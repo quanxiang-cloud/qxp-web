@@ -1,0 +1,13 @@
+{{template "layout" .}}
+
+{{define "header_styles"}}
+
+{{end}}
+
+{{define "content"}}
+<div id="root"></div>
+{{end}}
+
+{{define "bottom_scripts"}}
+  <script src="<%= htmlWebpackPlugin.files.js[0] %>"></script>
+{{end}}
