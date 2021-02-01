@@ -13,8 +13,12 @@ func GetRouter() http.Handler {
 	r := mux.NewRouter()
 
 	r.PathPrefix("/api").HandlerFunc(handlers.ProxyAPIHandler)
+	r.PathPrefix("/register").Methods("GET").HandlerFunc(handlers.RegisterHandler)
+	r.PathPrefix("/login/{type}").Methods("GET").HandlerFunc(handlers.LoginHandler)
+	r.PathPrefix("/login/{type}").Methods("POST").HandlerFunc(handlers.LoginActionHandler)
+	r.Path("/logout").Methods("POST").HandlerFunc(handlers.LogoutHandler)
 
-	r.PathPrefix("/").Methods("GET").HandlerFunc(handlers.PortalHandler)
+	r.Path("/").Methods("GET").HandlerFunc(handlers.PortalHandler)
 	r.PathPrefix("/").HandlerFunc(handlers.BadRequesthandler)
 
 	return contexts.RequestIDMiddleware(r)

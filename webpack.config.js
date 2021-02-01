@@ -16,6 +16,10 @@ module.exports = function({ mode }) {
     devtool: mode === 'production' ? false : 'source-map',
     entry: {
       portal: './clients/portal/index.tsx',
+      register: './clients/register/index.ts',
+      'login-password': './clients/login/password.ts',
+      'login-captcha': './clients/login/captcha.ts',
+      '404': './clients/404/index.ts',
     },
 
     output: {
@@ -65,7 +69,7 @@ module.exports = function({ mode }) {
         },
       ],
     },
-
+    
     plugins: [
       new WebpackBar(),
       new MiniCssExtractPlugin({
@@ -76,6 +80,29 @@ module.exports = function({ mode }) {
         chunks: ['portal'],
         template: './clients/templates/portal.html',
         filename: `${__dirname}/dist/templates/portal.html`,
+      }),
+      new HtmlWebpackPlugin({
+        inject: false,
+        chunks: ['login-password'],
+        template: './clients/templates/login-password.html',
+        filename: `${__dirname}/dist/templates/login-password.html`,
+      }),
+      new HtmlWebpackPlugin({
+        inject: false,
+        chunks: ['login-captcha'],
+        template: './clients/templates/login-captcha.html',
+        filename: `${__dirname}/dist/templates/login-captcha.html`,
+      }),
+      new HtmlWebpackPlugin({
+        inject: false,
+        chunks: ['register'],
+        template: './clients/templates/register.html',
+        filename: `${__dirname}/dist/templates/register.html`,
+      }),
+      new HtmlWebpackPlugin({
+        inject: false,
+        template: './clients/templates/404.html',
+        filename: `${__dirname}/dist/templates/404.html`,
       }),
       mode !== 'production' ? new WebpackNotifierPlugin({ alwaysNotify: true }) : null,
     ].filter(Boolean),

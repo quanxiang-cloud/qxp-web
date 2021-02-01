@@ -1,6 +1,9 @@
 import * as React from 'react';
 import { Route } from 'react-router';
 
+import '@assets/scss/index.scss';
+
+
 const Dashboard = React.lazy(() => import(
   /* webpackChunkName: "dashboard" */
   './pages/dashboard'
