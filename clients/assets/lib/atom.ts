@@ -9,6 +9,8 @@ export interface IInputField {
   errMessage?: string;
   errorElement?: HTMLElement;
   isCheckbox?: boolean;
+  actionElement?: HTMLButtonElement;
+  url?: string; 
 }
 
 export function query<T>(selector: string): T {
@@ -37,14 +39,14 @@ export abstract class InputField implements IInputField {
   }: IInputField, action: HTMLButtonElement, onValidateAll?: Function) {
     this.name = name
     this.inputElement = inputElement
-    this.onValidateAll = onValidateAll
+    this.onValidateAll = onValidateAll || function() {}
     this.value = value
     this.errMessage = errMessage
     this.errorElement = errorElement
     this.action = action
     this.isCheckbox = this.inputElement.type === 'checkbox'
     this.getValue()
-    this.bindEvents()
+    this.baseBindEvents()
   }
 
   getValue() {
@@ -60,7 +62,7 @@ export abstract class InputField implements IInputField {
     this.validate(true)
   }
 
-  bindEvents() {
+  baseBindEvents() {
     this.inputElement.onblur = () => this.validate(true)
     this.inputElement.onchange = (e: Event) => {
       if (this.isCheckbox) {
@@ -70,6 +72,10 @@ export abstract class InputField implements IInputField {
       }
       localStorage.setItem(this.name, String(this.value))
     }
+  }
+
+  on(name: string, callback: EventListenerOrEventListenerObject) {
+    this.inputElement.addEventListener(name, callback)
   }
 
   abstract validate(checkAll?: boolean): boolean

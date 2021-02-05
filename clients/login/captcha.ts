@@ -14,9 +14,12 @@ interface ICaptchaUser extends IUser {
 class CaptchaUser extends User {
   private captcha: Captcha
 
-  constructor({ remember, action, username, captcha }: ICaptchaUser) {
-    super({ username, remember, action })
+  constructor({ action, username, captcha }: ICaptchaUser) {
+    super({ username, action })
     this.captcha = new Captcha(captcha, action, this.onValidateAll.bind(this))
+    if (this.username) {
+      this.captcha.setUserName(this.username)
+    }
   }
 
   onValidateAll(context: UserName | Captcha, isValid: boolean): boolean {
@@ -27,7 +30,10 @@ class CaptchaUser extends User {
   }
 
   validate(): boolean {
-    return this.username.validate() && this.captcha.validate()
+    if (this.username) {
+      return this.username.validate() && this.captcha.validate()
+    }
+    return this.captcha.validate()
   }
 }
 
@@ -41,11 +47,9 @@ new CaptchaUser({
   captcha: {
     name: 'login:captcha:captcha', 
     inputElement: query<HTMLInputElement>('input[name="captcha"]'), 
-    errorElement: query<HTMLInputElement>('.captcha-hints') 
-  },
-  remember: {
-    name: 'login:captcha:remember',
-    inputElement: query<HTMLInputElement>('input[name="remember"]'),
+    errorElement: query<HTMLInputElement>('.captcha-hints'),
+    actionElement: query<HTMLButtonElement>('button.send'),
+    url: '/api/oauth2s/v1/login/code',
   },
   action: query<HTMLButtonElement>('.btn-login')
 })

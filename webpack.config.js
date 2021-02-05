@@ -17,8 +17,9 @@ module.exports = function({ mode }) {
     entry: {
       portal: './clients/portal/index.tsx',
       register: './clients/register/index.ts',
-      'login-password': './clients/login/password.ts',
-      'login-captcha': './clients/login/captcha.ts',
+      'login-by-password': './clients/login/password.ts',
+      'login-by-captcha': './clients/login/captcha.ts',
+      'reset-password': './clients/login/reset-password',
       '404': './clients/404/index.ts',
     },
 
@@ -83,15 +84,15 @@ module.exports = function({ mode }) {
       }),
       new HtmlWebpackPlugin({
         inject: false,
-        chunks: ['login-password'],
-        template: './clients/templates/login-password.html',
-        filename: `${__dirname}/dist/templates/login-password.html`,
+        chunks: ['login-by-password'],
+        template: './clients/templates/login-by-password.html',
+        filename: `${__dirname}/dist/templates/login-by-password.html`,
       }),
       new HtmlWebpackPlugin({
         inject: false,
-        chunks: ['login-captcha'],
-        template: './clients/templates/login-captcha.html',
-        filename: `${__dirname}/dist/templates/login-captcha.html`,
+        chunks: ['login-by-captcha'],
+        template: './clients/templates/login-by-captcha.html',
+        filename: `${__dirname}/dist/templates/login-by-captcha.html`,
       }),
       new HtmlWebpackPlugin({
         inject: false,
@@ -103,6 +104,12 @@ module.exports = function({ mode }) {
         inject: false,
         template: './clients/templates/404.html',
         filename: `${__dirname}/dist/templates/404.html`,
+      }),
+      new HtmlWebpackPlugin({
+        inject: false,
+        chunks: ['reset-password'],
+        template: './clients/templates/reset-password.html',
+        filename: `${__dirname}/dist/templates/reset-password.html`
       }),
       mode !== 'production' ? new WebpackNotifierPlugin({ alwaysNotify: true }) : null,
     ].filter(Boolean),

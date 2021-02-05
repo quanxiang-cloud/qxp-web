@@ -1,10 +1,12 @@
 package handlers
 
-import "net/http"
+import (
+	"net/http"
+)
 
-// PortalHandler ...
+// PortalHandler render portal page
 func PortalHandler(w http.ResponseWriter, r *http.Request) {
-	if !IsUserLogin(r) {
+	if !IsUserLogin(w, r) {
 		http.Redirect(w, r, "/login/password", http.StatusFound)
 		return
 	}

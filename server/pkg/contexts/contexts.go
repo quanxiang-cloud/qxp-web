@@ -19,6 +19,7 @@ var (
 	Config       Configuration
 	Logger       _log.Logger
 	LogLvl       logrus.Level
+	ClusterCache *redis.ClusterClient
 	Cache        *redis.Client
 	SessionStore *redisstore.RedisStore
 	IDWorker     *SnowFlake
@@ -40,7 +41,7 @@ func SetupContext(configFile string, sessionCookieName string, appName string) (
 
 	if Config.Redis == nil {
 		var defaultRedisConfig = &RedisConfig{
-			Host:    "redis",
+			Host:    []string{"redis"},
 			Port:    6379,
 			DB:      1,
 			Timeout: 15,
@@ -50,10 +51,14 @@ func SetupContext(configFile string, sessionCookieName string, appName string) (
 		Config.Redis = defaultRedisConfig
 	}
 
-	Cache, err = NewRedisClient(Config.Redis)
-	if err != nil {
-		log.Fatal(err)
-		return
+	if Config.DevMode {
+		Cache, err = NewRedisClient(Config.Redis)
+		if err != nil {
+			log.Fatal(err)
+			return
+		}
+	} else {
+		ClusterCache, err = NewRedisClusterClient(Config.Redis)
 	}
 
 	if Config.PortalServer.LogLevel == "" {
@@ -74,9 +79,16 @@ func SetupContext(configFile string, sessionCookieName string, appName string) (
 		_log.EnableStdout(Logger)
 	}
 
-	SessionStore, err = initSession(Cache)
-	if err != nil {
-		log.Fatal("failed to init session store", err.Error())
+	if Config.DevMode {
+		SessionStore, err = initSession(Cache)
+		if err != nil {
+			log.Fatal("failed to init session store", err.Error())
+		}
+	} else {
+		SessionStore, err = initClusterSession(ClusterCache)
+		if err != nil {
+			log.Fatal("failed to init session store", err.Error())
+		}
 	}
 
 	IDWorker, err = NewSnowFlake(1)
@@ -119,25 +131,28 @@ func SetupContext(configFile string, sessionCookieName string, appName string) (
 }
 
 // SendRequest is an util method for request API Server
-func SendRequest(r *http.Request, method string, path string, body io.Reader) (*bytes.Buffer, string) {
+func SendRequest(r *http.Request, method string, path string, body io.Reader, headers map[string]interface{}) (*http.Response, *bytes.Buffer, string) {
 	requestID := GetRequestID(r)
 
 	req, err := http.NewRequest(method, APIEndpoint+path, body)
+	for key, value := range headers {
+		req.Header.Add(key, value.(string))
+	}
 	if err != nil {
 		Logger.Errorf("[request_id=%s] failed to build request: %s", requestID, err.Error())
-		return nil, "failed to build request"
+		return nil, nil, "failed to build request"
 	}
 
-	token := GetSessionToken(r)
+	token, _ := GetSessionToken(r)
 	if token == "" {
 		token = GetQueryToken(r)
 	}
 
 	if token == "" {
-		return nil, "no token found in session or request query"
+		return nil, nil, "no token found in session or request query"
 	}
 
-	req.Header.Add("Authorization", "Bearer "+token)
+	req.Header.Add("Access-Token", token)
 
 	Logger.Debugf(
 		"[request_id=%s] sending request, method: %s, url: %s, headers: %s",
@@ -147,7 +162,7 @@ func SendRequest(r *http.Request, method string, path string, body io.Reader) (*
 	resp, err := HTTPClient.Do(req)
 	if err != nil {
 		Logger.Errorf("[request_id=%s] failed to send request to API server: %s", requestID, err.Error())
-		return nil, "failed to send request to API server"
+		return resp, nil, "failed to send request to API server"
 	}
 	defer resp.Body.Close() // Force closing the response body
 
@@ -155,7 +170,7 @@ func SendRequest(r *http.Request, method string, path string, body io.Reader) (*
 	_, err = io.Copy(buffer, resp.Body)
 	if err != nil {
 		Logger.Errorf("[request_id=%s] copy response body error: %s", requestID, err.Error())
-		return nil, http.StatusText(http.StatusInternalServerError)
+		return resp, nil, http.StatusText(http.StatusInternalServerError)
 	}
 
 	if resp.StatusCode >= http.StatusInternalServerError {
@@ -163,7 +178,7 @@ func SendRequest(r *http.Request, method string, path string, body io.Reader) (*
 			"[request_id=%s] request API encounter status_code: %d, request method: %s, request path: %s, response body: %s",
 			requestID, resp.StatusCode, method, path, buffer.String(),
 		)
-		return buffer, fmt.Sprintf("API server response status code >= %d", http.StatusInternalServerError)
+		return resp, buffer, fmt.Sprintf("API server response status code >= %d", http.StatusInternalServerError)
 	}
 
 	if resp.StatusCode >= http.StatusBadRequest && resp.StatusCode < http.StatusInternalServerError {
@@ -171,20 +186,23 @@ func SendRequest(r *http.Request, method string, path string, body io.Reader) (*
 			"[request_id=%s] request API encounter status_code: %d, request method: %s, request path: %s, response body: %s",
 			requestID, resp.StatusCode, method, path, buffer.String(),
 		)
-		return buffer, fmt.Sprintf("API server response status code >= %d", http.StatusBadRequest)
+		return resp, buffer, fmt.Sprintf("API server response status code >= %d", http.StatusBadRequest)
 	}
 
-	return buffer, ""
+	return resp, buffer, ""
 }
 
 // SendRequestWitoutAuth is an util method for request Billing Server
-func SendRequestWitoutAuth(r *http.Request, method string, path string, body io.Reader) (*bytes.Buffer, string) {
+func SendRequestWitoutAuth(r *http.Request, method string, path string, body io.Reader, headers map[string]interface{}) (*http.Response, *bytes.Buffer, string) {
 	requestID := GetRequestID(r)
 
 	req, err := http.NewRequest(method, APIEndpoint+path, body)
+	for key, value := range headers {
+		req.Header.Add(key, value.(string))
+	}
 	if err != nil {
 		Logger.Errorf("[request_id=%s] failed to build request: %s", requestID, err.Error())
-		return nil, "failed to build request"
+		return nil, nil, "failed to build request"
 	}
 
 	Logger.Debugf(
@@ -195,7 +213,7 @@ func SendRequestWitoutAuth(r *http.Request, method string, path string, body io.
 	resp, err := HTTPClient.Do(req)
 	if err != nil {
 		Logger.Errorf("[request_id=%s] failed to send request to API server: %s", requestID, err.Error())
-		return nil, "failed to send request to API server"
+		return nil, nil, "failed to send request to API server"
 	}
 	defer resp.Body.Close() // Force closing the response body
 
@@ -203,7 +221,7 @@ func SendRequestWitoutAuth(r *http.Request, method string, path string, body io.
 	_, err = io.Copy(buffer, resp.Body)
 	if err != nil {
 		Logger.Errorf("[request_id=%s] copy response body error: %s", requestID, err.Error())
-		return nil, http.StatusText(http.StatusInternalServerError)
+		return resp, nil, http.StatusText(http.StatusInternalServerError)
 	}
 
 	if resp.StatusCode >= http.StatusInternalServerError {
@@ -211,7 +229,7 @@ func SendRequestWitoutAuth(r *http.Request, method string, path string, body io.
 			"[request_id=%s] request API encounter status_code: %d, request method: %s, request path: %s, response body: %s",
 			requestID, resp.StatusCode, method, path, buffer.String(),
 		)
-		return buffer, fmt.Sprintf("API server response status code >= %d", http.StatusInternalServerError)
+		return resp, buffer, fmt.Sprintf("API server response status code >= %d", http.StatusInternalServerError)
 	}
 
 	if resp.StatusCode >= http.StatusBadRequest && resp.StatusCode < http.StatusInternalServerError {
@@ -219,8 +237,8 @@ func SendRequestWitoutAuth(r *http.Request, method string, path string, body io.
 			"[request_id=%s] request API encounter status_code: %d, request method: %s, request path: %s, response body: %s",
 			requestID, resp.StatusCode, method, path, buffer.String(),
 		)
-		return buffer, fmt.Sprintf("API server response status code >= %d", http.StatusBadRequest)
+		return resp, buffer, fmt.Sprintf("API server response status code >= %d", http.StatusBadRequest)
 	}
 
-	return buffer, ""
+	return resp, buffer, ""
 }

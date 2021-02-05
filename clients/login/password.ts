@@ -14,8 +14,8 @@ interface IPasswordUser extends IUser {
 class PasswordUser extends User {
   private password: Password
 
-  constructor({ remember, action, username, password }: IPasswordUser) {
-    super({ username, remember, action })
+  constructor({ action, username, password }: IPasswordUser) {
+    super({ username, action })
     this.password = new Password(password, action, this.onValidateAll.bind(this))
   }
 
@@ -27,7 +27,10 @@ class PasswordUser extends User {
   }
 
   validate(): boolean {
-    return this.username.validate() && this.password.validate()
+    if(this.username) {
+      return this.username.validate() && this.password.validate()
+    }
+    return this.password.validate()
   }
 }
 
@@ -42,10 +45,6 @@ new PasswordUser({
     name: 'login:password:password', 
     inputElement: query<HTMLInputElement>('input[name="password"]'), 
     errorElement: query<HTMLInputElement>('.password-hints') 
-  },
-  remember: {
-    name: 'login:password:remember',
-    inputElement: query<HTMLInputElement>('input[name="remember"]'),
   },
   action: query<HTMLButtonElement>('.btn-login')
 })

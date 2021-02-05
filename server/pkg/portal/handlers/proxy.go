@@ -8,7 +8,7 @@ import (
 	"qxp-web/server/pkg/contexts"
 )
 
-// ProxyAPIHandler ... 代理中间件
+// ProxyAPIHandler proxy helper for endpoint api
 func ProxyAPIHandler(w http.ResponseWriter, r *http.Request) {
 	// session, err := contexts.GetCurrentRequestSession(r)
 	// if err != nil {
@@ -29,7 +29,12 @@ func ProxyAPIHandler(w http.ResponseWriter, r *http.Request) {
 
 	method := r.Method
 	path := r.URL.Path
-	url := fmt.Sprintf("%s%s?%s", "http://192.168.5.105:8083", path, r.URL.RawQuery)
+	url := ""
+	if r.URL.RawQuery != "" {
+		url = fmt.Sprintf("%s%s?%s", contexts.APIEndpoint, path, r.URL.RawQuery)
+	} else {
+		url = fmt.Sprintf("%s%s", contexts.APIEndpoint, path)
+	}
 
 	req, err := http.NewRequest(method, url, r.Body)
 	if err != nil {
@@ -41,14 +46,16 @@ func ProxyAPIHandler(w http.ResponseWriter, r *http.Request) {
 	// authorization := "Bearer " + token
 	// req.Header.Add("Authorization", authorization)
 	req.Header.Add("Content-Type", "application/json")
-	req.Header.Add("token", "4cf02e712070455b92f4a95525768603")
-	req.Header.Add("domain", "qingcloud")
+	token, _ := contexts.GetSessionToken(r)
+	if token != "" {
+		req.Header.Add("Access-Token", token)
+	}
 	// headers: {
 	//     token: '4cf02e712070455b92f4a95525768603',
 	//     domain: 'qingcloud'
 	//   }
 
-	contexts.Logger.Debugf("proxy billing request, method: %s, url: %s, request_id: %s", method, url, contexts.GetRequestID(r))
+	contexts.Logger.Debugf("proxy api request, method: %s, url: %s, request_id: %s", method, url, contexts.GetRequestID(r))
 
 	resp, err := contexts.HTTPClient.Do(req)
 	if err != nil {

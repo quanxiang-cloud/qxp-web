@@ -12,10 +12,10 @@ import (
 )
 
 func main() {
-	confieFile := flag.String("c", "", "config file path")
+	configFile := flag.String("c", "", "config file path")
 	flag.Parse()
 
-	err := contexts.SetupContext(*confieFile, "sk", "portal")
+	err := contexts.SetupContext(*configFile, "sk", "portal")
 	if err != nil {
 		panic(err)
 	}
@@ -24,7 +24,7 @@ func main() {
 
 	addr := fmt.Sprintf("0.0.0.0:%d", contexts.Config.PortalServer.ServerPort)
 
-	log.Printf("Listen and server on: %s\n", addr)
+	log.Printf("Listen and serve on: %s\n", addr)
 
 	srv := &http.Server{
 		Handler: r,

@@ -4,18 +4,22 @@ import Remember from './remember'
 import UserName from './username'
 
 export interface IUser {
-  username: IInputField;
-  remember: IInputField;
+  username?: IInputField;
+  remember?: IInputField;
   action: HTMLButtonElement;
 }
 
 export default abstract class User {
-  protected username: UserName
+  protected username?: UserName
   protected action: HTMLButtonElement
 
   constructor({ username, remember, action }: IUser) {
-    new Remember(remember, action)
-    this.username = new UserName(username, action, this.onValidateAll.bind(this))
+    if (remember) {
+      new Remember(remember, action)
+    }
+    if (username) {
+      this.username = new UserName(username, action, this.onValidateAll.bind(this))
+    }
     this.action = action
     this.bindEvents()
   }

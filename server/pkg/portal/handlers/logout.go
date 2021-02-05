@@ -1,29 +1,53 @@
 package handlers
 
 import (
+	"encoding/json"
 	"net/http"
 	"qxp-web/server/pkg/contexts"
 )
 
-// LogoutHandler ... 退出登录
+// LogoutResponse logout response struct
+type LogoutResponse struct {
+	Code    int64  `json:"code"`
+	Message string `json:"message"`
+	Data    string `json:"data"`
+}
+
+// LogoutHandler render logout page
 func LogoutHandler(w http.ResponseWriter, r *http.Request) {
+	requestID := contexts.GetRequestID(r)
 	session, err := contexts.GetCurrentRequestSession(r)
-	token := contexts.GetSessionToken(r)
-	if err != nil || token == "" {
+	if err != nil {
+		http.Redirect(w, r, "/", http.StatusFound)
+		return
+	}
+	resp, respBuffer, errMsg := contexts.SendRequest(r, "POST", "/api/oauth2c/v1/loginout", nil, map[string]interface{}{
+		"Content-Type":  "application/x-www-form-urlencoded",
+		"Refresh-Token": session.Values["refresh_token"].(string),
+	})
+	if errMsg != "" {
+		contexts.Logger.Errorf("send logout request failed: %s, request_id: %s", errMsg, requestID)
+		http.Redirect(w, r, "/", http.StatusFound)
+		return
+	}
+	if ShouldLogin(w, r, resp) {
+		return
+	}
+	var logoutResponse LogoutResponse
+	if err := json.Unmarshal(respBuffer.Bytes(), &logoutResponse); err != nil {
+		contexts.Logger.Errorf("parse logout request body failed: %s, request_id: %s", err.Error(), requestID)
+		http.Redirect(w, r, "/", http.StatusFound)
+		return
+	}
+	if logoutResponse.Code != 0 {
+		contexts.Logger.Errorf("logout failed, request_id: %s", requestID)
 		http.Redirect(w, r, "/", http.StatusFound)
 		return
 	}
 	contexts.Logger.Debug("user session has been revoked")
-	session.Values["token"] = nil
-	if err = session.Save(r, w); err != nil {
-		http.Error(w, http.StatusText((http.StatusInternalServerError)), http.StatusInternalServerError)
-		return
-	}
+	session.Values["refresh_token"] = nil
+	contexts.Cache.Del("token")
+	session.Save(r, w)
 	contexts.Logger.Debug("user logout, redirect to /")
-	delCookie := http.Cookie{
-		Name:   contexts.Config.SessionCookieName,
-		MaxAge: -1,
-	}
-	http.SetCookie(w, &delCookie)
 	http.Redirect(w, r, "/", http.StatusFound)
 }

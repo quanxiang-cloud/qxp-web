@@ -12,31 +12,57 @@ import (
 // ContextKey is used for context.Context value. The value requires a key that is not primitive type.
 type ContextKey string
 
+// RequestID requestID type
 const RequestID ContextKey = "requestID"
 
+// GetQueryToken get token from query
 func GetQueryToken(r *http.Request) string {
 	return r.URL.Query().Get("token")
 }
 
-func GetSessionToken(r *http.Request) string {
+// GetSessionToken get token from session
+func GetSessionToken(r *http.Request) (string, bool) {
 	session, err := GetCurrentRequestSession(r)
 	if err != nil {
-		return ""
+		return "", true
 	}
 
 	if session.IsNew {
 		Logger.Debug("this request session is New, so user has not login")
-		return ""
+		return "", true
 	}
 
-	token, ok := session.Values["token"].(string)
-	if !ok {
-		return ""
+	token, err := Cache.Get("token").Result()
+
+	if token == "" || err != nil {
+		return token, false
 	}
 
-	return token
+	return token, true
 }
 
+// GetRefreshToken get refreshToken
+func GetRefreshToken(r *http.Request) string {
+	session, err := GetCurrentRequestSession(r)
+	if err != nil {
+		return ""
+	}
+	if session.IsNew {
+		Logger.Debug("this request session is New, so user has not login")
+		return ""
+	}
+	freshToken := ""
+	defer func() {
+		err := recover()
+		if err != nil {
+			freshToken = ""
+		}
+	}()
+	freshToken = session.Values["refresh_token"].(string)
+	return freshToken
+}
+
+// GetSessionValue get value from session
 func GetSessionValue(r *http.Request, valueKey string) string {
 	session, err := GetCurrentRequestSession(r)
 	if err != nil {
@@ -56,6 +82,7 @@ func GetRequestID(r *http.Request) string {
 	return r.Context().Value(RequestID).(string)
 }
 
+// GetCurrentRequestSession get session of current request
 func GetCurrentRequestSession(r *http.Request) (*sessions.Session, error) {
 	session, err := SessionStore.Get(r, Config.SessionCookieName)
 	if err != nil {
@@ -67,6 +94,22 @@ func GetCurrentRequestSession(r *http.Request) (*sessions.Session, error) {
 }
 
 func initSession(redisClient *redis.Client) (*redisstore.RedisStore, error) {
+	sessionStore, err := redisstore.NewRedisStore(redisClient)
+	if err != nil {
+		log.Fatal("failed to create redis store: ", err)
+	}
+	sessionStore.Options(sessions.Options{
+		// 29 days
+		MaxAge: 86400 * 29,
+		Path:   "/",
+	})
+
+	log.Println("sessionStore initialized")
+
+	return sessionStore, err
+}
+
+func initClusterSession(redisClient *redis.ClusterClient) (*redisstore.RedisStore, error) {
 	sessionStore, err := redisstore.NewRedisStore(redisClient)
 	if err != nil {
 		log.Fatal("failed to create redis store: ", err)

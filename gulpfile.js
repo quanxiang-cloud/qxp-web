@@ -81,5 +81,7 @@ exports.build = gulp.series(clean, gulp.parallel(copyImages, copyTemplates,
 ));
 
 process.on('exit', () => {
-  portalServer?.kill();
+  if (portalServer) {
+    portalServer.kill()
+  }
 })

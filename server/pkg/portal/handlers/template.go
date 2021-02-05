@@ -46,11 +46,11 @@ func renderTemplate(w http.ResponseWriter, templateName string, data map[string]
 
 func renderErrorPage(w http.ResponseWriter, r *http.Request, code int, message string) {
 	errMsg := fmt.Sprintf("[request_id=%s] %s: %s", contexts.GetRequestID(r), http.StatusText(code), message)
-	// contexts.Logger.Error(errMsg)
+	contexts.Logger.Error(errMsg)
 	http.Error(w, errMsg, code)
 }
 
-// BadRequesthandler ... 请求 404
+// BadRequesthandler render 404 page
 func BadRequesthandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(400)
 	renderTemplate(w, "404.html", nil)

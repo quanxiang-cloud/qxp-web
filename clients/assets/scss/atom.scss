@@ -97,6 +97,10 @@
   vertical-align: middle;
 }
 
+.va-bottom {
+  vertical-align: bottom;
+}
+
 .text-black-n20 {
   color: rgba(2, 5, 8, 1);
 }
@@ -153,6 +157,10 @@
   margin-bottom: px2rem(40px);
 }
 
+.mt-32 {
+  margin-top: px2rem(32px);
+}
+
 .mb-24 {
   margin-bottom: px2rem(24px);
 }
@@ -175,6 +183,10 @@
 
 .ml-10 {
   margin-left: px2rem(10px);
+}
+
+.ml-6 {
+  margin-left: px2rem(6px);
 }
 
 .w360 {
