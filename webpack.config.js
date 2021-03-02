@@ -4,6 +4,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const WebpackNotifierPlugin = require('webpack-notifier');
 const WebpackBar = require('webpackbar');
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
+const tailwindcss = require('tailwindcss');
 
 // {
 //   mode: 'production' | 'development';
@@ -48,11 +49,28 @@ module.exports = function({ mode }) {
               loader: 'postcss-loader',
               options: {
                 plugins: [
+                  tailwindcss('./tailwind.config.js'),
                   require('autoprefixer')(),
                 ],
               },
             },
             { loader: 'sass-loader' },
+          ],
+        },
+        {
+          test: /\.css$/,
+          use: [
+            MiniCssExtractPlugin.loader,
+            { loader: 'css-loader' },
+            {
+              loader: 'postcss-loader',
+              options: {
+                plugins: [
+                  tailwindcss('./tailwind.config.js'),
+                  require('autoprefixer')(),
+                ],
+              },
+            },
           ],
         },
         {

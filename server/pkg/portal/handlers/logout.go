@@ -16,6 +16,7 @@ type LogoutResponse struct {
 // LogoutHandler render logout page
 func LogoutHandler(w http.ResponseWriter, r *http.Request) {
 	session, err := contexts.GetCurrentRequestSession(r)
+	token, _ := contexts.GetSessionToken(r)
 	if err != nil {
 		http.Redirect(w, r, "/", http.StatusFound)
 		return
@@ -29,6 +30,7 @@ func LogoutHandler(w http.ResponseWriter, r *http.Request) {
 	resp, respBuffer, errMsg := contexts.SendRequest(r, "POST", "/api/oauth2c/v1/loginout", nil, map[string]interface{}{
 		"Content-Type":  "application/x-www-form-urlencoded",
 		"Refresh-Token": session.Values["refresh_token"].(string),
+		"Access-Token":  token,
 	})
 	if errMsg != "" {
 		contexts.Logger.Errorf("send logout request failed: %s, request_id: %s", errMsg, requestID)

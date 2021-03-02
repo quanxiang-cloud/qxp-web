@@ -1,1 +1,157 @@
-@import "../../assets/scss/reset"
+@import "../../assets/scss/reset";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  font-size: 20px;
+}
+
+.h-13 {
+  height: 3.2rem;
+}
+
+.w-13 {
+  width: 3.2rem;
+}
+
+.w-dot-8 {
+  width: .8rem;
+}
+
+.w-2-dot-4 {
+  width: 2.4rem;
+}
+
+.h-2-dot-4 {
+  height: 2.4rem;
+}
+
+.h-dot-8 {
+  height: .8rem;
+}
+
+.py-dot-8 {
+  padding-top: .8rem;
+  padding-bottom: .8rem;
+}
+
+.px-1-dot-2 {
+  padding-left: 1.2rem;
+  padding-right: 1.2rem;
+}
+
+.bg-E5E5E5 {
+  background-color: #E5E5E5;
+}
+
+.text-dot-7 {
+  font-size: .7rem;
+}
+
+.text-dot-6 {
+  font-size: .6rem;
+}
+
+.text-dot-8 {
+  font-size: .8rem;
+}
+
+.ml-dot-6 {
+  margin-left: .6rem;
+}
+
+.mr-dot-2 {
+  margin-right: .2rem;
+}
+
+.mr-2-dot-8 {
+  margin-right: 2.8rem;
+}
+
+.ml-dot-3-5 {
+  margin-left: .35rem;
+}
+
+.mr-dot-4 {
+  margin-right: .4rem;
+}
+
+.ml-dot-4 {
+  margin-left: .4rem;
+}
+
+.mb-dot-6 {
+  margin-bottom: .6rem;
+}
+
+.border-shape {
+  border-radius: 5px;
+  border-top-right-radius: 0;
+}
+
+.pt-1-dot-6 {
+  padding-top: 1.6rem;
+}
+
+.pb-1-dot-6 {
+  padding-bottom: 1.6rem;
+}
+
+.px-1-dot-6 {
+  padding-left: 1.6rem;
+  padding-right: 1.6rem;
+}
+
+.pl-2-dot-6 {
+  padding-left: 2.6rem;
+}
+
+.pr-2-dot-6 {
+  padding-right: 2.6rem;
+}
+
+.flex-2 {
+  flex: 2 1 0%;
+}
+
+.color-475569 {
+  color: #475569;
+}
+
+.color-324558 {
+  color: #324558;
+}
+
+.color-0F172A {
+  color: #0F172A;
+}
+
+.bg-white-dot-6-5 {
+  background-color: rgba($color: #fff, $alpha: .65);
+}
+
+.p-dot-3-6 {
+  padding: .36rem;
+}
+
+.bg-gradient-green-to-top-right {
+  background-image: linear-gradient(to top right, #14B8A6, rgba(20, 184, 166, .4));
+}
+
+.bg-gradient-yellow-to-top-right {
+  background-image: linear-gradient(to top right, #F59E0B, rgba(245, 158, 11, .4));
+}
+
+.bg-gradient-blue-to-top-right {
+  background-image: linear-gradient(to top right, #B5CCFF, rgba(181, 204, 255, .4));
+}
+
+.bg-DCDAD7 {
+  background-color: #DCDAD7;
+}
+
+.bg-5976e01a {
+  background-color: #5976e01a;
+}

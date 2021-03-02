@@ -8,7 +8,7 @@ export default class Application extends React.Component<unknown> {
   render(): JSX.Element {
     return (
       <Router>
-        <div className="main-content">
+        <div className="min-h-screen bg-5976e01a">
           <React.Suspense fallback={(<div>loading...</div>)}>
             {routes()}
           </React.Suspense>
