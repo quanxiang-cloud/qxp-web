@@ -16,6 +16,11 @@ module.exports = function({ mode }) {
     devtool: mode === 'production' ? false : 'source-map',
     entry: {
       portal: './clients/portal/index.tsx',
+      register: './clients/register/index.ts',
+      'login-by-password': './clients/login/password.ts',
+      'login-by-captcha': './clients/login/captcha.ts',
+      'reset-password': './clients/login/reset-password',
+      '404': './clients/404/index.ts',
     },
 
     output: {
@@ -65,7 +70,7 @@ module.exports = function({ mode }) {
         },
       ],
     },
-
+    
     plugins: [
       new WebpackBar(),
       new MiniCssExtractPlugin({
@@ -76,6 +81,35 @@ module.exports = function({ mode }) {
         chunks: ['portal'],
         template: './clients/templates/portal.html',
         filename: `${__dirname}/dist/templates/portal.html`,
+      }),
+      new HtmlWebpackPlugin({
+        inject: false,
+        chunks: ['login-by-password'],
+        template: './clients/templates/login-by-password.html',
+        filename: `${__dirname}/dist/templates/login-by-password.html`,
+      }),
+      new HtmlWebpackPlugin({
+        inject: false,
+        chunks: ['login-by-captcha'],
+        template: './clients/templates/login-by-captcha.html',
+        filename: `${__dirname}/dist/templates/login-by-captcha.html`,
+      }),
+      new HtmlWebpackPlugin({
+        inject: false,
+        chunks: ['register'],
+        template: './clients/templates/register.html',
+        filename: `${__dirname}/dist/templates/register.html`,
+      }),
+      new HtmlWebpackPlugin({
+        inject: false,
+        template: './clients/templates/404.html',
+        filename: `${__dirname}/dist/templates/404.html`,
+      }),
+      new HtmlWebpackPlugin({
+        inject: false,
+        chunks: ['reset-password'],
+        template: './clients/templates/reset-password.html',
+        filename: `${__dirname}/dist/templates/reset-password.html`
       }),
       mode !== 'production' ? new WebpackNotifierPlugin({ alwaysNotify: true }) : null,
     ].filter(Boolean),

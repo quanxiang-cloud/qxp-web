@@ -12,10 +12,15 @@ import (
 func GetRouter() http.Handler {
 	r := mux.NewRouter()
 
-	r.PathPrefix("/api").HandlerFunc(handlers.ProxyAPIHandler)
+	r.Headers("X-Proxy", "API").HandlerFunc(handlers.ProxyAPIHandler)
+	// r.Path("/register").Methods("GET").HandlerFunc(handlers.RegisterHandler)
+	r.Path("/login/{type}").Methods("GET").HandlerFunc(handlers.LoginHandler)
+	r.Path("/login/{type}").Methods("POST").HandlerFunc(handlers.LoginSubmitHandler)
+	r.Path("/logout").Methods("POST").HandlerFunc(handlers.LogoutHandler)
+	r.Path("/resetPassword").Methods("GET").HandlerFunc(handlers.ResetPasswordHandler)
+	r.Path("/resetPassword").Methods("POST").HandlerFunc(handlers.ResetPasswordActionHandler)
 
 	r.PathPrefix("/").Methods("GET").HandlerFunc(handlers.PortalHandler)
-	r.PathPrefix("/").HandlerFunc(handlers.BadRequesthandler)
 
 	return contexts.RequestIDMiddleware(r)
 }

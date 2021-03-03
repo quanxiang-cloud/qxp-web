@@ -6,6 +6,8 @@ import (
 	"net/http"
 	"path"
 	"qxp-web/server/pkg/contexts"
+
+	"github.com/gorilla/mux"
 )
 
 var tmpls = make(map[string]*template.Template)
@@ -13,6 +15,11 @@ var funcMap = template.FuncMap{
 	"rawCSS": func(s string) template.CSS {
 		return template.CSS(s)
 	},
+}
+
+func getPathParam(r *http.Request, name string) string {
+	vars := mux.Vars(r)
+	return vars[name]
 }
 
 func renderTemplate(w http.ResponseWriter, templateName string, data map[string]interface{}) {
@@ -39,11 +46,12 @@ func renderTemplate(w http.ResponseWriter, templateName string, data map[string]
 
 func renderErrorPage(w http.ResponseWriter, r *http.Request, code int, message string) {
 	errMsg := fmt.Sprintf("[request_id=%s] %s: %s", contexts.GetRequestID(r), http.StatusText(code), message)
-	// contexts.Logger.Error(errMsg)
+	contexts.Logger.Error(errMsg)
 	http.Error(w, errMsg, code)
 }
 
+// BadRequesthandler render 404 page
 func BadRequesthandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(400)
-	w.Write([]byte("Bad Request"))
+	renderTemplate(w, "404.html", nil)
 }

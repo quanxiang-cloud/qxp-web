@@ -1,0 +1,33 @@
+@import '@assets/scss/index.scss';
+
+body {
+  font-size: 0;
+  display: flex;
+  justify-content: space-between;
+  background-color: #fff;
+  text-align: center;
+
+  header {
+    padding: px2rem(16px) px2rem(20px) 0 px2rem(28.33px);
+
+    .logo-company {
+      img {
+        width: px2rem(26.6px);
+        height: px2rem(26.6px);
+        margin-right: px2rem(8.4px);
+      }
+    }
+
+    .to-login {
+      > span:first-child {
+        margin-right: px2rem(16px);
+      }
+
+      > a {
+        padding: px2rem(4px) px2rem(12px);
+      }
+    }
+  }
+}
+
+

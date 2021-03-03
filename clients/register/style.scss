@@ -1,0 +1,67 @@
+@import '@assets/scss/index.scss';
+
+body {
+  font-size: 0;
+  display: flex;
+  justify-content: space-between;
+  background-color: #fff;
+  text-align: center;
+
+  header {
+    padding: px2rem(16px) px2rem(20px) 0 px2rem(28.33px);
+
+    .logo-company {
+      img {
+        width: px2rem(26.6px);
+        height: px2rem(26.6px);
+        margin-right: px2rem(8.4px);
+      }
+    }
+
+    .to-login {
+      > span:first-child {
+        margin-right: px2rem(16px);
+      }
+
+      > a {
+        padding: px2rem(4px) px2rem(12px);
+      }
+    }
+  }
+
+  form {
+    > h1 {
+      margin-top: px2rem(-72px);
+    }
+
+    input {
+      border: 1px solid #D5DEE7;
+      padding: 4px 12px;
+      outline: none;
+      transition: all .3s linear;
+
+      &.pr-36 {
+        padding-right: px2rem(36px);
+      }
+
+      &:focus {
+        box-shadow: 0px 0px 4px rgba(50, 69, 88, 0.12);
+        border-color: rgba(55, 95, 243, 1);
+      }
+    }
+
+    > button:last-child {
+      padding: px2rem(4px) 0;
+      opacity: 0.6;
+      box-shadow: 0px 1px 2px rgba(50, 69, 88, 0.08);
+    }
+  }
+
+  @media screen and (max-width: 930px) {
+    aside {
+      display: none !important;
+    }
+  }
+}
+
+

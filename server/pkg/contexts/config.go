@@ -26,6 +26,7 @@ type HTTPClientConfig struct {
 	IdleConnTimeout int `yaml:"idle_conn_timeout" default:"90" split_words:"true"`
 }
 
+// PortalServerConfig server config
 type PortalServerConfig struct {
 	ServerPort   int    `yaml:"server_port" default:"80" split_words:"true"`
 	LogLevel     string `yaml:"log_level" default:"warning" split_words:"true"`

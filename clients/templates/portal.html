@@ -1,11 +1,11 @@
 {{template "layout" .}}
 
 {{define "header_styles"}}
-
+  <link rel="stylesheet" href="<%= htmlWebpackPlugin.files.css[0] %>">
 {{end}}
 
 {{define "content"}}
-<div id="root"></div>
+<div id="root" class="w-p-100 h-p-100"></div>
 {{end}}
 
 {{define "bottom_scripts"}}

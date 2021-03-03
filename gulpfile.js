@@ -1,7 +1,6 @@
 const util = require('util');
 const gulp = require('gulp');
 const webpack = require('webpack');
-const getWebpackConfig = require('./webpack.config.js');
 
 const promiseExec = util.promisify(require('child_process').exec);
 const { spawn, exec } = require('child_process');
@@ -45,19 +44,22 @@ function startPortalServer(done) {
   }
 
   portalServer = spawn('./bin/portal', ['-c', './config.yaml']);
-  portalServer.stderr.on('data', function (data) {
-    process.stdout.write(data.toString());
-  });
-
-  portalServer.stdout.on('data', function (data) {
-    process.stdout.write(data.toString());
-  });
-
+  portalServer.stderr.pipe(process.stderr);
+  portalServer.stdout.pipe(process.stdout);
   done();
 }
 
+function getWebpackConfig(config) {
+  Object.keys(require.cache).forEach(function(key) {
+    delete require.cache[key];
+  })
+  return require('./webpack.config.js')(config);
+}
+
 exports.default = gulp.series(clean, copyTemplates, copyImages, () => {
-  runWebpack(getWebpackConfig({ mode: 'development' }));
+  gulp.watch(['./webpack.config.js'], { ignoreInitial: false }, gulp.series((done) => {
+    runWebpack(getWebpackConfig({ mode: 'development' })).then(done)
+  }))
 
   gulp.watch(['server/**/*.go'], { ignoreInitial: false }, gulp.parallel(
     gulp.series(buildPortalServer, startPortalServer),
@@ -77,3 +79,9 @@ exports.build = gulp.series(clean, gulp.parallel(copyImages, copyTemplates,
     })
   },
 ));
+
+process.on('exit', () => {
+  if (portalServer) {
+    portalServer.kill()
+  }
+})
