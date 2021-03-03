@@ -10,7 +10,7 @@ export default function Index() {
     <>
       <HeaderWithMenu />
       <div className="px-td-dr h-full flex justify-center">
-        <div className="w-316 bg-fff pd-1 border-radius-2 mr-4">
+        <div className="w-316 bg-white pd-1 border-radius-2 mr-4">
           <ItemWithTitleDesc
             title="访问控制"
             desc="最近修改时间：2021-12-31 16:03"
@@ -25,7 +25,7 @@ export default function Index() {
           <div className="h-5"></div>
           <MenuComp />
         </div>
-        <div className="w-988 h-full bg-fff border-radius-2">
+        <div className="w-988 h-full bg-white border-radius-2">
           <Content />
         </div>
       </div>
