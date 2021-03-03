@@ -100,7 +100,7 @@ func LoginSubmitHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	expireTime, err := time.Parse(time.RFC3339, loginResponse.Data.Expire)
 	if err == nil {
-		contexts.Cache.Set("token", loginResponse.Data.AccessToken, time.Duration(expireTime.UnixNano()))
+		contexts.Cache.Set("token", loginResponse.Data.AccessToken, expireTime.Sub(time.Now()))
 	}
 	session.Values["refresh_token"] = loginResponse.Data.RefreshToken
 	redirectURL, ok := session.Values["redirect_url"].(string)

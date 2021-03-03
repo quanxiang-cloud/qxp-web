@@ -71,7 +71,7 @@ func RefreshToken(w http.ResponseWriter, r *http.Request) bool {
 	}
 	expireTime, err := time.Parse(time.RFC3339, refreshTokenResponse.Data.Expire)
 	if err == nil {
-		contexts.Cache.Set("token", refreshTokenResponse.Data.AccessToken, time.Duration(expireTime.UnixNano()))
+		contexts.Cache.Set("token", refreshTokenResponse.Data.AccessToken, expireTime.Sub(time.Now()))
 	}
 	session.Values["refresh_token"] = refreshTokenResponse.Data.RefreshToken
 	if err := session.Save(r, w); err != nil {
