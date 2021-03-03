@@ -1,15 +1,17 @@
-import React from 'react'
+import React, { useState } from 'react'
 
-import { MenuComp } from '@portal/components/MenuComp'
+import { ListMenu } from '@portal/pages/accessControl/ListMenu'
 import { ItemWithTitleDesc } from '@portal/components/ItemWithTitleDesc'
 import { HeaderWithMenu } from '@portal/components/HeaderWithMenu'
 import { Content } from './Content'
 
 export default function Index() {
+  const [menuType, setMenuType] = useState('corporateDirectory')
+
   return (
     <>
       <HeaderWithMenu />
-      <div className="px-td-dr h-full flex justify-center">
+      <div className="py-3-dot-9 px-8 h-full flex justify-center">
         <div className="w-316 bg-white pd-1 border-radius-2 mr-4">
           <ItemWithTitleDesc
             title="访问控制"
@@ -23,10 +25,10 @@ export default function Index() {
             descClassName="leading-4"
           />
           <div className="h-5"></div>
-          <MenuComp />
+          <ListMenu defaultType="corporateDirectory" onChange={setMenuType} />
         </div>
         <div className="w-988 h-full bg-white border-radius-2">
-          <Content />
+          <Content menuType={menuType} />
         </div>
       </div>
     </>

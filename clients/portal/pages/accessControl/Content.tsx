@@ -1,11 +1,17 @@
 import React from 'react'
 
+import { RoleManagement } from './RoleManagement'
 import { MailList } from './MailList'
 
-export const Content = () => {
+export interface IContent {
+  menuType: string
+}
+
+export const Content = ({ menuType }: IContent) => {
   return (
-    <div>
-      <MailList />
-    </div>
+    <>
+      {menuType === 'corporateDirectory' && <MailList />}
+      {menuType === 'RoleManagement' && <RoleManagement />}
+    </>
   )
 }

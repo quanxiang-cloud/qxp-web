@@ -1,5 +1,7 @@
 import * as React from 'react'
-import { Route } from 'react-router'
+import { Route, Switch } from 'react-router'
+
+import { NotFound } from './components/404'
 
 import '@assets/scss/index.scss'
 
@@ -24,9 +26,12 @@ const AccessControl = React.lazy(() => import('./pages/accessControl'))
 export default function routes(): JSX.Element {
   return (
     <>
-      <Route exact path="/" component={Dashboard} />
-      <Route path="/metadata" component={MetaData} />
-      <Route path="/accessControl" component={AccessControl} />
+      <Switch>
+        <Route exact path="/" component={Dashboard} />
+        <Route path="/metadata" component={MetaData} />
+        <Route exact path="/accessControl" component={AccessControl} />
+        <Route component={NotFound} />
+      </Switch>
     </>
   )
 }
