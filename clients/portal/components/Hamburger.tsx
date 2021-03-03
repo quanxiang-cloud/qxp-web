@@ -1,8 +1,12 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 
 import useCss from 'react-use/lib/useCss'
 
-export const Hamburger = () => {
+export interface IHamburger {
+  onChange: (active: boolean) => void
+}
+
+export const Hamburger = ({ onChange }: IHamburger) => {
   const [active, setActive] = useState(false)
   const activeClassName = {
     '& > div:nth-child(1)': {
@@ -35,8 +39,13 @@ export const Hamburger = () => {
     }),
   }
 
+  const onToggle = () => {
+    onChange(!active)
+    setActive(v => !v)
+  }
+
   return (
-    <div className={className.hamburger} onClick={() => setActive(v => !v)}>
+    <div className={className.hamburger} onClick={onToggle}>
       <div className={className.line}></div>
       <div className={className.line}></div>
       <div className={className.line}></div>

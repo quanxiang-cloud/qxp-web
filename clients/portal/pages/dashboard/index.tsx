@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import useCss from 'react-use/lib/useCss'
 import classnames from 'classnames'
 
@@ -6,15 +6,43 @@ import { Header } from '@portal/components/Header'
 import { Avatar } from '@portal/components/Avatar'
 import { Card } from '@portal/components/Card'
 import { List } from '@portal/components/List'
-
-import { ItemWithTitleDesc } from '@portal/components/ItemWithTitleDesc';
+import { ItemWithTitleDesc } from '@portal/components/ItemWithTitleDesc'
+import { Menu } from './Menu'
 
 import './index.scss';
 
 const Dashboard = () => {
+  const [showMenu, setShowMenu] = useState<boolean | null>(null)
+
+  const menus = [{
+    iconClassName: 'bg-gradient-green-to-top-right',
+    iconUrl: '/dist/images/calendar.svg',
+    title: '应用管理',
+    desc: '对平台的企业空间、账号、以及角色权限进行统一管理。',
+    address: '/dist/images/calendar.svg' 
+  }, {
+    iconClassName: 'bg-gradient-yellow-to-top-right',
+    iconUrl: '/dist/images/accounts.svg',
+    title: '访问控制',
+    desc: '对平台的企业空间、账号、以及角色权限进行统一管理。',
+    address: '/dist/images/accounts.svg' 
+  }, {
+    iconClassName: 'bg-gradient-blue-to-top-right',
+    iconUrl: '/dist/images/add.svg',
+    title: '平台设置',
+    desc: '对平台的企业空间、账号、以及角色权限进行统一管理。',
+    address: '/dist/images/add.svg' 
+  }]
+
   return (
     <>
-      <Header />
+      <Header 
+        onMenuToggle={setShowMenu}
+      />
+      <Menu 
+        menus={menus}
+        visible={showMenu}
+      />
       <main className="pt-1-dot-6 pb-1-dot-6 pl-2-dot-6 pr-2-dot-6">
         <div>
           <Avatar
@@ -25,7 +53,7 @@ const Dashboard = () => {
         </div>
         <Card className="ml-0 mt-8" title="我的应用" action={<a className="transition-all duration-300 ease-linear text-dot-7 underline color-324558">前往应用市场</a>} content={
           <List
-            itemClassName={classnames(useCss({
+            itemClassName={classnames('px-4 py-dot-8', useCss({
               'margin-right': '1rem',
               'background-color': '#fff'
             }), 'rounded-md')}

@@ -14,7 +14,7 @@ export const List = ({ className, itemClassName, items }: IList) => {
     <ul className={classnames('flex', className)}>
       {items.map((item) => {
         return (
-          <li key={UUIDGeneratorBrowser()} className={classnames('px-4 py-dot-8', itemClassName)}>{item}</li>
+          <li key={UUIDGeneratorBrowser()} className={classnames(itemClassName)}>{item}</li>
         )
       })}
     </ul>

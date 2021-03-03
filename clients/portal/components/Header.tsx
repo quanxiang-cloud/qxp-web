@@ -1,14 +1,18 @@
-import React from 'react'
+import React, { Dispatch, SetStateAction } from 'react'
 
 import { PersonalSettingMenu } from './PersonalSettingMenu'
 import { Hamburger } from './Hamburger'
 
-export const Header = () => {
+export interface IHeader {
+  onMenuToggle: Dispatch<SetStateAction<boolean | null>>;
+}
+
+export const Header = ({ onMenuToggle }: IHeader) => {
   return (
     <div className="mx-auto flex justify-between h-13 py-dot-8 px-1-dot-2 bg-white text-dot-7">
       <div className="flex justify-between items-center">
         <div className="mr-8 flex justify-between items-center">
-          <Hamburger />
+          <Hamburger onChange={onMenuToggle} />
           <span className="ml-dot-3-5">平台管理</span>
         </div>
         <div>工作台</div>

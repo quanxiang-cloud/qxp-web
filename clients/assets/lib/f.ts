@@ -46,3 +46,11 @@ export const UUIDGeneratorBrowser = () =>
       (crypto.getRandomValues(new Uint8Array(1))[0] & (15 >> (c / 4)))
     ).toString(16)
   );
+
+function isA(name: string) {
+  return (arg: unknown) => {
+    return typeof(arg) === name
+  }
+}
+
+export const isBool = isA('boolean')
