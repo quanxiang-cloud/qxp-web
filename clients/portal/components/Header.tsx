@@ -1,4 +1,5 @@
 import React, { Dispatch, SetStateAction } from 'react'
+import { Link } from 'react-router-dom'
 
 import { PersonalSettingMenu } from './PersonalSettingMenu'
 import { Hamburger } from './Hamburger'
@@ -16,7 +17,9 @@ export const Header = ({ onMenuToggle, getSetter }: IHeader) => {
           <Hamburger onChange={onMenuToggle} getSetter={getSetter} />
           <span className="ml-dot-3-5">平台管理</span>
         </div>
-        <div>工作台</div>
+        <div>
+          <Link to="/">工作台</Link>
+        </div>
       </div>
       <div className="flex justify-between items-center">
         <img className="w-6 h-6" src="/dist/images/logo.svg" alt="logo" />
