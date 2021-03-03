@@ -42,7 +42,14 @@
   dependencies:
     "@babel/highlight" "^7.10.4"
 
-"@babel/helper-validator-identifier@^7.10.4":
+"@babel/code-frame@^7.0.0":
+  version "7.12.13"
+  resolved "http://r.npm.internal.yunify.com/@babel/code-frame/download/@babel/code-frame-7.12.13.tgz#dcfc826beef65e75c50e21d3837d7d95798dd658"
+  integrity sha1-3PyCa+72XnXFDiHTg319lXmN1lg=
+  dependencies:
+    "@babel/highlight" "^7.12.13"
+
+"@babel/helper-validator-identifier@^7.10.4", "@babel/helper-validator-identifier@^7.12.11":
   version "7.12.11"
   resolved "https://registry.yarnpkg.com/@babel/helper-validator-identifier/-/helper-validator-identifier-7.12.11.tgz"
   integrity sha512-np/lG3uARFybkoHokJUmf1QfEvRVCPbmQeUQpKow5cQ3xWrV9i3rUHodKDJPQfTVX61qKi+UdYk8kik84n7XOw==
@@ -53,6 +60,15 @@
   integrity sha512-i6rgnR/YgPEQzZZnbTHHuZdlE8qyoBNalD6F+q4vAFlcMEcqmkoG+mPqJYJCo63qPf74+Y1UZsl3l6f7/RIkmA==
   dependencies:
     "@babel/helper-validator-identifier" "^7.10.4"
+    chalk "^2.0.0"
+    js-tokens "^4.0.0"
+
+"@babel/highlight@^7.12.13":
+  version "7.13.8"
+  resolved "http://r.npm.internal.yunify.com/@babel/highlight/download/@babel/highlight-7.13.8.tgz#10b2dac78526424dfc1f47650d0e415dfd9dc481"
+  integrity sha1-ELLax4UmQk38H0dlDQ5BXf2dxIE=
+  dependencies:
+    "@babel/helper-validator-identifier" "^7.12.11"
     chalk "^2.0.0"
     js-tokens "^4.0.0"
 
@@ -243,6 +259,11 @@
   version "14.14.22"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-14.14.22.tgz"
   integrity sha512-g+f/qj/cNcqKkc3tFqlXOYjrmZA+jNBiDzbP3kH+B+otKFqAdPgVTGP1IeKRdMml/aE69as5S4FqtxAbl+LaMw==
+
+"@types/parse-json@^4.0.0":
+  version "4.0.0"
+  resolved "http://r.npm.internal.yunify.com/@types/parse-json/download/@types/parse-json-4.0.0.tgz#2f8bb441434d163b35fb8ffdccd7138927ffb8c0"
+  integrity sha1-L4u0QUNNFjs1+4/9zNcTiSf/uMA=
 
 "@types/prop-types@*":
   version "15.7.3"
@@ -591,6 +612,14 @@ acorn@^7.0.0, acorn@^7.1.1, acorn@^7.4.0:
   resolved "https://registry.yarnpkg.com/acorn/-/acorn-7.4.1.tgz"
   integrity sha512-nQyp0o1/mNdbTO1PO6kHkwSrmgZ0MT/jCCpNiwbUjGoRN4dlBhqJtoQuCnEOKzgTVwg0ZWiCoQy6SxMebQVh8A==
 
+aggregate-error@^3.0.0:
+  version "3.1.0"
+  resolved "http://r.npm.internal.yunify.com/aggregate-error/download/aggregate-error-3.1.0.tgz#92670ff50f5359bdb7a3e0d40d0ec30c5737687a"
+  integrity sha1-kmcP9Q9TWb23o+DUDQ7DDFc3aHo=
+  dependencies:
+    clean-stack "^2.0.0"
+    indent-string "^4.0.0"
+
 ajv-errors@^1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/ajv-errors/-/ajv-errors-1.0.1.tgz"
@@ -638,7 +667,7 @@ ansi-escapes@^3.0.0:
   resolved "http://r.npm.internal.yunify.com/ansi-escapes/download/ansi-escapes-3.2.0.tgz"
   integrity sha1-h4C5j/nb9WOBUtHx/lwde0RCl2s=
 
-ansi-escapes@^4.2.1:
+ansi-escapes@^4.2.1, ansi-escapes@^4.3.0:
   version "4.3.1"
   resolved "https://registry.yarnpkg.com/ansi-escapes/-/ansi-escapes-4.3.1.tgz"
   integrity sha512-JWF7ocqNrp8u9oqpgV+wH5ftbt+cfvv+PTjOvKLT3AdYly/LmORARfEVT1iyjwN+4MqE5UmVKoAdIBqeoCHgLA==
@@ -1469,6 +1498,11 @@ clean-css@^4.2.3:
   dependencies:
     source-map "~0.6.0"
 
+clean-stack@^2.0.0:
+  version "2.2.0"
+  resolved "http://r.npm.internal.yunify.com/clean-stack/download/clean-stack-2.2.0.tgz#ee8472dbb129e727b31e8a10a427dee9dfe4008b"
+  integrity sha1-7oRy27Ep5yezHooQpCfe6d/kAIs=
+
 cli-cursor@^1.0.2:
   version "1.0.2"
   resolved "http://r.npm.internal.yunify.com/cli-cursor/download/cli-cursor-1.0.2.tgz"
@@ -1482,6 +1516,13 @@ cli-cursor@^2.0.0, cli-cursor@^2.1.0:
   integrity sha1-s12sN2R5+sw+lHR9QdDQ9SOP/LU=
   dependencies:
     restore-cursor "^2.0.0"
+
+cli-cursor@^3.1.0:
+  version "3.1.0"
+  resolved "http://r.npm.internal.yunify.com/cli-cursor/download/cli-cursor-3.1.0.tgz#264305a7ae490d1d03bf0c9ba7c925d1753af307"
+  integrity sha1-JkMFp65JDR0Dvwybp8kl0XU68wc=
+  dependencies:
+    restore-cursor "^3.1.0"
 
 cli-table3@~0.6.0:
   version "0.6.0"
@@ -1500,6 +1541,14 @@ cli-truncate@^0.2.1:
   dependencies:
     slice-ansi "0.0.4"
     string-width "^1.0.1"
+
+cli-truncate@^2.1.0:
+  version "2.1.0"
+  resolved "http://r.npm.internal.yunify.com/cli-truncate/download/cli-truncate-2.1.0.tgz#c39e28bf05edcde5be3b98992a22deed5a2b93c7"
+  integrity sha1-w54ovwXtzeW+O5iZKiLe7Vork8c=
+  dependencies:
+    slice-ansi "^3.0.0"
+    string-width "^4.2.0"
 
 cliui@^3.2.0:
   version "3.2.0"
@@ -1651,7 +1700,7 @@ commander@^5.1.0:
   resolved "http://r.npm.internal.yunify.com/commander/download/commander-5.1.0.tgz"
   integrity sha1-Rqu9FlL44Fm92u+Zu9yyrZzxea4=
 
-commander@^6.0.0:
+commander@^6.0.0, commander@^6.2.0:
   version "6.2.1"
   resolved "http://r.npm.internal.yunify.com/commander/download/commander-6.2.1.tgz#0792eb682dfbc325999bb2b84fddddba110ac73c"
   integrity sha1-B5LraC37wyWZm7K4T93duhEKxzw=
@@ -1798,6 +1847,17 @@ cosmiconfig@^5.0.0:
     is-directory "^0.3.1"
     js-yaml "^3.13.1"
     parse-json "^4.0.0"
+
+cosmiconfig@^7.0.0:
+  version "7.0.0"
+  resolved "http://r.npm.internal.yunify.com/cosmiconfig/download/cosmiconfig-7.0.0.tgz#ef9b44d773959cae63ddecd122de23853b60f8d3"
+  integrity sha1-75tE13OVnK5j3ezRIt4jhTtg+NM=
+  dependencies:
+    "@types/parse-json" "^4.0.0"
+    import-fresh "^3.2.1"
+    parse-json "^5.0.0"
+    path-type "^4.0.0"
+    yaml "^1.10.0"
 
 create-ecdh@^4.0.0:
   version "4.0.4"
@@ -2026,7 +2086,7 @@ debug@^3.1.0:
   dependencies:
     ms "^2.1.1"
 
-debug@^4.0.1, debug@^4.1.1:
+debug@^4.0.1, debug@^4.1.1, debug@^4.2.0:
   version "4.3.1"
   resolved "https://registry.yarnpkg.com/debug/-/debug-4.3.1.tgz"
   integrity sha512-doEwdvm4PCeK4K3RQN2ZC2BYUBaxwLARCqZmMjtF8a51J2Rb0xpVloFRnCODwqjpwnAoao4pelN8l3RJdv3gRQ==
@@ -2042,6 +2102,11 @@ decode-uri-component@^0.2.0:
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/decode-uri-component/-/decode-uri-component-0.2.0.tgz"
   integrity sha1-6zkTMzRYd1y4TNGh+uBiEGu4dUU=
+
+dedent@^0.7.0:
+  version "0.7.0"
+  resolved "http://r.npm.internal.yunify.com/dedent/download/dedent-0.7.0.tgz#2495ddbaf6eb874abb0e1be9df22d2e5a544326c"
+  integrity sha1-JJXduvbrh0q7Dhvp3yLS5aVEMmw=
 
 deep-is@^0.1.3:
   version "0.1.3"
@@ -2319,7 +2384,7 @@ enhanced-resolve@^4.0.0, enhanced-resolve@^4.1.1, enhanced-resolve@^4.5.0:
     memory-fs "^0.5.0"
     tapable "^1.0.0"
 
-enquirer@^2.3.5:
+enquirer@^2.3.5, enquirer@^2.3.6:
   version "2.3.6"
   resolved "https://registry.yarnpkg.com/enquirer/-/enquirer-2.3.6.tgz"
   integrity sha512-yjNnPr315/FjS4zIsUxYguYUPP2e1NK4d7E7ZOLiyYCcbFBiTMyID+2wvm2w6+pZ/odMA7cRkjhsPbltwBOrLg==
@@ -2613,7 +2678,7 @@ evp_bytestokey@^1.0.0, evp_bytestokey@^1.0.3:
     md5.js "^1.3.4"
     safe-buffer "^5.1.1"
 
-execa@^4.0.2:
+execa@^4.0.2, execa@^4.1.0:
   version "4.1.0"
   resolved "http://r.npm.internal.yunify.com/execa/download/execa-4.1.0.tgz"
   integrity sha1-TlSRrRVy8vF6d9OIxshXE1sihHo=
@@ -2843,7 +2908,7 @@ figures@^2.0.0:
   dependencies:
     escape-string-regexp "^1.0.5"
 
-figures@^3.0.0:
+figures@^3.0.0, figures@^3.2.0:
   version "3.2.0"
   resolved "https://registry.yarnpkg.com/figures/-/figures-3.2.0.tgz"
   integrity sha512-yaduQFRKLXYOGgEn6AZau90j3ggSOyiqXU0F9JZfeXYhNa+Jk4X+s45A2zg5jns87GAFa34BBm2kXw4XpNcbdg==
@@ -3118,6 +3183,11 @@ get-intrinsic@^1.0.1, get-intrinsic@^1.0.2, get-intrinsic@^1.1.0:
     function-bind "^1.1.1"
     has "^1.0.3"
     has-symbols "^1.0.1"
+
+get-own-enumerable-property-symbols@^3.0.0:
+  version "3.0.2"
+  resolved "http://r.npm.internal.yunify.com/get-own-enumerable-property-symbols/download/get-own-enumerable-property-symbols-3.0.2.tgz#b5fde77f22cbe35f390b4e089922c50bce6ef664"
+  integrity sha1-tf3nfyLL4185C04ImSLFC85u9mQ=
 
 get-stream@^5.0.0:
   version "5.2.0"
@@ -3555,6 +3625,11 @@ human-signals@^1.1.1:
   resolved "http://r.npm.internal.yunify.com/human-signals/download/human-signals-1.1.1.tgz"
   integrity sha1-xbHNFPUK6uCatsWf5jujOV/k36M=
 
+husky@^5.1.3:
+  version "5.1.3"
+  resolved "http://r.npm.internal.yunify.com/husky/download/husky-5.1.3.tgz#1a0645a4fe3ffc006c4d0d8bd0bcb4c98787cc9d"
+  integrity sha1-GgZFpP4//ABsTQ2L0Ly0yYeHzJ0=
+
 hyphenate-style-name@^1.0.2:
   version "1.0.4"
   resolved "http://r.npm.internal.yunify.com/hyphenate-style-name/download/hyphenate-style-name-1.0.4.tgz#691879af8e220aea5750e8827db4ef62a54e361d"
@@ -3641,6 +3716,11 @@ indent-string@^3.0.0:
   version "3.2.0"
   resolved "http://r.npm.internal.yunify.com/indent-string/download/indent-string-3.2.0.tgz"
   integrity sha1-Sl/W0nzDMvN+VBmlBNu4NxBckok=
+
+indent-string@^4.0.0:
+  version "4.0.0"
+  resolved "http://r.npm.internal.yunify.com/indent-string/download/indent-string-4.0.0.tgz#624f8f4497d619b2d9768531d58f4122854d7251"
+  integrity sha1-Yk+PRJfWGbLZdoUx1Y9BIoVNclE=
 
 indexes-of@^1.0.1:
   version "1.0.1"
@@ -3940,6 +4020,11 @@ is-number@^7.0.0:
   resolved "https://registry.yarnpkg.com/is-number/-/is-number-7.0.0.tgz"
   integrity sha512-41Cifkg6e8TylSpdtTpeLVMqvSBEVzTttHvERD741+pnZ8ANv0004MRL43QKPDlK9cGvNp6NZWZUBlbGXYxxng==
 
+is-obj@^1.0.1:
+  version "1.0.1"
+  resolved "http://r.npm.internal.yunify.com/is-obj/download/is-obj-1.0.1.tgz#3e4729ac1f5fde025cd7d83a896dab9f4f67db0f"
+  integrity sha1-PkcprB9f3gJc19g6iW2rn09n2w8=
+
 is-observable@^1.1.0:
   version "1.1.0"
   resolved "http://r.npm.internal.yunify.com/is-observable/download/is-observable-1.1.0.tgz"
@@ -3975,6 +4060,11 @@ is-regex@^1.1.1:
   integrity sha512-1+QkEcxiLlB7VEyFtyBg94e08OAsvq7FUBgApTq/w2ymCLyKJgDPsybBENVtA7XCQEgEXxKPonG+mvYRxh/LIg==
   dependencies:
     has-symbols "^1.0.1"
+
+is-regexp@^1.0.0:
+  version "1.0.0"
+  resolved "http://r.npm.internal.yunify.com/is-regexp/download/is-regexp-1.0.0.tgz#fd2d883545c46bac5a633e7b9a09e87fa2cb5069"
+  integrity sha1-/S2INUXEa6xaYz57mgnof6LLUGk=
 
 is-relative@^1.0.0:
   version "1.0.0"
@@ -4098,6 +4188,11 @@ json-parse-better-errors@^1.0.1, json-parse-better-errors@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/json-parse-better-errors/-/json-parse-better-errors-1.0.2.tgz"
   integrity sha512-mrqyZKfX5EhL7hvqcV6WG1yYjnjeuYDzDhhcAAUrq8Po85NBQBJP+ZDUT75qZQ98IkUoBqdkExkukOU7Ts2wrw==
+
+json-parse-even-better-errors@^2.3.0:
+  version "2.3.1"
+  resolved "http://r.npm.internal.yunify.com/json-parse-even-better-errors/download/json-parse-even-better-errors-2.3.1.tgz#7c47805a94319928e05777405dc12e1f7a4ee02d"
+  integrity sha1-fEeAWpQxmSjgV3dAXcEuH3pO4C0=
 
 json-schema-traverse@^0.4.1:
   version "0.4.1"
@@ -4250,6 +4345,32 @@ liftoff@^3.1.0:
     rechoir "^0.6.2"
     resolve "^1.1.7"
 
+lines-and-columns@^1.1.6:
+  version "1.1.6"
+  resolved "http://r.npm.internal.yunify.com/lines-and-columns/download/lines-and-columns-1.1.6.tgz#1c00c743b433cd0a4e80758f7b64a57440d9ff00"
+  integrity sha1-HADHQ7QzzQpOgHWPe2SldEDZ/wA=
+
+lint-staged@^10.5.4:
+  version "10.5.4"
+  resolved "http://r.npm.internal.yunify.com/lint-staged/download/lint-staged-10.5.4.tgz#cd153b5f0987d2371fc1d2847a409a2fe705b665"
+  integrity sha1-zRU7XwmH0jcfwdKEekCaL+cFtmU=
+  dependencies:
+    chalk "^4.1.0"
+    cli-truncate "^2.1.0"
+    commander "^6.2.0"
+    cosmiconfig "^7.0.0"
+    debug "^4.2.0"
+    dedent "^0.7.0"
+    enquirer "^2.3.6"
+    execa "^4.1.0"
+    listr2 "^3.2.2"
+    log-symbols "^4.0.0"
+    micromatch "^4.0.2"
+    normalize-path "^3.0.0"
+    please-upgrade-node "^3.2.0"
+    string-argv "0.3.1"
+    stringify-object "^3.3.0"
+
 listr-silent-renderer@^1.1.1:
   version "1.1.1"
   resolved "http://r.npm.internal.yunify.com/listr-silent-renderer/download/listr-silent-renderer-1.1.1.tgz"
@@ -4278,6 +4399,21 @@ listr-verbose-renderer@^0.5.0:
     cli-cursor "^2.1.0"
     date-fns "^1.27.2"
     figures "^2.0.0"
+
+listr2@^3.2.2:
+  version "3.3.4"
+  resolved "http://r.npm.internal.yunify.com/listr2/download/listr2-3.3.4.tgz#bca480e784877330b9d96d6cdc613ad243332e20"
+  integrity sha1-vKSA54SHczC52W1s3GE60kMzLiA=
+  dependencies:
+    chalk "^4.1.0"
+    cli-truncate "^2.1.0"
+    figures "^3.2.0"
+    indent-string "^4.0.0"
+    log-update "^4.0.0"
+    p-map "^4.0.0"
+    rxjs "^6.6.6"
+    through "^2.3.8"
+    wrap-ansi "^7.0.0"
 
 listr@^0.14.3:
   version "0.14.3"
@@ -4373,6 +4509,16 @@ log-update@^2.3.0:
     ansi-escapes "^3.0.0"
     cli-cursor "^2.0.0"
     wrap-ansi "^3.0.1"
+
+log-update@^4.0.0:
+  version "4.0.0"
+  resolved "http://r.npm.internal.yunify.com/log-update/download/log-update-4.0.0.tgz#589ecd352471f2a1c0c570287543a64dfd20e0a1"
+  integrity sha1-WJ7NNSRx8qHAxXAodUOmTf0g4KE=
+  dependencies:
+    ansi-escapes "^4.3.0"
+    cli-cursor "^3.1.0"
+    slice-ansi "^4.0.0"
+    wrap-ansi "^6.2.0"
 
 loose-envify@^1.0.0, loose-envify@^1.1.0, loose-envify@^1.2.0, loose-envify@^1.3.1, loose-envify@^1.4.0:
   version "1.4.0"
@@ -5090,6 +5236,13 @@ p-map@^2.0.0:
   resolved "http://r.npm.internal.yunify.com/p-map/download/p-map-2.1.0.tgz"
   integrity sha1-MQko/u+cnsxltosXaTAYpmXOoXU=
 
+p-map@^4.0.0:
+  version "4.0.0"
+  resolved "http://r.npm.internal.yunify.com/p-map/download/p-map-4.0.0.tgz#bb2f95a5eda2ec168ec9274e06a747c3e2904d2b"
+  integrity sha1-uy+Vpe2i7BaOySdOBqdHw+KQTSs=
+  dependencies:
+    aggregate-error "^3.0.0"
+
 p-try@^2.0.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/p-try/-/p-try-2.2.0.tgz"
@@ -5158,6 +5311,16 @@ parse-json@^4.0.0:
   dependencies:
     error-ex "^1.3.1"
     json-parse-better-errors "^1.0.1"
+
+parse-json@^5.0.0:
+  version "5.2.0"
+  resolved "http://r.npm.internal.yunify.com/parse-json/download/parse-json-5.2.0.tgz#c76fc66dee54231c962b22bcc8a72cf2f99753cd"
+  integrity sha1-x2/Gbe5UIxyWKyK8yKcs8vmXU80=
+  dependencies:
+    "@babel/code-frame" "^7.0.0"
+    error-ex "^1.3.1"
+    json-parse-even-better-errors "^2.3.0"
+    lines-and-columns "^1.1.6"
 
 parse-node-version@^1.0.0:
   version "1.0.1"
@@ -5321,6 +5484,13 @@ pkg-dir@^3.0.0:
   integrity sha512-/E57AYkoeQ25qkxMj5PBOVgF8Kiu/h7cYS30Z5+R7WaiCCBfLq58ZI/dSeaEKb9WVJV5n/03QwrN3IeWIFllvw==
   dependencies:
     find-up "^3.0.0"
+
+please-upgrade-node@^3.2.0:
+  version "3.2.0"
+  resolved "http://r.npm.internal.yunify.com/please-upgrade-node/download/please-upgrade-node-3.2.0.tgz#aeddd3f994c933e4ad98b99d9a556efa0e2fe942"
+  integrity sha1-rt3T+ZTJM+StmLmdmlVu+g4v6UI=
+  dependencies:
+    semver-compare "^1.0.0"
 
 popper.js@^1.14.6:
   version "1.16.1"
@@ -6018,6 +6188,14 @@ restore-cursor@^2.0.0:
     onetime "^2.0.0"
     signal-exit "^3.0.2"
 
+restore-cursor@^3.1.0:
+  version "3.1.0"
+  resolved "http://r.npm.internal.yunify.com/restore-cursor/download/restore-cursor-3.1.0.tgz#39f67c54b3a7a58cea5236d95cf0034239631f7e"
+  integrity sha1-OfZ8VLOnpYzqUjbZXPADQjljH34=
+  dependencies:
+    onetime "^5.1.0"
+    signal-exit "^3.0.2"
+
 ret@~0.1.10:
   version "0.1.15"
   resolved "https://registry.yarnpkg.com/ret/-/ret-0.1.15.tgz"
@@ -6073,6 +6251,13 @@ rxjs@^6.3.3:
   version "6.6.3"
   resolved "http://r.npm.internal.yunify.com/rxjs/download/rxjs-6.6.3.tgz"
   integrity sha1-jKhGNcTaqQDA05Z6buesYCce5VI=
+  dependencies:
+    tslib "^1.9.0"
+
+rxjs@^6.6.6:
+  version "6.6.6"
+  resolved "http://r.npm.internal.yunify.com/rxjs/download/rxjs-6.6.6.tgz#14d8417aa5a07c5e633995b525e1e3c0dec03b70"
+  integrity sha1-FNhBeqWgfF5jOZW1JeHjwN7AO3A=
   dependencies:
     tslib "^1.9.0"
 
@@ -6146,6 +6331,11 @@ screenfull@^4.1.0:
   version "4.2.1"
   resolved "http://r.npm.internal.yunify.com/screenfull/download/screenfull-4.2.1.tgz#3245b7bc73d2b7c9a15bd8caaf6965db7cbc7f04"
   integrity sha1-MkW3vHPSt8mhW9jKr2ll23y8fwQ=
+
+semver-compare@^1.0.0:
+  version "1.0.0"
+  resolved "http://r.npm.internal.yunify.com/semver-compare/download/semver-compare-1.0.0.tgz#0dee216a1c941ab37e9efb1788f6afc5ff5537fc"
+  integrity sha1-De4hahyUGrN+nvsXiPavxf9VN/w=
 
 semver-greatest-satisfied-range@^1.1.0:
   version "1.1.0"
@@ -6306,6 +6496,15 @@ slice-ansi@0.0.4:
   version "0.0.4"
   resolved "http://r.npm.internal.yunify.com/slice-ansi/download/slice-ansi-0.0.4.tgz"
   integrity sha1-7b+JA/ZvfOL46v1s7tZeJkyDGzU=
+
+slice-ansi@^3.0.0:
+  version "3.0.0"
+  resolved "http://r.npm.internal.yunify.com/slice-ansi/download/slice-ansi-3.0.0.tgz#31ddc10930a1b7e0b67b08c96c2f49b77a789787"
+  integrity sha1-Md3BCTCht+C2ewjJbC9Jt3p4l4c=
+  dependencies:
+    ansi-styles "^4.0.0"
+    astral-regex "^2.0.0"
+    is-fullwidth-code-point "^3.0.0"
 
 slice-ansi@^4.0.0:
   version "4.0.0"
@@ -6581,6 +6780,11 @@ strict-uri-encode@^1.0.0:
   resolved "https://registry.yarnpkg.com/strict-uri-encode/-/strict-uri-encode-1.1.0.tgz"
   integrity sha1-J5siXfHVgrH1TmWt3UNS4Y+qBxM=
 
+string-argv@0.3.1:
+  version "0.3.1"
+  resolved "http://r.npm.internal.yunify.com/string-argv/download/string-argv-0.3.1.tgz#95e2fbec0427ae19184935f816d74aaa4c5c19da"
+  integrity sha1-leL77AQnrhkYSTX4FtdKqkxcGdo=
+
 string-width@^1.0.1, string-width@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/string-width/-/string-width-1.0.2.tgz"
@@ -6658,6 +6862,15 @@ string_decoder@~1.1.1:
   integrity sha512-n/ShnvDi6FHbbVfviro+WojiFzv+s8MPMHBczVePfUpDJLwoLT0ht1l4YwBCbi8pJAveEEdnkHyPyTP/mzRfwg==
   dependencies:
     safe-buffer "~5.1.0"
+
+stringify-object@^3.3.0:
+  version "3.3.0"
+  resolved "http://r.npm.internal.yunify.com/stringify-object/download/stringify-object-3.3.0.tgz#703065aefca19300d3ce88af4f5b3956d7556629"
+  integrity sha1-cDBlrvyhkwDTzoivT1s5VtdVZik=
+  dependencies:
+    get-own-enumerable-property-symbols "^3.0.0"
+    is-obj "^1.0.1"
+    is-regexp "^1.0.0"
 
 strip-ansi@^3.0.0, strip-ansi@^3.0.1:
   version "3.0.1"
@@ -6830,6 +7043,11 @@ through2@^2.0.0, through2@^2.0.3, through2@~2.0.0:
   dependencies:
     readable-stream "~2.3.6"
     xtend "~4.0.1"
+
+through@^2.3.8:
+  version "2.3.8"
+  resolved "http://r.npm.internal.yunify.com/through/download/through-2.3.8.tgz#0dd4c9ffaabc357960b1b724115d7e0e86a2e1f5"
+  integrity sha1-DdTJ/6q8NXlgsbckEV1+Doai4fU=
 
 time-stamp@^1.0.0:
   version "1.1.0"
@@ -7483,10 +7701,19 @@ wrap-ansi@^5.1.0:
     string-width "^3.0.0"
     strip-ansi "^5.0.0"
 
-wrap-ansi@^6.0.0:
+wrap-ansi@^6.0.0, wrap-ansi@^6.2.0:
   version "6.2.0"
   resolved "https://registry.yarnpkg.com/wrap-ansi/-/wrap-ansi-6.2.0.tgz"
   integrity sha512-r6lPcBGxZXlIcymEu7InxDMhdW0KDxpLgoFLcguasxCaJ/SOIZwINatK9KY/tf+ZrlywOKU0UDj3ATXUBfxJXA==
+  dependencies:
+    ansi-styles "^4.0.0"
+    string-width "^4.1.0"
+    strip-ansi "^6.0.0"
+
+wrap-ansi@^7.0.0:
+  version "7.0.0"
+  resolved "http://r.npm.internal.yunify.com/wrap-ansi/download/wrap-ansi-7.0.0.tgz#67e145cff510a6a6984bdf1152911d69d2eb9e43"
+  integrity sha1-Z+FFz/UQpqaYS98RUpEdadLrnkM=
   dependencies:
     ansi-styles "^4.0.0"
     string-width "^4.1.0"
@@ -7528,6 +7755,11 @@ yallist@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/yallist/-/yallist-4.0.0.tgz"
   integrity sha512-3wdGidZyq5PB084XLES5TpOSRA3wjXAlIWMhum2kRcv/41Sn2emQ0dycQW4uZXLejwKvg6EsvbdlVL+FYEct7A==
+
+yaml@^1.10.0:
+  version "1.10.0"
+  resolved "http://r.npm.internal.yunify.com/yaml/download/yaml-1.10.0.tgz#3b593add944876077d4d683fee01081bd9fff31e"
+  integrity sha1-O1k63ZRIdgd9TWg/7gEIG9n/8x4=
 
 yargs-parser@5.0.0-security.0:
   version "5.0.0-security.0"
