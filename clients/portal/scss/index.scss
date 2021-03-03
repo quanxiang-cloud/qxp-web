@@ -17,7 +17,7 @@ html {
 }
 
 .w-dot-8 {
-  width: .8rem;
+  width: 0.8rem;
 }
 
 .w-2-dot-4 {
@@ -28,21 +28,25 @@ html {
   width: 29.4rem;
 }
 
+.w-416 {
+  width: 20.8rem;
+}
+
 .h-2-dot-4 {
   height: 2.4rem;
 }
 
 .h-dot-8 {
-  height: .8rem;
+  height: 0.8rem;
 }
 
 .py-dot-8 {
-  padding-top: .8rem;
-  padding-bottom: .8rem;
+  padding-top: 0.8rem;
+  padding-bottom: 0.8rem;
 }
 
 .pb-dot-8 {
-  padding-bottom: .8rem;
+  padding-bottom: 0.8rem;
 }
 
 .px-1-dot-2 {
@@ -50,44 +54,115 @@ html {
   padding-right: 1.2rem;
 }
 
+.p-x-0-dot-9 {
+  padding-left: 0.9rem;
+}
+
+.w-1-dot-2 {
+  width: 1.2rem;
+}
+
+.w-0-dot-2 {
+  width: 0.2rem;
+}
+
+.w-316 {
+  width: 15.8rem;
+}
+
+.w-988 {
+  width: 49.4rem;
+}
+
+.h-1-dot-2 {
+  width: 1.2rem;
+}
+
+.h-2-dot-8 {
+  height: 2.8rem;
+}
+
+.p-x-0-dot-4 {
+  padding-right: 0.4rem;
+}
+
+.bg-475569 {
+  background-color: #475569;
+}
+
 .bg-E5E5E5 {
-  background-color: #E5E5E5;
+  background-color: #e5e5e5;
+}
+
+.bg-F1F5F9 {
+  background-color: #f1f5f9;
+}
+
+.rounded-0-dot-4 {
+  border-top-left-radius: 0.4rem;
+  border-bottom-left-radius: 0.4rem;
+}
+
+.rounded-t-dot-6 {
+  border-top-left-radius: 0.6rem;
+  border-top-right-radius: 0.6rem;
+}
+
+.rounded-r-dot-6 {
+  border-top-right-radius: 0.6rem;
+  border-bottom-right-radius: 0.6rem;
+}
+
+.rounded-bl-dot-6 {
+  border-bottom-left-radius: 0.6rem;
+}
+
+.rounded-tl-dot-2 {
+  border-bottom-left-radius: 0.2rem;
 }
 
 .text-dot-7 {
-  font-size: .7rem;
+  font-size: 0.7rem;
 }
 
 .text-dot-6 {
-  font-size: .6rem;
+  font-size: 0.6rem;
 }
 
 .text-dot-8 {
-  font-size: .8rem;
+  font-size: 0.8rem;
+}
+
+.text-c-94A3B8 {
+  color: #94a3b8;
 }
 
 .ml-dot-6 {
-  margin-left: .6rem;
+  margin-left: 0.6rem;
 }
 
 .mr-dot-2 {
-  margin-right: .2rem;
+  margin-right: 0.2rem;
 }
 
 .mr-2-dot-8 {
   margin-right: 2.8rem;
 }
 
+.mr-dot-6 {
+  margin-right: 0.6rem;
+}
+
 .ml-dot-3-5 {
-  margin-left: .35rem;
+  margin-left: 0.35rem;
 }
 
 .mr-dot-4 {
-  margin-right: .4rem;
+  margin-right: 0.4rem;
 }
 
 .ml-dot-4 {
-  margin-left: .4rem;
+  margin-left: 0.4rem;
 }
 
 .mt-4-dot-4 {
@@ -95,7 +170,7 @@ html {
 }
 
 .mb-dot-6 {
-  margin-bottom: .6rem;
+  margin-bottom: 0.6rem;
 }
 
 .border-shape {
@@ -117,8 +192,8 @@ html {
 }
 
 .px-dot-8 {
-  padding-left: .8rem;
-  padding-right: .8rem;
+  padding-left: 0.8rem;
+  padding-right: 0.8rem;
 }
 
 .pl-2-dot-6 {
@@ -127,6 +202,34 @@ html {
 
 .pr-2-dot-6 {
   padding-right: 2.6rem;
+}
+
+.px-td-dr {
+  padding: 2rem 2.9rem;
+}
+
+.bg-fff {
+  background-color: #fff;
+}
+
+.pd-1 {
+  padding: 1rem;
+}
+
+.h-2-dot-8 {
+  height: 2.8rem;
+}
+
+.fs-0-dot-8 {
+  font-size: 0.8rem;
+}
+
+.border-radius-2 {
+  border-radius: 0.6rem;
+}
+
+.leading-2-bot-8 {
+  line-height: 2.8rem;
 }
 
 .flex-2 {
@@ -142,31 +245,47 @@ html {
 }
 
 .color-0F172A {
-  color: #0F172A;
+  color: #0f172a;
+}
+
+.color-697886 {
+  color: #697886;
 }
 
 .bg-white-dot-6-5 {
-  background-color: rgba($color: #fff, $alpha: .65);
+  background-color: rgba($color: #fff, $alpha: 0.65);
 }
 
 .p-dot-3-6 {
-  padding: .36rem;
+  padding: 0.36rem;
 }
 
 .bg-gradient-green-to-top-right {
-  background-image: linear-gradient(to top right, #14B8A6, rgba(20, 184, 166, .4));
+  background-image: linear-gradient(
+    to top right,
+    #14b8a6,
+    rgba(20, 184, 166, 0.4)
+  );
 }
 
 .bg-gradient-yellow-to-top-right {
-  background-image: linear-gradient(to top right, #F59E0B, rgba(245, 158, 11, .4));
+  background-image: linear-gradient(
+    to top right,
+    #f59e0b,
+    rgba(245, 158, 11, 0.4)
+  );
 }
 
 .bg-gradient-blue-to-top-right {
-  background-image: linear-gradient(to top right, #B5CCFF, rgba(181, 204, 255, .4));
+  background-image: linear-gradient(
+    to top right,
+    #b5ccff,
+    rgba(181, 204, 255, 0.4)
+  );
 }
 
 .bg-DCDAD7 {
-  background-color: #DCDAD7;
+  background-color: #dcdad7;
 }
 
 .bg-5976e01a {
@@ -175,7 +294,7 @@ html {
 
 /////////////////// Animation /////////////////////////
 .slide-in {
-  animation: slideIn .2s ease-in-out forwards; 
+  animation: slideIn 0.2s ease-in-out forwards;
 }
 @keyframes slideIn {
   from {
@@ -187,7 +306,7 @@ html {
 }
 
 .slide-out {
-  animation: slideOut .2s ease-in-out forwards;
+  animation: slideOut 0.2s ease-in-out forwards;
 }
 @keyframes slideOut {
   from {
