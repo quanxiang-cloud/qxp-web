@@ -1,4 +1,4 @@
-@import "../../assets/scss/reset";
+@import '../../assets/scss/reset';
 
 @tailwind base;
 @tailwind components;
@@ -261,6 +261,7 @@ html {
 }
 
 .bg-gradient-green-to-top-right {
+<<<<<<< HEAD
   background-image: linear-gradient(
     to top right,
     #14b8a6,
@@ -282,6 +283,17 @@ html {
     #b5ccff,
     rgba(181, 204, 255, 0.4)
   );
+=======
+  background-image: linear-gradient(to top right, #14b8a6, rgba(20, 184, 166, 0.4));
+}
+
+.bg-gradient-yellow-to-top-right {
+  background-image: linear-gradient(to top right, #f59e0b, rgba(245, 158, 11, 0.4));
+}
+
+.bg-gradient-blue-to-top-right {
+  background-image: linear-gradient(to top right, #b5ccff, rgba(181, 204, 255, 0.4));
+>>>>>>> feat: Add prettier and eslint, format code
 }
 
 .bg-DCDAD7 {

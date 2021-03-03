@@ -4,9 +4,9 @@ import classnames from 'classnames'
 import { UUIDGeneratorBrowser } from '@assets/lib/f'
 
 export interface IList {
-  items: JSX.Element[];
-  itemClassName?: string;
-  className?: string;
+  items: JSX.Element[]
+  itemClassName?: string
+  className?: string
 }
 
 export const List = ({ className, itemClassName, items }: IList) => {
@@ -14,7 +14,9 @@ export const List = ({ className, itemClassName, items }: IList) => {
     <ul className={classnames('flex', className)}>
       {items.map((item) => {
         return (
-          <li key={UUIDGeneratorBrowser()} className={classnames(itemClassName)}>{item}</li>
+          <li key={UUIDGeneratorBrowser()} className={classnames(itemClassName)}>
+            {item}
+          </li>
         )
       })}
     </ul>

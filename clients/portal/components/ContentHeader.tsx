@@ -1,12 +1,12 @@
-import React from 'react';
+import React from 'react'
 
 interface ContentHeaderProps {
-  title: string;
-  desc: string;
-  rightText: string;
+  title: string
+  desc: string
+  rightText: string
 }
 
-export const ContentHeader = ({title, desc, rightText}: ContentHeaderProps) => {
+export const ContentHeader = ({ title, desc, rightText }: ContentHeaderProps) => {
   return (
     <div className="w-auto h-2-dot-8 px-4 bg-F1F5F9 bg-opacity-50 rounded-t-dot-6 flex items-center justify-between">
       <div className="flex items-center">

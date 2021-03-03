@@ -3,10 +3,10 @@ import React from 'react'
 import useCss from 'react-use/lib/useCss'
 
 export interface ICard {
-  title: string;
-  action: JSX.Element;
-  content: JSX.Element;
-  className?: string;
+  title: string
+  action: JSX.Element
+  content: JSX.Element
+  className?: string
 }
 
 export const Card = ({ title, action, content, className }: ICard) => {
@@ -16,14 +16,14 @@ export const Card = ({ title, action, content, className }: ICard) => {
   })
 
   return (
-    <div className={`px-1-dot-6 py-4 bg-white-dot-6-5 m-2 ${className ? className : ''} ${classNames}`}>
+    <div
+      className={`px-1-dot-6 py-4 bg-white-dot-6-5 m-2 ${className ? className : ''} ${classNames}`}
+    >
       <header className="flex justify-between items-center pb-4">
         <div className="font-bold text-dot-8 color-0F172A">{title}</div>
         {action}
       </header>
-      <main className="flex-1">
-        {content}
-      </main>
+      <main className="flex-1">{content}</main>
     </div>
   )
 }

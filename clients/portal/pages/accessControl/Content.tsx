@@ -1,6 +1,6 @@
-import React from 'react';
+import React from 'react'
 
-import { MailList } from './MailList';
+import { MailList } from './MailList'
 
 export const Content = () => {
   return (

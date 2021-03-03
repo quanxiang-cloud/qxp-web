@@ -4,26 +4,30 @@ import useCss from 'react-use/lib/useCss'
 
 export interface IHamburger {
   onChange: (active: boolean) => void
+  getSetter: (f: Function) => void
 }
 
-export const Hamburger = ({ onChange }: IHamburger) => {
-  const [active, setActive] = useState(false)
+export const Hamburger = ({ onChange, getSetter }: IHamburger) => {
+  const [active, setActive] = useState<boolean>(false)
+  useEffect(() => {
+    getSetter(setActive)
+  }, [setActive])
   const activeClassName = {
     '& > div:nth-child(1)': {
-      transform: 'translateY(4.5px) rotate(45deg)'
+      transform: 'translateY(4.5px) rotate(45deg)',
     },
     '& > div:nth-child(2)': {
-      opacity: 0
+      opacity: 0,
     },
     '& > div:nth-child(3)': {
-      transform: 'translateY(-4.5px) rotate(-45deg)'
-    }
+      transform: 'translateY(-4.5px) rotate(-45deg)',
+    },
   }
   const className = {
     hamburger: useCss({
       width: '18px',
       cursor: 'pointer',
-      ...(active ? activeClassName : {})
+      ...(active ? activeClassName : {}),
     }),
     line: useCss({
       display: 'block',
@@ -41,7 +45,7 @@ export const Hamburger = ({ onChange }: IHamburger) => {
 
   const onToggle = () => {
     onChange(!active)
-    setActive(v => !v)
+    setActive((v) => !v)
   }
 
   return (

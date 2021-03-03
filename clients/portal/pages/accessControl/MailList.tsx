@@ -1,18 +1,18 @@
-import React, { useState } from 'react';
-import useCss from 'react-use/lib/useCss';
-import classnames from 'classnames';
-import { Select, Control, Icon, Input } from '@QCFE/lego-ui';
+import React, { useState } from 'react'
+import useCss from 'react-use/lib/useCss'
+import classnames from 'classnames'
+import { Select, Control, Icon, Input } from '@QCFE/lego-ui'
 
-import { ContentHeader } from '@portal/components/ContentHeader';
+import { ContentHeader } from '@portal/components/ContentHeader'
 
 const style = {
   width: 120,
   marginRight: 30,
   justifyContent: 'space-between',
-};
+}
 
 export const MailList = () => {
-  const [ selectedValue, changeSelectedValue ] = useState("CentOS");
+  const [selectedValue, changeSelectedValue] = useState('CentOS')
   return (
     <>
       <ContentHeader
@@ -26,15 +26,15 @@ export const MailList = () => {
             name="os"
             className={useCss({
               '&': {
-                'width': '100px'
+                width: '100px',
               },
               '.select-control': {
-                'background': 'none',
-                'border': 'none',
+                background: 'none',
+                border: 'none',
               },
               '.select-value-label': {
                 'font-size': '14px',
-              }
+              },
             })}
             value={selectedValue}
             options={[
@@ -43,20 +43,25 @@ export const MailList = () => {
               { value: 'Ubuntu', label: '按邮箱' },
             ]}
           />
-          <Control className={classnames('has-icons-left', useCss({
-            '> input': {
-              'background': 'none',
-              'border': 'none',
-              'outline': 'none',
-            }
-          }))}>
+          <Control
+            className={classnames(
+              'has-icons-left',
+              useCss({
+                '> input': {
+                  background: 'none',
+                  border: 'none',
+                  outline: 'none',
+                },
+              }),
+            )}
+          >
             <Icon className="is-left" name="magnifier" />
             <Input
               type="text"
               placeholder="搜索员工名称、手机号、邮箱..."
               // onChange={this.handleChange}
               name="search"
-              value={""}
+              value={''}
             />
           </Control>
         </div>
