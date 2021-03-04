@@ -40,7 +40,7 @@ export const ListMenu = ({ onChange, defaultType }: IListMenu) => {
               onChange(item.id)
             }}
             className={classnames(
-              'h-2-bot-8 leading-2-bot-8 rounded-0-dot-4 p-x-0-dot-9 flex relative cursor-pointer',
+              'h-2-bot-8 leading-2-bot-8 rounded-l-dot-4 p-x-0-dot-9 flex relative',
               useCss({
                 '> div': {
                   display: 'none',
@@ -69,8 +69,8 @@ export const ListMenu = ({ onChange, defaultType }: IListMenu) => {
             )}
           >
             <img className="w-1-dot-2 h-1-dot-2 p-x-0-dot-4" src={item.icon} alt="logo" />
-            <span className="fs-0-dot-8 text-c-94A3B8 text-dot-8">{item.name}</span>
-            <div className="absolute top-0 right-0 w-0-dot-2 h-2-dot-8 bg-475569 rounded-0-dot-4"></div>
+            <span className="fs-0-dot-8 text-94A3B8 text-dot-8">{item.name}</span>
+            <div className="absolute top-0 right-0 w-0-dot-2 h-2-dot-8 bg-475569 rounded-l-dot-4"></div>
           </li>
         )
       })}

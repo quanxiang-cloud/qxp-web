@@ -33,6 +33,10 @@ html {
   width: 20.8rem;
 }
 
+.h-1-dot-6 {
+  height: 1.6rem;
+}
+
 .h-2-dot-4 {
   height: 2.4rem;
 }
@@ -57,6 +61,10 @@ html {
 
 .pt-dot-8 {
   padding-top: 0.8rem;
+}
+
+.py-dot-125 {
+  padding: 0.125rem 0;
 }
 
 .pb-dot-8 {
@@ -132,7 +140,7 @@ html {
   border-radius: 0.6rem;
 }
 
-.rounded-0-dot-4 {
+.rounded-l-dot-4 {
   border-top-left-radius: 0.4rem;
   border-bottom-left-radius: 0.4rem;
 }
@@ -151,8 +159,17 @@ html {
   border-bottom-left-radius: 0.6rem;
 }
 
-.rounded-tl-dot-2 {
-  border-bottom-left-radius: 0.2rem;
+.rounded-tr-dot-1 {
+  border-bottom-right-radius: 0.1rem;
+}
+
+.rounded-br-dot-4 {
+  border-bottom-right-radius: 0.4rem;
+}
+
+.rounded-l-dot-4 {
+  border-top-left-radius: 0.4rem;
+  border-bottom-left-radius: 0.4rem;
 }
 
 .text-dot-7 {
@@ -167,16 +184,28 @@ html {
   font-size: 0.8rem;
 }
 
-.text-c-94A3B8 {
-  color: #94a3b8;
-}
-
 .text-94A3B8 {
   color: #94a3b8;
 }
 
 .text-697886 {
   color: #697886;
+}
+
+.text-375FF3 {
+  color: #375FF3;
+}
+
+.text-DC2626 {
+  color: #DC2626;
+}
+
+.text-16A34A {
+  color: #16A34A;
+}
+
+.text-D97706 {
+  color: #D97706;
 }
 
 .ml-dot-6 {
@@ -213,6 +242,10 @@ html {
 
 .mt-4-dot-4 {
   margin-top: 4.4rem;
+}
+
+.mt-dot-8 {
+  margin-top: 0.8rem;
 }
 
 .mb-dot-6 {
@@ -259,6 +292,11 @@ html {
   padding-bottom: 2.9rem;
 }
 
+.py-dot-4 {
+  padding-top: 0.4rem;
+  padding-bottom: 0.4rem;
+}
+
 .pd-1 {
   padding: 1rem;
 }
@@ -277,6 +315,10 @@ html {
 
 .border-E2E8F0 {
   border-color: #e2e8f0;
+}
+
+.border-334155 {
+  border-color: #334155;
 }
 
 .leading-2-bot-8 {
