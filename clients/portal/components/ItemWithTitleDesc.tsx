@@ -1,13 +1,15 @@
-import React from 'react'
-import classnames from 'classnames'
+import React, { MouseEvent } from 'react'
+
+import { twCascade } from '@mariusmarais/tailwind-cascade'
 
 export interface IItemWithTitleDesc {
-  title: string
+  title?: string
   desc?: string
   itemRender: () => JSX.Element
   titleClassName?: string
   descClassName?: string
   textDirection?: 'row' | 'col'
+  onClick?: (event: MouseEvent<HTMLDivElement>) => void
 }
 
 export const ItemWithTitleDesc = ({
@@ -17,19 +19,20 @@ export const ItemWithTitleDesc = ({
   titleClassName,
   descClassName,
   textDirection,
+  onClick = () => {},
 }: IItemWithTitleDesc) => {
   return (
-    <div className="flex justify-start items-center">
+    <div className="flex justify-start items-center" onClick={onClick}>
       {itemRender()}
       <div
-        className={classnames('justify-between ml-dot-4 flex flex-1', {
+        className={twCascade('justify-between ml-dot-4 flex flex-1', {
           'flex-row': textDirection == 'row',
           'flex-col': textDirection != 'row',
         })}
       >
-        <div className={classnames('text-base', titleClassName)}>{title}</div>
+        {title && <div className={twCascade('text-base', titleClassName)}>{title}</div>}
         {desc && (
-          <span className={classnames('flex items-center text-dot-6', descClassName)}>{desc}</span>
+          <span className={twCascade('flex items-center text-dot-6', descClassName)}>{desc}</span>
         )}
       </div>
     </div>

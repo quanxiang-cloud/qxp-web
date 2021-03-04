@@ -23,10 +23,10 @@ export default function Dashboard() {
           />
         </div>
         <Card
-          className="ml-0 mt-8"
+          className="ml-0 mt-8 px-1-dot-6 py-4"
           title="我的应用"
           action={
-            <a className="transition-all duration-300 ease-linear text-dot-7 underline color-324558">
+            <a className="transition-all duration-300 ease-linear text-dot-7 underline text-324558">
               前往应用市场
             </a>
           }
@@ -79,7 +79,7 @@ export default function Dashboard() {
         />
         <div className="flex justify-between items-center">
           <Card
-            className="flex-1 ml-0"
+            className="flex-1 ml-0 px-1-dot-6 py-4"
             title="我的待办"
             action={
               <a className="transition-all duration-300 ease-linear text-dot-7 underline color-324558">
@@ -133,7 +133,7 @@ export default function Dashboard() {
             }
           />
           <Card
-            className="flex-2 self-stretch flex flex-col"
+            className="flex-2 self-stretch flex flex-col px-1-dot-6 py-4"
             title="未读消息"
             action={
               <a className="text-dot-7 underline color-324558 transition-all duration-300 ease-linear">

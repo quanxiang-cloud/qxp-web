@@ -1,33 +1,37 @@
 import React from 'react'
-
+import classnames from 'classnames'
 import useCss from 'react-use/lib/useCss'
+
+import { TextHeader } from './TextHeader'
 
 export interface ICard {
   title: string
   desc?: string
-  action: JSX.Element
-  content: JSX.Element
+  action?: JSX.Element
+  content?: JSX.Element
   className?: string
+  headerClassName?: string
+  children?: JSX.Element
 }
 
-export const Card = ({ title, action, content, className, desc }: ICard) => {
+export const Card = ({
+  title,
+  action,
+  content,
+  className,
+  desc,
+  children,
+  headerClassName,
+}: ICard) => {
   const classNames = useCss({
     'backdrop-filter': 'blur(120px)',
     'border-radius': '12px',
   })
 
   return (
-    <div
-      className={`px-1-dot-6 py-4 bg-white-dot-6-5 m-2 ${className ? className : ''} ${classNames}`}
-    >
-      <header className="flex justify-between items-center pb-4">
-        <div className="font-bold text-dot-8 color-0F172A flex justify-between items-center">
-          {title}
-          {desc && <span className="ml-dot-2">{desc}</span>}
-        </div>
-        {action}
-      </header>
-      <main className="flex-1">{content}</main>
+    <div className={classnames('bg-white-dot-6-5 m-2', classNames, className)}>
+      <TextHeader title={title} desc={desc} action={action} className={headerClassName} />
+      {(content || children) && <main className="flex-1">{content || children}</main>}
     </div>
   )
 }

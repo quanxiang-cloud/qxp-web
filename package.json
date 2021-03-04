@@ -15,6 +15,7 @@
     "react-router-dom": "^5.2.0",
     "@QCFE/lego-ui": "^0.1.30",
     "react-use": "^8.1.1",
+    "@mariusmarais/tailwind-cascade": "^0.0.4"
   },
   "devDependencies": {
     "@qcfe/types": "^1.0.15",

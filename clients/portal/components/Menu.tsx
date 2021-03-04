@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react'
 import classnames from 'classnames'
-import { Link } from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
 import { Icon } from '@QCFE/lego-ui'
 import useCss from 'react-use/lib/useCss'
 
@@ -24,6 +24,7 @@ export interface IMenus {
 
 export const Menu = ({ menus, visible, toggle }: IMenus) => {
   const maskRef = useRef(null)
+  const history = useHistory()
 
   useEffect(() => {
     const maskElement = (maskRef.current as unknown) as HTMLDivElement
@@ -61,7 +62,7 @@ export const Menu = ({ menus, visible, toggle }: IMenus) => {
 
   return (
     <div
-      className="w-full h-full z-10 bg-black bg-opacity-50 fixed hidden transition duration-200"
+      className="w-full h-full z-20 bg-black bg-opacity-50 fixed hidden transition duration-200"
       ref={maskRef}
     >
       <div
@@ -93,8 +94,9 @@ export const Menu = ({ menus, visible, toggle }: IMenus) => {
             }),
           )}
           items={menus.map(({ title, desc, iconClassName, iconUrl, address }) => (
-            <div className="flex flex-row justify-between items-center bg-white px-4 py-dot-8 rounded">
+            <div className="flex flex-row justify-between items-center bg-white px-4 py-dot-8 rounded cursor-pointer">
               <ItemWithTitleDesc
+                onClick={() => history.push(address)}
                 title={title}
                 desc={desc}
                 itemRender={() => (
@@ -123,7 +125,7 @@ export const Menu = ({ menus, visible, toggle }: IMenus) => {
             }),
           )}
         >
-          <Icon name="close" type="dark" size={20} />
+          <Icon className="mr-dot-4" name="close" type="dark" size={20} />
           <span className="text-dot-7">离开当前页面</span>
         </div>
       </div>
