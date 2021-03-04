@@ -50,6 +50,15 @@ html {
   padding-bottom: 0.8rem;
 }
 
+.py-dot-9 {
+  padding-top: 0.9rem;
+  padding-bottom: 0.9rem;
+}
+
+.pt-dot-8 {
+  padding-top: 0.8rem;
+}
+
 .pb-dot-8 {
   padding-bottom: 0.8rem;
 }
@@ -278,10 +287,6 @@ html {
   line-height: 1.9rem;
 }
 
-.flex-2 {
-  flex: 2 1 0%;
-}
-
 .text-475569 {
   color: #475569;
 }
@@ -386,4 +391,13 @@ html {
     position: absolute;
     z-index: -1;
   }
+}
+
+//////////////////////////////////// layout /////////////////////////////////
+.flex-2 {
+  flex: 2 1 0%;
+}
+
+.flex-2-dot-8 {
+  flex: 2.8 1 0%;
 }

@@ -1,6 +1,6 @@
 import React from 'react'
-import classnames from 'classnames'
 import useCss from 'react-use/lib/useCss'
+import { twCascade } from '@mariusmarais/tailwind-cascade'
 
 import { TextHeader } from './TextHeader'
 
@@ -29,7 +29,7 @@ export const Card = ({
   })
 
   return (
-    <div className={classnames('bg-white-dot-6-5 m-2', classNames, className)}>
+    <div className={twCascade('bg-white-dot-6-5 m-2', classNames, className)}>
       <TextHeader title={title} desc={desc} action={action} className={headerClassName} />
       {(content || children) && <main className="flex-1">{content || children}</main>}
     </div>

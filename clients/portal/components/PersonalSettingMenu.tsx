@@ -11,7 +11,7 @@ export const PersonalSettingMenu = () => {
           <Menu.MenuDivider />
           <Menu.MenuItem>
             <form action="/logout" method="post" className="w-full h-full">
-              <button type="submit" className="w-full h-full text-left">
+              <button type="submit" className="w-full h-full text-left outline-none">
                 登出
               </button>
             </form>

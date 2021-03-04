@@ -25,7 +25,7 @@ export const ItemWithTitleDesc = ({
     <div className="flex justify-start items-center" onClick={onClick}>
       {itemRender()}
       <div
-        className={twCascade('justify-between ml-dot-4 flex flex-1', {
+        className={twCascade('justify-between ml-dot-4 flex flex-1 transition duration-300', {
           'flex-row': textDirection == 'row',
           'flex-col': textDirection != 'row',
         })}

@@ -5,4 +5,11 @@
   .special-button {
     @apply bg-green-700 px-5 py-2 text-lg;
   }
+
+  .vertical-line {
+    width: 0.05rem;
+    max-height: 100vh;
+    background-color: #e2e8f0;
+    align-self: stretch;
+  }
 }
