@@ -8,6 +8,7 @@ import { ItemWithTitleDesc } from '@portal/components/ItemWithTitleDesc'
 export interface IRoleListItem {
   name: string
   id: string | number
+  tag: string
   active?: boolean
   onClick?: (id: string | number) => void
 }

@@ -12,4 +12,9 @@
     background-color: #e2e8f0;
     align-self: stretch;
   }
+
+  .line {
+    @apply w-full bg-black;
+    height: 1px;
+  }
 }

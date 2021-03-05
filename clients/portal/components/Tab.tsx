@@ -1,26 +1,21 @@
 import React, { useState } from 'react'
 import { twCascade } from '@mariusmarais/tailwind-cascade'
 
+export interface ITabItem {
+  id: string | number
+  name: string
+  content: JSX.Element
+}
+
 export interface ITab {
   className?: string
   headerClassName?: string
   contentClassName?: string
+  items: ITabItem[]
 }
 
-export const Tab = ({ className, headerClassName, contentClassName }: ITab) => {
-  const items = [
-    {
-      id: 'func',
-      name: '功能权限',
-      content: <div>hello</div>,
-    },
-    {
-      id: 'department',
-      name: '关联员工与部门',
-      content: <div>world</div>,
-    },
-  ]
-  const [key, setKey] = useState<string>(items[0].id)
+export const Tab = ({ className, headerClassName, contentClassName, items }: ITab) => {
+  const [key, setKey] = useState<string | number>(items[0].id)
 
   return (
     <div className={twCascade('transition duration-300', className)}>

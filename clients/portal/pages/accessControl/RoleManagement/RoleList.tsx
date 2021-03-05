@@ -10,7 +10,7 @@ export interface IRoleList {
 }
 
 export const RoleList = ({ items, onChange }: IRoleList) => {
-  const [current, setCurrent] = useState(items[0].id)
+  const [current, setCurrent] = useState(items[0]?.id)
 
   const onClick = (id: number | string) => {
     setCurrent(id)

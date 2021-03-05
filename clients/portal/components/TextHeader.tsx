@@ -6,19 +6,15 @@ import { isString } from '@assets/lib/f'
 
 export interface ITextHeader {
   className?: string
-  title: string
+  title: JSX.Element | string
   desc?: string
   action?: JSX.Element | string
+  actionClassName?: string
 }
 
-export const TextHeader = ({ className, title, desc, action }: ITextHeader) => {
+export const TextHeader = ({ className, actionClassName, title, desc, action }: ITextHeader) => {
   return (
-    <header
-      className={twCascade(
-        'flex justify-between items-center pb-4 header-background-image opacity-95',
-        className,
-      )}
-    >
+    <header className={twCascade('flex justify-between items-center pb-4 opacity-95', className)}>
       <ItemWithTitleDesc
         desc={desc}
         itemRender={() => (
@@ -29,11 +25,15 @@ export const TextHeader = ({ className, title, desc, action }: ITextHeader) => {
         descClassName="transition-all duration-300 ease-linear text-dot-6 text-697886"
       />
       {isString(action) && (
-        <a className="transition-all duration-300 ease-linear text-dot-7 underline text-324558">
+        <a
+          className={twCascade(
+            'transition-all duration-300 ease-linear text-dot-7 underline text-324558',
+          )}
+        >
           {action}
         </a>
       )}
-      {!isString(action) && action}
+      <div className={actionClassName}>{!isString(action) && action}</div>
     </header>
   )
 }

@@ -21,8 +21,12 @@ export const RoleManagement = () => {
 
   const roleList = data.map(({ tag, name, id }) => new Role(name, id, tag))
 
-  if (isLoading) {
-    return <Loading />
+  if (isLoading || !data.length) {
+    return (
+      <div className="flex items-center justify-center py-4">
+        <Loading />
+      </div>
+    )
   }
 
   return (
@@ -43,7 +47,7 @@ export const RoleManagement = () => {
         </div>
         <div className="vertical-line flex-grow-0"></div>
         <div className="flex-2-dot-8 p-4">
-          <RoleDetail id={roleId} role={roleList.find(({ id }) => id == roleId)} />
+          <RoleDetail id={roleId} role={roleList.find(({ id }) => id == roleId) as Role} />
         </div>
       </div>
     </Card>
