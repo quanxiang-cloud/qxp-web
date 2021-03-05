@@ -1,13 +1,13 @@
 import { IInputField, InputField, query } from '@assets/lib/atom'
 import { httpPost } from '@assets/lib/f'
-import { IResponse } from 'clients/@types/interface/api';
-import UserName from './username';
+import { IResponse } from 'clients/@types/interface/api'
+import UserName from './username'
 
 export default class Captcha extends InputField {
-  sender?: HTMLButtonElement;
-  username?: UserName;
-  url!: string;
-  errorId?: number;
+  sender?: HTMLButtonElement
+  username?: UserName
+  url!: string
+  errorId?: number
 
   constructor(captcha: IInputField, action: HTMLButtonElement, onValidateAll?: Function) {
     super(captcha, action, onValidateAll)
@@ -38,33 +38,33 @@ export default class Captcha extends InputField {
 
   bindEvents() {
     if (!this.sender) {
-      return 
+      return
     }
     this.sender.onclick = this.sendCode.bind(this)
   }
 
   callSendApi() {
-    return httpPost(this.url, JSON.stringify({ userName: this.username?.value}))
+    return httpPost(this.url, JSON.stringify({ userName: this.username?.value }))
   }
 
   showError(errorMessage?: string) {
     if (this.errorId) {
       clearTimeout(this.errorId)
     }
-    const pageErrorElement = query<HTMLSpanElement>('span.error')  
+    const pageErrorElement = query<HTMLSpanElement>('span.error')
     if (errorMessage && pageErrorElement) {
-      pageErrorElement.innerText = errorMessage  
+      pageErrorElement.innerText = errorMessage
       pageErrorElement.classList.remove('hidden')
       this.errorId = setTimeout(() => {
         pageErrorElement.classList.add('hidden')
-      }, 3000);
+      }, 3000)
     }
   }
 
   sendCode(e: Event) {
     e.preventDefault()
     if (!this.username?.validate()) {
-      return;
+      return
     }
     let counter = 60
     let tid = 0
@@ -75,15 +75,17 @@ export default class Captcha extends InputField {
       clearInterval(tid)
       element.classList.remove('disabled')
       counter = 60
-      element.innerText = "获取验证码"
+      element.innerText = '获取验证码'
     }
 
-    this.callSendApi().then((resp: unknown) => {
-      const res = resp as IResponse
-      if (res.code !== 0) {
-        this.showError(res.msg)
-      }
-    }).catch(resetVars)
+    this.callSendApi()
+      .then((resp: unknown) => {
+        const res = resp as IResponse<string>
+        if (res.code !== 0) {
+          this.showError(res.msg)
+        }
+      })
+      .catch(resetVars)
     element.classList.add('disabled')
     tid = setInterval(() => {
       counter--
@@ -91,16 +93,16 @@ export default class Captcha extends InputField {
       if (counter <= 0) {
         resetVars()
       }
-    }, 1000);
+    }, 1000)
   }
 
   validate(checkAll?: boolean) {
     let isValid = true
     if ((this.value as string).length < 6) {
-      if(this.value !== '') {
+      if (this.value !== '') {
         this.errMessage = '验证码至少为6位'
-        isValid = false;
-      } 
+        isValid = false
+      }
       this.action.classList.add('disabled')
     }
     if (isValid) {
@@ -109,8 +111,8 @@ export default class Captcha extends InputField {
     if (this.value === '') {
       isValid = false
     }
-    (this.errorElement as HTMLElement).textContent = this.errMessage as string
-    if(checkAll && (this.onValidateAll as Function)(this, isValid)) {
+    ;(this.errorElement as HTMLElement).textContent = this.errMessage as string
+    if (checkAll && (this.onValidateAll as Function)(this, isValid)) {
       this.action.classList.remove('disabled')
     }
     return isValid

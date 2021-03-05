@@ -9,6 +9,7 @@ export interface IItemWithTitleDesc {
   titleClassName?: string
   descClassName?: string
   textDirection?: 'row' | 'col'
+  className?: string
   onClick?: (event: MouseEvent<HTMLDivElement>) => void
 }
 
@@ -19,10 +20,11 @@ export const ItemWithTitleDesc = ({
   titleClassName,
   descClassName,
   textDirection,
+  className,
   onClick = () => {},
 }: IItemWithTitleDesc) => {
   return (
-    <div className="flex justify-start items-center" onClick={onClick}>
+    <div className={twCascade('flex justify-start items-center', className)} onClick={onClick}>
       {itemRender()}
       <div
         className={twCascade('justify-between ml-dot-4 flex flex-1 transition duration-300', {

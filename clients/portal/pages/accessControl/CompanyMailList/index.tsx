@@ -17,7 +17,7 @@ export const MailList = () => {
   const [inputValue, changeInputValue] = useState('')
   return (
     <>
-    <ExportFileModal />
+      <ExportFileModal />
       {/* <TextHeader
         title="企业通讯录"
         desc="管理账号，如添加、编辑、删除账号等，同时还能关联每个账号的角色；用户可用账号名称或邮件登录全象云平台。"
@@ -81,27 +81,38 @@ export const MailList = () => {
             <DepartmentTree />
           </div>
           <div className="flex-1 h-full">
-            <DepartmentStaff
-              department="全象应用平台"
-              count={1}
-              unit="人"
-            />
-            <div className="h-auto px-4 my-2 h-8 h-4">
+            <DepartmentStaff department="全象应用平台" count={1} unit="人" />
+            <div className="px-4 my-2 h-4">
               <div className="flex items-center">
                 <Button
                   className="bg-black"
                   textClassName="text-white"
-                  icon={<img className="w-1-dot-2 h-1-dot-2 p-x-0-dot-4" src="./dist/images/folder.svg" alt="logo" />}
-                >excel 批量导入</Button>
+                  icon={
+                    <img
+                      className="w-1-dot-2 h-1-dot-2 p-x-0-dot-4"
+                      src="./dist/images/folder.svg"
+                      alt="logo"
+                    />
+                  }
+                >
+                  excel 批量导入
+                </Button>
                 <div className="px-2"></div>
                 <Button
-                  icon={<img className="w-1-dot-2 h-1-dot-2 p-x-0-dot-4" src="./dist/images/add-department.svg" alt="logo" />}
-                >添加员工</Button>
+                  icon={
+                    <img
+                      className="w-1-dot-2 h-1-dot-2 p-x-0-dot-4"
+                      src="./dist/images/add-department.svg"
+                      alt="logo"
+                    />
+                  }
+                >
+                  添加员工
+                </Button>
                 <div className="px-2"></div>
-                <Button
-                  className="bg-black"
-                  textClassName="text-white"
-                >···</Button>
+                <Button className="bg-black" textClassName="text-white">
+                  ···
+                </Button>
               </div>
               <PersonInfo />
             </div>

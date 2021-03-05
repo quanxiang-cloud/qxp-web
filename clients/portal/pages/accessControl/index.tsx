@@ -11,7 +11,7 @@ export default function Index() {
   return (
     <>
       <HeaderWithMenu />
-      <div className="py-3-dot-9 px-8 h-full flex justify-center">
+      <div className="py-3-dot-9 px-8 h-full flex justify-center items-start">
         <div className="w-316 bg-white pd-1 border-radius-2 mr-4">
           <ItemWithTitleDesc
             title="访问控制"

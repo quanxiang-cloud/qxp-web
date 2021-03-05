@@ -40,7 +40,7 @@ export const ListMenu = ({ onChange, defaultType }: IListMenu) => {
               onChange(item.id)
             }}
             className={classnames(
-              'h-2-bot-8 leading-2-bot-8 rounded-l-dot-4 p-x-0-dot-9 flex relative',
+              'h-2-bot-8 leading-2-bot-8 rounded-l-dot-4 p-x-0-dot-9 flex relative cursor-pointer transition duration-200',
               useCss({
                 '> div': {
                   display: 'none',

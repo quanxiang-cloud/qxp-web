@@ -45,11 +45,18 @@ func ProxyAPIHandler(w http.ResponseWriter, r *http.Request) {
 
 	// authorization := "Bearer " + token
 	// req.Header.Add("Authorization", authorization)
-	req.Header.Add("Content-Type", "application/json")
+	req.Header.Set("Content-Type", "application/json")
+	for key, values := range r.Header {
+		for _, value := range values {
+			req.Header.Set(key, value)
+		}
+	}
+
 	token, _ := contexts.GetSessionToken(r)
 	if token != "" {
-		req.Header.Add("Access-Token", token)
+		req.Header.Set("Access-Token", token)
 	}
+
 	// headers: {
 	//     token: '4cf02e712070455b92f4a95525768603',
 	//     domain: 'qingcloud'
