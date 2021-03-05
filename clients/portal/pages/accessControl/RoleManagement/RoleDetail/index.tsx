@@ -39,7 +39,6 @@ export const RoleDetail = ({ role, id }: IRoleDetail) => {
       />
       <Tab
         className="mt-4 py-dot-8 px-4"
-        headerClassName="header-background-image"
         items={[
           {
             id: 'func',

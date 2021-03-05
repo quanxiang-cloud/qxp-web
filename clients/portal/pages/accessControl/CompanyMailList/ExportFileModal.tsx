@@ -3,22 +3,21 @@ import classnames from 'classnames'
 import useCss from 'react-use/lib/useCss'
 import { Modal, CheckboxGroup, Checkbox, GridTable } from '@QCFE/lego-ui'
 
-import { Button } from '@portal/components/Button';
+import { Button } from '@portal/components/Button'
 interface ExportFileModalProps {
-  visible: boolean;
-  closeModal(): void;
-  okModal(): void;
+  visible: boolean
+  closeModal(): void
+  okModal(): void
 }
 
 export const ExportFileModal = ({ visible, closeModal, okModal }: ExportFileModalProps) => {
-
   const dataSource = [
     {
       name: '张三',
       reason: '人员手机号或邮箱不能为空！',
-    }
-  ];
-  
+    },
+  ]
+
   const columns = [
     {
       title: '姓名',
@@ -27,8 +26,8 @@ export const ExportFileModal = ({ visible, closeModal, okModal }: ExportFileModa
     {
       title: '原因',
       dataIndex: 'reason',
-    }
-  ];
+    },
+  ]
 
   return (
     <Modal
@@ -40,7 +39,13 @@ export const ExportFileModal = ({ visible, closeModal, okModal }: ExportFileModa
       footer={
         <div className="flex items-center">
           <Button
-            icon={<img className="w-1-dot-2 h-1-dot-2 px-dot-4" src="./dist/images/icon_error.svg" alt="icon_error" />}
+            icon={
+              <img
+                className="w-1-dot-2 h-1-dot-2 px-dot-4"
+                src="./dist/images/icon_error.svg"
+                alt="icon_error"
+              />
+            }
             onClick={closeModal}
           >
             取消
@@ -49,7 +54,13 @@ export const ExportFileModal = ({ visible, closeModal, okModal }: ExportFileModa
           <Button
             className="bg-black"
             textClassName="text-white"
-            icon={<img className="w-1-dot-2 h-1-dot-2 px-dot-4" src="./dist/images/icon_true.svg" alt="icon_true" />}
+            icon={
+              <img
+                className="w-1-dot-2 h-1-dot-2 px-dot-4"
+                src="./dist/images/icon_true.svg"
+                alt="icon_true"
+              />
+            }
             onClick={okModal}
           >
             确定导入
@@ -58,15 +69,21 @@ export const ExportFileModal = ({ visible, closeModal, okModal }: ExportFileModa
       }
     >
       <div className="text-dot-7">
-        <div className="text-DC2626 font-semibold">数据导入完成，已成功导入 0 数据，失败 0 数据。</div>
-        <div className="text-16A34A font-semibold">数据导入完成，已成功导入 0 数据，失败 0 数据。</div> 
-        <div className="text-D97706 font-semibold">数据导入完成，已成功导入 1 数据，失败 1 数据。 </div>
+        <div className="text-DC2626 font-semibold">
+          数据导入完成，已成功导入 0 数据，失败 0 数据。
+        </div>
+        <div className="text-16A34A font-semibold">
+          数据导入完成，已成功导入 0 数据，失败 0 数据。
+        </div>
+        <div className="text-D97706 font-semibold">
+          数据导入完成，已成功导入 1 数据，失败 1 数据。{' '}
+        </div>
         <div>
           <p className="text-dot-7 py-dot-4">向员工发送密码</p>
           <CheckboxGroup
             name="states"
             onChange={(value, name) => {
-              console.log({ value, name });
+              console.log({ value, name })
             }}
           >
             <Checkbox value={1}>通过邮箱</Checkbox>
@@ -79,7 +96,7 @@ export const ExportFileModal = ({ visible, closeModal, okModal }: ExportFileModa
             <img className="w-1-dot-2 h-1-dot-2 px-dot-4" src="./dist/images/icon_error.svg" alt="icon_error" />
             <div>点击或拖拽文件到该区域</div>
             </div> */}
-            <div className="demo-wrapper upload-demo">
+          <div className="demo-wrapper upload-demo">
             {/* <Upload
               {...this.uploaderProps}
               ref={n => {
@@ -108,35 +125,54 @@ export const ExportFileModal = ({ visible, closeModal, okModal }: ExportFileModa
         </div>
         <ul>
           <li>
-            1. 如果需要将excel的成员数据导入到不同部门，需要先建立部门。去 <span className={
-            classnames('text-375FF3', useCss({
-              '&': {
-                'cursor': 'pointer',
-              }
-            }))
-          }>添加</span></li>
+            1. 如果需要将excel的成员数据导入到不同部门，需要先建立部门。去{' '}
+            <span
+              className={classnames(
+                'text-375FF3',
+                useCss({
+                  '&': {
+                    cursor: 'pointer',
+                  },
+                }),
+              )}
+            >
+              添加
+            </span>
+          </li>
           <li>
-            2. 点击下载 <span className={
-            classnames('text-375FF3', useCss({
-              '&': {
-                'cursor': 'pointer',
-              }
-            }))
-          }>企业通讯录导入模版</span></li>
+            2. 点击下载{' '}
+            <span
+              className={classnames(
+                'text-375FF3',
+                useCss({
+                  '&': {
+                    cursor: 'pointer',
+                  },
+                }),
+              )}
+            >
+              企业通讯录导入模版
+            </span>
+          </li>
           <li>3. 上传填写正确的企业通讯录导入模版。</li>
         </ul>
         <div>
           <div className="py-dot-4 flex items-center">
             <p className="text-475569 font-semibold">失败原因：</p>
-            <span className={
-            classnames('text-375FF3', useCss({
-              '&': {
-                'cursor': 'pointer',
-              }
-            }))
-          }>下载失败列表</span>
+            <span
+              className={classnames(
+                'text-375FF3',
+                useCss({
+                  '&': {
+                    cursor: 'pointer',
+                  },
+                }),
+              )}
+            >
+              下载失败列表
+            </span>
           </div>
-          <GridTable dataSource={dataSource} columns={columns} />
+          <GridTable rowKey="id" dataSource={dataSource} columns={columns} />
         </div>
       </div>
     </Modal>
