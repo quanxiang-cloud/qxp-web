@@ -5,19 +5,28 @@ import { Button } from '@portal/components/Button';
 
 const { TextField, SelectField, ButtonField } = Form;
 
+interface DepartmentModalProps {
+  visible: boolean;
+  status: 'add' | 'edit';
+  closeModal(): void;
+  okModal(): void;
+}
 
-export const DepartmentModal = () => {
-  const [ visible, changeVisible ] = useState<boolean>(true);
+
+export const DepartmentModal = ({ visible, status, closeModal, okModal }: DepartmentModalProps) => {
+
+  const titleText = `${status === 'add' ? '添加' : '修改'}`;
   return (
     <Modal
-      title="添加部门"
-      // visible={visible}
-      // onOk={this.hideModal}
-      // onCancel={this.hideModal}
+      title={`${titleText}部门`}
+      visible={visible}
+      onCancel={closeModal}
+      onOk={okModal}
       footer={
         <div className="flex items-center">
           <Button
-            icon={<img className="w-1-dot-2 h-1-dot-2 p-x-0-dot-4" src="./dist/images/icon_error.svg" alt="icon_error" />}
+            icon={<img className="w-1-dot-2 h-1-dot-2 px-dot-4" src="./dist/images/icon_error.svg" alt="icon_error" />}
+            onClick={closeModal}
           >
             取消
           </Button>
@@ -25,9 +34,10 @@ export const DepartmentModal = () => {
           <Button
             className="bg-black"
             textClassName="text-white"
-            icon={<img className="w-1-dot-2 h-1-dot-2 p-x-0-dot-4" src="./dist/images/icon_true.svg" alt="icon_true" />}
+            icon={<img className="w-1-dot-2 h-1-dot-2 px-dot-4" src="./dist/images/icon_true.svg" alt="icon_true" />}
+            onClick={okModal}
           >
-            确定添加
+            确定{titleText}
           </Button>
         </div>
       }

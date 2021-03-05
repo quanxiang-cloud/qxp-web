@@ -1,21 +1,27 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { Modal } from '@QCFE/lego-ui'
 
 import { Button } from '@portal/components/Button'
 
-export const DeleteModal = () => {
-  const [ visible, changeVisible ] = useState<boolean>(true);
+interface DeleteModalProps {
+  visible: boolean;
+  closeModal(): void;
+  okModal(): void;
+}
+
+export const DeleteModal = ({ visible, closeModal, okModal } : DeleteModalProps) => {
 
   return (
     <Modal
       title="删除"
-      // visible={visible}
-      // onOk={this.hideModal}
-      // onCancel={this.hideModal}
+      visible={visible}
+      onOk={closeModal}
+      onCancel={okModal}
       footer={
         <div className="flex items-center">
           <Button
-            icon={<img className="w-1-dot-2 h-1-dot-2 p-x-0-dot-4" src="./dist/images/icon_error.svg" alt="icon_error" />}
+            icon={<img className="w-1-dot-2 h-1-dot-2 px-dot-4" src="./dist/images/icon_error.svg" alt="icon_error" />}
+            onClick={closeModal}
           >
             取消
           </Button>
@@ -23,7 +29,8 @@ export const DeleteModal = () => {
           <Button
             className="bg-black"
             textClassName="text-white"
-            icon={<img className="w-1-dot-2 h-1-dot-2 p-x-0-dot-4" src="./dist/images/icon_true.svg" alt="icon_true" />}
+            icon={<img className="w-1-dot-2 h-1-dot-2 px-dot-4" src="./dist/images/icon_true.svg" alt="icon_true" />}
+            onClick={okModal}
           >
             确定删除
           </Button>
