@@ -8,6 +8,8 @@ module.exports = {
         'blue-second': '#8CADFF',
         'blue-light': '#F0F6FF',
         'dark-second': '#475569',
+        'dark-third': '#334155',
+        'dark-four': '#94A3B8',
         'blue-third': '#E2E8F0',
         'white-dot-6-5': 'rgba(255, 255, 255, .65)',
       },

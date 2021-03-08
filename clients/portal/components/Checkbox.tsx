@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { Checkbox as LegoCheckbox, CheckboxProps } from '@QCFE/lego-ui'
 import { twCascade } from '@mariusmarais/tailwind-cascade'
 import useCss from 'react-use/lib/useCss'
@@ -15,8 +15,6 @@ export const Checkbox = ({
   value,
   children,
 }: ICheckbox) => {
-  const [isCheck, setIsCheck] = useState<boolean>(!!checked)
-
   return (
     <LegoCheckbox
       className={twCascade(
@@ -30,12 +28,11 @@ export const Checkbox = ({
         }),
         className,
       )}
-      defaultChecked={defaultChecked}
-      checked={isCheck}
-      disabled={disabled}
+      defaultChecked={!!defaultChecked}
+      checked={!!checked}
+      disabled={!!disabled}
       indeterminate={indeterminate}
       onChange={(e, checked) => {
-        setIsCheck(checked)
         if (onChange) {
           onChange(e, checked)
         }

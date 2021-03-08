@@ -1,3 +1,5 @@
+import { GridTableProps } from '@QCFE/lego-ui'
+
 declare module '@QCFE/lego-ui' {
   interface ModalProps {
     title?: string | React.ReactNode
@@ -34,5 +36,17 @@ declare module '@QCFE/lego-ui' {
     content?: React.ReactNode
     onAsyncOk?: (...args: any) => any
     visible?: boolean
+  }
+
+  interface TableProps extends GridTableProps<unknown> {
+    rowKey: string
+    dataSource?: unknown[]
+    columns: unknown[]
+    rowSelection?: {
+      selectedRowKeys: string[]
+      onChange?: (selectedRowKeys: string[], selectedRows: any[]) => void
+      getCheckboxProps?: (record: unknown) => unknown
+    }
+    emptyText: JSX.Element
   }
 }

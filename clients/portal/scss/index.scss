@@ -269,8 +269,12 @@ html {
   margin-bottom: 0.6rem;
 }
 
-.-mt-dot-8 {
-  margin-top: -0.8rem;
+.mb-dot-8 {
+  margin-bottom: 0.8rem;
+}
+
+.mb-dot-4 {
+  margin-bottom: 0.4rem;
 }
 
 .border-shape {
@@ -396,11 +400,11 @@ html {
 }
 
 .bg-DEE9FF {
-  background-color: #DEE9FF;
+  background-color: #dee9ff;
 }
 
 .bg-F0F6FF {
-  background-color: #F0F6FF;
+  background-color: #f0f6ff;
 }
 
 .bg-5976e01a {
@@ -467,4 +471,32 @@ html {
 
 .flex-2-dot-8 {
   flex: 2.8 1 0%;
+}
+
+/////////////////////////////////// components ///////////////////////////////
+.qxp-table {
+  .spin-nested-loading {
+    width: 100% !important;
+    .spin-container {
+      width: 100% !important;
+      .table-wrapper {
+        width: 100% !important;
+        .table {
+          border-radius: 0.6rem !important;
+          width: 100% !important;
+          thead > tr > th {
+            padding-top: 0.55rem !important;
+            padding-bottom: 0.55rem !important;
+            font-size: 0.7rem !important;
+            font-weight: bold !important;
+            line-height: 1.1rem !important;
+          }
+
+          tbody > tr:last-child > td {
+            border-bottom: none !important;
+          }
+        }
+      }
+    }
+  }
 }

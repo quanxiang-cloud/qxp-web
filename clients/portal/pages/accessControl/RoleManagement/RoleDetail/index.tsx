@@ -6,6 +6,7 @@ import { ItemWithTitleDesc } from '@portal/components/ItemWithTitleDesc'
 import { Tab } from '@portal/components/Tab'
 import { IRoleListItem } from '../RoleListItem'
 import { AlterRoleFunc } from './AlterRoleFunc'
+import { AssociateDepartmentEmployee } from './AssociateDepartmentEmployee'
 import { getRoleFunctions } from '../api'
 
 export interface IRoleDetail {
@@ -16,6 +17,7 @@ export interface IRoleDetail {
 export const RoleDetail = ({ role, id }: IRoleDetail) => {
   const { data, isLoading } = useQuery(['getRoleFunctions', id], getRoleFunctions, {
     refetchOnWindowFocus: false,
+    cacheTime: -1,
   })
 
   if (isLoading || !data?.func || !role) {
@@ -44,13 +46,18 @@ export const RoleDetail = ({ role, id }: IRoleDetail) => {
             id: 'func',
             name: '功能权限',
             content: (
-              <AlterRoleFunc lastSaveTime={data.lastSaveTime} funcs={data.func} tag={role.tag} />
+              <AlterRoleFunc
+                lastSaveTime={data.lastSaveTime}
+                funcs={data.func}
+                tag={role.tag}
+                id={id}
+              />
             ),
           },
           {
             id: 'association',
             name: '关联员工与部门',
-            content: <div>关联员工与部门</div>,
+            content: <AssociateDepartmentEmployee id={id} />,
           },
         ]}
       />

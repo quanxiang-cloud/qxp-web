@@ -98,3 +98,35 @@ export const countBy = <T, S>(attr: string, exclude: string, fn: (arg: S) => boo
   })
   return counter
 }
+
+/**
+ * @param key {string} 搜索的 key
+ * @param value {T} 搜索的 key 对应的值
+ * @param obj {S} 搜索的数据源
+ */
+export const searchByKey = <T, S, K>(key: string, value: T, obj: S): K | void => {
+  for (let k in obj) {
+    if (k === key && ((obj[k] as unknown) as T) === value) {
+      return (obj as unknown) as K
+    } else if (typeof obj[k] === 'object' || Array.isArray(obj[k])) {
+      const data = searchByKey<T, S, K>(key, value, (obj[k] as unknown) as S)
+      if (data) {
+        return data
+      }
+    }
+  }
+  return
+}
+
+export const deepClone = (obj: any) => {
+  if (obj === null) return null
+  let clone = Object.assign({}, obj)
+  Object.keys(clone).forEach(
+    (key) => (clone[key] = typeof obj[key] === 'object' ? deepClone(obj[key]) : obj[key]),
+  )
+  if (Array.isArray(obj)) {
+    clone.length = obj.length
+    return Array.from(clone)
+  }
+  return clone
+}

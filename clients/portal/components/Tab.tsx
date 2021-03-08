@@ -42,7 +42,19 @@ export const Tab = ({ className, headerClassName, contentClassName, items }: ITa
         })}
       </header>
       <div className="full-w bg-blue-light px-4 py-dot-8">
-        {items.find(({ id }) => id === key)?.content}
+        {items.map((item) => {
+          return (
+            <div
+              key={item.id}
+              className={twCascade(
+                item.id === key ? 'opacity-100' : 'opacity-0 h-0 overflow-hidden',
+                'transition-all',
+              )}
+            >
+              {item.content}
+            </div>
+          )
+        })}
       </div>
     </div>
   )

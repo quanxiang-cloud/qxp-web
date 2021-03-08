@@ -32,7 +32,7 @@ export const RoleManagement = () => {
   return (
     <Card
       className="ml-0 mt-0 mr-0 mb-0 px-4 pt-dot-8 pb-0"
-      headerClassName="bg-F1F5F9-dot-5 -mx-4 -mt-dot-8 px-4 py-dot-8 header-background-image"
+      headerClassName="bg-F1F5F9-dot-5 -mx-4 mt-dot-8 px-4 py-dot-8 header-background-image"
       title="角色管理"
       desc="平台默认的角色，默认具有企业所有功能权限和全部数据可见范围。"
       action={
