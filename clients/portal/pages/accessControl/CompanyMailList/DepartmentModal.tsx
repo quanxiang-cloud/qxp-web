@@ -8,20 +8,32 @@ const { TextField, SelectField, ButtonField } = Form;
 interface DepartmentModalProps {
   visible: boolean;
   status: 'add' | 'edit';
+  nodeId: string;
   closeModal(): void;
-  okModal(): void;
+  okModal: (val: any, nodeIndex: string) => void;
 }
 
 
-export const DepartmentModal = ({ visible, status, closeModal, okModal }: DepartmentModalProps) => {
+export const DepartmentModal = ({ visible, status, nodeId, closeModal, okModal }: DepartmentModalProps) => {
 
   const titleText = `${status === 'add' ? '添加' : '修改'}`;
+
+  const [ form, setForm ] = useState<any>(null);
+
+  const okModalHandle = () => {
+    const bol = form.validateForm();
+    if (!bol) {
+      return;
+    }
+    const values = form.getFieldsValue();
+    okModal(values, nodeId);
+  }
+  
   return (
     <Modal
       title={`${titleText}部门`}
       visible={visible}
       onCancel={closeModal}
-      onOk={okModal}
       footer={
         <div className="flex items-center">
           <Button
@@ -35,22 +47,29 @@ export const DepartmentModal = ({ visible, status, closeModal, okModal }: Depart
             className="bg-black"
             textClassName="text-white"
             icon={<img className="w-1-dot-2 h-1-dot-2 px-dot-4" src="./dist/images/icon_true.svg" alt="icon_true" />}
-            onClick={okModal}
+            onClick={okModalHandle}
           >
             确定{titleText}
           </Button>
         </div>
       }
     >
-      <Form layout='vertical'>
+      <Form layout='vertical'
+        ref={(n: any) => setForm(n)}>
         <TextField
-          name="account-1"
+          name="department-name"
           label="部门名称"
           placeholder="请输入 QingCloud 账号"
           help="不超过 30 个字符，部门名称不可重复。"
+          schemas={[
+            {
+              help: '请输入 QingCloud 账号',
+              rule: { required: true },
+            },
+          ]}
         />
         <SelectField
-          name="region-select"
+          name="department-manager"
           label="部门主管"
           placeholder="请选择区域"
           style={{width: '100%'}}
@@ -62,7 +81,7 @@ export const DepartmentModal = ({ visible, status, closeModal, okModal }: Depart
           ]}
         />
         <SelectField
-          name="region-select"
+          name="department"
           label="所属部门"
           placeholder="请选择区域"
           options={[

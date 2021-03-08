@@ -8,14 +8,16 @@ import { DeleteModal } from './DeleteModal'
 
 interface TreeNodeItem {
   title: string
-  [propsName: string]: string
+  id: string
+  addDepartment: (val: string, id: string) => void
+  [propsName: string]: any
 }
 
-const Title = ({ title, id }: TreeNodeItem) => {
+const Title = ({ title, id, addDepartment }: TreeNodeItem) => {
   const [handleStatus, setHandleStatus] = useState<'add' | 'edit'>('add')
   const [visibleDeparment, setVisibleDeparment] = useState(false)
   const [visibleDelete, setVisibleDelete] = useState(false)
-
+  const [indexOfNode, setindexOfNode] = useState(id) // 记录当前点击树节点的id
   // 添加部门 or 修改部门
   const handleDeparent = (status: 'add' | 'edit') => {
     setVisibleDeparment(true)
@@ -24,6 +26,13 @@ const Title = ({ title, id }: TreeNodeItem) => {
 
   //  关闭部门模态框
   const closeDeparentModal = () => {
+    setVisibleDeparment(false)
+  }
+
+  //  确定添加部门处理函数
+  const okDeparentModal = (val: any, nodeIndex: string) => {
+    setindexOfNode(nodeIndex) // 更新当前点击树节点的id
+    addDepartment(val['department-name'], nodeIndex) // 将新增部门添加为当前点击树节点的子节点
     setVisibleDeparment(false)
   }
 
@@ -65,8 +74,9 @@ const Title = ({ title, id }: TreeNodeItem) => {
         <DepartmentModal
           visible={visibleDeparment}
           status={handleStatus}
+          nodeId={indexOfNode}
           closeModal={closeDeparentModal}
-          okModal={closeDeparentModal}
+          okModal={okDeparentModal}
         />
       )}
       {/* 删除模态框 */}
@@ -80,7 +90,7 @@ const Title = ({ title, id }: TreeNodeItem) => {
       <div className="w-full flex items-center justify-between">
         <div className="text-dot-7">{title}</div>
         <div className="h-auto relative">
-          <Dropdown content={<ActionsList actions={actions} />}>
+          <Dropdown content={<ActionsList actions={actions} params={id} />}>
             <span>...</span>
           </Dropdown>
         </div>
@@ -90,42 +100,92 @@ const Title = ({ title, id }: TreeNodeItem) => {
 }
 
 export const DepartmentTree = () => {
-  const treeData = [
+  const [treeData, settreeData] = useState([
     {
       title: '全象云应用开发平台',
       id: '1',
-      key: '0',
+      key: '1',
       children: [
         {
           title: '分配部门1',
+          id: '1-1',
           key: '1-1',
           children: [],
         },
         {
           title: '分配部门2',
-          key: '2-1',
+          id: '1-2',
+          key: '1-2',
           children: [
             {
               title: '第三层部门',
-              key: '2-1-1',
+              id: '1-2-1',
+              key: '1-2-1',
             },
           ],
         },
       ],
     },
-  ]
+    {
+      title: '测试部门',
+      id: '2',
+      key: '2',
+      children: [],
+    },
+  ])
+
+  // 添加部门节点数据
+  const addHandle = (val: string, id: string) => {
+    const data = treeData.slice()
+    const i = id.split('-').map((item) => {
+      return Number(item) - 1
+    })
+
+    switch (i.length) {
+      case 2:
+        data[i[0]].children[i[1]].children.push({
+          title: val,
+          id: id + '-' + (data[i[0]].children[i[1]].children.length + 1).toString(),
+          key: id + '-' + (data[i[0]].children[i[1]].children.length + 1).toString(),
+        })
+        break
+      case 1:
+        data[i[0]].children.push({
+          title: val,
+          id: id + '-' + (data[i[0]].children.length + 1).toString(),
+          key: id + '-' + (data[i[0]].children.length + 1).toString(),
+          children: [],
+        })
+        break
+      default:
+        break
+    }
+
+    // 更新treeData的状态
+    settreeData(data)
+  }
 
   const renderTreeNodes = (data: any) =>
     data.map((item: any) => {
       const { children } = item
       if (children) {
         return (
-          <TreeNode title={<Title {...item} />} key={item.key} dataRef={item}>
+          <TreeNode
+            title={<Title {...item} addDepartment={addHandle} />}
+            key={item.key}
+            dataRef={item}
+          >
             {renderTreeNodes(children)}
           </TreeNode>
         )
       }
-      return <TreeNode title={<Title {...item} />} key={item.key} dataRef={item} />
+      return (
+        <TreeNode
+          title={<Title {...item} addDepartment={addHandle} />}
+          key={item.key}
+          dataRef={item}
+        />
+      )
     })
 
   return (
