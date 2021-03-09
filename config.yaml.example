@@ -2,8 +2,8 @@ dev_mode: false
 
 api_endpoint:
   protocol: http
-  hostname: 192.168.5.105
-  port: 8083
+  hostname: keeper.test
+  port: 80
 
 http_client:
   timeout: 30
@@ -12,7 +12,7 @@ http_client:
   idle_conn_timeout: 90
 
 redis:
-  host: 
+  host:
     - localhost
   port: 6379
   DB: 1
