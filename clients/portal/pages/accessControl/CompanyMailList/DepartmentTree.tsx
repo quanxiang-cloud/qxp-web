@@ -15,29 +15,29 @@ interface TreeNodeItem {
 
 const Title = ({ title, id, addDepartment }: TreeNodeItem) => {
   const [handleStatus, setHandleStatus] = useState<'add' | 'edit'>('add')
-  const [visibleDeparment, setVisibleDeparment] = useState(false)
+  const [visibleDepartment, setVisibleDepartment] = useState(false)
   const [visibleDelete, setVisibleDelete] = useState(false)
-  const [indexOfNode, setindexOfNode] = useState(id) // 记录当前点击树节点的id
+  const [indexOfNode, setIndexOfNode] = useState(id) // 记录当前点击树节点的id
   // 添加部门 or 修改部门
-  const handleDeparent = (status: 'add' | 'edit') => {
-    setVisibleDeparment(true)
+  const handleDepartment = (status: 'add' | 'edit') => {
+    setVisibleDepartment(true)
     setHandleStatus(status)
   }
 
   //  关闭部门模态框
-  const closeDeparentModal = () => {
-    setVisibleDeparment(false)
+  const closeDepartmentModal = () => {
+    setVisibleDepartment(false)
   }
 
   //  确定添加部门处理函数
-  const okDeparentModal = (val: any, nodeIndex: string) => {
-    setindexOfNode(nodeIndex) // 更新当前点击树节点的id
+  const okDepartmentModal = (val: any, nodeIndex: string) => {
+    setIndexOfNode(nodeIndex) // 更新当前点击树节点的id
     addDepartment(val['department-name'], nodeIndex) // 将新增部门添加为当前点击树节点的子节点
-    setVisibleDeparment(false)
+    setVisibleDepartment(false)
   }
 
   // 删除部门
-  const deleteDeparent = () => {
+  const deleteDepartment = () => {
     setVisibleDelete(true)
   }
 
@@ -46,37 +46,37 @@ const Title = ({ title, id, addDepartment }: TreeNodeItem) => {
     setVisibleDelete(false)
   }
 
-  const actions: IActionListItem<null>[] = [
+  const actions: IActionListItem<string>[] = [
     {
       id: '1',
       iconName: './dist/images/add-department.svg',
       text: '添加部门',
-      onclick: () => handleDeparent('add'),
+      onclick: () => handleDepartment('add'),
     },
     {
       id: '2',
       iconName: './dist/images/edit.svg',
       text: '修改部门',
-      onclick: () => handleDeparent('edit'),
+      onclick: () => handleDepartment('edit'),
     },
     {
       id: '3',
       iconName: './dist/images/delete.svg',
       text: '删除',
-      onclick: () => deleteDeparent(),
+      onclick: () => deleteDepartment(),
     },
   ]
 
   return (
     <>
       {/* 部门模态框 */}
-      {visibleDeparment && (
+      {visibleDepartment && (
         <DepartmentModal
-          visible={visibleDeparment}
+          visible={visibleDepartment}
           status={handleStatus}
           nodeId={indexOfNode}
-          closeModal={closeDeparentModal}
-          okModal={okDeparentModal}
+          closeModal={closeDepartmentModal}
+          okModal={okDepartmentModal}
         />
       )}
       {/* 删除模态框 */}
@@ -90,7 +90,7 @@ const Title = ({ title, id, addDepartment }: TreeNodeItem) => {
       <div className="w-full flex items-center justify-between">
         <div className="text-dot-7">{title}</div>
         <div className="h-auto relative">
-          <Dropdown content={<ActionsList actions={actions} params={id} />}>
+          <Dropdown content={<ActionsList<string> actions={actions} params={id} />}>
             <span>...</span>
           </Dropdown>
         </div>
@@ -100,7 +100,7 @@ const Title = ({ title, id, addDepartment }: TreeNodeItem) => {
 }
 
 export const DepartmentTree = () => {
-  const [treeData, settreeData] = useState([
+  const [treeData, setTreeData] = useState([
     {
       title: '全象云应用开发平台',
       id: '1',
@@ -162,7 +162,7 @@ export const DepartmentTree = () => {
     }
 
     // 更新treeData的状态
-    settreeData(data)
+    setTreeData(data)
   }
 
   const renderTreeNodes = (data: any) =>
