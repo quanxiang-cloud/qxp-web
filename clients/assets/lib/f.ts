@@ -118,6 +118,10 @@ export const searchByKey = <T, S, K>(key: string, value: T, obj: S): K | void =>
   return
 }
 
+/**
+ * deep clone array or object
+ * @param obj {array | object}
+ */
 export const deepClone = (obj: any) => {
   if (obj === null) return null
   let clone = Object.assign({}, obj)

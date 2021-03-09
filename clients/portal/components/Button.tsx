@@ -1,7 +1,7 @@
 import React from 'react'
 import classnames from 'classnames'
 
-interface ButtonProps {
+interface IButton {
   children: React.ReactNode
   textClassName?: string
   className?: string
@@ -9,7 +9,7 @@ interface ButtonProps {
   onClick?: () => void
 }
 
-export const Button = (props: ButtonProps) => {
+export const Button = (props: IButton) => {
   const { children, icon, className, textClassName, onClick } = props
   return (
     <div

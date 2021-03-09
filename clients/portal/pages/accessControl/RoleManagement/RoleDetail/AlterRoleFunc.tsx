@@ -1,15 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react'
+import { Message } from '@QCFE/lego-ui'
 
 import { Card } from '@portal/components/Card'
 import { Checkbox } from '@portal/components/Checkbox'
 import { countBy, searchByKey, deepClone } from '@assets/lib/f'
-import { Button } from '@portal/components/Button'
 import { IRoleFunc, IRoleFuncItem, setRoleFunctions } from '../api'
 
 export interface IAlterRoleFunc {
   funcs: IRoleFunc
   tag: string
-  lastSaveTime: number
+  lastSaveTime?: number
   id: string | number
 }
 
@@ -22,25 +22,25 @@ export const AlterRoleFunc = ({ funcs: functions, tag, lastSaveTime, id }: IAlte
   const [deleteSets, setDeleteSets] = useState<string[]>([])
   const originTags = useRef<string[]>([])
 
-  const getFuncTags = (func: IRoleFunc | IRoleFuncItem): string[] => {
+  const getFuncIds = (func: IRoleFunc | IRoleFuncItem): string[] => {
     const tags = []
     for (let key in func) {
-      if (key === 'funcTag' && func.has) {
-        tags.push(func.funcTag as string)
+      if (key === 'id' && func.has) {
+        tags.push(func.id as string)
         // @ts-ignore
-      } else if (key !== 'funcTag' && typeof func[key] === 'object') {
+      } else if (key !== 'id' && typeof func[key] === 'object') {
         // @ts-ignore
-        tags.push(...getFuncTags(func[key]))
+        tags.push(...getFuncIds(func[key]))
       }
     }
     return tags
   }
   if (!originTags.current.length) {
-    originTags.current = getFuncTags(functions)
+    originTags.current = getFuncIds(functions)
   }
 
   useEffect(() => {
-    const allSets = getFuncTags(funcs)
+    const allSets = getFuncIds(funcs)
     const adds = allSets.filter((item) => !originTags.current.includes(item))
     const deletes = originTags.current.filter((item) => !allSets.includes(item))
     setAddSets(adds)
@@ -82,7 +82,7 @@ export const AlterRoleFunc = ({ funcs: functions, tag, lastSaveTime, id }: IAlte
           if (!func.child) {
             return (
               <Checkbox
-                disabled={isSuper}
+                disabled
                 checked={func.has}
                 className="mr-14 flex flex-row items-center pb-dot-8"
                 key={func.funcTag}
@@ -101,7 +101,7 @@ export const AlterRoleFunc = ({ funcs: functions, tag, lastSaveTime, id }: IAlte
               headerClassName="py-dot-8 px-4 border-b border-blue-third"
               title={
                 <Checkbox
-                  disabled={isSuper}
+                  disabled
                   checked={func.has}
                   value={func.funcTag}
                   onChange={updateFuncs(func.funcTag)}
@@ -109,15 +109,15 @@ export const AlterRoleFunc = ({ funcs: functions, tag, lastSaveTime, id }: IAlte
                   {func.name}
                 </Checkbox>
               }
-              action={
-                <span onClick={selectAll(func)}>
-                  {func.child && !isSuper
-                    ? `${isAllChildSelected(func) ? '反选' : '全选'}${
-                        Object.keys(func.child).length
-                      }项`
-                    : ''}
-                </span>
-              }
+              // action={
+              //   <span onClick={selectAll(func)}>
+              //     {func.child && !isSuper
+              //       ? `${isAllChildSelected(func) ? '反选' : '全选'}${
+              //           Object.keys(func.child).length
+              //         }项`
+              //       : ''}
+              //   </span>
+              // }
               headerActionClassName="no-underline text-94A3B8 text-dot-6 leading-4 cursor-pointer"
               content={<>{renderFuncCard(func.child)}</>}
               contentClassName="pt-dot-8 px-4 flex justify-start whitespace-nowrap flex-wrap"
@@ -129,7 +129,7 @@ export const AlterRoleFunc = ({ funcs: functions, tag, lastSaveTime, id }: IAlte
   }
 
   const getSaveTime = (time: number) => {
-    const date = new Date(Date.now() - time)
+    const date = new Date(time * 1000)
     const month = `${date.getMonth() + 1}`.padStart(2, '0')
     const d = `${date.getDate()}`.padStart(2, '0')
     const hour = `${date.getHours()}`.padStart(2, '0')
@@ -147,17 +147,21 @@ export const AlterRoleFunc = ({ funcs: functions, tag, lastSaveTime, id }: IAlte
     setRoleFunctions({
       queryKey: params,
     }).then(({ code }) => {
-      console.log(code)
+      if (code == 0) {
+        setAddSets([])
+        setDeleteSets([])
+        Message.success('保存成功')
+      }
     })
   }
 
   return (
     <>
       <header className="mx-2 flex flex-row items-center justify-between py-3">
-        <Checkbox disabled={isSuper} checked={!!total}>
+        <Checkbox disabled checked={!!total}>
           已开启 {total} 项
         </Checkbox>
-        {!isSuper && (
+        {/* {!isSuper && (
           <div className="flex flex-row items-center justify-between">
             {!!lastSaveTime && (
               <span className="text-dot-6 text-dark-four mr-4">
@@ -173,7 +177,7 @@ export const AlterRoleFunc = ({ funcs: functions, tag, lastSaveTime, id }: IAlte
               保存
             </Button>
           </div>
-        )}
+        )} */}
       </header>
       {renderFuncCard(funcs)}
     </>

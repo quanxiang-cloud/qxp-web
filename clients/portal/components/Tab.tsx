@@ -47,7 +47,9 @@ export const Tab = ({ className, headerClassName, contentClassName, items }: ITa
             <div
               key={item.id}
               className={twCascade(
-                item.id === key ? 'opacity-100' : 'opacity-0 h-0 overflow-hidden',
+                item.id === key
+                  ? 'opacity-100 visible pointer-events-auto'
+                  : 'opacity-0 h-0 invisible pointer-events-none',
                 'transition-all',
               )}
             >

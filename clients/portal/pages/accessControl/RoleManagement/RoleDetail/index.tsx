@@ -36,7 +36,11 @@ export const RoleDetail = ({ role, id }: IRoleDetail) => {
             {role?.name}
           </div>
         )}
-        desc="这里显示用户自定义添加的描述信息，如果未添加，则不显示。"
+        desc={
+          role.tag === 'super'
+            ? '平台默认的角色，默认具有企业所有功能权限和全部数据可见范围。'
+            : '具有企业部分功能权限和部分数据可见范围。'
+        }
         descClassName="transition-all duration-300 ease-linear text-dot-6 text-697886"
       />
       <Tab
@@ -57,7 +61,7 @@ export const RoleDetail = ({ role, id }: IRoleDetail) => {
           {
             id: 'association',
             name: '关联员工与部门',
-            content: <AssociateDepartmentEmployee id={id} />,
+            content: <AssociateDepartmentEmployee id={id} isSuper={role.tag === 'super'} />,
           },
         ]}
       />

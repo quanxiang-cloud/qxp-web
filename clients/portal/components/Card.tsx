@@ -30,7 +30,6 @@ export const Card = ({
   style,
 }: ICard) => {
   const classNames = useCss({
-    'backdrop-filter': 'blur(120px)',
     'border-radius': '12px',
   })
 

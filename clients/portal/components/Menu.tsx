@@ -70,6 +70,7 @@ export const Menu = ({ menus, visible, toggle }: IMenus) => {
           '-left-full transform p-8 max-w-full w-2-9-dot-4 absolute bottom-0 top-0 flex flex-col',
           useCss({
             background: '#F0F6FF',
+            opacity: 0.9,
             'backdrop-filter': 'blur(72px)',
           }),
           {

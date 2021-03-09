@@ -48,5 +48,14 @@ declare module '@QCFE/lego-ui' {
       getCheckboxProps?: (record: unknown) => unknown
     }
     emptyText: JSX.Element
+    onRow: (
+      record: any,
+    ) => {
+      onClick?: Function
+      onDoubleClick?: Function
+      onMouseEnter?: Function
+      onMouseLeave?: Function
+      onContextMenu?: Function
+    }
   }
 }

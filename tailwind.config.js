@@ -20,6 +20,9 @@ module.exports = {
       borderRadius: {
         dot4: '0.4rem',
       },
+      minHeight: {
+        'dot-8': '0.8rem',
+      },
     },
   },
   variants: {

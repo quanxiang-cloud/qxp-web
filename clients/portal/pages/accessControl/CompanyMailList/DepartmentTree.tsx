@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import useCss from 'react-use/lib/useCss'
 import { Tree, TreeNode, Dropdown } from '@QCFE/lego-ui'
 
-import { ActionsList, ActionItem } from '@portal/components/ActionsList';
+import { ActionsList, IActionListItem } from '@portal/components/ActionsList'
 import { DepartmentModal } from './DepartmentModal'
 import { DeleteModal } from './DeleteModal'
 
@@ -11,75 +11,72 @@ interface TreeNodeItem {
   [propsName: string]: string
 }
 
-const Title = ({title, id}: TreeNodeItem) => {
-
-  const [ handleStatus, setHandleStatus ] = useState<'add' | 'edit'>('add');
-  const [ visibleDeparment, setVisibleDeparment ] = useState(false);
-  const [ visibleDelete, setVisibleDelete ] = useState(false);
+const Title = ({ title, id }: TreeNodeItem) => {
+  const [handleStatus, setHandleStatus] = useState<'add' | 'edit'>('add')
+  const [visibleDeparment, setVisibleDeparment] = useState(false)
+  const [visibleDelete, setVisibleDelete] = useState(false)
 
   // 添加部门 or 修改部门
   const handleDeparent = (status: 'add' | 'edit') => {
-    setVisibleDeparment(true);
-    setHandleStatus(status);
+    setVisibleDeparment(true)
+    setHandleStatus(status)
   }
 
   //  关闭部门模态框
   const closeDeparentModal = () => {
-    setVisibleDeparment(false);
+    setVisibleDeparment(false)
   }
 
   // 删除部门
   const deleteDeparent = () => {
-    setVisibleDelete(true);
+    setVisibleDelete(true)
   }
 
   // 关闭删除弹窗
   const closeDeleteModal = () => {
-    setVisibleDelete(false);
+    setVisibleDelete(false)
   }
 
-
-
-  const actions: ActionItem[] = [
+  const actions: IActionListItem<null>[] = [
     {
       id: '1',
-      icon: './dist/images/add-department.svg',
+      iconName: './dist/images/add-department.svg',
       text: '添加部门',
-      onclick: () => handleDeparent('add')
+      onclick: () => handleDeparent('add'),
     },
     {
       id: '2',
-      icon: './dist/images/edit.svg',
+      iconName: './dist/images/edit.svg',
       text: '修改部门',
-      onclick: () => handleDeparent('edit')
+      onclick: () => handleDeparent('edit'),
     },
     {
       id: '3',
-      icon: './dist/images/delete.svg',
+      iconName: './dist/images/delete.svg',
       text: '删除',
-      onclick: () => deleteDeparent()
+      onclick: () => deleteDeparent(),
     },
-  ];
+  ]
 
   return (
     <>
       {/* 部门模态框 */}
-      { visibleDeparment &&
-      <DepartmentModal
-        visible={visibleDeparment}
-        status={handleStatus}
-        closeModal={closeDeparentModal}
-        okModal={closeDeparentModal}
-      />}
+      {visibleDeparment && (
+        <DepartmentModal
+          visible={visibleDeparment}
+          status={handleStatus}
+          closeModal={closeDeparentModal}
+          okModal={closeDeparentModal}
+        />
+      )}
       {/* 删除模态框 */}
-      {
-        visibleDelete &&
+      {visibleDelete && (
         <DeleteModal
           visible={visibleDelete}
           closeModal={closeDeleteModal}
           okModal={closeDeleteModal}
         />
-      }
+      )}
       <div className="w-full flex items-center justify-between">
         <div className="text-dot-7">{title}</div>
         <div className="h-auto relative">
@@ -118,18 +115,18 @@ export const DepartmentTree = () => {
     },
   ]
 
-
-  const renderTreeNodes = (data: any) => data.map((item: any) => {
-    const { children } = item;
-    if (children) {
-      return (
-        <TreeNode title={<Title {...item} />} key={item.key} dataRef={item}>
-          {renderTreeNodes(children)}
-        </TreeNode>
-      );
-    }
-    return <TreeNode title={<Title {...item} />} key={item.key} dataRef={item} />;
-  });
+  const renderTreeNodes = (data: any) =>
+    data.map((item: any) => {
+      const { children } = item
+      if (children) {
+        return (
+          <TreeNode title={<Title {...item} />} key={item.key} dataRef={item}>
+            {renderTreeNodes(children)}
+          </TreeNode>
+        )
+      }
+      return <TreeNode title={<Title {...item} />} key={item.key} dataRef={item} />
+    })
 
   return (
     <div className="w-auto h-full">

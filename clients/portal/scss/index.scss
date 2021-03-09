@@ -265,6 +265,10 @@ html {
   margin-top: 0.8rem;
 }
 
+.-mt-dot-8 {
+  margin-top: -0.8rem;
+}
+
 .mb-dot-6 {
   margin-bottom: 0.6rem;
 }
@@ -499,4 +503,26 @@ html {
       }
     }
   }
+}
+
+.modal {
+  .modal-card-head {
+    @extend .header-background-image;
+    opacity: 0.95 !important;
+  }
+
+  .modal-card-foot {
+    background-color: #f1f5f9 !important;
+    border: none;
+  }
+
+  .modal-content {
+    box-shadow: inset 0px -1px 0px #e2e8f0 !important;
+    border-radius: 0.6rem !important;
+  }
+}
+
+label.checkbox.checked:before,
+label.checkbox.checked:hover:before {
+  background-color: #8cadff !important;
 }
