@@ -7,6 +7,7 @@ import { UUIDGeneratorBrowser } from '@assets/lib/f'
 import { ISelectedListItem, SelectedList } from './SelectedList'
 import { SearchInput } from '@portal/components/form/SearchInput'
 import { Tree } from '@portal/components/Tree'
+import { EmployeeTable } from './EmployeeTable'
 
 export const OwnerSelector = () => {
   const departmentsData: TreeData[] = [
@@ -111,11 +112,12 @@ export const OwnerSelector = () => {
                 />
                 <div className="flex flex-row" style={{ height: 'calc(100% - 32px)' }}>
                   <div className="h-full overflow-scroll">
-                    <TextHeader title="选择部门" />
-                    <Tree treeData={departmentsData} />
+                    <TextHeader className="pb-0" title="选择部门" />
+                    <Tree treeData={departmentsData} className="-ml-2" />
                   </div>
-                  <div>
+                  <div className="h-full overflow-scroll flex-1">
                     <TextHeader title="全象云应用开发平台" />
+                    <EmployeeTable />
                   </div>
                 </div>
               </>
@@ -124,7 +126,33 @@ export const OwnerSelector = () => {
           {
             id: UUIDGeneratorBrowser(),
             name: '按部门',
-            content: <>这里要按部门来</>,
+            content: (
+              <>
+                <SearchInput
+                  className="mb-dot-8"
+                  name="departmentName"
+                  placeholder="搜索部门名称姓名..."
+                  onChange={(value) => {
+                    console.log(value)
+                  }}
+                  appendix="close"
+                />
+                <div
+                  className="flex flex-col w-full overflow-scroll"
+                  style={{ height: 'calc(100% - 32px)' }}
+                >
+                  <TextHeader
+                    className="pb-0"
+                    title="选择部门"
+                    desc="角色关联部门后，在该部门下添加员工时会默认自动带入该部门的角色。例如：部门关联角色“普通管理员”，添加新员工时，自动关联角色“普通管理员”。"
+                    itemClassName="flex flex-col items-start"
+                    textClassName="ml-0"
+                    descClassName="-ml-dot-4"
+                  />
+                  <Tree treeData={departmentsData} className="-ml-2 bg-white rounded-md" />
+                </div>
+              </>
+            ),
           },
         ]}
       />

@@ -134,3 +134,28 @@ export const deepClone = (obj: any) => {
   }
   return clone
 }
+
+/**
+ * generate a generator of number in range from start to end
+ * @param {number} start
+ * @param {number} end
+ * @param {number} [step=1]
+ */
+export const rangeGenerator = function* (start: number, end: number, step: number = 1) {
+  let i = start
+  while (i < end) {
+    yield i
+    i += step
+  }
+}
+
+/**
+ * build a range array of number from start to end
+ * @param {number} start
+ * @param {number} end
+ * @param {number} [step]
+ * @return {*}
+ */
+export const range = (start: number, end: number, step?: number) => {
+  return [...rangeGenerator(start, end, step)]
+}

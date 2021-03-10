@@ -13,11 +13,15 @@ import { PersonInfo } from './PersonInfo'
 import { ExportFileModal } from './ExportFileModal'
 import { StaffModal } from './StaffModal'
 
-export const MailList = () => {
-  const [selectedValue, changeSelectedValue] = useState('CentOS');
-  const [inputValue, changeInputValue] = useState('');
-  const [ visibleFile, setVisibleFile ] = useState(false);
-  const [ visibleStaff, setVisibleStaff ] = useState(false);
+export interface IMailList {
+  visible: boolean
+}
+
+export const MailList = ({ visible }: IMailList) => {
+  const [selectedValue, changeSelectedValue] = useState('CentOS')
+  const [inputValue, changeInputValue] = useState('')
+  const [visibleFile, setVisibleFile] = useState(false)
+  const [visibleStaff, setVisibleStaff] = useState(false)
 
   const actions: IActionListItem<null>[] = [
     {
@@ -93,11 +97,23 @@ export const MailList = () => {
   }
 
   const closeStaffModal = () => {
-    setVisibleStaff(!visibleStaff);
+    setVisibleStaff(!visibleStaff)
   }
 
   return (
-    <>
+    <div
+      className={classnames('transition-opacity', {
+        visible: visible,
+        invisible: !visible,
+        'opacity-0': !visible,
+        'opacity-100': visible,
+        'pointer-events-none': !visible,
+        'pointer-events-auto': visible,
+        'h-0': !visible,
+        'h-full': visible,
+        'overflow-hidden': !visible,
+      })}
+    >
       {/* <input type="file" id="excel-file" onChange={importExcel} /> */}
       {/* 员工模态框 */}
       <StaffModal
@@ -216,6 +232,6 @@ export const MailList = () => {
           </div>
         </div>
       </div>
-    </>
+    </div>
   )
 }

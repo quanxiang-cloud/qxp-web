@@ -10,9 +10,25 @@ export interface ITextHeader {
   desc?: string
   action?: JSX.Element | string
   actionClassName?: string
+  textDirection?: 'row' | 'col'
+  itemClassName?: string
+  titleClassName?: string
+  descClassName?: string
+  textClassName?: string
 }
 
-export const TextHeader = ({ className, actionClassName, title, desc, action }: ITextHeader) => {
+export const TextHeader = ({
+  className,
+  actionClassName,
+  title,
+  desc,
+  action,
+  textDirection,
+  itemClassName,
+  titleClassName,
+  descClassName,
+  textClassName,
+}: ITextHeader) => {
   return (
     <header className={twCascade('flex justify-between items-center pb-4 opacity-95', className)}>
       <ItemWithTitleDesc
@@ -22,7 +38,11 @@ export const TextHeader = ({ className, actionClassName, title, desc, action }: 
             {title}
           </div>
         )}
-        descClassName="transition ease-linear text-dot-6 text-697886"
+        descClassName={twCascade('transition ease-linear text-dot-6 text-697886', descClassName)}
+        textDirection={textDirection}
+        className={itemClassName}
+        titleClassName={titleClassName}
+        textClassName={textClassName}
       />
       {isString(action) && (
         <a className={twCascade('transition ease-linear text-dot-7 underline text-324558')}>

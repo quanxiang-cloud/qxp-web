@@ -45,8 +45,8 @@ declare module '@QCFE/lego-ui' {
       onChange?: (selectedRowKeys: string[], selectedRows: any[]) => void
       getCheckboxProps?: (record: unknown) => unknown
     }
-    emptyText: JSX.Element
-    onRow: (
+    emptyText?: JSX.Element
+    onRow?: (
       record: any,
     ) => {
       onClick?: Function
@@ -54,6 +54,17 @@ declare module '@QCFE/lego-ui' {
       onMouseEnter?: Function
       onMouseLeave?: Function
       onContextMenu?: Function
+    }
+    pagination?: {
+      type?: 'mini' | 'simple'
+      current: number
+      total: number
+      pageSize: number
+      pageSizeOptions?: number[]
+      className?: string
+      style?: Object
+      onChange?: (page: number) => void
+      onShowSizeChange?: (pageSize: number) => void
     }
   }
 

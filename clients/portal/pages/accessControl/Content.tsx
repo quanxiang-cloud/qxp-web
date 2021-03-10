@@ -10,8 +10,8 @@ export interface IContent {
 export const Content = ({ menuType }: IContent) => {
   return (
     <>
-      {menuType === 'corporateDirectory' && <MailList />}
-      {menuType === 'RoleManagement' && <RoleManagement />}
+      <MailList visible={menuType === 'corporateDirectory'} />
+      <RoleManagement visible={menuType === 'RoleManagement'} />
     </>
   )
 }

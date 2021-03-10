@@ -95,9 +95,11 @@ export const Menu = ({ menus, visible, toggle }: IMenus) => {
             }),
           )}
           items={menus.map(({ title, desc, iconClassName, iconUrl, address }) => (
-            <div className="flex flex-row justify-between items-center bg-white px-4 py-dot-8 rounded cursor-pointer">
+            <div
+              onClick={() => history.push(address)}
+              className="flex flex-row justify-between items-center bg-white px-4 py-dot-8 rounded cursor-pointer"
+            >
               <ItemWithTitleDesc
-                onClick={() => history.push(address)}
                 title={title}
                 desc={desc}
                 itemRender={() => (

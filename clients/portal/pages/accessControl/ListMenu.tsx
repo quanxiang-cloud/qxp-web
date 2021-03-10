@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import useCss from 'react-use/lib/useCss'
 import classnames from 'classnames'
 
@@ -15,7 +15,7 @@ export interface IListMenu {
 }
 
 export const ListMenu = ({ onChange, defaultType }: IListMenu) => {
-  const [type, setType] = useState(defaultType)
+  const [type, setType] = useState<string | undefined>(defaultType)
   const menuData: MenuItem[] = [
     {
       id: 'corporateDirectory',
@@ -29,18 +29,19 @@ export const ListMenu = ({ onChange, defaultType }: IListMenu) => {
     },
   ]
 
+  useEffect(() => {
+    onChange(type as string)
+  }, [type])
+
   return (
     <ul className="w-auto">
       {menuData.map((item) => {
         return (
           <li
             key={item.id}
-            onClick={() => {
-              setType(item.id)
-              onChange(item.id)
-            }}
+            onClick={() => setType(item.id)}
             className={classnames(
-              'h-2-bot-8 leading-2-bot-8 rounded-l-dot-4 p-x-0-dot-9 flex relative cursor-pointer transition duration-200',
+              'h-2-bot-8 leading-2-bot-8 rounded-l-dot-4 p-x-0-dot-9 flex relative cursor-pointer transition',
               useCss({
                 '> div': {
                   display: 'none',

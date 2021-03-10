@@ -1,9 +1,9 @@
 import React from 'react'
-import { Loading } from '@QCFE/lego-ui'
 import { useQuery } from 'react-query'
 
 import { ItemWithTitleDesc } from '@portal/components/ItemWithTitleDesc'
 import { Tab } from '@portal/components/Tab'
+import { Loading } from '@portal/components/Loading'
 import { IRoleListItem } from '../RoleListItem'
 import { AlterRoleFunc } from './AlterRoleFunc'
 import { AssociateDepartmentEmployee } from './AssociateDepartmentEmployee'
@@ -21,11 +21,7 @@ export const RoleDetail = ({ role, id }: IRoleDetail) => {
   })
 
   if (isLoading || !data?.func || !role) {
-    return (
-      <div className="flex justify-center items-center">
-        <Loading />
-      </div>
-    )
+    return <Loading desc="加载中..." />
   }
 
   return (

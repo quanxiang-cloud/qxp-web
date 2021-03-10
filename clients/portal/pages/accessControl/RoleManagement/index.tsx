@@ -1,14 +1,19 @@
 import React, { useState, useEffect } from 'react'
 import { useQuery } from 'react-query'
+import { twCascade } from '@mariusmarais/tailwind-cascade'
 
 import { Card } from '@portal/components/Card'
+import { Loading } from '@portal/components/Loading'
 import { RoleList } from './RoleList'
 import { RoleDetail } from './RoleDetail'
 import { getRolesList } from './api'
 import Role from './role'
-import { Loading } from '@QCFE/lego-ui'
 
-export const RoleManagement = () => {
+export interface IRoleManagement {
+  visible: boolean
+}
+
+export const RoleManagement = ({ visible }: IRoleManagement) => {
   const { data = [], isLoading } = useQuery('getRolesList', getRolesList, {
     refetchOnWindowFocus: false,
   })
@@ -22,16 +27,22 @@ export const RoleManagement = () => {
   const roleList = data.map(({ tag, name, id }) => new Role(name, id, tag))
 
   if (isLoading || !data.length) {
-    return (
-      <div className="flex items-center justify-center py-4">
-        <Loading />
-      </div>
-    )
+    return <Loading desc="加载中..." />
   }
 
   return (
     <Card
-      className="ml-0 mt-0 mr-0 mb-0 px-4 pt-dot-8 pb-0"
+      className={twCascade('ml-0 mt-0 mr-0 mb-0 px-4 pt-dot-8 pb-0 transition-opacity', {
+        visible: visible,
+        invisible: !visible,
+        'opacity-0': !visible,
+        'opacity-100': visible,
+        'pointer-events-none': !visible,
+        'pointer-events-auto': visible,
+        'h-0': !visible,
+        'h-full': visible,
+        'overflow-hidden': !visible,
+      })}
       headerClassName="bg-F1F5F9-dot-5 -mx-4 -mt-dot-8 px-4 py-dot-8 pt-0 header-background-image"
       title="角色管理"
       desc="可以定义平台内的账号拥有的权限。"
