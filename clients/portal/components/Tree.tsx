@@ -1,59 +1,13 @@
-import React, { useState } from 'react'
+import React from 'react'
 import useCss from 'react-use/lib/useCss'
 import { Tree, TreeNode } from '@QCFE/lego-ui'
 
-interface TreeNodeItem {
-  title: string
-  id: string
+interface TreeComponent {
+  treeData: any,
   [propsName: string]: any
 }
 
-const Title = ({ title, id }: TreeNodeItem) => {
-  const [indexOfNode, setIndexOfNode] = useState(id) // 记录当前点击树节点的id
-
-  return (
-    <>
-      <div className="w-full flex items-center justify-between">
-        <div className="text-dot-7">{title}</div>
-      </div>
-    </>
-  )
-}
-
-export const TreeComponent = () => {
-  const [treeData, setTreeData] = useState([
-    {
-      title: '全象云应用开发平台',
-      id: '1',
-      key: '1',
-      children: [
-        {
-          title: '分配部门1',
-          id: '1-1',
-          key: '1-1',
-          children: [],
-        },
-        {
-          title: '分配部门2',
-          id: '1-2',
-          key: '1-2',
-          children: [
-            {
-              title: '第三层部门',
-              id: '1-2-1',
-              key: '1-2-1',
-            },
-          ],
-        },
-      ],
-    },
-    {
-      title: '测试部门',
-      id: '2',
-      key: '2',
-      children: [],
-    },
-  ])
+export const TreeComponent = ({treeData}: TreeComponent) => {
 
   const renderTreeNodes = (data: any) =>
     data.map((item: any) => {
@@ -61,7 +15,11 @@ export const TreeComponent = () => {
       if (children) {
         return (
           <TreeNode
-            title={<Title {...item} />}
+          title={
+            <div className="w-full flex items-center justify-between">
+              <div className="text-dot-7">{item.title}</div>
+            </div>
+          }
             key={item.key}
             dataRef={item}
           >
@@ -71,7 +29,11 @@ export const TreeComponent = () => {
       }
       return (
         <TreeNode
-          title={<Title {...item} />}
+          title={
+            <div className="w-full flex items-center justify-between">
+              <div className="text-dot-7">{item.title}</div>
+            </div>
+          }
           key={item.key}
           dataRef={item}
         />
