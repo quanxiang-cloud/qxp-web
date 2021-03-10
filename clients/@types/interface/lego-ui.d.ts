@@ -1,5 +1,3 @@
-import { GridTableProps } from '@QCFE/lego-ui'
-
 declare module '@QCFE/lego-ui' {
   interface ModalProps {
     title?: string | React.ReactNode
@@ -58,4 +56,25 @@ declare module '@QCFE/lego-ui' {
       onContextMenu?: Function
     }
   }
+
+  interface UploadProps {
+    name?: string
+    disabled?: boolean
+    directory?: boolean
+    action?: string
+    data?: any
+    headers?: Record<string, any>
+    accept?: string
+    multiple?: boolean
+    withCredentials?: boolean
+    className?: string
+    style?: Record<string, any>
+    onStart?: (file: File) => void
+    onProgress?: (res: Response, file: File) => void
+    onSuccess?: (file: File) => void
+    onError?: (err: Error, res: Response, file: File) => void
+    beforeUpload?: (file: File) => void
+  }
+
+  class Upload extends React.Component<UploadProps, {}> {}
 }

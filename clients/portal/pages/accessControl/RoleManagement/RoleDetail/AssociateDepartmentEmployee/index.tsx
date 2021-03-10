@@ -4,14 +4,15 @@ import { Loading, Modal } from '@QCFE/lego-ui'
 
 import { Button } from '@portal/components/Button'
 import { Table } from '@portal/components/Table'
+import { EmptyData } from '@portal/components/EmptyData'
+import { More } from '@portal/components/More'
+import { OwnerSelector } from './OwnerSelector/OwnerSelector'
 import {
   getRoleAssociations,
   IOwner,
   updateRoleAssociations,
   IUpdateRoleAssociations,
 } from '../../api'
-import { EmptyData } from '@portal/components/EmptyData'
-import { More } from '@portal/components/More'
 
 export interface IAssociateDepartmentEmployee {
   id: string | number
@@ -108,7 +109,9 @@ export const AssociateDepartmentEmployee = ({ id, isSuper }: IAssociateDepartmen
             </Button>
           </div>
         }
-      />
+      >
+        <OwnerSelector />
+      </Modal>
       {!isSuper && (
         <Button
           className="bg-dark-third hover:bg-gray-900 transition mb-dot-8 cursor-pointer"

@@ -519,10 +519,54 @@ html {
   .modal-content {
     box-shadow: inset 0px -1px 0px #e2e8f0 !important;
     border-radius: 0.6rem !important;
+    width: auto !important;
+    max-width: 80% !important;
+
+    .modal-card-body {
+      display: flex;
+      align-items: stretch;
+    }
   }
 }
 
 label.checkbox.checked:before,
 label.checkbox.checked:hover:before {
   background-color: #8cadff !important;
+}
+
+.search-input {
+  padding-left: 2.2rem !important;
+}
+
+.input {
+  border-radius: 2px 8px 8px 8px !important;
+}
+
+.tree {
+  .tree-node-wrap {
+    &.tree-node-wrap-selected {
+      background-color: #fff !important;
+      * {
+        background-color: #fff !important;
+      }
+      &::before {
+        background-color: #fff !important;
+      }
+      .tree-title {
+        color: #375ff3 !important;
+      }
+    }
+    .tree-node-selected {
+      .tree-title {
+        color: #375ff3 !important;
+      }
+    }
+    padding: 0.8rem 1rem !important;
+  }
+  ul {
+    padding-left: 0 !important;
+    & > li {
+      padding: 0 0 0 22px !important;
+    }
+  }
 }
