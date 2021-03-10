@@ -55,7 +55,7 @@ export const Tab = ({ className, headerClassName, contentClassName, items }: ITa
                 item.id === key
                   ? 'opacity-100 h-full visible pointer-events-auto'
                   : 'opacity-0 h-0 invisible pointer-events-none',
-                'transition-all overflow-hidden',
+                'transition-opacity overflow-hidden',
               )}
             >
               {item.content}

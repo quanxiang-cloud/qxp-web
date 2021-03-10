@@ -35,11 +35,7 @@ export const RoleManagement = () => {
       headerClassName="bg-F1F5F9-dot-5 -mx-4 -mt-dot-8 px-4 py-dot-8 pt-0 header-background-image"
       title="角色管理"
       desc="可以定义平台内的账号拥有的权限。"
-      action={
-        <a className="transition-all duration-300 ease-linear text-dot-7 underline text-324558">
-          📌 如何管理角色？
-        </a>
-      }
+      action={<a className="ease-linear text-dot-7 underline text-324558">📌 如何管理角色？</a>}
     >
       <div className="flex flex-row items-stretch">
         <div className="flex-1 pt-4 pb-4">

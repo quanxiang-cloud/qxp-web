@@ -26,7 +26,7 @@ export const RoleList = ({ items, onChange }: IRoleList) => {
           </div>
         )}
         desc={`(${items.length} 个)`}
-        descClassName="transition-all duration-300 ease-linear text-dot-6 text-697886"
+        descClassName="transition ease-linear text-dot-6 text-697886"
       />
       <List
         className="flex-col justify-start items-stretch mt-2"

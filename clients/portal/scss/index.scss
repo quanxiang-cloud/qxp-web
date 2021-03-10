@@ -538,31 +538,6 @@ label.checkbox.checked:hover:before {
   border-radius: 2px 8px 8px 8px !important;
 }
 
-.tree {
-  .tree-node-wrap {
-    &.tree-node-wrap-selected {
-      background-color: #fff !important;
-      * {
-        background-color: #fff !important;
-      }
-      &::before {
-        background-color: #fff !important;
-      }
-      .tree-title {
-        color: #375ff3 !important;
-      }
-    }
-    .tree-node-selected {
-      .tree-title {
-        color: #375ff3 !important;
-      }
-    }
-    padding: 0.8rem 1rem !important;
-  }
-  ul {
-    padding-left: 0 !important;
-    & > li {
-      padding: 0 0 0 22px !important;
-    }
-  }
+button {
+  outline: none !important;
 }

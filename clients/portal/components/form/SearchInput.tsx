@@ -26,7 +26,7 @@ export const SearchInput = React.memo(
     className,
   }: ISearchInput) => {
     const [val, setVal] = useState<string>('')
-    const [isVisible, setIsVisible] = useState<boolean>(visible || true)
+    const [isVisible, setIsVisible] = useState<boolean>(!!visible)
     useDebounce(
       () => {
         onChange(val)

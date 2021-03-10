@@ -22,14 +22,10 @@ export const TextHeader = ({ className, actionClassName, title, desc, action }: 
             {title}
           </div>
         )}
-        descClassName="transition-all duration-300 ease-linear text-dot-6 text-697886"
+        descClassName="transition ease-linear text-dot-6 text-697886"
       />
       {isString(action) && (
-        <a
-          className={twCascade(
-            'transition-all duration-300 ease-linear text-dot-7 underline text-324558',
-          )}
-        >
+        <a className={twCascade('transition ease-linear text-dot-7 underline text-324558')}>
           {action}
         </a>
       )}

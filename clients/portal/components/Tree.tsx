@@ -1,25 +1,23 @@
 import React from 'react'
 import useCss from 'react-use/lib/useCss'
-import { Tree, TreeNode } from '@QCFE/lego-ui'
+import { Tree as LegoTree, TreeNode, TreeProps, TreeData } from '@QCFE/lego-ui'
 
-interface TreeComponent {
-  treeData: any,
-  [propsName: string]: any
+interface ITree extends TreeProps {
+  treeData: TreeData[]
 }
 
-export const TreeComponent = ({treeData}: TreeComponent) => {
-
-  const renderTreeNodes = (data: any) =>
-    data.map((item: any) => {
+export const Tree = ({ treeData }: ITree) => {
+  const renderTreeNodes = (data: TreeData[]) =>
+    data.map((item: TreeData) => {
       const { children } = item
       if (children) {
         return (
           <TreeNode
-          title={
-            <div className="w-full flex items-center justify-between">
-              <div className="text-dot-7">{item.title}</div>
-            </div>
-          }
+            title={
+              <div className="w-full flex items-center justify-between">
+                <div className="text-dot-7">{item.title}</div>
+              </div>
+            }
             key={item.key}
             dataRef={item}
           >
@@ -42,7 +40,7 @@ export const TreeComponent = ({treeData}: TreeComponent) => {
 
   return (
     <div className="w-auto h-full">
-      <Tree
+      <LegoTree
         defaultExpandAll
         className={useCss({
           '.tree-title': {
@@ -81,7 +79,7 @@ export const TreeComponent = ({treeData}: TreeComponent) => {
         })}
       >
         {renderTreeNodes(treeData)}
-      </Tree>
+      </LegoTree>
     </div>
   )
 }

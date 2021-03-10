@@ -19,16 +19,14 @@ export default function Dashboard() {
           <Avatar
             username="Jackson"
             bio="万物皆有裂痕，那是光透过来的地方"
-            avatar="/dist/images/avatar.jpeg"
+            avatar="/dist/images/avatar.jpg"
           />
         </div>
         <Card
           className="ml-0 mt-8 px-1-dot-6 py-4"
           title="我的应用"
           action={
-            <a className="transition-all duration-300 ease-linear text-dot-7 underline text-324558">
-              前往应用市场
-            </a>
+            <a className="transition ease-linear text-dot-7 underline text-324558">前往应用市场</a>
           }
           content={
             <List
@@ -82,9 +80,7 @@ export default function Dashboard() {
             className="flex-1 ml-0 px-1-dot-6 py-4"
             title="我的待办"
             action={
-              <a className="transition-all duration-300 ease-linear text-dot-7 underline color-324558">
-                查看全部
-              </a>
+              <a className="transition ease-linear text-dot-7 underline color-324558">查看全部</a>
             }
             content={
               <List
@@ -136,9 +132,7 @@ export default function Dashboard() {
             className="flex-2 self-stretch flex flex-col px-1-dot-6 py-4"
             title="未读消息"
             action={
-              <a className="text-dot-7 underline color-324558 transition-all duration-300 ease-linear">
-                查看全部
-              </a>
+              <a className="text-dot-7 underline color-324558 transition ease-linear">查看全部</a>
             }
             content={
               <div className="w-full h-full flex items-center justify-center">

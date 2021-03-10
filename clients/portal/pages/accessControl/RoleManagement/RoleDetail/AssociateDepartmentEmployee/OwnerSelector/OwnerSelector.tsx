@@ -1,11 +1,12 @@
 import React from 'react'
-import { Tree, TreeData } from '@QCFE/lego-ui'
+import { TreeData } from '@QCFE/lego-ui'
 
 import { Tab } from '@portal/components/Tab'
 import { TextHeader } from '@portal/components/TextHeader'
 import { UUIDGeneratorBrowser } from '@assets/lib/f'
 import { ISelectedListItem, SelectedList } from './SelectedList'
 import { SearchInput } from '@portal/components/form/SearchInput'
+import { Tree } from '@portal/components/Tree'
 
 export const OwnerSelector = () => {
   const departmentsData: TreeData[] = [
