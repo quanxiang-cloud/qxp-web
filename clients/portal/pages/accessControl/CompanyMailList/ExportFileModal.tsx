@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import classnames from 'classnames'
 import useCss from 'react-use/lib/useCss'
-import { Modal, CheckboxGroup, Checkbox, GridTable } from '@QCFE/lego-ui'
+import { Modal, CheckboxGroup, Checkbox, GridTable, Upload } from '@QCFE/lego-ui'
 
 import { Button } from '@portal/components/Button'
 interface ExportFileModalProps {
@@ -77,6 +77,20 @@ export const ExportFileModal = ({ visible, closeModal, okModal }: ExportFileModa
         </div>
         <div className="text-D97706 font-semibold">
           数据导入完成，已成功导入 1 数据，失败 1 数据。{' '}
+        </div>
+        <div className="demo-wrapper upload-demo">
+          <Upload
+            // {...this.uploaderProps}
+            // ref={n => {
+            //   this.uploader = n;
+            // }}
+          >
+            <div className="drag-panel">
+              {/* <Icon size={32} name="upload" type="coloured" /> */}
+              <p className="drag-title">单击或拖动文件到此区域进行上传</p>
+              <p>支持单个或批量上传,请不要上传要求格式之外的任何文件</p>
+            </div>
+          </Upload>
         </div>
         <div>
           <p className="text-dot-7 py-dot-4">向员工发送密码</p>

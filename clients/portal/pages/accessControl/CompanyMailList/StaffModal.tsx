@@ -15,21 +15,23 @@ interface StaffModalProps {
   okModal(): void;
 }
 
-export const StaffModal = () => {
+export const StaffModal = (props: StaffModalProps) => {
+  const { visible, closeModal, okModal } = props;
+
   const titleText = `${status === 'add' ? '添加' : '修改'}`;
 
   return (
     <Modal
       title={`${titleText}部门`}
-      // visible={true}
+      visible={visible}
       width={632}
-      // onCancel={closeModal}
+      onCancel={closeModal}
       // onOk={okModal}
       footer={
         <div className="flex items-center">
           <Button
             icon={<img className="w-1-dot-2 h-1-dot-2 px-dot-4" src="./dist/images/icon_error.svg" alt="icon_error" />}
-            // onClick={closeModal}
+            onClick={closeModal}
           >
             取消
           </Button>
@@ -38,7 +40,7 @@ export const StaffModal = () => {
             className="bg-black"
             textClassName="text-white"
             icon={<img className="w-1-dot-2 h-1-dot-2 px-dot-4" src="./dist/images/icon_true.svg" alt="icon_true" />}
-            // onClick={okModal}
+            onClick={okModal}
           >
             确定{titleText}
           </Button>

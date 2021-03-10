@@ -14,9 +14,10 @@ import { ExportFileModal } from './ExportFileModal'
 import { StaffModal } from './StaffModal'
 
 export const MailList = () => {
-  const [selectedValue, changeSelectedValue] = useState('CentOS')
-  const [inputValue, changeInputValue] = useState('')
-  const [visibleFile, setVisibleFile] = useState(false)
+  const [selectedValue, changeSelectedValue] = useState('CentOS');
+  const [inputValue, changeInputValue] = useState('');
+  const [ visibleFile, setVisibleFile ] = useState(false);
+  const [ visibleStaff, setVisibleStaff ] = useState(false);
 
   const actions: IActionListItem<null>[] = [
     {
@@ -91,11 +92,20 @@ export const MailList = () => {
     reader.readAsBinaryString(files[0])
   }
 
+  const closeStaffModal = () => {
+    setVisibleStaff(!visibleStaff);
+  }
+
   return (
     <>
       {/* <input type="file" id="excel-file" onChange={importExcel} /> */}
       {/* 员工模态框 */}
-      <StaffModal />
+      <StaffModal
+        visible={visibleStaff}
+        status="add"
+        okModal={closeStaffModal}
+        closeModal={closeStaffModal}
+      />
       {/* 文件处理模态框 */}
       <ExportFileModal visible={visibleFile} okModal={closeFileModal} closeModal={closeFileModal} />
       <TextHeader
@@ -156,13 +166,14 @@ export const MailList = () => {
           </Control>
         </div>
         <div className="h-full mt-4 flex items-start">
-          <div className="w-12-dot-95 h-full border-r border-E2E8F0">
+          <div className="w-12-dot-95 h-full">
             <DepartmentStaff department="部门人员" count={0} unit="部门" />
             <DepartmentTree />
           </div>
+          <div className="vertical-line flex-grow-0"></div>
           <div className="flex-1 h-full">
             <DepartmentStaff department="全象应用平台" count={1} unit="人" />
-            <div className="px-4 my-2 h-4">
+            <div className="px-4 my-2">
               <div className="flex items-center">
                 <Button
                   className="bg-black"
@@ -187,6 +198,7 @@ export const MailList = () => {
                       alt="logo"
                     />
                   }
+                  onClick={closeStaffModal}
                 >
                   添加员工
                 </Button>
