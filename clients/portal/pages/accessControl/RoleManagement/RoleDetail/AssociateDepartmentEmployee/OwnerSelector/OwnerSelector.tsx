@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { TreeData } from '@QCFE/lego-ui'
 
 import { Tab } from '@portal/components/Tab'
@@ -6,10 +6,13 @@ import { TextHeader } from '@portal/components/TextHeader'
 import { UUIDGeneratorBrowser } from '@assets/lib/f'
 import { ISelectedListItem, SelectedList } from './SelectedList'
 import { SearchInput } from '@portal/components/form/SearchInput'
-import { Tree } from '@portal/components/Tree'
+// import { Tree } from '@portal/components/Tree'
+import { Tree } from '@portal/components/TempTree'
 import { EmployeeTable } from './EmployeeTable'
 
 export const OwnerSelector = () => {
+  const [keyword, setKeyword] = useState<string>('')
+  const [tabKey, setTabKey] = useState<string | number>('1')
   const departmentsData: TreeData[] = [
     {
       title: '全象云应用开发平台',
@@ -95,9 +98,11 @@ export const OwnerSelector = () => {
     <div className="flex flex-row">
       <Tab
         className="mr-4 flex-2"
+        currentKey={tabKey}
+        onChange={(k) => setTabKey(k)}
         items={[
           {
-            id: UUIDGeneratorBrowser(),
+            id: '1',
             name: '按员工',
             content: (
               <>
@@ -106,7 +111,7 @@ export const OwnerSelector = () => {
                   name="username"
                   placeholder="搜索员工姓名..."
                   onChange={(value) => {
-                    console.log(value)
+                    // console.log(value)
                   }}
                   appendix="close"
                 />
@@ -124,7 +129,7 @@ export const OwnerSelector = () => {
             ),
           },
           {
-            id: UUIDGeneratorBrowser(),
+            id: '2',
             name: '按部门',
             content: (
               <>
@@ -132,9 +137,7 @@ export const OwnerSelector = () => {
                   className="mb-dot-8"
                   name="departmentName"
                   placeholder="搜索部门名称姓名..."
-                  onChange={(value) => {
-                    console.log(value)
-                  }}
+                  onChange={setKeyword}
                   appendix="close"
                 />
                 <div
@@ -149,7 +152,11 @@ export const OwnerSelector = () => {
                     textClassName="ml-0"
                     descClassName="-ml-dot-4"
                   />
-                  <Tree treeData={departmentsData} className="-ml-2 bg-white rounded-md" />
+                  <Tree
+                    treeData={departmentsData}
+                    keyword={keyword}
+                    className="-ml-2 bg-white rounded-md"
+                  />
                 </div>
               </>
             ),

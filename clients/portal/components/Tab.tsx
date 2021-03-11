@@ -12,10 +12,19 @@ export interface ITab {
   headerClassName?: string
   contentClassName?: string
   items: ITabItem[]
+  currentKey?: string | number
+  onChange?: (key: string | number) => void
 }
 
-export const Tab = ({ className, headerClassName, contentClassName, items }: ITab) => {
-  const [key, setKey] = useState<string | number>(items[0].id)
+export const Tab = ({
+  className,
+  headerClassName,
+  contentClassName,
+  items,
+  currentKey,
+  onChange = () => {},
+}: ITab) => {
+  const [key, setKey] = useState<string | number>(currentKey || items[0].id)
 
   return (
     <div className={twCascade('transition duration-300 overflow-hidden', className)}>
@@ -34,7 +43,10 @@ export const Tab = ({ className, headerClassName, contentClassName, items }: ITa
                 },
                 contentClassName,
               )}
-              onClick={() => setKey(item.id)}
+              onClick={() => {
+                setKey(item.id)
+                onChange(item.id)
+              }}
             >
               {item.name}
             </div>
