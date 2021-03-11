@@ -49,7 +49,7 @@ export const MailList = ({ visible }: IMailList) => {
     const name = files.name
     console.log(name)
     const reader = new FileReader()
-    let jsondata: any[] = []
+    const jsondata: any[] = []
     // [{
     //   key: 'A3',
     //   name: "",

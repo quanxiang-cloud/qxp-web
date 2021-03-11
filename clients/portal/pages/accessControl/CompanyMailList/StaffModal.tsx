@@ -6,19 +6,19 @@ import { Modal, Form } from '@QCFE/lego-ui'
 
 import { Button } from '@portal/components/Button'
 
-const { TextField, SelectField, CheckboxGroupField } = Form;
+const { TextField, SelectField, CheckboxGroupField } = Form
 
 interface StaffModalProps {
-  visible: boolean;
-  status: 'add' | 'edit';
-  closeModal(): void;
-  okModal(): void;
+  visible: boolean
+  status: 'add' | 'edit'
+  closeModal(): void
+  okModal(): void
 }
 
 export const StaffModal = (props: StaffModalProps) => {
-  const { visible, closeModal, okModal } = props;
+  const { visible, closeModal, okModal } = props
 
-  const titleText = `${status === 'add' ? '添加' : '修改'}`;
+  const titleText = `${status === 'add' ? '添加' : '修改'}`
 
   return (
     <Modal
@@ -30,7 +30,13 @@ export const StaffModal = (props: StaffModalProps) => {
       footer={
         <div className="flex items-center">
           <Button
-            icon={<img className="w-1-dot-2 h-1-dot-2 px-dot-4" src="./dist/images/icon_error.svg" alt="icon_error" />}
+            icon={
+              <img
+                className="w-1-dot-2 h-1-dot-2 px-dot-4"
+                src="./dist/images/icon_error.svg"
+                alt="icon_error"
+              />
+            }
             onClick={closeModal}
           >
             取消
@@ -39,7 +45,13 @@ export const StaffModal = (props: StaffModalProps) => {
           <Button
             className="bg-black"
             textClassName="text-white"
-            icon={<img className="w-1-dot-2 h-1-dot-2 px-dot-4" src="./dist/images/icon_true.svg" alt="icon_true" />}
+            icon={
+              <img
+                className="w-1-dot-2 h-1-dot-2 px-dot-4"
+                src="./dist/images/icon_true.svg"
+                alt="icon_true"
+              />
+            }
             onClick={okModal}
           >
             确定{titleText}
@@ -47,12 +59,8 @@ export const StaffModal = (props: StaffModalProps) => {
         </div>
       }
     >
-      <Form layout='vertical'>
-        <TextField
-          name="account-1"
-          label="员工姓名"
-          placeholder="请输入 QingCloud 账号"
-        />
+      <Form layout="vertical">
+        <TextField name="account-1" label="员工姓名" placeholder="请输入 QingCloud 账号" />
         <TextField
           name="account-2"
           label="手机号码"
@@ -66,24 +74,24 @@ export const StaffModal = (props: StaffModalProps) => {
           help="企业成员的真实邮箱，设置后可以通过邮箱接收到全象云平台发送的各类消息提醒（手机号/邮箱，两者中至少必填一项）。"
         />
         <CheckboxGroupField
-            name="country"
-            label="向员工发送密码"
-            options={[
-              {
-                label: '通过邮箱',
-                value: '1',
-              },
-              {
-                label: '通过短信',
-                value: '2',
-              }
-            ]}
-          />
+          name="country"
+          label="向员工发送密码"
+          options={[
+            {
+              label: '通过邮箱',
+              value: '1',
+            },
+            {
+              label: '通过短信',
+              value: '2',
+            },
+          ]}
+        />
         <SelectField
           name="region-select"
           label="部门"
           placeholder="请选择区域"
-          style={{width: '100%'}}
+          style={{ width: '100%' }}
           options={[
             { value: 'pek3', label: '北京 3 区' },
             { value: 'gd1', label: '广东 1 区' },

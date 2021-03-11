@@ -3,8 +3,6 @@ import { Checkbox as LegoCheckbox, CheckboxProps } from '@QCFE/lego-ui'
 import { twCascade } from '@mariusmarais/tailwind-cascade'
 import useCss from 'react-use/lib/useCss'
 
-export interface ICheckbox extends CheckboxProps {}
-
 export const Checkbox = ({
   className,
   defaultChecked,
@@ -14,7 +12,7 @@ export const Checkbox = ({
   onChange,
   value,
   children,
-}: ICheckbox) => {
+}: CheckboxProps) => {
   return (
     <LegoCheckbox
       className={twCascade(

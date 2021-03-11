@@ -35,10 +35,10 @@ body {
     }
 
     input {
-      border: 1px solid #D5DEE7;
+      border: 1px solid #d5dee7;
       padding: 4px 12px;
       outline: none;
-      transition: all .3s linear;
+      transition: all 0.3s linear;
 
       &.pr-36 {
         padding-right: px2rem(36px);
@@ -62,5 +62,3 @@ body {
     }
   }
 }
-
-

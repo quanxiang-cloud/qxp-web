@@ -5,10 +5,10 @@ import Captcha from './captcha-field'
 import Page from './page'
 import User, { IUser } from './user'
 
-import './style.scss';
+import './style.scss'
 
 interface ICaptchaUser extends IUser {
-  captcha: IInputField; 
+  captcha: IInputField
 }
 
 class CaptchaUser extends User {
@@ -24,9 +24,12 @@ class CaptchaUser extends User {
 
   onValidateAll(context: UserName | Captcha, isValid: boolean): boolean {
     if (!this.username || !this.captcha) {
-      return false 
+      return false
     }
-    return [this.username, this.captcha].filter(i => i !== context).every(i => i.validate()) && isValid
+    return (
+      [this.username, this.captcha].filter((i) => i !== context).every((i) => i.validate()) &&
+      isValid
+    )
   }
 
   validate(): boolean {
@@ -40,17 +43,16 @@ class CaptchaUser extends User {
 new Page()
 new CaptchaUser({
   username: {
-    name: 'login:captcha:username', 
-    inputElement: query<HTMLInputElement>('input[name="username"]'), 
-    errorElement: query<HTMLElement>('.username-hints') 
+    name: 'login:captcha:username',
+    inputElement: query<HTMLInputElement>('input[name="username"]'),
+    errorElement: query<HTMLElement>('.username-hints'),
   },
   captcha: {
-    name: 'login:captcha:captcha', 
-    inputElement: query<HTMLInputElement>('input[name="captcha"]'), 
+    name: 'login:captcha:captcha',
+    inputElement: query<HTMLInputElement>('input[name="captcha"]'),
     errorElement: query<HTMLInputElement>('.captcha-hints'),
     actionElement: query<HTMLButtonElement>('button.send'),
     url: '/api/oauth2s/v1/login/code',
   },
-  action: query<HTMLButtonElement>('.btn-login')
+  action: query<HTMLButtonElement>('.btn-login'),
 })
-

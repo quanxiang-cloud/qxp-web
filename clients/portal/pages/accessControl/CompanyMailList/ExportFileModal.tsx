@@ -80,10 +80,10 @@ export const ExportFileModal = ({ visible, closeModal, okModal }: ExportFileModa
         </div>
         <div className="demo-wrapper upload-demo">
           <Upload
-            // {...this.uploaderProps}
-            // ref={n => {
-            //   this.uploader = n;
-            // }}
+          // {...this.uploaderProps}
+          // ref={n => {
+          //   this.uploader = n;
+          // }}
           >
             <div className="drag-panel">
               {/* <Icon size={32} name="upload" type="coloured" /> */}

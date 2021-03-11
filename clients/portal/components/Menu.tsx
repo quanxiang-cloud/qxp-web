@@ -6,7 +6,7 @@ import useCss from 'react-use/lib/useCss'
 
 import { List } from '@portal/components/List'
 import { ItemWithTitleDesc } from '@portal/components/ItemWithTitleDesc'
-import { isBool } from '@assets/lib/f'
+import { isBool, uuid } from '@assets/lib/f'
 
 interface IMenu {
   iconClassName: string
@@ -96,6 +96,7 @@ export const Menu = ({ menus, visible, toggle }: IMenus) => {
           )}
           items={menus.map(({ title, desc, iconClassName, iconUrl, address }) => (
             <div
+              key={uuid()}
               onClick={() => history.push(address)}
               className="flex flex-row justify-between items-center bg-white px-4 py-dot-8 rounded cursor-pointer"
             >

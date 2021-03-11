@@ -1,34 +1,38 @@
 import React, { useState } from 'react'
 import { Modal, Form } from '@QCFE/lego-ui'
 
-import { Button } from '@portal/components/Button';
+import { Button } from '@portal/components/Button'
 
-const { TextField, SelectField, ButtonField } = Form;
+const { TextField, SelectField, ButtonField } = Form
 
 interface DepartmentModalProps {
-  visible: boolean;
-  status: 'add' | 'edit';
-  nodeId: string;
-  closeModal(): void;
-  okModal: (val: any, nodeIndex: string) => void;
+  visible: boolean
+  status: 'add' | 'edit'
+  nodeId: string
+  closeModal(): void
+  okModal: (val: any, nodeIndex: string) => void
 }
 
+export const DepartmentModal = ({
+  visible,
+  status,
+  nodeId,
+  closeModal,
+  okModal,
+}: DepartmentModalProps) => {
+  const titleText = `${status === 'add' ? '添加' : '修改'}`
 
-export const DepartmentModal = ({ visible, status, nodeId, closeModal, okModal }: DepartmentModalProps) => {
-
-  const titleText = `${status === 'add' ? '添加' : '修改'}`;
-
-  const [ form, setForm ] = useState<any>(null);
+  const [form, setForm] = useState<any>(null)
 
   const okModalHandle = () => {
-    const bol = form.validateForm();
+    const bol = form.validateForm()
     if (!bol) {
-      return;
+      return
     }
-    const values = form.getFieldsValue();
-    okModal(values, nodeId);
+    const values = form.getFieldsValue()
+    okModal(values, nodeId)
   }
-  
+
   return (
     <Modal
       title={`${titleText}部门`}
@@ -37,7 +41,13 @@ export const DepartmentModal = ({ visible, status, nodeId, closeModal, okModal }
       footer={
         <div className="flex items-center">
           <Button
-            icon={<img className="w-1-dot-2 h-1-dot-2 px-dot-4" src="./dist/images/icon_error.svg" alt="icon_error" />}
+            icon={
+              <img
+                className="w-1-dot-2 h-1-dot-2 px-dot-4"
+                src="./dist/images/icon_error.svg"
+                alt="icon_error"
+              />
+            }
             onClick={closeModal}
           >
             取消
@@ -46,7 +56,13 @@ export const DepartmentModal = ({ visible, status, nodeId, closeModal, okModal }
           <Button
             className="bg-black"
             textClassName="text-white"
-            icon={<img className="w-1-dot-2 h-1-dot-2 px-dot-4" src="./dist/images/icon_true.svg" alt="icon_true" />}
+            icon={
+              <img
+                className="w-1-dot-2 h-1-dot-2 px-dot-4"
+                src="./dist/images/icon_true.svg"
+                alt="icon_true"
+              />
+            }
             onClick={okModalHandle}
           >
             确定{titleText}
@@ -54,8 +70,7 @@ export const DepartmentModal = ({ visible, status, nodeId, closeModal, okModal }
         </div>
       }
     >
-      <Form layout='vertical'
-        ref={(n: any) => setForm(n)}>
+      <Form layout="vertical" ref={(n: any) => setForm(n)}>
         <TextField
           name="department-name"
           label="部门名称"
@@ -72,7 +87,7 @@ export const DepartmentModal = ({ visible, status, nodeId, closeModal, okModal }
           name="department-manager"
           label="部门主管"
           placeholder="请选择区域"
-          style={{width: '100%'}}
+          style={{ width: '100%' }}
           options={[
             { value: 'pek3', label: '北京 3 区' },
             { value: 'gd1', label: '广东 1 区' },

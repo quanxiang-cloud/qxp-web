@@ -3,7 +3,7 @@ import { TreeData } from '@QCFE/lego-ui'
 
 import { Tab } from '@portal/components/Tab'
 import { TextHeader } from '@portal/components/TextHeader'
-import { UUIDGeneratorBrowser } from '@assets/lib/f'
+import { uuid } from '@assets/lib/f'
 import { ISelectedListItem, SelectedList } from './SelectedList'
 import { SearchInput } from '@portal/components/form/SearchInput'
 // import { Tree } from '@portal/components/Tree'
@@ -67,27 +67,27 @@ export const OwnerSelector = () => {
     {
       name: 'Jack',
       departmentName: '产品体验部',
-      id: UUIDGeneratorBrowser(),
+      id: uuid(),
     },
     {
       name: 'Jordan',
       departmentName: '质量保障部',
-      id: UUIDGeneratorBrowser(),
+      id: uuid(),
     },
     {
       name: 'Bob',
       departmentName: '产品设计部',
-      id: UUIDGeneratorBrowser(),
+      id: uuid(),
     },
     {
       name: 'Marvin',
       departmentName: '研发部',
-      id: UUIDGeneratorBrowser(),
+      id: uuid(),
     },
     {
       name: 'Scott',
       departmentName: '产品文档部',
-      id: UUIDGeneratorBrowser(),
+      id: uuid(),
     },
   ]
 

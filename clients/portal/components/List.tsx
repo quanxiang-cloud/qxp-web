@@ -1,7 +1,7 @@
 import React from 'react'
 import classnames from 'classnames'
 
-import { UUIDGeneratorBrowser } from '@assets/lib/f'
+import { uuid } from '@assets/lib/f'
 
 export interface IList {
   items: JSX.Element[]
@@ -14,7 +14,7 @@ export const List = ({ className, itemClassName, items }: IList) => {
     <ul className={classnames('flex', className)}>
       {items.map((item) => {
         return (
-          <li key={UUIDGeneratorBrowser()} className={classnames(itemClassName)}>
+          <li key={uuid()} className={classnames(itemClassName)}>
             {item}
           </li>
         )

@@ -18,7 +18,7 @@ export const Tree = ({ treeData, keyword, visible = true }: ITree) => {
 
   const buildDataSourceWithKeyword = (data: ITreeData[], k: string): ITreeData[] => {
     const newData = []
-    for (let item of data) {
+    for (const item of data) {
       if (item.title.includes(k)) {
         newData.push(item)
         break
@@ -33,7 +33,6 @@ export const Tree = ({ treeData, keyword, visible = true }: ITree) => {
     if (keyword) {
       setDataSource((data) => {
         const newData = buildDataSourceWithKeyword(data, keyword)
-        console.log(newData)
         return newData
       })
     } else {

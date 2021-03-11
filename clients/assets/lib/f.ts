@@ -53,13 +53,18 @@ export const httpPost = <T>(
  * 生成一个 uuid
  * @return {string}
  */
-export const UUIDGeneratorBrowser = () =>
+export const uuid = () =>
   // @ts-ignore
   ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, (c) =>
     (c ^ (crypto.getRandomValues(new Uint8Array(1))[0] & (15 >> (c / 4)))).toString(16),
   )
 
-function isA(name: string) {
+/**
+ * generate a type checker func
+ * @param {string} name
+ * @return {*} function
+ */
+function isA(name: string): (arg: unknown) => boolean {
   return (arg: unknown) => {
     return typeof arg === name
   }
@@ -74,15 +79,16 @@ export const either = <S>(pred1: (...args: S[]) => boolean, pred2: (...args: S[]
 ) => pred1(...args) || pred2(...args)
 export const isVoid = either<null | undefined>(isUndefined, isNull)
 export const identity = <T>(i: T) => i
-const curry = (fn: Function, arity = fn.length, ...args: any[]): Function => {
+const curry = (fn: Function, arity = fn.length, ...args: []): Function => {
   return arity <= args.length ? fn(...args) : curry.bind(null, fn, arity, ...args)
 }
 
 /**
  * @param {string} attr 需要被计数的属性
  * @param {string} exclude 计数时排除属性条件
- * @param {function=>boolean} fn 计数的条件函数
+ * @param {function} fn 计数的条件函数
  * @param {array | object} data 需要被计数的数据
+ * @return {number} counter
  */
 export const countBy = <T, S>(attr: string, exclude: string, fn: (arg: S) => boolean, data: T) => {
   let counter = 0
@@ -105,7 +111,7 @@ export const countBy = <T, S>(attr: string, exclude: string, fn: (arg: S) => boo
  * @param obj {S} 搜索的数据源
  */
 export const searchByKey = <T, S, K>(key: string, value: T, obj: S): K | void => {
-  for (let k in obj) {
+  for (const k in obj) {
     if (k === key && ((obj[k] as unknown) as T) === value) {
       return (obj as unknown) as K
     } else if (typeof obj[k] === 'object' || Array.isArray(obj[k])) {
@@ -124,7 +130,7 @@ export const searchByKey = <T, S, K>(key: string, value: T, obj: S): K | void =>
  */
 export const deepClone = (obj: any) => {
   if (obj === null) return null
-  let clone = Object.assign({}, obj)
+  const clone = Object.assign({}, obj)
   Object.keys(clone).forEach(
     (key) => (clone[key] = typeof obj[key] === 'object' ? deepClone(obj[key]) : obj[key]),
   )
@@ -141,7 +147,7 @@ export const deepClone = (obj: any) => {
  * @param {number} end
  * @param {number} [step=1]
  */
-export const rangeGenerator = function* (start: number, end: number, step: number = 1) {
+export const rangeGenerator = function* (start: number, end: number, step = 1) {
   let i = start
   while (i < end) {
     yield i

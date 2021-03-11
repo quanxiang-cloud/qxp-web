@@ -5,10 +5,10 @@ import Password from './password-field'
 import User, { IUser } from './user'
 import Page from './page'
 
-import './style.scss';
+import './style.scss'
 
 interface IPasswordUser extends IUser {
-  password: IInputField;
+  password: IInputField
 }
 
 class PasswordUser extends User {
@@ -20,14 +20,17 @@ class PasswordUser extends User {
   }
 
   onValidateAll(context: UserName | Password, isValid: boolean): boolean {
-    if(!this.username || !this.password) {
+    if (!this.username || !this.password) {
       return false
     }
-    return [this.username, this.password].filter(i => i !== context).every(i => i.validate()) && isValid
+    return (
+      [this.username, this.password].filter((i) => i !== context).every((i) => i.validate()) &&
+      isValid
+    )
   }
 
   validate(): boolean {
-    if(this.username) {
+    if (this.username) {
       return this.username.validate() && this.password.validate()
     }
     return this.password.validate()
@@ -37,14 +40,14 @@ class PasswordUser extends User {
 new Page()
 new PasswordUser({
   username: {
-    name: 'login:password:username', 
-    inputElement: query<HTMLInputElement>('input[name="username"]'), 
-    errorElement: query<HTMLElement>('.username-hints') 
+    name: 'login:password:username',
+    inputElement: query<HTMLInputElement>('input[name="username"]'),
+    errorElement: query<HTMLElement>('.username-hints'),
   },
   password: {
-    name: 'login:password:password', 
-    inputElement: query<HTMLInputElement>('input[name="password"]'), 
-    errorElement: query<HTMLInputElement>('.password-hints') 
+    name: 'login:password:password',
+    inputElement: query<HTMLInputElement>('input[name="password"]'),
+    errorElement: query<HTMLInputElement>('.password-hints'),
   },
-  action: query<HTMLButtonElement>('.btn-login')
+  action: query<HTMLButtonElement>('.btn-login'),
 })

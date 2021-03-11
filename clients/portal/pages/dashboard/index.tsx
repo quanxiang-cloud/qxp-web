@@ -7,6 +7,7 @@ import { Card } from '@portal/components/Card'
 import { List } from '@portal/components/List'
 import { ItemWithTitleDesc } from '@portal/components/ItemWithTitleDesc'
 import { HeaderWithMenu } from '@portal/components/HeaderWithMenu'
+import { uuid } from '@assets/lib/f'
 
 import './index.scss'
 
@@ -40,6 +41,7 @@ export default function Dashboard() {
               )}
               items={[
                 <ItemWithTitleDesc
+                  key={uuid()}
                   title="会议室预订"
                   desc="已上线"
                   itemRender={() => (
@@ -51,6 +53,7 @@ export default function Dashboard() {
                   descClassName="leading-4"
                 />,
                 <ItemWithTitleDesc
+                  key={uuid()}
                   title="CRM"
                   desc="未上线"
                   itemRender={() => (
@@ -62,6 +65,7 @@ export default function Dashboard() {
                   descClassName="leading-4"
                 />,
                 <ItemWithTitleDesc
+                  key={uuid()}
                   title="新建应用"
                   itemRender={() => (
                     <div className="p-dot-3-6 bg-gradient-blue-to-top-right rounded-lg rounded-tr-none">
@@ -95,6 +99,7 @@ export default function Dashboard() {
                 )}
                 items={[
                   <ItemWithTitleDesc
+                    key={uuid()}
                     title="我发起的"
                     desc="12"
                     itemRender={() => (
@@ -105,6 +110,7 @@ export default function Dashboard() {
                     descClassName="text-dot-8 font-bold"
                   />,
                   <ItemWithTitleDesc
+                    key={uuid()}
                     title="我处理的"
                     desc="3"
                     itemRender={() => (
@@ -115,6 +121,7 @@ export default function Dashboard() {
                     descClassName="text-dot-8 font-bold"
                   />,
                   <ItemWithTitleDesc
+                    key={uuid()}
                     title="抄送我的"
                     desc="3"
                     itemRender={() => (

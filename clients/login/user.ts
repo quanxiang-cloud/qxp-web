@@ -4,9 +4,9 @@ import Remember from './remember'
 import UserName from './username'
 
 export interface IUser {
-  username?: IInputField;
-  remember?: IInputField;
-  action: HTMLButtonElement;
+  username?: IInputField
+  remember?: IInputField
+  action: HTMLButtonElement
 }
 
 export default abstract class User {
@@ -30,7 +30,7 @@ export default abstract class User {
 
   login(e: Event): void {
     if (!this.validate()) {
-      e.preventDefault();
+      e.preventDefault()
     }
   }
 

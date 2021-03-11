@@ -29,7 +29,7 @@ export const AssociateDepartmentEmployee = ({ id, isSuper }: IAssociateDepartmen
     refetchOnWindowFocus: false,
     cacheTime: -1,
   })
-  //@ts-ignore
+  // @ts-ignore
   const mutation = useMutation((arg: IUpdateRoleAssociations) => updateRoleAssociations(arg), {
     onSuccess: () => refetch(),
   })

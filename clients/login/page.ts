@@ -4,7 +4,7 @@ export default class Page {
   pageErrorElement: HTMLSpanElement
 
   constructor() {
-    this.pageErrorElement = query<HTMLSpanElement>('span.error')    
+    this.pageErrorElement = query<HTMLSpanElement>('span.error')
     this.renderError()
   }
 
@@ -14,7 +14,7 @@ export default class Page {
       this.pageErrorElement.classList.remove('hidden')
       setTimeout(() => {
         this.pageErrorElement.classList.add('hidden')
-      }, 1000);
+      }, 1000)
     }
   }
 }

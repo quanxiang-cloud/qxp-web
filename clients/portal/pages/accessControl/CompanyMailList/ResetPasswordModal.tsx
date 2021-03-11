@@ -3,16 +3,16 @@ import { Modal, Form } from '@QCFE/lego-ui'
 
 import { Button } from '@portal/components/Button'
 
-const { TextField, CheckboxGroupField } = Form;
+const { TextField, CheckboxGroupField } = Form
 
 interface ResetPasswordModalProps {
-  visible: boolean;
-  closeModal(): void;
-  okModal(): void;
+  visible: boolean
+  closeModal(): void
+  okModal(): void
 }
 
 export const ResetPasswordModal = (props: ResetPasswordModalProps) => {
-  const { visible, closeModal, okModal } = props;
+  const { visible, closeModal, okModal } = props
 
   return (
     <Modal
@@ -24,7 +24,13 @@ export const ResetPasswordModal = (props: ResetPasswordModalProps) => {
       footer={
         <div className="flex items-center">
           <Button
-            icon={<img className="w-1-dot-2 h-1-dot-2 px-dot-4" src="./dist/images/icon_error.svg" alt="icon_error" />}
+            icon={
+              <img
+                className="w-1-dot-2 h-1-dot-2 px-dot-4"
+                src="./dist/images/icon_error.svg"
+                alt="icon_error"
+              />
+            }
             onClick={closeModal}
           >
             取消
@@ -33,7 +39,13 @@ export const ResetPasswordModal = (props: ResetPasswordModalProps) => {
           <Button
             className="bg-black"
             textClassName="text-white"
-            icon={<img className="w-1-dot-2 h-1-dot-2 px-dot-4" src="./dist/images/icon_true.svg" alt="icon_true" />}
+            icon={
+              <img
+                className="w-1-dot-2 h-1-dot-2 px-dot-4"
+                src="./dist/images/icon_true.svg"
+                alt="icon_true"
+              />
+            }
             onClick={okModal}
           >
             确定重置
@@ -41,12 +53,8 @@ export const ResetPasswordModal = (props: ResetPasswordModalProps) => {
         </div>
       }
     >
-      <Form layout='vertical'>
-        <TextField
-          name="account-1"
-          label="重置密码"
-          placeholder="请输入 QingCloud 账号"
-        />
+      <Form layout="vertical">
+        <TextField name="account-1" label="重置密码" placeholder="请输入 QingCloud 账号" />
         <CheckboxGroupField
           name="country"
           label="向员工发送密码"
@@ -58,7 +66,7 @@ export const ResetPasswordModal = (props: ResetPasswordModalProps) => {
             {
               label: '通过短信',
               value: '2',
-            }
+            },
           ]}
         />
       </Form>
