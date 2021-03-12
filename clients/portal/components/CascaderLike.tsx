@@ -16,26 +16,30 @@ export const CascadeTreeModel = ({ ...props }: ICascader) => {
     const data = props.treeOption
     let val = ''
     if (typeof key !== 'undefined') {
-      console.log(key)
-      val += data[Number(key) - 1].title
-      if (key.length > 1) {
-        const i = key.split('-').map((item) => {
-          return Number(item) - 1
-        })
+      const i = key.split('-').map((item) => {
+        return Number(item) - 1
+      })
+      try {
         switch (i.length) {
           case 3:
-            val +=
+            val =
+              data[i[0]].title +
               ' > ' +
               data[i[0]].children[i[1]].title +
               ' > ' +
               data[i[0]].children[i[1]].children[i[2]].title
             break
           case 2:
-            val += ' > ' + data[i[0]].children[i[1]].title
+            val = data[i[0]].title + ' > ' + data[i[0]].children[i[1]].title
+            break
+          case 1:
+            val = data[i[0]].title
             break
           default:
             break
         }
+      } catch {
+        console.log('treeData格式错误')
       }
     }
     setOption([{ value: val, label: val }])
