@@ -40,7 +40,7 @@ export const Tree = ({ ...props }: ITree) => {
       )
     })
   const handleSelect = (key: string) => {
-    typeof props.getKey !== 'undefined' ? props.getKey(key) : null
+    typeof props.getKey !== 'undefined' ? props.getKey(key[0]) : null
   }
   return (
     <div className="w-auto h-full">
