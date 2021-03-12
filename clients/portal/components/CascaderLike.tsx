@@ -16,7 +16,8 @@ export const CascadeTreeModel = ({ ...props }: ICascader) => {
     const data = props.treeOption
     let val = ''
     if (typeof key !== 'undefined') {
-      val += data[Number(key[0]) - 1].title
+      console.log(key)
+      val += data[Number(key) - 1].title
       if (key.length > 1) {
         const i = key.split('-').map((item) => {
           return Number(item) - 1
@@ -41,6 +42,12 @@ export const CascadeTreeModel = ({ ...props }: ICascader) => {
     setSelectValue(val)
   }
 
+  // const arrowRenderer = ({ onMouseDown }: any): any => (
+  //   <span className="select-arrow" onMouseDown={onMouseDown}>
+  //     {/* <Icon name="chevron-down" size="small" clickable /> */}
+  //   </span>
+  // )
+
   const menuRender = () => {
     return <Tree treeData={props.treeOption} getKey={handleKey} />
   }
@@ -55,16 +62,17 @@ export const CascadeTreeModel = ({ ...props }: ICascader) => {
         },
         '.select-control': {
           background: 'none',
-          border: 'none',
+          // border: 'to-blue-200',
         },
         '&': {
-          border: 'none',
+          // border: 'to-blue-300',
           background: 'none !important',
         },
         '.select-value-label': {
           'font-size': '14px',
         },
       })}
+      // arrowRenderer={arrowRenderer as () => void}
       menuRenderer={menuRender}
       placeholder="Select"
       value={selectValue}
