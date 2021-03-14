@@ -14,7 +14,7 @@ export interface IInputField {
 }
 
 export function query<T>(selector: string): T {
-  return document.querySelector(selector) as unknown as T
+  return document.querySelector(selector) as unknown as T;
 }
 
 export const isMobile = (s: string) => /^1[3456789]\d{9}$/.test(s);
@@ -35,47 +35,47 @@ export abstract class InputField implements IInputField {
   onValidateAll?: Function;
 
   constructor({ 
-    name, value = '', errMessage = '', inputElement, errorElement 
+    name, value = '', errMessage = '', inputElement, errorElement, 
   }: IInputField, action: HTMLButtonElement, onValidateAll?: Function) {
-    this.name = name
-    this.inputElement = inputElement
-    this.onValidateAll = onValidateAll || function() {}
-    this.value = value
-    this.errMessage = errMessage
-    this.errorElement = errorElement
-    this.action = action
-    this.isCheckbox = this.inputElement.type === 'checkbox'
-    this.getValue()
-    this.baseBindEvents()
+    this.name = name;
+    this.inputElement = inputElement;
+    this.onValidateAll = onValidateAll || function() {};
+    this.value = value;
+    this.errMessage = errMessage;
+    this.errorElement = errorElement;
+    this.action = action;
+    this.isCheckbox = this.inputElement.type === 'checkbox';
+    this.getValue();
+    this.baseBindEvents();
   }
 
   getValue() {
-    const value = localStorage.getItem(this.name)
+    const value = localStorage.getItem(this.name);
     if(value || value === '') {
-      this.value = this.isCheckbox ? !!value : value
+      this.value = this.isCheckbox ? !!value : value;
       if(this.isCheckbox) {
-        this.inputElement.checked = this.value as boolean
+        this.inputElement.checked = this.value as boolean;
       } else {
-        this.inputElement.value = this.value as string
+        this.inputElement.value = this.value as string;
       }
     }
-    this.validate(true)
+    this.validate(true);
   }
 
   baseBindEvents() {
-    this.inputElement.onblur = () => this.validate(true)
+    this.inputElement.onblur = () => this.validate(true);
     this.inputElement.onchange = (e: Event) => {
       if (this.isCheckbox) {
-        this.value = (e.target as HTMLInputElement).checked
+        this.value = (e.target as HTMLInputElement).checked;
       } else {
-        this.value = (e.target as HTMLInputElement).value
+        this.value = (e.target as HTMLInputElement).value;
       }
-      localStorage.setItem(this.name, String(this.value))
-    }
+      localStorage.setItem(this.name, String(this.value));
+    };
   }
 
   on(name: string, callback: EventListenerOrEventListenerObject) {
-    this.inputElement.addEventListener(name, callback)
+    this.inputElement.addEventListener(name, callback);
   }
 
   abstract validate(checkAll?: boolean): boolean

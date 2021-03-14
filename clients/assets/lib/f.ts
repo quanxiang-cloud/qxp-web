@@ -9,9 +9,9 @@ export const httpPost = (
   data: string
 ): Promise<string | Record<string, unknown> | never> => {
   const req = new XMLHttpRequest();
-  req.open("POST", url, true);
-  req.setRequestHeader("Content-Type", "application/json; charset=utf-8");
-  req.setRequestHeader("X-Proxy", "API")
+  req.open('POST', url, true);
+  req.setRequestHeader('Content-Type', 'application/json; charset=utf-8');
+  req.setRequestHeader('X-Proxy', 'API');
   return new Promise(
     (
       resolve: (responseText: string | Record<string, unknown>) => void,
@@ -21,8 +21,8 @@ export const httpPost = (
         if (req.status > 400) {
           return reject(req.statusText);
         }
-        const contentType = req.getResponseHeader("Content-Type");
-        if (contentType?.startsWith("application/json")) {
+        const contentType = req.getResponseHeader('Content-Type');
+        if (contentType?.startsWith('application/json')) {
           resolve(JSON.parse(req.responseText));
         } else {
           resolve(req.responseText);

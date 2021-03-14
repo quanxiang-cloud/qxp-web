@@ -4,6 +4,7 @@
   "license": "MIT",
   "main": "index.js",
   "scripts": {
+    "lint": "eslint 'clients/**/*.tsx' 'clients/**/*.ts' --fix",
     "start": "gulp",
     "test": "cypress open"
   },
@@ -21,12 +22,12 @@
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
     "@types/react-router-dom": "^5.1.7",
-    "@typescript-eslint/eslint-plugin": "^4.14.1",
-    "@typescript-eslint/parser": "^4.14.1",
+    "@typescript-eslint/eslint-plugin": "^4.17.0",
+    "@typescript-eslint/parser": "^4.17.0",
     "autoprefixer": "^9.7.1",
     "css-loader": "^3.2.0",
     "cypress": "^6.4.0",
-    "eslint": "^7.18.0",
+    "eslint": "^7.22.0",
     "eslint-plugin-react": "^7.22.0",
     "gulp": "^4.0.2",
     "html-webpack-plugin": "^4.3.0",
