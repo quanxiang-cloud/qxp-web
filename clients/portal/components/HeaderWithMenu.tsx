@@ -1,11 +1,11 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef } from 'react';
 
-import { Header } from './Header'
-import { Menu } from './Menu'
+import { Header } from './Header';
+import { Menu } from './Menu';
 
 export const HeaderWithMenu = React.memo(() => {
-  const [showMenu, setShowMenu] = useState<boolean | null>(null)
-  const headerSetterRef = useRef<Function>()
+  const [showMenu, setShowMenu] = useState<boolean | null>(null);
+  const headerSetterRef = useRef<Function>();
 
   const menus = [
     {
@@ -29,17 +29,17 @@ export const HeaderWithMenu = React.memo(() => {
       desc: '对平台的企业空间、账号、以及角色权限进行统一管理。',
       address: '/dist/images/add.svg',
     },
-  ]
+  ];
 
   const onToggle = (show: boolean) => {
-    setShowMenu(show)
-    headerSetterRef.current && headerSetterRef.current(show)
-  }
+    setShowMenu(show);
+    headerSetterRef.current && headerSetterRef.current(show);
+  };
 
   return (
     <>
       <Header onMenuToggle={setShowMenu} getSetter={(f) => (headerSetterRef.current = f)} />
       <Menu menus={menus} visible={showMenu} toggle={onToggle} />
     </>
-  )
-})
+  );
+});

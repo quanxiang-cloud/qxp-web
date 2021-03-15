@@ -1,27 +1,27 @@
-import React from 'react'
-import { useQuery } from 'react-query'
+import React from 'react';
+import { useQuery } from 'react-query';
 
-import { ItemWithTitleDesc } from '@portal/components/ItemWithTitleDesc'
-import { Tab } from '@portal/components/Tab'
-import { Loading } from '@portal/components/Loading'
-import { IRoleListItem } from '../RoleListItem'
-import { AlterRoleFunc } from './AlterRoleFunc'
-import { AssociateDepartmentEmployee } from './AssociateDepartmentEmployee'
-import { getRoleFunctions } from '../api'
+import { ItemWithTitleDesc } from '@portal/components/ItemWithTitleDesc';
+import { Tab } from '@portal/components/Tab';
+import { Loading } from '@portal/components/Loading';
+import { IRoleListItem } from '../RoleListItem';
+import { AlterRoleFunc } from './AlterRoleFunc';
+import { AssociateDepartmentEmployee } from './AssociateDepartmentEmployee';
+import { getRoleFunctions } from '../api';
 
 export interface IRoleDetail {
-  id: string | number
-  role: IRoleListItem
+  id: string | number;
+  role: IRoleListItem;
 }
 
 export const RoleDetail = ({ role, id }: IRoleDetail) => {
   const { data, isLoading } = useQuery(['getRoleFunctions', id], getRoleFunctions, {
     refetchOnWindowFocus: false,
     cacheTime: -1,
-  })
+  });
 
   if (isLoading || !data?.func || !role) {
-    return <Loading desc="加载中..." />
+    return <Loading desc="加载中..." />;
   }
 
   return (
@@ -62,5 +62,5 @@ export const RoleDetail = ({ role, id }: IRoleDetail) => {
         ]}
       />
     </div>
-  )
-}
+  );
+};

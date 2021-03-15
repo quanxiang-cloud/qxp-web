@@ -28,7 +28,7 @@ module.exports = {
     window: true,
   },
   rules: {
-    'prettier/prettier': 'error',
+    'prettier/prettier': ['error', { singleQuote: true, semi: true }],
     'react/display-name': 'off',
     '@typescript-eslint/explicit-module-boundary-types': 'off',
     '@typescript-eslint/ban-ts-comment': 'off',
@@ -40,14 +40,13 @@ module.exports = {
     'valid-jsdoc': 'off',
     'require-jsdoc': 'off',
     'object-curly-spacing': ['warn', 'always'],
-    semi: 'off',
+    semi: ['error', 'always'],
     quotes: ['error', 'single'],
     'quote-props': ['error', 'as-needed'],
     'no-underscore-dangle': 'off',
     'no-param-reassign': 'error',
     radix: [1, 'as-needed'],
     'class-methods-use-this': 'off',
-
     'comma-dangle': [
       'error',
       {
@@ -82,13 +81,10 @@ module.exports = {
           "^(\\s*[a-zA-Z_]+: '[^']+'[,;]*)|(.*interpolate.*)|(.*require.*)|(.*_\\.template.*)|(<svg .*)|(<rect .*)|(<polygon .*)$",
       },
     ],
-
     'import/no-unresolved': 'off',
     'import/prefer-default-export': 'off',
     'import/extensions': 'off',
-
     'jsx-a11y/no-static-element-interactions': 'off',
-
     'react/prefer-stateless-function': 'off',
     'react/destructuring-assignment': 'off',
     'react/forbid-prop-types': 'off',
@@ -130,7 +126,6 @@ module.exports = {
         },
       },
     ],
-
     'prefer-promise-reject-errors': 'off',
   },
-}
+};

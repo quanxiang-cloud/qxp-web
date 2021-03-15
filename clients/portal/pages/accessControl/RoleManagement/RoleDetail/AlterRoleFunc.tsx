@@ -1,79 +1,79 @@
-import React, { useState, useEffect, useRef } from 'react'
-import { Message } from '@QCFE/lego-ui'
+import React, { useState, useEffect, useRef } from 'react';
+import { Message } from '@QCFE/lego-ui';
 
-import { Card } from '@portal/components/Card'
-import { Checkbox } from '@portal/components/Checkbox'
-import { countBy, searchByKey, deepClone } from '@assets/lib/f'
-import { IRoleFunc, IRoleFuncItem, setRoleFunctions } from '../api'
+import { Card } from '@portal/components/Card';
+import { Checkbox } from '@portal/components/Checkbox';
+import { countBy, searchByKey, deepClone } from '@assets/lib/f';
+import { IRoleFunc, IRoleFuncItem, setRoleFunctions } from '../api';
 
 export interface IAlterRoleFunc {
-  funcs: IRoleFunc
-  tag: string
-  lastSaveTime?: number
-  id: string | number
+  funcs: IRoleFunc;
+  tag: string;
+  lastSaveTime?: number;
+  id: string | number;
 }
 
 export const AlterRoleFunc = ({ funcs: functions, tag, lastSaveTime, id }: IAlterRoleFunc) => {
   // @ts-ignore
-  const [funcs, setFuncs] = useState<IRoleFunc>(deepClone(functions))
-  const total = countBy<IRoleFunc, boolean>('has', 'child', (v) => v, funcs)
-  const isSuper = tag === 'super'
-  const [addSets, setAddSets] = useState<string[]>([])
-  const [deleteSets, setDeleteSets] = useState<string[]>([])
-  const originTags = useRef<string[]>([])
+  const [funcs, setFuncs] = useState<IRoleFunc>(deepClone(functions));
+  const total = countBy<IRoleFunc, boolean>('has', 'child', (v) => v, funcs);
+  const isSuper = tag === 'super';
+  const [addSets, setAddSets] = useState<string[]>([]);
+  const [deleteSets, setDeleteSets] = useState<string[]>([]);
+  const originTags = useRef<string[]>([]);
 
   const getFuncIds = (func: IRoleFunc | IRoleFuncItem): string[] => {
-    const tags = []
-    for (let key in func) {
+    const tags = [];
+    for (const key in func) {
       if (key === 'id' && func.has) {
-        tags.push(func.id as string)
+        tags.push(func.id as string);
         // @ts-ignore
       } else if (key !== 'id' && typeof func[key] === 'object') {
         // @ts-ignore
-        tags.push(...getFuncIds(func[key]))
+        tags.push(...getFuncIds(func[key]));
       }
     }
-    return tags
-  }
+    return tags;
+  };
   if (!originTags.current.length) {
-    originTags.current = getFuncIds(functions)
+    originTags.current = getFuncIds(functions);
   }
 
   useEffect(() => {
-    const allSets = getFuncIds(funcs)
-    const adds = allSets.filter((item) => !originTags.current.includes(item))
-    const deletes = originTags.current.filter((item) => !allSets.includes(item))
-    setAddSets(adds)
-    setDeleteSets(deletes)
-  }, [funcs])
+    const allSets = getFuncIds(funcs);
+    const adds = allSets.filter((item) => !originTags.current.includes(item));
+    const deletes = originTags.current.filter((item) => !allSets.includes(item));
+    setAddSets(adds);
+    setDeleteSets(deletes);
+  }, [funcs]);
 
   const updateFuncs = (funcTag: string) => (e: Event, checked: boolean) => {
     setFuncs((s: IRoleFunc) => {
-      const newS = { ...s }
-      const data = searchByKey<string, IRoleFunc, IRoleFuncItem>('funcTag', funcTag, newS)
+      const newS = { ...s };
+      const data = searchByKey<string, IRoleFunc, IRoleFuncItem>('funcTag', funcTag, newS);
       if (data) {
-        data.has = checked
-        return newS
+        data.has = checked;
+        return newS;
       }
-      return s
-    })
-  }
+      return s;
+    });
+  };
 
   const selectAll = (func: IRoleFuncItem) => () => {
-    const ev = new Event('click')
-    const needSelect = !isAllChildSelected(func)
-    needSelect && updateFuncs(func.funcTag)(ev, needSelect)
+    const ev = new Event('click');
+    const needSelect = !isAllChildSelected(func);
+    needSelect && updateFuncs(func.funcTag)(ev, needSelect);
     Object.values(func.child).forEach((i) => {
-      updateFuncs(i.funcTag)(ev, needSelect)
+      updateFuncs(i.funcTag)(ev, needSelect);
       if (i.child) {
-        selectAll(i)
+        selectAll(i);
       }
-    })
-  }
+    });
+  };
 
   const isAllChildSelected = (func: IRoleFuncItem) => {
-    return Object.values(func.child).every((i) => i.has)
-  }
+    return Object.values(func.child).every((i) => i.has);
+  };
 
   const renderFuncCard = (funcs: IRoleFunc) => {
     return (
@@ -91,7 +91,7 @@ export const AlterRoleFunc = ({ funcs: functions, tag, lastSaveTime, id }: IAlte
               >
                 {func.name}
               </Checkbox>
-            )
+            );
           }
 
           return (
@@ -122,38 +122,38 @@ export const AlterRoleFunc = ({ funcs: functions, tag, lastSaveTime, id }: IAlte
               content={<>{renderFuncCard(func.child)}</>}
               contentClassName="pt-dot-8 px-4 flex justify-start whitespace-nowrap flex-wrap"
             />
-          )
+          );
         })}
       </>
-    )
-  }
+    );
+  };
 
   const getSaveTime = (time: number) => {
-    const date = new Date(time * 1000)
-    const month = `${date.getMonth() + 1}`.padStart(2, '0')
-    const d = `${date.getDate()}`.padStart(2, '0')
-    const hour = `${date.getHours()}`.padStart(2, '0')
-    const minutes = `${date.getMinutes()}`.padStart(2, '0')
-    return `${date.getFullYear()}-${month}-${d} ${hour}:${minutes}`
-  }
+    const date = new Date(time * 1000);
+    const month = `${date.getMonth() + 1}`.padStart(2, '0');
+    const d = `${date.getDate()}`.padStart(2, '0');
+    const hour = `${date.getHours()}`.padStart(2, '0');
+    const minutes = `${date.getMinutes()}`.padStart(2, '0');
+    return `${date.getFullYear()}-${month}-${d} ${hour}:${minutes}`;
+  };
 
   const saveRoleFunctions = () => {
-    let params = []
+    let params = [];
     if (deleteSets.length) {
-      params = ['setRoleFunctions', id, addSets, deleteSets]
+      params = ['setRoleFunctions', id, addSets, deleteSets];
     } else {
-      params = ['setRoleFunctions', id, addSets]
+      params = ['setRoleFunctions', id, addSets];
     }
     setRoleFunctions({
       queryKey: params,
     }).then(({ code }) => {
       if (code == 0) {
-        setAddSets([])
-        setDeleteSets([])
-        Message.success('保存成功')
+        setAddSets([]);
+        setDeleteSets([]);
+        Message.success('保存成功');
       }
-    })
-  }
+    });
+  };
 
   return (
     <>
@@ -181,5 +181,5 @@ export const AlterRoleFunc = ({ funcs: functions, tag, lastSaveTime, id }: IAlte
       </header>
       {renderFuncCard(funcs)}
     </>
-  )
-}
+  );
+};

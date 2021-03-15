@@ -1,17 +1,17 @@
-import React from 'react'
-import useCss from 'react-use/lib/useCss'
-import { Tree as LegoTree, TreeNode, TreeProps, TreeData } from '@QCFE/lego-ui'
-import { twCascade } from '@mariusmarais/tailwind-cascade'
+import React from 'react';
+import useCss from 'react-use/lib/useCss';
+import { Tree as LegoTree, TreeNode, TreeProps, TreeData } from '@QCFE/lego-ui';
+import { twCascade } from '@mariusmarais/tailwind-cascade';
 
 interface ITree extends TreeProps {
-  treeData: TreeData[]
-  getKey?: (key: string) => void
+  treeData: TreeData[];
+  getKey?: (key: string) => void;
 }
 
 export const Tree = ({ ...props }: ITree) => {
   const renderTreeNodes = (data: TreeData[]) =>
     data.map((item: TreeData) => {
-      const { children } = item
+      const { children } = item;
       if (children) {
         return (
           <TreeNode
@@ -25,7 +25,7 @@ export const Tree = ({ ...props }: ITree) => {
           >
             {renderTreeNodes(children)}
           </TreeNode>
-        )
+        );
       }
       return (
         <TreeNode
@@ -37,11 +37,11 @@ export const Tree = ({ ...props }: ITree) => {
           key={item.key}
           dataRef={item}
         />
-      )
-    })
+      );
+    });
   const handleSelect = (key: string) => {
-    typeof props.getKey !== 'undefined' ? props.getKey(key[0]) : null
-  }
+    typeof props.getKey !== 'undefined' ? props.getKey(key[0]) : null;
+  };
   return (
     <div className="w-auto h-full">
       <LegoTree
@@ -89,5 +89,5 @@ export const Tree = ({ ...props }: ITree) => {
         {renderTreeNodes(props.treeData)}
       </LegoTree>
     </div>
-  )
-}
+  );
+};

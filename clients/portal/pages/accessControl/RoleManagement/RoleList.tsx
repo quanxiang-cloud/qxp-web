@@ -1,21 +1,21 @@
-import React, { useState } from 'react'
+import React, { useState } from 'react';
 
-import { List } from '@portal/components/List'
-import { ItemWithTitleDesc } from '@portal/components/ItemWithTitleDesc'
-import { RoleListItem, IRoleListItem } from './RoleListItem'
+import { List } from '@portal/components/List';
+import { ItemWithTitleDesc } from '@portal/components/ItemWithTitleDesc';
+import { RoleListItem, IRoleListItem } from './RoleListItem';
 
 export interface IRoleList {
-  items: IRoleListItem[]
-  onChange: (id: number | string) => void
+  items: IRoleListItem[];
+  onChange: (id: number | string) => void;
 }
 
 export const RoleList = ({ items, onChange }: IRoleList) => {
-  const [current, setCurrent] = useState(items[0]?.id)
+  const [current, setCurrent] = useState(items[0]?.id);
 
   const onClick = (id: number | string) => {
-    setCurrent(id)
-    onChange(id)
-  }
+    setCurrent(id);
+    onChange(id);
+  };
 
   return (
     <div>
@@ -32,9 +32,9 @@ export const RoleList = ({ items, onChange }: IRoleList) => {
         className="flex-col justify-start items-stretch mt-2"
         itemClassName="cursor-pointer"
         items={items.map((item) => (
-          <RoleListItem {...item} active={item.id === current} onClick={onClick} />
+          <RoleListItem key={item.id} {...item} active={item.id === current} onClick={onClick} />
         ))}
       />
     </div>
-  )
-}
+  );
+};

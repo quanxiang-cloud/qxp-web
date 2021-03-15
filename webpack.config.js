@@ -9,7 +9,7 @@ const tailwindcss = require('tailwindcss');
 // {
 //   mode: 'production' | 'development';
 // }
-module.exports = function({ mode }) {
+module.exports = function ({ mode }) {
   return {
     mode: mode,
     watch: mode !== 'production',
@@ -21,7 +21,7 @@ module.exports = function({ mode }) {
       'login-by-password': './clients/login/password.ts',
       'login-by-captcha': './clients/login/captcha.ts',
       'reset-password': './clients/login/reset-password',
-      '404': './clients/404/index.ts',
+      404: './clients/404/index.ts',
     },
 
     output: {
@@ -34,7 +34,7 @@ module.exports = function({ mode }) {
     resolve: {
       // Add '.ts' and '.tsx' as resolvable extensions.
       extensions: ['.ts', '.tsx', '.js', '.jsx'],
-      plugins: [new TsconfigPathsPlugin()]
+      plugins: [new TsconfigPathsPlugin()],
     },
 
     module: {
@@ -48,10 +48,7 @@ module.exports = function({ mode }) {
             {
               loader: 'postcss-loader',
               options: {
-                plugins: [
-                  tailwindcss('./tailwind.config.js'),
-                  require('autoprefixer')(),
-                ],
+                plugins: [tailwindcss('./tailwind.config.js'), require('autoprefixer')()],
               },
             },
             { loader: 'sass-loader' },
@@ -65,10 +62,7 @@ module.exports = function({ mode }) {
             {
               loader: 'postcss-loader',
               options: {
-                plugins: [
-                  tailwindcss('./tailwind.config.js'),
-                  require('autoprefixer')(),
-                ],
+                plugins: [tailwindcss('./tailwind.config.js'), require('autoprefixer')()],
               },
             },
           ],
@@ -76,9 +70,7 @@ module.exports = function({ mode }) {
         {
           test: /\.ts(x?)$/,
           exclude: /node_modules/,
-          use: [
-            { loader: 'ts-loader' },
-          ],
+          use: [{ loader: 'ts-loader' }],
         },
         // All output '.js' files will have any sourcemaps re-processed by 'source-map-loader'.
         {
@@ -88,7 +80,7 @@ module.exports = function({ mode }) {
         },
       ],
     },
-    
+
     plugins: [
       new WebpackBar(),
       new MiniCssExtractPlugin({
@@ -127,7 +119,7 @@ module.exports = function({ mode }) {
         inject: false,
         chunks: ['reset-password'],
         template: './clients/templates/reset-password.html',
-        filename: `${__dirname}/dist/templates/reset-password.html`
+        filename: `${__dirname}/dist/templates/reset-password.html`,
       }),
       mode !== 'production' ? new WebpackNotifierPlugin({ alwaysNotify: true }) : null,
     ].filter(Boolean),

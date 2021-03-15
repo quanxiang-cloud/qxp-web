@@ -1,17 +1,17 @@
-import React, { MouseEvent } from 'react'
+import React, { MouseEvent } from 'react';
 
-import { twCascade } from '@mariusmarais/tailwind-cascade'
+import { twCascade } from '@mariusmarais/tailwind-cascade';
 
 export interface IItemWithTitleDesc {
-  title?: string
-  desc?: string
-  itemRender: () => JSX.Element
-  titleClassName?: string
-  descClassName?: string
-  textDirection?: 'row' | 'col'
-  className?: string
-  textClassName?: string
-  onClick?: (event: MouseEvent<HTMLDivElement>) => void
+  title?: string;
+  desc?: string;
+  itemRender: () => JSX.Element;
+  titleClassName?: string;
+  descClassName?: string;
+  textDirection?: 'row' | 'col';
+  className?: string;
+  textClassName?: string;
+  onClick?: (event: MouseEvent<HTMLDivElement>) => void;
 }
 
 export const ItemWithTitleDesc = ({
@@ -44,5 +44,5 @@ export const ItemWithTitleDesc = ({
         )}
       </div>
     </div>
-  )
-}
+  );
+};

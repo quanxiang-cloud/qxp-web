@@ -1,17 +1,17 @@
-import React, { useState } from 'react'
-import { Input, Field, Label, Control, Icon } from '@QCFE/lego-ui'
-import useDebounce from 'react-use/lib/useDebounce'
-import { twCascade } from '@mariusmarais/tailwind-cascade'
+import React, { useState } from 'react';
+import { Input, Field, Label, Control, Icon } from '@QCFE/lego-ui';
+import useDebounce from 'react-use/lib/useDebounce';
+import { twCascade } from '@mariusmarais/tailwind-cascade';
 
 export interface ISearchInput {
-  name: string
-  prefix?: JSX.Element | string
-  placeholder: string
-  visible?: boolean
-  onChange: (value: string) => void
-  onClear?: () => void
-  appendix: JSX.Element | string
-  className?: string
+  name: string;
+  prefix?: JSX.Element | string;
+  placeholder: string;
+  visible?: boolean;
+  onChange: (value: string) => void;
+  onClear?: () => void;
+  appendix: JSX.Element | string;
+  className?: string;
 }
 
 export const SearchInput = React.memo(
@@ -25,15 +25,15 @@ export const SearchInput = React.memo(
     name,
     className,
   }: ISearchInput) => {
-    const [val, setVal] = useState<string>('')
-    const [isVisible, setIsVisible] = useState<boolean>(!!visible)
+    const [val, setVal] = useState<string>('');
+    const [isVisible, setIsVisible] = useState<boolean>(!!visible);
     useDebounce(
       () => {
-        onChange(val)
+        onChange(val);
       },
-      300,
+      500,
       [val],
-    )
+    );
 
     return (
       <div className={twCascade('flex flex-row items-center', className)}>
@@ -49,8 +49,8 @@ export const SearchInput = React.memo(
               type="text"
               placeholder={placeholder}
               onChange={(e: Event, value: string) => {
-                setVal(value)
-                setIsVisible(value !== '')
+                setVal(value);
+                setIsVisible(value !== '');
               }}
               name={name}
               value={val}
@@ -61,9 +61,9 @@ export const SearchInput = React.memo(
                 name={appendix}
                 clickable
                 onClick={() => {
-                  setVal('')
-                  setIsVisible(false)
-                  onClear()
+                  setVal('');
+                  setIsVisible(false);
+                  onClear();
                 }}
               />
             )}
@@ -72,6 +72,6 @@ export const SearchInput = React.memo(
           <Label></Label>
         </Field>
       </div>
-    )
+    );
   },
-)
+);

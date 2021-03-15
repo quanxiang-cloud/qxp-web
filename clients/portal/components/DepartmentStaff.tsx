@@ -1,12 +1,12 @@
 /**
  * 组件-部门人员
  */
-import React from 'react'
+import React from 'react';
 
 interface DepartmentStaffProps {
-  department: string
-  count: number
-  unit: string
+  department: string;
+  count: number;
+  unit: string;
 }
 
 export const DepartmentStaff = ({ department, count = 0, unit }: DepartmentStaffProps) => {
@@ -17,5 +17,5 @@ export const DepartmentStaff = ({ department, count = 0, unit }: DepartmentStaff
         （{count} {unit}）
       </div>
     </div>
-  )
-}
+  );
+};

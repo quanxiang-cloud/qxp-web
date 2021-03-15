@@ -1,40 +1,40 @@
-import { IInputField } from '@assets/lib/atom'
+import { IInputField } from '@assets/lib/atom';
 
-import Remember from './remember'
-import UserName from './username'
+import Remember from './remember';
+import UserName from './username';
 
 export interface IUser {
-  username?: IInputField
-  remember?: IInputField
-  action: HTMLButtonElement
+  username?: IInputField;
+  remember?: IInputField;
+  action: HTMLButtonElement;
 }
 
 export default abstract class User {
-  protected username?: UserName
-  protected action: HTMLButtonElement
+  protected username?: UserName;
+  protected action: HTMLButtonElement;
 
   constructor({ username, remember, action }: IUser) {
     if (remember) {
-      new Remember(remember, action)
+      new Remember(remember, action);
     }
     if (username) {
-      this.username = new UserName(username, action, this.onValidateAll.bind(this))
+      this.username = new UserName(username, action, this.onValidateAll.bind(this));
     }
-    this.action = action
-    this.bindEvents()
+    this.action = action;
+    this.bindEvents();
   }
 
   bindEvents() {
-    this.action.onclick = this.login.bind(this)
+    this.action.onclick = this.login.bind(this);
   }
 
   login(e: Event): void {
     if (!this.validate()) {
-      e.preventDefault()
+      e.preventDefault();
     }
   }
 
-  abstract onValidateAll(...args: unknown[]): boolean
+  abstract onValidateAll(...args: unknown[]): boolean;
 
-  abstract validate(): boolean
+  abstract validate(): boolean;
 }

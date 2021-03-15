@@ -1,10 +1,11 @@
-import React, { useState } from 'react'
-import { GridTable, Dropdown } from '@QCFE/lego-ui'
+import React, { useState } from 'react';
+import { GridTable, Dropdown } from '@QCFE/lego-ui';
+import { twCascade } from '@mariusmarais/tailwind-cascade';
 
-import { ActionsList, IActionListItem } from '@portal/components/ActionsList'
-import { Pagination } from '@portal/components/Pagination'
-import { ResetPasswordModal } from './ResetPasswordModal'
-import { AccountHandleModal } from './AccountHandleModal'
+import { ActionsList, IActionListItem } from '@portal/components/ActionsList';
+import { Pagination } from '@portal/components/Pagination';
+import { ResetPasswordModal } from './ResetPasswordModal';
+import { AccountHandleModal } from './AccountHandleModal';
 
 const dataSource: any[] = [
   {
@@ -28,19 +29,19 @@ const dataSource: any[] = [
     department: '运维一部',
     role: '普通管理员',
   },
-]
+];
 
 export const PersonInfo = () => {
-  const pageSizeOptions = [10, 20, 50, 100]
+  const pageSizeOptions = [10, 20, 50, 100];
 
-  const [resetModal, setResetModal] = useState(false)
-  const [handleModal, setHandleModal] = useState(false)
-  const [modalStatus, setModalStatus] = useState<'disabled' | 'delete'>('disabled')
+  const [resetModal, setResetModal] = useState(false);
+  const [handleModal, setHandleModal] = useState(false);
+  const [modalStatus, setModalStatus] = useState<'disabled' | 'delete'>('disabled');
   const [pageParams, setPageParams] = useState({
     current: 1,
     pageSize: 10,
     total: 108,
-  })
+  });
 
   const actions: IActionListItem<null>[] = [
     {
@@ -71,7 +72,7 @@ export const PersonInfo = () => {
       text: '删除账号 ',
       onclick: () => handleAccount('delete'),
     },
-  ]
+  ];
 
   const columns = [
     {
@@ -99,10 +100,15 @@ export const PersonInfo = () => {
       width: 130,
       render: (text: any) => {
         return (
-          <div className="text-center text-375FF3 leading-1-dot-6 border-none inline-block px-dot-8 py-dot-125 rounded-l-dot-4 rounded-tr-dot-1 rounded-br-dot-4 bg-DEE9FF">
+          <div
+            className={twCascade(
+              'text-center text-375FF3 leading-1-dot-6 border-none inline-block px-dot-8',
+              'py-dot-125 rounded-l-dot-4 rounded-tr-dot-1 rounded-br-dot-4 bg-DEE9FF',
+            )}
+          >
             {text}
           </div>
-        )
+        );
       },
     },
     {
@@ -114,31 +120,31 @@ export const PersonInfo = () => {
           <Dropdown content={<ActionsList actions={actions} params={record} />}>
             <div className="cursor-pointer">···</div>
           </Dropdown>
-        )
+        );
       },
     },
-  ]
+  ];
 
   // 重置密码
   const handleReset = (record: any) => {
-    setResetModal(true)
-  }
+    setResetModal(true);
+  };
 
   // 关闭-重置密码弹窗
   const closeResetModal = () => {
-    setResetModal(false)
-  }
+    setResetModal(false);
+  };
 
   // 处理账号
   const handleAccount = (status: 'disabled' | 'delete') => {
-    setModalStatus(status)
-    setHandleModal(true)
-  }
+    setModalStatus(status);
+    setHandleModal(true);
+  };
 
   // 关闭-处理账号弹窗
   const closeHandleModal = () => {
-    setHandleModal(false)
-  }
+    setHandleModal(false);
+  };
 
   // 处理页码
   const handleChange = (current: number) => {
@@ -146,8 +152,8 @@ export const PersonInfo = () => {
       current,
       pageSize: pageParams.pageSize,
       total: pageParams.total,
-    })
-  }
+    });
+  };
 
   // 处理页数量
   const handleShowSizeChange = (pageSize: number) => {
@@ -155,8 +161,8 @@ export const PersonInfo = () => {
       current: 1,
       pageSize,
       total: pageParams.total,
-    })
-  }
+    });
+  };
 
   return (
     <>
@@ -212,5 +218,5 @@ export const PersonInfo = () => {
         </div>
       </div>
     </>
-  )
-}
+  );
+};

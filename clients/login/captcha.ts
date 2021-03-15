@@ -1,46 +1,46 @@
-import { IInputField, query } from 'clients/assets/lib/atom'
+import { IInputField, query } from 'clients/assets/lib/atom';
 
-import UserName from './username'
-import Captcha from './captcha-field'
-import Page from './page'
-import User, { IUser } from './user'
+import UserName from './username';
+import Captcha from './captcha-field';
+import Page from './page';
+import User, { IUser } from './user';
 
-import './style.scss'
+import './style.scss';
 
 interface ICaptchaUser extends IUser {
-  captcha: IInputField
+  captcha: IInputField;
 }
 
 class CaptchaUser extends User {
-  private captcha: Captcha
+  private captcha: Captcha;
 
   constructor({ action, username, captcha }: ICaptchaUser) {
-    super({ username, action })
-    this.captcha = new Captcha(captcha, action, this.onValidateAll.bind(this))
+    super({ username, action });
+    this.captcha = new Captcha(captcha, action, this.onValidateAll.bind(this));
     if (this.username) {
-      this.captcha.setUserName(this.username)
+      this.captcha.setUserName(this.username);
     }
   }
 
   onValidateAll(context: UserName | Captcha, isValid: boolean): boolean {
     if (!this.username || !this.captcha) {
-      return false
+      return false;
     }
     return (
       [this.username, this.captcha].filter((i) => i !== context).every((i) => i.validate()) &&
       isValid
-    )
+    );
   }
 
   validate(): boolean {
     if (this.username) {
-      return this.username.validate() && this.captcha.validate()
+      return this.username.validate() && this.captcha.validate();
     }
-    return this.captcha.validate()
+    return this.captcha.validate();
   }
 }
 
-new Page()
+new Page();
 new CaptchaUser({
   username: {
     name: 'login:captcha:username',
@@ -55,4 +55,4 @@ new CaptchaUser({
     url: '/api/oauth2s/v1/login/code',
   },
   action: query<HTMLButtonElement>('.btn-login'),
-})
+});

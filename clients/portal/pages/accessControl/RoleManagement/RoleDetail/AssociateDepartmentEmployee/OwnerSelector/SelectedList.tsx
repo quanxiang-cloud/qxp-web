@@ -1,20 +1,20 @@
-import React, { MouseEvent } from 'react'
+import React, { MouseEvent } from 'react';
 
-import { TextHeader } from '@portal/components/TextHeader'
-import { Tag } from '@QCFE/lego-ui'
-import { twCascade } from '@mariusmarais/tailwind-cascade'
+import { TextHeader } from '@portal/components/TextHeader';
+import { Tag } from '@QCFE/lego-ui';
+import { twCascade } from '@mariusmarais/tailwind-cascade';
 
 export interface ISelectedListItem {
-  name: string
-  departmentName: string
-  id: string
+  name: string;
+  departmentName: string;
+  id: string;
 }
 
 export interface ISelectedList {
-  ownerList: ISelectedListItem[]
-  onClear: (e: MouseEvent<HTMLDivElement>) => void
-  onRemoveItem: (item: ISelectedListItem) => void
-  className?: string
+  ownerList: ISelectedListItem[];
+  onClear: (e: MouseEvent<HTMLDivElement>) => void;
+  onRemoveItem: (item: ISelectedListItem) => void;
+  className?: string;
 }
 
 export const SelectedList = ({ ownerList, onClear, onRemoveItem, className }: ISelectedList) => {
@@ -51,5 +51,5 @@ export const SelectedList = ({ ownerList, onClear, onRemoveItem, className }: IS
         ))}
       </div>
     </div>
-  )
-}
+  );
+};

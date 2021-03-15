@@ -1,24 +1,24 @@
 /**
  * 组件-添加员工
  */
-import React from 'react'
-import { Modal, Form } from '@QCFE/lego-ui'
+import React from 'react';
+import { Modal, Form } from '@QCFE/lego-ui';
 
-import { Button } from '@portal/components/Button'
+import { Button } from '@portal/components/Button';
 
-const { TextField, SelectField, CheckboxGroupField } = Form
+const { TextField, SelectField, CheckboxGroupField } = Form;
 
 interface StaffModalProps {
-  visible: boolean
-  status: 'add' | 'edit'
-  closeModal(): void
-  okModal(): void
+  visible: boolean;
+  status: 'add' | 'edit';
+  closeModal(): void;
+  okModal(): void;
 }
 
 export const StaffModal = (props: StaffModalProps) => {
-  const { visible, closeModal, okModal } = props
+  const { visible, closeModal, okModal } = props;
 
-  const titleText = `${status === 'add' ? '添加' : '修改'}`
+  const titleText = `${status === 'add' ? '添加' : '修改'}`;
 
   return (
     <Modal
@@ -113,5 +113,5 @@ export const StaffModal = (props: StaffModalProps) => {
         />
       </Form>
     </Modal>
-  )
-}
+  );
+};

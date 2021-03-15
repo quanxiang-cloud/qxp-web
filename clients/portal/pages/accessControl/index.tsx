@@ -1,12 +1,12 @@
-import React, { useState } from 'react'
+import React, { useState } from 'react';
 
-import { ListMenu } from '@portal/pages/accessControl/ListMenu'
-import { ItemWithTitleDesc } from '@portal/components/ItemWithTitleDesc'
-import { HeaderWithMenu } from '@portal/components/HeaderWithMenu'
-import { Content } from './Content'
+import { ListMenu } from '@portal/pages/accessControl/ListMenu';
+import { ItemWithTitleDesc } from '@portal/components/ItemWithTitleDesc';
+import { HeaderWithMenu } from '@portal/components/HeaderWithMenu';
+import { Content } from './Content';
 
 export default function Index() {
-  const [menuType, setMenuType] = useState('corporateDirectory')
+  const [menuType, setMenuType] = useState('corporateDirectory');
 
   return (
     <>
@@ -32,5 +32,5 @@ export default function Index() {
         </div>
       </div>
     </>
-  )
+  );
 }

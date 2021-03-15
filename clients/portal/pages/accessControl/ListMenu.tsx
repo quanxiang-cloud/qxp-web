@@ -1,21 +1,21 @@
-import React, { useState, useEffect } from 'react'
-import useCss from 'react-use/lib/useCss'
-import classnames from 'classnames'
+import React, { useState, useEffect } from 'react';
+import useCss from 'react-use/lib/useCss';
+import classnames from 'classnames';
 
 type MenuItem = {
-  id: string
-  name: string
-  icon: string
-}
+  id: string;
+  name: string;
+  icon: string;
+};
 
 export interface IListMenu {
-  menuData?: MenuItem[]
-  onChange: (type: string) => void
-  defaultType?: string
+  menuData?: MenuItem[];
+  onChange: (type: string) => void;
+  defaultType?: string;
 }
 
 export const ListMenu = ({ onChange, defaultType }: IListMenu) => {
-  const [type, setType] = useState<string | undefined>(defaultType)
+  const [type, setType] = useState<string | undefined>(defaultType);
   const menuData: MenuItem[] = [
     {
       id: 'corporateDirectory',
@@ -27,11 +27,11 @@ export const ListMenu = ({ onChange, defaultType }: IListMenu) => {
       icon: '/dist/images/role.svg',
       name: '角色管理',
     },
-  ]
+  ];
 
   useEffect(() => {
-    onChange(type as string)
-  }, [type])
+    onChange(type as string);
+  }, [type]);
 
   return (
     <ul className="w-auto">
@@ -41,7 +41,8 @@ export const ListMenu = ({ onChange, defaultType }: IListMenu) => {
             key={item.id}
             onClick={() => setType(item.id)}
             className={classnames(
-              'h-2-bot-8 leading-2-bot-8 rounded-l-dot-4 p-x-0-dot-9 flex relative cursor-pointer transition',
+              'h-2-bot-8 leading-2-bot-8 rounded-l-dot-4',
+              'p-x-0-dot-9 flex relative cursor-pointer transition',
               useCss({
                 '> div': {
                   display: 'none',
@@ -71,10 +72,14 @@ export const ListMenu = ({ onChange, defaultType }: IListMenu) => {
           >
             <img className="w-1-dot-2 h-1-dot-2 pr-dot-4" src={item.icon} alt="logo" />
             <span className="fs-0-dot-8 text-94A3B8 text-dot-8">{item.name}</span>
-            <div className="absolute top-0 right-0 w-0-dot-2 h-2-dot-8 bg-475569 rounded-l-dot-4"></div>
+            <div
+              className={classnames(
+                'absolute top-0 right-0 w-0-dot-2 h-2-dot-8 bg-475569 rounded-l-dot-4',
+              )}
+            ></div>
           </li>
-        )
+        );
       })}
     </ul>
-  )
-}
+  );
+};

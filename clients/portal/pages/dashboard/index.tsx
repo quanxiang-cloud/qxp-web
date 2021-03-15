@@ -1,15 +1,16 @@
-import React from 'react'
-import useCss from 'react-use/lib/useCss'
-import classnames from 'classnames'
+import React from 'react';
+import useCss from 'react-use/lib/useCss';
+import classnames from 'classnames';
 
-import { Avatar } from '@portal/components/Avatar'
-import { Card } from '@portal/components/Card'
-import { List } from '@portal/components/List'
-import { ItemWithTitleDesc } from '@portal/components/ItemWithTitleDesc'
-import { HeaderWithMenu } from '@portal/components/HeaderWithMenu'
-import { uuid } from '@assets/lib/f'
+import { Avatar } from '@portal/components/Avatar';
+import { Card } from '@portal/components/Card';
+import { List } from '@portal/components/List';
+import { ItemWithTitleDesc } from '@portal/components/ItemWithTitleDesc';
+import { HeaderWithMenu } from '@portal/components/HeaderWithMenu';
+import { uuid } from '@assets/lib/f';
 
-import './index.scss'
+import './index.scss';
+import { twCascade } from '@mariusmarais/tailwind-cascade';
 
 export default function Dashboard() {
   return (
@@ -45,7 +46,11 @@ export default function Dashboard() {
                   title="会议室预订"
                   desc="已上线"
                   itemRender={() => (
-                    <div className="p-dot-3-6 bg-gradient-green-to-top-right rounded-lg rounded-tr-none">
+                    <div
+                      className={twCascade(
+                        'p-dot-3-6 bg-gradient-green-to-top-right rounded-lg rounded-tr-none',
+                      )}
+                    >
                       <img src="/dist/images/calendar.svg" alt="calendar" />
                     </div>
                   )}
@@ -57,7 +62,11 @@ export default function Dashboard() {
                   title="CRM"
                   desc="未上线"
                   itemRender={() => (
-                    <div className="p-dot-3-6 bg-gradient-yellow-to-top-right rounded-lg rounded-tr-none">
+                    <div
+                      className={twCascade(
+                        'p-dot-3-6 bg-gradient-yellow-to-top-right rounded-lg rounded-tr-none',
+                      )}
+                    >
                       <img src="/dist/images/accounts.svg" alt="accounts" />
                     </div>
                   )}
@@ -68,7 +77,11 @@ export default function Dashboard() {
                   key={uuid()}
                   title="新建应用"
                   itemRender={() => (
-                    <div className="p-dot-3-6 bg-gradient-blue-to-top-right rounded-lg rounded-tr-none">
+                    <div
+                      className={twCascade(
+                        'p-dot-3-6 bg-gradient-blue-to-top-right rounded-lg rounded-tr-none',
+                      )}
+                    >
                       <img src="/dist/images/add.svg" alt="add" />
                     </div>
                   )}
@@ -103,7 +116,11 @@ export default function Dashboard() {
                     title="我发起的"
                     desc="12"
                     itemRender={() => (
-                      <div className="w-dot-8 h-dot-8 bg-gradient-green-to-top-right rounded rounded-tr-none"></div>
+                      <div
+                        className={twCascade(
+                          'w-dot-8 h-dot-8 bg-gradient-green-to-top-right rounded rounded-tr-none',
+                        )}
+                      ></div>
                     )}
                     textDirection="row"
                     titleClassName="text-dot-7"
@@ -114,7 +131,11 @@ export default function Dashboard() {
                     title="我处理的"
                     desc="3"
                     itemRender={() => (
-                      <div className="w-dot-8 h-dot-8 bg-gradient-yellow-to-top-right rounded rounded-tr-none"></div>
+                      <div
+                        className={twCascade(
+                          'w-dot-8 h-dot-8 bg-gradient-yellow-to-top-right rounded rounded-tr-none',
+                        )}
+                      ></div>
                     )}
                     textDirection="row"
                     titleClassName="text-dot-7"
@@ -125,7 +146,11 @@ export default function Dashboard() {
                     title="抄送我的"
                     desc="3"
                     itemRender={() => (
-                      <div className="w-dot-8 h-dot-8 bg-gradient-blue-to-top-right rounded rounded-tr-none"></div>
+                      <div
+                        className={twCascade(
+                          'w-dot-8 h-dot-8 bg-gradient-blue-to-top-right rounded rounded-tr-none',
+                        )}
+                      ></div>
                     )}
                     textDirection="row"
                     titleClassName="text-dot-7"
@@ -157,5 +182,5 @@ export default function Dashboard() {
         </div>
       </main>
     </>
-  )
+  );
 }

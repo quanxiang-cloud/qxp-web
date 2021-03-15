@@ -1,19 +1,20 @@
-import React from 'react'
-import { Select, Icon, Tag, Checkbox, CheckboxGroup } from '@QCFE/lego-ui'
+import React from 'react';
+import { Select, Icon, Tag, Checkbox, CheckboxGroup } from '@QCFE/lego-ui';
 
 export const SelectCheckbox = () => {
+  const options = [{ value: 'CentOS', label: '普通管理员' }];
 
-  const options = [
-    { value: 'CentOS', label: '普通管理员' },
-  ];
-
-  const arrowRenderer = ({ onMouseDown }) => (
+  const arrowRenderer = ({
+    onMouseDown,
+  }: {
+    onMouseDown: React.MouseEventHandler<HTMLSpanElement>;
+  }) => (
     <span className="select-arrow" onMouseDown={onMouseDown}>
       <Icon name="chevron-down" size="small" clickable />
     </span>
   );
-  
-  const optionRenderer = option => (
+
+  const optionRenderer = () => (
     <span className="option-with-icon" style={{ display: 'flex', alignItems: 'center' }}>
       <CheckboxGroup
         name="states"
@@ -30,11 +31,9 @@ export const SelectCheckbox = () => {
     </span>
   );
 
-  const valueRenderer = option => (
+  const valueRenderer = () => (
     <span className="option-with-icon" style={{ display: 'flex', alignItems: 'center' }}>
-      <Tag closable>
-        Tag 2
-      </Tag>
+      <Tag closable>Tag 2</Tag>
     </span>
   );
 
@@ -49,7 +48,7 @@ export const SelectCheckbox = () => {
       // onChange={this.handleChange}
       options={options}
     />
-  )
-}
+  );
+};
 
 export default SelectCheckbox;

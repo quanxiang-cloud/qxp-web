@@ -1,16 +1,16 @@
-import React, { useState } from 'react'
-import { Modal, Form } from '@QCFE/lego-ui'
+import React, { useState } from 'react';
+import { Modal, Form } from '@QCFE/lego-ui';
 
-import { Button } from '@portal/components/Button'
+import { Button } from '@portal/components/Button';
 
-const { TextField, SelectField, ButtonField } = Form
+const { TextField, SelectField, ButtonField } = Form;
 
 interface DepartmentModalProps {
-  visible: boolean
-  status: 'add' | 'edit'
-  nodeId: string
-  closeModal(): void
-  okModal: (val: any, nodeIndex: string) => void
+  visible: boolean;
+  status: 'add' | 'edit';
+  nodeId: string;
+  closeModal(): void;
+  okModal: (val: any, nodeIndex: string) => void;
 }
 
 export const DepartmentModal = ({
@@ -20,18 +20,18 @@ export const DepartmentModal = ({
   closeModal,
   okModal,
 }: DepartmentModalProps) => {
-  const titleText = `${status === 'add' ? '添加' : '修改'}`
+  const titleText = `${status === 'add' ? '添加' : '修改'}`;
 
-  const [form, setForm] = useState<any>(null)
+  const [form, setForm] = useState<any>(null);
 
   const okModalHandle = () => {
-    const bol = form.validateForm()
+    const bol = form.validateForm();
     if (!bol) {
-      return
+      return;
     }
-    const values = form.getFieldsValue()
-    okModal(values, nodeId)
-  }
+    const values = form.getFieldsValue();
+    okModal(values, nodeId);
+  };
 
   return (
     <Modal
@@ -108,5 +108,5 @@ export const DepartmentModal = ({
         />
       </Form>
     </Modal>
-  )
-}
+  );
+};

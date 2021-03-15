@@ -1,17 +1,17 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react';
 
-import useCss from 'react-use/lib/useCss'
+import useCss from 'react-use/lib/useCss';
 
 export interface IHamburger {
-  onChange: (active: boolean) => void
-  getSetter: (f: Function) => void
+  onChange: (active: boolean) => void;
+  getSetter: (f: Function) => void;
 }
 
 export const Hamburger = ({ onChange, getSetter }: IHamburger) => {
-  const [active, setActive] = useState<boolean>(false)
+  const [active, setActive] = useState<boolean>(false);
   useEffect(() => {
-    getSetter(setActive)
-  }, [setActive])
+    getSetter(setActive);
+  }, [setActive]);
   const activeClassName = {
     '& > div:nth-child(1)': {
       transform: 'translateY(4.5px) rotate(45deg)',
@@ -22,7 +22,7 @@ export const Hamburger = ({ onChange, getSetter }: IHamburger) => {
     '& > div:nth-child(3)': {
       transform: 'translateY(-4.5px) rotate(-45deg)',
     },
-  }
+  };
   const className = {
     hamburger: useCss({
       width: '18px',
@@ -41,12 +41,12 @@ export const Hamburger = ({ onChange, getSetter }: IHamburger) => {
       '-webkit-transition': 'all .3s ease-in-out',
       transition: 'all .3s ease-in-out',
     }),
-  }
+  };
 
   const onToggle = () => {
-    onChange(!active)
-    setActive((v) => !v)
-  }
+    onChange(!active);
+    setActive((v) => !v);
+  };
 
   return (
     <div className={className.hamburger} onClick={onToggle}>
@@ -54,5 +54,5 @@ export const Hamburger = ({ onChange, getSetter }: IHamburger) => {
       <div className={className.line}></div>
       <div className={className.line}></div>
     </div>
-  )
-}
+  );
+};

@@ -1,9 +1,9 @@
-import React from 'react'
-import { twCascade } from '@mariusmarais/tailwind-cascade'
+import React from 'react';
+import { twCascade } from '@mariusmarais/tailwind-cascade';
 
 export interface IEmptyData {
-  text: string
-  className?: string
+  text: string;
+  className?: string;
 }
 
 export const EmptyData = ({ text, className }: IEmptyData) => {
@@ -12,5 +12,5 @@ export const EmptyData = ({ text, className }: IEmptyData) => {
       <img src="/dist/images/links.svg" alt="no data" className="mb-dot-4" />
       <span className={twCascade('text-dot-6 leading-4')}>{text}</span>
     </div>
-  )
-}
+  );
+};

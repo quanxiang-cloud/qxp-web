@@ -1,19 +1,19 @@
-import React, { useState } from 'react'
-import { twCascade } from '@mariusmarais/tailwind-cascade'
+import React, { useState } from 'react';
+import { twCascade } from '@mariusmarais/tailwind-cascade';
 
 export interface ITabItem {
-  id: string | number
-  name: string
-  content: JSX.Element
+  id: string | number;
+  name: string;
+  content: JSX.Element;
 }
 
 export interface ITab {
-  className?: string
-  headerClassName?: string
-  contentClassName?: string
-  items: ITabItem[]
-  currentKey?: string | number
-  onChange?: (key: string | number) => void
+  className?: string;
+  headerClassName?: string;
+  contentClassName?: string;
+  items: ITabItem[];
+  currentKey?: string | number;
+  onChange?: (key: string | number) => void;
 }
 
 export const Tab = ({
@@ -24,18 +24,20 @@ export const Tab = ({
   currentKey,
   onChange = () => {},
 }: ITab) => {
-  const [key, setKey] = useState<string | number>(currentKey || items[0].id)
+  const [key, setKey] = useState<string | number>(currentKey || items[0].id);
 
   return (
     <div className={twCascade('transition duration-300 overflow-hidden', className)}>
       <header className={twCascade('flex flex-row overflow-x-scroll w-full', headerClassName)}>
         {items.map((item) => {
-          const active = item.id == key
+          const active = item.id == key;
           return (
             <div
               key={item.id}
               className={twCascade(
-                'whitespace-nowrap rounded-dot4 rounded-br-none rounded-bl-none py-1 px-dot-8 cursor-pointer text-dot-7 hover:bg-blue-light hover:text-blue-primary transition duration-300',
+                'whitespace-nowrap rounded-dot4 rounded-br-none rounded-bl-none py-1',
+                'px-dot-8 cursor-pointer text-dot-7 hover:bg-blue-light',
+                'hover:text-blue-primary transition duration-300',
                 {
                   'bg-blue-light': active,
                   'text-blue-primary': active,
@@ -44,13 +46,13 @@ export const Tab = ({
                 contentClassName,
               )}
               onClick={() => {
-                setKey(item.id)
-                onChange(item.id)
+                setKey(item.id);
+                onChange(item.id);
               }}
             >
               {item.name}
             </div>
-          )
+          );
         })}
       </header>
       <div
@@ -72,9 +74,9 @@ export const Tab = ({
             >
               {item.content}
             </div>
-          )
+          );
         })}
       </div>
     </div>
-  )
-}
+  );
+};

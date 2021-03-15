@@ -1,12 +1,12 @@
-import React, { Dispatch, SetStateAction } from 'react'
-import { Link } from 'react-router-dom'
+import React, { Dispatch, SetStateAction } from 'react';
+import { Link } from 'react-router-dom';
 
-import { PersonalSettingMenu } from './PersonalSettingMenu'
-import { Hamburger } from './Hamburger'
+import { PersonalSettingMenu } from './PersonalSettingMenu';
+import { Hamburger } from './Hamburger';
 
 export interface IHeader {
-  onMenuToggle: Dispatch<SetStateAction<boolean | null>>
-  getSetter: (f: Function) => void
+  onMenuToggle: Dispatch<SetStateAction<boolean | null>>;
+  getSetter: (f: Function) => void;
 }
 
 export const Header = ({ onMenuToggle, getSetter }: IHeader) => {
@@ -36,5 +36,5 @@ export const Header = ({ onMenuToggle, getSetter }: IHeader) => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};

@@ -1,33 +1,33 @@
-import React, { useState, useEffect } from 'react'
-import { useQuery } from 'react-query'
-import { twCascade } from '@mariusmarais/tailwind-cascade'
+import React, { useState, useEffect } from 'react';
+import { useQuery } from 'react-query';
+import { twCascade } from '@mariusmarais/tailwind-cascade';
 
-import { Card } from '@portal/components/Card'
-import { Loading } from '@portal/components/Loading'
-import { RoleList } from './RoleList'
-import { RoleDetail } from './RoleDetail'
-import { getRolesList } from './api'
-import Role from './role'
+import { Card } from '@portal/components/Card';
+import { Loading } from '@portal/components/Loading';
+import { RoleList } from './RoleList';
+import { RoleDetail } from './RoleDetail';
+import { getRolesList } from './api';
+import Role from './role';
 
 export interface IRoleManagement {
-  visible: boolean
+  visible: boolean;
 }
 
 export const RoleManagement = ({ visible }: IRoleManagement) => {
   const { data = [], isLoading } = useQuery('getRolesList', getRolesList, {
     refetchOnWindowFocus: false,
-  })
-  const [roleId, setRoleId] = useState<string | number>('')
+  });
+  const [roleId, setRoleId] = useState<string | number>('');
   useEffect(() => {
     if (data.length) {
-      setRoleId(data[0].id)
+      setRoleId(data[0].id);
     }
-  }, [data])
+  }, [data]);
 
-  const roleList = data.map(({ tag, name, id }) => new Role(name, id, tag))
+  const roleList = data.map(({ tag, name, id }) => new Role(name, id, tag));
 
   if (isLoading || !data.length) {
-    return <Loading desc="加载中..." />
+    return <Loading desc="加载中..." />;
   }
 
   return (
@@ -58,5 +58,5 @@ export const RoleManagement = ({ visible }: IRoleManagement) => {
         </div>
       </div>
     </Card>
-  )
-}
+  );
+};

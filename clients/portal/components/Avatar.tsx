@@ -1,11 +1,11 @@
-import React from 'react'
+import React from 'react';
 
-import { ItemWithTitleDesc } from './ItemWithTitleDesc'
+import { ItemWithTitleDesc } from './ItemWithTitleDesc';
 
 export interface IAvatar {
-  username: string
-  bio: string
-  avatar: string
+  username: string;
+  bio: string;
+  avatar: string;
 }
 
 export const Avatar = ({ username, bio, avatar }: IAvatar) => {
@@ -17,5 +17,5 @@ export const Avatar = ({ username, bio, avatar }: IAvatar) => {
       title={`${username}, 下午好!`}
       desc={bio}
     />
-  )
-}
+  );
+};

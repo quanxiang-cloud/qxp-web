@@ -1,9 +1,9 @@
-import React from 'react'
-import useCss from 'react-use/lib/useCss'
-import { twCascade } from '@mariusmarais/tailwind-cascade'
+import React from 'react';
+import useCss from 'react-use/lib/useCss';
+import { twCascade } from '@mariusmarais/tailwind-cascade';
 
 export interface IDot {
-  className?: string
+  className?: string;
 }
 
 export const Dot = ({ className }: IDot) => {
@@ -15,7 +15,7 @@ export const Dot = ({ className }: IDot) => {
     '&:not(:last-child)': {
       'margin-right': '0.125rem',
     },
-  })
+  });
 
-  return <div className={twCascade('flex', dotItemClassName, className)}></div>
-}
+  return <div className={twCascade('flex', dotItemClassName, className)}></div>;
+};

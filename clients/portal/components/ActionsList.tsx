@@ -1,19 +1,19 @@
-import React from 'react'
-import useCss from 'react-use/lib/useCss'
-import classnames from 'classnames'
-import { twCascade } from '@mariusmarais/tailwind-cascade'
+import React from 'react';
+import useCss from 'react-use/lib/useCss';
+import classnames from 'classnames';
+import { twCascade } from '@mariusmarais/tailwind-cascade';
 
 export type IActionListItem<T> = {
-  id: string
-  iconName: string
-  text: string
-  onclick?: (params?: T) => void
-}
+  id: string;
+  iconName: string;
+  text: string;
+  onclick?: (params?: T) => void;
+};
 
 interface IActionsList<T> {
-  actions: IActionListItem<T>[]
-  params?: T
-  className?: string
+  actions: IActionListItem<T>[];
+  params?: T;
+  className?: string;
 }
 
 export const ActionsList = function <T>({ actions, params, className }: IActionsList<T>) {
@@ -30,7 +30,7 @@ export const ActionsList = function <T>({ actions, params, className }: IActions
             <li
               key={action.id}
               onClick={() => {
-                action.onclick && action.onclick(params)
+                action.onclick && action.onclick(params);
               }}
               className={classnames(
                 'w-full h-1-dot-9 px-dot-8 flex items-center cursor-pointer',
@@ -54,9 +54,9 @@ export const ActionsList = function <T>({ actions, params, className }: IActions
               )}
               <div className="text-dot-7 whitespace-no-wrap">{action.text}</div>
             </li>
-          )
+          );
         })}
       </ul>
     </div>
-  )
-}
+  );
+};

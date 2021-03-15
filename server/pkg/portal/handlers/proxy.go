@@ -48,7 +48,9 @@ func ProxyAPIHandler(w http.ResponseWriter, r *http.Request) {
 	req.Header.Set("Content-Type", "application/json")
 	for key, values := range r.Header {
 		for _, value := range values {
-			req.Header.Set(key, value)
+			if key != "Cookie" && key != "Origin" && key != "Referer" {
+				req.Header.Set(key, value)
+			}
 		}
 	}
 
@@ -62,7 +64,7 @@ func ProxyAPIHandler(w http.ResponseWriter, r *http.Request) {
 	//     domain: 'qingcloud'
 	//   }
 
-	contexts.Logger.Debugf("proxy api request, method: %s, url: %s, request_id: %s", method, url, contexts.GetRequestID(r))
+	contexts.Logger.Debugf("proxy api request, method: %s, url: %s, header: %s request_id: %s", method, url, req.Header, contexts.GetRequestID(r))
 
 	resp, err := contexts.HTTPClient.Do(req)
 	if err != nil {

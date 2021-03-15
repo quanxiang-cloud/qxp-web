@@ -1,14 +1,14 @@
-import React, { useRef, useState, MouseEvent } from 'react'
-import { usePopper } from 'react-popper'
-import { twCascade } from '@mariusmarais/tailwind-cascade'
-import useClickAway from 'react-use/lib/useClickAway'
+import React, { useRef, useState, MouseEvent } from 'react';
+import { usePopper } from 'react-popper';
+import { twCascade } from '@mariusmarais/tailwind-cascade';
+import useClickAway from 'react-use/lib/useClickAway';
 
 export interface IPopover {
-  content: JSX.Element
-  className?: string
-  triggerClassName?: string
-  tooltipClassName?: string
-  children: JSX.Element
+  content: JSX.Element;
+  className?: string;
+  triggerClassName?: string;
+  tooltipClassName?: string;
+  children: JSX.Element;
   placement?:
     | 'top'
     | 'right'
@@ -24,9 +24,9 @@ export interface IPopover {
     | 'left-end'
     | 'auto'
     | 'auto-start'
-    | 'auto-end'
-  offsetX?: number
-  offsetY?: number
+    | 'auto-end';
+  offsetX?: number;
+  offsetY?: number;
 }
 
 export const Popover = ({
@@ -39,9 +39,9 @@ export const Popover = ({
   offsetX = 0,
   offsetY = 50,
 }: IPopover) => {
-  const clickAwayRef = useRef<HTMLDivElement | null>(null)
-  const triggerRef = useRef<HTMLDivElement | null>(null)
-  const tooltipRef = useRef<HTMLDivElement | null>(null)
+  const clickAwayRef = useRef<HTMLDivElement | null>(null);
+  const triggerRef = useRef<HTMLDivElement | null>(null);
+  const tooltipRef = useRef<HTMLDivElement | null>(null);
   const { styles, attributes } = usePopper(triggerRef.current, tooltipRef.current, {
     placement,
     modifiers: [
@@ -52,15 +52,15 @@ export const Popover = ({
         },
       },
     ],
-  })
-  const [isOpen, setIsOpen] = useState(false)
-  useClickAway(clickAwayRef, () => setIsOpen(false))
+  });
+  const [isOpen, setIsOpen] = useState(false);
+  useClickAway(clickAwayRef, () => setIsOpen(false));
   const onContentClick = (e: MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) {
-      return
+      return;
     }
-    setIsOpen(false)
-  }
+    setIsOpen(false);
+  };
 
   return (
     <div
@@ -92,5 +92,5 @@ export const Popover = ({
         {content}
       </div>
     </div>
-  )
-}
+  );
+};

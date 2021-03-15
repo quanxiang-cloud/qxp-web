@@ -1,10 +1,10 @@
-import React from 'react'
-import { Loading as LegoLoading } from '@QCFE/lego-ui'
-import { twCascade } from '@mariusmarais/tailwind-cascade'
+import React from 'react';
+import { Loading as LegoLoading } from '@QCFE/lego-ui';
+import { twCascade } from '@mariusmarais/tailwind-cascade';
 
 export interface ILoading {
-  desc?: string | JSX.Element
-  className?: string
+  desc?: string | JSX.Element;
+  className?: string;
 }
 
 export const Loading = ({ desc = 'Loading...', className }: ILoading) => {
@@ -18,5 +18,5 @@ export const Loading = ({ desc = 'Loading...', className }: ILoading) => {
       <LegoLoading />
       <span>{desc}</span>
     </div>
-  )
-}
+  );
+};

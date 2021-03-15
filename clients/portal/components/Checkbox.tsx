@@ -1,7 +1,7 @@
-import React from 'react'
-import { Checkbox as LegoCheckbox, CheckboxProps } from '@QCFE/lego-ui'
-import { twCascade } from '@mariusmarais/tailwind-cascade'
-import useCss from 'react-use/lib/useCss'
+import React from 'react';
+import { Checkbox as LegoCheckbox, CheckboxProps } from '@QCFE/lego-ui';
+import { twCascade } from '@mariusmarais/tailwind-cascade';
+import useCss from 'react-use/lib/useCss';
 
 export const Checkbox = ({
   className,
@@ -32,12 +32,12 @@ export const Checkbox = ({
       indeterminate={indeterminate}
       onChange={(e, checked) => {
         if (onChange) {
-          onChange(e, checked)
+          onChange(e, checked);
         }
       }}
       value={value}
     >
       {children}
     </LegoCheckbox>
-  )
-}
+  );
+};

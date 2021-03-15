@@ -5,6 +5,6 @@ const locales = {
   'zh-CN': {
     HELLO: '你好!',
   },
-}
+};
 
-export default locales
+export default locales;

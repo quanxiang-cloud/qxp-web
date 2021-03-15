@@ -1,10 +1,10 @@
-import * as React from 'react'
-import { Route, Switch } from 'react-router'
+import * as React from 'react';
+import { Route, Switch } from 'react-router';
 
-import { NotFound } from './components/404'
+import { NotFound } from './components/404';
 
-import '@QCFE/lego-ui/lib/scss/lego-ui.min.css'
-import '@assets/scss/index.scss'
+import '@QCFE/lego-ui/lib/scss/lego-ui.min.css';
+import '@assets/scss/index.scss';
 
 const Dashboard = React.lazy(
   () =>
@@ -12,7 +12,7 @@ const Dashboard = React.lazy(
       /* webpackChunkName: "dashboard" */
       './pages/dashboard'
     ),
-)
+);
 
 const MetaData = React.lazy(
   () =>
@@ -20,9 +20,9 @@ const MetaData = React.lazy(
       /* webpackChunkName: "dashboard" */
       './pages/metadata'
     ),
-)
+);
 
-const AccessControl = React.lazy(() => import('./pages/accessControl'))
+const AccessControl = React.lazy(() => import('./pages/accessControl'));
 
 export default function routes(): JSX.Element {
   return (
@@ -34,5 +34,5 @@ export default function routes(): JSX.Element {
         <Route component={NotFound} />
       </Switch>
     </>
-  )
+  );
 }

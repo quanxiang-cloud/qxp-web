@@ -1,68 +1,92 @@
-import React, { useState } from 'react'
-import { TreeData } from '@QCFE/lego-ui'
+import React, { useState, useEffect } from 'react';
+import { useQuery } from 'react-query';
 
-import { Tab } from '@portal/components/Tab'
-import { TextHeader } from '@portal/components/TextHeader'
-import { uuid } from '@assets/lib/f'
-import { ISelectedListItem, SelectedList } from './SelectedList'
-import { SearchInput } from '@portal/components/form/SearchInput'
-// import { Tree } from '@portal/components/Tree'
-import { Tree } from '@portal/components/TempTree'
-import { EmployeeTable } from './EmployeeTable'
+import { Tab } from '@portal/components/Tab';
+import { TextHeader } from '@portal/components/TextHeader';
+import { uuid } from '@assets/lib/f';
+import { ISelectedListItem, SelectedList } from './SelectedList';
+import { SearchInput } from '@portal/components/form/SearchInput';
+import { Tree } from '@portal/components/QxpTree';
+import { EmployeeTable } from './EmployeeTable';
+import { getDepartmentStructure } from '@portal/pages/accessControl/RoleManagement/api';
 
 export const OwnerSelector = () => {
-  const [keyword, setKeyword] = useState<string>('')
-  const [tabKey, setTabKey] = useState<string | number>('1')
-  const departmentsData: TreeData[] = [
-    {
-      title: '全象云应用开发平台',
-      key: '1',
-      children: [
-        {
-          title: '研发部',
-          key: '1-1',
-          children: [
-            {
-              title: '研发一部',
-              key: '1-1-1',
-              children: [],
-            },
-            {
-              title: '研发二部',
-              key: '1-1-2',
-              children: [],
-            },
-          ],
-        },
-        {
-          title: '产品体验部',
-          key: '1-2',
-          children: [
-            {
-              title: '质量保证部',
-              key: '1-2-1',
-              children: [],
-            },
-            {
-              title: '产品设计部',
-              key: '1-2-2',
-              children: [],
-            },
-            {
-              title: '产品文档部',
-              key: '1-2-3',
-              children: [],
-            },
-          ],
-        },
-        {
-          title: '未分配部门',
-          key: '2',
-          children: [],
-        },
-      ],
-    },
-  ]
+  const [keyword, setKeyword] = useState<string>('');
+  const [tabKey, setTabKey] = useState<string | number>('1');
+  const [depID, setDepID] = useState<string | null>(null);
+  let { data: departments } = useQuery(['getDepartmentStructure'], getDepartmentStructure, {
+    refetchOnWindowFocus: false,
+    cacheTime: -1,
+  });
+
+  useEffect(() => {
+    if (departments && departments.length) {
+      setDepID(departments[0].id as string);
+    }
+  }, [departments]);
+
+  if (!departments) {
+    departments = [
+      {
+        title: '全象云应用开发平台',
+        key: '1',
+        id: '9459cb9e-b66b-49f6-b1ef-a88232a07b1b',
+        children: [
+          {
+            title: '研发部',
+            key: '1-1',
+            id: '9459cb9e-b66b-49f6-b1ef-a88232a07b1b',
+            children: [
+              {
+                title: '研发一部',
+                key: '1-1-1',
+                id: '9459cb9e-b66b-49f6-b1ef-a88232a07b1b',
+                children: [],
+              },
+              {
+                title: '研发二部',
+                key: '1-1-2',
+                id: '9459cb9e-b66b-49f6-b1ef-a88232a07b1b',
+                children: [],
+              },
+            ],
+          },
+          {
+            title: '产品体验部',
+            key: '1-2',
+            id: '9459cb9e-b66b-49f6-b1ef-a88232a07b1b',
+            children: [
+              {
+                title: '质量保证部',
+                key: '1-2-1',
+                id: '9459cb9e-b66b-49f6-b1ef-a88232a07b1b',
+                children: [],
+              },
+              {
+                title: '产品设计部',
+                key: '1-2-2',
+                id: '9459cb9e-b66b-49f6-b1ef-a88232a07b1b',
+                children: [],
+              },
+              {
+                title: '产品文档部',
+                key: '1-2-3',
+                id: '9459cb9e-b66b-49f6-b1ef-a88232a07b1b',
+                children: [],
+              },
+            ],
+          },
+          {
+            title: '未分配部门',
+            key: '2',
+            id: '9459cb9e-b66b-49f6-b1ef-a88232a07b1b',
+            children: [],
+          },
+        ],
+      },
+    ];
+  }
+
   const selectedList: ISelectedListItem[] = [
     {
       name: 'Jack',
@@ -89,10 +113,10 @@ export const OwnerSelector = () => {
       departmentName: '产品文档部',
       id: uuid(),
     },
-  ]
+  ];
 
-  const onClear = () => {}
-  const onRemoveItem = () => {}
+  const onClear = () => {};
+  const onRemoveItem = () => {};
 
   return (
     <div className="flex flex-row">
@@ -115,14 +139,24 @@ export const OwnerSelector = () => {
                   }}
                   appendix="close"
                 />
-                <div className="flex flex-row" style={{ height: 'calc(100% - 32px)' }}>
-                  <div className="h-full overflow-scroll">
+                <div className="flex flex-row" style={{ height: 'calc(100% - 48px)' }}>
+                  <div className="h-full flex flex-col overflow-hidden">
                     <TextHeader className="pb-0" title="选择部门" />
-                    <Tree treeData={departmentsData} className="-ml-2" />
+                    <Tree
+                      treeData={departments}
+                      className="-ml-2 mr-4 mt-4 overflow-scroll"
+                      itemClassName="cursor-pointer hover:bg-white rounded-tl-2xl rounded-bl-2xl"
+                      selectable
+                      selectedClassName="bg-white text-blue-primary rounded-tl-2xl rounded-bl-2xl"
+                      expandOnSelect={false}
+                      onRow={{
+                        onClick: (node) => setDepID(node.id as string),
+                      }}
+                    />
                   </div>
-                  <div className="h-full overflow-scroll flex-1">
+                  <div className="h-full flex flex-col overflow-hidden flex-1">
                     <TextHeader title="全象云应用开发平台" />
-                    <EmployeeTable />
+                    <EmployeeTable depID={depID} className="overflow-scroll" />
                   </div>
                 </div>
               </>
@@ -141,8 +175,8 @@ export const OwnerSelector = () => {
                   appendix="close"
                 />
                 <div
-                  className="flex flex-col w-full overflow-scroll"
-                  style={{ height: 'calc(100% - 32px)' }}
+                  className="h-full flex flex-col overflow-hidden"
+                  style={{ height: 'calc(100% - 48px)' }}
                 >
                   <TextHeader
                     className="pb-0"
@@ -153,9 +187,9 @@ export const OwnerSelector = () => {
                     descClassName="-ml-dot-4"
                   />
                   <Tree
-                    treeData={departmentsData}
+                    treeData={departments}
                     keyword={keyword}
-                    className="-ml-2 bg-white rounded-md"
+                    className="-ml-2 bg-white rounded-md overflow-scroll"
                   />
                 </div>
               </>
@@ -171,5 +205,5 @@ export const OwnerSelector = () => {
         onRemoveItem={onRemoveItem}
       />
     </div>
-  )
-}
+  );
+};

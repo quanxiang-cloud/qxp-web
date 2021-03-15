@@ -1,32 +1,33 @@
-import { useQuery } from 'react-query'
+import { useQuery } from 'react-query';
 
-import React, { useState } from 'react'
-import useCss from 'react-use/lib/useCss'
-import classnames from 'classnames'
-import { Select, Control, Icon, Input, Dropdown, Loading } from '@QCFE/lego-ui'
-import XLSX from 'xlsx'
+import React, { useState } from 'react';
+import useCss from 'react-use/lib/useCss';
+import classnames from 'classnames';
+import { Select, Control, Icon, Input, Dropdown, Loading } from '@QCFE/lego-ui';
+import XLSX from 'xlsx';
 
-import { TextHeader } from '@portal/components/TextHeader'
-import { DepartmentStaff } from '@portal/components/DepartmentStaff'
-import { DepartmentTree } from './DepartmentTree'
-import { ActionsList, IActionListItem } from '@portal/components/ActionsList'
-import { Button } from '@portal/components/Button'
-import { PersonInfo } from './PersonInfo'
-import { ExportFileModal } from './ExportFileModal'
-import { StaffModal } from './StaffModal'
-import { SelectCheckbox } from '@portal/components/SelectCheckbox'
+import { TextHeader } from '@portal/components/TextHeader';
+import { DepartmentStaff } from '@portal/components/DepartmentStaff';
+import { DepartmentTree } from './DepartmentTree';
+import { ActionsList, IActionListItem } from '@portal/components/ActionsList';
+import { Button } from '@portal/components/Button';
+import { PersonInfo } from './PersonInfo';
+import { ExportFileModal } from './ExportFileModal';
+import { StaffModal } from './StaffModal';
+import { SelectCheckbox } from '@portal/components/SelectCheckbox';
 
-import { getERPTree } from './api'
+import { getERPTree } from './api';
+import { twCascade } from '@mariusmarais/tailwind-cascade';
 
 export interface IMailList {
-  visible: boolean
+  visible: boolean;
 }
 
 export const MailList = ({ visible }: IMailList) => {
-  const [selectedValue, changeSelectedValue] = useState('CentOS')
-  const [inputValue, changeInputValue] = useState('')
-  const [visibleFile, setVisibleFile] = useState(false)
-  const [visibleStaff, setVisibleStaff] = useState(false)
+  const [selectedValue, changeSelectedValue] = useState('CentOS');
+  const [inputValue, changeInputValue] = useState('');
+  const [visibleFile, setVisibleFile] = useState(false);
+  const [visibleStaff, setVisibleStaff] = useState(false);
 
   // if (isLoading) {
   //   return (
@@ -42,76 +43,76 @@ export const MailList = ({ visible }: IMailList) => {
       iconName: 'add-department.svg',
       text: '导出员工数据 ',
     },
-  ]
+  ];
 
   // 打开文件模态框
   const importFile = () => {
-    setVisibleFile(true)
-  }
+    setVisibleFile(true);
+  };
 
   // 关闭文件模态框
   const closeFileModal = () => {
-    setVisibleFile(false)
-  }
+    setVisibleFile(false);
+  };
 
   const importExcel = (e: any) => {
-    console.log(e)
-    const files = e.target.files
-    console.log(files)
+    console.log(e);
+    const files = e.target.files;
+    console.log(files);
 
-    const name = files.name
-    console.log(name)
-    const reader = new FileReader()
-    const jsondata: any[] = []
+    const name = files.name;
+    console.log(name);
+    const reader = new FileReader();
+    const jsondata: any[] = [];
     // [{
     //   key: 'A3',
     //   name: "",
     //   reason: ""
     // }]
     reader.onload = (evt: any) => {
-      const bstr = evt.target.result
-      const wb = XLSX.read(bstr, { type: 'binary' })
-      console.log(wb)
-      const wsname = wb.SheetNames[0]
-      console.log(wsname)
-      const ws = wb.Sheets[wsname]
-      console.log(ws)
-      console.log(typeof ws)
+      const bstr = evt.target.result;
+      const wb = XLSX.read(bstr, { type: 'binary' });
+      console.log(wb);
+      const wsname = wb.SheetNames[0];
+      console.log(wsname);
+      const ws = wb.Sheets[wsname];
+      console.log(ws);
+      console.log(typeof ws);
       Object.keys(ws).forEach((key) => {
-        const reg = /[A-Z][0-9]/
+        const reg = /[A-Z][0-9]/;
         if (!reg.test(key)) {
-          return
+          return;
         }
-        const letter = key.substring(0, 1) // 字母
-        const index = Number(key.substring(1, 2)) // 数字
-        console.log(index)
-        console.log(letter)
+        const letter = key.substring(0, 1); // 字母
+        const index = Number(key.substring(1, 2)); // 数字
+        console.log(index);
+        console.log(letter);
         if (index === 1) {
-          return
+          return;
         }
         if (index > 2 && letter === 'A') {
           jsondata.push({
             key: key,
             name: ws[key].v,
-          })
+          });
         }
         if (index > 2 && letter === 'B') {
-          jsondata[jsondata.length - 1].phone = ws[key].v
+          jsondata[jsondata.length - 1].phone = ws[key].v;
         }
         if (index > 2 && letter === 'C') {
-          jsondata[jsondata.length - 1].email = ws[key].v
+          jsondata[jsondata.length - 1].email = ws[key].v;
         }
-      })
-      console.log(jsondata)
+      });
+      console.log(jsondata);
       // const data = XLSX.utils.sheet_to_csv(ws);
       // const json = XLSX.utils.sheet_to_json(ws);
-    }
-    reader.readAsBinaryString(files[0])
-  }
+    };
+    reader.readAsBinaryString(files[0]);
+  };
 
   const closeStaffModal = () => {
-    setVisibleStaff(!visibleStaff)
-  }
+    setVisibleStaff(!visibleStaff);
+  };
 
   return (
     <div
@@ -152,7 +153,12 @@ export const MailList = ({ visible }: IMailList) => {
         className="bg-F1F5F9-dot-5 px-4 py-dot-8 header-background-image"
       />
       <div className="h-full">
-        <div className="w-416 m-4 bg-F1F5F9 rounded-r-dot-6 rounded-tl-dot-2 rounded-bl-dot-6 flex items-center">
+        <div
+          className={twCascade(
+            'w-416 m-4 bg-F1F5F9 rounded-r-dot-6 rounded-tl-dot-2',
+            'rounded-bl-dot-6 flex items-center',
+          )}
+        >
           <Select
             name="os"
             className={useCss({
@@ -254,5 +260,5 @@ export const MailList = ({ visible }: IMailList) => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};

@@ -1,12 +1,12 @@
-import React from 'react'
-import { Modal } from '@QCFE/lego-ui'
+import React from 'react';
+import { Modal } from '@QCFE/lego-ui';
 
-import { Button } from '@portal/components/Button'
+import { Button } from '@portal/components/Button';
 
 interface DeleteModalProps {
-  visible: boolean
-  closeModal(): void
-  okModal(): void
+  visible: boolean;
+  closeModal(): void;
+  okModal(): void;
 }
 
 export const DeleteModal = ({ visible, closeModal, okModal }: DeleteModalProps) => {
@@ -54,5 +54,5 @@ export const DeleteModal = ({ visible, closeModal, okModal }: DeleteModalProps) 
         吗？
       </div>
     </Modal>
-  )
-}
+  );
+};

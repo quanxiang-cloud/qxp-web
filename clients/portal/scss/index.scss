@@ -511,6 +511,12 @@ html {
       width: 100% !important;
       .table-wrapper {
         width: 100% !important;
+        &.rounded-bl-none .table {
+          border-bottom-left-radius: unset !important;
+        }
+        &.rounded-br-none .table {
+          border-bottom-right-radius: unset !important;
+        }
         .table {
           border-radius: 0.6rem !important;
           width: 100% !important;
@@ -570,4 +576,28 @@ label.checkbox.checked:hover:before {
 
 button {
   outline: none !important;
+}
+
+.qxp-single-select {
+  background-color: #fff !important;
+  border: none !important;
+
+  .select-control {
+    border: 1px solid #cbd5e1 !important;
+    border-radius: 0.1rem 0.4rem 0.4rem 0.4rem !important;
+    background-color: #fff !important;
+
+    .select-value-label {
+      color: #475569 !important;
+      font-size: 0.6rem !important;
+    }
+  }
+}
+
+.select-menu-outer {
+  border: none !important;
+  box-shadow: 0 0 3px 0 rgba(203, 213, 225, 1) !important;
+  .select-menu {
+    padding: 0 !important;
+  }
 }

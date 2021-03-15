@@ -1,50 +1,50 @@
-import React, { useState } from 'react'
-import useCss from 'react-use/lib/useCss'
-import { Tree, TreeNode, Dropdown } from '@QCFE/lego-ui'
+import React, { useState } from 'react';
+import useCss from 'react-use/lib/useCss';
+import { Tree, TreeNode, Dropdown } from '@QCFE/lego-ui';
 
-import { ActionsList, IActionListItem } from '@portal/components/ActionsList'
-import { DepartmentModal } from './DepartmentModal'
-import { DeleteModal } from './DeleteModal'
+import { ActionsList, IActionListItem } from '@portal/components/ActionsList';
+import { DepartmentModal } from './DepartmentModal';
+import { DeleteModal } from './DeleteModal';
 
 interface TreeNodeItem {
-  title: string
-  id: string
-  addDepartment: (val: string, id: string) => void
-  [propsName: string]: any
+  title: string;
+  id: string;
+  addDepartment: (val: string, id: string) => void;
+  [propsName: string]: any;
 }
 
 const Title = ({ title, id, addDepartment }: TreeNodeItem) => {
-  const [handleStatus, setHandleStatus] = useState<'add' | 'edit'>('add')
-  const [visibleDepartment, setVisibleDepartment] = useState(false)
-  const [visibleDelete, setVisibleDelete] = useState(false)
-  const [indexOfNode, setIndexOfNode] = useState(id) // 记录当前点击树节点的id
+  const [handleStatus, setHandleStatus] = useState<'add' | 'edit'>('add');
+  const [visibleDepartment, setVisibleDepartment] = useState(false);
+  const [visibleDelete, setVisibleDelete] = useState(false);
+  const [indexOfNode, setIndexOfNode] = useState(id); // 记录当前点击树节点的id
   // 添加部门 or 修改部门
   const handleDepartment = (status: 'add' | 'edit') => {
-    setVisibleDepartment(true)
-    setHandleStatus(status)
-  }
+    setVisibleDepartment(true);
+    setHandleStatus(status);
+  };
 
   //  关闭部门模态框
   const closeDepartmentModal = () => {
-    setVisibleDepartment(false)
-  }
+    setVisibleDepartment(false);
+  };
 
   //  确定添加部门处理函数
   const okDepartmentModal = (val: any, nodeIndex: string) => {
-    setIndexOfNode(nodeIndex) // 更新当前点击树节点的id
-    addDepartment(val['department-name'], nodeIndex) // 将新增部门添加为当前点击树节点的子节点
-    setVisibleDepartment(false)
-  }
+    setIndexOfNode(nodeIndex); // 更新当前点击树节点的id
+    addDepartment(val['department-name'], nodeIndex); // 将新增部门添加为当前点击树节点的子节点
+    setVisibleDepartment(false);
+  };
 
   // 删除部门
   const deleteDepartment = () => {
-    setVisibleDelete(true)
-  }
+    setVisibleDelete(true);
+  };
 
   // 关闭删除弹窗
   const closeDeleteModal = () => {
-    setVisibleDelete(false)
-  }
+    setVisibleDelete(false);
+  };
 
   const actions: IActionListItem<string>[] = [
     {
@@ -65,7 +65,7 @@ const Title = ({ title, id, addDepartment }: TreeNodeItem) => {
       text: '删除',
       onclick: () => deleteDepartment(),
     },
-  ]
+  ];
 
   return (
     <>
@@ -96,21 +96,21 @@ const Title = ({ title, id, addDepartment }: TreeNodeItem) => {
         </div>
       </div>
     </>
-  )
-}
+  );
+};
 
-interface TreeNode {
+interface ITreeNode {
   id: string;
   departmentName: string;
   departmentLeaderId: string;
   useStatus: number;
   superId: string;
-  child: TreeNode[];
+  child: ITreeNode[];
   pid?: string;
 }
 
 interface DepartmentTreeProps {
-  treeData: TreeNode[];
+  treeData: ITreeNode[];
 }
 
 export const DepartmentTree = (props: DepartmentTreeProps) => {
@@ -147,7 +147,7 @@ export const DepartmentTree = (props: DepartmentTreeProps) => {
       key: '2',
       children: [],
     },
-  ])
+  ]);
 
   // 添加部门节点数据
   const addHandle = (val: string, id: string) => {
@@ -155,7 +155,6 @@ export const DepartmentTree = (props: DepartmentTreeProps) => {
     // const i = id.split('-').map((item) => {
     //   return Number(item) - 1
     // })
-
     // switch (i.length) {
     //   case 2:
     //     data[i[0]].children[i[1]].children.push({
@@ -175,14 +174,13 @@ export const DepartmentTree = (props: DepartmentTreeProps) => {
     //   default:
     //     break
     // }
-
     // 更新treeData的状态
     // setTreeData(data)
-  }
+  };
 
   const renderTreeNodes = (data: any) =>
     data.map((item: any) => {
-      const { child } = item
+      const { child } = item;
       if (child) {
         return (
           <TreeNode
@@ -192,7 +190,7 @@ export const DepartmentTree = (props: DepartmentTreeProps) => {
           >
             {renderTreeNodes(child)}
           </TreeNode>
-        )
+        );
       }
       return (
         <TreeNode
@@ -200,8 +198,8 @@ export const DepartmentTree = (props: DepartmentTreeProps) => {
           key={item.id}
           dataRef={item}
         />
-      )
-    })
+      );
+    });
 
   return (
     <div className="w-auto h-full">
@@ -246,5 +244,5 @@ export const DepartmentTree = (props: DepartmentTreeProps) => {
         {renderTreeNodes(treeData)}
       </Tree>
     </div>
-  )
-}
+  );
+};

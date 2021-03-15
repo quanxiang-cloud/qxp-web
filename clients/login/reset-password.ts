@@ -1,84 +1,84 @@
-import { IInputField, query } from '@assets/lib/atom'
+import { IInputField, query } from '@assets/lib/atom';
 
-import Page from './page'
-import User, { IUser } from './user'
-import Password from './password-field'
+import Page from './page';
+import User, { IUser } from './user';
+import Password from './password-field';
 
-import './style.scss'
+import './style.scss';
 
 interface IResetUser extends IUser {
-  oldPassword: IInputField
-  newPassword: IInputField
-  checkPassword: IInputField
+  oldPassword: IInputField;
+  newPassword: IInputField;
+  checkPassword: IInputField;
 }
 
 class ResetUser extends User {
-  private oldPassword: Password
-  private newPassword: Password
-  private checkPassword: Password
+  private oldPassword: Password;
+  private newPassword: Password;
+  private checkPassword: Password;
 
   constructor({ oldPassword, newPassword, checkPassword, action }: IResetUser) {
-    super({ action })
-    this.oldPassword = new Password(oldPassword, action, this.onValidateAll.bind(this))
-    this.newPassword = new Password(newPassword, action, this.onValidateAll.bind(this))
-    this.checkPassword = new Password(checkPassword, action, this.onValidateAll.bind(this))
-    const that = this
+    super({ action });
+    this.oldPassword = new Password(oldPassword, action, this.onValidateAll.bind(this));
+    this.newPassword = new Password(newPassword, action, this.onValidateAll.bind(this));
+    this.checkPassword = new Password(checkPassword, action, this.onValidateAll.bind(this));
+    const that = this;
 
     this.checkPassword.validate = function (checkAll?: boolean) {
-      let isValid = true
+      let isValid = true;
       if ((this.value as string).length < 6) {
         if (this.value !== '') {
-          this.errMessage = '密码至少为6位'
-          isValid = false
+          this.errMessage = '密码至少为6位';
+          isValid = false;
         }
-        this.action.classList.add('disabled')
+        this.action.classList.add('disabled');
       }
       if ((this.value as string) !== (that.newPassword.value as string)) {
         if (this.value !== '') {
-          isValid = false
+          isValid = false;
           if (that.newPassword.value) {
-            this.errMessage = '两次输入的新密码不匹配'
+            this.errMessage = '两次输入的新密码不匹配';
           }
         }
 
-        this.action.classList.add('disabled')
+        this.action.classList.add('disabled');
       }
 
       if (isValid) {
-        this.errMessage = ''
+        this.errMessage = '';
       }
       if (this.value === '') {
-        isValid = false
+        isValid = false;
       }
-      ;(this.errorElement as HTMLElement).textContent = this.errMessage as string
+      (this.errorElement as HTMLElement).textContent = this.errMessage as string;
       if (checkAll && (this.onValidateAll as Function)(this, isValid)) {
-        this.action.classList.remove('disabled')
+        this.action.classList.remove('disabled');
       }
-      return isValid
-    }
+      return isValid;
+    };
 
-    this.checkPassword.validate(true)
+    this.checkPassword.validate(true);
   }
 
   onValidateAll(context: Password, isValid: boolean): boolean {
     if (!this.oldPassword || !this.newPassword || !this.checkPassword) {
-      return false
+      return false;
     }
     return (
       [this.oldPassword, this.newPassword, this.checkPassword]
         .filter((i) => i !== context)
         .every((i) => i.validate()) && isValid
-    )
+    );
   }
 
   validate(): boolean {
     return (
       this.oldPassword.validate() && this.newPassword.validate() && this.checkPassword.validate()
-    )
+    );
   }
 }
 
-new Page()
+new Page();
 new ResetUser({
   oldPassword: {
     name: 'reset:password:oldPassword',
@@ -96,4 +96,4 @@ new ResetUser({
     errorElement: query<HTMLElement>('.checkPassword-hints'),
   },
   action: query<HTMLButtonElement>('.btn-reset'),
-})
+});

@@ -1,6 +1,6 @@
-import React from 'react'
+import React from 'react';
 
-import { Dropdown, Menu, Icon } from '@QCFE/lego-ui'
+import { Dropdown, Menu, Icon } from '@QCFE/lego-ui';
 
 export const PersonalSettingMenu = () => {
   return (
@@ -24,5 +24,5 @@ export const PersonalSettingMenu = () => {
         <Icon name="caret-down" />
       </div>
     </Dropdown>
-  )
-}
+  );
+};

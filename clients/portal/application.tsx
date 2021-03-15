@@ -1,11 +1,11 @@
-import React from 'react'
-import { LocaleProvider } from '@QCFE/lego-ui'
-import { BrowserRouter as Router } from 'react-router-dom'
+import React from 'react';
+import { LocaleProvider } from '@QCFE/lego-ui';
+import { BrowserRouter as Router } from 'react-router-dom';
 
-import { Loading } from './components/Loading'
+import { Loading } from './components/Loading';
 
-import locales from './locales'
-import routes from './routes'
+import locales from './locales';
+import routes from './routes';
 
 export default class Application extends React.Component<unknown> {
   render(): JSX.Element {
@@ -19,6 +19,6 @@ export default class Application extends React.Component<unknown> {
           </div>
         </Router>
       </LocaleProvider>
-    )
+    );
   }
 }

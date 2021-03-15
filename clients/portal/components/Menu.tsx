@@ -1,64 +1,65 @@
-import React, { useEffect, useRef } from 'react'
-import classnames from 'classnames'
-import { Link, useHistory } from 'react-router-dom'
-import { Icon } from '@QCFE/lego-ui'
-import useCss from 'react-use/lib/useCss'
+import React, { useEffect, useRef } from 'react';
+import classnames from 'classnames';
+import { Link, useHistory } from 'react-router-dom';
+import { Icon } from '@QCFE/lego-ui';
+import useCss from 'react-use/lib/useCss';
 
-import { List } from '@portal/components/List'
-import { ItemWithTitleDesc } from '@portal/components/ItemWithTitleDesc'
-import { isBool, uuid } from '@assets/lib/f'
+import { List } from '@portal/components/List';
+import { ItemWithTitleDesc } from '@portal/components/ItemWithTitleDesc';
+import { isBool, uuid } from '@assets/lib/f';
+import { twCascade } from '@mariusmarais/tailwind-cascade';
 
 interface IMenu {
-  iconClassName: string
-  iconUrl: string
-  title: string
-  desc: string
-  address: string
+  iconClassName: string;
+  iconUrl: string;
+  title: string;
+  desc: string;
+  address: string;
 }
 
 export interface IMenus {
-  menus: IMenu[]
-  visible: boolean | null
-  toggle: (show: boolean) => void
+  menus: IMenu[];
+  visible: boolean | null;
+  toggle: (show: boolean) => void;
 }
 
 export const Menu = ({ menus, visible, toggle }: IMenus) => {
-  const maskRef = useRef(null)
-  const history = useHistory()
+  const maskRef = useRef(null);
+  const history = useHistory();
 
   useEffect(() => {
-    const maskElement = (maskRef.current as unknown) as HTMLDivElement
+    const maskElement = (maskRef.current as unknown) as HTMLDivElement;
     maskElement.onclick = (e: MouseEvent) => {
       if (e.target == maskElement) {
-        toggle(false)
+        toggle(false);
       }
-    }
+    };
     return () => {
-      maskElement.onclick = null
-    }
-  }, [])
+      maskElement.onclick = null;
+    };
+  }, []);
 
   useEffect(() => {
-    let timeId = 0
+    let timeId = 0;
     if (!isBool(visible) || !maskRef.current) {
-      return
+      return;
     }
-    const maskElement = (maskRef.current as unknown) as HTMLDivElement
+    const maskElement = (maskRef.current as unknown) as HTMLDivElement;
     if (visible) {
-      maskElement.classList.remove('hidden')
-      maskElement.classList.remove('opacity-0')
-      maskElement.classList.add('opacity-100')
+      maskElement.classList.remove('hidden');
+      maskElement.classList.remove('opacity-0');
+      maskElement.classList.add('opacity-100');
     } else {
-      maskElement.classList.remove('opacity-100')
-      maskElement.classList.add('opacity-0')
+      maskElement.classList.remove('opacity-100');
+      maskElement.classList.add('opacity-0');
       timeId = setTimeout(() => {
-        maskElement.classList.add('hidden')
-      }, 200)
+        maskElement.classList.add('hidden');
+      }, 200);
     }
     return () => {
-      clearTimeout(timeId)
-    }
-  }, [visible])
+      clearTimeout(timeId);
+    };
+  }, [visible]);
 
   return (
     <div
@@ -98,7 +99,10 @@ export const Menu = ({ menus, visible, toggle }: IMenus) => {
             <div
               key={uuid()}
               onClick={() => history.push(address)}
-              className="flex flex-row justify-between items-center bg-white px-4 py-dot-8 rounded cursor-pointer"
+              className={twCascade(
+                'flex flex-row justify-between items-center bg-white px-4 py-dot-8',
+                'rounded cursor-pointer',
+              )}
             >
               <ItemWithTitleDesc
                 title={title}
@@ -123,7 +127,8 @@ export const Menu = ({ menus, visible, toggle }: IMenus) => {
         />
         <div
           className={classnames(
-            'self-start cursor-pointer mt-8 flex flex-between items-center rounded-lg rounded-tr-none px-dot-8 py-1',
+            'self-start cursor-pointer mt-8 flex flex-between',
+            'items-center rounded-lg rounded-tr-none px-dot-8 py-1',
             useCss({
               border: '1.5px solid #475569',
             }),
@@ -134,5 +139,5 @@ export const Menu = ({ menus, visible, toggle }: IMenus) => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};

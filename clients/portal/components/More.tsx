@@ -1,15 +1,15 @@
-import React from 'react'
+import React from 'react';
 
-import { ActionsList, IActionListItem } from './ActionsList'
-import { Popover } from './Popover'
-import { Dot } from './Dot'
+import { ActionsList, IActionListItem } from './ActionsList';
+import { Popover } from './Popover';
+import { Dot } from './Dot';
 
 export interface IMore<T> {
-  className?: string
-  triggerClassName?: string
-  tooltipClassName?: string
-  actions: IActionListItem<T>[]
-  params: T
+  className?: string;
+  triggerClassName?: string;
+  tooltipClassName?: string;
+  actions: IActionListItem<T>[];
+  params: T;
 }
 
 export const More = function <T>({
@@ -32,5 +32,5 @@ export const More = function <T>({
         <Dot />
       </div>
     </Popover>
-  )
-}
+  );
+};

@@ -1,20 +1,20 @@
-import React from 'react'
-import useCss from 'react-use/lib/useCss'
-import { twCascade } from '@mariusmarais/tailwind-cascade'
+import React from 'react';
+import useCss from 'react-use/lib/useCss';
+import { twCascade } from '@mariusmarais/tailwind-cascade';
 
-import { TextHeader } from './TextHeader'
+import { TextHeader } from './TextHeader';
 
 export interface ICard {
-  title: string | JSX.Element
-  desc?: string
-  action?: string | JSX.Element
-  content?: JSX.Element
-  className?: string
-  headerClassName?: string
-  children?: JSX.Element
-  headerActionClassName?: string
-  contentClassName?: string
-  style?: Record<string, string>
+  title: string | JSX.Element;
+  desc?: string;
+  action?: string | JSX.Element;
+  content?: JSX.Element;
+  className?: string;
+  headerClassName?: string;
+  children?: JSX.Element;
+  headerActionClassName?: string;
+  contentClassName?: string;
+  style?: Record<string, string>;
 }
 
 export const Card = ({
@@ -31,7 +31,7 @@ export const Card = ({
 }: ICard) => {
   const classNames = useCss({
     'border-radius': '12px',
-  })
+  });
 
   return (
     <div style={style} className={twCascade('bg-white-dot-6-5 m-2', classNames, className)}>
@@ -46,5 +46,5 @@ export const Card = ({
         <main className={twCascade('flex-1', contentClassName)}>{content || children}</main>
       )}
     </div>
-  )
-}
+  );
+};

@@ -1,18 +1,18 @@
-import React from 'react'
-import { Modal, Form } from '@QCFE/lego-ui'
+import React from 'react';
+import { Modal, Form } from '@QCFE/lego-ui';
 
-import { Button } from '@portal/components/Button'
+import { Button } from '@portal/components/Button';
 
-const { TextField, CheckboxGroupField } = Form
+const { TextField, CheckboxGroupField } = Form;
 
 interface ResetPasswordModalProps {
-  visible: boolean
-  closeModal(): void
-  okModal(): void
+  visible: boolean;
+  closeModal(): void;
+  okModal(): void;
 }
 
 export const ResetPasswordModal = (props: ResetPasswordModalProps) => {
-  const { visible, closeModal, okModal } = props
+  const { visible, closeModal, okModal } = props;
 
   return (
     <Modal
@@ -71,5 +71,5 @@ export const ResetPasswordModal = (props: ResetPasswordModalProps) => {
         />
       </Form>
     </Modal>
-  )
-}
+  );
+};

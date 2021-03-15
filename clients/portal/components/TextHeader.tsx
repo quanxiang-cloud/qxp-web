@@ -1,20 +1,20 @@
-import React from 'react'
-import { twCascade } from '@mariusmarais/tailwind-cascade'
+import React from 'react';
+import { twCascade } from '@mariusmarais/tailwind-cascade';
 
-import { ItemWithTitleDesc } from './ItemWithTitleDesc'
-import { isString } from '@assets/lib/f'
+import { ItemWithTitleDesc } from './ItemWithTitleDesc';
+import { isString } from '@assets/lib/f';
 
 export interface ITextHeader {
-  className?: string
-  title: JSX.Element | string
-  desc?: string
-  action?: JSX.Element | string
-  actionClassName?: string
-  textDirection?: 'row' | 'col'
-  itemClassName?: string
-  titleClassName?: string
-  descClassName?: string
-  textClassName?: string
+  className?: string;
+  title: JSX.Element | string;
+  desc?: string;
+  action?: JSX.Element | string;
+  actionClassName?: string;
+  textDirection?: 'row' | 'col';
+  itemClassName?: string;
+  titleClassName?: string;
+  descClassName?: string;
+  textClassName?: string;
 }
 
 export const TextHeader = ({
@@ -51,5 +51,5 @@ export const TextHeader = ({
       )}
       <div className={actionClassName}>{!isString(action) && action}</div>
     </header>
-  )
-}
+  );
+};

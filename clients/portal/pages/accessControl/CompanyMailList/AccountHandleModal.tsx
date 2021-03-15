@@ -1,21 +1,21 @@
-import React from 'react'
-import { Modal } from '@QCFE/lego-ui'
+import React from 'react';
+import { Modal } from '@QCFE/lego-ui';
 
 declare module '@QCFE/lego-ui' {}
 
-import { Button } from '@portal/components/Button'
+import { Button } from '@portal/components/Button';
 
 interface AccountHandleModalProps {
-  visible: boolean
-  status: 'disabled' | 'delete'
-  closeModal(): void
-  okModal(): void
+  visible: boolean;
+  status: 'disabled' | 'delete';
+  closeModal(): void;
+  okModal(): void;
 }
 
 export const AccountHandleModal = (props: AccountHandleModalProps) => {
-  const { visible, status, closeModal, okModal } = props
+  const { visible, status, closeModal, okModal } = props;
 
-  const titleText = status === 'delete' ? '删除' : '禁用'
+  const titleText = status === 'delete' ? '删除' : '禁用';
 
   return (
     <Modal
@@ -70,5 +70,5 @@ export const AccountHandleModal = (props: AccountHandleModalProps) => {
         </div>
       )}
     </Modal>
-  )
-}
+  );
+};
