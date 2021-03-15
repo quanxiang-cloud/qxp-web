@@ -1,7 +1,9 @@
+import { useQuery } from 'react-query'
+
 import React, { useState } from 'react'
 import useCss from 'react-use/lib/useCss'
 import classnames from 'classnames'
-import { Select, Control, Icon, Input, Dropdown } from '@QCFE/lego-ui'
+import { Select, Control, Icon, Input, Dropdown, Loading } from '@QCFE/lego-ui'
 import XLSX from 'xlsx'
 
 import { TextHeader } from '@portal/components/TextHeader'
@@ -12,6 +14,9 @@ import { Button } from '@portal/components/Button'
 import { PersonInfo } from './PersonInfo'
 import { ExportFileModal } from './ExportFileModal'
 import { StaffModal } from './StaffModal'
+import { SelectCheckbox } from '@portal/components/SelectCheckbox'
+
+import { getERPTree } from './api'
 
 export interface IMailList {
   visible: boolean
@@ -22,6 +27,14 @@ export const MailList = ({ visible }: IMailList) => {
   const [inputValue, changeInputValue] = useState('')
   const [visibleFile, setVisibleFile] = useState(false)
   const [visibleStaff, setVisibleStaff] = useState(false)
+
+  // if (isLoading) {
+  //   return (
+  //     <div className="flex items-center justify-center py-4">
+  //       <Loading />
+  //     </div>
+  //   )
+  // }
 
   const actions: IActionListItem<null>[] = [
     {
@@ -116,14 +129,22 @@ export const MailList = ({ visible }: IMailList) => {
     >
       {/* <input type="file" id="excel-file" onChange={importExcel} /> */}
       {/* 员工模态框 */}
-      <StaffModal
-        visible={visibleStaff}
-        status="add"
-        okModal={closeStaffModal}
-        closeModal={closeStaffModal}
-      />
+      {visibleStaff && (
+        <StaffModal
+          visible={visibleStaff}
+          status="add"
+          okModal={closeStaffModal}
+          closeModal={closeStaffModal}
+        />
+      )}
       {/* 文件处理模态框 */}
-      <ExportFileModal visible={visibleFile} okModal={closeFileModal} closeModal={closeFileModal} />
+      {visibleFile && (
+        <ExportFileModal
+          visible={visibleFile}
+          okModal={closeFileModal}
+          closeModal={closeFileModal}
+        />
+      )}
       <TextHeader
         title="企业通讯录"
         desc="管理账号，如添加、编辑、删除账号等，同时还能关联每个账号的角色；用户可用账号名称或邮件登录全象云平台。"
@@ -184,7 +205,7 @@ export const MailList = ({ visible }: IMailList) => {
         <div className="h-full mt-4 flex items-start">
           <div className="w-12-dot-95 h-full">
             <DepartmentStaff department="部门人员" count={0} unit="部门" />
-            <DepartmentTree />
+            <DepartmentTree treeData={[]} />
           </div>
           <div className="vertical-line flex-grow-0"></div>
           <div className="flex-1 h-full">
@@ -196,7 +217,7 @@ export const MailList = ({ visible }: IMailList) => {
                   textClassName="text-white"
                   icon={
                     <img
-                      className="w-1-dot-2 h-1-dot-2 px-dot-4"
+                      className="w-1-dot-2 h-1-dot-2 pr-dot-4"
                       src="./dist/images/folder.svg"
                       alt="logo"
                     />
@@ -209,7 +230,7 @@ export const MailList = ({ visible }: IMailList) => {
                 <Button
                   icon={
                     <img
-                      className="w-1-dot-2 h-1-dot-2 px-dot-4"
+                      className="w-1-dot-2 h-1-dot-2 pr-dot-4"
                       src="./dist/images/add-department.svg"
                       alt="logo"
                     />
