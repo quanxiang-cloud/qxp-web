@@ -189,12 +189,12 @@ export const PersonInfo = () => {
         <div className="flex items-center justify-between">
           <ul className="flex items-center">
             <li className="flex items-center">
-              <img src="./dist/images/active.svg" className="px-dot-4" alt="" />
+              <img src="./dist/images/active.svg" className="pr-dot-4" alt="" />
               <div className="text-dot-7">活跃中：2</div>
             </li>
             <li className="flex items-center">
               <img
-                className="w-1-dot-2 h-1-dot-2 px-dot-4"
+                className="w-1-dot-2 h-1-dot-2 pr-dot-4"
                 src="./dist/images/disabled.svg"
                 alt=""
               />

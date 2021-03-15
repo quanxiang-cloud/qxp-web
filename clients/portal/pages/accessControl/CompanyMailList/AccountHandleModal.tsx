@@ -29,7 +29,7 @@ export const AccountHandleModal = (props: AccountHandleModalProps) => {
           <Button
             icon={
               <img
-                className="w-1-dot-2 h-1-dot-2 px-dot-4"
+                className="w-1-dot-2 h-1-dot-2 pr-dot-4"
                 src="./dist/images/icon_error.svg"
                 alt="icon_error"
               />
@@ -44,7 +44,7 @@ export const AccountHandleModal = (props: AccountHandleModalProps) => {
             textClassName="text-white"
             icon={
               <img
-                className="w-1-dot-2 h-1-dot-2 px-dot-4"
+                className="w-1-dot-2 h-1-dot-2 pr-dot-4"
                 src="./dist/images/icon_true.svg"
                 alt="icon_true"
               />

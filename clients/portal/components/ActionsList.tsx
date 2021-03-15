@@ -43,7 +43,7 @@ export const ActionsList = function <T>({ actions, params, className }: IActions
             >
               {action.iconName && (
                 <img
-                  className="w-1-dot-2 h-1-dot-2 px-dot-4"
+                  className="w-1-dot-2 h-1-dot-2 pr-dot-4"
                   src={
                     action.iconName.includes('/')
                       ? action.iconName

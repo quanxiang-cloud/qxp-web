@@ -99,26 +99,41 @@ const Title = ({ title, id, addDepartment }: TreeNodeItem) => {
   )
 }
 
-export const DepartmentTree = () => {
+interface TreeNode {
+  id: string;
+  departmentName: string;
+  departmentLeaderId: string;
+  useStatus: number;
+  superId: string;
+  child: TreeNode[];
+  pid?: string;
+}
+
+interface DepartmentTreeProps {
+  treeData: TreeNode[];
+}
+
+export const DepartmentTree = (props: DepartmentTreeProps) => {
+  // const { treeData } = props;
   const [treeData, setTreeData] = useState([
     {
-      title: '全象云应用开发平台',
+      departmentName: '全象云应用开发平台',
       id: '1',
       key: '1',
-      children: [
+      child: [
         {
-          title: '分配部门1',
+          departmentName: '分配部门1',
           id: '1-1',
           key: '1-1',
-          children: [],
+          child: [],
         },
         {
-          title: '分配部门2',
+          departmentName: '分配部门2',
           id: '1-2',
           key: '1-2',
-          children: [
+          child: [
             {
-              title: '第三层部门',
+              departmentName: '第三层部门',
               id: '1-2-1',
               key: '1-2-1',
             },
@@ -127,7 +142,7 @@ export const DepartmentTree = () => {
       ],
     },
     {
-      title: '测试部门',
+      departmentName: '测试部门',
       id: '2',
       key: '2',
       children: [],
@@ -136,53 +151,53 @@ export const DepartmentTree = () => {
 
   // 添加部门节点数据
   const addHandle = (val: string, id: string) => {
-    const data = treeData.slice()
-    const i = id.split('-').map((item) => {
-      return Number(item) - 1
-    })
+    // const data = treeData.slice()
+    // const i = id.split('-').map((item) => {
+    //   return Number(item) - 1
+    // })
 
-    switch (i.length) {
-      case 2:
-        data[i[0]].children[i[1]].children.push({
-          title: val,
-          id: id + '-' + (data[i[0]].children[i[1]].children.length + 1).toString(),
-          key: id + '-' + (data[i[0]].children[i[1]].children.length + 1).toString(),
-        })
-        break
-      case 1:
-        data[i[0]].children.push({
-          title: val,
-          id: id + '-' + (data[i[0]].children.length + 1).toString(),
-          key: id + '-' + (data[i[0]].children.length + 1).toString(),
-          children: [],
-        })
-        break
-      default:
-        break
-    }
+    // switch (i.length) {
+    //   case 2:
+    //     data[i[0]].children[i[1]].children.push({
+    //       title: val,
+    //       id: id + '-' + (data[i[0]].children[i[1]].children.length + 1).toString(),
+    //       key: id + '-' + (data[i[0]].children[i[1]].children.length + 1).toString(),
+    //     })
+    //     break
+    //   case 1:
+    //     data[i[0]].children.push({
+    //       title: val,
+    //       id: id + '-' + (data[i[0]].children.length + 1).toString(),
+    //       key: id + '-' + (data[i[0]].children.length + 1).toString(),
+    //       children: [],
+    //     })
+    //     break
+    //   default:
+    //     break
+    // }
 
     // 更新treeData的状态
-    setTreeData(data)
+    // setTreeData(data)
   }
 
   const renderTreeNodes = (data: any) =>
     data.map((item: any) => {
-      const { children } = item
-      if (children) {
+      const { child } = item
+      if (child) {
         return (
           <TreeNode
             title={<Title {...item} addDepartment={addHandle} />}
-            key={item.key}
+            key={item.id}
             dataRef={item}
           >
-            {renderTreeNodes(children)}
+            {renderTreeNodes(child)}
           </TreeNode>
         )
       }
       return (
         <TreeNode
           title={<Title {...item} addDepartment={addHandle} />}
-          key={item.key}
+          key={item.id}
           dataRef={item}
         />
       )

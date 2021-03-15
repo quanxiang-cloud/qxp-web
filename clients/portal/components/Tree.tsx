@@ -5,9 +5,10 @@ import { twCascade } from '@mariusmarais/tailwind-cascade'
 
 interface ITree extends TreeProps {
   treeData: TreeData[]
+  getKey?: (key: string) => void
 }
 
-export const Tree = ({ treeData, ...props }: ITree) => {
+export const Tree = ({ ...props }: ITree) => {
   const renderTreeNodes = (data: TreeData[]) =>
     data.map((item: TreeData) => {
       const { children } = item
@@ -38,11 +39,12 @@ export const Tree = ({ treeData, ...props }: ITree) => {
         />
       )
     })
-
+  const handleSelect = (key: string) => {
+    typeof props.getKey !== 'undefined' ? props.getKey(key[0]) : null
+  }
   return (
     <div className="w-auto h-full">
       <LegoTree
-        {...props}
         defaultExpandAll
         className={twCascade(
           useCss({
@@ -82,8 +84,9 @@ export const Tree = ({ treeData, ...props }: ITree) => {
           }),
           props.className,
         )}
+        onSelect={handleSelect}
       >
-        {renderTreeNodes(treeData)}
+        {renderTreeNodes(props.treeData)}
       </LegoTree>
     </div>
   )
