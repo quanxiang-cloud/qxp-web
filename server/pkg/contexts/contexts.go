@@ -19,8 +19,7 @@ var (
 	Config       Configuration
 	Logger       _log.Logger
 	LogLvl       logrus.Level
-	ClusterCache *redis.ClusterClient
-	Cache        *redis.Client
+	Cache        redis.UniversalClient
 	SessionStore *redisstore.RedisStore
 	IDWorker     *SnowFlake
 	HTTPClient   *http.Client
@@ -41,8 +40,7 @@ func SetupContext(configFile string, sessionCookieName string, appName string) (
 
 	if Config.Redis == nil {
 		var defaultRedisConfig = &RedisConfig{
-			Host:    []string{"redis"},
-			Port:    6379,
+			Hosts:   []string{"redis"},
 			DB:      1,
 			Timeout: 15,
 		}
@@ -51,15 +49,7 @@ func SetupContext(configFile string, sessionCookieName string, appName string) (
 		Config.Redis = defaultRedisConfig
 	}
 
-	if Config.DevMode {
-		Cache, err = NewRedisClient(Config.Redis)
-		if err != nil {
-			log.Fatal(err)
-			return
-		}
-	} else {
-		ClusterCache, err = NewRedisClusterClient(Config.Redis)
-	}
+	Cache = NewRedisClient(Config.Redis)
 
 	if Config.PortalServer.LogLevel == "" {
 		fmt.Println("No log level specified, use default warning")
@@ -79,17 +69,7 @@ func SetupContext(configFile string, sessionCookieName string, appName string) (
 		_log.EnableStdout(Logger)
 	}
 
-	if Config.DevMode {
-		SessionStore, err = initSession(Cache)
-		if err != nil {
-			log.Fatal("failed to init session store", err.Error())
-		}
-	} else {
-		SessionStore, err = initClusterSession(ClusterCache)
-		if err != nil {
-			log.Fatal("failed to init session store", err.Error())
-		}
-	}
+	SessionStore, err = initSession(Cache)
 
 	IDWorker, err = NewSnowFlake(1)
 	if err != nil {
