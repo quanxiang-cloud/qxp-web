@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useQuery } from 'react-query';
 
 import { Table } from '@portal/components/Table';
-import { range } from '@assets/lib/f';
 import { EmptyData } from '@portal/components/EmptyData';
 import { Pagination } from '@portal/components/Pagination';
 import { adminSearchUserList } from '@portal/pages/accessControl/RoleManagement/api';
@@ -10,6 +9,7 @@ import { Loading } from '@portal/components/Loading';
 
 interface IEmployeeTable {
   className?: string;
+  userName?: string;
   depID: string | null;
 }
 
@@ -24,29 +24,32 @@ export const EmployeeTable = <
 >({
   className,
   depID,
+  userName,
 }: IEmployeeTable) => {
   const [selectedKeys, setSelectedKeys] = useState<string[]>([]);
-  const [selectedRows, setSelectedRows] = useState<T[]>([]);
   const [pagination, setPagination] = useState({
     current: 1,
-    total: 30,
+    total: 0,
     pageSize: 10,
   });
 
-  const { data, isLoading } = useQuery(['adminSearchUserList', { depID }], adminSearchUserList, {
-    refetchOnWindowFocus: false,
-    cacheTime: -1,
-  });
+  const { data, isLoading } = useQuery(
+    [
+      'adminSearchUserList',
+      { depID, userName, page: pagination.current, limit: pagination.pageSize },
+    ],
+    adminSearchUserList,
+    {
+      refetchOnWindowFocus: false,
+      enabled: !!depID,
+    },
+  );
 
-  const getDateSource = () => {
-    return range(0, 7).map((i) => ({
-      id: `${i}`,
-      username: 'Jordan',
-      phone: '19960824973',
-      email: 'marvin@qq.com',
-      departmentName: '质量保证部',
-    }));
-  };
+  useEffect(() => {
+    if (data?.total) {
+      setPagination((p) => ({ ...p, total: data?.total as number }));
+    }
+  }, [data]);
 
   const onRowClick = (record: T) => {
     const id = record.id as string;
@@ -55,13 +58,6 @@ export const EmployeeTable = <
         return arr.filter((i) => i !== id);
       } else {
         return [...arr, id];
-      }
-    });
-    setSelectedRows((rows: T[]) => {
-      if (rows.find((item) => item.id === id)) {
-        return rows.filter((i) => i.id !== id);
-      } else {
-        return [...rows, record];
       }
     });
   };
@@ -81,7 +77,7 @@ export const EmployeeTable = <
         }}
         emptyText={<EmptyData text="无成员数据" className="py-10" />}
         rowKey="id"
-        dataSource={data?.users || getDateSource()}
+        dataSource={data?.users || []}
         columns={[
           {
             title: '员工姓名',
@@ -102,10 +98,7 @@ export const EmployeeTable = <
         ]}
         rowSelection={{
           selectedRowKeys: selectedKeys,
-          onChange: (selectedRowKeys, selectedRows) => {
-            setSelectedKeys(selectedRowKeys);
-            setSelectedRows(selectedRows);
-          },
+          onChange: (selectedRowKeys) => setSelectedKeys(selectedRowKeys),
         }}
       />
       <Pagination
@@ -115,6 +108,11 @@ export const EmployeeTable = <
         pageSize={pagination.pageSize}
         onShowSizeChange={(pageSize) => setPagination((p) => ({ ...p, pageSize }))}
         onChange={(current) => setPagination((p) => ({ ...p, current }))}
+        prefix={
+          <span className="text-dot-6 text-dark-four">
+            {`已选 ${selectedKeys.length}, 共 ${pagination.total}条`}
+          </span>
+        }
       />
     </div>
   );

@@ -41,7 +41,7 @@ export const MailList = ({ visible }: IMailList) => {
   // }
 
   console.log(data);
-  const treedata: any[] = data ? [data] : [];
+  const treeData: any[] = data ? [data] : [];
   console.log('isLoading', isLoading);
 
   const actions: IActionListItem<null>[] = [
@@ -218,7 +218,7 @@ export const MailList = ({ visible }: IMailList) => {
         <div className="h-full mt-4 flex items-start">
           <div className="w-12-dot-95 h-full">
             <DepartmentStaff department="部门人员" count={0} unit="部门" />
-            <DepartmentTree treeData={treedata} />
+            <DepartmentTree treeData={treeData} />
           </div>
           <div className="vertical-line flex-grow-0"></div>
           <div className="flex-1 h-full">

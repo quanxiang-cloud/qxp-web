@@ -7,6 +7,7 @@ import { Table } from '@portal/components/Table';
 import { Loading } from '@portal/components/Loading';
 import { EmptyData } from '@portal/components/EmptyData';
 import { More } from '@portal/components/More';
+import { Pagination } from '@portal/components/Pagination';
 import { OwnerSelector } from './OwnerSelector/OwnerSelector';
 import {
   getRoleAssociations,
@@ -24,11 +25,31 @@ export const AssociateDepartmentEmployee = ({ id, isSuper }: IAssociateDepartmen
   const [selectedKeys, setSelectedKeys] = useState<string[]>([]);
   const [selectedRows, setSelectedRows] = useState<IOwner[]>([]);
   const [showAddModal, setShowAddModal] = useState(false);
-
-  const { data, isLoading, refetch } = useQuery(['getRoleAssociations', id], getRoleAssociations, {
-    refetchOnWindowFocus: false,
-    cacheTime: -1,
+  const [pagination, setPagination] = useState<{
+    total: number;
+    current: number;
+    pageSize: number;
+  }>({
+    total: 0,
+    current: 1,
+    pageSize: 10,
   });
+
+  const { data, isLoading, refetch } = useQuery(
+    [
+      'getRoleAssociations',
+      {
+        roleID: id,
+        page: pagination.current,
+        limit: pagination.pageSize,
+      },
+    ],
+    getRoleAssociations,
+    {
+      refetchOnWindowFocus: false,
+      cacheTime: -1,
+    },
+  );
   // @ts-ignore
   const mutation = useMutation((arg: IUpdateRoleAssociations) => updateRoleAssociations(arg), {
     onSuccess: () => refetch(),
@@ -187,6 +208,15 @@ export const AssociateDepartmentEmployee = ({ id, isSuper }: IAssociateDepartmen
         onRow={(record) => ({
           onClick: () => onRowClick(record),
         })}
+      />
+      <Pagination
+        type="simple"
+        pageSize={pagination.pageSize}
+        total={pagination.total}
+        current={pagination.current}
+        prefix={<span className="text-dot-6 text-dark-four">{`共${pagination.total}个员工`}</span>}
+        onShowSizeChange={(pageSize) => setPagination((p) => ({ ...p, pageSize }))}
+        onChange={(current) => setPagination((p) => ({ ...p, current }))}
       />
     </>
   );

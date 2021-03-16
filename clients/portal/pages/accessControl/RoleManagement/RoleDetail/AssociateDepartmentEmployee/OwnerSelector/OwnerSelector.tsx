@@ -4,20 +4,25 @@ import { useQuery } from 'react-query';
 import { Tab } from '@portal/components/Tab';
 import { TextHeader } from '@portal/components/TextHeader';
 import { uuid } from '@assets/lib/f';
-import { ISelectedListItem, SelectedList } from './SelectedList';
 import { SearchInput } from '@portal/components/form/SearchInput';
 import { Tree } from '@portal/components/QxpTree';
-import { EmployeeTable } from './EmployeeTable';
 import { getDepartmentStructure } from '@portal/pages/accessControl/RoleManagement/api';
+import { EmployeeTable } from './EmployeeTable';
+import { ISelectedListItem, SelectedList } from './SelectedList';
+import { Loading } from '@portal/components/Loading';
 
 export const OwnerSelector = () => {
   const [keyword, setKeyword] = useState<string>('');
   const [tabKey, setTabKey] = useState<string | number>('1');
   const [depID, setDepID] = useState<string | null>(null);
-  let { data: departments } = useQuery(['getDepartmentStructure'], getDepartmentStructure, {
-    refetchOnWindowFocus: false,
-    cacheTime: -1,
-  });
+  const { data: departments = [], isLoading } = useQuery(
+    ['getDepartmentStructure'],
+    getDepartmentStructure,
+    {
+      refetchOnWindowFocus: false,
+      cacheTime: -1,
+    },
+  );
 
   useEffect(() => {
     if (departments && departments.length) {
@@ -25,66 +30,8 @@ export const OwnerSelector = () => {
     }
   }, [departments]);
 
-  if (!departments) {
-    departments = [
-      {
-        title: '全象云应用开发平台',
-        key: '1',
-        id: '9459cb9e-b66b-49f6-b1ef-a88232a07b1b',
-        children: [
-          {
-            title: '研发部',
-            key: '1-1',
-            id: '9459cb9e-b66b-49f6-b1ef-a88232a07b1b',
-            children: [
-              {
-                title: '研发一部',
-                key: '1-1-1',
-                id: '9459cb9e-b66b-49f6-b1ef-a88232a07b1b',
-                children: [],
-              },
-              {
-                title: '研发二部',
-                key: '1-1-2',
-                id: '9459cb9e-b66b-49f6-b1ef-a88232a07b1b',
-                children: [],
-              },
-            ],
-          },
-          {
-            title: '产品体验部',
-            key: '1-2',
-            id: '9459cb9e-b66b-49f6-b1ef-a88232a07b1b',
-            children: [
-              {
-                title: '质量保证部',
-                key: '1-2-1',
-                id: '9459cb9e-b66b-49f6-b1ef-a88232a07b1b',
-                children: [],
-              },
-              {
-                title: '产品设计部',
-                key: '1-2-2',
-                id: '9459cb9e-b66b-49f6-b1ef-a88232a07b1b',
-                children: [],
-              },
-              {
-                title: '产品文档部',
-                key: '1-2-3',
-                id: '9459cb9e-b66b-49f6-b1ef-a88232a07b1b',
-                children: [],
-              },
-            ],
-          },
-          {
-            title: '未分配部门',
-            key: '2',
-            id: '9459cb9e-b66b-49f6-b1ef-a88232a07b1b',
-            children: [],
-          },
-        ],
-      },
-    ];
+  if (isLoading) {
+    return <Loading desc="加载中..." />;
   }
 
   const selectedList: ISelectedListItem[] = [

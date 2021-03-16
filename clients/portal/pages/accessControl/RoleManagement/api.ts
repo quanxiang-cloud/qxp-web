@@ -62,18 +62,27 @@ export interface IOwner {
 }
 
 // 获取角色关联
-export const getRoleAssociations = ({ queryKey }: QueryFunctionContext) =>
+export const getRoleAssociations = ({
+  queryKey,
+}: QueryFunctionContext<
+  [
+    string,
+    {
+      roleId: string;
+      type?: string;
+      page?: string;
+      limit?: string;
+    },
+  ]
+>) =>
   httpPost<
     IResponse<{
       owners: IOwner[];
+      total: number;
     }>
-  >(
-    '/api/goalie/listRoleOwner',
-    JSON.stringify({
-      roleID: queryKey[1],
-    }),
-  ).then(({ data }) => ({
-    owners: data?.owners,
+  >('/api/goalie/listRoleOwner', JSON.stringify(queryKey[1])).then(({ data }) => ({
+    owners: data?.owners || [],
+    total: data?.total || 0,
   }));
 
 // 修改角色关联
@@ -103,11 +112,13 @@ interface IDepartment {
 }
 
 interface IDepartmentStructure extends IDepartment {
-  child: IDepartmentStructure[];
+  child: IDepartmentStructure[] | null;
 }
 // search for department structure
 export const getDepartmentStructure = async () => {
-  const { data } = await httpPost<IResponse<IDepartmentStructure>>('/api/org/v1/DEPTree', null);
+  const { data } = await httpPost<IResponse<IDepartmentStructure>>('/api/org/v1/DEPTree', null, {
+    'Content-Type': 'application/x-www-form-urlencoded',
+  });
   return data
     ? mapTreeData<ITreeData[]>(
         {

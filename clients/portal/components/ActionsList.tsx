@@ -7,17 +7,16 @@ export type IActionListItem<T> = {
   id: string;
   iconName: string;
   text: string;
-  onclick?: (params?: T) => void;
+  onclick?: (params?: Partial<T> | T) => void;
 };
 
 interface IActionsList<T> {
   actions: IActionListItem<T>[];
-  params?: T;
+  params?: Partial<T> | T;
   className?: string;
 }
 
 export const ActionsList = function <T>({ actions, params, className }: IActionsList<T>) {
-  console.log(ActionsList.length);
   return (
     <div
       className={twCascade(

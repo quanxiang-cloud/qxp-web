@@ -11,14 +11,14 @@ interface ICore {
 
 export const Core = ({ current, onChange = identity, maxPage }: ICore) => {
   const onPrev = () => {
-    if (current === 1) {
+    if (current <= 1) {
       return;
     }
     onChange(current - 1);
   };
 
   const onNext = () => {
-    if (current === maxPage) {
+    if (current >= maxPage) {
       return;
     }
     onChange(current + 1);

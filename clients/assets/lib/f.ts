@@ -73,6 +73,7 @@ function isA(name: string): (arg: unknown) => boolean {
 export const isBool = isA('boolean');
 export const isString = isA('string');
 export const isUndefined = isA('undefined');
+export const isObject = (o: unknown) => o === Object(o);
 export const isNull = (v: unknown) => v === null;
 export const either = <S>(pred1: (...args: S[]) => boolean, pred2: (...args: S[]) => boolean) => (
   ...args: S[]
@@ -180,4 +181,31 @@ export const mapTreeData = <T extends unknown>(rules: Record<string, string>, da
     });
   }
   return [newTreeData] as T;
+};
+
+export const getNestedPropertyToArray = <T>(
+  data: Record<string, any> | undefined,
+  targetKey: string,
+  nestKey: string,
+): T[] => {
+  if (!data) {
+    return [];
+  }
+  const arrData: T[] = [];
+  if (isObject(data)) {
+    Object.entries(data).forEach(([key, value]) => {
+      if (key === targetKey) {
+        arrData.push(value);
+      }
+      if (key === nestKey) {
+        arrData.push(...getNestedPropertyToArray<T>(value, targetKey, nestKey));
+      }
+    });
+  } else if (Array.isArray(data)) {
+    data.forEach((item) => {
+      const arr: T[] = getNestedPropertyToArray(item, targetKey, nestKey);
+      arrData.push(...arr);
+    });
+  }
+  return arrData;
 };

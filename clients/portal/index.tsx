@@ -14,7 +14,7 @@ const queryClient = new QueryClient({
       retry: 1,
     },
   },
-})
+});
 
 ReactDOM.render(
   <QueryClientProvider client={queryClient}>

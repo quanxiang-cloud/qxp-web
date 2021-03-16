@@ -1,0 +1,49 @@
+import { QueryFunctionContext } from 'react-query';
+
+import { httpPost, getNestedPropertyToArray } from '@assets/lib/f';
+import { IResponse } from '@clients/@types/interface/api';
+import { IDepartment } from '@clients/common/state/portal';
+
+// get user info
+export interface IUserInfo {
+  id: string;
+  userName: string;
+  phone: string;
+  email: string;
+  userIconURL: string;
+  dep: IDepartment;
+  depIds: string[];
+  authority: string[];
+}
+export const getUserInfo = async (): Promise<Partial<IUserInfo>> => {
+  const { data } = await httpPost<IResponse<IUserInfo>>('/api/org/v1/userUserInfo');
+  if (data) {
+    data.depIds = getNestedPropertyToArray<string>(data?.dep, 'id', 'child');
+  }
+  return data || {};
+};
+
+// get all user funcs
+export const getUserFuncs = async ({ queryKey }: QueryFunctionContext): Promise<string[]> => {
+  const { data } = await httpPost<
+    IResponse<{
+      tag: string[];
+    }>
+  >(
+    '/api/goalie/listUserFuncTag',
+    JSON.stringify({
+      departmentID: queryKey[1],
+    }),
+  );
+  return data?.tag || [];
+};
+
+// get system func list
+export const getSystemFuncs = async (): Promise<string[]> => {
+  const { data } = await httpPost<
+    IResponse<{
+      tag: string[];
+    }>
+  >('/api/goalie/listFuncTag', JSON.stringify({}));
+  return data?.tag || [];
+};
