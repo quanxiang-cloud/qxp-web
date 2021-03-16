@@ -93,23 +93,7 @@ func GetCurrentRequestSession(r *http.Request) (*sessions.Session, error) {
 	return session, nil
 }
 
-func initSession(redisClient *redis.Client) (*redisstore.RedisStore, error) {
-	sessionStore, err := redisstore.NewRedisStore(redisClient)
-	if err != nil {
-		log.Fatal("failed to create redis store: ", err)
-	}
-	sessionStore.Options(sessions.Options{
-		// 29 days
-		MaxAge: 86400 * 29,
-		Path:   "/",
-	})
-
-	log.Println("sessionStore initialized")
-
-	return sessionStore, err
-}
-
-func initClusterSession(redisClient *redis.ClusterClient) (*redisstore.RedisStore, error) {
+func initSession(redisClient redis.UniversalClient) (*redisstore.RedisStore, error) {
 	sessionStore, err := redisstore.NewRedisStore(redisClient)
 	if err != nil {
 		log.Fatal("failed to create redis store: ", err)
