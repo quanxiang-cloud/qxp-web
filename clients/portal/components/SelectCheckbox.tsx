@@ -29,19 +29,19 @@ export const SelectCheckbox = () => {
         <Checkbox value={4}>UNIX</Checkbox> */}
       </CheckboxGroup>
     </span>
-  );
+  )
 
   const valueRenderer = () => (
     <span className="option-with-icon" style={{ display: 'flex', alignItems: 'center' }}>
       <Tag closable>Tag 2</Tag>
     </span>
-  );
+  )
 
   return (
     <Select
       name="os"
       placeholder="请输入"
-      // arrowRenderer={arrowRenderer}
+      arrowRenderer={arrowRenderer}
       optionRenderer={optionRenderer}
       valueRenderer={valueRenderer}
       // value={selectedValue}
@@ -51,4 +51,4 @@ export const SelectCheckbox = () => {
   );
 };
 
-export default SelectCheckbox;
+export default SelectCheckbox

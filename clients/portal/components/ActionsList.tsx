@@ -17,6 +17,7 @@ interface IActionsList<T> {
 }
 
 export const ActionsList = function <T>({ actions, params, className }: IActionsList<T>) {
+  console.log(ActionsList.length);
   return (
     <div
       className={twCascade(
@@ -26,6 +27,9 @@ export const ActionsList = function <T>({ actions, params, className }: IActions
     >
       <ul className="flex flex-col items-center">
         {actions.map((action) => {
+          if (!action) {
+            return null;
+          }
           return (
             <li
               key={action.id}

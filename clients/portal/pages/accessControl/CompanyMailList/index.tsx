@@ -29,13 +29,20 @@ export const MailList = ({ visible }: IMailList) => {
   const [visibleFile, setVisibleFile] = useState(false);
   const [visibleStaff, setVisibleStaff] = useState(false);
 
+  const { data, isLoading } = useQuery('getERPTree', getERPTree);
+
   // if (isLoading) {
   //   return (
   //     <div className="flex items-center justify-center py-4">
-  //       <Loading />
+  //       {/* <Loading /> */}
+  //       <span>123</span>
   //     </div>
-  //   )
+  //   );
   // }
+
+  console.log(data);
+  const treedata: any[] = data ? [data] : [];
+  console.log('isLoading', isLoading);
 
   const actions: IActionListItem<null>[] = [
     {
@@ -211,7 +218,7 @@ export const MailList = ({ visible }: IMailList) => {
         <div className="h-full mt-4 flex items-start">
           <div className="w-12-dot-95 h-full">
             <DepartmentStaff department="部门人员" count={0} unit="部门" />
-            <DepartmentTree treeData={[]} />
+            <DepartmentTree treeData={treedata} />
           </div>
           <div className="vertical-line flex-grow-0"></div>
           <div className="flex-1 h-full">
@@ -254,7 +261,7 @@ export const MailList = ({ visible }: IMailList) => {
                   </div>
                 </Dropdown>
               </div>
-              <PersonInfo />
+              <PersonInfo departmentId="" />
             </div>
           </div>
         </div>

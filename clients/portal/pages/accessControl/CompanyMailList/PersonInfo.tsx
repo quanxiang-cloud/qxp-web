@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useQuery } from 'react-query';
 import { GridTable, Dropdown } from '@QCFE/lego-ui';
 import { twCascade } from '@mariusmarais/tailwind-cascade';
 
@@ -6,6 +7,8 @@ import { ActionsList, IActionListItem } from '@portal/components/ActionsList';
 import { Pagination } from '@portal/components/Pagination';
 import { ResetPasswordModal } from './ResetPasswordModal';
 import { AccountHandleModal } from './AccountHandleModal';
+
+import { getAdminDEPList } from './api';
 
 const dataSource: any[] = [
   {
@@ -31,7 +34,16 @@ const dataSource: any[] = [
   },
 ];
 
-export const PersonInfo = () => {
+interface PersonInfoProps {
+  departmentId: string
+}
+
+export const PersonInfo = (props: PersonInfoProps) => {
+  const { departmentId } = props;
+
+  // const { data, isLoading } = useQuery('getAdminDEPList', () => getAdminDEPList(departmentId), {
+  //   // enable
+  // })
   const pageSizeOptions = [10, 20, 50, 100];
 
   const [resetModal, setResetModal] = useState(false);
