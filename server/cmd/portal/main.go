@@ -15,6 +15,10 @@ func main() {
 	configFile := flag.String("c", "", "config file path")
 	flag.Parse()
 
+	if *configFile == "" {
+		*configFile = "/qxp-web/etc/config.yaml"
+	}
+
 	err := contexts.SetupContext(*configFile, "sk", "portal")
 	if err != nil {
 		panic(err)

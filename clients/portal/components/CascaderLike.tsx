@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import useCss from 'react-use/lib/useCss';
-import { TreeData, Select } from '@QCFE/lego-ui';
+import { TreeData, Select, Icon } from '@QCFE/lego-ui';
 
 import { Tree } from './Tree';
 
@@ -11,6 +11,7 @@ interface ICascader {
 export const CascadeTreeModel = ({ ...props }: ICascader) => {
   const [option, setOption] = useState([{}]);
   const [selectValue, setSelectValue] = useState('');
+  const [openMenu, setOpenMenu] = useState<true | false>(true);
 
   const handleKey = (key: string) => {
     const data = props.treeOption;
@@ -44,43 +45,55 @@ export const CascadeTreeModel = ({ ...props }: ICascader) => {
     }
     setOption([{ value: val, label: val }]);
     setSelectValue(val);
+    setOpenMenu(false);
   };
 
-  // const arrowRenderer = ({ onMouseDown }: any): any => (
-  //   <span className="select-arrow" onMouseDown={onMouseDown}>
-  //     {/* <Icon name="chevron-down" size="small" clickable /> */}
-  //   </span>
-  // )
+  const handleClick = () => {
+    openMenu ? null : setOpenMenu(true);
+  };
+
+  // const arrowRenderer = ({ onMouseDown }: any): any => {
+  //   return (
+  //     <span className="select-arrow" onMouseDown={onMouseDown}>
+  //       <Icon name="chevron-down" size="small" onClick={handleClick} clickable />
+  //     </span>
+  //   );
+  // };
 
   const menuRender = () => {
     return <Tree treeData={props.treeOption} getKey={handleKey} />;
   };
 
   return (
-    <Select
-      name="demo"
-      className={useCss({
-        '&:hover': {
-          border: 'none',
-          background: 'none',
-        },
-        '.select-control': {
-          background: 'none',
-          // border: 'to-blue-200',
-        },
-        '&': {
-          // border: 'to-blue-300',
-          background: 'none !important',
-        },
-        '.select-value-label': {
-          'font-size': '14px',
-        },
-      })}
-      // arrowRenderer={arrowRenderer as () => void}
-      menuRenderer={menuRender}
-      placeholder="Select"
-      value={selectValue}
-      options={option}
-    />
+    <div onClick={handleClick}>
+      <Select
+        name="demo"
+        className={useCss({
+          '.select-menu-outer': {
+            display: openMenu ? '' : 'none',
+          },
+          '&:hover': {
+            border: 'none',
+            background: 'none',
+          },
+          '.select-control': {
+            background: 'none',
+            // border: 'to-blue-200',
+          },
+          '&': {
+            // border: 'to-blue-300',
+            background: 'none !important',
+          },
+          '.select-value-label': {
+            'font-size': '14px',
+          },
+        })}
+        // arrowRenderer={arrowRenderer as () => void}
+        menuRenderer={menuRender}
+        placeholder="Select"
+        value={selectValue}
+        options={option}
+      />
+    </div>
   );
 };
