@@ -561,6 +561,12 @@ html {
   }
 }
 
+#tree-select-box {
+  .tree-title {
+    width: 100%;
+  }
+}
+
 label.checkbox.checked:before,
 label.checkbox.checked:hover:before {
   background-color: #8cadff !important;

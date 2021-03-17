@@ -8,67 +8,20 @@ import { DepartmentModal } from './DepartmentModal';
 import { DeleteModal } from './DeleteModal';
 
 import { deleteDEP } from './api';
+import { Func } from 'mocha';
 
+type DeptInfo = {
+  id: string
+  departmentName: string
+  pid: string
+}
 export interface TreeNodeItem extends ITreeNode {
   addDepartment: (val: string, id: string) => void;
+  openDeptModal: (type: string, deptInfo: DeptInfo ) => void;
+  openDeleteDeptModal: (deptInfo: DeptInfo) => void;
 }
 
-const Title = (titleProps: TreeNodeItem) => {
-  const { departmentName, id, pid, addDepartment } = titleProps;
-  const client = useQueryClient();
-  const [handleStatus, setHandleStatus] = useState<'add' | 'edit'>('add');
-  const [visibleDepartment, setVisibleDepartment] = useState(false);
-  const [visibleDelete, setVisibleDelete] = useState(false);
-  const [indexOfNode, setIndexOfNode] = useState(id); // 记录当前点击树节点的id
-  const [checkedDep, setCheckDep] = useState<TreeNodeItem>(null);
-
-  const { refetch } = useQuery(
-    'deleteDEP',
-    () =>
-      deleteDEP(checkedDep ? checkedDep.id : '').then((res) => {
-        if (res && res.code === 0) {
-          setVisibleDelete(false);
-          client.invalidateQueries('getERPTree');
-        }
-      }),
-    {
-      refetchOnWindowFocus: false,
-      enabled: false,
-    },
-  );
-
-  // 添加部门 or 修改部门
-  const handleDepartment = (
-    status: 'add' | 'edit',
-    params?: TreeNodeItem | Partial<TreeNodeItem>,
-  ) => {
-    setVisibleDepartment(true);
-    setHandleStatus(status);
-    console.log('id', params);
-  };
-
-  //  关闭部门模态框
-  const closeDepartmentModal = () => {
-    setVisibleDepartment(false);
-  };
-
-  //  确定添加部门处理函数
-  const okDepartmentModal = (val: any, nodeIndex: string) => {
-    // setIndexOfNode(nodeIndex); // 更新当前点击树节点的id
-    // addDepartment(val['department-name'], nodeIndex); // 将新增部门添加为当前点击树节点的子节点
-    setVisibleDepartment(false);
-  };
-
-  // 删除部门
-  const deleteDepartment = (params?: TreeNodeItem | Partial<TreeNodeItem>) => {
-    // setCheckDep(params);
-    setVisibleDelete(true);
-  };
-
-  // 关闭删除弹窗
-  const closeDeleteModal = () => {
-    refetch();
-  };
+const Title = ({ departmentName, id, pid, openDeptModal, openDeleteDeptModal }: TreeNodeItem) => {
 
   const actions = (bol: boolean) => {
     const acts = [
@@ -76,14 +29,14 @@ const Title = (titleProps: TreeNodeItem) => {
         id: '1',
         iconName: './dist/images/add-department.svg',
         text: '添加部门',
-        onclick: (params?: TreeNodeItem | Partial<TreeNodeItem>) => handleDepartment('add', params),
+        onclick: (params: DeptInfo) => openDeptModal('add', params),
       },
       {
         id: '2',
         iconName: './dist/images/edit.svg',
         text: '修改部门',
-        onclick: (params?: TreeNodeItem | Partial<TreeNodeItem>) =>
-          handleDepartment('edit', params),
+        onclick: (params: DeptInfo) =>
+          openDeptModal('edit', params),
       },
     ];
     if (bol) {
@@ -91,7 +44,7 @@ const Title = (titleProps: TreeNodeItem) => {
         id: '3',
         iconName: './dist/images/delete.svg',
         text: '删除',
-        onclick: (params?: TreeNodeItem | Partial<TreeNodeItem>) => deleteDepartment(params),
+        onclick: (params: DeptInfo) => openDeleteDeptModal(params),
       });
     }
     return acts;
@@ -99,24 +52,6 @@ const Title = (titleProps: TreeNodeItem) => {
 
   return (
     <>
-      {/* 部门模态框 */}
-      {visibleDepartment && (
-        <DepartmentModal
-          visible={visibleDepartment}
-          status={handleStatus}
-          nodeId={indexOfNode}
-          closeModal={closeDepartmentModal}
-          okModal={okDepartmentModal}
-        />
-      )}
-      {/* 删除模态框 */}
-      {visibleDelete && (
-        <DeleteModal
-          visible={visibleDelete}
-          closeModal={closeDeleteModal}
-          okModal={closeDeleteModal}
-        />
-      )}
       <div className="w-full flex items-center justify-between">
         <div className="text-dot-7">{departmentName}</div>
         <div className="h-auto relative">
@@ -157,6 +92,11 @@ interface DepartmentTreeProps {
 
 export const DepartmentTree = (props: DepartmentTreeProps) => {
   const { treeData, setCurrDepId } = props;
+  const [modalType, setModalType] = useState('');
+  const [handleStatus, setHandleStatus] = useState<'add' | 'edit'>('add');
+  const [indexOfNode, setIndexOfNode] = useState('');
+  const [curDept, setCurDept] = useState<TreeNodeItem | null>(null);
+  const client = useQueryClient();
 
   // 添加部门节点数据
   const addHandle = (val: string, id: string) => {
@@ -187,6 +127,17 @@ export const DepartmentTree = (props: DepartmentTreeProps) => {
     // setTreeData(data)
   };
 
+  const openDeptModal = (type: 'add' | 'edit', params: TreeNodeItem) => {
+    setCurDept(params);
+    setHandleStatus(type);
+    setModalType('department');
+  }
+
+  const openDeleteDeptModal = (params: TreeNodeItem) => {
+    setCurDept(params);
+    setModalType('delDept');
+  }
+
   const renderTreeNodes = (childData: ITreeNode[]) =>
     childData.length > 0 &&
     childData.map((treenode: any) => {
@@ -194,7 +145,7 @@ export const DepartmentTree = (props: DepartmentTreeProps) => {
       if (child) {
         return (
           <TreeNode
-            title={<Title {...treenode} addDepartment={addHandle} />}
+            title={<Title {...treenode} openDeptModal={openDeptModal} openDeleteDeptModal={openDeleteDeptModal} />}
             key={treenode.id}
             dataRef={treenode}
           >
@@ -204,7 +155,7 @@ export const DepartmentTree = (props: DepartmentTreeProps) => {
       }
       return (
         <TreeNode
-          title={<Title {...treenode} addDepartment={addHandle} />}
+          title={<Title {...treenode} openDeptModal={openDeptModal} openDeleteDeptModal={openDeleteDeptModal} />}
           key={treenode.id}
           dataRef={treenode}
         />
@@ -212,13 +163,27 @@ export const DepartmentTree = (props: DepartmentTreeProps) => {
     });
 
   const onSelect = (keys: string[], e: React.MouseEvent) => {
-    console.log(keys);
-    console.log(e);
     if (keys && keys.length > 0) {
       const checkId: string = keys[0];
       setCurrDepId(checkId);
     }
   };
+
+  const deleteDept = () => {
+    deleteDEP((curDept as TreeNodeItem).id).then((res) => {
+      if (res && res.code === 0) {
+        setModalType('')
+        client.invalidateQueries('getERPTree');
+      }
+    });
+  }
+
+  const okDepartmentModal = (val: any, nodeIndex: string) => {
+    console.log('nodeIndex: ', nodeIndex);
+    setIndexOfNode(nodeIndex);
+    // addDepartment(val['department-name'], nodeIndex); // 将新增部门添加为当前点击树节点的子节点
+    setModalType('');
+  }
 
   return (
     <div className="w-auto h-full">
@@ -263,6 +228,20 @@ export const DepartmentTree = (props: DepartmentTreeProps) => {
       >
         {treeData.length > 0 ? renderTreeNodes(treeData) : null}
       </Tree>
+      {modalType === "department" && (
+        <DepartmentModal
+          status={handleStatus}
+          nodeId={indexOfNode}
+          closeModal={() => setModalType('')}
+          okModal={okDepartmentModal}
+        />
+      )}
+      {modalType === "delDept" && (
+        <DeleteModal
+          closeModal={() => setModalType('')}
+          okModal={deleteDept}
+        />
+      )}
     </div>
   );
 };

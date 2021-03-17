@@ -4,18 +4,17 @@ import { Modal } from '@QCFE/lego-ui';
 import { Button } from '@portal/components/Button';
 
 interface DeleteModalProps {
-  visible: boolean;
   closeModal(): void;
   okModal(): void;
 }
 
-export const DeleteModal = ({ visible, closeModal, okModal }: DeleteModalProps) => {
+export const DeleteModal = ({ closeModal, okModal }: DeleteModalProps) => {
   return (
     <Modal
+      visible
       title="删除"
-      visible={visible}
-      onOk={closeModal}
-      onCancel={okModal}
+      onOk={okModal}
+      onCancel={closeModal}
       footer={
         <div className="flex items-center">
           <Button

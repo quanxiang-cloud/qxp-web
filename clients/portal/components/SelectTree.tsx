@@ -1,6 +1,6 @@
 import React from 'react';
 import useCss from 'react-use/lib/useCss';
-import { Select, Tree, TreeNode } from '@QCFE/lego-ui';
+import { Form, Tree, TreeNode, Control } from '@QCFE/lego-ui';
 
 interface SelectTreeProps {
   treeData: [];
@@ -45,19 +45,19 @@ export const SelectTree = (props: SelectTreeProps) => {
 
   const onSelect = (keys: string[], event: any) => {
     const treeItem: { departmentName: string; id: string } = event.selectedNodes[0].props.dataRef;
-    console.log(treeItem);
     setOptions([{ value: treeItem.id, label: treeItem.departmentName }]);
     setValue(treeItem.id);
   };
 
-  const changeValue = () => {
+  const changeValue = (e) => {
+    console.log('e: ', e);
     console.log(value);
   };
 
   return (
     <>
-      <Select
-        name="os"
+      <Form.SelectField
+        name="pid"
         className={useCss({
           '&:hover': {
             border: 'none',

@@ -3,13 +3,13 @@ import { useQuery } from 'react-query';
 import { Modal, Form, Loading } from '@QCFE/lego-ui';
 
 import { Button } from '@portal/components/Button';
-import { SelectTree } from '@portal/components/SelectTree';
+import SelectTree from '@portal/components/select-tree';
 import { getERPTree } from './api';
 
 const { TextField, SelectField, ButtonField } = Form;
+const SelectTreeField = Form.getFormField(SelectTree);
 
 interface DepartmentModalProps {
-  visible: boolean;
   status: 'add' | 'edit';
   nodeId: string;
   closeModal(): void;
@@ -17,22 +17,11 @@ interface DepartmentModalProps {
 }
 
 export const DepartmentModal = ({
-  visible,
   status,
   nodeId,
   closeModal,
   okModal,
 }: DepartmentModalProps) => {
-  const { data, isLoading } = useQuery('getERPTree', getERPTree, {
-    refetchOnWindowFocus: false,
-  });
-
-  const treeData = data ? [data] : [];
-
-  if (isLoading) {
-    return <Loading />;
-  }
-
   const titleText = `${status === 'add' ? '添加' : '修改'}`;
 
   const [form, setForm] = useState<any>(null);
@@ -43,7 +32,8 @@ export const DepartmentModal = ({
       return;
     }
     const values = form.getFieldsValue();
-    okModal(values, nodeId);
+    console.log('values: ', values);
+    // okModal(values, nodeId);
   };
 
   const valueRenderer = (option: any) => (
@@ -59,13 +49,18 @@ export const DepartmentModal = ({
     return;
   };
 
+  const { data, isLoading } = useQuery('getERPTree', getERPTree, {
+    refetchOnWindowFocus: false,
+  });
+
+  const treeData = data ? [data] : [];
+
   return (
     <Modal
+      visible
       title={`${titleText}部门`}
-      visible={visible}
       width={632}
       onCancel={closeModal}
-      appendToBody={true}
       footer={
         <div className="flex items-center">
           <Button
@@ -111,7 +106,14 @@ export const DepartmentModal = ({
             },
           ]}
         />
-        <SelectTree treeData={treeData} />
+        {isLoading ? (<Loading />) : (
+          <SelectTreeField
+            name="pid"
+            label="选择部门"
+            placeholder="请选择部门"
+            defaultSelect={nodeId}
+            treeData={treeData} />
+        )}
       </Form>
     </Modal>
   );
