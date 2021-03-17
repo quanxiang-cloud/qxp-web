@@ -45,9 +45,7 @@ export const ActionsList = function <T>({ actions, params, className }: IActions
                 }),
               )}
             >
-              {action.iconName && (
-                <Icon name={action.iconName} className="w-1-dot-2 h-1-dot-2 pr-dot-4" />
-              )}
+              {action.iconName && <Icon name={action.iconName} className="mr-dot-4" />}
               <div className="text-dot-7 whitespace-no-wrap">{action.text}</div>
             </li>
           );
