@@ -220,3 +220,12 @@ export const importTempFile = ({ depID, file }: FileParams) => {
   console.log(file);
   return httpFile('/api/org/v1/importFile', { depID, file });
 };
+
+export function createDepartment(params: { pid: string; departmentName: string }) {
+  return httpPost('/api/org/v1/addDEP', JSON.stringify(params));
+}
+
+// todo API has not implemented
+export function editDepartment(params: { pid: string; departmentName: string }) {
+  return httpPost('/api/org/v1/addDEP', JSON.stringify(params));
+}

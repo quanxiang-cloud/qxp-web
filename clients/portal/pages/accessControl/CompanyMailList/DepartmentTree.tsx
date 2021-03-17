@@ -4,7 +4,7 @@ import useCss from 'react-use/lib/useCss';
 import { Tree, TreeNode, Dropdown, Message } from '@QCFE/lego-ui';
 
 import { ActionsList, IActionListItem } from '@portal/components/ActionsList';
-import { DepartmentModal } from './DepartmentModal';
+import DepartmentModal from './DepartmentModal';
 import { DeleteModal } from './DeleteModal';
 
 import { deleteDEP } from './api';
@@ -178,13 +178,6 @@ export const DepartmentTree = (props: DepartmentTreeProps) => {
     });
   }
 
-  const okDepartmentModal = (val: any, nodeIndex: string) => {
-    console.log('nodeIndex: ', nodeIndex);
-    setIndexOfNode(nodeIndex);
-    // addDepartment(val['department-name'], nodeIndex); // 将新增部门添加为当前点击树节点的子节点
-    setModalType('');
-  }
-
   return (
     <div className="w-auto h-full">
       <Tree
@@ -233,7 +226,6 @@ export const DepartmentTree = (props: DepartmentTreeProps) => {
           status={handleStatus}
           nodeId={indexOfNode}
           closeModal={() => setModalType('')}
-          okModal={okDepartmentModal}
         />
       )}
       {modalType === "delDept" && (
