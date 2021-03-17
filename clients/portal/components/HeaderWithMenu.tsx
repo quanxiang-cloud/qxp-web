@@ -9,15 +9,17 @@ export const HeaderWithMenu = React.memo(() => {
 
   const menus = [
     {
-      iconClassName: 'bg-gradient-green-to-top-right',
+      // iconClassName: 'bg-gradient-green-to-top-right',
+      iconClassName: 'bg-gradient-yellow-to-top-right',
       iconUrl: '/dist/images/calendar.svg',
       title: '应用管理',
       desc: '对平台的企业空间、账号、以及角色权限进行统一管理。',
       address: '/dist/images/calendar.svg',
     },
     {
-      iconClassName: 'bg-gradient-yellow-to-top-right',
-      iconUrl: '/dist/images/accounts.svg',
+      // iconClassName: 'bg-gradient-yellow-to-top-right',
+      iconClassName: 'bg-gradient-green-to-top-right',
+      iconUrl: '/dist/images/aces-ctl.svg',
       title: '访问控制',
       desc: '对平台的企业空间、账号、以及角色权限进行统一管理。',
       address: '/accessControl',
