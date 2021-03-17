@@ -7,6 +7,7 @@ import { ActionsList, IActionListItem } from '@portal/components/ActionsList';
 import { Pagination } from '@portal/components/Pagination';
 import { ResetPasswordModal } from './ResetPasswordModal';
 import { AccountHandleModal } from './AccountHandleModal';
+import { StaffModal } from './StaffModal';
 
 import { getAdminDEPList } from './api';
 
@@ -35,7 +36,7 @@ const dataSource: any[] = [
 ];
 
 interface PersonInfoProps {
-  departmentId: string
+  departmentId: string;
 }
 
 export const PersonInfo = (props: PersonInfoProps) => {
@@ -49,11 +50,16 @@ export const PersonInfo = (props: PersonInfoProps) => {
   const [resetModal, setResetModal] = useState(false);
   const [handleModal, setHandleModal] = useState(false);
   const [modalStatus, setModalStatus] = useState<'disabled' | 'delete'>('disabled');
+  const [visibleStaff, setVisibleStaff] = useState(false);
   const [pageParams, setPageParams] = useState({
     current: 1,
     pageSize: 10,
     total: 108,
   });
+
+  const closeStaffModal = () => {
+    setVisibleStaff(!visibleStaff);
+  };
 
   const actions: IActionListItem<null>[] = [
     {
@@ -71,6 +77,7 @@ export const PersonInfo = (props: PersonInfoProps) => {
       id: '3',
       iconName: './dist/images/add-department.svg',
       text: '修改信息 ',
+      onclick: closeStaffModal,
     },
     {
       id: '4',
@@ -178,6 +185,15 @@ export const PersonInfo = (props: PersonInfoProps) => {
 
   return (
     <>
+      {/* 员工模态框 */}
+      {visibleStaff && (
+        <StaffModal
+          visible={visibleStaff}
+          status="edit"
+          okModal={closeStaffModal}
+          closeModal={closeStaffModal}
+        />
+      )}
       {handleModal && (
         <AccountHandleModal
           visible={handleModal}
