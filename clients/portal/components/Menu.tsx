@@ -107,7 +107,7 @@ export const Menu = ({ menus, visible, toggle }: IMenus) => {
               <ItemWithTitleDesc
                 title={title}
                 desc={desc}
-                itemRender={() => (
+                itemRender={
                   <div
                     className={classnames(
                       'p-dot-3-6 rounded-lg rounded-tr-none leading-4',
@@ -116,7 +116,7 @@ export const Menu = ({ menus, visible, toggle }: IMenus) => {
                   >
                     <img src={iconUrl} alt={title} />
                   </div>
-                )}
+                }
                 titleClassName="text-dot-7 font-bold leading-4"
               />
               <Link to={address}>

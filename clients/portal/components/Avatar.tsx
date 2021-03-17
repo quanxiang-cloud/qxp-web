@@ -11,9 +11,9 @@ export interface IAvatar {
 export const Avatar = ({ username, bio, avatar }: IAvatar) => {
   return (
     <ItemWithTitleDesc
-      itemRender={() => (
+      itemRender={
         <img src={avatar} alt={username} className="rounded-lg rounded-tr-none w-13 h-132" />
-      )}
+      }
       title={`${username}, 下午好!`}
       desc={bio}
     />

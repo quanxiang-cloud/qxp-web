@@ -16,11 +16,11 @@ export default function Index() {
           <ItemWithTitleDesc
             title="访问控制"
             desc="最近修改时间：2021-12-31 16:03"
-            itemRender={() => (
+            itemRender={
               <div className="p-dot-3-6 bg-gradient-green-to-top-right rounded-lg rounded-tr-none">
                 <img src="/dist/images/aces-ctl.svg" alt="calendar" />
               </div>
-            )}
+            }
             titleClassName="text-dot-7 leading-4 font-bold"
             descClassName="leading-4"
           />

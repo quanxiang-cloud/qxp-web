@@ -27,11 +27,11 @@ export const RoleDetail = ({ role, id }: IRoleDetail) => {
   return (
     <div>
       <ItemWithTitleDesc
-        itemRender={() => (
+        itemRender={
           <div className="font-bold text-dot-8 text-0F172A flex justify-between items-center">
             {role?.name}
           </div>
-        )}
+        }
         desc={
           role.tag === 'super'
             ? '平台默认的角色，默认具有企业所有功能权限和全部数据可见范围。'

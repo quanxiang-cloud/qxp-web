@@ -37,7 +37,7 @@ export const RoleListItem = ({ name, active, id, onClick = identity }: IRoleList
         }),
       )}
       onClick={() => onClick(id)}
-      itemRender={() => (
+      itemRender={
         <svg
           fill="#64748B"
           className={twCascade('transition duration-300', {
@@ -70,7 +70,7 @@ export const RoleListItem = ({ name, active, id, onClick = identity }: IRoleList
             d="M17.5308 13.1492L18.1855 13.8002C18.3825 13.9971 18.3827 14.3155 18.1858 14.5126L17.5312 15.1636V16.1709C17.5304 16.4488 17.3042 16.674 17.0249 16.6747H16.0126L15.3583 17.3261C15.1602 17.5223 14.84 17.5223 14.642 17.3261L13.9877 16.6747H12.9754C12.6961 16.674 12.4698 16.4488 12.4691 16.1709V15.1636L11.8145 14.5126C11.6175 14.3156 11.6175 13.9972 11.8145 13.8002L12.4691 13.1492V12.1419C12.4698 11.864 12.6961 11.6388 12.9754 11.6381H13.9877L14.6417 10.9867C14.8397 10.7906 15.1599 10.7906 15.358 10.9867L16.0123 11.6381H17.0245C17.3039 11.6388 17.5301 11.864 17.5308 12.1419V13.1492ZM13.481 13.1492L15 15.9188L16.5182 13.1492H15.7593L15 14.6605L14.2407 13.1492H13.481Z"
           />
         </svg>
-      )}
+      }
       title={name}
       titleClassName={twCascade('text-dot-7 leading-11 transition duration-300', {
         'text-blue-primary': active,

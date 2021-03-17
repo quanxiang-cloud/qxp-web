@@ -33,11 +33,11 @@ export const TextHeader = ({
     <header className={twCascade('flex justify-between items-center pb-4 opacity-95', className)}>
       <ItemWithTitleDesc
         desc={desc}
-        itemRender={() => (
+        itemRender={
           <div className="font-bold text-dot-8 text-0F172A flex justify-between items-center">
             {title}
           </div>
-        )}
+        }
         descClassName={twCascade('transition ease-linear text-dot-6 text-697886', descClassName)}
         textDirection={textDirection}
         className={itemClassName}

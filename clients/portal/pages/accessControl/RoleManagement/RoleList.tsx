@@ -20,11 +20,11 @@ export const RoleList = ({ items, onChange }: IRoleList) => {
   return (
     <div>
       <ItemWithTitleDesc
-        itemRender={() => (
+        itemRender={
           <div className="font-bold text-dot-8 text-0F172A flex justify-between items-center">
             角色列表
           </div>
-        )}
+        }
         desc={`(${items.length} 个)`}
         descClassName="transition ease-linear text-dot-6 text-697886"
       />

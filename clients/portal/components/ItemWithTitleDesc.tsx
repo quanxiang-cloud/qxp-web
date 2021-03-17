@@ -5,7 +5,7 @@ import { twCascade } from '@mariusmarais/tailwind-cascade';
 export interface IItemWithTitleDesc {
   title?: string;
   desc?: string;
-  itemRender: () => JSX.Element;
+  itemRender: JSX.Element;
   titleClassName?: string;
   descClassName?: string;
   textDirection?: 'row' | 'col';
@@ -27,7 +27,7 @@ export const ItemWithTitleDesc = ({
 }: IItemWithTitleDesc) => {
   return (
     <div className={twCascade('flex justify-start items-center', className)} onClick={onClick}>
-      {itemRender()}
+      {itemRender}
       <div
         className={twCascade(
           'justify-between ml-dot-4 flex flex-1 transition duration-300',

@@ -45,7 +45,7 @@ export default function Dashboard() {
                   key={uuid()}
                   title="会议室预订"
                   desc="已上线"
-                  itemRender={() => (
+                  itemRender={
                     <div
                       className={twCascade(
                         'p-dot-3-6 bg-gradient-green-to-top-right rounded-lg rounded-tr-none',
@@ -53,7 +53,7 @@ export default function Dashboard() {
                     >
                       <img src="/dist/images/calendar.svg" alt="calendar" />
                     </div>
-                  )}
+                  }
                   titleClassName="text-dot-7 leading-4 font-bold"
                   descClassName="leading-4"
                 />,
@@ -61,7 +61,7 @@ export default function Dashboard() {
                   key={uuid()}
                   title="CRM"
                   desc="未上线"
-                  itemRender={() => (
+                  itemRender={
                     <div
                       className={twCascade(
                         'p-dot-3-6 bg-gradient-yellow-to-top-right rounded-lg rounded-tr-none',
@@ -69,14 +69,14 @@ export default function Dashboard() {
                     >
                       <img src="/dist/images/accounts.svg" alt="accounts" />
                     </div>
-                  )}
+                  }
                   titleClassName="text-dot-7 leading-4 font-bold"
                   descClassName="leading-4"
                 />,
                 <ItemWithTitleDesc
                   key={uuid()}
                   title="新建应用"
-                  itemRender={() => (
+                  itemRender={
                     <div
                       className={twCascade(
                         'p-dot-3-6 bg-gradient-blue-to-top-right rounded-lg rounded-tr-none',
@@ -84,7 +84,7 @@ export default function Dashboard() {
                     >
                       <img src="/dist/images/add.svg" alt="add" />
                     </div>
-                  )}
+                  }
                   titleClassName="text-dot-7 leading-4 font-bold"
                   descClassName="leading-4"
                 />,
@@ -115,13 +115,13 @@ export default function Dashboard() {
                     key={uuid()}
                     title="我发起的"
                     desc="12"
-                    itemRender={() => (
+                    itemRender={
                       <div
                         className={twCascade(
                           'w-dot-8 h-dot-8 bg-gradient-green-to-top-right rounded rounded-tr-none',
                         )}
-                      ></div>
-                    )}
+                      />
+                    }
                     textDirection="row"
                     titleClassName="text-dot-7"
                     descClassName="text-dot-8 font-bold"
@@ -130,13 +130,13 @@ export default function Dashboard() {
                     key={uuid()}
                     title="我处理的"
                     desc="3"
-                    itemRender={() => (
+                    itemRender={
                       <div
                         className={twCascade(
                           'w-dot-8 h-dot-8 bg-gradient-yellow-to-top-right rounded rounded-tr-none',
                         )}
-                      ></div>
-                    )}
+                      />
+                    }
                     textDirection="row"
                     titleClassName="text-dot-7"
                     descClassName="text-dot-8 font-bold"
@@ -145,13 +145,13 @@ export default function Dashboard() {
                     key={uuid()}
                     title="抄送我的"
                     desc="3"
-                    itemRender={() => (
+                    itemRender={
                       <div
                         className={twCascade(
                           'w-dot-8 h-dot-8 bg-gradient-blue-to-top-right rounded rounded-tr-none',
                         )}
-                      ></div>
-                    )}
+                      />
+                    }
                     textDirection="row"
                     titleClassName="text-dot-7"
                     descClassName="text-dot-8 font-bold"
