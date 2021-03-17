@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Icon } from '@QCFE/lego-ui';
 import { useQuery, useMutation } from 'react-query';
 import useCss from 'react-use/lib/useCss';
 import classnames from 'classnames';
@@ -252,16 +253,7 @@ export const MailList = ({ visible }: IMailList) => {
                   excel 批量导入
                 </Button>
                 <div className="px-2"></div>
-                <Button
-                  icon={
-                    <img
-                      className="w-1-dot-2 h-1-dot-2 pr-dot-4"
-                      src="./dist/images/add-member.svg"
-                      alt="logo"
-                    />
-                  }
-                  onClick={openStaffModal}
-                >
+                <Button icon={<Icon className="mr-dot-4" name="add" />} onClick={openStaffModal}>
                   添加员工
                 </Button>
                 <div className="px-2"></div>
