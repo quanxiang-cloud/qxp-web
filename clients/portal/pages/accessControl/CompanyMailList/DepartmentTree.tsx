@@ -95,35 +95,6 @@ export const DepartmentTree = (props: DepartmentTreeProps) => {
   const [curDept, setCurDept] = useState<TreeNodeItem | null>(null);
   const client = useQueryClient();
 
-  // 添加部门节点数据
-  const addHandle = (val: string, id: string) => {
-    // const data = treeData.slice()
-    // const i = id.split('-').map((item) => {
-    //   return Number(item) - 1
-    // })
-    // switch (i.length) {
-    //   case 2:
-    //     data[i[0]].children[i[1]].children.push({
-    //       title: val,
-    //       id: id + '-' + (data[i[0]].children[i[1]].children.length + 1).toString(),
-    //       key: id + '-' + (data[i[0]].children[i[1]].children.length + 1).toString(),
-    //     })
-    //     break
-    //   case 1:
-    //     data[i[0]].children.push({
-    //       title: val,
-    //       id: id + '-' + (data[i[0]].children.length + 1).toString(),
-    //       key: id + '-' + (data[i[0]].children.length + 1).toString(),
-    //       children: [],
-    //     })
-    //     break
-    //   default:
-    //     break
-    // }
-    // 更新treeData的状态
-    // setTreeData(data)
-  };
-
   const openDeptModal = (type: 'add' | 'edit', params: TreeNodeItem) => {
     setCurDept(params);
     setModalType('department');

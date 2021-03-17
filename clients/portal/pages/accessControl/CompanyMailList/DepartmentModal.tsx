@@ -21,7 +21,7 @@ export default function DepartmentModal({ department, closeModal }: DepartmentMo
   const { data, isLoading } = useQuery('getERPTree', getERPTree, {
     refetchOnWindowFocus: false,
   });
-  const titleText = department?.id ? '添加' : '修改';
+  const titleText = department?.id ? '修改' : '添加';
   const formRef = createRef<Form>();
 
   const okModalHandle = () => {

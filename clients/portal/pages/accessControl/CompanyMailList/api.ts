@@ -225,7 +225,6 @@ export function createDepartment(params: { pid: string; departmentName: string }
   return httpPost('/api/org/v1/addDEP', JSON.stringify(params));
 }
 
-// todo API has not implemented
 export function editDepartment(params: { pid: string; departmentName: string }) {
   return httpPost('/api/org/v1/updateDEP', JSON.stringify(params));
 }
