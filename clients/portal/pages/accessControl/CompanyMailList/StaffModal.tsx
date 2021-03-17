@@ -1,30 +1,62 @@
 /**
  * 组件-添加员工
  */
-import React from 'react';
+import React, { useState } from 'react';
+import { useQuery } from 'react-query';
 import { Modal, Form } from '@QCFE/lego-ui';
 
 import { Button } from '@portal/components/Button';
+import { Loading } from '@portal/components/Loading';
+import { getListRole, addDepUser } from './api';
 
 const { TextField, SelectField, CheckboxGroupField } = Form;
+
+export type FormValues = {
+  username: string;
+  phone: string;
+  email: string;
+  roleIDs: string[];
+  depIDs: string | string[];
+};
 
 interface StaffModalProps {
   visible: boolean;
   status: 'add' | 'edit';
   closeModal(): void;
-  okModal(): void;
+  okModal(values: FormValues): void;
 }
 
 export const StaffModal = (props: StaffModalProps) => {
-  const { visible, status, closeModal, okModal } = props;
+  const { visible, closeModal, okModal } = props;
+  const [form, setForm] = useState<any>(null);
+
+  const { data: roleList, isLoading } = useQuery('getListRole', getListRole);
+  console.log(roleList);
+
+  if (isLoading) {
+    return <Loading desc="加载中..." />;
+  }
 
   const titleText = `${status === 'add' ? '添加员工' : '修改员工信息'}`;
 
+  const okModalHandle = () => {
+    const bol = form.validateForm();
+    if (!bol) {
+      return;
+    }
+    const values = form.getFieldsValue();
+    const params: FormValues = {
+      ...values,
+      depIDs: values.depIDs ? [values.depIDs] : [],
+    };
+    okModal(params);
+  };
+
   return (
     <Modal
-      title={`${titleText}`}
-      visible={visible}
-      width={632}
+      title={`${titleText}部门`}
+      visible={true}
+      minWidth={632}
       onCancel={closeModal}
       // onOk={okModal}
       footer={
@@ -52,17 +84,17 @@ export const StaffModal = (props: StaffModalProps) => {
                 alt="icon_true"
               />
             }
-            onClick={okModal}
+            onClick={okModalHandle}
           >
             确定{titleText}
           </Button>
         </div>
       }
     >
-      <Form layout="vertical">
-        <TextField name="account-1" label="员工姓名" placeholder="请输入 QingCloud 账号" />
+      <Form layout="vertical" ref={(n) => setForm(n)}>
+        <TextField name="userName" label="员工姓名" placeholder="请输入 QingCloud 账号" />
         <TextField
-          name="account-2"
+          name="phone"
           label="手机号码"
           placeholder="请输入 QingCloud 账号"
           help="企业成员的真实手机号（手机号/邮箱，两者中至少必填一项）。"
@@ -73,8 +105,8 @@ export const StaffModal = (props: StaffModalProps) => {
           placeholder="例如：name@company.com"
           help="企业成员的真实邮箱，设置后可以通过邮箱接收到全象云平台发送的各类消息提醒（手机号/邮箱，两者中至少必填一项）。"
         />
-        <CheckboxGroupField
-          name="country"
+        {/* <CheckboxGroupField
+          name="roleIDs"
           label="向员工发送密码"
           options={[
             {
@@ -86,30 +118,31 @@ export const StaffModal = (props: StaffModalProps) => {
               value: '2',
             },
           ]}
-        />
+        /> */}
         <SelectField
-          name="region-select"
+          name="depIDs"
           label="部门"
           placeholder="请选择区域"
           style={{ width: '100%' }}
           options={[
-            { value: 'pek3', label: '北京 3 区' },
-            { value: 'gd1', label: '广东 1 区' },
-            { value: 'gd2', label: '广东 2 区' },
-            { value: 'sh1', label: '上海 1 区' },
+            { label: '全象应用平台', value: 'f5a5d3a8-157e-4b04-90e0-07ba5950ee7a' },
+            { label: '部门1', value: '5ad55834-a03e-4705-9214-edd5de15cf7c' },
+            { label: '部门2', value: '5ad55834-a03e-4705-9214-edd5de15cf7c' },
           ]}
         />
         <SelectField
-          name="region-select"
+          name="roleIDs"
           multi
           label="角色"
           placeholder="请选择区域"
-          defaultValue={['0']}
-          options={[
-            { value: '0', label: '普通用户' },
-            { value: '1', label: '一级用户' },
-            { value: '2', label: '二级用户' },
-          ]}
+          defaultValue={[0]}
+          options={
+            roleList &&
+            roleList.map((role) => ({
+              label: role.name,
+              value: role.id,
+            }))
+          }
         />
       </Form>
     </Modal>

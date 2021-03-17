@@ -82,7 +82,7 @@ declare module '@QCFE/lego-ui' {
     style?: Record<string, any>;
     onStart?: (file: File) => void;
     onProgress?: (res: Response, file: File) => void;
-    onSuccess?: (file: File) => void;
+    onSuccess?: (res: Response, file: File) => void;
     onError?: (err: Error, res: Response, file: File) => void;
     beforeUpload?: (file: File) => void;
   }

@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
-import { Modal, Form } from '@QCFE/lego-ui';
+import { useQuery } from 'react-query';
+import { Modal, Form, Loading } from '@QCFE/lego-ui';
 
 import { Button } from '@portal/components/Button';
+import { SelectTree } from '@portal/components/SelectTree';
+import { getERPTree } from './api';
 
 const { TextField, SelectField, ButtonField } = Form;
 
@@ -20,6 +23,16 @@ export const DepartmentModal = ({
   closeModal,
   okModal,
 }: DepartmentModalProps) => {
+  const { data, isLoading } = useQuery('getERPTree', getERPTree, {
+    refetchOnWindowFocus: false,
+  });
+
+  const treeData = data ? [data] : [];
+
+  if (isLoading) {
+    return <Loading />;
+  }
+
   const titleText = `${status === 'add' ? '添加' : '修改'}`;
 
   const [form, setForm] = useState<any>(null);
@@ -33,11 +46,26 @@ export const DepartmentModal = ({
     okModal(values, nodeId);
   };
 
+  const valueRenderer = (option: any) => (
+    <span className="option-with-icon" style={{ display: 'flex', alignItems: 'center' }}>
+      123
+      <span style={{ color: '#00aa72' }}>{option.label}</span>
+    </span>
+  );
+
+  const modalClick = (event: React.MouseEvent): void => {
+    console.log(event);
+    event.preventDefault();
+    return;
+  };
+
   return (
     <Modal
       title={`${titleText}部门`}
       visible={visible}
+      width={632}
       onCancel={closeModal}
+      appendToBody={true}
       footer={
         <div className="flex items-center">
           <Button
@@ -73,7 +101,7 @@ export const DepartmentModal = ({
       <Form layout="vertical" ref={(n: any) => setForm(n)}>
         <TextField
           name="department-name"
-          label="部门名称"
+          label="部门名称1"
           placeholder="请输入 QingCloud 账号"
           help="不超过 30 个字符，部门名称不可重复。"
           schemas={[
@@ -83,29 +111,7 @@ export const DepartmentModal = ({
             },
           ]}
         />
-        <SelectField
-          name="department-manager"
-          label="部门主管"
-          placeholder="请选择区域"
-          style={{ width: '100%' }}
-          options={[
-            { value: 'pek3', label: '北京 3 区' },
-            { value: 'gd1', label: '广东 1 区' },
-            { value: 'gd2', label: '广东 2 区' },
-            { value: 'sh1', label: '上海 1 区' },
-          ]}
-        />
-        <SelectField
-          name="department"
-          label="所属部门"
-          placeholder="请选择区域"
-          options={[
-            { value: 'pek3', label: '北京 3 区' },
-            { value: 'gd1', label: '广东 1 区' },
-            { value: 'gd2', label: '广东 2 区' },
-            { value: 'sh1', label: '上海 1 区' },
-          ]}
-        />
+        <SelectTree treeData={treeData} />
       </Form>
     </Modal>
   );

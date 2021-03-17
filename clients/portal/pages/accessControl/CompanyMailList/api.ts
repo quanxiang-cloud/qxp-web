@@ -1,6 +1,7 @@
-import { httpPost } from '../../../../assets/lib/f';
+import { httpPost, httpFile } from '../../../../assets/lib/f';
 import { IResponse } from '../../../../@types/interface/api';
 import { ITreeNode } from '@portal/pages/accessControl/CompanyMailList/DepartmentTree';
+import { FormValues } from './StaffModal';
 
 // ------------------ 部门 ---------------
 // 获取部门树
@@ -107,4 +108,115 @@ export const getUserDEPInfo = () => {
   return httpPost<IResponse<ITreeNode[]>>('/api/org/v1/userDEPInfo', null, {
     'Content-Type': 'application/json',
   }).then(({ data }) => data);
+};
+
+type Persons = {
+  [name: string]: any;
+};
+
+/**
+ * @returns 管理员分页（根据部门id获取人员列表）
+ * @param id true
+ */
+export const getUserAdminInfo = (depID: string, params: any) => {
+  return httpPost<IResponse<{ total_count: number; data: Persons[] }>>(
+    '/api/org/v1/adminUserList',
+    JSON.stringify({ depID, ...params }),
+    {
+      'Content-Type': 'application/json',
+    },
+  ).then(({ data }) => ({
+    total: data?.total_count || 0,
+    data: data?.data || [],
+  }));
+};
+
+/**
+ * @returns 获取所有角色列表
+ */
+export const getUserTemplate = () => {
+  return httpPost<IResponse<{ fileURL: string }>>('/api/org/v1/getUserTemplate', null).then(
+    ({ data }) => data?.fileURL,
+  );
+};
+
+type Roles = {
+  id: string;
+  name: string;
+  tag: string;
+};
+
+/**
+ * @returns 获取所有角色列表
+ */
+export const getListRole = () => {
+  return httpPost<IResponse<{ roles: Roles[] }>>('/api/goalie/listRole', null, {
+    'Content-Type': 'application/x-www-form-urlencoded',
+  }).then(({ data }) => data?.roles);
+};
+
+/**
+ * @returns 新增部门人员
+ */
+export const addDepUser = (values: FormValues) => {
+  return httpPost<IResponse<{ roles: Roles[] }>>(
+    '/api/nurturing/v1/addUsers',
+    JSON.stringify(values),
+    {
+      'Content-Type': 'application/json',
+    },
+  ).then(({ data }) => data);
+};
+
+/**
+ * @returns 删除部门人员
+ */
+export const delDepUser = (id: string) => {
+  return httpPost<IResponse<{ code: number }>>(
+    '/api/nurturing/v1/delUsers',
+    JSON.stringify({ id }),
+    {
+      'Content-Type': 'application/json',
+    },
+  ).then(({ data }) => data);
+};
+
+/**
+ * @returns 修改用户状态
+ */
+export const updateUserStatus = ({ id, status }: { id: string; status: 1 | -2 }) => {
+  return httpPost<IResponse<{ code: number }>>(
+    '/api/org/v1/updateUserStatus',
+    JSON.stringify({ id, status }),
+    {
+      'Content-Type': 'application/json',
+    },
+  ).then(({ data }) => data);
+};
+
+/**
+ * @returns 修改用户状态
+ */
+export const resetUserPWD = (userIDs: string[]) => {
+  return httpPost<IResponse<{ code: number }>>(
+    '/api/org/v1/updateUserStatus',
+    JSON.stringify({ userIDs }),
+    {
+      'Content-Type': 'application/json',
+    },
+  ).then(({ data }) => data);
+};
+
+export type FileParams = {
+  depID: string;
+  file: File;
+};
+
+/**
+ * @returns 导入
+ */
+export const importTempFile = ({ depID, file }: FileParams) => {
+  console.log(depID);
+  console.log(file);
+  return httpFile('/api/org/v1/importFile', { depID, file });
 };

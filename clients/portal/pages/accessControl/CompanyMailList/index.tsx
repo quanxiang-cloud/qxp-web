@@ -1,6 +1,5 @@
-import { useQuery } from 'react-query';
-
 import React, { useState } from 'react';
+import { useQuery, useMutation } from 'react-query';
 import useCss from 'react-use/lib/useCss';
 import classnames from 'classnames';
 import { Select, Control, Icon, Input, Dropdown, Loading } from '@QCFE/lego-ui';
@@ -16,33 +15,29 @@ import { ExportFileModal } from './ExportFileModal';
 import { StaffModal } from './StaffModal';
 import { SelectCheckbox } from '@portal/components/SelectCheckbox';
 
-import { getERPTree } from './api';
+import { getERPTree, addDepUser } from './api';
 import { twCascade } from '@mariusmarais/tailwind-cascade';
-
+import { FormValues } from './StaffModal';
 export interface IMailList {
   visible: boolean;
 }
 
 export const MailList = ({ visible }: IMailList) => {
+  const { data, isLoading, refetch } = useQuery('getERPTree', getERPTree);
   const [selectedValue, changeSelectedValue] = useState('CentOS');
   const [inputValue, changeInputValue] = useState('');
   const [visibleFile, setVisibleFile] = useState(false);
   const [visibleStaff, setVisibleStaff] = useState(false);
+  const [currDepId, setCurrDepId] = useState(''); // 部门ID
 
-  const { data, isLoading } = useQuery('getERPTree', getERPTree);
+  const mutation = useMutation(addDepUser, {
+    onSuccess: () => {
+      setVisibleStaff(false);
+      refetch();
+    },
+  });
 
-  // if (isLoading) {
-  //   return (
-  //     <div className="flex items-center justify-center py-4">
-  //       {/* <Loading /> */}
-  //       <span>123</span>
-  //     </div>
-  //   );
-  // }
-
-  console.log(data);
   const treeData: any[] = data ? [data] : [];
-  console.log('isLoading', isLoading);
 
   const actions: IActionListItem<null>[] = [
     {
@@ -117,9 +112,26 @@ export const MailList = ({ visible }: IMailList) => {
     reader.readAsBinaryString(files[0]);
   };
 
-  const closeStaffModal = () => {
-    setVisibleStaff(!visibleStaff);
+  // 新增员工
+  const openStaffModal = () => {
+    setVisibleStaff(true);
   };
+
+  const closeStaffModal = () => {
+    setVisibleStaff(false);
+  };
+
+  const okStaffModal = (values: FormValues) => {
+    mutation.mutate(values);
+  };
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center py-4">
+        <Loading />
+      </div>
+    );
+  }
 
   return (
     <div
@@ -141,7 +153,7 @@ export const MailList = ({ visible }: IMailList) => {
         <StaffModal
           visible={visibleStaff}
           status="add"
-          okModal={closeStaffModal}
+          okModal={okStaffModal}
           closeModal={closeStaffModal}
         />
       )}
@@ -168,24 +180,24 @@ export const MailList = ({ visible }: IMailList) => {
         >
           <Select
             name="os"
-            className={useCss({
-              '&:hover': {
-                border: 'none',
-                background: 'none',
-              },
-              '.select-control': {
-                background: 'none',
-                border: 'none',
-              },
-              '&': {
-                width: '5.3rem',
-                border: 'none',
-                background: 'none !important',
-              },
-              '.select-value-label': {
-                'font-size': '14px',
-              },
-            })}
+            // className={useCss({
+            //   '&:hover': {
+            //     border: 'none',
+            //     background: 'none',
+            //   },
+            //   '.select-control': {
+            //     background: 'none',
+            //     border: 'none',
+            //   },
+            //   '&': {
+            //     width: '5.3rem',
+            //     border: 'none',
+            //     background: 'none !important',
+            //   },
+            //   '.select-value-label': {
+            //     'font-size': '14px',
+            //   },
+            // })}
             value={selectedValue}
             options={[
               { value: 'CentOS', label: '按员工' },
@@ -196,13 +208,13 @@ export const MailList = ({ visible }: IMailList) => {
           <Control
             className={classnames(
               'has-icons-left flex-1',
-              useCss({
-                '> input': {
-                  background: 'none',
-                  border: 'none',
-                  outline: 'none',
-                },
-              }),
+              // useCss({
+              //   '> input': {
+              //     background: 'none',
+              //     border: 'none',
+              //     outline: 'none',
+              //   },
+              // }),
             )}
           >
             <Icon className="is-left" name="magnifier" />
@@ -218,7 +230,7 @@ export const MailList = ({ visible }: IMailList) => {
         <div className="h-full mt-4 flex items-start">
           <div className="w-12-dot-95 h-full">
             <DepartmentStaff department="部门人员" count={0} unit="部门" />
-            <DepartmentTree treeData={treeData} />
+            <DepartmentTree treeData={treeData} setCurrDepId={setCurrDepId} />
           </div>
           <div className="vertical-line flex-grow-0"></div>
           <div className="flex-1 h-full">
@@ -248,7 +260,7 @@ export const MailList = ({ visible }: IMailList) => {
                       alt="logo"
                     />
                   }
-                  onClick={closeStaffModal}
+                  onClick={openStaffModal}
                 >
                   添加员工
                 </Button>
@@ -261,7 +273,7 @@ export const MailList = ({ visible }: IMailList) => {
                   </div>
                 </Dropdown>
               </div>
-              <PersonInfo departmentId="" />
+              <PersonInfo departmentId={currDepId} />
             </div>
           </div>
         </div>

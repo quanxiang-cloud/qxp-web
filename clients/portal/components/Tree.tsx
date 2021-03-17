@@ -9,8 +9,9 @@ interface ITree extends TreeProps {
 }
 
 export const Tree = ({ ...props }: ITree) => {
-  const renderTreeNodes = (data: TreeData[]) =>
-    data.map((item: TreeData) => {
+  const renderTreeNodes = (data: TreeData[]) => {
+    console.log(data);
+    return data.map((item: TreeData) => {
       const { children } = item;
       if (children) {
         return (
@@ -39,6 +40,7 @@ export const Tree = ({ ...props }: ITree) => {
         />
       );
     });
+  };
   const handleSelect = (key: string) => {
     typeof props.getKey !== 'undefined' ? props.getKey(key[0]) : null;
   };

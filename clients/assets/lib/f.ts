@@ -49,6 +49,24 @@ export const httpPost = <T>(
   });
 };
 
+export const httpFile = async (url: string, data?: any) => {
+  const formData = new FormData();
+  if (data) {
+    for (let key in data) {
+      formData.append(key, data[key]);
+    }
+  }
+  const response = await fetch(url, {
+    method: 'post',
+    body: formData,
+    headers: {
+      'X-Proxy': 'API',
+      'Content-Type': 'multipart/form-data',
+    },
+  });
+  console.log(response);
+};
+
 /**
  * 生成一个 uuid
  * @return {string}
