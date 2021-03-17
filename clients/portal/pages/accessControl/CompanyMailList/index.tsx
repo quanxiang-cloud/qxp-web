@@ -42,7 +42,7 @@ export const MailList = ({ visible }: IMailList) => {
   const actions: IActionListItem<null>[] = [
     {
       id: '1',
-      iconName: 'add-department.svg',
+      iconName: 'export-data.svg',
       text: '导出员工数据 ',
     },
   ];
@@ -256,7 +256,7 @@ export const MailList = ({ visible }: IMailList) => {
                   icon={
                     <img
                       className="w-1-dot-2 h-1-dot-2 pr-dot-4"
-                      src="./dist/images/add-department.svg"
+                      src="./dist/images/add-member.svg"
                       alt="logo"
                     />
                   }
