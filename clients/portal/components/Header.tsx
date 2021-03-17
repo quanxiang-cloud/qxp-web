@@ -19,7 +19,7 @@ export const Header = ({ onMenuToggle, getSetter }: IHeader) => {
         </div>
         <div>
           <Link to="/" className="flex justify-between items-center mr-2-dot-8">
-            <img className="w-3 h-3 mr-dot-2" src="/dist/images/vector.svg" />
+            <img className="w-3 h-3 mr-dot-2" src="/dist/images/work-space.svg" />
             <span>工作台</span>
           </Link>
         </div>
