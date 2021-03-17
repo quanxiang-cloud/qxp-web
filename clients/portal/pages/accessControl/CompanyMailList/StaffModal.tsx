@@ -16,13 +16,13 @@ interface StaffModalProps {
 }
 
 export const StaffModal = (props: StaffModalProps) => {
-  const { visible, closeModal, okModal } = props;
+  const { visible, status, closeModal, okModal } = props;
 
-  const titleText = `${status === 'add' ? '添加' : '修改'}`;
+  const titleText = `${status === 'add' ? '添加员工' : '修改员工信息'}`;
 
   return (
     <Modal
-      title={`${titleText}部门`}
+      title={`${titleText}`}
       visible={visible}
       width={632}
       onCancel={closeModal}
