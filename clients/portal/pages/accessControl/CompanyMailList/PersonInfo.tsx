@@ -86,30 +86,30 @@ export const PersonInfo = (props: PersonInfoProps) => {
   }>[] = [
     {
       id: '1',
-      iconName: './dist/images/add-department.svg',
+      iconName: './dist/images/set-leader.svg',
       text: '设为主管 ',
     },
     {
       id: '2',
-      iconName: './dist/images/add-department.svg',
+      iconName: './dist/images/reset-pwd.svg',
       text: '重置密码',
       onclick: (params: any) => handleReset(params),
     },
     {
       id: '3',
-      iconName: './dist/images/add-department.svg',
+      iconName: './dist/images/del.svg',
       text: '修改信息 ',
       onclick: closeStaffModal,
     },
     {
       id: '4',
-      iconName: './dist/images/add-department.svg',
+      iconName: './dist/images/disable-user.svg',
       text: '禁用账号',
       onclick: (params: any) => handleAccount('disabled', params),
     },
     {
       id: '5',
-      iconName: './dist/images/add-department.svg',
+      iconName: './dist/images/del.svg',
       text: '删除账号 ',
       onclick: (params: any) => handleAccount('delete', params),
     },
