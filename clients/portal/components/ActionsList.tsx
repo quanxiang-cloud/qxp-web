@@ -1,4 +1,5 @@
 import React from 'react';
+import { Icon } from '@QCFE/lego-ui';
 import useCss from 'react-use/lib/useCss';
 import classnames from 'classnames';
 import { twCascade } from '@mariusmarais/tailwind-cascade';
@@ -45,15 +46,7 @@ export const ActionsList = function <T>({ actions, params, className }: IActions
               )}
             >
               {action.iconName && (
-                <img
-                  className="w-1-dot-2 h-1-dot-2 pr-dot-4"
-                  src={
-                    action.iconName.includes('/')
-                      ? action.iconName
-                      : `/dist/images/${action.iconName}`
-                  }
-                  alt="logo"
-                />
+                <Icon name={action.iconName} className="w-1-dot-2 h-1-dot-2 pr-dot-4" />
               )}
               <div className="text-dot-7 whitespace-no-wrap">{action.text}</div>
             </li>

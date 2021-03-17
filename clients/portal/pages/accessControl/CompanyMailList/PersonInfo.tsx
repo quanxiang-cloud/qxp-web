@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation } from 'react-query';
 import { GridTable, Dropdown, Loading } from '@QCFE/lego-ui';
-import { twCascade } from '@mariusmarais/tailwind-cascade';
 
 import { ActionsList, IActionListItem } from '@portal/components/ActionsList';
 import { Pagination } from '@portal/components/Pagination';
@@ -86,30 +85,30 @@ export const PersonInfo = (props: PersonInfoProps) => {
   }>[] = [
     {
       id: '1',
-      iconName: './dist/images/set-leader.svg',
+      iconName: 'client',
       text: '设为主管 ',
     },
     {
       id: '2',
-      iconName: './dist/images/reset-pwd.svg',
+      iconName: 'key',
       text: '重置密码',
       onclick: (params: any) => handleReset(params),
     },
     {
       id: '3',
-      iconName: './dist/images/del.svg',
+      iconName: 'pen',
       text: '修改信息 ',
       onclick: closeStaffModal,
     },
     {
       id: '4',
-      iconName: './dist/images/disable-user.svg',
+      iconName: 'stop',
       text: '禁用账号',
       onclick: (params: any) => handleAccount('disabled', params),
     },
     {
       id: '5',
-      iconName: './dist/images/del.svg',
+      iconName: 'trash',
       text: '删除账号 ',
       onclick: (params: any) => handleAccount('delete', params),
     },
@@ -138,23 +137,6 @@ export const PersonInfo = (props: PersonInfoProps) => {
         return render.dep && render.dep.departmentName;
       },
     },
-    // {
-    //   title: '角色',
-    //   dataIndex: 'role',
-    //   width: 130,
-    //   render: (text: any) => {
-    //     return (
-    //       <div
-    //         className={twCascade(
-    //           'text-center text-375FF3 leading-1-dot-6 border-none inline-block px-dot-8',
-    //           'py-dot-125 rounded-l-dot-4 rounded-tr-dot-1 rounded-br-dot-4 bg-DEE9FF',
-    //         )}
-    //       >
-    //         {text}
-    //       </div>
-    //     );
-    //   },
-    // },
     {
       title: '',
       dataIndex: '',

@@ -27,13 +27,13 @@ const Title = ({ departmentName, id, pid, openDeptModal, openDeleteDeptModal }: 
     const acts = [
       {
         id: '1',
-        iconName: './dist/images/add-department.svg',
+        iconName: 'network-router',
         text: '添加部门',
         onclick: (params: DeptInfo) => openDeptModal('add', params),
       },
       {
         id: '2',
-        iconName: './dist/images/edit.svg',
+        iconName: 'pen',
         text: '修改部门',
         onclick: (params: DeptInfo) =>
           openDeptModal('edit', params),
@@ -42,7 +42,7 @@ const Title = ({ departmentName, id, pid, openDeptModal, openDeleteDeptModal }: 
     if (bol) {
       acts.push({
         id: '3',
-        iconName: './dist/images/delete.svg',
+        iconName: 'trash',
         text: '删除',
         onclick: (params: DeptInfo) => openDeleteDeptModal(params),
       });

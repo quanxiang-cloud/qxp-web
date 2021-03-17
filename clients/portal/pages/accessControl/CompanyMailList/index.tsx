@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { Icon } from '@QCFE/lego-ui';
 import { useQuery, useMutation } from 'react-query';
 import useCss from 'react-use/lib/useCss';
 import classnames from 'classnames';
@@ -43,7 +42,7 @@ export const MailList = ({ visible }: IMailList) => {
   const actions: IActionListItem<null>[] = [
     {
       id: '1',
-      iconName: 'export-data.svg',
+      iconName: 'exprt',
       text: '导出员工数据 ',
     },
   ];
@@ -242,11 +241,19 @@ export const MailList = ({ visible }: IMailList) => {
                   className="bg-black"
                   textClassName="text-white"
                   icon={
-                    <img
-                      className="w-1-dot-2 h-1-dot-2 pr-dot-4"
-                      src="./dist/images/folder.svg"
-                      alt="logo"
-                    />
+                    <svg
+                      className="mr-dot-4"
+                      width="18"
+                      height="14"
+                      viewBox="0 0 18 14"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M15.6667 1.99998H9.00008L7.33342 0.333313H2.33341C1.40841 0.333313 0.675081 1.07498 0.675081 1.99998L0.666748 12C0.666748 12.925 1.40841 13.6666 2.33341 13.6666H15.6667C16.5917 13.6666 17.3334 12.925 17.3334 12V3.66665C17.3334 2.74165 16.5917 1.99998 15.6667 1.99998ZM15.6667 12H2.33341V1.99998H6.64175L8.30841 3.66665H15.6667V12ZM9.00008 8.66665H10.6667V10.3333H12.3334V8.66665H14.0001V6.99998H12.3334V5.33331H10.6667V6.99998H9.00008V8.66665Z"
+                        fill="white"
+                      />
+                    </svg>
                   }
                   onClick={importFile}
                 >
