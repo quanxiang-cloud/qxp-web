@@ -109,14 +109,6 @@ export const MailList = ({ visible }: IMailList) => {
             'rounded-bl-dot-6 flex items-center',
           )}
         >
-          <Select
-            name="os"
-            className="select-set"
-            options={[
-              { label: '按部门', value: '1' },
-              { label: '按员工', value: '2' },
-            ]}
-          />
           <Control className="has-icons-left flex-1 control-set">
             <Icon className="is-left" name="magnifier" />
             <Input
