@@ -18,11 +18,17 @@ export interface IMailList {
 
 export const MailList = ({ visible }: IMailList) => {
   const { data, isLoading, refetch } = useQuery('getERPTree', getERPTree);
-  const [inputValue, changeInputValue] = useState('');
+  const [searchWord, setSearchWord] = useState('');
 
   const [currDepId, setCurrDepId] = useState(''); // 部门ID
 
   const treeData: any[] = data ? [data] : [];
+
+  function handleSearch(e: KeyboardEvent): void {
+    if (e.key !== 'Enter') {
+      return;
+    }
+  }
 
   const importExcel = (e: any) => {
     console.log(e);
@@ -115,8 +121,9 @@ export const MailList = ({ visible }: IMailList) => {
               type="text"
               placeholder="搜索员工名称、手机号、邮箱..."
               name="search"
-              // onChange={changeInputValue}
-              value={inputValue}
+              onChange={(_, value) => setSearchWord(value)}
+              value={searchWord}
+              onKeyDown={handleSearch}
             />
           </Control>
         </div>
