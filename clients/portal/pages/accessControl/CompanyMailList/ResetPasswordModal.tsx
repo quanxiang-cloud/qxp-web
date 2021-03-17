@@ -1,26 +1,50 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Modal, Form } from '@QCFE/lego-ui';
 
 import { Button } from '@portal/components/Button';
 
 const { TextField, CheckboxGroupField } = Form;
 
+export type CheckedWay = {
+  sendPhone: '' | 1;
+  sendEmail: '' | 1;
+};
+
 interface ResetPasswordModalProps {
   visible: boolean;
   closeModal(): void;
-  okModal(): void;
+  okModal: (val: CheckedWay) => void;
 }
 
 export const ResetPasswordModal = (props: ResetPasswordModalProps) => {
   const { visible, closeModal, okModal } = props;
+  const [form, setForm] = useState<any>(null);
+
+  const handleReset = () => {
+    const bol = form.validateForm();
+    if (!bol) {
+      return;
+    }
+    const values: { way: string[] } = form.getFieldsValue();
+    const { way } = values;
+    let checkedWay: CheckedWay = {
+      sendEmail: '',
+      sendPhone: '',
+    };
+    if (way.length > 0) {
+      way.includes('email') && (checkedWay.sendEmail = 1);
+      way.includes('phone') && (checkedWay.sendPhone = 1);
+    }
+    console.log(checkedWay);
+    okModal(checkedWay);
+  };
 
   return (
     <Modal
-      title="重置密码"
+      title="发送随机密码"
       visible={visible}
       width={632}
       onCancel={closeModal}
-      onOk={okModal}
       footer={
         <div className="flex items-center">
           <Button
@@ -46,26 +70,26 @@ export const ResetPasswordModal = (props: ResetPasswordModalProps) => {
                 alt="icon_true"
               />
             }
-            onClick={okModal}
+            onClick={handleReset}
           >
             确定重置
           </Button>
         </div>
       }
     >
-      <Form layout="vertical">
-        <TextField name="account-1" label="重置密码" placeholder="请输入 QingCloud 账号" />
+      <Form layout="vertical" ref={(n: any) => setForm(n)}>
+        {/* <TextField name="account-1" label="重置密码" placeholder="请输入 QingCloud 账号" /> */}
         <CheckboxGroupField
-          name="country"
+          name="way"
           label="向员工发送密码"
           options={[
             {
               label: '通过邮箱',
-              value: '1',
+              value: 'email',
             },
             {
               label: '通过短信',
-              value: '2',
+              value: 'phone',
             },
           ]}
         />

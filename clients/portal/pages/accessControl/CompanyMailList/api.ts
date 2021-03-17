@@ -2,6 +2,7 @@ import { httpPost, httpFile } from '../../../../assets/lib/f';
 import { IResponse } from '../../../../@types/interface/api';
 import { ITreeNode } from '@portal/pages/accessControl/CompanyMailList/DepartmentTree';
 import { FormValues } from './StaffModal';
+import { UserStatus } from './PersonInfo';
 
 // ------------------ 部门 ---------------
 // 获取部门树
@@ -169,12 +170,12 @@ export const addDepUser = (values: FormValues) => {
 };
 
 /**
- * @returns 删除部门人员
+ * @returns 修改用户状态
  */
-export const delDepUser = (id: string) => {
+export const updateUserStatus = ({ id, status }: { id: string; status: UserStatus }) => {
   return httpPost<IResponse<{ code: number }>>(
-    '/api/nurturing/v1/delUsers',
-    JSON.stringify({ id }),
+    '/api/org/v1/updateUserStatus',
+    JSON.stringify({ id, useStatus: status }),
     {
       'Content-Type': 'application/json',
     },
@@ -184,27 +185,22 @@ export const delDepUser = (id: string) => {
 /**
  * @returns 修改用户状态
  */
-export const updateUserStatus = ({ id, status }: { id: string; status: 1 | -2 }) => {
+export const resetUserPWD = ({
+  userIDs,
+  sendEmail,
+  sendPhone,
+}: {
+  userIDs: string[];
+  sendEmail: '' | 1;
+  sendPhone: '' | 1;
+}) => {
   return httpPost<IResponse<{ code: number }>>(
-    '/api/org/v1/updateUserStatus',
-    JSON.stringify({ id, status }),
+    '/api/nurturing/v1/adminResetPWD',
+    JSON.stringify({ userIDs, sendEmail, sendPhone }),
     {
       'Content-Type': 'application/json',
     },
-  ).then(({ data }) => data);
-};
-
-/**
- * @returns 修改用户状态
- */
-export const resetUserPWD = (userIDs: string[]) => {
-  return httpPost<IResponse<{ code: number }>>(
-    '/api/org/v1/updateUserStatus',
-    JSON.stringify({ userIDs }),
-    {
-      'Content-Type': 'application/json',
-    },
-  ).then(({ data }) => data);
+  ).then((data) => data);
 };
 
 export type FileParams = {
@@ -216,9 +212,7 @@ export type FileParams = {
  * @returns 导入
  */
 export const importTempFile = ({ depID, file }: FileParams) => {
-  console.log(depID);
-  console.log(file);
-  return httpFile('/api/org/v1/importFile', { depID, file });
+  return httpFile('/api/org/v1/importFile', { depID, file }).then(({ data }) => data);
 };
 
 export function createDepartment(params: { pid: string; departmentName: string }) {

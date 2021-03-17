@@ -612,3 +612,29 @@ button {
 .hover-bg-color:hover {
   background-color: #F0F6FF;
 }
+
+.select-set {
+  width: 5.3rem;
+  border: none;
+  background: none !important;
+
+  &:hover {
+    border: none;
+    background: none;
+  }
+  .select-control {
+    background: none;
+    border: none;
+  }
+  .select-value-label {
+    font-size: 14px;
+  }
+}
+
+.control-set {
+  > input {
+    background: none;
+    border: none;
+    outline: none;
+  }
+}
