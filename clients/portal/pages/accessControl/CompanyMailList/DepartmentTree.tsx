@@ -11,18 +11,17 @@ import { deleteDEP } from './api';
 import { Func } from 'mocha';
 
 type DeptInfo = {
-  id: string
-  departmentName: string
-  pid: string
-}
+  id: string;
+  departmentName: string;
+  pid: string;
+};
 export interface TreeNodeItem extends ITreeNode {
   addDepartment: (val: string, id: string) => void;
-  openDeptModal: (type: string, deptInfo: DeptInfo ) => void;
+  openDeptModal: (type: string, deptInfo: DeptInfo) => void;
   openDeleteDeptModal: (deptInfo: DeptInfo) => void;
 }
 
 const Title = ({ departmentName, id, pid, openDeptModal, openDeleteDeptModal }: TreeNodeItem) => {
-
   const actions = (bol: boolean) => {
     const acts = [
       {
@@ -35,8 +34,7 @@ const Title = ({ departmentName, id, pid, openDeptModal, openDeleteDeptModal }: 
         id: '2',
         iconName: 'pen',
         text: '修改部门',
-        onclick: (params: DeptInfo) =>
-          openDeptModal('edit', params),
+        onclick: (params: DeptInfo) => openDeptModal('edit', params),
       },
     ];
     if (bol) {
@@ -131,12 +129,12 @@ export const DepartmentTree = (props: DepartmentTreeProps) => {
     setCurDept(params);
     setHandleStatus(type);
     setModalType('department');
-  }
+  };
 
   const openDeleteDeptModal = (params: TreeNodeItem) => {
     setCurDept(params);
     setModalType('delDept');
-  }
+  };
 
   const renderTreeNodes = (childData: ITreeNode[]) =>
     childData.length > 0 &&
@@ -145,7 +143,13 @@ export const DepartmentTree = (props: DepartmentTreeProps) => {
       if (child) {
         return (
           <TreeNode
-            title={<Title {...treenode} openDeptModal={openDeptModal} openDeleteDeptModal={openDeleteDeptModal} />}
+            title={
+              <Title
+                {...treenode}
+                openDeptModal={openDeptModal}
+                openDeleteDeptModal={openDeleteDeptModal}
+              />
+            }
             key={treenode.id}
             dataRef={treenode}
           >
@@ -155,7 +159,13 @@ export const DepartmentTree = (props: DepartmentTreeProps) => {
       }
       return (
         <TreeNode
-          title={<Title {...treenode} openDeptModal={openDeptModal} openDeleteDeptModal={openDeleteDeptModal} />}
+          title={
+            <Title
+              {...treenode}
+              openDeptModal={openDeptModal}
+              openDeleteDeptModal={openDeleteDeptModal}
+            />
+          }
           key={treenode.id}
           dataRef={treenode}
         />
@@ -172,11 +182,11 @@ export const DepartmentTree = (props: DepartmentTreeProps) => {
   const deleteDept = () => {
     deleteDEP((curDept as TreeNodeItem).id).then((res) => {
       if (res && res.code === 0) {
-        setModalType('')
+        setModalType('');
         client.invalidateQueries('getERPTree');
       }
     });
-  }
+  };
 
   return (
     <div className="w-auto h-full">
@@ -221,18 +231,15 @@ export const DepartmentTree = (props: DepartmentTreeProps) => {
       >
         {treeData.length > 0 ? renderTreeNodes(treeData) : null}
       </Tree>
-      {modalType === "department" && (
+      {modalType === 'department' && (
         <DepartmentModal
           status={handleStatus}
           nodeId={indexOfNode}
           closeModal={() => setModalType('')}
         />
       )}
-      {modalType === "delDept" && (
-        <DeleteModal
-          closeModal={() => setModalType('')}
-          okModal={deleteDept}
-        />
+      {modalType === 'delDept' && (
+        <DeleteModal closeModal={() => setModalType('')} okModal={deleteDept} />
       )}
     </div>
   );
