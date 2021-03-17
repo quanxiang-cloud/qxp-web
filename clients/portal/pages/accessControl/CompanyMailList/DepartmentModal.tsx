@@ -6,21 +6,22 @@ import { Button } from '@portal/components/Button';
 import SelectTree from '@portal/components/select-tree';
 import { getERPTree, createDepartment, editDepartment } from './api';
 
+import { DeptInfo } from './DepartmentTree';
+
 const { TextField } = Form;
 const SelectTreeField = Form.getFormField(SelectTree);
 
 interface DepartmentModalProps {
-  status: 'add' | 'edit';
-  nodeId: string;
+  department: DeptInfo | null;
   closeModal(): void;
 }
 
-export default function DepartmentModal({ status, nodeId, closeModal }: DepartmentModalProps) {
+export default function DepartmentModal({ department, closeModal }: DepartmentModalProps) {
   const queryClient = useQueryClient();
   const { data, isLoading } = useQuery('getERPTree', getERPTree, {
     refetchOnWindowFocus: false,
   });
-  const titleText = `${status === 'add' ? '添加' : '修改'}`;
+  const titleText = department?.id ? '添加' : '修改';
   const formRef = createRef<Form>();
 
   const okModalHandle = () => {
@@ -28,7 +29,13 @@ export default function DepartmentModal({ status, nodeId, closeModal }: Departme
       return;
     }
 
-    createDepartment(formRef.current?.getFieldsValue())
+    const requestAPI = department?.id ? createDepartment : editDepartment;
+    const params = formRef.current?.getFieldsValue();
+    if (department?.id) {
+      params.id = department.id;
+    }
+
+    requestAPI(params)
       .then(() => {
         queryClient.invalidateQueries('getERPTree');
 
@@ -70,6 +77,7 @@ export default function DepartmentModal({ status, nodeId, closeModal }: Departme
           label="部门名称"
           placeholder="请输入部门名称"
           help="不超过 30 个字符，部门名称不可重复。"
+          defaultValue={department?.departmentName}
           schemas={[
             {
               help: '请输入部门名称',
@@ -84,7 +92,7 @@ export default function DepartmentModal({ status, nodeId, closeModal }: Departme
             name="pid"
             label="选择部门"
             placeholder="请选择部门"
-            defaultSelect={nodeId}
+            defaultSelect={department?.id || ''}
             treeData={treeData}
           />
         )}

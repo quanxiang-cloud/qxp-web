@@ -10,7 +10,7 @@ import { DeleteModal } from './DeleteModal';
 import { deleteDEP } from './api';
 import { Func } from 'mocha';
 
-type DeptInfo = {
+export type DeptInfo = {
   id: string;
   departmentName: string;
   pid: string;
@@ -91,7 +91,6 @@ interface DepartmentTreeProps {
 export const DepartmentTree = (props: DepartmentTreeProps) => {
   const { treeData, setCurrDepId } = props;
   const [modalType, setModalType] = useState('');
-  const [handleStatus, setHandleStatus] = useState<'add' | 'edit'>('add');
   const [indexOfNode, setIndexOfNode] = useState('');
   const [curDept, setCurDept] = useState<TreeNodeItem | null>(null);
   const client = useQueryClient();
@@ -127,7 +126,6 @@ export const DepartmentTree = (props: DepartmentTreeProps) => {
 
   const openDeptModal = (type: 'add' | 'edit', params: TreeNodeItem) => {
     setCurDept(params);
-    setHandleStatus(type);
     setModalType('department');
   };
 
@@ -232,11 +230,7 @@ export const DepartmentTree = (props: DepartmentTreeProps) => {
         {treeData.length > 0 ? renderTreeNodes(treeData) : null}
       </Tree>
       {modalType === 'department' && (
-        <DepartmentModal
-          status={handleStatus}
-          nodeId={indexOfNode}
-          closeModal={() => setModalType('')}
-        />
+        <DepartmentModal department={curDept as DeptInfo} closeModal={() => setModalType('')} />
       )}
       {modalType === 'delDept' && (
         <DeleteModal closeModal={() => setModalType('')} okModal={deleteDept} />
