@@ -29,7 +29,7 @@ export default function DepartmentModal({ department, closeModal }: DepartmentMo
       return;
     }
 
-    const requestAPI = department?.id ? createDepartment : editDepartment;
+    const requestAPI = department?.id ? editDepartment : createDepartment;
     const params = formRef.current?.getFieldsValue();
     if (department?.id) {
       params.id = department.id;
