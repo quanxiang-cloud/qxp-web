@@ -28,7 +28,6 @@ export const MailList = ({ visible }: IMailList) => {
   const treeData: any[] = data ? [data] : [];
 
   const search = (keyWord: string) => {
-    console.log('keyWord: ', keyWord);
     setSearchWord(keyWord)
   }
 
@@ -143,7 +142,7 @@ export const MailList = ({ visible }: IMailList) => {
             <DepartmentTree treeData={treeData} setCurrDept={setCurrDept} departmentId={curDeptId} />
           </div>
           <div className="vertical-line flex-grow-0"></div>
-          <PersonInfo departmentId={curDeptId} departmentName={curDept.departmentName} />
+          <PersonInfo keyword={searchWord} departmentId={curDeptId} departmentName={(curDept as DeptTree).departmentName} />
         </div>
       </div>
     </div>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation } from 'react-query';
 import { Table, Dropdown, Icon, Message } from '@QCFE/lego-ui';
 
@@ -42,10 +42,10 @@ export type BatchDepParams = {
 interface PersonInfoProps {
   departmentId: string;
   departmentName: string;
+  keyword: string;
 }
 
-export const PersonInfo = (props: PersonInfoProps) => {
-  const { departmentId, departmentName } = props;
+export const PersonInfo = ({ departmentId, departmentName, keyword }: PersonInfoProps) => {
   const [visibleFile, setVisibleFile] = useState<boolean>(false);
   const [resetModal, setResetModal] = useState<boolean>(false);
   const [handleModal, setHandleModal] = useState<boolean>(false);
@@ -56,6 +56,7 @@ export const PersonInfo = (props: PersonInfoProps) => {
   const [visibleStaff, setVisibleStaff] = useState<boolean>(false);
   const [selectedRows, setSelectedRows] = useState<string[]>([]);
   const [selectedUsers, setSelectedUsers] = useState<IUserInfo[]>([]);
+  const [searchTimer, setSearchTimer] = useState<number>(0);
 
   const staffMutation = useMutation(userModalStatus === 'add' ? addDepUser : updateUser, {
     onSuccess: () => {
@@ -69,11 +70,26 @@ export const PersonInfo = (props: PersonInfoProps) => {
     page: number;
     limit: number;
     total: number;
+    userName: string;
   }>({
     page: 1,
     limit: 10,
     total: 10,
+    userName: ''
   });
+
+  useEffect(() => {
+    if (searchTimer) {
+      clearTimeout(searchTimer);
+    }
+
+    setSearchTimer(setTimeout(() => {
+      setPageParams({ ...pageParams, userName: keyword })
+    }, 200));
+    return () => {
+      clearTimeout(searchTimer);
+    }
+  }, [keyword])
 
   const { data: personList, isLoading, refetch } = useQuery(
     ['getUserAdminInfo', pageParams, departmentId],
@@ -82,7 +98,6 @@ export const PersonInfo = (props: PersonInfoProps) => {
       refetchOnWindowFocus: false,
     },
   );
-  console.log(personList);
 
   const handleMutation = useMutation(updateUserStatus, {
     onSuccess: () => {
@@ -134,37 +149,37 @@ export const PersonInfo = (props: PersonInfoProps) => {
       text: string;
       onclick?: () => void;
     }>[] = [
-      {
-        id: '1',
-        iconName: 'client',
-        text: '设为主管 ',
-        onclick: (params: any) => setUpSuper(params),
-      },
-      {
-        id: '2',
-        iconName: 'key',
-        text: '发送随机密码',
-        onclick: (params: any) => handleReset(params),
-      },
-      {
-        id: '3',
-        iconName: 'pen',
-        text: '修改信息 ',
-        onclick: (params: any) => handleUserInfo(params, 'edit'),
-      },
-      {
-        id: '4',
-        iconName: 'stop',
-        text: '禁用账号',
-        onclick: (params: any) => handleAccount(-2, params),
-      },
-      {
-        id: '5',
-        iconName: 'trash',
-        text: '删除账号 ',
-        onclick: (params: any) => handleAccount(-1, params),
-      },
-    ];
+        {
+          id: '1',
+          iconName: 'client',
+          text: '设为主管 ',
+          onclick: (params: any) => setUpSuper(params),
+        },
+        {
+          id: '2',
+          iconName: 'key',
+          text: '发送随机密码',
+          onclick: (params: any) => handleReset(params),
+        },
+        {
+          id: '3',
+          iconName: 'pen',
+          text: '修改信息 ',
+          onclick: (params: any) => handleUserInfo(params, 'edit'),
+        },
+        {
+          id: '4',
+          iconName: 'stop',
+          text: '禁用账号',
+          onclick: (params: any) => handleAccount(-2, params),
+        },
+        {
+          id: '5',
+          iconName: 'trash',
+          text: '删除账号 ',
+          onclick: (params: any) => handleAccount(-1, params),
+        },
+      ];
 
     const disable = {
       id: '4',
