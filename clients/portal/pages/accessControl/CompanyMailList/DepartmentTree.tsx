@@ -48,11 +48,13 @@ const Title = ({ openDeptModal, openDeleteDeptModal, onSelect, ...treenode }: Tr
 
   return (
     <>
-      <div className={cs("w-full h-full flex items-center justify-between")}>
+      <div className={cs('w-full h-full flex items-center justify-between')}>
         <div
           onClick={() => onSelect(treenode)}
           className="text-dot-7 flex-1 h-full flex items-center"
-        >{departmentName}</div>
+        >
+          {departmentName}
+        </div>
         <div className="h-auto relative">
           <Dropdown
             content={
@@ -171,7 +173,7 @@ export const DepartmentTree = ({ departmentId, treeData, setShowDept }: Departme
         className={useCss({
           '.tree-title': {
             width: '100%',
-            height: '100%'
+            height: '100%',
           },
           '.tree-node-wrap': {
             height: '2.7rem',
@@ -214,7 +216,9 @@ export const DepartmentTree = ({ departmentId, treeData, setShowDept }: Departme
           closeModal={closeModal}
         />
       )}
-      {modalType === 'delDept' && <DeleteModal closeModal={closeModal} okModal={deleteDept} />}
+      {modalType === 'delDept' && (
+        <DeleteModal currDep={curDept} closeModal={closeModal} okModal={deleteDept} />
+      )}
     </div>
   );
 };
