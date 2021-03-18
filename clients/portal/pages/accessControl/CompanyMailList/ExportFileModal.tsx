@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
-import { useQuery, useMutation } from 'react-query';
+import { useMutation } from 'react-query';
 import XLSX from 'xlsx';
 import classnames from 'classnames';
-import useCss from 'react-use/lib/useCss';
 import { Modal, CheckboxGroup, Checkbox, GridTable, Upload, Icon, Message } from '@QCFE/lego-ui';
 
 import { Button } from '@portal/components/Button';
-import { getUserTemplate, importTempFile, FileParams } from './api';
+import { getUserTemplate, importTempFile } from './api';
 interface ExportFileModalProps {
   visible: boolean;
   currDepId: string;
@@ -329,12 +328,7 @@ export const ExportFileModal = ({
                   <div
                     className={classnames(
                       'w-full h-4-dot-3 border rounded-dot-4 border-dashed border-CBD5E1',
-                      'flex flex-col items-center justify-center',
-                      useCss({
-                        '&:hover': {
-                          'border-color': 'red',
-                        },
-                      }),
+                      'flex flex-col items-center justify-center hover:border-red-600',
                     )}
                   >
                     <Icon size={16} name="upload" type="coloured" />
@@ -388,17 +382,7 @@ export const ExportFileModal = ({
             <div>
               <div className="py-dot-4 flex items-center">
                 <p className="text-475569 font-semibold">失败原因：</p>
-                <span
-                  onClick={downFailData}
-                  className={classnames(
-                    'text-375FF3',
-                    useCss({
-                      '&': {
-                        cursor: 'pointer',
-                      },
-                    }),
-                  )}
-                >
+                <span onClick={downFailData} className="text-375FF3', 'cursor-pointer">
                   下载失败列表
                 </span>
               </div>
