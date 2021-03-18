@@ -76,7 +76,7 @@ export const PersonInfo = ({ departmentId, departmentName, keyword }: PersonInfo
     page: 1,
     limit: 10,
     total: 10,
-    userName: ''
+    userName: '',
   });
 
   useEffect(() => {
@@ -84,13 +84,15 @@ export const PersonInfo = ({ departmentId, departmentName, keyword }: PersonInfo
       clearTimeout(searchTimer);
     }
 
-    setSearchTimer(setTimeout(() => {
-      setPageParams({ ...pageParams, userName: keyword })
-    }, 200));
+    setSearchTimer(
+      setTimeout(() => {
+        setPageParams({ ...pageParams, userName: keyword });
+      }, 200),
+    );
     return () => {
       clearTimeout(searchTimer);
-    }
-  }, [keyword])
+    };
+  }, [keyword]);
 
   const { data: personList, isLoading, refetch } = useQuery(
     ['getUserAdminInfo', pageParams, departmentId],
@@ -150,37 +152,37 @@ export const PersonInfo = ({ departmentId, departmentName, keyword }: PersonInfo
       text: string;
       onclick?: () => void;
     }>[] = [
-        {
-          id: '1',
-          iconName: 'client',
-          text: '设为主管 ',
-          onclick: (params: any) => setUpSuper(params),
-        },
-        {
-          id: '2',
-          iconName: 'key',
-          text: '发送随机密码',
-          onclick: (params: any) => handleReset(params),
-        },
-        {
-          id: '3',
-          iconName: 'pen',
-          text: '修改信息 ',
-          onclick: (params: any) => handleUserInfo(params, 'edit'),
-        },
-        {
-          id: '4',
-          iconName: 'stop',
-          text: '禁用账号',
-          onclick: (params: any) => handleAccount(-2, params),
-        },
-        {
-          id: '5',
-          iconName: 'trash',
-          text: '删除账号 ',
-          onclick: (params: any) => handleAccount(-1, params),
-        },
-      ];
+      {
+        id: '1',
+        iconName: 'client',
+        text: '设为主管 ',
+        onclick: (params: any) => setUpSuper(params),
+      },
+      {
+        id: '2',
+        iconName: 'key',
+        text: '发送随机密码',
+        onclick: (params: any) => handleReset(params),
+      },
+      {
+        id: '3',
+        iconName: 'pen',
+        text: '修改信息 ',
+        onclick: (params: any) => handleUserInfo(params, 'edit'),
+      },
+      {
+        id: '4',
+        iconName: 'stop',
+        text: '禁用账号',
+        onclick: (params: any) => handleAccount(-2, params),
+      },
+      {
+        id: '5',
+        iconName: 'trash',
+        text: '删除账号 ',
+        onclick: (params: any) => handleAccount(-1, params),
+      },
+    ];
 
     const disable = {
       id: '4',
@@ -199,12 +201,16 @@ export const PersonInfo = ({ departmentId, departmentName, keyword }: PersonInfo
   const handleUserInfo = (params: IUserInfo, status: 'add' | 'edit') => {
     if (status === 'edit') {
       getUserRole({ ownerID: params.id, type: 1 }).then((roles) => {
-        let id = roles && roles[0].roleID;
-        setCurrUser({
+        let _params = {
           ...params,
-          roleId: id,
-          deleteId: roles && roles[0].id,
-        });
+          roleId: '',
+          deleteId: '',
+        };
+        if (roles && roles.length > 0) {
+          _params.roleId = roles[0].roleID;
+          _params.deleteId = roles[0].id;
+        }
+        setCurrUser(_params);
         setVisibleStaff(true);
         setUserModalStatus(status);
       });

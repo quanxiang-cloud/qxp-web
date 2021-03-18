@@ -75,7 +75,7 @@ export const MailList = ({ visible }: IMailList) => {
             <Icon className="is-left" name="magnifier" />
             <Input
               type="text"
-              placeholder="搜索员工名称、手机号、邮箱..."
+              placeholder="搜索员工名称"
               name="search"
               onChange={(_, value) => search(value)}
               value={searchWord}
