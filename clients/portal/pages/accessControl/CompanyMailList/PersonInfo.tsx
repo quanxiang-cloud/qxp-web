@@ -513,29 +513,15 @@ export const PersonInfo = (props: PersonInfoProps) => {
             </div>
           </Dropdown>
         </div>
-        <div className="w-full mt-dot-8">
+        <div className="w-full mt-dot-8 flex-column overflow-y-a flex-1 px-4">
           <Table
-            className="text-dot-7"
+            className="text-dot-7 table-full"
             dataSource={personList?.data}
             columns={columns}
             rowKey="id"
             rowSelection={rowSelection}
           />
           <div className="flex items-center justify-between">
-            {/* <ul className="flex items-center">
-            <li className="flex items-center">
-              <img src="./dist/images/active.svg" className="pr-dot-4" alt="" />
-              <div className="text-dot-7">活跃中：2</div>
-            </li>
-            <li className="flex items-center">
-              <img
-                className="w-1-dot-2 h-1-dot-2 pr-dot-4"
-                src="./dist/images/disabled.svg"
-                alt=""
-              />
-              <div className="text-dot-7">已禁用：1</div>
-            </li>
-          </ul> */}
           </div>
         </div>
         <Pagination

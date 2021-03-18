@@ -66,19 +66,11 @@ export default class SelectTree extends React.Component<Props> {
   }
 
   componentDidUpdate(prevProps: Props) {
-    const { defaultSelect, treeData } = this.props;
-    if (defaultSelect.id === prevProps.defaultSelect.id) {
+    if (this.props.defaultSelect?.id === prevProps.defaultSelect?.id) {
       return
     }
 
-    if (!defaultSelect || !treeData) {
-      return
-    }
-
-    if (defaultSelect) {
-      this.setState({ selectValue: defaultSelect, showTips: false });
-      this.handleValueChang(defaultSelect.id);
-    }
+    this.setDefaultSelect()
   }
 
   componentDidMount() {
@@ -86,6 +78,19 @@ export default class SelectTree extends React.Component<Props> {
     if (boxDom) {
       this.setState({ width: boxDom.getBoundingClientRect().width + 'px' });
     }
+
+    this.setDefaultSelect();
+
+  }
+
+  setDefaultSelect = () => {
+    const { defaultSelect, treeData } = this.props;
+    if (!defaultSelect || !treeData) {
+      return
+    }
+
+    this.setState({ selectValue: defaultSelect, showTips: false });
+    this.handleValueChang(defaultSelect.id);
   }
 
   handleValueChang = (value: string) => {

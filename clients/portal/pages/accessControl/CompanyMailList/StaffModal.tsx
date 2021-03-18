@@ -68,8 +68,6 @@ export const StaffModal = (props: StaffModalProps) => {
     okModal(params);
   };
 
-  console.log('init', initData);
-
   return (
     <Modal
       title={`${titleText}员工`}
@@ -118,7 +116,7 @@ export const StaffModal = (props: StaffModalProps) => {
           name="depIDs"
           label="选择部门"
           placeholder="请选择部门"
-          defaultSelect={(initData.dep && initData.dep.id) || ''}
+          defaultSelect={initData.dep}
           treeData={treeData}
         />
         <SelectField

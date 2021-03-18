@@ -27,6 +27,11 @@ export const MailList = ({ visible }: IMailList) => {
 
   const treeData: any[] = data ? [data] : [];
 
+  const search = (keyWord: string) => {
+    console.log('keyWord: ', keyWord);
+    setSearchWord(keyWord)
+  }
+
   function handleSearch(e: KeyboardEvent): void {
     if (e.key !== 'Enter') {
       return;
@@ -126,7 +131,7 @@ export const MailList = ({ visible }: IMailList) => {
               type="text"
               placeholder="搜索员工名称、手机号、邮箱..."
               name="search"
-              onChange={(_, value) => setSearchWord(value)}
+              onChange={(_, value) => search(value)}
               value={searchWord}
               onKeyDown={handleSearch}
             />

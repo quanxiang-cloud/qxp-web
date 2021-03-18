@@ -43,12 +43,13 @@ export default function DepartmentModal({ department, closeModal, deptModalType 
   const [parentNode, setParentNode] = useState<DeptInfo | null>(null)
   const queryClient = useQueryClient();
   const { data } = useQuery('getERPTree', () => getERPTree().then((_treeData: any) => {
-    if (department?.pid) {
-      findTreeNode(_treeData, department.pid, setParentNode);
-    } else if (!isEdit) {
+    if (isEdit) {
+      if (department?.pid) {
+        findTreeNode(_treeData, department.pid, setParentNode);
+      }
+    } else {
       setParentNode(department);
     }
-
     return _treeData
   }), {
     refetchOnWindowFocus: false,
