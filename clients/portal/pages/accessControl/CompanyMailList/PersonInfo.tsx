@@ -12,6 +12,7 @@ import { DepartmentStaff } from '@portal/components/DepartmentStaff';
 import { Button } from '@portal/components/Button';
 import { ExportFileModal } from './ExportFileModal';
 import { AdjustDepModal } from './AdjustDepModal';
+import { EmptyData } from '@portal/components/EmptyData';
 import {
   getUserAdminInfo,
   updateUserStatus,
@@ -369,7 +370,7 @@ export const PersonInfo = (props: PersonInfoProps) => {
       console.log(res);
       if (res && res.data) {
         const { data } = res;
-        let newData = data.map((user) => {
+        const newData = data.map((user) => {
           user.depName = user.dep && user.dep.departmentName;
           return user;
         });
@@ -520,6 +521,7 @@ export const PersonInfo = (props: PersonInfoProps) => {
             columns={columns}
             rowKey="id"
             rowSelection={rowSelection}
+            emptyText={<EmptyData text="无成员数据" className="py-10" />}
           />
           <div className="flex items-center justify-between">
           </div>
