@@ -24,10 +24,10 @@ type ResetStart = 0 | 1; // 0是单个，1批量
 
 interface PersonInfoProps {
   departmentId: string;
+  departmentName: string;
 }
 
-export const PersonInfo = (props: PersonInfoProps) => {
-  const { departmentId } = props;
+export const PersonInfo = ({ departmentId, departmentName }: PersonInfoProps) => {
   const [visibleFile, setVisibleFile] = useState(false);
   const [resetModal, setResetModal] = useState(false);
   const [handleModal, setHandleModal] = useState(false);
@@ -61,6 +61,8 @@ export const PersonInfo = (props: PersonInfoProps) => {
       refetchOnWindowFocus: false,
     },
   );
+  console.log(personList);
+
 
   const handleMutation = useMutation(updateUserStatus, {
     onSuccess: () => {
@@ -93,36 +95,36 @@ export const PersonInfo = (props: PersonInfoProps) => {
       text: string;
       onclick?: () => void;
     }>[] = [
-      {
-        id: '1',
-        iconName: 'client',
-        text: '设为主管 ',
-      },
-      {
-        id: '2',
-        iconName: 'key',
-        text: '发送随机密码',
-        onclick: (params: any) => handleReset(params),
-      },
-      {
-        id: '3',
-        iconName: 'pen',
-        text: '修改信息 ',
-        onclick: closeStaffModal,
-      },
-      {
-        id: '4',
-        iconName: 'stop',
-        text: '禁用账号',
-        onclick: (params: any) => handleAccount(-2, params),
-      },
-      {
-        id: '5',
-        iconName: 'trash',
-        text: '删除账号 ',
-        onclick: (params: any) => handleAccount(-1, params),
-      },
-    ];
+        {
+          id: '1',
+          iconName: 'client',
+          text: '设为主管 ',
+        },
+        {
+          id: '2',
+          iconName: 'key',
+          text: '发送随机密码',
+          onclick: (params: any) => handleReset(params),
+        },
+        {
+          id: '3',
+          iconName: 'pen',
+          text: '修改信息 ',
+          onclick: closeStaffModal,
+        },
+        {
+          id: '4',
+          iconName: 'stop',
+          text: '禁用账号',
+          onclick: (params: any) => handleAccount(-2, params),
+        },
+        {
+          id: '5',
+          iconName: 'trash',
+          text: '删除账号 ',
+          onclick: (params: any) => handleAccount(-1, params),
+        },
+      ];
 
     const disable = {
       id: '4',
@@ -174,11 +176,7 @@ export const PersonInfo = (props: PersonInfoProps) => {
 
   // 处理页码
   const handleChange = (current: number) => {
-    // setPageParams({
-    //   current
-    //   pageSize: pageParams.pageSize,
-    //   total: pageParams.total,
-    // });
+    setPageParams({ ...pageParams, page: current })
   };
 
   // 处理页数量
@@ -357,89 +355,88 @@ export const PersonInfo = (props: PersonInfoProps) => {
           okModal={okResetModal}
         />
       )}
-      <div className="flex-1 h-full">
-        <DepartmentStaff department="全象应用平台" count={personList?.total || 0} unit="人" />
-        <div className="px-4 my-2">
-          <div className="flex items-center">
-            {selectedRows.length > 0 ? (
-              <>
-                <Button
-                  className="bg-black"
-                  textClassName="text-white"
-                  icon={
-                    <svg
-                      className="mr-dot-4"
-                      width="18"
-                      height="14"
-                      viewBox="0 0 18 14"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M15.6667 1.99998H9.00008L7.33342 0.333313H2.33341C1.40841 0.333313 0.675081 1.07498 0.675081 1.99998L0.666748 12C0.666748 12.925 1.40841 13.6666 2.33341 13.6666H15.6667C16.5917 13.6666 17.3334 12.925 17.3334 12V3.66665C17.3334 2.74165 16.5917 1.99998 15.6667 1.99998ZM15.6667 12H2.33341V1.99998H6.64175L8.30841 3.66665H15.6667V12ZM9.00008 8.66665H10.6667V10.3333H12.3334V8.66665H14.0001V6.99998H12.3334V5.33331H10.6667V6.99998H9.00008V8.66665Z"
-                        fill="white"
-                      />
-                    </svg>
-                  }
-                  onClick={importFile}
-                >
-                  调整部门
+      <div className="flex-1 h-full flex-column">
+        <DepartmentStaff department={departmentName} count={personList?.total || 0} unit="人" />
+        <div className="flex items-center px-4">
+          {selectedRows.length > 0 ? (
+            <>
+              <Button
+                className="bg-black"
+                textClassName="text-white"
+                icon={
+                  <svg
+                    className="mr-dot-4"
+                    width="18"
+                    height="14"
+                    viewBox="0 0 18 14"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M15.6667 1.99998H9.00008L7.33342 0.333313H2.33341C1.40841 0.333313 0.675081 1.07498 0.675081 1.99998L0.666748 12C0.666748 12.925 1.40841 13.6666 2.33341 13.6666H15.6667C16.5917 13.6666 17.3334 12.925 17.3334 12V3.66665C17.3334 2.74165 16.5917 1.99998 15.6667 1.99998ZM15.6667 12H2.33341V1.99998H6.64175L8.30841 3.66665H15.6667V12ZM9.00008 8.66665H10.6667V10.3333H12.3334V8.66665H14.0001V6.99998H12.3334V5.33331H10.6667V6.99998H9.00008V8.66665Z"
+                      fill="white"
+                    />
+                  </svg>
+                }
+                onClick={importFile}
+              >
+                调整部门
                 </Button>
-                <div className="px-2"></div>
-                <Button icon={<Icon className="mr-dot-4" name="add" />} onClick={openSendPwd}>
-                  发送随机密码
+              <div className="px-2"></div>
+              <Button icon={<Icon className="mr-dot-4" name="add" />} onClick={openSendPwd}>
+                发送随机密码
                 </Button>
-              </>
-            ) : (
-              <>
-                <Button
-                  className="bg-black"
-                  textClassName="text-white"
-                  icon={
-                    <svg
-                      className="mr-dot-4"
-                      width="18"
-                      height="14"
-                      viewBox="0 0 18 14"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M15.6667 1.99998H9.00008L7.33342 0.333313H2.33341C1.40841 0.333313 0.675081 1.07498 0.675081 1.99998L0.666748 12C0.666748 12.925 1.40841 13.6666 2.33341 13.6666H15.6667C16.5917 13.6666 17.3334 12.925 17.3334 12V3.66665C17.3334 2.74165 16.5917 1.99998 15.6667 1.99998ZM15.6667 12H2.33341V1.99998H6.64175L8.30841 3.66665H15.6667V12ZM9.00008 8.66665H10.6667V10.3333H12.3334V8.66665H14.0001V6.99998H12.3334V5.33331H10.6667V6.99998H9.00008V8.66665Z"
-                        fill="white"
-                      />
-                    </svg>
-                  }
-                  onClick={importFile}
-                >
-                  excel 批量导入
+            </>
+          ) : (
+            <>
+              <Button
+                className="bg-black"
+                textClassName="text-white"
+                icon={
+                  <svg
+                    className="mr-dot-4"
+                    width="18"
+                    height="14"
+                    viewBox="0 0 18 14"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M15.6667 1.99998H9.00008L7.33342 0.333313H2.33341C1.40841 0.333313 0.675081 1.07498 0.675081 1.99998L0.666748 12C0.666748 12.925 1.40841 13.6666 2.33341 13.6666H15.6667C16.5917 13.6666 17.3334 12.925 17.3334 12V3.66665C17.3334 2.74165 16.5917 1.99998 15.6667 1.99998ZM15.6667 12H2.33341V1.99998H6.64175L8.30841 3.66665H15.6667V12ZM9.00008 8.66665H10.6667V10.3333H12.3334V8.66665H14.0001V6.99998H12.3334V5.33331H10.6667V6.99998H9.00008V8.66665Z"
+                      fill="white"
+                    />
+                  </svg>
+                }
+                onClick={importFile}
+              >
+                excel 批量导入
                 </Button>
-                <div className="px-2"></div>
-                <Button icon={<Icon className="mr-dot-4" name="add" />} onClick={openStaffModal}>
-                  添加员工
+              <div className="px-2"></div>
+              <Button icon={<Icon className="mr-dot-4" name="add" />} onClick={openStaffModal}>
+                添加员工
                 </Button>
-              </>
-            )}
+            </>
+          )}
 
-            <div className="px-2"></div>
-            {/* <Dropdown content={<ActionsList actions={actions} />}>
+          <div className="px-2"></div>
+          {/* <Dropdown content={<ActionsList actions={actions} />}>
                   <div>
                     <Button className="bg-black" textClassName="text-white">
                       ···
                     </Button>
                   </div>
                 </Dropdown> */}
-          </div>
-          <div className="w-full mt-dot-8">
-            <Table
-              className="text-dot-7"
-              dataSource={personList?.data}
-              columns={columns}
-              rowKey="id"
-              rowSelection={rowSelection}
-            />
-            <div className="flex items-center justify-between">
-              {/* <ul className="flex items-center">
+        </div>
+        <div className="w-full mt-dot-8 flex-1 overflow-y-a px-4">
+          <Table
+            className="text-dot-7 table-full"
+            dataSource={personList?.data}
+            columns={columns}
+            rowKey="id"
+            rowSelection={rowSelection}
+          />
+          <div className="flex items-center justify-between">
+            {/* <ul className="flex items-center">
             <li className="flex items-center">
               <img src="./dist/images/active.svg" className="pr-dot-4" alt="" />
               <div className="text-dot-7">活跃中：2</div>
@@ -453,17 +450,16 @@ export const PersonInfo = (props: PersonInfoProps) => {
               <div className="text-dot-7">已禁用：1</div>
             </li>
           </ul> */}
-              <Pagination
-                current={1}
-                total={1 || personList?.total}
-                pageSize={5}
-                pageSizeOptions={pageSizeOptions}
-                onChange={handleChange}
-                onShowSizeChange={handleShowSizeChange}
-              />
-            </div>
           </div>
         </div>
+        <Pagination
+          current={pageParams.page}
+          total={personList?.total || 0}
+          pageSize={10}
+          pageSizeOptions={pageSizeOptions}
+          onChange={handleChange}
+          onShowSizeChange={handleShowSizeChange}
+        />
       </div>
     </>
   );

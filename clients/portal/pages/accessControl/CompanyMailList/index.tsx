@@ -17,10 +17,13 @@ export interface IMailList {
 }
 
 export const MailList = ({ visible }: IMailList) => {
-  const { data, isLoading, refetch } = useQuery('getERPTree', getERPTree);
   const [searchWord, setSearchWord] = useState('');
+  const [curDept, setCurrDept] = useState<DeptTree | ''>('');
 
-  const [currDepId, setCurrDepId] = useState(''); // 部门ID
+  const { data, isLoading, refetch } = useQuery('getERPTree', () => getERPTree().then((_treeData: any) => {
+    setCurrDept(_treeData)
+    return _treeData
+  }));
 
   const treeData: any[] = data ? [data] : [];
 
@@ -88,9 +91,11 @@ export const MailList = ({ visible }: IMailList) => {
     );
   }
 
+  const curDeptId = (curDept as DeptTree).id;
+
   return (
     <div
-      className={classnames('transition-opacity', {
+      className={classnames('transition-opacity', 'flex-column', {
         visible: visible,
         invisible: !visible,
         'opacity-0': !visible,
@@ -108,7 +113,7 @@ export const MailList = ({ visible }: IMailList) => {
         action="📌 如何管理通讯录？"
         className="bg-F1F5F9-dot-5 px-4 py-dot-8 header-background-image"
       />
-      <div className="h-full">
+      <div className="h-full flex-column overflow-y-h">
         <div
           className={twCascade(
             'w-416 m-4 bg-F1F5F9 rounded-r-dot-6 rounded-tl-dot-2',
@@ -127,13 +132,13 @@ export const MailList = ({ visible }: IMailList) => {
             />
           </Control>
         </div>
-        <div className="h-full mt-4 flex items-start">
+        <div className="h-full mt-4 flex items-start overflow-y-h">
           <div className="w-12-dot-95 h-full">
             <DepartmentStaff department="部门人员" count={0} unit="部门" />
-            <DepartmentTree treeData={treeData} setCurrDepId={setCurrDepId} />
+            <DepartmentTree treeData={treeData} setCurrDept={setCurrDept} departmentId={curDeptId} />
           </div>
           <div className="vertical-line flex-grow-0"></div>
-          <PersonInfo departmentId={currDepId} />
+          <PersonInfo departmentId={curDeptId} departmentName={curDept.departmentName} />
         </div>
       </div>
     </div>

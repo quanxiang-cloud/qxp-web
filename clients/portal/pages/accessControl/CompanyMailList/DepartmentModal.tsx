@@ -1,12 +1,10 @@
-import React, { createRef, useRef, useState } from 'react';
+import React, { createRef, useState } from 'react';
 import { useQuery, useQueryClient } from 'react-query';
-import { Modal, Form, Loading, Icon } from '@QCFE/lego-ui';
+import { Modal, Form, Icon, Message } from '@QCFE/lego-ui';
 
 import { Button } from '@portal/components/Button';
 import SelectTree from '@portal/components/select-tree';
 import { getERPTree, createDepartment, editDepartment } from './api';
-
-import { DeptInfo } from './DepartmentTree';
 
 const { TextField } = Form;
 const SelectTreeField = Form.getFormField(SelectTree);
@@ -14,14 +12,50 @@ const SelectTreeField = Form.getFormField(SelectTree);
 interface DepartmentModalProps {
   department: DeptInfo | null;
   closeModal(): void;
+  deptModalType: 'add' | 'edit';
 }
 
-export default function DepartmentModal({ department, closeModal }: DepartmentModalProps) {
+function findTreeNode(originalTreeData: DeptTree, targetId: string, saveTargetNode: React.Dispatch<null | DeptInfo>) {
+  let stop: boolean = false;
+  function findFun(treeData: DeptTree) {
+    if (stop) {
+      return
+    }
+
+    if (treeData.id === targetId) {
+      saveTargetNode(treeData)
+      stop = true;
+      return
+    }
+
+    if (treeData.child) {
+      treeData.child.forEach((treeDataItem) => {
+        findFun(treeDataItem)
+      })
+    }
+  }
+
+  findFun(originalTreeData)
+}
+
+export default function DepartmentModal({ department, closeModal, deptModalType }: DepartmentModalProps) {
+  const isEdit = deptModalType === 'edit';
+  const [parentNode, setParentNode] = useState<DeptInfo | null>(null)
   const queryClient = useQueryClient();
-  const { data, isLoading } = useQuery('getERPTree', getERPTree, {
+  const { data } = useQuery('getERPTree', () => getERPTree().then((_treeData: any) => {
+    if (department?.pid) {
+      findTreeNode(_treeData, department.pid, setParentNode);
+    } else if (!isEdit) {
+      setParentNode(department);
+    }
+
+    return _treeData
+  }), {
     refetchOnWindowFocus: false,
   });
-  const titleText = department?.id ? '修改' : '添加';
+
+  const treeData = data ? [data] : [];
+  const titleText = isEdit ? '修改' : '添加';
   const formRef = createRef<Form>();
 
   const okModalHandle = () => {
@@ -29,24 +63,25 @@ export default function DepartmentModal({ department, closeModal }: DepartmentMo
       return;
     }
 
-    const requestAPI = department?.id ? editDepartment : createDepartment;
+    const requestAPI = isEdit ? editDepartment : createDepartment;
     const params = formRef.current?.getFieldsValue();
-    if (department?.id) {
-      params.id = department.id;
+
+    if (isEdit) {
+      params.id = department?.id;
     }
 
     requestAPI(params)
       .then(() => {
         queryClient.invalidateQueries('getERPTree');
-
         closeModal();
+        Message.success({
+          content: '操作成功！',
+        });
       })
       .catch((error) => {
         console.log(error);
       });
   };
-
-  const treeData = data ? [data] : [];
 
   return (
     <Modal
@@ -77,7 +112,7 @@ export default function DepartmentModal({ department, closeModal }: DepartmentMo
           label="部门名称"
           placeholder="请输入部门名称"
           help="不超过 30 个字符，部门名称不可重复。"
-          defaultValue={department?.departmentName}
+          defaultValue={isEdit && department?.departmentName}
           schemas={[
             {
               help: '请输入部门名称',
@@ -85,17 +120,13 @@ export default function DepartmentModal({ department, closeModal }: DepartmentMo
             },
           ]}
         />
-        {isLoading ? (
-          <Loading />
-        ) : (
-          <SelectTreeField
-            name="pid"
-            label="选择部门"
-            placeholder="请选择部门"
-            defaultSelect={department?.id || ''}
-            treeData={treeData}
-          />
-        )}
+        <SelectTreeField
+          name="pid"
+          label="选择部门"
+          placeholder="请选择部门"
+          defaultSelect={parentNode}
+          treeData={treeData}
+        />
       </Form>
     </Modal>
   );

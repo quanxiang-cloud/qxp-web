@@ -638,3 +638,22 @@ button {
     outline: none;
   }
 }
+
+.flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.overflow-y-h {
+  overflow-y: hidden;
+}
+
+.overflow-y-a {
+  overflow-y: auto;
+}
+
+.table-full {
+  .table {
+    width: 100%;
+  }
+}
