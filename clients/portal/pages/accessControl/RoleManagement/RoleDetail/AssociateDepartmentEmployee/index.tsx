@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useQuery, useMutation } from 'react-query';
 import { Modal } from '@QCFE/lego-ui';
 
@@ -34,29 +34,47 @@ export const AssociateDepartmentEmployee = ({ id, isSuper }: IAssociateDepartmen
     current: 1,
     pageSize: 10,
   });
+  const selectorRef = useRef<() => IOwner[]>();
 
   const { data, isLoading, refetch } = useQuery(
-    [
-      'getRoleAssociations',
+      [
+        'getRoleAssociations',
+        {
+          roleID: id,
+          page: pagination.current,
+          limit: pagination.pageSize,
+        },
+      ],
+      getRoleAssociations,
       {
-        roleID: id,
-        page: pagination.current,
-        limit: pagination.pageSize,
+        refetchOnWindowFocus: false,
+        cacheTime: -1,
       },
-    ],
-    getRoleAssociations,
-    {
-      refetchOnWindowFocus: false,
-      cacheTime: -1,
-    },
   );
   // @ts-ignore
-  const mutation = useMutation((arg: IUpdateRoleAssociations) => updateRoleAssociations(arg), {
-    onSuccess: () => refetch(),
-  });
+  const mutation = useMutation(
+      (arg: IUpdateRoleAssociations) => updateRoleAssociations(arg), {
+        onSuccess: () => {
+          setShowAddModal(false);
+          refetch();
+        },
+      });
 
   const onAssociate = () => {
-    // todo 关联 modal
+    if (selectorRef.current) {
+      const currentOwners = selectorRef.current();
+      const deletes = data?.owners.filter((owner) => {
+        return !currentOwners.find((o) => o.ownerID === owner.ownerID);
+      });
+      const adds = currentOwners.filter((cowner) => {
+        return !data?.owners.find((o) => o.ownerID === cowner.ownerID);
+      });
+      mutation.mutate({
+        roleID: id as string,
+        add: adds.map(({ type, ownerID }) => ({ type: type as (1 | 2), ownerID })),
+        delete: deletes?.map(({ id }) => id),
+      });
+    }
   };
 
   if (isLoading) {
@@ -110,9 +128,6 @@ export const AssociateDepartmentEmployee = ({ id, isSuper }: IAssociateDepartmen
       <Modal
         title="角色关联员工与部门"
         onCancel={() => setShowAddModal(false)}
-        onOk={() => {
-          console.log('准备提交');
-        }}
         visible={showAddModal}
         footer={
           <div className="flex flex-row justify-between items-center">
@@ -135,7 +150,7 @@ export const AssociateDepartmentEmployee = ({ id, isSuper }: IAssociateDepartmen
           </div>
         }
       >
-        <OwnerSelector />
+        <OwnerSelector defaultEmployees={data?.owners} refs={selectorRef} />
       </Modal>
       {!isSuper && (
         <Button
@@ -149,21 +164,8 @@ export const AssociateDepartmentEmployee = ({ id, isSuper }: IAssociateDepartmen
       )}
       <Table
         rowKey="ownerID"
-        dataSource={data?.owners?.map((i) => {
-          if (!i.ownerName) {
-            i.ownerName = 'test';
-          }
-          if (!i.phone) {
-            i.phone = '19960824973';
-          }
-          if (!i.email) {
-            i.email = 'abc@qq.com';
-          }
-          if (!i.departmentName) {
-            i.departmentName = '后勤部';
-          }
-          return i;
-        })}
+        dataSource={data?.owners || []}
+        className="rounded-bl-none rounded-br-none"
         columns={[
           {
             title: '名称',
@@ -181,27 +183,27 @@ export const AssociateDepartmentEmployee = ({ id, isSuper }: IAssociateDepartmen
             title: '部门',
             dataIndex: 'departmentName',
           },
-          !isSuper
-            ? {
-                title: '',
-                dataIndex: 'ownerID',
-                render: (ownerID: string, record: IOwner) => {
-                  return (
-                    <More<IOwner>
-                      actions={[
-                        {
-                          id: ownerID,
-                          iconName: 'linkOff.svg',
-                          text: '取消关联',
-                          onclick: onCancelAssociation(record),
-                        },
-                      ]}
-                      params={record}
-                    />
-                  );
-                },
-              }
-            : null,
+          !isSuper ?
+            {
+              title: '',
+              dataIndex: 'ownerID',
+              render: (ownerID: string, record: IOwner) => {
+                return (
+                  <More<IOwner>
+                    actions={[
+                      {
+                        id: ownerID,
+                        iconName: 'linkOff.svg',
+                        text: '取消关联',
+                        onclick: onCancelAssociation(record),
+                      },
+                    ]}
+                    params={record}
+                  />
+                );
+              },
+            } :
+            null,
         ].filter(Boolean)}
         rowSelection={rowSelection}
         emptyText={<EmptyData text="无成员数据" className="py-10" />}

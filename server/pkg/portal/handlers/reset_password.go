@@ -43,7 +43,7 @@ func ResetPasswordActionHandler(w http.ResponseWriter, r *http.Request) {
 		})
 		return
 	}
-	resp, respBuffer, errMsg := contexts.SendRequest(r, "POST", "/api/oauth2s/v1/account/reset/user", bytes.NewBuffer(resetPasswordParams), map[string]interface{}{
+	resp, respBuffer, errMsg := contexts.SendRequest(r, "POST", "/api/org/v1/account/reset/user", bytes.NewBuffer(resetPasswordParams), map[string]interface{}{
 		"Content-Type": "application/json",
 	})
 	if ShouldLogin(w, r, resp) {

@@ -6,7 +6,7 @@ import { Error } from './components/Error';
 
 import '@QCFE/lego-ui/lib/scss/lego-ui.min.css';
 import '@assets/scss/index.scss';
-import { getSystemFuncs, getUserFuncs, getUserInfo } from './api/auth';
+import { getSystemFuncs, getUserFuncs, getUserInfo, getUserRoles } from './api/auth';
 import { usePortalGlobalValue } from '@clients/common/state/portal';
 import { Loading } from './components/Loading';
 
@@ -55,6 +55,15 @@ export default function Routes(): JSX.Element {
       enabled: !!(userData?.depIds && userData.depIds.length),
     },
   );
+  const { data, isLoading: userRoleIsLoading } = useQuery(
+    'getUserRoles',
+    () => getUserRoles(userData?.id || '', userData?.depIds || []),
+    {
+      refetchOnWindowFocus: false,
+      retry: false,
+      enabled: !!(userData?.id && userData?.depIds && userData?.depIds.length),
+    },
+  );
 
   useEffect(() => {
     setValue((val) => ({
@@ -64,15 +73,16 @@ export default function Routes(): JSX.Element {
         ...userData,
         depIds: userData?.depIds || [],
         authority: userFuncs || [],
+        roles: data?.roles || [],
       },
     }));
   }, [userData, allFuncs, userFuncs]);
 
-  if (userIsLoading || allFunsIsLoading || userFuncsIsLoading) {
+  if (userIsLoading || allFunsIsLoading || userFuncsIsLoading || userRoleIsLoading) {
     return <Loading desc="加载中..." />;
   }
 
-  if (!userData || !allFuncs || !userFuncs) {
+  if (!userData || !allFuncs || !userFuncs || !data?.total) {
     return <Error desc="something wrong..." />;
   }
 

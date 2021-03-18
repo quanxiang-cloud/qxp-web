@@ -8,13 +8,7 @@ module.exports = {
       version: 'detect',
     },
   },
-  extends: [
-    'plugin:react/recommended',
-    'google',
-    'plugin:@typescript-eslint/recommended',
-    'prettier',
-    'plugin:prettier/recommended',
-  ],
+  extends: ['plugin:react/recommended', 'google', 'plugin:@typescript-eslint/recommended'],
   parser: '@typescript-eslint/parser',
   parserOptions: {
     ecmaFeatures: {
@@ -23,12 +17,11 @@ module.exports = {
     ecmaVersion: 12,
     sourceType: 'module',
   },
-  plugins: ['react', '@typescript-eslint', 'prettier'],
+  plugins: ['react', '@typescript-eslint'],
   globals: {
     window: true,
   },
   rules: {
-    'prettier/prettier': ['error', { singleQuote: true, semi: true }],
     'react/display-name': 'off',
     '@typescript-eslint/explicit-module-boundary-types': 'off',
     '@typescript-eslint/ban-ts-comment': 'off',

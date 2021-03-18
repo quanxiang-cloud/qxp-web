@@ -30,10 +30,10 @@ export const getUserFuncs = async ({ queryKey }: QueryFunctionContext): Promise<
       tag: string[];
     }>
   >(
-    '/api/goalie/listUserFuncTag',
-    JSON.stringify({
-      departmentID: queryKey[1],
-    }),
+      '/api/goalie/listUserFuncTag',
+      JSON.stringify({
+        departmentID: queryKey[1],
+      }),
   );
   return data?.tag || [];
 };
@@ -46,4 +46,31 @@ export const getSystemFuncs = async (): Promise<string[]> => {
     }>
   >('/api/goalie/listFuncTag', JSON.stringify({}));
   return data?.tag || [];
+};
+
+export interface IRole {
+  id: string;
+  name: string;
+  tag: string;
+}
+export const getUserRoles = async (
+    userId: string,
+    departmentIDs: string[],
+): Promise<{ roles: IRole[]; total: number }> => {
+  const { data } = await httpPost<
+    IResponse<{
+      roles: IRole[];
+      total: number;
+    }>
+  >(
+      '/api/goalie/listUserRole',
+      JSON.stringify({
+        departmentID: departmentIDs,
+      }),
+      {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'User-Id': userId,
+      },
+  );
+  return data || { roles: [], total: 0 };
 };

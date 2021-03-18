@@ -1,4 +1,5 @@
 import { createGlobalState } from '@clients/assets/lib/createGlobalState';
+import { IRole } from '@portal/api/auth';
 
 export interface IDepartment {
   id: string;
@@ -23,6 +24,7 @@ export interface IUsePortalGlobalValue {
     dep?: IDepartment;
     depIds: string[];
     authority: string[];
+    roles: IRole[];
   };
 }
 
@@ -32,6 +34,7 @@ export const usePortalGlobalValue = createGlobalState<IUsePortalGlobalValue>(
     userInfo: {
       depIds: [],
       authority: [],
+      roles: [],
     },
   },
   true,
