@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { useQuery, useQueryClient } from 'react-query';
+import cs from 'classnames';
+import { useQueryClient } from 'react-query';
 import useCss from 'react-use/lib/useCss';
 import { Tree, TreeNode, Dropdown, Message } from '@QCFE/lego-ui';
 
@@ -47,11 +48,11 @@ const Title = ({ openDeptModal, openDeleteDeptModal, onSelect, ...treenode }: Tr
 
   return (
     <>
-      <div className="w-full h-full flex items-center justify-between">
+      <div className={cs("w-full h-full flex items-center justify-between")}>
         <div
           onClick={() => onSelect(treenode)}
           className="text-dot-7 flex-1 h-full flex items-center"
-        >{departmentName}</div>
+        >{departmentName}</div>
         <div className="h-auto relative">
           <Dropdown
             content={
