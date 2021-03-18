@@ -120,6 +120,7 @@ type Persons = {
  * @param id true
  */
 export const getUserAdminInfo = (depID: string, params: any) => {
+  // eslint-disable-next-line camelcase
   return httpPost<IResponse<{ total_count: number; data: Persons[] }>>(
     '/api/org/v1/adminUserList',
     JSON.stringify({ depID, ...params }),

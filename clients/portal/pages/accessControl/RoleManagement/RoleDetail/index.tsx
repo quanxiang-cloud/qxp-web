@@ -17,7 +17,7 @@ export interface IRoleDetail {
 export const RoleDetail = ({ role, id }: IRoleDetail) => {
   const { data, isLoading } = useQuery(['getRoleFunctions', id], getRoleFunctions, {
     refetchOnWindowFocus: false,
-    cacheTime: -1,
+    enabled: !!id,
   });
 
   if (isLoading || !data?.func || !role) {

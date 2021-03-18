@@ -85,7 +85,7 @@ export const Popover = ({
           tooltipClassName,
           'mt-2',
         )}
-        style={styles}
+        style={{ ...styles, margin: 0 }}
         {...attributes.popper}
         onClick={onContentClick}
       >

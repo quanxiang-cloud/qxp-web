@@ -52,7 +52,7 @@ export const httpPost = <T>(
 export const httpFile = async (url: string, data?: any) => {
   const formData = new FormData();
   if (data) {
-    for (let key in data) {
+    for (const key in data) {
       formData.append(key, data[key]);
     }
   }
@@ -95,7 +95,7 @@ export const isUndefined = isA('undefined');
 export const isObject = (o: unknown) => o === Object(o);
 export const isNull = (v: unknown) => v === null;
 export const either = <S>(pred1: (...args: S[]) => boolean, pred2: (...args: S[]) => boolean) => (
-  ...args: S[]
+    ...args: S[]
 ) => pred1(...args) || pred2(...args);
 export const isVoid = either<null | undefined>(isUndefined, isNull);
 export const identity = <T>(i: T) => i;
@@ -152,7 +152,7 @@ export const deepClone = (obj: any) => {
   if (obj === null) return null;
   const clone = Object.assign({}, obj);
   Object.keys(clone).forEach(
-    (key) => (clone[key] = typeof obj[key] === 'object' ? deepClone(obj[key]) : obj[key]),
+      (key) => (clone[key] = typeof obj[key] === 'object' ? deepClone(obj[key]) : obj[key]),
   );
   if (Array.isArray(obj)) {
     clone.length = obj.length;
@@ -187,19 +187,19 @@ export const range = (start: number, end: number, step?: number) => {
 };
 
 export const mapTreeData = <T extends unknown>(rules: Record<string, string>, data: Object[]) => {
-  const newTreeData = {};
+  const arrData: T[] = [];
   const childKey = rules.children;
   for (const item of data) {
     const it = item as any;
     const children = it[childKey];
-    Object.assign(newTreeData, {
+    arrData.push({
       key: it[rules.key],
       title: it[rules.title],
       children: children && children.length ? mapTreeData(rules, children) : [],
       ...it,
     });
   }
-  return [newTreeData] as T;
+  return arrData as T;
 };
 
 export const getNestedPropertyToArray = <T>(
@@ -227,4 +227,10 @@ export const getNestedPropertyToArray = <T>(
     });
   }
   return arrData;
+};
+
+export const isLengthEqual = (a: unknown, b: unknown) => {
+  if (a instanceof Array && b instanceof Array) {
+    a.length === b.length;
+  }
 };
