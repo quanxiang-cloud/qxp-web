@@ -12,16 +12,18 @@ const { TextField } = Form;
 const SelectTreeField = Form.getFormField(SelectTree);
 
 interface DepartmentModalProps {
+  state: 'add' | 'edit';
   department: DeptInfo | null;
   closeModal(): void;
 }
 
-export default function DepartmentModal({ department, closeModal }: DepartmentModalProps) {
+export default function DepartmentModal({ department, state, closeModal }: DepartmentModalProps) {
   const queryClient = useQueryClient();
   const { data, isLoading } = useQuery('getERPTree', getERPTree, {
     refetchOnWindowFocus: false,
   });
-  const titleText = department?.id ? '修改' : '添加';
+  // const titleText = status ? '修改' : '添加';
+  const titleText = `${state === 'add' ? '添加' : '修改'}`;
   const formRef = createRef<Form>();
 
   const okModalHandle = () => {

@@ -93,9 +93,11 @@ export const DepartmentTree = (props: DepartmentTreeProps) => {
   const [modalType, setModalType] = useState('');
   const [indexOfNode, setIndexOfNode] = useState('');
   const [curDept, setCurDept] = useState<TreeNodeItem | null>(null);
+  const [state, setState] = useState<'add' | 'edit'>('add');
   const client = useQueryClient();
 
   const openDeptModal = (type: 'add' | 'edit', params: TreeNodeItem) => {
+    setState(type);
     setCurDept(params);
     setModalType('department');
   };
@@ -201,7 +203,11 @@ export const DepartmentTree = (props: DepartmentTreeProps) => {
         {treeData.length > 0 ? renderTreeNodes(treeData) : null}
       </Tree>
       {modalType === 'department' && (
-        <DepartmentModal department={curDept as DeptInfo} closeModal={() => setModalType('')} />
+        <DepartmentModal
+          state={state}
+          department={curDept as DeptInfo}
+          closeModal={() => setModalType('')}
+        />
       )}
       {modalType === 'delDept' && (
         <DeleteModal closeModal={() => setModalType('')} okModal={deleteDept} />
