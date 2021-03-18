@@ -47,8 +47,11 @@ const Title = ({ openDeptModal, openDeleteDeptModal, onSelect, ...treenode }: Tr
 
   return (
     <>
-      <div className="w-full flex items-center justify-between">
-        <div onClick={() => onSelect(treenode)} className="text-dot-7 flex-1">{departmentName}</div>
+      <div className="w-full h-full flex items-center justify-between">
+        <div
+          onClick={() => onSelect(treenode)}
+          className="text-dot-7 flex-1 h-full flex items-center"
+        >{departmentName}</div>
         <div className="h-auto relative">
           <Dropdown
             content={
@@ -82,11 +85,11 @@ export interface ITreeNode {
 
 interface DepartmentTreeProps {
   treeData: ITreeNode[];
-  setCurrDept: (treeNode: DeptTree) => void;
+  setShowDept: (treeNode: DeptTree) => void;
   departmentId: string;
 }
 
-export const DepartmentTree = ({ departmentId, treeData, setCurrDept }: DepartmentTreeProps) => {
+export const DepartmentTree = ({ departmentId, treeData, setShowDept }: DepartmentTreeProps) => {
   const [modalType, setModalType] = useState('');
   const [curDept, setCurDept] = useState<TreeNodeItem | null>(null);
   const [deptModalType, setDeptModalType] = useState<'add' | 'edit'>('add');
@@ -109,7 +112,7 @@ export const DepartmentTree = ({ departmentId, treeData, setCurrDept }: Departme
   };
 
   const onSelect = (treeNode: DeptTree) => {
-    setCurrDept(treeNode);
+    setShowDept(treeNode);
   };
 
   const renderTreeNodes = (childData: ITreeNode[]) =>
@@ -167,6 +170,7 @@ export const DepartmentTree = ({ departmentId, treeData, setCurrDept }: Departme
         className={useCss({
           '.tree-title': {
             width: '100%',
+            height: '100%'
           },
           '.tree-node-wrap': {
             height: '2.7rem',

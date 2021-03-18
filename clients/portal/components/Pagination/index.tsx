@@ -33,8 +33,8 @@ export const Pagination = ({
   return (
     <div
       className={twCascade(
-        'flex items-center w-full justify-between bg-white px-1-dot-2',
-        'py-dot-4 border-t border-blue-third',
+        'inline-flex items-center justify-between bg-white px-1-dot-2',
+        'py-dot-4',
         className,
       )}
     >

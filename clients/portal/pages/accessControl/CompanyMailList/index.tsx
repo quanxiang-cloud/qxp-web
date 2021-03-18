@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useQuery } from 'react-query';
 import classnames from 'classnames';
 import { twCascade } from '@mariusmarais/tailwind-cascade';
-import { Select, Control, Icon, Input, Loading } from '@QCFE/lego-ui';
+import { Control, Icon, Input, Loading } from '@QCFE/lego-ui';
 import XLSX from 'xlsx';
 
 import { TextHeader } from '@portal/components/TextHeader';
@@ -139,7 +139,7 @@ export const MailList = ({ visible }: IMailList) => {
         <div className="h-full mt-4 flex items-start overflow-y-h">
           <div className="w-12-dot-95 h-full">
             <DepartmentStaff department="部门人员" count={0} unit="部门" />
-            <DepartmentTree treeData={treeData} setCurrDept={setCurrDept} departmentId={curDeptId} />
+            <DepartmentTree treeData={treeData} setShowDept={setCurrDept} departmentId={curDeptId} />
           </div>
           <div className="vertical-line flex-grow-0"></div>
           <PersonInfo keyword={searchWord} departmentId={curDeptId} departmentName={(curDept as DeptTree).departmentName} />

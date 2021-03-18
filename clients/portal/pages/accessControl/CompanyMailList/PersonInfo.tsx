@@ -130,12 +130,6 @@ export const PersonInfo = ({ departmentId, departmentName, keyword }: PersonInfo
 
   const pageSizeOptions = [10, 20, 50, 100];
 
-  // const [pageParams, setPageParams] = useState({
-  //   current: 1,
-  //   pageSize: 10,
-  //   total: 108,
-  // });
-
   const setUpSuper = (params: IUserInfo) => {
     console.log(params);
     console.log('设置主管');
@@ -201,7 +195,6 @@ export const PersonInfo = ({ departmentId, departmentName, keyword }: PersonInfo
     setUserModalStatus(status);
   };
 
-  // dan
   const handleReset = (params: IUserInfo) => {
     setResetStart(0);
     setCurrUser(params);
@@ -213,40 +206,33 @@ export const PersonInfo = ({ departmentId, departmentName, keyword }: PersonInfo
     setResetModal(true);
   };
 
-  // 关闭-重置密码弹窗
   const closeResetModal = () => {
     setResetModal(false);
   };
 
-  // 处理账号
   const handleAccount = (status: UserStatus, params: IUserInfo): void => {
     setCurrUser(params);
     setModalStatus(status);
     setHandleModal(true);
   };
 
-  // 关闭-处理账号弹窗
   const closeHandleModal = () => {
     setHandleModal(false);
   };
 
-  // 确定
   const okHandleModal = () => {
     handleMutation.mutate({ id: currUser.id, status: modalStatus });
   };
 
-  // 处理页码
   const handleChange = (current: number) => {
     setPageParams({ ...pageParams, page: current });
   };
 
-  // 处理页数量
-  const handleShowSizeChange = (pageSize: number) => {
-    // setPageParams({
-    //   current: 1,
-    //   pageSize,
-    //   total: pageParams.total,
-    // });
+  const handleShowSizeChange = (limit: number) => {
+    setPageParams({
+      ...pageParams,
+      limit
+    });
   };
 
   const handleStatus = (status: UserStatus) => {
@@ -538,17 +524,18 @@ export const PersonInfo = ({ departmentId, departmentName, keyword }: PersonInfo
             rowSelection={rowSelection}
             emptyText={<EmptyData text="无成员数据" className="py-10" />}
           />
-          <div className="flex items-center justify-between">
-          </div>
         </div>
-        <Pagination
-          current={pageParams.page}
-          total={personList?.total || 0}
-          pageSize={10}
-          pageSizeOptions={pageSizeOptions}
-          onChange={handleChange}
-          onShowSizeChange={handleShowSizeChange}
-        />
+        <div className="flex justify-end border-t border-blue-third">
+          <Pagination
+            type="simple"
+            current={pageParams.page}
+            total={personList?.total || 0}
+            pageSize={pageParams.limit}
+            pageSizeOptions={pageSizeOptions}
+            onChange={handleChange}
+            onShowSizeChange={handleShowSizeChange}
+          />
+        </div>
       </div>
     </>
   );
