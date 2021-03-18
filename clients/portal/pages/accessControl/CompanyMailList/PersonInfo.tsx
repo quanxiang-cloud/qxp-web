@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation } from 'react-query';
-import { Table, Dropdown, Icon } from '@QCFE/lego-ui';
+import { Table, Dropdown, Icon, Message } from '@QCFE/lego-ui';
 
 import { ActionsList, IActionListItem } from '@portal/components/ActionsList';
 import { Pagination } from '@portal/components/Pagination';
@@ -11,7 +11,17 @@ import { Loading } from '@portal/components/Loading';
 import { DepartmentStaff } from '@portal/components/DepartmentStaff';
 import { Button } from '@portal/components/Button';
 import { ExportFileModal } from './ExportFileModal';
-import { getUserAdminInfo, updateUserStatus, addDepUser, resetUserPWD } from './api';
+import { AdjustDepModal } from './AdjustDepModal';
+import {
+  getUserAdminInfo,
+  updateUserStatus,
+  addDepUser,
+  updateUser,
+  resetUserPWD,
+  setDEPLeader,
+  batchAdjustDep,
+} from './api';
+import { excelHeader, exportDepExcel } from './excel';
 
 export interface IUserInfo {
   id: string;
@@ -22,21 +32,31 @@ export interface IUserInfo {
 export type UserStatus = 1 | -1 | -2; // 1 正常 -2 禁用 -1 删除
 type ResetStart = 0 | 1; // 0是单个，1批量
 
+export type BatchDepParams = {
+  usersID: string[];
+  oldDepID: string;
+  newDepID: string;
+};
+
 interface PersonInfoProps {
   departmentId: string;
   departmentName: string;
 }
 
-export const PersonInfo = ({ departmentId, departmentName }: PersonInfoProps) => {
-  const [visibleFile, setVisibleFile] = useState(false);
-  const [resetModal, setResetModal] = useState(false);
-  const [handleModal, setHandleModal] = useState(false);
+export const PersonInfo = (props: PersonInfoProps) => {
+  const { departmentId, departmentName } = props;
+  const [visibleFile, setVisibleFile] = useState<boolean>(false);
+  const [resetModal, setResetModal] = useState<boolean>(false);
+  const [handleModal, setHandleModal] = useState<boolean>(false);
+  const [visibleAdjust, setVisibleAdjust] = useState<boolean>(false);
   const [modalStatus, setModalStatus] = useState<UserStatus>(1);
   const [resetStart, setResetStart] = useState<ResetStart>(0);
-  const [visibleStaff, setVisibleStaff] = useState(false);
+  const [userModalStatus, setUserModalStatus] = useState<'add' | 'edit'>('add');
+  const [visibleStaff, setVisibleStaff] = useState<boolean>(false);
   const [selectedRows, setSelectedRows] = useState<string[]>([]);
+  const [selectedUsers, setSelectedUsers] = useState<IUserInfo[]>([]);
 
-  const mutation = useMutation(addDepUser, {
+  const staffMutation = useMutation(userModalStatus === 'add' ? addDepUser : updateUser, {
     onSuccess: () => {
       setVisibleStaff(false);
       refetch();
@@ -63,10 +83,15 @@ export const PersonInfo = ({ departmentId, departmentName }: PersonInfoProps) =>
   );
   console.log(personList);
 
-
   const handleMutation = useMutation(updateUserStatus, {
     onSuccess: () => {
       setHandleModal(false);
+      refetch();
+    },
+  });
+
+  const superMutation = useMutation(setDEPLeader, {
+    onSuccess: () => {
       refetch();
     },
   });
@@ -80,6 +105,13 @@ export const PersonInfo = ({ departmentId, departmentName }: PersonInfoProps) =>
     },
   });
 
+  const depMutation = useMutation(batchAdjustDep, {
+    onSuccess: () => {
+      setVisibleAdjust(false);
+      refetch();
+    },
+  });
+
   const pageSizeOptions = [10, 20, 50, 100];
 
   // const [pageParams, setPageParams] = useState({
@@ -88,6 +120,12 @@ export const PersonInfo = ({ departmentId, departmentName }: PersonInfoProps) =>
   //   total: 108,
   // });
 
+  const setUpSuper = (params: IUserInfo) => {
+    console.log(params);
+    console.log('设置主管');
+    superMutation.mutate({ depID: params.dep ? params.dep.id : '', userID: params.id });
+  };
+
   const actions = (status: UserStatus) => {
     const acts: IActionListItem<{
       id: string;
@@ -95,36 +133,37 @@ export const PersonInfo = ({ departmentId, departmentName }: PersonInfoProps) =>
       text: string;
       onclick?: () => void;
     }>[] = [
-        {
-          id: '1',
-          iconName: 'client',
-          text: '设为主管 ',
-        },
-        {
-          id: '2',
-          iconName: 'key',
-          text: '发送随机密码',
-          onclick: (params: any) => handleReset(params),
-        },
-        {
-          id: '3',
-          iconName: 'pen',
-          text: '修改信息 ',
-          onclick: closeStaffModal,
-        },
-        {
-          id: '4',
-          iconName: 'stop',
-          text: '禁用账号',
-          onclick: (params: any) => handleAccount(-2, params),
-        },
-        {
-          id: '5',
-          iconName: 'trash',
-          text: '删除账号 ',
-          onclick: (params: any) => handleAccount(-1, params),
-        },
-      ];
+      {
+        id: '1',
+        iconName: 'client',
+        text: '设为主管 ',
+        onclick: (params: any) => setUpSuper(params),
+      },
+      {
+        id: '2',
+        iconName: 'key',
+        text: '发送随机密码',
+        onclick: (params: any) => handleReset(params),
+      },
+      {
+        id: '3',
+        iconName: 'pen',
+        text: '修改信息 ',
+        onclick: (params: any) => handleUserInfo(params, 'edit'),
+      },
+      {
+        id: '4',
+        iconName: 'stop',
+        text: '禁用账号',
+        onclick: (params: any) => handleAccount(-2, params),
+      },
+      {
+        id: '5',
+        iconName: 'trash',
+        text: '删除账号 ',
+        onclick: (params: any) => handleAccount(-1, params),
+      },
+    ];
 
     const disable = {
       id: '4',
@@ -138,6 +177,12 @@ export const PersonInfo = ({ departmentId, departmentName }: PersonInfoProps) =>
     }
 
     return acts;
+  };
+
+  const handleUserInfo = (params: IUserInfo, status: 'add' | 'edit') => {
+    setCurrUser(params);
+    setVisibleStaff(true);
+    setUserModalStatus(status);
   };
 
   // dan
@@ -176,7 +221,7 @@ export const PersonInfo = ({ departmentId, departmentName }: PersonInfoProps) =>
 
   // 处理页码
   const handleChange = (current: number) => {
-    setPageParams({ ...pageParams, page: current })
+    setPageParams({ ...pageParams, page: current });
   };
 
   // 处理页数量
@@ -208,11 +253,21 @@ export const PersonInfo = ({ departmentId, departmentName }: PersonInfoProps) =>
     {
       title: '姓名',
       dataIndex: 'userName',
-      width: 100,
       render: (text: string, render: IUserInfo) => {
         return (
-          <div>
-            {handleStatus(render.useStatus)}-{text}
+          <div className="flex items-center">
+            {render.useStatus === 1 && (
+              <div className="w-dot-3 h-dot-3 bg-16A34A rounded-dot-3"></div>
+            )}
+            {render.useStatus === -2 && (
+              <div className="w-dot-3 h-dot-3 bg-red-600 rounded-dot-3"></div>
+            )}
+            <span>{render.userName}</span>
+            {render.isDEPLeader === 1 && (
+              <span className="w-1-dot-6 h-dot-8 bg-jb rounded-dot-2 p-dot-2 flex items-center justify-center">
+                <span className="text-white text-dot-5">主管</span>
+              </span>
+            )}
           </div>
         );
       },
@@ -259,7 +314,7 @@ export const PersonInfo = ({ departmentId, departmentName }: PersonInfoProps) =>
     selectedRowKeys: selectedRows,
     onChange: (selectedRowKeys: string[], selectedRows: IUserInfo[]) => {
       setSelectedRows(selectedRowKeys);
-      console.log('selectedRowKeys:', selectedRowKeys, 'selectedRows: ', selectedRows);
+      setSelectedUsers(selectedRows);
     },
   };
 
@@ -274,12 +329,11 @@ export const PersonInfo = ({ departmentId, departmentName }: PersonInfoProps) =>
   };
 
   const okStaffModal = (values: FormValues) => {
-    mutation.mutate(values);
-  };
-
-  // 新增员工
-  const openStaffModal = () => {
-    setVisibleStaff(true);
+    if (userModalStatus === 'edit') {
+      values.id = currUser.id;
+    }
+    console.log(values);
+    staffMutation.mutate(values);
   };
 
   const closeStaffModal = () => {
@@ -298,11 +352,41 @@ export const PersonInfo = ({ departmentId, departmentName }: PersonInfoProps) =>
     resetMutation.mutate({ userIDs: ids, ...way });
   };
 
-  const actionss: IActionListItem<null>[] = [
+  const openAdjustModal = () => {
+    setVisibleAdjust(true);
+  };
+
+  const okModalAdjust = (params: BatchDepParams) => {
+    depMutation.mutate(params);
+  };
+
+  const exportDepData = () => {
+    getUserAdminInfo('', {
+      useStatus: 1,
+      page: 0,
+      limit: 0,
+    }).then((res) => {
+      console.log(res);
+      if (res && res.data) {
+        const { data } = res;
+        let newData = data.map((user) => {
+          user.depName = user.dep && user.dep.departmentName;
+          return user;
+        });
+        console.log(newData);
+        exportDepExcel(excelHeader, newData, '人员列表.xlsx');
+      } else {
+        Message.error('获取人员出错');
+      }
+    });
+  };
+
+  const expandActions: IActionListItem<null>[] = [
     {
       id: '1',
       iconName: 'export-data.svg',
       text: '导出员工数据 ',
+      onclick: () => exportDepData(),
     },
   ];
 
@@ -312,11 +396,20 @@ export const PersonInfo = ({ departmentId, departmentName }: PersonInfoProps) =>
 
   return (
     <>
+      {visibleAdjust && (
+        <AdjustDepModal
+          userList={selectedUsers}
+          visible={visibleAdjust}
+          closeModal={() => setVisibleAdjust(false)}
+          okModal={okModalAdjust}
+        />
+      )}
       {/* 员工模态框 */}
       {visibleStaff && (
         <StaffModal
           visible={visibleStaff}
-          status="add"
+          status={userModalStatus}
+          initData={currUser}
           okModal={okStaffModal}
           closeModal={closeStaffModal}
         />
@@ -328,15 +421,6 @@ export const PersonInfo = ({ departmentId, departmentName }: PersonInfoProps) =>
           currDepId={departmentId}
           closeModal={closeFileModal}
           okModal={okExportModal}
-        />
-      )}
-      {/* 员工模态框 */}
-      {visibleStaff && (
-        <StaffModal
-          visible={visibleStaff}
-          status="edit"
-          okModal={closeStaffModal}
-          closeModal={closeStaffModal}
         />
       )}
       {handleModal && (
@@ -378,14 +462,14 @@ export const PersonInfo = ({ departmentId, departmentName }: PersonInfoProps) =>
                     />
                   </svg>
                 }
-                onClick={importFile}
+                onClick={openAdjustModal}
               >
                 调整部门
-                </Button>
+              </Button>
               <div className="px-2"></div>
               <Button icon={<Icon className="mr-dot-4" name="add" />} onClick={openSendPwd}>
                 发送随机密码
-                </Button>
+              </Button>
             </>
           ) : (
             <>
@@ -410,26 +494,28 @@ export const PersonInfo = ({ departmentId, departmentName }: PersonInfoProps) =>
                 onClick={importFile}
               >
                 excel 批量导入
-                </Button>
+              </Button>
               <div className="px-2"></div>
-              <Button icon={<Icon className="mr-dot-4" name="add" />} onClick={openStaffModal}>
+              <Button
+                icon={<Icon className="mr-dot-4" name="add" />}
+                onClick={() => handleUserInfo({ id: '', userName: '' }, 'add')}
+              >
                 添加员工
-                </Button>
+              </Button>
             </>
           )}
-
           <div className="px-2"></div>
-          {/* <Dropdown content={<ActionsList actions={actions} />}>
-                  <div>
-                    <Button className="bg-black" textClassName="text-white">
-                      ···
-                    </Button>
-                  </div>
-                </Dropdown> */}
+          <Dropdown content={<ActionsList actions={expandActions} />}>
+            <div>
+              <Button className="bg-black" textClassName="text-white">
+                ···
+              </Button>
+            </div>
+          </Dropdown>
         </div>
-        <div className="w-full mt-dot-8 flex-1 overflow-y-a px-4">
+        <div className="w-full mt-dot-8">
           <Table
-            className="text-dot-7 table-full"
+            className="text-dot-7"
             dataSource={personList?.data}
             columns={columns}
             rowKey="id"

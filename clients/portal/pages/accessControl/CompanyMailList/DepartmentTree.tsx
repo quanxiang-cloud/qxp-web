@@ -8,7 +8,6 @@ import DepartmentModal from './DepartmentModal';
 import { DeleteModal } from './DeleteModal';
 
 import { deleteDEP } from './api';
-import { Func } from 'mocha';
 
 export interface TreeNodeItem extends ITreeNode {
   addDepartment: (val: string, id: string) => void;

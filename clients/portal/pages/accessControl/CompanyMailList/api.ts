@@ -161,8 +161,34 @@ export const getListRole = () => {
  */
 export const addDepUser = (values: FormValues) => {
   return httpPost<IResponse<{ roles: Roles[] }>>(
-    '/api/nurturing/v1/addUsers',
+    '/api/nurturing/v1/addUser',
     JSON.stringify(values),
+    {
+      'Content-Type': 'application/json',
+    },
+  ).then(({ data }) => data);
+};
+
+/**
+ * @returns 修改用户信息
+ */
+export const updateUser = (values: FormValues) => {
+  return httpPost<IResponse<{ roles: Roles[] }>>(
+    '/api/nurturing/v1/updateUser',
+    JSON.stringify(values),
+    {
+      'Content-Type': 'application/json',
+    },
+  ).then(({ data }) => data);
+};
+
+/**
+ * @returns 设为主管
+ */
+export const setDEPLeader = ({ depID, userID }: { depID: string; userID: string }) => {
+  return httpPost<IResponse<{ code: number }>>(
+    '/api/org/v1/setDEPLeader',
+    JSON.stringify({ depID, userID }),
     {
       'Content-Type': 'application/json',
     },
@@ -174,7 +200,7 @@ export const addDepUser = (values: FormValues) => {
  */
 export const updateUserStatus = ({ id, status }: { id: string; status: UserStatus }) => {
   return httpPost<IResponse<{ code: number }>>(
-    '/api/org/v1/updateUserStatus',
+    '/api/nurturing/v1/updateUserStatus',
     JSON.stringify({ id, useStatus: status }),
     {
       'Content-Type': 'application/json',
@@ -183,7 +209,28 @@ export const updateUserStatus = ({ id, status }: { id: string; status: UserStatu
 };
 
 /**
- * @returns 修改用户状态
+ * @returns
+ */
+export const batchAdjustDep = ({
+  usersID,
+  oldDepID,
+  newDepID,
+}: {
+  usersID: string[];
+  oldDepID: string;
+  newDepID: string;
+}) => {
+  return httpPost<IResponse<{ code: number }>>(
+    '/api/org/v1/adminChangeUsersDEP',
+    JSON.stringify({ usersID, oldDepID, newDepID }),
+    {
+      'Content-Type': 'application/json',
+    },
+  ).then(({ data }) => data);
+};
+
+/**
+ * @returns 发送随机密码
  */
 export const resetUserPWD = ({
   userIDs,
@@ -219,6 +266,10 @@ export function createDepartment(params: { pid: string; departmentName: string }
   return httpPost('/api/org/v1/addDEP', JSON.stringify(params));
 }
 
-export function editDepartment(params: { pid: string; departmentName: string }) {
+export function editDepartment(params: {
+  pid: string;
+  departmentName?: string;
+  departmentLeaderID?: string;
+}) {
   return httpPost('/api/org/v1/updateDEP', JSON.stringify(params));
 }

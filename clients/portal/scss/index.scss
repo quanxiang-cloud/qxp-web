@@ -25,6 +25,10 @@ html {
   width: 0.8rem;
 }
 
+.w-dot-3 {
+  width: 0.3rem;
+}
+
 .w-2-dot-4 {
   width: 2.4rem;
 }
@@ -55,6 +59,10 @@ html {
 
 .h-dot-8 {
   height: 0.8rem;
+}
+
+.h-dot-3 {
+  height: 0.3rem;
 }
 
 .h-1-dot-9 {
@@ -106,6 +114,10 @@ html {
   width: 1.4rem;
 }
 
+.w-1-dot-6 {
+  width: 1.6rem;
+}
+
 .w-0-dot-2 {
   width: 0.2rem;
 }
@@ -139,12 +151,20 @@ html {
   padding-right: 0.4rem;
 }
 
+.bg-16A34A {
+  background-color: #16A34A;
+}
+
 .bg-475569 {
   background-color: #475569;
 }
 
 .bg-E5E5E5 {
   background-color: #e5e5e5;
+}
+
+.bg-jb{
+  background: linear-gradient(180deg, #FDBA74 0%, #FB923C 100%);
 }
 
 .bg-F1F5F9 {
@@ -158,6 +178,9 @@ html {
 .top-dot-6 {
   top: 0.6rem;
 }
+.rounded-dot-3 {
+  border-radius: 0.3rem;
+}
 
 .rounded-1-dot-6 {
   border-radius: 1.6rem;
@@ -165,6 +188,18 @@ html {
 
 .rounded-dot-4 {
   border-radius: 0.4rem;
+}
+
+.rounded-dot-2 {
+  border-radius: 0.2rem;
+}
+
+.rounded-tl-dot-2 {
+  border-top-left-radius: 0.2rem;
+}
+
+.rounded-br-dot-2 {
+  border-bottom-right-radius: 0.2rem;
 }
 
 .rounded-dot-6 {
@@ -201,6 +236,10 @@ html {
 .rounded-l-dot-4 {
   border-top-left-radius: 0.4rem;
   border-bottom-left-radius: 0.4rem;
+}
+
+.text-dot-5 {
+  font-size: 0.5rem;
 }
 
 .text-dot-7 {
@@ -398,6 +437,10 @@ html {
 
 .text-697886 {
   color: #697886;
+}
+
+.p-dot-2 {
+  padding: 0.2rem;
 }
 
 .p-dot-3-6 {
