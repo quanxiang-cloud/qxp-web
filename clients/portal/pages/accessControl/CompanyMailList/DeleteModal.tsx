@@ -4,16 +4,16 @@ import { Modal } from '@QCFE/lego-ui';
 import { Button } from '@portal/components/Button';
 
 interface DeleteModalProps {
+  currDep: any;
   closeModal(): void;
   okModal(): void;
 }
 
-export const DeleteModal = ({ closeModal, okModal }: DeleteModalProps) => {
+export const DeleteModal = ({ currDep, closeModal, okModal }: DeleteModalProps) => {
   return (
     <Modal
       visible
       title="删除"
-      onOk={okModal}
       onCancel={closeModal}
       footer={
         <div className="flex items-center">
@@ -49,7 +49,7 @@ export const DeleteModal = ({ closeModal, okModal }: DeleteModalProps) => {
     >
       <div className="text-dot-7">
         确定要删除
-        <span className="mx-1 text-dot-8 font-semibold">IT 运维部</span>
+        <span className="mx-1 text-dot-8 font-semibold">{currDep && currDep.departmentName}</span>
         吗？
       </div>
     </Modal>

@@ -134,8 +134,6 @@ export const PersonInfo = ({ departmentId, departmentName, keyword }: PersonInfo
   const pageSizeOptions = [10, 20, 50, 100];
 
   const setUpSuper = (params: IUserInfo) => {
-    console.log(params);
-    console.log('设置主管');
     superMutation.mutate({ depID: params.dep ? params.dep.id : '', userID: params.id });
   };
 
@@ -180,7 +178,7 @@ export const PersonInfo = ({ departmentId, departmentName, keyword }: PersonInfo
 
     const disable = {
       id: '4',
-      iconName: './dist/images/add-department.svg',
+      iconName: 'stop',
       text: '启用账号',
       onclick: (params: any) => handleAccount(1, params),
     };

@@ -92,12 +92,8 @@ export const updateDEP = () => {
  * @param id true
  */
 export const deleteDEP = (id: string) => {
-  console.log(id);
   return httpPost<IResponse<{ code: number }>>('/api/org/v1/delDEP', JSON.stringify({ id }), {
     'Content-Type': 'application/json',
-  }).then(({ data }) => {
-    console.log(data);
-    return data;
   });
 };
 
