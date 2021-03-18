@@ -85,9 +85,9 @@ export const PersonInfo = ({ departmentId, departmentName, keyword }: PersonInfo
     }
 
     setSearchTimer(
-      setTimeout(() => {
-        setPageParams({ ...pageParams, userName: keyword });
-      }, 200),
+        setTimeout(() => {
+          setPageParams({ ...pageParams, userName: keyword });
+        }, 200),
     );
     return () => {
       clearTimeout(searchTimer);
@@ -95,11 +95,11 @@ export const PersonInfo = ({ departmentId, departmentName, keyword }: PersonInfo
   }, [keyword]);
 
   const { data: personList, isLoading, refetch } = useQuery(
-    ['getUserAdminInfo', pageParams, departmentId],
-    () => getUserAdminInfo(departmentId, pageParams),
-    {
-      refetchOnWindowFocus: false,
-    },
+      ['getUserAdminInfo', pageParams, departmentId],
+      () => getUserAdminInfo(departmentId, pageParams),
+      {
+        refetchOnWindowFocus: false,
+      },
   );
 
   const handleMutation = useMutation(updateUserStatus, {
@@ -195,7 +195,7 @@ export const PersonInfo = ({ departmentId, departmentName, keyword }: PersonInfo
   const handleUserInfo = (params: IUserInfo, status: 'add' | 'edit') => {
     if (status === 'edit') {
       getUserRole({ ownerID: params.id, type: 1 }).then((roles) => {
-        let _params = {
+        const _params = {
           ...params,
           roleId: '',
           deleteId: '',
@@ -251,7 +251,7 @@ export const PersonInfo = ({ departmentId, departmentName, keyword }: PersonInfo
   const handleShowSizeChange = (limit: number) => {
     setPageParams({
       ...pageParams,
-      limit
+      limit,
     });
   };
 
@@ -478,6 +478,7 @@ export const PersonInfo = ({ departmentId, departmentName, keyword }: PersonInfo
                     xmlns="http://www.w3.org/2000/svg"
                   >
                     <path
+                      // eslint-disable-next-line max-len
                       d="M15.6667 1.99998H9.00008L7.33342 0.333313H2.33341C1.40841 0.333313 0.675081 1.07498 0.675081 1.99998L0.666748 12C0.666748 12.925 1.40841 13.6666 2.33341 13.6666H15.6667C16.5917 13.6666 17.3334 12.925 17.3334 12V3.66665C17.3334 2.74165 16.5917 1.99998 15.6667 1.99998ZM15.6667 12H2.33341V1.99998H6.64175L8.30841 3.66665H15.6667V12ZM9.00008 8.66665H10.6667V10.3333H12.3334V8.66665H14.0001V6.99998H12.3334V5.33331H10.6667V6.99998H9.00008V8.66665Z"
                       fill="white"
                     />
@@ -507,6 +508,7 @@ export const PersonInfo = ({ departmentId, departmentName, keyword }: PersonInfo
                     xmlns="http://www.w3.org/2000/svg"
                   >
                     <path
+                      // eslint-disable-next-line max-len
                       d="M15.6667 1.99998H9.00008L7.33342 0.333313H2.33341C1.40841 0.333313 0.675081 1.07498 0.675081 1.99998L0.666748 12C0.666748 12.925 1.40841 13.6666 2.33341 13.6666H15.6667C16.5917 13.6666 17.3334 12.925 17.3334 12V3.66665C17.3334 2.74165 16.5917 1.99998 15.6667 1.99998ZM15.6667 12H2.33341V1.99998H6.64175L8.30841 3.66665H15.6667V12ZM9.00008 8.66665H10.6667V10.3333H12.3334V8.66665H14.0001V6.99998H12.3334V5.33331H10.6667V6.99998H9.00008V8.66665Z"
                       fill="white"
                     />
@@ -536,26 +538,30 @@ export const PersonInfo = ({ departmentId, departmentName, keyword }: PersonInfo
         </div>
         <div className="w-full mt-dot-8 flex-column overflow-y-a flex-1 px-4">
           {personList?.data && (
-            <Table
-              className="text-dot-7 table-full"
-              dataSource={personList?.data}
-              columns={columns}
-              rowKey="id"
-              rowSelection={rowSelection}
-              emptyText={<EmptyData text="无成员数据" className="py-10" />}
-            />
+            <>
+              <div className="qxp-table flex w-full">
+                <Table
+                  className="text-dot-7 table-full"
+                  dataSource={personList?.data}
+                  columns={columns}
+                  rowKey="id"
+                  rowSelection={rowSelection}
+                  emptyText={<EmptyData text="无成员数据" className="py-10" />}
+                />
+              </div>
+              <div className="flex justify-end border-t border-blue-third">
+                <Pagination
+                  type="simple"
+                  current={pageParams.page}
+                  total={personList?.total || 0}
+                  pageSize={pageParams.limit}
+                  pageSizeOptions={pageSizeOptions}
+                  onChange={handleChange}
+                  onShowSizeChange={handleShowSizeChange}
+                />
+              </div>
+            </>
           )}
-        </div>
-        <div className="flex justify-end border-t border-blue-third">
-          <Pagination
-            type="simple"
-            current={pageParams.page}
-            total={personList?.total || 0}
-            pageSize={pageParams.limit}
-            pageSizeOptions={pageSizeOptions}
-            onChange={handleChange}
-            onShowSizeChange={handleShowSizeChange}
-          />
         </div>
       </div>
     </>

@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useQuery, useMutation } from 'react-query';
 import { Modal } from '@QCFE/lego-ui';
 
@@ -51,6 +51,11 @@ export const AssociateDepartmentEmployee = ({ id, isSuper }: IAssociateDepartmen
         cacheTime: -1,
       },
   );
+
+  useEffect(() => {
+    data?.total && setPagination((p) => ({ ...p, total: data?.total }));
+  }, [data]);
+
   // @ts-ignore
   const mutation = useMutation(
       (arg: IUpdateRoleAssociations) => updateRoleAssociations(arg), {

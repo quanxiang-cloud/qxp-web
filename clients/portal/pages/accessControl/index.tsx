@@ -14,8 +14,7 @@ export default function Index() {
     <>
       <HeaderWithMenu />
       <div
-        style={{ height: 'calc(100vh - 3.2rem)' }}
-        className="py-3-dot-9 px-8 h-full flex justify-center items-start"
+        className="py-3-dot-9 px-8 flex justify-center items-start"
       >
         <div className="w-316 bg-white pd-1 border-radius-2 mr-4">
           <ItemWithTitleDesc
@@ -32,7 +31,7 @@ export default function Index() {
           <div className="h-5"></div>
           <ListMenu defaultType="corporateDirectory" onChange={setMenuType} />
         </div>
-        <div className="w-988 h-full bg-white border-radius-2">
+        <div className="w-988 h-auto bg-white border-radius-2">
           {menuType === 'corporateDirectory' ? <MailList visible /> : <RoleManagement visible />}
         </div>
       </div>

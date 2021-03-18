@@ -40,7 +40,7 @@ export const RoleManagement = ({ visible }: IRoleManagement) => {
         'pointer-events-none': !visible,
         'pointer-events-auto': visible,
         'h-0': !visible,
-        'h-full': visible,
+        'h-auto': visible,
         'overflow-hidden': !visible,
       })}
       headerClassName="bg-F1F5F9-dot-5 -mx-4 -mt-dot-8 px-4 py-dot-8 pt-0 header-background-image"

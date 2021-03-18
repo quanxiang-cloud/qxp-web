@@ -30,12 +30,12 @@ export const ItemWithTitleDesc = ({
       {itemRender}
       <div
         className={twCascade(
-          'justify-between ml-dot-4 flex flex-1 transition duration-300',
-          {
-            'flex-row': textDirection == 'row',
-            'flex-col': textDirection != 'row',
-          },
-          textClassName,
+            'justify-between ml-dot-4 flex flex-1 transition duration-300',
+            {
+              'flex-row': textDirection == 'row',
+              'flex-col': textDirection != 'row',
+            },
+            textClassName,
         )}
       >
         {title && <div className={twCascade('text-base', titleClassName)}>{title}</div>}

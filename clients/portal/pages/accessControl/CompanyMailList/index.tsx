@@ -67,8 +67,8 @@ export const MailList = ({ visible }: IMailList) => {
       <div className="h-full flex-column overflow-y-h">
         <div
           className={twCascade(
-            'w-416 m-4 bg-F1F5F9 rounded-r-dot-6 rounded-tl-dot-2',
-            'rounded-bl-dot-6 flex items-center',
+              'w-416 m-4 bg-F1F5F9 rounded-r-dot-6 rounded-tl-dot-2',
+              'rounded-bl-dot-6 flex items-center',
           )}
         >
           <Control className="has-icons-left flex-1 control-set">
@@ -85,8 +85,12 @@ export const MailList = ({ visible }: IMailList) => {
         </div>
         <div className="h-full mt-4 flex items-start overflow-y-h">
           <div className="w-12-dot-95 h-full">
-            <DepartmentTree treeData={treeData} setShowDept={setCurrDept} departmentId={curDeptId} />
             <DepartmentStaff department="组织架构" />
+            <DepartmentTree
+              treeData={treeData}
+              setShowDept={setCurrDept}
+              departmentId={curDeptId}
+            />
           </div>
           <div className="vertical-line flex-grow-0"></div>
           <PersonInfo

@@ -90,7 +90,8 @@ const QXPTree = <T extends ITreeData>({
           parent,
         multiple ? selectedKeys : selectedKey,
         multiple ? selectedKeys.map(
-            (key) => map[key]) : selectedKey ? map[selectedKey] : undefined as unknown as T[],
+            (key) => map[key]).filter(Boolean) : selectedKey ? map[selectedKey] :
+            undefined as unknown as T[],
       );
     }
   }, 1, [selectedKeys, selectedKey, currentRow, map]);
@@ -275,6 +276,10 @@ const TreeRow = React.memo(<T extends ITreeData>({
       setParentSelectedChildrenKeys &&
       setParentSelectedChildrenKeys((keys: string[]) => keys.filter((key) => key !== row.key));
       setSelectedChildrenKeys([]);
+    } else {
+      if (setParentSelectedChildrenKeys && !parentSelectedChildrenKeys.includes(row.key)) {
+        setParentSelectedChildrenKeys((keys: string[]) => [...keys, row.key]);
+      }
     }
   }, 1, [keys]);
 

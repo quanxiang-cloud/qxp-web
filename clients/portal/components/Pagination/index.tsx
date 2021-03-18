@@ -33,9 +33,9 @@ export const Pagination = ({
   return (
     <div
       className={twCascade(
-        'inline-flex items-center justify-between bg-white px-1-dot-2',
-        'py-dot-4',
-        className,
+          'inline-flex items-center justify-between bg-white px-1-dot-2',
+          'py-dot-4 w-full border-t border-blue-third',
+          className,
       )}
     >
       {type === 'simple' && <div>{prefix}</div>}

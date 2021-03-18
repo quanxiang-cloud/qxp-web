@@ -21,7 +21,10 @@ export const OwnerSelector = ({ defaultEmployees = [], refs }: IOwnerSelector) =
   const [keyword, setKeyword] = useState<string>('');
   const [usernameKeyword, setUsernameKeyword] = useState<string>();
   const [tabKey, setTabKey] = useState<string | number>('1');
-  const [depID, setDepID] = useState<string | null>(null);
+  const [currentDepartment, setCurrentDepartment] = useState<{
+    departmentName?: string;
+    id?: string;
+  }>({});
   const [selectedOwner, setSelectedOwner] = useState<IOwner[]>(defaultEmployees);
   const [selectedDepartmentKeys, setSelectedDepartmentKeys] = useState<string[]>([]);
   const { data: departments = [], isLoading } = useQuery(
@@ -44,7 +47,7 @@ export const OwnerSelector = ({ defaultEmployees = [], refs }: IOwnerSelector) =
 
   useEffect(() => {
     if (departments && departments.length) {
-      setDepID(departments[0].id as string);
+      setCurrentDepartment(departments[0]);
     }
   }, [departments]);
 
@@ -118,15 +121,15 @@ export const OwnerSelector = ({ defaultEmployees = [], refs }: IOwnerSelector) =
                       selectedClassName="bg-white text-blue-primary rounded-tl-2xl rounded-bl-2xl"
                       expandOnSelect={false}
                       onRow={{
-                        onClick: (node) => setDepID(node.id as string),
+                        onClick: (node) => setCurrentDepartment(node),
                       }}
                     />
                   </div>
                   <div className="h-full flex flex-col overflow-hidden flex-1">
-                    <TextHeader title="全象云应用开发平台" />
+                    <TextHeader title={currentDepartment.departmentName || ''} />
                     <EmployeeTable
                       userName={usernameKeyword}
-                      depID={depID}
+                      depID={currentDepartment.id || ''}
                       className="overflow-scroll"
                       selectedOwner={selectedOwner.filter((owner) => owner.type === 1)}
                       setSelectedOwner={setSelectedOwner}
@@ -158,7 +161,7 @@ export const OwnerSelector = ({ defaultEmployees = [], refs }: IOwnerSelector) =
                     desc="角色关联部门后，在该部门下添加员工时会默认自动带入该部门的角色。例如：部门关联角色“普通管理员”，添加新员工时，自动关联角色“普通管理员”。"
                     itemClassName="flex flex-col items-start"
                     textClassName="ml-0"
-                    descClassName="-ml-dot-4"
+                    descClassName="-ml-dot-4 mb-dot-4"
                   />
                   <Tree<IDepartmentStructure>
                     treeData={departments}

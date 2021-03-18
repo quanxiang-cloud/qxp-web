@@ -33,9 +33,9 @@ export const RoleDetail = ({ role, id }: IRoleDetail) => {
           </div>
         }
         desc={
-          role.tag === 'super'
-            ? '平台默认的角色，默认具有企业所有功能权限和全部数据可见范围。'
-            : '具有企业部分功能权限和部分数据可见范围。'
+          role.tag === 'super' ?
+            '平台默认的角色，默认具有企业所有功能权限和全部数据可见范围。' :
+            '具有企业部分功能权限和部分数据可见范围。'
         }
         descClassName="transition ease-linear text-dot-6 text-697886"
       />
