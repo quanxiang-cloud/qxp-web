@@ -2,14 +2,13 @@ import React, { useState } from 'react';
 import { useQuery } from 'react-query';
 import classnames from 'classnames';
 import { twCascade } from '@mariusmarais/tailwind-cascade';
-import { Select, Control, Icon, Input, Loading } from '@QCFE/lego-ui';
-import XLSX from 'xlsx';
+import { Control, Icon, Input } from '@QCFE/lego-ui';
 
 import { TextHeader } from '@portal/components/TextHeader';
 import { DepartmentStaff } from '@portal/components/DepartmentStaff';
 import { DepartmentTree } from './DepartmentTree';
+import { Loading } from '@portal/components/Loading';
 import { PersonInfo } from './PersonInfo';
-
 import { getERPTree } from './api';
 
 export interface IMailList {
@@ -20,16 +19,18 @@ export const MailList = ({ visible }: IMailList) => {
   const [searchWord, setSearchWord] = useState('');
   const [curDept, setCurrDept] = useState<DeptTree | ''>('');
 
-  const { data, isLoading, refetch } = useQuery('getERPTree', () => getERPTree().then((_treeData: any) => {
-    setCurrDept(_treeData)
-    return _treeData
-  }));
+  const { data, isLoading } = useQuery('getERPTree', () =>
+    getERPTree().then((_treeData: any) => {
+      setCurrDept(_treeData);
+      return _treeData;
+    }),
+  );
 
   const treeData: any[] = data ? [data] : [];
 
   const search = (keyWord: string) => {
-    setSearchWord(keyWord)
-  }
+    setSearchWord(keyWord);
+  };
 
   function handleSearch(e: KeyboardEvent): void {
     if (e.key !== 'Enter') {
@@ -37,62 +38,8 @@ export const MailList = ({ visible }: IMailList) => {
     }
   }
 
-  const importExcel = (e: any) => {
-    console.log(e);
-    const files = e.target.files;
-    console.log(files);
-
-    const name = files.name;
-    console.log(name);
-    const reader = new FileReader();
-    const jsondata: any[] = [];
-    reader.onload = (evt: any) => {
-      const bstr = evt.target.result;
-      const wb = XLSX.read(bstr, { type: 'binary' });
-      console.log(wb);
-      const wsname = wb.SheetNames[0];
-      console.log(wsname);
-      const ws = wb.Sheets[wsname];
-      console.log(ws);
-      console.log(typeof ws);
-      Object.keys(ws).forEach((key) => {
-        const reg = /[A-Z][0-9]/;
-        if (!reg.test(key)) {
-          return;
-        }
-        const letter = key.substring(0, 1); // 字母
-        const index = Number(key.substring(1, 2)); // 数字
-        console.log(index);
-        console.log(letter);
-        if (index === 1) {
-          return;
-        }
-        if (index > 2 && letter === 'A') {
-          jsondata.push({
-            key: key,
-            name: ws[key].v,
-          });
-        }
-        if (index > 2 && letter === 'B') {
-          jsondata[jsondata.length - 1].phone = ws[key].v;
-        }
-        if (index > 2 && letter === 'C') {
-          jsondata[jsondata.length - 1].email = ws[key].v;
-        }
-      });
-      console.log(jsondata);
-      // const data = XLSX.utils.sheet_to_csv(ws);
-      // const json = XLSX.utils.sheet_to_json(ws);
-    };
-    reader.readAsBinaryString(files[0]);
-  };
-
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center py-4">
-        <Loading />
-      </div>
-    );
+  if (isLoading || !treeData.length) {
+    return <Loading desc="加载中..." />;
   }
 
   const curDeptId = (curDept as DeptTree).id;
@@ -138,11 +85,19 @@ export const MailList = ({ visible }: IMailList) => {
         </div>
         <div className="h-full mt-4 flex items-start overflow-y-h">
           <div className="w-12-dot-95 h-full">
-            <DepartmentStaff department="部门人员" count={0} unit="部门" />
-            <DepartmentTree treeData={treeData} setCurrDept={setCurrDept} departmentId={curDeptId} />
+            <DepartmentStaff department="组织架构" />
+            <DepartmentTree
+              treeData={treeData}
+              setCurrDept={setCurrDept}
+              departmentId={curDeptId}
+            />
           </div>
           <div className="vertical-line flex-grow-0"></div>
-          <PersonInfo keyword={searchWord} departmentId={curDeptId} departmentName={(curDept as DeptTree).departmentName} />
+          <PersonInfo
+            keyword={searchWord}
+            departmentId={curDeptId}
+            departmentName={(curDept as DeptTree).departmentName}
+          />
         </div>
       </div>
     </div>

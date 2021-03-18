@@ -1,7 +1,7 @@
 import { httpPost, httpFile } from '../../../../assets/lib/f';
 import { IResponse } from '../../../../@types/interface/api';
 import { ITreeNode } from '@portal/pages/accessControl/CompanyMailList/DepartmentTree';
-import { FormValues } from './StaffModal';
+import { FormValues, EditFormValues } from './StaffModal';
 import { UserStatus } from './PersonInfo';
 
 // ------------------ 部门 ---------------
@@ -146,6 +146,7 @@ type Roles = {
   id: string;
   name: string;
   tag: string;
+  roleID: string;
 };
 
 /**
@@ -160,7 +161,7 @@ export const getListRole = () => {
 /**
  * @returns 新增部门人员
  */
-export const addDepUser = (values: FormValues) => {
+export const addDepUser = (values: FormValues | EditFormValues) => {
   return httpPost<IResponse<{ roles: Roles[] }>>(
     '/api/nurturing/v1/addUser',
     JSON.stringify(values),
@@ -173,7 +174,7 @@ export const addDepUser = (values: FormValues) => {
 /**
  * @returns 修改用户信息
  */
-export const updateUser = (values: FormValues) => {
+export const updateUser = (values: FormValues | EditFormValues) => {
   return httpPost<IResponse<{ roles: Roles[] }>>(
     '/api/nurturing/v1/updateUser',
     JSON.stringify(values),
@@ -207,6 +208,19 @@ export const updateUserStatus = ({ id, status }: { id: string; status: UserStatu
       'Content-Type': 'application/json',
     },
   ).then(({ data }) => data);
+};
+
+/**
+ * @returns 获取拥有者角色列表
+ */
+export const getUserRole = ({ ownerID, type }: { ownerID: string; type: 1 | 2 }) => {
+  return httpPost<IResponse<{ roles: Roles[] }>>(
+    '/api/goalie/listOwnerRole',
+    JSON.stringify({ ownerID, type }),
+    {
+      'Content-Type': 'application/json',
+    },
+  ).then(({ data }) => data?.roles);
 };
 
 /**
