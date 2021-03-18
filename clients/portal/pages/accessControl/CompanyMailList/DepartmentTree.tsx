@@ -11,25 +11,25 @@ import { deleteDEP } from './api';
 
 export interface TreeNodeItem extends ITreeNode {
   addDepartment: (val: string, id: string) => void;
-  openDeptModal: (type: string, deptInfo: DeptInfo) => void;
-  openDeleteDeptModal: (deptInfo: DeptInfo) => void;
+  openDeptModal: (type: string, deptInfo?: Partial<DeptInfo>) => void;
+  openDeleteDeptModal: (deptInfo?: Partial<DeptInfo>) => void;
   onSelect: (deptInfo: any) => void;
 }
 
 const Title = ({ openDeptModal, openDeleteDeptModal, onSelect, ...treenode }: TreeNodeItem) => {
   const actions = (bol: boolean) => {
-    const acts = [
+    const acts: IActionListItem<Partial<DeptInfo>>[] = [
       {
         id: '1',
         iconName: 'network-router',
         text: '添加部门',
-        onclick: (params: DeptInfo) => openDeptModal('add', params),
+        onclick: (params?: Partial<DeptInfo>) => openDeptModal('add', params),
       },
       {
         id: '2',
         iconName: 'pen',
         text: '修改部门',
-        onclick: (params: DeptInfo) => openDeptModal('edit', params),
+        onclick: (params?: Partial<DeptInfo>) => openDeptModal('edit', params),
       },
     ];
     if (bol) {
@@ -37,13 +37,13 @@ const Title = ({ openDeptModal, openDeleteDeptModal, onSelect, ...treenode }: Tr
         id: '3',
         iconName: 'trash',
         text: '删除',
-        onclick: (params: DeptInfo) => openDeleteDeptModal(params),
+        onclick: (params?: Partial<DeptInfo>) => openDeleteDeptModal(params),
       });
     }
     return acts;
   };
 
-  const { departmentName, id, pid } = treenode
+  const { departmentName, id, pid } = treenode;
 
   return (
     <>
@@ -98,7 +98,7 @@ export const DepartmentTree = ({ departmentId, treeData, setShowDept }: Departme
   const closeModal = () => {
     setCurDept(null);
     setModalType('');
-  }
+  };
 
   const openDeptModal = (type: 'add' | 'edit', params: TreeNodeItem) => {
     setDeptModalType(type);
@@ -207,11 +207,13 @@ export const DepartmentTree = ({ departmentId, treeData, setShowDept }: Departme
         {treeData.length > 0 ? renderTreeNodes(treeData) : null}
       </Tree>
       {modalType === 'department' && (
-        <DepartmentModal deptModalType={deptModalType} department={curDept as DeptInfo} closeModal={closeModal} />
+        <DepartmentModal
+          deptModalType={deptModalType}
+          department={curDept as DeptInfo}
+          closeModal={closeModal}
+        />
       )}
-      {modalType === 'delDept' && (
-        <DeleteModal closeModal={closeModal} okModal={deleteDept} />
-      )}
+      {modalType === 'delDept' && <DeleteModal closeModal={closeModal} okModal={deleteDept} />}
     </div>
   );
 };

@@ -6,7 +6,7 @@ import { ActionsList, IActionListItem } from '@portal/components/ActionsList';
 import { Pagination } from '@portal/components/Pagination';
 import { ResetPasswordModal, CheckedWay } from './ResetPasswordModal';
 import { AccountHandleModal } from './AccountHandleModal';
-import { StaffModal, FormValues } from './StaffModal';
+import { StaffModal, FormValues, EditFormValues } from './StaffModal';
 import { Loading } from '@portal/components/Loading';
 import { DepartmentStaff } from '@portal/components/DepartmentStaff';
 import { Button } from '@portal/components/Button';
@@ -21,6 +21,7 @@ import {
   resetUserPWD,
   setDEPLeader,
   batchAdjustDep,
+  getUserRole,
 } from './api';
 import { excelHeader, exportDepExcel } from './excel';
 
@@ -190,9 +191,22 @@ export const PersonInfo = ({ departmentId, departmentName, keyword }: PersonInfo
   };
 
   const handleUserInfo = (params: IUserInfo, status: 'add' | 'edit') => {
-    setCurrUser(params);
-    setVisibleStaff(true);
-    setUserModalStatus(status);
+    if (status === 'edit') {
+      getUserRole({ ownerID: params.id, type: 1 }).then((roles) => {
+        let id = roles && roles[0].roleID;
+        setCurrUser({
+          ...params,
+          roleId: id,
+          deleteId: roles && roles[0].id,
+        });
+        setVisibleStaff(true);
+        setUserModalStatus(status);
+      });
+    } else {
+      setCurrUser(params);
+      setVisibleStaff(true);
+      setUserModalStatus(status);
+    }
   };
 
   const handleReset = (params: IUserInfo) => {
@@ -330,11 +344,10 @@ export const PersonInfo = ({ departmentId, departmentName, keyword }: PersonInfo
     setVisibleFile(false);
   };
 
-  const okStaffModal = (values: FormValues) => {
+  const okStaffModal = (values: FormValues | EditFormValues) => {
     if (userModalStatus === 'edit') {
       values.id = currUser.id;
     }
-    console.log(values);
     staffMutation.mutate(values);
   };
 
@@ -516,14 +529,16 @@ export const PersonInfo = ({ departmentId, departmentName, keyword }: PersonInfo
           </Dropdown>
         </div>
         <div className="w-full mt-dot-8 flex-column overflow-y-a flex-1 px-4">
-          <Table
-            className="text-dot-7 table-full"
-            dataSource={personList?.data}
-            columns={columns}
-            rowKey="id"
-            rowSelection={rowSelection}
-            emptyText={<EmptyData text="无成员数据" className="py-10" />}
-          />
+          {personList?.data && (
+            <Table
+              className="text-dot-7 table-full"
+              dataSource={personList?.data}
+              columns={columns}
+              rowKey="id"
+              rowSelection={rowSelection}
+              emptyText={<EmptyData text="无成员数据" className="py-10" />}
+            />
+          )}
         </div>
         <div className="flex justify-end border-t border-blue-third">
           <Pagination

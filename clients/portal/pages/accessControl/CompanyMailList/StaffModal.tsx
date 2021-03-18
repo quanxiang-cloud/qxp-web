@@ -2,24 +2,34 @@
  * 组件-添加员工
  */
 import React, { useState } from 'react';
-import { useQuery } from 'react-query';
+import { useQuery, useMutation } from 'react-query';
 import { Modal, Form, Icon } from '@QCFE/lego-ui';
 
 import { Button } from '@portal/components/Button';
 import { Loading } from '@portal/components/Loading';
 import SelectTree from '@portal/components/select-tree';
 import { IUserInfo } from './PersonInfo';
-import { getListRole, addDepUser, getERPTree } from './api';
+import { getListRole, addDepUser, getERPTree, getUserRole } from './api';
 
 const { TextField, SelectField, CheckboxGroupField } = Form;
 
 const SelectTreeField = Form.getFormField(SelectTree);
 
 export type FormValues = {
-  username: string;
+  userName: string;
   phone: string;
   email: string;
   roleIDs: string[];
+  depIDs: string[];
+  id?: string;
+};
+
+export type EditFormValues = {
+  userName: string;
+  phone: string;
+  email: string;
+  delete: string[];
+  add: string[];
   depIDs: string[];
   id?: string;
 };
@@ -29,7 +39,7 @@ interface StaffModalProps {
   status: 'add' | 'edit';
   initData: IUserInfo;
   closeModal(): void;
-  okModal(values: FormValues): void;
+  okModal(values: FormValues | EditFormValues): void;
 }
 
 export const StaffModal = (props: StaffModalProps) => {
@@ -44,6 +54,16 @@ export const StaffModal = (props: StaffModalProps) => {
     refetchOnWindowFocus: false,
   });
 
+  // const mutation = useMutation(getUserRole, {
+  //   onSuccess: (data) => {
+  //     console.log(data);
+  //   },
+  // });
+
+  // if (status === 'edit') {
+  //   mutation.mutate({ ownerID: initData.id, type: 1 });
+  // }
+
   const treeData = depData ? [depData] : [];
 
   if (isLoading && roleList && depData) {
@@ -57,15 +77,41 @@ export const StaffModal = (props: StaffModalProps) => {
     }
     const values = form.getFieldsValue();
     console.log(values);
-    const params: FormValues = {
-      ...values,
-      depIDs: values.depIDs ? [values.depIDs] : [],
-      roleIDs: values.roleIDs ? [values.roleIDs] : [],
-    };
-
-    console.log(params);
-
-    okModal(params);
+    if (status === 'add') {
+      const params: FormValues = {
+        ...values,
+        depIDs: values.depIDs ? [values.depIDs] : [],
+        roleIDs: values.roleIDs ? [values.roleIDs] : [],
+      };
+      okModal(params);
+    } else {
+      const {
+        userName,
+        phone,
+        email,
+        depIDs,
+        roleIDs,
+      }: {
+        userName: string;
+        phone: string;
+        email: string;
+        depIDs: string;
+        roleIDs: string;
+      } = values;
+      const params: EditFormValues = {
+        userName,
+        phone,
+        email,
+        delete: [],
+        add: [],
+        depIDs: depIDs ? [depIDs] : [],
+      };
+      if (initData.roleId !== values.roleIDs) {
+        params.add = [roleIDs];
+        params.delete = initData.deleteId ? [initData.deleteId] : [];
+      }
+      okModal(params);
+    }
   };
 
   return (
@@ -116,14 +162,14 @@ export const StaffModal = (props: StaffModalProps) => {
           name="depIDs"
           label="选择部门"
           placeholder="请选择部门"
-          defaultSelect={initData.dep}
+          defaultSelect={initData.dep || ''}
           treeData={treeData}
         />
         <SelectField
           name="roleIDs"
           label="角色"
           placeholder="请选择区域"
-          defaultValue={''}
+          defaultValue={initData.roleId || ''}
           options={
             roleList &&
             roleList.map((role) => ({
