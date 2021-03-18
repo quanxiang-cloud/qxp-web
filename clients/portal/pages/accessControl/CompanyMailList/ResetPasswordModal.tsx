@@ -6,8 +6,8 @@ import { Button } from '@portal/components/Button';
 const { TextField, CheckboxGroupField } = Form;
 
 export type CheckedWay = {
-  sendPhone: '' | 1;
-  sendEmail: '' | 1;
+  sendPhone: -1 | 1;
+  sendEmail: -1 | 1;
 };
 
 interface ResetPasswordModalProps {
@@ -28,8 +28,8 @@ export const ResetPasswordModal = (props: ResetPasswordModalProps) => {
     const values: { way: string[] } = form.getFieldsValue();
     const { way } = values;
     let checkedWay: CheckedWay = {
-      sendEmail: '',
-      sendPhone: '',
+      sendEmail: -1,
+      sendPhone: -1,
     };
     if (way.length > 0) {
       way.includes('email') && (checkedWay.sendEmail = 1);
@@ -72,7 +72,7 @@ export const ResetPasswordModal = (props: ResetPasswordModalProps) => {
             }
             onClick={handleReset}
           >
-            确定重置
+            发送密码
           </Button>
         </div>
       }

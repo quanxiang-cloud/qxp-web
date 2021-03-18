@@ -119,8 +119,12 @@ export const PersonInfo = ({ departmentId, departmentName, keyword }: PersonInfo
     onSuccess: (data) => {
       console.log(data);
       if (data && data.code === 0) {
-        setResetModal(false);
+        Message.success('操作成功！');
+      } else {
+        Message.error('操作失败！');
       }
+      setSelectedRows([]);
+      setResetModal(false);
     },
   });
 
@@ -523,16 +527,16 @@ export const PersonInfo = ({ departmentId, departmentName, keyword }: PersonInfo
               >
                 添加员工
               </Button>
+              <div className="px-2"></div>
+              <Dropdown content={<ActionsList actions={expandActions} />}>
+                <div>
+                  <Button className="bg-black" textClassName="text-white">
+                    ···
+                  </Button>
+                </div>
+              </Dropdown>
             </>
           )}
-          <div className="px-2"></div>
-          <Dropdown content={<ActionsList actions={expandActions} />}>
-            <div>
-              <Button className="bg-black" textClassName="text-white">
-                ···
-              </Button>
-            </div>
-          </Dropdown>
         </div>
         <div className="w-full mt-dot-8 flex-column overflow-y-a flex-1 px-4">
           {personList?.data && (

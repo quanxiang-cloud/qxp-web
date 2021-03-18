@@ -12,11 +12,11 @@ export const excelHeader: Column[] = [
   },
   {
     title: '手机号',
-    key: 'userName',
+    key: 'phone',
   },
   {
     title: '邮箱',
-    key: 'userName',
+    key: 'email',
   },
   {
     title: '部门',

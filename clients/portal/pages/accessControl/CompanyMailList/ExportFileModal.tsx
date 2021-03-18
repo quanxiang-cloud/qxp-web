@@ -29,8 +29,8 @@ type Column = {
 };
 
 type CheckedWay = {
-  sendEmail: '' | 1;
-  sendPhone: '' | 1;
+  sendEmail: -1 | 1;
+  sendPhone: -1 | 1;
 };
 
 export const ExportFileModal = ({
@@ -41,8 +41,8 @@ export const ExportFileModal = ({
 }: ExportFileModalProps) => {
   const [fileList, setFileList] = useState<File[]>([]);
   const [checkWay, setCheckWay] = useState<CheckedWay>({
-    sendPhone: '',
-    sendEmail: '',
+    sendPhone: -1,
+    sendEmail: -1,
   });
   const [uploadStatus, setUploadStatus] = useState<UploadRes>({
     status: 0,
@@ -61,26 +61,31 @@ export const ExportFileModal = ({
   });
 
   const uploadMutation = useMutation(importTempFile, {
-    onSuccess: (data) => {
-      console.log(data);
-      if (data) {
-        const { failTotal, failUsers, successTotal, success } = data;
-        let status: 0 | 1 | 2 | 3 = 0;
-        if (failTotal > 0 && successTotal === 0) {
-          status = 3;
-        } else if (failTotal === 0 && successTotal > 0) {
-          status = 1;
-        } else if (failTotal > 0 && successTotal > 0) {
-          status = 2;
+    onSuccess: (res) => {
+      if (res && res.code === 0) {
+        Message.success('操作成功');
+        const { data } = res;
+        if (data) {
+          const { failTotal, failUsers, successTotal, success } = data;
+          let status: 0 | 1 | 2 | 3 = 0;
+          if (failTotal > 0 && successTotal === 0) {
+            status = 3;
+          } else if (failTotal === 0 && successTotal > 0) {
+            status = 1;
+          } else if (failTotal > 0 && successTotal > 0) {
+            status = 2;
+          }
+          setBtnSatus(1);
+          setFailUsers(failUsers);
+          setSuccessUsersId(success);
+          setUploadStatus({
+            status,
+            failTotal,
+            successTotal,
+          });
         }
-        setBtnSatus(1);
-        setFailUsers(failUsers);
-        setSuccessUsersId(success);
-        setUploadStatus({
-          status,
-          failTotal,
-          successTotal,
-        });
+      } else {
+        Message.error('操作失败！');
       }
     },
   });
@@ -217,8 +222,8 @@ export const ExportFileModal = ({
 
   const changeCheckbox = (val: string[]) => {
     let checkedWay: CheckedWay = {
-      sendEmail: '',
-      sendPhone: '',
+      sendEmail: -1,
+      sendPhone: -1,
     };
     if (val.length > 0) {
       val.includes('email') && (checkedWay.sendEmail = 1);
@@ -231,6 +236,7 @@ export const ExportFileModal = ({
     okModal(successUsersId, checkWay);
   };
 
+  console.log('uploadStatus', uploadStatus);
   return (
     <>
       <Modal
@@ -239,70 +245,72 @@ export const ExportFileModal = ({
         width={632}
         onCancel={closeModal}
         footer={
-          <div className="flex items-center">
-            <Button
-              icon={
-                <img
-                  className="w-1-dot-2 h-1-dot-2 pr-dot-4"
-                  src="./dist/images/icon_error.svg"
-                  alt="icon_error"
-                />
-              }
-              onClick={closeModal}
-            >
-              取消
-            </Button>
-            <div className="px-2"></div>
-            {btnStatus === 0 ? (
-              <Button
-                className="bg-black"
-                textClassName="text-white"
-                icon={
-                  <img
-                    className="w-1-dot-2 h-1-dot-2 pr-dot-4"
-                    src="./dist/images/icon_true.svg"
-                    alt="icon_true"
-                  />
-                }
-                onClick={importFile}
-              >
-                确定导入
+          uploadStatus.status !== 3 ? (
+            <div className="flex items-center">
+              <Button icon={<Icon name="close" className="mr-dot-4" />} onClick={closeModal}>
+                取消
               </Button>
-            ) : (
-              <Button
-                className="bg-black"
-                textClassName="text-white"
-                icon={
-                  <img
-                    className="w-1-dot-2 h-1-dot-2 pr-dot-4"
-                    src="./dist/images/icon_true.svg"
-                    alt="icon_true"
-                  />
-                }
-                onClick={okSendModal}
-              >
-                确定
-              </Button>
-            )}
-          </div>
+              <div className="px-2"></div>
+              {btnStatus === 0 ? (
+                <Button
+                  className="bg-black"
+                  textClassName="text-white"
+                  icon={<Icon name="check" className="mr-dot-4" />}
+                  onClick={importFile}
+                >
+                  确定导入
+                </Button>
+              ) : (
+                <Button
+                  className="bg-black"
+                  textClassName="text-white"
+                  icon={<Icon name="check" className="mr-dot-4" />}
+                  onClick={okSendModal}
+                >
+                  确定
+                </Button>
+              )}
+            </div>
+          ) : null
         }
       >
         <div className="text-dot-7">
           {uploadStatus.status === 3 && (
             <div className="text-DC2626 font-semibold flex items-center">
-              <Icon size={16} name="upload" type="coloured" />
+              <Icon
+                size={16}
+                name="information"
+                color={{
+                  primary: '#ca2621',
+                  secondary: '#ea4641',
+                }}
+              />
               <span>导入失败 {uploadStatus.failTotal} 条数据。</span>
             </div>
           )}
           {uploadStatus.status === 1 && (
             <div className="text-16A34A font-semibold">
-              <Icon size={16} name="upload" type="coloured" />
+              <Icon
+                size={16}
+                name="cloud"
+                color={{
+                  primary: '#2191ca',
+                  secondary: '#41b1ea',
+                }}
+              />
               <span>导入成功 {uploadStatus.successTotal} 条数据。</span>
             </div>
           )}
           {uploadStatus.status === 2 && (
             <div className="text-D97706 font-semibold">
-              <Icon size={16} name="upload" type="coloured" />
+              <Icon
+                size={16}
+                name="exclamation"
+                color={{
+                  primary: '#d0a406',
+                  secondary: '#f0c426',
+                }}
+              />
               <span>
                 数据导入完成，导入成功 {uploadStatus.successTotal} 数据，导入失败{' '}
                 {uploadStatus.failTotal} 数据。

@@ -161,6 +161,13 @@ export const DepartmentTree = ({ departmentId, treeData, setShowDept }: Departme
       if (res && res.code === 0) {
         closeModal();
         client.invalidateQueries('getERPTree');
+      } else {
+        closeModal();
+        Message.error(
+          `${
+            curDept && curDept.departmentName
+          }部门中已存在员工数据，请先移除该部门下的所有员工数据。`,
+        );
       }
     });
   };

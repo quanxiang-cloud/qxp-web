@@ -249,8 +249,8 @@ export const resetUserPWD = ({
   sendPhone,
 }: {
   userIDs: string[];
-  sendEmail: '' | 1;
-  sendPhone: '' | 1;
+  sendEmail: -1 | 1;
+  sendPhone: -1 | 1;
 }) => {
   return httpPost<IResponse<{ code: number }>>(
     '/api/nurturing/v1/adminResetPWD',
@@ -258,7 +258,7 @@ export const resetUserPWD = ({
     {
       'Content-Type': 'application/json',
     },
-  ).then((data) => data);
+  );
 };
 
 export type FileParams = {
@@ -270,7 +270,7 @@ export type FileParams = {
  * @returns 导入
  */
 export const importTempFile = ({ depID, file }: FileParams) => {
-  return httpFile('/api/org/v1/importFile', { depID, file }).then(({ data }) => data);
+  return httpFile('/api/org/v1/importFile', { depID, file });
 };
 
 export function createDepartment(params: { pid: string; departmentName: string }) {
