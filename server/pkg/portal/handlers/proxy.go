@@ -86,6 +86,8 @@ func ProxyAPIHandler(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Add("Content-Type", resp.Header.Get("Content-Type"))
 	w.WriteHeader(resp.StatusCode)
+	contexts.Logger.Errorf("%d", resp.StatusCode)
+	contexts.Logger.Errorf("%v", resp.Header)
 	w.Write(buffer.Bytes())
 	return
 }

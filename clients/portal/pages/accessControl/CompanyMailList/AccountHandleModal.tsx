@@ -1,14 +1,15 @@
+/**
+ * 禁用/删除/启用 账号
+ */
 import React from 'react';
 import { Modal } from '@QCFE/lego-ui';
 
-declare module '@QCFE/lego-ui' {}
-
 import { Button } from '@portal/components/Button';
-import { IUserInfo } from './PersonInfo';
+import { IUserInfo, UserStatus } from './PersonInfo';
 
 interface AccountHandleModalProps {
   visible: boolean;
-  status: 'disabled' | 'delete';
+  status: UserStatus;
   initData: IUserInfo;
   closeModal(): void;
   okModal(val: IUserInfo): void;
@@ -17,13 +18,14 @@ interface AccountHandleModalProps {
 export const AccountHandleModal = (props: AccountHandleModalProps) => {
   const { visible, status, initData, closeModal, okModal } = props;
 
-  const titleText = status === 'delete' ? '删除' : '禁用';
+  const titleText = status !== 1 ? (status === -2 ? '禁用' : '删除') : '启用';
 
   return (
     <Modal
       title={`${titleText}账号`}
       visible={visible}
       width={632}
+      onCancel={closeModal}
       footer={
         <div className="flex items-center">
           <Button
@@ -56,17 +58,25 @@ export const AccountHandleModal = (props: AccountHandleModalProps) => {
         </div>
       }
     >
-      {status === 'delete' ? (
+      {status === -1 && (
         <div className="text-dot-7">
           删除账号后，在平台内无法恢复员工
           <span className="mx-1 text-dot-8 font-semibold">{initData?.userName}</span>
           数据，确定要删除该账号吗？
         </div>
-      ) : (
+      )}
+      {status === -2 && (
         <div className="text-dot-7">
           禁用账号后，员工
           <span className="mx-1 text-dot-8 font-semibold">{initData?.userName}</span>
           无法登录该平台，确定要禁用该账号吗？
+        </div>
+      )}
+      {status === 1 && (
+        <div className="text-dot-7">
+          启用账号后，员工
+          <span className="mx-1 text-dot-8 font-semibold">{initData?.userName}</span>
+          可以登录该平台，确定要启用该账号吗？
         </div>
       )}
     </Modal>

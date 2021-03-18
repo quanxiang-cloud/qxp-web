@@ -1,17 +1,22 @@
 import React from 'react';
 import { Tree, TreeNode } from '@QCFE/lego-ui';
 
-function TreeCom({ onSelect, treeData }) {
+type Props = {
+  onSelect: (treeNode: any) => void;
+  treeData: any;
+}
+
+function TreeCom({ onSelect, treeData }: Props) {
   const renderTreeNodes = (childData: any[]) =>
     childData.length > 0 &&
-    childData.map((treenode: any) => {
-      const { child } = treenode;
+    childData.map((treeNode: any) => {
+      const { child } = treeNode;
       if (child) {
         return (
           <TreeNode
-            title={<div onClick={() => onSelect(treenode)} className="w-full">{treenode.departmentName}</div>}
-            key={treenode.id}
-            dataRef={treenode}
+            title={<div onClick={() => onSelect(treeNode)} className="w-full">{treeNode.departmentName}</div>}
+            key={treeNode.id}
+            dataRef={treeNode}
           >
             {renderTreeNodes(child)}
           </TreeNode>
@@ -19,9 +24,9 @@ function TreeCom({ onSelect, treeData }) {
       }
       return (
         <TreeNode
-          title={<div onClick={() => onSelect(treenode)} className="w-full">{treenode.departmentName}</div>}
-          key={treenode.id}
-          dataRef={treenode}
+          title={<div onClick={() => onSelect(treeNode)} className="w-full">{treeNode.departmentName}</div>}
+          key={treeNode.id}
+          dataRef={treeNode}
         />
       );
     });

@@ -1,59 +1,88 @@
-import React, { useState } from 'react';
-import { useQuery } from 'react-query';
-import { Modal, Form, Loading } from '@QCFE/lego-ui';
+import React, { createRef, useState } from 'react';
+import { useQuery, useQueryClient } from 'react-query';
+import { Modal, Form, Icon, Message } from '@QCFE/lego-ui';
 
 import { Button } from '@portal/components/Button';
 import SelectTree from '@portal/components/select-tree';
-import { getERPTree } from './api';
+import { getERPTree, createDepartment, editDepartment } from './api';
 
-const { TextField, SelectField, ButtonField } = Form;
+const { TextField } = Form;
 const SelectTreeField = Form.getFormField(SelectTree);
 
 interface DepartmentModalProps {
-  status: 'add' | 'edit';
-  nodeId: string;
+  department: DeptInfo | null;
   closeModal(): void;
-  okModal: (val: any, nodeIndex: string) => void;
+  deptModalType: 'add' | 'edit';
 }
 
-export const DepartmentModal = ({
-  status,
-  nodeId,
-  closeModal,
-  okModal,
-}: DepartmentModalProps) => {
-  const titleText = `${status === 'add' ? '添加' : '修改'}`;
-
-  const [form, setForm] = useState<any>(null);
-
-  const okModalHandle = () => {
-    const bol = form.validateForm();
-    if (!bol) {
-      return;
+function findTreeNode(originalTreeData: DeptTree, targetId: string, saveTargetNode: React.Dispatch<null | DeptInfo>) {
+  let stop: boolean = false;
+  function findFun(treeData: DeptTree) {
+    if (stop) {
+      return
     }
-    const values = form.getFieldsValue();
-    console.log('values: ', values);
-    // okModal(values, nodeId);
-  };
 
-  const valueRenderer = (option: any) => (
-    <span className="option-with-icon" style={{ display: 'flex', alignItems: 'center' }}>
-      123
-      <span style={{ color: '#00aa72' }}>{option.label}</span>
-    </span>
-  );
+    if (treeData.id === targetId) {
+      saveTargetNode(treeData)
+      stop = true;
+      return
+    }
 
-  const modalClick = (event: React.MouseEvent): void => {
-    console.log(event);
-    event.preventDefault();
-    return;
-  };
+    if (treeData.child) {
+      treeData.child.forEach((treeDataItem) => {
+        findFun(treeDataItem)
+      })
+    }
+  }
 
-  const { data, isLoading } = useQuery('getERPTree', getERPTree, {
+  findFun(originalTreeData)
+}
+
+export default function DepartmentModal({ department, closeModal, deptModalType }: DepartmentModalProps) {
+  const isEdit = deptModalType === 'edit';
+  const [parentNode, setParentNode] = useState<DeptInfo | null>(null)
+  const queryClient = useQueryClient();
+  const { data } = useQuery('getERPTree', () => getERPTree().then((_treeData: any) => {
+    if (isEdit) {
+      if (department?.pid) {
+        findTreeNode(_treeData, department.pid, setParentNode);
+      }
+    } else {
+      setParentNode(department);
+    }
+    return _treeData
+  }), {
     refetchOnWindowFocus: false,
   });
 
   const treeData = data ? [data] : [];
+  const titleText = isEdit ? '修改' : '添加';
+  const formRef = createRef<Form>();
+
+  const okModalHandle = () => {
+    if (!formRef.current?.validateForm()) {
+      return;
+    }
+
+    const requestAPI = isEdit ? editDepartment : createDepartment;
+    const params = formRef.current?.getFieldsValue();
+
+    if (isEdit) {
+      params.id = department?.id;
+    }
+
+    requestAPI(params)
+      .then(() => {
+        queryClient.invalidateQueries('getERPTree');
+        closeModal();
+        Message.success({
+          content: '操作成功！',
+        });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
   return (
     <Modal
@@ -63,29 +92,14 @@ export const DepartmentModal = ({
       onCancel={closeModal}
       footer={
         <div className="flex items-center">
-          <Button
-            icon={
-              <img
-                className="w-1-dot-2 h-1-dot-2 px-dot-4"
-                src="./dist/images/icon_error.svg"
-                alt="icon_error"
-              />
-            }
-            onClick={closeModal}
-          >
+          <Button icon={<Icon name="close" className="mr-dot-4" />} onClick={closeModal}>
             取消
           </Button>
           <div className="px-2"></div>
           <Button
             className="bg-black"
             textClassName="text-white"
-            icon={
-              <img
-                className="w-1-dot-2 h-1-dot-2 px-dot-4"
-                src="./dist/images/icon_true.svg"
-                alt="icon_true"
-              />
-            }
+            icon={<Icon name="check" className="mr-dot-4" />}
             onClick={okModalHandle}
           >
             确定{titleText}
@@ -93,28 +107,28 @@ export const DepartmentModal = ({
         </div>
       }
     >
-      <Form layout="vertical" ref={(n: any) => setForm(n)}>
+      <Form layout="vertical" ref={formRef}>
         <TextField
-          name="department-name"
-          label="部门名称1"
-          placeholder="请输入 QingCloud 账号"
+          name="departmentName"
+          label="部门名称"
+          placeholder="请输入部门名称"
           help="不超过 30 个字符，部门名称不可重复。"
+          defaultValue={isEdit && department?.departmentName}
           schemas={[
             {
-              help: '请输入 QingCloud 账号',
+              help: '请输入部门名称',
               rule: { required: true },
             },
           ]}
         />
-        {isLoading ? (<Loading />) : (
-          <SelectTreeField
-            name="pid"
-            label="选择部门"
-            placeholder="请选择部门"
-            defaultSelect={nodeId}
-            treeData={treeData} />
-        )}
+        <SelectTreeField
+          name="pid"
+          label="选择部门"
+          placeholder="请选择部门"
+          defaultSelect={parentNode}
+          treeData={treeData}
+        />
       </Form>
     </Modal>
   );
-};
+}

@@ -1,9 +1,24 @@
 import React from 'react';
-import cs from 'classnames';
 import PropTypes from 'prop-types';
 import { Control, Icon } from '@QCFE/lego-ui';
 
 import Tree from './tree';
+
+type Props = {
+  defaultSelect: any;
+  treeData: any;
+  onChange: (id: string) => void;
+  onBlur: (id: string) => void;
+  name: string;
+  placeholder: string;
+}
+
+type State = {
+  showSelectBox: boolean;
+  width: string;
+  showTips: boolean;
+  selectValue: DeptInfo | string;
+}
 
 const styles = {
   selectBox: {
@@ -30,20 +45,17 @@ const styles = {
   },
 }
 
-export default class SelectTree extends React.Component {
+export default class SelectTree extends React.Component<Props> {
   static propTypes = {
     name: PropTypes.string.isRequired,
-    defaultSelect: PropTypes.oneOfType([
-      PropTypes.string,
-      PropTypes.number,
-    ]),
+    defaultSelect: PropTypes.any,
     treeData: PropTypes.array,
     onChange: PropTypes.func,
     onBlur: PropTypes.func,
     placeholder: PropTypes.string,
   };
 
-  constructor(props) {
+  constructor(props: Props) {
     super(props)
     this.state = {
       showSelectBox: false,
@@ -53,31 +65,42 @@ export default class SelectTree extends React.Component {
     }
   }
 
+  componentDidUpdate(prevProps: Props) {
+    if (this.props.defaultSelect?.id === prevProps.defaultSelect?.id) {
+      return
+    }
+
+    this.setDefaultSelect()
+  }
+
   componentDidMount() {
     const boxDom = document.getElementById('tree-select-box');
     if (boxDom) {
       this.setState({ width: boxDom.getBoundingClientRect().width + 'px' });
     }
 
+    this.setDefaultSelect();
+
+  }
+
+  setDefaultSelect = () => {
     const { defaultSelect, treeData } = this.props;
     if (!defaultSelect || !treeData) {
       return
     }
 
-    if (defaultSelect) {
-      this.setState({ selectValue: defaultSelect, showTips: false });
-      this.handleValueChang(defaultSelect.id);
-    }
+    this.setState({ selectValue: defaultSelect, showTips: false });
+    this.handleValueChang(defaultSelect.id);
   }
 
-  handleValueChang = (value) => {
+  handleValueChang = (value: string) => {
     const { onChange, onBlur } = this.props;
     onChange instanceof Function && onChange(value);
     onBlur instanceof Function && onBlur(value);
   }
 
 
-  handleSelect = (data) => {
+  handleSelect = (data: any) => {
     this.handleValueChang(data.id)
     this.setState({
       showSelectBox: false,
@@ -102,7 +125,7 @@ export default class SelectTree extends React.Component {
   }
 
   render() {
-    const { showSelectBox, showTips, selectValue, width } = this.state;
+    const { showSelectBox, showTips, selectValue, width } = this.state as State;
     const { name, placeholder, treeData } = this.props;
     const selectBoxStyle = Object.assign({ width }, styles.selectBox, showSelectBox ? styles.showSelectBox : {});
 
@@ -112,7 +135,7 @@ export default class SelectTree extends React.Component {
           <span className="select-multi-value-wrapper">
             {showTips ? (<div className="select-placeholder">{placeholder}</div>) : (
               <div className="select-value">
-                <span className="select-value-label">{selectValue.departmentName}</span>
+                <span className="select-value-label">{(selectValue as DeptInfo).departmentName}</span>
               </div>
             )}
           </span>

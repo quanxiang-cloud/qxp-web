@@ -2,6 +2,7 @@ import { httpPost, httpFile } from '../../../../assets/lib/f';
 import { IResponse } from '../../../../@types/interface/api';
 import { ITreeNode } from '@portal/pages/accessControl/CompanyMailList/DepartmentTree';
 import { FormValues } from './StaffModal';
+import { UserStatus } from './PersonInfo';
 
 // ------------------ 部门 ---------------
 // 获取部门树
@@ -161,7 +162,7 @@ export const getListRole = () => {
  */
 export const addDepUser = (values: FormValues) => {
   return httpPost<IResponse<{ roles: Roles[] }>>(
-    '/api/nurturing/v1/addUsers',
+    '/api/nurturing/v1/addUser',
     JSON.stringify(values),
     {
       'Content-Type': 'application/json',
@@ -170,12 +171,25 @@ export const addDepUser = (values: FormValues) => {
 };
 
 /**
- * @returns 删除部门人员
+ * @returns 修改用户信息
  */
-export const delDepUser = (id: string) => {
+export const updateUser = (values: FormValues) => {
+  return httpPost<IResponse<{ roles: Roles[] }>>(
+    '/api/nurturing/v1/updateUser',
+    JSON.stringify(values),
+    {
+      'Content-Type': 'application/json',
+    },
+  ).then(({ data }) => data);
+};
+
+/**
+ * @returns 设为主管
+ */
+export const setDEPLeader = ({ depID, userID }: { depID: string; userID: string }) => {
   return httpPost<IResponse<{ code: number }>>(
-    '/api/nurturing/v1/delUsers',
-    JSON.stringify({ id }),
+    '/api/org/v1/setDEPLeader',
+    JSON.stringify({ depID, userID }),
     {
       'Content-Type': 'application/json',
     },
@@ -185,10 +199,10 @@ export const delDepUser = (id: string) => {
 /**
  * @returns 修改用户状态
  */
-export const updateUserStatus = ({ id, status }: { id: string; status: 1 | -2 }) => {
+export const updateUserStatus = ({ id, status }: { id: string; status: UserStatus }) => {
   return httpPost<IResponse<{ code: number }>>(
-    '/api/org/v1/updateUserStatus',
-    JSON.stringify({ id, status }),
+    '/api/nurturing/v1/updateUserStatus',
+    JSON.stringify({ id, useStatus: status }),
     {
       'Content-Type': 'application/json',
     },
@@ -196,16 +210,45 @@ export const updateUserStatus = ({ id, status }: { id: string; status: 1 | -2 })
 };
 
 /**
- * @returns 修改用户状态
+ * @returns
  */
-export const resetUserPWD = (userIDs: string[]) => {
+export const batchAdjustDep = ({
+  usersID,
+  oldDepID,
+  newDepID,
+}: {
+  usersID: string[];
+  oldDepID: string;
+  newDepID: string;
+}) => {
   return httpPost<IResponse<{ code: number }>>(
-    '/api/org/v1/updateUserStatus',
-    JSON.stringify({ userIDs }),
+    '/api/org/v1/adminChangeUsersDEP',
+    JSON.stringify({ usersID, oldDepID, newDepID }),
     {
       'Content-Type': 'application/json',
     },
   ).then(({ data }) => data);
+};
+
+/**
+ * @returns 发送随机密码
+ */
+export const resetUserPWD = ({
+  userIDs,
+  sendEmail,
+  sendPhone,
+}: {
+  userIDs: string[];
+  sendEmail: '' | 1;
+  sendPhone: '' | 1;
+}) => {
+  return httpPost<IResponse<{ code: number }>>(
+    '/api/nurturing/v1/adminResetPWD',
+    JSON.stringify({ userIDs, sendEmail, sendPhone }),
+    {
+      'Content-Type': 'application/json',
+    },
+  ).then((data) => data);
 };
 
 export type FileParams = {
@@ -217,7 +260,17 @@ export type FileParams = {
  * @returns 导入
  */
 export const importTempFile = ({ depID, file }: FileParams) => {
-  console.log(depID);
-  console.log(file);
-  return httpFile('/api/org/v1/importFile', { depID, file });
+  return httpFile('/api/org/v1/importFile', { depID, file }).then(({ data }) => data);
 };
+
+export function createDepartment(params: { pid: string; departmentName: string }) {
+  return httpPost('/api/org/v1/addDEP', JSON.stringify(params));
+}
+
+export function editDepartment(params: {
+  pid: string;
+  departmentName?: string;
+  departmentLeaderID?: string;
+}) {
+  return httpPost('/api/org/v1/updateDEP', JSON.stringify(params));
+}

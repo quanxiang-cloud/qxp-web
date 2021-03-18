@@ -4,25 +4,19 @@ import useCss from 'react-use/lib/useCss';
 import { Tree, TreeNode, Dropdown, Message } from '@QCFE/lego-ui';
 
 import { ActionsList, IActionListItem } from '@portal/components/ActionsList';
-import { DepartmentModal } from './DepartmentModal';
+import DepartmentModal from './DepartmentModal';
 import { DeleteModal } from './DeleteModal';
 
 import { deleteDEP } from './api';
-import { Func } from 'mocha';
 
-type DeptInfo = {
-  id: string
-  departmentName: string
-  pid: string
-}
 export interface TreeNodeItem extends ITreeNode {
   addDepartment: (val: string, id: string) => void;
-  openDeptModal: (type: string, deptInfo: DeptInfo ) => void;
+  openDeptModal: (type: string, deptInfo: DeptInfo) => void;
   openDeleteDeptModal: (deptInfo: DeptInfo) => void;
+  onSelect: (deptInfo: any) => void;
 }
 
-const Title = ({ departmentName, id, pid, openDeptModal, openDeleteDeptModal }: TreeNodeItem) => {
-
+const Title = ({ openDeptModal, openDeleteDeptModal, onSelect, ...treenode }: TreeNodeItem) => {
   const actions = (bol: boolean) => {
     const acts = [
       {
@@ -35,8 +29,7 @@ const Title = ({ departmentName, id, pid, openDeptModal, openDeleteDeptModal }: 
         id: '2',
         iconName: 'pen',
         text: '修改部门',
-        onclick: (params: DeptInfo) =>
-          openDeptModal('edit', params),
+        onclick: (params: DeptInfo) => openDeptModal('edit', params),
       },
     ];
     if (bol) {
@@ -50,10 +43,12 @@ const Title = ({ departmentName, id, pid, openDeptModal, openDeleteDeptModal }: 
     return acts;
   };
 
+  const { departmentName, id, pid } = treenode
+
   return (
     <>
       <div className="w-full flex items-center justify-between">
-        <div className="text-dot-7">{departmentName}</div>
+        <div onClick={() => onSelect(treenode)} className="text-dot-7 flex-1">{departmentName}</div>
         <div className="h-auto relative">
           <Dropdown
             content={
@@ -87,56 +82,35 @@ export interface ITreeNode {
 
 interface DepartmentTreeProps {
   treeData: ITreeNode[];
-  setCurrDepId: (id: string) => void;
+  setCurrDept: (treeNode: DeptTree) => void;
+  departmentId: string;
 }
 
-export const DepartmentTree = (props: DepartmentTreeProps) => {
-  const { treeData, setCurrDepId } = props;
+export const DepartmentTree = ({ departmentId, treeData, setCurrDept }: DepartmentTreeProps) => {
   const [modalType, setModalType] = useState('');
-  const [handleStatus, setHandleStatus] = useState<'add' | 'edit'>('add');
-  const [indexOfNode, setIndexOfNode] = useState('');
   const [curDept, setCurDept] = useState<TreeNodeItem | null>(null);
+  const [deptModalType, setDeptModalType] = useState<'add' | 'edit'>('add');
   const client = useQueryClient();
 
-  // 添加部门节点数据
-  const addHandle = (val: string, id: string) => {
-    // const data = treeData.slice()
-    // const i = id.split('-').map((item) => {
-    //   return Number(item) - 1
-    // })
-    // switch (i.length) {
-    //   case 2:
-    //     data[i[0]].children[i[1]].children.push({
-    //       title: val,
-    //       id: id + '-' + (data[i[0]].children[i[1]].children.length + 1).toString(),
-    //       key: id + '-' + (data[i[0]].children[i[1]].children.length + 1).toString(),
-    //     })
-    //     break
-    //   case 1:
-    //     data[i[0]].children.push({
-    //       title: val,
-    //       id: id + '-' + (data[i[0]].children.length + 1).toString(),
-    //       key: id + '-' + (data[i[0]].children.length + 1).toString(),
-    //       children: [],
-    //     })
-    //     break
-    //   default:
-    //     break
-    // }
-    // 更新treeData的状态
-    // setTreeData(data)
-  };
+  const closeModal = () => {
+    setCurDept(null);
+    setModalType('');
+  }
 
   const openDeptModal = (type: 'add' | 'edit', params: TreeNodeItem) => {
+    setDeptModalType(type);
     setCurDept(params);
-    setHandleStatus(type);
     setModalType('department');
-  }
+  };
 
   const openDeleteDeptModal = (params: TreeNodeItem) => {
     setCurDept(params);
     setModalType('delDept');
-  }
+  };
+
+  const onSelect = (treeNode: DeptTree) => {
+    setCurrDept(treeNode);
+  };
 
   const renderTreeNodes = (childData: ITreeNode[]) =>
     childData.length > 0 &&
@@ -145,7 +119,14 @@ export const DepartmentTree = (props: DepartmentTreeProps) => {
       if (child) {
         return (
           <TreeNode
-            title={<Title {...treenode} openDeptModal={openDeptModal} openDeleteDeptModal={openDeleteDeptModal} />}
+            title={
+              <Title
+                {...treenode}
+                onSelect={onSelect}
+                openDeptModal={openDeptModal}
+                openDeleteDeptModal={openDeleteDeptModal}
+              />
+            }
             key={treenode.id}
             dataRef={treenode}
           >
@@ -155,41 +136,34 @@ export const DepartmentTree = (props: DepartmentTreeProps) => {
       }
       return (
         <TreeNode
-          title={<Title {...treenode} openDeptModal={openDeptModal} openDeleteDeptModal={openDeleteDeptModal} />}
+          title={
+            <Title
+              {...treenode}
+              onSelect={onSelect}
+              openDeptModal={openDeptModal}
+              openDeleteDeptModal={openDeleteDeptModal}
+            />
+          }
           key={treenode.id}
           dataRef={treenode}
         />
       );
     });
 
-  const onSelect = (keys: string[], e: React.MouseEvent) => {
-    if (keys && keys.length > 0) {
-      const checkId: string = keys[0];
-      setCurrDepId(checkId);
-    }
-  };
-
   const deleteDept = () => {
     deleteDEP((curDept as TreeNodeItem).id).then((res) => {
       if (res && res.code === 0) {
-        setModalType('')
+        closeModal();
         client.invalidateQueries('getERPTree');
       }
     });
-  }
-
-  const okDepartmentModal = (val: any, nodeIndex: string) => {
-    console.log('nodeIndex: ', nodeIndex);
-    setIndexOfNode(nodeIndex);
-    // addDepartment(val['department-name'], nodeIndex); // 将新增部门添加为当前点击树节点的子节点
-    setModalType('');
-  }
+  };
 
   return (
     <div className="w-auto h-full">
       <Tree
         defaultExpandAll
-        onSelect={onSelect}
+        defaultSelectedKeys={[departmentId]}
         className={useCss({
           '.tree-title': {
             width: '100%',
@@ -228,19 +202,11 @@ export const DepartmentTree = (props: DepartmentTreeProps) => {
       >
         {treeData.length > 0 ? renderTreeNodes(treeData) : null}
       </Tree>
-      {modalType === "department" && (
-        <DepartmentModal
-          status={handleStatus}
-          nodeId={indexOfNode}
-          closeModal={() => setModalType('')}
-          okModal={okDepartmentModal}
-        />
+      {modalType === 'department' && (
+        <DepartmentModal deptModalType={deptModalType} department={curDept as DeptInfo} closeModal={closeModal} />
       )}
-      {modalType === "delDept" && (
-        <DeleteModal
-          closeModal={() => setModalType('')}
-          okModal={deleteDept}
-        />
+      {modalType === 'delDept' && (
+        <DeleteModal closeModal={closeModal} okModal={deleteDept} />
       )}
     </div>
   );
