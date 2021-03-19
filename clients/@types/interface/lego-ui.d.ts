@@ -126,4 +126,11 @@ declare module '@QCFE/lego-ui' {
       validateOnChange?: boolean;
     }
   }
+
+  interface TreeData {
+    title: string
+    className?: string
+    key: string
+    children: TreeData[]
+  }
 }

@@ -17,24 +17,24 @@ export const RoleListItem = ({ name, active, id, onClick = identity }: IRoleList
   return (
     <ItemWithTitleDesc
       className={twCascade(
-        'py-dot-8 px-4 hover:text-blue-primary hover:bg-blue-light hover:font-bold',
-        'transition duration-300',
-        {
-          'bg-blue-light': active,
-          'text-blue-primary': active,
-          'font-bold': active,
-        },
-        useCss({
-          '&:hover': {
-            svg: {
-              fill: '#8CADFF',
-            },
-            div: {
-              color: '#375FF3',
-              fontWeight: 'bold',
-            },
+          'py-dot-8 px-4 hover:text-blue-primary hover:bg-blue-light hover:font-bold',
+          'transition duration-300',
+          {
+            'bg-blue-light': active,
+            'text-blue-primary': active,
+            'font-bold': active,
           },
-        }),
+          useCss({
+            '&:hover': {
+              svg: {
+                fill: '#8CADFF',
+              },
+              div: {
+                color: '#375FF3',
+                fontWeight: 'bold',
+              },
+            },
+          }),
       )}
       onClick={() => onClick(id)}
       itemRender={
