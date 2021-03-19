@@ -9,6 +9,14 @@ html {
   font-size: 20px;
 }
 
+.bottom-dot-25 {
+  bottom: -0.25rem;
+}
+
+.right-dot-25 {
+  right: 0.25rem;
+}
+
 .h-13 {
   height: 3.2rem;
 }
@@ -135,7 +143,7 @@ html {
 }
 
 .h-1-dot-2 {
-  width: 1.2rem;
+  height: 1.2rem;
 }
 
 .h-2-dot-8 {
@@ -197,6 +205,11 @@ html {
 
 .rounded-tl-dot-2 {
   border-top-left-radius: 0.2rem;
+}
+
+.rounded-l-dot-2 {
+  border-top-left-radius: 0.2rem;
+  border-bottom-left-radius: 0.2rem;
 }
 
 .rounded-br-dot-2 {
@@ -285,6 +298,10 @@ html {
 
 .ml-dot-2 {
   margin-left: 0.2rem;
+}
+
+.mr-dot-1 {
+  margin-right: 0.1rem;
 }
 
 .mr-dot-2 {
@@ -412,6 +429,10 @@ html {
   border-color: #CBD5E1;
 }
 
+.leading-2 {
+  line-height: 0.5rem;
+}
+
 .leading-2-bot-8 {
   line-height: 2.8rem;
 }
@@ -422,6 +443,10 @@ html {
 
 .leading-1-dot-6 {
   line-height: 1.6rem;
+}
+
+.leading-1-dot-2 {
+  line-height: 1.2rem;
 }
 
 .text-475569 {

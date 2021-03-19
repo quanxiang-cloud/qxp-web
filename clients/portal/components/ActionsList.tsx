@@ -37,7 +37,7 @@ export const ActionsList = function <T>({ actions, params, className }: IActions
                 action.onclick && action.onclick(params);
               }}
               className={classnames(
-                  'w-full h-1-dot-9 px-dot-8 flex items-center cursor-pointer justify-between',
+                  'w-full h-1-dot-9 px-dot-8 flex items-center cursor-pointer',
                   useCss({
                     '&:hover': {
                       'background-color': '#F0F6FF',
@@ -50,7 +50,7 @@ export const ActionsList = function <T>({ actions, params, className }: IActions
               {action.iconName && action.iconName.endsWith('.svg') && (
                 <img src={action.iconName} />
               )}
-              <div className="text-dot-7 whitespace-no-wrap">{action.text}</div>
+              <div className="text-dot-7 whitespace-nowrap">{action.text}</div>
             </li>
           );
         })}

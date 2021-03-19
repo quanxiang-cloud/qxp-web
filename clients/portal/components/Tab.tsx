@@ -35,15 +35,15 @@ export const Tab = ({
             <div
               key={item.id}
               className={twCascade(
-                'whitespace-nowrap rounded-dot4 rounded-br-none rounded-bl-none py-1',
-                'px-dot-8 cursor-pointer text-dot-7 hover:bg-blue-light',
-                'hover:text-blue-primary transition duration-300',
-                {
-                  'bg-blue-light': active,
-                  'text-blue-primary': active,
-                  'font-bold': active,
-                },
-                contentClassName,
+                  'whitespace-nowrap rounded-dot4 rounded-br-none rounded-bl-none py-1',
+                  'px-dot-8 cursor-pointer text-dot-7 hover:bg-blue-light',
+                  'hover:text-blue-primary transition duration-300',
+                  {
+                    'bg-blue-light': active,
+                    'text-blue-primary': active,
+                    'font-bold': active,
+                  },
+                  contentClassName,
               )}
               onClick={() => {
                 setKey(item.id);
@@ -66,9 +66,9 @@ export const Tab = ({
             <div
               key={item.id}
               className={twCascade(
-                item.id === key
-                  ? 'opacity-100 h-full visible pointer-events-auto'
-                  : 'opacity-0 h-0 invisible pointer-events-none',
+                item.id === key ?
+                  'opacity-100 h-full visible pointer-events-auto' :
+                  'opacity-0 h-0 invisible pointer-events-none',
                 'transition-opacity overflow-hidden',
               )}
             >

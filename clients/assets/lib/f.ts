@@ -49,12 +49,12 @@ export const httpPost = <T>(
   });
 };
 
-export const httpFile = async (url: string, data?: any) => {
+export const httpFile = async (url: string, data?: Record<string, string | Blob>) => {
   const formData = new FormData();
   if (data) {
-    for (const key in data) {
-      formData.append(key, data[key]);
-    }
+    Object.entries(data).forEach(([key, value]) => {
+      formData.append(key, value);
+    });
   }
 
   const response = await fetch(url, {
