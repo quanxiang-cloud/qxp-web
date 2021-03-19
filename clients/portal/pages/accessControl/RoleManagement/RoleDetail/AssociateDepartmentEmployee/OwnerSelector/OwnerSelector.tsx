@@ -110,11 +110,11 @@ export const OwnerSelector = ({ defaultEmployees = [], refs }: IOwnerSelector) =
                   appendix="close"
                 />
                 <div className="flex flex-row" style={{ height: 'calc(100% - 48px)' }}>
-                  <div className="h-full flex flex-col overflow-hidden">
+                  <div className="h-full flex flex-col overflow-hidden flex-1">
                     <TextHeader className="pb-0" title="选择部门" />
                     <Tree
                       treeData={departments}
-                      className="-ml-2 mr-4 mt-4 overflow-scroll"
+                      className="-ml-2 mr-4 mt-4 overflow-scroll text-dot-7"
                       itemClassName="cursor-pointer hover:bg-white rounded-tl-2xl rounded-bl-2xl"
                       selectable
                       defaultKey={departments[0]?.key}
@@ -125,7 +125,7 @@ export const OwnerSelector = ({ defaultEmployees = [], refs }: IOwnerSelector) =
                       }}
                     />
                   </div>
-                  <div className="h-full flex flex-col overflow-hidden flex-1">
+                  <div className="h-full flex flex-col overflow-hidden flex-2dot5">
                     <TextHeader title={currentDepartment.departmentName || ''} />
                     <EmployeeTable
                       userName={usernameKeyword}
@@ -166,7 +166,7 @@ export const OwnerSelector = ({ defaultEmployees = [], refs }: IOwnerSelector) =
                   <Tree<IDepartmentStructure>
                     treeData={departments}
                     keyword={keyword}
-                    className="-ml-2 bg-white rounded-md overflow-scroll"
+                    className="-ml-2 bg-white rounded-md overflow-scroll text-dot-7"
                     itemClassName="cursor-pointer hover:bg-gray-1 text-dot-7"
                     selectable
                     multiple

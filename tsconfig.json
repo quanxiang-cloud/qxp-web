@@ -52,6 +52,7 @@
     "typeRoots": [
       "node_modules/@types",
       "node_modules/@QCFE/types",
+      "node_modules/@qcfe/types",
       "clients/@types"
     ] /* List of folders to include type definitions from. */,
     "types": ["cypress"] /* Type declaration files to be included in compilation. */,

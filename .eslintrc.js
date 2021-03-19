@@ -30,6 +30,7 @@ module.exports = {
     '@typescript-eslint/no-unused-vars': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
     '@typescript-eslint/no-this-alias': 'off',
+    'no-invalid-this': 'off',
     'valid-jsdoc': 'off',
     'require-jsdoc': 'off',
     'object-curly-spacing': ['warn', 'always'],

@@ -1,12 +1,12 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import classnames from 'classnames';
-import { Link, useHistory } from 'react-router-dom';
+import { Link, useHistory, useLocation } from 'react-router-dom';
 import { Icon } from '@QCFE/lego-ui';
 import useCss from 'react-use/lib/useCss';
 
 import { List } from '@portal/components/List';
 import { ItemWithTitleDesc } from '@portal/components/ItemWithTitleDesc';
-import { isBool, uuid } from '@assets/lib/f';
+import { isBool, isNull, uuid } from '@assets/lib/f';
 import { twCascade } from '@mariusmarais/tailwind-cascade';
 
 interface IMenu {
@@ -27,6 +27,8 @@ export const Menu = ({ menus, visible, toggle }: IMenus) => {
   const maskRef = useRef(null);
   const history = useHistory();
 
+  const location = useLocation();
+
   useEffect(() => {
     const maskElement = (maskRef.current as unknown) as HTMLDivElement;
     maskElement.onclick = (e: MouseEvent) => {
@@ -40,6 +42,9 @@ export const Menu = ({ menus, visible, toggle }: IMenus) => {
   }, []);
 
   useEffect(() => {
+    if (isNull(visible)) {
+      return;
+    }
     let timeId = 0;
     if (!isBool(visible) || !maskRef.current) {
       return;
@@ -68,40 +73,48 @@ export const Menu = ({ menus, visible, toggle }: IMenus) => {
     >
       <div
         className={classnames(
-          '-left-full transform p-8 max-w-full w-2-9-dot-4 absolute bottom-0 top-0 flex flex-col',
-          useCss({
-            background: '#F0F6FF',
-            opacity: 0.9,
-            'backdrop-filter': 'blur(72px)',
-          }),
-          {
-            'slide-in': visible && isBool(visible),
-            'slide-out': !visible && isBool(visible),
-          },
+            '-left-full transform p-8 max-w-full w-2-9-dot-4 absolute bottom-0 top-0 flex flex-col',
+            useCss({
+              background: '#F0F6FF',
+              opacity: 0.9,
+              'backdrop-filter': 'blur(72px)',
+            }),
+            {
+              'slide-in': visible && isBool(visible),
+              'slide-out': !visible && isBool(visible),
+            },
         )}
       >
         <List
           className="flex-col mt-4-dot-4"
           itemClassName={classnames(
-            'pb-dot-8 transform hover:scale-105 transition duration-200',
-            useCss({
-              '&:hover .next': {
-                width: '1.6rem',
-                height: '1.6rem',
-              },
-              '.next': {
-                width: '1.2rem',
-                height: '1.2rem',
-              },
-            }),
+              'pb-dot-8 transform transition-all duration-200',
+              useCss({
+                '&:hover .next': {
+                  width: '1.6rem',
+                  height: '1.6rem',
+                },
+                '.next': {
+                  width: '1.2rem',
+                  height: '1.2rem',
+                },
+                '&:hover > div': {
+                  'box-shadow': '0px 8px 24px 4px rgba(148, 163, 184, 0.25)',
+                },
+              }),
           )}
           items={menus.map(({ title, desc, iconClassName, iconUrl, address }) => (
             <div
               key={uuid()}
-              onClick={() => history.push(address)}
+              onClick={() => {
+                if (location.pathname === address) {
+                  return toggle(false);
+                }
+                history.push(address);
+              }}
               className={twCascade(
-                'flex flex-row justify-between items-center bg-white px-4 py-dot-8',
-                'rounded cursor-pointer',
+                  'flex flex-row justify-between items-center bg-white px-4 py-dot-8',
+                  'rounded cursor-pointer transition-all duration-200',
               )}
             >
               <ItemWithTitleDesc
@@ -110,8 +123,8 @@ export const Menu = ({ menus, visible, toggle }: IMenus) => {
                 itemRender={
                   <div
                     className={classnames(
-                      'p-dot-3-6 rounded-lg rounded-tr-none leading-4',
-                      iconClassName,
+                        'p-dot-3-6 rounded-lg rounded-tr-none leading-4',
+                        iconClassName,
                     )}
                   >
                     <img src={iconUrl} alt={title} />
@@ -120,22 +133,22 @@ export const Menu = ({ menus, visible, toggle }: IMenus) => {
                 titleClassName="text-dot-7 font-bold leading-4"
               />
               <Link to={address}>
-                <Icon className="next transition duration-200" name="next" type="dark" />
+                <Icon className="next transition-all duration-200" name="next" type="dark" />
               </Link>
             </div>
           ))}
         />
         <div
           className={classnames(
-            'self-start cursor-pointer mt-8 flex flex-between',
-            'items-center rounded-lg rounded-tr-none px-dot-8 py-1',
-            useCss({
-              border: '1.5px solid #475569',
-            }),
+              'self-start cursor-pointer mt-8 flex flex-between',
+              'items-center rounded-lg rounded-tr-none px-dot-8 py-1',
+              useCss({
+                border: '1.5px solid #475569',
+              }),
           )}
         >
           <Icon className="mr-dot-4" name="close" type="dark" size={20} />
-          <span className="text-dot-7">离开当前页面</span>
+          <span className="text-dot-7" onClick={() => toggle(false)}>离开当前页面</span>
         </div>
       </div>
     </div>

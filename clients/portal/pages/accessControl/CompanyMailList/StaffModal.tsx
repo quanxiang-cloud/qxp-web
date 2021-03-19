@@ -118,8 +118,8 @@ export const StaffModal = (props: StaffModalProps) => {
     <Modal
       title={`${titleText}员工`}
       visible={visible}
-      minWidth={632}
       onCancel={closeModal}
+      className="static-modal"
       footer={
         <div className="flex items-center">
           <Button icon={<Icon name="close" className="mr-dot-4" />} onClick={closeModal}>
@@ -137,19 +137,44 @@ export const StaffModal = (props: StaffModalProps) => {
         </div>
       }
     >
-      <Form layout="vertical" ref={(n) => setForm(n)}>
+      <Form layout="vertical" ref={(n:any) => setForm(n)}>
         <TextField
           name="userName"
           label="员工姓名"
           defaultValue={initData.userName || ''}
-          placeholder="请输入 QingCloud 账号"
+          placeholder="请输入员工姓名"
+          validateOnBlur
+          schemas={[
+            {
+              rule: { required: true },
+              help: '请输入员工姓名 ',
+            },
+          ]}
         />
         <TextField
           name="phone"
           label="手机号码"
           defaultValue={initData.phone || ''}
-          placeholder="请输入 QingCloud 账号"
+          placeholder="请输入手机号码"
+          validateOnChange
           help="企业成员的真实手机号（手机号/邮箱，两者中至少必填一项）。"
+          schemas={[
+            {
+              rule: { required: true },
+              help: '请输入手机号码',
+            },
+            {
+              rule: (value: string) => {
+                let bol = true;
+                const reg = /^[1](([3][0-9])|([4][5-9])|([5][0-3,5-9])|([6][5,6])|([7][0-8])|([8][0-9])|([9][1,8,9]))[0-9]{8}$/;
+                if (!reg.test(value)) {
+                  bol = false;
+                }
+                return bol;
+              },
+              help: '请输入合法的手机号',
+            },
+          ]}
         />
         <TextField
           name="email"
@@ -157,6 +182,19 @@ export const StaffModal = (props: StaffModalProps) => {
           defaultValue={initData.email || ''}
           placeholder="例如：name@company.com"
           help="企业成员的真实邮箱，设置后可以通过邮箱接收到全象云平台发送的各类消息提醒（手机号/邮箱，两者中至少必填一项）。"
+          validateOnChange
+          schemas={[
+            {
+              rule: { required: true },
+              help: '请输入邮箱帐号',
+              status: 'error',
+            },
+            {
+              rule: { isEmail: true, maxLength: 20 },
+              help: '请输入合法的邮箱地址',
+              status: 'error',
+            },
+          ]}
         />
         <SelectTreeField
           name="depIDs"
@@ -164,12 +202,21 @@ export const StaffModal = (props: StaffModalProps) => {
           placeholder="请选择部门"
           defaultSelect={initData.dep || ''}
           treeData={treeData}
+          validateOnChange
+          schemas={[
+            {
+              rule: { required: true },
+              help: '请选择部门',
+              status: 'error',
+            },
+          ]}
         />
         <SelectField
           name="roleIDs"
           label="角色"
-          placeholder="请选择区域"
+          placeholder="请选择角色"
           defaultValue={initData.roleId || ''}
+          validateOnChange
           options={
             roleList &&
             roleList.map((role) => ({
@@ -177,6 +224,13 @@ export const StaffModal = (props: StaffModalProps) => {
               value: role.id,
             }))
           }
+          schemas={[
+            {
+              rule: { required: true },
+              help: '请选择角色',
+              status: 'error',
+            },
+          ]}
         />
       </Form>
 

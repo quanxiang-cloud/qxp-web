@@ -12,6 +12,23 @@ export const getERPTree = () => {
   }).then(({ data }) => data);
 };
 
+// 获取部门树
+export const queryERPName = ({
+  depID,
+  depName,
+}: {
+  depID: string;
+  depName: string;
+}) => {
+  return httpPost<IResponse<{ isExist: 1 | -1 }>>(
+      '/api/org/v1/checkDEPIsExist',
+      JSON.stringify({ depID, depName }),
+      {
+        'Content-Type': 'application/json',
+      }
+  );
+};
+
 /**
  * @returns 新增
  * @param departmentName true(true：必须 false：非必须)
@@ -43,9 +60,13 @@ export const getAdminDEPInfo = () => {
  * @param limit true
  */
 export const getAdminDEPList = (id: string) => {
-  return httpPost<IResponse<ITreeNode[]>>('/api/org/v1/adminDEPList', JSON.stringify({ id }), {
-    'Content-Type': 'application/json',
-  }).then(({ data }) => data);
+  return httpPost<IResponse<ITreeNode[]>>(
+      '/api/org/v1/adminDEPList',
+      JSON.stringify({ id }),
+      {
+        'Content-Type': 'application/json',
+      }
+  ).then(({ data }) => data);
 };
 
 /**
@@ -55,9 +76,13 @@ export const getAdminDEPList = (id: string) => {
  * @param limit true
  */
 export const getAdminDEPSuperPID = () => {
-  return httpPost<IResponse<ITreeNode[]>>('/api/org/v1/adminDEPSuperPID', null, {
-    'Content-Type': 'application/json',
-  }).then(({ data }) => data);
+  return httpPost<IResponse<ITreeNode[]>>(
+      '/api/org/v1/adminDEPSuperPID',
+      null,
+      {
+        'Content-Type': 'application/json',
+      }
+  ).then(({ data }) => data);
 };
 
 /**
@@ -92,9 +117,13 @@ export const updateDEP = () => {
  * @param id true
  */
 export const deleteDEP = (id: string) => {
-  return httpPost<IResponse<{ code: number }>>('/api/org/v1/delDEP', JSON.stringify({ id }), {
-    'Content-Type': 'application/json',
-  });
+  return httpPost<IResponse<{ code: number }>>(
+      '/api/org/v1/delDEP',
+      JSON.stringify({ id }),
+      {
+        'Content-Type': 'application/json',
+      }
+  );
 };
 
 /**
@@ -118,11 +147,11 @@ type Persons = {
 export const getUserAdminInfo = (depID: string, params: any) => {
   // eslint-disable-next-line camelcase
   return httpPost<IResponse<{ total_count: number; data: Persons[] }>>(
-    '/api/org/v1/adminUserList',
-    JSON.stringify({ depID, ...params }),
-    {
-      'Content-Type': 'application/json',
-    },
+      '/api/org/v1/adminUserList',
+      JSON.stringify({ depID, ...params }),
+      {
+        'Content-Type': 'application/json',
+      }
   ).then(({ data }) => ({
     total: data?.total_count || 0,
     data: data?.data || [],
@@ -133,9 +162,10 @@ export const getUserAdminInfo = (depID: string, params: any) => {
  * @returns 获取所有角色列表
  */
 export const getUserTemplate = () => {
-  return httpPost<IResponse<{ fileURL: string }>>('/api/org/v1/getUserTemplate', null).then(
-    ({ data }) => data?.fileURL,
-  );
+  return httpPost<IResponse<{ fileURL: string }>>(
+      '/api/org/v1/getUserTemplate',
+      null
+  ).then(({ data }) => data?.fileURL);
 };
 
 type Roles = {
@@ -159,11 +189,11 @@ export const getListRole = () => {
  */
 export const addDepUser = (values: FormValues | EditFormValues) => {
   return httpPost<IResponse<{ roles: Roles[] }>>(
-    '/api/nurturing/v1/addUser',
-    JSON.stringify(values),
-    {
-      'Content-Type': 'application/json',
-    },
+      '/api/nurturing/v1/addUser',
+      JSON.stringify(values),
+      {
+        'Content-Type': 'application/json',
+      }
   ).then(({ data }) => data);
 };
 
@@ -172,50 +202,68 @@ export const addDepUser = (values: FormValues | EditFormValues) => {
  */
 export const updateUser = (values: FormValues | EditFormValues) => {
   return httpPost<IResponse<{ roles: Roles[] }>>(
-    '/api/nurturing/v1/updateUser',
-    JSON.stringify(values),
-    {
-      'Content-Type': 'application/json',
-    },
+      '/api/nurturing/v1/updateUser',
+      JSON.stringify(values),
+      {
+        'Content-Type': 'application/json',
+      }
   ).then(({ data }) => data);
 };
 
 /**
  * @returns 设为主管
  */
-export const setDEPLeader = ({ depID, userID }: { depID: string; userID: string }) => {
+export const setDEPLeader = ({
+  depID,
+  userID,
+}: {
+  depID: string;
+  userID: string;
+}) => {
   return httpPost<IResponse<{ code: number }>>(
-    '/api/org/v1/setDEPLeader',
-    JSON.stringify({ depID, userID }),
-    {
-      'Content-Type': 'application/json',
-    },
+      '/api/org/v1/setDEPLeader',
+      JSON.stringify({ depID, userID }),
+      {
+        'Content-Type': 'application/json',
+      }
   ).then(({ data }) => data);
 };
 
 /**
  * @returns 修改用户状态
  */
-export const updateUserStatus = ({ id, status }: { id: string; status: UserStatus }) => {
+export const updateUserStatus = ({
+  id,
+  status,
+}: {
+  id: string;
+  status: UserStatus;
+}) => {
   return httpPost<IResponse<{ code: number }>>(
-    '/api/nurturing/v1/updateUserStatus',
-    JSON.stringify({ id, useStatus: status }),
-    {
-      'Content-Type': 'application/json',
-    },
+      '/api/nurturing/v1/updateUserStatus',
+      JSON.stringify({ id, useStatus: status }),
+      {
+        'Content-Type': 'application/json',
+      }
   ).then(({ data }) => data);
 };
 
 /**
  * @returns 获取拥有者角色列表
  */
-export const getUserRole = ({ ownerID, type }: { ownerID: string; type: 1 | 2 }) => {
+export const getUserRole = ({
+  ownerID,
+  type,
+}: {
+  ownerID: string;
+  type: 1 | 2;
+}) => {
   return httpPost<IResponse<{ roles: Roles[] }>>(
-    '/api/goalie/listOwnerRole',
-    JSON.stringify({ ownerID, type }),
-    {
-      'Content-Type': 'application/json',
-    },
+      '/api/goalie/listOwnerRole',
+      JSON.stringify({ ownerID, type }),
+      {
+        'Content-Type': 'application/json',
+      }
   ).then(({ data }) => data?.roles);
 };
 
@@ -232,11 +280,11 @@ export const batchAdjustDep = ({
   newDepID: string;
 }) => {
   return httpPost<IResponse<{ code: number }>>(
-    '/api/org/v1/adminChangeUsersDEP',
-    JSON.stringify({ usersID, oldDepID, newDepID }),
-    {
-      'Content-Type': 'application/json',
-    },
+      '/api/org/v1/adminChangeUsersDEP',
+      JSON.stringify({ usersID, oldDepID, newDepID }),
+      {
+        'Content-Type': 'application/json',
+      }
   ).then(({ data }) => data);
 };
 
@@ -253,11 +301,11 @@ export const resetUserPWD = ({
   sendPhone: -1 | 1;
 }) => {
   return httpPost<IResponse<{ code: number }>>(
-    '/api/nurturing/v1/adminResetPWD',
-    JSON.stringify({ userIDs, sendEmail, sendPhone }),
-    {
-      'Content-Type': 'application/json',
-    },
+      '/api/nurturing/v1/adminResetPWD',
+      JSON.stringify({ userIDs, sendEmail, sendPhone }),
+      {
+        'Content-Type': 'application/json',
+      }
   );
 };
 
@@ -273,7 +321,10 @@ export const importTempFile = ({ depID, file }: FileParams) => {
   return httpFile('/api/org/v1/importFile', { depID, file });
 };
 
-export function createDepartment(params: { pid: string; departmentName: string }) {
+export function createDepartment(params: {
+  pid: string;
+  departmentName: string;
+}) {
   return httpPost('/api/org/v1/addDEP', JSON.stringify(params));
 }
 

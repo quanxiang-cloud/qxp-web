@@ -138,7 +138,7 @@ export const ExportFileModal = ({
 
   // 删除文件
   const delFile = (Index: number) => {
-    let newFileList = fileList.filter((item, index) => index !== Index);
+    const newFileList = fileList.filter((item, index) => index !== Index);
     setFileList(newFileList);
   };
 
@@ -162,43 +162,43 @@ export const ExportFileModal = ({
   // 导出课程Excel表格数据
   const exportCourseExcel = (headers: Column[], data: any[], fileName: string) => {
     const _headers = headers
-      .map((item: Column, i: number) =>
-        Object.assign(
-          {},
-          {
-            key: item.key,
-            title: item.title,
-            position: String.fromCharCode(65 + i) + 1,
-          },
-        ),
-      )
-      .reduce(
-        (prev: any, next: any) =>
-          Object.assign({}, prev, {
-            [next.position]: { key: next.key, v: next.title },
-          }),
-        {},
-      );
+        .map((item: Column, i: number) =>
+          Object.assign(
+              {},
+              {
+                key: item.key,
+                title: item.title,
+                position: String.fromCharCode(65 + i) + 1,
+              },
+          ),
+        )
+        .reduce(
+            (prev: any, next: any) =>
+              Object.assign({}, prev, {
+                [next.position]: { key: next.key, v: next.title },
+              }),
+            {},
+        );
 
     const _data = data
-      .map((item: any, i: any) =>
-        headers.map((key: any, j: any) =>
-          Object.assign(
-            {},
-            {
-              content: item[key.key],
-              position: String.fromCharCode(65 + j) + (i + 2),
-            },
+        .map((item: any, i: any) =>
+          headers.map((key: any, j: any) =>
+            Object.assign(
+                {},
+                {
+                  content: item[key.key],
+                  position: String.fromCharCode(65 + j) + (i + 2),
+                },
+            ),
           ),
-        ),
-      )
-      // 对刚才的结果进行降维处理（二维数组变成一维数组）
-      .reduce((prev: any, next: any) => prev.concat(next))
-      // 转换成 worksheet 需要的结构
-      .reduce(
-        (prev: any, next: any) => Object.assign({}, prev, { [next.position]: { v: next.content } }),
-        {},
-      );
+        )
+    // 对刚才的结果进行降维处理（二维数组变成一维数组）
+        .reduce((prev: any, next: any) => prev.concat(next))
+    // 转换成 worksheet 需要的结构
+        .reduce(
+            (prev: any, next: any) => Object.assign({}, prev, { [next.position]: { v: next.content } }),
+            {},
+        );
     // 合并 headers 和 data
     const output = Object.assign({}, _headers, _data);
     // 获取所有单元格的位置
@@ -220,7 +220,7 @@ export const ExportFileModal = ({
   };
 
   const changeCheckbox = (val: string[]) => {
-    let checkedWay: CheckedWay = {
+    const checkedWay: CheckedWay = {
       sendEmail: -1,
       sendPhone: -1,
     };
@@ -241,7 +241,7 @@ export const ExportFileModal = ({
       <Modal
         title="excel 批量导入成员"
         visible={visible}
-        width={632}
+        className="static-modal"
         onCancel={closeModal}
         footer={
           uploadStatus.status !== 3 ? (
@@ -273,7 +273,7 @@ export const ExportFileModal = ({
           ) : null
         }
       >
-        <div className="text-dot-7">
+        <div className="w-full text-dot-7">
           {uploadStatus.status === 3 && (
             <div className="text-DC2626 font-semibold flex items-center">
               <Icon
@@ -327,8 +327,8 @@ export const ExportFileModal = ({
                 >
                   <div
                     className={classnames(
-                      'w-full h-4-dot-3 border rounded-dot-4 border-dashed border-CBD5E1',
-                      'flex flex-col items-center justify-center hover:border-red-600',
+                        'w-full h-4-dot-3 border rounded-dot-4 border-dashed border-CBD5E1',
+                        'flex flex-col items-center justify-center hover:border-red-600',
                     )}
                   >
                     <Icon size={16} name="upload" type="coloured" />
@@ -372,7 +372,7 @@ export const ExportFileModal = ({
             <div>
               <p className="text-475569 font-semibold">接下来选择：</p>
               <p className="text-dot-7 py-dot-4">向已导入的员工发送随机密码</p>
-              <CheckboxGroup name="states" onChange={(value) => changeCheckbox(value)}>
+              <CheckboxGroup name="states" onChange={(value: string[]) => changeCheckbox(value)}>
                 <Checkbox value="email">通过邮箱</Checkbox>
                 <Checkbox value="phone">通过短信</Checkbox>
               </CheckboxGroup>

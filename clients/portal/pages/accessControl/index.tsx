@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 
 import { ListMenu } from '@portal/pages/accessControl/ListMenu';
 import { ItemWithTitleDesc } from '@portal/components/ItemWithTitleDesc';
@@ -9,12 +9,23 @@ import { MailList } from './CompanyMailList';
 
 export default function Index() {
   const [menuType, setMenuType] = useState('corporateDirectory');
+  const headerRef = useRef<HTMLDivElement>(null);
+  const mainRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (headerRef.current && mainRef.current) {
+      mainRef.current.style.minHeight = `calc(100vh - ${
+        getComputedStyle(headerRef.current).height
+      })`;
+    }
+  });
 
   return (
     <>
-      <HeaderWithMenu />
+      <HeaderWithMenu ref={headerRef} />
       <div
         className="py-3-dot-9 px-8 flex justify-center items-start"
+        ref={mainRef}
       >
         <div className="w-316 bg-white pd-1 border-radius-2 mr-4">
           <ItemWithTitleDesc
@@ -31,8 +42,9 @@ export default function Index() {
           <div className="h-5"></div>
           <ListMenu defaultType="corporateDirectory" onChange={setMenuType} />
         </div>
-        <div className="w-988 h-auto bg-white border-radius-2">
-          {menuType === 'corporateDirectory' ? <MailList visible /> : <RoleManagement visible />}
+        <div className="w-988 bg-white border-radius-2 self-stretch flex">
+          <MailList visible={menuType === 'corporateDirectory'} />
+          <RoleManagement visible={menuType !== 'corporateDirectory'} />
         </div>
       </div>
     </>

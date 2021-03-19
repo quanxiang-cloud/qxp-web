@@ -1,9 +1,9 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, forwardRef } from 'react';
 
 import { Header } from './Header';
 import { Menu } from './Menu';
 
-export const HeaderWithMenu = React.memo(() => {
+const Headers = forwardRef<HTMLDivElement>((_, ref) => {
   const [showMenu, setShowMenu] = useState<boolean | null>(null);
   const headerSetterRef = useRef<Function>();
 
@@ -39,9 +39,11 @@ export const HeaderWithMenu = React.memo(() => {
   };
 
   return (
-    <>
+    <div ref={ref}>
       <Header onMenuToggle={setShowMenu} getSetter={(f) => (headerSetterRef.current = f)} />
       <Menu menus={menus} visible={showMenu} toggle={onToggle} />
-    </>
+    </div>
   );
 });
+
+export const HeaderWithMenu = React.memo(Headers);

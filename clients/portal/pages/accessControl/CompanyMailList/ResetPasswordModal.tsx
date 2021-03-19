@@ -27,7 +27,7 @@ export const ResetPasswordModal = (props: ResetPasswordModalProps) => {
     }
     const values: { way: string[] } = form.getFieldsValue();
     const { way } = values;
-    let checkedWay: CheckedWay = {
+    const checkedWay: CheckedWay = {
       sendEmail: -1,
       sendPhone: -1,
     };
@@ -43,7 +43,7 @@ export const ResetPasswordModal = (props: ResetPasswordModalProps) => {
     <Modal
       title="发送随机密码"
       visible={visible}
-      width={632}
+      className="static-modal"
       onCancel={closeModal}
       footer={
         <div className="flex items-center">
