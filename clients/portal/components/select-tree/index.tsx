@@ -165,7 +165,7 @@ export default class SelectTree extends React.Component<Props> {
             <span className="select-arrow">
               {!!selectValue && (
                 <Icon
-                  onClick={() => this.handleClear}
+                  onClick={(e: React.MouseEvent) => this.handleClear(e)}
                   changeable
                   clickable
                   name="close"
