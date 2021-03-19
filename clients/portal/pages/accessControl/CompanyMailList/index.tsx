@@ -67,8 +67,8 @@ export const MailList = ({ visible }: IMailList) => {
       <div className="h-full flex-column overflow-y-h">
         <div
           className={twCascade(
-              'w-416 m-4 bg-F1F5F9 rounded-r-dot-6 rounded-tl-dot-2',
-              'rounded-bl-dot-6 flex items-center',
+            'w-416 m-4 bg-F1F5F9 rounded-r-dot-6 rounded-tl-dot-2',
+            'rounded-bl-dot-6 flex items-center',
           )}
         >
           <Control className="has-icons-left flex-1 control-set">
@@ -77,7 +77,7 @@ export const MailList = ({ visible }: IMailList) => {
               type="text"
               placeholder="搜索员工名称"
               name="search"
-              onChange={(_, value) => search(value)}
+              onChange={(_: Event, value: string) => search(value)}
               value={searchWord}
               onKeyDown={handleSearch}
             />

@@ -137,7 +137,7 @@ export const StaffModal = (props: StaffModalProps) => {
         </div>
       }
     >
-      <Form layout="vertical" ref={(n) => setForm(n)}>
+      <Form layout="vertical" ref={(n:any) => setForm(n)}>
         <TextField
           name="userName"
           label="员工姓名"
