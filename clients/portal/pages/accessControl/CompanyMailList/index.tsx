@@ -15,14 +15,15 @@ export interface IMailList {
 }
 
 export const MailList = ({ visible }: IMailList) => {
-  const [searchWord, setSearchWord] = useState('');
+  const [searchWord, setSearchWord] = useState<string>('');
   const [curDept, setCurrDept] = useState<DeptTree | ''>('');
+  const [lastWord, setLastWord] = useState<string>('');
 
   const { data, isLoading } = useQuery('getERPTree', () =>
     getERPTree().then((_treeData: any) => {
       setCurrDept(_treeData);
       return _treeData;
-    }),
+    })
   );
 
   const treeData: any[] = data ? [data] : [];
@@ -35,7 +36,13 @@ export const MailList = ({ visible }: IMailList) => {
     if (e.key !== 'Enter') {
       return;
     }
+    setLastWord(searchWord);
   }
+
+  const handleClear = () => {
+    search('');
+    setLastWord('');
+  };
 
   if (isLoading || !treeData.length) {
     return <Loading desc="加载中..." />;
@@ -72,7 +79,7 @@ export const MailList = ({ visible }: IMailList) => {
               'rounded-bl-dot-6 flex items-center',
           )}
         >
-          <Control className="has-icons-left flex-1 control-set">
+          <Control className="has-icons-left has-icons-right flex-1 control-set">
             <Icon className="is-left" name="magnifier" />
             <Input
               type="text"
@@ -81,7 +88,16 @@ export const MailList = ({ visible }: IMailList) => {
               onChange={(_: Event, value: string) => search(value)}
               value={searchWord}
               onKeyDown={handleSearch}
+              onBlur={() => setLastWord(searchWord)}
             />
+            {searchWord !== '' && (
+              <Icon
+                className="is-right"
+                name="close"
+                clickable
+                onClick={handleClear}
+              />
+            )}
           </Control>
         </div>
         <div className="h-full mt-4 flex items-start overflow-y-h">
@@ -95,7 +111,7 @@ export const MailList = ({ visible }: IMailList) => {
           </div>
           <div className="vertical-line flex-grow-0"></div>
           <PersonInfo
-            keyword={searchWord}
+            keyword={lastWord}
             departmentId={curDeptId}
             departmentName={(curDept as DeptTree).departmentName}
           />

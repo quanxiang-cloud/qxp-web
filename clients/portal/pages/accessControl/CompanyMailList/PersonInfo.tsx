@@ -47,7 +47,11 @@ interface PersonInfoProps {
   keyword: string;
 }
 
-export const PersonInfo = ({ departmentId, departmentName, keyword }: PersonInfoProps) => {
+export const PersonInfo = ({
+  departmentId,
+  departmentName,
+  keyword,
+}: PersonInfoProps) => {
   const [visibleFile, setVisibleFile] = useState<boolean>(false);
   const [resetModal, setResetModal] = useState<boolean>(false);
   const [handleModal, setHandleModal] = useState<boolean>(false);
@@ -58,14 +62,16 @@ export const PersonInfo = ({ departmentId, departmentName, keyword }: PersonInfo
   const [visibleStaff, setVisibleStaff] = useState<boolean>(false);
   const [selectedRows, setSelectedRows] = useState<string[]>([]);
   const [selectedUsers, setSelectedUsers] = useState<IUserInfo[]>([]);
-  const [searchTimer, setSearchTimer] = useState<number>(0);
 
-  const staffMutation = useMutation(userModalStatus === 'add' ? addDepUser : updateUser, {
-    onSuccess: () => {
-      setVisibleStaff(false);
-      refetch();
-    },
-  });
+  const staffMutation = useMutation(
+    userModalStatus === 'add' ? addDepUser : updateUser,
+    {
+      onSuccess: () => {
+        setVisibleStaff(false);
+        refetch();
+      },
+    }
+  );
 
   const [currUser, setCurrUser] = useState<IUserInfo>({ id: '', userName: '' });
   const [pageParams, setPageParams] = React.useState<{
@@ -81,18 +87,7 @@ export const PersonInfo = ({ departmentId, departmentName, keyword }: PersonInfo
   });
 
   useEffect(() => {
-    if (searchTimer) {
-      clearTimeout(searchTimer);
-    }
-
-    setSearchTimer(
-        setTimeout(() => {
-          setPageParams({ ...pageParams, userName: keyword });
-        }, 200),
-    );
-    return () => {
-      clearTimeout(searchTimer);
-    };
+    setPageParams({ ...pageParams, userName: keyword });
   }, [keyword]);
 
   const { data: personList, isLoading, refetch } = useQuery(
@@ -100,7 +95,7 @@ export const PersonInfo = ({ departmentId, departmentName, keyword }: PersonInfo
       () => getUserAdminInfo(departmentId, pageParams),
       {
         refetchOnWindowFocus: false,
-      },
+      }
   );
 
   const handleMutation = useMutation(updateUserStatus, {
@@ -139,7 +134,10 @@ export const PersonInfo = ({ departmentId, departmentName, keyword }: PersonInfo
   const pageSizeOptions = [10, 20, 50, 100];
 
   const setUpSuper = (params: IUserInfo) => {
-    superMutation.mutate({ depID: params.dep ? params.dep.id : '', userID: params.id });
+    superMutation.mutate({
+      depID: params.dep ? params.dep.id : '',
+      userID: params.id,
+    });
   };
 
   const actions = (status: UserStatus) => {
@@ -290,12 +288,11 @@ export const PersonInfo = ({ departmentId, departmentName, keyword }: PersonInfo
             <span>{render.userName}</span>
             {render.isDEPLeader === 1 && (
               <span
-                className={
-                  twCascade(
-                      'w-1-dot-6 h-dot-8 bg-jb rounded-dot-2 p-dot-2',
-                      'flex items-center justify-center'
-                  )
-                }>
+                className={twCascade(
+                    'w-1-dot-6 h-dot-8 bg-jb rounded-dot-2 p-dot-2',
+                    'flex items-center justify-center'
+                )}
+              >
                 <span className="text-white text-dot-5">主管</span>
               </span>
             )}
@@ -470,7 +467,11 @@ export const PersonInfo = ({ departmentId, departmentName, keyword }: PersonInfo
         />
       )}
       <div className="flex-1 h-full flex-column">
-        <DepartmentStaff department={departmentName} count={personList?.total || 0} unit="人" />
+        <DepartmentStaff
+          department={departmentName}
+          count={personList?.total || 0}
+          unit="人"
+        />
         <div className="flex items-center px-4">
           {selectedRows.length > 0 ? (
             <>
@@ -498,7 +499,10 @@ export const PersonInfo = ({ departmentId, departmentName, keyword }: PersonInfo
                 调整部门
               </Button>
               <div className="px-2"></div>
-              <Button icon={<Icon className="mr-dot-4" name="add" />} onClick={openSendPwd}>
+              <Button
+                icon={<Icon className="mr-dot-4" name="add" />}
+                onClick={openSendPwd}
+              >
                 发送随机密码
               </Button>
             </>

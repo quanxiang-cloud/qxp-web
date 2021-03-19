@@ -39,7 +39,7 @@ export const AdjustDepModal = (props: IAdjustDepModalProps) => {
       Message.error('当前已选择员工列表中存在部门主管，不能参与调整部门！');
       return;
     }
-    let params: BatchDepParams = {
+    const params: BatchDepParams = {
       usersID: [],
       oldDepID: '',
       newDepID: '',
@@ -59,7 +59,7 @@ export const AdjustDepModal = (props: IAdjustDepModalProps) => {
     <Modal
       visible={visible}
       title="调整部门"
-      width={632}
+      className="static-modal"
       onCancel={closeModal}
       footer={
         <div className="flex items-center">

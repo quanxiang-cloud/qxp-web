@@ -47,7 +47,7 @@ declare module '@QCFE/lego-ui' {
     };
     emptyText?: JSX.Element;
     onRow?: (
-      record: any,
+      record: any
     ) => {
       onClick?: Function;
       onDoubleClick?: Function;
@@ -133,4 +133,101 @@ declare module '@QCFE/lego-ui' {
     key: string
     children: TreeData[]
   }
+  interface CommonInputProps {
+    name?: string;
+    className?: string;
+    style?: React.CSSProperties;
+    value?: string | number;
+    defaultValue?: string | number;
+    disabled?: boolean | Function;
+    readOnly?: boolean;
+    onChange?: (...args: any) => void;
+    onKeyDown?: (...args: any) => void;
+    onBlur?: (...args: any) => void;
+  }
+
+  interface InputProps extends CommonInputProps {
+    size?: Size;
+    type?: string;
+    placeholder?: string;
+    onPressEnter?: (...args: any) => void;
+  }
+
+  interface SelectProps {
+    arrowRenderer?: () => void;
+    autoBlur?: boolean;
+    autoFocus?: boolean;
+    backspaceRemoves?: boolean;
+    className?: string;
+    clearAllText?: string | React.ReactNode;
+    clearRenderer?: () => void;
+    clearValueText?: string | React.ReactNode;
+    clearable?: boolean;
+    closeOnSelect?: boolean;
+    defaultValue?: any;
+    deleteRemoves?: boolean;
+    disabled?: boolean;
+    escapeClearsValue?: boolean;
+    isLoadingAtBottom?: boolean;
+    bottomTextVisible?: boolean;
+    id?: string;
+    inputProps?: object;
+    inputRenderer?: () => void;
+    instanceId?: string;
+    isLoading?: boolean;
+    labelKey?: string;
+    menuContainerStyle?: object;
+    menuRenderer?: () => void;
+    menuStyle?: object;
+    multi?: boolean;
+    name?: string;
+    noResultsText?: string | React.ReactNode;
+    onBlur?: () => void;
+    onBlurResetsInput?: boolean;
+    onChange?: (...args: any) => void;
+    onClose?: () => void;
+    onCloseResetsInput?: boolean;
+    onFocus?: () => void;
+    validateOnBlur?: boolean;
+    validateOnChange?: boolean;
+    onInputChange?: (...args: any) => void;
+    onInputKeyDown?: (e: any) => void;
+    onMenuScrollToBottom?: () => void;
+    onOpen?: () => void;
+    onSelectResetsInput?: boolean;
+    onValueClick?: () => void;
+    openOnClick?: boolean;
+    openOnFocus?: boolean;
+    openOnClear?: boolean;
+    optionComponent?: () => void;
+    optionRenderer?: (option: any) => JSX.Element;
+    options: any;
+    prefixIcon?: React.ReactNode;
+    placeholder?: string | React.ReactNode;
+    bottomText?: string | React.ReactNode;
+    resetValue?: any;
+    scrollMenuIntoView?: boolean;
+    searchable?: boolean;
+    simpleValue?: boolean;
+    size?: string;
+    style?: object;
+    tabIndex?: string | number;
+    tabSelectsValue?: boolean;
+    value?: any;
+    valueComponent?: () => void;
+    valueKey?: string;
+    valueRenderer?: (option: object) => React.ReactNode;
+    wrapperStyle?: object;
+    children?: React.ReactNode;
+  }
+
+  export interface SelectFieldProps extends SelectProps {
+    label?: React.ReactNode;
+    validateStatus?: string;
+    validateIcon?: boolean;
+    help?: string;
+    schemas?: object;
+  }
+
+  class SelectField extends React.Component<SelectFieldProps, {}> { }
 }
