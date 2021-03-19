@@ -32,7 +32,7 @@ export const AssociateDepartmentEmployee = ({ id, isSuper }: IAssociateDepartmen
   }>({
     total: 0,
     current: 1,
-    pageSize: 10,
+    pageSize: 1,
   });
   const selectorRef = useRef<() => IOwner[]>();
 
@@ -53,7 +53,7 @@ export const AssociateDepartmentEmployee = ({ id, isSuper }: IAssociateDepartmen
   );
 
   useEffect(() => {
-    data?.total && setPagination((p) => ({ ...p, total: data?.total }));
+    setPagination((p) => ({ ...p, total: data?.total || 0 }));
   }, [data]);
 
   // @ts-ignore
@@ -216,15 +216,17 @@ export const AssociateDepartmentEmployee = ({ id, isSuper }: IAssociateDepartmen
           onClick: () => onRowClick(record),
         })}
       />
-      <Pagination
-        type="simple"
-        pageSize={pagination.pageSize}
-        total={pagination.total}
-        current={pagination.current}
-        prefix={<span className="text-dot-6 text-dark-four">{`共${pagination.total}个员工`}</span>}
-        onShowSizeChange={(pageSize) => setPagination((p) => ({ ...p, pageSize }))}
-        onChange={(current) => setPagination((p) => ({ ...p, current }))}
-      />
+      {!isSuper && (
+        <Pagination
+          type="simple"
+          pageSize={pagination.pageSize}
+          total={pagination.total}
+          current={pagination.current}
+          prefix={<span className="text-dot-6 text-dark-four">{`共${pagination.total}个员工`}</span>}
+          onShowSizeChange={(pageSize) => setPagination((p) => ({ ...p, pageSize }))}
+          onChange={(current) => setPagination((p) => ({ ...p, current }))}
+        />
+      )}
     </>
   );
 };

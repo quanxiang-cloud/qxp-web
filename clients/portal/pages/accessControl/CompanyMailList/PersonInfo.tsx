@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation } from 'react-query';
 import { Table, Dropdown, Icon, Message } from '@QCFE/lego-ui';
+import { twCascade } from '@mariusmarais/tailwind-cascade';
 
 import { ActionsList, IActionListItem } from '@portal/components/ActionsList';
 import { Pagination } from '@portal/components/Pagination';
@@ -288,7 +289,13 @@ export const PersonInfo = ({ departmentId, departmentName, keyword }: PersonInfo
             )}
             <span>{render.userName}</span>
             {render.isDEPLeader === 1 && (
-              <span className="w-1-dot-6 h-dot-8 bg-jb rounded-dot-2 p-dot-2 flex items-center justify-center">
+              <span
+                className={
+                  twCascade(
+                      'w-1-dot-6 h-dot-8 bg-jb rounded-dot-2 p-dot-2',
+                      'flex items-center justify-center'
+                  )
+                }>
                 <span className="text-white text-dot-5">主管</span>
               </span>
             )}

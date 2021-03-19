@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { twCascade } from '@mariusmarais/tailwind-cascade';
 
 import { Core } from './Core';
@@ -30,6 +30,13 @@ export const Pagination = ({
 }: PaginationProps) => {
   const maxPage = Math.ceil(total / pageSize);
 
+  useEffect(() => {
+    const maxPage = Math.ceil(total / pageSize);
+    if (current > maxPage && !!maxPage && onChange) {
+      onChange(1);
+    }
+  }, [current, total, pageSize]);
+
   return (
     <div
       className={twCascade(
@@ -39,7 +46,7 @@ export const Pagination = ({
       )}
     >
       {type === 'simple' && <div>{prefix}</div>}
-      <Core current={current} maxPage={maxPage} onChange={onChange} />
+      <Core current={current <= maxPage ? current : 1} maxPage={maxPage} onChange={onChange} />
       {type === 'simple' && (
         <SizeSelect
           pageSize={pageSize}
