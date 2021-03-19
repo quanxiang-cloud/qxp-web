@@ -1,13 +1,13 @@
 import React, { createRef, useState } from 'react';
-import { useQuery, useQueryClient } from 'react-query';
+import { useQueryClient } from 'react-query';
 import { Modal, Form, Icon, Message } from '@QCFE/lego-ui';
 
 import { Button } from '@portal/components/Button';
-import SelectTree from '@portal/components/select-tree';
+import DepartmentPicker from '@c/department-picker';
+
 import { getERPTree, createDepartment, editDepartment } from '../api';
 
 const { TextField } = Form;
-const SelectTreeField = Form.getFormField(SelectTree);
 
 interface DepartmentModalProps {
   department: DeptInfo;
@@ -15,15 +15,12 @@ interface DepartmentModalProps {
 }
 
 export default function EditDepartment({ department, closeModal }: DepartmentModalProps) {
+  const [pid, setPID] = useState('');
+  const formRef = createRef<Form>();
+
+  const queryClient = useQueryClient();
   const title = department.id ? '修改部门' : '添加部门';
   const submitBtnText = department.id ? '确认修改' : '确认添加';
-
-  const [parentNode, setParentNode] = useState<DeptInfo | null>(null);
-  const queryClient = useQueryClient();
-  const { data } = useQuery('getERPTree', getERPTree);
-
-  const treeData = data ? [data] : [];
-  const formRef = createRef<Form>();
 
   const okModalHandle = () => {
     if (!formRef.current?.validateForm()) {
@@ -36,6 +33,13 @@ export default function EditDepartment({ department, closeModal }: DepartmentMod
     if (department.id) {
       params.id = department?.id;
     }
+
+    if (!pid) {
+      Message.error('请选择父级部门');
+      return;
+    }
+
+    params.pid = pid;
 
     requestAPI(params).then(() => {
       queryClient.invalidateQueries('getERPTree');
@@ -52,6 +56,7 @@ export default function EditDepartment({ department, closeModal }: DepartmentMod
       appendToBody
       title={title}
       width={632}
+      style={{ maxWidth: '632px' }}
       onCancel={closeModal}
       footer={
         <div className="flex items-center">
@@ -84,13 +89,7 @@ export default function EditDepartment({ department, closeModal }: DepartmentMod
             },
           ]}
         />
-        <SelectTreeField
-          name="pid"
-          label="选择部门"
-          placeholder="请选择部门"
-          defaultSelect={parentNode}
-          treeData={treeData}
-        />
+        <DepartmentPicker onChange={({ id }) => setPID(id)} />
       </Form>
     </Modal>
   );

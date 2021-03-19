@@ -1,6 +1,6 @@
 import TreeStore from '@portal/components/headless-tree/store';
 
-function departmentToTreeNode(department: Department): TreeNode<Department> {
+export function departmentToTreeNode(department: Department): TreeNode<Department> {
   const children = (department.child || []).map((dep) => departmentToTreeNode(dep));
 
   return {

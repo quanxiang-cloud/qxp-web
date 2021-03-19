@@ -17,3 +17,7 @@ $box-shadow:
 $global-header-height: 52px;
 $border-radius: 4px;
 $border-radius-lg: 12px;
+
+.modal {
+  z-index: $modal-z-index;
+}
