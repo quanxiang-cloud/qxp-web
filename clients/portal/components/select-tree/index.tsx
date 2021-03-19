@@ -119,8 +119,8 @@ export default class SelectTree extends React.Component<Props> {
     });
   };
 
-  handleClear = (e: React.MouseEvent) => {
-    e.stopPropagation();
+  handleClear = (e?: Event) => {
+    e && e.stopPropagation();
     this.setState({
       selectValue: '',
       showTips: true,
@@ -165,7 +165,7 @@ export default class SelectTree extends React.Component<Props> {
             <span className="select-arrow">
               {!!selectValue && (
                 <Icon
-                  onClick={(e: React.MouseEvent) => this.handleClear(e)}
+                  onClick={this.handleClear}
                   changeable
                   clickable
                   name="close"
