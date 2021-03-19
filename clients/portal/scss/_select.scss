@@ -1,5 +1,6 @@
-$select-min-width: 150px;
+$select-min-width: 120px;
 $select-max-width: 500px;
+$select-option-height: 36px;
 
 @include block(select-options) {
   padding: 8px 0;
@@ -19,7 +20,7 @@ $select-max-width: 500px;
     display: flex;
     align-items: center;
     padding: 6px 16px;
-    min-height: 32px;
+    min-height: $select-option-height;
 
     color: var(--neutral-6);
 
@@ -36,10 +37,10 @@ $select-max-width: 500px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 32px;
+  height: $select-option-height;
   padding-left: 16px;
   padding-right: 16px;
-  line-height: 32px;
+  line-height: $select-option-height;
 
   font-weight: 600;
   cursor: pointer;
@@ -78,7 +79,7 @@ $select-max-width: 500px;
   justify-content: space-between;
   min-width: $select-min-width;
   max-width: $select-max-width;
-  min-height: 32px;
+  min-height: $select-option-height;
   line-height: 30px;
   padding-left: 8px;
   padding-right: 8px;

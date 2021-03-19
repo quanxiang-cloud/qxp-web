@@ -20,13 +20,15 @@ $node-height: 56px;
   transition: transform 200ms ease-in-out;
   cursor: pointer;
 
-  &:hover {
+  &:hover:not(.tree-node--focused) {
     color: #0F172A;
     background-color: #F1F5F9;
   }
 
   @include modifier(focused) {
     color: #375FF3;
+    font-weight: 600;
+    background-color: #F0F6FF;
 
     // todo refactor this
     // @include element(toggle-icon) {
@@ -69,6 +71,7 @@ $node-height: 56px;
     flex-shrink: 0;
     width: 20px;
     height: 20px;
+    margin-right: 4px;
     border-radius: 2px;
     transform: rotate(-90deg);
 
@@ -89,5 +92,19 @@ $node-height: 56px;
 
     border-radius: 3px;
     overflow: hidden;
+  }
+}
+
+.departments-tree {
+  user-select: none;
+
+  .tree-node {
+    padding-left: 16px;
+    padding-right: 8px;
+  }
+
+  .more-menu {
+    flex-shrink: 0;
+    margin-left: 8px;
   }
 }

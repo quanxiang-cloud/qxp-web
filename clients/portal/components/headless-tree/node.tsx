@@ -93,7 +93,7 @@ export default function renderNode<T>({
         onDrop(node);
         setAcceptDrop(false);
       }}
-      className={classnames('tree-node', {
+      className={classnames('group', 'tree-node', {
         'tree-node--focused': node.id === currentFocusedNodeID && !upwardFocusedStyleToParent,
         'tree-node--focused-on-parent': bubbledFocusedStyle,
         'tree-node--fade': renamingNodeID && node.id !== renamingNodeID,
