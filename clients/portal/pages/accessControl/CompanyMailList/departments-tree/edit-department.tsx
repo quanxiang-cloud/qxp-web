@@ -5,7 +5,7 @@ import { Modal, Form, Icon, Message } from '@QCFE/lego-ui';
 import { Button } from '@portal/components/Button';
 import DepartmentPicker from '@c/department-picker';
 
-import { getERPTree, createDepartment, editDepartment } from '../api';
+import { createDepartment, editDepartment } from '../api';
 
 const { TextField } = Form;
 
@@ -89,6 +89,7 @@ export default function EditDepartment({ department, closeModal }: DepartmentMod
             },
           ]}
         />
+        <span>所属部门</span>
         <DepartmentPicker onChange={({ id }) => setPID(id)} />
       </Form>
     </Modal>
