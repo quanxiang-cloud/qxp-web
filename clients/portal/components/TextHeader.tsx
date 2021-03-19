@@ -49,7 +49,9 @@ export const TextHeader = ({
           {action}
         </a>
       )}
-      <div className={actionClassName}>{!isString(action) && action}</div>
+      {!isString(action) && action && (
+        <div className={actionClassName}>{action}</div>
+      )}
     </header>
   );
 };

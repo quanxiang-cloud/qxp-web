@@ -3,7 +3,6 @@ import { useQuery } from 'react-query';
 import { twCascade } from '@mariusmarais/tailwind-cascade';
 
 import { Card } from '@portal/components/Card';
-import { Loading } from '@portal/components/Loading';
 import { RoleList } from './RoleList';
 import { RoleDetail } from './RoleDetail';
 import { getRolesList } from './api';
@@ -13,9 +12,10 @@ export interface IRoleManagement {
   visible: boolean;
 }
 
-export const RoleManagement = ({ visible }: IRoleManagement) => {
+export const RoleManagement = React.memo(({ visible }: IRoleManagement) => {
   const { data = [], isLoading } = useQuery('getRolesList', getRolesList, {
     refetchOnWindowFocus: false,
+    enabled: !!visible,
   });
   const [roleId, setRoleId] = useState<string | number>('');
   useEffect(() => {
@@ -27,13 +27,13 @@ export const RoleManagement = ({ visible }: IRoleManagement) => {
   const roleList = data.map(({ tag, name, id }) => new Role(name, id, tag));
 
   if (isLoading || !data.length) {
-    return <Loading desc="加载中..." />;
+    return null;
   }
 
   return (
     <Card
       className={
-        twCascade('ml-0 mt-0 mr-0 mb-0 px-4 pt-dot-8 pb-dot-8',
+        twCascade('ml-0 mt-0 mr-0 mb-0',
             'transition-opacity flex flex-col', {
               visible: visible,
               invisible: !visible,
@@ -46,6 +46,7 @@ export const RoleManagement = ({ visible }: IRoleManagement) => {
               'overflow-hidden': !visible,
               'flex-none': !visible,
               'flex-1': visible,
+              'px-4 pt-dot-8 pb-dot-8': visible,
             })}
       headerClassName="bg-F1F5F9-dot-5 -mx-4 -mt-dot-8 px-4 py-dot-8 pt-0 header-background-image"
       title="角色管理"
@@ -63,4 +64,4 @@ export const RoleManagement = ({ visible }: IRoleManagement) => {
       </div>
     </Card>
   );
-};
+});

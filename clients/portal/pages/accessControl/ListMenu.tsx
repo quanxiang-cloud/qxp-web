@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import useCss from 'react-use/lib/useCss';
-import classnames from 'classnames';
+import { twCascade } from '@mariusmarais/tailwind-cascade';
 
 type MenuItem = {
   id: string;
@@ -29,20 +29,19 @@ export const ListMenu = ({ onChange, defaultType }: IListMenu) => {
     },
   ];
 
-  useEffect(() => {
-    onChange(type as string);
-  }, [type]);
-
   return (
     <ul className="w-auto">
       {menuData.map((item) => {
         return (
           <li
             key={item.id}
-            onClick={() => setType(item.id)}
-            className={classnames(
-                'h-2-bot-8 leading-2-bot-8 rounded-l-dot-4',
-                'p-x-0-dot-9 flex relative cursor-pointer transition',
+            onClick={() => {
+              setType(item.id);
+              onChange(item.id);
+            }}
+            className={twCascade(
+                'h-2-bot-8 leading-2-bot-8 rounded-l-dot-4 items-center',
+                'p-x-0-dot-9 flex relative cursor-pointer transition-all duration-300',
                 useCss({
                   '> div': {
                     display: 'none',
@@ -73,8 +72,9 @@ export const ListMenu = ({ onChange, defaultType }: IListMenu) => {
             <img className="w-1-dot-2 h-1-dot-2 pr-dot-4" src={item.icon} alt="logo" />
             <span className="fs-0-dot-8 text-94A3B8 text-dot-8">{item.name}</span>
             <div
-              className={classnames(
-                  'absolute top-0 right-0 w-0-dot-2 h-2-dot-8 bg-475569 rounded-l-dot-4',
+              className={twCascade(
+                  'absolute top-0 right-0 w-0-dot-2 h-2-dot-8 bg-475569',
+                  'rounded-l-dot-4 transition-all duration-300',
               )}
             ></div>
           </li>

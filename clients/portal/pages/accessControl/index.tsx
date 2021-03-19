@@ -42,7 +42,7 @@ export default function Index() {
           <div className="h-5"></div>
           <ListMenu defaultType="corporateDirectory" onChange={setMenuType} />
         </div>
-        <div className="w-988 bg-white border-radius-2 self-stretch flex">
+        <div className="w-988 bg-white border-radius-2 self-stretch flex flex-1">
           <MailList visible={menuType === 'corporateDirectory'} />
           <RoleManagement visible={menuType !== 'corporateDirectory'} />
         </div>

@@ -7,7 +7,6 @@ import { TextHeader } from '@portal/components/TextHeader';
 import { DepartmentStaff } from '@portal/components/DepartmentStaff';
 
 import DepartmentsTree from './departments-tree';
-import { Loading } from '@portal/components/Loading';
 import { PersonInfo } from './PersonInfo';
 import { getERPTree } from './api';
 
@@ -15,12 +14,12 @@ export interface IMailList {
   visible: boolean;
 }
 
-export const MailList = ({ visible }: IMailList) => {
+export const MailList = React.memo(({ visible }: IMailList) => {
   const [searchWord, setSearchWord] = useState<string>('');
   const [curDept, setCurrDept] = useState<DeptTree | ''>('');
   const [lastWord, setLastWord] = useState<string>('');
 
-  const { data: rootDep, isLoading } = useQuery('getERPTree', () =>
+  const { data: rootDep = {} } = useQuery('getERPTree', () =>
     getERPTree().then((_treeData: any) => {
       setCurrDept(_treeData);
       return _treeData;
@@ -42,10 +41,6 @@ export const MailList = ({ visible }: IMailList) => {
     search('');
     setLastWord('');
   };
-
-  if (isLoading) {
-    return <Loading desc="加载中..." />;
-  }
 
   const curDeptId = (curDept as DeptTree).id;
 
@@ -114,4 +109,4 @@ export const MailList = ({ visible }: IMailList) => {
       </div>
     </div>
   );
-};
+});

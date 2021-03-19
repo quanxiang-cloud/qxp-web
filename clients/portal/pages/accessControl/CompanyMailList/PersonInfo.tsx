@@ -47,7 +47,7 @@ interface PersonInfoProps {
   keyword: string;
 }
 
-export const PersonInfo = ({
+export const PersonInfo = React.memo(({
   departmentId,
   departmentName,
   keyword,
@@ -441,55 +441,41 @@ export const PersonInfo = ({
     },
   ];
 
-  if (isLoading) {
-    return <Loading desc="加载中..." />;
-  }
-
   return (
     <>
-      {visibleAdjust && (
-        <AdjustDepModal
-          userList={selectedUsers}
-          visible={visibleAdjust}
-          closeModal={() => setVisibleAdjust(false)}
-          okModal={okModalAdjust}
-        />
-      )}
+      <AdjustDepModal
+        userList={selectedUsers}
+        visible={visibleAdjust}
+        closeModal={() => setVisibleAdjust(false)}
+        okModal={okModalAdjust}
+      />
       {/* 员工模态框 */}
-      {visibleStaff && (
-        <StaffModal
-          visible={visibleStaff}
-          status={userModalStatus}
-          initData={currUser}
-          okModal={okStaffModal}
-          closeModal={closeStaffModal}
-        />
-      )}
+      <StaffModal
+        visible={visibleStaff}
+        status={userModalStatus}
+        initData={currUser}
+        okModal={okStaffModal}
+        closeModal={closeStaffModal}
+      />
       {/* 文件处理模态框 */}
-      {visibleFile && (
-        <ExportFileModal
-          visible={visibleFile}
-          currDepId={departmentId}
-          closeModal={closeFileModal}
-          okModal={okExportModal}
-        />
-      )}
-      {handleModal && (
-        <AccountHandleModal
-          visible={handleModal}
-          status={modalStatus}
-          initData={currUser}
-          closeModal={closeHandleModal}
-          okModal={okHandleModal}
-        />
-      )}
-      {resetModal && (
-        <ResetPasswordModal
-          visible={resetModal}
-          closeModal={closeResetModal}
-          okModal={okResetModal}
-        />
-      )}
+      <ExportFileModal
+        visible={visibleFile}
+        currDepId={departmentId}
+        closeModal={closeFileModal}
+        okModal={okExportModal}
+      />
+      <AccountHandleModal
+        visible={handleModal}
+        status={modalStatus}
+        initData={currUser}
+        closeModal={closeHandleModal}
+        okModal={okHandleModal}
+      />
+      <ResetPasswordModal
+        visible={resetModal}
+        closeModal={closeResetModal}
+        okModal={okResetModal}
+      />
       <div className="flex-1 h-full flex-column">
         <DepartmentStaff
           department={departmentName}
@@ -574,33 +560,30 @@ export const PersonInfo = ({
           )}
         </div>
         <div className="w-full mt-dot-8 flex-column overflow-y-a flex-1 px-4">
-          {personList?.data && (
-            <>
-              <div className="qxp-table flex w-full">
-                <Table
-                  className="text-dot-7 table-full"
-                  dataSource={personList?.data}
-                  columns={columns}
-                  rowKey="id"
-                  rowSelection={rowSelection}
-                  emptyText={<EmptyData text="无成员数据" className="py-10" />}
-                />
-              </div>
-              <div className="flex justify-end">
-                <Pagination
-                  type="simple"
-                  current={pageParams.page}
-                  total={personList?.total || 0}
-                  pageSize={pageParams.limit}
-                  pageSizeOptions={pageSizeOptions}
-                  onChange={handleChange}
-                  onShowSizeChange={handleShowSizeChange}
-                />
-              </div>
-            </>
-          )}
+          <div className="qxp-table flex w-full">
+            <Table
+              className="text-dot-7 table-full"
+              dataSource={personList?.data || []}
+              columns={columns}
+              rowKey="id"
+              rowSelection={rowSelection}
+              emptyText={<EmptyData text="无成员数据" className="py-10" />}
+              loading={isLoading}
+            />
+          </div>
+          <div className="flex justify-end">
+            <Pagination
+              type="simple"
+              current={pageParams.page}
+              total={personList?.total || 0}
+              pageSize={pageParams.limit}
+              pageSizeOptions={pageSizeOptions}
+              onChange={handleChange}
+              onShowSizeChange={handleShowSizeChange}
+            />
+          </div>
         </div>
       </div>
     </>
   );
-};
+});

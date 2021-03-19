@@ -44,7 +44,8 @@ export const Hamburger = forwardRef<HTMLDivElement, IHamburger>(
         }),
       };
 
-      const onToggle = () => {
+      const onToggle = (e: React.MouseEvent<HTMLDivElement>) => {
+        e.stopPropagation();
         onChange(!active);
         setActive((v) => !v);
       };

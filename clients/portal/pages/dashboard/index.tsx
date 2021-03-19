@@ -8,19 +8,22 @@ import { List } from '@portal/components/List';
 import { ItemWithTitleDesc } from '@portal/components/ItemWithTitleDesc';
 import { HeaderWithMenu } from '@portal/components/HeaderWithMenu';
 import { uuid } from '@assets/lib/f';
+import { usePortalGlobalValue } from '@clients/common/state/portal';
 
 import './index.scss';
 
 export default function Dashboard() {
+  const [value] = usePortalGlobalValue();
+
   return (
     <>
       <HeaderWithMenu />
       <main className="pt-1-dot-6 pb-1-dot-6 pl-2-dot-6 pr-2-dot-6">
         <div>
           <Avatar
-            username="Jackson"
+            username={value.userInfo.userName}
             bio="万物皆有裂痕，那是光透过来的地方"
-            avatar="/dist/images/avatar.jpg"
+            avatar={value.userInfo.userIconURL}
           />
         </div>
         <Card

@@ -22,10 +22,10 @@ export const Header = ({ onMenuToggle, getSetter }: IHeader) => {
           <Hamburger onChange={onMenuToggle} getSetter={getSetter} ref={hamburgerRef} />
           <span className="ml-dot-3-5">平台管理</span>
         </div>
-        <div>
+        <div className="cursor-pointer">
           <Link to="/" className="flex justify-between items-center mr-2-dot-8">
             <img className="w-3 h-3 mr-dot-2" src="/dist/images/work-space.svg" />
-            <span>工作台</span>
+            <span className="text-dark-second">工作台</span>
           </Link>
         </div>
       </div>
