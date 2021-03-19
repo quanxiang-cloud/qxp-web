@@ -558,7 +558,7 @@ export const PersonInfo = ({ departmentId, departmentName, keyword }: PersonInfo
                   emptyText={<EmptyData text="无成员数据" className="py-10" />}
                 />
               </div>
-              <div className="flex justify-end border-t border-blue-third">
+              <div className="flex justify-end">
                 <Pagination
                   type="simple"
                   current={pageParams.page}

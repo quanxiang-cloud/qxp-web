@@ -320,14 +320,14 @@ const TreeRow = React.memo(<T extends ITreeData>({
             {
               'h-0': !visible,
               'overflow-hidden': !visible,
-              'px-4': visible,
+              'px-3': visible,
               'py-dot-8': visible,
             },
             className,
           isChecked ? selectedClassName : '',
         )}
         style={{
-          paddingLeft: `${level ? 1.2 * level : 1}rem`,
+          paddingLeft: `${level ? 1 * level : 0.5}rem`,
         }}
         onClick={(e) => {
           e.stopPropagation();

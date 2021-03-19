@@ -29,13 +29,13 @@ export interface IUsePortalGlobalValue {
 }
 
 export const usePortalGlobalValue = createGlobalState<IUsePortalGlobalValue>(
-  {
-    authority: [],
-    userInfo: {
-      depIds: [],
+    {
       authority: [],
-      roles: [],
+      userInfo: {
+        depIds: [],
+        authority: [],
+        roles: [],
+      },
     },
-  },
-  true,
+    true,
 );

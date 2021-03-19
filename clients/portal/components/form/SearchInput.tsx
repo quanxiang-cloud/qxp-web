@@ -15,63 +15,63 @@ export interface ISearchInput {
 }
 
 export const SearchInput = React.memo(
-  ({
-    visible,
-    placeholder,
-    onChange,
-    onClear = () => {},
-    prefix,
-    appendix,
-    name,
-    className,
-  }: ISearchInput) => {
-    const [val, setVal] = useState<string>('');
-    const [isVisible, setIsVisible] = useState<boolean>(!!visible);
-    useDebounce(
-      () => {
-        onChange(val);
-      },
-      500,
-      [val],
-    );
+    ({
+      visible,
+      placeholder,
+      onChange,
+      onClear = () => {},
+      prefix,
+      appendix,
+      name,
+      className,
+    }: ISearchInput) => {
+      const [val, setVal] = useState<string>('');
+      const [isVisible, setIsVisible] = useState<boolean>(!!visible);
+      useDebounce(
+          () => {
+            onChange(val);
+          },
+          500,
+          [val],
+      );
 
-    return (
-      <div className={twCascade('flex flex-row items-center', className)}>
-        <Field className="flex flex-row items-center w-full">
-          {typeof prefix === 'string' && <Label>{prefix}</Label>}
-          {typeof prefix !== 'string' && prefix && <>{prefix}</>}
-          <Control className="flex flex-row items-center w-full relative">
-            <Icon name="magnifier" className="absolute left-3 z-10" />
-            <Input
-              className={twCascade('search-input', {
-                'pr-8': appendix,
-              })}
-              type="text"
-              placeholder={placeholder}
-              onChange={(e: Event, value: string) => {
-                setVal(value);
-                setIsVisible(value !== '');
-              }}
-              name={name}
-              value={val}
-            />
-            {isVisible && typeof appendix === 'string' && (
-              <Icon
-                className="absolute right-3 z-10"
-                name={appendix}
-                clickable
-                onClick={() => {
-                  setVal('');
-                  setIsVisible(false);
-                  onClear();
+      return (
+        <div className={twCascade('flex flex-row items-center', className)}>
+          <Field className="flex flex-row items-center w-full">
+            {typeof prefix === 'string' && <Label>{prefix}</Label>}
+            {typeof prefix !== 'string' && prefix && <>{prefix}</>}
+            <Control className="flex flex-row items-center w-full relative">
+              <Icon name="magnifier" className="absolute left-3 z-10" />
+              <Input
+                className={twCascade('search-input', {
+                  'pr-8': appendix,
+                })}
+                type="text"
+                placeholder={placeholder}
+                onChange={(e: Event, value: string) => {
+                  setVal(value);
+                  setIsVisible(value !== '');
                 }}
+                name={name}
+                value={val}
               />
-            )}
-            {isVisible && typeof appendix !== 'string' && appendix && <>{appendix}</>}
-          </Control>
-          <Label></Label>
-        </Field>
-      </div>
-    );
-  },
+              {isVisible && typeof appendix === 'string' && (
+                <Icon
+                  className="absolute right-3 z-10"
+                  name={appendix}
+                  clickable
+                  onClick={() => {
+                    setVal('');
+                    setIsVisible(false);
+                    onClear();
+                  }}
+                />
+              )}
+              {isVisible && typeof appendix !== 'string' && appendix && <>{appendix}</>}
+            </Control>
+            <Label></Label>
+          </Field>
+        </div>
+      );
+    },
 );

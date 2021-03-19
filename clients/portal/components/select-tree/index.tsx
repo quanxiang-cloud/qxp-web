@@ -71,18 +71,18 @@ export default class SelectTree extends React.Component<Props> {
     };
   }
 
-  componentDidUpdate(prevProps: Props) {
-    if (this.props.defaultSelect?.id === prevProps.defaultSelect?.id) {
-      return;
+  componentDidMount() {
+    const boxDom = document.getElementById('tree-select-box');
+    if (boxDom) {
+      this.setState({ width: boxDom.getBoundingClientRect().width + 'px' });
     }
 
     this.setDefaultSelect();
   }
 
-  componentDidMount() {
-    const boxDom = document.getElementById('tree-select-box');
-    if (boxDom) {
-      this.setState({ width: boxDom.getBoundingClientRect().width + 'px' });
+  componentDidUpdate(prevProps: Props) {
+    if (this.props.defaultSelect?.id === prevProps.defaultSelect?.id) {
+      return;
     }
 
     this.setDefaultSelect();
@@ -132,8 +132,8 @@ export default class SelectTree extends React.Component<Props> {
     const { showSelectBox, showTips, selectValue, width } = this.state as State;
     const { name, placeholder, treeData } = this.props;
     const selectBoxStyle = Object.assign(
-      { width },
-      styles.selectBox,
+        { width },
+        styles.selectBox,
       showSelectBox ? styles.showSelectBox : {},
     );
 

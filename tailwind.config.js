@@ -27,6 +27,9 @@ module.exports = {
       minHeight: {
         'dot-8': '0.8rem',
       },
+      flex: {
+        '2dot5': '2.5 1 0%',
+      },
     },
   },
   variants: {

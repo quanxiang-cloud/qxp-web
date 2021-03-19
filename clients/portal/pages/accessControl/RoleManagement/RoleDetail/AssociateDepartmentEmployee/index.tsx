@@ -32,7 +32,7 @@ export const AssociateDepartmentEmployee = ({ id, isSuper }: IAssociateDepartmen
   }>({
     total: 0,
     current: 1,
-    pageSize: 1,
+    pageSize: 10,
   });
   const selectorRef = useRef<() => IOwner[]>();
 
