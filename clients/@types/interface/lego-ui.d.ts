@@ -88,4 +88,13 @@ declare module '@QCFE/lego-ui' {
   }
 
   class Upload extends React.Component<UploadProps, {}> {}
+
+  interface ControlProps {
+    className?: string;
+    id?: string;
+    tabIndex?: string;
+    onBlur?: React.FocusEventHandler<HTMLTextAreaElement>;
+    name?: string;
+    style?: React.CSSProperties;
+  }
 }
