@@ -17,3 +17,14 @@ type TreeNode<T> = Readonly<{
 
   children?: TreeNode<T>[];
 }>;
+
+type CheckStatus = 'checked' | 'unchecked' | 'indeterminate';
+
+type TNode<T> = {
+  data: T;
+  id: string;
+  parentID?: string;
+  children?: string[];
+
+  checkStatus: CheckStatus;
+}
