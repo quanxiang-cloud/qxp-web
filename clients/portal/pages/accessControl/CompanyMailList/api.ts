@@ -12,6 +12,17 @@ export const getERPTree = () => {
   }).then(({ data }) => data);
 };
 
+// 获取部门树
+export const queryERPName = ({ depID, depName }: { depID: string; depName: string }) => {
+  return httpPost<IResponse<{ isExist: 1 | -1 }>>(
+    '/api/org/v1/checkDEPIsExist',
+    JSON.stringify({ depID, depName }),
+    {
+      'Content-Type': 'application/json',
+    },
+  );
+};
+
 /**
  * @returns 新增
  * @param departmentName true(true：必须 false：非必须)

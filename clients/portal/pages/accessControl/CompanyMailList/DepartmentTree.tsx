@@ -7,7 +7,6 @@ import { Tree, TreeNode, Dropdown, Message } from '@QCFE/lego-ui';
 import { ActionsList, IActionListItem } from '@portal/components/ActionsList';
 import DepartmentModal from './DepartmentModal';
 import { DeleteModal } from './DeleteModal';
-
 import { deleteDEP } from './api';
 
 export interface TreeNodeItem extends ITreeNode {
@@ -51,7 +50,7 @@ const Title = ({ openDeptModal, openDeleteDeptModal, onSelect, ...treenode }: Tr
       <div className={cs('w-full h-full flex items-center justify-between')}>
         <div
           onClick={() => onSelect(treenode)}
-          className="text-dot-7 flex-1 h-full flex items-center"
+          className="text-dot-7 h-full truncate flex items-center"
         >
           {departmentName}
         </div>
