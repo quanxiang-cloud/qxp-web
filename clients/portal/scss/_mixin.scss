@@ -1,0 +1,205 @@
+/* stylelint-disable */
+$elementSeparator: "__";
+$modifierSeparator: "--";
+
+@function containsmodifier($selector) {
+  $selector: selectortostring($selector);
+
+  @if str-index($selector, $modifierSeparator) {
+    @return true;
+  }
+
+  @else {
+    @return false;
+  }
+}
+
+@function selectortostring($selector) {
+  $selector: inspect($selector); //cast to string
+  $selector: str-slice($selector, 2, -2); //remove bracket
+
+  @return $selector;
+}
+
+@function getblock($selector) {
+  $selector: selectortostring($selector);
+  $modifierStart: str-index($selector, $modifierSeparator);
+
+  @if $modifierStart {
+    @return str-slice($selector, 0, $modifierStart - 1);
+  }
+
+  @else {
+    @return 0;
+  }
+}
+
+@mixin modifier($modifier) {
+  @at-root {
+    #{&}#{$modifierSeparator + $modifier} {
+      @content;
+    }
+  }
+}
+
+@mixin block($block) {
+  .#{$block} {
+    @content;
+  }
+}
+
+@mixin element($element) {
+  $selector: &;
+  $block: getblock($selector);
+
+  @if containsmodifier($selector) {
+    @at-root {
+      #{$selector} {
+        #{$block + $elementSeparator + $element} {
+          @content;
+        }
+      }
+    }
+  }
+
+  @else {
+    @at-root {
+      #{$selector + $elementSeparator + $element} {
+        @content;
+      }
+    }
+  }
+}
+
+@mixin container() {
+  padding-left: $base-gutter;
+  padding-right: $base-gutter;
+}
+
+@mixin clear-float {
+  &:after {
+    content: "";
+    display: block;
+    line-height: 0;
+    visibility: hidden;
+    clear: both;
+  }
+}
+
+@mixin disabled() {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+@mixin delimiter($delimiter: "/") {
+  &:before {
+    content: $delimiter;
+    margin-right: 6px;
+    margin-left: 6px;
+    user-select: none;
+  }
+}
+
+@mixin text-omit() {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+
+@mixin box-shadow($shadowColor, $extraShadow: '') {
+  @if $extraShadow != '' {
+    box-shadow:
+      2px 1px 2px 0 rgba($shadowColor, 0.15),
+      2px 2px 4px 0 rgba($shadowColor, 0.15),
+      2px 4px 8px 0 rgba($shadowColor, 0.15),
+      0 8px 16px 0 rgba($shadowColor, 0.05),
+      $extraShadow;
+  } @else {
+    box-shadow:
+      2px 1px 2px 0 rgba($shadowColor, 0.15),
+      2px 2px 4px 0 rgba($shadowColor, 0.15),
+      2px 4px 8px 0 rgba($shadowColor, 0.15);
+  }
+}
+/* stylelint-enable */
+
+@mixin child-icon-active-on-hover {
+  &:hover .svg-icon {
+    color: var(--primary-color);
+    fill: var(--icon-coloured-fill);
+  }
+}
+
+@mixin bold-text-large {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--icon-dark-color);
+}
+
+@mixin bold-text-regular {
+  font-weight: 500;
+}
+
+@mixin bold-weaken-regular {
+  font-weight: 500;
+  color: var(--neutral-12);
+}
+
+@mixin weaken-text {
+  color: var(--neutral-12);
+}
+
+@mixin single-line-label {
+  position: relative;
+  padding-right: 3px;
+  text-align: right;
+  @include text-omit;
+
+  &::after {
+    position: absolute;
+    right: 0;
+    content: ':',
+  }
+}
+
+@mixin monospace-font {
+  font-family: Roboto Mono;
+}
+
+@mixin link-text {
+  cursor: pointer;
+  color: var(--primary-color);
+}
+
+@mixin text-primary {
+  line-height: 16px;
+  color: var(--neutral-19);
+  font-weight: 500;
+}
+
+@mixin text-green {
+  line-height: 20px;
+  color: var(--primary-color);
+}
+
+@mixin text-error {
+  line-height: 20px;
+  color: var(--error-color);
+}
+
+@mixin text-desc {
+  line-height: 20px;
+  color: var(--neutral-6);
+}
+
+// 蛤？
+@mixin text-param-name {
+  color: var(--neutral-12);
+}
+
+@mixin text-title-modal {
+  font-weight: 500;
+  color: var(--neutral-15);
+  line-height: 1.75;
+}

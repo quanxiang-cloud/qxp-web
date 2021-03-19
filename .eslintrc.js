@@ -40,6 +40,7 @@ module.exports = {
     'no-param-reassign': 'error',
     radix: [1, 'as-needed'],
     'class-methods-use-this': 'off',
+    'no-invalid-this': 0,
     'comma-dangle': [
       'error',
       {

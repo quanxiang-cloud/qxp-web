@@ -1,0 +1,132 @@
+$select-min-width: 150px;
+$select-max-width: 500px;
+
+@include block(select-options) {
+  padding: 8px 0;
+  min-width: $select-min-width;
+  max-width: $select-max-width;
+  max-height: 300px;
+  overflow-y: auto;
+
+  color: var(--neutral-18);
+
+  background-color: white;
+  border-radius: 4px;
+  box-shadow: 0 6px 18px 0 rgba(213, 222, 231, 0.45);
+  border: solid 1px var(--neutral-2);
+
+  @include element(desc) {
+    display: flex;
+    align-items: center;
+    padding: 6px 16px;
+    min-height: 32px;
+
+    color: var(--neutral-6);
+
+    user-select: none;
+    pointer-events: none;
+  }
+
+  @include element(option) {
+    position: relative;
+  }
+}
+
+@include block(select-option) {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 32px;
+  padding-left: 16px;
+  padding-right: 16px;
+  line-height: 32px;
+
+  font-weight: 600;
+  cursor: pointer;
+  user-select: none;
+
+  // todo mixin
+  .svg-icon[data-name="check"] {
+    color: var(--primary-color);
+    fill: var(--green-8);
+  }
+
+  &:hover {
+    background-color: var(--neutral-1);
+  }
+
+  @include modifier(disabled) {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  @include element(content) {
+    min-width: 0;
+
+    @include text-omit;
+  }
+
+  .option-left-icon {
+    margin-right: 8px;
+  }
+}
+
+@include block(select-trigger) {
+  position: relative;
+  display: inline-flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  min-width: $select-min-width;
+  max-width: $select-max-width;
+  min-height: 32px;
+  line-height: 30px;
+  padding-left: 8px;
+  padding-right: 8px;
+
+  border: 1px solid var(--neutral-9);
+  border-radius: $border-radius;
+  background-color: white;
+
+  cursor: pointer;
+
+  &:hover {
+    border-color: var(--primary-color);
+
+    .trigger-arrow-icon {
+      color: var(--primary-color);
+      fill: var(--green-8);
+    }
+  }
+
+  label {
+    @include text-omit;
+  }
+
+  @include element(content) {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .trigger-arrow-icon {
+    flex-shrink: 0;
+    height: 30px;
+    margin-left: 8px;
+  }
+
+  @include modifier(active) {
+    // todo same as select-trigger:hover
+    border-color: var(--primary-color);
+
+    .trigger-arrow-icon {
+      color: var(--primary-color);
+      fill: var(--green-8);
+    }
+  }
+
+  @include modifier(disabled) {
+    pointer-events: none;
+    opacity: .5;
+  }
+}

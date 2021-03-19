@@ -1,0 +1,69 @@
+$popperBorderColor: white;
+$popperArrowMargin: 8px;
+$popperArrowOffset: -4px;
+
+// popper styles
+[data-popper-arrow],
+[data-popper-arrow]::before {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  z-index: -1;
+}
+
+[data-popper-arrow]::before {
+  content: '';
+  transition: transform 0.2s ease-out 0s, visibility 0.2s ease-out 0s;
+  visibility: visible;
+  transform: translateX(0px) rotate(45deg);
+  transform-origin: center center;
+}
+
+[data-popper-placement^='top'] > [data-popper-arrow] {
+  bottom: -4px;
+}
+
+[data-popper-placement^='bottom'] > [data-popper-arrow] {
+  top: -4px;
+}
+
+[data-popper-placement^='left'] > [data-popper-arrow] {
+  right: -4px;
+}
+
+[data-popper-placement^='right'] > [data-popper-arrow] {
+  left: -4px;
+}
+
+@include block(popper-container) {
+  border-radius: 4px;
+  z-index: $popper-z-index;
+
+  @include modifier(light) {
+    background-color: white;
+
+    [data-popper-arrow]::before {
+      background-color: white;
+    }
+  }
+
+  @include modifier(dark) {
+    background-color: #182530;
+
+    [data-popper-arrow]::before {
+      background-color: #182530;
+    }
+  }
+}
+
+// todo refactor this based on style guide
+.popper-tooltip-container {
+  max-width: 300px;
+  padding: 8px;
+
+  line-height: 1.67;
+  color: white;
+
+  border-radius: $border-radius-lg;
+  box-shadow: 0 2px 4px 0 rgba(20, 31, 41, 0.3);
+}

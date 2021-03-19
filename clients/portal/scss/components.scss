@@ -1,3 +1,10 @@
+@import 'variables';
+@import 'colors';
+@import 'mixin';
+@import 'tree';
+@import 'popper';
+@import 'select';
+
 @layer components {
   .base-button {
     @apply bg-blue-700 px-3 py-1;

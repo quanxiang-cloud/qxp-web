@@ -6,7 +6,8 @@ import { Control, Icon, Input } from '@QCFE/lego-ui';
 
 import { TextHeader } from '@portal/components/TextHeader';
 import { DepartmentStaff } from '@portal/components/DepartmentStaff';
-import { DepartmentTree } from './DepartmentTree';
+
+import DepartmentsTree from './departments-tree';
 import { Loading } from '@portal/components/Loading';
 import { PersonInfo } from './PersonInfo';
 import { getERPTree } from './api';
@@ -19,14 +20,12 @@ export const MailList = ({ visible }: IMailList) => {
   const [searchWord, setSearchWord] = useState('');
   const [curDept, setCurrDept] = useState<DeptTree | ''>('');
 
-  const { data, isLoading } = useQuery('getERPTree', () =>
+  const { data: rootDep, isLoading } = useQuery('getERPTree', () =>
     getERPTree().then((_treeData: any) => {
       setCurrDept(_treeData);
       return _treeData;
     }),
   );
-
-  const treeData: any[] = data ? [data] : [];
 
   const search = (keyWord: string) => {
     setSearchWord(keyWord);
@@ -38,7 +37,7 @@ export const MailList = ({ visible }: IMailList) => {
     }
   }
 
-  if (isLoading || !treeData.length) {
+  if (isLoading) {
     return <Loading desc="加载中..." />;
   }
 
@@ -86,11 +85,7 @@ export const MailList = ({ visible }: IMailList) => {
         <div className="h-full mt-4 flex items-start overflow-y-h">
           <div className="w-12-dot-95 h-full">
             <DepartmentStaff department="组织架构" />
-            <DepartmentTree
-              treeData={treeData}
-              setShowDept={setCurrDept}
-              departmentId={curDeptId}
-            />
+            <DepartmentsTree rootDep={rootDep} />
           </div>
           <div className="vertical-line flex-grow-0"></div>
           <PersonInfo

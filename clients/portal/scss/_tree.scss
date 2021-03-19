@@ -1,0 +1,93 @@
+$node-height: 56px;
+
+@include block(tree) {
+  position: relative;
+  width: 100%;
+
+  z-index: 1;
+
+  font-size: 14px;
+}
+
+@include block(tree-node) {
+  position: absolute;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  height: $node-height;
+
+  background-color: white;
+  transition: transform 200ms ease-in-out;
+  cursor: pointer;
+
+  &:hover {
+    color: #0F172A;
+    background-color: #F1F5F9;
+  }
+
+  @include modifier(focused) {
+    color: #375FF3;
+
+    // todo refactor this
+    // @include element(toggle-icon) {
+    //   color: var(--primary-color);
+    //   fill: var(--icon-coloured-fill);
+    // }
+
+    // @include element(indent-placeholder) {
+    //   &:last-of-type {
+    //     background-color: var(--primary-color);
+    //     box-shadow: 1px 0 0 0 var(--primary-color);
+    //   }
+    // }
+  }
+
+  @include modifier(focused-on-parent) {
+    // box-shadow: inset 0 0 0 1px var(--primary-color);
+  }
+
+  @include modifier(fade) {
+    opacity: 0.5;
+  }
+
+  @include modifier(accept-drop) {
+    // outline: 1px dashed var(--primary-color);
+    outline-offset: -2px;
+  }
+
+  @include element(indent-placeholder) {
+    flex-shrink: 0;
+    display: inline-block;
+    width: 1px;
+    margin: 0 8px;
+    height: $node-height;
+    background-color: transparent;
+    border-color: transparent;
+  }
+
+  @include element(toggle-icon) {
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    border-radius: 2px;
+    transform: rotate(-90deg);
+
+    &:hover {
+      background-color: rgba(96, 125, 139, 0.2);
+    }
+
+    @include modifier(opened) {
+      transform: rotate(0deg);
+    }
+  }
+
+  @include element(content) {
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    padding: 2px 0;
+
+    border-radius: 3px;
+    overflow: hidden;
+  }
+}
