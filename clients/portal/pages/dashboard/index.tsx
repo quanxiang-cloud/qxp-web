@@ -1,6 +1,6 @@
 import React from 'react';
 import useCss from 'react-use/lib/useCss';
-import classnames from 'classnames';
+import { twCascade } from '@mariusmarais/tailwind-cascade';
 
 import { Avatar } from '@portal/components/Avatar';
 import { Card } from '@portal/components/Card';
@@ -10,7 +10,6 @@ import { HeaderWithMenu } from '@portal/components/HeaderWithMenu';
 import { uuid } from '@assets/lib/f';
 
 import './index.scss';
-import { twCascade } from '@mariusmarais/tailwind-cascade';
 
 export default function Dashboard() {
   return (
@@ -32,13 +31,13 @@ export default function Dashboard() {
           }
           content={
             <List
-              itemClassName={classnames(
-                'px-4 py-dot-8 p-8',
-                useCss({
-                  'margin-right': '1rem',
-                  'background-color': '#fff',
-                }),
-                'rounded-md',
+              itemClassName={twCascade(
+                  'px-4 py-dot-8 p-8',
+                  useCss({
+                    'margin-right': '1rem',
+                    'background-color': '#fff',
+                  }),
+                  'rounded-md',
               )}
               items={[
                 <ItemWithTitleDesc
@@ -48,7 +47,7 @@ export default function Dashboard() {
                   itemRender={
                     <div
                       className={twCascade(
-                        'p-dot-3-6 bg-gradient-green-to-top-right rounded-lg rounded-tr-none',
+                          'p-dot-3-6 bg-gradient-green-to-top-right rounded-lg rounded-tr-none',
                       )}
                     >
                       <img src="/dist/images/calendar.svg" alt="calendar" />
@@ -64,7 +63,7 @@ export default function Dashboard() {
                   itemRender={
                     <div
                       className={twCascade(
-                        'p-dot-3-6 bg-gradient-yellow-to-top-right rounded-lg rounded-tr-none',
+                          'p-dot-3-6 bg-gradient-yellow-to-top-right rounded-lg rounded-tr-none',
                       )}
                     >
                       <img src="/dist/images/accounts.svg" alt="accounts" />
@@ -79,7 +78,7 @@ export default function Dashboard() {
                   itemRender={
                     <div
                       className={twCascade(
-                        'p-dot-3-6 bg-gradient-blue-to-top-right rounded-lg rounded-tr-none',
+                          'p-dot-3-6 bg-gradient-blue-to-top-right rounded-lg rounded-tr-none',
                       )}
                     >
                       <img src="/dist/images/add.svg" alt="add" />
@@ -102,13 +101,13 @@ export default function Dashboard() {
             content={
               <List
                 className="flex-col"
-                itemClassName={classnames(
-                  useCss({
-                    'margin-bottom': '1rem',
-                    'background-color': '#fff',
-                    padding: '.8rem',
-                  }),
-                  'rounded-md',
+                itemClassName={twCascade(
+                    useCss({
+                      'margin-bottom': '1rem',
+                      'background-color': '#fff',
+                      padding: '.8rem',
+                    }),
+                    'rounded-md',
                 )}
                 items={[
                   <ItemWithTitleDesc
@@ -118,7 +117,8 @@ export default function Dashboard() {
                     itemRender={
                       <div
                         className={twCascade(
-                          'w-dot-8 h-dot-8 bg-gradient-green-to-top-right rounded rounded-tr-none',
+                            'w-dot-8 h-dot-8 bg-gradient-green-to-top-right',
+                            'rounded rounded-tr-none',
                         )}
                       />
                     }
@@ -133,7 +133,8 @@ export default function Dashboard() {
                     itemRender={
                       <div
                         className={twCascade(
-                          'w-dot-8 h-dot-8 bg-gradient-yellow-to-top-right rounded rounded-tr-none',
+                            'w-dot-8 h-dot-8 bg-gradient-yellow-to-top-right',
+                            'rounded rounded-tr-none',
                         )}
                       />
                     }
@@ -148,7 +149,7 @@ export default function Dashboard() {
                     itemRender={
                       <div
                         className={twCascade(
-                          'w-dot-8 h-dot-8 bg-gradient-blue-to-top-right rounded rounded-tr-none',
+                            'w-dot-8 h-dot-8 bg-gradient-blue-to-top-right rounded rounded-tr-none',
                         )}
                       />
                     }

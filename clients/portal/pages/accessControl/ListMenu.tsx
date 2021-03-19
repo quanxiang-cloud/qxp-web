@@ -41,40 +41,40 @@ export const ListMenu = ({ onChange, defaultType }: IListMenu) => {
             key={item.id}
             onClick={() => setType(item.id)}
             className={classnames(
-              'h-2-bot-8 leading-2-bot-8 rounded-l-dot-4',
-              'p-x-0-dot-9 flex relative cursor-pointer transition',
-              useCss({
-                '> div': {
-                  display: 'none',
-                },
-                '&:hover': {
-                  'background-color': '#F1F5F9',
-                  '> span': {
-                    color: '#0F172A',
-                  },
+                'h-2-bot-8 leading-2-bot-8 rounded-l-dot-4',
+                'p-x-0-dot-9 flex relative cursor-pointer transition',
+                useCss({
                   '> div': {
-                    display: 'block',
+                    display: 'none',
                   },
-                },
-                ...(type === item.id
-                  ? {
-                      'background-color': '#F1F5F9',
-                      '> span': {
-                        color: '#0F172A',
-                      },
-                      '> div': {
-                        display: 'block',
-                      },
-                    }
-                  : {}),
-              }),
+                  '&:hover': {
+                    'background-color': '#F1F5F9',
+                    '> span': {
+                      color: '#0F172A',
+                    },
+                    '> div': {
+                      display: 'block',
+                    },
+                  },
+                  ...(type === item.id ?
+                  {
+                    'background-color': '#F1F5F9',
+                    '> span': {
+                      color: '#0F172A',
+                    },
+                    '> div': {
+                      display: 'block',
+                    },
+                  } :
+                  {}),
+                }),
             )}
           >
             <img className="w-1-dot-2 h-1-dot-2 pr-dot-4" src={item.icon} alt="logo" />
             <span className="fs-0-dot-8 text-94A3B8 text-dot-8">{item.name}</span>
             <div
               className={classnames(
-                'absolute top-0 right-0 w-0-dot-2 h-2-dot-8 bg-475569 rounded-l-dot-4',
+                  'absolute top-0 right-0 w-0-dot-2 h-2-dot-8 bg-475569 rounded-l-dot-4',
               )}
             ></div>
           </li>
