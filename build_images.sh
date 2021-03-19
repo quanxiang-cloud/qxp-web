@@ -2,6 +2,8 @@
 
 set -e
 
+GOOS=linux go build -o ./docker-files/portal/portal server/cmd/portal/main.go
+
 IMAGE_PREFIX=dockerhub.qingcloud.com/qxpdev
 
 docker build -t $IMAGE_PREFIX/qxp-web-nginx -f ./docker-files/nginx/Dockerfile ./docker-files/nginx
