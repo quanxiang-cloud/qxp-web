@@ -30,7 +30,6 @@ interface ITree<T extends ITreeData> extends TreeProps {
   keyword?: string;
   visible?: boolean;
   onRow?: IOnRow<T>;
-  className?: string;
   itemClassName?: string;
   appendixRender?: (
     row: ITreeData,

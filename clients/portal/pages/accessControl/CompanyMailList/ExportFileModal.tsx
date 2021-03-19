@@ -372,7 +372,7 @@ export const ExportFileModal = ({
             <div>
               <p className="text-475569 font-semibold">接下来选择：</p>
               <p className="text-dot-7 py-dot-4">向已导入的员工发送随机密码</p>
-              <CheckboxGroup name="states" onChange={(value) => changeCheckbox(value)}>
+              <CheckboxGroup name="states" onChange={(value: string[]) => changeCheckbox(value)}>
                 <Checkbox value="email">通过邮箱</Checkbox>
                 <Checkbox value="phone">通过短信</Checkbox>
               </CheckboxGroup>

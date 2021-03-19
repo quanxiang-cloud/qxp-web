@@ -30,7 +30,7 @@ export const Checkbox = ({
       checked={!!checked}
       disabled={!!disabled}
       indeterminate={indeterminate}
-      onChange={(e, checked) => {
+      onChange={(e: Event, checked:boolean) => {
         if (onChange) {
           onChange(e, checked);
         }
