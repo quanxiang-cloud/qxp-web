@@ -21,8 +21,8 @@ export const ActionsList = function <T>({ actions, params, className }: IActions
   return (
     <div
       className={twCascade(
-        'min-w-24 z-10 py-dot-8 shadow-title bg-white rounded-dot-6 absolute top-1-dot-6 right-0',
-        className,
+          'min-w-24 z-10 py-dot-8 shadow-title bg-white rounded-dot-6 absolute top-1-dot-6 right-0',
+          className,
       )}
     >
       <ul className="flex flex-col items-center">
@@ -37,15 +37,19 @@ export const ActionsList = function <T>({ actions, params, className }: IActions
                 action.onclick && action.onclick(params);
               }}
               className={classnames(
-                'w-full h-1-dot-9 px-dot-8 flex items-center cursor-pointer',
-                useCss({
-                  '&:hover': {
-                    'background-color': '#F0F6FF',
-                  },
-                }),
+                  'w-full h-1-dot-9 px-dot-8 flex items-center cursor-pointer justify-between',
+                  useCss({
+                    '&:hover': {
+                      'background-color': '#F0F6FF',
+                    },
+                  }),
               )}
             >
-              {action.iconName && <Icon name={action.iconName} className="mr-dot-4" />}
+              {action.iconName && !action.iconName.endsWith('.svg') &&
+                <Icon name={action.iconName} className="mr-dot-4" />}
+              {action.iconName && action.iconName.endsWith('.svg') && (
+                <img src={action.iconName} />
+              )}
               <div className="text-dot-7 whitespace-no-wrap">{action.text}</div>
             </li>
           );

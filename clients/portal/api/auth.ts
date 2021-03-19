@@ -52,6 +52,7 @@ export interface IRole {
   id: string;
   name: string;
   tag: string;
+  roleID: string;
 }
 export const getUserRoles = async (
     userId: string,
