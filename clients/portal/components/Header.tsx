@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction } from 'react';
+import React, { Dispatch, SetStateAction, useRef } from 'react';
 import { Link } from 'react-router-dom';
 
 import { PersonalSettingMenu } from './PersonalSettingMenu';
@@ -10,11 +10,16 @@ export interface IHeader {
 }
 
 export const Header = ({ onMenuToggle, getSetter }: IHeader) => {
+  const hamburgerRef = useRef<HTMLDivElement>(null);
+
   return (
     <div className="mx-auto flex justify-between h-13 py-dot-8 px-1-dot-2 bg-white text-dot-7">
       <div className="flex justify-between items-center">
-        <div className="mr-8 flex justify-between items-center">
-          <Hamburger onChange={onMenuToggle} getSetter={getSetter} />
+        <div
+          className="mr-8 flex justify-between items-center cursor-pointer"
+          onClick={() => hamburgerRef.current?.click()}
+        >
+          <Hamburger onChange={onMenuToggle} getSetter={getSetter} ref={hamburgerRef} />
           <span className="ml-dot-3-5">平台管理</span>
         </div>
         <div>
