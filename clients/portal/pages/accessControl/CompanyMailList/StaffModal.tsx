@@ -22,6 +22,8 @@ export type FormValues = {
   roleIDs: string[];
   depIDs: string[];
   id?: string;
+  sendEmailMsg?: 1 | -1;
+  sendPhoneMsg?: 1 | -1;
 };
 
 export type EditFormValues = {
@@ -76,12 +78,16 @@ export const StaffModal = (props: StaffModalProps) => {
       return;
     }
     const values = form.getFieldsValue();
-    console.log(values);
+    const { userName, phone, email, way, depIDs, roleIDs } = values;
     if (status === 'add') {
       const params: FormValues = {
-        ...values,
-        depIDs: values.depIDs ? [values.depIDs] : [],
-        roleIDs: values.roleIDs ? [values.roleIDs] : [],
+        userName,
+        phone,
+        email,
+        sendPhoneMsg: way && way.includes('phone') ? 1 : -1,
+        sendEmailMsg: way && way.includes('email') ? 1 : -1,
+        depIDs: depIDs ? [depIDs] : [],
+        roleIDs: roleIDs ? [roleIDs] : [],
       };
       okModal(params);
     } else {
@@ -196,9 +202,27 @@ export const StaffModal = (props: StaffModalProps) => {
             },
           ]}
         />
+        {
+          status === 'add' && (
+            <CheckboxGroupField
+              name="way"
+              label="向员工发送密码"
+              options={[
+                {
+                  label: '通过邮箱',
+                  value: 'email',
+                },
+                {
+                  label: '通过短信',
+                  value: 'phone',
+                },
+              ]}
+            />
+          )
+        }
         <SelectTreeField
           name="depIDs"
-          label="选择部门"
+          label="部门"
           placeholder="请选择部门"
           defaultSelect={initData.dep || ''}
           treeData={treeData}
@@ -233,21 +257,6 @@ export const StaffModal = (props: StaffModalProps) => {
           ]}
         />
       </Form>
-
-      {/* <CheckboxGroupField
-          name="roleIDs"
-          label="向员工发送密码"
-          options={[
-            {
-              label: '通过邮箱',
-              value: '1',
-            },
-            {
-              label: '通过短信',
-              value: '2',
-            },
-          ]}
-        /> */}
     </Modal>
   );
 };

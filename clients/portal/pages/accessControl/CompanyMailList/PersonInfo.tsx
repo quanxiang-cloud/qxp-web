@@ -256,37 +256,45 @@ export const PersonInfo = ({
     });
   };
 
-  const handleStatus = (status: UserStatus) => {
-    let text = '';
-    switch (status) {
-      case -1:
-        text = '删除';
-        break;
-      case -2:
-        text = '禁用';
-        break;
-      default:
-        text = '正常';
-        break;
-    }
-    return text;
+  const imgBgColors: string[] = ['#6366F1', '#F59E0B', '#10B981', '#F97316',
+    '#A855F7', '#14B8A6', '#EF4444', '#06B6D4'];
+
+  const getImgColor = (text: string, colors = imgBgColors) => {
+    const num: number = text.charCodeAt(0) % 8;
+    return colors[num];
   };
 
   const columns = [
     {
       title: '姓名',
       dataIndex: 'userName',
-      render: (text: string, render: IUserInfo) => {
+      render: (text: string, record: IUserInfo) => {
+        const head: string = text.substring(0, 1);
+        const bgColor = getImgColor(head);
         return (
           <div className="flex items-center">
-            {render.useStatus === 1 && (
-              <div className="w-dot-3 h-dot-3 bg-16A34A rounded-dot-3"></div>
-            )}
-            {render.useStatus === -2 && (
-              <div className="w-dot-3 h-dot-3 bg-red-600 rounded-dot-3"></div>
-            )}
-            <span>{render.userName}</span>
-            {render.isDEPLeader === 1 && (
+            <div className="pr-dot-4 relative">
+              <div className="w-1-dot-2 h-1-dot-2 rounded-br-dot-2 rounded-l-dot-2
+              rounded-br-dot-2 text-center leading-1-dot-2 text-white text-dot-7"
+              style={{
+                backgroundColor: bgColor,
+              }}
+              >{head}</div>
+              <div className="w-2 h-2 bg-white rounded-lg flex items-center
+              justify-center absolute bottom-dot-25 right-dot-25">
+                {record.useStatus === 1 && (
+                  <div className="w-dot-3 h-dot-3 bg-16A34A rounded-dot-3"></div>
+                )}
+                {record.useStatus === -2 && (
+                  <div className="w-dot-3 h-dot-3 bg-red-600 rounded-dot-3"></div>
+                )}
+              </div>
+            </div>
+
+            {record.useStatus === -2 ?
+            <span className="mr-dot-1 text-94A3B8">{text}</span> :
+            <span className="mr-dot-1">{text}</span>}
+            {record.isDEPLeader === 1 && (
               <span
                 className={twCascade(
                     'w-1-dot-6 h-dot-8 bg-jb rounded-dot-2 p-dot-2',
@@ -304,18 +312,34 @@ export const PersonInfo = ({
       title: '手机号',
       dataIndex: 'phone',
       width: 130,
+      render: (text: string, record: IUserInfo) => {
+        return (record.useStatus === -2 ?
+          <span className="mr-dot-1 text-94A3B8">{text}</span>:
+          <span className="mr-dot-1">{text}</span>);
+      },
     },
     {
       title: '邮箱',
       dataIndex: 'email',
       // width: 150,
+      render: (text: string, record: IUserInfo) => {
+        return (record.useStatus === -2 ?
+          <span className="mr-dot-1 text-94A3B8">{text}</span>:
+          <span className="mr-dot-1">{text}</span>
+        );
+      },
     },
     {
       title: '部门',
       dataIndex: 'department',
-      render: (text: string, render: IUserInfo) => {
-        return render.dep && render.dep.departmentName;
-      },
+      render: (text: string, record: IUserInfo) => {
+        return (
+          record.useStatus === -2 ?
+          <span className="mr-dot-1 text-94A3B8">{record.dep && record.dep.departmentName}</span>:
+        <span className="mr-dot-1 ">{record.dep && record.dep.departmentName}</span>
+        );
+      }
+      ,
     },
     {
       title: '',
@@ -411,7 +435,7 @@ export const PersonInfo = ({
   const expandActions: IActionListItem<null>[] = [
     {
       id: '1',
-      iconName: 'export-data.svg',
+      iconName: 'export',
       text: '导出员工数据 ',
       onclick: () => exportDepData(),
     },
