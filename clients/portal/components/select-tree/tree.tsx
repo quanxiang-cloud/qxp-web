@@ -35,7 +35,7 @@ function TreeCom({ onSelect, treeData }: Props) {
     <Tree defaultExpandAll>
       {treeData.length > 0 ? renderTreeNodes(treeData) : null}
     </Tree>
-  )
+  );
 }
 
 export default TreeCom;

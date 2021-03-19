@@ -75,7 +75,7 @@ export default function EditDepartment({ department, closeModal }: DepartmentMod
           name="departmentName"
           label="部门名称"
           placeholder="请输入部门名称"
-          help="不超过 30 个字符，部门名称不可重复。"
+          help="不超过 10 个字符，部门名称不可重复。"
           defaultValue={department.departmentName}
           schemas={[
             {

@@ -21,15 +21,21 @@ type DepartmentNodeProps = {
 const MENUS: MenuItem<string>[] = [
   {
     key: 'add',
-    label: (<><Icon name="add" className="mr-dot-4" />添加部门</>),
+    label: (
+      <div className="flex items-center"><Icon name="add" className="mr-dot-4" />添加部门</div>
+    ),
   },
   {
     key: 'edit',
-    label: (<><Icon name="pen" className="mr-dot-4" />修改信息</>),
+    label: (
+      <div className="flex items-center"><Icon name="pen" className="mr-dot-4" />修改信息</div>
+    ),
   },
   {
     key: 'delete',
-    label: (<><Icon name="trash" className="mr-dot-4" />删除部门</>),
+    label: (
+      <div className="flex items-center"><Icon name="trash" className="mr-dot-4" />删除部门</div>
+    ),
   },
 ];
 
@@ -52,6 +58,7 @@ function DepartmentNode({ node, store }: DepartmentNodeProps): JSX.Element {
       <span className="truncate mr-auto">{node.name}</span>
       <MoreMenu
         menus={MENUS}
+        placement="bottom-end"
         className="opacity-0 group-hover:opacity-100"
         onChange={(key) => {
           if (key === 'add') {
