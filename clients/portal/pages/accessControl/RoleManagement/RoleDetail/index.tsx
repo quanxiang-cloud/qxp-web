@@ -18,6 +18,7 @@ export const RoleDetail = ({ role, id }: IRoleDetail) => {
   const { data, isLoading } = useQuery(['getRoleFunctions', id], getRoleFunctions, {
     refetchOnWindowFocus: false,
     enabled: !!id,
+    cacheTime: -1,
   });
 
   if (isLoading || !data?.func || !role) {

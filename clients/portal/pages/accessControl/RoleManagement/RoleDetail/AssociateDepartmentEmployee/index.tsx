@@ -198,7 +198,7 @@ export const AssociateDepartmentEmployee = ({ id, isSuper }: IAssociateDepartmen
                     actions={[
                       {
                         id: ownerID,
-                        iconName: 'linkOff.svg',
+                        iconName: '/dist/images/linkOff.svg',
                         text: '取消关联',
                         onclick: onCancelAssociation(record),
                       },
