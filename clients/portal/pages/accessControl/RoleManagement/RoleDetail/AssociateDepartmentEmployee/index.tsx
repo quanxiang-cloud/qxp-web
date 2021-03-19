@@ -82,6 +82,23 @@ export const AssociateDepartmentEmployee = ({ id, isSuper }: IAssociateDepartmen
     }
   };
 
+  const onCancelAssociation = (record: IOwner) => {
+    setSelectedRows((rows) => {
+      if (rows.length) {
+        mutation.mutate({
+          roleID: id as string,
+          delete: rows.map(({ id }) => id),
+        });
+      } else {
+        mutation.mutate({
+          roleID: id as string,
+          delete: [record.id],
+        });
+      }
+      return rows;
+    });
+  };
+
   if (isLoading) {
     return <Loading desc="加载中..." />;
   }
@@ -110,22 +127,6 @@ export const AssociateDepartmentEmployee = ({ id, isSuper }: IAssociateDepartmen
         return [...rows, record];
       }
     });
-  };
-
-  const onCancelAssociation = (record: IOwner) => {
-    return () => {
-      if (selectedRows.length) {
-        mutation.mutate({
-          roleID: id as string,
-          delete: selectedRows.map(({ id }) => id),
-        });
-      } else {
-        mutation.mutate({
-          roleID: id as string,
-          delete: [record.id],
-        });
-      }
-    };
   };
 
   return (
@@ -200,7 +201,7 @@ export const AssociateDepartmentEmployee = ({ id, isSuper }: IAssociateDepartmen
                         id: ownerID,
                         iconName: '/dist/images/linkOff.svg',
                         text: '取消关联',
-                        onclick: onCancelAssociation(record),
+                        onclick: () => onCancelAssociation(record),
                       },
                     ]}
                     params={record}

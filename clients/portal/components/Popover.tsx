@@ -78,12 +78,12 @@ export const Popover = ({
       <div
         ref={tooltipRef}
         className={twCascade(
-          {
-            invisible: !isOpen,
-            'pointer-events-none': !isOpen,
-          },
-          tooltipClassName,
-          'mt-2',
+            {
+              invisible: !isOpen,
+              'pointer-events-none': !isOpen,
+            },
+            tooltipClassName,
+            'mt-2',
         )}
         style={{ ...styles, margin: 0 }}
         {...attributes.popper}
