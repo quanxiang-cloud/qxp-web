@@ -1,78 +1,134 @@
+import { action, computed } from 'mobx';
+import BaseStore, { TreeStorProps } from './store';
+
 type NodeMap<T> = Record<string, TNode<T>>
+type SelectedNodePaths<T> = Array<Array<TNode<T>>>
 
-const nodeMap: NodeMap<any> = {};
-
-function toggleNode(
-    id: string,
-    checkStatus: 'checked' | 'unchecked',
-) {
-  if (!nodeMap[id]) {
-    return;
+function selectedNodes<T>(nodeMap: NodeMap<T>, parentID: string): SelectedNodePaths<T> {
+  if (nodeMap[parentID].checkStatus === 'checked') {
+    return [[nodeMap[parentID]]];
   }
 
-  if (nodeMap[id].checkStatus === checkStatus) {
-    return;
-  }
+  let selectedNodePaths: SelectedNodePaths<T> = [];
+  nodeMap[parentID].children?.forEach((id) => {
+    const childSelectedPaths = selectedNodes(nodeMap, id);
+    childSelectedPaths.forEach((path) => {
+      path.unshift(nodeMap[parentID]);
+    });
 
-  nodeMap[id].checkStatus = checkStatus;
-  (nodeMap[id].children || []).forEach((id) => {
-    toggleNode(id, checkStatus);
+    selectedNodePaths = childSelectedPaths;
   });
 
-  const parentID = nodeMap[id].parentID;
-  if (!parentID || nodeMap[parentID]) {
-    return;
-  }
-
-  handlePropagate(parentID, checkStatus);
+  return selectedNodePaths;
 }
 
-function handlePropagate(id: string, childCheckStatus: CheckStatus) {
-  if (!nodeMap[id]) {
-    return;
+class SelectableTreeStore<T> extends BaseStore<T> {
+  _nodeMap: NodeMap<T> = {};
+  nodeMap: NodeMap<T> = {};
+
+  constructor(props: TreeStorProps<T>) {
+    super(props);
+
+    this.generateNodeMap();
   }
 
-  const checkStatus = nodeMap[id].checkStatus;
+  generateNodeMap() {
+    // todo support initial check status
+    this._nodeMap = this.nodeList.reduce<NodeMap<T>>((nodeMap, node) => {
+      nodeMap[node.id] = {
+        data: node.data,
+        id: node.id,
+        parentID: node.parentId,
+        children: node.children?.map(({ id }) => id),
+        checkStatus: 'unchecked',
+      };
 
-  // P: parent checkStatus
-  // C: child checkStatus
-  // | P\C | ✅    | ❌    | ❓    |
-  // | ---- | ---- | ---- | ---- |
-  // | ✅    | ⏹    | ❓    | ❓    |
-  // | ❌    | ❓    | ⏹    | ❓    |
-  // | ❓    | 🧮    | 🧮    | ⏹    |
-  if (checkStatus === childCheckStatus) {
-    return;
+      return nodeMap;
+    }, {});
   }
 
-  if (
-    childCheckStatus === 'indeterminate' ||
-    checkStatus === 'unchecked' ||
-    (checkStatus === 'checked' && childCheckStatus == 'unchecked')
-  ) {
-    nodeMap[id].checkStatus = 'indeterminate';
-    if (nodeMap[id].parentID) {
-      handlePropagate(nodeMap[id].parentID as string, 'indeterminate');
+  @computed get SelectedNodePaths(): SelectedNodePaths<T> {
+    const rootNodeID = this.rootNode.id;
+
+    return selectedNodes(this.nodeMap, rootNodeID);
+  }
+
+  @action
+  toggleCheck(id: string, checkStatus: 'checked' | 'unchecked') {
+    this._toggleCheck(id, checkStatus);
+
+    this.nodeMap = this._nodeMap;
+  }
+
+  _toggleCheck(id: string, checkStatus: 'checked' | 'unchecked') {
+    if (!this._nodeMap[id]) {
+      return;
     }
-    return;
-  }
 
-  if (childCheckStatus === 'checked') {
-    const allChildrenChecked = nodeMap[id].children?.every((childID) => {
-      return nodeMap[childID].checkStatus === 'checked';
+    if (this._nodeMap[id].checkStatus === checkStatus) {
+      return;
+    }
+
+    this._nodeMap[id].checkStatus = checkStatus;
+    (this._nodeMap[id].children || []).forEach((id) => {
+      this._toggleCheck(id, checkStatus);
     });
 
-    nodeMap[id].checkStatus = allChildrenChecked ? 'checked' : 'indeterminate';
-    handlePropagate(nodeMap[id].parentID as string, nodeMap[id].checkStatus);
+    const parentID = this._nodeMap[id].parentID;
+    if (!parentID || this._nodeMap[parentID]) {
+      return;
+    }
+
+    this.propagateCheckStatus(parentID, checkStatus);
   }
 
-  if (childCheckStatus === 'unchecked') {
-    const hasCheckedChild = nodeMap[id].children?.some((childID) => {
-      return nodeMap[childID].checkStatus === 'checked' ||
-        nodeMap[childID].checkStatus === 'indeterminate';
-    });
+  propagateCheckStatus(id: string, childCheckStatus: CheckStatus) {
+    if (!this._nodeMap[id]) {
+      return;
+    }
 
-    nodeMap[id].checkStatus = hasCheckedChild ? 'indeterminate' : 'unchecked';
-    handlePropagate(nodeMap[id].parentID as string, nodeMap[id].checkStatus);
+    const checkStatus = this._nodeMap[id].checkStatus;
+
+    // P: parent checkStatus
+    // C: child checkStatus
+    // | P\C | ✅    | ❌    | ❓    |
+    // | ---- | ---- | ---- | ---- |
+    // | ✅    | ⏹    | ❓    | ❓    |
+    // | ❌    | ❓    | ⏹    | ❓    |
+    // | ❓    | 🧮    | 🧮    | ⏹    |
+    if (checkStatus === childCheckStatus) {
+      return;
+    }
+
+    if (
+      childCheckStatus === 'indeterminate' ||
+      checkStatus === 'unchecked' ||
+      (checkStatus === 'checked' && childCheckStatus == 'unchecked')
+    ) {
+      this._nodeMap[id].checkStatus = 'indeterminate';
+      if (this._nodeMap[id].parentID) {
+        this.propagateCheckStatus(this._nodeMap[id].parentID as string, 'indeterminate');
+      }
+      return;
+    }
+
+    if (childCheckStatus === 'checked') {
+      const allChildrenChecked = this._nodeMap[id].children?.every((childID) => {
+        return this._nodeMap[childID].checkStatus === 'checked';
+      });
+
+      this._nodeMap[id].checkStatus = allChildrenChecked ? 'checked' : 'indeterminate';
+      this.propagateCheckStatus(this._nodeMap[id].parentID as string, this._nodeMap[id].checkStatus);
+    }
+
+    if (childCheckStatus === 'unchecked') {
+      const hasCheckedChild = this._nodeMap[id].children?.some((childID) => {
+        return this._nodeMap[childID].checkStatus === 'checked' ||
+          this._nodeMap[childID].checkStatus === 'indeterminate';
+      });
+
+      this._nodeMap[id].checkStatus = hasCheckedChild ? 'indeterminate' : 'unchecked';
+      this.propagateCheckStatus(this._nodeMap[id].parentID as string, this._nodeMap[id].checkStatus);
+    }
   }
 }

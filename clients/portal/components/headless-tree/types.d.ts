@@ -23,7 +23,7 @@ type CheckStatus = 'checked' | 'unchecked' | 'indeterminate';
 type TNode<T> = {
   data: T;
   id: string;
-  parentID?: string;
+  parentID: string | null;
   children?: string[];
 
   checkStatus: CheckStatus;
