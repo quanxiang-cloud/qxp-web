@@ -14,6 +14,7 @@ export const DeleteModal = ({ currDep, closeModal, okModal }: DeleteModalProps) 
     <Modal
       visible
       title="删除"
+      className="static-modal"
       onCancel={closeModal}
       footer={
         <div className="flex items-center">

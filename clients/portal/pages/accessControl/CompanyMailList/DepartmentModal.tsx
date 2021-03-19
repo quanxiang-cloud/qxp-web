@@ -21,11 +21,11 @@ type DepParams = {
 };
 
 function findTreeNode(
-  originalTreeData: DeptTree,
-  targetId: string,
-  saveTargetNode: React.Dispatch<null | DeptInfo>,
+    originalTreeData: DeptTree,
+    targetId: string,
+    saveTargetNode: React.Dispatch<null | DeptInfo>,
 ) {
-  let stop: boolean = false;
+  let stop = false;
   function findFun(treeData: DeptTree) {
     if (stop) {
       return;
@@ -56,21 +56,21 @@ export default function DepartmentModal({
   const [parentNode, setParentNode] = useState<DeptInfo | null>(null);
   const queryClient = useQueryClient();
   const { data } = useQuery(
-    'getERPTree',
-    () =>
-      getERPTree().then((_treeData: any) => {
-        if (isEdit) {
-          if (department?.pid) {
-            findTreeNode(_treeData, department.pid, setParentNode);
+      'getERPTree',
+      () =>
+        getERPTree().then((_treeData: any) => {
+          if (isEdit) {
+            if (department?.pid) {
+              findTreeNode(_treeData, department.pid, setParentNode);
+            }
+          } else {
+            setParentNode(department);
           }
-        } else {
-          setParentNode(department);
-        }
-        return _treeData;
-      }),
-    {
-      refetchOnWindowFocus: false,
-    },
+          return _treeData;
+        }),
+      {
+        refetchOnWindowFocus: false,
+      },
   );
 
   const treeData = data ? [data] : [];
@@ -83,7 +83,7 @@ export default function DepartmentModal({
     }
     const params = formRef.current?.getFieldsValue();
 
-    let bol = await validateDepName(params.pid, params.departmentName);
+    const bol = await validateDepName(params.pid, params.departmentName);
     if (!bol) {
       Message.error('部门名称重复，请重新输入');
       return;
@@ -96,17 +96,17 @@ export default function DepartmentModal({
     const requestAPI = isEdit ? editDepartment : createDepartment;
 
     requestAPI(params)
-      .then(() => {
-        queryClient.invalidateQueries('getERPTree');
-        closeModal();
-        Message.success({
-          content: '操作成功！',
+        .then(() => {
+          queryClient.invalidateQueries('getERPTree');
+          closeModal();
+          Message.success({
+            content: '操作成功！',
+          });
+        })
+        .catch((error) => {
+          console.log(error);
+          Message.error('操作失败！');
         });
-      })
-      .catch((error) => {
-        console.log(error);
-        Message.error('操作失败！');
-      });
   };
 
   const validateDepName = async (id: string, value: string) => {
@@ -114,7 +114,7 @@ export default function DepartmentModal({
       depID: id,
       depName: value,
     };
-    let res = await queryERPName(params);
+    const res = await queryERPName(params);
     if (res && res.code === 0) {
       const { data } = res;
       if (data && data.isExist === 1) {
@@ -132,7 +132,7 @@ export default function DepartmentModal({
     <Modal
       visible
       title={`${titleText}部门`}
-      width={632}
+      className="static-modal"
       onCancel={closeModal}
       footer={
         <div className="flex items-center">

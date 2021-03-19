@@ -24,7 +24,7 @@ export const AccountHandleModal = (props: AccountHandleModalProps) => {
     <Modal
       title={`${titleText}账号`}
       visible={visible}
-      width={632}
+      className="static-modal"
       onCancel={closeModal}
       footer={
         <div className="flex items-center">
