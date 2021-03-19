@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useQuery } from 'react-query';
-import classnames from 'classnames';
 import { twCascade } from '@mariusmarais/tailwind-cascade';
 import { Control, Icon, Input } from '@QCFE/lego-ui';
 
@@ -46,7 +45,7 @@ export const MailList = ({ visible }: IMailList) => {
 
   return (
     <div
-      className={classnames('transition-opacity', 'flex-column', {
+      className={twCascade('transition-opacity flex-column', {
         visible: visible,
         invisible: !visible,
         'opacity-0': !visible,
@@ -56,6 +55,8 @@ export const MailList = ({ visible }: IMailList) => {
         'h-0': !visible,
         'h-full': visible,
         'overflow-hidden': !visible,
+        'flex-none': !visible,
+        'flex-1': visible,
       })}
     >
       <TextHeader
@@ -67,8 +68,8 @@ export const MailList = ({ visible }: IMailList) => {
       <div className="h-full flex-column overflow-y-h">
         <div
           className={twCascade(
-            'w-416 m-4 bg-F1F5F9 rounded-r-dot-6 rounded-tl-dot-2',
-            'rounded-bl-dot-6 flex items-center',
+              'w-416 m-4 bg-F1F5F9 rounded-r-dot-6 rounded-tl-dot-2',
+              'rounded-bl-dot-6 flex items-center',
           )}
         >
           <Control className="has-icons-left flex-1 control-set">

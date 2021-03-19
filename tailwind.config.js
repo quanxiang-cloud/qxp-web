@@ -29,6 +29,7 @@ module.exports = {
       },
       flex: {
         '2dot5': '2.5 1 0%',
+        none: '0 0 0%',
       },
     },
   },
