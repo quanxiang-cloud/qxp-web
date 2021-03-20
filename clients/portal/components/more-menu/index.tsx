@@ -38,6 +38,8 @@ const modifiers = [
 ];
 
 function stopPropagation(e: any) {
+  // prevent click event propagate to parent node
+  // incase parent node also has an event handler too
   e.stopPropagation();
 }
 
@@ -70,6 +72,8 @@ function RenderMenuItems<T extends React.Key>(
   );
 }
 
+// todo fix this
+// opened more-menu will not be closed when another more-menu opened
 export default function MoreMenu<T extends React.Key>({
   iconName, className, menus, onVisibilityChange, onChange, menuDesc, placement, likeBtn,
 }: Props<T>): JSX.Element {
