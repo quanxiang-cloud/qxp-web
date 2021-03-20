@@ -1,6 +1,8 @@
 import _ from 'lodash';
 import { observable, action, computed } from 'mobx';
 
+import { TreeNode } from './types';
+
 import {
   flatTree,
   findNode,
@@ -142,9 +144,9 @@ export default class TreeStor<T> {
 
   @action
   patchNode(
-      nodeID: string,
-      name: string,
-      data: Record<string, string | number | boolean | undefined | null | Array<string | number>>,
+    nodeID: string,
+    name: string,
+    data: Record<string, string | number | boolean | undefined | null | Array<string | number>>,
   ): boolean {
     const nodeToPatch = this.getNode(nodeID);
     if (!nodeToPatch) {

@@ -2,14 +2,18 @@ import * as React from 'react';
 import classnames from 'classnames';
 import { Icon } from '@QCFE/lego-ui';
 
+import TreeStore from './store';
+import { TreeNode } from './types';
+
 type Props<T> = {
   node: TreeNode<T>;
+  store: TreeStore<T>;
   draggingNode: TreeNode<T> | null;
   currentFocusedNodeID: string;
   renamingNodeID: string;
   actualFocusedNodeID: string;
   upwardFocusedStyleToParent: boolean;
-  nodeRender: (node: TreeNode<T>) => JSX.Element | string;
+  NodeRender: React.FC<{ node: TreeNode<T>; store: TreeStore<T> }>;
   onClick: (node: TreeNode<T>) => void;
   onSwitcherClick: (node: TreeNode<T>) => void;
   draggable?: (node: TreeNode<T>) => boolean;
@@ -46,11 +50,12 @@ function renderSwitcherIcon({
 
 export default function renderNode<T>({
   node,
+  store,
   currentFocusedNodeID,
   renamingNodeID,
   actualFocusedNodeID,
   upwardFocusedStyleToParent,
-  nodeRender,
+  NodeRender,
   onClick,
   onSwitcherClick,
   draggingNode,
@@ -118,7 +123,7 @@ export default function renderNode<T>({
         onDragStart={(): void => setDraggingNode?.(node)}
         onDragEnd={(): void => setDraggingNode?.(null)}
       >
-        {nodeRender(node)}
+        <NodeRender node={node} store={store} />
       </div>
     </div>
   );

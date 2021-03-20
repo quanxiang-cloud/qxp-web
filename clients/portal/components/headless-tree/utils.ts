@@ -1,6 +1,8 @@
+import { TreeNode } from './types';
+
 export function flatTree(parentNode: TreeNode<any>): TreeNode<any>[] {
   return [parentNode].concat(...(parentNode.children || [])
-      .map((child: TreeNode<any>) => flatTree(child)));
+    .map((child: TreeNode<any>) => flatTree(child)));
 }
 
 export function findNode(currentNode: TreeNode<any>, nodeID: string): TreeNode<any> | null {
@@ -24,9 +26,9 @@ export function findNode(currentNode: TreeNode<any>, nodeID: string): TreeNode<a
 }
 
 export function getNodeParents(
-    currentNode: TreeNode<any>,
-    nodeID: string,
-    parents: TreeNode<any>[],
+  currentNode: TreeNode<any>,
+  nodeID: string,
+  parents: TreeNode<any>[],
 ): boolean {
   if (currentNode.id === nodeID) {
     return true;
@@ -46,23 +48,23 @@ export function addChildren(parentNode: TreeNode<any>, nodes: TreeNode<any>[]): 
   const _parentNode = { ...parentNode };
   const idSet = new Set();
   const childrenNodes = nodes.concat((parentNode.children || []).slice())
-      .filter((node: TreeNode<any>) => {
-        if (idSet.has(node.id)) {
-          return false;
-        }
+    .filter((node: TreeNode<any>) => {
+      if (idSet.has(node.id)) {
+        return false;
+      }
 
-        idSet.add(node.id);
+      idSet.add(node.id);
 
-        return true;
-      }).map((node) => {
-        return {
-          ...node,
-          parentId: parentNode.id,
-          level: parentNode.level + 1,
-        };
-      }).map((node) => {
-        return addChildren(node, node.children || []);
-      });
+      return true;
+    }).map((node) => {
+      return {
+        ...node,
+        parentId: parentNode.id,
+        level: parentNode.level + 1,
+      };
+    }).map((node) => {
+      return addChildren(node, node.children || []);
+    });
 
   _parentNode.children = childrenNodes.sort((nodeA: TreeNode<any>, nodeB: TreeNode<any>) => {
     if (nodeA.isLeaf === nodeB.isLeaf) {
@@ -92,7 +94,10 @@ export function updateNode(currentNode: TreeNode<any>, node: TreeNode<any>): Tre
   };
 }
 
-export function patchAllNodes(node: TreeNode<any>, partialValue: Partial<TreeNode<any>>): TreeNode<any> {
+export function patchAllNodes(
+  node: TreeNode<any>,
+  partialValue: Partial<TreeNode<any>>,
+): TreeNode<any> {
   return {
     ...node,
     ...partialValue,

@@ -1,5 +1,6 @@
-type TreeNode<T> = Readonly<{
-  // data is the information node holds
+import TreeStore from './store';
+
+export type TreeNode<T> = Readonly<{
   data: T;
 
   name: string;
@@ -18,9 +19,9 @@ type TreeNode<T> = Readonly<{
   children?: TreeNode<T>[];
 }>;
 
-type CheckStatus = 'checked' | 'unchecked' | 'indeterminate';
+export type CheckStatus = 'checked' | 'unchecked' | 'indeterminate';
 
-type TNode<T> = {
+export type TNode<T> = {
   data: T;
   id: string;
   parentID: string | null;
@@ -28,3 +29,6 @@ type TNode<T> = {
 
   checkStatus: CheckStatus;
 }
+
+export type NodeRenderProps<T> = { node: TreeNode<T>; store: TreeStore<T> };
+export type NodeRender<T> = React.FC<NodeRenderProps<T>>
