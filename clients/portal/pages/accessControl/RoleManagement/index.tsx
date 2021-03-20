@@ -8,14 +8,10 @@ import { RoleDetail } from './RoleDetail';
 import { getRolesList } from './api';
 import Role from './role';
 
-export interface IRoleManagement {
-  visible: boolean;
-}
-
-export const RoleManagement = React.memo(({ visible }: IRoleManagement) => {
+export default function RoleManagement() {
   const { data = [], isLoading } = useQuery('getRolesList', getRolesList, {
     refetchOnWindowFocus: false,
-    enabled: !!visible,
+    enabled: true,
   });
   const [roleId, setRoleId] = useState<string | number>('');
   useEffect(() => {
@@ -32,22 +28,7 @@ export const RoleManagement = React.memo(({ visible }: IRoleManagement) => {
 
   return (
     <Card
-      className={
-        twCascade('ml-0 mt-0 mr-0 mb-0',
-            'transition-opacity flex flex-col', {
-              visible: visible,
-              invisible: !visible,
-              'opacity-0': !visible,
-              'opacity-100': visible,
-              'pointer-events-none': !visible,
-              'pointer-events-auto': visible,
-              'h-0': !visible,
-              'h-auto': visible,
-              'overflow-hidden': !visible,
-              'flex-none': !visible,
-              'flex-1': visible,
-              'px-4 pt-dot-8 pb-dot-8': visible,
-            })}
+      className="ml-0 mt-0 mr-0 mb-0 transition-opacity flex flex-col flex-1 px-4 pt-dot-8 pb-dot-8"
       headerClassName="bg-F1F5F9-dot-5 -mx-4 -mt-dot-8 px-4 py-dot-8 pt-0 header-background-image"
       title="角色管理"
       desc="可以定义平台内的账号拥有的权限。"
@@ -64,4 +45,4 @@ export const RoleManagement = React.memo(({ visible }: IRoleManagement) => {
       </div>
     </Card>
   );
-});
+}

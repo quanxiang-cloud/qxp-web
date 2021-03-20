@@ -4,8 +4,8 @@ import { ListMenu } from '@portal/pages/accessControl/ListMenu';
 import { ItemWithTitleDesc } from '@portal/components/ItemWithTitleDesc';
 import { HeaderWithMenu } from '@portal/components/HeaderWithMenu';
 
-import { RoleManagement } from './RoleManagement';
-import { MailList } from './CompanyMailList';
+import RoleManagement from './RoleManagement';
+import MailList from './CompanyMailList';
 
 export default function Index() {
   const [menuType, setMenuType] = useState('corporateDirectory');
@@ -43,8 +43,8 @@ export default function Index() {
           <ListMenu defaultType="corporateDirectory" onChange={setMenuType} />
         </div>
         <div className="w-988 bg-white border-radius-2 self-stretch flex flex-1">
-          <MailList visible={menuType === 'corporateDirectory'} />
-          <RoleManagement visible={menuType !== 'corporateDirectory'} />
+          {menuType === 'corporateDirectory' && (<MailList />)}
+          {menuType !== 'corporateDirectory' && (<RoleManagement />)}
         </div>
       </div>
     </>
