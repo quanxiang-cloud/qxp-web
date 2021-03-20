@@ -1,4 +1,5 @@
 import TreeStore from '@portal/components/headless-tree/store';
+import { TreeNode } from '@c/headless-tree/types';
 
 export function departmentToTreeNode(department: Department): TreeNode<Department> {
   const children = (department.child || []).map((dep) => departmentToTreeNode(dep));

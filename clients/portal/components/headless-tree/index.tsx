@@ -5,11 +5,12 @@ import { observable, action } from 'mobx';
 
 import TreeStore from './store';
 import RenderNode from './node';
+import { TreeNode } from './types';
 
 interface Props<T> {
   store: TreeStore<T>;
-  nodeRender: (node: TreeNode<T>) => JSX.Element | string;
-  rootNodeRender: (node: TreeNode<T>) => JSX.Element | string;
+  NodeRender: React.FC<{ node: TreeNode<T>; store: TreeStore<T> }>;
+  RootNodeRender: React.FC<{ node: TreeNode<T>; store: TreeStore<T> }>;
   nodeDraggable?: (node: TreeNode<T>) => boolean;
   canDropOn?: (node: TreeNode<T>) => boolean;
   onDragOver?: (node: TreeNode<T>, draggingNode: TreeNode<T>) => boolean;
@@ -87,8 +88,8 @@ export default class Tree<T> extends React.Component<Props<T>> {
 
   render(): JSX.Element {
     const {
-      nodeRender,
-      rootNodeRender,
+      NodeRender,
+      RootNodeRender,
       nodeDraggable,
       canDropOn,
     } = this.props;
@@ -134,7 +135,9 @@ export default class Tree<T> extends React.Component<Props<T>> {
             this.setAcceptDrop(false);
           }}
         >
-          <div className="tree-node__content">{rootNodeRender(rootNode)}</div>
+          <div className="tree-node__content">
+            <RootNodeRender node={rootNode} store={this.props.store} />
+          </div>
         </div>
         {
           nodeList.slice(1).map((node) => {
@@ -142,11 +145,12 @@ export default class Tree<T> extends React.Component<Props<T>> {
               <RenderNode
                 key={node.id}
                 node={node}
+                store={this.props.store}
                 draggingNode={draggingNode}
                 renamingNodeID={renamingNodeID}
                 actualFocusedNodeID={actualFocusedNodeID}
                 upwardFocusedStyleToParent={upwardFocusedStyleToParent}
-                nodeRender={nodeRender}
+                NodeRender={NodeRender}
                 draggable={nodeDraggable}
                 canDropOn={canDropOn}
                 onDragOver={this.defaultOnDragOver}

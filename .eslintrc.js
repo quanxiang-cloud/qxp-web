@@ -35,6 +35,7 @@ module.exports = {
     'require-jsdoc': 'off',
     'object-curly-spacing': ['warn', 'always'],
     semi: ['error', 'always'],
+    indent: ['error', 2],
     quotes: ['error', 'single'],
     'quote-props': ['error', 'as-needed'],
     'no-underscore-dangle': 'off',
