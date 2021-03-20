@@ -277,7 +277,7 @@ export const PersonInfo = React.memo(({
               }}
               >{head}</div>
               <div className="w-2 h-2 bg-white rounded-lg flex items-center
-              justify-center absolute bottom-dot-25 right-dot-25">
+              justify-center absolute bottom-dot25 right-dot-25">
                 {record.useStatus === 1 && (
                   <div className="w-dot-3 h-dot-3 bg-16A34A rounded-dot-3"></div>
                 )}
