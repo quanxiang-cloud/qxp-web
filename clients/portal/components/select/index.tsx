@@ -153,7 +153,6 @@ export default class Select<T extends React.Key> extends React.Component<SelectP
       return;
     }
 
-
     // remove value from selectedValue if exist
     // add value to selectedValue if not exist
     // todo extract a util method?
