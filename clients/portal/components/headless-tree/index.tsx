@@ -1,7 +1,7 @@
 import * as React from 'react';
 import classnames from 'classnames';
 import { observer } from 'mobx-react';
-import { observable, action } from 'mobx';
+import { observable, action, toJS } from 'mobx';
 
 import TreeStore from './store';
 import RenderNode from './node';
@@ -15,6 +15,7 @@ interface Props<T> {
   canDropOn?: (node: TreeNode<T>) => boolean;
   onDragOver?: (node: TreeNode<T>, draggingNode: TreeNode<T>) => boolean;
   onDrop?: (node: TreeNode<T>, draggingNode: TreeNode<T>) => Promise<boolean>;
+  onSelect?: (data: T) => void;
 }
 
 @observer
@@ -30,6 +31,10 @@ export default class Tree<T> extends React.Component<Props<T>> {
     },
   }
 
+  componentDidMount() {
+    this.props.onSelect?.(toJS(this.props.store.currentFocusedNode.data));
+  }
+
   @action
   setAcceptDrop(acceptDrop: boolean): void {
     this.isRootAcceptDrop = acceptDrop;
@@ -39,6 +44,7 @@ export default class Tree<T> extends React.Component<Props<T>> {
   handleNodeClick = (node: TreeNode<T>): void => {
     // todo check is shift key down?
     this.props.store.onSelectNode(node.id);
+    this.props.onSelect?.(toJS(node.data));
   }
 
   handleSwitcherClick = (node: TreeNode<T>): void => {
