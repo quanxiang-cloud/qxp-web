@@ -28,6 +28,12 @@ const MENUS: MenuItem<string>[] = [
   },
 ];
 
+// model click event should not propagate to parent nodes
+// this is an bug of lego UI modal
+function stopModalClickPropagate(e: React.MouseEvent) {
+  e.stopPropagation();
+}
+
 function DepartmentNode({ node, store }: NodeRenderProps<Department>): JSX.Element {
   const [showModal, toggleModal] = useState(false);
   const [departmentToEdit, setDepartment] = useState(node.data);
@@ -43,7 +49,7 @@ function DepartmentNode({ node, store }: NodeRenderProps<Department>): JSX.Eleme
   }
 
   return (
-    <div className="flex flex-grow max-w-full">
+    <div className="flex flex-grow max-w-full" onClick={stopModalClickPropagate}>
       <span className="truncate mr-auto">
         {node.name}
       </span>
