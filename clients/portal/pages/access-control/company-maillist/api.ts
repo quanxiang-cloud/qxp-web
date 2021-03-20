@@ -117,7 +117,7 @@ export const updateDEP = () => {
  * @param id true
  */
 export const deleteDEP = (id: string) => {
-  return httpPost<IResponse<{ code: number }>>(
+  return httpPost<IResponse<null>>(
     '/api/org/v1/delDEP',
     JSON.stringify({ id }),
     {

@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { observer } from 'mobx-react';
-import { Icon } from '@QCFE/lego-ui';
+import { Icon, Modal, Message } from '@QCFE/lego-ui';
+import { useQueryClient } from 'react-query';
 
 import MoreMenu, { MenuItem } from '@portal/components/more-menu';
 import { NodeRenderProps } from '@c/headless-tree/types';
 
 import EditDepartment from './edit-department';
+import { deleteDEP } from '../api';
 
 const MENUS: MenuItem<string>[] = [
   {
@@ -28,9 +30,17 @@ const MENUS: MenuItem<string>[] = [
   },
 ];
 
-function DepartmentNode({ node, store }: NodeRenderProps<Department>): JSX.Element {
+// model click event should not propagate to parent nodes
+// this is an bug of lego UI modal
+function stopModalClickPropagate(e: React.MouseEvent) {
+  e.stopPropagation();
+}
+
+function DepartmentNode({ node }: NodeRenderProps<Department>): JSX.Element {
   const [showModal, toggleModal] = useState(false);
   const [departmentToEdit, setDepartment] = useState(node.data);
+  const queryClient = useQueryClient();
+
 
   function onAdd() {
     setDepartment({ id: '', departmentName: '', pid: node.data.id, superID: '', grade: 0 });
@@ -40,6 +50,27 @@ function DepartmentNode({ node, store }: NodeRenderProps<Department>): JSX.Eleme
   function onEdit() {
     setDepartment(node.data);
     toggleModal(true);
+  }
+
+  function onDelete() {
+    const currentModal = Modal.open({
+      title: '删除',
+      okType: 'danger',
+      okText: '确认删除',
+      onOk: () => {
+        Modal.close(currentModal);
+        deleteDEP(node.id).then(({ code, msg }) => {
+          if (!code) {
+            Message.success({ content: '删除成功' });
+            queryClient.invalidateQueries('getERPTree');
+            return;
+          }
+
+          Message.error(msg || '');
+        });
+      },
+      content: (<div>{`确定删除部门${node.data.departmentName}吗？`}</div>),
+    });
   }
 
   return (
@@ -61,14 +92,18 @@ function DepartmentNode({ node, store }: NodeRenderProps<Department>): JSX.Eleme
             onEdit();
             return;
           }
+
+          onDelete();
         }}
       />
       {
         showModal && (
-          <EditDepartment
-            department={departmentToEdit}
-            closeModal={() => toggleModal(false)}
-          />
+          <span onClick={stopModalClickPropagate}>
+            <EditDepartment
+              department={departmentToEdit}
+              closeModal={() => toggleModal(false)}
+            />
+          </span>
         )
       }
     </div>
