@@ -2,7 +2,7 @@ import React from 'react';
 import useCss from 'react-use/lib/useCss';
 import { twCascade } from '@mariusmarais/tailwind-cascade';
 
-import { TextHeader } from './TextHeader';
+import { TextHeader } from './text-header';
 
 export interface ICard {
   title: string | JSX.Element;

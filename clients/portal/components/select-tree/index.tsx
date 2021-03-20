@@ -132,8 +132,8 @@ export default class SelectTree extends React.Component<Props> {
     const { showSelectBox, showTips, selectValue, width } = this.state as State;
     const { name, placeholder, treeData } = this.props;
     const selectBoxStyle = Object.assign(
-        { width },
-        styles.selectBox,
+      { width },
+      styles.selectBox,
       showSelectBox ? styles.showSelectBox : {},
     );
 

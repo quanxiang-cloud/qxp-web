@@ -14,7 +14,13 @@ function TreeCom({ onSelect, treeData }: Props) {
       if (child) {
         return (
           <TreeNode
-            title={<div onClick={() => onSelect(treeNode)} className="w-full">{treeNode.departmentName}</div>}
+            title={
+              <div
+                onClick={
+                  () => onSelect(treeNode)} className="w-full">{treeNode.departmentName
+                }
+              </div>
+            }
             key={treeNode.id}
             dataRef={treeNode}
           >
@@ -24,7 +30,16 @@ function TreeCom({ onSelect, treeData }: Props) {
       }
       return (
         <TreeNode
-          title={<div onClick={() => onSelect(treeNode)} className="w-full">{treeNode.departmentName}</div>}
+          title={
+            <div
+              onClick={
+                () => onSelect(treeNode)
+              }
+              className="w-full"
+            >
+              {treeNode.departmentName}
+            </div>
+          }
           key={treeNode.id}
           dataRef={treeNode}
         />

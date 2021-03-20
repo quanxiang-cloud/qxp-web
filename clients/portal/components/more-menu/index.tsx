@@ -43,7 +43,7 @@ function stopPropagation(e: any) {
 
 // todo combine with select component
 function RenderMenuItems<T extends React.Key>(
-    { menuDesc, items, onClick }: MenuItemsProps<T>
+  { menuDesc, items, onClick }: MenuItemsProps<T>
 ): JSX.Element {
   return (
     <div className="select-options">

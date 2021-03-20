@@ -36,9 +36,9 @@ export abstract class InputField implements IInputField {
   onValidateAll?: Function;
 
   constructor(
-      { name, value = '', errMessage = '', inputElement, errorElement }: IInputField,
-      action: HTMLButtonElement,
-      onValidateAll?: Function,
+    { name, value = '', errMessage = '', inputElement, errorElement }: IInputField,
+    action: HTMLButtonElement,
+    onValidateAll?: Function,
   ) {
     this.name = name;
     this.inputElement = inputElement;

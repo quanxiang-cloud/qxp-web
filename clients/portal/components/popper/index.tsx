@@ -219,8 +219,8 @@ export default class Popper2 extends React.Component<Props, State> {
     this.appendContainer();
 
     return ReactDOM.createPortal(
-        this.props.children,
-        this.popperContainer,
+      this.props.children,
+      this.popperContainer,
     );
   }
 }

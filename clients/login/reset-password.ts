@@ -24,7 +24,7 @@ class ResetUser extends User {
     this.checkPassword = new Password(checkPassword, action, this.onValidateAll.bind(this));
     const that = this;
 
-    this.checkPassword.validate = function (checkAll?: boolean) {
+    this.checkPassword.validate = function(checkAll?: boolean) {
       let isValid = true;
       if ((this.value as string).length < 6) {
         if (this.value !== '') {

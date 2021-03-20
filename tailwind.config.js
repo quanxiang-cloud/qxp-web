@@ -31,6 +31,9 @@ module.exports = {
         '2dot5': '2.5 1 0%',
         none: '0 0 0%',
       },
+      margin: {
+        'dot875': '0.875rem',
+      },
     },
   },
   variants: {

@@ -93,8 +93,8 @@ export default class Select<T extends React.Key> extends React.Component<SelectP
   }
 
   static getDerivedStateFromProps(
-      props: SelectProps<React.Key>,
-      { selectedValue, triggerActive }: State<React.Key>,
+    props: SelectProps<React.Key>,
+    { selectedValue, triggerActive }: State<React.Key>,
   ): State<React.Key> {
     const { value, options } = props;
     let selectedOption = undefined;

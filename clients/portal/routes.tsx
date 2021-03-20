@@ -2,31 +2,31 @@ import React, { useEffect } from 'react';
 import { Route, Switch } from 'react-router';
 import { useQuery } from 'react-query';
 
-import { Error } from './components/Error';
+import { Error } from './components/error';
 
 import '@QCFE/lego-ui/lib/scss/lego-ui.min.css';
 import '@assets/scss/index.scss';
 import { getSystemFuncs, getUserFuncs, getUserInfo, getUserRoles } from './api/auth';
 import { usePortalGlobalValue } from '@clients/common/state/portal';
-import { Loading } from './components/Loading';
+import { Loading } from './components/loading';
 
 const Dashboard = React.lazy(
-    () =>
-      import(
+  () =>
+    import(
       /* webpackChunkName: "dashboard" */
-          './pages/dashboard'
-      ),
+      './pages/dashboard'
+    ),
 );
 
 const MetaData = React.lazy(
-    () =>
-      import(
+  () =>
+    import(
       /* webpackChunkName: "dashboard" */
-          './pages/metadata'
-      ),
+      './pages/metadata'
+    ),
 );
 
-const AccessControl = React.lazy(() => import('./pages/accessControl'));
+const AccessControl = React.lazy(() => import('./pages/access-control'));
 
 export default function Routes(): JSX.Element {
   const [_, setValue] = usePortalGlobalValue();
@@ -36,33 +36,33 @@ export default function Routes(): JSX.Element {
     retry: false,
   });
   const { data: allFuncs, isLoading: allFunsIsLoading } = useQuery(
-      ['getSystemFuncs'],
-      getSystemFuncs,
-      {
-        refetchOnWindowFocus: false,
-        cacheTime: -1,
-        retry: false,
-        enabled: !!userData?.id,
-      },
+    ['getSystemFuncs'],
+    getSystemFuncs,
+    {
+      refetchOnWindowFocus: false,
+      cacheTime: -1,
+      retry: false,
+      enabled: !!userData?.id,
+    },
   );
   const { data: userFuncs, isLoading: userFuncsIsLoading } = useQuery(
-      ['getUserFuncs', userData?.depIds],
-      getUserFuncs,
-      {
-        refetchOnWindowFocus: false,
-        cacheTime: -1,
-        retry: false,
-        enabled: !!(userData?.depIds && userData.depIds.length),
-      },
+    ['getUserFuncs', userData?.depIds],
+    getUserFuncs,
+    {
+      refetchOnWindowFocus: false,
+      cacheTime: -1,
+      retry: false,
+      enabled: !!(userData?.depIds && userData.depIds.length),
+    },
   );
   const { data, isLoading: userRoleIsLoading } = useQuery(
-      'getUserRoles',
-      () => getUserRoles(userData?.id || '', userData?.depIds || []),
-      {
-        refetchOnWindowFocus: false,
-        retry: false,
-        enabled: !!(userData?.id && userData?.depIds && userData?.depIds.length),
-      },
+    'getUserRoles',
+    () => getUserRoles(userData?.id || '', userData?.depIds || []),
+    {
+      refetchOnWindowFocus: false,
+      retry: false,
+      enabled: !!(userData?.id && userData?.depIds && userData?.depIds.length),
+    },
   );
 
   useEffect(() => {

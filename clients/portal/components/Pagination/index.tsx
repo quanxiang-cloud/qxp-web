@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
 import { twCascade } from '@mariusmarais/tailwind-cascade';
 
-import { Core } from './Core';
-import { SizeSelect } from './SizeSelect';
+import { Core } from './pagger';
+import { SizeSelect } from './size-select';
 
 interface PaginationProps {
   type?: 'simple' | 'mini';
@@ -40,9 +40,9 @@ export const Pagination = ({
   return (
     <div
       className={twCascade(
-          'inline-flex items-center justify-between bg-white px-1-dot-2',
-          'py-dot-4 w-full border-t border-blue-third',
-          className,
+        'inline-flex items-center justify-between bg-white px-1-dot-2',
+        'py-dot-4 w-full border-t border-blue-third',
+        className,
       )}
     >
       {type === 'simple' && <div>{prefix}</div>}

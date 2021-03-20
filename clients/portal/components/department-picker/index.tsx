@@ -5,9 +5,9 @@ import { useQuery } from 'react-query';
 
 import {
   departmentToTreeNode,
-} from '@portal/pages/accessControl/CompanyMailList/departments-tree/store';
+} from '@portal/pages/access-control/company-maillist/departments-tree/store';
 import { flatTree } from '../headless-tree/utils';
-import { getERPTree } from '@portal/pages/accessControl/CompanyMailList/api';
+import { getERPTree } from '@portal/pages/access-control/company-maillist/api';
 
 
 type DepartmentPickerProps = {

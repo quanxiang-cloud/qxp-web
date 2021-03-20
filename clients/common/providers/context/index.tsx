@@ -1,15 +1,15 @@
 import React, { useReducer, createContext } from 'react';
-import { defaultContext, IDefaultContext } from './defaultContext';
+import { defaultContext, IDefaultContext } from './default-context';
 
 interface IAction extends IDefaultContext { type: string; }
 const reducer = (state: IDefaultContext, action: IAction) => {
   switch (action.type) {
-    case 'reset':
-      return defaultContext;
-    case 'setTheme':
-      return { ...state, themeName: action.themeName };
-    case 'setLang':
-      return { ...state, siteLang: action.siteLang };
+  case 'reset':
+    return defaultContext;
+  case 'setTheme':
+    return { ...state, themeName: action.themeName };
+  case 'setLang':
+    return { ...state, siteLang: action.siteLang };
   }
   return state;
 };

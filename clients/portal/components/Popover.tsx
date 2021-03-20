@@ -37,7 +37,7 @@ export const Popover = ({
   tooltipClassName,
   placement = 'bottom-start',
   offsetX = 0,
-  offsetY = 50,
+  offsetY = 100,
 }: IPopover) => {
   const clickAwayRef = useRef<HTMLDivElement | null>(null);
   const triggerRef = useRef<HTMLDivElement | null>(null);
@@ -64,7 +64,7 @@ export const Popover = ({
 
   return (
     <div
-      className={twCascade(className)}
+      className={twCascade('relative', className)}
       onClick={(e: MouseEvent<HTMLDivElement>) => e.stopPropagation()}
       ref={clickAwayRef}
     >
@@ -78,12 +78,11 @@ export const Popover = ({
       <div
         ref={tooltipRef}
         className={twCascade(
-            {
-              invisible: !isOpen,
-              'pointer-events-none': !isOpen,
-            },
-            tooltipClassName,
-            'mt-2',
+          {
+            invisible: !isOpen,
+            'pointer-events-none': !isOpen,
+          },
+          tooltipClassName,
         )}
         style={{ ...styles, margin: 0 }}
         {...attributes.popper}
