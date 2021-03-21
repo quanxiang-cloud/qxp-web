@@ -4,6 +4,7 @@ import { Table, Icon, Message } from '@QCFE/lego-ui';
 import { twCascade } from '@mariusmarais/tailwind-cascade';
 
 import Button2 from '@c/button2';
+import IconBtn from '@c/icon-btn';
 import { Pagination } from '@portal/components/pagination2';
 import { ResetPasswordModal, CheckedWay } from './reset-password-modal';
 import { AccountHandleModal } from './account-handle-modal';
@@ -524,6 +525,7 @@ export const PersonInfo = React.memo(({
                 添加员工
               </Button2>
               <div className="px-2"></div>
+              <IconBtn iconName="more" />
               <More
                 items={[<List key={uuid()} items={expandActions} />]}
                 contentClassName="mr-8"

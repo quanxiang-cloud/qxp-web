@@ -1,6 +1,8 @@
 .btn {
-  display: flex;
   flex-shrink: 0;
+
+  display: flex;
+  justify-content: center;
   align-items: center;
   padding-left: 16px;
   padding-right: 16px;
@@ -19,7 +21,7 @@
   user-select: none;
 }
 
-.btn:not(.btn-icon) .icon {
+.btn:not(.icon-btn) .icon {
   margin-right: 8px;
 }
 
@@ -28,7 +30,7 @@
   background-color: var(--gray-700);
 }
 
-.btn-icon {
+.icon-btn {
   padding-left: 0;
   padding-right: 0;
   width: 32px;

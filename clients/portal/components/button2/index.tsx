@@ -7,18 +7,19 @@ interface ButtonProps extends React.DetailedHTMLProps<
   HTMLButtonElement>
 {
   icon?: string;
-  className?: string;
   isPrimary?: boolean;
   isLoading?: boolean;
   isForbidden?: boolean;
 }
 
-export default function Button(
-  { children, icon, className, isPrimary, isLoading, isForbidden, ...restProps }: ButtonProps
+function Button(
+  { children, icon, className, isPrimary, isLoading, isForbidden, ...restProps }: ButtonProps,
+  ref?: React.Ref<HTMLButtonElement>,
 ): JSX.Element {
   return (
     <button
       { ...restProps }
+      ref={ref}
       className={classnames('btn', className, {
         'btn--primary': isPrimary,
         'btn--loading': isLoading,
@@ -34,3 +35,5 @@ export default function Button(
     </button>
   );
 }
+
+export default React.forwardRef(Button);
