@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useQuery } from 'react-query';
 import { twCascade } from '@mariusmarais/tailwind-cascade';
 
-import { Card } from '@portal/components/card';
+import { Card } from '@portal/components/card2';
 import { RoleList } from './role-list';
 import { RoleDetail } from './role-detail';
 import { getRolesList } from './api';

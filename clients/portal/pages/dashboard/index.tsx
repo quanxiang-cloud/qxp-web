@@ -2,11 +2,11 @@ import React from 'react';
 import useCss from 'react-use/lib/useCss';
 import { twCascade } from '@mariusmarais/tailwind-cascade';
 
-import { Avatar } from '@portal/components/avatar';
-import { Card } from '@portal/components/card';
+import { Avatar } from '@portal/components/avatar2';
+import { Card } from '@portal/components/card2';
 import { List } from '@portal/components/list2';
-import { ItemWithTitleDesc } from '@portal/components/Item-with-title-desc';
-import { HeaderWithMenu } from '@portal/components/header-with-menu';
+import { ItemWithTitleDesc } from '@portal/components/Item-with-title-desc2';
+import { HeaderWithMenu } from '@portal/components/header-with-menu2';
 import { uuid } from '@assets/lib/utils';
 import { usePortalGlobalValue } from '@clients/common/state/portal';
 

@@ -2,12 +2,12 @@ import React, { useEffect } from 'react';
 import { Route, Switch } from 'react-router';
 import { useQuery } from 'react-query';
 
-import { Error } from './components/error';
+import { Error } from './components/error2';
 
 import '@assets/scss/index.scss';
 import { getSystemFuncs, getUserFuncs, getUserInfo, getUserRoles } from './api/auth';
 import { usePortalGlobalValue } from '@clients/common/state/portal';
-import { Loading } from './components/loading';
+import { Loading } from './components/loading2';
 
 const Dashboard = React.lazy(
   () =>

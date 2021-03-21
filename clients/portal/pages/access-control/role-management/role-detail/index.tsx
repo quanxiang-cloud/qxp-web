@@ -1,9 +1,9 @@
 import React from 'react';
 import { useQuery } from 'react-query';
 
-import { ItemWithTitleDesc } from '@portal/components/Item-with-title-desc';
+import { ItemWithTitleDesc } from '@portal/components/Item-with-title-desc2';
 import { Tab } from '@portal/components/tab2';
-import { Loading } from '@portal/components/loading';
+import { Loading } from '@portal/components/loading2';
 import { IRoleListItem } from '../role-list-item';
 import { AlterRoleFunc } from './alter-role-func';
 import { AssociateDepartmentEmployee } from './associate-department-employee';

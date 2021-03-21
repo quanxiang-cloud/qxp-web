@@ -4,7 +4,7 @@ import { Modal } from '@QCFE/lego-ui';
 
 import { Button } from '@portal/components/button';
 import { Table } from '@portal/components/table';
-import { Loading } from '@portal/components/loading';
+import { Loading } from '@portal/components/loading2';
 import { EmptyData } from '@portal/components/empty-data';
 import { More } from '@portal/components/more';
 import { Pagination } from '@portal/components/pagination2';
