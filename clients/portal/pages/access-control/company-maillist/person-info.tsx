@@ -524,20 +524,11 @@ export const PersonInfo = React.memo(({
               >
                 添加员工
               </Button2>
-              <div className="px-2"></div>
-              <IconBtn iconName="more" />
               <More
                 items={[<List key={uuid()} items={expandActions} />]}
                 contentClassName="mr-8"
               >
-                <Button className="light-button w-3-dot-2 h-dot-2 relative
-                -top-2px" textClassName="text-white">
-                  <div className="flex-start-center">
-                    <Dot />
-                    <Dot />
-                    <Dot />
-                  </div>
-                </Button>
+                <IconBtn iconName="more" />
               </More>
             </>
           )}
