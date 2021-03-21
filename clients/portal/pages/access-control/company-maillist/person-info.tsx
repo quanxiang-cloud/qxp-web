@@ -352,7 +352,9 @@ export const PersonInfo = React.memo(({
             items={actions(record && record.useStatus)}
             params={record}
             contentClassName="mr-8"
-          />
+          >
+            <Icon name="more" style={{ transform: 'rotate(90deg)' }} />
+          </More>
         );
       },
     },
