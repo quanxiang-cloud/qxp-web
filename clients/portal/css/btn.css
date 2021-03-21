@@ -1,3 +1,35 @@
 .btn {
-  @apply px-4 py-2 rounded font-semibold bg-gray-200 text-black;
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  padding-left: 16px;
+  padding-right: 16px;
+  height: 32px;
+  line-height: 30px;
+
+  color: var(--gray-700);
+  font-weight: 400;
+  font-size: 14px;
+
+  border-radius: 8px 2px 8px 8px;
+  background-color: white;
+  border: 1px solid var(--gray-700);
+
+  cursor: pointer;
+  user-select: none;
+}
+
+.btn:not(.btn-icon) .icon {
+  margin-right: 8px;
+}
+
+.btn--primary {
+  color: white;
+  background-color: var(--gray-700);
+}
+
+.btn-icon {
+  padding-left: 0;
+  padding-right: 0;
+  width: 32px;
 }

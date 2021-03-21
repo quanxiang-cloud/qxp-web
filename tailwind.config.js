@@ -28,6 +28,9 @@ module.exports = {
         'yellow-second': '#FFFBEB',
         'green-first': '#16A34A',
       },
+      spacing: {
+        '16px': '16px'
+      },
       width: {
         '2dot4': '2.4rem',
       },

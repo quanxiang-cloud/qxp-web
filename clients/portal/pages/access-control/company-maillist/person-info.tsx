@@ -3,6 +3,7 @@ import { useQuery, useMutation } from 'react-query';
 import { Table, Icon, Message } from '@QCFE/lego-ui';
 import { twCascade } from '@mariusmarais/tailwind-cascade';
 
+import Button2 from '@c/button2';
 import { Pagination } from '@portal/components/pagination2';
 import { ResetPasswordModal, CheckedWay } from './reset-password-modal';
 import { AccountHandleModal } from './account-handle-modal';
@@ -512,37 +513,16 @@ export const PersonInfo = React.memo(({
             </>
           ) : (
             <>
-              <Button
-                className="dark-button"
-                textClassName="text-white"
-                icon={
-                  <svg
-                    className="mr-dot-4"
-                    width="18"
-                    height="14"
-                    viewBox="0 0 18 14"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      // eslint-disable-next-line max-len
-                      d="M15.6667 1.99998H9.00008L7.33342 0.333313H2.33341C1.40841 0.333313 0.675081 1.07498 0.675081 1.99998L0.666748 12C0.666748 12.925 1.40841 13.6666 2.33341 13.6666H15.6667C16.5917 13.6666 17.3334 12.925 17.3334 12V3.66665C17.3334 2.74165 16.5917 1.99998 15.6667 1.99998ZM15.6667 12H2.33341V1.99998H6.64175L8.30841 3.66665H15.6667V12ZM9.00008 8.66665H10.6667V10.3333H12.3334V8.66665H14.0001V6.99998H12.3334V5.33331H10.6667V6.99998H9.00008V8.66665Z"
-                      fill="white"
-                    />
-                  </svg>
-                }
-                onClick={importFile}
-              >
+              <Button2 isPrimary icon="folder" onClick={importFile} className="mr-16px">
                 excel 批量导入
-              </Button>
-              <div className="px-2"></div>
-              <Button
-                className="light-button"
-                icon={<Icon className="mr-dot-4" name="add" />}
+              </Button2>
+              <Button2
+                icon="add"
                 onClick={() => handleUserInfo({ id: '', userName: '' }, 'add')}
+                className="mr-16px"
               >
                 添加员工
-              </Button>
+              </Button2>
               <div className="px-2"></div>
               <More
                 items={[<List key={uuid()} items={expandActions} />]}
