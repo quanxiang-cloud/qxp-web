@@ -1,5 +1,6 @@
 @import '../../assets/scss/reset';
 @import './components.scss';
+@import './lego';
 
 @tailwind base;
 @tailwind components;
@@ -142,6 +143,10 @@ body {
   width: 2.4rem;
 }
 
+.w-2-dot-7 {
+  width: 2.7rem;
+}
+
 .w-3-dot-4 {
   width: 3.4rem;
 }
@@ -175,7 +180,7 @@ body {
 }
 
 .w-988 {
-  width: 49.4rem;
+  width: 98.8rem;
 }
 
 .h-2-dot-8 {
@@ -339,6 +344,10 @@ body {
   margin-right: 0.6rem;
 }
 
+.ml-1-dot-6 {
+  margin-left: 1.6rem;
+}
+
 .ml-dot-3-5 {
   margin-left: 0.35rem;
 }
@@ -396,6 +405,10 @@ body {
   padding-top: 1.6rem;
 }
 
+.pt-2 {
+  padding-top: 2rem;
+}
+
 .pb-1-dot-6 {
   padding-bottom: 1.6rem;
 }
@@ -403,6 +416,11 @@ body {
 .px-1-dot-6 {
   padding-left: 1.6rem;
   padding-right: 1.6rem;
+}
+
+.py-1-dot-6 {
+  padding-top: 1.6rem;
+  padding-bottom: 1.6rem;
 }
 
 .pl-2-dot-6 {
@@ -536,6 +554,10 @@ body {
   box-shadow: 0px 8px 24px 4px rgba(148, 163, 184, 0.25);
 }
 
+.max-h-63-dot-2 {
+  max-height: 63.2rem;
+}
+
 /////////////////// Animation /////////////////////////
 .slide-in {
   animation: slideIn 0.2s ease-in-out forwards;
@@ -623,11 +645,15 @@ body {
           width: 100% !important;
 
           thead>tr>th {
-            padding-top: 0.55rem !important;
-            padding-bottom: 0.55rem !important;
-            font-size: 0.7rem !important;
-            font-weight: bold !important;
-            line-height: 1.1rem !important;
+            // padding-top: 0.55rem !important;
+            // padding-bottom: 0.55rem !important;
+            font-size: 1.4rem !important;
+            font-weight: normal !important;
+            vertical-align: middle;
+            span {
+              line-height: 1 !important;
+              height: 44px;
+            }
           }
 
           tbody>tr:last-child>td {

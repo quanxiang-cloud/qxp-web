@@ -4,7 +4,6 @@ import { useQuery } from 'react-query';
 
 import { Error } from './components/error';
 
-import '@QCFE/lego-ui/lib/scss/lego-ui.min.css';
 import '@assets/scss/index.scss';
 import { getSystemFuncs, getUserFuncs, getUserInfo, getUserRoles } from './api/auth';
 import { usePortalGlobalValue } from '@clients/common/state/portal';

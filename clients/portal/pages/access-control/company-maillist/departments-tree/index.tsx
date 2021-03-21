@@ -33,7 +33,7 @@ function DepartmentsTree({ onSelect }: Props): JSX.Element {
   }
 
   return (
-    <div className="departments-tree">
+    <div className="departments-tree max-h-63-dot-2 overflow-auto">
       <Tree
         store={store}
         NodeRender={DepartmentNode}

@@ -8,7 +8,7 @@ export interface IPopover {
   className?: string;
   triggerClassName?: string;
   tooltipClassName?: string;
-  children: JSX.Element;
+  children?: React.ReactNode;
   placement?:
     | 'top'
     | 'right'

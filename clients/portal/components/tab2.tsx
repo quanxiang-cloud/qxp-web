@@ -28,15 +28,15 @@ export const Tab = ({
 
   return (
     <div className={twCascade('transition duration-300 overflow-hidden', className)}>
-      <header className={twCascade('flex flex-row overflow-x-scroll w-full', headerClassName)}>
+      <header className={twCascade('flex flex-row w-full', headerClassName)}>
         {items.map((item) => {
           const active = item.id == key;
           return (
             <div
               key={item.id}
               className={twCascade(
-                'whitespace-nowrap rounded-dot4 rounded-br-none rounded-bl-none py-1',
-                'px-dot-8 cursor-pointer text-1-dot-4 hover:bg-blue-light',
+                'whitespace-nowrap rounded-dot4 rounded-br-none rounded-bl-none py-2',
+                'px-1-dot-6 cursor-pointer text-1-dot-4 hover:bg-blue-light',
                 'hover:text-blue-primary transition duration-300',
                 {
                   'bg-blue-light': active,
@@ -56,7 +56,7 @@ export const Tab = ({
         })}
       </header>
       <div
-        className="w-full bg-blue-light px-4 py-dot-8 overflow-hidden"
+        className="w-full bg-blue-light px-8 py-1-dot-6 overflow-hidden"
         style={{
           height: 'calc(100% - 34px)',
         }}

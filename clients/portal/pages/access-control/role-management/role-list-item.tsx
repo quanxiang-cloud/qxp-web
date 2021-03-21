@@ -17,8 +17,8 @@ export const RoleListItem = ({ name, active, id, onClick = identity }: IRoleList
   return (
     <ItemWithTitleDesc
       className={twCascade(
-        'py-dot-8 px-4 hover:text-blue-primary hover:bg-blue-light hover:font-bold',
-        'transition duration-300',
+        'py-1-dot-6 px-8 hover:text-blue-primary hover:bg-blue-light hover:font-bold',
+        'transition duration-300 flex items-center justify-center',
         {
           'bg-blue-light': active,
           'text-blue-primary': active,

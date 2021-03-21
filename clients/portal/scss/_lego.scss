@@ -1,0 +1,64 @@
+// 引入默认主题
+@import '~@QCFE/lego-ui/lib/scss/themes/default';
+
+// 引入 SVG 图标组件的样式
+@import '~@QCFE/lego-ui/lib/scss/base/icon';
+
+// 在这里定义你要覆盖的变量，或者引入你自定义的变量样式文件
+// $primary: blue;
+// $button-color: #ccc;
+
+// 引入核心的 Bulma 样式与组件样式
+// @import '~@QCFE/lego-ui/lib/scss/core.scss';
+
+// Import the rest of Bulma
+@import '~bulma/bulma.sass';
+// Import the components
+// @import '~@QCFE/lego-ui/lib/scss/components/main';
+
+@import './lego-components/Layout';
+// @import './lego-components/Button';
+@import './lego-components/Icon';
+@import './lego-components/Input';
+// @import './lego-components/Breadcrumb';
+@import './lego-components/Modal';
+@import './lego-components/Notify';
+@import './lego-components/Message';
+@import './lego-components/Transition';
+@import './lego-components/Menu';
+@import './lego-components/Navigation';
+@import './lego-components/Tabs';
+@import './lego-components/Tag';
+// @import './lego-components/Timeline';
+@import './lego-components/Loading';
+@import './lego-components/Form';
+@import './lego-components/Radio';
+@import './lego-components/Checkbox';
+// @import './lego-components/Progress';
+// @import './lego-components/PageProgress';
+@import './lego-components/Table';
+@import './lego-components/Pagination';
+@import './lego-components/Toggle';
+// @import './lego-components/Tree';
+@import './lego-components/Select';
+// @import './lego-components/AutoComplete';
+// @import './lego-components/Slider';
+// @import './lego-components/Steps';
+// @import './lego-components/Alert';
+@import './lego-components/List';
+// @import './lego-components/Banner';
+// @import './lego-components/DatePicker';
+@import './lego-components/Upload';
+// @import './lego-components/Mention';
+// @import './lego-components/Collapse';
+// @import './lego-components/Rate';
+// @import './lego-components/Badge';
+// @import './lego-components/GridTable';
+@import './lego-components/Popper';
+@import './lego-components/Tooltip';
+@import './lego-components/Dropdown';
+// @import './lego-components/PopConfirm';
+
+// Import the override
+@import '~@QCFE/lego-ui/lib/scss/override';
+

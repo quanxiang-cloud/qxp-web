@@ -1,8 +1,8 @@
 import React from 'react';
 import { twCascade } from '@mariusmarais/tailwind-cascade';
+import { Icon } from '@QCFE/lego-ui';
 
 import { Popover } from './popover2';
-import { Dot } from './dot';
 import { List, IITems } from './list2';
 
 export interface IMore<T> {
@@ -57,14 +57,14 @@ export const More = function <T>({
       offsetY={offsetY}
       placement="bottom-end"
     >
-      {children ? (
-        <>{children}</>
-      ): (
-        <div className="flex-start-center mr-dot875">
-          <Dot />
-          <Dot />
-          <Dot />
-        </div>
+      {children ? children : (
+        <Icon
+          changeable
+          clickable
+          name="more"
+          style={{ transform: 'rotate(90deg)' }}
+          className={className}
+        />
       )}
     </Popover>
   );

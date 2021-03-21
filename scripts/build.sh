@@ -2,6 +2,8 @@
 
 set -e
 
+gulp build
+
 GOOS=linux go build -o ./docker-files/portal/portal server/cmd/portal/main.go
 
 IMAGE_PREFIX=dockerhub.qingcloud.com/qxpdev
