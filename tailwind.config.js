@@ -1,7 +1,17 @@
+const colors = require('./clients/theme/colors');
+
 module.exports = {
   purge: [],
   darkMode: false, // or 'media' or 'class'
   theme: {
+    colors: colors,
+    screens: {
+      '2xl': { max: '1535px' },
+      xl: { max: '1279px' },
+      lg: { max: '1023px' },
+      md: { max: '767px' },
+      sm: { max: '639px' },
+    },
     extend: {
       colors: {
         'blue-primary': '#375FF3',
@@ -44,13 +54,6 @@ module.exports = {
       inset: {
         '-2px': '-2px',
       },
-    },
-    screens: {
-      '2xl': { max: '1535px' },
-      xl: { max: '1279px' },
-      lg: { max: '1023px' },
-      md: { max: '767px' },
-      sm: { max: '639px' },
     },
   },
   variants: {

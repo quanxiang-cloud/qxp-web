@@ -3,3 +3,4 @@ node_modules
 gulpfile.js
 webpack.*.js
 scripts/*
+tailwind.config.js
