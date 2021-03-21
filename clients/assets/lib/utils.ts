@@ -208,9 +208,10 @@ export const getNestedPropertyToArray = <T>(
   targetKey: string,
   nestKey: string,
 ): T[] => {
-  if (!data) {
+  if (!data || !data.length) {
     return [];
   }
+  console.log(data);
   const arrData: T[] = [];
   if (isObject(data)) {
     Object.entries(data).forEach(([key, value]) => {

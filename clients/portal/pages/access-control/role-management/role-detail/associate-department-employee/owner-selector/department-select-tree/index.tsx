@@ -1,46 +1,20 @@
-import React, { useState, useEffect } from 'react';
-import { useQuery } from 'react-query';
+import React from 'react';
 import { observer } from 'mobx-react';
 
 import Store from './store';
 import Tree from '@portal/components/headless-tree';
-import { getDepartmentStructure } from '@portal/pages/access-control/role-management/api';
-import { Loading } from '@portal/components/loading';
 import { DepartmentNode } from './department-node';
-import { TNode } from '@portal/components/headless-tree/types';
 
 export interface IDepartmentSelectTree {
-  onChange: (departments: TNode<IDepartment>[]) => void
+  store: Store;
 }
-export const DepartmentSelectTree = observer(({ onChange }: IDepartmentSelectTree) => {
-  const [store, setStore] = useState<Store | null>(null);
-  const { data: department, isLoading, isError } = useQuery(
-    ['getDepartmentStructure'],
-    getDepartmentStructure,
-    {
-      refetchOnWindowFocus: false,
-    },
-  );
-
-  useEffect(() => {
-    if (department && !isLoading && !isError) {
-      setStore(new Store(department));
-    }
-  }, [department]);
-
-  if (!store) {
-    return <Loading desc="加载中..." />;
-  }
-
+export const DepartmentSelectTree = observer(({ store }: IDepartmentSelectTree) => {
   return (
     <div className="departments-tree">
       <Tree
         store={store}
         NodeRender={DepartmentNode}
         RootNodeRender={DepartmentNode}
-        onSelect={() => {
-          console.log(store.nodeMap);
-        }}
       />
     </div>
   );

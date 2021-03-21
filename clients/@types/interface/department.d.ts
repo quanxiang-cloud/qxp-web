@@ -9,3 +9,7 @@ interface IDepartment {
   useStatus?: number;
   superId?: string;
 }
+
+interface IDepartmentWithParent extends IDepartment {
+  parent: IDepartment[];
+}
