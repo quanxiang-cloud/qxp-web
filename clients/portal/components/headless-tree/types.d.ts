@@ -1,3 +1,4 @@
+import SelectableTreeStore from './multiple-select-tree';
 import TreeStore from './store';
 
 export type TreeNode<T> = Readonly<{
@@ -30,5 +31,7 @@ export type TNode<T> = {
   checkStatus: CheckStatus;
 }
 
-export type NodeRenderProps<T> = { node: TreeNode<T>; store: TreeStore<T> };
+export type NodeRenderProps<T> = {
+  node: TreeNode<T>; store: TreeStore<T> | SelectableTreeStore<T>
+};
 export type NodeRender<T> = React.FC<NodeRenderProps<T>>

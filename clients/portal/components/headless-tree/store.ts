@@ -15,12 +15,12 @@ import {
 
 const TREE_NODE_HEIGHT = 56;
 
-export type TreeStorProps<T> = {
+export type TreeStoreProps<T> = {
   rootNode: TreeNode<T>;
   onGetChildren?: (parentNode: TreeNode<T>) => Promise<TreeNode<T>[]>;
 }
 
-export default class TreeStor<T> {
+export default class TreeStore<T> {
   static ID_FOR_NODE_UNSUBMITTED = 'ID_FOR_NODE_UNSUBMITTED';
 
   @observable rootNode: TreeNode<T>;
@@ -30,7 +30,7 @@ export default class TreeStor<T> {
 
   onGetChildren: (parentNode: TreeNode<T>) => Promise<TreeNode<T>[]> = defaultGetChildren;
 
-  constructor({ rootNode, onGetChildren }: TreeStorProps<T>) {
+  constructor({ rootNode, onGetChildren }: TreeStoreProps<T>) {
     this.rootNode = rootNode;
     this.currentFocusedNodeID = rootNode.id;
 

@@ -4,11 +4,12 @@ import { Checkbox } from '@QCFE/lego-ui';
 import { Tab } from '@portal/components/tab';
 import { TextHeader } from '@portal/components/text-header';
 import { SearchInput } from '@portal/components/form/search-input';
-import { Tree } from '@portal/components/qxp-tree';
-import { EmployeeTable } from '../employee-table';
-import { SelectedList } from '../selected-list';
+import { EmployeeTable } from './employee-table';
+import { SelectedList } from './selected-list';
 import { EmployeeSelectTree } from './employee-select-tree';
+import { DepartmentSelectTree } from './department-select-tree';
 import { IOwner } from '@portal/pages/access-control/role-management/api';
+import { TNode } from '@portal/components/headless-tree/types';
 
 export interface IOwnerSelector {
   defaultEmployees?: IOwner[];
@@ -40,7 +41,7 @@ export const OwnerSelector = ({ defaultEmployees = [], refs }: IOwnerSelector) =
     setSelectedOwner((owners) => owners.filter((o) => o.ownerID !== owner.ownerID));
   };
 
-  const updateSelectedOwnerFromTree = (selectedRows: IDepartment[]) => {
+  const updateSelectedOwnerFromTree = (selectedRows: TNode<IDepartment>[]) => {
     let owners = selectedOwner.filter((owner) => owner.type === 2);
     owners = owners.map((owner) => {
       if (!selectedRows.find((row) => row.id === owner.ownerID)) {
@@ -56,10 +57,10 @@ export const OwnerSelector = ({ defaultEmployees = [], refs }: IOwnerSelector) =
         setSelectedOwner((owners) => [...owners, {
           type: 2,
           ownerID: row.id,
-          ownerName: row.departmentName,
+          ownerName: row.data.departmentName,
           phone: '',
           email: '',
-          departmentName: row.departmentName,
+          departmentName: row.data.departmentName,
           createdAt: -1,
           id: '',
         }]);
@@ -86,9 +87,9 @@ export const OwnerSelector = ({ defaultEmployees = [], refs }: IOwnerSelector) =
                   onChange={(value) => setUsernameKeyword(value)}
                   appendix="close"
                 />
-                <div className="flex flex-row" style={{ height: 'calc(100% - 48px)' }}>
-                  <div className="h-full flex flex-col overflow-hidden flex-1">
-                    <TextHeader className="pb-0" title="选择部门" />
+                <div className="flex flex-row mr-4" style={{ height: 'calc(100% - 48px)' }}>
+                  <div className="h-full flex flex-col overflow-hidden flex-1 mr-4">
+                    <TextHeader className="pb-4" title="选择部门" />
                     {/* <Tree
                       treeData={departments}
                       className="-ml-2 mr-4 mt-4 overflow-scroll text-dot-7"
@@ -140,6 +141,10 @@ export const OwnerSelector = ({ defaultEmployees = [], refs }: IOwnerSelector) =
                     itemClassName="flex flex-col items-start"
                     textClassName="ml-0"
                     descClassName="-ml-dot-4 mb-dot-4"
+                  />
+                  <DepartmentSelectTree
+                    onChange={updateSelectedOwnerFromTree}
+                    // selectedKeys={selectedDepartmentKeys}
                   />
                   {/* <Tree<IDepartmentStructure>
                     treeData={departments}

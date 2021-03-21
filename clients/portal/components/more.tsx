@@ -1,7 +1,7 @@
 import React from 'react';
 import { twCascade } from '@mariusmarais/tailwind-cascade';
 
-import { Popover } from './popover';
+import { Popover } from './popover2';
 import { Dot } from './dot';
 import { List, IITems } from './list';
 

@@ -6,16 +6,19 @@ import { observable, action, toJS } from 'mobx';
 import TreeStore from './store';
 import RenderNode from './node';
 import { TreeNode } from './types';
+import SelectableTreeStore from './multiple-select-tree';
 
 interface Props<T> {
   store: TreeStore<T>;
-  NodeRender: React.FC<{ node: TreeNode<T>; store: TreeStore<T> }>;
-  RootNodeRender: React.FC<{ node: TreeNode<T>; store: TreeStore<T> }>;
+  NodeRender: React.FC<{ node: TreeNode<T>; store: TreeStore<T> | SelectableTreeStore<T> }>;
+  RootNodeRender: React.FC<{ node: TreeNode<T>; store: TreeStore<T> | SelectableTreeStore<T> }>;
   nodeDraggable?: (node: TreeNode<T>) => boolean;
   canDropOn?: (node: TreeNode<T>) => boolean;
   onDragOver?: (node: TreeNode<T>, draggingNode: TreeNode<T>) => boolean;
   onDrop?: (node: TreeNode<T>, draggingNode: TreeNode<T>) => Promise<boolean>;
   onSelect?: (data: T) => void;
+  className?: string;
+  itemClassName?: string;
 }
 
 @observer
@@ -23,10 +26,10 @@ export default class Tree<T> extends React.Component<Props<T>> {
   @observable isRootAcceptDrop = false;
 
   static defaultProps = {
-    nodeRender: (node: TreeNode<any>): JSX.Element | string => {
+    NodeRender: (node: TreeNode<any>): JSX.Element | string => {
       return node.name;
     },
-    rootNodeRender: (node: TreeNode<any>): JSX.Element | string => {
+    RootNodeRender: (node: TreeNode<any>): JSX.Element | string => {
       return node.name;
     },
   }
@@ -98,6 +101,8 @@ export default class Tree<T> extends React.Component<Props<T>> {
       RootNodeRender,
       nodeDraggable,
       canDropOn,
+      className,
+      itemClassName,
     } = this.props;
     const {
       nodeList,
@@ -117,7 +122,7 @@ export default class Tree<T> extends React.Component<Props<T>> {
     const rootNode = nodeList[0];
 
     return (
-      <div className="tree">
+      <div className={classnames('tree', className)}>
         <div
           key={rootNode.id}
           onClick={(): void => this.handleNodeClick(rootNode)}
@@ -125,7 +130,7 @@ export default class Tree<T> extends React.Component<Props<T>> {
             'tree-node--focused': rootNode.id === currentFocusedNode.id,
             'tree-node--fade': renamingNodeID,
             'tree-node--accept-drop': this.isRootAcceptDrop,
-          })}
+          }, itemClassName)}
           onDragLeave={(): void => this.setAcceptDrop(false)}
           onDragOver={(e): void => {
             if (draggingNode?.id !== rootNode.id) {

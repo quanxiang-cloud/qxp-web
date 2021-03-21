@@ -1,7 +1,7 @@
 import { flatten } from 'lodash';
 import { action, computed, observable, toJS } from 'mobx';
 
-import BaseStore, { TreeStorProps } from './store';
+import BaseStore, { TreeStoreProps } from './store';
 import { TNode, CheckStatus } from './types';
 
 type NodeMap<T> = Record<string, TNode<T>>
@@ -26,7 +26,7 @@ export default class SelectableTreeStore<T> extends BaseStore<T> {
   _nodeMap: NodeMap<T> = {};
   @observable nodeMap: NodeMap<T> = {};
 
-  constructor(props: TreeStorProps<T>) {
+  constructor(props: TreeStoreProps<T>) {
     super(props);
 
     this.generateNodeMap();
@@ -61,6 +61,8 @@ export default class SelectableTreeStore<T> extends BaseStore<T> {
 
   @action
   toggleCheck(id: string) {
+    console.log(id);
+
     const currentCheckStatus = this._nodeMap[id].checkStatus;
     const targetCheckStatus = currentCheckStatus === 'checked' ? 'unchecked' : 'checked';
     this._toggleCheck(id, targetCheckStatus);
