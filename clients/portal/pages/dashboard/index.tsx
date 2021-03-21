@@ -51,13 +51,14 @@ export default function Dashboard() {
                   itemRender={
                     <div
                       className={twCascade(
-                        'p-dot-3-6 bg-gradient-green-to-top-right rounded-lg rounded-tr-none',
+                        'w-4-dot-4 h-4-dot-4 p-dot-3-6 flex items-center justify-center',
+                        'bg-gradient-green-to-top-right rounded-lg rounded-tr-none',
                       )}
                     >
                       <img src="/dist/images/calendar.svg" alt="calendar" />
                     </div>
                   }
-                  titleClassName="text-1-dot-4 leading-4 font-bold"
+                  titleClassName="text-1-dot-4 leading-4 font-bold mb-4"
                   descClassName="leading-4"
                 />,
                 <ItemWithTitleDesc
@@ -67,13 +68,14 @@ export default function Dashboard() {
                   itemRender={
                     <div
                       className={twCascade(
-                        'p-dot-3-6 bg-gradient-yellow-to-top-right rounded-lg rounded-tr-none',
+                        'w-4-dot-4 h-4-dot-4 p-dot-3-6 flex items-center justify-center',
+                        'bg-gradient-yellow-to-top-right rounded-lg rounded-tr-none',
                       )}
                     >
                       <img src="/dist/images/accounts.svg" alt="accounts" />
                     </div>
                   }
-                  titleClassName="text-1-dot-4 leading-4 font-bold"
+                  titleClassName="text-1-dot-4 leading-4 font-bold mb-4"
                   descClassName="leading-4"
                 />,
                 <ItemWithTitleDesc
@@ -82,7 +84,8 @@ export default function Dashboard() {
                   itemRender={
                     <div
                       className={twCascade(
-                        'p-dot-3-6 bg-gradient-blue-to-top-right rounded-lg rounded-tr-none',
+                        'w-4-dot-4 h-4-dot-4 p-dot-3-6 flex items-center justify-center',
+                        'bg-gradient-blue-to-top-right rounded-lg rounded-tr-none',
                       )}
                     >
                       <img src="/dist/images/add.svg" alt="add" />
@@ -97,7 +100,7 @@ export default function Dashboard() {
         />
         <div className="flex justify-between items-center">
           <Card
-            className="flex-1 ml-0 px-1-dot-6 py-4"
+            className="flex-1 ml-0 px-1-dot-6 py-8"
             title="我的待办"
             action={
               <a className="transition ease-linear text-1-dot-4 underline color-324558">查看全部</a>
@@ -109,7 +112,7 @@ export default function Dashboard() {
                   useCss({
                     'margin-bottom': '1rem',
                     'background-color': '#fff',
-                    padding: '.8rem',
+                    padding: '0 20px',
                   }),
                   'rounded-md',
                 )}
@@ -121,12 +124,14 @@ export default function Dashboard() {
                     itemRender={
                       <div
                         className={twCascade(
-                          'w-dot-8 h-dot-8 bg-gradient-green-to-top-right',
+                          'w-1-dot-6 h-1-dot-6 bg-gradient-green-to-top-right',
                           'rounded rounded-tr-none',
                         )}
                       />
                     }
                     textDirection="row"
+                    className="h-5-dot-6"
+                    textClassName="h-auto"
                     titleClassName="text-1-dot-4"
                     descClassName="text-1-dot-6 font-bold"
                   />,
@@ -137,12 +142,14 @@ export default function Dashboard() {
                     itemRender={
                       <div
                         className={twCascade(
-                          'w-dot-8 h-dot-8 bg-gradient-yellow-to-top-right',
+                          'w-1-dot-6 h-1-dot-6 bg-gradient-yellow-to-top-right',
                           'rounded rounded-tr-none',
                         )}
                       />
                     }
                     textDirection="row"
+                    className="h-5-dot-6"
+                    textClassName="h-auto"
                     titleClassName="text-1-dot-4"
                     descClassName="text-1-dot-6 font-bold"
                   />,
@@ -153,11 +160,13 @@ export default function Dashboard() {
                     itemRender={
                       <div
                         className={twCascade(
-                          'w-dot-8 h-dot-8 bg-gradient-blue-to-top-right rounded rounded-tr-none',
+                          'w-1-dot-6 h-1-dot-6 bg-gradient-blue-to-top-right rounded rounded-tr-none',
                         )}
                       />
                     }
                     textDirection="row"
+                    className="h-5-dot-6"
+                    textClassName="h-auto"
                     titleClassName="text-1-dot-4"
                     descClassName="text-1-dot-6 font-bold"
                   />,
@@ -175,7 +184,7 @@ export default function Dashboard() {
               <div className="w-full h-full flex items-center justify-center">
                 <div className="flex flex-col items-center">
                   <img
-                    className="w-2-dot-4 h-2-dot-4 mb-dot-6"
+                    className="w-4-dot-8 h-4-dot-8 mb-dot-6"
                     src="/dist/images/alert.svg"
                     alt="alert"
                   />

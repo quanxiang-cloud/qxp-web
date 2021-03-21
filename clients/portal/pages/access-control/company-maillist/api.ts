@@ -230,6 +230,23 @@ export const setDEPLeader = ({
 };
 
 /**
+ * @returns 取消主管
+ */
+export const cancelDEPLeader = ({
+  depID,
+}: {
+  depID: string;
+}) => {
+  return httpPost<IResponse<{ code: number }>>(
+    '/api/org/v1/cancelDEPLeader',
+    JSON.stringify({ depID }),
+    {
+      'Content-Type': 'application/json',
+    }
+  );
+};
+
+/**
  * @returns 修改用户状态
  */
 export const updateUserStatus = ({

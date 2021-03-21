@@ -82,3 +82,11 @@ export const exportDepExcel = (headers: Column[], data: any[], fileName: string)
   // 导出 Excel
   XLSX.writeFile(wb, fileName);
 };
+
+const imgBgColors: string[] = ['#6366F1', '#F59E0B', '#10B981', '#F97316',
+  '#A855F7', '#14B8A6', '#EF4444', '#06B6D4'];
+
+export const getImgColor = (text: string, colors = imgBgColors) => {
+  const num: number = text.charCodeAt(0) % 8;
+  return colors[num];
+};

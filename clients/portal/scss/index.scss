@@ -30,6 +30,10 @@ body {
   height: 4.3rem;
 }
 
+.h-4-dot-4 {
+  height: 4.4rem;
+}
+
 .h-4-dot-8 {
   height: 4.8rem;
 }
@@ -52,6 +56,10 @@ body {
 
 .w-416 {
   width: 20.8rem;
+}
+
+.w-4-dot-4 {
+  width: 4.4rem;
 }
 
 .w-4-dot-8 {
@@ -245,6 +253,11 @@ body {
   border-bottom-left-radius: 0.4rem;
 }
 
+.rounded-l-1 {
+  border-top-left-radius: 1rem;
+  border-bottom-left-radius: 1rem;
+}
+
 .rounded-l-dot-8 {
   border-top-left-radius: 0.8rem;
   border-bottom-left-radius: 0.8rem;
@@ -252,6 +265,10 @@ body {
 
 .rounded-br-dot-4 {
   border-bottom-right-radius: 0.4rem;
+}
+
+.rounded-br-1 {
+  border-bottom-right-radius: 1rem;
 }
 
 .rounded-dot-6 {
@@ -461,6 +478,10 @@ body {
   border-color: #CBD5E1;
 }
 
+.leading-no {
+  line-height: 0;
+}
+
 .leading-2 {
   line-height: 0.5rem;
 }
@@ -487,6 +508,10 @@ body {
 
 .leading-2-dot-4 {
   line-height: 2.4rem;
+}
+
+.leading-4-dot-8 {
+  line-height: 4.8rem;
 }
 
 .text-475569 {
@@ -650,6 +675,7 @@ body {
             font-size: 1.4rem !important;
             font-weight: normal !important;
             vertical-align: middle;
+
             span {
               line-height: 1 !important;
               height: 44px;

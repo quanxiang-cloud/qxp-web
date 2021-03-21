@@ -25,10 +25,10 @@ import {
   setDEPLeader,
   batchAdjustDep,
   getUserRole,
+  cancelDEPLeader,
 } from './api';
-import { excelHeader, exportDepExcel } from './excel';
+import { excelHeader, exportDepExcel, getImgColor } from './excel';
 import { uuid } from '@assets/lib/utils';
-import { Dot } from '@portal/components/dot2';
 
 export interface IUserInfo {
   id: string;
@@ -145,6 +145,20 @@ export const PersonInfo = React.memo(({
     });
   };
 
+  const cancelUpSuper = (params: IUserInfo) => {
+    const _params: { depID: string } = {
+      depID: params.dep ? params.dep.id : '',
+    };
+    cancelDEPLeader(_params).then((res) => {
+      if (res && res.code === 0) {
+        Message.success('操作成功');
+        refetch();
+      } else {
+        Message.error('操作失败');
+      }
+    });
+  };
+
   const actions = (status: UserStatus, isLeader: number) => {
     const acts = [
       {
@@ -183,7 +197,7 @@ export const PersonInfo = React.memo(({
       id: '1',
       iconName: 'stop',
       text: '取消主管',
-      onclick: (params: any) => setUpSuper(params),
+      onclick: (params: any) => cancelUpSuper(params),
     };
 
     const disable = {
@@ -265,14 +279,6 @@ export const PersonInfo = React.memo(({
       ...pageParams,
       limit,
     });
-  };
-
-  const imgBgColors: string[] = ['#6366F1', '#F59E0B', '#10B981', '#F97316',
-    '#A855F7', '#14B8A6', '#EF4444', '#06B6D4'];
-
-  const getImgColor = (text: string, colors = imgBgColors) => {
-    const num: number = text.charCodeAt(0) % 8;
-    return colors[num];
   };
 
   const columns = [
