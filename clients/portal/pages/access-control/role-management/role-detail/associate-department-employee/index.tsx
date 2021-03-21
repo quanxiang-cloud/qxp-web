@@ -3,7 +3,7 @@ import { useQuery, useMutation } from 'react-query';
 import { Modal } from '@QCFE/lego-ui';
 
 import { Button } from '@portal/components/button';
-import { Table } from '@portal/components/table';
+import { Table } from '@portal/components/table2';
 import { Loading } from '@portal/components/loading2';
 import { EmptyData } from '@portal/components/empty-data';
 import { More } from '@portal/components/more';
