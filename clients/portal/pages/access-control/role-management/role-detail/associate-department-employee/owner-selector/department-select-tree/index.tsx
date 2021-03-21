@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery } from 'react-query';
+import { observer } from 'mobx-react';
 
 import Store from './store';
 import Tree from '@portal/components/headless-tree';
@@ -11,7 +12,7 @@ import { TNode } from '@portal/components/headless-tree/types';
 export interface IDepartmentSelectTree {
   onChange: (departments: TNode<IDepartment>[]) => void
 }
-export const DepartmentSelectTree = ({ onChange }: IDepartmentSelectTree) => {
+export const DepartmentSelectTree = observer(({ onChange }: IDepartmentSelectTree) => {
   const [store, setStore] = useState<Store | null>(null);
   const { data: department, isLoading, isError } = useQuery(
     ['getDepartmentStructure'],
@@ -37,7 +38,10 @@ export const DepartmentSelectTree = ({ onChange }: IDepartmentSelectTree) => {
         store={store}
         NodeRender={DepartmentNode}
         RootNodeRender={DepartmentNode}
+        onSelect={() => {
+          console.log(store.nodeMap);
+        }}
       />
     </div>
   );
-};
+});
