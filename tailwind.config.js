@@ -1,7 +1,7 @@
 const colors = require('./clients/theme/colors');
 
 module.exports = {
-  purge: [],
+  purge: ['./clients/**/*.tsx'],
   darkMode: false, // or 'media' or 'class'
   theme: {
     colors: colors,
