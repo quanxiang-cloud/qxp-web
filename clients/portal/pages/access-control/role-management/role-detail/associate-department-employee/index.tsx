@@ -7,7 +7,7 @@ import { Table } from '@portal/components/table';
 import { Loading } from '@portal/components/loading';
 import { EmptyData } from '@portal/components/empty-data';
 import { More } from '@portal/components/more';
-import { Pagination } from '@portal/components/pagination';
+import { Pagination } from '@portal/components/pagination2';
 import { OwnerSelector } from './owner-selector/owner-selector';
 import {
   getRoleAssociations,

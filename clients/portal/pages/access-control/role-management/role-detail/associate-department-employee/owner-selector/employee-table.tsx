@@ -3,7 +3,7 @@ import { useQuery } from 'react-query';
 
 import { Table } from '@portal/components/table';
 import { EmptyData } from '@portal/components/empty-data';
-import { Pagination } from '@portal/components/pagination';
+import { Pagination } from '@portal/components/pagination2';
 import { adminSearchUserList, IOwner } from '@portal/pages/access-control/role-management/api';
 import { Loading } from '@portal/components/loading';
 import { usePrevious } from '@assets/lib/hooks/use-previous-value';

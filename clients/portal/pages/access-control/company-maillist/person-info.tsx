@@ -3,7 +3,7 @@ import { useQuery, useMutation } from 'react-query';
 import { Table, Icon, Message } from '@QCFE/lego-ui';
 import { twCascade } from '@mariusmarais/tailwind-cascade';
 
-import { Pagination } from '@portal/components/pagination';
+import { Pagination } from '@portal/components/pagination2';
 import { ResetPasswordModal, CheckedWay } from './reset-password-modal';
 import { AccountHandleModal } from './account-handle-modal';
 import { StaffModal, FormValues, EditFormValues } from './staff-modal';
