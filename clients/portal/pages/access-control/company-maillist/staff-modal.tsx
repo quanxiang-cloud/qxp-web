@@ -6,7 +6,7 @@ import { useQuery, useMutation } from 'react-query';
 import { Modal, Form, Icon } from '@QCFE/lego-ui';
 
 import { Button } from '@portal/components/button';
-import { Loading } from '@portal/components/loading';
+import { Loading } from '@portal/components/loading2';
 import SelectTree from '@portal/components/select-tree';
 import { IUserInfo } from './person-info';
 import { getListRole, addDepUser, getERPTree, getUserRole } from './api';

@@ -1,7 +1,7 @@
 import React from 'react';
 import { twCascade } from '@mariusmarais/tailwind-cascade';
 
-import { ItemWithTitleDesc } from './Item-with-title-desc';
+import { ItemWithTitleDesc } from './Item-with-title-desc3';
 import { isString } from '@assets/lib/utils';
 
 export interface ITextHeader {

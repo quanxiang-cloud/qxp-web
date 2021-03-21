@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { LocaleProvider } from '@QCFE/lego-ui';
 import { BrowserRouter as Router } from 'react-router-dom';
 
-import { Loading } from './components/loading';
+import { Loading } from './components/loading2';
 import { AppContext, IContextValue } from '@clients/common/providers/context';
 
 import locales from './locales';

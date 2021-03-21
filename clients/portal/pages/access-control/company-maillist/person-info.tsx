@@ -28,7 +28,7 @@ import {
 } from './api';
 import { excelHeader, exportDepExcel } from './excel';
 import { uuid } from '@assets/lib/utils';
-import { Dot } from '@portal/components/dot';
+import { Dot } from '@portal/components/dot2';
 
 export interface IUserInfo {
   id: string;

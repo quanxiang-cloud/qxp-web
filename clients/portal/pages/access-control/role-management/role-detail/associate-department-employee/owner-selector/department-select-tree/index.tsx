@@ -4,7 +4,7 @@ import { observer } from 'mobx-react';
 import Store from './store';
 import Tree from '@portal/components/headless-tree';
 import { DepartmentNode } from './department-node';
-
+@portal/components/loading2
 export interface IDepartmentSelectTree {
   store: Store;
 }

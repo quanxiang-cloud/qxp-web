@@ -2,7 +2,7 @@ import React, { Dispatch, SetStateAction, useRef } from 'react';
 import { Link } from 'react-router-dom';
 
 import { PersonalSettingMenu } from './personal-setting-menu';
-import { Hamburger } from './hamburger';
+import { Hamburger } from './hamburger2';
 
 export interface IHeader {
   onMenuToggle: Dispatch<SetStateAction<boolean | null>>;

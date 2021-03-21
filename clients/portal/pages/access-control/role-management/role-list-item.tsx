@@ -3,7 +3,7 @@ import { twCascade } from '@mariusmarais/tailwind-cascade';
 import useCss from 'react-use/lib/useCss';
 import { identity } from '@assets/lib/utils';
 
-import { ItemWithTitleDesc } from '@portal/components/Item-with-title-desc';
+import { ItemWithTitleDesc } from '@portal/components/Item-with-title-desc3';
 
 export interface IRoleListItem {
   name: string;
