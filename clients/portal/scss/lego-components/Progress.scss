@@ -1,0 +1,181 @@
+$progress-prefix-cls: 'lego-progress';
+.#{$progress-prefix-cls} {
+  display: inline-block;
+  color: $neutral-15;
+}
+
+.#{$progress-prefix-cls}-line {
+  position: relative;
+  width: 100%;
+}
+
+.#{$progress-prefix-cls}-small.#{$progress-prefix-cls}-line {
+  font-size: $size-6;
+}
+
+.#{$progress-prefix-cls}-outer {
+  display: inline-block;
+  width: 100%;
+  padding-right: 0;
+  margin-right: 0;
+}
+
+.#{$progress-prefix-cls}-show-info {
+  .#{$progress-prefix-cls}-outer {
+    padding-right: calc(2em + 8px);
+    margin-right: calc(-2em - 8px);
+  }
+  .#{$progress-prefix-cls}-title + .#{$progress-prefix-cls}-outer {
+    padding-right: 0;
+    margin-right: 0;
+  }
+}
+
+.#{$progress-prefix-cls}-inner {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+  border-radius: $progress-border-radius;
+  background-color: $white-bis;
+  vertical-align: middle;
+}
+
+.#{$progress-prefix-cls}-circle-trail {
+  stroke: $neutral-3;
+}
+
+.#{$progress-prefix-cls}-circle-path {
+  stroke: $progress-success-color;
+}
+
+.#{$progress-prefix-cls}-success-bg,
+.#{$progress-prefix-cls}-bg {
+  position: relative;
+  border-radius: $progress-border-radius;
+  background-color: $progress-success-color;
+  transition: all 0.4s ease 0s;
+}
+
+.#{$progress-prefix-cls}-success-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: $progress-success-color;
+}
+
+.#{$progress-prefix-cls}-text {
+  display: inline-block;
+  width: 2em;
+  margin-left: 8px;
+  vertical-align: middle;
+  font-size: 1em;
+  line-height: 1;
+  word-break: normal;
+  text-align: left;
+}
+
+.#{$progress-prefix-cls}-status-active {
+  .#{$progress-prefix-cls}-bg:before {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: $progress-success-color;
+    opacity: 0;
+    animation: progress-appear 2.4s ease-out infinite;
+    content: '';
+  }
+}
+
+.#{$progress-prefix-cls}-status-exception {
+  .#{$progress-prefix-cls}-bg {
+    background-color: $progress-error-color;
+  }
+  .#{$progress-prefix-cls}-text {
+    color: $progress-success-color;
+    svg {
+      margin-top: 1px;
+    }
+  }
+  .#{$progress-prefix-cls}-circle-path {
+    stroke: $progress-error-color;
+  }
+}
+
+.#{$progress-prefix-cls}-status-success {
+  .#{$progress-prefix-cls}-bg {
+    background-color: $progress-success-color;
+  }
+  .#{$progress-prefix-cls}-text {
+    color: $progress-success-color;
+  }
+  .#{$progress-prefix-cls}-circle-path {
+    stroke: $progress-success-color;
+  }
+}
+
+.#{$progress-prefix-cls}-circle .#{$progress-prefix-cls}-inner {
+  position: relative;
+  background-color: transparent;
+  line-height: 1;
+}
+
+.#{$progress-prefix-cls}-circle .#{$progress-prefix-cls}-text {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  display: block;
+  width: 100%;
+  margin: 0;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 1;
+  text-align: center;
+  transform: translateY(-50%);
+}
+
+.#{$progress-prefix-cls}-circle.#{$progress-prefix-cls}-status-exception {
+  .#{$progress-prefix-cls}-text {
+    color: $progress-error-color;
+  }
+}
+
+.#{$progress-prefix-cls}-circle.#{$progress-prefix-cls}-status-success {
+  .#{$progress-prefix-cls}-text {
+    color: $neutral-3;
+  }
+}
+
+@keyframes progress-appear {
+  0% {
+    width: 0;
+    opacity: 0.1;
+  }
+  20% {
+    width: 0;
+    opacity: 0.5;
+  }
+  100% {
+    width: 100%;
+    opacity: 0;
+  }
+}
+
+.lego-icon-error-progress {
+  rect {
+    fill: $progress-error-color;
+  }
+  path {
+    fill: white;
+  }
+}
+
+.#{$progress-prefix-cls}-title {
+  font-size: 14px;
+  line-height: 1.71;
+}
+
+.#{$progress-prefix-cls}-title--info {
+  float: right;
+}

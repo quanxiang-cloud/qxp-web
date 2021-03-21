@@ -1,0 +1,36 @@
+.tag.is-rounded {
+  padding-right: $tag-padding;
+  padding-left: $tag-padding;
+  border: 1px solid transparent;
+  outline: none;
+  cursor: pointer;
+  &:hover,
+  &:focus {
+    border: solid 1px $neutral-4;
+  }
+  & > .icon {
+    margin-right: $tag-icon-margin !important;
+  }
+  & > .close {
+    margin-right: 0 !important;
+    margin-left: $tag-icon-margin !important;
+  }
+  &.not-clickable {
+    cursor: default;
+    &:hover,
+    &:focus {
+      border: 1px solid transparent;
+    }
+  }
+}
+
+.tag-add {
+  background: $neutral-1 !important;
+  vertical-align: bottom;
+  &:hover {
+    background-color: $neutral-2 !important;
+  }
+  &:active {
+    background-color: $neutral-3 !important;
+  }
+}

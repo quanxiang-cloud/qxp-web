@@ -1,0 +1,27 @@
+.icon {
+  &.icon-clickable {
+    border-radius: $icon-button-border-radius;
+    cursor: pointer;
+    pointer-events: auto;
+    &:hover {
+      background-color: $icon-button-hover-background-color;
+    }
+    &:active {
+      background-color: $icon-button-active-background-color;
+    }
+  }
+  &.icon-disabled {
+    opacity: $icon-button-disabled-opacity;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+  &.fake-disabled {
+    opacity: $icon-button-disabled-opacity;
+    cursor: not-allowed;
+    pointer-events: auto;
+  }
+  svg {
+    width: 100%;
+    height: 100%;
+  }
+}
