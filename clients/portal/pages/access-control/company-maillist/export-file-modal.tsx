@@ -235,7 +235,6 @@ export const ExportFileModal = ({
     okModal(successUsersId, checkWay);
   };
 
-  console.log('uploadStatus', uploadStatus);
   return (
     <>
       <Modal

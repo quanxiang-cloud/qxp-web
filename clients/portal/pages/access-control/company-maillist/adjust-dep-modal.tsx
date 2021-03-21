@@ -53,8 +53,6 @@ export const AdjustDepModal = (props: IAdjustDepModalProps) => {
     okModal(params);
   };
 
-  console.log(userList);
-
   return (
     <Modal
       visible={visible}
