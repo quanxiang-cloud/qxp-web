@@ -271,36 +271,36 @@ export const PersonInfo = React.memo(({
         return (
           <div className="flex items-center">
             <div className="pr-dot-4">
-              <div className="relative w-1-dot-2 h-1-dot-2 rounded-br-dot-2 rounded-l-dot-2
-              rounded-br-dot-2 text-center leading-1-dot-2 text-white text-dot-7"
+              <div className="relative w-2-dot-4 h-2-dot-4 rounded-br-dot-4 rounded-l-dot-4
+              text-center leading-2-dot-4 text-white text-1-dot-4"
               style={{
                 backgroundColor: bgColor,
               }}
               >
                 {head}
-                <div className="w-2 h-2 bg-white rounded-lg flex items-center
-                justify-center absolute bottom-0 -right-1">
+                <div className="w-4 h-4 bg-white rounded-lg flex items-center
+                justify-center absolute bottom-dot-5 right-dot-5">
                   {record.useStatus === 1 && (
-                    <div className="w-dot-3 h-dot-3 bg-16A34A rounded-dot-3"></div>
+                    <div className="w-dot-6 h-dot-6 bg-green-first rounded-dot-6"></div>
                   )}
                   {record.useStatus === -2 && (
-                    <div className="w-dot-3 h-dot-3 bg-red-600 rounded-dot-3"></div>
+                    <div className="w-dot-6 h-dot-6 bg-red-600 rounded-dot-6"></div>
                   )}
                 </div>
               </div>
             </div>
 
             {record.useStatus === -2 ?
-              <span className="mr-dot-1 text-94A3B8">{text}</span> :
+              <span className="mr-dot-1 text-dark-four">{text}</span> :
               <span className="mr-dot-1">{text}</span>}
             {record.isDEPLeader === 1 && (
               <span
                 className={twCascade(
-                  'w-1-dot-6 h-dot-8 bg-jb rounded-dot-2 p-dot-2',
+                  'w-3-dot-4 h-1-dot-6 bg-jb rounded-dot-4 p-dot-4',
                   'flex items-center justify-center'
                 )}
               >
-                <span className="text-white text-dot-5">主管</span>
+                <span className="text-white text-1-dot-2">主管</span>
               </span>
             )}
           </div>
@@ -313,7 +313,7 @@ export const PersonInfo = React.memo(({
       width: 130,
       render: (text: string, record: IUserInfo) => {
         return (record.useStatus === -2 ?
-          <span className="mr-dot-1 text-94A3B8">{text}</span>:
+          <span className="mr-dot-1 text-dark-four">{text}</span>:
           <span className="mr-dot-1">{text}</span>);
       },
     },
@@ -323,7 +323,7 @@ export const PersonInfo = React.memo(({
       // width: 150,
       render: (text: string, record: IUserInfo) => {
         return (record.useStatus === -2 ?
-          <span className="mr-dot-1 text-94A3B8">{text}</span>:
+          <span className="mr-dot-1 text-dark-four">{text}</span>:
           <span className="mr-dot-1">{text}</span>
         );
       },
@@ -334,7 +334,7 @@ export const PersonInfo = React.memo(({
       render: (text: string, record: IUserInfo) => {
         return (
           record.useStatus === -2 ?
-            <span className="mr-dot-1 text-94A3B8">{record.dep && record.dep.departmentName}</span>:
+            <span className="mr-dot-1 text-dark-four">{record.dep && record.dep.departmentName}</span>:
             <span className="mr-dot-1 ">{record.dep && record.dep.departmentName}</span>
         );
       }
@@ -349,7 +349,7 @@ export const PersonInfo = React.memo(({
           <More<IUserInfo>
             items={actions(record && record.useStatus)}
             params={record}
-            contentClassName="mr-4"
+            contentClassName="mr-8"
           />
         );
       },
@@ -546,9 +546,9 @@ export const PersonInfo = React.memo(({
               <div className="px-2"></div>
               <More
                 items={[<List key={uuid()} items={expandActions} />]}
-                contentClassName="mr-4"
+                contentClassName="mr-8"
               >
-                <Button className="light-button w-8 h-7 relative
+                <Button className="light-button w-3-dot-2 h-dot-2 relative
                 -top-2px" textClassName="text-white">
                   <div className="flex-start-center">
                     <Dot />
@@ -563,7 +563,7 @@ export const PersonInfo = React.memo(({
         <div className="w-full mt-dot-8 flex-column overflow-y-a flex-1 px-4">
           <div className="qxp-table flex w-full">
             <Table
-              className="text-dot-7 table-full"
+              className="text-1-dot-4 table-full"
               dataSource={personList?.data || []}
               columns={columns}
               rowKey="id"

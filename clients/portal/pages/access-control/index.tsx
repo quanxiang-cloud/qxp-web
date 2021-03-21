@@ -27,25 +27,25 @@ export default function Index() {
         className="py-3-dot-9 px-8 flex justify-center items-start"
         ref={mainRef}
       >
-        <div className="w-316 bg-white pd-1 border-radius-2 mr-4">
+        <div className="w-31-dot-6 bg-white pd-2 border-1-radius-2 mr-8">
           <ItemWithTitleDesc
             title="访问控制"
             desc="最近修改时间：2021-12-31 16:03"
             itemRender={
               <div
-                className="p-dot-3-6 bg-gradient-green-to-top-right
-                rounded-lg rounded-tr-none w-2dot4 h-2dot4 flex-initial"
+                className="bg-gradient-green-to-top-right
+                rounded-lg rounded-tr-none w-4-dot-8 h-4-dot-8 flex-initial"
               >
                 <img src="/dist/images/aces-ctl.svg" alt="calendar" />
               </div>
             }
-            titleClassName="text-dot-7 leading-4 font-bold"
-            descClassName="leading-4"
+            titleClassName="text-2 leading-8 font-bold mb-2"
+            descClassName="leading-8"
           />
-          <div className="h-5"></div>
+          <div className="h-10"></div>
           <ListMenu defaultType="corporateDirectory" onChange={setMenuType} />
         </div>
-        <div className="w-988 bg-white border-radius-2 self-stretch flex flex-1">
+        <div className="w-988 bg-white border-1-radius-2 self-stretch flex flex-1">
           {menuType === 'corporateDirectory' && (<MailList />)}
           {menuType !== 'corporateDirectory' && (<RoleManagement />)}
         </div>

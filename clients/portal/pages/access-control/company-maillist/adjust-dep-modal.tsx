@@ -80,19 +80,19 @@ export const AdjustDepModal = (props: IAdjustDepModalProps) => {
     >
       <div>
         <div>
-          <p className="text-475569 text-dot-7">已选择员工</p>
+          <p className="text-475569 text-1-dot-4">已选择员工</p>
           <ul className="flex items-center">
             {userList.map((user) => {
               return (
                 <li key={user.id} className="rounded-tl-dot-2 rounded-br-dot-2 px-dot-4 bg-DEE9FF">
-                  <span className="text-375FF3 text-dot-7">{user.userName}</span>
+                  <span className="text-375FF3 text-1-dot-4">{user.userName}</span>
                 </li>
               );
             })}
           </ul>
         </div>
         <div className="mt-4">
-          <p className="text-475569 text-dot-7">选择要调整的部门</p>
+          <p className="text-475569 text-1-dot-4">选择要调整的部门</p>
           <Form layout="vertical" ref={formRef}>
             {isLoading ? (
               <Loading />

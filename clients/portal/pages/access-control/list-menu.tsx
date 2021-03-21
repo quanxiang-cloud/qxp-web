@@ -40,8 +40,8 @@ export const ListMenu = ({ onChange, defaultType }: IListMenu) => {
               onChange(item.id);
             }}
             className={twCascade(
-              'h-2-bot-8 leading-2-bot-8 rounded-l-dot-4 items-center',
-              'p-x-0-dot-9 flex relative cursor-pointer transition-all duration-300',
+              'h-5-dot-6 leading-2-dot-8 rounded-l-dot-8 items-center',
+              'p-l-1-dot-8 flex relative cursor-pointer transition-all duration-300',
               useCss({
                 '> div': {
                   display: 'none',
@@ -69,12 +69,12 @@ export const ListMenu = ({ onChange, defaultType }: IListMenu) => {
               }),
             )}
           >
-            <img className="w-1-dot-2 h-1-dot-2 pr-dot-4" src={item.icon} alt="logo" />
-            <span className="fs-0-dot-8 text-94A3B8 text-dot-8">{item.name}</span>
+            <img className="w-2-dot-4 h-2-dot-4 pr-dot-4" src={item.icon} alt="logo" />
+            <span className="text-dark-four text-1-dot-6">{item.name}</span>
             <div
               className={twCascade(
-                'absolute top-0 right-0 w-0-dot-2 h-2-dot-8 bg-475569',
-                'rounded-l-dot-4 transition-all duration-300',
+                'absolute top-0 right-0 w-0-dot-4 h-5-dot-6 bg-dark-second',
+                'rounded-l-dot-8 transition-all duration-300',
               )}
             ></div>
           </li>

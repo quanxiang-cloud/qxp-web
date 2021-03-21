@@ -23,7 +23,7 @@ export const SelectedList = ({ ownerList, onClear, onRemoveItem, className }: IS
         desc={`(${users.length}个员工${departments.length ? `, ${departments.length}个部门` : ''})`}
         action={
           <span
-            className="cursor-pointer text-dot-7 text-blue-primary flex items-center justify-center"
+            className="cursor-pointer text-1-dot-4 text-blue-primary flex items-center justify-center"
             onClick={onClear}
           >
             清空

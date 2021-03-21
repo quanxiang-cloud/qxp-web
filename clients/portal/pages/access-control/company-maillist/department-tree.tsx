@@ -50,7 +50,7 @@ const Title = ({ openDeptModal, openDeleteDeptModal, onSelect, ...treenode }: Tr
       <div className={cs('w-full h-full flex items-center justify-between')}>
         <div
           onClick={() => onSelect(treenode)}
-          className="text-dot-7 h-full truncate flex items-center"
+          className="text-1-dot-4 h-full truncate flex items-center"
         >
           {departmentName}
         </div>
@@ -197,10 +197,10 @@ export const DepartmentTree = ({ departmentId, treeData, setShowDept }: Departme
               opacity: '1',
             },
             'li.tree-node .tree-node-wrap.tree-node-wrap-selected .tree-title': {
-              '> div > .text-dot-7': {
+              '> div > .text-1-dot-4': {
                 color: '#375FF3',
               },
-              '.text-dot-7': {
+              '.text-1-dot-4': {
                 'font-weight': 'normal',
               },
             },

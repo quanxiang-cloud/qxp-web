@@ -34,18 +34,18 @@ export const TextHeader = ({
       <ItemWithTitleDesc
         desc={desc}
         itemRender={
-          <div className="font-bold text-dot-8 text-0F172A flex justify-between items-center">
+          <div className="font-bold text-1-dot-6 text-0F172A flex justify-between items-center">
             {title}
           </div>
         }
-        descClassName={twCascade('transition ease-linear text-dot-6 text-697886', descClassName)}
+        descClassName={twCascade('transition ease-linear text-1-dot-2 text-697886', descClassName)}
         textDirection={textDirection}
         className={itemClassName}
         titleClassName={titleClassName}
         textClassName={textClassName}
       />
       {isString(action) && (
-        <a className={twCascade('transition ease-linear text-dot-7 underline text-324558')}>
+        <a className={twCascade('transition ease-linear text-1-dot-4 underline text-324558')}>
           {action}
         </a>
       )}

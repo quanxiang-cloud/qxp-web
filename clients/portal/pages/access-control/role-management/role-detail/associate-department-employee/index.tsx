@@ -138,7 +138,7 @@ export const AssociateDepartmentEmployee = ({ id, isSuper }: IAssociateDepartmen
         footer={
           <div className="flex flex-row justify-between items-center">
             <Button
-              className="bg-white hover:bg-gray-100 transition cursor-pointer mr-4 mb-0"
+              className="bg-white hover:bg-gray-100 transition cursor-pointer mr-8 mb-0"
               textClassName="text-dark-second ml-2"
               icon={<img src="/dist/images/icon_error.svg" />}
               onClick={() => setShowAddModal(false)}
@@ -224,7 +224,7 @@ export const AssociateDepartmentEmployee = ({ id, isSuper }: IAssociateDepartmen
           pageSize={pagination.pageSize}
           total={pagination.total}
           current={pagination.current}
-          prefix={<span className="text-dot-6 text-dark-four">{`共${pagination.total}个员工`}</span>}
+          prefix={<span className="text-1-dot-2 text-dark-four">{`共${pagination.total}个员工`}</span>}
           onShowSizeChange={(pageSize) => setPagination((p) => ({ ...p, pageSize }))}
           onChange={(current) => setPagination((p) => ({ ...p, current }))}
         />

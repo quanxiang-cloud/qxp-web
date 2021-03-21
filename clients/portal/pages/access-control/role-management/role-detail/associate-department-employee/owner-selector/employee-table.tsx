@@ -164,7 +164,7 @@ export const EmployeeTable = ({
         onShowSizeChange={(pageSize) => setPagination((p) => ({ ...p, pageSize }))}
         onChange={(current) => setPagination((p) => ({ ...p, current }))}
         prefix={
-          <span className="text-dot-6 text-dark-four">
+          <span className="text-1-dot-2 text-dark-four">
             {`已选 ${selectedKeys.length}, 共 ${pagination.total}条`}
           </span>
         }

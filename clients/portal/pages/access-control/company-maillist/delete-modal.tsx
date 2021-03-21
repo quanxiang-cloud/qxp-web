@@ -21,7 +21,7 @@ export const DeleteModal = ({ currDep, closeModal, okModal }: DeleteModalProps) 
           <Button
             icon={
               <img
-                className="w-1-dot-2 h-1-dot-2 px-dot-4"
+                className="w-2-dot-4 h-2-dot-4 px-dot-4"
                 src="./dist/images/icon_error.svg"
                 alt="icon_error"
               />
@@ -36,7 +36,7 @@ export const DeleteModal = ({ currDep, closeModal, okModal }: DeleteModalProps) 
             textClassName="text-white"
             icon={
               <img
-                className="w-1-dot-2 h-1-dot-2 px-dot-4"
+                className="w-2-dot-4 h-2-dot-4 px-dot-4"
                 src="./dist/images/icon_true.svg"
                 alt="icon_true"
               />
@@ -48,9 +48,9 @@ export const DeleteModal = ({ currDep, closeModal, okModal }: DeleteModalProps) 
         </div>
       }
     >
-      <div className="text-dot-7">
+      <div className="text-1-dot-4">
         确定要删除
-        <span className="mx-1 text-dot-8 font-semibold">{currDep && currDep.departmentName}</span>
+        <span className="mx-1 text-1-dot-6 font-semibold">{currDep && currDep.departmentName}</span>
         吗？
       </div>
     </Modal>

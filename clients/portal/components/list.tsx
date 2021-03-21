@@ -41,7 +41,7 @@ export const List = <T extends unknown>({
                 curItem.onclick && curItem.onclick(params);
               }}
               className={twCascade(
-                'w-full h-1-dot-9 px-dot-8 flex items-center',
+                'w-full h-3-dot-6 px-1-dot-6 flex items-center',
                 'cursor-pointer hover:blue-light transition',
                 itemClassName,
               )}
@@ -55,7 +55,7 @@ export const List = <T extends unknown>({
                   )
                 }</>
               )}
-              <div className="text-dot-7 whitespace-nowrap">{curItem.text}</div>
+              <div className="text-1-dot-4 whitespace-nowrap">{curItem.text}</div>
             </li>
           );
         }

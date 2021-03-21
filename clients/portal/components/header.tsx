@@ -13,7 +13,7 @@ export const Header = ({ onMenuToggle, getSetter }: IHeader) => {
   const hamburgerRef = useRef<HTMLDivElement>(null);
 
   return (
-    <div className="mx-auto flex justify-between h-13 py-dot-8 px-1-dot-2 bg-white text-dot-7">
+    <div className="mx-auto flex justify-between h-6-dot-4 py-dot-8 px-1-dot-2 bg-white text-1-dot-4">
       <div className="flex justify-between items-center">
         <div
           className="mr-8 flex justify-between items-center cursor-pointer"
@@ -24,22 +24,23 @@ export const Header = ({ onMenuToggle, getSetter }: IHeader) => {
         </div>
         <div className="cursor-pointer">
           <Link to="/" className="flex justify-between items-center mr-2-dot-8">
-            <img className="w-3 h-3 mr-dot-2" src="/dist/images/work-space.svg" />
+            <img className="w-8 h-8 mr-dot-4" src="/dist/images/work-space.svg" />
             <span className="text-dark-second">工作台</span>
           </Link>
         </div>
       </div>
       <div className="flex justify-between items-center">
-        <img className="w-6 h-6" src="/dist/images/logo.svg" alt="logo" />
-        <img src="/dist/images/qxy-text.svg" alt="qxy-text" className="w-12 h-4 ml-dot-6" />
+        {/* <img className="w-12 h-12" src="/dist/images/logo.svg" alt="logo" />
+        <img src="/dist/images/qxy-text.svg" alt="qxy-text" className="w-24 h-6 ml-dot-6" /> */}
+        <img className="" src="/dist/images/quanxiangyun.svg" alt="quanxiangyun" />
       </div>
       <div className="flex justify-between items-center">
         <div className="flex justify-between items-center mr-2-dot-8">
-          <img className="w-4 h-4 mr-dot-2" src="/dist/images/book.svg" alt="help documentation" />
+          <img className="w-8 h-8 mr-dot-4" src="/dist/images/book.svg" alt="help documentation" />
           <span>帮助文档</span>
         </div>
         <div className="flex justify-between items-center">
-          <img className="w-5 h-5 mr-dot-2" src="/dist/images/settings.svg" alt="settings" />
+          <img className="w-10 h-10 mr-dot-4" src="/dist/images/settings.svg" alt="settings" />
           <PersonalSettingMenu />
         </div>
       </div>

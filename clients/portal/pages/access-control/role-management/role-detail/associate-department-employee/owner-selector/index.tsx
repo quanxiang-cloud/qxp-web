@@ -71,7 +71,7 @@ export const OwnerSelector = ({ defaultEmployees = [], refs }: IOwnerSelector) =
   return (
     <div className="flex flex-row">
       <Tab
-        className="mr-4 flex-2"
+        className="mr-8 flex-2"
         currentKey={tabKey}
         onChange={(k) => setTabKey(k)}
         items={[
@@ -92,7 +92,7 @@ export const OwnerSelector = ({ defaultEmployees = [], refs }: IOwnerSelector) =
                     <TextHeader className="pb-4" title="选择部门" />
                     {/* <Tree
                       treeData={departments}
-                      className="-ml-2 mr-4 mt-4 overflow-scroll text-dot-7"
+                      className="-ml-2 mr-8 mt-4 overflow-scroll text-1-dot-4"
                       itemClassName="cursor-pointer hover:bg-white rounded-tl-2xl rounded-bl-2xl"
                       selectable
                       defaultKey={departments[0]?.key}
@@ -149,8 +149,8 @@ export const OwnerSelector = ({ defaultEmployees = [], refs }: IOwnerSelector) =
                   {/* <Tree<IDepartmentStructure>
                     treeData={departments}
                     keyword={keyword}
-                    className="-ml-2 bg-white rounded-md overflow-scroll text-dot-7"
-                    itemClassName="cursor-pointer hover:bg-gray-1 text-dot-7"
+                    className="-ml-2 bg-white rounded-md overflow-scroll text-1-dot-4"
+                    itemClassName="cursor-pointer hover:bg-gray-1 text-1-dot-4"
                     selectable
                     multiple
                     selectedClassName="bg-gray-1 text-dark-five"

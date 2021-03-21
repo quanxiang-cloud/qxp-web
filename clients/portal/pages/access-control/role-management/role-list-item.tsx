@@ -72,7 +72,7 @@ export const RoleListItem = ({ name, active, id, onClick = identity }: IRoleList
         </svg>
       }
       title={name}
-      titleClassName={twCascade('text-dot-7 leading-11 transition duration-300', {
+      titleClassName={twCascade('text-1-dot-4 leading-11 transition duration-300', {
         'text-blue-primary': active,
         'font-bold': active,
       })}

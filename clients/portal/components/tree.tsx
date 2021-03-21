@@ -18,7 +18,7 @@ export const Tree = ({ ...props }: ITree) => {
           <TreeNode
             title={
               <div className="w-full flex items-center justify-between">
-                <div className="text-dot-7">{item.title}</div>
+                <div className="text-1-dot-4">{item.title}</div>
               </div>
             }
             key={item.key}
@@ -32,7 +32,7 @@ export const Tree = ({ ...props }: ITree) => {
         <TreeNode
           title={
             <div className="w-full flex items-center justify-between">
-              <div className="text-dot-7">{item.title}</div>
+              <div className="text-1-dot-4">{item.title}</div>
             </div>
           }
           key={item.key}
@@ -69,10 +69,10 @@ export const Tree = ({ ...props }: ITree) => {
                 opacity: '1',
               },
               'li.tree-node .tree-node-wrap.tree-node-wrap-selected .tree-title': {
-                '> div > .text-dot-7': {
+                '> div > .text-1-dot-4': {
                   color: '#375FF3',
                 },
-                '.text-dot-7': {
+                '.text-1-dot-4': {
                   'font-weight': 'normal',
                 },
               },

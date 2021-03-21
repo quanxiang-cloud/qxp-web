@@ -73,7 +73,7 @@ export const Menu = ({ menus, visible, toggle }: IMenus) => {
     >
       <div
         className={classnames(
-          '-left-full transform p-8 max-w-full w-2-9-dot-4 absolute bottom-0 top-0 flex flex-col',
+          '-left-full transform p-16 max-w-full w-58-dot-8 absolute bottom-0 top-0 flex flex-col',
           useCss({
             background: '#F0F6FF',
             opacity: 0.9,
@@ -85,59 +85,63 @@ export const Menu = ({ menus, visible, toggle }: IMenus) => {
           },
         )}
       >
-        <List
-          className="flex-col mt-4-dot-4"
-          itemClassName={classnames(
-            'pb-dot-8 transform transition-all duration-200',
-            useCss({
-              '&:hover .next': {
-                width: '1.6rem',
-                height: '1.6rem',
-              },
-              '.next': {
-                width: '1.2rem',
-                height: '1.2rem',
-              },
-              '&:hover > div': {
-                'box-shadow': '0px 8px 24px 4px rgba(148, 163, 184, 0.25)',
-              },
-            }),
-          )}
-          items={menus.map(({ title, desc, iconClassName, iconUrl, address }) => (
-            <div
-              key={uuid()}
-              onClick={() => {
-                if (location.pathname === address) {
-                  return toggle(false);
-                }
-                history.push(address);
-              }}
-              className={twCascade(
-                'flex flex-row justify-between items-center bg-white px-4 py-dot-8',
-                'rounded cursor-pointer transition-all duration-200',
-              )}
-            >
-              <ItemWithTitleDesc
-                title={title}
-                desc={desc}
-                itemRender={
-                  <div
-                    className={classnames(
-                      'p-dot-3-6 rounded-lg rounded-tr-none leading-4 w-2dot4 h-2dot4 flex-initial',
-                      iconClassName,
-                    )}
-                  >
-                    <img className="w-full h-full" src={iconUrl} alt={title} />
-                  </div>
-                }
-                titleClassName="text-dot-7 font-bold leading-4"
-              />
-              <Link to={address}>
-                <Icon className="next transition-all duration-200" name="next" type="dark" />
-              </Link>
-            </div>
-          ))}
-        />
+        <div className="right-16">
+          <img className="absolute top-16 right-16" src="/dist/images/menu-chatu.svg" alt="chatu" />
+          <List
+            className="flex-col mt-10-dot-4"
+            itemClassName={classnames(
+              'pb-dot-8 transform transition-all duration-200',
+              useCss({
+                '&:hover .next': {
+                  width: '1.6rem',
+                  height: '1.6rem',
+                },
+                '.next': {
+                  width: '1.2rem',
+                  height: '1.2rem',
+                },
+                '&:hover > div': {
+                  'box-shadow': '0px 8px 24px 4px rgba(148, 163, 184, 0.25)',
+                },
+              }),
+            )}
+            items={menus.map(({ title, desc, iconClassName, iconUrl, address }) => (
+              <div
+                key={uuid()}
+                onClick={() => {
+                  if (location.pathname === address) {
+                    return toggle(false);
+                  }
+                  history.push(address);
+                }}
+                className={twCascade(
+                  'h-32 flex flex-row justify-between items-center bg-white px-4 py-dot-8',
+                  'rounded cursor-pointer transition-all duration-200',
+                )}
+              >
+                <ItemWithTitleDesc
+                  title={title}
+                  desc={desc}
+                  itemRender={
+                    <div
+                      className={classnames(
+                        'p-dot-3-6 rounded-lg rounded-tr-none leading-4 w-4-dot-8 h-4-dot-8 flex-initial',
+                        iconClassName,
+                      )}
+                    >
+                      <img className="w-full h-full" src={iconUrl} alt={title} />
+                    </div>
+                  }
+                  titleClassName="text-2 font-bold mb-4"
+                />
+                <Link to={address}>
+                  <Icon className="next transition-all duration-200" name="next" type="dark" />
+                </Link>
+              </div>
+            ))}
+          />
+        </div>
+
         <div
           className={classnames(
             'self-start cursor-pointer mt-8 flex flex-between',
@@ -148,7 +152,7 @@ export const Menu = ({ menus, visible, toggle }: IMenus) => {
           )}
         >
           <Icon className="mr-dot-4" name="close" type="dark" size={20} />
-          <span className="text-dot-7" onClick={() => toggle(false)}>离开当前页面</span>
+          <span className="text-1-dot-4" onClick={() => toggle(false)}>离开当前页面</span>
         </div>
       </div>
     </div>

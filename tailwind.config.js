@@ -26,6 +26,7 @@ module.exports = {
         'gray-1': '#F1F5F9',
         'yellow-primary': '#D97706',
         'yellow-second': '#FFFBEB',
+        'green-first': '#16A34A',
       },
       width: {
         '2dot4': '2.4rem',

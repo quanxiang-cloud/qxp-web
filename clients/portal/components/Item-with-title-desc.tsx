@@ -28,14 +28,14 @@ export const ItemWithTitleDesc = ({
   return (
     <div
       className={
-        twCascade('flex justify-start items-center md:flex-col md:items-start', className)
+        twCascade('px-8 flex justify-start items-center md:flex-col md:items-start', className)
       }
       onClick={onClick}
     >
       {itemRender}
       <div
         className={twCascade(
-          'justify-between ml-dot4 flex flex-1 transition duration-300 md:ml-0 md:mt-1',
+          'h-full justify-between ml-dot4 flex flex-1 transition duration-300 md:ml-0 md:mt-1',
           {
             'flex-row': textDirection == 'row',
             'flex-col': textDirection != 'row',
@@ -45,7 +45,7 @@ export const ItemWithTitleDesc = ({
       >
         {title && <div className={twCascade('text-base', titleClassName)}>{title}</div>}
         {desc && (
-          <span className={twCascade('flex items-center text-dot-6', descClassName)}>{desc}</span>
+          <span className={twCascade('flex items-center text-1-dot-2', descClassName)}>{desc}</span>
         )}
       </div>
     </div>

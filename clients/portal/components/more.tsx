@@ -47,7 +47,7 @@ export const More = function <T>({
           className={
             twCascade(
               'min-w-24 z-10 py-dot-8 shadow-title bg-white',
-              'rounded-dot-6 absolute top-1-dot-6 right-0 mt-dot-6 mr-4',
+              'rounded-dot-6 absolute top-1-dot-6 right-0 mt-dot-6 mr-8',
               contentClassName,
             )
           }

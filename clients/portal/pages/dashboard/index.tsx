@@ -30,7 +30,7 @@ export default function Dashboard() {
           className="ml-0 mt-8 px-1-dot-6 py-4"
           title="我的应用"
           action={
-            <a className="transition ease-linear text-dot-7 underline text-324558">前往应用市场</a>
+            <a className="transition ease-linear text-1-dot-4 underline text-324558">前往应用市场</a>
           }
           content={
             <List
@@ -57,7 +57,7 @@ export default function Dashboard() {
                       <img src="/dist/images/calendar.svg" alt="calendar" />
                     </div>
                   }
-                  titleClassName="text-dot-7 leading-4 font-bold"
+                  titleClassName="text-1-dot-4 leading-4 font-bold"
                   descClassName="leading-4"
                 />,
                 <ItemWithTitleDesc
@@ -73,7 +73,7 @@ export default function Dashboard() {
                       <img src="/dist/images/accounts.svg" alt="accounts" />
                     </div>
                   }
-                  titleClassName="text-dot-7 leading-4 font-bold"
+                  titleClassName="text-1-dot-4 leading-4 font-bold"
                   descClassName="leading-4"
                 />,
                 <ItemWithTitleDesc
@@ -88,7 +88,7 @@ export default function Dashboard() {
                       <img src="/dist/images/add.svg" alt="add" />
                     </div>
                   }
-                  titleClassName="text-dot-7 leading-4 font-bold"
+                  titleClassName="text-1-dot-4 leading-4 font-bold"
                   descClassName="leading-4"
                 />,
               ]}
@@ -100,7 +100,7 @@ export default function Dashboard() {
             className="flex-1 ml-0 px-1-dot-6 py-4"
             title="我的待办"
             action={
-              <a className="transition ease-linear text-dot-7 underline color-324558">查看全部</a>
+              <a className="transition ease-linear text-1-dot-4 underline color-324558">查看全部</a>
             }
             content={
               <List
@@ -127,8 +127,8 @@ export default function Dashboard() {
                       />
                     }
                     textDirection="row"
-                    titleClassName="text-dot-7"
-                    descClassName="text-dot-8 font-bold"
+                    titleClassName="text-1-dot-4"
+                    descClassName="text-1-dot-6 font-bold"
                   />,
                   <ItemWithTitleDesc
                     key={uuid()}
@@ -143,8 +143,8 @@ export default function Dashboard() {
                       />
                     }
                     textDirection="row"
-                    titleClassName="text-dot-7"
-                    descClassName="text-dot-8 font-bold"
+                    titleClassName="text-1-dot-4"
+                    descClassName="text-1-dot-6 font-bold"
                   />,
                   <ItemWithTitleDesc
                     key={uuid()}
@@ -158,8 +158,8 @@ export default function Dashboard() {
                       />
                     }
                     textDirection="row"
-                    titleClassName="text-dot-7"
-                    descClassName="text-dot-8 font-bold"
+                    titleClassName="text-1-dot-4"
+                    descClassName="text-1-dot-6 font-bold"
                   />,
                 ]}
               />
@@ -169,7 +169,7 @@ export default function Dashboard() {
             className="flex-2 self-stretch flex flex-col px-1-dot-6 py-4"
             title="未读消息"
             action={
-              <a className="text-dot-7 underline color-324558 transition ease-linear">查看全部</a>
+              <a className="text-1-dot-4 underline color-324558 transition ease-linear">查看全部</a>
             }
             content={
               <div className="w-full h-full flex items-center justify-center">
@@ -179,7 +179,7 @@ export default function Dashboard() {
                     src="/dist/images/alert.svg"
                     alt="alert"
                   />
-                  <span className="text-dot-6">无未读消息</span>
+                  <span className="text-1-dot-2">无未读消息</span>
                 </div>
               </div>
             }
