@@ -45,15 +45,19 @@ export const Pagination = ({
         className,
       )}
     >
-      {type === 'simple' && <div>{prefix}</div>}
-      <Core current={current <= maxPage ? current : 1} maxPage={maxPage} onChange={onChange} />
-      {type === 'simple' && (
-        <SizeSelect
-          pageSize={pageSize}
-          pageSizeOptions={pageSizeOptions}
-          onShowSizeChange={onShowSizeChange}
-        />
-      )}
+      {type === 'simple' ? <div>{prefix}</div> : <div></div>}
+      <div className="flex items-center">
+        <Core current={current <= maxPage ? current : 1} maxPage={maxPage} onChange={onChange} />
+        <div className="w-2-dot-7"></div>
+        {type === 'simple' && (<>
+          <SizeSelect
+            pageSize={pageSize}
+            pageSizeOptions={pageSizeOptions}
+            onShowSizeChange={onShowSizeChange}
+          />
+        </>
+        )}
+      </div>
     </div>
   );
 };

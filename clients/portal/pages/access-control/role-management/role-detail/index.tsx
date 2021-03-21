@@ -41,7 +41,7 @@ export const RoleDetail = ({ role, id }: IRoleDetail) => {
         descClassName="transition ease-linear text-1-dot-2 text-697886"
       />
       <Tab
-        className="mt-4 py-dot-8 px-4"
+        className="mt-4 py-1-dot-6"
         items={[
           {
             id: 'func',

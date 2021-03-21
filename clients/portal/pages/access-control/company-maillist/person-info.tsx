@@ -111,6 +111,7 @@ export const PersonInfo = React.memo(({
 
   const superMutation = useMutation(setDEPLeader, {
     onSuccess: () => {
+      Message.success('操作成功！');
       refetch();
     },
   });
@@ -144,7 +145,7 @@ export const PersonInfo = React.memo(({
     });
   };
 
-  const actions = (status: UserStatus) => {
+  const actions = (status: UserStatus, isLeader: number) => {
     const acts = [
       {
         id: '1',
@@ -178,12 +179,23 @@ export const PersonInfo = React.memo(({
       },
     ];
 
+    const cancel = {
+      id: '1',
+      iconName: 'stop',
+      text: '取消主管',
+      onclick: (params: any) => setUpSuper(params),
+    };
+
     const disable = {
       id: '4',
       iconName: 'stop',
       text: '启用账号',
       onclick: (params: any) => handleAccount(1, params),
     };
+
+    if (isLeader === 1) {
+      acts[0] = cancel;
+    }
 
     if (status === -2) {
       acts[acts.length - 2] = disable;
@@ -349,7 +361,7 @@ export const PersonInfo = React.memo(({
       render: (text: any, record?: IUserInfo) => {
         return (
           <More<IUserInfo>
-            items={actions(record && record.useStatus)}
+            items={actions(record && record.useStatus, record && record.isDEPLeader)}
             params={record}
             contentClassName="mr-8"
           >
@@ -516,7 +528,7 @@ export const PersonInfo = React.memo(({
             </>
           ) : (
             <>
-              <Button2 isPrimary icon="folder" onClick={importFile} className="mr-16px">
+              <Button2 isPrimary icon="folder" onClick={importFile} className="mr-16px h-2">
                 excel 批量导入
               </Button2>
               <Button2

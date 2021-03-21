@@ -98,7 +98,7 @@ export const AlterRoleFunc = ({ funcs: functions, tag, lastSaveTime, id }: IAlte
             <Card
               style={{ backgroundColor: '#fff' }}
               key={func.funcTag}
-              headerClassName="py-dot-8 px-4 border-b border-blue-third"
+              headerClassName="py-1-dot-6 px-8 border-b border-blue-third"
               title={
                 <Checkbox
                   disabled
@@ -120,7 +120,7 @@ export const AlterRoleFunc = ({ funcs: functions, tag, lastSaveTime, id }: IAlte
               // }
               headerActionClassName="no-underline text-dark-four text-1-dot-2 leading-4 cursor-pointer"
               content={<>{renderFuncCard(func.child)}</>}
-              contentClassName="pt-dot-8 px-4 flex justify-start whitespace-nowrap flex-wrap"
+              contentClassName="pt-1-dot-6 px-8 flex justify-start whitespace-nowrap flex-wrap"
             />
           );
         })}
@@ -157,7 +157,7 @@ export const AlterRoleFunc = ({ funcs: functions, tag, lastSaveTime, id }: IAlte
 
   return (
     <>
-      <header className="mx-2 flex flex-row items-center justify-between py-3">
+      <header className="mx-4 flex flex-row items-center justify-between py-3">
         <Checkbox disabled checked={!!total}>
           已开启 {total} 项
         </Checkbox>

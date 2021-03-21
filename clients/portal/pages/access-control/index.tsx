@@ -27,14 +27,16 @@ export default function Index() {
         className="py-3-dot-9 px-8 flex justify-center items-start"
         ref={mainRef}
       >
-        <div className="w-31-dot-6 bg-white pd-2 border-1-radius-2 mr-8">
+        <div className="w-31-dot-6 bg-white px-8 pt-8 pb-16 border-1-radius-2 mr-8">
           <ItemWithTitleDesc
             title="访问控制"
-            desc="最近修改时间：2021-12-31 16:03"
+            desc="处理人员信息"
             itemRender={
               <div
                 className="bg-gradient-green-to-top-right
-                rounded-lg rounded-tr-none w-4-dot-8 h-4-dot-8 flex-initial"
+                rounded-lg rounded-tr-none w-4-dot-8 h-4-dot-8 flex-initial
+                flex items-center justify-center
+                "
               >
                 <img src="/dist/images/aces-ctl.svg" alt="calendar" />
               </div>

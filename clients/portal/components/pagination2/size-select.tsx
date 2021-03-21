@@ -20,7 +20,7 @@ export const SizeSelect = ({
   return (
     <div className="flex items-center">
       <span className="text-1-dot-2 mr-dot-3 text-dark-second">每页</span>
-      <div className="w-16">
+      <div className="w-32">
         <Select
           className="qxp-single-select"
           value={pageSize}

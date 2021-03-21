@@ -145,7 +145,7 @@ export const Menu = ({ menus, visible, toggle }: IMenus) => {
         <div
           className={classnames(
             'self-start cursor-pointer mt-8 flex flex-between',
-            'items-center rounded-lg rounded-tr-none px-dot-8 py-1',
+            'items-center rounded-lg rounded-tr-none px-1-dot-6 py-1',
             useCss({
               border: '1.5px solid #475569',
             }),
