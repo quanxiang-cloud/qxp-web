@@ -5,13 +5,13 @@ const WebpackNotifierPlugin = require('webpack-notifier');
 const WebpackBar = require('webpackbar');
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 
-// mode: 'production' | 'development';
-module.exports = function ({ mode }) {
+// env: 'production' | 'development';
+module.exports = function (env) {
   return {
-    mode: mode,
-    watch: mode !== 'production',
-    bail: mode === 'production',
-    devtool: mode === 'production' ? false : 'source-map',
+    mode: env.mode ? env.mode : 'development',
+    watch: env.mode !== 'production',
+    bail: env.mode === 'production',
+    devtool: env.mode === 'production' ? false : 'source-map',
 
     entry: {
       portal: './clients/portal/index.tsx',
@@ -24,8 +24,8 @@ module.exports = function ({ mode }) {
 
     output: {
       path: path.join(__dirname, 'dist'),
-      filename: mode === 'production' ? '[name].[fullhash].js' : '[name].js',
-      chunkFilename: mode === 'production' ? '[name].[chunkhash].js' : '[name].js',
+      filename: env.mode === 'production' ? '[name].[fullhash].js' : '[name].js',
+      chunkFilename: env.mode === 'production' ? '[name].[chunkhash].js' : '[name].js',
       publicPath: '/dist/',
     },
 
@@ -72,7 +72,7 @@ module.exports = function ({ mode }) {
     plugins: [
       new WebpackBar(),
       new MiniCssExtractPlugin({
-        filename: mode === 'production' ? '[name].[contenthash].css' : '[name].css',
+        filename: env.mode === 'production' ? '[name].[contenthash].css' : '[name].css',
       }),
       new HtmlWebpackPlugin({
         inject: false,
@@ -109,7 +109,7 @@ module.exports = function ({ mode }) {
         template: './clients/templates/reset-password.html',
         filename: `${__dirname}/dist/templates/reset-password.html`,
       }),
-      mode !== 'production' ? new WebpackNotifierPlugin({ alwaysNotify: true }) : null,
+      env !== 'production' ? new WebpackNotifierPlugin({ alwaysNotify: true }) : null,
     ].filter(Boolean),
   };
 };
