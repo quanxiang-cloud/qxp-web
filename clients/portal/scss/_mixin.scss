@@ -131,25 +131,6 @@ $modifierSeparator: "--";
   }
 }
 
-@mixin bold-text-large {
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--icon-dark-color);
-}
-
-@mixin bold-text-regular {
-  font-weight: 500;
-}
-
-@mixin bold-weaken-regular {
-  font-weight: 500;
-  color: var(--neutral-12);
-}
-
-@mixin weaken-text {
-  color: var(--neutral-12);
-}
-
 @mixin single-line-label {
   position: relative;
   padding-right: 3px;
@@ -170,36 +151,4 @@ $modifierSeparator: "--";
 @mixin link-text {
   cursor: pointer;
   color: var(--primary-color);
-}
-
-@mixin text-primary {
-  line-height: 16px;
-  color: var(--neutral-19);
-  font-weight: 500;
-}
-
-@mixin text-green {
-  line-height: 20px;
-  color: var(--primary-color);
-}
-
-@mixin text-error {
-  line-height: 20px;
-  color: var(--error-color);
-}
-
-@mixin text-desc {
-  line-height: 20px;
-  color: var(--neutral-6);
-}
-
-// 蛤？
-@mixin text-param-name {
-  color: var(--neutral-12);
-}
-
-@mixin text-title-modal {
-  font-weight: 500;
-  color: var(--neutral-15);
-  line-height: 1.75;
 }

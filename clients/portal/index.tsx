@@ -7,6 +7,8 @@ import App from './application';
 
 import './scss/index.scss';
 
+import './index.css';
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -18,10 +20,10 @@ const queryClient = new QueryClient({
 });
 
 ReactDOM.render(
-    <AppContextProvider>
-      <QueryClientProvider client={queryClient}>
-        <App />
-      </QueryClientProvider>
-    </AppContextProvider>,
-    document.getElementById('root'),
+  <AppContextProvider>
+    <QueryClientProvider client={queryClient}>
+      <App />
+    </QueryClientProvider>
+  </AppContextProvider>,
+  document.getElementById('root'),
 );

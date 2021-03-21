@@ -9,12 +9,12 @@ $select-option-height: 36px;
   max-height: 300px;
   overflow-y: auto;
 
-  color: var(--neutral-18);
+  color: var(--gray-600);
 
   background-color: white;
   border-radius: 4px;
   box-shadow: 0 6px 18px 0 rgba(213, 222, 231, 0.45);
-  border: solid 1px var(--neutral-2);
+  border: solid 1px var(--gray-200);
 
   @include element(desc) {
     display: flex;
@@ -22,7 +22,7 @@ $select-option-height: 36px;
     padding: 6px 16px;
     min-height: $select-option-height;
 
-    color: var(--neutral-6);
+    color: var(--gray-400);
 
     user-select: none;
     pointer-events: none;
@@ -49,11 +49,11 @@ $select-option-height: 36px;
   // todo mixin
   .svg-icon[data-name="check"] {
     color: var(--primary-color);
-    fill: var(--green-8);
+    fill: var(--green-400);
   }
 
   &:hover {
-    background-color: var(--neutral-1);
+    background-color: var(--gray-100);
   }
 
   @include modifier(disabled) {
@@ -84,7 +84,7 @@ $select-option-height: 36px;
   padding-left: 8px;
   padding-right: 8px;
 
-  border: 1px solid var(--neutral-9);
+  border: 1px solid var(--gray-900);
   border-radius: $border-radius;
   background-color: white;
 
@@ -95,7 +95,7 @@ $select-option-height: 36px;
 
     .trigger-arrow-icon {
       color: var(--primary-color);
-      fill: var(--green-8);
+      fill: var(--green-400);
     }
   }
 
@@ -122,7 +122,7 @@ $select-option-height: 36px;
 
     .trigger-arrow-icon {
       color: var(--primary-color);
-      fill: var(--green-8);
+      fill: var(--green-400);
     }
   }
 

@@ -1,5 +1,4 @@
 @import 'variables';
-@import 'colors';
 @import 'mixin';
 @import 'tree';
 @import 'popper';
@@ -30,6 +29,6 @@
   }
 
   .flex-start-center {
-    @apply flex flex-row items-center cursor-pointer justify-start; 
+    @apply flex flex-row items-center cursor-pointer justify-start;
   }
 }
