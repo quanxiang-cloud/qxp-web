@@ -123,11 +123,11 @@ export const Menu = ({ menus, visible, toggle }: IMenus) => {
                 itemRender={
                   <div
                     className={classnames(
-                      'p-dot-3-6 rounded-lg rounded-tr-none leading-4',
+                      'p-dot-3-6 rounded-lg rounded-tr-none leading-4 w-2dot4 h-2dot4 flex-initial',
                       iconClassName,
                     )}
                   >
-                    <img src={iconUrl} alt={title} />
+                    <img className="w-full h-full" src={iconUrl} alt={title} />
                   </div>
                 }
                 titleClassName="text-dot-7 font-bold leading-4"

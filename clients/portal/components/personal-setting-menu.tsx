@@ -19,9 +19,9 @@ export const PersonalSettingMenu = () => {
         </Menu>
       }
     >
-      <div className="cursor-pointer">
+      <div className="cursor-pointer flex items-center">
         个人设置
-        <Icon name="caret-down" />
+        <Icon name="caret-down" className="ml-1" />
       </div>
     </Dropdown>
   );

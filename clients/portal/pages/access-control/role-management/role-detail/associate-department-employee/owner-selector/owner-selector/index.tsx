@@ -1,16 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Checkbox } from '@QCFE/lego-ui';
-import { useQuery } from 'react-query';
 
 import { Tab } from '@portal/components/tab';
 import { TextHeader } from '@portal/components/text-header';
 import { SearchInput } from '@portal/components/form/search-input';
 import { Tree } from '@portal/components/qxp-tree';
-import { getDepartmentStructure, IOwner } from '@portal/pages/access-control/role-management/api';
-import { Loading } from '@portal/components/loading';
-import { IDepartmentStructure } from '@portal/pages/access-control/role-management/api';
-import { EmployeeTable } from './employee-table';
-import { SelectedList } from './selected-list';
+import { EmployeeTable } from '../employee-table';
+import { SelectedList } from '../selected-list';
+import { EmployeeSelectTree } from './employee-select-tree';
+import { IOwner } from '@portal/pages/access-control/role-management/api';
 
 export interface IOwnerSelector {
   defaultEmployees?: IOwner[];
@@ -21,20 +19,9 @@ export const OwnerSelector = ({ defaultEmployees = [], refs }: IOwnerSelector) =
   const [keyword, setKeyword] = useState<string>('');
   const [usernameKeyword, setUsernameKeyword] = useState<string>();
   const [tabKey, setTabKey] = useState<string | number>('1');
-  const [currentDepartment, setCurrentDepartment] = useState<{
-    departmentName?: string;
-    id?: string;
-  }>({});
   const [selectedOwner, setSelectedOwner] = useState<IOwner[]>(defaultEmployees);
   const [selectedDepartmentKeys, setSelectedDepartmentKeys] = useState<string[]>([]);
-  const { data: departments = [], isLoading } = useQuery(
-    ['getDepartmentStructure'],
-    getDepartmentStructure,
-    {
-      refetchOnWindowFocus: false,
-      cacheTime: -1,
-    },
-  );
+  const [currentDepartment, setCurrentDepartment] = useState<IDepartment>();
 
   refs.current = () => selectedOwner;
 
@@ -45,16 +32,6 @@ export const OwnerSelector = ({ defaultEmployees = [], refs }: IOwnerSelector) =
     );
   }, [selectedOwner]);
 
-  useEffect(() => {
-    if (departments && departments.length) {
-      setCurrentDepartment(departments[0]);
-    }
-  }, [departments]);
-
-  if (isLoading) {
-    return <Loading desc="加载中..." />;
-  }
-
   const onClear = () => {
     setSelectedOwner([]);
   };
@@ -63,7 +40,7 @@ export const OwnerSelector = ({ defaultEmployees = [], refs }: IOwnerSelector) =
     setSelectedOwner((owners) => owners.filter((o) => o.ownerID !== owner.ownerID));
   };
 
-  const updateSelectedOwnerFromTree = (selectedRows: IDepartmentStructure[]) => {
+  const updateSelectedOwnerFromTree = (selectedRows: IDepartment[]) => {
     let owners = selectedOwner.filter((owner) => owner.type === 2);
     owners = owners.map((owner) => {
       if (!selectedRows.find((row) => row.id === owner.ownerID)) {
@@ -82,7 +59,7 @@ export const OwnerSelector = ({ defaultEmployees = [], refs }: IOwnerSelector) =
           ownerName: row.departmentName,
           phone: '',
           email: '',
-          departmentName: row.parent?.departmentName,
+          departmentName: row.departmentName,
           createdAt: -1,
           id: '',
         }]);
@@ -112,7 +89,7 @@ export const OwnerSelector = ({ defaultEmployees = [], refs }: IOwnerSelector) =
                 <div className="flex flex-row" style={{ height: 'calc(100% - 48px)' }}>
                   <div className="h-full flex flex-col overflow-hidden flex-1">
                     <TextHeader className="pb-0" title="选择部门" />
-                    <Tree
+                    {/* <Tree
                       treeData={departments}
                       className="-ml-2 mr-4 mt-4 overflow-scroll text-dot-7"
                       itemClassName="cursor-pointer hover:bg-white rounded-tl-2xl rounded-bl-2xl"
@@ -123,13 +100,14 @@ export const OwnerSelector = ({ defaultEmployees = [], refs }: IOwnerSelector) =
                       onRow={{
                         onClick: (node) => setCurrentDepartment(node),
                       }}
-                    />
+                    /> */}
+                    <EmployeeSelectTree onChange={setCurrentDepartment} />
                   </div>
                   <div className="h-full flex flex-col overflow-hidden flex-2dot5">
-                    <TextHeader title={currentDepartment.departmentName || ''} />
+                    <TextHeader title={currentDepartment?.departmentName || ''} />
                     <EmployeeTable
                       userName={usernameKeyword}
-                      depID={currentDepartment.id || ''}
+                      depID={currentDepartment?.id || ''}
                       className="overflow-scroll"
                       selectedOwner={selectedOwner.filter((owner) => owner.type === 1)}
                       setSelectedOwner={setSelectedOwner}
@@ -163,7 +141,7 @@ export const OwnerSelector = ({ defaultEmployees = [], refs }: IOwnerSelector) =
                     textClassName="ml-0"
                     descClassName="-ml-dot-4 mb-dot-4"
                   />
-                  <Tree<IDepartmentStructure>
+                  {/* <Tree<IDepartmentStructure>
                     treeData={departments}
                     keyword={keyword}
                     className="-ml-2 bg-white rounded-md overflow-scroll text-dot-7"
@@ -199,7 +177,7 @@ export const OwnerSelector = ({ defaultEmployees = [], refs }: IOwnerSelector) =
                         </div>
                       );
                     }}
-                  />
+                  /> */}
                 </div>
               </>
             ),

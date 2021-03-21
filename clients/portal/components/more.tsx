@@ -15,6 +15,8 @@ export interface IMore<T> {
   offsetY?: number;
   children?: React.ReactNode;
   contentClassName?: string;
+  onMouseOver?: () => void;
+  onMouseOut?: () => void;
 }
 
 export const More = function <T>({
@@ -27,12 +29,16 @@ export const More = function <T>({
   offsetX,
   offsetY,
   children,
+  onMouseOver,
+  onMouseOut,
 }: IMore<T>) {
   return (
     <Popover
       className={className}
       triggerClassName={triggerClassName}
       tooltipClassName={tooltipClassName}
+      onMouseOver={onMouseOver}
+      onMouseOut={onMouseOut}
       content={(
         <List<T>
           items={items}
@@ -54,7 +60,7 @@ export const More = function <T>({
       {children ? (
         <>{children}</>
       ): (
-        <div className="flex flex-row items-center cursor-pointer justify-start mr-dot875">
+        <div className="flex-start-center mr-dot875">
           <Dot />
           <Dot />
           <Dot />

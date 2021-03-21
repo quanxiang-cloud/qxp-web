@@ -26,11 +26,16 @@ export const ItemWithTitleDesc = ({
   onClick = () => {},
 }: IItemWithTitleDesc) => {
   return (
-    <div className={twCascade('flex justify-start items-center', className)} onClick={onClick}>
+    <div
+      className={
+        twCascade('flex justify-start items-center md:flex-col md:items-start', className)
+      }
+      onClick={onClick}
+    >
       {itemRender}
       <div
         className={twCascade(
-          'justify-between ml-dot-4 flex flex-1 transition duration-300',
+          'justify-between ml-dot4 flex flex-1 transition duration-300 md:ml-0 md:mt-1',
           {
             'flex-row': textDirection == 'row',
             'flex-col': textDirection != 'row',

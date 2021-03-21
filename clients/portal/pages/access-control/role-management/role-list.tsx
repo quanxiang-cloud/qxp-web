@@ -30,7 +30,7 @@ export const RoleList = ({ items, onChange }: IRoleList) => {
       />
       <List
         className="flex-col justify-start items-stretch mt-2"
-        itemClassName="cursor-pointer"
+        itemClassName="cursor-pointer truncate flex-shrink-0"
         items={items.map((item) => (
           <RoleListItem key={item.id} {...item} active={item.id === current} onClick={onClick} />
         ))}

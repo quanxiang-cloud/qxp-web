@@ -34,6 +34,7 @@ export default function Dashboard() {
           }
           content={
             <List
+              className="flex-row"
               itemClassName={twCascade(
                 'px-4 py-dot-8 p-4',
                 useCss({

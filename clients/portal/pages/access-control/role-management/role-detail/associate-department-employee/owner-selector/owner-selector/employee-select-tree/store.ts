@@ -20,7 +20,7 @@ export function departmentToTreeNode(department: IDepartment): TreeNode<IDepartm
   };
 }
 
-export default class DepartmentsStore extends TreeStore<IDepartment> {
+export default class extends TreeStore<IDepartment> {
   constructor(rootDep: IDepartment) {
     super({ rootNode: departmentToTreeNode(rootDep) });
   }

@@ -103,34 +103,12 @@ export const updateRoleAssociations = (arg: IUpdateRoleAssociations) =>
     roles: data?.roles || [];
   });
 
-interface IDepartment {
-  id: string;
-  departmentName?: string;
-  departmentLeaderId: string;
-  useStatus: number;
-  superId: string;
-}
-
-export interface IDepartmentStructure extends IDepartment {
-  parent: IDepartmentStructure;
-  child: IDepartmentStructure[] | null;
-  key: string;
-  title: string;
-  children: IDepartmentStructure[];
-}
 // search for department structure
 export const getDepartmentStructure = async () => {
-  const { data } = await httpPost<IResponse<IDepartmentStructure>>('/api/org/v1/DEPTree', null, {
+  const { data } = await httpPost<IResponse<IDepartment>>('/api/org/v1/DEPTree', null, {
     'Content-Type': 'application/x-www-form-urlencoded',
   });
-  return mapTreeData<ITreeData[]>(
-    {
-      key: 'id',
-      title: 'departmentName',
-      children: 'child',
-    },
-    data ? [data] : [],
-  );
+  return data;
 };
 
 interface IUserDepartment extends IDepartment {

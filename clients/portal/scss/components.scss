@@ -6,12 +6,16 @@
 @import 'select';
 
 @layer components {
-  .base-button {
-    @apply bg-blue-700 px-3 py-1;
+  .button {
+    @apply py-1 px-3 hover:opacity-90 transition;
   }
 
-  .special-button {
-    @apply bg-green-700 px-5 py-2 text-lg;
+  .dark-button {
+    @apply bg-dark-third button;
+  }
+
+  .light-button {
+    @apply bg-white button;
   }
 
   .vertical-line {
@@ -23,5 +27,9 @@
   .line {
     @apply w-full bg-black;
     height: 1px;
+  }
+
+  .flex-start-center {
+    @apply flex flex-row items-center cursor-pointer justify-start; 
   }
 }

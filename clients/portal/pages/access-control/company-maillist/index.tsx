@@ -10,7 +10,7 @@ import { PersonInfo } from './person-info';
 
 export default function MailList() {
   const [searchWord, setSearchWord] = useState<string>('');
-  const [currentDepartment, setCurrentDepartment] = useState<Department | null>(null);
+  const [currentDepartment, setCurrentDepartment] = useState<IDepartment | null>(null);
   const [lastWord, setLastWord] = useState<string>('');
 
   const search = (keyWord: string) => {

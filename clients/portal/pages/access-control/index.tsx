@@ -32,7 +32,10 @@ export default function Index() {
             title="访问控制"
             desc="最近修改时间：2021-12-31 16:03"
             itemRender={
-              <div className="p-dot-3-6 bg-gradient-green-to-top-right rounded-lg rounded-tr-none">
+              <div
+                className="p-dot-3-6 bg-gradient-green-to-top-right
+                rounded-lg rounded-tr-none w-2dot4 h-2dot4 flex-initial"
+              >
                 <img src="/dist/images/aces-ctl.svg" alt="calendar" />
               </div>
             }

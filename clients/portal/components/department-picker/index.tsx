@@ -12,7 +12,7 @@ import { getERPTree } from '@portal/pages/access-control/company-maillist/api';
 
 type DepartmentPickerProps = {
   initialDepartmentID?: string;
-  onChange: (department: Department) => void;
+  onChange: (department: IDepartment) => void;
 }
 
 function DepartmentPicker({ initialDepartmentID, onChange }: DepartmentPickerProps): JSX.Element {

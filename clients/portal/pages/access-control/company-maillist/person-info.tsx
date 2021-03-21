@@ -26,6 +26,7 @@ import {
 } from './api';
 import { excelHeader, exportDepExcel } from './excel';
 import { uuid } from '@assets/lib/utils';
+import { Dot } from '@portal/components/dot';
 
 export interface IUserInfo {
   id: string;
@@ -269,21 +270,23 @@ export const PersonInfo = React.memo(({
         const bgColor = getImgColor(head);
         return (
           <div className="flex items-center">
-            <div className="pr-dot-4 relative">
-              <div className="w-1-dot-2 h-1-dot-2 rounded-br-dot-2 rounded-l-dot-2
+            <div className="pr-dot-4">
+              <div className="relative w-1-dot-2 h-1-dot-2 rounded-br-dot-2 rounded-l-dot-2
               rounded-br-dot-2 text-center leading-1-dot-2 text-white text-dot-7"
               style={{
                 backgroundColor: bgColor,
               }}
-              >{head}</div>
-              <div className="w-2 h-2 bg-white rounded-lg flex items-center
-              justify-center absolute bottom-dot25 right-dot-25">
-                {record.useStatus === 1 && (
-                  <div className="w-dot-3 h-dot-3 bg-16A34A rounded-dot-3"></div>
-                )}
-                {record.useStatus === -2 && (
-                  <div className="w-dot-3 h-dot-3 bg-red-600 rounded-dot-3"></div>
-                )}
+              >
+                {head}
+                <div className="w-2 h-2 bg-white rounded-lg flex items-center
+                justify-center absolute bottom-0 -right-1">
+                  {record.useStatus === 1 && (
+                    <div className="w-dot-3 h-dot-3 bg-16A34A rounded-dot-3"></div>
+                  )}
+                  {record.useStatus === -2 && (
+                    <div className="w-dot-3 h-dot-3 bg-red-600 rounded-dot-3"></div>
+                  )}
+                </div>
               </div>
             </div>
 
@@ -473,7 +476,7 @@ export const PersonInfo = React.memo(({
           count={personList?.total || 0}
           unit="人"
         />
-        <div className="flex items-center px-4">
+        <div className="flex items-stretch px-4">
           {selectedRows.length > 0 ? (
             <>
               <Button
@@ -510,7 +513,7 @@ export const PersonInfo = React.memo(({
           ) : (
             <>
               <Button
-                className="bg-black"
+                className="dark-button"
                 textClassName="text-white"
                 icon={
                   <svg
@@ -534,6 +537,7 @@ export const PersonInfo = React.memo(({
               </Button>
               <div className="px-2"></div>
               <Button
+                className="light-button"
                 icon={<Icon className="mr-dot-4" name="add" />}
                 onClick={() => handleUserInfo({ id: '', userName: '' }, 'add')}
               >
@@ -544,11 +548,14 @@ export const PersonInfo = React.memo(({
                 items={[<List key={uuid()} items={expandActions} />]}
                 contentClassName="mr-4"
               >
-                <div>
-                  <Button className="bg-black" textClassName="text-white">
-                    ···
-                  </Button>
-                </div>
+                <Button className="light-button w-8 h-7 relative
+                -top-2px" textClassName="text-white">
+                  <div className="flex-start-center">
+                    <Dot />
+                    <Dot />
+                    <Dot />
+                  </div>
+                </Button>
               </More>
             </>
           )}

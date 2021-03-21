@@ -17,6 +17,12 @@ module.exports = {
         'yellow-primary': '#D97706',
         'yellow-second': '#FFFBEB',
       },
+      width: {
+        '2dot4': '2.4rem',
+      },
+      height: {
+        '2dot4': '2.4rem',
+      },
       lineHeight: {
         11: '1.1rem',
         'dot-9': '0.9rem',
@@ -32,8 +38,19 @@ module.exports = {
         none: '0 0 0%',
       },
       margin: {
-        'dot875': '0.875rem',
+        dot875: '0.875rem',
+        dot4: '0.4rem',
       },
+      inset: {
+        '-2px': '-2px',
+      },
+    },
+    screens: {
+      '2xl': { max: '1535px' },
+      xl: { max: '1279px' },
+      lg: { max: '1023px' },
+      md: { max: '767px' },
+      sm: { max: '639px' },
     },
   },
   variants: {
