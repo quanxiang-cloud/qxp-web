@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Checkbox } from '@QCFE/lego-ui';
 
-import { Tab } from '@portal/components/tab';
+import { Tab } from '@portal/components/tab2';
 import { TextHeader } from '@portal/components/text-header';
 import { SearchInput } from '@portal/components/form/search-input';
 import { EmployeeTable } from './employee-table';

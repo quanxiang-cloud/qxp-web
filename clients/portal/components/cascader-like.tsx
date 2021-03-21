@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import useCss from 'react-use/lib/useCss';
 import { TreeData, Select, Icon } from '@QCFE/lego-ui';
 
-import { Tree } from './tree';
+import { Tree } from './tree2';
 
 interface ICascader {
   treeOption: TreeData[];

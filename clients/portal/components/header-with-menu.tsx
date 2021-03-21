@@ -1,6 +1,6 @@
 import React, { useState, useRef, forwardRef } from 'react';
 
-import { Header } from './header';
+import { Header } from './header2';
 import { Menu } from './menu';
 
 const Headers = forwardRef<HTMLDivElement>((_, ref) => {

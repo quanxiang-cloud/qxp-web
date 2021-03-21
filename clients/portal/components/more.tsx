@@ -3,7 +3,7 @@ import { twCascade } from '@mariusmarais/tailwind-cascade';
 
 import { Popover } from './popover2';
 import { Dot } from './dot';
-import { List, IITems } from './list';
+import { List, IITems } from './list2';
 
 export interface IMore<T> {
   className?: string;

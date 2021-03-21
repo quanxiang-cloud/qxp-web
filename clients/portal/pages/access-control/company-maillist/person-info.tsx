@@ -8,7 +8,7 @@ import { Pagination } from '@portal/components/pagination2';
 import { ResetPasswordModal, CheckedWay } from './reset-password-modal';
 import { AccountHandleModal } from './account-handle-modal';
 import { StaffModal, FormValues, EditFormValues } from './staff-modal';
-import { List } from '@portal/components/list';
+import { List } from '@portal/components/list2';
 import { DepartmentStaff } from '@portal/components/department-staff';
 import { Button } from '@portal/components/button';
 import { ExportFileModal } from './export-file-modal';

@@ -4,7 +4,7 @@ import { twCascade } from '@mariusmarais/tailwind-cascade';
 
 import { Avatar } from '@portal/components/avatar';
 import { Card } from '@portal/components/card';
-import { List } from '@portal/components/list';
+import { List } from '@portal/components/list2';
 import { ItemWithTitleDesc } from '@portal/components/Item-with-title-desc';
 import { HeaderWithMenu } from '@portal/components/header-with-menu';
 import { uuid } from '@assets/lib/utils';

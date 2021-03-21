@@ -2,7 +2,7 @@ import React from 'react';
 import { useQuery } from 'react-query';
 
 import { ItemWithTitleDesc } from '@portal/components/Item-with-title-desc';
-import { Tab } from '@portal/components/tab';
+import { Tab } from '@portal/components/tab2';
 import { Loading } from '@portal/components/loading';
 import { IRoleListItem } from '../role-list-item';
 import { AlterRoleFunc } from './alter-role-func';
