@@ -4,7 +4,7 @@ import Store from './store';
 import Tree from '@portal/components/headless-tree';
 import { DepartmentNode } from './department-node';
 
-export interface IEmploye@portal/components/loading2
+export interface IEmployeeSelectTree {
   store: Store;
 }
 export const EmployeeSelectTree = ({ store }: IEmployeeSelectTree) => {

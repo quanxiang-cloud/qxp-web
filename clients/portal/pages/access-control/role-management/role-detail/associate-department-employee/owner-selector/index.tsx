@@ -14,7 +14,7 @@ import EmployeeTreeStore from './employee-select-tree/store';
 import EmployeeStore from './employee-table/store';
 import DepartmentTreeStore from './department-select-tree/store';
 import OwnerStore from './store';
-import { Loading } from '@portal/components/loading';
+import { Loading } from '@portal/components/loading2';
 
 export interface IOwnerSelector {
   defaultEmployees?: IOwner[];
