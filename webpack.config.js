@@ -4,7 +4,6 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const WebpackNotifierPlugin = require('webpack-notifier');
 const WebpackBar = require('webpackbar');
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
-const tailwindcss = require('tailwindcss');
 
 // {
 //   mode: 'production' | 'development';
@@ -15,6 +14,7 @@ module.exports = function ({ mode }) {
     watch: mode !== 'production',
     bail: mode === 'production',
     devtool: mode === 'production' ? false : 'source-map',
+
     entry: {
       portal: './clients/portal/index.tsx',
       register: './clients/register/index.ts',
@@ -26,7 +26,7 @@ module.exports = function ({ mode }) {
 
     output: {
       path: path.join(__dirname, 'dist'),
-      filename: mode === 'production' ? '[name].[hash].js' : '[name].js',
+      filename: mode === 'production' ? '[name].[fullhash].js' : '[name].js',
       chunkFilename: mode === 'production' ? '[name].[chunkhash].js' : '[name].js',
       publicPath: '/dist/',
     },
@@ -47,9 +47,9 @@ module.exports = function ({ mode }) {
             { loader: 'css-loader' },
             {
               loader: 'postcss-loader',
-              options: {
-                plugins: [tailwindcss('./tailwind.config.js'), require('autoprefixer')()],
-              },
+              // options: {
+              //   plugins: [tailwindcss('./tailwind.config.js'), require('autoprefixer')()],
+              // },
             },
             { loader: 'sass-loader' },
           ],
@@ -61,9 +61,9 @@ module.exports = function ({ mode }) {
             { loader: 'css-loader' },
             {
               loader: 'postcss-loader',
-              options: {
-                plugins: [tailwindcss('./tailwind.config.js'), require('autoprefixer')()],
-              },
+              // options: {
+              //   plugins: [tailwindcss('./tailwind.config.js'), require('autoprefixer')()],
+              // },
             },
           ],
         },

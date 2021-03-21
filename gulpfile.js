@@ -39,6 +39,10 @@ function getWebpackConfig(config) {
   return require('./webpack.config.js')(config);
 }
 
+exports.webpack = (done) => {
+  runWebpack(getWebpackConfig({ mode: 'development' })).then(done);
+}
+
 exports.build = gulp.series(clean, copyImages, copyTemplates,
   (done) => {
     runWebpack(getWebpackConfig({ mode: 'production' })).then(done);
