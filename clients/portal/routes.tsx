@@ -79,12 +79,12 @@ export default function Routes(): JSX.Element {
   }, [userData, allFuncs, userFuncs]);
 
   if (userIsLoading || allFunsIsLoading || userFuncsIsLoading || userRoleIsLoading) {
-    return <Loading desc="加载中..." />;
+    return <Loading desc="加载中..." className="w-screen h-screen" />;
   }
 
-  if (!userData || !allFuncs || !userFuncs || !data?.total) {
-    return <Error desc="something wrong..." />;
-  }
+  // if (!userData || !allFuncs || !userFuncs || !data?.total) {
+  //   return <Error desc="something wrong..." />;
+  // }
 
   return (
     <>

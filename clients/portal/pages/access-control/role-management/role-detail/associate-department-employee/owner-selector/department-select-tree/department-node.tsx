@@ -1,11 +1,12 @@
 import React from 'react';
 import { twCascade } from '@mariusmarais/tailwind-cascade';
+import { observer } from 'mobx-react';
 
 import { NodeRenderProps } from '@c/headless-tree/types';
 import SelectableTreeStore from '@portal/components/headless-tree/multiple-select-tree';
 import { Checkbox } from '@QCFE/lego-ui';
 
-export const DepartmentNode = ({ node, store }: NodeRenderProps<IDepartment>) => {
+export const DepartmentNode = observer(({ node, store }: NodeRenderProps<IDepartment>) => {
   const st = store as SelectableTreeStore<IDepartment>;
   const status = st.nodeMap[node.id]?.checkStatus;
   const isChecked = status === 'checked';
@@ -24,7 +25,8 @@ export const DepartmentNode = ({ node, store }: NodeRenderProps<IDepartment>) =>
       <Checkbox
         checked={isChecked}
         indeterminate={isIndeterminate}
+        onChange={() => st.toggleCheck(node.id)}
       />
     </div>
   );
-};
+});

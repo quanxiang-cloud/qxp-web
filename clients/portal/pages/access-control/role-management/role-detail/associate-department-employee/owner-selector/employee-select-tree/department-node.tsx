@@ -3,12 +3,10 @@ import { twCascade } from '@mariusmarais/tailwind-cascade';
 
 import { NodeRenderProps } from '@c/headless-tree/types';
 
-export const DepartmentNode = ({ node, store }: NodeRenderProps<IDepartment>) => {
-  const curNode = store.currentFocusedNode;
-
+export const DepartmentNode = ({ node }: NodeRenderProps<IDepartment>) => {
   return (
     <div
-      className={twCascade('transition-all py-dot-8')}
+      className={twCascade('transition-all py-dot-8 cursor-pointer')}
     >
       <div className="flex flex-row justify-between">
         <div className="flex items-center">
