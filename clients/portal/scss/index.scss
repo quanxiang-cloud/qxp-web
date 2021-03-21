@@ -624,11 +624,15 @@ body {
           width: 100% !important;
 
           thead>tr>th {
-            padding-top: 0.55rem !important;
-            padding-bottom: 0.55rem !important;
-            font-size: 0.7rem !important;
-            font-weight: bold !important;
-            line-height: 1.1rem !important;
+            // padding-top: 0.55rem !important;
+            // padding-bottom: 0.55rem !important;
+            font-size: 1.4rem !important;
+            font-weight: normal !important;
+            vertical-align: middle;
+            span {
+              line-height: 1 !important;
+              height: 44px;
+            }
           }
 
           tbody>tr:last-child>td {
