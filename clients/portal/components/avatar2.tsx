@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-import { ItemWithTitleDesc } from './Item-with-title-desc3';
+import { ItemWithTitleDesc } from './item-with-title-desc4';
 import { loadImage } from '@assets/lib/utils';
 
 export interface IAvatar {

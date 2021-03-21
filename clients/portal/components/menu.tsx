@@ -5,7 +5,7 @@ import { Icon } from '@QCFE/lego-ui';
 import useCss from 'react-use/lib/useCss';
 
 import { List } from '@portal/components/list2';
-import { ItemWithTitleDesc } from '@portal/components/Item-with-title-desc3';
+import { ItemWithTitleDesc } from '@portal/components/item-with-title-desc4';
 import { isBool, isNull, uuid } from '@assets/lib/utils';
 import { twCascade } from '@mariusmarais/tailwind-cascade';
 
