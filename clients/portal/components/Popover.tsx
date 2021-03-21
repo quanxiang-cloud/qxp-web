@@ -27,6 +27,8 @@ export interface IPopover {
     | 'auto-end';
   offsetX?: number;
   offsetY?: number;
+  onMouseOver?: () => void;
+  onMouseOut?: () => void;
 }
 
 export const Popover = ({
@@ -38,6 +40,8 @@ export const Popover = ({
   placement = 'bottom-start',
   offsetX = 0,
   offsetY = 100,
+  onMouseOver,
+  onMouseOut,
 }: IPopover) => {
   const clickAwayRef = useRef<HTMLDivElement | null>(null);
   const triggerRef = useRef<HTMLDivElement | null>(null);
@@ -67,6 +71,8 @@ export const Popover = ({
       className={twCascade('relative', className)}
       onClick={(e: MouseEvent<HTMLDivElement>) => e.stopPropagation()}
       ref={clickAwayRef}
+      onMouseOver={onMouseOver}
+      onMouseOut={onMouseOut}
     >
       <div
         ref={triggerRef}
