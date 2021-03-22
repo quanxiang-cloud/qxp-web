@@ -2,6 +2,8 @@
 
 set -e
 
+yarn install
+
 # build frontend assets
 rm -rf dist
 rm -rf docker-files/nginx/dist docker-files/portal/dist
