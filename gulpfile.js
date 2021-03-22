@@ -39,13 +39,13 @@ exports.webpack = (done) => {
   runWebpack(webpackConfig({ mode: 'production' })).then(done);
 }
 
-exports.build = gulp.series(clean, copyImages, copyTemplates,
-  (done) => {
-    runWebpack(webpackConfig({ mode: 'production' })).then(done);
-  },
-  (done) => {
-    return promiseExec('rm -rf docker-files/nginx/dist docker-files/portal/dist', done);
-  },
+exports.build = gulp.series(copyImages, copyTemplates,
+  // (done) => {
+  //   runWebpack(webpackConfig({ mode: 'production' })).then(done);
+  // },
+  // (done) => {
+  //   return promiseExec('rm -rf docker-files/nginx/dist docker-files/portal/dist', done);
+  // },
   () => gulp.src('./dist/**/*').pipe(gulp.dest('./docker-files/nginx/dist')),
   () => gulp.src('./dist/templates/*').pipe(gulp.dest('./docker-files/portal/dist/templates')),
 );
