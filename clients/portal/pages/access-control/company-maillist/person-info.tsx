@@ -70,7 +70,7 @@ export const PersonInfo = React.memo(({
           Message.success('操作成功');
           refetch();
         } else {
-          Message.error('操作失败');
+          Message.error(data?.msg || '操作失败');
         }
         setVisibleStaff(false);
       },
