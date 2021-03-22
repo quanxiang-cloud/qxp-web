@@ -263,7 +263,7 @@ export const ExportFileModal = ({
                 <Button
                   className="bg-black"
                   textClassName="text-white"
-                  icon={<Icon name="check" className="mr-dot-4" />}
+                  icon={<Icon name="check" type="light" className="mr-dot-4" />}
                   onClick={importFile}
                 >
                   确定导入
@@ -272,7 +272,7 @@ export const ExportFileModal = ({
                 <Button
                   className="bg-black"
                   textClassName="text-white"
-                  icon={<Icon name="check" className="mr-dot-4" />}
+                  icon={<Icon name="check" type="light" className="mr-dot-4" />}
                   onClick={okSendModal}
                 >
                   确定

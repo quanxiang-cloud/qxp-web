@@ -66,7 +66,7 @@ export default function MailList() {
           </Control>
         </div>
         <div className="h-full mt-4 flex items-start overflow-y-h">
-          <div className="w-25-dot-9 h-full flex-col main-department-tree">
+          <div className="w-25-dot-9 h-full flex-col flex">
             <DepartmentStaff department="组织架构" />
             <DepartmentsTree onSelect={setCurrentDepartment} />
           </div>

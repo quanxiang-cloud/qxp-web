@@ -124,7 +124,7 @@ export const StaffModal = (props: StaffModalProps) => {
           <Button
             className="bg-black"
             textClassName="text-white"
-            icon={<Icon name="check" className="mr-dot-4" />}
+            icon={<Icon name="check" type="light" className="mr-dot-4" />}
             onClick={okModalHandle}
           >
             确定{titleText}
@@ -185,7 +185,7 @@ export const StaffModal = (props: StaffModalProps) => {
               status: 'error',
             },
             {
-              rule: { isEmail: true, maxLength: 20 },
+              rule: { isEmail: true },
               help: '请输入合法的邮箱地址',
               status: 'error',
             },
