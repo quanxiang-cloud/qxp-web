@@ -80,11 +80,12 @@ export const AdjustDepModal = (props: IAdjustDepModalProps) => {
       <div>
         <div>
           <p className="text-gray-600 text-1-dot-4">已选择员工</p>
-          <ul className="flex items-center">
+          <ul className="flex items-center flex-wrap">
             {userList.map((user) => {
               return (
-                <li key={user.id} className="rounded-tl-dot-2 rounded-br-dot-2 px-dot-4 bg-DEE9FF">
-                  <span className="text-375FF3 text-1-dot-4">{user.userName}</span>
+                <li key={user.id} className="rounded-tl-dot-4 rounded-br-dot-4
+                px-dot-8 bg-blue-200 mr-2 mr-2 whitespace-nowrap">
+                  <span className="text-blue-600 text-1-dot-4">{user.userName}</span>
                 </li>
               );
             })}

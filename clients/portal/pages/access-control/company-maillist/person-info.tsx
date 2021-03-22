@@ -139,7 +139,7 @@ export const PersonInfo = React.memo(({
         Message.error('操作失败！');
       }
       setSelectedRows([]);
-      setVisibleFile(false);
+      setResetModal(false);
     },
   });
 

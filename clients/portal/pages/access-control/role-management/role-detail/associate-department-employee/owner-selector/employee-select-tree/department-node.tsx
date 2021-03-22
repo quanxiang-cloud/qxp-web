@@ -10,7 +10,7 @@ export const DepartmentNode = ({ node }: NodeRenderProps<IDepartment>) => {
     >
       <div className="flex flex-row justify-between">
         <div className="flex items-center">
-          <div className="ml-2">
+          <div className="ml-2 whitespace-nowrap">
             {node.name}
           </div>
         </div>
