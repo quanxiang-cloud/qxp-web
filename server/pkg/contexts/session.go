@@ -49,6 +49,8 @@ func initSession(redisClient redis.UniversalClient) (*redisstore.RedisStore, err
 		Path:   "/",
 	})
 
+	sessionStore.KeyPrefix("websk:")
+
 	log.Println("sessionStore initialized")
 
 	return sessionStore, err
