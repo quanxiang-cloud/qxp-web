@@ -44,11 +44,40 @@ export const EmployeeTable = observer(({
     if (data?.users) {
       store.initialSelectedKeys(data.users, ownerStore.owners);
     }
-  }, [data]);
+  }, [data, ownerStore.owners]);
 
   if (isLoading) {
     return <Loading desc="加载中..." />;
   }
+
+  const onUpdateSelectedKeys = (keys: string[]) => {
+    if (keys.length > store.selectedKeys.length) {
+      keys.filter((key) => !store.selectedKeys.includes(key)).forEach((k) => {
+        if (!data?.users) {
+          return;
+        }
+        const user = data.users.find((user) => user.id === k);
+        if (!user) {
+          return;
+        }
+        ownerStore.addOwner({
+          type: 1,
+          ownerID: user.id,
+          ownerName: user.userName,
+          phone: user.phone,
+          email: user.email,
+          departmentName: user.dep.departmentName,
+          createdAt: user.createTime,
+          id: user.id,
+        });
+      });
+    } else if (keys.length < store.selectedKeys.length) {
+      store.selectedKeys.filter((key) => !keys.includes(key)).forEach((k) => {
+        ownerStore.removeOwner(k);
+      });
+    }
+    store.setSelectedKeys(keys);
+  };
 
   return (
     <div style={{ height: 'calc(100% - 48px)' }} className={className}>
@@ -56,7 +85,12 @@ export const EmployeeTable = observer(({
         className="rounded-bl-none rounded-br-none"
         onRow={(record: IOwner) => {
           return {
-            onClick: () => store.toggleSelectedKeys(record.id),
+            onClick: () => {
+              const newKeys = store.selectedKeys.includes(record.id) ?
+                store.selectedKeys.filter((k) => k !== record.id) :
+                [...store.selectedKeys, record.id];
+              onUpdateSelectedKeys(newKeys);
+            },
           };
         }}
         emptyText={<EmptyData text="无成员数据" className="py-10" />}
@@ -82,7 +116,7 @@ export const EmployeeTable = observer(({
         ]}
         rowSelection={{
           selectedRowKeys: store.selectedKeys,
-          onChange: store.setSelectedKeys,
+          onChange: onUpdateSelectedKeys,
         }}
       />
       <Pagination

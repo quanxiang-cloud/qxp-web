@@ -21,7 +21,9 @@ export const RoleList = ({ items, onChange }: IRoleList) => {
     <div className="pt-8">
       <ItemWithTitleDesc
         itemRender={
-          <div className="font-bold text-1-dot-6 px-8 text-gray-900 flex justify-between items-center">
+          <div
+            className="font-bold text-1-dot-6 px-8 text-gray-900 flex justify-between items-center"
+          >
             角色列表
           </div>
         }

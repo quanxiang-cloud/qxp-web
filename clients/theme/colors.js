@@ -84,6 +84,7 @@ module.exports = {
     700: 'var(--blue-700)',
     800: 'var(--blue-800)',
     900: 'var(--blue-900)',
+    1000: 'var(--blue-1000)',
   },
   lightBlue: {
     50: 'var(--lightBlue-50)',

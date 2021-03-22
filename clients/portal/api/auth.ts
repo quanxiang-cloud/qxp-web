@@ -10,10 +10,12 @@ export interface IUserInfo {
   userName: string;
   phone: string;
   email: string;
-  userIconURL: string;
-  dep: IDepartment;
-  depIds: string[];
-  authority: string[];
+  userIconURL?: string;
+  dep?: IDepartment;
+  depIds?: string[];
+  authority?: string[];
+  roleId?: string;
+  deleteId?: string;
 }
 export const getUserInfo = async (): Promise<Partial<IUserInfo>> => {
   const { data } = await httpPost<IResponse<IUserInfo>>('/api/org/v1/userUserInfo');

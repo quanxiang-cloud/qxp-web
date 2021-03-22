@@ -2,18 +2,17 @@
  * 组件-添加员工
  */
 import React, { useState } from 'react';
-import { useQuery, useMutation } from 'react-query';
+import { useQuery } from 'react-query';
 import { Modal, Form, Icon } from '@QCFE/lego-ui';
 
 import { Button } from '@portal/components/button';
 import { Loading } from '@portal/components/loading2';
-import SelectTree from '@portal/components/select-tree';
-import { IUserInfo } from './person-info';
-import { getListRole, addDepUser, getERPTree, getUserRole } from './api';
+import { IUserInfo } from '@portal/api/auth';
+import { getListRole, getERPTree } from './api';
+import TreePicker from '@portal/components/tree-picker';
+import { departmentToTreeNode } from '@assets/lib/utils';
 
 const { TextField, SelectField, CheckboxGroupField } = Form;
-
-const SelectTreeField = Form.getFormField(SelectTree);
 
 export type FormValues = {
   userName: string;
@@ -56,19 +55,7 @@ export const StaffModal = (props: StaffModalProps) => {
     refetchOnWindowFocus: false,
   });
 
-  // const mutation = useMutation(getUserRole, {
-  //   onSuccess: (data) => {
-  //     console.log(data);
-  //   },
-  // });
-
-  // if (status === 'edit') {
-  //   mutation.mutate({ ownerID: initData.id, type: 1 });
-  // }
-
-  const treeData = depData ? [depData] : [];
-
-  if (isLoading && roleList && depData) {
+  if (isLoading && !roleList && !depData) {
     return <Loading desc="加载中..." />;
   }
 
@@ -77,8 +64,16 @@ export const StaffModal = (props: StaffModalProps) => {
     if (!bol) {
       return;
     }
-    const values = form.getFieldsValue();
-    const { userName, phone, email, way, depIDs, roleIDs } = values;
+    const values = form.getFieldsValue() as {
+      userName: string;
+      phone: string;
+      email: string;
+      roleIDs: string;
+      depID: string;
+      way: string;
+    };
+
+    const { userName, phone, email, way, roleIDs, depID } = values;
     if (status === 'add') {
       const params: FormValues = {
         userName,
@@ -86,31 +81,18 @@ export const StaffModal = (props: StaffModalProps) => {
         email,
         sendPhoneMsg: way && way.includes('phone') ? 1 : -1,
         sendEmailMsg: way && way.includes('email') ? 1 : -1,
-        depIDs: depIDs ? [depIDs] : [],
+        depIDs: depID ? [depID] : [],
         roleIDs: roleIDs ? [roleIDs] : [],
       };
       okModal(params);
     } else {
-      const {
-        userName,
-        phone,
-        email,
-        depIDs,
-        roleIDs,
-      }: {
-        userName: string;
-        phone: string;
-        email: string;
-        depIDs: string;
-        roleIDs: string;
-      } = values;
       const params: EditFormValues = {
         userName,
         phone,
         email,
         delete: [],
         add: [],
-        depIDs: depIDs ? [depIDs] : [],
+        depIDs: depID ? [depID] : [],
       };
       if (initData.roleId !== values.roleIDs) {
         params.add = [roleIDs];
@@ -220,20 +202,12 @@ export const StaffModal = (props: StaffModalProps) => {
             />
           )
         }
-        <SelectTreeField
-          name="depIDs"
+        <TreePicker
           label="部门"
-          placeholder="请选择部门"
-          defaultSelect={initData.dep || ''}
-          treeData={treeData}
-          validateOnChange
-          schemas={[
-            {
-              rule: { required: true },
-              help: '请选择部门',
-              status: 'error',
-            },
-          ]}
+          treeData={departmentToTreeNode(depData as IDepartment)}
+          labelKey="departmentName"
+          name="depID"
+          defaultValue={props.initData?.dep?.id}
         />
         <SelectField
           name="roleIDs"

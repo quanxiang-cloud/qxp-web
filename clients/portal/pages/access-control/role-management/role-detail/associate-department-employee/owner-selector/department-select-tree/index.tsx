@@ -1,12 +1,12 @@
 import React from 'react';
 import { observer } from 'mobx-react';
 
-import Store from './store';
 import Tree from '@portal/components/headless-tree';
 import { DepartmentNode } from './department-node';
+import DepartmentTreeStore from './store';
 
 export interface IDepartmentSelectTree {
-  store: Store;
+  store: DepartmentTreeStore;
 }
 
 export const DepartmentSelectTree = observer(({ store }: IDepartmentSelectTree) => {

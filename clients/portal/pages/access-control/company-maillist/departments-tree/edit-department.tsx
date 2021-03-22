@@ -3,7 +3,7 @@ import { useQueryClient } from 'react-query';
 import { Modal, Form, Icon, Message } from '@QCFE/lego-ui';
 
 import { Button } from '@portal/components/button';
-import DepartmentPicker from '@c/department-picker';
+import DepartmentPicker from '@portal/components/tree-picker';
 
 import { createDepartment, editDepartment } from '../api';
 
@@ -90,7 +90,7 @@ export default function EditDepartment({ department, closeModal }: DepartmentMod
           ]}
         />
         <span>所属部门</span>
-        <DepartmentPicker onChange={({ id }) => setPID(id)} />
+        <DepartmentPicker onChange={(id) => setPID(id)} />
       </Form>
     </Modal>
   );

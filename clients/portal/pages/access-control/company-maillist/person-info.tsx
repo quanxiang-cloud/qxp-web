@@ -16,6 +16,7 @@ import { ExportFileModal } from './export-file-modal';
 import { AdjustDepModal } from './adjust-dep-modal';
 import { EmptyData } from '@portal/components/empty-data';
 import { More } from '@portal/components/more';
+import { IUserInfo } from '@portal/api/auth';
 import {
   getUserAdminInfo,
   updateUserStatus,
@@ -29,12 +30,6 @@ import {
 } from './api';
 import { excelHeader, exportDepExcel, getImgColor } from './excel';
 import { uuid } from '@assets/lib/utils';
-
-export interface IUserInfo {
-  id: string;
-  userName: string;
-  [propsName: string]: any;
-}
 
 export type UserStatus = 1 | -1 | -2; // 1 正常 -2 禁用 -1 删除
 type ResetStart = 0 | 1; // 0是单个，1批量
@@ -77,7 +72,12 @@ export const PersonInfo = React.memo(({
     }
   );
 
-  const [currUser, setCurrUser] = useState<IUserInfo>({ id: '', userName: '' });
+  const [currUser, setCurrUser] = useState<IUserInfo>({
+    id: '',
+    userName: '',
+    email: '',
+    phone: '',
+  });
   const [pageParams, setPageParams] = React.useState<{
     page: number;
     limit: number;

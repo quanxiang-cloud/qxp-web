@@ -787,3 +787,16 @@ button {
 .fs12 {
   font-size: 12px;
 }
+
+.text-area-input {
+  margin: 0 !important;
+  .control {
+    width: 100%;
+    textarea {
+      min-height: unset;
+      cursor: pointer !important;
+      padding-right: 2rem !important;
+      overflow: scroll;
+    }
+  }
+}

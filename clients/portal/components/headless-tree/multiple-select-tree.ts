@@ -69,12 +69,16 @@ export default class SelectableTreeStore<T> extends BaseStore<T> {
   }
 
   @action
-  toggleCheck(id: string) {
+  toggleCheck(id: string, checkStatus?: 'checked' | 'unchecked') {
+    if (!this._nodeMap[id]) {
+      return;
+    }
     const currentCheckStatus = this._nodeMap[id].checkStatus;
     const targetCheckStatus = currentCheckStatus === 'checked' ? 'unchecked' : 'checked';
-    this._toggleCheck(id, targetCheckStatus);
+    this._toggleCheck(id, checkStatus || targetCheckStatus);
 
     this.nodeMap = { ...this._nodeMap };
+    return this.nodeMap;
   }
 
   _toggleCheck(id: string, checkStatus: 'checked' | 'unchecked') {

@@ -5,7 +5,8 @@ import React from 'react';
 import { Modal } from '@QCFE/lego-ui';
 
 import { Button } from '@portal/components/button';
-import { IUserInfo, UserStatus } from './person-info';
+import { UserStatus } from './person-info';
+import { IUserInfo } from '@portal/api/auth';
 
 interface AccountHandleModalProps {
   visible: boolean;

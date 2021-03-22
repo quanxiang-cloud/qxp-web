@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery } from 'react-query';
+import { observer } from 'mobx-react';
 
 import { Tab } from '@portal/components/tab2';
 import { TextHeader } from '@portal/components/text-header';
@@ -15,13 +16,14 @@ import EmployeeStore from './employee-table/store';
 import DepartmentTreeStore from './department-select-tree/store';
 import OwnerStore from './store';
 import { Loading } from '@portal/components/loading2';
+import { toJS } from 'mobx';
 
 export interface IOwnerSelector {
   defaultEmployees?: IOwner[];
   refs: React.MutableRefObject<(() => IOwner[]) | undefined>;
 }
 
-export const OwnerSelector = ({ defaultEmployees = [], refs }: IOwnerSelector) => {
+export const OwnerSelector = observer(({ defaultEmployees = [], refs }: IOwnerSelector) => {
   const [store, setStore] = useState<OwnerStore>();
 
   const { data: department, isLoading, isError } = useQuery(
@@ -32,23 +34,52 @@ export const OwnerSelector = ({ defaultEmployees = [], refs }: IOwnerSelector) =
     },
   );
 
+  const onDepartmentTreeChange = (prevNodes: IDepartment[], currentNodes: IDepartment[]) => {
+    console.log(prevNodes.map((i) => toJS(i)), currentNodes.map((i) => toJS(i)));
+
+    setStore((store) => {
+      if (!store) {
+        return;
+      }
+      if (currentNodes.length > prevNodes.length) {
+        currentNodes.filter((node) => !prevNodes.find((n) => n.id === node.id)).forEach((node) => {
+          store.addOwner({
+            type: 2,
+            ownerID: node.id,
+            ownerName: node.departmentName,
+            phone: '',
+            email: '',
+            departmentName: store.departmentTreeStore.getNodeParents(node.id)[0]?.name,
+            createdAt: -1,
+            id: node.id,
+          });
+        });
+      } else if (currentNodes.length < prevNodes.length) {
+        prevNodes.filter((node) => !currentNodes.find((n) => n.id === node.id)).forEach((node) => {
+          store.removeOwner(node.id);
+        });
+      }
+      return store;
+    });
+  };
+
   useEffect(() => {
-    if(department) {
+    if (department) {
       setStore(new OwnerStore(
         new EmployeeTreeStore(department),
         new EmployeeStore(),
-        new DepartmentTreeStore(department),
+        new DepartmentTreeStore(department, onDepartmentTreeChange),
         defaultEmployees,
-      ))
+      ));
     }
   }, [department, defaultEmployees]);
 
   refs.current = () => {
-    return []
+    return [];
   };
 
-  if(!store) {
-    return <Loading desc="加载中..." />
+  if (!store || isLoading || isError) {
+    return <Loading desc="加载中..." />;
   }
 
   return (
@@ -56,7 +87,7 @@ export const OwnerSelector = ({ defaultEmployees = [], refs }: IOwnerSelector) =
       <Tab
         className="mr-8 flex-2"
         currentKey={store.tabKey}
-        onChange={key => store.setTabKey(key as string)}
+        onChange={(key) => store.setTabKey(key as string)}
         items={[
           {
             id: '1',
@@ -115,43 +146,6 @@ export const OwnerSelector = ({ defaultEmployees = [], refs }: IOwnerSelector) =
                   <DepartmentSelectTree
                     store={store.departmentTreeStore}
                   />
-                  {/* <Tree<IDepartmentStructure>
-                    treeData={departments}
-                    keyword={keyword}
-                    className="-ml-2 bg-white rounded-md overflow-scroll text-1-dot-4"
-                    itemClassName="cursor-pointer hover:bg-gray-1 text-1-dot-4"
-                    selectable
-                    multiple
-                    selectedClassName="bg-gray-1 text-dark-five"
-                    expandOnSelect={false}
-                    selectedKeys={selectedDepartmentKeys}
-                    onRow={{
-                      onClick: (_, __, ___, selectedRows = []) => {
-                        if (Array.isArray(selectedRows)) {
-                          updateSelectedOwnerFromTree(selectedRows);
-                        }
-                      },
-                    }}
-                    appendixRender={(row, isChecked, isIndeterminate, onChange) => {
-                      return (
-                        <div
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            e.preventDefault();
-                            onChange();
-                          }}
-                        >
-                          <Checkbox
-                            checked={isChecked}
-                            indeterminate={isIndeterminate}
-                            className="flex flex-row items-center"
-                            key={row.id}
-                            value={row}
-                          />
-                        </div>
-                      );
-                    }}
-                  /> */}
                 </div>
               </>
             ),
@@ -165,4 +159,4 @@ export const OwnerSelector = ({ defaultEmployees = [], refs }: IOwnerSelector) =
       />
     </div>
   );
-};
+});

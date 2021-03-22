@@ -1,27 +1,14 @@
 import SelectableTreeStore from '@portal/components/headless-tree/multiple-select-tree';
-import { TreeNode } from '@c/headless-tree/types';
-
-export function departmentToTreeNode(department: IDepartment): TreeNode<IDepartment> {
-  const children = (department.child || []).map((dep) => departmentToTreeNode(dep));
-
-  return {
-    data: department,
-    name: department.departmentName,
-    id: department.id,
-    parentId: department.pid,
-    path: '',
-    isLeaf: !department.child?.length,
-    visible: true,
-    childrenStatus: 'resolved',
-    expanded: true,
-    order: 0,
-    level: department.grade,
-    children: children,
-  };
-}
+import { departmentToTreeNode } from '@assets/lib/utils';
 
 export default class extends SelectableTreeStore<IDepartment> {
-  constructor(rootDep: IDepartment) {
+  onChange: (prevNodes: IDepartment[], curNodes: IDepartment[]) => void
+
+  constructor(
+    rootDep: IDepartment,
+    onChange: (prevNodes: IDepartment[], curNodes: IDepartment[]) => void
+  ) {
     super({ rootNode: departmentToTreeNode(rootDep) });
+    this.onChange = onChange;
   }
 }

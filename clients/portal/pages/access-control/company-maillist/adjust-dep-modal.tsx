@@ -7,7 +7,8 @@ import { Modal, Icon, Form, Loading, Message } from '@QCFE/lego-ui';
 
 import { Button } from '@portal/components/button';
 import SelectTree from '@portal/components/select-tree';
-import { IUserInfo, BatchDepParams } from './person-info';
+import { BatchDepParams } from './person-info';
+import { IUserInfo } from '@portal/api/auth';
 import { getERPTree } from './api';
 
 const SelectTreeField = Form.getFormField(SelectTree);

@@ -1,16 +1,16 @@
 import { observable, action } from 'mobx';
 
 import TreeStore from '@portal/components/headless-tree/store';
-import SelectableTreeStore from '@portal/components/headless-tree/multiple-select-tree';
 import EmployeeStore from './employee-table/store';
 import { IOwner } from '../../../api';
+import DepartmentTreeStore from './department-select-tree/store';
 
 class OwnerStore {
   @observable
   employeeTreeStore: TreeStore<IDepartment>
 
   @observable
-  departmentTreeStore: SelectableTreeStore<IDepartment>
+  departmentTreeStore: DepartmentTreeStore
 
   @observable
   employeeStore: EmployeeStore;
@@ -30,7 +30,7 @@ class OwnerStore {
   constructor(
     employeeTreeStore: TreeStore<IDepartment>,
     employeeStore: EmployeeStore,
-    departmentTreeStore: SelectableTreeStore<IDepartment>,
+    departmentTreeStore: DepartmentTreeStore,
     owners: IOwner[]
   ) {
     this.employeeTreeStore = employeeTreeStore;
@@ -62,6 +62,19 @@ class OwnerStore {
   @action
   onRemove = (o: IOwner) => {
     this.owners = this.owners.filter((owner) => owner.ownerID !== o.ownerID);
+  }
+
+  @action
+  addOwner = (o: IOwner) => {
+    if (this.owners.find((owner) => owner.ownerID === o.ownerID)) {
+      return;
+    }
+    this.owners = [...this.owners, o];
+  }
+
+  @action
+  removeOwner = (ownerId: string) => {
+    this.owners = this.owners.filter((owner) => owner.ownerID !== ownerId);
   }
 }
 

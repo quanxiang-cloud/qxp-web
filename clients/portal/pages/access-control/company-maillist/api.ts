@@ -7,7 +7,7 @@ import { UserStatus } from './person-info';
 // ------------------ 部门 ---------------
 // 获取部门树
 export const getERPTree = () => {
-  return httpPost<IResponse<ITreeNode[]>>('/api/org/v1/DEPTree', null, {
+  return httpPost<IResponse<IDepartment>>('/api/org/v1/DEPTree', null, {
     'Content-Type': 'application/x-www-form-urlencoded',
   }).then(({ data }) => data);
 };

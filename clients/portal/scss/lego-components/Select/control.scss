@@ -1,0 +1,252 @@
+.select {
+  position: relative;
+  display: inline-block;
+  width: 264px;
+  vertical-align: bottom;
+  > .select-control {
+    box-shadow: $select-input-box-shadow;
+    cursor: pointer;
+    &:hover {
+      background: $select-input-bg-hover;
+    }
+  } // handle disabled state
+  &.is-disabled {
+    .select-arrow-zone {
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+    > .select-control {
+      opacity: $select-input-bg-opacity;
+      cursor: not-allowed;
+      &:hover {
+        background: $select-input-bg;
+      }
+    }
+  }
+  &.is-searchable {
+    &.is-open > .select-control {
+      cursor: text;
+    }
+    &.is-focused:not(.is-open) > .select-control {
+      cursor: text;
+    }
+  }
+  &.is-open > .select-control {
+    border-color: $select-input-border-color;
+    background: $select-input-bg;
+    .select-arrow {
+      transform: rotate(180deg);
+    }
+  }
+  &.is-focused > .select-control {
+    border-color: $select-input-border-focus;
+    background: $select-input-bg-focus;
+  }
+  &.is-small {
+    > .select-control {
+      height: $select-input-height-sm;
+      font-size: 12px;
+      .select-input {
+        height: $select-input-internal-height-sm;
+        line-height: $select-input-internal-height-sm;
+        > input {
+          padding: (($select-input-internal-height-sm - 12) / 2 - 1) 0;
+        }
+      }
+    }
+  }
+  &.is-large {
+    > .select-control {
+      height: $select-input-height-lg;
+      font-size: 14px;
+      .select-input {
+        height: $select-input-internal-height-lg;
+        > input {
+          padding: (($select-input-internal-height-lg - 14) / 2 - 1) 0;
+        }
+      }
+    }
+  }
+  &.has-value.is-clearable.select--single > .select-control .select-value {
+    right: 48px;
+  }
+  &.has-prefix-icon > .select-control {
+    .select-placeholder,
+    .select-value {
+      left: 22px;
+    }
+  }
+  &.has-value.select--single > .select-control .select-value,
+  &.has-value.is-pseudo-focused.select--single > .select-control .select-value {
+    .select-value-label {
+      color: $select-text-color;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    a.select-value-label {
+      text-decoration: none;
+      cursor: pointer;
+      &:hover,
+      &:focus {
+        outline: none;
+        color: $select-link-hover-color;
+        text-decoration: underline;
+      }
+      &:focus {
+        background: $select-input-bg-focus;
+      }
+    }
+  } // fake-hide the input when the control is pseudo-focused
+  &.has-value.is-pseudo-focused .select-input {
+    opacity: 0;
+  }
+  &:not(.is-multiple) {
+    height: auto;
+    &:after {
+      display: none;
+    }
+  }
+}
+
+.select-control {
+  position: relative;
+  display: table;
+  border-collapse: separate;
+  border-spacing: 0;
+  box-sizing: border-box;
+  width: 100%;
+  height: $select-input-height;
+  padding: 0 $select-padding-horizontal;
+  border: $select-input-border-width solid $select-input-border-color;
+  border-color: $select-input-border-color;
+  border-radius: $select-input-border-radius;
+  outline: none;
+  color: $select-text-color;
+  background-color: $select-input-bg;
+  overflow: hidden;
+  cursor: default;
+  &:hover {
+    box-shadow: $select-input-hover-box-shadow;
+  }
+  .select-input:focus {
+    outline: none;
+    background: transparent;
+  }
+}
+
+// placeholder
+.select-placeholder,
+.select--single > .select-control .select-value {
+  position: absolute;
+  top: 0;
+  right: 32px;
+  bottom: 0;
+  left: 0;
+  display: inline-flex;
+  align-items: center; // crop text
+  max-width: 100%;
+  padding-left: $select-padding-horizontal;
+  color: $select-input-placeholder;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.select-input {
+  // inherits `display: inline-block` from "react-input-autosize"
+  max-width: $select-input-max-width;
+  height: $select-input-internal-height;
+  overflow: hidden;
+  vertical-align: middle;
+  > input {
+    display: inline-block;
+    width: 100%;
+    padding: (($select-input-internal-height - 14) / 2 - 1) 0;
+    border: 0 none;
+    outline: none;
+    margin: 0;
+    color: $select-text-color;
+    background: none transparent;
+    box-shadow: none;
+    font-size: inherit;
+    font-family: inherit;
+    line-height: 16px;
+    cursor: default;
+    caret-color: $primary;
+    .is-focused {
+      cursor: text;
+    }
+  }
+}
+
+// fake input
+.select-control:not(.is-searchable) > .select-input {
+  outline: none;
+}
+
+.select-icon-zone {
+  position: relative;
+  display: table-cell;
+  width: 16px;
+  height: 100%;
+  padding-right: 6px;
+}
+
+.select-prefix-icon {
+  display: inline-flex;
+  align-items: center;
+  height: 100%;
+}
+
+.select-clear-zone {
+  position: relative;
+  display: table-cell;
+  width: 16px;
+  height: 100%;
+  animation: select-animation-fadeIn 200ms;
+  cursor: pointer;
+}
+
+.select-clear {
+  display: inline-flex;
+  align-items: center;
+  height: 100%;
+}
+
+.select-multi-value-wrapper {
+  display: table-cell;
+  vertical-align: middle;
+}
+
+.select .select-aria-only {
+  position: absolute;
+  float: left;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+}
+
+.select-arrow-zone {
+  position: relative;
+  display: table-cell;
+  width: 16px;
+  height: 100%;
+  padding-left: 4px;
+  cursor: pointer;
+}
+
+.select-arrow {
+  display: inline-flex;
+  align-items: center;
+  height: 100%;
+}
+
+@keyframes select-animation-fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

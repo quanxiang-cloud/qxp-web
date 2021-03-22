@@ -1,5 +1,7 @@
 import { Message } from '@QCFE/lego-ui';
 
+import { TreeNode } from '@portal/components/headless-tree/types';
+
 /**
  * 发送一个POST请求到特定url
  * @param {string} url
@@ -245,3 +247,22 @@ export const loadImage = (src: string) => {
     image.onerror = reject;
   });
 };
+
+export function departmentToTreeNode(department: IDepartment): TreeNode<IDepartment> {
+  const children = (department.child || []).map((dep) => departmentToTreeNode(dep));
+
+  return {
+    data: department,
+    name: department.departmentName,
+    id: department.id,
+    parentId: department.pid,
+    path: '',
+    isLeaf: !department.child?.length,
+    visible: true,
+    childrenStatus: 'resolved',
+    expanded: true,
+    order: 0,
+    level: department.grade,
+    children: children,
+  };
+}

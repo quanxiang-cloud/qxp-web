@@ -22,10 +22,6 @@ class EmployeeStore {
   @action
   setSelectedKeys = (keys: string[]) => {
     this.selectedKeys = keys;
-    const isAdd = keys.length > this.selectedKeys.length;
-    if (isAdd) {
-
-    }
   }
 
   @action

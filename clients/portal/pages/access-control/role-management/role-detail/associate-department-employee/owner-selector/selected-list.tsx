@@ -1,4 +1,5 @@
 import React, { MouseEvent } from 'react';
+import { observer } from 'mobx-react';
 
 import { TextHeader } from '@portal/components/text-header';
 import { Tag } from '@QCFE/lego-ui';
@@ -11,9 +12,29 @@ export interface ISelectedList {
   ownerStore: OwnerStore;
 }
 
-export const SelectedList = ({ className, ownerStore }: ISelectedList) => {
+export const SelectedList = observer(({ className, ownerStore }: ISelectedList) => {
   const users = ownerStore.owners.filter(({ type }) => type === 1);
   const departments = ownerStore.owners.filter(({ type }) => type === 2);
+
+  const onRemove = (owner: IOwner) => {
+    ownerStore.onRemove(owner);
+    const nodeMap = ownerStore.departmentTreeStore.toggleCheck(owner.id, 'unchecked');
+    if (!nodeMap) {
+      return;
+    }
+    Object.entries(nodeMap).forEach(([key, node]) => {
+      if (node.checkStatus === 'unchecked' || node.checkStatus === 'indeterminate') {
+        ownerStore.removeOwner(key);
+      }
+    });
+  };
+
+  const onClear = () => {
+    ownerStore.onClear();
+    ownerStore.owners.forEach((owner) => {
+      ownerStore.departmentTreeStore.toggleCheck(owner.id, 'unchecked');
+    });
+  };
 
   const tagRender = ({ ownerName, departmentName, ownerID, ...others }: IOwner) => {
     return (
@@ -30,7 +51,7 @@ export const SelectedList = ({ className, ownerStore }: ISelectedList) => {
           transition: 'all .1s linear',
         }}
         onClose={() =>
-          ownerStore.onRemove({
+          onRemove({
             ownerName,
             departmentName,
             ownerID,
@@ -63,7 +84,7 @@ export const SelectedList = ({ className, ownerStore }: ISelectedList) => {
           <span
             className="cursor-pointer text-1-dot-4 text-blue-primary flex
             items-center justify-center"
-            onClick={ownerStore.onClear}
+            onClick={onClear}
           >
             清空
           </span>
@@ -75,4 +96,4 @@ export const SelectedList = ({ className, ownerStore }: ISelectedList) => {
       </div>
     </div>
   );
-};
+});
