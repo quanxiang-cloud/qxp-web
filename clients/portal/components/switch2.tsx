@@ -20,17 +20,18 @@ export const Switch = ({ ...props }: ISwitch) => {
     <div className={useCss({
       display: 'inline-block',
       'margin-right': '16px',
-      '.radio-group label.radio-button': {
+      'label.radio-button': {
         width: '60px',
         height: '32px',
         padding: '5px 16px',
-        background: 'none',
+        background: '#fff',
         color: '#475569',
         'font-size': '14px',
         'line-height': '22px',
         'border-color': '#CBD5E1',
+        'border-radius':'8px'
       },
-      '.radio-group label.radio-button.checked': {
+      'label.radio-button.checked': {
         'border-color': '#375FF3',
         color: '#375FF3',
       },
@@ -39,16 +40,15 @@ export const Switch = ({ ...props }: ISwitch) => {
         defaultValue={selectedValue}
         onChange={props.onChange}
       >
-        <LegoRadioButton
-          style={{ borderRadius: '8px 0 0 8px' }}
-          value={props.options[0]['value']}>
-          {props.options[0]['label']}
-        </LegoRadioButton>
-        <LegoRadioButton
-          style={{ borderRadius: '0 8px 8px 0' }}
-          value={props.options[1]['value']}>
-          {props.options[1]['label']}
-        </LegoRadioButton>
+        {
+          props.options.map(option => {
+            return <LegoRadioButton
+              key={option['value']}
+              value={option['value']}>
+              {option['label']}
+            </LegoRadioButton>
+          })
+        }
       </LegoRadioGroup>
     </div>
 
