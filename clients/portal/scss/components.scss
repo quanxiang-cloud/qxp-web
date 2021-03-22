@@ -5,14 +5,6 @@
 @import 'select';
 
 @layer components {
-  .button {
-    @apply py-1 px-3 hover:opacity-90 transition;
-  }
-
-  .dark-button {
-    @apply bg-dark-third button;
-  }
-
   .light-button {
     @apply bg-white button;
   }

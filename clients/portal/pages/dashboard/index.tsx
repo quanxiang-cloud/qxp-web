@@ -6,7 +6,6 @@ import { Avatar } from '@portal/components/avatar2';
 import { Card } from '@portal/components/card2';
 import { List } from '@portal/components/list2';
 import { ItemWithTitleDesc } from '@portal/components/item-with-title-desc4';
-import { HeaderWithMenu } from '@portal/components/header-with-menu2';
 import { uuid } from '@assets/lib/utils';
 import { usePortalGlobalValue } from '@clients/common/state/portal';
 
@@ -17,7 +16,6 @@ export default function Dashboard() {
 
   return (
     <>
-      <HeaderWithMenu />
       <main className="pt-1-dot-6 pb-1-dot-6 pl-2-dot-6 pr-2-dot-6">
         <div>
           <Avatar

@@ -38,7 +38,7 @@ const PageSelect = (props: PageSelectProps) => {
                   key={num}
                   onClick={() => clickPage(num)}
                   className="h-2-dot-8 px-1-dot-2 py-dot-2 text-1-dot-2 cursor-pointer
-        text-center leading-2-dot-8 hover:bg-blue-light">{num} 条</li>
+        text-center leading-2-dot-8 hover:bg-blue-100">{num} 条</li>
               );
             })
           }

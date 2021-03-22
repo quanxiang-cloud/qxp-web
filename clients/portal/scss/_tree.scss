@@ -97,6 +97,7 @@ $node-height: 56px;
 
 .departments-tree {
   user-select: none;
+  overflow: auto;
 
   .tree-node {
     padding-left: 20px;

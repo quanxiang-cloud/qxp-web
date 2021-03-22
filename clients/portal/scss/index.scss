@@ -115,6 +115,11 @@ body {
   padding-bottom: 0.2rem;
 }
 
+.py-dot-6 {
+  padding-top: 0.6rem;
+  padding-bottom: 0.6rem;
+}
+
 .py-dot-8 {
   padding-top: 0.8rem;
   padding-bottom: 0.8rem;
@@ -187,10 +192,6 @@ body {
   width: 25.9rem;
 }
 
-.w-988 {
-  width: 98.8rem;
-}
-
 .h-2-dot-8 {
   height: 2.8rem;
 }
@@ -202,6 +203,11 @@ body {
 .px-dot-4 {
   padding-left: 0.4rem;
   padding-right: 0.4rem;
+}
+
+.px-dot-8 {
+  padding-left: 0.8rem;
+  padding-right: 0.8rem;
 }
 
 .bg-jb {
@@ -429,11 +435,6 @@ body {
   padding-right: 2.6rem;
 }
 
-.py-3-dot-9 {
-  padding-top: 2.9rem;
-  padding-bottom: 2.9rem;
-}
-
 .py-dot-4 {
   padding-top: 0.4rem;
   padding-bottom: 0.4rem;
@@ -443,6 +444,7 @@ body {
   padding: 1rem;
 }
 
+// todo remove this
 .border-1-radius-2 {
   border-radius: 1.2rem;
 }
@@ -524,8 +526,8 @@ body {
   box-shadow: 0px 8px 24px 4px rgba(148, 163, 184, 0.25);
 }
 
-.max-h-63-dot-2 {
-  max-height: 63.2rem;
+.max-h-68 {
+  max-height: 68rem;
 }
 
 /////////////////// Animation /////////////////////////
@@ -581,6 +583,26 @@ body {
     z-index: -1;
   }
 }
+
+.access-background-image {
+  position: relative;
+
+  &::after {
+    content: '';
+    background-image: url('/dist/images/maskHeaderBg.svg');
+    background-position: top right;
+    background-size: contain;
+    background-repeat: no-repeat;
+    opacity: 0.1;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    position: absolute;
+    z-index: -1;
+  }
+}
+
 
 //////////////////////////////////// layout /////////////////////////////////
 .flex-2 {
@@ -790,13 +812,24 @@ button {
 
 .text-area-input {
   margin: 0 !important;
+
   .control {
     width: 100%;
+
     textarea {
       min-height: unset;
       cursor: pointer !important;
       padding-right: 2rem !important;
       overflow: scroll;
     }
+  }
+}
+
+.hover-gong:hover {
+  background: #F0F6FF;
+  border-radius: 8px 8px 8px 2px;
+
+  span {
+    color: #375FF3;
   }
 }

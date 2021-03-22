@@ -43,7 +43,7 @@ export const More = function <T>({
         <List<T>
           items={items}
           params={params}
-          itemClassName="hover:bg-blue-light"
+          itemClassName="hover:bg-blue-100"
           className={
             twCascade(
               'min-w-24 z-10 py-dot-8 shadow-title bg-white',

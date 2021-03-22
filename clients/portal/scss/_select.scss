@@ -3,7 +3,7 @@ $select-max-width: 500px;
 $select-option-height: 36px;
 
 @include block(select-options) {
-  padding: 8px 0;
+  padding: 16px 0;
   min-width: $select-min-width;
   max-width: $select-max-width;
   max-height: 300px;
@@ -13,8 +13,8 @@ $select-option-height: 36px;
 
   background-color: white;
   border-radius: 4px;
-  box-shadow: 0 6px 18px 0 rgba(213, 222, 231, 0.45);
-  border: solid 1px var(--gray-200);
+  border-radius: 12px;
+  box-shadow: 0px 8px 24px 4px rgba(148, 163, 184, 0.25);
 
   @include element(desc) {
     display: flex;

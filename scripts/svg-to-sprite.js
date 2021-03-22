@@ -6,6 +6,7 @@ const svgSpreact = require('svg-spreact');
 // const SVGSpriter = require('svg-sprite');
 const mkdirp = require('mkdirp');
 const svgoConfig = require('./svgo.config');
+const { type } = require('os');
 
 function getFileContent(filePath) {
   return util.promisify(fs.readFile)(filePath, { encoding: 'utf-8' });
@@ -44,7 +45,6 @@ function getIconNames() {
         return name;
       })
       .filter(Boolean);
-    console.log(names);
     return names;
   });
 }
@@ -61,19 +61,23 @@ function getSVGFiles() {
   );
 }
 
-//往固定的行写入数据
 function writeSvgTmpToLayout(value) {
   let basePath = path.resolve('./');
   let data = fs
     .readFileSync(basePath + '/dist/templates/layout.html', 'utf8')
-    .split(/\r\n|\n|\r/gm); //readFileSync的第一个参数是文件名
-  const index = data.indexOf('  <body>');
-  data.splice(index + 1, 0, value);
-  fs.writeFileSync(basePath + '/dist/templates/layout.html', data.join('\r\n'));
+    .split(/\r\n|\n|\r/gm);
+  const match = data.find((value) => /^<body>$/.test(value));
+  const index = data.indexOf(match);
+  if (typeof data.find((val) => /^<svg>/.test(val)) === 'undefined') {
+    data.splice(index + 1, 0, value);
+    fs.writeFileSync(
+      basePath + '/dist/templates/layout.html',
+      data.join('\r\n')
+    );
+  }
 }
 
 module.exports = function () {
-  // function build() {
   return getSVGFiles().then((filePaths) => {
     return Promise.all(
       filePaths.map((filePath) => {
@@ -96,5 +100,3 @@ module.exports = function () {
     });
   });
 };
-
-// build();

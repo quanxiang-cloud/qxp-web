@@ -29,7 +29,7 @@ export const Core = ({ current, onChange = identity, maxPage }: ICore) => {
       <div
         onClick={onPrev}
         className={twCascade(
-          'w-1-dot-4 h-1-dot-4 text-center text-dark-four leading-1-dot-4',
+          'w-1-dot-4 h-1-dot-4 text-center text-gray-400 leading-1-dot-4',
           'flex justify-center items-center',
           current <= 1 ? 'cursor-not-allowed' : 'cursor-pointer',
         )}
@@ -111,7 +111,7 @@ export const Core = ({ current, onChange = identity, maxPage }: ICore) => {
       <div
         onClick={onNext}
         className={twCascade(
-          'w-1-dot-4 h-1-dot-4 text-center text-dark-four leading-1-dot-4',
+          'w-1-dot-4 h-1-dot-4 text-center text-gray-400 leading-1-dot-4',
           'flex justify-center items-center',
           current >= maxPage ? 'cursor-not-allowed' : 'cursor-pointer',
         )}
