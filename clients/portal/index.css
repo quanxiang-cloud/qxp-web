@@ -12,3 +12,7 @@
 .global-header {
   margin-bottom: 20px;
 }
+
+.main-department-tree .departments-tree {
+  max-height: calc(100% - 38px);
+}
