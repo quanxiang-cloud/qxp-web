@@ -562,7 +562,7 @@ export const PersonInfo = React.memo(({
             </>
           )}
         </div>
-        <div className="w-full mt-dot-8 flex-column flex-1 px-4">
+        <div className="w-full mt-dot-8 flex-column flex-1 px-4 overflow-auto">
           <div className="qxp-table flex w-full">
             <Table
               className="text-1-dot-4 table-full"
