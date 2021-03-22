@@ -50,7 +50,8 @@ export const DeleteModal = ({ currDep, closeModal, okModal }: DeleteModalProps) 
     >
       <div className="text-1-dot-4">
         确定要删除
-        <span className="mx-1 text-1-dot-6 font-semibold">{currDep && currDep.departmentName}</span>
+        <span className="mx-2 text-1-dot-6
+        font-semibold text-gray-900">{currDep && currDep.departmentName}</span>
         吗？
       </div>
     </Modal>

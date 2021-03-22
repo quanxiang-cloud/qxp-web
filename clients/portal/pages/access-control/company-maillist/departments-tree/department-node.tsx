@@ -57,6 +57,8 @@ function DepartmentNode({ node }: NodeRenderProps<IDepartment>): JSX.Element {
       title: '删除',
       okType: 'danger',
       okText: '确认删除',
+      width: 632,
+      className: 'static-modal',
       onOk: () => {
         Modal.close(currentModal);
         deleteDEP(node.id).then(({ code, msg }) => {
@@ -69,7 +71,8 @@ function DepartmentNode({ node }: NodeRenderProps<IDepartment>): JSX.Element {
           Message.error(msg || '');
         });
       },
-      content: (<div>{`确定删除部门${node.data.departmentName}吗？`}</div>),
+      content: (<div>确定要删除<span className="mx-2 text-1-dot-6
+      font-semibold text-gray-900">{node.data.departmentName}</span>吗？</div>),
     });
   }
 

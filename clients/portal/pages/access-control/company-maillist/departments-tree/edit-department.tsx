@@ -55,8 +55,9 @@ export default function EditDepartment({ department, closeModal }: DepartmentMod
       visible
       appendToBody
       title={title}
-      width={632}
-      style={{ maxWidth: '632px' }}
+      // width={632}
+      // style={{ maxWidth: '632px' }}
+      className="static-modal"
       onCancel={closeModal}
       footer={
         <div className="flex items-center">
