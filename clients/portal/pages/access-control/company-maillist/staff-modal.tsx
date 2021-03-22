@@ -13,7 +13,7 @@ import TreePicker from '@portal/components/tree-picker';
 import { departmentToTreeNode } from '@assets/lib/utils';
 import Select from '@c/select';
 
-const { TextField, SelectField, CheckboxGroupField } = Form;
+const { TextField, CheckboxGroupField } = Form;
 
 export type FormValues = {
   userName: string;

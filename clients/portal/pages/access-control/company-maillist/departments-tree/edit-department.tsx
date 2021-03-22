@@ -1,11 +1,13 @@
-import React, { createRef, useState } from 'react';
-import { useQueryClient } from 'react-query';
+import React, { createRef } from 'react';
+import { useQuery, useQueryClient } from 'react-query';
 import { Modal, Form, Icon, Message } from '@QCFE/lego-ui';
 
 import { Button } from '@portal/components/button';
 import DepartmentPicker from '@portal/components/tree-picker';
+import { Loading } from '@portal/components/loading2';
 
-import { createDepartment, editDepartment } from '../api';
+import { createDepartment, editDepartment, getERPTree } from '../api';
+import { departmentToTreeNode } from '@assets/lib/utils';
 
 const { TextField } = Form;
 
@@ -15,12 +17,18 @@ interface DepartmentModalProps {
 }
 
 export default function EditDepartment({ department, closeModal }: DepartmentModalProps) {
-  const [pid, setPID] = useState('');
   const formRef = createRef<Form>();
-
   const queryClient = useQueryClient();
+
   const title = department.id ? '修改部门' : '添加部门';
   const submitBtnText = department.id ? '确认修改' : '确认添加';
+  const { data: depData, isLoading } = useQuery('getERPTree', getERPTree, {
+    refetchOnWindowFocus: false,
+  });
+
+  if (isLoading || !depData) {
+    return <Loading desc="加载中..." />;
+  }
 
   const okModalHandle = () => {
     if (!formRef.current?.validateForm()) {
@@ -34,17 +42,15 @@ export default function EditDepartment({ department, closeModal }: DepartmentMod
       params.id = department?.id;
     }
 
-    if (!pid) {
+    if (!params.pid) {
       Message.error('请选择父级部门');
       return;
     }
 
-    params.pid = pid;
-
     requestAPI(params).then(() => {
-      queryClient.invalidateQueries('getERPTree');
       closeModal();
       Message.success({ content: '操作成功！' });
+      queryClient.invalidateQueries('getERPTree');
     }).catch((error: any) => {
       console.log(error);
     });
@@ -90,8 +96,12 @@ export default function EditDepartment({ department, closeModal }: DepartmentMod
             },
           ]}
         />
-        <span>所属部门</span>
-        <DepartmentPicker onChange={(id) => setPID(id)} />
+        <DepartmentPicker
+          label="所属部门"
+          treeData={departmentToTreeNode(depData as IDepartment)}
+          labelKey="departmentName"
+          name="pid"
+        />
       </Form>
     </Modal>
   );
