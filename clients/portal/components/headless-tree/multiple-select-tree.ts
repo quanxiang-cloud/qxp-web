@@ -114,19 +114,10 @@ export default class SelectableTreeStore<T> extends BaseStore<T> {
     // C: child checkStatus
     // | P\C |  ✅   |  ❌   |  ❓  |
     // | ---- | ---- | ---- | ---- |
-    // |  ✅  |  ⏹   |  ❓   |  ❓  |
+    // |  ✅  |  ⏹   |  🧮   |  ❓  |
     // |  ❌  |  🧮   |  ⏹   |  ❓  |
     // |  ❓  |  🧮   |  🧮   |  ⏹  |
     if (checkStatus === childCheckStatus) {
-      return;
-    }
-
-    if (
-      childCheckStatus === 'indeterminate' ||
-      (checkStatus === 'checked' && childCheckStatus === 'unchecked')
-    ) {
-      this._nodeMap[id].checkStatus = 'indeterminate';
-      this.propagateCheckStatus(this._nodeMap[id].parentID as string, 'indeterminate');
       return;
     }
 
@@ -136,13 +127,15 @@ export default class SelectableTreeStore<T> extends BaseStore<T> {
       });
 
       this._nodeMap[id].checkStatus = allChildrenChecked ? 'checked' : 'indeterminate';
-    } else {
-      const hasCheckedChild = this._nodeMap[id].children?.some((childID) => {
+    } else if (childCheckStatus === 'unchecked') {
+      const hasChildChecked = this._nodeMap[id].children?.some((childID) => {
         return this._nodeMap[childID].checkStatus === 'checked' ||
           this._nodeMap[childID].checkStatus === 'indeterminate';
       });
 
-      this._nodeMap[id].checkStatus = hasCheckedChild ? 'indeterminate' : 'unchecked';
+      this._nodeMap[id].checkStatus = hasChildChecked ? 'indeterminate' : 'unchecked';
+    } else {
+      this._nodeMap[id].checkStatus = 'indeterminate';
     }
 
     this.propagateCheckStatus(this._nodeMap[id].parentID as string, this._nodeMap[id].checkStatus);
