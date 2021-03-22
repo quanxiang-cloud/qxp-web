@@ -49,7 +49,7 @@ export const AdjustDepModal = (props: IAdjustDepModalProps) => {
     if (values?.pid) {
       params.newDepID = values.pid;
     }
-    params.oldDepID = userList && userList[0].dep.id;
+    params.oldDepID = (userList && userList[0] && userList[0].dep?.id) || '';
     userList.forEach((user) => params.usersID.push(user.id));
     okModal(params);
   };

@@ -16,6 +16,8 @@ export interface IUserInfo {
   authority?: string[];
   roleId?: string;
   deleteId?: string;
+  useStatus?: number;
+  isDEPLeader?: boolean | number;
 }
 export const getUserInfo = async (): Promise<Partial<IUserInfo>> => {
   const { data } = await httpPost<IResponse<IUserInfo>>('/api/org/v1/userUserInfo');
