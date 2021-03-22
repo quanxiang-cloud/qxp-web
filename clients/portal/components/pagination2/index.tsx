@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { twCascade } from '@mariusmarais/tailwind-cascade';
 
 import { Core } from './pagger';
-import Select from './page-select';
+import Select from '@c/select';
 
 interface PaginationProps {
   type?: 'simple' | 'mini';
@@ -58,6 +58,24 @@ export const Pagination = ({
           <Select
             value={pageSize}
             onChange={selectChange}
+            className="w-32 h-2-dot-8 border border-gray-300 rounded-r-dot-8
+            rounded-tl-dot-2 rounded-bl-dot-8 px-1-dot-2 text-1-dot-2 flex items-center"
+            options={[{
+              value: 10,
+              label: '10条/页',
+            },
+            {
+              value: 20,
+              label: '20条/页',
+            },
+            {
+              value: 50,
+              label: '50条/页',
+            },
+            {
+              value: 100,
+              label: '100条/页',
+            }]}
           />
         </>
         )}

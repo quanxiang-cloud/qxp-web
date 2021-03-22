@@ -65,9 +65,14 @@ export const PersonInfo = React.memo(({
   const staffMutation = useMutation(
     userModalStatus === 'add' ? addDepUser : updateUser,
     {
-      onSuccess: () => {
+      onSuccess: (data) => {
+        if (data && data.code === 0) {
+          Message.success('操作成功');
+          refetch();
+        } else {
+          Message.error('操作失败');
+        }
         setVisibleStaff(false);
-        refetch();
       },
     }
   );
@@ -102,6 +107,16 @@ export const PersonInfo = React.memo(({
     }
   );
 
+  useEffect(() => {
+    setPageParams({
+      page: 1,
+      limit: 10,
+      total: 10,
+      userName: '',
+    });
+    setSelectedRows([]);
+  }, [departmentId]);
+
   const handleMutation = useMutation(updateUserStatus, {
     onSuccess: () => {
       setHandleModal(false);
@@ -118,7 +133,6 @@ export const PersonInfo = React.memo(({
 
   const resetMutation = useMutation(resetUserPWD, {
     onSuccess: (data) => {
-      console.log(data);
       if (data && data.code === 0) {
         Message.success('操作成功！');
       } else {
@@ -277,6 +291,7 @@ export const PersonInfo = React.memo(({
   const handleShowSizeChange = (limit: number) => {
     setPageParams({
       ...pageParams,
+      page: 1,
       limit,
     });
   };
@@ -440,14 +455,12 @@ export const PersonInfo = React.memo(({
       page: 0,
       limit: 0,
     }).then((res) => {
-      console.log(res);
       if (res && res.data) {
         const { data } = res;
         const newData = data.map((user) => {
           user.depName = user.dep && user.dep.departmentName;
           return user;
         });
-        console.log(newData);
         exportDepExcel(excelHeader, newData, '人员列表.xlsx');
       } else {
         Message.error('获取人员出错');
@@ -564,26 +577,31 @@ export const PersonInfo = React.memo(({
         </div>
         <div className="w-full mt-dot-8 flex-column flex-1 px-4 overflow-auto">
           <div className="qxp-table flex w-full">
-            <Table
-              className="text-1-dot-4 table-full"
-              dataSource={personList?.data || []}
-              columns={columns}
-              rowKey="id"
-              rowSelection={rowSelection}
-              emptyText={<EmptyData text="无成员数据" className="py-10" />}
-              loading={isLoading}
-            />
+            {
+              personList?.data && <Table
+                className="text-1-dot-4 table-full"
+                dataSource={personList?.data || []}
+                columns={columns}
+                rowKey="id"
+                rowSelection={rowSelection || []}
+                emptyText={<EmptyData text="无成员数据" className="py-10" />}
+                loading={isLoading}
+              />
+            }
+
           </div>
           <div className="flex justify-end">
-            <Pagination
-              type="simple"
-              current={pageParams.page}
-              total={personList?.total || 0}
-              pageSize={pageParams.limit}
-              pageSizeOptions={pageSizeOptions}
-              onChange={handleChange}
-              onShowSizeChange={handleShowSizeChange}
-            />
+            {
+              personList?.data && <Pagination
+                type="simple"
+                current={pageParams.page}
+                total={personList?.total || 0}
+                pageSize={pageParams.limit}
+                pageSizeOptions={pageSizeOptions}
+                onChange={handleChange}
+                onShowSizeChange={handleShowSizeChange}
+              />
+            }
           </div>
         </div>
       </div>

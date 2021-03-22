@@ -11,6 +11,7 @@ import { IUserInfo } from '@portal/api/auth';
 import { getListRole, getERPTree } from './api';
 import TreePicker from '@portal/components/tree-picker';
 import { departmentToTreeNode } from '@assets/lib/utils';
+import Select from '@c/select';
 
 const { TextField, SelectField, CheckboxGroupField } = Form;
 
@@ -46,6 +47,7 @@ interface StaffModalProps {
 export const StaffModal = (props: StaffModalProps) => {
   const { visible, initData, status, closeModal, okModal } = props;
   const [form, setForm] = useState<any>(null);
+  const [roleValue, setRoleValue] = useState('3');
   const titleText = `${status === 'add' ? '添加' : '修改'}`;
 
   const { data: roleList, isLoading } = useQuery('getListRole', getListRole, {
@@ -73,7 +75,8 @@ export const StaffModal = (props: StaffModalProps) => {
       way: string;
     };
 
-    const { userName, phone, email, way, roleIDs, depID } = values;
+    const { userName, phone, email, way, depID } = values;
+    const roleIDs = roleValue;
     if (status === 'add') {
       const params: FormValues = {
         userName,
@@ -100,6 +103,10 @@ export const StaffModal = (props: StaffModalProps) => {
       }
       okModal(params);
     }
+  };
+
+  const changeRole = (val: string) => {
+    setRoleValue(val);
   };
 
   return (
@@ -209,7 +216,7 @@ export const StaffModal = (props: StaffModalProps) => {
           name="depID"
           defaultValue={props.initData?.dep?.id}
         />
-        <SelectField
+        {/* <SelectField
           name="roleIDs"
           label="角色"
           placeholder="请选择角色"
@@ -229,7 +236,20 @@ export const StaffModal = (props: StaffModalProps) => {
               status: 'error',
             },
           ]}
-        />
+        /> */}
+        <div>
+          <div style={{ color: '#020508', fontSize: 14, marginBlock: 7 }}>角色</div>
+          <Select
+            defaultValue={initData.roleId || roleValue}
+            value={roleValue}
+            onChange={changeRole}
+            options={roleList ?
+              roleList.map((role) => ({
+                label: role.name,
+                value: role.id,
+              })) : []}
+          />
+        </div>
       </Form>
     </Modal>
   );

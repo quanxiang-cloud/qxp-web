@@ -10,7 +10,6 @@ interface ITree extends TreeProps {
 
 export const Tree = ({ ...props }: ITree) => {
   const renderTreeNodes = (data: TreeData[]) => {
-    console.log(data);
     return data.map((item: TreeData) => {
       const { children } = item;
       if (children) {

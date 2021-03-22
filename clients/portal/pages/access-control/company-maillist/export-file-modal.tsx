@@ -121,7 +121,6 @@ export const ExportFileModal = ({
   ];
 
   const beforeUpload = (file: File) => {
-    console.log(file);
     const { size } = file;
     if (size > 1024 * 1024 * 2) {
       Message.error('文件过大，超过 2M 不能上传！');

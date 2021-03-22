@@ -104,7 +104,6 @@ export default function DepartmentModal({
         });
       })
       .catch((error) => {
-        console.log(error);
         Message.error('操作失败！');
       });
   };

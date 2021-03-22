@@ -28,7 +28,6 @@ export const Avatar = ({ username = '', bio, avatar }: IAvatar) => {
   let bgColor = '';
   if (username) {
     head = username.substring(0, 1);
-    console.log(username);
     bgColor = getImgColor(head);
   }
 
