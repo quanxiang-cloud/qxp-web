@@ -2,6 +2,14 @@
 
 set -e
 
+# build frontend assets
+rm -rf dist
+rm -rf docker-files/nginx/dist docker-files/portal/dist
+
+NODE_ENV=production ./node_modules/.bin/webpack --config webpack.config.js
+
+# todo refactor
+# copy built files
 gulp build
 
 GOOS=linux go build -o ./docker-files/portal/portal server/cmd/portal/main.go

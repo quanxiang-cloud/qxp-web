@@ -9,11 +9,13 @@ const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 
 // env: 'production' | 'development';
 module.exports = function (env) {
+  const NODE_ENV = process.env.NODE_ENV || env.mode || 'production';
+
   return {
-    mode: env.mode ? env.mode : 'development',
-    watch: env.mode !== 'production',
-    bail: env.mode === 'production',
-    devtool: env.mode === 'production' ? false : 'source-map',
+    mode: NODE_ENV ? NODE_ENV : 'production',
+    watch: NODE_ENV === 'development',
+    bail: NODE_ENV !== 'development',
+    devtool: NODE_ENV === 'development' ? 'source-map': false,
 
     entry: {
       portal: './clients/portal/index.tsx',
@@ -26,8 +28,8 @@ module.exports = function (env) {
 
     output: {
       path: path.join(__dirname, 'dist'),
-      filename: env.mode === 'production' ? '[name].[fullhash].js' : '[name].js',
-      chunkFilename: env.mode === 'production' ? '[name].[chunkhash].js' : '[name].js',
+      filename: NODE_ENV === 'production' ? '[name].[fullhash].js' : '[name].js',
+      chunkFilename: NODE_ENV === 'production' ? '[name].[chunkhash].js' : '[name].js',
       publicPath: '/dist/',
     },
 
@@ -82,7 +84,7 @@ module.exports = function (env) {
     plugins: [
       new WebpackBar(),
       new MiniCssExtractPlugin({
-        filename: env.mode === 'production' ? '[name].[contenthash].css' : '[name].css',
+        filename: NODE_ENV === 'production' ? '[name].[contenthash].css' : '[name].css',
       }),
       new HtmlWebpackPlugin({
         inject: false,
