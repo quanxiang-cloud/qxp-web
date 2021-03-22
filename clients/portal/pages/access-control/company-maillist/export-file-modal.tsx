@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useMutation } from 'react-query';
-import XLSX from 'xlsx';
+// import XLSX from 'xlsx';
 import classnames from 'classnames';
 import { Modal, CheckboxGroup, Checkbox, GridTable, Upload, Icon, Message } from '@QCFE/lego-ui';
 
@@ -216,7 +216,9 @@ export const ExportFileModal = ({
       },
     };
     // 导出 Excel
-    XLSX.writeFile(wb, fileName);
+    import('xlsx').then(({ default: XLSX }) => {
+      XLSX.writeFile(wb, fileName);
+    });
   };
 
   const changeCheckbox = (val: string[]) => {

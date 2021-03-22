@@ -53,15 +53,6 @@ export default class SelectableTreeStore<T> extends BaseStore<T> {
     return selectedNodes(this.nodeMap, rootNodeID);
   }
 
-  @computed get selectedNodes(): T[] {
-    return Object.entries(this.nodeMap).reduce<T[]>((cur, [_, node]) => {
-      if (node.checkStatus === 'checked') {
-        cur.push(node.data);
-      }
-      return cur;
-    }, []);
-  }
-
   @computed get selectedDataPaths(): Array<Array<T>> {
     return this.selectedNodePaths.map((path) => {
       return path.map(({ data }) => data);
