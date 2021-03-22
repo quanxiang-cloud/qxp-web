@@ -9,52 +9,40 @@ import (
 	"time"
 )
 
-// LoginHandler render login page
-func LoginHandler(w http.ResponseWriter, r *http.Request) {
-	if IsUserLogin(w, r) {
+func getLoginTemplate(r *http.Request) string {
+	loginType := getPathParam(r, "type")
+	templateName := "login-by-password.html"
+	if loginType == "captcha" {
+		templateName = "login-by-captcha.html"
+	}
+
+	return templateName
+}
+
+// HandleLogin render login page
+func HandleLogin(w http.ResponseWriter, r *http.Request) {
+	if IsUserLogin(r) {
 		http.Redirect(w, r, "/", http.StatusFound)
 		return
 	}
 
-	loginType := getPathParam(r, "type")
-	templateName := ""
-	switch loginType {
-	case "captcha":
-		templateName = "login-by-captcha.html"
-	case "password":
-		templateName = "login-by-password.html"
-	}
-
-	if templateName == "" {
-		renderTemplate(w, "404.html", nil)
-	} else {
-		renderTemplate(w, templateName, map[string]interface{}{
-			"redirectUrl": r.URL.Query().Get("redirectUrl"),
-		})
-	}
+	template := getLoginTemplate(r)
+	renderTemplate(w, template, map[string]interface{}{
+		// todo delete this
+		"redirectUrl": r.URL.Query().Get("redirectUrl"),
+	})
 }
 
-func renderPage(w http.ResponseWriter, templateName string, errorMessage string) {
-	if templateName == "" {
-		renderTemplate(w, "404.html", nil)
-	} else {
-		contexts.Logger.Debug("login error message", errorMessage)
-		renderTemplate(w, templateName, map[string]interface{}{
-			"errorMessage": errorMessage,
-		})
-	}
-}
-
-// LoginSubmitHandler resolve login request
-func LoginSubmitHandler(w http.ResponseWriter, r *http.Request) {
-	requestID := contexts.GetRequestID(r)
+// HandleLoginSubmit resolve login request
+func HandleLoginSubmit(w http.ResponseWriter, r *http.Request) {
 	loginType := getPathParam(r, "type")
-	templateName := ""
+	templateName := getLoginTemplate(r)
 	loginType4API := ""
+	username := r.FormValue("username")
 	password := ""
+
 	switch loginType {
 	case "captcha":
-		templateName = "login-by-captcha.html"
 		loginType4API = "code"
 		password = r.FormValue("captcha")
 	case "password":
@@ -63,60 +51,72 @@ func LoginSubmitHandler(w http.ResponseWriter, r *http.Request) {
 		password = r.FormValue("password")
 	}
 
+	if loginType4API == "" {
+		renderTemplate(w, templateName, map[string]interface{}{"errorMessage": http.StatusText(http.StatusBadRequest)})
+		return
+	}
+
+	if password == "" || username == "" {
+		// todo give this a better error message
+		renderTemplate(w, templateName, map[string]interface{}{"errorMessage": http.StatusText(http.StatusBadRequest)})
+		return
+	}
+
 	loginParams := map[string]string{
-		"username":   r.FormValue("username"),
+		"username":   username,
 		"password":   password,
 		"login_type": loginType4API,
 	}
 	jsonStr, err := json.Marshal(loginParams)
+
+	requestID := contexts.GetRequestID(r)
 	if err != nil {
 		contexts.Logger.Errorf("failed to marshal login request body: %s, request_id: %s", err.Error(), requestID)
-		renderPage(w, templateName, http.StatusText(http.StatusInternalServerError))
+		renderTemplate(w, templateName, map[string]interface{}{"errorMessage": http.StatusText(http.StatusBadRequest)})
 		return
 	}
-	_, respBuffer, errMsg := contexts.SendRequestWitoutAuth(r, "POST", "/api/oauth2c/v1/login", bytes.NewBuffer(jsonStr), map[string]interface{}{
+
+	respBuffer, errMsg := contexts.SendRequestWitoutAuth(r, "POST", "/api/oauth2c/v1/login", bytes.NewBuffer(jsonStr), map[string]interface{}{
 		"Content-Type": "application/json",
 	})
+
 	if errMsg != "" {
 		contexts.Logger.Errorf("failed to login, err: %s, request_id: %s", errMsg, requestID)
-		renderPage(w, templateName, errMsg)
+		renderTemplate(w, templateName, map[string]interface{}{"errorMessage": errMsg})
 		return
 	}
+
 	var loginResponse LoginResponse
 	if err := json.Unmarshal(respBuffer.Bytes(), &loginResponse); err != nil {
 		contexts.Logger.Errorf("failed to unmarshal login response body, err: %s, request_id: %s", err.Error(), requestID)
-		renderPage(w, templateName, http.StatusText(http.StatusInternalServerError))
+		renderTemplate(w, templateName, map[string]interface{}{"errorMessage": http.StatusText(http.StatusInternalServerError)})
 		return
 	}
+
 	if loginResponse.Code != 0 {
-		renderPage(w, templateName, loginResponse.Message)
+		renderTemplate(w, templateName, map[string]interface{}{"errorMessage": loginResponse.Message})
 		return
 	}
-	session, err := contexts.GetCurrentRequestSession(r)
-	if err != nil {
-		contexts.Logger.Errorf("failed to get current request session: %s, request_id: %s", err.Error(), requestID)
-		renderPage(w, templateName, http.StatusText(http.StatusInternalServerError))
-		return
-	}
+
 	expireTime, err := time.Parse(time.RFC3339, loginResponse.Data.Expire)
-	if err == nil {
-		contexts.Cache.Set("token", loginResponse.Data.AccessToken, expireTime.Sub(time.Now()))
+	if err != nil {
+		contexts.Logger.Errorf("failed to parse login response: %s", err.Error())
+		renderTemplate(w, templateName, map[string]interface{}{"errorMessage": http.StatusText(http.StatusInternalServerError)})
+		return
 	}
-	session.Values["refresh_token"] = loginResponse.Data.RefreshToken
-	redirectURL, ok := session.Values["redirect_url"].(string)
-	if redirectURL == "/favicon.ico" || !ok || strings.HasPrefix(redirectURL, "/_") {
+
+	SaveToken(r, loginResponse.Data.AccessToken, loginResponse.Data.RefreshToken, expireTime)
+
+	redirectURL := contexts.GetSessionValue(r, "redirect_url")
+	if redirectURL == "" || redirectURL == "/favicon.ico" || strings.HasPrefix(redirectURL, "/_") {
 		redirectURL = "/"
 	}
-	redirectURLSpec := r.URL.Query().Get("redirectUrl")
-	if redirectURLSpec != "" {
-		redirectURL = redirectURLSpec
-	}
+
+	// redirectURLSpec := r.URL.Query().Get("redirectUrl")
+	// if redirectURLSpec != "" {
+	// 	redirectURL = redirectURLSpec
+	// }
 	contexts.Logger.Infof("user login success, redirect to %s, request_id: %s", redirectURL, requestID)
-	if err := session.Save(r, w); err != nil {
-		contexts.Logger.Errorf("failed to save session: %s, request_id: %s", err.Error(), requestID)
-		renderPage(w, templateName, http.StatusText(http.StatusInternalServerError))
-		return
-	}
+
 	http.Redirect(w, r, redirectURL, http.StatusFound)
-	return
 }

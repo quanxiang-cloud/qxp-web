@@ -35,8 +35,8 @@ func ResetPasswordActionHandler(w http.ResponseWriter, r *http.Request) {
 		})
 		return
 	}
-	session, err := contexts.GetCurrentRequestSession(r)
-	if err != nil {
+	session := contexts.GetCurrentRequestSession(r)
+	if session == nil {
 		contexts.Logger.Errorf("failed to get request session for resetPassword: %s, request_id: %s", err.Error(), requestID)
 		renderTemplate(w, templateName, map[string]interface{}{
 			"errorMessage": "重置密码失败",

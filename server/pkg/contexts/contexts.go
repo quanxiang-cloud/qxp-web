@@ -123,16 +123,12 @@ func SendRequest(r *http.Request, method string, path string, body io.Reader, he
 		return nil, nil, "failed to build request"
 	}
 
-	token, _ := GetSessionToken(r)
-	if token == "" {
-		token = GetQueryToken(r)
-	}
+	// token, _ := GetSessionToken(r)
+	// if token == "" {
+	// 	return nil, nil, "no token found in session or request query"
+	// }
 
-	if token == "" {
-		return nil, nil, "no token found in session or request query"
-	}
-
-	req.Header.Add("Access-Token", token)
+	// req.Header.Add("Access-Token", token)
 
 	Logger.Debugf(
 		"[request_id=%s] sending request, method: %s, url: %s, headers: %s",
@@ -173,7 +169,7 @@ func SendRequest(r *http.Request, method string, path string, body io.Reader, he
 }
 
 // SendRequestWitoutAuth is an util method for request Billing Server
-func SendRequestWitoutAuth(r *http.Request, method string, path string, body io.Reader, headers map[string]interface{}) (*http.Response, *bytes.Buffer, string) {
+func SendRequestWitoutAuth(r *http.Request, method string, path string, body io.Reader, headers map[string]interface{}) (*bytes.Buffer, string) {
 	requestID := GetRequestID(r)
 
 	req, err := http.NewRequest(method, APIEndpoint+path, body)
@@ -182,7 +178,7 @@ func SendRequestWitoutAuth(r *http.Request, method string, path string, body io.
 	}
 	if err != nil {
 		Logger.Errorf("[request_id=%s] failed to build request: %s", requestID, err.Error())
-		return nil, nil, "failed to build request"
+		return nil, "failed to build request"
 	}
 
 	Logger.Debugf(
@@ -193,7 +189,7 @@ func SendRequestWitoutAuth(r *http.Request, method string, path string, body io.
 	resp, err := HTTPClient.Do(req)
 	if err != nil {
 		Logger.Errorf("[request_id=%s] failed to send request to API server: %s", requestID, err.Error())
-		return nil, nil, "failed to send request to API server"
+		return nil, "failed to send request to API server"
 	}
 	defer resp.Body.Close() // Force closing the response body
 
@@ -201,7 +197,7 @@ func SendRequestWitoutAuth(r *http.Request, method string, path string, body io.
 	_, err = io.Copy(buffer, resp.Body)
 	if err != nil {
 		Logger.Errorf("[request_id=%s] copy response body error: %s", requestID, err.Error())
-		return resp, nil, http.StatusText(http.StatusInternalServerError)
+		return nil, http.StatusText(http.StatusInternalServerError)
 	}
 
 	if resp.StatusCode >= http.StatusInternalServerError {
@@ -209,7 +205,7 @@ func SendRequestWitoutAuth(r *http.Request, method string, path string, body io.
 			"[request_id=%s] request API encounter status_code: %d, request method: %s, request path: %s, response body: %s",
 			requestID, resp.StatusCode, method, path, buffer.String(),
 		)
-		return resp, buffer, fmt.Sprintf("API server response status code >= %d", http.StatusInternalServerError)
+		return buffer, fmt.Sprintf("API server response status code >= %d", http.StatusInternalServerError)
 	}
 
 	if resp.StatusCode >= http.StatusBadRequest && resp.StatusCode < http.StatusInternalServerError {
@@ -217,8 +213,8 @@ func SendRequestWitoutAuth(r *http.Request, method string, path string, body io.
 			"[request_id=%s] request API encounter status_code: %d, request method: %s, request path: %s, response body: %s",
 			requestID, resp.StatusCode, method, path, buffer.String(),
 		)
-		return resp, buffer, fmt.Sprintf("API server response status code >= %d", http.StatusBadRequest)
+		return buffer, fmt.Sprintf("API server response status code >= %d", http.StatusBadRequest)
 	}
 
-	return resp, buffer, ""
+	return buffer, ""
 }

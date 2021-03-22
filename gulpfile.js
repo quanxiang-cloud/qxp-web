@@ -28,7 +28,11 @@ function runWebpack(webpackConfig) {
 }
 
 function copyTemplates() {
-  return gulp.src('./clients/templates/layout.html').pipe(gulp.dest('./dist/templates'));
+  return gulp.src([
+    './clients/templates/layout.html',
+    './clients/templates/404.html',
+    './clients/templates/500.html',
+  ]).pipe(gulp.dest('./dist/templates'));
 }
 
 function copyImages() {

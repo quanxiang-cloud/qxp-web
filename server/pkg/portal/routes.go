@@ -8,19 +8,41 @@ import (
 	"github.com/gorilla/mux"
 )
 
+func loginRequired(h http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		if !handlers.IsUserLogin(r) {
+			handlers.RedirectToLoginPage(w, r)
+			return
+		}
+
+		h(w, r)
+	}
+}
+
+func tokenRequired(h http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		if !handlers.IsUserLogin(r) {
+			w.WriteHeader(http.StatusUnauthorized)
+			return
+		}
+
+		h(w, r)
+	}
+}
+
 // GetRouter return mux router
 func GetRouter() http.Handler {
 	r := mux.NewRouter()
 
-	r.Headers("X-Proxy", "API").HandlerFunc(handlers.ProxyAPIHandler)
+	r.Headers("X-Proxy", "API").HandlerFunc(tokenRequired(handlers.ProxyAPIHandler))
 	// r.Path("/register").Methods("GET").HandlerFunc(handlers.RegisterHandler)
-	r.Path("/login/{type}").Methods("GET").HandlerFunc(handlers.LoginHandler)
-	r.Path("/login/{type}").Methods("POST").HandlerFunc(handlers.LoginSubmitHandler)
+	r.Path("/login/{type}").Methods("GET").HandlerFunc(handlers.HandleLogin)
+	r.Path("/login/{type}").Methods("POST").HandlerFunc(handlers.HandleLoginSubmit)
 	r.Path("/logout").Methods("POST").HandlerFunc(handlers.LogoutHandler)
 	r.Path("/resetPassword").Methods("GET").HandlerFunc(handlers.ResetPasswordHandler)
 	r.Path("/resetPassword").Methods("POST").HandlerFunc(handlers.ResetPasswordActionHandler)
 
-	r.PathPrefix("/").Methods("GET").HandlerFunc(handlers.PortalHandler)
+	r.PathPrefix("/").Methods("GET").HandlerFunc(loginRequired(handlers.PortalHandler))
 
 	return contexts.RequestIDMiddleware(r)
 }
