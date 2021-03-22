@@ -76,6 +76,16 @@ class OwnerStore {
   removeOwner = (ownerId: string) => {
     this.owners = this.owners.filter((owner) => owner.ownerID !== ownerId);
   }
+
+  @action
+  addOwners = (os: IOwner[]) => {
+    this.owners = [...this.owners, ...os];
+  }
+
+  @action
+  removeOwners = (ownerIds: string[]) => {
+    this.owners = this.owners.filter((owner) => !ownerIds.includes(owner.ownerID));
+  }
 }
 
 export default OwnerStore;

@@ -18,21 +18,23 @@ export const SelectedList = observer(({ className, ownerStore }: ISelectedList) 
 
   const onRemove = (owner: IOwner) => {
     ownerStore.onRemove(owner);
-    const nodeMap = ownerStore.departmentTreeStore.toggleCheck(owner.id, 'unchecked');
-    if (!nodeMap) {
-      return;
-    }
-    Object.entries(nodeMap).forEach(([key, node]) => {
-      if (node.checkStatus === 'unchecked' || node.checkStatus === 'indeterminate') {
-        ownerStore.removeOwner(key);
-      }
-    });
+    ownerStore.departmentTreeStore.toggleCheck(owner.id);
+    // const nodeMap = ownerStore.departmentTreeStore.toggleCheck(owner.id, 'unchecked');
+    // if (!nodeMap) {
+    //   return;
+    // }
+    // Object.entries(nodeMap).forEach(([key, node]) => {
+    //   if (node.checkStatus === 'unchecked' || node.checkStatus === 'indeterminate') {
+    //     ownerStore.removeOwner(key);
+    //   }
+    // });
   };
 
   const onClear = () => {
     ownerStore.onClear();
     ownerStore.owners.forEach((owner) => {
-      ownerStore.departmentTreeStore.toggleCheck(owner.id, 'unchecked');
+      // ownerStore.departmentTreeStore.toggleCheck(owner.id, 'unchecked');
+      ownerStore.departmentTreeStore.toggleCheck(owner.id);
     });
   };
 

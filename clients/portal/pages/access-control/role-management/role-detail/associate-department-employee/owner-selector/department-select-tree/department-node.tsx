@@ -5,6 +5,7 @@ import { observer } from 'mobx-react';
 import { NodeRenderProps } from '@c/headless-tree/types';
 import { Checkbox } from '@QCFE/lego-ui';
 import DepartmentTreeStore from './store';
+import { last } from '@assets/lib/utils';
 
 export const DepartmentNode = observer(({ node, store }: NodeRenderProps<IDepartment>) => {
   const st = store as DepartmentTreeStore;
@@ -12,11 +13,19 @@ export const DepartmentNode = observer(({ node, store }: NodeRenderProps<IDepart
   const isChecked = status === 'checked';
   const isIndeterminate = status === 'indeterminate';
 
+  const getSelectedData = (departments: IDepartment[][]) => {
+    const arr: IDepartment[] = [];
+    departments.forEach((dps) => {
+      arr.push(last<IDepartment>(dps));
+    });
+    return arr;
+  };
+
   const onChange = () => {
-    const prevNodes = st.selectedNodes;
+    const prevData = getSelectedData(st.selectedDataPaths);
     st.toggleCheck(node.id);
-    const currentNodes = st.selectedNodes;
-    st.onChange(prevNodes, currentNodes);
+    const currentData = getSelectedData(st.selectedDataPaths);
+    st.onChange(prevData, currentData);
   };
 
   return (
@@ -26,14 +35,14 @@ export const DepartmentNode = observer(({ node, store }: NodeRenderProps<IDepart
     >
       <div className="flex items-center">
         <div className="ml-2">
+          <Checkbox
+            checked={isChecked}
+            indeterminate={isIndeterminate}
+            onChange={onChange}
+          />
           {node.name}
         </div>
       </div>
-      <Checkbox
-        checked={isChecked}
-        indeterminate={isIndeterminate}
-        onChange={onChange}
-      />
     </div>
   );
 });

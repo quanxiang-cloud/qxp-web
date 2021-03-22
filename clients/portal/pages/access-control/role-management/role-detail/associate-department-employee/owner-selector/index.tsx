@@ -35,30 +35,29 @@ export const OwnerSelector = observer(({ defaultEmployees = [], refs }: IOwnerSe
   );
 
   const onDepartmentTreeChange = (prevNodes: IDepartment[], currentNodes: IDepartment[]) => {
-    console.log(prevNodes.map((i) => toJS(i)), currentNodes.map((i) => toJS(i)));
-
     setStore((store) => {
       if (!store) {
-        return;
+        return store;
       }
-      if (currentNodes.length > prevNodes.length) {
-        currentNodes.filter((node) => !prevNodes.find((n) => n.id === node.id)).forEach((node) => {
-          store.addOwner({
-            type: 2,
-            ownerID: node.id,
-            ownerName: node.departmentName,
-            phone: '',
-            email: '',
-            departmentName: store.departmentTreeStore.getNodeParents(node.id)[0]?.name,
-            createdAt: -1,
-            id: node.id,
-          });
+      const add: IOwner[] = [];
+      const remove: string[] = [];
+      currentNodes.filter((node) => !prevNodes.find((n) => n.id === node.id)).forEach((node) => {
+        add.push({
+          type: 2,
+          ownerID: node.id,
+          ownerName: node.departmentName,
+          phone: '',
+          email: '',
+          departmentName: store.departmentTreeStore.getNodeParents(node.id)[0]?.name,
+          createdAt: -1,
+          id: node.id,
         });
-      } else if (currentNodes.length < prevNodes.length) {
-        prevNodes.filter((node) => !currentNodes.find((n) => n.id === node.id)).forEach((node) => {
-          store.removeOwner(node.id);
-        });
-      }
+      });
+      prevNodes.filter((node) => !currentNodes.find((n) => n.id === node.id)).forEach((node) => {
+        remove.push(node.id);
+      });
+      add.length && store.addOwners(add);
+      remove.length && store.removeOwners(remove);
       return store;
     });
   };

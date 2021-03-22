@@ -266,3 +266,7 @@ export function departmentToTreeNode(department: IDepartment): TreeNode<IDepartm
     children: children,
   };
 }
+
+export const last = <T>(arg: T[]) => {
+  return arg[arg.length - 1];
+};
