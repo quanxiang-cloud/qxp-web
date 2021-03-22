@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Icon, Field, Control, Label, Form, Input } from '@QCFE/lego-ui';
 import { twCascade } from '@mariusmarais/tailwind-cascade';
 
@@ -31,13 +31,21 @@ function TreePicker<T extends { id: string; }>({
   const [open, setOpen] = useState<boolean>(isOpen);
   const [store, setStore] = useState<Store<T>>();
   const [value, setValue] = useState<string>(defaultValue);
-
-  console.log(treeData, value, defaultValue);
+  const isFirstLoadRef = useRef<boolean>(true);
 
   useEffect(() => {
-    setValue(defaultValue);
-    store?.onSelectNode(defaultValue);
-  }, [defaultValue]);
+    if (!store || !defaultValue) {
+      return;
+    }
+    const node = store.nodeList.find((node) => node.id === defaultValue);
+    if (node) {
+      const path = [...store.getNodeParents(node.id).map(({ data }) => data), node.data];
+      setPath(path);
+      setValue(node.id);
+      store.onSelectNode(node.id);
+      onChange && onChange(node.id, path);
+    }
+  }, [defaultValue, store]);
 
   useEffect(() => {
     setOpen(isOpen);
@@ -53,7 +61,8 @@ function TreePicker<T extends { id: string; }>({
     return <Loading desc="加载中..." />;
   }
 
-  const text = path.reverse().map((p) => (p as any)[labelKey]).join(' > ');
+  const text = path.map((p) => (p as any)[labelKey]).join(' > ');
+
 
   return (
     <div className="flex flex-col items-center w-full">
@@ -105,7 +114,11 @@ function TreePicker<T extends { id: string; }>({
           })
         }
         onSelect={(node) => {
-          const path = [node, ...store.getNodeParents(node.id).map(({ data }) => data)];
+          if (isFirstLoadRef.current) {
+            isFirstLoadRef.current = false;
+            return;
+          }
+          const path = [...store.getNodeParents(node.id).map(({ data }) => data), node];
           setPath(path);
           setValue(node.id);
           onChange && onChange(node.id, path);

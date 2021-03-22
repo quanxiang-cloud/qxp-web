@@ -16,7 +16,6 @@ import EmployeeStore from './employee-table/store';
 import DepartmentTreeStore from './department-select-tree/store';
 import OwnerStore from './store';
 import { Loading } from '@portal/components/loading2';
-import { toJS } from 'mobx';
 
 export interface IOwnerSelector {
   defaultEmployees?: IOwner[];
@@ -74,7 +73,7 @@ export const OwnerSelector = observer(({ defaultEmployees = [], refs }: IOwnerSe
   }, [department, defaultEmployees]);
 
   refs.current = () => {
-    return [];
+    return store?.owners || [];
   };
 
   if (!store || isLoading || isError) {

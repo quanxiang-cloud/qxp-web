@@ -90,7 +90,7 @@ export const Menu = ({ menus, visible, toggle }: IMenus) => {
           <List
             className="flex-col mt-10-dot-4"
             itemClassName={classnames(
-              'pb-dot-8 transform transition-all duration-200',
+              'pb-8 transform transition-all duration-200',
               useCss({
                 '&:hover .next': {
                   width: '1.6rem',
@@ -125,7 +125,8 @@ export const Menu = ({ menus, visible, toggle }: IMenus) => {
                   itemRender={
                     <div
                       className={classnames(
-                        'p-dot-3-6 rounded-lg rounded-tr-none leading-4 w-4-dot-8 h-4-dot-8 flex-initial',
+                        'p-dot-3-6 rounded-lg rounded-tr-none leading-4 w-4-dot-8',
+                        'h-4-dot-8 flex-initial',
                         iconClassName,
                       )}
                     >

@@ -224,7 +224,9 @@ export const AssociateDepartmentEmployee = ({ id, isSuper }: IAssociateDepartmen
           pageSize={pagination.pageSize}
           total={pagination.total}
           current={pagination.current}
-          prefix={<span className="text-1-dot-2 text-dark-four">{`共 ${pagination.total} 个员工`}</span>}
+          prefix={
+            <span className="text-1-dot-2 text-dark-four">{`共 ${pagination.total} 个员工`}</span>
+          }
           onShowSizeChange={(pageSize) => setPagination((p) => ({ ...p, pageSize }))}
           onChange={(current) => setPagination((p) => ({ ...p, current }))}
         />
