@@ -125,7 +125,7 @@ export const PersonInfo = React.memo(({
         Message.error('操作失败！');
       }
       setSelectedRows([]);
-      setResetModal(false);
+      setVisibleFile(false);
     },
   });
 
@@ -301,7 +301,7 @@ export const PersonInfo = React.memo(({
                 <div className="w-4 h-4 bg-white rounded-lg flex items-center
                 justify-center absolute bottom-dot-5 right-dot-5">
                   {record.useStatus === 1 && (
-                    <div className="w-dot-6 h-dot-6 bg-green-first rounded-dot-6"></div>
+                    <div className="w-dot-6 h-dot-6 bg-green-600 rounded-dot-6"></div>
                   )}
                   {record.useStatus === -2 && (
                     <div className="w-dot-6 h-dot-6 bg-red-600 rounded-dot-6"></div>
@@ -311,7 +311,7 @@ export const PersonInfo = React.memo(({
             </div>
 
             {record.useStatus === -2 ?
-              <span className="mr-dot-1 text-dark-four">{text}</span> :
+              <span className="mr-dot-1 text-gray-400">{text}</span> :
               <span className="mr-dot-1">{text}</span>}
             {record.isDEPLeader === 1 && (
               <span
@@ -333,7 +333,7 @@ export const PersonInfo = React.memo(({
       width: 130,
       render: (text: string, record: IUserInfo) => {
         return (record.useStatus === -2 ?
-          <span className="mr-dot-1 text-dark-four">{text}</span>:
+          <span className="mr-dot-1 text-gray-400">{text}</span>:
           <span className="mr-dot-1">{text}</span>);
       },
     },
@@ -343,7 +343,7 @@ export const PersonInfo = React.memo(({
       // width: 150,
       render: (text: string, record: IUserInfo) => {
         return (record.useStatus === -2 ?
-          <span className="mr-dot-1 text-dark-four">{text}</span>:
+          <span className="mr-dot-1 text-gray-400">{text}</span>:
           <span className="mr-dot-1">{text}</span>
         );
       },
@@ -354,7 +354,7 @@ export const PersonInfo = React.memo(({
       render: (text: string, record: IUserInfo) => {
         return (
           record.useStatus === -2 ?
-            <span className="mr-dot-1 text-dark-four">
+            <span className="mr-dot-1 text-gray-400">
               {record.dep && record.dep.departmentName}
             </span>:
             <span className="mr-dot-1 ">{record.dep && record.dep.departmentName}</span>
@@ -562,7 +562,7 @@ export const PersonInfo = React.memo(({
             </>
           )}
         </div>
-        <div className="w-full mt-dot-8 flex-column overflow-y-a flex-1 px-4">
+        <div className="w-full mt-dot-8 flex-column flex-1 px-4">
           <div className="qxp-table flex w-full">
             <Table
               className="text-1-dot-4 table-full"

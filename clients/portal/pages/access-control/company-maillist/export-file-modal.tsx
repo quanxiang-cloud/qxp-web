@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { useMutation } from 'react-query';
-// import XLSX from 'xlsx';
 import classnames from 'classnames';
-import { Modal, CheckboxGroup, Checkbox, GridTable, Upload, Icon, Message } from '@QCFE/lego-ui';
+import { Modal, CheckboxGroup, Checkbox, Table, Upload, Icon, Message } from '@QCFE/lego-ui';
 
 import { Button } from '@portal/components/button';
 import { getUserTemplate, importTempFile } from './api';
@@ -158,7 +157,6 @@ export const ExportFileModal = ({
     exportCourseExcel(columns, failUsers, '失败人员列表.xlsx');
   };
 
-  //
   // 导出课程Excel表格数据
   const exportCourseExcel = (headers: Column[], data: any[], fileName: string) => {
     const _headers = headers
@@ -192,20 +190,14 @@ export const ExportFileModal = ({
           ),
         ),
       )
-    // 对刚才的结果进行降维处理（二维数组变成一维数组）
       .reduce((prev: any, next: any) => prev.concat(next))
-    // 转换成 worksheet 需要的结构
       .reduce(
         (prev: any, next: any) => Object.assign({}, prev, { [next.position]: { v: next.content } }),
         {},
       );
-    // 合并 headers 和 data
     const output = Object.assign({}, _headers, _data);
-    // 获取所有单元格的位置
     const outputPos = Object.keys(output);
-    // 计算出范围 ,["A1",..., "H2"]
     const ref = `${outputPos[0]}:${outputPos[outputPos.length - 1]}`;
-    // 构建 workbook 对象
     const wb = {
       SheetNames: ['mySheet'],
       Sheets: {
@@ -215,7 +207,6 @@ export const ExportFileModal = ({
         }),
       },
     };
-    // 导出 Excel
     import('xlsx').then(({ default: XLSX }) => {
       XLSX.writeFile(wb, fileName);
     });
@@ -234,7 +225,25 @@ export const ExportFileModal = ({
   };
 
   const okSendModal = () => {
+    setUploadStatus({
+      status: 0,
+      successTotal: 0,
+      failTotal: 0,
+    });
+    setFileList([]);
+    setBtnStatus(0);
     okModal(successUsersId, checkWay);
+  };
+
+  const closeBefore = () => {
+    setUploadStatus({
+      status: 0,
+      successTotal: 0,
+      failTotal: 0,
+    });
+    setFileList([]);
+    setBtnStatus(0);
+    closeModal();
   };
 
   return (
@@ -243,11 +252,11 @@ export const ExportFileModal = ({
         title="excel 批量导入成员"
         visible={visible}
         className="static-modal"
-        onCancel={closeModal}
+        onCancel={closeBefore}
         footer={
           uploadStatus.status !== 3 ? (
             <div className="flex items-center">
-              <Button icon={<Icon name="close" className="mr-dot-4" />} onClick={closeModal}>
+              <Button icon={<Icon name="close" className="mr-dot-4" />} onClick={closeBefore}>
                 取消
               </Button>
               <div className="px-2"></div>
@@ -384,11 +393,13 @@ export const ExportFileModal = ({
             <div>
               <div className="py-dot-4 flex items-center">
                 <p className="text-gray-600 font-semibold">失败原因：</p>
-                <span onClick={downFailData} className="text-375FF3', 'cursor-pointer">
+                <span onClick={downFailData} className="text-blue-600 cursor-pointer">
                   下载失败列表
                 </span>
               </div>
-              <GridTable rowKey="phone" dataSource={failUsers} columns={columns} />
+              <div className="qxp-table flex w-full">
+                <Table rowKey="phone" dataSource={failUsers} columns={columns} />
+              </div>
             </div>
           )}
         </div>

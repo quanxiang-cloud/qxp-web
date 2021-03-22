@@ -1,5 +1,3 @@
-// import XLSX from 'xlsx';
-
 type Column = {
   title: string;
   key: string;
@@ -56,20 +54,14 @@ export const exportDepExcel = (headers: Column[], data: any[], fileName: string)
         ),
       ),
     )
-  // 对刚才的结果进行降维处理（二维数组变成一维数组）
     .reduce((prev: any, next: any) => prev.concat(next))
-  // 转换成 worksheet 需要的结构
     .reduce(
       (prev: any, next: any) => Object.assign({}, prev, { [next.position]: { v: next.content } }),
       {},
     );
-  // 合并 headers 和 data
   const output = Object.assign({}, _headers, _data);
-  // 获取所有单元格的位置
   const outputPos = Object.keys(output);
-  // 计算出范围 ,["A1",..., "H2"]
   const ref = `${outputPos[0]}:${outputPos[outputPos.length - 1]}`;
-  // 构建 workbook 对象
   const wb = {
     SheetNames: ['mySheet'],
     Sheets: {
@@ -79,8 +71,6 @@ export const exportDepExcel = (headers: Column[], data: any[], fileName: string)
       }),
     },
   };
-  // 导出 Excel
-  // XLSX.writeFile(wb, fileName);
   import('xlsx').then(({ default: XLSX }) => {
     XLSX.writeFile(wb, fileName);
   });

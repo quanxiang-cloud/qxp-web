@@ -98,7 +98,7 @@ export const AlterRoleFunc = ({ funcs: functions, tag, lastSaveTime, id }: IAlte
             <Card
               style={{ backgroundColor: '#fff' }}
               key={func.funcTag}
-              headerClassName="py-1-dot-6 px-8 border-b border-blue-third"
+              headerClassName="py-1-dot-6 px-8 border-b border-gray-200"
               title={
                 <Checkbox
                   disabled
@@ -118,7 +118,8 @@ export const AlterRoleFunc = ({ funcs: functions, tag, lastSaveTime, id }: IAlte
               //       : ''}
               //   </span>
               // }
-              headerActionClassName="no-underline text-dark-four text-1-dot-2 leading-4 cursor-pointer"
+              headerActionClassName="no-underline text-gray-400
+              text-1-dot-2 leading-4 cursor-pointer"
               content={<>{renderFuncCard(func.child)}</>}
               contentClassName="pt-1-dot-6 px-8 flex justify-start whitespace-nowrap flex-wrap"
             />
@@ -164,12 +165,12 @@ export const AlterRoleFunc = ({ funcs: functions, tag, lastSaveTime, id }: IAlte
         {/* {!isSuper && (
           <div className="flex flex-row items-center justify-between">
             {!!lastSaveTime && (
-              <span className="text-1-dot-2 text-dark-four mr-8">
+              <span className="text-1-dot-2 text-gray-400 mr-8">
                 最近保存时间：{getSaveTime(lastSaveTime)}
               </span>
             )}
             <Button
-              className="bg-dark-third hover:bg-gray-900 transition"
+              className="bg-gray-700 hover:bg-gray-900 transition"
               textClassName="text-white ml-2"
               icon={<img src="/dist/images/save.svg" />}
               onClick={saveRoleFunctions}

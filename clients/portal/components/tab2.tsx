@@ -36,11 +36,11 @@ export const Tab = ({
               key={item.id}
               className={twCascade(
                 'whitespace-nowrap rounded-dot4 rounded-br-none rounded-bl-none py-2',
-                'px-1-dot-6 cursor-pointer text-1-dot-4 hover:bg-blue-light',
-                'hover:text-blue-primary transition duration-300',
+                'px-1-dot-6 cursor-pointer text-1-dot-4 hover:bg-blue-100',
+                'hover:text-blue-600 transition duration-300',
                 {
-                  'bg-blue-light': active,
-                  'text-blue-primary': active,
+                  'bg-blue-100': active,
+                  'text-blue-600': active,
                   'font-bold': active,
                 },
                 contentClassName,
@@ -56,7 +56,7 @@ export const Tab = ({
         })}
       </header>
       <div
-        className="w-full bg-blue-light px-8 py-1-dot-6 overflow-hidden"
+        className="w-full bg-blue-100 px-8 py-1-dot-6 overflow-hidden"
         style={{
           height: 'calc(100% - 34px)',
         }}

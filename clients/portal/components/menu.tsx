@@ -93,12 +93,12 @@ export const Menu = ({ menus, visible, toggle }: IMenus) => {
               'pb-dot-8 transform transition-all duration-200',
               useCss({
                 '&:hover .next': {
-                  width: '1.6rem',
-                  height: '1.6rem',
+                  width: '3.2rem',
+                  height: '3.2rem',
                 },
                 '.next': {
-                  width: '1.2rem',
-                  height: '1.2rem',
+                  width: '2.4rem',
+                  height: '2.4rem',
                 },
                 '&:hover > div': {
                   'box-shadow': '0px 8px 24px 4px rgba(148, 163, 184, 0.25)',

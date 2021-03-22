@@ -23,9 +23,11 @@ export const Header = ({ onMenuToggle, getSetter }: IHeader) => {
           <span className="ml-dot-3-5">平台管理</span>
         </div>
         <div className="cursor-pointer">
-          <Link to="/" className="flex justify-between items-center mr-2-dot-8">
+          <Link to="/" className="flex justify-between items-center mr-2-dot-8 px-dot-8 py-dot-6
+            hover-gong
+          ">
             <img className="w-8 h-8 mr-dot-4" src="/dist/images/work-space.svg" />
-            <span className="text-dark-second">工作台</span>
+            <span className="text-gray-600">工作台</span>
           </Link>
         </div>
       </div>

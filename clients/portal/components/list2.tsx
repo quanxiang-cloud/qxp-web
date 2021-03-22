@@ -42,7 +42,7 @@ export const List = <T extends unknown>({
               }}
               className={twCascade(
                 'w-full h-3-dot-6 px-1-dot-6 flex items-center',
-                'cursor-pointer hover:blue-light transition',
+                'cursor-pointer hover:blue-100 transition',
                 itemClassName,
               )}
             >

@@ -19,7 +19,7 @@ export const SizeSelect = ({
 
   return (
     <div className="flex items-center">
-      <span className="text-1-dot-2 mr-dot-3 text-dark-second">每页</span>
+      <span className="text-1-dot-2 mr-dot-3 text-gray-600">每页</span>
       <div className="w-16">
         <Select
           className="qxp-single-select"
