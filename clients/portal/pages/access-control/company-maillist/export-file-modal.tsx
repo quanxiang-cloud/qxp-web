@@ -83,7 +83,7 @@ export const ExportFileModal = ({
           });
         }
       } else {
-        Message.error('操作失败！');
+        Message.error(res?.msg ||'操作失败！');
       }
     },
   });
@@ -333,6 +333,7 @@ export const ExportFileModal = ({
                   style={{ width: '100%' }}
                   disabled={fileList.length === 0 ? false : true}
                   beforeUpload={beforeUpload}
+                  accept=".csv, .xlsx, .xls"
                 >
                   <div
                     className={classnames(
