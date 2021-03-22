@@ -20,7 +20,6 @@ export const SelectCheckbox = () => {
         name="states"
         defaultValue={[3]}
         // onChange={(value, name) => {
-        //   console.log({ value, name });
         // }}
       >
         <Checkbox value={1}>Windows</Checkbox>

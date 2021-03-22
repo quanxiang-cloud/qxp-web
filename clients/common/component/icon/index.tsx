@@ -18,7 +18,6 @@ export const SvgIcon = ({ name, ...props }: Iicon) => {
     width: props.size ? `${props.size - 1}px` : undefined,
     height: props.size ? `${props.size - 1}px` : undefined,
   };
-  console.log(`#${name}`);
   return (
     <svg
       {...props}
