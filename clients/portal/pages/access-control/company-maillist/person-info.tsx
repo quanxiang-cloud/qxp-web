@@ -354,7 +354,9 @@ export const PersonInfo = React.memo(({
       render: (text: string, record: IUserInfo) => {
         return (
           record.useStatus === -2 ?
-            <span className="mr-dot-1 text-dark-four">{record.dep && record.dep.departmentName}</span>:
+            <span className="mr-dot-1 text-dark-four">
+              {record.dep && record.dep.departmentName}
+            </span>:
             <span className="mr-dot-1 ">{record.dep && record.dep.departmentName}</span>
         );
       }
@@ -367,7 +369,12 @@ export const PersonInfo = React.memo(({
       render: (text: any, record?: IUserInfo) => {
         return (
           <More<IUserInfo>
-            items={actions(record && record.useStatus, record && record.isDEPLeader)}
+            items={
+              actions(
+                (record && record.useStatus) as UserStatus,
+                (record && record.isDEPLeader) as unknown as number,
+              )
+            }
             params={record}
             contentClassName="mr-8"
           >
@@ -539,7 +546,9 @@ export const PersonInfo = React.memo(({
               </Button2>
               <Button2
                 icon="add"
-                onClick={() => handleUserInfo({ id: '', userName: '' }, 'add')}
+                onClick={() => handleUserInfo({
+                  id: '', userName: '', phone: '', email: '',
+                }, 'add')}
                 className="mr-16px"
               >
                 添加员工
