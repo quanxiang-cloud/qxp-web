@@ -35,7 +35,6 @@ export const ResetPasswordModal = (props: ResetPasswordModalProps) => {
       way.includes('email') && (checkedWay.sendEmail = 1);
       way.includes('phone') && (checkedWay.sendPhone = 1);
     }
-    console.log(checkedWay);
     okModal(checkedWay);
   };
 

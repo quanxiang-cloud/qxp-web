@@ -128,7 +128,6 @@ export const PersonInfo = React.memo(({
 
   const resetMutation = useMutation(resetUserPWD, {
     onSuccess: (data) => {
-      console.log(data);
       if (data && data.code === 0) {
         Message.success('操作成功！');
       } else {
@@ -281,7 +280,6 @@ export const PersonInfo = React.memo(({
   };
 
   const handleChange = (current: number) => {
-    console.log({ ...pageParams, page: current });
     setPageParams({ ...pageParams, page: current });
   };
 
@@ -452,14 +450,12 @@ export const PersonInfo = React.memo(({
       page: 0,
       limit: 0,
     }).then((res) => {
-      console.log(res);
       if (res && res.data) {
         const { data } = res;
         const newData = data.map((user) => {
           user.depName = user.dep && user.dep.departmentName;
           return user;
         });
-        console.log(newData);
         exportDepExcel(excelHeader, newData, '人员列表.xlsx');
       } else {
         Message.error('获取人员出错');
