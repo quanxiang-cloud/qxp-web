@@ -22,13 +22,30 @@ export default function EditDepartment({ department, closeModal }: DepartmentMod
 
   const title = department.id ? '修改部门' : '添加部门';
   const submitBtnText = department.id ? '确认修改' : '确认添加';
-  const { data: depData, isLoading } = useQuery('getERPTree', getERPTree, {
+  let { data: depData, isLoading } = useQuery('getERPTree', getERPTree, {
     refetchOnWindowFocus: false,
   });
+
 
   if (isLoading || !depData) {
     return <Loading desc="加载中..." />;
   }
+
+  if (depData && (depData.id === department.id)) {
+    depData = undefined;
+  }
+
+  const removeSelf = (dep: IDepartment | undefined): IDepartment | undefined => {
+    if (!dep || dep.id === department.id) {
+      return;
+    }
+    return {
+      ...dep,
+      child: dep.child?.map((dp) => removeSelf(dp)).filter(Boolean) as IDepartment[],
+    };
+  };
+
+  depData = removeSelf(depData);
 
   const okModalHandle = () => {
     if (!formRef.current?.validateForm()) {
@@ -42,7 +59,7 @@ export default function EditDepartment({ department, closeModal }: DepartmentMod
       params.id = department?.id;
     }
 
-    if (!params.pid) {
+    if (!params.pid && !department.id) {
       Message.error('请选择父级部门');
       return;
     }
@@ -96,12 +113,14 @@ export default function EditDepartment({ department, closeModal }: DepartmentMod
             },
           ]}
         />
-        <DepartmentPicker
-          label="所属部门"
-          treeData={departmentToTreeNode(depData as IDepartment)}
-          labelKey="departmentName"
-          name="pid"
-        />
+        {depData && (
+          <DepartmentPicker
+            label="所属部门"
+            treeData={departmentToTreeNode(depData as IDepartment)}
+            labelKey="departmentName"
+            name="pid"
+          />
+        )}
       </Form>
     </Modal>
   );

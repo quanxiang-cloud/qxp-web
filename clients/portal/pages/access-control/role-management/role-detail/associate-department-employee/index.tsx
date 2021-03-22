@@ -206,6 +206,7 @@ export const AssociateDepartmentEmployee = ({ id, isSuper }: IAssociateDepartmen
                     ]}
                     params={record}
                     className="flex items-center justify-center"
+                    contentClassName="w-48"
                   />
                 );
               },

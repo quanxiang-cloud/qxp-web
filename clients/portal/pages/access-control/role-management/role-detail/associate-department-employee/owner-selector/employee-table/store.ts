@@ -4,6 +4,8 @@ import { observable, action } from 'mobx';
 class EmployeeStore {
   @observable
   selectedKeys: string[]
+
+  @observable
   pagination: {
     current: number;
     total: number;
