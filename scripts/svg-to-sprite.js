@@ -14,7 +14,7 @@ function getFileContent(filePath) {
 function getFileNames() {
   return new Promise((resolve, reject) => {
     glob(
-      path.join(__dirname, '../clients/common/components/icon/svgs/*.svg'),
+      path.join(__dirname, '../clients/common/component/icon/svgs/*.svg'),
       (err, files) => {
         if (err) {
           reject(err);
@@ -29,7 +29,7 @@ function getFileNames() {
 
 function getIconNames() {
   return getFileContent(
-    path.join(__dirname, '../clients/common/components/icon/names.ts')
+    path.join(__dirname, '../clients/common/component/icon/names.ts')
   ).then((data) => {
     // const names = data
     //   .substring(data.indexOf('[') + 2, data.indexOf(']') - 1)
