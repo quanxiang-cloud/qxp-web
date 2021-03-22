@@ -65,9 +65,14 @@ export const PersonInfo = React.memo(({
   const staffMutation = useMutation(
     userModalStatus === 'add' ? addDepUser : updateUser,
     {
-      onSuccess: () => {
+      onSuccess: (data) => {
+        if (data && data.code === 0) {
+          Message.success('操作成功');
+          refetch();
+        } else {
+          Message.error('操作失败');
+        }
         setVisibleStaff(false);
-        refetch();
       },
     }
   );

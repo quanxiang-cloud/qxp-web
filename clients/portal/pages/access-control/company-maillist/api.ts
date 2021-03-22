@@ -194,7 +194,7 @@ export const addDepUser = (values: FormValues | EditFormValues) => {
     {
       'Content-Type': 'application/json',
     }
-  ).then(({ data }) => data);
+  );
 };
 
 /**
@@ -207,7 +207,7 @@ export const updateUser = (values: FormValues | EditFormValues) => {
     {
       'Content-Type': 'application/json',
     }
-  ).then(({ data }) => data);
+  );
 };
 
 /**
