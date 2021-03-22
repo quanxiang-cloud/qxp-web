@@ -84,7 +84,7 @@ export const AlterRoleFunc = ({ funcs: functions, tag, lastSaveTime, id }: IAlte
               <Checkbox
                 disabled
                 checked={func.has}
-                className="mr-14 flex flex-row items-center pb-dot-8"
+                className="mr-14 flex flex-row items-center pb-1-dot-6"
                 key={func.funcTag}
                 value={func.funcTag}
                 onChange={updateFuncs(func.funcTag)}

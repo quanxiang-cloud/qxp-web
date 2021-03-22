@@ -1,5 +1,6 @@
 import * as React from 'react';
 import classnames from 'classnames';
+import { twCascade } from '@mariusmarais/tailwind-cascade';
 
 import { Icon } from '@QCFE/lego-ui';
 import Popper from '@portal/components/popper';
@@ -258,7 +259,7 @@ export default class Select<T extends React.Key> extends React.Component<SelectP
             <div
               ref={this.reference}
               style={style}
-              className={classnames('select-trigger', className, {
+              className={twCascade('select-trigger flex items-center', className, {
                 'select-trigger--active': triggerActive && !disabled,
                 'select-trigger--disabled': disabled,
               })}

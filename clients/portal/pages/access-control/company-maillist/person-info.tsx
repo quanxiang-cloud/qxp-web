@@ -102,6 +102,16 @@ export const PersonInfo = React.memo(({
     }
   );
 
+  useEffect(() => {
+    setPageParams({
+      page: 1,
+      limit: 10,
+      total: 10,
+      userName: '',
+    });
+    setSelectedRows([]);
+  }, [departmentId]);
+
   const handleMutation = useMutation(updateUserStatus, {
     onSuccess: () => {
       setHandleModal(false);
@@ -271,12 +281,14 @@ export const PersonInfo = React.memo(({
   };
 
   const handleChange = (current: number) => {
+    console.log({ ...pageParams, page: current });
     setPageParams({ ...pageParams, page: current });
   };
 
   const handleShowSizeChange = (limit: number) => {
     setPageParams({
       ...pageParams,
+      page: 1,
       limit,
     });
   };
@@ -564,26 +576,31 @@ export const PersonInfo = React.memo(({
         </div>
         <div className="w-full mt-dot-8 flex-column flex-1 px-4 overflow-auto">
           <div className="qxp-table flex w-full">
-            <Table
-              className="text-1-dot-4 table-full"
-              dataSource={personList?.data || []}
-              columns={columns}
-              rowKey="id"
-              rowSelection={rowSelection}
-              emptyText={<EmptyData text="无成员数据" className="py-10" />}
-              loading={isLoading}
-            />
+            {
+              personList?.data && <Table
+                className="text-1-dot-4 table-full"
+                dataSource={personList?.data || []}
+                columns={columns}
+                rowKey="id"
+                rowSelection={rowSelection || []}
+                emptyText={<EmptyData text="无成员数据" className="py-10" />}
+                loading={isLoading}
+              />
+            }
+
           </div>
           <div className="flex justify-end">
-            <Pagination
-              type="simple"
-              current={pageParams.page}
-              total={personList?.total || 0}
-              pageSize={pageParams.limit}
-              pageSizeOptions={pageSizeOptions}
-              onChange={handleChange}
-              onShowSizeChange={handleShowSizeChange}
-            />
+            {
+              personList?.data && <Pagination
+                type="simple"
+                current={pageParams.page}
+                total={personList?.total || 0}
+                pageSize={pageParams.limit}
+                pageSizeOptions={pageSizeOptions}
+                onChange={handleChange}
+                onShowSizeChange={handleShowSizeChange}
+              />
+            }
           </div>
         </div>
       </div>
