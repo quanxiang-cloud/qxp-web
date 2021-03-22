@@ -106,7 +106,7 @@ function TreePicker<T extends { id: string; }>({
         NodeRender={NodeRender}
         RootNodeRender={NodeRender}
         className={
-          twCascade('transition-all border border-blue-1000 border-t-0 overflow-scroll mb-10', {
+          twCascade('transition-all border border-blue-1000 border-t-0 mb-10', {
             'h-0': !open,
             'h-96': open,
             invisible: !open,

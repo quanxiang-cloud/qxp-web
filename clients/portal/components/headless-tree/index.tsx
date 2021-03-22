@@ -174,7 +174,7 @@ export default class Tree<T> extends React.Component<Props<T>> {
             );
           })
         }
-        <div className="tree__scroll" style={{ height: `${scrollHeight + 72}px` }}/>
+        <div className="tree__scroll" style={{ height: `${scrollHeight + 15}px` }}/>
       </div>
     );
   }
