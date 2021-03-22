@@ -1,4 +1,4 @@
-import XLSX from 'xlsx';
+// import XLSX from 'xlsx';
 
 type Column = {
   title: string;
@@ -80,7 +80,10 @@ export const exportDepExcel = (headers: Column[], data: any[], fileName: string)
     },
   };
   // 导出 Excel
-  XLSX.writeFile(wb, fileName);
+  // XLSX.writeFile(wb, fileName);
+  import('xlsx').then(({ default: XLSX }) => {
+    XLSX.writeFile(wb, fileName);
+  });
 };
 
 const imgBgColors: string[] = ['#6366F1', '#F59E0B', '#10B981', '#F97316',
