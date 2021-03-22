@@ -29,7 +29,7 @@ export const RoleDetail = ({ role, id }: IRoleDetail) => {
     <div>
       <ItemWithTitleDesc
         itemRender={
-          <div className="font-bold text-1-dot-6 text-0F172A flex justify-between items-center">
+          <div className="font-bold text-1-dot-6 text-gray-900 flex justify-between items-center">
             {role?.name}
           </div>
         }
@@ -38,7 +38,7 @@ export const RoleDetail = ({ role, id }: IRoleDetail) => {
             '平台默认的角色，默认具有企业所有功能权限和全部数据可见范围。' :
             '具有企业部分功能权限和部分数据可见范围。'
         }
-        descClassName="transition ease-linear text-1-dot-2 text-697886"
+        descClassName="transition ease-linear text-1-dot-2 text-blueGray-400"
       />
       <Tab
         className="mt-4 py-1-dot-6"

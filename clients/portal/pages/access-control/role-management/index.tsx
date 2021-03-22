@@ -30,11 +30,11 @@ export default function RoleManagement() {
     <Card
       className="ml-0 mt-0 mr-0 mb-0 transition-opacity flex flex-col
       flex-1 pt-dot-8 pb-dot-8"
-      headerClassName="bg-F1F5F9-dot-5 -mx-4 -mt-dot-8 px-8 py-dot-8
+      headerClassName="bg-gray-200-dot-5 -mt-dot-8 px-8 py-dot-8
       pt-0 header-background-image h-5-dot-6"
       title="角色管理"
       desc="可以定义平台内的账号拥有的权限。"
-      action={<a className="ease-linear text-1-dot-4 underline text-324558">📌 如何管理角色？</a>}
+      action={<a className="ease-linear text-1-dot-4 underline text-gray-600">📌 如何管理角色？</a>}
     >
       <div className="flex flex-row items-stretch h-full">
         <div className="flex-1 pt-4 pb-4">

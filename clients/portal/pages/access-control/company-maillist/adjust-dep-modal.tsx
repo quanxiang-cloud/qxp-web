@@ -78,7 +78,7 @@ export const AdjustDepModal = (props: IAdjustDepModalProps) => {
     >
       <div>
         <div>
-          <p className="text-475569 text-1-dot-4">已选择员工</p>
+          <p className="text-gray-600 text-1-dot-4">已选择员工</p>
           <ul className="flex items-center">
             {userList.map((user) => {
               return (
@@ -90,7 +90,7 @@ export const AdjustDepModal = (props: IAdjustDepModalProps) => {
           </ul>
         </div>
         <div className="mt-4">
-          <p className="text-475569 text-1-dot-4">选择要调整的部门</p>
+          <p className="text-gray-600 text-1-dot-4">选择要调整的部门</p>
           <Form layout="vertical" ref={formRef}>
             {isLoading ? (
               <Loading />

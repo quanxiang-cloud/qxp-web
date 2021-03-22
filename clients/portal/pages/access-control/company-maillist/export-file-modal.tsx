@@ -274,7 +274,7 @@ export const ExportFileModal = ({
       >
         <div className="w-full text-1-dot-4">
           {uploadStatus.status === 3 && (
-            <div className="text-DC2626 font-semibold flex items-center">
+            <div className="text-red-600 font-semibold flex items-center">
               <Icon
                 size={16}
                 name="information"
@@ -287,7 +287,7 @@ export const ExportFileModal = ({
             </div>
           )}
           {uploadStatus.status === 1 && (
-            <div className="text-16A34A font-semibold">
+            <div className="text-green-600 font-semibold">
               <Icon
                 size={16}
                 name="cloud"
@@ -300,7 +300,7 @@ export const ExportFileModal = ({
             </div>
           )}
           {uploadStatus.status === 2 && (
-            <div className="text-D97706 font-semibold">
+            <div className="text-yellow-600 font-semibold">
               <Icon
                 size={16}
                 name="exclamation"
@@ -316,7 +316,7 @@ export const ExportFileModal = ({
             </div>
           )}
           {uploadStatus.status === 0 && (
-            <div>
+            <div className="text-gray-600">
               <p className="py-dot-4">上传单个 excel 文件</p>
               <div className="w-full">
                 <Upload
@@ -326,7 +326,7 @@ export const ExportFileModal = ({
                 >
                   <div
                     className={classnames(
-                      'w-full h-4-dot-3 border rounded-dot-4 border-dashed border-CBD5E1',
+                      'w-full h-8-dot-6 border rounded-dot-8 border-dashed broder-gray-700',
                       'flex flex-col items-center justify-center hover:border-red-600',
                     )}
                   >
@@ -357,10 +357,10 @@ export const ExportFileModal = ({
                   })}
                 </div>
               </div>
-              <ul>
+              <ul className="text-gray-600">
                 <li>
-                  1. 点击下载{' '}
-                  <span onClick={downTemp} className="text-375FF3 cursor-pointer">
+                  1. 点击下载
+                  <span onClick={downTemp} className="text-blue-600 cursor-pointer">
                     企业通讯录导入模版
                   </span>
                 </li>
@@ -370,7 +370,7 @@ export const ExportFileModal = ({
           )}
           {[1, 2].includes(uploadStatus.status) && (
             <div>
-              <p className="text-475569 font-semibold">接下来选择：</p>
+              <p className="text-gray-600 font-semibold">接下来选择：</p>
               <p className="text-1-dot-4 py-dot-4">向已导入的员工发送随机密码</p>
               <CheckboxGroup name="states" onChange={(value: string[]) => changeCheckbox(value)}>
                 <Checkbox value="email">通过邮箱</Checkbox>
@@ -381,7 +381,7 @@ export const ExportFileModal = ({
           {[2, 3].includes(uploadStatus.status) && (
             <div>
               <div className="py-dot-4 flex items-center">
-                <p className="text-475569 font-semibold">失败原因：</p>
+                <p className="text-gray-600 font-semibold">失败原因：</p>
                 <span onClick={downFailData} className="text-375FF3', 'cursor-pointer">
                   下载失败列表
                 </span>

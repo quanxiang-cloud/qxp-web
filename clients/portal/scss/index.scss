@@ -26,8 +26,8 @@ body {
   height: 3.2rem;
 }
 
-.h-4-dot-3 {
-  height: 4.3rem;
+.h-8-dot-6 {
+  height: 8.6rem;
 }
 
 .h-4-dot-4 {
@@ -204,19 +204,11 @@ body {
   padding-right: 0.4rem;
 }
 
-.bg-E5E5E5 {
-  background-color: #e5e5e5;
-}
-
 .bg-jb {
   background: linear-gradient(180deg, #FDBA74 0%, #FB923C 100%);
 }
 
-.bg-F1F5F9 {
-  background-color: #f1f5f9;
-}
-
-.bg-F1F5F9-dot-5 {
+.bg-gray-200-dot-5 {
   background-color: rgba(241, 245, 249, 0.5);
 }
 
@@ -240,8 +232,8 @@ body {
   border-radius: 0.4rem;
 }
 
-.rounded-dot-4 {
-  border-radius: 0.4rem;
+.rounded-dot-8 {
+  border-radius: 0.8rem;
 }
 
 .rounded-tl-dot-2 {
@@ -311,26 +303,6 @@ body {
 
 .text-1-dot-6 {
   font-size: 1.6rem;
-}
-
-.text-697886 {
-  color: #697886;
-}
-
-.text-375FF3 {
-  color: #375ff3;
-}
-
-.text-DC2626 {
-  color: #dc2626;
-}
-
-.text-16A34A {
-  color: #16a34a;
-}
-
-.text-D97706 {
-  color: #d97706;
 }
 
 .ml-dot-6 {
@@ -470,14 +442,6 @@ body {
   border-radius: 1.2rem;
 }
 
-.border-334155 {
-  border-color: #334155;
-}
-
-.border-CBD5E1 {
-  border-color: #CBD5E1;
-}
-
 .leading-no {
   line-height: 0;
 }
@@ -514,22 +478,6 @@ body {
   line-height: 4.8rem;
 }
 
-.text-475569 {
-  color: #475569;
-}
-
-.text-324558 {
-  color: #324558;
-}
-
-.text-0F172A {
-  color: #0f172a;
-}
-
-.text-697886 {
-  color: #697886;
-}
-
 .p-dot-4 {
   padding: 0.4rem;
 }
@@ -557,18 +505,6 @@ body {
 
 .bg-gradient-blue-to-top-right {
   background-image: linear-gradient(to top right, #b5ccff, rgba(181, 204, 255, 0.4));
-}
-
-.bg-DCDAD7 {
-  background-color: #dcdad7;
-}
-
-.bg-DEE9FF {
-  background-color: #dee9ff;
-}
-
-.bg-F0F6FF {
-  background-color: #f0f6ff;
 }
 
 .bg-5976e01a {
@@ -790,11 +726,6 @@ button {
   .select-menu {
     padding: 0 !important;
   }
-}
-
-// 自定义
-.hover-bg-color:hover {
-  background-color: #F0F6FF;
 }
 
 .select-set {

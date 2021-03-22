@@ -65,7 +65,7 @@ export const Core = ({ current, onChange = identity, maxPage }: ICore) => {
         )}
         <div
           className={twCascade(
-            'h-1-dot-4 px-2 bg-F0F6FF text-375FF3 rounded-l-dot-4 rounded-br-dot-4',
+            'h-1-dot-4 px-2 bg-blue-100 text-375FF3 rounded-l-dot-4 rounded-br-dot-4',
             'rounded-tr-dot-1 font-normal flex justify-center items-center fs12',
           )}
         >

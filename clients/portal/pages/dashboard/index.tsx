@@ -30,7 +30,7 @@ export default function Dashboard() {
           className="ml-0 mt-8 px-1-dot-6 py-4"
           title="我的应用"
           action={
-            <a className="transition ease-linear text-1-dot-4 underline text-324558">前往应用市场</a>
+            <a className="transition ease-linear text-1-dot-4 underline text-gray-600">前往应用市场</a>
           }
           content={
             <List

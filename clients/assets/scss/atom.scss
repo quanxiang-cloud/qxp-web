@@ -1,6 +1,6 @@
 @function px2rem($px) {
   $rem: 37.5px;
-  @return ($px/$rem) + rem;
+  @return ($px/$rem)+rem;
 }
 
 .flex {
@@ -245,7 +245,7 @@
 }
 
 .input-field {
-  > input {
+  >input {
     border: 1px solid #D5DEE7;
     padding: px2rem(4px) px2rem(12px);
     min-height: px2rem(24px);
