@@ -61,12 +61,11 @@ function getSVGFiles() {
   );
 }
 
-//往固定的行写入数据
 function writeSvgTmpToLayout(value) {
   let basePath = path.resolve('./');
   let data = fs
     .readFileSync(basePath + '/dist/templates/layout.html', 'utf8')
-    .split(/\r\n|\n|\r/gm); //readFileSync的第一个参数是文件名
+    .split(/\r\n|\n|\r/gm);
   const match = data.find((value) => /^<body>$/.test(value));
   const index = data.indexOf(match);
   if (typeof data.find((val) => /^<svg>/.test(val)) === 'undefined') {
@@ -79,7 +78,6 @@ function writeSvgTmpToLayout(value) {
 }
 
 module.exports = function () {
-  // function build() {
   return getSVGFiles().then((filePaths) => {
     return Promise.all(
       filePaths.map((filePath) => {
@@ -102,5 +100,3 @@ module.exports = function () {
     });
   });
 };
-
-// build();
