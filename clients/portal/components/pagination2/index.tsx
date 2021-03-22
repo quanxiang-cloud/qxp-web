@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { twCascade } from '@mariusmarais/tailwind-cascade';
 
 import { Core } from './pagger';
-import { SizeSelect } from './size-select';
+import Select from './page-select';
 
 interface PaginationProps {
   type?: 'simple' | 'mini';
@@ -37,6 +37,11 @@ export const Pagination = ({
     }
   }, [current, total, pageSize]);
 
+
+  const selectChange = (val: number) => {
+    onShowSizeChange && onShowSizeChange(val);
+  };
+
   return (
     <div
       className={twCascade(
@@ -50,10 +55,9 @@ export const Pagination = ({
         <Core current={current <= maxPage ? current : 1} maxPage={maxPage} onChange={onChange} />
         <div className="w-2-dot-7"></div>
         {type === 'simple' && (<>
-          <SizeSelect
-            pageSize={pageSize}
-            pageSizeOptions={pageSizeOptions}
-            onShowSizeChange={onShowSizeChange}
+          <Select
+            value={pageSize}
+            onChange={selectChange}
           />
         </>
         )}

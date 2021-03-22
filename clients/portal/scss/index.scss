@@ -277,8 +277,17 @@ body {
   border-bottom-right-radius: 0.6rem;
 }
 
+.rounded-r-dot-8 {
+  border-top-right-radius: 0.8rem;
+  border-bottom-right-radius: 0.8rem;
+}
+
 .rounded-bl-dot-6 {
   border-bottom-left-radius: 0.6rem;
+}
+
+.rounded-bl-dot-8 {
+  border-bottom-left-radius: 0.8rem;
 }
 
 .rounded-tr-dot-2 {
@@ -434,10 +443,6 @@ body {
   padding: 1rem;
 }
 
-.h-2-dot-8 {
-  height: 2.8rem;
-}
-
 .border-1-radius-2 {
   border-radius: 1.2rem;
 }
@@ -448,6 +453,10 @@ body {
 
 .leading-2 {
   line-height: 0.5rem;
+}
+
+.leading-2-dot-8 {
+  line-height: 2.8rem;
 }
 
 .leading-5-bot-6 {
