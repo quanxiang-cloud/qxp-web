@@ -21,6 +21,10 @@
   user-select: none;
 }
 
+.btn:hover {
+  border-color: var(--gray-800);
+}
+
 .btn:not(.icon-btn) .icon {
   margin-right: 8px;
 }
@@ -28,6 +32,10 @@
 .btn--primary {
   color: white;
   background-color: var(--gray-700);
+}
+
+.btn--primary:hover {
+  background-color: var(--gray-800);
 }
 
 .icon-btn {
