@@ -50,7 +50,7 @@ export default function Index() {
             <ListMenu defaultType="corporateDirectory" onChange={setMenuType} />
           </div>
         </div>
-        <div className="w-988 bg-white border-1-radius-2 self-stretch flex flex-1">
+        <div className="right-content-container">
           {menuType === 'corporateDirectory' && (<MailList />)}
           {menuType !== 'corporateDirectory' && (<RoleManagement />)}
         </div>
