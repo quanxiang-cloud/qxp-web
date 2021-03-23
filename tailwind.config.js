@@ -30,6 +30,7 @@ module.exports = {
       4: '4px',
       8: '8px',
       12: '12px',
+      none: '0px',
       // todo remove this
       dot4: '0.4rem',
     },

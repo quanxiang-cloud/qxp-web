@@ -113,7 +113,7 @@ export const Menu = ({ menus, visible, toggle }: IMenus) => {
                 }}
                 className={twCascade(
                   'h-32 flex flex-row justify-between items-center bg-white px-4 py-dot-8',
-                  'rounded-2xl cursor-pointer transition-all duration-200',
+                  'rounded-12 cursor-pointer transition-all duration-200',
                 )}
               >
                 <ItemWithTitleDesc
