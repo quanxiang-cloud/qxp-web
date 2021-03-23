@@ -1,4 +1,4 @@
-import React, { MouseEvent } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { observer } from 'mobx-react';
 
 import { TextHeader } from '@portal/components/text-header';
@@ -15,10 +15,20 @@ export interface ISelectedList {
 export const SelectedList = observer(({ className, ownerStore }: ISelectedList) => {
   const users = ownerStore.owners.filter(({ type }) => type === 1);
   const departments = ownerStore.owners.filter(({ type }) => type === 2);
+  const isFirstLoad = useRef<boolean>(true);
+
+  useEffect(() => {
+    if (isFirstLoad.current) {
+      departments.forEach((department) => {
+        ownerStore.departmentTreeStore.toggleCheck(department.ownerID);
+      });
+      isFirstLoad.current = false;
+    }
+  }, [departments]);
 
   const onRemove = (owner: IOwner) => {
     ownerStore.onRemove(owner);
-    ownerStore.departmentTreeStore.toggleCheck(owner.id);
+    ownerStore.departmentTreeStore.toggleCheck(owner.ownerID);
     // const nodeMap = ownerStore.departmentTreeStore.toggleCheck(owner.id, 'unchecked');
     // if (!nodeMap) {
     //   return;
@@ -34,7 +44,7 @@ export const SelectedList = observer(({ className, ownerStore }: ISelectedList) 
     ownerStore.onClear();
     ownerStore.owners.forEach((owner) => {
       // ownerStore.departmentTreeStore.toggleCheck(owner.id, 'unchecked');
-      ownerStore.departmentTreeStore.toggleCheck(owner.id);
+      ownerStore.departmentTreeStore.toggleCheck(owner.ownerID);
     });
   };
 
@@ -66,9 +76,11 @@ export const SelectedList = observer(({ className, ownerStore }: ISelectedList) 
           'text-yellow-600': others.type === 2,
         })}>{ownerName}</span>}
         {departmentName && (
-          <span className="text-gray-400 mr-1">{`${
-            ownerName ? `(${departmentName})` : departmentName
-          }`}</span>
+          <span className={twCascade('text-gray-400 mr-1', {
+            'text-yellow-600': others.type === 2,
+          })}>{`${
+              ownerName ? `(${departmentName})` : departmentName
+            }`}</span>
         )}
         {!ownerName && !departmentName && (
           <span className="text-blue-600 mr-2">{ownerID}</span>

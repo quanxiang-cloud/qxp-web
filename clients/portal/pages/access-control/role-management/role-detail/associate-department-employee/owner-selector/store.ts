@@ -79,7 +79,10 @@ class OwnerStore {
 
   @action
   addOwners = (os: IOwner[]) => {
-    this.owners = [...this.owners, ...os];
+    this.owners = [
+      ...this.owners,
+      ...os.filter((o) => !this.owners.find((owner) => owner.ownerID === o.ownerID)),
+    ];
   }
 
   @action
