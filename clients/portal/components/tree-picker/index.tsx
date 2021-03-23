@@ -69,7 +69,10 @@ function TreePicker<T extends { id: string; }>({
 
 
   return (
-    <div className="flex flex-col items-center w-full">
+    <div
+      className="flex flex-col items-center w-full"
+      ref={domRef}
+    >
       <div
         onClick={(e) => {
           e.stopPropagation();
@@ -77,7 +80,6 @@ function TreePicker<T extends { id: string; }>({
         }}
         className="w-full cursor-pointer"
         title={text}
-        ref={domRef}
       >
         <Field className="flex flex-col">
           <Label>{label}</Label>
