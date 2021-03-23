@@ -100,6 +100,7 @@ func renewToken(r *http.Request, refreshToken string) bool {
 	_, respBuffer, errMsg := contexts.SendRequest(r, "POST", "/api/oauth2c/v1/in/refresh", nil, map[string]interface{}{
 		"Content-Type":  "application/x-www-form-urlencoded",
 		"Refresh-Token": refreshToken,
+		"User-Agent":    r.Header.Get("User-Agent"),
 	})
 
 	if errMsg != "" {
