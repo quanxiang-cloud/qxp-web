@@ -14,6 +14,10 @@ body {
   font-size: 1.4rem;
 }
 
+.-z-1 {
+  z-index: -1;
+}
+
 .bottom-dot-5 {
   bottom: -0.5rem;
 }
@@ -204,6 +208,11 @@ body {
   padding-right: 0.4rem;
 }
 
+.px-dot-6 {
+  padding-left: 0.6rem;
+  padding-right: 0.6rem;
+}
+
 .px-dot-8 {
   padding-left: 0.8rem;
   padding-right: 0.8rem;
@@ -223,6 +232,10 @@ body {
 
 .top-14-dot-4 {
   top: 14.4rem;
+}
+
+.right-5-dot-8 {
+  right: 5.8rem;
 }
 
 .rounded-dot-6 {
