@@ -9,10 +9,10 @@ import (
 
 // ResetPasswordHandler render reset password page
 func ResetPasswordHandler(w http.ResponseWriter, r *http.Request) {
-	// if !IsUserLogin(w, r) {
-	// 	http.Redirect(w, r, "/login/password", http.StatusFound)
-	// 	return
-	// }
+	if !IsUserLogin(r) {
+		http.Redirect(w, r, "/login/password", http.StatusFound)
+		return
+	}
 	redirectURL := r.URL.Query().Get("redirectUrl")
 	renderTemplate(w, "reset-password.html", map[string]interface{}{
 		"redirectUrl": redirectURL,
@@ -43,9 +43,10 @@ func ResetPasswordActionHandler(w http.ResponseWriter, r *http.Request) {
 		})
 		return
 	}
-	respBuffer, errMsg := contexts.SendRequest(r.Context(), "POST", "/api/org/v1/account/reset/user", bytes.NewBuffer(resetPasswordParams), map[string]string{
+	respBuffer, errMsg := contexts.SendRequest(r.Context(), "POST", "/api/nurturing/v1/userResetPWD", bytes.NewBuffer(resetPasswordParams), map[string]string{
 		"Content-Type": "application/json",
 		"User-Agent":   r.Header.Get("User-Agent"),
+		"Access-Token": GetToken(r),
 	})
 	// if ShouldLogin(w, r, resp) {
 	// 	return
