@@ -36,8 +36,6 @@ function getIconNames() {
       .split('\n')
       .slice(1, -2)
       .map((str) => {
-        // let name = str.trim();
-        // name.slice(0, name.length - 3);
         const [name] = /[a-z\_]+/.exec(str);
         return name;
       })
@@ -65,13 +63,10 @@ function writeSvgTmpToLayout(value) {
     .split(/\r\n|\n|\r/gm);
   const match = data.find((value) => /^<body>$/.test(value));
   const index = data.indexOf(match);
-  if (typeof data.find((val) => /^<svg>/.test(val)) === 'undefined') {
-    data.splice(index + 1, 0, value);
-    fs.writeFileSync(
-      basePath + '/dist/templates/layout.html',
-      data.join('\r\n')
-    );
-  }
+  // if (typeof data.find((val) => /^<svg>/.test(val)) === 'undefined') {
+  data.splice(index + 1, 0, value);
+  fs.writeFileSync(basePath + '/dist/templates/layout.html', data.join('\r\n'));
+  // }
 }
 
 module.exports = function () {
@@ -90,9 +85,8 @@ module.exports = function () {
         ({ defs, refs }) => {
           // replace #475569 by currentColor in order to be styled by css
           // todo define #475569 as constant?
-          // const svgStr = defs.replace(/#475569/g, 'currentColor');
-          // const template = `    {{block "svg-sprite" .}}${svgStr}{{end}}`;
-          const template = `    {{block "svg-sprite" .}}${defs}{{end}}`;
+          const svgStr = defs.replace(/#475569/g, 'currentColor');
+          const template = `    {{block "svg-sprite" .}}${svgStr}{{end}}`;
           writeSvgTmpToLayout(template);
         }
       );
