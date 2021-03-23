@@ -13,7 +13,7 @@ export const Header = ({ onMenuToggle, getSetter }: IHeader) => {
   const hamburgerRef = useRef<HTMLDivElement>(null);
 
   return (
-    <div className="mx-auto flex justify-between h-6-dot-4 py-dot-8 px-1-dot-2
+    <div className="mx-auto flex justify-between h-6-dot-4 py-dot-8 px-10
     bg-white text-1-dot-4 global-header">
       <div className="flex justify-between items-center">
         <div
@@ -27,7 +27,7 @@ export const Header = ({ onMenuToggle, getSetter }: IHeader) => {
           <Link to="/" className="flex justify-between items-center mr-2-dot-8 px-dot-8 py-dot-6
             hover-gong
           ">
-            <img className="w-8 h-8 mr-dot-4" src="/dist/images/work-space.svg" />
+            <img className="w-8 h-8 mr-dot-4 mt-1" src="/dist/images/work-space.svg" />
             <span className="text-gray-600">工作台</span>
           </Link>
         </div>

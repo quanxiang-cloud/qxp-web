@@ -11,8 +11,8 @@ export const PersonalSettingMenu = () => {
       items={[
         <div
           key={uuid()}
-          className="cursor-pointer flex items-center h-3-dot-6 px-1-dot-6
-          hover:blue-100 transition justify-center"
+          className="cursor-pointer flex items-center h-3-dot-6 pl-1-dot-6
+          hover:blue-100 transition"
         >
           个人中心
         </div>,
@@ -20,7 +20,7 @@ export const PersonalSettingMenu = () => {
           <button
             type="submit"
             className="cursor-pointer flex items-center h-3-dot-6 px-1-dot-6
-            hover:blue-100 transition w-full justify-center"
+            hover:blue-100 transition w-full"
           >
             登出
           </button>
@@ -30,7 +30,7 @@ export const PersonalSettingMenu = () => {
       contentClassName="w-48"
     >
       <div
-        className="cursor-pointer flex items-center h-3-dot-6 px-1-dot-6
+        className="cursor-pointer flex items-center h-3-dot-6
         hover:blue-100 transition"
       >
         个人设置

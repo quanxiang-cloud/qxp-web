@@ -41,11 +41,11 @@ export const SelectedList = observer(({ className, ownerStore }: ISelectedList) 
   };
 
   const onClear = () => {
-    ownerStore.onClear();
     ownerStore.owners.forEach((owner) => {
       // ownerStore.departmentTreeStore.toggleCheck(owner.id, 'unchecked');
       ownerStore.departmentTreeStore.toggleCheck(owner.ownerID);
     });
+    ownerStore.onClear();
   };
 
   const tagRender = ({ ownerName, departmentName, ownerID, ...others }: IOwner) => {

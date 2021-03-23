@@ -134,6 +134,7 @@ export const AssociateDepartmentEmployee = ({ id, isSuper }: IAssociateDepartmen
       <Modal
         title="角色关联员工与部门"
         onCancel={() => setShowAddModal(false)}
+        className="owner-bind-modal"
         visible={showAddModal}
         footer={
           <div className="flex flex-row justify-between items-center">
