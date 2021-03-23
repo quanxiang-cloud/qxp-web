@@ -76,6 +76,7 @@ export default function MailList() {
               <PersonInfo
                 keyword={lastWord}
                 departmentId={currentDepartment.id}
+                handleClear={handleClear}
                 departmentName={currentDepartment.departmentName}
               />
             )
