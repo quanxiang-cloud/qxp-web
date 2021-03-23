@@ -1,8 +1,6 @@
 @import 'variables';
 @import 'mixin';
-@import 'tree';
-@import 'popper';
-@import 'select';
+@import 'components/index';
 
 @layer components {
   .light-button {
