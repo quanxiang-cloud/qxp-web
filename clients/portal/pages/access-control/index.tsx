@@ -10,7 +10,7 @@ export default function Index() {
   const [menuType, setMenuType] = useState('corporateDirectory');
 
   return (
-    <div className="px-8 flex justify-center items-start">
+    <div className="py-8 px-5-dot-8 flex justify-center items-start">
       <div className="w-31-dot-6 bg-white pb-8 border-1-radius-2 mr-8">
         <div className="access-background-image p-8 opacity-90">
           <ItemWithTitleDesc
