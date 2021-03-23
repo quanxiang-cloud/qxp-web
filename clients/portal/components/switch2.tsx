@@ -14,17 +14,16 @@ interface ISwitch {
 }
 
 export const Switch = ({ ...props }: ISwitch) => {
-
   return (
     <div className={useCss({
       display: 'inline-block',
       'margin-right': '16px',
       'label.radio-button': {
-        width: '60px',
-        height: '32px',
-        padding: '5px 16px',
-        background: '#fff',
-        color: '#475569',
+        'width': '60px',
+        'height': '32px',
+        'padding': '5px 16px',
+        'background': '#fff',
+        'color': '#475569',
         'font-size': '14px',
         'line-height': '22px',
         'border-color': '#CBD5E1',
@@ -32,7 +31,7 @@ export const Switch = ({ ...props }: ISwitch) => {
       },
       'label.radio-button.checked': {
         'border-color': '#375FF3',
-        color: '#375FF3',
+        'color': '#375FF3',
       },
     })}>
       <LegoRadioGroup
