@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import useCss from 'react-use/lib/useCss';
 import { RadioGroup as LegoRadioGroup, RadioButton as LegoRadioButton } from '@QCFE/lego-ui';
 
@@ -14,7 +14,6 @@ interface ISwitch {
 }
 
 export const Switch = ({ ...props }: ISwitch) => {
-  const [selectedValue, setSelectedValue] = useState(props.options[0]['value']);
 
   return (
     <div className={useCss({
@@ -29,7 +28,7 @@ export const Switch = ({ ...props }: ISwitch) => {
         'font-size': '14px',
         'line-height': '22px',
         'border-color': '#CBD5E1',
-        'border-radius':'8px'
+        'border-radius': '8px'
       },
       'label.radio-button.checked': {
         'border-color': '#375FF3',
@@ -37,7 +36,7 @@ export const Switch = ({ ...props }: ISwitch) => {
       },
     })}>
       <LegoRadioGroup
-        defaultValue={selectedValue}
+        defaultValue={props.options[0]['value']}
         onChange={props.onChange}
       >
         {
