@@ -77,7 +77,7 @@ export const Tab = ({
                 item.id === key ?
                   'opacity-100 h-full visible pointer-events-auto' :
                   'opacity-0 h-0 invisible pointer-events-none',
-                'transition-opacity overflow-scroll',
+                'transition-opacity',
               )}
             >
               {item.content}

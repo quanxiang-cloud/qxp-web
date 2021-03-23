@@ -157,7 +157,7 @@ export const AlterRoleFunc = ({ funcs: functions, tag, lastSaveTime, id }: IAlte
   };
 
   return (
-    <>
+    <div className="overflow-scroll h-full">
       <header className="mx-4 flex flex-row items-center justify-between py-3">
         <Checkbox disabled checked={!!total}>
           已开启 {total} 项
@@ -181,6 +181,6 @@ export const AlterRoleFunc = ({ funcs: functions, tag, lastSaveTime, id }: IAlte
         )} */}
       </header>
       {renderFuncCard(funcs)}
-    </>
+    </div>
   );
 };
