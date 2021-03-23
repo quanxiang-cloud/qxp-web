@@ -125,6 +125,7 @@ export const ExportFileModal = ({
     const { size } = file;
     if (size > 1024 * 1024 * 2) {
       Message.error('文件过大，超过 2M 不能上传！');
+      return;
     }
     setFileList([file]);
     return false;
@@ -143,7 +144,8 @@ export const ExportFileModal = ({
 
   // import file
   const importFile = () => {
-    if (fileList === []) {
+    if (fileList.length === 0) {
+      Message.error('请上传文件');
       return;
     }
     const params = {
@@ -334,7 +336,7 @@ export const ExportFileModal = ({
                   style={{ width: '100%' }}
                   disabled={fileList.length === 0 ? false : true}
                   beforeUpload={beforeUpload}
-                  accept=".csv, .xlsx, .xls"
+                  accept=".xlsx, .xls"
                 >
                   <div
                     className={classnames(
@@ -351,8 +353,8 @@ export const ExportFileModal = ({
                     return (
                       <div
                         key={index}
-                        className="px-dot-4 py-dot-2 cursor-pointer flex
-                        items-center justify-between hover-bg-color"
+                        className="px-dot-8 py-dot-4 cursor-pointer flex
+                        items-center justify-between bg-blue-100"
                       >
                         <div className="flex items-center">
                           <SvgIcon size={16} name="book" fill="red" type="coloured" />
@@ -370,7 +372,7 @@ export const ExportFileModal = ({
                   })}
                 </div>
               </div>
-              <ul className="text-gray-600">
+              <ul className="text-gray-600 mt-8">
                 <li>
                   1. 点击下载
                   <span onClick={downTemp} className="text-blue-600 cursor-pointer">

@@ -49,7 +49,7 @@ export const ResetPasswordModal = (props: ResetPasswordModalProps) => {
           <Button
             icon={
               <img
-                className="w-2-dot-4 h-2-dot-4 px-dot-4"
+                className="w-2-dot-4 h-2-dot-4 px-dot-8"
                 src="./dist/images/icon_error.svg"
                 alt="icon_error"
               />
@@ -64,7 +64,7 @@ export const ResetPasswordModal = (props: ResetPasswordModalProps) => {
             textClassName="text-white"
             icon={
               <img
-                className="w-2-dot-4 h-2-dot-4 px-dot-4"
+                className="w-2-dot-4 h-2-dot-4 px-dot-8"
                 src="./dist/images/icon_true.svg"
                 alt="icon_true"
               />

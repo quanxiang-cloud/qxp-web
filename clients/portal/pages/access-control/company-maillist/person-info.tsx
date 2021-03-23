@@ -174,59 +174,60 @@ export const PersonInfo = React.memo(({
   };
 
   const actions = (status: UserStatus, isLeader: number) => {
-    const acts = [
-      {
-        id: '1',
-        iconName: 'client',
-        text: '设为主管 ',
-        onclick: (params: any) => setUpSuper(params),
-      },
-      {
-        id: '2',
-        iconName: 'key',
-        text: '发送随机密码',
-        onclick: (params: any) => handleReset(params),
-      },
-      {
-        id: '3',
-        iconName: 'pen',
-        text: '修改信息 ',
-        onclick: (params: any) => handleUserInfo(params, 'edit'),
-      },
-      {
-        id: '4',
-        iconName: 'stop',
-        text: '禁用账号',
-        onclick: (params: any) => handleAccount(-2, params),
-      },
-      {
-        id: '5',
-        iconName: 'trash',
-        text: '删除账号 ',
-        onclick: (params: any) => handleAccount(-1, params),
-      },
-    ];
-
-    const cancel = {
+    let acts: any[] = [];
+    const leader = {
       id: '1',
+      iconName: 'client',
+      text: '设为主管 ',
+      onclick: (params: any) => setUpSuper(params),
+    };
+    const password = {
+      id: '2',
+      iconName: 'key',
+      text: '发送随机密码',
+      onclick: (params: any) => handleReset(params),
+    };
+    const edit = {
+      id: '3',
+      iconName: 'pen',
+      text: '修改信息 ',
+      onclick: (params: any) => handleUserInfo(params, 'edit'),
+    };
+    const disable = {
+      id: '4',
+      iconName: 'stop',
+      text: '禁用账号',
+      onclick: (params: any) => handleAccount(-2, params),
+    };
+    const deleted = {
+      id: '5',
+      iconName: 'stop',
+      text: '删除账号',
+      onclick: (params: any) => handleAccount(-1, params),
+    };
+    const cancel = {
+      id: '6',
       iconName: 'stop',
       text: '取消主管',
       onclick: (params: any) => cancelUpSuper(params),
     };
-
-    const disable = {
-      id: '4',
+    const open = {
+      id: '7',
       iconName: 'stop',
       text: '启用账号',
       onclick: (params: any) => handleAccount(1, params),
     };
 
-    if (isLeader === 1) {
-      acts[0] = cancel;
+    if (status === 1) {
+      acts = [leader, password, edit, disable, deleted];
     }
 
     if (status === -2) {
-      acts[acts.length - 2] = disable;
+      acts = [open, deleted];
+    }
+
+    if (isLeader === 1) {
+      acts[0] = cancel;
     }
 
     return acts;
@@ -570,7 +571,7 @@ export const PersonInfo = React.memo(({
                 items={[<List key={uuid()} items={expandActions} />]}
                 contentClassName="mr-8"
               >
-                <IconBtn iconName="more" />
+                <IconBtn iconName="more" style={{ transform: 'rotate(90deg)' }} />
               </More>
             </>
           )}
