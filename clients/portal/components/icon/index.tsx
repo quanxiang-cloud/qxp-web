@@ -3,13 +3,23 @@ import classnames from 'classnames';
 
 import { IconName } from './types';
 
-interface Iicon extends React.SVGProps<SVGSVGElement> {
+import './_icon.scss';
+
+interface Icon extends React.SVGProps<SVGSVGElement> {
   name: IconName;
   type?: 'dark' | 'coloured' | 'light';
   size?: number;
+  color?: string;
+  className?: any;
   disabled?: boolean;
   changeable?: boolean;
   clickable?: boolean;
+}
+
+interface Style {
+  width?: string;
+  height?: string;
+  color?: string;
 }
 
 export const Icon = (
@@ -20,23 +30,30 @@ export const Icon = (
     changeable = false,
     disabled = false,
     clickable = false,
+    className,
+    color,
     ...props
-  }: Iicon,
+  }: Icon,
   ref: React.Ref<SVGSVGElement>
 ) => {
-  const _style: React.CSSProperties = {
-    ...props.style,
+  const styleCSS: Style = {
     width: size ? `${size - 1}px` : undefined,
     height: size ? `${size - 1}px` : undefined,
   };
+
+  if (color) {
+    styleCSS.color = color;
+  }
+
+  const _style: React.CSSProperties = styleCSS;
+
   return (
     <svg
       {...props}
       ref={props.ref}
       data-name={name}
       style={_style}
-      className={classnames('svg-icon', props.className, {
-        [`svg-icon--${type}`]: type,
+      className={classnames('svg-icon', `svg-icon--${type}`, className, {
         'svg-icon--changeable': changeable,
         'svg-icon--clickable': clickable,
         'svg-icon--disabled': disabled,
