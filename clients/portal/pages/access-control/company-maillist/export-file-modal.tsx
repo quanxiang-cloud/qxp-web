@@ -3,6 +3,7 @@ import { useMutation } from 'react-query';
 import classnames from 'classnames';
 import { Modal, CheckboxGroup, Checkbox, Table, Upload, Icon, Message } from '@QCFE/lego-ui';
 
+import SvgIcon from '@c/icon';
 import { Button } from '@portal/components/button';
 import { getUserTemplate, importTempFile } from './api';
 interface ExportFileModalProps {
@@ -285,39 +286,39 @@ export const ExportFileModal = ({
         <div className="w-full text-1-dot-4">
           {uploadStatus.status === 3 && (
             <div className="text-red-600 font-semibold flex items-center">
-              <Icon
+              <SvgIcon
                 size={16}
-                name="information"
-                color={{
-                  primary: '#ca2621',
-                  secondary: '#ea4641',
-                }}
+                name="sms_failed"
+                // color={{
+                //   primary: '#ca2621',
+                //   secondary: '#ea4641',
+                // }}
               />
               <span>导入失败 {uploadStatus.failTotal} 条数据。</span>
             </div>
           )}
           {uploadStatus.status === 1 && (
             <div className="text-green-600 font-semibold">
-              <Icon
+              <SvgIcon
                 size={16}
-                name="cloud"
-                color={{
-                  primary: '#2191ca',
-                  secondary: '#41b1ea',
-                }}
+                name="playlist_add_check"
+                // color={{
+                //   primary: '#2191ca',
+                //   secondary: '#41b1ea',
+                // }}
               />
               <span>导入成功 {uploadStatus.successTotal} 条数据。</span>
             </div>
           )}
           {uploadStatus.status === 2 && (
             <div className="text-yellow-600 font-semibold">
-              <Icon
+              <SvgIcon
                 size={16}
-                name="exclamation"
-                color={{
-                  primary: '#d0a406',
-                  secondary: '#f0c426',
-                }}
+                name="priority_high"
+                // color={{
+                //   primary: '#d0a406',
+                //   secondary: '#f0c426',
+                // }}
               />
               <span>
                 数据导入完成，导入成功 {uploadStatus.successTotal} 数据，导入失败{' '}
@@ -341,7 +342,7 @@ export const ExportFileModal = ({
                       'flex flex-col items-center justify-center hover:border-red-600',
                     )}
                   >
-                    <Icon size={16} name="upload" type="coloured" />
+                    <SvgIcon size={16} name="cloud_upload" fill="red" type="coloured" />
                     <p>点击或拖拽单个文件到至该区域。支持xls、xlsx格式</p>
                   </div>
                 </Upload>
@@ -354,13 +355,14 @@ export const ExportFileModal = ({
                         items-center justify-between hover-bg-color"
                       >
                         <div className="flex items-center">
-                          <Icon size={16} name="upload" type="coloured" />
+                          <SvgIcon size={16} name="book" fill="red" type="coloured" />
                           <span>{file.name}</span>
                         </div>
-                        <Icon
+                        <SvgIcon
                           size={16}
-                          name="upload"
+                          name="restore_from_trash"
                           type="coloured"
+                          fill="red"
                           onClick={() => delFile(index)}
                         />
                       </div>
