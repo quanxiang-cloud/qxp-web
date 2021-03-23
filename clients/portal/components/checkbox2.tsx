@@ -20,8 +20,8 @@ export const Checkbox = ({
         useCss({
           '& > span.label-value': {
             color: '#0F172A',
-            'font-size': '0.6rem',
-            'line-height': '0.9rem',
+            'font-size': '1.2rem',
+            'line-height': '2rem',
           },
         }),
         className,

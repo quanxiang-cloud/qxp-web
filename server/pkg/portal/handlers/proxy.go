@@ -45,6 +45,12 @@ func ProxyAPIHandler(w http.ResponseWriter, r *http.Request) {
 
 	buffer := &bytes.Buffer{}
 	_, err = io.Copy(buffer, resp.Body)
+	if resp.StatusCode == 401 {
+		tokenKey := getTokenKey(r)
+		refreshTokenKey := getRefreshTokenKey(r)
+		contexts.Cache.Del(tokenKey)
+		contexts.Cache.Del(refreshTokenKey)
+	}
 	if err != nil {
 		contexts.Logger.Errorf("copy response body error: %s", err.Error())
 		w.WriteHeader(400)
@@ -55,5 +61,4 @@ func ProxyAPIHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Content-Type", resp.Header.Get("Content-Type"))
 	w.WriteHeader(resp.StatusCode)
 	w.Write(buffer.Bytes())
-	return
 }

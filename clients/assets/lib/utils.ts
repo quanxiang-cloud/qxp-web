@@ -29,7 +29,7 @@ export const httpPost = <T>(
   return new Promise((resolve: (arg: T) => void, reject: (...data: unknown[]) => void) => {
     req.onload = () => {
       if (req.status > 400) {
-        if (req.statusText.toLocaleLowerCase() === 'unauthorized') {
+        if (req.statusText.toLocaleLowerCase() === 'unauthorized' || req.status === 401) {
           window.location.search = '/login/password';
           return;
         }
