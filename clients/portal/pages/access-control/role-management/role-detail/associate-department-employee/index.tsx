@@ -168,68 +168,76 @@ export const AssociateDepartmentEmployee = ({ id, isSuper }: IAssociateDepartmen
           关联员工与部门
         </Button>
       )}
-      <Table
-        rowKey="ownerID"
-        dataSource={data?.owners || []}
-        className="rounded-bl-none rounded-br-none"
-        columns={[
-          {
-            title: '名称',
-            dataIndex: 'ownerName',
-          },
-          {
-            title: '手机号',
-            dataIndex: 'phone',
-          },
-          {
-            title: '邮箱',
-            dataIndex: 'email',
-          },
-          {
-            title: '部门',
-            dataIndex: 'departmentName',
-          },
-          !isSuper ?
+      <div
+        className="overflow-scroll w-full pb-6"
+        style={{ height: 'calc(100% - 32px)' }}
+      >
+        <Table
+          rowKey="ownerID"
+          dataSource={data?.owners || []}
+          className="rounded-bl-none rounded-br-none"
+          columns={[
             {
-              title: '',
-              dataIndex: 'ownerID',
-              render: (ownerID: string, record: IOwner) => {
-                return (
-                  <More<IOwner>
-                    items={[
-                      {
-                        id: ownerID,
-                        iconName: '/dist/images/linkOff.svg',
-                        text: '取消关联',
-                        onclick: () => onCancelAssociation(record),
-                      },
-                    ]}
-                    params={record}
-                    className="flex items-center justify-center"
-                    contentClassName="w-48"
-                  />
-                );
-              },
-            } :
-            null,
-        ].filter(Boolean)}
-        rowSelection={rowSelection}
-        emptyText={<EmptyData text="无成员数据" className="py-10" />}
-        onRow={(record) => ({
-          onClick: () => onRowClick(record),
-        })}
-      />
-      {!isSuper && (
-        <Pagination
-          type="simple"
-          pageSize={pagination.pageSize}
-          total={pagination.total}
-          current={pagination.current}
-          prefix={<span className="text-1-dot-2 text-gray-400">{`共 ${pagination.total} 个员工`}</span>}
-          onShowSizeChange={(pageSize) => setPagination((p) => ({ ...p, pageSize }))}
-          onChange={(current) => setPagination((p) => ({ ...p, current }))}
+              title: '名称',
+              dataIndex: 'ownerName',
+            },
+            {
+              title: '手机号',
+              dataIndex: 'phone',
+            },
+            {
+              title: '邮箱',
+              dataIndex: 'email',
+            },
+            {
+              title: '部门',
+              dataIndex: 'departmentName',
+            },
+            !isSuper ?
+              {
+                title: '',
+                dataIndex: 'ownerID',
+                render: (ownerID: string, record: IOwner) => {
+                  return (
+                    <More<IOwner>
+                      items={[
+                        {
+                          id: ownerID,
+                          iconName: '/dist/images/linkOff.svg',
+                          text: '取消关联',
+                          onclick: () => onCancelAssociation(record),
+                        },
+                      ]}
+                      params={record}
+                      className="flex items-center justify-center"
+                      contentClassName="w-48"
+                      contentItemClassName="justify-center"
+                    />
+                  );
+                },
+              } :
+              null,
+          ].filter(Boolean)}
+          rowSelection={rowSelection}
+          emptyText={<EmptyData text="无成员数据" className="py-10" />}
+          onRow={(record) => ({
+            onClick: () => onRowClick(record),
+          })}
         />
-      )}
+        {!isSuper && (
+          <Pagination
+            type="simple"
+            pageSize={pagination.pageSize}
+            total={pagination.total}
+            current={pagination.current}
+            prefix={
+              <span className="text-1-dot-2 text-gray-400">{`共 ${pagination.total} 个员工`}</span>
+            }
+            onShowSizeChange={(pageSize) => setPagination((p) => ({ ...p, pageSize }))}
+            onChange={(current) => setPagination((p) => ({ ...p, current }))}
+          />
+        )}
+      </div>
     </>
   );
 };

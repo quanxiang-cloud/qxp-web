@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Icon, Field, Control, Label, Form, Input } from '@QCFE/lego-ui';
+import { Icon, Field, Control, Label, Form } from '@QCFE/lego-ui';
 import { twCascade } from '@mariusmarais/tailwind-cascade';
+import useClickAway from 'react-use/lib/useClickAway';
 
 import Store from '@portal/components/headless-tree/store';
 import { TreeNode } from '@portal/components/headless-tree/types';
@@ -32,6 +33,9 @@ function TreePicker<T extends { id: string; }>({
   const [store, setStore] = useState<Store<T>>();
   const [value, setValue] = useState<string>(defaultValue);
   const isFirstLoadRef = useRef<boolean>(true);
+  const domRef = useRef<any>(null);
+
+  useClickAway(domRef, () => setOpen(false));
 
   useEffect(() => {
     if (!store || !defaultValue) {
@@ -73,6 +77,7 @@ function TreePicker<T extends { id: string; }>({
         }}
         className="w-full cursor-pointer"
         title={text}
+        ref={domRef}
       >
         <Field className="flex flex-col">
           <Label>{label}</Label>

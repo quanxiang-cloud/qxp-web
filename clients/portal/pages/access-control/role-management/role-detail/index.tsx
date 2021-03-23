@@ -26,7 +26,7 @@ export const RoleDetail = ({ role, id }: IRoleDetail) => {
   }
 
   return (
-    <div>
+    <>
       <ItemWithTitleDesc
         itemRender={
           <div className="font-bold text-1-dot-6 text-gray-900 flex justify-between items-center">
@@ -41,6 +41,7 @@ export const RoleDetail = ({ role, id }: IRoleDetail) => {
         descClassName="transition ease-linear text-1-dot-2 text-blueGray-400"
       />
       <Tab
+        style={{ height: 'calc(100% - 24px)' }}
         className="mt-4 py-1-dot-6"
         items={[
           {
@@ -62,6 +63,6 @@ export const RoleDetail = ({ role, id }: IRoleDetail) => {
           },
         ]}
       />
-    </div>
+    </>
   );
 };
