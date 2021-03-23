@@ -12,11 +12,22 @@ interface Iicon extends React.SVGProps<SVGSVGElement> {
   clickable?: boolean;
 }
 
-export const SvgIcon = ({ name, ...props }: Iicon) => {
+export const Icon = (
+  {
+    name,
+    size = 22,
+    type = 'dark',
+    changeable = false,
+    disabled = false,
+    clickable = false,
+    ...props
+  }: Iicon,
+  ref: React.Ref<SVGSVGElement>
+) => {
   const _style: React.CSSProperties = {
     ...props.style,
-    width: props.size ? `${props.size - 1}px` : undefined,
-    height: props.size ? `${props.size - 1}px` : undefined,
+    width: size ? `${size - 1}px` : undefined,
+    height: size ? `${size - 1}px` : undefined,
   };
   return (
     <svg
@@ -25,10 +36,10 @@ export const SvgIcon = ({ name, ...props }: Iicon) => {
       data-name={name}
       style={_style}
       className={classnames('svg-icon', props.className, {
-        [`svg-icon--${props.type}`]: props.type,
-        'svg-icon--changeable': props.changeable,
-        'svg-icon--clickable': props.clickable,
-        'svg-icon--disabled': props.disabled,
+        [`svg-icon--${type}`]: type,
+        'svg-icon--changeable': changeable,
+        'svg-icon--clickable': clickable,
+        'svg-icon--disabled': disabled,
       })}
     >
       <use xlinkHref={`#${name}`} />
@@ -36,4 +47,8 @@ export const SvgIcon = ({ name, ...props }: Iicon) => {
   );
 };
 
-export default React.forwardRef(SvgIcon);
+const SvgIconRef = React.forwardRef(Icon);
+
+const SvgIcon = SvgIconRef;
+
+export default SvgIcon;
