@@ -36,4 +36,6 @@ export default [
   'toggle_on',
   'close',
   'check',
+  'pause_circle_outline',
+  'restore',
 ] as const;
