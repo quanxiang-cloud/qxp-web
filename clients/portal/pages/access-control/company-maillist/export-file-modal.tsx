@@ -227,14 +227,18 @@ export const ExportFileModal = ({
   };
 
   const okSendModal = () => {
+    if (checkWay && checkWay.sendEmail === -1 && checkWay.sendPhone === -1) {
+      Message.error('请选择发送方式');
+      return;
+    }
     setUploadStatus({
       status: 0,
       successTotal: 0,
       failTotal: 0,
     });
+    okModal(successUsersId, checkWay);
     setFileList([]);
     setBtnStatus(0);
-    okModal(successUsersId, checkWay);
   };
 
   const closeBefore = () => {
