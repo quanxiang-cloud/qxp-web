@@ -28,17 +28,18 @@ export const ItemWithTitleDesc = ({
   return (
     <div
       className={
-        twCascade('flex justify-start items-center md:flex-col md:items-start', className)
+        twCascade('flex justify-start items-center', className)
       }
       onClick={onClick}
     >
       {itemRender}
       <div
         className={twCascade(
-          'h-full justify-between ml-1-dot-6 flex flex-1 transition duration-300 md:ml-0 md:mt-1',
+          'h-full justify-between flex flex-1 transition duration-300',
           {
             'flex-row': textDirection == 'row',
             'flex-col': textDirection != 'row',
+            'ml-1dot6': !textClassName?.startsWith('ml'),
           },
           textClassName,
         )}

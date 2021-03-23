@@ -21,6 +21,7 @@ type Props<T> = {
   onDragOver?: (node: TreeNode<T>, draggingNode: TreeNode<T>) => boolean;
   onDrop: (node: TreeNode<T>) => void;
   setDraggingNode?: (node: TreeNode<T> | null) => void;
+  className?: string;
 }
 
 function renderSwitcherIcon({
@@ -64,6 +65,7 @@ export default function renderNode<T>({
   canDropOn,
   onDragOver,
   onDrop,
+  className,
 }: Props<T>): JSX.Element {
   const [isAcceptDrop, setAcceptDrop] = React.useState<boolean>(false);
   const _canDropOn = React.useMemo(() => canDropOn?.(node), [node]);
@@ -98,7 +100,7 @@ export default function renderNode<T>({
         onDrop(node);
         setAcceptDrop(false);
       }}
-      className={classnames('group', 'tree-node', {
+      className={classnames('group', 'tree-node', className, {
         'tree-node--focused': node.id === currentFocusedNodeID && !upwardFocusedStyleToParent,
         'tree-node--focused-on-parent': bubbledFocusedStyle,
         'tree-node--fade': renamingNodeID && node.id !== renamingNodeID,

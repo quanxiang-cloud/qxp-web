@@ -26,7 +26,7 @@ $node-height: 56px;
   }
 
   @include modifier(focused) {
-    color: #375FF3;
+    color: var(--blue-600);
     font-weight: 600;
     background-color: #F0F6FF;
 
@@ -95,9 +95,8 @@ $node-height: 56px;
   }
 }
 
-.departments-tree {
-  user-select: none;
-  overflow: auto;
+.tree-wrapper {
+  @apply overflow-auto select-none;
 
   .tree-node {
     padding-left: 20px;
@@ -105,7 +104,21 @@ $node-height: 56px;
   }
 
   .more-menu {
-    flex-shrink: 0;
+    @apply flex-shrink-0;
     margin-left: 8px;
+  }
+}
+
+.employee-select-tree {
+  .tree-node {
+    @apply bg-blue-100 cursor-pointer rounded-2xl rounded-r-none;
+    &:hover {
+      @apply bg-white font-semibold text-blue-600;
+    }
+    .tree-node__content {
+      div {
+        @apply w-full truncate;
+      }
+    }
   }
 }

@@ -102,7 +102,10 @@ export const OwnerSelector = observer(({ defaultEmployees = [], refs }: IOwnerSe
                 <div className="flex flex-row mr-4" style={{ height: 'calc(100% - 48px)' }}>
                   <div className="h-full flex flex-col overflow-hidden flex-1 mr-4">
                     <TextHeader className="pb-4" title="选择部门" />
-                    <EmployeeSelectTree store={store.employeeTreeStore} />
+                    <EmployeeSelectTree
+                      store={store.employeeTreeStore}
+                      className="employee-select-tree"
+                    />
                   </div>
                   <div className="h-full flex flex-col overflow-hidden flex-2dot5">
                     <TextHeader title={store.employeeTreeStore.currentFocusedNode.name || ''} />
@@ -143,6 +146,7 @@ export const OwnerSelector = observer(({ defaultEmployees = [], refs }: IOwnerSe
                   />
                   <DepartmentSelectTree
                     store={store.departmentTreeStore}
+                    wrapperClassName="rounded-3xl"
                   />
                 </div>
               </>

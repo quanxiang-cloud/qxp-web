@@ -8,11 +8,9 @@ export const DepartmentNode = ({ node }: NodeRenderProps<IDepartment>) => {
     <div
       className={twCascade('transition-all py-dot-8 cursor-pointer')}
     >
-      <div className="flex flex-row justify-between">
-        <div className="flex items-center">
-          <div className="ml-2 whitespace-nowrap">
-            {node.name}
-          </div>
+      <div className="flex flex-row justify-between items-center">
+        <div className="ml-2 whitespace-nowrap">
+          {node.name}
         </div>
       </div>
     </div>

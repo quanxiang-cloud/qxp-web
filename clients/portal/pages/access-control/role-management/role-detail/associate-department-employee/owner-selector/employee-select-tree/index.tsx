@@ -6,14 +6,18 @@ import { DepartmentNode } from './department-node';
 
 export interface IEmployeeSelectTree {
   store: Store;
+  className?: string;
+  itemClassName?: string;
 }
-export const EmployeeSelectTree = ({ store }: IEmployeeSelectTree) => {
+export const EmployeeSelectTree = ({ store, className, itemClassName }: IEmployeeSelectTree) => {
   return (
-    <div className="departments-tree">
+    <div className="tree-wrapper">
       <Tree
         store={store}
         NodeRender={DepartmentNode}
         RootNodeRender={DepartmentNode}
+        className={className}
+        itemClassName={itemClassName}
       />
     </div>
   );
