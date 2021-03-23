@@ -1,9 +1,37 @@
 import * as React from 'react';
 import classnames from 'classnames';
 
+import svgSprite from '../../../assets/sprite/icons';
+import domReady from './domReady';
+import './_icon.scss';
 import { IconName } from './types';
 
-import './_icon.scss';
+const prepend = (el: any, target: any) => {
+  if (target.firstChild) {
+    target.insertBefore(el, target.firstChild);
+  } else {
+    target.appendChild(el);
+  }
+};
+
+const appendSvg = () => {
+  const svgContainer = document.createElement('div');
+  svgContainer.innerHTML = svgSprite;
+  const svg = svgContainer.getElementsByTagName('svg')[0];
+  if (svg) {
+    svg.setAttribute('aria-hidden', 'true');
+    svg.style.position = 'absolute';
+    svg.style.width = '0';
+    svg.style.height = '0';
+    svg.style.overflow = 'hidden';
+    prepend(svg, document.body);
+  }
+};
+
+if (!(window as any).svgicon_inject) {
+  (window as any).svgicon_inject = true;
+  domReady(appendSvg);
+}
 
 interface Icon extends React.SVGProps<SVGSVGElement> {
   name: IconName;
@@ -22,7 +50,7 @@ interface Style {
   color?: string;
 }
 
-export const Icon = (
+const Icon = (
   {
     name,
     size = 22,
