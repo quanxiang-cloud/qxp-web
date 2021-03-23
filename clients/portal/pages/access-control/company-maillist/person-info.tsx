@@ -141,8 +141,9 @@ export const PersonInfo = React.memo(({
       } else {
         Message.error('操作失败！');
       }
-      setSelectedRows([]);
+      setVisibleFile(false);
       setResetModal(false);
+      setSelectedRows([]);
     },
   });
 

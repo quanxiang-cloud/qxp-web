@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Modal, Form } from '@QCFE/lego-ui';
+import { Modal, Form, Message } from '@QCFE/lego-ui';
 
 import { Button } from '@portal/components/button';
 
@@ -27,6 +27,10 @@ export const ResetPasswordModal = (props: ResetPasswordModalProps) => {
     }
     const values: { way: string[] } = form.getFieldsValue();
     const { way } = values;
+    if (way.length === 0) {
+      Message.error('请选择发送方式');
+      return;
+    }
     const checkedWay: CheckedWay = {
       sendEmail: -1,
       sendPhone: -1,
