@@ -1,4 +1,4 @@
-$select-min-width: 80px;
+$select-min-width: 90px;
 $select-max-width: 500px;
 $select-option-height: 28px;
 
@@ -91,7 +91,7 @@ $select-option-height: 28px;
   cursor: pointer;
 
   &:hover {
-    border-color: var(--primary-color);
+    // border-color: var(--primary-color);
 
     .trigger-arrow-icon {
       color: var(--primary-color);

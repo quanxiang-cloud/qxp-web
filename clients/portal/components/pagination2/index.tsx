@@ -46,7 +46,7 @@ export const Pagination = ({
     <div
       className={twCascade(
         'inline-flex items-center justify-between bg-white px-1-dot-2',
-        'py-dot-4 w-full border-t border-gray-200 mt-dot-8',
+        'py-dot-8 w-full border-t border-gray-200',
         className,
       )}
     >
@@ -59,7 +59,7 @@ export const Pagination = ({
           <Select
             value={pageSize}
             onChange={selectChange}
-            className="w-32 h-2-dot-8 border border-gray-300 rounded-r-dot-8
+            className="h-2-dot-8 border border-gray-300 rounded-r-dot-8
             rounded-tl-dot-2 rounded-bl-dot-8 px-1-dot-2 text-1-dot-2 flex items-center"
             options={[{
               value: 10,
