@@ -1,5 +1,5 @@
-const ieContentLoaded = (w: any, callback: any) => {
-  const d = w.document;
+const ieContentLoaded = (callback: any) => {
+  const d = document;
   let done = false;
   const init = () => {
     if (!done) {
@@ -9,7 +9,10 @@ const ieContentLoaded = (w: any, callback: any) => {
   };
   const polling = () => {
     try {
-      d.documentElement.doScroll('left');
+      d.documentElement.scrollTo({
+        left: 10,
+        top: 20,
+      });
     } catch (e) {
       setTimeout(polling, 50);
       return;
@@ -39,7 +42,7 @@ const DOMReady = (fn: any) => {
       document.addEventListener('DOMContentLoaded', loadFn, false);
     }
   } else if (document.attachEvent) {
-    ieContentLoaded(window, fn);
+    ieContentLoaded(fn);
   }
 };
 
