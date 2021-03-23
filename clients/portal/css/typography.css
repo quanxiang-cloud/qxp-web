@@ -1,37 +1,50 @@
 .text-h3, .text-h4, .text-h5, .text-h6 {
   color: var(--gray-900);
+  font-weight: 500;
+}
+
+.text-body1, .text-body2, .text-button, .text-caption {
+  font-weight: 400;
 }
 
 .text-h3 {
-  font-size: 2.4rem;
-  line-height: 3.2rem;
-  font-weight: 500;
+  font-size: 24px;
+  line-height: 32px;
 }
 
 .text-h4 {
-  font-weight: 500;
-  font-size: 2rem;
-  line-height: 2.8rem;
+  font-size: 20px;
+  line-height: 28px;
 }
 
 .text-h5 {
-  font-weight: 500;
-  font-size: 1.6rem;
-  line-height: 2.4rem;
+  font-size: 16px;
+  line-height: 24px;
 }
 
 .text-h6 {
-  font-weight: 500;
-  font-size: 1.4rem;
-  line-height: 2.2rem;
+  font-size: 14px;
+  line-height: 22px;
 }
 
 .text-body1 {
-  font-size: 1.6rem;
-  line-height: 2.4rem;
+  font-size: 16px;
+  line-height: 24px;
 }
 
 .text-body2 {
-  font-size: 1.4rem;
-  line-height: 2.2rem;
+  font-size: 14px;
+  line-height: 22px;
+}
+
+.text-button {
+  font-size: 14px;
+  line-height: 22px;
+  color: var(--gray-600);
+}
+
+.text-caption {
+  font-size: 12px;
+  line-height: 20px;
+  color: var(--gray-600);
 }
