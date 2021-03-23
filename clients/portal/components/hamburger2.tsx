@@ -15,13 +15,13 @@ export const Hamburger = forwardRef<HTMLDivElement, IHamburger>(
     }, [setActive]);
     const activeClassName = {
       '& > div:nth-child(1)': {
-        transform: 'translateY(4.5px) rotate(45deg)',
+        transform: 'translateY(5px) rotate(45deg)',
       },
       '& > div:nth-child(2)': {
         opacity: 0,
       },
       '& > div:nth-child(3)': {
-        transform: 'translateY(-4.5px) rotate(-45deg)',
+        transform: 'translateY(-5px) rotate(-45deg)',
       },
     };
     const className = {
