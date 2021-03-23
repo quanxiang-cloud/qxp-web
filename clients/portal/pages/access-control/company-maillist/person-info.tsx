@@ -201,7 +201,7 @@ export const PersonInfo = React.memo(({
     };
     const deleted = {
       id: '5',
-      iconName: 'stop',
+      iconName: 'trash',
       text: '删除账号',
       onclick: (params: any) => handleAccount(-1, params),
     };

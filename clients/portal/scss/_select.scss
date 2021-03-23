@@ -1,6 +1,6 @@
-$select-min-width: 120px;
+$select-min-width: 80px;
 $select-max-width: 500px;
-$select-option-height: 36px;
+$select-option-height: 28px;
 
 @include block(select-options) {
   padding: 16px 0;
