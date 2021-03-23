@@ -27,6 +27,7 @@ func LogoutHandler(w http.ResponseWriter, r *http.Request) {
 		"Content-Type":  "application/x-www-form-urlencoded",
 		"Refresh-Token": refreshToken,
 		"Access-Token":  token,
+		"User-Agent":    r.Header.Get("User-Agent"),
 	})
 
 	http.Redirect(w, r, "/", http.StatusFound)

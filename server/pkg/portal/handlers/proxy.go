@@ -27,13 +27,7 @@ func ProxyAPIHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	req.Header.Set("Content-Type", r.Header.Get("Content-Type"))
-	// for key, values := range r.Header {
-	// 	for _, value := range values {
-	// 		if key != "Cookie" && key != "Origin" && key != "Referer" {
-	// 			req.Header.Set(key, value)
-	// 		}
-	// 	}
-	// }
+	req.Header.Set("User-Agent", r.Header.Get("User-Agent"))
 
 	token := GetToken(r)
 	req.Header.Set("Access-Token", token)
