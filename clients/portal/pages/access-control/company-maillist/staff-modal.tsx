@@ -209,13 +209,17 @@ export const StaffModal = (props: StaffModalProps) => {
             />
           )
         }
-        <TreePicker
-          label="部门"
-          treeData={departmentToTreeNode(depData as IDepartment)}
-          labelKey="departmentName"
-          name="depID"
-          defaultValue={props.initData?.dep?.id}
-        />
+        {
+          (status === 'add' || (props.initData && props.initData.isDEPLeader === -1)) && (
+            <TreePicker
+              label="部门"
+              treeData={departmentToTreeNode(depData as IDepartment)}
+              labelKey="departmentName"
+              name="depID"
+              defaultValue={props.initData?.dep?.id}
+            />
+          )
+        }
         {/* <SelectField
           name="roleIDs"
           label="角色"

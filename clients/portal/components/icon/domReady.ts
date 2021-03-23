@@ -41,8 +41,6 @@ const DOMReady = (fn: any) => {
       };
       document.addEventListener('DOMContentLoaded', loadFn, false);
     }
-  } else if (document.attachEvent) {
-    ieContentLoaded(fn);
   }
 };
 

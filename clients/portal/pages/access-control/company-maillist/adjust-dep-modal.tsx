@@ -9,6 +9,8 @@ import { Button } from '@portal/components/button';
 import SelectTree from '@portal/components/select-tree';
 import { BatchDepParams } from './person-info';
 import { IUserInfo } from '@portal/api/auth';
+import TreePicker from '@portal/components/tree-picker';
+import { departmentToTreeNode } from '@assets/lib/utils';
 import { getERPTree } from './api';
 
 const SelectTreeField = Form.getFormField(SelectTree);
@@ -46,9 +48,11 @@ export const AdjustDepModal = (props: IAdjustDepModalProps) => {
       newDepID: '',
     };
     const values = formRef.current?.getFieldsValue();
-    if (values?.pid) {
-      params.newDepID = values.pid;
+    if (!values?.pid) {
+      Message.error('请选择部门');
+      return;
     }
+    params.newDepID = values.pid;
     params.oldDepID = (userList && userList[0] && userList[0].dep?.id) || '';
     userList.forEach((user) => params.usersID.push(user.id));
     okModal(params);
@@ -77,8 +81,8 @@ export const AdjustDepModal = (props: IAdjustDepModalProps) => {
         </div>
       }
     >
-      <div>
-        <div>
+      <div className="w-full">
+        <div className="w-full">
           <p className="text-gray-600 text-1-dot-4">已选择员工</p>
           <ul className="flex items-center flex-wrap">
             {userList.map((user) => {
@@ -91,18 +95,25 @@ export const AdjustDepModal = (props: IAdjustDepModalProps) => {
             })}
           </ul>
         </div>
-        <div className="mt-4">
+        <div className="mt-4 w-full">
           <p className="text-gray-600 text-1-dot-4">选择要调整的部门</p>
           <Form layout="vertical" ref={formRef}>
             {isLoading ? (
               <Loading />
             ) : (
-              <SelectTreeField
+              // <SelectTreeField
+              //   name="pid"
+              //   label="选择部门"
+              //   placeholder="请选择部门"
+              //   defaultSelect={department?.id || ''}
+              //   treeData={treeData}
+              // />
+              <TreePicker
+                label="部门"
+                treeData={departmentToTreeNode(depData as IDepartment)}
+                labelKey="departmentName"
                 name="pid"
-                // label="选择部门"
-                placeholder="请选择部门"
-                // defaultSelect={department?.id || ''}
-                treeData={treeData}
+                // defaultValue={props.initData?.dep?.id}
               />
             )}
           </Form>

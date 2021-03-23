@@ -44,12 +44,14 @@ interface PersonInfoProps {
   departmentId: string;
   departmentName: string;
   keyword: string;
+  handleClear(): void;
 }
 
 export const PersonInfo = React.memo(({
   departmentId,
   departmentName,
   keyword,
+  handleClear,
 }: PersonInfoProps) => {
   const [visibleFile, setVisibleFile] = useState<boolean>(false);
   const [resetModal, setResetModal] = useState<boolean>(false);
@@ -115,6 +117,7 @@ export const PersonInfo = React.memo(({
       userName: '',
     });
     setSelectedRows([]);
+    handleClear();
   }, [departmentId]);
 
   const handleMutation = useMutation(updateUserStatus, {
@@ -226,7 +229,7 @@ export const PersonInfo = React.memo(({
       acts = [open, deleted];
     }
 
-    if (isLeader === 1) {
+    if (isLeader === 1 && status !== -2) {
       acts[0] = cancel;
     }
 
@@ -403,6 +406,10 @@ export const PersonInfo = React.memo(({
 
   const rowSelection = {
     selectedRowKeys: selectedRows,
+    getCheckboxProps: (record: any) => ({
+      disabled: record.useStatus === -2,
+      name: record.id,
+    }),
     onChange: (selectedRowKeys: string[], selectedRows: IUserInfo[]) => {
       setSelectedRows(selectedRowKeys);
       setSelectedUsers(selectedRows);
@@ -584,7 +591,7 @@ export const PersonInfo = React.memo(({
                 dataSource={personList?.data || []}
                 columns={columns}
                 rowKey="id"
-                rowSelection={rowSelection || []}
+                rowSelection={rowSelection}
                 emptyText={<EmptyData text="无成员数据" className="py-10" />}
                 loading={isLoading}
               />
