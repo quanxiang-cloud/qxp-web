@@ -16,7 +16,7 @@ export default function Dashboard() {
 
   return (
     <>
-      <main className="pt-1-dot-6 pb-1-dot-6 pl-2-dot-6 pr-2-dot-6">
+      <main className="pt-3-dot-2 pb-3-dot-2 pl-5-dot-2 pr-5-dot-2">
         <div>
           <Avatar
             username={value.userInfo.userName}
@@ -25,7 +25,7 @@ export default function Dashboard() {
           />
         </div>
         <Card
-          className="ml-0 mt-8 px-1-dot-6 py-4"
+          className="ml-0 mt-8 px-16 py-8 text-1-dot-6"
           title="我的应用"
           action={
             <a className="transition ease-linear text-1-dot-4 underline text-gray-600">前往应用市场</a>
@@ -34,9 +34,9 @@ export default function Dashboard() {
             <List
               className="flex-row"
               itemClassName={twCascade(
-                'px-4 py-dot-8 p-4',
+                'px-8 py-1-dot-6 p-8',
                 useCss({
-                  'margin-right': '1rem',
+                  'margin-right': '2rem',
                   'background-color': '#fff',
                 }),
                 'rounded-md',
@@ -98,7 +98,7 @@ export default function Dashboard() {
         />
         <div className="flex justify-between items-center">
           <Card
-            className="flex-1 ml-0 px-1-dot-6 py-8"
+            className="flex-1 ml-0 px-16 py-8 text-1-dot-6"
             title="我的待办"
             action={
               <a className="transition ease-linear text-1-dot-4 underline color-324558">查看全部</a>
@@ -108,7 +108,7 @@ export default function Dashboard() {
                 className="flex-col"
                 itemClassName={twCascade(
                   useCss({
-                    'margin-bottom': '1rem',
+                    'margin-bottom': '2rem',
                     'background-color': '#fff',
                     padding: '0 20px',
                   }),
@@ -172,8 +172,9 @@ export default function Dashboard() {
               />
             }
           />
+          <div className="w-8 h-full"></div>
           <Card
-            className="flex-2 self-stretch flex flex-col px-1-dot-6 py-4"
+            className="flex-2 self-stretch flex flex-col px-16 py-8 text-1-dot-6"
             title="未读消息"
             action={
               <a className="text-1-dot-4 underline color-324558 transition ease-linear">查看全部</a>
@@ -186,7 +187,7 @@ export default function Dashboard() {
                     src="/dist/images/alert.svg"
                     alt="alert"
                   />
-                  <span className="text-1-dot-2">无未读消息</span>
+                  <span className="text-1-dot-2 text-blue-400">无未读消息</span>
                 </div>
               </div>
             }
