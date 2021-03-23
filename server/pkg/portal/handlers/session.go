@@ -97,7 +97,7 @@ func GetRefreshToken(r *http.Request) string {
 // renewToken refresh token
 func renewToken(r *http.Request, refreshToken string) bool {
 	requestID := contexts.GetRequestID(r)
-	_, respBuffer, errMsg := contexts.SendRequest(r, "POST", "/api/oauth2c/v1/in/refresh", nil, map[string]interface{}{
+	respBuffer, errMsg := contexts.SendRequest(r.Context(), "POST", "/api/oauth2c/v1/in/refresh", nil, map[string]string{
 		"Content-Type":  "application/x-www-form-urlencoded",
 		"Refresh-Token": refreshToken,
 		"User-Agent":    r.Header.Get("User-Agent"),

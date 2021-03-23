@@ -43,13 +43,13 @@ func ResetPasswordActionHandler(w http.ResponseWriter, r *http.Request) {
 		})
 		return
 	}
-	resp, respBuffer, errMsg := contexts.SendRequest(r, "POST", "/api/org/v1/account/reset/user", bytes.NewBuffer(resetPasswordParams), map[string]interface{}{
+	respBuffer, errMsg := contexts.SendRequest(r.Context(), "POST", "/api/org/v1/account/reset/user", bytes.NewBuffer(resetPasswordParams), map[string]string{
 		"Content-Type": "application/json",
 		"User-Agent":   r.Header.Get("User-Agent"),
 	})
-	if ShouldLogin(w, r, resp) {
-		return
-	}
+	// if ShouldLogin(w, r, resp) {
+	// 	return
+	// }
 	if errMsg != "" {
 		contexts.Logger.Errorf("failed to reset password: %s, response: %s request_id: %s", errMsg, respBuffer.String(), requestID)
 		renderTemplate(w, templateName, map[string]interface{}{

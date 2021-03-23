@@ -1,9 +1,7 @@
 package contexts
 
 import (
-	"bytes"
 	"fmt"
-	"io"
 	"log"
 	"net/http"
 
@@ -108,113 +106,4 @@ func SetupContext(configFile string, sessionCookieName string, appName string) (
 	// }
 
 	return nil
-}
-
-// SendRequest is an util method for request API Server
-func SendRequest(r *http.Request, method string, path string, body io.Reader, headers map[string]interface{}) (*http.Response, *bytes.Buffer, string) {
-	requestID := GetRequestID(r)
-
-	req, err := http.NewRequest(method, APIEndpoint+path, body)
-	for key, value := range headers {
-		req.Header.Add(key, value.(string))
-	}
-	if err != nil {
-		Logger.Errorf("[request_id=%s] failed to build request: %s", requestID, err.Error())
-		return nil, nil, "failed to build request"
-	}
-
-	// token, _ := GetSessionToken(r)
-	// if token == "" {
-	// 	return nil, nil, "no token found in session or request query"
-	// }
-
-	// req.Header.Add("Access-Token", token)
-
-	Logger.Debugf(
-		"[request_id=%s] sending request, method: %s, url: %s, headers: %s",
-		requestID, req.Method, req.URL, req.Header,
-	)
-
-	resp, err := HTTPClient.Do(req)
-	if err != nil {
-		Logger.Errorf("[request_id=%s] failed to send request to API server: %s", requestID, err.Error())
-		return resp, nil, "failed to send request to API server"
-	}
-	defer resp.Body.Close() // Force closing the response body
-
-	buffer := &bytes.Buffer{}
-	_, err = io.Copy(buffer, resp.Body)
-	if err != nil {
-		Logger.Errorf("[request_id=%s] copy response body error: %s", requestID, err.Error())
-		return resp, nil, http.StatusText(http.StatusInternalServerError)
-	}
-
-	if resp.StatusCode >= http.StatusInternalServerError {
-		Logger.Errorf(
-			"[request_id=%s] request API encounter status_code: %d, request method: %s, request path: %s, response body: %s",
-			requestID, resp.StatusCode, method, path, buffer.String(),
-		)
-		return resp, buffer, fmt.Sprintf("API server response status code >= %d", http.StatusInternalServerError)
-	}
-
-	if resp.StatusCode >= http.StatusBadRequest && resp.StatusCode < http.StatusInternalServerError {
-		Logger.Warnf(
-			"[request_id=%s] request API encounter status_code: %d, request method: %s, request path: %s, response body: %s",
-			requestID, resp.StatusCode, method, path, buffer.String(),
-		)
-		return resp, buffer, fmt.Sprintf("API server response status code >= %d", http.StatusBadRequest)
-	}
-
-	return resp, buffer, ""
-}
-
-// SendRequestWitoutAuth is an util method for request Billing Server
-func SendRequestWitoutAuth(r *http.Request, method string, path string, body io.Reader, headers map[string]interface{}) (*bytes.Buffer, string) {
-	requestID := GetRequestID(r)
-
-	req, err := http.NewRequest(method, APIEndpoint+path, body)
-	for key, value := range headers {
-		req.Header.Add(key, value.(string))
-	}
-	if err != nil {
-		Logger.Errorf("[request_id=%s] failed to build request: %s", requestID, err.Error())
-		return nil, "failed to build request"
-	}
-
-	Logger.Debugf(
-		"[request_id=%s] sending request, method: %s, url: %s, headers: %s",
-		requestID, req.Method, req.URL, req.Header,
-	)
-
-	resp, err := HTTPClient.Do(req)
-	if err != nil {
-		Logger.Errorf("[request_id=%s] failed to send request to API server: %s", requestID, err.Error())
-		return nil, "failed to send request to API server"
-	}
-	defer resp.Body.Close() // Force closing the response body
-
-	buffer := &bytes.Buffer{}
-	_, err = io.Copy(buffer, resp.Body)
-	if err != nil {
-		Logger.Errorf("[request_id=%s] copy response body error: %s", requestID, err.Error())
-		return nil, http.StatusText(http.StatusInternalServerError)
-	}
-
-	if resp.StatusCode >= http.StatusInternalServerError {
-		Logger.Errorf(
-			"[request_id=%s] request API encounter status_code: %d, request method: %s, request path: %s, response body: %s",
-			requestID, resp.StatusCode, method, path, buffer.String(),
-		)
-		return buffer, fmt.Sprintf("API server response status code >= %d", http.StatusInternalServerError)
-	}
-
-	if resp.StatusCode >= http.StatusBadRequest && resp.StatusCode < http.StatusInternalServerError {
-		Logger.Warnf(
-			"[request_id=%s] request API encounter status_code: %d, request method: %s, request path: %s, response body: %s",
-			requestID, resp.StatusCode, method, path, buffer.String(),
-		)
-		return buffer, fmt.Sprintf("API server response status code >= %d", http.StatusBadRequest)
-	}
-
-	return buffer, ""
 }
