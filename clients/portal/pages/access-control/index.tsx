@@ -1,8 +1,7 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState } from 'react';
 
 import { ListMenu } from '@portal/pages/access-control/list-menu';
 import { ItemWithTitleDesc } from '@portal/components/item-with-title-desc4';
-import { HeaderWithMenu } from '@portal/components/header-with-menu2';
 
 import RoleManagement from './role-management';
 import MailList from './company-maillist';

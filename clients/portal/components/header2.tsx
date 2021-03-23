@@ -13,7 +13,8 @@ export const Header = ({ onMenuToggle, getSetter }: IHeader) => {
   const hamburgerRef = useRef<HTMLDivElement>(null);
 
   return (
-    <div className="mx-auto flex justify-between h-6-dot-4 py-dot-8 px-1-dot-2 bg-white text-1-dot-4 global-header">
+    <div className="mx-auto flex justify-between h-6-dot-4 py-dot-8 px-1-dot-2
+    bg-white text-1-dot-4 global-header">
       <div className="flex justify-between items-center">
         <div
           className="mr-8 flex justify-between items-center cursor-pointer"

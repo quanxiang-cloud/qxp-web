@@ -30,7 +30,7 @@ const menus = [
 ];
 
 const Headers = forwardRef<HTMLDivElement>((_, ref) => {
-  const [showMenu, setShowMenu] = useState<boolean | null>(null);
+  const [showMenu, setShowMenu] = useState<boolean | null>(false);
   const headerSetterRef = useRef<Function>();
 
   const onToggle = (show: boolean) => {

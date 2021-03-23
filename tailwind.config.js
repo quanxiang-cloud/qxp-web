@@ -42,6 +42,7 @@ module.exports = {
       },
       height: {
         '2dot4': '2.4rem',
+        '5.6': '5.6rem',
       },
       lineHeight: {
         11: '1.1rem',

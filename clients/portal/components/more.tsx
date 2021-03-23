@@ -17,6 +17,7 @@ export interface IMore<T> {
   contentClassName?: string;
   onMouseOver?: () => void;
   onMouseOut?: () => void;
+  contentItemClassName?: string;
 }
 
 export const More = function <T>({
@@ -26,6 +27,7 @@ export const More = function <T>({
   triggerClassName,
   tooltipClassName,
   contentClassName,
+  contentItemClassName,
   offsetX,
   offsetY,
   children,
@@ -43,11 +45,11 @@ export const More = function <T>({
         <List<T>
           items={items}
           params={params}
-          itemClassName="hover:bg-blue-100"
+          itemClassName={twCascade('hover:bg-blue-100', contentItemClassName)}
           className={
             twCascade(
               'min-w-24 z-10 py-dot-8 shadow-title bg-white',
-              'rounded-dot-6 absolute top-1-dot-6 right-0 mt-dot-6 mr-8',
+              'rounded-dot-6 absolute right-0 mt-8 mr-2',
               contentClassName,
             )
           }

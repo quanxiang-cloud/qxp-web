@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { twCascade } from '@mariusmarais/tailwind-cascade';
 
 export interface ITabItem {
@@ -14,6 +14,7 @@ export interface ITab {
   items: ITabItem[];
   currentKey?: string | number;
   onChange?: (key: string | number) => void;
+  style?: Record<string, unknown>;
 }
 
 export const Tab = ({
@@ -23,12 +24,19 @@ export const Tab = ({
   items,
   currentKey,
   onChange = () => {},
+  style,
 }: ITab) => {
   const [key, setKey] = useState<string | number>(currentKey || items[0].id);
+  const [height, setHeight] = useState<string>('34px');
+  const headerRef = useRef(null);
+
+  useEffect(() => {
+    setHeight((headerRef.current as unknown as HTMLDivElement)?.style.height);
+  }, []);
 
   return (
-    <div className={twCascade('transition duration-300 overflow-hidden', className)}>
-      <header className={twCascade('flex flex-row w-full', headerClassName)}>
+    <div style={style} className={twCascade('transition duration-300 overflow-hidden', className)}>
+      <header className={twCascade('flex flex-row w-full', headerClassName)} ref={headerRef}>
         {items.map((item) => {
           const active = item.id == key;
           return (
@@ -58,7 +66,7 @@ export const Tab = ({
       <div
         className="w-full bg-blue-100 px-8 py-1-dot-6 overflow-hidden"
         style={{
-          height: 'calc(100% - 34px)',
+          height: `calc(100% - ${height})`,
         }}
       >
         {items.map((item) => {
@@ -69,7 +77,7 @@ export const Tab = ({
                 item.id === key ?
                   'opacity-100 h-full visible pointer-events-auto' :
                   'opacity-0 h-0 invisible pointer-events-none',
-                'transition-opacity overflow-hidden',
+                'transition-opacity overflow-scroll',
               )}
             >
               {item.content}

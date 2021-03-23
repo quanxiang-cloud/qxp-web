@@ -1,6 +1,6 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import classnames from 'classnames';
-import { Link, useHistory, useLocation } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { Icon } from '@QCFE/lego-ui';
 import useCss from 'react-use/lib/useCss';
 
@@ -26,8 +26,6 @@ export interface IMenus {
 export const Menu = ({ menus, visible, toggle }: IMenus) => {
   const maskRef = useRef(null);
   const history = useHistory();
-
-  const location = useLocation();
 
   useEffect(() => {
     const maskElement = (maskRef.current as unknown) as HTMLDivElement;
@@ -68,7 +66,8 @@ export const Menu = ({ menus, visible, toggle }: IMenus) => {
 
   return (
     <div
-      className="w-full h-full z-20 bg-black bg-opacity-50 fixed hidden transition duration-200"
+      className="w-screen h-screen z-20 top-24 bg-black bg-opacity-50 fixed hidden
+      transition duration-200"
       ref={maskRef}
     >
       <div
@@ -109,14 +108,12 @@ export const Menu = ({ menus, visible, toggle }: IMenus) => {
               <div
                 key={uuid()}
                 onClick={() => {
-                  if (location.pathname === address) {
-                    return toggle(false);
-                  }
+                  toggle(false);
                   history.push(address);
                 }}
                 className={twCascade(
                   'h-32 flex flex-row justify-between items-center bg-white px-4 py-dot-8',
-                  'rounded cursor-pointer transition-all duration-200',
+                  'rounded-2xl cursor-pointer transition-all duration-200',
                 )}
               >
                 <ItemWithTitleDesc
@@ -133,7 +130,7 @@ export const Menu = ({ menus, visible, toggle }: IMenus) => {
                       <img className="w-full h-full" src={iconUrl} alt={title} />
                     </div>
                   }
-                  titleClassName="text-2 font-bold mb-4"
+                  titleClassName="text-2 font-semibold"
                 />
                 <Link to={address}>
                   <Icon className="next transition-all duration-200" name="next" type="dark" />
