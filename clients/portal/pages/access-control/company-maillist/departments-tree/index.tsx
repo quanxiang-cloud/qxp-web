@@ -33,7 +33,7 @@ function DepartmentsTree({ onSelect }: Props): JSX.Element {
   }
 
   return (
-    <div className="departments-tree">
+    <div className="tree-wrapper">
       <Tree
         store={store}
         NodeRender={DepartmentNode}

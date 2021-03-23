@@ -18,21 +18,28 @@ export const Switch = ({ ...props }: ISwitch) => {
     <div className={useCss({
       display: 'inline-block',
       'margin-right': '16px',
+      'label:hover':{
+        'background':'#000'
+      },
       'label.radio-button': {
         'width': '60px',
         'height': '32px',
-        'padding': '5px 16px',
-        'background': '#fff',
         'color': '#475569',
         'font-size': '14px',
+        'background': '#fff',
         'line-height': '22px',
-        'border-color': '#CBD5E1',
-        'border-radius': '8px'
+        'padding': '5px 16px',
+        'border-radius': '8px',
+        'border': '1px solid #CBD5E1',
       },
       'label.radio-button.checked': {
-        'border-color': '#375FF3',
         'color': '#375FF3',
+        'background':'#F1F5F9',
+        'border-color': '#375FF3',
       },
+      'label.radio-button.is-default.button.radio-button-wrapper.is-default.button:hover':{
+        'background':'#F1F5F9'
+      }
     })}>
       <LegoRadioGroup
         defaultValue={props.options[0]['value']}

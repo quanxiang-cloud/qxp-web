@@ -34,4 +34,8 @@ export default [
   'sms_failed',
   'toggle_off',
   'toggle_on',
+  'close',
+  'check',
+  'pause_circle_outline',
+  'restore',
 ] as const;

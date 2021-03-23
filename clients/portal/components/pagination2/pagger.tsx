@@ -29,7 +29,7 @@ export const Core = ({ current, onChange = identity, maxPage }: ICore) => {
       <div
         onClick={onPrev}
         className={twCascade(
-          'w-1-dot-4 h-1-dot-4 text-center text-gray-400 leading-1-dot-4',
+          'w-2-dot-8 h-2-dot-8 text-center text-gray-400 leading-1-dot-4',
           'flex justify-center items-center',
           current <= 1 ? 'cursor-not-allowed' : 'cursor-pointer',
         )}
@@ -44,7 +44,7 @@ export const Core = ({ current, onChange = identity, maxPage }: ICore) => {
         {(current + 1 > maxPage && current - 2 > 0) && (
           <div
             className={twCascade(
-              'h-1-dot-4 px-2 rounded-l-dot-4 rounded-br-dot-4 cursor-pointer',
+              'w-2-dot-8 h-2-dot-8 px-2 rounded-l-dot-4 rounded-br-dot-4 cursor-pointer',
               'rounded-tr-dot-1 font-normal flex justify-center items-center fs12',
             )}
             onClick={() => onChange(current - 2)}
@@ -55,7 +55,7 @@ export const Core = ({ current, onChange = identity, maxPage }: ICore) => {
         {(current + 1 >= maxPage && current - 1 > 0) && (
           <div
             className={twCascade(
-              'h-1-dot-4 px-2 rounded-l-dot-4 rounded-br-dot-4 cursor-pointer',
+              'w-2-dot-8 h-2-dot-8 px-2 rounded-l-dot-4 rounded-br-dot-4 cursor-pointer',
               'rounded-tr-dot-1 font-normal flex justify-center items-center fs12',
             )}
             onClick={() => onChange(current - 1)}
@@ -65,7 +65,7 @@ export const Core = ({ current, onChange = identity, maxPage }: ICore) => {
         )}
         <div
           className={twCascade(
-            'h-1-dot-4 px-2 bg-blue-100 text-375FF3 rounded-l-dot-4 rounded-br-dot-4',
+            'w-2-dot-8 h-2-dot-8 px-2 bg-blue-100 text-375FF3 rounded-l-dot-4 rounded-br-dot-4',
             'rounded-tr-dot-1 font-normal flex justify-center items-center fs12',
           )}
         >
@@ -74,7 +74,7 @@ export const Core = ({ current, onChange = identity, maxPage }: ICore) => {
         {(current + 1 < maxPage) && (
           <div
             className={twCascade(
-              'h-1-dot-4 px-2 rounded-l-dot-4 rounded-br-dot-4 cursor-pointer',
+              'w-2-dot-8 h-2-dot-8 px-2 rounded-l-dot-4 rounded-br-dot-4 cursor-pointer',
               'rounded-tr-dot-1 font-normal flex justify-center items-center fs12',
             )}
             onClick={() => onChange(current + 1)}
@@ -86,7 +86,7 @@ export const Core = ({ current, onChange = identity, maxPage }: ICore) => {
           (maxPage - current > 2) && (
             <div
               className={twCascade(
-                'h-1-dot-4 px-2 rounded-l-dot-4 rounded-br-dot-4',
+                'w-2-dot-8 h-2-dot-8 px-2 rounded-l-dot-4 rounded-br-dot-4',
                 'rounded-tr-dot-1 font-normal flex justify-center items-center fs12',
               )}
             >
@@ -98,7 +98,7 @@ export const Core = ({ current, onChange = identity, maxPage }: ICore) => {
           (maxPage > current) && (
             <div
               className={twCascade(
-                'h-1-dot-4 px-2 rounded-l-dot-4 rounded-br-dot-4 cursor-pointer',
+                'w-2-dot-8 h-2-dot-8 px-2 rounded-l-dot-4 rounded-br-dot-4 cursor-pointer',
                 'rounded-tr-dot-1 font-normal flex justify-center items-center fs12',
               )}
               onClick={() => onChange(maxPage)}
@@ -111,7 +111,7 @@ export const Core = ({ current, onChange = identity, maxPage }: ICore) => {
       <div
         onClick={onNext}
         className={twCascade(
-          'w-1-dot-4 h-1-dot-4 text-center text-gray-400 leading-1-dot-4',
+          'w-2-dot-8 h-2-dot-8 text-center text-gray-400 leading-1-dot-4',
           'flex justify-center items-center',
           current >= maxPage ? 'cursor-not-allowed' : 'cursor-pointer',
         )}

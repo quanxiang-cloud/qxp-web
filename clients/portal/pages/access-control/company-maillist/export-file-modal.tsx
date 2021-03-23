@@ -123,8 +123,8 @@ export const ExportFileModal = ({
 
   const beforeUpload = (file: File) => {
     const { size } = file;
-    if (size > 1024 * 1024 * 2) {
-      Message.error('文件过大，超过 2M 不能上传！');
+    if (size > 1024 * 1024 * 5) {
+      Message.error('文件过大，超过 5M 不能上传！');
       return;
     }
     setFileList([file]);
@@ -291,10 +291,8 @@ export const ExportFileModal = ({
               <SvgIcon
                 size={16}
                 name="sms_failed"
-                // color={{
-                //   primary: '#ca2621',
-                //   secondary: '#ea4641',
-                // }}
+                className="mr-dot-9"
+                color='#ca2621'
               />
               <span>导入失败 {uploadStatus.failTotal} 条数据。</span>
             </div>
@@ -304,10 +302,8 @@ export const ExportFileModal = ({
               <SvgIcon
                 size={16}
                 name="playlist_add_check"
-                // color={{
-                //   primary: '#2191ca',
-                //   secondary: '#41b1ea',
-                // }}
+                className="mr-dot-9"
+                color='#2191ca'
               />
               <span>导入成功 {uploadStatus.successTotal} 条数据。</span>
             </div>
@@ -317,10 +313,8 @@ export const ExportFileModal = ({
               <SvgIcon
                 size={16}
                 name="priority_high"
-                // color={{
-                //   primary: '#d0a406',
-                //   secondary: '#f0c426',
-                // }}
+                className="mr-dot-9"
+                color='#d0a406'
               />
               <span>
                 数据导入完成，导入成功 {uploadStatus.successTotal} 数据，导入失败{' '}

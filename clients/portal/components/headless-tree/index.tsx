@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import classnames from 'classnames';
 import { observer } from 'mobx-react';
 import { observable, action, toJS } from 'mobx';
@@ -170,6 +170,7 @@ export default class Tree<T> extends React.Component<Props<T>> {
                 currentFocusedNodeID={currentFocusedNode.id}
                 onClick={this.handleNodeClick}
                 onSwitcherClick={this.handleSwitcherClick}
+                className={itemClassName}
               />
             );
           })

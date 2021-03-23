@@ -1,0 +1,70 @@
+.svg-icon {
+  @apply w-6 h-6 align-middle;
+}
+
+.svg-icon--light {
+  @apply text-white fill-current;
+}
+
+.svg-icon--dark {
+  @apply text-gray-600 fill-current;
+}
+
+.svg-icon--coloured {
+  @apply text-blue-600 fill-current;
+}
+
+.svg-icon--disabled {
+  opacity: 0.5;
+}
+
+.svg-icon--changeable {
+  &:hover,
+  &:active {
+    color: var(--icon-coloured-color);
+    fill: var(--icon-coloured-fill);
+  }
+}
+
+.svg-icon--clickable {
+  cursor: pointer;
+}
+
+.svg-icon[data-name='loading'] {
+  animation-name: spinner;
+  animation-duration: 2s;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+.icons-group {
+  display: flex;
+
+  .svg-icon {
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  .svg-icon:not(:last-child) {
+    margin-right: 12px;
+  }
+}
+
+.icons-group--large {
+  .svg-icon {
+    height: 20px;
+    width: 20px;
+  }
+
+  .svg-icon:not(:last-child) {
+    margin-right: 16px;
+  }
+}
+
+.confirm-check-icon svg {
+  color: green;
+}
+
+.cancel-close-icon svg {
+  color: red;
+}
