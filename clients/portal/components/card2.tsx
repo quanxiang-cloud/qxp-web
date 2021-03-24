@@ -34,7 +34,7 @@ export const Card = ({
   });
 
   return (
-    <div style={style} className={twCascade('bg-white-dot-6-5 mt-8', classNames, className)}>
+    <div style={style} className={twCascade('bg-white-dot-6-5 mt-20', classNames, className)}>
       <TextHeader
         title={title}
         desc={desc}

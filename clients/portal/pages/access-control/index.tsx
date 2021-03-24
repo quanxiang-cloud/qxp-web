@@ -10,16 +10,16 @@ export default function Index() {
   const [menuType, setMenuType] = useState('corporateDirectory');
 
   return (
-    <div className="py-8 px-5-dot-8 flex justify-center items-start">
-      <div className="w-31-dot-6 bg-white pb-8 border-1-radius-2 mr-8">
-        <div className="access-background-image p-8 opacity-90">
+    <div className="py-20 px-5-dot-8 flex justify-center items-start">
+      <div className="w-31-dot-6 bg-white rounded-12">
+        <div className="access-background-image p-20 opacity-90">
           <ItemWithTitleDesc
             title="访问控制"
             desc="对企业通讯录、角色权限进行统一管理"
             itemRender={
               <div
                 className="bg-gradient-green-to-top-right
-                rounded-lg rounded-tr-none w-4-dot-8 h-4-dot-8 flex-initial
+                rounded-lg rounded-tr-none w-48 h-48 flex-initial
                 flex items-center justify-center
                 "
               >
@@ -34,6 +34,7 @@ export default function Index() {
           <ListMenu defaultType="corporateDirectory" onChange={setMenuType} />
         </div>
       </div>
+      <div className='w-20'></div>
       <div className="right-content-container">
         {menuType === 'corporateDirectory' && (<MailList />)}
         {menuType !== 'corporateDirectory' && (<RoleManagement />)}
