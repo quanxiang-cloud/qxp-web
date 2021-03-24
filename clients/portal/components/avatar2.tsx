@@ -39,7 +39,7 @@ export const Avatar = ({ username = '', bio, avatar }: IAvatar) => {
             {
               (head && bgColor) && (
                 <div className="relative w-48 h-48 icon-border-radius
-              text-center text-white text-24"
+              text-center text-white text-24 leading-48"
                 style={{
                   backgroundColor: bgColor,
                 }}
@@ -53,7 +53,7 @@ export const Avatar = ({ username = '', bio, avatar }: IAvatar) => {
       }
       title={`${username}, 下午好!`}
       desc={bio}
-      titleClassName="text-20 text-black font-semibold text-12"
+      titleClassName="text-20 text-black font-semibold"
     />
   );
 };

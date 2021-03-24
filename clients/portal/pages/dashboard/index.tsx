@@ -57,7 +57,7 @@ export default function Dashboard() {
                         <img src="/dist/images/calendar.svg" alt="calendar" />
                       </div>
                     }
-                    titleClassName="text-14 leading-4 font-bold mb-4"
+                    titleClassName="text-14 leading-4 font-bold"
                     descClassName="leading-4"
                   />,
                   <ItemWithTitleDesc
@@ -74,7 +74,7 @@ export default function Dashboard() {
                         <img src="/dist/images/accounts.svg" alt="accounts" />
                       </div>
                     }
-                    titleClassName="text-14 leading-4 font-bold mb-4"
+                    titleClassName="text-14 leading-4 font-bold"
                     descClassName="leading-4"
                   />,
                   <ItemWithTitleDesc
