@@ -153,13 +153,13 @@ export default function GlobalHeader() {
       </div>
 
       <div
-        className="w-screen h-screen z-20 top-24 bg-black bg-opacity-50 fixed hidden
+        className="w-screen h-screen z-20 top-64 bg-black bg-opacity-50 fixed hidden
       transition duration-200"
         ref={maskRef}
       >
         <div
           className={classnames(
-            '-left-full transform p-16 max-w-full w-58-dot-8 absolute bottom-0 top-0 flex flex-col',
+            '-left-full transform px-40 max-w-full w-58-dot-8 absolute bottom-0 top-0 flex flex-col',
             useCss({
               background: 'var(--blue-100)',
               opacity: 0.9,
@@ -171,16 +171,16 @@ export default function GlobalHeader() {
             },
           )}
         >
-          <div className="right-16">
+          <div className="relative">
             <img
-              className="absolute top-16 right-16"
+              className="absolute top-40 right-40"
               src="/dist/images/menu-chatu.svg"
               alt="chatu"
             />
             <List
-              className="flex-col mt-10-dot-4"
+              className="flex-col mt-14-dot-4"
               itemClassName={classnames(
-                'pb-8 transform transition-all duration-200',
+                'pb-20 transform transition-all duration-200',
                 useCss({
                   '&:hover .next': {
                     width: '3.2rem',
@@ -203,7 +203,7 @@ export default function GlobalHeader() {
                     history.push(address);
                   }}
                   className={twCascade(
-                    'h-32 flex flex-row justify-between items-center bg-white px-4 py-8',
+                    'flex flex-row justify-between items-center bg-white px-20 py-16',
                     'rounded-12 cursor-pointer transition-all duration-200',
                   )}
                 >
@@ -213,15 +213,16 @@ export default function GlobalHeader() {
                     itemRender={
                       <div
                         className={classnames(
-                          'p-dot-3-6 rounded-lg rounded-tr-none leading-4 w-4-dot-8',
-                          'h-4-dot-8 flex-initial',
+                          'p-dot-3-6 rounded-lg rounded-tr-none w-48',
+                          'h-48 icon-border-radius flex items-center justify-center',
                           iconClassName,
                         )}
                       >
-                        <img className="w-full h-full" src={iconUrl} alt={title} />
+                        <img className="w-32 h-32" src={iconUrl} alt={title} />
                       </div>
                     }
-                    titleClassName="text-2 font-semibold"
+                    titleClassName="text-20 font-semibold"
+                    descClassName="text-697886"
                   />
                   <Link to={address}>
                     <Icon className="next transition-all duration-200" name="next" type="dark" />
@@ -232,8 +233,8 @@ export default function GlobalHeader() {
           </div>
           <div
             className={classnames(
-              'self-start cursor-pointer mt-8 flex flex-between',
-              'items-center rounded-lg rounded-tr-none px-1-dot-6 py-1',
+              'h-32 self-start cursor-pointer mt-20 flex flex-between',
+              'items-center button-border-radius rounded-tr-none px-1-dot-6 py-1',
               useCss({
                 border: '1.5px solid #475569',
               }),

@@ -39,7 +39,7 @@ export const ItemWithTitleDesc = ({
           {
             'flex-row': textDirection == 'row',
             'flex-col': textDirection != 'row',
-            'ml-1dot6': !textClassName?.startsWith('ml'),
+            'ml-16': !textClassName?.startsWith('ml'),
           },
           textClassName,
         )}

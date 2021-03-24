@@ -99,7 +99,7 @@ export default function Dashboard() {
           />
           <div className="flex justify-between items-center">
             <Card
-              className="flex-1 ml-0 px-40 py-20 text-16"
+              className="flex-1 ml-0 px-40 pt-20 text-16"
               title="我的待办"
               action={
                 <a className="transition ease-linear text-14 underline color-324558">查看全部</a>
