@@ -1,62 +1,54 @@
-import React, { useState, useEffect, forwardRef } from 'react';
-
+import React from 'react';
 import useCss from 'react-use/lib/useCss';
+import { twCascade } from '@mariusmarais/tailwind-cascade';
 
-export interface IHamburger {
-  onChange: (active: boolean) => void;
-  getSetter: (f: Function) => void;
+export interface Props {
+  onChange: () => void;
+  active: boolean;
 }
 
-export const Hamburger = forwardRef<HTMLDivElement, IHamburger>(
-  ({ onChange, getSetter }: IHamburger, ref) => {
-    const [active, setActive] = useState<boolean>(false);
-    useEffect(() => {
-      getSetter(setActive);
-    }, [setActive]);
-    const activeClassName = {
-      '& > div:nth-child(1)': {
-        transform: 'translateY(5px) rotate(45deg)',
+export default function Hamburger({ onChange, active }: Props) {
+  const activeClassName = {
+    '& > div > div:nth-child(1)': {
+      transform: 'translateY(5px) rotate(45deg)',
+    },
+    '& > div > div:nth-child(2)': {
+      opacity: 0,
+    },
+    '& > div > div:nth-child(3)': {
+      transform: 'translateY(-5px) rotate(-45deg)',
+    },
+  };
+  const className = {
+    hamburger: twCascade(useCss({
+      width: '24px',
+      height: '24px',
+      cursor: 'pointer',
+      ...(active ? activeClassName : {}),
+    }), 'flex justify-center items-center'),
+    line: useCss({
+      display: 'block',
+      width: '18px',
+      height: '3px',
+      'border-radius': '4px',
+      'background-color': 'var(--gray-600)',
+      '&:not(:last-child)': {
+        'margin-bottom': '3px',
       },
-      '& > div:nth-child(2)': {
-        opacity: 0,
-      },
-      '& > div:nth-child(3)': {
-        transform: 'translateY(-5px) rotate(-45deg)',
-      },
-    };
-    const className = {
-      hamburger: useCss({
-        width: '18px',
-        cursor: 'pointer',
-        ...(active ? activeClassName : {}),
-      }),
-      line: useCss({
-        display: 'block',
-        width: '100%',
-        height: '2px',
-        'border-radius': '4px',
-        'background-color': '#1E293B',
-        '&:not(:last-child)': {
-          'margin-bottom': '3px',
-        },
-        '-webkit-transition': 'all .3s ease-in-out',
-        transition: 'all .3s ease-in-out',
-      }),
-    };
+      '-webkit-transition': 'all .3s ease-in-out',
+      transition: 'all .3s ease-in-out',
+    }),
+  };
 
-    const onToggle = (e: React.MouseEvent<HTMLDivElement>) => {
-      e.stopPropagation();
-      onChange(!active);
-      setActive((v) => !v);
-    };
-
-    return (
-      <div className={className.hamburger} ref={ref} onClick={onToggle}>
+  return (
+    <div className={className.hamburger} onClick={onChange}>
+      <div>
         <div className={className.line}></div>
         <div className={className.line}></div>
         <div className={className.line}></div>
       </div>
-    );
-  }
-);
+    </div>
+  );
+}
+
 

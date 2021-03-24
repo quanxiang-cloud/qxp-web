@@ -6,24 +6,27 @@ module.exports = {
   theme: {
     colors: colors,
     spacing: {
+      0: '0px',
       2: '2px',
       4: '4px',
+      5: '5px',
+      6: '6px',
       8: '8px',
       12: '12px',
       16: '16px',
+      20: '20px',
       24: '24px',
+      28: '28px',
       36: '36px',
+      46: '46px',
+      56: '56px',
     },
     fontSize: {
-      'text-24': ['24px', '32px'],
-      'text-20': ['20px', '38px'],
-      'text-16': ['16px', '24px'],
-      'text-14': ['14px', '22px'],
-      'text-16': ['16px', '24px'],
-      'text-14': ['14px', '22px'],
-      'text-14': ['14px', '22px'],
-      'text-14': ['14px', '22px'],
       'text-12': ['12px', '20px'],
+      'text-14': ['14px', '22px'],
+      'text-16': ['16px', '24px'],
+      'text-20': ['20px', '38px'],
+      'text-24': ['24px', '32px'],
     },
     borderRadius: {
       2: '2px',
@@ -63,6 +66,7 @@ module.exports = {
       flex: {
         '2dot5': '2.5 1 0%',
         none: '0 0 0%',
+        2: '2 2 0%',
       },
       margin: {
         dot875: '0.875rem',

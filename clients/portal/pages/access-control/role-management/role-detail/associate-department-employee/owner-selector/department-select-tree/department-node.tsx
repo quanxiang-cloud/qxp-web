@@ -31,7 +31,7 @@ export const DepartmentNode = observer(({ node, store }: NodeRenderProps<IDepart
   return (
     <div
       onClick={onChange}
-      className={twCascade('transition-all py-dot-8 w-full flex items-center justify-between')}
+      className={twCascade('transition-all py-8 w-full flex items-center justify-between')}
     >
       <div className="ml-2 flex flex-row items-center">
         <Checkbox

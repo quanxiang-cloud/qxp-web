@@ -59,7 +59,7 @@ export const SelectedList = observer(({ className, ownerStore }: ISelectedList) 
         })}
         style={{
           borderRadius: '0.2rem 0',
-          backgroundColor: others.type === 1 ? '#F0F6FF' : '#FFFBEB',
+          backgroundColor: others.type === 1 ? 'var(--blue-100)' : '#FFFBEB',
           transition: 'all .1s linear',
         }}
         onClose={() =>

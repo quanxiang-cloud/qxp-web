@@ -320,7 +320,7 @@ const TreeRow = React.memo(<T extends ITreeData>({
             'h-0': !visible,
             'overflow-hidden': !visible,
             'px-3': visible,
-            'py-dot-8': visible,
+            'py-8': visible,
           },
           className,
           isChecked ? selectedClassName : '',

@@ -6,14 +6,11 @@ import { useQuery } from 'react-query';
 import { Modal, Icon, Form, Loading, Message } from '@QCFE/lego-ui';
 
 import { Button } from '@portal/components/button';
-import SelectTree from '@portal/components/select-tree';
 import { BatchDepParams } from './person-info';
 import { IUserInfo } from '@portal/api/auth';
 import TreePicker from '@portal/components/tree-picker';
 import { departmentToTreeNode } from '@assets/lib/utils';
 import { getERPTree } from './api';
-
-const SelectTreeField = Form.getFormField(SelectTree);
 
 interface IAdjustDepModalProps {
   userList: IUserInfo[];
@@ -29,8 +26,6 @@ export const AdjustDepModal = (props: IAdjustDepModalProps) => {
   const { data: depData, isLoading } = useQuery('getERPTree', getERPTree, {
     refetchOnWindowFocus: false,
   });
-
-  const treeData = depData ? [depData] : [];
 
   const okModalHandle = () => {
     if (!formRef.current?.validateForm()) {
@@ -66,14 +61,14 @@ export const AdjustDepModal = (props: IAdjustDepModalProps) => {
       onCancel={closeModal}
       footer={
         <div className="flex items-center">
-          <Button icon={<Icon name="close" className="mr-dot-4" />} onClick={closeModal}>
+          <Button icon={<Icon name="close" className="mr-4" />} onClick={closeModal}>
             取消
           </Button>
           <div className="px-2"></div>
           <Button
             className="bg-black"
             textClassName="text-white"
-            icon={<Icon name="check" type="light" className="mr-dot-4" />}
+            icon={<Icon name="check" type="light" className="mr-4" />}
             onClick={okModalHandle}
           >
             确定
@@ -88,7 +83,7 @@ export const AdjustDepModal = (props: IAdjustDepModalProps) => {
             {userList.map((user) => {
               return (
                 <li key={user.id} className="rounded-tl-dot-4 rounded-br-dot-4
-                px-dot-8 bg-blue-200 mr-2 mr-2 whitespace-nowrap">
+                px-8 bg-blue-200 mr-2 whitespace-nowrap">
                   <span className="text-blue-600 text-1-dot-4">{user.userName}</span>
                 </li>
               );
@@ -101,19 +96,11 @@ export const AdjustDepModal = (props: IAdjustDepModalProps) => {
             {isLoading ? (
               <Loading />
             ) : (
-              // <SelectTreeField
-              //   name="pid"
-              //   label="选择部门"
-              //   placeholder="请选择部门"
-              //   defaultSelect={department?.id || ''}
-              //   treeData={treeData}
-              // />
               <TreePicker
                 label="部门"
                 treeData={departmentToTreeNode(depData as IDepartment)}
                 labelKey="departmentName"
                 name="pid"
-                // defaultValue={props.initData?.dep?.id}
               />
             )}
           </Form>

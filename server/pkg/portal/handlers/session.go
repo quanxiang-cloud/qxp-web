@@ -132,7 +132,7 @@ func renewToken(r *http.Request, refreshToken string) bool {
 func SaveToken(r *http.Request, token string, refreshToken string, expireTime time.Time) {
 	tokenKey := getTokenKey(r)
 	refreshTokenKey := getRefreshTokenKey(r)
-	duration := expireTime.Sub(time.Now()) - time.Hour
+	duration := time.Until(expireTime) - time.Hour
 
 	err := contexts.Cache.Set(tokenKey, token, duration).Err()
 	if err != nil {

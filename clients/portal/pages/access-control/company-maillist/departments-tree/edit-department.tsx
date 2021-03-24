@@ -84,14 +84,14 @@ export default function EditDepartment({ department, closeModal }: DepartmentMod
       onCancel={closeModal}
       footer={
         <div className="flex items-center">
-          <Button icon={<Icon name="close" className="mr-dot-4" />} onClick={closeModal}>
+          <Button icon={<Icon name="close" className="mr-4" />} onClick={closeModal}>
             取消
           </Button>
           <div className="px-2"></div>
           <Button
             className="bg-black"
             textClassName="text-white"
-            icon={<Icon name="check" className="mr-dot-4" />}
+            icon={<Icon name="check" className="mr-4" />}
             onClick={okModalHandle}
           >
             {submitBtnText}

@@ -28,7 +28,7 @@ $node-height: 56px;
   @include modifier(focused) {
     color: var(--blue-600);
     font-weight: 600;
-    background-color: #F0F6FF;
+    background-color: var(--blue-100);
 
     // todo refactor this
     // @include element(toggle-icon) {

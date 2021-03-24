@@ -177,7 +177,7 @@ export default function Dashboard() {
                 />
               }
             />
-            <div className="w-8 h-full"></div>
+            <div className="w-20 h-full"></div>
             <Card
               className="flex-2 self-stretch flex flex-col px-16 py-8 text-1-dot-6"
               title="未读消息"
