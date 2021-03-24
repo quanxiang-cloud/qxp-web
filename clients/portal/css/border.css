@@ -6,6 +6,10 @@
   @apply rounded-tl-2 rounded-tr-8 rounded-br-8 rounded-bl-8;
 }
 
+.button-reverse-border-radius {
+  @apply rounded-tl-8 rounded-tr-8 rounded-br-8 rounded-bl-2;
+}
+
 .icon-border-radius {
   @apply rounded-tl-12 rounded-tr-2 rounded-br-12 rounded-bl-12;
 }

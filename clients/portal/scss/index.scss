@@ -30,7 +30,7 @@ body {
   height: 3.2rem;
 }
 
-.h-8-dot-6 {
+.h-20-dot-6 {
   height: 8.6rem;
 }
 
@@ -106,26 +106,8 @@ body {
   height: 3.2rem;
 }
 
-.h-3-dot-6 {
-  height: 3.6rem;
-}
-
 .h-5-dot-6 {
   height: 5.6rem;
-}
-
-.h-6-dot-4 {
-  height: 6.4rem;
-}
-
-.py-dot-6 {
-  padding-top: 0.6rem;
-  padding-bottom: 0.6rem;
-}
-
-.py-dot-8 {
-  padding-top: 0.8rem;
-  padding-bottom: 0.8rem;
 }
 
 .py-dot-9 {
@@ -211,11 +193,6 @@ body {
 .px-dot-6 {
   padding-left: 0.6rem;
   padding-right: 0.6rem;
-}
-
-.px-dot-8 {
-  padding-left: 0.8rem;
-  padding-right: 0.8rem;
 }
 
 .bg-jb {
@@ -344,10 +321,6 @@ body {
   margin-right: 0.1rem;
 }
 
-.mr-dot-4 {
-  margin-right: 0.4rem;
-}
-
 .mr-dot-3 {
   margin-right: 0.3rem;
 }
@@ -356,24 +329,12 @@ body {
   margin-right: 0.9rem;
 }
 
-.mr-2-dot-8 {
-  margin-right: 2.8rem;
-}
-
 .mr-dot-6 {
   margin-right: 0.6rem;
 }
 
 .ml-1dot6 {
   margin-left: 1.6rem;
-}
-
-.ml-dot-3-5 {
-  margin-left: 0.35rem;
-}
-
-.mr-dot-4 {
-  margin-right: 0.4rem;
 }
 
 .ml-dot-8 {
@@ -860,14 +821,5 @@ button {
       cursor: pointer !important;
       padding-right: 2rem !important;
     }
-  }
-}
-
-.hover-gong:hover {
-  background: #F0F6FF;
-  border-radius: 8px 8px 8px 2px;
-
-  span {
-    color: #375FF3;
   }
 }

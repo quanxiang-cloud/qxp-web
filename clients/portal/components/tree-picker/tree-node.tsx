@@ -7,7 +7,7 @@ import { NodeRenderProps } from '@c/headless-tree/types';
 export default observer(<T extends unknown>({ node }: NodeRenderProps<T>) => {
   return (
     <div
-      className={twCascade('transition-all py-dot-8 w-full flex items-center justify-between')}
+      className={twCascade('transition-all py-8 w-full flex items-center justify-between')}
     >
       <div className="flex items-center">
         <div className="ml-2">

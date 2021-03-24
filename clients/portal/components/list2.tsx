@@ -51,7 +51,7 @@ export const List = <T extends unknown>({
                   curItem.iconName.endsWith('.svg') ? (
                     <img src={curItem.iconName} />
                   ) : (
-                    <Icon name={curItem.iconName} className="mr-dot-4" />
+                    <Icon name={curItem.iconName} className="mr-4" />
                   )
                 }</>
               )}

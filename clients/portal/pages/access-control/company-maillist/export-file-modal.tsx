@@ -262,7 +262,7 @@ export const ExportFileModal = ({
         footer={
           uploadStatus.status !== 3 ? (
             <div className="flex items-center">
-              <Button icon={<Icon name="close" className="mr-dot-4" />} onClick={closeBefore}>
+              <Button icon={<Icon name="close" className="mr-4" />} onClick={closeBefore}>
                 取消
               </Button>
               <div className="px-2"></div>
@@ -270,7 +270,7 @@ export const ExportFileModal = ({
                 <Button
                   className="bg-black"
                   textClassName="text-white"
-                  icon={<Icon name="check" type="light" className="mr-dot-4" />}
+                  icon={<Icon name="check" type="light" className="mr-4" />}
                   onClick={importFile}
                 >
                   确定导入
@@ -279,7 +279,7 @@ export const ExportFileModal = ({
                 <Button
                   className="bg-black"
                   textClassName="text-white"
-                  icon={<Icon name="check" type="light" className="mr-dot-4" />}
+                  icon={<Icon name="check" type="light" className="mr-4" />}
                   onClick={okSendModal}
                 >
                   确定
@@ -338,7 +338,7 @@ export const ExportFileModal = ({
                 >
                   <div
                     className={classnames(
-                      'w-full h-8-dot-6 border rounded-dot-8 border-dashed broder-gray-700',
+                      'w-full h-20-dot-6 border rounded-dot-8 border-dashed broder-gray-700',
                       'flex flex-col items-center justify-center hover:border-red-600',
                     )}
                   >
@@ -351,7 +351,7 @@ export const ExportFileModal = ({
                     return (
                       <div
                         key={index}
-                        className="px-dot-8 py-dot-4 cursor-pointer flex
+                        className="px-8 py-dot-4 cursor-pointer flex
                         items-center justify-between bg-blue-100"
                       >
                         <div className="flex items-center">

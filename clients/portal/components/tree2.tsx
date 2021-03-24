@@ -59,12 +59,12 @@ export const Tree = ({ ...props }: ITree) => {
             '&': {
               'li.tree-node .tree-node-wrap:hover:before': {
                 height: '2.7rem',
-                'background-color': '#F0F6FF',
+                'background-color': 'var(--blue-100)',
                 opacity: '0.5',
               },
               'li.tree-node .tree-node-wrap.tree-node-wrap-selected:before': {
                 height: '2.7rem',
-                'background-color': '#F0F6FF',
+                'background-color': 'var(--blue-100)',
                 opacity: '1',
               },
               'li.tree-node .tree-node-wrap.tree-node-wrap-selected .tree-title': {

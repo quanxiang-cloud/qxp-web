@@ -13,19 +13,19 @@ const MENUS: MenuItem<string>[] = [
   {
     key: 'add',
     label: (
-      <div className="flex items-center"><Icon name="add" className="mr-dot-4" />添加部门</div>
+      <div className="flex items-center"><Icon name="add" className="mr-4" />添加部门</div>
     ),
   },
   {
     key: 'edit',
     label: (
-      <div className="flex items-center"><Icon name="pen" className="mr-dot-4" />修改信息</div>
+      <div className="flex items-center"><Icon name="pen" className="mr-4" />修改信息</div>
     ),
   },
   {
     key: 'delete',
     label: (
-      <div className="flex items-center"><Icon name="trash" className="mr-dot-4" />删除部门</div>
+      <div className="flex items-center"><Icon name="trash" className="mr-4" />删除部门</div>
     ),
   },
 ];

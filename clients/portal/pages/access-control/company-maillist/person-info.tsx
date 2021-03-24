@@ -535,7 +535,7 @@ export const PersonInfo = React.memo(({
                 textClassName="text-white"
                 icon={
                   <svg
-                    className="mr-dot-4"
+                    className="mr-4"
                     width="18"
                     height="14"
                     viewBox="0 0 18 14"
@@ -555,7 +555,7 @@ export const PersonInfo = React.memo(({
               </Button>
               <div className="px-2"></div>
               <Button
-                icon={<Icon className="mr-dot-4" name="add" />}
+                icon={<Icon className="mr-4" name="add" />}
                 onClick={openSendPwd}
               >
                 发送随机密码
