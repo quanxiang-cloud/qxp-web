@@ -56,11 +56,6 @@ function getSVGFiles() {
   );
 }
 
-function writeSvgTmpToLayout(value) {
-  let basePath = path.resolve('./');
-  fs.writeFileSync(basePath + '/clients/assets/sprite/icons.js', value);
-}
-
 module.exports = function () {
   return getSVGFiles().then((filePaths) => {
     return Promise.all(
@@ -77,8 +72,13 @@ module.exports = function () {
           // replace #475569 by currentColor in order to be styled by css
           // todo define #475569 as constant?
           const svgStr = defs.replace(/#475569/g, 'currentColor');
-          const template = `const svgSprites = \`${svgStr}\`;\n\nexport default svgSprites;\n`;
-          writeSvgTmpToLayout(template);
+          mkdirp.sync(
+            path.dirname(path.join(__dirname, '../dist/images/sprite.svg'))
+          );
+          fs.writeFileSync(
+            path.join(__dirname, '../dist/images/sprite.svg'),
+            svgStr
+          );
         }
       );
     });
