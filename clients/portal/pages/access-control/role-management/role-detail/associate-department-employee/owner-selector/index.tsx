@@ -142,7 +142,7 @@ export const OwnerSelector = observer(({ defaultEmployees = [], refs }: IOwnerSe
                     desc="角色关联部门后，在该部门下添加员工时会默认自动带入该部门的角色。例如：部门关联角色“普通管理员”，添加新员工时，自动关联角色“普通管理员”。"
                     itemClassName="flex flex-col items-start"
                     textClassName="ml-0"
-                    descClassName="-ml-dot-4 mb-dot-4"
+                    descClassName="mb-dot-4"
                   />
                   <DepartmentSelectTree
                     store={store.departmentTreeStore}
