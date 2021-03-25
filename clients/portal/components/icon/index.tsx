@@ -2,10 +2,9 @@ import * as React from 'react';
 import classnames from 'classnames';
 
 import './_icon.scss';
-import { IconName } from './types';
 
 interface Props extends React.SVGProps<SVGSVGElement> {
-  name: IconName;
+  name: string;
   type?: 'dark' | 'coloured' | 'light';
   size?: number;
   color?: string;

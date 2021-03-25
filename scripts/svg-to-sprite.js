@@ -3,10 +3,8 @@ const glob = require('glob');
 const path = require('path');
 const fs = require('fs');
 const svgSpreact = require('svg-spreact');
-// const SVGSpriter = require('svg-sprite');
 const mkdirp = require('mkdirp');
 const svgoConfig = require('./svgo.config');
-const { type } = require('os');
 
 function getFileContent(filePath) {
   return util.promisify(fs.readFile)(filePath, { encoding: 'utf-8' });
@@ -28,36 +26,8 @@ function getFileNames() {
   });
 }
 
-function getIconNames() {
-  return getFileContent(
-    path.join(__dirname, '../clients/portal/components/icon/names.ts')
-  ).then((data) => {
-    const names = data
-      .split('\n')
-      .slice(1, -2)
-      .map((str) => {
-        const [name] = /[a-z\_]+/.exec(str);
-        return name;
-      })
-      .filter(Boolean);
-    return names;
-  });
-}
-
-function getSVGFiles() {
-  return Promise.all([getFileNames(), getIconNames()]).then(
-    ([fileNames, iconNames]) => {
-      return fileNames.filter((fileName) => {
-        return iconNames.some((iconName) => {
-          return fileName.endsWith(`${iconName}.svg`);
-        });
-      });
-    }
-  );
-}
-
 module.exports = function () {
-  return getSVGFiles().then((filePaths) => {
+  return getFileNames().then((filePaths) => {
     return Promise.all(
       filePaths.map((filePath) => {
         return getFileContent(filePath);
