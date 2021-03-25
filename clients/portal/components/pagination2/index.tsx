@@ -59,8 +59,8 @@ export const Pagination = ({
           <Select
             value={pageSize}
             onChange={selectChange}
-            className="h-2-dot-8 border border-gray-300 rounded-r-dot-8
-            rounded-tl-dot-2 rounded-bl-dot-8 px-1-dot-2 text-1-dot-2 flex items-center"
+            className="h-2-dot-8 border border-gray-300 rounded-r-8
+            rounded-tl-2 rounded-bl-8 px-1-dot-2 text-1-dot-2 flex items-center"
             options={[{
               value: 10,
               label: '10 条',

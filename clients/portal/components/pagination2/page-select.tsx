@@ -20,8 +20,8 @@ const PageSelect = (props: PageSelectProps) => {
   return (
     <div className="flex items-center relative">
       <div className="mr-dot-6 text-1-dot-2">每页</div>
-      <div className="w-32 h-2-dot-8 border border-gray-300 rounded-r-dot-8
-      rounded-tl-dot-2 rounded-bl-dot-8 px-1-dot-2 text-1-dot-2 flex items-center"
+      <div className="w-32 h-2-dot-8 border border-gray-300 rounded-r-8
+      rounded-tl-2 rounded-bl-8 px-1-dot-2 text-1-dot-2 flex items-center"
       onClick={() => setIsShow(!isShow)}
       >
         <div className="mr-2">{value} 条</div>

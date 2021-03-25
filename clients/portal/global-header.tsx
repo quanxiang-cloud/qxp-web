@@ -1,11 +1,11 @@
 /* eslint-disable max-len */
 import React, { useEffect, useRef } from 'react';
-import classnames from 'classnames';
 import useToggle from 'react-use/lib/useToggle';
 import useCss from 'react-use/lib/useCss';
 import { Link, useHistory } from 'react-router-dom';
 import { twCascade } from '@mariusmarais/tailwind-cascade';
 import { Icon } from '@QCFE/lego-ui';
+import { useLocation } from 'react-router-dom';
 
 import { More } from '@portal/components/more';
 import Hamburger from '@portal/components/hamburger2';
@@ -41,6 +41,7 @@ export default function GlobalHeader() {
   const [on, toggle] = useToggle(false);
   const history = useHistory();
   const maskRef = useRef<HTMLDivElement>(null);
+  const location = useLocation();
 
   useEffect(() => {
     const maskElement = maskRef.current;
@@ -79,27 +80,106 @@ export default function GlobalHeader() {
     };
   }, [on]);
 
+  const isHome = location.pathname === '/';
+  const isAppManagement = location.pathname === '/app-management';
+  const isAccess = location.pathname === '/access-control';
+  const isSystemControl = location.pathname === '/system';
+
   return (
     <>
       <div className="flex justify-between py-8 px-24 bg-white">
         <div className="flex items-center flex-2">
-          <div
+          {/* <div
             className="mr-8 flex justify-between items-center cursor-pointer"
             onClick={toggle}
           >
             <Hamburger active={on} />
             <span className="ml-8 text-button">平台管理</span>
-          </div>
+          </div> */}
           <Link
             to="/"
-            className="header-nav-btn group"
+            className={twCascade('header-nav-btn group mr-12', {
+              'bg-blue-100': isHome,
+            })}
           >
             <div className="header-nav-btn-icon-wrapper">
-              <svg width="19" height="18" viewBox="0 0 19 18" className="header-nav-btn-icon group-hover:text-blue-600" xmlns="http://www.w3.org/2000/svg">
+              <svg width="19" height="18" viewBox="0 0 19 18" className="header-nav-btn-icon group-hover:text-blue-600" xmlns="http://www.w3.org/2000/svg"
+                style={{
+                  color: isHome ? 'var(--blue-600)' : 'var(--gray-600)',
+                }}
+              >
                 <path d="M17.3333 3.31663L7.825 12.8333L4.29166 9.29996L5.46666 8.12496L7.825 10.4833L16.1583 2.14996L17.3333 3.31663ZM9 15.6666C5.325 15.6666 2.33333 12.675 2.33333 8.99996C2.33333 5.32496 5.325 2.33329 9 2.33329C10.3083 2.33329 11.5333 2.71663 12.5667 3.37496L13.775 2.16663C12.4167 1.22496 10.775 0.666626 9 0.666626C4.4 0.666626 0.666664 4.39996 0.666664 8.99996C0.666664 13.6 4.4 17.3333 9 17.3333C10.4417 17.3333 11.8 16.9666 12.9833 16.3166L11.7333 15.0666C10.9 15.45 9.975 15.6666 9 15.6666ZM14.8333 11.5H12.3333V13.1666H14.8333V15.6666H16.5V13.1666H19V11.5H16.5V8.99996H14.8333V11.5Z"/>
               </svg>
             </div>
-            <span className="header-nav-btn-text group-hover:text-blue-600">工作台</span>
+            <span
+              className="header-nav-btn-text group-hover:text-blue-600"
+              style={{
+                color: isHome ? 'var(--blue-600)' : 'var(--gray-600)',
+              }}
+            >工作台</span>
+          </Link>
+          <Link
+            to="/app-management"
+            className={twCascade('header-nav-btn group mr-20', {
+              'bg-blue-100': isAppManagement,
+            })}
+          >
+            <div className="header-nav-btn-icon-wrapper">
+              <svg width="19" height="18" viewBox="0 0 19 18" className="header-nav-btn-icon group-hover:text-blue-600" xmlns="http://www.w3.org/2000/svg"
+                style={{
+                  color: isAppManagement ? 'var(--blue-600)' : 'var(--gray-600)',
+                }}
+              >
+                <path d="M17.3333 3.31663L7.825 12.8333L4.29166 9.29996L5.46666 8.12496L7.825 10.4833L16.1583 2.14996L17.3333 3.31663ZM9 15.6666C5.325 15.6666 2.33333 12.675 2.33333 8.99996C2.33333 5.32496 5.325 2.33329 9 2.33329C10.3083 2.33329 11.5333 2.71663 12.5667 3.37496L13.775 2.16663C12.4167 1.22496 10.775 0.666626 9 0.666626C4.4 0.666626 0.666664 4.39996 0.666664 8.99996C0.666664 13.6 4.4 17.3333 9 17.3333C10.4417 17.3333 11.8 16.9666 12.9833 16.3166L11.7333 15.0666C10.9 15.45 9.975 15.6666 9 15.6666ZM14.8333 11.5H12.3333V13.1666H14.8333V15.6666H16.5V13.1666H19V11.5H16.5V8.99996H14.8333V11.5Z"/>
+              </svg>
+            </div>
+            <span className="header-nav-btn-text group-hover:text-blue-600"
+              style={{
+                color: isAppManagement ? 'var(--blue-600)' : 'var(--gray-600)',
+              }}
+            >应用管理</span>
+          </Link>
+          <Link
+            to="/access-control"
+            className={twCascade('header-nav-btn group mr-20', {
+              'bg-blue-100': isAccess,
+            })}
+          >
+            <div className="header-nav-btn-icon-wrapper">
+              <svg width="19" height="18" viewBox="0 0 19 18" className="header-nav-btn-icon group-hover:text-blue-600" xmlns="http://www.w3.org/2000/svg"
+                style={{
+                  color: isAccess ? 'var(--blue-600)' : 'var(--gray-600)',
+                }}
+              >
+                <path d="M17.3333 3.31663L7.825 12.8333L4.29166 9.29996L5.46666 8.12496L7.825 10.4833L16.1583 2.14996L17.3333 3.31663ZM9 15.6666C5.325 15.6666 2.33333 12.675 2.33333 8.99996C2.33333 5.32496 5.325 2.33329 9 2.33329C10.3083 2.33329 11.5333 2.71663 12.5667 3.37496L13.775 2.16663C12.4167 1.22496 10.775 0.666626 9 0.666626C4.4 0.666626 0.666664 4.39996 0.666664 8.99996C0.666664 13.6 4.4 17.3333 9 17.3333C10.4417 17.3333 11.8 16.9666 12.9833 16.3166L11.7333 15.0666C10.9 15.45 9.975 15.6666 9 15.6666ZM14.8333 11.5H12.3333V13.1666H14.8333V15.6666H16.5V13.1666H19V11.5H16.5V8.99996H14.8333V11.5Z"/>
+              </svg>
+            </div>
+            <span className="header-nav-btn-text group-hover:text-blue-600"
+              style={{
+                color: isAccess ? 'var(--blue-600)' : 'var(--gray-600)',
+              }}
+            >访问控制</span>
+          </Link>
+          <Link
+            to="/system"
+            className={twCascade('header-nav-btn group mr-20', {
+              'bg-blue-100': isSystemControl,
+            })}
+          >
+            <div className="header-nav-btn-icon-wrapper">
+              <svg width="19" height="18" viewBox="0 0 19 18" className="header-nav-btn-icon group-hover:text-blue-600" xmlns="http://www.w3.org/2000/svg"
+                style={{
+                  color: isSystemControl ? 'var(--blue-600)' : 'var(--gray-600)',
+                }}
+              >
+                <path d="M17.3333 3.31663L7.825 12.8333L4.29166 9.29996L5.46666 8.12496L7.825 10.4833L16.1583 2.14996L17.3333 3.31663ZM9 15.6666C5.325 15.6666 2.33333 12.675 2.33333 8.99996C2.33333 5.32496 5.325 2.33329 9 2.33329C10.3083 2.33329 11.5333 2.71663 12.5667 3.37496L13.775 2.16663C12.4167 1.22496 10.775 0.666626 9 0.666626C4.4 0.666626 0.666664 4.39996 0.666664 8.99996C0.666664 13.6 4.4 17.3333 9 17.3333C10.4417 17.3333 11.8 16.9666 12.9833 16.3166L11.7333 15.0666C10.9 15.45 9.975 15.6666 9 15.6666ZM14.8333 11.5H12.3333V13.1666H14.8333V15.6666H16.5V13.1666H19V11.5H16.5V8.99996H14.8333V11.5Z"/>
+              </svg>
+            </div>
+            <span className="header-nav-btn-text group-hover:text-blue-600"
+              style={{
+                color: isSystemControl ? 'var(--blue-600)' : 'var(--gray-600)',
+              }}
+            >系统管理</span>
           </Link>
         </div>
         <img className="flex-1 h-46" src="/dist/images/quanxiangyun.svg" alt="quanxiangyun" />
@@ -151,7 +231,7 @@ export default function GlobalHeader() {
         </div>
       </div>
 
-      <div
+      {/* <div
         className="w-screen h-screen z-20 top-64 bg-black bg-opacity-50 fixed hidden
       transition duration-200"
         ref={maskRef}
@@ -212,7 +292,7 @@ export default function GlobalHeader() {
                     itemRender={
                       <div
                         className={classnames(
-                          'p-36 rounded-lg rounded-tr-none w-48',
+                          'p-8 icon-border-radius w-48',
                           'h-48 icon-border-radius flex items-center justify-center',
                           iconClassName,
                         )}
@@ -235,7 +315,7 @@ export default function GlobalHeader() {
             <span className="text-button" onClick={toggle}>离开当前页面</span>
           </div>
         </div>
-      </div>
+      </div> */}
     </>
   );
 }

@@ -311,7 +311,7 @@ export const PersonInfo = React.memo(({
         return (
           <div className="flex items-center">
             <div className="pr-dot-4">
-              <div className="relative w-2-dot-4 h-2-dot-4 rounded-br-dot-4 rounded-l-dot-4
+              <div className="relative w-2-dot-4 h-2-dot-4 rounded-br-4 rounded-l-4
               text-center leading-2-dot-4 text-white text-1-dot-4"
               style={{
                 backgroundColor: bgColor,
@@ -321,10 +321,10 @@ export const PersonInfo = React.memo(({
                 <div className="w-4 h-4 bg-white rounded-lg flex items-center
                 justify-center absolute bottom-dot-5 right-dot-5">
                   {record.useStatus === 1 && (
-                    <div className="w-dot-6 h-dot-6 bg-green-600 rounded-dot-6"></div>
+                    <div className="w-dot-6 h-dot-6 bg-green-600 rounded-6"></div>
                   )}
                   {record.useStatus === -2 && (
-                    <div className="w-dot-6 h-dot-6 bg-red-600 rounded-dot-6"></div>
+                    <div className="w-dot-6 h-dot-6 bg-red-600 rounded-6"></div>
                   )}
                 </div>
               </div>
@@ -336,7 +336,7 @@ export const PersonInfo = React.memo(({
             {record.isDEPLeader === 1 && (
               <span
                 className={twCascade(
-                  'w-3-dot-4 h-1-dot-6 bg-jb rounded-dot-4 p-dot-4',
+                  'w-3-dot-4 h-1-dot-6 bg-jb rounded-4 p-dot-4',
                   'flex items-center justify-center'
                 )}
               >

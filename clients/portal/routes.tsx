@@ -90,7 +90,7 @@ export default function Routes(): JSX.Element {
       <Switch>
         <Route exact path="/" component={Dashboard} />
         <Route path="/metadata" component={MetaData} />
-        <Route exact path="/accessControl" component={AccessControl} />
+        <Route exact path="/access-control" component={AccessControl} />
         <Route component={Error} />
       </Switch>
     </>

@@ -50,7 +50,7 @@ export default function Dashboard() {
                     itemRender={
                       <div
                         className={twCascade(
-                          'w-44 h-44 p-36 flex items-center justify-center icon-border-radius',
+                          'w-44 h-44 p-8 flex items-center justify-center icon-border-radius',
                           'bg-gradient-green-to-top-right rounded-lg rounded-tr-none',
                         )}
                       >
@@ -67,7 +67,7 @@ export default function Dashboard() {
                     itemRender={
                       <div
                         className={twCascade(
-                          'w-44 h-44 p-36 flex items-center justify-center icon-border-radius',
+                          'w-44 h-44 p-8 flex items-center justify-center icon-border-radius',
                           'bg-gradient-yellow-to-top-right rounded-lg rounded-tr-none',
                         )}
                       >
@@ -83,7 +83,7 @@ export default function Dashboard() {
                     itemRender={
                       <div
                         className={twCascade(
-                          'w-44 h-44 p-36 flex items-center justify-center icon-border-radius',
+                          'w-44 h-44 p-8 flex items-center justify-center icon-border-radius',
                           'bg-gradient-blue-to-top-right rounded-lg rounded-tr-none',
                         )}
                       >

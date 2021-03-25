@@ -19,11 +19,11 @@ export default function Index() {
             itemRender={
               <div
                 className="bg-gradient-green-to-top-right
-                rounded-lg rounded-tr-none w-48 h-48 flex-initial
+                icon-border-radius w-48 h-48 flex-initial
                 flex items-center justify-center
                 "
               >
-                <img src="/dist/images/aces-ctl.svg" alt="calendar" />
+                <img src="/dist/images/person.svg" alt="calendar" />
               </div>
             }
             titleClassName="text-2 leading-8 font-bold mb-2"
