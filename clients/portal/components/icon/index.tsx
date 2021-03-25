@@ -49,7 +49,7 @@ function SvgIcon(
   return (
     <svg
       {...props}
-      ref={_ref}
+      ref={props.ref}
       data-name={name}
       style={_style}
       className={classnames('svg-icon', `svg-icon--${type}`, className, {
