@@ -1,6 +1,6 @@
 import { IInputField, InputField, query } from '@assets/lib/atom';
 import { httpPost } from '@assets/lib/utils';
-import { IResponse } from 'clients/@types/interface/api';
+import { Response } from 'clients/@types/interface/api';
 import UserName from './username';
 
 export default class Captcha extends InputField {
@@ -80,7 +80,7 @@ export default class Captcha extends InputField {
 
     this.callSendApi()
       .then((resp: unknown) => {
-        const res = resp as IResponse<string>;
+        const res = resp as Response<string>;
         if (res.code !== 0) {
           this.showError(res.msg);
         }

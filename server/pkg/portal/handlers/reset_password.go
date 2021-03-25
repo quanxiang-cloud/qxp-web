@@ -43,7 +43,7 @@ func ResetPasswordActionHandler(w http.ResponseWriter, r *http.Request) {
 		})
 		return
 	}
-	respBuffer, errMsg := contexts.SendRequest(r.Context(), "POST", "/api/nurturing/v1/userResetPWD", bytes.NewBuffer(resetPasswordParams), map[string]string{
+	respBuffer, errMsg := contexts.SendRequest(r.Context(), "POST", "/api/v1/nurturing/userResetPWD", bytes.NewBuffer(resetPasswordParams), map[string]string{
 		"Content-Type": "application/json",
 		"User-Agent":   r.Header.Get("User-Agent"),
 		"Access-Token": GetToken(r),

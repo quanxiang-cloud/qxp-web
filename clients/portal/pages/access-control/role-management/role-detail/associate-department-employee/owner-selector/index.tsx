@@ -3,7 +3,7 @@ import { useQuery } from 'react-query';
 import { observer } from 'mobx-react';
 
 import { Tab } from '@portal/components/tab2';
-import { TextHeader } from '@portal/components/text-header';
+import TextHeader from '@portal/components/text-header';
 import { SearchInput } from '@portal/components/form/search-input';
 import { EmployeeTable } from './employee-table';
 import { SelectedList } from './selected-list';

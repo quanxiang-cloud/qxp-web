@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { twCascade } from '@mariusmarais/tailwind-cascade';
 import { Control, Icon, Input } from '@QCFE/lego-ui';
 
-import { TextHeader } from '@portal/components/text-header';
+import TextHeader from '@portal/components/text-header';
 import { DepartmentStaff } from '@portal/components/department-staff';
 
 import DepartmentsTree from './departments-tree';

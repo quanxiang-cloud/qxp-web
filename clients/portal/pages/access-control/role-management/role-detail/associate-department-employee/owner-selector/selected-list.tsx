@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { observer } from 'mobx-react';
 
-import { TextHeader } from '@portal/components/text-header';
+import TextHeader from '@portal/components/text-header';
 import { Tag } from '@QCFE/lego-ui';
 import { twCascade } from '@mariusmarais/tailwind-cascade';
 import OwnerStore from './store';

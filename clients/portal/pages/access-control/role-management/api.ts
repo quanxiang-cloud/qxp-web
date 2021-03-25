@@ -5,7 +5,7 @@ import Role from './role';
 
 // 获取角色列表
 export async function getRoles() {
-  const { data } = await httpPost<{ roles: Role[]; }>('/api/goalie/listRole', null, {
+  const { data } = await httpPost<{ roles: Role[]; }>('/api/v1/goalie/listRole', null, {
     'Content-Type': 'application/x-www-form-urlencoded',
   });
   return data?.roles;
@@ -29,7 +29,7 @@ export const getRoleFunctions = ({ queryKey }: QueryFunctionContext) =>
       lastSaveTime: number;
     }
   >(
-    '/api/goalie/listRoleFunc',
+    '/api/v1/goalie/listRoleFunc',
     JSON.stringify({
       roleID: queryKey[1],
     }),
@@ -42,7 +42,7 @@ export const setRoleFunctions = ({ queryKey }: QueryFunctionContext) =>
       code: number;
     }
   >(
-    '/api/goalie/updateRoleFunc',
+    '/api/v1/goalie/updateRoleFunc',
     JSON.stringify({
       roleID: queryKey[1],
       add: queryKey[2],
@@ -80,7 +80,7 @@ export const getRoleAssociations = ({
       owners: IOwner[];
       total: number;
     }
-  >('/api/goalie/listRoleOwner', JSON.stringify(queryKey[1])).then(({ data }) => ({
+  >('/api/v1/goalie/listRoleOwner', JSON.stringify(queryKey[1])).then(({ data }) => ({
     owners: data?.owners || [],
     total: data?.total || 0,
   }));
@@ -99,13 +99,13 @@ export const updateRoleAssociations = (arg: IUpdateRoleAssociations) =>
     {
       roles: Role[];
     }
-  >('/api/goalie/updateRoleOwner', JSON.stringify(arg)).then(({ data }) => {
+  >('/api/v1/goalie/updateRoleOwner', JSON.stringify(arg)).then(({ data }) => {
     roles: data?.roles || [];
   });
 
 // search for department structure
 export const getDepartmentStructure = async () => {
-  const { data } = await httpPost<IDepartment>('/api/org/v1/DEPTree', null, {
+  const { data } = await httpPost<IDepartment>('/api/v1/org/DEPTree', null, {
     'Content-Type': 'application/x-www-form-urlencoded',
   });
   return data;
@@ -136,7 +136,7 @@ export const adminSearchUserList = async ({ queryKey }: QueryFunctionContext) =>
       data: IUser[];
     }
   >(
-    '/api/org/v1/adminUserList',
+    '/api/v1/org/adminUserList',
     JSON.stringify(
       queryKey[1] as {
         depID: string;

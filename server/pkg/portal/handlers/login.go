@@ -76,7 +76,7 @@ func HandleLoginSubmit(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	respBuffer, errMsg := contexts.SendRequestWitoutAuth(r.Context(), "POST", "/api/oauth2c/v1/login", bytes.NewBuffer(jsonStr), map[string]string{
+	respBuffer, errMsg := contexts.SendRequestWitoutAuth(r.Context(), "POST", "/api/v1/oauth2c/login", bytes.NewBuffer(jsonStr), map[string]string{
 		"Content-Type": "application/json",
 		"User-Agent":   r.Header.Get("User-Agent"),
 	})

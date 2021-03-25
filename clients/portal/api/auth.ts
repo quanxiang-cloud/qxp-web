@@ -1,7 +1,6 @@
 import { QueryFunctionContext } from 'react-query';
 
 import { httpPost, getNestedPropertyToArray } from '@assets/lib/utils';
-import { IResponse } from '@clients/@types/interface/api';
 import { IDepartment } from '@clients/common/state/portal';
 
 // get user info
@@ -20,7 +19,7 @@ export interface IUserInfo {
   isDEPLeader?: boolean | number;
 }
 export const getUserInfo = async (): Promise<Partial<IUserInfo>> => {
-  const { data } = await httpPost<IResponse<IUserInfo>>('/api/org/v1/userUserInfo');
+  const { data } = await httpPost<IUserInfo>('/api/v1/org/userUserInfo');
   if (data) {
     data.depIds = getNestedPropertyToArray<string>(data?.dep, 'id', 'child');
   }
@@ -30,11 +29,11 @@ export const getUserInfo = async (): Promise<Partial<IUserInfo>> => {
 // get all user funcs
 export const getUserFuncs = async ({ queryKey }: QueryFunctionContext): Promise<string[]> => {
   const { data } = await httpPost<
-    IResponse<{
+    {
       tag: string[];
-    }>
+    }
   >(
-    '/api/goalie/listUserFuncTag',
+    '/api/v1/goalie/listUserFuncTag',
     JSON.stringify({
       departmentID: queryKey[1],
     }),
@@ -45,10 +44,10 @@ export const getUserFuncs = async ({ queryKey }: QueryFunctionContext): Promise<
 // get system func list
 export const getSystemFuncs = async (): Promise<string[]> => {
   const { data } = await httpPost<
-    IResponse<{
+    {
       tag: string[];
-    }>
-  >('/api/goalie/listFuncTag', JSON.stringify({}));
+    }
+  >('/api/v1/goalie/listFuncTag', JSON.stringify({}));
   return data?.tag || [];
 };
 
@@ -63,12 +62,12 @@ export const getUserRoles = async (
   departmentIDs: string[],
 ): Promise<{ roles: IRole[]; total: number }> => {
   const { data } = await httpPost<
-    IResponse<{
+    {
       roles: IRole[];
       total: number;
-    }>
+    }
   >(
-    '/api/goalie/listUserRole',
+    '/api/v1/goalie/listUserRole',
     JSON.stringify({
       departmentID: departmentIDs,
     }),
