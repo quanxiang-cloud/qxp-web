@@ -10,7 +10,7 @@ function getFileContent(filePath) {
   return util.promisify(fs.readFile)(filePath, { encoding: 'utf-8' });
 }
 
-function getFileNames() {
+function getFileFullPath() {
   return new Promise((resolve, reject) => {
     glob(
       path.join(__dirname, '../clients/portal/components/icon/svgs/*.svg'),
@@ -27,7 +27,7 @@ function getFileNames() {
 }
 
 module.exports = function () {
-  return getFileNames().then((filePaths) => {
+  return getFileFullPath().then((filePaths) => {
     return Promise.all(
       filePaths.map((filePath) => {
         return getFileContent(filePath);
