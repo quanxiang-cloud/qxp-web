@@ -39,14 +39,14 @@ export const ItemWithTitleDesc = ({
           {
             'flex-row': textDirection == 'row',
             'flex-col': textDirection != 'row',
-            'ml-16': !textClassName?.startsWith('ml'),
+            'ml-8': !textClassName?.startsWith('ml'),
           },
           textClassName,
         )}
       >
         {title && <div className={twCascade('', titleClassName)}>{title}</div>}
         {desc && (
-          <span className={twCascade('flex items-center text-12', descClassName)}>{desc}</span>
+          <span className={twCascade('flex items-center', descClassName)}>{desc}</span>
         )}
       </div>
     </div>

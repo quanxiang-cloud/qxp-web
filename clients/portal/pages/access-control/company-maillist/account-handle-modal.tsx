@@ -43,7 +43,7 @@ export const AccountHandleModal = (props: AccountHandleModalProps) => {
           </Button>
           <div className="px-2"></div>
           <Button
-            className="bg-black"
+            className="bg-black-900"
             textClassName="text-white"
             icon={
               <img

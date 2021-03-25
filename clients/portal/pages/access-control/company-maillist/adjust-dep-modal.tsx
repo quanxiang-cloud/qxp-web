@@ -66,7 +66,7 @@ export const AdjustDepModal = (props: IAdjustDepModalProps) => {
           </Button>
           <div className="px-2"></div>
           <Button
-            className="bg-black"
+            className="bg-black-900"
             textClassName="text-white"
             icon={<Icon name="check" type="light" className="mr-4" />}
             onClick={okModalHandle}

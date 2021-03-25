@@ -35,7 +35,7 @@ export default function TextHeader({
       <ItemWithTitleDesc
         desc={desc}
         itemRender={
-          <div className="font-bold text-16 text-gray-900 flex justify-between items-center">
+          <div className="text-h5 text-gray-900 flex justify-between items-center">
             {title}
           </div>
         }

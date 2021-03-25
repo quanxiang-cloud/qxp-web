@@ -16,9 +16,9 @@ export default function Dashboard() {
 
   return (
     <>
-      <main className="py-40 px-5-dot-2 relative">
-        <div className="absolute right-5-dot-8 top-40 -z-1">
-          <img src="/dist/images/work-figure.svg" alt=""/>
+      <main className="py-40 px-58 relative">
+        <div className="absolute top-42 right-64 -z-1 w-214 h-160">
+          <img src="/dist/images/work-figure.svg" alt="dashboard"/>
         </div>
         <div>
           <Avatar
@@ -29,19 +29,16 @@ export default function Dashboard() {
         </div>
         <div className="px-dot-6 mt-40">
           <Card
-            className="ml-0 px-32 py-20 text-16"
+            className="px-32 py-20"
+            headerClassName="ml-8"
             title="我的应用"
             action={
-              <a className="transition ease-linear text-14 underline text-gray-600">前往应用市场</a>
+              <a className="transition ease-linear text-underline">前往应用市场</a>
             }
             content={
               <List
                 className="flex-row"
-                itemClassName={twCascade(
-                  'px-20 py-16 rounded-12',
-                  'mr-20 bg-white',
-                  'rounded-md',
-                )}
+                itemClassName="px-20 py-16 mr-20 bg-white rounded-12"
                 items={[
                   <ItemWithTitleDesc
                     key={uuid()}
@@ -57,8 +54,8 @@ export default function Dashboard() {
                         <img src="/dist/images/calendar.svg" alt="calendar" />
                       </div>
                     }
-                    titleClassName="text-14 leading-4 font-bold"
-                    descClassName="leading-4"
+                    titleClassName="text-h6"
+                    descClassName="text-caption"
                   />,
                   <ItemWithTitleDesc
                     key={uuid()}
@@ -75,7 +72,7 @@ export default function Dashboard() {
                       </div>
                     }
                     titleClassName="text-14 leading-4 font-bold"
-                    descClassName="leading-4"
+                    descClassName="text-caption"
                   />,
                   <ItemWithTitleDesc
                     key={uuid()}
@@ -90,8 +87,7 @@ export default function Dashboard() {
                         <img src="/dist/images/add.svg" alt="add" />
                       </div>
                     }
-                    titleClassName="text-14 leading-4 font-bold"
-                    descClassName="leading-4"
+                    titleClassName="text-button"
                   />,
                 ]}
               />
@@ -102,7 +98,7 @@ export default function Dashboard() {
               className="flex-1 ml-0 px-40 pt-20 text-16"
               title="我的待办"
               action={
-                <a className="transition ease-linear text-14 underline color-324558">查看全部</a>
+                <a className="transition ease-linear text-black-50 text-underline-no-color">查看全部</a>
               }
               content={
                 <List
@@ -123,17 +119,14 @@ export default function Dashboard() {
                       desc="12"
                       itemRender={
                         <div
-                          className={twCascade(
-                            'w-16 h-16 bg-gradient-green-to-top-right icon-border-radius',
-                            'rounded-12 rounded-tr-none',
-                          )}
+                          className="w-16 h-16 bg-gradient-green-to-top-right icon-border-radius"
                         />
                       }
                       textDirection="row"
                       className="h-5-dot-6"
                       textClassName="h-auto"
-                      titleClassName="text-14"
-                      descClassName="text-16 font-bold"
+                      titleClassName="text-body2"
+                      descClassName="text-h5 text-blue-1100"
                     />,
                     <ItemWithTitleDesc
                       key={uuid()}
@@ -150,7 +143,7 @@ export default function Dashboard() {
                       textDirection="row"
                       className="h-5-dot-6"
                       textClassName="h-auto"
-                      titleClassName="text-14"
+                      titleClassName="text-body2"
                       descClassName="text-16 font-bold"
                     />,
                     <ItemWithTitleDesc
@@ -180,7 +173,7 @@ export default function Dashboard() {
               className="flex-2 self-stretch flex flex-col px-40 py-20 text-16"
               title="未读消息"
               action={
-                <a className="text-14 underline color-324558 transition ease-linear">查看全部</a>
+                <a className="text-underline-no-color text-black-50 transition ease-linear">查看全部</a>
               }
               content={
                 <div className="w-full h-full flex items-center justify-center">
@@ -190,7 +183,7 @@ export default function Dashboard() {
                       src="/dist/images/alert.svg"
                       alt="alert"
                     />
-                    <span className="text-12 text-blue-400">无未读消息</span>
+                    <span className="text-blue-400 text-caption-no-color">无未读消息</span>
                   </div>
                 </div>
               }

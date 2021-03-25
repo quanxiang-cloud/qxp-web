@@ -89,7 +89,7 @@ export default function EditDepartment({ department, closeModal }: DepartmentMod
           </Button>
           <div className="px-2"></div>
           <Button
-            className="bg-black"
+            className="bg-black-900"
             textClassName="text-white"
             icon={<Icon name="check" className="mr-4" />}
             onClick={okModalHandle}

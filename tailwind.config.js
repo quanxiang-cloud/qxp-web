@@ -25,6 +25,7 @@ module.exports = {
       46: '46px',
       48: '48px',
       56: '56px',
+      58: '58px',
       144: "144px",
     },
     lineHeight: {
@@ -63,6 +64,7 @@ module.exports = {
       width: {
         '2dot4': '2.4rem',
         588: '588px',
+        214: '214px',
       },
       minWidth: {
         90: '90px',
@@ -73,6 +75,7 @@ module.exports = {
       height: {
         '2dot4': '2.4rem',
         '5.6': '5.6rem',
+        160: '160px',
       },
       borderWidth: {
         '1.5': '1.5px',
@@ -95,6 +98,8 @@ module.exports = {
       },
       inset: {
         '-2px': '-2px',
+        42: '42px',
+        64: '64px',
       },
     },
   },

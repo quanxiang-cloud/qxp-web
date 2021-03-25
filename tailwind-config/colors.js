@@ -1,5 +1,10 @@
 module.exports = {
-  black: '#000',
+  black: {
+    50: 'var(--black-50)',
+    100: 'var(--black-100)',
+    200: 'var(--black-200)',
+    900: '#000',
+  },
   white: '#fff',
   // rose: {
   //   50: 'var(--rose-50)',
@@ -85,6 +90,7 @@ module.exports = {
     800: 'var(--blue-800)',
     900: 'var(--blue-900)',
     1000: 'var(--blue-1000)',
+    1100: 'var(--blue-1100)',
   },
   // lightBlue: {
   //   50: 'var(--lightBlue-50)',

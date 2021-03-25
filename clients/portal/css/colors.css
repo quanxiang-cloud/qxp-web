@@ -83,6 +83,7 @@
   --blue-800: #162BA6;
   --blue-900: #1e3a8a;
   --blue-1000: #d5dee7;
+  --blue-1100: #00020A;
 
   /* lightBlue */
   --lightBlue-50: #f0f9ff;
@@ -263,6 +264,10 @@
   --blueGray-700: #334155;
   --blueGray-800: #1e293b;
   --blueGray-900: #0f172a;
+
+  --black-50: #324558;
+  --black-100: #020508;
+  --black-200: #697886;
 
   /* todo remove this */
   --icon-light-color: rgba(255, 255, 255, 0.9);

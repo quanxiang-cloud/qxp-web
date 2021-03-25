@@ -531,7 +531,7 @@ export const PersonInfo = React.memo(({
           {selectedRows.length > 0 ? (
             <>
               <Button
-                className="bg-black"
+                className="bg-black-900"
                 textClassName="text-white"
                 icon={
                   <svg

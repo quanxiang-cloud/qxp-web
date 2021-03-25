@@ -268,7 +268,7 @@ export const ExportFileModal = ({
               <div className="px-2"></div>
               {btnStatus === 0 ? (
                 <Button
-                  className="bg-black"
+                  className="bg-black-900"
                   textClassName="text-white"
                   icon={<Icon name="check" type="light" className="mr-4" />}
                   onClick={importFile}
@@ -277,7 +277,7 @@ export const ExportFileModal = ({
                 </Button>
               ) : (
                 <Button
-                  className="bg-black"
+                  className="bg-black-900"
                   textClassName="text-white"
                   icon={<Icon name="check" type="light" className="mr-4" />}
                   onClick={okSendModal}
