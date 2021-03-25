@@ -7,7 +7,6 @@ import { Link, useHistory } from 'react-router-dom';
 import { twCascade } from '@mariusmarais/tailwind-cascade';
 import { Icon } from '@QCFE/lego-ui';
 
-
 import { More } from '@portal/components/more';
 import Hamburger from '@portal/components/hamburger2';
 import { List } from '@portal/components/list2';
@@ -17,7 +16,7 @@ import { uuid } from '@assets/lib/utils';
 const menus = [
   {
     iconClassName: 'bg-gradient-yellow-to-top-right',
-    iconUrl: '/dist/images/calendar.svg',
+    iconUrl: '/dist/images/app-plus.svg',
     title: '应用管理',
     desc: '对平台的企业空间、账号、以及角色权限进行统一管理。',
     address: '/dist/images/calendar.svg',
@@ -31,7 +30,7 @@ const menus = [
   },
   {
     iconClassName: 'bg-gradient-blue-to-top-right',
-    iconUrl: '/dist/images/add.svg',
+    iconUrl: '/dist/images/clothes.svg',
     title: '平台设置',
     desc: '对平台的企业空间、账号、以及角色权限进行统一管理。',
     address: '/dist/images/add.svg',
@@ -88,7 +87,7 @@ export default function GlobalHeader() {
             className="mr-8 flex justify-between items-center cursor-pointer"
             onClick={toggle}
           >
-            <Hamburger onChange={toggle} active={on} />
+            <Hamburger active={on} />
             <span className="ml-8 text-button">平台管理</span>
           </div>
           <Link
@@ -123,14 +122,14 @@ export default function GlobalHeader() {
                   to="/login/password"
                   key={uuid()}
                   className="cursor-pointer flex items-center h-36
-                  pl-1-dot-6 hover:bg-blue-100 transition whitespace-nowrap text-button text-gray-900 hover:text-gray-600"
+                  pl-16 hover:bg-blue-100 transition whitespace-nowrap text-button text-gray-900 hover:text-gray-600"
                 >
                   重置密码
                 </Link>,
                 <form key={uuid()} action="/logout" method="post" className="w-full h-full">
                   <button
                     type="submit"
-                    className="cursor-pointer flex items-center h-36 px-1-dot-6
+                    className="cursor-pointer flex items-center h-36 px-16
                     hover:bg-blue-100 transition w-full whitespace-nowrap text-button text-gray-900 hover:text-gray-600"
                   >
                     登出
@@ -159,7 +158,7 @@ export default function GlobalHeader() {
       >
         <div
           className={classnames(
-            '-left-full transform px-40 max-w-full w-58-dot-8 absolute bottom-0 top-0 flex flex-col',
+            '-left-full transform px-40 max-w-%90 w-588 absolute bottom-0 top-0 flex flex-col',
             useCss({
               background: 'var(--blue-100)',
               opacity: 0.9,
@@ -178,7 +177,7 @@ export default function GlobalHeader() {
               alt="chatu"
             />
             <List
-              className="flex-col mt-14-dot-4"
+              className="flex-col mt-144"
               itemClassName={classnames(
                 'pb-20 transform transition-all duration-200',
                 useCss({
@@ -213,7 +212,7 @@ export default function GlobalHeader() {
                     itemRender={
                       <div
                         className={classnames(
-                          'p-dot-3-6 rounded-lg rounded-tr-none w-48',
+                          'p-36 rounded-lg rounded-tr-none w-48',
                           'h-48 icon-border-radius flex items-center justify-center',
                           iconClassName,
                         )}
@@ -221,8 +220,8 @@ export default function GlobalHeader() {
                         <img className="w-32 h-32" src={iconUrl} alt={title} />
                       </div>
                     }
-                    titleClassName="text-20 font-semibold"
-                    descClassName="text-697886"
+                    titleClassName="text-h4"
+                    descClassName="text-caption"
                   />
                   <Link to={address}>
                     <Icon className="next transition-all duration-200" name="next" type="dark" />
@@ -231,17 +230,9 @@ export default function GlobalHeader() {
               ))}
             />
           </div>
-          <div
-            className={classnames(
-              'h-32 self-start cursor-pointer mt-20 flex flex-between',
-              'items-center button-border-radius rounded-tr-none px-1-dot-6 py-1',
-              useCss({
-                border: '1.5px solid #475569',
-              }),
-            )}
-          >
-            <Icon className="mr-4" name="close" type="dark" size={20} />
-            <span className="text-1-dot-4" onClick={toggle}>离开当前页面</span>
+          <div className='h-32 self-start mt-20 opacity-button'>
+            <Icon className="mr-5" name="close" type="dark" size={20} />
+            <span className="text-button" onClick={toggle}>离开当前页面</span>
           </div>
         </div>
       </div>

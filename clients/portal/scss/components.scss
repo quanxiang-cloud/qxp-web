@@ -3,10 +3,6 @@
 @import 'components/index';
 
 @layer components {
-  .light-button {
-    @apply bg-white button;
-  }
-
   .vertical-line {
     width: 0.05rem;
     background-color: #e2e8f0;

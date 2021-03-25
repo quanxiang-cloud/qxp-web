@@ -17,7 +17,7 @@ export const Button = ({ children, icon, className, textClassName, onClick, load
       onClick={onClick}
       className={twCascade(
         'h-3-dot-2 text-center leading-2-dot-5 inline-block border border-gray-700',
-        'px-1-dot-6 rounded-l-dot-8 rounded-tr-dot-1 rounded-br-dot-8 cursor-pointer',
+        'px-16 rounded-l-dot-8 rounded-tr-dot-1 rounded-br-dot-8 cursor-pointer',
         className,
         {
           'opacity-50': loading,

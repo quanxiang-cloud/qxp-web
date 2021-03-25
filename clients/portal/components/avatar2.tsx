@@ -53,7 +53,7 @@ export const Avatar = ({ username = '', bio, avatar }: IAvatar) => {
       }
       title={`${username}, 下午好!`}
       desc={bio}
-      titleClassName="text-20 text-black font-semibold"
+      titleClassName="text-h4"
     />
   );
 };

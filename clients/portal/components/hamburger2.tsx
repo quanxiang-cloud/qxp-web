@@ -3,20 +3,19 @@ import useCss from 'react-use/lib/useCss';
 import { twCascade } from '@mariusmarais/tailwind-cascade';
 
 export interface Props {
-  onChange: () => void;
   active: boolean;
 }
 
-export default function Hamburger({ onChange, active }: Props) {
+export default function Hamburger({ active }: Props) {
   const activeClassName = {
     '& > div > div:nth-child(1)': {
-      transform: 'translateY(5px) rotate(45deg)',
+      transform: 'translateY(5.8px) rotate(45deg)',
     },
     '& > div > div:nth-child(2)': {
       opacity: 0,
     },
     '& > div > div:nth-child(3)': {
-      transform: 'translateY(-5px) rotate(-45deg)',
+      transform: 'translateY(-5.8px) rotate(-45deg)',
     },
   };
   const className = {
@@ -41,7 +40,7 @@ export default function Hamburger({ onChange, active }: Props) {
   };
 
   return (
-    <div className={className.hamburger} onClick={onChange}>
+    <div className={className.hamburger}>
       <div>
         <div className={className.line}></div>
         <div className={className.line}></div>
