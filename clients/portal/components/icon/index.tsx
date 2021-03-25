@@ -4,7 +4,7 @@ import classnames from 'classnames';
 import './_icon.scss';
 import { IconName } from './types';
 
-interface Icon extends React.SVGProps<SVGSVGElement> {
+interface Props extends React.SVGProps<SVGSVGElement> {
   name: IconName;
   type?: 'dark' | 'coloured' | 'light';
   size?: number;
@@ -21,7 +21,7 @@ interface Style {
   color?: string;
 }
 
-const Icon = (
+function SvgIcon(
   {
     name,
     size = 22,
@@ -32,12 +32,12 @@ const Icon = (
     className,
     color,
     ...props
-  }: Icon,
-  ref: React.Ref<SVGSVGElement>
-) => {
+  }: Props,
+  _ref: React.Ref<SVGSVGElement>
+) {
   const styleCSS: Style = {
-    width: size ? `${size - 1}px` : undefined,
-    height: size ? `${size - 1}px` : undefined,
+    width: size ? `${size}px` : undefined,
+    height: size ? `${size}px` : undefined,
   };
 
   if (color) {
@@ -49,7 +49,7 @@ const Icon = (
   return (
     <svg
       {...props}
-      ref={props.ref}
+      ref={_ref}
       data-name={name}
       style={_style}
       className={classnames('svg-icon', `svg-icon--${type}`, className, {
@@ -61,10 +61,6 @@ const Icon = (
       <use xlinkHref={`../dist/images/sprite.svg#${name}`} />
     </svg>
   );
-};
-
-const SvgIconRef = React.forwardRef(Icon);
-
-const SvgIcon = SvgIconRef;
+}
 
 export default SvgIcon;
