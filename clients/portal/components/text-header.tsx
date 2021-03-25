@@ -1,10 +1,11 @@
 import React from 'react';
 import { twCascade } from '@mariusmarais/tailwind-cascade';
 
-import { ItemWithTitleDesc } from './item-with-title-desc4';
 import { isString } from '@assets/lib/utils';
 
-export interface ITextHeader {
+import { ItemWithTitleDesc } from './item-with-title-desc4';
+
+export interface Props {
   className?: string;
   title: JSX.Element | string;
   desc?: string;
@@ -17,7 +18,7 @@ export interface ITextHeader {
   textClassName?: string;
 }
 
-export const TextHeader = ({
+export default function TextHeader({
   className,
   actionClassName,
   title,
@@ -28,7 +29,7 @@ export const TextHeader = ({
   titleClassName,
   descClassName,
   textClassName,
-}: ITextHeader) => {
+}: Props) {
   return (
     <header className={twCascade('flex justify-between items-center pb-20 opacity-95', className)}>
       <ItemWithTitleDesc
@@ -57,4 +58,4 @@ export const TextHeader = ({
       )}
     </header>
   );
-};
+}

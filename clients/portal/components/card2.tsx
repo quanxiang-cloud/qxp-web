@@ -2,9 +2,9 @@ import React from 'react';
 import useCss from 'react-use/lib/useCss';
 import { twCascade } from '@mariusmarais/tailwind-cascade';
 
-import { TextHeader } from './text-header';
+import TextHeader from './text-header';
 
-export interface ICard {
+export interface Props {
   title: string | JSX.Element;
   desc?: string;
   action?: string | JSX.Element;
@@ -17,7 +17,7 @@ export interface ICard {
   style?: Record<string, string>;
 }
 
-export const Card = ({
+export default function Card({
   title,
   action,
   content,
@@ -28,7 +28,7 @@ export const Card = ({
   headerActionClassName,
   contentClassName,
   style,
-}: ICard) => {
+}: Props) {
   const classNames = useCss({
     'border-radius': '12px',
   });
@@ -47,4 +47,4 @@ export const Card = ({
       )}
     </div>
   );
-};
+}

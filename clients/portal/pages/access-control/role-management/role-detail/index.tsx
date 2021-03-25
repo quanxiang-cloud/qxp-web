@@ -10,14 +10,13 @@ import { AssociateDepartmentEmployee } from './associate-department-employee';
 import { getRoleFunctions } from '../api';
 
 export interface IRoleDetail {
-  id: string | number;
-  role: IRoleListItem;
+  role?: IRoleListItem;
 }
 
-export const RoleDetail = ({ role, id }: IRoleDetail) => {
-  const { data, isLoading } = useQuery(['getRoleFunctions', id], getRoleFunctions, {
+export const RoleDetail = ({ role }: IRoleDetail) => {
+  const { data, isLoading } = useQuery(['getRoleFunctions', role?.id], getRoleFunctions, {
     refetchOnWindowFocus: false,
-    enabled: !!id,
+    enabled: !!role?.id,
     cacheTime: -1,
   });
 
@@ -52,14 +51,14 @@ export const RoleDetail = ({ role, id }: IRoleDetail) => {
                 lastSaveTime={data.lastSaveTime}
                 funcs={data.func}
                 tag={role.tag}
-                id={id}
+                id={role.id}
               />
             ),
           },
           {
             id: 'association',
             name: '关联员工与部门',
-            content: <AssociateDepartmentEmployee id={id} isSuper={role.tag === 'super'} />,
+            content: <AssociateDepartmentEmployee id={role.id} isSuper={role.tag === 'super'} />,
           },
         ]}
       />

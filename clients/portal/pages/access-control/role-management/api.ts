@@ -1,15 +1,15 @@
 import { QueryFunctionContext } from 'react-query';
 
-import { httpPost, mapTreeData } from '../../../../assets/lib/utils';
-import { IResponse } from '../../../../@types/interface/api';
+import { httpPost } from '../../../../assets/lib/utils';
 import Role from './role';
-import { ITreeData } from '@portal/components/qxp-tree';
 
 // 获取角色列表
-export const getRolesList = () =>
-  httpPost<IResponse<{ roles: Role[] }>>('/api/goalie/listRole', null, {
+export async function getRoles() {
+  const { data } = await httpPost<{ roles: Role[]; }>('/api/goalie/listRole', null, {
     'Content-Type': 'application/x-www-form-urlencoded',
-  }).then(({ data }) => data?.roles);
+  });
+  return data?.roles;
+}
 
 // 获取角色功能集
 export interface IRoleFuncItem {
@@ -24,10 +24,10 @@ export interface IRoleFunc {
 }
 export const getRoleFunctions = ({ queryKey }: QueryFunctionContext) =>
   httpPost<
-    IResponse<{
+    {
       func: IRoleFunc;
       lastSaveTime: number;
-    }>
+    }
   >(
     '/api/goalie/listRoleFunc',
     JSON.stringify({
@@ -38,9 +38,9 @@ export const getRoleFunctions = ({ queryKey }: QueryFunctionContext) =>
 // 设置用户功能集
 export const setRoleFunctions = ({ queryKey }: QueryFunctionContext) =>
   httpPost<
-    IResponse<{
+    {
       code: number;
-    }>
+    }
   >(
     '/api/goalie/updateRoleFunc',
     JSON.stringify({
@@ -76,10 +76,10 @@ export const getRoleAssociations = ({
   ]
 >) =>
   httpPost<
-    IResponse<{
+    {
       owners: IOwner[];
       total: number;
-    }>
+    }
   >('/api/goalie/listRoleOwner', JSON.stringify(queryKey[1])).then(({ data }) => ({
     owners: data?.owners || [],
     total: data?.total || 0,
@@ -96,16 +96,16 @@ export interface IUpdateRoleAssociations {
 }
 export const updateRoleAssociations = (arg: IUpdateRoleAssociations) =>
   httpPost<
-    IResponse<{
+    {
       roles: Role[];
-    }>
+    }
   >('/api/goalie/updateRoleOwner', JSON.stringify(arg)).then(({ data }) => {
     roles: data?.roles || [];
   });
 
 // search for department structure
 export const getDepartmentStructure = async () => {
-  const { data } = await httpPost<IResponse<IDepartment>>('/api/org/v1/DEPTree', null, {
+  const { data } = await httpPost<IDepartment>('/api/org/v1/DEPTree', null, {
     'Content-Type': 'application/x-www-form-urlencoded',
   });
   return data;
@@ -130,11 +130,11 @@ export interface IUser {
 }
 export const adminSearchUserList = async ({ queryKey }: QueryFunctionContext) => {
   const { data } = await httpPost<
-    IResponse<{
+    {
       // eslint-disable-next-line camelcase
       total_count: number;
       data: IUser[];
-    }>
+    }
   >(
     '/api/org/v1/adminUserList',
     JSON.stringify(

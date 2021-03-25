@@ -1,5 +1,4 @@
 import { httpPost, httpFile } from '../../../../assets/lib/utils';
-import { IResponse } from '../../../../@types/interface/api';
 import { ITreeNode } from '@portal/pages/access-control/company-maillist/department-tree';
 import { FormValues, EditFormValues } from './staff-modal';
 import { UserStatus } from './person-info';
@@ -7,7 +6,7 @@ import { UserStatus } from './person-info';
 // ------------------ 部门 ---------------
 // 获取部门树
 export const getERPTree = () => {
-  return httpPost<IResponse<IDepartment>>('/api/org/v1/DEPTree', null, {
+  return httpPost<IDepartment>('/api/org/v1/DEPTree', null, {
     'Content-Type': 'application/x-www-form-urlencoded',
   }).then(({ data }) => data);
 };
@@ -20,7 +19,7 @@ export const queryERPName = ({
   depID: string;
   depName: string;
 }) => {
-  return httpPost<IResponse<{ isExist: 1 | -1 }>>(
+  return httpPost<{ isExist: 1 | -1 }>(
     '/api/org/v1/checkDEPIsExist',
     JSON.stringify({ depID, depName }),
     {
@@ -36,7 +35,7 @@ export const queryERPName = ({
  * @param pid true
  */
 export const addDEP = () => {
-  return httpPost<IResponse<ITreeNode[]>>('/api/org/v1/addDEP', null, {
+  return httpPost<ITreeNode[]>('/api/org/v1/addDEP', null, {
     'Content-Type': 'application/json',
   }).then(({ data }) => data);
 };
@@ -46,7 +45,7 @@ export const addDEP = () => {
  * @param id true
  */
 export const getAdminDEPInfo = () => {
-  return httpPost<IResponse<ITreeNode[]>>('/api/org/v1/adminDEPInfo', null, {
+  return httpPost<ITreeNode[]>('/api/org/v1/adminDEPInfo', null, {
     'Content-Type': 'application/json',
   }).then(({ data }) => data);
 };
@@ -60,7 +59,7 @@ export const getAdminDEPInfo = () => {
  * @param limit true
  */
 export const getAdminDEPList = (id: string) => {
-  return httpPost<IResponse<ITreeNode[]>>(
+  return httpPost<ITreeNode[]>(
     '/api/org/v1/adminDEPList',
     JSON.stringify({ id }),
     {
@@ -76,7 +75,7 @@ export const getAdminDEPList = (id: string) => {
  * @param limit true
  */
 export const getAdminDEPSuperPID = () => {
-  return httpPost<IResponse<ITreeNode[]>>(
+  return httpPost<ITreeNode[]>(
     '/api/org/v1/adminDEPSuperPID',
     null,
     {
@@ -93,7 +92,7 @@ export const getAdminDEPSuperPID = () => {
  * @param limit true
  */
 export const getAdminDEPPID = () => {
-  return httpPost<IResponse<ITreeNode[]>>('/api/org/v1/adminDEPList', null, {
+  return httpPost<ITreeNode[]>('/api/org/v1/adminDEPList', null, {
     'Content-Type': 'application/json',
   }).then(({ data }) => data);
 };
@@ -107,7 +106,7 @@ export const getAdminDEPPID = () => {
  * @param pid false
  */
 export const updateDEP = () => {
-  return httpPost<IResponse<ITreeNode[]>>('/api/org/v1/updateDEP', null, {
+  return httpPost<ITreeNode[]>('/api/org/v1/updateDEP', null, {
     'Content-Type': 'application/json',
   }).then(({ data }) => data);
 };
@@ -117,7 +116,7 @@ export const updateDEP = () => {
  * @param id true
  */
 export const deleteDEP = (id: string) => {
-  return httpPost<IResponse<null>>(
+  return httpPost<null>(
     '/api/org/v1/delDEP',
     JSON.stringify({ id }),
     {
@@ -131,7 +130,7 @@ export const deleteDEP = (id: string) => {
  * @param id true
  */
 export const getUserDEPInfo = () => {
-  return httpPost<IResponse<ITreeNode[]>>('/api/org/v1/userDEPInfo', null, {
+  return httpPost<ITreeNode[]>('/api/org/v1/userDEPInfo', null, {
     'Content-Type': 'application/json',
   }).then(({ data }) => data);
 };
@@ -146,7 +145,7 @@ type Persons = {
  */
 export const getUserAdminInfo = (depID: string, params: any) => {
   // eslint-disable-next-line camelcase
-  return httpPost<IResponse<{ total_count: number; data: Persons[] }>>(
+  return httpPost<{ total_count: number; data: Persons[] }>(
     '/api/org/v1/adminUserList',
     JSON.stringify({ depID, ...params }),
     {
@@ -162,7 +161,7 @@ export const getUserAdminInfo = (depID: string, params: any) => {
  * @returns 获取所有角色列表
  */
 export const getUserTemplate = () => {
-  return httpPost<IResponse<{ fileURL: string }>>(
+  return httpPost<{ fileURL: string }>(
     '/api/org/v1/getUserTemplate',
     null
   ).then(({ data }) => data?.fileURL);
@@ -179,7 +178,7 @@ type Roles = {
  * @returns 获取所有角色列表
  */
 export const getListRole = () => {
-  return httpPost<IResponse<{ roles: Roles[] }>>('/api/goalie/listRole', null, {
+  return httpPost<{ roles: Roles[] }>('/api/goalie/listRole', null, {
     'Content-Type': 'application/x-www-form-urlencoded',
   }).then(({ data }) => data?.roles);
 };
@@ -188,7 +187,7 @@ export const getListRole = () => {
  * @returns 新增部门人员
  */
 export const addDepUser = (values: FormValues | EditFormValues) => {
-  return httpPost<IResponse<{ roles: Roles[] }>>(
+  return httpPost<{ roles: Roles[] }>(
     '/api/nurturing/v1/addUser',
     JSON.stringify(values),
     {
@@ -201,7 +200,7 @@ export const addDepUser = (values: FormValues | EditFormValues) => {
  * @returns 修改用户信息
  */
 export const updateUser = (values: FormValues | EditFormValues) => {
-  return httpPost<IResponse<{ roles: Roles[] }>>(
+  return httpPost<{ roles: Roles[] }>(
     '/api/nurturing/v1/updateUser',
     JSON.stringify(values),
     {
@@ -220,7 +219,7 @@ export const setDEPLeader = ({
   depID: string;
   userID: string;
 }) => {
-  return httpPost<IResponse<{ code: number }>>(
+  return httpPost<{ code: number }>(
     '/api/org/v1/setDEPLeader',
     JSON.stringify({ depID, userID }),
     {
@@ -237,7 +236,7 @@ export const cancelDEPLeader = ({
 }: {
   depID: string;
 }) => {
-  return httpPost<IResponse<{ code: number }>>(
+  return httpPost<{ code: number }>(
     '/api/org/v1/cancelDEPLeader',
     JSON.stringify({ depID }),
     {
@@ -256,7 +255,7 @@ export const updateUserStatus = ({
   id: string;
   status: UserStatus;
 }) => {
-  return httpPost<IResponse<{ code: number }>>(
+  return httpPost<{ code: number }>(
     '/api/nurturing/v1/updateUserStatus',
     JSON.stringify({ id, useStatus: status }),
     {
@@ -275,7 +274,7 @@ export const getUserRole = ({
   ownerID: string;
   type: 1 | 2;
 }) => {
-  return httpPost<IResponse<{ roles: Roles[] }>>(
+  return httpPost<{ roles: Roles[] }>(
     '/api/goalie/listOwnerRole',
     JSON.stringify({ ownerID, type }),
     {
@@ -296,7 +295,7 @@ export const batchAdjustDep = ({
   oldDepID: string;
   newDepID: string;
 }) => {
-  return httpPost<IResponse<{ code: number }>>(
+  return httpPost<{ code: number }>(
     '/api/org/v1/adminChangeUsersDEP',
     JSON.stringify({ usersID, oldDepID, newDepID }),
     {
@@ -317,7 +316,7 @@ export const resetUserPWD = ({
   sendEmail: -1 | 1;
   sendPhone: -1 | 1;
 }) => {
-  return httpPost<IResponse<{ code: number }>>(
+  return httpPost<{ code: number }>(
     '/api/nurturing/v1/adminResetPWD',
     JSON.stringify({ userIDs, sendEmail, sendPhone }),
     {

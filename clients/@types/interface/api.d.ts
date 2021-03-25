@@ -3,7 +3,7 @@ import '@QCFE/types';
 import '@qcfe/types';
 
 
-export interface IResponse<T> {
+export interface Response<T> {
   code: number;
   msg?: string;
   data?: T;

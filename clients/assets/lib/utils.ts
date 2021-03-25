@@ -1,18 +1,16 @@
 import { Message } from '@QCFE/lego-ui';
 
 import { TreeNode } from '@portal/components/headless-tree/types';
+import { Response } from '../../@types/interface/api';
 
 /**
- * 发送一个POST请求到特定url
- * @param {string} url
- * @param {string} data
- * @returns {Promise<string | Record<string, unknown> | never}
+ * send http post request
  */
-export const httpPost = <T>(
+export function httpPost<T>(
   url: string,
   data?: string | null,
   headers?: { [key: string]: string },
-): Promise<T | never> => {
+): Promise<Response<T> | never> {
   const req = new XMLHttpRequest();
   req.open('POST', url, true);
   req.setRequestHeader('X-Proxy', 'API');
@@ -26,34 +24,35 @@ export const httpPost = <T>(
   if (!keys.find((key) => key.toLocaleLowerCase() === 'content-type')) {
     req.setRequestHeader('Content-Type', 'application/json; charset=utf-8');
   }
-  return new Promise((resolve: (arg: T) => void, reject: (...data: unknown[]) => void) => {
-    req.onload = () => {
-      if (req.status > 400) {
-        if (req.statusText.toLocaleLowerCase() === 'unauthorized' || req.status === 401) {
-          window.location.search = '/login/password';
-          return;
+  return new Promise(
+    (resolve: (arg: Response<T>) => void, reject: (...data: unknown[]) => void) => {
+      req.onload = () => {
+        if (req.status >= 400) {
+          if (req.statusText.toLocaleLowerCase() === 'unauthorized' || req.status === 401) {
+            window.location.search = '/login/password';
+            return;
+          }
+          Message.error(req.statusText);
+          return reject(req.statusText);
         }
-        Message.error(req.statusText);
-        return reject(req.statusText);
-      }
-      const contentType = req.getResponseHeader('Content-Type');
-      if (contentType?.startsWith('application/json')) {
-        resolve(JSON.parse(req.responseText));
+        const contentType = req.getResponseHeader('Content-Type');
+        if (contentType?.startsWith('application/json')) {
+          resolve(JSON.parse(req.responseText));
+        } else {
+          resolve((req.responseText as unknown) as Response<T>);
+        }
+      };
+      req.onerror = () => {
+        Message.error(req.responseText);
+        reject(req);
+      };
+      if (data) {
+        req.send(data);
       } else {
-        resolve((req.responseText as unknown) as T);
+        req.send();
       }
-    };
-    req.onerror = () => {
-      Message.error(req.responseText);
-      reject(req);
-    };
-    if (data) {
-      req.send(data);
-    } else {
-      req.send();
-    }
-  });
-};
+    });
+}
 
 export const httpFile = async (url: string, data?: Record<string, string | Blob>) => {
   const formData = new FormData();

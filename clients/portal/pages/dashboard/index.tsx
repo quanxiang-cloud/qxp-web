@@ -3,7 +3,7 @@ import useCss from 'react-use/lib/useCss';
 import { twCascade } from '@mariusmarais/tailwind-cascade';
 
 import { Avatar } from '@portal/components/avatar2';
-import { Card } from '@portal/components/card2';
+import Card from '@portal/components/card2';
 import { List } from '@portal/components/list2';
 import { ItemWithTitleDesc } from '@portal/components/item-with-title-desc4';
 import { uuid } from '@assets/lib/utils';

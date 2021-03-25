@@ -2,30 +2,27 @@ import React, { useState, useEffect } from 'react';
 import useCss from 'react-use/lib/useCss';
 import { useQuery } from 'react-query';
 
-import { Card } from '@portal/components/card2';
+import Card from '@portal/components/card2';
 import { RoleList } from './role-list';
 import { RoleDetail } from './role-detail';
-import { getRolesList } from './api';
-import Role from './role';
+import { getRoles } from './api';
 
 export default function RoleManagement() {
-  const { data = [], isLoading } = useQuery('getRolesList', getRolesList, {
+  const { data: roleList = [], isLoading } = useQuery('getRoles', getRoles, {
     refetchOnWindowFocus: false,
-    enabled: true,
   });
   const [roleId, setRoleId] = useState<string | number>('');
   useEffect(() => {
-    if (data.length) {
-      setRoleId(data[0].id);
+    if (roleList.length) {
+      setRoleId(roleList[0].id);
     }
-  }, [data]);
+  }, [roleList]);
 
-  const roleList = data.map(({ tag, name, id }) => new Role(name, id, tag));
   const contentHeight = useCss({
     height: 'calc(100% - 56px)',
   });
 
-  if (isLoading || !data.length) {
+  if (isLoading || !roleList.length) {
     return null;
   }
 
@@ -46,7 +43,7 @@ export default function RoleManagement() {
         </div>
         <div className="vertical-line flex-grow-0"></div>
         <div className="flex-2-dot-8 p-8">
-          <RoleDetail id={roleId} role={roleList.find(({ id }) => id == roleId) as Role} />
+          <RoleDetail role={roleList.find(({ id }) => id == roleId)} />
         </div>
       </div>
     </Card>
