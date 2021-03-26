@@ -41,7 +41,7 @@ export const SearchInput = React.memo(
           {typeof prefix === 'string' && <Label>{prefix}</Label>}
           {typeof prefix !== 'string' && prefix && <>{prefix}</>}
           <Control className="flex flex-row items-center w-full relative">
-            <Icon name="magnifier" className="absolute left-3 z-10" />
+            <Icon name="magnifier" className="absolute left-16 z-10" />
             <Input
               className={twCascade('search-input', {
                 'pr-8': appendix,

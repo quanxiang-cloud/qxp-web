@@ -39,7 +39,7 @@ export const DepartmentNode = observer(({ node, store }: NodeRenderProps<IDepart
           indeterminate={isIndeterminate}
           onChange={onChange}
         />
-        <div className="ml-1">
+        <div className="ml-10">
           {node.name}
         </div>
       </div>

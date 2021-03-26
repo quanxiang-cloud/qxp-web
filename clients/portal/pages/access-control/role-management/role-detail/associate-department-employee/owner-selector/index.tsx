@@ -84,6 +84,7 @@ export const OwnerSelector = observer(({ defaultEmployees = [], refs }: IOwnerSe
     <div className="flex flex-row">
       <Tab
         className="mr-8 flex-2"
+        contentClassName="rounded-12 rounded-tl-none"
         currentKey={store.tabKey}
         onChange={(key) => store.setTabKey(key as string)}
         items={[
