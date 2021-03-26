@@ -310,35 +310,32 @@ export const PersonInfo = React.memo(({
         const bgColor = getImgColor(head);
         return (
           <div className="flex items-center">
-            <div className="pr-dot-4">
-              <div className="relative w-2-dot-4 h-2-dot-4 rounded-br-4 rounded-l-4
-              text-center leading-2-dot-4 text-white text-14"
+            <div className="pr-8">
+              <div className="relative w-24 h-24 rounded-br-4 rounded-l-4
+              text-center leading-24 text-white text-14"
               style={{
                 backgroundColor: bgColor,
               }}
               >
-                {head}
-                <div className="w-4 h-4 bg-white rounded-lg flex items-center
-                justify-center absolute bottom-dot-5 right-dot-5">
+                <span className="mr-4">{head}</span>
+                <div className="w-10 h-10 bg-white rounded-10 flex items-center
+                justify-center absolute -bottom-5 -right-5">
                   {record.useStatus === 1 && (
-                    <div className="w-dot-6 h-dot-6 bg-green-600 rounded-6"></div>
+                    <div className="w-6 h-6 bg-green-600 rounded-6"></div>
                   )}
                   {record.useStatus === -2 && (
-                    <div className="w-dot-6 h-dot-6 bg-red-600 rounded-6"></div>
+                    <div className="w-6 h-6 bg-red-600 rounded-6"></div>
                   )}
                 </div>
               </div>
             </div>
 
             {record.useStatus === -2 ?
-              <span className="mr-dot-1 text-gray-400">{text}</span> :
-              <span className="mr-dot-1">{text}</span>}
+              <span className="mr-1 text-gray-400">{text}</span> :
+              <span className="mr-1">{text}</span>}
             {record.isDEPLeader === 1 && (
               <span
-                className={twCascade(
-                  'w-3-dot-4 h-1-dot-6 bg-jb rounded-4 p-dot-4',
-                  'flex items-center justify-center'
-                )}
+                className='bg-jb rounded-4 px-2 flex items-center justify-center'
               >
                 <span className="text-white text-12">主管</span>
               </span>
@@ -527,7 +524,7 @@ export const PersonInfo = React.memo(({
           count={personList?.total || 0}
           unit="人"
         />
-        <div className="flex items-stretch px-4">
+        <div className="flex items-stretch px-20">
           {selectedRows.length > 0 ? (
             <>
               <Button
@@ -553,9 +550,9 @@ export const PersonInfo = React.memo(({
               >
                 调整部门
               </Button>
-              <div className="px-2"></div>
+              <div className="w-16"></div>
               <Button
-                icon={<Icon className="mr-4" name="add" />}
+                icon={<Icon className="mr-12" name="add" />}
                 onClick={openSendPwd}
               >
                 发送随机密码
@@ -563,7 +560,7 @@ export const PersonInfo = React.memo(({
             </>
           ) : (
             <>
-              <Button2 isPrimary icon="folder" onClick={importFile} className="mr-16px h-2">
+              <Button2 isPrimary icon="folder" onClick={importFile} className="mr-16">
                 excel 批量导入
               </Button2>
               <Button2
@@ -571,7 +568,7 @@ export const PersonInfo = React.memo(({
                 onClick={() => handleUserInfo({
                   id: '', userName: '', phone: '', email: '',
                 }, 'add')}
-                className="mr-16px"
+                className="mr-16"
               >
                 添加员工
               </Button2>
@@ -584,8 +581,8 @@ export const PersonInfo = React.memo(({
             </>
           )}
         </div>
-        <div className="w-full mt-dot-8 flex-column flex-1 px-4 overflow-auto">
-          <div className="qxp-table flex w-full">
+        <div className="w-full mt-16 flex-column flex-1 px-20 overflow-auto">
+          <div className="qxp-table flex w-full border-b">
             {
               personList?.data && <Table
                 className="text-14 table-full"
@@ -593,7 +590,7 @@ export const PersonInfo = React.memo(({
                 columns={columns}
                 rowKey="id"
                 rowSelection={rowSelection}
-                emptyText={<EmptyData text="无成员数据" className="py-10" />}
+                emptyText={<EmptyData text="无成员数据" className="py-32" />}
                 loading={isLoading}
               />
             }

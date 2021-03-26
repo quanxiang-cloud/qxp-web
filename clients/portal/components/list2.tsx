@@ -41,7 +41,7 @@ export const List = <T extends unknown>({
                 curItem.onclick && curItem.onclick(params);
               }}
               className={twCascade(
-                'w-full h-3-dot-6 px-16 flex items-center',
+                'w-full h-36 px-16 flex items-center',
                 'cursor-pointer hover:blue-100 transition',
                 itemClassName,
               )}
@@ -51,7 +51,7 @@ export const List = <T extends unknown>({
                   curItem.iconName.endsWith('.svg') ? (
                     <img src={curItem.iconName} />
                   ) : (
-                    <Icon name={curItem.iconName} className="mr-4" />
+                    <Icon name={curItem.iconName} className="mr-10" />
                   )
                 }</>
               )}

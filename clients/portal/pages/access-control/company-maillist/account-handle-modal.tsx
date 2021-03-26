@@ -47,7 +47,7 @@ export const AccountHandleModal = (props: AccountHandleModalProps) => {
             textClassName="text-white"
             icon={
               <img
-                className="w-2-dot-4 h-2-dot-4 pr-dot-4"
+                className="w-24 h-24 pr-8"
                 src="./dist/images/icon_true.svg"
                 alt="icon_true"
               />

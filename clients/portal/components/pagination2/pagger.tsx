@@ -29,7 +29,7 @@ export const Core = ({ current, onChange = identity, maxPage }: ICore) => {
       <div
         onClick={onPrev}
         className={twCascade(
-          'w-2-dot-8 h-2-dot-8 text-center text-gray-400 leading-1-dot-4',
+          'w-28 h-28 text-center text-gray-400 leading-28',
           'flex justify-center items-center',
           current <= 1 ? 'cursor-not-allowed' : 'cursor-pointer',
         )}
@@ -44,8 +44,8 @@ export const Core = ({ current, onChange = identity, maxPage }: ICore) => {
         {(current + 1 > maxPage && current - 2 > 0) && (
           <div
             className={twCascade(
-              'w-2-dot-8 h-2-dot-8 px-2 rounded-l-4 rounded-br-4 cursor-pointer',
-              'rounded-tr-2 font-normal flex justify-center items-center fs12',
+              'w-28 h-28 px-2 small-border-radius cursor-pointer',
+              'rounded-tr-2 font-normal flex justify-center items-center text-12',
             )}
             onClick={() => onChange(current - 2)}
           >
@@ -55,8 +55,8 @@ export const Core = ({ current, onChange = identity, maxPage }: ICore) => {
         {(current + 1 >= maxPage && current - 1 > 0) && (
           <div
             className={twCascade(
-              'w-2-dot-8 h-2-dot-8 px-2 rounded-l-4 rounded-br-4 cursor-pointer',
-              'rounded-tr-2 font-normal flex justify-center items-center fs12',
+              'w-28 h-28 px-2 small-border-radius cursor-pointer',
+              'font-normal flex justify-center items-center text-12',
             )}
             onClick={() => onChange(current - 1)}
           >
@@ -65,8 +65,8 @@ export const Core = ({ current, onChange = identity, maxPage }: ICore) => {
         )}
         <div
           className={twCascade(
-            'w-2-dot-8 h-2-dot-8 px-2 bg-blue-100 text-375FF3 rounded-l-4 rounded-br-dot-4',
-            'rounded-tr-2 font-normal flex justify-center items-center fs12',
+            'w-28 h-28 px-2 bg-blue-100 text-blue-600 small-border-radius',
+            'font-normal flex justify-center items-center text-12',
           )}
         >
           {current}
@@ -74,8 +74,8 @@ export const Core = ({ current, onChange = identity, maxPage }: ICore) => {
         {(current + 1 < maxPage) && (
           <div
             className={twCascade(
-              'w-2-dot-8 h-2-dot-8 px-2 rounded-l-4 rounded-br-4 cursor-pointer',
-              'rounded-tr-2 font-normal flex justify-center items-center fs12',
+              'w-28 h-28 px-2 small-border-radius cursor-pointer',
+              'font-normal flex justify-center items-center text-12',
             )}
             onClick={() => onChange(current + 1)}
           >
@@ -86,8 +86,8 @@ export const Core = ({ current, onChange = identity, maxPage }: ICore) => {
           (maxPage - current > 2) && (
             <div
               className={twCascade(
-                'w-2-dot-8 h-2-dot-8 px-2 rounded-l-4 rounded-br-dot-4',
-                'rounded-tr-2 font-normal flex justify-center items-center fs12',
+                'w-28 h-28 px-2 small-border-radius',
+                'font-normal flex justify-center items-center text-12',
               )}
             >
               ...
@@ -98,8 +98,8 @@ export const Core = ({ current, onChange = identity, maxPage }: ICore) => {
           (maxPage > current) && (
             <div
               className={twCascade(
-                'w-2-dot-8 h-2-dot-8 px-2 rounded-l-4 rounded-br-4 cursor-pointer',
-                'rounded-tr-2 font-normal flex justify-center items-center fs12',
+                'w-28 h-28 px-2 small-border-radius cursor-pointer',
+                'rounded-tr-2 font-normal flex justify-center items-center text-12',
               )}
               onClick={() => onChange(maxPage)}
             >
@@ -111,7 +111,7 @@ export const Core = ({ current, onChange = identity, maxPage }: ICore) => {
       <div
         onClick={onNext}
         className={twCascade(
-          'w-2-dot-8 h-2-dot-8 text-center text-gray-400 leading-1-dot-4',
+          'w-28 h-28 text-center text-gray-400 leading-1-dot-4',
           'flex justify-center items-center',
           current >= maxPage ? 'cursor-not-allowed' : 'cursor-pointer',
         )}

@@ -11,11 +11,10 @@ interface DepartmentStaffProps {
 
 export const DepartmentStaff = ({ department, count = 0, unit }: DepartmentStaffProps) => {
   return (
-    <div className="h-3-dot-8 pl-8 flex items-center">
-      <div className="h-full leading-3-dot-8 text-14
-      text-black-900 font-semibold">{department}</div>
+    <div className="mt-20 mb-8 pl-20 flex items-center">
+      <div className="h-full text-14 text-black-900 font-semibold">{department}</div>
       {unit && (
-        <div className="h-full leading-3-dot-8 text-12 text-gray-400">
+        <div className="h-full text-12 text-gray-400">
           （{count} {unit}）
         </div>
       )}
