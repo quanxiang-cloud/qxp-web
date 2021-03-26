@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Switch, Route, Redirect, useRouteMatch } from "react-router-dom";
 
 import { ListMenu } from '@portal/pages/access-control/list-menu';
 import { ItemWithTitleDesc } from '@portal/components/item-with-title-desc4';
@@ -7,7 +8,8 @@ import RoleManagement from './role-management';
 import MailList from './company-maillist';
 
 export default function Index() {
-  const [menuType, setMenuType] = useState('corporateDirectory');
+  let { path } = useRouteMatch();
+  const [defaultSelectId, setdefaultSelectId] = useState('role-management');
 
   return (
     <div className="py-20 px-5-dot-8 flex justify-center items-start">
@@ -31,13 +33,16 @@ export default function Index() {
           />
         </div>
         <div className="p-20">
-          <ListMenu defaultType="corporateDirectory" onChange={setMenuType} />
+          <ListMenu />
         </div>
       </div>
       <div className='w-20'></div>
       <div className="right-content-container">
-        {menuType === 'corporateDirectory' && (<MailList />)}
-        {menuType !== 'corporateDirectory' && (<RoleManagement />)}
+      <Switch>
+          <Route exact path={`${path}`} component={MailList} />
+          <Route path={`${path}/corporate-directory`} component={MailList} />
+          <Route path={`${path}/role-management`} component={RoleManagement} />
+        </Switch>
       </div>
     </div>
   );

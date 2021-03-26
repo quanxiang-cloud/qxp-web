@@ -11,6 +11,10 @@ import { departmentToTreeNode } from '@assets/lib/utils';
 
 const { TextField } = Form;
 
+// const string for form input help text 
+const HELP_TEXT_NORMAL = '不超过 30 个字符，部门名称不可重复。'
+const HELP_TEXT_OVERLENGTH = '部门名称不能超过30个字符'
+const HELP_TEXT_DUPLICATED = '名称已存在，请修改'
 interface DepartmentModalProps {
   department: DeptInfo;
   closeModal(): void;
@@ -18,7 +22,7 @@ interface DepartmentModalProps {
 
 export default function EditDepartment({ department, closeModal }: DepartmentModalProps) {
   const [depNameStatus, setDepNameState] = useState('')
-  const [depNameHelpText, setDepNameHelpText] = useState('不超过 30 个字符，部门名称不可重复。');
+  const [depNameHelpText, setDepNameHelpText] = useState(HELP_TEXT_NORMAL);
 
   const formRef = createRef<Form>();
   const queryClient = useQueryClient();
@@ -51,16 +55,13 @@ export default function EditDepartment({ department, closeModal }: DepartmentMod
   depData = removeSelf(depData);
 
   // validate departmentName after input blur
-  const handleDepBlur = (value?: string) => {
-    const departmentName = value?.trim()
-    if (!departmentName) {
-      setDepNameHelpText('请输入部门名称')
-      setDepNameState('warning')
-    } else if (departmentName.length > 30) {
-      setDepNameHelpText('部门名称不能超过30个字符')
+  const handleDepBlur = (value: string) => {
+    let departmentName = value?.trim()
+    if (departmentName.length > 30) {
+      setDepNameHelpText(HELP_TEXT_OVERLENGTH)
       setDepNameState('error')
     } else {
-      setDepNameHelpText('不超过 30 个字符，部门名称不可重复')
+      setDepNameHelpText(HELP_TEXT_NORMAL)
       setDepNameState('')
     }
   }
@@ -90,7 +91,7 @@ export default function EditDepartment({ department, closeModal }: DepartmentMod
           closeModal();
           break
         case 54001003:
-          setDepNameHelpText('名称已存在，请修改')
+          setDepNameHelpText(HELP_TEXT_DUPLICATED)
           setDepNameState('error')
           break
         default:
@@ -106,8 +107,6 @@ export default function EditDepartment({ department, closeModal }: DepartmentMod
       visible
       appendToBody
       title={title}
-      // width={632}
-      // style={{ maxWidth: '632px' }}
       className="static-modal"
       onCancel={closeModal}
       footer={
@@ -132,12 +131,19 @@ export default function EditDepartment({ department, closeModal }: DepartmentMod
           name="departmentName"
           label="部门名称"
           placeholder="请输入部门名称"
-          help={depNameHelpText}
+          help={HELP_TEXT_NORMAL}
           validateHelp={depNameHelpText}
           validateStatus={depNameStatus}
           validateOnBlur
           defaultValue={department.departmentName}
           onBlur={handleDepBlur}
+          schemas={[
+            {
+              rule: { required: true },
+              help: HELP_TEXT_NORMAL,
+              status: 'error',
+            }
+          ]}
         />
         {depData && (
           <DepartmentPicker
