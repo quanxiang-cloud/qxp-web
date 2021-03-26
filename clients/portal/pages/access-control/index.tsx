@@ -26,11 +26,11 @@ export default function Index() {
                 <img src="/dist/images/person.svg" alt="calendar" />
               </div>
             }
-            titleClassName="text-20 leading-8 font-bold mb-2"
-            descClassName="leading-8"
+            titleClassName="text-20 font-bold"
+            descClassName="text-12"
           />
         </div>
-        <div className="p-8">
+        <div className="p-20">
           <ListMenu defaultType="corporateDirectory" onChange={setMenuType} />
         </div>
       </div>
