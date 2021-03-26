@@ -246,14 +246,6 @@ body {
   margin-bottom: 0.6rem;
 }
 
-.mb-dot-8 {
-  margin-bottom: 0.8rem;
-}
-
-.mb-dot-4 {
-  margin-bottom: 0.4rem;
-}
-
 .border-shape {
   border-radius: 5px;
   border-top-right-radius: 0;
@@ -518,6 +510,7 @@ body {
     .modal-card-body {
       display: flex;
       align-items: stretch;
+      @apply px-20 #{!important};
     }
   }
 }

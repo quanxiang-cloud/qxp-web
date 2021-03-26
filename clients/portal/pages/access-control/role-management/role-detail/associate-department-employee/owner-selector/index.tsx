@@ -7,7 +7,7 @@ import TextHeader from '@portal/components/text-header';
 import { SearchInput } from '@portal/components/form/search-input';
 import { EmployeeTable } from './employee-table';
 import { SelectedList } from './selected-list';
-import { EmployeeSelectTree } from './employee-select-tree';
+import EmployeeSelectTree from './employee-select-tree';
 import { DepartmentSelectTree } from './department-select-tree';
 import { getDepartmentStructure, IOwner } from '@portal/pages/access-control/role-management/api';
 
@@ -83,7 +83,7 @@ export const OwnerSelector = observer(({ defaultEmployees = [], refs }: IOwnerSe
   return (
     <div className="flex flex-row">
       <Tab
-        className="mr-8 flex-2"
+        className="mr-20 flex-2"
         contentClassName="rounded-12 rounded-tl-none"
         currentKey={store.tabKey}
         onChange={(key) => store.setTabKey(key as string)}
@@ -94,22 +94,33 @@ export const OwnerSelector = observer(({ defaultEmployees = [], refs }: IOwnerSe
             content: (
               <>
                 <SearchInput
-                  className="mb-dot-8"
+                  className="mb-16"
                   name="username"
                   placeholder="搜索员工姓名..."
                   onChange={(value) => store.setUsernameKeyword(value)}
                   appendix="close"
                 />
                 <div className="flex flex-row mr-4" style={{ height: 'calc(100% - 48px)' }}>
-                  <div className="h-full flex flex-col overflow-hidden flex-1 mr-4">
-                    <TextHeader className="pb-4" title="选择部门" />
+                  <div className="h-full flex flex-col overflow-hidden flex-2 mr-20">
+                    <TextHeader
+                      className="mb-8 pb-0"
+                      title="选择部门"
+                      itemTitleClassName="text-h6-no-color-weight font-semibold"
+                      descClassName="text-caption"
+                    />
                     <EmployeeSelectTree
                       store={store.employeeTreeStore}
                       className="employee-select-tree"
+                      wrapperClassName="flex-1 bg-white rounded-tl-12 rounded-bl-12
+                      border-r border-gray-200"
                     />
                   </div>
-                  <div className="h-full flex flex-col overflow-hidden flex-2dot5">
-                    <TextHeader title={store.employeeTreeStore.currentFocusedNode.name || ''} />
+                  <div className="h-full flex flex-col overflow-hidden flex-5">
+                    <TextHeader
+                      className="mb-8 pb-0"
+                      title={store.employeeTreeStore.currentFocusedNode.name || ''}
+                      itemTitleClassName="text-h6-no-color-weight font-semibold"
+                    />
                     <EmployeeTable
                       userName={store.usernameKeyword}
                       depID={store.employeeTreeStore.currentFocusedNode.id || ''}
@@ -127,7 +138,7 @@ export const OwnerSelector = observer(({ defaultEmployees = [], refs }: IOwnerSe
             content: (
               <>
                 <SearchInput
-                  className="mb-dot-8"
+                  className="mb-8"
                   name="departmentName"
                   placeholder="搜索部门名称姓名..."
                   onChange={store.setDepartmentKeyword}
@@ -140,14 +151,15 @@ export const OwnerSelector = observer(({ defaultEmployees = [], refs }: IOwnerSe
                   <TextHeader
                     className="pb-0"
                     title="选择部门"
+                    itemTitleClassName="text-h6-no-color-weight font-semibold"
                     desc="角色关联部门后，在该部门下添加员工时会默认自动带入该部门的角色。例如：部门关联角色“普通管理员”，添加新员工时，自动关联角色“普通管理员”。"
                     itemClassName="flex flex-col items-start"
-                    textClassName="ml-0"
-                    descClassName="mb-dot-4"
+                    textClassName="ml-0 mt-4"
+                    descClassName="mb-8 text-caption"
                   />
                   <DepartmentSelectTree
                     store={store.departmentTreeStore}
-                    wrapperClassName="rounded-3xl"
+                    wrapperClassName="flex-1 bg-white rounded-12"
                   />
                 </div>
               </>

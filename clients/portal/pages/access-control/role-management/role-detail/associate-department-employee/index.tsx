@@ -139,7 +139,7 @@ export const AssociateDepartmentEmployee = ({ id, isSuper }: IAssociateDepartmen
         footer={
           <div className="flex flex-row justify-between items-center">
             <Button
-              className="bg-white hover:bg-gray-100 transition cursor-pointer mr-8 mb-0"
+              className="bg-white hover:bg-gray-100 transition cursor-pointer mr-20 mb-0"
               textClassName="text-gray-600 ml-2"
               icon={<img src="/dist/images/icon_error.svg" />}
               onClick={() => setShowAddModal(false)}
@@ -161,7 +161,7 @@ export const AssociateDepartmentEmployee = ({ id, isSuper }: IAssociateDepartmen
       </Modal>
       {!isSuper && (
         <Button
-          className="bg-gray-700 hover:bg-gray-900 transition mb-dot-8 cursor-pointer"
+          className="bg-gray-700 hover:bg-gray-900 transition mb-16 cursor-pointer"
           textClassName="text-white ml-2"
           icon={<img src="/dist/images/link.svg" />}
           onClick={() => setShowAddModal(true)}

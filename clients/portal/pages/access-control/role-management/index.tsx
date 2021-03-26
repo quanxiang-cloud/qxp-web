@@ -31,6 +31,7 @@ export default function RoleManagement() {
       className="transition-opacity flex flex-col flex-1 mt-0"
       headerClassName="bg-gray-200-dot-5 px-20 py-16 header-background-image h-56"
       title="角色管理"
+      itemTitleClassName="text-h5"
       desc="可以定义平台内的账号拥有的权限。"
       action={<a className="ease-linear text-underline">📌 如何管理角色？</a>}
       contentClassName={contentHeight}

@@ -80,7 +80,7 @@ export const EmployeeTable = observer(({
   };
 
   return (
-    <div style={{ height: 'calc(100% - 48px)' }} className={className}>
+    <div className={className}>
       <Table
         className="rounded-bl-none rounded-br-none"
         onRow={(record: IOwner) => {

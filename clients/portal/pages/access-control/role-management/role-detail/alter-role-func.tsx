@@ -109,6 +109,7 @@ export const AlterRoleFunc = ({ funcs: functions, tag, lastSaveTime, id }: IAlte
                   {func.name}
                 </Checkbox>
               }
+              itemTitleClassName="text-h5"
               // action={
               //   <span onClick={selectAll(func)}>
               //     {func.child && !isSuper
