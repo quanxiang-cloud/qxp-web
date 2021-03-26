@@ -48,7 +48,7 @@ export default function MailList() {
       <div className="h-full flex-column overflow-y-h">
         <div
           className={twCascade(
-            'w-208 ml-20 bg-gray-200 rounded-r-6 rounded-tl-2',
+            'w-208 ml-20 mt-20 bg-gray-100 rounded-r-6 rounded-tl-2',
             'rounded-bl-6 flex items-center',
           )}
         >

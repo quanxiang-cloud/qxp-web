@@ -7,6 +7,7 @@ import { Modal } from '@QCFE/lego-ui';
 import { Button } from '@portal/components/button';
 import { UserStatus } from './person-info';
 import { IUserInfo } from '@portal/api/auth';
+import SvgIcon from '@portal/components/icon';
 
 interface AccountHandleModalProps {
   visible: boolean;
@@ -30,28 +31,16 @@ export const AccountHandleModal = (props: AccountHandleModalProps) => {
       footer={
         <div className="flex items-center">
           <Button
-            icon={
-              <img
-                className="w-24 h-24 pr-4"
-                src="./dist/images/icon_error.svg"
-                alt="icon_error"
-              />
-            }
+            icon={<SvgIcon name="close" size={20} className="mr-8" />}
             onClick={closeModal}
           >
             取消
           </Button>
-          <div className="px-2"></div>
+          <div className="w-20"></div>
           <Button
             className="bg-black-900"
             textClassName="text-white"
-            icon={
-              <img
-                className="w-24 h-24 pr-8"
-                src="./dist/images/icon_true.svg"
-                alt="icon_true"
-              />
-            }
+            icon={<SvgIcon name="check" type="light" size={20} className="mr-8" />}
             onClick={() => okModal(initData)}
           >
             {titleText}账号
@@ -62,21 +51,21 @@ export const AccountHandleModal = (props: AccountHandleModalProps) => {
       {status === -1 && (
         <div className="text-14">
           删除账号后，在平台内无法恢复员工
-          <span className="mx-1 text-16 font-semibold">{initData?.userName}</span>
+          <span className="mx-4 text-16 text-gray-900 font-semibold">{initData?.userName}</span>
           数据，确定要删除该账号吗？
         </div>
       )}
       {status === -2 && (
         <div className="text-14">
           禁用账号后，员工
-          <span className="mx-1 text-16 font-semibold">{initData?.userName}</span>
+          <span className="mx-4 text-16 text-gray-900 font-semibold">{initData?.userName}</span>
           无法登录该平台，确定要禁用该账号吗？
         </div>
       )}
       {status === 1 && (
         <div className="text-14">
           启用账号后，员工
-          <span className="mx-1 text-16 font-semibold">{initData?.userName}</span>
+          <span className="mx-4 text-16 text-gray-900 font-semibold">{initData?.userName}</span>
           可以登录该平台，确定要启用该账号吗？
         </div>
       )}

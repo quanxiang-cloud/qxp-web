@@ -63,7 +63,7 @@ function RenderMenuItems<T extends React.Key>(
                 'select-option--disabled': disabled,
               })}
             >
-              <div className="select-option__content">{label}</div>
+              <div className="select-option__content px-16 py-6">{label}</div>
             </div>
           );
         })

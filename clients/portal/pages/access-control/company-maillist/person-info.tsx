@@ -87,6 +87,7 @@ export const PersonInfo = React.memo(({
     email: '',
     phone: '',
   });
+
   const [pageParams, setPageParams] = React.useState<{
     page: number;
     limit: number;
@@ -190,7 +191,7 @@ export const PersonInfo = React.memo(({
     const password = {
       id: '2',
       iconName: 'key',
-      text: '发送随机密码',
+      text: '重置密码',
       onclick: (params: any) => handleReset(params),
     };
     const edit = {
@@ -319,7 +320,7 @@ export const PersonInfo = React.memo(({
                 backgroundColor: bgColor,
               }}
               >
-                <span className="mr-4">{head}</span>
+                {head}
                 <div className="w-10 h-10 bg-white rounded-10 flex items-center
                 justify-center absolute -bottom-5 -right-5">
                   {record.useStatus === 1 && (
@@ -426,6 +427,7 @@ export const PersonInfo = React.memo(({
   // 关闭文件模态框
   const closeFileModal = () => {
     setVisibleFile(false);
+    refetch();
   };
 
   const okStaffModal = (values: FormValues | EditFormValues) => {
@@ -559,7 +561,7 @@ export const PersonInfo = React.memo(({
                 icon={<Icon className="mr-12" name="add" />}
                 onClick={openSendPwd}
               >
-                发送随机密码
+                重置密码
               </Button>
             </Authorized>
           ) : (

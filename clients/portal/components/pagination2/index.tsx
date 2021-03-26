@@ -23,7 +23,7 @@ export const Pagination = ({
   pageSize,
   total,
   onChange,
-  pageSizeOptions,
+  pageSizeOptions = [10, 20, 50, 100],
   onShowSizeChange,
   prefix = '',
   className,
@@ -61,22 +61,10 @@ export const Pagination = ({
             onChange={selectChange}
             className="h-28 border border-gray-300 select-border-radius
             px-12 text-12 flex items-center"
-            options={[{
-              value: 10,
-              label: '10 条',
-            },
-            {
-              value: 20,
-              label: '20 条',
-            },
-            {
-              value: 50,
-              label: '50 条',
-            },
-            {
-              value: 100,
-              label: '100 条',
-            }]}
+            options={pageSizeOptions.map((page: number) => ({
+              label: `${page} 条`,
+              value: page,
+            }))}
           />
         </div>
         )}

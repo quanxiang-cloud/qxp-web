@@ -11,7 +11,7 @@ import { IUserInfo } from '@portal/api/auth';
 import { getListRole, getERPTree } from './api';
 import TreePicker from '@portal/components/tree-picker';
 import { departmentToTreeNode } from '@assets/lib/utils';
-import Select from '@c/select';
+// import Select from '@c/select';
 
 const { TextField, CheckboxGroupField } = Form;
 
@@ -50,14 +50,14 @@ export const StaffModal = (props: StaffModalProps) => {
   const [roleValue, setRoleValue] = useState('3');
   const titleText = `${status === 'add' ? '添加' : '修改'}`;
 
-  const { data: roleList, isLoading } = useQuery('getListRole', getListRole, {
-    refetchOnWindowFocus: false,
-  });
-  const { data: depData } = useQuery('getERPTree', getERPTree, {
+  // const { data: roleList, isLoading } = useQuery('getListRole', getListRole, {
+  //   refetchOnWindowFocus: false,
+  // });
+  const { data: depData, isLoading } = useQuery('getERPTree', getERPTree, {
     refetchOnWindowFocus: false,
   });
 
-  if (isLoading && !roleList && !depData) {
+  if (isLoading && !depData) {
     return <Loading desc="加载中..." />;
   }
 
@@ -241,7 +241,7 @@ export const StaffModal = (props: StaffModalProps) => {
             },
           ]}
         /> */}
-        <div>
+        {/* <div>
           <div style={{ color: '#020508', fontSize: 14, marginBlock: 7 }}>角色</div>
           <Select
             defaultValue={initData.roleId || roleValue}
@@ -253,7 +253,7 @@ export const StaffModal = (props: StaffModalProps) => {
                 value: role.id,
               })) : []}
           />
-        </div>
+        </div> */}
       </Form>
     </Modal>
   );
