@@ -111,10 +111,10 @@ $node-height: 56px;
 
 .employee-select-tree {
   .tree-node {
-    @apply bg-blue-100 cursor-pointer rounded-12 rounded-r-none;
+    @apply cursor-pointer font-semibold;
 
     &:hover {
-      @apply bg-white font-semibold text-blue-600;
+      @apply text-blue-600;
     }
     .tree-node__content {
       div {

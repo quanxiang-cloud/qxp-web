@@ -28,11 +28,9 @@
   line-height: 22px;
 }
 
-.text-h6-no-color {
+.text-h6-no-color-weight {
   font-size: 14px;
   line-height: 22px;
-  color: unset;
-  font-weight: unset;
 }
 
 .text-h6-bold {

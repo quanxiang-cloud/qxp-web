@@ -1,17 +1,23 @@
 import React from 'react';
+import classnames from 'classnames';
 
-import Store from './store';
 import Tree from '@portal/components/headless-tree';
-import { DepartmentNode } from './department-node';
 
-export interface IEmployeeSelectTree {
+import { DepartmentNode } from './department-node';
+import Store from './store';
+
+export interface Props {
   store: Store;
   className?: string;
   itemClassName?: string;
+  wrapperClassName?: string;
 }
-export const EmployeeSelectTree = ({ store, className, itemClassName }: IEmployeeSelectTree) => {
+
+export default function EmployeeSelectTree(
+  { store, className, itemClassName, wrapperClassName }: Props
+) {
   return (
-    <div className="tree-wrapper">
+    <div className={classnames('tree-wrapper', wrapperClassName)}>
       <Tree
         store={store}
         NodeRender={DepartmentNode}
@@ -21,4 +27,4 @@ export const EmployeeSelectTree = ({ store, className, itemClassName }: IEmploye
       />
     </div>
   );
-};
+}

@@ -16,6 +16,7 @@ export interface Props {
   titleClassName?: string;
   descClassName?: string;
   textClassName?: string;
+  itemTitleClassName?: string;
 }
 
 export default function TextHeader({
@@ -29,13 +30,17 @@ export default function TextHeader({
   titleClassName,
   descClassName,
   textClassName,
+  itemTitleClassName,
 }: Props) {
   return (
     <header className={twCascade('flex justify-between items-center pb-20 opacity-95', className)}>
       <ItemWithTitleDesc
         desc={desc}
         itemRender={
-          <div className="text-h5 text-gray-900 flex justify-between items-center">
+          <div
+            className={
+              twCascade('text-gray-900 flex justify-between items-center', itemTitleClassName)
+            }>
             {title}
           </div>
         }

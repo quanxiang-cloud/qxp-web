@@ -17,4 +17,8 @@
   .flex-start-center {
     @apply flex flex-row items-center cursor-pointer justify-start;
   }
+
+  .tag-border-radius {
+    @apply rounded-tl-4 rounded-tr-none rounded-br-4 rounded-bl-none #{!important};
+  }
 }

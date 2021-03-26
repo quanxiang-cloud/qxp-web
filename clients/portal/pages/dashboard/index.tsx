@@ -32,6 +32,7 @@ export default function Dashboard() {
             className="px-32 py-20"
             headerClassName="ml-8"
             title="我的应用"
+            itemTitleClassName="text-h5"
             action={
               <a className="transition ease-linear text-underline">前往应用市场</a>
             }
@@ -60,6 +61,7 @@ export default function Dashboard() {
                   <ItemWithTitleDesc
                     key={uuid()}
                     title="CRM"
+                    titleClassName="text-h6"
                     desc="未上线"
                     itemRender={
                       <div
@@ -71,12 +73,12 @@ export default function Dashboard() {
                         <img src="/dist/images/accounts.svg" alt="accounts" />
                       </div>
                     }
-                    titleClassName="text-14 leading-4 font-bold"
                     descClassName="text-caption"
                   />,
                   <ItemWithTitleDesc
                     key={uuid()}
                     title="新建应用"
+                    titleClassName="text-button"
                     itemRender={
                       <div
                         className={twCascade(
@@ -87,7 +89,6 @@ export default function Dashboard() {
                         <img src="/dist/images/add.svg" alt="add" />
                       </div>
                     }
-                    titleClassName="text-button"
                   />,
                 ]}
               />
@@ -97,6 +98,7 @@ export default function Dashboard() {
             <Card
               className="flex-1 ml-0 px-40 pt-20 text-16"
               title="我的待办"
+              itemTitleClassName="text-h5"
               action={
                 <a className="transition ease-linear text-black-50 text-underline-no-color">查看全部</a>
               }
@@ -172,6 +174,7 @@ export default function Dashboard() {
             <Card
               className="flex-2 self-stretch flex flex-col px-40 py-20 text-16"
               title="未读消息"
+              itemTitleClassName="text-h5"
               action={
                 <a className="text-underline-no-color text-black-50 transition ease-linear">查看全部</a>
               }

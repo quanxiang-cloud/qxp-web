@@ -16,6 +16,8 @@ export interface Props {
   contentClassName?: string;
   style?: Record<string, string>;
   descClassName?: string;
+  titleClassName?: string;
+  itemTitleClassName?: string;
 }
 
 export default function Card({
@@ -30,6 +32,8 @@ export default function Card({
   contentClassName,
   style,
   descClassName,
+  titleClassName,
+  itemTitleClassName,
 }: Props) {
   const classNames = useCss({
     'border-radius': '12px',
@@ -39,6 +43,8 @@ export default function Card({
     <div style={style} className={twCascade('bg-white-dot-6-5 mt-20', classNames, className)}>
       <TextHeader
         title={title}
+        titleClassName={titleClassName}
+        itemTitleClassName={itemTitleClassName}
         desc={desc}
         action={action}
         actionClassName={headerActionClassName}

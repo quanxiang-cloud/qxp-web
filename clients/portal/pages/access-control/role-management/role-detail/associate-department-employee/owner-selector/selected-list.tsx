@@ -53,12 +53,11 @@ export const SelectedList = observer(({ className, ownerStore }: ISelectedList) 
       <Tag
         key={ownerID}
         closable
-        className={twCascade('mr-2 mb-dot-4', {
+        className={twCascade('mr-8 mb-8 tag-border-radius', {
           'bg-blue-100': others.type === 1,
           'bg-amber-50': others.type === 2,
         })}
         style={{
-          borderRadius: '0.2rem 0',
           backgroundColor: others.type === 1 ? 'var(--blue-100)' : '#FFFBEB',
           transition: 'all .1s linear',
         }}
@@ -90,13 +89,15 @@ export const SelectedList = observer(({ className, ownerStore }: ISelectedList) 
   };
 
   return (
-    <div className={twCascade('px-4 pb-5', className)}>
+    <div className={twCascade('pl-20 pr-4 pb-5', className)}>
       <TextHeader
         title="已选"
+        itemTitleClassName="text-h6"
+        descClassName="text-caption-no-color text-gray-400"
         desc={`(${users.length}个员工${departments.length ? `, ${departments.length}个部门` : ''})`}
         action={
           <span
-            className="cursor-pointer text-14 text-blue-600 flex
+            className="cursor-pointer text-body2-no-color text-blue-600 flex
             items-center justify-center"
             onClick={onClear}
           >
