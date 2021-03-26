@@ -236,7 +236,7 @@ export const AssociateDepartmentEmployee = ({ id, isSuper }: IAssociateDepartmen
             }
             onShowSizeChange={(pageSize) => setPagination((p) => ({ ...p, pageSize }))}
             onChange={(current) => setPagination((p) => ({ ...p, current }))}
-            className="rounded-bl-12 rounded-br-12"
+            className="rounded-bl-12 rounded-br-12 pagination-border"
           />
         )}
       </div>

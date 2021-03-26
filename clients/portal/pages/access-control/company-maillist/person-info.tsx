@@ -350,8 +350,8 @@ export const PersonInfo = React.memo(({
       width: 130,
       render: (text: string, record: IUserInfo) => {
         return (record.useStatus === -2 ?
-          <span className="mr-dot-1 text-gray-400">{text}</span>:
-          <span className="mr-dot-1">{text}</span>);
+          <span className="mr-1 text-gray-400">{text}</span>:
+          <span className="mr-1">{text}</span>);
       },
     },
     {
@@ -360,8 +360,8 @@ export const PersonInfo = React.memo(({
       // width: 150,
       render: (text: string, record: IUserInfo) => {
         return (record.useStatus === -2 ?
-          <span className="mr-dot-1 text-gray-400">{text}</span>:
-          <span className="mr-dot-1">{text}</span>
+          <span className="mr-1 text-gray-400">{text}</span>:
+          <span className="mr-1">{text}</span>
         );
       },
     },
@@ -371,13 +371,12 @@ export const PersonInfo = React.memo(({
       render: (text: string, record: IUserInfo) => {
         return (
           record.useStatus === -2 ?
-            <span className="mr-dot-1 text-gray-400">
+            <span className="mr-1 text-gray-400">
               {record.dep && record.dep.departmentName}
             </span>:
-            <span className="mr-dot-1 ">{record.dep && record.dep.departmentName}</span>
+            <span className="mr-1">{record.dep && record.dep.departmentName}</span>
         );
-      }
-      ,
+      },
     },
     {
       title: '',

@@ -17,3 +17,7 @@
 .select-border-radius {
   @apply rounded-tl-2 rounded-tr-8 rounded-br-8 rounded-bl-8;
 }
+
+.pagination-border {
+  @apply border-t border-gray-200;
+}

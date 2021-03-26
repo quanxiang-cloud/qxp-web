@@ -11,17 +11,17 @@ import { departmentToTreeNode } from '@assets/lib/utils';
 
 const { TextField } = Form;
 
-// const string for form input help text 
-const HELP_TEXT_NORMAL = '不超过 30 个字符，部门名称不可重复。'
-const HELP_TEXT_OVERLENGTH = '部门名称不能超过30个字符'
-const HELP_TEXT_DUPLICATED = '名称已存在，请修改'
+// const string for form input help text
+const HELP_TEXT_NORMAL = '不超过 30 个字符，部门名称不可重复。';
+const HELP_TEXT_OVERLENGTH = '部门名称不能超过30个字符';
+const HELP_TEXT_DUPLICATED = '名称已存在，请修改';
 interface DepartmentModalProps {
   department: DeptInfo;
   closeModal(): void;
 }
 
 export default function EditDepartment({ department, closeModal }: DepartmentModalProps) {
-  const [depNameStatus, setDepNameState] = useState('')
+  const [depNameStatus, setDepNameState] = useState('');
   const [depNameHelpText, setDepNameHelpText] = useState(HELP_TEXT_NORMAL);
 
   const formRef = createRef<Form>();
@@ -55,16 +55,19 @@ export default function EditDepartment({ department, closeModal }: DepartmentMod
   depData = removeSelf(depData);
 
   // validate departmentName after input blur
-  const handleDepBlur = (value: string) => {
-    let departmentName = value?.trim()
-    if (departmentName.length > 30) {
-      setDepNameHelpText(HELP_TEXT_OVERLENGTH)
-      setDepNameState('error')
-    } else {
-      setDepNameHelpText(HELP_TEXT_NORMAL)
-      setDepNameState('')
+  const handleDepBlur = (value?: string) => {
+    if (!value) {
+      return;
     }
-  }
+    const departmentName = value?.trim();
+    if (departmentName.length > 30) {
+      setDepNameHelpText(HELP_TEXT_OVERLENGTH);
+      setDepNameState('error');
+    } else {
+      setDepNameHelpText(HELP_TEXT_NORMAL);
+      setDepNameState('');
+    }
+  };
 
   const okModalHandle = () => {
     if (!formRef.current?.validateForm()) {
@@ -85,17 +88,17 @@ export default function EditDepartment({ department, closeModal }: DepartmentMod
 
     requestAPI(params).then((submitResponseData: any) => {
       switch (submitResponseData.code) {
-        case 0:
-          Message.success({ content: '操作成功！' });
-          queryClient.invalidateQueries('getERPTree');
-          closeModal();
-          break
-        case 54001003:
-          setDepNameHelpText(HELP_TEXT_DUPLICATED)
-          setDepNameState('error')
-          break
-        default:
-          Message.error({ content: '发生未知错误！' });
+      case 0:
+        Message.success({ content: '操作成功！' });
+        queryClient.invalidateQueries('getERPTree');
+        closeModal();
+        break;
+      case 54001003:
+        setDepNameHelpText(HELP_TEXT_DUPLICATED);
+        setDepNameState('error');
+        break;
+      default:
+        Message.error({ content: '发生未知错误！' });
       }
     }).catch((error: any) => {
       console.log(error);
@@ -142,7 +145,7 @@ export default function EditDepartment({ department, closeModal }: DepartmentMod
               rule: { required: true },
               help: HELP_TEXT_NORMAL,
               status: 'error',
-            }
+            },
           ]}
         />
         {depData && (

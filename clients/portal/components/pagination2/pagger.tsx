@@ -111,7 +111,7 @@ export const Core = ({ current, onChange = identity, maxPage }: ICore) => {
       <div
         onClick={onNext}
         className={twCascade(
-          'w-28 h-28 text-center text-gray-400 leading-1-dot-4',
+          'w-28 h-28 text-center text-gray-400 ',
           'flex justify-center items-center',
           current >= maxPage ? 'cursor-not-allowed' : 'cursor-pointer',
         )}

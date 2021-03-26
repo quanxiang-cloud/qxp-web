@@ -129,6 +129,7 @@ export const EmployeeTable = observer(({
             {`已选 ${store.selectedKeys.length}, 共 ${total}条`}
           </span>
         }
+        className="pagination-border"
       />
     </div>
   );

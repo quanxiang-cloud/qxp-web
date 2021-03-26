@@ -16,7 +16,7 @@ export const Button = ({ children, icon, className, textClassName, onClick, load
     <button
       onClick={onClick}
       className={twCascade(
-        'h-3-dot-2 text-center leading-2-dot-5 inline-block border border-gray-700',
+        'h-32 text-center leading-25 inline-block border border-gray-700',
         'px-16 rounded-l-8 rounded-tr-2 rounded-br-8 cursor-pointer',
         className,
         {
@@ -33,7 +33,7 @@ export const Button = ({ children, icon, className, textClassName, onClick, load
         {!loading && (
           <>{ icon }</>
         )}
-        <div className={twCascade('text-14 ml-dot-4', textClassName)}>{children}</div>
+        <div className={twCascade('text-14', textClassName)}>{children}</div>
       </div>
     </button>
   );

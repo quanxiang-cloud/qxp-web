@@ -52,8 +52,6 @@ module.exports = {
       10: '10px',
       12: '12px',
       none: '0px',
-      // todo remove this
-      dot4: '0.4rem',
     },
     // disable responsive
     screens: {
@@ -64,14 +62,14 @@ module.exports = {
       // sm: { max: '639px' },
     },
     extend: {
-      colors: {
-        'white-dot-6-5': 'rgba(255, 255, 255, .65)',
-      },
       width: {
-        '2dot4': '2.4rem',
-        588: '588px',
+        24: '24px',
+        32: '32px',
+        208: '208px',
         214: '214px',
-        259: '259px'
+        259: '259px',
+        316: '316px',
+        588: '588px',
       },
       minWidth: {
         90: '90px',
@@ -80,20 +78,19 @@ module.exports = {
         '%90': '90%',
       },
       height: {
-        '2dot4': '2.4rem',
-        '5.6': '5.6rem',
-        160: '160px',
+        24: '24px',
+        28: '28px',
+        32: '32px',
         56: '56px',
+        86: '86px',
+        160: '160px',
       },
       borderWidth: {
         '1.5': '1.5px',
       },
       lineHeight: {
-        11: '1.1rem',
-        'dot-9': '0.9rem',
-      },
-      minHeight: {
-        'dot-8': '0.8rem',
+        11: '11px',
+        25: '25px',
       },
       flex: {
         none: '0 0 0%',
@@ -102,15 +99,17 @@ module.exports = {
         5: '5 5 0%',
       },
       margin: {
-        dot875: '0.875rem',
-        dot4: '0.4rem',
         3.5: '3.5px',
+        3: '3px',
       },
       inset: {
         '-2px': '-2px',
         42: '42px',
         64: '64px',
       },
+      zIndex: {
+        '-z-1': -1,
+      }
     },
   },
 };
