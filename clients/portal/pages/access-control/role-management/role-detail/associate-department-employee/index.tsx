@@ -8,6 +8,8 @@ import { Loading } from '@portal/components/loading2';
 import { EmptyData } from '@portal/components/empty-data';
 import { More } from '@portal/components/more';
 import { Pagination } from '@portal/components/pagination2';
+import Authorized from '@clients/common/component/authorized';
+
 import { OwnerSelector } from './owner-selector';
 import {
   getRoleAssociations,
@@ -23,7 +25,7 @@ export interface IAssociateDepartmentEmployee {
 
 export const AssociateDepartmentEmployee = ({ id, isSuper }: IAssociateDepartmentEmployee) => {
   const [selectedKeys, setSelectedKeys] = useState<string[]>([]);
-  const [selectedRows, setSelectedRows] = useState<IOwner[]>([]);
+  const [_, setSelectedRows] = useState<IOwner[]>([]);
   const [showAddModal, setShowAddModal] = useState(false);
   const [pagination, setPagination] = useState<{
     total: number;
@@ -160,14 +162,16 @@ export const AssociateDepartmentEmployee = ({ id, isSuper }: IAssociateDepartmen
         <OwnerSelector defaultEmployees={data?.owners} refs={selectorRef} />
       </Modal>
       {!isSuper && (
-        <Button
-          className="bg-gray-700 hover:bg-gray-900 transition mb-16 cursor-pointer"
-          textClassName="text-white ml-2"
-          icon={<img src="/dist/images/link.svg" />}
-          onClick={() => setShowAddModal(true)}
-        >
-          关联员工与部门
-        </Button>
+        <Authorized authority={['accessControl/role/manage']}>
+          <Button
+            className="bg-gray-700 hover:bg-gray-900 transition mb-16 cursor-pointer"
+            textClassName="text-white ml-2"
+            icon={<img src="/dist/images/link.svg" />}
+            onClick={() => setShowAddModal(true)}
+          >
+            关联员工与部门
+          </Button>
+        </Authorized>
       )}
       <div
         className="overflow-scroll w-full pb-6 rounded-12"

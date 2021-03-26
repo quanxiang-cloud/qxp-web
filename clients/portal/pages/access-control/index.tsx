@@ -1,17 +1,24 @@
-import React, { useState } from 'react';
-import { Switch, Route, Redirect, useRouteMatch } from 'react-router-dom';
+import React from 'react';
+import { Switch, Route, useRouteMatch } from 'react-router-dom';
+import { usePortalGlobalValue } from '@clients/common/state/portal';
 
 import { ListMenu } from '@portal/pages/access-control/list-menu';
 import { ItemWithTitleDesc } from '@portal/components/item-with-title-desc4';
+import { Error } from '@c/error2';
 
 import RoleManagement from './role-management';
 import MailList from './company-maillist';
 
 export default function Index() {
   const { path } = useRouteMatch();
+  const [{ userInfo }] = usePortalGlobalValue();
+
+  if (!userInfo.authority.includes('accessControl')) {
+    return <Error desc="您没有权限, 请联系管理员..." />;
+  }
 
   return (
-    <div className="py-20 flex justify-center items-start">
+    <div className="py-20 px-58 flex justify-center items-start">
       <div className="w-316 bg-white rounded-12">
         <div className="access-background-image p-20 opacity-90">
           <ItemWithTitleDesc

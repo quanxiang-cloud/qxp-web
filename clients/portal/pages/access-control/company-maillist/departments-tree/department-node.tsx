@@ -5,6 +5,7 @@ import { useQueryClient } from 'react-query';
 
 import MoreMenu, { MenuItem } from '@portal/components/more-menu';
 import { NodeRenderProps } from '@c/headless-tree/types';
+import Authorized from '@clients/common/component/authorized';
 
 import EditDepartment from './edit-department';
 import { deleteDEP } from '../api';
@@ -81,24 +82,26 @@ function DepartmentNode({ node }: NodeRenderProps<IDepartment>): JSX.Element {
       <span className="truncate mr-auto">
         {node.name}
       </span>
-      <MoreMenu
-        menus={MENUS}
-        placement="bottom-end"
-        className="opacity-0 group-hover:opacity-100"
-        onChange={(key) => {
-          if (key === 'add') {
-            onAdd();
-            return;
-          }
+      <Authorized authority={['accessControl/maillist/manage']}>
+        <MoreMenu
+          menus={MENUS}
+          placement="bottom-end"
+          className="opacity-0 group-hover:opacity-100"
+          onChange={(key) => {
+            if (key === 'add') {
+              onAdd();
+              return;
+            }
 
-          if (key === 'edit') {
-            onEdit();
-            return;
-          }
+            if (key === 'edit') {
+              onEdit();
+              return;
+            }
 
-          onDelete();
-        }}
-      />
+            onDelete();
+          }}
+        />
+      </Authorized>
       {
         showModal && (
           <span onClick={stopModalClickPropagate}>

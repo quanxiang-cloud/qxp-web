@@ -338,7 +338,7 @@ export const ExportFileModal = ({
                 >
                   <div
                     className={classnames(
-                      'w-full h-86 border rounded-8 border-dashed broder-gray-700',
+                      'w-full h-86 border rounded-8 border-dashed border-gray-700',
                       'flex flex-col items-center justify-center hover:border-red-600',
                     )}
                   >

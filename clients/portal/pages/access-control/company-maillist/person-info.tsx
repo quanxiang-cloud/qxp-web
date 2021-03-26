@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation } from 'react-query';
 import { Table, Icon, Message } from '@QCFE/lego-ui';
-import { twCascade } from '@mariusmarais/tailwind-cascade';
 
 import Button2 from '@c/button2';
 import IconBtn from '@c/icon-btn';
@@ -17,6 +16,10 @@ import { AdjustDepModal } from './adjust-dep-modal';
 import { EmptyData } from '@portal/components/empty-data';
 import { More } from '@portal/components/more';
 import { IUserInfo } from '@portal/api/auth';
+import { excelHeader, exportDepExcel, getImgColor } from './excel';
+import { uuid } from '@assets/lib/utils';
+import Authorized from '@clients/common/component/authorized';
+import { usePortalGlobalValue } from '@clients/common/state/portal';
 import {
   getUserAdminInfo,
   updateUserStatus,
@@ -28,8 +31,6 @@ import {
   getUserRole,
   cancelDEPLeader,
 } from './api';
-import { excelHeader, exportDepExcel, getImgColor } from './excel';
-import { uuid } from '@assets/lib/utils';
 
 export type UserStatus = 1 | -1 | -2; // 1 正常 -2 禁用 -1 删除
 type ResetStart = 0 | 1; // 0是单个，1批量
@@ -63,6 +64,7 @@ export const PersonInfo = React.memo(({
   const [visibleStaff, setVisibleStaff] = useState<boolean>(false);
   const [selectedRows, setSelectedRows] = useState<string[]>([]);
   const [selectedUsers, setSelectedUsers] = useState<IUserInfo[]>([]);
+  const [{ userInfo }] = usePortalGlobalValue();
 
   const staffMutation = useMutation(
     userModalStatus === 'add' ? addDepUser : updateUser,
@@ -378,7 +380,10 @@ export const PersonInfo = React.memo(({
         );
       },
     },
-    {
+  ];
+
+  if (userInfo.authority.includes('accessControl/mailList/manage')) {
+    columns.push({
       title: '',
       dataIndex: '',
       width: 40,
@@ -387,8 +392,8 @@ export const PersonInfo = React.memo(({
           <More<IUserInfo>
             items={
               actions(
-                (record && record.useStatus) as UserStatus,
-                (record && record.isDEPLeader) as unknown as number,
+                  (record && record.useStatus) as UserStatus,
+                  (record && record.isDEPLeader) as unknown as number,
               )
             }
             params={record}
@@ -398,8 +403,8 @@ export const PersonInfo = React.memo(({
           </More>
         );
       },
-    },
-  ];
+    });
+  }
 
   const rowSelection = {
     selectedRowKeys: selectedRows,
@@ -525,7 +530,7 @@ export const PersonInfo = React.memo(({
         />
         <div className="flex items-stretch px-20">
           {selectedRows.length > 0 ? (
-            <>
+            <Authorized authority={['accessControl/mailList/manage']}>
               <Button
                 className="bg-black-900"
                 textClassName="text-white"
@@ -556,9 +561,9 @@ export const PersonInfo = React.memo(({
               >
                 发送随机密码
               </Button>
-            </>
+            </Authorized>
           ) : (
-            <>
+            <Authorized authority={['accessControl/mailList/manage']}>
               <Button2 isPrimary icon="folder" onClick={importFile} className="mr-16">
                 excel 批量导入
               </Button2>
@@ -577,7 +582,7 @@ export const PersonInfo = React.memo(({
               >
                 <IconBtn iconName="more" style={{ transform: 'rotate(90deg)' }} />
               </More>
-            </>
+            </Authorized>
           )}
         </div>
         <div className="w-full mt-16 flex-column flex-1 px-20 overflow-auto">

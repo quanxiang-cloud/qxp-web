@@ -1,8 +1,9 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom'
+import { NavLink } from 'react-router-dom';
 
 import useCss from 'react-use/lib/useCss';
 import { twCascade } from '@mariusmarais/tailwind-cascade';
+import { usePortalGlobalValue } from '@clients/common/state/portal';
 
 type MenuItem = {
   id: string;
@@ -10,23 +11,26 @@ type MenuItem = {
   icon: string;
 };
 
-export interface IListMenu {
-  menuData?: MenuItem[];
-}
+export const ListMenu = () => {
+  const [{ userInfo }] = usePortalGlobalValue();
 
-export const ListMenu = ({}: IListMenu) => {
-  const menuData: MenuItem[] = [
-    {
+  const menuData: MenuItem[] = [];
+
+  if (userInfo.authority.includes('accessControl/mailList/read')) {
+    menuData.push({
       id: 'corporate-directory',
       icon: '/dist/images/user.svg',
       name: '企业通讯录',
-    },
-    {
+    });
+  }
+  if (userInfo.authority.includes('accessControl/role/read')) {
+    menuData.push({
       id: 'role-management',
       icon: '/dist/images/role.svg',
       name: '角色管理',
-    },
-  ];
+    });
+  }
+
 
   return (
     <ul className="w-auto">
@@ -52,7 +56,7 @@ export const ListMenu = ({}: IListMenu) => {
                     '> div': {
                       display: 'block',
                     },
-                  }
+                  },
                 })
               )}
               activeClassName={useCss({
@@ -68,25 +72,25 @@ export const ListMenu = ({}: IListMenu) => {
               // When /access and /access/corporate-directory are matched, NavLink is activated
               isActive={(match, location) => {
                 console.log(location);
-                
-                const {pathname} = location
+
+                const { pathname } = location;
                 if (item.id === 'corporate-directory') {
                   if (match || pathname === '/access-control' || pathname === '/access-control/') {
-                    return true
+                    return true;
                   } else {
-                    return false
+                    return false;
                   }
                 } else {
                   if (match) {
-                    return true
+                    return true;
                   } else {
-                    return false
+                    return false;
                   }
                 }
               }}
             >
               <img className="w-24 h-24 pr-8" src={item.icon} alt="logo" />
-              <span className="text-gray-400 text-16">{item.name}</span>
+              <span className="text-gray-400 text-h5">{item.name}</span>
               <div
                 className={twCascade(
                   'absolute top-0 right-0 w-4 h-56 bg-gray-600',

@@ -9,9 +9,9 @@ export interface IAuthorized {
 }
 
 export default function Authorized({ authority, children, noMatch = null }: IAuthorized) {
-  const [value] = usePortalGlobalValue();
-  if (authority.some((item) => value.authority.includes(item))) {
-    return children;
+  const [{ userInfo }] = usePortalGlobalValue();
+  if (authority.some((item) => userInfo.authority.includes(item))) {
+    return <>{children}</>;
   }
   return noMatch;
 }

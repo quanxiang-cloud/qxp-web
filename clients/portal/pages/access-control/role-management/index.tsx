@@ -3,6 +3,9 @@ import useCss from 'react-use/lib/useCss';
 import { useQuery } from 'react-query';
 
 import Card from '@portal/components/card2';
+import { Error } from '@c/error2';
+import { usePortalGlobalValue } from '@clients/common/state/portal';
+
 import { RoleList } from './role-list';
 import { RoleDetail } from './role-detail';
 import { getRoles } from './api';
@@ -17,6 +20,7 @@ export default function RoleManagement() {
       setRoleId(roleList[0].id);
     }
   }, [roleList]);
+  const [{ userInfo }] = usePortalGlobalValue();
 
   const contentHeight = useCss({
     height: 'calc(100% - 56px)',
@@ -24,6 +28,9 @@ export default function RoleManagement() {
 
   if (isLoading || !roleList.length) {
     return null;
+  }
+  if (!userInfo.authority.includes('accessControl/role/manage')) {
+    return <Error desc="您没有权限, 请联系管理员..." />;
   }
 
   return (

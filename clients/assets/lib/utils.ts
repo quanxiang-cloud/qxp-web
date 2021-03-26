@@ -213,7 +213,7 @@ export const getNestedPropertyToArray = <T>(
   targetKey: string,
   nestKey: string,
 ): T[] => {
-  if (!data || !data.length) {
+  if (!data) {
     return [];
   }
   const arrData: T[] = [];

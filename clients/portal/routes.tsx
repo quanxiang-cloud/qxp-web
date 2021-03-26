@@ -4,27 +4,14 @@ import { useQuery } from 'react-query';
 
 import { Error } from './components/error2';
 
-import '@assets/scss/index.scss';
 import { getSystemFuncs, getUserFuncs, getUserInfo, getUserRoles } from './api/auth';
 import { usePortalGlobalValue } from '@clients/common/state/portal';
 import { Loading } from './components/loading2';
 
-const Dashboard = React.lazy(
-  () =>
-    import(
-      /* webpackChunkName: "dashboard" */
-      './pages/dashboard'
-    ),
-);
+import '@assets/scss/index.scss';
 
-const MetaData = React.lazy(
-  () =>
-    import(
-      /* webpackChunkName: "dashboard" */
-      './pages/metadata'
-    ),
-);
-
+const Dashboard = React.lazy(() => import('./pages/dashboard'));
+const MetaData = React.lazy(() => import('./pages/metadata'));
 const AccessControl = React.lazy(() => import('./pages/access-control'));
 
 export default function Routes(): JSX.Element {
@@ -44,6 +31,7 @@ export default function Routes(): JSX.Element {
       enabled: !!userData?.id,
     },
   );
+
   const { data: userFuncs, isLoading: userFuncsIsLoading } = useQuery(
     ['getUserFuncs', userData?.depIds],
     getUserFuncs,
@@ -81,9 +69,10 @@ export default function Routes(): JSX.Element {
     return <Loading desc="加载中..." className="w-screen h-screen" />;
   }
 
-  // if (!userData || !allFuncs || !userFuncs || !data?.total) {
-  //   return <Error desc="something wrong..." />;
-  // }
+  if (!userData || !allFuncs || !userFuncs || !data?.total ||
+    (userFuncs && !userFuncs.includes('application'))) {
+    return <Error desc="您没有权限, 请联系管理员..." />;
+  }
 
   return (
     <>

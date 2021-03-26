@@ -4,6 +4,8 @@ import { Control, Icon, Input } from '@QCFE/lego-ui';
 
 import TextHeader from '@portal/components/text-header';
 import { DepartmentStaff } from '@portal/components/department-staff';
+import { usePortalGlobalValue } from '@clients/common/state/portal';
+import { Error } from '@c/error2';
 
 import DepartmentsTree from './departments-tree';
 import { PersonInfo } from './person-info';
@@ -12,6 +14,7 @@ export default function MailList() {
   const [searchWord, setSearchWord] = useState<string>('');
   const [currentDepartment, setCurrentDepartment] = useState<IDepartment | null>(null);
   const [lastWord, setLastWord] = useState<string>('');
+  const [{ userInfo }] = usePortalGlobalValue();
 
   const search = (keyWord: string) => {
     setSearchWord(keyWord);
@@ -28,6 +31,10 @@ export default function MailList() {
     search('');
     setLastWord('');
   };
+
+  if (!userInfo.authority.includes('accessControl/mailList/read')) {
+    return <Error desc="您没有权限, 请联系管理员..." />;
+  }
 
   return (
     <div className="transition-opacity flex-column flex-1">
