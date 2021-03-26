@@ -84,7 +84,7 @@ export const AlterRoleFunc = ({ funcs: functions, tag, lastSaveTime, id }: IAlte
               <Checkbox
                 disabled
                 checked={func.has}
-                className="mr-14 flex flex-row items-center pb-1-dot-6"
+                className="mr-72 flex flex-row items-center text-caption mb-16"
                 key={func.funcTag}
                 value={func.funcTag}
                 onChange={updateFuncs(func.funcTag)}
@@ -98,7 +98,7 @@ export const AlterRoleFunc = ({ funcs: functions, tag, lastSaveTime, id }: IAlte
             <Card
               style={{ backgroundColor: '#fff' }}
               key={func.funcTag}
-              headerClassName="py-1-dot-6 px-8 border-b border-gray-200"
+              headerClassName="py-16 px-20 border-b border-gray-200"
               title={
                 <Checkbox
                   disabled
@@ -121,7 +121,7 @@ export const AlterRoleFunc = ({ funcs: functions, tag, lastSaveTime, id }: IAlte
               headerActionClassName="no-underline text-gray-400
               text-12 leading-4 cursor-pointer"
               content={<>{renderFuncCard(func.child)}</>}
-              contentClassName="pt-1-dot-6 px-8 flex justify-start whitespace-nowrap flex-wrap"
+              contentClassName="py-16 pb-0 px-20 flex justify-start whitespace-nowrap flex-wrap"
             />
           );
         })}

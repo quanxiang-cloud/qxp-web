@@ -263,16 +263,8 @@ body {
   border-top-right-radius: 0;
 }
 
-.pt-1-dot-6 {
-  padding-top: 1.6rem;
-}
-
 .pt-2 {
   padding-top: 2rem;
-}
-
-.pb-1-dot-6 {
-  padding-bottom: 1.6rem;
 }
 
 .pt-3-dot-2 {
@@ -281,11 +273,6 @@ body {
 
 .pb-3-dot-2 {
   padding-bottom: 3.2rem;
-}
-
-.py-1-dot-6 {
-  padding-top: 1.6rem;
-  padding-bottom: 1.6rem;
 }
 
 .pl-2-dot-6 {
@@ -572,6 +559,13 @@ body {
 label.checkbox.checked:before,
 label.checkbox.checked:hover:before {
   @apply bg-blue-600 #{!important};
+}
+
+label.checkbox.disabled {
+  opacity: 1 !important;
+  input {
+    opacity: 0.5 !important;
+  }
 }
 
 .search-input {

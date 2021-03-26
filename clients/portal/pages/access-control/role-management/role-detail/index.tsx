@@ -41,7 +41,8 @@ export const RoleDetail = ({ role }: IRoleDetail) => {
       />
       <Tab
         style={{ height: 'calc(100% - 24px)' }}
-        className="mt-4 py-1-dot-6"
+        className="mt-4 py-16"
+        contentClassName="rounded-12 rounded-tl-none"
         items={[
           {
             id: 'func',

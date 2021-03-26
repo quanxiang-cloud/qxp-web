@@ -15,11 +15,13 @@ export interface ITab {
   currentKey?: string | number;
   onChange?: (key: string | number) => void;
   style?: Record<string, unknown>;
+  titleClassName?: string;
 }
 
 export const Tab = ({
   className,
   headerClassName,
+  titleClassName,
   contentClassName,
   items,
   currentKey,
@@ -43,15 +45,16 @@ export const Tab = ({
             <div
               key={item.id}
               className={twCascade(
-                'whitespace-nowrap rounded-dot4 rounded-br-none rounded-bl-none py-2',
-                'px-16 cursor-pointer text-14 hover:bg-blue-100',
+                'whitespace-nowrap py-5 tab-border',
+                'px-16 cursor-pointer text-body2-no-color hover:bg-blue-100',
                 'hover:text-blue-600 transition duration-300',
                 {
                   'bg-blue-100': active,
                   'text-blue-600': active,
-                  'font-bold': active,
+                  'font-semibold': active,
+                  'text-gray-600': !active,
                 },
-                contentClassName,
+                titleClassName,
               )}
               onClick={() => {
                 setKey(item.id);
@@ -64,7 +67,9 @@ export const Tab = ({
         })}
       </header>
       <div
-        className="w-full bg-blue-100 px-8 py-1-dot-6 overflow-hidden"
+        className={
+          twCascade('w-full bg-blue-100 px-20 py-16 overflow-hidden', contentClassName)
+        }
         style={{
           height: `calc(100% - ${height})`,
         }}
