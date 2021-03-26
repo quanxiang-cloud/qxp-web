@@ -170,8 +170,8 @@ export const AssociateDepartmentEmployee = ({ id, isSuper }: IAssociateDepartmen
         </Button>
       )}
       <div
-        className="overflow-scroll w-full pb-6"
-        style={{ height: 'calc(100% - 32px)' }}
+        className="overflow-scroll w-full pb-6 rounded-12"
+        style={{ height: 'calc(100% - 42px)' }}
       >
         <Table
           rowKey="ownerID"
@@ -236,6 +236,7 @@ export const AssociateDepartmentEmployee = ({ id, isSuper }: IAssociateDepartmen
             }
             onShowSizeChange={(pageSize) => setPagination((p) => ({ ...p, pageSize }))}
             onChange={(current) => setPagination((p) => ({ ...p, current }))}
+            className="rounded-bl-12 rounded-br-12"
           />
         )}
       </div>
