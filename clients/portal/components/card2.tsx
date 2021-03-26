@@ -15,6 +15,7 @@ export interface Props {
   headerActionClassName?: string;
   contentClassName?: string;
   style?: Record<string, string>;
+  descClassName?: string;
 }
 
 export default function Card({
@@ -28,6 +29,7 @@ export default function Card({
   headerActionClassName,
   contentClassName,
   style,
+  descClassName,
 }: Props) {
   const classNames = useCss({
     'border-radius': '12px',
@@ -41,6 +43,7 @@ export default function Card({
         action={action}
         actionClassName={headerActionClassName}
         className={headerClassName}
+        descClassName={descClassName}
       />
       {(content || children) && (
         <main className={twCascade('flex-1', contentClassName)}>{content || children}</main>

@@ -44,7 +44,7 @@ export const Tab = ({
               key={item.id}
               className={twCascade(
                 'whitespace-nowrap rounded-dot4 rounded-br-none rounded-bl-none py-2',
-                'px-16 cursor-pointer text-1-dot-4 hover:bg-blue-100',
+                'px-16 cursor-pointer text-14 hover:bg-blue-100',
                 'hover:text-blue-600 transition duration-300',
                 {
                   'bg-blue-100': active,

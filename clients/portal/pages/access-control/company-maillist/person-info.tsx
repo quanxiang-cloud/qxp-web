@@ -312,7 +312,7 @@ export const PersonInfo = React.memo(({
           <div className="flex items-center">
             <div className="pr-dot-4">
               <div className="relative w-2-dot-4 h-2-dot-4 rounded-br-4 rounded-l-4
-              text-center leading-2-dot-4 text-white text-1-dot-4"
+              text-center leading-2-dot-4 text-white text-14"
               style={{
                 backgroundColor: bgColor,
               }}
@@ -340,7 +340,7 @@ export const PersonInfo = React.memo(({
                   'flex items-center justify-center'
                 )}
               >
-                <span className="text-white text-1-dot-2">主管</span>
+                <span className="text-white text-12">主管</span>
               </span>
             )}
           </div>
@@ -588,7 +588,7 @@ export const PersonInfo = React.memo(({
           <div className="qxp-table flex w-full">
             {
               personList?.data && <Table
-                className="text-1-dot-4 table-full"
+                className="text-14 table-full"
                 dataSource={personList?.data || []}
                 columns={columns}
                 rowKey="id"

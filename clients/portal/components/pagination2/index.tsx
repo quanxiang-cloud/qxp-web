@@ -55,12 +55,12 @@ export const Pagination = ({
         <Core current={current <= maxPage ? current : 1} maxPage={maxPage} onChange={onChange} />
         <div className="w-2-dot-7"></div>
         {type === 'simple' && (<div className="flex itmes-center">
-          <div className="text-1-dot-2 mr-dot-6 text-center leading-2-dot-8">每页</div>
+          <div className="text-12 mr-dot-6 text-center leading-2-dot-8">每页</div>
           <Select
             value={pageSize}
             onChange={selectChange}
             className="h-2-dot-8 border border-gray-300 rounded-r-8
-            rounded-tl-2 rounded-bl-8 px-1-dot-2 text-1-dot-2 flex items-center"
+            rounded-tl-2 rounded-bl-8 px-1-dot-2 text-12 flex items-center"
             options={[{
               value: 10,
               label: '10 条',

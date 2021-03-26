@@ -28,6 +28,12 @@
   line-height: 22px;
 }
 
+.text-h6-bold {
+  font-size: 14px;
+  line-height: 22px;
+  font-weight: 600;
+}
+
 .text-body1 {
   font-size: 16px;
   line-height: 24px;

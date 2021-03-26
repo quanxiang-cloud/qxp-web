@@ -125,7 +125,7 @@ export const EmployeeTable = observer(({
         onShowSizeChange={store.setPageSize}
         onChange={store.setCurrentPage}
         prefix={
-          <span className="text-1-dot-2 text-dark-four">
+          <span className="text-12 text-dark-four">
             {`已选 ${store.selectedKeys.length}, 共 ${total}条`}
           </span>
         }

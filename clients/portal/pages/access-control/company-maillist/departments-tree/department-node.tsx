@@ -71,7 +71,7 @@ function DepartmentNode({ node }: NodeRenderProps<IDepartment>): JSX.Element {
           Message.error(msg || '');
         });
       },
-      content: (<div>确定要删除<span className="mx-2 text-1-dot-6
+      content: (<div>确定要删除<span className="mx-2 text-16
       font-semibold text-gray-900">{node.data.departmentName}</span>吗？</div>),
     });
   }

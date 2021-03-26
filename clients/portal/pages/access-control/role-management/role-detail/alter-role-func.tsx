@@ -119,7 +119,7 @@ export const AlterRoleFunc = ({ funcs: functions, tag, lastSaveTime, id }: IAlte
               //   </span>
               // }
               headerActionClassName="no-underline text-gray-400
-              text-1-dot-2 leading-4 cursor-pointer"
+              text-12 leading-4 cursor-pointer"
               content={<>{renderFuncCard(func.child)}</>}
               contentClassName="pt-1-dot-6 px-8 flex justify-start whitespace-nowrap flex-wrap"
             />
@@ -165,7 +165,7 @@ export const AlterRoleFunc = ({ funcs: functions, tag, lastSaveTime, id }: IAlte
         {/* {!isSuper && (
           <div className="flex flex-row items-center justify-between">
             {!!lastSaveTime && (
-              <span className="text-1-dot-2 text-gray-400 mr-8">
+              <span className="text-12 text-gray-400 mr-8">
                 最近保存时间：{getSaveTime(lastSaveTime)}
               </span>
             )}

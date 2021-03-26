@@ -60,23 +60,23 @@ export const AccountHandleModal = (props: AccountHandleModalProps) => {
       }
     >
       {status === -1 && (
-        <div className="text-1-dot-4">
+        <div className="text-14">
           删除账号后，在平台内无法恢复员工
-          <span className="mx-1 text-1-dot-6 font-semibold">{initData?.userName}</span>
+          <span className="mx-1 text-16 font-semibold">{initData?.userName}</span>
           数据，确定要删除该账号吗？
         </div>
       )}
       {status === -2 && (
-        <div className="text-1-dot-4">
+        <div className="text-14">
           禁用账号后，员工
-          <span className="mx-1 text-1-dot-6 font-semibold">{initData?.userName}</span>
+          <span className="mx-1 text-16 font-semibold">{initData?.userName}</span>
           无法登录该平台，确定要禁用该账号吗？
         </div>
       )}
       {status === 1 && (
-        <div className="text-1-dot-4">
+        <div className="text-14">
           启用账号后，员工
-          <span className="mx-1 text-1-dot-6 font-semibold">{initData?.userName}</span>
+          <span className="mx-1 text-16 font-semibold">{initData?.userName}</span>
           可以登录该平台，确定要启用该账号吗？
         </div>
       )}

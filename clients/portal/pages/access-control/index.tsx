@@ -26,7 +26,7 @@ export default function Index() {
                 <img src="/dist/images/person.svg" alt="calendar" />
               </div>
             }
-            titleClassName="text-2 leading-8 font-bold mb-2"
+            titleClassName="text-20 leading-8 font-bold mb-2"
             descClassName="leading-8"
           />
         </div>

@@ -40,7 +40,7 @@ export const ListMenu = ({ onChange, defaultType }: IListMenu) => {
               onChange(item.id);
             }}
             className={twCascade(
-              'h-5-dot-6 leading-2-dot-8 rounded-l-8 items-center',
+              'h-56 leading-2-dot-8 rounded-l-8 items-center',
               'p-l-1-dot-8 flex relative cursor-pointer transition-all duration-300',
               useCss({
                 '> div': {
@@ -70,10 +70,10 @@ export const ListMenu = ({ onChange, defaultType }: IListMenu) => {
             )}
           >
             <img className="w-2-dot-4 h-2-dot-4 pr-dot-4" src={item.icon} alt="logo" />
-            <span className="text-gray-400 text-1-dot-6">{item.name}</span>
+            <span className="text-gray-400 text-16">{item.name}</span>
             <div
               className={twCascade(
-                'absolute top-0 right-0 w-0-dot-4 h-5-dot-6 bg-gray-600',
+                'absolute top-0 right-0 w-0-dot-4 h-56 bg-gray-600',
                 'rounded-l-8 transition-all duration-300',
               )}
             ></div>

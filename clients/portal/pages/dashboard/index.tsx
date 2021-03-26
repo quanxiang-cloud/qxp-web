@@ -27,7 +27,7 @@ export default function Dashboard() {
             avatar={value.userInfo.userIconURL}
           />
         </div>
-        <div className="px-dot-6 mt-40">
+        <div className="px-6 mt-40">
           <Card
             className="px-32 py-20"
             headerClassName="ml-8"
@@ -123,7 +123,7 @@ export default function Dashboard() {
                         />
                       }
                       textDirection="row"
-                      className="h-5-dot-6"
+                      className="h-56"
                       textClassName="h-auto"
                       titleClassName="text-body2"
                       descClassName="text-h5 text-blue-1100"
@@ -141,7 +141,7 @@ export default function Dashboard() {
                         />
                       }
                       textDirection="row"
-                      className="h-5-dot-6"
+                      className="h-56"
                       textClassName="h-auto"
                       titleClassName="text-body2"
                       descClassName="text-16 font-bold"
@@ -159,7 +159,7 @@ export default function Dashboard() {
                         />
                       }
                       textDirection="row"
-                      className="h-5-dot-6"
+                      className="h-56"
                       textClassName="h-auto"
                       titleClassName="text-14"
                       descClassName="text-16 font-bold"

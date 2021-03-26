@@ -289,7 +289,7 @@ export const ExportFileModal = ({
           ) : null
         }
       >
-        <div className="w-full text-1-dot-4">
+        <div className="w-full text-14">
           {uploadStatus.status === 3 && (
             <div className="text-red-600 font-semibold flex items-center">
               <SvgIcon
@@ -384,7 +384,7 @@ export const ExportFileModal = ({
           {[1, 2].includes(uploadStatus.status) && (
             <div>
               <p className="text-gray-600 font-semibold">接下来选择：</p>
-              <p className="text-1-dot-4 py-dot-4">向已导入的员工发送随机密码</p>
+              <p className="text-14 py-dot-4">向已导入的员工发送随机密码</p>
               <CheckboxGroup name="states" onChange={(value: string[]) => changeCheckbox(value)}>
                 <Checkbox value="email">通过邮箱</Checkbox>
                 <Checkbox value="phone">通过短信</Checkbox>

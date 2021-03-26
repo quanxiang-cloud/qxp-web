@@ -19,9 +19,9 @@ const PageSelect = (props: PageSelectProps) => {
 
   return (
     <div className="flex items-center relative">
-      <div className="mr-dot-6 text-1-dot-2">每页</div>
+      <div className="mr-dot-6 text-12">每页</div>
       <div className="w-32 h-2-dot-8 border border-gray-300 rounded-r-8
-      rounded-tl-2 rounded-bl-8 px-1-dot-2 text-1-dot-2 flex items-center"
+      rounded-tl-2 rounded-bl-8 px-1-dot-2 text-12 flex items-center"
       onClick={() => setIsShow(!isShow)}
       >
         <div className="mr-2">{value} 条</div>
@@ -37,7 +37,7 @@ const PageSelect = (props: PageSelectProps) => {
                 <li
                   key={num}
                   onClick={() => clickPage(num)}
-                  className="h-2-dot-8 px-1-dot-2 py-dot-2 text-1-dot-2 cursor-pointer
+                  className="h-2-dot-8 px-1-dot-2 py-dot-2 text-12 cursor-pointer
         text-center leading-2-dot-8 hover:bg-blue-100">{num} 条</li>
               );
             })

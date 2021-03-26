@@ -96,7 +96,7 @@ export const SelectedList = observer(({ className, ownerStore }: ISelectedList) 
         desc={`(${users.length}个员工${departments.length ? `, ${departments.length}个部门` : ''})`}
         action={
           <span
-            className="cursor-pointer text-1-dot-4 text-blue-600 flex
+            className="cursor-pointer text-14 text-blue-600 flex
             items-center justify-center"
             onClick={onClear}
           >

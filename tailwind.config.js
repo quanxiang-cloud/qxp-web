@@ -65,6 +65,7 @@ module.exports = {
         '2dot4': '2.4rem',
         588: '588px',
         214: '214px',
+        259: '259px'
       },
       minWidth: {
         90: '90px',
@@ -76,6 +77,7 @@ module.exports = {
         '2dot4': '2.4rem',
         '5.6': '5.6rem',
         160: '160px',
+        56: '56px',
       },
       borderWidth: {
         '1.5': '1.5px',
@@ -95,6 +97,7 @@ module.exports = {
       margin: {
         dot875: '0.875rem',
         dot4: '0.4rem',
+        3.5: '3.5px',
       },
       inset: {
         '-2px': '-2px',

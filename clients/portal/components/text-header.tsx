@@ -40,7 +40,7 @@ export default function TextHeader({
           </div>
         }
         descClassName={twCascade(
-          'transition ease-linear text-1-dot-2 text-blueGray-400',
+          'transition ease-linear text-12 text-blueGray-400',
           descClassName
         )}
         textDirection={textDirection}
@@ -49,7 +49,7 @@ export default function TextHeader({
         textClassName={textClassName}
       />
       {isString(action) && (
-        <a className={twCascade('transition ease-linear text-1-dot-4 underline text-gray-600')}>
+        <a className={twCascade('transition ease-linear text-14 underline text-gray-600')}>
           {action}
         </a>
       )}

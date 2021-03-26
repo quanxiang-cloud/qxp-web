@@ -18,18 +18,19 @@ export const RoleList = ({ items, onChange }: IRoleList) => {
   };
 
   return (
-    <div className="pt-8">
+    <div className="pt-20">
       <ItemWithTitleDesc
         itemRender={
           <div
-            className="font-bold text-1-dot-6 pl-8 text-gray-900 flex justify-between items-center"
+            className="text-h6-bold pl-20 text-black-900 flex justify-between items-center"
           >
             角色列表
           </div>
         }
         desc={`(${items.length} 个)`}
-        descClassName="transition ease-linear text-1-dot-2 text-blueGray-400"
+        descClassName="transition ease-linear text-12 text-blueGray-400 text-caption-no-color"
         textClassName="ml-3.5"
+        className="mb-8"
       />
       <List
         className="flex-col justify-start items-stretch mt-2"
