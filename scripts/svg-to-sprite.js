@@ -41,13 +41,14 @@ module.exports = function () {
         ({ defs, refs }) => {
           // replace #475569 by currentColor in order to be styled by css
           // todo define #475569 as constant?
-          const svgStr = defs.replace(/#475569/g, 'currentColor');
+          const svgStr = defs.replace(/currentColor/g, 'none');
+          const svgStrs = svgStr.replace(/#475569/g, 'currentColor');
           mkdirp.sync(
             path.dirname(path.join(__dirname, '../dist/images/sprite.svg'))
           );
           fs.writeFileSync(
             path.join(__dirname, '../dist/images/sprite.svg'),
-            svgStr
+            svgStrs
           );
         }
       );
