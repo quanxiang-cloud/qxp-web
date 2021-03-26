@@ -7,6 +7,7 @@ interface Props extends React.SVGProps<SVGSVGElement> {
   name: string;
   type?: 'dark' | 'coloured' | 'light';
   size?: number;
+  style?: Style;
   color?: string;
   className?: any;
   disabled?: boolean;
@@ -18,6 +19,7 @@ interface Style {
   width?: string;
   height?: string;
   color?: string;
+  fill?: string;
 }
 
 function SvgIcon(
@@ -30,18 +32,16 @@ function SvgIcon(
     clickable = false,
     className,
     color,
+    style,
     ...props
   }: Props,
   _ref: React.Ref<SVGSVGElement>
 ) {
   const styleCSS: Style = {
-    width: size ? `${size}px` : undefined,
-    height: size ? `${size}px` : undefined,
+    ...style,
+    width: size ? `${size - 1}px` : undefined,
+    height: size ? `${size - 1}px` : undefined,
   };
-
-  if (color) {
-    styleCSS.color = color;
-  }
 
   const _style: React.CSSProperties = styleCSS;
 
