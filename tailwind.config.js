@@ -12,6 +12,7 @@ module.exports = {
       5: '5px',
       6: '6px',
       8: '8px',
+      10: '10px',
       12: '12px',
       16: '16px',
       18: '18px',
@@ -32,6 +33,7 @@ module.exports = {
     },
     lineHeight: {
       24: '24px',
+      28: '28px',
       48: '48px'
     },
     fontSize: {
@@ -47,6 +49,7 @@ module.exports = {
       4: '4px',
       6: '6px',
       8: '8px',
+      10: '10px',
       12: '12px',
       none: '0px',
       // todo remove this

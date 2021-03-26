@@ -138,7 +138,7 @@ export default function DepartmentModal({
           <Button icon={<Icon name="close" className="mr-4" />} onClick={closeModal}>
             取消
           </Button>
-          <div className="px-2"></div>
+          <div className="w-20"></div>
           <Button
             className="bg-black-900"
             textClassName="text-white"

@@ -9,8 +9,8 @@ export interface IEmptyData {
 export const EmptyData = ({ text, className }: IEmptyData) => {
   return (
     <div className={twCascade('flex flex-col justify-center items-center', className)}>
-      <img src="/dist/images/links.svg" alt="no data" className="mb-dot-4" />
-      <span className={twCascade('text-12 leading-4')}>{text}</span>
+      <img src="/dist/images/links.svg" alt="no data" className="mb-8" />
+      <span className={twCascade('text-12')}>{text}</span>
     </div>
   );
 };

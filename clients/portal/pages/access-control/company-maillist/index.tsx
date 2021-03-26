@@ -35,12 +35,12 @@ export default function MailList() {
         title="企业通讯录"
         desc="管理账号，如添加、编辑、删除账号等，同时还能关联每个账号的角色；用户可用账号名称或邮件登录全象云平台。"
         action="📌 如何管理通讯录？"
-        className="bg-gray-200-dot-5 px-20 py-dot-8 header-background-image h-56"
+        className="bg-g ray-200-dot-5 px-20 py-16 header-background-image"
       />
       <div className="h-full flex-column overflow-y-h">
         <div
           className={twCascade(
-            'w-416 ml-8 mt-8 bg-gray-200 rounded-r-6 rounded-tl-2',
+            'w-416 ml-20 bg-gray-200 rounded-r-6 rounded-tl-2',
             'rounded-bl-6 flex items-center',
           )}
         >

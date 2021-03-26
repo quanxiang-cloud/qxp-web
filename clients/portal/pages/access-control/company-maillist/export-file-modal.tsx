@@ -265,7 +265,7 @@ export const ExportFileModal = ({
               <Button icon={<Icon name="close" className="mr-4" />} onClick={closeBefore}>
                 取消
               </Button>
-              <div className="px-2"></div>
+              <div className="w-20"></div>
               {btnStatus === 0 ? (
                 <Button
                   className="bg-black-900"
@@ -291,33 +291,33 @@ export const ExportFileModal = ({
       >
         <div className="w-full text-14">
           {uploadStatus.status === 3 && (
-            <div className="text-red-600 font-semibold flex items-center">
+            <div className="text-red-600 mb-24 font-semibold flex items-center">
               <SvgIcon
                 size={16}
                 name="sms_failed"
-                className="mr-dot-9"
+                className="mr-8"
                 color='#ca2621'
               />
               <span>导入失败 {uploadStatus.failTotal} 条数据。</span>
             </div>
           )}
           {uploadStatus.status === 1 && (
-            <div className="text-green-600 font-semibold">
+            <div className="text-green-600 mb-24 font-semibold">
               <SvgIcon
                 size={16}
                 name="playlist_add_check"
-                className="mr-dot-9"
+                className="mr-8"
                 color='#2191ca'
               />
               <span>导入成功 {uploadStatus.successTotal} 条数据。</span>
             </div>
           )}
           {uploadStatus.status === 2 && (
-            <div className="text-yellow-600 font-semibold">
+            <div className="text-yellow-600 mb-24 font-semibold">
               <SvgIcon
                 size={16}
                 name="priority_high"
-                className="mr-dot-9"
+                className="mr-8"
                 color='#d0a406'
               />
               <span>
@@ -328,7 +328,7 @@ export const ExportFileModal = ({
           )}
           {uploadStatus.status === 0 && (
             <div className="text-gray-600">
-              <p className="py-dot-4">上传单个 excel 文件</p>
+              <p className="py-8">上传单个 excel 文件</p>
               <div className="w-full">
                 <Upload
                   style={{ width: '100%' }}
@@ -342,27 +342,30 @@ export const ExportFileModal = ({
                       'flex flex-col items-center justify-center hover:border-red-600',
                     )}
                   >
-                    <SvgIcon size={16} name="cloud_upload" fill="red" type="coloured" />
+                    <SvgIcon size={16} name="cloud_upload" color="#64748B" type="coloured" />
                     <p>点击或拖拽单个文件到至该区域。支持xls、xlsx格式</p>
                   </div>
                 </Upload>
-                <div className="mt-dot-4 flex flex-col">
+                <div className="mt-8 flex flex-col">
                   {fileList.map((file, index) => {
                     return (
                       <div
                         key={index}
-                        className="px-8 py-dot-4 cursor-pointer flex
+                        className="px-8 py-4 cursor-pointer flex
                         items-center justify-between bg-blue-100"
                       >
                         <div className="flex items-center">
-                          <SvgIcon size={16} name="book" fill="red" type="coloured" />
+                          <div className="w-16 h-16 bg-blue-600 icon-border-radius
+                          flex items-center justify-center mr-8">
+                            <SvgIcon size={8} name="book" type="light" />
+                          </div>
                           <span>{file.name}</span>
                         </div>
                         <SvgIcon
                           size={16}
                           name="restore_from_trash"
                           type="coloured"
-                          fill="red"
+                          color="#475569"
                           onClick={() => delFile(index)}
                         />
                       </div>
@@ -370,7 +373,7 @@ export const ExportFileModal = ({
                   })}
                 </div>
               </div>
-              <ul className="text-gray-600 mt-8">
+              <ul className="text-gray-600 mt-24">
                 <li>
                   1. 点击下载
                   <span onClick={downTemp} className="text-blue-600 cursor-pointer">
@@ -383,8 +386,8 @@ export const ExportFileModal = ({
           )}
           {[1, 2].includes(uploadStatus.status) && (
             <div>
-              <p className="text-gray-600 font-semibold">接下来选择：</p>
-              <p className="text-14 py-dot-4">向已导入的员工发送随机密码</p>
+              <p className="text-gray-600 font-semibold mt-24 mb-16">接下来选择：</p>
+              <p className="text-14 py-8">向已导入的员工发送随机密码</p>
               <CheckboxGroup name="states" onChange={(value: string[]) => changeCheckbox(value)}>
                 <Checkbox value="email">通过邮箱</Checkbox>
                 <Checkbox value="phone">通过短信</Checkbox>
@@ -393,14 +396,19 @@ export const ExportFileModal = ({
           )}
           {[2, 3].includes(uploadStatus.status) && (
             <div>
-              <div className="py-dot-4 flex items-center">
+              <div className="mb-8 flex items-center">
                 <p className="text-gray-600 font-semibold">失败原因：</p>
                 <span onClick={downFailData} className="text-blue-600 cursor-pointer">
                   下载失败列表
                 </span>
               </div>
-              <div className="qxp-table flex w-full">
-                <Table rowKey="phone" dataSource={failUsers} columns={columns} />
+              <div className="qxp-table flex w-full mb-24">
+                <Table
+                  className="text-14 table-full"
+                  rowKey="phone"
+                  dataSource={failUsers}
+                  columns={columns}
+                />
               </div>
             </div>
           )}

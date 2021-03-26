@@ -21,7 +21,7 @@ export const DeleteModal = ({ currDep, closeModal, okModal }: DeleteModalProps) 
           <Button
             icon={
               <img
-                className="w-2-dot-4 h-2-dot-4 px-8"
+                className="w-24 h-24 px-8"
                 src="./dist/images/icon_error.svg"
                 alt="icon_error"
               />
@@ -30,13 +30,13 @@ export const DeleteModal = ({ currDep, closeModal, okModal }: DeleteModalProps) 
           >
             取消
           </Button>
-          <div className="px-2"></div>
+          <div className="w-20"></div>
           <Button
             className="bg-black-900"
             textClassName="text-white"
             icon={
               <img
-                className="w-2-dot-4 h-2-dot-4 px-8"
+                className="w-24 h-24 px-8"
                 src="./dist/images/icon_true.svg"
                 alt="icon_true"
               />

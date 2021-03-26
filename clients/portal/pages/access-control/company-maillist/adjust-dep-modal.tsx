@@ -64,7 +64,7 @@ export const AdjustDepModal = (props: IAdjustDepModalProps) => {
           <Button icon={<Icon name="close" className="mr-4" />} onClick={closeModal}>
             取消
           </Button>
-          <div className="px-2"></div>
+          <div className="w-20"></div>
           <Button
             className="bg-black-900"
             textClassName="text-white"
@@ -82,22 +82,21 @@ export const AdjustDepModal = (props: IAdjustDepModalProps) => {
           <ul className="flex items-center flex-wrap">
             {userList.map((user) => {
               return (
-                <li key={user.id} className="rounded-tl-dot-4 rounded-br-dot-4
-                px-8 bg-blue-200 mr-2 whitespace-nowrap">
+                <li key={user.id} className="rounded-tl-4 rounded-br-4
+                px-8 bg-blue-200 mr-8 whitespace-nowrap">
                   <span className="text-blue-600 text-14">{user.userName}</span>
                 </li>
               );
             })}
           </ul>
         </div>
-        <div className="mt-4 w-full">
+        <div className="mt-24 w-full">
           <p className="text-gray-600 text-14">选择要调整的部门</p>
           <Form layout="vertical" ref={formRef}>
             {isLoading ? (
               <Loading />
             ) : (
               <TreePicker
-                label="部门"
                 treeData={departmentToTreeNode(depData as IDepartment)}
                 labelKey="departmentName"
                 name="pid"
