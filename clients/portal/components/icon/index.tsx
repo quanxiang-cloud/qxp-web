@@ -23,7 +23,7 @@ interface Style {
 function SvgIcon(
   {
     name,
-    size = 22,
+    size = 24,
     type = 'dark',
     changeable = false,
     disabled = false,
