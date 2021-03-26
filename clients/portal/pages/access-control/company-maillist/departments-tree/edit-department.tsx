@@ -18,7 +18,7 @@ interface DepartmentModalProps {
 
 export default function EditDepartment({ department, closeModal }: DepartmentModalProps) {
   const [depNameStatus, setDepNameState] = useState('')
-  const [depNameHelpText, setDepNameHelpText] = useState('不超过 10 个字符，部门名称不可重复。');
+  const [depNameHelpText, setDepNameHelpText] = useState('不超过 30 个字符，部门名称不可重复。');
 
   const formRef = createRef<Form>();
   const queryClient = useQueryClient();
@@ -60,7 +60,7 @@ export default function EditDepartment({ department, closeModal }: DepartmentMod
       setDepNameHelpText('部门名称不能超过30个字符')
       setDepNameState('error')
     } else {
-      setDepNameHelpText('不超过 10 个字符，部门名称不可重复')
+      setDepNameHelpText('不超过 30 个字符，部门名称不可重复')
       setDepNameState('')
     }
   }
