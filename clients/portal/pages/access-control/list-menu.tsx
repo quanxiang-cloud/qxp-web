@@ -71,8 +71,6 @@ export const ListMenu = () => {
               })}
               // When /access and /access/corporate-directory are matched, NavLink is activated
               isActive={(match, location) => {
-                console.log(location);
-
                 const { pathname } = location;
                 if (item.id === 'corporate-directory') {
                   if (match || pathname === '/access-control' || pathname === '/access-control/') {
