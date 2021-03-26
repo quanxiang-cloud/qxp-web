@@ -1,4 +1,4 @@
-import React, { createRef } from 'react';
+import React, { createRef, useState } from 'react';
 import { useQuery, useQueryClient } from 'react-query';
 import { Modal, Form, Icon, Message } from '@QCFE/lego-ui';
 
@@ -17,6 +17,9 @@ interface DepartmentModalProps {
 }
 
 export default function EditDepartment({ department, closeModal }: DepartmentModalProps) {
+  const [depNameStatus, setDepNameState] = useState('')
+  const [depNameHelpText, setDepNameHelpText] = useState('不超过 10 个字符，部门名称不可重复。');
+
   const formRef = createRef<Form>();
   const queryClient = useQueryClient();
 
@@ -47,6 +50,21 @@ export default function EditDepartment({ department, closeModal }: DepartmentMod
 
   depData = removeSelf(depData);
 
+  // validate departmentName after input blur
+  const handleDepBlur = (value?: string) => {
+    const departmentName = value?.trim()
+    if (!departmentName) {
+      setDepNameHelpText('请输入部门名称')
+      setDepNameState('warning')
+    } else if (departmentName.length > 30) {
+      setDepNameHelpText('部门名称不能超过30个字符')
+      setDepNameState('error')
+    } else {
+      setDepNameHelpText('不超过 10 个字符，部门名称不可重复')
+      setDepNameState('')
+    }
+  }
+
   const okModalHandle = () => {
     if (!formRef.current?.validateForm()) {
       return;
@@ -64,10 +82,20 @@ export default function EditDepartment({ department, closeModal }: DepartmentMod
       return;
     }
 
-    requestAPI(params).then(() => {
-      closeModal();
-      Message.success({ content: '操作成功！' });
-      queryClient.invalidateQueries('getERPTree');
+    requestAPI(params).then((submitResponseData: any) => {
+      switch (submitResponseData.code) {
+        case 0:
+          Message.success({ content: '操作成功！' });
+          queryClient.invalidateQueries('getERPTree');
+          closeModal();
+          break
+        case 54001003:
+          setDepNameHelpText('名称已存在，请修改')
+          setDepNameState('error')
+          break
+        default:
+          Message.error({ content: '发生未知错误！' });
+      }
     }).catch((error: any) => {
       console.log(error);
     });
@@ -104,14 +132,12 @@ export default function EditDepartment({ department, closeModal }: DepartmentMod
           name="departmentName"
           label="部门名称"
           placeholder="请输入部门名称"
-          help="不超过 10 个字符，部门名称不可重复。"
+          help={depNameHelpText}
+          validateHelp={depNameHelpText}
+          validateStatus={depNameStatus}
+          validateOnBlur
           defaultValue={department.departmentName}
-          schemas={[
-            {
-              help: '请输入部门名称',
-              rule: { required: true },
-            },
-          ]}
+          onBlur={handleDepBlur}
         />
         {depData && (
           <DepartmentPicker
