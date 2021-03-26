@@ -305,7 +305,7 @@ export const batchAdjustDep = ({
 };
 
 /**
- * @returns 发送随机密码
+ * @returns 重置密码
  */
 export const resetUserPWD = ({
   userIDs,

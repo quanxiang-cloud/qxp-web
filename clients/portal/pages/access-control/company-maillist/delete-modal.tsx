@@ -2,6 +2,7 @@ import React from 'react';
 import { Modal } from '@QCFE/lego-ui';
 
 import { Button } from '@portal/components/button';
+import SvgIcon from '@portal/components/icon';
 
 interface DeleteModalProps {
   currDep: any;
@@ -19,13 +20,7 @@ export const DeleteModal = ({ currDep, closeModal, okModal }: DeleteModalProps) 
       footer={
         <div className="flex items-center">
           <Button
-            icon={
-              <img
-                className="w-24 h-24 px-8"
-                src="./dist/images/icon_error.svg"
-                alt="icon_error"
-              />
-            }
+            icon={<SvgIcon name="close" size={20} className="mr-8" />}
             onClick={closeModal}
           >
             取消
@@ -34,13 +29,7 @@ export const DeleteModal = ({ currDep, closeModal, okModal }: DeleteModalProps) 
           <Button
             className="bg-black-900"
             textClassName="text-white"
-            icon={
-              <img
-                className="w-24 h-24 px-8"
-                src="./dist/images/icon_true.svg"
-                alt="icon_true"
-              />
-            }
+            icon={<SvgIcon name="check" type="light" size={20} className="mr-8" />}
             onClick={okModal}
           >
             确定删除

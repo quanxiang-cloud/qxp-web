@@ -48,7 +48,7 @@ export const More = function <T>({
           itemClassName={twCascade('hover:bg-blue-100', contentItemClassName)}
           className={
             twCascade(
-              'min-w-90 z-10 py-8 shadow-title bg-white',
+              'min-w-90 z-10 py-16 shadow-title bg-white',
               'rounded-6 absolute right-0 top-full mr-2 mt-12',
               contentClassName,
             )

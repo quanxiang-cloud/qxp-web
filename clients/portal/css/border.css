@@ -21,3 +21,7 @@
 .pagination-border {
   @apply border-t border-gray-200;
 }
+
+.box-border-radius {
+  @apply rounded-tl-4 rounded-tr-12 rounded-br-12 rounded-bl-12;
+}

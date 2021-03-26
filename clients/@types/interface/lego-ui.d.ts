@@ -107,7 +107,7 @@ declare module '@QCFE/lego-ui' {
       value?: string | number;
       onChange?: (...args: any) => void;
       validateOnBlur?: boolean;
-      onBlur?: () => void;
+      onBlur?: (...args: any) => void;
       validateStatus?: string;
       validateIcon?: boolean;
       validateHelp?: string;

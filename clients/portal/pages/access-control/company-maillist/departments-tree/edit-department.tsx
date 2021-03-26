@@ -137,6 +137,7 @@ export default function EditDepartment({ department, closeModal }: DepartmentMod
           help={HELP_TEXT_NORMAL}
           validateHelp={depNameHelpText}
           validateStatus={depNameStatus}
+          maxLength={30}
           validateOnBlur
           defaultValue={department.departmentName}
           onBlur={handleDepBlur}
