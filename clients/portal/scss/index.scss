@@ -1,6 +1,7 @@
 @import '../../assets/scss/reset';
 @import './components.scss';
 @import './lego';
+@import './form.scss';
 
 @tailwind base;
 @tailwind components;
@@ -196,7 +197,7 @@ body {
     width: 632px !important;
 
     .modal-card-body {
-      padding: 24px 40px;
+      padding: 24px 40px !important;
 
       form {
         width: 100%;
@@ -233,6 +234,7 @@ label.checkbox.checked:after {
 
 label.checkbox.disabled {
   opacity: 1 !important;
+
   input {
     opacity: 0.5 !important;
   }

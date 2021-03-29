@@ -2,38 +2,41 @@ import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation } from 'react-query';
 import { Table, Icon, Message } from '@QCFE/lego-ui';
 
-import Button2 from '@c/button2';
 import IconBtn from '@c/icon-btn';
 import { Pagination } from '@c/pagination2';
-import { ResetPasswordModal, CheckedWay } from './reset-password-modal';
-import { AccountHandleModal } from './account-handle-modal';
-import { StaffModal, FormValues, EditFormValues } from './staff-modal';
+import SvgIcon from '@c/icon';
+import { ResetPasswordModal, CheckedWay } from './modal/reset-password-modal';
+import { AccountHandleModal } from './modal/account-handle-modal';
+import StaffModal from './modal/staff-modal';
 import { List } from '@c/list2';
+import { UserInfo } from '@portal/api/auth';
+import { UserStatus } from './enum';
 import { DepartmentStaff } from '@c/department-staff';
 import { Button } from '@c/button';
-import { ExportFileModal } from './export-file-modal';
-import { AdjustDepModal } from './adjust-dep-modal';
+import { ExportFileModal } from './modal/export-file-modal';
+import { AdjustDepModal } from './modal/adjust-dep-modal';
 import { EmptyData } from '@c/empty-data';
 import { More } from '@c/more';
-import { IUserInfo } from '@portal/api/auth';
-import { excelHeader, exportDepExcel, getImgColor } from './excel';
+import { excelHeader, exportDepExcel } from './excel';
 import { uuid } from '@lib/utils';
 import Authorized from '@clients/common/component/authorized';
 import { usePortalGlobalValue } from '@states/portal';
 import {
   getUserAdminInfo,
   updateUserStatus,
-  addDepUser,
-  updateUser,
   resetUserPWD,
   setDEPLeader,
   batchAdjustDep,
   getUserRole,
   cancelDEPLeader,
 } from '@net/corporate-directory';
+import UserInfoColumn from './table-column/user-info-column';
+import OtherColumn from './table-column/other-column';
 
-export type UserStatus = 1 | -1 | -2; // 1 正常 -2 禁用 -1 删除
-type ResetStart = 0 | 1; // 0是单个，1批量
+enum ResetStart {
+  single = 0,
+  batch = 1
+}
 
 export type BatchDepParams = {
   usersID: string[];
@@ -48,40 +51,25 @@ interface PersonInfoProps {
   handleClear(): void;
 }
 
-export const PersonInfo = React.memo(({
+export default function PersonInfo({
   departmentId,
   departmentName,
   keyword,
   handleClear,
-}: PersonInfoProps) => {
+}: PersonInfoProps) {
+  console.log('ResetStart', ResetStart);
   const [visibleFile, setVisibleFile] = useState<boolean>(false);
   const [resetModal, setResetModal] = useState<boolean>(false);
   const [handleModal, setHandleModal] = useState<boolean>(false);
   const [visibleAdjust, setVisibleAdjust] = useState<boolean>(false);
   const [modalStatus, setModalStatus] = useState<UserStatus>(1);
   const [resetStart, setResetStart] = useState<ResetStart>(0);
-  const [userModalStatus, setUserModalStatus] = useState<'add' | 'edit'>('add');
   const [visibleStaff, setVisibleStaff] = useState<boolean>(false);
   const [selectedRows, setSelectedRows] = useState<string[]>([]);
-  const [selectedUsers, setSelectedUsers] = useState<IUserInfo[]>([]);
+  const [selectedUsers, setSelectedUsers] = useState<UserInfo[]>([]);
   const [{ userInfo }] = usePortalGlobalValue();
 
-  const staffMutation = useMutation(
-    userModalStatus === 'add' ? addDepUser : updateUser,
-    {
-      onSuccess: (data) => {
-        if (data && data.code === 0) {
-          Message.success('操作成功');
-          refetch();
-        } else {
-          Message.error(data?.msg || '操作失败');
-        }
-        setVisibleStaff(false);
-      },
-    }
-  );
-
-  const [currUser, setCurrUser] = useState<IUserInfo>({
+  const [currUser, setCurrUser] = useState<UserInfo>({
     id: '',
     userName: '',
     email: '',
@@ -105,7 +93,7 @@ export const PersonInfo = React.memo(({
   }, [keyword]);
 
   const { data: personList, isLoading, refetch } = useQuery(
-    ['getUserAdminInfo', pageParams, departmentId],
+    ['GET_USER_ADMIN_INFO', pageParams, departmentId],
     () => getUserAdminInfo(departmentId, pageParams),
     {
       refetchOnWindowFocus: false,
@@ -159,14 +147,14 @@ export const PersonInfo = React.memo(({
 
   const pageSizeOptions = [10, 20, 50, 100];
 
-  const setUpSuper = (params: IUserInfo) => {
+  const setUpSuper = (params: UserInfo) => {
     superMutation.mutate({
       depID: params.dep ? params.dep.id : '',
       userID: params.id,
     });
   };
 
-  const cancelUpSuper = (params: IUserInfo) => {
+  const cancelUpSuper = (params: UserInfo) => {
     const _params: { depID: string } = {
       depID: params.dep ? params.dep.id : '',
     };
@@ -204,13 +192,13 @@ export const PersonInfo = React.memo(({
       id: '4',
       iconName: 'stop',
       text: '禁用账号',
-      onclick: (params: any) => handleAccount(-2, params),
+      onclick: (params: any) => handleAccount(UserStatus.disable, params),
     };
     const deleted = {
       id: '5',
       iconName: 'trash',
       text: '删除账号',
-      onclick: (params: any) => handleAccount(-1, params),
+      onclick: (params: any) => handleAccount(UserStatus.delete, params),
     };
     const cancel = {
       id: '6',
@@ -222,25 +210,25 @@ export const PersonInfo = React.memo(({
       id: '7',
       iconName: 'stop',
       text: '启用账号',
-      onclick: (params: any) => handleAccount(1, params),
+      onclick: (params: any) => handleAccount(UserStatus.normal, params),
     };
 
-    if (status === 1) {
+    if (status === UserStatus.normal) {
       acts = [leader, password, edit, disable, deleted];
     }
 
-    if (status === -2) {
+    if (status === UserStatus.disable) {
       acts = [open, deleted];
     }
 
-    if (isLeader === 1 && status !== -2) {
+    if (isLeader === UserStatus.normal && status !== UserStatus.disable) {
       acts[0] = cancel;
     }
 
     return acts;
   };
 
-  const handleUserInfo = (params: IUserInfo, status: 'add' | 'edit') => {
+  const handleUserInfo = (params: UserInfo, status: 'add' | 'edit') => {
     if (status === 'edit') {
       getUserRole({ ownerID: params.id, type: 1 }).then((roles) => {
         const _params = {
@@ -254,23 +242,26 @@ export const PersonInfo = React.memo(({
         }
         setCurrUser(_params);
         setVisibleStaff(true);
-        setUserModalStatus(status);
       });
     } else {
-      setCurrUser(params);
+      setCurrUser({
+        id: '',
+        userName: '',
+        email: '',
+        phone: '',
+      });
       setVisibleStaff(true);
-      setUserModalStatus(status);
     }
   };
 
-  const handleReset = (params: IUserInfo) => {
-    setResetStart(0);
+  const handleReset = (params: UserInfo) => {
+    setResetStart(ResetStart.single);
     setCurrUser(params);
     setResetModal(true);
   };
 
   const openSendPwd = () => {
-    setResetStart(1);
+    setResetStart(ResetStart.batch);
     setResetModal(true);
   };
 
@@ -278,7 +269,7 @@ export const PersonInfo = React.memo(({
     setResetModal(false);
   };
 
-  const handleAccount = (status: UserStatus, params: IUserInfo): void => {
+  const handleAccount = (status: UserStatus, params: UserInfo): void => {
     setCurrUser(params);
     setModalStatus(status);
     setHandleModal(true);
@@ -308,77 +299,29 @@ export const PersonInfo = React.memo(({
     {
       title: '姓名',
       dataIndex: 'userName',
-      render: (text: string, record: IUserInfo) => {
-        const head: string = text.substring(0, 1);
-        const imgInfo = getImgColor(head);
-        return (
-          <div className="flex items-center">
-            <div className="pr-8">
-              <div className="relative w-24 h-24 rounded-br-4 rounded-l-4
-              text-center leading-24 text-white text-14"
-              style={{
-                backgroundColor: imgInfo.color,
-              }}
-              >
-                {imgInfo.name}
-                <div className="w-10 h-10 bg-white rounded-10 flex items-center
-                justify-center absolute -bottom-5 -right-5">
-                  {record.useStatus === 1 && (
-                    <div className="w-6 h-6 bg-green-600 rounded-6"></div>
-                  )}
-                  {record.useStatus === -2 && (
-                    <div className="w-6 h-6 bg-red-600 rounded-6"></div>
-                  )}
-                </div>
-              </div>
-            </div>
-
-            {record.useStatus === -2 ?
-              <span className="mr-1 text-gray-400">{text}</span> :
-              <span className="mr-1">{text}</span>}
-            {record.isDEPLeader === 1 && (
-              <span
-                className='bg-jb rounded-4 px-2 flex items-center justify-center'
-              >
-                <span className="text-white text-12">主管</span>
-              </span>
-            )}
-          </div>
-        );
-      },
+      render: (text: string, record: UserInfo) => <UserInfoColumn userinfo={record} />,
     },
     {
       title: '手机号',
       dataIndex: 'phone',
       width: 130,
-      render: (text: string, record: IUserInfo) => {
-        return (record.useStatus === -2 ?
-          <span className="mr-1 text-gray-400">{text}</span>:
-          <span className="mr-1">{text}</span>);
+      render: (text: string, record: UserInfo) => {
+        return <OtherColumn columnKey='phone' userinfo={record} />;
       },
     },
     {
       title: '邮箱',
       dataIndex: 'email',
       // width: 150,
-      render: (text: string, record: IUserInfo) => {
-        return (record.useStatus === -2 ?
-          <span className="mr-1 text-gray-400">{text}</span>:
-          <span className="mr-1">{text}</span>
-        );
+      render: (text: string, record: UserInfo) => {
+        return <OtherColumn columnKey='email' userinfo={record} />;
       },
     },
     {
       title: '部门',
       dataIndex: 'department',
-      render: (text: string, record: IUserInfo) => {
-        return (
-          record.useStatus === -2 ?
-            <span className="mr-1 text-gray-400">
-              {record.dep && record.dep.departmentName}
-            </span>:
-            <span className="mr-1">{record.dep && record.dep.departmentName}</span>
-        );
+      render: (text: string, record: UserInfo) => {
+        return <OtherColumn columnKey='dep' userinfo={record} />;
       },
     },
   ];
@@ -388,9 +331,9 @@ export const PersonInfo = React.memo(({
       title: '',
       dataIndex: '',
       width: 40,
-      render: (text: any, record?: IUserInfo) => {
+      render: (text: any, record?: UserInfo) => {
         return (
-          <More<IUserInfo>
+          <More<UserInfo>
             items={
               actions(
                   (record && record.useStatus) as UserStatus,
@@ -413,7 +356,7 @@ export const PersonInfo = React.memo(({
       disabled: record.useStatus === -2,
       name: record.id,
     }),
-    onChange: (selectedRowKeys: string[], selectedRows: IUserInfo[]) => {
+    onChange: (selectedRowKeys: string[], selectedRows: UserInfo[]) => {
       setSelectedRows(selectedRowKeys);
       setSelectedUsers(selectedRows);
     },
@@ -430,15 +373,8 @@ export const PersonInfo = React.memo(({
     refetch();
   };
 
-  const okStaffModal = (values: FormValues | EditFormValues) => {
-    if (userModalStatus === 'edit') {
-      values.id = currUser.id;
-    }
-    staffMutation.mutate(values);
-  };
-
   const closeStaffModal = () => {
-    setVisibleStaff(false);
+    setVisibleStaff(!visibleStaff);
   };
 
   const okResetModal = (checkedWay: CheckedWay) => {
@@ -498,13 +434,12 @@ export const PersonInfo = React.memo(({
         okModal={okModalAdjust}
       />
       {/* 员工模态框 */}
-      <StaffModal
-        visible={visibleStaff}
-        status={userModalStatus}
-        initData={currUser}
-        okModal={okStaffModal}
-        closeModal={closeStaffModal}
-      />
+      {
+        visibleStaff && <StaffModal
+          user={currUser}
+          closeModal={closeStaffModal}
+        />
+      }
       {/* 文件处理模态框 */}
       <ExportFileModal
         visible={visibleFile}
@@ -536,22 +471,7 @@ export const PersonInfo = React.memo(({
               <Button
                 className="bg-black-900"
                 textClassName="text-white"
-                icon={
-                  <svg
-                    className="mr-4"
-                    width="18"
-                    height="14"
-                    viewBox="0 0 18 14"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      // eslint-disable-next-line max-len
-                      d="M15.6667 1.99998H9.00008L7.33342 0.333313H2.33341C1.40841 0.333313 0.675081 1.07498 0.675081 1.99998L0.666748 12C0.666748 12.925 1.40841 13.6666 2.33341 13.6666H15.6667C16.5917 13.6666 17.3334 12.925 17.3334 12V3.66665C17.3334 2.74165 16.5917 1.99998 15.6667 1.99998ZM15.6667 12H2.33341V1.99998H6.64175L8.30841 3.66665H15.6667V12ZM9.00008 8.66665H10.6667V10.3333H12.3334V8.66665H14.0001V6.99998H12.3334V5.33331H10.6667V6.99998H9.00008V8.66665Z"
-                      fill="white"
-                    />
-                  </svg>
-                }
+                icon={<SvgIcon name="device_hub" type="light" size={20} />}
                 onClick={openAdjustModal}
               >
                 调整部门
@@ -566,18 +486,22 @@ export const PersonInfo = React.memo(({
             </Authorized>
           ) : (
             <Authorized authority={['accessControl/mailList/manage']}>
-              <Button2 isPrimary icon="folder" onClick={importFile} className="mr-16">
+              <Button
+                icon={<SvgIcon type="light" name="create_new_folder" className="mr-10" size={20} />}
+                onClick={importFile}
+                className="mr-16 bg-gray-700 text-white"
+              >
                 excel 批量导入
-              </Button2>
-              <Button2
-                icon="add"
+              </Button>
+              <Button
+                icon={<SvgIcon name="add" className="mr-10" size={20} />}
                 onClick={() => handleUserInfo({
                   id: '', userName: '', phone: '', email: '',
                 }, 'add')}
                 className="mr-16"
               >
                 添加员工
-              </Button2>
+              </Button>
               <More
                 items={[<List key={uuid()} items={expandActions} />]}
                 contentClassName="mr-8"
@@ -619,4 +543,4 @@ export const PersonInfo = React.memo(({
       </div>
     </>
   );
-});
+}

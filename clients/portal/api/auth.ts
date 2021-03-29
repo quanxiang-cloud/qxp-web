@@ -4,7 +4,7 @@ import { httpPost, getNestedPropertyToArray } from '@lib/utils';
 import { IDepartment } from '@states/portal';
 
 // get user info
-export interface IUserInfo {
+export interface UserInfo {
   id: string;
   userName: string;
   phone: string;
@@ -18,8 +18,8 @@ export interface IUserInfo {
   useStatus?: number;
   isDEPLeader?: boolean | number;
 }
-export const getUserInfo = async (): Promise<Partial<IUserInfo>> => {
-  const { data } = await httpPost<IUserInfo>('/api/v1/org/userUserInfo');
+export const getUserInfo = async (): Promise<Partial<UserInfo>> => {
+  const { data } = await httpPost<UserInfo>('/api/v1/org/userUserInfo');
   if (data) {
     data.depIds = getNestedPropertyToArray<string>(data?.dep, 'id', 'child');
   }

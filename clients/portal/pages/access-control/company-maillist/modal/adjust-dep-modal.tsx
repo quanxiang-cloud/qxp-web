@@ -5,15 +5,15 @@ import React, { createRef } from 'react';
 import { useQuery } from 'react-query';
 import { Modal, Icon, Form, Loading, Message } from '@QCFE/lego-ui';
 
-import { Button } from '@c/button';
-import { BatchDepParams } from './person-info';
-import { IUserInfo } from '@portal/api/auth';
-import TreePicker from '@c/tree-picker';
+import { Button } from '@portal/components/button';
+import { BatchDepParams } from '../person-info';
+import { UserInfo } from '@portal/api/auth';
+import TreePicker from '@portal/components/tree-picker';
 import { departmentToTreeNode } from '@lib/utils';
 import { getERPTree } from '@net/corporate-directory';
 
 interface IAdjustDepModalProps {
-  userList: IUserInfo[];
+  userList: UserInfo[];
   visible: boolean;
   closeModal(): void;
   okModal: (val: BatchDepParams) => void;
@@ -83,7 +83,7 @@ export const AdjustDepModal = (props: IAdjustDepModalProps) => {
             {userList.map((user) => {
               return (
                 <li key={user.id} className="rounded-tl-4 rounded-br-4
-                px-8 bg-blue-200 mr-8 whitespace-nowrap">
+                px-8 bg-blue-200 mr-8 mb-8 whitespace-nowrap">
                   <span className="text-blue-600 text-14">{user.userName}</span>
                 </li>
               );

@@ -4,17 +4,17 @@
 import React from 'react';
 import { Modal } from '@QCFE/lego-ui';
 
-import { Button } from '@c/button';
-import { UserStatus } from './person-info';
-import { IUserInfo } from '@portal/api/auth';
-import SvgIcon from '@c/icon';
+import { Button } from '@portal/components/button';
+import { UserStatus } from '../enum';
+import { UserInfo } from '@portal/api/auth';
+import SvgIcon from '@portal/components/icon';
 
 interface AccountHandleModalProps {
   visible: boolean;
   status: UserStatus;
-  initData: IUserInfo;
+  initData: UserInfo;
   closeModal(): void;
-  okModal(val: IUserInfo): void;
+  okModal(val: UserInfo): void;
 }
 
 export const AccountHandleModal = (props: AccountHandleModalProps) => {

@@ -8,7 +8,7 @@ import { usePortalGlobalValue } from '@states/portal';
 import { Error } from '@c/error';
 
 import DepartmentsTree from './departments-tree';
-import { PersonInfo } from './person-info';
+import PersonInfo from './person-info';
 
 export default function MailList() {
   const [searchWord, setSearchWord] = useState<string>('');

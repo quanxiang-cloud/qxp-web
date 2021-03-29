@@ -90,7 +90,7 @@ export default function EditDepartment({ department, closeModal }: DepartmentMod
       switch (submitResponseData.code) {
       case 0:
         Message.success({ content: '操作成功！' });
-        queryClient.invalidateQueries('getERPTree');
+        queryClient.invalidateQueries('GET_ERP_TREE');
         closeModal();
         break;
       case 54001003:

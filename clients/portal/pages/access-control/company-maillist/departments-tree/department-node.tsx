@@ -64,7 +64,7 @@ function DepartmentNode({ node }: NodeRenderProps<IDepartment>): JSX.Element | n
         deleteDEP(node.id).then(({ code, msg }) => {
           if (!code) {
             Message.success({ content: '删除成功' });
-            queryClient.invalidateQueries('getERPTree');
+            queryClient.invalidateQueries('GET_ERP_TREE');
             return;
           }
 

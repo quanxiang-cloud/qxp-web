@@ -1,8 +1,8 @@
 import { httpPost, httpFile } from '@lib/utils';
 import { ITreeNode } from '@p/access-control/company-maillist/department-tree';
 
-import { FormValues, EditFormValues } from '../pages/access-control/company-maillist/staff-modal';
-import { UserStatus } from '../pages/access-control/company-maillist/person-info';
+import { FormValues } from '../pages/access-control/company-maillist/modal/staff-modal';
+import { UserStatus } from '../pages/access-control/company-maillist/enum';
 
 // ------------------ 部门 ---------------
 // 获取部门树
@@ -187,7 +187,7 @@ export const getListRole = () => {
 /**
  * @returns 新增部门人员
  */
-export const addDepUser = (values: FormValues | EditFormValues) => {
+export const addDepUser = (values: FormValues) => {
   return httpPost<{ roles: Roles[] }>(
     '/api/v1/nurturing/addUser',
     JSON.stringify(values),
@@ -200,7 +200,7 @@ export const addDepUser = (values: FormValues | EditFormValues) => {
 /**
  * @returns 修改用户信息
  */
-export const updateUser = (values: FormValues | EditFormValues) => {
+export const updateUser = (values: FormValues) => {
   return httpPost<{ roles: Roles[] }>(
     '/api/v1/nurturing/updateUser',
     JSON.stringify(values),

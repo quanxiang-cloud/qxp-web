@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { Modal, Form, Message } from '@QCFE/lego-ui';
 
-import { Button } from '@c/button';
-import SvgIcon from '@c/icon';
+import { Button } from '@portal/components/button';
+import SvgIcon from '@portal/components/icon';
 
-const { TextField, CheckboxGroupField } = Form;
+const { CheckboxGroupField } = Form;
 
 export type CheckedWay = {
   sendPhone: -1 | 1;
@@ -64,21 +64,21 @@ export const ResetPasswordModal = (props: ResetPasswordModalProps) => {
             icon={<SvgIcon name="check" type="light" size={20} className="mr-8" />}
             onClick={handleReset}
           >
-            发送密码
+            发送重置密码
           </Button>
         </div>
       }
     >
       <div className="w-full flex flex-col">
         <div className="w-full box-border-radius px-18 py-12 mb-20 bg-blue-100 flex items-center">
-          <SvgIcon name="info" size={24} color="#375FF3" className="mr-10" />
+          <SvgIcon name="info" size={24} type="coloured" color="#375FF3" className="mr-10" />
           <span className="text-blue-600">系统将自动生成一个随机密码发送给员工。</span>
         </div>
         <Form layout="vertical" ref={(n: any) => setForm(n)}>
           {/* <TextField name="account-1" label="重置密码" placeholder="请输入 QingCloud 账号" /> */}
           <CheckboxGroupField
             name="way"
-            label="选择密码发送方式"
+            label="选择重置密码的发送方式"
             options={[
               {
                 label: '通过邮箱',
