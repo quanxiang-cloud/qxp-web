@@ -225,11 +225,14 @@ body {
 label.checkbox.checked:before,
 label.checkbox.checked:hover:before {
   @apply bg-blue-600 #{!important};
+}
+
+label.checkbox:after {
   @apply top-4 #{!important};
 }
 
-label.checkbox.checked:after {
-  @apply top-5 #{!important};
+label.checkbox::before {
+  @apply top-4 #{!important};
 }
 
 label.checkbox.disabled {
