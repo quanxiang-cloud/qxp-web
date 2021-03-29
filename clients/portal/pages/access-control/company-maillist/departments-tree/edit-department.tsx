@@ -155,6 +155,10 @@ export default function EditDepartment({ department, closeModal }: DepartmentMod
             treeData={departmentToTreeNode(depData as IDepartment)}
             labelKey="departmentName"
             name="pid"
+            defaultValue={department.pid}
+            closeOnSelect
+            required
+            help="请选择部门"
           />
         )}
       </Form>

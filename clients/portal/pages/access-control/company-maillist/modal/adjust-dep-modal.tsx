@@ -5,10 +5,10 @@ import React, { createRef } from 'react';
 import { useQuery } from 'react-query';
 import { Modal, Icon, Form, Loading, Message } from '@QCFE/lego-ui';
 
-import { Button } from '@portal/components/button';
+import { Button } from '@c/button';
 import { BatchDepParams } from '../person-info';
-import { UserInfo } from '@portal/api/auth';
-import TreePicker from '@portal/components/tree-picker';
+import { UserInfo } from '@net/auth';
+import DepartmentPicker from '@c/tree-picker';
 import { departmentToTreeNode } from '@lib/utils';
 import { getERPTree } from '@net/corporate-directory';
 
@@ -90,20 +90,21 @@ export const AdjustDepModal = (props: IAdjustDepModalProps) => {
             })}
           </ul>
         </div>
-        <div className="mt-24 w-full">
-          <p className="text-gray-600 text-14">选择要调整的部门</p>
-          <Form layout="vertical" ref={formRef}>
-            {isLoading ? (
-              <Loading />
-            ) : (
-              <TreePicker
-                treeData={departmentToTreeNode(depData as IDepartment)}
-                labelKey="departmentName"
-                name="pid"
-              />
-            )}
-          </Form>
-        </div>
+        <Form layout="vertical" ref={formRef}>
+          {isLoading ? (
+            <Loading />
+          ) : (
+            <DepartmentPicker
+              treeData={departmentToTreeNode(depData as IDepartment)}
+              labelKey="departmentName"
+              name="pid"
+              required
+              label="选择要调整的部门"
+              closeOnSelect
+              help="请选择部门"
+            />
+          )}
+        </Form>
       </div>
     </Modal>
   );

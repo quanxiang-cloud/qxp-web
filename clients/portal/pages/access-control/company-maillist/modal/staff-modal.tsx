@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from 'react-query';
 import { Modal, Form, Icon, Message } from '@QCFE/lego-ui';
 
-import TreePicker from '@portal/components/tree-picker';
-import { Button } from '@portal/components/button';
-import { Loading } from '@portal/components/loading2';
-import { UserInfo } from '@portal/api/auth';
+import TreePicker from '@c/tree-picker';
+import { Button } from '@c/button';
+import { Loading } from '@c/loading2';
+import { UserInfo } from '@net/auth';
 import { getERPTree, addDepUser, updateUser } from '@net/corporate-directory';
 import { departmentToTreeNode } from '@lib/utils';
 
@@ -209,6 +209,9 @@ export default function StaffModal(
               labelKey="departmentName"
               name="depID"
               defaultValue={user?.dep?.id}
+              required
+              closeOnSelect
+              help="请选择部门"
             />
           )
         }

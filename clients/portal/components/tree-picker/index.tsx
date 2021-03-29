@@ -1,15 +1,16 @@
 import React, { useState, useEffect, useRef } from 'react';
+import useClickAway from 'react-use/lib/useClickAway';
 import { Icon, Field, Control, Label, Form } from '@QCFE/lego-ui';
 import { twCascade } from '@mariusmarais/tailwind-cascade';
-import useClickAway from 'react-use/lib/useClickAway';
 
 import Store from '@c/headless-tree/store';
 import { TreeNode } from '@c/headless-tree/types';
 import Tree from '@c/headless-tree';
 import { Loading } from '@c/loading2';
+
 import NodeRender from './tree-node';
 
-export type TreePickerType<T> = {
+export type Props<T> = {
   label?: string;
   treeData?: TreeNode<T>;
   onChange?: (id: string, paths: T[]) => void;
@@ -17,6 +18,9 @@ export type TreePickerType<T> = {
   labelKey?: string;
   name?: string;
   defaultValue?: string;
+  closeOnSelect?: boolean;
+  required?: boolean;
+  help?: string;
 }
 
 function TreePicker<T extends { id: string; }>({
@@ -27,7 +31,10 @@ function TreePicker<T extends { id: string; }>({
   labelKey = 'name',
   name = 'treePicker',
   defaultValue = '',
-}: TreePickerType<T>): JSX.Element {
+  closeOnSelect,
+  required,
+  help = '请选择项目',
+}: Props<T>): JSX.Element {
   const [path, setPath] = useState<T[]>([]);
   const [open, setOpen] = useState<boolean>(isOpen);
   const [store, setStore] = useState<Store<T>>();
@@ -43,7 +50,7 @@ function TreePicker<T extends { id: string; }>({
     }
     const node = store.nodeList.find((node) => node.id === defaultValue);
     if (node) {
-      const path = [...store.getNodeParents(node.id).map(({ data }) => data), node.data];
+      const path = [node.data, ...store.getNodeParents(node.id).map(({ data }) => data)];
       setPath(path);
       setValue(node.id);
       store.onSelectNode(node.id);
@@ -64,9 +71,15 @@ function TreePicker<T extends { id: string; }>({
   if (!store) {
     return <Loading desc="加载中..." />;
   }
-
-  const text = path.map((p) => (p as any)[labelKey]).join(' > ');
-
+  const text = path.map((p) => (p as any)[labelKey]).reverse().join(' > ');
+  const schemas = [];
+  if (required) {
+    schemas.push({
+      help: help,
+      status: 'error',
+      rule: { required: true },
+    });
+  }
 
   return (
     <div
@@ -86,8 +99,9 @@ function TreePicker<T extends { id: string; }>({
           <Control className="w-full self-stretch relative">
             <Form.TextAreaField
               name={`${name}Value`}
-              className="cursor-pointer text-area-input"
+              className="cursor-pointer text-area-input flex flex-col"
               value={text}
+              schemas={schemas}
             />
             <Form.TextField name={name} value={value} className="hidden h-0" />
             <Icon
@@ -95,7 +109,7 @@ function TreePicker<T extends { id: string; }>({
               size="20"
               className={
                 twCascade(
-                  'transition-all absolute top-2/4 transform -translate-y-2/4 cursor-pointer',
+                  'transition-all absolute cursor-pointer top-16 transform',
                   {
                     '-rotate-180': open,
                   }
@@ -125,10 +139,13 @@ function TreePicker<T extends { id: string; }>({
             isFirstLoadRef.current = false;
             return;
           }
-          const path = [...store.getNodeParents(node.id).map(({ data }) => data), node];
+          const path = [node, ...store.getNodeParents(node.id).map(({ data }) => data)];
           setPath(path);
           setValue(node.id);
           onChange && onChange(node.id, path);
+          if (closeOnSelect) {
+            setOpen((o) => !o);
+          }
         }}
       />
     </div>
