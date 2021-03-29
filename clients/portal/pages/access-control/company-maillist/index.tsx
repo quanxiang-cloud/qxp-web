@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { twCascade } from '@mariusmarais/tailwind-cascade';
 import { Control, Icon, Input } from '@QCFE/lego-ui';
 
@@ -15,6 +15,10 @@ export default function MailList() {
   const [currentDepartment, setCurrentDepartment] = useState<IDepartment | null>(null);
   const [lastWord, setLastWord] = useState<string>('');
   const [{ userInfo }] = usePortalGlobalValue();
+
+  useEffect(() => {
+    document.title = '访问控制 - 企业通讯录'
+  }, []);
 
   const search = (keyWord: string) => {
     setSearchWord(keyWord);

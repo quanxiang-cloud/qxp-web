@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import useCss from 'react-use/lib/useCss';
 import { twCascade } from '@mariusmarais/tailwind-cascade';
 
@@ -13,7 +13,9 @@ import './index.scss';
 
 export default function Dashboard() {
   const [value] = usePortalGlobalValue();
-
+  useEffect(() => {
+    document.title = '工作台'
+  }, []);
   return (
     <>
       <main className="py-40 px-58 relative">
