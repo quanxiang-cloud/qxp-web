@@ -25,10 +25,10 @@ export const Avatar = ({ username = '', bio, avatar }: IAvatar) => {
   // }, [avatar]);
 
   let head = '';
-  let bgColor = '';
+  let imgInfo: { name: string, color: string } = {name: '', color: ''};
   if (username) {
     head = username.substring(0, 1);
-    bgColor = getImgColor(head);
+    imgInfo = getImgColor(head);
   }
 
   return (
@@ -37,14 +37,14 @@ export const Avatar = ({ username = '', bio, avatar }: IAvatar) => {
         (
           <>
             {
-              (head && bgColor) && (
+              (head && imgInfo) && (
                 <div className="relative w-48 h-48 icon-border-radius
               text-center text-white text-24 leading-48"
                 style={{
-                  backgroundColor: bgColor,
+                  backgroundColor: imgInfo.color,
                 }}
                 >
-                  {head}
+                  {imgInfo.name}
                 </div>
               )
             }
