@@ -6,7 +6,7 @@ import { Tab } from '@c/tab2';
 import TextHeader from '@c/text-header';
 import { SearchInput } from '@c/form/search-input';
 import { Loading } from '@c/loading2';
-import { getDepartmentStructure, IOwner } from '@portal/api/role-management';
+import { getDepartmentStructure, IOwner, getRoleAssociations } from '@net/role-management';
 
 import { EmployeeTable } from './employee-table';
 import { SelectedList } from './selected-list';
@@ -68,7 +68,7 @@ export const OwnerSelector = observer(({ defaultEmployees = [], refs }: IOwnerSe
         new EmployeeTreeStore(department),
         new EmployeeStore(),
         new DepartmentTreeStore(department, onDepartmentTreeChange),
-        defaultEmployees,
+        defaultEmployees
       ));
     }
   }, [department, defaultEmployees]);

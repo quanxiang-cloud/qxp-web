@@ -9,21 +9,21 @@ import { EmptyData } from '@c/empty-data';
 import { More } from '@c/more';
 import { Pagination } from '@c/pagination2';
 import Authorized from '@clients/common/component/authorized';
-
-import { OwnerSelector } from './owner-selector';
 import {
   getRoleAssociations,
   IOwner,
   updateRoleAssociations,
   IUpdateRoleAssociations,
-} from '@portal/api/role-management';
+} from '@net/role-management';
 
-export interface IAssociateDepartmentEmployee {
+import { OwnerSelector } from './owner-selector';
+
+export interface Props {
   id: string | number;
   isSuper: boolean;
 }
 
-export const AssociateDepartmentEmployee = ({ id, isSuper }: IAssociateDepartmentEmployee) => {
+export const AssociateDepartmentEmployee = ({ id, isSuper }: Props) => {
   const [selectedKeys, setSelectedKeys] = useState<string[]>([]);
   const [_, setSelectedRows] = useState<IOwner[]>([]);
   const [showAddModal, setShowAddModal] = useState(false);
@@ -40,11 +40,30 @@ export const AssociateDepartmentEmployee = ({ id, isSuper }: IAssociateDepartmen
 
   const { data, isLoading, refetch } = useQuery(
     [
-      'getRoleAssociations',
+      'GET_ROLE_ASSOCIATIONS',
       {
         roleID: id,
         page: pagination.current,
         limit: pagination.pageSize,
+      },
+    ],
+    getRoleAssociations,
+    {
+      refetchOnWindowFocus: false,
+      cacheTime: -1,
+    },
+  );
+
+  const {
+    data: allData,
+    isLoading: isAllLoading,
+    isError: isAllError,
+    refetch: refetchAll,
+  } = useQuery(
+    [
+      'GET_ROLE_ASSOCIATIONS_ALL',
+      {
+        roleID: id,
       },
     ],
     getRoleAssociations,
@@ -64,17 +83,18 @@ export const AssociateDepartmentEmployee = ({ id, isSuper }: IAssociateDepartmen
       onSuccess: () => {
         setShowAddModal(false);
         refetch();
+        refetchAll();
       },
     });
 
   const onAssociate = () => {
     if (selectorRef.current) {
       const currentOwners = selectorRef.current();
-      const deletes = data?.owners.filter((owner) => {
+      const deletes = allData?.owners.filter((owner) => {
         return !currentOwners.find((o) => o.ownerID === owner.ownerID);
       });
       const adds = currentOwners.filter((cowner) => {
-        return !data?.owners.find((o) => o.ownerID === cowner.ownerID);
+        return !allData?.owners.find((o) => o.ownerID === cowner.ownerID);
       });
       mutation.mutate({
         roleID: id as string,
@@ -101,10 +121,6 @@ export const AssociateDepartmentEmployee = ({ id, isSuper }: IAssociateDepartmen
     });
   };
 
-  if (isLoading) {
-    return <Loading desc="加载中..." />;
-  }
-
   const rowSelection = {
     selectedRowKeys: selectedKeys,
     onChange: (selectedRowKeys: string[], selectedRowData: IOwner[]) => {
@@ -130,6 +146,10 @@ export const AssociateDepartmentEmployee = ({ id, isSuper }: IAssociateDepartmen
       }
     });
   };
+
+  if (isLoading || isAllLoading || isAllError) {
+    return <Loading desc="加载中..." />;
+  }
 
   return (
     <>
@@ -159,7 +179,7 @@ export const AssociateDepartmentEmployee = ({ id, isSuper }: IAssociateDepartmen
           </div>
         }
       >
-        <OwnerSelector defaultEmployees={data?.owners} refs={selectorRef} />
+        <OwnerSelector defaultEmployees={allData?.owners} refs={selectorRef} />
       </Modal>
       {!isSuper && (
         <Authorized authority={['accessControl/role/manage']}>

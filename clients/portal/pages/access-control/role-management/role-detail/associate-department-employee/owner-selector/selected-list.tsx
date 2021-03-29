@@ -106,7 +106,10 @@ export const SelectedList = observer(({ className, ownerStore }: ISelectedList) 
           </span>
         }
       />
-      <div className="flex flex-row flex-wrap">
+      <div
+        className="flex flex-row flex-wrap overflow-scroll"
+        style={{ height: 'calc(100% - 42px)' }}
+      >
         {users.map(tagRender)}
         {departments.map(tagRender)}
       </div>
