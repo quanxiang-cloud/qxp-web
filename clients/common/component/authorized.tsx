@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { usePortalGlobalValue } from '../state/portal';
+import { usePortalGlobalValue } from '../states/portal';
 
 export interface IAuthorized {
   authority: string[];

@@ -19,7 +19,7 @@ import { IUserInfo } from '@portal/api/auth';
 import { excelHeader, exportDepExcel, getImgColor } from './excel';
 import { uuid } from '@lib/utils';
 import Authorized from '@clients/common/component/authorized';
-import { usePortalGlobalValue } from '@clients/common/state/portal';
+import { usePortalGlobalValue } from '@states/portal';
 import {
   getUserAdminInfo,
   updateUserStatus,

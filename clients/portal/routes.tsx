@@ -5,7 +5,7 @@ import { useQuery } from 'react-query';
 import { Error } from '@c/error';
 
 import { getSystemFuncs, getUserFuncs, getUserInfo, getUserRoles } from './api/auth';
-import { usePortalGlobalValue } from '@clients/common/state/portal';
+import { usePortalGlobalValue } from '@states/portal';
 import { Loading } from './components/loading2';
 
 import '@assets/scss/index.scss';

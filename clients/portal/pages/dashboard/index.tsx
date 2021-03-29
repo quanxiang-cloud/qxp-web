@@ -7,7 +7,7 @@ import Card from '@c/card2';
 import { List } from '@c/list2';
 import { ItemWithTitleDesc } from '@c/item-with-title-desc';
 import { uuid } from '@lib/utils';
-import { usePortalGlobalValue } from '@clients/common/state/portal';
+import { usePortalGlobalValue } from '@states/portal';
 
 import './index.scss';
 

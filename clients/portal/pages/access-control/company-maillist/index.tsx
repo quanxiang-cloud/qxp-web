@@ -1,10 +1,10 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { twCascade } from '@mariusmarais/tailwind-cascade';
 import { Control, Icon, Input } from '@QCFE/lego-ui';
 
 import TextHeader from '@c/text-header';
 import { DepartmentStaff } from '@c/department-staff';
-import { usePortalGlobalValue } from '@clients/common/state/portal';
+import { usePortalGlobalValue } from '@states/portal';
 import { Error } from '@c/error';
 
 import DepartmentsTree from './departments-tree';
@@ -17,7 +17,7 @@ export default function MailList() {
   const [{ userInfo }] = usePortalGlobalValue();
 
   useEffect(() => {
-    document.title = '访问控制 - 企业通讯录'
+    document.title = '访问控制 - 企业通讯录';
   }, []);
 
   const search = (keyWord: string) => {

@@ -1,7 +1,7 @@
 import { QueryFunctionContext } from 'react-query';
 
 import { httpPost, getNestedPropertyToArray } from '@lib/utils';
-import { IDepartment } from '@clients/common/state/portal';
+import { IDepartment } from '@states/portal';
 
 // get user info
 export interface IUserInfo {
