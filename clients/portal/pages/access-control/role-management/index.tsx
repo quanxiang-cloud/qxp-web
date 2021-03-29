@@ -16,6 +16,7 @@ export default function RoleManagement() {
   });
   const [roleId, setRoleId] = useState<string | number>('');
   useEffect(() => {
+    document.title = '访问控制 - 角色管理'
     if (roleList.length) {
       setRoleId(roleList[0].id);
     }
