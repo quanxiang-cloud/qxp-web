@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Modal, Form, Message } from '@QCFE/lego-ui';
 
-import { Button } from '@portal/components/button';
-import SvgIcon from '@portal/components/icon';
+import { Button } from '@c/button';
+import SvgIcon from '@c/icon';
 
 const { TextField, CheckboxGroupField } = Form;
 

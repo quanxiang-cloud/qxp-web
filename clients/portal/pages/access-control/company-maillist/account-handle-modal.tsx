@@ -4,10 +4,10 @@
 import React from 'react';
 import { Modal } from '@QCFE/lego-ui';
 
-import { Button } from '@portal/components/button';
+import { Button } from '@c/button';
 import { UserStatus } from './person-info';
 import { IUserInfo } from '@portal/api/auth';
-import SvgIcon from '@portal/components/icon';
+import SvgIcon from '@c/icon';
 
 interface AccountHandleModalProps {
   visible: boolean;

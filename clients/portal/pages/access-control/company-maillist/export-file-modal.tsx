@@ -4,7 +4,7 @@ import classnames from 'classnames';
 import { Modal, CheckboxGroup, Checkbox, Table, Upload, Icon, Message } from '@QCFE/lego-ui';
 
 import SvgIcon from '@c/icon';
-import { Button } from '@portal/components/button';
+import { Button } from '@c/button';
 import { getUserTemplate, importTempFile } from './api';
 interface ExportFileModalProps {
   visible: boolean;

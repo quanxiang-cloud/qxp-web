@@ -1,4 +1,4 @@
-import SelectableTreeStore from '@portal/components/headless-tree/multiple-select-tree';
+import SelectableTreeStore from '@c/headless-tree/multiple-select-tree';
 import { departmentToTreeNode } from '@assets/lib/utils';
 
 export default class extends SelectableTreeStore<IDepartment> {

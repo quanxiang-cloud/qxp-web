@@ -3,7 +3,7 @@ import classnames from 'classnames';
 import { Placement } from '@popperjs/core';
 
 import { Icon } from '@QCFE/lego-ui';
-import Popper from '@portal/components/popper';
+import Popper from '@c/popper';
 
 export type MenuItem<T> = {
   key: T;

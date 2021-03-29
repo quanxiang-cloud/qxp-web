@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { Route, Switch } from 'react-router';
 import { useQuery } from 'react-query';
 
-import { Error } from './components/error2';
+import { Error } from './components/error';
 
 import { getSystemFuncs, getUserFuncs, getUserInfo, getUserRoles } from './api/auth';
 import { usePortalGlobalValue } from '@clients/common/state/portal';

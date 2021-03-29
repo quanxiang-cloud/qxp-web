@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useQuery } from 'react-query';
 import { observer } from 'mobx-react';
 
-import { Tab } from '@portal/components/tab2';
-import TextHeader from '@portal/components/text-header';
-import { SearchInput } from '@portal/components/form/search-input';
+import { Tab } from '@c/tab2';
+import TextHeader from '@c/text-header';
+import { SearchInput } from '@c/form/search-input';
 import { EmployeeTable } from './employee-table';
 import { SelectedList } from './selected-list';
 import EmployeeSelectTree from './employee-select-tree';
@@ -15,7 +15,7 @@ import EmployeeTreeStore from './employee-select-tree/store';
 import EmployeeStore from './employee-table/store';
 import DepartmentTreeStore from './department-select-tree/store';
 import OwnerStore from './store';
-import { Loading } from '@portal/components/loading2';
+import { Loading } from '@c/loading2';
 
 export interface IOwnerSelector {
   defaultEmployees?: IOwner[];

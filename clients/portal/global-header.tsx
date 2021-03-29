@@ -1,47 +1,18 @@
 /* eslint-disable max-len */
 import React, { useEffect, useRef } from 'react';
 import useToggle from 'react-use/lib/useToggle';
-import useCss from 'react-use/lib/useCss';
 import { Link, useHistory } from 'react-router-dom';
 import { twCascade } from '@mariusmarais/tailwind-cascade';
 import { Icon } from '@QCFE/lego-ui';
 import { useLocation } from 'react-router-dom';
 
-import { More } from '@portal/components/more';
-import Hamburger from '@portal/components/hamburger2';
-import { List } from '@portal/components/list2';
-import { ItemWithTitleDesc } from '@portal/components/item-with-title-desc4';
+import { More } from '@c/more';
 import { uuid } from '@assets/lib/utils';
 import Authorized from '@clients/common/component/authorized';
 import SvgIcon from './components/icon';
 
-const menus = [
-  {
-    iconClassName: 'bg-gradient-yellow-to-top-right',
-    iconUrl: '/dist/images/app-plus.svg',
-    title: '应用管理',
-    desc: '对平台的企业空间、账号、以及角色权限进行统一管理。',
-    address: '/dist/images/calendar.svg',
-  },
-  {
-    iconClassName: 'bg-gradient-green-to-top-right',
-    iconUrl: '/dist/images/aces-ctl.svg',
-    title: '访问控制',
-    desc: '对平台的企业空间、账号、以及角色权限进行统一管理。',
-    address: '/accessControl',
-  },
-  {
-    iconClassName: 'bg-gradient-blue-to-top-right',
-    iconUrl: '/dist/images/clothes.svg',
-    title: '平台设置',
-    desc: '对平台的企业空间、账号、以及角色权限进行统一管理。',
-    address: '/dist/images/add.svg',
-  },
-];
-
 export default function GlobalHeader() {
   const [on, toggle] = useToggle(false);
-  const history = useHistory();
   const maskRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
 
@@ -84,7 +55,11 @@ export default function GlobalHeader() {
 
   const isHome = location.pathname === '/';
   const isAppManagement = location.pathname === '/app-management';
-  const isAccess = location.pathname === '/access-control';
+  const isAccess = [
+    '/access-control',
+    '/access-control/corporate-directory',
+    '/access-control/role-management',
+  ].includes(location.pathname);
   const isSystemControl = location.pathname === '/system';
 
   function className(condition: boolean) {
@@ -267,92 +242,6 @@ export default function GlobalHeader() {
           </div>
         </div>
       </div>
-
-      {/* <div
-        className="w-screen h-screen z-20 top-64 bg-black-900 bg-opacity-50 fixed hidden
-      transition duration-200"
-        ref={maskRef}
-      >
-        <div
-          className={classnames(
-            '-left-full transform px-40 max-w-%90 w-588 absolute bottom-0 top-0 flex flex-col',
-            useCss({
-              background: 'var(--blue-100)',
-              opacity: 0.9,
-              'backdrop-filter': 'blur(72px)',
-            }),
-            {
-              'slide-in': on,
-              'slide-out': !on,
-            },
-          )}
-        >
-          <div className="relative">
-            <img
-              className="absolute top-40 right-40"
-              src="/dist/images/menu-chatu.svg"
-              alt="chatu"
-            />
-            <List
-              className="flex-col mt-144"
-              itemClassName={classnames(
-                'pb-20 transform transition-all duration-200',
-                useCss({
-                  '&:hover .next': {
-                    width: '3.2rem',
-                    height: '3.2rem',
-                  },
-                  '.next': {
-                    width: '2.4rem',
-                    height: '2.4rem',
-                  },
-                  '&:hover > div': {
-                    'box-shadow': '0px 8px 24px 4px rgba(148, 163, 184, 0.25)',
-                  },
-                }),
-              )}
-              items={menus.map(({ title, desc, iconClassName, iconUrl, address }) => (
-                <div
-                  key={uuid()}
-                  onClick={() => {
-                    toggle();
-                    history.push(address);
-                  }}
-                  className={twCascade(
-                    'flex flex-row justify-between items-center bg-white px-20 py-16',
-                    'rounded-12 cursor-pointer transition-all duration-200',
-                  )}
-                >
-                  <ItemWithTitleDesc
-                    title={title}
-                    desc={desc}
-                    itemRender={
-                      <div
-                        className={classnames(
-                          'p-8 icon-border-radius w-48',
-                          'h-48 icon-border-radius flex items-center justify-center',
-                          iconClassName,
-                        )}
-                      >
-                        <img className="w-32 h-32" src={iconUrl} alt={title} />
-                      </div>
-                    }
-                    titleClassName="text-h4"
-                    descClassName="text-caption"
-                  />
-                  <Link to={address}>
-                    <Icon className="next transition-all duration-200" name="next" type="dark" />
-                  </Link>
-                </div>
-              ))}
-            />
-          </div>
-          <div className='h-32 self-start mt-20 opacity-button'>
-            <Icon className="mr-5" name="close" type="dark" size={20} />
-            <span className="text-button" onClick={toggle}>离开当前页面</span>
-          </div>
-        </div>
-      </div> */}
     </>
   );
 }

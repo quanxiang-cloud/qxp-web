@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-import { ItemWithTitleDesc } from './item-with-title-desc4';
+import { ItemWithTitleDesc } from './item-with-title-desc';
 // import { loadImage } from '@assets/lib/utils';
 import { getImgColor } from '../pages/access-control/company-maillist/excel';
 

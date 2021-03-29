@@ -1,6 +1,6 @@
 import { observable, action } from 'mobx';
 
-import TreeStore from '@portal/components/headless-tree/store';
+import TreeStore from '@c/headless-tree/store';
 import EmployeeStore from './employee-table/store';
 import { IOwner } from '../../../api';
 import DepartmentTreeStore from './department-select-tree/store';

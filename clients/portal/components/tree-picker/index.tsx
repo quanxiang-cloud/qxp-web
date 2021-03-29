@@ -3,10 +3,10 @@ import { Icon, Field, Control, Label, Form } from '@QCFE/lego-ui';
 import { twCascade } from '@mariusmarais/tailwind-cascade';
 import useClickAway from 'react-use/lib/useClickAway';
 
-import Store from '@portal/components/headless-tree/store';
-import { TreeNode } from '@portal/components/headless-tree/types';
-import Tree from '@portal/components/headless-tree';
-import { Loading } from '@portal/components/loading2';
+import Store from '@c/headless-tree/store';
+import { TreeNode } from '@c/headless-tree/types';
+import Tree from '@c/headless-tree';
+import { Loading } from '@c/loading2';
 import NodeRender from './tree-node';
 
 export type TreePickerType<T> = {

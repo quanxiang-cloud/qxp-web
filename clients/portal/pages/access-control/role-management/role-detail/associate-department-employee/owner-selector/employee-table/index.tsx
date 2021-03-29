@@ -2,11 +2,11 @@ import React, { useEffect } from 'react';
 import { useQuery } from 'react-query';
 import { observer } from 'mobx-react';
 
-import { Table } from '@portal/components/table2';
-import { EmptyData } from '@portal/components/empty-data';
-import { Pagination } from '@portal/components/pagination2';
+import { Table } from '@c/table2';
+import { EmptyData } from '@c/empty-data';
+import { Pagination } from '@c/pagination2';
 import { adminSearchUserList, IOwner } from '@portal/pages/access-control/role-management/api';
-import { Loading } from '@portal/components/loading2';
+import { Loading } from '@c/loading2';
 import OwnerStore from '../store';
 
 interface IEmployeeTable {

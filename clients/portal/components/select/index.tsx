@@ -3,7 +3,7 @@ import classnames from 'classnames';
 import { twCascade } from '@mariusmarais/tailwind-cascade';
 
 import { Icon } from '@QCFE/lego-ui';
-import Popper from '@portal/components/popper';
+import Popper from '@c/popper';
 
 import { SingleSelectTrigger, MultipleSelectTrigger } from './trigger';
 

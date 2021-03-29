@@ -5,11 +5,11 @@ import React, { useState } from 'react';
 import { useQuery } from 'react-query';
 import { Modal, Form, Icon } from '@QCFE/lego-ui';
 
-import { Button } from '@portal/components/button';
-import { Loading } from '@portal/components/loading2';
+import { Button } from '@c/button';
+import { Loading } from '@c/loading2';
 import { IUserInfo } from '@portal/api/auth';
 import { getListRole, getERPTree } from './api';
-import TreePicker from '@portal/components/tree-picker';
+import TreePicker from '@c/tree-picker';
 import { departmentToTreeNode } from '@assets/lib/utils';
 // import Select from '@c/select';
 

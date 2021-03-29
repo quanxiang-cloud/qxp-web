@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { observer } from 'mobx-react';
 import { useQuery } from 'react-query';
 
-import Tree from '@portal/components/headless-tree';
+import Tree from '@c/headless-tree';
 
 import Store from './store';
 import DepartmentNode from './department-node';
@@ -29,7 +29,7 @@ function DepartmentsTree({ onSelect }: Props): JSX.Element {
 
   // todo render loading and error state
   if (!store) {
-    return (<span></span>);
+    return <></>;
   }
 
   return (

@@ -1,6 +1,6 @@
 import { Message } from '@QCFE/lego-ui';
 
-import { TreeNode } from '@portal/components/headless-tree/types';
+import { TreeNode } from '@c/headless-tree/types';
 import { Response } from '../../@types/interface/api';
 
 /**

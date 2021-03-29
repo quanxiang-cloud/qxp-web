@@ -1,7 +1,7 @@
 import React from 'react';
 import classnames from 'classnames';
 
-import Tree from '@portal/components/headless-tree';
+import Tree from '@c/headless-tree';
 
 import { DepartmentNode } from './department-node';
 import Store from './store';

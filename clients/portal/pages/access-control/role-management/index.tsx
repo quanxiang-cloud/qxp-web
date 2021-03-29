@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import useCss from 'react-use/lib/useCss';
 import { useQuery } from 'react-query';
 
-import Card from '@portal/components/card2';
-import { Error } from '@c/error2';
+import Card from '@c/card2';
+import { Error } from '@c/error';
 import { usePortalGlobalValue } from '@clients/common/state/portal';
 
 import { RoleList } from './role-list';

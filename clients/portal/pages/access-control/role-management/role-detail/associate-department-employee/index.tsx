@@ -2,12 +2,12 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useQuery, useMutation } from 'react-query';
 import { Modal } from '@QCFE/lego-ui';
 
-import { Button } from '@portal/components/button';
-import { Table } from '@portal/components/table2';
-import { Loading } from '@portal/components/loading2';
-import { EmptyData } from '@portal/components/empty-data';
-import { More } from '@portal/components/more';
-import { Pagination } from '@portal/components/pagination2';
+import { Button } from '@c/button';
+import { Table } from '@c/table2';
+import { Loading } from '@c/loading2';
+import { EmptyData } from '@c/empty-data';
+import { More } from '@c/more';
+import { Pagination } from '@c/pagination2';
 import Authorized from '@clients/common/component/authorized';
 
 import { OwnerSelector } from './owner-selector';

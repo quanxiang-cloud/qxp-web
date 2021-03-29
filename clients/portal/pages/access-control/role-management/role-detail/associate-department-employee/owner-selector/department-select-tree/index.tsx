@@ -2,7 +2,7 @@ import React from 'react';
 import { observer } from 'mobx-react';
 import { twCascade } from '@mariusmarais/tailwind-cascade';
 
-import Tree from '@portal/components/headless-tree';
+import Tree from '@c/headless-tree';
 import { DepartmentNode } from './department-node';
 import DepartmentTreeStore from './store';
 

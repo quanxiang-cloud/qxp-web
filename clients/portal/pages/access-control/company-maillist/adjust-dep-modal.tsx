@@ -5,10 +5,10 @@ import React, { createRef } from 'react';
 import { useQuery } from 'react-query';
 import { Modal, Icon, Form, Loading, Message } from '@QCFE/lego-ui';
 
-import { Button } from '@portal/components/button';
+import { Button } from '@c/button';
 import { BatchDepParams } from './person-info';
 import { IUserInfo } from '@portal/api/auth';
-import TreePicker from '@portal/components/tree-picker';
+import TreePicker from '@c/tree-picker';
 import { departmentToTreeNode } from '@assets/lib/utils';
 import { getERPTree } from './api';
 

@@ -2,8 +2,8 @@ import React, { createRef, useState } from 'react';
 import { useQuery, useQueryClient } from 'react-query';
 import { Modal, Form, Icon, Message } from '@QCFE/lego-ui';
 
-import { Button } from '@portal/components/button';
-import SelectTree from '@portal/components/select-tree';
+import { Button } from '@c/button';
+import SelectTree from '@c/select-tree';
 import { getERPTree, createDepartment, editDepartment, queryERPName } from './api';
 
 const { TextField } = Form;

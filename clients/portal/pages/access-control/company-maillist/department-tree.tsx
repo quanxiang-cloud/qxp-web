@@ -4,7 +4,7 @@ import { useQueryClient } from 'react-query';
 import useCss from 'react-use/lib/useCss';
 import { Tree, TreeNode, Dropdown, Message } from '@QCFE/lego-ui';
 
-import { List, IITems } from '@portal/components/list2';
+import { List, IITems } from '@c/list2';
 import DepartmentModal from './department-modal';
 import { DeleteModal } from './delete-modal';
 import { deleteDEP } from './api';
