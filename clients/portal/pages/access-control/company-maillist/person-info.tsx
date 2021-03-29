@@ -310,17 +310,17 @@ export const PersonInfo = React.memo(({
       dataIndex: 'userName',
       render: (text: string, record: IUserInfo) => {
         const head: string = text.substring(0, 1);
-        const bgColor = getImgColor(head);
+        const imgInfo = getImgColor(head);
         return (
           <div className="flex items-center">
             <div className="pr-8">
               <div className="relative w-24 h-24 rounded-br-4 rounded-l-4
               text-center leading-24 text-white text-14"
               style={{
-                backgroundColor: bgColor,
+                backgroundColor: imgInfo.color,
               }}
               >
-                {head}
+                {imgInfo.name}
                 <div className="w-10 h-10 bg-white rounded-10 flex items-center
                 justify-center absolute -bottom-5 -right-5">
                   {record.useStatus === 1 && (

@@ -1,3 +1,5 @@
+import { toUpper } from 'lodash';
+
 type Column = {
   title: string;
   key: string;
@@ -80,6 +82,13 @@ const imgBgColors: string[] = ['#6366F1', '#F59E0B', '#10B981', '#F97316',
   '#A855F7', '#14B8A6', '#EF4444', '#06B6D4'];
 
 export const getImgColor = (text: string, colors = imgBgColors) => {
+  const reg = /^[a-zA-Z]*$/;
+  if (reg.test(text)) {
+    text = text.toUpperCase();
+  }
   const num: number = text.charCodeAt(0) % 8;
-  return colors[num];
+  return {
+    name: text,
+    color: colors[num]
+  };
 };
