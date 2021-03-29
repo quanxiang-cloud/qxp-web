@@ -8,9 +8,9 @@ import { Modal, Form, Icon } from '@QCFE/lego-ui';
 import { Button } from '@c/button';
 import { Loading } from '@c/loading2';
 import { IUserInfo } from '@portal/api/auth';
-import { getListRole, getERPTree } from './api';
+import { getListRole, getERPTree } from '@net/corporate-directory';
 import TreePicker from '@c/tree-picker';
-import { departmentToTreeNode } from '@assets/lib/utils';
+import { departmentToTreeNode } from '@lib/utils';
 // import Select from '@c/select';
 
 const { TextField, CheckboxGroupField } = Form;

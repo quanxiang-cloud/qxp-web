@@ -17,7 +17,7 @@ import { EmptyData } from '@c/empty-data';
 import { More } from '@c/more';
 import { IUserInfo } from '@portal/api/auth';
 import { excelHeader, exportDepExcel, getImgColor } from './excel';
-import { uuid } from '@assets/lib/utils';
+import { uuid } from '@lib/utils';
 import Authorized from '@clients/common/component/authorized';
 import { usePortalGlobalValue } from '@clients/common/state/portal';
 import {
@@ -30,7 +30,7 @@ import {
   batchAdjustDep,
   getUserRole,
   cancelDEPLeader,
-} from './api';
+} from '@net/corporate-directory';
 
 export type UserStatus = 1 | -1 | -2; // 1 正常 -2 禁用 -1 删除
 type ResetStart = 0 | 1; // 0是单个，1批量

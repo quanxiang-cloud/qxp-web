@@ -1,4 +1,4 @@
-import { IInputField, query } from 'clients/assets/lib/atom';
+import { IInputField, query } from '@lib/atom';
 
 import UserName from './username';
 import Password from './password-field';

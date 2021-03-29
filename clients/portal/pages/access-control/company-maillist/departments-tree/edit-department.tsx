@@ -6,8 +6,8 @@ import { Button } from '@c/button';
 import DepartmentPicker from '@c/tree-picker';
 import { Loading } from '@c/loading2';
 
-import { createDepartment, editDepartment, getERPTree } from '../api';
-import { departmentToTreeNode } from '@assets/lib/utils';
+import { createDepartment, editDepartment, getERPTree } from '@net/corporate-directory';
+import { departmentToTreeNode } from '@lib/utils';
 
 const { TextField } = Form;
 

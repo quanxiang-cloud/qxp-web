@@ -1,7 +1,8 @@
-import { httpPost, httpFile } from '../../../../assets/lib/utils';
-import { ITreeNode } from '@portal/pages/access-control/company-maillist/department-tree';
-import { FormValues, EditFormValues } from './staff-modal';
-import { UserStatus } from './person-info';
+import { httpPost, httpFile } from '@lib/utils';
+import { ITreeNode } from '@p/access-control/company-maillist/department-tree';
+
+import { FormValues, EditFormValues } from '../pages/access-control/company-maillist/staff-modal';
+import { UserStatus } from '../pages/access-control/company-maillist/person-info';
 
 // ------------------ 部门 ---------------
 // 获取部门树

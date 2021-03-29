@@ -7,7 +7,7 @@ import { Loading } from '@c/loading2';
 import { IRoleListItem } from '../role-list-item';
 import { AlterRoleFunc } from './alter-role-func';
 import { AssociateDepartmentEmployee } from './associate-department-employee';
-import { getRoleFunctions } from '../api';
+import { getRoleFunctions } from '@portal/api/role-management';
 
 export interface IRoleDetail {
   role?: IRoleListItem;

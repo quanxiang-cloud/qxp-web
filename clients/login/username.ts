@@ -1,4 +1,4 @@
-import { InputField, isEmail, isMobile } from 'clients/assets/lib/atom';
+import { InputField, isEmail, isMobile } from '@lib/atom';
 
 export default class UserName extends InputField {
   validate(checkAll?: boolean) {

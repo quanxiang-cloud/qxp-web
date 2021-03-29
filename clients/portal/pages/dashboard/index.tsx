@@ -6,7 +6,7 @@ import { Avatar } from '@c/avatar2';
 import Card from '@c/card2';
 import { List } from '@c/list2';
 import { ItemWithTitleDesc } from '@c/item-with-title-desc';
-import { uuid } from '@assets/lib/utils';
+import { uuid } from '@lib/utils';
 import { usePortalGlobalValue } from '@clients/common/state/portal';
 
 import './index.scss';

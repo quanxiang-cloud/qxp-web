@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 
 import { ItemWithTitleDesc } from './item-with-title-desc';
-// import { loadImage } from '@assets/lib/utils';
-import { getImgColor } from '../pages/access-control/company-maillist/excel';
+// import { loadImage } from '@lib/utils';
+import { getImgColor } from '@p/access-control/company-maillist/excel';
 
 export interface IAvatar {
   username?: string;
@@ -25,7 +25,7 @@ export const Avatar = ({ username = '', bio, avatar }: IAvatar) => {
   // }, [avatar]);
 
   let head = '';
-  let imgInfo: { name: string, color: string } = {name: '', color: ''};
+  let imgInfo: { name: string, color: string } = { name: '', color: '' };
   if (username) {
     head = username.substring(0, 1);
     imgInfo = getImgColor(head);

@@ -2,7 +2,7 @@ import React from 'react';
 import { twCascade } from '@mariusmarais/tailwind-cascade';
 import { Icon } from '@QCFE/lego-ui';
 
-import { uuid, isFunction, isObject } from '@assets/lib/utils';
+import { uuid, isFunction, isObject } from '@lib/utils';
 
 export interface IItem<T> {
   id: string;

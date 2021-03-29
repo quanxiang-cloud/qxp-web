@@ -3,8 +3,8 @@ import { TreeProps, Icon } from '@QCFE/lego-ui';
 import { twCascade } from '@mariusmarais/tailwind-cascade';
 import useDebounce from 'react-use/lib/useDebounce';
 
-import { deepClone } from '@assets/lib/utils';
-import { usePrevious } from '@assets/lib/hooks/use-previous-value';
+import { deepClone } from '@lib/utils';
+import { usePrevious } from '@lib/hooks/use-previous-value';
 
 interface IOnRow<T extends ITreeData> {
   onClick: (

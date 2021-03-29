@@ -2,7 +2,7 @@ import { observable, action } from 'mobx';
 
 import TreeStore from '@c/headless-tree/store';
 import EmployeeStore from './employee-table/store';
-import { IOwner } from '../../../api';
+import { IOwner } from '@portal/api/role-management';
 import DepartmentTreeStore from './department-select-tree/store';
 
 class OwnerStore {

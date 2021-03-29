@@ -9,8 +9,8 @@ import { Button } from '@c/button';
 import { BatchDepParams } from './person-info';
 import { IUserInfo } from '@portal/api/auth';
 import TreePicker from '@c/tree-picker';
-import { departmentToTreeNode } from '@assets/lib/utils';
-import { getERPTree } from './api';
+import { departmentToTreeNode } from '@lib/utils';
+import { getERPTree } from '@net/corporate-directory';
 
 interface IAdjustDepModalProps {
   userList: IUserInfo[];

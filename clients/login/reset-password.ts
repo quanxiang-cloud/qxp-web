@@ -1,4 +1,4 @@
-import { IInputField, query } from '@assets/lib/atom';
+import { IInputField, query } from '@lib/atom';
 
 import Page from './page';
 import User, { IUser } from './user';

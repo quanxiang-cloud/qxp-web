@@ -2,7 +2,7 @@ import React from 'react';
 import { Switch, Route, useRouteMatch } from 'react-router-dom';
 
 import { usePortalGlobalValue } from '@clients/common/state/portal';
-import { ListMenu } from '@portal/pages/access-control/list-menu';
+import { ListMenu } from '@p/access-control/list-menu';
 import { ItemWithTitleDesc } from '@c/item-with-title-desc';
 import { Error } from '@c/error';
 

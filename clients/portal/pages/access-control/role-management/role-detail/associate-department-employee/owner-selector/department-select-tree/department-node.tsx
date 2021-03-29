@@ -5,7 +5,7 @@ import { observer } from 'mobx-react';
 import { NodeRenderProps } from '@c/headless-tree/types';
 import { Checkbox } from '@QCFE/lego-ui';
 import DepartmentTreeStore from './store';
-import { last } from '@assets/lib/utils';
+import { last } from '@lib/utils';
 
 export const DepartmentNode = observer(({ node, store }: NodeRenderProps<IDepartment>) => {
   const st = store as DepartmentTreeStore;

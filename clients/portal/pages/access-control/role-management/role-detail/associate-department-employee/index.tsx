@@ -16,7 +16,7 @@ import {
   IOwner,
   updateRoleAssociations,
   IUpdateRoleAssociations,
-} from '../../api';
+} from '@portal/api/role-management';
 
 export interface IAssociateDepartmentEmployee {
   id: string | number;

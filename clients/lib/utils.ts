@@ -1,7 +1,7 @@
 import { Message } from '@QCFE/lego-ui';
 
 import { TreeNode } from '@c/headless-tree/types';
-import { Response } from '../../@types/interface/api';
+import { Response } from '@t/interface/api';
 
 /**
  * send http post request

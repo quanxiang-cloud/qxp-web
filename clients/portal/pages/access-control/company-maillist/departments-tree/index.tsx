@@ -6,7 +6,7 @@ import Tree from '@c/headless-tree';
 
 import Store from './store';
 import DepartmentNode from './department-node';
-import { getERPTree } from '../api';
+import { getERPTree } from '@net/corporate-directory';
 
 interface Props {
   onSelect?: (department: IDepartment) => void;

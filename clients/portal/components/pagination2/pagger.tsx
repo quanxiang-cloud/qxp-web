@@ -1,7 +1,7 @@
 import React from 'react';
 import { twCascade } from '@mariusmarais/tailwind-cascade';
 
-import { identity } from '@assets/lib/utils';
+import { identity } from '@lib/utils';
 
 interface ICore {
   current: number;

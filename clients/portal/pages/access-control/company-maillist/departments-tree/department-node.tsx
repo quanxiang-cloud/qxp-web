@@ -8,7 +8,7 @@ import { NodeRenderProps } from '@c/headless-tree/types';
 import Authorized from '@clients/common/component/authorized';
 
 import EditDepartment from './edit-department';
-import { deleteDEP } from '../api';
+import { deleteDEP } from '@net/corporate-directory';
 
 const MENUS: MenuItem<string>[] = [
   {
@@ -78,7 +78,7 @@ function DepartmentNode({ node }: NodeRenderProps<IDepartment>): JSX.Element | n
 
   return (
     <div className="flex flex-grow max-w-full">
-      <span className="truncate mr-auto">
+      <span className="truncate mr-auto" title={node.name}>
         {node.name}
       </span>
       <Authorized authority={['accessControl/mailList/manage']}>

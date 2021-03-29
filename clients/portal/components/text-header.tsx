@@ -1,7 +1,7 @@
 import React from 'react';
 import { twCascade } from '@mariusmarais/tailwind-cascade';
 
-import { isString } from '@assets/lib/utils';
+import { isString } from '@lib/utils';
 
 import { ItemWithTitleDesc } from './item-with-title-desc';
 

@@ -1,4 +1,4 @@
-import { InputField, IInputField } from '@assets/lib/atom';
+import { InputField, IInputField } from '@lib/atom';
 
 export default class Password extends InputField {
   toggler: HTMLImageElement;

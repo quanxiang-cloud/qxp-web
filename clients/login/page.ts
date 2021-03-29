@@ -1,4 +1,4 @@
-import { query } from '@assets/lib/atom';
+import { query } from '@lib/atom';
 
 export default class Page {
   pageErrorElement: HTMLSpanElement;

@@ -4,7 +4,9 @@ import { Modal, Form, Icon, Message } from '@QCFE/lego-ui';
 
 import { Button } from '@c/button';
 import SelectTree from '@c/select-tree';
-import { getERPTree, createDepartment, editDepartment, queryERPName } from './api';
+import {
+  getERPTree, createDepartment, editDepartment, queryERPName,
+} from '@net/corporate-directory';
 
 const { TextField } = Form;
 const SelectTreeField = Form.getFormField(SelectTree);

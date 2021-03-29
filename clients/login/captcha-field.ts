@@ -1,5 +1,5 @@
-import { IInputField, InputField, query } from '@assets/lib/atom';
-import { httpPost } from '@assets/lib/utils';
+import { IInputField, InputField, query } from '@lib/atom';
+import { httpPost } from '@lib/utils';
 import { Response } from 'clients/@types/interface/api';
 import UserName from './username';
 

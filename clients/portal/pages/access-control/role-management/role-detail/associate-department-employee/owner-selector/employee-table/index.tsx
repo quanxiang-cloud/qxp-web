@@ -5,8 +5,9 @@ import { observer } from 'mobx-react';
 import { Table } from '@c/table2';
 import { EmptyData } from '@c/empty-data';
 import { Pagination } from '@c/pagination2';
-import { adminSearchUserList, IOwner } from '@portal/pages/access-control/role-management/api';
+import { adminSearchUserList, IOwner } from '@portal/api/role-management';
 import { Loading } from '@c/loading2';
+
 import OwnerStore from '../store';
 
 interface IEmployeeTable {

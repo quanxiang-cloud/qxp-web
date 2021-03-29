@@ -1,5 +1,6 @@
-import { IOwner, IUser } from '@portal/pages/access-control/role-management/api';
 import { observable, action } from 'mobx';
+
+import { IOwner, IUser } from '@portal/api/role-management';
 
 class EmployeeStore {
   @observable

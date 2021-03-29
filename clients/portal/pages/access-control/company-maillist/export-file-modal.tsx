@@ -5,7 +5,8 @@ import { Modal, CheckboxGroup, Checkbox, Table, Upload, Icon, Message } from '@Q
 
 import SvgIcon from '@c/icon';
 import { Button } from '@c/button';
-import { getUserTemplate, importTempFile } from './api';
+import { getUserTemplate, importTempFile } from '@net/corporate-directory';
+
 interface ExportFileModalProps {
   visible: boolean;
   currDepId: string;

@@ -7,7 +7,7 @@ import { Tree, TreeNode, Dropdown, Message } from '@QCFE/lego-ui';
 import { List, IITems } from '@c/list2';
 import DepartmentModal from './department-modal';
 import { DeleteModal } from './delete-modal';
-import { deleteDEP } from './api';
+import { deleteDEP } from '@net/corporate-directory';
 
 export interface TreeNodeItem extends ITreeNode {
   addDepartment: (val: string, id: string) => void;

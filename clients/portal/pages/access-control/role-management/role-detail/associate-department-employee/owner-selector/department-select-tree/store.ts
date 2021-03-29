@@ -1,5 +1,5 @@
 import SelectableTreeStore from '@c/headless-tree/multiple-select-tree';
-import { departmentToTreeNode } from '@assets/lib/utils';
+import { departmentToTreeNode } from '@lib/utils';
 
 export default class extends SelectableTreeStore<IDepartment> {
   onChange: (prevNodes: IDepartment[], curNodes: IDepartment[]) => void

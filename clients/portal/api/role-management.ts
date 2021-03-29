@@ -1,7 +1,8 @@
 import { QueryFunctionContext } from 'react-query';
 
-import { httpPost } from '../../../../assets/lib/utils';
-import Role from './role';
+import { httpPost } from '@lib/utils';
+
+import Role from '../pages/access-control/role-management/role';
 
 // 获取角色列表
 export async function getRoles() {

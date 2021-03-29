@@ -1,11 +1,12 @@
 import React, { useEffect, useRef } from 'react';
 import { observer } from 'mobx-react';
-
-import TextHeader from '@c/text-header';
 import { Tag } from '@QCFE/lego-ui';
 import { twCascade } from '@mariusmarais/tailwind-cascade';
+
+import TextHeader from '@c/text-header';
+import { IOwner } from '@portal/api/role-management';
+
 import OwnerStore from './store';
-import { IOwner } from '../../../api';
 
 export interface ISelectedList {
   className?: string;

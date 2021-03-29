@@ -1,7 +1,7 @@
 import React from 'react';
 import { twCascade } from '@mariusmarais/tailwind-cascade';
 import useCss from 'react-use/lib/useCss';
-import { identity } from '@assets/lib/utils';
+import { identity } from '@lib/utils';
 
 import { ItemWithTitleDesc } from '@c/item-with-title-desc';
 

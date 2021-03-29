@@ -1,4 +1,4 @@
-import { createGlobalState } from '@assets/lib/create-global-state';
+import { createGlobalState } from '@lib/create-global-state';
 import { IRole } from '@portal/api/auth';
 
 export interface IDepartment {

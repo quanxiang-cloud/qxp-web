@@ -3,8 +3,8 @@ import { Message } from '@QCFE/lego-ui';
 
 import Card from '@c/card2';
 import { Checkbox } from '@c/checkbox2';
-import { countBy, searchByKey, deepClone } from '@assets/lib/utils';
-import { IRoleFunc, IRoleFuncItem, setRoleFunctions } from '../api';
+import { countBy, searchByKey, deepClone } from '@lib/utils';
+import { IRoleFunc, IRoleFuncItem, setRoleFunctions } from '@portal/api/role-management';
 
 export interface IAlterRoleFunc {
   funcs: IRoleFunc;
