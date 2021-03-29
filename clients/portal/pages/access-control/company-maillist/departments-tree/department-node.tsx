@@ -37,11 +37,10 @@ function stopModalClickPropagate(e: React.MouseEvent) {
   e.stopPropagation();
 }
 
-function DepartmentNode({ node }: NodeRenderProps<IDepartment>): JSX.Element {
+function DepartmentNode({ node }: NodeRenderProps<IDepartment>): JSX.Element | null {
   const [showModal, toggleModal] = useState(false);
   const [departmentToEdit, setDepartment] = useState(node.data);
   const queryClient = useQueryClient();
-
 
   function onAdd() {
     setDepartment({ id: '', departmentName: '', pid: node.data.id, superID: '', grade: 0 });
@@ -82,7 +81,7 @@ function DepartmentNode({ node }: NodeRenderProps<IDepartment>): JSX.Element {
       <span className="truncate mr-auto">
         {node.name}
       </span>
-      <Authorized authority={['accessControl/maillist/manage']}>
+      <Authorized authority={['accessControl/mailList/manage']}>
         <MoreMenu
           menus={MENUS}
           placement="bottom-end"
