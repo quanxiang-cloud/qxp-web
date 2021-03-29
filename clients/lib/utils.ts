@@ -27,20 +27,22 @@ export function httpPost<T>(
   return new Promise(
     (resolve: (arg: Response<T>) => void, reject: (...data: unknown[]) => void) => {
       req.onload = () => {
+        const contentType = req.getResponseHeader('Content-Type');
+        let response: Response<T>;
+        if (contentType?.startsWith('application/json')) {
+          response = JSON.parse(req.responseText);
+        } else {
+          response = (req.responseText as unknown) as Response<T>;
+        }
         if (req.status >= 400) {
           if (req.statusText.toLocaleLowerCase() === 'unauthorized' || req.status === 401) {
             window.location.search = '/login/password';
             return;
           }
-          Message.error(req.statusText);
-          return reject(req.statusText);
+          Message.error(`${req.statusText}: ${response.msg}`);
+          return reject(response.msg);
         }
-        const contentType = req.getResponseHeader('Content-Type');
-        if (contentType?.startsWith('application/json')) {
-          resolve(JSON.parse(req.responseText));
-        } else {
-          resolve((req.responseText as unknown) as Response<T>);
-        }
+        resolve(response);
       };
       req.onerror = () => {
         Message.error(req.responseText);
