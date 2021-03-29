@@ -29,7 +29,7 @@ export default function RoleManagement() {
   if (isLoading || !roleList.length) {
     return null;
   }
-  if (!userInfo.authority.includes('accessControl/role/manage')) {
+  if (!userInfo.authority.includes('accessControl/role/read')) {
     return <Error desc="您没有权限, 请联系管理员..." />;
   }
 

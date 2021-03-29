@@ -81,7 +81,7 @@ export const OwnerSelector = observer(({ defaultEmployees = [], refs }: IOwnerSe
   }
 
   return (
-    <div className="flex flex-row">
+    <div className="flex flex-row w-full">
       <Tab
         className="mr-20 flex-2"
         contentClassName="rounded-12 rounded-tl-none"

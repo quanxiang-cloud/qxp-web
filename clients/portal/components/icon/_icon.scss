@@ -46,25 +46,24 @@
   }
 
   .svg-icon:not(:last-child) {
-    margin-right: 12px;
+    @apply mr-12;
   }
 }
 
 .icons-group--large {
   .svg-icon {
-    height: 20px;
-    width: 20px;
+    @apply w-20 h-20;
   }
 
   .svg-icon:not(:last-child) {
-    margin-right: 16px;
+    @apply mr-16;
   }
 }
 
 .confirm-check-icon svg {
-  color: green;
+  @apply text-green-50;
 }
 
 .cancel-close-icon svg {
-  color: red;
+  @apply text-red-50;
 }
