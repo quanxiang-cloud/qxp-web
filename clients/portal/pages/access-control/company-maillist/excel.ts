@@ -83,12 +83,13 @@ const imgBgColors: string[] = ['#6366F1', '#F59E0B', '#10B981', '#F97316',
 
 export const getImgColor = (text: string, colors = imgBgColors) => {
   const reg = /^[a-zA-Z]*$/;
+  let _text = text;
   if (reg.test(text)) {
-    text = text.toUpperCase();
+    _text = text.toUpperCase();
   }
   const num: number = text.charCodeAt(0) % 8;
   return {
-    name: text,
-    color: colors[num]
+    name: _text,
+    color: colors[num],
   };
 };
