@@ -14,8 +14,9 @@ const { TextField } = Form;
 
 // const string for form input help text
 const HELP_TEXT_NORMAL = '不超过 30 个字符，部门名称不可重复。';
-const HELP_TEXT_OVERLENGTH = '部门名称不能超过30个字符';
 const HELP_TEXT_DUPLICATED = '名称已存在，请修改';
+const HELP_TEXT_REG_ERROR = '只允许输入中英文数字和下划线、横线';
+
 interface DepartmentModalProps {
   department: DeptInfo;
   closeModal(): void;
@@ -61,8 +62,9 @@ export default function EditDepartment({ department, closeModal }: DepartmentMod
       return;
     }
     const departmentName = value?.trim();
-    if (departmentName.length > 30) {
-      setDepNameHelpText(HELP_TEXT_OVERLENGTH);
+    const reg = /^[\u4e00-\u9fa5A-Za-z0-9-\_]+$/g;
+    if (!reg.test(departmentName)) {
+      setDepNameHelpText(HELP_TEXT_REG_ERROR);
       setDepNameState('error');
     } else {
       setDepNameHelpText(HELP_TEXT_NORMAL);
@@ -94,12 +96,12 @@ export default function EditDepartment({ department, closeModal }: DepartmentMod
         queryClient.invalidateQueries('GET_ERP_TREE');
         closeModal();
         break;
-      case 54001003:
+      case 50014000003:
         setDepNameHelpText(HELP_TEXT_DUPLICATED);
         setDepNameState('error');
         break;
       default:
-        Message.error({ content: '发生未知错误！' });
+        Message.error({ content: '发生未知错误，Code:' + submitResponseData.code });
       }
     }).catch((error: any) => {
       console.log(error);
