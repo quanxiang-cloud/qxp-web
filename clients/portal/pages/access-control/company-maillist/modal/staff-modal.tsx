@@ -131,6 +131,7 @@ export default function StaffModal(
           label="员工姓名"
           defaultValue={user.userName}
           placeholder="请输入员工姓名"
+          maxLength={30}
           schemas={[
             {
               rule: { required: true },

@@ -15,13 +15,14 @@ interface Props {
 function DepartmentsTree({ onSelect }: Props): JSX.Element {
   const [store, setStore] = useState<Store | null>(null);
   // todo refactor getERPTree
-  const { data: rootDep, isLoading, isError } = useQuery('getERPTree', () => {
+  const { data: rootDep, isLoading, isError } = useQuery('GET_ERP_TREE', () => {
     return getERPTree().then((_treeData: any) => {
       return _treeData;
     });
   });
 
   useEffect(() => {
+    console.log('zoule这里了');
     if (rootDep && !isLoading && !isError) {
       setStore(new Store(rootDep));
     }
@@ -32,6 +33,7 @@ function DepartmentsTree({ onSelect }: Props): JSX.Element {
     return <></>;
   }
 
+  console.log('store', store);
   return (
     <div className="tree-wrapper">
       <Tree

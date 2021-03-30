@@ -1,8 +1,17 @@
 import { httpPost, httpFile } from '@lib/utils';
-import { ITreeNode } from '@p/access-control/company-maillist/department-tree';
 
 import { FormValues } from '../pages/access-control/company-maillist/modal/staff-modal';
 import { UserStatus } from '../pages/access-control/company-maillist/enum';
+
+export interface ITreeNode {
+  id: string;
+  departmentName: string;
+  departmentLeaderId: string;
+  useStatus: number;
+  superId: string;
+  child: ITreeNode[];
+  pid?: string;
+}
 
 // ------------------ 部门 ---------------
 // 获取部门树

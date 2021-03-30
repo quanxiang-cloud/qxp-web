@@ -12,16 +12,16 @@ import SvgIcon from '@portal/components/icon';
 const { TextField } = Form;
 
 // const string for form input help text
-const HELP_TEXT_NORMAL = '不超过 30 个字符，部门名称不可重复。';
-const HELP_TEXT_DUPLICATED = '名称已存在，请修改';
-const HELP_TEXT_REG_ERROR = '只允许输入中英文数字和下划线、横线';
+const HELP_TEXT_NORMAL = '名称不超过 30 个字符，请修改！';
+const HELP_TEXT_DUPLICATED = '名称已存在，请修改！';
+const HELP_TEXT_REG_ERROR = '只允许 划线、横线！';
 
-interface DepartmentModalProps {
+interface Props {
   department: DeptInfo;
   closeModal(): void;
 }
 
-export default function EditDepartment({ department, closeModal }: DepartmentModalProps) {
+export default function EditDepartment({ department, closeModal }: Props) {
   const [depNameStatus, setDepNameState] = useState('');
   const [depNameHelpText, setDepNameHelpText] = useState(HELP_TEXT_NORMAL);
 
@@ -119,6 +119,7 @@ export default function EditDepartment({ department, closeModal }: DepartmentMod
           <Button
             icon={<SvgIcon name="close" size={20} className="mr-8" />}
             className="mr-20"
+            onClick={closeModal}
           >
             取消
           </Button>

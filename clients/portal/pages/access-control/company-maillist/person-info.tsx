@@ -398,7 +398,7 @@ export default function PersonInfo({
         />
       }
 
-      <div className="flex-1 h-full flex-column">
+      <div className="flex-1 flex-column">
         <DepartmentStaff
           department={departmentName}
           count={personList?.total || 0}
@@ -450,7 +450,7 @@ export default function PersonInfo({
             </Authorized>
           )}
         </div>
-        <div className="w-full mt-16 flex-column flex-1 px-20 overflow-auto">
+        <div className="w-full my-16 flex-column flex-1 px-20 overflow-auto">
           <div className="qxp-table flex w-full border-b">
             {
               personList?.data && <Table

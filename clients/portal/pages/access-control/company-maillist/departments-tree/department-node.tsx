@@ -82,7 +82,7 @@ function DepartmentNode({ node }: NodeRenderProps<IDepartment>): JSX.Element | n
           Message.error(msg || '');
         });
       },
-      content: (<div>确定要删除<span className="mx-2 text-16
+      content: (<div>确定要删除<span className="mx-4 text-16
       font-semibold text-gray-900">{node.data.departmentName}</span>吗？</div>),
     });
   }
