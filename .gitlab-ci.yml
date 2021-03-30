@@ -35,7 +35,6 @@ build_all:
     - testing
     - master
     # todo delete this
-    - gitlab-ci
   script:
     - NODE_ENV=production ./node_modules/.bin/webpack --config webpack.config.js
     # todo refactor
@@ -54,7 +53,6 @@ deploy_testing:
   stage: release
   only:
     - testing
-    - gitlab-ci
   script:
     - IMAGE_TAG="v$(date "+%Y%m%d")-$(git rev-parse --short HEAD)"
     - echo "deploy testing done! $IMAGE_TAG"
