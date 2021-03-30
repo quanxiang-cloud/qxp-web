@@ -82,6 +82,7 @@ const imgBgColors: string[] = ['#6366F1', '#F59E0B', '#10B981', '#F97316',
 export const getImgColor = (text: string, colors = imgBgColors) => {
   let _text = text;
   const reg = /^[a-zA-Z]*$/;
+  let _text = text;
   if (reg.test(text)) {
     _text = text.toUpperCase();
   }

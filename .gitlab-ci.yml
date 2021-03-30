@@ -1,0 +1,59 @@
+variables:
+  IMAGE_PREFIX: dockerhub.qingcloud.com/qxpdev
+
+stages:
+  - install
+  - test
+  - build
+  - release
+
+cache:
+  key: node_modules
+  paths:
+    - node_modules/
+
+install_node_modules_go_packages:
+  tags:
+    - qxp-web-runner
+  stage: install
+  script:
+    - yarn install --registry=http://r.npm.internal.yunify.com
+    - go mod tidy
+
+lint_js:
+  tags:
+    - qxp-web-runner
+  stage: test
+  script:
+    - yarn run lint
+
+build_all:
+  tags:
+    - qxp-web-runner
+  stage: build
+  only:
+    - testing
+    - master
+    # todo delete this
+  script:
+    - NODE_ENV=production ./node_modules/.bin/webpack --config webpack.config.js
+    # todo refactor
+    - node_modules/.bin/gulp build
+    - GOOS=linux go build -o ./docker-files/portal/portal server/cmd/portal/main.go
+    - IMAGE_TAG="v$(date "+%Y%m%d")-$(git rev-parse --short HEAD)"
+    - docker build -t "$IMAGE_PREFIX/qxp-web-nginx:$IMAGE_TAG" -f ./docker-files/nginx/Dockerfile ./docker-files/nginx
+    - docker build -t "$IMAGE_PREFIX/qxp-web-portal:$IMAGE_TAG" -f ./docker-files/portal/Dockerfile ./docker-files/portal
+    - docker login -u "$DOCKER_HUB_USERNAME" -p "$DOCKER_HUB_PASSWORD" $DOCKER_HUB_REGISTRY
+    - docker push "$IMAGE_PREFIX/qxp-web-nginx:$IMAGE_TAG"
+    - docker push "$IMAGE_PREFIX/qxp-web-portal:$IMAGE_TAG"
+
+deploy_testing:
+  tags:
+    - qxp-web-runner
+  stage: release
+  only:
+    - testing
+  script:
+    - IMAGE_TAG="v$(date "+%Y%m%d")-$(git rev-parse --short HEAD)"
+    - echo "deploy testing done! $IMAGE_TAG"
+
