@@ -3,7 +3,7 @@ import { twCascade } from '@mariusmarais/tailwind-cascade';
 import { Icon } from '@QCFE/lego-ui';
 
 import { Popover } from './popover2';
-import { List, IITems } from './list2';
+import List, { IITems } from './list2';
 
 export interface IMore<T> {
   className?: string;
@@ -20,7 +20,7 @@ export interface IMore<T> {
   contentItemClassName?: string;
 }
 
-export const More = function <T>({
+export default function More<T>({
   className,
   items,
   params,
@@ -70,4 +70,4 @@ export const More = function <T>({
       )}
     </Popover>
   );
-};
+}

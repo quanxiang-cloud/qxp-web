@@ -18,7 +18,7 @@ export interface ITab {
   titleClassName?: string;
 }
 
-export const Tab = ({
+export default function Tab({
   className,
   headerClassName,
   titleClassName,
@@ -27,7 +27,7 @@ export const Tab = ({
   currentKey,
   onChange = () => {},
   style,
-}: ITab) => {
+}: ITab) {
   const [key, setKey] = useState<string | number>(currentKey || items[0].id);
   const [height, setHeight] = useState<string>('34px');
   const headerRef = useRef(null);
@@ -92,4 +92,4 @@ export const Tab = ({
       </div>
     </div>
   );
-};
+}

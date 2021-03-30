@@ -2,10 +2,9 @@ import React, { createRef, useState } from 'react';
 import { useQuery, useQueryClient } from 'react-query';
 import { Modal, Form, Icon, Message } from '@QCFE/lego-ui';
 
-import { Button } from '@c/button';
+import Button from '@c/button';
 import DepartmentPicker from '@c/tree-picker';
-import { Loading } from '@c/loading2';
-
+import Loading from '@c/loading2';
 import { createDepartment, editDepartment, getERPTree } from '@net/corporate-directory';
 import { departmentToTreeNode } from '@lib/utils';
 import SvgIcon from '@portal/components/icon';

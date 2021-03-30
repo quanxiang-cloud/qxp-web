@@ -3,10 +3,11 @@ import { useMutation, useQueryClient } from 'react-query';
 import { Modal, Message } from '@QCFE/lego-ui';
 
 import SvgIcon from '@portal/components/icon';
-import { Button } from '@portal/components/button';
-import { UserStatus } from '../enum';
+import Button from '@portal/components/button';
 import { UserInfo } from '@portal/api/auth';
 import { updateUserStatus } from '@net/corporate-directory';
+
+import { UserStatus } from '../enum';
 
 interface Props {
   status: UserStatus;

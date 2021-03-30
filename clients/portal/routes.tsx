@@ -2,11 +2,11 @@ import React, { useEffect } from 'react';
 import { Route, Switch } from 'react-router';
 import { useQuery } from 'react-query';
 
-import { Error } from '@c/error';
+import Error from '@c/error';
 
+import Loading from './components/loading2';
 import { getSystemFuncs, getUserFuncs, getUserInfo, getUserRoles } from './api/auth';
 import { usePortalGlobalValue } from '@states/portal';
-import { Loading } from './components/loading2';
 
 import '@assets/scss/index.scss';
 

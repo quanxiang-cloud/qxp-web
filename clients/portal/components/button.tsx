@@ -11,7 +11,8 @@ interface IButton {
   loading?: boolean;
 }
 
-export const Button = ({ children, icon, className, textClassName, onClick, loading }: IButton) => {
+export default function Button(
+  { children, icon, className, textClassName, onClick, loading }: IButton) {
   return (
     <button
       onClick={onClick}
@@ -37,4 +38,4 @@ export const Button = ({ children, icon, className, textClassName, onClick, load
       </div>
     </button>
   );
-};
+}

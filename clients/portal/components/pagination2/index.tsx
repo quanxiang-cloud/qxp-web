@@ -17,7 +17,7 @@ interface PaginationProps {
   prefix?: JSX.Element | string;
 }
 
-export const Pagination = ({
+export default function Pagination({
   type = 'mini',
   current,
   pageSize,
@@ -27,7 +27,7 @@ export const Pagination = ({
   onShowSizeChange,
   prefix = '',
   className,
-}: PaginationProps) => {
+}: PaginationProps) {
   const maxPage = Math.ceil(total / pageSize);
 
   useEffect(() => {
@@ -71,4 +71,4 @@ export const Pagination = ({
       </div>
     </div>
   );
-};
+}

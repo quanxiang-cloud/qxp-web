@@ -1,11 +1,12 @@
 import React from 'react';
-import { twCascade } from '@mariusmarais/tailwind-cascade';
 import { observer } from 'mobx-react';
+import { twCascade } from '@mariusmarais/tailwind-cascade';
+import { Checkbox } from '@QCFE/lego-ui';
 
 import { NodeRenderProps } from '@c/headless-tree/types';
-import { Checkbox } from '@QCFE/lego-ui';
-import DepartmentTreeStore from './store';
 import { last } from '@lib/utils';
+
+import DepartmentTreeStore from './store';
 
 export const DepartmentNode = observer(({ node, store }: NodeRenderProps<IDepartment>) => {
   const st = store as DepartmentTreeStore;

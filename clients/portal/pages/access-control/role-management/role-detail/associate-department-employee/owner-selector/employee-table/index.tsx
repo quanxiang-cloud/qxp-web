@@ -2,11 +2,11 @@ import React, { useEffect } from 'react';
 import { useQuery } from 'react-query';
 import { observer } from 'mobx-react';
 
-import { Table } from '@c/table2';
-import { EmptyData } from '@c/empty-data';
-import { Pagination } from '@c/pagination2';
+import Table from '@c/table2';
+import EmptyData from '@c/empty-data';
+import Pagination from '@c/pagination2';
 import { adminSearchUserList, IOwner } from '@portal/api/role-management';
-import { Loading } from '@c/loading2';
+import Loading from '@c/loading2';
 
 import OwnerStore from '../store';
 
@@ -17,12 +17,12 @@ interface IEmployeeTable {
   ownerStore: OwnerStore;
 }
 
-export const EmployeeTable = observer(({
+export default observer(function EmployeeTable({
   className,
   depID,
   userName,
   ownerStore,
-}: IEmployeeTable) => {
+}: IEmployeeTable) {
   const store = ownerStore.employeeStore;
   const { current, pageSize, total } = store.pagination;
 

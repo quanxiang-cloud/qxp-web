@@ -2,12 +2,12 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useQuery, useMutation } from 'react-query';
 import { Modal } from '@QCFE/lego-ui';
 
-import { Button } from '@c/button';
-import { Table } from '@c/table2';
-import { Loading } from '@c/loading2';
-import { EmptyData } from '@c/empty-data';
-import { More } from '@c/more';
-import { Pagination } from '@c/pagination2';
+import Button from '@c/button';
+import Table from '@c/table2';
+import Loading from '@c/loading2';
+import EmptyData from '@c/empty-data';
+import More from '@c/more';
+import Pagination from '@c/pagination2';
 import Authorized from '@clients/common/component/authorized';
 import {
   getRoleAssociations,
@@ -23,7 +23,7 @@ export interface Props {
   isSuper: boolean;
 }
 
-export const AssociateDepartmentEmployee = ({ id, isSuper }: Props) => {
+export default function AssociateDepartmentEmployee({ id, isSuper }: Props) {
   const [selectedKeys, setSelectedKeys] = useState<string[]>([]);
   const [_, setSelectedRows] = useState<IOwner[]>([]);
   const [showAddModal, setShowAddModal] = useState(false);
@@ -266,4 +266,4 @@ export const AssociateDepartmentEmployee = ({ id, isSuper }: Props) => {
       </div>
     </>
   );
-};
+}

@@ -3,10 +3,10 @@ import ReactDOM from 'react-dom';
 import { QueryClient, QueryClientProvider } from 'react-query';
 
 import { AppContextProvider } from '@clients/common/providers/context';
+
 import App from './application';
 
 import './scss/index.scss';
-
 import './index.css';
 
 const queryClient = new QueryClient({

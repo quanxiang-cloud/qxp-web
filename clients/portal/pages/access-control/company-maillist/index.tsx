@@ -3,9 +3,9 @@ import { twCascade } from '@mariusmarais/tailwind-cascade';
 import { Control, Icon, Input } from '@QCFE/lego-ui';
 
 import TextHeader from '@c/text-header';
-import { DepartmentStaff } from '@c/department-staff';
+import DepartmentStaff from '@c/department-staff';
+import Error from '@c/error';
 import { usePortalGlobalValue } from '@states/portal';
-import { Error } from '@c/error';
 
 import DepartmentsTree from './departments-tree';
 import PersonInfo from './person-info';

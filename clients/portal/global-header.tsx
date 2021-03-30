@@ -1,14 +1,15 @@
 /* eslint-disable max-len */
 import React, { useEffect, useRef } from 'react';
 import useToggle from 'react-use/lib/useToggle';
-import { Link, useHistory } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { twCascade } from '@mariusmarais/tailwind-cascade';
 import { Icon } from '@QCFE/lego-ui';
 import { useLocation } from 'react-router-dom';
 
-import { More } from '@c/more';
-import { uuid } from '@lib/utils';
+import More from '@c/more';
 import Authorized from '@clients/common/component/authorized';
+import { uuid } from '@lib/utils';
+
 import SvgIcon from './components/icon';
 
 export default function GlobalHeader() {

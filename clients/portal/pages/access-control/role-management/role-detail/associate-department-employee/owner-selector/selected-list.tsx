@@ -13,7 +13,7 @@ export interface ISelectedList {
   ownerStore: OwnerStore;
 }
 
-export const SelectedList = observer(({ className, ownerStore }: ISelectedList) => {
+export default observer( function SelectedList({ className, ownerStore }: ISelectedList) {
   const users = ownerStore.owners.filter(({ type }) => type === 1);
   const departments = ownerStore.owners.filter(({ type }) => type === 2);
   const isFirstLoad = useRef<boolean>(true);

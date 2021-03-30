@@ -2,17 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { useQuery } from 'react-query';
 import { observer } from 'mobx-react';
 
-import { Tab } from '@c/tab2';
+import Tab from '@c/tab2';
 import TextHeader from '@c/text-header';
-import { SearchInput } from '@c/form/search-input';
-import { Loading } from '@c/loading2';
+import SearchInput from '@c/form/search-input';
+import Loading from '@c/loading2';
 import { getDepartmentStructure, IOwner } from '@net/role-management';
 
-import { EmployeeTable } from './employee-table';
-import { SelectedList } from './selected-list';
+import EmployeeTable from './employee-table';
+import SelectedList from './selected-list';
 import EmployeeSelectTree from './employee-select-tree';
-import { DepartmentSelectTree } from './department-select-tree';
-
+import DepartmentSelectTree from './department-select-tree';
 import EmployeeTreeStore from './employee-select-tree/store';
 import EmployeeStore from './employee-table/store';
 import DepartmentTreeStore from './department-select-tree/store';

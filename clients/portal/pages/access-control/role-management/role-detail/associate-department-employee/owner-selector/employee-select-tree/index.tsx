@@ -3,7 +3,7 @@ import classnames from 'classnames';
 
 import Tree from '@c/headless-tree';
 
-import { DepartmentNode } from './department-node';
+import DepartmentNode from './department-node';
 import Store from './store';
 
 export interface Props {

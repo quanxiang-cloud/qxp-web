@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 
-import { ItemWithTitleDesc } from './item-with-title-desc';
-// import { loadImage } from '@lib/utils';
+import ItemWithTitleDesc from './item-with-title-desc';
 import { getImgColor } from '@p/access-control/company-maillist/excel';
 
 export interface IAvatar {
@@ -10,20 +9,7 @@ export interface IAvatar {
   avatar?: string;
 }
 
-export const Avatar = ({ username = '', bio, avatar }: IAvatar) => {
-  // const [imageURL, setImageURL] = useState<string | null>(null);
-
-  // useEffect(() => {
-  //   if (!avatar) {
-  //     return;
-  //   }
-  //   loadImage(avatar).then(() => {
-  //     setImageURL(avatar);
-  //   }).catch(() => {
-  //     setImageURL('/dist/images/avatar.jpg');
-  //   });
-  // }, [avatar]);
-
+export default function Avatar({ username = '', bio, avatar }: IAvatar) {
   let head = '';
   let imgInfo: { name: string, color: string } = { name: '', color: '' };
   if (username) {
@@ -56,4 +42,4 @@ export const Avatar = ({ username = '', bio, avatar }: IAvatar) => {
       titleClassName="text-h4"
     />
   );
-};
+}

@@ -4,8 +4,9 @@ import classnames from 'classnames';
 import { Modal, CheckboxGroup, Checkbox, Table, Upload, Message } from '@QCFE/lego-ui';
 
 import SvgIcon from '@c/icon';
-import { Button } from '@portal/components/button';
+import Button from '@c/button';
 import { getUserTemplate, importTempFile, resetUserPWD } from '@net/corporate-directory';
+
 import { FileUploadStatus } from '../enum';
 
 interface ExportFileModalProps {

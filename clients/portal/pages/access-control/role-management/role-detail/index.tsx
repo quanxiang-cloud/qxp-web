@@ -1,19 +1,20 @@
 import React from 'react';
 import { useQuery } from 'react-query';
 
-import { ItemWithTitleDesc } from '@c/item-with-title-desc';
-import { Tab } from '@c/tab2';
-import { Loading } from '@c/loading2';
-import { IRoleListItem } from '../role-list-item';
-import { AlterRoleFunc } from './alter-role-func';
-import { AssociateDepartmentEmployee } from './associate-department-employee';
+import ItemWithTitleDesc from '@c/item-with-title-desc';
+import Tab from '@c/tab2';
+import Loading from '@c/loading2';
 import { getRoleFunctions } from '@portal/api/role-management';
+
+import AlterRoleFunc from './alter-role-func';
+import AssociateDepartmentEmployee from './associate-department-employee';
+import { IRoleListItem } from '../role-list-item';
 
 export interface IRoleDetail {
   role?: IRoleListItem;
 }
 
-export const RoleDetail = ({ role }: IRoleDetail) => {
+export default function RoleDetail({ role }: IRoleDetail) {
   const { data, isLoading } = useQuery(['getRoleFunctions', role?.id], getRoleFunctions, {
     refetchOnWindowFocus: false,
     enabled: !!role?.id,
@@ -65,4 +66,4 @@ export const RoleDetail = ({ role }: IRoleDetail) => {
       />
     </>
   );
-};
+}

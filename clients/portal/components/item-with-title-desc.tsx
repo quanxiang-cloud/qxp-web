@@ -14,7 +14,7 @@ export interface IItemWithTitleDesc {
   onClick?: (event: MouseEvent<HTMLDivElement>) => void;
 }
 
-export const ItemWithTitleDesc = ({
+export default function ItemWithTitleDesc({
   title,
   desc,
   itemRender,
@@ -24,7 +24,7 @@ export const ItemWithTitleDesc = ({
   textDirection,
   className,
   onClick = () => {},
-}: IItemWithTitleDesc) => {
+}: IItemWithTitleDesc) {
   return (
     <div
       className={
@@ -51,4 +51,4 @@ export const ItemWithTitleDesc = ({
       </div>
     </div>
   );
-};
+}

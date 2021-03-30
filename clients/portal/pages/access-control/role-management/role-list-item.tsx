@@ -3,7 +3,7 @@ import { twCascade } from '@mariusmarais/tailwind-cascade';
 import useCss from 'react-use/lib/useCss';
 import { identity } from '@lib/utils';
 
-import { ItemWithTitleDesc } from '@c/item-with-title-desc';
+import ItemWithTitleDesc from '@c/item-with-title-desc';
 
 export interface IRoleListItem {
   name: string;
@@ -13,7 +13,7 @@ export interface IRoleListItem {
   onClick?: (id: string | number) => void;
 }
 
-export const RoleListItem = ({ name, active, id, onClick = identity }: IRoleListItem) => {
+export default function RoleListItem({ name, active, id, onClick = identity }: IRoleListItem) {
   return (
     <ItemWithTitleDesc
       className={twCascade(
@@ -78,4 +78,4 @@ export const RoleListItem = ({ name, active, id, onClick = identity }: IRoleList
       })}
     />
   );
-};
+}

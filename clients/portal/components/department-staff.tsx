@@ -1,6 +1,3 @@
-/**
- * 组件-部门人员
- */
 import React from 'react';
 
 interface DepartmentStaffProps {
@@ -9,7 +6,7 @@ interface DepartmentStaffProps {
   unit?: string;
 }
 
-export const DepartmentStaff = ({ department, count = 0, unit }: DepartmentStaffProps) => {
+export default function DepartmentStaff({ department, count = 0, unit }: DepartmentStaffProps) {
   return (
     <div className="mt-20 mb-8 pl-20 flex items-center">
       <div className="h-full text-14 text-black-900 font-semibold">{department}</div>
@@ -20,4 +17,4 @@ export const DepartmentStaff = ({ department, count = 0, unit }: DepartmentStaff
       )}
     </div>
   );
-};
+}

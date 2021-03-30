@@ -13,7 +13,7 @@ export interface IAlterRoleFunc {
   id: string | number;
 }
 
-export const AlterRoleFunc = ({ funcs: functions, tag, lastSaveTime, id }: IAlterRoleFunc) => {
+export default function AlterRoleFunc({ funcs: functions, tag, lastSaveTime, id }: IAlterRoleFunc) {
   // @ts-ignore
   const [funcs, setFuncs] = useState<IRoleFunc>(deepClone(functions));
   const total = countBy<IRoleFunc, boolean>('has', 'child', (v) => v, funcs);
@@ -184,4 +184,4 @@ export const AlterRoleFunc = ({ funcs: functions, tag, lastSaveTime, id }: IAlte
       {renderFuncCard(funcs)}
     </div>
   );
-};
+}

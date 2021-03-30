@@ -20,12 +20,12 @@ export interface IList<T> {
   params?: T;
 }
 
-export const List = <T extends unknown>({
+export default function List<T extends unknown>({
   className,
   itemClassName,
   items = [],
   params,
-}: IList<T>) => {
+}: IList<T>) {
   return (
     <ul className={twCascade('flex flex-col', className)}>
       {items.map((item: JSX.Element | (() => JSX.Element) | IItem<T>) => {
@@ -62,4 +62,4 @@ export const List = <T extends unknown>({
       })}
     </ul>
   );
-};
+}

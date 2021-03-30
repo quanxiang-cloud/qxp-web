@@ -2,10 +2,10 @@ import React, { useEffect } from 'react';
 import useCss from 'react-use/lib/useCss';
 import { twCascade } from '@mariusmarais/tailwind-cascade';
 
-import { Avatar } from '@c/avatar2';
+import Avatar from '@c/avatar2';
 import Card from '@c/card2';
-import { List } from '@c/list2';
-import { ItemWithTitleDesc } from '@c/item-with-title-desc';
+import List from '@c/list2';
+import ItemWithTitleDesc from '@c/item-with-title-desc';
 import { uuid } from '@lib/utils';
 import { usePortalGlobalValue } from '@states/portal';
 

@@ -3,11 +3,12 @@ import { useQuery, useMutation, useQueryClient } from 'react-query';
 import { Modal, Icon, Form, Loading, Message } from '@QCFE/lego-ui';
 
 import DepartmentPicker from '@c/tree-picker';
-import { Button } from '@c/button';
-import { BatchDepParams } from '../person-info';
+import Button from '@c/button';
 import { UserInfo } from '@net/auth';
 import { departmentToTreeNode } from '@lib/utils';
 import { getERPTree, batchAdjustDep } from '@net/corporate-directory';
+
+import { BatchDepParams } from '../person-info';
 
 interface IAdjustDepModalProps {
   userList: UserInfo[];

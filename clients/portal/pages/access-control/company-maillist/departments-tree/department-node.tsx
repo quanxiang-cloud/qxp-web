@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
 import { observer } from 'mobx-react';
-import { Icon, Modal, Message } from '@QCFE/lego-ui';
+import { Modal, Message } from '@QCFE/lego-ui';
 import { useQueryClient } from 'react-query';
 
 import MoreMenu, { MenuItem } from '@c/more-menu';
-import { NodeRenderProps } from '@c/headless-tree/types';
 import Authorized from '@clients/common/component/authorized';
+import SvgIcon from '@portal/components/icon';
+import { deleteDEP } from '@net/corporate-directory';
+import { NodeRenderProps } from '@c/headless-tree/types';
 
 import EditDepartment from './edit-department';
-import { deleteDEP } from '@net/corporate-directory';
-import SvgIcon from '@portal/components/icon';
+
 
 const MENUS: MenuItem<string>[] = [
   {

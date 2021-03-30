@@ -3,7 +3,7 @@ import { twCascade } from '@mariusmarais/tailwind-cascade';
 
 import { isString } from '@lib/utils';
 
-import { ItemWithTitleDesc } from './item-with-title-desc';
+import ItemWithTitleDesc from './item-with-title-desc';
 
 export interface Props {
   className?: string;

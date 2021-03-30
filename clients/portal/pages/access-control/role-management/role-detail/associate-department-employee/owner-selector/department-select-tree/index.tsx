@@ -3,6 +3,7 @@ import { observer } from 'mobx-react';
 import { twCascade } from '@mariusmarais/tailwind-cascade';
 
 import Tree from '@c/headless-tree';
+
 import { DepartmentNode } from './department-node';
 import DepartmentTreeStore from './store';
 
@@ -13,9 +14,9 @@ export interface IDepartmentSelectTree {
   wrapperClassName?: string;
 }
 
-export const DepartmentSelectTree = observer(({
+export default observer( function DepartmentSelectTree({
   store, className, itemClassName, wrapperClassName,
-}: IDepartmentSelectTree) => {
+}: IDepartmentSelectTree) {
   return (
     <div className={twCascade('tree-wrapper', wrapperClassName)}>
       <Tree

@@ -7,7 +7,7 @@ export interface ILoading {
   className?: string;
 }
 
-export const Loading = ({ desc = 'Loading...', className }: ILoading) => {
+export default function Loading({ desc = 'Loading...', className }: ILoading) {
   return (
     <div
       className={twCascade(
@@ -19,4 +19,4 @@ export const Loading = ({ desc = 'Loading...', className }: ILoading) => {
       <span>{desc}</span>
     </div>
   );
-};
+}

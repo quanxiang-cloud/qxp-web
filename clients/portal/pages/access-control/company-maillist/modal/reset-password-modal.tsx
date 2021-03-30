@@ -2,7 +2,7 @@ import React, { createRef } from 'react';
 import { useMutation } from 'react-query';
 import { Modal, Form, Message } from '@QCFE/lego-ui';
 
-import { Button } from '@portal/components/button';
+import Button from '@portal/components/button';
 import SvgIcon from '@portal/components/icon';
 import { resetUserPWD } from '@net/corporate-directory';
 

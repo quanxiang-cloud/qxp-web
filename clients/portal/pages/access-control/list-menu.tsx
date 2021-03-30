@@ -1,8 +1,8 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-
 import useCss from 'react-use/lib/useCss';
 import { twCascade } from '@mariusmarais/tailwind-cascade';
+
 import { usePortalGlobalValue } from '@states/portal';
 
 type MenuItem = {
@@ -11,7 +11,7 @@ type MenuItem = {
   icon: string;
 };
 
-export const ListMenu = () => {
+export default function ListMenu() {
   const [{ userInfo }] = usePortalGlobalValue();
 
   const menuData: MenuItem[] = [];
@@ -101,4 +101,4 @@ export const ListMenu = () => {
       })}
     </ul>
   );
-};
+}

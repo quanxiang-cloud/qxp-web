@@ -4,10 +4,11 @@ import { useQueryClient } from 'react-query';
 import useCss from 'react-use/lib/useCss';
 import { Tree, TreeNode, Dropdown, Message } from '@QCFE/lego-ui';
 
-import { List, IITems } from '@c/list2';
+import List, { IITems } from '@c/list2';
+import { deleteDEP } from '@net/corporate-directory';
+
 import DepartmentModal from './modal/department-modal';
 import DeleteModal from './modal/delete-modal';
-import { deleteDEP } from '@net/corporate-directory';
 
 export interface TreeNodeItem extends ITreeNode {
   addDepartment: (val: string, id: string) => void;

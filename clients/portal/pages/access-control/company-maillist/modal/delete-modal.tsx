@@ -1,7 +1,7 @@
 import React from 'react';
 import { Modal } from '@QCFE/lego-ui';
 
-import { Button } from '@portal/components/button';
+import Button from '@portal/components/button';
 import SvgIcon from '@portal/components/icon';
 
 interface DeleteModalProps {

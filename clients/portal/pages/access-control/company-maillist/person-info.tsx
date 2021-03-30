@@ -3,23 +3,16 @@ import { useQuery, useMutation } from 'react-query';
 import { Table, Icon, Message } from '@QCFE/lego-ui';
 
 import IconBtn from '@c/icon-btn';
-import { Pagination } from '@c/pagination2';
+import Pagination from '@c/pagination2';
 import SvgIcon from '@c/icon';
 import Authorized from '@clients/common/component/authorized';
-import ResetPasswordModal from './modal/reset-password-modal';
-import AccountHandleModal from './modal/account-handle-modal';
-import AdjustDepModal from './modal/adjust-dep-modal';
-import ExportFileModal from './modal/export-file-modal';
-import StaffModal from './modal/staff-modal';
-import { List } from '@c/list2';
-import { UserInfo } from '@portal/api/auth';
-import { UserStatus } from './enum';
-import { DepartmentStaff } from '@c/department-staff';
-import { Button } from '@c/button';
-import { EmptyData } from '@c/empty-data';
-import { More } from '@c/more';
-import { excelHeader, exportDepExcel } from './excel';
+import List from '@c/list2';
+import DepartmentStaff from '@c/department-staff';
+import Button from '@c/button';
+import EmptyData from '@c/empty-data';
+import More from '@c/more';
 import { uuid } from '@lib/utils';
+import { UserInfo } from '@portal/api/auth';
 import { usePortalGlobalValue } from '@states/portal';
 import {
   getUserAdminInfo,
@@ -27,8 +20,17 @@ import {
   getUserRole,
   cancelDEPLeader,
 } from '@net/corporate-directory';
+
+import ResetPasswordModal from './modal/reset-password-modal';
+import AccountHandleModal from './modal/account-handle-modal';
+import AdjustDepModal from './modal/adjust-dep-modal';
+import ExportFileModal from './modal/export-file-modal';
+import StaffModal from './modal/staff-modal';
 import UserInfoColumn from './table-column/user-info-column';
 import OtherColumn from './table-column/other-column';
+import { excelHeader, exportDepExcel } from './excel';
+import { UserStatus } from './enum';
+
 
 enum ResetStart {
   single = 0,
