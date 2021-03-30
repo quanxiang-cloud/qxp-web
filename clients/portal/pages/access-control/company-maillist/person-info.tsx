@@ -5,28 +5,25 @@ import { Table, Icon, Message } from '@QCFE/lego-ui';
 import IconBtn from '@c/icon-btn';
 import { Pagination } from '@c/pagination2';
 import SvgIcon from '@c/icon';
-import { ResetPasswordModal, CheckedWay } from './modal/reset-password-modal';
-import { AccountHandleModal } from './modal/account-handle-modal';
+import Authorized from '@clients/common/component/authorized';
+import ResetPasswordModal from './modal/reset-password-modal';
+import AccountHandleModal from './modal/account-handle-modal';
+import AdjustDepModal from './modal/adjust-dep-modal';
+import ExportFileModal from './modal/export-file-modal';
 import StaffModal from './modal/staff-modal';
 import { List } from '@c/list2';
 import { UserInfo } from '@portal/api/auth';
 import { UserStatus } from './enum';
 import { DepartmentStaff } from '@c/department-staff';
 import { Button } from '@c/button';
-import { ExportFileModal } from './modal/export-file-modal';
-import { AdjustDepModal } from './modal/adjust-dep-modal';
 import { EmptyData } from '@c/empty-data';
 import { More } from '@c/more';
 import { excelHeader, exportDepExcel } from './excel';
 import { uuid } from '@lib/utils';
-import Authorized from '@clients/common/component/authorized';
 import { usePortalGlobalValue } from '@states/portal';
 import {
   getUserAdminInfo,
-  updateUserStatus,
-  resetUserPWD,
   setDEPLeader,
-  batchAdjustDep,
   getUserRole,
   cancelDEPLeader,
 } from '@net/corporate-directory';
@@ -38,13 +35,15 @@ enum ResetStart {
   batch = 1
 }
 
+const pageSizeOptions = [10, 20, 50, 100];
+
 export type BatchDepParams = {
   usersID: string[];
   oldDepID: string;
   newDepID: string;
 };
 
-interface PersonInfoProps {
+interface Props {
   departmentId: string;
   departmentName: string;
   keyword: string;
@@ -56,15 +55,14 @@ export default function PersonInfo({
   departmentName,
   keyword,
   handleClear,
-}: PersonInfoProps) {
-  console.log('ResetStart', ResetStart);
+}: Props) {
   const [visibleFile, setVisibleFile] = useState<boolean>(false);
   const [resetModal, setResetModal] = useState<boolean>(false);
   const [handleModal, setHandleModal] = useState<boolean>(false);
   const [visibleAdjust, setVisibleAdjust] = useState<boolean>(false);
-  const [modalStatus, setModalStatus] = useState<UserStatus>(1);
-  const [resetStart, setResetStart] = useState<ResetStart>(0);
   const [visibleStaff, setVisibleStaff] = useState<boolean>(false);
+  const [modalStatus, setModalStatus] = useState<UserStatus>(UserStatus.normal);
+  const [resetStart, setResetStart] = useState<ResetStart>(ResetStart.single);
   const [selectedRows, setSelectedRows] = useState<string[]>([]);
   const [selectedUsers, setSelectedUsers] = useState<UserInfo[]>([]);
   const [{ userInfo }] = usePortalGlobalValue();
@@ -111,41 +109,12 @@ export default function PersonInfo({
     handleClear();
   }, [departmentId]);
 
-  const handleMutation = useMutation(updateUserStatus, {
-    onSuccess: () => {
-      setHandleModal(false);
-      refetch();
-    },
-  });
-
   const superMutation = useMutation(setDEPLeader, {
     onSuccess: () => {
       Message.success('操作成功！');
       refetch();
     },
   });
-
-  const resetMutation = useMutation(resetUserPWD, {
-    onSuccess: (data) => {
-      if (data && data.code === 0) {
-        Message.success('操作成功！');
-      } else {
-        Message.error('操作失败！');
-      }
-      setVisibleFile(false);
-      setResetModal(false);
-      setSelectedRows([]);
-    },
-  });
-
-  const depMutation = useMutation(batchAdjustDep, {
-    onSuccess: () => {
-      setVisibleAdjust(false);
-      refetch();
-    },
-  });
-
-  const pageSizeOptions = [10, 20, 50, 100];
 
   const setUpSuper = (params: UserInfo) => {
     superMutation.mutate({
@@ -172,31 +141,31 @@ export default function PersonInfo({
     let acts: any[] = [];
     const leader = {
       id: '1',
-      iconName: 'client',
+      iconName: 'bookmark_border',
       text: '设为主管 ',
       onclick: (params: any) => setUpSuper(params),
     };
     const password = {
       id: '2',
-      iconName: 'key',
+      iconName: 'password',
       text: '重置密码',
       onclick: (params: any) => handleReset(params),
     };
     const edit = {
       id: '3',
-      iconName: 'pen',
-      text: '修改信息 ',
+      iconName: 'create',
+      text: '修改员工信息 ',
       onclick: (params: any) => handleUserInfo(params, 'edit'),
     };
     const disable = {
       id: '4',
-      iconName: 'stop',
+      iconName: 'toggle_off',
       text: '禁用账号',
       onclick: (params: any) => handleAccount(UserStatus.disable, params),
     };
     const deleted = {
       id: '5',
-      iconName: 'trash',
+      iconName: 'restore_from_trash',
       text: '删除账号',
       onclick: (params: any) => handleAccount(UserStatus.delete, params),
     };
@@ -208,13 +177,13 @@ export default function PersonInfo({
     };
     const open = {
       id: '7',
-      iconName: 'stop',
-      text: '启用账号',
+      iconName: 'toggle_on',
+      text: '开启账号',
       onclick: (params: any) => handleAccount(UserStatus.normal, params),
     };
 
     if (status === UserStatus.normal) {
-      acts = [leader, password, edit, disable, deleted];
+      acts = [edit, leader, password, disable, deleted];
     }
 
     if (status === UserStatus.disable) {
@@ -222,7 +191,7 @@ export default function PersonInfo({
     }
 
     if (isLeader === UserStatus.normal && status !== UserStatus.disable) {
-      acts[0] = cancel;
+      acts[1] = cancel;
     }
 
     return acts;
@@ -279,10 +248,6 @@ export default function PersonInfo({
     setHandleModal(false);
   };
 
-  const okHandleModal = () => {
-    handleMutation.mutate({ id: currUser.id, status: modalStatus });
-  };
-
   const handleChange = (current: number) => {
     setPageParams({ ...pageParams, page: current });
   };
@@ -294,6 +259,55 @@ export default function PersonInfo({
       limit,
     });
   };
+
+  const importFile = () => {
+    setVisibleFile(true);
+  };
+
+  const closeFileModal = () => {
+    setVisibleFile(false);
+    refetch();
+  };
+
+  const closeStaffModal = () => {
+    setVisibleStaff(!visibleStaff);
+  };
+
+  const handleAdjustModal = () => {
+    setVisibleAdjust(!visibleStaff);
+  };
+
+  const clearSelectRows = () => {
+    setSelectedRows([]);
+  };
+
+  const exportDepData = () => {
+    getUserAdminInfo('', {
+      useStatus: 1,
+      page: 1,
+      limit: 10000,
+    }).then((res) => {
+      if (res && res.data) {
+        const { data } = res;
+        const newData = data.map((user) => {
+          user.depName = user.dep && user.dep.departmentName;
+          return user;
+        });
+        exportDepExcel(excelHeader, newData, '人员列表.xlsx');
+      } else {
+        Message.error('获取人员出错');
+      }
+    });
+  };
+
+  const expandActions = [
+    {
+      id: '1',
+      iconName: 'exit_to_app',
+      text: '导出员工数据 ',
+      onclick: () => exportDepData(),
+    },
+  ];
 
   const columns = [
     {
@@ -362,103 +376,26 @@ export default function PersonInfo({
     },
   };
 
-  // 打开文件模态框
-  const importFile = () => {
-    setVisibleFile(true);
-  };
-
-  // 关闭文件模态框
-  const closeFileModal = () => {
-    setVisibleFile(false);
-    refetch();
-  };
-
-  const closeStaffModal = () => {
-    setVisibleStaff(!visibleStaff);
-  };
-
-  const okResetModal = (checkedWay: CheckedWay) => {
-    if (resetStart === 0) {
-      resetMutation.mutate({ userIDs: [currUser.id], ...checkedWay });
-    } else {
-      resetMutation.mutate({ userIDs: selectedRows, ...checkedWay });
-    }
-  };
-
-  const okExportModal = (ids: string[], way: CheckedWay) => {
-    resetMutation.mutate({ userIDs: ids, ...way });
-  };
-
-  const openAdjustModal = () => {
-    setVisibleAdjust(true);
-  };
-
-  const okModalAdjust = (params: BatchDepParams) => {
-    depMutation.mutate(params);
-  };
-
-  const exportDepData = () => {
-    getUserAdminInfo('', {
-      useStatus: 1,
-      page: 0,
-      limit: 0,
-    }).then((res) => {
-      if (res && res.data) {
-        const { data } = res;
-        const newData = data.map((user) => {
-          user.depName = user.dep && user.dep.departmentName;
-          return user;
-        });
-        exportDepExcel(excelHeader, newData, '人员列表.xlsx');
-      } else {
-        Message.error('获取人员出错');
-      }
-    });
-  };
-
-  const expandActions = [
-    {
-      id: '1',
-      iconName: 'export',
-      text: '导出员工数据 ',
-      onclick: () => exportDepData(),
-    },
-  ];
-
   return (
     <>
-      <AdjustDepModal
-        userList={selectedUsers}
-        visible={visibleAdjust}
-        closeModal={() => setVisibleAdjust(false)}
-        okModal={okModalAdjust}
-      />
-      {/* 员工模态框 */}
+      { visibleAdjust && <AdjustDepModal userList={selectedUsers} closeModal={handleAdjustModal} />}
+      { visibleStaff && <StaffModal user={currUser} closeModal={closeStaffModal} />}
+      { visibleFile && <ExportFileModal currDepId={departmentId} closeModal={closeFileModal} />}
       {
-        visibleStaff && <StaffModal
+        handleModal && <AccountHandleModal
+          status={modalStatus}
           user={currUser}
-          closeModal={closeStaffModal}
+          closeModal={closeHandleModal}
         />
       }
-      {/* 文件处理模态框 */}
-      <ExportFileModal
-        visible={visibleFile}
-        currDepId={departmentId}
-        closeModal={closeFileModal}
-        okModal={okExportModal}
-      />
-      <AccountHandleModal
-        visible={handleModal}
-        status={modalStatus}
-        initData={currUser}
-        closeModal={closeHandleModal}
-        okModal={okHandleModal}
-      />
-      <ResetPasswordModal
-        visible={resetModal}
-        closeModal={closeResetModal}
-        okModal={okResetModal}
-      />
+      {
+        resetModal && <ResetPasswordModal
+          userIds={resetStart === ResetStart.single ? [currUser.id] : selectedRows}
+          closeModal={closeResetModal}
+          clearSelectRows={clearSelectRows}
+        />
+      }
+
       <div className="flex-1 h-full flex-column">
         <DepartmentStaff
           department={departmentName}
@@ -471,8 +408,8 @@ export default function PersonInfo({
               <Button
                 className="bg-black-900"
                 textClassName="text-white"
-                icon={<SvgIcon name="device_hub" type="light" size={20} />}
-                onClick={openAdjustModal}
+                icon={<SvgIcon name="device_hub" type="light" size={20} className="mr-10" />}
+                onClick={handleAdjustModal}
               >
                 调整部门
               </Button>

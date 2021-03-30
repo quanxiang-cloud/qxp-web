@@ -262,7 +262,7 @@ export const updateUserStatus = ({
     {
       'Content-Type': 'application/json',
     }
-  ).then(({ data }) => data);
+  );
 };
 
 /**
@@ -302,7 +302,7 @@ export const batchAdjustDep = ({
     {
       'Content-Type': 'application/json',
     }
-  ).then(({ data }) => data);
+  );
 };
 
 /**

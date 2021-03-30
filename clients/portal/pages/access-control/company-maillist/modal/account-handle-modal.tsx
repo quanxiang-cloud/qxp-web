@@ -1,31 +1,48 @@
-/**
- * 禁用/删除/启用 账号
- */
 import React from 'react';
-import { Modal } from '@QCFE/lego-ui';
+import { useMutation, useQueryClient } from 'react-query';
+import { Modal, Message } from '@QCFE/lego-ui';
 
+import SvgIcon from '@portal/components/icon';
 import { Button } from '@portal/components/button';
 import { UserStatus } from '../enum';
 import { UserInfo } from '@portal/api/auth';
-import SvgIcon from '@portal/components/icon';
+import { updateUserStatus } from '@net/corporate-directory';
 
-interface AccountHandleModalProps {
-  visible: boolean;
+interface Props {
   status: UserStatus;
-  initData: UserInfo;
+  user: UserInfo;
   closeModal(): void;
-  okModal(val: UserInfo): void;
 }
 
-export const AccountHandleModal = (props: AccountHandleModalProps) => {
-  const { visible, status, initData, closeModal, okModal } = props;
+export default function AccountHandleModal(
+  { status, user, closeModal }: Props) {
+  const queryClient = useQueryClient();
 
-  const titleText = status !== 1 ? (status === -2 ? '禁用' : '删除') : '启用';
+  const handleMutation = useMutation(updateUserStatus, {
+    onSuccess: (res) => {
+      if (res && res.code === 0) {
+        Message.success('操作成功');
+        closeModal();
+        queryClient.invalidateQueries('GET_USER_ADMIN_INFO');
+      } else {
+        Message.error('操作失败');
+        closeModal();
+      }
+    },
+  });
+
+  const titleText = status !== UserStatus.normal ?
+    (status === UserStatus.disable ? '禁用' : '删除') :
+    '启用';
+
+  const handleSubmit = () => {
+    handleMutation.mutate({ id: user.id, status: status });
+  };
 
   return (
     <Modal
+      visible
       title={`${titleText}账号`}
-      visible={visible}
       className="static-modal"
       onCancel={closeModal}
       footer={
@@ -33,42 +50,42 @@ export const AccountHandleModal = (props: AccountHandleModalProps) => {
           <Button
             icon={<SvgIcon name="close" size={20} className="mr-8" />}
             onClick={closeModal}
+            className="mr-20"
           >
             取消
           </Button>
-          <div className="w-20"></div>
           <Button
             className="bg-black-900"
             textClassName="text-white"
             icon={<SvgIcon name="check" type="light" size={20} className="mr-8" />}
-            onClick={() => okModal(initData)}
+            onClick={handleSubmit}
           >
             {titleText}账号
           </Button>
         </div>
       }
     >
-      {status === -1 && (
+      {status === UserStatus.delete && (
         <div className="text-14">
           删除账号后，在平台内无法恢复员工
-          <span className="mx-4 text-16 text-gray-900 font-semibold">{initData?.userName}</span>
+          <span className="mx-4 text-16 text-gray-900 font-semibold">{user?.userName}</span>
           数据，确定要删除该账号吗？
         </div>
       )}
-      {status === -2 && (
+      {status === UserStatus.disable && (
         <div className="text-14">
           禁用账号后，员工
-          <span className="mx-4 text-16 text-gray-900 font-semibold">{initData?.userName}</span>
+          <span className="mx-4 text-16 text-gray-900 font-semibold">{user?.userName}</span>
           无法登录该平台，确定要禁用该账号吗？
         </div>
       )}
-      {status === 1 && (
+      {status === UserStatus.normal && (
         <div className="text-14">
           启用账号后，员工
-          <span className="mx-4 text-16 text-gray-900 font-semibold">{initData?.userName}</span>
+          <span className="mx-4 text-16 text-gray-900 font-semibold">{user?.userName}</span>
           可以登录该平台，确定要启用该账号吗？
         </div>
       )}
     </Modal>
   );
-};
+}

@@ -1,8 +1,8 @@
 import React from 'react';
 import { twCascade } from '@mariusmarais/tailwind-cascade';
-import { Icon } from '@QCFE/lego-ui';
 
 import { uuid, isFunction, isObject } from '@lib/utils';
+import SvgIcon from './icon';
 
 export interface IItem<T> {
   id: string;
@@ -46,15 +46,9 @@ export const List = <T extends unknown>({
                 itemClassName,
               )}
             >
-              {curItem.iconName && (
-                <>{
-                  curItem.iconName.endsWith('.svg') ? (
-                    <img src={curItem.iconName} />
-                  ) : (
-                    <Icon name={curItem.iconName} className="mr-10" />
-                  )
-                }</>
-              )}
+              {
+                curItem.iconName && <SvgIcon name={curItem.iconName} size={16} className="mr-8" />
+              }
               <div className="text-14 whitespace-nowrap">{curItem.text}</div>
             </li>
           );

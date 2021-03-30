@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, { createRef } from 'react';
+import { useMutation } from 'react-query';
 import { Modal, Form, Message } from '@QCFE/lego-ui';
 
 import { Button } from '@portal/components/button';
 import SvgIcon from '@portal/components/icon';
+import { resetUserPWD } from '@net/corporate-directory';
 
 const { CheckboxGroupField } = Form;
 
@@ -12,23 +14,34 @@ export type CheckedWay = {
 };
 
 interface ResetPasswordModalProps {
-  visible: boolean;
+  userIds: string[];
   closeModal(): void;
-  okModal: (val: CheckedWay) => void;
+  clearSelectRows(): void;
 }
 
-export const ResetPasswordModal = (props: ResetPasswordModalProps) => {
-  const { visible, closeModal, okModal } = props;
-  const [form, setForm] = useState<any>(null);
+export default function ResetPasswordModal(
+  { userIds, closeModal, clearSelectRows } : ResetPasswordModalProps) {
+  const formRef = createRef<Form>();
+
+  const resetMutation = useMutation(resetUserPWD, {
+    onSuccess: (data) => {
+      if (data && data.code === 0) {
+        Message.success('操作成功！');
+      } else {
+        Message.error('操作失败！');
+      }
+      closeModal();
+      clearSelectRows();
+    },
+  });
 
   const handleReset = () => {
-    const bol = form.validateForm();
-    if (!bol) {
+    if (!formRef.current?.validateForm()) {
       return;
     }
-    const values: { way: string[] } = form.getFieldsValue();
-    const { way } = values;
-    if (way.length === 0) {
+    const values: { sendPasswordBy: string[] } = formRef.current?.getFieldsValue();
+    const { sendPasswordBy } = values;
+    if (sendPasswordBy.length === 0) {
       Message.error('请选择发送方式');
       return;
     }
@@ -36,17 +49,17 @@ export const ResetPasswordModal = (props: ResetPasswordModalProps) => {
       sendEmail: -1,
       sendPhone: -1,
     };
-    if (way.length > 0) {
-      way.includes('email') && (checkedWay.sendEmail = 1);
-      way.includes('phone') && (checkedWay.sendPhone = 1);
+    if (sendPasswordBy.length > 0) {
+      sendPasswordBy.includes('email') && (checkedWay.sendEmail = 1);
+      sendPasswordBy.includes('phone') && (checkedWay.sendPhone = 1);
     }
-    okModal(checkedWay);
+    resetMutation.mutate({ userIDs: userIds, ...checkedWay });
   };
 
   return (
     <Modal
-      title="重置密码 "
-      visible={visible}
+      visible
+      title="重置密码"
       className="static-modal"
       onCancel={closeModal}
       footer={
@@ -54,10 +67,10 @@ export const ResetPasswordModal = (props: ResetPasswordModalProps) => {
           <Button
             icon={<SvgIcon name="close" size={20} className="mr-8" />}
             onClick={closeModal}
+            className="mr-20"
           >
             取消
           </Button>
-          <div className="w-20"></div>
           <Button
             className="bg-black-900"
             textClassName="text-white"
@@ -74,10 +87,9 @@ export const ResetPasswordModal = (props: ResetPasswordModalProps) => {
           <SvgIcon name="info" size={24} type="coloured" color="#375FF3" className="mr-10" />
           <span className="text-blue-600">系统将自动生成一个随机密码发送给员工。</span>
         </div>
-        <Form layout="vertical" ref={(n: any) => setForm(n)}>
-          {/* <TextField name="account-1" label="重置密码" placeholder="请输入 QingCloud 账号" /> */}
+        <Form layout="vertical" ref={formRef}>
           <CheckboxGroupField
-            name="way"
+            name="sendPasswordBy"
             label="选择重置密码的发送方式"
             options={[
               {
@@ -94,4 +106,4 @@ export const ResetPasswordModal = (props: ResetPasswordModalProps) => {
       </div>
     </Modal>
   );
-};
+}

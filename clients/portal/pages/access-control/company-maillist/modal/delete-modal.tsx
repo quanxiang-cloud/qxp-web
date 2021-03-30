@@ -10,7 +10,7 @@ interface DeleteModalProps {
   okModal(): void;
 }
 
-export const DeleteModal = ({ currDep, closeModal, okModal }: DeleteModalProps) => {
+export default function DeleteModal({ currDep, closeModal, okModal }: DeleteModalProps) {
   return (
     <Modal
       visible
@@ -45,4 +45,4 @@ export const DeleteModal = ({ currDep, closeModal, okModal }: DeleteModalProps) 
       </div>
     </Modal>
   );
-};
+}

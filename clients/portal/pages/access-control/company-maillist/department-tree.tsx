@@ -6,7 +6,7 @@ import { Tree, TreeNode, Dropdown, Message } from '@QCFE/lego-ui';
 
 import { List, IITems } from '@c/list2';
 import DepartmentModal from './modal/department-modal';
-import { DeleteModal } from './modal/delete-modal';
+import DeleteModal from './modal/delete-modal';
 import { deleteDEP } from '@net/corporate-directory';
 
 export interface TreeNodeItem extends ITreeNode {
@@ -21,13 +21,13 @@ const Title = ({ openDeptModal, openDeleteDeptModal, onSelect, ...treenode }: Tr
     const acts: IITems<DeptInfo> = [
       {
         id: '1',
-        iconName: 'network-router',
+        iconName: 'device-hub',
         text: '添加部门',
         onclick: (params?: DeptInfo) => openDeptModal('add', params),
       },
       {
         id: '2',
-        iconName: 'pen',
+        iconName: 'edit',
         text: '修改部门',
         onclick: (params?: DeptInfo) => openDeptModal('edit', params),
       },
@@ -35,7 +35,7 @@ const Title = ({ openDeptModal, openDeleteDeptModal, onSelect, ...treenode }: Tr
     if (bol) {
       acts.push({
         id: '3',
-        iconName: 'trash',
+        iconName: 'restore_from_trash',
         text: '删除',
         onclick: (params?: Partial<DeptInfo>) => openDeleteDeptModal(params),
       });

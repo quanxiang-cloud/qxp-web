@@ -1,39 +1,47 @@
-/**
- * Adjust department Modal
- */
 import React, { createRef } from 'react';
-import { useQuery } from 'react-query';
+import { useQuery, useMutation, useQueryClient } from 'react-query';
 import { Modal, Icon, Form, Loading, Message } from '@QCFE/lego-ui';
 
+import DepartmentPicker from '@c/tree-picker';
 import { Button } from '@c/button';
 import { BatchDepParams } from '../person-info';
 import { UserInfo } from '@net/auth';
-import DepartmentPicker from '@c/tree-picker';
 import { departmentToTreeNode } from '@lib/utils';
-import { getERPTree } from '@net/corporate-directory';
+import { getERPTree, batchAdjustDep } from '@net/corporate-directory';
 
 interface IAdjustDepModalProps {
   userList: UserInfo[];
-  visible: boolean;
   closeModal(): void;
-  okModal: (val: BatchDepParams) => void;
 }
 
-export const AdjustDepModal = (props: IAdjustDepModalProps) => {
-  const { visible, userList, closeModal, okModal } = props;
+export default function AdjustDepModal({ userList, closeModal }: IAdjustDepModalProps) {
   const formRef = createRef<Form>();
+  const queryClient = useQueryClient();
 
-  const { data: depData, isLoading } = useQuery('getERPTree', getERPTree, {
+  const { data: depData, isLoading } = useQuery('GET_ERP_TREE', getERPTree, {
     refetchOnWindowFocus: false,
   });
 
-  const okModalHandle = () => {
+  const depMutation = useMutation(batchAdjustDep, {
+    onSuccess: (res) => {
+      if (res && res.code === 0) {
+        Message.success('操作成功');
+        closeModal();
+        queryClient.invalidateQueries('GET_USER_ADMIN_INFO');
+      } else {
+        Message.error('操作失败');
+        closeModal();
+      }
+    },
+  });
+
+  const handleSubmit = () => {
     if (!formRef.current?.validateForm()) {
       return;
     }
 
-    const bol = userList.find((user) => user.isDEPLeader === 1);
-    if (bol) {
+    const isHaveLeader = userList.find((user) => user.isDEPLeader === 1);
+    if (isHaveLeader) {
       Message.error('当前已选择员工列表中存在部门主管，不能参与调整部门！');
       return;
     }
@@ -42,34 +50,38 @@ export const AdjustDepModal = (props: IAdjustDepModalProps) => {
       oldDepID: '',
       newDepID: '',
     };
+
     const values = formRef.current?.getFieldsValue();
     if (!values?.pid) {
       Message.error('请选择部门');
       return;
     }
+
     params.newDepID = values.pid;
     params.oldDepID = (userList && userList[0] && userList[0].dep?.id) || '';
     userList.forEach((user) => params.usersID.push(user.id));
-    okModal(params);
+    depMutation.mutate(params);
   };
 
   return (
     <Modal
-      visible={visible}
+      visible
       title="调整部门"
       className="static-modal"
       onCancel={closeModal}
       footer={
         <div className="flex items-center">
-          <Button icon={<Icon name="close" className="mr-4" />} onClick={closeModal}>
+          <Button
+            icon={<Icon name="close" className="mr-4" />} onClick={closeModal}
+            className="mr-20"
+          >
             取消
           </Button>
-          <div className="w-20"></div>
           <Button
             className="bg-black-900"
             textClassName="text-white"
             icon={<Icon name="check" type="light" className="mr-4" />}
-            onClick={okModalHandle}
+            onClick={handleSubmit}
           >
             确定
           </Button>
@@ -108,4 +120,4 @@ export const AdjustDepModal = (props: IAdjustDepModalProps) => {
       </div>
     </Modal>
   );
-};
+}

@@ -1,21 +1,20 @@
 import React, { useState } from 'react';
 import { useMutation } from 'react-query';
 import classnames from 'classnames';
-import { Modal, CheckboxGroup, Checkbox, Table, Upload, Icon, Message } from '@QCFE/lego-ui';
+import { Modal, CheckboxGroup, Checkbox, Table, Upload, Message } from '@QCFE/lego-ui';
 
 import SvgIcon from '@c/icon';
 import { Button } from '@portal/components/button';
-import { getUserTemplate, importTempFile } from '@net/corporate-directory';
+import { getUserTemplate, importTempFile, resetUserPWD } from '@net/corporate-directory';
+import { FileUploadStatus } from '../enum';
 
 interface ExportFileModalProps {
-  visible: boolean;
   currDepId: string;
   closeModal(): void;
-  okModal(ids: string[], val: CheckedWay): void;
 }
 
 type UploadRes = {
-  status: 0 | 1 | 2 | 3; // 0 无状态 1成功 2部分成功 3失败
+  status: FileUploadStatus;
   successTotal: number;
   failTotal: number;
 };
@@ -33,25 +32,22 @@ type CheckedWay = {
   sendPhone: -1 | 1;
 };
 
-export const ExportFileModal = ({
-  visible,
-  currDepId,
-  closeModal,
-  okModal,
-}: ExportFileModalProps) => {
+export default function ExportFileModal({
+  currDepId, closeModal }: ExportFileModalProps) {
   const [fileList, setFileList] = useState<File[]>([]);
   const [checkWay, setCheckWay] = useState<CheckedWay>({
     sendPhone: -1,
     sendEmail: -1,
   });
   const [uploadStatus, setUploadStatus] = useState<UploadRes>({
-    status: 0,
+    status: FileUploadStatus.init,
     successTotal: 0,
     failTotal: 0,
   });
   const [failUsers, setFailUsers] = useState([]);
   const [successUsersId, setSuccessUsersId] = useState<string[]>([]);
   const [btnStatus, setBtnStatus] = useState<ButtonStatus>(0);
+
   const tempMutation = useMutation(getUserTemplate, {
     onSuccess: (url) => {
       if (url) {
@@ -67,13 +63,13 @@ export const ExportFileModal = ({
         const { data } = res;
         if (data) {
           const { failTotal, failUsers, successTotal, success } = data;
-          let status: 0 | 1 | 2 | 3 = 0;
+          let status: FileUploadStatus = FileUploadStatus.init;
           if (failTotal > 0 && successTotal === 0) {
-            status = 3;
+            status = FileUploadStatus.fail;
           } else if (failTotal === 0 && successTotal > 0) {
-            status = 1;
+            status = FileUploadStatus.success;
           } else if (failTotal > 0 && successTotal > 0) {
-            status = 2;
+            status = FileUploadStatus.depSuccess;
           }
           setBtnStatus(1);
           setFailUsers(failUsers);
@@ -87,6 +83,19 @@ export const ExportFileModal = ({
       } else {
         Message.error(res?.msg ||'操作失败！');
       }
+    },
+  });
+
+  const resetMutation = useMutation(resetUserPWD, {
+    onSuccess: (data) => {
+      if (data && data.code === 0) {
+        Message.success('操作成功！');
+      } else {
+        Message.error('操作失败！');
+      }
+      closeModal();
+      setFileList([]);
+      setBtnStatus(0);
     },
   });
 
@@ -132,18 +141,15 @@ export const ExportFileModal = ({
     return false;
   };
 
-  // 下载模板
   const downTemp = () => {
     tempMutation.mutate();
   };
 
-  // 删除文件
   const delFile = (Index: number) => {
     const newFileList = fileList.filter((item, index) => index !== Index);
     setFileList(newFileList);
   };
 
-  // import file
   const importFile = () => {
     if (fileList.length === 0) {
       Message.error('请上传文件');
@@ -160,7 +166,6 @@ export const ExportFileModal = ({
     exportCourseExcel(columns, failUsers, '失败人员列表.xlsx');
   };
 
-  // 导出课程Excel表格数据
   const exportCourseExcel = (headers: Column[], data: any[], fileName: string) => {
     const _headers = headers
       .map((item: Column, i: number) =>
@@ -227,7 +232,7 @@ export const ExportFileModal = ({
     setCheckWay(checkedWay);
   };
 
-  const okSendModal = () => {
+  const handleSubmit = () => {
     if (checkWay && checkWay.sendEmail === -1 && checkWay.sendPhone === -1) {
       Message.error('请选择发送方式');
       return;
@@ -237,9 +242,7 @@ export const ExportFileModal = ({
       successTotal: 0,
       failTotal: 0,
     });
-    okModal(successUsersId, checkWay);
-    setFileList([]);
-    setBtnStatus(0);
+    resetMutation.mutate({ userIDs: successUsersId, ...checkWay });
   };
 
   const closeBefore = () => {
@@ -256,22 +259,25 @@ export const ExportFileModal = ({
   return (
     <>
       <Modal
+        visible
         title="excel 批量导入成员"
-        visible={visible}
         className="static-modal"
         onCancel={closeBefore}
         footer={
-          uploadStatus.status !== 3 ? (
+          uploadStatus.status !== FileUploadStatus.fail ? (
             <div className="flex items-center">
-              <Button icon={<Icon name="close" className="mr-4" />} onClick={closeBefore}>
+              <Button
+                icon={<SvgIcon name="close" size={20} className="mr-8" />}
+                className="mr-20"
+                onClick={closeBefore}
+              >
                 取消
               </Button>
-              <div className="w-20"></div>
               {btnStatus === 0 ? (
                 <Button
                   className="bg-black-900"
                   textClassName="text-white"
-                  icon={<Icon name="check" type="light" className="mr-4" />}
+                  icon={<SvgIcon name="check" type='light' size={20} className="mr-8" />}
                   onClick={importFile}
                 >
                   确定导入
@@ -280,8 +286,8 @@ export const ExportFileModal = ({
                 <Button
                   className="bg-black-900"
                   textClassName="text-white"
-                  icon={<Icon name="check" type="light" className="mr-4" />}
-                  onClick={okSendModal}
+                  icon={<SvgIcon name="check" type='light' size={20} className="mr-8" />}
+                  onClick={handleSubmit}
                 >
                   确定
                 </Button>
@@ -291,7 +297,7 @@ export const ExportFileModal = ({
         }
       >
         <div className="w-full text-14">
-          {uploadStatus.status === 3 && (
+          {uploadStatus.status === FileUploadStatus.fail && (
             <div className="text-red-600 mb-24 font-semibold flex items-center">
               <SvgIcon
                 size={16}
@@ -302,7 +308,7 @@ export const ExportFileModal = ({
               <span>导入失败 {uploadStatus.failTotal} 条数据。</span>
             </div>
           )}
-          {uploadStatus.status === 1 && (
+          {uploadStatus.status === FileUploadStatus.success && (
             <div className="text-green-600 mb-24 font-semibold">
               <SvgIcon
                 size={16}
@@ -313,7 +319,7 @@ export const ExportFileModal = ({
               <span>导入成功 {uploadStatus.successTotal} 条数据。</span>
             </div>
           )}
-          {uploadStatus.status === 2 && (
+          {uploadStatus.status === FileUploadStatus.depSuccess && (
             <div className="text-yellow-600 mb-24 font-semibold">
               <SvgIcon
                 size={16}
@@ -327,7 +333,7 @@ export const ExportFileModal = ({
               </span>
             </div>
           )}
-          {uploadStatus.status === 0 && (
+          {uploadStatus.status === FileUploadStatus.init && (
             <div className="text-gray-600">
               <p className="py-8">上传单个 excel 文件</p>
               <div className="w-full">
@@ -358,15 +364,13 @@ export const ExportFileModal = ({
                         <div className="flex items-center">
                           <div className="w-16 h-16 bg-blue-600 icon-border-radius
                           flex items-center justify-center mr-8">
-                            <SvgIcon size={8} name="book" type="light" />
+                            <SvgIcon size={12} name="book" type="light" />
                           </div>
                           <span>{file.name}</span>
                         </div>
                         <SvgIcon
                           size={16}
                           name="restore_from_trash"
-                          type="coloured"
-                          color="#475569"
                           onClick={() => delFile(index)}
                         />
                       </div>
@@ -385,7 +389,8 @@ export const ExportFileModal = ({
               </ul>
             </div>
           )}
-          {[1, 2].includes(uploadStatus.status) && (
+          {[FileUploadStatus.success, FileUploadStatus.depSuccess].includes(uploadStatus.status) &&
+          (
             <div>
               <p className="text-gray-600 font-semibold mt-24 mb-16">接下来选择：</p>
               <p className="text-14 py-8">向已导入的员工发送随机密码</p>
@@ -395,7 +400,7 @@ export const ExportFileModal = ({
               </CheckboxGroup>
             </div>
           )}
-          {[2, 3].includes(uploadStatus.status) && (
+          {[FileUploadStatus.depSuccess, FileUploadStatus.fail].includes(uploadStatus.status) && (
             <div>
               <div className="mb-8 flex items-center">
                 <p className="text-gray-600 font-semibold">失败原因：</p>
@@ -417,4 +422,4 @@ export const ExportFileModal = ({
       </Modal>
     </>
   );
-};
+}

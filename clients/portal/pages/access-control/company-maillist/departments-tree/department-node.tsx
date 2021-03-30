@@ -9,24 +9,34 @@ import Authorized from '@clients/common/component/authorized';
 
 import EditDepartment from './edit-department';
 import { deleteDEP } from '@net/corporate-directory';
+import SvgIcon from '@portal/components/icon';
 
 const MENUS: MenuItem<string>[] = [
   {
     key: 'add',
     label: (
-      <div className="flex items-center"><Icon name="add" className="mr-4" />添加部门</div>
+      <div className="flex items-center">
+        <SvgIcon name="device_hub" size={16} className="mr-8" />
+        <span className="font-normal">添加部门</span>
+      </div>
     ),
   },
   {
     key: 'edit',
     label: (
-      <div className="flex items-center"><Icon name="pen" className="mr-4" />修改信息</div>
+      <div className="flex items-center">
+        <SvgIcon name="create" size={16} className="mr-8" />
+        <span className="font-normal">修改信息</span>
+      </div>
     ),
   },
   {
     key: 'delete',
     label: (
-      <div className="flex items-center"><Icon name="trash" className="mr-4" />删除部门</div>
+      <div className="flex items-center">
+        <SvgIcon name="restore_from_trash" size={16} className="mr-8" />
+        <span className="font-normal">删除</span>
+      </div>
     ),
   },
 ];

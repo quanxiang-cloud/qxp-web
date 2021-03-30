@@ -8,6 +8,7 @@ import { Loading } from '@c/loading2';
 
 import { createDepartment, editDepartment, getERPTree } from '@net/corporate-directory';
 import { departmentToTreeNode } from '@lib/utils';
+import SvgIcon from '@portal/components/icon';
 
 const { TextField } = Form;
 
@@ -114,14 +115,16 @@ export default function EditDepartment({ department, closeModal }: DepartmentMod
       onCancel={closeModal}
       footer={
         <div className="flex items-center">
-          <Button icon={<Icon name="close" className="mr-4" />} onClick={closeModal}>
+          <Button
+            icon={<SvgIcon name="close" size={20} className="mr-8" />}
+            className="mr-20"
+          >
             取消
           </Button>
-          <div className="w-20"></div>
           <Button
             className="bg-black-900"
             textClassName="text-white"
-            icon={<Icon name="check" className="mr-4" />}
+            icon={<SvgIcon name="check" type="light" size={20} className="mr-8" />}
             onClick={okModalHandle}
           >
             {submitBtnText}
