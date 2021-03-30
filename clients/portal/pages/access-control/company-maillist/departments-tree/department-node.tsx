@@ -48,7 +48,7 @@ function stopModalClickPropagate(e: React.MouseEvent) {
   e.stopPropagation();
 }
 
-function DepartmentNode({ node }: NodeRenderProps<IDepartment>): JSX.Element | null {
+function DepartmentNode({ node, store }: NodeRenderProps<IDepartment>): JSX.Element | null {
   const [showModal, toggleModal] = useState(false);
   const [departmentToEdit, setDepartment] = useState(node.data);
   const queryClient = useQueryClient();
@@ -75,7 +75,7 @@ function DepartmentNode({ node }: NodeRenderProps<IDepartment>): JSX.Element | n
         deleteDEP(node.id).then(({ code, msg }) => {
           if (!code) {
             Message.success({ content: '删除成功' });
-            queryClient.invalidateQueries('GET_ERP_TREE');
+            store.deleteNode(node);
             return;
           }
 
