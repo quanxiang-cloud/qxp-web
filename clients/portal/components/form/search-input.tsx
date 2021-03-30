@@ -44,7 +44,7 @@ export const SearchInput = React.memo(
             <Icon name="magnifier" className="absolute left-16 z-10" />
             <Input
               className={twCascade('search-input', {
-                'pr-8': appendix,
+                'pr-28': appendix,
               })}
               type="text"
               placeholder={placeholder}
@@ -57,7 +57,7 @@ export const SearchInput = React.memo(
             />
             {isVisible && typeof appendix === 'string' && (
               <Icon
-                className="absolute right-3 z-10"
+                className="absolute right-12 z-10"
                 name={appendix}
                 clickable
                 onClick={() => {

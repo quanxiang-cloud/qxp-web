@@ -30,20 +30,10 @@ export const SelectedList = observer(({ className, ownerStore }: ISelectedList) 
   const onRemove = (owner: IOwner) => {
     ownerStore.onRemove(owner);
     ownerStore.departmentTreeStore.toggleCheck(owner.ownerID);
-    // const nodeMap = ownerStore.departmentTreeStore.toggleCheck(owner.id, 'unchecked');
-    // if (!nodeMap) {
-    //   return;
-    // }
-    // Object.entries(nodeMap).forEach(([key, node]) => {
-    //   if (node.checkStatus === 'unchecked' || node.checkStatus === 'indeterminate') {
-    //     ownerStore.removeOwner(key);
-    //   }
-    // });
   };
 
   const onClear = () => {
     ownerStore.owners.forEach((owner) => {
-      // ownerStore.departmentTreeStore.toggleCheck(owner.id, 'unchecked');
       ownerStore.departmentTreeStore.toggleCheck(owner.ownerID);
     });
     ownerStore.onClear();
@@ -54,13 +44,15 @@ export const SelectedList = observer(({ className, ownerStore }: ISelectedList) 
       <Tag
         key={ownerID}
         closable
-        className={twCascade('mr-8 mb-8 tag-border-radius', {
+        className={twCascade('mr-8 mb-8 tag-border-radius relative bind-role-selector-tag', {
           'bg-blue-100': others.type === 1,
           'bg-amber-50': others.type === 2,
         })}
         style={{
           backgroundColor: others.type === 1 ? 'var(--blue-100)' : '#FFFBEB',
           transition: 'all .1s linear',
+          lineHeight: '24px',
+          maxWidth: '356px',
         }}
         onClose={() =>
           onRemove({
@@ -71,20 +63,22 @@ export const SelectedList = observer(({ className, ownerStore }: ISelectedList) 
           })
         }
       >
-        {ownerName && <span className={twCascade('mr-2', {
-          'text-blue-600': others.type === 1,
-          'text-yellow-600': others.type === 2,
-        })}>{ownerName}</span>}
-        {departmentName && (
-          <span className={twCascade('text-gray-400 mr-1', {
+        <div className="truncate inline-block pr-16">
+          {ownerName && <span className={twCascade('mr-2', {
+            'text-blue-600': others.type === 1,
             'text-yellow-600': others.type === 2,
-          })}>{`${
-              ownerName ? `(${departmentName})` : departmentName
-            }`}</span>
-        )}
-        {!ownerName && !departmentName && (
-          <span className="text-blue-600 mr-2">{ownerID}</span>
-        )}
+          })}>{ownerName}</span>}
+          {departmentName && (
+            <span className={twCascade('text-gray-400 mr-1', {
+              'text-yellow-600': others.type === 2,
+            })}>{`${
+                ownerName ? `(${departmentName})` : departmentName
+              }`}</span>
+          )}
+          {!ownerName && !departmentName && (
+            <span className="text-blue-600 mr-2">{ownerID}</span>
+          )}
+        </div>
       </Tag>
     );
   };
@@ -107,8 +101,8 @@ export const SelectedList = observer(({ className, ownerStore }: ISelectedList) 
         }
       />
       <div
-        className="flex flex-row flex-wrap overflow-scroll"
-        style={{ height: 'calc(100% - 42px)' }}
+        className="flex flex-row flex-wrap content-start overflow-scroll"
+        style={{ height: 'calc(100% - 42px)', width: '360px' }}
       >
         {users.map(tagRender)}
         {departments.map(tagRender)}

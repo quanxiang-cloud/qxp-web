@@ -6,7 +6,7 @@ import { Tab } from '@c/tab2';
 import TextHeader from '@c/text-header';
 import { SearchInput } from '@c/form/search-input';
 import { Loading } from '@c/loading2';
-import { getDepartmentStructure, IOwner, getRoleAssociations } from '@net/role-management';
+import { getDepartmentStructure, IOwner } from '@net/role-management';
 
 import { EmployeeTable } from './employee-table';
 import { SelectedList } from './selected-list';
