@@ -80,7 +80,6 @@ const imgBgColors: string[] = ['#6366F1', '#F59E0B', '#10B981', '#F97316',
   '#A855F7', '#14B8A6', '#EF4444', '#06B6D4'];
 
 export const getImgColor = (text: string, colors = imgBgColors) => {
-  let _text = text;
   const reg = /^[a-zA-Z]*$/;
   let _text = text;
   if (reg.test(text)) {
