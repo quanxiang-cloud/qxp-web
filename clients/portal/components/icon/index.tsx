@@ -7,7 +7,7 @@ interface Props extends React.SVGProps<SVGSVGElement> {
   name: string;
   type?: 'dark' | 'coloured' | 'light';
   size?: number;
-  style?: Style;
+  style?: {};
   color?: string;
   className?: any;
   disabled?: boolean;
@@ -15,35 +15,23 @@ interface Props extends React.SVGProps<SVGSVGElement> {
   clickable?: boolean;
 }
 
-interface Style {
-  width?: string;
-  height?: string;
-  color?: string;
-  fill?: string;
-}
-
-function SvgIcon(
-  {
-    name,
-    size = 24,
-    type = 'dark',
-    changeable = false,
-    disabled = false,
-    clickable = false,
-    className,
-    color,
-    style,
-    ...props
-  }: Props,
-  _ref: React.Ref<SVGSVGElement>
-) {
-  const styleCSS: Style = {
+function SvgIcon({
+  name,
+  size = 24,
+  type = 'dark',
+  changeable = false,
+  disabled = false,
+  clickable = false,
+  className,
+  color,
+  style,
+  ...props
+}: Props) {
+  const _style: React.CSSProperties = {
     ...style,
     width: size ? `${size - 1}px` : undefined,
     height: size ? `${size - 1}px` : undefined,
   };
-
-  const _style: React.CSSProperties = styleCSS;
 
   return (
     <svg
