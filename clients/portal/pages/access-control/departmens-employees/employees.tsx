@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useQuery, useMutation } from 'react-query';
+import { useQuery } from 'react-query';
 import { Table, Icon, Message } from '@QCFE/lego-ui';
 
 import IconBtn from '@c/icon-btn';
@@ -127,17 +127,13 @@ export type BatchDepParams = {
 };
 
 interface Props {
-  departmentId: string;
-  departmentName: string;
+  department: Department;
   keyword: string;
-  handleClear(): void;
 }
 
-export default function PersonInfo({
-  departmentId,
-  departmentName,
+export default function Employees({
+  department,
   keyword,
-  handleClear,
 }: Props) {
   const [visibleFile, setVisibleFile] = useState<boolean>(false);
   const [resetModal, setResetModal] = useState<boolean>(false);
@@ -173,8 +169,8 @@ export default function PersonInfo({
   }, [keyword]);
 
   const { data: personList, isLoading, refetch } = useQuery(
-    ['GET_USER_ADMIN_INFO', pageParams, departmentId],
-    () => getUserAdminInfo(departmentId, pageParams),
+    ['GET_USER_ADMIN_INFO', pageParams, department.id],
+    () => getUserAdminInfo(department.id, pageParams),
     {
       refetchOnWindowFocus: false,
     }
@@ -187,8 +183,7 @@ export default function PersonInfo({
       userName: '',
     });
     setSelectedRows([]);
-    handleClear();
-  }, [departmentId]);
+  }, [department.id]);
 
   const setUpSuper = (params: UserInfo) => {
     setCurrUser(params);
@@ -394,7 +389,7 @@ export default function PersonInfo({
       <LeaderHandleModal user={currUser} closeModal={() => setVisibleLeader(false)} />}
       { visibleAdjust && <AdjustDepModal userList={selectedUsers} closeModal={handleAdjustModal} />}
       { visibleStaff && <StaffModal user={currUser} closeModal={closeStaffModal} />}
-      { visibleFile && <ExportFileModal currDepId={departmentId} closeModal={closeFileModal} />}
+      { visibleFile && <ExportFileModal currDepId={department.id} closeModal={closeFileModal} />}
       {
         handleModal && <AccountHandleModal
           status={modalStatus}
@@ -412,7 +407,7 @@ export default function PersonInfo({
 
       <div className="h-full flex flex-grow flex-col overflow-hidden">
         <DepartmentStaff
-          department={departmentName}
+          department={department.departmentName}
           count={personList?.total || 0}
           unit="人"
         />
@@ -462,7 +457,7 @@ export default function PersonInfo({
             </Authorized>
           )}
         </div>
-        <div className="flex fle-grow my-16 flex-col px-20 overflow-auto">
+        <div className="h-full flex flex-grow my-16 flex-col px-20 overflow-auto">
           <div className="qxp-table flex w-full border-b">
             {
               personList?.data && <Table

@@ -33,7 +33,7 @@ export const OwnerSelector = observer(({ defaultEmployees = [], refs }: IOwnerSe
     },
   );
 
-  const onDepartmentTreeChange = (prevNodes: IDepartment[], currentNodes: IDepartment[]) => {
+  const onDepartmentTreeChange = (prevNodes: Department[], currentNodes: Department[]) => {
     setStore((store) => {
       if (!store) {
         return store;

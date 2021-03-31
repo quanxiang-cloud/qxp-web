@@ -1,7 +1,7 @@
 import { httpPost, httpFile } from '@lib/utils';
 
-import { FormValues } from '../pages/access-control/company-maillist/modal/staff-modal';
-import { UserStatus } from '../pages/access-control/company-maillist/enum';
+import { FormValues } from '../pages/access-control/departmens-employees/modal/staff-modal';
+import { UserStatus } from '../pages/access-control/departmens-employees/enum';
 
 export interface ITreeNode {
   id: string;
@@ -16,7 +16,7 @@ export interface ITreeNode {
 // ------------------ 部门 ---------------
 // 获取部门树
 export const getERPTree = () => {
-  return httpPost<IDepartment>('/api/v1/org/DEPTree', null, {
+  return httpPost<Department>('/api/v1/org/DEPTree', null, {
     'Content-Type': 'application/x-www-form-urlencoded',
   }).then(({ data }) => data);
 };

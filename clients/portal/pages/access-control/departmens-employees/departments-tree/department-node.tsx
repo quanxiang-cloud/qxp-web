@@ -48,7 +48,7 @@ function stopModalClickPropagate(e: React.MouseEvent) {
   e.stopPropagation();
 }
 
-function DepartmentNode({ node, store }: NodeRenderProps<IDepartment>): JSX.Element | null {
+function DepartmentNode({ node, store }: NodeRenderProps<Department>): JSX.Element | null {
   const [showModal, toggleModal] = useState(false);
   const [departmentToEdit, setDepartment] = useState(node.data);
   const queryClient = useQueryClient();

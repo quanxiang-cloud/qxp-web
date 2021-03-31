@@ -252,7 +252,7 @@ export const loadImage = (src: string) => {
   });
 };
 
-export function departmentToTreeNode(department: IDepartment): TreeNode<IDepartment> {
+export function departmentToTreeNode(department: Department): TreeNode<Department> {
   const children = (department.child || []).map((dep) => departmentToTreeNode(dep));
 
   return {

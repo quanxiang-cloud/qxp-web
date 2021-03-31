@@ -1,7 +1,7 @@
 import { createGlobalState } from '@lib/create-global-state';
 import { IRole } from '@portal/api/auth';
 
-export interface IDepartment {
+export interface Department {
   id: string;
   departmentName: string;
   departmentLeaderId: string;
@@ -10,7 +10,7 @@ export interface IDepartment {
   pid: string;
   superID: string;
   grade: number;
-  child: IDepartment | null;
+  child: Department | null;
 }
 
 export interface IUsePortalGlobalValue {
@@ -21,7 +21,7 @@ export interface IUsePortalGlobalValue {
     phone?: string;
     email?: string;
     userIconURL?: string;
-    dep?: IDepartment;
+    dep?: Department;
     depIds: string[];
     authority: string[];
     roles: IRole[];

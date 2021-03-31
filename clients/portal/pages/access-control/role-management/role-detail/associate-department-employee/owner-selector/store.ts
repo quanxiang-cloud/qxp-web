@@ -7,7 +7,7 @@ import DepartmentTreeStore from './department-select-tree/store';
 
 class OwnerStore {
   @observable
-  employeeTreeStore: TreeStore<IDepartment>
+  employeeTreeStore: TreeStore<Department>
 
   @observable
   departmentTreeStore: DepartmentTreeStore
@@ -28,7 +28,7 @@ class OwnerStore {
   departmentKeyword = '';
 
   constructor(
-    employeeTreeStore: TreeStore<IDepartment>,
+    employeeTreeStore: TreeStore<Department>,
     employeeStore: EmployeeStore,
     departmentTreeStore: DepartmentTreeStore,
     owners: IOwner[]

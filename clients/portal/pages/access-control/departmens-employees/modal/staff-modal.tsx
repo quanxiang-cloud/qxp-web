@@ -206,7 +206,7 @@ export default function StaffModal(
           showDepTree && (
             <TreePicker
               label="部门"
-              treeData={departmentToTreeNode(departmentTree as IDepartment)}
+              treeData={departmentToTreeNode(departmentTree as Department)}
               labelKey="departmentName"
               name="depID"
               defaultValue={user?.dep?.id}

@@ -8,16 +8,16 @@ import { last } from '@lib/utils';
 
 import DepartmentTreeStore from './store';
 
-export const DepartmentNode = observer(({ node, store }: NodeRenderProps<IDepartment>) => {
+export const DepartmentNode = observer(({ node, store }: NodeRenderProps<Department>) => {
   const st = store as DepartmentTreeStore;
   const status = st.nodeMap[node.id]?.checkStatus;
   const isChecked = status === 'checked';
   const isIndeterminate = status === 'indeterminate';
 
-  const getSelectedData = (departments: IDepartment[][]) => {
-    const arr: IDepartment[] = [];
+  const getSelectedData = (departments: Department[][]) => {
+    const arr: Department[] = [];
     departments.forEach((dps) => {
-      arr.push(last<IDepartment>(dps));
+      arr.push(last<Department>(dps));
     });
     return arr;
   };

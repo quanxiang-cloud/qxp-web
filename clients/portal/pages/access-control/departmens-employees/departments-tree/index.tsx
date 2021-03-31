@@ -9,7 +9,7 @@ import DepartmentNode from './department-node';
 import { getERPTree } from '@net/corporate-directory';
 
 interface Props {
-  onSelect?: (department: IDepartment) => void;
+  onSelect?: (department: Department) => void;
 }
 
 function DepartmentsTree({ onSelect }: Props): JSX.Element {

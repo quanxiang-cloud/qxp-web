@@ -8,7 +8,7 @@ import { UserInfo } from '@net/auth';
 import { departmentToTreeNode } from '@lib/utils';
 import { getERPTree, batchAdjustDep } from '@net/corporate-directory';
 
-import { BatchDepParams } from '../person-info';
+import { BatchDepParams } from '../employees';
 
 interface IAdjustDepModalProps {
   userList: UserInfo[];
@@ -108,7 +108,7 @@ export default function AdjustDepModal({ userList, closeModal }: IAdjustDepModal
             <Loading />
           ) : (
             <DepartmentPicker
-              treeData={departmentToTreeNode(depData as IDepartment)}
+              treeData={departmentToTreeNode(depData as Department)}
               labelKey="departmentName"
               name="pid"
               required

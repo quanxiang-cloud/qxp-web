@@ -1,7 +1,7 @@
 import React from 'react';
 
 import ItemWithTitleDesc from './item-with-title-desc';
-import { getImgColor } from '@p/access-control/company-maillist/excel';
+import { getImgColor } from '@portal/pages/access-control/departmens-employees/excel';
 
 export interface IAvatar {
   username?: string;
