@@ -18,7 +18,7 @@ export default function ListMenu() {
 
   if (userInfo.authority.includes('accessControl/mailList/read')) {
     menuData.push({
-      id: 'corporate-directory',
+      id: '',
       icon: '/dist/images/user.svg',
       name: '企业通讯录',
     });
@@ -69,21 +69,15 @@ export default function ListMenu() {
                   display: 'block',
                 },
               })}
-              // When /access and /access/corporate-directory are matched, NavLink is activated
               isActive={(match, location) => {
                 const { pathname } = location;
-                if (item.id === 'corporate-directory') {
-                  if (match || pathname === '/access-control' || pathname === '/access-control/') {
-                    return true;
-                  } else {
-                    return false;
-                  }
+                console.log(location);
+                console.log(match);
+                if ((!item.id && pathname === '/access-control') ||
+                pathname === '/access-control/' + item.id) {
+                  return true;
                 } else {
-                  if (match) {
-                    return true;
-                  } else {
-                    return false;
-                  }
+                  return false;
                 }
               }}
             >

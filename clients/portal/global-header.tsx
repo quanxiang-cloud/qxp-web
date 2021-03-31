@@ -58,7 +58,7 @@ export default function GlobalHeader() {
   const isAppManagement = location.pathname === '/app-management';
   const isAccess = [
     '/access-control',
-    '/access-control/corporate-directory',
+    '/access-control/',
     '/access-control/role-management',
   ].includes(location.pathname);
   const isSystemControl = location.pathname === '/system';

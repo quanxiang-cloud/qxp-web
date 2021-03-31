@@ -46,8 +46,8 @@ export default function Index() {
       <div className="h-full flex-grow bg-white rounded-12 overflow-hidden">
         <Switch>
           <Route exact path={`${path}`} component={DeparmentsEmployees} />
-          <Route path={`${path}/corporate-directory`} component={DeparmentsEmployees} />
-          <Route path={`${path}/role-management`} component={RoleManagement} />
+          <Route exact path={`${path}/role-management`} component={RoleManagement} />
+          <Route component={Error} />
         </Switch>
       </div>
     </div>
