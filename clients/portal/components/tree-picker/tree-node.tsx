@@ -9,8 +9,8 @@ export default observer(<T extends unknown>({ node }: NodeRenderProps<T>) => {
     <div
       className={twCascade('transition-all py-8 w-full flex items-center justify-between')}
     >
-      <div className="flex items-center">
-        <div className="ml-2">
+      <div className="flex items-center w-full">
+        <div className="ml-2 truncate w-full px-5">
           {node.name}
         </div>
       </div>

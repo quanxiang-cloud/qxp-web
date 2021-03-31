@@ -21,19 +21,21 @@ export type Props<T> = {
   closeOnSelect?: boolean;
   required?: boolean;
   help?: string;
+  toggleable?: boolean;
 }
 
 function TreePicker<T extends { id: string; }>({
   treeData,
   onChange,
   label,
-  isOpen = false,
+  isOpen = true,
   labelKey = 'name',
   name = 'treePicker',
   defaultValue = '',
   closeOnSelect,
   required,
   help = '请选择项目',
+  toggleable = true,
 }: Props<T>): JSX.Element {
   const [path, setPath] = useState<T[]>([]);
   const [open, setOpen] = useState<boolean>(isOpen);
@@ -41,6 +43,10 @@ function TreePicker<T extends { id: string; }>({
   const [value, setValue] = useState<string>(defaultValue);
   const isFirstLoadRef = useRef<boolean>(true);
   const domRef = useRef<any>(null);
+
+  function toggle() {
+    toggleable && setOpen((o) => !o);
+  }
 
   useClickAway(domRef, () => setOpen(false));
 
@@ -89,7 +95,7 @@ function TreePicker<T extends { id: string; }>({
       <div
         onClick={(e) => {
           e.stopPropagation();
-          setOpen((o) => !o);
+          toggle();
         }}
         className="w-full cursor-pointer"
         title={text}
@@ -104,21 +110,23 @@ function TreePicker<T extends { id: string; }>({
               schemas={schemas}
             />
             <Form.TextField name={name} value={value} className="hidden h-0" />
-            <Icon
-              name="chevron-down"
-              size="20"
-              className={
-                twCascade(
-                  'transition-all absolute cursor-pointer top-16 transform',
-                  {
-                    '-rotate-180': open,
-                  }
-                )
-              }
-              style={{
-                right: '0.6rem',
-              }}
-            />
+            {toggleable && (
+              <Icon
+                name="chevron-down"
+                size="20"
+                className={
+                  twCascade(
+                    'transition-all absolute cursor-pointer top-16 transform',
+                    {
+                      '-rotate-180': open,
+                    }
+                  )
+                }
+                style={{
+                  right: '0.6rem',
+                }}
+              />
+            )}
           </Control>
         </Field>
       </div>
@@ -129,7 +137,7 @@ function TreePicker<T extends { id: string; }>({
         className={
           twCascade('transition-all border border-blue-1000 border-t-0 mb-10 overflow-scroll', {
             'h-0': !open,
-            'h-96': open,
+            'h-280': open,
             invisible: !open,
             visible: open,
           })
@@ -144,7 +152,7 @@ function TreePicker<T extends { id: string; }>({
           setValue(node.id);
           onChange && onChange(node.id, path);
           if (closeOnSelect) {
-            setOpen((o) => !o);
+            toggle();
           }
         }}
       />

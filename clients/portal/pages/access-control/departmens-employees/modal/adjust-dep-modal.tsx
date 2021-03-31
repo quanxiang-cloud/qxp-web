@@ -115,6 +115,7 @@ export default function AdjustDepModal({ userList, closeModal }: IAdjustDepModal
               label="选择要调整的部门"
               closeOnSelect
               help="请选择部门"
+              toggleable={false}
             />
           )}
         </Form>

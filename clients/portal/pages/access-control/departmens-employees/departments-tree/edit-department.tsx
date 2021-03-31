@@ -165,6 +165,7 @@ export default function EditDepartment({ department, closeModal }: Props) {
             closeOnSelect
             required
             help="请选择部门"
+            toggleable={false}
           />
         )}
       </Form>
