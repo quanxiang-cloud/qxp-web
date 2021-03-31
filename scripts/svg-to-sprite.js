@@ -38,7 +38,7 @@ module.exports = function () {
       );
       const iconID = (n) => iconNames[n];
       svgSpreact(svgStrArr, { tidy: true, processId: iconID, svgoConfig }).then(
-        ({ defs, refs }) => {
+        ({ defs }) => {
           // replace #475569 by currentColor in order to be styled by css
           // todo define #475569 as constant?
           const svgStrs = defs
@@ -48,6 +48,7 @@ module.exports = function () {
             path.dirname(path.join(__dirname, '../dist/images/sprite.svg'))
           );
           fs.writeFileSync(
+            // todo minify
             path.join(__dirname, '../dist/images/sprite.svg'),
             svgStrs
           );

@@ -19,8 +19,11 @@ interface ResetPasswordModalProps {
   clearSelectRows(): void;
 }
 
-export default function ResetPasswordModal(
-  { userIds, closeModal, clearSelectRows } : ResetPasswordModalProps) {
+export default function ResetPasswordModal({
+  userIds,
+  closeModal,
+  clearSelectRows,
+}: ResetPasswordModalProps) {
   const formRef = createRef<Form>();
 
   const resetMutation = useMutation(resetUserPWD, {
@@ -39,7 +42,9 @@ export default function ResetPasswordModal(
     if (!formRef.current?.validateForm()) {
       return;
     }
-    const values: { sendPasswordBy: string[] } = formRef.current?.getFieldsValue();
+    const values: {
+      sendPasswordBy: string[];
+    } = formRef.current?.getFieldsValue();
     const { sendPasswordBy } = values;
     if (sendPasswordBy.length === 0) {
       Message.error('请选择发送方式');
@@ -74,7 +79,9 @@ export default function ResetPasswordModal(
           <Button
             className="bg-black-900"
             textClassName="text-white"
-            icon={<SvgIcon name="check" type="light" size={20} className="mr-8" />}
+            icon={
+              <SvgIcon name="check" type="light" size={20} className="mr-8" />
+            }
             onClick={handleReset}
           >
             发送重置密码
@@ -84,8 +91,16 @@ export default function ResetPasswordModal(
     >
       <div className="w-full flex flex-col">
         <div className="w-full box-border-radius px-18 py-12 mb-20 bg-blue-100 flex items-center">
-          <SvgIcon name="info" size={24} type="coloured" color="#375FF3" className="mr-10" />
-          <span className="text-blue-600">系统将自动生成一个随机密码发送给员工。</span>
+          <SvgIcon
+            name="info"
+            size={24}
+            type="primary"
+            style={{ color: '#375FF3' }}
+            className="mr-10"
+          />
+          <span className="text-blue-600">
+            系统将自动生成一个随机密码发送给员工。
+          </span>
         </div>
         <Form layout="vertical" ref={formRef}>
           <CheckboxGroupField

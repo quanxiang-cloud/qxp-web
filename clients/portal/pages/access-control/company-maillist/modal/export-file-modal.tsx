@@ -1,11 +1,22 @@
 import React, { useState } from 'react';
 import { useMutation } from 'react-query';
 import classnames from 'classnames';
-import { Modal, CheckboxGroup, Checkbox, Table, Upload, Message } from '@QCFE/lego-ui';
+import {
+  Modal,
+  CheckboxGroup,
+  Checkbox,
+  Table,
+  Upload,
+  Message,
+} from '@QCFE/lego-ui';
 
 import SvgIcon from '@c/icon';
 import Button from '@c/button';
-import { getUserTemplate, importTempFile, resetUserPWD } from '@net/corporate-directory';
+import {
+  getUserTemplate,
+  importTempFile,
+  resetUserPWD,
+} from '@net/corporate-directory';
 
 import { FileUploadStatus } from '../enum';
 
@@ -34,7 +45,9 @@ type CheckedWay = {
 };
 
 export default function ExportFileModal({
-  currDepId, closeModal }: ExportFileModalProps) {
+  currDepId,
+  closeModal,
+}: ExportFileModalProps) {
   const [fileList, setFileList] = useState<File[]>([]);
   const [checkWay, setCheckWay] = useState<CheckedWay>({
     sendPhone: -1,
@@ -82,7 +95,7 @@ export default function ExportFileModal({
           });
         }
       } else {
-        Message.error(res?.msg ||'操作失败！');
+        Message.error(res?.msg || '操作失败！');
       }
     },
   });
@@ -167,7 +180,11 @@ export default function ExportFileModal({
     exportCourseExcel(columns, failUsers, '失败人员列表.xlsx');
   };
 
-  const exportCourseExcel = (headers: Column[], data: any[], fileName: string) => {
+  const exportCourseExcel = (
+    headers: Column[],
+    data: any[],
+    fileName: string
+  ) => {
     const _headers = headers
       .map((item: Column, i: number) =>
         Object.assign(
@@ -176,15 +193,15 @@ export default function ExportFileModal({
             key: item.key,
             title: item.title,
             position: String.fromCharCode(65 + i) + 1,
-          },
-        ),
+          }
+        )
       )
       .reduce(
         (prev: any, next: any) =>
           Object.assign({}, prev, {
             [next.position]: { key: next.key, v: next.title },
           }),
-        {},
+        {}
       );
 
     const _data = data
@@ -195,14 +212,15 @@ export default function ExportFileModal({
             {
               content: item[key.key],
               position: String.fromCharCode(65 + j) + (i + 2),
-            },
-          ),
-        ),
+            }
+          )
+        )
       )
       .reduce((prev: any, next: any) => prev.concat(next))
       .reduce(
-        (prev: any, next: any) => Object.assign({}, prev, { [next.position]: { v: next.content } }),
-        {},
+        (prev: any, next: any) =>
+          Object.assign({}, prev, { [next.position]: { v: next.content } }),
+        {}
       );
     const output = Object.assign({}, _headers, _data);
     const outputPos = Object.keys(output);
@@ -278,7 +296,14 @@ export default function ExportFileModal({
                 <Button
                   className="bg-black-900"
                   textClassName="text-white"
-                  icon={<SvgIcon name="check" type='light' size={20} className="mr-8" />}
+                  icon={
+                    <SvgIcon
+                      name="check"
+                      type="light"
+                      size={20}
+                      className="mr-8"
+                    />
+                  }
                   onClick={importFile}
                 >
                   确定导入
@@ -287,7 +312,14 @@ export default function ExportFileModal({
                 <Button
                   className="bg-black-900"
                   textClassName="text-white"
-                  icon={<SvgIcon name="check" type='light' size={20} className="mr-8" />}
+                  icon={
+                    <SvgIcon
+                      name="check"
+                      type="light"
+                      size={20}
+                      className="mr-8"
+                    />
+                  }
                   onClick={handleSubmit}
                 >
                   确定
@@ -304,7 +336,7 @@ export default function ExportFileModal({
                 size={16}
                 name="sms_failed"
                 className="mr-8"
-                color='#ca2621'
+                style={{ color: '#ca2621' }}
               />
               <span>导入失败 {uploadStatus.failTotal} 条数据。</span>
             </div>
@@ -315,7 +347,7 @@ export default function ExportFileModal({
                 size={16}
                 name="playlist_add_check"
                 className="mr-8"
-                color='#2191ca'
+                style={{ color: '#2191ca' }}
               />
               <span>导入成功 {uploadStatus.successTotal} 条数据。</span>
             </div>
@@ -326,11 +358,11 @@ export default function ExportFileModal({
                 size={16}
                 name="priority_high"
                 className="mr-8"
-                color='#d0a406'
+                style={{ color: '#d0a406' }}
               />
               <span>
-                数据导入完成，导入成功 {uploadStatus.successTotal} 数据，导入失败{' '}
-                {uploadStatus.failTotal} 数据。
+                数据导入完成，导入成功 {uploadStatus.successTotal}{' '}
+                数据，导入失败 {uploadStatus.failTotal} 数据。
               </span>
             </div>
           )}
@@ -347,10 +379,15 @@ export default function ExportFileModal({
                   <div
                     className={classnames(
                       'w-full h-86 border rounded-8 border-dashed border-gray-700',
-                      'flex flex-col items-center justify-center hover:border-red-600',
+                      'flex flex-col items-center justify-center hover:border-red-600'
                     )}
                   >
-                    <SvgIcon size={16} name="cloud_upload" color="#64748B" type="coloured" />
+                    <SvgIcon
+                      size={16}
+                      name="cloud_upload"
+                      style={{ color: '#64748B' }}
+                      type="primary"
+                    />
                     <p>点击或拖拽单个文件到至该区域。支持xls、xlsx格式</p>
                   </div>
                 </Upload>
@@ -363,8 +400,10 @@ export default function ExportFileModal({
                         items-center justify-between bg-blue-100"
                       >
                         <div className="flex items-center">
-                          <div className="w-16 h-16 bg-blue-600 icon-border-radius
-                          flex items-center justify-center mr-8">
+                          <div
+                            className="w-16 h-16 bg-blue-600 icon-border-radius
+                          flex items-center justify-center mr-8"
+                          >
                             <SvgIcon size={12} name="book" type="light" />
                           </div>
                           <span>{file.name}</span>
@@ -382,7 +421,10 @@ export default function ExportFileModal({
               <ul className="text-gray-600 mt-24">
                 <li>
                   1. 点击下载
-                  <span onClick={downTemp} className="text-blue-600 cursor-pointer">
+                  <span
+                    onClick={downTemp}
+                    className="text-blue-600 cursor-pointer"
+                  >
                     企业通讯录导入模版
                   </span>
                 </li>
@@ -390,22 +432,33 @@ export default function ExportFileModal({
               </ul>
             </div>
           )}
-          {[FileUploadStatus.success, FileUploadStatus.depSuccess].includes(uploadStatus.status) &&
-          (
+          {[FileUploadStatus.success, FileUploadStatus.depSuccess].includes(
+            uploadStatus.status
+          ) && (
             <div>
-              <p className="text-gray-600 font-semibold mt-24 mb-16">接下来选择：</p>
+              <p className="text-gray-600 font-semibold mt-24 mb-16">
+                接下来选择：
+              </p>
               <p className="text-14 py-8">向已导入的员工发送随机密码</p>
-              <CheckboxGroup name="states" onChange={(value: string[]) => changeCheckbox(value)}>
+              <CheckboxGroup
+                name="states"
+                onChange={(value: string[]) => changeCheckbox(value)}
+              >
                 <Checkbox value="email">通过邮箱</Checkbox>
                 <Checkbox value="phone">通过短信</Checkbox>
               </CheckboxGroup>
             </div>
           )}
-          {[FileUploadStatus.depSuccess, FileUploadStatus.fail].includes(uploadStatus.status) && (
+          {[FileUploadStatus.depSuccess, FileUploadStatus.fail].includes(
+            uploadStatus.status
+          ) && (
             <div>
               <div className="mb-8 flex items-center">
                 <p className="text-gray-600 font-semibold">失败原因：</p>
-                <span onClick={downFailData} className="text-blue-600 cursor-pointer">
+                <span
+                  onClick={downFailData}
+                  className="text-blue-600 cursor-pointer"
+                >
                   下载失败列表
                 </span>
               </div>
