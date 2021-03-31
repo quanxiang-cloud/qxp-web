@@ -1,6 +1,6 @@
 import React, { createRef, useState } from 'react';
 import { useQuery, useQueryClient } from 'react-query';
-import { Modal, Form, Icon, Message } from '@QCFE/lego-ui';
+import { Modal, Form, Message } from '@QCFE/lego-ui';
 
 import Button from '@c/button';
 import DepartmentPicker from '@c/tree-picker';

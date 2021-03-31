@@ -4,7 +4,7 @@ import { useQuery } from 'react-query';
 import EmptyData from '@c/empty-data';
 import More from '@c/more';
 import { PAGINATION } from '@const/table';
-import Pagination from '@c/pagination2';
+import Pagination from '@portal/components/pagination';
 import { IPagination } from '@t/interface/api';
 import { getRoleAssociations } from '@net/role-management';
 import Loading from '@portal/components/loading';

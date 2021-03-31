@@ -1,41 +1,65 @@
-import React from 'react';
+import React, { MouseEvent, MouseEventHandler, forwardRef, Ref } from 'react';
 import { twCascade } from '@mariusmarais/tailwind-cascade';
-import { Loading } from '@QCFE/lego-ui';
+import { Loading, Icon } from '@QCFE/lego-ui';
 
-interface IButton {
-  children: React.ReactNode;
-  textClassName?: string;
-  className?: string;
+export type ButtonType = 'primary' | 'secondary' | 'disabled';
+
+interface Props {
+  type?: ButtonType;
   icon?: JSX.Element;
-  onClick?: () => void;
   loading?: boolean;
+  children: React.ReactNode;
+  className?: string;
+  textClassName?: string;
+  onClick?: MouseEventHandler<HTMLElement>;
+  htmlType?: 'submit' | 'reset' | 'button';
 }
 
-export default function Button(
-  { children, icon, className, textClassName, onClick, loading }: IButton) {
+type CompoundedComponent = React.ForwardRefExoticComponent<Props & React.RefAttributes<HTMLElement>>
+
+function Button({
+  type, children, icon, className, textClassName, onClick, loading, htmlType = 'button', ...rest
+}: Props, ref?: Ref<HTMLButtonElement>) {
+  function handleClick(e: MouseEvent<HTMLButtonElement>) {
+    if (loading) {
+      return;
+    }
+    onClick && onClick(e);
+  }
+
   return (
     <button
-      onClick={onClick}
+      {...rest}
+      ref={ref}
+      type={htmlType}
+      onClick={handleClick}
       className={twCascade(
         'h-32 text-center leading-25 inline-block border border-gray-700',
-        'px-16 rounded-l-8 rounded-tr-2 rounded-br-8 cursor-pointer',
+        'px-16 rounded-l-8 rounded-tr-2 rounded-br-8 cursor-pointer btn',
         className,
         {
           'opacity-50': loading,
           'cursor-not-allowed': loading,
           'pointer-events-none': loading,
+          'btn-loading': loading,
+          [`btn-${type}`]: type,
         }
       )}
     >
-      <div className="flex items-center justify-center">
+      <span className="flex items-center justify-center">
         {loading && (
           <Loading size="20" />
         )}
-        {!loading && (
-          <>{ icon }</>
+        {!loading && icon && (
+          <>{icon}</>
         )}
-        <div className={twCascade('text-14', textClassName)}>{children}</div>
-      </div>
+        {!loading && typeof icon === 'string' && (
+          <Icon name={icon} type={type === 'primary' ? 'light' : 'dark'} />
+        )}
+        <span className={twCascade('text-14', textClassName)}>{children}</span>
+      </span>
     </button>
   );
 }
+
+export default forwardRef<HTMLButtonElement, Props>(Button) as CompoundedComponent;

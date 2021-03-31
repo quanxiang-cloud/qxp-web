@@ -4,7 +4,7 @@ import { observer } from 'mobx-react';
 
 import Table from '@portal/components/table';
 import EmptyData from '@c/empty-data';
-import Pagination from '@c/pagination2';
+import Pagination from '@portal/components/pagination';
 import { adminSearchUserList } from '@portal/api/role-management';
 import Loading from '@portal/components/loading';
 

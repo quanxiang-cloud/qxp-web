@@ -18,3 +18,5 @@ type Columns = {
   dataIndex: string;
   render?: (...args: any[]) => JSX.Element;
 }[]
+
+type SizeType = 'small' | 'middle' | 'large' | undefined;

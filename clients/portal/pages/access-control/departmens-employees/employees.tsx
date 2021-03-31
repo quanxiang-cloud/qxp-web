@@ -3,7 +3,7 @@ import { useQuery } from 'react-query';
 import { Table, Icon, Message } from '@QCFE/lego-ui';
 
 import IconBtn from '@c/icon-btn';
-import Pagination from '@c/pagination2';
+import Pagination from '@portal/components/pagination';
 import SvgIcon from '@c/icon';
 import Authorized from '@clients/common/component/authorized';
 import List from '@portal/components/list';
