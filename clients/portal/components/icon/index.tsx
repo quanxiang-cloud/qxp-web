@@ -20,8 +20,8 @@ function svgIcon(
     size = 16,
     type = 'dark',
     changeable,
-    disabled = false,
-    clickable = false,
+    disabled,
+    clickable,
     className,
     style,
     ...props
