@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery } from 'react-query';
 
-import { EmptyData } from '@c/empty-data';
-import { More } from '@c/more';
+import EmptyData from '@c/empty-data';
+import More from '@c/more';
 import { PAGINATION } from '@const/table';
-import { Pagination } from '@c/pagination2';
+import Pagination from '@c/pagination2';
 import { IPagination } from '@t/interface/api';
 import { getRoleAssociations } from '@net/role-management';
-import { Loading } from '@c/loading2';
-import { Error } from '@portal/components/error';
-import { Table } from '@c/table2';
+import Loading from '@c/loading2';
+import Error from '@portal/components/error';
+import Table from '@c/table2';
 
 interface Props {
   isSuper: boolean;

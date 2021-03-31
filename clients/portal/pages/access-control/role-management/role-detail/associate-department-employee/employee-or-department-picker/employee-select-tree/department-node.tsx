@@ -3,7 +3,7 @@ import { twCascade } from '@mariusmarais/tailwind-cascade';
 
 import { NodeRenderProps } from '@c/headless-tree/types';
 
-export const DepartmentNode = ({ node }: NodeRenderProps<Department>) => {
+export default function DepartmentNode({ node }: NodeRenderProps<Department>) {
   return (
     <div
       className={twCascade('transition-all py-8 cursor-pointer')}
@@ -15,4 +15,4 @@ export const DepartmentNode = ({ node }: NodeRenderProps<Department>) => {
       </div>
     </div>
   );
-};
+}

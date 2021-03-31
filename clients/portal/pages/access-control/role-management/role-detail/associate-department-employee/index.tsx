@@ -4,7 +4,6 @@ import { Modal } from '@QCFE/lego-ui';
 
 import Button from '@c/button';
 import Authorized from '@clients/common/component/authorized';
-import DepartmentOrEmployeeTable from './department-or-employee-table';
 import Loading from '@c/loading2';
 import Error from '@c/error';
 import { Switch } from '@c/switch2';
@@ -15,13 +14,14 @@ import {
 } from '@net/role-management';
 
 import EmployeeOrDepartmentPicker from './employee-or-department-picker';
+import DepartmentOrEmployeeTable from './department-or-employee-table';
 
 export interface Props {
   id: string | number;
   isSuper: boolean;
 }
 
-export const AssociateDepartmentEmployee = ({ id, isSuper }: Props) => {
+export default function AssociateDepartmentEmployee({ id, isSuper }: Props) {
   const [showAddModal, setShowAddModal] = useState(false);
   const [showBindType, setShowBindType] = useState<string | number>(1);
   const [departmentsOrEmployees, setDepartmentsOrEmployees] = useState<
@@ -157,4 +157,4 @@ export const AssociateDepartmentEmployee = ({ id, isSuper }: Props) => {
       </div>
     </>
   );
-};
+}
