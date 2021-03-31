@@ -6,48 +6,54 @@ import Tab from '@c/tab2';
 import TextHeader from '@c/text-header';
 import SearchInput from '@c/form/search-input';
 import Loading from '@c/loading2';
-import { getDepartmentStructure, IOwner } from '@net/role-management';
+import { getDepartmentStructure } from '@net/role-management';
+import Error from '@c/error';
 
 import EmployeeTable from './employee-table';
 import SelectedList from './selected-list';
 import EmployeeSelectTree from './employee-select-tree';
 import DepartmentSelectTree from './department-select-tree';
-import EmployeeTreeStore from './employee-select-tree/store';
-import EmployeeStore from './employee-table/store';
-import DepartmentTreeStore from './department-select-tree/store';
+
 import OwnerStore from './store';
 
-export interface IOwnerSelector {
-  defaultEmployees?: IOwner[];
-  refs: React.MutableRefObject<(() => IOwner[]) | undefined>;
+interface Props {
+  departments?: EmployeeOrDepartmentOfRole[];
+  employees?: EmployeeOrDepartmentOfRole[];
+  onChange: (departmentsOrEmployees: EmployeeOrDepartmentOfRole[]) => void;
 }
 
-export const OwnerSelector = observer(({ defaultEmployees = [], refs }: IOwnerSelector) => {
+export default observer(({ departments = [], employees = [], onChange }: Props) => {
   const [store, setStore] = useState<OwnerStore>();
 
   const { data: department, isLoading, isError } = useQuery(
-    ['getDepartmentStructure'],
+    ['GET_DEPARTMENT_STRUCTURE'],
     getDepartmentStructure,
     {
       refetchOnWindowFocus: false,
     },
   );
 
+  useEffect(() => {
+    store?.owners && onChange(store.owners);
+  }, [store?.owners.length]);
+
   const onDepartmentTreeChange = (prevNodes: Department[], currentNodes: Department[]) => {
     setStore((store) => {
       if (!store) {
         return store;
       }
-      const add: IOwner[] = [];
+      const add: EmployeeOrDepartmentOfRole[] = [];
       const remove: string[] = [];
       currentNodes.filter((node) => !prevNodes.find((n) => n.id === node.id)).forEach((node) => {
+        const parent = store.departmentTreeStore.getNodeParents(node.id)[0];
         add.push({
           type: 2,
           ownerID: node.id,
           ownerName: node.departmentName,
           phone: '',
           email: '',
-          departmentName: store.departmentTreeStore.getNodeParents(node.id)[0]?.name,
+          departmentName: parent?.name,
+          departmentID: parent?.id,
           createdAt: -1,
           id: node.id,
         });
@@ -63,21 +69,15 @@ export const OwnerSelector = observer(({ defaultEmployees = [], refs }: IOwnerSe
 
   useEffect(() => {
     if (department) {
-      setStore(new OwnerStore(
-        new EmployeeTreeStore(department),
-        new EmployeeStore(),
-        new DepartmentTreeStore(department, onDepartmentTreeChange),
-        defaultEmployees
-      ));
+      setStore(new OwnerStore(department, [...departments, ...employees]));
     }
-  }, [department, defaultEmployees]);
+  }, [department, departments, employees]);
 
-  refs.current = () => {
-    return store?.owners || [];
-  };
-
-  if (!store || isLoading || isError) {
+  if (!store || isLoading) {
     return <Loading desc="加载中..." />;
+  }
+  if (isError) {
+    return <Error desc="something wrong" />;
   }
 
   return (
@@ -160,6 +160,7 @@ export const OwnerSelector = observer(({ defaultEmployees = [], refs }: IOwnerSe
                   <DepartmentSelectTree
                     store={store.departmentTreeStore}
                     wrapperClassName="flex-1 bg-white rounded-12"
+                    onChange={onDepartmentTreeChange}
                   />
                 </div>
               </>

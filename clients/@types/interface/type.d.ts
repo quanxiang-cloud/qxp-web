@@ -12,3 +12,9 @@ type DeptTree = {
   superID: string;
   useStatus: number;
 };
+
+type Columns = {
+  title: string;
+  dataIndex: string;
+  render?: (...args: any[]) => JSX.Element;
+}[]

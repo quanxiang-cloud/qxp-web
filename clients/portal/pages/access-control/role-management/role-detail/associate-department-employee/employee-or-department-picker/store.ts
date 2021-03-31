@@ -1,9 +1,10 @@
 import { observable, action } from 'mobx';
 
 import TreeStore from '@c/headless-tree/store';
+
 import EmployeeStore from './employee-table/store';
-import { IOwner } from '@portal/api/role-management';
 import DepartmentTreeStore from './department-select-tree/store';
+import EmployeeTreeStore from './employee-select-tree/store';
 
 class OwnerStore {
   @observable
@@ -16,7 +17,7 @@ class OwnerStore {
   employeeStore: EmployeeStore;
 
   @observable
-  owners: IOwner[];
+  owners: EmployeeOrDepartmentOfRole[];
 
   @observable
   tabKey = '1';
@@ -27,16 +28,11 @@ class OwnerStore {
   @observable
   departmentKeyword = '';
 
-  constructor(
-    employeeTreeStore: TreeStore<Department>,
-    employeeStore: EmployeeStore,
-    departmentTreeStore: DepartmentTreeStore,
-    owners: IOwner[]
-  ) {
-    this.employeeTreeStore = employeeTreeStore;
-    this.employeeStore = employeeStore;
-    this.departmentTreeStore = departmentTreeStore;
-    this.owners = owners;
+  constructor(department: Department, members: EmployeeOrDepartmentOfRole[]) {
+    this.employeeTreeStore = new EmployeeTreeStore(department);
+    this.employeeStore = new EmployeeStore();
+    this.departmentTreeStore = new DepartmentTreeStore(department);
+    this.owners = members;
   }
 
   @action
@@ -60,12 +56,12 @@ class OwnerStore {
   }
 
   @action
-  onRemove = (o: IOwner) => {
+  onRemove = (o: EmployeeOrDepartmentOfRole) => {
     this.owners = this.owners.filter((owner) => owner.ownerID !== o.ownerID);
   }
 
   @action
-  addOwner = (o: IOwner) => {
+  addOwner = (o: EmployeeOrDepartmentOfRole) => {
     if (this.owners.find((owner) => owner.ownerID === o.ownerID)) {
       return;
     }
@@ -78,7 +74,7 @@ class OwnerStore {
   }
 
   @action
-  addOwners = (os: IOwner[]) => {
+  addOwners = (os: EmployeeOrDepartmentOfRole[]) => {
     this.owners = [
       ...this.owners,
       ...os.filter((o) => !this.owners.find((owner) => owner.ownerID === o.ownerID)),

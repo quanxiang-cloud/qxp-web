@@ -8,7 +8,14 @@ import { last } from '@lib/utils';
 
 import DepartmentTreeStore from './store';
 
-export const DepartmentNode = observer(({ node, store }: NodeRenderProps<Department>) => {
+interface Props extends NodeRenderProps<Department>{
+  onChange: (prevNodes: Department[], currentNodes: Department[]) => void;
+}
+
+export const DepartmentNode = observer(({ node, store, onChange }: Props) => {
+  if (!store) {
+    return null;
+  }
   const st = store as DepartmentTreeStore;
   const status = st.nodeMap[node.id]?.checkStatus;
   const isChecked = status === 'checked';
@@ -22,16 +29,16 @@ export const DepartmentNode = observer(({ node, store }: NodeRenderProps<Departm
     return arr;
   };
 
-  const onChange = () => {
+  const handleClick = () => {
     const prevData = getSelectedData(st.selectedDataPaths);
     st.toggleCheck(node.id);
     const currentData = getSelectedData(st.selectedDataPaths);
-    st.onChange(prevData, currentData);
+    onChange(prevData, currentData);
   };
 
   return (
     <div
-      onClick={onChange}
+      onClick={handleClick}
       className={twCascade('transition-all py-8 w-full flex items-center justify-between')}
     >
       <div className="ml-2 flex flex-row items-center w-full">

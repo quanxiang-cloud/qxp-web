@@ -126,6 +126,7 @@ export default function StaffModal(
     >
       <Form layout="vertical" ref={(form: any) => setForm(form)}>
         <TextField
+          // @ts-ignore
           validateOnBlur
           name="userName"
           label="员工姓名"

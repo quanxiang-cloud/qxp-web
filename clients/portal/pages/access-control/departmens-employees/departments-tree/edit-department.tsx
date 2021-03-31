@@ -142,6 +142,7 @@ export default function EditDepartment({ department, closeModal }: Props) {
           help={HELP_TEXT_NORMAL}
           validateHelp={depNameHelpText}
           validateStatus={depNameStatus}
+          // @ts-ignore
           maxLength={30}
           validateOnBlur
           defaultValue={department.departmentName}

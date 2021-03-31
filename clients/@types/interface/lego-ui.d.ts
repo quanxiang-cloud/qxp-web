@@ -98,33 +98,25 @@ declare module '@QCFE/lego-ui' {
     style?: React.CSSProperties;
   }
 
-  export namespace Form {
-    export interface CommonFormFieldProps {
-      name: string;
-      label?: string | React.ReactNode;
-      help?: string | React.ReactNode;
-      defaultValue?: any;
-      value?: string | number;
-      onChange?: (...args: any) => void;
-      validateOnBlur?: boolean;
-      onBlur?: (...args: any) => void;
-      validateStatus?: string;
-      validateIcon?: boolean;
-      validateHelp?: string;
-      className?: string;
-      controlClassName?: string;
-      readOnly?: boolean;
-      disabled?: boolean;
-      direction?: string;
-      schemas?: object;
-      maxLength?: number;
-    }
-    export interface TextFieldProps extends CommonFormFieldProps {
-      iconLeft?: string;
-      iconRight?: string;
-      placeholder?: string;
-      validateOnChange?: boolean;
-    }
+  interface CommonFormFieldProps {
+    name: string;
+    label?: string | React.ReactNode;
+    help?: string | React.ReactNode;
+    defaultValue?: any;
+    value?: string | number;
+    onChange?: (...args: any) => void;
+    validateOnBlur?: boolean;
+    onBlur?: (...args: any) => void;
+    validateStatus?: string;
+    validateIcon?: boolean;
+    validateHelp?: string;
+    className?: string;
+    controlClassName?: string;
+    readOnly?: boolean;
+    disabled?: boolean;
+    direction?: string;
+    schemas?: object;
+    maxLength?: number;
   }
 
   interface TreeData {
@@ -230,4 +222,13 @@ declare module '@QCFE/lego-ui' {
   }
 
   class SelectField extends React.Component<SelectFieldProps, {}> { }
+
+  interface TextFieldProps extends CommonFormFieldProps {
+    iconLeft?: string;
+    iconRight?: string;
+    placeholder?: string;
+    validateOnChange?: boolean;
+    validateOnBlur?: boolean;
+    maxLength?: number;
+  }
 }

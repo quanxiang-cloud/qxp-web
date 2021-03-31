@@ -10,6 +10,11 @@ interface Department {
   superId?: string;
 }
 
-interface IDepartmentWithParent extends Department {
-  parent: Department[];
+interface DepartmentOfRole {
+  createdAt: number;
+  departmentID: string;
+  departmentName: string;
+  id: string;
+  ownerID: string;
+  type: RoleBindType;
 }

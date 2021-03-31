@@ -51,7 +51,6 @@ function stopModalClickPropagate(e: React.MouseEvent) {
 function DepartmentNode({ node, store }: NodeRenderProps<Department>): JSX.Element | null {
   const [showModal, toggleModal] = useState(false);
   const [departmentToEdit, setDepartment] = useState(node.data);
-  const queryClient = useQueryClient();
 
   function onAdd() {
     setDepartment({ id: '', departmentName: '', pid: node.data.id, superID: '', grade: 0 });

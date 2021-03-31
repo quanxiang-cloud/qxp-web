@@ -4,7 +4,6 @@ import { Tag } from '@QCFE/lego-ui';
 import { twCascade } from '@mariusmarais/tailwind-cascade';
 
 import TextHeader from '@c/text-header';
-import { IOwner } from '@portal/api/role-management';
 
 import OwnerStore from './store';
 
@@ -27,7 +26,7 @@ export default observer( function SelectedList({ className, ownerStore }: ISelec
     }
   }, [departments]);
 
-  const onRemove = (owner: IOwner) => {
+  const onRemove = (owner: EmployeeOrDepartmentOfRole) => {
     ownerStore.onRemove(owner);
     ownerStore.departmentTreeStore.toggleCheck(owner.ownerID);
   };
@@ -39,7 +38,12 @@ export default observer( function SelectedList({ className, ownerStore }: ISelec
     ownerStore.onClear();
   };
 
-  const tagRender = ({ ownerName, departmentName, ownerID, ...others }: IOwner) => {
+  const tagRender = ({
+    ownerName,
+    departmentName,
+    ownerID,
+    ...others
+  }: EmployeeOrDepartmentOfRole) => {
     return (
       <Tag
         key={ownerID}

@@ -5,7 +5,7 @@ import { observer } from 'mobx-react';
 import Table from '@c/table2';
 import EmptyData from '@c/empty-data';
 import Pagination from '@c/pagination2';
-import { adminSearchUserList, IOwner } from '@portal/api/role-management';
+import { adminSearchUserList } from '@portal/api/role-management';
 import Loading from '@c/loading2';
 
 import OwnerStore from '../store';
@@ -70,6 +70,7 @@ export default observer(function EmployeeTable({
           departmentName: user.dep.departmentName,
           createdAt: user.createTime,
           id: user.id,
+          departmentID: user.dep.id,
         });
       });
     } else if (keys.length < store.selectedKeys.length) {
@@ -84,7 +85,7 @@ export default observer(function EmployeeTable({
     <div className={className}>
       <Table
         className="rounded-bl-none rounded-br-none"
-        onRow={(record: IOwner) => {
+        onRow={(record: EmployeeOrDepartmentOfRole) => {
           return {
             onClick: () => {
               const newKeys = store.selectedKeys.includes(record.id) ?

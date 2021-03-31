@@ -1,65 +1,35 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { useQuery, useMutation } from 'react-query';
+import React, { useState } from 'react';
+import { useQuery, useMutation, useQueryClient } from 'react-query';
 import { Modal } from '@QCFE/lego-ui';
 
 import Button from '@c/button';
-import Table from '@c/table2';
-import Loading from '@c/loading2';
-import EmptyData from '@c/empty-data';
-import More from '@c/more';
-import Pagination from '@c/pagination2';
 import Authorized from '@clients/common/component/authorized';
+import DepartmentOrEmployeeTable from './department-or-employee-table';
+import Loading from '@c/loading2';
+import Error from '@c/error';
+import { Switch } from '@c/switch2';
 import {
   getRoleAssociations,
-  IOwner,
   updateRoleAssociations,
   IUpdateRoleAssociations,
 } from '@net/role-management';
 
-import { OwnerSelector } from './owner-selector';
+import EmployeeOrDepartmentPicker from './employee-or-department-picker';
 
 export interface Props {
   id: string | number;
   isSuper: boolean;
 }
 
-export default function AssociateDepartmentEmployee({ id, isSuper }: Props) {
-  const [selectedKeys, setSelectedKeys] = useState<string[]>([]);
-  const [_, setSelectedRows] = useState<IOwner[]>([]);
+export const AssociateDepartmentEmployee = ({ id, isSuper }: Props) => {
   const [showAddModal, setShowAddModal] = useState(false);
-  const [pagination, setPagination] = useState<{
-    total: number;
-    current: number;
-    pageSize: number;
-  }>({
-    total: 0,
-    current: 1,
-    pageSize: 10,
-  });
-  const selectorRef = useRef<() => IOwner[]>();
+  const [showBindType, setShowBindType] = useState<string | number>(1);
+  const [departmentsOrEmployees, setDepartmentsOrEmployees] = useState<
+    EmployeeOrDepartmentOfRole[]
+  >();
+  const queryClient = useQueryClient();
 
-  const { data, isLoading, refetch } = useQuery(
-    [
-      'GET_ROLE_ASSOCIATIONS',
-      {
-        roleID: id,
-        page: pagination.current,
-        limit: pagination.pageSize,
-      },
-    ],
-    getRoleAssociations,
-    {
-      refetchOnWindowFocus: false,
-      cacheTime: -1,
-    },
-  );
-
-  const {
-    data: allData,
-    isLoading: isAllLoading,
-    isError: isAllError,
-    refetch: refetchAll,
-  } = useQuery(
+  const { data, isLoading, isError, refetch } = useQuery(
     [
       'GET_ROLE_ASSOCIATIONS_ALL',
       {
@@ -73,82 +43,46 @@ export default function AssociateDepartmentEmployee({ id, isSuper }: Props) {
     },
   );
 
-  useEffect(() => {
-    setPagination((p) => ({ ...p, total: data?.total || 0 }));
-  }, [data]);
-
-  // @ts-ignore
   const mutation = useMutation(
     (arg: IUpdateRoleAssociations) => updateRoleAssociations(arg), {
       onSuccess: () => {
         setShowAddModal(false);
         refetch();
-        refetchAll();
+        queryClient.invalidateQueries('GET_ROLE_ASSOCIATIONS');
       },
-    });
+    }
+  );
 
   const onAssociate = () => {
-    if (selectorRef.current) {
-      const currentOwners = selectorRef.current();
-      const deletes = allData?.owners.filter((owner) => {
-        return !currentOwners.find((o) => o.ownerID === owner.ownerID);
+    if (departmentsOrEmployees) {
+      const deletes = data?.departmentsOrEmployees.filter((member) => {
+        return !departmentsOrEmployees.find((m) => m.ownerID === member.ownerID);
       });
-      const adds = currentOwners.filter((cowner) => {
-        return !allData?.owners.find((o) => o.ownerID === cowner.ownerID);
+      const adds = departmentsOrEmployees.filter((curMember) => {
+        return !data?.departmentsOrEmployees.find((member) => {
+          member.ownerID === curMember.ownerID;
+        });
       });
       mutation.mutate({
         roleID: id as string,
-        add: adds.map(({ type, ownerID }) => ({ type: type as (1 | 2), ownerID })),
+        add: adds.map(({ type, ownerID }) => ({ type, ownerID })),
         delete: deletes?.map(({ id }) => id),
       });
     }
   };
 
-  const onCancelAssociation = (record: IOwner) => {
-    setSelectedRows((rows) => {
-      if (rows.length) {
-        mutation.mutate({
-          roleID: id as string,
-          delete: rows.map(({ id }) => id),
-        });
-      } else {
-        mutation.mutate({
-          roleID: id as string,
-          delete: [record.id],
-        });
-      }
-      return rows;
+  const onCancelAssociation = (records: EmployeeOrDepartmentOfRole[]) => {
+    mutation.mutate({
+      roleID: id as string,
+      delete: records.map(({ id }) => id),
     });
   };
 
-  const rowSelection = {
-    selectedRowKeys: selectedKeys,
-    onChange: (selectedRowKeys: string[], selectedRowData: IOwner[]) => {
-      setSelectedKeys(selectedRowKeys);
-      setSelectedRows(selectedRowData);
-    },
-  };
-
-  const onRowClick = (record: IOwner) => {
-    const id = record.ownerID as string;
-    setSelectedKeys((arr: string[]) => {
-      if (arr.includes(id)) {
-        return arr.filter((i) => i !== id);
-      } else {
-        return [...arr, id];
-      }
-    });
-    setSelectedRows((rows: IOwner[]) => {
-      if (rows.find((item) => item.id === id)) {
-        return rows.filter((i) => i.id !== id);
-      } else {
-        return [...rows, record];
-      }
-    });
-  };
-
-  if (isLoading || isAllLoading || isAllError) {
+  if (isLoading) {
     return <Loading desc="加载中..." />;
+  }
+  if (isError) {
+    return <Error desc="something wrong" />;
   }
 
   return (
@@ -179,91 +113,48 @@ export default function AssociateDepartmentEmployee({ id, isSuper }: Props) {
           </div>
         }
       >
-        <OwnerSelector defaultEmployees={allData?.owners} refs={selectorRef} />
+        <EmployeeOrDepartmentPicker
+          departments={data?.departments}
+          employees={data?.employees}
+          onChange={setDepartmentsOrEmployees}
+        />
       </Modal>
-      {!isSuper && (
-        <Authorized authority={['accessControl/role/manage']}>
-          <Button
-            className="bg-gray-700 hover:bg-gray-900 transition mb-16 cursor-pointer"
-            textClassName="text-white ml-2"
-            icon={<img src="/dist/images/link.svg" />}
-            onClick={() => setShowAddModal(true)}
-          >
+      <div className="flex items-center">
+        <Switch
+          className="mb-16"
+          options={[{
+            label: '员工',
+            value: 1,
+          }, {
+            label: '部门',
+            value: 2,
+          }]}
+          onChange={setShowBindType}
+        />
+        {!isSuper && (
+          <Authorized authority={['accessControl/role/manage']}>
+            <Button
+              className="bg-gray-700 hover:bg-gray-900 transition mb-16 cursor-pointer"
+              textClassName="text-white ml-2"
+              icon={<img src="/dist/images/link.svg" />}
+              onClick={() => setShowAddModal(true)}
+            >
             关联员工与部门
-          </Button>
-        </Authorized>
-      )}
+            </Button>
+          </Authorized>
+        )}
+      </div>
       <div
         className="overflow-scroll w-full pb-6 rounded-12"
         style={{ height: 'calc(100% - 42px)' }}
       >
-        <Table
-          rowKey="ownerID"
-          dataSource={data?.owners || []}
-          className="rounded-bl-none rounded-br-none"
-          columns={[
-            {
-              title: '名称',
-              dataIndex: 'ownerName',
-            },
-            {
-              title: '手机号',
-              dataIndex: 'phone',
-            },
-            {
-              title: '邮箱',
-              dataIndex: 'email',
-            },
-            {
-              title: '部门',
-              dataIndex: 'departmentName',
-            },
-            !isSuper ?
-              {
-                title: '',
-                dataIndex: 'ownerID',
-                render: (ownerID: string, record: IOwner) => {
-                  return (
-                    <More<IOwner>
-                      items={[
-                        {
-                          id: ownerID,
-                          iconName: '/dist/images/linkOff.svg',
-                          text: '取消关联',
-                          onclick: () => onCancelAssociation(record),
-                        },
-                      ]}
-                      params={record}
-                      className="flex items-center justify-center"
-                      contentClassName="w-48"
-                      contentItemClassName="justify-center"
-                    />
-                  );
-                },
-              } :
-              null,
-          ].filter(Boolean)}
-          rowSelection={rowSelection}
-          emptyText={<EmptyData text="无成员数据" className="py-10" />}
-          onRow={(record) => ({
-            onClick: () => onRowClick(record),
-          })}
+        <DepartmentOrEmployeeTable
+          isSuper={isSuper}
+          roleID={id}
+          onCancelAssociation={onCancelAssociation}
+          type={showBindType as RoleBindType}
         />
-        {!isSuper && (
-          <Pagination
-            type="simple"
-            pageSize={pagination.pageSize}
-            total={pagination.total}
-            current={pagination.current}
-            prefix={
-              <span className="text-12 text-gray-400">{`共 ${pagination.total} 个员工`}</span>
-            }
-            onShowSizeChange={(pageSize) => setPagination((p) => ({ ...p, pageSize }))}
-            onChange={(current) => setPagination((p) => ({ ...p, current }))}
-            className="rounded-bl-12 rounded-br-12 pagination-border"
-          />
-        )}
       </div>
     </>
   );
-}
+};

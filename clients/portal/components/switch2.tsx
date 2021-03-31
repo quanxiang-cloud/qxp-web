@@ -1,21 +1,22 @@
 import React from 'react';
 import useCss from 'react-use/lib/useCss';
+import classnames from 'classnames';
 import { RadioGroup as LegoRadioGroup, RadioButton as LegoRadioButton } from '@QCFE/lego-ui';
 
 interface ISwitchOption {
-  label: string
-  value: string
+  label: string;
+  value: string | number;
 }
 
 interface ISwitch {
-  className?: string
-  options: ISwitchOption[]
-  onChange?: (value: string | number) => void
+  className?: string;
+  options: ISwitchOption[];
+  onChange?: (value: string | number) => void;
 }
 
 export const Switch = ({ ...props }: ISwitch) => {
   return (
-    <div className={useCss({
+    <div className={classnames(useCss({
       display: 'inline-block',
       'margin-right': '16px',
       'label:hover': {
@@ -40,7 +41,7 @@ export const Switch = ({ ...props }: ISwitch) => {
       'label.radio-button.is-default.button.radio-button-wrapper.is-default.button:hover': {
         background: '#F1F5F9',
       },
-    })}>
+    }), props.className)}>
       <LegoRadioGroup
         defaultValue={props.options[0]['value']}
         onChange={props.onChange}

@@ -51,40 +51,30 @@ export const setRoleFunctions = ({ queryKey }: QueryFunctionContext) =>
     }),
   ).then(({ data, code }) => ({ code, data }));
 
-export interface IOwner {
-  type: number;
-  ownerID: string;
-  ownerName?: string;
-  phone: string;
-  email: string;
-  departmentName?: string;
-  createdAt: number;
-  id: string;
-}
 
 // 获取角色关联
-export const getRoleAssociations = ({
-  queryKey,
-}: QueryFunctionContext<
-  [
-    string,
+interface GetRoleAssociationParams {
+  roleId: string;
+  type?: string;
+  page?: string;
+  limit?: string;
+}
+export async function getRoleAssociations({ queryKey }: QueryFunctionContext<[
+  string, GetRoleAssociationParams
+]>) {
+  const { data } = await httpPost<
     {
-      roleId: string;
-      type?: string;
-      page?: string;
-      limit?: string;
-    },
-  ]
->) =>
-  httpPost<
-    {
-      owners: IOwner[];
+      owners: EmployeeOrDepartmentOfRole[];
       total: number;
     }
-  >('/api/v1/goalie/listRoleOwner', JSON.stringify(queryKey[1])).then(({ data }) => ({
-    owners: data?.owners || [],
+  >('/api/v1/goalie/listRoleOwner', JSON.stringify(queryKey[1]));
+  return ({
+    departments: data?.owners.filter(({ type }) => type === 2) || [],
+    employees: data?.owners.filter(({ type }) => type === 1) || [],
+    departmentsOrEmployees: data?.owners || [],
     total: data?.total || 0,
-  }));
+  });
+}
 
 // 修改角色关联
 export interface IUpdateRoleAssociations {

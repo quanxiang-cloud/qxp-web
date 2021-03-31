@@ -1,6 +1,6 @@
 import { observable, action } from 'mobx';
 
-import { IOwner, IUser } from '@portal/api/role-management';
+import { IUser } from '@portal/api/role-management';
 
 class EmployeeStore {
   @observable
@@ -50,7 +50,7 @@ class EmployeeStore {
   }
 
   @action
-  initialSelectedKeys = (users: IUser[], owners: IOwner[]) => {
+  initialSelectedKeys = (users: IUser[], owners: EmployeeOrDepartmentOfRole[]) => {
     this.setSelectedKeys(
       owners.filter((owner) =>
         users?.find((user) => user.id === owner.ownerID)
