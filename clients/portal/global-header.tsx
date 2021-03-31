@@ -102,7 +102,7 @@ export default function GlobalHeader() {
               <SvgIcon
                 name="add_task"
                 className="group-hover:text-blue-600 header-nav-btn-icon"
-                size={22}
+                size={24}
                 style={style(isHome)}
               />
             </div>
@@ -125,6 +125,7 @@ export default function GlobalHeader() {
                 name="application_management"
                 className="group-hover:text-blue-600 header-nav-btn-icon"
                 style={style(isAppManagement)}
+                size={24}
               />
             </div>
             <span
@@ -147,6 +148,7 @@ export default function GlobalHeader() {
                   name="access_control"
                   className="group-hover:text-blue-600 header-nav-btn-icon"
                   style={style(isAccess)}
+                  size={24}
                 />
               </div>
               <span
@@ -168,7 +170,7 @@ export default function GlobalHeader() {
               <SvgIcon
                 name="system_management"
                 className="group-hover:text-blue-600 header-nav-btn-icon"
-                size={22}
+                size={24}
                 style={style(isSystemControl)}
               />
             </div>
@@ -191,7 +193,7 @@ export default function GlobalHeader() {
               <SvgIcon
                 name="book"
                 className="group-hover:text-blue-600 header-nav-btn-icon"
-                size={22}
+                size={24}
               />
             </div>
             <span className="header-nav-btn-text group-hover:text-blue-600">
@@ -202,7 +204,7 @@ export default function GlobalHeader() {
             <SvgIcon
               name="settings"
               className="group-hover:text-blue-600 header-nav-btn-icon"
-              size={22}
+              size={24}
             />
             <More
               items={[
