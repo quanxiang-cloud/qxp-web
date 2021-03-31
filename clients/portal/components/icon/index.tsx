@@ -14,8 +14,7 @@ interface Props extends React.SVGProps<SVGSVGElement> {
   clickable?: boolean;
 }
 
-function Icon(
-  // function SvgIcon(
+function svgIcon(
   {
     name,
     size = 16,
@@ -52,7 +51,7 @@ function Icon(
   );
 }
 
-const SvgIconRef = React.forwardRef(Icon);
+const SvgIconRef = React.forwardRef(svgIcon);
 
 const SvgIcon = SvgIconRef;
 
