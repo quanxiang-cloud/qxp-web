@@ -48,7 +48,7 @@ function TreePicker<T extends { id: string; }>({
     toggleable && setOpen((o) => !o);
   }
 
-  useClickAway(domRef, () => setOpen(false));
+  useClickAway(domRef, () => toggleable && setOpen(false));
 
   useEffect(() => {
     if (!store || !defaultValue) {
