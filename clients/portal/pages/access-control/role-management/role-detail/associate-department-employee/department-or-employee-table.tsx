@@ -7,9 +7,9 @@ import { PAGINATION } from '@const/table';
 import Pagination from '@c/pagination2';
 import { IPagination } from '@t/interface/api';
 import { getRoleAssociations } from '@net/role-management';
-import Loading from '@c/loading2';
+import Loading from '@portal/components/loading';
 import Error from '@portal/components/error';
-import Table from '@c/table2';
+import Table from '@portal/components/table';
 
 interface Props {
   isSuper: boolean;

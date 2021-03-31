@@ -6,7 +6,7 @@ import IconBtn from '@c/icon-btn';
 import Pagination from '@c/pagination2';
 import SvgIcon from '@c/icon';
 import Authorized from '@clients/common/component/authorized';
-import List from '@c/list2';
+import List from '@portal/components/list';
 import DepartmentStaff from '@c/department-staff';
 import Button from '@c/button';
 import EmptyData from '@c/empty-data';

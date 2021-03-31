@@ -3,7 +3,7 @@ import { LocaleProvider } from '@QCFE/lego-ui';
 import { BrowserRouter as Router } from 'react-router-dom';
 
 import GlobalHeader from './global-header';
-import Loading from './components/loading2';
+import Loading from './components/loading';
 import { AppContext, IContextValue } from '@clients/common/providers/context';
 
 import locales from './locales';

@@ -4,7 +4,7 @@ import { useQuery } from 'react-query';
 
 import Error from '@c/error';
 
-import Loading from './components/loading2';
+import Loading from './components/loading';
 import { getSystemFuncs, getUserFuncs, getUserInfo, getUserRoles } from './api/auth';
 import { usePortalGlobalValue } from '@states/portal';
 

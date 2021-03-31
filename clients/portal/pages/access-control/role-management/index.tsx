@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import useCss from 'react-use/lib/useCss';
 import { useQuery } from 'react-query';
 
-import Card from '@c/card2';
+import Card from '@portal/components/card';
 import Error from '@c/error';
 import { usePortalGlobalValue } from '@states/portal';
 

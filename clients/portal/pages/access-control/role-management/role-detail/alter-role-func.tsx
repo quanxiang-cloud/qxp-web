@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Message } from '@QCFE/lego-ui';
 
-import Card from '@c/card2';
-import { Checkbox } from '@c/checkbox2';
+import Card from '@portal/components/card';
+import { Checkbox } from '@portal/components/checkbox';
 import { countBy, searchByKey, deepClone } from '@lib/utils';
 import { IRoleFunc, IRoleFuncItem, setRoleFunctions } from '@portal/api/role-management';
 

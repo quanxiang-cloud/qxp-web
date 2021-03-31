@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import List from '@c/list2';
+import List from '@portal/components/list';
 import ItemWithTitleDesc from '@c/item-with-title-desc';
 
 import RoleListItem, { IRoleListItem } from './role-list-item';

@@ -2,8 +2,8 @@ import React from 'react';
 import { twCascade } from '@mariusmarais/tailwind-cascade';
 import { Icon } from '@QCFE/lego-ui';
 
-import { Popover } from './popover2';
-import List, { IITems } from './list2';
+import { Popover } from './popover';
+import List, { IITems } from './list';
 
 export interface IMore<T> {
   className?: string;

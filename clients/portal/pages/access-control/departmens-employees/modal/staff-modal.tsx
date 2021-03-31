@@ -4,7 +4,7 @@ import { Modal, Form, Icon, Message } from '@QCFE/lego-ui';
 
 import TreePicker from '@c/tree-picker';
 import Button from '@c/button';
-import Loading from '@c/loading2';
+import Loading from '@portal/components/loading';
 import { UserInfo } from '@net/auth';
 import { getERPTree, addDepUser, updateUser } from '@net/corporate-directory';
 import { departmentToTreeNode } from '@lib/utils';

@@ -4,9 +4,9 @@ import { Modal } from '@QCFE/lego-ui';
 
 import Button from '@c/button';
 import Authorized from '@clients/common/component/authorized';
-import Loading from '@c/loading2';
+import Loading from '@portal/components/loading';
 import Error from '@c/error';
-import { Switch } from '@c/switch2';
+import { Switch } from '@portal/components/switch';
 import {
   getRoleAssociations,
   updateRoleAssociations,

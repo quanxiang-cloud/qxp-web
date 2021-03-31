@@ -2,8 +2,8 @@ import React from 'react';
 import { useQuery } from 'react-query';
 
 import ItemWithTitleDesc from '@c/item-with-title-desc';
-import Tab from '@c/tab2';
-import Loading from '@c/loading2';
+import Tab from '@portal/components/tab';
+import Loading from '@portal/components/loading';
 import { getRoleFunctions } from '@portal/api/role-management';
 
 import AlterRoleFunc from './alter-role-func';
