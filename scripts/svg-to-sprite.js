@@ -3,7 +3,6 @@ const glob = require('glob');
 const path = require('path');
 const fs = require('fs');
 const svgSpreact = require('svg-spreact');
-const mkdirp = require('mkdirp');
 const svgoConfig = require('./svgo.config');
 
 function getFileContent(filePath) {
@@ -44,9 +43,6 @@ module.exports = function () {
           const svgStrs = defs
             .replace(/currentColor/g, 'none')
             .replace(/#475569/g, 'currentColor');
-          mkdirp.sync(
-            path.dirname(path.join(__dirname, '../dist/images/sprite.svg'))
-          );
           fs.writeFileSync(
             // todo minify
             path.join(__dirname, '../dist/images/sprite.svg'),
