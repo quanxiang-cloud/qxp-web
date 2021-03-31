@@ -1,6 +1,7 @@
 import { httpPost, httpFile } from '@lib/utils';
 
-import { FormValues } from '../pages/access-control/departmens-employees/modal/staff-modal';
+import { FormValues }
+  from '../pages/access-control/departmens-employees/modal/edit-employees-modal';
 import { UserStatus } from '../pages/access-control/departmens-employees/enum';
 
 export interface ITreeNode {

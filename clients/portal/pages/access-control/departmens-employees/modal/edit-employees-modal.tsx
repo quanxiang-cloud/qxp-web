@@ -4,7 +4,7 @@ import { Modal, Form, Icon, Message } from '@QCFE/lego-ui';
 
 import TreePicker from '@c/tree-picker';
 import Button from '@c/button';
-import Loading from '@portal/components/loading';
+import Loading from '@c/loading2';
 import { UserInfo } from '@net/auth';
 import { getERPTree, addDepUser, updateUser } from '@net/corporate-directory';
 import { departmentToTreeNode } from '@lib/utils';
@@ -31,7 +31,7 @@ interface Props {
   closeModal(): void;
 }
 
-export default function StaffModal(
+export default function EditEmployeesModal(
   { user, closeModal }: Props,
 ) {
   const [form, setForm] = useState<any>(null);
@@ -126,7 +126,6 @@ export default function StaffModal(
     >
       <Form layout="vertical" ref={(form: any) => setForm(form)}>
         <TextField
-          // @ts-ignore
           validateOnBlur
           name="userName"
           label="员工姓名"
@@ -146,7 +145,7 @@ export default function StaffModal(
           label="手机号码"
           defaultValue={user.phone}
           placeholder="请输入手机号码"
-          help="企业成员的真实手机号（手机号/邮箱，两者中至少必填一项）。"
+          help="企业成员的真实手机号"
           schemas={[
             {
               rule: { required: true },
@@ -214,7 +213,6 @@ export default function StaffModal(
               required
               closeOnSelect
               help="请选择部门"
-              toggleable={false}
             />
           )
         }

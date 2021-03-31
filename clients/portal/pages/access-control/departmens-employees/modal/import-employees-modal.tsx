@@ -44,7 +44,7 @@ type CheckedWay = {
   sendPhone: -1 | 1;
 };
 
-export default function ExportFileModal({
+export default function ImportEmployeesModal({
   currDepId,
   closeModal,
 }: ExportFileModalProps) {
@@ -386,7 +386,6 @@ export default function ExportFileModal({
                       size={16}
                       name="cloud_upload"
                       style={{ color: '#64748B' }}
-                      type="primary"
                     />
                     <p>点击或拖拽单个文件到至该区域。支持xls、xlsx格式</p>
                   </div>

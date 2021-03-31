@@ -2,123 +2,44 @@ import React, { useState, useEffect } from 'react';
 import { useQuery } from 'react-query';
 import { Table, Icon, Message } from '@QCFE/lego-ui';
 
+import SvgIcon from '@c/icon';
+import EmptyTips from '@c/empty-tips';
 import IconBtn from '@c/icon-btn';
 import Pagination from '@c/pagination2';
-import SvgIcon from '@c/icon';
 import Authorized from '@clients/common/component/authorized';
-import List from '@portal/components/list';
-import DepartmentStaff from '@c/department-staff';
+// todo replace by button2
 import Button from '@c/button';
-import EmptyData from '@c/empty-data';
-import More from '@c/more';
-import MoreMenu, { MenuItem } from '@c/more-menu';
-import { uuid } from '@lib/utils';
+// todo replace this by more-menu component
+import MoreMenu from '@c/more-menu';
+
+// remove this type definition to global d.ts
 import { UserInfo } from '@portal/api/auth';
-import { usePortalGlobalValue } from '@states/portal';
 import { getUserAdminInfo } from '@net/corporate-directory';
+// todo windows
+import { usePortalGlobalValue } from '@states/portal';
 
+import List from '@c/list';
+import More from '@c/more';
+import { uuid } from '@lib/utils';
+
+import EditEmployeesModal from './modal/edit-employees-modal';
+import ImportEmployeesModal from './modal/import-employees-modal';
 import ResetPasswordModal from './modal/reset-password-modal';
-import AccountHandleModal from './modal/account-handle-modal';
+import AlterUserStateModal from './modal/alert-user-state-modal';
 import AdjustDepModal from './modal/adjust-dep-modal';
-import ExportFileModal from './modal/export-file-modal';
-import StaffModal from './modal/staff-modal';
 import LeaderHandleModal from './modal/leader-handle-modal';
-import UserInfoColumn from './table-column/user-info-column';
-import OtherColumn from './table-column/other-column';
-import { excelHeader, exportDepExcel } from './excel';
-import { UserStatus, LeaderStatus } from './enum';
 
-type AuthorMenuItem<T> = {
-  authority: number[];
-  leader: number[];
-} & MenuItem<T>;
-
-const MENUS: AuthorMenuItem<string>[] = [
-  {
-    key: 'edit',
-    label: (
-      <div className="flex items-center">
-        <SvgIcon name="create" size={16} className="mr-8" />
-        <span className="font-normal">修改员工信息</span>
-      </div>
-    ),
-    authority: [UserStatus.normal],
-    leader: [LeaderStatus.true, LeaderStatus.false],
-  },
-  {
-    key: 'leader',
-    label: (
-      <div className="flex items-center">
-        <SvgIcon name="bookmark_border" size={16} className="mr-8" />
-        <span className="font-normal">设为主管</span>
-      </div>
-    ),
-    authority: [UserStatus.normal],
-    leader: [LeaderStatus.false],
-  },
-  {
-    key: 'cancel',
-    label: (
-      <div className="flex items-center">
-        <SvgIcon name="cancel" size={16} className="mr-8" />
-        <span className="font-normal">取消主管</span>
-      </div>
-    ),
-    authority: [UserStatus.normal],
-    leader: [LeaderStatus.true],
-  },
-  {
-    key: 'reset',
-    label: (
-      <div className="flex items-center">
-        <SvgIcon name="password" size={16} className="mr-8" />
-        <span className="font-normal">重置密码</span>
-      </div>
-    ),
-    authority: [UserStatus.normal],
-    leader: [LeaderStatus.true, LeaderStatus.false],
-  },
-  {
-    key: 'disable',
-    label: (
-      <div className="flex items-center">
-        <SvgIcon name="toggle_off" size={16} className="mr-8" />
-        <span className="font-normal">禁用账号</span>
-      </div>
-    ),
-    authority: [UserStatus.normal],
-    leader: [LeaderStatus.true, LeaderStatus.false],
-  },
-  {
-    key: 'enable',
-    label: (
-      <div className="flex items-center">
-        <SvgIcon name="toggle_on" size={16} className="mr-8" />
-        <span className="font-normal">启用账号</span>
-      </div>
-    ),
-    authority: [UserStatus.disable],
-    leader: [LeaderStatus.true, LeaderStatus.false],
-  },
-  {
-    key: 'delete',
-    label: (
-      <div className="flex items-center">
-        <SvgIcon name="restore_from_trash" size={16} className="mr-8" />
-        <span className="font-normal">删除账号</span>
-      </div>
-    ),
-    authority: [UserStatus.normal, UserStatus.disable],
-    leader: [LeaderStatus.true, LeaderStatus.false],
-  },
-];
+import { exportEmployees } from './excel';
+import { UserStatus } from './enum';
+import { EmployeesColumns, EmplayeesActions, ExpandActions } from './constant';
 
 enum ResetStart {
   single = 0,
   batch = 1
 }
 
-const pageSizeOptions = [10, 20, 50, 100];
+type modalType = '' | 'edit_employees' | 'import_employees' | 'reset_password' |
+  'alert_user_state' | 'adjust_dep' | 'leader_handle';
 
 export type BatchDepParams = {
   usersID: string[];
@@ -135,25 +56,18 @@ export default function Employees({
   department,
   keyword,
 }: Props) {
-  const [visibleFile, setVisibleFile] = useState<boolean>(false);
-  const [resetModal, setResetModal] = useState<boolean>(false);
-  const [handleModal, setHandleModal] = useState<boolean>(false);
-  const [visibleAdjust, setVisibleAdjust] = useState<boolean>(false);
-  const [visibleStaff, setVisibleStaff] = useState<boolean>(false);
-  const [visibleLeader, setVisibleLeader] = useState<boolean>(false);
+  const [modayType, setModalType] = useState<modalType>('');
   const [modalStatus, setModalStatus] = useState<UserStatus>(UserStatus.normal);
   const [resetStart, setResetStart] = useState<ResetStart>(ResetStart.single);
   const [selectedRows, setSelectedRows] = useState<string[]>([]);
   const [selectedUsers, setSelectedUsers] = useState<UserInfo[]>([]);
   const [{ userInfo }] = usePortalGlobalValue();
-
   const [currUser, setCurrUser] = useState<UserInfo>({
     id: '',
     userName: '',
     email: '',
     phone: '',
   });
-
   const [pageParams, setPageParams] = React.useState<{
     page: number;
     limit: number;
@@ -164,17 +78,17 @@ export default function Employees({
     userName: '',
   });
 
-  useEffect(() => {
-    setPageParams({ ...pageParams, userName: keyword });
-  }, [keyword]);
-
-  const { data: personList, isLoading, refetch } = useQuery(
+  const { data: employeesList, isLoading, refetch } = useQuery(
     ['GET_USER_ADMIN_INFO', pageParams, department.id],
     () => getUserAdminInfo(department.id, pageParams),
     {
       refetchOnWindowFocus: false,
     }
   );
+
+  useEffect(() => {
+    setPageParams({ ...pageParams, userName: keyword });
+  }, [keyword]);
 
   useEffect(() => {
     setPageParams({
@@ -185,80 +99,54 @@ export default function Employees({
     setSelectedRows([]);
   }, [department.id]);
 
-  const setUpSuper = (params: UserInfo) => {
+  function setUpSuper(params: UserInfo) {
     setCurrUser(params);
-    setVisibleLeader(true);
-  };
+    setModalType('leader_handle');
+  }
 
-  const handleUserInfo = (params: UserInfo, status: 'add' | 'edit') => {
+  function handleUserInfo(params: UserInfo, status: 'add' | 'edit') {
     if (status === 'edit') {
       setCurrUser(params);
-      setVisibleStaff(true);
-    } else {
-      setCurrUser({
-        id: '',
-        userName: '',
-        email: '',
-        phone: '',
-      });
-      setVisibleStaff(true);
+      setModalType('edit_employees');
+      return;
     }
-  };
+    setCurrUser({
+      id: '',
+      userName: '',
+      email: '',
+      phone: '',
+    });
+    setModalType('edit_employees');
+  }
 
   const handleReset = (params: UserInfo) => {
     setResetStart(ResetStart.single);
     setCurrUser(params);
-    setResetModal(true);
+    setModalType('reset_password');
   };
 
   const openSendPwd = () => {
     setResetStart(ResetStart.batch);
-    setResetModal(true);
-  };
-
-  const closeResetModal = () => {
-    setResetModal(false);
+    setModalType('reset_password');
   };
 
   const handleAccount = (status: UserStatus, params: UserInfo): void => {
     setCurrUser(params);
     setModalStatus(status);
-    setHandleModal(true);
+    setModalType('edit_employees');
   };
 
-  const closeHandleModal = () => {
-    setHandleModal(false);
-  };
-
-  const handleChange = (current: number) => {
+  function handlePageChange(current: number) {
     setPageParams({ ...pageParams, page: current });
-  };
+  }
 
-  const handleShowSizeChange = (limit: number) => {
+  function handlePageSizeChange(limit: number) {
     setPageParams({
       ...pageParams,
       page: 1,
       limit,
     });
-  };
-
-  const importFile = () => {
-    setVisibleFile(true);
-  };
-
-  const closeFileModal = () => {
-    setVisibleFile(false);
-    refetch();
-  };
-
-  const closeStaffModal = () => {
-    setVisibleStaff(!visibleStaff);
-  };
-
-  const handleAdjustModal = () => {
-    setVisibleAdjust(!visibleAdjust);
-  };
-
+  }
   const clearSelectRows = () => {
     setSelectedRows([]);
   };
@@ -275,61 +163,21 @@ export default function Employees({
           user.depName = user.dep && user.dep.departmentName;
           return user;
         });
-        exportDepExcel(excelHeader, newData, '人员列表.xlsx');
+        exportEmployees(newData);
       } else {
         Message.error('获取人员出错');
       }
     });
   };
 
-
-  const expandActions = [
-    {
-      id: '1',
-      iconName: 'exit_to_app',
-      text: '导出员工数据 ',
-      onclick: () => exportDepData(),
-    },
-  ];
-
-  const columns = [
-    {
-      title: '姓名',
-      dataIndex: 'userName',
-      render: (text: string, record: UserInfo) => <UserInfoColumn userinfo={record} />,
-    },
-    {
-      title: '手机号',
-      dataIndex: 'phone',
-      width: 130,
-      render: (text: string, record: UserInfo) => {
-        return <OtherColumn columnKey='phone' userinfo={record} />;
-      },
-    },
-    {
-      title: '邮箱',
-      dataIndex: 'email',
-      // width: 150,
-      render: (text: string, record: UserInfo) => {
-        return <OtherColumn columnKey='email' userinfo={record} />;
-      },
-    },
-    {
-      title: '部门',
-      dataIndex: 'department',
-      render: (text: string, record: UserInfo) => {
-        return <OtherColumn columnKey='dep' userinfo={record} />;
-      },
-    },
-  ];
-
+  const columns = [...EmployeesColumns];
   if (userInfo.authority.includes('accessControl/mailList/manage')) {
     columns.push({
       title: '',
       dataIndex: '',
       width: 40,
       render: (text: string, record: UserInfo)=> {
-        const menu = MENUS.filter((menu) => {
+        const menu = EmplayeesActions.filter((menu) => {
           return menu.authority.includes(record?.useStatus || 0) &&
           menu.leader.includes(record?.isDEPLeader || 0);
         });
@@ -343,13 +191,10 @@ export default function Employees({
                 handleUserInfo(record, 'edit');
                 return;
               }
-              if (key === 'leader') {
+              if (key === 'leader' || key === 'cancel' ) {
                 setUpSuper(record);
               }
-              if (key === 'cancel') {
-                setUpSuper(record);
-                return;
-              }
+
               if (key === 'reset') {
                 handleReset(record);
                 return;
@@ -371,6 +216,29 @@ export default function Employees({
     });
   }
 
+  function openModal(type: modalType) {
+    setModalType(type);
+  }
+
+  function closeModal() {
+    setModalType('');
+  }
+
+  // Because the data will be imported in the middle, it needs to be refreshed
+  function closeFileModal() {
+    setModalType('');
+    refetch();
+  }
+
+  const expandActions = [
+    {
+      id: '1',
+      iconName: 'exit_to_app',
+      text: '导出员工数据 ',
+      onclick: () => exportDepData(),
+    },
+  ];
+
   const rowSelection = {
     selectedRowKeys: selectedRows,
     getCheckboxProps: (record: any) => ({
@@ -385,32 +253,34 @@ export default function Employees({
 
   return (
     <>
-      { visibleLeader &&
-      <LeaderHandleModal user={currUser} closeModal={() => setVisibleLeader(false)} />}
-      { visibleAdjust && <AdjustDepModal userList={selectedUsers} closeModal={handleAdjustModal} />}
-      { visibleStaff && <StaffModal user={currUser} closeModal={closeStaffModal} />}
-      { visibleFile && <ExportFileModal currDepId={department.id} closeModal={closeFileModal} />}
+      { modayType === 'leader_handle' &&
+      (<LeaderHandleModal user={currUser} closeModal={closeModal} />)}
+      { modayType === 'adjust_dep' &&
+      (<AdjustDepModal userList={selectedUsers} closeModal={closeModal} />)}
+      { modayType === 'edit_employees' &&
+      (<EditEmployeesModal user={currUser} closeModal={closeModal} />)}
+      { modayType === 'import_employees' &&
+      (<ImportEmployeesModal currDepId={department.id} closeModal={closeFileModal} />)}
       {
-        handleModal && <AccountHandleModal
+        modayType === 'alert_user_state' && (<AlterUserStateModal
           status={modalStatus}
           user={currUser}
-          closeModal={closeHandleModal}
-        />
+          closeModal={closeModal}
+        />)
       }
       {
-        resetModal && <ResetPasswordModal
+        modayType === 'reset_password' && (<ResetPasswordModal
           userIds={resetStart === ResetStart.single ? [currUser.id] : selectedRows}
-          closeModal={closeResetModal}
+          closeModal={closeModal}
           clearSelectRows={clearSelectRows}
-        />
+        />)
       }
 
       <div className="h-full flex flex-grow flex-col overflow-hidden">
-        <DepartmentStaff
-          department={department.departmentName}
-          count={personList?.total || 0}
-          unit="人"
-        />
+        <div className="flex items-center ml-20 mb-20">
+          <div className="text-h6">{department.departmentName}</div>
+          <div className="text-12 text-gray-400">（{employeesList?.total || 0}人）</div>
+        </div>
         <div className="flex items-stretch px-20">
           {selectedRows.length > 0 ? (
             <Authorized authority={['accessControl/mailList/manage']}>
@@ -418,7 +288,7 @@ export default function Employees({
                 className="bg-black-900"
                 textClassName="text-white"
                 icon={<SvgIcon name="device_hub" type="light" size={20} className="mr-10" />}
-                onClick={handleAdjustModal}
+                onClick={() => openModal('adjust_dep')}
               >
                 调整部门
               </Button>
@@ -434,7 +304,7 @@ export default function Employees({
             <Authorized authority={['accessControl/mailList/manage']}>
               <Button
                 icon={<SvgIcon type="light" name="create_new_folder" className="mr-10" size={20} />}
-                onClick={importFile}
+                onClick={() => openModal('import_employees')}
                 className="mr-16 bg-gray-700 text-white"
               >
                 excel 批量导入
@@ -460,29 +330,32 @@ export default function Employees({
         <div className="h-full flex flex-grow my-16 flex-col px-20 overflow-auto">
           <div className="qxp-table flex w-full border-b">
             {
-              personList?.data && <Table
+              (employeesList?.data && employeesList?.data.length > 0) && (<Table
                 className="text-14 table-full"
-                dataSource={personList?.data || []}
+                dataSource={employeesList?.data || []}
                 columns={columns}
                 rowKey="id"
                 rowSelection={rowSelection}
-                emptyText={<EmptyData text="无成员数据" className="py-32" />}
+                // emptyText={<EmptyTips text="无成员数据" className="py-32" />}
                 loading={isLoading}
-              />
+              />)
             }
-
+            {
+              (employeesList?.data && employeesList?.data.length === 0) && (<div className="w-full">
+                <EmptyTips text="无成员数据" className="py-32" />
+              </div>)
+            }
           </div>
           <div className="flex justify-end">
             {
-              personList?.data && <Pagination
+              (employeesList?.data && employeesList?.data.length > 0) && (<Pagination
                 type="simple"
                 current={pageParams.page}
-                total={personList?.total || 0}
+                total={employeesList?.total || 0}
                 pageSize={pageParams.limit}
-                pageSizeOptions={pageSizeOptions}
-                onChange={handleChange}
-                onShowSizeChange={handleShowSizeChange}
-              />
+                onChange={handlePageChange}
+                onShowSizeChange={handlePageSizeChange}
+              />)
             }
           </div>
         </div>

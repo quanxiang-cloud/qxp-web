@@ -3,6 +3,14 @@ import { useQuery, useMutation, useQueryClient } from 'react-query';
 import { Modal } from '@QCFE/lego-ui';
 
 import Button from '@c/button';
+<<<<<<< Updated upstream
+=======
+import Table from '@c/table2';
+import Loading from '@c/loading2';
+import EmptyData from '@portal/components/empty-tips';
+import More from '@c/more';
+import Pagination from '@c/pagination2';
+>>>>>>> Stashed changes
 import Authorized from '@clients/common/component/authorized';
 import Loading from '@portal/components/loading';
 import Error from '@c/error';

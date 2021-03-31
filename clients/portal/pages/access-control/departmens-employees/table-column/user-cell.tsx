@@ -8,7 +8,7 @@ interface Props {
   userinfo: UserInfo;
 }
 
-export default function UserInfoColumn({ userinfo }: Props) {
+export default function UserCell({ userinfo }: Props) {
   const firstLetter: string = userinfo.userName.substring(0, 1);
   const imgInfo = getImgColor(firstLetter);
 
@@ -39,7 +39,7 @@ export default function UserInfoColumn({ userinfo }: Props) {
         <span className="mr-1">{userinfo.userName}</span>}
       {userinfo.isDEPLeader === UserStatus.normal && (
         <span
-          className='bg-jb rounded-4 px-2 flex items-center justify-center'
+          className='bg-jb rounded-4 ml-4 px-2 flex items-center justify-center'
         >
           <span className="text-white text-12">主管</span>
         </span>
