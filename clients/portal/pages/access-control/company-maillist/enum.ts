@@ -4,6 +4,11 @@ export enum UserStatus {
   delete = -1
 }
 
+export enum LeaderStatus {
+  true = 1,
+  false = -1
+}
+
 export enum FileUploadStatus {
   init = 0,
   success = 1,

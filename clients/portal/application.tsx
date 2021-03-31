@@ -15,9 +15,9 @@ export default function Application() {
   return (
     <LocaleProvider locales={locales} currentLocale={state.siteLang}>
       <Router>
-        <div className="min-h-screen flex flex-col">
+        <div className="h-full flex flex-col">
           <GlobalHeader />
-          <React.Suspense fallback={<Loading className="min-h-screen" desc="加载中..." />}>
+          <React.Suspense fallback={<Loading className="h-full" desc="加载中..." />}>
             <Routes />
           </React.Suspense>
         </div>

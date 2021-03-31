@@ -19,8 +19,8 @@ export default function Index() {
   }
 
   return (
-    <div className="py-20 px-58 flex justify-center items-start">
-      <div className="w-316 bg-white rounded-12">
+    <div className="py-20 px-58 flex justify-center items-start flex-grow overflow-hidden">
+      <div className="w-316 bg-white rounded-12 mr-20">
         <div className="access-background-image p-20 opacity-90">
           <ItemWithTitleDesc
             title="访问控制"
@@ -43,8 +43,7 @@ export default function Index() {
           <ListMenu />
         </div>
       </div>
-      <div className='w-20'></div>
-      <div className="right-content-container">
+      <div className="h-full flex-grow bg-white rounded-12 overflow-hidden">
         <Switch>
           <Route exact path={`${path}`} component={MailList} />
           <Route path={`${path}/corporate-directory`} component={MailList} />

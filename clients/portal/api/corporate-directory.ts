@@ -219,23 +219,25 @@ export const updateUser = (values: FormValues) => {
   );
 };
 
+export interface LeaderParams {
+  depID: string;
+  userID?: string;
+}
+
 /**
  * @returns 设为主管
  */
 export const setDEPLeader = ({
   depID,
   userID,
-}: {
-  depID: string;
-  userID: string;
-}) => {
+}: LeaderParams) => {
   return httpPost<{ code: number }>(
     '/api/v1/org/setDEPLeader',
     JSON.stringify({ depID, userID }),
     {
       'Content-Type': 'application/json',
     }
-  ).then(({ data }) => data);
+  );
 };
 
 /**
@@ -243,9 +245,7 @@ export const setDEPLeader = ({
  */
 export const cancelDEPLeader = ({
   depID,
-}: {
-  depID: string;
-}) => {
+}: LeaderParams) => {
   return httpPost<{ code: number }>(
     '/api/v1/org/cancelDEPLeader',
     JSON.stringify({ depID }),

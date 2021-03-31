@@ -36,7 +36,7 @@ export default function RoleManagement() {
 
   return (
     <Card
-      className="transition-opacity flex flex-col flex-1 mt-0"
+      className="h-full transition-opacity flex flex-col flex-1 mt-0"
       headerClassName="bg-gray-1000 px-20 py-16 header-background-image h-56"
       title="角色管理"
       itemTitleClassName="text-h5"
@@ -45,12 +45,11 @@ export default function RoleManagement() {
       contentClassName={contentHeight}
       descClassName="text-caption"
     >
-      <div className="flex flex-row items-stretch h-full">
-        <div className="pb-4 w-259">
+      <div className="flex flex-grow  items-stretch h-full">
+        <div className="h-full pb-4 w-259 border-r">
           <RoleList items={roleList} onChange={setRoleId} />
         </div>
-        <div className="vertical-line flex-grow-0"></div>
-        <div className="flex-1 p-20 pb-0">
+        <div className="h-full flex-grow p-20 pb-0">
           <RoleDetail role={roleList.find(({ id }) => id == roleId)} />
         </div>
       </div>

@@ -22,9 +22,10 @@ function DepartmentsTree({ onSelect }: Props): JSX.Element {
   });
 
   useEffect(() => {
-    console.log('zoule这里了');
     if (rootDep && !isLoading && !isError) {
-      setStore(new Store(rootDep));
+      const newStore = new Store(rootDep);
+      setStore(newStore);
+      // onSelect && onSelect(newStore.currentFocusedNode.data);
     }
   }, [rootDep]);
 
@@ -33,7 +34,6 @@ function DepartmentsTree({ onSelect }: Props): JSX.Element {
     return <></>;
   }
 
-  console.log('store', store);
   return (
     <div className="tree-wrapper">
       <Tree
