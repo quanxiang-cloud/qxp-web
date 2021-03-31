@@ -224,18 +224,22 @@ body {
 
 label.checkbox {
   &.checked {
+
     &:before,
     &:hover:before {
       @apply bg-blue-600 #{!important};
     }
   }
+
   &.disabled {
     opacity: 1 !important;
+
     &:after,
     &:before {
       opacity: 0.5 !important;
     }
   }
+
   input {
     opacity: 0 !important;
   }
@@ -310,11 +314,6 @@ button {
     border: none;
     outline: none;
   }
-}
-
-.flex-column {
-  display: flex;
-  flex-direction: column;
 }
 
 .overflow-y-h {

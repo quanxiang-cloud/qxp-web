@@ -1,12 +1,12 @@
 import SelectableTreeStore from '@c/headless-tree/multiple-select-tree';
 import { departmentToTreeNode } from '@lib/utils';
 
-export default class extends SelectableTreeStore<IDepartment> {
-  onChange: (prevNodes: IDepartment[], curNodes: IDepartment[]) => void
+export default class extends SelectableTreeStore<Department> {
+  onChange: (prevNodes: Department[], curNodes: Department[]) => void
 
   constructor(
-    rootDep: IDepartment,
-    onChange: (prevNodes: IDepartment[], curNodes: IDepartment[]) => void
+    rootDep: Department,
+    onChange: (prevNodes: Department[], curNodes: Department[]) => void
   ) {
     super({ rootNode: departmentToTreeNode(rootDep) });
     this.onChange = onChange;

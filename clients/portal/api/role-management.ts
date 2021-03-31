@@ -106,13 +106,13 @@ export const updateRoleAssociations = (arg: IUpdateRoleAssociations) =>
 
 // search for department structure
 export const getDepartmentStructure = async () => {
-  const { data } = await httpPost<IDepartment>('/api/v1/org/DEPTree', null, {
+  const { data } = await httpPost<Department>('/api/v1/org/DEPTree', null, {
     'Content-Type': 'application/x-www-form-urlencoded',
   });
   return data;
 };
 
-interface IUserDepartment extends IDepartment {
+interface IUserDepartment extends Department {
   createTime: number;
   updateTime: number;
   grade: number;

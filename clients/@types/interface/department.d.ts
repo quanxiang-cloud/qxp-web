@@ -1,15 +1,15 @@
-interface IDepartment {
+interface Department {
   departmentName: string;
   id: string;
   pid: string;
   superID: string;
   grade: number;
-  child?: Array<IDepartment>;
+  child?: Array<Department>;
   departmentLeaderId?: string;
   useStatus?: number;
   superId?: string;
 }
 
-interface IDepartmentWithParent extends IDepartment {
-  parent: IDepartment[];
+interface IDepartmentWithParent extends Department {
+  parent: Department[];
 }

@@ -43,13 +43,13 @@ export default function EditDepartment({ department, closeModal }: Props) {
     depData = undefined;
   }
 
-  const removeSelf = (dep: IDepartment | undefined): IDepartment | undefined => {
+  const removeSelf = (dep: Department | undefined): Department | undefined => {
     if (!dep || dep.id === department.id) {
       return;
     }
     return {
       ...dep,
-      child: dep.child?.map((dp) => removeSelf(dp)).filter(Boolean) as IDepartment[],
+      child: dep.child?.map((dp) => removeSelf(dp)).filter(Boolean) as Department[],
     };
   };
 
@@ -157,7 +157,7 @@ export default function EditDepartment({ department, closeModal }: Props) {
         {depData && (
           <DepartmentPicker
             label="所属部门"
-            treeData={departmentToTreeNode(depData as IDepartment)}
+            treeData={departmentToTreeNode(depData as Department)}
             labelKey="departmentName"
             name="pid"
             defaultValue={department.pid}

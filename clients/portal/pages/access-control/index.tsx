@@ -8,7 +8,7 @@ import { usePortalGlobalValue } from '@states/portal';
 import ListMenu from '@p/access-control/list-menu';
 
 import RoleManagement from './role-management';
-import MailList from './company-maillist';
+import DeparmentsEmployees from './departmens-employees';
 
 export default function Index() {
   const { path } = useRouteMatch();
@@ -45,8 +45,8 @@ export default function Index() {
       </div>
       <div className="h-full flex-grow bg-white rounded-12 overflow-hidden">
         <Switch>
-          <Route exact path={`${path}`} component={MailList} />
-          <Route path={`${path}/corporate-directory`} component={MailList} />
+          <Route exact path={`${path}`} component={DeparmentsEmployees} />
+          <Route path={`${path}/corporate-directory`} component={DeparmentsEmployees} />
           <Route path={`${path}/role-management`} component={RoleManagement} />
         </Switch>
       </div>

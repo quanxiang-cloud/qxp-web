@@ -1,7 +1,7 @@
 import { QueryFunctionContext } from 'react-query';
 
 import { httpPost, getNestedPropertyToArray } from '@lib/utils';
-import { IDepartment } from '@states/portal';
+import { Department } from '@states/portal';
 
 // get user info
 export interface UserInfo {
@@ -10,7 +10,7 @@ export interface UserInfo {
   phone: string;
   email: string;
   userIconURL?: string;
-  dep?: IDepartment;
+  dep?: Department;
   depIds?: string[];
   authority?: string[];
   roleId?: string;
