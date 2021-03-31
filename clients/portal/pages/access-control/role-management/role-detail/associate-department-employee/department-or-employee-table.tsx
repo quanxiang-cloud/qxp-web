@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery } from 'react-query';
 
-import EmptyData from '@c/empty-data';
+import EmptyData from '@c/empty-tips';
 import More from '@c/more';
 import { PAGINATION } from '@const/table';
 import Pagination from '@portal/components/pagination';

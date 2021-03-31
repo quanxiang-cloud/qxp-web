@@ -22,7 +22,9 @@ export const excelHeader: Column[] = [
   },
 ];
 
-export const exportDepExcel = (headers: Column[], data: any[], fileName: string) => {
+export const exportEmployees = ( data: any[]) => {
+  const headers = excelHeader;
+  const fileName = '人员列表.xlsx';
   const _headers = headers
     .map((item: Column, i: number) =>
       Object.assign(

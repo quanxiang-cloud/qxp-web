@@ -8,7 +8,7 @@ interface Props {
   userinfo: UserInfo;
 }
 
-export default function OtherColumn({ columnKey, userinfo }: Props) {
+export default function OtherCell({ columnKey, userinfo }: Props) {
   return (
     userinfo.useStatus === UserStatus.disable ?
       <span className="mr-1 text-gray-400">
