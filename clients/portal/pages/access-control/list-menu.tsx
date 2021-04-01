@@ -70,7 +70,7 @@ export default function ListMenu() {
                 },
               })}
             >
-              <img className="w-24 h-24 pr-8" src={item.icon} alt="logo" />
+              <img className="w-24 h-24 mr-8" src={item.icon} alt="logo" />
               <span className="text-gray-400 text-h5">{item.name}</span>
               <div
                 className={twCascade(

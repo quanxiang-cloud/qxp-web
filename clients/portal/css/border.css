@@ -25,3 +25,7 @@
 .box-border-radius {
   @apply rounded-tl-4 rounded-tr-12 rounded-br-12 rounded-bl-12;
 }
+
+.btn-border-radius {
+  @apply rounded-tl-8 rounded-tr-2 rounded-br-8 rounded-bl-8;
+}

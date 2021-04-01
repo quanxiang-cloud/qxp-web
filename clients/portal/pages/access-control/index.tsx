@@ -8,7 +8,7 @@ import { usePortalGlobalValue } from '@states/portal';
 import ListMenu from '@p/access-control/list-menu';
 
 import RoleManagement from './role-management';
-import DeparmentsEmployees from './departmens-employees';
+import DepartmentsEmployees from './departments-employees';
 
 export default function Index() {
   const [{ userInfo }] = usePortalGlobalValue();
@@ -44,7 +44,7 @@ export default function Index() {
       </div>
       <div className="h-full flex-grow bg-white rounded-12 overflow-hidden">
         <Switch>
-          <Route exact path="/access-control" component={DeparmentsEmployees} />
+          <Route exact path="/access-control" component={DepartmentsEmployees} />
           <Route path="/access-control/role-management" component={RoleManagement} />
           <Route component={() => (<Error desc={'Menu page is not found'} />)} />
         </Switch>

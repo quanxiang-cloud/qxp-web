@@ -8,12 +8,12 @@ import { resetUserPWD } from '@net/corporate-directory';
 
 const { CheckboxGroupField } = Form;
 
-export type CheckedWay = {
+export type sendPasswordBy = {
   sendPhone: -1 | 1;
   sendEmail: -1 | 1;
 };
 
-interface ResetPasswordModalProps {
+interface Props {
   userIds: string[];
   closeModal(): void;
   clearSelectRows(): void;
@@ -23,7 +23,7 @@ export default function ResetPasswordModal({
   userIds,
   closeModal,
   clearSelectRows,
-}: ResetPasswordModalProps) {
+}: Props) {
   const formRef = createRef<Form>();
 
   const resetMutation = useMutation(resetUserPWD, {
@@ -50,7 +50,7 @@ export default function ResetPasswordModal({
       Message.error('请选择发送方式');
       return;
     }
-    const checkedWay: CheckedWay = {
+    const checkedWay: sendPasswordBy = {
       sendEmail: -1,
       sendPhone: -1,
     };

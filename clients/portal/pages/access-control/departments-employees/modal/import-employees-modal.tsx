@@ -17,13 +17,9 @@ import {
   importTempFile,
   resetUserPWD,
 } from '@net/corporate-directory';
+import { Columns } from '@t/interface/type';
 
-import { FileUploadStatus } from '../enum';
-
-interface ExportFileModalProps {
-  currDepId: string;
-  closeModal(): void;
-}
+import { FileUploadStatus } from '../type';
 
 type UploadRes = {
   status: FileUploadStatus;
@@ -33,21 +29,20 @@ type UploadRes = {
 
 type ButtonStatus = 0 | 1;
 
-type Column = {
-  title: string;
-  key: string;
-  dataIndex: string;
-};
-
 type CheckedWay = {
   sendEmail: -1 | 1;
   sendPhone: -1 | 1;
 };
 
+interface Props {
+  currDepId: string;
+  closeModal(): void;
+}
+
 export default function ImportEmployeesModal({
   currDepId,
   closeModal,
-}: ExportFileModalProps) {
+}: Props) {
   const [fileList, setFileList] = useState<File[]>([]);
   const [checkWay, setCheckWay] = useState<CheckedWay>({
     sendPhone: -1,
@@ -122,7 +117,7 @@ export default function ImportEmployeesModal({
     document.body.removeChild(aElem);
   };
 
-  const columns: Column[] = [
+  const columns: Columns = [
     {
       title: '姓名',
       dataIndex: 'userName',
@@ -181,12 +176,12 @@ export default function ImportEmployeesModal({
   };
 
   const exportCourseExcel = (
-    headers: Column[],
+    headers: Columns,
     data: any[],
     fileName: string
   ) => {
     const _headers = headers
-      .map((item: Column, i: number) =>
+      .map((item, i) =>
         Object.assign(
           {},
           {

@@ -4,22 +4,22 @@ import SvgIcon from '@c/icon';
 import UserCell from './table-column/user-cell';
 import OtherCell from './table-column/other-cell';
 import { MenuItem } from '@c/more-menu';
-import { UserInfo } from '@portal/api/auth';
+import { UserInfo } from '@net/auth';
 
-import { UserStatus, LeaderStatus } from './enum';
+import { UserStatus, LeaderStatus } from './type';
 
 export const EmployeesColumns = [
   {
     title: '姓名',
     dataIndex: 'userName',
-    render: (text: string, record: UserInfo) => <UserCell userinfo={record} />,
+    render: (text: string, record: UserInfo) => <UserCell user={record} />,
   },
   {
     title: '手机号',
     dataIndex: 'phone',
     width: 130,
     render: (text: string, record: UserInfo) => {
-      return <OtherCell columnKey='phone' userinfo={record} />;
+      return <OtherCell columnKey='phone' user={record} />;
     },
   },
   {
@@ -27,14 +27,14 @@ export const EmployeesColumns = [
     dataIndex: 'email',
     // width: 150,
     render: (text: string, record: UserInfo) => {
-      return <OtherCell columnKey='email' userinfo={record} />;
+      return <OtherCell columnKey='email' user={record} />;
     },
   },
   {
     title: '部门',
     dataIndex: 'department',
     render: (text: string, record: UserInfo) => {
-      return <OtherCell columnKey='dep' userinfo={record} />;
+      return <OtherCell columnKey='dep' user={record} />;
     },
   },
 ];
@@ -44,7 +44,7 @@ export type AuthorMenuItem<T> = {
   leader: number[];
 } & MenuItem<T>;
 
-export const EmplayeesActions: AuthorMenuItem<string>[] = [
+export const EmployeesActions: AuthorMenuItem<string>[] = [
   {
     key: 'edit',
     label: (
@@ -57,7 +57,7 @@ export const EmplayeesActions: AuthorMenuItem<string>[] = [
     leader: [LeaderStatus.true, LeaderStatus.false],
   },
   {
-    key: 'leader',
+    key: 'confer',
     label: (
       <div className="flex items-center">
         <SvgIcon name="bookmark_border" size={16} className="mr-8" />
@@ -68,7 +68,7 @@ export const EmplayeesActions: AuthorMenuItem<string>[] = [
     leader: [LeaderStatus.false],
   },
   {
-    key: 'cancel',
+    key: 'revoke',
     label: (
       <div className="flex items-center">
         <SvgIcon name="cancel" size={16} className="mr-8" />
@@ -129,7 +129,7 @@ export const ExpandActions: MenuItem<string>[] = [
     key: 'export',
     label: (
       <div className="flex items-center">
-        <SvgIcon name="more_horiz" size={16} className="mr-8" />
+        <SvgIcon name="exit_to_app" size={16} className="mr-8" />
         <span className="font-normal">导出员工数据</span>
       </div>
     ),

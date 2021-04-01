@@ -3,13 +3,12 @@ import React, { useState, useEffect } from 'react';
 import TextHeader from '@c/text-header';
 import Error from '@c/error';
 import Search from '@c/search';
-// todo 挂载都全局window上面
 import { usePortalGlobalValue } from '@states/portal';
 
 import DepartmentsTree from './departments-tree';
 import Employees from './employees';
 
-export default function DeparmentsEmployees() {
+export default function DepartmentsEmployees() {
   const [inputValue, setInputValue] = useState<string>('');
   const [searchWord, setSearchWord] = useState<string>('');
   const [currentDepartment, setCurrentDepartment] = useState<Department | null>(null);
@@ -69,7 +68,7 @@ export default function DeparmentsEmployees() {
           {
             currentDepartment && (
               <Employees
-                keyword={searchWord}
+                searchWord={searchWord}
                 department={currentDepartment}
               />
             )

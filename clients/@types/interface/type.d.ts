@@ -1,6 +1,6 @@
 import { UserInfo } from '@net/auth';
 
-type DeptInfo = {
+export type DeptInfo = {
   departmentName: string;
   id: string;
   pid?: string;
@@ -18,6 +18,8 @@ type DeptTree = {
 export type Columns = {
   title: string;
   dataIndex: string;
+  width?: number;
+  key?: string;
   render?: (...args: any[]) => JSX.Element;
 }[]
 

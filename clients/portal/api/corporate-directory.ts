@@ -1,16 +1,16 @@
 import { httpPost, httpFile } from '@lib/utils';
 
 import { FormValues }
-  from '../pages/access-control/departmens-employees/modal/edit-employees-modal';
-import { UserStatus } from '../pages/access-control/departmens-employees/enum';
+  from '../pages/access-control/departments-employees/modal/edit-employees-modal';
+import { UserStatus } from '../pages/access-control/departments-employees/type';
 
-export interface ITreeNode {
+interface TreeNode {
   id: string;
   departmentName: string;
   departmentLeaderId: string;
   useStatus: number;
   superId: string;
-  child: ITreeNode[];
+  child: TreeNode[];
   pid?: string;
 }
 
@@ -46,7 +46,7 @@ export const queryERPName = ({
  * @param pid true
  */
 export const addDEP = () => {
-  return httpPost<ITreeNode[]>('/api/v1/org/addDEP', null, {
+  return httpPost<TreeNode[]>('/api/v1/org/addDEP', null, {
     'Content-Type': 'application/json',
   }).then(({ data }) => data);
 };
@@ -56,7 +56,7 @@ export const addDEP = () => {
  * @param id true
  */
 export const getAdminDEPInfo = () => {
-  return httpPost<ITreeNode[]>('/api/v1/org/adminDEPInfo', null, {
+  return httpPost<TreeNode[]>('/api/v1/org/adminDEPInfo', null, {
     'Content-Type': 'application/json',
   }).then(({ data }) => data);
 };
@@ -70,7 +70,7 @@ export const getAdminDEPInfo = () => {
  * @param limit true
  */
 export const getAdminDEPList = (id: string) => {
-  return httpPost<ITreeNode[]>(
+  return httpPost<TreeNode[]>(
     '/api/v1/org/adminDEPList',
     JSON.stringify({ id }),
     {
@@ -86,7 +86,7 @@ export const getAdminDEPList = (id: string) => {
  * @param limit true
  */
 export const getAdminDEPSuperPID = () => {
-  return httpPost<ITreeNode[]>(
+  return httpPost<TreeNode[]>(
     '/api/v1/org/adminDEPSuperPID',
     null,
     {
@@ -103,7 +103,7 @@ export const getAdminDEPSuperPID = () => {
  * @param limit true
  */
 export const getAdminDEPPID = () => {
-  return httpPost<ITreeNode[]>('/api/v1/org/adminDEPList', null, {
+  return httpPost<TreeNode[]>('/api/v1/org/adminDEPList', null, {
     'Content-Type': 'application/json',
   }).then(({ data }) => data);
 };
@@ -117,7 +117,7 @@ export const getAdminDEPPID = () => {
  * @param pid false
  */
 export const updateDEP = () => {
-  return httpPost<ITreeNode[]>('/api/v1/org/updateDEP', null, {
+  return httpPost<TreeNode[]>('/api/v1/org/updateDEP', null, {
     'Content-Type': 'application/json',
   }).then(({ data }) => data);
 };
@@ -141,7 +141,7 @@ export const deleteDEP = (id: string) => {
  * @param id true
  */
 export const getUserDEPInfo = () => {
-  return httpPost<ITreeNode[]>('/api/v1/org/userDEPInfo', null, {
+  return httpPost<TreeNode[]>('/api/v1/org/userDEPInfo', null, {
     'Content-Type': 'application/json',
   }).then(({ data }) => data);
 };
