@@ -1,12 +1,14 @@
 import React, { useEffect } from 'react';
 import { Route, Switch } from 'react-router';
 import { useQuery } from 'react-query';
+import { isEmpty } from 'lodash';
 
 import Error from '@c/error';
+import { usePortalGlobalValue } from '@states/portal';
+import { getNestedPropertyToArray } from '@lib/utils';
 
 import Loading from './components/loading';
-import { getSystemFuncs, getUserFuncs, getUserInfo, getUserRoles } from './api/auth';
-import { usePortalGlobalValue } from '@states/portal';
+import { getUserFuncs, getUserRoles } from './api/auth';
 
 import '@assets/scss/index.scss';
 
@@ -14,63 +16,51 @@ const Dashboard = React.lazy(() => import('./pages/dashboard'));
 const MetaData = React.lazy(() => import('./pages/metadata'));
 const AccessControl = React.lazy(() => import('./pages/access-control'));
 
+// @ts-ignore
+const { userInfo } = window.__global || {};
+if (userInfo && !isEmpty(userInfo)) {
+  userInfo.depIds = getNestedPropertyToArray<string>(userInfo?.dep, 'id', 'child');
+}
+
 export default function Routes(): JSX.Element {
   const [_, setValue] = usePortalGlobalValue();
-  const { data: userData, isLoading: userIsLoading } = useQuery(['getUserInfo'], getUserInfo, {
-    refetchOnWindowFocus: false,
-    cacheTime: -1,
-    retry: false,
-  });
-  const { data: allFuncs, isLoading: allFunsIsLoading } = useQuery(
-    ['getSystemFuncs'],
-    getSystemFuncs,
-    {
-      refetchOnWindowFocus: false,
-      cacheTime: -1,
-      retry: false,
-      enabled: !!userData?.id,
-    },
-  );
-
-  const { data: userFuncs, isLoading: userFuncsIsLoading } = useQuery(
-    ['getUserFuncs', userData?.depIds],
+  const { data: funcs, isLoading: funcsIsLoading } = useQuery(
+    ['GET_USER_FUNCS', userInfo?.depIds],
     getUserFuncs,
     {
       refetchOnWindowFocus: false,
       cacheTime: -1,
       retry: false,
-      enabled: !!(userData?.depIds && userData.depIds.length),
+      enabled: !!(userInfo?.depIds && userInfo.depIds.length),
     },
   );
-  const { data, isLoading: userRoleIsLoading } = useQuery(
-    'getUserRoles',
-    () => getUserRoles(userData?.id || '', userData?.depIds || []),
+  const { data, isLoading: rolesIsLoading } = useQuery(
+    'GET_USER_ROLES',
+    () => getUserRoles(userInfo?.id || '', userInfo?.depIds || []),
     {
       refetchOnWindowFocus: false,
       retry: false,
-      enabled: !!(userData?.id && userData?.depIds && userData?.depIds.length),
+      enabled: !!(userInfo?.id && userInfo?.depIds && userInfo?.depIds.length),
     },
   );
 
   useEffect(() => {
     setValue((val) => ({
       ...val,
-      authority: allFuncs || [],
       userInfo: {
-        ...userData,
-        depIds: userData?.depIds || [],
-        authority: userFuncs || [],
+        ...userInfo,
+        depIds: userInfo?.depIds || [],
+        authority: funcs || [],
         roles: data?.roles || [],
       },
     }));
-  }, [userData, allFuncs, userFuncs]);
+  }, [funcs, data?.roles]);
 
-  if (userIsLoading || allFunsIsLoading || userFuncsIsLoading || userRoleIsLoading) {
+  if (funcsIsLoading || rolesIsLoading) {
     return <Loading desc="加载中..." className="w-screen h-screen" />;
   }
 
-  if (!userData || !allFuncs || !userFuncs || !data?.total ||
-    (userFuncs && !userFuncs.includes('application'))) {
+  if (!funcs || !data?.total || (funcs && !funcs.includes('application'))) {
     return <Error desc="您没有权限, 请联系管理员..." />;
   }
 

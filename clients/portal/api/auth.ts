@@ -1,6 +1,6 @@
 import { QueryFunctionContext } from 'react-query';
 
-import { httpPost, getNestedPropertyToArray } from '@lib/utils';
+import { httpPost } from '@lib/utils';
 import { Department } from '@states/portal';
 
 // get user info
@@ -18,13 +18,6 @@ export interface UserInfo {
   useStatus?: number;
   isDEPLeader?: number;
 }
-export const getUserInfo = async (): Promise<Partial<UserInfo>> => {
-  const { data } = await httpPost<UserInfo>('/api/v1/org/userUserInfo');
-  if (data) {
-    data.depIds = getNestedPropertyToArray<string>(data?.dep, 'id', 'child');
-  }
-  return data || {};
-};
 
 // get all user funcs
 export const getUserFuncs = async ({ queryKey }: QueryFunctionContext): Promise<string[]> => {
