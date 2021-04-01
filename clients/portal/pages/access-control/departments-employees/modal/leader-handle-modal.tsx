@@ -4,10 +4,10 @@ import { Modal, Message } from '@QCFE/lego-ui';
 
 import SvgIcon from '@c/icon';
 import Button from '@c/button';
-import { UserInfo } from '@portal/api/auth';
 import { setDEPLeader, cancelDEPLeader, LeaderParams } from '@net/corporate-directory';
+import { UserInfo } from '@net/auth';
 
-import { LeaderStatus } from '../enum';
+import { LeaderStatus } from '../type';
 
 interface Props {
   user: UserInfo;
@@ -21,7 +21,7 @@ export default function LeaderHandleModal({ user, closeModal }: Props) {
   const api = isLeader ? cancelDEPLeader : setDEPLeader;
   const queryClient = useQueryClient();
 
-  const superMutation = useMutation(api, {
+  const mutation = useMutation(api, {
     onSuccess: (res) => {
       if (res && res.code === 0) {
         Message.success('操作成功');
@@ -40,7 +40,7 @@ export default function LeaderHandleModal({ user, closeModal }: Props) {
     if (!isLeader) {
       params.userID = user.id;
     }
-    superMutation.mutate(params);
+    mutation.mutate(params);
   }
 
   return (

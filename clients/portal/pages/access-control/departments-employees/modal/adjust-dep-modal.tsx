@@ -1,21 +1,28 @@
 import React, { createRef } from 'react';
 import { useQuery, useMutation, useQueryClient } from 'react-query';
-import { Modal, Icon, Form, Loading, Message } from '@QCFE/lego-ui';
+import { Modal, Form, Loading, Message } from '@QCFE/lego-ui';
 
+import SvgIcon from '@c/icon';
 import DepartmentPicker from '@c/tree-picker';
 import Button from '@c/button';
-import { UserInfo } from '@net/auth';
 import { departmentToTreeNode } from '@lib/utils';
+import { UserInfo } from '@net/auth';
 import { getERPTree, batchAdjustDep } from '@net/corporate-directory';
 
-import { BatchDepParams } from '../employees';
+import { LeaderStatus } from '../type';
 
-interface IAdjustDepModalProps {
-  userList: UserInfo[];
+type BatchDepParams = {
+  usersID: string[];
+  oldDepID: string;
+  newDepID: string;
+};
+
+interface Props {
+  users: UserInfo[];
   closeModal(): void;
 }
 
-export default function AdjustDepModal({ userList, closeModal }: IAdjustDepModalProps) {
+export default function AdjustDepModal({ users: userList, closeModal }: Props) {
   const formRef = createRef<Form>();
   const queryClient = useQueryClient();
 
@@ -36,12 +43,12 @@ export default function AdjustDepModal({ userList, closeModal }: IAdjustDepModal
     },
   });
 
-  const handleSubmit = () => {
+  function handleSubmit() {
     if (!formRef.current?.validateForm()) {
       return;
     }
 
-    const isHaveLeader = userList.find((user) => user.isDEPLeader === 1);
+    const isHaveLeader = userList.find((user) => user.isDEPLeader === LeaderStatus.true);
     if (isHaveLeader) {
       Message.error('当前已选择员工列表中存在部门主管，不能参与调整部门！');
       return;
@@ -62,7 +69,7 @@ export default function AdjustDepModal({ userList, closeModal }: IAdjustDepModal
     params.oldDepID = (userList && userList[0] && userList[0].dep?.id) || '';
     userList.forEach((user) => params.usersID.push(user.id));
     depMutation.mutate(params);
-  };
+  }
 
   return (
     <Modal
@@ -73,7 +80,8 @@ export default function AdjustDepModal({ userList, closeModal }: IAdjustDepModal
       footer={
         <div className="flex items-center">
           <Button
-            icon={<Icon name="close" className="mr-4" />} onClick={closeModal}
+            icon={<SvgIcon name="close" size={20} className="mr-8" />}
+            onClick={closeModal}
             className="mr-20"
           >
             取消
@@ -81,7 +89,7 @@ export default function AdjustDepModal({ userList, closeModal }: IAdjustDepModal
           <Button
             className="bg-black-900"
             textClassName="text-white"
-            icon={<Icon name="check" type="light" className="mr-4" />}
+            icon={<SvgIcon name="check" type="light" size={20} className="mr-8" />}
             onClick={handleSubmit}
           >
             确定

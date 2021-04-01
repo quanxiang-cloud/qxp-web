@@ -1,15 +1,16 @@
 import React from 'react';
 
-import { getImgColor } from '../excel';
-import { UserInfo } from '@portal/api/auth';
-import { UserStatus } from '../enum';
+import { UserInfo } from '@net/auth';
+
+import { getImgColor } from '../utils';
+import { UserStatus } from '../type';
 
 interface Props {
-  userinfo: UserInfo;
+  user: UserInfo;
 }
 
-export default function UserCell({ userinfo }: Props) {
-  const firstLetter: string = userinfo.userName.substring(0, 1);
+export default function UserCell({ user }: Props) {
+  const firstLetter: string = user.userName.substring(0, 1);
   const imgInfo = getImgColor(firstLetter);
 
   return (
@@ -24,20 +25,20 @@ export default function UserCell({ userinfo }: Props) {
           {imgInfo.name}
           <div className="w-10 h-10 bg-white rounded-10 flex items-center
                 justify-center absolute -bottom-5 -right-5">
-            {userinfo.useStatus === UserStatus.normal && (
+            {user.useStatus === UserStatus.normal && (
               <div className="w-6 h-6 bg-green-600 rounded-6"></div>
             )}
-            {userinfo.useStatus === UserStatus.disable && (
+            {user.useStatus === UserStatus.disable && (
               <div className="w-6 h-6 bg-red-600 rounded-6"></div>
             )}
           </div>
         </div>
       </div>
 
-      {userinfo.useStatus === UserStatus.disable ?
-        <span className="mr-1 text-gray-400">{userinfo.userName}</span> :
-        <span className="mr-1">{userinfo.userName}</span>}
-      {userinfo.isDEPLeader === UserStatus.normal && (
+      {user.useStatus === UserStatus.disable ?
+        <span className="mr-1 text-gray-400">{user.userName}</span> :
+        <span className="mr-1">{user.userName}</span>}
+      {user.isDEPLeader === UserStatus.normal && (
         <span
           className='bg-jb rounded-4 ml-4 px-2 flex items-center justify-center'
         >

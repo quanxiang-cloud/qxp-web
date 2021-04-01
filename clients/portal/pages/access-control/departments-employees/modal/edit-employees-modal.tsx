@@ -1,12 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, createRef } from 'react';
 import { useQuery, useMutation, useQueryClient } from 'react-query';
-import { Modal, Form, Icon, Message } from '@QCFE/lego-ui';
+import { Modal, Form, Message } from '@QCFE/lego-ui';
 
 import TreePicker from '@c/tree-picker';
+import SvgIcon from '@c/icon';
 import Button from '@c/button';
 import Loading from '@c/loading';
-import { UserInfo } from '@net/auth';
 import { getERPTree, addDepUser, updateUser } from '@net/corporate-directory';
+import { UserInfo } from '@net/auth';
 import { departmentToTreeNode } from '@lib/utils';
 
 const { TextField, CheckboxGroupField } = Form;
@@ -34,7 +35,7 @@ interface Props {
 export default function EditEmployeesModal(
   { user, closeModal }: Props,
 ) {
-  const [form, setForm] = useState<any>(null);
+  const formRef = createRef<Form>();
   const titleText = `${user.id ? '修改' : '添加'}`;
   const queryClient = useQueryClient();
   const { data: departmentTree, isLoading } = useQuery('GET_ERP_TREE', getERPTree, {
@@ -55,12 +56,12 @@ export default function EditEmployeesModal(
   }
   );
 
-  const handleSubmit = () => {
-    const isValidate = form.validateForm();
+  function handleSubmit() {
+    const isValidate = formRef.current?.validateForm();
     if (!isValidate) {
       return;
     }
-    const values = form.getFieldsValue();
+    const values = formRef.current?.getFieldsValue();
 
     const { userName, phone, email, sendPasswordBy, depID } = values;
     const roleIDs = '3';
@@ -91,7 +92,7 @@ export default function EditEmployeesModal(
       }
       staffMutation.mutate(params);
     }
-  };
+  }
 
   const showDepTree = !user.id || (user.id && user.isDEPLeader !== -1);
 
@@ -108,7 +109,7 @@ export default function EditEmployeesModal(
       footer={
         <div className="flex items-center">
           <Button
-            icon={<Icon name="close" className="mr-4" />}
+            icon={<SvgIcon name="close" size={20} className="mr-8" />}
             className="mr-20"
             onClick={closeModal}>
             取消
@@ -116,7 +117,7 @@ export default function EditEmployeesModal(
           <Button
             className="bg-black-900"
             textClassName="text-white"
-            icon={<Icon name="check" type="light" className="mr-4" />}
+            icon={<SvgIcon name="check" type="light" size={20} className="mr-8" />}
             onClick={handleSubmit}
           >
             确定{titleText}
@@ -124,7 +125,7 @@ export default function EditEmployeesModal(
         </div>
       }
     >
-      <Form layout="vertical" ref={(form: any) => setForm(form)}>
+      <Form layout="vertical" ref={formRef}>
         <TextField
           // @ts-ignore
           validateOnBlur

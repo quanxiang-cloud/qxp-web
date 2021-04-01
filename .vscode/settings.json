@@ -1,3 +1,8 @@
 {
-  "css.validate": false
+  "css.validate": false,
+  "cSpell.words": [
+    "employess",
+    "export",
+    "handle"
+  ]
 }

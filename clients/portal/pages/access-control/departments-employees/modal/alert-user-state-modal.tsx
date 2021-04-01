@@ -4,10 +4,10 @@ import { Modal, Message } from '@QCFE/lego-ui';
 
 import SvgIcon from '@c/icon';
 import Button from '@c/button';
-import { UserInfo } from '@portal/api/auth';
+import { UserInfo } from '@net/auth';
 import { updateUserStatus } from '@net/corporate-directory';
 
-import { UserStatus } from '../enum';
+import { UserStatus } from '../type';
 
 interface Props {
   status: UserStatus;
@@ -36,9 +36,9 @@ export default function AccountHandleModal(
     (status === UserStatus.disable ? '禁用' : '删除') :
     '启用';
 
-  const handleSubmit = () => {
+  function handleSubmit() {
     handleMutation.mutate({ id: user.id, status: status });
-  };
+  }
 
   return (
     <Modal
