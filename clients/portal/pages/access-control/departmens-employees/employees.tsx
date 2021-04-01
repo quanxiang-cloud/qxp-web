@@ -6,7 +6,7 @@ import SvgIcon from '@c/icon';
 import EmptyTips from '@c/empty-tips';
 import IconBtn from '@c/icon-btn';
 import Pagination from '@c/pagination';
-import Authorized from '@clients/common/component/authorized';
+import Authorized from '@cc/authorized';
 // todo replace by button2
 import Button from '@c/button';
 // todo replace this by more-menu component

@@ -4,7 +4,7 @@ import { Modal } from '@QCFE/lego-ui';
 
 import Button from '@c/button';
 import Loading from '@c/loading';
-import Authorized from '@clients/common/component/authorized';
+import Authorized from '@cc/authorized';
 import Error from '@c/error';
 import Switch from '@c/switch';
 import {
@@ -58,10 +58,8 @@ export default function AssociateDepartmentEmployee({ id, isSuper }: Props) {
       const deletes = data?.departmentsOrEmployees.filter((member) => {
         return !departmentsOrEmployees.find((m) => m.ownerID === member.ownerID);
       });
-      const adds = departmentsOrEmployees.filter((curMember) => {
-        return !data?.departmentsOrEmployees.find((member) => {
-          member.ownerID === curMember.ownerID;
-        });
+      const adds = departmentsOrEmployees.filter((member) => {
+        return !data?.departmentsOrEmployees.find((m) => m.ownerID === member.ownerID);
       });
       mutation.mutate({
         roleID: id as string,

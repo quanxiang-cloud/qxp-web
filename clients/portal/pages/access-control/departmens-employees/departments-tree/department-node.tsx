@@ -4,7 +4,7 @@ import { Modal, Message } from '@QCFE/lego-ui';
 import { useQueryClient } from 'react-query';
 
 import MoreMenu, { MenuItem } from '@c/more-menu';
-import Authorized from '@clients/common/component/authorized';
+import Authorized from '@cc/authorized';
 import SvgIcon from '@c/icon';
 import { deleteDEP } from '@net/corporate-directory';
 import { NodeRenderProps } from '@c/headless-tree/types';
