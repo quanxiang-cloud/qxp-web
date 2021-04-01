@@ -1,5 +1,5 @@
 import React from 'react';
-import { Switch, Route, useRouteMatch } from 'react-router-dom';
+import { Switch, Route } from 'react-router-dom';
 
 
 import ItemWithTitleDesc from '@c/item-with-title-desc';
@@ -11,7 +11,6 @@ import RoleManagement from './role-management';
 import DeparmentsEmployees from './departmens-employees';
 
 export default function Index() {
-  const { path } = useRouteMatch();
   const [{ userInfo }] = usePortalGlobalValue();
 
   if (!userInfo.authority.includes('accessControl')) {
@@ -45,9 +44,9 @@ export default function Index() {
       </div>
       <div className="h-full flex-grow bg-white rounded-12 overflow-hidden">
         <Switch>
-          <Route exact path={`${path}`} component={DeparmentsEmployees} />
-          <Route exact path={`${path}/role-management`} component={RoleManagement} />
-          <Route component={Error} />
+          <Route exact path="/access-control" component={DeparmentsEmployees} />
+          <Route path="/access-control/role-management" component={RoleManagement} />
+          <Route component={() => (<Error desc={'Menu page is not found'} />)} />
         </Switch>
       </div>
     </div>
