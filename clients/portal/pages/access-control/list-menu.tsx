@@ -31,7 +31,6 @@ export default function ListMenu() {
     });
   }
 
-
   return (
     <ul className="w-auto">
       {menuData.map((item) => {
@@ -41,6 +40,7 @@ export default function ListMenu() {
           >
             <NavLink
               to={`/access-control/${item.id}`}
+              exact
               className={twCascade(
                 'h-56 rounded-l-8 items-center',
                 'pl-18 flex relative cursor-pointer transition-all duration-300',
@@ -69,17 +69,6 @@ export default function ListMenu() {
                   display: 'block',
                 },
               })}
-              isActive={(match, location) => {
-                const { pathname } = location;
-                console.log(location);
-                console.log(match);
-                if ((!item.id && pathname === '/access-control') ||
-                pathname === '/access-control/' + item.id) {
-                  return true;
-                } else {
-                  return false;
-                }
-              }}
             >
               <img className="w-24 h-24 pr-8" src={item.icon} alt="logo" />
               <span className="text-gray-400 text-h5">{item.name}</span>
