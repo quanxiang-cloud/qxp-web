@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useQuery } from 'react-query';
 import { observer } from 'mobx-react';
 
-import Tab from '@portal/components/tab';
+import Tab from '@c/tab';
 import TextHeader from '@c/text-header';
 import SearchInput from '@c/form/search-input';
-import Loading from '@portal/components/loading';
+import Loading from '@c/loading';
 import { getDepartmentStructure } from '@net/role-management';
 import Error from '@c/error';
 

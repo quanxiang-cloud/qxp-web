@@ -2,11 +2,11 @@ import React, { useEffect } from 'react';
 import { useQuery } from 'react-query';
 import { observer } from 'mobx-react';
 
-import Table from '@portal/components/table';
+import Table from '@c/table';
 import EmptyData from '@c/empty-tips';
 import Pagination from '@c/pagination';
 import { adminSearchUserList } from '@portal/api/role-management';
-import Loading from '@portal/components/loading';
+import Loading from '@c/loading';
 
 import OwnerStore from '../store';
 

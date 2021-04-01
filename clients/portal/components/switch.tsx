@@ -14,7 +14,7 @@ interface ISwitch {
   onChange?: (value: string | number) => void;
 }
 
-export const Switch = ({ ...props }: ISwitch) => {
+export default function Switch({ ...props }: ISwitch) {
   return (
     <div className={classnames(useCss({
       display: 'inline-block',
@@ -59,4 +59,4 @@ export const Switch = ({ ...props }: ISwitch) => {
     </div>
 
   );
-};
+}

@@ -2,8 +2,8 @@ import React from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 import { Modal, Message } from '@QCFE/lego-ui';
 
-import SvgIcon from '@portal/components/icon';
-import Button from '@portal/components/button';
+import SvgIcon from '@c/icon';
+import Button from '@c/button';
 import { UserInfo } from '@portal/api/auth';
 import { updateUserStatus } from '@net/corporate-directory';
 

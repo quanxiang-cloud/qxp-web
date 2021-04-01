@@ -2,9 +2,9 @@ import React, { useEffect } from 'react';
 import useCss from 'react-use/lib/useCss';
 import { twCascade } from '@mariusmarais/tailwind-cascade';
 
-import Avatar from '@portal/components/avatar';
-import Card from '@portal/components/card';
-import List from '@portal/components/list';
+import Avatar from '@c/avatar';
+import Card from '@c/card';
+import List from '@c/list';
 import ItemWithTitleDesc from '@c/item-with-title-desc';
 import { uuid } from '@lib/utils';
 import { usePortalGlobalValue } from '@states/portal';

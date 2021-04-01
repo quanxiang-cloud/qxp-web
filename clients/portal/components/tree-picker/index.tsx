@@ -6,7 +6,7 @@ import { twCascade } from '@mariusmarais/tailwind-cascade';
 import Store from '@c/headless-tree/store';
 import { TreeNode } from '@c/headless-tree/types';
 import Tree from '@c/headless-tree';
-import Loading from '@portal/components/loading';
+import Loading from '@c/loading';
 
 import NodeRender from './tree-node';
 

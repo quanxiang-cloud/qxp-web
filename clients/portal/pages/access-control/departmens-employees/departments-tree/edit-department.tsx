@@ -4,10 +4,10 @@ import { Modal, Form, Message } from '@QCFE/lego-ui';
 
 import Button from '@c/button';
 import DepartmentPicker from '@c/tree-picker';
-import Loading from '@portal/components/loading';
+import Loading from '@c/loading';
 import { createDepartment, editDepartment, getERPTree } from '@net/corporate-directory';
 import { departmentToTreeNode } from '@lib/utils';
-import SvgIcon from '@portal/components/icon';
+import SvgIcon from '@c/icon';
 
 const { TextField } = Form;
 

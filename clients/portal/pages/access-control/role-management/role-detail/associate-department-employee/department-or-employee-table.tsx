@@ -4,12 +4,12 @@ import { useQuery } from 'react-query';
 import EmptyData from '@c/empty-tips';
 import More from '@c/more';
 import { PAGINATION } from '@const/table';
-import Pagination from '@portal/components/pagination';
+import Pagination from '@c/pagination';
 import { IPagination } from '@t/interface/api';
 import { getRoleAssociations } from '@net/role-management';
-import Loading from '@portal/components/loading';
-import Error from '@portal/components/error';
-import Table from '@portal/components/table';
+import Loading from '@c/loading';
+import Error from '@c/error';
+import Table from '@c/table';
 
 interface Props {
   isSuper: boolean;

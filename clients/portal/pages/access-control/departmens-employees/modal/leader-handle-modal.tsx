@@ -2,7 +2,7 @@ import React from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 import { Modal, Message } from '@QCFE/lego-ui';
 
-import SvgIcon from '@portal/components/icon';
+import SvgIcon from '@c/icon';
 import Button from '@c/button';
 import { UserInfo } from '@portal/api/auth';
 import { setDEPLeader, cancelDEPLeader, LeaderParams } from '@net/corporate-directory';

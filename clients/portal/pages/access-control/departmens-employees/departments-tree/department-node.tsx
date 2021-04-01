@@ -5,7 +5,7 @@ import { useQueryClient } from 'react-query';
 
 import MoreMenu, { MenuItem } from '@c/more-menu';
 import Authorized from '@clients/common/component/authorized';
-import SvgIcon from '@portal/components/icon';
+import SvgIcon from '@c/icon';
 import { deleteDEP } from '@net/corporate-directory';
 import { NodeRenderProps } from '@c/headless-tree/types';
 
