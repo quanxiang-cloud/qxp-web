@@ -8,6 +8,7 @@ import Loading from '@c/loading';
 import { createDepartment, editDepartment, getERPTree } from '@net/corporate-directory';
 import { departmentToTreeNode } from '@lib/utils';
 import SvgIcon from '@c/icon';
+import { DeptInfo } from '@t/interface/type';
 
 const { TextField } = Form;
 
