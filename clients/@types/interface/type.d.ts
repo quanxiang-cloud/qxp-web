@@ -1,3 +1,5 @@
+import { UserInfo } from '@net/auth';
+
 type DeptInfo = {
   departmentName: string;
   id: string;
@@ -20,3 +22,9 @@ type Columns = {
 }[]
 
 type SizeType = 'small' | 'middle' | 'large' | undefined;
+
+interface QxpWindow extends Window {
+  __global: {
+    userInfo: UserInfo;
+  }
+}

@@ -6,6 +6,7 @@ import { isEmpty } from 'lodash';
 import Error from '@c/error';
 import { usePortalGlobalValue } from '@states/portal';
 import { getNestedPropertyToArray } from '@lib/utils';
+import { QxpWindow } from '@t/interface/type';
 
 import Loading from './components/loading';
 import { getUserFuncs, getUserRoles } from './api/auth';
@@ -16,8 +17,7 @@ const Dashboard = React.lazy(() => import('./pages/dashboard'));
 const MetaData = React.lazy(() => import('./pages/metadata'));
 const AccessControl = React.lazy(() => import('./pages/access-control'));
 
-// @ts-ignore
-const { userInfo } = window.__global || {};
+const { userInfo } = (window as unknown as QxpWindow).__global || {};
 if (userInfo && !isEmpty(userInfo)) {
   userInfo.depIds = getNestedPropertyToArray<string>(userInfo?.dep, 'id', 'child');
 }
