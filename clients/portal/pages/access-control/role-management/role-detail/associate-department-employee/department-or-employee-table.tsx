@@ -6,10 +6,12 @@ import More from '@c/more';
 import { PAGINATION } from '@const/table';
 import Pagination from '@c/pagination';
 import { IPagination } from '@t/interface/api';
+import { Columns } from '@t/interface/type';
 import { getRoleAssociations } from '@net/role-management';
 import Loading from '@c/loading';
 import Error from '@c/error';
 import Table from '@c/table';
+import { usePortalGlobalValue } from '@states/portal';
 
 interface Props {
   isSuper: boolean;
@@ -21,6 +23,7 @@ interface Props {
 export default function DepartmentTable({ isSuper, onCancelAssociation, roleID, type }: Props) {
   const [selectedKeys, setSelectedKeys] = useState<string[]>([]);
   const [pagination, setPagination] = useState<IPagination>(PAGINATION);
+  const [{ userInfo }] = usePortalGlobalValue();
   const [_, setMemberIDMap] = useState<
     Map<string, EmployeeOrDepartmentOfRole>
   >();
@@ -137,7 +140,7 @@ export default function DepartmentTable({ isSuper, onCancelAssociation, roleID, 
       dataIndex: 'departmentName',
     });
   }
-  if (!isSuper) {
+  if (!isSuper && userInfo.authority.includes('accessControl/role/manage')) {
     columns.push({
       title: '',
       dataIndex: 'ownerID',

@@ -15,7 +15,7 @@ type DeptTree = {
   useStatus: number;
 };
 
-type Columns = {
+export type Columns = {
   title: string;
   dataIndex: string;
   render?: (...args: any[]) => JSX.Element;
