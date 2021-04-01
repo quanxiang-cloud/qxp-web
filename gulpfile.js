@@ -65,11 +65,11 @@ exports.build = gulp.series(
   // (done) => {
   //   return promiseExec('rm -rf docker-files/nginx/dist docker-files/portal/dist', done);
   // },
-  () => gulp.src('./dist/**/*').pipe(gulp.dest('./docker-files/nginx/dist')),
-  () =>
-    gulp
-      .src('./dist/templates/*')
-      .pipe(gulp.dest('./docker-files/portal/dist/templates'))
+  // () => gulp.src('./dist/**/*').pipe(gulp.dest('./docker-files/nginx/dist')),
+  // () =>
+  //   gulp
+  //     .src('./dist/templates/*')
+  //     .pipe(gulp.dest('./docker-files/portal/dist/templates'))
 );
 
 exports.default = gulp.series(

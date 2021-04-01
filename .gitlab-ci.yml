@@ -18,7 +18,6 @@ install_node_modules_go_packages:
   stage: install
   script:
     - yarn install --registry=http://r.npm.internal.yunify.com
-    - go mod tidy
 
 lint_js:
   tags:
@@ -31,19 +30,15 @@ build_all:
   tags:
     - qxp-web-runner
   stage: build
-  only:
-    - testing
-    - master
-    # todo delete this
   script:
     - NODE_ENV=production ./node_modules/.bin/webpack --config webpack.config.js
     # todo refactor
     - node_modules/.bin/gulp build
-    - GOOS=linux go build -o ./docker-files/portal/portal server/cmd/portal/main.go
+    - go mod tidy
+    - go mod vendor
     - IMAGE_TAG="v$(date "+%Y%m%d")-$(git rev-parse --short HEAD)"
-    - docker build -t "$IMAGE_PREFIX/qxp-web-nginx:$IMAGE_TAG" -f ./docker-files/nginx/Dockerfile ./docker-files/nginx
-    - docker build -t "$IMAGE_PREFIX/qxp-web-portal:$IMAGE_TAG" -f ./docker-files/portal/Dockerfile ./docker-files/portal
-    - docker login -u "$DOCKER_HUB_USERNAME" -p "$DOCKER_HUB_PASSWORD" $DOCKER_HUB_REGISTRY
+    - docker build -t "$IMAGE_PREFIX/qxp-web-portal:$IMAGE_TAG" -f ./deploy/Dockerfile-portal .
+    - docker build -t "$IMAGE_PREFIX/qxp-web-nginx:$IMAGE_TAG" -f ./deploy/Dockerfile-nginx .
     - docker push "$IMAGE_PREFIX/qxp-web-nginx:$IMAGE_TAG"
     - docker push "$IMAGE_PREFIX/qxp-web-portal:$IMAGE_TAG"
 
@@ -53,7 +48,10 @@ deploy_testing:
   stage: release
   only:
     - testing
+    - gitlab-ci
   script:
     - IMAGE_TAG="v$(date "+%Y%m%d")-$(git rev-parse --short HEAD)"
-    - echo "deploy testing done! $IMAGE_TAG"
+    - bash -c "helm upgrade qxp-web-portal /root/helm-re/qxp-web-portal --set image.tag=$IMAGE_TAG"
+    - bash -c "helm upgrade qxp-web-nginx /root/helm-re/qxp-web-nginx --set image.tag=$IMAGE_TAG"
+    - echo "deploy testing done!"
 

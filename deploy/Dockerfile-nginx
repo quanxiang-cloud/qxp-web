@@ -1,0 +1,7 @@
+FROM nginx:1.18-alpine
+
+LABEL qxp="web-nginx"
+
+ADD ./deploy/conf/nginx/nginx.conf /etc/nginx/nginx.conf
+ADD ./deploy/conf/nginx/conf.d /etc/nginx/conf.d
+ADD ./dist/ /qxp-web/dist/
