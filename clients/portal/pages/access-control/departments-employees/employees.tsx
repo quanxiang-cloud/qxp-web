@@ -5,7 +5,7 @@ import { Table, Icon, Message } from '@QCFE/lego-ui';
 import SvgIcon from '@c/icon';
 import EmptyTips from '@c/empty-tips';
 import Pagination from '@c/pagination';
-import Authorized from '@clients/common/component/authorized';
+import Authorized from '@cc/authorized';
 import Button from '@c/button';
 import MoreMenu from '@c/more-menu';
 import EditEmployeesModal from './modal/edit-employees-modal';

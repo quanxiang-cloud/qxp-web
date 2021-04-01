@@ -7,7 +7,7 @@ import { Icon } from '@QCFE/lego-ui';
 import { useLocation } from 'react-router-dom';
 
 import More from '@c/more';
-import Authorized from '@clients/common/component/authorized';
+import Authorized from '@cc/authorized';
 import { uuid } from '@lib/utils';
 
 import SvgIcon from './components/icon';
