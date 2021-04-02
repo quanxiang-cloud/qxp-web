@@ -271,36 +271,39 @@ export default function Employees({
           </Authorized>
         </div>
         <div className="h-full flex flex-grow my-16 flex-col px-20 overflow-auto">
-          <div className="qxp-table flex w-full border-b">
-            {
-              (employeesList?.data && employeesList?.data.length > 0) && (<Table
-                className="text-14 table-full"
-                dataSource={employeesList?.data || []}
-                columns={columns}
-                rowKey="id"
-                rowSelection={rowSelection}
-                // emptyText={<EmptyTips text="无成员数据" className="py-32" />}
-                loading={isLoading}
-              />)
-            }
-            {
-              (employeesList?.data && employeesList?.data.length === 0) && (<div className="w-full">
+
+          {
+            (employeesList?.data && employeesList?.data.length > 0) && (
+              <div className="qxp-table flex w-full border-b">
+                <Table
+                  className="text-14 table-full"
+                  dataSource={employeesList?.data || []}
+                  columns={columns}
+                  rowKey="id"
+                  rowSelection={rowSelection}
+                  // emptyText={<EmptyTips text="无成员数据" className="py-32" />}
+                  loading={isLoading}
+                />
+              </div>)
+          }
+          {
+            (employeesList?.data && employeesList?.data.length === 0) && (
+              <div className="qxp-table w-full flex items-center justify-center">
                 <EmptyTips text="无成员数据" className="py-32" />
               </div>)
-            }
-          </div>
-          <div className="flex justify-end">
-            {
-              (employeesList?.data && employeesList?.data.length > 0) && (<Pagination
-                type="simple"
-                current={pageParams.page}
-                total={employeesList?.total || 0}
-                pageSize={pageParams.limit}
-                onChange={handlePageChange}
-                onShowSizeChange={handlePageSizeChange}
-              />)
-            }
-          </div>
+          }
+        </div>
+        <div className="flex justify-end">
+          {
+            (employeesList?.data && employeesList?.data.length > 0) && (<Pagination
+              type="simple"
+              current={pageParams.page}
+              total={employeesList?.total || 0}
+              pageSize={pageParams.limit}
+              onChange={handlePageChange}
+              onShowSizeChange={handlePageSizeChange}
+            />)
+          }
         </div>
       </div>
     </>

@@ -15,6 +15,10 @@ body {
   font-size: 1.4rem;
 }
 
+.w-316 {
+  min-width: 316px;
+}
+
 .bg-jb {
   background: linear-gradient(180deg, #FDBA74 0%, #FB923C 100%);
 }
@@ -328,10 +332,6 @@ button {
   .table {
     width: 100%;
   }
-}
-
-.text-12 {
-  font-size: 12px;
 }
 
 .text-area-input {

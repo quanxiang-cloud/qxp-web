@@ -96,6 +96,7 @@ $node-height: 56px;
 }
 
 .tree-wrapper {
+  min-width: 258px;
   @apply overflow-auto select-none;
 
   .tree-node {
@@ -116,6 +117,7 @@ $node-height: 56px;
     &:hover {
       @apply text-blue-600;
     }
+
     .tree-node__content {
       div {
         @apply w-full truncate;

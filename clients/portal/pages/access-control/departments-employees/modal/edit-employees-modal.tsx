@@ -9,6 +9,8 @@ import Loading from '@c/loading';
 import { getERPTree, addDepUser, updateUser } from '@net/corporate-directory';
 import { departmentToTreeNode } from '@lib/utils';
 
+import { SpecialSymbolsReg, PhoneReg } from '../utils';
+
 const { TextField, CheckboxGroupField } = Form;
 
 const EMAIL_HELP = '企业成员的真实邮箱，设置后可以通过邮箱接收到全象云平台发送的各类消息提醒（手机号/邮箱，两者中至少必填一项）。';
@@ -138,6 +140,16 @@ export default function EditEmployeesModal(
               rule: { required: true },
               help: '请输入员工姓名 ',
             },
+            {
+              rule: (value: string) => {
+                let isPass = true;
+                if (SpecialSymbolsReg.test(value)) {
+                  isPass = false;
+                }
+                return isPass;
+              },
+              help: '不能输入特殊符号(除"_"、"-"外)',
+            },
           ]}
         />
         <TextField
@@ -154,12 +166,11 @@ export default function EditEmployeesModal(
             },
             {
               rule: (value: string) => {
-                let bol = true;
-                const reg = /^[1](([3][0-9])|([4][5-9])|([5][0-3,5-9])|([6][5,6])|([7][0-8])|([8][0-9])|([9][1,8,9]))[0-9]{8}$/;
-                if (!reg.test(value)) {
-                  bol = false;
+                let isPass = true;
+                if (!PhoneReg.test(value)) {
+                  isPass = false;
                 }
-                return bol;
+                return isPass;
               },
               help: '请输入合法的手机号',
             },
