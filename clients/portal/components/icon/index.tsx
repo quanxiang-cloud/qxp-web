@@ -7,14 +7,12 @@ interface Props extends React.SVGProps<SVGSVGElement> {
   name: string;
   type?: 'dark' | 'primary' | 'light';
   size?: number;
-  style?: React.CSSProperties;
-  className?: string;
   disabled?: boolean;
   changeable?: boolean;
   clickable?: boolean;
 }
 
-function svgIcon(
+function Icon(
   {
     name,
     size = 16,
@@ -51,8 +49,4 @@ function svgIcon(
   );
 }
 
-const SvgIconRef = React.forwardRef(svgIcon);
-
-const SvgIcon = SvgIconRef;
-
-export default SvgIcon;
+export default React.forwardRef(Icon);
