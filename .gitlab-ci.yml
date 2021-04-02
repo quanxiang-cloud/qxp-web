@@ -30,6 +30,9 @@ build_all:
   tags:
     - qxp-web-runner
   stage: build
+  only:
+    - testing
+    - gitlab-ci
   script:
     - NODE_ENV=production ./node_modules/.bin/webpack --config webpack.config.js
     # todo refactor
