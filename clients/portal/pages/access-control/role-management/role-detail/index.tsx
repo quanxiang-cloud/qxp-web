@@ -60,7 +60,12 @@ export default function RoleDetail({ role }: IRoleDetail) {
           {
             id: 'association',
             name: '关联员工与部门',
-            content: <AssociateDepartmentEmployee id={role.id} isSuper={role.tag === 'super'} />,
+            content: (
+              <AssociateDepartmentEmployee
+                roleID={role.id}
+                isSuper={role.tag === 'super'}
+              />
+            ),
           },
         ]}
       />

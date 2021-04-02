@@ -22,7 +22,9 @@ interface Props {
   onChange: (departmentsOrEmployees: EmployeeOrDepartmentOfRole[]) => void;
 }
 
-export default observer(({ departments = [], employees = [], onChange }: Props) => {
+export default observer(function EmployeeOrDepartmentPicker({
+  departments = [], employees = [], onChange,
+}: Props) {
   const [store, setStore] = useState<OwnerStore>();
 
   const { data: department, isLoading, isError } = useQuery(
