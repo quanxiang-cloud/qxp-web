@@ -116,7 +116,7 @@ export default observer(function EmployeeOrDepartmentPicker({
                       border-r border-gray-200"
                     />
                   </div>
-                  <div className="h-full flex flex-col overflow-hidden flex-5">
+                  <div className="h-full flex flex-col overflow-hidden">
                     <TextHeader
                       className="mb-8 pb-0"
                       title={store.employeeTreeStore.currentFocusedNode.name || ''}
