@@ -71,3 +71,15 @@ export const getUserRoles = async (
   );
   return data || { roles: [], total: 0 };
 };
+
+export async function userResetPassword({
+  oldPassword, newPassword,
+}: Record<string, string>) {
+  await httpPost<any>(
+    '/api/v1/nurturing/userResetPWD',
+    JSON.stringify({
+      oldPassword,
+      newPassword,
+    })
+  );
+}

@@ -38,9 +38,9 @@ function Button({
         'px-16 rounded-l-8 rounded-tr-2 rounded-br-8 cursor-pointer btn',
         className,
         {
-          'opacity-50': loading,
-          'cursor-not-allowed': loading,
-          'pointer-events-none': loading,
+          'opacity-50': loading || type === 'disabled',
+          'cursor-not-allowed': loading || type === 'disabled',
+          'pointer-events-none': loading || type === 'disabled',
           'btn-loading': loading,
           [`btn-${type}`]: type,
         }

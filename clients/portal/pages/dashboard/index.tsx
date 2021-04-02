@@ -106,16 +106,8 @@ export default function Dashboard() {
               }
               content={
                 <List
-                  className="flex-col"
-                  itemClassName={twCascade(
-                    // 'bg-white, mt-20, px-20',
-                    useCss({
-                      'margin-bottom': '2rem',
-                      'background-color': '#fff',
-                      padding: '0 20px',
-                    }),
-                    'rounded-12',
-                  )}
+                  className="flex-col flex-1"
+                  itemClassName="px-20 rounded-12 mb-20 bg-white"
                   items={[
                     <ItemWithTitleDesc
                       key={uuid()}

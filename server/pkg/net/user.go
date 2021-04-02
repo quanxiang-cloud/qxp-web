@@ -18,7 +18,7 @@ func GetUserInfo(w http.ResponseWriter, r *http.Request, token string) (
 
 	if errMsg != "" {
 		contexts.Logger.Errorf("Get user info error: %s, request_id: %s", errMsg, requestID)
-		if len(errMsg) >= len("401") && errMsg[len(errMsg)-len("401"):] == "401" {
+		if len(errMsg) >= len("401") && (errMsg[len(errMsg)-len("401"):] == "401" || errMsg[len(errMsg)-len("400"):] == "400") {
 			return userInfoResponse, errors.New(errMsg)
 		}
 		return userInfoResponse, nil

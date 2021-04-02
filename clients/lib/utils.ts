@@ -274,3 +274,7 @@ export function departmentToTreeNode(department: Department): TreeNode<Departmen
 export const last = <T>(arg: T[]) => {
   return arg[arg.length - 1];
 };
+
+export function isPassword(pwd: string) {
+  return /^(?=.*\d)(?=.*[a-zA-Z])(?=.*[~!@#$%^&*])[\da-zA-Z~!@#$%^&*]{8,}$/.test(pwd);
+}

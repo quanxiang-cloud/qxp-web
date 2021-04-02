@@ -5,15 +5,17 @@ import More from '@c/more';
 import SvgIcon from '@c/icon';
 import { uuid } from '@lib/utils';
 
+import ResetPasswordModal from './reset-password-modal';
+
 export default function HeaderMenu() {
   const [openResetPasswordModal, setOpenResetPasswordModal] = useState<boolean>(false);
 
-  function handleResetPassword() {
-    setOpenResetPasswordModal(openResetPasswordModal);
-  }
-
   return (
     <div className="flex justify-end items-center flex-2">
+      <ResetPasswordModal
+        visible={openResetPasswordModal}
+        onCancel={() => setOpenResetPasswordModal(false)}
+      />
       <div className="mr-56 header-nav-btn group">
         <div className="header-nav-btn-icon-wrapper">
           <SvgIcon
@@ -35,7 +37,7 @@ export default function HeaderMenu() {
         <More
           items={[
             <span
-              onClick={handleResetPassword}
+              onClick={() => setOpenResetPasswordModal(true)}
               key={uuid()}
               className="cursor-pointer flex items-center h-36
               pl-16 hover:bg-blue-100 transition whitespace-nowrap text-button
