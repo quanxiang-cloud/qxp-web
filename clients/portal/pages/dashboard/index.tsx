@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import useCss from 'react-use/lib/useCss';
 import { twCascade } from '@mariusmarais/tailwind-cascade';
 
 import Avatar from '@c/avatar';

@@ -53,7 +53,7 @@ export default function DepartmentTable({ isSuper, onCancelAssociation, roleID, 
   );
 
   useEffect(() => {
-    if (data?.total) {
+    if (data) {
       setPagination((p) => ({ ...p, total: data.total }));
       if (type === 1) {
         setMembers(data?.employees);
@@ -108,9 +108,6 @@ export default function DepartmentTable({ isSuper, onCancelAssociation, roleID, 
   }
   if (isError) {
     return <Error desc="something wrong!" />;
-  }
-  if (!members.length) {
-    return null;
   }
 
   const columns: Columns = [];
@@ -173,7 +170,9 @@ export default function DepartmentTable({ isSuper, onCancelAssociation, roleID, 
         className="rounded-bl-none rounded-br-none"
         columns={columns}
         rowSelection={rowSelection}
-        emptyText={<EmptyData text="无成员数据" className="py-10" />}
+        emptyText={(
+          <EmptyData text={type === 1 ? '无成员数据' : '无部门数据'} className="py-10" />
+        )}
         onRow={(record) => ({
           onClick: () => onRowClick(record),
         })}
