@@ -13,7 +13,6 @@ import EmployeeTable from './employee-table';
 import SelectedList from './selected-list';
 import EmployeeSelectTree from './employee-select-tree';
 import DepartmentSelectTree from './department-select-tree';
-
 import OwnerStore from './store';
 
 interface Props {

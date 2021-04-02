@@ -3,7 +3,7 @@ import { useQuery, useMutation, useQueryClient } from 'react-query';
 import { Modal, Form, Loading, Message } from '@QCFE/lego-ui';
 
 import SvgIcon from '@c/icon';
-import DepartmentPicker from '@c/tree-picker';
+import DepartmentPicker from '@portal/components/input/tree-picker-field';
 import Button from '@c/button';
 import { departmentToTreeNode } from '@lib/utils';
 import { getERPTree, batchAdjustDep } from '@net/corporate-directory';
@@ -120,9 +120,7 @@ export default function AdjustDepModal({ users: userList, closeModal }: Props) {
               name="pid"
               required
               label="选择要调整的部门"
-              closeOnSelect
               help="请选择部门"
-              toggleable={false}
             />
           )}
         </Form>

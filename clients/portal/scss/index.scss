@@ -337,13 +337,23 @@ button {
 .text-area-input {
   margin: 0 !important;
 
+  label {
+    display: none !important;
+  }
+
   .control {
     width: 100%;
+    cursor: default !important;
 
     textarea {
       min-height: unset;
-      cursor: pointer !important;
-      padding-right: 2rem !important;
+      padding-right: 20px !important;
+      @apply rounded-br-8 rounded-bl-8 rounded-tl-none rounded-tr-none #{!important};
+      @apply cursor-default pointer-events-none #{!important};
+      &:hover,
+      &:focus {
+        border-color:#d5dee7 !important;
+      }
     }
   }
 }

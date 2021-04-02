@@ -2,7 +2,7 @@ import React, { useState, createRef } from 'react';
 import { useQuery, useMutation, useQueryClient } from 'react-query';
 import { Modal, Form, Message } from '@QCFE/lego-ui';
 
-import TreePicker from '@c/tree-picker';
+import TreePicker from '@portal/components/input/tree-picker-field';
 import SvgIcon from '@c/icon';
 import Button from '@c/button';
 import Loading from '@c/loading';
@@ -212,7 +212,6 @@ export default function EditEmployeesModal(
               name="depID"
               defaultValue={user?.dep?.id}
               required
-              closeOnSelect
               help="请选择部门"
             />
           )

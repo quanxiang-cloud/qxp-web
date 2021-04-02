@@ -14,7 +14,7 @@ interface Props {
   className?: string;
 }
 
-export default function PassWord({
+export default function PassWordField({
   label,
   name,
   layout = 'vertical',
