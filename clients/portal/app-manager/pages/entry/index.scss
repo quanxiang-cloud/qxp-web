@@ -1,0 +1,9 @@
+.app-right-box {
+  @apply flex-1 bg-white rounded-tl-12 rounded-tr-12 bg-opacity-50;
+  height:100%;
+}
+
+.app-entry-container {
+  @apply pt-20 flex justify-center items-start gap-x-20 mx-auto;
+  height: calc(100vh - 64px);
+}

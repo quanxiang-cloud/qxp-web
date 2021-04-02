@@ -5,3 +5,7 @@
 .icon-border-radius {
   @apply rounded-tl-12 rounded-tr-2 rounded-br-12 rounded-bl-12;
 }
+
+.icon-border-radius-8 {
+  border-radius: 8px 8px 8px 2px;
+}

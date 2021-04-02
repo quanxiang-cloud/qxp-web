@@ -1,0 +1,10 @@
+.app-details-container {
+  @apply flex-1 bg-white rounded-tl-12 rounded-tr-12;
+  margin: 20px 20px 0 20px;
+}
+
+.app-details-nav {
+  @apply bg-white;
+  min-width: 236px;
+  max-width: 236px;
+}

@@ -1,0 +1,7 @@
+.app-bg-icon {
+  @apply flex justify-center items-center;
+  width: var(--appBgIconSize);
+  height: var(--appBgIconSize);
+  min-width: var(--appBgIconSize);
+  min-height: var(--appBgIconSize);
+}

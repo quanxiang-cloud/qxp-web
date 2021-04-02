@@ -74,3 +74,9 @@
   text-decoration: underline;
   color: var(--gray-600);
 }
+
+.text-overflow-1 {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}

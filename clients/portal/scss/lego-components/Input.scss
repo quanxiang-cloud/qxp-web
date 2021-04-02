@@ -127,11 +127,12 @@ textarea.textarea:not([readonly]):not([disabled]) {
   }
 }
 
+.from>.field:not(:last-child) {
+  margin-bottom: 24px;
+}
+
 .field {
   display: flex;
-  &:not(:last-child) {
-    margin-bottom: 24px;
-  }
   .control {
     label {
       line-height: 1.7143;

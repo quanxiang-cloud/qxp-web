@@ -336,7 +336,7 @@ export const PersonInfo = React.memo(({
             {record.isDEPLeader === 1 && (
               <span
                 className={twCascade(
-                  'w-3-dot-4 h-1-dot-6 bg-jb rounded-4 p-dot-4',
+                  'w-3-dot-4 h-1-dot-6 bg-gradient-orange rounded-4 p-dot-4',
                   'flex items-center justify-center'
                 )}
               >

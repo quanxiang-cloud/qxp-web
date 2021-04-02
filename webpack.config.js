@@ -15,7 +15,7 @@ module.exports = function (env) {
     mode: NODE_ENV ? NODE_ENV : 'production',
     watch: NODE_ENV === 'development',
     bail: NODE_ENV !== 'development',
-    devtool: NODE_ENV === 'development' ? 'source-map': false,
+    devtool: NODE_ENV === 'development' ? 'source-map' : false,
 
     entry: {
       portal: './clients/portal/index.tsx',
@@ -24,6 +24,7 @@ module.exports = function (env) {
       'login-by-captcha': './clients/login/captcha.ts',
       'reset-password': './clients/login/reset-password',
       404: './clients/404/index.ts',
+      'app-manager': './clients/portal/app-manager/index.tsx'
     },
 
     output: {
@@ -69,6 +70,18 @@ module.exports = function (env) {
           enforce: 'pre',
           test: /\.js$/,
           loader: 'source-map-loader',
+        },
+        {
+          test: /\.(png|jpe?g|gif|svg)$/,
+          use: [
+            {
+              loader: 'url-loader',
+              options: {
+                limit: 10000,
+                esModule: false,
+              },
+            },
+          ],
         },
       ],
     },
@@ -120,6 +133,12 @@ module.exports = function (env) {
         chunks: ['reset-password'],
         template: './clients/templates/reset-password.html',
         filename: `${__dirname}/dist/templates/reset-password.html`,
+      }),
+      new HtmlWebpackPlugin({
+        inject: false,
+        chunks: ['app-manager'],
+        template: './clients/templates/app-manager.html',
+        filename: `${__dirname}/dist/templates/app-manager.html`,
       }),
       env !== 'production' ? new WebpackNotifierPlugin({ alwaysNotify: true }) : null,
     ].filter(Boolean),

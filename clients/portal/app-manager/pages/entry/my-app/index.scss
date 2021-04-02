@@ -1,0 +1,27 @@
+.my-app-header {
+  .radio-group label.radio-button.checked {
+    border-color: #375FF3;
+    color: #375FF3;
+    background-color: #F0F6FF;
+  }
+
+  .radio-button .is-default .button .radio-button-wrapper .is-default .button {
+    border-radius: 12px;
+  }
+}
+
+.app-status-modal-title {
+  @apply flex items-center;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 22px;
+}
+
+.app-del-title {
+  @extend .app-status-modal-title;
+  color: #DC2626;
+}
+
+.app-del-icon {
+  color: inherit!important;
+}

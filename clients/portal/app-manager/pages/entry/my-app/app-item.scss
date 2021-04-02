@@ -1,0 +1,9 @@
+.app-item-box {
+  @apply px-20 py-16 bg-white rounded-12 duration-300 flex items-center cursor-pointer gap-x-12;
+  width: 302px;
+  height: 76px;
+
+    &:hover {
+      box-shadow: 0px 8px 24px 4px rgba(148, 163, 184, 0.25),
+    }
+}

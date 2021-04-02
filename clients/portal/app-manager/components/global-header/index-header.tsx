@@ -1,0 +1,61 @@
+import React from 'react';
+
+import { More } from '@c/more';
+import Icon from '@c/icon';
+import Button from '@c/button2';
+
+import NotifyIcon from './notify-icon';
+
+const NAV_LIST: Nav[] = [
+  { name: '应用管理', icon: 'dashboard_customize', url: '/appManager/list', active: true },
+  { name: '访问控制', icon: 'add_task', url: '/access-control' },
+  { name: '系统管理', icon: 'settings', url: '/appManager' },
+];
+
+const NAV_LIST_RIGHT = [
+  { name: '帮助文档', icon: 'play_lesson', url: '' },
+  {
+    name: <More items={[
+      <a
+        href="/login/password"
+        key={1}
+        className="global-header-user-action text-button"
+      >
+        重置密码
+      </a>,
+      <a
+        key={2}
+        href='/logout'
+        type="submit"
+        className="global-header-user-action text-button"
+      >
+        登出
+      </a>,
+    ]}>
+      个人中心
+      <Icon name="expand_more" style={{ marginLeft: '8px' }} />
+    </More>,
+    icon: 'settings',
+  },
+];
+
+function IndexHeader({ navButtonRender }: GHeaderProps) {
+  return (
+    <div className="app-global-header app-global-header-icon">
+      <div className='flex gap-x-20'>
+        {NAV_LIST.map((navItem) => navButtonRender(navItem))}
+      </div>
+      <div className='flex gap-x-20'>
+        <Button
+          icon='cogwheel'
+        >
+          进入访问端
+        </Button>
+        <NotifyIcon unreadNum={5} />
+        {NAV_LIST_RIGHT.map((navRightItem) => navButtonRender(navRightItem))}
+      </div>
+    </div>
+  );
+}
+
+export default IndexHeader;

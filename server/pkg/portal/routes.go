@@ -41,6 +41,7 @@ func GetRouter() http.Handler {
 	r.Path("/logout").Methods("POST").HandlerFunc(handlers.LogoutHandler)
 	r.Path("/resetPassword").Methods("GET").HandlerFunc(handlers.ResetPasswordHandler)
 	r.Path("/resetPassword").Methods("POST").HandlerFunc(handlers.ResetPasswordActionHandler)
+	r.PathPrefix("/appManager/").Methods("GET").HandlerFunc(handlers.AppManagerHandler)
 
 	r.PathPrefix("/").Methods("GET").HandlerFunc(loginRequired(handlers.PortalHandler))
 

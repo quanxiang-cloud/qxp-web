@@ -182,10 +182,6 @@ body {
   padding-right: 0.4rem;
 }
 
-.bg-jb {
-  background: linear-gradient(180deg, #FDBA74 0%, #FB923C 100%);
-}
-
 .bg-gray-200-dot-5 {
   background-color: rgba(241, 245, 249, 0.5);
 }
@@ -366,8 +362,36 @@ body {
   background-image: linear-gradient(to top right, #b5ccff, rgba(181, 204, 255, 0.4));
 }
 
-.bg-gradient-blue-to-top-right {
-  background-image: linear-gradient(to top right, #b5ccff, rgba(181, 204, 255, 0.4));
+.bg-gradient-amber {
+  background: linear-gradient(180deg, #FCD34D 0%, #FBBF24 100%);
+}
+
+.bg-gradient-orange {
+  background: linear-gradient(180deg, #FDBA74 0%, #FB923C 100%);
+}
+
+.bg-gradient-indigo {
+  background: linear-gradient(180deg, #A5B4FC 0%, #818CF8 100%);
+}
+
+.bg-gradient-teal {
+  background: linear-gradient(180deg, #5EEAD4 0%, #2DD4BF 100%);
+}
+
+.bg-gradient-fuchsia {
+  background: linear-gradient(180deg, #F0ABFC 0%, #E879F9 100%);
+}
+
+.bg-gradient-emerald {
+  background: linear-gradient(180deg, #6EE7B7 0%, #34D399 100%);
+}
+
+.bg-gradient-cyan {
+  background: linear-gradient(180deg, #67E8F9 0%, #22D3EE 100%);
+}
+
+.bg-gradient-red {
+  background: linear-gradient(180deg, #FCA5A5 0%, #F87171 100%);
 }
 
 .bg-5976e01a {

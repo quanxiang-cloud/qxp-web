@@ -81,7 +81,7 @@ export default function GlobalHeader() {
   }, [on]);
 
   const isHome = location.pathname === '/';
-  const isAppManagement = location.pathname === '/app-management';
+  const isAppManagement = location.pathname === '/appManager';
   const isAccess = location.pathname === '/access-control';
   const isSystemControl = location.pathname === '/system';
 
@@ -129,8 +129,8 @@ export default function GlobalHeader() {
               style={style(isHome)}
             >工作台</span>
           </Link>
-          <Link
-            to="/app-management"
+          <a
+            href="/appManager/list"
             className={twCascade('header-nav-btn group mr-20', className(isAppManagement))}
           >
             <div className="header-nav-btn-icon-wrapper">
@@ -143,7 +143,7 @@ export default function GlobalHeader() {
             <span className="header-nav-btn-text group-hover:text-blue-600"
               style={style(isAppManagement)}
             >应用管理</span>
-          </Link>
+          </a>
           <Link
             to="/access-control"
             className={twCascade('header-nav-btn group mr-20', className(isAccess))}

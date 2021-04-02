@@ -10,6 +10,27 @@
   border-radius: 12px;
 }
 
+.max-w-screen {
+  max-width: 1440px;
+}
+
+html {
+  overflow-y: auto;
+}
+
+.text-btn {
+  cursor: pointer;
+  color: #375FF3;
+}
+
+.text-btn:hover {
+  color: #254ee6;
+}
+
+.mb-0-i {
+  margin-bottom:0 !important;
+}
+
 /* .global-header {
   margin-bottom: 20px;
 } */

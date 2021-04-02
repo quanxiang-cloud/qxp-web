@@ -1,0 +1,25 @@
+.app-manager-height {
+  height: calc(100vh - 64px);
+}
+
+.app-icon-color-inherit {
+  color: inherit;
+}
+
+.app-no-data {
+  text-align: center;
+  width: 100%;
+  
+  img {
+    margin: 0 auto 16px;
+    display: block;
+    width: 120px;
+    height: 120px;
+  }
+
+  span {
+    text-align: center;
+    font-size: 12px;
+    line-height: 20px;
+  }
+}
