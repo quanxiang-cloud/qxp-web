@@ -24,6 +24,7 @@ export default function AssociateDepartmentEmployee({ roleID, isSuper }: Props) 
       onSuccess: () => {
         setShowBindModal(false);
         queryClient.invalidateQueries('GET_ROLE_ASSOCIATIONS');
+        queryClient.invalidateQueries('GET_ROLE_ASSOCIATIONS_ALL');
       },
     }
   );

@@ -4,7 +4,7 @@ import { useMutation } from 'react-query';
 
 import Button from '@c/button';
 import { userResetPassword } from '@net/auth';
-import PassWord from '@c/input/password';
+import PassWordField from '@portal/components/input/password-field';
 import { isPassword } from '@clients/lib/utils';
 
 interface Props {
@@ -94,14 +94,14 @@ export default function ResetPasswordModal({ visible, onCancel }: Props) {
       }
     >
       <form className="w-full">
-        <PassWord
+        <PassWordField
           label="原密码"
           name="oldPassword"
           onBlur={onValidate('old')}
           onChange={onChange('old')}
           errorMessage={errorMessage.old}
         />
-        <PassWord
+        <PassWordField
           label="新密码"
           name="newPassword"
           onBlur={onValidate('new')}
