@@ -43,7 +43,11 @@ export default function TreePicker<T extends { id: string} >({
 
   useEffect(() => {
     if (treeData) {
-      setStore(new Store({ rootNode: treeData }));
+      const newStore = new Store({ rootNode: treeData }, false);
+      setStore(newStore);
+      if (store) {
+        newStore.onSelectNode(store.currentFocusedNodeID);
+      }
     }
   }, [treeData]);
 
@@ -71,6 +75,9 @@ export default function TreePicker<T extends { id: string} >({
         onSelect={(node) => {
           if (isFirstLoadRef.current) {
             isFirstLoadRef.current = false;
+            return;
+          }
+          if (!node) {
             return;
           }
           const paths = [node, ...store.getNodeParents(node.id).map(({ data }) => data)];
