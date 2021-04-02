@@ -1,8 +1,8 @@
 import React from 'react';
 
-import { More } from '@c/more';
+import More from '@c/more';
 import Icon from '@c/icon';
-import Button from '@c/button2';
+import Button from '@c/button';
 
 import NotifyIcon from './notify-icon';
 
@@ -13,7 +13,7 @@ const NAV_LIST: Nav[] = [
 ];
 
 const NAV_LIST_RIGHT = [
-  { name: '帮助文档', icon: 'play_lesson', url: '' },
+  { name: '帮助文档', icon: 'book', url: '' },
   {
     name: <More items={[
       <a

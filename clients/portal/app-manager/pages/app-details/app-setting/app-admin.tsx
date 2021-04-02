@@ -1,6 +1,6 @@
 import React from 'react';
 
-import Button from '@c/button2';
+import Button from '@c/button';
 import Table from '@c/table';
 
 const columns = [

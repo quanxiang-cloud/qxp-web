@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import Button from '@c/button2';
+import Button from '@c/button';
 import Icon from '@c/icon';
 
 function AppAdminSelect() {

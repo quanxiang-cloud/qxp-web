@@ -10,12 +10,14 @@ import './index.scss';
 
 function AppDetails({ appDetailsStore }) {
   const { isOpenSetting, appId } = useParams<any>();
+  console.log('appId: ', appId);
   const { fetchAppDetails, visibleAppManager, setVisibleAppManager } = appDetailsStore;
 
   useEffect(() => {
     fetchAppDetails(appId);
-    console.log(appDetailsStore);
+  }, [appId]);
 
+  useEffect(() => {
     if (isOpenSetting === 'openSetting') {
       setVisibleAppManager(true);
       window.history.replaceState({}, '', '/appManager/details');

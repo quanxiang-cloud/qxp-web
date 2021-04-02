@@ -2,7 +2,7 @@ import React, { useRef } from 'react';
 import { inject } from 'mobx-react';
 import { Modal } from '@QCFE/lego-ui';
 
-import Button from '@c/button2';
+import Button from '@c/button';
 
 import CreatedEditApp from './created-edit-app';
 

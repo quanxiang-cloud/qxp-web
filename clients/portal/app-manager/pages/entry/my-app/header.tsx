@@ -1,7 +1,7 @@
 import React from 'react';
 import { RadioButton, RadioGroup } from '@QCFE/lego-ui';
 
-import Button from '@c/button2';
+import Button from '@c/button';
 import SearchInput from '@portal/components/search-input';
 
 import './index.scss';

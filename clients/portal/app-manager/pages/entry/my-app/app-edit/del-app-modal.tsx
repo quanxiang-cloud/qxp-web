@@ -3,7 +3,7 @@ import { inject } from 'mobx-react';
 import { Modal, Form } from '@QCFE/lego-ui';
 
 import Icon from '@c/icon';
-import Button from '@c/button2';
+import Button from '@c/button';
 
 import '../index.scss';
 

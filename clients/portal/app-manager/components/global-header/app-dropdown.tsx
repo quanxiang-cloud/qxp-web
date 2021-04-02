@@ -1,7 +1,8 @@
 import React, { useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
 import { inject } from 'mobx-react';
 
-import { More } from '@c/more';
+import More from '@c/more';
 
 import BgIcon from '../bg-icon';
 import AppInfoView from '../app-info-view';
@@ -12,12 +13,13 @@ type Props = {
 }
 
 function AppDropdown({ appDetailsStore, appListStore }: Props) {
+  const history = useHistory();
   useEffect(() => {
     appListStore.fetchAppList();
   }, []);
 
   const handleChange = (appId: string) => {
-    console.log('appId: ', appId);
+    history.replace(`/appManager/details/${appId}`);
   };
 
   const appListItems: JSX.Element[] = React.useMemo(() => {

@@ -4,6 +4,7 @@
 }
 
 .app-entry-container {
-  @apply pt-20 flex justify-center items-start gap-x-20 mx-auto;
+  @apply flex justify-center items-start gap-x-20 mx-auto;
+  padding: 20px 58px 0;
   height: calc(100vh - 64px);
 }

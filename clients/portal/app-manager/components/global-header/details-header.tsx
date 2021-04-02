@@ -3,7 +3,7 @@ import { inject, observer } from 'mobx-react';
 
 import Icon from '@c/icon';
 import PopConfirm from '@c/pop-confirm';
-import Button from '@c/button2';
+import Button from '@c/button';
 
 import AppDropdown from './app-dropdown';
 
@@ -67,7 +67,7 @@ function DetailsHeader({ navButtonRender, appDetailsStore }: DetailsHeaderProps)
           应用管理
         </Button>
         <hr className='app-global-header-hr' />
-        {navButtonRender({ name: '帮助文档', icon: 'play_lesson', url: '' })}
+        {navButtonRender({ name: '帮助文档', icon: 'book', url: '' })}
       </div>
     </div>
   );

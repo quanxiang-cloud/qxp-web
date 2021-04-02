@@ -1,7 +1,7 @@
 import React, { useRef, cloneElement, isValidElement } from 'react';
 
 import { Placement } from '@popperjs/core';
-import Button from '../button2';
+import Button from '../button';
 import Popper from '../popper';
 
 import './index.scss';

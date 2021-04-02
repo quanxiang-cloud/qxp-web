@@ -23,6 +23,7 @@ function GlobalHeader() {
 
     if (isInside) {
       history.push(url);
+      return;
     }
 
     window.location.href = url;

@@ -2,7 +2,7 @@ import React, { lazy, Suspense } from 'react';
 import { Route, Switch } from 'react-router';
 
 import PageLoading from '@appC/page-loading';
-import { Error } from '@c/error2';
+import Error from '@c/error';
 
 const AppManagerEntry = lazy(
   () => import('./pages/entry'),

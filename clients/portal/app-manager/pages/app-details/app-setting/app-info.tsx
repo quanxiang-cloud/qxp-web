@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 
-import Button from '@c/button2';
+import Button from '@c/button';
 
 import CreatedEditApp from '../../entry/my-app/app-edit/created-edit-app';
 

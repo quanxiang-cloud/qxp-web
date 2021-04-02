@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
-import ListMenu from '@portal/components/list-menu';
-import { ItemWithTitleDesc } from '@portal/components/item-with-title-desc4';
+import ListMenu from '@c/list-menu';
+import ItemWithTitleDesc from '@c/item-with-title-desc';
 
 import MyApp from './my-app';
 
