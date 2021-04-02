@@ -1,24 +1,37 @@
 import React, { useState } from 'react';
 import { useMutation } from 'react-query';
 import classnames from 'classnames';
-import {
-  Modal,
-  CheckboxGroup,
-  Checkbox,
-  Table,
-  Upload,
-  Message,
-} from '@QCFE/lego-ui';
+import { Modal, CheckboxGroup, Checkbox, Table, Upload, Message } from '@QCFE/lego-ui';
 
 import SvgIcon from '@c/icon';
 import Button from '@c/button';
-import {
-  getUserTemplate,
-  importTempFile,
-  resetUserPWD,
-} from '@net/corporate-directory';
+import { getUserTemplate, importTempFile, resetUserPWD } from '@net/corporate-directory';
 
 import { FileUploadStatus } from '../type';
+import { exportEmployeesFail } from '../utils';
+
+const columns: Columns = [
+  {
+    title: '姓名',
+    dataIndex: 'userName',
+    key: 'userName',
+  },
+  {
+    title: '手机号',
+    dataIndex: 'phone',
+    key: 'phone',
+  },
+  {
+    title: '邮箱',
+    dataIndex: 'email',
+    key: 'email',
+  },
+  {
+    title: '原因',
+    dataIndex: 'remarks',
+    key: 'remarks',
+  },
+];
 
 type UploadRes = {
   status: FileUploadStatus;
@@ -38,10 +51,7 @@ interface Props {
   closeModal(): void;
 }
 
-export default function ImportEmployeesModal({
-  currDepId,
-  closeModal,
-}: Props) {
+export default function ImportEmployeesModal({ currDepId, closeModal }: Props) {
   const [fileList, setFileList] = useState<File[]>([]);
   const [checkWay, setCheckWay] = useState<CheckedWay>({
     sendPhone: -1,
@@ -55,11 +65,17 @@ export default function ImportEmployeesModal({
   const [failUsers, setFailUsers] = useState([]);
   const [successUsersId, setSuccessUsersId] = useState<string[]>([]);
   const [btnStatus, setBtnStatus] = useState<ButtonStatus>(0);
+  const [importLoading, setImportLoading] = useState(false);
 
   const tempMutation = useMutation(getUserTemplate, {
-    onSuccess: (url) => {
-      if (url) {
-        downFile(url, '模板文件.xlsx');
+    onSuccess: (res) => {
+      if (res && res.code === 0) {
+        const { data } = res;
+        if (data && data.fileURL) {
+          downEmployeesTemp(data.fileURL, '模板文件.xlsx');
+        }
+      } else {
+        Message.error('操作失败');
       }
     },
   });
@@ -82,6 +98,7 @@ export default function ImportEmployeesModal({
           setBtnStatus(1);
           setFailUsers(failUsers);
           setSuccessUsersId(success);
+          setImportLoading(false);
           setUploadStatus({
             status,
             failTotal,
@@ -102,44 +119,19 @@ export default function ImportEmployeesModal({
         Message.error('操作失败！');
       }
       closeModal();
-      setFileList([]);
-      setBtnStatus(0);
     },
   });
 
-  const downFile = (url: string, fileName: string) => {
+  function downEmployeesTemp(url: string, fileName: string) {
     const aElem = document.createElement('a');
     document.body.appendChild(aElem);
     aElem.href = url;
     aElem.download = fileName;
     aElem.click();
     document.body.removeChild(aElem);
-  };
+  }
 
-  const columns: Columns = [
-    {
-      title: '姓名',
-      dataIndex: 'userName',
-      key: 'userName',
-    },
-    {
-      title: '手机号',
-      dataIndex: 'phone',
-      key: 'phone',
-    },
-    {
-      title: '邮箱',
-      dataIndex: 'email',
-      key: 'email',
-    },
-    {
-      title: '原因',
-      dataIndex: 'remarks',
-      key: 'remarks',
-    },
-  ];
-
-  const beforeUpload = (file: File) => {
+  function beforeUpload(file: File) {
     const { size } = file;
     if (size > 1024 * 1024 * 5) {
       Message.error('文件过大，超过 5M 不能上传！');
@@ -147,18 +139,18 @@ export default function ImportEmployeesModal({
     }
     setFileList([file]);
     return false;
-  };
+  }
 
   const downTemp = () => {
     tempMutation.mutate();
   };
 
-  const delFile = (Index: number) => {
+  function deleteUploadFile(Index: number) {
     const newFileList = fileList.filter((item, index) => index !== Index);
     setFileList(newFileList);
-  };
+  }
 
-  const importFile = () => {
+  function importEmployeesTemp() {
     if (fileList.length === 0) {
       Message.error('请上传文件');
       return;
@@ -167,71 +159,13 @@ export default function ImportEmployeesModal({
       depID: currDepId,
       file: fileList[0],
     };
+    setImportLoading(true);
     uploadMutation.mutate(params);
-  };
+  }
 
-  const downFailData = () => {
-    exportCourseExcel(columns, failUsers, '失败人员列表.xlsx');
-  };
-
-  const exportCourseExcel = (
-    headers: Columns,
-    data: any[],
-    fileName: string
-  ) => {
-    const _headers = headers
-      .map((item, i) =>
-        Object.assign(
-          {},
-          {
-            key: item.key,
-            title: item.title,
-            position: String.fromCharCode(65 + i) + 1,
-          }
-        )
-      )
-      .reduce(
-        (prev: any, next: any) =>
-          Object.assign({}, prev, {
-            [next.position]: { key: next.key, v: next.title },
-          }),
-        {}
-      );
-
-    const _data = data
-      .map((item: any, i: any) =>
-        headers.map((key: any, j: any) =>
-          Object.assign(
-            {},
-            {
-              content: item[key.key],
-              position: String.fromCharCode(65 + j) + (i + 2),
-            }
-          )
-        )
-      )
-      .reduce((prev: any, next: any) => prev.concat(next))
-      .reduce(
-        (prev: any, next: any) =>
-          Object.assign({}, prev, { [next.position]: { v: next.content } }),
-        {}
-      );
-    const output = Object.assign({}, _headers, _data);
-    const outputPos = Object.keys(output);
-    const ref = `${outputPos[0]}:${outputPos[outputPos.length - 1]}`;
-    const wb = {
-      SheetNames: ['mySheet'],
-      Sheets: {
-        mySheet: Object.assign({}, output, {
-          '!ref': ref,
-          '!cols': [{ wpx: 100 }, { wpx: 100 }, { wpx: 100 }, { wpx: 100 }],
-        }),
-      },
-    };
-    import('xlsx').then(({ default: XLSX }) => {
-      XLSX.writeFile(wb, fileName);
-    });
-  };
+  function exportEmployees() {
+    exportEmployeesFail(columns, failUsers, '失败人员列表.xlsx');
+  }
 
   const changeCheckbox = (val: string[]) => {
     const checkedWay: CheckedWay = {
@@ -245,7 +179,7 @@ export default function ImportEmployeesModal({
     setCheckWay(checkedWay);
   };
 
-  const handleSubmit = () => {
+  function handleSubmit() {
     if (checkWay && checkWay.sendEmail === -1 && checkWay.sendPhone === -1) {
       Message.error('请选择发送方式');
       return;
@@ -256,18 +190,7 @@ export default function ImportEmployeesModal({
       failTotal: 0,
     });
     resetMutation.mutate({ userIDs: successUsersId, ...checkWay });
-  };
-
-  const closeBefore = () => {
-    setUploadStatus({
-      status: 0,
-      successTotal: 0,
-      failTotal: 0,
-    });
-    setFileList([]);
-    setBtnStatus(0);
-    closeModal();
-  };
+  }
 
   return (
     <>
@@ -275,14 +198,14 @@ export default function ImportEmployeesModal({
         visible
         title="excel 批量导入成员"
         className="static-modal"
-        onCancel={closeBefore}
+        onCancel={closeModal}
         footer={
           uploadStatus.status !== FileUploadStatus.fail ? (
             <div className="flex items-center">
               <Button
                 icon={<SvgIcon name="close" size={20} className="mr-8" />}
                 className="mr-20"
-                onClick={closeBefore}
+                onClick={closeModal}
               >
                 取消
               </Button>
@@ -290,15 +213,9 @@ export default function ImportEmployeesModal({
                 <Button
                   className="bg-black-900"
                   textClassName="text-white"
-                  icon={
-                    <SvgIcon
-                      name="check"
-                      type="light"
-                      size={20}
-                      className="mr-8"
-                    />
-                  }
-                  onClick={importFile}
+                  icon={<SvgIcon name="check" type="light" size={20} className="mr-8" />}
+                  onClick={importEmployeesTemp}
+                  loading={importLoading}
                 >
                   确定导入
                 </Button>
@@ -306,13 +223,7 @@ export default function ImportEmployeesModal({
                 <Button
                   className="bg-black-900"
                   textClassName="text-white"
-                  icon={
-                    <SvgIcon
-                      name="check"
-                      type="light"
-                      size={20}
-                      className="mr-8"
-                    />
+                  icon={<SvgIcon name="check" type="light" size={20} className="mr-8" />
                   }
                   onClick={handleSubmit}
                 >
@@ -347,7 +258,7 @@ export default function ImportEmployeesModal({
             </div>
           )}
           {uploadStatus.status === FileUploadStatus.depSuccess && (
-            <div className="text-yellow-600 mb-24 font-semibold">
+            <div className="text-yellow-600 mb-24 font-semibold flex items-center">
               <SvgIcon
                 size={16}
                 name="priority_high"
@@ -404,7 +315,7 @@ export default function ImportEmployeesModal({
                         <SvgIcon
                           size={16}
                           name="restore_from_trash"
-                          onClick={() => delFile(index)}
+                          onClick={() => deleteUploadFile(index)}
                         />
                       </div>
                     );
@@ -449,7 +360,7 @@ export default function ImportEmployeesModal({
               <div className="mb-8 flex items-center">
                 <p className="text-gray-600 font-semibold">失败原因：</p>
                 <span
-                  onClick={downFailData}
+                  onClick={exportEmployees}
                   className="text-blue-600 cursor-pointer"
                 >
                   下载失败列表

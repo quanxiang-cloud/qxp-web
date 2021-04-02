@@ -102,7 +102,7 @@ export default function Employees({
     }).then((res) => {
       if (res && res.data) {
         const { data } = res;
-        const newData = data.map((user) => {
+        const newData: UserInfo[] = data.map((user) => {
           user.depName = user.dep && user.dep.departmentName;
           return user;
         });
@@ -228,7 +228,7 @@ export default function Employees({
                 </Button>
                 <div className="w-16"></div>
                 <Button
-                  icon={<Icon className="mr-12" name="add" />}
+                  icon={<SvgIcon name="password" className="mr-10" size={20} />}
                   onClick={() => openModal('reset_password')}
                 >
                 重置密码
