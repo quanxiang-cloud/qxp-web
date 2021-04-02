@@ -4,13 +4,14 @@ import SvgIcon from '../icon';
 
 interface Props {
   value: string;
+  placeholder?: string;
   onChange?: (val:string) => void;
   onBlur?(val?: string): void;
   onKeyDown?(e?: React.KeyboardEvent): void;
 }
 
 export default function Search(
-  { value, onChange, onKeyDown, onBlur }: Props) {
+  { value, placeholder, onChange, onKeyDown, onBlur }: Props) {
   function handleClick() {
     onChange && onChange('');
     onBlur && onBlur('');
@@ -23,7 +24,7 @@ export default function Search(
         style={{ background: 'none', width: 122 }}
         className="outline-none flex-grow"
         type="text"
-        placeholder="搜索员工名称"
+        placeholder={placeholder}
         name="search"
         onChange={(e: React.ChangeEvent<HTMLInputElement>) => onChange && onChange(e.target.value)}
         value={value}

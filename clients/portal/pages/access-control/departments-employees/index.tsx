@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Message } from '@QCFE/lego-ui';
 
 import TextHeader from '@c/text-header';
 import Error from '@c/error';
@@ -7,6 +8,7 @@ import { usePortalGlobalValue } from '@states/portal';
 
 import DepartmentsTree from './departments-tree';
 import Employees from './employees';
+import { SpecialSymbolsReg } from './utils';
 
 export default function DepartmentsEmployees() {
   const [inputValue, setInputValue] = useState<string>('');
@@ -23,6 +25,10 @@ export default function DepartmentsEmployees() {
     if (e.key !== 'Enter') {
       return;
     }
+    if (SpecialSymbolsReg.test(inputValue)) {
+      Message.error('不能输入特殊字符');
+      return;
+    }
     setSearchWord(inputValue);
   }
 
@@ -34,6 +40,15 @@ export default function DepartmentsEmployees() {
   function handleClear() {
     setInputValue('');
     setSearchWord('');
+  }
+
+  function handleOnBlur(val: string) {
+    const newVal = val === '' ? val : inputValue;
+    if (SpecialSymbolsReg.test(newVal)) {
+      Message.error('不能输入特殊字符');
+      return;
+    }
+    setSearchWord(newVal);
   }
 
   if (!userInfo.authority.includes('accessControl/mailList/read')) {
@@ -54,10 +69,11 @@ export default function DepartmentsEmployees() {
           className='w-208 ml-20 mt-20'
         >
           <Search
+            placeholder="搜索员工名称"
             value={inputValue}
             onChange={(value: string) => setInputValue(value)}
             onKeyDown={handleKeDown}
-            onBlur={(val) => setSearchWord(val === '' ? val :inputValue)}
+            onBlur={handleOnBlur}
           />
         </div>
         <div className="mt-20 h-full mt-4 flex items-start overflow-hidden">
