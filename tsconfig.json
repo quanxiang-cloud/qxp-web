@@ -50,7 +50,7 @@
       "@states/*": ["./clients/common/states/*"],
       "@c/*": ["./clients/portal/components/*"],
       "@p/*": ["./clients/portal/pages/*"],
-      "@t/*": ["./clients/@types/*"],
+      "@t/*": ["clients/type/*"],
       "@lib/*": ["./clients/lib/*"],
       "@net/*": ["./clients/portal/api/*"],
       "@const/*": ["./clients/portal/const/*"],
@@ -61,7 +61,7 @@
       "node_modules/@types",
       "node_modules/@QCFE/types",
       "node_modules/@qcfe/types",
-      "clients/@types"
+      "clients/type"
     ] /* List of folders to include type definitions from. */,
     "types": ["cypress"] /* Type declaration files to be included in compilation. */,
     "allowSyntheticDefaultImports": true /* Allow default imports from modules with no default export. This does not affect code emit, just typechecking. */,

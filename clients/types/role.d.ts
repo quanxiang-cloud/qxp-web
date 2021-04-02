@@ -4,3 +4,9 @@ declare enum RoleBindType {
 }
 
 type EmployeeOrDepartmentOfRole = EmployeeOfRole & DepartmentOfRole;
+
+interface Role {
+  id: string;
+  name: string;
+  tag: string;
+}

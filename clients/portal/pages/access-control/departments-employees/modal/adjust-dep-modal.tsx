@@ -6,7 +6,6 @@ import SvgIcon from '@c/icon';
 import DepartmentPicker from '@c/tree-picker';
 import Button from '@c/button';
 import { departmentToTreeNode } from '@lib/utils';
-import { UserInfo } from '@net/auth';
 import { getERPTree, batchAdjustDep } from '@net/corporate-directory';
 
 import { LeaderStatus } from '../type';

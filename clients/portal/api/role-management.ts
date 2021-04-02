@@ -2,8 +2,6 @@ import { QueryFunctionContext } from 'react-query';
 
 import { httpPost } from '@lib/utils';
 
-import Role from '../pages/access-control/role-management/role';
-
 // 获取角色列表
 export async function getRoles() {
   const { data } = await httpPost<{ roles: Role[]; }>('/api/v1/goalie/listRole', null, {

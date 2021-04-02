@@ -4,7 +4,6 @@ import SvgIcon from '@c/icon';
 import UserCell from './table-column/user-cell';
 import OtherCell from './table-column/other-cell';
 import { MenuItem } from '@c/more-menu';
-import { UserInfo } from '@net/auth';
 
 import { UserStatus, LeaderStatus } from './type';
 

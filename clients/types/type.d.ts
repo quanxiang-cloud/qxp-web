@@ -1,6 +1,19 @@
-import { UserInfo } from '@net/auth';
+interface UserInfo {
+  id: string;
+  userName: string;
+  phone: string;
+  email: string;
+  userIconURL?: string;
+  dep?: Department;
+  depIds?: string[];
+  authority?: string[];
+  roleId?: string;
+  deleteId?: string;
+  useStatus?: number;
+  isDEPLeader?: number;
+}
 
-export type DeptInfo = {
+type DeptInfo = {
   departmentName: string;
   id: string;
   pid?: string;
@@ -15,7 +28,7 @@ type DeptTree = {
   useStatus: number;
 };
 
-export type Columns = {
+type Columns = {
   title: string;
   dataIndex: string;
   width?: number;

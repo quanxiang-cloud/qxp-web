@@ -1,6 +1,6 @@
 import { IInputField, InputField, query } from '@lib/atom';
 import { httpPost } from '@lib/utils';
-import { Response } from 'clients/@types/interface/api';
+import { Response } from '@clients/types/api';
 import UserName from './username';
 
 export default class Captcha extends InputField {

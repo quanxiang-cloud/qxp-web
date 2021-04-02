@@ -213,7 +213,7 @@ declare module '@QCFE/lego-ui' {
     children?: React.ReactNode;
   }
 
-  export interface SelectFieldProps extends SelectProps {
+  interface SelectFieldProps extends SelectProps {
     label?: React.ReactNode;
     validateStatus?: string;
     validateIcon?: boolean;

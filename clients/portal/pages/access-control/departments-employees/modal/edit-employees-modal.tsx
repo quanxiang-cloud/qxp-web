@@ -7,7 +7,6 @@ import SvgIcon from '@c/icon';
 import Button from '@c/button';
 import Loading from '@c/loading';
 import { getERPTree, addDepUser, updateUser } from '@net/corporate-directory';
-import { UserInfo } from '@net/auth';
 import { departmentToTreeNode } from '@lib/utils';
 
 const { TextField, CheckboxGroupField } = Form;

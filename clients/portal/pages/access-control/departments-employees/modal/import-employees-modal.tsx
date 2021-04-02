@@ -17,7 +17,6 @@ import {
   importTempFile,
   resetUserPWD,
 } from '@net/corporate-directory';
-import { Columns } from '@t/interface/type';
 
 import { FileUploadStatus } from '../type';
 

@@ -16,8 +16,6 @@ import AdjustDepModal from './modal/adjust-dep-modal';
 import LeaderHandleModal from './modal/leader-handle-modal';
 import { usePortalGlobalValue } from '@states/portal';
 import { getUserAdminInfo } from '@net/corporate-directory';
-import { UserInfo } from '@net/auth';
-import { Columns } from '@t/interface/type';
 
 import { exportEmployees } from './utils';
 import { UserStatus } from './type';

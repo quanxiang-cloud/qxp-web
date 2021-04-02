@@ -1,7 +1,5 @@
 import React from 'react';
 
-import { UserInfo } from '@net/auth';
-
 import { getImgColor } from '../utils';
 import { UserStatus } from '../type';
 

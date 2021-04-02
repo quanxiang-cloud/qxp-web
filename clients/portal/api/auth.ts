@@ -1,23 +1,6 @@
 import { QueryFunctionContext } from 'react-query';
 
 import { httpPost } from '@lib/utils';
-import { Department } from '@states/portal';
-
-// get user info
-export interface UserInfo {
-  id: string;
-  userName: string;
-  phone: string;
-  email: string;
-  userIconURL?: string;
-  dep?: Department;
-  depIds?: string[];
-  authority?: string[];
-  roleId?: string;
-  deleteId?: string;
-  useStatus?: number;
-  isDEPLeader?: number;
-}
 
 // get all user funcs
 export const getUserFuncs = async ({ queryKey }: QueryFunctionContext): Promise<string[]> => {

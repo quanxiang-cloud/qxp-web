@@ -1,7 +1,5 @@
 import React from 'react';
 
-import { UserInfo } from '@net/auth';
-
 import { UserStatus } from '../type';
 
 interface Props {
