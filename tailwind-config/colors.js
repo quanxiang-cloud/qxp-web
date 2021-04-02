@@ -6,6 +6,9 @@ module.exports = {
     900: '#000',
   },
   white: '#fff',
+  light: {
+    50: 'rgba(255, 255, 255, 0.65)',
+  },
   // rose: {
   //   50: 'var(--rose-50)',
   //   100: 'var(--rose-100)',
@@ -91,6 +94,7 @@ module.exports = {
     900: 'var(--blue-900)',
     1000: 'var(--blue-1000)',
     1100: 'var(--blue-1100)',
+    1200: 'var(--blue-1200)',
   },
   // lightBlue: {
   //   50: 'var(--lightBlue-50)',
@@ -247,6 +251,7 @@ module.exports = {
     700: 'var(--gray-700)',
     800: 'var(--gray-800)',
     900: 'var(--gray-900)',
+    1000: 'rgba(241, 245, 249, 0.5)',
   },
   // coolGray: {
   //   50: 'var(coolGray-50)',

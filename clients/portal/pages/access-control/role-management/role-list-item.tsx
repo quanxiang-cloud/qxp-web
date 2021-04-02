@@ -1,9 +1,9 @@
 import React from 'react';
 import { twCascade } from '@mariusmarais/tailwind-cascade';
 import useCss from 'react-use/lib/useCss';
-import { identity } from '@assets/lib/utils';
+import { identity } from '@lib/utils';
 
-import { ItemWithTitleDesc } from '@portal/components/item-with-title-desc4';
+import ItemWithTitleDesc from '@c/item-with-title-desc';
 
 export interface IRoleListItem {
   name: string;
@@ -13,11 +13,11 @@ export interface IRoleListItem {
   onClick?: (id: string | number) => void;
 }
 
-export const RoleListItem = ({ name, active, id, onClick = identity }: IRoleListItem) => {
+export default function RoleListItem({ name, active, id, onClick = identity }: IRoleListItem) {
   return (
     <ItemWithTitleDesc
       className={twCascade(
-        'py-1-dot-6 px-20 hover:text-blue-600 hover:bg-blue-100 hover:font-bold',
+        'py-16 px-20 hover:text-blue-600 hover:bg-blue-100 hover:font-bold',
         'transition duration-300 flex items-center justify-center',
         {
           'bg-blue-100': active,
@@ -27,7 +27,7 @@ export const RoleListItem = ({ name, active, id, onClick = identity }: IRoleList
         useCss({
           '&:hover': {
             svg: {
-              fill: '#8CADFF',
+              fill: '#375FF3',
             },
             div: {
               color: '#375FF3',
@@ -72,10 +72,10 @@ export const RoleListItem = ({ name, active, id, onClick = identity }: IRoleList
         </svg>
       }
       title={name}
-      titleClassName={twCascade('text-h6-no-color transition duration-300', {
+      titleClassName={twCascade('text-h6-no-color-weight transition duration-300', {
         'text-blue-600': active,
         'font-semibold': active,
       })}
     />
   );
-};
+}

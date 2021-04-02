@@ -1,30 +1,6 @@
 import { QueryFunctionContext } from 'react-query';
 
-import { httpPost, getNestedPropertyToArray } from '@assets/lib/utils';
-import { IDepartment } from '@clients/common/state/portal';
-
-// get user info
-export interface IUserInfo {
-  id: string;
-  userName: string;
-  phone: string;
-  email: string;
-  userIconURL?: string;
-  dep?: IDepartment;
-  depIds?: string[];
-  authority?: string[];
-  roleId?: string;
-  deleteId?: string;
-  useStatus?: number;
-  isDEPLeader?: boolean | number;
-}
-export const getUserInfo = async (): Promise<Partial<IUserInfo>> => {
-  const { data } = await httpPost<IUserInfo>('/api/v1/org/userUserInfo');
-  if (data) {
-    data.depIds = getNestedPropertyToArray<string>(data?.dep, 'id', 'child');
-  }
-  return data || {};
-};
+import { httpPost } from '@lib/utils';
 
 // get all user funcs
 export const getUserFuncs = async ({ queryKey }: QueryFunctionContext): Promise<string[]> => {
@@ -78,3 +54,15 @@ export const getUserRoles = async (
   );
   return data || { roles: [], total: 0 };
 };
+
+export async function userResetPassword({
+  oldPassword, newPassword,
+}: Record<string, string>) {
+  await httpPost<any>(
+    '/api/v1/nurturing/userResetPWD',
+    JSON.stringify({
+      oldPassword,
+      newPassword,
+    })
+  );
+}

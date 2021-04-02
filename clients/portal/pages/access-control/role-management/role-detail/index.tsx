@@ -1,19 +1,20 @@
 import React from 'react';
 import { useQuery } from 'react-query';
 
-import { ItemWithTitleDesc } from '@portal/components/item-with-title-desc4';
-import { Tab } from '@portal/components/tab2';
-import { Loading } from '@portal/components/loading2';
+import ItemWithTitleDesc from '@c/item-with-title-desc';
+import Tab from '@c/tab';
+import Loading from '@c/loading';
+import { getRoleFunctions } from '@portal/api/role-management';
+
+import AlterRoleFunc from './alter-role-func';
+import AssociateDepartmentEmployee from './associate-department-employee';
 import { IRoleListItem } from '../role-list-item';
-import { AlterRoleFunc } from './alter-role-func';
-import { AssociateDepartmentEmployee } from './associate-department-employee';
-import { getRoleFunctions } from '../api';
 
 export interface IRoleDetail {
   role?: IRoleListItem;
 }
 
-export const RoleDetail = ({ role }: IRoleDetail) => {
+export default function RoleDetail({ role }: IRoleDetail) {
   const { data, isLoading } = useQuery(['getRoleFunctions', role?.id], getRoleFunctions, {
     refetchOnWindowFocus: false,
     enabled: !!role?.id,
@@ -41,7 +42,8 @@ export const RoleDetail = ({ role }: IRoleDetail) => {
       />
       <Tab
         style={{ height: 'calc(100% - 24px)' }}
-        className="mt-4 py-1-dot-6"
+        className="mt-4 py-16"
+        contentClassName="rounded-12 rounded-tl-none"
         items={[
           {
             id: 'func',
@@ -58,10 +60,15 @@ export const RoleDetail = ({ role }: IRoleDetail) => {
           {
             id: 'association',
             name: '关联员工与部门',
-            content: <AssociateDepartmentEmployee id={role.id} isSuper={role.tag === 'super'} />,
+            content: (
+              <AssociateDepartmentEmployee
+                roleID={role.id}
+                isSuper={role.tag === 'super'}
+              />
+            ),
           },
         ]}
       />
     </>
   );
-};
+}

@@ -1,19 +1,20 @@
-import React from 'react';
-import useCss from 'react-use/lib/useCss';
+import React, { useEffect } from 'react';
 import { twCascade } from '@mariusmarais/tailwind-cascade';
 
-import { Avatar } from '@portal/components/avatar2';
-import Card from '@portal/components/card2';
-import { List } from '@portal/components/list2';
-import { ItemWithTitleDesc } from '@portal/components/item-with-title-desc4';
-import { uuid } from '@assets/lib/utils';
-import { usePortalGlobalValue } from '@clients/common/state/portal';
+import Avatar from '@c/avatar';
+import Card from '@c/card';
+import List from '@c/list';
+import ItemWithTitleDesc from '@c/item-with-title-desc';
+import { uuid } from '@lib/utils';
+import { usePortalGlobalValue } from '@states/portal';
 
 import './index.scss';
 
 export default function Dashboard() {
   const [value] = usePortalGlobalValue();
-
+  useEffect(() => {
+    document.title = '工作台';
+  }, []);
   return (
     <>
       <main className="py-40 px-58 relative">
@@ -32,6 +33,7 @@ export default function Dashboard() {
             className="px-32 py-20"
             headerClassName="ml-8"
             title="我的应用"
+            itemTitleClassName="text-h5"
             action={
               <a className="transition ease-linear text-underline">前往应用市场</a>
             }
@@ -60,6 +62,7 @@ export default function Dashboard() {
                   <ItemWithTitleDesc
                     key={uuid()}
                     title="CRM"
+                    titleClassName="text-h6"
                     desc="未上线"
                     itemRender={
                       <div
@@ -71,12 +74,12 @@ export default function Dashboard() {
                         <img src="/dist/images/accounts.svg" alt="accounts" />
                       </div>
                     }
-                    titleClassName="text-14 leading-4 font-bold"
                     descClassName="text-caption"
                   />,
                   <ItemWithTitleDesc
                     key={uuid()}
                     title="新建应用"
+                    titleClassName="text-button"
                     itemRender={
                       <div
                         className={twCascade(
@@ -87,7 +90,6 @@ export default function Dashboard() {
                         <img src="/dist/images/add.svg" alt="add" />
                       </div>
                     }
-                    titleClassName="text-button"
                   />,
                 ]}
               />
@@ -97,21 +99,14 @@ export default function Dashboard() {
             <Card
               className="flex-1 ml-0 px-40 pt-20 text-16"
               title="我的待办"
+              itemTitleClassName="text-h5"
               action={
                 <a className="transition ease-linear text-black-50 text-underline-no-color">查看全部</a>
               }
               content={
                 <List
-                  className="flex-col"
-                  itemClassName={twCascade(
-                    // 'bg-white, mt-20, px-20',
-                    useCss({
-                      'margin-bottom': '2rem',
-                      'background-color': '#fff',
-                      padding: '0 20px',
-                    }),
-                    'rounded-12',
-                  )}
+                  className="flex-col flex-1"
+                  itemClassName="px-20 rounded-12 mb-20 bg-white"
                   items={[
                     <ItemWithTitleDesc
                       key={uuid()}
@@ -172,6 +167,7 @@ export default function Dashboard() {
             <Card
               className="flex-2 self-stretch flex flex-col px-40 py-20 text-16"
               title="未读消息"
+              itemTitleClassName="text-h5"
               action={
                 <a className="text-underline-no-color text-black-50 transition ease-linear">查看全部</a>
               }

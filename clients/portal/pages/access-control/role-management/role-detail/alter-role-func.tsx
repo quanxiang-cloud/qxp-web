@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Message } from '@QCFE/lego-ui';
 
-import Card from '@portal/components/card2';
-import { Checkbox } from '@portal/components/checkbox2';
-import { countBy, searchByKey, deepClone } from '@assets/lib/utils';
-import { IRoleFunc, IRoleFuncItem, setRoleFunctions } from '../api';
+import Card from '@c/card';
+import { Checkbox } from '@c/checkbox';
+import { countBy, searchByKey, deepClone } from '@lib/utils';
+import { IRoleFunc, IRoleFuncItem, setRoleFunctions } from '@portal/api/role-management';
 
 export interface IAlterRoleFunc {
   funcs: IRoleFunc;
@@ -13,7 +13,7 @@ export interface IAlterRoleFunc {
   id: string | number;
 }
 
-export const AlterRoleFunc = ({ funcs: functions, tag, lastSaveTime, id }: IAlterRoleFunc) => {
+export default function AlterRoleFunc({ funcs: functions, tag, lastSaveTime, id }: IAlterRoleFunc) {
   // @ts-ignore
   const [funcs, setFuncs] = useState<IRoleFunc>(deepClone(functions));
   const total = countBy<IRoleFunc, boolean>('has', 'child', (v) => v, funcs);
@@ -84,7 +84,7 @@ export const AlterRoleFunc = ({ funcs: functions, tag, lastSaveTime, id }: IAlte
               <Checkbox
                 disabled
                 checked={func.has}
-                className="mr-14 flex flex-row items-center pb-1-dot-6"
+                className="mr-72 flex flex-row items-center text-caption mb-16"
                 key={func.funcTag}
                 value={func.funcTag}
                 onChange={updateFuncs(func.funcTag)}
@@ -98,7 +98,7 @@ export const AlterRoleFunc = ({ funcs: functions, tag, lastSaveTime, id }: IAlte
             <Card
               style={{ backgroundColor: '#fff' }}
               key={func.funcTag}
-              headerClassName="py-1-dot-6 px-8 border-b border-gray-200"
+              headerClassName="py-16 px-20 border-b border-gray-200"
               title={
                 <Checkbox
                   disabled
@@ -109,6 +109,7 @@ export const AlterRoleFunc = ({ funcs: functions, tag, lastSaveTime, id }: IAlte
                   {func.name}
                 </Checkbox>
               }
+              itemTitleClassName="text-h5"
               // action={
               //   <span onClick={selectAll(func)}>
               //     {func.child && !isSuper
@@ -121,7 +122,7 @@ export const AlterRoleFunc = ({ funcs: functions, tag, lastSaveTime, id }: IAlte
               headerActionClassName="no-underline text-gray-400
               text-12 leading-4 cursor-pointer"
               content={<>{renderFuncCard(func.child)}</>}
-              contentClassName="pt-1-dot-6 px-8 flex justify-start whitespace-nowrap flex-wrap"
+              contentClassName="py-16 pb-0 px-20 flex justify-start whitespace-nowrap flex-wrap"
             />
           );
         })}
@@ -183,4 +184,4 @@ export const AlterRoleFunc = ({ funcs: functions, tag, lastSaveTime, id }: IAlte
       {renderFuncCard(funcs)}
     </div>
   );
-};
+}

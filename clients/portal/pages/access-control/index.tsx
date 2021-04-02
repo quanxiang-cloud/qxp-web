@@ -1,17 +1,25 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { Switch, Route } from 'react-router-dom';
 
-import { ListMenu } from '@portal/pages/access-control/list-menu';
-import { ItemWithTitleDesc } from '@portal/components/item-with-title-desc4';
+
+import ItemWithTitleDesc from '@c/item-with-title-desc';
+import Error from '@c/error';
+import { usePortalGlobalValue } from '@states/portal';
+import ListMenu from '@p/access-control/list-menu';
 
 import RoleManagement from './role-management';
-import MailList from './company-maillist';
+import DepartmentsEmployees from './departments-employees';
 
 export default function Index() {
-  const [menuType, setMenuType] = useState('corporateDirectory');
+  const [{ userInfo }] = usePortalGlobalValue();
+
+  if (!userInfo.authority.includes('accessControl')) {
+    return <Error desc="您没有权限, 请联系管理员..." />;
+  }
 
   return (
-    <div className="py-20 px-5-dot-8 flex justify-center items-start">
-      <div className="w-31-dot-6 bg-white rounded-12">
+    <div className="py-20 px-58 flex justify-center items-start flex-grow overflow-hidden">
+      <div className="w-316 bg-white rounded-12 mr-20">
         <div className="access-background-image p-20 opacity-90">
           <ItemWithTitleDesc
             title="访问控制"
@@ -26,18 +34,20 @@ export default function Index() {
                 <img src="/dist/images/person.svg" alt="calendar" />
               </div>
             }
-            titleClassName="text-20 font-bold"
-            descClassName="text-12"
+            titleClassName="text-h4"
+            descClassName="text-caption"
           />
         </div>
         <div className="p-20">
-          <ListMenu defaultType="corporateDirectory" onChange={setMenuType} />
+          <ListMenu />
         </div>
       </div>
-      <div className='w-20'></div>
-      <div className="right-content-container">
-        {menuType === 'corporateDirectory' && (<MailList />)}
-        {menuType !== 'corporateDirectory' && (<RoleManagement />)}
+      <div className="h-full flex-grow bg-white rounded-12 overflow-hidden">
+        <Switch>
+          <Route exact path="/access-control" component={DepartmentsEmployees} />
+          <Route path="/access-control/role-management" component={RoleManagement} />
+          <Route component={() => (<Error desc={'Menu page is not found'} />)} />
+        </Switch>
       </div>
     </div>
   );

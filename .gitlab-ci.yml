@@ -1,0 +1,60 @@
+variables:
+  IMAGE_PREFIX: dockerhub.qingcloud.com/qxpdev
+
+stages:
+  - install
+  - test
+  - build
+  - release
+
+cache:
+  key: node_modules
+  paths:
+    - node_modules/
+
+install_node_modules_go_packages:
+  tags:
+    - qxp-web-runner
+  stage: install
+  script:
+    - yarn install --registry=http://r.npm.internal.yunify.com
+
+lint_js:
+  tags:
+    - qxp-web-runner
+  stage: test
+  script:
+    - yarn run lint
+
+build_all:
+  tags:
+    - qxp-web-runner
+  stage: build
+  only:
+    - testing
+    - gitlab-ci
+  script:
+    - NODE_ENV=production ./node_modules/.bin/webpack --config webpack.config.js
+    # todo refactor
+    - node_modules/.bin/gulp build
+    - go mod tidy
+    - go mod vendor
+    - IMAGE_TAG="v$(date "+%Y%m%d")-$(git rev-parse --short HEAD)"
+    - docker build -t "$IMAGE_PREFIX/qxp-web-portal:$IMAGE_TAG" -f ./deploy/Dockerfile-portal .
+    - docker build -t "$IMAGE_PREFIX/qxp-web-nginx:$IMAGE_TAG" -f ./deploy/Dockerfile-nginx .
+    - docker push "$IMAGE_PREFIX/qxp-web-nginx:$IMAGE_TAG"
+    - docker push "$IMAGE_PREFIX/qxp-web-portal:$IMAGE_TAG"
+
+deploy_testing:
+  tags:
+    - qxp-web-runner
+  stage: release
+  only:
+    - testing
+    - gitlab-ci
+  script:
+    - IMAGE_TAG="v$(date "+%Y%m%d")-$(git rev-parse --short HEAD)"
+    - bash -c "helm upgrade qxp-web-portal /root/helm-re/qxp-web-portal --set image.tag=$IMAGE_TAG"
+    - bash -c "helm upgrade qxp-web-nginx /root/helm-re/qxp-web-nginx --set image.tag=$IMAGE_TAG"
+    - echo "deploy testing done!"
+

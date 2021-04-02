@@ -17,4 +17,14 @@
   .flex-start-center {
     @apply flex flex-row items-center cursor-pointer justify-start;
   }
+
+  .tag-border-radius {
+    @apply rounded-tl-4 rounded-tr-none rounded-br-4 rounded-bl-none #{!important};
+  }
+
+  .bind-role-selector-tag {
+    .icon.close {
+      @apply absolute right-4 top-1/2 transform -translate-y-1/2 #{!important};
+    }
+  }
 }

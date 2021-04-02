@@ -3,7 +3,7 @@ import classnames from 'classnames';
 import { Placement } from '@popperjs/core';
 
 import { Icon } from '@QCFE/lego-ui';
-import Popper from '@portal/components/popper';
+import Popper from '@c/popper';
 
 export type MenuItem<T> = {
   key: T;
@@ -20,6 +20,7 @@ type Props<T> = {
   menus: MenuItem<T>[];
   placement?: Placement;
   likeBtn?: boolean;
+  children?: React.ReactElement;
 }
 
 type MenuItemsProps<T> = {
@@ -63,7 +64,7 @@ function RenderMenuItems<T extends React.Key>(
                 'select-option--disabled': disabled,
               })}
             >
-              <div className="select-option__content">{label}</div>
+              <div className="select-option__content py-6">{label}</div>
             </div>
           );
         })
@@ -75,7 +76,7 @@ function RenderMenuItems<T extends React.Key>(
 // todo fix this
 // opened more-menu will not be closed when another more-menu opened
 export default function MoreMenu<T extends React.Key>({
-  iconName, className, menus, onVisibilityChange, onChange, menuDesc, placement, likeBtn,
+  iconName, className, menus, children, onVisibilityChange, onChange, menuDesc, placement, likeBtn,
 }: Props<T>): JSX.Element {
   // todo fix this ref any type
   const reference = React.useRef<any>(null);
@@ -83,15 +84,18 @@ export default function MoreMenu<T extends React.Key>({
 
   return (
     <>
-      <span ref={reference} onClick={stopPropagation}>
-        <Icon
-          changeable
-          clickable
-          name={iconName ? iconName : 'more'}
-          style={{ transform: 'rotate(90deg)' }}
-          className={className}
-        />
-      </span>
+      {
+        children ? React.cloneElement(children, { ref: reference, onClick: stopPropagation }) :
+          <span ref={reference} onClick={stopPropagation}>
+            <Icon
+              changeable
+              clickable
+              name={iconName ? iconName : 'more'}
+              style={{ transform: 'rotate(90deg)' }}
+              className={className}
+            />
+          </span>
+      }
       <Popper
         ref={popperRef}
         reference={reference}

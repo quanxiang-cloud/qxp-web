@@ -1,54 +1,43 @@
-import * as React from 'react';
+import React from 'react';
 import classnames from 'classnames';
 
-import './_icon.scss';
+import '@portal/scss/components/_icon.scss';
 
 interface Props extends React.SVGProps<SVGSVGElement> {
   name: string;
-  type?: 'dark' | 'coloured' | 'light';
+  type?: 'dark' | 'primary' | 'light';
   size?: number;
-  color?: string;
-  className?: any;
+  style?: React.CSSProperties;
+  className?: string;
   disabled?: boolean;
   changeable?: boolean;
   clickable?: boolean;
 }
 
-interface Style {
-  width?: string;
-  height?: string;
-  color?: string;
-}
-
-function SvgIcon(
+function svgIcon(
   {
     name,
-    size = 22,
+    size = 16,
     type = 'dark',
-    changeable = false,
-    disabled = false,
-    clickable = false,
+    changeable,
+    disabled,
+    clickable,
     className,
-    color,
+    style,
     ...props
   }: Props,
-  _ref: React.Ref<SVGSVGElement>
+  ref?: React.Ref<SVGSVGElement>
 ) {
-  const styleCSS: Style = {
-    width: size ? `${size}px` : undefined,
-    height: size ? `${size}px` : undefined,
+  const _style: React.CSSProperties = {
+    ...style,
+    width: `${size - 1}px`,
+    height: `${size - 1}px`,
   };
-
-  if (color) {
-    styleCSS.color = color;
-  }
-
-  const _style: React.CSSProperties = styleCSS;
 
   return (
     <svg
       {...props}
-      ref={props.ref}
+      ref={ref}
       data-name={name}
       style={_style}
       className={classnames('svg-icon', `svg-icon--${type}`, className, {
@@ -57,9 +46,13 @@ function SvgIcon(
         'svg-icon--disabled': disabled,
       })}
     >
-      <use xlinkHref={`../dist/images/sprite.svg#${name}`} />
+      <use xlinkHref={`/dist/images/sprite.svg#${name}`} />
     </svg>
   );
 }
+
+const SvgIconRef = React.forwardRef(svgIcon);
+
+const SvgIcon = SvgIconRef;
 
 export default SvgIcon;

@@ -2,8 +2,8 @@ import React from 'react';
 import { twCascade } from '@mariusmarais/tailwind-cascade';
 import { Icon } from '@QCFE/lego-ui';
 
-import { Popover } from './popover2';
-import { List, IITems } from './list2';
+import { Popover } from './popover';
+import List, { IITems } from './list';
 
 export interface IMore<T> {
   className?: string;
@@ -20,7 +20,7 @@ export interface IMore<T> {
   contentItemClassName?: string;
 }
 
-export const More = function <T>({
+export default function More<T>({
   className,
   items,
   params,
@@ -48,7 +48,7 @@ export const More = function <T>({
           itemClassName={twCascade('hover:bg-blue-100', contentItemClassName)}
           className={
             twCascade(
-              'min-w-90 z-10 py-8 shadow-title bg-white',
+              'min-w-90 z-10 py-16 shadow-title bg-white',
               'rounded-6 absolute right-0 top-full mr-2 mt-12',
               contentClassName,
             )
@@ -70,4 +70,4 @@ export const More = function <T>({
       )}
     </Popover>
   );
-};
+}

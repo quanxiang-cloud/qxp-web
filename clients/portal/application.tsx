@@ -3,7 +3,7 @@ import { LocaleProvider } from '@QCFE/lego-ui';
 import { BrowserRouter as Router } from 'react-router-dom';
 
 import GlobalHeader from './global-header';
-import { Loading } from './components/loading2';
+import Loading from './components/loading';
 import { AppContext, IContextValue } from '@clients/common/providers/context';
 
 import locales from './locales';
@@ -15,9 +15,9 @@ export default function Application() {
   return (
     <LocaleProvider locales={locales} currentLocale={state.siteLang}>
       <Router>
-        <div className="min-h-screen bg-5976e01a flex flex-col">
+        <div className="h-full flex flex-col">
           <GlobalHeader />
-          <React.Suspense fallback={<Loading className="min-h-screen" desc="加载中..." />}>
+          <React.Suspense fallback={<Loading className="h-full" desc="加载中..." />}>
             <Routes />
           </React.Suspense>
         </div>

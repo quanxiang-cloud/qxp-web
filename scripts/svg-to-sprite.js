@@ -3,7 +3,6 @@ const glob = require('glob');
 const path = require('path');
 const fs = require('fs');
 const svgSpreact = require('svg-spreact');
-const mkdirp = require('mkdirp');
 const svgoConfig = require('./svgo.config');
 
 function getFileContent(filePath) {
@@ -38,15 +37,14 @@ module.exports = function () {
       );
       const iconID = (n) => iconNames[n];
       svgSpreact(svgStrArr, { tidy: true, processId: iconID, svgoConfig }).then(
-        ({ defs, refs }) => {
+        ({ defs }) => {
           // replace #475569 by currentColor in order to be styled by css
           // todo define #475569 as constant?
-          const svgStrs = defs.replace(/currentColor/g, 'none').replace(/#475569/g, 'currentColor');
-          // const svgStrs = svgStr;
-          mkdirp.sync(
-            path.dirname(path.join(__dirname, '../dist/images/sprite.svg'))
-          );
+          const svgStrs = defs
+            .replace(/currentColor/g, 'none')
+            .replace(/#475569/g, 'currentColor');
           fs.writeFileSync(
+            // todo minify
             path.join(__dirname, '../dist/images/sprite.svg'),
             svgStrs
           );

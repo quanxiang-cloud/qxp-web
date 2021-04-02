@@ -1,7 +1,7 @@
 import React from 'react';
 import classnames from 'classnames';
 import { observer } from 'mobx-react';
-import { observable, action, toJS } from 'mobx';
+import { observable, action, toJS, reaction, IReactionDisposer } from 'mobx';
 
 import TreeStore from './store';
 import RenderNode from './node';
@@ -24,6 +24,7 @@ interface Props<T> {
 @observer
 export default class Tree<T> extends React.Component<Props<T>> {
   @observable isRootAcceptDrop = false;
+  selectDisposer: IReactionDisposer;
 
   static defaultProps = {
     NodeRender: (node: TreeNode<any>): JSX.Element | string => {
@@ -34,8 +35,20 @@ export default class Tree<T> extends React.Component<Props<T>> {
     },
   }
 
+  constructor(props: Props<T>) {
+    super(props);
+
+    this.selectDisposer = reaction(() => this.props.store.currentFocusedNodeID, () => {
+      this.props.onSelect?.(toJS(this.props.store.currentFocusedNode.data));
+    });
+  }
+
   componentDidMount() {
     this.props.onSelect?.(toJS(this.props.store.currentFocusedNode.data));
+  }
+
+  componentWillUnmount() {
+    this.selectDisposer();
   }
 
   @action
@@ -47,7 +60,7 @@ export default class Tree<T> extends React.Component<Props<T>> {
   handleNodeClick = (node: TreeNode<T>): void => {
     // todo check is shift key down?
     this.props.store.onSelectNode(node.id);
-    this.props.onSelect?.(toJS(node.data));
+    // this.props.onSelect?.(toJS(node.data));
   }
 
   handleSwitcherClick = (node: TreeNode<T>): void => {

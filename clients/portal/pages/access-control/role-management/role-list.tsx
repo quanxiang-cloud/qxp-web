@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
 
-import { List } from '@portal/components/list2';
-import { ItemWithTitleDesc } from '@portal/components/item-with-title-desc4';
-import { RoleListItem, IRoleListItem } from './role-list-item';
+import List from '@c/list';
+import ItemWithTitleDesc from '@c/item-with-title-desc';
+
+import RoleListItem, { IRoleListItem } from './role-list-item';
 
 export interface IRoleList {
   items: IRoleListItem[];
   onChange: (id: number | string) => void;
 }
 
-export const RoleList = ({ items, onChange }: IRoleList) => {
+export default function RoleList({ items, onChange }: IRoleList) {
   const [current, setCurrent] = useState(items[0]?.id);
 
   const onClick = (id: number | string) => {
@@ -41,4 +42,4 @@ export const RoleList = ({ items, onChange }: IRoleList) => {
       />
     </div>
   );
-};
+}

@@ -1,0 +1,21 @@
+FROM golang:1.16.0-alpine3.13 AS builder
+
+VOLUME "/var/log/qxp-web"
+
+WORKDIR /build
+COPY ./server/ ./server/
+COPY ./vendor/ ./vendor/
+COPY go.mod .
+COPY go.sum .
+RUN CGO_ENABLED=0 go build -o portal -ldflags='-s -w' -installsuffix cgo ./server/cmd/portal/main.go
+
+FROM scratch
+
+WORKDIR /portal
+COPY --from=builder /build/portal /qxp-web/bin/
+
+EXPOSE 80
+
+COPY ./dist/templates/ /qxp-web/dist/templates/
+
+CMD ["/qxp-web/bin/portal", "-c", "/qxp-web/etc/config.yaml"]

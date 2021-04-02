@@ -3,5 +3,12 @@
 {{end}} {{define "content"}}
 <div id="root" class="w-p-100 h-p-100"></div>
 {{end}} {{define "bottom_scripts"}}
+<script>
+  {{if .}}
+    window.__global = {
+      userInfo: {{.data}}
+    }
+  {{end}}
+</script>
 <script src="<%= htmlWebpackPlugin.files.js[0] %>"></script>
 {{end}}
