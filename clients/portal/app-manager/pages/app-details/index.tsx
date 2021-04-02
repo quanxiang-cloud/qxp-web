@@ -10,7 +10,6 @@ import './index.scss';
 
 function AppDetails({ appDetailsStore }) {
   const { isOpenSetting, appId } = useParams<any>();
-  console.log('appId: ', appId);
   const { fetchAppDetails, visibleAppManager, setVisibleAppManager } = appDetailsStore;
 
   useEffect(() => {
