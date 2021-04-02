@@ -11,6 +11,7 @@ interface UserInfo {
   deleteId?: string;
   useStatus?: number;
   isDEPLeader?: number;
+  depName?: string;
 }
 
 type DeptInfo = {

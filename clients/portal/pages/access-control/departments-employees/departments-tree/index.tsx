@@ -3,6 +3,7 @@ import { observer } from 'mobx-react';
 import { useQuery } from 'react-query';
 
 import Tree from '@c/headless-tree';
+import Loading from '@c/loading';
 
 import Store from './store';
 import DepartmentNode from './department-node';
@@ -14,7 +15,6 @@ interface Props {
 
 function DepartmentsTree({ onSelect }: Props): JSX.Element {
   const [store, setStore] = useState<Store | null>(null);
-  // todo refactor getERPTree
   const { data: rootDep, isLoading, isError } = useQuery('GET_ERP_TREE', () => {
     return getERPTree().then((_treeData: any) => {
       return _treeData;
@@ -25,13 +25,11 @@ function DepartmentsTree({ onSelect }: Props): JSX.Element {
     if (rootDep && !isLoading && !isError) {
       const newStore = new Store(rootDep);
       setStore(newStore);
-      // onSelect && onSelect(newStore.currentFocusedNode.data);
     }
   }, [rootDep]);
 
-  // todo render loading and error state
   if (!store) {
-    return <></>;
+    return (<Loading className="h-full" desc="加载中..." />);
   }
 
   return (

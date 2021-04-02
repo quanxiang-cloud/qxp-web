@@ -146,9 +146,6 @@ export const getUserDEPInfo = () => {
   }).then(({ data }) => data);
 };
 
-type Persons = {
-  [name: string]: any;
-};
 
 /**
  * @returns 管理员分页（根据部门id获取人员列表）
@@ -156,7 +153,7 @@ type Persons = {
  */
 export const getUserAdminInfo = (depID: string, params: any) => {
   // eslint-disable-next-line camelcase
-  return httpPost<{ total_count: number; data: Persons[] }>(
+  return httpPost<{ total_count: number; data: UserInfo[] }>(
     '/api/v1/org/adminUserList',
     JSON.stringify({ depID, ...params }),
     {
@@ -175,7 +172,7 @@ export const getUserTemplate = () => {
   return httpPost<{ fileURL: string }>(
     '/api/v1/org/getUserTemplate',
     null
-  ).then(({ data }) => data?.fileURL);
+  );
 };
 
 type Roles = {

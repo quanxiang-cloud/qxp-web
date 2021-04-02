@@ -1,37 +1,36 @@
-type Column = {
-  title: string;
-  key: string;
-};
-
 // /[`~!@#$%^&*()_\-+=<>?:"{}|,.\/;'\\[\]·~！@#￥%……&*（）——\-+={}|《》？：“”【】、；‘'，。、]/im  (except - and _)
 export const SpecialSymbolsReg = /[`~!@#$%^&*()\+=<>?:"{}|,.\/;'\\[\]·~！@#￥%……&*（）——\+={}|《》？：“”【】、；‘'，。、]/im;
 
 export const PhoneReg = /^[1](([3][0-9])|([4][5-9])|([5][0-3,5-9])|([6][5,6])|([7][0-8])|([8][0-9])|([9][1,8,9]))[0-9]{8}$/;
 
-export const excelHeader: Column[] = [
+export const excelHeader: Columns = [
   {
     title: '姓名',
+    dataIndex: 'userName',
     key: 'userName',
   },
   {
     title: '手机号',
+    dataIndex: 'phone',
     key: 'phone',
   },
   {
     title: '邮箱',
+    dataIndex: 'email',
     key: 'email',
   },
   {
     title: '部门',
+    dataIndex: 'depName',
     key: 'depName',
   },
 ];
 
-export const exportEmployees = ( data: any[]) => {
+export const exportEmployees = ( data: UserInfo[]) => {
   const headers = excelHeader;
   const fileName = '人员列表.xlsx';
   const _headers = headers
-    .map((item: Column, i: number) =>
+    .map((item, i: number) =>
       Object.assign(
         {},
         {
@@ -82,6 +81,61 @@ export const exportEmployees = ( data: any[]) => {
     XLSX.writeFile(wb, fileName);
   });
 };
+
+export function exportEmployeesFail(headers: Columns, data: UserInfo[], fileName: string) {
+  const _headers = headers
+    .map((item, i) =>
+      Object.assign(
+        {},
+        {
+          key: item.key,
+          title: item.title,
+          position: String.fromCharCode(65 + i) + 1,
+        }
+      )
+    )
+    .reduce(
+      (prev: any, next: any) =>
+        Object.assign({}, prev, {
+          [next.position]: { key: next.key, v: next.title },
+        }),
+      {}
+    );
+
+  const _data = data
+    .map((item: any, i: any) =>
+      headers.map((key: any, j: any) =>
+        Object.assign(
+          {},
+          {
+            content: item[key.key],
+            position: String.fromCharCode(65 + j) + (i + 2),
+          }
+        )
+      )
+    )
+    .reduce((prev: any, next: any) => prev.concat(next))
+    .reduce(
+      (prev: any, next: any) =>
+        Object.assign({}, prev, { [next.position]: { v: next.content } }),
+      {}
+    );
+  const output = Object.assign({}, _headers, _data);
+  const outputPos = Object.keys(output);
+  const ref = `${outputPos[0]}:${outputPos[outputPos.length - 1]}`;
+  const wb = {
+    SheetNames: ['mySheet'],
+    Sheets: {
+      mySheet: Object.assign({}, output, {
+        '!ref': ref,
+        '!cols': [{ wpx: 100 }, { wpx: 100 }, { wpx: 100 }, { wpx: 100 }],
+      }),
+    },
+  };
+  import('xlsx').then(({ default: XLSX }) => {
+    XLSX.writeFile(wb, fileName);
+  });
+}
 
 const imgBgColors: string[] = ['#6366F1', '#F59E0B', '#10B981', '#F97316',
   '#A855F7', '#14B8A6', '#EF4444', '#06B6D4'];
