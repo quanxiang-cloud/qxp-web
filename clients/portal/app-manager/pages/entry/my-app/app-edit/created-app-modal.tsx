@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 import { inject } from 'mobx-react';
-import { Modal } from '@QCFE/lego-ui';
+import { Modal, Message } from '@QCFE/lego-ui';
 
 import Button from '@appC/button';
 
@@ -20,6 +20,7 @@ function CreatedAppModal({ onCancel, appListStore }: Props) {
       const data = formDom.getFieldsValue();
       data.appIcon = JSON.stringify(data.appIcon);
       appListStore.createdApp(data).then(() => {
+        Message.success({ content: '创建应用成功！' });
         onCancel();
       });
     }

@@ -23,7 +23,7 @@ function AppDetails({ appDetailsStore }: Props) {
   useEffect(() => {
     if (isOpenSetting === 'openSetting') {
       setVisibleAppManager(true);
-      window.history.replaceState({}, '', '/appManager/details');
+      window.history.replaceState({}, '', '/appManager/details/' + appId);
     }
   }, []);
 

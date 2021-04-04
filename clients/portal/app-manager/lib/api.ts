@@ -8,9 +8,17 @@ export const fetchAppList = () => {
   });
 };
 
-export const createdApp = (data: any) => {
+export const createdApp = (data: AppInfo) => {
   return request({
     url: '/api/v1/app-center/add',
+    method: 'post',
+    data,
+  });
+};
+
+export const updateApp = (data: AppInfo) => {
+  return request({
+    url: '/api/v1/app-center/update',
     method: 'post',
     data,
   });

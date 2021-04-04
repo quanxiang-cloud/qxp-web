@@ -15,7 +15,7 @@ type Props = {
 
 function MyApp({ appListStore }: Props) {
   const [modalType, setModalType] = useState('');
-  const { isListLoading, changeParams, appRenderList, params } = appListStore;
+  const { isListLoading, changeParams, appRenderList, params, appList } = appListStore;
 
   useEffect(() => {
     appListStore.fetchAppList();

@@ -31,16 +31,15 @@ export default (opt: APIRequestParam): AxiosPromise => {
       },
     }).then((response: APIResponse) => {
       if (response.data.code !== 0) {
+        Message.error(response.data.msg);
         reject(response);
       }
 
       resolve(response.data.data);
     }).catch((error: AxiosError) => {
-      if (axios.isCancel(error)) return;
+      axios.isCancel(error);
       const { response } = error;
-      if (response?.status===200) {
-        Message.error(response.data.msg);
-      } else {
+      if (response?.status !== 200) {
         Message.error('网络出错，请稍后再试！');
       }
       reject(response);

@@ -3,9 +3,15 @@ import { Form } from '@QCFE/lego-ui';
 
 import BgIconPicker from './bg-icon-picker';
 
+type Props = {
+  appInfo?: AppInfo;
+}
+
 const BgIconPickerField = Form.getFormField(BgIconPicker);
 
-function CreatedEditApp(_: any, ref?: React.ForwardedRef<Form>): JSX.Element {
+function CreatedEditApp({ appInfo }: Props, ref?: React.ForwardedRef<Form>): JSX.Element {
+  const { appName, appIcon } = appInfo || {};
+
   return (
     <Form ref={ref} layout='vertical'>
       <Form.TextField
@@ -13,6 +19,7 @@ function CreatedEditApp(_: any, ref?: React.ForwardedRef<Form>): JSX.Element {
         label='应用名称:'
         placeholder='请输入应用名称'
         help='不超过 30 个字符，应用名称不可重复。'
+        defaultValue={appName}
         schemas={[
           {
             help: '请输入应用名称',
@@ -23,6 +30,7 @@ function CreatedEditApp(_: any, ref?: React.ForwardedRef<Form>): JSX.Element {
       <BgIconPickerField
         name='appIcon'
         label='应用图标'
+        defaultAppIcon={appIcon && JSON.parse(appIcon)}
         schemas={[
           {
             help: '请选择应用图标',

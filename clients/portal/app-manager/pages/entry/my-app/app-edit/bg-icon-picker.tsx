@@ -7,18 +7,14 @@ import ColorPicker from './color-picker';
 
 type Props = {
   name: string;
-  onChange?: (formData: FormData) => void;
-  onBlur?: (formData: FormData) => void;
-}
-
-type FormData = {
-  iconName: string;
-  bgColor: BgColor
+  defaultAppIcon?: AppIcon;
+  onChange?: (formData: AppIcon) => void;
+  onBlur?: (formData: AppIcon) => void;
 }
 
 export default class BgIconPicker extends React.Component<Props> {
-  state: FormData = {
-    iconName: '',
+  state: AppIcon = {
+    iconName: this.props.defaultAppIcon?.iconName || '',
     bgColor: 'indigo',
   }
 
@@ -29,11 +25,14 @@ export default class BgIconPicker extends React.Component<Props> {
       onBlur && onBlur(this.state);
     });
   };
+
   render() {
+    const { name, defaultAppIcon = { iconName: '', bgColor: 'indigo' } } = this.props;
     return (
-      <Control name={this.props.name}>
+      <Control name={name}>
         <Select
           onChange={(iconName: string) => this.handleFormChange({ iconName })}
+          defaultValue={defaultAppIcon.iconName}
           options={[
             { value: 'toggle_on', label: '北京 3 区' },
             { value: 'settings', label: '广东 1 区' },
@@ -43,7 +42,7 @@ export default class BgIconPicker extends React.Component<Props> {
         />
         <ColorPicker
           className='mt-8'
-          defaultColor='indigo'
+          defaultColor={defaultAppIcon.bgColor}
           onChange={(bgColor: BgColor) => this.handleFormChange({ bgColor })}
           iconName={this.state.iconName} />
       </Control>

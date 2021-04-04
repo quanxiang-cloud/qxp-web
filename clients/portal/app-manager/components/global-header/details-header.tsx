@@ -51,7 +51,7 @@ function DetailsHeader({ navButtonRender, appDetailsStore }: DetailsHeaderProps)
           </PopConfirm>
         ) : (
           <PopConfirm content={statusTipsContent(true)} onOk={updateAppStatus}>
-            <Button icon='cogwheel' isPrimary>
+            <Button icon='toggle_on' isPrimary>
               发布应用
             </Button>
           </PopConfirm>

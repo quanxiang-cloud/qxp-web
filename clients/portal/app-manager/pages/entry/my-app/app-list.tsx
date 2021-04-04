@@ -31,7 +31,7 @@ function AppList({ isLoading, appList, openCreatedModal }: Props) {
     return <div className='relative flex-1'><PageLoading /></div>;
   }
 
-  if (appList.length===0) {
+  if (appList.length === 0) {
     return (
       <div className='app-no-data mt-58'>
         <img src={require('@assets/images/no-data-tips.svg')} />

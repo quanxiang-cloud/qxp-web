@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import cs from 'classnames';
 import { useHistory } from 'react-router-dom';
 import { inject } from 'mobx-react';
 
@@ -26,7 +27,8 @@ function AppDropdown({ appDetailsStore, appListStore }: Props) {
   const appListItems: JSX.Element[] = React.useMemo(() => {
     return appListStore.appList.map((appInfo: AppInfo) => (
       <div
-        className='app-global-header-drop-item'
+        className={cs('app-global-header-drop-item',
+          { 'app-global-header-drop-item-active': appDetailsStore.appDetails.id === appInfo.id })}
         key={appInfo.id}
         onClick={() => handleChange(appInfo.id)}
       >
