@@ -24,25 +24,34 @@ export default class TreeStore<T> {
   static ID_FOR_NODE_UNSUBMITTED = 'ID_FOR_NODE_UNSUBMITTED';
 
   @observable rootNode: TreeNode<T>;
-  @observable currentFocusedNodeID: string;
+  @observable currentFocusedNodeID = '';
   @observable renamingNodeID = '';
   @observable draggingNode: TreeNode<T> | null = null;
+  @observable autoSelect?: boolean;
 
   onGetChildren: (parentNode: TreeNode<T>) => Promise<TreeNode<T>[]> = defaultGetChildren;
 
-  constructor({ rootNode, onGetChildren }: TreeStoreProps<T>) {
+  constructor({ rootNode, onGetChildren }: TreeStoreProps<T>, autoSelect?: boolean) {
     this.rootNode = rootNode;
-    this.currentFocusedNodeID = rootNode.id;
+    this.autoSelect = autoSelect !== false;
+    if (autoSelect) {
+      this.currentFocusedNodeID = rootNode.id;
+    }
 
     if (onGetChildren) {
       this.onGetChildren = onGetChildren;
     }
   }
 
-  @computed get currentFocusedNode(): TreeNode<T> {
-    return this.nodeList.find(({ id }) => {
+  @computed get currentFocusedNode(): TreeNode<T> | any {
+    const node = this.nodeList.find(({ id }) => {
       return id === this.currentFocusedNodeID;
-    }) || this.rootNode;
+    });
+
+    if (!this.autoSelect) {
+      return node || {};
+    }
+    return node || this.rootNode;
   }
 
   @computed get actualFocusedNodeID(): string {

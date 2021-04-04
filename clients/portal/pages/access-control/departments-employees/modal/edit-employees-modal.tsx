@@ -54,8 +54,7 @@ export default function EditEmployeesModal(
         closeModal();
       }
     },
-  }
-  );
+  });
 
   function handleSubmit() {
     const isValidate = formRef.current?.validateForm();
