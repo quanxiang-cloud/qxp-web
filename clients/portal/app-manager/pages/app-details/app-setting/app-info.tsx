@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 
-import Button from '@c/button';
+import Button from '@appC/button';
 
 import CreatedEditApp from '../../entry/my-app/app-edit/created-edit-app';
 
@@ -17,7 +17,7 @@ function AppInfo() {
   return (
     <>
       <CreatedEditApp ref={formRef} />
-      <Button onClick={handleSubmit} isPrimary icon='project'>保存修改</Button>
+      <Button onClick={handleSubmit} isPrimary icon='save'>保存修改</Button>
     </>
   );
 }

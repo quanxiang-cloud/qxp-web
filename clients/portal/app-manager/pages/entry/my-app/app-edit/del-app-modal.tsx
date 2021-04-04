@@ -3,17 +3,18 @@ import { inject } from 'mobx-react';
 import { Modal, Form } from '@QCFE/lego-ui';
 
 import Icon from '@c/icon';
-import Button from '@c/button';
+import Button from '@appC/button';
 
 import '../index.scss';
 
 type Props = {
   appInfo: AppInfo;
   onCancel: () => void;
+  appListStore?: any;
 }
 
 function DeleteAppModal({ onCancel, appInfo, appListStore }: Props) {
-  const ref = useRef();
+  const ref: any = useRef();
   const handleSubmit = () => {
     const formRef: any = ref.current;
     if (formRef.validateFields()) {

@@ -55,7 +55,7 @@ export default class Captcha extends InputField {
     if (errorMessage && pageErrorElement) {
       pageErrorElement.innerText = errorMessage;
       pageErrorElement.classList.remove('hidden');
-      this.errorId = setTimeout(() => {
+      this.errorId = window.setTimeout(() => {
         pageErrorElement.classList.add('hidden');
       }, 3000);
     }
@@ -87,7 +87,7 @@ export default class Captcha extends InputField {
       })
       .catch(resetVars);
     element.classList.add('disabled');
-    tid = setInterval(() => {
+    tid = window.setInterval(() => {
       counter -= 1;
       element.innerText = `${counter}`;
       if (counter <= 0) {

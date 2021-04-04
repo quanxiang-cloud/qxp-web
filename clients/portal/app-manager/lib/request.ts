@@ -27,7 +27,7 @@ export default (opt: APIRequestParam): AxiosPromise => {
     axios({
       ...opt,
       paramsSerializer: (params) => {
-        return stringify(params, { arrayFormat: 'repeat' });
+        return stringify(params, { arrayFormat: 'none' });
       },
     }).then((response: APIResponse) => {
       if (response.data.code !== 0) {
@@ -38,7 +38,12 @@ export default (opt: APIRequestParam): AxiosPromise => {
     }).catch((error: AxiosError) => {
       if (axios.isCancel(error)) return;
       const { response } = error;
-      Message.error(response.data.msg);
+      if (response?.status===200) {
+        Message.error(response.data.msg);
+      } else {
+        Message.error('网络出错，请稍后再试！');
+      }
+      reject(response);
     });
   });
 };

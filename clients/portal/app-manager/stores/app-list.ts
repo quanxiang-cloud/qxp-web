@@ -51,10 +51,10 @@ class AppListStore {
 
   @action
   updateAppStatus = (id: string, useStatus: number) => {
-    console.log('useStatus: ', useStatus);
     return updateAppStatus({ id, useStatus }).then(() => {
       [{ list: this.appRenderList, key: 'appRenderList' },
         { list: this.appList, key: 'appList' }].map(({ list, key }) => {
+        // @ts-ignore
         this[key] = list.map((appInfo: AppInfo) => {
           if (appInfo.id === id) {
             return { ...appInfo, useStatus };

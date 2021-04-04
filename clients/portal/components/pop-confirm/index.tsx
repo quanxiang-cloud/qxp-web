@@ -42,13 +42,13 @@ function PopConfirm({
   const reference = React.useRef<any>(null);
 
   const handleCancel = () => {
-    onCancel&&onCancel();
-    popperRef.current.close();
+    onCancel && onCancel();
+    popperRef.current?.close();
   };
 
   const handleOk = () => {
     onOk && onOk();
-    popperRef.current.close();
+    popperRef.current?.close();
   };
 
   const isElement = isValidElement(children);

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 
 import ListMenu from '@c/list-menu';
 import ItemWithTitleDesc from '@c/item-with-title-desc';
+import Icon from '@c/icon';
 
 import MyApp from './my-app';
 
@@ -10,14 +11,14 @@ import './index.scss';
 const MENU = [
   {
     id: 'MyApp',
-    icon: 'application',
+    icon: 'dashboard_customize',
     name: '我的应用',
   },
-  {
-    id: 'PlatformSetting',
-    icon: 'theme',
-    name: '平台设置',
-  },
+  // {
+  //   id: 'PlatformSetting',
+  //   icon: 'theme',
+  //   name: '平台设置',
+  // },
 ];
 
 function AppManagerEntry() {
@@ -37,7 +38,7 @@ function AppManagerEntry() {
                 flex items-center justify-center
                 "
               >
-                <img src={require('@assets/images/application-white.svg')} alt="app" />
+                <Icon name='dashboard_customize' type='light' size={24} />
               </div>
             }
             titleClassName="text-2 leading-8 font-bold mb-2"

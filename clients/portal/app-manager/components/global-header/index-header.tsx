@@ -2,7 +2,7 @@ import React from 'react';
 
 import More from '@c/more';
 import Icon from '@c/icon';
-import Button from '@c/button';
+import Button from '@appC/button';
 
 import NotifyIcon from './notify-icon';
 
@@ -47,7 +47,7 @@ function IndexHeader({ navButtonRender }: GHeaderProps) {
       </div>
       <div className='flex gap-x-20'>
         <Button
-          icon='cogwheel'
+          icon='login'
         >
           进入访问端
         </Button>

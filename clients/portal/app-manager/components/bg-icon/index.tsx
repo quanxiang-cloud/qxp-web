@@ -17,7 +17,7 @@ function BgIcon({ size = 44, iconSize = 28, className = '', iconName, bgColor, o
   return (
     <div
       onClick={() => onClick?.(bgColor)}
-      style={{ '--appBgIconSize': size + 'px' }}
+      style={{ '--appBgIconSize': size + 'px' } as React.CSSProperties}
       className={`icon-border-radius bg-gradient-${bgColor} ${className} app-bg-icon`}>
       {iconName ? (<Icon type='light' name={iconName} size={iconSize} />) : null}
     </div>

@@ -1,14 +1,14 @@
 import React from 'react';
 
-import Button from '@c/button';
-import Table from '@c/table';
+import Button from '@appC/button';
+import Table from '@c/app-table';
 
-const columns = [
+const columns: any = [
   {
     id: 'name',
     Header: '员工',
     fixed: true,
-    accessor: ({ name }): JSX.Element => {
+    accessor: ({ name }: any): JSX.Element => {
       return (
         <div>
           {name}
@@ -47,7 +47,7 @@ const data = [{
 }];
 
 function AppAdmin() {
-  const handleSelectChange = (selectedArr)=>{
+  const handleSelectChange = (selectedArr: any) => {
     console.log('selectedArr: ', selectedArr);
   };
 
@@ -64,10 +64,10 @@ function AppAdmin() {
         columns={columns}
         data={data}
         onSelectChange={handleSelectChange}
-        // loading={loading}
-        // hasFilterParams={this.hasFilterParams}
-        // onResetQuery={this.props.onResetQuery}
-        // onPageChange={this.handlePageChange}
+      // loading={loading}
+      // hasFilterParams={this.hasFilterParams}
+      // onResetQuery={this.props.onResetQuery}
+      // onPageChange={this.handlePageChange}
       />
     </div>
   );

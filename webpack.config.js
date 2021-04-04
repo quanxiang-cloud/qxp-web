@@ -2,13 +2,13 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
-const TerserPlugin = require("terser-webpack-plugin");
+const TerserPlugin = require('terser-webpack-plugin');
 const WebpackNotifierPlugin = require('webpack-notifier');
 const WebpackBar = require('webpackbar');
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 
 // env: 'production' | 'development';
-module.exports = function (env) {
+module.exports = function(env) {
   const NODE_ENV = process.env.NODE_ENV || env.mode || 'production';
 
   return {
@@ -24,7 +24,7 @@ module.exports = function (env) {
       'login-by-captcha': './clients/login/captcha.ts',
       'reset-password': './clients/login/reset-password',
       404: './clients/404/index.ts',
-      'app-manager': './clients/portal/app-manager/index.tsx'
+      'app-manager': './clients/portal/app-manager/index.tsx',
     },
 
     output: {
@@ -48,7 +48,7 @@ module.exports = function (env) {
           use: [
             MiniCssExtractPlugin.loader,
             { loader: 'css-loader' },
-            { loader: 'postcss-loader', },
+            { loader: 'postcss-loader' },
             { loader: 'sass-loader' },
           ],
         },
@@ -57,7 +57,7 @@ module.exports = function (env) {
           use: [
             MiniCssExtractPlugin.loader,
             { loader: 'css-loader' },
-            { loader: 'postcss-loader', },
+            { loader: 'postcss-loader' },
           ],
         },
         {
@@ -72,12 +72,13 @@ module.exports = function (env) {
           loader: 'source-map-loader',
         },
         {
-          test: /\.(png|jpe?g|gif|svg)$/,
+          test: /\.(png|jpe?g|gif|svg|ico)$/,
           use: [
             {
               loader: 'url-loader',
               options: {
                 limit: 10000,
+                name: 'images/[name].[ext]',
                 esModule: false,
               },
             },

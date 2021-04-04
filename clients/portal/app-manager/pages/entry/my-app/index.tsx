@@ -7,7 +7,13 @@ import CreatedAppModal from './app-edit/created-app-modal';
 import Header from './header';
 import AppList from './app-list';
 
-function MyApp({ appListStore }) {
+import './index.scss';
+
+type Props = {
+  appListStore?: any
+}
+
+function MyApp({ appListStore }: Props) {
   const [modalType, setModalType] = useState('');
   const { isListLoading, changeParams, appRenderList, params } = appListStore;
 
@@ -21,7 +27,7 @@ function MyApp({ appListStore }) {
         title="我的应用"
         desc="一个应用是由若干表单、流程表单、报表、自定义页面组成的业务管理系统。"
         action="👋 快速开始"
-        className="bg-gray-200-dot-5 px-20 py-dot-8 header-background-image h-56"
+        className="my-app-header header-background-image "
       />
       <Header setModalType={setModalType} changeParams={changeParams} params={params} />
       <AppList

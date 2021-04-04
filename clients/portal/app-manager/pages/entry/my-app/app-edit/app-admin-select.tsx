@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import Button from '@c/button';
+import Button from '@appC/button';
 import Icon from '@c/icon';
 
 function AppAdminSelect() {
@@ -10,7 +10,7 @@ function AppAdminSelect() {
     { name: '王老五', id: 3 },
   ]);
 
-  const removePerson = (id) => {
+  const removePerson = (id:string) => {
 
   };
 
@@ -18,7 +18,7 @@ function AppAdminSelect() {
     return (
       <div>
         <span className='mr-4'>{person.name}</span>
-        <Icon onClick={} clickable changeable name='close' />
+        <Icon clickable changeable name='close' />
       </div>
     );
   };

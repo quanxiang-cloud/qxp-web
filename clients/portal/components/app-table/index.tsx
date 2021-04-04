@@ -1,20 +1,24 @@
 import React, { useEffect } from 'react';
 import classnames from 'classnames';
-import { useTable, Column, useRowSelect } from 'react-table';
+import {
+  useTable,
+  Column,
+  useRowSelect,
+  Hooks,
+  TableOptions,
+  TableToggleCommonProps,
+  Row,
+} from 'react-table';
 
 import Icon from '@c/icon';
-import { Pagination } from '@c/pagination2';
+import Pagination from '@c/pagination';
 import computeColumnsStickyPosition from './sticky-position';
 
 import './index.scss';
 
-
 interface Props<T extends Record<string, unknown>> {
   data: Array<T>;
-  columns: Array<Omit<Column<T>, 'columns'> & {
-    fixed?: boolean;
-    width?: number;
-  }>;
+  columns: Column<T>[];
   className?: string;
   showCheckBox?: boolean;
   style?: React.CSSProperties;
@@ -29,9 +33,9 @@ interface Props<T extends Record<string, unknown>> {
 }
 
 const IndeterminateCheckbox = React.forwardRef(
-  ({ indeterminate, ...rest }, ref) => {
+  ({ indeterminate, ...rest }: TableToggleCommonProps, ref) => {
     const defaultRef = React.useRef();
-    const resolvedRef = ref || defaultRef;
+    const resolvedRef: any = ref || defaultRef;
 
     useEffect(() => {
       resolvedRef.current.indeterminate = indeterminate;
@@ -61,23 +65,23 @@ export default function Table<T extends Record<string, unknown>>({
   onResetQuery,
   onPageChange,
 }: Props<T>): JSX.Element {
-  const tableParameter = [{ columns, data }];
+  const tableParameter = [];
   if (showCheckBox) {
-    tableParameter.push(useRowSelect, (hooks) => {
-      hooks.visibleColumns.push((columns) => [
+    tableParameter.push(useRowSelect, (hooks: Hooks) => {
+      hooks.visibleColumns.push((columns: Column[]) => [
         // Let's make a column for selection
         {
           id: 'selection',
           // The header can use the table's getToggleAllRowsSelectedProps method
           // to render a checkbox
-          Header: ({ getToggleAllRowsSelectedProps }) => (
+          Header: ({ getToggleAllRowsSelectedProps }: any) => (
             <div>
               <IndeterminateCheckbox {...getToggleAllRowsSelectedProps()} />
             </div>
           ),
           // The cell can use the individual row's getToggleRowSelectedProps method
           // to the render a checkbox
-          Cell: ({ row }) => (
+          Cell: ({ row }: any) => (
             <div>
               <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} />
             </div>
@@ -95,17 +99,16 @@ export default function Table<T extends Record<string, unknown>>({
     prepareRow,
     rows,
     selectedFlatRows,
-    // state: { selectedRowIds },
-  } = useTable<T>(...tableParameter);
+  }: any = useTable<any>(({ columns, data }) as TableOptions<T>, ...tableParameter);
 
-  const columnsFixedStyle = computeColumnsStickyPosition(columns);
+  // const columnsFixedStyle = computeColumnsStickyPosition(columns);
 
-  const fixedStyle = (index: number): Pick<React.CSSProperties, 'left' | 'right'> => {
-    if (columns[index].fixed) {
-      return columnsFixedStyle[index];
-    }
-    return {};
-  };
+  // const fixedStyle = (index: number): Pick<React.CSSProperties, 'left' | 'right'> => {
+  //   if (columns[index].fixed) {
+  //     return columnsFixedStyle[index];
+  //   }
+  //   return {};
+  // };
 
   useEffect(() => {
     onSelectChange?.(selectedFlatRows);
@@ -116,7 +119,7 @@ export default function Table<T extends Record<string, unknown>>({
       <div className={classnames('table', 'qxp-table', className)} style={style}>
         <table {...getTableProps()}>
           <colgroup>
-            {flatHeaders.map((column) => (
+            {flatHeaders.map((column: Column) => (
               <col
                 key={column.id}
                 style={column.width ? { width: `${column.width}px` } : {}}
@@ -125,7 +128,7 @@ export default function Table<T extends Record<string, unknown>>({
           </colgroup>
           <thead>
             <tr>
-              {flatHeaders.map((column, index) => {
+              {flatHeaders.map((column: any) => {
                 return (
                   <th
                     {...column.getHeaderProps()}
@@ -145,14 +148,14 @@ export default function Table<T extends Record<string, unknown>>({
             </tr>
           </thead>
           <tbody {...getTableBodyProps()}>
-            {rows.map((row) => {
+            {rows.map((row: Row) => {
               prepareRow(row);
               return (
                 <tr
                   {...row.getRowProps()}
                   key={row.id}
                 >
-                  {row.cells.map((cell, index) => {
+                  {row.cells.map((cell: any) => {
                     return (
                       <td
                         {...cell.getCellProps()}

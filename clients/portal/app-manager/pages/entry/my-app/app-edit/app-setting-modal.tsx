@@ -1,8 +1,8 @@
 import React, { useRef } from 'react';
-import { Modal, Form } from '@QCFE/lego-ui';
+import { Modal } from '@QCFE/lego-ui';
 
-import Button from '@c/button';
-import { Tab } from '@c/tab2';
+import Button from '@appC/button';
+import Tab from '@c/tab';
 
 import AppAdminSelect from './app-admin-select';
 import CreatedEditApp from './created-edit-app';

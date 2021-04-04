@@ -2,23 +2,24 @@ import React, { useRef } from 'react';
 import { inject } from 'mobx-react';
 import { Modal } from '@QCFE/lego-ui';
 
-import Button from '@c/button';
+import Button from '@appC/button';
 
 import CreatedEditApp from './created-edit-app';
 
 type Props = {
   onCancel: () => void;
+  appListStore?: any;
 }
 
 function CreatedAppModal({ onCancel, appListStore }: Props) {
-  const formRef:any = useRef(null);
+  const formRef: any = useRef(null);
 
   const handleSubmit = () => {
     const formDom = formRef.current;
     if (formDom.validateFields()) {
       const data = formDom.getFieldsValue();
       data.appIcon = JSON.stringify(data.appIcon);
-      appListStore.createdApp(data).then(()=>{
+      appListStore.createdApp(data).then(() => {
         onCancel();
       });
     }

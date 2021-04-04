@@ -3,7 +3,7 @@ import { inject } from 'mobx-react';
 import { Modal } from '@QCFE/lego-ui';
 
 import Icon from '@c/icon';
-import Button from '@c/button';
+import Button from '@appC/button';
 
 import '../index.scss';
 
@@ -11,6 +11,7 @@ type Props = {
   appId: string;
   status: 'publish' | 'soldOut';
   onCancel: () => void;
+  appListStore?: any;
 }
 
 const TEXT = {

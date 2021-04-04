@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import useCss from 'react-use/lib/useCss';
 import { twCascade } from '@mariusmarais/tailwind-cascade';
 
+import Icon from '@c/icon';
+
 type MenuItem = {
   id: string;
   name: string;
@@ -58,7 +60,7 @@ export default function ListMenu({ onChange, defaultType, menuData }: Props) {
               }),
             )}
           >
-            <img className="w-24 h-24 pr-8" src={require(`../../../assets/images/${icon}.svg`)} alt="logo" />
+            <Icon className='mr-8' name={icon} size={24} />
             <span className="text-gray-400 text-16">{name}</span>
             <div
               className={twCascade(
@@ -71,4 +73,4 @@ export default function ListMenu({ onChange, defaultType, menuData }: Props) {
       })}
     </ul>
   );
-};
+}

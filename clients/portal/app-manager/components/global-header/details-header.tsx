@@ -3,12 +3,12 @@ import { inject, observer } from 'mobx-react';
 
 import Icon from '@c/icon';
 import PopConfirm from '@c/pop-confirm';
-import Button from '@c/button';
+import Button from '@appC/button';
 
 import AppDropdown from './app-dropdown';
 
 interface DetailsHeaderProps extends GHeaderProps {
-  appDetailsStore: any
+  appDetailsStore?: any
 }
 
 function DetailsHeader({ navButtonRender, appDetailsStore }: DetailsHeaderProps) {
@@ -45,7 +45,7 @@ function DetailsHeader({ navButtonRender, appDetailsStore }: DetailsHeaderProps)
       <div className='flex'>
         {appDetailsStore.appDetails.useStatus > 0 ? (
           <PopConfirm content={statusTipsContent(false)} onOk={updateAppStatus}>
-            <Button icon='cogwheel' isPrimary>
+            <Button icon='toggle_on' isPrimary>
               下线应用
             </Button>
           </PopConfirm>
@@ -57,12 +57,12 @@ function DetailsHeader({ navButtonRender, appDetailsStore }: DetailsHeaderProps)
           </PopConfirm>
         )}
         <hr className='app-global-header-hr' />
-        <Button className='mr-16' icon='cogwheel'>
+        <Button className='mr-16' icon='login'>
           进入应用访问
         </Button>
         <Button
           onClick={() => appDetailsStore.setVisibleAppManager(true)}
-          icon='cogwheel'
+          icon='settings'
         >
           应用管理
         </Button>

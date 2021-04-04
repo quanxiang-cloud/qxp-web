@@ -3,7 +3,12 @@ import useCss from 'react-use/lib/useCss';
 
 import Icon from '@c/icon';
 
-const ItemRender = ({ title, iconName }) => {
+type NavProps = {
+  title: string;
+  iconName: string;
+}
+
+const ItemRender = ({ title, iconName }: NavProps) => {
   return (
     <div className={`p-16 flex items-center cursor-pointer ${useCss({
       '&:hover': {

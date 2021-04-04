@@ -4,10 +4,6 @@ import { Message } from '@QCFE/lego-ui';
 import { fetchAppDetails, updateAppStatus } from '@appLib/api';
 
 class AppDetailsStore {
-  constructor(rootStore) {
-
-  }
-
   @observable appDetails: any = {};
 
   @observable visibleAppManager = false;

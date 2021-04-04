@@ -9,9 +9,9 @@ type Props = {
 function NotifyIcon({ unreadNum }:Props) {
   return (
     <div className='relative flex items-center'>
-      <Icon name='add_task'
+      <Icon
         size={20}
-      // name='notifications_active'
+        name='notifications_active'
       />
       <span className='app-unread-number icon-border-radius-8'>{unreadNum}</span>
     </div>

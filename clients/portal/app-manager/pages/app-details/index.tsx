@@ -8,7 +8,11 @@ import AppSetting from './app-setting';
 import PageNav from './page-nav';
 import './index.scss';
 
-function AppDetails({ appDetailsStore }) {
+type Props = {
+  appDetailsStore: any
+}
+
+function AppDetails({ appDetailsStore }: Props) {
   const { isOpenSetting, appId } = useParams<any>();
   const { fetchAppDetails, visibleAppManager, setVisibleAppManager } = appDetailsStore;
 
