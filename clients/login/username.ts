@@ -20,7 +20,7 @@ export default class UserName extends InputField {
     if (this.asyncValidate && !this.errMessage) {
       return new Promise((resolve) => {
         setTimeout(() => {
-          const msg = '用户不存在';
+          const msg = '';
           if (msg) {
             (this.errorElement as HTMLElement).textContent = msg;
             isValid = false;

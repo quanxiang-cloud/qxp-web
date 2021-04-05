@@ -27,9 +27,9 @@ export default class Captcha extends InputField {
     const element = this.sender as HTMLButtonElement;
     const toggle = (valid?: boolean) => {
       if (!valid) {
-        element.classList.remove('disabled');
-      } else {
         element.classList.add('disabled');
+      } else {
+        element.classList.remove('disabled');
       }
     };
     if (typeof result === 'boolean') {

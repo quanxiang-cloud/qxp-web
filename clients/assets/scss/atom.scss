@@ -110,6 +110,10 @@
   margin-bottom: 24px;
 }
 
+.mb-21 {
+  margin-bottom: 21px;
+}
+
 .mb-37 {
   margin-bottom: 37px;
 }
@@ -159,8 +163,8 @@
 }
 
 .br-r-0 {
-  border-top-right-radius: 0;
-  border-bottom-right-radius: 0;
+  border-top-right-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
 }
 
 .clickable {

@@ -36,7 +36,7 @@ export function httpPost<T>(
         }
         if (req.status >= 400) {
           if (req.statusText.toLocaleLowerCase() === 'unauthorized' || req.status === 401) {
-            window.location.search = '/login/password';
+            window.location.pathname = '/login/password';
             return;
           }
           Message.error(`${req.statusText}: ${response.msg}`);

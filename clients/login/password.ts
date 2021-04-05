@@ -1,4 +1,5 @@
 import { IInputField, query, parseUserValidateResult } from '@lib/atom';
+import Notify from '@lib/notify';
 
 import UserName from './username';
 import Password from './password-field';
@@ -57,3 +58,5 @@ new PasswordUser({
   },
   action: query<HTMLButtonElement>('.btn-login'),
 });
+
+window.notifier = new Notify(query<HTMLElement>('body main'));
