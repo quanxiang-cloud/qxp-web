@@ -4,7 +4,6 @@ import Notify from '@lib/notify';
 import UserName from './username';
 import Password from './password-field';
 import User, { IUser } from './user';
-import Page from './page';
 
 import './style.scss';
 
@@ -43,7 +42,6 @@ class PasswordUser extends User {
   }
 }
 
-new Page();
 new PasswordUser({
   username: {
     name: 'login:password:username',

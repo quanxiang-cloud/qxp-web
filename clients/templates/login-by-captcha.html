@@ -7,9 +7,6 @@
 
 {{define "content"}}
     <main class="flex va-top flex-1 column align-center">
-        <span class="hidden error fixed top-10 right-10 px-12 fs-12 py-4 bg-red text-white-n00 br-3"> 
-          {{ if .errorMessage }}{{ .errorMessage }} {{ end }}
-        </span>
       <header class="flex row space-between align-center w-p-100">
         <div class="logo-company">
           <img class="va-middle" src="/dist/images/logo.svg" alt="logo">
@@ -46,4 +43,9 @@
 
 {{define "bottom_scripts"}}
   <script src="<%= htmlWebpackPlugin.files.js[0] %>"></script>
+  <script>
+    {{ if .errorMessage }}
+      window.notifier.error({{ .errorMessage }});
+    {{ end }}
+  </script>
 {{end}}

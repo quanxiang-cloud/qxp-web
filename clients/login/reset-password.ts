@@ -1,6 +1,5 @@
 import { IInputField, query, parseValidateAllResult, parseUserValidateResult } from '@lib/atom';
 
-import Page from './page';
 import User, { IUser } from './user';
 import Password from './password-field';
 
@@ -90,7 +89,6 @@ class ResetUser extends User {
   }
 }
 
-new Page();
 new ResetUser({
   oldPassword: {
     name: 'reset:password:oldPassword',

@@ -1,8 +1,8 @@
 import { IInputField, query, parseUserValidateResult } from '@lib/atom';
+import Notify from '@lib/notify';
 
 import UserName from './username';
 import Captcha from './captcha-field';
-import Page from './page';
 import User, { IUser } from './user';
 
 import './style.scss';
@@ -45,7 +45,6 @@ class CaptchaUser extends User {
   }
 }
 
-new Page();
 new CaptchaUser({
   username: {
     name: 'login:captcha:username',
@@ -61,3 +60,5 @@ new CaptchaUser({
   },
   action: query<HTMLButtonElement>('.btn-login'),
 });
+
+window.notifier = new Notify(query<HTMLElement>('body main'));

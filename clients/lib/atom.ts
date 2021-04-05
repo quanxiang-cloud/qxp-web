@@ -166,5 +166,8 @@ export function parseUserValidateResult(
         }
       });
     }
+    if (!promises.length) {
+      resolve(allValid);
+    }
   });
 }
