@@ -91,6 +91,16 @@ class AppListStore {
       this.appRenderList = [newApp, ...this.appRenderList];
     });
   }
+
+  @action
+  updateApp = (appInfo: AppInfo) => {
+    this.appList = this.appList.map((appItem: AppInfo) => {
+      if (appItem.id === appInfo.id) {
+        return appInfo;
+      }
+      return appItem;
+    });
+  }
 }
 
 export default AppListStore;

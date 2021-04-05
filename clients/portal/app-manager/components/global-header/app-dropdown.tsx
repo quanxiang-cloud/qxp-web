@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import cs from 'classnames';
 import { useHistory } from 'react-router-dom';
-import { inject } from 'mobx-react';
+import { inject, observer } from 'mobx-react';
 
 import More from '@c/more';
 import Icon from '@c/icon';
@@ -52,4 +52,4 @@ function AppDropdown({ appDetailsStore, appListStore }: Props) {
   );
 }
 
-export default inject('appDetailsStore')(inject('appListStore')(AppDropdown));
+export default inject('appDetailsStore')(inject('appListStore')(observer(AppDropdown)));

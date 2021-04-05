@@ -5,7 +5,7 @@ class AppManager {
   appDetailsStore: any
   appListStore: any
   constructor() {
-    this.appDetailsStore = new AppDetails();
+    this.appDetailsStore = new AppDetails(this);
     this.appListStore = new AppList(this);
   }
 }

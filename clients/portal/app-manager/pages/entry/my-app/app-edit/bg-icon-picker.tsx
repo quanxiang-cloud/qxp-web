@@ -14,9 +14,19 @@ type Props = {
 }
 
 export default class BgIconPicker extends React.Component<Props> {
-  state: AppIcon = {
-    iconName: this.props.defaultAppIcon?.iconName || '',
-    bgColor: 'indigo',
+  state: AppIcon;
+  constructor(props: Props) {
+    super(props);
+    this.state = {
+      iconName: props.defaultAppIcon?.iconName || '',
+      bgColor: props.defaultAppIcon?.bgColor || 'indigo',
+    };
+
+    const { defaultAppIcon, onChange, onBlur } = props;
+    if (defaultAppIcon) {
+      onChange && onChange(defaultAppIcon);
+      onBlur && onBlur(defaultAppIcon);
+    }
   }
 
   handleFormChange = (newFormData: any) => {
@@ -28,12 +38,12 @@ export default class BgIconPicker extends React.Component<Props> {
   };
 
   render() {
-    const { name, defaultAppIcon = { iconName: '', bgColor: 'indigo' } } = this.props;
+    const { bgColor, iconName } = this.state;
     return (
-      <Control name={name}>
+      <Control name={this.props.name}>
         <Select
-          onChange={(iconName: string) => this.handleFormChange({ iconName })}
-          defaultValue={defaultAppIcon.iconName}
+          onChange={(_iconName: string) => this.handleFormChange({ iconName: _iconName })}
+          defaultValue={iconName}
           options={[
             { value: 'toggle_on', label: <Icon size={24} name='toggle_on' /> },
             { value: 'settings', label: <Icon size={24} name='settings' /> },
@@ -43,9 +53,9 @@ export default class BgIconPicker extends React.Component<Props> {
         />
         <ColorPicker
           className='mt-8'
-          defaultColor={defaultAppIcon.bgColor}
+          defaultColor={bgColor}
           onChange={(bgColor: BgColor) => this.handleFormChange({ bgColor })}
-          iconName={this.state.iconName} />
+          iconName={iconName} />
       </Control>
     );
   }

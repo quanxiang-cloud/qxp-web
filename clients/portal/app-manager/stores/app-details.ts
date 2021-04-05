@@ -4,6 +4,11 @@ import { Message } from '@QCFE/lego-ui';
 import { fetchAppDetails, updateAppStatus, updateApp } from '@appLib/api';
 
 class AppDetailsStore {
+  rootStore: any;
+  constructor(rootStore: any) {
+    this.rootStore = rootStore;
+  }
+
   @observable appDetails: any = {};
 
   @observable loading = false;
@@ -39,6 +44,7 @@ class AppDetailsStore {
   updateApp = (appInfo: any) => {
     return updateApp({ id: this.appDetails.id, ...appInfo }).then(() => {
       this.appDetails = { ...this.appDetails, ...appInfo };
+      this.rootStore.appListStore.updateApp(this.appDetails);
       Message.success({ content: '修改成功！' });
     });
   }
