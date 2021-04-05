@@ -58,8 +58,8 @@ export default function HeaderLeft() {
           工作台
         </span>
       </Link>
-      <Link
-        to="/appManager/list"
+      <a
+        href="/appManager/list"
         className={twCascade(
           'header-nav-btn group mr-20',
           className(isAppManagement)
@@ -79,7 +79,7 @@ export default function HeaderLeft() {
         >
               应用管理
         </span>
-      </Link>
+      </a>
       <Authorized authority={['accessControl']}>
         <Link
           to="/access-control"

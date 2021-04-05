@@ -2,6 +2,7 @@ import React from 'react';
 import { Control } from '@QCFE/lego-ui';
 
 import Select from '@c/select';
+import Icon from '@c/icon';
 
 import ColorPicker from './color-picker';
 
@@ -34,10 +35,10 @@ export default class BgIconPicker extends React.Component<Props> {
           onChange={(iconName: string) => this.handleFormChange({ iconName })}
           defaultValue={defaultAppIcon.iconName}
           options={[
-            { value: 'toggle_on', label: '北京 3 区' },
-            { value: 'settings', label: '广东 1 区' },
-            { value: 'login', label: '广东 2 区' },
-            { value: 'restore_from_trash', label: '上海 1 区' },
+            { value: 'toggle_on', label: <Icon size={24} name='toggle_on' /> },
+            { value: 'settings', label: <Icon size={24} name='settings' /> },
+            { value: 'login', label: <Icon size={24} name='login' /> },
+            { value: 'restore_from_trash', label: <Icon size={24} name='restore_from_trash' /> },
           ]}
         />
         <ColorPicker
