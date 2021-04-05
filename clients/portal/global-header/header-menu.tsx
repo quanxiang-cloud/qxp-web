@@ -21,7 +21,7 @@ export default function HeaderMenu() {
           <SvgIcon
             name="book"
             className="group-hover:text-blue-600 header-nav-btn-icon"
-            size={24}
+            size={20}
           />
         </div>
         <span className="header-nav-btn-text group-hover:text-blue-600">
@@ -29,11 +29,13 @@ export default function HeaderMenu() {
         </span>
       </div>
       <div className="header-nav-btn group">
-        <SvgIcon
-          name="settings"
-          className="group-hover:text-blue-600 header-nav-btn-icon"
-          size={24}
-        />
+        <div className="header-nav-btn-icon-wrapper">
+          <SvgIcon
+            name="settings"
+            className="group-hover:text-blue-600 header-nav-btn-icon"
+            size={20}
+          />
+        </div>
         <More
           items={[
             <span

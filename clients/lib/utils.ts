@@ -278,3 +278,7 @@ export const last = <T>(arg: T[]) => {
 export function isPassword(pwd: string) {
   return /^(?=.*\d)(?=.*[a-zA-Z])(?=.*[~!@#$%^&*])[\da-zA-Z~!@#$%^&*]{8,}$/.test(pwd);
 }
+
+export function isPromise(a: unknown) {
+  return a instanceof Promise;
+}

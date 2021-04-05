@@ -23,8 +23,7 @@ function DepartmentsTree({ onSelect }: Props): JSX.Element {
 
   useEffect(() => {
     if (rootDep && !isLoading && !isError) {
-      const newStore = new Store(rootDep);
-      setStore(newStore);
+      setStore(new Store(rootDep));
     }
   }, [rootDep]);
 

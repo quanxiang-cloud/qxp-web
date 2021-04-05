@@ -1,4 +1,4 @@
-import { IInputField, InputField, query } from '@lib/atom';
+import { IInputField, InputField, query, OnValidateAll, parseValidateAllResult } from '@lib/atom';
 import { httpPost } from '@lib/utils';
 import { Response } from '@clients/types/api';
 import UserName from './username';
@@ -9,7 +9,11 @@ export default class Captcha extends InputField {
   url!: string;
   errorId?: number;
 
-  constructor(captcha: IInputField, action: HTMLButtonElement, onValidateAll?: Function) {
+  constructor(
+    captcha: IInputField,
+    action: HTMLButtonElement,
+    onValidateAll?: OnValidateAll,
+  ) {
     super(captcha, action, onValidateAll);
     if (!captcha.actionElement) {
       return;
@@ -19,18 +23,30 @@ export default class Captcha extends InputField {
     this.bindEvents();
   }
 
+  toggleSender(result: boolean | Promise<boolean>) {
+    const element = this.sender as HTMLButtonElement;
+    const toggle = (valid?: boolean) => {
+      if (!valid) {
+        element.classList.remove('disabled');
+      } else {
+        element.classList.add('disabled');
+      }
+    };
+    if (typeof result === 'boolean') {
+      toggle(result);
+    } else if (result instanceof Promise) {
+      result.then(toggle);
+    }
+  }
+
   setUserName(username: UserName) {
     this.username = username;
     if (!this.sender) {
       return;
     }
     const syncUsername = () => {
-      const element = this.sender as HTMLButtonElement;
-      if (this.username?.validate()) {
-        element.classList.remove('disabled');
-      } else {
-        element.classList.add('disabled');
-      }
+      const validateResult = this.username?.validate() || false;
+      this.toggleSender(validateResult);
     };
     syncUsername();
     this.username.on('change', syncUsername);
@@ -40,7 +56,7 @@ export default class Captcha extends InputField {
     if (!this.sender) {
       return;
     }
-    this.sender.onclick = this.sendCode.bind(this);
+    this.sender.onclick = this.onSendCode.bind(this);
   }
 
   callSendApi() {
@@ -61,11 +77,7 @@ export default class Captcha extends InputField {
     }
   }
 
-  sendCode(e: Event) {
-    e.preventDefault();
-    if (!this.username?.validate()) {
-      return;
-    }
+  sendCode() {
     let counter = 60;
     let tid = 0;
     const element = this.sender as HTMLButtonElement;
@@ -96,7 +108,17 @@ export default class Captcha extends InputField {
     }, 1000);
   }
 
-  validate(checkAll?: boolean) {
+  onSendCode(e: Event) {
+    e.preventDefault();
+    const validateResult = this.username?.validate();
+    if (validateResult === true) {
+      this.sendCode();
+    } else if (validateResult instanceof Promise) {
+      validateResult.then(() => this.sendCode());
+    }
+  }
+
+  validate(checkAll?: boolean): boolean | Promise<boolean> {
     let isValid = true;
     if ((this.value as string).length < 6) {
       if (this.value !== '') {
@@ -112,8 +134,18 @@ export default class Captcha extends InputField {
       isValid = false;
     }
     (this.errorElement as HTMLElement).textContent = this.errMessage as string;
-    if (checkAll && (this.onValidateAll as Function)(this, isValid)) {
-      this.action.classList.remove('disabled');
+
+    if (checkAll) {
+      const onValidateAllResult: boolean | (boolean | Promise<boolean>)[] = this.onValidateAll(
+        this, isValid
+      );
+      if (onValidateAllResult instanceof Array) {
+        parseValidateAllResult(onValidateAllResult, this.errorElement).then((isAllValid) => {
+          isAllValid && this.action.classList.remove('disabled');
+        });
+      } else if (onValidateAllResult) {
+        this.action.classList.remove('disabled');
+      }
     }
     return isValid;
   }

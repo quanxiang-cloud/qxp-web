@@ -90,10 +90,12 @@ export default function ImportEmployeesModal({ currDepId, closeModal }: Props) {
           let status: FileUploadStatus = FileUploadStatus.init;
           if (failTotal > 0 && successTotal === 0) {
             status = FileUploadStatus.fail;
-          } else if (failTotal === 0 && successTotal > 0) {
+          } else if (failTotal === 0) {
             status = FileUploadStatus.success;
           } else if (failTotal > 0 && successTotal > 0) {
             status = FileUploadStatus.depSuccess;
+          } else {
+            status = FileUploadStatus.success;
           }
           setBtnStatus(1);
           setFailUsers(failUsers);
@@ -184,11 +186,6 @@ export default function ImportEmployeesModal({ currDepId, closeModal }: Props) {
       Message.error('请选择发送方式');
       return;
     }
-    setUploadStatus({
-      status: 0,
-      successTotal: 0,
-      failTotal: 0,
-    });
     resetMutation.mutate({ userIDs: successUsersId, ...checkWay });
   }
 
@@ -247,7 +244,7 @@ export default function ImportEmployeesModal({ currDepId, closeModal }: Props) {
             </div>
           )}
           {uploadStatus.status === FileUploadStatus.success && (
-            <div className="text-green-600 mb-24 font-semibold">
+            <div className="text-green-600 mb-24 font-semibold flex items-center">
               <SvgIcon
                 size={16}
                 name="playlist_add_check"

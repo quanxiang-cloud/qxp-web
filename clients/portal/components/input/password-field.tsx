@@ -48,7 +48,7 @@ export default function PassWordField({
         />
         <SvgIcon
           className="absolute right-6 top-1/2 transform -translate-y-1/2 cursor-pointer"
-          name={type === 'password' ? 'visibility_off' : 'visibility'}
+          name={type === 'password' ? 'visibility-off' : 'visibility'}
           onClick={() => setType(type === 'text' ? 'password' : 'text')}
         />
       </div>

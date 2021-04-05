@@ -47,7 +47,7 @@ export default function HeaderLeft() {
           <SvgIcon
             name="add_task"
             className="group-hover:text-blue-600 header-nav-btn-icon"
-            size={24}
+            size={20}
             style={style(isHome)}
           />
         </div>
@@ -55,7 +55,7 @@ export default function HeaderLeft() {
           className="header-nav-btn-text group-hover:text-blue-600"
           style={style(isHome)}
         >
-              工作台
+          工作台
         </span>
       </Link>
       <Link
@@ -70,7 +70,7 @@ export default function HeaderLeft() {
             name="application_management"
             className="group-hover:text-blue-600 header-nav-btn-icon"
             style={style(isAppManagement)}
-            size={24}
+            size={20}
           />
         </div>
         <span
@@ -93,7 +93,7 @@ export default function HeaderLeft() {
               name="access_control"
               className="group-hover:text-blue-600 header-nav-btn-icon"
               style={style(isAccess)}
-              size={24}
+              size={20}
             />
           </div>
           <span
@@ -115,7 +115,7 @@ export default function HeaderLeft() {
           <SvgIcon
             name="system_management"
             className="group-hover:text-blue-600 header-nav-btn-icon"
-            size={24}
+            size={20}
             style={style(isSystemControl)}
           />
         </div>
