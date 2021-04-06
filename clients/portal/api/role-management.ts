@@ -49,7 +49,6 @@ export const setRoleFunctions = ({ queryKey }: QueryFunctionContext) =>
     }),
   ).then(({ data, code }) => ({ code, data }));
 
-
 // 获取角色关联
 interface GetRoleAssociationParams {
   roleId: string;

@@ -23,7 +23,6 @@ export const isMobile = (s: string) => /^1[3456789]\d{9}$/.test(s);
 export const isEmail = (s: string) =>
   /^[A-Za-z0-9-_\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/.test(s);
 
-
 export type OnValidateAll = (
   context: any, isValid: boolean
 ) => boolean | (boolean | Promise<boolean>)[];

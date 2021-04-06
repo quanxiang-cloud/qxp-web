@@ -34,7 +34,6 @@ export default function EditDepartment({ department, closeModal }: Props) {
     refetchOnWindowFocus: false,
   });
 
-
   if (isLoading || !depData) {
     return <Loading desc="加载中..." />;
   }

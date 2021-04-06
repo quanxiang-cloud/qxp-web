@@ -11,7 +11,6 @@ import { NodeRenderProps } from '@c/headless-tree/types';
 
 import EditDepartment from './edit-department';
 
-
 const MENUS: MenuItem<string>[] = [
   {
     key: 'add',

@@ -22,6 +22,7 @@ module.exports = {
     window: true,
   },
   rules: {
+    'no-multiple-empty-lines': ['warn', { max: 1 }],
     'react/jsx-wrap-multilines': ['warn', {
       declaration: 'parens',
       assignment: 'parens',

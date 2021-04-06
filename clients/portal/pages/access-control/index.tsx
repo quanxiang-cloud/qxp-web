@@ -1,7 +1,6 @@
 import React from 'react';
 import { Switch, Route } from 'react-router-dom';
 
-
 import ItemWithTitleDesc from '@c/item-with-title-desc';
 import Error from '@c/error';
 import { usePortalGlobalValue } from '@states/portal';
