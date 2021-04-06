@@ -1,0 +1,55 @@
+@if $variable-columns {
+  .columns.is-variable {
+    margin-right: calc(-1 * var(--columnGap));
+    margin-left: calc(-1 * var(--columnGap));
+    --columnGap: $column-gap;
+    .column {
+      padding-right: var(--columnGap);
+      padding-left: var(--columnGap);
+    }
+    @for $i from 0 through 8 {
+      &.is-#{$i} {
+        --columnGap: #{$i * $column-gap / 3};
+      }
+    }
+  }
+}
+
+.main-layout {
+  display: flex;
+  flex: auto;
+  flex-direction: column;
+}
+
+.main-layout,
+.main-layout * {
+  box-sizing: border-box;
+}
+
+.main-layout.main-layout-has-sider {
+  flex-direction: row;
+}
+
+.main-layout.main-layout-has-sider > .main-layout,
+.main-layout.main-layout-has-sider > .main-layout-content {
+  overflow-x: hidden;
+}
+
+.main-layout-header,
+.main-layout-footer {
+  flex: 0 0 auto;
+}
+
+.main-layout-content {
+  flex: auto;
+}
+
+.main-layout-sider {
+  position: relative;
+  min-width: 0;
+  transition: all 0.2s;
+}
+
+.main-layout-sider-right {
+  order: 1;
+}

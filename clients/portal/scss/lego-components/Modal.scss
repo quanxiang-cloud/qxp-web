@@ -1,0 +1,99 @@
+.modal {
+  .modal-content {
+    box-shadow: $modal-card-box-shadow;
+    .modal-card-head {
+      .modal-card-title {
+        font-weight: $modal-card-title-font-weight;
+      }
+    }
+    .modal-card-body {
+      position: relative;
+      line-height: $modal-card-body-line-height;
+      &.without-footer {
+        border-bottom-right-radius: $modal-card-foot-radius;
+        border-bottom-left-radius: $modal-card-foot-radius;
+      }
+      .modal-icon {
+        position: absolute;
+        top: 28px;
+        line-height: 1;
+        .icon {
+          width: 18px;
+          height: 18px;
+          background-position: center;
+          background-size: contain;
+          background-repeat: no-repeat;
+          &.icon-success {
+            background-image: var(--icon-status-success);
+          }
+          &.icon-info {
+            background-image: var(--icon-status-info);
+          }
+          &.icon-warning {
+            background-image: var(--icon-status-warning);
+          }
+          &.icon-error {
+            background-image: var(--icon-status-error);
+          }
+        }
+      }
+      .modal-icon + div {
+        margin-left: 46px;
+      }
+    }
+    .modal-card-foot {
+      justify-content: flex-end;
+      padding: $modal-card-footer-padding;
+      .button:not(:last-child) {
+        margin-right: 12px;
+      }
+    }
+    &.is-draggable {
+      position: absolute;
+      .modal-card-head {
+        cursor: move;
+      }
+    }
+  }
+  .modal-close {
+    &:before,
+    &:after {
+      display: none;
+    }
+    &:hover {
+      background: transparent;
+    }
+  }
+  .modal-resizer {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 16px;
+    height: 16px;
+    background-color: transparent;
+    cursor: nwse-resize;
+    z-index: 1;
+    user-select: none;
+    &:before,
+    &:after {
+      position: absolute;
+      display: block;
+      background-color: $neutral-4;
+      transform: rotate(135deg);
+      content: '';
+      z-index: 2;
+    }
+    &:before {
+      top: 11px;
+      left: 9px;
+      width: 5px;
+      height: 1px;
+    }
+    &:after {
+      top: 9px;
+      left: 4px;
+      width: 11px;
+      height: 1px;
+    }
+  }
+}

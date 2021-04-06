@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"encoding/json"
 	"net/http"
 	"qxp-web/server/pkg/contexts"
 )
@@ -15,39 +14,25 @@ type LogoutResponse struct {
 
 // LogoutHandler render logout page
 func LogoutHandler(w http.ResponseWriter, r *http.Request) {
-	session, err := contexts.GetCurrentRequestSession(r)
-	if err != nil {
-		http.Redirect(w, r, "/", http.StatusFound)
-		return
-	}
-	session.Values["refresh_token"] = nil
-	contexts.Cache.Del("token")
-	session.Save(r, w)
-	contexts.Logger.Debug("user logout, redirect to /")
-	http.Redirect(w, r, "/", http.StatusFound)
+	token := GetToken(r)
+	refreshToken := GetRefreshToken(r)
+
+	tokenKey := getTokenKey(r)
+	refreshTokenKey := getRefreshTokenKey(r)
+	contexts.Cache.Del(tokenKey)
+	contexts.Cache.Del(refreshTokenKey)
+
 	requestID := contexts.GetRequestID(r)
-	resp, respBuffer, errMsg := contexts.SendRequest(r, "POST", "/api/oauth2c/v1/loginout", nil, map[string]interface{}{
+	_, errMsg := contexts.SendRequest(r.Context(), "POST", "/api/v1/oauth2c/loginout", nil, map[string]string{
 		"Content-Type":  "application/x-www-form-urlencoded",
-		"Refresh-Token": session.Values["refresh_token"].(string),
+		"Refresh-Token": refreshToken,
+		"Access-Token":  token,
+		"User-Agent":    r.Header.Get("User-Agent"),
 	})
+
+	http.Redirect(w, r, "/", http.StatusFound)
+
 	if errMsg != "" {
 		contexts.Logger.Errorf("send logout request failed: %s, request_id: %s", errMsg, requestID)
-		http.Redirect(w, r, "/", http.StatusFound)
-		return
 	}
-	if ShouldLogin(w, r, resp) {
-		return
-	}
-	var logoutResponse LogoutResponse
-	if err := json.Unmarshal(respBuffer.Bytes(), &logoutResponse); err != nil {
-		contexts.Logger.Errorf("parse logout request body failed: %s, request_id: %s", err.Error(), requestID)
-		http.Redirect(w, r, "/", http.StatusFound)
-		return
-	}
-	if logoutResponse.Code != 0 {
-		contexts.Logger.Errorf("logout failed, request_id: %s", requestID)
-		http.Redirect(w, r, "/", http.StatusFound)
-		return
-	}
-	contexts.Logger.Debug("user session has been revoked")
 }

@@ -1,1 +1,359 @@
-@import "../../assets/scss/reset"
+@import '../../assets/scss/reset';
+@import './components.scss';
+@import './lego';
+@import './form.scss';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  font-size: 62.5%;
+}
+
+body {
+  font-size: 1.4rem;
+}
+
+.w-316 {
+  min-width: 316px;
+}
+
+.bg-jb {
+  background: linear-gradient(180deg, #FDBA74 0%, #FB923C 100%);
+}
+
+.bg-gradient-green-to-top-right {
+  background-image: linear-gradient(to top right, #14b8a6, rgba(20, 184, 166, 0.4));
+}
+
+.bg-gradient-yellow-to-top-right {
+  background-image: linear-gradient(to top right, #EDBD3E, rgba(245, 158, 11, 0.4));
+}
+
+.bg-gradient-blue-to-top-right {
+  background-image: linear-gradient(to top right, #b5ccff, rgba(181, 204, 255, 0.4));
+}
+
+.bg-gradient-blue-to-top-right {
+  background-image: linear-gradient(to top right, #b5ccff, rgba(181, 204, 255, 0.4));
+}
+
+.shadow-title {
+  box-shadow: 0px 8px 24px 4px rgba(148, 163, 184, 0.25);
+}
+
+/////////////////// Animation /////////////////////////
+.slide-in {
+  animation: slideIn 0.2s ease-in-out forwards;
+}
+
+@keyframes slideIn {
+  from {
+    left: -100%;
+  }
+
+  to {
+    left: 0;
+  }
+}
+
+.slide-out {
+  animation: slideOut 0.2s ease-in-out forwards;
+}
+
+@keyframes slideOut {
+  from {
+    left: 0;
+  }
+
+  to {
+    left: -100%;
+  }
+}
+
+////////////////// background /////////////////////////
+.header-background-image {
+  position: relative;
+
+  &::after {
+    content: '';
+    background-image: url('/dist/images/maskHeaderBackgroundImage.png');
+    background-position: top right;
+    background-size: contain;
+    background-repeat: no-repeat;
+    opacity: 0.5;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    position: absolute;
+    z-index: -1;
+  }
+}
+
+.access-background-image {
+  position: relative;
+
+  &::after {
+    content: '';
+    background-image: url('/dist/images/maskHeaderBg.svg');
+    background-position: top right;
+    background-size: contain;
+    background-repeat: no-repeat;
+    opacity: 0.1;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    position: absolute;
+    z-index: -1;
+  }
+}
+
+
+//////////////////////////////////// layout /////////////////////////////////
+.flex-2 {
+  flex: 2 1 0%;
+}
+
+/////////////////////////////////// components ///////////////////////////////
+.qxp-table {
+  .spin-nested-loading {
+    width: 100% !important;
+
+    .spin-container {
+      width: 100% !important;
+
+      .table-wrapper {
+        width: 100% !important;
+
+        &.rounded-bl-none .table {
+          border-bottom-left-radius: unset !important;
+        }
+
+        &.rounded-br-none .table {
+          border-bottom-right-radius: unset !important;
+        }
+
+        .table {
+          border-radius: 0.6rem !important;
+          width: 100% !important;
+
+          thead>tr>th {
+            // padding-top: 0.55rem !important;
+            // padding-bottom: 0.55rem !important;
+            font-size: 1.4rem !important;
+            font-weight: normal !important;
+            vertical-align: middle;
+
+            span {
+              line-height: 1 !important;
+              height: 44px;
+            }
+          }
+
+          tbody>tr:last-child>td {
+            border-bottom: none !important;
+          }
+        }
+      }
+    }
+  }
+}
+
+.modal {
+  &.owner-bind-modal {
+    .modal-content {
+      width: 1234px !important;
+      height: 760px !important;
+      max-width: 98% !important;
+      max-height: 98% !important;
+    }
+  }
+
+  .modal-card-head {
+    @extend .header-background-image;
+    opacity: 0.95 !important;
+  }
+
+  .modal-card-foot {
+    background-color: #f1f5f9 !important;
+    border: none;
+  }
+
+  .modal-content {
+    box-shadow: inset 0px -1px 0px #e2e8f0 !important;
+    border-radius: 0.6rem !important;
+    width: auto !important;
+    max-width: 80% !important;
+
+    .modal-card-body {
+      display: flex;
+      align-items: stretch;
+      @apply px-20 #{!important};
+    }
+  }
+}
+
+.static-modal {
+  .modal-content {
+    width: 632px !important;
+
+    .modal-card-body {
+      padding: 24px 40px !important;
+
+      form {
+        width: 100%;
+        min-width: none;
+        max-width: none;
+
+        .select {
+          width: 100%;
+        }
+
+        >.field:nth-last-child(1) {
+          margin-bottom: 0;
+        }
+      }
+    }
+  }
+}
+
+#tree-select-box {
+  .tree-title {
+    width: 100%;
+  }
+}
+
+label.checkbox {
+  &.checked {
+
+    &:before,
+    &:hover:before {
+      @apply bg-blue-600 #{!important};
+    }
+  }
+
+  &.disabled {
+    opacity: 1 !important;
+
+    &:after,
+    &:before {
+      opacity: 0.5 !important;
+    }
+  }
+
+  input {
+    opacity: 0 !important;
+  }
+}
+
+.search-input {
+  @apply pl-44 #{!important};
+  @apply pr-28 #{!important};
+}
+
+.input {
+  border-radius: 2px 8px 8px 8px !important;
+}
+
+button {
+  outline: none !important;
+}
+
+.qxp-single-select {
+  background-color: #fff !important;
+  border: none !important;
+
+  .select-placeholder {
+    font-size: 0.6rem !important;
+    padding-left: 5px !important;
+  }
+
+  .select-control {
+    border: 1px solid #cbd5e1 !important;
+    border-radius: 0.1rem 0.4rem 0.4rem 0.4rem !important;
+    background-color: #fff !important;
+
+    .select-value-label {
+      color: #475569 !important;
+      font-size: 0.6rem !important;
+    }
+  }
+}
+
+.select-menu-outer {
+  border: none !important;
+  box-shadow: 0 0 3px 0 rgba(203, 213, 225, 1) !important;
+
+  .select-menu {
+    padding: 0 !important;
+  }
+}
+
+.select-set {
+  width: 5.3rem;
+  border: none;
+  background: none !important;
+
+  &:hover {
+    border: none;
+    background: none;
+  }
+
+  .select-control {
+    background: none;
+    border: none;
+  }
+
+  .select-value-label {
+    font-size: 14px;
+  }
+}
+
+.control-set {
+  >input {
+    background: none;
+    border: none;
+    outline: none;
+  }
+}
+
+.overflow-y-h {
+  overflow-y: hidden;
+}
+
+.overflow-y-a {
+  overflow-y: auto;
+}
+
+.table-full {
+  .table {
+    width: 100%;
+  }
+}
+
+.text-area-input {
+  margin: 0 !important;
+
+  label {
+    display: none !important;
+  }
+
+  .control {
+    width: 100%;
+    cursor: default !important;
+
+    textarea {
+      min-height: unset;
+      padding-right: 20px !important;
+      @apply rounded-br-8 rounded-bl-8 rounded-tl-none rounded-tr-none #{!important};
+      @apply cursor-default pointer-events-none #{!important};
+      &:hover,
+      &:focus {
+        border-color:#d5dee7 !important;
+      }
+    }
+  }
+}

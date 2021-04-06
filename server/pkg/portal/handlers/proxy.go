@@ -10,23 +10,6 @@ import (
 
 // ProxyAPIHandler proxy helper for endpoint api
 func ProxyAPIHandler(w http.ResponseWriter, r *http.Request) {
-	// session, err := contexts.GetCurrentRequestSession(r)
-	// if err != nil {
-	// 	http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
-	// 	return
-	// }
-
-	// token, ok := session.Values["token"].(string)
-	// if !ok {
-	// 	token = r.Header.Get("X-Auth-Token")
-	// 	contexts.Logger.Debugf("no session key found for request: %s", contexts.GetRequestID(r))
-	// }
-
-	// if token == "" {
-	// 	http.Error(w, http.StatusText(http.StatusUnauthorized), http.StatusUnauthorized)
-	// 	return
-	// }
-
 	method := r.Method
 	path := r.URL.Path
 	url := ""
@@ -43,19 +26,13 @@ func ProxyAPIHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// authorization := "Bearer " + token
-	// req.Header.Add("Authorization", authorization)
-	req.Header.Add("Content-Type", "application/json")
-	token, _ := contexts.GetSessionToken(r)
-	if token != "" {
-		req.Header.Add("Access-Token", token)
-	}
-	// headers: {
-	//     token: '4cf02e712070455b92f4a95525768603',
-	//     domain: 'qingcloud'
-	//   }
+	req.Header.Set("Content-Type", r.Header.Get("Content-Type"))
+	req.Header.Set("User-Agent", r.Header.Get("User-Agent"))
 
-	contexts.Logger.Debugf("proxy api request, method: %s, url: %s, request_id: %s", method, url, contexts.GetRequestID(r))
+	token := GetToken(r)
+	req.Header.Set("Access-Token", token)
+
+	contexts.Logger.Debugf("proxy api request, method: %s, url: %s, header: %s request_id: %s", method, url, req.Header, contexts.GetRequestID(r))
 
 	resp, err := contexts.HTTPClient.Do(req)
 	if err != nil {
@@ -75,8 +52,7 @@ func ProxyAPIHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.Header().Add("Content-Type", "application/json")
+	w.Header().Add("Content-Type", resp.Header.Get("Content-Type"))
 	w.WriteHeader(resp.StatusCode)
 	w.Write(buffer.Bytes())
-	return
 }

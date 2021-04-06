@@ -1,0 +1,24 @@
+$base-z-index: 0;
+$sidebar-z-index: 2;
+$sub-pages-z-index: 2;
+$global-header-z-index: $sidebar-z-index + 1;
+$preview-shared-container-z-index: $base-z-index + 10;
+$modal-z-index: $preview-shared-container-z-index + 10;
+$popper-z-index: $modal-z-index + 10;
+$toaster-z-index: $popper-z-index + 10;
+$tooltip-z-index: $toaster-z-index + 10;
+
+$box-shadow:
+  2px 1px 2px 0 rgba(175, 192, 208, 0.15),
+  2px 2px 4px 0 rgba(175, 192, 208, 0.15),
+  2px 4px 8px 0 rgba(175, 192, 208, 0.15),
+  0 8px 16px 0 rgba(175, 192, 208, 0.05);
+
+$global-header-height: 52px;
+$border-radius: 4px;
+$border-radius-lg: 12px;
+
+// todo remove this
+.modal {
+  z-index: $modal-z-index !important;
+}

@@ -1,5 +1,7 @@
-import { InputField } from '@assets/lib/atom';
+import { InputField } from '@lib/atom';
 
 export default class Remember extends InputField {
-  validate() { return true; }
+  validate() {
+    return true;
+  }
 }

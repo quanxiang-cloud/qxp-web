@@ -1,6 +1,5 @@
-import { IInputField, query } from '@assets/lib/atom';
+import { IInputField, query, parseValidateAllResult, parseUserValidateResult } from '@lib/atom';
 
-import Page from './page';
 import User, { IUser } from './user';
 import Password from './password-field';
 
@@ -13,9 +12,9 @@ interface IResetUser extends IUser {
 }
 
 class ResetUser extends User {
-  private oldPassword: Password 
-  private newPassword: Password 
-  private checkPassword: Password
+  private oldPassword: Password;
+  private newPassword: Password;
+  private checkPassword: Password;
 
   constructor({ oldPassword, newPassword, checkPassword, action }: IResetUser) {
     super({ action });
@@ -27,23 +26,23 @@ class ResetUser extends User {
     this.checkPassword.validate = function(checkAll?: boolean) {
       let isValid = true;
       if ((this.value as string).length < 6) {
-        if(this.value !== '') {
+        if (this.value !== '') {
           this.errMessage = '密码至少为6位';
           isValid = false;
-        } 
+        }
         this.action.classList.add('disabled');
       }
       if ((this.value as string) !== (that.newPassword.value as string)) {
-        if(this.value !== '') {
+        if (this.value !== '') {
           isValid = false;
-          if(that.newPassword.value) {
+          if (that.newPassword.value) {
             this.errMessage = '两次输入的新密码不匹配';
           }
         }
 
         this.action.classList.add('disabled');
       }
-      
+
       if (isValid) {
         this.errMessage = '';
       }
@@ -51,8 +50,18 @@ class ResetUser extends User {
         isValid = false;
       }
       (this.errorElement as HTMLElement).textContent = this.errMessage as string;
-      if (checkAll && (this.onValidateAll as Function)(this, isValid)) {
-        this.action.classList.remove('disabled');
+
+      if (checkAll) {
+        const onValidateAllResult: boolean | (boolean | Promise<boolean>)[] = this.onValidateAll(
+          this, isValid
+        );
+        if (onValidateAllResult instanceof Array) {
+          parseValidateAllResult(onValidateAllResult, this.errorElement).then((isAllValid) => {
+            isAllValid && this.action.classList.remove('disabled');
+          });
+        } else if (onValidateAllResult) {
+          this.action.classList.remove('disabled');
+        }
       }
       return isValid;
     };
@@ -60,24 +69,31 @@ class ResetUser extends User {
     this.checkPassword.validate(true);
   }
 
-  onValidateAll(context: Password, isValid: boolean): boolean {
-    if (!this.oldPassword || !this.newPassword || !this.checkPassword) {
-      return false; 
+  onValidateAll(context: Password, isValid: boolean): boolean | (boolean | Promise<boolean>)[] {
+    if (!this.oldPassword || !this.newPassword || !this.checkPassword || !isValid) {
+      return false;
     }
-    return [this.oldPassword, this.newPassword, this.checkPassword].filter((i) => i !== context).every((i) => i.validate()) && isValid;
+    return (
+      [this.oldPassword, this.newPassword, this.checkPassword]
+        .filter((i) => i !== context)
+        .map((i) => i.validate())
+    );
   }
 
-  validate(): boolean {
-    return this.oldPassword.validate() && this.newPassword.validate() && this.checkPassword.validate();
+  validate(): boolean | Promise<boolean> {
+    return parseUserValidateResult(
+      this.oldPassword.validate(),
+      this.newPassword.validate(),
+      this.checkPassword.validate(),
+    );
   }
 }
 
-new Page();
 new ResetUser({
   oldPassword: {
-    name: 'reset:password:oldPassword', 
-    inputElement: query<HTMLInputElement>('input[name="oldPassword"]'), 
-    errorElement: query<HTMLElement>('.oldPassword-hints'), 
+    name: 'reset:password:oldPassword',
+    inputElement: query<HTMLInputElement>('input[name="oldPassword"]'),
+    errorElement: query<HTMLElement>('.oldPassword-hints'),
   },
   newPassword: {
     name: 'reset:password:newPassword',

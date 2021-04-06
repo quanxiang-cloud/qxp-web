@@ -2,6 +2,9 @@ package handlers
 
 import (
 	"encoding/json"
+	"errors"
+	"fmt"
+	"log"
 	"net/http"
 	"qxp-web/server/pkg/contexts"
 	"time"
@@ -42,79 +45,155 @@ type RefreshTokenData struct {
 	Expire       string `json:"expiry"`
 }
 
-// RefreshToken refresh token
-func RefreshToken(w http.ResponseWriter, r *http.Request) bool {
-	refreshToken := contexts.GetRefreshToken(r)
+func getTokenKey(r *http.Request) string {
+	session := contexts.GetCurrentRequestSession(r)
+
+	return fmt.Sprintf("portal:session:%s:token", session.ID)
+}
+
+func getRefreshTokenKey(r *http.Request) string {
+	session := contexts.GetCurrentRequestSession(r)
+
+	return fmt.Sprintf("portal:session:%s:refresh_token", session.ID)
+}
+
+// IsUserLogin judge wheather user is login
+func IsUserLogin(r *http.Request) bool {
+	token := contexts.Cache.Get(getTokenKey(r)).Val()
+	if token != "" {
+		return true
+	}
+
+	refreshToken := contexts.Cache.Get(getRefreshTokenKey(r)).Val()
 	if refreshToken == "" {
 		return false
 	}
+
+	return renewToken(r, refreshToken)
+}
+
+func GetToken(r *http.Request) string {
+	tokenKey := getTokenKey(r)
+	token := contexts.Cache.Get(tokenKey).Val()
+	if token != "" {
+		return token
+	}
+
+	refreshToken := GetRefreshToken(r)
+	if refreshToken == "" {
+		return ""
+	}
+
+	if !renewToken(r, refreshToken) {
+		return ""
+	}
+
+	return contexts.Cache.Get(tokenKey).Val()
+}
+
+func GetRefreshToken(r *http.Request) string {
+	return contexts.Cache.Get(getRefreshTokenKey(r)).Val()
+}
+
+// renewToken refresh token
+func renewToken(r *http.Request, refreshToken string) bool {
 	requestID := contexts.GetRequestID(r)
-	resp, respBuffer, errMsg := contexts.SendRequest(r, "POST", "/api/oauth2c/v1/in/refresh", nil, map[string]interface{}{
+	respBuffer, errMsg := contexts.SendRequest(r.Context(), "POST", "/api/v1/oauth2c/in/refresh", nil, map[string]string{
 		"Content-Type":  "application/x-www-form-urlencoded",
 		"Refresh-Token": refreshToken,
+		"User-Agent":    r.Header.Get("User-Agent"),
 	})
-	if errMsg != "" || ShouldLogin(w, r, resp) {
+
+	if errMsg != "" {
 		contexts.Logger.Errorf("refresh token failed: %s, request_id: %s", errMsg, requestID)
 		return false
 	}
+
 	var refreshTokenResponse RefreshTokenResponse
 	if err := json.Unmarshal(respBuffer.Bytes(), &refreshTokenResponse); err != nil {
 		contexts.Logger.Errorf("failed to unmarshal refresh token body, err: %s, request_id: %s", err.Error(), requestID)
 		return false
 	}
-	session, err := contexts.GetCurrentRequestSession(r)
-	if err != nil {
-		contexts.Logger.Errorf("failed to read session err: %s, request_id: %s", err.Error(), requestID)
-	}
+
 	if refreshTokenResponse.Data.AccessToken == "" {
 		return false
 	}
+
 	expireTime, err := time.Parse(time.RFC3339, refreshTokenResponse.Data.Expire)
-	if err == nil {
-		contexts.Cache.Set("token", refreshTokenResponse.Data.AccessToken, expireTime.Sub(time.Now()))
-	}
-	session.Values["refresh_token"] = refreshTokenResponse.Data.RefreshToken
-	if err := session.Save(r, w); err != nil {
-		contexts.Logger.Errorf("failed to save session: %s, request_id: %s", err.Error(), requestID)
+	if err != nil {
+		// todo log error message
 		return false
 	}
+
+	SaveToken(r, refreshTokenResponse.Data.AccessToken, refreshTokenResponse.Data.RefreshToken, expireTime)
+
 	return true
 }
 
-// IsUserLogin judge wheather user is login
-func IsUserLogin(w http.ResponseWriter, r *http.Request) bool {
-	token, ok := contexts.GetSessionToken(r)
-	if !ok {
-		return RefreshToken(w, r)
+func SaveToken(r *http.Request, token string, refreshToken string, expireTime time.Time) {
+	tokenKey := getTokenKey(r)
+	refreshTokenKey := getRefreshTokenKey(r)
+	duration := time.Until(expireTime) - time.Hour
+
+	err := contexts.Cache.Set(tokenKey, token, duration).Err()
+	if err != nil {
+		log.Fatalf("failed to save user token to cache: %s", err.Error())
 	}
-	if token == "" {
-		return false
+
+	err = contexts.Cache.Set(refreshTokenKey, refreshToken, time.Hour*72).Err()
+	if err != nil {
+		log.Fatalf("failed to save user refresh_token to cache: %s", err.Error())
 	}
-	return true
 }
 
 // RedirectToLoginPage redirect to login page
-func RedirectToLoginPage(w http.ResponseWriter, r *http.Request, path string) {
-	session, err := contexts.GetCurrentRequestSession(r)
-	if err != nil {
-		renderErrorPage(w, r, http.StatusInternalServerError, http.StatusText(http.StatusInternalServerError))
-		return
-	}
+func RedirectToLoginPage(w http.ResponseWriter, r *http.Request) {
+	session := contexts.GetCurrentRequestSession(r)
 	session.Values["redirect_url"] = r.URL.Path
-	contexts.Cache.Del("token")
-	if err = session.Save(r, w); err != nil {
+	if err := session.Save(r, w); err != nil {
 		renderErrorPage(w, r, http.StatusInternalServerError, http.StatusText(http.StatusInternalServerError))
 		return
 	}
+
 	// path: /login/password /login/captcha
-	http.Redirect(w, r, path, http.StatusFound)
+	http.Redirect(w, r, "/login/password", http.StatusFound)
 }
 
 // ShouldLogin redirect to login if 401
+// todo delete this
 func ShouldLogin(w http.ResponseWriter, r *http.Request, resp *http.Response) bool {
 	if resp.StatusCode == 401 {
 		http.Redirect(w, r, "/login/password", http.StatusFound)
 		return true
 	}
 	return false
+}
+
+func GetUserInfo(w http.ResponseWriter, r *http.Request, token string) (
+	map[string]interface{}, error) {
+
+	requestID := contexts.GetRequestID(r)
+	var userInfoResponse map[string]interface{} 
+	respBuffer, errMsg := contexts.SendRequest(r.Context(), "POST", "/api/v1/org/userUserInfo", r.Body, map[string]string{
+		"Access-Token":  token,
+	})
+
+	if errMsg != "" {
+		contexts.Logger.Errorf("Get user info error: %s, request_id: %s", errMsg, requestID)
+		if len(errMsg) >= len("401") && (errMsg[len(errMsg)-len("401"):] == "401" || errMsg[len(errMsg)-len("400"):] == "400") {
+			return userInfoResponse, errors.New(errMsg)
+		}
+		return userInfoResponse, nil
+	}
+
+	err := json.Unmarshal(respBuffer.Bytes(), &userInfoResponse)
+	if err != nil {
+		contexts.Logger.Errorf(
+			"failed to unmarshal user info body, err: %s, request_id: %s", 
+			err.Error(), 
+			requestID,
+		)
+	}
+
+	return userInfoResponse, nil 
 }

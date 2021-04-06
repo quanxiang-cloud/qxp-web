@@ -1,7 +1,29 @@
-import * as React from 'react';
-import * as ReactDOM from 'react-dom';
+import React from 'react';
+import ReactDOM from 'react-dom';
+import { QueryClient, QueryClientProvider } from 'react-query';
+
+import { AppContextProvider } from '@clients/common/providers/context';
 
 import App from './application';
-import './scss/index.scss';
 
-ReactDOM.render((<App />), document.getElementById('root'));
+import './scss/index.scss';
+import './index.css';
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      // 如果用户离开您的应用程序并返回到过时的数据，React Query会在后台自动为您请求新数据。
+      refetchOnWindowFocus: false, // 全局禁用
+      retry: 1,
+    },
+  },
+});
+
+ReactDOM.render(
+  <AppContextProvider>
+    <QueryClientProvider client={queryClient}>
+      <App />
+    </QueryClientProvider>
+  </AppContextProvider>,
+  document.getElementById('root'),
+);

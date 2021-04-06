@@ -1,0 +1,26 @@
+{{template "layout" .}}
+
+{{define "header_styles"}}
+  <title>500: internal server error</title>
+  <link rel="stylesheet" href="<%= htmlWebpackPlugin.files.css[0] %>">
+{{end}}
+
+{{define "content"}}
+    <main class="flex va-top flex-1 column align-center">
+
+      <header class="flex row space-between align-center w-p-100">
+        <div class="logo-company">
+          <img class="va-middle" src="/dist/images/logo.png" alt="logo">
+          <span class="text-black-100 fs-16 va-middle">全象云</span>
+        </div>
+        <div class="to-login">
+          <a href="/" class="br-3 text-white-n00 bg-dark-n15 fs-14">回到首页</a>
+        </div>
+      </header>
+
+      <div class="fs-24 inline-flex column text-center w360 w-m-p-100 flex-1 justify-center">
+        sorry, please try again later
+      </div>
+
+    </main>
+{{end}}

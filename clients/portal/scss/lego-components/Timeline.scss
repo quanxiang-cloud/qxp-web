@@ -1,0 +1,50 @@
+.timeline {
+  &-item {
+    display: flex;
+    flex-direction: row;
+    &-head {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: $timeline-item-head-width;
+      :first-child {
+        flex-shrink: 0;
+      }
+      &-dot {
+        flex-shrink: 0;
+        width: $timeline-item-head-dot-size;
+        height: $timeline-item-head-dot-size;
+        border: $timeline-item-head-dot-border;
+        border-radius: 50%;
+        background-color: $timeline-item-head-dot-background-color;
+      }
+      &-line {
+        width: $timeline-item-head-line-width;
+        height: 100%;
+        background-color: $timeline-item-head-line-color;
+        &-gradient {
+          position: relative;
+          top: $timeline-item-head-line-gradient-top;
+          width: $timeline-item-head-line-width;
+          height: 100%;
+          background: linear-gradient($timeline-item-head-line-color, #fff);
+        }
+      }
+    }
+    &-content {
+      position: relative;
+      top: $timeline-item-content-top;
+      margin: $timeline-item-content-margin;
+      &-tail {
+        position: relative;
+        top: $timeline-item-content-tail-top;
+        margin-left: $timeline-item-content-margin-left;
+        color: $timeline-item-content-tail-color;
+        &-load {
+          color: $timeline-item-content-tail-load-color;
+          cursor: pointer;
+        }
+      }
+    }
+  }
+}

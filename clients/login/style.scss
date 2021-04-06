@@ -1,5 +1,12 @@
 @import '@assets/scss/index.scss';
 
+@import '../portal/css/typography.css';
+@import '../portal/css/colors.css';
+
+html {
+  font-size: 62.5%;
+}
+
 body {
   font-size: 0;
   display: flex;
@@ -8,40 +15,40 @@ body {
   text-align: center;
 
   header {
-    padding: px2rem(16px) px2rem(20px) 0 px2rem(28.33px);
+    padding: 16px 20px 0 28.33px;
 
     .logo-company {
       img {
-        width: px2rem(26.6px);
-        height: px2rem(26.6px);
-        margin-right: px2rem(8.4px);
+        width: 26.6px;
+        height: 26.6px;
+        margin-right: 8.4px;
       }
     }
 
     .to-login {
-      > span:first-child {
-        margin-right: px2rem(16px);
+      >span:first-child {
+        margin-right: 16px;
       }
 
-      > a {
-        padding: px2rem(4px) px2rem(12px);
+      >a {
+        padding: 4px 12px;
       }
     }
   }
 
   form {
-    > h1 {
-      margin-top: px2rem(-72px);
+    >h1 {
+      margin-top: -72px;
     }
 
     input {
-      border: 1px solid #D5DEE7;
+      border: 1px solid #d5dee7;
       padding: 4px 12px;
       outline: none;
-      transition: all .3s linear;
+      transition: all 0.3s linear;
 
       &.pr-36 {
-        padding-right: px2rem(36px);
+        padding-right: 36px;
       }
 
       &:focus {
@@ -50,8 +57,8 @@ body {
       }
     }
 
-    > button:last-child {
-      padding: px2rem(4px) 0;
+    >button:last-child {
+      padding: 5px 0;
       box-shadow: 0px 1px 2px rgba(50, 69, 88, 0.08);
     }
   }
@@ -63,4 +70,7 @@ body {
   }
 }
 
-
+.bg-main {
+  background: #E9EDF8;
+  background-color: #E9EDF8;
+}

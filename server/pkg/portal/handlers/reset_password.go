@@ -9,10 +9,6 @@ import (
 
 // ResetPasswordHandler render reset password page
 func ResetPasswordHandler(w http.ResponseWriter, r *http.Request) {
-	// if !IsUserLogin(w, r) {
-	// 	http.Redirect(w, r, "/login/password", http.StatusFound)
-	// 	return
-	// }
 	redirectURL := r.URL.Query().Get("redirectUrl")
 	renderTemplate(w, "reset-password.html", map[string]interface{}{
 		"redirectUrl": redirectURL,
@@ -35,20 +31,22 @@ func ResetPasswordActionHandler(w http.ResponseWriter, r *http.Request) {
 		})
 		return
 	}
-	session, err := contexts.GetCurrentRequestSession(r)
-	if err != nil {
+	session := contexts.GetCurrentRequestSession(r)
+	if session == nil {
 		contexts.Logger.Errorf("failed to get request session for resetPassword: %s, request_id: %s", err.Error(), requestID)
 		renderTemplate(w, templateName, map[string]interface{}{
 			"errorMessage": "重置密码失败",
 		})
 		return
 	}
-	resp, respBuffer, errMsg := contexts.SendRequest(r, "POST", "/api/oauth2s/v1/account/reset/user", bytes.NewBuffer(resetPasswordParams), map[string]interface{}{
+	respBuffer, errMsg := contexts.SendRequest(r.Context(), "POST", "/api/v1/nurturing/userResetPWD", bytes.NewBuffer(resetPasswordParams), map[string]string{
 		"Content-Type": "application/json",
+		"User-Agent":   r.Header.Get("User-Agent"),
+		"Access-Token": GetToken(r),
 	})
-	if ShouldLogin(w, r, resp) {
-		return
-	}
+	// if ShouldLogin(w, r, resp) {
+	// 	return
+	// }
 	if errMsg != "" {
 		contexts.Logger.Errorf("failed to reset password: %s, response: %s request_id: %s", errMsg, respBuffer.String(), requestID)
 		renderTemplate(w, templateName, map[string]interface{}{
@@ -76,5 +74,5 @@ func ResetPasswordActionHandler(w http.ResponseWriter, r *http.Request) {
 	session.Values["refresh_token"] = nil
 	session.Save(r, w)
 
-	http.Redirect(w, r, "/", http.StatusFound)
+	http.Redirect(w, r, "/login/password", http.StatusFound)
 }

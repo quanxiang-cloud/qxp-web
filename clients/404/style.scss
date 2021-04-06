@@ -8,26 +8,24 @@ body {
   text-align: center;
 
   header {
-    padding: px2rem(16px) px2rem(20px) 0 px2rem(28.33px);
+    padding: 16px 20px 0 28.33px;
 
     .logo-company {
       img {
-        width: px2rem(26.6px);
-        height: px2rem(26.6px);
-        margin-right: px2rem(8.4px);
+        width: 26.6px;
+        height: 26.6px;
+        margin-right: 8.4px;
       }
     }
 
     .to-login {
       > span:first-child {
-        margin-right: px2rem(16px);
+        margin-right: 16px;
       }
 
       > a {
-        padding: px2rem(4px) px2rem(12px);
+        padding: 4px 12px;
       }
     }
   }
 }
-
-

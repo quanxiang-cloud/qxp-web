@@ -1,18 +1,18 @@
-import { IInputField, query } from 'clients/assets/lib/atom';
+import { IInputField, query, parseUserValidateResult } from '@lib/atom';
+import Notify from '@lib/notify';
 
 import UserName from './username';
 import Captcha from './captcha-field';
-import Page from './page';
 import User, { IUser } from './user';
 
 import './style.scss';
 
 interface ICaptchaUser extends IUser {
-  captcha: IInputField; 
+  captcha: IInputField;
 }
 
 class CaptchaUser extends User {
-  private captcha: Captcha
+  private captcha: Captcha;
 
   constructor({ action, username, captcha }: ICaptchaUser) {
     super({ username, action });
@@ -22,35 +22,43 @@ class CaptchaUser extends User {
     }
   }
 
-  onValidateAll(context: UserName | Captcha, isValid: boolean): boolean {
-    if (!this.username || !this.captcha) {
-      return false; 
+  onValidateAll(
+    context: UserName | Captcha,
+    isValid: boolean
+  ): boolean | (boolean | Promise<boolean>)[] {
+    if (!this.username || !this.captcha || !isValid) {
+      return false;
     }
-    return [this.username, this.captcha].filter((i) => i !== context).every((i) => i.validate()) && isValid;
+    return (
+      [this.username, this.captcha].filter((i) => i !== context).map((i) => i.validate())
+    );
   }
 
-  validate(): boolean {
+  validate(): boolean | Promise<boolean> {
     if (this.username) {
-      return this.username.validate() && this.captcha.validate();
+      return parseUserValidateResult(
+        this.username.validate(),
+        this.captcha.validate(),
+      );
     }
     return this.captcha.validate();
   }
 }
 
-new Page();
 new CaptchaUser({
   username: {
-    name: 'login:captcha:username', 
-    inputElement: query<HTMLInputElement>('input[name="username"]'), 
-    errorElement: query<HTMLElement>('.username-hints'), 
+    name: 'login:captcha:username',
+    inputElement: query<HTMLInputElement>('input[name="username"]'),
+    errorElement: query<HTMLElement>('.username-hints'),
   },
   captcha: {
-    name: 'login:captcha:captcha', 
-    inputElement: query<HTMLInputElement>('input[name="captcha"]'), 
+    name: 'login:captcha:captcha',
+    inputElement: query<HTMLInputElement>('input[name="captcha"]'),
     errorElement: query<HTMLInputElement>('.captcha-hints'),
     actionElement: query<HTMLButtonElement>('button.send'),
-    url: '/api/oauth2s/v1/login/code',
+    url: '/api/v1/org/login/code',
   },
   action: query<HTMLButtonElement>('.btn-login'),
 });
 
+window.notifier = new Notify(query<HTMLElement>('body main'));

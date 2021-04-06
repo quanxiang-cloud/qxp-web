@@ -4,7 +4,6 @@ import { Component } from 'react';
 import './index.scss';
 
 export default class Metadata extends Component {
-
   render(): JSX.Element {
     return (
       <div style={{ marginLeft: '20px' }} className="metadata">
@@ -12,5 +11,4 @@ export default class Metadata extends Component {
       </div>
     );
   }
-
 }
