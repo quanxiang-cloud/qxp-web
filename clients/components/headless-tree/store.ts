@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import { observable, action, computed } from 'mobx';
+import logger from '@lib/logger';
 
 import { TreeNode } from './types';
 
@@ -177,7 +178,7 @@ export default class TreeStore<T> {
     const parentNode = this.getNode(node.parentId as string);
 
     if (!parentNode) {
-      console.error('failed to delete node, because cannot find its parent node');
+      logger.error('failed to delete node, because cannot find its parent node');
       return false;
     }
 
