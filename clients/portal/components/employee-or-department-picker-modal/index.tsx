@@ -10,7 +10,7 @@ import Error from '@c/error';
 import EmployeeOrDepartmentPicker from './picker';
 
 interface Props {
-  onOk: (adds: EmployeeOrDepartmentOfRole[], deletes: EmployeeOrDepartmentOfRole[]) => void;
+  onOk: (newSets: EmployeeOrDepartmentOfRole[], oldSets: EmployeeOrDepartmentOfRole[]) => void;
   visible: boolean;
   roleID: string | number;
   onCancel: () => void;
@@ -47,15 +47,7 @@ export default function EmployeeOrDepartmentPickerModal({
   }
 
   function onBind() {
-    if (departmentsOrEmployees) {
-      const deletes = data?.departmentsOrEmployees.filter((member) => {
-        return !departmentsOrEmployees.find((m) => m.ownerID === member.ownerID);
-      });
-      const adds = departmentsOrEmployees.filter((member) => {
-        return !data?.departmentsOrEmployees.find((m) => m.ownerID === member.ownerID);
-      });
-      onOk(adds, deletes || []);
-    }
+    departmentsOrEmployees && onOk(departmentsOrEmployees, data?.departmentsOrEmployees || []);
   }
 
   return (
