@@ -1,4 +1,4 @@
-import { IInputField, query, parseUserValidateResult } from '@clients/login/atom';
+import { IInputField, query, parseUserValidateResult } from './atom';
 import Notify from '@lib/notify';
 
 import UserName from './username';

@@ -1,4 +1,4 @@
-import { InputField, IInputField, OnValidateAll, parseValidateAllResult } from '@clients/login/atom';
+import { InputField, IInputField, OnValidateAll, parseValidateAllResult } from './atom';
 
 export default class Password extends InputField {
   toggler: HTMLImageElement;
