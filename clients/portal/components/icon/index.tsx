@@ -1,8 +1,6 @@
 import React from 'react';
 import classnames from 'classnames';
 
-import '@portal/scss/components/_icon.scss';
-
 interface Props extends React.SVGProps<SVGSVGElement> {
   name: string;
   type?: 'dark' | 'primary' | 'light';
