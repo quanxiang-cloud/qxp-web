@@ -12,7 +12,7 @@ function getFileContent(filePath) {
 function getFileFullPath() {
   return new Promise((resolve, reject) => {
     glob(
-      path.join(__dirname, '../clients/portal/components/icon/svgs/*.svg'),
+      path.join(__dirname, '../clients/portal/components/icon/svgs/**/*.svg'),
       (err, files) => {
         if (err) {
           reject(err);
