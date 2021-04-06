@@ -2,7 +2,7 @@ const util = require('util');
 const gulp = require('gulp');
 const webpack = require('webpack');
 
-const generateSprite = require('./scripts/svg-to-sprite');
+const {generateSprite} = require('./scripts/svg-to-sprite');
 
 const promiseExec = util.promisify(require('child_process').exec);
 const { spawn } = require('child_process');
