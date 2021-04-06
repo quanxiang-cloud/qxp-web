@@ -49,7 +49,7 @@ module.exports = function () {
             svgStrs
           );
         }
-      );
+      ).catch(console.error);
     });
   });
 };

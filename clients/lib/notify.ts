@@ -23,6 +23,16 @@ export default class Notify {
         box-shadow: 0px 8px 24px 4px rgba(148, 163, 184, 0.25);
         border-radius: 4px 12px 12px 12px;
         transition: all .3s ease;
+        animation: show 1s ease forwards;
+      }
+
+      @keyframes show {
+        0% {
+          transform: rotateX(90deg) translateX(-50%);
+        }
+        100% {
+          transform: rotateX(0deg) translateX(-50%);
+        }
       }
       
       .notify .message {
@@ -45,8 +55,8 @@ export default class Notify {
       }
 
       .notify.info {
-        background: #E5E5E5;
-        border: 1px solid #375FF3;
+        background: #F0FDF4;;
+        border: 1px solid #16A34A;
       }
     `;
     document.head.appendChild(style);
