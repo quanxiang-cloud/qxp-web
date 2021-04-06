@@ -68,10 +68,10 @@ export default observer( function SelectedList({ className, ownerStore }: ISelec
         }
       >
         <div className="truncate inline-block pr-16">
-          {ownerName && <span className={twCascade('mr-2', {
+          {ownerName && (<span className={twCascade('mr-2', {
             'text-blue-600': others.type === 1,
             'text-yellow-600': others.type === 2,
-          })}>{ownerName}</span>}
+          })}>{ownerName}</span>)}
           {departmentName && (
             <span className={twCascade('text-gray-400 mr-1', {
               'text-yellow-600': others.type === 2,
@@ -95,13 +95,13 @@ export default observer( function SelectedList({ className, ownerStore }: ISelec
         descClassName="text-caption-no-color text-gray-400"
         desc={`(${users.length}个员工${departments.length ? `, ${departments.length}个部门` : ''})`}
         action={
-          <span
+          (<span
             className="cursor-pointer text-body2-no-color text-blue-600 flex
             items-center justify-center"
             onClick={onClear}
           >
             清空
-          </span>
+          </span>)
         }
       />
       <div

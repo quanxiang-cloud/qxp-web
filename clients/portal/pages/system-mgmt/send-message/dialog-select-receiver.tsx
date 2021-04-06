@@ -69,7 +69,7 @@ export default function EmployeeOrDepartmentPickerModal({
       visible={visible}
       maskClosable={false}
       footer={
-        <div className="flex flex-row justify-between items-center">
+        (<div className="flex flex-row justify-between items-center">
           <Button
             className="bg-white hover:bg-gray-100 transition cursor-pointer mr-20 mb-0"
             textClassName="text-gray-600 ml-2"
@@ -86,7 +86,7 @@ export default function EmployeeOrDepartmentPickerModal({
           >
             确定选择
           </Button>
-        </div>
+        </div>)
       }
     >
       <EmployeeOrDepartmentPicker

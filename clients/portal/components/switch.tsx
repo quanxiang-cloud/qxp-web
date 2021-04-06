@@ -48,11 +48,11 @@ export default function Switch({ ...props }: ISwitch) {
       >
         {
           props.options.map((option) => {
-            return <LegoRadioButton
+            return (<LegoRadioButton
               key={option['value']}
               value={option['value']}>
               {option['label']}
-            </LegoRadioButton>;
+            </LegoRadioButton>);
           })
         }
       </LegoRadioGroup>

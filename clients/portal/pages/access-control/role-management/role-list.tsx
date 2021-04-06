@@ -22,11 +22,11 @@ export default function RoleList({ items, onChange }: IRoleList) {
     <div className="pt-20">
       <ItemWithTitleDesc
         itemRender={
-          <div
+          (<div
             className="text-h6-bold pl-20 text-black-900 flex justify-between items-center"
           >
             角色列表
-          </div>
+          </div>)
         }
         desc={`(${items.length} 个)`}
         descClassName="transition ease-linear text-12 text-blueGray-400 text-caption-no-color"

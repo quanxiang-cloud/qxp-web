@@ -86,7 +86,7 @@ export default function MoreMenu<T extends React.Key>({
     <>
       {
         children ? React.cloneElement(children, { ref: reference, onClick: stopPropagation }) :
-          <span ref={reference} onClick={stopPropagation}>
+          (<span ref={reference} onClick={stopPropagation}>
             <Icon
               changeable
               clickable
@@ -94,7 +94,7 @@ export default function MoreMenu<T extends React.Key>({
               style={{ transform: 'rotate(90deg)' }}
               className={className}
             />
-          </span>
+          </span>)
       }
       <Popper
         ref={popperRef}

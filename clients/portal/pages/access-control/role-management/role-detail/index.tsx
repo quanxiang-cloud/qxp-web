@@ -29,9 +29,9 @@ export default function RoleDetail({ role }: IRoleDetail) {
     <>
       <ItemWithTitleDesc
         itemRender={
-          <div className="text-h6-bold text-black-900 flex justify-between items-center">
+          (<div className="text-h6-bold text-black-900 flex justify-between items-center">
             {role?.name}
-          </div>
+          </div>)
         }
         desc={
           role.tag === 'super' ?

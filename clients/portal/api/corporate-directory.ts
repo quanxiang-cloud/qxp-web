@@ -146,7 +146,6 @@ export const getUserDEPInfo = () => {
   }).then(({ data }) => data);
 };
 
-
 /**
  * @returns 管理员分页（根据部门id获取人员列表）
  * @param id true

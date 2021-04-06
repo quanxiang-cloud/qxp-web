@@ -48,7 +48,7 @@ export default function LeaderHandleModal({ user, closeModal }: Props) {
       title={`${title}主管`}
       className='static-modal'
       footer={
-        <div className="flex items-center">
+        (<div className="flex items-center">
           <Button
             icon={<SvgIcon name="close" size={20} className="mr-8" />}
             onClick={closeModal}
@@ -64,7 +64,7 @@ export default function LeaderHandleModal({ user, closeModal }: Props) {
           >
             确定{title}主管
           </Button>
-        </div>
+        </div>)
       }
     >
       <div>

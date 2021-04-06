@@ -100,14 +100,14 @@ export default function AlterRoleFunc({ funcs: functions, tag, lastSaveTime, id 
               key={func.funcTag}
               headerClassName="py-16 px-20 border-b border-gray-200"
               title={
-                <Checkbox
+                (<Checkbox
                   disabled
                   checked={func.has}
                   value={func.funcTag}
                   onChange={updateFuncs(func.funcTag)}
                 >
                   {func.name}
-                </Checkbox>
+                </Checkbox>)
               }
               itemTitleClassName="text-h5"
               // action={

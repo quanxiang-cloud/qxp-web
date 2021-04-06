@@ -77,7 +77,7 @@ export default function AdjustDepModal({ users: userList, closeModal }: Props) {
       className="static-modal"
       onCancel={closeModal}
       footer={
-        <div className="flex items-center">
+        (<div className="flex items-center">
           <Button
             icon={<SvgIcon name="close" size={20} className="mr-8" />}
             onClick={closeModal}
@@ -93,7 +93,7 @@ export default function AdjustDepModal({ users: userList, closeModal }: Props) {
           >
             确定
           </Button>
-        </div>
+        </div>)
       }
     >
       <div className="w-full">

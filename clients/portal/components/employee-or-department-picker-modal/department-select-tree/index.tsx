@@ -8,7 +8,6 @@ import { NodeRenderProps } from '@c/headless-tree/types';
 import { DepartmentNode } from './department-node';
 import DepartmentTreeStore from './store';
 
-
 export interface Props {
   store: DepartmentTreeStore;
   className?: string;

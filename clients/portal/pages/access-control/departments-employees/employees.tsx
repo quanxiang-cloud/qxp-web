@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery } from 'react-query';
-import { Table, Icon, Message } from '@QCFE/lego-ui';
+import { Table, Message } from '@QCFE/lego-ui';
 
 import SvgIcon from '@c/icon';
 import EmptyTips from '@c/empty-tips';
@@ -237,8 +237,8 @@ export default function Employees({
             ) : (
               <>
                 <Button
-                  icon={<SvgIcon type="light" name="create_new_folder"
-                    className="mr-10" size={20} />}
+                  icon={(<SvgIcon type="light" name="create_new_folder"
+                    className="mr-10" size={20} />)}
                   onClick={() => openModal('import_employees')}
                   className="mr-16 bg-gray-700 text-white"
                 >

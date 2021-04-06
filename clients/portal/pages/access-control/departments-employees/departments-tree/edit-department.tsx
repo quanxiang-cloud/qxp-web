@@ -34,7 +34,6 @@ export default function EditDepartment({ department, closeModal }: Props) {
     refetchOnWindowFocus: false,
   });
 
-
   if (isLoading || !depData) {
     return <Loading desc="加载中..." />;
   }
@@ -115,7 +114,7 @@ export default function EditDepartment({ department, closeModal }: Props) {
       className="static-modal"
       onCancel={closeModal}
       footer={
-        <div className="flex items-center">
+        (<div className="flex items-center">
           <Button
             icon={<SvgIcon name="close" size={20} className="mr-8" />}
             className="mr-20"
@@ -131,7 +130,7 @@ export default function EditDepartment({ department, closeModal }: Props) {
           >
             {submitBtnText}
           </Button>
-        </div>
+        </div>)
       }
     >
       <Form layout="vertical" ref={formRef}>

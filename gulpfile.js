@@ -2,7 +2,7 @@ const util = require('util');
 const gulp = require('gulp');
 const webpack = require('webpack');
 
-const generateSprite = require('./scripts/svg-to-sprite');
+const {generateSprite} = require('./scripts/svg-to-sprite');
 
 const promiseExec = util.promisify(require('child_process').exec);
 const { spawn } = require('child_process');
@@ -49,23 +49,19 @@ function buildIcons() {
   return generateSprite();
 }
 
-exports.buildIcons = buildIcons;
-
-exports.webpack = (done) => {
-  runWebpack(webpackConfig({ mode: 'production' })).then(done);
-};
-
-exports.build = gulp.series(
+const buildAssets = gulp.parallel(
   copyImages,
   copyTemplates,
   buildIcons,
 );
 
-exports.default = gulp.series(
-  clean,
-  copyTemplates,
-  copyImages,
-  buildIcons,
+exports.buildIcons = buildIcons;
+exports.buildAssets = buildAssets;
+exports.webpack = (done) => {
+  runWebpack(webpackConfig({ mode: 'production' })).then(done);
+};
+
+exports.default = gulp.parallel(buildAssets,
   () => {
     gulp.watch(
       ['./webpack.config.js'],

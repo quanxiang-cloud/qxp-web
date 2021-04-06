@@ -181,9 +181,9 @@ export default function DepartmentTable({ isSuper, onCancelAssociation, roleID, 
           {...pagination}
           type="simple"
           prefix={
-            <span className="text-12 text-gray-400">
+            (<span className="text-12 text-gray-400">
               {`共 ${pagination.total} 个${type === 1 ? '员工' : '部门'}`}
-            </span>
+            </span>)
           }
           onShowSizeChange={(pageSize) => setPagination((p) => ({ ...p, pageSize }))}
           onChange={(current) => setPagination((p) => ({ ...p, current }))}

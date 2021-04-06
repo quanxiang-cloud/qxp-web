@@ -37,7 +37,6 @@ export default function Pagination({
     }
   }, [current, total, pageSize]);
 
-
   const selectChange = (val: number) => {
     onShowSizeChange && onShowSizeChange(val);
   };

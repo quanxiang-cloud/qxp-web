@@ -67,7 +67,7 @@ export default function HeaderLeft() {
       >
         <div className="header-nav-btn-icon-wrapper">
           <SvgIcon
-            name="application_management"
+            name="dashboard_customize"
             className="group-hover:text-blue-600 header-nav-btn-icon"
             style={style(isAppManagement)}
             size={20}
@@ -90,7 +90,7 @@ export default function HeaderLeft() {
         >
           <div className="header-nav-btn-icon-wrapper">
             <SvgIcon
-              name="access_control"
+              name="admin_panel_settings"
               className="group-hover:text-blue-600 header-nav-btn-icon"
               style={style(isAccess)}
               size={20}

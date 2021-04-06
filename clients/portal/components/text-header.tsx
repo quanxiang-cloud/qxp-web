@@ -37,12 +37,12 @@ export default function TextHeader({
       <ItemWithTitleDesc
         desc={desc}
         itemRender={
-          <div
+          (<div
             className={
               twCascade('text-gray-900 flex justify-between items-center', itemTitleClassName)
             }>
             {title}
-          </div>
+          </div>)
         }
         descClassName={twCascade(
           'transition ease-linear text-12 text-blueGray-400',
