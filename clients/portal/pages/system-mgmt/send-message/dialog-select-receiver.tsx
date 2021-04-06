@@ -13,7 +13,7 @@ import EmployeeOrDepartmentPicker from '@c/employee-or-department-picker-modal/p
 interface Props {
   onOk: (adds: EmployeeOrDepartmentOfRole[], deletes: EmployeeOrDepartmentOfRole[]) => void;
   visible: boolean;
-  roleID: string | number;
+  roleID: string;
   onCancel: () => void;
 }
 

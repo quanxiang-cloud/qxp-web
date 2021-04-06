@@ -1,5 +1,6 @@
 import React from 'react';
 
+// todo refactor
 import { getImgColor } from '../utils';
 import { UserStatus } from '../type';
 

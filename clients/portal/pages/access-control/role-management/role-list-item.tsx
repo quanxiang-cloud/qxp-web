@@ -7,10 +7,10 @@ import ItemWithTitleDesc from '@c/item-with-title-desc';
 
 export interface IRoleListItem {
   name: string;
-  id: string | number;
+  id: string;
   tag: string;
   active?: boolean;
-  onClick?: (id: string | number) => void;
+  onClick?: (id: string) => void;
 }
 
 export default function RoleListItem({ name, active, id, onClick = identity }: IRoleListItem) {

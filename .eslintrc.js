@@ -72,6 +72,7 @@ module.exports = {
       },
     ],
     'newline-per-chained-call': 'off',
+    'no-console': 'warn',
     'no-invalid-this': 0,
     'no-mixed-operators': 'error',
     'no-multiple-empty-lines': [

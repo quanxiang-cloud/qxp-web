@@ -3,7 +3,7 @@ import { useQuery, useQueryClient } from 'react-query';
 import { Modal, Form, Message } from '@QCFE/lego-ui';
 
 import Button from '@c/button';
-import DepartmentPicker from '@portal/components/input/tree-picker-field';
+import DepartmentPicker from '@c/input/tree-picker-field';
 import Loading from '@c/loading';
 import { createDepartment, editDepartment, getERPTree } from '@lib/requests/corporate-directory';
 import { departmentToTreeNode } from '@lib/utils';

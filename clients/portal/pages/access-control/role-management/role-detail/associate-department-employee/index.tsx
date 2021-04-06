@@ -10,7 +10,7 @@ import { updateRoleAssociations, IUpdateRoleAssociations } from '@lib/requests/r
 import DepartmentOrEmployeeTable from './department-or-employee-table';
 
 export interface Props {
-  roleID: string | number;
+  roleID: string;
   isSuper: boolean;
 }
 

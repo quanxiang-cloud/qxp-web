@@ -4,13 +4,12 @@ import { useQuery } from 'react-query';
 import { isEmpty } from 'lodash';
 
 import Error from '@c/error';
+import Loading from '@c/loading';
 import { usePortalGlobalValue } from '@states/portal';
 import { getNestedPropertyToArray } from '@lib/utils';
-
-import Loading from './components/loading';
 import { getUserFuncs, getUserRoles } from '@lib/requests/auth';
 
-import '@assets/scss/index.scss';
+// import '@assets/scss/index.scss';
 
 const Dashboard = React.lazy(() => import('./pages/dashboard'));
 const MetaData = React.lazy(() => import('./pages/metadata'));

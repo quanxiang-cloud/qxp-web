@@ -1,7 +1,22 @@
 import React from 'react';
 
 import ItemWithTitleDesc from './item-with-title-desc';
-import { getImgColor } from '@portal/pages/access-control/departments-employees/utils';
+
+// todo refactor
+const imgBgColors: string[] = ['#6366F1', '#F59E0B', '#10B981', '#F97316',
+  '#A855F7', '#14B8A6', '#EF4444', '#06B6D4'];
+const getImgColor = (text: string, colors = imgBgColors) => {
+  const reg = /^[a-zA-Z]*$/;
+  let _text = text;
+  if (reg.test(text)) {
+    _text = text.toUpperCase();
+  }
+  const num: number = _text.charCodeAt(0) % 8;
+  return {
+    name: _text,
+    color: colors[num],
+  };
+};
 
 export interface Avatar {
   username?: string;

@@ -3,7 +3,6 @@ import { Icon } from '@QCFE/lego-ui';
 
 import More from '@c/more';
 import SvgIcon from '@c/icon';
-import { uuid } from '@lib/utils';
 
 import ResetPasswordModal from './reset-password-modal';
 

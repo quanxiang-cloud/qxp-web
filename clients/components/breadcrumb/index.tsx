@@ -1,2 +1,2 @@
 import Breadcrumb from './breadcrumb';
-export  {Breadcrumb};
+export { Breadcrumb };

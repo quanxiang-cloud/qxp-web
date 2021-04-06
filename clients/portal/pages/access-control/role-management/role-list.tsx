@@ -11,9 +11,9 @@ export interface IRoleList {
 }
 
 export default function RoleList({ items, onChange }: IRoleList) {
-  const [current, setCurrent] = useState(items[0]?.id);
+  const [current, setCurrent] = useState<string>(items[0]?.id);
 
-  const onClick = (id: number | string) => {
+  const onClick = (id: string) => {
     setCurrent(id);
     onChange(id);
   };

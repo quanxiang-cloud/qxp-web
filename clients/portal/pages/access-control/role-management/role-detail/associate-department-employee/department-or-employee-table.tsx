@@ -15,7 +15,7 @@ import { usePortalGlobalValue } from '@states/portal';
 interface Props {
   isSuper: boolean;
   onCancelAssociation: (records: EmployeeOrDepartmentOfRole[]) => void;
-  roleID: string | number;
+  roleID: string;
   type: RoleBindType;
 }
 
@@ -38,7 +38,7 @@ export default function DepartmentTable({ isSuper, onCancelAssociation, roleID, 
       'GET_ROLE_ASSOCIATIONS',
       {
         type,
-        roleID,
+        roleId: roleID,
         page: pagination.current,
         limit: pagination.pageSize,
       },

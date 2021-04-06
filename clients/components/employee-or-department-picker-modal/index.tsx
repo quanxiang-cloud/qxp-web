@@ -12,7 +12,7 @@ import EmployeeOrDepartmentPicker from './picker';
 interface Props {
   onOk: (newSets: EmployeeOrDepartmentOfRole[], oldSets: EmployeeOrDepartmentOfRole[]) => void;
   visible: boolean;
-  roleID: string | number;
+  roleID: string;
   onCancel: () => void;
 }
 
@@ -29,7 +29,7 @@ export default function EmployeeOrDepartmentPickerModal({
     [
       'GET_ROLE_ASSOCIATIONS_ALL',
       {
-        roleID: roleID,
+        roleId: roleID,
       },
     ],
     getRoleAssociations,

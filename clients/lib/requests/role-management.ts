@@ -52,9 +52,9 @@ export const setRoleFunctions = ({ queryKey }: QueryFunctionContext) =>
 // 获取角色关联
 interface GetRoleAssociationParams {
   roleId: string;
-  type?: string;
-  page?: string;
-  limit?: string;
+  type?: RoleBindType;
+  page?: number;
+  limit?: number;
 }
 export async function getRoleAssociations({ queryKey }: QueryFunctionContext<[
   string, GetRoleAssociationParams

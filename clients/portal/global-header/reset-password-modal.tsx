@@ -4,7 +4,7 @@ import { useMutation } from 'react-query';
 
 import Button from '@c/button';
 import { userResetPassword } from '@lib/requests/auth';
-import PassWordField from '@portal/components/input/password-field';
+import PassWordField from '@c/input/password-field';
 import { isPassword } from '@clients/lib/utils';
 
 interface Props {
