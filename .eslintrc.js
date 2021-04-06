@@ -1,4 +1,7 @@
 module.exports = {
+  parser: '@typescript-eslint/parser',
+  extends: ['plugin:react/recommended', 'google', 'plugin:@typescript-eslint/recommended'],
+  plugins: ['react', '@typescript-eslint', 'unused-imports'],
   env: {
     browser: true,
     es2021: true,
@@ -8,8 +11,6 @@ module.exports = {
       version: 'detect',
     },
   },
-  extends: ['plugin:react/recommended', 'google', 'plugin:@typescript-eslint/recommended'],
-  parser: '@typescript-eslint/parser',
   parserOptions: {
     ecmaFeatures: {
       jsx: true,
@@ -17,11 +18,16 @@ module.exports = {
     ecmaVersion: 12,
     sourceType: 'module',
   },
-  plugins: ['react', '@typescript-eslint'],
   globals: {
     window: true,
   },
   rules: {
+    'no-unused-vars': 'off',
+    'unused-imports/no-unused-imports': 'error',
+    'unused-imports/no-unused-vars': [
+      'warn',
+      { vars: 'all', varsIgnorePattern: '^_', args: 'after-used', argsIgnorePattern: '^_' },
+    ],
     'no-multiple-empty-lines': ['warn', { max: 1 }],
     'react/jsx-wrap-multilines': ['warn', {
       declaration: 'parens',

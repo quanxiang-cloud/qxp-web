@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery } from 'react-query';
-import { Table, Icon, Message } from '@QCFE/lego-ui';
+import { Table, Message } from '@QCFE/lego-ui';
 
 import SvgIcon from '@c/icon';
 import EmptyTips from '@c/empty-tips';
