@@ -8,7 +8,7 @@ import Loading from '@c/loading';
 import { departmentToTreeNode } from '@lib/utils';
 import SvgIcon from '@c/icon';
 
-import { createDepartment, editDepartment, getERPTree } from '../corporate-directory';
+import { createDepartment, editDepartment, getERPTree } from '../api';
 
 const { TextField } = Form;
 // const string for form input help text

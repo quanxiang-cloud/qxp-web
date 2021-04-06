@@ -7,7 +7,7 @@ import Authorized from '@clients/components/authorized';
 import SvgIcon from '@c/icon';
 import { NodeRenderProps } from '@c/headless-tree/types';
 
-import { deleteDEP } from '../corporate-directory';
+import { deleteDEP } from '../api';
 import EditDepartment from './edit-department';
 
 const MENUS: MenuItem<string>[] = [

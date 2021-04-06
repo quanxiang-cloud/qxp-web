@@ -7,7 +7,7 @@ import DepartmentPicker from '@c/input/tree-picker-field';
 import Button from '@c/button';
 import { departmentToTreeNode } from '@lib/utils';
 
-import { getERPTree, batchAdjustDep } from '../corporate-directory';
+import { getERPTree, batchAdjustDep } from '../api';
 import { LeaderStatus } from '../type';
 
 type BatchDepParams = {

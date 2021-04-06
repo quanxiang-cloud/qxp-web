@@ -4,7 +4,7 @@ import { Modal, Form, Message } from '@QCFE/lego-ui';
 
 import Button from '@c/button';
 import SvgIcon from '@c/icon';
-import { resetUserPWD } from '../corporate-directory';
+import { resetUserPWD } from '../api';
 
 const { CheckboxGroupField } = Form;
 

@@ -4,7 +4,7 @@ import { useQuery } from 'react-query';
 
 import Button from '@c/button';
 // todo remove this
-import { getRoleAssociations } from '@portal/pages/access-control/role-management/role-management';
+import { getRoleAssociations } from '@portal/pages/access-control/role-management/api';
 import Loading from '@c/loading';
 import Error from '@c/error';
 

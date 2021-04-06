@@ -9,7 +9,7 @@ import Loading from '@c/loading';
 // todo remove this
 import {
   getDepartmentStructure,
-} from '@portal/pages/access-control/role-management/role-management';
+} from '@portal/pages/access-control/role-management/api';
 import Error from '@c/error';
 
 import EmployeeTable from './employee-table';

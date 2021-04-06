@@ -8,7 +8,7 @@ import { usePortalGlobalValue } from '@portal/states/portal';
 
 import RoleList from './role-list';
 import RoleDetail from './role-detail';
-import { getRoles } from './role-management';
+import { getRoles } from './api';
 
 export default function RoleManagement() {
   const { data: roleList = [], isLoading } = useQuery('getRoles', getRoles, {

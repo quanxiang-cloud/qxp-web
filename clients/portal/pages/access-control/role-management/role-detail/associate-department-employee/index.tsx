@@ -5,7 +5,7 @@ import Button from '@c/button';
 import Authorized from '@clients/components/authorized';
 import Switch from '@c/switch';
 import EmployeeOrDepartmentPickerModal from '@c/employee-or-department-picker-modal';
-import { updateRoleAssociations, IUpdateRoleAssociations } from '../../role-management';
+import { updateRoleAssociations, IUpdateRoleAssociations } from '../../api';
 
 import DepartmentOrEmployeeTable from './department-or-employee-table';
 

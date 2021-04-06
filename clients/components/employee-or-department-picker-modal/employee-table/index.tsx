@@ -6,7 +6,7 @@ import Table from '@c/table';
 import EmptyData from '@c/empty-tips';
 import Pagination from '@c/pagination';
 // todo remove this
-import { adminSearchUserList } from '@portal/pages/access-control/role-management/role-management';
+import { adminSearchUserList } from '@portal/pages/access-control/role-management/api';
 import Loading from '@c/loading';
 
 import OwnerStore from '../store';

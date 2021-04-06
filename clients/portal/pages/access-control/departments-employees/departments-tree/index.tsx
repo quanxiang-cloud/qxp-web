@@ -7,7 +7,7 @@ import Loading from '@c/loading';
 
 import Store from './store';
 import DepartmentNode from './department-node';
-import { getERPTree } from '../corporate-directory';
+import { getERPTree } from '../api';
 
 interface Props {
   onSelect?: (department: Department) => void;
