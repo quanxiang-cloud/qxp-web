@@ -1,4 +1,4 @@
-import { InputField } from '@lib/atom';
+import { InputField } from '@clients/login/atom';
 
 export default class Remember extends InputField {
   validate() {

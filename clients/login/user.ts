@@ -1,4 +1,4 @@
-import { IInputField } from '@lib/atom';
+import { IInputField } from '@clients/login/atom';
 
 import Remember from './remember';
 import UserName from './username';

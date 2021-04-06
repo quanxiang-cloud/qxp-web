@@ -1,4 +1,4 @@
-import { IInputField, InputField, query, OnValidateAll, parseValidateAllResult } from '@lib/atom';
+import { IInputField, InputField, query, OnValidateAll, parseValidateAllResult } from '@clients/login/atom';
 import { httpPost } from '@lib/utils';
 import { Response } from '@clients/types/api';
 import UserName from './username';
