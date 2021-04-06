@@ -4,7 +4,6 @@ import { useQuery } from 'react-query';
 import EmptyData from '@c/empty-tips';
 import More from '@c/more';
 import Pagination from '@c/pagination';
-import { IPagination } from '@clients/types/api';
 import { getRoleAssociations } from '../../api';
 import Loading from '@c/loading';
 import Error from '@c/error';

@@ -1,7 +1,4 @@
-import { Message } from '@QCFE/lego-ui';
-
 import { TreeNode } from '@c/headless-tree/types';
-import { Response } from '@clients/types/api';
 
 /**
  * send http post request
@@ -10,7 +7,7 @@ export function httpPost<T>(
   url: string,
   data?: string | null,
   headers?: { [key: string]: string },
-): Promise<Response<T> | never> {
+): Promise<ResponseToBeDelete<T> | never> {
   const req = new XMLHttpRequest();
   req.open('POST', url, true);
   req.setRequestHeader('X-Proxy', 'API');
@@ -25,27 +22,27 @@ export function httpPost<T>(
     req.setRequestHeader('Content-Type', 'application/json; charset=utf-8');
   }
   return new Promise(
-    (resolve: (arg: Response<T>) => void, reject: (...data: unknown[]) => void) => {
+    (resolve: (arg: ResponseToBeDelete<T>) => void, reject: (...data: unknown[]) => void) => {
       req.onload = () => {
         const contentType = req.getResponseHeader('Content-Type');
-        let response: Response<T>;
+        let response: ResponseToBeDelete<T>;
         if (contentType?.startsWith('application/json')) {
           response = JSON.parse(req.responseText);
         } else {
-          response = (req.responseText as unknown) as Response<T>;
+          response = (req.responseText as unknown) as ResponseToBeDelete<T>;
         }
         if (req.status >= 400) {
           if (req.statusText.toLocaleLowerCase() === 'unauthorized' || req.status === 401) {
             window.location.pathname = '/login/password';
             return;
           }
-          Message.error(`${req.statusText}: ${response.msg}`);
+          // Message.error(`${req.statusText}: ${response.msg}`);
           return reject(response.msg);
         }
         resolve(response);
       };
       req.onerror = () => {
-        Message.error(req.responseText);
+        // Message.error(req.responseText);
         reject(req);
       };
       if (data) {

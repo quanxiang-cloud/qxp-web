@@ -1,6 +1,5 @@
 import { IInputField, InputField, query, OnValidateAll, parseValidateAllResult } from './atom';
 import { httpPost } from '@lib/utils';
-import { Response } from '@clients/types/api';
 import UserName from './username';
 
 export default class Captcha extends InputField {
@@ -94,7 +93,7 @@ export default class Captcha extends InputField {
 
     this.callSendApi()
       .then((resp: unknown) => {
-        const res = resp as Response<string>;
+        const res = resp as ResponseToBeDelete<string>;
         if (res.code !== 0) {
           this.showError(res.msg);
         }
