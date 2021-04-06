@@ -49,23 +49,19 @@ function buildIcons() {
   return generateSprite();
 }
 
-exports.buildIcons = buildIcons;
-
-exports.webpack = (done) => {
-  runWebpack(webpackConfig({ mode: 'production' })).then(done);
-};
-
-exports.build = gulp.series(
+const buildAssets = gulp.parallel(
   copyImages,
   copyTemplates,
   buildIcons,
 );
 
-exports.default = gulp.series(
-  clean,
-  copyTemplates,
-  copyImages,
-  buildIcons,
+exports.buildIcons = buildIcons;
+exports.buildAssets = buildAssets;
+exports.webpack = (done) => {
+  runWebpack(webpackConfig({ mode: 'production' })).then(done);
+};
+
+exports.default = gulp.parallel(buildAssets,
   () => {
     gulp.watch(
       ['./webpack.config.js'],
