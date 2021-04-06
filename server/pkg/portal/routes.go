@@ -21,7 +21,7 @@ func loginRequired(h http.HandlerFunc) http.HandlerFunc {
 
 func tokenRequired(h http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		if !handlers.IsUserLogin(r) {
+		if !handlers.IsUserLogin(r) && r.URL.Path != "/api/v1/org/login/code" {
 			w.WriteHeader(http.StatusUnauthorized)
 			return
 		}
