@@ -3,7 +3,6 @@ import { useQuery } from 'react-query';
 
 import EmptyData from '@c/empty-tips';
 import More from '@c/more';
-import { PAGINATION } from '@const/table';
 import Pagination from '@c/pagination';
 import { IPagination } from '@clients/types/api';
 import { getRoleAssociations } from '../../api';
@@ -11,6 +10,12 @@ import Loading from '@c/loading';
 import Error from '@c/error';
 import Table from '@c/table';
 import { usePortalGlobalValue } from '@portal/states_to_be_delete/portal';
+
+export const PAGINATION = {
+  total: 0,
+  current: 1,
+  pageSize: 10,
+};
 
 interface Props {
   isSuper: boolean;
