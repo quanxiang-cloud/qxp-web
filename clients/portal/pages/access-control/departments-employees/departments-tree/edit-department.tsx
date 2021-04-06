@@ -101,8 +101,8 @@ export default function EditDepartment({ department, closeModal }: Props) {
       default:
         Message.error({ content: '发生未知错误，Code:' + submitResponseData.code });
       }
-    }).catch((error: any) => {
-      console.log(error);
+    }).catch(() => {
+      // todo handle error
     });
   };
 

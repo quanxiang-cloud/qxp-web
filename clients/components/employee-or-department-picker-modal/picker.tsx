@@ -6,7 +6,10 @@ import Tab from '@c/tab';
 import TextHeader from '@c/text-header';
 import SearchInput from '@c/form/search-input';
 import Loading from '@c/loading';
-import { getDepartmentStructure } from '@lib/requests/role-management';
+// todo remove this
+import {
+  getDepartmentStructure,
+} from '@portal/pages/access-control/role-management/role-management';
 import Error from '@c/error';
 
 import EmployeeTable from './employee-table';

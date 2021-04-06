@@ -1,6 +1,7 @@
 import { observable, action } from 'mobx';
 
-import { IUser } from '@lib/requests/role-management';
+// todo remove this
+import { IUser } from '@portal/pages/access-control/role-management/role-management';
 
 class EmployeeStore {
   @observable

@@ -3,7 +3,8 @@ import { Modal } from '@QCFE/lego-ui';
 import { useQuery } from 'react-query';
 
 import Button from '@c/button';
-import { getRoleAssociations } from '@lib/requests/role-management';
+// todo remove this
+import { getRoleAssociations } from '@portal/pages/access-control/role-management/role-management';
 import Loading from '@c/loading';
 import Error from '@c/error';
 

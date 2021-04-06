@@ -6,7 +6,7 @@ import More from '@c/more';
 import { PAGINATION } from '@const/table';
 import Pagination from '@c/pagination';
 import { IPagination } from '@clients/types/api';
-import { getRoleAssociations } from '@lib/requests/role-management';
+import { getRoleAssociations } from '../../role-management';
 import Loading from '@c/loading';
 import Error from '@c/error';
 import Table from '@c/table';

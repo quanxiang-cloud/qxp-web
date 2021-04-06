@@ -5,7 +5,8 @@ import { observer } from 'mobx-react';
 import Table from '@c/table';
 import EmptyData from '@c/empty-tips';
 import Pagination from '@c/pagination';
-import { adminSearchUserList } from '@lib/requests/role-management';
+// todo remove this
+import { adminSearchUserList } from '@portal/pages/access-control/role-management/role-management';
 import Loading from '@c/loading';
 
 import OwnerStore from '../store';

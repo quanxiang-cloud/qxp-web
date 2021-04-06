@@ -3,7 +3,7 @@ import React, { useState, useRef } from 'react';
 import Card from '@c/card';
 import { Checkbox } from '@c/checkbox';
 import { countBy, searchByKey, deepClone } from '@lib/utils';
-import { IRoleFunc, IRoleFuncItem } from '@lib/requests/role-management';
+import { IRoleFunc, IRoleFuncItem } from '../role-management';
 
 export interface IAlterRoleFunc {
   funcs: IRoleFunc;
