@@ -47,7 +47,6 @@
       "@portal/*": ["./clients/portal/*"],
       "@clients/*": ["./clients/*"],
       "@c/*": ["./clients/components/*"],
-      "@t/*": ["clients/type/*"],
       "@lib/*": ["./clients/lib/*"],
       "@const/*": ["./clients/portal/const/*"],
     } /* A series of entries which re-map imports to lookup locations relative to the 'baseUrl'. */,
