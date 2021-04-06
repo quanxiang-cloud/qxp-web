@@ -67,7 +67,7 @@ export default function HeaderLeft() {
       >
         <div className="header-nav-btn-icon-wrapper">
           <SvgIcon
-            name="application_management"
+            name="add_task"
             className="group-hover:text-blue-600 header-nav-btn-icon"
             style={style(isAppManagement)}
             size={20}
