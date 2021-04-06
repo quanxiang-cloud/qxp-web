@@ -4,7 +4,7 @@ import { Modal, Message } from '@QCFE/lego-ui';
 
 import SvgIcon from '@c/icon';
 import Button from '@c/button';
-import { updateUserStatus } from '@lib/requests/corporate-directory';
+import { updateUserStatus } from '../corporate-directory';
 
 import { UserStatus } from '../type';
 

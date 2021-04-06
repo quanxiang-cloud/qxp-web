@@ -9,8 +9,8 @@ import Authorized from '@clients/components/authorized';
 import Button from '@c/button';
 import MoreMenu from '@c/more-menu';
 import { usePortalGlobalValue } from '@portal/states/portal';
-import { getUserAdminInfo } from '@lib/requests/corporate-directory';
 
+import { getUserAdminInfo } from './corporate-directory';
 import EditEmployeesModal from './modal/edit-employees-modal';
 import ImportEmployeesModal from './modal/import-employees-modal';
 import ResetPasswordModal from './modal/reset-password-modal';

@@ -4,7 +4,7 @@ import { Modal, Message } from '@QCFE/lego-ui';
 
 import SvgIcon from '@c/icon';
 import Button from '@c/button';
-import { setDEPLeader, cancelDEPLeader, LeaderParams } from '@lib/requests/corporate-directory';
+import { setDEPLeader, cancelDEPLeader, LeaderParams } from '../corporate-directory';
 
 import { LeaderStatus } from '../type';
 

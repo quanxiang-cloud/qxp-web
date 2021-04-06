@@ -6,7 +6,7 @@ import TreePicker from '@c/input/tree-picker-field';
 import SvgIcon from '@c/icon';
 import Button from '@c/button';
 import Loading from '@c/loading';
-import { getERPTree, addDepUser, updateUser } from '@lib/requests/corporate-directory';
+import { getERPTree, addDepUser, updateUser } from '../corporate-directory';
 import { departmentToTreeNode } from '@lib/utils';
 
 import { SpecialSymbolsReg, PhoneReg } from '../utils';
