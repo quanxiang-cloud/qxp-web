@@ -12,7 +12,7 @@ function getFileContent(filePath) {
 function getFileFullPath() {
   return new Promise((resolve, reject) => {
     glob(
-      path.join(__dirname, '../clients/portal/components/icon/svgs/**/*.svg'),
+      path.join(__dirname, '../clients/portal/components/icon/svgs/*.svg'),
       (err, files) => {
         if (err) {
           reject(err);
@@ -36,8 +36,8 @@ module.exports = function () {
         path.basename(filePath).replace('.svg', '')
       );
       const iconID = (n) => iconNames[n];
-      svgSpreact(svgStrArr, { tidy: true, processId: iconID, svgoConfig }).then(
-        ({ defs }) => {
+      svgSpreact(svgStrArr, { tidy: true, processId: iconID, svgoConfig })
+        .then(({ defs }) => {
           // replace #475569 by currentColor in order to be styled by css
           // todo define #475569 as constant?
           const svgStrs = defs
@@ -47,8 +47,8 @@ module.exports = function () {
             path.join(__dirname, '../dist/images/sprite.svg'),
             svgStrs
           );
-        }
-      ).catch(console.error);
+        })
+        .catch(console.error);
     });
   });
 };
