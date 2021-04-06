@@ -46,7 +46,7 @@ export default function AccountHandleModal(
       className="static-modal"
       onCancel={closeModal}
       footer={
-        <div className="flex items-center">
+        (<div className="flex items-center">
           <Button
             icon={<SvgIcon name="close" size={20} className="mr-8" />}
             onClick={closeModal}
@@ -62,7 +62,7 @@ export default function AccountHandleModal(
           >
             {titleText}账号
           </Button>
-        </div>
+        </div>)
       }
     >
       {status === UserStatus.delete && (

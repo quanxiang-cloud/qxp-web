@@ -67,7 +67,7 @@ export default function ResetPasswordModal({ visible, onCancel }: Props) {
       onCancel={onCancel}
       visible={visible}
       footer={
-        <div className="flex flex-row justify-between items-center">
+        (<div className="flex flex-row justify-between items-center">
           <Button
             className="bg-white hover:bg-gray-100 transition cursor-pointer mr-20 mb-0"
             textClassName="text-gray-600 ml-2"
@@ -90,7 +90,7 @@ export default function ResetPasswordModal({ visible, onCancel }: Props) {
           >
            确定重置
           </Button>
-        </div>
+        </div>)
       }
     >
       <form className="w-full">

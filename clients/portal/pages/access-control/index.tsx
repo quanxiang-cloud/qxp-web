@@ -25,14 +25,14 @@ export default function Index() {
             title="访问控制"
             desc="对企业通讯录、角色权限进行统一管理"
             itemRender={
-              <div
+              (<div
                 className="bg-gradient-green-to-top-right
                 icon-border-radius w-48 h-48 flex-initial
                 flex items-center justify-center
                 "
               >
                 <img src="/dist/images/person.svg" alt="calendar" />
-              </div>
+              </div>)
             }
             titleClassName="text-h4"
             descClassName="text-caption"

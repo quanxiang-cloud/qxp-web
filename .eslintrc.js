@@ -22,6 +22,15 @@ module.exports = {
     window: true,
   },
   rules: {
+    'react/jsx-wrap-multilines': ['warn', {
+      declaration: 'parens',
+      assignment: 'parens',
+      return: 'parens',
+      arrow: 'parens',
+      condition: 'parens',
+      logical: 'parens',
+      prop: 'parens',
+    }],
     'react/display-name': 'off',
     '@typescript-eslint/explicit-module-boundary-types': 'off',
     '@typescript-eslint/ban-ts-comment': 'off',

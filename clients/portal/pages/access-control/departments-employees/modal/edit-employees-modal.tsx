@@ -107,7 +107,7 @@ export default function EditEmployeesModal(
       onCancel={closeModal}
       className="static-modal"
       footer={
-        <div className="flex items-center">
+        (<div className="flex items-center">
           <Button
             icon={<SvgIcon name="close" size={20} className="mr-8" />}
             className="mr-20"
@@ -122,7 +122,7 @@ export default function EditEmployeesModal(
           >
             确定{titleText}
           </Button>
-        </div>
+        </div>)
       }
     >
       <Form layout="vertical" ref={formRef}>
