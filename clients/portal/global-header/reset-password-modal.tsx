@@ -3,7 +3,7 @@ import { Modal, Message } from '@QCFE/lego-ui';
 import { useMutation } from 'react-query';
 
 import Button from '@c/button';
-import { userResetPassword } from '@lib/requests/auth';
+import { userResetPassword } from '@clients/lib/api/auth';
 import PassWordField from '@c/input/password-field';
 import { isPassword } from '@clients/lib/utils';
 

@@ -1,5 +1,5 @@
 import { createGlobalState } from '@portal/states_to_be_delete/create-global-state';
-import { IRole } from '@lib/requests/auth';
+import { IRole } from '@clients/lib/api/auth';
 
 export interface IUsePortalGlobalValue {
   authority: string[];
