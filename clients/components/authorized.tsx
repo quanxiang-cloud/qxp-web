@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { usePortalGlobalValue } from '../portal/states/portal';
+import { usePortalGlobalValue } from '../portal/states_to_be_delete/portal';
 
 export interface IAuthorized {
   authority: string[];

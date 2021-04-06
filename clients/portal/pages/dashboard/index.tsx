@@ -6,7 +6,7 @@ import Card from '@c/card';
 import List from '@c/list';
 import ItemWithTitleDesc from '@c/item-with-title-desc';
 import { uuid } from '@lib/utils';
-import { usePortalGlobalValue } from '@portal/states/portal';
+import { usePortalGlobalValue } from '@portal/states_to_be_delete/portal';
 
 import './index.scss';
 

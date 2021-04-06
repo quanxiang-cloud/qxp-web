@@ -3,7 +3,7 @@ import { Switch, Route } from 'react-router-dom';
 
 import ItemWithTitleDesc from '@c/item-with-title-desc';
 import Error from '@c/error';
-import { usePortalGlobalValue } from '@portal/states/portal';
+import { usePortalGlobalValue } from '@portal/states_to_be_delete/portal';
 
 import ListMenu from './list-menu';
 import RoleManagement from './role-management';

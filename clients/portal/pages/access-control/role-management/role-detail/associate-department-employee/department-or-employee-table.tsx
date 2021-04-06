@@ -10,7 +10,7 @@ import { getRoleAssociations } from '../../api';
 import Loading from '@c/loading';
 import Error from '@c/error';
 import Table from '@c/table';
-import { usePortalGlobalValue } from '@portal/states/portal';
+import { usePortalGlobalValue } from '@portal/states_to_be_delete/portal';
 
 interface Props {
   isSuper: boolean;

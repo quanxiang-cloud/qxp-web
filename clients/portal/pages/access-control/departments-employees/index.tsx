@@ -4,7 +4,7 @@ import { Message } from '@QCFE/lego-ui';
 import TextHeader from '@c/text-header';
 import Error from '@c/error';
 import Search from '@c/search';
-import { usePortalGlobalValue } from '@portal/states/portal';
+import { usePortalGlobalValue } from '@portal/states_to_be_delete/portal';
 
 import DepartmentsTree from './departments-tree';
 import Employees from './employees';

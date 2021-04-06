@@ -8,7 +8,7 @@ import Pagination from '@c/pagination';
 import Authorized from '@clients/components/authorized';
 import Button from '@c/button';
 import MoreMenu from '@c/more-menu';
-import { usePortalGlobalValue } from '@portal/states/portal';
+import { usePortalGlobalValue } from '@portal/states_to_be_delete/portal';
 
 import { getUserAdminInfo } from './api';
 import EditEmployeesModal from './modal/edit-employees-modal';
