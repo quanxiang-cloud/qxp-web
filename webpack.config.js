@@ -8,7 +8,7 @@ const WebpackBar = require('webpackbar');
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 
 // env: 'production' | 'development';
-module.exports = function(env) {
+module.exports = function (env) {
   const NODE_ENV = process.env.NODE_ENV || env.mode || 'production';
 
   return {
@@ -19,7 +19,6 @@ module.exports = function(env) {
 
     entry: {
       portal: './clients/portal/index.tsx',
-      register: './clients/register/index.ts',
       'login-by-password': './clients/login/password.ts',
       'login-by-captcha': './clients/login/captcha.ts',
       'reset-password': './clients/login/reset-password',
@@ -47,8 +46,8 @@ module.exports = function(env) {
           exclude: /node_modules/,
           use: [
             MiniCssExtractPlugin.loader,
-            { loader: 'css-loader' },
-            { loader: 'postcss-loader' },
+            { loader: 'css-loader', options: { url: false } },
+            { loader: 'postcss-loader', },
             { loader: 'sass-loader' },
           ],
         },
@@ -56,8 +55,8 @@ module.exports = function(env) {
           test: /\.css$/,
           use: [
             MiniCssExtractPlugin.loader,
-            { loader: 'css-loader' },
-            { loader: 'postcss-loader' },
+            { loader: 'css-loader', options: { url: false } },
+            { loader: 'postcss-loader', },
           ],
         },
         {
@@ -117,12 +116,6 @@ module.exports = function(env) {
         chunks: ['login-by-captcha'],
         template: './clients/templates/login-by-captcha.html',
         filename: `${__dirname}/dist/templates/login-by-captcha.html`,
-      }),
-      new HtmlWebpackPlugin({
-        inject: false,
-        chunks: ['register'],
-        template: './clients/templates/register.html',
-        filename: `${__dirname}/dist/templates/register.html`,
       }),
       new HtmlWebpackPlugin({
         inject: false,

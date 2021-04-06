@@ -1,8 +1,4 @@
-import '@QCFE/types';
-// @ts-ignore
-import '@qcfe/types';
-
-interface Response<T> {
+interface ResponseToBeDelete<T> {
   code: number;
   msg?: string;
   data?: T;

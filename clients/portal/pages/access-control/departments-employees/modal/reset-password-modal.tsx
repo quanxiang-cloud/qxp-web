@@ -4,7 +4,7 @@ import { Modal, Form, Message } from '@QCFE/lego-ui';
 
 import Button from '@c/button';
 import SvgIcon from '@c/icon';
-import { resetUserPWD } from '@net/corporate-directory';
+import { resetUserPWD } from '../api';
 
 const { CheckboxGroupField } = Form;
 
@@ -68,7 +68,7 @@ export default function ResetPasswordModal({
       className="static-modal"
       onCancel={closeModal}
       footer={
-        <div className="flex items-center">
+        (<div className="flex items-center">
           <Button
             icon={<SvgIcon name="close" size={20} className="mr-8" />}
             onClick={closeModal}
@@ -86,7 +86,7 @@ export default function ResetPasswordModal({
           >
             发送重置密码
           </Button>
-        </div>
+        </div>)
       }
     >
       <div className="w-full flex flex-col">

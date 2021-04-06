@@ -1,6 +1,5 @@
-import { IInputField, query } from '@lib/atom';
+import { IInputField, query, parseValidateAllResult, parseUserValidateResult } from './atom';
 
-import Page from './page';
 import User, { IUser } from './user';
 import Password from './password-field';
 
@@ -51,8 +50,18 @@ class ResetUser extends User {
         isValid = false;
       }
       (this.errorElement as HTMLElement).textContent = this.errMessage as string;
-      if (checkAll && (this.onValidateAll as Function)(this, isValid)) {
-        this.action.classList.remove('disabled');
+
+      if (checkAll) {
+        const onValidateAllResult: boolean | (boolean | Promise<boolean>)[] = this.onValidateAll(
+          this, isValid
+        );
+        if (onValidateAllResult instanceof Array) {
+          parseValidateAllResult(onValidateAllResult, this.errorElement).then((isAllValid) => {
+            isAllValid && this.action.classList.remove('disabled');
+          });
+        } else if (onValidateAllResult) {
+          this.action.classList.remove('disabled');
+        }
       }
       return isValid;
     };
@@ -60,25 +69,26 @@ class ResetUser extends User {
     this.checkPassword.validate(true);
   }
 
-  onValidateAll(context: Password, isValid: boolean): boolean {
-    if (!this.oldPassword || !this.newPassword || !this.checkPassword) {
+  onValidateAll(context: Password, isValid: boolean): boolean | (boolean | Promise<boolean>)[] {
+    if (!this.oldPassword || !this.newPassword || !this.checkPassword || !isValid) {
       return false;
     }
     return (
       [this.oldPassword, this.newPassword, this.checkPassword]
         .filter((i) => i !== context)
-        .every((i) => i.validate()) && isValid
+        .map((i) => i.validate())
     );
   }
 
-  validate(): boolean {
-    return (
-      this.oldPassword.validate() && this.newPassword.validate() && this.checkPassword.validate()
+  validate(): boolean | Promise<boolean> {
+    return parseUserValidateResult(
+      this.oldPassword.validate(),
+      this.newPassword.validate(),
+      this.checkPassword.validate(),
     );
   }
 }
 
-new Page();
 new ResetUser({
   oldPassword: {
     name: 'reset:password:oldPassword',

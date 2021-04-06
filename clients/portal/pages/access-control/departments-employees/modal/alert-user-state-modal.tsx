@@ -4,7 +4,7 @@ import { Modal, Message } from '@QCFE/lego-ui';
 
 import SvgIcon from '@c/icon';
 import Button from '@c/button';
-import { updateUserStatus } from '@net/corporate-directory';
+import { updateUserStatus } from '../api';
 
 import { UserStatus } from '../type';
 
@@ -31,12 +31,26 @@ export default function AccountHandleModal(
     },
   });
 
-  const titleText = status !== UserStatus.normal ?
-    (status === UserStatus.disable ? '禁用' : '删除') :
-    '启用';
+  const titleText: string = handleTitle(status);
 
   function handleSubmit() {
     handleMutation.mutate({ id: user.id, status: status });
+  }
+
+  function handleTitle(status: UserStatus): string {
+    let title = '';
+    switch (status) {
+    case UserStatus.disable:
+      title = '禁用';
+      break;
+    case UserStatus.delete:
+      title = '删除';
+      break;
+    default:
+      title = '启用';
+      break;
+    }
+    return title;
   }
 
   return (
@@ -46,7 +60,7 @@ export default function AccountHandleModal(
       className="static-modal"
       onCancel={closeModal}
       footer={
-        <div className="flex items-center">
+        (<div className="flex items-center">
           <Button
             icon={<SvgIcon name="close" size={20} className="mr-8" />}
             onClick={closeModal}
@@ -62,7 +76,7 @@ export default function AccountHandleModal(
           >
             {titleText}账号
           </Button>
-        </div>
+        </div>)
       }
     >
       {status === UserStatus.delete && (

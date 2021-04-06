@@ -2,7 +2,7 @@ const util = require('util');
 const gulp = require('gulp');
 const webpack = require('webpack');
 
-const generateSprite = require('./scripts/svg-to-sprite');
+const { generateSprite } = require('./scripts/svg-to-sprite');
 
 const promiseExec = util.promisify(require('child_process').exec);
 const { spawn } = require('child_process');
@@ -49,34 +49,19 @@ function buildIcons() {
   return generateSprite();
 }
 
-exports.buildIcons = buildIcons;
+const buildAssets = gulp.parallel(
+  copyImages,
+  copyTemplates,
+  buildIcons,
+);
 
+exports.buildIcons = buildIcons;
+exports.buildAssets = buildAssets;
 exports.webpack = (done) => {
   runWebpack(webpackConfig({ mode: 'production' })).then(done);
 };
 
-exports.build = gulp.series(
-  copyImages,
-  copyTemplates,
-  buildIcons,
-  // (done) => {
-  //   runWebpack(webpackConfig({ mode: 'production' })).then(done);
-  // },
-  // (done) => {
-  //   return promiseExec('rm -rf docker-files/nginx/dist docker-files/portal/dist', done);
-  // },
-  // () => gulp.src('./dist/**/*').pipe(gulp.dest('./docker-files/nginx/dist')),
-  // () =>
-  //   gulp
-  //     .src('./dist/templates/*')
-  //     .pipe(gulp.dest('./docker-files/portal/dist/templates'))
-);
-
-exports.default = gulp.series(
-  clean,
-  copyTemplates,
-  copyImages,
-  buildIcons,
+exports.default = gulp.parallel(buildAssets,
   () => {
     gulp.watch(
       ['./webpack.config.js'],

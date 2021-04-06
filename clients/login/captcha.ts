@@ -1,8 +1,8 @@
-import { IInputField, query } from '@lib/atom';
+import { IInputField, query, parseUserValidateResult } from './atom';
+import Notify from '@lib/notify';
 
 import UserName from './username';
 import Captcha from './captcha-field';
-import Page from './page';
 import User, { IUser } from './user';
 
 import './style.scss';
@@ -22,25 +22,29 @@ class CaptchaUser extends User {
     }
   }
 
-  onValidateAll(context: UserName | Captcha, isValid: boolean): boolean {
-    if (!this.username || !this.captcha) {
+  onValidateAll(
+    context: UserName | Captcha,
+    isValid: boolean
+  ): boolean | (boolean | Promise<boolean>)[] {
+    if (!this.username || !this.captcha || !isValid) {
       return false;
     }
     return (
-      [this.username, this.captcha].filter((i) => i !== context).every((i) => i.validate()) &&
-      isValid
+      [this.username, this.captcha].filter((i) => i !== context).map((i) => i.validate())
     );
   }
 
-  validate(): boolean {
+  validate(): boolean | Promise<boolean> {
     if (this.username) {
-      return this.username.validate() && this.captcha.validate();
+      return parseUserValidateResult(
+        this.username.validate(),
+        this.captcha.validate(),
+      );
     }
     return this.captcha.validate();
   }
 }
 
-new Page();
 new CaptchaUser({
   username: {
     name: 'login:captcha:username',
@@ -56,3 +60,5 @@ new CaptchaUser({
   },
   action: query<HTMLButtonElement>('.btn-login'),
 });
+
+window.notifier = new Notify(query<HTMLElement>('body main'));

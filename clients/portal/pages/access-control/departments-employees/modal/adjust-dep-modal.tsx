@@ -3,11 +3,11 @@ import { useQuery, useMutation, useQueryClient } from 'react-query';
 import { Modal, Form, Loading, Message } from '@QCFE/lego-ui';
 
 import SvgIcon from '@c/icon';
-import DepartmentPicker from '@portal/components/input/tree-picker-field';
+import DepartmentPicker from '@c/input/tree-picker-field';
 import Button from '@c/button';
 import { departmentToTreeNode } from '@lib/utils';
-import { getERPTree, batchAdjustDep } from '@net/corporate-directory';
 
+import { getERPTree, batchAdjustDep } from '../api';
 import { LeaderStatus } from '../type';
 
 type BatchDepParams = {
@@ -77,7 +77,7 @@ export default function AdjustDepModal({ users: userList, closeModal }: Props) {
       className="static-modal"
       onCancel={closeModal}
       footer={
-        <div className="flex items-center">
+        (<div className="flex items-center">
           <Button
             icon={<SvgIcon name="close" size={20} className="mr-8" />}
             onClick={closeModal}
@@ -93,7 +93,7 @@ export default function AdjustDepModal({ users: userList, closeModal }: Props) {
           >
             确定
           </Button>
-        </div>
+        </div>)
       }
     >
       <div className="w-full">

@@ -1,0 +1,25 @@
+@import './reset.scss';
+@import "./atom.scss";
+
+.content-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+button {
+  border-radius: 8px 2px 8px 8px;
+}
+
+input.error {
+  border-color: #dc2626;
+}
+
+::placeholder {
+  opacity: .6;
+  color: #939EA9;
+}
+
+a {
+  text-decoration: none;
+}

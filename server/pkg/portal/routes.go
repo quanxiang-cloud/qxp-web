@@ -35,7 +35,7 @@ func GetRouter() http.Handler {
 	r := mux.NewRouter()
 
 	r.Headers("X-Proxy", "API").HandlerFunc(tokenRequired(handlers.ProxyAPIHandler))
-	// r.Path("/register").Methods("GET").HandlerFunc(handlers.RegisterHandler)
+	r.Headers("X-Proxy", "API-NO-AUTH").HandlerFunc(handlers.ProxyAPIHandler)
 	r.Path("/login/{type}").Methods("GET").HandlerFunc(handlers.HandleLogin)
 	r.Path("/login/{type}").Methods("POST").HandlerFunc(handlers.HandleLoginSubmit)
 	r.Path("/logout").Methods("POST").HandlerFunc(handlers.LogoutHandler)

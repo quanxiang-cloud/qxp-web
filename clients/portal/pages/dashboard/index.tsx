@@ -6,7 +6,7 @@ import Card from '@c/card';
 import List from '@c/list';
 import ItemWithTitleDesc from '@c/item-with-title-desc';
 import { uuid } from '@lib/utils';
-import { usePortalGlobalValue } from '@states/portal';
+import { usePortalGlobalValue } from '@portal/states_to_be_delete/portal';
 
 import './index.scss';
 
@@ -38,7 +38,7 @@ export default function Dashboard() {
               <a className="transition ease-linear text-underline">前往应用市场</a>
             }
             content={
-              <List
+              (<List
                 className="flex-row"
                 itemClassName="px-20 py-16 mr-20 bg-white rounded-12"
                 items={[
@@ -47,14 +47,14 @@ export default function Dashboard() {
                     title="会议室预订"
                     desc="已上线"
                     itemRender={
-                      <div
+                      (<div
                         className={twCascade(
                           'w-44 h-44 p-8 flex items-center justify-center icon-border-radius',
                           'bg-gradient-green-to-top-right rounded-lg rounded-tr-none',
                         )}
                       >
                         <img src="/dist/images/calendar.svg" alt="calendar" />
-                      </div>
+                      </div>)
                     }
                     titleClassName="text-h6"
                     descClassName="text-caption"
@@ -65,14 +65,14 @@ export default function Dashboard() {
                     titleClassName="text-h6"
                     desc="未上线"
                     itemRender={
-                      <div
+                      (<div
                         className={twCascade(
                           'w-44 h-44 p-8 flex items-center justify-center icon-border-radius',
                           'bg-gradient-yellow-to-top-right rounded-lg rounded-tr-none',
                         )}
                       >
                         <img src="/dist/images/accounts.svg" alt="accounts" />
-                      </div>
+                      </div>)
                     }
                     descClassName="text-caption"
                   />,
@@ -81,18 +81,18 @@ export default function Dashboard() {
                     title="新建应用"
                     titleClassName="text-button"
                     itemRender={
-                      <div
+                      (<div
                         className={twCascade(
                           'w-44 h-44 p-8 flex items-center justify-center icon-border-radius',
                           'bg-gradient-blue-to-top-right rounded-lg rounded-tr-none',
                         )}
                       >
                         <img src="/dist/images/add.svg" alt="add" />
-                      </div>
+                      </div>)
                     }
                   />,
                 ]}
-              />
+              />)
             }
           />
           <div className="flex justify-between items-center">
@@ -104,7 +104,7 @@ export default function Dashboard() {
                 <a className="transition ease-linear text-black-50 text-underline-no-color">查看全部</a>
               }
               content={
-                <List
+                (<List
                   className="flex-col flex-1"
                   itemClassName="px-20 rounded-12 mb-20 bg-white"
                   items={[
@@ -113,9 +113,9 @@ export default function Dashboard() {
                       title="我发起的"
                       desc="12"
                       itemRender={
-                        <div
+                        (<div
                           className="w-16 h-16 bg-gradient-green-to-top-right icon-border-radius"
-                        />
+                        />)
                       }
                       textDirection="row"
                       className="h-56"
@@ -128,12 +128,12 @@ export default function Dashboard() {
                       title="我处理的"
                       desc="3"
                       itemRender={
-                        <div
+                        (<div
                           className={twCascade(
                             'w-16 h-16 bg-gradient-yellow-to-top-right icon-border-radius',
                             'rounded rounded-tr-none',
                           )}
-                        />
+                        />)
                       }
                       textDirection="row"
                       className="h-56"
@@ -146,12 +146,12 @@ export default function Dashboard() {
                       title="抄送我的"
                       desc="3"
                       itemRender={
-                        <div
+                        (<div
                           className={twCascade(
                             'w-16 h-16 bg-gradient-blue-to-top-right icon-border-radius',
                             'rounded rounded-tr-none',
                           )}
-                        />
+                        />)
                       }
                       textDirection="row"
                       className="h-56"
@@ -160,7 +160,7 @@ export default function Dashboard() {
                       descClassName="text-16 font-bold"
                     />,
                   ]}
-                />
+                />)
               }
             />
             <div className="w-20 h-full"></div>
@@ -172,7 +172,7 @@ export default function Dashboard() {
                 <a className="text-underline-no-color text-black-50 transition ease-linear">查看全部</a>
               }
               content={
-                <div className="w-full h-full flex items-center justify-center">
+                (<div className="w-full h-full flex items-center justify-center">
                   <div className="flex flex-col items-center">
                     <img
                       className="w-48 h-48 mb-8"
@@ -181,7 +181,7 @@ export default function Dashboard() {
                     />
                     <span className="text-blue-400 text-caption-no-color">无未读消息</span>
                   </div>
-                </div>
+                </div>)
               }
             />
           </div>

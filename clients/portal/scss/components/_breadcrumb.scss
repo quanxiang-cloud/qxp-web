@@ -1,0 +1,48 @@
+@layer components {
+  .qxp-breadcrumb {
+    @apply flex text-14 select-none items-stretch font-normal leading-24 text-left tracking-normal overflow-hidden whitespace-nowrap ;
+    color: #94A3B8;
+    ul {
+      @apply flex items-center flex-1 justify-start ;
+    }
+    .svg-icon{
+      @apply m-0 ;
+    }
+    .qxp-breadcrumb-item {
+      @apply flex items-center ;
+      a {
+        color: #94A3B8;
+        &:hover {
+          @apply underline ; 
+          color: #475569;
+        }
+        &:active {
+          @apply underline;
+          color: #0F172A;
+        }
+      }
+      .icon {
+        @apply m-0 ;
+      }
+      &:before {
+        @apply hidden ;  
+      }
+      .qxp-breadcrumb-link {
+        @apply inline-flex items-center justify-center p-0 ;
+      }
+      .qxp-breadcrumb-separator {
+        @apply px-8 py-0 ;
+        color: #94A3B8;
+        .icon {
+          @apply m-0 ;
+        }
+      }
+    }
+    .qxp-breadcrumb-item:last-child{
+      color: #0F172A;
+      .qxp-breadcrumb-separator{
+        @apply hidden ;
+      }
+    }
+  }
+}

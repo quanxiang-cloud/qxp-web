@@ -4,19 +4,16 @@ import { useQuery } from 'react-query';
 import { isEmpty } from 'lodash';
 
 import Error from '@c/error';
-import { usePortalGlobalValue } from '@states/portal';
+import Loading from '@c/loading';
+import { usePortalGlobalValue } from '@portal/states_to_be_delete/portal';
 import { getNestedPropertyToArray } from '@lib/utils';
-
-import Loading from './components/loading';
-import { getUserFuncs, getUserRoles } from './api/auth';
-
-import '@assets/scss/index.scss';
+import { getUserFuncs, getUserRoles } from '@clients/lib/api/auth';
 
 const Dashboard = React.lazy(() => import('./pages/dashboard'));
 const MetaData = React.lazy(() => import('./pages/metadata'));
 const AccessControl = React.lazy(() => import('./pages/access-control'));
 
-const { userInfo } = (window as unknown as QxpWindow).__global || {};
+const { userInfo } = window.__global || {};
 if (userInfo && !isEmpty(userInfo)) {
   userInfo.depIds = getNestedPropertyToArray<string>(userInfo?.dep, 'id', 'child');
 }
@@ -54,6 +51,7 @@ export default function Routes(): JSX.Element {
       },
     }));
   }, [funcs, data?.roles]);
+
 
   if (funcsIsLoading || rolesIsLoading) {
     return <Loading desc="加载中..." className="w-screen h-screen" />;

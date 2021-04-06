@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { QueryClient, QueryClientProvider } from 'react-query';
 
-import { AppContextProvider } from '@clients/common/providers/context';
+import { AppContextProvider } from '@clients/_legacy/providers/context';
 
 import App from './application';
 

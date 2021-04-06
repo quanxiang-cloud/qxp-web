@@ -1,12 +1,12 @@
-import React, { useState, createRef } from 'react';
+import React, { createRef } from 'react';
 import { useQuery, useMutation, useQueryClient } from 'react-query';
 import { Modal, Form, Message } from '@QCFE/lego-ui';
 
-import TreePicker from '@portal/components/input/tree-picker-field';
+import TreePicker from '@c/input/tree-picker-field';
 import SvgIcon from '@c/icon';
 import Button from '@c/button';
 import Loading from '@c/loading';
-import { getERPTree, addDepUser, updateUser } from '@net/corporate-directory';
+import { getERPTree, addDepUser, updateUser } from '../api';
 import { departmentToTreeNode } from '@lib/utils';
 
 import { SpecialSymbolsReg, PhoneReg } from '../utils';
@@ -107,7 +107,7 @@ export default function EditEmployeesModal(
       onCancel={closeModal}
       className="static-modal"
       footer={
-        <div className="flex items-center">
+        (<div className="flex items-center">
           <Button
             icon={<SvgIcon name="close" size={20} className="mr-8" />}
             className="mr-20"
@@ -122,7 +122,7 @@ export default function EditEmployeesModal(
           >
             确定{titleText}
           </Button>
-        </div>
+        </div>)
       }
     >
       <Form layout="vertical" ref={formRef}>

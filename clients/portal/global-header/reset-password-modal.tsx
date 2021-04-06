@@ -3,8 +3,8 @@ import { Modal, Message } from '@QCFE/lego-ui';
 import { useMutation } from 'react-query';
 
 import Button from '@c/button';
-import { userResetPassword } from '@net/auth';
-import PassWordField from '@portal/components/input/password-field';
+import { userResetPassword } from '@clients/lib/api/auth';
+import PassWordField from '@c/input/password-field';
 import { isPassword } from '@clients/lib/utils';
 
 interface Props {
@@ -67,7 +67,7 @@ export default function ResetPasswordModal({ visible, onCancel }: Props) {
       onCancel={onCancel}
       visible={visible}
       footer={
-        <div className="flex flex-row justify-between items-center">
+        (<div className="flex flex-row justify-between items-center">
           <Button
             className="bg-white hover:bg-gray-100 transition cursor-pointer mr-20 mb-0"
             textClassName="text-gray-600 ml-2"
@@ -90,7 +90,7 @@ export default function ResetPasswordModal({ visible, onCancel }: Props) {
           >
            确定重置
           </Button>
-        </div>
+        </div>)
       }
     >
       <form className="w-full">

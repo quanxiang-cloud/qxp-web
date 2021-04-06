@@ -9,10 +9,6 @@ import (
 
 // ResetPasswordHandler render reset password page
 func ResetPasswordHandler(w http.ResponseWriter, r *http.Request) {
-	if !IsUserLogin(r) {
-		http.Redirect(w, r, "/login/password", http.StatusFound)
-		return
-	}
 	redirectURL := r.URL.Query().Get("redirectUrl")
 	renderTemplate(w, "reset-password.html", map[string]interface{}{
 		"redirectUrl": redirectURL,

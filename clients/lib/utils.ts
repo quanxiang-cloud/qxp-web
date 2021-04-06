@@ -1,7 +1,4 @@
-import { Message } from '@QCFE/lego-ui';
-
 import { TreeNode } from '@c/headless-tree/types';
-import { Response } from '@clients/types/api';
 
 /**
  * send http post request
@@ -10,7 +7,7 @@ export function httpPost<T>(
   url: string,
   data?: string | null,
   headers?: { [key: string]: string },
-): Promise<Response<T> | never> {
+): Promise<ResponseToBeDelete<T> | never> {
   const req = new XMLHttpRequest();
   req.open('POST', url, true);
   req.setRequestHeader('X-Proxy', 'API');
@@ -25,27 +22,27 @@ export function httpPost<T>(
     req.setRequestHeader('Content-Type', 'application/json; charset=utf-8');
   }
   return new Promise(
-    (resolve: (arg: Response<T>) => void, reject: (...data: unknown[]) => void) => {
+    (resolve: (arg: ResponseToBeDelete<T>) => void, reject: (...data: unknown[]) => void) => {
       req.onload = () => {
         const contentType = req.getResponseHeader('Content-Type');
-        let response: Response<T>;
+        let response: ResponseToBeDelete<T>;
         if (contentType?.startsWith('application/json')) {
           response = JSON.parse(req.responseText);
         } else {
-          response = (req.responseText as unknown) as Response<T>;
+          response = (req.responseText as unknown) as ResponseToBeDelete<T>;
         }
         if (req.status >= 400) {
           if (req.statusText.toLocaleLowerCase() === 'unauthorized' || req.status === 401) {
-            window.location.search = '/login/password';
+            window.location.pathname = '/login/password';
             return;
           }
-          Message.error(`${req.statusText}: ${response.msg}`);
+          // Message.error(`${req.statusText}: ${response.msg}`);
           return reject(response.msg);
         }
         resolve(response);
       };
       req.onerror = () => {
-        Message.error(req.responseText);
+        // Message.error(req.responseText);
         reject(req);
       };
       if (data) {
@@ -107,9 +104,9 @@ export const either = <S>(pred1: (...args: S[]) => boolean, pred2: (...args: S[]
 ) => pred1(...args) || pred2(...args);
 export const isVoid = either<null | undefined>(isUndefined, isNull);
 export const identity = <T>(i: T) => i;
-const curry = (fn: Function, arity = fn.length, ...args: []): Function => {
-  return arity <= args.length ? fn(...args) : curry.bind(null, fn, arity, ...args);
-};
+// const curry = (fn: Function, arity = fn.length, ...args: []): Function => {
+//   return arity <= args.length ? fn(...args) : curry.bind(null, fn, arity, ...args);
+// };
 
 /**
  * @param {string} attr 需要被计数的属性
@@ -277,4 +274,8 @@ export const last = <T>(arg: T[]) => {
 
 export function isPassword(pwd: string) {
   return /^(?=.*\d)(?=.*[a-zA-Z])(?=.*[~!@#$%^&*])[\da-zA-Z~!@#$%^&*]{8,}$/.test(pwd);
+}
+
+export function isPromise(a: unknown) {
+  return a instanceof Promise;
 }

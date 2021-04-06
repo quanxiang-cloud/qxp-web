@@ -4,7 +4,7 @@ import { Message } from '@QCFE/lego-ui';
 import TextHeader from '@c/text-header';
 import Error from '@c/error';
 import Search from '@c/search';
-import { usePortalGlobalValue } from '@states/portal';
+import { usePortalGlobalValue } from '@portal/states_to_be_delete/portal';
 
 import DepartmentsTree from './departments-tree';
 import Employees from './employees';
@@ -19,7 +19,6 @@ export default function DepartmentsEmployees() {
   useEffect(() => {
     document.title = '访问控制 - 企业通讯录';
   }, []);
-
 
   function handleKeDown(e: React.KeyboardEvent): void {
     if (e.key !== 'Enter') {
@@ -58,16 +57,14 @@ export default function DepartmentsEmployees() {
   return (
     <div className="h-full flex flex-col flex-grow overflow-hidden">
       <TextHeader
-        title="企业通讯录"
+        title='企业通讯录'
         desc="管理账号，如添加、编辑、删除账号等，同时还能关联每个账号的角色；用户可用账号名称或邮件登录全象云平台。"
         action="📌 如何管理通讯录？"
         className="bg-gray-1000 px-20 py-16 header-background-image"
         itemTitleClassName="text-h5"
       />
       <div className="h-full flex flex-col flex-grow overflow-hidden">
-        <div
-          className='w-208 ml-20 mt-20'
-        >
+        <div className='w-208 ml-20 mt-20'>
           <Search
             placeholder="搜索员工名称"
             value={inputValue}
@@ -76,8 +73,8 @@ export default function DepartmentsEmployees() {
             onBlur={handleOnBlur}
           />
         </div>
-        <div className="mt-20 h-full mt-4 flex items-start overflow-hidden">
-          <div className="w-259 h-full flex-col flex border-r">
+        <div className="h-full mt-20 flex overflow-hidden">
+          <div className="h-full flex flex-col border-r">
             <div className="text-h6 ml-20 mb-8">组织架构</div>
             <DepartmentsTree onSelect={handleSelectDep} />
           </div>
