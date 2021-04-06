@@ -34,7 +34,7 @@ function AppList({ isLoading, appList, openCreatedModal }: Props) {
   if (appList.length === 0) {
     return (
       <div className='app-no-data mt-58'>
-        <img src={require('@assets/images/no-data-tips.svg')} />
+        <img src='/dist/images/no-data-tips.svg' />
         <span>无应用数据。点击
           <span onClick={openCreatedModal} className='text-btn'>新建应用</span>
           ，开始构建应用

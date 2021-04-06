@@ -1,8 +1,9 @@
 import React, { useEffect } from 'react';
 import classnames from 'classnames';
+import { Loading } from '@QCFE/lego-ui';
 import {
   useTable,
-  Column,
+  Column as RColumn,
   useRowSelect,
   Hooks,
   TableOptions,
@@ -16,9 +17,12 @@ import computeColumnsStickyPosition from './sticky-position';
 
 import './index.scss';
 
+export type Column = RColumn & { fixed?: boolean, width?: number };
+
 interface Props<T extends Record<string, unknown>> {
   data: Array<T>;
-  columns: Column<T>[];
+  columns: Column[];
+  emptyText?: string;
   className?: string;
   showCheckBox?: boolean;
   style?: React.CSSProperties;
@@ -26,7 +30,6 @@ interface Props<T extends Record<string, unknown>> {
   total?: number;
   limit?: number;
   loading?: boolean;
-  hasFilterParams?: boolean;
   onResetQuery?: () => void;
   onSelectChange?: (selected: Array<Column>) => void;
   onPageChange?: (pageParam: { offset: number; limit: number }) => void;
@@ -59,7 +62,7 @@ export default function Table<T extends Record<string, unknown>>({
   total,
   limit,
   loading,
-  hasFilterParams,
+  emptyText,
   onSelectChange,
   showCheckBox = false,
   onResetQuery,
@@ -68,19 +71,14 @@ export default function Table<T extends Record<string, unknown>>({
   const tableParameter = [];
   if (showCheckBox) {
     tableParameter.push(useRowSelect, (hooks: Hooks) => {
-      hooks.visibleColumns.push((columns: Column[]) => [
-        // Let's make a column for selection
+      hooks.visibleColumns.push((columns: RColumn[]) => [
         {
           id: 'selection',
-          // The header can use the table's getToggleAllRowsSelectedProps method
-          // to render a checkbox
           Header: ({ getToggleAllRowsSelectedProps }: any) => (
             <div>
               <IndeterminateCheckbox {...getToggleAllRowsSelectedProps()} />
             </div>
           ),
-          // The cell can use the individual row's getToggleRowSelectedProps method
-          // to the render a checkbox
           Cell: ({ row }: any) => (
             <div>
               <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} />
@@ -178,19 +176,15 @@ export default function Table<T extends Record<string, unknown>>({
           </tbody>
         </table>
       </div>
+      {loading ? (
+        <div className='table-loading-box'>
+          <Loading />
+        </div>) : null}
       {
         !loading && !rows.length ? (
           <div className="table-empty">
-            <Icon name="exclamation" size={32} />
-            <p className="table-empty__text">无数据或符合条件的数据</p>
-            {
-              hasFilterParams ? (
-                <p
-                  className="table-empty__reset"
-                  onClick={(): void => onResetQuery && onResetQuery()}
-                >重置筛选条件</p>
-              ) : null
-            }
+            <img src='/dist/images/links.svg' alt='noData' />
+            <p className="table-empty__text">{emptyText || '无数据或符合条件的数据'}</p>
           </div>
         ) : null
       }
@@ -203,3 +197,4 @@ export default function Table<T extends Record<string, unknown>>({
     </div>
   );
 }
+

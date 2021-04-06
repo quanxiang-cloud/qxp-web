@@ -47,3 +47,27 @@ export const fetchAppDetails = (id: string) => {
     data: { id },
   });
 };
+
+export const appAddAdmin = (data: any) => {
+  return request({
+    url: '/api/v1/app-center/addAdmin',
+    method: 'post',
+    data,
+  });
+};
+
+export const fetchAppAdminUsers = (id: string) => {
+  return request({
+    url: '/api/v1/app-center/adminUsers',
+    method: 'post',
+    data: { id },
+  });
+};
+
+export const delAppAdminUsers = (data: any) => {
+  return request({
+    url: '/api/v1/app-center/delAdmin',
+    method: 'post',
+    data,
+  });
+};

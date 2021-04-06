@@ -35,7 +35,7 @@ export default (opt: APIRequestParam): AxiosPromise => {
         reject(response);
       }
 
-      resolve(response.data.data);
+      resolve(response.data);
     }).catch((error: AxiosError) => {
       axios.isCancel(error);
       const { response } = error;

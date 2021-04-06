@@ -17,3 +17,18 @@
     border-color: #E2E8F0;
   }
 }
+
+.table-empty {
+  padding: 30px;
+  text-align: center;
+
+  img {
+    display: inline-block;
+    margin-bottom: 8px;
+  }
+}
+
+.table-loading-box {
+  text-align: center;
+  padding: 30px;
+}

@@ -70,8 +70,8 @@ class AppListStore {
   fetchAppList = () => {
     this.isListLoading = true;
     return fetchAppList().then((res) => {
-      this.appList = res.data;
-      this.appRenderList = res.data;
+      this.appList = res.data.data;
+      this.appRenderList = res.data.data;
       this.isListLoading = false;
     }).catch(() => {
       this.isListLoading = false;
@@ -86,7 +86,7 @@ class AppListStore {
   @action
   createdApp = (appInfo: AppInfo) => {
     return createdApp(appInfo).then((res) => {
-      const newApp = { ...appInfo, ...res };
+      const newApp = { ...appInfo, ...res.data };
       this.appList = [newApp, ...this.appList];
       this.appRenderList = [newApp, ...this.appRenderList];
     });

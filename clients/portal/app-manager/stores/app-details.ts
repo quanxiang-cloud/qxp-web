@@ -33,7 +33,7 @@ class AppDetailsStore {
   fetchAppDetails = (appId: string) => {
     this.loading = true;
     return fetchAppDetails(appId).then((res) => {
-      this.appDetails = res;
+      this.appDetails = res.data;
       this.loading = false;
     }).catch(() => {
       this.loading = false;
