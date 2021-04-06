@@ -16,7 +16,7 @@ const Dashboard = React.lazy(() => import('./pages/dashboard'));
 const MetaData = React.lazy(() => import('./pages/metadata'));
 const AccessControl = React.lazy(() => import('./pages/access-control'));
 
-const { userInfo } = (window as unknown as QxpWindow).__global || {};
+const { userInfo } = window.__global || {};
 if (userInfo && !isEmpty(userInfo)) {
   userInfo.depIds = getNestedPropertyToArray<string>(userInfo?.dep, 'id', 'child');
 }

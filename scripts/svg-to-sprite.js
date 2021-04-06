@@ -36,20 +36,19 @@ module.exports = function () {
         path.basename(filePath).replace('.svg', '')
       );
       const iconID = (n) => iconNames[n];
-      svgSpreact(svgStrArr, { tidy: true, processId: iconID, svgoConfig }).then(
-        ({ defs }) => {
+      svgSpreact(svgStrArr, { tidy: true, processId: iconID, svgoConfig })
+        .then(({ defs }) => {
           // replace #475569 by currentColor in order to be styled by css
           // todo define #475569 as constant?
           const svgStrs = defs
             .replace(/currentColor/g, 'none')
             .replace(/#475569/g, 'currentColor');
           fs.writeFileSync(
-            // todo minify
             path.join(__dirname, '../dist/images/sprite.svg'),
             svgStrs
           );
-        }
-      );
+        })
+        .catch(console.error);
     });
   });
 };

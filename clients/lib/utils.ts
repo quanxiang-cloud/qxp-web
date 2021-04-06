@@ -36,7 +36,7 @@ export function httpPost<T>(
         }
         if (req.status >= 400) {
           if (req.statusText.toLocaleLowerCase() === 'unauthorized' || req.status === 401) {
-            window.location.search = '/login/password';
+            window.location.pathname = '/login/password';
             return;
           }
           Message.error(`${req.statusText}: ${response.msg}`);
@@ -277,4 +277,8 @@ export const last = <T>(arg: T[]) => {
 
 export function isPassword(pwd: string) {
   return /^(?=.*\d)(?=.*[a-zA-Z])(?=.*[~!@#$%^&*])[\da-zA-Z~!@#$%^&*]{8,}$/.test(pwd);
+}
+
+export function isPromise(a: unknown) {
+  return a instanceof Promise;
 }

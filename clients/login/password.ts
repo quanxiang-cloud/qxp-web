@@ -1,9 +1,9 @@
-import { IInputField, query } from '@lib/atom';
+import { IInputField, query, parseUserValidateResult } from '@lib/atom';
+import Notify from '@lib/notify';
 
 import UserName from './username';
 import Password from './password-field';
 import User, { IUser } from './user';
-import Page from './page';
 
 import './style.scss';
 
@@ -19,30 +19,35 @@ class PasswordUser extends User {
     this.password = new Password(password, action, this.onValidateAll.bind(this));
   }
 
-  onValidateAll(context: UserName | Password, isValid: boolean): boolean {
-    if (!this.username || !this.password) {
+  onValidateAll(
+    context: UserName | Password,
+    isValid: boolean
+  ): boolean | (boolean | Promise<boolean>)[] {
+    if (!this.username || !this.password || !isValid) {
       return false;
     }
     return (
-      [this.username, this.password].filter((i) => i !== context).every((i) => i.validate()) &&
-      isValid
+      [this.username, this.password].filter((i) => i !== context).map((i) => i.validate())
     );
   }
 
-  validate(): boolean {
+  validate(): boolean | Promise<boolean> {
     if (this.username) {
-      return this.username.validate() && this.password.validate();
+      return parseUserValidateResult(
+        this.username.validate(),
+        this.password.validate(),
+      );
     }
     return this.password.validate();
   }
 }
 
-new Page();
 new PasswordUser({
   username: {
     name: 'login:password:username',
     inputElement: query<HTMLInputElement>('input[name="username"]'),
     errorElement: query<HTMLElement>('.username-hints'),
+    asyncValidate: true,
   },
   password: {
     name: 'login:password:password',
@@ -51,3 +56,5 @@ new PasswordUser({
   },
   action: query<HTMLButtonElement>('.btn-login'),
 });
+
+window.notifier = new Notify(query<HTMLElement>('body main'));

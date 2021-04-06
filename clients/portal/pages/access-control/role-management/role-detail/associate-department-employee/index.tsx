@@ -4,9 +4,9 @@ import { useMutation, useQueryClient } from 'react-query';
 import Button from '@c/button';
 import Authorized from '@cc/authorized';
 import Switch from '@c/switch';
+import EmployeeOrDepartmentPickerModal from '@c/employee-or-department-picker-modal';
 import { updateRoleAssociations, IUpdateRoleAssociations } from '@net/role-management';
 
-import EmployeeOrDepartmentPickerModal from './employee-or-department-picker-modal';
 import DepartmentOrEmployeeTable from './department-or-employee-table';
 
 export interface Props {
@@ -29,7 +29,16 @@ export default function AssociateDepartmentEmployee({ roleID, isSuper }: Props) 
     }
   );
 
-  function onAssociate(adds: EmployeeOrDepartmentOfRole[], deletes: EmployeeOrDepartmentOfRole[]) {
+  function onAssociate(
+    newSets: EmployeeOrDepartmentOfRole[],
+    oldSets: EmployeeOrDepartmentOfRole[]
+  ) {
+    const deletes = oldSets.filter((member) => {
+      return !newSets.find((m) => m.ownerID === member.ownerID);
+    });
+    const adds = newSets.filter((member) => {
+      return !oldSets.find((m) => m.ownerID === member.ownerID);
+    });
     mutation.mutate({
       roleID: roleID as string,
       add: adds.map(({ type, ownerID }) => ({ type, ownerID })),
