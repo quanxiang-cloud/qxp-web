@@ -1,3 +1,5 @@
+// todo notify should be export as utils method, not class.
+// recommend usage: notify.success(message, options), notify.error(message, options) ...
 export default class Notify {
   private duration?: number;
   private element: HTMLElement;
@@ -34,7 +36,7 @@ export default class Notify {
           transform: rotateX(0deg) translateX(-50%);
         }
       }
-      
+
       .notify .message {
         font-size: 14px;
         line-height: 22px;
