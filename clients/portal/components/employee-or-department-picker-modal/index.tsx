@@ -39,13 +39,6 @@ export default function EmployeeOrDepartmentPickerModal({
     },
   );
 
-  if (isLoading) {
-    return <Loading desc="加载中..." />;
-  }
-  if (isError) {
-    return <Error desc="something wrong" />;
-  }
-
   function onBind() {
     departmentsOrEmployees && onOk(departmentsOrEmployees, data?.departmentsOrEmployees || []);
   }
@@ -77,11 +70,19 @@ export default function EmployeeOrDepartmentPickerModal({
         </div>
       }
     >
-      <EmployeeOrDepartmentPicker
-        departments={data?.departments}
-        employees={data?.employees}
-        onChange={setDepartmentsOrEmployees}
-      />
+      {isLoading && (
+        <Loading desc="加载中..." />
+      )}
+      {isError && (
+        <Error desc="something wrong" />
+      )}
+      {!isLoading && !isError && (
+        <EmployeeOrDepartmentPicker
+          departments={data?.departments}
+          employees={data?.employees}
+          onChange={setDepartmentsOrEmployees}
+        />
+      )}
     </Modal>
   );
 }
