@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { twCascade } from '@mariusmarais/tailwind-cascade';
 
 import SvgIcon from '@c/icon';
-import Authorized from '@cc/authorized';
+import Authorized from '@clients/components/authorized';
 
 export default function HeaderLeft() {
   const location = useLocation();

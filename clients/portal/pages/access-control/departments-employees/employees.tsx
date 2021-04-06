@@ -5,7 +5,7 @@ import { Table, Message } from '@QCFE/lego-ui';
 import SvgIcon from '@c/icon';
 import EmptyTips from '@c/empty-tips';
 import Pagination from '@c/pagination';
-import Authorized from '@cc/authorized';
+import Authorized from '@clients/components/authorized';
 import Button from '@c/button';
 import MoreMenu from '@c/more-menu';
 import { usePortalGlobalValue } from '@states/portal';
