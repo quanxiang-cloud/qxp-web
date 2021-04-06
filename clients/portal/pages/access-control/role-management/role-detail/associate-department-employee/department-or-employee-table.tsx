@@ -10,7 +10,7 @@ import { getRoleAssociations } from '@lib/requests/role-management';
 import Loading from '@c/loading';
 import Error from '@c/error';
 import Table from '@c/table';
-import { usePortalGlobalValue } from '@states/portal';
+import { usePortalGlobalValue } from '@portal/states/portal';
 
 interface Props {
   isSuper: boolean;

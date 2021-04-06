@@ -4,7 +4,7 @@ import { useQuery } from 'react-query';
 
 import Card from '@c/card';
 import Error from '@c/error';
-import { usePortalGlobalValue } from '@states/portal';
+import { usePortalGlobalValue } from '@portal/states/portal';
 
 import RoleList from './role-list';
 import RoleDetail from './role-detail';

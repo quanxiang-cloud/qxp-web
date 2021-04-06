@@ -1,4 +1,4 @@
-import { createGlobalState } from '@lib/create-global-state';
+import { createGlobalState } from '@portal/states/create-global-state';
 import { IRole } from '@lib/requests/auth';
 
 export interface IUsePortalGlobalValue {

@@ -3,7 +3,7 @@ import { NavLink } from 'react-router-dom';
 import useCss from 'react-use/lib/useCss';
 import { twCascade } from '@mariusmarais/tailwind-cascade';
 
-import { usePortalGlobalValue } from '@states/portal';
+import { usePortalGlobalValue } from '@portal/states/portal';
 
 type MenuItem = {
   id: string;

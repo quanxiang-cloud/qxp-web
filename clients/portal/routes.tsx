@@ -5,7 +5,7 @@ import { isEmpty } from 'lodash';
 
 import Error from '@c/error';
 import Loading from '@c/loading';
-import { usePortalGlobalValue } from '@states/portal';
+import { usePortalGlobalValue } from '@portal/states/portal';
 import { getNestedPropertyToArray } from '@lib/utils';
 import { getUserFuncs, getUserRoles } from '@lib/requests/auth';
 
