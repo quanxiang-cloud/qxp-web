@@ -38,6 +38,7 @@ export default function HeaderMenu() {
         <More
           items={[
             <span
+              key="reset_password"
               onClick={() => setOpenResetPasswordModal(true)}
               className="cursor-pointer flex items-center h-36
               pl-16 hover:bg-blue-100 transition whitespace-nowrap text-button
@@ -46,6 +47,7 @@ export default function HeaderMenu() {
               重置密码
             </span>,
             <form
+              key="logout"
               action="/logout"
               method="post"
               className="w-full h-full"
