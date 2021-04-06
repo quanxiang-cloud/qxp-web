@@ -48,7 +48,6 @@
       "@portal/*": ["./clients/portal/*"],
       "@clients/*": ["./clients/*"],
       "@c/*": ["./clients/components/*"],
-      "@p/*": ["./clients/portal/pages/*"],
       "@t/*": ["clients/type/*"],
       "@lib/*": ["./clients/lib/*"],
       "@const/*": ["./clients/portal/const/*"],

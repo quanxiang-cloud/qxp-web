@@ -4,8 +4,8 @@ import { Switch, Route } from 'react-router-dom';
 import ItemWithTitleDesc from '@c/item-with-title-desc';
 import Error from '@c/error';
 import { usePortalGlobalValue } from '@portal/states/portal';
-import ListMenu from '@p/access-control/list-menu';
 
+import ListMenu from './list-menu';
 import RoleManagement from './role-management';
 import DepartmentsEmployees from './departments-employees';
 

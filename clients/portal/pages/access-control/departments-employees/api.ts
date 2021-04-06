@@ -1,7 +1,7 @@
 import { httpPost, httpFile } from '@lib/utils';
 
-import { FormValues } from '@p/access-control/departments-employees/modal/edit-employees-modal';
-import { UserStatus } from '@p/access-control/departments-employees/type';
+import { FormValues } from './modal/edit-employees-modal';
+import { UserStatus } from './type';
 
 interface TreeNode {
   id: string;
