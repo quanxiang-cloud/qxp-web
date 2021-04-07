@@ -52,10 +52,9 @@ new CaptchaUser({
     errorElement: query<HTMLElement>('.username-hints'),
   },
   captcha: {
-    name: 'login:captcha:captcha',
     inputElement: query<HTMLInputElement>('input[name="captcha"]'),
     errorElement: query<HTMLInputElement>('.captcha-hints'),
-    actionElement: query<HTMLButtonElement>('button.send'),
+    actionElement: query<HTMLButtonElement>('.send'),
     url: '/api/v1/org/login/code',
   },
   action: query<HTMLButtonElement>('.btn-login'),

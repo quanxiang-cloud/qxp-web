@@ -90,6 +90,10 @@
   border-radius: 3px;
 }
 
+.br-12 {
+  border-radius: 12px;
+}
+
 .text-center {
   text-align: center;
 }
@@ -122,6 +126,10 @@
   margin-bottom: 16px;
 }
 
+.mb-8 {
+  margin-bottom: 8px;
+}
+
 .mr-8 {
   margin-right: 8px;
 }
@@ -144,6 +152,10 @@
 
 .w360 {
   width: 360px;
+}
+
+.w540 {
+  width: 540px;
 }
 
 .w16 {
@@ -198,6 +210,15 @@
 
 .pr-36 {
   padding-right: 36px;
+}
+
+.pr-4 {
+  padding-right: 4px;
+}
+
+.py-1 {
+  padding-top: 1px;
+  padding-bottom: 1px;
 }
 
 .px-12 {
@@ -309,6 +330,24 @@
   margin-top: 16px;
 }
 
+.mt-17 {
+  margin-top: 16px;
+}
+
 .underline {
   text-decoration: underline;
+}
+
+.bg-white {
+  background-color: #fff;
+}
+
+.px-90 {
+  padding-left: 90px;
+  padding-right: 90px;
+}
+
+.py-64 {
+  padding-top: 64px;
+  padding-bottom: 64px;
 }

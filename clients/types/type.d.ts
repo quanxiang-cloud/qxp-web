@@ -12,6 +12,7 @@ interface UserInfo {
   useStatus?: number;
   isDEPLeader?: number;
   depName?: string;
+  status?: number;
 }
 
 type DeptInfo = {

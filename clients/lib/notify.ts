@@ -3,13 +3,13 @@
 export default class Notify {
   private duration?: number;
   private element: HTMLElement;
-  private elements: Element[];
+  private notifyInstances: Element[];
 
   constructor(ele: HTMLElement, duration = 3000) {
     this.duration = duration;
     this.element = ele;
     this.element.style.position = 'relative';
-    this.elements = [];
+    this.notifyInstances = [];
     const style = document.createElement('style');
     style.innerHTML = `
       .notify {
@@ -73,17 +73,17 @@ export default class Notify {
     } else if (e instanceof HTMLElement) {
       curNotifyElement = e;
     } else {
-      curNotifyElement = this.elements[0] as HTMLElement;
+      curNotifyElement = this.notifyInstances[0] as HTMLElement;
     }
-    const curNotifyElementIndex = this.elements.findIndex(
+    const curNotifyElementIndex = this.notifyInstances.findIndex(
       (element) => element === curNotifyElement
     );
 
-    const elements = this.elements.slice(curNotifyElementIndex + 1) as HTMLElement[];
-    this.elements.splice(curNotifyElementIndex, 1);
+    const notifyInstances = this.notifyInstances.slice(curNotifyElementIndex + 1) as HTMLElement[];
+    this.notifyInstances.splice(curNotifyElementIndex, 1);
     curNotifyElement.parentElement?.removeChild(curNotifyElement);
 
-    elements.forEach((element) => {
+    notifyInstances.forEach((element) => {
       const top = parseInt(element.style.top);
       if (top - 60 >= 80) {
         element.style.top = `${top - 60}px`;
@@ -103,10 +103,10 @@ export default class Notify {
   private notify(type: string, message: string) {
     this.element.insertAdjacentHTML('beforeend', this.getTemplate(type, message));
     const element = this.element.lastElementChild as HTMLElement;
-    if (element && this.elements.length) {
-      element.style.top = `${(this.elements.length * 60) + 80}px`;
+    if (element && this.notifyInstances.length) {
+      element.style.top = `${(this.notifyInstances.length * 60) + 80}px`;
     }
-    element && this.elements.push(element);
+    element && this.notifyInstances.push(element);
     setTimeout(() => this.close(element), this.duration);
   }
 

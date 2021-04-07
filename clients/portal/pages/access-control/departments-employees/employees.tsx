@@ -220,16 +220,18 @@ export default function Employees({
             {selectedUserIds.length > 0 ? (
               <>
                 <Button
-                  className="bg-black-900"
-                  textClassName="text-white"
-                  icon={<SvgIcon name="device_hub" type="light" size={20} className="mr-10" />}
+                  className="bg-black-900 text-white"
+                  modifier="primary"
+                  iconName="device_hub"
+                  iconSize={20}
                   onClick={() => openModal('adjust_dep')}
                 >
                 调整部门
                 </Button>
                 <div className="w-16"></div>
                 <Button
-                  icon={<SvgIcon name="password" className="mr-10" size={20} />}
+                  iconName="password"
+                  iconSize={20}
                   onClick={() => openModal('reset_password')}
                 >
                 重置密码
@@ -238,15 +240,16 @@ export default function Employees({
             ) : (
               <>
                 <Button
-                  icon={(<SvgIcon type="light" name="create_new_folder"
-                    className="mr-10" size={20} />)}
+                  iconName="create_new_folder"
+                  iconSize={20}
                   onClick={() => openModal('import_employees')}
                   className="mr-16 bg-gray-700 text-white"
                 >
                 excel 批量导入
                 </Button>
                 <Button
-                  icon={<SvgIcon name="add" className="mr-10" size={20} />}
+                  iconName="add"
+                  iconSize={20}
                   onClick={() => handleUserInfo(initUserInfo)}
                   className="mr-16"
                 >

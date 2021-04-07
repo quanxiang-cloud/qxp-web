@@ -29,17 +29,17 @@ function Breadcrumb({
       return child;
     }
 
-    return cloneElement(child, {
+    return cloneElement(child as React.ReactElement, {
       separator,
       key: idx,
     });
   });
 
   // Breadcrumb Children Render function :
-  // if have segments array ,and segmentRender function should be reruen a custom render
+  // if have segments array ,and segmentRender function should be return a custom render
   // else return link with a tag,
-  // as segments come in , the children inside <Breadcurmb>  won't be rendered
-  // without segments , must need the BreadCurmbItem inside the Breadcrumb ,follow the lego-ui
+  // as segments come in , the children inside <Breadcrumb>  won't be rendered
+  // without segments , must need the BreadCrumbItem inside the Breadcrumb ,follow the lego-ui
   const breadcrumbChildrenRender = () => {
     if (segments) {
       if (segmentRender) {

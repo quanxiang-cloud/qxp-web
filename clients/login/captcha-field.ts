@@ -7,6 +7,7 @@ export default class Captcha extends InputField {
   username?: UserName;
   url!: string;
   errorId?: number;
+  isSending?: boolean;
 
   constructor(
     captcha: IInputField,
@@ -89,8 +90,9 @@ export default class Captcha extends InputField {
       element.classList.remove('disabled');
       counter = 60;
       element.innerText = '获取验证码';
+      this.isSending = false;
     };
-
+    this.isSending = true;
     this.callSendApi()
       .then((resp: unknown) => {
         const res = resp as ResponseToBeDelete<string>;
@@ -102,7 +104,7 @@ export default class Captcha extends InputField {
     element.classList.add('disabled');
     tid = setInterval(() => {
       counter -= 1;
-      element.innerText = `${counter}`;
+      element.innerText = `${counter} 后重新获取`;
       if (counter <= 0) {
         resetVars();
       }
@@ -110,6 +112,9 @@ export default class Captcha extends InputField {
   }
 
   onSendCode(e: Event) {
+    if (this.isSending) {
+      return;
+    }
     e.preventDefault();
     const validateResult = this.username?.validate();
     if (validateResult === true) {

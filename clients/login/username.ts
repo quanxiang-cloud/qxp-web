@@ -5,7 +5,7 @@ export default class UserName extends InputField {
     let isValid = true;
     if (!isEmail(this.value as string) && !isMobile(this.value as string)) {
       if (this.value !== '') {
-        this.errMessage = '请输入有效的邮箱或手机号';
+        this.errMessage = '请输入正确格式的邮箱或手机号';
         isValid = false;
       }
       this.action.classList.add('disabled');

@@ -3,7 +3,6 @@ import { useQuery, useMutation, useQueryClient } from 'react-query';
 import { Modal, Form, Message } from '@QCFE/lego-ui';
 
 import TreePicker from '@c/input/tree-picker-field';
-import SvgIcon from '@c/icon';
 import Button from '@c/button';
 import Loading from '@c/loading';
 import { getERPTree, addDepUser, updateUser } from '../api';
@@ -109,15 +108,16 @@ export default function EditEmployeesModal(
       footer={
         (<div className="flex items-center">
           <Button
-            icon={<SvgIcon name="close" size={20} className="mr-8" />}
+            iconName="close"
+            iconSize={20}
             className="mr-20"
             onClick={closeModal}>
             取消
           </Button>
           <Button
-            className="bg-black-900"
-            textClassName="text-white"
-            icon={<SvgIcon name="check" type="light" size={20} className="mr-8" />}
+            className="bg-black-900 text-white"
+            iconName="check"
+            iconSize={20}
             onClick={handleSubmit}
           >
             确定{titleText}
