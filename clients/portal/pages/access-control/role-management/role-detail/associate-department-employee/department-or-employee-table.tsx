@@ -3,19 +3,23 @@ import { useQuery } from 'react-query';
 
 import EmptyData from '@c/empty-tips';
 import More from '@c/more';
-import { PAGINATION } from '@const/table';
 import Pagination from '@c/pagination';
-import { IPagination } from '@clients/types/api';
-import { getRoleAssociations } from '@net/role-management';
+import { getRoleAssociations } from '../../api';
 import Loading from '@c/loading';
 import Error from '@c/error';
 import Table from '@c/table';
-import { usePortalGlobalValue } from '@states/portal';
+import { usePortalGlobalValue } from '@portal/states_to_be_delete/portal';
+
+export const PAGINATION = {
+  total: 0,
+  current: 1,
+  pageSize: 10,
+};
 
 interface Props {
   isSuper: boolean;
   onCancelAssociation: (records: EmployeeOrDepartmentOfRole[]) => void;
-  roleID: string | number;
+  roleID: string;
   type: RoleBindType;
 }
 
@@ -23,7 +27,7 @@ export default function DepartmentTable({ isSuper, onCancelAssociation, roleID, 
   const [selectedKeys, setSelectedKeys] = useState<string[]>([]);
   const [pagination, setPagination] = useState<IPagination>(PAGINATION);
   const [{ userInfo }] = usePortalGlobalValue();
-  const [_, setMemberIDMap] = useState<
+  const [, setMemberIDMap] = useState<
     Map<string, EmployeeOrDepartmentOfRole>
   >();
   const [members, setMembers] = useState<EmployeeOrDepartmentOfRole[]>([]);
@@ -38,7 +42,7 @@ export default function DepartmentTable({ isSuper, onCancelAssociation, roleID, 
       'GET_ROLE_ASSOCIATIONS',
       {
         type,
-        roleID,
+        roleId: roleID,
         page: pagination.current,
         limit: pagination.pageSize,
       },

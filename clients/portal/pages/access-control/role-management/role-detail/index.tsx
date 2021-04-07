@@ -4,7 +4,7 @@ import { useQuery } from 'react-query';
 import ItemWithTitleDesc from '@c/item-with-title-desc';
 import Tab from '@c/tab';
 import Loading from '@c/loading';
-import { getRoleFunctions } from '@portal/api/role-management';
+import { getRoleFunctions } from '../api';
 
 import AlterRoleFunc from './alter-role-func';
 import AssociateDepartmentEmployee from './associate-department-employee';

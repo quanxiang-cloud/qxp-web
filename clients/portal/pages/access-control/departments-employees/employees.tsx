@@ -5,23 +5,24 @@ import { Table, Message } from '@QCFE/lego-ui';
 import SvgIcon from '@c/icon';
 import EmptyTips from '@c/empty-tips';
 import Pagination from '@c/pagination';
-import Authorized from '@cc/authorized';
+import Authorized from '@clients/components/authorized';
 import Button from '@c/button';
 import MoreMenu from '@c/more-menu';
+import { usePortalGlobalValue } from '@portal/states_to_be_delete/portal';
+
+import { getUserAdminInfo } from './api';
 import EditEmployeesModal from './modal/edit-employees-modal';
 import ImportEmployeesModal from './modal/import-employees-modal';
 import ResetPasswordModal from './modal/reset-password-modal';
 import AlterUserStateModal from './modal/alert-user-state-modal';
 import AdjustDepModal from './modal/adjust-dep-modal';
 import LeaderHandleModal from './modal/leader-handle-modal';
-import { usePortalGlobalValue } from '@states/portal';
-import { getUserAdminInfo } from '@net/corporate-directory';
 
 import { exportEmployees } from './utils';
 import { UserStatus } from './type';
 import { EmployeesColumns, EmployeesActions, ExpandActions } from './constant';
 
-type modalType = '' | 'edit_employees' | 'import_employees' | 'reset_password' |
+type ModalType = '' | 'edit_employees' | 'import_employees' | 'reset_password' |
   'alert_user_state' | 'adjust_dep' | 'leader_handle';
 
 const initUserInfo = { id: '', userName: '', email: '', phone: '' };
@@ -36,9 +37,9 @@ export default function Employees({
   department,
   searchWord,
 }: Props) {
-  const [modalType, setModalType] = useState<modalType>('');
-  const [modalStatus, setModalStatus] = useState<UserStatus>(UserStatus.normal);
-  const [selectedRows, setSelectedRows] = useState<string[]>([]);
+  const [modalType, setModalType] = useState<ModalType>('');
+  const [userState, setUserState] = useState<UserStatus>(UserStatus.normal);
+  const [selectedUserIds, setSelectedUserIds] = useState<string[]>([]);
   const [selectedUsers, setSelectedUsers] = useState<UserInfo[]>([]);
   const [currUser, setCurrUser] = useState<UserInfo>(initUserInfo);
   const [pageParams, setPageParams] = React.useState(initSearch);
@@ -58,7 +59,7 @@ export default function Employees({
 
   useEffect(() => {
     setPageParams(initSearch);
-    setSelectedRows([]);
+    setSelectedUserIds([]);
   }, [department.id]);
 
   function handleDepLeader(params: UserInfo) {
@@ -78,7 +79,7 @@ export default function Employees({
 
   function handleUserState(status: UserStatus, user: UserInfo) {
     setCurrUser(user);
-    setModalStatus(status);
+    setUserState(status);
     openModal('alert_user_state');
   }
 
@@ -113,7 +114,7 @@ export default function Employees({
     });
   }
 
-  function openModal(type: modalType) {
+  function openModal(type: ModalType) {
     setModalType(type);
   }
 
@@ -128,13 +129,13 @@ export default function Employees({
   }
 
   const rowSelection = {
-    selectedRowKeys: selectedRows,
+    selectedRowKeys: selectedUserIds,
     getCheckboxProps: (record: any) => ({
       disabled: record.useStatus === -2,
       name: record.id,
     }),
     onChange: (selectedRowKeys: string[], selectedRows: UserInfo[]) => {
-      setSelectedRows(selectedRowKeys);
+      setSelectedUserIds(selectedRowKeys);
       setSelectedUsers(selectedRows);
     },
   };
@@ -196,7 +197,7 @@ export default function Employees({
       (<ImportEmployeesModal currDepId={department.id} closeModal={closeFileModal} />)}
       {
         modalType === 'alert_user_state' && (<AlterUserStateModal
-          status={modalStatus}
+          status={userState}
           user={currUser}
           closeModal={closeModal}
         />)
@@ -205,7 +206,7 @@ export default function Employees({
         modalType === 'reset_password' && (<ResetPasswordModal
           userIds={selectedUsers.map((user) => user.id)}
           closeModal={closeModal}
-          clearSelectRows={() => setSelectedRows([])}
+          clearSelectRows={() => setSelectedUserIds([])}
         />)
       }
 
@@ -216,7 +217,7 @@ export default function Employees({
         </div>
         <div className="flex items-stretch px-20">
           <Authorized authority={['accessControl/mailList/manage']}>
-            {selectedRows.length > 0 ? (
+            {selectedUserIds.length > 0 ? (
               <>
                 <Button
                   className="bg-black-900"

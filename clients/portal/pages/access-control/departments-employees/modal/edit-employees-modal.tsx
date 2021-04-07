@@ -2,11 +2,11 @@ import React, { createRef } from 'react';
 import { useQuery, useMutation, useQueryClient } from 'react-query';
 import { Modal, Form, Message } from '@QCFE/lego-ui';
 
-import TreePicker from '@portal/components/input/tree-picker-field';
+import TreePicker from '@c/input/tree-picker-field';
 import SvgIcon from '@c/icon';
 import Button from '@c/button';
 import Loading from '@c/loading';
-import { getERPTree, addDepUser, updateUser } from '@net/corporate-directory';
+import { getERPTree, addDepUser, updateUser } from '../api';
 import { departmentToTreeNode } from '@lib/utils';
 
 import { SpecialSymbolsReg, PhoneReg } from '../utils';

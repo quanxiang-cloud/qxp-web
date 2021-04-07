@@ -3,7 +3,6 @@ import { Icon } from '@QCFE/lego-ui';
 
 import More from '@c/more';
 import SvgIcon from '@c/icon';
-import { uuid } from '@lib/utils';
 
 import ResetPasswordModal from './reset-password-modal';
 
@@ -39,8 +38,8 @@ export default function HeaderMenu() {
         <More
           items={[
             <span
+              key="reset_password"
               onClick={() => setOpenResetPasswordModal(true)}
-              key={uuid()}
               className="cursor-pointer flex items-center h-36
               pl-16 hover:bg-blue-100 transition whitespace-nowrap text-button
               text-gray-900 hover:text-gray-600"
@@ -48,7 +47,7 @@ export default function HeaderMenu() {
               重置密码
             </span>,
             <form
-              key={uuid()}
+              key="logout"
               action="/logout"
               method="post"
               className="w-full h-full"

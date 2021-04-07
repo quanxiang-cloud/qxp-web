@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { twCascade } from '@mariusmarais/tailwind-cascade';
 
 import SvgIcon from '@c/icon';
-import Authorized from '@cc/authorized';
+import Authorized from '@clients/components/authorized';
 
 export default function HeaderLeft() {
   const location = useLocation();
@@ -27,6 +27,7 @@ export default function HeaderLeft() {
 
   const isHome = location.pathname === '/';
   const isAppManagement = location.pathname === '/appManager/list';
+
   const isAccess = [
     '/access-control',
     '/access-control/',
@@ -79,7 +80,7 @@ export default function HeaderLeft() {
         >
               应用管理
         </span>
-      </a>
+        </a>
       <Authorized authority={['accessControl']}>
         <Link
           to="/access-control"

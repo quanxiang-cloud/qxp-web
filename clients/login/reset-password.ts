@@ -1,4 +1,4 @@
-import { IInputField, query, parseValidateAllResult, parseUserValidateResult } from '@lib/atom';
+import { IInputField, query, parseValidateAllResult, parseUserValidateResult } from './atom';
 
 import User, { IUser } from './user';
 import Password from './password-field';

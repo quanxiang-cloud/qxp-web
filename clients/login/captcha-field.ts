@@ -1,6 +1,5 @@
-import { IInputField, InputField, query, OnValidateAll, parseValidateAllResult } from '@lib/atom';
+import { IInputField, InputField, query, OnValidateAll, parseValidateAllResult } from './atom';
 import { httpPost } from '@lib/utils';
-import { Response } from '@clients/types/api';
 import UserName from './username';
 
 export default class Captcha extends InputField {
@@ -60,7 +59,9 @@ export default class Captcha extends InputField {
   }
 
   callSendApi() {
-    return httpPost(this.url, JSON.stringify({ userName: this.username?.value }));
+    return httpPost(this.url, JSON.stringify({ userName: this.username?.value }), {
+      'X-Proxy': 'API-NO-AUTH',
+    });
   }
 
   showError(errorMessage?: string) {
@@ -71,7 +72,7 @@ export default class Captcha extends InputField {
     if (errorMessage && pageErrorElement) {
       pageErrorElement.innerText = errorMessage;
       pageErrorElement.classList.remove('hidden');
-      this.errorId = window.setTimeout(() => {
+      this.errorId = setTimeout(() => {
         pageErrorElement.classList.add('hidden');
       }, 3000);
     }
@@ -92,14 +93,14 @@ export default class Captcha extends InputField {
 
     this.callSendApi()
       .then((resp: unknown) => {
-        const res = resp as Response<string>;
+        const res = resp as ResponseToBeDelete<string>;
         if (res.code !== 0) {
           this.showError(res.msg);
         }
       })
       .catch(resetVars);
     element.classList.add('disabled');
-    tid = window.setInterval(() => {
+    tid = setInterval(() => {
       counter -= 1;
       element.innerText = `${counter}`;
       if (counter <= 0) {

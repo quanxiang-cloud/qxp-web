@@ -9,6 +9,7 @@
 .icon-border-radius-8 {
   border-radius: 8px 8px 8px 2px;
 }
+
 .tab-border {
   @apply rounded-tl-8 rounded-tr-8;
 }

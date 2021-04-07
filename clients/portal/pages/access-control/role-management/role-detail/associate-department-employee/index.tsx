@@ -2,15 +2,15 @@ import React, { useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 
 import Button from '@c/button';
-import Authorized from '@cc/authorized';
+import Authorized from '@clients/components/authorized';
 import Switch from '@c/switch';
 import EmployeeOrDepartmentPickerModal from '@c/employee-or-department-picker-modal';
-import { updateRoleAssociations, IUpdateRoleAssociations } from '@net/role-management';
+import { updateRoleAssociations, IUpdateRoleAssociations } from '../../api';
 
 import DepartmentOrEmployeeTable from './department-or-employee-table';
 
 export interface Props {
-  roleID: string | number;
+  roleID: string;
   isSuper: boolean;
 }
 

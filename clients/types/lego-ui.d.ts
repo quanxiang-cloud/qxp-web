@@ -1,3 +1,7 @@
+import '@QCFE/types';
+import '@qcfe/types';
+import React from 'react';
+
 declare module '@QCFE/lego-ui' {
   interface ModalProps {
     title?: string | React.ReactNode;

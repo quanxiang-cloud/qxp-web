@@ -1,10 +1,4 @@
-import '@QCFE/types';
-// @ts-ignore
-import '@qcfe/types';
-
-import Notify from '@clients/lib/notify';
-
-interface Response<T> {
+interface ResponseToBeDelete<T> {
   code: number;
   msg?: string;
   data?: T;

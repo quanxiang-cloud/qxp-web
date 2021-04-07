@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "lint": "eslint 'clients/**/*.tsx' 'clients/**/*.ts' --fix",
+    "preview:icon": "node scripts/preview-icons.js",
     "start": "gulp",
     "test": "cypress open",
     "preview:icon": "node scripts/preview-icons.js"
@@ -13,7 +14,6 @@
     "@QCFE/lego-ui": "^0.1.30",
     "@mariusmarais/tailwind-cascade": "^0.0.4",
     "@popperjs/core": "^2.9.1",
-    "@types/react-table": "^7.0.29",
     "axios": "^0.21.1",
     "classnames": "^2.2.6",
     "mobx": "5",
@@ -37,6 +37,7 @@
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
     "@types/react-router-dom": "^5.1.7",
+    "@types/react-table": "^7.0.29",
     "@typescript-eslint/eslint-plugin": "^4.17.0",
     "@typescript-eslint/parser": "^4.17.0",
     "autoprefixer": "^9.7.1",

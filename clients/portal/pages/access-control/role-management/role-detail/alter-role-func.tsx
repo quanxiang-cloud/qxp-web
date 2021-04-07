@@ -1,10 +1,9 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Message } from '@QCFE/lego-ui';
+import React, { useState, useRef } from 'react';
 
 import Card from '@c/card';
 import { Checkbox } from '@c/checkbox';
 import { countBy, searchByKey, deepClone } from '@lib/utils';
-import { IRoleFunc, IRoleFuncItem, setRoleFunctions } from '@portal/api/role-management';
+import { IRoleFunc, IRoleFuncItem } from '../api';
 
 export interface IAlterRoleFunc {
   funcs: IRoleFunc;
@@ -13,13 +12,12 @@ export interface IAlterRoleFunc {
   id: string | number;
 }
 
-export default function AlterRoleFunc({ funcs: functions, tag, lastSaveTime, id }: IAlterRoleFunc) {
+export default function AlterRoleFunc({ funcs: functions }: IAlterRoleFunc) {
   // @ts-ignore
   const [funcs, setFuncs] = useState<IRoleFunc>(deepClone(functions));
   const total = countBy<IRoleFunc, boolean>('has', 'child', (v) => v, funcs);
-  const isSuper = tag === 'super';
-  const [addSets, setAddSets] = useState<string[]>([]);
-  const [deleteSets, setDeleteSets] = useState<string[]>([]);
+  // const [addSets, setAddSets] = useState<string[]>([]);
+  // const [deleteSets, setDeleteSets] = useState<string[]>([]);
   const originTags = useRef<string[]>([]);
 
   const getFuncIds = (func: IRoleFunc | IRoleFuncItem): string[] => {
@@ -39,13 +37,13 @@ export default function AlterRoleFunc({ funcs: functions, tag, lastSaveTime, id 
     originTags.current = getFuncIds(functions);
   }
 
-  useEffect(() => {
-    const allSets = getFuncIds(funcs);
-    const adds = allSets.filter((item) => !originTags.current.includes(item));
-    const deletes = originTags.current.filter((item) => !allSets.includes(item));
-    setAddSets(adds);
-    setDeleteSets(deletes);
-  }, [funcs]);
+  // useEffect(() => {
+  // const allSets = getFuncIds(funcs);
+  // const adds = allSets.filter((item) => !originTags.current.includes(item));
+  // const deletes = originTags.current.filter((item) => !allSets.includes(item));
+  // setAddSets(adds);
+  // setDeleteSets(deletes);
+  // }, [funcs]);
 
   const updateFuncs = (funcTag: string) => (e: Event, checked: boolean) => {
     setFuncs((s: IRoleFunc) => {
@@ -59,21 +57,21 @@ export default function AlterRoleFunc({ funcs: functions, tag, lastSaveTime, id 
     });
   };
 
-  const selectAll = (func: IRoleFuncItem) => () => {
-    const ev = new Event('click');
-    const needSelect = !isAllChildSelected(func);
-    needSelect && updateFuncs(func.funcTag)(ev, needSelect);
-    Object.values(func.child).forEach((i) => {
-      updateFuncs(i.funcTag)(ev, needSelect);
-      if (i.child) {
-        selectAll(i);
-      }
-    });
-  };
+  // const selectAll = (func: IRoleFuncItem) => () => {
+  //   const ev = new Event('click');
+  //   const needSelect = !isAllChildSelected(func);
+  //   needSelect && updateFuncs(func.funcTag)(ev, needSelect);
+  //   Object.values(func.child).forEach((i) => {
+  //     updateFuncs(i.funcTag)(ev, needSelect);
+  //     if (i.child) {
+  //       selectAll(i);
+  //     }
+  //   });
+  // };
 
-  const isAllChildSelected = (func: IRoleFuncItem) => {
-    return Object.values(func.child).every((i) => i.has);
-  };
+  // const isAllChildSelected = (func: IRoleFuncItem) => {
+  //   return Object.values(func.child).every((i) => i.has);
+  // };
 
   const renderFuncCard = (funcs: IRoleFunc) => {
     return (
@@ -130,32 +128,32 @@ export default function AlterRoleFunc({ funcs: functions, tag, lastSaveTime, id 
     );
   };
 
-  const getSaveTime = (time: number) => {
-    const date = new Date(time * 1000);
-    const month = `${date.getMonth() + 1}`.padStart(2, '0');
-    const d = `${date.getDate()}`.padStart(2, '0');
-    const hour = `${date.getHours()}`.padStart(2, '0');
-    const minutes = `${date.getMinutes()}`.padStart(2, '0');
-    return `${date.getFullYear()}-${month}-${d} ${hour}:${minutes}`;
-  };
+  // const getSaveTime = (time: number) => {
+  //   const date = new Date(time * 1000);
+  //   const month = `${date.getMonth() + 1}`.padStart(2, '0');
+  //   const d = `${date.getDate()}`.padStart(2, '0');
+  //   const hour = `${date.getHours()}`.padStart(2, '0');
+  //   const minutes = `${date.getMinutes()}`.padStart(2, '0');
+  //   return `${date.getFullYear()}-${month}-${d} ${hour}:${minutes}`;
+  // };
 
-  const saveRoleFunctions = () => {
-    let params = [];
-    if (deleteSets.length) {
-      params = ['setRoleFunctions', id, addSets, deleteSets];
-    } else {
-      params = ['setRoleFunctions', id, addSets];
-    }
-    setRoleFunctions({
-      queryKey: params,
-    }).then(({ code }) => {
-      if (code == 0) {
-        setAddSets([]);
-        setDeleteSets([]);
-        Message.success('保存成功');
-      }
-    });
-  };
+  // const saveRoleFunctions = () => {
+  //   let params = [];
+  //   if (deleteSets.length) {
+  //     params = ['setRoleFunctions', id, addSets, deleteSets];
+  //   } else {
+  //     params = ['setRoleFunctions', id, addSets];
+  //   }
+  //   setRoleFunctions({
+  //     queryKey: params,
+  //   }).then(({ code }) => {
+  //     if (code == 0) {
+  //       setAddSets([]);
+  //       setDeleteSets([]);
+  //       Message.success('保存成功');
+  //     }
+  //   });
+  // };
 
   return (
     <div className="overflow-scroll h-full">

@@ -67,6 +67,10 @@ body {
   background: linear-gradient(180deg, #FCA5A5 0%, #F87171 100%);
 }
 
+.bg-gradient-blue-to-top-right {
+  background-image: linear-gradient(to top right, #b5ccff, rgba(181, 204, 255, 0.4));
+}
+
 .shadow-title {
   box-shadow: 0px 8px 24px 4px rgba(148, 163, 184, 0.25);
 }

@@ -4,11 +4,11 @@ import { useQuery } from 'react-query';
 
 import Card from '@c/card';
 import Error from '@c/error';
-import { usePortalGlobalValue } from '@states/portal';
+import { usePortalGlobalValue } from '@portal/states_to_be_delete/portal';
 
 import RoleList from './role-list';
 import RoleDetail from './role-detail';
-import { getRoles } from '@portal/api/role-management';
+import { getRoles } from './api';
 
 export default function RoleManagement() {
   const { data: roleList = [], isLoading } = useQuery('getRoles', getRoles, {

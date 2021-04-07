@@ -3,7 +3,8 @@ import { Modal } from '@QCFE/lego-ui';
 import { useQuery } from 'react-query';
 
 import Button from '@c/button';
-import { getRoleAssociations } from '@net/role-management';
+// todo remove this
+import { getRoleAssociations } from '@portal/pages/access-control/role-management/api';
 import Loading from '@c/loading';
 import Error from '@c/error';
 
@@ -13,7 +14,7 @@ import EmployeeOrDepartmentPicker from '@c/employee-or-department-picker-modal/p
 interface Props {
   onOk: (adds: EmployeeOrDepartmentOfRole[], deletes: EmployeeOrDepartmentOfRole[]) => void;
   visible: boolean;
-  roleID: string | number;
+  roleID: string;
   onCancel: () => void;
 }
 

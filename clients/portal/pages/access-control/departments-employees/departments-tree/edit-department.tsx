@@ -3,14 +3,14 @@ import { useQuery, useQueryClient } from 'react-query';
 import { Modal, Form, Message } from '@QCFE/lego-ui';
 
 import Button from '@c/button';
-import DepartmentPicker from '@portal/components/input/tree-picker-field';
+import DepartmentPicker from '@c/input/tree-picker-field';
 import Loading from '@c/loading';
-import { createDepartment, editDepartment, getERPTree } from '@net/corporate-directory';
 import { departmentToTreeNode } from '@lib/utils';
 import SvgIcon from '@c/icon';
 
-const { TextField } = Form;
+import { createDepartment, editDepartment, getERPTree } from '../api';
 
+const { TextField } = Form;
 // const string for form input help text
 const HELP_TEXT_NORMAL = '名称不超过 30 个字符，请修改！';
 const HELP_TEXT_DUPLICATED = '名称已存在，请修改！';
@@ -101,8 +101,8 @@ export default function EditDepartment({ department, closeModal }: Props) {
       default:
         Message.error({ content: '发生未知错误，Code:' + submitResponseData.code });
       }
-    }).catch((error: any) => {
-      console.log(error);
+    }).catch(() => {
+      // todo handle error
     });
   };
 

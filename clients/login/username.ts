@@ -1,4 +1,4 @@
-import { InputField, isEmail, isMobile, parseValidateAllResult } from '@lib/atom';
+import { InputField, isEmail, isMobile, parseValidateAllResult } from './atom';
 
 export default class UserName extends InputField {
   validate(checkAll?: boolean): boolean | Promise<boolean> {

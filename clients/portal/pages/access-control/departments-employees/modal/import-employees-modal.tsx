@@ -5,7 +5,7 @@ import { Modal, CheckboxGroup, Checkbox, Table, Upload, Message } from '@QCFE/le
 
 import SvgIcon from '@c/icon';
 import Button from '@c/button';
-import { getUserTemplate, importTempFile, resetUserPWD } from '@net/corporate-directory';
+import { getUserTemplate, importTempFile, resetUserPWD } from '../api';
 
 import { FileUploadStatus } from '../type';
 import { exportEmployeesFail } from '../utils';
