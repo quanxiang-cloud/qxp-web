@@ -1,0 +1,84 @@
+.drawer-modal-mask {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  top: 0;
+  background-color: rgba(2, 5, 8, 0.7);
+  animation: fadeIn .2s;
+}
+
+.drawer-content {
+  @apply flex flex-col;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: calc(100vh - 56px);
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+  background-color: #fff;
+  animation: enter .3s ease;
+  transition: transform .3s;
+}
+
+.drawer-began-close {
+  animation: fadeOut .3s forwards;
+  .drawer-content {
+    animation: quit .3s ease forwards;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes enter {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes quit {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(100%);
+  }
+}
+
+.drawer-header {
+  display: flex;
+  justify-content: space-between;
+  padding: 16px 20px;
+  box-shadow: inset 0px -1px 0px #E2E8F0;
+  background-image: url('/dist/images/maskHeaderBackgroundImage.png');
+  background-position: top right;
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+.drawer-close {
+  display: none;
+}
+
+.drawer-main-content {
+  @apply flex-1;
+}
