@@ -33,7 +33,7 @@ function CreatedAppModal({ onCancel, appListStore }: Props) {
       onCancel={onCancel}
       className="static-modal"
       footer={
-        <div className="flex items-center">
+        (<div className="flex items-center">
           <Button icon='close' onClick={onCancel}>
             取消
           </Button>
@@ -45,7 +45,7 @@ function CreatedAppModal({ onCancel, appListStore }: Props) {
           >
             确定
           </Button>
-        </div>
+        </div>)
       }
     >
       <CreatedEditApp ref={formRef} />

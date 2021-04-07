@@ -1,4 +1,5 @@
 import React from 'react';
+import { useHistory } from 'react-router-dom';
 import { inject, observer } from 'mobx-react';
 
 import Icon from '@c/icon';
@@ -12,7 +13,13 @@ interface DetailsHeaderProps extends GHeaderProps {
 }
 
 function DetailsHeader({ navButtonRender, appDetailsStore }: DetailsHeaderProps) {
+  const history = useHistory();
+
   const { updateAppStatus } = appDetailsStore;
+
+  const goAppSetting = () => {
+    history.push('/appManager/setting/' + appDetailsStore.appDetails.id)
+  }
 
   const statusTipsContent = (isPublish: boolean) => {
     if (isPublish) {
@@ -40,7 +47,7 @@ function DetailsHeader({ navButtonRender, appDetailsStore }: DetailsHeaderProps)
       <div className='flex items-center'>
         {navButtonRender({ name: '应用管理', icon: 'apps', inside: true, url: '/appManager/list' })}
         <span className='mr-16 ml-8'>/</span>
-        <AppDropdown />
+        <AppDropdown appDetails={appDetailsStore.appDetails} />
       </div>
       <div className='flex'>
         {appDetailsStore.appDetails.useStatus > 0 ? (
@@ -61,7 +68,7 @@ function DetailsHeader({ navButtonRender, appDetailsStore }: DetailsHeaderProps)
           进入应用访问
         </Button>
         <Button
-          onClick={() => appDetailsStore.setVisibleAppManager(true)}
+          onClick={goAppSetting}
           icon='settings'
         >
           应用管理

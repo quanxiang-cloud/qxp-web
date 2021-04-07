@@ -43,7 +43,7 @@ function AppSetStatusModal({ onCancel, appId, status = 'publish', appListStore }
       onCancel={onCancel}
       className="static-modal"
       footer={
-        <div className="flex items-center">
+        (<div className="flex items-center">
           <Button icon='close' onClick={onCancel}>
             取消
           </Button>
@@ -55,7 +55,7 @@ function AppSetStatusModal({ onCancel, appId, status = 'publish', appListStore }
           >
             {TEXT[status].sureText}
           </Button>
-        </div>
+        </div>)
       }
     >
       <div className='flex-1'>

@@ -10,11 +10,11 @@ import BgIcon from '../bg-icon';
 import AppInfoView from '../app-info-view';
 
 type Props = {
-  appDetailsStore?: any
   appListStore?: any
+  appDetails: AppInfo;
 }
 
-function AppDropdown({ appDetailsStore, appListStore }: Props) {
+function AppDropdown({ appListStore, appDetails }: Props) {
   const history = useHistory();
   useEffect(() => {
     appListStore.fetchAppList();
@@ -28,7 +28,7 @@ function AppDropdown({ appDetailsStore, appListStore }: Props) {
     return appListStore.appList.map((appInfo: AppInfo) => (
       <div
         className={cs('app-global-header-drop-item',
-          { 'app-global-header-drop-item-active': appDetailsStore.appDetails.id === appInfo.id })}
+          { 'app-global-header-drop-item-active': appDetails.id === appInfo.id })}
         key={appInfo.id}
         onClick={() => handleChange(appInfo.id)}
       >
@@ -37,7 +37,7 @@ function AppDropdown({ appDetailsStore, appListStore }: Props) {
     ));
   }, [appListStore.appList]);
 
-  const { appIcon = '', useStatus, appName } = appDetailsStore.appDetails;
+  const { appIcon = '', useStatus, appName } = appDetails;
   const { bgColor, iconName } = (appIcon ? JSON.parse(appIcon) : {}) as AppIcon;
 
   return (
@@ -52,4 +52,4 @@ function AppDropdown({ appDetailsStore, appListStore }: Props) {
   );
 }
 
-export default inject('appDetailsStore')(inject('appListStore')(observer(AppDropdown)));
+export default inject('appListStore')(observer(AppDropdown));

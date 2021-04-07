@@ -1,6 +1,6 @@
 import React from 'react';
 
-import Icon from '@portal/components/icon';
+import Icon from '@c/icon';
 
 import './index.scss';
 

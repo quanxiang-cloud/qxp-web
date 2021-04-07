@@ -10,12 +10,3 @@ interface IPagination {
   pageSize: number;
 }
 
-declare global {
-  interface Window {
-    __global: {
-      userInfo: UserInfo;
-    },
-    closeNotify: (e: Event | HTMLElement) => void,
-    notifier: Notify,
-  }
-}

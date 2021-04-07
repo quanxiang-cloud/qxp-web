@@ -2,7 +2,7 @@ import React from 'react';
 import { RadioButton, RadioGroup } from '@QCFE/lego-ui';
 
 import Button from '@appC/button';
-import SearchInput from '@portal/components/search-input';
+import Search from '@appC/search';
 
 import './index.scss';
 
@@ -21,7 +21,7 @@ const STATUS_LIST = [
 function Header({ changeParams, params, setModalType }: Props) {
   return (
     <div className='app-filter-column'>
-      <SearchInput onSearch={(keyword) => changeParams({ keyword })} />
+      <Search onSearch={(keyword) => changeParams({ keyword })} />
       <RadioGroup
         wrapClassName='mb-0-i'
         value={params.status}

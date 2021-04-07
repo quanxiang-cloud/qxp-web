@@ -18,7 +18,7 @@ function AppActions({ openModal, appInfo }: Props) {
       label: (
         <div className="flex items-center">
           <Icon name="toggle_on" className="mr-4" />
-          {appInfo.useStatus > 0 ?'下架应用':'发布应用'}
+          {appInfo.useStatus > 0 ? '下架应用' : '发布应用'}
         </div>
       ),
     },
@@ -47,18 +47,18 @@ function AppActions({ openModal, appInfo }: Props) {
 
   const handleClick = (key: string) => {
     switch (key) {
-    case 'publish':
-      openModal('publish', appInfo);
-      break;
-    case 'setting':
-      history.push(`/appManager/details/${appInfo.id}/openSetting`);
-      break;
-    case 'visit':
+      case 'publish':
+        openModal('publish', appInfo);
+        break;
+      case 'setting':
+        history.push(`/appManager/setting/${appInfo.id}`);
+        break;
+      case 'visit':
 
-      break;
-    case 'delete':
-      openModal('delete', appInfo);
-      break;
+        break;
+      case 'delete':
+        openModal('delete', appInfo);
+        break;
     }
   };
   return (

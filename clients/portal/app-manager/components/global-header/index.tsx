@@ -8,7 +8,7 @@ import IndexHeader from './index-header';
 import DetailsHeader from './details-header';
 import './index.scss';
 
-const DETAILS_HEADER = ['/appManager/details'];
+const DETAILS_HEADER = ['/appManager/details','/appManager/setting'];
 const INDEX_HEADER = ['/appManager/list'];
 
 function GlobalHeader() {

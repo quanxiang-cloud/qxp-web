@@ -7,8 +7,7 @@
     "lint": "eslint 'clients/**/*.tsx' 'clients/**/*.ts' --fix",
     "preview:icon": "node scripts/preview-icons.js",
     "start": "gulp",
-    "test": "cypress open",
-    "preview:icon": "node scripts/preview-icons.js"
+    "test": "cypress open"
   },
   "dependencies": {
     "@QCFE/lego-ui": "^0.1.30",

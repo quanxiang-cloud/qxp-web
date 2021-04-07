@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { Switch, Route } from 'react-router-dom';
 
 import ListMenu from '@c/list-menu';
 import ItemWithTitleDesc from '@c/item-with-title-desc';
@@ -13,6 +14,7 @@ const MENU = [
     id: 'MyApp',
     icon: 'dashboard_customize',
     name: '我的应用',
+    url: '/appManager/list'
   },
   // {
   //   id: 'PlatformSetting',
@@ -22,7 +24,6 @@ const MENU = [
 ];
 
 function AppManagerEntry() {
-  const [menuType, setMenuType] = useState('MyApp');
 
   return (
     <div className="max-w-screen px-5-dot-8 app-entry-container">
@@ -32,26 +33,27 @@ function AppManagerEntry() {
             title="应用管理"
             desc="对企业的自建应用进行统一管理"
             itemRender={
-              <div
+              (<div
                 className="icon-border-radius bg-gradient-amber
                 rounded-lg rounded-tr-none w-48 h-48 flex-initial
                 flex items-center justify-center
                 "
               >
                 <Icon name='dashboard_customize' type='light' size={24} />
-              </div>
+              </div>)
             }
             titleClassName="text-2 leading-8 font-bold mb-2"
             descClassName="leading-8"
           />
         </div>
         <div className="p-20 pb-40">
-          <ListMenu defaultType="MyApp" onChange={setMenuType} menuData={MENU} />
+          <ListMenu defaultType="MyApp" menuData={MENU} />
         </div>
       </div>
       <div className="app-right-box">
-        {menuType === 'MyApp' && (<MyApp />)}
-        {/* {menuType === 'PlatformSetting' && (<RoleManagement />)} */}
+        <Switch>
+          <Route exact path="/appManager/list" component={MyApp} />
+        </Switch>
       </div>
     </div>
   );

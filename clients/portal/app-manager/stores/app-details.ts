@@ -1,23 +1,25 @@
-import { observable, action } from 'mobx';
+import { observable, action, reaction } from 'mobx';
 import { Message } from '@QCFE/lego-ui';
 
 import { fetchAppDetails, updateAppStatus, updateApp } from '@appLib/api';
 
 class AppDetailsStore {
   rootStore: any;
+  destroyFetchAppDetails: () => void;
   constructor(rootStore: any) {
     this.rootStore = rootStore;
+    this.destroyFetchAppDetails = reaction(() => this.appId, this.fetchAppDetails)
   }
 
   @observable appDetails: any = {};
 
   @observable loading = false;
 
-  @observable visibleAppManager = false;
+  @observable appId = '';
 
   @action
-  setVisibleAppManager = (visible: boolean) => {
-    this.visibleAppManager = visible;
+  setAppId = (appId: string) => {
+    this.appId = appId;
   }
 
   @action
