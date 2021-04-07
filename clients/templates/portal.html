@@ -6,8 +6,9 @@
 <script>
   {{if .}}
     window.__global = {
-      userInfo: {{.data}}
+      userInfo: {{.user}}
     }
+    window.__verbose_log__ = {{.debugMode}}
   {{end}}
 </script>
 <script src="<%= htmlWebpackPlugin.files.js[0] %>"></script>

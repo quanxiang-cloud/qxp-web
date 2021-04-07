@@ -14,7 +14,10 @@ func PortalHandler(w http.ResponseWriter, r *http.Request) {
 		contexts.Cache.Del(tokenKey)
 		contexts.Cache.Del(refreshTokenKey)
 		RedirectToLoginPage(w, r)
-		return	
+		return
 	}
-	renderTemplate(w, "portal.html", userInfo)
+	renderTemplate(w, "portal.html", map[string]interface{}{
+		"user":      userInfo,
+		"debugMode": contexts.Config.DevMode,
+	})
 }
