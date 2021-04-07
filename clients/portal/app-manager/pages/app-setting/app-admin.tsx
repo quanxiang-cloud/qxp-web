@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { Message } from '@QCFE/lego-ui';
 
+import TextHeader from '@c/text-header';
 import Button from '@appC/button';
 import Table, { Column } from '@c/app-table';
 import { appAddAdmin, fetchAppAdminUsers, delAppAdminUsers } from '@appLib/api';
@@ -75,37 +76,43 @@ function AppAdmin() {
   ], [])
 
   return (
-    <div>
-      <div className='mb-20 flex'>
-        <Button onClick={() => setEmployeeVisible(true)} className='mr-16' isPrimary icon='add'>
-          添加管理员
+    <>
+      <TextHeader
+        title="应用管理员"
+        className="my-app-header header-background-image "
+      />
+      <div className='px-20 py-24'>
+        <div className='mb-20 flex'>
+          <Button onClick={() => setEmployeeVisible(true)} className='mr-16' isPrimary icon='add'>
+            添加管理员
         </Button>
-        {selectedIdArr.length > 0 && (
-          <Button onClick={() => removeAdmin(selectedIdArr)} isPrimary icon='restore_from_trash'>
-            批量移除
-          </Button>
-        )}
+          {selectedIdArr.length > 0 && (
+            <Button onClick={() => removeAdmin(selectedIdArr)} isPrimary icon='restore_from_trash'>
+              批量移除
+            </Button>
+          )}
+        </div>
+        <Table
+          // offset={offset}
+          // limit={limit}
+          // total={total}
+          showCheckBox
+          selectKey='id'
+          columns={columns}
+          data={appAdminList}
+          onSelectChange={handleSelectChange}
+          loading={loading}
+        // onResetQuery={this.props.onResetQuery}
+        // onPageChange={this.handlePageChange}
+        />
+        <EmployeeOrDepartmentPickerModal
+          visible={employeeVisible}
+          onOk={addAdmin}
+          roleID=''
+          onCancel={() => setEmployeeVisible(false)}
+        />
       </div>
-      <Table
-        // offset={offset}
-        // limit={limit}
-        // total={total}
-        showCheckBox
-        selectKey='id'
-        columns={columns}
-        data={appAdminList}
-        onSelectChange={handleSelectChange}
-        loading={loading}
-      // onResetQuery={this.props.onResetQuery}
-      // onPageChange={this.handlePageChange}
-      />
-      <EmployeeOrDepartmentPickerModal
-        visible={employeeVisible}
-        onOk={addAdmin}
-        roleID=''
-        onCancel={() => setEmployeeVisible(false)}
-      />
-    </div>
+    </>
   );
 }
 

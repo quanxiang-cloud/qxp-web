@@ -51,7 +51,7 @@ function AppActions({ openModal, appInfo }: Props) {
         openModal('publish', appInfo);
         break;
       case 'setting':
-        history.push(`/appManager/setting/${appInfo.id}`);
+        history.push(`/appManager/setting/info/${appInfo.id}`);
         break;
       case 'visit':
 

@@ -27,3 +27,24 @@ html {
     line-height: 20px;
   }
 }
+
+.app-right-box {
+  @apply flex-1 rounded-tl-12 rounded-tr-12;
+  overflow: hidden;
+  height:100%;
+}
+
+.app-entry-container {
+  @apply flex justify-center items-start gap-x-20 mx-auto;
+  padding: 20px 58px 0;
+  height: calc(100vh - 64px);
+}
+
+.my-app-header {
+  @apply px-20 py-16;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 24px;
+  background-color: rgba(241, 245, 249, 1);
+  box-shadow: inset 0px -1px 0px #e2e8f0;
+}

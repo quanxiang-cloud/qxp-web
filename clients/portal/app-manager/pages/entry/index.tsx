@@ -3,7 +3,7 @@ import { Switch, Route } from 'react-router-dom';
 
 import ListMenu from '@c/list-menu';
 import ItemWithTitleDesc from '@c/item-with-title-desc';
-import Icon from '@c/icon';
+import BgIcon from '@appC/bg-icon'; 
 
 import MyApp from './my-app';
 
@@ -32,25 +32,16 @@ function AppManagerEntry() {
           <ItemWithTitleDesc
             title="应用管理"
             desc="对企业的自建应用进行统一管理"
-            itemRender={
-              (<div
-                className="icon-border-radius bg-gradient-amber
-                rounded-lg rounded-tr-none w-48 h-48 flex-initial
-                flex items-center justify-center
-                "
-              >
-                <Icon name='dashboard_customize' type='light' size={24} />
-              </div>)
-            }
+            itemRender={<BgIcon bgColor='amber' iconName='dashboard_customize' iconSize={32} size={48} />}
             titleClassName="text-2 leading-8 font-bold mb-2"
             descClassName="leading-8"
           />
         </div>
         <div className="p-20 pb-40">
-          <ListMenu defaultType="MyApp" menuData={MENU} />
+          <ListMenu menuData={MENU} />
         </div>
       </div>
-      <div className="app-right-box">
+      <div className="app-right-box bg-opacity-50 bg-white">
         <Switch>
           <Route exact path="/appManager/list" component={MyApp} />
         </Switch>

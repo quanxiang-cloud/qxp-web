@@ -21,7 +21,7 @@ export default (
     <Switch>
       <Route exact path="/appManager/list" component={AppManagerEntry} />
       <Route exact path="/appManager/details/:appId" component={AppDetails} />
-      <Route exact path="/appManager/setting/:appId" component={AppSetting} />
+      <Route path="/appManager/setting/*/:appId" component={AppSetting} />
       <Route component={Error} />
     </Switch>
   </Suspense>

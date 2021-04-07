@@ -1,8 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { inject } from 'mobx-react';
+import { Switch, Route } from 'react-router-dom';
 
-import SettingNav from './setting-nav';
+import ListMenu from '@c/list-menu';
+import ItemWithTitleDesc from '@c/item-with-title-desc';
+import BgIcon from '@appC/bg-icon';
+
 import AppInfo from './app-info';
 import AppAdmin from './app-admin';
 
@@ -12,29 +16,49 @@ type Props = {
   appDetailsStore?: any;
 }
 
-const NAV_LIST = [
-  { name: '应用信息', key: 'appInfo' },
-  { name: '应用管理员', key: 'appAdmin' },
-  // { name: '工作流', key: 'workflow' },
-];
-
 function AppSetting({ appDetailsStore }: Props) {
   const { appId } = useParams<any>();
-  const [nav, setNav] = useState('appInfo');
 
   useEffect(() => {
     appDetailsStore.setAppId(appId);
   }, [])
 
+  const MENU = [
+    {
+      id: 'info',
+      icon: 'description',
+      name: '应用信息',
+      url: '/appManager/setting/info/' + appId
+    },
+    {
+      id: 'adminUsers',
+      icon: 'admin_panel_settings',
+      name: '应用管理员',
+      url: '/appManager/setting/adminUsers/' + appId
+    },
+  ];
+
   return (
-    <div className='flex h-full'>
-      <SettingNav onChange={setNav} activeNav={nav} navList={NAV_LIST} />
-      <div className='p-20 flex-1'>
-        <p className='text-h5 mb-20'>
-          {NAV_LIST.find(({ key }) => key === nav)?.name}
-        </p>
-        {nav === 'appInfo' && <AppInfo />}
-        {nav === 'appAdmin' && <AppAdmin />}
+    <div className="max-w-screen px-5-dot-8 app-entry-container">
+      <div className="w-31-dot-6 bg-white rounded-12">
+        <div className="access-background-image p-20 opacity-90">
+          <ItemWithTitleDesc
+            title="应用管理"
+            desc="常规的基础设置和工作流编排"
+            itemRender={<BgIcon bgColor='fuchsia' iconName='settings' iconSize={32} size={48} />}
+            titleClassName="text-2 leading-8 font-bold mb-2"
+            descClassName="leading-8"
+          />
+        </div>
+        <div className="p-20 pb-40">
+          <ListMenu menuData={MENU} />
+        </div>
+      </div>
+      <div className="app-right-box bg-white">
+        <Switch>
+          <Route exact path="/appManager/setting/info/:appId" component={AppInfo} />
+          <Route exact path="/appManager/setting/adminUsers/:appId" component={AppAdmin} />
+        </Switch>
       </div>
     </div>
   );

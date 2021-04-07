@@ -3,6 +3,7 @@ import { inject, observer } from 'mobx-react';
 
 import Button from '@appC/button';
 import PageLoading from '@appC/page-loading';
+import TextHeader from '@c/text-header';
 
 import CreatedEditApp from '../entry/my-app/app-edit/created-edit-app';
 
@@ -28,8 +29,14 @@ function AppInfo({ appDetailsStore }: Props) {
 
   return (
     <>
-      <CreatedEditApp appInfo={appDetailsStore.appDetails} ref={formRef} />
-      <Button onClick={handleSubmit} isPrimary icon='save'>保存修改</Button>
+      <TextHeader
+        title="基础设置"
+        className="my-app-header header-background-image "
+      />
+      <div className='px-20 py-24'>
+        <CreatedEditApp appInfo={appDetailsStore.appDetails} ref={formRef} />
+        <Button onClick={handleSubmit} isPrimary icon='save'>保存修改</Button>
+      </div>
     </>
   );
 }

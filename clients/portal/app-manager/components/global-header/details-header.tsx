@@ -18,7 +18,7 @@ function DetailsHeader({ navButtonRender, appDetailsStore }: DetailsHeaderProps)
   const { updateAppStatus } = appDetailsStore;
 
   const goAppSetting = () => {
-    history.push('/appManager/setting/' + appDetailsStore.appDetails.id)
+    history.push('/appManager/setting/info/' + appDetailsStore.appDetails.id)
   }
 
   const statusTipsContent = (isPublish: boolean) => {
