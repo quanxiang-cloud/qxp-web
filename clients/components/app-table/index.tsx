@@ -12,6 +12,8 @@ import {
   Row,
 } from 'react-table';
 
+import Pagination from '../pagination';
+
 import './index.scss';
 
 export type Column = RColumn & { fixed?: boolean, width?: number };
@@ -23,14 +25,14 @@ interface Props<T extends Record<string, unknown>> {
   className?: string;
   selectKey: string;
   showCheckBox?: boolean;
+  currentPage?: number;
   style?: React.CSSProperties;
-  offset?: number;
+  pageSize?: number;
   total?: number;
-  limit?: number;
   loading?: boolean;
-  onResetQuery?: () => void;
   onSelectChange?: (selected: Array<T>) => void;
-  onPageChange?: (pageParam: { offset: number; limit: number }) => void;
+  onPageChange?: (currentPage: number) => void;
+  onShowSizeChange?: (pageSize: number) => void;
 }
 
 const IndeterminateCheckbox = React.forwardRef(
@@ -55,15 +57,16 @@ export default function Table<T extends Record<string, unknown>>({
   data,
   className,
   style = {},
-  offset,
-  total,
-  limit,
+  pageSize = 20,
+  total = 0,
+  currentPage = 1,
   loading,
   emptyText,
   onSelectChange,
   selectKey,
   showCheckBox = false,
   onPageChange,
+  onShowSizeChange,
 }: Props<T>): JSX.Element {
   const tableParameter = [];
   if (showCheckBox) {
@@ -185,12 +188,15 @@ export default function Table<T extends Record<string, unknown>>({
           </div>
         ) : null
       }
-      {/* <Pagination
-        offset={offset}
-        total={total}
-        limit={limit}
-        onChange={onPageChange}
-      /> */}
+      {total > pageSize && (
+        <Pagination
+          pageSize={pageSize}
+          current={currentPage}
+          total={total}
+          onShowSizeChange={onShowSizeChange}
+          onChange={onPageChange}
+        />
+      )}
     </div>
   );
 }

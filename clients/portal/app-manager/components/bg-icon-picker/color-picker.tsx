@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import BgIcon from '@portal/app-manager/components/bg-icon';
+import BgIcon from '../bg-icon';
 
 const COLORS: BgColor[] = [
   'indigo',

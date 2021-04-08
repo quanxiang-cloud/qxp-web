@@ -1,0 +1,42 @@
+.app-bg-icon-select {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 100%;
+  width: 100%;
+  cursor: pointer;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  box-shadow: none;
+  font-size: 14px;
+  height: 2.25em;
+  line-height: 1.5;
+  padding-bottom: calc(0.375em - 1px);
+  padding-left: calc(0.625em - 1px);
+  padding-right: calc(0.625em - 1px);
+  padding-top: calc(0.375em - 1px);
+  position: relative;
+  vertical-align: top;
+  background-color: #fff;
+  border-color: #d5dee7;
+  color: #324558;
+  box-shadow: none;
+  border-radius: 2px 8px 8px 8px;
+}
+
+.app-icon-select-option-box {
+  display: flex;
+  gap: 5px;
+  padding: 16px;
+  background: #FFFFFF;
+  box-shadow: 0px 8px 24px rgba(153, 181, 221, 0.25);
+  border-radius: 12px;
+}
+
+.app-icon-select-option {
+  cursor: pointer;
+  color: #B6C2CD;
+  &:hover,&.app-icon-select-active {
+    color: #475569;
+  }
+}

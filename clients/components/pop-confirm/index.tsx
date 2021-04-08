@@ -9,12 +9,11 @@ import './index.scss';
 type Props = {
   children: React.ReactElement;
   content: React.ReactNode;
-  footer?: React.ReactNode;
   cancelText?: string;
   okText?: string;
   placement?: Placement
   onCancel?: () => void;
-  onOk?: () => void;
+  onOk?: () => (void | Promise<any>);
   onVisibilityChange?: (visible: boolean) => void;
 }
 
@@ -32,7 +31,6 @@ function PopConfirm({
   onVisibilityChange,
   children,
   content,
-  footer,
   onCancel,
   onOk,
   cancelText = '取消',
@@ -47,6 +45,13 @@ function PopConfirm({
   };
 
   const handleOk = () => {
+    if (onOk instanceof Promise) {
+      (onOk() as Promise<any>).then(() => {
+        popperRef.current?.close();
+      });
+      return;
+    }
+
     onOk && onOk();
     popperRef.current?.close();
   };
@@ -68,17 +73,15 @@ function PopConfirm({
       >
         <div className='pop-confirm-content'>
           {content}
-          {isValidElement(footer) ? footer : (
-            <div className='pop-confirm-content-btn-box'>
-              <Button
-                onClick={handleCancel}
-                className='pop-confirm-content-btn-cancel'
-              >
-                {cancelText}
-              </Button>
-              <Button onClick={handleOk} className='pop-confirm-content-btn-ok'>{okText}</Button>
-            </div>
-          )}
+          <div className='pop-confirm-content-btn-box'>
+            <Button
+              onClick={handleCancel}
+              className='pop-confirm-content-btn-cancel'
+            >
+              {cancelText}
+            </Button>
+            <Button onClick={handleOk} className='pop-confirm-content-btn-ok'>{okText}</Button>
+          </div>
         </div>
       </Popper>
     </>

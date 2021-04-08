@@ -1,0 +1,25 @@
+.app-details-nav {
+  position: relative;
+  background-color: #fff;
+  min-width: 236px;
+  max-width: 236px;
+  border-right: 1px solid var(--gray-300);
+}
+
+.app-page-add-group {
+  cursor: pointer;
+  &:hover {
+    color: var(--blue-600);
+  }
+}
+
+.add-page-add-btn {
+  display: flex;
+  align-items: center;
+  padding: 1px 16px 16px;
+  cursor: pointer;
+
+  &:hover {
+    color: var(--blue-600);
+  }
+}

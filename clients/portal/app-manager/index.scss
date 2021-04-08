@@ -30,6 +30,7 @@ html {
 
 .app-right-box {
   @apply flex-1 rounded-tl-12 rounded-tr-12;
+  position: relative;
   overflow: hidden;
   height:100%;
 }

@@ -2,7 +2,7 @@
   padding: 20px;
   max-width: 374px;
   background: #FFFFFF;
-  border: 1px solid #CBD5E1;
+  border: 1px solid var(--gray-300);
   box-sizing: border-box;
   box-shadow: 0px 8px 24px rgba(148, 163, 184, 0.25);
   border-radius: 12px 2px 12px 12px;
@@ -20,21 +20,21 @@
 
   .pop-confirm-content-btn-cancel {
     @extend .pop-confirm-content-btn;
-    border-color: #CBD5E1;
+    border-color: var(--gray-300);
 
     &:hover {
-      border-color: #b7b8b9;
+      border-color: var(--gray-400);
     }
   }
 
   .pop-confirm-content-btn-ok {
     @extend .pop-confirm-content-btn;
-    color: #375FF3;
-    border-color: #375FF3;
-    background-color:#F0F6FF;
+    color: var( --blue-600);
+    border-color: var( --blue-600);
+    background-color:var( --blue-100);
     
     &:hover {
-      border-color: #274edb;
+      border-color: var( --blue-700);
     }
   }
 }

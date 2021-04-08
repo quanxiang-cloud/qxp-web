@@ -31,12 +31,12 @@ module.exports = {
       58: '58px',
       72: '72px',
       96: '96px',
-      144: "144px",
+      144: '144px',
     },
     lineHeight: {
       24: '24px',
       28: '28px',
-      48: '48px'
+      48: '48px',
     },
     fontSize: {
       24: ['24px', '32px'],
@@ -89,7 +89,7 @@ module.exports = {
         280: '280px',
       },
       borderWidth: {
-        '1.5': '1.5px',
+        1.5: '1.5px',
       },
       lineHeight: {
         11: '11px',
@@ -112,7 +112,10 @@ module.exports = {
       },
       zIndex: {
         '-z-1': -1,
-      }
+      },
+      cursor: {
+        grab: 'grab',
+      },
     },
   },
 };

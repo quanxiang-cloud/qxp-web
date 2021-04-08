@@ -1,7 +1,7 @@
 import React from 'react';
 import { Form } from '@QCFE/lego-ui';
 
-import BgIconPicker from './bg-icon-picker';
+import BgIconPicker from '@appC/bg-icon-picker';
 
 type Props = {
   appInfo?: AppInfo;

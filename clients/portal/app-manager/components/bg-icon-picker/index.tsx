@@ -1,10 +1,11 @@
 import React from 'react';
 import { Control } from '@QCFE/lego-ui';
 
-import Select from '@c/select';
 import Icon from '@c/icon';
 
+import IconSelect from '../icon-select';
 import ColorPicker from './color-picker';
+import './index.scss';
 
 type Props = {
   name: string;
@@ -41,16 +42,15 @@ export default class BgIconPicker extends React.Component<Props> {
     const { bgColor, iconName } = this.state;
     return (
       <Control name={this.props.name}>
-        <Select
+        <IconSelect
           onChange={(_iconName: string) => this.handleFormChange({ iconName: _iconName })}
-          defaultValue={iconName}
+          value={iconName}
           options={[
             { value: 'toggle_on', label: <Icon size={24} name='toggle_on' /> },
             { value: 'settings', label: <Icon size={24} name='settings' /> },
             { value: 'login', label: <Icon size={24} name='login' /> },
             { value: 'restore_from_trash', label: <Icon size={24} name='restore_from_trash' /> },
-          ]}
-        />
+          ]} />
         <ColorPicker
           className='mt-8'
           defaultColor={bgColor}

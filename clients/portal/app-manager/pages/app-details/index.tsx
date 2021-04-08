@@ -3,6 +3,7 @@ import { inject, observer } from 'mobx-react';
 import { useParams } from 'react-router-dom';
 
 import PageNav from './page-nav';
+import PageDetails from './page-details';
 import './index.scss';
 
 type Props = {
@@ -17,9 +18,9 @@ function AppDetails({ appDetailsStore }: Props) {
   }, [appId]);
 
   return (
-    <div className='app-manager-height flex'>
+    <div className='app-manager-height flex relative'>
       <PageNav />
-      <div className='app-details-container'></div>
+      <PageDetails />
     </div>
   );
 }

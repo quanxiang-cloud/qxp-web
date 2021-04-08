@@ -56,11 +56,11 @@ export const appAddAdmin = (data: any) => {
   });
 };
 
-export const fetchAppAdminUsers = (id: string) => {
+export const fetchAppAdminUsers = (data: any) => {
   return request({
     url: '/api/v1/app-center/adminUsers',
     method: 'post',
-    data: { id },
+    data,
   });
 };
 
