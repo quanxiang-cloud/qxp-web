@@ -1,5 +1,4 @@
 import { IInputField, query, parseUserValidateResult } from './atom';
-import { isPassword } from '@lib/utils';
 
 import User, { IUser } from './user';
 import Password from './password-field';
@@ -40,25 +39,25 @@ class ResetUser extends User {
   }
 }
 
-function customeValidator(value: string) {
-  if (value && !isPassword(value)) {
-    return '密码必须包含数字、字母和符号，长度至少为 8 位';
-  }
-  return '';
-}
+// function customeValidator(value: string) {
+//   if (value && !isPassword(value)) {
+//     return '密码必须包含数字、字母和符号，长度至少为 8 位';
+//   }
+//   return '';
+// }
 
 new ResetUser({
   oldPassword: {
     name: 'reset:password:oldPassword',
     inputElement: query<HTMLInputElement>('input[name="oldPassword"]'),
     errorElement: query<HTMLElement>('.oldPassword-hints'),
-    customeValidator,
+    // customeValidator,
   },
   newPassword: {
     name: 'reset:password:newPassword',
     inputElement: query<HTMLInputElement>('input[name="newPassword"]'),
     errorElement: query<HTMLElement>('.newPassword-hints'),
-    customeValidator,
+    // customeValidator,
   },
   action: query<HTMLButtonElement>('.btn-reset'),
 });

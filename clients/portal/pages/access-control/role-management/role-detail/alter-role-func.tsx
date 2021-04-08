@@ -1,7 +1,7 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, ChangeEvent } from 'react';
 
 import Card from '@c/card';
-import { Checkbox } from '@c/checkbox';
+import Checkbox from '@c/checkbox';
 import { countBy, searchByKey, deepClone } from '@lib/utils';
 import { IRoleFunc, IRoleFuncItem } from '../api';
 
@@ -45,12 +45,12 @@ export default function AlterRoleFunc({ funcs: functions }: IAlterRoleFunc) {
   // setDeleteSets(deletes);
   // }, [funcs]);
 
-  const updateFuncs = (funcTag: string) => (e: Event, checked: boolean) => {
+  const updateFuncs = (funcTag: string) => (e: ChangeEvent<HTMLInputElement>) => {
     setFuncs((s: IRoleFunc) => {
       const newS = { ...s };
       const data = searchByKey<string, IRoleFunc, IRoleFuncItem>('funcTag', funcTag, newS);
       if (data) {
-        data.has = checked;
+        data.has = e.target.checked;
         return newS;
       }
       return s;
@@ -86,9 +86,8 @@ export default function AlterRoleFunc({ funcs: functions }: IAlterRoleFunc) {
                 key={func.funcTag}
                 value={func.funcTag}
                 onChange={updateFuncs(func.funcTag)}
-              >
-                {func.name}
-              </Checkbox>
+                label={func.name}
+              />
             );
           }
 
@@ -103,9 +102,9 @@ export default function AlterRoleFunc({ funcs: functions }: IAlterRoleFunc) {
                   checked={func.has}
                   value={func.funcTag}
                   onChange={updateFuncs(func.funcTag)}
-                >
-                  {func.name}
-                </Checkbox>)
+                  label={func.name}
+                />
+                )
               }
               itemTitleClassName="text-h5"
               // action={
@@ -158,9 +157,7 @@ export default function AlterRoleFunc({ funcs: functions }: IAlterRoleFunc) {
   return (
     <div className="overflow-scroll h-full">
       <header className="mx-4 flex flex-row items-center justify-between py-3">
-        <Checkbox disabled checked={!!total}>
-          已开启 {total} 项
-        </Checkbox>
+        <Checkbox disabled checked={!!total} label={`已开启 ${total} 项`} />
         {/* {!isSuper && (
           <div className="flex flex-row items-center justify-between">
             {!!lastSaveTime && (
