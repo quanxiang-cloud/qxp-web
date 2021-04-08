@@ -2,7 +2,6 @@ import React from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 import { Modal, Message } from '@QCFE/lego-ui';
 
-import SvgIcon from '@c/icon';
 import Button from '@c/button';
 import { updateUserStatus } from '../api';
 
@@ -62,16 +61,18 @@ export default function AccountHandleModal(
       footer={
         (<div className="flex items-center">
           <Button
-            icon={<SvgIcon name="close" size={20} className="mr-8" />}
+            iconName="close"
+            iconSize={20}
             onClick={closeModal}
             className="mr-20"
           >
             取消
           </Button>
           <Button
-            className="bg-black-900"
-            textClassName="text-white"
-            icon={<SvgIcon name="check" type="light" size={20} className="mr-8" />}
+            className="bg-black-900 text-white"
+            iconName="check"
+            modifier="primary"
+            iconSize={20}
             onClick={handleSubmit}
           >
             {titleText}账号

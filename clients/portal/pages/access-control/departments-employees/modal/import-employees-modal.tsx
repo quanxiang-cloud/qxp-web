@@ -200,7 +200,8 @@ export default function ImportEmployeesModal({ currDepId, closeModal }: Props) {
           uploadStatus.status !== FileUploadStatus.fail ? (
             <div className="flex items-center">
               <Button
-                icon={<SvgIcon name="close" size={20} className="mr-8" />}
+                iconName="close"
+                iconSize={20}
                 className="mr-20"
                 onClick={closeModal}
               >
@@ -208,20 +209,19 @@ export default function ImportEmployeesModal({ currDepId, closeModal }: Props) {
               </Button>
               {btnStatus === 0 ? (
                 <Button
-                  className="bg-black-900"
-                  textClassName="text-white"
-                  icon={<SvgIcon name="check" type="light" size={20} className="mr-8" />}
+                  className="bg-black-900 text-white"
+                  iconName="check"
+                  iconSize={20}
                   onClick={importEmployeesTemp}
-                  loading={importLoading}
+                  modifier={importLoading ? 'loading' : 'primary'}
                 >
                   确定导入
                 </Button>
               ) : (
                 <Button
-                  className="bg-black-900"
-                  textClassName="text-white"
-                  icon={<SvgIcon name="check" type="light" size={20} className="mr-8" />
-                  }
+                  className="bg-black-900 text-white"
+                  iconName="check"
+                  iconSize={20}
                   onClick={handleSubmit}
                 >
                   确定

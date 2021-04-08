@@ -2,7 +2,6 @@ import React, { createRef } from 'react';
 import { useQuery, useMutation, useQueryClient } from 'react-query';
 import { Modal, Form, Loading, Message } from '@QCFE/lego-ui';
 
-import SvgIcon from '@c/icon';
 import DepartmentPicker from '@c/input/tree-picker-field';
 import Button from '@c/button';
 import { departmentToTreeNode } from '@lib/utils';
@@ -79,16 +78,17 @@ export default function AdjustDepModal({ users: userList, closeModal }: Props) {
       footer={
         (<div className="flex items-center">
           <Button
-            icon={<SvgIcon name="close" size={20} className="mr-8" />}
+            iconName="close"
+            iconSize={20}
             onClick={closeModal}
             className="mr-20"
           >
             取消
           </Button>
           <Button
-            className="bg-black-900"
-            textClassName="text-white"
-            icon={<SvgIcon name="check" type="light" size={20} className="mr-8" />}
+            className="bg-black-900 text-white"
+            iconName="check"
+            iconSize={20}
             onClick={handleSubmit}
           >
             确定

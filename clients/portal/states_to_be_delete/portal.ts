@@ -13,6 +13,7 @@ export interface IUsePortalGlobalValue {
     depIds: string[];
     authority: string[];
     roles: IRole[];
+    status?: number;
   };
 }
 
@@ -23,6 +24,7 @@ export const usePortalGlobalValue = createGlobalState<IUsePortalGlobalValue>(
       depIds: [],
       authority: [],
       roles: [],
+      status: -1,
     },
   },
   true,

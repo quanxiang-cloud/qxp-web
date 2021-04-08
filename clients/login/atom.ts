@@ -2,7 +2,7 @@
  * 输入框的属性
  */
 export interface IInputField {
-  name: string;
+  name?: string;
   inputElement: HTMLInputElement;
   onValidate?: () => boolean;
   value?: string | boolean;
@@ -12,6 +12,7 @@ export interface IInputField {
   actionElement?: HTMLButtonElement;
   url?: string;
   asyncValidate?: boolean;
+  customeValidator?: (value: string) => string;
 }
 
 export function query<T>(selector: string): T {
@@ -30,7 +31,7 @@ export type OnValidateAll = (
  * 输入框 base
  */
 export abstract class InputField implements IInputField {
-  name: string;
+  name?: string;
   inputElement: HTMLInputElement;
   value?: string | boolean;
   errMessage?: string;
@@ -39,9 +40,18 @@ export abstract class InputField implements IInputField {
   isCheckbox: boolean;
   onValidateAll: OnValidateAll = () => true;
   asyncValidate?: boolean = false;
+  customeValidator?: (value: string) => string;
 
   constructor(
-    { name, value = '', errMessage = '', inputElement, errorElement, asyncValidate }: IInputField,
+    {
+      name,
+      value = '',
+      errMessage = '',
+      inputElement,
+      errorElement,
+      asyncValidate,
+      customeValidator,
+    }: IInputField,
     action: HTMLButtonElement,
     onValidateAll?: OnValidateAll,
   ) {
@@ -54,12 +64,16 @@ export abstract class InputField implements IInputField {
     this.action = action;
     this.isCheckbox = this.inputElement.type === 'checkbox';
     this.asyncValidate = asyncValidate;
+    this.customeValidator = customeValidator;
     this.getValue();
     this.baseBindEvents();
   }
 
   getValue() {
-    const value = localStorage.getItem(this.name);
+    let value;
+    if (this.name) {
+      value = localStorage.getItem(this.name);
+    }
     if (value || value === '') {
       this.value = this.isCheckbox ? !!value : value;
       if (this.isCheckbox) {
@@ -78,6 +92,9 @@ export abstract class InputField implements IInputField {
         this.value = (e.target as HTMLInputElement).checked;
       } else {
         this.value = (e.target as HTMLInputElement).value;
+      }
+      if (!this.name) {
+        return;
       }
       localStorage.setItem(this.name, String(this.value));
     };

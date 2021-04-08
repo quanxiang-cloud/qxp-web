@@ -70,18 +70,16 @@ export default function ResetPasswordModal({
       footer={
         (<div className="flex items-center">
           <Button
-            icon={<SvgIcon name="close" size={20} className="mr-8" />}
+            iconName="close"
             onClick={closeModal}
             className="mr-20"
           >
             取消
           </Button>
           <Button
-            className="bg-black-900"
-            textClassName="text-white"
-            icon={
-              <SvgIcon name="check" type="light" size={20} className="mr-8" />
-            }
+            className="bg-black-900 text-white"
+            iconName="check"
+            iconSize={20}
             onClick={handleReset}
           >
             发送重置密码

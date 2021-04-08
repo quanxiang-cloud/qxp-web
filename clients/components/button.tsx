@@ -1,65 +1,43 @@
-import React, { MouseEvent, MouseEventHandler, forwardRef, Ref } from 'react';
-import { twCascade } from '@mariusmarais/tailwind-cascade';
-import { Loading, Icon } from '@QCFE/lego-ui';
+import React, { forwardRef, Ref } from 'react';
+import classnames from 'classnames';
 
-export type ButtonType = 'primary' | 'secondary' | 'disabled';
+import SvgIcon from '@c/icon';
 
-interface Props {
-  type?: ButtonType;
-  icon?: JSX.Element;
-  loading?: boolean;
-  children: React.ReactNode;
-  className?: string;
-  textClassName?: string;
-  onClick?: MouseEventHandler<HTMLElement>;
-  htmlType?: 'submit' | 'reset' | 'button';
+interface Props extends React.DetailedHTMLProps<
+React.ButtonHTMLAttributes<HTMLButtonElement>,
+HTMLButtonElement
+>{
+  modifier?: 'primary' | 'loading' | 'forbidden';
+  iconName?: string;
+  iconSize?: number;
 }
 
-type CompoundedComponent = React.ForwardRefExoticComponent<Props & React.RefAttributes<HTMLElement>>
-
-function Button({
-  type, children, icon, className, textClassName, onClick, loading, htmlType = 'button', ...rest
-}: Props, ref?: Ref<HTMLButtonElement>) {
-  function handleClick(e: MouseEvent<HTMLButtonElement>) {
-    if (loading) {
-      return;
-    }
-    onClick && onClick(e);
-  }
-
+function Button(
+  { children, iconName, className, modifier = 'primary', iconSize, ...rest }: Props,
+  ref?: Ref<HTMLButtonElement>
+) {
   return (
     <button
       {...rest}
       ref={ref}
-      type={htmlType}
-      onClick={handleClick}
-      className={twCascade(
-        'h-32 text-center leading-25 inline-block border border-gray-700',
-        'px-16 rounded-l-8 rounded-tr-2 rounded-br-8 cursor-pointer btn',
-        className,
-        {
-          'opacity-50': loading || type === 'disabled',
-          'cursor-not-allowed': loading || type === 'disabled',
-          'pointer-events-none': loading || type === 'disabled',
-          'btn-loading': loading,
-          [`btn-${type}`]: type,
-        }
-      )}
+      className={classnames('btn', className, `btn-${modifier}`, {
+        'cursor-not-allowed': modifier === 'forbidden',
+        'opacity-50': modifier === 'forbidden',
+        'pointer-events-none': modifier === 'loading' || modifier === 'forbidden',
+      })}
     >
-      <span className="flex items-center justify-center">
-        {loading && (
-          <Loading size="20" />
-        )}
-        {!loading && icon && (
-          <>{icon}</>
-        )}
-        {!loading && typeof icon === 'string' && (
-          <Icon name={icon} type={type === 'primary' ? 'light' : 'dark'} />
-        )}
-        <span className={twCascade('text-14', textClassName)}>{children}</span>
-      </span>
+      {iconName && (
+        <SvgIcon
+          name={iconName}
+          type={modifier === 'primary' ? 'light' : 'dark'}
+          disabled={modifier === 'forbidden'}
+          size={iconSize || 20}
+          className="fill-current text-inherit mr-8"
+        />
+      )}
+      {children}
     </button>
   );
 }
 
-export default forwardRef<HTMLButtonElement, Props>(Button) as CompoundedComponent;
+export default forwardRef(Button);

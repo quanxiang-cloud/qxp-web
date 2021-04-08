@@ -112,7 +112,10 @@ module.exports = {
       },
       zIndex: {
         '-z-1': -1,
-      }
+      },
+      textColor: {
+        'inherit': 'inherit'
+      }      
     },
   },
 };

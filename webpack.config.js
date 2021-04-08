@@ -22,6 +22,7 @@ module.exports = function (env) {
       'login-by-password': './clients/login/password.ts',
       'login-by-captcha': './clients/login/captcha.ts',
       'reset-password': './clients/login/reset-password',
+      'retrieve-password': './clients/login/retrieve-password',
       404: './clients/404/index.ts',
     },
 
@@ -105,6 +106,7 @@ module.exports = function (env) {
       }),
       new HtmlWebpackPlugin({
         inject: false,
+        chunks: ['404'],
         template: './clients/templates/404.html',
         filename: `${__dirname}/dist/templates/404.html`,
       }),
@@ -113,6 +115,12 @@ module.exports = function (env) {
         chunks: ['reset-password'],
         template: './clients/templates/reset-password.html',
         filename: `${__dirname}/dist/templates/reset-password.html`,
+      }),
+      new HtmlWebpackPlugin({
+        inject: false,
+        chunks: ['retrieve-password'],
+        template: './clients/templates/retrieve-password.html',
+        filename: `${__dirname}/dist/templates/retrieve-password.html`,
       }),
       env !== 'production' ? new WebpackNotifierPlugin({ alwaysNotify: true }) : null,
     ].filter(Boolean),
