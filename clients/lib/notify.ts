@@ -1,13 +1,11 @@
-// todo notify should be export as utils method, not class.
-// recommend usage: notify.success(message, options), notify.error(message, options) ...
-export default class Notify {
+class Notify {
   private duration?: number;
   private element: HTMLElement;
   private notifyInstances: Element[];
 
-  constructor(ele: HTMLElement, duration = 3000) {
-    this.duration = duration;
-    this.element = ele;
+  constructor() {
+    this.duration = 300000;
+    this.element = document.body;
     this.element.style.position = 'relative';
     this.notifyInstances = [];
     const style = document.createElement('style');
@@ -21,7 +19,7 @@ export default class Notify {
         flex-flow: row nowrap;
         justify-content: space-between;
         align-items: center;
-        padding: 12px 16px;
+        padding: 7px 16px;
         box-shadow: 0px 8px 24px 4px rgba(148, 163, 184, 0.25);
         border-radius: 4px 12px 12px 12px;
         transition: all .3s ease;
@@ -37,7 +35,7 @@ export default class Notify {
         }
       }
 
-      .notify .message {
+      .notify .message-info {
         font-size: 14px;
         line-height: 22px;
         margin-right: 64px;
@@ -94,7 +92,7 @@ export default class Notify {
   private getTemplate(type: string, message: string) {
     return `
       <div class="notify ${type}">
-        <span class="message">${message}</span>
+        <span class="message-info">${message}</span>
         <span class="close" onClick="closeNotify(event);">x</span>
       </div>
     `;
@@ -110,11 +108,17 @@ export default class Notify {
     setTimeout(() => this.close(element), this.duration);
   }
 
-  info(message: string) {
+  public success(message: string) {
     this.notify('info', message);
   }
 
-  error(message: string) {
+  public error(message: string) {
     this.notify('error', message);
   }
+
+  setDuration(duration: number) {
+    this.duration = duration;
+  }
 }
+
+export default new Notify();
