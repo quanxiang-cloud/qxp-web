@@ -1,0 +1,111 @@
+import React from 'react';
+import Icon from '@c/icon';
+import { Form } from '@formily/antd';
+import omit from 'lodash/omit';
+import DropWrapper from './drop-wrapper';
+import ElementRenderer from './ElementRenderer.txt';
+import { EmptyPlaceholder } from './StyledComponents';
+import { useFormBuilderContext } from './context';
+
+type SchemaRendererProps = {
+  formItems: Array<any>;
+  parent?: string;
+  path?: string;
+  activeItem: any;
+  formAttrs: any;
+}
+
+function SchemaRenderer(
+  { formItems, parent = '$0', path = '$0', activeItem, formAttrs }: SchemaRendererProps,
+): React.ReactElement[] {
+  return formItems.map((item, index) => {
+    const { children } = item;
+    const className = children ? 'drag-row row-container' : 'drag-row';
+    const newPath = `${path}-${index}`;
+    const _item = { ...item };
+    _item.path = newPath;
+    // update activeItem path.
+    if (activeItem && activeItem.id === _item.id) {
+      activeItem.path = newPath;
+    }
+    const props = {
+      item: _item,
+      index,
+      className,
+      parent,
+      path: newPath,
+      key: item.id,
+      id: item.id,
+      formAttrs,
+    };
+
+    if (!children) {
+      return React.createElement(ElementRenderer, props);
+    }
+
+    return React.createElement(
+      ElementRenderer,
+      props,
+      // eslint-disable-next-line new-cap
+      SchemaRenderer({
+        formItems: children,
+        parent: item.id,
+        path: newPath,
+        activeItem,
+        formAttrs,
+      }),
+    );
+  });
+}
+
+type Props = {
+  items: Array<any>;
+  formValue: any;
+  formAttrs: any;
+}
+
+function Canvas({ items, formValue, formAttrs }: Props): JSX.Element {
+  const { activeItem } = useFormBuilderContext();
+
+  const containerItem = {
+    id: '$0',
+    name: 'CanvasContainer',
+  };
+
+  if (!items.length) {
+    return (
+      <DropWrapper
+        className="canvas-container"
+        id="$0"
+        isWrapper
+        path="$0"
+        index={0}
+        item={containerItem}
+        draggable={false}
+      >
+        <EmptyPlaceholder>
+          <Icon name="add" size={32} />
+          <div className="text">请从左侧拖拽所需字段组成表单</div>
+        </EmptyPlaceholder>
+      </DropWrapper>
+    );
+  }
+
+  return (
+    <DropWrapper
+      className="canvas-container"
+      id="$0"
+      isWrapper
+      item={containerItem}
+      path="$0"
+      index={0}
+      draggable={false}
+    >
+      <Form value={formValue} {...omit(formAttrs, ['helpInLabel'])}>
+        <SchemaRenderer formItems={items} activeItem={activeItem} formAttrs={formAttrs} />
+      </Form>
+    </DropWrapper>
+  );
+}
+
+export default Canvas;

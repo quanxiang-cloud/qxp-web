@@ -1,0 +1,88 @@
+// lego-ui
+.qicon-dark {
+  color: #324558;
+  fill: #b6c2cd;
+}
+
+.icon {
+  align-items: center;
+  display: inline-flex;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+
+  svg {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+
+.page-form {
+  overflow: hidden;
+
+  .topbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 9;
+    padding: 10px 24px;
+    background: #fff;
+    box-shadow: 0 3px 5px 0 rgba(213, 220, 231, 0.64), 0 0.5px 1px 0 rgba(174, 184, 193, 0.48);
+
+    .form-title {
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .ant-btn {
+      padding: 4px 8px;
+      border-radius: 3px;
+      transition-duration: .1s;
+    }
+
+    .topbar-divider {
+      margin: 0 15px;
+
+      &:after {
+        content: '';
+        border-left: 1px solid #d5dee7;
+        width: 0;
+        height: 25px;
+      }
+    }
+  }
+
+  .form-builder-container {
+    margin: 0 20px;
+  }
+
+  .custom-form-builder {
+    height: calc(100vh - 80px);
+    margin-top: 65px;
+  }
+}
+
+.level {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.level-left, .level-right {
+  display: flex;
+  flex-grow: 0;
+  flex-shrink: 0;
+  flex-basis: auto;
+}
+
+.level-left {
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.level-right {
+  align-items: center;
+  justify-content: flex-end;
+}
