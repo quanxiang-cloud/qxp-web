@@ -230,9 +230,10 @@ export default function Employees({
             ) : (
               <>
                 <Button
+                  modifier="primary"
                   iconName="create_new_folder"
                   onClick={() => openModal('import_employees')}
-                  className="mr-16 bg-gray-700 text-white"
+                  className="mr-16"
                 >
                   excel 批量导入
                 </Button>

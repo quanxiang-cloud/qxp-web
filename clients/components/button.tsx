@@ -21,8 +21,8 @@ function Button(
     <button
       {...rest}
       ref={ref}
-      className={classnames('btn', className, `btn-${modifier}`, {
-        'btn-loading': loading,
+      className={classnames('btn', className, `btn--${modifier}`, {
+        'btn--loading': loading,
         'cursor-not-allowed': forbidden,
         'opacity-50': forbidden,
         'pointer-events-none': loading || forbidden,
