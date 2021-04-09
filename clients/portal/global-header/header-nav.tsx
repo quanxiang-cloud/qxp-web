@@ -30,6 +30,7 @@ export default function HeaderLeft() {
   const isAccess = [
     '/access-control',
     '/access-control/',
+    '/access-control/departments-employees',
     '/access-control/role-management',
   ].includes(location.pathname);
   const isSystemControl = location.pathname === '/system';
