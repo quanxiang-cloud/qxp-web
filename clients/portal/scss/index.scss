@@ -12,6 +12,10 @@ html {
 
 body {
   font-size: 1.4rem;
+
+  #root {
+    height: 100%;
+  }
 }
 
 .w-316 {
@@ -349,9 +353,10 @@ button {
       padding-right: 20px !important;
       @apply rounded-br-8 rounded-bl-8 rounded-tl-none rounded-tr-none #{!important};
       @apply cursor-default pointer-events-none #{!important};
+
       &:hover,
       &:focus {
-        border-color:#d5dee7 !important;
+        border-color: #d5dee7 !important;
       }
     }
   }

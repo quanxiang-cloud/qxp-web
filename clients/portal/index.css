@@ -12,10 +12,6 @@
   border-radius: 12px;
 }
 
-/* .global-header {
-  margin-bottom: 20px;
-} */
-
 body {
   background-image: url(/dist/images/viewport-bg.svg);
   background-size: cover;

@@ -1,73 +1,284 @@
-import React, { useEffect } from 'react';
-import { twCascade } from '@mariusmarais/tailwind-cascade';
+import React from 'react';
+import classNames from 'classnames';
+import { Input } from '@QCFE/lego-ui';
 
-import { Core } from './pagger';
+import SvgIcon from '@c/icon';
 import Select from '@c/select';
 
-interface PaginationProps {
-  type?: 'simple' | 'mini';
-  current: number;
-  total: number;
-  pageSize: number;
+import Pager from './pager';
+
+import './index.scss';
+
+export interface Props {
+  pageNumber?: number;
+  total?: number;
+  hideOnSinglePage?: boolean;
+  pageSize?: number;
+  onChange?: (pageNumber: number, pageSize: number) => void;
+  showSizeChanger?: boolean;
   pageSizeOptions?: number[];
-  className?: string;
-  style?: Record<string, string>;
-  onChange?: (current: number) => void;
-  onShowSizeChange?: (pageSize: number) => void;
-  prefix?: JSX.Element | string;
+  showQuickJumper?: boolean;
+  showTotal?: (total: number, range?: [number, number]) => React.ReactNode;
+  showLessItems?: boolean;
 }
 
-export default function Pagination({
-  type = 'mini',
-  current,
-  pageSize,
-  total,
-  onChange,
+function Pagination({
+  pageNumber = 1,
+  total = 0,
+  pageSize = 10,
+  hideOnSinglePage,
   pageSizeOptions = [10, 20, 50, 100],
-  onShowSizeChange,
-  prefix = '',
-  className,
-}: PaginationProps) {
-  const maxPage = Math.ceil(total / pageSize);
+  showTotal,
+  showSizeChanger,
+  showQuickJumper,
+  showLessItems,
+  onChange,
+}: Props) {
+  if (hideOnSinglePage && total <= pageSize) {
+    return null;
+  }
 
-  useEffect(() => {
-    const maxPage = Math.ceil(total / pageSize);
-    if (current > maxPage && !!maxPage && onChange) {
-      onChange(1);
+  const [pageParams, setPageParams] = React.useState({
+    current: pageNumber || 0,
+    _current: '',
+    pageSize: pageSize || 10,
+  });
+
+  function calcPage(p?: number) {
+    let pageSizes = p;
+    if (typeof pageSizes === 'undefined') {
+      pageSizes = pageParams.pageSize;
     }
-  }, [current, total, pageSize]);
+    return Math.floor((total - 1) / pageSizes) + 1;
+  }
 
-  const selectChange = (val: number) => {
-    onShowSizeChange && onShowSizeChange(val);
-  };
+  function isValid(page: number) {
+    return typeof page === 'number' && page >= 1 && page !== pageParams.current;
+  }
 
-  return (
-    <div
-      className={twCascade(
-        'inline-flex items-center justify-between bg-white px-24',
-        'py-8 w-full border-gray-200',
-        className,
-      )}
-    >
-      {type === 'simple' ? <div>{prefix}</div> : <div></div>}
-      <div className="flex items-center">
-        <Core current={current <= maxPage ? current : 1} maxPage={maxPage} onChange={onChange} />
-        <div className="w-16"></div>
-        {type === 'simple' && (<div className="flex items-center">
+  function handleChange(p: number) {
+    let page = p;
+    if (isValid(page)) {
+      if (page > calcPage()) {
+        page = calcPage();
+      }
+    }
+
+    setPageParams({
+      current: page,
+      pageSize: pageParams.pageSize,
+      _current: '',
+    });
+
+    onChange && onChange(page, pageParams.pageSize);
+
+    return pageParams.current;
+  }
+
+  function changePageSize(size: number) {
+    setPageParams({
+      current: 1,
+      pageSize: size,
+      _current: '',
+    });
+    onChange && onChange(1, size);
+  }
+
+  function handleInputOnblur() {
+    const isNumber = pageParams._current !== '' && !isNaN(Number(pageParams._current));
+    if (isNumber) {
+      handleChange(Number(pageParams._current));
+    }
+  }
+
+  function handleInputKeydown(e: React.KeyboardEvent) {
+    if (e.key !== 'Enter') {
+      return;
+    }
+    handleInputOnblur();
+  }
+
+  function handPrev() {
+    if (hasPrev()) {
+      handleChange(pageParams.current - 1);
+    }
+  }
+
+  function handleNext() {
+    if (hasNext()) {
+      handleChange(pageParams.current + 1);
+    }
+  }
+
+  function handleJumpPrev() {
+    handleChange(Math.max(1, pageParams.current - 5));
+  }
+
+  function handleJumpNext() {
+    handleChange(Math.min(calcPage(), pageParams.current + 5));
+  }
+
+  function hasPrev() {
+    return pageParams.current > 1;
+  }
+
+  function hasNext() {
+    return pageParams.current < calcPage();
+  }
+
+  function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
+    setPageParams({
+      pageSize: pageParams.pageSize,
+      current: pageParams.current,
+      _current: e.target.value,
+    });
+  }
+
+  const prevIcon = (
+    <li
+      className={classNames('pagination-page', { 'pagination-disabled': pageParams.current === 1 })}
+      onClick={handPrev}>
+      <SvgIcon name="chevron_left" />
+    </li>
+  );
+
+  const nextIcon = (
+    <li
+      className={classNames('pagination-page', {
+        'pagination-disabled': pageParams.current === calcPage(),
+      })}
+      onClick={handleNext}>
+      <SvgIcon name="chevron_right" />
+    </li>
+  );
+
+  const allPages = calcPage();
+  const pagerList = [];
+  let firstPager = null;
+  let lastPager = null;
+  let jumpPrev = null;
+  let jumpNext = null;
+  let totalText = null;
+  let pageSizeText = null;
+  let quickJumperText = null;
+
+  if (allPages <= 9) {
+    for (let i = 1; i <= allPages; i+=1) {
+      const active = pageParams.current === i;
+      pagerList.push(<Pager
+        key={i}
+        page={i}
+        active={active}
+        onClick={() => handleChange(i)}
+      />);
+    }
+  } else {
+    lastPager = (<Pager key={allPages} page={allPages} active={false}
+      onClick={() => handleChange(allPages)} />);
+    firstPager = (<Pager key={1} page={1} active={false} onClick={() => handleChange(1)} />);
+    jumpPrev = (
+      <li key="jumpPrev"
+        className="pagination-page pagination-jump pagination-jump-prev" onClick={handleJumpPrev}>
+        <SvgIcon className="icon" name="more_horiz" />
+        <SvgIcon className="prev" name="double_arrow"
+          color="#375FF3" style={{ transform: 'rotate(180deg)' }} />
+      </li>);
+    jumpNext = (
+      <li key="jumpNext"
+        className="pagination-page pagination-jump pagination-jump-next" onClick={handleJumpNext}>
+        <SvgIcon className="icon" name="more_horiz" />
+        <SvgIcon className="next" name="double_arrow" color="#375FF3" />
+      </li>);
+
+    const num = showLessItems ? 2 : 4;
+    const secondNum = showLessItems ? 3 : 4;
+
+    const _current = pageParams.current;
+    let left = Math.max(1, _current - (num / 2));
+    let right = Math.min(_current + (num / 2), allPages);
+
+    if (_current - 1 <= num / 2) {
+      right = 1 + num;
+    }
+
+    if (allPages - _current <= num / 2) {
+      left = allPages - num;
+    }
+
+    for (let i = left; i <= right; i+= 1) {
+      const active = _current === i;
+      pagerList.push((<Pager key={i} page={i} active={active}
+        onClick={() => handleChange(i)} />));
+    }
+
+    if (_current - 1 >= secondNum) {
+      pagerList.unshift(jumpPrev);
+    }
+    if (allPages - _current >= secondNum) {
+      pagerList.push(jumpNext);
+    }
+
+    if (left !== 1) {
+      pagerList.unshift(firstPager);
+    }
+    if (right !== allPages) {
+      pagerList.push(lastPager);
+    }
+  }
+
+  if (showTotal) {
+    totalText = (<li>{showTotal(allPages)}</li>);
+  }
+
+  if ((showSizeChanger && total <= 50) || total > 50) {
+    pageSizeText = (
+      <li className="ml-16">
+        <div className="flex items-center">
           <div className="text-12 mr-6 text-center leading-28">每页</div>
           <Select
-            value={pageSize}
-            onChange={selectChange}
+            value={pageParams.pageSize}
+            onChange={changePageSize}
             className="h-28 border border-gray-300 select-border-radius
             px-12 text-12 flex items-center"
-            options={pageSizeOptions.map((page: number) => ({
+            options={pageSizeOptions ? pageSizeOptions.map((page: number) => ({
               label: `${page} 条`,
               value: page,
-            }))}
+            })): []}
           />
         </div>
-        )}
-      </div>
-    </div>
+      </li>
+    );
+  }
+
+  if (showQuickJumper) {
+    quickJumperText = (
+      <li className="ml-16">
+        <div className="flex items-center">
+          <div className="text-12 mr-6 text-center leading-28">跳至</div>
+          <Input
+            value={pageParams._current}
+            onChange={handleInputChange}
+            onBlur={handleInputOnblur}
+            onKeyDown={handleInputKeydown}
+            className="w-40 h-28 border border-gray-300 select-border-radius
+            px-12 text-12 flex items-center"
+          />
+          <div className="text-12 ml-6 text-center leading-28">页</div>
+        </div>
+      </li>
+    );
+  }
+
+  return (
+    <ul className="pagination">
+      {totalText}
+      {prevIcon}
+      {pagerList}
+      {nextIcon}
+      {pageSizeText}
+      {quickJumperText}
+    </ul>
   );
 }
+
+export default Pagination;
