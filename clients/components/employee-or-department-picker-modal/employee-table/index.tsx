@@ -128,15 +128,14 @@ export default observer(function EmployeeTable({
         }}
       />
       <Pagination
-        type="simple"
         {...store.pagination}
-        onShowSizeChange={store.setPageSize}
-        onChange={store.setCurrentPage}
-        prefix={
-          (<span className="text-12 text-dark-four">
-            {`已选 ${store.selectedKeys.length}, 共 ${total}条`}
-          </span>)
-        }
+        total={total}
+        onChange={store.setPagination}
+        // prefix={
+        //   (<span className="text-12 text-dark-four">
+        //     {`已选 ${store.selectedKeys.length}, 共 ${total}条`}
+        //   </span>)
+        // }
         className="pagination-border"
       />
     </div>

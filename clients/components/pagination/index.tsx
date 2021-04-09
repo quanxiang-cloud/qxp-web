@@ -1,5 +1,5 @@
 import React from 'react';
-import classNames from 'classnames';
+import classnames from 'classnames';
 import { Input } from '@QCFE/lego-ui';
 
 import SvgIcon from '@c/icon';
@@ -20,6 +20,7 @@ export interface Props {
   showQuickJumper?: boolean;
   showTotal?: (total: number, range?: [number, number]) => React.ReactNode;
   showLessItems?: boolean;
+  className?: string;
 }
 
 function Pagination({
@@ -33,6 +34,7 @@ function Pagination({
   showQuickJumper,
   showLessItems,
   onChange,
+  className,
 }: Props) {
   if (hideOnSinglePage && total <= pageSize) {
     return null;
@@ -136,7 +138,7 @@ function Pagination({
 
   const prevIcon = (
     <li
-      className={classNames('pagination-page', { 'pagination-disabled': pageParams.current === 1 })}
+      className={classnames('pagination-page', { 'pagination-disabled': pageParams.current === 1 })}
       onClick={handPrev}>
       <SvgIcon name="chevron_left" />
     </li>
@@ -144,7 +146,7 @@ function Pagination({
 
   const nextIcon = (
     <li
-      className={classNames('pagination-page', {
+      className={classnames('pagination-page', {
         'pagination-disabled': pageParams.current === calcPage(),
       })}
       onClick={handleNext}>
@@ -270,7 +272,7 @@ function Pagination({
   }
 
   return (
-    <ul className="pagination">
+    <ul className={classnames('pagination', className)}>
       {totalText}
       {prevIcon}
       {pagerList}
