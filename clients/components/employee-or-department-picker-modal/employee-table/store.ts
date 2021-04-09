@@ -39,6 +39,11 @@ class EmployeeStore {
   }
 
   @action
+  setPagination = (page: number, pageSize: number) => {
+    this.pagination = { ...this.pagination, current: page, pageSize };
+  }
+
+  @action
   toggleSelectedKeys = (id: string) => {
     this.selectedKeys = this.selectedKeys.includes(id) ?
       this.selectedKeys.filter((item) => item !== id) :

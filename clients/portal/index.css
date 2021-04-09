@@ -3,6 +3,7 @@
 @import "./css/typography.css";
 @import "./css/border.css";
 @import "./css/btn.css";
+@import "./css/animation.css";
 
 .right-content-container {
   @apply bg-white self-stretch flex flex-1;
@@ -31,11 +32,6 @@ html {
 .mb-0-i {
   margin-bottom:0 !important;
 }
-
-
-/* .global-header {
-  margin-bottom: 20px;
-} */
 
 body {
   background-image: url(/dist/images/viewport-bg.svg);

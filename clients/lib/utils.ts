@@ -10,7 +10,9 @@ export function httpPost<T>(
 ): Promise<ResponseToBeDelete<T> | never> {
   const req = new XMLHttpRequest();
   req.open('POST', url, true);
-  req.setRequestHeader('X-Proxy', 'API');
+  if (!headers || !headers['X-Proxy']) {
+    req.setRequestHeader('X-Proxy', 'API');
+  }
   let keys: string[] = [];
   if (headers) {
     keys = Object.keys(headers);

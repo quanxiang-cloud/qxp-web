@@ -72,17 +72,16 @@ export default function EmployeeOrDepartmentPickerModal({
       footer={
         (<div className="flex flex-row justify-between items-center">
           <Button
-            className="bg-white hover:bg-gray-100 transition cursor-pointer mr-20 mb-0"
-            textClassName="text-gray-600 ml-2"
-            icon={<img src="/dist/images/icon_error.svg" />}
+            className="bg-white hover:bg-gray-100 transition cursor-pointer mr-20
+            mb-0 text-gray-600 ml-2"
+            iconName="close"
             onClick={onCancel}
           >
             取消
           </Button>
           <Button
-            className="bg-gray-700 hover:bg-gray-900 transition cursor-pointer mb-0"
-            textClassName="text-white ml-2"
-            icon={<img src="/dist/images/icon_true.svg" />}
+            className="bg-gray-700 hover:bg-gray-900 transition cursor-pointer mb-0 text-white ml-2"
+            iconName="check"
             onClick={onBind}
           >
             确定选择

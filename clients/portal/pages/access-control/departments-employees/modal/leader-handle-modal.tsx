@@ -2,7 +2,7 @@ import React from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 import { Modal, Message } from '@QCFE/lego-ui';
 
-import SvgIcon from '@c/icon';
+import Icon from '@c/icon';
 import Button from '@c/button';
 import { setDEPLeader, cancelDEPLeader, LeaderParams } from '../api';
 
@@ -50,16 +50,17 @@ export default function LeaderHandleModal({ user, closeModal }: Props) {
       footer={
         (<div className="flex items-center">
           <Button
-            icon={<SvgIcon name="close" size={20} className="mr-8" />}
+            iconName="close"
+            iconSize={20}
             onClick={closeModal}
             className="mr-20"
           >
             取消
           </Button>
           <Button
-            className="bg-black-900"
-            textClassName="text-white"
-            icon={<SvgIcon name="check" type="light" size={20} className="mr-8" />}
+            className="bg-gray-700 text-white"
+            iconName="check"
+            iconSize={20}
             onClick={handleSubmit}
           >
             确定{title}主管
@@ -69,7 +70,7 @@ export default function LeaderHandleModal({ user, closeModal }: Props) {
     >
       <div>
         <div className='flex items-center'>
-          <SvgIcon name="info" size={20} style={{ color: '#D97706' }} className='mr-8' />
+          <Icon name="info" size={20} style={{ color: '#D97706' }} className='mr-8' />
           <div className="text-yellow-600 text-14">
             确定将员工<span className='mx-4'>{user.userName}</span>{title}主管吗？
           </div>

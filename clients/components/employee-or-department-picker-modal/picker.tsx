@@ -4,7 +4,7 @@ import { observer } from 'mobx-react';
 
 import Tab from '@c/tab';
 import TextHeader from '@c/text-header';
-import SearchInput from '@c/form/search-input';
+import SearchInput from '@c/form/input/search-input';
 import Loading from '@c/loading';
 // todo remove this
 import {

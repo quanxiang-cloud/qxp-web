@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 
 import Button from '@c/button';
-import Authorized from '@clients/components/authorized';
+import Authorized from '@c/authorized';
 import Switch from '@c/switch';
 import EmployeeOrDepartmentPickerModal from '@c/employee-or-department-picker-modal';
 import { updateRoleAssociations, IUpdateRoleAssociations } from '../../api';
@@ -76,9 +76,9 @@ export default function AssociateDepartmentEmployee({ roleID, isSuper }: Props) 
         {!isSuper && (
           <Authorized authority={['accessControl/role/manage']}>
             <Button
-              className="bg-gray-700 hover:bg-gray-900 transition mb-16 cursor-pointer"
-              textClassName="text-white ml-2"
-              icon={<img src="/dist/images/link.svg" />}
+              className="bg-gray-700 hover:bg-gray-900 transition mb-16 cursor-pointer
+               text-white ml-2"
+              iconName="link"
               onClick={() => setShowBindModal(true)}
             >
             关联员工与部门

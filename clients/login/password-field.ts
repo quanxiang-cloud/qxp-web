@@ -31,6 +31,13 @@ export default class Password extends InputField {
       }
       this.action.classList.add('disabled');
     }
+    if (this.customeValidator) {
+      const validateError = this.customeValidator(this.value as string);
+      if (validateError) {
+        isValid = false;
+        this.errMessage = validateError;
+      }
+    }
     if (isValid) {
       this.errMessage = '';
     }

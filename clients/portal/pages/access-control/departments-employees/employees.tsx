@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useQuery } from 'react-query';
 import { Table, Message } from '@QCFE/lego-ui';
 
-import SvgIcon from '@c/icon';
+import Icon from '@c/icon';
 import EmptyTips from '@c/empty-tips';
 import Pagination from '@c/pagination';
-import Authorized from '@clients/components/authorized';
+import Authorized from '@c/authorized';
 import Button from '@c/button';
 import MoreMenu from '@c/more-menu';
 import { usePortalGlobalValue } from '@portal/states_to_be_delete/portal';
@@ -83,16 +83,8 @@ export default function Employees({
     openModal('alert_user_state');
   }
 
-  function handlePageChange(current: number) {
-    setPageParams({ ...pageParams, page: current });
-  }
-
-  function handlePageSizeChange(limit: number) {
-    setPageParams({
-      ...pageParams,
-      page: 1,
-      limit,
-    });
+  function handlePageChange(current: number, pageSize: number) {
+    setPageParams({ ...pageParams, page: current, limit: pageSize });
   }
 
   function handleEmployeesExport() {
@@ -146,10 +138,10 @@ export default function Employees({
       title: '',
       dataIndex: '',
       width: 40,
-      render: (text: string, record: UserInfo)=> {
+      render: (text: string, record: UserInfo) => {
         const menu = EmployeesActions.filter((menu) => {
           return menu.authority.includes(record?.useStatus || 0) &&
-          menu.leader.includes(record?.isDEPLeader || 0);
+            menu.leader.includes(record?.isDEPLeader || 0);
         });
         return (
           <MoreMenu
@@ -161,7 +153,7 @@ export default function Employees({
                 handleUserInfo(record);
                 return;
               }
-              if (key === 'confer' || key === 'revoke' ) {
+              if (key === 'confer' || key === 'revoke') {
                 handleDepLeader(record);
               }
               if (key === 'reset') {
@@ -188,13 +180,13 @@ export default function Employees({
   return (
     <>
       { modalType === 'leader_handle' &&
-      (<LeaderHandleModal user={currUser} closeModal={closeModal} />)}
+        (<LeaderHandleModal user={currUser} closeModal={closeModal} />)}
       { modalType === 'adjust_dep' &&
-      (<AdjustDepModal users={selectedUsers} closeModal={closeModal} />)}
+        (<AdjustDepModal users={selectedUsers} closeModal={closeModal} />)}
       { modalType === 'edit_employees' &&
-      (<EditEmployeesModal user={currUser} closeModal={closeModal} />)}
+        (<EditEmployeesModal user={currUser} closeModal={closeModal} />)}
       { modalType === 'import_employees' &&
-      (<ImportEmployeesModal currDepId={department.id} closeModal={closeFileModal} />)}
+        (<ImportEmployeesModal currDepId={department.id} closeModal={closeFileModal} />)}
       {
         modalType === 'alert_user_state' && (<AlterUserStateModal
           status={userState}
@@ -220,37 +212,40 @@ export default function Employees({
             {selectedUserIds.length > 0 ? (
               <>
                 <Button
-                  className="bg-black-900"
-                  textClassName="text-white"
-                  icon={<SvgIcon name="device_hub" type="light" size={20} className="mr-10" />}
+                  className="bg-gray-700 text-white"
+                  modifier="primary"
+                  iconName="device_hub"
+                  iconSize={20}
                   onClick={() => openModal('adjust_dep')}
                 >
-                调整部门
+                  调整部门
                 </Button>
                 <div className="w-16"></div>
                 <Button
-                  icon={<SvgIcon name="password" className="mr-10" size={20} />}
+                  iconName="password"
+                  iconSize={20}
                   onClick={() => openModal('reset_password')}
                 >
-                重置密码
+                  重置密码
                 </Button>
               </>
             ) : (
               <>
                 <Button
-                  icon={(<SvgIcon type="light" name="create_new_folder"
-                    className="mr-10" size={20} />)}
+                  iconName="create_new_folder"
+                  iconSize={20}
                   onClick={() => openModal('import_employees')}
                   className="mr-16 bg-gray-700 text-white"
                 >
-                excel 批量导入
+                  excel 批量导入
                 </Button>
                 <Button
-                  icon={<SvgIcon name="add" className="mr-10" size={20} />}
+                  iconName="add"
+                  iconSize={20}
                   onClick={() => handleUserInfo(initUserInfo)}
                   className="mr-16"
                 >
-                添加员工
+                  添加员工
                 </Button>
                 <MoreMenu
                   menus={ExpandActions}
@@ -264,7 +259,7 @@ export default function Employees({
                   }}
                 >
                   <div className="p-6 bg-gray-700 text-white btn-border-radius cursor-pointer">
-                    <SvgIcon type="light" name="more_horiz" size={20} />
+                    <Icon type="light" name="more_horiz" size={20} />
                   </div>
                 </MoreMenu>
               </>
@@ -297,12 +292,10 @@ export default function Employees({
         <div className="flex justify-end">
           {
             (employeesList?.data && employeesList?.data.length > 0) && (<Pagination
-              type="simple"
-              current={pageParams.page}
+              pageNumber={pageParams.page}
               total={employeesList?.total || 0}
               pageSize={pageParams.limit}
               onChange={handlePageChange}
-              onShowSizeChange={handlePageSizeChange}
             />)
           }
         </div>

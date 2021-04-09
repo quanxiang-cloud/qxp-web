@@ -8,12 +8,14 @@ import './index.scss';
 type Props = {
   onCancel: () => void;
   title: string;
-  children: React.ReactNode
+  children: React.ReactNode;
+  distanceTop: number;
 }
 
-function Drawer({ onCancel, title, children }: Props) {
+function Drawer({ onCancel, title, children, distanceTop = 56 }: Props) {
   const [beganClose, setBeganClose] = useState<boolean>(false);
   const [visible, setVisible] = useState<boolean>(false);
+
   const handleCancel = () => {
     setBeganClose(true);
     setTimeout(() => {
@@ -23,10 +25,16 @@ function Drawer({ onCancel, title, children }: Props) {
   };
 
   return (
-    <div className={
-      cs('drawer-modal-mask', { 'drawer-began-close': beganClose, 'drawer-close': visible })
-    }>
-      <div className='drawer-content'>
+    <div
+      className={cs('drawer-modal-mask', {
+        'drawer-began-close': beganClose,
+        'drawer-close': visible,
+      })}
+    >
+      <div
+        style={{ '--distanceTop': distanceTop + 'px' } as React.CSSProperties}
+        className='drawer-container'
+      >
         <div className='drawer-header header-background-image'>
           <span className='text-h5'>{title}</span>
           <Icon onClick={handleCancel} clickable changeable name='close' size={24} />

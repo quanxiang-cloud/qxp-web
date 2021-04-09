@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import { Icon } from '@QCFE/lego-ui';
 
 import More from '@c/more';
-import SvgIcon from '@c/icon';
+import Icon from '@c/icon';
 
 import ResetPasswordModal from './reset-password-modal';
 
@@ -17,7 +16,7 @@ export default function HeaderMenu() {
       />
       <div className="mr-56 header-nav-btn group">
         <div className="header-nav-btn-icon-wrapper">
-          <SvgIcon
+          <Icon
             name="book"
             className="group-hover:text-blue-600 header-nav-btn-icon"
             size={20}
@@ -29,7 +28,7 @@ export default function HeaderMenu() {
       </div>
       <div className="header-nav-btn group">
         <div className="header-nav-btn-icon-wrapper">
-          <SvgIcon
+          <Icon
             name="settings"
             className="group-hover:text-blue-600 header-nav-btn-icon"
             size={20}

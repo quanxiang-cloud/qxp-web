@@ -3,10 +3,9 @@ import { useQuery, useQueryClient } from 'react-query';
 import { Modal, Form, Message } from '@QCFE/lego-ui';
 
 import Button from '@c/button';
-import DepartmentPicker from '@c/input/tree-picker-field';
+import DepartmentPicker from '@c/form/input/tree-picker-field';
 import Loading from '@c/loading';
 import { departmentToTreeNode } from '@lib/utils';
-import SvgIcon from '@c/icon';
 
 import { createDepartment, editDepartment, getERPTree } from '../api';
 
@@ -116,16 +115,17 @@ export default function EditDepartment({ department, closeModal }: Props) {
       footer={
         (<div className="flex items-center">
           <Button
-            icon={<SvgIcon name="close" size={20} className="mr-8" />}
+            iconName="close"
+            iconSize={20}
             className="mr-20"
             onClick={closeModal}
           >
             取消
           </Button>
           <Button
-            className="bg-black-900"
-            textClassName="text-white"
-            icon={<SvgIcon name="check" type="light" size={20} className="mr-8" />}
+            className="bg-gray-700 text-white"
+            iconName="check"
+            iconSize={20}
             onClick={okModalHandle}
           >
             {submitBtnText}

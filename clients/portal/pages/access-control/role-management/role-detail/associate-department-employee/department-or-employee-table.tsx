@@ -4,11 +4,12 @@ import { useQuery } from 'react-query';
 import EmptyData from '@c/empty-tips';
 import More from '@c/more';
 import Pagination from '@c/pagination';
-import { getRoleAssociations } from '../../api';
 import Loading from '@c/loading';
 import Error from '@c/error';
 import Table from '@c/table';
 import { usePortalGlobalValue } from '@portal/states_to_be_delete/portal';
+
+import { getRoleAssociations } from '../../api';
 
 export const PAGINATION = {
   total: 0,
@@ -183,15 +184,17 @@ export default function DepartmentTable({ isSuper, onCancelAssociation, roleID, 
       {!isSuper && (
         <Pagination
           {...pagination}
-          type="simple"
-          prefix={
-            (<span className="text-12 text-gray-400">
-              {`共 ${pagination.total} 个${type === 1 ? '员工' : '部门'}`}
-            </span>)
-          }
-          onShowSizeChange={(pageSize) => setPagination((p) => ({ ...p, pageSize }))}
-          onChange={(current) => setPagination((p) => ({ ...p, current }))}
+          // prefix={
+          //   (<span className="text-12 text-gray-400">
+          //     {`共 ${pagination.total} 个${type === 1 ? '员工' : '部门'}`}
+          //   </span>)
+          // }
+          // onShowSizeChange={(pageSize) => setPagination((p) => ({ ...p, pageSize }))}
+          // onChange={(current) => setPagination((p) => ({ ...p, current }))}
           className="rounded-bl-12 rounded-br-12 pagination-border"
+          onChange={(pageNumber, pageSize) => {
+            setPagination({ current: pageNumber, pageSize, total: pagination.total });
+          }}
         />
       )}
     </>

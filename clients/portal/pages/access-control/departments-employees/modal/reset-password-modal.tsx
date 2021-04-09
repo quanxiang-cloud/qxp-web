@@ -3,7 +3,7 @@ import { useMutation } from 'react-query';
 import { Modal, Form, Message } from '@QCFE/lego-ui';
 
 import Button from '@c/button';
-import SvgIcon from '@c/icon';
+import Icon from '@c/icon';
 import { resetUserPWD } from '../api';
 
 const { CheckboxGroupField } = Form;
@@ -70,18 +70,16 @@ export default function ResetPasswordModal({
       footer={
         (<div className="flex items-center">
           <Button
-            icon={<SvgIcon name="close" size={20} className="mr-8" />}
+            iconName="close"
             onClick={closeModal}
             className="mr-20"
           >
             取消
           </Button>
           <Button
-            className="bg-black-900"
-            textClassName="text-white"
-            icon={
-              <SvgIcon name="check" type="light" size={20} className="mr-8" />
-            }
+            className="bg-gray-700 text-white"
+            iconName="check"
+            iconSize={20}
             onClick={handleReset}
           >
             发送重置密码
@@ -91,7 +89,7 @@ export default function ResetPasswordModal({
     >
       <div className="w-full flex flex-col">
         <div className="w-full box-border-radius px-18 py-12 mb-20 bg-blue-100 flex items-center">
-          <SvgIcon
+          <Icon
             name="info"
             size={24}
             type="primary"

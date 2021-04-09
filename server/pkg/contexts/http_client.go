@@ -61,7 +61,7 @@ func SendRequest(ctx context.Context, method string, fullPath string, body io.Re
 			"[request_id=%s] request API encounter status_code: %d, request method: %s, request path: %s, response body: %s",
 			requestID, resp.StatusCode, method, fullPath, buffer.String(),
 		)
-		return buffer, fmt.Sprintf("API server response status code >= %d", http.StatusInternalServerError)
+		return buffer, fmt.Sprintf("API server response status code >= %d, is %d", http.StatusInternalServerError, resp.StatusCode)
 	}
 
 	if resp.StatusCode >= http.StatusBadRequest && resp.StatusCode < http.StatusInternalServerError {
@@ -69,7 +69,7 @@ func SendRequest(ctx context.Context, method string, fullPath string, body io.Re
 			"[request_id=%s] request API encounter status_code: %d, request method: %s, request path: %s, response body: %s",
 			requestID, resp.StatusCode, method, fullPath, buffer.String(),
 		)
-		return buffer, fmt.Sprintf("API server response status code >= %d", http.StatusBadRequest)
+		return buffer, fmt.Sprintf("API server response status code >= %d, is %d", http.StatusBadRequest, resp.StatusCode)
 	}
 
 	return buffer, ""

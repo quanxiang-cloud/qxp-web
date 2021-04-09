@@ -2,7 +2,7 @@ import * as React from 'react';
 import classnames from 'classnames';
 import { Placement } from '@popperjs/core';
 
-import { Icon } from '@QCFE/lego-ui';
+import Icon from '@c/icon';
 import Popper from '@c/popper';
 
 export type MenuItem<T> = {
@@ -37,12 +37,6 @@ const modifiers = [
     },
   },
 ];
-
-function stopPropagation(e: any) {
-  // prevent click event propagate to parent node
-  // incase parent node also has an event handler too
-  e.stopPropagation();
-}
 
 // todo combine with select component
 function RenderMenuItems<T extends React.Key>(
@@ -85,16 +79,15 @@ export default function MoreMenu<T extends React.Key>({
   return (
     <>
       {
-        children ? React.cloneElement(children, { ref: reference, onClick: stopPropagation }) :
-          (<span ref={reference} onClick={stopPropagation}>
-            <Icon
-              changeable
-              clickable
-              name={iconName ? iconName : 'more'}
-              style={{ transform: 'rotate(90deg)' }}
-              className={className}
-            />
-          </span>)
+        children ? React.cloneElement(children, { ref: reference }) : (
+          <Icon
+            ref={reference}
+            changeable
+            clickable
+            name={iconName ? iconName : 'more_horiz'}
+            className={className}
+          />
+        )
       }
       <Popper
         ref={popperRef}

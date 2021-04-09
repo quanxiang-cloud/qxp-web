@@ -21,16 +21,20 @@
             密码登录
           </a>
         </h1>
-
+        <p class="error-message">
+          {{ if .errorMessage }}
+            {{ .errorMessage }}
+          {{ end }}
+        </p>
         <div class="input-field mb-21">
-          <input name="username" type="text" class="w-p-100 br-3 text-body2" placeholder="邮箱或手机号">
+          <input name="username" type="text" class="w-p-100 text-body2" placeholder="手机号或邮箱">
           <div class="username-hints fs-12 text-red mt-3"></div>
         </div>
-        <div class="input-field with-appendix flex">
-          <input name="captcha" type="text" class="br-3 flex-1 br-r-0 text-body2" placeholder="输入验证码">
+        <div class="input-field with-appendix flex relative">
+          <input name="captcha" type="text" class="flex-1 text-body2" placeholder="输入验证码">
           <span 
             type="button" 
-            class="clickable fs-12 px-12 send outline-none br-r-0 text-body2"
+            class="clickable fs-12 pr-4 py-1 send text-body2 absolute right-10 top-center text-blue-b10"
           >
             获取验证码
           </span>
@@ -48,9 +52,4 @@
 
 {{define "bottom_scripts"}}
   <script src="<%= htmlWebpackPlugin.files.js[0] %>"></script>
-  <script>
-    {{ if .errorMessage }}
-      window.notifier.error({{ .errorMessage }});
-    {{ end }}
-  </script>
 {{end}}

@@ -3,7 +3,7 @@ import { useMutation } from 'react-query';
 import classnames from 'classnames';
 import { Modal, CheckboxGroup, Checkbox, Table, Upload, Message } from '@QCFE/lego-ui';
 
-import SvgIcon from '@c/icon';
+import Icon from '@c/icon';
 import Button from '@c/button';
 import { getUserTemplate, importTempFile, resetUserPWD } from '../api';
 
@@ -200,7 +200,8 @@ export default function ImportEmployeesModal({ currDepId, closeModal }: Props) {
           uploadStatus.status !== FileUploadStatus.fail ? (
             <div className="flex items-center">
               <Button
-                icon={<SvgIcon name="close" size={20} className="mr-8" />}
+                iconName="close"
+                iconSize={20}
                 className="mr-20"
                 onClick={closeModal}
               >
@@ -208,20 +209,19 @@ export default function ImportEmployeesModal({ currDepId, closeModal }: Props) {
               </Button>
               {btnStatus === 0 ? (
                 <Button
-                  className="bg-black-900"
-                  textClassName="text-white"
-                  icon={<SvgIcon name="check" type="light" size={20} className="mr-8" />}
+                  className="bg-gray-700 text-white"
+                  iconName="check"
+                  iconSize={20}
                   onClick={importEmployeesTemp}
-                  loading={importLoading}
+                  modifier={importLoading ? 'loading' : 'primary'}
                 >
                   确定导入
                 </Button>
               ) : (
                 <Button
-                  className="bg-black-900"
-                  textClassName="text-white"
-                  icon={<SvgIcon name="check" type="light" size={20} className="mr-8" />
-                  }
+                  className="bg-gray-700 text-white"
+                  iconName="check"
+                  iconSize={20}
                   onClick={handleSubmit}
                 >
                   确定
@@ -234,7 +234,7 @@ export default function ImportEmployeesModal({ currDepId, closeModal }: Props) {
         <div className="w-full text-14">
           {uploadStatus.status === FileUploadStatus.fail && (
             <div className="text-red-600 mb-24 font-semibold flex items-center">
-              <SvgIcon
+              <Icon
                 size={16}
                 name="sms_failed"
                 className="mr-8"
@@ -245,7 +245,7 @@ export default function ImportEmployeesModal({ currDepId, closeModal }: Props) {
           )}
           {uploadStatus.status === FileUploadStatus.success && (
             <div className="text-green-600 mb-24 font-semibold flex items-center">
-              <SvgIcon
+              <Icon
                 size={16}
                 name="playlist_add_check"
                 className="mr-8"
@@ -256,7 +256,7 @@ export default function ImportEmployeesModal({ currDepId, closeModal }: Props) {
           )}
           {uploadStatus.status === FileUploadStatus.depSuccess && (
             <div className="text-yellow-600 mb-24 font-semibold flex items-center">
-              <SvgIcon
+              <Icon
                 size={16}
                 name="priority_high"
                 className="mr-8"
@@ -284,7 +284,7 @@ export default function ImportEmployeesModal({ currDepId, closeModal }: Props) {
                       'flex flex-col items-center justify-center hover:border-red-600'
                     )}
                   >
-                    <SvgIcon
+                    <Icon
                       size={16}
                       name="cloud_upload"
                       style={{ color: '#64748B' }}
@@ -305,11 +305,11 @@ export default function ImportEmployeesModal({ currDepId, closeModal }: Props) {
                             className="w-16 h-16 bg-blue-600 icon-border-radius
                           flex items-center justify-center mr-8"
                           >
-                            <SvgIcon size={12} name="book" type="light" />
+                            <Icon size={12} name="book" type="light" />
                           </div>
                           <span>{file.name}</span>
                         </div>
-                        <SvgIcon
+                        <Icon
                           size={16}
                           name="restore_from_trash"
                           onClick={() => deleteUploadFile(index)}

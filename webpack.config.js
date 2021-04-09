@@ -8,7 +8,7 @@ const WebpackBar = require('webpackbar');
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 
 // env: 'production' | 'development';
-module.exports = function (env) {
+module.exports = function(env) {
   const NODE_ENV = process.env.NODE_ENV || env.mode || 'production';
 
   return {
@@ -22,6 +22,7 @@ module.exports = function (env) {
       'login-by-password': './clients/login/password.ts',
       'login-by-captcha': './clients/login/captcha.ts',
       'reset-password': './clients/login/reset-password',
+      'retrieve-password': './clients/login/retrieve-password',
       404: './clients/404/index.ts',
       'app-manager': './clients/portal/app-manager/index.tsx',
     },
@@ -47,7 +48,7 @@ module.exports = function (env) {
           use: [
             MiniCssExtractPlugin.loader,
             { loader: 'css-loader', options: { url: false } },
-            { loader: 'postcss-loader', },
+            { loader: 'postcss-loader' },
             { loader: 'sass-loader' },
           ],
         },
@@ -56,7 +57,7 @@ module.exports = function (env) {
           use: [
             MiniCssExtractPlugin.loader,
             { loader: 'css-loader', options: { url: false } },
-            { loader: 'postcss-loader', },
+            { loader: 'postcss-loader' },
           ],
         },
         {
@@ -106,6 +107,7 @@ module.exports = function (env) {
       }),
       new HtmlWebpackPlugin({
         inject: false,
+        chunks: ['404'],
         template: './clients/templates/404.html',
         filename: `${__dirname}/dist/templates/404.html`,
       }),
@@ -120,6 +122,9 @@ module.exports = function (env) {
         chunks: ['app-manager'],
         template: './clients/templates/app-manager.html',
         filename: `${__dirname}/dist/templates/app-manager.html`,
+        chunks: ['retrieve-password'],
+        template: './clients/templates/retrieve-password.html',
+        filename: `${__dirname}/dist/templates/retrieve-password.html`,
       }),
       env !== 'production' ? new WebpackNotifierPlugin({ alwaysNotify: true }) : null,
     ].filter(Boolean),

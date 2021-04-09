@@ -116,6 +116,9 @@ module.exports = {
       cursor: {
         grab: 'grab',
       },
+      textColor: {
+        inherit: 'inherit',
+      },
     },
   },
 };

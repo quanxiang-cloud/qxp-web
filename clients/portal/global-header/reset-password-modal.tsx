@@ -4,7 +4,7 @@ import { useMutation } from 'react-query';
 
 import Button from '@c/button';
 import { userResetPassword } from '@clients/lib/api/auth';
-import PassWordField from '@c/input/password-field';
+import PassWordField from '@c/form/input/password-field';
 import { isPassword } from '@clients/lib/utils';
 
 interface Props {
@@ -61,6 +61,14 @@ export default function ResetPasswordModal({ visible, onCancel }: Props) {
     };
   }
 
+  let modifier: 'primary' | 'loading' | 'forbidden' = 'primary';
+  if (loading) {
+    modifier = 'loading';
+  }
+  if (errorMessage.new || errorMessage.old || !values.new || !values.old) {
+    modifier = 'forbidden';
+  }
+
   return (
     <Modal
       title="重置密码"
@@ -69,24 +77,18 @@ export default function ResetPasswordModal({ visible, onCancel }: Props) {
       footer={
         (<div className="flex flex-row justify-between items-center">
           <Button
-            className="bg-white hover:bg-gray-100 transition cursor-pointer mr-20 mb-0"
-            textClassName="text-gray-600 ml-2"
-            icon={<img src="/dist/images/icon_error.svg" />}
+            className="bg-white hover:bg-gray-100 transition cursor-pointer mr-20
+            mb-0 text-gray-600 ml-2"
+            iconName="close"
             onClick={onCancel}
           >
            取消
           </Button>
           <Button
-            loading={loading}
-            className="bg-gray-700 hover:bg-gray-900 transition cursor-pointer mb-0"
-            textClassName="text-white ml-2"
-            icon={<img src="/dist/images/icon_true.svg" />}
+            modifier={modifier}
+            className="bg-gray-700 hover:bg-gray-900 transition cursor-pointer mb-0 text-white ml-2"
+            iconName="check"
             onClick={onOk}
-            type={
-              errorMessage.new || errorMessage.old || !values.new || !values.old ?
-                'disabled' :
-                'primary'
-            }
           >
            确定重置
           </Button>

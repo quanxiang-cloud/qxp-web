@@ -1,13 +1,17 @@
-export default class Notify {
+interface Options {
+  duration?: number;
+}
+
+class Notify {
   private duration?: number;
   private element: HTMLElement;
-  private elements: Element[];
+  private notifyInstances: Element[];
 
-  constructor(ele: HTMLElement, duration = 3000) {
-    this.duration = duration;
-    this.element = ele;
+  constructor() {
+    this.duration = 3000;
+    this.element = document.body;
     this.element.style.position = 'relative';
-    this.elements = [];
+    this.notifyInstances = [];
     const style = document.createElement('style');
     style.innerHTML = `
       .notify {
@@ -19,7 +23,7 @@ export default class Notify {
         flex-flow: row nowrap;
         justify-content: space-between;
         align-items: center;
-        padding: 12px 16px;
+        padding: 7px 16px;
         box-shadow: 0px 8px 24px 4px rgba(148, 163, 184, 0.25);
         border-radius: 4px 12px 12px 12px;
         transition: all .3s ease;
@@ -34,8 +38,8 @@ export default class Notify {
           transform: rotateX(0deg) translateX(-50%);
         }
       }
-      
-      .notify .message {
+
+      .notify .message-info {
         font-size: 14px;
         line-height: 22px;
         margin-right: 64px;
@@ -71,17 +75,17 @@ export default class Notify {
     } else if (e instanceof HTMLElement) {
       curNotifyElement = e;
     } else {
-      curNotifyElement = this.elements[0] as HTMLElement;
+      curNotifyElement = this.notifyInstances[0] as HTMLElement;
     }
-    const curNotifyElementIndex = this.elements.findIndex(
+    const curNotifyElementIndex = this.notifyInstances.findIndex(
       (element) => element === curNotifyElement
     );
 
-    const elements = this.elements.slice(curNotifyElementIndex + 1) as HTMLElement[];
-    this.elements.splice(curNotifyElementIndex, 1);
+    const notifyInstances = this.notifyInstances.slice(curNotifyElementIndex + 1) as HTMLElement[];
+    this.notifyInstances.splice(curNotifyElementIndex, 1);
     curNotifyElement.parentElement?.removeChild(curNotifyElement);
 
-    elements.forEach((element) => {
+    notifyInstances.forEach((element) => {
       const top = parseInt(element.style.top);
       if (top - 60 >= 80) {
         element.style.top = `${top - 60}px`;
@@ -92,27 +96,43 @@ export default class Notify {
   private getTemplate(type: string, message: string) {
     return `
       <div class="notify ${type}">
-        <span class="message">${message}</span>
+        <span class="message-info">${message}</span>
         <span class="close" onClick="closeNotify(event);">x</span>
       </div>
     `;
   }
 
-  private notify(type: string, message: string) {
+  private notify(type: string, message: string, options?: Options) {
     this.element.insertAdjacentHTML('beforeend', this.getTemplate(type, message));
     const element = this.element.lastElementChild as HTMLElement;
-    if (element && this.elements.length) {
-      element.style.top = `${(this.elements.length * 60) + 80}px`;
+    if (!element) {
+      return;
     }
-    element && this.elements.push(element);
-    setTimeout(() => this.close(element), this.duration);
+    if (this.notifyInstances.length) {
+      element.style.top = `${(this.notifyInstances.length * 60) + 80}px`;
+    }
+    this.notifyInstances.push(element);
+    if (options?.duration === -1) {
+      return;
+    }
+    setTimeout(() => this.close(element), options?.duration || this.duration);
   }
 
-  info(message: string) {
-    this.notify('info', message);
+  public success(message: string, options?: Options) {
+    this.notify('info', message, options);
   }
 
-  error(message: string) {
-    this.notify('error', message);
+  public error(message: string, options?: Options) {
+    this.notify('error', message, options);
+  }
+
+  setDuration(duration: number) {
+    this.duration = duration;
+  }
+
+  setRoot(element: HTMLElement) {
+    this.element = element;
   }
 }
+
+export default new Notify();

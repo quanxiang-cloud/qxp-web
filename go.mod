@@ -15,6 +15,7 @@ require (
 	github.com/rbcervilla/redisstore v1.1.0
 	github.com/sirupsen/logrus v1.7.0
 	github.com/stretchr/testify v1.7.0 // indirect
+	github.com/tidwall/gjson v1.7.4
 	golang.org/x/sys v0.0.0-20210316164454-77fc1eacc6aa // indirect
 	gopkg.in/go-playground/assert.v1 v1.2.1 // indirect
 	gopkg.in/go-playground/validator.v9 v9.31.0
