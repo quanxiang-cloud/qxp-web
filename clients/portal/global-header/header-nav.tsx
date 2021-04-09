@@ -2,8 +2,8 @@ import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { twCascade } from '@mariusmarais/tailwind-cascade';
 
-import SvgIcon from '@c/icon';
-import Authorized from '@clients/components/authorized';
+import Icon from '@c/icon';
+import Authorized from '@c/authorized';
 
 export default function HeaderLeft() {
   const location = useLocation();
@@ -44,7 +44,7 @@ export default function HeaderLeft() {
         )}
       >
         <div className="header-nav-btn-icon-wrapper">
-          <SvgIcon
+          <Icon
             name="add_task"
             className="group-hover:text-blue-600 header-nav-btn-icon"
             size={20}
@@ -66,7 +66,7 @@ export default function HeaderLeft() {
         )}
       >
         <div className="header-nav-btn-icon-wrapper">
-          <SvgIcon
+          <Icon
             name="dashboard_customize"
             className="group-hover:text-blue-600 header-nav-btn-icon"
             style={style(isAppManagement)}
@@ -89,7 +89,7 @@ export default function HeaderLeft() {
           )}
         >
           <div className="header-nav-btn-icon-wrapper">
-            <SvgIcon
+            <Icon
               name="admin_panel_settings"
               className="group-hover:text-blue-600 header-nav-btn-icon"
               style={style(isAccess)}
@@ -112,7 +112,7 @@ export default function HeaderLeft() {
         )}
       >
         <div className="header-nav-btn-icon-wrapper">
-          <SvgIcon
+          <Icon
             name="system_management"
             className="group-hover:text-blue-600 header-nav-btn-icon"
             size={20}

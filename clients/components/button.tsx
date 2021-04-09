@@ -1,7 +1,7 @@
 import React, { forwardRef, Ref } from 'react';
 import classnames from 'classnames';
 
-import SvgIcon from '@c/icon';
+import Icon from '@c/icon';
 
 interface Props extends React.DetailedHTMLProps<
 React.ButtonHTMLAttributes<HTMLButtonElement>,
@@ -27,7 +27,7 @@ function Button(
       })}
     >
       {iconName && (
-        <SvgIcon
+        <Icon
           name={iconName}
           type={modifier === 'primary' ? 'light' : 'dark'}
           disabled={modifier === 'forbidden'}

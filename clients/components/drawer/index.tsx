@@ -28,10 +28,13 @@ function Drawer({ onCancel, title, children, distanceTop = 56 }: Props) {
     <div
       className={cs('drawer-modal-mask', {
         'drawer-began-close': beganClose,
-        'drawer-close': visible
+        'drawer-close': visible,
       })}
     >
-      <div style={{ '--distanceTop': distanceTop + 'px' } as React.CSSProperties} className='drawer-container'>
+      <div
+        style={{ '--distanceTop': distanceTop + 'px' } as React.CSSProperties}
+        className='drawer-container'
+      >
         <div className='drawer-header header-background-image'>
           <span className='text-h5'>{title}</span>
           <Icon onClick={handleCancel} clickable changeable name='close' size={24} />

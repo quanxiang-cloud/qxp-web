@@ -19,7 +19,6 @@ type Props = {
 }
 
 export default function SideNavCard({ menuData, cardTitle, className = '' }: Props) {
-
   return (
     <div className={`bg-white rounded-12 ${className}`}>
       {cardTitle ? cardTitle : null}

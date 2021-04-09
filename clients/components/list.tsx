@@ -2,7 +2,7 @@ import React from 'react';
 import { twCascade } from '@mariusmarais/tailwind-cascade';
 
 import { uuid, isFunction, isObject } from '@lib/utils';
-import SvgIcon from './icon';
+import Icon from './icon';
 
 export interface IItem<T> {
   id: string;
@@ -47,7 +47,7 @@ export default function List<T extends unknown>({
               )}
             >
               {
-                curItem.iconName && <SvgIcon name={curItem.iconName} size={16} className="mr-8" />
+                curItem.iconName && <Icon name={curItem.iconName} size={16} className="mr-8" />
               }
               <div className="text-14 whitespace-nowrap">{curItem.text}</div>
             </li>

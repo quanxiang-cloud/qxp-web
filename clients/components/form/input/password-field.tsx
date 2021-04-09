@@ -2,7 +2,7 @@ import React, { useState, ChangeEventHandler, FocusEventHandler } from 'react';
 import classnames from 'classnames';
 import { uuid } from '@lib/utils';
 
-import SvgIcon from '@c/icon';
+import Icon from '@c/icon';
 
 interface Props {
   label: string;
@@ -46,7 +46,7 @@ export default function PassWordField({
           onChange={onChange}
           onBlur={onBlur}
         />
-        <SvgIcon
+        <Icon
           className="absolute right-6 top-1/2 transform -translate-y-1/2 cursor-pointer"
           name={type === 'password' ? 'visibility-off' : 'visibility'}
           onClick={() => setType(type === 'text' ? 'password' : 'text')}

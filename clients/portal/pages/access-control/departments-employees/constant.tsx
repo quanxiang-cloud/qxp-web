@@ -1,10 +1,10 @@
 import React from 'react';
 
-import SvgIcon from '@c/icon';
-import UserCell from './table-column/user-cell';
-import OtherCell from './table-column/other-cell';
+import Icon from '@c/icon';
 import { MenuItem } from '@c/more-menu';
 
+import UserCell from './table-column/user-cell';
+import OtherCell from './table-column/other-cell';
 import { UserStatus, LeaderStatus } from './type';
 
 export const EmployeesColumns = [
@@ -48,7 +48,7 @@ export const EmployeesActions: AuthorMenuItem<string>[] = [
     key: 'edit',
     label: (
       <div className="flex items-center">
-        <SvgIcon name="create" size={16} className="mr-8" />
+        <Icon name="create" size={16} className="mr-8" />
         <span className="font-normal">修改员工信息</span>
       </div>
     ),
@@ -59,7 +59,7 @@ export const EmployeesActions: AuthorMenuItem<string>[] = [
     key: 'confer',
     label: (
       <div className="flex items-center">
-        <SvgIcon name="bookmark_border" size={16} className="mr-8" />
+        <Icon name="bookmark_border" size={16} className="mr-8" />
         <span className="font-normal">设为主管</span>
       </div>
     ),
@@ -70,7 +70,7 @@ export const EmployeesActions: AuthorMenuItem<string>[] = [
     key: 'revoke',
     label: (
       <div className="flex items-center">
-        <SvgIcon name="cancel" size={16} className="mr-8" />
+        <Icon name="cancel" size={16} className="mr-8" />
         <span className="font-normal">取消主管</span>
       </div>
     ),
@@ -81,7 +81,7 @@ export const EmployeesActions: AuthorMenuItem<string>[] = [
     key: 'reset',
     label: (
       <div className="flex items-center">
-        <SvgIcon name="password" size={16} className="mr-8" />
+        <Icon name="password" size={16} className="mr-8" />
         <span className="font-normal">重置密码</span>
       </div>
     ),
@@ -92,7 +92,7 @@ export const EmployeesActions: AuthorMenuItem<string>[] = [
     key: 'disable',
     label: (
       <div className="flex items-center">
-        <SvgIcon name="toggle_off" size={16} className="mr-8" />
+        <Icon name="toggle_off" size={16} className="mr-8" />
         <span className="font-normal">禁用账号</span>
       </div>
     ),
@@ -103,7 +103,7 @@ export const EmployeesActions: AuthorMenuItem<string>[] = [
     key: 'enable',
     label: (
       <div className="flex items-center">
-        <SvgIcon name="toggle_on" size={16} className="mr-8" />
+        <Icon name="toggle_on" size={16} className="mr-8" />
         <span className="font-normal">启用账号</span>
       </div>
     ),
@@ -114,7 +114,7 @@ export const EmployeesActions: AuthorMenuItem<string>[] = [
     key: 'delete',
     label: (
       <div className="flex items-center">
-        <SvgIcon name="restore_from_trash" size={16} className="mr-8" />
+        <Icon name="restore_from_trash" size={16} className="mr-8" />
         <span className="font-normal">删除账号</span>
       </div>
     ),
@@ -128,7 +128,7 @@ export const ExpandActions: MenuItem<string>[] = [
     key: 'export',
     label: (
       <div className="flex items-center">
-        <SvgIcon name="exit_to_app" size={16} className="mr-8" />
+        <Icon name="exit_to_app" size={16} className="mr-8" />
         <span className="font-normal">导出员工数据</span>
       </div>
     ),

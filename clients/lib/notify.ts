@@ -1,10 +1,14 @@
+interface Options {
+  duration?: number;
+}
+
 class Notify {
   private duration?: number;
   private element: HTMLElement;
   private notifyInstances: Element[];
 
   constructor() {
-    this.duration = 300000;
+    this.duration = 3000;
     this.element = document.body;
     this.element.style.position = 'relative';
     this.notifyInstances = [];
@@ -98,26 +102,36 @@ class Notify {
     `;
   }
 
-  private notify(type: string, message: string) {
+  private notify(type: string, message: string, options?: Options) {
     this.element.insertAdjacentHTML('beforeend', this.getTemplate(type, message));
     const element = this.element.lastElementChild as HTMLElement;
-    if (element && this.notifyInstances.length) {
+    if (!element) {
+      return;
+    }
+    if (this.notifyInstances.length) {
       element.style.top = `${(this.notifyInstances.length * 60) + 80}px`;
     }
-    element && this.notifyInstances.push(element);
-    setTimeout(() => this.close(element), this.duration);
+    this.notifyInstances.push(element);
+    if (options?.duration === -1) {
+      return;
+    }
+    setTimeout(() => this.close(element), options?.duration || this.duration);
   }
 
-  public success(message: string) {
-    this.notify('info', message);
+  public success(message: string, options?: Options) {
+    this.notify('info', message, options);
   }
 
-  public error(message: string) {
-    this.notify('error', message);
+  public error(message: string, options?: Options) {
+    this.notify('error', message, options);
   }
 
   setDuration(duration: number) {
     this.duration = duration;
+  }
+
+  setRoot(element: HTMLElement) {
+    this.element = element;
   }
 }
 

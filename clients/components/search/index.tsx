@@ -1,6 +1,6 @@
 import React from 'react';
 
-import SvgIcon from '../icon';
+import Icon from '../icon';
 
 interface Props {
   value: string;
@@ -19,7 +19,7 @@ export default function Search(
   return (
     <div className="px-16 py-6 rounded-r-6 rounded-tl-2 rounded-bl-6
     bg-gray-100 flex items-center">
-      <SvgIcon name="search" size={20} className='mr-8' />
+      <Icon name="search" size={20} className='mr-8' />
       <input
         style={{ background: 'none', width: 122 }}
         className="outline-none flex-grow"
@@ -32,7 +32,7 @@ export default function Search(
         onBlur={() => onBlur && onBlur()}
       />
       {value !== '' && (
-        <SvgIcon
+        <Icon
           className="ml-8"
           name="close"
           size={20}

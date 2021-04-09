@@ -19,7 +19,7 @@ label.checkbox {
   }
   &:before {
     position: absolute;
-    top: 2px;
+    top: 4px;
     display: inline-block;
     width: $checkbox-size;
     height: $checkbox-size;
@@ -39,7 +39,7 @@ label.checkbox {
   }
   &.checked:after {
     position: absolute;
-    top: 3px;
+    top: 4px;
     left: 4px;
     display: block;
     width: 4px;
