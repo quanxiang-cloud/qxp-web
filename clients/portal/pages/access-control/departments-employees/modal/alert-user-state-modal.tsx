@@ -62,7 +62,6 @@ export default function AccountHandleModal(
         (<div className="flex items-center">
           <Button
             iconName="close"
-            iconSize={20}
             onClick={closeModal}
             className="mr-20"
           >
@@ -72,7 +71,6 @@ export default function AccountHandleModal(
             className="bg-gray-700 text-white"
             iconName="check"
             modifier="primary"
-            iconSize={20}
             onClick={handleSubmit}
           >
             {titleText}账号

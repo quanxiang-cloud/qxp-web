@@ -201,7 +201,6 @@ export default function ImportEmployeesModal({ currDepId, closeModal }: Props) {
             <div className="flex items-center">
               <Button
                 iconName="close"
-                iconSize={20}
                 className="mr-20"
                 onClick={closeModal}
               >
@@ -211,9 +210,9 @@ export default function ImportEmployeesModal({ currDepId, closeModal }: Props) {
                 <Button
                   className="bg-gray-700 text-white"
                   iconName="check"
-                  iconSize={20}
                   onClick={importEmployeesTemp}
-                  modifier={importLoading ? 'loading' : 'primary'}
+                  loading={importLoading}
+                  modifier="primary"
                 >
                   确定导入
                 </Button>
@@ -221,7 +220,6 @@ export default function ImportEmployeesModal({ currDepId, closeModal }: Props) {
                 <Button
                   className="bg-gray-700 text-white"
                   iconName="check"
-                  iconSize={20}
                   onClick={handleSubmit}
                 >
                   确定

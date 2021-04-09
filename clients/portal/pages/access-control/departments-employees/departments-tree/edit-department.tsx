@@ -116,7 +116,6 @@ export default function EditDepartment({ department, closeModal }: Props) {
         (<div className="flex items-center">
           <Button
             iconName="close"
-            iconSize={20}
             className="mr-20"
             onClick={closeModal}
           >
@@ -125,7 +124,6 @@ export default function EditDepartment({ department, closeModal }: Props) {
           <Button
             className="bg-gray-700 text-white"
             iconName="check"
-            iconSize={20}
             onClick={okModalHandle}
           >
             {submitBtnText}

@@ -61,13 +61,7 @@ export default function ResetPasswordModal({ visible, onCancel }: Props) {
     };
   }
 
-  let modifier: 'primary' | 'loading' | 'forbidden' = 'primary';
-  if (loading) {
-    modifier = 'loading';
-  }
-  if (errorMessage.new || errorMessage.old || !values.new || !values.old) {
-    modifier = 'forbidden';
-  }
+  const forbidden = !!(errorMessage.new || errorMessage.old || !values.new || !values.old);
 
   return (
     <Modal
@@ -85,7 +79,9 @@ export default function ResetPasswordModal({ visible, onCancel }: Props) {
            取消
           </Button>
           <Button
-            modifier={modifier}
+            modifier='primary'
+            loading={loading}
+            forbidden={forbidden}
             className="bg-gray-700 hover:bg-gray-900 transition cursor-pointer mb-0 text-white ml-2"
             iconName="check"
             onClick={onOk}

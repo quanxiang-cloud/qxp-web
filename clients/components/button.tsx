@@ -4,16 +4,17 @@ import classnames from 'classnames';
 import Icon from '@c/icon';
 
 interface Props extends React.DetailedHTMLProps<
-React.ButtonHTMLAttributes<HTMLButtonElement>,
-HTMLButtonElement
->{
-  modifier?: 'primary' | 'loading' | 'forbidden';
+  React.ButtonHTMLAttributes<HTMLButtonElement>,
+  HTMLButtonElement
+> {
+  modifier?: 'primary' | 'danger';
+  loading?: boolean;
+  forbidden?: boolean;
   iconName?: string;
-  iconSize?: number;
 }
 
 function Button(
-  { children, iconName, className, modifier = 'primary', iconSize, ...rest }: Props,
+  { children, iconName, className, modifier, forbidden, loading, ...rest }: Props,
   ref?: Ref<HTMLButtonElement>
 ) {
   return (
@@ -21,17 +22,18 @@ function Button(
       {...rest}
       ref={ref}
       className={classnames('btn', className, `btn-${modifier}`, {
-        'cursor-not-allowed': modifier === 'forbidden',
-        'opacity-50': modifier === 'forbidden',
-        'pointer-events-none': modifier === 'loading' || modifier === 'forbidden',
+        'btn-loading': loading,
+        'cursor-not-allowed': forbidden,
+        'opacity-50': forbidden,
+        'pointer-events-none': loading || forbidden,
       })}
     >
       {iconName && (
         <Icon
           name={iconName}
           type={modifier === 'primary' ? 'light' : 'dark'}
-          disabled={modifier === 'forbidden'}
-          size={iconSize || 20}
+          disabled={forbidden}
+          size={20}
           className="fill-current text-inherit mr-8"
         />
       )}
