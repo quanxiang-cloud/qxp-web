@@ -16,12 +16,17 @@ const AppSetting = lazy(
   () => import('./pages/app-setting'),
 );
 
+const FormDesign = lazy(
+  () => import('./pages/form-design')
+);
+
 export default (
   <Suspense fallback={(<PageLoading />)}>
     <Switch>
       <Route exact path="/appManager/list" component={AppManagerEntry} />
       <Route exact path="/appManager/details/:appId" component={AppDetails} />
       <Route path="/appManager/setting/*/:appId" component={AppSetting} />
+      <Route exact path="/appManager/formDesign/:type" component={FormDesign} />
       <Route component={Error} />
     </Switch>
   </Suspense>

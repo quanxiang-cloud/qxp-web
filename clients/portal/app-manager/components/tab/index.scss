@@ -1,0 +1,32 @@
+.qxp-tab-container {
+  display: inline-flex;
+  height: 100%;
+  min-height: 56px;
+}
+
+.qxp-tab-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  font-size: 16px;
+  line-height: 24px;
+  cursor: pointer;
+
+  &:hover,&.qxp-tab-active {
+    font-weight: 600;
+    color: var(--blue-600);
+
+    &::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 100%;
+      height: 4px;
+      border-radius: 8px 8px 0 0;
+      background-color: var(--blue-600);
+    }
+  }
+}
+

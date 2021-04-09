@@ -6,20 +6,21 @@ import Icon from '@c/icon';
 import PopConfirm from '@c/pop-confirm';
 import Button from '@appC/button';
 
+import NavButton from '../nav-button';
 import AppDropdown from './app-dropdown';
 
-interface DetailsHeaderProps extends GHeaderProps {
+interface DetailsHeaderProps {
   appDetailsStore?: any
 }
 
-function DetailsHeader({ navButtonRender, appDetailsStore }: DetailsHeaderProps) {
+function DetailsHeader({ appDetailsStore }: DetailsHeaderProps) {
   const history = useHistory();
 
   const { updateAppStatus } = appDetailsStore;
 
   const goAppSetting = () => {
-    history.push('/appManager/setting/info/' + appDetailsStore.appDetails.id)
-  }
+    history.push('/appManager/setting/info/' + appDetailsStore.appDetails.id);
+  };
 
   const statusTipsContent = (isPublish: boolean) => {
     if (isPublish) {
@@ -45,7 +46,7 @@ function DetailsHeader({ navButtonRender, appDetailsStore }: DetailsHeaderProps)
   return (
     <div className="app-global-header app-details-header">
       <div className='flex items-center'>
-        {navButtonRender({ name: '应用管理', icon: 'apps', inside: true, url: '/appManager/list' })}
+        <NavButton {...{ name: '应用管理', icon: 'apps', inside: true, url: '/appManager/list' }} />
         <span className='mr-16 ml-8'>/</span>
         <AppDropdown appDetails={appDetailsStore.appDetails} />
       </div>
@@ -74,7 +75,7 @@ function DetailsHeader({ navButtonRender, appDetailsStore }: DetailsHeaderProps)
           应用管理
         </Button>
         <hr className='app-global-header-hr' />
-        {navButtonRender({ name: '帮助文档', icon: 'book', url: '' })}
+        <NavButton {...{ name: '帮助文档', icon: 'book', url: '' }} />
       </div>
     </div>
   );

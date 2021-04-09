@@ -4,6 +4,7 @@ import More from '@c/more';
 import Icon from '@c/icon';
 import Button from '@appC/button';
 
+import NavButton from '../nav-button';
 import NotifyIcon from './notify-icon';
 
 const NAV_LIST: Nav[] = [
@@ -39,11 +40,11 @@ const NAV_LIST_RIGHT = [
   },
 ];
 
-function IndexHeader({ navButtonRender }: GHeaderProps) {
+function IndexHeader() {
   return (
     <div className="app-global-header app-global-header-icon">
       <div className='flex gap-x-20'>
-        {NAV_LIST.map((navItem) => navButtonRender(navItem))}
+        {NAV_LIST.map((navItem) => <NavButton key={navItem.url} {...navItem} />)}
       </div>
       <div className='flex gap-x-20'>
         <Button
@@ -52,7 +53,9 @@ function IndexHeader({ navButtonRender }: GHeaderProps) {
           进入访问端
         </Button>
         <NotifyIcon unreadNum={5} />
-        {NAV_LIST_RIGHT.map((navRightItem) => navButtonRender(navRightItem))}
+        {NAV_LIST_RIGHT.map((navRightItem) => {
+          return <NavButton key={navRightItem.url} {...navRightItem} />;
+        })}
       </div>
     </div>
   );

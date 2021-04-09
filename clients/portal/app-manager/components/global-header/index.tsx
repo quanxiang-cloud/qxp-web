@@ -1,53 +1,38 @@
 import React from 'react';
-import { useHistory, useLocation } from 'react-router-dom';
-import cs from 'classnames';
-
-import Icon from '@c/icon';
+import { useLocation } from 'react-router-dom';
 
 import IndexHeader from './index-header';
 import DetailsHeader from './details-header';
 import './index.scss';
 
-const DETAILS_HEADER = ['/appManager/details','/appManager/setting'];
-const INDEX_HEADER = ['/appManager/list'];
+const HEADER_LIST = [
+  { key: 'details', urls: ['/appManager/details', '/appManager/setting'] },
+  { key: 'none', urls: ['/appManager/formDesign'] },
+];
+
+function getHeaderType(path: string) {
+  for (const headers of HEADER_LIST) {
+    for (const url of headers.urls) {
+      if (path.startsWith(url)) {
+        return headers.key;
+      }
+    }
+  }
+}
 
 function GlobalHeader() {
-  const history = useHistory();
   const location = useLocation();
-  const isIndexHeader = INDEX_HEADER.includes(location.pathname);
 
-  const jump = (url: string, isInside: boolean | undefined) => {
-    if (!url) {
-      return;
-    }
+  switch (getHeaderType(location.pathname)) {
+  case 'details':
+    return (<DetailsHeader/>);
 
-    if (isInside) {
-      history.push(url);
-      return;
-    }
+  case 'none':
+    return null;
 
-    window.location.href = url;
-  };
-
-  const navButtonRender = (nav: any) => {
-    return (
-      <div
-        onClick={() => jump(nav.url, nav.inside)}
-        className={cs('app-global-header-nav icon-border-radius-8',
-          { 'app-nav-active': nav.active })}
-        key={nav.name}
-      >
-        <Icon size={20} className='mr-4 app-icon-color-inherit' name={nav.icon} />
-        {nav.name}
-      </div>
-    );
-  };
-
-  if (isIndexHeader) {
-    return (<IndexHeader navButtonRender={navButtonRender} />);
+  default:
+    return (<IndexHeader />);
   }
-
-  return (<DetailsHeader navButtonRender={navButtonRender} />);
 }
 
 export default GlobalHeader;

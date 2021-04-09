@@ -1,0 +1,7 @@
+.app-nav-button {
+  @apply inline-flex items-center py-5 px-8 cursor-pointer;
+  
+  &:hover, &.app-nav-button-active {
+    @apply text-blue-500 bg-blue-100;
+  }
+}
