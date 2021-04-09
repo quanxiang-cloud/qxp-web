@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 
 interface IDropdown {
-    content: JSX.Element
-    children?: JSX.Element
+  content: JSX.Element
+  children?: JSX.Element
 }
 
-export const Dropdown = ({ ...props }: IDropdown) => {
+export default function Dropdown({ ...props }: IDropdown) {
   const [showMenu, setShowMenu] = useState(false);
   const remove = (e: { stopPropagation: () => void; }) => {
     e.stopPropagation();
@@ -31,5 +31,4 @@ export const Dropdown = ({ ...props }: IDropdown) => {
       {showMenu ? props.content : null}
     </div>
   );
-};
-export default Dropdown;
+}

@@ -3,7 +3,7 @@ import { useQuery, useQueryClient } from 'react-query';
 import { Modal, Form, Message } from '@QCFE/lego-ui';
 
 import Button from '@c/button';
-import DepartmentPicker from '@c/input/tree-picker-field';
+import DepartmentPicker from '@c/form/input/tree-picker-field';
 import Loading from '@c/loading';
 import { departmentToTreeNode } from '@lib/utils';
 
@@ -123,7 +123,7 @@ export default function EditDepartment({ department, closeModal }: Props) {
             取消
           </Button>
           <Button
-            className="bg-black-900 text-white"
+            className="bg-gray-700 text-white"
             iconName="check"
             iconSize={20}
             onClick={okModalHandle}

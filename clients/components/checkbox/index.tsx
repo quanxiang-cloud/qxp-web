@@ -15,7 +15,7 @@ function Checkbox(
   ref?: React.Ref<HTMLInputElement>
 ): JSX.Element {
   return (
-    <label className={classnames('checkbox', className)}>
+    <label className={classnames('checkbox flex items-center', className)}>
       <input
         {...inputProps}
         ref={ref}
@@ -26,7 +26,7 @@ function Checkbox(
           'checkbox__input--indeterminate': indeterminate,
         })}
       />
-      {label ? (<span className="checkbox__label">{label}</span>) : null}
+      {label ? (<span className="checkbox__label text-caption ml-8">{label}</span>) : null}
     </label>
   );
 }

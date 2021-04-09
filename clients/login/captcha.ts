@@ -1,5 +1,4 @@
 import { IInputField, query, parseUserValidateResult } from './atom';
-import Notify from '@lib/notify';
 
 import UserName from './username';
 import Captcha from './captcha-field';
@@ -59,5 +58,3 @@ new CaptchaUser({
   },
   action: query<HTMLButtonElement>('.btn-login'),
 });
-
-window.notifier = new Notify(query<HTMLElement>('body main'));

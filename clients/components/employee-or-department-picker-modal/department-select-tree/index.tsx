@@ -5,7 +5,7 @@ import { twCascade } from '@mariusmarais/tailwind-cascade';
 import Tree from '@c/headless-tree';
 import { NodeRenderProps } from '@c/headless-tree/types';
 
-import { DepartmentNode } from './department-node';
+import DepartmentNode from './department-node';
 import DepartmentTreeStore from './store';
 
 export interface Props {

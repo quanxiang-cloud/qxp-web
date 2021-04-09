@@ -57,7 +57,7 @@ export default function TreePicker<T extends { id: string} >({
 
   return (
     <>
-      <Label className="flex w-full text-left">{label}</Label>
+      <Label className="flex w-full text-left text-body2">{label}</Label>
       <Tree
         store={store}
         NodeRender={NodeRender}

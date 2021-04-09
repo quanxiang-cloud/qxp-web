@@ -3,8 +3,8 @@ import { observer } from 'mobx-react';
 import { Modal, Message } from '@QCFE/lego-ui';
 
 import MoreMenu, { MenuItem } from '@c/more-menu';
-import Authorized from '@clients/components/authorized';
-import SvgIcon from '@c/icon';
+import Authorized from '@c/authorized';
+import Icon from '@c/icon';
 import { NodeRenderProps } from '@c/headless-tree/types';
 
 import { deleteDEP } from '../api';
@@ -15,7 +15,7 @@ const MENUS: MenuItem<string>[] = [
     key: 'add',
     label: (
       <div className="flex items-center">
-        <SvgIcon name="device_hub" size={16} className="mr-8" />
+        <Icon name="device_hub" size={16} className="mr-8" />
         <span className="font-normal">添加部门</span>
       </div>
     ),
@@ -24,7 +24,7 @@ const MENUS: MenuItem<string>[] = [
     key: 'edit',
     label: (
       <div className="flex items-center">
-        <SvgIcon name="create" size={16} className="mr-8" />
+        <Icon name="create" size={16} className="mr-8" />
         <span className="font-normal">修改信息</span>
       </div>
     ),
@@ -33,7 +33,7 @@ const MENUS: MenuItem<string>[] = [
     key: 'delete',
     label: (
       <div className="flex items-center">
-        <SvgIcon name="restore_from_trash" size={16} className="mr-8" />
+        <Icon name="restore_from_trash" size={16} className="mr-8" />
         <span className="font-normal">删除</span>
       </div>
     ),

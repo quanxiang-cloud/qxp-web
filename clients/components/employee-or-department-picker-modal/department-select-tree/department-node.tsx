@@ -12,7 +12,7 @@ interface Props extends NodeRenderProps<Department>{
   onChange: (prevNodes: Department[], currentNodes: Department[]) => void;
 }
 
-export const DepartmentNode = observer(({ node, store, onChange }: Props) => {
+export default observer(function DepartmentNode({ node, store, onChange }: Props) {
   if (!store) {
     return null;
   }

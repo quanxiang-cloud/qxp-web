@@ -3,7 +3,7 @@ import { usePopper } from 'react-popper';
 import { twCascade } from '@mariusmarais/tailwind-cascade';
 import useClickAway from 'react-use/lib/useClickAway';
 
-export interface IPopover {
+export interface Props {
   content: JSX.Element;
   className?: string;
   triggerClassName?: string;
@@ -31,7 +31,7 @@ export interface IPopover {
   onMouseOut?: () => void;
 }
 
-export const Popover = ({
+export default function Popover({
   children,
   content,
   className,
@@ -42,7 +42,7 @@ export const Popover = ({
   offsetY = 100,
   onMouseOver,
   onMouseOut,
-}: IPopover) => {
+}: Props) {
   const clickAwayRef = useRef<HTMLDivElement | null>(null);
   const triggerRef = useRef<HTMLDivElement | null>(null);
   const tooltipRef = useRef<HTMLDivElement | null>(null);
@@ -98,4 +98,4 @@ export const Popover = ({
       </div>
     </div>
   );
-};
+}

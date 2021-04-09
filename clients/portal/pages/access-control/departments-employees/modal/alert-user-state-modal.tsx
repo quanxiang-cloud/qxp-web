@@ -69,7 +69,7 @@ export default function AccountHandleModal(
             取消
           </Button>
           <Button
-            className="bg-black-900 text-white"
+            className="bg-gray-700 text-white"
             iconName="check"
             modifier="primary"
             iconSize={20}

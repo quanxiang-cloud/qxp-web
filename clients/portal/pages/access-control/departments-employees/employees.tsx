@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useQuery } from 'react-query';
 import { Table, Message } from '@QCFE/lego-ui';
 
-import SvgIcon from '@c/icon';
+import Icon from '@c/icon';
 import EmptyTips from '@c/empty-tips';
 import Pagination from '@c/pagination';
-import Authorized from '@clients/components/authorized';
+import Authorized from '@c/authorized';
 import Button from '@c/button';
 import MoreMenu from '@c/more-menu';
 import { usePortalGlobalValue } from '@portal/states_to_be_delete/portal';
@@ -220,7 +220,7 @@ export default function Employees({
             {selectedUserIds.length > 0 ? (
               <>
                 <Button
-                  className="bg-black-900 text-white"
+                  className="bg-gray-700 text-white"
                   modifier="primary"
                   iconName="device_hub"
                   iconSize={20}
@@ -267,7 +267,7 @@ export default function Employees({
                   }}
                 >
                   <div className="p-6 bg-gray-700 text-white btn-border-radius cursor-pointer">
-                    <SvgIcon type="light" name="more_horiz" size={20} />
+                    <Icon type="light" name="more_horiz" size={20} />
                   </div>
                 </MoreMenu>
               </>

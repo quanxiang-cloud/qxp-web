@@ -4,11 +4,12 @@ import { useQuery } from 'react-query';
 import EmptyData from '@c/empty-tips';
 import More from '@c/more';
 import Pagination from '@c/pagination';
-import { getRoleAssociations } from '../../api';
 import Loading from '@c/loading';
 import Error from '@c/error';
 import Table from '@c/table';
 import { usePortalGlobalValue } from '@portal/states_to_be_delete/portal';
+
+import { getRoleAssociations } from '../../api';
 
 export const PAGINATION = {
   total: 0,
