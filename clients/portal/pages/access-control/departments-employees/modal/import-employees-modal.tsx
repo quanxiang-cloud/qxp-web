@@ -100,7 +100,6 @@ export default function ImportEmployeesModal({ currDepId, closeModal }: Props) {
           setBtnStatus(1);
           setFailUsers(failUsers);
           setSuccessUsersId(success);
-          setImportLoading(false);
           setUploadStatus({
             status,
             failTotal,
@@ -110,6 +109,7 @@ export default function ImportEmployeesModal({ currDepId, closeModal }: Props) {
       } else {
         Message.error(res?.msg || '操作失败！');
       }
+      setImportLoading(false);
     },
   });
 
