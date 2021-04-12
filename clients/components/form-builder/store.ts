@@ -1,17 +1,17 @@
 import { nanoid } from 'nanoid';
 import { action, computed, observable, toJS } from 'mobx';
 
-export type Field = FormItem<any> & {
+export type FormItemInstance = FormItem<any> & {
   fieldName: string;
   configValue: any;
 };
 
 type Props = {
-  fields: Array<Field>;
+  fields: Array<FormItemInstance>;
 }
 
 export default class FormBuilderStore {
-  @observable fields: Array<Field>;
+  @observable fields: Array<FormItemInstance>;
   @observable activeFieldName = '';
   @observable activeFieldWrapperName = '';
 
@@ -23,16 +23,16 @@ export default class FormBuilderStore {
     }
   }
 
-  @computed get activeField(): Field | null {
+  @computed get activeField(): FormItemInstance | null {
     return this.fields.find(({ fieldName }) => fieldName === this.activeFieldName) || null;
   }
 
   @computed get schema(): ISchema {
     const properties = this.fields.reduce<Record<string, any>>((acc, field, index) => {
-      const { fieldName, toSchema: configToSchema, configValue } = field;
+      const { fieldName, toSchema, configValue } = field;
       acc[fieldName] = {
-        // for better debug
-        ...configToSchema(toJS(configValue)),
+        // convert observable value to prune js object for debugging
+        ...toSchema(toJS(configValue)),
         'x-index': index,
         'x-mega-props': {
           labelAlign: 'top',
