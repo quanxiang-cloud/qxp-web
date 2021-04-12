@@ -259,7 +259,6 @@ body {
 
 label.checkbox {
   &.checked {
-
     &:before,
     &:hover:before {
       @apply bg-blue-600 #{!important};

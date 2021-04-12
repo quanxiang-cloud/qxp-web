@@ -1,0 +1,44 @@
+
+
+@include block(date-picker) {
+  margin-top: 4px;
+  border: $calendar-border;
+  border-radius: $calendar-border-radius;
+  font-size: 14px;
+  color: $calendar-text-color;
+  background-color: $calendar-background-color;
+  box-shadow: $box-shadow;
+  user-select: none;
+
+  @include element(input) {
+    position: relative;
+
+    input {
+      width: 100%;
+      padding-right: 32px;
+    }
+  }
+
+  @include modifier(has-selected-day) {
+    &:hover {
+      .date-picker__right-icon:first-of-type {
+        visibility: hidden;
+      }
+
+      .date-picker__right-icon:last-of-type {
+        visibility: visible;
+      }
+    }
+  }
+
+  @include element(right-icon) {
+    position: absolute;
+    top: 50%;
+    right: 8px;
+    transform: translateY(-50%);
+  }
+
+  @include element(close-icon) {
+    visibility: hidden;
+  }
+}

@@ -3,7 +3,7 @@ import { Toggle } from '@QCFE/lego-ui';
 
 import Icon from '@c/icon';
 import Select from '@c/select';
-import { Checkbox } from '@c/checkbox';
+import Checkbox from '@c/checkbox';
 
 import FilterSetting from './filter-setting';
 import FieldSort from './field-sort';
@@ -68,7 +68,7 @@ const PAGE_SIZE_OPTION = [
 function PageSettingConfig() {
   const configItemRender = (title: React.ReactNode, content: React.ReactNode) => {
     return (
-      <div className='mb-24'>
+      <div className='mt-24'>
         <div className='mb-8 text-body2'>{title}</div>
         <div>{content}</div>
       </div>
@@ -77,7 +77,7 @@ function PageSettingConfig() {
 
   return (
     <div className='page-setting-option'>
-      <p className='text-caption-no-color text-gray-400 mb-20'>选择配置以下内容以定义页面视图的显示元素。</p>
+      <p className='text-caption-no-color text-gray-400'>选择配置以下内容以定义页面视图的显示元素。</p>
       {configItemRender('筛选条件', <FilterSetting />)}
       {configItemRender('排序规则', <Select options={SORT_OPTION} />)}
       {configItemRender(
@@ -88,7 +88,7 @@ function PageSettingConfig() {
       )}
       {configItemRender(
         <div className='flex items-center justify-between'>
-          <span>字段显示和排序</span><span><Checkbox>全选</Checkbox></span>
+          <span>字段显示和排序</span><span><Checkbox label='全选' /></span>
         </div>,
         <FieldSort />
       )}

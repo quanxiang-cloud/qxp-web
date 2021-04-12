@@ -23,7 +23,7 @@ interface Props<T extends Record<string, unknown>> {
   columns: Column[];
   emptyText?: string;
   className?: string;
-  selectKey: string;
+  selectKey?: string;
   showCheckBox?: boolean;
   currentPage?: number;
   style?: React.CSSProperties;

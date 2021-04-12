@@ -1,0 +1,21 @@
+.app-page-data-container {
+  padding: 20px;
+  background: #FFFFFF;
+  border-radius: 12px;
+}
+
+.app-page-data-filtrate {
+  display: flex;
+  column-gap: 24px;
+  margin-bottom: 16px;
+}
+
+.app-page-data-filtrate-more {
+  margin-right: 40px;
+  cursor: pointer;
+  user-select:none;
+
+  &:hover {
+    color: var(--blue-600);
+  }
+}
