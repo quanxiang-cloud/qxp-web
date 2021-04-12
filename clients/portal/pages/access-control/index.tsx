@@ -44,6 +44,7 @@ export default function Index() {
       <div className="h-full flex-grow bg-white rounded-12 overflow-hidden">
         <Switch>
           <Route exact path="/access-control" component={DepartmentsEmployees} />
+          <Route path="/access-control/departments-employees" component={DepartmentsEmployees} />
           <Route path="/access-control/role-management" component={RoleManagement} />
           <Route component={() => (<Error desc={'Menu page is not found'} />)} />
         </Switch>

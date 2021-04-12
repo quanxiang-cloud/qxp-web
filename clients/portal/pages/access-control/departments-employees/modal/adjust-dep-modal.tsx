@@ -79,7 +79,6 @@ export default function AdjustDepModal({ users: userList, closeModal }: Props) {
         (<div className="flex items-center">
           <Button
             iconName="close"
-            iconSize={20}
             onClick={closeModal}
             className="mr-20"
           >
@@ -88,7 +87,6 @@ export default function AdjustDepModal({ users: userList, closeModal }: Props) {
           <Button
             className="bg-gray-700 text-white"
             iconName="check"
-            iconSize={20}
             onClick={handleSubmit}
           >
             确定

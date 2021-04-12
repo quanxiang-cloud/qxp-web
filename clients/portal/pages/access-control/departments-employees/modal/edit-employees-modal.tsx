@@ -109,7 +109,6 @@ export default function EditEmployeesModal(
         (<div className="flex items-center">
           <Button
             iconName="close"
-            iconSize={20}
             className="mr-20"
             onClick={closeModal}>
             取消
@@ -117,7 +116,6 @@ export default function EditEmployeesModal(
           <Button
             className="bg-gray-700 text-white"
             iconName="check"
-            iconSize={20}
             onClick={handleSubmit}
           >
             确定{titleText}

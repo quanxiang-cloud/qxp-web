@@ -79,7 +79,6 @@ export default function ResetPasswordModal({
           <Button
             className="bg-gray-700 text-white"
             iconName="check"
-            iconSize={20}
             onClick={handleReset}
           >
             发送重置密码

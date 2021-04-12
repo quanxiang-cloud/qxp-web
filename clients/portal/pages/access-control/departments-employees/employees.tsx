@@ -215,7 +215,6 @@ export default function Employees({
                   className="bg-gray-700 text-white"
                   modifier="primary"
                   iconName="device_hub"
-                  iconSize={20}
                   onClick={() => openModal('adjust_dep')}
                 >
                   调整部门
@@ -223,7 +222,6 @@ export default function Employees({
                 <div className="w-16"></div>
                 <Button
                   iconName="password"
-                  iconSize={20}
                   onClick={() => openModal('reset_password')}
                 >
                   重置密码
@@ -232,16 +230,15 @@ export default function Employees({
             ) : (
               <>
                 <Button
+                  modifier="primary"
                   iconName="create_new_folder"
-                  iconSize={20}
                   onClick={() => openModal('import_employees')}
-                  className="mr-16 bg-gray-700 text-white"
+                  className="mr-16"
                 >
                   excel 批量导入
                 </Button>
                 <Button
                   iconName="add"
-                  iconSize={20}
                   onClick={() => handleUserInfo(initUserInfo)}
                   className="mr-16"
                 >

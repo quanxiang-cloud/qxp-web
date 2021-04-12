@@ -57,3 +57,25 @@
 .header-nav-btn-icon-wrapper {
   @apply w-20 h-20 mr-4 flex items-center;
 }
+
+@layer components {
+  .button-border-radius {
+    @apply rounded-tl-8 rounded-tr-2 rounded-br-8 rounded-bl-8;
+  }
+
+  .button-reverse-border-radius {
+    @apply rounded-tl-8 rounded-tr-8 rounded-br-8 rounded-bl-2;
+  }
+
+  .light-button {
+    @apply bg-white;
+  }
+
+  .opacity-button {
+    @apply cursor-pointer flex justify-between items-center button-border-radius rounded-tr-none px-16 py-5 border-1.5 border-solid border-gray-600;
+  }
+
+  .header-nav-btn {
+    @apply flex justify-between items-center px-8 py-5 transition-all hover:bg-blue-100 button-reverse-border-radius cursor-pointer;
+  }
+}

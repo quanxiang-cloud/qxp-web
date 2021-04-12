@@ -51,7 +51,6 @@ export default function LeaderHandleModal({ user, closeModal }: Props) {
         (<div className="flex items-center">
           <Button
             iconName="close"
-            iconSize={20}
             onClick={closeModal}
             className="mr-20"
           >
@@ -60,7 +59,6 @@ export default function LeaderHandleModal({ user, closeModal }: Props) {
           <Button
             className="bg-gray-700 text-white"
             iconName="check"
-            iconSize={20}
             onClick={handleSubmit}
           >
             确定{title}主管
