@@ -161,18 +161,6 @@ body {
   }
 }
 
-.hover-color:hover {
-  border: 1px dashed #375FF3;
-
-  svg {
-    color: #375FF3 !important;
-  }
-
-  p {
-    color: #375FF3;
-  }
-}
-
 .modal {
   &.owner-bind-modal {
     .modal-content {
