@@ -16,6 +16,7 @@ function FormFieldConfigTrue({ onChange, initialValue, schema }: Props): JSX.Ele
   return (
     <SchemaForm
       initialValues={initialValue}
+      // todo fix this
       components={{ Input, Select, Radio, RadioGroup: Radio.Group, Switch, NumberPicker, ArrayTable }}
       onChange={onChange}
       schema={schema}

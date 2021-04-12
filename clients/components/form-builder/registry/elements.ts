@@ -5,6 +5,7 @@ import CheckboxGroup from './checkbox-group';
 import NumberPicker from './number-picker';
 import DatePicker from './date-picker';
 import Select from './select';
+import MultipleSelect from './multiple-select';
 
 export type Elements = { [key: string]: FormItem<any> };
 
@@ -17,5 +18,6 @@ elements[CheckboxGroup.type] = { ...CheckboxGroup, displayOrder: 4 };
 elements[NumberPicker.type] = { ...NumberPicker, displayOrder: 5 };
 elements[DatePicker.type] = { ...DatePicker, displayOrder: 6 };
 elements[Select.type] = { ...Select, displayOrder: 7 };
+elements.MultipleSelect = { ...MultipleSelect, displayOrder: 8 };
 
 export default elements;
