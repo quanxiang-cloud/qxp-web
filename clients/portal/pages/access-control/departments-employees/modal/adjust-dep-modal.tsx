@@ -85,7 +85,7 @@ export default function AdjustDepModal({ users: userList, closeModal }: Props) {
             取消
           </Button>
           <Button
-            className="bg-gray-700 text-white"
+            modifier="primary"
             iconName="check"
             onClick={handleSubmit}
           >

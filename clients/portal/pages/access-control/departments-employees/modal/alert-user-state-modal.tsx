@@ -68,7 +68,6 @@ export default function AccountHandleModal(
             取消
           </Button>
           <Button
-            className="bg-gray-700 text-white"
             iconName="check"
             modifier="primary"
             onClick={handleSubmit}

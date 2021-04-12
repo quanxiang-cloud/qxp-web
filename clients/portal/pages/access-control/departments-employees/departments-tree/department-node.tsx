@@ -1,14 +1,13 @@
 import React, { useState } from 'react';
 import { observer } from 'mobx-react';
-import { Modal, Message } from '@QCFE/lego-ui';
 
 import MoreMenu, { MenuItem } from '@c/more-menu';
 import Authorized from '@c/authorized';
 import Icon from '@c/icon';
 import { NodeRenderProps } from '@c/headless-tree/types';
 
-import { deleteDEP } from '../api';
 import EditDepartment from './edit-department';
+import DeleteDepartment from './delete-department';
 
 const MENUS: MenuItem<string>[] = [
   {
@@ -46,42 +45,32 @@ function stopModalClickPropagate(e: React.MouseEvent) {
   e.stopPropagation();
 }
 
+type OpenedModal = '' | 'edit_modal' | 'delete_modal';
+
 function DepartmentNode({ node, store }: NodeRenderProps<Department>): JSX.Element | null {
-  const [showModal, toggleModal] = useState(false);
+  const [modalType, setModalType] = useState<OpenedModal>('');
   const [departmentToEdit, setDepartment] = useState(node.data);
 
   function onAdd() {
     setDepartment({ id: '', departmentName: '', pid: node.data.id, superID: '', grade: 0 });
-    toggleModal(true);
+    openModal('edit_modal');
   }
 
   function onEdit() {
     setDepartment(node.data);
-    toggleModal(true);
+    openModal('edit_modal');
   }
 
   function onDelete() {
-    const currentModal = Modal.open({
-      title: '删除',
-      okType: 'danger',
-      okText: '确认删除',
-      width: 632,
-      className: 'static-modal',
-      onOk: () => {
-        Modal.close(currentModal);
-        deleteDEP(node.id).then(({ code, msg }) => {
-          if (!code) {
-            Message.success({ content: '删除成功' });
-            store.deleteNode(node);
-            return;
-          }
+    openModal('delete_modal');
+  }
 
-          Message.error(msg || '');
-        });
-      },
-      content: (<div>确定要删除<span className="mx-4 text-16
-      font-semibold text-gray-900">{node.data.departmentName}</span>吗？</div>),
-    });
+  function openModal(type: OpenedModal) {
+    setModalType(type);
+  }
+
+  function closeModal() {
+    setModalType('');
   }
 
   return (
@@ -110,11 +99,22 @@ function DepartmentNode({ node, store }: NodeRenderProps<Department>): JSX.Eleme
         />
       </Authorized>
       {
-        showModal && (
+        modalType === 'edit_modal' && (
           <span onClick={stopModalClickPropagate}>
             <EditDepartment
               department={departmentToEdit}
-              closeModal={() => toggleModal(false)}
+              closeModal={closeModal}
+            />
+          </span>
+        )
+      }
+      {
+        modalType === 'delete_modal' && (
+          <span onClick={stopModalClickPropagate}>
+            <DeleteDepartment
+              node={node}
+              store={store}
+              closeModal={closeModal}
             />
           </span>
         )

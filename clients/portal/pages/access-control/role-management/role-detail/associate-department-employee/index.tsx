@@ -76,12 +76,12 @@ export default function AssociateDepartmentEmployee({ roleID, isSuper }: Props) 
         {!isSuper && (
           <Authorized authority={['accessControl/role/manage']}>
             <Button
-              className="bg-gray-700 hover:bg-gray-900 transition mb-16 cursor-pointer
-               text-white ml-2"
+              modifier="primary"
+              className="mb-16 ml-2"
               iconName="link"
               onClick={() => setShowBindModal(true)}
             >
-            关联员工与部门
+              关联员工与部门
             </Button>
           </Authorized>
         )}
