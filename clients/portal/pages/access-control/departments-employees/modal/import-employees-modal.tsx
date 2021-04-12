@@ -336,7 +336,7 @@ export default function ImportEmployeesModal({ currDepId, closeModal }: Props) {
               <div>
                 <p className="text-gray-600 font-semibold mt-24 mb-16">
                   接下来选择：
-              </p>
+                </p>
                 <p className="text-14 py-8">向已导入的员工发送随机密码</p>
                 <CheckboxGroup
                   name="states"
@@ -360,7 +360,7 @@ export default function ImportEmployeesModal({ currDepId, closeModal }: Props) {
                     className="text-blue-600 cursor-pointer"
                   >
                     下载失败列表
-              </span>
+                  </span>
                 </div>
                 <div className="qxp-table flex w-full mb-24">
                   <Table

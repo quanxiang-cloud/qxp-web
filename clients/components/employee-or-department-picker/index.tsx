@@ -1,47 +1,56 @@
 import React, { useState } from 'react';
 import { Modal } from '@QCFE/lego-ui';
-import { useQuery } from 'react-query';
 
 import Button from '@c/button';
-// todo remove this
-import { getRoleAssociations } from '@portal/pages/access-control/role-management/api';
 import Loading from '@c/loading';
 import Error from '@c/error';
 
 import EmployeeOrDepartmentPicker from './picker';
 
 interface Props {
-  onOk: (newSets: EmployeeOrDepartmentOfRole[], oldSets: EmployeeOrDepartmentOfRole[]) => void;
+  onOk: (
+    departments: EmployeeOrDepartmentOfRole[],
+    employees: EmployeeOrDepartmentOfRole[]
+  ) => Promise<unknown>;
   visible: boolean;
-  roleID: string;
   onCancel: () => void;
+  employees?: EmployeeOrDepartmentOfRole[];
+  departments?: EmployeeOrDepartmentOfRole[];
+  isLoading?: boolean;
+  errorMessage?: string;
 }
 
 export default function EmployeeOrDepartmentPickerModal({
+  departments,
+  employees,
   onOk,
   visible,
-  roleID,
   onCancel,
+  isLoading,
+  errorMessage,
 }: Props) {
   const [departmentsOrEmployees, setDepartmentsOrEmployees] = useState<
     EmployeeOrDepartmentOfRole[]
-  >();
-  const { data, isLoading, isError } = useQuery(
-    [
-      'GET_ROLE_ASSOCIATIONS_ALL',
-      {
-        roleId: roleID,
-      },
-    ],
-    getRoleAssociations,
-    {
-      refetchOnWindowFocus: false,
-      cacheTime: -1,
-    },
-  );
+  >([]);
+  const [isBindLoading, setIsBindLoading] = useState(false);
+  const [errMsg, setErrMsg] = useState('');
 
   function onBind() {
-    departmentsOrEmployees && onOk(departmentsOrEmployees, data?.departmentsOrEmployees || []);
+    const employees: EmployeeOrDepartmentOfRole[] = [];
+    const departments: EmployeeOrDepartmentOfRole[] = [];
+    departmentsOrEmployees.forEach((departmentOrEmployees) => {
+      if (departmentOrEmployees.type === 1) {
+        employees.push(departmentOrEmployees);
+      } else if (departmentOrEmployees.type === 2) {
+        departments.push(departmentOrEmployees);
+      }
+    });
+    setIsBindLoading(true);
+    onOk(departments, employees).then(() => {
+      setIsBindLoading(false);
+    }).catch((err) => {
+      setErrMsg(err.message);
+    });
   }
 
   return (
@@ -62,6 +71,7 @@ export default function EmployeeOrDepartmentPickerModal({
           <Button
             modifier="primary"
             iconName="check"
+            loading={isBindLoading}
             onClick={onBind}
           >
             确定关联
@@ -72,13 +82,13 @@ export default function EmployeeOrDepartmentPickerModal({
       {isLoading && (
         <Loading desc="加载中..." />
       )}
-      {isError && (
-        <Error desc="something wrong" />
+      {(errorMessage || errMsg) && (
+        <Error desc={errorMessage || errMsg} />
       )}
-      {!isLoading && !isError && (
+      {!isLoading && !errorMessage && (
         <EmployeeOrDepartmentPicker
-          departments={data?.departments}
-          employees={data?.employees}
+          departments={departments}
+          employees={employees}
           onChange={setDepartmentsOrEmployees}
         />
       )}
