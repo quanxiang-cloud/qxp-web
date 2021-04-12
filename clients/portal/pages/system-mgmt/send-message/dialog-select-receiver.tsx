@@ -9,7 +9,7 @@ import Loading from '@c/loading';
 import Error from '@c/error';
 
 // todo
-import EmployeeOrDepartmentPicker from '@c/employee-or-department-picker-modal/picker';
+import EmployeeOrDepartmentPicker from '@c/employee-or-department-picker/picker';
 
 interface Props {
   onOk: (adds: EmployeeOrDepartmentOfRole[], deletes: EmployeeOrDepartmentOfRole[]) => void;
