@@ -1,10 +1,11 @@
 import React from 'react';
 import { useMutation, useQueryClient } from 'react-query';
-import { Modal, Message } from '@QCFE/lego-ui';
+import { Modal } from '@QCFE/lego-ui';
 
 import Button from '@c/button';
-import { updateUserStatus } from '../api';
+import notify from '@lib/notify';
 
+import { updateUserStatus } from '../api';
 import { UserStatus } from '../type';
 
 interface Props {
@@ -20,11 +21,11 @@ export default function AccountHandleModal(
   const handleMutation = useMutation(updateUserStatus, {
     onSuccess: (res) => {
       if (res && res.code === 0) {
-        Message.success('操作成功');
+        notify.success('操作成功');
         closeModal();
         queryClient.invalidateQueries('GET_USER_ADMIN_INFO');
       } else {
-        Message.error('操作失败');
+        notify.error('操作失败');
         closeModal();
       }
     },

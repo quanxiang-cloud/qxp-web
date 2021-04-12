@@ -1,9 +1,10 @@
 import React, { createRef } from 'react';
 import { useQuery, useMutation, useQueryClient } from 'react-query';
-import { Modal, Form, Loading, Message } from '@QCFE/lego-ui';
+import { Modal, Form, Loading } from '@QCFE/lego-ui';
 
 import DepartmentPicker from '@c/form/input/tree-picker-field';
 import Button from '@c/button';
+import notify from '@lib/notify';
 import { departmentToTreeNode } from '@lib/utils';
 
 import { getERPTree, batchAdjustDep } from '../api';
@@ -31,11 +32,11 @@ export default function AdjustDepModal({ users: userList, closeModal }: Props) {
   const depMutation = useMutation(batchAdjustDep, {
     onSuccess: (res) => {
       if (res && res.code === 0) {
-        Message.success('操作成功');
+        notify.success('操作成功');
         closeModal();
         queryClient.invalidateQueries('GET_USER_ADMIN_INFO');
       } else {
-        Message.error('操作失败');
+        notify.error('操作失败');
         closeModal();
       }
     },
@@ -48,7 +49,7 @@ export default function AdjustDepModal({ users: userList, closeModal }: Props) {
 
     const isHaveLeader = userList.find((user) => user.isDEPLeader === LeaderStatus.true);
     if (isHaveLeader) {
-      Message.error('当前已选择员工列表中存在部门主管，不能参与调整部门！');
+      notify.error('当前已选择员工列表中存在部门主管，不能参与调整部门！');
       return;
     }
     const params: BatchDepParams = {
@@ -59,7 +60,7 @@ export default function AdjustDepModal({ users: userList, closeModal }: Props) {
 
     const values = formRef.current?.getFieldsValue();
     if (!values?.pid) {
-      Message.error('请选择部门');
+      notify.error('请选择部门');
       return;
     }
 

@@ -23,6 +23,7 @@ function Button(
       ref={ref}
       className={classnames('btn', className, {
         [`btn--${modifier}`]: modifier,
+        'btn--forbidden': forbidden,
         'btn--loading': loading,
         'cursor-not-allowed': forbidden,
         'opacity-50': forbidden,

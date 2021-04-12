@@ -1,3 +1,4 @@
+import classnames from 'classnames';
 import React, {
   DetailedHTMLProps,
   InputHTMLAttributes,
@@ -6,15 +7,22 @@ import React, {
   ChangeEvent,
   FocusEvent,
   TextareaHTMLAttributes,
+  ReactNode,
 } from 'react';
 
 import { FormContext } from '..';
+import { omit } from '@lib/utils';
 
 interface BaseProps {
   validateMessage?: string;
-  rules?: (string | ((value: Value) => string))[];
+  rules?: (string | ((value: any) => string))[];
   controlClassName?: string;
   errorClassName?: string;
+  label?: string;
+  beforeBeginIcon?: ReactNode;
+  beforeEndIcon?: ReactNode;
+  afterBeginIcon?: ReactNode;
+  afterEndIcon?: ReactNode;
 }
 
 export type Props =
@@ -26,7 +34,17 @@ export type Value = string | number | readonly string[] | undefined;
 
 export default function Input(props: Props) {
   const { setField, addField, validateField, fields, errors } = useContext(FormContext);
-  const { controlClassName, errorClassName, onChange, onBlur } = props;
+  const {
+    controlClassName,
+    errorClassName,
+    onChange,
+    onBlur,
+    label,
+    beforeBeginIcon,
+    beforeEndIcon,
+    afterBeginIcon,
+    afterEndIcon,
+  } = props;
   const { id = props.name } = props;
   const field = fields[id] || { value: '' };
   const error = errors[id];
@@ -34,38 +52,71 @@ export default function Input(props: Props) {
   const { validateMessage, ...restProps } = field;
 
   useEffect(() => {
-    addField({ validateMessage, ...props, id, value: props.value || '' });
+    addField({
+      validateMessage: validateMessage,
+      ...props,
+      id,
+      value: props.value || '',
+    });
   }, []);
 
   function handleBlur(e: FocusEvent<HTMLInputElement & HTMLTextAreaElement>) {
-    validateField(id);
     onBlur && onBlur(e);
+    validateField(id);
   }
 
   function handleChange(e: ChangeEvent<HTMLInputElement & HTMLTextAreaElement>) {
-    setField(e, field);
     onChange && onChange(e);
+    setField(e, field);
   }
 
+  const inputProps = omit({
+    ...props,
+    ...restProps,
+    type: props.type,
+  }, ['validateMessage', 'afterBeginIcon', 'className']);
+
+  const className = classnames('input-border-radius border pr-32 w-full outline-none pl-4', {
+    'border-gray-300': !error,
+    'border-red-600': error,
+  });
+
   return (
-    <div className={controlClassName}>
-      <label htmlFor={id}>
-        {field.type === 'textarea' ? (
-          <textarea
-            {...restProps}
-            onBlur={handleBlur}
-            onChange={handleChange}
-            rows={restProps.rows || 2}
-          />
-        ) : (
-          <input
-            {...restProps}
-            onBlur={handleBlur}
-            onChange={handleChange}
-          />
-        )}
-      </label>
-      <p className={errorClassName}>{error}</p>
+    <div className={classnames('control', controlClassName)}>
+      {label && (
+        <label htmlFor={id} className="text-body2 mb-8">{label}</label>
+      )}
+      <div className="field relative">
+        {beforeBeginIcon}
+        <div className="field-content relative w-full">
+          {beforeEndIcon}
+          {field.type === 'textarea' ? (
+            <textarea
+              {...inputProps}
+              onBlur={handleBlur}
+              onChange={handleChange}
+              rows={restProps.rows || 2}
+              className={className}
+            />
+          ) : (
+            <input
+              {...inputProps}
+              onBlur={handleBlur}
+              onChange={handleChange}
+              className={className}
+            />
+          )}
+          {afterBeginIcon}
+        </div>
+        {afterEndIcon}
+      </div>
+      <p
+        className={
+          classnames('text-caption-no-color text-red-600 m-0', errorClassName)
+        }
+      >
+        {error}
+      </p>
     </div>
   );
 }

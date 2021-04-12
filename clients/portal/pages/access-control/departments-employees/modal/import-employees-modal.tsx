@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
 import { useMutation } from 'react-query';
 import classnames from 'classnames';
-import { Modal, CheckboxGroup, Checkbox, Table, Upload, Message } from '@QCFE/lego-ui';
+import { Modal, CheckboxGroup, Checkbox, Table, Upload } from '@QCFE/lego-ui';
 
 import Icon from '@c/icon';
 import Button from '@c/button';
-import { getUserTemplate, importTempFile, resetUserPWD } from '../api';
+import notify from '@lib/notify';
 
 import { FileUploadStatus } from '../type';
 import { exportEmployeesFail } from '../utils';
+import { getUserTemplate, importTempFile, resetUserPWD } from '../api';
 
 const columns: Columns = [
   {
@@ -75,7 +76,7 @@ export default function ImportEmployeesModal({ currDepId, closeModal }: Props) {
           downEmployeesTemp(data.fileURL, '模板文件.xlsx');
         }
       } else {
-        Message.error('操作失败');
+        notify.error('操作失败');
       }
     },
   });
@@ -83,7 +84,7 @@ export default function ImportEmployeesModal({ currDepId, closeModal }: Props) {
   const uploadMutation = useMutation(importTempFile, {
     onSuccess: (res) => {
       if (res && res.code === 0) {
-        Message.success('操作成功');
+        notify.success('操作成功');
         const { data } = res;
         if (data) {
           const { failTotal, failUsers, successTotal, success } = data;
@@ -107,7 +108,7 @@ export default function ImportEmployeesModal({ currDepId, closeModal }: Props) {
           });
         }
       } else {
-        Message.error(res?.msg || '操作失败！');
+        notify.error(res?.msg || '操作失败！');
       }
       setImportLoading(false);
     },
@@ -116,9 +117,9 @@ export default function ImportEmployeesModal({ currDepId, closeModal }: Props) {
   const resetMutation = useMutation(resetUserPWD, {
     onSuccess: (data) => {
       if (data && data.code === 0) {
-        Message.success('操作成功！');
+        notify.success('操作成功！');
       } else {
-        Message.error('操作失败！');
+        notify.error('操作失败！');
       }
       closeModal();
     },
@@ -136,7 +137,7 @@ export default function ImportEmployeesModal({ currDepId, closeModal }: Props) {
   function beforeUpload(file: File) {
     const { size } = file;
     if (size > 1024 * 1024 * 5) {
-      Message.error('文件过大，超过 5M 不能上传！');
+      notify.error('文件过大，超过 5M 不能上传！');
       return;
     }
     setFileList([file]);
@@ -154,7 +155,7 @@ export default function ImportEmployeesModal({ currDepId, closeModal }: Props) {
 
   function importEmployeesTemp() {
     if (fileList.length === 0) {
-      Message.error('请上传文件');
+      notify.error('请上传文件');
       return;
     }
     const params = {
@@ -183,7 +184,7 @@ export default function ImportEmployeesModal({ currDepId, closeModal }: Props) {
 
   function handleSubmit() {
     if (checkWay && checkWay.sendEmail === -1 && checkWay.sendPhone === -1) {
-      Message.error('请选择发送方式');
+      notify.error('请选择发送方式');
       return;
     }
     resetMutation.mutate({ userIDs: successUsersId, ...checkWay });

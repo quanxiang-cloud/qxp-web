@@ -19,12 +19,16 @@
   user-select: none;
 }
 
-.btn-disabled {
+.btn--disabled {
   cursor: not-allowed;
 }
 
 .btn {
   color: var(--gray-600);
+}
+
+.btn--forbidden {
+  cursor: not-allowed;
 }
 
 .btn:hover {

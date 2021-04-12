@@ -101,7 +101,7 @@ export default function HeaderLeft() {
             className="header-nav-btn-text group-hover:text-blue-600"
             style={style(isAccess)}
           >
-                访问控制
+            访问控制
           </span>
         </Link>
       </Authorized>
@@ -124,7 +124,7 @@ export default function HeaderLeft() {
           className="header-nav-btn-text group-hover:text-blue-600"
           style={style(isSystemControl)}
         >
-              系统管理
+          系统管理
         </span>
       </Link>
     </div>

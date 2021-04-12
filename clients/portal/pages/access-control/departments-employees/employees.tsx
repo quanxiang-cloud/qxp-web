@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery } from 'react-query';
-import { Table, Message } from '@QCFE/lego-ui';
+import { Table } from '@QCFE/lego-ui';
 
 import Icon from '@c/icon';
 import EmptyTips from '@c/empty-tips';
@@ -9,6 +9,7 @@ import Authorized from '@c/authorized';
 import Button from '@c/button';
 import MoreMenu from '@c/more-menu';
 import { usePortalGlobalValue } from '@portal/states_to_be_delete/portal';
+import notify from '@lib/notify';
 
 import { getUserAdminInfo } from './api';
 import EditEmployeesModal from './modal/edit-employees-modal';
@@ -106,7 +107,7 @@ export default function Employees({
         });
         exportEmployees(newData);
       } else {
-        Message.error('获取人员出错');
+        notify.error('获取人员出错');
       }
     });
   }
