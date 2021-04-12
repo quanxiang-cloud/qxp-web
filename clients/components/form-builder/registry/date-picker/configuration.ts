@@ -34,27 +34,27 @@ const schema: ISchema = {
     valueFormat: {
       type: 'string',
       title: '时间格式',
-      default: '',
+      default: 'YYYY-MM-DD',
       enum: [
         {
           label: '年',
-          value: '',
+          value: 'YYYY',
         },
         {
           label: '年-月',
-          value: '',
+          value: 'YYYY-MM',
         },
         {
           label: '年-月-日',
-          value: '',
+          value: 'YYYY-MM-DD',
         },
         {
           label: '年-月-日 时-分',
-          value: '',
+          value: 'YYYY-MM-DD HH:mm',
         },
         {
           label: '年-月-日 时-分-秒',
-          value: '',
+          value: 'YYYY-MM-DD HH:mm:ss',
         },
       ],
       'x-component': 'select',
