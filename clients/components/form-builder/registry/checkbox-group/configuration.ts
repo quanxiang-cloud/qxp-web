@@ -94,14 +94,15 @@ const schema: ISchema = {
       'x-index': 7,
     },
     availableOptions: {
-      title: '可选值',
+      title: '',
       type: 'array',
       'x-component': 'ArrayTable',
+      'x-index': 8,
       items: {
         type: 'object',
         properties: {
           label: {
-            title: 'label',
+            title: '选项',
             type: 'string',
             'x-component': 'Input',
           },
