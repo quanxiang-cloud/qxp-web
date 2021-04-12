@@ -329,9 +329,10 @@ export default function ImportEmployeesModal({ currDepId, closeModal }: Props) {
               </ul>
             </div>
           )}
-          {[FileUploadStatus.success, FileUploadStatus.depSuccess].includes(
-            uploadStatus.status
-          ) && (
+          {
+            [FileUploadStatus.success, FileUploadStatus.depSuccess].includes(
+              uploadStatus.status
+            ) && (
               <div>
                 <p className="text-gray-600 font-semibold mt-24 mb-16">
                   接下来选择：
@@ -345,10 +346,12 @@ export default function ImportEmployeesModal({ currDepId, closeModal }: Props) {
                   <Checkbox value="phone">通过短信</Checkbox>
                 </CheckboxGroup>
               </div>
-            )}
-          {[FileUploadStatus.depSuccess, FileUploadStatus.fail].includes(
-            uploadStatus.status
-          ) && (
+            )
+          }
+          {
+            [FileUploadStatus.depSuccess, FileUploadStatus.fail].includes(
+              uploadStatus.status
+            ) && (
               <div>
                 <div className="mb-8 flex items-center">
                   <p className="text-gray-600 font-semibold">失败原因：</p>
@@ -357,7 +360,7 @@ export default function ImportEmployeesModal({ currDepId, closeModal }: Props) {
                     className="text-blue-600 cursor-pointer"
                   >
                     下载失败列表
-                </span>
+              </span>
                 </div>
                 <div className="qxp-table flex w-full mb-24">
                   <Table
@@ -368,7 +371,8 @@ export default function ImportEmployeesModal({ currDepId, closeModal }: Props) {
                   />
                 </div>
               </div>
-            )}
+            )
+          }
         </div>
       </Modal>
     </>
