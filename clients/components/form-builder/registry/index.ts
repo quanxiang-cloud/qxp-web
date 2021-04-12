@@ -10,8 +10,8 @@ type RemoteFuncs = {
 
 const AVAILABLE_CATEGORIES: Array<{ title: string; key: ElementCategory }> = [
   { title: '基础字段', key: 'basic' },
-  { title: '高级字段', key: 'advance' },
-  { title: '布局字段', key: 'layout' },
+  // { title: '高级字段', key: 'advance' },
+  // { title: '布局字段', key: 'layout' },
 ];
 
 class Registry {
