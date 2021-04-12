@@ -56,12 +56,12 @@ export const getUserRoles = async (
 };
 
 export async function userResetPassword({
-  oldPassword, newPassword,
+  old, new: newPassword,
 }: Record<string, string>) {
   await httpPost<any>(
     '/api/v1/nurturing/userResetPWD',
     JSON.stringify({
-      oldPassword,
+      oldPassword: old,
       newPassword,
     })
   );

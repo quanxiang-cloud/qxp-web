@@ -41,11 +41,14 @@ export default observer(function DepartmentNode({ node, store, onChange }: Props
       onClick={handleClick}
       className={twCascade('transition-all py-8 w-full flex items-center justify-between')}
     >
-      <div className="ml-2 flex flex-row items-center w-full">
+      <div
+        className="ml-2 flex flex-row items-center w-full"
+        onClick={(e) => e.stopPropagation()}
+      >
         <Checkbox
           checked={isChecked}
           indeterminate={isIndeterminate}
-          onChange={onChange}
+          onChange={handleClick}
         />
         <div className="ml-10 truncate" title={node.name}>
           {node.name}

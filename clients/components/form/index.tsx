@@ -10,12 +10,15 @@ import React, {
   FormHTMLAttributes,
   TextareaHTMLAttributes,
   ForwardedRef,
+  isValidElement,
 } from 'react';
 
 import validations, { Validation } from './validations';
 
 export type Props = PropsWithChildren<DetailedHTMLProps<
-  FormHTMLAttributes<HTMLFormElement>, HTMLFormElement>>
+  FormHTMLAttributes<HTMLFormElement>, HTMLFormElement>> & {
+    layout?: 'vertical' | 'horizontal';
+  }
 export type Value = string | number | readonly string[] | undefined;
 
 type Field = DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement> &
@@ -44,10 +47,11 @@ export const FormContext = createContext<Context>({
 
 export interface FormRef {
   validateFields: () => boolean;
+  isAllValid: () => boolean;
 }
 
 function Form(
-  { children, ...restProps }: Props,
+  { children, layout = 'vertical', ...restProps }: Props,
   ref?: ForwardedRef<FormRef>
 ) {
   const [formState, setFormState] = useState<{ fields: Fields, errors: Errors }>({
@@ -59,9 +63,10 @@ function Form(
     if (typeof ref === 'object' && ref) {
       ref.current = {
         validateFields,
+        isAllValid,
       };
     }
-  }, [validateFields]);
+  }, [validateFields, isAllValid]);
 
   function setField(
     event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
@@ -100,13 +105,17 @@ function Form(
     }
   }
 
-  function validateFields(): boolean {
+  function validateFields(ignoreErrorMessage?: boolean): boolean {
     return Object.keys(formState.fields).every((id) => {
-      return validateField(id);
+      return validateField(id, ignoreErrorMessage);
     });
   }
 
-  function validateField(id: string): boolean {
+  function isAllValid(): boolean {
+    return validateFields(true);
+  }
+
+  function validateField(id: string, ignoreErrorMessage?: boolean): boolean {
     let error = '';
     const field = formState.fields[id];
     if (!field) {
@@ -141,7 +150,7 @@ function Form(
         break;
       }
     }
-    setFormState((state) => ({
+    !ignoreErrorMessage && setFormState((state) => ({
       ...state,
       errors: {
         ...state.errors,
@@ -154,7 +163,14 @@ function Form(
   return (
     <form {...restProps}>
       <FormContext.Provider value={{ ...formState, setField, addField, validateField }}>
-        {children}
+        {
+          React.Children.map(children, (child) => {
+            if (isValidElement(child)) {
+              return React.cloneElement(child, { layout });
+            }
+            return child;
+          })
+        }
       </FormContext.Provider>
     </form>
   );

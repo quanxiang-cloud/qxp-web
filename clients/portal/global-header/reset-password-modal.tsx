@@ -3,10 +3,10 @@ import { Modal } from '@QCFE/lego-ui';
 import { useMutation } from 'react-query';
 
 import Button from '@c/button';
-import { userResetPassword } from '@clients/lib/api/auth';
+import { userResetPassword } from '@lib/api/auth';
 import PassWordField from '@c/form/input/password-field';
 import Form, { FormRef } from '@c/form';
-import { isPassword } from '@clients/lib/utils';
+import { isPassword } from '@lib/utils';
 import notify from '@lib/notify';
 
 interface Props {
@@ -42,9 +42,7 @@ export default function ResetPasswordModal({ visible, onCancel }: Props) {
     return function(e: FocusEvent<HTMLInputElement & HTMLTextAreaElement>) {
       const { value } = e.target;
       setValues((values) => ({ ...values, [type]: value }));
-      if (!formRef.current?.validateFields()) {
-        setIsForbidden(true);
-      }
+      setIsForbidden(!!formRef.current?.isAllValid());
     };
   }
 
