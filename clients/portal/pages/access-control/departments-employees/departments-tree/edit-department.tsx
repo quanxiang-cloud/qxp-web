@@ -13,7 +13,7 @@ const { TextField } = Form;
 // const string for form input help text
 const HELP_TEXT_NORMAL = '名称不超过 30 个字符，请修改！';
 const HELP_TEXT_DUPLICATED = '名称已存在，请修改！';
-const HELP_TEXT_REG_ERROR = '只允许 划线、横线！';
+const HELP_TEXT_REG_ERROR = '只能包含汉字、英文、横线("-")以及下划线("_")，请修改！';
 
 interface Props {
   department: DeptInfo;
@@ -122,7 +122,7 @@ export default function EditDepartment({ department, closeModal }: Props) {
             取消
           </Button>
           <Button
-            className="bg-gray-700 text-white"
+            modifier="primary"
             iconName="check"
             onClick={okModalHandle}
           >

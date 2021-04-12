@@ -71,22 +71,20 @@ export default function ResetPasswordModal({ visible, onCancel }: Props) {
       footer={
         (<div className="flex flex-row justify-between items-center">
           <Button
-            className="bg-white hover:bg-gray-100 transition cursor-pointer mr-20
-            mb-0 text-gray-600 ml-2"
+            className="mr-20"
             iconName="close"
             onClick={onCancel}
           >
-           取消
+            取消
           </Button>
           <Button
             modifier='primary'
             loading={loading}
             forbidden={forbidden}
-            className="bg-gray-700 hover:bg-gray-900 transition cursor-pointer mb-0 text-white ml-2"
             iconName="check"
             onClick={onOk}
           >
-           确定重置
+            确定重置
           </Button>
         </div>)
       }

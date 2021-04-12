@@ -47,6 +47,7 @@ export default function LeaderHandleModal({ user, closeModal }: Props) {
       visible
       title={`${title}主管`}
       className='static-modal'
+      onCancel={closeModal}
       footer={
         (<div className="flex items-center">
           <Button
@@ -57,7 +58,7 @@ export default function LeaderHandleModal({ user, closeModal }: Props) {
             取消
           </Button>
           <Button
-            className="bg-gray-700 text-white"
+            modifier="primary"
             iconName="check"
             onClick={handleSubmit}
           >

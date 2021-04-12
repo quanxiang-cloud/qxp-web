@@ -208,17 +208,16 @@ export default function ImportEmployeesModal({ currDepId, closeModal }: Props) {
               </Button>
               {btnStatus === 0 ? (
                 <Button
-                  className="bg-gray-700 text-white"
+                  modifier="primary"
                   iconName="check"
                   onClick={importEmployeesTemp}
                   loading={importLoading}
-                  modifier="primary"
                 >
                   确定导入
                 </Button>
               ) : (
                 <Button
-                  className="bg-gray-700 text-white"
+                  modifier="primary"
                   iconName="check"
                   onClick={handleSubmit}
                 >
@@ -279,7 +278,7 @@ export default function ImportEmployeesModal({ currDepId, closeModal }: Props) {
                   <div
                     className={classnames(
                       'w-full h-86 border rounded-8 border-dashed border-gray-700',
-                      'flex flex-col items-center justify-center hover:border-red-600'
+                      'flex flex-col items-center justify-center hover-color'
                     )}
                   >
                     <Icon
@@ -327,7 +326,7 @@ export default function ImportEmployeesModal({ currDepId, closeModal }: Props) {
                     企业通讯录导入模版
                   </span>
                 </li>
-                <li>2. 上传填写正确的企业通讯录导入模版。</li>
+                <li>2. 上传填写正确的企业通讯录导入模版</li>
               </ul>
             </div>
           )}
@@ -336,7 +335,7 @@ export default function ImportEmployeesModal({ currDepId, closeModal }: Props) {
           ) && (
             <div>
               <p className="text-gray-600 font-semibold mt-24 mb-16">
-                接下来选择：
+                  接下来选择：
               </p>
               <p className="text-14 py-8">向已导入的员工发送随机密码</p>
               <CheckboxGroup
@@ -358,7 +357,7 @@ export default function ImportEmployeesModal({ currDepId, closeModal }: Props) {
                   onClick={exportEmployees}
                   className="text-blue-600 cursor-pointer"
                 >
-                  下载失败列表
+                    下载失败列表
                 </span>
               </div>
               <div className="qxp-table flex w-full mb-24">

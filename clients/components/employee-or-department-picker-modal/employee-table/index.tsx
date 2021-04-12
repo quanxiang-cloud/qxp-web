@@ -25,7 +25,7 @@ export default observer(function EmployeeTable({
   ownerStore,
 }: IEmployeeTable) {
   const store = ownerStore.employeeStore;
-  const { current, pageSize, total } = store.pagination;
+  const { pageNumber: current, pageSize, total } = store.pagination;
 
   const { data, isLoading } = useQuery(
     [
@@ -127,17 +127,20 @@ export default observer(function EmployeeTable({
           onChange: onUpdateSelectedKeys,
         }}
       />
-      <Pagination
-        {...store.pagination}
-        total={total}
-        onChange={store.setPagination}
-        // prefix={
-        //   (<span className="text-12 text-dark-four">
-        //     {`已选 ${store.selectedKeys.length}, 共 ${total}条`}
-        //   </span>)
-        // }
-        className="pagination-border"
-      />
+      <div className="h-52 flex justify-end bg-white">
+        <Pagination
+          {...store.pagination}
+          total={total}
+          showLessItems
+          onChange={store.setPagination}
+          // prefix={
+          //   (<span className="text-12 text-dark-four">
+          //     {`已选 ${store.selectedKeys.length}, 共 ${total}条`}
+          //   </span>)
+          // }
+          className="pagination-border"
+        />
+      </div>
     </div>
   );
 });

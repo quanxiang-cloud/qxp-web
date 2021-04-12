@@ -21,7 +21,8 @@ function Button(
     <button
       {...rest}
       ref={ref}
-      className={classnames('btn', className, `btn--${modifier}`, {
+      className={classnames('btn', className, {
+        [`btn--${modifier}`]: modifier,
         'btn--loading': loading,
         'cursor-not-allowed': forbidden,
         'opacity-50': forbidden,

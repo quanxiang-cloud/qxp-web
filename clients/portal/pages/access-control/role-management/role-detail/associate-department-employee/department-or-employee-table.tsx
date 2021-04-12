@@ -182,20 +182,22 @@ export default function DepartmentTable({ isSuper, onCancelAssociation, roleID, 
         })}
       />
       {!isSuper && (
-        <Pagination
-          {...pagination}
-          // prefix={
-          //   (<span className="text-12 text-gray-400">
-          //     {`共 ${pagination.total} 个${type === 1 ? '员工' : '部门'}`}
-          //   </span>)
-          // }
-          // onShowSizeChange={(pageSize) => setPagination((p) => ({ ...p, pageSize }))}
-          // onChange={(current) => setPagination((p) => ({ ...p, current }))}
-          className="rounded-bl-12 rounded-br-12 pagination-border"
-          onChange={(pageNumber, pageSize) => {
-            setPagination({ current: pageNumber, pageSize, total: pagination.total });
-          }}
-        />
+        <div className="h-52 flex justify-end bg-white">
+          <Pagination
+            {...pagination}
+            // prefix={
+            //   (<span className="text-12 text-gray-400">
+            //     {`共 ${pagination.total} 个${type === 1 ? '员工' : '部门'}`}
+            //   </span>)
+            // }
+            // onShowSizeChange={(pageSize) => setPagination((p) => ({ ...p, pageSize }))}
+            // onChange={(current) => setPagination((p) => ({ ...p, current }))}
+            className="rounded-bl-12 rounded-br-12 pagination-border"
+            onChange={(pageNumber, pageSize) => {
+              setPagination({ current: pageNumber, pageSize, total: pagination.total });
+            }}
+          />
+        </div>
       )}
     </>
   );

@@ -23,8 +23,18 @@
   cursor: not-allowed;
 }
 
+.btn {
+  color: var(--gray-600);
+}
+
 .btn:hover {
+  color: var(--gray-900);
   border-color: var(--gray-800);
+}
+
+.btn:active {
+  color: white;
+  background-color: var(--gray-900);
 }
 
 .btn:not(.icon-btn) .icon {
@@ -37,6 +47,11 @@
 }
 
 .btn--primary:hover {
+  color: white;
+  background-color: var(--gray-600);
+}
+
+.btn--primary:active {
   background-color: var(--gray-800);
 }
 

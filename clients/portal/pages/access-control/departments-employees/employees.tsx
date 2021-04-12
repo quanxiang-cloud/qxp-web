@@ -212,14 +212,13 @@ export default function Employees({
             {selectedUserIds.length > 0 ? (
               <>
                 <Button
-                  className="bg-gray-700 text-white"
                   modifier="primary"
                   iconName="device_hub"
                   onClick={() => openModal('adjust_dep')}
+                  className="mr-16"
                 >
                   调整部门
                 </Button>
-                <div className="w-16"></div>
                 <Button
                   iconName="password"
                   onClick={() => openModal('reset_password')}
@@ -255,15 +254,15 @@ export default function Employees({
                     }
                   }}
                 >
-                  <div className="p-6 bg-gray-700 text-white btn-border-radius cursor-pointer">
-                    <Icon type="light" name="more_horiz" size={20} />
+                  <div className="p-6 border border-gray-800 btn-border-radius cursor-pointer">
+                    <Icon name="more_horiz" size={20} />
                   </div>
                 </MoreMenu>
               </>
             )}
           </Authorized>
         </div>
-        <div className="h-full flex flex-grow my-16 flex-col px-20 overflow-auto">
+        <div className="h-full flex flex-grow mt-16 flex-col px-20 overflow-auto">
 
           {
             (employeesList?.data && employeesList?.data.length > 0) && (
@@ -283,19 +282,24 @@ export default function Employees({
             (employeesList?.data && employeesList?.data.length === 0) && (
               <div className="qxp-table w-full flex items-center justify-center">
                 <EmptyTips text="无成员数据" className="py-32" />
-              </div>)
+              </div>
+            )
           }
         </div>
-        <div className="flex justify-end">
-          {
-            (employeesList?.data && employeesList?.data.length > 0) && (<Pagination
-              pageNumber={pageParams.page}
-              total={employeesList?.total || 0}
-              pageSize={pageParams.limit}
-              onChange={handlePageChange}
-            />)
-          }
-        </div>
+        {
+          (employeesList?.data && employeesList?.data.length > 0) && (
+            <div className="h-52 flex items-center justify-between px-20">
+              <div className="text-12 text-gray-600">共<span className="mx-4">
+                {employeesList?.total || 0}</span>条数据</div>
+              <Pagination
+                pageNumber={pageParams.page}
+                total={employeesList?.total || 0}
+                pageSize={pageParams.limit}
+                onChange={handlePageChange}
+              />
+            </div>
+          )
+        }
       </div>
     </>
   );

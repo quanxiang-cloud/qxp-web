@@ -27,6 +27,7 @@ module.exports = {
       44: '44px',
       46: '46px',
       48: '48px',
+      52: '52px',
       56: '56px',
       58: '58px',
       72: '72px',
@@ -115,7 +116,7 @@ module.exports = {
       },
       textColor: {
         'inherit': 'inherit'
-      }      
+      }
     },
   },
 };

@@ -114,7 +114,7 @@ export default function EditEmployeesModal(
             取消
           </Button>
           <Button
-            className="bg-gray-700 text-white"
+            modifier="primary"
             iconName="check"
             onClick={handleSubmit}
           >
@@ -145,7 +145,7 @@ export default function EditEmployeesModal(
                 }
                 return isPass;
               },
-              help: '不能输入特殊符号(除"_"、"-"外)',
+              help: '只能包含汉字、英文、横线("-")以及下划线("_")，请修改！',
             },
           ]}
         />

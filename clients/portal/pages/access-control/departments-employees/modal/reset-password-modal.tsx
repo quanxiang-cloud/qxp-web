@@ -77,7 +77,7 @@ export default function ResetPasswordModal({
             取消
           </Button>
           <Button
-            className="bg-gray-700 text-white"
+            modifier="primary"
             iconName="check"
             onClick={handleReset}
           >

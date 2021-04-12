@@ -166,7 +166,7 @@ export default function AlterRoleFunc({ funcs: functions }: IAlterRoleFunc) {
               </span>
             )}
             <Button
-              className="bg-gray-700 hover:bg-gray-900 transition"
+              modifier="primary"
               textClassName="text-white ml-2"
               icon={<img src="/dist/images/save.svg" />}
               onClick={saveRoleFunctions}

@@ -53,19 +53,18 @@ export default function EmployeeOrDepartmentPickerModal({
       footer={
         (<div className="flex flex-row justify-between items-center">
           <Button
-            className="bg-white hover:bg-gray-100 transition cursor-pointer mr-20 mb-0
-             text-gray-600 ml-2"
+            className="mr-20"
             iconName="close"
             onClick={onCancel}
           >
-              取消
+            取消
           </Button>
           <Button
-            className="bg-gray-700 hover:bg-gray-900 transition cursor-pointer mb-0 text-white ml-2"
+            modifier="primary"
             iconName="check"
             onClick={onBind}
           >
-              确定关联
+            确定关联
           </Button>
         </div>)
       }
