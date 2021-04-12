@@ -71,12 +71,12 @@ const schema: ISchema = {
       'x-component': 'Switch',
       'x-index': 7,
     },
-    defaultValue: {
+    valueFrom: {
       title: '默认值',
       enum: [
         {
           label: '自定义',
-          value: '',
+          value: 'customized',
         },
         {
           label: '数据联动',

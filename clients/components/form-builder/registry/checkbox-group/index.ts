@@ -7,7 +7,7 @@ const CheckboxGroupField: Omit<FormItem<typeof defaultConfig>, 'displayOrder'> =
   configuration,
   itemName: '复选框',
   icon: 'check_box',
-  defaultConfig: defaultConfig,
+  defaultConfig,
   toSchema,
   component: Checkbox.Group,
   category: 'basic',

@@ -7,8 +7,8 @@ export const defaultConfig = {
   displayModifier: '',
   optionsLayout: 'horizontal',
   sortable: false,
-  valueFormat: '',
   required: false,
+  valueFrom: 'customized',
   availableOptions: [
     { label: 'One', value: 'One', title: 'One' },
     { label: 'Two', value: 'Two', title: 'Two' },
@@ -23,10 +23,9 @@ function toSchema(value: typeof defaultConfig): Schema {
     title: value.title,
     description: value.description,
     required: value.required,
-    format: value.valueFormat,
     readOnly: value.displayModifier === 'readonly',
     display: value.displayModifier !== 'hidden',
-    enum: value.availableOptions.map((option) => {
+    enum: (value.availableOptions || []).map((option) => {
       return {
         ...option,
         value: nanoid(8),

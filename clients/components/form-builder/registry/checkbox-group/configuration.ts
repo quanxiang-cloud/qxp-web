@@ -74,12 +74,12 @@ const schema: ISchema = {
       'x-component': 'Switch',
       'x-index': 6,
     },
-    defaultValue: {
+    valueFrom: {
       title: '默认值',
       enum: [
         {
           label: '自定义',
-          value: '',
+          value: 'customized',
         },
         {
           label: '数据联动',
@@ -92,12 +92,26 @@ const schema: ISchema = {
       ],
       'x-component': 'select',
       'x-index': 7,
+      'x-linkages': [
+        {
+          type: 'value:visible',
+          target: 'availableOptions',
+          condition: '{{ $self.value === "customized" }}',
+        },
+      ],
     },
     availableOptions: {
       title: '',
       type: 'array',
       'x-component': 'ArrayTable',
       'x-index': 8,
+      // 'x-component-props': {
+      //   initialValues: [
+      //     { label: 'One', value: 'One', title: 'One' },
+      //     { label: 'Two', value: 'Two', title: 'Two' },
+      //     { label: 'Three', value: 'Three', title: 'Three' },
+      //   ],
+      // },
       items: {
         type: 'object',
         properties: {

@@ -7,7 +7,7 @@ export const defaultConfig = {
   sortable: false,
   precision: 4,
   required: false,
-  defaultValue: '',
+  valueFrom: 'customized',
 };
 
 type Schema = ISchema & { 'x-extend'?: Record<string, any> };
