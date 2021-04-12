@@ -5,7 +5,7 @@ export const defaultConfig = {
   displayModifier: '',
   placeholder: '',
   sortable: true,
-  valueFormat: '',
+  precision: 4,
   required: false,
   defaultValue: '',
 };
@@ -17,12 +17,13 @@ function toSchema(value: typeof defaultConfig): Schema {
     title: value.title,
     description: value.description,
     required: value.required,
-    format: value.valueFormat,
     readOnly: value.displayModifier === 'readonly',
     display: value.displayModifier !== 'hidden',
     'x-component': 'NumberPicker',
     ['x-component-props']: {
       placeholder: value.placeholder,
+      precision: value.precision,
+      step: 1 / Math.pow(10, value.precision),
     },
     ['x-extend']: {
       sortable: value.sortable,

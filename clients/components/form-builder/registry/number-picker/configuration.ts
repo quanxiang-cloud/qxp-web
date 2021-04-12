@@ -31,7 +31,7 @@ const schema: ISchema = {
       'x-component': 'Input',
       'x-index': 2,
     },
-    valueFormat: {
+    precision: {
       type: 'string',
       title: '小数点位数',
       default: '',
