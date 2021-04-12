@@ -1,12 +1,13 @@
 import React from 'react';
 import { useMutation, useQueryClient } from 'react-query';
-import { Modal, Message } from '@QCFE/lego-ui';
+import { Modal } from '@QCFE/lego-ui';
 
 import Icon from '@c/icon';
 import Button from '@c/button';
-import { setDEPLeader, cancelDEPLeader, LeaderParams } from '../api';
+import notify from '@lib/notify';
 
 import { LeaderStatus } from '../type';
+import { setDEPLeader, cancelDEPLeader, LeaderParams } from '../api';
 
 interface Props {
   user: UserInfo;
@@ -23,11 +24,11 @@ export default function LeaderHandleModal({ user, closeModal }: Props) {
   const mutation = useMutation(api, {
     onSuccess: (res) => {
       if (res && res.code === 0) {
-        Message.success('操作成功');
+        notify.success('操作成功');
         closeModal();
         queryClient.invalidateQueries('GET_USER_ADMIN_INFO');
       } else {
-        Message.error('操作失败');
+        notify.error('操作失败');
         closeModal();
       }
     },

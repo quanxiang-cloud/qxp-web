@@ -38,13 +38,11 @@ export function httpPost<T>(
             window.location.pathname = '/login/password';
             return;
           }
-          // Message.error(`${req.statusText}: ${response.msg}`);
           return reject(response.msg);
         }
         resolve(response);
       };
       req.onerror = () => {
-        // Message.error(req.responseText);
         reject(req);
       };
       if (data) {
@@ -280,4 +278,12 @@ export function isPassword(pwd: string) {
 
 export function isPromise(a: unknown) {
   return a instanceof Promise;
+}
+
+export function omit(obj: Record<string, unknown>, arr: string[]) {
+  return Object.keys(obj).filter((k) => !arr.includes(k)).reduce(
+    (acc: Record<string, unknown>, key) => {
+      acc[key] = obj[key];
+      return acc;
+    }, {});
 }

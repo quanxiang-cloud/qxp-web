@@ -42,9 +42,13 @@ export const FormContext = createContext<Context>({
   validateField() {},
 });
 
+export interface FormRef {
+  validateFields: () => boolean;
+}
+
 function Form(
   { children, ...restProps }: Props,
-  ref?: ForwardedRef<{ validateFields: () => boolean; }>
+  ref?: ForwardedRef<FormRef>
 ) {
   const [formState, setFormState] = useState<{ fields: Fields, errors: Errors }>({
     fields: {},
@@ -63,19 +67,20 @@ function Form(
     event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
     field: Field
   ) {
-    event.persist();
+    event && event.persist();
     if (!field.id) {
-      throw new Error('missing field id');
+      return;
     }
     const oldField = formState.fields[field.id];
     if (oldField) {
       setFormState((state) => ({
         ...state,
         fields: {
+          ...state.fields,
           [field.id as string]: {
             ...oldField,
             ...field,
-            value: event.target.value,
+            value: event?.target.value,
           },
         },
       }));
@@ -87,10 +92,12 @@ function Form(
   function addField(field: Field) {
     const { id } = field;
     if (id) {
-      setFormState((state) => ({ ...state, fields: { ...state.fields, [id]: field } }));
+      setFormState((state) => {
+        const oldField = state.fields[id] || {};
+        return { ...state, fields: { ...state.fields, [id]: { ...oldField, ...field } } };
+      });
       return;
     }
-    throw new Error('missing id field');
   }
 
   function validateFields(): boolean {
@@ -103,34 +110,37 @@ function Form(
     let error = '';
     const field = formState.fields[id];
     if (!field) {
-      throw new Error('field not found');
+      return false;
     }
     const { value, validateMessage, rules = [] } = field;
     if (!rules.length) {
       return !error;
     }
-    rules.forEach((rule) => {
+    for (let index = 0; index < rules.length; index += 1) {
+      const rule = rules[index];
       let validator: Validation | ((value: Value) => string);
       if (typeof rule === 'string') {
         validator = validations[rule];
       } else {
         validator = rule;
       }
-      function validate(value: Value): boolean {
-        if (!value) {
-          return false;
-        }
-        if (typeof validator === 'function') {
-          error = validator(value);
-          return !error;
-        }
-        return validator.rule.test(value.toString());
+
+      let isRuleSatisfied = false;
+      if (typeof validator === 'function') {
+        error = validator(value);
+        isRuleSatisfied = !error;
+      } else if (typeof value === 'undefined') {
+        isRuleSatisfied = false;
+      } else {
+        isRuleSatisfied = validator.rule.test(value.toString());
       }
-      const isRuleSatisfied = !rules.includes('required') && !value ? true : validate(value);
       if (!isRuleSatisfied && typeof validator !== 'function') {
-        error = validator.formatter(validateMessage);
+        error = validator.formatter(validateMessage, field.name);
       }
-    });
+      if (error) {
+        break;
+      }
+    }
     setFormState((state) => ({
       ...state,
       errors: {

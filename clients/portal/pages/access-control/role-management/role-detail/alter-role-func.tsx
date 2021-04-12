@@ -149,7 +149,7 @@ export default function AlterRoleFunc({ funcs: functions }: IAlterRoleFunc) {
   //     if (code == 0) {
   //       setAddSets([]);
   //       setDeleteSets([]);
-  //       Message.success('保存成功');
+  //       notify.success('保存成功');
   //     }
   //   });
   // };

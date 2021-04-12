@@ -1,19 +1,19 @@
 export interface Validation {
   rule: RegExp,
-  formatter: (validateMessage?: string) => string,
+  formatter: (validateMessage?: string, field?: string) => string,
 }
 
 const validations: Record<string, Validation> = {
   required: {
     rule: /\S/,
-    formatter(validateMessage?: string) {
-      return validateMessage || 'field is required.';
+    formatter(validateMessage?: string, field?: string) {
+      return validateMessage || `${field} is required.`;
     },
   },
   numeric: {
     rule: /^\d+$/,
-    formatter(validateMessage?: string) {
-      return validateMessage || 'field should contain only numbers.';
+    formatter(validateMessage?: string, field?: string) {
+      return validateMessage || `${field} should contain only numbers.`;
     },
   },
 };
