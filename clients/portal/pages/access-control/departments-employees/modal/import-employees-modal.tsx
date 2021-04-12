@@ -267,8 +267,7 @@ export default function ImportEmployeesModal({ currDepId, closeModal }: Props) {
           )}
           {uploadStatus.status === FileUploadStatus.init && (
             <div className="text-gray-600">
-              <p className="py-8">上传单个 excel 文件</p>
-              <div className="w-full">
+              <div className="w-full group">
                 <Upload
                   style={{ width: '100%' }}
                   disabled={fileList.length === 0 ? false : true}
@@ -278,15 +277,15 @@ export default function ImportEmployeesModal({ currDepId, closeModal }: Props) {
                   <div
                     className={classnames(
                       'w-full h-86 border rounded-8 border-dashed border-gray-700',
-                      'flex flex-col items-center justify-center hover-color'
+                      'flex flex-col items-center justify-center group-hover:border-blue-600'
                     )}
                   >
                     <Icon
                       size={16}
                       name="cloud_upload"
-                      style={{ color: '#64748B' }}
+                      className="group-hover:text-blue-600"
                     />
-                    <p>点击或拖拽单个文件到至该区域。支持xls、xlsx格式</p>
+                    <p className="group-hover:text-blue-600">点击或拖拽单个文件到至该区域。支持xls、xlsx格式</p>
                   </div>
                 </Upload>
                 <div className="mt-8 flex flex-col">
@@ -333,43 +332,43 @@ export default function ImportEmployeesModal({ currDepId, closeModal }: Props) {
           {[FileUploadStatus.success, FileUploadStatus.depSuccess].includes(
             uploadStatus.status
           ) && (
-            <div>
-              <p className="text-gray-600 font-semibold mt-24 mb-16">
+              <div>
+                <p className="text-gray-600 font-semibold mt-24 mb-16">
                   接下来选择：
               </p>
-              <p className="text-14 py-8">向已导入的员工发送随机密码</p>
-              <CheckboxGroup
-                name="states"
-                onChange={(value: string[]) => changeCheckbox(value)}
-              >
-                <Checkbox value="email">通过邮箱</Checkbox>
-                <Checkbox value="phone">通过短信</Checkbox>
-              </CheckboxGroup>
-            </div>
-          )}
+                <p className="text-14 py-8">向已导入的员工发送随机密码</p>
+                <CheckboxGroup
+                  name="states"
+                  onChange={(value: string[]) => changeCheckbox(value)}
+                >
+                  <Checkbox value="email">通过邮箱</Checkbox>
+                  <Checkbox value="phone">通过短信</Checkbox>
+                </CheckboxGroup>
+              </div>
+            )}
           {[FileUploadStatus.depSuccess, FileUploadStatus.fail].includes(
             uploadStatus.status
           ) && (
-            <div>
-              <div className="mb-8 flex items-center">
-                <p className="text-gray-600 font-semibold">失败原因：</p>
-                <span
-                  onClick={exportEmployees}
-                  className="text-blue-600 cursor-pointer"
-                >
+              <div>
+                <div className="mb-8 flex items-center">
+                  <p className="text-gray-600 font-semibold">失败原因：</p>
+                  <span
+                    onClick={exportEmployees}
+                    className="text-blue-600 cursor-pointer"
+                  >
                     下载失败列表
                 </span>
+                </div>
+                <div className="qxp-table flex w-full mb-24">
+                  <Table
+                    className="text-14 table-full"
+                    rowKey="phone"
+                    dataSource={failUsers}
+                    columns={columns}
+                  />
+                </div>
               </div>
-              <div className="qxp-table flex w-full mb-24">
-                <Table
-                  className="text-14 table-full"
-                  rowKey="phone"
-                  dataSource={failUsers}
-                  columns={columns}
-                />
-              </div>
-            </div>
-          )}
+            )}
         </div>
       </Modal>
     </>
