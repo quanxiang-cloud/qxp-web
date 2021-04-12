@@ -108,6 +108,10 @@ const schema: ISchema = {
           label: '自定义公式',
           value: 'formula',
         },
+        {
+          label: '填写当时',
+          value: 'now',
+        },
       ],
       'x-component': 'select',
       'x-index': 8,
