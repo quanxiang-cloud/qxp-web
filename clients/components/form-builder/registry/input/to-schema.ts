@@ -1,6 +1,6 @@
 // just for type friendly
 export const defaultConfig = {
-  title: '多行文本',
+  title: '单行文本',
   description: '',
   displayModifier: '',
   placeholder: '',
@@ -12,7 +12,7 @@ export const defaultConfig = {
 
 type Schema = ISchema & { 'x-extend'?: Record<string, any> };
 
-function valueToSchema(value: typeof defaultConfig): Schema {
+function toSchema(value: typeof defaultConfig): Schema {
   return {
     title: value.title,
     description: value.description,
@@ -30,4 +30,4 @@ function valueToSchema(value: typeof defaultConfig): Schema {
   };
 }
 
-export default valueToSchema;
+export default toSchema;

@@ -29,7 +29,7 @@ export default class FormBuilderStore {
 
   @computed get schema(): ISchema {
     const properties = this.fields.reduce<Record<string, any>>((acc, field, index) => {
-      const { fieldName, configToSchema, configValue } = field;
+      const { fieldName, toSchema: configToSchema, configValue } = field;
       acc[fieldName] = {
         // for better debug
         ...configToSchema(toJS(configValue)),

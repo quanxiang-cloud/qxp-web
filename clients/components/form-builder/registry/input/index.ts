@@ -1,14 +1,14 @@
 import { Input } from '@formily/antd-components';
 
 import configuration from './configuration';
-import valueToSchema, { defaultConfig } from './config-to-schema';
+import toSchema, { defaultConfig } from './to-schema';
 
 const InputField: Omit<FormItem<typeof defaultConfig>, 'displayOrder'> = {
   configuration,
   itemName: '单行文本',
   icon: 'text_fields',
   defaultConfig: defaultConfig,
-  configToSchema: valueToSchema,
+  toSchema,
   component: Input,
   category: 'basic',
   type: 'Input',

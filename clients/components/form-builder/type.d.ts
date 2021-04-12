@@ -38,8 +38,8 @@ type FormItem<T> = {
   category: ElementCategory;
   configuration: ISchema;
   defaultConfig: T;
-  // transform form field settings to SchemaForm render schema
-  configToSchema: (value: T) => ISchema;
+  // transform configuration to the node of schema used by SchemaForm
+  toSchema: (value: T) => ISchema;
   component: React.JSXElementConstructor<any>;
   editComponent?: React.Component<EditComponentProps>;
   displayOrder: number;

@@ -2,7 +2,7 @@ import { nanoid } from 'nanoid';
 
 // just for type friendly
 export const defaultConfig = {
-  title: '复选框',
+  title: '单选框',
   description: '',
   displayModifier: '',
   optionsLayout: 'horizontal',
@@ -18,7 +18,7 @@ export const defaultConfig = {
 
 type Schema = ISchema & { 'x-extend'?: Record<string, any> };
 
-function valueToSchema(value: typeof defaultConfig): Schema {
+function toSchema(value: typeof defaultConfig): Schema {
   return {
     title: value.title,
     description: value.description,
@@ -34,13 +34,15 @@ function valueToSchema(value: typeof defaultConfig): Schema {
         name: option.label,
       };
     }),
-    'x-component': 'CheckboxGroup',
+    'x-component': 'RadioGroup',
     // todo support optionsLayout
-    ['x-component-props']: { },
+    ['x-component-props']: {
+      name: value.title,
+    },
     ['x-extend']: {
       sortable: value.sortable,
     },
   };
 }
 
-export default valueToSchema;
+export default toSchema;
