@@ -19,10 +19,6 @@ const SourceElementDiv = styled.div`
   color: #3c4e5b;
   cursor: move;
 
-  .icon {
-    margin-right: 12px;
-  }
-
   &.is-dragging {
     color: ${(props) => props.theme.primaryColor};
     border-color: ${(props) => props.theme.primaryColor};
@@ -47,7 +43,7 @@ function SourceElement({ formItem }: Props): JSX.Element {
   const opacity = isDragging ? 0.5 : 1;
   return (
     <SourceElementDiv ref={dragRef} style={{ opacity }}>
-      <Icon name={formItem.icon} size={20} />
+      <Icon name={formItem.icon} size={20} className="mr-6" />
       {formItem.itemName}
     </SourceElementDiv>
   );
