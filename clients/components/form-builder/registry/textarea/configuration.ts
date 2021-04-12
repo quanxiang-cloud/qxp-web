@@ -85,17 +85,11 @@ const schema: ISchema = {
       'x-component': 'RadioGroup',
       'x-index': 5,
     },
-    sortable: {
-      title: '是否支持列表排序',
-      default: false,
-      'x-component': 'Switch',
-      'x-index': 6,
-    },
     required: {
       title: '是否必填',
       default: false,
       'x-component': 'Switch',
-      'x-index': 7,
+      'x-index': 6,
     },
     defaultValue: {
       title: '默认值',
@@ -114,7 +108,7 @@ const schema: ISchema = {
         },
       ],
       'x-component': 'select',
-      'x-index': 8,
+      'x-index': 7,
     },
   },
 };
