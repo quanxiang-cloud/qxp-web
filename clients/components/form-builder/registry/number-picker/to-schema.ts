@@ -4,7 +4,7 @@ export const defaultConfig = {
   description: '',
   displayModifier: '',
   placeholder: '',
-  sortable: true,
+  sortable: false,
   precision: 4,
   required: false,
   defaultValue: '',

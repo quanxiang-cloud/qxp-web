@@ -6,7 +6,7 @@ export const defaultConfig = {
   description: '',
   displayModifier: '',
   optionsLayout: 'horizontal',
-  sortable: true,
+  sortable: false,
   valueFormat: '',
   required: false,
   availableOptions: [
