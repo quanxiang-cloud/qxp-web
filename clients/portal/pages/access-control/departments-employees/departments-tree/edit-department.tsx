@@ -1,10 +1,11 @@
 import React, { createRef, useState } from 'react';
 import { useQuery, useQueryClient } from 'react-query';
-import { Modal, Form, Message } from '@QCFE/lego-ui';
+import { Modal, Form } from '@QCFE/lego-ui';
 
 import Button from '@c/button';
 import DepartmentPicker from '@c/form/input/tree-picker-field';
 import Loading from '@c/loading';
+import notify from '@lib/notify';
 import { departmentToTreeNode } from '@lib/utils';
 
 import { createDepartment, editDepartment, getERPTree } from '../api';
@@ -13,7 +14,7 @@ const { TextField } = Form;
 // const string for form input help text
 const HELP_TEXT_NORMAL = '名称不超过 30 个字符，请修改！';
 const HELP_TEXT_DUPLICATED = '名称已存在，请修改！';
-const HELP_TEXT_REG_ERROR = '只允许 划线、横线！';
+const HELP_TEXT_REG_ERROR = '只能包含汉字、英文、横线("-")以及下划线("_")，请修改！';
 
 interface Props {
   department: DeptInfo;
@@ -82,14 +83,14 @@ export default function EditDepartment({ department, closeModal }: Props) {
     }
 
     if (!params.pid && !department.id) {
-      Message.error('请选择父级部门');
+      notify.error('请选择父级部门');
       return;
     }
 
     requestAPI(params).then((submitResponseData: any) => {
       switch (submitResponseData.code) {
       case 0:
-        Message.success({ content: '操作成功！' });
+        notify.success('操作成功！');
         queryClient.invalidateQueries('GET_ERP_TREE');
         closeModal();
         break;
@@ -98,7 +99,7 @@ export default function EditDepartment({ department, closeModal }: Props) {
         setDepNameState('error');
         break;
       default:
-        Message.error({ content: '发生未知错误，Code:' + submitResponseData.code });
+        notify.error('发生未知错误，Code:' + submitResponseData.code);
       }
     }).catch(() => {
       // todo handle error
@@ -122,7 +123,7 @@ export default function EditDepartment({ department, closeModal }: Props) {
             取消
           </Button>
           <Button
-            className="bg-gray-700 text-white"
+            modifier="primary"
             iconName="check"
             onClick={okModalHandle}
           >

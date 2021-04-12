@@ -9,7 +9,7 @@ import Loading from '@c/loading';
 import Error from '@c/error';
 
 // todo
-import EmployeeOrDepartmentPicker from '@c/employee-or-department-picker-modal/picker';
+import EmployeeOrDepartmentPicker from '@c/employee-or-department-picker/picker';
 
 interface Props {
   onOk: (adds: EmployeeOrDepartmentOfRole[], deletes: EmployeeOrDepartmentOfRole[]) => void;
@@ -26,7 +26,7 @@ export default function EmployeeOrDepartmentPickerModal({
 }: Props) {
   const [departmentsOrEmployees, setDepartmentsOrEmployees] = useState<
     EmployeeOrDepartmentOfRole[]
-    >();
+  >();
   const { data, isLoading, isError } = useQuery(
     [
       'GET_ROLE_ASSOCIATIONS_ALL',
@@ -48,7 +48,7 @@ export default function EmployeeOrDepartmentPickerModal({
     return <Error desc="获取数据失败" />;
   }
 
-  const onBind=()=> {
+  const onBind = () => {
     // if (departmentsOrEmployees) {
     //   const deletes = data?.departmentsOrEmployees.filter((member) => {
     //     return !departmentsOrEmployees.find((m) => m.ownerID === member.ownerID);
@@ -72,15 +72,15 @@ export default function EmployeeOrDepartmentPickerModal({
       footer={
         (<div className="flex flex-row justify-between items-center">
           <Button
-            className="bg-white hover:bg-gray-100 transition cursor-pointer mr-20
-            mb-0 text-gray-600 ml-2"
+            className="mr-20 ml-2"
             iconName="close"
             onClick={onCancel}
           >
             取消
           </Button>
           <Button
-            className="bg-gray-700 hover:bg-gray-900 transition cursor-pointer mb-0 text-white ml-2"
+            modifier="primary"
+            className="ml-2"
             iconName="check"
             onClick={onBind}
           >

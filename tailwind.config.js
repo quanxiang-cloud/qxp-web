@@ -7,6 +7,7 @@ module.exports = {
     colors: colors,
     spacing: {
       0: '0px',
+      1: '1px',
       2: '2px',
       4: '4px',
       5: '5px',
@@ -27,6 +28,7 @@ module.exports = {
       44: '44px',
       46: '46px',
       48: '48px',
+      52: '52px',
       56: '56px',
       58: '58px',
       72: '72px',

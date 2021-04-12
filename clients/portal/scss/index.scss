@@ -257,28 +257,6 @@ body {
   }
 }
 
-label.checkbox {
-  &.checked {
-    &:before,
-    &:hover:before {
-      @apply bg-blue-600 #{!important};
-    }
-  }
-
-  &.disabled {
-    opacity: 1 !important;
-
-    &:after,
-    &:before {
-      opacity: 0.5 !important;
-    }
-  }
-
-  input {
-    opacity: 0 !important;
-  }
-}
-
 .search-input {
   @apply pl-44 #{!important};
   @apply pr-28 #{!important};
@@ -386,5 +364,22 @@ button {
         border-color: #d5dee7 !important;
       }
     }
+  }
+}
+
+.control {
+  &:not(:last-child) {
+    @apply mb-24;
+  }
+  > .field {
+    @apply mb-0;
+  }
+}
+
+input {
+  transition: all .3s linear;
+  &:focus {
+    box-shadow: 0px 0px 4px rgb(50 69 88 / 12%);
+    border-color: var(--blue-600);
   }
 }

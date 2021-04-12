@@ -1,9 +1,11 @@
 import React, { createRef } from 'react';
 import { useMutation } from 'react-query';
-import { Modal, Form, Message } from '@QCFE/lego-ui';
+import { Modal, Form } from '@QCFE/lego-ui';
 
 import Button from '@c/button';
 import Icon from '@c/icon';
+import notify from '@lib/notify';
+
 import { resetUserPWD } from '../api';
 
 const { CheckboxGroupField } = Form;
@@ -29,9 +31,9 @@ export default function ResetPasswordModal({
   const resetMutation = useMutation(resetUserPWD, {
     onSuccess: (data) => {
       if (data && data.code === 0) {
-        Message.success('操作成功！');
+        notify.success('操作成功！');
       } else {
-        Message.error('操作失败！');
+        notify.error('操作失败！');
       }
       closeModal();
       clearSelectRows();
@@ -47,7 +49,7 @@ export default function ResetPasswordModal({
     } = formRef.current?.getFieldsValue();
     const { sendPasswordBy } = values;
     if (sendPasswordBy.length === 0) {
-      Message.error('请选择发送方式');
+      notify.error('请选择发送方式');
       return;
     }
     const checkedWay: sendPasswordBy = {
@@ -77,7 +79,7 @@ export default function ResetPasswordModal({
             取消
           </Button>
           <Button
-            className="bg-gray-700 text-white"
+            modifier="primary"
             iconName="check"
             onClick={handleReset}
           >

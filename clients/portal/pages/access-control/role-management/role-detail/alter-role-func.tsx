@@ -149,7 +149,7 @@ export default function AlterRoleFunc({ funcs: functions }: IAlterRoleFunc) {
   //     if (code == 0) {
   //       setAddSets([]);
   //       setDeleteSets([]);
-  //       Message.success('保存成功');
+  //       notify.success('保存成功');
   //     }
   //   });
   // };
@@ -166,7 +166,7 @@ export default function AlterRoleFunc({ funcs: functions }: IAlterRoleFunc) {
               </span>
             )}
             <Button
-              className="bg-gray-700 hover:bg-gray-900 transition"
+              modifier="primary"
               textClassName="text-white ml-2"
               icon={<img src="/dist/images/save.svg" />}
               onClick={saveRoleFunctions}

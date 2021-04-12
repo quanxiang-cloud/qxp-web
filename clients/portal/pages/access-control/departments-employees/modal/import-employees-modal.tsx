@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
 import { useMutation } from 'react-query';
 import classnames from 'classnames';
-import { Modal, CheckboxGroup, Checkbox, Table, Upload, Message } from '@QCFE/lego-ui';
+import { Modal, CheckboxGroup, Checkbox, Table, Upload } from '@QCFE/lego-ui';
 
 import Icon from '@c/icon';
 import Button from '@c/button';
-import { getUserTemplate, importTempFile, resetUserPWD } from '../api';
+import notify from '@lib/notify';
 
 import { FileUploadStatus } from '../type';
 import { exportEmployeesFail } from '../utils';
+import { getUserTemplate, importTempFile, resetUserPWD } from '../api';
 
 const columns: Columns = [
   {
@@ -75,7 +76,7 @@ export default function ImportEmployeesModal({ currDepId, closeModal }: Props) {
           downEmployeesTemp(data.fileURL, '模板文件.xlsx');
         }
       } else {
-        Message.error('操作失败');
+        notify.error('操作失败');
       }
     },
   });
@@ -83,7 +84,7 @@ export default function ImportEmployeesModal({ currDepId, closeModal }: Props) {
   const uploadMutation = useMutation(importTempFile, {
     onSuccess: (res) => {
       if (res && res.code === 0) {
-        Message.success('操作成功');
+        notify.success('操作成功');
         const { data } = res;
         if (data) {
           const { failTotal, failUsers, successTotal, success } = data;
@@ -100,7 +101,6 @@ export default function ImportEmployeesModal({ currDepId, closeModal }: Props) {
           setBtnStatus(1);
           setFailUsers(failUsers);
           setSuccessUsersId(success);
-          setImportLoading(false);
           setUploadStatus({
             status,
             failTotal,
@@ -108,17 +108,18 @@ export default function ImportEmployeesModal({ currDepId, closeModal }: Props) {
           });
         }
       } else {
-        Message.error(res?.msg || '操作失败！');
+        notify.error(res?.msg || '操作失败！');
       }
+      setImportLoading(false);
     },
   });
 
   const resetMutation = useMutation(resetUserPWD, {
     onSuccess: (data) => {
       if (data && data.code === 0) {
-        Message.success('操作成功！');
+        notify.success('操作成功！');
       } else {
-        Message.error('操作失败！');
+        notify.error('操作失败！');
       }
       closeModal();
     },
@@ -136,7 +137,7 @@ export default function ImportEmployeesModal({ currDepId, closeModal }: Props) {
   function beforeUpload(file: File) {
     const { size } = file;
     if (size > 1024 * 1024 * 5) {
-      Message.error('文件过大，超过 5M 不能上传！');
+      notify.error('文件过大，超过 5M 不能上传！');
       return;
     }
     setFileList([file]);
@@ -154,7 +155,7 @@ export default function ImportEmployeesModal({ currDepId, closeModal }: Props) {
 
   function importEmployeesTemp() {
     if (fileList.length === 0) {
-      Message.error('请上传文件');
+      notify.error('请上传文件');
       return;
     }
     const params = {
@@ -183,7 +184,7 @@ export default function ImportEmployeesModal({ currDepId, closeModal }: Props) {
 
   function handleSubmit() {
     if (checkWay && checkWay.sendEmail === -1 && checkWay.sendPhone === -1) {
-      Message.error('请选择发送方式');
+      notify.error('请选择发送方式');
       return;
     }
     resetMutation.mutate({ userIDs: successUsersId, ...checkWay });
@@ -208,17 +209,16 @@ export default function ImportEmployeesModal({ currDepId, closeModal }: Props) {
               </Button>
               {btnStatus === 0 ? (
                 <Button
-                  className="bg-gray-700 text-white"
+                  modifier="primary"
                   iconName="check"
                   onClick={importEmployeesTemp}
                   loading={importLoading}
-                  modifier="primary"
                 >
                   确定导入
                 </Button>
               ) : (
                 <Button
-                  className="bg-gray-700 text-white"
+                  modifier="primary"
                   iconName="check"
                   onClick={handleSubmit}
                 >
@@ -268,8 +268,7 @@ export default function ImportEmployeesModal({ currDepId, closeModal }: Props) {
           )}
           {uploadStatus.status === FileUploadStatus.init && (
             <div className="text-gray-600">
-              <p className="py-8">上传单个 excel 文件</p>
-              <div className="w-full">
+              <div className="w-full group">
                 <Upload
                   style={{ width: '100%' }}
                   disabled={fileList.length === 0 ? false : true}
@@ -279,15 +278,15 @@ export default function ImportEmployeesModal({ currDepId, closeModal }: Props) {
                   <div
                     className={classnames(
                       'w-full h-86 border rounded-8 border-dashed border-gray-700',
-                      'flex flex-col items-center justify-center hover:border-red-600'
+                      'flex flex-col items-center justify-center group-hover:border-blue-600'
                     )}
                   >
                     <Icon
                       size={16}
                       name="cloud_upload"
-                      style={{ color: '#64748B' }}
+                      className="group-hover:text-blue-600"
                     />
-                    <p>点击或拖拽单个文件到至该区域。支持xls、xlsx格式</p>
+                    <p className="group-hover:text-blue-600">点击或拖拽单个文件到至该区域。支持xls、xlsx格式</p>
                   </div>
                 </Upload>
                 <div className="mt-8 flex flex-col">
@@ -327,50 +326,54 @@ export default function ImportEmployeesModal({ currDepId, closeModal }: Props) {
                     企业通讯录导入模版
                   </span>
                 </li>
-                <li>2. 上传填写正确的企业通讯录导入模版。</li>
+                <li>2. 上传填写正确的企业通讯录导入模版</li>
               </ul>
             </div>
           )}
-          {[FileUploadStatus.success, FileUploadStatus.depSuccess].includes(
-            uploadStatus.status
-          ) && (
-            <div>
-              <p className="text-gray-600 font-semibold mt-24 mb-16">
-                接下来选择：
-              </p>
-              <p className="text-14 py-8">向已导入的员工发送随机密码</p>
-              <CheckboxGroup
-                name="states"
-                onChange={(value: string[]) => changeCheckbox(value)}
-              >
-                <Checkbox value="email">通过邮箱</Checkbox>
-                <Checkbox value="phone">通过短信</Checkbox>
-              </CheckboxGroup>
-            </div>
-          )}
-          {[FileUploadStatus.depSuccess, FileUploadStatus.fail].includes(
-            uploadStatus.status
-          ) && (
-            <div>
-              <div className="mb-8 flex items-center">
-                <p className="text-gray-600 font-semibold">失败原因：</p>
-                <span
-                  onClick={exportEmployees}
-                  className="text-blue-600 cursor-pointer"
+          {
+            [FileUploadStatus.success, FileUploadStatus.depSuccess].includes(
+              uploadStatus.status
+            ) && (
+              <div>
+                <p className="text-gray-600 font-semibold mt-24 mb-16">
+                  接下来选择：
+                </p>
+                <p className="text-14 py-8">向已导入的员工发送随机密码</p>
+                <CheckboxGroup
+                  name="states"
+                  onChange={(value: string[]) => changeCheckbox(value)}
                 >
-                  下载失败列表
-                </span>
+                  <Checkbox value="email">通过邮箱</Checkbox>
+                  <Checkbox value="phone">通过短信</Checkbox>
+                </CheckboxGroup>
               </div>
-              <div className="qxp-table flex w-full mb-24">
-                <Table
-                  className="text-14 table-full"
-                  rowKey="phone"
-                  dataSource={failUsers}
-                  columns={columns}
-                />
+            )
+          }
+          {
+            [FileUploadStatus.depSuccess, FileUploadStatus.fail].includes(
+              uploadStatus.status
+            ) && (
+              <div>
+                <div className="mb-8 flex items-center">
+                  <p className="text-gray-600 font-semibold">失败原因：</p>
+                  <span
+                    onClick={exportEmployees}
+                    className="text-blue-600 cursor-pointer"
+                  >
+                    下载失败列表
+                  </span>
+                </div>
+                <div className="qxp-table flex w-full mb-24">
+                  <Table
+                    className="text-14 table-full"
+                    rowKey="phone"
+                    dataSource={failUsers}
+                    columns={columns}
+                  />
+                </div>
               </div>
-            </div>
-          )}
+            )
+          }
         </div>
       </Modal>
     </>

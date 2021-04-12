@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import { useMutation, useQueryClient } from 'react-query';
+import { useMutation, useQueryClient, useQuery } from 'react-query';
 
 import Button from '@c/button';
 import Authorized from '@c/authorized';
 import Switch from '@c/switch';
-import EmployeeOrDepartmentPickerModal from '@c/employee-or-department-picker-modal';
-import { updateRoleAssociations, IUpdateRoleAssociations } from '../../api';
+import EmployeeOrDepartmentPickerModal from '@c/employee-or-department-picker';
 
+import { updateRoleAssociations, IUpdateRoleAssociations, getRoleAssociations } from '../../api';
 import DepartmentOrEmployeeTable from './department-or-employee-table';
 
 export interface Props {
@@ -19,6 +19,20 @@ export default function AssociateDepartmentEmployee({ roleID, isSuper }: Props) 
   const [showBindType, setShowBindType] = useState<string | number>(1);
   const queryClient = useQueryClient();
 
+  const { data, isLoading, isError } = useQuery(
+    [
+      'GET_ROLE_ASSOCIATIONS_ALL',
+      {
+        roleId: roleID,
+      },
+    ],
+    getRoleAssociations,
+    {
+      refetchOnWindowFocus: false,
+      cacheTime: -1,
+    },
+  );
+
   const mutation = useMutation(
     (arg: IUpdateRoleAssociations) => updateRoleAssociations(arg), {
       onSuccess: () => {
@@ -30,16 +44,18 @@ export default function AssociateDepartmentEmployee({ roleID, isSuper }: Props) 
   );
 
   function onAssociate(
-    newSets: EmployeeOrDepartmentOfRole[],
-    oldSets: EmployeeOrDepartmentOfRole[]
+    departments: EmployeeOrDepartmentOfRole[],
+    employees: EmployeeOrDepartmentOfRole[]
   ) {
+    const newSets = [...departments, ...employees];
+    const oldSets = data?.departmentsOrEmployees || [];
     const deletes = oldSets.filter((member) => {
       return !newSets.find((m) => m.ownerID === member.ownerID);
     });
     const adds = newSets.filter((member) => {
       return !oldSets.find((m) => m.ownerID === member.ownerID);
     });
-    mutation.mutate({
+    return mutation.mutateAsync({
       roleID: roleID as string,
       add: adds.map(({ type, ownerID }) => ({ type, ownerID })),
       delete: deletes?.map(({ id }) => id),
@@ -58,8 +74,11 @@ export default function AssociateDepartmentEmployee({ roleID, isSuper }: Props) 
       <EmployeeOrDepartmentPickerModal
         onOk={onAssociate}
         visible={showBindModal}
-        roleID={roleID}
         onCancel={() => setShowBindModal(false)}
+        employees={data?.employees}
+        departments={data?.departments}
+        isLoading={isLoading}
+        errorMessage={isError ? 'something wrong' : ''}
       />
       <div className="flex items-center">
         <Switch
@@ -76,12 +95,12 @@ export default function AssociateDepartmentEmployee({ roleID, isSuper }: Props) 
         {!isSuper && (
           <Authorized authority={['accessControl/role/manage']}>
             <Button
-              className="bg-gray-700 hover:bg-gray-900 transition mb-16 cursor-pointer
-               text-white ml-2"
+              modifier="primary"
+              className="mb-16 ml-2"
               iconName="link"
               onClick={() => setShowBindModal(true)}
             >
-            关联员工与部门
+              关联员工与部门
             </Button>
           </Authorized>
         )}

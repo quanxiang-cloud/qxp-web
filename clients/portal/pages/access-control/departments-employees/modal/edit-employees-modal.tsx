@@ -1,14 +1,15 @@
 import React, { createRef } from 'react';
 import { useQuery, useMutation, useQueryClient } from 'react-query';
-import { Modal, Form, Message } from '@QCFE/lego-ui';
+import { Modal, Form } from '@QCFE/lego-ui';
 
 import TreePicker from '@c/form/input/tree-picker-field';
 import Button from '@c/button';
 import Loading from '@c/loading';
-import { getERPTree, addDepUser, updateUser } from '../api';
 import { departmentToTreeNode } from '@lib/utils';
+import notify from '@lib/notify';
 
 import { SpecialSymbolsReg, PhoneReg } from '../utils';
+import { getERPTree, addDepUser, updateUser } from '../api';
 
 const { TextField, CheckboxGroupField } = Form;
 
@@ -45,11 +46,11 @@ export default function EditEmployeesModal(
   const staffMutation = useMutation(user.id ? updateUser : addDepUser, {
     onSuccess: (data) => {
       if (data && data.code === 0) {
-        Message.success('操作成功');
+        notify.success('操作成功');
         closeModal();
         queryClient.invalidateQueries('GET_USER_ADMIN_INFO');
       } else {
-        Message.error(data?.msg || '操作失败');
+        notify.error(data?.msg || '操作失败');
         closeModal();
       }
     },
@@ -114,7 +115,7 @@ export default function EditEmployeesModal(
             取消
           </Button>
           <Button
-            className="bg-gray-700 text-white"
+            modifier="primary"
             iconName="check"
             onClick={handleSubmit}
           >
@@ -145,7 +146,7 @@ export default function EditEmployeesModal(
                 }
                 return isPass;
               },
-              help: '不能输入特殊符号(除"_"、"-"外)',
+              help: '只能包含汉字、英文、横线("-")以及下划线("_")，请修改！',
             },
           ]}
         />
