@@ -20,7 +20,7 @@ function toSchema(value: typeof defaultConfig): Schema {
     format: value.valueFormat,
     readOnly: value.displayModifier === 'readonly',
     display: value.displayModifier !== 'hidden',
-    'x-component': 'Input',
+    'x-component': 'Textarea',
     ['x-component-props']: {
       placeholder: value.placeholder,
     },

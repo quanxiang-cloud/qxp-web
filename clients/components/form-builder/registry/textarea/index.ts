@@ -5,13 +5,13 @@ import toSchema, { defaultConfig } from './to-schema';
 
 const TextArea: Omit<FormItem<typeof defaultConfig>, 'displayOrder'> = {
   configuration,
+  toSchema,
   itemName: '多行文本',
   icon: 'notes',
   defaultConfig: defaultConfig,
-  toSchema,
   component: Input.TextArea,
   category: 'basic',
-  type: 'TextArea',
+  type: 'textarea',
 };
 
 export default TextArea;
