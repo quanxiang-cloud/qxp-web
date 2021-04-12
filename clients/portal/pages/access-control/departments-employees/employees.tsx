@@ -77,6 +77,11 @@ export default function Employees({
     openModal('reset_password');
   }
 
+  function handleCleanChecked() {
+    setSelectedUserIds([]);
+    setSelectedUsers([]);
+  }
+
   function handleUserState(status: UserStatus, user: UserInfo) {
     setCurrUser(user);
     setUserState(status);
@@ -111,6 +116,9 @@ export default function Employees({
   }
 
   function closeModal() {
+    if (modalType === 'alert_user_state') {
+      handleCleanChecked();
+    }
     setModalType('');
   }
 
