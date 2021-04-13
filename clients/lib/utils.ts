@@ -93,7 +93,6 @@ function isA(name: string): (arg: unknown) => boolean {
   };
 }
 
-export const isBool = isA('boolean');
 export const isString = isA('string');
 export const isUndefined = isA('undefined');
 export const isFunction = isA('function');
@@ -104,9 +103,6 @@ export const either = <S>(pred1: (...args: S[]) => boolean, pred2: (...args: S[]
 ) => pred1(...args) || pred2(...args);
 export const isVoid = either<null | undefined>(isUndefined, isNull);
 export const identity = <T>(i: T) => i;
-// const curry = (fn: Function, arity = fn.length, ...args: []): Function => {
-//   return arity <= args.length ? fn(...args) : curry.bind(null, fn, arity, ...args);
-// };
 
 /**
  * @param {string} attr 需要被计数的属性
@@ -166,47 +162,6 @@ export const deepClone = (obj: any) => {
   return clone;
 };
 
-/**
- * generate a generator of number in range from start to end
- * @param {number} start
- * @param {number} end
- * @param {number} [step=1]
- */
-export const rangeGenerator = function* (start: number, end: number, step = 1) {
-  let i = start;
-  while (i < end) {
-    yield i;
-    i += step;
-  }
-};
-
-/**
- * build a range array of number from start to end
- * @param {number} start
- * @param {number} end
- * @param {number} [step]
- * @return {*}
- */
-export const range = (start: number, end: number, step?: number) => {
-  return [...rangeGenerator(start, end, step)];
-};
-
-export const mapTreeData = <T extends unknown>(rules: Record<string, string>, data: Object[]) => {
-  const arrData: T[] = [];
-  const childKey = rules.children;
-  for (const item of data) {
-    const it = item as any;
-    const children = it[childKey];
-    arrData.push({
-      key: it[rules.key],
-      title: it[rules.title],
-      children: children && children.length ? mapTreeData(rules, children) : [],
-      ...it,
-    });
-  }
-  return arrData as T;
-};
-
 export const getNestedPropertyToArray = <T>(
   data: Record<string, any> | undefined,
   targetKey: string,
@@ -234,21 +189,6 @@ export const getNestedPropertyToArray = <T>(
   return arrData;
 };
 
-export const isLengthEqual = (a: unknown, b: unknown) => {
-  if (a instanceof Array && b instanceof Array) {
-    a.length === b.length;
-  }
-};
-
-export const loadImage = (src: string) => {
-  return new Promise((resolve, reject) => {
-    const image = new Image();
-    image.src = src;
-    image.onload = () => resolve(image);
-    image.onerror = reject;
-  });
-};
-
 export function departmentToTreeNode(department: Department): TreeNode<Department> {
   const children = (department.child || []).map((dep) => departmentToTreeNode(dep));
 
@@ -274,8 +214,4 @@ export const last = <T>(arg: T[]) => {
 
 export function isPassword(pwd: string) {
   return /^(?=.*\d)(?=.*[a-zA-Z])(?=.*[~!@#$%^&*])[\da-zA-Z~!@#$%^&*]{8,}$/.test(pwd);
-}
-
-export function isPromise(a: unknown) {
-  return a instanceof Promise;
 }

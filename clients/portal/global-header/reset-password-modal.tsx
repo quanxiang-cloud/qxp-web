@@ -31,18 +31,22 @@ export default function ResetPasswordModal({ visible, onCancel }: Props) {
     },
   });
 
-  function onOk() {
-    if (values.new && values.old && formRef.current?.validateFields()) {
-      setLoading(true);
-      mutation.mutate(values);
-    }
+  function onResetSubmit() {
+    formRef.current?.validateFields().then((isAllValid) => {
+      if (values.new && values.old && isAllValid) {
+        setLoading(true);
+        mutation.mutate(values);
+      }
+    });
   }
 
   function onChange(type: 'old' | 'new') {
     return function(e: FocusEvent<HTMLInputElement & HTMLTextAreaElement>) {
       const { value } = e.target;
       setValues((values) => ({ ...values, [type]: value }));
-      setIsForbidden(!!formRef.current?.isAllValid());
+      formRef.current?.isAllValid().then((isAllValid) => {
+        setIsForbidden(!isAllValid);
+      });
     };
   }
 
@@ -69,7 +73,7 @@ export default function ResetPasswordModal({ visible, onCancel }: Props) {
             loading={loading}
             forbidden={isForbidden || !values.new || !values.old}
             iconName="check"
-            onClick={onOk}
+            onClick={onResetSubmit}
           >
             确定重置
           </Button>

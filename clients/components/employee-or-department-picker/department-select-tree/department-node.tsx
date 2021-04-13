@@ -1,9 +1,9 @@
 import React from 'react';
 import { observer } from 'mobx-react';
 import { twCascade } from '@mariusmarais/tailwind-cascade';
-import { Checkbox } from '@QCFE/lego-ui';
 
 import { NodeRenderProps } from '@c/headless-tree/types';
+import Checkbox from '@c/checkbox';
 import { last } from '@lib/utils';
 
 import DepartmentTreeStore from './store';
@@ -41,14 +41,12 @@ export default observer(function DepartmentNode({ node, store, onChange }: Props
       onClick={handleClick}
       className={twCascade('transition-all py-8 w-full flex items-center justify-between')}
     >
-      <div
-        className="ml-2 flex flex-row items-center w-full"
-        onClick={(e) => e.stopPropagation()}
-      >
+      <div className="ml-2 flex flex-row items-center w-full">
         <Checkbox
           checked={isChecked}
           indeterminate={isIndeterminate}
           onChange={handleClick}
+          onClick={(e) => e.stopPropagation()}
         />
         <div className="ml-10 truncate" title={node.name}>
           {node.name}
