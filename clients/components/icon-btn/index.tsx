@@ -1,19 +1,19 @@
 import React from 'react';
-import { Icon } from '@QCFE/lego-ui';
 import classnames from 'classnames';
+
+import Icon from '@c/icon';
 
 interface ButtonProps extends Omit<
   React.DetailedHTMLProps<React.ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>,
   'children'
 > {
   iconName: string;
-  isPrimary?: boolean;
-  isLoading?: boolean;
-  isForbidden?: boolean;
+  loading?: boolean;
+  forbidden?: boolean;
 }
 
 function IconBtn(
-  { iconName, className, isPrimary, isLoading, isForbidden, ...restProps }: ButtonProps,
+  { iconName, className, loading, forbidden, ...restProps }: ButtonProps,
   ref?: React.Ref<HTMLButtonElement>,
 ): JSX.Element {
   return (
@@ -21,12 +21,17 @@ function IconBtn(
       {...restProps}
       ref={ref}
       className={classnames('btn', 'icon-btn', className, {
-        'btn--primary': isPrimary,
-        'btn--loading': isLoading,
-        'btn--forbidden': isForbidden,
+        'btn--loading': loading,
+        'btn--forbidden': forbidden,
+        'opacity-50': forbidden,
+        'pointer-events-none': loading,
       })}
+      disabled={forbidden}
     >
-      <Icon name={iconName} type={isPrimary ? 'light' : 'dark'} />
+      <Icon
+        name={loading ? 'loading' : iconName}
+        className={classnames({ 'animate-spin': loading })}
+      />
     </button>
   );
 }

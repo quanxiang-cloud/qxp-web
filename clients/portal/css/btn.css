@@ -63,6 +63,23 @@
   padding-left: 0;
   padding-right: 0;
   width: 32px;
+  border: 1px solid var(--gray-600);
+}
+
+.icon-btn:hover:not(.btn--forbidden) {
+  border-color: var(--gray-800);
+}
+
+.icon-btn:hover:not(.btn--forbidden) svg {
+  color: var(--gray-800);
+}
+
+.icon-btn:hover:active {
+  background-color: var(--gray-900);
+}
+
+.icon-btn:hover:active svg {
+  color: white;
 }
 
 .header-nav-btn-icon {

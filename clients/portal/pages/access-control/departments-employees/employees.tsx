@@ -2,11 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { useQuery } from 'react-query';
 import { Table } from '@QCFE/lego-ui';
 
-import Icon from '@c/icon';
 import EmptyTips from '@c/empty-tips';
 import Pagination from '@c/pagination';
 import Authorized from '@c/authorized';
 import Button from '@c/button';
+import IconButton from '@c/icon-btn';
 import MoreMenu from '@c/more-menu';
 import { usePortalGlobalValue } from '@portal/states_to_be_delete/portal';
 import notify from '@lib/notify';
@@ -263,9 +263,7 @@ export default function Employees({
                     }
                   }}
                 >
-                  <div className="p-6 border border-gray-800 btn-border-radius cursor-pointer">
-                    <Icon name="more_horiz" size={20} />
-                  </div>
+                  <IconButton iconName="more_horiz" />
                 </MoreMenu>
               </>
             )}
