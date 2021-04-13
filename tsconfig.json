@@ -57,7 +57,7 @@
       "node_modules/@types",
       "node_modules/@QCFE/types",
       "node_modules/@qcfe/types",
-      "clients/type"
+      "clients/types"
     ] /* List of folders to include type definitions from. */,
     "types": ["cypress"] /* Type declaration files to be included in compilation. */,
     "allowSyntheticDefaultImports": true /* Allow default imports from modules with no default export. This does not affect code emit, just typechecking. */,
