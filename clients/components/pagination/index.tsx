@@ -18,7 +18,7 @@ export interface Props {
   showSizeChanger?: boolean;
   pageSizeOptions?: number[];
   showQuickJumper?: boolean;
-  showTotal?: (total: number, range?: [number, number]) => React.ReactNode;
+  renderTotalTip?: (total: number, range?: [number, number]) => React.ReactNode;
   showLessItems?: boolean;
   className?: string;
 }
@@ -29,7 +29,7 @@ function Pagination({
   pageSize = 10,
   hideOnSinglePage,
   pageSizeOptions = [10, 20, 50, 100],
-  showTotal,
+  renderTotalTip,
   showSizeChanger = true,
   showQuickJumper,
   showLessItems,
@@ -165,7 +165,7 @@ function Pagination({
   let quickJumperText = null;
 
   if (allPages <= 9) {
-    for (let i = 1; i <= allPages; i+=1) {
+    for (let i = 1; i <= allPages; i += 1) {
       const active = pageParams.current === i;
       pagerList.push(<Pager
         key={i}
@@ -207,7 +207,7 @@ function Pagination({
       left = allPages - num;
     }
 
-    for (let i = left; i <= right; i+= 1) {
+    for (let i = left; i <= right; i += 1) {
       const active = _current === i;
       pagerList.push((<Pager key={i} page={i} active={active}
         onClick={() => handleChange(i)} />));
@@ -228,8 +228,8 @@ function Pagination({
     }
   }
 
-  if (showTotal) {
-    totalText = (<li>{showTotal(allPages)}</li>);
+  if (renderTotalTip) {
+    totalText = (<>{renderTotalTip(allPages)}</>);
   }
 
   if ((showSizeChanger && total <= 50) || total > 50) {
@@ -245,7 +245,7 @@ function Pagination({
             options={pageSizeOptions ? pageSizeOptions.map((page: number) => ({
               label: `${page} 条`,
               value: page,
-            })): []}
+            })) : []}
           />
         </div>
       </li>
@@ -272,14 +272,18 @@ function Pagination({
   }
 
   return (
-    <ul className={classnames('pagination', className)}>
-      {totalText}
-      {prevIcon}
-      {pagerList}
-      {nextIcon}
-      {pageSizeText}
-      {quickJumperText}
-    </ul>
+    <div className="w-full px-20 flex items-center justify-between">
+      <div>
+        {totalText}
+      </div>
+      <ul className={classnames('pagination', className)}>
+        {prevIcon}
+        {pagerList}
+        {nextIcon}
+        {pageSizeText}
+        {quickJumperText}
+      </ul>
+    </div>
   );
 }
 
