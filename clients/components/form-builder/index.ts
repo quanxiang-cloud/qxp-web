@@ -3,6 +3,8 @@ import FormRenderer from './FormRenderer';
 import registry from './registry';
 import { useFormPreview, useLinkageSetting, useDataSetting } from './hooks';
 
+import './index.scss';
+
 // const actions: ISchemaFormActions = {
 //   getSchema(): Schema;
 //   getFormSchema(): Schema;

@@ -26,7 +26,6 @@ function FormBuilder({ className, store }: Props) {
       <FormBuilderDiv className={`form-builder ${className}`}>
         <DndProvider backend={HTML5Backend} context={window}>
           <LeftPanel>
-            <PanelTitle>表单元素列表</PanelTitle>
             <SourceElementPanel />
           </LeftPanel>
           <MainPanel>
