@@ -83,6 +83,14 @@ export default function Employees({
     setSelectedUsers([]);
   }
 
+  function handleShowTotal() {
+    return (
+      <div className="text-12 text-gray-600">
+        共<span className="mx-4">{employeesList?.total || 0}</span>条数据
+      </div>
+    )
+  }
+
   function handleUserState(status: UserStatus, user: UserInfo) {
     setCurrUser(user);
     setUserState(status);
@@ -295,16 +303,13 @@ export default function Employees({
         </div>
         {
           (employeesList?.data && employeesList?.data.length > 0) && (
-            <div className="h-52 flex items-center justify-between px-20">
-              <div className="text-12 text-gray-600">共<span className="mx-4">
-                {employeesList?.total || 0}</span>条数据</div>
-              <Pagination
-                pageNumber={pageParams.page}
-                total={employeesList?.total || 0}
-                pageSize={pageParams.limit}
-                onChange={handlePageChange}
-              />
-            </div>
+            <Pagination
+              pageNumber={pageParams.page}
+              total={employeesList?.total || 0}
+              pageSize={pageParams.limit}
+              onChange={handlePageChange}
+              showTotal={handleShowTotal}
+            />
           )
         }
       </div>

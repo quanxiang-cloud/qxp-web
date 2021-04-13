@@ -87,6 +87,14 @@ export default observer(function EmployeeTable({
     store.setSelectedKeys(keys);
   };
 
+  function handleShowTotal() {
+    return (
+      <div className="text-12 text-gray-600">
+        共<span className="mx-4">{total || 0}</span>条数据
+      </div>
+    )
+  }
+
   return (
     <div className={className}>
       <Table
@@ -127,17 +135,12 @@ export default observer(function EmployeeTable({
           onChange: onUpdateSelectedKeys,
         }}
       />
-      <div className="h-52 flex justify-end bg-white">
+      <div className="h-52 bg-white">
         <Pagination
           {...store.pagination}
-          total={total}
+          showTotal={handleShowTotal}
           showLessItems
           onChange={store.setPagination}
-          // prefix={
-          //   (<span className="text-12 text-dark-four">
-          //     {`已选 ${store.selectedKeys.length}, 共 ${total}条`}
-          //   </span>)
-          // }
           className="pagination-border"
         />
       </div>

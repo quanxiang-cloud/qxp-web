@@ -165,7 +165,7 @@ function Pagination({
   let quickJumperText = null;
 
   if (allPages <= 9) {
-    for (let i = 1; i <= allPages; i+=1) {
+    for (let i = 1; i <= allPages; i += 1) {
       const active = pageParams.current === i;
       pagerList.push(<Pager
         key={i}
@@ -207,7 +207,7 @@ function Pagination({
       left = allPages - num;
     }
 
-    for (let i = left; i <= right; i+= 1) {
+    for (let i = left; i <= right; i += 1) {
       const active = _current === i;
       pagerList.push((<Pager key={i} page={i} active={active}
         onClick={() => handleChange(i)} />));
@@ -229,7 +229,7 @@ function Pagination({
   }
 
   if (showTotal) {
-    totalText = (<li>{showTotal(allPages)}</li>);
+    totalText = (<>{showTotal(allPages)}</>);
   }
 
   if ((showSizeChanger && total <= 50) || total > 50) {
@@ -245,7 +245,7 @@ function Pagination({
             options={pageSizeOptions ? pageSizeOptions.map((page: number) => ({
               label: `${page} 条`,
               value: page,
-            })): []}
+            })) : []}
           />
         </div>
       </li>
@@ -272,14 +272,18 @@ function Pagination({
   }
 
   return (
-    <ul className={classnames('pagination', className)}>
-      {totalText}
-      {prevIcon}
-      {pagerList}
-      {nextIcon}
-      {pageSizeText}
-      {quickJumperText}
-    </ul>
+    <div className="w-full px-20 flex items-center justify-between">
+      <div>
+        {totalText}
+      </div>
+      <ul className={classnames('pagination', className)}>
+        {prevIcon}
+        {pagerList}
+        {nextIcon}
+        {pageSizeText}
+        {quickJumperText}
+      </ul>
+    </div>
   );
 }
 
