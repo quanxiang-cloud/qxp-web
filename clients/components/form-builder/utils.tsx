@@ -2,7 +2,6 @@ import React from 'react';
 import { nanoid } from 'nanoid';
 import Icon from '@c/icon';
 import { Tooltip } from 'antd';
-import { isEqual, get } from 'lodash';
 import styled from 'styled-components';
 
 export const getItemPathArr = (path: string): Array<string> => {
@@ -29,28 +28,6 @@ export const arrayMove = (array: Array<any>, from: number, to: number) => {
 
     const [item] = array.splice(from, 1);
     array.splice(endIndex, 0, item);
-  }
-};
-
-/**
- * move item in nest array.
- * @param array target array
- * @param fromIndex number
- * @param toIndex number
- * @param fromPath array, eg: [0-3]
- * @param toPath same as above.
- */
-export const arrayMoveByPath = (array: Array<any>, fromIndex: number, toIndex: number, fromPath: Array<any>, toPath: Array<any>) => {
-  if (isEqual(fromPath, toPath)) {
-    // same layer.
-    const realToIndex = fromIndex < toIndex ? toIndex - 1 : toIndex;
-    const arr = fromPath.length === 0 ? array : get(array, fromPath);
-    arrayMove(arr, fromIndex, realToIndex);
-  } else {
-    const source = fromPath.length === 0 ? array : get(array, fromPath);
-    const [item] = source.splice(fromIndex, 1);
-    const target = toPath.length === 0 ? array : get(array, toPath);
-    target.splice(toIndex, 0, item);
   }
 };
 

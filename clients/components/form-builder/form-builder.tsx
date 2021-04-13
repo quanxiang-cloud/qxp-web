@@ -5,7 +5,7 @@ import { HTML5Backend } from 'react-dnd-html5-backend';
 import { StoreContext } from './context';
 import Store from './store';
 import Canvas from './canvas';
-import SourceElementPanel from './SourceElementPanel';
+import SourceElementPanel from './source-element-panel';
 import FormSettingPanel from './form-settings-panel';
 import {
   FormBuilderDiv,
