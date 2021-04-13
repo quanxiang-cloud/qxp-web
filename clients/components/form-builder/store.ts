@@ -31,7 +31,7 @@ export default class FormBuilderStore {
     const properties = this.fields.reduce<Record<string, any>>((acc, field, index) => {
       const { fieldName, toSchema, configValue } = field;
       acc[fieldName] = {
-        // convert observable value to prune js object for debugging
+        // convert observable value to pure js object for debugging
         ...toSchema(toJS(configValue)),
         'x-index': index,
         'x-mega-props': {
