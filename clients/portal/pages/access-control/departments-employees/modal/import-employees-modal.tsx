@@ -272,7 +272,6 @@ export default function ImportEmployeesModal({ currDepId, closeModal }: Props) {
               <div className="w-full group">
                 <Upload
                   style={{ width: '100%' }}
-                  disabled={fileList.length === 0 ? false : true}
                   beforeUpload={beforeUpload}
                   accept=".xlsx, .xls"
                 >
