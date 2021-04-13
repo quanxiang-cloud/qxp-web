@@ -8,11 +8,11 @@ const { TabPane } = Tabs;
 
 function FormSettingPanel() {
   return (
-    <Tabs size="small" className="setting-panel">
-      <TabPane tab="字段属性" key="fieldAttr">
+    <Tabs size="small" className="form-settings-panel">
+      <TabPane tab="字段属性" key="fieldAttr" className="form-settings-panel__panel">
         <FormFieldConfig />
       </TabPane>
-      <TabPane tab="表单属性" key="formAttr">
+      <TabPane tab="表单属性" key="formAttr" className="form-settings-panel__panel">
         <FormConfig />
       </TabPane>
     </Tabs>

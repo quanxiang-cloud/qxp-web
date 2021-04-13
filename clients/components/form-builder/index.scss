@@ -43,3 +43,13 @@
   //   border-color: ${(props) => props.theme.primaryColor};
   // }
 }
+
+.form-settings-panel {
+  width: 296px;
+
+  background-color: white;
+}
+
+.form-settings-panel__panel {
+  padding: 0 20px;
+}
