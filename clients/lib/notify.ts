@@ -28,6 +28,7 @@ class Notify {
         border-radius: 4px 12px 12px 12px;
         transition: all .3s ease;
         animation: show 1s ease forwards;
+        z-index: 1001;
       }
 
       @keyframes show {

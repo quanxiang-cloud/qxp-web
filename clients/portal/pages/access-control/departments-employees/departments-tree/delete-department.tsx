@@ -1,7 +1,8 @@
 import React from 'react';
-import { Modal, Message } from '@QCFE/lego-ui';
+import { Modal } from '@QCFE/lego-ui';
 
 import Button from '@c/button';
+import Notify from '@lib/notify';
 import { NodeRenderProps } from '@c/headless-tree/types';
 
 import { deleteDEP } from '../api';
@@ -14,13 +15,13 @@ export default function DeleteModal({ node, store, closeModal }: Props) {
   function handleOk() {
     deleteDEP(node.id).then(({ code, msg }) => {
       if (!code) {
-        Message.success({ content: '删除成功' });
+        Notify.success('删除成功');
         store.deleteNode(node);
         closeModal();
         return;
       }
 
-      Message.error(msg || '');
+      Notify.error(msg || '');
     });
   }
 
