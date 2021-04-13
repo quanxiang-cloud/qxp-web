@@ -25,18 +25,19 @@ function Button(
         [`btn--${modifier}`]: modifier,
         'btn--forbidden': forbidden,
         'btn--loading': loading,
-        'cursor-not-allowed': forbidden,
         'opacity-50': forbidden,
-        'pointer-events-none': loading || forbidden,
+        'pointer-events-none': loading,
       })}
+      disabled={forbidden}
     >
       {iconName && (
         <Icon
-          name={iconName}
+          name={loading ? 'loading' : iconName}
           type={modifier === 'primary' ? 'light' : 'dark'}
-          disabled={forbidden}
           size={20}
-          className="fill-current text-inherit mr-8"
+          className={classnames('fill-current text-inherit mr-8', {
+            'animate-spin': loading
+          })}
         />
       )}
       {children}
