@@ -39,3 +39,5 @@ type Columns = {
 }[]
 
 type SizeType = 'small' | 'middle' | 'large' | undefined;
+
+type Override<T, P> = Omit<T, keyof P> & P;

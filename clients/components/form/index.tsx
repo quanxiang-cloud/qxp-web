@@ -46,8 +46,8 @@ export const FormContext = createContext<Context>({
 });
 
 export interface FormRef {
-  validateFields: () => boolean;
-  isAllValid: () => boolean;
+  validateFields: () => Promise<boolean>;
+  isAllValid: () => Promise<boolean>;
 }
 
 function Form(
@@ -105,19 +105,28 @@ function Form(
     }
   }
 
-  function validateFields(ignoreErrorMessage?: boolean): boolean {
-    return Object.keys(formState.fields).every((id) => {
-      return validateField(id, ignoreErrorMessage);
+  function validateFields(ignoreErrorMessage?: boolean): Promise<boolean> {
+    return new Promise((resolve) => {
+      setFormState((state) => {
+        const isAllValid = Object.keys(state.fields).every((id) => {
+          return validateField(id, ignoreErrorMessage, state);
+        });
+        resolve(isAllValid);
+        return state;
+      });
     });
   }
 
-  function isAllValid(): boolean {
+  function isAllValid(): Promise<boolean> {
     return validateFields(true);
   }
 
-  function validateField(id: string, ignoreErrorMessage?: boolean): boolean {
+  function validateField(id: string, ignoreErrorMessage?: boolean, state?: {
+      fields: Fields;
+      errors: Errors;
+  }): boolean {
     let error = '';
-    const field = formState.fields[id];
+    const field = state ? state.fields[id] : formState.fields[id];
     if (!field) {
       return false;
     }

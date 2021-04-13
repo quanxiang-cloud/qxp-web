@@ -62,13 +62,13 @@ export default function Input(props: Props) {
   }, []);
 
   function handleBlur(e: FocusEvent<HTMLInputElement & HTMLTextAreaElement>) {
-    onBlur && onBlur(e);
     validateField(id);
+    onBlur && onBlur(e);
   }
 
   function handleChange(e: ChangeEvent<HTMLInputElement & HTMLTextAreaElement>) {
-    onChange && onChange(e);
     setField(e, field);
+    onChange && onChange(e);
   }
 
   const inputProps = omit({
