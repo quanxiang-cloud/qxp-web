@@ -53,3 +53,23 @@
 .form-settings-panel__panel {
   padding: 0 20px;
 }
+
+.form-builder .form-builder-canvas {
+  min-height: 300px;
+  padding: 20px 0;
+  border-radius: 12px;
+  background-color: white;
+}
+
+.form-builder-canvas__empty-tip {
+  display: flex;
+  height: 300px;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+
+  .text {
+    margin-top: 8px;
+    color: #939aa9;
+  }
+}

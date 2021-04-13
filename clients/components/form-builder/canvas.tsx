@@ -1,7 +1,6 @@
 import React, { useContext } from 'react';
 import Icon from '@c/icon';
 import DropWrapper from './drop-wrapper';
-import { EmptyPlaceholder } from './StyledComponents';
 import { StoreContext } from './context';
 import { observer } from 'mobx-react';
 import { createAsyncFormActions, SchemaForm } from '@formily/antd';
@@ -33,20 +32,24 @@ function FormFields({ }: Props): JSX.Element {
         item={containerItem}
         draggable={false}
       >
-        <EmptyPlaceholder>
-          <Icon name="add" size={32} />
-          <div className="text">请从左侧拖拽所需字段组成表单</div>
-        </EmptyPlaceholder>
+        <div className="form-builder-canvas">
+          <div className="form-builder-canvas__empty-tip">
+            <Icon name="add" size={32} />
+            <div className="text">请从左侧拖拽所需字段组成表单</div>
+          </div>
+        </div>
       </DropWrapper>
     );
   }
 
   return (
-    <SchemaForm
-      actions={actions}
-      components={{ ...registry.components, FormFieldWrapper }}
-      schema={store.schemaForCanvas}
-    />
+    <div className="form-builder-canvas">
+      <SchemaForm
+        actions={actions}
+        components={{ ...registry.components, FormFieldWrapper }}
+        schema={store.schemaForCanvas}
+      />
+    </div>
   );
 }
 
