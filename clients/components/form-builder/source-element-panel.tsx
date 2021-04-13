@@ -2,10 +2,7 @@ import React from 'react';
 import SourceElement from './SourceElement';
 import registry from './registry';
 
-type Props = {
-}
-
-function SourceElementPanel({ }: Props): JSX.Element {
+function SourceElementPanel(): JSX.Element {
   return (
     <div className="source-element-panel">
       <div className="text-caption mb-20">拖动下方组件至中间表单区域</div>
