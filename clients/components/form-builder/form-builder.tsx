@@ -10,8 +10,6 @@ import FormSettingPanel from './form-settings-panel';
 import {
   FormBuilderDiv,
   PanelTitle,
-  LeftPanel,
-  RightPanel,
   MainPanel,
 } from './StyledComponents';
 
@@ -25,17 +23,13 @@ function FormBuilder({ className, store }: Props) {
     <StoreContext.Provider value={store}>
       <FormBuilderDiv className={`form-builder ${className}`}>
         <DndProvider backend={HTML5Backend} context={window}>
-          <LeftPanel>
-            <SourceElementPanel />
-          </LeftPanel>
+          <SourceElementPanel />
           <MainPanel>
             <PanelTitle>表单编辑视图</PanelTitle>
             <Canvas />
           </MainPanel>
         </DndProvider>
-        <RightPanel>
-          <FormSettingPanel />
-        </RightPanel>
+        <FormSettingPanel />
       </FormBuilderDiv>
     </StoreContext.Provider>
   );
