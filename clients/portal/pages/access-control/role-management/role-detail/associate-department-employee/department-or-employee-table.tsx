@@ -107,7 +107,7 @@ export default function DepartmentTable({ isSuper, onCancelAssociation, roleID, 
     };
   }
 
-  function handleShowTotal() {
+  function renderTotalTip() {
     return (
       <div className="text-12 text-gray-600">
         共<span className="mx-4">{members.length || 0}</span>条数据
@@ -193,7 +193,7 @@ export default function DepartmentTable({ isSuper, onCancelAssociation, roleID, 
         <div className="h-52 bg-white">
           <Pagination
             {...pagination}
-            showTotal={handleShowTotal}
+            renderTotalTip={renderTotalTip}
             className="rounded-bl-12 rounded-br-12 pagination-border"
             onChange={(pageNumber, pageSize) => {
               setPagination({ current: pageNumber, pageSize, total: pagination.total });

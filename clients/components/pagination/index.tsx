@@ -18,7 +18,7 @@ export interface Props {
   showSizeChanger?: boolean;
   pageSizeOptions?: number[];
   showQuickJumper?: boolean;
-  showTotal?: (total: number, range?: [number, number]) => React.ReactNode;
+  renderTotalTip?: (total: number, range?: [number, number]) => React.ReactNode;
   showLessItems?: boolean;
   className?: string;
 }
@@ -29,7 +29,7 @@ function Pagination({
   pageSize = 10,
   hideOnSinglePage,
   pageSizeOptions = [10, 20, 50, 100],
-  showTotal,
+  renderTotalTip,
   showSizeChanger = true,
   showQuickJumper,
   showLessItems,
@@ -228,8 +228,8 @@ function Pagination({
     }
   }
 
-  if (showTotal) {
-    totalText = (<>{showTotal(allPages)}</>);
+  if (renderTotalTip) {
+    totalText = (<>{renderTotalTip(allPages)}</>);
   }
 
   if ((showSizeChanger && total <= 50) || total > 50) {

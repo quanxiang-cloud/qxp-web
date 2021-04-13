@@ -83,7 +83,7 @@ export default function Employees({
     setSelectedUsers([]);
   }
 
-  function handleShowTotal() {
+  function renderTotalTip() {
     return (
       <div className="text-12 text-gray-600">
         共<span className="mx-4">{employeesList?.total || 0}</span>条数据
@@ -308,7 +308,7 @@ export default function Employees({
               total={employeesList?.total || 0}
               pageSize={pageParams.limit}
               onChange={handlePageChange}
-              showTotal={handleShowTotal}
+              renderTotalTip={renderTotalTip}
             />
           )
         }
