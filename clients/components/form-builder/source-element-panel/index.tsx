@@ -1,6 +1,6 @@
 import React from 'react';
-import SourceElement from './SourceElement';
-import registry from './registry';
+import SourceElement from './source-element';
+import registry from '../registry';
 
 function SourceElementPanel(): JSX.Element {
   return (

@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { useDrag } from 'react-dnd';
 import Icon from '@c/icon';
 
-import { StoreContext } from './context';
+import { StoreContext } from '../context';
 import { observer } from 'mobx-react';
 
 type Props = {
