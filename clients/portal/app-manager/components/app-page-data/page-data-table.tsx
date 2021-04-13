@@ -2,7 +2,7 @@ import React from 'react';
 
 import Button from '@c/button';
 import Icon from '@c/icon';
-import Table from '@c/app-table';
+import Table from '@c/table/index';
 
 const columns: any = [{
   id: 'userName',
@@ -39,23 +39,22 @@ const data = [
     phone: '133456564654',
     email: '38475@qq.cm',
     id: 1,
-    dep: { departmentName: '研发部' }
-  }
-]
+    dep: { departmentName: '研发部' },
+  },
+];
 
 function PageDataTable() {
-
   const handleSelectChange = (selectArr: any) => {
     console.log('selectArr: ', selectArr);
-  }
+  };
 
   const textBtnRender = (text: string, icon: string) => {
     return (
       <div className='inline-flex items-center cursor-pointer hover:text-blue-600'>
         <Icon size={20} className='mr-4 app-icon-color-inherit' name={icon} /> {text}
       </div>
-    )
-  }
+    );
+  };
 
   return (
     <div className='app-page-data-container flex-1'>

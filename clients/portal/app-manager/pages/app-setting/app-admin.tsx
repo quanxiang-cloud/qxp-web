@@ -4,9 +4,9 @@ import { Message } from '@QCFE/lego-ui';
 
 import TextHeader from '@c/text-header';
 import Button from '@appC/button';
-import Table, { Column } from '@c/app-table';
+import Table from '@c/table/index';
 import { appAddAdmin, fetchAppAdminUsers, delAppAdminUsers } from '@appLib/api';
-import EmployeeOrDepartmentPickerModal from '@c/employee-or-department-picker-modal';
+import EmployeeOrDepartmentPickerModal from '@c/employee-or-department-picker';
 
 function AppAdmin() {
   const [employeeVisible, setEmployeeVisible] = useState(false);
@@ -14,7 +14,7 @@ function AppAdmin() {
   const [loading, setLoading] = useState(false);
   const { appId } = useParams<any>();
   const [total, setTotal] = useState(0);
-  const [params, setParams] = useState({ page: 1, limit: 20, id: appId });
+  const [params, setParams] = useState({ page: 1, limit: 9999, id: appId });
   const [appAdminList, setAppAdminList] = useState<Employee[]>([]);
 
   const handleChangeParams = (newParams: any) => {
@@ -40,13 +40,13 @@ function AppAdmin() {
     setSelectedArr(selectedArr);
   };
 
-  const addAdmin = (employees: any) => {
+  const addAdmin = (_: any, employees: any) => {
     if (employees.length === 0) {
       Message.error('请选择添加为管理员的员工');
-      return;
+      return Promise.reject({ message: '' });
     }
 
-    appAddAdmin({ appId, userIDs: employees.map(({ id }: Employee) => id) }).then(() => {
+    return appAddAdmin({ appId, userIDs: employees.map(({ id }: Employee) => id) }).then(() => {
       fetchAdmins();
       setEmployeeVisible(false);
     });
@@ -54,9 +54,9 @@ function AppAdmin() {
 
   useEffect(() => {
     fetchAdmins();
-  }, []);
+  }, [params]);
 
-  const columns: Column[] = React.useMemo(() => [
+  const columns = React.useMemo(() => [
     {
       id: 'userName',
       Header: '员工',
@@ -107,6 +107,7 @@ function AppAdmin() {
         <Table
           showCheckBox
           selectKey='id'
+          style={{ maxHeight: 'calc(100vh - 272px)' }}
           columns={columns}
           data={appAdminList}
           loading={loading}
@@ -114,15 +115,16 @@ function AppAdmin() {
           currentPage={params.page}
           total={total}
           onSelectChange={handleSelectChange}
-          onPageChange={(page: number) => handleChangeParams({ page })}
-          onShowSizeChange={(limit: number) => handleChangeParams({ limit })}
+          onPageChange={(page: number, limit: number) => handleChangeParams({ page, limit })}
         />
-        <EmployeeOrDepartmentPickerModal
-          visible={employeeVisible}
-          onOk={addAdmin}
-          roleID=''
-          onCancel={() => setEmployeeVisible(false)}
-        />
+        {employeeVisible && (
+          <EmployeeOrDepartmentPickerModal
+            visible
+            onOk={addAdmin}
+            onCancel={() => setEmployeeVisible(false)}
+            employees={[]}
+          />
+        )}
       </div>
     </>
   );

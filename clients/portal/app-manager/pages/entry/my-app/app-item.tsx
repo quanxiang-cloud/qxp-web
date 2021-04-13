@@ -14,8 +14,8 @@ type Props = {
 
 function AppItem({ appInfo, onClick, readonly, openModal }: Props) {
   return (
-    <div onClick={() => onClick?.(appInfo.id)} className='app-item-box'>
-      <AppInfoView appInfo={appInfo} />
+    <div className='app-item-box'>
+      <AppInfoView onClick={() => onClick?.(appInfo.id)} appInfo={appInfo} />
       {readonly ? null : <AppActions appInfo={appInfo} openModal={openModal} />}
     </div>
   );

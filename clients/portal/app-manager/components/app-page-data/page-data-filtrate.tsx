@@ -9,7 +9,7 @@ import store from './store';
 import FiltrateForm from './filtrate-form';
 
 function PageDataFiltrate() {
-  const filterDom = useRef();
+  const filterDom = useRef<any>();
   const { showMoreFiltrate, setShowMoreFiltrate } = store;
 
   const search = () => {
@@ -20,23 +20,29 @@ function PageDataFiltrate() {
     filterDom.current.reset();
   };
 
+  const noFilter = store.filterList.length === 0;
+
   return (
     <div className='app-page-data-container app-page-data-filtrate'>
-      <FiltrateForm ref={filterDom} fieldList={store.fieldList} />
+      <FiltrateForm ref={filterDom} filterList={store.filterList} />
       <div>
-        {showMoreFiltrate ? (
-          <span onClick={() => setShowMoreFiltrate(false)} className='app-page-data-filtrate-more'>
-            收起全部
-            <Icon size={16} className='ml-4 app-icon-color-inherit' name='expand_less' />
+        {store.filterList.length > 3 ? (
+          <span
+            onClick={() => setShowMoreFiltrate(!showMoreFiltrate)}
+            className='app-page-data-filtrate-more'
+          >
+            {showMoreFiltrate ? '收起' : '展开'}全部
+            <Icon
+              size={16}
+              className='ml-4 app-icon-color-inherit'
+              name={showMoreFiltrate ? 'expand_less' : 'expand_more'}
+            />
           </span>
-        ) : (
-          <span onClick={() => setShowMoreFiltrate(true)} className='app-page-data-filtrate-more'>
-              展开全部
-            <Icon size={16} className='ml-4 app-icon-color-inherit' name='expand_more' />
-          </span>
-        )}
-        <Button onClick={search} className='mr-16' modifier='primary'>查询</Button>
-        <Button onClick={reset}>重置</Button>
+        ) : null}
+        <Button forbidden={noFilter} onClick={search} className='mr-16' modifier='primary'>
+          查询
+        </Button>
+        <Button forbidden={noFilter} onClick={reset}>重置</Button>
       </div>
     </div>
   );

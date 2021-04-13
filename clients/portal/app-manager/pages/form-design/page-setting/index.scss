@@ -20,8 +20,8 @@
 }
 
 .page-field-sort-action {
-  // display: flex;
-  // align-items: center;
+  display: flex;
+  align-items: center;
 }
 
 .page-field-sort-content {
@@ -42,4 +42,18 @@
   @extend .page-field-sort-content;
   border-radius: 8px 8px 0 0;
   background: var(--gray-100);
+}
+
+.page-setting-field-filter {
+  border-radius: 8px;
+  border: 1px solid var(--gray-300);
+
+  &:not(:last-child) {
+    margin-bottom: 8px;
+  }
+}
+
+.page-setting-filter-option {
+  padding: 16px 36px;
+  border-top: 1px solid var(--gray-300);
 }

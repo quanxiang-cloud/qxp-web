@@ -44,17 +44,15 @@ function IndexHeader() {
   return (
     <div className="app-global-header app-global-header-icon">
       <div className='flex gap-x-20'>
-        {NAV_LIST.map((navItem) => <NavButton key={navItem.url} {...navItem} />)}
+        {NAV_LIST.map((navItem) => <NavButton key={navItem.icon} {...navItem} />)}
       </div>
       <div className='flex gap-x-20'>
-        <Button
-          icon='login'
-        >
+        <Button icon='login'>
           进入访问端
         </Button>
         <NotifyIcon unreadNum={5} />
         {NAV_LIST_RIGHT.map((navRightItem) => {
-          return <NavButton key={navRightItem.url} {...navRightItem} />;
+          return <NavButton key={navRightItem.icon} {...navRightItem} />;
         })}
       </div>
     </div>

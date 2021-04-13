@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import classnames from 'classnames';
 import { get } from 'lodash';
-import { Loading } from '@QCFE/lego-ui';
 import {
   useTable,
   Column as RColumn,
@@ -9,14 +8,21 @@ import {
   Hooks,
   TableOptions,
   TableToggleCommonProps,
+  UseTableColumnProps,
   Row,
 } from 'react-table';
 
 import Pagination from '../pagination';
 
+import TableLoading from './table-loading';
 import './index.scss';
 
-export type Column = RColumn & { fixed?: boolean, width?: number };
+interface ColumnS extends UseTableColumnProps<any> {
+  fixed?: boolean, width?: number
+}
+export type Column = RColumn<any> & { fixed?: boolean, width?: number };
+
+const FIXED_ROW: React.CSSProperties = { position: 'sticky', left: '0px', zIndex: 1 };
 
 interface Props<T extends Record<string, unknown>> {
   data: Array<T>;
@@ -31,8 +37,7 @@ interface Props<T extends Record<string, unknown>> {
   total?: number;
   loading?: boolean;
   onSelectChange?: (selected: Array<T>) => void;
-  onPageChange?: (currentPage: number) => void;
-  onShowSizeChange?: (pageSize: number) => void;
+  onPageChange?: (currentPage: number, pageSize: number) => void;
 }
 
 const IndeterminateCheckbox = React.forwardRef(
@@ -66,7 +71,6 @@ export default function Table<T extends Record<string, unknown>>({
   selectKey,
   showCheckBox = false,
   onPageChange,
-  onShowSizeChange,
 }: Props<T>): JSX.Element {
   const tableParameter = [];
   if (showCheckBox) {
@@ -99,45 +103,63 @@ export default function Table<T extends Record<string, unknown>>({
     selectedFlatRows,
   }: any = useTable<any>(({ columns, data }) as TableOptions<T>, ...tableParameter);
 
-  // const columnsFixedStyle = computeColumnsStickyPosition(columns);
-
-  // const fixedStyle = (index: number): Pick<React.CSSProperties, 'left' | 'right'> => {
-  //   if (columns[index].fixed) {
-  //     return columnsFixedStyle[index];
-  //   }
-  //   return {};
-  // };
-
   useEffect(() => {
-    onSelectChange?.(selectedFlatRows.map(({ original }: Row) => selectKey ? get(original, selectKey) : original));
+    onSelectChange?.(selectedFlatRows.map(({ original }: Row) => {
+      return selectKey ? get(original, selectKey) : original;
+    }));
   }, [selectedFlatRows]);
 
+  const tableFooterRender = () => {
+    if (loading) {
+      return <TableLoading />;
+    }
+
+    if (rows.length === 0) {
+      return (
+        <div className="qxp-table-empty">
+          <img src='/dist/images/message_details_empty_tips.svg' alt='noData' />
+          <p>{emptyText || '无数据或符合条件的数据'}</p>
+        </div>
+      );
+    }
+
+    return (
+      <div className='px-16 flex justify-between items-center h-56'>
+        <div className='qxp-table-total-tips' >共{total}条数据</div>
+        {total > pageSize && (
+          <Pagination
+            className='inline-flex'
+            pageSize={pageSize}
+            pageNumber={currentPage}
+            total={total}
+            onChange={onPageChange}
+          />
+        )}
+      </div>
+    );
+  };
+
   return (
-    <div className="table-wrapper">
-      <div className={classnames('table', 'qxp-table', className)} style={style}>
-        <table {...getTableProps()}>
+    <div className="qxp-table-wrapper">
+      <div className={classnames('qxp-table-content', className)} style={style}>
+        <table className='qxp-table' {...getTableProps()}>
           <colgroup>
             {flatHeaders.map((column: Column) => (
               <col
                 key={column.id}
-                style={column.width ? { width: `${column.width}px` } : {}}
+                width={column.width ? column.width : ''}
               />
             ))}
           </colgroup>
           <thead>
             <tr>
-              {flatHeaders.map((column: any) => {
+              {flatHeaders.map((column: ColumnS) => {
                 return (
                   <th
                     {...column.getHeaderProps()}
                     key={column.id}
-                    className={classnames('qxp-table-th',
-                      { 'table__header-fixed': column.fixed }
-                    )}
-                    style={{
-                      // ...fixedStyle(index),
-                      maxWidth: column.maxWidth ? `${column.maxWidth}px` : 'none',
-                    }}
+                    style={column.fixed ? FIXED_ROW : {}}
+                    className='qxp-table-th'
                   >
                     {column.render('Header')}
                   </th>
@@ -145,7 +167,7 @@ export default function Table<T extends Record<string, unknown>>({
               })}
             </tr>
           </thead>
-          <tbody {...getTableBodyProps()}>
+          <tbody style={{ display: loading ? 'none' : '' }} {...getTableBodyProps()}>
             {rows.map((row: Row) => {
               prepareRow(row);
               return (
@@ -158,13 +180,8 @@ export default function Table<T extends Record<string, unknown>>({
                       <td
                         {...cell.getCellProps()}
                         key={cell.column.id}
-                        className={classnames('qxp-table-td',
-                          { 'table__cell-fixed': cell.fixed })}
-                        style={{
-                          // ...fixedStyle(index),
-                          maxWidth: cell.maxWidth ?
-                            `${cell.maxWidth}px` : 'none',
-                        }}
+                        className='qxp-table-td'
+                        style={cell.column.fixed ? FIXED_ROW : {}}
                       >
                         {cell.render('Cell')}
                       </td>
@@ -176,27 +193,7 @@ export default function Table<T extends Record<string, unknown>>({
           </tbody>
         </table>
       </div>
-      {loading ? (
-        <div className='table-loading-box'>
-          <Loading />
-        </div>) : null}
-      {
-        !loading && !rows.length ? (
-          <div className="table-empty">
-            <img src='/dist/images/links.svg' alt='noData' />
-            <p className="table-empty__text">{emptyText || '无数据或符合条件的数据'}</p>
-          </div>
-        ) : null
-      }
-      {total > pageSize && (
-        <Pagination
-          pageSize={pageSize}
-          current={currentPage}
-          total={total}
-          onShowSizeChange={onShowSizeChange}
-          onChange={onPageChange}
-        />
-      )}
+      {tableFooterRender()}
     </div>
   );
 }

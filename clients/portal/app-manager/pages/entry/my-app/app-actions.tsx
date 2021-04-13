@@ -47,18 +47,18 @@ function AppActions({ openModal, appInfo }: Props) {
 
   const handleClick = (key: string) => {
     switch (key) {
-      case 'publish':
-        openModal('publish', appInfo);
-        break;
-      case 'setting':
-        history.push(`/appManager/setting/info/${appInfo.id}`);
-        break;
-      case 'visit':
+    case 'publish':
+      openModal('publish', appInfo);
+      break;
+    case 'setting':
+      history.push(`/appManager/setting/info/${appInfo.id}`);
+      break;
+    case 'visit':
 
-        break;
-      case 'delete':
-        openModal('delete', appInfo);
-        break;
+      break;
+    case 'delete':
+      openModal('delete', appInfo);
+      break;
     }
   };
   return (

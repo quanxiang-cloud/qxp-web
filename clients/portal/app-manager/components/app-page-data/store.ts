@@ -31,9 +31,16 @@ class AppPageDataStore {
     id: 'date-range',
   }];
 
+  @observable filterList = [];
+
   @action
   setShowMoreFiltrate = (value:boolean) => {
     this.showMoreFiltrate = value;
+  }
+
+  @action
+  setFilterList = (filterList:any) => {
+    this.filterList = filterList;
   }
 }
 

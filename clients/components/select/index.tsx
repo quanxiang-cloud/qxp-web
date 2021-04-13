@@ -130,6 +130,12 @@ export default class Select<T extends React.Key> extends React.Component<SelectP
     };
   }
 
+  componentDidUpdate(preProps: SelectProps<T>) {
+    if (preProps.value !== this.props.value) {
+      this.setState({ selectedValue: this.props.value });
+    }
+  }
+
   getTriggerWidth(): number {
     const rects = this.triggerContentRef.current?.parentElement?.getClientRects();
     if (!rects || !rects.length) {
