@@ -5,7 +5,7 @@ export const defaultConfig = {
   displayModifier: '',
   placeholder: '',
   sortable: false,
-  precision: 4,
+  precision: 2,
   required: false,
   valueFrom: 'customized',
 };
