@@ -46,6 +46,7 @@ export function toSchema(value: MultipleSelectConfig): FormBuilder.Schema {
     },
     ['x-internal']: {
       sortable: value.sortable,
+      permission: 3,
     },
   };
 }

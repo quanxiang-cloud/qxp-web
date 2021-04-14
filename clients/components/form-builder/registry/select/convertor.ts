@@ -44,6 +44,7 @@ export function toSchema(value: SelectConfig): FormBuilder.Schema {
     ['x-component-props']: { },
     ['x-internal']: {
       sortable: value.sortable,
+      permission: 3,
     },
   };
 }

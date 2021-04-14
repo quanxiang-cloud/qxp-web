@@ -35,6 +35,7 @@ export function toSchema(value: TextareaConfig): FormBuilder.Schema {
     ['x-internal']: {
       sortable: value.sortable,
       valueSource: value.valueSource,
+      permission: 3,
     },
   };
 }

@@ -47,6 +47,7 @@ export function toSchema(value: CheckboxGroupConfig): FormBuilder.Schema {
     ['x-component-props']: { },
     ['x-internal']: {
       sortable: value.sortable,
+      permission: 3,
     },
   };
 }

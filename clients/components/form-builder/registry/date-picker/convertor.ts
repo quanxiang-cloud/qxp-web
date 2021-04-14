@@ -60,6 +60,7 @@ export function toSchema(value: typeof defaultConfig): FormBuilder.Schema {
     },
     ['x-internal']: {
       sortable: value.sortable,
+      permission: 3,
     },
   };
 }
