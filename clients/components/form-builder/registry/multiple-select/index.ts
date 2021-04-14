@@ -1,10 +1,10 @@
 import { Select } from '@formily/antd-components';
 
-import configuration from './config-schema';
+import configSchema from './config-schema';
 import toSchema, { defaultConfig } from './to-schema';
 
 const MultipleSelectField: Omit<FormItem<typeof defaultConfig>, 'displayOrder'> = {
-  configuration,
+  configSchema,
   itemName: '下拉复选框',
   icon: 'fact_check',
   defaultConfig: defaultConfig,

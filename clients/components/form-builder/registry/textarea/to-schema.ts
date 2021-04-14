@@ -1,4 +1,4 @@
-interface TextareaConfig {
+export interface TextareaConfig {
   title: string;
   description?: string;
   displayModifier: FormBuilder.DisplayModifier;

@@ -1,10 +1,10 @@
 import { DatePicker } from '@formily/antd-components';
 
-import configuration from './config-schema';
+import configSchema from './config-schema';
 import toSchema, { defaultConfig } from './to-schema';
 
 const DatePickerField: Omit<FormItem<typeof defaultConfig>, 'displayOrder'> = {
-  configuration,
+  configSchema,
   itemName: '时间日期',
   icon: 'date_range',
   defaultConfig: defaultConfig,

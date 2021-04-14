@@ -1,10 +1,10 @@
 import { Input } from '@formily/antd-components';
 
-import configuration from './config-schema';
-import toSchema, { defaultConfig } from './to-schema';
+import configSchema from './config-schema';
+import toSchema, { defaultConfig, TextareaConfig } from './to-schema';
 
-const TextArea: Omit<FormItem<typeof defaultConfig>, 'displayOrder'> = {
-  configuration,
+const TextArea: Omit<FormItem<TextareaConfig>, 'displayOrder'> = {
+  configSchema,
   toSchema,
   itemName: '多行文本',
   icon: 'notes',

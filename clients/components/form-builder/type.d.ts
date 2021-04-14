@@ -36,7 +36,7 @@ type FormItem<T> = {
   icon: string;
   type: string;
   category: ElementCategory;
-  configuration: ISchema;
+  configSchema: ISchema;
   defaultConfig: T;
   // transform configuration to the node of schema used by SchemaForm
   toSchema: (value: T) => ISchema;
