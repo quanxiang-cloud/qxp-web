@@ -314,8 +314,8 @@
 
 "@types/react-table@^7.0.29":
   version "7.0.29"
-  resolved "http://r.npm.internal.yunify.com/@types/react-table/download/@types/react-table-7.0.29.tgz#af2c82f2d6a39be5bc0f191b30501309a8db0949"
-  integrity sha1-ryyC8tajm+W8DxkbMFATCajbCUk=
+  resolved "https://registry.yarnpkg.com/@types/react-table/-/react-table-7.0.29.tgz#af2c82f2d6a39be5bc0f191b30501309a8db0949"
+  integrity sha512-RCGVKGlTDv3jbj37WJ5HhN3sPb0W/2rqlvyGUtvawnnyrxgI2BGgASvU93rq2jwanVp5J9l1NYAeiGlNhdaBGw==
   dependencies:
     "@types/react" "*"
 
@@ -5807,8 +5807,8 @@ react-router@5.2.0:
 
 react-table@^7.6.3:
   version "7.6.3"
-  resolved "http://r.npm.internal.yunify.com/react-table/download/react-table-7.6.3.tgz#76434392b3f62344bdb704f5b227c2f29c1ffb14"
-  integrity sha1-dkNDkrP2I0S9twT1sifC8pwf+xQ=
+  resolved "https://registry.yarnpkg.com/react-table/-/react-table-7.6.3.tgz#76434392b3f62344bdb704f5b227c2f29c1ffb14"
+  integrity sha512-hfPF13zDLxPMpLKzIKCE8RZud9T/XrRTsaCIf8zXpWZIZ2juCl7qrGpo3AQw9eAetXV5DP7s2GDm+hht7qq5Dw==
 
 react-universal-interface@^0.6.2:
   version "0.6.2"
