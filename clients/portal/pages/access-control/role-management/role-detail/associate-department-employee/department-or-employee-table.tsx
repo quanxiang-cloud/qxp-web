@@ -6,7 +6,7 @@ import More from '@c/more';
 import Pagination from '@c/pagination';
 import Loading from '@c/loading';
 import Error from '@c/error';
-import Table from '@c/table';
+import Table from '@c/lego-table';
 import { usePortalGlobalValue } from '@portal/states_to_be_delete/portal';
 
 import { getRoleAssociations } from '../../api';
@@ -69,7 +69,7 @@ export default function DepartmentTable({ isSuper, onCancelAssociation, roleID, 
 
   const rowSelection = {
     selectedRowKeys: selectedKeys,
-    onChange: function(selectedRowKeys: string[]) {
+    onChange: function (selectedRowKeys: string[]) {
       setSelectedKeys(selectedRowKeys);
     },
   };
@@ -86,7 +86,7 @@ export default function DepartmentTable({ isSuper, onCancelAssociation, roleID, 
   }
 
   function onCancel(record: EmployeeOrDepartmentOfRole) {
-    return function() {
+    return function () {
       setSelectedKeys((selectedKeys) => {
         setMemberIDMap((memberIDMap) => {
           const records = [];
@@ -105,6 +105,14 @@ export default function DepartmentTable({ isSuper, onCancelAssociation, roleID, 
         return selectedKeys;
       });
     };
+  }
+
+  function renderTotalTip() {
+    return (
+      <div className="text-12 text-gray-600">
+        共<span className="mx-4">{members.length || 0}</span>条数据
+      </div>
+    )
   }
 
   if (isLoading) {
@@ -182,16 +190,10 @@ export default function DepartmentTable({ isSuper, onCancelAssociation, roleID, 
         })}
       />
       {!isSuper && (
-        <div className="h-52 flex justify-end bg-white">
+        <div className="h-52 bg-white">
           <Pagination
             {...pagination}
-            // prefix={
-            //   (<span className="text-12 text-gray-400">
-            //     {`共 ${pagination.total} 个${type === 1 ? '员工' : '部门'}`}
-            //   </span>)
-            // }
-            // onShowSizeChange={(pageSize) => setPagination((p) => ({ ...p, pageSize }))}
-            // onChange={(current) => setPagination((p) => ({ ...p, current }))}
+            renderTotalTip={renderTotalTip}
             className="rounded-bl-12 rounded-br-12 pagination-border"
             onChange={(pageNumber, pageSize) => {
               setPagination({ current: pageNumber, pageSize, total: pagination.total });
