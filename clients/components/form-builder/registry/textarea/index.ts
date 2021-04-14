@@ -1,7 +1,7 @@
 import { Input } from '@formily/antd-components';
 
 import configSchema from './config-schema';
-import toSchema, { defaultConfig, TextareaConfig } from './to-schema';
+import toSchema, { defaultConfig, TextareaConfig } from './convertor';
 
 const TextArea: Omit<FormItem<TextareaConfig>, 'displayOrder'> = {
   configSchema,

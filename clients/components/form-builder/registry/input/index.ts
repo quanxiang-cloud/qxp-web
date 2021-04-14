@@ -1,7 +1,7 @@
 import { Input } from '@formily/antd-components';
 
 import configSchema from './config-schema';
-import toSchema, { defaultConfig } from './to-schema';
+import toSchema, { defaultConfig } from './convertor';
 
 const InputField: Omit<FormItem<typeof defaultConfig>, 'displayOrder'> = {
   configSchema,

@@ -1,7 +1,7 @@
 import { Checkbox } from '@formily/antd-components';
 
 import configSchema from './config-schema';
-import toSchema, { defaultConfig } from './to-schema';
+import toSchema, { defaultConfig } from './convertor';
 
 const CheckboxGroupField: Omit<FormItem<typeof defaultConfig>, 'displayOrder'> = {
   configSchema,
