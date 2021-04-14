@@ -116,7 +116,7 @@ class Notify {
     if (options?.duration === -1) {
       return;
     }
-    // setTimeout(() => this.close(element), options?.duration || this.duration);
+    setTimeout(() => this.close(element), options?.duration || this.duration);
   }
 
   public success(message: string, options?: Options) {
