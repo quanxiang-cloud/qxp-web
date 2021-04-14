@@ -12,10 +12,6 @@ import { getUserFuncs, getUserRoles } from '@lib/api/auth';
 const Dashboard = React.lazy(() => import('./pages/dashboard'));
 const MetaData = React.lazy(() => import('./pages/metadata'));
 const AccessControl = React.lazy(() => import('./pages/access-control'));
-const FormBuilderDemo = React.lazy(() => import(
-  /* webpackChunkName: "form-builder-demo" */
-  './pages/form-builder-demo'
-));
 
 const { userInfo } = window.__global || {};
 if (userInfo && !isEmpty(userInfo)) {
@@ -71,7 +67,6 @@ export default function Routes(): JSX.Element {
         <Route exact path="/" component={Dashboard} />
         <Route path="/metadata" component={MetaData} />
         <Route path="/access-control" component={AccessControl} />
-        <Route path="/form-builder-demo" component={FormBuilderDemo} />
         <Route component={Error} />
       </Switch>
     </>
