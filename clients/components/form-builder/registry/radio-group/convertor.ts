@@ -67,10 +67,10 @@ export function toConfig(schema: FormBuilder.Schema): RadioGroupConfig {
     displayModifier: displayModifier,
     // todo implement this
     optionsLayout: schema['x-component-props']?.layout as any,
-    sortable: schema['x-internal']?.sortable,
+    sortable: !!schema['x-internal']?.sortable,
     required: !!schema.required,
     // todo implement this
-    valueSource: schema['x-internal']?.valueSource,
+    valueSource: 'customized',
     // todo refactor this
     availableOptions: schema.enum as Array<{ label: string; value: any; title: string }> || [],
   };

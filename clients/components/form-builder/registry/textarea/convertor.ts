@@ -52,7 +52,7 @@ export function toConfig(schema: FormBuilder.Schema): TextareaConfig {
     description: schema.description as string,
     displayModifier: displayModifier,
     placeholder: schema['x-component-props']?.placeholder || '',
-    sortable: schema['x-internal']?.sortable,
+    sortable: !!schema['x-internal']?.sortable,
     valueFormat: schema.format || '',
     required: !!schema.required,
     // todo implement this
