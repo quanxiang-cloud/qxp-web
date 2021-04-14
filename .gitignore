@@ -6,9 +6,6 @@ config.yaml
 .DS_Store
 cypress/integration/examples/*
 tmp
-
 *.log
-
 .idea/
-
 *.rdb
