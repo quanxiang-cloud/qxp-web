@@ -1,6 +1,6 @@
 import { Radio } from '@formily/antd-components';
 
-import configuration from './configuration';
+import configuration from './config-schema';
 import toSchema, { defaultConfig } from './to-schema';
 
 const RadioField: Omit<FormItem<typeof defaultConfig>, 'displayOrder'> = {

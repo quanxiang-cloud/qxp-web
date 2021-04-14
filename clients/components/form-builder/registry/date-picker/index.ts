@@ -1,6 +1,6 @@
 import { DatePicker } from '@formily/antd-components';
 
-import configuration from './configuration';
+import configuration from './config-schema';
 import toSchema, { defaultConfig } from './to-schema';
 
 const DatePickerField: Omit<FormItem<typeof defaultConfig>, 'displayOrder'> = {

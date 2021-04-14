@@ -1,6 +1,6 @@
 import { Select } from '@formily/antd-components';
 
-import configuration from './configuration';
+import configuration from './config-schema';
 import toSchema, { defaultConfig } from './to-schema';
 
 const SelectField: Omit<FormItem<typeof defaultConfig>, 'displayOrder'> = {
