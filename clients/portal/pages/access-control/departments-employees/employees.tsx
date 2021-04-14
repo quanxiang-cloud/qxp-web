@@ -2,11 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { useQuery } from 'react-query';
 import { Table } from '@QCFE/lego-ui';
 
-import Icon from '@c/icon';
 import EmptyTips from '@c/empty-tips';
 import Pagination from '@c/pagination';
 import Authorized from '@c/authorized';
 import Button from '@c/button';
+import IconButton from '@c/icon-btn';
 import MoreMenu from '@c/more-menu';
 import { usePortalGlobalValue } from '@portal/states_to_be_delete/portal';
 import notify from '@lib/notify';
@@ -81,6 +81,14 @@ export default function Employees({
   function handleCleanChecked() {
     setSelectedUserIds([]);
     setSelectedUsers([]);
+  }
+
+  function renderTotalTip() {
+    return (
+      <div className="text-12 text-gray-600">
+        共<span className="mx-4">{employeesList?.total || 0}</span>条数据
+      </div>
+    )
   }
 
   function handleUserState(status: UserStatus, user: UserInfo) {
@@ -263,9 +271,7 @@ export default function Employees({
                     }
                   }}
                 >
-                  <div className="p-6 border border-gray-800 btn-border-radius cursor-pointer">
-                    <Icon name="more_horiz" size={20} />
-                  </div>
+                  <IconButton iconName="more_horiz" />
                 </MoreMenu>
               </>
             )}
@@ -297,16 +303,13 @@ export default function Employees({
         </div>
         {
           (employeesList?.data && employeesList?.data.length > 0) && (
-            <div className="h-52 flex items-center justify-between px-20">
-              <div className="text-12 text-gray-600">共<span className="mx-4">
-                {employeesList?.total || 0}</span>条数据</div>
-              <Pagination
-                pageNumber={pageParams.page}
-                total={employeesList?.total || 0}
-                pageSize={pageParams.limit}
-                onChange={handlePageChange}
-              />
-            </div>
+            <Pagination
+              pageNumber={pageParams.page}
+              total={employeesList?.total || 0}
+              pageSize={pageParams.limit}
+              onChange={handlePageChange}
+              renderTotalTip={renderTotalTip}
+            />
           )
         }
       </div>

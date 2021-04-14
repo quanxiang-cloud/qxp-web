@@ -1,0 +1,88 @@
+$boxW: 464px;
+$boxH: 342px;
+
+.msgBox {
+  position: absolute;
+  width: $boxW;
+  transform: translateX(-35px);
+  background: white;
+  top: 40px;
+  right: 0;
+  z-index: 100;
+  cursor: default;
+  //box-shadow: inset 0px 1px 0px #E2E8F0, inset 0px -1px 0px #E2E8F0;
+  box-shadow: inset 0px -1px 0px #E2E8F0;
+  border-radius: 12px;
+
+  &.hide {
+    display: none;
+  }
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 56px;
+    padding-left: 20px;
+    padding-right: 20px;
+    border-bottom: 1px solid #E2E8F0;
+    &::after {
+      content: '';
+      background-image: url(/dist/images/md-header-bg.png);
+      // background-position: top right;
+      background-size: contain ;
+      background-repeat: repeat-x;
+      opacity: 0.1;
+      top: 0;
+      left: 0;
+      right: 0;
+      position: absolute;
+      z-index: -1;
+      height: 56px;
+    }
+    .title {
+      font-weight: 600;
+
+      .dot {
+        display: inline-flex;
+        margin-left: 5px;
+        margin-right: 5px;
+        &::after {
+          content: '·';
+        }
+      }
+    }
+    .action {
+    }
+  }
+
+  .body {
+    max-height: $boxH;
+  }
+}
+
+.msgList {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .items {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-self: flex-start;
+    padding-top: 16px;
+    padding-bottom: 24px;
+    max-height: 342px;
+    overflow-y: auto;
+
+    .noMsg {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 326px;
+      flex-direction: column;
+    }
+  }
+}

@@ -335,7 +335,7 @@ button {
   }
 }
 
-.control {
+.input-control {
   &:not(:last-child) {
     @apply mb-24;
   }
@@ -350,4 +350,17 @@ input {
     box-shadow: 0px 0px 4px rgb(50 69 88 / 12%);
     border-color: var(--blue-600);
   }
+}
+
+.full-width{
+  width: 100%;
+}
+
+
+.pt-20{
+  padding-top: 20px;
+}
+
+.mt-20{
+  margin-top: 20px;
 }

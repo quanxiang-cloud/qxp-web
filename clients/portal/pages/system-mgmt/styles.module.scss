@@ -1,0 +1,22 @@
+.breadcrumb {
+  display: flex;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 24px;
+  color: #939EA9;
+
+  .divider {
+    margin-left: 8px;
+    margin-right: 8px;
+  }
+  :global {
+    .svg-icon {
+      cursor: pointer;
+      margin-right: 10px;
+    }
+  }
+  .current {
+    color: #324558;
+    cursor: default;
+  }
+}

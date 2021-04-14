@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { useMutation } from 'react-query';
 import classnames from 'classnames';
-import { Modal, CheckboxGroup, Checkbox, Table, Upload } from '@QCFE/lego-ui';
+import { Modal, CheckboxGroup, Table, Upload } from '@QCFE/lego-ui';
 
 import Icon from '@c/icon';
 import Button from '@c/button';
 import notify from '@lib/notify';
+import Checkbox from '@c/checkbox';
 
 import { FileUploadStatus } from '../type';
 import { exportEmployeesFail } from '../utils';
@@ -271,7 +272,6 @@ export default function ImportEmployeesModal({ currDepId, closeModal }: Props) {
               <div className="w-full group">
                 <Upload
                   style={{ width: '100%' }}
-                  disabled={fileList.length === 0 ? false : true}
                   beforeUpload={beforeUpload}
                   accept=".xlsx, .xls"
                 >

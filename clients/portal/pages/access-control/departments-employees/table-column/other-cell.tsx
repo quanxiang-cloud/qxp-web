@@ -9,6 +9,7 @@ interface Props {
 
 export default function OtherCell({ columnKey, user: userinfo }: Props) {
   const isDisable = userinfo.useStatus === UserStatus.disable;
+  console.log(isDisable);
 
   return (
     <span className={['mr-1', isDisable ? 'text-gray-400' : null].join(' ')}>

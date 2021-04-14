@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useQuery } from 'react-query';
 import { observer } from 'mobx-react';
 
-import Table from '@c/table';
+import Table from '@c/lego-table';
 import EmptyData from '@c/empty-tips';
 import Pagination from '@c/pagination';
 // todo remove this
@@ -87,6 +87,14 @@ export default observer(function EmployeeTable({
     store.setSelectedKeys(keys);
   };
 
+  function renderTotalTip() {
+    return (
+      <div className="text-12 text-gray-600">
+        共<span className="mx-4">{total || 0}</span>条数据
+      </div>
+    )
+  }
+
   return (
     <div className={className}>
       <Table
@@ -127,17 +135,12 @@ export default observer(function EmployeeTable({
           onChange: onUpdateSelectedKeys,
         }}
       />
-      <div className="h-52 flex justify-end bg-white">
+      <div className="h-52 bg-white">
         <Pagination
           {...store.pagination}
-          total={total}
+          renderTotalTip={renderTotalTip}
           showLessItems
           onChange={store.setPagination}
-          // prefix={
-          //   (<span className="text-12 text-dark-four">
-          //     {`已选 ${store.selectedKeys.length}, 共 ${total}条`}
-          //   </span>)
-          // }
           className="pagination-border"
         />
       </div>

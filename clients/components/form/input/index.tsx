@@ -1,4 +1,5 @@
 import classnames from 'classnames';
+import { omit } from 'lodash';
 import React, {
   DetailedHTMLProps,
   InputHTMLAttributes,
@@ -11,7 +12,6 @@ import React, {
 } from 'react';
 
 import { FormContext } from '..';
-import { omit } from '@lib/utils';
 
 interface BaseProps {
   validateMessage?: string;
@@ -29,6 +29,7 @@ export type Props =
   DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement> & BaseProps &
   DetailedHTMLProps<TextareaHTMLAttributes<HTMLTextAreaElement>, HTMLTextAreaElement> & {
     name: string;
+    layout?: 'vertical' | 'horizontal';
   };
 export type Value = string | number | readonly string[] | undefined;
 
@@ -45,7 +46,7 @@ export default function Input(props: Props) {
     afterBeginIcon,
     afterEndIcon,
   } = props;
-  const { id = props.name } = props;
+  const { id = props.name, layout } = props;
   const field = fields[id] || { value: '' };
   const error = errors[id];
 
@@ -61,20 +62,20 @@ export default function Input(props: Props) {
   }, []);
 
   function handleBlur(e: FocusEvent<HTMLInputElement & HTMLTextAreaElement>) {
-    onBlur && onBlur(e);
     validateField(id);
+    onBlur && onBlur(e);
   }
 
   function handleChange(e: ChangeEvent<HTMLInputElement & HTMLTextAreaElement>) {
-    onChange && onChange(e);
     setField(e, field);
+    onChange && onChange(e);
   }
 
   const inputProps = omit({
     ...props,
     ...restProps,
     type: props.type,
-  }, ['validateMessage', 'afterBeginIcon', 'className']);
+  }, ['validateMessage', 'afterBeginIcon', 'className', 'layout']);
 
   const className = classnames('input-border-radius border pr-32 w-full outline-none pl-4', {
     'border-gray-300': !error,
@@ -82,9 +83,18 @@ export default function Input(props: Props) {
   });
 
   return (
-    <div className={classnames('control', controlClassName)}>
+    <div className={classnames('input-control flex', controlClassName, {
+      'flex-row': layout === 'horizontal',
+      'flex-col': layout === 'vertical',
+      'items-center': layout === 'horizontal',
+    })}>
       {label && (
-        <label htmlFor={id} className="text-body2 mb-8">{label}</label>
+        <label htmlFor={id} className={classnames('text-body2 flex', {
+          'mb-8': layout === 'vertical',
+          'mr-8': layout === 'horizontal',
+        })}>
+          {label}
+        </label>
       )}
       <div className="field relative">
         {beforeBeginIcon}
@@ -112,7 +122,9 @@ export default function Input(props: Props) {
       </div>
       <p
         className={
-          classnames('text-caption-no-color text-red-600 m-0', errorClassName)
+          classnames('text-caption-no-color text-red-600 m-0', errorClassName, {
+            'ml-8': layout === 'horizontal',
+          })
         }
       >
         {error}
