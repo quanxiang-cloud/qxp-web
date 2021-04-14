@@ -12,6 +12,10 @@ import { getUserFuncs, getUserRoles } from '@lib/api/auth';
 const Dashboard = React.lazy(() => import('./pages/dashboard'));
 const MetaData = React.lazy(() => import('./pages/metadata'));
 const AccessControl = React.lazy(() => import('./pages/access-control'));
+const FormBuilderDemo = React.lazy(() => import(
+  /* webpackChunkName: "form-builder-demo" */
+  './pages/form-builder-demo'
+));
 
 const { userInfo } = window.__global || {};
 if (userInfo && !isEmpty(userInfo)) {
@@ -57,9 +61,9 @@ export default function Routes(): JSX.Element {
     return <Loading desc="加载中..." className="w-screen h-screen" />;
   }
 
-  if (!funcs || !data?.total || (funcs && !funcs.includes('application'))) {
-    return <Error desc="您没有权限, 请联系管理员..." />;
-  }
+  // if (!funcs || !data?.total || (funcs && !funcs.includes('application'))) {
+  //   return <Error desc="您没有权限, 请联系管理员..." />;
+  // }
 
   return (
     <>
@@ -67,6 +71,7 @@ export default function Routes(): JSX.Element {
         <Route exact path="/" component={Dashboard} />
         <Route path="/metadata" component={MetaData} />
         <Route path="/access-control" component={AccessControl} />
+        <Route path="/form-builder-demo" component={FormBuilderDemo} />
         <Route component={Error} />
       </Switch>
     </>
