@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useQuery } from 'react-query';
 import { observer } from 'mobx-react';
 
-import Table from '@c/table';
+import Table from '@c/lego-table';
 import EmptyData from '@c/empty-tips';
 import Pagination from '@c/pagination';
 // todo remove this

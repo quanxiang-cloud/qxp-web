@@ -6,7 +6,7 @@ import More from '@c/more';
 import Pagination from '@c/pagination';
 import Loading from '@c/loading';
 import Error from '@c/error';
-import Table from '@c/table';
+import Table from '@c/lego-table';
 import { usePortalGlobalValue } from '@portal/states_to_be_delete/portal';
 
 import { getRoleAssociations } from '../../api';
