@@ -10,7 +10,7 @@ export const defaultConfig = {
   valueFrom: 'customized',
 };
 
-type Schema = ISchema & { 'x-extend'?: Record<string, any> };
+type Schema = ISchema & { 'x-internal'?: Record<string, any> };
 
 function toSchema(value: typeof defaultConfig): Schema {
   return {
@@ -24,7 +24,7 @@ function toSchema(value: typeof defaultConfig): Schema {
     ['x-component-props']: {
       placeholder: value.placeholder,
     },
-    ['x-extend']: {
+    ['x-internal']: {
       sortable: value.sortable,
     },
   };

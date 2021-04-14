@@ -10,7 +10,7 @@ export const defaultConfig = {
   valueFrom: 'customized',
 };
 
-type Schema = ISchema & { 'x-extend'?: Record<string, any> };
+type Schema = ISchema & { 'x-internal'?: Record<string, any> };
 
 function toSchema(value: typeof defaultConfig): Schema {
   let xComponent = 'DatePicker';
@@ -41,7 +41,7 @@ function toSchema(value: typeof defaultConfig): Schema {
       placeholder: value.placeholder,
       format: value.valueFormat,
     },
-    ['x-extend']: {
+    ['x-internal']: {
       sortable: value.sortable,
     },
   };
