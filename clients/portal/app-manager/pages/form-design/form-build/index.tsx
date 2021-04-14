@@ -15,7 +15,13 @@ const FormPage = () => {
   return (
     <div>
       <div className='form-design-tool'>
-        <Button modifier="primary">
+        <Button
+          modifier="primary"
+          onClick={() => {
+            logger.log(store.schema);
+            logger.log(JSON.stringify(store.schema));
+          }}
+        >
           <Icon name="save" />
           保存表单
         </Button>
@@ -27,14 +33,6 @@ const FormPage = () => {
           🎬 查看新手指引
         </span>
       </div>
-      <Button
-        onClick={() => {
-          logger.log(store.schema);
-          logger.log(JSON.stringify(store.schema));
-        }}
-      >
-        获取 schema
-      </Button>
       <FormBuilder store={store} className="custom-form-builder" />
     </div>
   );
