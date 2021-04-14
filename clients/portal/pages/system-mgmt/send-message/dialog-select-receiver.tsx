@@ -24,16 +24,16 @@ export default function EmployeeOrDepartmentPickerModal({
   visible,
   roleID,
   onCancel,
-  picked
+  picked,
 }: Props) {
   const [departmentsOrEmployees, setDepartmentsOrEmployees] = useState<
     EmployeeOrDepartmentOfRole[]
   >(picked);
 
   useEffect(()=>{
-    console.log(picked.map(itm=>toJS(itm)))
-    visible || setDepartmentsOrEmployees(picked)
-  },[visible, picked])
+    console.log(picked.map((itm)=>toJS(itm)));
+    visible || setDepartmentsOrEmployees(picked);
+  }, [visible, picked]);
 
   const { data, isLoading, isError } = useQuery(
     [
@@ -69,7 +69,7 @@ export default function EmployeeOrDepartmentPickerModal({
     // @ts-ignore
     onOk(departmentsOrEmployees);
   };
-  console.log(departmentsOrEmployees.map(itm=>toJS(itm)))
+  console.log(departmentsOrEmployees.map((itm)=>toJS(itm)));
   return (
     <Modal
       title="选择员工或部门"
@@ -98,8 +98,8 @@ export default function EmployeeOrDepartmentPickerModal({
       }
     >
       <EmployeeOrDepartmentPicker
-        departments={departmentsOrEmployees.filter(itm=>itm.type==2)}
-        employees={departmentsOrEmployees.filter(itm=>itm.type==1)}
+        departments={departmentsOrEmployees.filter((itm)=>itm.type==2)}
+        employees={departmentsOrEmployees.filter((itm)=>itm.type==1)}
         // departments={data?.departments}
         // employees={data?.employees}
         // departments={[]}

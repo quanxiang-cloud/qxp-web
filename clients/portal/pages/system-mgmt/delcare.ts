@@ -1,5 +1,5 @@
 import { atom, selector } from 'recoil';
-import { MsgSendStatus, MsgType } from '@portal/const/message';
+import { MsgSendStatus, MsgType } from '@portal/pages/system-mgmt/constants';
 
 interface Page {
     pageSize: number,

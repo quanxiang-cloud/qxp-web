@@ -3,7 +3,7 @@ import { Modal } from '@QCFE/lego-ui';
 import styles from './index.module.scss';
 import Button from '@c/button';
 import PreviewMsg from '../send-message/preview-msg';
-import { MsgSendStatus } from '@portal/const/message';
+import { MsgSendStatus } from '@portal/pages/system-mgmt/constants';
 
 interface Props {
     handleClick: () => void

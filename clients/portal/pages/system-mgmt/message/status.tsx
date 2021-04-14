@@ -1,6 +1,6 @@
 import React from 'react';
 import classNames from 'classnames';
-import { MsgSendStatus } from '@portal/const/message';
+import { MsgSendStatus } from '@portal/pages/system-mgmt/constants';
 // import { Popover } from '@c/popover'
 import { Tooltip } from '@QCFE/lego-ui';
 

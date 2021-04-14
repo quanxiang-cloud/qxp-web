@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Table, Message, Modal as LegoModal } from '@QCFE/lego-ui';
 import { inject, observer } from 'mobx-react';
 import dayjs from 'dayjs';
-import { MsgSendStatus, MsgType } from '@portal/const/message';
+import { MsgSendStatus, MsgType } from '@portal/pages/system-mgmt/constants';
 import Status from './status';
 import Loading from '@c/loading';
 import Error from '@c/error';
@@ -12,9 +12,9 @@ import Pagination from '@c/pagination';
 import Select from '@c/select';
 import Modal from '@c/modal';
 import Button from '@c/button';
-import { createMsg, deleteMsgById } from '@lib/requests/message-mgmt';
+import { createMsg, deleteMsgById } from '@portal/pages/system-mgmt/api/message-mgmt';
 import PreviewModal, { ModalContent } from './preview-modal';
-import { getMsgById } from '@lib/requests/message-mgmt';
+import { getMsgById } from '@portal/pages/system-mgmt/api/message-mgmt';
 
 import { Content as SendMessage } from '../send-message/index';
 
@@ -120,7 +120,7 @@ const MsgTable = ({ msgMgmt: store, refresh }: Props & Pick<MobxStores, any>) =>
       title: previewData.title || '',
       args: [{
         key: 'code',
-      // @ts-ignore
+        // @ts-ignore
         value: previewData.content || '',
       }],
       // @ts-ignore
@@ -134,12 +134,12 @@ const MsgTable = ({ msgMgmt: store, refresh }: Props & Pick<MobxStores, any>) =>
       // @ts-ignore
       recivers: previewData.receivers,
       // @ts-ignore
-      mes_attachment: previewData.mes_attachment||[]
+      mes_attachment: previewData.mes_attachment||[],
       //     url: string
       // filename:
-    }
-    //@ts-ignore
-    if(previewData.id) params.id = previewData.id
+    };
+    // @ts-ignore
+    if (previewData.id) params.id = previewData.id;
     createMsg(params)
       .then((data)=>{
         if (data&&data.code==0) {
@@ -154,7 +154,7 @@ const MsgTable = ({ msgMgmt: store, refresh }: Props & Pick<MobxStores, any>) =>
 
   const handleClose = () => setPreviewInfo({ visible: false, id: '', title: '', status: MsgSendStatus.all });
 
-  const pageChange = (page: number, pageSize: number) => setPageInfo( (_current) =>({ ..._current, pageNumber: page, pageSize }))
+  const pageChange = (page: number, pageSize: number) => setPageInfo( (_current) =>({ ..._current, pageNumber: page, pageSize }));
 
   const [rowSelectionKyes, setRowSelectionKyes] = useState([]);
 
@@ -217,7 +217,7 @@ const MsgTable = ({ msgMgmt: store, refresh }: Props & Pick<MobxStores, any>) =>
       render: (_: any, { id, title, sort, status } : { status: MsgSendStatus, id: string, title: string, sort: MsgType })=>{
         const handleClick = () => {
           setPreviewInfo({ id, visible: true, title, status });
-        }
+        };
 
         return (<PreviewModal handleClick={handleClick} title={(<div>
           {( sort != MsgType.all ) &&<span className={styles.msg_type_tip}>{(EnumMessage.find((itm)=>itm.value==sort)||{}).label}</span>}
@@ -284,7 +284,6 @@ const MsgTable = ({ msgMgmt: store, refresh }: Props & Pick<MobxStores, any>) =>
     },
   ];
 
-
   const saveDraft = () => {
     const params = {
       id: modifyData.id,
@@ -293,7 +292,7 @@ const MsgTable = ({ msgMgmt: store, refresh }: Props & Pick<MobxStores, any>) =>
       title: modifyData.title || '',
       args: [{
         key: 'code',
-      // @ts-ignore
+        // @ts-ignore
         value: modifyData.content || '',
       }],
       // @ts-ignore
@@ -307,17 +306,17 @@ const MsgTable = ({ msgMgmt: store, refresh }: Props & Pick<MobxStores, any>) =>
       // @ts-ignore
       recivers: modifyData.receivers,
       // @ts-ignore
-      mes_attachment: modifyData.mes_attachment||[]
+      mes_attachment: modifyData.mes_attachment||[],
       //     url: string
       // filename:
-    }
+    };
     createMsg(params)
       .then((data)=>{
         if (data&&data.code==0) {
           Message.success('操作成功');
           setPreviewInfo({ id: '', visible: false, title: '', status: MsgSendStatus.all });
           refresh();
-          handleModifyModalClose()
+          handleModifyModalClose();
         } else {
           Message.error('操作失败');
         }
@@ -341,7 +340,7 @@ const MsgTable = ({ msgMgmt: store, refresh }: Props & Pick<MobxStores, any>) =>
         footer={(<div className={styles.footer}>
           <Button
             onClick={()=>{
-              saveDraft()
+              saveDraft();
               // sendMessageRef?.current?.saveDraft && sendMessageRef?.current?.saveDraft();
             }}
             iconName="book"

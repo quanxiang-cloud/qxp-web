@@ -3,7 +3,7 @@ import dayjs from 'dayjs';
 import styles from './index.module.scss';
 import classNames from 'classnames';
 import FileList from './filelist';
-import { MsgType } from '@portal/const/message';
+import { MsgType } from '@portal/pages/system-mgmt/constants';
 
 interface Props {
   className?: string;

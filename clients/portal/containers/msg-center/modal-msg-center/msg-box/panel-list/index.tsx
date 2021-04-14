@@ -7,8 +7,8 @@ import Loading from '@c/loading';
 import Error from '@c/error';
 import MsgItem from '@containers/msg-center/msg-item';
 import Toolbar from './toolbar';
-import { getMessages, deleteMsgByIds, setMsgAsReadByIds, getUnreadMsgCount } from '@lib/requests/message-center';
-import { MsgType, MsgReadStatus } from '@portal/const/message';
+import { getMessages, deleteMsgByIds, setMsgAsReadByIds, getUnreadMsgCount } from '@portal/pages/system-mgmt/api/message-center';
+import { MsgType, MsgReadStatus } from '@portal/pages/system-mgmt/constants';
 import Pagination from '@c/pagination';
 import Modal from '@c/modal';
 import Button from '@c/button';
@@ -63,8 +63,8 @@ const PanelList = ({ msgCenter }: Props & Pick<MobxStores, any>) => {
   const { data: unReadData, refetch: unReadRefetch } = useQuery(['unReadMsg', getQueryParams()], getUnreadMsgCount );
 
   useEffect(()=>{
-    setSelectedRows([])
-  },[isLoading])
+    setSelectedRows([]);
+  }, [isLoading]);
 
   const [confirmInfo, setConfirmInfo] = useState({
     visible: false,
@@ -72,7 +72,6 @@ const PanelList = ({ msgCenter }: Props & Pick<MobxStores, any>) => {
     content: '',
     cb: ()=>{},
   });
-  
 
   const toolbarRef = useRef<any>();
 

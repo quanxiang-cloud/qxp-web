@@ -10,7 +10,7 @@ import { Editor } from 'react-draft-wysiwyg';
 import { EditorState, convertToRaw, ContentState } from 'draft-js';
 import draftToHtml from 'draftjs-to-html';
 import htmlToDraft from 'html-to-draftjs';
-import { MsgType } from '@portal/const/message';
+import { MsgType } from '@portal/pages/system-mgmt/constants';
 import Button from '@c/button';
 import Icon from '@c/icon';
 import Container from '../container';
@@ -18,7 +18,7 @@ import editorToolbarOptions from './editor-toolbar';
 import ModalSelectReceiver from './dialog-select-receiver';
 import PreviewMsg from './preview-msg';
 import { usePortalGlobalValue } from '@portal/states_to_be_delete/portal';
-import { createMsg } from '@lib/requests/message-mgmt';
+import { createMsg } from '@portal/pages/system-mgmt/api/message-mgmt';
 import Filelist from './filelist';
 
 import styles from './index.module.scss';
@@ -71,7 +71,6 @@ interface ContentProps {
 }
 
 export const Content = forwardRef(({ donotShowHeader, footer, modifyData, handleClose }: ContentProps, ref ) => {
-  
   const [msgType, setMsgType] = useState( modifyData?.type || MsgType.notify );
   const [title, setTitle] = useState( modifyData?.title || '' );
   const [prevData, setPrevData] = useState<Qxp.DraftData | null>(null);
@@ -87,13 +86,13 @@ export const Content = forwardRef(({ donotShowHeader, footer, modifyData, handle
   const [files, setFiles] = useState<Array<FileInfo>>( (modifyData?.mes_attachment || []).map((itm)=>({ filename: itm.file_name, fileurl: itm.file_url })) );
   const chosenDepOrPerson = useMemo(()=>{
     // @ts-ignore
-    return _chosenDepOrPerson.map(({ id, type, ownerName, departmentName }) => ({ id, type, name: ownerName || departmentName }))
-  },[_chosenDepOrPerson]) 
+    return _chosenDepOrPerson.map(({ id, type, ownerName, departmentName }) => ({ id, type, name: ownerName || departmentName }));
+  }, [_chosenDepOrPerson]);
   const [dom, setDom] = useState<Element|null>(null);
 
   const deleteFiles = (idx: number) => {
-    setFiles(current => current.filter((_, key) => key!=idx ))
-  }
+    setFiles((current) => current.filter((_, key) => key!=idx ));
+  };
 
   useEffect(()=>{
     setDom(document.getElementById('rdw-wrapper-8888'));
@@ -113,7 +112,7 @@ export const Content = forwardRef(({ donotShowHeader, footer, modifyData, handle
         Message.success('操作成功');
         queryClient.invalidateQueries('msg-mgmt-msg-list');
         handleClose && handleClose();
-        setOpenPreviewModal(false)
+        setOpenPreviewModal(false);
         setTimeout(()=> {
           history.push('/system/message');
         }, 500);
@@ -155,10 +154,9 @@ export const Content = forwardRef(({ donotShowHeader, footer, modifyData, handle
     setChosenDepOrPerson(receivers);
   };
 
-
   const removeReceiver = (key: number) => {
     // @ts-ignore
-    setChosenDepOrPerson(current => current.filter((_,idx)=>idx!=key));
+    setChosenDepOrPerson((current) => current.filter((_, idx)=>idx!=key));
   };
 
   const validateForm = () => {
@@ -224,9 +222,9 @@ export const Content = forwardRef(({ donotShowHeader, footer, modifyData, handle
       }).filter(Boolean),
       //     url: string
       // filename:
-    }
+    };
     // @ts-ignore
-    if(modifyData) params.id = modifyData.id
+    if (modifyData) params.id = modifyData.id;
 
     createMsgMutation.mutate(params);
   };
@@ -345,7 +343,7 @@ export const Content = forwardRef(({ donotShowHeader, footer, modifyData, handle
           {dom && ReactDom.createPortal(
             <div className={styles.upload_warp}>
               <Filelist candownload deleteFiles={deleteFiles} files={files.map((itm)=>({ file_url: itm.url, file_name: itm.filename }))} />
-              <Upload headers={{'X-Proxy':'API'}} onSuccess={handleFileSuccessUpload} multiple action="/api/v1/fileserver/uploadFile">
+              <Upload headers={{ 'X-Proxy': 'API' }} onSuccess={handleFileSuccessUpload} multiple action="/api/v1/fileserver/uploadFile">
                 <div className={`${styles.upload} flex align-center`}>
                   <Icon name="attachment" />
                   <div>上传附件</div>
@@ -358,7 +356,7 @@ export const Content = forwardRef(({ donotShowHeader, footer, modifyData, handle
         </Form>
 
         <div className={styles.chosenPersons}>
-          {chosenDepOrPerson.map(({ id, name, type }: Qxp.MsgReceiver,key) => {
+          {chosenDepOrPerson.map(({ id, name, type }: Qxp.MsgReceiver, key) => {
             return (
               <span className={classNames(styles.person, {
                 [styles.isDep]: type === 2,

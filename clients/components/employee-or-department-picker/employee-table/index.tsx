@@ -92,7 +92,7 @@ export default observer(function EmployeeTable({
       <div className="text-12 text-gray-600">
         共<span className="mx-4">{total || 0}</span>条数据
       </div>
-    )
+    );
   }
 
   return (

@@ -6,11 +6,7 @@ interface FileInfo {
   file_name: string
 }
 
-
-
-
 const Filelist = ({ files, candownload, deleteFiles }: { deleteFiles?: (key: number) => void, files: Array<FileInfo>, candownload?: boolean }) => {
-  
   return (<div>
     {files.map((itm, idx) => (<div className={styles.file_itm} key={idx}>
       {candownload ? <a href={itm.file_url}>{itm.file_name}</a> : <span>{itm.file_name}</span>}
