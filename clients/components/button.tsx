@@ -36,7 +36,7 @@ function Button(
           type={modifier === 'primary' ? 'light' : 'dark'}
           size={20}
           className={classnames('fill-current text-inherit mr-8', {
-            'animate-spin': loading
+            'animate-spin': loading,
           })}
         />
       )}
