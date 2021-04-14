@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
 import { useMutation } from 'react-query';
 import classnames from 'classnames';
-import { Modal, CheckboxGroup, Table, Upload } from '@QCFE/lego-ui';
+import { Modal, CheckboxGroup, Checkbox, Table, Upload } from '@QCFE/lego-ui';
 
 import Icon from '@c/icon';
 import Button from '@c/button';
 import notify from '@lib/notify';
-import Checkbox from '@c/checkbox';
 
 import { FileUploadStatus } from '../type';
 import { exportEmployeesFail } from '../utils';
