@@ -10,24 +10,30 @@ type MenuItem = {
   name: string;
   icon: string;
   url: string;
+  replace?: boolean;
 };
 
 type Props = {
   menuData: MenuItem[];
+  width?: number;
   cardTitle?: string | React.ReactNode;
   className?: string;
 }
 
-export default function SideNavCard({ menuData, cardTitle, className = '' }: Props) {
+export default function SideNavCard({ menuData, cardTitle, className = '', width = 316 }: Props) {
   return (
-    <div className={`bg-white rounded-12 ${className}`}>
+    <div
+      style={{ width: width + 'px', minWidth: width + 'px' }}
+      className={`bg-white rounded-12 ${className}`}
+    >
       {cardTitle ? cardTitle : null}
       <div className="p-20">
         <ul className="w-auto">
-          {menuData.map(({ id, icon, name, url }) => {
+          {menuData.map(({ id, icon, name, url, replace = false }) => {
             return (
               <li key={id}>
                 <NavLink
+                  replace={replace}
                   to={url}
                   exact
                   className='side-nav-link rounded-l-8 transition-all duration-300'

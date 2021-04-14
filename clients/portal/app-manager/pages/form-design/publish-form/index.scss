@@ -1,0 +1,37 @@
+.pb-form-right-item {
+  border: 1px solid var(--gray-300);
+  border-radius: 12px;
+  margin-bottom: 20px;
+}
+
+.pb-form-right-title {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid var(--gray-300);
+  padding: 0 20px;
+  height: 62px;
+}
+
+.pb-form-right-action {
+  color: var(--blue-600);
+  >span {
+    cursor: pointer;
+  }
+}
+
+.pb-form-right-user,.pb-form-right-dep {
+  font-size: 14px;
+  line-height: 22px;
+  border-radius: 4px 0px;
+  padding: 1px 8px;
+}
+
+.pb-form-right-user {
+  color:var(--blue-600);
+  background-color: var(--blue-100);
+}
+
+.pb-form-right-dep {
+  color: var(--yellow-600);
+  background-color: var(--yellow-50);
+}

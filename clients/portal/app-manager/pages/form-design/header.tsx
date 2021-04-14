@@ -14,7 +14,7 @@ const TABS: TabProps[] = [
 ];
 
 function FormDesignHeader() {
-  const { type } = useParams<any>();
+  const { pageType } = useParams<any>();
   const history = useHistory();
 
   const tabChange = (tabKey: string) => {
@@ -35,7 +35,7 @@ function FormDesignHeader() {
         正在设计表单：固定资产转移申请
         <Icon className='ml-8' name='edit' size={20} />
       </div>
-      <Tab onChange={tabChange} activeTab={type} tabs={TABS} />
+      <Tab onChange={tabChange} activeTab={pageType} tabs={TABS} />
       <div className='flex justify-end'>
         <NavButton name='帮助文档' icon='book' url='' />
       </div>

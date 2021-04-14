@@ -11,11 +11,11 @@ import FormDesignHeader from './header';
 import './index.scss';
 
 function FormDesign() {
-  const { type } = useParams<any>();
+  const { pageType } = useParams<any>();
   return (
     <div style={{ height: '100vh' }} className='flex flex-col'>
       <FormDesignHeader />
-      {type !== 'publishForm' && (
+      {pageType !== 'publishForm' && (
         <div className='form-design-tool'>
           <Button isPrimary icon='save'>
             保存表单
@@ -28,9 +28,9 @@ function FormDesign() {
           </span>
         </div>
       )}
-      {type === 'formBuild' && (<FormBuild />)}
-      {type === 'pageSetting' && (<PageSetting />)}
-      {type === 'publishForm' && (<PublishForm />)}
+      {pageType === 'formBuild' && (<FormBuild />)}
+      {pageType === 'pageSetting' && (<PageSetting />)}
+      {pageType === 'publishForm' && (<PublishForm />)}
     </div>
   );
 }

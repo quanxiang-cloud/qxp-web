@@ -51,7 +51,8 @@ function PageDataTable() {
   const textBtnRender = (text: string, icon: string) => {
     return (
       <div className='inline-flex items-center cursor-pointer hover:text-blue-600'>
-        <Icon size={20} className='mr-4 app-icon-color-inherit' name={icon} /> {text}
+        <Icon size={20} className='mr-4 app-icon-color-inherit' name={icon} />
+        {text}
       </div>
     );
   };

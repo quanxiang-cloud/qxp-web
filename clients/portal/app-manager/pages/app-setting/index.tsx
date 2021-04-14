@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { inject } from 'mobx-react';
 import { Switch, Route } from 'react-router-dom';
 
-import ListMenu from '@c/list-menu';
+import SideNavCard from '@c/side-nav-card';
 import ItemWithTitleDesc from '@c/item-with-title-desc';
 import BgIcon from '@appC/bg-icon';
 
@@ -21,26 +21,26 @@ function AppSetting({ appDetailsStore }: Props) {
 
   useEffect(() => {
     appDetailsStore.setAppId(appId);
-  }, [])
+  }, []);
 
   const MENU = [
     {
       id: 'info',
       icon: 'description',
       name: '应用信息',
-      url: '/appManager/setting/info/' + appId
+      url: '/appManager/setting/info/' + appId,
     },
     {
       id: 'adminUsers',
       icon: 'admin_panel_settings',
       name: '应用管理员',
-      url: '/appManager/setting/adminUsers/' + appId
+      url: '/appManager/setting/adminUsers/' + appId,
     },
   ];
 
   return (
-    <div className="max-w-screen px-5-dot-8 app-entry-container">
-      <div className="w-31-dot-6 bg-white rounded-12">
+    <div className="max-w-screen app-entry-container">
+      <SideNavCard cardTitle={(
         <div className="access-background-image p-20 opacity-90">
           <ItemWithTitleDesc
             title="应用管理"
@@ -50,10 +50,7 @@ function AppSetting({ appDetailsStore }: Props) {
             descClassName="leading-8"
           />
         </div>
-        <div className="p-20 pb-40">
-          <ListMenu menuData={MENU} />
-        </div>
-      </div>
+      )} menuData={MENU} />
       <div className="app-right-box bg-white">
         <Switch>
           <Route exact path="/appManager/setting/info/:appId" component={AppInfo} />

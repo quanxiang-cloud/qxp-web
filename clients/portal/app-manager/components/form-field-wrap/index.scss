@@ -1,0 +1,16 @@
+.form-field-box:not(:last-child) {
+  margin-bottom: 24px;
+}
+
+.form-field-label {
+  display: inline-block;
+  margin-bottom: 8px;
+  color: var(--gray-600);
+}
+
+.form-field-tips {
+  margin-top: 4px;
+  font-size: 12px;
+  line-height: 20px;
+  color: var(--gray-600);
+}

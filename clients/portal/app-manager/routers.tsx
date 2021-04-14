@@ -26,7 +26,7 @@ export default (
       <Route exact path="/appManager/list" component={AppManagerEntry} />
       <Route exact path="/appManager/details/:appId" component={AppDetails} />
       <Route path="/appManager/setting/*/:appId" component={AppSetting} />
-      <Route exact path="/appManager/formDesign/:type" component={FormDesign} />
+      <Route exact path="/appManager/formDesign/:pageType/:navType?" component={FormDesign} />
       <Route component={Error} />
     </Switch>
   </Suspense>
