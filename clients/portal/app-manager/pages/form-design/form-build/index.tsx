@@ -13,7 +13,7 @@ const FormPage = () => {
   const store = new FormStore({ schema });
 
   return (
-    <div>
+    <>
       <div className='form-design-tool'>
         <Button
           modifier="primary"
@@ -26,15 +26,15 @@ const FormPage = () => {
           保存表单
         </Button>
         <Button>
-          <Icon name="preview"/>
+          <Icon name="preview" />
           预览
         </Button>
         <span className='text-underline-no-color cursor-pointer'>
           🎬 查看新手指引
         </span>
       </div>
-      <FormBuilder store={store} className="custom-form-builder" />
-    </div>
+      <FormBuilder store={store} className="flex-grow" />
+    </>
   );
 };
 
