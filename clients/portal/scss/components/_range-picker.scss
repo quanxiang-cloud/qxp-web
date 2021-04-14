@@ -1,0 +1,80 @@
+@include block(range-picker) {
+
+  @include element(range-type) {
+    width: 304px;
+    padding: 12px 12px 0;
+  }
+}
+
+@include block(range-picker-custom) {
+
+  @include element(preset-options) {
+    padding: 12px;
+    border-bottom: $calendar-border;
+  }
+
+  @include element(option) {
+    line-height: 26px;
+    padding-left: 46px;
+    border-radius: 3px;
+    cursor: pointer;
+
+    &:hover {
+      background-color: #f5f7fa;
+    }
+  }
+
+  @include element(selected) {
+    background-color: rgba(33, 147, 211, 0.25);
+
+    &:hover {
+      background-color: rgba(33, 147, 211, 0.25);
+    }
+  }
+
+  @include element(user-defined) {
+    padding: 12px;
+    border-bottom: $calendar-border;
+  }
+
+  @include element(user-defined-title) {
+    line-height: 26px;
+    padding-left: 46px;
+    border-radius: 3px;
+  }
+
+  @include element(user-defined-selected) {
+    background-color: rgba(33, 147, 211, 0.25);
+  }
+
+  @include element(date-trigger-wrap) {
+    display: flex;
+    padding-left: 46px;
+    margin-top: 12px;
+  }
+
+  @include element(date-trigger) {
+    display: inline-block;
+    width: 90px;
+    height: 30px;
+    line-height: 30px;
+    padding: 0 8px;
+    border: $calendar-border;
+    border-radius: $border-radius;
+    margin-right: 12px;
+    cursor: pointer;
+
+    @include modifier(open) {
+      border: 1px solid #04969b;
+    }
+
+    &:hover {
+      border: 1px solid #04969b;
+    }
+  }
+
+  @include element(confirm) {
+    padding: 12px;
+    text-align: right;
+  }
+}
