@@ -1,10 +1,11 @@
 import { NumberPicker } from '@formily/antd-components';
 
 import configSchema from './config-schema';
-import toSchema, { defaultConfig } from './convertor';
+import { defaultConfig, toSchema, toConfig, NumberPickerConfig } from './convertor';
 
-const NumberPickerField: Omit<FormItem<typeof defaultConfig>, 'displayOrder'> = {
+const NumberPickerField: Omit<FormItem<NumberPickerConfig>, 'displayOrder'> = {
   configSchema,
+  toConfig,
   itemName: '数字',
   icon: 'plus_one',
   defaultConfig: defaultConfig,

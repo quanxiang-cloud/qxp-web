@@ -20,7 +20,7 @@ export const defaultConfig: TextareaConfig = {
   valueSource: 'customized',
 };
 
-function toSchema(value: TextareaConfig): FormBuilder.Schema {
+export function toSchema(value: TextareaConfig): FormBuilder.Schema {
   return {
     title: value.title,
     description: value.description,
@@ -39,7 +39,7 @@ function toSchema(value: TextareaConfig): FormBuilder.Schema {
   };
 }
 
-function toConfig(schema: FormBuilder.Schema): TextareaConfig {
+export function toConfig(schema: FormBuilder.Schema): TextareaConfig {
   let displayModifier: FormBuilder.DisplayModifier = 'normal';
   if (schema.readOnly) {
     displayModifier = 'readonly';
@@ -59,7 +59,3 @@ function toConfig(schema: FormBuilder.Schema): TextareaConfig {
     valueSource: 'customized',
   };
 }
-
-export { toConfig };
-
-export default toSchema;

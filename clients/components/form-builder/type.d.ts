@@ -40,6 +40,7 @@ type FormItem<T> = {
   defaultConfig: T;
   // transform configuration to the node of schema used by SchemaForm
   toSchema: (value: T) => ISchema;
+  toConfig: (schema: FormBuilder.Schema) => T;
   component: React.JSXElementConstructor<any>;
   editComponent?: React.Component<EditComponentProps>;
   displayOrder: number;
@@ -47,7 +48,7 @@ type FormItem<T> = {
 
 declare namespace FormBuilder {
   type DisplayModifier = 'normal' | 'readonly' | 'hidden';
-  type Schema = ISchema & { 'x-internal'?: Record<string, any> };
+  type Schema = ISchema & { 'x-internal'?: Record<string, unknown> };
   type ValueSource = 'customized' | 'linkage' | 'formula';
 }
 

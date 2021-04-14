@@ -1,13 +1,23 @@
 import { nanoid } from 'nanoid';
 
+export interface CheckboxGroupConfig {
+  title: string;
+  description?: string;
+  displayModifier: FormBuilder.DisplayModifier;
+  optionsLayout: 'horizontal' | 'vertical';
+  sortable: boolean;
+  required: boolean;
+  valueSource: FormBuilder.ValueSource;
+  availableOptions: Array<{ label: string; value: any; title: string }>,
+}
+
 // just for type friendly
-export const defaultConfig = {
+export const defaultConfig: CheckboxGroupConfig = {
   title: '复选框',
   description: '',
-  displayModifier: '',
+  displayModifier: 'normal',
   optionsLayout: 'horizontal',
   sortable: false,
-  valueFormat: '',
   required: false,
   valueSource: 'customized',
   availableOptions: [
@@ -17,14 +27,11 @@ export const defaultConfig = {
   ],
 };
 
-type Schema = ISchema & { 'x-internal'?: Record<string, any> };
-
-function toSchema(value: typeof defaultConfig): Schema {
+export function toSchema(value: CheckboxGroupConfig): FormBuilder.Schema {
   return {
     title: value.title,
     description: value.description,
     required: value.required,
-    format: value.valueFormat,
     readOnly: value.displayModifier === 'readonly',
     display: value.displayModifier !== 'hidden',
     enum: (value.availableOptions || []).map((option) => {
@@ -44,4 +51,25 @@ function toSchema(value: typeof defaultConfig): Schema {
   };
 }
 
-export default toSchema;
+export function toConfig(schema: FormBuilder.Schema): CheckboxGroupConfig {
+  let displayModifier: FormBuilder.DisplayModifier = 'normal';
+  if (schema.readOnly) {
+    displayModifier = 'readonly';
+  } else if (!schema.display) {
+    displayModifier = 'hidden';
+  }
+
+  return {
+    title: schema.title as string,
+    description: schema.description as string,
+    displayModifier: displayModifier,
+    // todo implement this
+    optionsLayout: schema['x-component-props']?.layout as any,
+    sortable: !!schema['x-internal']?.sortable,
+    required: !!schema.required,
+    // todo implement this
+    valueSource: 'customized',
+    // todo refactor this
+    availableOptions: schema.enum as Array<{ label: string; value: any; title: string }> || [],
+  };
+}

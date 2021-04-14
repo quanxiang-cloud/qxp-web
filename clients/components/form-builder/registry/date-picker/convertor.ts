@@ -1,8 +1,27 @@
+type ValueFormat =
+  'YYYY' |
+  'YYYY-MM' |
+  'YYYY-MM-DD' |
+  'YYYY-MM-DD HH:mm' |
+  'YYYY-MM-DD HH:mm:ss' |
+  string;
+
+export interface DatePickerConfig {
+  title: string;
+  description?: string;
+  displayModifier: FormBuilder.DisplayModifier;
+  placeholder?: string;
+  sortable: boolean;
+  valueFormat: ValueFormat;
+  required: boolean;
+  valueSource: FormBuilder.ValueSource;
+}
+
 // just for type friendly
-export const defaultConfig = {
+export const defaultConfig: DatePickerConfig = {
   title: '时间日期',
   description: '',
-  displayModifier: '',
+  displayModifier: 'normal',
   placeholder: '',
   sortable: false,
   valueFormat: '',
@@ -10,9 +29,7 @@ export const defaultConfig = {
   valueSource: 'customized',
 };
 
-type Schema = ISchema & { 'x-internal'?: Record<string, any> };
-
-function toSchema(value: typeof defaultConfig): Schema {
+export function toSchema(value: typeof defaultConfig): FormBuilder.Schema {
   let xComponent = 'DatePicker';
   switch (value.valueFormat) {
   case 'YYYY':
@@ -47,4 +64,23 @@ function toSchema(value: typeof defaultConfig): Schema {
   };
 }
 
-export default toSchema;
+export function toConfig(schema: FormBuilder.Schema): DatePickerConfig {
+  let displayModifier: FormBuilder.DisplayModifier = 'normal';
+  if (schema.readOnly) {
+    displayModifier = 'readonly';
+  } else if (!schema.display) {
+    displayModifier = 'hidden';
+  }
+
+  return {
+    title: schema.title as string,
+    description: schema.description as string,
+    displayModifier: displayModifier,
+    placeholder: schema['x-component-props']?.placeholder || '',
+    sortable: !!schema['x-internal']?.sortable,
+    valueFormat: schema['x-component-props']?.format,
+    required: !!schema.required,
+    // todo implement this
+    valueSource: 'customized',
+  };
+}

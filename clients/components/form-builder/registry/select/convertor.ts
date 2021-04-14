@@ -1,11 +1,19 @@
 import { nanoid } from 'nanoid';
 
-// just for type friendly
-export const defaultConfig = {
+export interface SelectConfig {
+  title: string;
+  description?: string;
+  displayModifier: FormBuilder.DisplayModifier;
+  sortable: boolean;
+  required: boolean;
+  valueSource: FormBuilder.ValueSource;
+  availableOptions: Array<{ label: string; value: any; title: string }>,
+}
+
+export const defaultConfig: SelectConfig = {
   title: '下拉框',
   description: '',
-  displayModifier: '',
-  optionsLayout: 'horizontal',
+  displayModifier: 'normal',
   sortable: false,
   required: false,
   valueSource: 'customized',
@@ -16,9 +24,7 @@ export const defaultConfig = {
   ],
 };
 
-type Schema = ISchema & { 'x-internal'?: Record<string, any> };
-
-function toSchema(value: typeof defaultConfig): Schema {
+export function toSchema(value: SelectConfig): FormBuilder.Schema {
   return {
     title: value.title,
     description: value.description,
@@ -42,4 +48,23 @@ function toSchema(value: typeof defaultConfig): Schema {
   };
 }
 
-export default toSchema;
+export function toConfig(schema: FormBuilder.Schema): SelectConfig {
+  let displayModifier: FormBuilder.DisplayModifier = 'normal';
+  if (schema.readOnly) {
+    displayModifier = 'readonly';
+  } else if (!schema.display) {
+    displayModifier = 'hidden';
+  }
+
+  return {
+    title: schema.title as string,
+    description: schema.description as string,
+    displayModifier: displayModifier,
+    sortable: !!schema['x-internal']?.sortable,
+    required: !!schema.required,
+    // todo implement this
+    valueSource: 'customized',
+    // todo refactor this
+    availableOptions: schema.enum as Array<{ label: string; value: any; title: string }> || [],
+  };
+}

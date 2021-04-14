@@ -1,8 +1,19 @@
 // just for type friendly
-export const defaultConfig = {
+export interface InputConfig {
+  title: string;
+  description?: string;
+  displayModifier: FormBuilder.DisplayModifier;
+  placeholder?: string;
+  sortable: boolean;
+  valueFormat: 'phone' | 'post_code' | 'mobile_phone' | 'id_number' | 'email' | string;
+  required: boolean;
+  valueSource: FormBuilder.ValueSource;
+}
+
+export const defaultConfig: InputConfig = {
   title: '单行文本',
   description: '',
-  displayModifier: '',
+  displayModifier: 'normal',
   placeholder: '',
   sortable: false,
   valueFormat: '',
@@ -10,9 +21,7 @@ export const defaultConfig = {
   valueSource: 'customized',
 };
 
-type Schema = ISchema & { 'x-internal'?: Record<string, any> };
-
-function toSchema(value: typeof defaultConfig): Schema {
+export function toSchema(value: typeof defaultConfig): FormBuilder.Schema {
   return {
     title: value.title,
     description: value.description,
@@ -30,4 +39,23 @@ function toSchema(value: typeof defaultConfig): Schema {
   };
 }
 
-export default toSchema;
+export function toConfig(schema: FormBuilder.Schema): InputConfig {
+  let displayModifier: FormBuilder.DisplayModifier = 'normal';
+  if (schema.readOnly) {
+    displayModifier = 'readonly';
+  } else if (!schema.display) {
+    displayModifier = 'hidden';
+  }
+
+  return {
+    title: schema.title as string,
+    description: schema.description as string,
+    displayModifier: displayModifier,
+    placeholder: schema['x-component-props']?.placeholder || '',
+    sortable: !!schema['x-internal']?.sortable,
+    valueFormat: schema.format || '',
+    required: !!schema.required,
+    // todo implement this
+    valueSource: 'customized',
+  };
+}

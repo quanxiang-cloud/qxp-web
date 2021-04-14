@@ -45,23 +45,6 @@ const schema: ISchema = {
       'x-component': 'RadioGroup',
       'x-index': 3,
     },
-    // optionsLayout: {
-    //   type: 'string',
-    //   title: '排列方式',
-    //   default: 'horizontal',
-    //   enum: [
-    //     {
-    //       label: '横向排列',
-    //       value: 'horizontal',
-    //     },
-    //     {
-    //       label: '纵向排列',
-    //       value: 'vertical',
-    //     },
-    //   ],
-    //   'x-component': 'RadioGroup',
-    //   'x-index': 4,
-    // },
     sortable: {
       title: '是否支持列表排序',
       default: false,

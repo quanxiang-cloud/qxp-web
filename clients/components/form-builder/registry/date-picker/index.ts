@@ -1,14 +1,15 @@
 import { DatePicker } from '@formily/antd-components';
 
 import configSchema from './config-schema';
-import toSchema, { defaultConfig } from './convertor';
+import { defaultConfig, toSchema, toConfig, DatePickerConfig } from './convertor';
 
-const DatePickerField: Omit<FormItem<typeof defaultConfig>, 'displayOrder'> = {
+const DatePickerField: Omit<FormItem<DatePickerConfig>, 'displayOrder'> = {
   configSchema,
+  toConfig,
+  toSchema,
   itemName: '时间日期',
   icon: 'date_range',
   defaultConfig: defaultConfig,
-  toSchema,
   component: DatePicker,
   category: 'basic',
   type: 'DatePicker',
