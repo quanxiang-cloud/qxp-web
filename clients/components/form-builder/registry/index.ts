@@ -19,7 +19,7 @@ class Registry {
   elements: Elements;
   components: { [key: string]: React.JSXElementConstructor<any>; } = {};
   categories: Array<{ title: string; key: ElementCategory }>;
-  categorizedElements: Dictionary<FormItem<any>[]>;
+  categorizedElements: Dictionary<SourceElement<any>[]>;
   // todo remove this
   remoteFuncs: RemoteFuncs;
   // todo remove this
@@ -66,10 +66,6 @@ class Registry {
 
   getFormComponent(type: string) {
     return this.elements[type]?.component;
-  }
-
-  getFormEditComponent(type: string) {
-    return this.elements[type]?.editComponent;
   }
 }
 

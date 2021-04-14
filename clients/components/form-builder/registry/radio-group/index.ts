@@ -3,7 +3,7 @@ import { Radio } from '@formily/antd-components';
 import configSchema from './config-schema';
 import { defaultConfig, toSchema, toConfig, RadioGroupConfig } from './convertor';
 
-const RadioField: Omit<FormItem<RadioGroupConfig>, 'displayOrder'> = {
+const RadioField: Omit<SourceElement<RadioGroupConfig>, 'displayOrder'> = {
   configSchema,
   toConfig,
   itemName: '单选框',

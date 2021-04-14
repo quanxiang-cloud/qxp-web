@@ -7,7 +7,7 @@ import DatePicker from './date-picker';
 import Select from './select';
 import MultipleSelect from './multiple-select';
 
-export type Elements = { [key: string]: FormItem<any> };
+export type Elements = { [key: string]: SourceElement<any> };
 
 const elements: Elements = {};
 // basic form fields

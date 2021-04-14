@@ -3,7 +3,7 @@ import { NumberPicker } from '@formily/antd-components';
 import configSchema from './config-schema';
 import { defaultConfig, toSchema, toConfig, NumberPickerConfig } from './convertor';
 
-const NumberPickerField: Omit<FormItem<NumberPickerConfig>, 'displayOrder'> = {
+const NumberPickerField: Omit<SourceElement<NumberPickerConfig>, 'displayOrder'> = {
   configSchema,
   toConfig,
   itemName: '数字',

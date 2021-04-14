@@ -6,7 +6,7 @@ import { StoreContext } from '../context';
 import { observer } from 'mobx-react';
 
 type Props = {
-  formItem: FormItem<any>;
+  formItem: SourceElement<any>;
 }
 
 function SourceElement({ formItem }: Props): JSX.Element {

@@ -7,7 +7,8 @@ import logger from '@clients/lib/logger';
 import { toJS } from 'mobx';
 
 const FormPage = () => {
-  const store = new FormStore({ fields: [] });
+  const schema = {};
+  const store = new FormStore({ schema });
 
   return (
     <div>

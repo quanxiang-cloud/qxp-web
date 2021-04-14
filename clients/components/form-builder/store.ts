@@ -1,13 +1,32 @@
 import { nanoid } from 'nanoid';
 import { action, computed, observable, toJS } from 'mobx';
 
-export type FormItemInstance = FormItem<any> & {
+export type FormItemInstance = SourceElement<any> & {
   fieldName: string;
   configValue: any;
 };
 
 type Props = {
-  fields: Array<FormItemInstance>;
+  schema: FormBuilder.Schema;
+}
+
+// todo support tree structure
+function schemaToFields({ properties }: FormBuilder.Schema): Array<FormItemInstance> {
+  if (!properties) {
+    return [];
+  }
+
+  return [];
+
+  // return Object.keys(properties).sort((keyA, keyB) => {
+  //   return properties[keyA] - properties[keyB];
+  // }).map((key) => {
+  //   return {
+  //     fieldName: key,
+  //     properties[key],
+  //     configValue: {},
+  //   };
+  // });
 }
 
 export default class FormBuilderStore {
@@ -15,8 +34,8 @@ export default class FormBuilderStore {
   @observable activeFieldName = '';
   @observable activeFieldWrapperName = '';
 
-  constructor({ fields }: Props) {
-    this.fields = fields;
+  constructor({ schema }: Props) {
+    this.fields = schemaToFields(schema);
 
     if (this.fields.length) {
       this.activeFieldName = this.fields[0].fieldName;
@@ -90,7 +109,7 @@ export default class FormBuilderStore {
   }
 
   @action
-  append(field: FormItem<any>) {
+  append(field: SourceElement<any>) {
     this.fields.push({
       ...field,
       configValue: field.defaultConfig,

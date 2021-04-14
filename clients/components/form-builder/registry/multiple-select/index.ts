@@ -3,7 +3,7 @@ import { Select } from '@formily/antd-components';
 import configSchema from './config-schema';
 import { defaultConfig, toSchema, toConfig, MultipleSelectConfig } from './convertor';
 
-const MultipleSelectField: Omit<FormItem<MultipleSelectConfig>, 'displayOrder'> = {
+const MultipleSelectField: Omit<SourceElement<MultipleSelectConfig>, 'displayOrder'> = {
   configSchema,
   toConfig,
   itemName: '下拉复选框',

@@ -24,4 +24,4 @@ export const FormBuilderContext = React.createContext<ContextProps>(defaultConte
 
 export const useFormBuilderContext = () => React.useContext(FormBuilderContext);
 
-export const StoreContext = React.createContext<Store>(new Store({ fields: [] }));
+export const StoreContext = React.createContext<Store>(new Store({ schema: {} }));

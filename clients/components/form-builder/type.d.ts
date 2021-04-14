@@ -31,7 +31,7 @@ type EditComponentProps = any;
 
 type ElementCategory = 'basic' | 'advance' | 'layout';
 
-type FormItem<T> = {
+type SourceElement<T> = {
   itemName: string;
   icon: string;
   type: string;
@@ -42,7 +42,6 @@ type FormItem<T> = {
   toSchema: (value: T) => ISchema;
   toConfig: (schema: FormBuilder.Schema) => T;
   component: React.JSXElementConstructor<any>;
-  editComponent?: React.Component<EditComponentProps>;
   displayOrder: number;
 };
 
