@@ -132,6 +132,9 @@ module.exports = function(env) {
         chunks: ['app-manager'],
         template: './clients/templates/app-manager.html',
         filename: `${__dirname}/dist/templates/app-manager.html`,
+      }),
+      new HtmlWebpackPlugin({
+        inject: false,
         chunks: ['retrieve-password'],
         template: './clients/templates/retrieve-password.html',
         filename: `${__dirname}/dist/templates/retrieve-password.html`,
