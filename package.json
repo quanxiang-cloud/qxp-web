@@ -13,6 +13,7 @@
     "@QCFE/lego-ui": "^0.1.30",
     "@mariusmarais/tailwind-cascade": "^0.0.4",
     "@popperjs/core": "^2.9.1",
+    "@types/react-table": "^7.0.29",
     "classnames": "^2.2.6",
     "mobx": "5",
     "mobx-react": "6.1.4",
@@ -21,6 +22,7 @@
     "react-popper": "^2.2.4",
     "react-query": "^3.12.0",
     "react-router-dom": "^5.2.0",
+    "react-table": "^7.6.3",
     "react-use": "^17.2.1",
     "xlsx": "^0.16.9"
   },
