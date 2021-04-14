@@ -36,6 +36,7 @@ type SourceElement<T> = {
   displayOrder: number;
   category: ElementCategory;
   icon: string;
+  // use this as sourceElement key
   componentName: string;
   component: React.JSXElementConstructor<any>;
   configSchema: ISchema;

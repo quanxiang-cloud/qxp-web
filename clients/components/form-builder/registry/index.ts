@@ -54,9 +54,9 @@ class Registry {
   }
 
   getComponents() {
-    Object.keys(this.elements).forEach((key: string) => {
-      const { component } = this.elements[key];
-      this.components[key] = component;
+    Object.keys(this.elements).forEach((componentName: string) => {
+      const { component } = this.elements[componentName];
+      this.components[componentName] = component;
     });
 
     // todo fix this
