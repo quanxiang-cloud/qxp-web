@@ -6,13 +6,13 @@ import { defaultConfig, toSchema, toConfig, NumberPickerConfig } from './convert
 const NumberPickerField: Omit<SourceElement<NumberPickerConfig>, 'displayOrder'> = {
   configSchema,
   toConfig,
-  itemName: '数字',
+  displayName: '数字',
   icon: 'plus_one',
   defaultConfig: defaultConfig,
   toSchema,
   component: NumberPicker,
   category: 'basic',
-  type: 'NumberPicker',
+  componentName: 'NumberPicker',
 };
 
 export default NumberPickerField;

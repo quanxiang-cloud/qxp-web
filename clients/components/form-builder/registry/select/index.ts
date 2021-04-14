@@ -6,13 +6,13 @@ import { defaultConfig, toSchema, toConfig, SelectConfig } from './convertor';
 const SelectField: Omit<SourceElement<SelectConfig>, 'displayOrder'> = {
   configSchema,
   toConfig,
-  itemName: '下拉单选框',
+  displayName: '下拉单选框',
   icon: 'arrow_drop_down_circle',
   defaultConfig: defaultConfig,
   toSchema,
   component: Select,
   category: 'basic',
-  type: 'Select',
+  componentName: 'Select',
 };
 
 export default SelectField;

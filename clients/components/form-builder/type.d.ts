@@ -32,17 +32,17 @@ type EditComponentProps = any;
 type ElementCategory = 'basic' | 'advance' | 'layout';
 
 type SourceElement<T> = {
-  itemName: string;
-  icon: string;
-  type: string;
+  displayName: string;
+  displayOrder: number;
   category: ElementCategory;
+  icon: string;
+  componentName: string;
+  component: React.JSXElementConstructor<any>;
   configSchema: ISchema;
   defaultConfig: T;
   // transform configuration to the node of schema used by SchemaForm
   toSchema: (value: T) => ISchema;
   toConfig: (schema: FormBuilder.Schema) => T;
-  component: React.JSXElementConstructor<any>;
-  displayOrder: number;
 };
 
 declare namespace FormBuilder {

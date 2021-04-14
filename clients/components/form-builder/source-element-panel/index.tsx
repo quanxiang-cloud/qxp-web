@@ -14,7 +14,7 @@ function SourceElementPanel(): JSX.Element {
             <div className="text-h6-bold source-element-section__title">{title}</div>
             {
               registry.categorizedElements[key]?.map((item) => {
-                return (<SourceElement key={item.type} formItem={item} />);
+                return (<SourceElement key={item.componentName} formItem={item} />);
               })
             }
           </div>

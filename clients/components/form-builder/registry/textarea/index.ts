@@ -7,12 +7,12 @@ const TextArea: Omit<SourceElement<TextareaConfig>, 'displayOrder'> = {
   configSchema,
   toSchema,
   toConfig,
-  itemName: '多行文本',
+  displayName: '多行文本',
   icon: 'notes',
   defaultConfig: defaultConfig,
   component: Input.TextArea,
   category: 'basic',
-  type: 'textarea',
+  componentName: 'textarea',
 };
 
 export default TextArea;

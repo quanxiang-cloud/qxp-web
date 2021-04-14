@@ -6,13 +6,13 @@ import { defaultConfig, toSchema, toConfig } from './convertor';
 const CheckboxGroupField: Omit<SourceElement<typeof defaultConfig>, 'displayOrder'> = {
   configSchema,
   toConfig,
-  itemName: '复选框',
+  displayName: '复选框',
   icon: 'check_box',
   defaultConfig,
   toSchema,
   component: Checkbox.Group,
   category: 'basic',
-  type: 'CheckboxGroup',
+  componentName: 'CheckboxGroup',
 };
 
 export default CheckboxGroupField;

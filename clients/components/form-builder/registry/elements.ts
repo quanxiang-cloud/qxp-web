@@ -11,13 +11,13 @@ export type Elements = { [key: string]: SourceElement<any> };
 
 const elements: Elements = {};
 // basic form fields
-elements[Input.type] = { ...Input, displayOrder: 1 };
-elements[Textarea.type] = { ...Textarea, displayOrder: 2 };
-elements[RadioGroup.type] = { ...RadioGroup, displayOrder: 3 };
-elements[CheckboxGroup.type] = { ...CheckboxGroup, displayOrder: 4 };
-elements[NumberPicker.type] = { ...NumberPicker, displayOrder: 5 };
-elements[DatePicker.type] = { ...DatePicker, displayOrder: 6 };
-elements[Select.type] = { ...Select, displayOrder: 7 };
+elements[Input.componentName] = { ...Input, displayOrder: 1 };
+elements[Textarea.componentName] = { ...Textarea, displayOrder: 2 };
+elements[RadioGroup.componentName] = { ...RadioGroup, displayOrder: 3 };
+elements[CheckboxGroup.componentName] = { ...CheckboxGroup, displayOrder: 4 };
+elements[NumberPicker.componentName] = { ...NumberPicker, displayOrder: 5 };
+elements[DatePicker.componentName] = { ...DatePicker, displayOrder: 6 };
+elements[Select.componentName] = { ...Select, displayOrder: 7 };
 elements.MultipleSelect = { ...MultipleSelect, displayOrder: 8 };
 
 export default elements;

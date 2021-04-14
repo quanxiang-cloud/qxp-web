@@ -25,7 +25,7 @@ function SourceElement({ formItem }: Props): JSX.Element {
   return (
     <div className="source-element-section__element" ref={dragRef} style={{ opacity }}>
       <Icon name={formItem.icon} size={20} className="mr-6" />
-      {formItem.itemName}
+      {formItem.displayName}
     </div>
   );
 }
