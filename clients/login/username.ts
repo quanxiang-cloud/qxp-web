@@ -8,7 +8,7 @@ export default class UserName extends InputField {
         this.errMessage = '请输入正确格式的邮箱或手机号';
         isValid = false;
       }
-      this.action.classList.add('disabled');
+      // this.action.classList.add('disabled');
     }
     if (isValid) {
       this.errMessage = '';
@@ -25,7 +25,7 @@ export default class UserName extends InputField {
             (this.errorElement as HTMLElement).textContent = msg;
             isValid = false;
             this.inputElement?.classList.add('error');
-            this.action.classList.add('disabled');
+            // this.action.classList.add('disabled');
           } else {
             (this.errorElement as HTMLElement).textContent = '';
             this.inputElement?.classList.remove('error');

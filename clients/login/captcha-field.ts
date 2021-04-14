@@ -26,11 +26,11 @@ export default class Captcha extends InputField {
   toggleSender(result: boolean | Promise<boolean>) {
     const element = this.sender as HTMLButtonElement;
     const toggle = (valid?: boolean) => {
-      if (!valid) {
-        element.classList.add('disabled');
-      } else {
-        element.classList.remove('disabled');
-      }
+      // if (!valid) {
+      //   element.classList.add('disabled');
+      // } else {
+      //   element.classList.remove('disabled');
+      // }
     };
     if (typeof result === 'boolean') {
       toggle(result);
@@ -87,7 +87,7 @@ export default class Captcha extends InputField {
     const resetVars = (errorMessage?: string) => {
       this.showError(errorMessage);
       clearInterval(tid);
-      element.classList.remove('disabled');
+      // element.classList.remove('disabled');
       counter = 60;
       element.innerText = '获取验证码';
       this.isSending = false;
@@ -101,7 +101,7 @@ export default class Captcha extends InputField {
         }
       })
       .catch(resetVars);
-    element.classList.add('disabled');
+    // element.classList.add('disabled');
     tid = setInterval(() => {
       counter -= 1;
       element.innerText = `${counter} 后重新获取`;
@@ -131,7 +131,7 @@ export default class Captcha extends InputField {
         this.errMessage = '验证码至少为6位';
         isValid = false;
       }
-      this.action.classList.add('disabled');
+      // this.action.classList.add('disabled');
     }
     if (isValid) {
       this.errMessage = '';

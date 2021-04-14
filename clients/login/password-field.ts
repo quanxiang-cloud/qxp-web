@@ -25,11 +25,15 @@ export default class Password extends InputField {
   validate(checkAll?: boolean): boolean | Promise<boolean> {
     let isValid = true;
     if ((this.value as string).length < 6) {
+      if (this.value == '') {
+        this.errMessage = '请输入密码';
+        isValid = false;
+      }
       if (this.value !== '') {
         this.errMessage = '密码至少为6位';
         isValid = false;
       }
-      this.action.classList.add('disabled');
+      // this.action.classList.add('disabled');
     }
     if (this.customeValidator) {
       const validateError = this.customeValidator(this.value as string);
