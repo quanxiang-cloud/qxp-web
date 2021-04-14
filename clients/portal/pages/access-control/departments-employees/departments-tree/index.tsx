@@ -4,7 +4,7 @@ import { useQuery } from 'react-query';
 
 import Tree from '@c/headless-tree';
 import Loading from '@c/loading';
-import { getERPTree } from '@lib/requests/corporate-directory';
+import { getERPTree } from '../api';
 
 import Store from './store';
 import DepartmentNode from './department-node';

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery } from 'react-query';
 import { observer } from 'mobx-react';
-import { toJS } from 'mobx';
 
 import Tab from '@c/tab';
 import TextHeader from '@c/text-header';
@@ -29,6 +28,7 @@ export default observer(function EmployeeOrDepartmentPicker({
   departments = [], employees = [], onChange,
 }: Props) {
   const [store, setStore] = useState<OwnerStore>();
+
   const { data: department, isLoading, isError } = useQuery(
     ['GET_DEPARTMENT_STRUCTURE'],
     getDepartmentStructure,
@@ -36,7 +36,7 @@ export default observer(function EmployeeOrDepartmentPicker({
       refetchOnWindowFocus: false,
     },
   );
-  
+
   useEffect(() => {
     store?.owners && onChange(store.owners);
   }, [store?.owners.length]);
@@ -44,7 +44,7 @@ export default observer(function EmployeeOrDepartmentPicker({
   const onDepartmentTreeChange = (prevNodes: Department[], currentNodes: Department[]) => {
     setStore((store) => {
       if (!store) {
-      return store;
+        return store;
       }
       const add: EmployeeOrDepartmentOfRole[] = [];
       const remove: string[] = [];
