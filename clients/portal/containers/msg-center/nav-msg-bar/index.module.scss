@@ -1,0 +1,29 @@
+.wrap {
+  position: relative;
+  .navItem {
+    width: 36px;
+    height: 32px;
+    margin-right: 35px;
+    &:hover {
+      background: var(--blue-100);
+      // @include as-btn;
+    }
+
+    > button {
+      top: -0.8rem;
+      left: 2.5rem;
+    }
+  }
+  .count_btn{
+    width: 20px;
+    height: 20px !important;
+    padding: 0 !important;
+    border-radius:  8px 8px 8px 2px !important;
+    background: #EF4444;
+    color: #fff;
+    border: none;
+  }
+  
+  
+}
+

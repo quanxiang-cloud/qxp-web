@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Modal } from '@QCFE/lego-ui';
 import { useQuery } from 'react-query';
+import { toJS } from 'mobx';
 
 import Button from '@c/button';
-// todo remove this
 import { getRoleAssociations } from '@portal/pages/access-control/role-management/api';
 import Loading from '@c/loading';
 import Error from '@c/error';
@@ -12,6 +12,7 @@ import Error from '@c/error';
 import EmployeeOrDepartmentPicker from '@c/employee-or-department-picker/picker';
 
 interface Props {
+  picked: EmployeeOrDepartmentOfRole[],
   onOk: (adds: EmployeeOrDepartmentOfRole[], deletes: EmployeeOrDepartmentOfRole[]) => void;
   visible: boolean;
   roleID: string;
@@ -23,10 +24,17 @@ export default function EmployeeOrDepartmentPickerModal({
   visible,
   roleID,
   onCancel,
+  picked
 }: Props) {
   const [departmentsOrEmployees, setDepartmentsOrEmployees] = useState<
     EmployeeOrDepartmentOfRole[]
-  >();
+  >(picked);
+
+  useEffect(()=>{
+    console.log(picked.map(itm=>toJS(itm)))
+    visible || setDepartmentsOrEmployees(picked)
+  },[visible, picked])
+
   const { data, isLoading, isError } = useQuery(
     [
       'GET_ROLE_ASSOCIATIONS_ALL',
@@ -61,7 +69,7 @@ export default function EmployeeOrDepartmentPickerModal({
     // @ts-ignore
     onOk(departmentsOrEmployees);
   };
-
+  console.log(departmentsOrEmployees.map(itm=>toJS(itm)))
   return (
     <Modal
       title="选择员工或部门"
@@ -90,8 +98,12 @@ export default function EmployeeOrDepartmentPickerModal({
       }
     >
       <EmployeeOrDepartmentPicker
-        departments={data?.departments}
-        employees={data?.employees}
+        departments={departmentsOrEmployees.filter(itm=>itm.type==2)}
+        employees={departmentsOrEmployees.filter(itm=>itm.type==1)}
+        // departments={data?.departments}
+        // employees={data?.employees}
+        // departments={[]}
+        // employees={[]}
         onChange={setDepartmentsOrEmployees}
       />
     </Modal>

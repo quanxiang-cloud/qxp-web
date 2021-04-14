@@ -44,10 +44,12 @@
     "moduleResolution": "node" /* Specify module resolution strategy: 'node' (Node.js) or 'classic' (TypeScript pre-1.6). */,
     "baseUrl": "." /* Base directory to resolve non-absolute module names. */,
     "paths": {
+      // todo remove this
+      "@containers/*": ["./clients/portal/containers/*"],
       "@portal/*": ["./clients/portal/*"],
       "@clients/*": ["./clients/*"],
       "@c/*": ["./clients/components/*"],
-      "@lib/*": ["./clients/lib/*"],
+      "@lib/*": ["./clients/lib/*"]
     } /* A series of entries which re-map imports to lookup locations relative to the 'baseUrl'. */,
     // "rootDirs": [],                        /* List of root folders whose combined content represents the structure of the project at runtime. */
     "typeRoots": [
@@ -73,5 +75,14 @@
     "forceConsistentCasingInFileNames": true /* Disallow inconsistently-cased references to the same file. */
   },
   "include": ["**/*.ts", "**/*.tsx"],
-  "exclude": ["./dist/"]
+  "exclude": ["./dist/"],
+  "plugins": [
+    {
+      "name":  "typescript-plugin-css-modules",
+      "options": {
+        "classnameTransform": "dashes",
+        "customMatcher": "\\.module\\.scss$"
+      }
+    }
+  ]
 }

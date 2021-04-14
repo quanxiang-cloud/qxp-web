@@ -1,0 +1,71 @@
+.msgItem {
+  display: flex;
+  flex-direction: column;
+  padding: 8px 24px;
+  height: 62px;
+  cursor: pointer;
+  .msgItemInner{
+    margin-left: 8px;
+  }
+  //&:hover{
+  //  background: var(--gray-100);
+  //}
+  .msg_itm_time{
+    text-align: left;
+    padding-left: 16px;
+  }
+  > div {
+    // display: flex;
+    align-items: center;
+    justify-content: space-between;
+    line-height: 22px;
+
+    .txt {
+      color: var(--gray-900);
+      // @include text-omit;
+      max-width: 330px;
+      display: inline-flex;
+    }
+
+    .statusIcon {
+      display: inline-flex;
+      vertical-align: middle;
+      margin-right: 8px;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      margin-left: 8px;
+      &.statusUnread {
+        background: var(--red-500);
+      }
+      &.statusRead {
+        opacity: 0;
+      }
+      
+    }
+
+    .type {
+      font-size: 1.2rem;
+      font-weight: 400;
+      border-radius: 4px 0;
+      padding: 0 8px;
+      &.system {
+        color: var(--blue-600);
+        background: var(--blue-100);
+      }
+      &.alert {
+        color: var(--yellow-600);
+        background: var(--yellow-100);
+      }
+    }
+
+    .time {
+      position: relative;
+      left: 1.4rem;
+      font-size: 1.2rem;
+      line-height: 20px;
+      color: var(--gray-400);
+    }
+  }
+
+}
