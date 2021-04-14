@@ -11,7 +11,7 @@ const MENU = [
     icon: 'people',
     replace: true,
     name: '对员工发布',
-    url: '/appManager/formDesign/publishForm/forEmployee',
+    url: '/apps/formDesign/publishForm/forEmployee',
   },
 ];
 
@@ -23,7 +23,7 @@ function PublishForm() {
         <Switch>
           <Route
             exact
-            path="/appManager/formDesign/publishForm/forEmployee"
+            path="/apps/formDesign/publishForm/forEmployee"
             component={ForEmployee}
           />
         </Switch>

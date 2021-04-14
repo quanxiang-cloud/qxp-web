@@ -24,7 +24,7 @@ function AppList({ isLoading, appList, openCreatedModal }: Props) {
   };
 
   const goDetails = (id: string) => {
-    history.push(`/appManager/details/${id}`);
+    history.push(`/apps/${id}`);
   };
 
   if (isLoading) {
