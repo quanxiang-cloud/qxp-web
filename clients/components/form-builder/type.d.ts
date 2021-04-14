@@ -45,6 +45,12 @@ type FormItem<T> = {
   displayOrder: number;
 };
 
+declare namespace FormBuilder {
+  type DisplayModifier = 'normal' | 'readonly' | 'hidden';
+  type Schema = ISchema & { 'x-internal'?: Record<string, any> };
+  type ValueSource = 'customized' | 'linkage' | 'formula';
+}
+
 // interface Schema {
 //   title: string;
 //   type: 'string' | 'object' | 'array' | 'number' | 'datetime';

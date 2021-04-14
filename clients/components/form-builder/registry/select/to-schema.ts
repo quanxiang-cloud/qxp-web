@@ -8,7 +8,7 @@ export const defaultConfig = {
   optionsLayout: 'horizontal',
   sortable: false,
   required: false,
-  valueFrom: 'customized',
+  valueSource: 'customized',
   availableOptions: [
     { label: 'One', value: 'One', title: 'One' },
     { label: 'Two', value: 'Two', title: 'Two' },

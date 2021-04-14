@@ -97,7 +97,7 @@ const schema: ISchema = {
       'x-component': 'Switch',
       'x-index': 7,
     },
-    valueFrom: {
+    valueSource: {
       title: '默认值',
       enum: [
         {

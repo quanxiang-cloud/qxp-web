@@ -9,7 +9,7 @@ export const defaultConfig = {
   sortable: false,
   valueFormat: '',
   required: false,
-  valueFrom: 'customized',
+  valueSource: 'customized',
   availableOptions: [
     { label: 'One', value: 'One', title: 'One' },
     { label: 'Two', value: 'Two', title: 'Two' },

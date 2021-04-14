@@ -54,7 +54,7 @@ interface tempOption {
   checked: boolean;
 }
 
-export const getValueFromOptions = (options: Array<tempOption>, multiple: boolean) => {
+export const getvalueSourceOptions = (options: Array<tempOption>, multiple: boolean) => {
   const values: Array<any> = [];
   options.forEach((option) => {
     if (option.checked) values.push(option.value);
@@ -76,7 +76,7 @@ export const getValueFromOptions = (options: Array<tempOption>, multiple: boolea
 
 //     if (optionType === 'static' && options) {
 //       const multiple = props.multiple || component === 'Checkbox';
-//       defaultValue[name] = getValueFromOptions(options, multiple);
+//       defaultValue[name] = getvalueSourceOptions(options, multiple);
 //     }
 
 //     if (Array.isArray(children)) {
