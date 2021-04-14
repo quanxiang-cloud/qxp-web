@@ -7,7 +7,6 @@ import Header from './header';
 import Month from './month';
 import Year from './year';
 
-
 type Props = {
   selectedDate?: moment.Moment;
   minDate?: string;
@@ -18,7 +17,6 @@ type Props = {
 
 @observer
 export default class Calendar extends React.Component<Props> {
-
   static defaultProps = {
     picker: 'day',
   };
@@ -29,8 +27,8 @@ export default class Calendar extends React.Component<Props> {
     super(props);
 
     const { selectedDate } = this.props;
-    this.displayDate = selectedDate && moment(selectedDate).isValid()
-      ? moment(selectedDate) : moment();
+    this.displayDate = selectedDate && moment(selectedDate).isValid() ?
+      moment(selectedDate) : moment();
   }
 
   @computed get minDate(): moment.Moment | null {
@@ -89,5 +87,4 @@ export default class Calendar extends React.Component<Props> {
       </div>
     );
   }
-
 }

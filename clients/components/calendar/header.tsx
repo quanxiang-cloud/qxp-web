@@ -8,7 +8,6 @@ import Icon from '@c/icon';
 import zh from './constants';
 import { scrollToOption, isDateOutRange } from './utils';
 
-
 type Props = {
   date: moment.Moment;
   picker?: 'day' | 'week' | 'month';
@@ -19,7 +18,6 @@ type Props = {
 
 @observer
 export default class Header extends React.Component<Props> {
-
   static defaultProps = {
     picker: 'day',
   };
@@ -106,7 +104,9 @@ export default class Header extends React.Component<Props> {
             return (
               <li
                 key={year}
-                onClick={(): void => { !isOutsideRange && this.handleYearClick(year); }}
+                onClick={(): void => {
+                  !isOutsideRange && this.handleYearClick(year);
+                }}
                 className={classnames({
                   'is-outside-range': isOutsideRange,
                   'is-active': isActive,
@@ -131,7 +131,9 @@ export default class Header extends React.Component<Props> {
       return (
         <li
           key={monthStr}
-          onClick={(): void => { !isOutsideRange && this.handleMonthClick(index); }}
+          onClick={(): void => {
+            !isOutsideRange && this.handleMonthClick(index);
+          }}
           className={classnames({
             'is-outside-range': isOutsideRange,
             'is-active': isActive,
@@ -185,5 +187,4 @@ export default class Header extends React.Component<Props> {
       </div>
     );
   }
-
 }

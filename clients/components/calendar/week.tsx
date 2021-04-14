@@ -6,7 +6,6 @@ import { computed } from 'mobx';
 
 import { isDateOutRange } from './utils';
 
-
 type Props = {
   week: moment.Moment;
   selectedDate?: moment.Moment;
@@ -17,10 +16,8 @@ type Props = {
   onDayClick: (d: moment.Moment) => void;
 }
 
-
 @observer
 export default class Week extends React.Component<Props> {
-
   static defaultProps = {
     picker: 'day',
   };
@@ -90,7 +87,9 @@ export default class Week extends React.Component<Props> {
             return (
               <span
                 key={offset}
-                onClick={(): void => { !isDateOutRange && this.handleDayClick(day); }}
+                onClick={(): void => {
+                  !isDateOutRange && this.handleDayClick(day);
+                }}
                 className={classnames('calendar-month__single-day', {
                   'calendar-month__outside-month-day': isOutsideMonth,
                   'calendar-month__outside-range-day': isDateOutRange,
@@ -105,5 +104,4 @@ export default class Week extends React.Component<Props> {
       </div>
     );
   }
-
 }
