@@ -22,11 +22,11 @@ interface ColumnS extends UseTableColumnProps<any> {
 }
 export type Column = RColumn<any> & { fixed?: boolean, width?: number };
 
-const FIXED_ROW: React.CSSProperties = { position: 'sticky', left: '0px', zIndex: 1 };
-
 interface Props<T extends Record<string, unknown>> {
   data: Array<T>;
   columns: Column[];
+  rowKey?: string;
+  selectedRowKeys?: string[];
   emptyText?: string;
   className?: string;
   selectKey?: string;
@@ -40,8 +40,24 @@ interface Props<T extends Record<string, unknown>> {
   onPageChange?: (currentPage: number, pageSize: number) => void;
 }
 
+const FIXED_ROW: React.CSSProperties = { position: 'sticky', left: '0px', zIndex: 1 };
+
+const getDefaultSelectMap = (keys: string[]|undefined) => {
+  if (!keys) {
+    return {};
+  }
+
+  const keyMap: any = {};
+  keys.forEach((key) => {
+    keyMap[key] = true;
+  });
+  return keyMap;
+};
+
 const IndeterminateCheckbox = React.forwardRef(
-  ({ indeterminate, ...rest }: TableToggleCommonProps, ref) => {
+  ({
+    indeterminate,
+    ...rest }: TableToggleCommonProps, ref) => {
     const defaultRef = React.useRef();
     const resolvedRef: any = ref || defaultRef;
 
@@ -60,6 +76,7 @@ const IndeterminateCheckbox = React.forwardRef(
 export default function Table<T extends Record<string, unknown>>({
   columns,
   data,
+  selectedRowKeys,
   className,
   style = {},
   pageSize = 20,
@@ -69,6 +86,7 @@ export default function Table<T extends Record<string, unknown>>({
   emptyText,
   onSelectChange,
   selectKey,
+  rowKey = 'id',
   showCheckBox = false,
   onPageChange,
 }: Props<T>): JSX.Element {
@@ -80,12 +98,16 @@ export default function Table<T extends Record<string, unknown>>({
           id: 'selection',
           Header: ({ getToggleAllRowsSelectedProps }: any) => (
             <div>
-              <IndeterminateCheckbox {...getToggleAllRowsSelectedProps()} />
+              <IndeterminateCheckbox
+                {...getToggleAllRowsSelectedProps()}
+              />
             </div>
           ),
           Cell: ({ row }: any) => (
             <div>
-              <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} />
+              <IndeterminateCheckbox
+                {...row.getToggleRowSelectedProps()}
+              />
             </div>
           ),
         },
@@ -101,13 +123,21 @@ export default function Table<T extends Record<string, unknown>>({
     prepareRow,
     rows,
     selectedFlatRows,
-  }: any = useTable<any>(({ columns, data }) as TableOptions<T>, ...tableParameter);
+    state: { selectedRowIds },
+  }: any = useTable<any>(({
+    columns,
+    data,
+    getRowId: (row, _, parent: any) => {
+      return parent ? [parent[rowKey], row[rowKey]].join('.') : row[rowKey];
+    },
+    initialState: { selectedRowIds: getDefaultSelectMap(selectedRowKeys) },
+  }) as TableOptions<T>, ...tableParameter);
 
   useEffect(() => {
     onSelectChange?.(selectedFlatRows.map(({ original }: Row) => {
       return selectKey ? get(original, selectKey) : original;
     }));
-  }, [selectedFlatRows]);
+  }, [selectedRowIds]);
 
   const tableFooterRender = () => {
     if (loading) {
@@ -172,6 +202,7 @@ export default function Table<T extends Record<string, unknown>>({
               prepareRow(row);
               return (
                 <tr
+                  className='qxp-table-tr'
                   {...row.getRowProps()}
                   key={row.id}
                 >
