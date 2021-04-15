@@ -10,6 +10,7 @@
     }
     window.__verbose_log__ = {{.debugMode}}
   {{end}}
+  window.__verbose_log__ = {{.debugMode }}
 </script>
 <script src="<%= htmlWebpackPlugin.files.js[0] %>"></script>
 {{end}}

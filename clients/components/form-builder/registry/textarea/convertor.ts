@@ -28,7 +28,7 @@ export function toSchema(value: TextareaConfig): FormBuilder.Schema {
     format: value.valueFormat,
     readOnly: value.displayModifier === 'readonly',
     display: value.displayModifier !== 'hidden',
-    'x-component': 'Textarea',
+    'x-component': 'textarea',
     ['x-component-props']: {
       placeholder: value.placeholder,
     },
