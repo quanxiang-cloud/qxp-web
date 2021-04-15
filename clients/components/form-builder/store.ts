@@ -3,7 +3,6 @@ import { action, computed, observable, toJS } from 'mobx';
 
 import registry from './registry';
 import logger from '@clients/lib/logger';
-import FormItem from 'antd/lib/form/FormItem';
 
 export type FormItem = {
   componentName: string;
@@ -15,19 +14,50 @@ type Props = {
   schema: FormBuilder.Schema;
 }
 
+const INTERNAL_FIELDS: Array<FormItem> = [
+  {
+    fieldName: '_id',
+    componentName: 'Input',
+    configValue: { displayModifier: 'hidden' },
+  },
+  {
+    fieldName: '_created_time',
+    componentName: 'Input',
+    configValue: { displayModifier: 'hidden' },
+  },
+  {
+    fieldName: '_updated_time',
+    componentName: 'Input',
+    configValue: { displayModifier: 'hidden' },
+  },
+  {
+    fieldName: '_created_by',
+    componentName: 'Input',
+    configValue: { displayModifier: 'hidden' },
+  },
+  {
+    fieldName: '_updated_by',
+    componentName: 'Input',
+    configValue: { displayModifier: 'hidden' },
+  },
+];
+
 // todo support tree structure
 function schemaToFields({ properties }: FormBuilder.Schema): Array<FormItem> {
   if (!properties) {
-    return [];
+    return INTERNAL_FIELDS;
   }
 
-  return Object.keys(properties).sort((keyA, keyB) => {
+  const sortedKeys = Object.keys(properties).sort((keyA, keyB) => {
     const keyAIndex = properties[keyA]['x-index'] || 0;
     const keyBIndex = properties[keyB]['x-index'] || 0;
     return keyAIndex - keyBIndex;
-  }).map((key) => {
-    const componentName = properties[key]['x-component'];
-    if (!componentName) {
+  });
+
+  return sortedKeys.map((key) => {
+    const componentName = properties[key]['x-component']?.toLowerCase();
+    if (!componentName || !registry.elements[componentName]) {
+      // todo refactor this message
       logger.error('fatal! there is no x-component in schema:', properties[key]);
       return null;
     }
@@ -72,7 +102,7 @@ export default class FormBuilderStore {
     const properties = this.fields.reduce<Record<string, any>>((acc, field, index) => {
       const { fieldName, componentName, configValue } = field;
 
-      const { toSchema } = registry.elements[componentName] || {};
+      const { toSchema } = registry.elements[componentName.toLowerCase()] || {};
       if (!toSchema) {
         logger.error(`failed to find component: [${componentName}] in registry`);
       }
