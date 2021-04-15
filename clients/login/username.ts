@@ -4,11 +4,8 @@ export default class UserName extends InputField {
   validate(checkAll?: boolean): boolean | Promise<boolean> {
     let isValid = true;
     if (!isEmail(this.value as string) && !isMobile(this.value as string)) {
-      if (this.value !== '') {
-        this.errMessage = '请输入正确格式的邮箱或手机号';
-        isValid = false;
-      }
-      // this.action.classList.add('disabled');
+      this.errMessage = '请输入正确格式的邮箱或手机号';
+      isValid = false;
     }
     if (isValid) {
       this.errMessage = '';
@@ -25,7 +22,6 @@ export default class UserName extends InputField {
             (this.errorElement as HTMLElement).textContent = msg;
             isValid = false;
             this.inputElement?.classList.add('error');
-            // this.action.classList.add('disabled');
           } else {
             (this.errorElement as HTMLElement).textContent = '';
             this.inputElement?.classList.remove('error');
