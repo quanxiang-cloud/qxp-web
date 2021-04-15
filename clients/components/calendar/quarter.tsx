@@ -4,7 +4,6 @@ import classnames from 'classnames';
 
 import { isDateOutRange } from './utils';
 
-
 type Props = {
   quarter: moment.Moment;
   selectedDate?: moment.Moment;
@@ -14,7 +13,6 @@ type Props = {
 }
 
 export default class Quarter extends React.Component<Props> {
-
   isSelectedMonth = (month: moment.Moment): boolean => {
     const { selectedDate } = this.props;
     return selectedDate ? month.isSame(selectedDate, 'month') : false;
@@ -42,7 +40,9 @@ export default class Quarter extends React.Component<Props> {
             return (
               <div
                 key={offset}
-                onClick={(): void => { !isOutsideRange && this.handleMonthClick(month); }}
+                onClick={(): void => {
+                  !isOutsideRange && this.handleMonthClick(month);
+                }}
                 className={classnames('calendar-year__single-month', {
                   'calendar-year__outside-range-month': isOutsideRange,
                   'calendar-year__selected-month': isSelectedMonth,
@@ -56,5 +56,4 @@ export default class Quarter extends React.Component<Props> {
       </div>
     );
   }
-
 }

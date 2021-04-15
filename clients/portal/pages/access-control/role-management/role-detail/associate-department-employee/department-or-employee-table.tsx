@@ -69,7 +69,7 @@ export default function DepartmentTable({ isSuper, onCancelAssociation, roleID, 
 
   const rowSelection = {
     selectedRowKeys: selectedKeys,
-    onChange: function (selectedRowKeys: string[]) {
+    onChange: function(selectedRowKeys: string[]) {
       setSelectedKeys(selectedRowKeys);
     },
   };
@@ -86,7 +86,7 @@ export default function DepartmentTable({ isSuper, onCancelAssociation, roleID, 
   }
 
   function onCancel(record: EmployeeOrDepartmentOfRole) {
-    return function () {
+    return function() {
       setSelectedKeys((selectedKeys) => {
         setMemberIDMap((memberIDMap) => {
           const records = [];
@@ -112,7 +112,7 @@ export default function DepartmentTable({ isSuper, onCancelAssociation, roleID, 
       <div className="text-12 text-gray-600">
         共<span className="mx-4">{members.length || 0}</span>条数据
       </div>
-    )
+    );
   }
 
   if (isLoading) {

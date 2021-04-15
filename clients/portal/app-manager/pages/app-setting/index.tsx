@@ -45,7 +45,7 @@ function AppSetting({ appDetailsStore }: Props) {
           <ItemWithTitleDesc
             title="应用管理"
             desc="常规的基础设置和工作流编排"
-            itemRender={<BgIcon bgColor='fuchsia' iconName='settings' iconSize={32} size={48} />}
+            itemRender={<BgIcon themeColor='fuchsia' iconName='settings' size={48} />}
             titleClassName="text-2 leading-8 font-bold mb-2"
             descClassName="leading-8"
           />

@@ -3,7 +3,6 @@ import moment from 'moment';
 
 import Quarter from './quarter';
 
-
 type Props = {
   selectedDate?: moment.Moment;
   displayDate: moment.Moment;
@@ -13,7 +12,6 @@ type Props = {
 }
 
 export default class Year extends React.Component<Props> {
-
   handleMonthClick = (day: moment.Moment): void => {
     this.props.onMonthClick(day);
   }
@@ -50,5 +48,4 @@ export default class Year extends React.Component<Props> {
       </div>
     );
   }
-
 }

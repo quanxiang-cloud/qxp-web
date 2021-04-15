@@ -4,7 +4,6 @@ import moment from 'moment';
 import Week from './week';
 import zh from './constants';
 
-
 type Props = {
   selectedDate?: moment.Moment;
   displayDate: moment.Moment;
@@ -15,7 +14,6 @@ type Props = {
 }
 
 export default class Month extends React.Component<Props> {
-
   handleDayClick = (day: moment.Moment): void => {
     this.props.onDayClick(day);
   }
@@ -73,5 +71,4 @@ export default class Month extends React.Component<Props> {
       </div>
     );
   }
-
 }
