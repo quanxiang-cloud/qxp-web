@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useImperativeHandle, useRef } from 'react';
 import classnames from 'classnames';
 
 type Props = React.DetailedHTMLProps<
@@ -12,12 +12,17 @@ type Props = React.DetailedHTMLProps<
 
 function Checkbox(
   { className = '', label, indeterminate = false, onChange, ...inputProps }: Props,
-  ref?: React.Ref<HTMLInputElement>
+  ref?: any
 ): JSX.Element {
+  const inputRef = useRef<HTMLInputElement|null>(null);
+
+  useImperativeHandle(ref, () => ({
+    ref: inputRef,
+  }));
+
   useEffect(() => {
-    const input = document.querySelector('#checkbox');
-    if (input) {
-      (input as HTMLInputElement).indeterminate = indeterminate;
+    if (inputRef?.current) {
+      inputRef.current.indeterminate = indeterminate;
     }
   }, [indeterminate]);
 
@@ -25,8 +30,7 @@ function Checkbox(
     <label className={classnames('checkbox flex items-center', className)}>
       <input
         {...inputProps}
-        id='checkbox'
-        ref={ref}
+        ref={inputRef}
         type="checkbox"
         onChange={onChange}
         readOnly={!onChange}

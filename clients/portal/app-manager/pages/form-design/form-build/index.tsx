@@ -33,7 +33,7 @@ const FormPage = () => {
           🎬 查看新手指引
         </span>
       </div>
-      <FormBuilder store={store} className="flex-grow" />
+      {/* <FormBuilder store={store} className="flex-grow" /> */}
     </>
   );
 };

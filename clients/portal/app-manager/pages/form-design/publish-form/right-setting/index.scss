@@ -16,3 +16,29 @@
   border-top: 1px solid var(--gray-200);
   padding: 20px;
 }
+
+.pb-field-box {
+  border-radius: 12px;
+  background-color: #FFFFFF;
+}
+
+.pb-field-item-title {
+  height: 44px;
+  color: var(--gray-600);
+}
+
+.pb-field-item {
+  height: 56px;
+  color: var(--gray-900);
+}
+
+.pb-field-item, .pb-field-item-title {
+  display: grid;
+  padding: 0 24px;
+  align-items: center;
+  grid-template-columns: 3fr 1fr 1fr;
+  grid-column-gap: 16px;
+  border-bottom: 1px solid var(--gray-200);
+  font-size: 14px;
+  line-height: 22px;
+}
