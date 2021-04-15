@@ -43,7 +43,7 @@ function AppDropdown({ appListStore, appDetails }: Props) {
   return (
     <More contentClassName='app-global-header-drop-more' items={appListItems}>
       <div className='flex items-center cursor-pointer app-global-header-cur-app'>
-        <BgIcon className='mr-8' size={32} bgColor={bgColor} iconName={iconName} iconSize={20} />
+        <BgIcon className='mr-8' size={32} themeColor={bgColor} iconName={iconName} />
         <span>{appName}</span>
         <span className='ml-6 text-gray-500 mr-4'>({useStatus > 0 ? '已发布' : '未发布'})</span>
         <Icon name='expand_more' size={20} />

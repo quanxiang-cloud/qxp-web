@@ -32,7 +32,7 @@ function AppManagerEntry() {
             title="应用管理"
             desc="对企业的自建应用进行统一管理"
             itemRender={(
-              <BgIcon bgColor='amber' iconName='dashboard_customize' iconSize={32} size={48} />
+              <BgIcon themeColor='amber' iconName='dashboard_customize' size={48} />
             )}
             titleClassName="text-2 leading-8 font-bold mb-2"
             descClassName="leading-8"
