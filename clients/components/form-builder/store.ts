@@ -112,7 +112,7 @@ export default class FormBuilderStore {
         ...toSchema(toJS(configValue)),
         'x-index': index,
         'x-mega-props': {
-          labelAlign: 'top',
+          labelAlign: 'left',
         },
       };
 
@@ -131,11 +131,8 @@ export default class FormBuilderStore {
     const properties = Object.keys(originalProperties).reduce<Record<string, any>>((acc, key) => {
       const wrapperNode: ISchema = {
         type: 'object',
-        'x-component': 'FormFieldWrapper',
+        'x-component': 'mega-layout',
         'x-index': this.schema.properties?.[key]['x-index'],
-        'x-mega-props': {
-          labelAlign: 'top',
-        },
         properties: {
           [key]: this.schema.properties?.[key],
         } as { [key: string]: ISchema; },
