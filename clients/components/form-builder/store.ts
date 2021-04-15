@@ -55,7 +55,7 @@ function schemaToFields({ properties }: FormBuilder.Schema): Array<FormItem> {
   });
 
   return sortedKeys.map((key) => {
-    const componentName = properties[key]['x-component'];
+    const componentName = properties[key]['x-component']?.toLowerCase();
     if (!componentName || !registry.elements[componentName]) {
       // todo refactor this message
       logger.error('fatal! there is no x-component in schema:', properties[key]);
@@ -102,7 +102,7 @@ export default class FormBuilderStore {
     const properties = this.fields.reduce<Record<string, any>>((acc, field, index) => {
       const { fieldName, componentName, configValue } = field;
 
-      const { toSchema } = registry.elements[componentName] || {};
+      const { toSchema } = registry.elements[componentName.toLowerCase()] || {};
       if (!toSchema) {
         logger.error(`failed to find component: [${componentName}] in registry`);
       }
