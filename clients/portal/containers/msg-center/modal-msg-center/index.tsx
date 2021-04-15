@@ -5,7 +5,7 @@ import { useRouting } from '@portal/hooks';
 import Toolbar from './toolbar';
 import MsgBox from './msg-box';
 
-const ModalMsgCenter = ({ msgCenter }: Pick<MobxStores, any>) => {
+const ModalMsgCenter = ({ msgCenter }: Pick<MobxStores, 'msgCenter' | any>) => {
   const { msgCenterOpen, openMsgCenter } = msgCenter;
   const [, queryPage] = useRouting();
 

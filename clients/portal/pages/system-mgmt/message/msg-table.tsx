@@ -12,9 +12,9 @@ import Pagination from '@c/pagination';
 import Select from '@c/select';
 import Modal from '@c/modal';
 import Button from '@c/button';
-import { createMsg, deleteMsgById } from '@portal/pages/system-mgmt/api/message-mgmt';
+import { createMsg, deleteMsgById } from '@portal/api/message-mgmt';
 import PreviewModal, { ModalContent } from './preview-modal';
-import { getMsgById } from '@portal/pages/system-mgmt/api/message-mgmt';
+import { getMsgById } from '@portal/api/message-mgmt';
 
 import { Content as SendMessage } from '../send-message/index';
 
@@ -66,7 +66,7 @@ const EnumMessage = [
   },
 ];
 
-const MsgTable = ({ msgMgmt: store, refresh }: Props & Pick<MobxStores, any>) => {
+const MsgTable = ({ msgMgmt: store, refresh }: Props & Pick<MobxStores, 'msgMgmt' | any>) => {
   const data = useRecoilValue(Data);
   const [pageInfo, setPageInfo] = useRecoilState(PageInfo);
   const { isLoading, isError, isFetching } = useRecoilValue(RequestInfo);

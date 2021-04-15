@@ -27,7 +27,7 @@ interface Props {
   onClick?: (...args: any[]) => void;
 }
 
-const Types = ({ className, msgCenter }: Props & Pick<MobxStores, any>) => {
+const Types = ({ className, msgCenter }: Props & Pick<MobxStores, 'msgCenter' | any>) => {
   const { selectType, changeType, unReadCount }=msgCenter;
 
   const { announcement, systemMessage } = unReadCount;

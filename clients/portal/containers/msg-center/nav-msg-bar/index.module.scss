@@ -6,7 +6,7 @@
     margin-right: 35px;
     &:hover {
       background: var(--blue-100);
-      // @include as-btn;
+      border-radius: 8px 8px 8px 2px;
     }
 
     > button {
@@ -23,7 +23,7 @@
     color: #fff;
     border: none;
   }
-  
-  
+
+
 }
 

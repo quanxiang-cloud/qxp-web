@@ -1,7 +1,7 @@
 import React from 'react';
 import classNames from 'classnames';
 import { useQuery } from 'react-query';
-import { getMessages } from '@portal/pages/system-mgmt/api/message-center';
+import { getMessages } from '@portal/api/message-center';
 import Loading from '@c/loading';
 import Error from '@c/error';
 import MsgItem from '../msg-item';

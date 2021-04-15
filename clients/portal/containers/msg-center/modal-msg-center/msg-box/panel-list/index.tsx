@@ -7,7 +7,7 @@ import Loading from '@c/loading';
 import Error from '@c/error';
 import MsgItem from '@containers/msg-center/msg-item';
 import Toolbar from './toolbar';
-import { getMessages, deleteMsgByIds, setMsgAsReadByIds, getUnreadMsgCount } from '@portal/pages/system-mgmt/api/message-center';
+import { getMessages, deleteMsgByIds, setMsgAsReadByIds, getUnreadMsgCount } from '@portal/api/message-center';
 import { MsgType, MsgReadStatus } from '@portal/pages/system-mgmt/constants';
 import Pagination from '@c/pagination';
 import Modal from '@c/modal';
@@ -49,7 +49,7 @@ const urlParse = (_url: string) => {
   }
 };
 
-const PanelList = ({ msgCenter }: Props & Pick<MobxStores, any>) => {
+const PanelList = ({ msgCenter }: Props & Pick<MobxStores, 'msgCenter' | any>) => {
   const { paging, selectType, filterCheckUnread }=msgCenter;
   const getQueryParams=()=> {
     const params={

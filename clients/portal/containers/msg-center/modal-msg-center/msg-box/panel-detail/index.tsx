@@ -8,7 +8,7 @@ interface Props {
   className?: string;
 }
 
-const PanelDetail = ({ msgCenter }: Props & Pick<MobxStores, any>) => {
+const PanelDetail = ({ msgCenter }: Props & Pick<MobxStores, 'msgCenter' | any>) => {
   const { loadingOfGetDetail, messageDetail } = msgCenter;
 
   if (loadingOfGetDetail) return <Loading />;

@@ -1,6 +1,9 @@
 import React, { useEffect, useRef } from 'react';
 import classNames from 'classnames';
 import { inject, observer } from 'mobx-react';
+import { get } from 'lodash';
+import { useQuery } from 'react-query';
+import { getUnreadMsgCount } from '@portal/api/message-center';
 import Icon from '@c/icon';
 // import { io } from 'socket.io-client';
 
@@ -11,11 +14,13 @@ import { getQuery } from '@clients/utils';
 
 import styles from './index.module.scss';
 
-const NavMsgBar = ({ msgCenter }: Pick<MobxStores, any>): JSX.Element => {
+const NavMsgBar = ({ msgCenter: store }: Pick<MobxStores, 'msgCenter' | any>): JSX.Element => {
   const toggleRef = useRef(null);
   const msgBoxRef = useRef(null);
-
-  const { openUnreadMsgBox, unReadCount, msgBoxOpen, openMsgCenter } = msgCenter;
+  const { openUnreadMsgBox, unReadCount, msgBoxOpen, openMsgCenter } = store;
+  const { data: countUnreadMsg }=useQuery('count-unread-msg', getUnreadMsgCount, {
+    // cacheTime: -1,
+  });
 
   const handleClickOuter = (ev: MouseEvent) => {
     const { target } = ev;
@@ -27,6 +32,8 @@ const NavMsgBar = ({ msgCenter }: Pick<MobxStores, any>): JSX.Element => {
       openUnreadMsgBox(false);
     }
   };
+
+  store.setUnreadTypeCounts(get(countUnreadMsg, 'data.type_num', []));
 
   useEffect(() => {
     document.body.addEventListener('click', handleClickOuter);
@@ -83,7 +90,7 @@ const NavMsgBar = ({ msgCenter }: Pick<MobxStores, any>): JSX.Element => {
             name="notifications_active"
             size={20}
           />
-          <BtnBadge className={styles.count_btn} count={unReadCount.announcement+unReadCount.systemMessage}/>
+          <BtnBadge className={styles.count_btn} count={store.countUnread}/>
         </div>
         {renderUnreadMsgBox()}
       </div>

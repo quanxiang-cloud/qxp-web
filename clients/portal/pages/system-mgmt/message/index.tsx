@@ -36,7 +36,7 @@ const useDebounceState = (defaultState: any, timer: number, cb?: (params: any) =
   return [state, f];
 };
 
-const MessagesPage = ({ msgMgmt: msgStore }: Pick<MobxStores, any>) => {
+const MessagesPage = ({ msgMgmt: msgStore }: Pick<MobxStores, 'msgMgmt' | any>) => {
   // const { searchWord, setSearch }=msgStore;
   // const [inputValue, setInputValue] = useState<string>('');
   const [{ userInfo }] = usePortalGlobalValue();

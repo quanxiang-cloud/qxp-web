@@ -6,9 +6,9 @@ import MsgList from './msg-list';
 
 import styles from './index.module.scss';
 
-const UnreadMsgBox = React.forwardRef((props: Pick<MobxStores, any>, ref: any) => {
+const UnreadMsgBox = React.forwardRef(({ msgCenter }: Pick<MobxStores, 'msgCenter' | any>, ref: any) => {
   const [, queryPage]=useRouting();
-  const { openUnreadMsgBox, openMsgCenter, unReadCount }=props.msgCenter;
+  const { openUnreadMsgBox, openMsgCenter }=msgCenter;
 
   const toMsgCenter= (extParams?: object) => {
     openUnreadMsgBox(false);
@@ -22,7 +22,7 @@ const UnreadMsgBox = React.forwardRef((props: Pick<MobxStores, any>, ref: any) =
         <div className={classNames('text-h5', styles.title)}>
           <span>未读消息</span>
           <span className={styles.dot}/>
-          <span>{unReadCount.announcement+unReadCount.systemMessage}</span>
+          <span>{msgCenter.countUnread}</span>
         </div>
         <a onClick={()=>toMsgCenter({})} className='transition ease-linear text-1-dot-4 underline text-gray-600'>
           查看全部消息

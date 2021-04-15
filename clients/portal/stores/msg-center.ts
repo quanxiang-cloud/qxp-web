@@ -2,7 +2,7 @@
 import { observable, action, computed } from 'mobx';
 import { find, get } from 'lodash';
 import { MsgType } from '@portal/pages/system-mgmt/constants';
-import { getMessageDetail } from '@portal/pages/system-mgmt/api/message-center';
+import { getMessageDetail } from '@portal/api/message-center';
 
 class MsgCenter {
   @observable.shallow
@@ -40,10 +40,17 @@ class MsgCenter {
 
   @computed
   get countUnread() {
-    const counts = this.countUnreadByType.slice();
-    const countSystem = get(find(counts, { sort: MsgType.system }), 'total', 0);
-    const countNotify = get(find(counts, { sort: MsgType.notify }), 'total', 0);
-    return countSystem + countNotify;
+    return this.countUnreadSystemMsg + this.countUnreadNotifyMsg;
+  }
+
+  @computed
+  get countUnreadSystemMsg() {
+    return get(find(this.countUnreadByType, { sort: MsgType.system }), 'total', 0);
+  }
+
+  @computed
+  get countUnreadNotifyMsg() {
+    return get(find(this.countUnreadByType, { sort: MsgType.notify }), 'total', 0);
   }
 
   @computed
@@ -67,7 +74,7 @@ class MsgCenter {
   }
 
   @action
-  setUnreadFilter=(unread: boolean)=> {
+  setUnreadFilter = (unread: boolean) => {
     this.setFilter('unread', unread);
     this.paging = {
       limit: 10,
@@ -98,10 +105,10 @@ class MsgCenter {
   @action
   showMessageDetail(id: string) {
     this.loadingOfGetDetail = true;
-    getMessageDetail(id)
-      .then((response)=>{
+    getMessageDetail(id, false)
+      .then((response) => {
         this.loadingOfGetDetail = false;
-        if (response.code==0) {
+        if (response.code == 0) {
           this.messageDetail = response.data;
         }
       });
@@ -110,6 +117,11 @@ class MsgCenter {
   @action
   setUnReadCount(resetValue: any) {
     this.unReadCount = resetValue;
+  }
+
+  @action
+  reset = () => {
+
   }
 }
 

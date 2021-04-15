@@ -6,7 +6,7 @@ import { useQueryClient } from 'react-query';
 import Icon from '@c/icon';
 import { MsgReadStatus } from '@portal/pages/system-mgmt/constants';
 
-const Toolbar = ({ msgCenter }: Pick<MobxStores, any>) => {
+const Toolbar = ({ msgCenter }: Pick<MobxStores, 'msgCenter' | any>) => {
   const { countUnread, filterCheckUnread, setUnreadFilter }=msgCenter;
   const queryClient=useQueryClient();
 
