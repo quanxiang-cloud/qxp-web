@@ -1,6 +1,7 @@
 .qxp-table-wrapper {
   .qxp-table {
     width: 100%;
+    table-layout: fixed;
 
     thead>tr>.qxp-table-th {
       position: sticky;

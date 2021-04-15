@@ -26,7 +26,30 @@ function AppAdmin() {
     fetchAppAdminUsers(params).then((res) => {
       setLoading(false);
       setTotal(res.data.total_count);
-      setAppAdminList(res.data.data || []);
+      setAppAdminList(res.data.data || [
+        {
+          id: '1',
+          userName: '谭杰',
+          a: '1',
+          b: '2',
+          c: '3',
+          d: '4',
+          phone: '4564567897899',
+          email: '384759564@qq.com',
+          dep: { departmentName: 'fasdfa' },
+        },
+        {
+          id: '2',
+          userName: '谭杰',
+          a: '1',
+          b: '2',
+          c: '3',
+          d: '4',
+          phone: '4564567897899',
+          email: '384759564@qq.com',
+          dep: { departmentName: 'fasdfa' },
+        },
+      ]);
     });
   };
 
@@ -65,10 +88,34 @@ function AppAdmin() {
     {
       id: 'phone',
       Header: '手机号',
+      fixed: true,
+      width: 200,
       accessor: 'phone',
     },
     {
       id: 'email',
+      Header: '邮箱',
+      fixed: true,
+      width: 200,
+      accessor: 'email',
+    },
+    {
+      id: 'a',
+      Header: '邮箱',
+      accessor: 'email',
+    },
+    {
+      id: 'b',
+      Header: '邮箱',
+      accessor: 'email',
+    },
+    {
+      id: 'c',
+      Header: '邮箱',
+      accessor: 'email',
+    },
+    {
+      id: 'd',
       Header: '邮箱',
       accessor: 'email',
     },
@@ -107,16 +154,12 @@ function AppAdmin() {
         <Table
           showCheckBox
           selectKey='id'
-          selectedRowKeys={['00896f2e-17f5-4888-9236-d60608a19f65']}
+          // selectedRowKeys={['00896f2e-17f5-4888-9236-d60608a19f65']}
           style={{ maxHeight: 'calc(100vh - 272px)' }}
           columns={columns}
           data={appAdminList}
           loading={loading}
-          pageSize={params.limit}
-          currentPage={params.page}
-          total={total}
           onSelectChange={handleSelectChange}
-          onPageChange={(page: number, limit: number) => handleChangeParams({ page, limit })}
         />
         {employeeVisible && (
           <EmployeeOrDepartmentPickerModal

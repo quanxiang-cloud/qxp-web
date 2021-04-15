@@ -36,9 +36,14 @@
   display: grid;
   padding: 0 24px;
   align-items: center;
-  grid-template-columns: 3fr 1fr 1fr;
+  justify-items: center;
+  grid-template-columns: auto 80px 80px;
   grid-column-gap: 16px;
   border-bottom: 1px solid var(--gray-200);
   font-size: 14px;
   line-height: 22px;
+
+  &> span:first-of-type {
+    justify-self: start;
+  }
 }
