@@ -131,7 +131,7 @@ export default class FormBuilderStore {
     const properties = Object.keys(originalProperties).reduce<Record<string, any>>((acc, key) => {
       const wrapperNode: ISchema = {
         type: 'object',
-        'x-component': 'mega-layout',
+        'x-component': 'FormFieldWrapper',
         'x-index': this.schema.properties?.[key]['x-index'],
         properties: {
           [key]: this.schema.properties?.[key],
@@ -148,6 +148,10 @@ export default class FormBuilderStore {
       title: '',
       type: 'object',
       properties: properties,
+      // 'x-component': 'mega-layout',
+      // 'x-mega-props': {
+      //   labelAlign: 'top',
+      // },
     };
   }
 
