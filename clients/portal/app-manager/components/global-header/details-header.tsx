@@ -19,7 +19,7 @@ function DetailsHeader({ appDetailsStore }: DetailsHeaderProps) {
   const { updateAppStatus } = appDetailsStore;
 
   const goAppSetting = () => {
-    history.push('/appManager/setting/info/' + appDetailsStore.appDetails.id);
+    history.push(`/apps/${appDetailsStore.appDetails.id}/setting/info`);
   };
 
   const statusTipsContent = (isPublish: boolean) => {
@@ -46,7 +46,7 @@ function DetailsHeader({ appDetailsStore }: DetailsHeaderProps) {
   return (
     <div className="app-global-header app-details-header">
       <div className='flex items-center'>
-        <NavButton {...{ name: '应用管理', icon: 'apps', inside: true, url: '/appManager/list' }} />
+        <NavButton {...{ name: '应用管理', icon: 'apps', inside: true, url: '/apps/list' }} />
         <span className='mr-16 ml-8'>/</span>
         <AppDropdown appDetails={appDetailsStore.appDetails} />
       </div>

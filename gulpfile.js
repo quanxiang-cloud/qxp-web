@@ -63,14 +63,7 @@ exports.webpack = (done) => {
 
 exports.default = gulp.parallel(buildAssets,
   () => {
-    gulp.watch(
-      ['./webpack.config.js'],
-      { ignoreInitial: false },
-      gulp.series((done) => {
-        runWebpack(webpackConfig({ mode: 'development' })).then(done);
-      })
-    );
-
+    runWebpack(webpackConfig({ mode: 'development' }));
     portalServer = spawn('air');
     portalServer.stderr.pipe(process.stderr);
     portalServer.stdout.pipe(process.stdout);

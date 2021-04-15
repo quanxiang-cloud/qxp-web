@@ -44,7 +44,6 @@ module.exports = function(env) {
       rules: [
         {
           test: /\.s[ac]ss$/,
-          exclude: /node_modules/,
           use: [
             MiniCssExtractPlugin.loader,
             { loader: 'css-loader', options: { url: false } },
@@ -64,6 +63,17 @@ module.exports = function(env) {
           test: /\.ts(x?)$/,
           exclude: /node_modules/,
           use: [{ loader: 'ts-loader' }],
+        },
+        // todo remove this
+        {
+          test: /\.js(x?)$/,
+          exclude: /node_modules/,
+          use: {
+            loader: "babel-loader",
+            options: {
+              presets: ['@babel/preset-env', '@babel/preset-react']
+            }
+          }
         },
         // All output '.js' files will have any sourcemaps re-processed by 'source-map-loader'.
         {
@@ -122,6 +132,9 @@ module.exports = function(env) {
         chunks: ['app-manager'],
         template: './clients/templates/app-manager.html',
         filename: `${__dirname}/dist/templates/app-manager.html`,
+      }),
+      new HtmlWebpackPlugin({
+        inject: false,
         chunks: ['retrieve-password'],
         template: './clients/templates/retrieve-password.html',
         filename: `${__dirname}/dist/templates/retrieve-password.html`,

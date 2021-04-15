@@ -18,7 +18,7 @@ function FormDesignHeader() {
   const history = useHistory();
 
   const tabChange = (tabKey: string) => {
-    history.replace('/appManager/formDesign/' + tabKey);
+    history.replace('/apps/formDesign/' + tabKey);
   };
 
   return (

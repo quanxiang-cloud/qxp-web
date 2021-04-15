@@ -57,9 +57,9 @@ export default function Routes(): JSX.Element {
     return <Loading desc="加载中..." className="w-screen h-screen" />;
   }
 
-  if (!funcs || !data?.total || (funcs && !funcs.includes('application'))) {
-    return <Error desc="您没有权限, 请联系管理员..." />;
-  }
+  // if (!funcs || !data?.total || (funcs && !funcs.includes('application'))) {
+  //   return <Error desc="您没有权限, 请联系管理员..." />;
+  // }
 
   return (
     <>

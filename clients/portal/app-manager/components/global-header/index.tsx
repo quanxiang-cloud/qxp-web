@@ -6,8 +6,8 @@ import DetailsHeader from './details-header';
 import './index.scss';
 
 const HEADER_LIST = [
-  { key: 'details', urls: ['/appManager/details', '/appManager/setting'] },
-  { key: 'none', urls: ['/appManager/formDesign'] },
+  { key: 'details', urls: ['/apps/details', '/apps/setting'] },
+  { key: 'none', urls: ['/apps/formDesign'] },
 ];
 
 function getHeaderType(path: string) {

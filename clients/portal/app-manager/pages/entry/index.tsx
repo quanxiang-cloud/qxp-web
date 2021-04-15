@@ -14,7 +14,7 @@ const MENU = [
     id: 'MyApp',
     icon: 'dashboard_customize',
     name: '我的应用',
-    url: '/appManager/list',
+    url: '/apps/list',
   },
   // {
   //   id: 'PlatformSetting',
@@ -41,7 +41,7 @@ function AppManagerEntry() {
       )} menuData={MENU} />
       <div className="app-right-box bg-opacity-50 bg-white">
         <Switch>
-          <Route exact path="/appManager/list" component={MyApp} />
+          <Route exact path="/apps/list" component={MyApp} />
         </Switch>
       </div>
     </div>

@@ -28,13 +28,13 @@ function AppSetting({ appDetailsStore }: Props) {
       id: 'info',
       icon: 'description',
       name: '应用信息',
-      url: '/appManager/setting/info/' + appId,
+      url: `/apps/${appId}/setting/info`,
     },
     {
       id: 'adminUsers',
       icon: 'admin_panel_settings',
       name: '应用管理员',
-      url: '/appManager/setting/adminUsers/' + appId,
+      url: `/apps/${appId}/setting/adminUsers`,
     },
   ];
 
@@ -53,8 +53,8 @@ function AppSetting({ appDetailsStore }: Props) {
       )} menuData={MENU} />
       <div className="app-right-box bg-white">
         <Switch>
-          <Route exact path="/appManager/setting/info/:appId" component={AppInfo} />
-          <Route exact path="/appManager/setting/adminUsers/:appId" component={AppAdmin} />
+          <Route exact path="/apps/:appId/setting/info" component={AppInfo} />
+          <Route exact path="/apps/:appId/setting/adminUsers" component={AppAdmin} />
         </Switch>
       </div>
     </div>

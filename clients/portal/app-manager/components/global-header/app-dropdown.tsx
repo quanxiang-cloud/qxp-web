@@ -21,7 +21,7 @@ function AppDropdown({ appListStore, appDetails }: Props) {
   }, []);
 
   const handleChange = (appId: string) => {
-    history.replace(`/appManager/details/${appId}`);
+    history.replace(`/apps/${appId}`);
   };
 
   const appListItems: JSX.Element[] = React.useMemo(() => {

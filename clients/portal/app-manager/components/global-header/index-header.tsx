@@ -8,7 +8,7 @@ import NavButton from '../nav-button';
 import NotifyIcon from './notify-icon';
 
 const NAV_LIST: Nav[] = [
-  { name: '应用管理', icon: 'dashboard_customize', url: '/appManager/list', active: true },
+  { name: '应用管理', icon: 'dashboard_customize', url: '/apps/list', active: true },
   { name: '访问控制', icon: 'add_task', url: '/access-control' },
   { name: '系统管理', icon: 'settings', url: '/appManager' },
 ];
