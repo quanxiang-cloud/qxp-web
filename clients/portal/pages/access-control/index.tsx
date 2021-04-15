@@ -55,7 +55,7 @@ export default function Index() {
           </div>
         )}
         menuData={MENU}
-        defaultActiveLink={{ basePath: '/access-control', subPath: '/access-control/departments-employees' }}
+        defaultActiveLink={{ basePath: '/access-control', menuId: 'departments-employees' }}
         />
       </div>
       <div className="h-full flex-grow bg-white rounded-12 overflow-hidden">
