@@ -304,7 +304,7 @@ export default function Employees({
         {
           (employeesList?.data && employeesList?.data.length > 0) && (
             <Pagination
-              pageNumber={pageParams.page}
+              current={pageParams.page}
               total={employeesList?.total || 0}
               pageSize={pageParams.limit}
               onChange={handlePageChange}

@@ -12,7 +12,7 @@ function Pager({ page, active, onClick }: Props) {
   return (
     <li
       onClick={onClick}
-      className={classnames('pagination-page', { active })}
+      className={classnames('pagination-comp-page', { active })}
     >
       {page}
     </li>
