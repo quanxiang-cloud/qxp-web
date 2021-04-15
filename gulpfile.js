@@ -39,10 +39,10 @@ function copyTemplates() {
     .pipe(gulp.dest('./dist/templates'));
 }
 
-function copyImages() {
+function copyAssets() {
   return gulp
-    .src('./clients/assets/images/**/*')
-    .pipe(gulp.dest('./dist/images'));
+    .src('./clients/assets/**/*')
+    .pipe(gulp.dest('./dist'));
 }
 
 function buildIcons() {
@@ -50,7 +50,7 @@ function buildIcons() {
 }
 
 const buildAssets = gulp.parallel(
-  copyImages,
+  copyAssets,
   copyTemplates,
   buildIcons,
 );
