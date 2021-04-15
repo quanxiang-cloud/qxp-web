@@ -107,6 +107,7 @@ function AppAdmin() {
         <Table
           showCheckBox
           selectKey='id'
+          selectedRowKeys={['00896f2e-17f5-4888-9236-d60608a19f65']}
           style={{ maxHeight: 'calc(100vh - 272px)' }}
           columns={columns}
           data={appAdminList}

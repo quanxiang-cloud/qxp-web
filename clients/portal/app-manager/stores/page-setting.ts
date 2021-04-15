@@ -45,7 +45,7 @@ class PageSettingStore {
   ];
 
   @action
-  deleteRight = (_id: string) => {
+  deleteRight = (_id: number) => {
     this.rightList = this.rightList.filter(({ id }) => id !== _id);
   }
 }
