@@ -1,6 +1,7 @@
 .qxp-table-wrapper {
   .qxp-table {
     width: 100%;
+    table-layout: fixed;
 
     thead>tr>.qxp-table-th {
       position: sticky;
@@ -37,10 +38,25 @@
     overflow: auto;
   }
 
+  .qxp-table-content-loading {
+    overflow: hidden;
+  }
+
+  .qxp-table-fixed {
+    position: sticky;
+    z-index: 1;
+  }
+
   .qxp-table-total-tips {
     font-size: 12px;
     line-height: 20px;
     color: var(--gray-600);
+  }
+
+  .qxp-table-tr {
+    &:hover .qxp-table-td {
+      background-color: var(--gray-100);
+    }
   }
 }
 

@@ -7,6 +7,8 @@ import BasicInfo from './basic-info';
 import Authorized from './authorized';
 import FieldPermissions from './field-permissions';
 
+import './index.scss';
+
 function RightSetting() {
   return (
     <div>

@@ -8,7 +8,6 @@ import Calendar from '@c/calendar';
 import { presetOptions } from './constants';
 import { getPresetDate } from './utils';
 
-
 type Props = {
   range: string;
   rangeType: string;
@@ -20,7 +19,6 @@ type Props = {
 
 @observer
 export default class Year extends React.Component<Props> {
-
   @observable startDate: moment.Moment | null;
   @observable endDate: moment.Moment | null;
   @observable openCalendar: '' | 'startDate' | 'endDate' = '';
@@ -129,10 +127,10 @@ export default class Year extends React.Component<Props> {
     if (this.openCalendar) {
       const { minDate, maxDate } = this.props;
       const selectedDate = this.openCalendar === 'startDate' ? this.startDate : this.endDate;
-      const min = this.openCalendar === 'endDate' && this.startDate
-        ? this.startDate.format() : minDate;
-      const max = this.openCalendar === 'startDate' && this.endDate
-        ? this.endDate.format() : maxDate;
+      const min = this.openCalendar === 'endDate' && this.startDate ?
+        this.startDate.format() : minDate;
+      const max = this.openCalendar === 'startDate' && this.endDate ?
+        this.endDate.format() : maxDate;
 
       return (
         <>
@@ -166,5 +164,4 @@ export default class Year extends React.Component<Props> {
       </div>
     );
   }
-
 }
