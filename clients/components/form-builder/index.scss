@@ -52,6 +52,57 @@
 
 .form-settings-panel__panel {
   padding: 0 20px;
+  .md {
+    margin-bottom: 24px;
+  }
+  .item-label {
+    margin-bottom: 8px;
+    color: #475569;
+    font-size: 14px;
+  }
+  .layout-content {
+    box-sizing: border-box;
+    display: flex;
+    justify-content: space-between;
+    .content-item {
+      padding: 12px;
+      width: 120px;
+      height: 84px;
+      background-color: #FFFFFF;
+      // border: 1px solid #375FF3;
+      border: 1px solid #CBD5E1;
+      box-sizing: border-box;
+      border-radius: 8px;
+    }
+    .add-panel {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 4px 32px;
+      width: 100%;
+      height: 32px;
+      line-height: 32px;
+      text-align: center;
+      font-size: 14px;
+      border: 1px dotted #CBD5E1;
+      border-radius: 8px 2px 8px 8px;
+    }
+  }
+  .form-label {
+    display: inline-block;
+    margin-right: 2px;
+    width: 24px;
+    height: 16px;
+    background: #CBD5E1;
+    border-radius: 2px;
+  }
+  .form-item-body {
+    display: inline-block;
+    width: 68px;
+    height: 16px;
+    background: #F1F5F9;
+    border-radius: 2px;
+  }
 }
 
 .form-builder .form-builder-canvas {
