@@ -49,7 +49,7 @@ function FormLabelConfig(): JSX.Element {
 
   return (
     <>
-      <div className="pt-8">
+      <div className="pt-6">
         <div className="pb-24">
           <div className="item-title">字段标题位置</div>
           <div className="layout-content">
