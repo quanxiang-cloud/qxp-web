@@ -38,6 +38,15 @@
     overflow: auto;
   }
 
+  .qxp-table-content-loading {
+    overflow: hidden;
+  }
+
+  .qxp-table-fixed {
+    position: sticky;
+    z-index: 1;
+  }
+
   .qxp-table-total-tips {
     font-size: 12px;
     line-height: 20px;

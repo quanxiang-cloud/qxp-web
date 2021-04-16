@@ -35,20 +35,6 @@ interface Props<T extends Record<string, unknown>> {
   onSelectChange?: (selected: Array<T>) => void;
 }
 
-const FIXED_ROW: React.CSSProperties = { position: 'sticky', left: '0px', zIndex: 1 };
-
-const getDefaultSelectMap = (keys: string[]|undefined) => {
-  if (!keys) {
-    return {};
-  }
-
-  const keyMap: any = {};
-  keys.forEach((key) => {
-    keyMap[key] = true;
-  });
-  return keyMap;
-};
-
 const IndeterminateCheckbox = React.forwardRef(
   ({
     indeterminate,
@@ -149,7 +135,15 @@ export default function Table<T extends Record<string, unknown>>({
 
   return (
     <div className="qxp-table-wrapper">
-      <div className={classnames('qxp-table-content', className)} style={style}>
+      <div
+        className={classnames(
+          loading ?
+            'qxp-table-content-loading' :
+            'qxp-table-content',
+          className
+        )}
+        style={style}
+      >
         <table className='qxp-table' {...getTableProps()}>
           <colgroup>
             {flatHeaders.map((column: Column) => (
@@ -167,7 +161,9 @@ export default function Table<T extends Record<string, unknown>>({
                     {...column.getHeaderProps()}
                     key={column.id}
                     style={positionMap[column.id]}
-                    className='qxp-table-th'
+                    className={classnames('qxp-table-th',
+                      { 'qxp-table-fixed': column.fixed }
+                    )}
                   >
                     {column.render('Header')}
                   </th>
@@ -189,7 +185,9 @@ export default function Table<T extends Record<string, unknown>>({
                       <td
                         {...cell.getCellProps()}
                         key={cell.column.id}
-                        className='qxp-table-td'
+                        className={classnames('qxp-table-td',
+                          { 'qxp-table-fixed': cell.column.fixed }
+                        )}
                         style={positionMap[cell.column.id]}
                       >
                         {cell.render('Cell')}

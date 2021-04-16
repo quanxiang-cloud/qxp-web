@@ -37,7 +37,7 @@ export function useComputeColumnsPosition<T extends Record<string, unknown>>(
 
       const _marginLeft = marginLeft;
       marginLeft += Number(width);
-      _positionMap[id] = { left: _marginLeft + 'px', position: 'sticky', zIndex: 1 };
+      _positionMap[id] = { left: _marginLeft + 'px' };
     });
 
     const rightKeySort = Object.keys(_positionMap).reverse();
