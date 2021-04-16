@@ -17,11 +17,11 @@ type Props = {
 
 @observer
 export default class Calendar extends React.Component<Props> {
+  @observable displayDate: moment.Moment;
+
   static defaultProps = {
     picker: 'day',
   };
-
-  @observable displayDate: moment.Moment;
 
   constructor(props: Props) {
     super(props);

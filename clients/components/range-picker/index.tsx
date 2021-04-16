@@ -25,16 +25,16 @@ type RangeType = 'customized' | 'day' | 'week' | 'month';
 
 @observer
 export default class RangePicker extends React.Component<Props> {
-  static defaultProps = {
-    dateFormat: 'YYYY-MM-DD',
-  };
-
   @observable range = '';
   @observable rangeType: RangeType = 'customized';
   @observable _rangeType: RangeType = 'customized';
 
   popperRef = React.createRef<Popper>();
   reference = React.createRef<HTMLDivElement>();
+
+  static defaultProps = {
+    dateFormat: 'YYYY-MM-DD',
+  };
 
   constructor(props: Props) {
     super(props);
