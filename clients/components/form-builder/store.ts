@@ -176,7 +176,8 @@ export default class FormBuilderStore {
   @action
   append(field: SourceElement<any>) {
     this.fields.push({
-      componentName: field.componentName.toLowerCase(),
+      ...field,
+      // componentName: field.componentName.toLowerCase(), //Need change componentName to lowercase
       configValue: field.defaultConfig,
       fieldName: nanoid(8),
     });
