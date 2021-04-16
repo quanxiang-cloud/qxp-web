@@ -67,11 +67,9 @@ function FormLabelConfig(): JSX.Element {
             <span>表单提交校验规则:</span>
             <Icon name="info" />
           </h4>
-          <div className="layout-content">
-            <div className="add-panel">
-              <Icon name="add" />
-              <span>添加表单校验规则</span>
-            </div>
+          <div className='page-setting-filter'>
+            <Icon className='mr-8' name='add' size={20} />
+            添加表单校验规则
           </div>
         </div>
       </div>
