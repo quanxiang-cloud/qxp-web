@@ -69,10 +69,31 @@
       width: 120px;
       height: 84px;
       background-color: #FFFFFF;
-      // border: 1px solid #375FF3;
       border: 1px solid #CBD5E1;
       box-sizing: border-box;
       border-radius: 8px;
+    }
+    .ok-icon{
+      display: none;
+    }
+    .item-focus {
+      position: relative;
+      border-color: #375FF3;
+      .rectangle {
+        position: absolute;
+        top: 0;
+        right:0;
+        border: 16px solid transparent;
+        border-top-right-radius: 6px;
+        border-top-color: #375FF3;
+        border-right-color: #375FF3;
+      }
+      .ok-icon {
+        display: block;
+        position: absolute;
+        top: 2px;
+        right: 4px;
+      }
     }
     .add-panel {
       display: flex;
