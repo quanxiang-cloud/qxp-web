@@ -93,6 +93,11 @@ body{
   margin-right: 8px;
 }
 
+.msg_type_tip_notice{
+  background: #FFFBEB;
+  color: #D97706;
+}
+
 body{
 
   .modal_card_foot{
@@ -105,3 +110,21 @@ body{
     box-sizing: border-box;
   }
 }
+
+.options{
+  color: #0F172A;
+  font-weight: 400;
+}
+
+.text_blue{
+  color:var(--blue-600, #375FF3);
+}
+
+.status_icon{
+  margin-left: 4px;
+}
+
+.menu{
+  min-width: 160px;
+}
+

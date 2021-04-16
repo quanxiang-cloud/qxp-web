@@ -48,7 +48,8 @@ $select-option-height: 28px;
   // todo mixin
   .svg-icon[data-name="check"] {
     color: var(--primary-color);
-    fill: var(--green-400);
+    // fill: var(--green-400);
+    fill: currentColor;
   }
 
   &:hover {
