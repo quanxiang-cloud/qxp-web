@@ -34,12 +34,12 @@ function PageNav({ appPagesStore }: Props) {
   const delPage = () => {
     deletePage(curEditNode);
     closeModal();
-  }
+  };
 
   const handleAddPage = (pageInfo) => {
     addPage(pageInfo);
     closeModal();
-  }
+  };
 
   const closeModal = () => {
     setModalType('');
@@ -53,8 +53,8 @@ function PageNav({ appPagesStore }: Props) {
 
   const onDrop = (e: TreeNode<any>, a: TreeNode<any>) => {
     console.log('e, a: ', e, a);
-    return true
-  }
+    return true;
+  };
 
   const PageItemRender = useCallback((props) => {
     return (<PageItem {...props} onMenuClick={handleMenuClick} />);

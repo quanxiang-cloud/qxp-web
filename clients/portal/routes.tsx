@@ -52,7 +52,6 @@ export default function Routes(): JSX.Element {
     }));
   }, [funcs, data?.roles]);
 
-
   if (funcsIsLoading || rolesIsLoading) {
     return <Loading desc="加载中..." className="w-screen h-screen" />;
   }

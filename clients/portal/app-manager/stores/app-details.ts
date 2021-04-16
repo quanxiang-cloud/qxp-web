@@ -8,7 +8,7 @@ class AppDetailsStore {
   destroyFetchAppDetails: () => void;
   constructor(rootStore: any) {
     this.rootStore = rootStore;
-    this.destroyFetchAppDetails = reaction(() => this.appId, this.fetchAppDetails)
+    this.destroyFetchAppDetails = reaction(() => this.appId, this.fetchAppDetails);
   }
 
   @observable appDetails: any = {};

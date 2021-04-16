@@ -76,6 +76,7 @@ export default class FormBuilderStore {
   @observable fields: Array<FormItem>;
   @observable activeFieldName = '';
   @observable activeFieldWrapperName = '';
+  @observable labelAlign = 'left';
 
   constructor({ schema }: Props) {
     this.fields = schemaToFields(schema);
@@ -111,9 +112,6 @@ export default class FormBuilderStore {
         // convert observable value to pure js object for debugging
         ...toSchema(toJS(configValue)),
         'x-index': index,
-        'x-mega-props': {
-          labelAlign: 'left',
-        },
       };
 
       return acc;
@@ -145,14 +143,22 @@ export default class FormBuilderStore {
     }, {});
 
     return {
-      title: '',
       type: 'object',
-      properties: properties,
-      // 'x-component': 'mega-layout',
-      // 'x-mega-props': {
-      //   labelAlign: 'top',
-      // },
+      properties: {
+        FILEDS: {
+          type: 'object',
+          'x-component': 'mega-layout',
+          'x-component-props': {
+            labelAlign: this.labelAlign,
+          },
+          properties: properties,
+        },
+      },
     };
+  }
+
+  @action updateLabelAlign(labelAlign: 'left' | 'right' | 'top') {
+    this.labelAlign = labelAlign;
   }
 
   @action
@@ -171,6 +177,7 @@ export default class FormBuilderStore {
   append(field: SourceElement<any>) {
     this.fields.push({
       ...field,
+      // componentName: field.componentName.toLowerCase(), //Need change componentName to lowercase
       configValue: field.defaultConfig,
       fieldName: nanoid(8),
     });
