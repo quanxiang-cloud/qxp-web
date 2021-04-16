@@ -65,7 +65,7 @@
 
     .msgItem {
       position: relative;
-      left: -10px;
+      //left: -10px;
       padding: 0;
       padding-top: 10px;
       padding-bottom: 10px;
@@ -109,6 +109,8 @@
   }
 
   .detailPanel {
+    height: calc(100vh - 120px);
+    overflow: scroll;
     .noData {
       display: flex;
       justify-content: center;
@@ -137,12 +139,28 @@
 
   .message_list{
     flex: 1;
-    border-bottom: 1px solid var(--gray-200);
+    //border-bottom: 1px solid var(--gray-200);
     margin-bottom: 12px;
 
     :global{
       .table-thead{
         display: none;
+      }
+
+      .table table .table-tbody > tr.table-row-selected td {
+        background-color: #F1F5F9;
+        &::before {
+          background-color: transparent;
+        }
+        &::after {
+          background-color: transparent;
+        }
+      }
+      .table table .table-tbody > tr.table-row-selected td:first-child {
+        border-left: none;
+      }
+      .table table .table-tbody > tr.table-row-selected td:last-child {
+        border-right: none;
       }
     }
   }

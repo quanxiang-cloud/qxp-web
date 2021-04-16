@@ -10,11 +10,11 @@ import Pager from './pager';
 import './index.scss';
 
 export interface Props {
-  pageNumber?: number;
+  current?: number;
   total?: number;
   hideOnSinglePage?: boolean;
   pageSize?: number;
-  onChange?: (pageNumber: number, pageSize: number) => void;
+  onChange?: (current: number, pageSize: number) => void;
   showSizeChanger?: boolean;
   pageSizeOptions?: number[];
   showQuickJumper?: boolean;
@@ -24,7 +24,7 @@ export interface Props {
 }
 
 function Pagination({
-  pageNumber = 1,
+  current = 1,
   total = 0,
   pageSize = 10,
   hideOnSinglePage,
@@ -41,7 +41,7 @@ function Pagination({
   }
 
   const [pageParams, setPageParams] = React.useState({
-    current: pageNumber || 0,
+    current: current || 0,
     _current: '',
     pageSize: pageSize || 10,
   });
@@ -138,7 +138,7 @@ function Pagination({
 
   const prevIcon = (
     <li
-      className={classnames('pagination-page', { 'pagination-disabled': pageParams.current === 1 })}
+      className={classnames('pagination-comp-page', { 'pagination-comp-disabled': pageParams.current === 1 })}
       onClick={handPrev}>
       <SvgIcon name="chevron_left" />
     </li>
@@ -146,8 +146,8 @@ function Pagination({
 
   const nextIcon = (
     <li
-      className={classnames('pagination-page', {
-        'pagination-disabled': pageParams.current === calcPage(),
+      className={classnames('pagination-comp-page', {
+        'pagination-comp-disabled': pageParams.current === calcPage(),
       })}
       onClick={handleNext}>
       <SvgIcon name="chevron_right" />
@@ -180,14 +180,14 @@ function Pagination({
     firstPager = (<Pager key={1} page={1} active={false} onClick={() => handleChange(1)} />);
     jumpPrev = (
       <li key="jumpPrev"
-        className="pagination-page pagination-jump pagination-jump-prev" onClick={handleJumpPrev}>
+        className="pagination-comp-page pagination-comp-jump pagination-comp-jump-prev" onClick={handleJumpPrev}>
         <SvgIcon className="icon" name="more_horiz" />
         <SvgIcon className="prev" name="double_arrow"
           color="#375FF3" style={{ transform: 'rotate(180deg)' }} />
       </li>);
     jumpNext = (
       <li key="jumpNext"
-        className="pagination-page pagination-jump pagination-jump-next" onClick={handleJumpNext}>
+        className="pagination-comp-page pagination-comp-jump pagination-comp-jump-next" onClick={handleJumpNext}>
         <SvgIcon className="icon" name="more_horiz" />
         <SvgIcon className="next" name="double_arrow" color="#375FF3" />
       </li>);
@@ -276,7 +276,7 @@ function Pagination({
       <div>
         {totalText}
       </div>
-      <ul className={classnames('pagination', className)}>
+      <ul className={classnames('pagination-comp', className)}>
         {prevIcon}
         {pagerList}
         {nextIcon}

@@ -1,9 +1,22 @@
+:global {
+  .msg-item-active {
+    background-color: #F0F6FF;
+    td {
+      background-color: #F0F6FF !important;
+    }
+  }
+  .msg-item-selected {
+
+  }
+}
+
 .msgItem {
   display: flex;
   flex-direction: column;
   padding: 8px 24px;
   height: 62px;
   cursor: pointer;
+
   .msgItemInner{
     margin-left: 8px;
   }

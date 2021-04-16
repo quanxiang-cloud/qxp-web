@@ -3,15 +3,17 @@ import classNames from 'classnames';
 import { inject, observer } from 'mobx-react';
 import { Message, Table } from '@QCFE/lego-ui';
 import { useQuery } from 'react-query';
+import { get } from 'lodash';
 import Loading from '@c/loading';
 import Error from '@c/error';
 import MsgItem from '@containers/msg-center/msg-item';
 import Toolbar from './toolbar';
-import { getMessages, deleteMsgByIds, setMsgAsReadByIds, getUnreadMsgCount } from '@portal/api/message-center';
+import { getMessageList, deleteMsgByIds, setMsgAsReadByIds, getUnreadMsgCount } from '@portal/api/message-center';
 import { MsgType, MsgReadStatus } from '@portal/pages/system-mgmt/constants';
 import Pagination from '@c/pagination';
 import Modal from '@c/modal';
 import Button from '@c/button';
+import { useRouting } from '@portal/hooks';
 
 import styles from '../index.module.scss';
 
@@ -19,38 +21,9 @@ interface Props {
   className?: string;
 }
 
-const cols = [
-  {
-    title: '',
-    render: (msg: Qxp.MsgItem) => {
-      return <MsgItem className={styles.msgItem} {...msg} hideType/>;
-    },
-  },
-];
-
-const urlParse = (_url: string) => {
-  const url = window.decodeURIComponent(_url);
-  try {
-    const paramsStr = url.split('?')[1];
-
-    const keyValList = paramsStr.split('&');
-
-    const param : any = {};
-
-    keyValList.map((itm) => {
-      const [key, value] = itm.split('=');
-
-      param[key] = value;
-    });
-
-    return param;
-  } catch (e) {
-    return {};
-  }
-};
-
 const PanelList = ({ msgCenter }: Props & Pick<MobxStores, 'msgCenter' | any>) => {
   const { paging, selectType, filterCheckUnread }=msgCenter;
+  const [, queryPage]=useRouting();
   const getQueryParams=()=> {
     const params={
       read_status: filterCheckUnread ? MsgReadStatus.unread : undefined,
@@ -59,8 +32,10 @@ const PanelList = ({ msgCenter }: Props & Pick<MobxStores, 'msgCenter' | any>) =
     return { ...params, ...paging };
   };
   const [selectedRows, setSelectedRows] = useState<string[]>([]);
-  const { isLoading, isError, data, isFetching, refetch } = useQuery(['all-messages', getQueryParams()], getMessages, {});
-  const { data: unReadData, refetch: unReadRefetch } = useQuery(['unReadMsg', getQueryParams()], getUnreadMsgCount );
+  const { isLoading, isError, data, isFetching, refetch } = useQuery(['all-messages', getQueryParams()], getMessageList, {});
+  const { data: countUnreadMsg, refetch: unReadRefetch }=useQuery('count-unread-msg', getUnreadMsgCount);
+
+  msgCenter.setUnreadTypeCounts(get(countUnreadMsg, 'data.type_num', []));
 
   useEffect(()=>{
     setSelectedRows([]);
@@ -74,24 +49,6 @@ const PanelList = ({ msgCenter }: Props & Pick<MobxStores, 'msgCenter' | any>) =
   });
 
   const toolbarRef = useRef<any>();
-
-  useEffect(()=>{
-    const params = urlParse(window.location.href);
-    if (params.id) {
-      msgCenter.showMessageDetail(params.id);
-    }
-  }, []);
-
-  useEffect(()=>{
-    if (unReadData?.code!=0) return;
-    const { type_num } = unReadData.data;
-    const announcement = type_num.find((itm: any)=>itm.sort == 2);
-    const systemMessage = type_num.find((itm: any)=>itm.sort == 1);
-    msgCenter.setUnReadCount({
-      announcement: announcement?.total || 0,
-      systemMessage: systemMessage?.taotal || 0,
-    });
-  }, [unReadData]);
 
   const msgList = useMemo(()=>{
     return data?.data?.mes_list || [];
@@ -127,7 +84,7 @@ const PanelList = ({ msgCenter }: Props & Pick<MobxStores, 'msgCenter' | any>) =
   const handleAllReaded = () => {
     setConfirmInfo({
       visible: true,
-      title: '标记已读',
+      title: '全部已读',
       content: '确定要将全部类型的消息标记为已读吗?',
       cb: ()=>{
         setMsgAsReadByIds(msgList.map((itm: any) => itm.id))
@@ -135,12 +92,9 @@ const PanelList = ({ msgCenter }: Props & Pick<MobxStores, 'msgCenter' | any>) =
             if (response.code == 0) {
               refetch();
               unReadRefetch();
-              setConfirmInfo({
-                visible: false,
-                title: '',
-                content: '',
-                cb: ()=>{},
-              });
+              closeConfirmInfo();
+              msgCenter.reset();
+              queryPage('', { id: undefined });
             } else {
               Message.warning('操作失败');
             }
@@ -160,12 +114,7 @@ const PanelList = ({ msgCenter }: Props & Pick<MobxStores, 'msgCenter' | any>) =
             if (response.code == 0) {
               refetch();
               unReadRefetch();
-              setConfirmInfo({
-                visible: false,
-                title: '',
-                content: '',
-                cb: ()=>{},
-              });
+              closeConfirmInfo();
             } else {
               Message.warning('操作失败');
             }
@@ -177,7 +126,7 @@ const PanelList = ({ msgCenter }: Props & Pick<MobxStores, 'msgCenter' | any>) =
   const handleDeleteMessage = () => {
     setConfirmInfo({
       visible: true,
-      title: '标记已读',
+      title: '删除消息',
       content: `确定要将已选中的${selectedRows.length}条消息删除吗?`,
       cb: ()=>{
         deleteMsgByIds(selectedRows)
@@ -185,12 +134,9 @@ const PanelList = ({ msgCenter }: Props & Pick<MobxStores, 'msgCenter' | any>) =
             if (response.code == 0) {
               refetch();
               unReadRefetch();
-              setConfirmInfo({
-                visible: false,
-                title: '',
-                content: '',
-                cb: ()=>{},
-              });
+              closeConfirmInfo();
+              msgCenter.reset();
+              queryPage('', { id: undefined });
             } else {
               Message.warning('操作失败');
             }
@@ -202,15 +148,21 @@ const PanelList = ({ msgCenter }: Props & Pick<MobxStores, 'msgCenter' | any>) =
   const rowSelection = {
     selectedRowKeys: selectedRows,
     getCheckboxProps: (record: any) => ({
-      disabled: record.useStatus === -2,
+      // disabled: record.read_status === MsgReadStatus.read,
       name: record.id,
     }),
     onChange(keys: any) {
       setSelectedRows(keys);
+      // todo
       if (keys.length == msgList.length) {
         toolbarRef.current.allcheck(true);
+        toolbarRef.current.interm(false);
+      } else if (keys.length > 0) {
+        toolbarRef.current.allcheck(false);
+        toolbarRef.current.interm(true);
       } else {
         toolbarRef.current.allcheck(false);
+        toolbarRef.current.interm(false);
       }
     },
   };
@@ -222,27 +174,44 @@ const PanelList = ({ msgCenter }: Props & Pick<MobxStores, 'msgCenter' | any>) =
   const setAllUnchecked = ()=> setSelectedRows([]);
 
   const renderTable = () => {
+    const toolbarOptions = {
+      setAllChecked,
+      setAllUnchecked,
+      handleAllReaded,
+      handleCheckedReaded,
+      selectedRows,
+      canIUseReadBtn,
+      canIUseDelBtn,
+      handleDeleteMessage,
+    };
+
     return (
       <div className={styles.message_list_warp}>
         <div className={styles.message_list}>
-          <Toolbar ref={toolbarRef} {...{ setAllChecked, setAllUnchecked, handleAllReaded, handleCheckedReaded, selectedRows, canIUseReadBtn, canIUseDelBtn, handleDeleteMessage }} />
+          <Toolbar ref={toolbarRef} {...toolbarOptions} />
           <Table
-            onRow={(record)=>({
-              onClick() {
-                msgCenter.showMessageDetail(record.id);
-              },
-            })}
             className={classNames('text-14 table-full', styles.table)}
             rowKey='id'
             rowSelection={rowSelection}
-            columns={cols}
+            columns={[
+              {
+                title: '',
+                render: (msg: Qxp.MsgItem) => (
+                  <MsgItem
+                    className={styles.msgItem}
+                    {...msg}
+                    hideType
+                  />
+                ),
+              },
+            ]}
             dataSource={msgList}
           />
         </div>
         <div>
           <Pagination
             pageSize={paging.limit}
-            pageNumber={paging.page}
+            current={paging.page}
             total={data?.data?.total||0}
             onChange={msgCenter.pageChange}
             showSizeChanger
