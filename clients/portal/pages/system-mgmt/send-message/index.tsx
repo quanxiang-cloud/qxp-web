@@ -313,7 +313,7 @@ export const Content = forwardRef(({ donotShowHeader, footer, modifyData, handle
             ]}
           />
           <Field>
-            <Label>内容:</Label>
+            <Label className={styles.labelCont}>内容:</Label>
             <Control>
               <Editor
                 wrapperId={8888}

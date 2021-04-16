@@ -13,6 +13,7 @@ interface Props {
   height?: number | string;
   toolbar?: React.ReactNode | null;
   footer?: React.ReactNode | null;
+  hideFooter?: boolean;
   visible?: boolean;
   okText?: string;
   cancelText?: string;
@@ -61,7 +62,7 @@ export default class Modal extends React.PureComponent<Props, State> {
 
   render() {
     const { visible, fullscreen, className, title, children, width = '632px',
-      height = 'auto', toolbar, footer, okText, cancelText, onClose,
+      height = 'auto', toolbar, footer, hideFooter, okText, cancelText, onClose,
       onConfirm, closable = true } = this.props;
 
     return createPortal(
@@ -78,12 +79,13 @@ export default class Modal extends React.PureComponent<Props, State> {
               {closable && <Icon name='close' size={24} clickable />}
             </div>
           </Header>
-          <Body>
+          <Body fullscreen={fullscreen}>
             {children}
           </Body>
-          <Footer>
-            <FooterInner>
-              {footer ? footer : (
+          {/* eslint-disable-next-line no-nested-ternary */}
+          {hideFooter ? null : footer ? footer : (
+            <Footer>
+              <FooterInner>
                 <div className="flex items-center">
                   <Button iconName="close" className="mr-20" onClick={onClose}>
                     {okText ? okText : '取消'}
@@ -92,9 +94,9 @@ export default class Modal extends React.PureComponent<Props, State> {
                     {cancelText ? cancelText : '确定'}
                   </Button>
                 </div>
-              )}
-            </FooterInner>
-          </Footer>
+              </FooterInner>
+            </Footer>
+          )}
         </Inner>
       </Wrap>,
       this.element
@@ -150,10 +152,9 @@ const Header = styled.div`
   }
 `;
 
-const Body = styled.div`
-  padding: 24px 40px;
-  max-height: 600px;
-  overflow: auto;
+const Body = styled.div<{ fullscreen?: boolean }>`
+ ${(props) => props.fullscreen ?
+    'height: calc(100vh - 56px)' : 'padding: 24px 40px;height: 100%; max-height:600px;overflow: auto;'};
 `;
 
 const Footer = styled.div`
@@ -194,7 +195,7 @@ const Inner = styled.div<{ width: any, height: any, fullscreen?: boolean }>`
   flex-direction: column;
   width: ${(props) => typeof props.width === 'number' ? props.width + 'px' : props.width};
   height: ${(props) => typeof props.height === 'number' ? props.height + 'px' : props.height};
-  ${(props) => props.fullscreen && 'width: 100vw; height: 100vh'};
+  ${(props) => props.fullscreen && 'width: 100vw; height: 100vh;position: relative; top: 56px'};
   //@media (min-width: 1440px) {
   //  width: 1440px;
   //}

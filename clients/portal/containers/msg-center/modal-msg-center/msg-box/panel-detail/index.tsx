@@ -25,13 +25,16 @@ const PanelDetail = ({ msgCenter }: Props & Pick<MobxStores, 'msgCenter' | any>)
     );
   }
 
-  const { recivers } = messageDetail;
+  const { recivers, sort } = messageDetail;
 
-  const data = Object.assign({}, messageDetail, { receivers: recivers || [] });
+  const data = Object.assign({}, messageDetail, {
+    receivers: recivers || [],
+    type: sort,
+  });
 
   return (
     <div className={styles.detailPanel}>
-      <PreviewMsg prevData={data} />
+      <PreviewMsg prevData={data} hideReceivers />
     </div>
   );
 };

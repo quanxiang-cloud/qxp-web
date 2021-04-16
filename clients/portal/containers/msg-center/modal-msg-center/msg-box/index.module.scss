@@ -170,11 +170,6 @@
     padding: 40px;
   }
 
-  .modal_card_foot{
-    border-radius: 0 0 12px 12px;
-    justify-content: flex-end;
-  }
-
 }
 
 
@@ -191,3 +186,7 @@ body {
   }
 }
 
+.modal_card_foot{
+  border-radius: 0 0 12px 12px;
+  justify-content: flex-end !important;
+}

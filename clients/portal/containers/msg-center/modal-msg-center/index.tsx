@@ -30,6 +30,8 @@ const ModalMsgCenter = ({ msgCenter }: Pick<MobxStores, 'msgCenter' | any>) => {
     <Modal
       visible
       fullscreen
+      width='100vw'
+      hideFooter
       title='消息中心'
       toolbar={(
         <Toolbar/>

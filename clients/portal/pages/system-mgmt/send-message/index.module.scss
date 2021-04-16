@@ -18,8 +18,6 @@ body{
     padding-bottom: 0;
     flex-direction: column;
     padding-top: 20px;
-
-    
   }
   .panel {
     position: relative;
@@ -36,6 +34,12 @@ body{
       }
       .form.is-horizon-layout > .field > .control{
         max-width: 764px;
+        label.radio.checked:before, label.radio.checked:hover:before {
+          background-color: var(--blue-600);
+        }
+        label > .label-value {
+          padding-left: 8px;
+        }
       }
 
       .form.is-horizon-layout > .field .label{
@@ -49,13 +53,13 @@ body{
 
       .form.is-horizon-layout > .field .help{
         position: absolute;
-        left: 260px;
+        left: 240px;
         line-height: 22px;
         bottom: -22px;
         margin-left: 0;
       }
     }
-   
+
 
     .header {
       position: relative;
@@ -101,7 +105,13 @@ body{
         border: 1px solid #CBD5E1;
         box-sizing: border-box;
         border-radius: 2px 8px 8px 8px;
-        
+
+      }
+
+      .labelCont {
+        position: relative;
+        top: 3px;
+        align-items: flex-start !important;
       }
 
       :global{
@@ -121,7 +131,7 @@ body{
         width: 100%;
         max-width: 764px;
         transform: translateX(256px);
-        
+
       }
     }
     .footer {
@@ -175,7 +185,7 @@ body {
       .modal-content{
         width: 988px !important;
       }
-      
+
     }
   }
 }
@@ -219,27 +229,31 @@ body {
   }
 }
 
+.fileList {
+  margin-top: 50px;
 
-.file_itm{
-  background-color: var( --blue-100);
-  border-radius: 4px;
-  padding: 4px;
-  padding-left: 12px;
-  margin-bottom: 10px;
-  position: relative;
-  &>svg{
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    right: 14px;
-    transition: .3s;
-    margin: auto;
-    opacity: 0;
-  }
-  &:hover > svg{
-    opacity: 1;
+  .file_itm{
+    background-color: var( --blue-100);
+    border-radius: 4px;
+    padding: 4px;
+    padding-left: 12px;
+    margin-bottom: 10px;
+    position: relative;
+    &>svg{
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      right: 14px;
+      transition: .3s;
+      margin: auto;
+      opacity: 0;
+    }
+    &:hover > svg{
+      opacity: 1;
+    }
   }
 }
+
 
 .upload_warp{
   padding: 16px;

@@ -8,9 +8,10 @@ import { MsgType } from '@portal/pages/system-mgmt/constants';
 interface Props {
   className?: string;
   prevData: Qxp.DraftData | null;
+  hideReceivers?: boolean;
 }
 
-const PreviewMsg = ({ prevData }: Props) => {
+const PreviewMsg = ({ prevData, hideReceivers }: Props) => {
   if (!prevData) {
     return (
       <div>暂无预览数据</div>
@@ -32,25 +33,28 @@ const PreviewMsg = ({ prevData }: Props) => {
       <div className={styles.previewMsgContent}>
         <div className={styles.title}>{title}</div>
         <div className={styles.info}>{dayjs().format('YYYY-MM-DD HH:mm:ss')} {txt}</div>
-
         <div dangerouslySetInnerHTML={{ __html: content }} />
-      </div>
-      <div>
+
         <FileList candownload files={ (prevData.mes_attachment || [])}/>
+
       </div>
 
-      <div className={styles.pre_receivers}>
-        <div className={styles.pre_receivers_title}>该消息将发送至:</div>
-        {receivers&&receivers.map(({ id, type, name })=> (<span
-          className={classNames(styles.person, {
-            [styles.isDep]: type === 2,
-            [styles.isPerson]: type === 1,
-          })}
-          key={id}
-        >
-          <span>{name}</span>
-        </span>))}
-      </div>
+      {
+        !hideReceivers && (
+          <div className={styles.pre_receivers}>
+            <div className={styles.pre_receivers_title}>该消息将发送至:</div>
+            {receivers && receivers.map(({id, type, name}) => (<span
+              className={classNames(styles.person, {
+                [styles.isDep]: type === 2,
+                [styles.isPerson]: type === 1,
+              })}
+              key={id}
+            >
+              <span>{name}</span>
+            </span>))}
+          </div>
+        )
+      }
     </div>
   );
 };

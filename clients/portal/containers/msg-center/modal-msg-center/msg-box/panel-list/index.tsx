@@ -225,7 +225,7 @@ const PanelList = ({ msgCenter }: Props & Pick<MobxStores, 'msgCenter' | any>) =
           title={confirmInfo.title}
           onClose={closeConfirmInfo}
           footer={(
-            <div className={`modal-card-foot ${styles.modal_card_foot}`}>
+            <div className={classNames('modal-card-foot', styles.modal_card_foot)}>
               <div className="flex flex-row justify-between items-center">
                 <Button
                   className="bg-white hover:bg-gray-100 transition cursor-pointer mr-20 mb-0"
