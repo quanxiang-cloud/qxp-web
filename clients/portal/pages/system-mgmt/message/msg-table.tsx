@@ -15,6 +15,7 @@ import Button from '@c/button';
 import { createMsg, deleteMsgById } from '@portal/api/message-mgmt';
 import PreviewModal, { ModalContent } from './preview-modal';
 import { getMsgById } from '@portal/api/message-mgmt';
+import classnames from 'classnames'
 
 import { Content as SendMessage } from '../send-message/index';
 
@@ -34,35 +35,58 @@ interface Props {
   refresh: ()=>void;
 }
 
+const EnumStatusLabel: any = {
+  [MsgSendStatus.all]: '全部',
+  [MsgSendStatus.success]: '已发送',
+  [MsgSendStatus.sending]: '发送中',
+  [MsgSendStatus.draft]: '草稿',
+}
+
+const EnumMessageLabel = {
+  [MsgType.all]: '全部',
+  [MsgType.system]: '系统消息',
+  [MsgType.notify]: '通知公告'
+}
+
+const getOptions = (labels: any, keyname?: string )=>{
+  const keys = Object.keys(labels)
+
+  return keys.map(key=>({
+    label: labels[key],
+    [keyname || 'key']: key
+  }))
+} 
+
 const EnumStatus = [
   {
     label: '全部',
-    value: MsgSendStatus.all,
+    key: MsgSendStatus.all,
   },
   {
     label: '已发送',
-    value: MsgSendStatus.success,
+    key: MsgSendStatus.success,
   }, {
     label: '发送中',
-    value: MsgSendStatus.sending,
+    key: MsgSendStatus.sending,
   },
   {
     label: '草稿',
-    value: MsgSendStatus.draft,
+    key: MsgSendStatus.draft,
   },
 ];
+
 
 const EnumMessage = [
   {
     label: '全部',
-    value: MsgType.all,
+    key: MsgType.all,
   },
   {
     label: '系统消息',
-    value: MsgType.system,
+    key: MsgType.system,
   }, {
     label: '通知公告',
-    value: MsgType.notify,
+    key: MsgType.notify,
   },
 ];
 
@@ -161,7 +185,7 @@ const MsgTable = ({ msgMgmt: store, refresh }: Props & Pick<MobxStores, 'msgMgmt
   const [modalInfo, setModalInfo] = useState({ visible: false, id: '' });
   const closeModal = () => setModalInfo({ visible: false, id: '' });
 
-  const [status, setStatus] = useRecoilState(MessaeStatus);
+  const [status, setStatus] = useRecoilState<MsgSendStatus>(MessaeStatus);
   const [messageType, setMessageType] = useRecoilState(MessageType);
 
   if (isLoading ) {
@@ -190,37 +214,76 @@ const MsgTable = ({ msgMgmt: store, refresh }: Props & Pick<MobxStores, 'msgMgmt
     setModifyData(null);
     refresh();
   };
-
+  
   const cols = [
     {
-      // title: <div className="flex content-center"><div>状态</div><SvgIcon name="filter_alt" /></div>,//
-      title: <Select
-        placeholder={<div className="flex content-center"><div>状态</div><SvgIcon name="filter_alt" /></div>}
-        className={styles.selects}
-        value={status}
-        onChange={setStatus}
-        options={EnumStatus}
-      />,
+      // title: <Select
+      //   placeholder={<div className="flex content-center"><div>状态</div><SvgIcon name="filter_alt" /></div>}
+      //   className={styles.selects}
+      //   value={status}
+      //   onChange={setStatus}
+      //   options={EnumStatus}
+      // />,
+      // @ts-ignore
+      title: 
+        <MoreMenu 
+          value={status} 
+          targetClass={styles.text_blue} 
+          optionsWarpClass={styles.menu} 
+          optionsClass={styles.options}
+          onChange={setStatus} 
+          className="opacity-1"  
+          menus={EnumStatus}
+          suffix={<SvgIcon name="check" style={{color:'inherit'}}/>}
+        >
+       
+          <div className={`flex content-center ${styles.text_blue} pointer`}>
+            <div>{EnumStatusLabel[status]}</div>
+            <SvgIcon name="filter_alt" className={classnames(styles.text_blue,styles.status_icon)}/>
+          </div>
+        </MoreMenu>,
       dataIndex: 'status',
       render: ( _ : any, { status, fail, success }: { status: MsgSendStatus, fail: number, success: number }) => <Status {...{ status, fail, success }}/>,
     },
     {
-      // title: <div className="flex content-center"><div>消息</div><SvgIcon name="filter_alt" /></div>,
-      title: <Select
-        placeholder={<div className="flex content-center"><div>消息</div><SvgIcon name="filter_alt" /></div>}
-        className={styles.selects}
-        value={messageType}
-        onChange={setMessageType}
-        options={EnumMessage}
-      />,
+      // title: <Select
+      //   placeholder={<div className="flex content-center"><div>消息</div><SvgIcon name="filter_alt" /></div>}
+      //   className={styles.selects}
+      //   value={messageType}
+      //   onChange={setMessageType}
+      //   options={EnumMessage}
+      // />,
+      // @ts-ignore
+      title: 
+        <MoreMenu 
+          value={messageType} 
+          targetClass={styles.text_blue} 
+          optionsWarpClass={styles.menu} 
+          optionsClass={styles.options}
+          onChange={setMessageType} 
+          className="opacity-1"  
+          menus={EnumMessage}
+          suffix={<SvgIcon name="check" style={{color:'inherit'}}/>}
+        >
+          <div className={`flex content-center ${styles.text_blue} pointer`}>
+            <div>{EnumMessageLabel[messageType]}</div>
+            <SvgIcon name="filter_alt" className={classnames(styles.text_blue,styles.status_icon)}/>
+          </div>
+        </MoreMenu>,
       dataIndex: 'title',
       render: (_: any, { id, title, sort, status } : { status: MsgSendStatus, id: string, title: string, sort: MsgType })=>{
         const handleClick = () => {
           setPreviewInfo({ id, visible: true, title, status });
         };
-
         return (<PreviewModal handleClick={handleClick} title={(<div>
-          {( sort != MsgType.all ) &&<span className={styles.msg_type_tip}>{(EnumMessage.find((itm)=>itm.value==sort)||{}).label}</span>}
+          {( sort != MsgType.all ) &&<span 
+            className={
+              classnames(
+                styles.msg_type_tip,
+                {
+                  [styles.msg_type_tip_notice]: sort == MsgType.notify
+                })
+            }>{(EnumMessage.find((itm)=>itm.key==sort)||{}).label}</span>}
           {title}
         </div>)} />);
       },
