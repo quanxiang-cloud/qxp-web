@@ -35,6 +35,20 @@ interface Props<T extends Record<string, unknown>> {
   onSelectChange?: (selected: Array<T>) => void;
 }
 
+const FIXED_ROW: React.CSSProperties = { position: 'sticky', left: '0px', zIndex: 1 };
+
+const getDefaultSelectMap = (keys: string[]|undefined) => {
+  if (!keys) {
+    return {};
+  }
+
+  const keyMap: any = {};
+  keys.forEach((key) => {
+    keyMap[key] = true;
+  });
+  return keyMap;
+};
+
 const IndeterminateCheckbox = React.forwardRef(
   ({
     indeterminate,
