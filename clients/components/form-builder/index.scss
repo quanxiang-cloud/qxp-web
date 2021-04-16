@@ -50,67 +50,73 @@
   background-color: white;
 }
 
+.item-title {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.content-item {
+  position: relative;
+  padding: 12px;
+  width: 120px;
+  height: 84px;
+  background-color: #FFFFFF;
+  border: 1px solid #CBD5E1;
+  border-radius: 8px;
+}
+
 .form-settings-panel__panel {
   padding: 0 20px;
-  .md {
-    margin-bottom: 24px;
+  color: #475569;
+}
+
+.layout-content {
+  display: flex;
+  justify-content: space-between; 
+}
+
+.item-checked {
+  border-color: #375FF3;
+  .rectangle {
+    border-color: #375FF3 #375FF3 transparent transparent;
   }
-  .item-label {
-    margin-bottom: 8px;
-    color: #475569;
-    font-size: 14px;
+  .check-icon {
+    display: block;
   }
-  .layout-content {
-    box-sizing: border-box;
-    display: flex;
-    justify-content: space-between;
-    .content-item {
-      padding: 12px;
-      width: 120px;
-      height: 84px;
-      background-color: #FFFFFF;
-      border: 1px solid #CBD5E1;
-      box-sizing: border-box;
-      border-radius: 8px;
-    }
-    .ok-icon{
-      display: none;
-    }
-    .item-focus {
-      position: relative;
-      border-color: #375FF3;
-      .rectangle {
-        position: absolute;
-        top: 0;
-        right:0;
-        border: 16px solid transparent;
-        border-top-right-radius: 6px;
-        border-top-color: #375FF3;
-        border-right-color: #375FF3;
-      }
-      .ok-icon {
-        display: block;
-        position: absolute;
-        top: 2px;
-        right: 4px;
-      }
-    }
-  }
-  .form-label {
-    display: inline-block;
-    margin-right: 2px;
-    width: 24px;
-    height: 16px;
-    background: #CBD5E1;
-    border-radius: 2px;
-  }
-  .form-item-body {
-    display: inline-block;
-    width: 68px;
-    height: 16px;
-    background: #F1F5F9;
-    border-radius: 2px;
-  }
+}
+
+.rectangle {
+  position: absolute;
+  top: 0;
+  right:0;
+  border: 16px solid transparent;
+  border-top-right-radius: 6px;
+}
+
+.check-icon {
+  display: none;
+  position: absolute;
+  top: 2px;
+  right: 4px;
+}
+
+.item-label {
+  display: inline-block;
+  margin-right: 2px;
+  width: 24px;
+  height: 16px;
+  background: #CBD5E1;
+  border-radius: 2px;
+}
+
+.item-body {
+  display: inline-block;
+  width: 68px;
+  height: 16px;
+  background: #F1F5F9;
+  border-radius: 2px;
 }
 
 .form-builder .form-builder-canvas {
