@@ -39,12 +39,8 @@ function FormLabelConfig(): JSX.Element {
             handleClick('top');
           }}
         >
-          <div>
-            <span className="item-label"></span>
-          </div>
-          <div>
-            <span className="item-body" style={{ width: '96px' }}></span>
-          </div>
+          <div className="item-label"></div>
+          <div className="item-body" style={{ width: '96px' }}></div>
           <div className="text-center">上下</div>
           <div className="rectangle"></div>
           <Icon name='done' type="light" className="check-icon"/>
