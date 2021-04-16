@@ -138,7 +138,9 @@ function Pagination({
 
   const prevIcon = (
     <li
-      className={classnames('pagination-comp-page', { 'pagination-comp-disabled': pageParams.current === 1 })}
+      className={classnames('pagination-comp-page', {
+        'pagination-comp-disabled': pageParams.current === 1,
+      })}
       onClick={handPrev}>
       <SvgIcon name="chevron_left" />
     </li>
@@ -179,15 +181,19 @@ function Pagination({
       onClick={() => handleChange(allPages)} />);
     firstPager = (<Pager key={1} page={1} active={false} onClick={() => handleChange(1)} />);
     jumpPrev = (
-      <li key="jumpPrev"
-        className="pagination-comp-page pagination-comp-jump pagination-comp-jump-prev" onClick={handleJumpPrev}>
+      <li
+        key="jumpPrev"
+        className="pagination-comp-page pagination-comp-jump pagination-comp-jump-prev"
+        onClick={handleJumpPrev}>
         <SvgIcon className="icon" name="more_horiz" />
         <SvgIcon className="prev" name="double_arrow"
           color="#375FF3" style={{ transform: 'rotate(180deg)' }} />
       </li>);
     jumpNext = (
-      <li key="jumpNext"
-        className="pagination-comp-page pagination-comp-jump pagination-comp-jump-next" onClick={handleJumpNext}>
+      <li
+        key="jumpNext"
+        className="pagination-comp-page pagination-comp-jump pagination-comp-jump-next"
+        onClick={handleJumpNext}>
         <SvgIcon className="icon" name="more_horiz" />
         <SvgIcon className="next" name="double_arrow" color="#375FF3" />
       </li>);
