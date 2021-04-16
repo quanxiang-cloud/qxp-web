@@ -3,7 +3,7 @@ import classnames from 'classnames';
 
 import Icon from '@c/icon';
 
-interface ButtonProps extends Omit<
+interface Props extends Omit<
   React.DetailedHTMLProps<React.ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>,
   'children'
 > {
@@ -13,7 +13,7 @@ interface ButtonProps extends Omit<
 }
 
 function IconBtn(
-  { iconName, className, loading, forbidden, ...restProps }: ButtonProps,
+  { iconName, className, loading, forbidden, ...restProps }: Props,
   ref?: React.Ref<HTMLButtonElement>,
 ): JSX.Element {
   return (

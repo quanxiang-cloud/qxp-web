@@ -160,7 +160,7 @@ export default function Table<T extends Record<string, unknown>>({
           <Pagination
             className='inline-flex'
             pageSize={pageSize}
-            pageNumber={currentPage}
+            current={currentPage}
             total={total}
             onChange={onPageChange}
           />
