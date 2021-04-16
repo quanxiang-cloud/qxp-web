@@ -12,9 +12,8 @@ import {
   Row,
 } from 'react-table';
 
-import Pagination from '../pagination';
-
 import TableLoading from './table-loading';
+import { getDefaultSelectMap, useComputeColumnsPosition } from './utils';
 import './index.scss';
 
 interface ColumnS extends UseTableColumnProps<any> {
@@ -22,26 +21,24 @@ interface ColumnS extends UseTableColumnProps<any> {
 }
 export type Column = RColumn<any> & { fixed?: boolean, width?: number };
 
-const FIXED_ROW: React.CSSProperties = { position: 'sticky', left: '0px', zIndex: 1 };
-
 interface Props<T extends Record<string, unknown>> {
   data: Array<T>;
   columns: Column[];
+  rowKey?: string;
+  selectedRowKeys?: string[];
   emptyText?: string;
   className?: string;
   selectKey?: string;
   showCheckBox?: boolean;
-  currentPage?: number;
   style?: React.CSSProperties;
-  pageSize?: number;
-  total?: number;
   loading?: boolean;
   onSelectChange?: (selected: Array<T>) => void;
-  onPageChange?: (currentPage: number, pageSize: number) => void;
 }
 
 const IndeterminateCheckbox = React.forwardRef(
-  ({ indeterminate, ...rest }: TableToggleCommonProps, ref) => {
+  ({
+    indeterminate,
+    ...rest }: TableToggleCommonProps, ref) => {
     const defaultRef = React.useRef();
     const resolvedRef: any = ref || defaultRef;
 
@@ -60,17 +57,15 @@ const IndeterminateCheckbox = React.forwardRef(
 export default function Table<T extends Record<string, unknown>>({
   columns,
   data,
+  selectedRowKeys,
   className,
   style = {},
-  pageSize = 20,
-  total = 0,
-  currentPage = 1,
   loading,
   emptyText,
   onSelectChange,
   selectKey,
+  rowKey = 'id',
   showCheckBox = false,
-  onPageChange,
 }: Props<T>): JSX.Element {
   const tableParameter = [];
   if (showCheckBox) {
@@ -80,12 +75,16 @@ export default function Table<T extends Record<string, unknown>>({
           id: 'selection',
           Header: ({ getToggleAllRowsSelectedProps }: any) => (
             <div>
-              <IndeterminateCheckbox {...getToggleAllRowsSelectedProps()} />
+              <IndeterminateCheckbox
+                {...getToggleAllRowsSelectedProps()}
+              />
             </div>
           ),
           Cell: ({ row }: any) => (
             <div>
-              <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} />
+              <IndeterminateCheckbox
+                {...row.getToggleRowSelectedProps()}
+              />
             </div>
           ),
         },
@@ -94,6 +93,8 @@ export default function Table<T extends Record<string, unknown>>({
     });
   }
 
+  const positionMap = useComputeColumnsPosition(rowKey, columns);
+
   const {
     getTableProps,
     getTableBodyProps,
@@ -101,13 +102,21 @@ export default function Table<T extends Record<string, unknown>>({
     prepareRow,
     rows,
     selectedFlatRows,
-  }: any = useTable<any>(({ columns, data }) as TableOptions<T>, ...tableParameter);
+    state: { selectedRowIds },
+  }: any = useTable<any>(({
+    columns,
+    data,
+    getRowId: (row, _, parent: any) => {
+      return parent ? [parent[rowKey], row[rowKey]].join('.') : row[rowKey];
+    },
+    initialState: { selectedRowIds: getDefaultSelectMap(selectedRowKeys) },
+  }) as TableOptions<T>, ...tableParameter);
 
   useEffect(() => {
     onSelectChange?.(selectedFlatRows.map(({ original }: Row) => {
       return selectKey ? get(original, selectKey) : original;
     }));
-  }, [selectedFlatRows]);
+  }, [selectedRowIds]);
 
   const tableFooterRender = () => {
     if (loading) {
@@ -122,26 +131,19 @@ export default function Table<T extends Record<string, unknown>>({
         </div>
       );
     }
-
-    return (
-      <div className='px-16 flex justify-between items-center h-56'>
-        <div className='qxp-table-total-tips' >共{total}条数据</div>
-        {total > pageSize && (
-          <Pagination
-            className='inline-flex'
-            pageSize={pageSize}
-            pageNumber={currentPage}
-            total={total}
-            onChange={onPageChange}
-          />
-        )}
-      </div>
-    );
   };
 
   return (
     <div className="qxp-table-wrapper">
-      <div className={classnames('qxp-table-content', className)} style={style}>
+      <div
+        className={classnames(
+          loading ?
+            'qxp-table-content-loading' :
+            'qxp-table-content',
+          className
+        )}
+        style={style}
+      >
         <table className='qxp-table' {...getTableProps()}>
           <colgroup>
             {flatHeaders.map((column: Column) => (
@@ -158,8 +160,10 @@ export default function Table<T extends Record<string, unknown>>({
                   <th
                     {...column.getHeaderProps()}
                     key={column.id}
-                    style={column.fixed ? FIXED_ROW : {}}
-                    className='qxp-table-th'
+                    style={positionMap[column.id]}
+                    className={classnames('qxp-table-th',
+                      { 'qxp-table-fixed': column.fixed }
+                    )}
                   >
                     {column.render('Header')}
                   </th>
@@ -167,11 +171,12 @@ export default function Table<T extends Record<string, unknown>>({
               })}
             </tr>
           </thead>
-          <tbody style={{ display: loading ? 'none' : '' }} {...getTableBodyProps()}>
+          <tbody {...getTableBodyProps()}>
             {rows.map((row: Row) => {
               prepareRow(row);
               return (
                 <tr
+                  className='qxp-table-tr'
                   {...row.getRowProps()}
                   key={row.id}
                 >
@@ -180,8 +185,10 @@ export default function Table<T extends Record<string, unknown>>({
                       <td
                         {...cell.getCellProps()}
                         key={cell.column.id}
-                        className='qxp-table-td'
-                        style={cell.column.fixed ? FIXED_ROW : {}}
+                        className={classnames('qxp-table-td',
+                          { 'qxp-table-fixed': cell.column.fixed }
+                        )}
+                        style={positionMap[cell.column.id]}
                       >
                         {cell.render('Cell')}
                       </td>
@@ -192,8 +199,8 @@ export default function Table<T extends Record<string, unknown>>({
             })}
           </tbody>
         </table>
+        {tableFooterRender()}
       </div>
-      {tableFooterRender()}
     </div>
   );
 }

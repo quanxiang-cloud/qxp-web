@@ -6,18 +6,25 @@ import './index.scss';
 interface Props extends React.InputHTMLAttributes<any> {
   label?: string;
   help?: string;
-  register: any
+  error?: any;
+  register: any;
 }
 
 function formFieldWrap(field: React.ReactElement) {
-  function FormField({ label, help, className, register, ...inputProps }: Props) {
+  function FormField({ label, help, className, register, error, ...inputProps }: Props) {
     return (
       <div className='form-field-box'>
         <label className='form-field-label'>{label}</label>
-        {React.cloneElement(field,
-          { className: cs('input', className), ...register, ...inputProps }
+        {React.cloneElement(field, {
+          className: cs('input', className, { 'form-input-error': error }),
+          ...register,
+          ...inputProps,
+        })}
+        {error ? (
+          <div className='form-field-error'>{error.message}</div>
+        ) : (
+          <div className='form-field-tips'>{help}</div>
         )}
-        <div className='form-field-tips'>{help}</div>
       </div>
     );
   }

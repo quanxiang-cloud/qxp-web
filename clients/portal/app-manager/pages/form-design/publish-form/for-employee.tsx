@@ -7,16 +7,16 @@ import TextHeader from '@c/text-header';
 import RightItem from './right-item';
 
 type Props = {
-  pageSettingStore: any;
+  publishFormStore: any;
 }
 
-function ForEmployee({ pageSettingStore }: Props) {
-  console.log('appSettingStore: ', pageSettingStore);
+function ForEmployee({ publishFormStore }: Props) {
+  console.log('appSettingStore: ', publishFormStore);
 
   const handleClick = (key: string, right: any) => {
     switch (key) {
     case 'del':
-      pageSettingStore.deleteRight(right.id);
+      publishFormStore.deleteRight(right.id);
       break;
     }
   };
@@ -31,7 +31,7 @@ function ForEmployee({ pageSettingStore }: Props) {
       />
       <div className='m-20'><Button modifier='primary' iconName='add'>新建权限组</Button></div>
       <div className='px-20 overflow-auto'>
-        {pageSettingStore.rightList.map((right: any) => (
+        {publishFormStore.rightList.map((right: any) => (
           <RightItem key={right.id} right={right} actions={handleClick} />
         ))}
       </div>
@@ -39,4 +39,4 @@ function ForEmployee({ pageSettingStore }: Props) {
   );
 }
 
-export default inject('pageSettingStore')(observer(ForEmployee));
+export default inject('publishFormStore')(observer(ForEmployee));

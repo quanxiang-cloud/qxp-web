@@ -33,9 +33,8 @@ function ColorPicker({ iconName = '', onChange, defaultColor, className }: Props
             setCurBgColor(color);
           }}
           key={color}
-          bgColor={color}
+          themeColor={color}
           size={32}
-          iconSize={20}
           iconName={curBgColor === color ? iconName : ''}
         />
       ))}

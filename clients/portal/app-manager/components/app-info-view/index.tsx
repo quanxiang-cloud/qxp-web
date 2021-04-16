@@ -15,7 +15,7 @@ function AppInfoView({ appInfo, onClick, className = '' }: Props) {
 
   return (
     <div onClick={onClick} className={`${className} flex-1 flex overflow-hidden`}>
-      <BgIcon className='mr-8' bgColor={appIcon.bgColor} iconName={appIcon.iconName} />
+      <BgIcon className='mr-8' themeColor={appIcon.bgColor} iconName={appIcon.iconName} size={44}/>
       <div className='flex-1 app-info-view-text overflow-hidden'>
         <p className='text-overflow-1'>{appInfo.appName}</p>
         <p>{appInfo.useStatus > 0 ? '已发布' : '未发布'}</p>
