@@ -82,11 +82,10 @@ export abstract class InputField implements IInputField {
         this.inputElement.value = this.value as string;
       }
     }
-    this.validate(true);
   }
 
   baseBindEvents() {
-    this.inputElement.onblur = () => this.validate(true);
+    this.inputElement.onblur = () => this.validate(false);
     this.inputElement.onchange = (e: Event) => {
       if (this.isCheckbox) {
         this.value = (e.target as HTMLInputElement).checked;

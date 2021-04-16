@@ -74,7 +74,7 @@ export default function DepartmentsEmployees() {
           />
         </div>
         <div className="h-full mt-20 flex overflow-hidden">
-          <div className="h-full flex flex-col border-r w-259 overflow-hidden">
+          <div className="h-full flex flex-col border-r min-w-259 overflow-hidden">
             <div className="text-h6 ml-20 mb-8">组织架构</div>
             <DepartmentsTree onSelect={handleSelectDep} />
           </div>

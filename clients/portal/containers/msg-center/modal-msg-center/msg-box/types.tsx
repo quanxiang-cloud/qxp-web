@@ -28,15 +28,13 @@ interface Props {
 }
 
 const Types = ({ className, msgCenter }: Props & Pick<MobxStores, 'msgCenter' | any>) => {
-  const { selectType, changeType, unReadCount }=msgCenter;
-
-  const { announcement, systemMessage } = unReadCount;
+  const { selectType, changeType }=msgCenter;
 
   return (
     <ul className={styles.typePanel}>
-      <TypeItem selected={selectType === MsgType.all} onClick={() => changeType(MsgType.all)} name='全部类型' count={announcement + systemMessage}/>
-      <TypeItem selected={selectType === MsgType.notify} onClick={() => changeType(MsgType.notify)} name='通知公告' count={announcement}/>
-      <TypeItem selected={selectType === MsgType.system} onClick={() => changeType(MsgType.system)} name='系统消息' count={systemMessage}/>
+      <TypeItem selected={selectType === MsgType.all} onClick={() => changeType(MsgType.all)} name='全部类型' count={msgCenter.countUnread}/>
+      <TypeItem selected={selectType === MsgType.notify} onClick={() => changeType(MsgType.notify)} name='通知公告' count={msgCenter.countUnreadNotifyMsg}/>
+      <TypeItem selected={selectType === MsgType.system} onClick={() => changeType(MsgType.system)} name='系统消息' count={msgCenter.countUnreadSystemMsg}/>
     </ul>
   );
 };

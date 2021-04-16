@@ -1,5 +1,6 @@
 import { useHistory, useLocation } from 'react-router-dom';
 import { parse, stringify } from 'qs';
+import { omitEmpty } from '@clients/utils';
 
 interface History {
   push(path: unknown, state?: any): void;
@@ -16,7 +17,7 @@ const useRouting = (): [History, QueryPage] => {
     const currentParams = parse(search.slice(1));
     const newParams = refresh ? params : { ...currentParams, ...params };
 
-    history.push(`${path || pathname}?${stringify(newParams)}`);
+    history.push(`${path || pathname}?${stringify(omitEmpty(newParams))}`);
   };
   return [history, queryPage];
 };

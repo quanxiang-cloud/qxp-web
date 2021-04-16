@@ -339,13 +339,15 @@ button {
   &:not(:last-child) {
     @apply mb-24;
   }
-  > .field {
+
+  >.field {
     @apply mb-0;
   }
 }
 
 input {
   transition: all .3s linear;
+
   &:focus {
     box-shadow: 0px 0px 4px rgb(50 69 88 / 12%);
     border-color: var(--blue-600);
@@ -367,4 +369,7 @@ input {
 
 .pointer{
   cursor: pointer;
+}
+.min-w-259 {
+  min-width: 259px;
 }

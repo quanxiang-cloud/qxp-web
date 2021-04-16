@@ -1,16 +1,21 @@
 import React, { useState, forwardRef, useImperativeHandle } from 'react';
 import { Checkbox } from '@QCFE/lego-ui';
+// import Checkbox from '@c/checkbox';
 import Button from '@c/button';
 
 import styles from '../index.module.scss';
 
 const Toolbar = forwardRef((props: any, ref) => {
   const [checkAll, setCheckAll] = useState(false);
+  const [interm, setInterm]=useState(false);
 
   useImperativeHandle(ref, ()=>{
     return {
       allcheck(checked: boolean) {
         setCheckAll(checked);
+      },
+      interm(checked: boolean) {
+        setInterm(checked);
       },
     };
   });
@@ -20,7 +25,7 @@ const Toolbar = forwardRef((props: any, ref) => {
       <div className={`flex align-center flex-1 ${styles.toolbar_content}`}>
         <Checkbox
           checked={checkAll}
-          // indeterminate
+          indeterminate={interm}
           onChange={(e) => {
             setCheckAll(e.target.checked);
             if (e.target.checked) {

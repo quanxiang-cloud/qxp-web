@@ -110,7 +110,9 @@ export const Content = forwardRef(({ donotShowHeader, footer, modifyData, handle
     onSuccess: (data: any) => {
       if (data && data.code === 0) {
         Message.success('操作成功');
+        // todo: prefix all msg related query keys
         queryClient.invalidateQueries('msg-mgmt-msg-list');
+        queryClient.invalidateQueries('count-unread-msg');
         handleClose && handleClose();
         setOpenPreviewModal(false);
         setTimeout(()=> {
