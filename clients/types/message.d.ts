@@ -99,7 +99,9 @@ declare namespace Qxp {
     content: string;
     receivers: Array<MsgReceiver>;
     type: MsgType;
-    mes_attachment?: Array<File>
+    sort?: number | MsgType;
+    mes_attachment?: Array<File>;
+    handle_name?: string;
   }
 }
 

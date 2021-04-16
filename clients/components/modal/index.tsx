@@ -42,7 +42,6 @@ export default class Modal extends React.PureComponent<Props, State> {
     window.document.body.append(this.element);
   }
 
-
   static getDerivedStateFromError(props: Partial<Props>) {
     return { visible: props.visible };
   }
@@ -100,7 +99,7 @@ export default class Modal extends React.PureComponent<Props, State> {
         </Inner>
       </Wrap>,
       this.element
-    )
+    );
   }
 }
 

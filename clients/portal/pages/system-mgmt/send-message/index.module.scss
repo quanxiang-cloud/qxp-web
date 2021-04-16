@@ -193,19 +193,6 @@ body {
 // preview msg
 .previewMsg {
   width: 100%;
-  .title {
-    font-weight: 600;
-    font-size: 20px;
-    line-height: 28px;
-    color: #0F172A;
-  }
-
-  .info{
-    margin-top: 8px;
-    line-height: 20px;
-    color: #94A3B8;
-    margin-bottom: 24px;
-  }
 
   .pre_receivers{
     padding: 12px 24px;
@@ -218,6 +205,20 @@ body {
 
   .previewMsgContent{
     padding: 24px 20px 12px;
+
+    .title {
+      font-weight: 600;
+      font-size: 20px;
+      line-height: 28px;
+      color: #0F172A;
+    }
+
+    .info{
+      margin-top: 8px;
+      line-height: 20px;
+      color: #94A3B8;
+      margin-bottom: 24px;
+    }
   }
 }
 

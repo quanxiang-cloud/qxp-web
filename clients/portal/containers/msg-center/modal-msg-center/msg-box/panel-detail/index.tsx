@@ -25,11 +25,10 @@ const PanelDetail = ({ msgCenter }: Props & Pick<MobxStores, 'msgCenter' | any>)
     );
   }
 
-  const { recivers, sort } = messageDetail;
+  const { recivers } = messageDetail;
 
   const data = Object.assign({}, messageDetail, {
     receivers: recivers || [],
-    type: sort,
   });
 
   return (

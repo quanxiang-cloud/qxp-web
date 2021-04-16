@@ -18,32 +18,32 @@ const PreviewMsg = ({ prevData, hideReceivers }: Props) => {
     );
   }
 
-  const { title, content, receivers, type }=prevData;
+  const { title, content, receivers, sort, handle_name }=prevData;
 
   let txt = '';
-  if (type === MsgType.notify) {
+  if (sort === MsgType.notify) {
     txt = '通知公告';
-  }
-  if (type === MsgType.system) {
+  } else if (sort === MsgType.system) {
     txt = '系统消息';
+  } else {
+    txt = '未知消息类型';
   }
 
   return (
     <div className={styles.previewMsg}>
       <div className={styles.previewMsgContent}>
         <div className={styles.title}>{title}</div>
-        <div className={styles.info}>{dayjs().format('YYYY-MM-DD HH:mm:ss')} {txt}</div>
+        <div className={styles.info}>{dayjs().format('YYYY-MM-DD HH:mm:ss')} {txt} {handle_name}</div>
         <div dangerouslySetInnerHTML={{ __html: content }} />
 
         <FileList candownload files={ (prevData.mes_attachment || [])}/>
-
       </div>
 
       {
         !hideReceivers && (
           <div className={styles.pre_receivers}>
             <div className={styles.pre_receivers_title}>该消息将发送至:</div>
-            {receivers && receivers.map(({id, type, name}) => (<span
+            {receivers && receivers.map(({ id, type, name }) => (<span
               className={classNames(styles.person, {
                 [styles.isDep]: type === 2,
                 [styles.isPerson]: type === 1,

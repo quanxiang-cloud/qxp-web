@@ -64,9 +64,9 @@ function RenderMenuItems<T extends React.Key>(
                 e.stopPropagation();
                 !disabled && onClick(key);
               }}
-              className={classnames('select-options__option', 'select-option', 'optionsClass', "select-option__content py-6", {
+              className={classnames('select-options__option', 'select-option', 'optionsClass', 'select-option__content py-6', {
                 'select-option--disabled': disabled,
-                [targetClass||'']: value == key
+                [targetClass||'']: value == key,
               }, optionsClass)}
             >
               <span>{label}</span>
@@ -83,7 +83,7 @@ function RenderMenuItems<T extends React.Key>(
 // opened more-menu will not be closed when another more-menu opened
 export default function MoreMenu<T extends React.Key>({
   iconName, className, menus, children, onVisibilityChange, onChange, menuDesc, placement, optionsWarpClass,
-  value, targetClass, optionsClass, suffix
+  value, targetClass, optionsClass, suffix,
 }: Props<T>): JSX.Element {
   // todo fix this ref any type
   const reference = React.useRef<any>(null);
@@ -112,7 +112,7 @@ export default function MoreMenu<T extends React.Key>({
         <RenderMenuItems
           classname={optionsWarpClass}
           items={menus}
-          value={value} 
+          value={value}
           targetClass={targetClass}
           menuDesc={menuDesc}
           optionsClass={optionsClass}
