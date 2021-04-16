@@ -1,121 +1,77 @@
 import React, { useEffect } from 'react';
 import classnames from 'classnames';
-import { get } from 'lodash';
 import {
   useTable,
-  Column as RColumn,
-  useRowSelect,
-  Hooks,
+  FixedColumn,
+  UnionColumns,
   TableOptions,
-  TableToggleCommonProps,
-  UseTableColumnProps,
-  Row,
 } from 'react-table';
 
 import TableLoading from './table-loading';
-import { getDefaultSelectMap, useComputeColumnsPosition } from './utils';
+import { getDefaultSelectMap, useFixedStyle } from './utils';
+import hooks from './hooks';
 import './index.scss';
 
-interface ColumnS extends UseTableColumnProps<any> {
-  fixed?: boolean, width?: number
-}
-export type Column = RColumn<any> & { fixed?: boolean, width?: number };
-
-interface Props<T extends Record<string, unknown>> {
-  data: Array<T>;
-  columns: Column[];
-  rowKey?: string;
-  selectedRowKeys?: string[];
-  emptyText?: string;
+interface Props<T extends Record<string, any>> {
   className?: string;
-  selectKey?: string;
-  showCheckBox?: boolean;
-  style?: React.CSSProperties;
+  columns: UnionColumns<T>[];
+  data: Array<T>;
+  emptyTips?: React.ReactNode;
+  initialSelectedRowKeys?: string[];
   loading?: boolean;
-  onSelectChange?: (selected: Array<T>) => void;
+  onSelectChange?: (selectedKeys: string[], selectedRows: T[]) => void;
+  rowKey: string;
+  showCheckbox?: boolean;
+  style?: React.CSSProperties;
 }
 
-const IndeterminateCheckbox = React.forwardRef(
-  ({
-    indeterminate,
-    ...rest }: TableToggleCommonProps, ref) => {
-    const defaultRef = React.useRef();
-    const resolvedRef: any = ref || defaultRef;
-
-    useEffect(() => {
-      resolvedRef.current.indeterminate = indeterminate;
-    }, [resolvedRef, indeterminate]);
-
-    return (
-      <>
-        <input type="checkbox" ref={resolvedRef} {...rest} />
-      </>
-    );
-  }
-);
-
-export default function Table<T extends Record<string, unknown>>({
+export default function Table<T extends Record<string, any>>({
+  className,
   columns,
   data,
-  selectedRowKeys,
-  className,
-  style = {},
+  emptyTips,
+  initialSelectedRowKeys,
   loading,
-  emptyText,
   onSelectChange,
-  selectKey,
-  rowKey = 'id',
-  showCheckBox = false,
+  rowKey,
+  showCheckbox,
+  style,
 }: Props<T>): JSX.Element {
-  const tableParameter = [];
-  if (showCheckBox) {
-    tableParameter.push(useRowSelect, (hooks: Hooks) => {
-      hooks.visibleColumns.push((columns: RColumn[]) => [
-        {
-          id: 'selection',
-          Header: ({ getToggleAllRowsSelectedProps }: any) => (
-            <div>
-              <IndeterminateCheckbox
-                {...getToggleAllRowsSelectedProps()}
-              />
-            </div>
-          ),
-          Cell: ({ row }: any) => (
-            <div>
-              <IndeterminateCheckbox
-                {...row.getToggleRowSelectedProps()}
-              />
-            </div>
-          ),
-        },
-        ...columns,
-      ]);
-    });
+  const extendsColumns = [...columns];
+  // todo refactor this
+  const firstColumnFixed = columns.length > 0 && (columns[0] as FixedColumn<T>).fixed;
+  if (showCheckbox) {
+    extendsColumns.unshift({ width: 40, fixed: firstColumnFixed, id: '_selector' });
   }
-
-  const positionMap = useComputeColumnsPosition(rowKey, columns);
+  const hiddenColumns = showCheckbox ? [] : ['_selector'];
+  const fixedStyle = useFixedStyle(extendsColumns);
 
   const {
     getTableProps,
     getTableBodyProps,
-    flatHeaders,
+    headerGroups,
     prepareRow,
     rows,
     selectedFlatRows,
     state: { selectedRowIds },
-  }: any = useTable<any>(({
+  } = useTable(({
     columns,
     data,
-    getRowId: (row, _, parent: any) => {
-      return parent ? [parent[rowKey], row[rowKey]].join('.') : row[rowKey];
+    getRowId: (row) => row[rowKey],
+    initialState: {
+      hiddenColumns,
+      selectedRowIds: getDefaultSelectMap(initialSelectedRowKeys),
     },
-    initialState: { selectedRowIds: getDefaultSelectMap(selectedRowKeys) },
-  }) as TableOptions<T>, ...tableParameter);
+  }) as TableOptions<T>, ...hooks);
 
   useEffect(() => {
-    onSelectChange?.(selectedFlatRows.map(({ original }: Row) => {
-      return selectKey ? get(original, selectKey) : original;
-    }));
+    if (!onSelectChange) {
+      return;
+    }
+
+    const selectedRows = selectedFlatRows.map(({ original }) => original);
+    const selectedKeys = selectedRows.map((row) => row[rowKey] as string);
+    onSelectChange(selectedKeys, selectedRows);
   }, [selectedRowIds]);
 
   const tableFooterRender = () => {
@@ -124,59 +80,70 @@ export default function Table<T extends Record<string, unknown>>({
     }
 
     if (rows.length === 0) {
-      return (
-        <div className="qxp-table-empty">
-          <img src='/dist/images/message_details_empty_tips.svg' alt='noData' />
-          <p>{emptyText || '无数据或符合条件的数据'}</p>
-        </div>
-      );
+      return (<div className="qxp-table-empty">{emptyTips}</div>);
     }
   };
 
+  if (!headerGroups.length) {
+    // todo render error tips
+    return <TableLoading />;
+  }
+
   return (
     <div className="qxp-table-wrapper">
-      <div className={classnames('qxp-table-content', className)} style={style}>
-        <table className='qxp-table' {...getTableProps()}>
-          <colgroup>
-            {flatHeaders.map((column: Column) => (
-              <col
-                key={column.id}
-                width={column.width ? column.width : ''}
-              />
-            ))}
+      <div className={classnames('qxp-table', className)} style={style}>
+        <table {...getTableProps()}>
+          <colgroup id="colgroup">
+            {headerGroups[0].headers.map((header, index) => {
+              return (
+                <col
+                  key={header.id}
+                  style={(extendsColumns[index] as FixedColumn<any>).fixed ? { width: `${header.width}px` } : {}}
+                />
+              );
+            })}
           </colgroup>
           <thead>
             <tr>
-              {flatHeaders.map((column: ColumnS) => {
+              {headerGroups[0].headers.map((header, index) => {
+                const hasFixed = (extendsColumns[index] as FixedColumn<any>).fixed;
+                // todo explain this
+                const zIndex = hasFixed ? extendsColumns.length - index + 1 : undefined;
+
                 return (
                   <th
-                    {...column.getHeaderProps()}
-                    key={column.id}
-                    style={positionMap[column.id]}
-                    className='qxp-table-th'
+                    {...header.getHeaderProps()}
+                    key={header.id}
+                    className={classnames({ 'table__header-fixed': hasFixed })}
+                    style={{
+                      ...fixedStyle(index),
+                      zIndex,
+                    }}
                   >
-                    {column.render('Header')}
+                    {header.render('Header')}
                   </th>
                 );
               })}
             </tr>
           </thead>
           <tbody {...getTableBodyProps()}>
-            {rows.map((row: Row) => {
+            {rows.map((row) => {
               prepareRow(row);
               return (
                 <tr
-                  className='qxp-table-tr'
                   {...row.getRowProps()}
                   key={row.id}
+                  className='qxp-table-tr'
                 >
-                  {row.cells.map((cell: any) => {
+                  {row.cells.map((cell, index) => {
+                    const hasFixed = (extendsColumns[index] as FixedColumn<any>).fixed;
+
                     return (
                       <td
                         {...cell.getCellProps()}
                         key={cell.column.id}
-                        className='qxp-table-td'
-                        style={positionMap[cell.column.id]}
+                        className={classnames({ 'table__cell-fixed': hasFixed })}
+                        style={fixedStyle(index)}
                       >
                         {cell.render('Cell')}
                       </td>
@@ -192,4 +159,3 @@ export default function Table<T extends Record<string, unknown>>({
     </div>
   );
 }
-

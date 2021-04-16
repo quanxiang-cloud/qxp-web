@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
-import { Column } from 'react-table';
+import { useEffect, useRef } from 'react';
+import { FixedColumn, IdType, UnionColumns } from 'react-table';
 
-export const getDefaultSelectMap = (keys: string[] | undefined) => {
+export const getDefaultSelectMap = (keys: string[] | undefined): Record<IdType<any>, boolean> => {
   if (!keys) {
     return {};
   }
@@ -13,40 +13,52 @@ export const getDefaultSelectMap = (keys: string[] | undefined) => {
   return keyMap;
 };
 
-type FixedMap = {
-  [key: string]: React.CSSProperties
-}
+export function useComputeColumnsPosition<T extends object = {}>(
+  columns: FixedColumn<T>[]
+): Array<React.CSSProperties> {
+  let marginLeft = 0;
+  const leftMargins: Array<number | undefined> = columns.map(({ fixed, width }) => {
+    if (!fixed || typeof width !== 'number') {
+      return undefined;
+    }
+    const _marginLeft = marginLeft;
+    marginLeft = marginLeft + width;
 
-export function useComputeColumnsPosition<T extends Record<string, unknown>>(
-  rowKey: string,
-  columns: Array<Omit<Column<T>, 'columns'> & {
-    fixed?: boolean;
-    width?: number;
-  }>): FixedMap {
-  const [positionMap, setPositionMap] = useState({});
+    return _marginLeft;
+  });
 
-  useEffect(() => {
-    const _positionMap: any = {};
-    let marginLeft = 0;
-    columns.forEach(({ fixed, width, ...otherProps }) => {
-      if (!fixed) {
-        return;
+  let marginRight = 0;
+  const rightMargins: Array<number | undefined> = columns
+    .slice().reverse().map(({ fixed, width }) => {
+      if (!fixed || typeof width !== 'number') {
+        return undefined;
       }
 
-      const id = (otherProps as any)[rowKey];
+      const _marginRight = marginRight;
+      marginRight = marginRight + width;
+      return _marginRight;
+    }).reverse();
 
-      const _marginLeft = marginLeft;
-      marginLeft += Number(width);
-      _positionMap[id] = { left: _marginLeft + 'px', position: 'sticky', zIndex: 1 };
-    });
+  return leftMargins.map((left, index) => {
+    return {
+      left: left !== undefined ? `${left}px` : undefined,
+      right: rightMargins[index] !== undefined ? `${rightMargins[index]}px` : undefined,
+    };
+  });
+}
 
-    const rightKeySort = Object.keys(_positionMap).reverse();
-
-    Object.keys(_positionMap).forEach((key, index) => {
-      _positionMap[key].right = _positionMap[rightKeySort[index]].left;
-    });
-
-    setPositionMap(_positionMap);
+type GetFixedStyle = (index: number) => React.CSSProperties;
+export function useFixedStyle<T extends {}>(columns: UnionColumns<T>[]): GetFixedStyle {
+  const fn = useRef<GetFixedStyle>(() => ({}));
+  useEffect(() => {
+    const columnsFixedStyle = useComputeColumnsPosition(columns as FixedColumn<T>[]);
+    fn.current = (index: number) => {
+      if ((columns as FixedColumn<T>[])[index].fixed) {
+        return columnsFixedStyle[index];
+      }
+      return {};
+    };
   }, [columns]);
-  return positionMap;
+
+  return fn.current;
 }
