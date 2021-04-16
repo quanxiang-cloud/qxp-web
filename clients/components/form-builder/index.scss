@@ -78,21 +78,20 @@
 }
 
 .item-checked {
+  position: relative;
   border-color: #375FF3;
-  .rectangle {
+  &:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right:0;
+    border: 16px solid transparent;
+    border-top-right-radius: 6px;
     border-color: #375FF3 #375FF3 transparent transparent;
   }
   .check-icon {
     display: block;
   }
-}
-
-.rectangle {
-  position: absolute;
-  top: 0;
-  right:0;
-  border: 16px solid transparent;
-  border-top-right-radius: 6px;
 }
 
 .check-icon {

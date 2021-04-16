@@ -30,7 +30,6 @@ function FormLabelConfig(): JSX.Element {
             <span className="item-body"></span>
           </div>
           <div className="text-center">左右</div>
-          <div className="rectangle"></div>
           <Icon name='done' type="light" className="check-icon"/>
         </div>
         <div
@@ -42,7 +41,6 @@ function FormLabelConfig(): JSX.Element {
           <div className="item-label"></div>
           <div className="item-body" style={{ width: '96px' }}></div>
           <div className="text-center">上下</div>
-          <div className="rectangle"></div>
           <Icon name='done' type="light" className="check-icon"/>
         </div>
       </>
