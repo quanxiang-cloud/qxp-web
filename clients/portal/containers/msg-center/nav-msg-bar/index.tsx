@@ -17,10 +17,8 @@ import styles from './index.module.scss';
 const NavMsgBar = ({ msgCenter: store }: Pick<MobxStores, 'msgCenter' | any>): JSX.Element => {
   const toggleRef = useRef(null);
   const msgBoxRef = useRef(null);
-  const { openUnreadMsgBox, unReadCount, msgBoxOpen, openMsgCenter } = store;
-  const { data: countUnreadMsg }=useQuery('count-unread-msg', getUnreadMsgCount, {
-    // cacheTime: -1,
-  });
+  const { openUnreadMsgBox, msgBoxOpen, openMsgCenter } = store;
+  const { data: countUnreadMsg }=useQuery('count-unread-msg', getUnreadMsgCount);
 
   const handleClickOuter = (ev: MouseEvent) => {
     const { target } = ev;
@@ -40,7 +38,6 @@ const NavMsgBar = ({ msgCenter: store }: Pick<MobxStores, 'msgCenter' | any>): J
 
     // check params from url
     const queryOpenMsg = getQuery('msg_center');
-    // fixme
     if (['true', '1'].includes(queryOpenMsg + '')) {
       openMsgCenter(true);
     }

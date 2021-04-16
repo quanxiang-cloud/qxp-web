@@ -3,7 +3,7 @@ import fetcher from '@lib/fetcher';
 import { omitEmpty } from '@clients/utils';
 
 // 获取未读消息列表
-export const getMessages = async ({ queryKey }: QueryFuncCtx) => {
+export const getMessageList = async ({ queryKey }: QueryFuncCtx) => {
   const [, params] = queryKey;
   // const defaults = {
   //   read_status: MsgReadStatus.unread,
@@ -26,16 +26,6 @@ export const getMsgById = async ({ queryKey }: QueryFuncCtx) => {
     read: false, // 是否标记为已读
   };
   const { data } = await fetcher.post('/api/v1/message/center/getById', { ...defaults, ...params });
-  return data;
-};
-
-// 根据id查询消息详情
-export const getMessageDetail = async (id: string, donotSetRead?: boolean) => {
-  const params = {
-    id,
-    read: !donotSetRead, // 是否标记为已读
-  };
-  const { data } = await fetcher.post('/api/v1/message/center/getById', params);
   return data;
 };
 

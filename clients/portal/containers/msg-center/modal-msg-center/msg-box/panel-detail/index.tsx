@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import { inject, observer } from 'mobx-react';
 import Loading from '@c/loading';
 import styles from '../index.module.scss';
@@ -9,9 +9,13 @@ interface Props {
 }
 
 const PanelDetail = ({ msgCenter }: Props & Pick<MobxStores, 'msgCenter' | any>) => {
-  const { loadingOfGetDetail, messageDetail } = msgCenter;
+  const { loadingDetail, messageDetail, curMsgId } = msgCenter;
 
-  if (loadingOfGetDetail) return <Loading />;
+  useEffect(()=> {
+
+  }, [curMsgId])
+
+  if (loadingDetail) return <Loading />;
 
   if (messageDetail == null) {
     return (
@@ -27,9 +31,7 @@ const PanelDetail = ({ msgCenter }: Props & Pick<MobxStores, 'msgCenter' | any>)
 
   return (
     <div className={styles.detailPanel}>
-      <div>
-        <PreviewMsg prevData={data} />
-      </div>
+      <PreviewMsg prevData={data} />
     </div>
   );
 };

@@ -1,10 +1,11 @@
 import React from 'react';
 import classNames from 'classnames';
 import { useQuery } from 'react-query';
-import { getMessages } from '@portal/api/message-center';
+import { getMessageList } from '@portal/api/message-center';
 import Loading from '@c/loading';
 import Error from '@c/error';
 import MsgItem from '../msg-item';
+import { MsgReadStatus } from '@portal/pages/system-mgmt/constants';
 // import {default as mockMsgList} from '@portal/mock/mock-msg-list';
 
 import styles from './index.module.scss';
@@ -39,15 +40,17 @@ const MsgList = ({ className, getMsgDetail }: Props): JSX.Element => {
     return (
       <ul className={styles.items}>
         {msgList.map((msg: Qxp.MsgItem) => (<div onClick={()=>handleClick(msg.id)} className='hover:bg-gray-100' key={msg.id} >
-          <MsgItem {...msg} />
+          <MsgItem {...msg} readonly />
         </div>))}
       </ul>
     );
   };
 
-  const { isLoading, isError, data } = useQuery(['unread-messages', { limit: 5 }], getMessages, {
-    // initialData: mockMsgList,
-    // staleTime: 1000 * 60 * 60,
+  const {isLoading, isError, data} = useQuery(['unread-messages', {
+    read_status: MsgReadStatus.unread,
+    page: 1,
+    limit: 5,
+  }], getMessageList, {
     cacheTime: -1,
   });
 

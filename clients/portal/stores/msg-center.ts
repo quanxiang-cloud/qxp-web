@@ -2,7 +2,7 @@
 import { observable, action, computed } from 'mobx';
 import { find, get } from 'lodash';
 import { MsgType } from '@portal/pages/system-mgmt/constants';
-import { getMessageDetail } from '@portal/api/message-center';
+import { getMsgById } from '@portal/api/message-center';
 
 class MsgCenter {
   @observable.shallow
@@ -27,16 +27,13 @@ class MsgCenter {
   selectType = MsgType.all;
 
   @observable
-  loadingOfGetDetail = false;
+  loadingDetail = false;
 
   @observable
   messageDetail = null;
 
   @observable
-  unReadCount = {
-    announcement: 0,
-    systemMessage: 0,
-  }
+  curMsgId='';
 
   @computed
   get countUnread() {
@@ -103,25 +100,24 @@ class MsgCenter {
   }
 
   @action
-  showMessageDetail(id: string) {
-    this.loadingOfGetDetail = true;
-    getMessageDetail(id, false)
-      .then((response) => {
-        this.loadingOfGetDetail = false;
-        if (response.code == 0) {
-          this.messageDetail = response.data;
-        }
-      });
+  setLoadingDetail=(loading: boolean)=> {
+    this.loadingDetail=loading;
   }
 
   @action
-  setUnReadCount(resetValue: any) {
-    this.unReadCount = resetValue;
+  setDetail = (msg: any) => {
+    this.messageDetail = msg;
+  }
+
+  @action
+  setCurMsgId = (id: string) => {
+    this.curMsgId = id;
   }
 
   @action
   reset = () => {
-
+    this.curMsgId = '';
+    this.messageDetail=null;
   }
 }
 
