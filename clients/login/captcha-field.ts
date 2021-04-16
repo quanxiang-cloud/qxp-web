@@ -116,10 +116,13 @@ export default class Captcha extends InputField {
     }
     e.preventDefault();
     const validateResult = this.username?.validate();
+    this.toggleSender(validateResult || false);
     if (validateResult === true) {
       this.sendCode();
     } else if (validateResult instanceof Promise) {
-      validateResult.then(() => this.sendCode());
+      validateResult.then((isValid: boolean) => {
+        isValid && this.sendCode();
+      });
     }
   }
 
