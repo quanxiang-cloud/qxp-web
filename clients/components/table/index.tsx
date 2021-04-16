@@ -12,9 +12,8 @@ import {
   Row,
 } from 'react-table';
 
-import Pagination from '../pagination';
-
 import TableLoading from './table-loading';
+import { getDefaultSelectMap, useComputeColumnsPosition } from './utils';
 import './index.scss';
 
 interface ColumnS extends UseTableColumnProps<any> {
@@ -31,28 +30,10 @@ interface Props<T extends Record<string, unknown>> {
   className?: string;
   selectKey?: string;
   showCheckBox?: boolean;
-  currentPage?: number;
   style?: React.CSSProperties;
-  pageSize?: number;
-  total?: number;
   loading?: boolean;
   onSelectChange?: (selected: Array<T>) => void;
-  onPageChange?: (currentPage: number, pageSize: number) => void;
 }
-
-const FIXED_ROW: React.CSSProperties = { position: 'sticky', left: '0px', zIndex: 1 };
-
-const getDefaultSelectMap = (keys: string[]|undefined) => {
-  if (!keys) {
-    return {};
-  }
-
-  const keyMap: any = {};
-  keys.forEach((key) => {
-    keyMap[key] = true;
-  });
-  return keyMap;
-};
 
 const IndeterminateCheckbox = React.forwardRef(
   ({
@@ -79,16 +60,12 @@ export default function Table<T extends Record<string, unknown>>({
   selectedRowKeys,
   className,
   style = {},
-  pageSize = 20,
-  total = 0,
-  currentPage = 1,
   loading,
   emptyText,
   onSelectChange,
   selectKey,
   rowKey = 'id',
   showCheckBox = false,
-  onPageChange,
 }: Props<T>): JSX.Element {
   const tableParameter = [];
   if (showCheckBox) {
@@ -115,6 +92,8 @@ export default function Table<T extends Record<string, unknown>>({
       ]);
     });
   }
+
+  const positionMap = useComputeColumnsPosition(rowKey, columns);
 
   const {
     getTableProps,
@@ -152,21 +131,6 @@ export default function Table<T extends Record<string, unknown>>({
         </div>
       );
     }
-
-    return (
-      <div className='px-16 flex justify-between items-center h-56'>
-        <div className='qxp-table-total-tips' >共{total}条数据</div>
-        {total > pageSize && (
-          <Pagination
-            className='inline-flex'
-            pageSize={pageSize}
-            current={currentPage}
-            total={total}
-            onChange={onPageChange}
-          />
-        )}
-      </div>
-    );
   };
 
   return (
@@ -188,7 +152,7 @@ export default function Table<T extends Record<string, unknown>>({
                   <th
                     {...column.getHeaderProps()}
                     key={column.id}
-                    style={column.fixed ? FIXED_ROW : {}}
+                    style={positionMap[column.id]}
                     className='qxp-table-th'
                   >
                     {column.render('Header')}
@@ -197,7 +161,7 @@ export default function Table<T extends Record<string, unknown>>({
               })}
             </tr>
           </thead>
-          <tbody style={{ display: loading ? 'none' : '' }} {...getTableBodyProps()}>
+          <tbody {...getTableBodyProps()}>
             {rows.map((row: Row) => {
               prepareRow(row);
               return (
@@ -212,7 +176,7 @@ export default function Table<T extends Record<string, unknown>>({
                         {...cell.getCellProps()}
                         key={cell.column.id}
                         className='qxp-table-td'
-                        style={cell.column.fixed ? FIXED_ROW : {}}
+                        style={positionMap[cell.column.id]}
                       >
                         {cell.render('Cell')}
                       </td>
@@ -223,8 +187,8 @@ export default function Table<T extends Record<string, unknown>>({
             })}
           </tbody>
         </table>
+        {tableFooterRender()}
       </div>
-      {tableFooterRender()}
     </div>
   );
 }
