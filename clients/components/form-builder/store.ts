@@ -76,6 +76,7 @@ export default class FormBuilderStore {
   @observable fields: Array<FormItem>;
   @observable activeFieldName = '';
   @observable activeFieldWrapperName = '';
+  @observable labelAlign = 'left';
 
   constructor({ schema }: Props) {
     this.fields = schemaToFields(schema);
@@ -148,12 +149,16 @@ export default class FormBuilderStore {
           type: 'object',
           'x-component': 'mega-layout',
           'x-component-props': {
-            labelAlign: 'left',
+            labelAlign: this.labelAlign,
           },
           properties: properties,
         },
       },
     };
+  }
+
+  @action updateLabelAlign(labelAlign: 'left' | 'right' | 'top') {
+    this.labelAlign = labelAlign;
   }
 
   @action
