@@ -111,9 +111,6 @@ export default class FormBuilderStore {
         // convert observable value to pure js object for debugging
         ...toSchema(toJS(configValue)),
         'x-index': index,
-        'x-mega-props': {
-          labelAlign: 'top',
-        },
       };
 
       return acc;
@@ -133,9 +130,6 @@ export default class FormBuilderStore {
         type: 'object',
         'x-component': 'FormFieldWrapper',
         'x-index': this.schema.properties?.[key]['x-index'],
-        'x-mega-props': {
-          labelAlign: 'top',
-        },
         properties: {
           [key]: this.schema.properties?.[key],
         } as { [key: string]: ISchema; },
@@ -148,9 +142,17 @@ export default class FormBuilderStore {
     }, {});
 
     return {
-      title: '',
       type: 'object',
-      properties: properties,
+      properties: {
+        FILEDS: {
+          type: 'object',
+          'x-component': 'mega-layout',
+          'x-component-props': {
+            labelAlign: 'left',
+          },
+          properties: properties,
+        },
+      },
     };
   }
 
@@ -169,7 +171,7 @@ export default class FormBuilderStore {
   @action
   append(field: SourceElement<any>) {
     this.fields.push({
-      ...field,
+      componentName: field.componentName.toLowerCase(),
       configValue: field.defaultConfig,
       fieldName: nanoid(8),
     });
