@@ -1,12 +1,12 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import classNames from 'classnames';
-import {inject, observer} from 'mobx-react';
+import { inject, observer } from 'mobx-react';
 import { MsgReadStatus, MsgType } from '@portal/pages/system-mgmt/constants';
 import dayjs from 'dayjs';
 import { useRouting } from '@portal/hooks';
-import {Message} from '@QCFE/lego-ui';
-import {useQueryClient, useMutation} from 'react-query';
-import {getMsgById} from '@portal/api/message-center';
+import { Message } from '@QCFE/lego-ui';
+import { useQueryClient, useMutation } from 'react-query';
+import { getMsgById } from '@portal/api/message-center';
 import { getQuery } from '@clients/utils';
 
 import styles from './index.module.scss';
@@ -34,7 +34,7 @@ const MsgItem = ({
   const refItem=useRef(null);
   const [, queryPage]=useRouting();
   const queryClient=useQueryClient();
-  const {curMsgId}=store;
+  const { curMsgId }=store;
 
   useEffect(()=> {
     const msgId = getQuery('id') || store.curMsgId || '';
@@ -44,8 +44,8 @@ const MsgItem = ({
         queryKey: ['', {
           id,
           read: true,
-        }]
-      })
+        }],
+      });
     }
   }, []);
 
@@ -62,7 +62,7 @@ const MsgItem = ({
         trElem.classList.remove(activeCls);
       }
     }
-  }
+  };
 
   const readMsg = useMutation(getMsgById, {
     onMutate: ()=> {
@@ -79,25 +79,25 @@ const MsgItem = ({
       }
     },
     onError: (err: Error) => {
-      store.setLoadingDetail(false)
+      store.setLoadingDetail(false);
       Message.error(err.message);
-    }
+    },
   });
 
   const handleClick = () => {
-    if(readonly){
+    if (readonly) {
       return;
     }
     if (id !== store.curMsgId) {
       store.setCurMsgId(id);
-      queryPage('', {id});
+      queryPage('', { id });
 
       readMsg.mutate({
         queryKey: ['', {
           id,
           read: true,
-        }]
-      })
+        }],
+      });
     }
 
     checkRow();

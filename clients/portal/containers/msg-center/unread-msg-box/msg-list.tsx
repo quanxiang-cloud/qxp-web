@@ -46,7 +46,7 @@ const MsgList = ({ className, getMsgDetail }: Props): JSX.Element => {
     );
   };
 
-  const {isLoading, isError, data} = useQuery(['unread-messages', {
+  const { isLoading, isError, data } = useQuery(['unread-messages', {
     read_status: MsgReadStatus.unread,
     page: 1,
     limit: 5,

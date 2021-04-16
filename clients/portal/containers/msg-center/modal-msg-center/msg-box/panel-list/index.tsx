@@ -1,9 +1,9 @@
-import React, {useState, useRef, useMemo, useEffect} from 'react';
+import React, { useState, useRef, useMemo, useEffect } from 'react';
 import classNames from 'classnames';
 import { inject, observer } from 'mobx-react';
 import { Message, Table } from '@QCFE/lego-ui';
 import { useQuery } from 'react-query';
-import {get} from 'lodash';
+import { get } from 'lodash';
 import Loading from '@c/loading';
 import Error from '@c/error';
 import MsgItem from '@containers/msg-center/msg-item';
@@ -94,7 +94,7 @@ const PanelList = ({ msgCenter }: Props & Pick<MobxStores, 'msgCenter' | any>) =
               unReadRefetch();
               closeConfirmInfo();
               msgCenter.reset();
-              queryPage('', {id: undefined});
+              queryPage('', { id: undefined });
             } else {
               Message.warning('操作失败');
             }
@@ -136,7 +136,7 @@ const PanelList = ({ msgCenter }: Props & Pick<MobxStores, 'msgCenter' | any>) =
               unReadRefetch();
               closeConfirmInfo();
               msgCenter.reset();
-              queryPage('', {id: undefined});
+              queryPage('', { id: undefined });
             } else {
               Message.warning('操作失败');
             }
@@ -211,7 +211,7 @@ const PanelList = ({ msgCenter }: Props & Pick<MobxStores, 'msgCenter' | any>) =
         <div>
           <Pagination
             pageSize={paging.limit}
-            pageNumber={paging.page}
+            current={paging.page}
             total={data?.data?.total||0}
             onChange={msgCenter.pageChange}
             showSizeChanger

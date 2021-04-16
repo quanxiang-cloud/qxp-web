@@ -2,7 +2,6 @@
 import { observable, action, computed } from 'mobx';
 import { find, get } from 'lodash';
 import { MsgType } from '@portal/pages/system-mgmt/constants';
-import { getMsgById } from '@portal/api/message-center';
 
 class MsgCenter {
   @observable.shallow

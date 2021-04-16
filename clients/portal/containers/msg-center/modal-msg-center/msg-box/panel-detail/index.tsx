@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, { useEffect } from 'react';
 import { inject, observer } from 'mobx-react';
 import Loading from '@c/loading';
 import styles from '../index.module.scss';
@@ -13,7 +13,7 @@ const PanelDetail = ({ msgCenter }: Props & Pick<MobxStores, 'msgCenter' | any>)
 
   useEffect(()=> {
 
-  }, [curMsgId])
+  }, [curMsgId]);
 
   if (loadingDetail) return <Loading />;
 
