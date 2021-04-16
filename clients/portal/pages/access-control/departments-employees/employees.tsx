@@ -88,7 +88,7 @@ export default function Employees({
       <div className="text-12 text-gray-600">
         共<span className="mx-4">{employeesList?.total || 0}</span>条数据
       </div>
-    )
+    );
   }
 
   function handleUserState(status: UserStatus, user: UserInfo) {
