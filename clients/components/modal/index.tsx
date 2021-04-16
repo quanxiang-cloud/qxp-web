@@ -1,6 +1,9 @@
 import React from 'react';
-import Icon from '@c/icon';
+import { createPortal } from 'react-dom';
 import styled, { createGlobalStyle, keyframes } from 'styled-components';
+
+import Icon from '@c/icon';
+import Button from '@c/button';
 
 interface Props {
   title?: string | React.ReactNode;
@@ -29,19 +32,24 @@ const GlobalStyle = createGlobalStyle<{ visible?: boolean }>`
 `;
 
 export default class Modal extends React.PureComponent<Props, State> {
+  element = window.document.createElement('div');
   constructor(props: Props) {
     super(props);
     this.state = {
       visible: props.visible,
     };
+    window.document.body.append(this.element);
   }
+
 
   static getDerivedStateFromError(props: Partial<Props>) {
     return { visible: props.visible };
   }
 
-  componentDidMount(): void {
-
+  componentWillUnmount() {
+    if (this.element) {
+      window.document.body.removeChild(this.element);
+    }
   }
 
   handleClose = (ev: unknown): void => {
@@ -52,24 +60,14 @@ export default class Modal extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const {
-      // visible,
-      fullscreen,
-      className,
-      title,
-      children,
-      width = '100vw',
-      height = 'auto',
-      toolbar,
-      footer,
-      closable = true,
-    } = this.props;
-    const { visible } = this.props;
+    const { visible, fullscreen, className, title, children, width = '632px',
+      height = 'auto', toolbar, footer, okText, cancelText, onClose,
+      onConfirm, closable = true } = this.props;
 
-    return (
+    return createPortal(
       <Wrap className={className} visible={visible}>
-        <GlobalStyle visible={visible}/>
-        <Mask/>
+        <GlobalStyle visible={visible} />
+        <Mask />
         <Inner width={width} height={height} fullscreen={fullscreen}>
           <Header>
             <div className='md-header-left'>
@@ -77,16 +75,30 @@ export default class Modal extends React.PureComponent<Props, State> {
               <div className='md-toolbar'>{toolbar}</div>
             </div>
             <div className='md-header-right' onClick={this.handleClose}>
-              {closable && <Icon name='close' size={16} clickable/>}
+              {closable && <Icon name='close' size={24} clickable />}
             </div>
           </Header>
           <Body>
             {children}
           </Body>
-          <Footer>{footer}</Footer>
+          <Footer>
+            <FooterInner>
+              {footer ? footer : (
+                <div className="flex items-center">
+                  <Button iconName="close" className="mr-20" onClick={onClose}>
+                    {okText ? okText : '取消'}
+                  </Button>
+                  <Button modifier="primary" iconName="check" onClick={onConfirm}>
+                    {cancelText ? cancelText : '确定'}
+                  </Button>
+                </div>
+              )}
+            </FooterInner>
+          </Footer>
         </Inner>
-      </Wrap>
-    );
+      </Wrap>,
+      this.element
+    )
   }
 }
 
@@ -139,11 +151,23 @@ const Header = styled.div`
 `;
 
 const Body = styled.div`
-  height: calc(100vh - 56px);
+  padding: 24px 40px;
+  max-height: 600px;
+  overflow: auto;
 `;
 
 const Footer = styled.div`
+  padding: 16px 20px;
+  background-color: #F1F5F9;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  border-bottom-left-radius: 12px;
+  border-bottom-right-radius: 12px;
+`;
 
+const FooterInner = styled.div`
+  display: inline-block;
 `;
 
 const scaleAnimation = keyframes`
@@ -155,6 +179,14 @@ const scaleAnimation = keyframes`
     transform: scale(1);
     opacity: 1;
   }
+  // 0% {
+  //   transform: translate3d(0, -20px, 0);
+  //   opacity: 0;
+  // }
+  // 100% {
+  //   transform: translate3d(0, 0, 0);
+  //   opacity: 1;
+  // }
 `;
 
 const Inner = styled.div<{ width: any, height: any, fullscreen?: boolean }>`
@@ -168,10 +200,8 @@ const Inner = styled.div<{ width: any, height: any, fullscreen?: boolean }>`
   //}
   background: white;
   z-index: 110;
-  position: relative;
-  top: 56px;
-  border-radius: 12px 12px 12px 12px;
-  animation: ${scaleAnimation} 0.3s ease-in-out;
+  border-radius: 12px;
+  animation: ${scaleAnimation} 0.3s;
 `;
 
 const Wrap = styled.div<{ visible?: boolean }>`
@@ -184,7 +214,7 @@ const Wrap = styled.div<{ visible?: boolean }>`
   top: 0;
   align-items: center;
   display: ${(props) => props.visible ? 'flex' : 'none'};
-  transition: all 0.3s ease;
+  transition: opacity .1s;
   justify-content: center;
   overflow: hidden;
   z-index: 100;
@@ -196,4 +226,3 @@ const Wrap = styled.div<{ visible?: boolean }>`
     height: 100%;
   }
 `;
-
