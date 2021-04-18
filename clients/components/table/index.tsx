@@ -95,10 +95,11 @@ export default function Table<T extends Record<string, any>>({
         <table {...getTableProps()}>
           <colgroup id="colgroup">
             {headerGroups[0].headers.map((header, index) => {
+              const fixed = (extendsColumns[index] as FixedColumn<any>).fixed;
               return (
                 <col
                   key={header.id}
-                  style={(extendsColumns[index] as FixedColumn<any>).fixed ? { width: `${header.width}px` } : {}}
+                  style={fixed ? { width: `${header.width}px` } : {}}
                 />
               );
             })}
