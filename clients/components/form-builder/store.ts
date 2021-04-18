@@ -42,6 +42,9 @@ const INTERNAL_FIELDS: Array<FormItem> = [
   },
 ];
 
+// todo refactor this
+const INTERNAL_FIELD_NAMES = INTERNAL_FIELDS.map(({ fieldName }) => fieldName);
+
 // todo support tree structure
 function schemaToFields({ properties }: FormBuilder.Schema): Array<FormItem> {
   if (!properties) {
@@ -127,6 +130,10 @@ export default class FormBuilderStore {
   @computed get schemaForCanvas(): ISchema {
     const originalProperties = toJS(this.schema.properties) || {};
     const properties = Object.keys(originalProperties).reduce<Record<string, any>>((acc, key) => {
+      if (INTERNAL_FIELD_NAMES.includes(key)) {
+        return acc;
+      }
+
       const wrapperNode: ISchema = {
         type: 'object',
         'x-component': 'FormFieldWrapper',
