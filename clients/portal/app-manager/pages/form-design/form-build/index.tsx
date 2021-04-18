@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
+
 import FormStore from '@c/form-builder/store';
+import { FormBuilder } from '@c/form-builder';
 import Button from '@c/button';
 import Icon from '@c/icon';
 
@@ -31,7 +33,7 @@ const FormPage = () => {
           🎬 查看新手指引
         </span>
       </div>
-      {/* <FormBuilder store={store} className="flex-grow" /> */}
+      <FormBuilder store={store} />
     </>
   );
 };

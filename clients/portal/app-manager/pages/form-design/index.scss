@@ -18,6 +18,8 @@
   box-shadow: 0px 8px 24px 4px rgba(148, 163, 184, 0.25);
 }
 
-body {
-  overflow-y: hidden;
+.form-design {
+  .form-builder {
+    height: calc(100vh - 112px);
+  }
 }

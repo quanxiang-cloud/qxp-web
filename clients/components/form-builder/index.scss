@@ -48,6 +48,10 @@
   width: 296px;
 
   background-color: white;
+
+  .ant-tabs-content-holder {
+    overflow: auto;
+  }
 }
 
 .item-title {
@@ -74,7 +78,7 @@
 
 .layout-content {
   display: flex;
-  justify-content: space-between; 
+  justify-content: space-between;
 }
 
 .item-checked {
