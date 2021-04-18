@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { FormBuilder } from '@c/form-builder';
 import FormStore from '@c/form-builder/store';
 import Button from '@c/button';
 import Icon from '@c/icon';
