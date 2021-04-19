@@ -93,9 +93,9 @@ body{
     }
     .body {
       padding-top: 48px;
-      padding-bottom: 42px;
+      //padding-bottom: 42px;
       height: auto;
-      max-width: 1200px;
+      //max-width: 1200px;
       margin: auto;
 
       .editorWrap {
@@ -234,6 +234,8 @@ body {
   margin-top: 50px;
 
   .file_itm{
+    display: flex;
+    justify-content: space-between;
     background-color: var( --blue-100);
     border-radius: 4px;
     padding: 4px;
