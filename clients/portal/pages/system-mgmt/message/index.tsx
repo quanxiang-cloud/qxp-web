@@ -85,7 +85,7 @@ const MessagesPage = ({ msgMgmt: msgStore }: Pick<MobxStores, 'msgMgmt' | any>) 
             </Button>
             <Search
               placeholder="输入消息标题、操作人名称"
-              // value={searchValue}
+              value={inputValue}
               onChange={searchValueChange}
               classname={styles.search}
             />
