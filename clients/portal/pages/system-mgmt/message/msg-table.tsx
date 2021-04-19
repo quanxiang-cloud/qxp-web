@@ -91,7 +91,7 @@ const EnumMessage = [
 const MsgTable = ({ msgMgmt: store, refresh }: Props & Pick<MobxStores, 'msgMgmt' | any>) => {
   const data = useRecoilValue(Data);
   const [pageInfo, setPageInfo] = useRecoilState(PageInfo);
- 
+
   const { isLoading, isError, isFetching } = useRecoilValue(RequestInfo);
 
   const [previewInfo, setPreviewInfo] = useState({ visible: false, id: '', title: '', status: MsgSendStatus.all });
@@ -242,6 +242,7 @@ const MsgTable = ({ msgMgmt: store, refresh }: Props & Pick<MobxStores, 'msgMgmt
           </div>
         </MoreMenu>,
       dataIndex: 'status',
+      width: 160,
       render: ( _ : any, { status, fail, success }: { status: MsgSendStatus, fail: number, success: number }) => <Status {...{ status, fail, success }}/>,
     },
     {
@@ -270,6 +271,7 @@ const MsgTable = ({ msgMgmt: store, refresh }: Props & Pick<MobxStores, 'msgMgmt
           </div>
         </MoreMenu>,
       dataIndex: 'title',
+      width: 'auto',
       render: (_: any, { id, title, sort, status } : { status: MsgSendStatus, id: string, title: string, sort: MsgType })=>{
         const handleClick = () => {
           setPreviewInfo({ id, visible: true, title, status });
@@ -283,7 +285,7 @@ const MsgTable = ({ msgMgmt: store, refresh }: Props & Pick<MobxStores, 'msgMgmt
                   [styles.msg_type_tip_notice]: sort == MsgType.notify,
                 })
             }>{(EnumMessage.find((itm)=>itm.key==sort)||{}).label}</span>)}
-          {title}
+          <span className={styles.msg_title} title={title}>{title}</span>
         </div>)} />);
       },
     },
@@ -294,12 +296,13 @@ const MsgTable = ({ msgMgmt: store, refresh }: Props & Pick<MobxStores, 'msgMgmt
     {
       title: '更新时间',
       dataIndex: 'updated_at',
+      width: 180,
       render: ( _: any, { updated_at } : Qxp.QueryMsgResult) => {
         return <span>{dayjs(parseInt(String(updated_at * 1000))).format('YYYY-MM-DD HH:mm:ss')}</span>;
       },
     },
     {
-      title: ' ',
+      title: '',
       render: (itm: Qxp.QueryMsgResult) => {
         const { status, id } = itm;
         const confirmSend = () => {
