@@ -62,7 +62,7 @@ body{
       height: 64px;
       background: #F1F5F9;
     }
-  
+
     :global {
       .modal-content {
         width: 1288px !important;
@@ -70,7 +70,7 @@ body{
         overflow-y: auto;
       }
     }
-    
+
   }
 }
 
@@ -99,7 +99,6 @@ body{
 }
 
 body{
-
   .modal_card_foot{
     border-radius: 0 0 12px 12px;
     justify-content: flex-end;
@@ -126,5 +125,10 @@ body{
 
 .menu{
   min-width: 160px;
+}
+
+.tableWrap {
+  max-height: 600px;
+  overflow-y: scroll;
 }
 

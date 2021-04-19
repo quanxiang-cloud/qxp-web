@@ -72,7 +72,7 @@ const MessagesPage = ({ msgMgmt: msgStore }: Pick<MobxStores, 'msgMgmt' | any>) 
           className="bg-gray-1000 px-20 py-16 header-background-image"
           itemTitleClassName="text-h5"
         />
-        <div className="h-full flex flex-col flex-grow overflow-hidden">
+        <div className="flex flex-col flex-grow overflow-hidden">
           <div className='w-full flex align-center ml-20 mt-20'>
             <Button
               className="bg-gray-700 mr-20"
@@ -90,7 +90,7 @@ const MessagesPage = ({ msgMgmt: msgStore }: Pick<MobxStores, 'msgMgmt' | any>) 
               classname={styles.search}
             />
           </div>
-          <div className="qxp-table my-20 px-20 w-full h-full flex overflow-auto">
+          <div className="qxp-table my-20 px-20 w-full flex overflow-auto">
             <MsgTable refresh={refresh}/>
           </div>
         </div>

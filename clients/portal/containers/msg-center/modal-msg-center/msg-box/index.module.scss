@@ -73,6 +73,8 @@
     }
 
     .table {
+      max-height: calc(100vh - 240px);
+      overflow-y: scroll;
       table {
         thead {
           visibility: hidden;
@@ -183,6 +185,7 @@ body {
     height: 20px !important;
     padding: 0 !important;
     border: none;
+    line-height: 20px;
   }
 }
 

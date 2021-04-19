@@ -385,7 +385,7 @@ const MsgTable = ({ msgMgmt: store, refresh }: Props & Pick<MobxStores, 'msgMgmt
   };
 
   return (
-    <div className="full-width">
+    <div className={classnames('full-width', styles.tableWrap)}>
       <ModalContent
         visible={previewInfo.visible}
         handleClose={handleClose}
@@ -429,7 +429,6 @@ const MsgTable = ({ msgMgmt: store, refresh }: Props & Pick<MobxStores, 'msgMgmt
         width={632}
         height={240}
         onClose={closeModal}
-
         footer={(
           <div className={`modal-card-foot ${styles.modal_card_foot}`}>
             <div className="flex flex-row justify-between items-center">
@@ -466,7 +465,7 @@ const MsgTable = ({ msgMgmt: store, refresh }: Props & Pick<MobxStores, 'msgMgmt
         <div className={styles.modal_card_content}>确定要删除该条消息吗？删除后不可恢复。</div>
       </Modal>
       <Table
-        className="text-14 table-full"
+        className='text-14 table-full'
         dataSource={msgList}
         columns={cols}
         rowKey="id"
@@ -478,7 +477,13 @@ const MsgTable = ({ msgMgmt: store, refresh }: Props & Pick<MobxStores, 'msgMgmt
         {...pageInfo}
         showSizeChanger
         onChange={pageChange}
-        className={'pagination-border pt-20'}/>
+        className={'pt-20'}
+        renderTotalTip={()=> (
+          <div className="text-12 text-gray-600">
+            共<span className="mx-4">{data?.data?.total || 0}</span>条消息
+          </div>
+        )}
+      />
     </div>
   );
 };

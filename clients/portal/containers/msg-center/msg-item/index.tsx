@@ -113,12 +113,12 @@ const MsgItem = ({
       [styles.active]: curMsgId === id,
     }, className)} onClick={handleClick}>
       <div className={styles.msgItemInner}>
-        <span>
+        <span className='inline-flex items-center'>
           <span className={classNames(styles.statusIcon, {
             [styles.statusUnread]: read === MsgReadStatus.unread,
             [styles.statusRead]: read === MsgReadStatus.read,
           })}/>
-          <span className={styles.txt}>{title}</span>
+          <span className={styles.txt} title={title}>{title}</span>
         </span>
         {!hideType && (
           <span className={classNames(styles.type, {

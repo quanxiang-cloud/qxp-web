@@ -35,17 +35,15 @@
 
     .txt {
       color: var(--gray-900);
-      //@include text-omit;  // todo: use mixin in css module
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
-      max-width: 330px;
-      display: inline-flex;
+      max-width: 300px;
+      //display: inline-flex;
     }
 
     .statusIcon {
       display: inline-flex;
-      vertical-align: middle;
       margin-right: 8px;
       width: 6px;
       height: 6px;
