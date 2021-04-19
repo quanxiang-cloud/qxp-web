@@ -46,6 +46,14 @@
 
 .pre_modal_hover_title{
   cursor: pointer;
+  max-width: 400px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  .msg_title {
+
+  }
 }
 
 body{

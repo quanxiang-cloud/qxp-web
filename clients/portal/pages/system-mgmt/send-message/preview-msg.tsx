@@ -36,7 +36,7 @@ const PreviewMsg = ({ prevData, hideReceivers }: Props) => {
         <div className={styles.info}>{dayjs().format('YYYY-MM-DD HH:mm:ss')} {txt} {handle_name}</div>
         <div dangerouslySetInnerHTML={{ __html: content }} />
 
-        <FileList candownload files={ (prevData.mes_attachment || [])}/>
+        <FileList candownload files={ (prevData.mes_attachment || [])} hideProgress />
       </div>
 
       {

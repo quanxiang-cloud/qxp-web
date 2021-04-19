@@ -35,8 +35,11 @@ interface Props {
 }
 
 interface FileInfo {
-  url: string
-  filename: string
+  url: string;
+  filename: string;
+  status?: 'success' | 'active' | 'exception';
+  showProgress?: boolean;
+  percentage?: number;
 }
 
 const SendMessage = (props: Props) => {
@@ -100,6 +103,13 @@ export const Content = forwardRef(({ donotShowHeader, footer, modifyData, handle
   }, []);
 
   const addFile = (fileUrl: FileInfo) => setFiles((currentFiles) => ([...currentFiles, fileUrl]));
+  const updateFile=(name: string, data: Partial<FileInfo>)=> {
+    setFiles((currentFiles) => {
+      const curFile = currentFiles.find((f) => f.filename === name);
+      Object.assign(curFile, data);
+      return [...currentFiles];
+    });
+  };
 
   const roleId = get(userInfo, 'roles[0].roleID', '3'); // fixme
 
@@ -263,11 +273,14 @@ export const Content = forwardRef(({ donotShowHeader, footer, modifyData, handle
   };
 
   // @ts-ignore
-  const handleFileSuccessUpload = (response) => {
-    if (response.code == 200) {
-      addFile({
-        filename: response.data.filename,
-        url: response.data.url,
+  const handleFileSuccessUpload = (res) => {
+    if (res.code == 200) {
+      updateFile(res.data.filename, {
+        filename: res.data.filename,
+        url: res.data.url,
+        percentage: 100,
+        status: 'success',
+        showProgress: false,
       });
     } else {
       Message.warning('上传失败');
@@ -333,7 +346,6 @@ export const Content = forwardRef(({ donotShowHeader, footer, modifyData, handle
                 />
               </Control>
             </Field>
-
             <Field>
               <Label>发送至:</Label>
               <Control>
@@ -345,18 +357,54 @@ export const Content = forwardRef(({ donotShowHeader, footer, modifyData, handle
                 </Button>
               </Control>
             </Field>
+
             {dom && ReactDom.createPortal(
               <div className={styles.upload_warp}>
                 <Filelist
                   candownload
                   deleteFiles={deleteFiles}
-                  files={files.map((itm)=>({ file_url: itm.url, file_name: itm.filename }))}
+                  files={files.map((itm) => ({
+                    file_url: itm.url,
+                    file_name: itm.filename,
+                    percent: itm.percentage,
+                    showProgress: itm.showProgress,
+                    status: itm.status,
+                  }))}
                 />
                 <Upload
                   headers={{ 'X-Proxy': 'API' }}
-                  onSuccess={handleFileSuccessUpload}
                   multiple
                   action="/api/v1/fileserver/uploadFile"
+                  beforeUpload={(file)=> {
+                    if (file.size > 1024 * 1024 * 5) {
+                      Message.error('文件大小不能超过5M');
+                      return false;
+                    }
+                    if (files.find((f) => f.filename === file.name)) {
+                      Message.warning('文件已存在，请勿重复上传');
+                      return false;
+                    }
+                    return true;
+                  }}
+                  onStart={(file)=> {
+                    addFile({
+                      filename: file.name,
+                      url: '',
+                      percentage: 0,
+                      showProgress: true,
+                      status: 'active',
+                    });
+                  }}
+                  onProgress={(step, file)=> {
+                  // @ts-ignore
+                    const percent = typeof step.percent === 'number' ? Math.round(step.percent) : 0;
+                    updateFile(file.name, {
+                      percentage: percent,
+                      showProgress: true,
+                    });
+                  }}
+                  onSuccess={handleFileSuccessUpload}
+                  onError={(err, res)=> Message.error(err.message)}
                 >
                   <div className={`${styles.upload} flex align-center`}>
                     <Icon name="attachment" />
@@ -365,8 +413,7 @@ export const Content = forwardRef(({ donotShowHeader, footer, modifyData, handle
                 </Upload>
               </div>,
               dom
-            ) && null}
-
+            )}
           </Form>
 
           <div className={styles.chosenPersons}>
@@ -382,25 +429,26 @@ export const Content = forwardRef(({ donotShowHeader, footer, modifyData, handle
               );
             })}
           </div>
+          { footer ? footer() : (<div className={styles.footer}>
+            <Button
+              onClick={saveDraft}
+              iconName="book"
+              className='mr-20'
+            >
+            存草稿
+            </Button>
+            <Button
+              className="bg-gray-700 mr-20"
+              modifier="primary"
+              onClick={previewAndPublish}
+              iconName="send"
+            >
+            预览并发送
+            </Button>
+          </div>)}
         </div>
-        { footer ? footer() : (<div className={styles.footer}>
-          <Button
-            onClick={saveDraft}
-            iconName="book"
-            className='mr-20'
-          >
-          存草稿
-          </Button>
-          <Button
-            className="bg-gray-700 mr-20"
-            modifier="primary"
-            onClick={previewAndPublish}
-            iconName="send"
-          >
-          预览并发送
-          </Button>
-        </div>)}
       </div>
+
       {openReceiverModal && (
         <ModalSelectReceiver
           onSubmit={chooseReceiver}
@@ -415,7 +463,7 @@ export const Content = forwardRef(({ donotShowHeader, footer, modifyData, handle
       )}
       <Modal
         visible={openPreviewModal}
-        className={`${styles.previewModal} ddddd`}
+        className={`${styles.previewModal}`}
         title='消息预览并发送'
         width={960}
         onCancel={() => setOpenPreviewModal(false)}

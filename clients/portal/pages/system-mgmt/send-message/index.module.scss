@@ -93,9 +93,9 @@ body{
     }
     .body {
       padding-top: 48px;
-      padding-bottom: 42px;
+      //padding-bottom: 42px;
       height: auto;
-      max-width: 1200px;
+      //max-width: 1200px;
       margin: auto;
 
       .editorWrap {
@@ -123,6 +123,10 @@ body{
         .DraftEditor-root{
           padding: 0 16px
         }
+
+        form > .field:last-child {
+          margin-bottom: 10px;
+        }
       }
 
       .chosenPersons {
@@ -130,8 +134,8 @@ body{
         flex-wrap: wrap;
         width: 100%;
         max-width: 764px;
-        transform: translateX(256px);
-
+        transform: translateX(240px);
+        margin-bottom: 42px;
       }
     }
     .footer {
@@ -234,6 +238,8 @@ body {
   margin-top: 50px;
 
   .file_itm{
+    display: flex;
+    justify-content: space-between;
     background-color: var( --blue-100);
     border-radius: 4px;
     padding: 4px;
