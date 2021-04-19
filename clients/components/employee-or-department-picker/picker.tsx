@@ -102,7 +102,7 @@ export default observer(function EmployeeOrDepartmentPicker({
                   appendix="close"
                 />
                 <div className="flex flex-row mr-4" style={{ height: 'calc(100% - 48px)' }}>
-                  <div className="h-full flex flex-col overflow-hidden flex-2 mr-20 min-w-max">
+                  <div className="w-212 h-full flex flex-col overflow-hidden mr-20">
                     <TextHeader
                       className="mb-8 pb-0"
                       title="选择部门"
@@ -171,7 +171,6 @@ export default observer(function EmployeeOrDepartmentPicker({
       />
       <div className="vertical-line flex-grow-0"></div>
       <SelectedList
-        className="flex-1"
         ownerStore={store}
       />
     </div>
