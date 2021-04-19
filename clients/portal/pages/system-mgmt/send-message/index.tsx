@@ -15,11 +15,12 @@ import Button from '@c/button';
 import Icon from '@c/icon';
 import Container from '../container';
 import editorToolbarOptions from './editor-toolbar';
-import ModalSelectReceiver from './dialog-select-receiver';
+// import ModalSelectReceiver from './dialog-select-receiver';
 import PreviewMsg from './preview-msg';
 import { usePortalGlobalValue } from '@portal/states_to_be_delete/portal';
 import { createMsg } from '@portal/api/message-mgmt';
 import Filelist from './filelist';
+import ModalSelectReceiver from '@c/employee-or-department-picker';
 
 import styles from './index.module.scss';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
@@ -144,16 +145,17 @@ export const Content = forwardRef(({ donotShowHeader, footer, modifyData, handle
     return !rawCont.blocks.some((v: any) => !!String(v.text).trim());
   };
 
-  const chooseReceiver = (data: any) => {
-    const receivers = [].concat(data).map((d) => toJS(d));
+  const chooseReceiver = (data: any[], data1: any[]) => {
+    const receivers = [...data, ...data1].map((d) => toJS(d));
     if (!receivers.length) {
       Message.warning('请至少选择一个员工或部门');
-      return;
+      return Promise.reject(false);
     }
     setOpenReceiverModal(false);
     // console.log('receivers: ', receivers);
     // @ts-ignore
     setChosenDepOrPerson(receivers);
+    return Promise.resolve(true);
   };
 
   const removeReceiver = (key: number) => {
@@ -278,154 +280,168 @@ export const Content = forwardRef(({ donotShowHeader, footer, modifyData, handle
     };
   });
 
-  return (<div className="full-width">
-    <div className={styles.panel}>
-      {!donotShowHeader&&(<div className={styles.header}>
-        <div className={styles.title}>发送消息</div>
-      </div>)}
-      <div className={styles.body}>
-        <Form onSubmit={noop}>
-          <Field>
-            <Label>消息类型:</Label>
-            <Control>
-              <RadioGroup name='type' value={msgType} onChange={setMsgType}>
-                <Radio value={MsgType.notify}>通知公告</Radio>
-                <Radio value={MsgType.system}>系统消息</Radio>
-              </RadioGroup>
-            </Control>
-          </Field>
-          <TextField
+  return (
+    <div className="full-width">
+      <div className={styles.panel}>
+        {!donotShowHeader&&(<div className={styles.header}>
+          <div className={styles.title}>发送消息</div>
+        </div>)}
+        <div className={styles.body}>
+          <Form onSubmit={noop}>
+            <Field>
+              <Label>消息类型:</Label>
+              <Control>
+                <RadioGroup name='type' value={msgType} onChange={setMsgType}>
+                  <Radio value={MsgType.notify}>通知公告</Radio>
+                  <Radio value={MsgType.system}>系统消息</Radio>
+                </RadioGroup>
+              </Control>
+            </Field>
+            <TextField
             // @ts-ignore
-            validateOnBlur
-            validateOnChange
-            name="title"
-            label="标题:"
-            placeholder="请输入消息标题"
-            help='不超过 50 个字符。'
-            maxLength={50}
-            value={title}
-            onChange={setTitle}
-            schemas={[
-              {
-                rule: { required: true },
-                help: '标题不能为空 ',
-              },
-            ]}
-          />
-          <Field>
-            <Label className={styles.labelCont}>内容:</Label>
-            <Control>
-              <Editor
-                wrapperId={8888}
-                editorState={editorCont}
-                wrapperClassName={styles.editorWrap}
-                editorClassName={styles.editor}
-                onEditorStateChange={handleChangeEditor}
-                // onContentStateChange={handleChangeEditor}
-                toolbar={editorToolbarOptions}
-                placeholder='在此输入正文'
-                localization={{
-                  locale: 'zh',
-                }}
-              />
-            </Control>
-          </Field>
+              validateOnBlur
+              validateOnChange
+              name="title"
+              label="标题:"
+              placeholder="请输入消息标题"
+              help='不超过 50 个字符。'
+              maxLength={50}
+              value={title}
+              onChange={setTitle}
+              schemas={[
+                {
+                  rule: { required: true },
+                  help: '标题不能为空 ',
+                },
+              ]}
+            />
+            <Field>
+              <Label className={styles.labelCont}>内容:</Label>
+              <Control>
+                <Editor
+                  wrapperId={8888}
+                  editorState={editorCont}
+                  wrapperClassName={styles.editorWrap}
+                  editorClassName={styles.editor}
+                  onEditorStateChange={handleChangeEditor}
+                  // onContentStateChange={handleChangeEditor}
+                  toolbar={editorToolbarOptions}
+                  placeholder='在此输入正文'
+                  localization={{
+                    locale: 'zh',
+                  }}
+                />
+              </Control>
+            </Field>
 
-          <Field>
-            <Label>发送至:</Label>
-            <Control>
-              <Button
-                onClick={() => setOpenReceiverModal(true)}
-                iconName="add"
-              >
+            <Field>
+              <Label>发送至:</Label>
+              <Control>
+                <Button
+                  onClick={() => setOpenReceiverModal(true)}
+                  iconName="add"
+                >
                 选择
-              </Button>
-            </Control>
-          </Field>
-          {dom && ReactDom.createPortal(
-            <div className={styles.upload_warp}>
-              <Filelist candownload deleteFiles={deleteFiles} files={files.map((itm)=>({ file_url: itm.url, file_name: itm.filename }))} />
-              <Upload headers={{ 'X-Proxy': 'API' }} onSuccess={handleFileSuccessUpload} multiple action="/api/v1/fileserver/uploadFile">
-                <div className={`${styles.upload} flex align-center`}>
-                  <Icon name="attachment" />
-                  <div>上传附件</div>
-                </div>
-              </Upload>
-            </div>,
-            dom
-          )}
+                </Button>
+              </Control>
+            </Field>
+            {dom && ReactDom.createPortal(
+              <div className={styles.upload_warp}>
+                <Filelist
+                  candownload
+                  deleteFiles={deleteFiles}
+                  files={files.map((itm)=>({ file_url: itm.url, file_name: itm.filename }))}
+                />
+                <Upload
+                  headers={{ 'X-Proxy': 'API' }}
+                  onSuccess={handleFileSuccessUpload}
+                  multiple
+                  action="/api/v1/fileserver/uploadFile"
+                >
+                  <div className={`${styles.upload} flex align-center`}>
+                    <Icon name="attachment" />
+                    <div>上传附件</div>
+                  </div>
+                </Upload>
+              </div>,
+              dom
+            ) && null}
 
-        </Form>
+          </Form>
 
-        <div className={styles.chosenPersons}>
-          {chosenDepOrPerson.map(({ id, name, type }: Qxp.MsgReceiver, key) => {
-            return (
-              <span className={classNames(styles.person, {
-                [styles.isDep]: type === 2,
-                [styles.isPerson]: type === 1,
-              })} key={id}>
-                <span>{name}</span>
-                <Icon name='close' className={styles.close} onClick={() => removeReceiver(key)} />
-              </span>
-            );
-          })}
+          <div className={styles.chosenPersons}>
+            {chosenDepOrPerson.map(({ id, name, type }: Qxp.MsgReceiver, key) => {
+              return (
+                <span className={classNames(styles.person, {
+                  [styles.isDep]: type === 2,
+                  [styles.isPerson]: type === 1,
+                })} key={id}>
+                  <span>{name}</span>
+                  <Icon name='close' className={styles.close} onClick={() => removeReceiver(key)} />
+                </span>
+              );
+            })}
+          </div>
         </div>
-      </div>
-      { footer ? footer() : (<div className={styles.footer}>
-        <Button
-          onClick={saveDraft}
-          iconName="book"
-          className='mr-20'
-        >
+        { footer ? footer() : (<div className={styles.footer}>
+          <Button
+            onClick={saveDraft}
+            iconName="book"
+            className='mr-20'
+          >
           存草稿
-        </Button>
-        <Button
-          className="bg-gray-700 mr-20"
-          modifier="primary"
-          onClick={previewAndPublish}
-          iconName="send"
-        >
-          预览并发送
-        </Button>
-      </div>)}
-    </div>
-    <ModalSelectReceiver
-      onOk={chooseReceiver}
-      onCancel={() => setOpenReceiverModal(false)}
-      visible={openReceiverModal}
-      roleID={roleId}
-      // @ts-ignore
-      picked={_chosenDepOrPerson}
-    />
-    <Modal
-      visible={openPreviewModal}
-      className={`${styles.previewModal} ddddd`}
-      title='消息预览并发送'
-      width={960}
-      onCancel={() => setOpenPreviewModal(false)}
-      footer={(
-        <div className="flex flex-row justify-between items-center">
-          <Button
-            className="bg-white hover:bg-gray-100 transition cursor-pointer mr-20 mb-0"
-            iconName="close"
-            onClick={() => setOpenPreviewModal(false)}
-          >
-            取消
           </Button>
           <Button
-            className="bg-gray-700 hover:bg-gray-900 transition cursor-pointer mb-0"
+            className="bg-gray-700 mr-20"
             modifier="primary"
-            iconName="done"
-            onClick={()=>confirmSend(true)}
+            onClick={previewAndPublish}
+            iconName="send"
           >
-            确定发送
+          预览并发送
           </Button>
-        </div>
+        </div>)}
+      </div>
+      {openReceiverModal && (
+        <ModalSelectReceiver
+          onSubmit={chooseReceiver}
+          onCancel={() => setOpenReceiverModal(false)}
+          title="选择员工或部门"
+          submitText="确定选择"
+          // @ts-ignore
+          departments={_chosenDepOrPerson.filter((itm)=>itm.type==2)}
+          // @ts-ignore
+          employees={_chosenDepOrPerson.filter((itm)=>itm.type==1)}
+        />
       )}
-    >
-      <PreviewMsg prevData={prevData}/>
-    </Modal>
-  </div>);
+      <Modal
+        visible={openPreviewModal}
+        className={`${styles.previewModal} ddddd`}
+        title='消息预览并发送'
+        width={960}
+        onCancel={() => setOpenPreviewModal(false)}
+        footer={(
+          <div className="flex flex-row justify-between items-center">
+            <Button
+              className="bg-white hover:bg-gray-100 transition cursor-pointer mr-20 mb-0"
+              iconName="close"
+              onClick={() => setOpenPreviewModal(false)}
+            >
+            取消
+            </Button>
+            <Button
+              className="bg-gray-700 hover:bg-gray-900 transition cursor-pointer mb-0"
+              modifier="primary"
+              iconName="done"
+              onClick={()=>confirmSend(true)}
+            >
+            确定发送
+            </Button>
+          </div>
+        )}
+      >
+        <PreviewMsg prevData={prevData}/>
+      </Modal>
+    </div>);
 });
 
 export default SendMessage;

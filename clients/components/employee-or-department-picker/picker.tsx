@@ -42,33 +42,30 @@ export default observer(function EmployeeOrDepartmentPicker({
   }, [store?.owners.length]);
 
   const onDepartmentTreeChange = (prevNodes: Department[], currentNodes: Department[]) => {
-    setStore((store) => {
-      if (!store) {
-        return store;
-      }
-      const add: EmployeeOrDepartmentOfRole[] = [];
-      const remove: string[] = [];
-      currentNodes.filter((node) => !prevNodes.find((n) => n.id === node.id)).forEach((node) => {
-        const parent = store.departmentTreeStore.getNodeParents(node.id)[0];
-        add.push({
-          type: 2,
-          ownerID: node.id,
-          ownerName: node.departmentName,
-          phone: '',
-          email: '',
-          departmentName: parent?.name,
-          departmentID: parent?.id,
-          createdAt: -1,
-          id: node.id,
-        });
+    if (!store) {
+      return;
+    }
+    const add: EmployeeOrDepartmentOfRole[] = [];
+    const remove: string[] = [];
+    currentNodes.filter((node) => !prevNodes.find((n) => n.id === node.id)).forEach((node) => {
+      const parent = store.departmentTreeStore.getNodeParents(node.id)[0];
+      add.push({
+        type: 2,
+        ownerID: node.id,
+        ownerName: node.departmentName,
+        phone: '',
+        email: '',
+        departmentName: parent?.name,
+        departmentID: parent?.id,
+        createdAt: -1,
+        id: node.id,
       });
-      prevNodes.filter((node) => !currentNodes.find((n) => n.id === node.id)).forEach((node) => {
-        remove.push(node.id);
-      });
-      add.length && store.addOwners(add);
-      remove.length && store.removeOwners(remove);
-      return store;
     });
+    prevNodes.filter((node) => !currentNodes.find((n) => n.id === node.id)).forEach((node) => {
+      remove.push(node.id);
+    });
+    add.length && store.addOwners(add);
+    remove.length && store.removeOwners(remove);
   };
 
   useEffect(() => {

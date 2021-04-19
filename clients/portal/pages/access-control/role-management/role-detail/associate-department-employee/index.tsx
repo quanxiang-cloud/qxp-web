@@ -5,6 +5,7 @@ import Button from '@c/button';
 import Authorized from '@c/authorized';
 import Switch from '@c/switch';
 import EmployeeOrDepartmentPickerModal from '@c/employee-or-department-picker';
+import notify from '@clients/lib/notify';
 
 import { updateRoleAssociations, IUpdateRoleAssociations, getRoleAssociations } from '../../api';
 import DepartmentOrEmployeeTable from './department-or-employee-table';
@@ -36,14 +37,13 @@ export default function AssociateDepartmentEmployee({ roleID, isSuper }: Props) 
   const mutation = useMutation(
     (arg: IUpdateRoleAssociations) => updateRoleAssociations(arg), {
       onSuccess: () => {
-        setShowBindModal(false);
         queryClient.invalidateQueries('GET_ROLE_ASSOCIATIONS');
         queryClient.invalidateQueries('GET_ROLE_ASSOCIATIONS_ALL');
       },
     }
   );
 
-  function onAssociate(
+  async function onAssociate(
     departments: EmployeeOrDepartmentOfRole[],
     employees: EmployeeOrDepartmentOfRole[]
   ) {
@@ -55,11 +55,16 @@ export default function AssociateDepartmentEmployee({ roleID, isSuper }: Props) 
     const adds = newSets.filter((member) => {
       return !oldSets.find((m) => m.ownerID === member.ownerID);
     });
-    return mutation.mutateAsync({
-      roleID: roleID as string,
-      add: adds.map(({ type, ownerID }) => ({ type, ownerID })),
-      delete: deletes?.map(({ id }) => id),
-    });
+    try {
+      await mutation.mutateAsync({
+        roleID: roleID as string,
+        add: adds.map(({ type, ownerID }) => ({ type, ownerID })),
+        delete: deletes?.map(({ id }) => id),
+      });
+      return true;
+    } catch (e) {
+      notify.error(e.message);
+    }
   }
 
   function onCancelAssociation(records: EmployeeOrDepartmentOfRole[]) {
@@ -71,15 +76,16 @@ export default function AssociateDepartmentEmployee({ roleID, isSuper }: Props) 
 
   return (
     <>
-      <EmployeeOrDepartmentPickerModal
-        onOk={onAssociate}
-        visible={showBindModal}
-        onCancel={() => setShowBindModal(false)}
-        employees={data?.employees}
-        departments={data?.departments}
-        isLoading={isLoading}
-        errorMessage={isError ? 'something wrong' : ''}
-      />
+      {showBindModal && !isLoading && !isError && (
+        <EmployeeOrDepartmentPickerModal
+          title="选择员工或部门"
+          submitText="确定关联"
+          onSubmit={onAssociate}
+          onCancel={() => setShowBindModal(false)}
+          employees={data?.employees}
+          departments={data?.departments}
+        />
+      )}
       <div className="flex items-center">
         <Switch
           className="mb-16"
