@@ -91,6 +91,7 @@ const EnumMessage = [
 const MsgTable = ({ msgMgmt: store, refresh }: Props & Pick<MobxStores, 'msgMgmt' | any>) => {
   const data = useRecoilValue(Data);
   const [pageInfo, setPageInfo] = useRecoilState(PageInfo);
+ 
   const { isLoading, isError, isFetching } = useRecoilValue(RequestInfo);
 
   const [previewInfo, setPreviewInfo] = useState({ visible: false, id: '', title: '', status: MsgSendStatus.all });
@@ -176,7 +177,7 @@ const MsgTable = ({ msgMgmt: store, refresh }: Props & Pick<MobxStores, 'msgMgmt
 
   const handleClose = () => setPreviewInfo({ visible: false, id: '', title: '', status: MsgSendStatus.all });
 
-  const pageChange = (page: number, pageSize: number) => setPageInfo( (_current) =>({ ..._current, pageNumber: page, pageSize }));
+  const pageChange = (page: number, pageSize: number) => setPageInfo( (_current) =>({ ..._current, current: page, pageSize }));
 
   const [rowSelectionKyes, setRowSelectionKyes] = useState([]);
 

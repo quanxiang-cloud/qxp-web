@@ -3,7 +3,7 @@ import { MsgSendStatus, MsgType } from '@portal/pages/system-mgmt/constants';
 
 interface Page {
     pageSize: number,
-    pageNumber: number,
+    current: number,
     total: number
 }
 
@@ -17,7 +17,7 @@ export const PageInfo = atom<Page>({
   key: 'page',
   default: {
     pageSize: 10,
-    pageNumber: 1,
+    current: 1,
     total: 0,
   },
 });
@@ -25,13 +25,13 @@ export const PageInfo = atom<Page>({
 export const PageParams = selector({
   key: 'pageParams',
   get: ({ get }) => {
-    const { pageSize, pageNumber, total } = get(PageInfo);
+    const { pageSize, current, total } = get(PageInfo);
     const status = get(MessaeStatus);
     const sort = get(MessageType);
 
     return {
       limit: pageSize,
-      page: pageNumber,
+      page: current,
       status: status == MsgSendStatus.all ? undefined : status,
       sort: sort == MsgType.all ? undefined : sort,
     };
