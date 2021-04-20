@@ -1,24 +1,14 @@
-import React, { useState, useEffect, MouseEvent } from 'react';
+import React, { useState } from 'react';
 
 import Checkbox from './index';
 
-export type CheckboxValueType = string | number | boolean;
+export type CheckboxValueType = string | number;
 
 export interface CheckboxOptionType {
   label: React.ReactNode;
   value: CheckboxValueType;
-  style?: React.CSSProperties;
-  disabled?: boolean;
-  onChange?: (e: MouseEvent) => void;
-}
-
-export interface CheckboxGroupContext {
-  toggleOption?: (option: CheckboxOptionType) => void;
-  value?: Array<CheckboxValueType>;
   disabled?: boolean;
 }
-
-export const GroupContext = React.createContext<CheckboxGroupContext | null>(null);
 
 interface Props {
   defaultValue?: Array<CheckboxValueType>;
@@ -26,13 +16,11 @@ interface Props {
   disabled?: boolean;
   onChange?: (checkedValue: Array<CheckboxValueType>) => void;
   options?: Array<CheckboxOptionType | string>;
-  children?: React.ReactNode;
 }
 
 function CheckboxGroup({
   defaultValue,
   options = [],
-  children,
   onChange,
   ...restProps
 }: Props) {
@@ -40,7 +28,7 @@ function CheckboxGroup({
     restProps.value || defaultValue || [],
   );
 
-  useEffect(() => {
+  React.useEffect(() => {
     if ('value' in restProps) {
       setValue(restProps.value || []);
     }
@@ -57,15 +45,7 @@ function CheckboxGroup({
     if (!('value' in restProps)) {
       setValue(newValue);
     }
-    const opts = getOptions();
-    onChange?.(
-      newValue
-        .sort((a, b) => {
-          const indexA = opts.findIndex((opt) => opt.value === a);
-          const indexB = opts.findIndex((opt) => opt.value === b);
-          return indexA - indexB;
-        })
-    );
+    onChange?.(newValue);
   };
 
   const getOptions = (): Array<CheckboxOptionType> =>
@@ -79,33 +59,25 @@ function CheckboxGroup({
       return option;
     });
 
-  let newChildren = children;
+  let children;
   if (options && options.length > 0) {
-    newChildren = getOptions().map((option: any) => {
+    children = getOptions().map((option: any) => {
       return (
-        <div key={option.value.toString()} className="flex mr-20">
-          <Checkbox
-            disabled={'disabled' in option ? option.disabled : restProps.disabled}
-            value={option.value}
-            checked={value.indexOf(option.value) !== -1}
-            onChange={option.onChange}
-            label={option.label}
-          />
-        </div>);
+        <Checkbox
+          key={option.value}
+          disabled={'disabled' in option ? option.disabled : restProps.disabled}
+          value={option.value}
+          checked={value.indexOf(option.value) !== -1}
+          label={option.label}
+          onChange={() => toggleOption(option)}
+          className="mr-20"
+        />);
     });
   }
 
-  const context = {
-    toggleOption,
-    value,
-    disabled: restProps.disabled,
-  };
-
   return (
     <div className="flex items-center flex-wrap">
-      <GroupContext.Provider value={context}>
-        {newChildren}
-      </GroupContext.Provider>
+      {children}
     </div>
   );
 }
