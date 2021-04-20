@@ -1,7 +1,9 @@
 {
   "css.validate": false,
   "cSpell.words": [
+    "antd",
     "export",
+    "formily",
     "handle"
   ],
   "files.eol": "\n",

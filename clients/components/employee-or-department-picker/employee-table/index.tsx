@@ -25,7 +25,7 @@ export default observer(function EmployeeTable({
   ownerStore,
 }: IEmployeeTable) {
   const store = ownerStore.employeeStore;
-  const { pageNumber: current, pageSize, total } = store.pagination;
+  const { current, pageSize, total } = store.pagination;
 
   const { data, isLoading } = useQuery(
     [

@@ -14,11 +14,18 @@ function Checkbox(
   { className = '', label, indeterminate, onChange, ...inputProps }: Props,
   ref?: React.Ref<HTMLInputElement>
 ): JSX.Element {
+  const defaultRef = React.useRef();
+  const resolvedRef: any = ref || defaultRef;
+
+  React.useEffect(() => {
+    resolvedRef.current.indeterminate = indeterminate;
+  }, [resolvedRef, indeterminate]);
+
   return (
     <label className={classnames('checkbox flex items-center', className)}>
       <input
         {...inputProps}
-        ref={ref}
+        ref={resolvedRef}
         type="checkbox"
         onChange={onChange}
         readOnly={!onChange}
