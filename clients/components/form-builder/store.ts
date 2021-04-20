@@ -78,19 +78,22 @@ function schemaToFields({ properties }: FormBuilder.Schema): Array<FormItem> {
 export default class FormBuilderStore {
   @observable fields: Array<FormItem>;
   @observable activeFieldName = '';
-  @observable activeFieldWrapperName = '';
   @observable labelAlign = 'left';
 
   constructor({ schema }: Props) {
     this.fields = schemaToFields(schema);
-
-    if (this.fields.length) {
-      this.activeFieldName = this.fields[0].fieldName;
-    }
   }
 
   @computed get activeField(): FormItem | null {
     return this.fields.find(({ fieldName }) => fieldName === this.activeFieldName) || null;
+  }
+
+  @computed get activeFieldWrapperName(): string {
+    if (!this.activeField) {
+      return '';
+    }
+
+    return `wrap-${this.activeField?.fieldName}`;
   }
 
   @computed get activeFieldConfigSchema(): ISchema | null {
@@ -171,13 +174,6 @@ export default class FormBuilderStore {
   @action
   setActiveFieldKey(fieldName: string) {
     this.activeFieldName = fieldName;
-    this.activeFieldWrapperName = `wrap-${fieldName}`;
-  }
-
-  @action
-  setActiveFieldWrapperKey(fieldName: string) {
-    this.activeFieldWrapperName = fieldName;
-    this.activeFieldName = fieldName.slice(5);
   }
 
   @action
@@ -193,6 +189,21 @@ export default class FormBuilderStore {
   @action
   delete(fieldName: string) {
     this.fields = this.fields.filter((field) => field.fieldName !== fieldName);
+  }
+
+  @action
+  duplicate(fieldName: string) {
+    let index = -1;
+    const field = this.fields.find((field, i) => {
+      index = i;
+      return field.fieldName === fieldName;
+    });
+    if (!field) {
+      return;
+    }
+
+    const newField = { ...field, fieldName: nanoid(8) };
+    this.fields.splice(index + 1, 0, newField);
   }
 
   @action

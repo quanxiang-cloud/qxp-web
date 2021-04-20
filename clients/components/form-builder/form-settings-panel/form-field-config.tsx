@@ -45,7 +45,7 @@ function FormFieldConfig(): JSX.Element {
 
   return (
     <FormFieldConfigTrue
-      // assign key to FormFieldConfigTrue to force re-render on activeFieldName changed
+      // assign key to FormFieldConfigTrue to force re-render when activeFieldName changed
       key={toJS(store.activeFieldName)}
       onChange={(value) => store.updateFieldConfig(value)}
       initialValue={toJS(store.activeField.configValue)}

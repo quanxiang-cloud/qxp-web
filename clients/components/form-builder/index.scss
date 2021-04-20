@@ -122,9 +122,14 @@
   border-radius: 2px;
 }
 
+// todo remove this after support layout shortcut
+.form-builder .canvas-wrapper {
+  padding-top: 56px;
+}
+
 .form-builder .form-builder-canvas {
   min-height: 300px;
-  padding: 20px;
+  padding: 20px 0px;
   border-radius: 12px;
   background-color: white;
 }
@@ -140,4 +145,14 @@
     margin-top: 8px;
     color: #939aa9;
   }
+}
+
+.form-field-wrapper {
+  padding: 16px 60px;
+  border: 1px solid transparent;
+}
+
+.form-field-wrapper--active {
+  border-color: var(--blue-600);
+  background-color: var(--blue-100);
 }
