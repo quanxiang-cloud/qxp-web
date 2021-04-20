@@ -7,6 +7,7 @@ import { observer } from 'mobx-react';
 import { toJS } from 'mobx';
 
 import Icon from '@clients/components/icon';
+import { FieldConfigContext } from './form-field-config-context';
 
 const components = {
   ArrayTable,
@@ -26,6 +27,7 @@ type Props = {
 }
 
 function FormFieldConfigTrue({ onChange, initialValue, schema }: Props): JSX.Element {
+  const { actions } = useContext(FieldConfigContext);
   return (
     <SchemaForm
       initialValues={initialValue}
@@ -33,6 +35,7 @@ function FormFieldConfigTrue({ onChange, initialValue, schema }: Props): JSX.Ele
       components={components}
       onChange={onChange}
       schema={schema}
+      actions={actions}
     />
   //   <SchemaForm
   //     actions={actions}
