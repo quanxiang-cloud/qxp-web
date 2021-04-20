@@ -475,9 +475,9 @@ export const Content = forwardRef(({ className, donotShowHeader, footer, modifyD
           title="选择员工或部门"
           submitText="确定选择"
           // @ts-ignore
-          departments={chosenDepOrPerson.filter((itm)=>itm.type==2)}
+          departments={_chosenDepOrPerson.filter((itm)=>itm.type==2)}
           // @ts-ignore
-          employees={chosenDepOrPerson.filter((itm)=>itm.type==1)}
+          employees={_chosenDepOrPerson.filter((itm)=>itm.type==1)}
         />
       )}
       <Modal
