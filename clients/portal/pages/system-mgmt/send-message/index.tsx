@@ -60,10 +60,10 @@ const SendMessage = (props: Props) => {
 
 interface data {
   id?: string
-  type?: MsgType
+  sort?: MsgType
   title?: string
   content?: any
-  receivers?: Array<object>,
+  recivers?: Array<object>, // fixme: typo
   mes_attachment?: Array<FileInfo> | null
 }
 
@@ -72,10 +72,11 @@ interface ContentProps {
   footer?: () => JSX.Element | null
   modifyData?: data
   handleClose?: () => void
+  editMode?: boolean
 }
 
 export const Content = forwardRef(({ donotShowHeader, footer, modifyData, handleClose }: ContentProps, ref ) => {
-  const [msgType, setMsgType] = useState( modifyData?.type || MsgType.notify );
+  const [msgType, setMsgType] = useState( modifyData?.sort || MsgType.notify );
   const [title, setTitle] = useState( modifyData?.title || '' );
   const [prevData, setPrevData] = useState<Qxp.DraftData | null>(null);
 
@@ -84,25 +85,29 @@ export const Content = forwardRef(({ donotShowHeader, footer, modifyData, handle
   const [openReceiverModal, setOpenReceiverModal] = useState(false);
   const [openPreviewModal, setOpenPreviewModal] = useState(false);
 
-  const [_chosenDepOrPerson, setChosenDepOrPerson] = useState( modifyData?.receivers || [] ); // 已选中的员工或部门
+  const [_chosenDepOrPerson, setChosenDepOrPerson] = useState( modifyData?.recivers || [] ); // 已选中的员工或部门
   const [{ userInfo }] = usePortalGlobalValue();
   // @ts-ignore
-  const [files, setFiles] = useState<Array<FileInfo>>( (modifyData?.mes_attachment || []).map((itm)=>({ filename: itm.file_name, fileurl: itm.file_url })) );
+  const [files, setFiles] = useState<Array<FileInfo>>((modifyData?.mes_attachment || []).map((itm: {file_name: string, file_url: string}) => ({
+    filename: itm.file_name,
+    url: itm.file_url,
+    status: 'success',
+  })));
   const chosenDepOrPerson = useMemo(()=>{
     // @ts-ignore
-    return _chosenDepOrPerson.map(({ id, type, ownerName, departmentName }) => ({ id, type, name: ownerName || departmentName }));
+    return _chosenDepOrPerson.map(({ id, type, name, ownerName, departmentName }) => ({ id, type, name: name || ownerName || departmentName }));
   }, [_chosenDepOrPerson]);
   const [dom, setDom] = useState<Element|null>(null);
 
-  const deleteFiles = (idx: number) => {
-    setFiles((current) => current.filter((_, key) => key!=idx ));
+  const deleteFiles = (name: string) => {
+    setFiles((curFiles) => curFiles.filter((file, idx) => file.filename !== name ));
   };
 
   useEffect(()=>{
     setDom(document.getElementById('rdw-wrapper-8888'));
   }, []);
 
-  const addFile = (fileUrl: FileInfo) => setFiles((currentFiles) => ([...currentFiles, fileUrl]));
+  const addFile = (file: FileInfo) => setFiles((currentFiles) => ([...currentFiles, file]));
   const updateFile=(name: string, data: Partial<FileInfo>)=> {
     setFiles((currentFiles) => {
       const curFile = currentFiles.find((f) => f.filename === name);
@@ -155,8 +160,8 @@ export const Content = forwardRef(({ donotShowHeader, footer, modifyData, handle
     return !rawCont.blocks.some((v: any) => !!String(v.text).trim());
   };
 
-  const chooseReceiver = (data: any[], data1: any[]) => {
-    const receivers = [...data, ...data1].map((d) => toJS(d));
+  const chooseReceiver = (departments: any[], employees: any[]) => {
+    const receivers = [...departments, ...employees].map((d) => toJS(d));
     if (!receivers.length) {
       Message.warning('请至少选择一个员工或部门');
       return Promise.reject(false);
@@ -207,6 +212,7 @@ export const Content = forwardRef(({ donotShowHeader, footer, modifyData, handle
       };
     }).filter(Boolean) });
     if (formData) {
+      // @ts-ignore
       setPrevData(formData);
       setOpenPreviewModal(true);
     }
@@ -243,10 +249,10 @@ export const Content = forwardRef(({ donotShowHeader, footer, modifyData, handle
     createMsgMutation.mutate(params);
   };
 
-  const saveDraft = () => {
+  const saveDraft = (options?: {toParams?: boolean}) => {
     const formData = validateForm();
     if (formData) {
-      createMsgMutation.mutate({
+      const params={
         id: modifyData?.id,
         template_id: 'quanliang',
         // @ts-ignore
@@ -268,8 +274,17 @@ export const Content = forwardRef(({ donotShowHeader, footer, modifyData, handle
             file_url: itm.url,
           };
         }).filter(Boolean),
-      });
+      };
+      if (options?.toParams) {
+        return params;
+      }
+      // @ts-ignore
+      createMsgMutation.mutate(params);
     }
+  };
+
+  const getCurrentFiles=()=> {
+    return [...files];
   };
 
   // @ts-ignore
@@ -289,7 +304,9 @@ export const Content = forwardRef(({ donotShowHeader, footer, modifyData, handle
 
   useImperativeHandle(ref, ()=>{
     return {
-      saveDraft, previewAndPublish,
+      saveDraft,
+      previewAndPublish,
+      getCurrentFiles,
     };
   });
 
@@ -417,6 +434,7 @@ export const Content = forwardRef(({ donotShowHeader, footer, modifyData, handle
           </Form>
 
           <div className={styles.chosenPersons}>
+            {/* @ts-ignore */}
             {chosenDepOrPerson.map(({ id, name, type }: Qxp.MsgReceiver, key) => {
               return (
                 <span className={classNames(styles.person, {
@@ -431,7 +449,7 @@ export const Content = forwardRef(({ donotShowHeader, footer, modifyData, handle
           </div>
           { footer ? footer() : (<div className={styles.footer}>
             <Button
-              onClick={saveDraft}
+              onClick={()=> saveDraft()}
               iconName="book"
               className='mr-20'
             >
@@ -456,9 +474,9 @@ export const Content = forwardRef(({ donotShowHeader, footer, modifyData, handle
           title="选择员工或部门"
           submitText="确定选择"
           // @ts-ignore
-          departments={_chosenDepOrPerson.filter((itm)=>itm.type==2)}
+          departments={chosenDepOrPerson.filter((itm)=>itm.type==2)}
           // @ts-ignore
-          employees={_chosenDepOrPerson.filter((itm)=>itm.type==1)}
+          employees={chosenDepOrPerson.filter((itm)=>itm.type==1)}
         />
       )}
       <Modal

@@ -15,6 +15,8 @@ import { createMsg, deleteMsgById } from '@portal/api/message-mgmt';
 import PreviewModal, { ModalContent } from './preview-modal';
 import { getMsgById } from '@portal/api/message-mgmt';
 import classnames from 'classnames';
+import { useQueryClient } from 'react-query';
+import EmptyData from '@c/empty-tips';
 
 import { Content as SendMessage } from '../send-message/index';
 
@@ -89,6 +91,7 @@ const EnumMessage = [
 ];
 
 const MsgTable = ({ msgMgmt: store, refresh }: Props & Pick<MobxStores, 'msgMgmt' | any>) => {
+  const queryClient=useQueryClient();
   const data = useRecoilValue(Data);
   const [pageInfo, setPageInfo] = useRecoilState(PageInfo);
 
@@ -101,6 +104,11 @@ const MsgTable = ({ msgMgmt: store, refresh }: Props & Pick<MobxStores, 'msgMgmt
   const [modifyData, setModifyData] = useState<any>(null);
 
   const sendMessageRef = useRef<any>();
+
+  const refreshMsg = () => {
+    queryClient.invalidateQueries('msg-mgmt-msg-list');
+    queryClient.invalidateQueries('count-unread-msg');
+  };
 
   useEffect(()=>{
     if (!previewInfo.visible || !previewInfo.id) {
@@ -169,6 +177,7 @@ const MsgTable = ({ msgMgmt: store, refresh }: Props & Pick<MobxStores, 'msgMgmt
           Message.success('操作成功');
           setPreviewInfo({ id: '', visible: false, title: '', status: MsgSendStatus.all });
           refresh();
+          refreshMsg();
         } else {
           Message.error('操作失败');
         }
@@ -350,37 +359,14 @@ const MsgTable = ({ msgMgmt: store, refresh }: Props & Pick<MobxStores, 'msgMgmt
   ];
 
   const saveDraft = () => {
-    const params = {
-      id: modifyData.id,
-      template_id: 'quanliang',
-      // @ts-ignore
-      title: modifyData.title || '',
-      args: [{
-        key: 'code',
-        // @ts-ignore
-        value: modifyData.content || '',
-      }],
-      // @ts-ignore
-      channel: modifyData.channel||modifyData.chanel, // letter: 站内信，email: 邮件
-      // @ts-ignore
-      type: modifyData.type, // 1. verifycode 2、not verifycode
-      // @ts-ignore
-      sort: modifyData.type,
-      // @ts-ignore
-      is_send: false, // false: 保存为草稿
-      // @ts-ignore
-      recivers: modifyData.receivers,
-      // @ts-ignore
-      mes_attachment: modifyData.mes_attachment||[],
-      //     url: string
-      // filename:
-    };
-    createMsg(params)
+    const params=sendMessageRef?.current?.saveDraft({ toParams: true });
+    params && createMsg(params)
       .then((data)=>{
         if (data&&data.code==0) {
           Message.success('操作成功');
           setPreviewInfo({ id: '', visible: false, title: '', status: MsgSendStatus.all });
-          refresh();
+          refresh(); // fixme
+          refreshMsg();
           handleModifyModalClose();
         } else {
           Message.error('操作失败');
@@ -399,7 +385,7 @@ const MsgTable = ({ msgMgmt: store, refresh }: Props & Pick<MobxStores, 'msgMgmt
       />
       <LegoModal
         className={styles.preview_modal}
-        title="修改信息"
+        title="修改草稿"
         visible={modifyModal.visible}
         onCancel={handleModifyModalClose}
         footer={(<div className={styles.footer}>
@@ -425,7 +411,14 @@ const MsgTable = ({ msgMgmt: store, refresh }: Props & Pick<MobxStores, 'msgMgmt
           </Button>
         </div>)}
       >
-        {modifyData&&<SendMessage donotShowHeader handleClose={handleModifyModalClose} modifyData={modifyData} ref={sendMessageRef} footer={()=>null} />}
+        {modifyData &&
+        (<SendMessage
+          donotShowHeader
+          handleClose={handleModifyModalClose}
+          modifyData={modifyData}
+          ref={sendMessageRef}
+          footer={() => null}
+        />)}
       </LegoModal>
       <Modal
         title="删除消息"
@@ -453,6 +446,7 @@ const MsgTable = ({ msgMgmt: store, refresh }: Props & Pick<MobxStores, 'msgMgmt
                       if (data&&data.code==0) {
                         Message.success('操作成功');
                         refresh();
+                        refreshMsg();
                         closeModal();
                       } else {
                         Message.error('操作失败');
@@ -468,26 +462,34 @@ const MsgTable = ({ msgMgmt: store, refresh }: Props & Pick<MobxStores, 'msgMgmt
       >
         <div className={styles.modal_card_content}>确定要删除该条消息吗？删除后不可恢复。</div>
       </Modal>
-      <Table
-        className='text-14 table-full'
-        dataSource={msgList}
-        columns={cols}
-        rowKey="id"
-        // rowSelection={rowSelection}
-        // emptyText={<EmptyTips text="无成员数据" className="py-32" />}
-        loading={isLoading}
-      />
-      <Pagination
-        {...pageInfo}
-        showSizeChanger
-        onChange={pageChange}
-        className={'pt-20'}
-        renderTotalTip={()=> (
-          <div className="text-12 text-gray-600">
-            共<span className="mx-4">{data?.data?.total || 0}</span>条消息
-          </div>
-        )}
-      />
+      {
+        msgList.length ? (
+          <>
+            <Table
+              className='text-14 table-full'
+              dataSource={msgList}
+              columns={cols}
+              rowKey="id"
+              // rowSelection={rowSelection}
+              // emptyText={<EmptyTips text="无成员数据" className="py-32" />}
+              loading={isLoading}
+            />
+            <Pagination
+              {...pageInfo}
+              showSizeChanger
+              onChange={pageChange}
+              className={'pt-20'}
+              renderTotalTip={()=> (
+                <div className="text-12 text-gray-600">
+                  共<span className="mx-4">{data?.data?.total || 0}</span>条消息
+                </div>
+              )}
+            />
+          </>
+        ) : (
+          <EmptyData text='暂无消息数据' className="pt-40" />
+        )
+      }
     </div>
   );
 };

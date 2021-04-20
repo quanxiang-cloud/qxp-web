@@ -2,6 +2,7 @@ import React from 'react';
 import dayjs from 'dayjs';
 import styles from './index.module.scss';
 import classNames from 'classnames';
+import Loading from '@c/loading';
 import FileList from './filelist';
 import { MsgType } from '@portal/pages/system-mgmt/constants';
 
@@ -14,7 +15,7 @@ interface Props {
 const PreviewMsg = ({ prevData, hideReceivers }: Props) => {
   if (!prevData) {
     return (
-      <div>暂无预览数据</div>
+      <Loading />
     );
   }
 

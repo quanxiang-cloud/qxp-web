@@ -56,6 +56,7 @@ export const ModalContent = ({ status, visible, handleClose, confirmSend, data }
       className={styles.previewModal}
       title={status == MsgSendStatus.draft ? '消息预览并发送' : '消息信息'}
       onCancel={handleClose}
+      maskClosable={false}
       footer={(
         <div className="flex flex-row justify-between items-center">
           <Button
@@ -63,7 +64,7 @@ export const ModalContent = ({ status, visible, handleClose, confirmSend, data }
             iconName="close"
             onClick={handleClose}
           >
-                        取消
+            取消
           </Button>
           <Button
             className="bg-gray-700 hover:bg-gray-900 transition cursor-pointer mb-0"
