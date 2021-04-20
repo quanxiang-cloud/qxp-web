@@ -1,4 +1,8 @@
-import { ISchema } from '@formily/react-schema-renderer';
+import React from 'react';
+import { ISchema, useForm } from '@formily/react-schema-renderer';
+
+import Icon from '@c/icon';
+import Button from '@c/button';
 
 const schema: ISchema = {
   type: 'object',
@@ -101,17 +105,42 @@ const schema: ISchema = {
       ],
     },
     availableOptions: {
-      title: '',
       type: 'array',
       'x-component': 'ArrayTable',
+      'x-component-props': {
+        draggable: true,
+        operationsWidth: 100,
+        renderMoveUp: () => null,
+        renderMoveDown: () => null,
+        renderAddition: () => {
+          return <Button>添加选项</Button>;
+        },
+        renderRemove: (idx: number) => {
+          const { createMutators } = useForm({});
+          // const actions = useContext(ActionContext);
+
+          const mutator = createMutators('availableOptions');
+          debugger;
+          return (<Icon
+            style={{ cursor: 'pointer' }}
+            name="delete"
+            size={24}
+            onClick={() => {
+              console.log(idx);
+              mutator.remove(idx);
+            }}
+          />);
+        },
+      },
       'x-index': 8,
       items: {
         type: 'object',
         properties: {
           label: {
-            title: '选项',
             type: 'string',
+            title: '选项',
             'x-component': 'Input',
+            'x-index': 1,
           },
         },
       },
