@@ -35,7 +35,7 @@ export default function ItemWithTitleDesc({
       {itemRender}
       <div
         className={twCascade(
-          'h-full justify-between flex flex-1 transition duration-300',
+          'justify-between flex flex-1',
           {
             'flex-row': textDirection == 'row',
             'flex-col': textDirection != 'row',

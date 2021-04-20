@@ -18,16 +18,14 @@ export default function Dashboard() {
   return (
     <>
       <main className="py-40 px-58 relative">
-        <div className="absolute top-42 right-64 -z-1 w-214 h-160">
+        <div className="absolute top-42 right-64 -z-z-1 w-214 h-160">
           <img src="/dist/images/work-figure.svg" alt="dashboard"/>
         </div>
-        <div>
-          <Avatar
-            username={value.userInfo.userName}
-            bio="万物皆有裂痕，那是光透过来的地方"
-            avatar={value.userInfo.userIconURL}
-          />
-        </div>
+        <Avatar
+          username={value.userInfo.userName}
+          bio="万物皆有裂痕，那是光透过来的地方"
+          avatar={value.userInfo.userIconURL}
+        />
         <div className="px-6 mt-40">
           <Card
             className="px-32 py-20"
@@ -163,7 +161,7 @@ export default function Dashboard() {
                 />)
               }
             />
-            <div className="w-20 h-full"></div>
+            <div className="w-20 "></div>
             <Card
               className="flex-2 self-stretch flex flex-col px-40 py-20 text-16"
               title="未读消息"
@@ -172,7 +170,7 @@ export default function Dashboard() {
                 <a className="text-underline-no-color text-black-50 transition ease-linear">查看全部</a>
               }
               content={
-                (<div className="w-full h-full flex items-center justify-center">
+                (<div className="w-full flex items-center justify-center">
                   <div className="flex flex-col items-center">
                     <img
                       className="w-48 h-48 mb-8"
