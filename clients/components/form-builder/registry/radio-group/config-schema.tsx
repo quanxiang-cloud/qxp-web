@@ -1,8 +1,9 @@
-import React from 'react';
-import { ISchema, useForm } from '@formily/react-schema-renderer';
+import React, { useContext } from 'react';
+import { ISchema } from '@formily/react-schema-renderer';
 
 import Icon from '@c/icon';
 import Button from '@c/button';
+import { FieldConfigContext } from '../../form-settings-panel/form-field-config-context';
 
 const schema: ISchema = {
   type: 'object',
@@ -116,11 +117,10 @@ const schema: ISchema = {
           return <Button>添加选项</Button>;
         },
         renderRemove: (idx: number) => {
-          const { createMutators } = useForm({});
-          // const actions = useContext(ActionContext);
+          const { actions } = useContext(FieldConfigContext);
 
-          const mutator = createMutators('availableOptions');
-          debugger;
+          const mutator = actions.createMutators('availableOptions');
+
           return (<Icon
             style={{ cursor: 'pointer' }}
             name="delete"
