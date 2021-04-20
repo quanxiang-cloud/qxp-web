@@ -77,7 +77,7 @@ export const ModalContent = ({ status, visible, handleClose, confirmSend, data }
         </div>
       )}
     >
-      <PreviewMsg prevData={data} />
+      <PreviewMsg prevData={data} isPreview />
     </Modal>
   </div>);
 };

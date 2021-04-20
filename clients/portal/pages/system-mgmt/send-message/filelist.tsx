@@ -12,32 +12,58 @@ interface FileInfo {
   status?: 'success' | 'exception' | 'active';
 }
 
-const Filelist = ({ files, candownload, deleteFiles, hideProgress }: { deleteFiles?: (name: string) => void, files: Array<FileInfo>, candownload?: boolean, hideProgress?: boolean }) => {
+interface Props {
+  deleteFiles?: (name: string) => void;
+  files: Array<FileInfo>;
+  candownload?: boolean;
+  hideProgress?: boolean;
+  isPreview?: boolean;
+}
+
+const Filelist = ({ files, candownload, deleteFiles, hideProgress, isPreview }: Props) => {
   const handleDownload=(link: string, filename: string)=> {
     saveAs(link, filename);
   };
 
+  const renderList=()=> {
+    return (
+      <>
+        {files.map((itm, idx) => (
+          <div className={styles.file_itm} key={idx}>
+            {candownload ?
+              (<span className='cursor-pointer'
+                onClick={() => handleDownload(itm.file_url, itm.file_name)}>{itm.file_name}</span>) :
+              <span>{itm.file_name}</span>}
+            {!hideProgress && (<Progress
+              className='mr-40'
+              percent={itm.percent}
+              status={itm.status}
+              key={itm.file_url}
+              // onIconClick={() => {
+              //   this.uploader.resend(fileId);
+              // }}
+            />)}
+            {deleteFiles ? <Icon onClick={() => deleteFiles(itm.file_name)} name="close" clickable/> : null}
+          </div>
+        ))}
+      </>
+    );
+  };
+
+  if (!files.length) {
+    return null;
+  }
+
   return (
     <div className={styles.fileList}>
-      {files.map((itm, idx) => (
-        <div className={styles.file_itm} key={idx}>
-          {candownload ?
-            (<span className='cursor-pointer'
-              onClick={() => handleDownload(itm.file_url, itm.file_name)}>{itm.file_name}</span>) :
-            <span>{itm.file_name}</span>}
-          {!hideProgress && (<Progress
-            className='mr-40'
-            percent={itm.percent}
-            status={itm.status}
-            key={itm.file_url}
-            // onIconClick={() => {
-            //   this.uploader.resend(fileId);
-            // }}
-          />)}
-          {deleteFiles ? <Icon onClick={() => deleteFiles(itm.file_name)} name="close" clickable/> : null}
-        </div>
-      ))}
-    </div>);
+      {isPreview ? (
+        <fieldset>
+          <legend>附件</legend>
+          {renderList()}
+        </fieldset>
+      ) : renderList()}
+    </div>
+  );
 };
 
 export default Filelist;

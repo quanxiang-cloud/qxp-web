@@ -5,26 +5,31 @@ import classNames from 'classnames';
 import Loading from '@c/loading';
 import FileList from './filelist';
 import { MsgType } from '@portal/pages/system-mgmt/constants';
+import { usePortalGlobalValue } from '@portal/states_to_be_delete/portal';
 
 interface Props {
   className?: string;
   prevData: Qxp.DraftData | null;
   hideReceivers?: boolean;
+  isPreview?: boolean;
 }
 
-const PreviewMsg = ({ prevData, hideReceivers }: Props) => {
+const PreviewMsg = ({ prevData, hideReceivers, isPreview }: Props) => {
   if (!prevData) {
     return (
       <Loading />
     );
   }
 
-  const { title, content, receivers, sort, handle_name }=prevData;
+  const [{ userInfo }] = usePortalGlobalValue();
+
+  const { title, content, receivers, sort, type, handle_name }=prevData;
+  const msgType = typeof sort !== 'undefined' ? sort : type; // todo
 
   let txt = '';
-  if (sort === MsgType.notify) {
+  if (msgType === MsgType.notify) {
     txt = '通知公告';
-  } else if (sort === MsgType.system) {
+  } else if (msgType === MsgType.system) {
     txt = '系统消息';
   } else {
     txt = '未知消息类型';
@@ -34,10 +39,10 @@ const PreviewMsg = ({ prevData, hideReceivers }: Props) => {
     <div className={styles.previewMsg}>
       <div className={styles.previewMsgContent}>
         <div className={styles.title}>{title}</div>
-        <div className={styles.info}>{dayjs().format('YYYY-MM-DD HH:mm:ss')} {txt} {handle_name}</div>
+        <div className={styles.info}>{[dayjs().format('YYYY-MM-DD HH:mm:ss'), txt, handle_name || userInfo.userName].join(' · ')}</div>
         <div dangerouslySetInnerHTML={{ __html: content }} />
 
-        <FileList candownload files={ (prevData.mes_attachment || [])} hideProgress />
+        <FileList candownload files={ (prevData.mes_attachment || [])} hideProgress isPreview={isPreview} />
       </div>
 
       {

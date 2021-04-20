@@ -98,8 +98,8 @@ declare namespace Qxp {
     title: string;
     content: string;
     receivers: Array<MsgReceiver>;
-    type: MsgType;
-    sort?: number | MsgType;
+    type: MsgType; // fixme: remove
+    sort?: number | MsgType; // real msg type
     mes_attachment?: Array<File>;
     handle_name?: string;
   }

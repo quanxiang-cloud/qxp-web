@@ -33,7 +33,7 @@ const PanelDetail = ({ msgCenter }: Props & Pick<MobxStores, 'msgCenter' | any>)
 
   return (
     <div className={styles.detailPanel}>
-      <PreviewMsg prevData={data} hideReceivers />
+      <PreviewMsg prevData={data} hideReceivers isPreview />
     </div>
   );
 };

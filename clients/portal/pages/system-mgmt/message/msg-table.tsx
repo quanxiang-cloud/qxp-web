@@ -463,34 +463,26 @@ const MsgTable = ({ msgMgmt: store, refresh }: Props & Pick<MobxStores, 'msgMgmt
       >
         <div className={styles.modal_card_content}>确定要删除该条消息吗？删除后不可恢复。</div>
       </Modal>
-      {
-        msgList.length ? (
-          <>
-            <Table
-              className='text-14 table-full'
-              dataSource={msgList}
-              columns={cols}
-              rowKey="id"
-              // rowSelection={rowSelection}
-              // emptyText={<EmptyTips text="无成员数据" className="py-32" />}
-              loading={isLoading}
-            />
-            <Pagination
-              {...pageInfo}
-              showSizeChanger
-              onChange={pageChange}
-              className={'pt-20'}
-              renderTotalTip={()=> (
-                <div className="text-12 text-gray-600">
-                  共<span className="mx-4">{data?.data?.total || 0}</span>条消息
-                </div>
-              )}
-            />
-          </>
-        ) : (
-          <EmptyData text='暂无消息数据' className="pt-40" />
-        )
-      }
+      <Table
+        className='text-14 table-full'
+        dataSource={msgList}
+        columns={cols}
+        rowKey="id"
+        // rowSelection={rowSelection}
+        emptyText={<EmptyData text='暂无消息数据' className="pt-40" />}
+        loading={isLoading}
+      />
+      {msgList.length > 0 && (<Pagination
+        {...pageInfo}
+        showSizeChanger
+        onChange={pageChange}
+        className={'pt-20'}
+        renderTotalTip={() => (
+          <div className="text-12 text-gray-600">
+            共<span className="mx-4">{data?.data?.total || 0}</span>条消息
+          </div>
+        )}
+      />)}
     </div>
   );
 };
