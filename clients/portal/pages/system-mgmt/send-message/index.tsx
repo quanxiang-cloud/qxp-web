@@ -73,9 +73,10 @@ interface ContentProps {
   modifyData?: data
   handleClose?: () => void
   editMode?: boolean
+  className?: string
 }
 
-export const Content = forwardRef(({ donotShowHeader, footer, modifyData, handleClose }: ContentProps, ref ) => {
+export const Content = forwardRef(({ className, donotShowHeader, footer, modifyData, handleClose }: ContentProps, ref ) => {
   const [msgType, setMsgType] = useState( modifyData?.sort || MsgType.notify );
   const [title, setTitle] = useState( modifyData?.title || '' );
   const [prevData, setPrevData] = useState<Qxp.DraftData | null>(null);
@@ -311,12 +312,12 @@ export const Content = forwardRef(({ donotShowHeader, footer, modifyData, handle
   });
 
   return (
-    <div className="full-width">
+    <div className={classNames('full-width', className)}>
       <div className={styles.panel}>
         {!donotShowHeader&&(<div className={styles.header}>
           <div className={styles.title}>发送消息</div>
         </div>)}
-        <div className={styles.body}>
+        <div className={classNames('send-msg-body', styles.body)}>
           <Form onSubmit={noop}>
             <Field>
               <Label>消息类型:</Label>

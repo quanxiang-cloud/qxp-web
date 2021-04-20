@@ -10,8 +10,8 @@ $boxH: 342px;
   right: 0;
   z-index: 100;
   cursor: default;
-  //box-shadow: inset 0px 1px 0px #E2E8F0, inset 0px -1px 0px #E2E8F0;
-  box-shadow: inset 0px -1px 0px #E2E8F0;
+  //box-shadow: inset 0px -1px 0px #E2E8F0;
+  box-shadow: 0 8px 24px 4px rgb(148 163 184 / 0.25);
   border-radius: 12px;
 
   &.hide {

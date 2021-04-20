@@ -414,6 +414,7 @@ const MsgTable = ({ msgMgmt: store, refresh }: Props & Pick<MobxStores, 'msgMgmt
         {modifyData &&
         (<SendMessage
           donotShowHeader
+          className={styles.draftModal}
           handleClose={handleModifyModalClose}
           modifyData={modifyData}
           ref={sendMessageRef}

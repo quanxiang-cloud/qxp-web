@@ -153,7 +153,7 @@ const Header = styled.div`
 
 const Body = styled.div<{ fullscreen?: boolean }>`
  ${(props) => props.fullscreen ?
-    'height: calc(100vh - 56px)' : 'padding: 24px 40px;height: 100%; max-height:600px;overflow: auto;'};
+    'height: calc(100vh - 56px)' : 'padding: 24px 40px;height: 100%; max-height:600px;'};
 `;
 
 const Footer = styled.div`
