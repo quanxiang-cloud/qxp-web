@@ -9,7 +9,7 @@ class EmployeeStore {
 
   @observable
   pagination: {
-    pageNumber: number;
+    current: number;
     total: number;
     pageSize: number;
   }
@@ -17,7 +17,7 @@ class EmployeeStore {
   constructor() {
     this.selectedKeys = [];
     this.pagination = {
-      pageNumber: 1,
+      current: 1,
       total: 0,
       pageSize: 10,
     };
@@ -35,12 +35,12 @@ class EmployeeStore {
 
   @action
   setCurrentPage = (page: number) => {
-    this.pagination = { ...this.pagination, pageNumber: page };
+    this.pagination = { ...this.pagination, current: page };
   }
 
   @action
   setPagination = (page: number, pageSize: number) => {
-    this.pagination = { ...this.pagination, pageNumber: page, pageSize };
+    this.pagination = { ...this.pagination, current: page, pageSize };
   }
 
   @action
