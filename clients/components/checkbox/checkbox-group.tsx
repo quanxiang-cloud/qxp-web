@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 import Checkbox from './index';
 
-export type CheckboxValueType = string | number;
+type CheckboxValueType = string | number;
 
-export interface CheckboxOptionType {
+interface CheckboxOptionType {
   label: React.ReactNode;
   value: CheckboxValueType;
   disabled?: boolean;
@@ -24,7 +24,7 @@ function CheckboxGroup({
   onChange,
   ...restProps
 }: Props) {
-  const [value, setValue] = useState<CheckboxValueType[]>(
+  const [value, setValue] = React.useState<CheckboxValueType[]>(
     restProps.value || defaultValue || [],
   );
 
