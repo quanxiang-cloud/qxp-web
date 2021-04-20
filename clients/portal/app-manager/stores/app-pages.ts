@@ -69,7 +69,7 @@ class AppPagesStore {
   @action
   editGroup = (groupInfo: GroupInfo, node: TreeNode<any>) => {
     return createGroup({ appID: this.appId, ...groupInfo }).then((res) => {
-      if (groupInfo.groupID) {
+      if (groupInfo.id) {
         this.treeStore?.updateNode({
           ...node,
           name: groupInfo.name || '',
@@ -111,7 +111,7 @@ class AppPagesStore {
     } else {
       return createPage({ appID: this.appId, ...pageInfo }).then((res) => {
         const newPage = { ...res.data, ...pageInfo, menuType: 0 };
-        this.treeStore?.addChildren('root', [{
+        this.treeStore?.addChildren(pageInfo.groupID || 'root', [{
           data: newPage,
           name: newPage.name || '',
           id: newPage.id || '',
@@ -122,7 +122,7 @@ class AppPagesStore {
           visible: true,
           childrenStatus: 'resolved',
           level: 1,
-          parentId: 'root',
+          parentId: pageInfo.groupID || 'root',
           children: [],
         }]);
         notify.success('创建成功');

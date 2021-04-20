@@ -15,7 +15,7 @@ function EditGroupModal({ name, id, onCancel, onSubmit }: Props) {
   const handleSubmit = () => {
     const formRef: any = ref.current;
     if (formRef.validateFields()) {
-      onSubmit({ ...formRef.getFieldsValue(), groupID: id }).then(()=>{
+      onSubmit({ ...formRef.getFieldsValue(), id }).then(() => {
         onCancel();
       });
     }

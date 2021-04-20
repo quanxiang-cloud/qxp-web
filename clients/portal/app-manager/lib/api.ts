@@ -136,3 +136,11 @@ export const movePage = (data: any) => {
   });
 };
 
+export const saveFormScheme = (data: any) => {
+  return request({
+    url: '/api/v1/structor/table/create',
+    method: 'post',
+    data,
+  });
+};
+

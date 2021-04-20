@@ -11,8 +11,6 @@ type Props = {
 }
 
 function ForEmployee({ publishFormStore }: Props) {
-  console.log('appSettingStore: ', publishFormStore);
-
   const handleClick = (key: string, right: any) => {
     switch (key) {
     case 'del':

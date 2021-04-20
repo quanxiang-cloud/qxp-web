@@ -16,7 +16,7 @@ function AppAdmin() {
   const { appId } = useParams<any>();
   const [total, setTotal] = useState(0);
   const [params, setParams] = useState({ page: 1, limit: 9999, id: appId });
-  const [appAdminList, setAppAdminList] = useState<Employee[]>([]);
+  const [appAdminList, setAppAdminList] = useState<any>([]);
 
   const handleChangeParams = (newParams: any) => {
     setParams({ ...params, ...newParams });
@@ -27,52 +27,9 @@ function AppAdmin() {
     fetchAppAdminUsers(params).then((res) => {
       setLoading(false);
       setTotal(res.data.total_count);
-      setAppAdminList(res.data.data || [
-        {
-          id: '1',
-          userName: '谭杰',
-          a: '1',
-          b: '2',
-          c: '3',
-          d: '4',
-          phone: '4564567897899',
-          email: '384759564@qq.com',
-          dep: { departmentName: 'fasdfa' },
-        },
-        {
-          id: '2',
-          userName: '谭杰',
-          a: '1',
-          b: '2',
-          c: '3',
-          d: '4',
-          phone: '4564567897899',
-          email: '384759564@qq.com',
-          dep: { departmentName: 'fasdfa' },
-        },
-        {
-          id: '3',
-          userName: '谭杰',
-          a: '1',
-          b: '2',
-          c: '3',
-          d: '4',
-          phone: '4564567897899',
-          email: '384759564@qq.com',
-          dep: { departmentName: 'fasdfa' },
-        },
-        {
-          id: '4',
-          userName: '谭杰',
-          a: '1',
-          b: '2',
-          c: '3',
-          d: '4',
-          phone: '4564567897899',
-          email: '384759564@qq.com',
-          dep: { departmentName: 'fasdfa' },
-        },
-      ]);
+      setAppAdminList(res.data.data.map((admin: any) => {
+        return { ...admin, ownerID: admin.id, type: 1, ownerName: admin.userName };
+      }));
     });
   };
 
@@ -123,26 +80,6 @@ function AppAdmin() {
       accessor: 'email',
     },
     {
-      id: 'a',
-      Header: '邮箱',
-      accessor: 'email',
-    },
-    {
-      id: 'b',
-      Header: '邮箱',
-      accessor: 'email',
-    },
-    {
-      id: 'c',
-      Header: '邮箱',
-      accessor: 'email',
-    },
-    {
-      id: 'd',
-      Header: '邮箱',
-      accessor: 'email',
-    },
-    {
       id: 'dep',
       Header: '部门',
       accessor: ({ dep }: Employee) => {
@@ -177,21 +114,19 @@ function AppAdmin() {
         <Table
           showCheckbox
           rowKey="id"
-          // selectedRowKeys={['00896f2e-17f5-4888-9236-d60608a19f65']}
           style={{ maxHeight: 'calc(100vh - 272px)' }}
           columns={columns}
           data={appAdminList}
           loading={loading}
           onSelectChange={handleSelectChange}
         />
-        {employeeVisible && (
-          <EmployeeOrDepartmentPickerModal
-            visible
-            onOk={addAdmin}
-            onCancel={() => setEmployeeVisible(false)}
-            employees={[]}
-          />
-        )}
+        <EmployeeOrDepartmentPickerModal
+          visible={employeeVisible}
+          employees={appAdminList}
+          departments={[]}
+          onOk={addAdmin}
+          onCancel={() => setEmployeeVisible(false)}
+        />
       </div>
     </>
   );

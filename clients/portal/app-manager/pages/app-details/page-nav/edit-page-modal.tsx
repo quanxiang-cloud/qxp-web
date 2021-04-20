@@ -1,19 +1,42 @@
-import React, { useRef } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { Modal, Form } from '@QCFE/lego-ui';
 
 import Button from '@appC/button';
 import SelectField from '@appC/select-field';
 import IconSelect from '@appC/icon-select';
+import { fetchGroupList } from '@appLib/api';
 
 type Props = {
   onCancel: () => void;
   onSubmit: any;
+  appID: string;
   pageInfo?: PageInfo;
 };
 
+type GroupList = {
+  id: string;
+  name: string;
+}
+
+type Option = {
+  value: string;
+  label: string;
+}
+
 const IconSelectField = Form.getFormField(IconSelect);
 
-function EditPageModal({ pageInfo, onCancel, onSubmit }: Props) {
+function EditPageModal({ pageInfo, onCancel, onSubmit, appID }: Props) {
+  const [groupList, setGroupList] = useState<Option[]>([]);
+
+  useEffect(() => {
+    fetchGroupList(appID).then((res) => {
+      const option = res.data.group.map(({ id, name }: GroupList) => {
+        return { value: id, label: name };
+      });
+      setGroupList([{ value: '', label: '无分组' }, ...option]);
+    });
+  }, [appID]);
+
   const ref: any = useRef();
   const handleSubmit = () => {
     const formRef: any = ref.current;
@@ -22,13 +45,13 @@ function EditPageModal({ pageInfo, onCancel, onSubmit }: Props) {
     }
   };
 
-  const { name, icon, describe, groupID, appID } = pageInfo || {};
+  const { name, icon, describe, groupID, appID: curAppID } = pageInfo || {};
 
   return (
     <Modal
       visible
       className="static-modal"
-      title={appID ? '修改名称与图标' : '新建页面'}
+      title={curAppID ? '修改名称与图标' : '新建页面'}
       onCancel={onCancel}
       footer={
         (<div className="flex items-center">
@@ -92,16 +115,15 @@ function EditPageModal({ pageInfo, onCancel, onSubmit }: Props) {
             },
           ]}
         />
-        <SelectField
-          name='groupID'
-          defaultValue={groupID}
-          label='所属分组'
-          placeholder='选填'
-          options={[
-            { value: 'range-1', label: '地址范围：172.31.36.200 ~ 215' },
-            { value: 'range-2', label: '地址范围：172.31.36.200 ~ 240' },
-          ]}
-        />
+        {!curAppID && (
+          <SelectField
+            name='groupID'
+            defaultValue={groupID}
+            label='所属分组'
+            placeholder='选填'
+            options={groupList}
+          />
+        )}
       </Form>
     </Modal>
   );

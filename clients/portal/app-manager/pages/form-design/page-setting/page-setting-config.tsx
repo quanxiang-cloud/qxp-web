@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Toggle } from '@QCFE/lego-ui';
 
 import Icon from '@c/icon';
@@ -65,7 +65,33 @@ const PAGE_SIZE_OPTION = [
   { label: '200条/页', value: 200 },
 ];
 
+const listItems = [
+  'Apple',
+  'Banana',
+  'Cherry',
+  'Grape',
+  'Guava',
+  'Kiwi',
+  'Lemon',
+  'Melon',
+  'Orange',
+  'Peach',
+  'Pear',
+  'Strawberry',
+];
+
 function PageSettingConfig() {
+  const [checkedFields, setCheckedList] = useState<string[]>([]);
+  const [indeterminate, setIndeterminate] = useState(false);
+
+  useEffect(() => {
+    if (checkedFields.length === 0 || checkedFields.length === listItems.length) {
+      setIndeterminate(false);
+    } else {
+      setIndeterminate(true);
+    }
+  }, [checkedFields]);
+
   const configItemRender = (title: React.ReactNode, content: React.ReactNode) => {
     return (
       <div className='mt-24'>
@@ -73,6 +99,24 @@ function PageSettingConfig() {
         <div>{content}</div>
       </div>
     );
+  };
+
+  const handleCheckAll = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.checked) {
+      setCheckedList(listItems);
+    } else {
+      setCheckedList([]);
+    }
+  };
+
+  const handleChecked = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.checked) {
+      setCheckedList([...checkedFields, e.target.value]);
+    } else {
+      setCheckedList(
+        checkedFields.filter((item) => item !== e.target.value)
+      );
+    }
   };
 
   return (
@@ -88,9 +132,16 @@ function PageSettingConfig() {
       )}
       {configItemRender(
         <div className='flex items-center justify-between'>
-          <span>字段显示和排序</span><span><Checkbox label='全选' /></span>
+          <span>字段显示和排序</span>
+          <span>
+            <Checkbox indeterminate={indeterminate} onChange={handleCheckAll} label='全选' />
+          </span>
         </div>,
-        <FieldSort />
+        <FieldSort
+          fieldList={listItems}
+          fieldShowList={checkedFields}
+          showOnChange={handleChecked}
+        />
       )}
     </div>
   );

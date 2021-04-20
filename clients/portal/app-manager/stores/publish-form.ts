@@ -5,6 +5,7 @@ class PublishFormStore {
   constructor(rootStore: any) {
     this.rootStore = rootStore;
   }
+
   @observable fieldList = [{
     type: 'text',
     label: '提交人',

@@ -127,6 +127,7 @@ function PageNav({ appPagesStore }: Props) {
       )}
       {modalType === 'editPage' && (
         <EditPageModal
+          appID={appId}
           pageInfo={curEditNode?.data}
           onCancel={closeModal}
           onSubmit={handleEditPage}
