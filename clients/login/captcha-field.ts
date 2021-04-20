@@ -48,7 +48,6 @@ export default class Captcha extends InputField {
       const validateResult = this.username?.validate() || false;
       this.toggleSender(validateResult);
     };
-    syncUsername();
     this.username.on('change', syncUsername);
   }
 
@@ -87,7 +86,7 @@ export default class Captcha extends InputField {
     const resetVars = (errorMessage?: string) => {
       this.showError(errorMessage);
       clearInterval(tid);
-      element.classList.remove('disabled');
+      this.toggleSender(this.username?.validate() || false);
       counter = 60;
       element.innerText = '获取验证码';
       this.isSending = false;
@@ -117,30 +116,38 @@ export default class Captcha extends InputField {
     }
     e.preventDefault();
     const validateResult = this.username?.validate();
+    this.toggleSender(validateResult || false);
     if (validateResult === true) {
       this.sendCode();
     } else if (validateResult instanceof Promise) {
-      validateResult.then(() => this.sendCode());
+      validateResult.then((isValid: boolean) => {
+        isValid && this.sendCode();
+      });
     }
   }
 
   validate(checkAll?: boolean): boolean | Promise<boolean> {
     let isValid = true;
     if ((this.value as string).length < 6) {
+      if (this.value == '') {
+        this.errMessage = '验证码不能为空';
+      }
       if (this.value !== '') {
         this.errMessage = '验证码至少为6位';
-        isValid = false;
       }
+      isValid = false;
       this.action.classList.add('disabled');
     }
     if (isValid) {
       this.errMessage = '';
     }
-    if (this.value === '') {
-      isValid = false;
-    }
-    (this.errorElement as HTMLElement).textContent = this.errMessage as string;
 
+    (this.errorElement as HTMLElement).textContent = this.errMessage as string;
+    if (this.errMessage) {
+      this.inputElement?.classList.add('error');
+    } else {
+      this.inputElement?.classList.remove('error');
+    }
     if (checkAll) {
       const onValidateAllResult: boolean | (boolean | Promise<boolean>)[] = this.onValidateAll(
         this, isValid

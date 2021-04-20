@@ -7,6 +7,7 @@ import Button from '@appC/button';
 import Table from '@c/table/index';
 import { appAddAdmin, fetchAppAdminUsers, delAppAdminUsers } from '@appLib/api';
 import EmployeeOrDepartmentPickerModal from '@c/employee-or-department-picker';
+import { UnionColumns } from 'react-table';
 
 function AppAdmin() {
   const [employeeVisible, setEmployeeVisible] = useState(false);
@@ -101,7 +102,7 @@ function AppAdmin() {
     fetchAdmins();
   }, [params]);
 
-  const columns = React.useMemo(() => [
+  const columns: UnionColumns<Employee>[] = React.useMemo(() => [
     {
       id: 'userName',
       Header: '员工',
@@ -174,8 +175,8 @@ function AppAdmin() {
           )}
         </div>
         <Table
-          showCheckBox
-          selectKey='id'
+          showCheckbox
+          rowKey="id"
           // selectedRowKeys={['00896f2e-17f5-4888-9236-d60608a19f65']}
           style={{ maxHeight: 'calc(100vh - 272px)' }}
           columns={columns}

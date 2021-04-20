@@ -11,7 +11,6 @@ type DropResult = {
   id: string;
   item: any;
   index: number;
-  path: string;
   dropPosition: string;
 }
 

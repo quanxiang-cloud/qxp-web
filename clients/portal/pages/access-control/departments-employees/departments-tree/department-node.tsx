@@ -74,7 +74,7 @@ function DepartmentNode({ node, store }: NodeRenderProps<Department>): JSX.Eleme
   }
 
   return (
-    <div className="flex flex-grow max-w-full">
+    <div className="flex items-center flex-grow max-w-full">
       <span className="truncate mr-auto" title={node.name}>
         {node.name}
       </span>

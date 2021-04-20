@@ -18,16 +18,16 @@ type Props = {
 
 @observer
 export default class Header extends React.Component<Props> {
-  static defaultProps = {
-    picker: 'day',
-  };
-
   yearMenuRef = React.createRef<HTMLUListElement>();
   monthMenuRef = React.createRef<HTMLUListElement>();
 
   listOfYear: number[] = [];
 
   @observable isOpen = false;
+
+  static defaultProps = {
+    picker: 'day',
+  };
 
   constructor(props: Props) {
     super(props);

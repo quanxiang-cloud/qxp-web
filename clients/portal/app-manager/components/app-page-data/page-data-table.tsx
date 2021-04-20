@@ -65,7 +65,13 @@ function PageDataTable() {
         {textBtnRender('导出', 'file_upload')}
         {textBtnRender('删除', 'restore_from_trash')}
       </div>
-      <Table showCheckBox onSelectChange={handleSelectChange} columns={columns} data={data} />
+      <Table
+        showCheckbox
+        rowKey="id"
+        onSelectChange={handleSelectChange}
+        columns={columns}
+        data={data}
+      />
     </div>
   );
 }

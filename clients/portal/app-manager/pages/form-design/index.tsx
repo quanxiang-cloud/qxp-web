@@ -11,7 +11,7 @@ import './index.scss';
 function FormDesign() {
   const { pageType } = useParams<any>();
   return (
-    <div style={{ height: '100vh' }} className='flex flex-col'>
+    <div style={{ height: '100vh' }} className='flex flex-col form-design'>
       <FormDesignHeader />
       {pageType === 'formBuild' && (<FormBuild />)}
       {pageType === 'pageSetting' && (<PageSetting />)}

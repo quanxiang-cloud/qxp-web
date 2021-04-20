@@ -6,6 +6,16 @@ import { StoreContext } from '../context';
 import { observer } from 'mobx-react';
 import { toJS } from 'mobx';
 
+const components = {
+  ArrayTable,
+  Input,
+  NumberPicker,
+  Radio,
+  RadioGroup: Radio.Group,
+  Select,
+  Switch,
+};
+
 type Props = {
   onChange: (value: any) => void;
   initialValue: any;
@@ -17,7 +27,7 @@ function FormFieldConfigTrue({ onChange, initialValue, schema }: Props): JSX.Ele
     <SchemaForm
       initialValues={initialValue}
       // todo fix this
-      components={{ Input, Select, Radio, RadioGroup: Radio.Group, Switch, NumberPicker, ArrayTable }}
+      components={components}
       onChange={onChange}
       schema={schema}
     />

@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { useDrop } from 'react-dnd';
 import classNames from 'classnames';
 import Icon from '@c/icon';
@@ -19,16 +19,13 @@ type Props = React.PropsWithChildren<{
 export default function DndWrapper({
   id,
   item,
-  isWrapper = false,
   innerWrapper = false,
-  draggable = true,
   children,
   style,
   className,
-  path,
   index,
 }: Props) {
-  const [dropPosition, setDropPosition] = useState('');
+  const [dropPosition] = useState('');
   const [isHover, setIsHover] = useState(false);
   const {
     deleteItem,
@@ -36,43 +33,42 @@ export default function DndWrapper({
     setCurrentActiveItem,
     activeItem,
   } = useFormBuilderContext();
-  const boxRef = useRef<HTMLDivElement>(null);
 
   const [{ canDrop, isOver }, dropRef] = useDrop<any, DropResult, any>({
     accept: 'SOURCE_ELEMENT',
-    // drop: (_, monitor) => {
-    //   const didDrop = monitor.didDrop();
-    //   if (didDrop) {
-    //     // console.log('already dropped');
-    //     return;
-    //   }
+    drop: (_, monitor) => {
+      const didDrop = monitor.didDrop();
+      if (didDrop) {
+        // console.log('already dropped');
+        return;
+      }
 
-    //   // console.log('return drop result');
-    //   // eslint-disable-next-line consistent-return
-    //   return { id, item, index, path, dropPosition };
-    // },
-    hover: (dropItem, monitor) => {
-      const didHover = monitor.isOver({ shallow: true });
-      setDropPosition('inside');
-      // if (didHover && dropRef.current) {
-      //   const hoverBoundingRect = dropRef.current.getBoundingClientRect();
-      //   const hoverMiddleY = (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2;
-      //   const dragOffset = monitor.getSourceClientOffset();
-      //   // todo refactor this
-      //   const hoverClientY = (dragOffset?.y || 0) - hoverBoundingRect.top;
-
-      //   if (isWrapper) {
-      //     // console.log('set drop position')
-      //   } else {
-      //     if (hoverClientY <= hoverMiddleY) {
-      //       setDropPosition('up');
-      //     }
-      //     if (hoverClientY > hoverMiddleY) {
-      //       setDropPosition('down');
-      //     }
-      //   }
-      // }
+      // console.log('return drop result');
+      // eslint-disable-next-line consistent-return
+      return { id, item, index, dropPosition };
     },
+    // hover: (dropItem, monitor) => {
+    //   const didHover = monitor.isOver({ shallow: true });
+    //   setDropPosition('inside');
+    //   // if (didHover && dropRef.current) {
+    //   //   const hoverBoundingRect = dropRef.current.getBoundingClientRect();
+    //   //   const hoverMiddleY = (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2;
+    //   //   const dragOffset = monitor.getSourceClientOffset();
+    //   //   // todo refactor this
+    //   //   const hoverClientY = (dragOffset?.y || 0) - hoverBoundingRect.top;
+
+    //   //   if (isWrapper) {
+    //   //     // console.log('set drop position')
+    //   //   } else {
+    //   //     if (hoverClientY <= hoverMiddleY) {
+    //   //       setDropPosition('up');
+    //   //     }
+    //   //     if (hoverClientY > hoverMiddleY) {
+    //   //       setDropPosition('down');
+    //   //     }
+    //   //   }
+    //   // }
+    // },
     collect: (monitor) => ({
       isOver: monitor.isOver({ shallow: true }),
       canDrop: monitor.canDrop(),
