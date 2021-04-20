@@ -13,19 +13,22 @@ type MenuItem = {
   replace?: boolean;
 };
 
+type defaultActive = {
+  basePath: string;
+  menuId: string
+}
+
 type Props = {
   menuData: MenuItem[];
   width?: number;
   cardTitle?: string | React.ReactNode;
   className?: string;
+  defaultActiveLink?: defaultActive
 }
 
-export default function SideNavCard({ menuData, cardTitle, className = '', width = 316 }: Props) {
+export default function SideNavCard({ menuData, cardTitle, className = '', defaultActiveLink }: Props) {
   return (
-    <div
-      style={{ width: width + 'px', minWidth: width + 'px' }}
-      className={`bg-white rounded-12 ${className}`}
-    >
+    <div className={`bg-white rounded-12 ${className}`}>
       {cardTitle ? cardTitle : null}
       <div className="p-20">
         <ul className="w-auto">
@@ -38,6 +41,17 @@ export default function SideNavCard({ menuData, cardTitle, className = '', width
                   exact
                   className='side-nav-link rounded-l-8 transition-all duration-300'
                   activeClassName='side-nav-link-active'
+                  isActive={(match, location) => {
+                    const { pathname } = location;
+                    if (defaultActiveLink) {
+                      if (url === `${defaultActiveLink.basePath}/${defaultActiveLink.menuId}` &&
+                        (pathname === defaultActiveLink.basePath ||
+                          pathname === `${defaultActiveLink.basePath}/`)) {
+                        return true;
+                      }
+                    }
+                    return !!match;
+                  }}
                 >
                   <Icon className='mr-8' size={24} name={icon} />
                   <span className='text-gray-400 text-h5'>{name}</span>

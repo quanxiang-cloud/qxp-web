@@ -20,15 +20,17 @@ $node-height: 56px;
   transition: transform 200ms ease-in-out;
   cursor: pointer;
 
-  &:hover:not(.tree-node--focused) {
-    color: #0F172A;
+  &:hover {
     background-color: #F1F5F9;
+
+    &:not(.tree-node--focused) {
+      color: #0F172A;
+    }
   }
 
   @include modifier(focused) {
     color: var(--blue-600);
     font-weight: 600;
-    background-color: var(--blue-100);
 
     // todo refactor this
     // @include element(toggle-icon) {

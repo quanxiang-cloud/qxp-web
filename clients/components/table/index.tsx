@@ -116,10 +116,7 @@ export default function Table<T extends Record<string, any>>({
                     {...header.getHeaderProps()}
                     key={header.id}
                     className={classnames({ 'table__header-fixed': hasFixed })}
-                    style={{
-                      ...fixedStyle(index),
-                      zIndex,
-                    }}
+                    style={{ ...fixedStyle(index), zIndex }}
                   >
                     {header.render('Header')}
                   </th>

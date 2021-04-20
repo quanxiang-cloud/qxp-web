@@ -110,7 +110,8 @@ export default function DepartmentTable({ isSuper, onCancelAssociation, roleID, 
   function renderTotalTip() {
     return (
       <div className="text-12 text-gray-600">
-        共<span className="mx-4">{members.length || 0}</span>条数据
+        已选<span className="ml-4">{selectedKeys.length}</span>，
+        共<span className="mx-4">{pagination.total || 0}</span>条数据
       </div>
     );
   }
