@@ -1,4 +1,5 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
+import { useParams } from 'react-router-dom';
 import { inject, observer } from 'mobx-react';
 import { Tooltip } from '@QCFE/lego-ui';
 
@@ -20,26 +21,32 @@ type Props = {
 function PageNav({ appPagesStore }: Props) {
   const [modalType, setModalType] = useState('');
   const [curEditNode, setCurEditNode] = useState<null | TreeNode<any>>(null);
-  const { treeStore, fetchPages, deletePage, addPage, setCurPage } = appPagesStore;
+  const { appId } = useParams<any>();
+  const { treeStore, editPage, setCurPage, editGroup, deletePageOrGroup, movePage } = appPagesStore;
 
-  useEffect(() => {
-    fetchPages();
-  }, []);
+  const onSelect = (pageNode: PageInfo) => {
+    if (pageNode.menuType === 1) {
+      return;
+    }
 
-  const onSelect = (node: TreeNode<any>) => {
-    console.log('e: ', node);
-    setCurPage(node);
+    setCurPage(pageNode);
   };
 
-  const delPage = () => {
-    deletePage(curEditNode);
-    closeModal();
-  }
+  const delPageOrGroup = () => {
+    deletePageOrGroup(curEditNode, modalType).then(() => {
+      closeModal();
+    });
+  };
 
-  const handleAddPage = (pageInfo) => {
-    addPage(pageInfo);
-    closeModal();
-  }
+  const handleEditPage = (pageInfo: PageInfo) => {
+    editPage(pageInfo, curEditNode).then(() => {
+      closeModal();
+    });
+  };
+
+  const handleEditGroup = (groupInfo: GroupInfo) => {
+    return editGroup(groupInfo, curEditNode);
+  };
 
   const closeModal = () => {
     setModalType('');
@@ -51,10 +58,22 @@ function PageNav({ appPagesStore }: Props) {
     setModalType(key);
   };
 
-  const onDrop = (e: TreeNode<any>, a: TreeNode<any>) => {
-    console.log('e, a: ', e, a);
-    return true
-  }
+  const onDrop = (dropTo: TreeNode<any>, draggingNode: TreeNode<any>) => {
+    if (dropTo.isLeaf) {
+      return Promise.resolve(false);
+    }
+
+    return movePage({
+      id: draggingNode.id,
+      appID: appId,
+      fromSort: draggingNode.data.sort,
+      toSort: dropTo.data.sort,
+      fromGroupID: draggingNode.data.groupID,
+      toGroupID: dropTo.id,
+    }).then(() => {
+      return true;
+    });
+  };
 
   const PageItemRender = useCallback((props) => {
     return (<PageItem {...props} onMenuClick={handleMenuClick} />);
@@ -77,14 +96,17 @@ function PageNav({ appPagesStore }: Props) {
           />
         </Tooltip>
       </div>
-      <Tree
-        nodeDraggable={() => true}
-        onDragOver={onDrop}
-        store={treeStore}
-        NodeRender={PageItemRender}
-        RootNodeRender={() => <div className='px-16'>页面列表</div>}
-        onSelect={onSelect}
-      />
+      <div className='app-page-tree-wrapper'>
+        <Tree
+          nodeDraggable={(node): boolean => node.data.menuType === 0}
+          onDrop={onDrop}
+          store={treeStore}
+          canDropOn={(node): boolean => !node.isLeaf}
+          NodeRender={PageItemRender}
+          RootNodeRender={() => <div className='px-16'>页面列表</div>}
+          onSelect={onSelect}
+        />
+      </div>
       <div onClick={() => setModalType('editPage')} className='add-page-add-btn'>
         <Icon size={24} className='mr-8 app-icon-color-inherit' name='add' />
         <span className='text-body1'>新建页面</span>
@@ -92,7 +114,7 @@ function PageNav({ appPagesStore }: Props) {
       <DelModal
         type={modalType === 'delGroup' ? 'group' : 'page'}
         visible={modalType === 'delPage' || modalType === 'delGroup'}
-        onOk={delPage}
+        onOk={delPageOrGroup}
         onCancel={closeModal}
       />
       {modalType === 'editGroup' && (
@@ -100,9 +122,16 @@ function PageNav({ appPagesStore }: Props) {
           id={curEditNode?.id}
           name={curEditNode?.name}
           onCancel={closeModal}
+          onSubmit={handleEditGroup}
         />
       )}
-      {modalType === 'editPage' && <EditPageModal pageInfo={curEditNode} onCancel={closeModal} onSubmit={handleAddPage} />}
+      {modalType === 'editPage' && (
+        <EditPageModal
+          pageInfo={curEditNode?.data}
+          onCancel={closeModal}
+          onSubmit={handleEditPage}
+        />
+      )}
     </div>
   );
 }

@@ -12,12 +12,10 @@ function PageSetting() {
   return (
     <>
       <div className='form-design-tool'>
-        <Button modifier="primary">
-          <Icon name="save" />
+        <Button iconName='save' modifier="primary">
           保存表单
         </Button>
-        <Button>
-          <Icon name="preview" />
+        <Button iconName='preview'>
           预览
         </Button>
         <span className='text-underline-no-color cursor-pointer'>

@@ -71,3 +71,68 @@ export const delAppAdminUsers = (data: any) => {
     data,
   });
 };
+
+export const fetchPageList = (appID: string) => {
+  return request({
+    url: '/api/v1/structor/menu/list',
+    method: 'post',
+    data: { appID },
+  });
+};
+
+export const fetchGroupList = (appID: string) => {
+  return request({
+    url: '/api/v1/structor/group/list',
+    method: 'post',
+    data: { appID },
+  });
+};
+
+export const createPage = (data: PageInfo) => {
+  return request({
+    url: '/api/v1/structor/menu/create',
+    method: 'post',
+    data,
+  });
+};
+
+export const updatePage = (data: PageInfo) => {
+  return request({
+    url: '/api/v1/structor/menu/update',
+    method: 'post',
+    data,
+  });
+};
+
+export const createGroup = (data: any) => {
+  return request({
+    url: '/api/v1/structor/group/create',
+    method: 'post',
+    data,
+  });
+};
+
+export const deleteGroup = (data: any) => {
+  return request({
+    url: '/api/v1/structor/group/delete',
+    method: 'post',
+    data,
+  });
+};
+
+export const deletePage = (data: any) => {
+  return request({
+    url: '/api/v1/structor/menu/delete',
+    method: 'post',
+    data,
+  });
+};
+
+export const movePage = (data: any) => {
+  return request({
+    url: '/api/v1/structor/menu/transfer',
+    method: 'post',
+    data,
+  });
+};
+

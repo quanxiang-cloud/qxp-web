@@ -8,27 +8,27 @@ import IconSelect from '@appC/icon-select';
 type Props = {
   onCancel: () => void;
   onSubmit: any;
-  pageInfo?: any;
+  pageInfo?: PageInfo;
 };
 
 const IconSelectField = Form.getFormField(IconSelect);
 
-function EditPageModal({ pageInfo = {}, onCancel, onSubmit }: Props) {
+function EditPageModal({ pageInfo, onCancel, onSubmit }: Props) {
   const ref: any = useRef();
   const handleSubmit = () => {
     const formRef: any = ref.current;
     if (formRef.validateFields()) {
-      onSubmit({ ...pageInfo, ...formRef.getFieldsValue() });
+      onSubmit({ ...(pageInfo || {}), ...formRef.getFieldsValue() });
     }
   };
 
-  const { name, icon, description, groupId, id } = pageInfo || {};
+  const { name, icon, describe, groupID, appID } = pageInfo || {};
 
   return (
     <Modal
       visible
       className="static-modal"
-      title={id ? '修改名称与图标' : '新建页面'}
+      title={appID ? '修改名称与图标' : '新建页面'}
       onCancel={onCancel}
       footer={
         (<div className="flex items-center">
@@ -81,8 +81,8 @@ function EditPageModal({ pageInfo = {}, onCancel, onSubmit }: Props) {
           ]}
         />
         <Form.TextAreaField
-          name='description'
-          defaultValue={description}
+          name='describe'
+          defaultValue={describe}
           label='描述'
           placeholder='选填（不超过 100 字符）'
           schemas={[
@@ -93,8 +93,8 @@ function EditPageModal({ pageInfo = {}, onCancel, onSubmit }: Props) {
           ]}
         />
         <SelectField
-          name='groupId'
-          defaultValue={groupId}
+          name='groupID'
+          defaultValue={groupID}
           label='所属分组'
           placeholder='选填'
           options={[

@@ -79,7 +79,7 @@ function Breadcrumb({
 
   return (
     <div className={classnames('qxp-breadcrumb', className)} style={style}>
-      <div>{breadcrumbChildrenRender()}</div>
+      {breadcrumbChildrenRender()}
     </div>
   );
 }

@@ -5,18 +5,19 @@ import Button from '@appC/button';
 
 type Props = {
   onCancel: () => void;
+  onSubmit: (groupInfo: GroupInfo) => Promise<unknown>;
   name?: string;
   id?: string;
 };
 
-function EditGroupModal({ name, id, onCancel }: Props) {
+function EditGroupModal({ name, id, onCancel, onSubmit }: Props) {
   const ref: any = useRef();
   const handleSubmit = () => {
     const formRef: any = ref.current;
     if (formRef.validateFields()) {
-      // appListStore.delApp(appInfo.id).then(() => {
-      //   onCancel();
-      // });
+      onSubmit({ ...formRef.getFieldsValue(), groupID: id }).then(()=>{
+        onCancel();
+      });
     }
   };
 

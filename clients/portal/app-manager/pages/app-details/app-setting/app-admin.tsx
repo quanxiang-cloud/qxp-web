@@ -49,6 +49,28 @@ function AppAdmin() {
           email: '384759564@qq.com',
           dep: { departmentName: 'fasdfa' },
         },
+        {
+          id: '3',
+          userName: '谭杰',
+          a: '1',
+          b: '2',
+          c: '3',
+          d: '4',
+          phone: '4564567897899',
+          email: '384759564@qq.com',
+          dep: { departmentName: 'fasdfa' },
+        },
+        {
+          id: '4',
+          userName: '谭杰',
+          a: '1',
+          b: '2',
+          c: '3',
+          d: '4',
+          phone: '4564567897899',
+          email: '384759564@qq.com',
+          dep: { departmentName: 'fasdfa' },
+        },
       ]);
     });
   };

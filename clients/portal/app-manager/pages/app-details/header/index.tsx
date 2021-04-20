@@ -1,13 +1,14 @@
-import React from 'react';
-import { useHistory } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { useHistory, useParams } from 'react-router-dom';
 import { inject, observer } from 'mobx-react';
 
 import Icon from '@c/icon';
 import PopConfirm from '@c/pop-confirm';
 import Button from '@appC/button';
+import NavButton from '@appC/nav-button';
 
-import NavButton from '../nav-button';
 import AppDropdown from './app-dropdown';
+import './index.scss';
 
 interface DetailsHeaderProps {
   appDetailsStore?: any
@@ -15,11 +16,16 @@ interface DetailsHeaderProps {
 
 function DetailsHeader({ appDetailsStore }: DetailsHeaderProps) {
   const history = useHistory();
+  const { appId } = useParams<any>();
+
+  useEffect(() => {
+    appDetailsStore.setAppId(appId);
+  }, [appId]);
 
   const { updateAppStatus } = appDetailsStore;
 
   const goAppSetting = () => {
-    history.push(`/apps/${appDetailsStore.appDetails.id}/setting/info`);
+    history.push(`/apps/details/${appDetailsStore.appDetails.id}/setting/info`);
   };
 
   const statusTipsContent = (isPublish: boolean) => {

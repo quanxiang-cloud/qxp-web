@@ -1,3 +1,5 @@
+import { observable } from 'mobx';
+
 import AppDetails from './app-details';
 import AppList from './app-list';
 import AppPages from './app-pages';
@@ -14,6 +16,8 @@ class AppManager {
     this.appPagesStore = new AppPages(this);
     this.publishFormStore = new PublishFormStore(this);
   }
+
+  @observable headerType = 'index';
 }
 
 export default new AppManager();

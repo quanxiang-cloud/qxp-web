@@ -7,7 +7,7 @@ import TextHeader from '@c/text-header';
 import RightItem from './right-item';
 
 type Props = {
-  publishFormStore: any;
+  publishFormStore?: any;
 }
 
 function ForEmployee({ publishFormStore }: Props) {
