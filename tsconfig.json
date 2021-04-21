@@ -48,7 +48,6 @@
       "@appLib/*": ["./clients/portal/app-manager/lib/*"],
       "@appC/*": ["./clients/portal/app-manager/components/*"],
       "@portal/*": ["./clients/portal/*"],
-      "@clients/*": ["./clients/*"],
       "@c/*": ["./clients/components/*"],
       "@lib/*": ["./clients/lib/*"],
     } /* A series of entries which re-map imports to lookup locations relative to the 'baseUrl'. */,

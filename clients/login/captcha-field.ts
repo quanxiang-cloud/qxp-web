@@ -136,7 +136,7 @@ export default class Captcha extends InputField {
         this.errMessage = '验证码至少为6位';
       }
       isValid = false;
-      this.action.classList.add('disabled');
+      // this.action.classList.add('disabled');
     }
     if (isValid) {
       this.errMessage = '';
