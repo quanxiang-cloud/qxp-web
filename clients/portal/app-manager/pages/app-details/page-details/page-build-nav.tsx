@@ -1,7 +1,11 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 
 import Icon from '@c/icon';
+
+type Props = {
+  pageId: string;
+}
 
 const BUILD_NAV = [
   {
@@ -14,12 +18,12 @@ const BUILD_NAV = [
   { title: '新建仪表', desc: '仪表盘是数据可视化工具，可用于数据展示分析。', type: 'meter', url: '' },
 ];
 
-function PageBuildNav() {
+function PageBuildNav({ pageId }: Props) {
   return (
     <div className='app-page-build-nav rounded-tl-12 rounded-tr-12'>
       {BUILD_NAV.map(({ title, desc, type, url }) => (
         <Link
-          to={url}
+          to={`${url}/${pageId}`}
           key={type} className={`app-page-build-nav-bg-${type} app-page-build-nav-item`}
         >
           <Icon className='mr-8' name='list_alt' type='light' size={44} />

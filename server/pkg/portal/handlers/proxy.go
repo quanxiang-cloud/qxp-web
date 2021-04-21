@@ -20,6 +20,7 @@ func ProxyAPIHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	req, err := http.NewRequest(method, url, r.Body)
+
 	if err != nil {
 		contexts.Logger.Error("failed to build billing request: %s", err.Error())
 		renderErrorPage(w, r, http.StatusInternalServerError, http.StatusText(http.StatusInternalServerError))

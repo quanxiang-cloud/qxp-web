@@ -11,7 +11,7 @@ type Props = NodeRenderProps<any> & {
 
 function PageItem({ node, store, onMenuClick }: Props) {
   const isActive = store.currentFocusedNode.id === node.id;
-  const isPage = node.children?.length === 0;
+  const isPage = node.data.menuType === 0;
 
   const MENUS: MenuItem<string>[] = [
     isPage ?
@@ -44,8 +44,8 @@ function PageItem({ node, store, onMenuClick }: Props) {
   ];
 
   return (
-    <div className="flex w-full justify-between pr-16 items-center">
-      {isPage && (<Icon className='mr-8' name='settings' size={24} />)}
+    <div className="flex w-full justify-between items-center">
+      {isPage && (<Icon className='mr-8' name={node.data.icon} size={24} />)}
       <span className="truncate flex-1" title={node.name}>
         {node.name}
       </span>

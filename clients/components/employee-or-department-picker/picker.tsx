@@ -74,6 +74,7 @@ export default observer(function EmployeeOrDepartmentPicker({
   useEffect(() => {
     if (department) {
       setStore(new OwnerStore(department, [...departments, ...employees]));
+      console.log('employees: ', employees);
     }
   }, [department, departments, employees]);
 

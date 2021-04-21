@@ -1,15 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { inject } from 'mobx-react';
 
 import Button from '@c/button';
 import Checkbox from '@c/checkbox';
 
-type Props = {
-  publishFormStore: any
-}
+import store from '../../store';
 
-function FieldPermissions({ publishFormStore }: Props) {
-  const [fieldList, setFieldList] = useState(publishFormStore.fieldList);
+function FieldPermissions() {
+  const [fieldList, setFieldList] = useState(store.fieldList);
   const [visibleField, setVisibleField] = useState<string[]>([]);
   const [revisableField, setRevisableField] = useState<string[]>([]);
   const [vIndeterminate, setVIndeterminate] = useState(false);
@@ -135,4 +132,4 @@ function FieldPermissions({ publishFormStore }: Props) {
   );
 }
 
-export default inject('publishFormStore')(FieldPermissions);
+export default FieldPermissions;

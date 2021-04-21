@@ -10,15 +10,16 @@ import './index.scss';
 const TABS: TabProps[] = [
   { label: '表单设计', key: 'formBuild' },
   { label: '页面配置', key: 'pageSetting' },
-  { label: '发布表单', key: 'publishForm/forEmployee' },
+  { label: '发布表单', key: 'publishForm' },
 ];
 
 function FormDesignHeader() {
-  const { pageType } = useParams<any>();
+  const { pageType, pageId } = useParams<any>();
   const history = useHistory();
 
   const tabChange = (tabKey: string) => {
-    history.replace('/apps/formDesign/' + tabKey);
+    const navType = tabKey === 'publishForm' ? '/forEmployee' : '';
+    history.replace(`/apps/formDesign/${tabKey}/${pageId}${navType}`);
   };
 
   return (

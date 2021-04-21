@@ -1,22 +1,20 @@
-import React from 'react';
-import { inject, observer } from 'mobx-react';
+import React, { useState } from 'react';
+import { observer } from 'mobx-react';
 
 import Button from '@c/button';
 import TextHeader from '@c/text-header';
 
+import CreateRightModal from './create-right-modal';
 import RightItem from './right-item';
+import store from '../store';
 
-type Props = {
-  publishFormStore: any;
-}
-
-function ForEmployee({ publishFormStore }: Props) {
-  console.log('appSettingStore: ', publishFormStore);
+function ForEmployee() {
+  const [modalType, setModalType] = useState('');
 
   const handleClick = (key: string, right: any) => {
     switch (key) {
     case 'del':
-      publishFormStore.deleteRight(right.id);
+      store.deleteRight(right.id);
       break;
     }
   };
@@ -29,14 +27,25 @@ function ForEmployee({ publishFormStore }: Props) {
         action="🔨 如何维护权限组"
         className="my-app-header header-background-image"
       />
-      <div className='m-20'><Button modifier='primary' iconName='add'>新建权限组</Button></div>
+      <div className='m-20'>
+        <Button
+          onClick={() => setModalType('creatRight')}
+          modifier='primary'
+          iconName='add'
+        >
+          新建权限组
+        </Button>
+      </div>
       <div className='px-20 overflow-auto'>
-        {publishFormStore.rightList.map((right: any) => (
+        {store.rightList.map((right: any) => (
           <RightItem key={right.id} right={right} actions={handleClick} />
         ))}
       </div>
+      {modalType === 'creatRight' && (
+        <CreateRightModal onCancel={() => setModalType('')} />
+      )}
     </div>
   );
 }
 
-export default inject('publishFormStore')(observer(ForEmployee));
+export default observer(ForEmployee);

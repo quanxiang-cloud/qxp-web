@@ -1,16 +1,18 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { observer } from 'mobx-react';
 
 import Button from '@c/button';
 import Icon from '@c/icon';
 
-import store from './store';
-
 import FiltrateForm from './filtrate-form';
 
-function PageDataFiltrate() {
+type Props = {
+  filtrates: PageField[];
+}
+
+function PageDataFiltrate({ filtrates }: Props) {
+  const [showMoreFiltrate, setShowMoreFiltrate] = useState(false);
   const filterDom = useRef<any>();
-  const { showMoreFiltrate, setShowMoreFiltrate } = store;
 
   const search = () => {
     console.log(filterDom.current.getValues());
@@ -20,13 +22,13 @@ function PageDataFiltrate() {
     filterDom.current.reset();
   };
 
-  const noFilter = store.filterList.length === 0;
+  const noFilter = filtrates.length === 0;
 
   return (
     <div className='app-page-data-container app-page-data-filtrate'>
-      <FiltrateForm ref={filterDom} filterList={store.filterList} />
+      <FiltrateForm ref={filterDom} filtrates={filtrates} showMoreFiltrate={showMoreFiltrate} />
       <div>
-        {store.filterList.length > 3 ? (
+        {filtrates.length > 3 ? (
           <span
             onClick={() => setShowMoreFiltrate(!showMoreFiltrate)}
             className='app-page-data-filtrate-more'

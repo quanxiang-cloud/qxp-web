@@ -5,7 +5,7 @@ import Button from '@appC/button';
 import PageLoading from '@appC/page-loading';
 import TextHeader from '@c/text-header';
 
-import CreatedEditApp from '../entry/my-app/app-edit/created-edit-app';
+import CreatedEditApp from '../../entry/my-app/app-edit/created-edit-app';
 
 type Props = {
   appDetailsStore?: any;

@@ -1,28 +1,18 @@
-import React, { useEffect } from 'react';
-import { inject, observer } from 'mobx-react';
-import { useParams } from 'react-router-dom';
+import React from 'react';
+import { Route } from 'react-router-dom';
 
-import PageNav from './page-nav';
-import PageDetails from './page-details';
-import './index.scss';
+import Header from './header';
+import AppDetailsContent from './app-details-content';
+import AppSetting from './app-setting';
 
-type Props = {
-  appDetailsStore: any
-}
-
-function AppDetails({ appDetailsStore }: Props) {
-  const { appId } = useParams<any>();
-
-  useEffect(() => {
-    appDetailsStore.setAppId(appId);
-  }, [appId]);
-
+function AppDetails() {
   return (
-    <div className='app-manager-height flex relative'>
-      <PageNav />
-      <PageDetails />
+    <div>
+      <Header />
+      <Route exact path='/apps/details/:appId' component={AppDetailsContent} />
+      <Route path='/apps/details/:appId/setting' component={AppSetting} />
     </div>
   );
 }
 
-export default inject('appDetailsStore')(observer(AppDetails));
+export default AppDetails;

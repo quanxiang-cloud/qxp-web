@@ -41,7 +41,7 @@ function AppManagerEntry() {
       )} menuData={MENU} />
       <div className="app-right-box bg-opacity-50 bg-white">
         <Switch>
-          <Route exact path="/apps/list" component={MyApp} />
+          <Route path="/apps/list" component={MyApp} />
         </Switch>
       </div>
     </div>

@@ -43,7 +43,7 @@ func GetRouter() http.Handler {
 	r.Path("/resetPassword").Methods("POST").HandlerFunc(handlers.HandleResetPasswordSubmit)
 	r.Path("/retrievePassword").Methods("GET").HandlerFunc(handlers.HandleRetrievePassword)
 	r.Path("/retrievePassword").Methods("POST").HandlerFunc(handlers.HandleRetrievePasswordSubmit)
-	r.PathPrefix("/apps/").Methods("GET").HandlerFunc(handlers.AppManagerHandler)
+	r.PathPrefix("/apps").Methods("GET").HandlerFunc(handlers.AppManagerHandler)
 
 	r.PathPrefix("/").Methods("GET").HandlerFunc(loginRequired(handlers.PortalHandler))
 

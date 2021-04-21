@@ -1,10 +1,11 @@
 import React from 'react';
+import {observer} from 'mobx-react';
 
 import AppPageData from '@appC/app-page-data';
 import Button from '@c/button';
-import Icon from '@c/icon';
 
 import PageSettingConfig from './page-setting-config';
+import store from '../store';
 
 import './index.scss';
 
@@ -12,12 +13,10 @@ function PageSetting() {
   return (
     <>
       <div className='form-design-tool'>
-        <Button modifier="primary">
-          <Icon name="save" />
+        <Button iconName='save' modifier="primary">
           保存表单
         </Button>
-        <Button>
-          <Icon name="preview" />
+        <Button iconName='preview'>
           预览
         </Button>
         <span className='text-underline-no-color cursor-pointer'>
@@ -27,7 +26,7 @@ function PageSetting() {
       <div className='flex-1 flex overflow-hidden'>
         <div className='flex-1 p-20'>
           <p className='text-caption-no-color text-gray-400 mb-8'>预览页面视图</p>
-          <AppPageData />
+          <AppPageData filtrates={store.filtrates} tableColumns={[]} />
         </div>
         <PageSettingConfig />
       </div>
@@ -35,4 +34,4 @@ function PageSetting() {
   );
 }
 
-export default PageSetting;
+export default observer(PageSetting);

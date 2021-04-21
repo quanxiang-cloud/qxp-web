@@ -6,27 +6,18 @@ import Icon from '@c/icon';
 
 import './index.scss';
 
-const listItems = [
-  'Apple',
-  'Banana',
-  'Cherry',
-  'Grape',
-  'Guava',
-  'Kiwi',
-  'Lemon',
-  'Melon',
-  'Orange',
-  'Peach',
-  'Pear',
-  'Strawberry',
-];
+type Props = {
+  fieldShowList: string[];
+  fieldList: string[];
+  showOnChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+}
 
-function FieldSort() {
+function FieldSort({ fieldShowList, showOnChange, fieldList }: Props) {
   const renderList = (lists) => lists.map((item) => (
     <div className="page-field-sort-item" key={item} data-id={item}>
       {item}
       <div className='page-field-sort-action'>
-        <Checkbox />
+        <Checkbox value={item} checked={fieldShowList.includes(item)} onChange={showOnChange} />
         <Icon className='page-field-drag ml-22' clickable changeable name="drag_indicator" />
       </div>
     </div>
@@ -49,7 +40,7 @@ function FieldSort() {
           console.log('items: ', items);
         }}
       >
-        {renderList(listItems)}
+        {renderList(fieldList)}
       </Sortable>
     </div>
   );

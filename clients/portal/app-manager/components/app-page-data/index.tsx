@@ -2,14 +2,22 @@ import React from 'react';
 
 import PageDataTable from './page-data-table';
 import PageDataFiltrate from './page-data-filtrate';
+import { PageDataContext } from './context';
 import './index.scss';
 
-function AppPageData() {
+type Props = {
+  filtrates: PageField[];
+  tableColumns: any;
+}
+
+function AppPageData({ filtrates, tableColumns }: Props) {
   return (
-    <div className='flex flex-col'>
-      <PageDataFiltrate />
-      <PageDataTable />
-    </div>
+    <PageDataContext.Provider value={{ filtrates, tableColumns }}>
+      <div className='flex flex-col'>
+        <PageDataFiltrate filtrates={filtrates} />
+        <PageDataTable />
+      </div>
+    </PageDataContext.Provider>
   );
 }
 

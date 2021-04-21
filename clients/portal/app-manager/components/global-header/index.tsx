@@ -2,15 +2,13 @@ import React from 'react';
 import { useLocation } from 'react-router-dom';
 
 import IndexHeader from './index-header';
-import DetailsHeader from './details-header';
 import './index.scss';
 
 const HEADER_LIST = [
-  { key: 'details', urls: ['/apps/details', '/apps/setting'] },
-  { key: 'none', urls: ['/apps/formDesign'] },
+  { key: 'none', urls: ['/apps/formDesign', '/apps/details'] },
 ];
 
-function getHeaderType(path: string) {
+function getHeaderType(path:string) {
   for (const headers of HEADER_LIST) {
     for (const url of headers.urls) {
       if (path.startsWith(url)) {
@@ -22,11 +20,7 @@ function getHeaderType(path: string) {
 
 function GlobalHeader() {
   const location = useLocation();
-
   switch (getHeaderType(location.pathname)) {
-  case 'details':
-    return (<DetailsHeader/>);
-
   case 'none':
     return null;
 
