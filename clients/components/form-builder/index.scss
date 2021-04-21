@@ -172,4 +172,10 @@
 
 .form-builder .field-action-icon {
   @apply flex h-32 w-32 bg-white rounded-full shadow-lg items-center justify-center cursor-pointer;
+.operate-icon {
+  display: block;
+  cursor: pointer;
+  &:hover {
+    color: #375FF3;
+  }
 }

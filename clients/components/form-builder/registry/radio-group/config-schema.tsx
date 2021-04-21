@@ -109,27 +109,51 @@ const schema: ISchema = {
       type: 'array',
       'x-component': 'ArrayTable',
       'x-component-props': {
-        draggable: true,
         operationsWidth: 100,
-        renderMoveUp: () => null,
-        renderMoveDown: () => null,
-        renderAddition: () => {
-          return <Button>添加选项</Button>;
-        },
         renderRemove: (idx: number) => {
           const { actions } = useContext(FieldConfigContext);
 
           const mutator = actions.createMutators('availableOptions');
 
           return (<Icon
-            style={{ cursor: 'pointer' }}
+            className="operate-icon"
             name="delete"
-            size={24}
+            size={31}
             onClick={() => {
-              console.log(idx);
               mutator.remove(idx);
             }}
           />);
+        },
+        renderMoveDown: () => null,
+        renderMoveUp: () => null,
+        renderExtraOperations: (idx: number) => {
+          const { actions } = useContext(FieldConfigContext);
+
+          const mutator = actions.createMutators('availableOptions');
+
+          return (
+            <>
+              <div style={{ marginLeft: '16px' }}>
+                <Icon
+                  className="operate-icon"
+                  name="keyboard_arrow_up"
+                  onClick={() => {
+                    mutator.moveDown(idx);
+                  }}
+                />
+                <Icon
+                  className="operate-icon"
+                  name="keyboard_arrow_down"
+                  onClick={() => {
+                    mutator.moveDown(idx);
+                  }}
+                />
+              </div>
+            </>
+          );
+        },
+        renderAddition: () => {
+          return <Button>添加选项</Button>;
         },
       },
       'x-index': 8,

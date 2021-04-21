@@ -37,66 +37,6 @@ function FormFieldConfigTrue({ onChange, initialValue, schema }: Props): JSX.Ele
       schema={schema}
       actions={actions}
     />
-  //   <SchemaForm
-  //     actions={actions}
-  //     initialValues={initialValue}
-  //     // todo fix this
-  //     components={components}
-  //     onChange={onChange}
-  //     // schema={schema}
-  //   >
-  //     <Field
-  //       name="userList"
-  //       type="array"
-  //       default={initialValue}
-  //       x-component="ArrayTable"
-  //       x-component-props={{
-  //         renderMoveDown: () => null,
-  //         renderMoveUp: () => null,
-  //         renderAddition: () => {
-  //           const mutators = actions.createMutators('userList');
-  //           return (
-  //             <FormSpy>s
-  //               {({ state }): any => {
-  //                 return state.value === 'morally' ? null : (
-  //                   <div
-  //                     onClick={() => {
-  //                       mutators.push();
-  //                     }}
-  //                   >
-  //                     <Icon name="add" />
-  //                     添加选项
-  //                   </div>
-  //                 );
-  //               }}
-  //             </FormSpy>
-  //           );
-  //         },
-  //         renderRemove: (idx: any) => {
-  //           const mutators = actions.createMutators('userList');
-  //           return (
-  //             <FormSpy>
-  //               {({ state }): any => {
-  //                 return state.value === 'morally' ? null : (
-  //                   <Icon
-  //                     name="delete"
-  //                     size={24}
-  //                     onClick={() => {
-  //                       mutators.remove(idx);
-  //                     }}
-  //                   />
-  //                 );
-  //               }}
-  //             </FormSpy>
-  //           );
-  //         },
-  //       }}
-  //     >
-  //       <Field type="object">
-  //         <Field name="username" x-component="Input" title="选项" />
-  //       </Field>
-  //     </Field>
-  //   </SchemaForm>
   );
 }
 
