@@ -1,3 +1,4 @@
+import { createFormActions, ISchemaFormActions } from '@formily/react-schema-renderer';
 import React from 'react';
 
 import registry, { Registry } from './registry';
@@ -25,3 +26,13 @@ export const FormBuilderContext = React.createContext<ContextProps>(defaultConte
 export const useFormBuilderContext = () => React.useContext(FormBuilderContext);
 
 export const StoreContext = React.createContext<Store>(new Store({ schema: {} }));
+
+type FieldConfigContextType = {
+  actions: ISchemaFormActions;
+}
+
+export const fieldConfigContext = {
+  actions: createFormActions(),
+};
+
+export const FieldConfigContext = React.createContext<FieldConfigContextType>(fieldConfigContext);

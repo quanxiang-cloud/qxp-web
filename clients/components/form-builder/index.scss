@@ -1,7 +1,6 @@
 .form-builder {
   display: grid;
   grid-template-columns: auto 1fr auto;
-  column-gap: 20px;
 }
 
 .source-element-panel {
@@ -124,7 +123,8 @@
 
 // todo remove this after support layout shortcut
 .form-builder .canvas-wrapper {
-  padding-top: 56px;
+  padding: 56px 20px;
+  overflow: auto;
 }
 
 .form-builder .form-builder-canvas {
@@ -148,6 +148,7 @@
 }
 
 .form-field-wrapper {
+  min-height: 80px;
   padding: 16px 60px;
   border: 1px solid transparent;
 }
@@ -155,4 +156,49 @@
 .form-field-wrapper--active {
   border-color: var(--blue-600);
   background-color: var(--blue-100);
+}
+
+.form-field-wrapper--hidden-children::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  background-image: repeating-linear-gradient(45deg, var(--gray-300) 25%, transparent 25%, transparent 75%, var(--gray-300) 75%, var(--gray-300)), repeating-linear-gradient(45deg, var(--gray-300) 25%, transparent 25%, transparent 75%, var(--gray-300) 75%, var(--gray-300));
+  background-position: 0 0, 20px 20px;
+  background-size: calc(2 * 20px) calc(2 * 20px);
+}
+
+.form-builder .field-action-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 32px;
+  width: 32px;
+  background-color: white;
+  border-radius: 50%;
+  box-shadow: 0px 8px 24px 4px rgba(148, 163, 184, 0.25);
+
+  cursor: pointer;
+
+  .operate-icon {
+    display: block;
+    cursor: pointer;
+    &:hover {
+      color: #375FF3;
+    }
+  }
+}
+
+.delete-container {
+  position: relative;
+  width: 32px;
+}
+
+.delete-icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }

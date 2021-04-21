@@ -7,14 +7,11 @@ import Icon from '@c/icon';
 import { StoreContext } from '../context';
 import FormBuilderStore from '../store';
 
-const actionClassName = 'flex h-32 w-32 bg-white rounded-full shadow-lg items-center justify-center cursor-pointer';
-
-// todo support re-range fields
 function renderActions(store: FormBuilderStore): JSX.Element {
   return (
     <div className="absolute flex -top-16 right-16 z-10">
       <span
-        className={classnames(actionClassName, 'mr-8')}
+        className={classnames('field-action-icon', 'mr-8')}
         onClick={() => {
           if (!store.activeField) {
             return;
@@ -26,7 +23,7 @@ function renderActions(store: FormBuilderStore): JSX.Element {
         <Icon name="arrow_upward" size={20} />
       </span>
       <span
-        className={classnames(actionClassName, 'mr-8')}
+        className={classnames('field-action-icon', 'mr-8')}
         onClick={() => {
           if (!store.activeField) {
             return;
@@ -38,7 +35,7 @@ function renderActions(store: FormBuilderStore): JSX.Element {
         <Icon name="arrow_downward" size={20} />
       </span>
       <span
-        className={classnames(actionClassName, 'mr-8')}
+        className={classnames('field-action-icon', 'mr-8')}
         onClick={() => {
           if (!store.activeField) {
             return;
@@ -50,7 +47,7 @@ function renderActions(store: FormBuilderStore): JSX.Element {
         <Icon name="content_copy" size={20} />
       </span>
       <span
-        className={actionClassName}
+        className={'field-action-icon'}
         onClick={() => {
           if (!store.activeField) {
             return;
@@ -76,12 +73,15 @@ function InnerWrapper(props: ISchemaFieldComponentProps) {
     store.setActiveFieldKey(props.name.slice(5));
   }
 
+  const childrenInvisible = props.props['x-component-props'].childrenInvisible;
+
   return (
     <div
       ref={ref}
       onClick={handleFieldClick}
       className={classnames('relative', 'form-field-wrapper', {
         'form-field-wrapper--active': active,
+        'form-field-wrapper--hidden-children': childrenInvisible,
       })}
     >
       {active && renderActions(store)}
