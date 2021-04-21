@@ -26,6 +26,7 @@ export const defaultConfig: MultipleSelectConfig = {
 
 export function toSchema(value: MultipleSelectConfig): FormBuilder.Schema {
   return {
+    type: 'array',
     title: value.title,
     description: value.description,
     required: value.required,
