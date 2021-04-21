@@ -141,3 +141,11 @@
     color: #939aa9;
   }
 }
+
+.operate-icon {
+  display: block;
+  cursor: pointer;
+  &:hover {
+    color: #375FF3;
+  }
+}
