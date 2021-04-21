@@ -1,9 +1,6 @@
-import React, { useContext } from 'react';
 import { ISchema } from '@formily/react-schema-renderer';
 
-import Icon from '@c/icon';
-import Button from '@c/button';
-import { FieldConfigContext } from '../../form-settings-panel/form-field-config-context';
+import { deleteOperate, extraOperations, addOperate } from '../operates';
 
 const schema: ISchema = {
   type: 'object',
@@ -110,63 +107,11 @@ const schema: ISchema = {
       'x-component': 'ArrayTable',
       'x-component-props': {
         operationsWidth: 80,
-        renderRemove: (idx: number) => {
-          const { actions } = useContext(FieldConfigContext);
-
-          const mutator = actions.createMutators('availableOptions');
-
-          return (
-            <>
-              <div style={{ position: 'relative', height: '32px' }}>
-                <Icon
-                  className="operate-icon"
-                  style={{
-                    position: 'absolute',
-                    top: '50%',
-                    left: '50%',
-                    transform: 'translate(-50%, -50%)',
-                  }}
-                  name="delete"
-                  size={24}
-                  onClick={() => {
-                    mutator.remove(idx);
-                  }}
-                />
-              </div>
-            </>
-          );
-        },
+        renderRemove: deleteOperate,
         renderMoveDown: () => null,
         renderMoveUp: () => null,
-        renderExtraOperations: (idx: number) => {
-          const { actions } = useContext(FieldConfigContext);
-
-          const mutator = actions.createMutators('availableOptions');
-
-          return (
-            <>
-              <div className="ml-28">
-                <Icon
-                  className="operate-icon"
-                  name="keyboard_arrow_up"
-                  onClick={() => {
-                    mutator.moveUp(idx);
-                  }}
-                />
-                <Icon
-                  className="operate-icon"
-                  name="keyboard_arrow_down"
-                  onClick={() => {
-                    mutator.moveDown(idx);
-                  }}
-                />
-              </div>
-            </>
-          );
-        },
-        renderAddition: () => {
-          return <Button>添加选项</Button>;
-        },
+        renderExtraOperations: extraOperations,
+        renderAddition: addOperate,
       },
       'x-index': 8,
       items: {
