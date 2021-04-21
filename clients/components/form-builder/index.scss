@@ -171,7 +171,17 @@
 }
 
 .form-builder .field-action-icon {
-  @apply flex h-32 w-32 bg-white rounded-full shadow-lg items-center justify-center cursor-pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 32px;
+  width: 32px;
+  background-color: white;
+  border-radius: 50%;
+  box-shadow: 0px 8px 24px 4px rgba(148, 163, 184, 0.25);
+
+  cursor: pointer;
+
   .operate-icon {
     display: block;
     cursor: pointer;
