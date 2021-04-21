@@ -11,7 +11,7 @@ type Props = InputProps & {
 }
 
 export default function PassWordField(props: Props) {
-  const [type, setType] = useState<string>('text');
+  const [type, setType] = useState<string>('password');
 
   return (
     <Input

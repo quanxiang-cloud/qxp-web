@@ -1,0 +1,21 @@
+<svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M6 57.6667L56 19L106 57.6667L103 115H9L6 57.6667Z" fill="#CBD5E1"/>
+<path d="M68 4L113.033 30L76.0333 94.0859L31 68.0859L68 4Z" fill="#E5E9FC"/>
+<rect opacity="0.5" x="83.0526" y="21.9282" width="19" height="6" transform="rotate(30 83.0526 21.9282)" fill="white"/>
+<rect opacity="0.5" x="66.5263" y="28.5526" width="30" height="6" transform="rotate(30 66.5263 28.5526)" fill="white"/>
+<rect opacity="0.5" x="59.5263" y="40.6769" width="30" height="6" transform="rotate(30 59.5263 40.6769)" fill="white"/>
+<rect opacity="0.5" x="52.5263" y="52.8013" width="30" height="6" transform="rotate(30 52.5263 52.8013)" fill="white"/>
+<path d="M16 37H60V97H16L16 37Z" fill="#638AFF"/>
+<path d="M36.2581 43L36.9032 58.6835H39.0968L39.7419 43H36.2581Z" fill="white"/>
+<circle cx="38" cy="63" r="2" fill="white"/>
+<path d="M6 58L56 79.375L106 58L103 115H9L6 58Z" fill="#F1F3FD"/>
+<rect x="68" y="99" width="30" height="8" fill="url(#paint0_linear)"/>
+<rect x="3.5" y="76" width="32" height="1" transform="rotate(30 3.5 76)" fill="#ADBBF2"/>
+<rect x="0.5" y="81.1962" width="32" height="1" transform="rotate(30 0.5 81.1962)" fill="#ADBBF2"/>
+<defs>
+<linearGradient id="paint0_linear" x1="83" y1="99" x2="83" y2="107" gradientUnits="userSpaceOnUse">
+<stop stop-color="#FCD34D"/>
+<stop offset="1" stop-color="#FBBF24"/>
+</linearGradient>
+</defs>
+</svg>

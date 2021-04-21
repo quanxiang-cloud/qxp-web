@@ -1,3 +1,5 @@
+import { isPassword } from '@lib/utils';
+
 import { InputField, IInputField, OnValidateAll, parseValidateAllResult } from './atom';
 
 export default class Password extends InputField {
@@ -24,8 +26,8 @@ export default class Password extends InputField {
 
   validate(checkAll?: boolean): boolean | Promise<boolean> {
     let isValid = true;
-    if ((this.value as string).length < 6) {
-      this.errMessage = '密码至少为6位';
+    if (!isPassword(this.value as string)) {
+      this.errMessage = '密码必须包含数字、字母和符号，长度至少为 8 位';
       isValid = false;
     }
     if (this.customeValidator) {
