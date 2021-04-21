@@ -14,12 +14,12 @@ const TABS: TabProps[] = [
 ];
 
 function FormDesignHeader() {
-  const { pageType, appId, pageId } = useParams<any>();
+  const { pageType, pageId } = useParams<any>();
   const history = useHistory();
 
   const tabChange = (tabKey: string) => {
-    history.replace(`/apps/formDesign/${tabKey}/${appId}/${pageId}
-    ${tabKey === 'publishForm' ?'/forEmployee':''}`);
+    const navType = tabKey === 'publishForm' ? '/forEmployee' : '';
+    history.replace(`/apps/formDesign/${tabKey}/${pageId}${navType}`);
   };
 
   return (

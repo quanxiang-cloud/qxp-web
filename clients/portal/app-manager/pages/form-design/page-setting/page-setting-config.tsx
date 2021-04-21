@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { Toggle } from '@QCFE/lego-ui';
 
 import Icon from '@c/icon';
 import Select from '@c/select';
 import Checkbox from '@c/checkbox';
+import Toggle from '@c/toggle';
 
 import FilterSetting from './filter-setting';
 import FieldSort from './field-sort';
@@ -126,7 +126,7 @@ function PageSettingConfig() {
       {configItemRender('排序规则', <Select options={SORT_OPTION} />)}
       {configItemRender(
         <div className='flex items-center justify-between'>
-          <span>分页</span><Toggle onText='开启' offText='关闭' />
+          <span>分页</span><Toggle onChange={() => { }} onText='开启' offText='关闭' />
         </div>,
         <Select options={PAGE_SIZE_OPTION} />
       )}

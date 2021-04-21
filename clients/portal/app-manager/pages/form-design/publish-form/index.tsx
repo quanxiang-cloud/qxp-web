@@ -6,8 +6,8 @@ import SideNavCard from '@c/side-nav-card';
 import ForEmployee from './for-employee';
 
 function PublishForm() {
-  const { appId, pageId, navType } = useParams<any>();
-  const basicUrl = `/apps/formDesign/publishForm/${appId}/${pageId}/`;
+  const { pageId, navType } = useParams<any>();
+  const basicUrl = `/apps/formDesign/publishForm/${pageId}/`;
   const MENU = [
     {
       id: 'forEmployee',

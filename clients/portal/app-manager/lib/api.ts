@@ -136,9 +136,48 @@ export const movePage = (data: any) => {
   });
 };
 
-export const saveFormScheme = (data: any) => {
+export const createFormScheme = (data: any) => {
   return request({
     url: '/api/v1/structor/table/create',
+    method: 'post',
+    data,
+  });
+};
+
+export const fetchFormScheme = (tableID: string) => {
+  return request({
+    url: '/api/v1/structor/table/getByID',
+    method: 'post',
+    data: { tableID },
+  });
+};
+
+export const updateFormScheme = (data: any) => {
+  return request({
+    url: '/api/v1/structor/table/update',
+    method: 'post',
+    data,
+  });
+};
+
+export const fetchPageScheme = (tableID: string) => {
+  return request({
+    url: `/api/v1/structor/schema/${tableID}`,
+    method: 'post',
+  });
+};
+
+export const createPageScheme = (data: any) => {
+  return request({
+    url: '/api/v1/structor/config/create',
+    method: 'post',
+    data,
+  });
+};
+
+export const updatePageScheme = (data: any) => {
+  return request({
+    url: '/api/v1/structor/config/update',
     method: 'post',
     data,
   });

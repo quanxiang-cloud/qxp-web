@@ -30,10 +30,9 @@ function EditPageModal({ pageInfo, onCancel, onSubmit, appID }: Props) {
 
   useEffect(() => {
     fetchGroupList(appID).then((res) => {
-      const option = res.data.group.map(({ id, name }: GroupList) => {
+      setGroupList(res.data.group.map(({ id, name }: GroupList) => {
         return { value: id, label: name };
-      });
-      setGroupList([{ value: '', label: '无分组' }, ...option]);
+      }));
     });
   }, [appID]);
 

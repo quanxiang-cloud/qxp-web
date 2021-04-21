@@ -19,12 +19,11 @@ const BUILD_NAV = [
 ];
 
 function PageBuildNav({ pageId }: Props) {
-  const { appId } = useParams<any>();
   return (
     <div className='app-page-build-nav rounded-tl-12 rounded-tr-12'>
       {BUILD_NAV.map(({ title, desc, type, url }) => (
         <Link
-          to={`${url}/${appId}/${pageId}`}
+          to={`${url}/${pageId}`}
           key={type} className={`app-page-build-nav-bg-${type} app-page-build-nav-item`}
         >
           <Icon className='mr-8' name='list_alt' type='light' size={44} />

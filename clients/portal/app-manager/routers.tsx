@@ -23,7 +23,7 @@ export default (
       <Route path="/apps/details/:appId" component={AppDetails} />
       <Route
         exact
-        path="/apps/formDesign/:pageType/:appId/:pageId/:navType?"
+        path="/apps/formDesign/:pageType/:pageId/:navType?"
         component={FormDesign}
       />
       <Route component={Error} />

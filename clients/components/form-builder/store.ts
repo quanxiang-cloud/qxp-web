@@ -99,7 +99,7 @@ export default class FormBuilderStore {
       return null;
     }
 
-    return registry.elements[componentName].configSchema;
+    return registry.elements[componentName.toLocaleLowerCase()].configSchema;
   }
 
   @computed get schema(): ISchema {

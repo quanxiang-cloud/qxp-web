@@ -11,12 +11,14 @@ import store from './store';
 import './index.scss';
 
 function FormDesign() {
-  const { pageType, appId, pageId } = useParams<any>();
+  const { pageType, pageId } = useParams<any>();
 
   useEffect(() => {
-    store.setAppID(appId);
     store.setPageID(pageId);
-  }, [appId, pageId]);
+    return () => {
+      store.clear();
+    };
+  }, [pageId]);
 
   return (
     <div style={{ height: '100vh' }} className='flex flex-col form-design'>

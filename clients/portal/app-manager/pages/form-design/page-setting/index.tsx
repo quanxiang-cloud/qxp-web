@@ -2,9 +2,10 @@ import React from 'react';
 
 import AppPageData from '@appC/app-page-data';
 import Button from '@c/button';
-import Icon from '@c/icon';
 
 import PageSettingConfig from './page-setting-config';
+
+import store from '../store';
 
 import './index.scss';
 
