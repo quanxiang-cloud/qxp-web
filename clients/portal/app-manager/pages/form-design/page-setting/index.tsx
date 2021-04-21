@@ -1,10 +1,10 @@
 import React from 'react';
+import {observer} from 'mobx-react';
 
 import AppPageData from '@appC/app-page-data';
 import Button from '@c/button';
 
 import PageSettingConfig from './page-setting-config';
-
 import store from '../store';
 
 import './index.scss';
@@ -26,7 +26,7 @@ function PageSetting() {
       <div className='flex-1 flex overflow-hidden'>
         <div className='flex-1 p-20'>
           <p className='text-caption-no-color text-gray-400 mb-8'>预览页面视图</p>
-          <AppPageData />
+          <AppPageData filtrates={store.filtrates} tableColumns={[]} />
         </div>
         <PageSettingConfig />
       </div>
@@ -34,4 +34,4 @@ function PageSetting() {
   );
 }
 
-export default PageSetting;
+export default observer(PageSetting);

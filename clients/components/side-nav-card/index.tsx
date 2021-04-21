@@ -34,7 +34,10 @@ export default function SideNavCard({
   defaultActiveLink,
 }: Props) {
   return (
-    <div className={`bg-white rounded-12 ${className}`}>
+    <div
+      style={{ width: width + 'px', minWidth: width + 'px' }}
+      className={`bg-white rounded-12 ${className}`}
+    >
       {cardTitle ? cardTitle : null}
       <div className="p-20">
         <ul className="w-auto">

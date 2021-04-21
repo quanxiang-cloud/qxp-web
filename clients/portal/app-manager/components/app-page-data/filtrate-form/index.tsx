@@ -6,15 +6,14 @@ import Select from '@c/select';
 import DatePicker from '@c/date-picker';
 import RangePicker from '@c/range-picker';
 
-import store from '../store';
-
 import './index.scss';
 
 type Props = {
-  filterList: any
+  filtrates: PageField[];
+  showMoreFiltrate: boolean;
 }
 
-function FiltrateForm({ filterList }: Props, ref?: React.Ref<any>) {
+function FiltrateForm({ filtrates, showMoreFiltrate }: Props, ref?: React.Ref<any>) {
   const { register, getValues, reset, control } = useForm();
 
   useImperativeHandle(ref, () => ({
@@ -22,7 +21,7 @@ function FiltrateForm({ filterList }: Props, ref?: React.Ref<any>) {
     reset: reset,
   }));
 
-  if (filterList.length === 0) {
+  if (filtrates.length === 0) {
     return (
       <div className='text-caption-no-color text-gray-400 flex-1 flex items-center'>
         <img
@@ -70,7 +69,7 @@ function FiltrateForm({ filterList }: Props, ref?: React.Ref<any>) {
 
   return (
     <form className='app-page-filtrate-form'>
-      {(store.showMoreFiltrate ? filterList : filterList.slice(0, 3)).map((item: any) => (
+      {(showMoreFiltrate ? filtrates : filtrates.slice(0, 3)).map((item: any) => (
         <div className='flex items-center' key={item.id}>
           <label className='app-page-filtrate-label'>{item.label}：</label>
           {fieldRender(item)}

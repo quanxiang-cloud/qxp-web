@@ -1,55 +1,59 @@
-import { action, observable, reaction, IReactionDisposer } from 'mobx';
+import { action, observable, reaction, IReactionDisposer, computed } from 'mobx';
 
 import FormStore from '@c/form-builder/store';
 import notify from '@lib/notify';
-import { createFormScheme, fetchFormScheme, updateFormScheme, createPageScheme } from '@appLib/api';
+import {
+  createFormScheme,
+  fetchFormScheme,
+  updateFormScheme,
+  createPageScheme,
+} from '@appLib/api';
 
 class FormDesignStore {
   destroyFetchScheme: IReactionDisposer
   @observable pageID = '';
+  @observable pageLoading = true;
   @observable formStore: any = null;
-  @observable formMetadata: any = null;
-
-  @observable fieldList = [{
-    type: 'text',
-    label: '提交人',
-    placeholder: '搜索关键字...',
-    id: 'submitId',
-  },
-  {
-    type: 'number',
-    label: '转移编号',
-    placeholder: '搜索关键字...',
-    id: 'code',
-  }, {
-    type: 'select',
-    label: '原使用低点',
-    placeholder: '搜索关键字...',
-    id: 'address',
-  }, {
-    type: 'date',
-    label: '日期',
-    placeholder: '搜索关键字...',
-    id: 'date',
-  }, {
-    type: 'date_range',
-    label: '日期范围',
-    placeholder: '搜索关键字...',
-    id: 'date-range',
-  }];
-
+  @observable formMetadata: any = {};
+  @observable pageConfig = null;
   @observable rightList = [
     {
       id: 1,
       title: '提交并管理本人数据',
       desc: '在此分组内的部门和员工可以填报数据、管理自己填报的数据。',
-      users: [{ name: '谭杰 ' }],
+      users: [{ name: '谭杰' }],
       dep: [{ name: '质量保障部' }],
     },
   ];
 
+  @observable allFiltrate = [];
+
+  @computed get fieldList(): PageField[] {
+    const fieldsMap = this.formStore?.schema?.properties || {};
+    return Object.keys(fieldsMap).map((key: string) => {
+      return {
+        id: key,
+        placeholder: '搜索关键字...',
+        label: fieldsMap[key].title || '',
+        type: fieldsMap[key]['x-component'],
+      };
+    });
+  }
+
+  @computed get filtrates(): any[] {
+    return this.allFiltrate.filter(({ id }) => {
+      return this.fieldList.findIndex((field: PageField) => field.id === id) > -1;
+    });
+  }
+
   constructor() {
     this.destroyFetchScheme = reaction(() => this.pageID, this.fetchFormScheme);
+  }
+
+  @action
+  setFilterList = (list) => {
+    this.allFiltrate = list;
+    console.log('list: ', list);
   }
 
   @action
@@ -72,11 +76,15 @@ class FormDesignStore {
     if (!pageID) {
       return;
     }
-
+    this.pageLoading = true;
     fetchFormScheme(pageID).then((res) => {
-      const { schema = {}, ...others } = res.data || {};
+      const { schema = {}, config, ...others } = res.data || {};
       this.formStore = new FormStore({ schema });
       this.formMetadata = others;
+      this.pageConfig = config;
+      this.pageLoading = false;
+    }).catch(()=>{
+      this.pageLoading = false;
     });
   }
 
@@ -106,7 +114,7 @@ class FormDesignStore {
 
   @action
   createPageScheme = () => {
-    createPageScheme()
+    createPageScheme();
   }
 }
 

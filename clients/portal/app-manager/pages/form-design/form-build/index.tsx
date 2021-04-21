@@ -3,17 +3,15 @@ import { observer } from 'mobx-react';
 
 import { FormBuilder } from '@c/form-builder';
 import Button from '@c/button';
-import PageLoad from '@appC/page-loading';
 
 import store from '../store';
 
 const FormPage = () => {
   if (!store.formStore) {
-    return <PageLoad />;
+    return null;
   }
 
-  const hasScheme = store.formStore.schema;
-  console.log(store.formStore.schema);
+  const hasScheme = !!store.formMetadata.id;
 
   return (
     <>

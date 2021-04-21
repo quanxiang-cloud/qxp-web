@@ -7,7 +7,7 @@ import Button from '@c/button';
 import Checkbox from '@c/checkbox';
 
 import './index.scss';
-import store from '@appC/app-page-data/store';
+import store from '../store';
 
 function infoRender(title: string, desc: string) {
   return (
@@ -21,6 +21,8 @@ function infoRender(title: string, desc: string) {
 function FilterSetting() {
   const [filterModalVisible, setFilterModalVisible] = useState(false);
   const [fieldList, setFieldList] = useState<any>([]);
+  console.log(store.fieldList);
+  
 
   useEffect(() => {
     if (!filterModalVisible) {
@@ -29,16 +31,17 @@ function FilterSetting() {
 
     setFieldList(
       store.fieldList.map((field) => {
-        const filterField = store.filterList.find(({ id }) => {
+        const filterField = fieldList.find(({ id }) => {
           return id === field.id;
         });
         if (filterField) {
           return filterField;
         }
+
         return field;
       })
     );
-  }, [store.fieldList, store.filterList, filterModalVisible]);
+  }, [store.fieldList, filterModalVisible]);
 
   const handleCancel = () => {
     setFilterModalVisible(false);

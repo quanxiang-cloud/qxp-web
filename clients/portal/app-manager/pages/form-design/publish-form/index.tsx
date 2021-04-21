@@ -4,9 +4,11 @@ import { useParams } from 'react-router-dom';
 import SideNavCard from '@c/side-nav-card';
 
 import ForEmployee from './for-employee';
+import store from '../store';
 
 function PublishForm() {
   const { pageId, navType } = useParams<any>();
+
   const basicUrl = `/apps/formDesign/publishForm/${pageId}/`;
   const MENU = [
     {
