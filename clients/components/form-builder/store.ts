@@ -46,18 +46,18 @@ const INTERNAL_FIELDS: Array<FormItem> = [
 const INTERNAL_FIELD_NAMES = INTERNAL_FIELDS.map(({ fieldName }) => fieldName);
 
 // todo support tree structure
-function schemaToFields({ properties }: FormBuilder.Schema): Array<FormItem> {
+function schemaToFields({ properties }: FormBuilder.Schema): [Array<FormItem>, Array<FormItem>] {
   if (!properties) {
-    return INTERNAL_FIELDS;
+    return [INTERNAL_FIELDS, []];
   }
 
   const sortedKeys = Object.keys(properties).sort((keyA, keyB) => {
     const keyAIndex = properties[keyA]['x-index'] || 0;
     const keyBIndex = properties[keyB]['x-index'] || 0;
     return keyAIndex - keyBIndex;
-  });
+  }).filter((key) => !INTERNAL_FIELD_NAMES.includes(key));
 
-  return sortedKeys.map((key) => {
+  const fields = sortedKeys.map((key) => {
     const componentName = properties[key]['x-component']?.toLowerCase();
     if (!componentName || !registry.elements[componentName]) {
       // todo refactor this message
@@ -73,15 +73,20 @@ function schemaToFields({ properties }: FormBuilder.Schema): Array<FormItem> {
       configValue: configValue,
     };
   }).filter((formItem): formItem is FormItem => !!formItem);
+
+  return [INTERNAL_FIELDS, fields];
 }
 
 export default class FormBuilderStore {
+  internalFields: Array<FormItem>;
   @observable fields: Array<FormItem>;
   @observable activeFieldName = '';
   @observable labelAlign = 'left';
 
   constructor({ schema }: Props) {
-    this.fields = schemaToFields(schema);
+    const [internalFields, fields] = schemaToFields(schema);
+    this.internalFields = internalFields;
+    this.fields = fields;
   }
 
   @computed get activeField(): FormItem | null {
@@ -106,22 +111,24 @@ export default class FormBuilderStore {
   }
 
   @computed get schema(): ISchema {
-    const properties = this.fields.reduce<Record<string, any>>((acc, field, index) => {
-      const { fieldName, componentName, configValue } = field;
+    const properties = this.internalFields
+      .concat(this.fields)
+      .reduce<Record<string, any>>((acc, field, index) => {
+        const { fieldName, componentName, configValue } = field;
 
-      const { toSchema } = registry.elements[componentName.toLowerCase()] || {};
-      if (!toSchema) {
-        logger.error(`failed to find component: [${componentName}] in registry`);
-      }
+        const { toSchema } = registry.elements[componentName.toLowerCase()] || {};
+        if (!toSchema) {
+          logger.error(`failed to find component: [${componentName}] in registry`);
+        }
 
-      acc[fieldName] = {
-        // convert observable value to pure js object for debugging
-        ...toSchema(toJS(configValue)),
-        'x-index': index,
-      };
+        acc[fieldName] = {
+          // convert observable value to pure js object for debugging
+          ...toSchema(toJS(configValue)),
+          'x-index': index,
+        };
 
-      return acc;
-    }, {});
+        return acc;
+      }, {});
 
     return {
       title: '',
@@ -198,12 +205,45 @@ export default class FormBuilderStore {
       index = i;
       return field.fieldName === fieldName;
     });
+
     if (!field) {
       return;
     }
 
     const newField = { ...field, fieldName: nanoid(8) };
     this.fields.splice(index + 1, 0, newField);
+  }
+
+  @action
+  moveUp(fieldName: string) {
+    let index = -1;
+    const field = this.fields.find((field, i) => {
+      index = i;
+      return field.fieldName === fieldName;
+    });
+
+    if (!field || index < 1) {
+      return;
+    }
+
+    const [previous, current] = this.fields.slice(index - 1, index + 1);
+    this.fields.splice(index - 1, 2, current, previous);
+  }
+
+  @action
+  moveDown(fieldName: string) {
+    let index = -1;
+    const field = this.fields.find((field, i) => {
+      index = i;
+      return field.fieldName === fieldName;
+    });
+
+    if (!field || index >= this.fields.length - 1) {
+      return;
+    }
+
+    const [previous, current] = this.fields.slice(index, index + 2);
+    this.fields.splice(index, 2, current, previous);
   }
 
   @action

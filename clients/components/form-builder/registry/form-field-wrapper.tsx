@@ -20,13 +20,25 @@ function renderActions(store: FormBuilderStore): JSX.Element {
             return;
           }
 
-          store.delete(store.activeField?.fieldName);
+          store.moveUp(store.activeField?.fieldName);
         }}
       >
-        <Icon name="delete" size={20} />
+        <Icon name="arrow_upward" size={20} />
       </span>
       <span
-        className={actionClassName}
+        className={classnames(actionClassName, 'mr-8')}
+        onClick={() => {
+          if (!store.activeField) {
+            return;
+          }
+
+          store.moveDown(store.activeField?.fieldName);
+        }}
+      >
+        <Icon name="arrow_downward" size={20} />
+      </span>
+      <span
+        className={classnames(actionClassName, 'mr-8')}
         onClick={() => {
           if (!store.activeField) {
             return;
@@ -37,7 +49,18 @@ function renderActions(store: FormBuilderStore): JSX.Element {
       >
         <Icon name="content_copy" size={20} />
       </span>
-      {/* <Icon name="drag_indicator" /> */}
+      <span
+        className={actionClassName}
+        onClick={() => {
+          if (!store.activeField) {
+            return;
+          }
+
+          store.delete(store.activeField?.fieldName);
+        }}
+      >
+        <Icon name="delete" size={20} />
+      </span>
     </div>
   );
 }
