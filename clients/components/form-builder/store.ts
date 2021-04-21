@@ -152,7 +152,7 @@ export default class FormBuilderStore {
     return {
       type: 'object',
       properties: {
-        FILEDS: {
+        FIELDs: {
           type: 'object',
           'x-component': 'mega-layout',
           'x-component-props': {
