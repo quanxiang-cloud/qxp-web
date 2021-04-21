@@ -1,4 +1,5 @@
 import React, { useContext } from 'react';
+import classnames from 'classnames';
 
 import { FieldConfigContext } from '../form-settings-panel/form-field-config-context';
 import Icon from '@c/icon';
@@ -11,15 +12,9 @@ export function deleteOperate(idx: number) {
 
   return (
     <>
-      <div style={{ position: 'relative', height: '32px' }}>
+      <div className="delete-container">
         <Icon
-          className="operate-icon"
-          style={{
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-          }}
+          className={classnames('operate-icon', 'delete-icon')}
           name="delete"
           size={24}
           onClick={() => {
@@ -38,7 +33,7 @@ export function extraOperations(idx: number) {
 
   return (
     <>
-      <div className="ml-28">
+      <div className="ml-24">
         <Icon
           className="operate-icon"
           name="keyboard_arrow_up"
