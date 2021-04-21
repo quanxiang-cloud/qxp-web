@@ -181,6 +181,14 @@
 }
 
 .delete-container {
-  position: 'relative';
-  height: '32px';
+  position: relative;
+  width: 32px;
+  height: 32px;
+}
+
+.delete-icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
