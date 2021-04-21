@@ -109,20 +109,32 @@ const schema: ISchema = {
       type: 'array',
       'x-component': 'ArrayTable',
       'x-component-props': {
-        operationsWidth: 100,
+        operationsWidth: 80,
         renderRemove: (idx: number) => {
           const { actions } = useContext(FieldConfigContext);
 
           const mutator = actions.createMutators('availableOptions');
 
-          return (<Icon
-            className="operate-icon"
-            name="delete"
-            size={31}
-            onClick={() => {
-              mutator.remove(idx);
-            }}
-          />);
+          return (
+            <>
+              <div style={{ position: 'relative', height: '32px' }}>
+                <Icon
+                  className="operate-icon"
+                  style={{
+                    position: 'absolute',
+                    top: '50%',
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)',
+                  }}
+                  name="delete"
+                  size={24}
+                  onClick={() => {
+                    mutator.remove(idx);
+                  }}
+                />
+              </div>
+            </>
+          );
         },
         renderMoveDown: () => null,
         renderMoveUp: () => null,
@@ -133,12 +145,12 @@ const schema: ISchema = {
 
           return (
             <>
-              <div style={{ marginLeft: '16px' }}>
+              <div className="ml-28">
                 <Icon
                   className="operate-icon"
                   name="keyboard_arrow_up"
                   onClick={() => {
-                    mutator.moveDown(idx);
+                    mutator.moveUp(idx);
                   }}
                 />
                 <Icon
