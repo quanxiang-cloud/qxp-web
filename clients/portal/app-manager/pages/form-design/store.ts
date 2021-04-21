@@ -9,13 +9,27 @@ import {
   createPageScheme,
 } from '@appLib/api';
 
+function getAttribute(config: any, index: number) {
+  if (!config) {
+    return {
+      visible: true,
+      sort: index,
+    };
+  }
+
+  return {
+    visible: 'visible' in config ? config.visible : true,
+    sort: 'sort' in config ? config.sort : index,
+  };
+}
+
 class FormDesignStore {
   destroyFetchScheme: IReactionDisposer
   @observable pageID = '';
   @observable pageLoading = true;
   @observable formStore: any = null;
   @observable formMetadata: any = {};
-  @observable pageConfig = null;
+  @observable pageConfig: any = {};
   @observable rightList = [
     {
       id: 1,
@@ -28,14 +42,29 @@ class FormDesignStore {
 
   @observable allFiltrate = [];
 
+  @computed get tableColumn(): any[] {
+    const column: any[] = [];
+    [...this.fieldList].sort((a, b) => a.sort - b.sort).forEach((field) => {
+      if (field.visible) {
+        column.push({
+          id: field.id,
+          Header: field.label,
+          accessor: field.id,
+        });
+      }
+    });
+    return column;
+  }
+
   @computed get fieldList(): PageField[] {
     const fieldsMap = this.formStore?.schema?.properties || {};
-    return Object.keys(fieldsMap).map((key: string) => {
+    return Object.keys(fieldsMap).map((key: string, index: number) => {
       return {
         id: key,
         placeholder: '搜索关键字...',
         label: fieldsMap[key].title || '',
-        type: fieldsMap[key]['x-component'],
+        type: fieldsMap[key].type,
+        ...getAttribute(this.pageConfig[key], index),
       };
     });
   }
@@ -72,18 +101,32 @@ class FormDesignStore {
   }
 
   @action
+  setAllPageConfig = (values: any[]) => {
+    values.forEach((value) => {
+      this.pageConfig[value.id] = { ...this.pageConfig[value.id], ...value };
+    });
+  }
+
+  @action
+  setPageConfig = (key: string, newConfig: any) => {
+    const _config = { [key]: { ...this.pageConfig[key], ...newConfig } };
+    this.pageConfig = { ...this.pageConfig, ..._config };
+  }
+
+  @action
   fetchFormScheme = (pageID: string) => {
     if (!pageID) {
       return;
     }
+
     this.pageLoading = true;
     fetchFormScheme(pageID).then((res) => {
       const { schema = {}, config, ...others } = res.data || {};
       this.formStore = new FormStore({ schema });
       this.formMetadata = others;
-      this.pageConfig = config;
+      this.pageConfig = config || {};
       this.pageLoading = false;
-    }).catch(()=>{
+    }).catch(() => {
       this.pageLoading = false;
     });
   }

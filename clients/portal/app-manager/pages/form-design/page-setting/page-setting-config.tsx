@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
+import { observer } from 'mobx-react';
 
 import Icon from '@c/icon';
 import Select from '@c/select';
@@ -7,6 +8,7 @@ import Toggle from '@c/toggle';
 
 import FilterSetting from './filter-setting';
 import FieldSort from './field-sort';
+import store from '../store';
 
 const SORT_OPTION = [
   {
@@ -45,15 +47,15 @@ const SORT_OPTION = [
     ),
     value: '4',
   },
-  {
-    label: (
-      <div className='flex items-center'>
-        <Icon className='mr-8' name='mediation' />
-      自定义排序规则
-      </div>
-    ),
-    value: '5',
-  },
+  // {
+  //   label: (
+  //     <div className='flex items-center'>
+  //       <Icon className='mr-8' name='mediation' />
+  //     自定义排序规则
+  //     </div>
+  //   ),
+  //   value: '5',
+  // },
 ];
 
 const PAGE_SIZE_OPTION = [
@@ -65,32 +67,21 @@ const PAGE_SIZE_OPTION = [
   { label: '200条/页', value: 200 },
 ];
 
-const listItems = [
-  'Apple',
-  'Banana',
-  'Cherry',
-  'Grape',
-  'Guava',
-  'Kiwi',
-  'Lemon',
-  'Melon',
-  'Orange',
-  'Peach',
-  'Pear',
-  'Strawberry',
-];
-
 function PageSettingConfig() {
-  const [checkedFields, setCheckedList] = useState<string[]>([]);
+  const { fieldList } = store;
   const [indeterminate, setIndeterminate] = useState(false);
 
+  const showListLength = useMemo(() => {
+    return store.fieldList.filter((field) => field.visible).length;
+  }, [store.fieldList]);
+
   useEffect(() => {
-    if (checkedFields.length === 0 || checkedFields.length === listItems.length) {
+    if (showListLength === 0 || showListLength === fieldList.length) {
       setIndeterminate(false);
     } else {
       setIndeterminate(true);
     }
-  }, [checkedFields]);
+  }, [showListLength]);
 
   const configItemRender = (title: React.ReactNode, content: React.ReactNode) => {
     return (
@@ -103,20 +94,28 @@ function PageSettingConfig() {
 
   const handleCheckAll = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.checked) {
-      setCheckedList(listItems);
+      store.setAllPageConfig(
+        fieldList.map(({ id }) => ({ id, visible: true }))
+      );
     } else {
-      setCheckedList([]);
+      store.setAllPageConfig(
+        fieldList.map(({ id }) => ({ id, visible: false }))
+      );
     }
   };
 
   const handleChecked = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.checked) {
-      setCheckedList([...checkedFields, e.target.value]);
+      store.setPageConfig(e.target.value, { visible: true });
     } else {
-      setCheckedList(
-        checkedFields.filter((item) => item !== e.target.value)
-      );
+      store.setPageConfig(e.target.value, { visible: false });
     }
+  };
+
+  const handleSort = (keys: string[]) => {
+    store.setAllPageConfig(
+      keys.map((id: string, index: number) => ({ id, sort: index }))
+    );
   };
 
   return (
@@ -134,12 +133,16 @@ function PageSettingConfig() {
         <div className='flex items-center justify-between'>
           <span>字段显示和排序</span>
           <span>
-            <Checkbox indeterminate={indeterminate} onChange={handleCheckAll} label='全选' />
+            <Checkbox
+              checked={showListLength === fieldList.length}
+              indeterminate={indeterminate}
+              onChange={handleCheckAll}
+              label='全选' />
           </span>
         </div>,
         <FieldSort
-          fieldList={listItems}
-          fieldShowList={checkedFields}
+          sortChange={handleSort}
+          fieldList={store.fieldList}
           showOnChange={handleChecked}
         />
       )}
@@ -147,4 +150,4 @@ function PageSettingConfig() {
   );
 }
 
-export default PageSettingConfig;
+export default observer(PageSettingConfig);

@@ -15,7 +15,7 @@ function AppPageData({ filtrates, tableColumns }: Props) {
     <PageDataContext.Provider value={{ filtrates, tableColumns }}>
       <div className='flex flex-col'>
         <PageDataFiltrate filtrates={filtrates} />
-        <PageDataTable />
+        <PageDataTable tableColumns={tableColumns} />
       </div>
     </PageDataContext.Provider>
   );

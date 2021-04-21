@@ -21,8 +21,6 @@ function infoRender(title: string, desc: string) {
 function FilterSetting() {
   const [filterModalVisible, setFilterModalVisible] = useState(false);
   const [fieldList, setFieldList] = useState<any>([]);
-  console.log(store.fieldList);
-  
 
   useEffect(() => {
     if (!filterModalVisible) {
@@ -83,7 +81,7 @@ function FilterSetting() {
     }
   };
 
-  const fieldFilterRender = (field: any) => {
+  const fieldFilterRender = (field: PageField) => {
     return (
       <div key={field.id} className='page-setting-field-filter'>
         <div className='flex items-center justify-between py-8 px-16'>
@@ -151,7 +149,7 @@ function FilterSetting() {
           }
         >
           <div className='w-full'>
-            {fieldList.map((field) => fieldFilterRender(field))}
+            {fieldList.map((field: PageField) => fieldFilterRender(field))}
           </div>
         </Modal>
       )}
