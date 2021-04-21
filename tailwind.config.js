@@ -56,6 +56,7 @@ module.exports = {
       10: '10px',
       12: '12px',
       none: '0px',
+      full: '50%',
     },
     // disable responsive
     screens: {

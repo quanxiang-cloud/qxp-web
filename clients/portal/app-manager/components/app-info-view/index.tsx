@@ -1,6 +1,6 @@
 import React from 'react';
 
-import BgIcon from '../bg-icon';
+import AppIcon from '@c/app-icon';
 
 import './index.scss';
 
@@ -11,11 +11,11 @@ type Props = {
 }
 
 function AppInfoView({ appInfo, onClick, className = '' }: Props) {
-  const appIcon: AppIcon = JSON.parse(appInfo.appIcon);
+  const appIcon: AppIconInfo = JSON.parse(appInfo.appIcon);
 
   return (
     <div onClick={onClick} className={`${className} flex-1 flex overflow-hidden`}>
-      <BgIcon className='mr-8' themeColor={appIcon.bgColor} iconName={appIcon.iconName} size={44}/>
+      <AppIcon className='mr-8' themeColor={appIcon.bgColor} iconName={appIcon.iconName} size={44}/>
       <div className='flex-1 app-info-view-text overflow-hidden'>
         <p className='text-overflow-1'>{appInfo.appName}</p>
         <p>{appInfo.useStatus > 0 ? '已发布' : '未发布'}</p>

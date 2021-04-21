@@ -5,8 +5,9 @@ import { inject, observer } from 'mobx-react';
 
 import More from '@c/more';
 import Icon from '@c/icon';
-import BgIcon from '@appC/bg-icon';
+
 import AppInfoView from '@appC/app-info-view';
+import AppIcon from '@c/app-icon';
 
 type Props = {
   appListStore?: any
@@ -40,12 +41,12 @@ function AppDropdown({ appListStore, appDetails }: Props) {
   }, [appListStore.appList]);
 
   const { appIcon = '', useStatus, appName } = appDetails;
-  const { bgColor, iconName } = (appIcon ? JSON.parse(appIcon) : {}) as AppIcon;
+  const { bgColor, iconName } = (appIcon ? JSON.parse(appIcon) : {}) as AppIconInfo;
 
   return (
     <More contentClassName='app-global-header-drop-more' items={appListItems}>
       <div className='flex items-center cursor-pointer app-global-header-cur-app'>
-        <BgIcon className='mr-8' size={32} themeColor={bgColor} iconName={iconName} />
+        <AppIcon className='mr-8' size={32} themeColor={bgColor} iconName={iconName} />
         <span>{appName}</span>
         <span className='ml-6 text-gray-500 mr-4'>({useStatus > 0 ? '已发布' : '未发布'})</span>
         <Icon name='expand_more' size={20} />

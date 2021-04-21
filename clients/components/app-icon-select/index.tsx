@@ -5,8 +5,6 @@ import { Control } from '@QCFE/lego-ui';
 import Icon from '@c/icon';
 import Popper from '@c/popper';
 
-import './index.scss';
-
 type Value = string;
 
 type Option = {

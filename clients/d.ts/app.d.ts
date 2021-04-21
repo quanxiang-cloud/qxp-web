@@ -7,7 +7,7 @@ type AppInfo = {
   useStatus: number;
 }
 
-type AppIcon = {
+type AppIconInfo = {
   bgColor: BgColor;
   iconName: string;
 }

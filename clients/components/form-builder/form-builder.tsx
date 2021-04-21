@@ -24,6 +24,7 @@ function FormBuilder({ className, store }: Props) {
           <DndProvider backend={HTML5Backend} context={window}>
             <SourceElementPanel />
             <div className="canvas-wrapper">
+              {/* todo render layout shortcut */}
               <Canvas />
             </div>
           </DndProvider>

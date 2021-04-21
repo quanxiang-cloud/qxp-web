@@ -66,59 +66,6 @@ body {
   background: linear-gradient(180deg, #FCA5A5 0%, #F87171 100%);
 }
 
-
-.bg-icon-circle-amber {
-  &::before, &::after{
-    background: #F59E0B;
-  }
-}
-
-.bg-icon-circle-orange {
-  &::before, &::after{
-    background: #F97316;
-  }
-}
-
-.bg-icon-circle-indigo {
-  &::before, &::after{
-    background: #6366F1;
-  }
-}
-
-.bg-icon-circle-teal {
-  &::before, &::after{
-    background: #14B8A6;
-  }
-}
-
-.bg-icon-circle-fuchsia {
-  &::before, &::after{
-    background: #D946EF;
-  }
-}
-
-.bg-icon-circle-emerald {
-  &::before, &::after{
-    background: #10B981;
-  }
-}
-
-.bg-icon-circle-cyan {
-  &::before, &::after{
-    background: #06B6D4;
-  }
-}
-
-.bg-icon-circle-red {
-  &::before, &::after{
-    background: #EF4444;
-  }
-}
-
-.bg-gradient-blue-to-top-right {
-  background-image: linear-gradient(to top right, #b5ccff, rgba(181, 204, 255, 0.4));
-}
-
 .shadow-title {
   box-shadow: 0px 8px 24px 4px rgba(148, 163, 184, 0.25);
 }
