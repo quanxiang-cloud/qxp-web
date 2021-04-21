@@ -1,13 +1,13 @@
 import React from 'react';
 import { Form } from '@QCFE/lego-ui';
 
-import BgIconPicker from '@appC/bg-icon-picker';
+import AppIconPicker from '@c/app-icon-picker';
 
 type Props = {
   appInfo?: AppInfo;
 }
 
-const BgIconPickerField = Form.getFormField(BgIconPicker);
+const AppIconPickerField = Form.getFormField(AppIconPicker);
 
 function CreatedEditApp({ appInfo }: Props, ref?: React.ForwardedRef<Form>): JSX.Element {
   const { appName, appIcon } = appInfo || {};
@@ -27,7 +27,7 @@ function CreatedEditApp({ appInfo }: Props, ref?: React.ForwardedRef<Form>): JSX
           },
         ]}
       />
-      <BgIconPickerField
+      <AppIconPickerField
         name='appIcon'
         label='应用图标'
         defaultAppIcon={appIcon && JSON.parse(appIcon)}

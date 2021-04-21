@@ -3,19 +3,18 @@ import { Control } from '@QCFE/lego-ui';
 
 import Icon from '@c/icon';
 
-import IconSelect from '../icon-select';
+import IconSelect from '@c/app-icon-select';
 import ColorPicker from './color-picker';
-import './index.scss';
 
 type Props = {
   name: string;
-  defaultAppIcon?: AppIcon;
-  onChange?: (formData: AppIcon) => void;
-  onBlur?: (formData: AppIcon) => void;
+  defaultAppIcon?: AppIconInfo;
+  onChange?: (formData: AppIconInfo) => void;
+  onBlur?: (formData: AppIconInfo) => void;
 }
 
-export default class BgIconPicker extends React.Component<Props> {
-  state: AppIcon;
+export default class AppIconPicker extends React.Component<Props> {
+  state: AppIconInfo;
   constructor(props: Props) {
     super(props);
     this.state = {

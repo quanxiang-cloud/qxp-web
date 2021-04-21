@@ -5,7 +5,7 @@ import { Switch, Route } from 'react-router-dom';
 
 import SideNavCard from '@c/side-nav-card';
 import ItemWithTitleDesc from '@c/item-with-title-desc';
-import BgIcon from '@appC/bg-icon';
+import AppIcon from '@clients/components/app-icon';
 
 import AppInfo from './app-info';
 import AppAdmin from './app-admin';
@@ -45,7 +45,7 @@ function AppSetting({ appDetailsStore }: Props) {
           <ItemWithTitleDesc
             title="应用管理"
             desc="常规的基础设置和工作流编排"
-            itemRender={<BgIcon themeColor='fuchsia' iconName='settings' size={48} />}
+            itemRender={<AppIcon themeColor='fuchsia' iconName='settings' size={48} />}
             titleClassName="text-2 leading-8 font-bold mb-2"
             descClassName="leading-8"
           />

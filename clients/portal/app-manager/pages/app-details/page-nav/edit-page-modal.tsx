@@ -3,7 +3,7 @@ import { Modal, Form } from '@QCFE/lego-ui';
 
 import Button from '@appC/button';
 import SelectField from '@appC/select-field';
-import IconSelect from '@appC/icon-select';
+import AppIconSelect from '@c/app-icon-select';
 
 type Props = {
   onCancel: () => void;
@@ -11,7 +11,7 @@ type Props = {
   pageInfo?: any;
 };
 
-const IconSelectField = Form.getFormField(IconSelect);
+const IconSelectField = Form.getFormField(AppIconSelect);
 
 function EditPageModal({ pageInfo = {}, onCancel, onSubmit }: Props) {
   const ref: any = useRef();

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import BgIcon from '../bg-icon';
+import AppIcon from '@clients/components/app-icon';
 
 const COLORS: BgColor[] = [
   'indigo',
@@ -26,7 +26,7 @@ function ColorPicker({ iconName = '', onChange, defaultColor, className }: Props
   return (
     <div className={`${className} flex gap-x-16`}>
       {COLORS.map((color: BgColor) => (
-        <BgIcon
+        <AppIcon
           className='cursor-pointer'
           onClick={() => {
             onChange(color);

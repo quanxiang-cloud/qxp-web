@@ -2,8 +2,6 @@ import React, { HTMLProps } from 'react';
 
 import Icon from '@c/icon';
 
-import './index.scss';
-
 interface Props extends HTMLProps<HTMLDivElement> {
   themeColor: BgColor;
   iconName?: string;
@@ -17,7 +15,7 @@ const appIconSize = new Map([
   [48, 32],
 ]);
 
-function BgIcon(
+function AppIcon(
   { size = 44, className = '', iconName, themeColor, ...restProps }: Props,
   ref: React.Ref<HTMLDivElement>,
 ) {
@@ -44,4 +42,4 @@ function BgIcon(
   );
 }
 
-export default React.forwardRef<HTMLDivElement, Props>(BgIcon);
+export default React.forwardRef<HTMLDivElement, Props>(AppIcon);
