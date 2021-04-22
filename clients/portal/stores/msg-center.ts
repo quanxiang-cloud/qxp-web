@@ -91,11 +91,8 @@ class MsgCenter {
   }
 
   @action
-  pageChange = (pageNumber: number, pageSize: number) => {
-    this.paging = {
-      limit: pageSize,
-      page: pageNumber,
-    };
+  setPaging = (params: Partial<{ limit: number, page: number }>) => {
+    Object.assign(this.paging, params);
   }
 
   @action

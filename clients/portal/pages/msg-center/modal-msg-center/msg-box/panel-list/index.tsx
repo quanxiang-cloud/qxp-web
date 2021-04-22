@@ -2,7 +2,7 @@ import React, { useState, useRef, useMemo, useEffect } from 'react';
 import classNames from 'classnames';
 import { inject, observer } from 'mobx-react';
 import { Message, Table } from '@QCFE/lego-ui';
-import { useQuery } from 'react-query';
+import {useMutation, useQuery} from 'react-query';
 import { get } from 'lodash';
 import Loading from '@c/loading';
 import Error from '@c/error';
@@ -38,10 +38,6 @@ const PanelList = ({ msgCenter }: Props & Pick<MobxStores, 'msgCenter' | any>) =
 
   msgCenter.setUnreadTypeCounts(get(countUnreadMsg, 'data.type_num', []));
 
-  useEffect(()=>{
-    setSelectedRows([]);
-  }, [isLoading]);
-
   const [confirmInfo, setConfirmInfo] = useState({
     visible: false,
     title: '',
@@ -55,6 +51,10 @@ const PanelList = ({ msgCenter }: Props & Pick<MobxStores, 'msgCenter' | any>) =
     return data?.data?.mes_list || [];
   }, [data]);
 
+  const msgTotal = useMemo(() => {
+    return data?.data?.total || 0;
+  }, [data]);
+
   const canIUseReadBtn = useMemo(()=>{
     return msgList
       .filter((itm: any)=>selectedRows.some((id)=>id==itm.id))
@@ -65,6 +65,35 @@ const PanelList = ({ msgCenter }: Props & Pick<MobxStores, 'msgCenter' | any>) =
   const canIUseDelBtn = useMemo(()=>{
     return selectedRows .length > 0;
   }, [selectedRows]);
+
+  const deleteMsgMutation=useMutation(deleteMsgByIds, {
+    onSuccess: (data: any)=> {
+      closeConfirmInfo();
+      msgCenter.reset();
+      queryPage('', { id: undefined });
+      refetch();
+      unReadRefetch();
+      console.log('msgList: ', msgList, ', msgTotal: ', msgTotal);
+      console.log('success data: ', data);
+    },
+    onError: (err: Error)=> {
+      Message.warning(`删除失败: ${err.message}`);
+    },
+  });
+
+  useEffect(()=>{
+    setSelectedRows([]);
+  }, [isLoading]);
+
+  useEffect(() => {
+    if (!msgList.length && msgTotal > 0) {
+      const curPage = paging.page;
+      if (curPage > 0) {
+        msgCenter.setPaging({page: curPage - 1});
+        refetch();
+      }
+    }
+  }, [msgList, msgTotal]);
 
   if (isLoading || isFetching) {
     return <Loading/>;
@@ -130,18 +159,7 @@ const PanelList = ({ msgCenter }: Props & Pick<MobxStores, 'msgCenter' | any>) =
       title: '删除消息',
       content: `确定要将已选中的${selectedRows.length}条消息删除吗?`,
       cb: ()=>{
-        deleteMsgByIds(selectedRows)
-          .then((response) => {
-            if (response.code == 0) {
-              refetch();
-              unReadRefetch();
-              closeConfirmInfo();
-              msgCenter.reset();
-              queryPage('', { id: undefined });
-            } else {
-              Message.warning('操作失败');
-            }
-          });
+        deleteMsgMutation.mutate(selectedRows);
       },
     });
   };
@@ -213,8 +231,8 @@ const PanelList = ({ msgCenter }: Props & Pick<MobxStores, 'msgCenter' | any>) =
           <Pagination
             pageSize={paging.limit}
             current={paging.page}
-            total={data?.data?.total||0}
-            onChange={msgCenter.pageChange}
+            total={msgTotal}
+            onChange={(page, limit)=> msgCenter.setPaging({page, limit})}
             showSizeChanger
           />
         </div>
