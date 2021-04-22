@@ -3,7 +3,7 @@ import classnames from 'classnames';
 import { observer } from 'mobx-react';
 
 import { StoreContext } from '../context';
-import Icon from '@clients/components/icon';
+import Icon from '@c/icon';
 
 function FormLabelConfig(): JSX.Element {
   const store = useContext(StoreContext);

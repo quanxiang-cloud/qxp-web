@@ -2,7 +2,7 @@ import { nanoid } from 'nanoid';
 import { action, computed, observable, toJS } from 'mobx';
 
 import registry from './registry';
-import logger from '@clients/lib/logger';
+import logger from '@lib/logger';
 
 export type FormItem = {
   componentName: string;
