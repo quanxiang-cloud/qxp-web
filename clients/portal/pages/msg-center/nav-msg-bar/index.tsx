@@ -5,11 +5,11 @@ import { get } from 'lodash';
 import { useQuery } from 'react-query';
 import { getUnreadMsgCount } from '@portal/api/message-center';
 import Icon from '@c/icon';
-// import { io } from 'socket.io-client';
 
 import UnreadMsgBox from '../unread-msg-box';
 import ModalMsgCenter from '../modal-msg-center';
 import BtnBadge from '@c/btn-badge';
+import pushServer from '@lib/push';
 import { getQuery } from '@portal/utils';
 
 import styles from './index.module.scss';
@@ -56,24 +56,13 @@ const NavMsgBar = ({ msgCenter: store }: Pick<MobxStores, 'msgCenter' | any>): J
     );
   };
 
-  // useEffect(() => {
-  //   const socket = io('/api/v1/message/ws', {
-  //     path: '/socket',
-  //     extraHeaders: {
-  //       'X-Proxy': "WS",
-  //       'Upgrade': 'websocket',
-  //       'Connection': 'Upgrade'
-  //     }
-  //   });
-  //   console.log('>>>')
-  //   socket.on(socket.id, (...emit) => {
-  //     console.log('io', emit)
-  //   })
-  //
-  //   return () => {
-  //     socket.close();
-  //   }
-  // }, []);
+  useEffect(() => {
+    const listener = (data: any) => console.log(data);
+    // todo newMessage? NewMessage? new_message?
+    pushServer.addEventListener('newMessage', listener);
+
+    return () => pushServer.removeEventListener('newMessage', listener);
+  }, []);
 
   return (
     <>
