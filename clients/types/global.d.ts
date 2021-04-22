@@ -10,5 +10,5 @@ interface Window {
   __global: {
     userInfo: UserInfo;
   },
-  [key: string]: unknown;
+  [key: string]: any;
 }

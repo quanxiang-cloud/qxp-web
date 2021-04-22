@@ -11,5 +11,6 @@ func OTPHandler(w http.ResponseWriter, r *http.Request) {
 		"token": token,
 	})
 
+	w.Header().Add("Content-Type", "application/json")
 	w.Write(body)
 }
