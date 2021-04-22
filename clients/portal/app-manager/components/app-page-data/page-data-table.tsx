@@ -2,48 +2,13 @@ import React from 'react';
 
 import Button from '@c/button';
 import Icon from '@c/icon';
-import Table from '@c/table/index';
+import Table from '@c/table';
 
-const columns: any = [{
-  id: 'userName',
-  Header: '员工',
-  accessor: 'userName',
-},
-{
-  id: 'phone',
-  Header: '手机号',
-  accessor: 'phone',
-},
-{
-  id: 'email',
-  Header: '邮箱',
-  accessor: 'email',
-},
-{
-  id: 'dep',
-  Header: '部门',
-  accessor: ({ dep }: Employee) => {
-    return dep.departmentName || '未分配部门';
-  },
-},
-{
-  id: 'action',
-  Header: '操作',
-  accessor: ({ id }: any): JSX.Element =>
-    <span className='text-btn'>移除</span>,
-}];
+type Props = {
+  tableColumns: any[]
+}
 
-const data = [
-  {
-    userName: '谭杰',
-    phone: '133456564654',
-    email: '38475@qq.cm',
-    id: 1,
-    dep: { departmentName: '研发部' },
-  },
-];
-
-function PageDataTable() {
+function PageDataTable({ tableColumns }: Props) {
   const handleSelectChange = (selectArr: any) => {
     console.log('selectArr: ', selectArr);
   };
@@ -69,8 +34,8 @@ function PageDataTable() {
         showCheckbox
         rowKey="id"
         onSelectChange={handleSelectChange}
-        columns={columns}
-        data={data}
+        columns={tableColumns}
+        data={[]}
       />
     </div>
   );

@@ -26,6 +26,7 @@ export const defaultConfig: SelectConfig = {
 
 export function toSchema(value: SelectConfig): FormBuilder.Schema {
   return {
+    type: 'string',
     title: value.title,
     description: value.description,
     required: value.required,

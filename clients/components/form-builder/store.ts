@@ -18,33 +18,28 @@ type Props = {
 const INTERNAL_FIELDS: Array<FormItem> = [
   {
     fieldName: '_id',
-    title: 'id',
     componentName: 'Input',
-    configValue: { displayModifier: 'hidden' },
+    configValue: { displayModifier: 'hidden', title: 'id' },
   },
   {
     fieldName: '_created_time',
-    title: '创建时间',
     componentName: 'DatePicker',
-    configValue: { displayModifier: 'hidden' },
+    configValue: { displayModifier: 'hidden', title: '创建时间' },
   },
   {
     fieldName: '_updated_time',
-    title: '修改时间',
     componentName: 'DatePicker',
-    configValue: { displayModifier: 'hidden' },
+    configValue: { displayModifier: 'hidden', title: '修改时间' },
   },
   {
     fieldName: '_created_by',
-    title: '创建者',
     componentName: 'Input',
-    configValue: { displayModifier: 'hidden' },
+    configValue: { displayModifier: 'hidden', title: '创建者' },
   },
   {
     fieldName: '_updated_by',
-    title: '修改者',
     componentName: 'Input',
-    configValue: { displayModifier: 'hidden' },
+    configValue: { displayModifier: 'hidden', title: '修改者' },
   },
 ];
 

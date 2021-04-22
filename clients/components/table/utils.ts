@@ -1,4 +1,3 @@
-import { useEffect, useRef } from 'react';
 import { FixedColumn, IdType, UnionColumns } from 'react-table';
 
 export const getDefaultSelectMap = (keys: string[] | undefined): Record<IdType<any>, boolean> => {
@@ -13,7 +12,7 @@ export const getDefaultSelectMap = (keys: string[] | undefined): Record<IdType<a
   return keyMap;
 };
 
-export function useComputeColumnsPosition<T extends object = {}>(
+export function computeColumnsPosition<T extends object = {}>(
   columns: FixedColumn<T>[]
 ): Array<React.CSSProperties> {
   let marginLeft = 0;
@@ -49,16 +48,12 @@ export function useComputeColumnsPosition<T extends object = {}>(
 
 type GetFixedStyle = (index: number) => React.CSSProperties;
 export function useFixedStyle<T extends {}>(columns: UnionColumns<T>[]): GetFixedStyle {
-  const fn = useRef<GetFixedStyle>(() => ({}));
-  useEffect(() => {
-    const columnsFixedStyle = useComputeColumnsPosition(columns as FixedColumn<T>[]);
-    fn.current = (index: number) => {
-      if ((columns as FixedColumn<T>[])[index].fixed) {
-        return columnsFixedStyle[index];
-      }
-      return {};
-    };
-  }, [columns]);
+  const columnsFixedStyle = computeColumnsPosition(columns as FixedColumn<T>[]);
 
-  return fn.current;
+  return (index: number) => {
+    if ((columns as FixedColumn<T>[])[index].fixed) {
+      return columnsFixedStyle[index];
+    }
+    return {};
+  };
 }

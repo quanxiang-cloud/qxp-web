@@ -48,6 +48,7 @@ export function toSchema(value: typeof defaultConfig): FormBuilder.Schema {
   }
 
   return {
+    type: 'datetime',
     title: value.title,
     description: value.description,
     required: value.required,

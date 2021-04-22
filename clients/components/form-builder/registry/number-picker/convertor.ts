@@ -23,6 +23,7 @@ export const defaultConfig: NumberPickerConfig = {
 
 export function toSchema(value: typeof defaultConfig): FormBuilder.Schema {
   return {
+    type: 'number',
     title: value.title,
     description: value.description,
     required: value.required,

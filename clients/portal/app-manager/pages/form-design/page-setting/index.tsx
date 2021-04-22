@@ -1,5 +1,5 @@
 import React from 'react';
-import {observer} from 'mobx-react';
+import { observer } from 'mobx-react';
 
 import AppPageData from '@appC/app-page-data';
 import Button from '@c/button';
@@ -10,6 +10,8 @@ import store from '../store';
 import './index.scss';
 
 function PageSetting() {
+  console.log(store.tableColumn, 13123);
+
   return (
     <>
       <div className='form-design-tool'>
@@ -26,7 +28,7 @@ function PageSetting() {
       <div className='flex-1 flex overflow-hidden'>
         <div className='flex-1 p-20'>
           <p className='text-caption-no-color text-gray-400 mb-8'>预览页面视图</p>
-          <AppPageData filtrates={store.filtrates} tableColumns={[]} />
+          <AppPageData filtrates={store.filtrates} tableColumns={store.tableColumn} />
         </div>
         <PageSettingConfig />
       </div>

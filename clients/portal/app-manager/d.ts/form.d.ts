@@ -3,4 +3,7 @@ type PageField = {
   placeholder: string;
   label: string;
   type: string,
+  expand?: boolean;
+  filter?: boolean;
+  visible?: boolean;
 }
