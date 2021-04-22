@@ -1,7 +1,7 @@
 import React, { useState, useEffect, forwardRef, useImperativeHandle } from 'react';
 import ReactDom from 'react-dom';
 import classNames from 'classnames';
-import { get } from 'lodash';
+import { get, debounce } from 'lodash';
 import { toJS } from 'mobx';
 import { useMutation, useQueryClient } from 'react-query';
 import { useHistory } from 'react-router-dom';
@@ -450,7 +450,8 @@ export const Content = forwardRef(({ className, donotShowHeader, footer, modifyD
           </div>
           { footer ? footer() : (<div className={styles.footer}>
             <Button
-              onClick={()=> saveDraft()}
+              // @ts-ignore
+              onClick={debounce(saveDraft, 1000)}
               iconName="book"
               className='mr-20'
             >
@@ -499,7 +500,7 @@ export const Content = forwardRef(({ className, donotShowHeader, footer, modifyD
               className="bg-gray-700 hover:bg-gray-900 transition cursor-pointer mb-0"
               modifier="primary"
               iconName="done"
-              onClick={()=>confirmSend(true)}
+              onClick={debounce(()=>confirmSend(true), 1000)}
             >
             确定发送
             </Button>

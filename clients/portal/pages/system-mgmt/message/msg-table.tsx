@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Table, Message, Modal as LegoModal } from '@QCFE/lego-ui';
 import { inject, observer } from 'mobx-react';
 import dayjs from 'dayjs';
+import {debounce} from 'lodash';
 import { MsgSendStatus, MsgType } from '@portal/pages/system-mgmt/constants';
 import Status from './status';
 import Loading from '@c/loading';
@@ -402,7 +403,7 @@ const MsgTable = ({ msgMgmt: store, refresh }: Props & Pick<MobxStores, 'msgMgmt
       <ModalContent
         visible={previewInfo.visible}
         handleClose={handleClose}
-        confirmSend={confirmSend}
+        confirmSend={debounce(confirmSend, 1000)}
         data={previewData}
         status={previewInfo.status}
       />
@@ -413,10 +414,7 @@ const MsgTable = ({ msgMgmt: store, refresh }: Props & Pick<MobxStores, 'msgMgmt
         onCancel={handleModifyModalClose}
         footer={(<div className={styles.footer}>
           <Button
-            onClick={()=>{
-              saveDraft();
-              // sendMessageRef?.current?.saveDraft && sendMessageRef?.current?.saveDraft();
-            }}
+            onClick={debounce(saveDraft, 1000, {leading: true})}
             iconName="book"
             className='mr-20'
           >
