@@ -9,8 +9,8 @@ import Icon from '@c/icon';
 
 import UnreadMsgBox from '../unread-msg-box';
 import ModalMsgCenter from '../modal-msg-center';
-import BtnBadge from '../btn-badge';
-import { getQuery } from '@clients/utils';
+import BtnBadge from '@c/btn-badge';
+import { getQuery } from '@portal/utils';
 
 import styles from './index.module.scss';
 

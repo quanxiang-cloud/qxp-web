@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 
 import More from '@c/more';
-// todo remove @containers
-import NavMsgBar from '@containers/msg-center/nav-msg-bar';
+import NavMsgBar from '@portal/pages/msg-center/nav-msg-bar';
 import Icon from '@c/icon';
 
 import ResetPasswordModal from './reset-password-modal';

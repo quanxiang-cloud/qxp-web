@@ -1,6 +1,6 @@
 import { useHistory, useLocation } from 'react-router-dom';
 import { parse, stringify } from 'qs';
-import { omitEmpty } from '@clients/utils';
+import { omitEmpty } from '@portal/utils';
 
 interface History {
   push(path: unknown, state?: any): void;

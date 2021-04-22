@@ -90,7 +90,7 @@ const MessagesPage = ({ msgMgmt: msgStore }: Pick<MobxStores, 'msgMgmt' | any>) 
               classname={styles.search}
             />
           </div>
-          <div className="qxp-table my-20 px-20 w-full flex overflow-auto">
+          <div className="qxp-table my-20 px-20 w-full flex overflow-auto flex-col">
             <MsgTable refresh={refresh}/>
           </div>
         </div>

@@ -1,6 +1,6 @@
 import fetcher from '@lib/fetcher';
 // import {QueryFunctionContext} from 'react-query';
-import { omitEmpty } from '@clients/utils';
+import { omitEmpty } from '@portal/utils';
 
 // 获取未读消息列表
 export const getMessageList = async ({ queryKey }: QueryFuncCtx) => {

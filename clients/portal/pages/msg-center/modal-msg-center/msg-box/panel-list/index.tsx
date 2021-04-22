@@ -6,7 +6,7 @@ import { useQuery } from 'react-query';
 import { get } from 'lodash';
 import Loading from '@c/loading';
 import Error from '@c/error';
-import MsgItem from '@containers/msg-center/msg-item';
+import MsgItem from '@portal/pages/msg-center/msg-item';
 import Toolbar from './toolbar';
 import { getMessageList, deleteMsgByIds, setMsgAsReadByIds, getUnreadMsgCount } from '@portal/api/message-center';
 import { MsgType, MsgReadStatus } from '@portal/pages/system-mgmt/constants';

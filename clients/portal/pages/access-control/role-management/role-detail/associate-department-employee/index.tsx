@@ -5,7 +5,7 @@ import Button from '@c/button';
 import Authorized from '@c/authorized';
 import Switch from '@c/switch';
 import EmployeeOrDepartmentPickerModal from '@c/employee-or-department-picker';
-import notify from '@clients/lib/notify';
+import notify from '@lib/notify';
 
 import { updateRoleAssociations, IUpdateRoleAssociations, getRoleAssociations } from '../../api';
 import DepartmentOrEmployeeTable from './department-or-employee-table';

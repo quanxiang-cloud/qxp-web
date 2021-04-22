@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { Provider as MobxProvider } from 'mobx-react';
 import { RecoilRoot } from 'recoil';
-import { AppContextProvider } from '@clients/_legacy/providers/context';
 
 import App from './application';
 import stores from './stores';
@@ -24,13 +23,11 @@ Object.assign(window, { _stores: stores }); // fixme: debug
 
 ReactDOM.render(
   <MobxProvider {...stores}>
-    <AppContextProvider>
-      <QueryClientProvider client={queryClient}>
-        <RecoilRoot>
-          <App/>
-        </RecoilRoot>
-      </QueryClientProvider>
-    </AppContextProvider>
+    <QueryClientProvider client={queryClient}>
+      <RecoilRoot>
+        <App/>
+      </RecoilRoot>
+    </QueryClientProvider>
   </MobxProvider>,
   document.getElementById('root'),
 );
