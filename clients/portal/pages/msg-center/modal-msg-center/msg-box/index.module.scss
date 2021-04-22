@@ -98,44 +98,12 @@
         }
       }
     }
-
-    .noMsg {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      width: 100%;
-      height: 100%;
-      transform: translateY(-16px);
-      &::after {
-        content: '';
-        width: 120px;
-        height: 120px;
-        background: url("/dist/images/empty-msg-box.svg") no-repeat;
-        background-size: contain;
-      }
-    }
   }
 
   .detailPanel {
     height: calc(100vh - 120px);
     overflow: scroll;
-    .noData {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      width: 100%;
-      height: 100%;
-      transform: translateY(-16px);
-      &::after {
-        content: '';
-        width: 120px;
-        height: 120px;
-        background: url("/dist/images/empty-msg-detail.svg") no-repeat;
-        background-size: contain;
-      }
-    }
   }
-
 }
 
 
@@ -198,4 +166,35 @@ body {
 .modal_card_foot{
   border-radius: 0 0 12px 12px;
   justify-content: flex-end !important;
+}
+
+%picNoMsg {
+  width: 120px;
+  height: 120px;
+  background-size: contain;
+}
+
+.noMsg {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  transform: translateY(-16px);
+  > .picNoMsg {
+    @extend %picNoMsg;
+    background: url("/dist/images/empty-msg-box.svg") no-repeat;
+  }
+  > .picNoDetail {
+    @extend %picNoMsg;
+    background: url("/dist/images/empty-msg-detail.svg") no-repeat;
+  }
+  > .tips {
+    margin-top: 20px;
+    font-size: 12px;
+    line-height: 20px;
+    text-align: center;
+    color: #94A3B8;
+  }
 }

@@ -14,6 +14,7 @@ import Pagination from '@c/pagination';
 import Modal from '@c/modal';
 import Button from '@c/button';
 import { useRouting } from '@portal/hooks';
+import NoMsg from '../no-msg';
 
 import styles from '../index.module.scss';
 
@@ -254,7 +255,7 @@ const PanelList = ({ msgCenter }: Props & Pick<MobxStores, 'msgCenter' | any>) =
 
   return (
     <div className={styles.listPanel}>
-      {msgList.length ? renderTable() : <div className={styles.noMsg}/>}
+      {msgList.length ? renderTable() : <NoMsg tips='暂无消息' />}
     </div>
   );
 };

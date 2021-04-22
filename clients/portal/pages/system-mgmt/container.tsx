@@ -28,7 +28,7 @@ const Container = ({
   const renderBreadcrumb=()=> {
     // todo
     return (
-      <div className={classNames('flex align-center', styles.breadcrumb)}>
+      <div className={classNames('flex items-center', styles.breadcrumb)}>
         <Icon name='reply' size={20} onClick={goBack}/>
         <NavLink to='/system'>系统管理</NavLink>
         <span className={styles.divider}>/</span>
