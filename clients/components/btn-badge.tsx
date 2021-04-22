@@ -9,7 +9,7 @@ interface Props {
 const BtnBadge = ({ count=0, className }: Props) => {
   return (
     <button className={classNames('absolute btn btn--danger btn-badge h-4', className)}>
-      {count}
+      {count > 99 ? '99+' : count}
     </button>
   );
 };

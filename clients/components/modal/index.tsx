@@ -78,7 +78,7 @@ export default class Modal extends React.PureComponent<Props, State> {
               {closable && <Icon name='close' size={24} clickable />}
             </div>
           </Header>
-          <Body fullscreen={fullscreen}>
+          <Body className='md-body' fullscreen={fullscreen}>
             {children}
           </Body>
           {/* eslint-disable-next-line no-nested-ternary */}

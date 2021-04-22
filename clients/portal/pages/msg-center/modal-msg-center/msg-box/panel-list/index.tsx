@@ -2,7 +2,7 @@ import React, { useState, useRef, useMemo, useEffect } from 'react';
 import classNames from 'classnames';
 import { inject, observer } from 'mobx-react';
 import { Message, Table } from '@QCFE/lego-ui';
-import {useMutation, useQuery} from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 import { get } from 'lodash';
 import Loading from '@c/loading';
 import Error from '@c/error';
@@ -89,7 +89,7 @@ const PanelList = ({ msgCenter }: Props & Pick<MobxStores, 'msgCenter' | any>) =
     if (!msgList.length && msgTotal > 0) {
       const curPage = paging.page;
       if (curPage > 0) {
-        msgCenter.setPaging({page: curPage - 1});
+        msgCenter.setPaging({ page: curPage - 1 });
         refetch();
       }
     }
@@ -232,7 +232,7 @@ const PanelList = ({ msgCenter }: Props & Pick<MobxStores, 'msgCenter' | any>) =
             pageSize={paging.limit}
             current={paging.page}
             total={msgTotal}
-            onChange={(page, limit)=> msgCenter.setPaging({page, limit})}
+            onChange={(page, limit)=> msgCenter.setPaging({ page, limit })}
             showSizeChanger
           />
         </div>
