@@ -23,26 +23,26 @@ interface Props {
 }
 
 const dlViaBlob=(url: string)=> {
-  return fetch(url).then((res)=> ({url, blob: res.blob()})).catch((err: Error)=> Message.error(err.message));
-}
+  return fetch(url).then((res)=> ({ url, blob: res.blob() })).catch((err: Error)=> Message.error(err.message));
+};
 
 const exportZip = (blobs: Array<{url: string, blob: any}>) => {
   const zip = jsZip();
-  blobs.forEach(({url, blob}) => {
+  blobs.forEach(({ url, blob }) => {
     const urlInst=new URL(url);
     const urlPath=urlInst.pathname.split('/');
     // console.log('zip file: ', urlPath[urlPath.length-1], blob);
     zip.file(urlPath[urlPath.length-1], blob);
   });
-  zip.generateAsync({type: 'blob'}).then((zipFile) => {
+  zip.generateAsync({ type: 'blob' }).then((zipFile) => {
     return saveAs(zipFile, `attachments-${Date.now()}.zip`);
   });
-}
+};
 
 const dlAndZip=(urls: string[])=> {
   // @ts-ignore
   return Promise.all(urls.map((url)=> dlViaBlob(url))).then(exportZip);
-}
+};
 
 const Filelist = ({ files, candownload, canMultiDownload, deleteFiles, hideProgress, isPreview }: Props) => {
   const handleDownload=(link: string, filename: string)=> {
@@ -54,7 +54,7 @@ const Filelist = ({ files, candownload, canMultiDownload, deleteFiles, hideProgr
 
   const handleZipDl=()=> {
     dlAndZip(files.map((file)=> file.file_url));
-  }
+  };
 
   const renderList=()=> {
     return (
