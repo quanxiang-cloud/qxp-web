@@ -12,9 +12,11 @@ interface Props {
   prevData: Qxp.DraftData | null;
   hideReceivers?: boolean;
   isPreview?: boolean;
+  canDownload?: boolean;
+  canMultiDownload?: boolean;
 }
 
-const PreviewMsg = ({ prevData, hideReceivers, isPreview }: Props) => {
+const PreviewMsg = ({ prevData, hideReceivers, isPreview, canDownload, canMultiDownload }: Props) => {
   if (!prevData) {
     return (
       <Loading />
@@ -42,7 +44,13 @@ const PreviewMsg = ({ prevData, hideReceivers, isPreview }: Props) => {
         <div className={styles.info}>{[dayjs().format('YYYY-MM-DD HH:mm:ss'), txt, handle_name || userInfo.userName].join(' · ')}</div>
         <div dangerouslySetInnerHTML={{ __html: content }} />
 
-        <FileList candownload files={ (prevData.mes_attachment || [])} hideProgress isPreview={isPreview} />
+        <FileList
+          candownload={canDownload}
+          files={(prevData.mes_attachment || [])}
+          hideProgress
+          isPreview={isPreview}
+          canMultiDownload={canMultiDownload}
+        />
       </div>
 
       {

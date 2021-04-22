@@ -23,6 +23,7 @@ const useDebounceState = (defaultState: any, timer: number, cb?: (params: any) =
   const f = useCallback((newState) => {
     clearTimeout(ref.current);
 
+    // @ts-ignore
     ref.current = setTimeout(() => {
       setState(newState);
       cb && cb(newState);

@@ -22,6 +22,7 @@
     "file-saver": "^2.0.5",
     "html-to-draftjs": "^1.5.0",
     "immutable": "^4.0.0-rc.12",
+    "jszip": "^3.6.0",
     "mobx": "5",
     "mobx-react": "6.1.4",
     "qs": "^6.10.1",

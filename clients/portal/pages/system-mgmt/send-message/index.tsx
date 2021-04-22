@@ -507,7 +507,7 @@ export const Content = forwardRef(({ className, donotShowHeader, footer, modifyD
           </div>
         )}
       >
-        <PreviewMsg prevData={prevData} isPreview />
+        <PreviewMsg prevData={prevData} isPreview canMultiDownload={false} canDownload={false}/>
       </Modal>
     </div>);
 });

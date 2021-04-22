@@ -1,6 +1,5 @@
 import React from 'react';
 import { Modal } from '@QCFE/lego-ui';
-import {debounce} from 'lodash';
 import styles from './index.module.scss';
 import Button from '@c/button';
 import PreviewMsg from '../send-message/preview-msg';
