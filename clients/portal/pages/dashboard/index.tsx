@@ -5,6 +5,7 @@ import Avatar from '@c/avatar';
 import Card from '@c/card';
 import List from '@c/list';
 import ItemWithTitleDesc from '@c/item-with-title-desc';
+import AppIcon from '@c/app-icon';
 import { uuid } from '@lib/utils';
 import { usePortalGlobalValue } from '@portal/states_to_be_delete/portal';
 
@@ -53,7 +54,7 @@ export default function Dashboard() {
                           'bg-gradient-green-to-top-right rounded-lg rounded-tr-none',
                         )}
                       >
-                        <img src="/dist/images/calendar.svg" alt="calendar" />
+                        <AppIcon themeColor="teal" size={44} iconName="event_available"/>
                       </div>)
                     }
                     titleClassName="text-h6"
@@ -71,7 +72,7 @@ export default function Dashboard() {
                           'bg-gradient-yellow-to-top-right rounded-lg rounded-tr-none',
                         )}
                       >
-                        <img src="/dist/images/accounts.svg" alt="accounts" />
+                        <AppIcon themeColor="amber" size={44} iconName="supervisor_account"/>
                       </div>)
                     }
                     descClassName="text-caption"

@@ -5,6 +5,7 @@ import ItemWithTitleDesc from '@c/item-with-title-desc';
 import Error from '@c/error';
 import { usePortalGlobalValue } from '@portal/states_to_be_delete/portal';
 import SideNavCard from '@c/side-nav-card';
+import AppIcon from '@c/app-icon';
 
 import RoleManagement from './role-management';
 import DepartmentsEmployees from './departments-employees';
@@ -46,7 +47,7 @@ export default function Index() {
                 flex items-center justify-center
                 "
                 >
-                  <img src="/dist/images/person.svg" alt="calendar" />
+                  <AppIcon themeColor="teal" size={48} iconName="admin"/>
                 </div>)
               }
               titleClassName="text-h4"
