@@ -1,5 +1,5 @@
 import React, { lazy } from 'react';
-import { Switch, Route, Redirect, useRouteMatch } from 'react-router-dom';
+import { Switch, Route, useRouteMatch } from 'react-router-dom';
 
 import Error from '@c/error';
 import { usePortalGlobalValue } from '@portal/states_to_be_delete/portal';
@@ -18,9 +18,9 @@ export default function Index() {
 
   return (
     <Switch>
-      <Route exact path={`${path}/message`} component={Message} />
+      <Route exact path={`${path}`} component={Message} />
+      <Route path={`${path}/message`} component={Message} />
       <Route path={`${path}/message/send`} component={SendMessage} />
-      <Redirect from={path} to={`${path}/message`} />
       <Route component={() => (<Error desc={'Menu page is not found'} />)} />
     </Switch>
   );
