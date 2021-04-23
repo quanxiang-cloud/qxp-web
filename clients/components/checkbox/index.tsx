@@ -1,5 +1,5 @@
 import React from 'react';
-import classnames from 'classnames';
+import cs from 'classnames';
 
 type Props = React.DetailedHTMLProps<
   React.InputHTMLAttributes<HTMLInputElement>,
@@ -22,14 +22,14 @@ function Checkbox(
   }, [resolvedRef, indeterminate]);
 
   return (
-    <label className={classnames('checkbox flex items-center', className)}>
+    <label className={cs('checkbox flex items-center', className)}>
       <input
         {...inputProps}
         ref={resolvedRef}
         type="checkbox"
         onChange={onChange}
         readOnly={!onChange}
-        className={classnames('checkbox__input', {
+        className={cs('checkbox__input', {
           'checkbox__input--indeterminate': indeterminate,
         })}
       />

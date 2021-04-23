@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import classnames from 'classnames';
+import cs from 'classnames';
 import {
   useTable,
   FixedColumn,
@@ -91,7 +91,7 @@ export default function Table<T extends Record<string, any>>({
 
   return (
     <div className="qxp-table-wrapper">
-      <div className={classnames('qxp-table', className)} style={style}>
+      <div className={cs('qxp-table', className)} style={style}>
         <table {...getTableProps()}>
           <colgroup id="colgroup">
             {headerGroups[0].headers.map((header, index) => {
@@ -115,7 +115,7 @@ export default function Table<T extends Record<string, any>>({
                   <th
                     {...header.getHeaderProps()}
                     key={header.id}
-                    className={classnames({ 'table__header-fixed': hasFixed })}
+                    className={cs({ 'table__header-fixed': hasFixed })}
                     style={{ ...fixedStyle(index), zIndex }}
                   >
                     {header.render('Header')}
@@ -140,7 +140,7 @@ export default function Table<T extends Record<string, any>>({
                       <td
                         {...cell.getCellProps()}
                         key={cell.column.id}
-                        className={classnames({ 'table__cell-fixed': hasFixed })}
+                        className={cs({ 'table__cell-fixed': hasFixed })}
                         style={fixedStyle(index)}
                       >
                         {cell.render('Cell')}

@@ -1,5 +1,5 @@
 import React from 'react';
-import classnames from 'classnames';
+import cs from 'classnames';
 
 import { Icon } from '@QCFE/lego-ui';
 
@@ -12,7 +12,7 @@ type Props<T> = {
 
 export default function Tag<T>({ value, id, className, onDelete }: Props<T>): JSX.Element {
   return (
-    <span className={classnames('tag', className)}>
+    <span className={cs('tag', className)}>
       {value}
       {
         onDelete && (

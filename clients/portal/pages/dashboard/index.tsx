@@ -18,7 +18,8 @@ export default function Dashboard() {
   }, []);
   return (
     <>
-      <main className="py-40 px-58 relative">
+      <main className="py-40 px-58 relative"
+        style={{ height: 'calc(100vh - 62px)', overflow: 'scroll' }}>
         <div className="absolute top-42 right-64 -z-z-1 w-214 h-160">
           <img src="/dist/images/work-figure.svg" alt="dashboard"/>
         </div>
