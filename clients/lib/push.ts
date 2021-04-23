@@ -1,5 +1,27 @@
+import logger from '@lib/logger';
+
 function getOTP(): Promise<string> {
   return fetch('/_otp').then((response) => response.json()).then(({ token }) => token);
+}
+
+function ensureConnectionReady(connection: WebSocket): Promise<WebSocket> {
+  return new Promise((resolve, reject) => {
+    connection.addEventListener('open', () => {
+      resolve(connection);
+    });
+
+    connection.addEventListener('error', (e) => {
+      reject(e);
+    });
+  });
+}
+
+function makeConnection(): Promise<WebSocket> {
+  return getOTP().then((token) => {
+    const protocol = window.location.protocol === 'http:' ? 'ws' : 'wss';
+    const connection = new WebSocket(`${protocol}://${window.CONFIG.websocket_hostname}/api/v1/message/ws?token=${token}`);
+    return ensureConnectionReady(connection);
+  });
 }
 
 type SocketEventListener = (data: Record<string, any>) => any;
@@ -14,12 +36,13 @@ class PushServer {
   }
 
   initialConnect(): void {
-    getOTP().then((token) => {
-      const protocol = window.location.protocol === 'http:' ? 'ws' : 'wss';
-      const connection = new WebSocket(`${protocol}://${window.CONFIG.websocket_hostname}/api/v1/message/ws?token=${token}`);
-      connection.addEventListener('message', ({ data }) => this.dispatchEvent(data));
-
+    makeConnection().then((connection) => {
+      this.connection = connection;
+      this.connection.addEventListener('message', ({ data }) => this.dispatchEvent(data));
       this.heartBeat(connection);
+    }).catch((err) => {
+      // todo retry
+      logger.error('make websocket connection failed', err);
     });
   }
 
