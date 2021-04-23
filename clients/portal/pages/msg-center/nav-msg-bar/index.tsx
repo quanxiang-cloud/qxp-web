@@ -80,7 +80,7 @@ const NavMsgBar = ({ msgCenter: store }: Pick<MobxStores, 'msgCenter' | any>): J
         </div>
         {renderUnreadMsgBox()}
       </div>
-      <ModalMsgCenter/>
+      <ModalMsgCenter />
     </>
   );
 };

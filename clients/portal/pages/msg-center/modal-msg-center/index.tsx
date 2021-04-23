@@ -1,13 +1,14 @@
 import React, { useEffect } from 'react';
-import { inject, observer } from 'mobx-react';
+import { observer } from 'mobx-react';
 
 import Modal from '@c/modal';
 import { useRouting } from '@portal/hooks';
 
 import Toolbar from './toolbar';
 import MsgBox from './msg-box';
+import msgCenter from '../../../stores/msg-center';
 
-const ModalMsgCenter = ({ msgCenter }: Pick<MobxStores, 'msgCenter'>) => {
+const ModalMsgCenter = () => {
   const { msgCenterOpen, openMsgCenter } = msgCenter;
   const [, queryPage] = useRouting();
 
@@ -44,4 +45,4 @@ const ModalMsgCenter = ({ msgCenter }: Pick<MobxStores, 'msgCenter'>) => {
   );
 };
 
-export default inject('msgCenter')(observer(ModalMsgCenter));
+export default observer(ModalMsgCenter);
