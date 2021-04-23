@@ -92,7 +92,6 @@ const schema: ISchema = {
     },
     test: {
       type: 'object',
-      // 'x-component': 'FragmentContainer',
       properties: {
         range: {
           type: 'object',
@@ -113,16 +112,6 @@ const schema: ISchema = {
         },
       },
     },
-    // min: {
-    //   title: '最小值',
-    //   type: 'string',
-    //   'x-component': 'Input',
-    // },
-    // max: {
-    //   title: '最大值',
-    //   type: 'string',
-    //   'x-component': 'Input',
-    // },
   },
 };
 
