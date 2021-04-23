@@ -68,6 +68,10 @@
   background-color: #FFFFFF;
   border: 1px solid #CBD5E1;
   border-radius: 8px;
+  &:hover {
+    cursor: pointer;
+    border-color: #375FF3;
+  }
 }
 
 .form-settings-panel__panel {
