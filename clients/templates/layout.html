@@ -30,11 +30,9 @@
   <body>
     <script>
       {{ if .}}
-      window.__global = {
-        userInfo: {{.user }},
-      }
-      window.CONFIG = {{ .CONFIG }}
-      window.__verbose_log__ = {{.debugMode }}
+        window.USER = {{ .user }}
+        window.CONFIG = {{ .CONFIG }}
+        window.__verbose_log__ = {{.debugMode }}
       {{ end }}
     </script>
     {{block "content" .}}{{end}} {{block "bottom_scripts" .}}{{end}}
