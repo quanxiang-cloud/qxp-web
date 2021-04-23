@@ -20,7 +20,7 @@ export default function AssociateDepartmentEmployee({ roleID, isSuper }: Props) 
   const [showBindType, setShowBindType] = useState<string | number>(1);
   const queryClient = useQueryClient();
 
-  const { data, isLoading, isError } = useQuery(
+  const { data, isLoading, isError, error } = useQuery(
     [
       'GET_ROLE_ASSOCIATIONS_ALL',
       {
@@ -74,11 +74,15 @@ export default function AssociateDepartmentEmployee({ roleID, isSuper }: Props) 
     });
   }
 
+  if (isError) {
+    notify.error((error as string));
+  }
+
   return (
     <>
       {showBindModal && !isLoading && !isError && (
         <EmployeeOrDepartmentPickerModal
-          title="选择员工或部门"
+          title="角色关联员工与部门"
           submitText="确定关联"
           onSubmit={onAssociate}
           onCancel={() => setShowBindModal(false)}
