@@ -49,7 +49,8 @@ class PushServer {
   heartBeat(connection: WebSocket): void {
     setInterval(() => {
       connection.send('echo');
-    }, 100 * 1000);
+    // }, 100 * 1000);
+    }, 10 * 1000);
   }
 
   dispatchEvent = (data: SocketData) => {
