@@ -22,11 +22,12 @@ func PortalHandler(w http.ResponseWriter, r *http.Request) {
 	userInfoBytes, _ := json.Marshal(userInfo)
 	userStatus := gjson.Get(string(userInfoBytes[:]), "data.status").Num
 	if userStatus == 1 {
-		http.Redirect(w, r, "/resetPassword", http.StatusFound)	
+		http.Redirect(w, r, "/resetPassword", http.StatusFound)
 		return
 	}
 	renderTemplate(w, "portal.html", map[string]interface{}{
 		"user":      userInfo["data"],
 		"debugMode": contexts.Config.DevMode,
+		"CONFIG":    contexts.Config.ClientConfig,
 	})
 }
