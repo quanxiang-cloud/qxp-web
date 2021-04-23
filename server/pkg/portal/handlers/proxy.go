@@ -4,13 +4,9 @@ import (
 	"bytes"
 	"fmt"
 	"io"
-	"log"
 	"net/http"
 	"qxp-web/server/pkg/contexts"
-	"github.com/gorilla/websocket"
 )
-
-var upgrader = websocket.Upgrader{}
 
 // ProxyAPIHandler proxy helper for endpoint api
 func ProxyAPIHandler(w http.ResponseWriter, r *http.Request) {
@@ -59,27 +55,4 @@ func ProxyAPIHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Content-Type", resp.Header.Get("Content-Type"))
 	w.WriteHeader(resp.StatusCode)
 	w.Write(buffer.Bytes())
-}
-
-// todo
-func ProxyWebsocket(w http.ResponseWriter, r *http.Request) {
-	c, err := upgrader.Upgrade(w, r, nil)
-	if err != nil {
-		log.Print("upgrade:", err)
-		return
-	}
-	defer c.Close()
-	for {
-		mt, message, err := c.ReadMessage()
-		if err != nil {
-			log.Println("read:", err)
-			break
-		}
-		log.Printf("recv: %s", message)
-		err = c.WriteMessage(mt, message)
-		if err != nil {
-			log.Println("write:", err)
-			break
-		}
-	}
 }
