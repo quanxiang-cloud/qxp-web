@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useMutation } from 'react-query';
-import classnames from 'classnames';
+import cs from 'classnames';
 import { Modal, CheckboxGroup, Checkbox, Table, Upload } from '@QCFE/lego-ui';
 
 import Icon from '@c/icon';
@@ -275,7 +275,7 @@ export default function ImportEmployeesModal({ currDepId, closeModal }: Props) {
                   accept=".xlsx, .xls"
                 >
                   <div
-                    className={classnames(
+                    className={cs(
                       'w-full h-86 border rounded-8 border-dashed border-gray-700',
                       'flex flex-col items-center justify-center group-hover:border-blue-600'
                     )}

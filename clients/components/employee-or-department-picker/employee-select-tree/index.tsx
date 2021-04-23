@@ -1,5 +1,5 @@
 import React from 'react';
-import classnames from 'classnames';
+import cs from 'classnames';
 
 import Tree from '@c/headless-tree';
 
@@ -17,7 +17,7 @@ export default function EmployeeSelectTree(
   { store, className, itemClassName, wrapperClassName }: Props
 ) {
   return (
-    <div className={classnames('tree-wrapper', wrapperClassName)}>
+    <div className={cs('tree-wrapper', wrapperClassName)}>
       <Tree
         store={store}
         NodeRender={DepartmentNode}

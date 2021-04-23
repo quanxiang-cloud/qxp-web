@@ -30,8 +30,8 @@ export default function Search(
     <div className={`px-16 py-6 rounded-r-6 rounded-tl-2 rounded-bl-6 bg-gray-100 flex items-center ${classname}`}>
       <Icon name="search" size={20} className='mr-8' />
       <input
-        style={{ background: 'none' }}
-        className={'outline-none flex-grow'}
+        style={{ background: 'none', width: 122, boxShadow: 'none' }}
+        className="outline-none flex-grow"
         type="text"
         placeholder={placeholder}
         name="search"

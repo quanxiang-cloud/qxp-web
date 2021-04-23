@@ -1,6 +1,6 @@
 import * as React from 'react';
 import moment from 'moment';
-import classnames from 'classnames';
+import cs from 'classnames';
 
 import { isDateOutRange } from './utils';
 
@@ -43,7 +43,7 @@ export default class Quarter extends React.Component<Props> {
                 onClick={(): void => {
                   !isOutsideRange && this.handleMonthClick(month);
                 }}
-                className={classnames('calendar-year__single-month', {
+                className={cs('calendar-year__single-month', {
                   'calendar-year__outside-range-month': isOutsideRange,
                   'calendar-year__selected-month': isSelectedMonth,
                 })}

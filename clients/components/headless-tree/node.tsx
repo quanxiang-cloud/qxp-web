@@ -1,5 +1,5 @@
 import * as React from 'react';
-import classnames from 'classnames';
+import cs from 'classnames';
 import { Icon } from '@QCFE/lego-ui';
 
 import TreeStore from './store';
@@ -37,7 +37,7 @@ function renderSwitcherIcon({
     <Icon
       name="caret-down"
       size={16}
-      className={classnames('tree-node__toggle-icon', {
+      className={cs('tree-node__toggle-icon', {
         'tree-node__toggle-icon--opened': expanded,
       })}
       onClick={(e): void => {
@@ -100,7 +100,7 @@ export default function renderNode<T>({
         onDrop(node);
         setAcceptDrop(false);
       }}
-      className={classnames('group', 'tree-node', className, {
+      className={cs('group', 'tree-node', className, {
         'tree-node--focused': node.id === currentFocusedNodeID && !upwardFocusedStyleToParent,
         'tree-node--focused-on-parent': bubbledFocusedStyle,
         'tree-node--fade': renamingNodeID && node.id !== renamingNodeID,
