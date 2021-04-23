@@ -149,7 +149,7 @@ export default function Employees({
     },
   };
 
-  const columns: Columns = [...EmployeesColumns];
+  const columns: EmployeeTableColumn[] = [...EmployeesColumns];
   if (userInfo.authority.includes('accessControl/mailList/manage')) {
     columns.push({
       title: '',
