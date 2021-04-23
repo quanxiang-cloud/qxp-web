@@ -4,10 +4,10 @@ import { useQuery } from 'react-query';
 
 import Tree from '@c/headless-tree';
 import Loading from '@c/loading';
-import { getERPTree } from '../api';
 
 import Store from './store';
 import DepartmentNode from './department-node';
+import { getERPTree } from '../api';
 
 interface Props {
   onSelect?: (department: Department) => void;
