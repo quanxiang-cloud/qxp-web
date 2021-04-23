@@ -181,13 +181,13 @@
   box-shadow: 0px 8px 24px 4px rgba(148, 163, 184, 0.25);
 
   cursor: pointer;
+}
 
-  .operate-icon {
-    display: block;
-    cursor: pointer;
-    &:hover {
-      color: #375FF3;
-    }
+.form-builder .operate-icon {
+  display: block;
+  cursor: pointer;
+  &:hover {
+    color: #375FF3;
   }
 }
 
