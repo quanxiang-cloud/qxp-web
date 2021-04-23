@@ -31,10 +31,10 @@ export default function Index() {
   if (!userInfo.authority.includes('accessControl')) {
     return <Error desc="您没有权限, 请联系管理员..." />;
   }
-
   return (
-    <div className="h-full py-20 px-58 flex justify-center items-start flex-grow overflow-hidden">
-      <div className="w-316 bg-white rounded-12 mr-20">
+    <div className="h-full py-20 px-58 flex justify-center items-start flex-grow overflow-hidden"
+      style={{ height: 'calc(100vh - 62px)' }} >
+      <div className="w-316  rounded-12 mr-20">
         <SideNavCard cardTitle={(
           <div className="access-background-image p-20 opacity-90">
             <ItemWithTitleDesc
