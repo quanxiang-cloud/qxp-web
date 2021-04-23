@@ -90,6 +90,39 @@ const schema: ISchema = {
       'x-component': 'select',
       'x-index': 8,
     },
+    test: {
+      type: 'object',
+      // 'x-component': 'FragmentContainer',
+      properties: {
+        range: {
+          type: 'object',
+          'x-component': 'CheckboxGroup',
+          enum: [
+            { label: '最大值最小值', value: true },
+          ],
+        },
+        min: {
+          title: '最小值',
+          type: 'string',
+          'x-component': 'Input',
+        },
+        max: {
+          title: '最大值',
+          type: 'string',
+          'x-component': 'Input',
+        },
+      },
+    },
+    // min: {
+    //   title: '最小值',
+    //   type: 'string',
+    //   'x-component': 'Input',
+    // },
+    // max: {
+    //   title: '最大值',
+    //   type: 'string',
+    //   'x-component': 'Input',
+    // },
   },
 };
 
