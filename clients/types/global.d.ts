@@ -35,5 +35,5 @@ interface UserInfo {
 
 interface Window {
   USER: UserInfo;
-  [key: string]: unknown;
+  [key: string]: any;
 }
