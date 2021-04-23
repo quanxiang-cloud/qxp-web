@@ -38,10 +38,7 @@ const useOneToManyEffects = () => {
   });
 
   onFieldInputChange$('rangeSetting.range').subscribe(({ value }) => {
-    setFieldState('rangeSetting.min', (state) => {
-      state.visible = value.length===0 ? false : true;
-    });
-    setFieldState('rangeSetting.max', (state) => {
+    setFieldState('*(rangeSetting.min,rangeSetting.max)', (state) => {
       state.visible = value.length===0 ? false : true;
     });
   });
