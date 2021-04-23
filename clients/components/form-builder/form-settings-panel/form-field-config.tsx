@@ -31,17 +31,17 @@ const { onFieldInputChange$, onFieldInit$ } = FormEffectHooks;
 const useOneToManyEffects = () => {
   const { setFieldState } = createFormActions();
 
-  onFieldInit$('*(test.max,test.min)').subscribe(() => {
-    setFieldState('*(test.max,test.min)', (state) => {
+  onFieldInit$('*(rangeSetting.max,rangeSetting.min)').subscribe(() => {
+    setFieldState('*(rangeSetting.max,rangeSetting.min)', (state) => {
       state.visible = false;
     });
   });
 
-  onFieldInputChange$('test.range').subscribe(({ value }) => {
-    setFieldState('test.min', (state) => {
+  onFieldInputChange$('rangeSetting.range').subscribe(({ value }) => {
+    setFieldState('rangeSetting.min', (state) => {
       state.visible = value.length===0 ? false : true;
     });
-    setFieldState('test.max', (state) => {
+    setFieldState('rangeSetting.max', (state) => {
       state.visible = value.length===0 ? false : true;
     });
   });

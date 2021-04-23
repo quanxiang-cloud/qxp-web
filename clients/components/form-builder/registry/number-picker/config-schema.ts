@@ -90,7 +90,7 @@ const schema: ISchema = {
       'x-component': 'select',
       'x-index': 8,
     },
-    test: {
+    rangeSetting: {
       type: 'object',
       properties: {
         range: {
