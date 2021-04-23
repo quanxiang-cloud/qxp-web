@@ -106,7 +106,7 @@ export default observer( function SelectedList({ className, ownerStore }: ISelec
       />
       <div
         className="flex flex-row flex-wrap content-start overflow-scroll"
-        style={{ height: 'calc(100% - 42px)', width: '360px' }}
+        style={{ height: 'calc(100% - 42px)', width: '250px' }}
       >
         {users.map(tagRender)}
         {departments.map(tagRender)}
