@@ -5,6 +5,7 @@ import Button from '@c/button';
 import Authorized from '@c/authorized';
 import Switch from '@c/switch';
 import EmployeeOrDepartmentPickerModal from '@c/employee-or-department-picker';
+import notify from '@lib/notify';
 
 import { updateRoleAssociations, IUpdateRoleAssociations, getRoleAssociations } from '../../api';
 import DepartmentOrEmployeeTable from './department-or-employee-table';
@@ -19,7 +20,7 @@ export default function AssociateDepartmentEmployee({ roleID, isSuper }: Props) 
   const [showBindType, setShowBindType] = useState<string | number>(1);
   const queryClient = useQueryClient();
 
-  const { data, isLoading, isError } = useQuery(
+  const { data, isLoading, isError, error } = useQuery(
     [
       'GET_ROLE_ASSOCIATIONS_ALL',
       {
@@ -69,17 +70,22 @@ export default function AssociateDepartmentEmployee({ roleID, isSuper }: Props) 
     });
   }
 
+  if (isError) {
+    notify.error((error as string));
+  }
+
   return (
     <>
-      <EmployeeOrDepartmentPickerModal
-        onOk={onAssociate}
-        visible={showBindModal}
-        onCancel={() => setShowBindModal(false)}
-        employees={data?.employees}
-        departments={data?.departments}
-        isLoading={isLoading}
-        errorMessage={isError ? 'something wrong' : ''}
-      />
+      {showBindModal && !isLoading && !isError && (
+        <EmployeeOrDepartmentPickerModal
+          title="角色关联员工与部门"
+          submitText="确定关联"
+          onSubmit={onAssociate}
+          onCancel={() => setShowBindModal(false)}
+          employees={data?.employees}
+          departments={data?.departments}
+        />
+      )}
       <div className="flex items-center">
         <Switch
           className="mb-16"
