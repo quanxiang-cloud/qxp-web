@@ -39,7 +39,7 @@ export default function Avatar({ username = '', bio }: Avatar) {
           <>
             {
               (head && imgInfo) && (
-                <div className="relative w-48 h-48 icon-border-radius
+                <div className=" w-48 h-48 icon-border-radius
               text-center text-white text-24 leading-48"
                 style={{
                   backgroundColor: imgInfo.color,

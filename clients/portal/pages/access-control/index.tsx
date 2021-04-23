@@ -5,6 +5,7 @@ import ItemWithTitleDesc from '@c/item-with-title-desc';
 import Error from '@c/error';
 import { usePortalGlobalValue } from '@portal/states_to_be_delete/portal';
 import SideNavCard from '@c/side-nav-card';
+import AppIcon from '@c/app-icon';
 
 import RoleManagement from './role-management';
 import DepartmentsEmployees from './departments-employees';
@@ -30,10 +31,10 @@ export default function Index() {
   if (!userInfo.authority.includes('accessControl')) {
     return <Error desc="您没有权限, 请联系管理员..." />;
   }
-
   return (
-    <div className="h-full py-20 px-58 flex justify-center items-start flex-grow overflow-hidden">
-      <div className="w-316 bg-white rounded-12 mr-20">
+    <div className="h-full py-20 px-58 flex justify-center items-start flex-grow overflow-hidden"
+      style={{ height: 'calc(100vh - 62px)' }} >
+      <div className="w-316  rounded-12 mr-20">
         <SideNavCard cardTitle={(
           <div className="access-background-image p-20 opacity-90">
             <ItemWithTitleDesc
@@ -46,7 +47,7 @@ export default function Index() {
                 flex items-center justify-center
                 "
                 >
-                  <img src="/dist/images/person.svg" alt="calendar" />
+                  <AppIcon themeColor="teal" size={48} iconName="admin"/>
                 </div>)
               }
               titleClassName="text-h4"

@@ -6,6 +6,13 @@ import Icon from '@c/icon';
 import IconSelect from '@c/app-icon-select';
 import ColorPicker from './color-picker';
 
+import { BgColor } from '@c/app-icon';
+
+type AppIconInfo = {
+  bgColor: BgColor;
+  iconName: string;
+}
+
 type Props = {
   name: string;
   defaultAppIcon?: AppIconInfo;

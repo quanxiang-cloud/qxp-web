@@ -2,6 +2,9 @@ import React, { HTMLProps } from 'react';
 
 import Icon from '@c/icon';
 
+export type BgColor =
+  'amber' | 'indigo' | 'teal' | 'fuchsia' | 'emerald' | 'cyan' | 'red' | 'orange';
+
 interface Props extends HTMLProps<HTMLDivElement> {
   themeColor: BgColor;
   iconName?: string;
@@ -28,15 +31,15 @@ function AppIcon(
       } as React.CSSProperties}
       className={`
         app-bg-icon
-        app-bg-icon-circle 
-        ${className} 
-        bg-gradient-${themeColor} 
+        app-bg-icon-circle
+        ${className}
+        bg-gradient-${themeColor}
         bg-icon-circle-${themeColor}`
       }
       {...restProps}
     >
       {iconName ? (
-        <Icon type='light' name={iconName} size={appIconSize.get(size)}/>
+        <Icon type='light' name={iconName} size={appIconSize.get(size)} />
       ) : null}
     </div>
   );

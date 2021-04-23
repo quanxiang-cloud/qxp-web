@@ -26,3 +26,6 @@ portal_server:
   templates_dir: /path/to/qxp-web/dist/templates
   # enable log to stdout
   enable_stdout: false
+
+client_config:
+  websocket_hostname: keeper.test
