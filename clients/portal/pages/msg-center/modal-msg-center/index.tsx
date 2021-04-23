@@ -1,11 +1,13 @@
 import React, { useEffect } from 'react';
 import { inject, observer } from 'mobx-react';
+
 import Modal from '@c/modal';
 import { useRouting } from '@portal/hooks';
+
 import Toolbar from './toolbar';
 import MsgBox from './msg-box';
 
-const ModalMsgCenter = ({ msgCenter }: Pick<MobxStores, 'msgCenter' | any>) => {
+const ModalMsgCenter = ({ msgCenter }: Pick<MobxStores, 'msgCenter'>) => {
   const { msgCenterOpen, openMsgCenter } = msgCenter;
   const [, queryPage] = useRouting();
 
@@ -26,16 +28,15 @@ const ModalMsgCenter = ({ msgCenter }: Pick<MobxStores, 'msgCenter' | any>) => {
   if (!msgCenterOpen) {
     return null;
   }
+
   return (
     <Modal
       visible
+      hideFooter
       fullscreen
       width='100vw'
-      hideFooter
       title='消息中心'
-      toolbar={(
-        <Toolbar/>
-      )}
+      toolbar={(<Toolbar/>)}
       onClose={handleClose}
     >
       <MsgBox/>
