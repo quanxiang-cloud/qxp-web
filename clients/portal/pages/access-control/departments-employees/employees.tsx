@@ -277,7 +277,7 @@ export default function Employees({
             )}
           </Authorized>
         </div>
-        <div className="h-full flex flex-grow mt-16 flex-col px-20 overflow-auto">
+        <div className="max-h-380 flex flex-grow mt-16 flex-col px-20 overflow-auto">
 
           {
             (employeesList?.data && employeesList?.data.length > 0) && (

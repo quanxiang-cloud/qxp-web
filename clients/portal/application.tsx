@@ -16,12 +16,10 @@ export default function Application() {
   return (
     <LocaleProvider locales={locales} >
       <Router>
-        <div className="h-full flex flex-col">
-          <GlobalHeader />
-          <React.Suspense fallback={<Loading className="h-full" desc="加载中..." />}>
-            <Routes />
-          </React.Suspense>
-        </div>
+        <GlobalHeader />
+        <React.Suspense fallback={<Loading className="h-full" desc="加载中..." />}>
+          <Routes />
+        </React.Suspense>
       </Router>
     </LocaleProvider>
   );

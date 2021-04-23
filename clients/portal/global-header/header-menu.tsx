@@ -16,7 +16,7 @@ export default function HeaderMenu() {
         onCancel={() => setOpenResetPasswordModal(false)}
       />
       <NavMsgBar />
-      <div className="mr-40 header-nav-btn group">
+      <div className="mr-56 header-nav-btn ">
         <div className="header-nav-btn-icon-wrapper">
           <Icon
             name="book"
@@ -28,7 +28,7 @@ export default function HeaderMenu() {
               帮助文档
         </span>
       </div>
-      <div className="header-nav-btn group">
+      <div className="header-nav-btn ">
         <div className="header-nav-btn-icon-wrapper">
           <Icon
             name="settings"
