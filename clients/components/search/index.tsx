@@ -21,7 +21,7 @@ export default function Search(
     bg-gray-100 flex items-center">
       <Icon name="search" size={20} className='mr-8' />
       <input
-        style={{ background: 'none', width: 122 }}
+        style={{ background: 'none', width: 122, boxShadow: 'none' }}
         className="outline-none flex-grow"
         type="text"
         placeholder={placeholder}

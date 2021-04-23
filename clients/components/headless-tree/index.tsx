@@ -1,5 +1,5 @@
 import React from 'react';
-import classnames from 'classnames';
+import cs from 'classnames';
 import { observer } from 'mobx-react';
 import { observable, action, toJS, reaction, IReactionDisposer } from 'mobx';
 
@@ -135,11 +135,11 @@ export default class Tree<T> extends React.Component<Props<T>> {
     const rootNode = nodeList[0];
 
     return (
-      <div className={classnames('tree', className)}>
+      <div className={cs('tree', className)}>
         <div
           key={rootNode.id}
           onClick={(): void => this.handleNodeClick(rootNode)}
-          className={classnames('group', 'tree-node', {
+          className={cs('group', 'tree-node', {
             'tree-node--focused': rootNode.id === currentFocusedNode.id,
             'tree-node--fade': renamingNodeID,
             'tree-node--accept-drop': this.isRootAcceptDrop,

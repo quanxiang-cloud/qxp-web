@@ -1,6 +1,6 @@
 import * as React from 'react';
 import moment from 'moment';
-import classnames from 'classnames';
+import cs from 'classnames';
 import { observer } from 'mobx-react';
 import { observable, action, computed } from 'mobx';
 
@@ -80,7 +80,7 @@ export default class Year extends React.Component<Props> {
           presetOptions.map((option) => (
             <div
               key={option.value}
-              className={classnames('range-picker-custom__option', {
+              className={cs('range-picker-custom__option', {
                 'range-picker-custom__selected': this.props.range === option.value,
               })}
               onClick={(): void => this.handleOptionClick(option.value)}
@@ -97,12 +97,12 @@ export default class Year extends React.Component<Props> {
     return (
       <>
         <div className="range-picker-custom__user-defined">
-          <div className={classnames('range-picker-custom__user-defined-title', {
+          <div className={cs('range-picker-custom__user-defined-title', {
             'range-picker-custom__user-defined-selected': this.isUserDefined,
           })}>自定义</div>
           <div className="range-picker-custom__date-trigger-wrap">
             <div
-              className={classnames('range-picker-custom__date-trigger', {
+              className={cs('range-picker-custom__date-trigger', {
                 'range-picker-custom__date-trigger--open': this.openCalendar === 'startDate',
               })}
               onClick={(): void => this.handleToggleCalendar('startDate')}
@@ -110,7 +110,7 @@ export default class Year extends React.Component<Props> {
               {this.startDate ? moment(this.startDate).format(dateFormat) : ''}
             </div>
             <div
-              className={classnames('range-picker-custom__date-trigger', {
+              className={cs('range-picker-custom__date-trigger', {
                 'range-picker-custom__date-trigger--open': this.openCalendar === 'endDate',
               })}
               onClick={(): void => this.handleToggleCalendar('endDate')}

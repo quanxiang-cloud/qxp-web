@@ -1,5 +1,5 @@
 import React, { cloneElement } from 'react';
-import classnames from 'classnames';
+import cs from 'classnames';
 
 interface Props {
   separator?: React.ReactNode
@@ -20,7 +20,7 @@ export default function BreadcrumbItem({
     } else {
       return (
         cloneElement(children, {
-          className: classnames(className, 'qxp-breadcrumb-link'),
+          className: cs(className, 'qxp-breadcrumb-link'),
         })
       );
     }
@@ -32,7 +32,7 @@ export default function BreadcrumbItem({
   return (
     <div
       style={style}
-      className={classnames(className, 'qxp-breadcrumb-item')}
+      className={cs(className, 'qxp-breadcrumb-item')}
     >
       {childrenRender()}
       <span className="qxp-breadcrumb-separator">{separator}</span>

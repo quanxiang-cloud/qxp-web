@@ -1,5 +1,5 @@
 import React from 'react';
-import classnames from 'classnames';
+import cs from 'classnames';
 
 import Icon from '@c/icon';
 
@@ -20,7 +20,7 @@ function IconBtn(
     <button
       {...restProps}
       ref={ref}
-      className={classnames('btn', 'icon-btn', className, {
+      className={cs('btn', 'icon-btn', className, {
         'btn--loading': loading,
         'btn--forbidden': forbidden,
         'opacity-50': forbidden,
@@ -30,7 +30,7 @@ function IconBtn(
     >
       <Icon
         name={loading ? 'loading' : iconName}
-        className={classnames({ 'animate-spin': loading })}
+        className={cs({ 'animate-spin': loading })}
       />
     </button>
   );
