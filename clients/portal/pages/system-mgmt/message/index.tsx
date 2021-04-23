@@ -8,6 +8,7 @@ import { usePortalGlobalValue } from '@portal/states_to_be_delete/portal';
 import { useRouting } from '@portal/hooks';
 import Container from '../container';
 import MsgTable from './msg-table';
+import Authorized from '@c/authorized';
 
 import { useRecoilState, useSetRecoilState } from 'recoil';
 import { useInitData } from '../hooks';
@@ -75,15 +76,17 @@ const MessagesPage = ({ msgMgmt: msgStore }: Pick<MobxStores, 'msgMgmt' | any>) 
         />
         <div className="flex flex-col flex-grow overflow-hidden">
           <div className='w-full flex align-center ml-20 mt-20'>
-            <Button
-              className="bg-gray-700 mr-20"
-              // textClassName="text-white"
-              modifier="primary"
-              onClick={toSendMsg}
-              iconName="add"
-            >
+            <Authorized authority={['system/mangage']}>
+              <Button
+                className="bg-gray-700 mr-20"
+                // textClassName="text-white"
+                modifier="primary"
+                onClick={toSendMsg}
+                iconName="add"
+              >
               发送消息
-            </Button>
+              </Button>
+            </Authorized>
             <Search
               placeholder="输入消息标题、操作人名称"
               value={inputValue}

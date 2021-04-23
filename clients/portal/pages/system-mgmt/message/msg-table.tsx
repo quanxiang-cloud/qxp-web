@@ -23,7 +23,7 @@ import { Content as SendMessage } from '../send-message/index';
 
 import { Data, PageInfo, RequestInfo, MessaeStatus, MessageType } from '../delcare';
 import { useRecoilState, useRecoilValue } from 'recoil';
-
+import Authorized from '@c/authorized';
 import styles from './index.module.scss';
 
 enum MessageAction {
@@ -354,7 +354,11 @@ const MsgTable = ({ msgMgmt: store, refresh }: Props & Pick<MobxStores, 'msgMgmt
             ),
           },
         ];
-        return <MoreMenu onChange={console.log} placement="bottom-end" className="opacity-1" menus={menus}/>;
+        return (
+          <Authorized authority={['system/mangage']}>
+            <MoreMenu onChange={console.log} placement="bottom-end" className="opacity-1" menus={menus}/>
+          </Authorized>
+        );
       },
     },
   ];
