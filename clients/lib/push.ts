@@ -18,7 +18,15 @@ class PushServer {
       const protocol = window.location.protocol === 'http:' ? 'ws' : 'wss';
       const connection = new WebSocket(`${protocol}://${window.CONFIG.websocket_hostname}/api/v1/message/ws?token=${token}`);
       connection.addEventListener('message', ({ data }) => this.dispatchEvent(data));
+
+      this.heartBeat(connection);
     });
+  }
+
+  heartBeat(connection: WebSocket): void {
+    setInterval(() => {
+      connection.send('echo');
+    }, 100 * 1000);
   }
 
   dispatchEvent = (data: SocketData) => {
