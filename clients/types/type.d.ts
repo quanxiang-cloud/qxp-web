@@ -39,10 +39,6 @@ type Columns = {
   render?: (...args: any[]) => JSX.Element;
 }[]
 
-type SizeType = 'small' | 'middle' | 'large' | undefined;
-
-type Override<T, P> = Omit<T, keyof P> & P;
-
 declare module '*.module.css' {
   const classes: { readonly [key: string]: string };
   export default classes;
