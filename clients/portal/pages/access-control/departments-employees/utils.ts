@@ -5,7 +5,7 @@ export const SpecialSymbolsReg = /[`~!@#$%^&*()\+=<>?:"{}|,.\/;'\\[\]·~！@#￥
 
 export const PhoneReg = /^[1](([3][0-9])|([4][5-9])|([5][0-3,5-9])|([6][5,6])|([7][0-8])|([8][0-9])|([9][1,8,9]))[0-9]{8}$/;
 
-export const excelHeader: EmployeeTableColumn = [
+export const excelHeader: EmployeeTableColumn[] = [
   {
     title: '姓名',
     dataIndex: 'userName',
@@ -84,7 +84,7 @@ export const exportEmployees = ( data: UserInfo[]) => {
   });
 };
 
-export function exportEmployeesFail(headers: EmployeeTableColumn, data: UserInfo[], fileName: string) {
+export function exportEmployeesFail(headers: EmployeeTableColumn[], data: UserInfo[], fileName: string) {
   const _headers = headers
     .map((item, i) =>
       Object.assign(

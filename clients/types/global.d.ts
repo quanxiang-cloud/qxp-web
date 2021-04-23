@@ -16,8 +16,6 @@ interface UserInfo {
 }
 
 interface Window {
-  __global: {
-    userInfo: UserInfo;
-  },
+  USER: UserInfo;
   [key: string]: unknown;
 }
