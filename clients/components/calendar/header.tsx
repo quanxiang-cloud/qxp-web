@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import moment from 'moment';
 import classnames from 'classnames';
 import { observer } from 'mobx-react';
@@ -20,7 +20,6 @@ type Props = {
 export default class Header extends React.Component<Props> {
   yearMenuRef = React.createRef<HTMLUListElement>();
   monthMenuRef = React.createRef<HTMLUListElement>();
-
   listOfYear: number[] = [];
 
   @observable isOpen = false;

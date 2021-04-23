@@ -5,7 +5,7 @@ import { RadioGroup as LegoRadioGroup, RadioButton as LegoRadioButton } from '@Q
 
 interface ISwitchOption {
   label: string;
-  value: string | number;
+  value: string | number | null;
 }
 
 interface ISwitch {

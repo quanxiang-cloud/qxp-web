@@ -6,10 +6,11 @@ import Popover from './popover';
 import List, { IITems } from './list';
 
 export interface IMore<T> {
+  items: IITems<T>;
+  header?: JSX.Element;
   className?: string;
   triggerClassName?: string;
   tooltipClassName?: string;
-  items: IITems<T>;
   params?: T;
   offsetX?: number;
   offsetY?: number;
@@ -18,6 +19,11 @@ export interface IMore<T> {
   onMouseOver?: () => void;
   onMouseOut?: () => void;
   contentItemClassName?: string;
+  placement?: 'bottom-end' | 'top' | 'right' | 'bottom' | 'left' | 'top-start' | 'top-end'
+    | 'bottom-start' | 'right-start' | 'right-end' | 'left-start' | 'left-end' | 'auto'
+    | 'auto-start' | 'auto-end' | undefined;
+  onOpen?: () => void;
+  onClose?: () => void;
 }
 
 export default function More<T>({
@@ -33,6 +39,9 @@ export default function More<T>({
   children,
   onMouseOver,
   onMouseOut,
+  header,
+  onOpen,
+  onClose,
 }: IMore<T>) {
   return (
     <Popover
@@ -41,8 +50,11 @@ export default function More<T>({
       tooltipClassName={tooltipClassName}
       onMouseOver={onMouseOver}
       onMouseOut={onMouseOut}
+      onOpen={onOpen}
+      onClose={onClose}
       content={(
         <List<T>
+          header={header}
           items={items}
           params={params}
           itemClassName={twCascade('hover:bg-blue-100', contentItemClassName)}

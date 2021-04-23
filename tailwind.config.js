@@ -32,6 +32,7 @@ module.exports = {
       56: '56px',
       58: '58px',
       72: '72px',
+      80: '80px',
       96: '96px',
       144: "144px",
     },
@@ -66,14 +67,24 @@ module.exports = {
       // sm: { max: '639px' },
     },
     extend: {
+      boxShadow: {
+        header: "inset 0px -1px 0px #E2E8F0",
+        'flow-header': "0px 8px 24px 4px rgba(148, 163, 184, 0.25)",
+        'flow-aside': "inset -1px 0px 0px #E2E8F0",
+      },
       width: {
         24: '24px',
         32: '32px',
+        100: '100px',
+        142: '142px',
+        172: '172px',
+        200: '200px',
         208: '208px',
         214: '214px',
         259: '259px',
         316: '316px',
         588: '588px',
+        552: '552px',
       },
       minWidth: {
         90: '90px',
@@ -87,11 +98,13 @@ module.exports = {
         32: '32px',
         56: '56px',
         86: '86px',
+        92: '92px',
         160: '160px',
         280: '280px',
       },
       borderWidth: {
         '1.5': '1.5px',
+        '1': '1px',
       },
       lineHeight: {
         11: '11px',

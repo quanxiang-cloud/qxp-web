@@ -18,6 +18,7 @@ export interface IList<T> {
   itemClassName?: string;
   className?: string;
   params?: T;
+  header?: JSX.Element;
 }
 
 export default function List<T extends unknown>({
@@ -25,9 +26,11 @@ export default function List<T extends unknown>({
   itemClassName,
   items = [],
   params,
+  header,
 }: IList<T>) {
   return (
     <ul className={twCascade('flex flex-col', className)}>
+      {header}
       {items.map((item: JSX.Element | (() => JSX.Element) | IItem<T>) => {
         const isElement = React.isValidElement(item);
         const isFunc = isFunction(item);

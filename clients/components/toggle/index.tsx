@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, memo } from 'react';
 import classNames from 'classnames';
 
 import './index.scss';
@@ -13,7 +13,7 @@ type Props = {
   style?: React.CSSProperties
 }
 
-export default function Toggle({
+function Toggle({
   onChange,
   onText,
   offText,
@@ -28,10 +28,8 @@ export default function Toggle({
     if (disabled) {
       return;
     }
-    setChecked(((prevChecked) => {
-      onChange(!prevChecked);
-      return !prevChecked;
-    }));
+    setChecked(!checked);
+    onChange(!checked);
   };
 
   return (
@@ -50,6 +48,7 @@ export default function Toggle({
         )}
       </label>
     </div>
-
   );
 }
+
+export default memo(Toggle);

@@ -2,9 +2,11 @@
   "css.validate": false,
   "cSpell.words": [
     "antd",
+    "arrowclosed",
     "export",
     "formily",
     "handle"
   ],
   "files.eol": "\n",
+  "svg.preview.background": "black",
 }
