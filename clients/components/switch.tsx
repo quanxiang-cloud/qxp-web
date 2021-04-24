@@ -1,6 +1,6 @@
 import React from 'react';
 import useCss from 'react-use/lib/useCss';
-import classnames from 'classnames';
+import cs from 'classnames';
 import { RadioGroup as LegoRadioGroup, RadioButton as LegoRadioButton } from '@QCFE/lego-ui';
 
 interface ISwitchOption {
@@ -16,7 +16,7 @@ interface ISwitch {
 
 export default function Switch({ ...props }: ISwitch) {
   return (
-    <div className={classnames(useCss({
+    <div className={cs(useCss({
       display: 'inline-block',
       'margin-right': '16px',
       'label:hover': {

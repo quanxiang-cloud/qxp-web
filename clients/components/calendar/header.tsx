@@ -1,6 +1,6 @@
 import React from 'react';
 import moment from 'moment';
-import classnames from 'classnames';
+import cs from 'classnames';
 import { observer } from 'mobx-react';
 import { observable, action, computed } from 'mobx';
 
@@ -106,7 +106,7 @@ export default class Header extends React.Component<Props> {
                 onClick={(): void => {
                   !isOutsideRange && this.handleYearClick(year);
                 }}
-                className={classnames({
+                className={cs({
                   'is-outside-range': isOutsideRange,
                   'is-active': isActive,
                 })}
@@ -133,7 +133,7 @@ export default class Header extends React.Component<Props> {
           onClick={(): void => {
             !isOutsideRange && this.handleMonthClick(index);
           }}
-          className={classnames({
+          className={cs({
             'is-outside-range': isOutsideRange,
             'is-active': isActive,
           })}
@@ -160,7 +160,7 @@ export default class Header extends React.Component<Props> {
         <div className="calendar-header__date">
           <span
             onClick={this.handleToggleDropdown}
-            className={classnames('calendar-header__label', {
+            className={cs('calendar-header__label', {
               'is-open': this.isOpen,
             })}
           >
@@ -168,7 +168,7 @@ export default class Header extends React.Component<Props> {
           </span>
           <div
             onMouseLeave={this.handleMouseLeave}
-            className={classnames('calendar-header__dropdown', {
+            className={cs('calendar-header__dropdown', {
               'calendar-header__dropdown--wide': this.props.picker !== 'month',
               'is-active': this.isOpen,
             })}

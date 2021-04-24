@@ -123,32 +123,3 @@ $modifierSeparator: "--";
   }
 }
 /* stylelint-enable */
-
-@mixin child-icon-active-on-hover {
-  &:hover .svg-icon {
-    color: var(--primary-color);
-    fill: var(--icon-coloured-fill);
-  }
-}
-
-@mixin single-line-label {
-  position: relative;
-  padding-right: 3px;
-  text-align: right;
-  @include text-omit;
-
-  &::after {
-    position: absolute;
-    right: 0;
-    content: ':',
-  }
-}
-
-@mixin monospace-font {
-  font-family: Roboto Mono;
-}
-
-@mixin link-text {
-  cursor: pointer;
-  color: var(--primary-color);
-}

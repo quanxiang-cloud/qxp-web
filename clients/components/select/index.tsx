@@ -1,5 +1,5 @@
 import React from 'react';
-import classnames from 'classnames';
+import cs from 'classnames';
 import { twCascade } from '@mariusmarais/tailwind-cascade';
 
 import { Icon } from '@QCFE/lego-ui';
@@ -186,7 +186,7 @@ export default class Select<T extends React.Key> extends React.Component<SelectP
             return (
               <div
                 key={option.value}
-                className={classnames('select-options__option', 'select-option')}
+                className={cs('select-options__option', 'select-option')}
                 onClick={(): void => {
                   this.handleClick(option.value);
                 }}

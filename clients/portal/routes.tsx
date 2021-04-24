@@ -15,30 +15,30 @@ const AccessControl = React.lazy(() => import('./pages/access-control'));
 const AppsManagement = React.lazy(() => import('./pages/apps-management'));
 const NewFlow = React.lazy(() => import('./pages/apps-management/work-flow/detail'));
 
-const { userInfo } = window.__global || {};
-if (userInfo && !isEmpty(userInfo)) {
-  userInfo.depIds = getNestedPropertyToArray<string>(userInfo?.dep, 'id', 'child');
+const { USER } = window;
+if (USER && !isEmpty(USER)) {
+  USER.depIds = getNestedPropertyToArray<string>(USER?.dep, 'id', 'child');
 }
 
 export default function Routes(): JSX.Element {
   const [, setValue] = usePortalGlobalValue();
   const { data: funcs, isLoading: funcsIsLoading } = useQuery(
-    ['GET_USER_FUNCS', userInfo?.depIds],
+    ['GET_USER_FUNCS', USER?.depIds],
     getUserFuncs,
     {
       refetchOnWindowFocus: false,
       cacheTime: -1,
       retry: false,
-      enabled: !!(userInfo?.depIds && userInfo.depIds.length),
+      enabled: !!(USER?.depIds && USER.depIds.length),
     },
   );
   const { data, isLoading: rolesIsLoading } = useQuery(
     'GET_USER_ROLES',
-    () => getUserRoles(userInfo?.id || '', userInfo?.depIds || []),
+    () => getUserRoles(USER?.id || '', USER?.depIds || []),
     {
       refetchOnWindowFocus: false,
       retry: false,
-      enabled: !!(userInfo?.id && userInfo?.depIds && userInfo?.depIds.length),
+      enabled: !!(USER?.id && USER?.depIds && USER?.depIds.length),
     },
   );
 
@@ -46,8 +46,8 @@ export default function Routes(): JSX.Element {
     setValue((val) => ({
       ...val,
       userInfo: {
-        ...userInfo,
-        depIds: userInfo?.depIds || [],
+        ...USER,
+        depIds: USER?.depIds || [],
         authority: funcs || [],
         roles: data?.roles || [],
       },

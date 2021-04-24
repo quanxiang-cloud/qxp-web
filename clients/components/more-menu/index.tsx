@@ -1,5 +1,5 @@
 import * as React from 'react';
-import classnames from 'classnames';
+import cs from 'classnames';
 import { Placement } from '@popperjs/core';
 
 import Icon from '@c/icon';
@@ -54,7 +54,7 @@ function RenderMenuItems<T extends React.Key>(
                 e.stopPropagation();
                 !disabled && onClick(key);
               }}
-              className={classnames('select-options__option', 'select-option', {
+              className={cs('select-options__option', 'select-option', {
                 'select-option--disabled': disabled,
               })}
             >

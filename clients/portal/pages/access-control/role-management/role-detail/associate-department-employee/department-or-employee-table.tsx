@@ -123,7 +123,7 @@ export default function DepartmentTable({ isSuper, onCancelAssociation, roleID, 
     return <Error desc="something wrong!" />;
   }
 
-  const columns: Columns = [];
+  const columns: EmployeeTableColumn[] = [];
   if (type === 1) {
     columns.push(...[
       {
