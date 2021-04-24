@@ -34,7 +34,7 @@ export default function ComponentsSelector() {
 
   function onSubmit(e: FormEvent) {
     e.preventDefault();
-    console.log(elements);
+    // console.log(elements);
   }
 
   return (

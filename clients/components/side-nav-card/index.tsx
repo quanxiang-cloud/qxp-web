@@ -24,7 +24,12 @@ type Props = {
   defaultActiveLink?: defaultActive
 }
 
-export default function SideNavCard({ menuData, cardTitle, className = '', defaultActiveLink }: Props) {
+export default function SideNavCard({
+  menuData,
+  cardTitle,
+  className = '',
+  defaultActiveLink,
+}: Props) {
   return (
     <div className={`bg-white rounded-12 ${className}`}>
       {cardTitle ? cardTitle : null}
