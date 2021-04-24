@@ -28,7 +28,7 @@ import Plus from './edges/plus';
 import Control from './control';
 import Components from './components';
 import FormDataForm from './forms/form-data';
-import store from './store';
+import store, { updateStore } from './store';
 
 import 'react-flow-renderer/dist/style.css';
 import 'react-flow-renderer/dist/theme-default.css';
@@ -42,10 +42,7 @@ export default function Editor() {
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
 
   function setElements(elements: Elements) {
-    store.next({
-      ...store.value,
-      elements,
-    });
+    updateStore(null, () => ({ elements }));
   }
 
   function getLayoutedElements(elements: Elements) {
@@ -122,7 +119,7 @@ export default function Editor() {
       }
       return { ...element, position };
     }
-    const newElements: Elements<any> = [];
+    const newElements: Elements = [];
     let insertPosition = store.value.elements.length;
     store.value.elements.forEach((element: FlowElement, index: number) => {
       if (element.id !== `e${source}-${target}`) {
@@ -130,10 +127,12 @@ export default function Editor() {
       }
       if (element.id === source) {
         insertPosition = index;
-        newElements.push(updateElementPosition({
-          id, type, position: { x: position.x - (width / 2), y: position.y - (height / 2) },
+        newElements.push({
+          id,
+          type,
+          position: { x: position.x - (width / 2), y: position.y - (height / 2) },
           data: { width, height },
-        }, insertPosition, index));
+        });
       }
     });
     setElements(newElements);
@@ -145,10 +144,7 @@ export default function Editor() {
       id: `e${id}-${target}`, source: id, target, label: '+',
       arrowHeadType: ArrowHeadType.ArrowClosed,
     });
-    store.next({
-      ...store.value,
-      currentConnection: {},
-    });
+    updateStore(null, () => ({ currentConnection: {} }));
   }
 
   const onLoad = useCallback((reactFlowInstance) => {

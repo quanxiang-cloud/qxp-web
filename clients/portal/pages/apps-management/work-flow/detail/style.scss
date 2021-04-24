@@ -10,6 +10,7 @@ rect {
     box-shadow: -8px 0px 24px 4px rgba(148, 163, 184, 0.25);
     .drawer-main-content {
       @apply p-24 flex flex-col items-stretch;
+      height: calc(100% - 56px);
     }
   }
 }

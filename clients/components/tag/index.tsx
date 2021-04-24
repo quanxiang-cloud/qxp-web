@@ -12,11 +12,11 @@ type Props<T> = {
 
 export default function Tag<T>({ value, id, className, onDelete }: Props<T>): JSX.Element {
   return (
-    <span className={cs('tag', className)}>
+    <span className={cs('tag inline-flex items-center', className)}>
       {value}
       {
         onDelete && (
-          <span style={{ marginLeft: '4px' }} onClick={(e): void => id && onDelete(id, e)}>
+          <span className="ml-4 flex items-center" onClick={(e): void => id && onDelete(id, e)}>
             <Icon
               changeable
               clickable

@@ -5,7 +5,7 @@ import Icon from '@c/icon';
 
 import { Params } from '../engine';
 
-import store from '../store';
+import { updateStore } from '../store';
 
 export function formData(params: Params) {
   return Promise.resolve({ formData: 'formData', ...params });
@@ -24,7 +24,7 @@ interface Props {
 }
 
 export default function FormData({ data }: Props) {
-  const isNew = !data.form;
+  const isNew = !data.form.name;
 
   return (
     <div
@@ -33,7 +33,7 @@ export default function FormData({ data }: Props) {
         'rounded-bl-8 bg-white flex flex-col',
         `w-${data.width}`, `h-${data.height}`
       )}
-      onClick={() => store.next({ ...store.value, asideDrawerType: 'formDataForm' })}
+      onClick={() => updateStore(null, () => ({ asideDrawerType: 'formDataForm' }))}
     >
       <header className="flex items-center py-4 px-12 bg-gray-100 rounded-tl-8
         rounded-tr-8 rounded-br-2 rounded-bl-8">

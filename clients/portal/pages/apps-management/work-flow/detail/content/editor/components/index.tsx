@@ -3,7 +3,7 @@ import React from 'react';
 import Drawer from '@c/drawer';
 import useObservable from '@lib/hooks/use-observable';
 
-import store from '../store';
+import store, { updateStore } from '../store';
 import DragNode from './drag-node';
 
 export default function ComponentsSelector() {
@@ -20,10 +20,7 @@ export default function ComponentsSelector() {
             </div>
           )}
           distanceTop={0}
-          onCancel={() => store.next({
-            ...store.value,
-            asideDrawerType: '',
-          })}
+          onCancel={() => updateStore(null, () => ({ asideDrawerType: '' }))}
           className="flow-editor-drawer"
         >
           <div>

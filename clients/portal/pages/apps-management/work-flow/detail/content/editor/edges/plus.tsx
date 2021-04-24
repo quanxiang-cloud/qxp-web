@@ -1,8 +1,7 @@
 import React, { DragEvent } from 'react';
 import { getSmoothStepPath, getMarkerEnd } from 'react-flow-renderer';
 
-import store from '../store';
-
+import { updateStore } from '../store';
 import { EdgeProps } from '../type';
 import { getCenter } from '../utils';
 import EdgeText from './_components/edge-text';
@@ -43,14 +42,11 @@ export default function CustomEdge({
 
   function onDragOver(e: DragEvent) {
     e.preventDefault();
-    store.next({
-      ...store.value,
-      currentConnection: {
-        source,
-        target,
-        position: { x: centerX, y: centerY },
-      },
-    });
+    updateStore('currentConnection', () => ({
+      source,
+      target,
+      position: { x: centerX, y: centerY },
+    }));
   }
 
   return (
@@ -69,16 +65,15 @@ export default function CustomEdge({
         onDragOver={onDragOver}
         label={label}
         onClick={(e) => {
-          store.next({
-            ...store.value,
+          e.stopPropagation();
+          updateStore(null, () => ({
             asideDrawerType: 'components',
             currentConnection: {
               source,
               target,
               position: { x: centerX, y: centerY },
             },
-          });
-          e.stopPropagation();
+          }));
         }}
         labelBgBorderRadius={14}
         width="28"

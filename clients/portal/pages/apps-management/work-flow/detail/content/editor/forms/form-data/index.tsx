@@ -1,32 +1,40 @@
-import React from 'react';
-import { useForm } from 'react-hook-form';
+import React, { FormEvent } from 'react';
 
 import Drawer from '@c/drawer';
 import useObservable from '@lib/hooks/use-observable';
 import Icon from '@c/icon';
 import Tab from '@c/tab';
 import Button from '@c/button';
-import notify from '@lib/notify';
 
 import FormSelector from './form-selector';
-import TriggerWay from './trigger-way';
-import store from '../../store';
-import TriggerCondition from './trigger-condition';
+import TriggerWay from './basic-config/trigger-way';
+import TriggerCondition from './basic-config/trigger-condition';
+import store, { updateDataField, StoreValue, CurrentElement, updateStore } from '../../store';
+
+const formFieldOptions = [{
+  label: '修改时间',
+  value: '1',
+}, {
+  label: '创建时间',
+  value: '2',
+}, {
+  label: '创建人',
+  value: '3',
+}, {
+  label: '申请时间',
+  value: '4',
+}];
 
 export default function ComponentsSelector() {
-  const { asideDrawerType } = useObservable(store) || {};
-  const { register, handleSubmit } = useForm<{
-    triggerWay:('whenAdd' | 'whenAlter' | '')[];
-      }>({
-        defaultValues: {
-          triggerWay: [],
-        },
-      });
+  const { asideDrawerType, elements = [] } = useObservable<StoreValue>(store) || {};
+  const currentElement = elements.find(({ type }) => type === 'formData') as CurrentElement;
+  if (!currentElement) {
+    return null;
+  }
 
-  function onSubmit(data: any) {
-    if (!data.triggerWay.length) {
-      notify.error('请选择触发方式');
-    }
+  function onSubmit(e: FormEvent) {
+    e.preventDefault();
+    console.log(elements);
   }
 
   return (
@@ -40,49 +48,57 @@ export default function ComponentsSelector() {
             </div>
           )}
           distanceTop={0}
-          onCancel={() => store.next({
-            ...store.value,
-            asideDrawerType: '',
-          })}
+          onCancel={() => updateDataField('formData', 'asideDrawerType', () => '')}
           className="flow-editor-drawer"
         >
-          <form onSubmit={handleSubmit(onSubmit)} className="flex-1 flex flex-col justify-between">
-            <div>
-              <FormSelector />
+          <form
+            onSubmit={onSubmit}
+            className="flex-1 flex flex-col justify-between h-full"
+          >
+            <div className="flex-1" style={{ height: 'calc(100% - 56px)' }}>
+              <FormSelector defaultValue={currentElement.data.form.value} />
               <Tab
                 className="mt-10"
+                contentClassName="overflow-scroll"
+                style={{ height: 'calc(100% - 56px)' }}
                 items={[{
                   id: 'basicConfig',
                   name: '基础配置',
                   content: (
                     <div className="mt-24">
-                      <TriggerWay {...register('triggerWay')} />
-                      <TriggerCondition />
+                      <TriggerWay
+                        formFieldOptions={formFieldOptions}
+                        currentElement={currentElement}
+                      />
+                      <TriggerCondition
+                        formFieldOptions={formFieldOptions}
+                        currentElement={currentElement}
+                      />
                     </div>
                   ),
                 }, {
                   id: 'events',
                   name: '事件',
                   content: (
-                    <div>content</div>
+                    <div>TODO</div>
                   ),
                 }]}
               />
             </div>
-            <div className="flex justify-end">
+            <div className="flex justify-end flex-none">
               <Button
                 className="mr-20"
                 iconName="close"
-                onClick={() => store.next({ ...store.value, asideDrawerType: '' })}
+                onClick={() => updateStore(null, () => ({ asideDrawerType: '' }))}
               >
-              取消
+                取消
               </Button>
               <Button
                 modifier="primary"
-                iconName="check"
+                iconName="save"
                 type="submit"
               >
-              确定关联
+                保存
               </Button>
             </div>
           </form>
