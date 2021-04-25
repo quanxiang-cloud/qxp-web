@@ -73,8 +73,8 @@ const PanelList = ({ msgCenter }: Props & Pick<MobxStores, 'msgCenter' | any>) =
       queryPage('', { id: undefined });
       refetch();
       unReadRefetch();
-      console.log('msgList: ', msgList, ', msgTotal: ', msgTotal);
-      console.log('success data: ', data);
+      // console.log('msgList: ', msgList, ', msgTotal: ', msgTotal);
+      // console.log('success data: ', data);
     },
     onError: (err: Error)=> {
       Message.warning(`删除失败: ${err.message}`);

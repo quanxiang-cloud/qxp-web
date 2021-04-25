@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import classNames from 'classnames';
 import { inject, observer } from 'mobx-react';
 import { get } from 'lodash';
-import { useQuery } from 'react-query';
+import { useQuery, useQueryClient } from 'react-query';
 import { getUnreadMsgCount } from '@portal/api/message-center';
 import Icon from '@c/icon';
 
@@ -17,6 +17,7 @@ import styles from './index.module.scss';
 const NavMsgBar = ({ msgCenter: store }: Pick<MobxStores, 'msgCenter' | any>): JSX.Element => {
   const toggleRef = useRef(null);
   const msgBoxRef = useRef(null);
+  const queryClient = useQueryClient();
   const { openUnreadMsgBox, msgBoxOpen, openMsgCenter, countUnread } = store;
   const { data: countUnreadMsg }=useQuery('count-unread-msg', getUnreadMsgCount);
 
@@ -57,7 +58,11 @@ const NavMsgBar = ({ msgCenter: store }: Pick<MobxStores, 'msgCenter' | any>): J
   };
 
   useEffect(() => {
-    const listener = (data: any) => console.log(data);
+    const listener = (data: any) => {
+      // when new message come
+      queryClient.invalidateQueries('count-unread-msg');
+      queryClient.invalidateQueries('all-messages');
+    };
     // todo newMessage? NewMessage? new_message?
     pushServer.addEventListener('newMessage', listener);
 

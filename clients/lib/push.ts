@@ -38,7 +38,17 @@ class PushServer {
   initialConnect(): void {
     makeConnection().then((connection) => {
       this.connection = connection;
-      this.connection.addEventListener('message', ({ data }) => this.dispatchEvent(data));
+      this.connection.addEventListener('message', ({ data }) => {
+        if (typeof data === 'string') {
+          try {
+            // eslint-disable-next-line no-param-reassign
+            data = JSON.parse(data);
+          } catch (err) {
+            logger.error('invalid socket data: ', err);
+          }
+        }
+        this.dispatchEvent(data);
+      });
       this.heartBeat(connection);
     }).catch((err) => {
       // todo retry
