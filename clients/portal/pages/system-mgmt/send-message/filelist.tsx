@@ -2,6 +2,7 @@ import React from 'react';
 import styles from './index.module.scss';
 import Icon from '@c/icon';
 import { Progress, Message } from '@QCFE/lego-ui';
+import classnames from 'classnames';
 import { saveAs } from 'file-saver';
 import jsZip from 'jszip';
 
@@ -20,36 +21,55 @@ interface Props {
   hideProgress?: boolean;
   isPreview?: boolean;
   canMultiDownload?: boolean;
+  messageTitle?: string;
 }
 
-const dlViaBlob=(url: string)=> {
-  return fetch(url).then((res)=> ({ url, blob: res.blob() })).catch((err: Error)=> Message.error(err.message));
+const regImage=/jpe?g|png|gif|svg/i;
+
+const isImageExt=(filename: string): boolean=> {
+  const parts=filename.split('.');
+  const name=parts[parts.length - 1];
+  return regImage.test(name);
 };
 
-const exportZip = (blobs: Array<{url: string, blob: any}>) => {
-  const zip = jsZip();
-  blobs.forEach(({ url, blob }) => {
-    const urlInst=new URL(url);
-    const urlPath=urlInst.pathname.split('/');
-    // console.log('zip file: ', urlPath[urlPath.length-1], blob);
-    zip.file(urlPath[urlPath.length-1], blob);
-  });
-  zip.generateAsync({ type: 'blob' }).then((zipFile) => {
-    return saveAs(zipFile, `attachments-${Date.now()}.zip`);
-  });
-};
-
-const dlAndZip=(urls: string[])=> {
-  // @ts-ignore
-  return Promise.all(urls.map((url)=> dlViaBlob(url))).then(exportZip);
-};
-
-const Filelist = ({ files, candownload, canMultiDownload, deleteFiles, hideProgress, isPreview }: Props) => {
+const Filelist = ({
+  files,
+  candownload,
+  canMultiDownload,
+  deleteFiles,
+  hideProgress,
+  isPreview,
+  messageTitle,
+}: Props) => {
   const handleDownload=(link: string, filename: string)=> {
     if (!candownload) {
       return;
     }
     saveAs(link, filename);
+  };
+
+  const dlViaBlob=(url: string)=> {
+    return fetch(url).then((res)=> ({ url, blob: res.blob() })).catch((err: Error)=> Message.error(err.message));
+  };
+
+  const exportZip = (blobs: Array<{url: string, blob: any}>) => {
+    const zip = jsZip();
+    blobs.forEach(({ url, blob }) => {
+      const urlInst=new URL(url);
+      const urlPath=urlInst.pathname.split('/');
+      zip.file(decodeURIComponent(urlPath[urlPath.length-1]), blob);
+    });
+    zip.generateAsync({
+      type: 'blob',
+      platform: 'UNIX',
+    }).then((zipFile) => {
+      return saveAs(zipFile, `消息附件打包-${messageTitle || Date.now()}.zip`);
+    });
+  };
+
+  const dlAndZip=(urls: string[])=> {
+    // @ts-ignore
+    return Promise.all(urls.map((url)=> dlViaBlob(url))).then(exportZip);
   };
 
   const handleZipDl=()=> {
@@ -62,9 +82,10 @@ const Filelist = ({ files, candownload, canMultiDownload, deleteFiles, hideProgr
         {files.map((itm, idx) => (
           <div className={styles.file_itm} key={idx}>
             <span
-              className={candownload ? 'cursor-pointer' : 'cursor-default'}
+              className={classnames('inline-flex items-center', candownload ? 'cursor-pointer' : 'cursor-default')}
               onClick={() => handleDownload(itm.file_url, itm.file_name)}
             >
+              <span className={classnames(styles.typeFile, { [styles.typeImage]: isImageExt(itm.file_name) })} />
               {itm.file_name}
             </span>
             {!hideProgress && (<Progress

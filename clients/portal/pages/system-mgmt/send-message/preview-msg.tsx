@@ -50,6 +50,7 @@ const PreviewMsg = ({ prevData, hideReceivers, isPreview, canDownload, canMultiD
           hideProgress
           isPreview={isPreview}
           canMultiDownload={canMultiDownload}
+          messageTitle={title}
         />
       </div>
 

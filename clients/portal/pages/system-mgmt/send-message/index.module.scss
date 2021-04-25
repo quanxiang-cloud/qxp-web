@@ -258,6 +258,22 @@ body {
     &:hover > svg{
       opacity: 1;
     }
+
+    .typeFile {
+      width: 16px;
+      height: 16px;
+      background: #375FF3;
+      border-radius: 4px 0 4px 4px;
+      background-image: url('/dist/images/attach-type-file.svg');
+      background-repeat: no-repeat;
+      background-position: center;
+      margin-right: 8px;
+    }
+    .typeImage {
+      @extend .typeFile;
+      background-color: #F59E0B;
+      background-image: url('/dist/images/attach-type-photo.svg');
+    }
   }
 
   :global {
