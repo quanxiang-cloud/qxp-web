@@ -163,6 +163,27 @@ func saveToken(r *http.Request, token string, refreshToken string, expireTime ti
 	}
 }
 
+func getCurrentUser(r *http.Request) *User {
+	respBuffer, errMsg := contexts.SendRequest(r.Context(), "POST", "/api/v1/org/userUserInfo", nil, map[string]string{
+		"Access-Token": getToken(r),
+	})
+
+	if errMsg != "" {
+		contexts.Logger.Errorf("get user info error: %s", errMsg)
+		return nil
+	}
+
+	var user User
+	userRaw := gjson.Get(respBuffer.String(), "data").Raw
+	err := json.Unmarshal([]byte(userRaw), &user)
+	if err != nil {
+		contexts.Logger.Errorf("failed to unmarshal user, err: %s", err.Error())
+		return nil
+	}
+
+	return &user
+}
+
 // IsUserLogin judge wheather user is login
 func IsUserLogin(r *http.Request) bool {
 	token := contexts.Cache.Get(getTokenKey(r)).Val()
@@ -191,31 +212,9 @@ func RedirectToLoginPage(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/login/password", http.StatusFound)
 }
 
-// GetCurrentUser return User of current request
-func GetCurrentUser(r *http.Request) *User {
-	respBuffer, errMsg := contexts.SendRequest(r.Context(), "POST", "/api/v1/org/userUserInfo", nil, map[string]string{
-		"Access-Token": getToken(r),
-	})
-
-	if errMsg != "" {
-		contexts.Logger.Errorf("get user info error: %s", errMsg)
-		return nil
-	}
-
-	var user User
-	userRaw := gjson.Get(respBuffer.String(), "data").Raw
-	err := json.Unmarshal([]byte(userRaw), &user)
-	if err != nil {
-		contexts.Logger.Errorf("failed to unmarshal user, err: %s", err.Error())
-		return nil
-	}
-
-	return &user
-}
-
 // DecoratRequest will associated request context with current user and it's token
 func DecoratRequest(r *http.Request) *http.Request {
-	user := GetCurrentUser(r)
+	user := getCurrentUser(r)
 	token := getToken(r)
 	userAgent := r.Header.Get("User-Agent")
 

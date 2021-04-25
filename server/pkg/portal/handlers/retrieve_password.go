@@ -15,6 +15,7 @@ func HandleRetrievePassword(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
+// HandleRetrievePasswordSubmit handle reset password post request
 func HandleRetrievePasswordSubmit(w http.ResponseWriter, r *http.Request) {
 	requestID := contexts.GetRequestID(r)
 	templateName := "retrieve-password.html"
@@ -25,8 +26,8 @@ func HandleRetrievePasswordSubmit(w http.ResponseWriter, r *http.Request) {
 
 	resetPasswordParams, err := json.Marshal(map[string]string{
 		"newPassword": newPassword,
-		"userName": username,
-		"code": captcha,
+		"userName":    username,
+		"code":        captcha,
 	})
 	if err != nil {
 		contexts.Logger.Errorf("failed to marshal request body: %s, request_id: %s", err.Error(), requestID)
