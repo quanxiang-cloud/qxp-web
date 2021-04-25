@@ -1,18 +1,58 @@
 import React, { useState, useEffect } from 'react';
+import { union } from 'lodash';
 
 import Button from '@c/button';
 import Checkbox from '@c/checkbox';
+import { fetchFieldFilter, saveFieldFilter } from '@appLib/api';
+import notify from '@lib/notify';
 
 import store from '../../store';
 
-function FieldPermissions() {
-  const [fieldList, setFieldList] = useState(store.fieldList);
+type Props = {
+  rightsID: string
+}
+
+function FieldPermissions({ rightsID }: Props) {
   const [visibleField, setVisibleField] = useState<string[]>([]);
   const [revisableField, setRevisableField] = useState<string[]>([]);
   const [vIndeterminate, setVIndeterminate] = useState(false);
   const [rIndeterminate, setRIndeterminate] = useState(false);
   const [vCheckAll, setVCheckAll] = useState(false);
   const [rCheckAll, setRCheckAll] = useState(false);
+
+  const { fieldList } = store;
+  const fieldRevisable = fieldList.filter(({ isSystem }) => !isSystem);
+
+  useEffect(() => {
+    fetchFieldFilter(rightsID).then((res) => {
+      const { schema } = res.data;
+      if (schema) {
+        const visibleList: string[] = [];
+        const revisableList: string[] = [];
+        fieldList.forEach((field) => {
+          switch (schema.properties[field.id]['x-internal'].permission) {
+          case 3:
+            visibleList.push(field.id);
+            revisableList.push(field.id);
+            break;
+          case 2:
+            visibleList.push(field.id);
+            break;
+          }
+        });
+        setVisibleField(visibleList);
+        setRevisableField(revisableList);
+      } else {
+        const event: any = {
+          target: {
+            checked: true,
+          },
+        };
+        handleRCheckAll(event);
+        handleVCheckAll(event);
+      }
+    });
+  }, []);
 
   useEffect(() => {
     setVIndeterminate(visibleField.length > 0 && visibleField.length !== fieldList.length);
@@ -24,8 +64,8 @@ function FieldPermissions() {
   }, [visibleField]);
 
   useEffect(() => {
-    setRIndeterminate(revisableField.length > 0 && revisableField.length !== fieldList.length);
-    if (revisableField.length === fieldList.length) {
+    setRIndeterminate(revisableField.length > 0 && revisableField.length !== fieldRevisable.length);
+    if (revisableField.length === fieldRevisable.length) {
       setRCheckAll(true);
     } else {
       setRCheckAll(false);
@@ -66,7 +106,7 @@ function FieldPermissions() {
   const handleVCheckAll = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.checked) {
       setVisibleField(
-        fieldList.map(({ id })=>id)
+        fieldList.map(({ id }) => id)
       );
     } else {
       setRevisableField([]);
@@ -76,8 +116,8 @@ function FieldPermissions() {
 
   const handleRCheckAll = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.checked) {
-      const ids = fieldList.map(({ id }) => id);
-      setVisibleField(ids);
+      const ids = fieldRevisable.map(({ id }) => id);
+      setVisibleField(union(visibleField, ids));
       setRevisableField(ids);
     } else {
       setRevisableField([]);
@@ -85,7 +125,27 @@ function FieldPermissions() {
   };
 
   const handleSave = () => {
-    console.log(visibleField, revisableField);
+    const schema: any = {
+      properties: {},
+      title: '',
+      type: 'object',
+    };
+
+    fieldList.forEach((field) => {
+      const visible = visibleField.includes(field.id);
+      const revisable = revisableField.includes(field.id);
+      const permissions = [visible ? 1 : 0, revisable ? 1 : 0].join('');
+      schema.properties[field.id] = {
+        title: field.label,
+        'x-internal': {
+          permission: parseInt(permissions, 2),
+        },
+      };
+    });
+
+    saveFieldFilter({ permissionGroupID: rightsID, schema }).then(() => {
+      notify.success('保存成功！');
+    });
   };
 
   return (
@@ -109,7 +169,7 @@ function FieldPermissions() {
       </div>
       <div className='pb-field-box'>
         <div className='pb-field-item-title'><span>字段</span><span>可见</span><span>可修改</span></div>
-        {fieldList.map((field: any) => (
+        {fieldList.map((field) => (
           <div key={field.id} className='pb-field-item'>
             <span>{field.label}</span>
             <Checkbox
@@ -117,11 +177,13 @@ function FieldPermissions() {
               value={field.id}
               onChange={handleVisibleChange}
             />
-            <Checkbox
-              checked={revisableField.includes(field.id)}
-              value={field.id}
-              onChange={handleRevisableChange}
-            />
+            {!field.isSystem && (
+              <Checkbox
+                checked={revisableField.includes(field.id)}
+                value={field.id}
+                onChange={handleRevisableChange}
+              />
+            )}
           </div>
         ))}
       </div>

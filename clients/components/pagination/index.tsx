@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import classnames from 'classnames';
 import { Input } from '@QCFE/lego-ui';
 
@@ -43,8 +43,15 @@ function Pagination({
   const [pageParams, setPageParams] = React.useState({
     current: current || 0,
     _current: '',
-    pageSize: pageSize || 10,
+    pageSize: 10,
   });
+
+  useEffect(() => {
+    if (!pageSize) {
+      return;
+    }
+    setPageParams({ ...pageParams, pageSize });
+  }, [pageSize]);
 
   function calcPage(p?: number) {
     let pageSizes = p;

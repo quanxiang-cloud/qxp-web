@@ -10,17 +10,15 @@ import store from '../store';
 import './index.scss';
 
 function PageSetting() {
-  console.log(store.tableColumn, 13123);
-
   return (
     <>
       <div className='form-design-tool'>
-        <Button iconName='save' modifier="primary">
-          保存表单
+        <Button onClick={store.savePageConfig} iconName='save' modifier="primary">
+          保存页面设置
         </Button>
-        <Button iconName='preview'>
+        {/* <Button iconName='preview'>
           预览
-        </Button>
+        </Button> */}
         <span className='text-underline-no-color cursor-pointer'>
           🎬 查看新手指引
         </span>

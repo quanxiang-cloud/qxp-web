@@ -1,8 +1,12 @@
 import React from 'react';
+import { observer } from 'mobx-react';
 
 import Button from '@c/button';
 import Icon from '@c/icon';
 import Table from '@c/table';
+import Pagination from '@c/pagination';
+
+import store from './store';
 
 type Props = {
   tableColumns: any[]
@@ -37,8 +41,18 @@ function PageDataTable({ tableColumns }: Props) {
         columns={tableColumns}
         data={[]}
       />
+      {store.pageSize ? (
+        <Pagination
+          current={1}
+          total={1}
+          pageSize={store.pageSize}
+          onChange={(page: number) => {
+            console.log('page: ', page);
+          }}
+        />
+      ) : null}
     </div>
   );
 }
 
-export default PageDataTable;
+export default observer(PageDataTable);

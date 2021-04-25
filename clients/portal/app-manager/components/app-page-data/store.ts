@@ -1,45 +1,38 @@
-import { action, observable } from 'mobx';
+import { action, observable, computed } from 'mobx';
 
 class AppPageDataStore {
   @observable showMoreFiltrate = false;
 
-  @observable fieldList = [{
-    type: 'text',
-    label: '提交人',
-    placeholder: '搜索关键字...',
-    id: 'submitId',
-  },
-  {
-    type: 'number',
-    label: '转移编号',
-    placeholder: '搜索关键字...',
-    id: 'code',
-  }, {
-    type: 'select',
-    label: '原使用低点',
-    placeholder: '搜索关键字...',
-    id: 'address',
-  }, {
-    type: 'date',
-    label: '日期',
-    placeholder: '搜索关键字...',
-    id: 'date',
-  }, {
-    type: 'date_range',
-    label: '日期范围',
-    placeholder: '搜索关键字...',
-    id: 'date-range',
-  }];
-
   @observable filterList = [];
 
+  @observable tableConfig: any = {};
+
+  @computed get order(): any {
+    if ('order' in this.tableConfig) {
+      return this.tableConfig.order;
+    }
+    return null;
+  }
+
+  @computed get pageSize(): null | number {
+    if ('pageSize' in this.tableConfig) {
+      return this.tableConfig.pageSize;
+    }
+    return null;
+  }
+
   @action
-  setShowMoreFiltrate = (value:boolean) => {
+  setTableConfig = (tableConfig: any) => {
+    this.tableConfig = tableConfig;
+  }
+
+  @action
+  setShowMoreFiltrate = (value: boolean) => {
     this.showMoreFiltrate = value;
   }
 
   @action
-  setFilterList = (filterList:any) => {
+  setFilterList = (filterList: any) => {
     this.filterList = filterList;
   }
 }

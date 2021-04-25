@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Modal } from '@QCFE/lego-ui';
+import { Modal, RadioGroup } from '@QCFE/lego-ui';
 import { observer } from 'mobx-react';
 
 import Icon from '@c/icon';
@@ -20,7 +20,7 @@ function infoRender(title: string, desc: string) {
 
 function FilterSetting() {
   const [filterModalVisible, setFilterModalVisible] = useState(false);
-  const [fieldList, setFieldList] = useState<any>([]);
+  const [fieldList, setFieldList] = useState<PageField[]>([]);
 
   useEffect(() => {
     if (!filterModalVisible) {
@@ -29,7 +29,7 @@ function FilterSetting() {
 
     setFieldList(
       store.fieldList.map((field) => {
-        const filterField = fieldList.find(({ id }) => {
+        const filterField = store.allFiltrate.find(({ id }) => {
           return id === field.id;
         });
         if (filterField) {
@@ -56,26 +56,38 @@ function FilterSetting() {
     );
   };
 
-  const filterOptionRender = (field:any) => {
+  const filterOptionRender = (field: PageField) => {
     switch (field.type) {
-    case 'select':
-      return (
-        <Checkbox
-          disabled={!field.filter}
-          checked={field.option?.multiple ? true : false}
-          onChange={(e) => {
-            handleChangeField(field.id, { option: { multiple: e.target.checked } });
-          }}
-          label={infoRender('多选', '可选值来自字段配置填写的内容')}
-        />
-      );
-    case 'date':
+    case 'datetime':
       return (
         <Checkbox
           disabled={!field.filter}
           checked={field.option?.range ? true : false}
           onChange={(e) => handleChangeField(field.id, { option: { range: e.target.checked } })}
           label={infoRender('日期范围查询', '可选值来自字段配置填写的内容')}
+        />
+      );
+    case 'number':
+      return (
+        <RadioGroup
+          direction="column"
+          disabled={!field.filter}
+          options={[
+            {
+              label: '大于',
+              value: '>',
+            },
+            {
+              label: '小于',
+              value: '<',
+            },
+            {
+              label: '等于',
+              value: '=',
+            },
+          ]}
+          value={field.option?.compareSymbol}
+          onChange={(value) => handleChangeField(field.id, { option: { compareSymbol: value } })}
         />
       );
     }
@@ -85,7 +97,7 @@ function FilterSetting() {
     return (
       <div key={field.id} className='page-setting-field-filter'>
         <div className='flex items-center justify-between py-8 px-16'>
-          {['date', 'select'].includes(field.type) ? (
+          {['datetime', 'number'].includes(field.type) ? (
             <div
               onClick={() => handleChangeField(field.id, { expand: !field.expand })}
               className='flex items-center flex-1 cursor-pointer'
@@ -102,7 +114,8 @@ function FilterSetting() {
             checked={field.filter ? true : false}
             onChange={(e) => {
               handleChangeField(field.id,
-                e.target.checked ? { filter: true } : { filter: false, option: {} }
+                e.target.checked ? { filter: true, option: { compareSymbol: '>' } } :
+                  { filter: false, option: {} }
               );
             }}
           />
@@ -115,7 +128,7 @@ function FilterSetting() {
   };
 
   const onSave = () => {
-    const filterList = fieldList.filter(({ filter }: any) => filter);
+    const filterList = fieldList.filter(({ filter }: PageField) => filter);
     store.setFilterList(filterList);
     setFilterModalVisible(false);
   };

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import AppIcon from '@clients/components/app-icon';
+import AppIcon from '@c/app-icon';
 
 const COLORS: BgColor[] = [
   'indigo',

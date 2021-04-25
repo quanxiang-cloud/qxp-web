@@ -9,9 +9,13 @@ import FieldPermissions from './field-permissions';
 
 import './index.scss';
 
-function RightSetting() {
+type Props = {
+  rights: Rights
+}
+
+function RightSetting({ rights }: Props) {
   return (
-    <div>
+    <div className='p-20'>
       <Tab
         className="mt-4 py-16"
         contentClassName="rounded-12 rounded-tl-none"
@@ -19,22 +23,22 @@ function RightSetting() {
           {
             id: 'basicInfo',
             name: '名称信息',
-            content: (<BasicInfo />),
+            content: (<BasicInfo rights={rights} />),
           },
           {
             id: 'authorized',
             name: '操作权限',
-            content: (<Authorized />),
+            content: (<Authorized rightsID={rights.id} />),
           },
           {
             id: 'fieldPermissions',
             name: '字段查看权限',
-            content: (<FieldPermissions />),
+            content: (<FieldPermissions rightsID={rights.id} />),
           },
           {
             id: 'association',
             name: '数据查看权限',
-            content: (<DataPermission />),
+            content: (<DataPermission rightsID={rights.id} />),
           },
         ]}
       />

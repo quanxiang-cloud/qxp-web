@@ -18,6 +18,7 @@ type Props = {
   dateFormat?: string;
   inputValue?: string;
   className?: string;
+  style?: React.CSSProperties;
   onChange: (d: { start: string; end: string; readableCode: string }) => void;
 }
 
@@ -169,13 +170,16 @@ export default class RangePicker extends React.Component<Props> {
   }
 
   render(): JSX.Element {
-    const { inputValue, readableCode, className } = this.props;
+    const { inputValue, readableCode, className, style } = this.props;
 
     return (
       <>
-        <div ref={this.reference} className={classnames('date-picker__input', className, {
-          'date-picker--has-selected-day': readableCode,
-        })}>
+        <div
+          ref={this.reference}
+          style={style}
+          className={classnames('date-picker__input', className, {
+            'date-picker--has-selected-day': readableCode,
+          })}>
           <input
             value={inputValue || getInputValue(readableCode)}
             className="input"

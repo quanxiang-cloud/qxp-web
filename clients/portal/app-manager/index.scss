@@ -49,3 +49,11 @@ html {
   background-color: rgba(241, 245, 249, 1);
   box-shadow: inset 0px -1px 0px #e2e8f0;
 }
+
+.text-icon-btn {
+  @apply items-center cursor-pointer hover:text-blue-600 inline-flex;
+  svg {
+    color: inherit;
+    margin-right: 4px;
+  }
+}

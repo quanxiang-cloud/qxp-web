@@ -9,7 +9,7 @@ type Props = {
   onCancel: () => void;
   title: string;
   children: React.ReactNode;
-  distanceTop: number;
+  distanceTop?: number;
 }
 
 function Drawer({ onCancel, title, children, distanceTop = 56 }: Props) {

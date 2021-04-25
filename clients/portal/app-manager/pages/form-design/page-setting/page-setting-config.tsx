@@ -67,8 +67,13 @@ const PAGE_SIZE_OPTION = [
   { label: '200条/页', value: 200 },
 ];
 
+const FIXED_RULE_OPTION = [
+  { label: '固定首列', value: 'one' },
+  { label: '固定前两列', value: 'previous_two' },
+];
+
 function PageSettingConfig() {
-  const { fieldList } = store;
+  const { fieldList, pageTableShowRule, setPageTableShowRule } = store;
   const [indeterminate, setIndeterminate] = useState(false);
 
   const showListLength = useMemo(() => {
@@ -94,11 +99,11 @@ function PageSettingConfig() {
 
   const handleCheckAll = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.checked) {
-      store.setAllPageConfig(
+      store.setAllPageTableConfig(
         fieldList.map(({ id }) => ({ id, visible: true }))
       );
     } else {
-      store.setAllPageConfig(
+      store.setAllPageTableConfig(
         fieldList.map(({ id }) => ({ id, visible: false }))
       );
     }
@@ -106,14 +111,14 @@ function PageSettingConfig() {
 
   const handleChecked = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.checked) {
-      store.setPageConfig(e.target.value, { visible: true });
+      store.setPageTableConfig(e.target.value, { visible: true });
     } else {
-      store.setPageConfig(e.target.value, { visible: false });
+      store.setPageTableConfig(e.target.value, { visible: false });
     }
   };
 
   const handleSort = (keys: string[]) => {
-    store.setAllPageConfig(
+    store.setAllPageTableConfig(
       keys.map((id: string, index: number) => ({ id, sort: index }))
     );
   };
@@ -122,12 +127,35 @@ function PageSettingConfig() {
     <div className='page-setting-option'>
       <p className='text-caption-no-color text-gray-400'>选择配置以下内容以定义页面视图的显示元素。</p>
       {configItemRender('筛选条件', <FilterSetting />)}
-      {configItemRender('排序规则', <Select options={SORT_OPTION} />)}
+      {configItemRender('排序规则',
+        <Select
+          value={pageTableShowRule.order}
+          onChange={(order: string) => setPageTableShowRule({ order })}
+          options={SORT_OPTION}
+        />
+      )}
       {configItemRender(
         <div className='flex items-center justify-between'>
-          <span>分页</span><Toggle onChange={() => { }} onText='开启' offText='关闭' />
+          <span>分页</span>
+          <Toggle
+            defaultChecked={!!pageTableShowRule.pageSize}
+            onChange={(flag: boolean) => setPageTableShowRule({ pageSize: flag ? 10 : null })}
+            onText='开启'
+            offText='关闭'
+          />
         </div>,
-        <Select options={PAGE_SIZE_OPTION} />
+        <Select
+          value={pageTableShowRule.pageSize}
+          onChange={(pageSize: number) => setPageTableShowRule({ pageSize })}
+          disabled={!pageTableShowRule.pageSize}
+          options={PAGE_SIZE_OPTION} />
+      )}
+      {configItemRender('固定列  ',
+        <Select
+          value={pageTableShowRule.fixedRule}
+          onChange={(fixedRule: string) => setPageTableShowRule({ fixedRule })}
+          options={FIXED_RULE_OPTION}
+        />
       )}
       {configItemRender(
         <div className='flex items-center justify-between'>

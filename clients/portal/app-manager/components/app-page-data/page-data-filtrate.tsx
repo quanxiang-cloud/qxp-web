@@ -7,7 +7,7 @@ import Icon from '@c/icon';
 import FiltrateForm from './filtrate-form';
 
 type Props = {
-  filtrates: PageField[];
+  filtrates: FilterField[];
 }
 
 function PageDataFiltrate({ filtrates }: Props) {

@@ -183,3 +183,82 @@ export const updatePageScheme = (data: any) => {
   });
 };
 
+export const createPerGroup = (data: RightsCreate) => {
+  return request({
+    url: '/api/v1/structor/permission/perGroup/create',
+    method: 'post',
+    data,
+  });
+};
+
+export const fetchRights = (formID: string) => {
+  return request({
+    url: '/api/v1/structor/permission/perGroup/getList',
+    method: 'post',
+    data: { formID },
+  });
+};
+
+export const deleteRights = (data: any) => {
+  return request({
+    url: '/api/v1/structor/permission/perGroup/delete',
+    method: 'post',
+    data,
+  });
+};
+
+export const updatePerGroup = (data: Rights) => {
+  return request({
+    url: '/api/v1/structor/permission/perGroup/update',
+    method: 'post',
+    data,
+  });
+};
+
+export const fetchOperatePer = (perGroupID: string) => {
+  return request({
+    url: '/api/v1/structor/permission/operatePer/get',
+    method: 'post',
+    data: { perGroupID },
+  });
+};
+
+export const saveOperatePer = (data: any) => {
+  return request({
+    url: '/api/v1/structor/permission/operatePer/save',
+    method: 'post',
+    data,
+  });
+};
+
+export const fetchDataAccessPer = (perGroupID: string) => {
+  return request({
+    url: '/api/v1/structor/permission/dataAccessPer/get',
+    method: 'post',
+    data: { perGroupID },
+  });
+};
+
+export const saveDataAccessPer = (data: any) => {
+  return request({
+    url: '/api/v1/structor/permission/dataAccessPer/save',
+    method: 'post',
+    data,
+  });
+};
+
+export const fetchFieldFilter = (permissionGroupID: string) => {
+  return request({
+    url: '/api/v1/structor/filter/get',
+    method: 'post',
+    data: { permissionGroupID },
+  });
+};
+
+export const saveFieldFilter = (data: any) => {
+  return request({
+    url: '/api/v1/structor/filter/save',
+    method: 'post',
+    data,
+  });
+};

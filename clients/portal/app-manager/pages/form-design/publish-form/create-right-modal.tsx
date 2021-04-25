@@ -3,7 +3,7 @@ import { Modal } from '@QCFE/lego-ui';
 
 import Button from '@c/button';
 
-import BasicInfoForm from './right-setting/basic-info-form';
+import BasicInfoForm from './rights-setting/basic-info-form';
 
 import store from '../store';
 
@@ -16,9 +16,14 @@ function CreateRightModal({ onCancel }: Props) {
   const formRef = useRef<any>();
 
   const onSubmit = () => {
-    formRef.current?.handleSubmit((data1: any) => {
-      store.addRight(data1);
-      console.log(data1);
+    formRef.current?.handleSubmit((rights: RightsCreate) => {
+      setLoading(true);
+      store.addRight(rights).then(() => {
+        setLoading(false);
+        onCancel();
+      }).catch(() => {
+        setLoading(false);
+      });
     })();
   };
 

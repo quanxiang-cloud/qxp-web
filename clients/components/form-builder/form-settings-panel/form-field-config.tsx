@@ -6,7 +6,7 @@ import { StoreContext } from '../context';
 import { observer } from 'mobx-react';
 import { toJS } from 'mobx';
 
-import Icon from '@clients/components/icon';
+import Icon from '@c/icon';
 import { FieldConfigContext } from './form-field-config-context';
 
 const components = {

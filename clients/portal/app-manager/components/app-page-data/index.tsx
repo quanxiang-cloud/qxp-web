@@ -6,7 +6,7 @@ import { PageDataContext } from './context';
 import './index.scss';
 
 type Props = {
-  filtrates: PageField[];
+  filtrates: FilterField[];
   tableColumns: any;
 }
 

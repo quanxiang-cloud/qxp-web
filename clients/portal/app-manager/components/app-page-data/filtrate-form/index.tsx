@@ -8,8 +8,26 @@ import RangePicker from '@c/range-picker';
 
 import './index.scss';
 
+function numberVerify(e: any, precision: number | undefined) {
+  if (precision === undefined) {
+    return;
+  }
+
+  const value = e.target.value;
+  if (value === '') {
+    return;
+  }
+
+  const reg = new RegExp(`^\\d+\\.?\\d{0,${precision}}$`);
+
+  if (!reg.test(value)) {
+    const valueArr = value.split('.');
+    e.target.value = valueArr[0] + '.' + valueArr[1].substr(0, precision);
+  }
+}
+
 type Props = {
-  filtrates: PageField[];
+  filtrates: FilterField[];
   showMoreFiltrate: boolean;
 }
 
@@ -35,26 +53,41 @@ function FiltrateForm({ filtrates, showMoreFiltrate }: Props, ref?: React.Ref<an
     );
   }
 
-  const fieldRender = (field: any) => {
-    switch (field.type) {
-    case 'text':
-      return <input className='input' {...register(field.id)} />;
+  const fieldRender = (filtrate: FilterField) => {
+    switch (filtrate.type) {
+    case 'string':
+      return <input className='input' {...register(filtrate.id)} />;
     case 'number':
-      return <input type='number' className='input' {...register(field.id)} />;
+      return (
+        <input
+          className='input'
+          step={filtrate.step}
+          {...register(filtrate.id)}
+          type='number'
+          onKeyUp={(e) => numberVerify(e, filtrate.precision)}
+        />
+      );
     case 'select':
       return (
-        <Controller name={field.id} control={control} render={({ field }) => {
-          return <Select className='w-full' {...field} options={[{ value: 'f', label: '测试' }]} />;
+        <Controller name={filtrate.id} control={control} render={({ field }) => {
+          return (
+            <Select
+              multiple={filtrate.multiple}
+              className='w-full'
+              {...field}
+              options={filtrate.enum || [] as any}
+            />
+          );
         }} />);
     case 'date':
       return (
-        <Controller name={field.id} control={control} render={({ field }) => {
+        <Controller name={filtrate.id} control={control} render={({ field }) => {
           return <DatePicker selectedDate={field.value} className='w-full' {...field} />;
         }} />
       );
     case 'date_range':
       return (
-        <Controller name={field.id} control={control} render={({ field }) => {
+        <Controller name={filtrate.id} control={control} render={({ field }) => {
           return (
             <RangePicker
               className='w-full'

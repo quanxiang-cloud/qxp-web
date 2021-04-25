@@ -7,50 +7,52 @@ import {
   fetchFormScheme,
   updateFormScheme,
   createPageScheme,
+  createPerGroup,
+  fetchRights,
+  deleteRights,
+  updatePerGroup,
 } from '@appLib/api';
+import appPageDataStore from '@appC/app-page-data/store';
 
-function getAttribute(config: any, index: number) {
-  if (!config) {
-    return {
-      visible: true,
-      sort: index,
-    };
-  }
-
-  return {
-    visible: 'visible' in config ? config.visible : true,
-    sort: 'sort' in config ? config.sort : index,
-  };
-}
+import { getFilterField, getAttribute } from './utils';
 
 class FormDesignStore {
-  destroyFetchScheme: IReactionDisposer
+  destroyFetchScheme: IReactionDisposer;
+  destroySetTableConfig: IReactionDisposer;
   @observable pageID = '';
   @observable pageLoading = true;
   @observable formStore: any = null;
   @observable formMetadata: any = {};
-  @observable pageConfig: any = {};
-  @observable rightList = [
-    {
-      id: 1,
-      title: '提交并管理本人数据',
-      desc: '在此分组内的部门和员工可以填报数据、管理自己填报的数据。',
-      users: [{ name: '谭杰' }],
-      dep: [{ name: '质量保障部' }],
-    },
-  ];
-
-  @observable allFiltrate = [];
+  @observable pageTableConfig: any = {};
+  @observable pageTableShowRule: any = {};
+  @observable rightsList: Rights[] = [];
+  @observable allFiltrate: PageField[] = [];
+  @observable rightsLoading = false;
 
   @computed get tableColumn(): any[] {
     const column: any[] = [];
-    [...this.fieldList].sort((a, b) => a.sort - b.sort).forEach((field) => {
+    let recordColNum = 0;
+    let fixedColumnIndex: number[] = [];
+    switch (this.pageTableShowRule.fixedRule) {
+    case 'one':
+      fixedColumnIndex = [0];
+      break;
+    case 'previous_two':
+      fixedColumnIndex = [0, 1];
+      break;
+    }
+
+    [...this.fieldList].sort((a: any, b: any) => {
+      return a.sort - b.sort;
+    }).forEach((field) => {
       if (field.visible) {
         column.push({
           id: field.id,
           Header: field.label,
           accessor: field.id,
+          fixed: fixedColumnIndex.includes(recordColNum),
         });
+        recordColNum += 1;
       }
     });
     return column;
@@ -61,38 +63,62 @@ class FormDesignStore {
     return Object.keys(fieldsMap).map((key: string, index: number) => {
       return {
         id: key,
-        placeholder: '搜索关键字...',
         label: fieldsMap[key].title || '',
         type: fieldsMap[key].type,
-        ...getAttribute(this.pageConfig[key], index),
+        enum: fieldsMap[key].enum,
+        isSystem: !fieldsMap[key].display,
+        cProps: fieldsMap[key]['x-component-props'],
+        ...getAttribute(this.pageTableConfig[key], index),
       };
     });
   }
 
-  @computed get filtrates(): any[] {
-    return this.allFiltrate.filter(({ id }) => {
-      return this.fieldList.findIndex((field: PageField) => field.id === id) > -1;
+  @computed get filtrates(): FilterField[] {
+    const filtrates: FilterField[] = [];
+
+    this.allFiltrate.forEach((field: PageField) => {
+      if (this.fieldList.findIndex(({ id }: PageField) => field.id === id) === -1) {
+        return;
+      }
+      filtrates.push(getFilterField(field));
     });
+
+    return filtrates;
   }
 
   constructor() {
     this.destroyFetchScheme = reaction(() => this.pageID, this.fetchFormScheme);
+    this.destroySetTableConfig = reaction(() => {
+      return this.pageTableShowRule;
+    }, appPageDataStore.setTableConfig);
   }
 
   @action
-  setFilterList = (list) => {
-    this.allFiltrate = list;
-    console.log('list: ', list);
+  setFilterList = (filtrates: PageField[]) => {
+    this.allFiltrate = filtrates;
   }
 
   @action
-  addRight = (right) => {
-    this.rightList = [right, ...this.rightList];
+  addRight = (rights: RightsCreate) => {
+    const _rights = {
+      ...rights,
+      sequence: this.rightsList.length,
+      formID: this.pageID,
+    };
+    return createPerGroup(_rights).then((res) => {
+      this.rightsList = [...this.rightsList, { ..._rights, ...res.data }];
+    });
   }
 
   @action
-  deleteRight = (_id: number) => {
-    this.rightList = this.rightList.filter(({ id }) => id !== _id);
+  deleteRight = (id: string) => {
+    const delAfter = this.rightsList.filter((rights) => id !== rights.id);
+    deleteRights({ id, moveArr: delAfter.map((AFrights, sequence) => {
+      return { id: AFrights.id, sequence };
+    }) }).then(() => {
+      notify.success('删除成功!');
+      this.rightsList = delAfter;
+    });
   }
 
   @action
@@ -101,16 +127,21 @@ class FormDesignStore {
   }
 
   @action
-  setAllPageConfig = (values: any[]) => {
+  setAllPageTableConfig = (values: any[]) => {
     values.forEach((value) => {
-      this.pageConfig[value.id] = { ...this.pageConfig[value.id], ...value };
+      this.pageTableConfig[value.id] = { ...this.pageTableConfig[value.id], ...value };
     });
   }
 
   @action
-  setPageConfig = (key: string, newConfig: any) => {
-    const _config = { [key]: { ...this.pageConfig[key], ...newConfig } };
-    this.pageConfig = { ...this.pageConfig, ..._config };
+  setPageTableShowRule = (newRule: any) => {
+    this.pageTableShowRule = { ...this.pageTableShowRule, ...newRule };
+  }
+
+  @action
+  setPageTableConfig = (key: string, newConfig: any) => {
+    const _config = { [key]: { ...this.pageTableConfig[key], ...newConfig } };
+    this.pageTableConfig = { ...this.pageTableConfig, ..._config };
   }
 
   @action
@@ -124,7 +155,11 @@ class FormDesignStore {
       const { schema = {}, config, ...others } = res.data || {};
       this.formStore = new FormStore({ schema });
       this.formMetadata = others;
-      this.pageConfig = config || {};
+      if (config) {
+        this.pageTableConfig = config.pageTableConfig || {};
+        this.allFiltrate = config.filtrate || [];
+        this.pageTableShowRule = config.pageTableShowRule || {};
+      }
       this.pageLoading = false;
     }).catch(() => {
       this.pageLoading = false;
@@ -156,8 +191,41 @@ class FormDesignStore {
   }
 
   @action
-  createPageScheme = () => {
-    createPageScheme();
+  savePageConfig = () => {
+    createPageScheme({
+      tableID: this.pageID, config: {
+        pageTableConfig: this.pageTableConfig,
+        filtrate: this.allFiltrate,
+        pageTableShowRule: this.pageTableShowRule,
+      },
+    }).then(() => {
+      notify.success('保存成功!');
+    });
+  }
+
+  @action
+  fetchRights = () => {
+    this.rightsLoading = true;
+    fetchRights(this.pageID).then((res) => {
+      this.rightsList = res.data.list;
+      this.rightsLoading = false;
+    }).catch(() => {
+      this.rightsLoading = false;
+    });
+  }
+
+  @action
+  updatePerGroup = (rights:Rights) => {
+    console.log('rights: ', rights);
+    return updatePerGroup(rights).then(()=>{
+      this.rightsList = this.rightsList.map((_rights)=>{
+        if (rights.id===_rights.id) {
+          return { ..._rights, ...rights };
+        }
+        return _rights;
+      });
+      notify.success('修改成功！');
+    });
   }
 }
 

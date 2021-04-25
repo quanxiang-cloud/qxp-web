@@ -1,22 +1,49 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { observer } from 'mobx-react';
 
 import Button from '@c/button';
 import TextHeader from '@c/text-header';
+import PageLoading from '@appC/page-loading';
 
 import CreateRightModal from './create-right-modal';
-import RightItem from './right-item';
+import RightsItem from './rights-item';
 import store from '../store';
 
 function ForEmployee() {
   const [modalType, setModalType] = useState('');
 
-  const handleClick = (key: string, right: any) => {
+  useEffect(() => {
+    store.fetchRights();
+  }, []);
+
+  const handleClick = (key: string, rights: Rights) => {
     switch (key) {
     case 'del':
-      store.deleteRight(right.id);
+      store.deleteRight(rights.id);
       break;
     }
+  };
+
+  const rightsRender = () => {
+    if (store.rightsLoading) {
+      return <PageLoading />;
+    }
+
+    if (store.rightsList.length) {
+      return (
+        <div className='px-20 overflow-auto'>
+          {store.rightsList.map((rights: Rights) => (
+            <RightsItem key={rights.id} rights={rights} actions={handleClick} />
+          ))}
+        </div>
+      );
+    }
+    return (
+      <div className='app-no-data mt-58'>
+        <img src='/dist/images/new_tips.svg' />
+        <span>暂无权限组</span>
+      </div>
+    );
   };
 
   return (
@@ -36,11 +63,7 @@ function ForEmployee() {
           新建权限组
         </Button>
       </div>
-      <div className='px-20 overflow-auto'>
-        {store.rightList.map((right: any) => (
-          <RightItem key={right.id} right={right} actions={handleClick} />
-        ))}
-      </div>
+      {rightsRender()}
       {modalType === 'creatRight' && (
         <CreateRightModal onCancel={() => setModalType('')} />
       )}
