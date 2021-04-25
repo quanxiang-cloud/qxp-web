@@ -1,19 +1,30 @@
-function httpClient(url: string, body?: any, headers?: HeadersInit) {
+function httpClient<TData>(
+  url: string, body?: any, additionalHeaders?: HeadersInit
+): Promise<TData> {
+  const headers = {
+    ...additionalHeaders,
+    'content-type': 'application/json',
+    'X-Proxy': 'API',
+  };
+
   return fetch(url, {
     method: 'POST',
-    body: body ? JSON.stringify(body): body,
+    body: JSON.stringify(body || {}),
     headers: headers,
   }).then((response) => {
     if (response.status !== 200) {
-      // return response.headers.get('Content-Type')?.indexOf('application/json');
-      return Promise.reject({
-        code: response.status,
-        message: 'todo some error message',
-      });
+      return Promise.reject(new Error('todo some error message'));
     }
 
     return response.json();
-  }).then(({ data }) => data);
+  }).then((resp) => {
+    const { code, message, data } = resp;
+    if (code !== 0) {
+      return Promise.reject(new Error(message));
+    }
+
+    return data as TData;
+  });
 }
 
 export default httpClient;
