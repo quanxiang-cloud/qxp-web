@@ -26,7 +26,7 @@ interface Props {
 
 export default function DepartmentTable({ isSuper, onCancelAssociation, roleID, type }: Props) {
   const [selectedKeys, setSelectedKeys] = useState<string[]>([]);
-  const [pagination, setPagination] = useState<IPagination>(PAGINATION);
+  const [pagination, setPagination] = useState(PAGINATION);
   const [{ userInfo }] = usePortalGlobalValue();
   const [, setMemberIDMap] = useState<
     Map<string, EmployeeOrDepartmentOfRole>
