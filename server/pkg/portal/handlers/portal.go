@@ -13,9 +13,12 @@ func PortalHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	userFuncTags := getUserFuncTags(r)
+
 	renderTemplate(w, "portal.html", map[string]interface{}{
-		"user":      user,
-		"debugMode": contexts.Config.DevMode,
-		"CONFIG":    contexts.Config.ClientConfig,
+		"user":         user,
+		"userFuncTags": userFuncTags,
+		"debugMode":    contexts.Config.DevMode,
+		"CONFIG":       contexts.Config.ClientConfig,
 	})
 }
