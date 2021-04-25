@@ -1,5 +1,4 @@
 import { createGlobalState } from '@portal/states_to_be_delete/create-global-state';
-import { IRole } from '@lib/api/auth';
 
 export interface IUsePortalGlobalValue {
   authority: string[];
@@ -12,7 +11,7 @@ export interface IUsePortalGlobalValue {
     dep?: Department;
     depIds: string[];
     authority: string[];
-    roles: IRole[];
+    roles: Role[];
     status?: number;
   };
 }
