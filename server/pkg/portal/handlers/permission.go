@@ -25,3 +25,29 @@ func getUserFuncTags(r *http.Request) []string {
 
 	return tags
 }
+
+// Role represents user role fields
+type Role struct {
+	ID     string `json:"id"`
+	Name   string `json:"name"`
+	RoleID string `json:"roleID"`
+	Tag    string `json:"tag"`
+}
+
+func getUserRoles(r *http.Request) []Role {
+	respBuffer, errMsg := sendRequest(r.Context(), "POST", "/api/v1/goalie/listUserRole", map[string]string{})
+	if errMsg != "" {
+		contexts.Logger.Errorf("failed to get user roles: %s", errMsg)
+		return []Role{}
+	}
+
+	rolesRaw := gjson.Get(respBuffer.String(), "data.roles").Raw
+	var roles []Role
+	if err := json.Unmarshal([]byte(rolesRaw), &roles); err != nil {
+		contexts.Logger.Errorf("failed to unmarshal user roles: %s", err.Error())
+
+		return []Role{}
+	}
+
+	return roles
+}
