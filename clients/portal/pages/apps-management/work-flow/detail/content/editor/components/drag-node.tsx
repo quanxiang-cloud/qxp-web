@@ -1,5 +1,5 @@
 import React, { DragEvent } from 'react';
-import classnames from 'classnames';
+import cs from 'classnames';
 
 import Icon from '@c/icon';
 
@@ -12,7 +12,7 @@ interface RenderProps {
   iconClassName?: string;
 }
 
-export default function DragNode({
+export default function DragNodeComponent({
   text, type, width, height, iconName, iconClassName,
 }: RenderProps) {
   function onDragStart(event: DragEvent, nodeType: string, width: number, height: number) {
@@ -31,7 +31,7 @@ export default function DragNode({
       draggable
       onDragStart={(e) => onDragStart(e, type, width, height)}
     >
-      <Icon name={iconName} size={40} className={classnames('mr-4 text-white', iconClassName)} />
+      <Icon name={iconName} size={40} className={cs('mr-4 text-white', iconClassName)} />
       <span className="ml-16 text-body2">{text}</span>
     </div>
   );

@@ -3,7 +3,7 @@ import React, { forwardRef, Ref } from 'react';
 import Select from '@c/select';
 import Icon from '@c/icon';
 
-import { updateDataField } from '../../store';
+import { updateDataField } from '../store';
 
 interface Props {
   defaultValue: string;

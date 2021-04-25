@@ -12,7 +12,7 @@ import Select from '@c/select';
 import { ConditionItemOptions } from './condition-item';
 import { CurrentElement, updateDataField } from '../../../store';
 
-export default forwardRef(function(
+export default forwardRef(function TriggerWay(
   props: DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement> & {
     currentElement: CurrentElement;
     formFieldOptions: ConditionItemOptions;

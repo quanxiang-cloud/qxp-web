@@ -14,7 +14,7 @@ interface Props {
   };
 }
 
-export default function End({ data }: Props) {
+export default function EndNodeComponent({ data }: Props) {
   return (
     <div
       className="shadow-flow-header rounded-tl-8 rounded-tr-8 rounded-br-0 rounded-bl-8

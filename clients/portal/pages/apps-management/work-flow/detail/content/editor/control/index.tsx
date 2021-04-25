@@ -1,5 +1,5 @@
 import React, { memo, useCallback, HTMLAttributes } from 'react';
-import classnames from 'classnames';
+import cs from 'classnames';
 
 import Icon from '@c/icon';
 import Button from '@c/button';
@@ -66,7 +66,7 @@ function Controls({
   }, [isInteractive, setInteractive, onInteractiveChange]);
 
   return (
-    <div className={classnames('flex flex-row items-center justify-between', className)}>
+    <div className={cs('flex flex-row items-center justify-between', className)}>
       <Button
         modifier="primary"
         iconName="toggle_on"

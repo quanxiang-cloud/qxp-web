@@ -1,5 +1,7 @@
 import { Position } from 'react-flow-renderer';
 
+import { deepClone } from '@lib/utils';
+
 export interface GetCenterParams {
   sourceX: number;
   sourceY: number;
@@ -41,3 +43,47 @@ export const getCenter = ({
 
   return [centerX, centerY, xOffset, yOffset];
 };
+
+const approveAndFillInCommonData = {
+  basicConfig: {
+    approvePersons: [],
+    multiplePersonApproveWay: '',
+    whenNoApprovePerson: '',
+    autoApproveRules: [],
+    approveRule: {
+      deadLine: {
+        breakPoint: '',
+        day: -1,
+        hours: -1,
+        minutes: -1,
+        urge: {
+          day: -1,
+          hours: -1,
+          minutes: -1,
+          repeat: false,
+        },
+      },
+      whenTimeout: {
+        type: '',
+        value: '',
+      },
+    },
+  },
+  fieldPermission: {},
+  operatorPermission: [],
+  events: {},
+};
+export function getNodeInitialData(type: 'formData' | 'approve' | 'fillIn') {
+  const dataMap = {
+    formData: {
+      form: { name: '', value: '' },
+      triggerWay: '',
+      whenAlterFields: [],
+      triggerCondition: [],
+      events: {},
+    },
+    approve: deepClone(approveAndFillInCommonData),
+    fillIn: deepClone(approveAndFillInCommonData),
+  };
+  return dataMap[type];
+}

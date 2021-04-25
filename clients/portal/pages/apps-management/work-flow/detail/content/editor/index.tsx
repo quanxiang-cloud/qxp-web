@@ -28,7 +28,10 @@ import Plus from './edges/plus';
 import Control from './control';
 import Components from './components';
 import FormDataForm from './forms/form-data';
+import FillInForm from './forms/intermidiate/fill-in';
+import ApproveForm from './forms/intermidiate/approve';
 import store, { updateStore } from './store';
+import { getNodeInitialData } from './utils';
 
 import 'react-flow-renderer/dist/style.css';
 import 'react-flow-renderer/dist/theme-default.css';
@@ -131,7 +134,7 @@ export default function Editor() {
           id,
           type,
           position: { x: position.x - (width / 2), y: position.y - (height / 2) },
-          data: { width, height },
+          data: { width, height, ...getNodeInitialData(type) },
         });
       }
     });
@@ -202,6 +205,8 @@ export default function Editor() {
         </div>
         <Components />
         <FormDataForm />
+        <ApproveForm />
+        <FillInForm />
       </ReactFlowProvider>
     </div>
   );

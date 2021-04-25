@@ -86,7 +86,7 @@ export const exportEmployees = (data: Employee[]) => {
 
 export function exportEmployeesFail(
   headers: EmployeeTableColumn[],
-  data: UserInfo[],
+  data: Employee[],
   fileName: string
 ) {
   const _headers = headers

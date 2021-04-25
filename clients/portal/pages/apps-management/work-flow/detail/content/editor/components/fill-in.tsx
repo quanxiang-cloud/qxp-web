@@ -1,11 +1,12 @@
 import React from 'react';
-import classnames from 'classnames';
+import cs from 'classnames';
 
 import Icon from '@c/icon';
 
 import { Params } from '../engine';
+import { updateStore } from '../store';
 
-export function formData(params: Params) {
+export function fillIn(params: Params) {
   return Promise.resolve({ formData: 'fillIn', ...params });
 }
 
@@ -16,14 +17,15 @@ interface Props {
   }
 }
 
-export default function FormData({ data }: Props) {
+export default function FillInNodeComponent({ data }: Props) {
   return (
     <div
-      className={classnames(
+      className={cs(
         'shadow-title rounded-tl-8 rounded-tr-8 rounded-br-2',
         'rounded-bl-8 bg-white flex flex-col',
         `w-${data.width}`, `h-${data.height}`
       )}
+      onClick={() => updateStore(null, () => ({ asideDrawerType: 'fillInForm' }))}
     >
       <header className="flex items-center py-4 px-12 bg-teal-500 rounded-tl-8
         rounded-tr-8 rounded-br-2 rounded-bl-8">

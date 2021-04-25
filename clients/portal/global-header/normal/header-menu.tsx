@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import classnames from 'classnames';
+import cs from 'classnames';
 
 import More from '@c/more';
 import Icon from '@c/icon';
@@ -73,7 +73,7 @@ export default function HeaderMenu() {
                 <Icon
                   name="caret-down"
                   style={{ marginLeft: '8px' }}
-                  className={classnames('transform transition-all', {
+                  className={cs('transform transition-all', {
                     'rotate-180': isPersonalSettingOpen,
                   })}
                 />

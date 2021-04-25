@@ -1,16 +1,16 @@
 import React from 'react';
 import { Handle, Position } from 'react-flow-renderer';
 
-import Approve from '../components/approve';
+import ApproveNodeComponent from '../components/approve';
 
-export default function FormDataNode(props: any) {
+export default function ApproveNode(props: any) {
   return (
     <>
       <Handle
         type="target"
         position={Position.Top}
       />
-      <Approve {...props} />
+      <ApproveNodeComponent {...props} />
       <Handle
         type="source"
         position={Position.Bottom}

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import classnames from 'classnames';
+import cs from 'classnames';
 
 import Toggle from '@c/toggle';
 import Icon from '@c/icon';
@@ -12,7 +12,7 @@ interface Props {
   formFieldOptions: ConditionItemOptions;
 }
 
-export default function({ currentElement, formFieldOptions }: Props) {
+export default function TriggerCondition({ currentElement, formFieldOptions }: Props) {
   const [openMore, setOpenMore] = useState(false);
   const { triggerCondition = [] } = currentElement.data || {};
 
@@ -128,7 +128,7 @@ export default function({ currentElement, formFieldOptions }: Props) {
         </div>
         <Toggle onChange={onChange} />
       </div>
-      <div className={classnames('overflow-hidden transition-all', {
+      <div className={cs('overflow-hidden transition-all', {
         visible: openMore,
         invisible: !openMore,
         'h-0': !openMore,
@@ -138,7 +138,7 @@ export default function({ currentElement, formFieldOptions }: Props) {
       })}>
         {conditionRender(triggerCondition)}
         <div
-          className={classnames(
+          className={cs(
             'flex items-center border border-dashed border-gray-300 small-border-radius',
             'py-5 text-button my-16 justify-center cursor-pointer h-32',
           )}

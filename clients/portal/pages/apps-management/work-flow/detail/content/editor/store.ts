@@ -9,20 +9,66 @@ export type Condition = {
 }
 export type AndCondition = Condition[];
 export type Conditions = AndCondition[];
-export type AsideDrawerType = '' | 'formDataForm' | 'components';
+export type AsideDrawerType = '' | 'formDataForm' | 'fillInForm' | 'approveForm' | 'components';
 export type CurrentConnection = {[key: string]: unknown};
+
+export interface FormDataData {
+  width: number;
+  height: number;
+  form: { name: string; value: string; },
+  triggerWay: 'whenAdd' | 'whenAlter' | '';
+  whenAlterFields: string[];
+  triggerCondition: Conditions;
+  events: {},
+}
+
+export interface FillInDataBasicConfig {
+  approvePersons: string[];
+  multiplePersonApproveWay: 'and' | 'or';
+  whenNoApprovePerson: 'skip' | 'transferAdmin';
+  autoApproveRules: string[];
+  approveRule: {
+    deadLine: {
+      breakPoint: string;
+      day: number;
+      hours: number;
+      minutes: number;
+      urge: {
+        day: number;
+        hours: number;
+        minutes: number;
+        repeat: boolean;
+      }
+    },
+    whenTimeout: {
+      type: string;
+      value: string;
+    };
+  };
+}
+
+export type ApproveDataBasicConfig = FillInDataBasicConfig;
+
+export interface FillInData {
+  basicConfig: FillInDataBasicConfig;
+  fieldPermission: FieldPermission;
+  operatorPermission: {value: string; text: string;}[];
+  events: {};
+}
+
+export interface FieldPermission {
+  fieldName: string;
+  read: boolean;
+  write: boolean;
+  initialValue: string;
+  submitValue: string;
+  children: FieldPermission[];
+}
 
 export interface CurrentElement {
   id: string;
-  type: 'formData',
-  data: {
-    width: number;
-    height: number;
-    form: { name: string; value: string; },
-    triggerWay: 'whenAdd' | 'whenAlter';
-    whenAlterFields: string[];
-    triggerCondition: Conditions;
-  },
+  type: 'formData' | 'fillIn' | 'approve',
+  data: FormDataData & FillInData,
   position: { x: number; y: number; }
 }
 
