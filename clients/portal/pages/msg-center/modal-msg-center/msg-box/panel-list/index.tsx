@@ -8,7 +8,7 @@ import Loading from '@c/loading';
 import Error from '@c/error';
 import MsgItem from '@portal/pages/msg-center/msg-item';
 import Toolbar from './toolbar';
-import { getMessageList, deleteMsgByIds, setMsgAsReadByIds, getUnreadMsgCount } from '@portal/api/message-center';
+import { getMessageList, deleteMsgByIds, setMsgAsReadByIds, getUnreadMsgCount, setAllMsgAdRead } from '@portal/api/message-center';
 import { MsgType, MsgReadStatus } from '@portal/pages/system-mgmt/constants';
 import Pagination from '@c/pagination';
 import Modal from '@c/modal';
@@ -117,7 +117,7 @@ const PanelList = ({ msgCenter }: Props & Pick<MobxStores, 'msgCenter' | any>) =
       title: '全部已读',
       content: '确定要将全部类型的消息标记为已读吗?',
       cb: ()=>{
-        setMsgAsReadByIds(msgList.map((itm: any) => itm.id))
+        setAllMsgAdRead()
           .then((response) => {
             if (response.code == 0) {
               refetch();
