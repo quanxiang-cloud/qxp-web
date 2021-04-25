@@ -30,5 +30,6 @@ interface Window {
   USER: CurrentUser;
   USER_ROLES: Role[];
   USER_FUNC_TAGS: string[];
+  CONFIG?: Record<string, unknown>;
   [key: string]: unknown;
 }

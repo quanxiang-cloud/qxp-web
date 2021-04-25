@@ -19,7 +19,7 @@ function ensureConnectionReady(connection: WebSocket): Promise<WebSocket> {
 function makeConnection(): Promise<WebSocket> {
   return getOTP().then((token) => {
     const protocol = window.location.protocol === 'http:' ? 'ws' : 'wss';
-    const connection = new WebSocket(`${protocol}://${window.CONFIG.websocket_hostname}/api/v1/message/ws?token=${token}`);
+    const connection = new WebSocket(`${protocol}://${window?.CONFIG?.websocket_hostname}/api/v1/message/ws?token=${token}`);
     return ensureConnectionReady(connection);
   });
 }
