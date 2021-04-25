@@ -144,6 +144,9 @@ const PanelList = ({ msgCenter }: Props & Pick<MobxStores, 'msgCenter' | any>) =
             if (response.code == 0) {
               refetch();
               unReadRefetch();
+              setSelectedRows((rows)=> {
+                return rows.filter((id)=> !selectedRows.includes(id));
+              });
               closeConfirmInfo();
             } else {
               Message.warning('操作失败');
