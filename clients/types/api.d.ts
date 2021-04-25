@@ -3,9 +3,3 @@ interface ResponseToBeDelete<T> {
   msg?: string;
   data?: T;
 }
-
-interface IPagination {
-  total: number;
-  current: number;
-  pageSize: number;
-}

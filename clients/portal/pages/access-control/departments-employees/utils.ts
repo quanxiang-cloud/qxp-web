@@ -28,7 +28,7 @@ export const excelHeader: EmployeeTableColumn[] = [
   },
 ];
 
-export const exportEmployees = ( data: UserInfo[]) => {
+export const exportEmployees = ( data: Employee[]) => {
   const headers = excelHeader;
   const fileName = '人员列表.xlsx';
   const _headers = headers
@@ -84,7 +84,7 @@ export const exportEmployees = ( data: UserInfo[]) => {
   });
 };
 
-export function exportEmployeesFail(headers: EmployeeTableColumn[], data: UserInfo[], fileName: string) {
+export function exportEmployeesFail(headers: EmployeeTableColumn[], data: Employee[], fileName: string) {
   const _headers = headers
     .map((item, i) =>
       Object.assign(

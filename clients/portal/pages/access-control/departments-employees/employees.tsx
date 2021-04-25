@@ -41,8 +41,8 @@ export default function Employees({
   const [modalType, setModalType] = useState<ModalType>('');
   const [userState, setUserState] = useState<UserStatus>(UserStatus.normal);
   const [selectedUserIds, setSelectedUserIds] = useState<string[]>([]);
-  const [selectedUsers, setSelectedUsers] = useState<UserInfo[]>([]);
-  const [currUser, setCurrUser] = useState<UserInfo>(initUserInfo);
+  const [selectedUsers, setSelectedUsers] = useState<Employee[]>([]);
+  const [currUser, setCurrUser] = useState<Employee>(initUserInfo);
   const [pageParams, setPageParams] = React.useState(initSearch);
   const [{ userInfo }] = usePortalGlobalValue();
 
@@ -63,17 +63,17 @@ export default function Employees({
     setSelectedUserIds([]);
   }, [department.id]);
 
-  function handleDepLeader(params: UserInfo) {
+  function handleDepLeader(params: Employee) {
     setCurrUser(params);
     openModal('leader_handle');
   }
 
-  function handleUserInfo(user: UserInfo) {
+  function handleUserInfo(user: Employee) {
     setCurrUser(user);
     openModal('edit_employees');
   }
 
-  function handleResetPWD(user: UserInfo) {
+  function handleResetPWD(user: Employee) {
     setSelectedUsers([user]);
     openModal('reset_password');
   }
@@ -91,7 +91,7 @@ export default function Employees({
     );
   }
 
-  function handleUserState(status: UserStatus, user: UserInfo) {
+  function handleUserState(status: UserStatus, user: Employee) {
     setCurrUser(user);
     setUserState(status);
     openModal('alert_user_state');
@@ -109,7 +109,7 @@ export default function Employees({
     }).then((res) => {
       if (res && res.data) {
         const { data } = res;
-        const newData: UserInfo[] = data.map((user) => {
+        const newData: Employee[] = data.map((user) => {
           user.depName = user.dep && user.dep.departmentName;
           return user;
         });
@@ -143,7 +143,7 @@ export default function Employees({
       disabled: record.useStatus === -2,
       name: record.id,
     }),
-    onChange: (selectedRowKeys: string[], selectedRows: UserInfo[]) => {
+    onChange: (selectedRowKeys: string[], selectedRows: Employee[]) => {
       setSelectedUserIds(selectedRowKeys);
       setSelectedUsers(selectedRows);
     },
@@ -155,7 +155,7 @@ export default function Employees({
       title: '',
       dataIndex: '',
       width: 40,
-      render: (text: string, record: UserInfo) => {
+      render: (text: string, record: Employee) => {
         const menu = EmployeesActions.filter((menu) => {
           return menu.authority.includes(record?.useStatus || 0) &&
             menu.leader.includes(record?.isDEPLeader || 0);

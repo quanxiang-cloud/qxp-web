@@ -4,7 +4,7 @@ import { UserStatus } from '../type';
 
 interface Props {
   columnKey: 'phone' | 'email' | 'dep';
-  user: UserInfo;
+  user: Employee;
 }
 
 export default function OtherCell({ columnKey, user: userinfo }: Props) {

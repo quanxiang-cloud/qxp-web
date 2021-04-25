@@ -42,7 +42,7 @@ func HandleResetPasswordSubmit(w http.ResponseWriter, r *http.Request) {
 	respBuffer, errMsg := contexts.SendRequest(r.Context(), "POST", "/api/v1/nurturing/userResetPWD", bytes.NewBuffer(resetPasswordParams), map[string]string{
 		"Content-Type": "application/json",
 		"User-Agent":   r.Header.Get("User-Agent"),
-		"Access-Token": GetToken(r),
+		"Access-Token": getToken(r),
 	})
 	if errMsg != "" {
 		contexts.Logger.Errorf("failed to reset password: %s, response: %s request_id: %s", errMsg, respBuffer.String(), requestID)
