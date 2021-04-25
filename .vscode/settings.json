@@ -9,4 +9,5 @@
   ],
   "files.eol": "\n",
   "svg.preview.background": "black",
+  "go.lintTool": "golint",
 }

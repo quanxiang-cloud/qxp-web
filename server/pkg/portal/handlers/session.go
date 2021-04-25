@@ -159,23 +159,13 @@ func RedirectToLoginPage(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/login/password", http.StatusFound)
 }
 
-// ShouldLogin redirect to login if 401
-// todo delete this
-func ShouldLogin(w http.ResponseWriter, r *http.Request, resp *http.Response) bool {
-	if resp.StatusCode == 401 {
-		http.Redirect(w, r, "/login/password", http.StatusFound)
-		return true
-	}
-	return false
-}
-
 func GetUserInfo(w http.ResponseWriter, r *http.Request, token string) (
 	map[string]interface{}, error) {
 
 	requestID := contexts.GetRequestID(r)
-	var userInfoResponse map[string]interface{} 
+	var userInfoResponse map[string]interface{}
 	respBuffer, errMsg := contexts.SendRequest(r.Context(), "POST", "/api/v1/org/userUserInfo", r.Body, map[string]string{
-		"Access-Token":  token,
+		"Access-Token": token,
 	})
 
 	if errMsg != "" {
@@ -189,11 +179,11 @@ func GetUserInfo(w http.ResponseWriter, r *http.Request, token string) (
 	err := json.Unmarshal(respBuffer.Bytes(), &userInfoResponse)
 	if err != nil {
 		contexts.Logger.Errorf(
-			"failed to unmarshal user info body, err: %s, request_id: %s", 
-			err.Error(), 
+			"failed to unmarshal user info body, err: %s, request_id: %s",
+			err.Error(),
 			requestID,
 		)
 	}
 
-	return userInfoResponse, nil 
+	return userInfoResponse, nil
 }
