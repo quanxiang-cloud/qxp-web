@@ -5,7 +5,7 @@ import { getImgColor } from '../utils';
 import { UserStatus } from '../type';
 
 interface Props {
-  user: UserInfo;
+  user: Employee;
 }
 
 export default function UserCell({ user }: Props) {

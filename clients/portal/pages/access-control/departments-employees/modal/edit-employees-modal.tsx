@@ -29,7 +29,7 @@ export type FormValues = {
 };
 
 interface Props {
-  user: UserInfo;
+  user: Employee;
   closeModal(): void;
 }
 

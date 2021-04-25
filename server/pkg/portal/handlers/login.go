@@ -106,7 +106,7 @@ func HandleLoginSubmit(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	SaveToken(r, loginResponse.Data.AccessToken, loginResponse.Data.RefreshToken, expireTime)
+	saveToken(r, loginResponse.Data.AccessToken, loginResponse.Data.RefreshToken, expireTime)
 
 	redirectURL := contexts.GetSessionValue(r, "redirect_url")
 	if redirectURL == "" || redirectURL == "/favicon.ico" || strings.HasPrefix(redirectURL, "/_") {

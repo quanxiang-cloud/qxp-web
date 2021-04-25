@@ -31,11 +31,9 @@ func ProxyAPIHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	req.Header.Set("Access-Token", getToken(r))
 	req.Header.Set("Content-Type", r.Header.Get("Content-Type"))
 	req.Header.Set("User-Agent", r.Header.Get("User-Agent"))
-
-	token := GetToken(r)
-	req.Header.Set("Access-Token", token)
 
 	contexts.Logger.Debugf(
 		"proxy api request, method: %s, url: %s, header: %s request_id: %s", method, targetURL, req.Header, contexts.GetRequestID(r))

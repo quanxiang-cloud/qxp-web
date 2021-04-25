@@ -94,7 +94,8 @@ export default class Captcha extends InputField {
     this.isSending = true;
     this.callSendApi()
       .then((resp: unknown) => {
-        const res = resp as ResponseToBeDelete<string>;
+        // todo fixme
+        const res = resp as any;
         if (res.code !== 0) {
           this.showError(res.msg);
         }

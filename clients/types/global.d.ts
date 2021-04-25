@@ -1,21 +1,16 @@
-interface UserInfo {
+type CurrentUser = {
   id: string;
   userName: string;
-  phone: string;
+  status: number;
   email: string;
-  userIconURL?: string;
-  dep?: Department;
-  depIds?: string[];
-  authority?: string[];
-  roleId?: string;
-  deleteId?: string;
-  useStatus?: number;
-  isDEPLeader?: number;
-  depName?: string;
-  status?: number;
+  phone: string;
+  depIds: string[]
+  dep: Department;
 }
 
 interface Window {
-  USER: UserInfo;
+  USER: CurrentUser;
+  USER_ROLES: Role[];
+  USER_FUNC_TAGS: string[];
   [key: string]: unknown;
 }

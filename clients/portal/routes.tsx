@@ -34,7 +34,7 @@ export default function Routes(): JSX.Element {
   );
   const { data, isLoading: rolesIsLoading } = useQuery(
     'GET_USER_ROLES',
-    () => getUserRoles(USER?.id || '', USER?.depIds || []),
+    () => getUserRoles(),
     {
       refetchOnWindowFocus: false,
       retry: false,

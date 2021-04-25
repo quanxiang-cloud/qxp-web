@@ -17,7 +17,7 @@ type BatchDepParams = {
 };
 
 interface Props {
-  users: UserInfo[];
+  users: Employee[];
   closeModal(): void;
 }
 

@@ -15,6 +15,8 @@ func loginRequired(h http.HandlerFunc) http.HandlerFunc {
 			return
 		}
 
+		r = handlers.DecoratRequest(r)
+
 		h(w, r)
 	}
 }
