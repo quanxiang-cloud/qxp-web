@@ -90,6 +90,7 @@ export default observer(function EmployeeTable({
   function renderTotalTip() {
     return (
       <div className="text-12 text-gray-600">
+        已选<span className="ml-4">{store.selectedKeys.length}</span>，
         共<span className="mx-4">{total || 0}</span>条数据
       </div>
     );

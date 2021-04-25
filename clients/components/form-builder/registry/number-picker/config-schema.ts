@@ -90,6 +90,28 @@ const schema: ISchema = {
       'x-component': 'select',
       'x-index': 8,
     },
+    rangeSetting: {
+      type: 'object',
+      properties: {
+        range: {
+          type: 'object',
+          'x-component': 'CheckboxGroup',
+          enum: [
+            { label: '最大值最小值', value: true },
+          ],
+        },
+        min: {
+          title: '最小值',
+          type: 'string',
+          'x-component': 'Input',
+        },
+        max: {
+          title: '最大值',
+          type: 'string',
+          'x-component': 'Input',
+        },
+      },
+    },
   },
 };
 

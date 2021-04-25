@@ -11,7 +11,7 @@ import { FileUploadStatus } from '../type';
 import { exportEmployeesFail } from '../utils';
 import { getUserTemplate, importTempFile, resetUserPWD } from '../api';
 
-const columns: Columns = [
+const columns: EmployeeTableColumn[] = [
   {
     title: '姓名',
     dataIndex: 'userName',

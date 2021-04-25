@@ -12,6 +12,7 @@
   border-radius: 12px;
 }
 
+<<<<<<< HEAD
 .max-w-screen {
   max-width: 1440px;
 }
@@ -33,9 +34,9 @@ html {
   margin-bottom:0 !important;
 }
 
-body {
+#root {
   background-image: url(/dist/images/viewport-bg.svg);
   background-size: cover;
   background-color: rgb(55, 95, 216, 15%);
-  min-width: 1170px;
+  height: 100vh;
 }

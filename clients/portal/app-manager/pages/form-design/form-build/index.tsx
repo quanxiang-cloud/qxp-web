@@ -1,17 +1,40 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { observer } from 'mobx-react';
-
-import { FormBuilder } from '@c/form-builder';
-import Button from '@c/button';
-
 import store from '../store';
 
+import { FormBuilder } from '@c/form-builder';
+import registry from '@c/form-builder/registry';
+import Button from '@c/button';
+
+import { Modal, Message } from '@QCFE/lego-ui';
+
+import { SchemaForm } from '@formily/antd';
+
 const FormPage = () => {
+  const [previewModalVisible, setPreviewModalVisible] = useState(false);
+  const [tempFormValue, setTempFormValue] = useState({});
+
   if (!store.formStore) {
     return null;
   }
 
   const hasScheme = !!store.formMetadata.id;
+
+  const handlePreview = () => {
+    setPreviewModalVisible(true);
+  };
+
+  const handleSimulateSubmit = () => {
+    Message.success('提交表单：' + JSON.stringify(tempFormValue));
+  };
+
+  const handleFormChange = (value: React.SetStateAction<{}>) => {
+    setTempFormValue(value);
+  };
+
+  const handlePreviewClose = () => {
+    setPreviewModalVisible(false);
+  };
 
   return (
     <>
@@ -23,7 +46,7 @@ const FormPage = () => {
         >
           保存表单
         </Button>
-        <Button iconName='preview'>
+        <Button iconName='preview' onClick={handlePreview}>
           预览
         </Button>
         <span className='text-underline-no-color cursor-pointer'>
@@ -31,6 +54,36 @@ const FormPage = () => {
         </span>
       </div>
       <FormBuilder store={store.formStore} />
+      <Modal
+        title="预览表单"
+        onOk={handleSimulateSubmit}
+        onCancel={handlePreviewClose}
+        visible={previewModalVisible}
+        footer={
+          (<div>
+            <Button
+              className="mr-16"
+              onClick={handlePreviewClose}
+            >
+              关闭
+            </Button>
+            <Button
+              modifier="primary"
+              onClick={handleSimulateSubmit}
+            >
+              模拟提交
+            </Button>
+          </div>
+          )
+        }
+      >
+        <SchemaForm
+          className="w-588"
+          components={{ ...registry.components }}
+          schema={store.formStore.schemaForPreview}
+          onChange={handleFormChange}
+        />
+      </Modal>
     </>
   );
 };

@@ -17,9 +17,7 @@ function FormLabelConfig(): JSX.Element {
       <>
         <div
           className={classnames('content-item', { 'item-checked': store.labelAlign==='left' })}
-          onClick={() => {
-            handleClick('left');
-          }}
+          onClick={() => handleClick('left')}
         >
           <div>
             <span className="item-label"></span>
@@ -34,9 +32,7 @@ function FormLabelConfig(): JSX.Element {
         </div>
         <div
           className={classnames('content-item', { 'item-checked': store.labelAlign==='top' })}
-          onClick={() => {
-            handleClick('top');
-          }}
+          onClick={() => handleClick('top')}
         >
           <div className="item-label"></div>
           <div className="item-body" style={{ width: '96px' }}></div>

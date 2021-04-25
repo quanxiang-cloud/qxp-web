@@ -17,9 +17,7 @@ export function deleteOperate(idx: number) {
           className={classnames('operate-icon', 'delete-icon')}
           name="delete"
           size={24}
-          onClick={() => {
-            mutator.remove(idx);
-          }}
+          onClick={() => mutator.remove(idx)}
         />
       </div>
     </>
@@ -37,16 +35,12 @@ export function extraOperations(idx: number) {
         <Icon
           className="operate-icon"
           name="keyboard_arrow_up"
-          onClick={() => {
-            mutator.moveUp(idx);
-          }}
+          onClick={() => mutator.moveUp(idx)}
         />
         <Icon
           className="operate-icon"
           name="keyboard_arrow_down"
-          onClick={() => {
-            mutator.moveDown(idx);
-          }}
+          onClick={() => mutator.moveDown(idx)}
         />
       </div>
     </>

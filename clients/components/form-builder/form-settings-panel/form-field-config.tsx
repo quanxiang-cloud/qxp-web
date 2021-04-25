@@ -1,12 +1,11 @@
 import React, { useContext } from 'react';
-import { Radio, Input, Select, Switch, NumberPicker, ArrayTable } from '@formily/antd-components';
-import { SchemaForm, ISchema } from '@formily/antd';
+import { Radio, Input, Select, Switch, NumberPicker, ArrayTable, Checkbox } from '@formily/antd-components';
+import { SchemaForm, ISchema, FormEffectHooks, createFormActions } from '@formily/antd';
 
 import { StoreContext } from '../context';
 import { observer } from 'mobx-react';
 import { toJS } from 'mobx';
 
-import Icon from '@c/icon';
 import { FieldConfigContext } from './form-field-config-context';
 
 const components = {
@@ -15,9 +14,10 @@ const components = {
   NumberPicker,
   Radio,
   RadioGroup: Radio.Group,
+  Checkbox,
+  CheckboxGroup: Checkbox.Group,
   Select,
   Switch,
-  Icon,
 };
 
 type Props = {
@@ -25,6 +25,28 @@ type Props = {
   initialValue: any;
   schema: ISchema;
 }
+
+const { onFieldInputChange$, onFieldInit$ } = FormEffectHooks;
+
+const useOneToManyEffects = () => {
+  const { setFieldState } = createFormActions();
+  let visible = false;
+
+  onFieldInit$('*(rangeSetting.range, rangeSetting.max,rangeSetting.min)').subscribe((field) => {
+    if (field.name === 'rangeSetting.range' && field.value !== undefined) {
+      visible = field.value.length===0 ? false : true;
+    }
+    setFieldState('*(rangeSetting.max,rangeSetting.min)', (state) => {
+      state.visible = visible;
+    });
+  });
+
+  onFieldInputChange$('rangeSetting.range').subscribe(({ value }) => {
+    setFieldState('*(rangeSetting.min,rangeSetting.max)', (state) => {
+      state.visible = value.length===0 ? false : true;
+    });
+  });
+};
 
 function FormFieldConfigTrue({ onChange, initialValue, schema }: Props): JSX.Element {
   const { actions } = useContext(FieldConfigContext);
@@ -36,6 +58,7 @@ function FormFieldConfigTrue({ onChange, initialValue, schema }: Props): JSX.Ele
       onChange={onChange}
       schema={schema}
       actions={actions}
+      effects={() => useOneToManyEffects()}
     />
   );
 }

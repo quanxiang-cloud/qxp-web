@@ -1,16 +1,7 @@
 {{template "layout" .}} {{define "header_styles"}}
 <link rel="stylesheet" href="<%= htmlWebpackPlugin.files.css[0] %>" />
 {{end}} {{define "content"}}
-<div id="root" class="w-screen h-screen"></div>
+<div id="root"></div>
 {{end}} {{define "bottom_scripts"}}
-<script>
-  {{if .}}
-    window.__global = {
-      userInfo: {{.user}}
-    }
-    window.__verbose_log__ = {{.debugMode}}
-  {{end}}
-  window.__verbose_log__ = {{.debugMode }}
-</script>
 <script src="<%= htmlWebpackPlugin.files.js[0] %>"></script>
 {{end}}

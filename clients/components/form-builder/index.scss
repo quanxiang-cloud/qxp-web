@@ -68,6 +68,10 @@
   background-color: #FFFFFF;
   border: 1px solid #CBD5E1;
   border-radius: 8px;
+  &:hover {
+    cursor: pointer;
+    border-color: #375FF3;
+  }
 }
 
 .form-settings-panel__panel {
@@ -181,13 +185,13 @@
   box-shadow: 0px 8px 24px 4px rgba(148, 163, 184, 0.25);
 
   cursor: pointer;
+}
 
-  .operate-icon {
-    display: block;
-    cursor: pointer;
-    &:hover {
-      color: #375FF3;
-    }
+.form-builder .operate-icon {
+  display: block;
+  cursor: pointer;
+  &:hover {
+    color: #375FF3;
   }
 }
 
