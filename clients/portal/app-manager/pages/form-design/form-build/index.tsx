@@ -80,7 +80,7 @@ const FormPage = () => {
         <SchemaForm
           className="w-588"
           components={{ ...registry.components }}
-          schema={store.formStore.schema}
+          schema={store.formStore.schemaForPreview}
           onChange={handleFormChange}
         />
       </Modal>

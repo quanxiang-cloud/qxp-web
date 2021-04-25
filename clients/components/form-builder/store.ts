@@ -138,6 +138,23 @@ export default class FormBuilderStore {
     };
   }
 
+  @computed get schemaForPreview():ISchema {
+    const { properties } = this.schema;
+    return {
+      type: 'object',
+      properties: {
+        FIELDs: {
+          type: 'object',
+          'x-component': 'mega-layout',
+          'x-component-props': {
+            labelAlign: this.labelAlign,
+          },
+          properties: properties,
+        },
+      },
+    };
+  }
+
   @computed get schemaForCanvas(): ISchema {
     const originalProperties = toJS(this.schema.properties) || {};
     const properties = Object.keys(originalProperties).reduce<Record<string, any>>((acc, key) => {
