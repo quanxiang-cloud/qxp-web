@@ -17,6 +17,7 @@ type contextKey int
 const (
 	ctxUser contextKey = iota
 	ctxToken
+	ctxUA
 )
 
 // LoginResponseData login response data struct
@@ -216,10 +217,12 @@ func GetCurrentUser(r *http.Request) *User {
 func DecoratRequest(r *http.Request) *http.Request {
 	user := GetCurrentUser(r)
 	token := getToken(r)
+	userAgent := r.Header.Get("User-Agent")
 
 	ctx := r.Context()
 	ctx = context.WithValue(ctx, ctxToken, token)
 	ctx = context.WithValue(ctx, ctxUser, user)
+	ctx = context.WithValue(ctx, ctxUA, userAgent)
 	r = r.WithContext(ctx)
 
 	return r
