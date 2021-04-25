@@ -115,7 +115,7 @@ func getRefreshToken(r *http.Request) string {
 // renewToken refresh token
 func renewToken(r *http.Request, refreshToken string) bool {
 	requestID := contexts.GetRequestID(r)
-	respBuffer, errMsg := contexts.SendRequest(r.Context(), "POST", "/api/v1/oauth2c/in/refresh", nil, map[string]string{
+	respBody, errMsg := contexts.SendRequest(r.Context(), "POST", "/api/v1/oauth2c/in/refresh", nil, map[string]string{
 		"Content-Type":  "application/x-www-form-urlencoded",
 		"Refresh-Token": refreshToken,
 		"User-Agent":    r.Header.Get("User-Agent"),
@@ -127,7 +127,7 @@ func renewToken(r *http.Request, refreshToken string) bool {
 	}
 
 	var refreshTokenResponse RefreshTokenResponse
-	if err := json.Unmarshal(respBuffer.Bytes(), &refreshTokenResponse); err != nil {
+	if err := json.Unmarshal(respBody, &refreshTokenResponse); err != nil {
 		contexts.Logger.Errorf("failed to unmarshal refresh token body, err: %s, request_id: %s", err.Error(), requestID)
 		return false
 	}
@@ -164,7 +164,7 @@ func saveToken(r *http.Request, token string, refreshToken string, expireTime ti
 }
 
 func getCurrentUser(r *http.Request) *User {
-	respBuffer, errMsg := contexts.SendRequest(r.Context(), "POST", "/api/v1/org/userUserInfo", nil, map[string]string{
+	respBody, errMsg := contexts.SendRequest(r.Context(), "POST", "/api/v1/org/userUserInfo", nil, map[string]string{
 		"Access-Token": getToken(r),
 	})
 
@@ -174,7 +174,7 @@ func getCurrentUser(r *http.Request) *User {
 	}
 
 	var user User
-	userRaw := gjson.Get(respBuffer.String(), "data").Raw
+	userRaw := gjson.Get(string(respBody), "data").Raw
 	err := json.Unmarshal([]byte(userRaw), &user)
 	if err != nil {
 		contexts.Logger.Errorf("failed to unmarshal user, err: %s", err.Error())
@@ -214,8 +214,8 @@ func RedirectToLoginPage(w http.ResponseWriter, r *http.Request) {
 
 // DecoratRequest will associated request context with current user and it's token
 func DecoratRequest(r *http.Request) *http.Request {
-	user := getCurrentUser(r)
 	token := getToken(r)
+	user := getCurrentUser(r)
 	userAgent := r.Header.Get("User-Agent")
 
 	ctx := r.Context()
