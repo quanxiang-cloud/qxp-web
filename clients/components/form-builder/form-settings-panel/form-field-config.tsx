@@ -33,8 +33,8 @@ const useOneToManyEffects = () => {
   let visible = false;
 
   onFieldInit$('*(rangeSetting.range, rangeSetting.max,rangeSetting.min)').subscribe((value) => {
-    if (value.name === 'rangeSetting.range') {
-      visible = value.value === undefined ? false : true;
+    if (value.name === 'rangeSetting.range' && value.value !== undefined) {
+      visible = value.value.length===0 ? false : true;
     }
     setFieldState('*(rangeSetting.max,rangeSetting.min)', (state) => {
       state.visible = visible;
