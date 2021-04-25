@@ -1,5 +1,5 @@
 import React, { cloneElement, PropsWithChildren } from 'react';
-import classnames from 'classnames';
+import cs from 'classnames';
 import BreadcrumbItem from './breadcrumb-item';
 
 interface Segment {
@@ -46,7 +46,7 @@ function Breadcrumb({
         return segments.map((link) => (
           <div
             key={link.key}
-            className={classnames(className, 'qxp-breadcrumb-item')}
+            className={cs(className, 'qxp-breadcrumb-item')}
           >
             {segmentRender(link)}
             <span className="qxp-breadcrumb-separator">{separator}</span>
@@ -55,7 +55,7 @@ function Breadcrumb({
         );
       } else {
         return segments.map((link, idx) => (
-          <div key={link.key} className={classnames(className, 'qxp-breadcrumb-item')}>
+          <div key={link.key} className={cs(className, 'qxp-breadcrumb-item')}>
             { idx === segments.length - 1 ?
               (<span>
                 {link.text}
@@ -63,7 +63,7 @@ function Breadcrumb({
               (
                 <a
                   href={link.path}
-                  className={classnames(className, 'qxp-breadcrumb-link')}
+                  className={cs(className, 'qxp-breadcrumb-link')}
                 >
                   {link.text}
                 </a>
@@ -78,7 +78,7 @@ function Breadcrumb({
   };
 
   return (
-    <div className={classnames('qxp-breadcrumb', className)} style={style}>
+    <div className={cs('qxp-breadcrumb', className)} style={style}>
       {breadcrumbChildrenRender()}
     </div>
   );

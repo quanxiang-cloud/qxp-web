@@ -151,7 +151,7 @@ export const getUserDEPInfo = () => {
  */
 export const getUserAdminInfo = (depID: string, params: any) => {
   // eslint-disable-next-line camelcase
-  return httpPost<{ total_count: number; data: UserInfo[] }>(
+  return httpPost<{ total_count: number; data: Employee[] }>(
     '/api/v1/org/adminUserList',
     JSON.stringify({ depID, ...params }),
     {

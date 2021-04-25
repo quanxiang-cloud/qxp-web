@@ -1,5 +1,5 @@
 import React, { forwardRef, Ref } from 'react';
-import classnames from 'classnames';
+import cs from 'classnames';
 
 import Icon from '@c/icon';
 
@@ -21,7 +21,7 @@ function Button(
     <button
       {...rest}
       ref={ref}
-      className={classnames('btn', className, {
+      className={cs('btn', className, {
         [`btn--${modifier}`]: modifier,
         'btn--forbidden': forbidden,
         'btn--loading': loading,
@@ -35,7 +35,7 @@ function Button(
           name={loading ? 'loading' : iconName}
           type={modifier === 'primary' ? 'light' : 'dark'}
           size={20}
-          className={classnames('fill-current text-inherit mr-8', {
+          className={cs('fill-current text-inherit mr-8', {
             'animate-spin': loading,
           })}
         />

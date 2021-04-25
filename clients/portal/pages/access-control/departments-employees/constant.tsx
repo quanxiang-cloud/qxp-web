@@ -11,13 +11,13 @@ export const EmployeesColumns = [
   {
     title: '姓名',
     dataIndex: 'userName',
-    render: (text: string, record: UserInfo) => <UserCell user={record} />,
+    render: (text: string, record: Employee) => <UserCell user={record} />,
   },
   {
     title: '手机号',
     dataIndex: 'phone',
     width: 130,
-    render: (text: string, record: UserInfo) => {
+    render: (text: string, record: Employee) => {
       return <OtherCell columnKey='phone' user={record} />;
     },
   },
@@ -25,14 +25,14 @@ export const EmployeesColumns = [
     title: '邮箱',
     dataIndex: 'email',
     // width: 150,
-    render: (text: string, record: UserInfo) => {
+    render: (text: string, record: Employee) => {
       return <OtherCell columnKey='email' user={record} />;
     },
   },
   {
     title: '部门',
     dataIndex: 'department',
-    render: (text: string, record: UserInfo) => {
+    render: (text: string, record: Employee) => {
       return <OtherCell columnKey='dep' user={record} />;
     },
   },

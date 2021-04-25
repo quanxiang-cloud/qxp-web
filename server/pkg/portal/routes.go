@@ -15,6 +15,8 @@ func loginRequired(h http.HandlerFunc) http.HandlerFunc {
 			return
 		}
 
+		r = handlers.DecoratRequest(r)
+
 		h(w, r)
 	}
 }
@@ -36,6 +38,9 @@ func GetRouter() http.Handler {
 
 	r.Headers("X-Proxy", "API").HandlerFunc(tokenRequired(handlers.ProxyAPIHandler))
 	r.Headers("X-Proxy", "API-NO-AUTH").HandlerFunc(handlers.ProxyAPIHandler)
+
+	r.Path("/_otp").Methods("GET").HandlerFunc(tokenRequired((handlers.OTPHandler)))
+
 	r.Path("/login/{type}").Methods("GET").HandlerFunc(handlers.HandleLogin)
 	r.Path("/login/{type}").Methods("POST").HandlerFunc(handlers.HandleLoginSubmit)
 	r.Path("/logout").Methods("POST").HandlerFunc(handlers.LogoutHandler)

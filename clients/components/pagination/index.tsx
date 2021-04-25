@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import classnames from 'classnames';
+import cs from 'classnames';
 import { Input } from '@QCFE/lego-ui';
 
 import SvgIcon from '@c/icon';
@@ -145,7 +145,7 @@ function Pagination({
 
   const prevIcon = (
     <li
-      className={classnames('pagination-comp-page', {
+      className={cs('pagination-comp-page', {
         'pagination-comp-disabled': pageParams.current === 1,
       })}
       onClick={handPrev}>
@@ -155,7 +155,7 @@ function Pagination({
 
   const nextIcon = (
     <li
-      className={classnames('pagination-comp-page', {
+      className={cs('pagination-comp-page', {
         'pagination-comp-disabled': pageParams.current === calcPage(),
       })}
       onClick={handleNext}>
@@ -289,7 +289,7 @@ function Pagination({
       <div>
         {totalText}
       </div>
-      <ul className={classnames('pagination-comp', className)}>
+      <ul className={cs('pagination-comp', className)}>
         {prevIcon}
         {pagerList}
         {nextIcon}

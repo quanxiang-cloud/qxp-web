@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import classNames from 'classnames';
+import cs from 'classnames';
 
 import './index.scss';
 
@@ -35,13 +35,13 @@ export default function Toggle({
   return (
     <div>
       <label
-        className={classNames('qxp-toggle', className, { disabled, checked })}
+        className={cs('qxp-toggle', className, { disabled, checked })}
         style={style}
         onClick={handleToggleSwitch}
       >
         {onText && offText && (
           <span
-            className={classNames('text', { checked })}
+            className={cs('text', { checked })}
           >
             {checked ? onText : offText}
           </span>

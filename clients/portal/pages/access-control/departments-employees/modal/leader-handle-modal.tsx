@@ -10,7 +10,7 @@ import { LeaderStatus } from '../type';
 import { setDEPLeader, cancelDEPLeader, LeaderParams } from '../api';
 
 interface Props {
-  user: UserInfo;
+  user: Employee;
   closeModal(): void;
 }
 

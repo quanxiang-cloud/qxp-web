@@ -5,10 +5,22 @@ import (
 	"context"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"net"
 	"net/http"
 	"time"
 )
+
+// A backoff schedule for when and how often to retry failed HTTP
+// requests. The first element is the time to wait after the
+// first failure, the second the time to wait after the second
+// failure, etc. After reaching the last element, retries stop
+// and the request is considered failed.
+var backoffSchedule = []time.Duration{
+	1 * time.Second,
+	3 * time.Second,
+	10 * time.Second,
+}
 
 // NewHTTPClient for connection re-use
 func NewHTTPClient(c *HTTPClientConfig) *http.Client {
@@ -26,11 +38,29 @@ func NewHTTPClient(c *HTTPClientConfig) *http.Client {
 	return client
 }
 
+func doRequest(req *http.Request) (*http.Response, []byte, string) {
+	resp, err := HTTPClient.Do(req)
+	if err != nil {
+		Logger.Errorf("failed to send request to API server: %s", err.Error())
+		return nil, nil, err.Error()
+	}
+
+	defer resp.Body.Close() // Force closing the response body
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		Logger.Errorf("failed to read response body: %s", err.Error())
+		return nil, nil, err.Error()
+	}
+
+	return resp, body, ""
+}
+
 // SendRequest is an util method for request API Server
-func SendRequest(ctx context.Context, method string, fullPath string, body io.Reader, headers map[string]string) (*bytes.Buffer, string) {
+func SendRequest(ctx context.Context, method string, fullPath string, body []byte, headers map[string]string) ([]byte, string) {
 	requestID := ctx.Value(RequestID).(string)
 
-	req, err := http.NewRequest(method, APIEndpoint+fullPath, body)
+	req, err := http.NewRequest(method, APIEndpoint+fullPath, bytes.NewBuffer(body))
 	if err != nil {
 		Logger.Errorf("[request_id=%s] failed to build request: %s", requestID, err.Error())
 		return nil, "failed to build request"
@@ -42,37 +72,43 @@ func SendRequest(ctx context.Context, method string, fullPath string, body io.Re
 
 	Logger.Debugf("sending request, method: %s, url: %s, headers: %s", req.Method, req.URL, req.Header)
 
-	resp, err := HTTPClient.Do(req)
-	if err != nil {
-		Logger.Errorf("failed to send request to API server: %s", err.Error())
-		return nil, "failed to send request to API server"
-	}
-	defer resp.Body.Close() // Force closing the response body
+	var resp *http.Response
+	var respBody []byte
+	var errMsg string
 
-	buffer := &bytes.Buffer{}
-	_, err = io.Copy(buffer, resp.Body)
-	if err != nil {
-		Logger.Errorf("copy response body error: %s", err.Error())
-		return nil, http.StatusText(http.StatusInternalServerError)
+	for _, backoff := range backoffSchedule {
+		resp, respBody, errMsg = doRequest(req)
+
+		if errMsg == "" {
+			break
+		}
+
+		Logger.Infof("request error: %s", errMsg)
+		Logger.Infof("retrying in %v", backoff)
+		time.Sleep(backoff)
+	}
+
+	if errMsg != "" {
+		return nil, errMsg
 	}
 
 	if resp.StatusCode >= http.StatusInternalServerError {
 		Logger.Errorf(
 			"[request_id=%s] request API encounter status_code: %d, request method: %s, request path: %s, response body: %s",
-			requestID, resp.StatusCode, method, fullPath, buffer.String(),
+			requestID, resp.StatusCode, method, fullPath, string(respBody),
 		)
-		return buffer, fmt.Sprintf("API server response status code >= %d, is %d", http.StatusInternalServerError, resp.StatusCode)
+		return respBody, fmt.Sprintf("API server response status code >= %d, is %d", http.StatusInternalServerError, resp.StatusCode)
 	}
 
 	if resp.StatusCode >= http.StatusBadRequest && resp.StatusCode < http.StatusInternalServerError {
 		Logger.Warnf(
 			"[request_id=%s] request API encounter status_code: %d, request method: %s, request path: %s, response body: %s",
-			requestID, resp.StatusCode, method, fullPath, buffer.String(),
+			requestID, resp.StatusCode, method, fullPath, string(respBody),
 		)
-		return buffer, fmt.Sprintf("API server response status code >= %d, is %d", http.StatusBadRequest, resp.StatusCode)
+		return respBody, fmt.Sprintf("API server response status code >= %d, is %d", http.StatusBadRequest, resp.StatusCode)
 	}
 
-	return buffer, ""
+	return respBody, ""
 }
 
 // SendRequestWitoutAuth is an util method for request Billing Server

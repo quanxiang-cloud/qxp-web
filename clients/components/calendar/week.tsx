@@ -1,6 +1,6 @@
 import * as React from 'react';
 import moment from 'moment';
-import classnames from 'classnames';
+import cs from 'classnames';
 import { observer } from 'mobx-react';
 import { computed } from 'mobx';
 
@@ -66,7 +66,7 @@ export default class Week extends React.Component<Props> {
 
     return (
       <div
-        className={classnames('calendar-month__week', {
+        className={cs('calendar-month__week', {
           'calendar-month__week-picker': this.props.picker === 'week',
           'calendar-month__selected-week': this.isSelectedWeek,
           'calendar-month__outside-range-week': this.isWeekOutRange,
@@ -90,7 +90,7 @@ export default class Week extends React.Component<Props> {
                 onClick={(): void => {
                   !isDateOutRange && this.handleDayClick(day);
                 }}
-                className={classnames('calendar-month__single-day', {
+                className={cs('calendar-month__single-day', {
                   'calendar-month__outside-month-day': isOutsideMonth,
                   'calendar-month__outside-range-day': isDateOutRange,
                   'calendar-month__selected-day': isSelectedDate || this.isSelectedWeek,

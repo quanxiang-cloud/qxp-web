@@ -1,6 +1,6 @@
 import * as React from 'react';
 import moment from 'moment';
-import classnames from 'classnames';
+import cs from 'classnames';
 import { observer } from 'mobx-react';
 import { observable, action, computed } from 'mobx';
 
@@ -87,13 +87,9 @@ export default class DatePicker extends React.Component<Props> {
 
     return (
       <>
-        <div
-          ref={this.reference}
-          style={style}
-          className={classnames('date-picker__input', className, {
-            'date-picker--has-selected-day': !!this.selectedDate,
-          })}
-        >
+        <div ref={this.reference} className={cs('date-picker__input', className, {
+          'date-picker--has-selected-day': !!this.selectedDate,
+        })}>
           <input
             value={inputValue || this.inputValue}
             className="input"

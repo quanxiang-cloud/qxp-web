@@ -14,8 +14,8 @@ type LogoutResponse struct {
 
 // LogoutHandler render logout page
 func LogoutHandler(w http.ResponseWriter, r *http.Request) {
-	token := GetToken(r)
-	refreshToken := GetRefreshToken(r)
+	token := getToken(r)
+	refreshToken := getRefreshToken(r)
 
 	tokenKey := getTokenKey(r)
 	refreshTokenKey := getRefreshTokenKey(r)

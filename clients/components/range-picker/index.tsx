@@ -1,6 +1,6 @@
 import * as React from 'react';
 import moment from 'moment';
-import classnames from 'classnames';
+import cs from 'classnames';
 import { observer } from 'mobx-react';
 import { observable, action } from 'mobx';
 
@@ -174,12 +174,9 @@ export default class RangePicker extends React.Component<Props> {
 
     return (
       <>
-        <div
-          ref={this.reference}
-          style={style}
-          className={classnames('date-picker__input', className, {
-            'date-picker--has-selected-day': readableCode,
-          })}>
+        <div ref={this.reference} className={cs('date-picker__input', className, {
+          'date-picker--has-selected-day': readableCode,
+        })}>
           <input
             value={inputValue || getInputValue(readableCode)}
             className="input"

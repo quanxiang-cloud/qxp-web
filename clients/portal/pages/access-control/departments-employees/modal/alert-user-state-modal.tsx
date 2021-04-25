@@ -10,7 +10,7 @@ import { UserStatus } from '../type';
 
 interface Props {
   status: UserStatus;
-  user: UserInfo;
+  user: Employee;
   closeModal(): void;
 }
 
