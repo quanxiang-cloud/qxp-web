@@ -72,7 +72,7 @@ type User struct {
 	Email    string     `json:"email"`
 	Phone    string     `json:"phone"`
 	Avatar   string     `json:"avatar"`
-	Statue   int        `json:"status"`
+	Status   int        `json:"status"`
 	DepIds   []string   `json:"depIds"`
 	Dep      Department `json:"dep"`
 }

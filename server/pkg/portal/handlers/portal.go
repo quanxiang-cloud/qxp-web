@@ -8,7 +8,7 @@ import (
 // PortalHandler render portal page
 func PortalHandler(w http.ResponseWriter, r *http.Request) {
 	user := r.Context().Value(ctxUser).(*User)
-	if user.Statue == 1 {
+	if user.Status == 1 {
 		http.Redirect(w, r, "/resetPassword", http.StatusFound)
 		return
 	}
