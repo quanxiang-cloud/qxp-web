@@ -375,64 +375,64 @@ export const Content = forwardRef(({ className, donotShowHeader, footer, modifyD
                 </Button>
               </Control>
             </Field>
-
-            {dom && ReactDom.createPortal(
-              <div className={styles.upload_warp}>
-                <Filelist
-                  candownload
-                  deleteFiles={deleteFiles}
-                  files={files.map((itm) => ({
-                    file_url: itm.url,
-                    file_name: itm.filename,
-                    percent: itm.percentage,
-                    showProgress: itm.showProgress,
-                    status: itm.status,
-                  }))}
-                />
-                <Upload
-                  headers={{ 'X-Proxy': 'API' }}
-                  multiple
-                  action="/api/v1/fileserver/uploadFile"
-                  beforeUpload={(file)=> {
-                    if (file.size > 1024 * 1024 * 5) {
-                      Message.error('文件大小不能超过5M');
-                      return false;
-                    }
-                    if (files.find((f) => f.filename === file.name)) {
-                      Message.warning('文件已存在，请勿重复上传');
-                      return false;
-                    }
-                    return true;
-                  }}
-                  onStart={(file)=> {
-                    addFile({
-                      filename: file.name,
-                      url: '',
-                      percentage: 0,
-                      showProgress: true,
-                      status: 'active',
-                    });
-                  }}
-                  onProgress={(step, file)=> {
-                  // @ts-ignore
-                    const percent = typeof step.percent === 'number' ? Math.round(step.percent) : 0;
-                    updateFile(file.name, {
-                      percentage: percent,
-                      showProgress: true,
-                    });
-                  }}
-                  onSuccess={handleFileSuccessUpload}
-                  onError={(err, res)=> Message.error(err.message)}
-                >
-                  <div className={`${styles.upload} flex align-center`}>
-                    <Icon name="attachment" />
-                    <div>上传附件</div>
-                  </div>
-                </Upload>
-              </div>,
-              dom
-            )}
           </Form>
+
+          {dom && ReactDom.createPortal(
+            <div className={styles.upload_warp}>
+              <Filelist
+                candownload
+                deleteFiles={deleteFiles}
+                files={files.map((itm) => ({
+                  file_url: itm.url,
+                  file_name: itm.filename,
+                  percent: itm.percentage,
+                  showProgress: itm.showProgress,
+                  status: itm.status,
+                }))}
+              />
+              <Upload
+                headers={{ 'X-Proxy': 'API' }}
+                multiple
+                action="/api/v1/fileserver/uploadFile"
+                beforeUpload={(file)=> {
+                  if (file.size > 1024 * 1024 * 5) {
+                    Message.error('文件大小不能超过5M');
+                    return false;
+                  }
+                  if (files.find((f) => f.filename === file.name)) {
+                    Message.warning('文件已存在，请勿重复上传');
+                    return false;
+                  }
+                  return true;
+                }}
+                onStart={(file)=> {
+                  addFile({
+                    filename: file.name,
+                    url: '',
+                    percentage: 0,
+                    showProgress: true,
+                    status: 'active',
+                  });
+                }}
+                onProgress={(step, file)=> {
+                  // @ts-ignore
+                  const percent = typeof step.percent === 'number' ? Math.round(step.percent) : 0;
+                  updateFile(file.name, {
+                    percentage: percent,
+                    showProgress: true,
+                  });
+                }}
+                onSuccess={handleFileSuccessUpload}
+                onError={(err, res)=> Message.error(err.message)}
+              >
+                <div className={`${styles.upload} flex align-center`}>
+                  <Icon name="attachment" />
+                  <div>上传附件</div>
+                </div>
+              </Upload>
+            </div>,
+            dom
+          )}
 
           <div className={styles.chosenPersons}>
             {/* @ts-ignore */}
