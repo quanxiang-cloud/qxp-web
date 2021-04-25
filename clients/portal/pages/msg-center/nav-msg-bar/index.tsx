@@ -17,7 +17,7 @@ import styles from './index.module.scss';
 const NavMsgBar = ({ msgCenter: store }: Pick<MobxStores, 'msgCenter' | any>): JSX.Element => {
   const toggleRef = useRef(null);
   const msgBoxRef = useRef(null);
-  const { openUnreadMsgBox, msgBoxOpen, openMsgCenter } = store;
+  const { openUnreadMsgBox, msgBoxOpen, openMsgCenter, countUnread } = store;
   const { data: countUnreadMsg }=useQuery('count-unread-msg', getUnreadMsgCount);
 
   const handleClickOuter = (ev: MouseEvent) => {
@@ -76,7 +76,7 @@ const NavMsgBar = ({ msgCenter: store }: Pick<MobxStores, 'msgCenter' | any>): J
             name="notifications_active"
             size={20}
           />
-          <BtnBadge className={styles.count_btn} count={store.countUnread}/>
+          {countUnread > 0 && <BtnBadge className={styles.count_btn} count={countUnread}/>}
         </div>
         {renderUnreadMsgBox()}
       </div>
