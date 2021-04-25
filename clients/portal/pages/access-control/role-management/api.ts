@@ -1,5 +1,6 @@
 import { QueryFunctionContext } from 'react-query';
 
+import httpClient from '@lib/http-client';
 import { httpPost } from '@lib/utils';
 
 // 获取角色列表
@@ -92,11 +93,8 @@ export const updateRoleAssociations = (arg: IUpdateRoleAssociations) =>
   });
 
 // search for department structure
-export const getDepartmentStructure = async () => {
-  const { data } = await httpPost<Department>('/api/v1/org/DEPTree', null, {
-    'Content-Type': 'application/x-www-form-urlencoded',
-  });
-  return data;
+export const getDepartmentStructure = () => {
+  return httpClient<Department>('/api/v1/org/DEPTree');
 };
 
 interface IUserDepartment extends Department {
