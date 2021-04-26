@@ -60,6 +60,7 @@ export default class Captcha extends InputField {
 
   callSendApi() {
     return httpPost(this.url, JSON.stringify({ userName: this.username?.value }), {
+      // todo refactor this
       'X-Proxy': 'API-NO-AUTH',
     });
   }

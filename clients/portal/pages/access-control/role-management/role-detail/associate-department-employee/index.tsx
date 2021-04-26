@@ -5,7 +5,7 @@ import Button from '@c/button';
 import Authorized from '@c/authorized';
 import Switch from '@c/switch';
 import EmployeeOrDepartmentPickerModal from '@c/employee-or-department-picker';
-import notify from '@lib/notify';
+import toast from '@lib/toast';
 
 import { updateRoleAssociations, IUpdateRoleAssociations, getRoleAssociations } from '../../api';
 import DepartmentOrEmployeeTable from './department-or-employee-table';
@@ -75,7 +75,7 @@ export default function AssociateDepartmentEmployee({ roleID, isSuper }: Props) 
   }
 
   if (isError) {
-    notify.error((error as string));
+    toast.error((error as string));
   }
 
   return (

@@ -2,7 +2,7 @@ interface Options {
   duration?: number;
 }
 
-class Notify {
+class Toast {
   private duration?: number;
   private element: HTMLElement;
   private notifyInstances: Element[];
@@ -14,7 +14,7 @@ class Notify {
     this.notifyInstances = [];
     const style = document.createElement('style');
     style.innerHTML = `
-      .notify {
+      .toast {
         position: absolute;
         top: 80px;
         left: 50%;
@@ -40,13 +40,13 @@ class Notify {
         }
       }
 
-      .notify .message-info {
+      .toast .message-info {
         font-size: 14px;
         line-height: 22px;
         margin-right: 64px;
       }
 
-      .notify .close {
+      .toast .close {
         cursor: pointer;
         color: #64748B;
         font-size: 20px;
@@ -54,12 +54,12 @@ class Notify {
         align-items: center;
       }
 
-      .notify.error {
+      .toast.error {
         background: #FEF2F2;
         border: 1px solid #DC2626;
       }
 
-      .notify.info {
+      .toast.info {
         background: #F0FDF4;;
         border: 1px solid #16A34A;
       }
@@ -71,7 +71,7 @@ class Notify {
   public close = (e: Event | HTMLElement) => {
     let curNotifyElement: HTMLElement;
     if (e instanceof Event) {
-      const closeElement = e.target as HTMLElement;
+      const closeElement = e.currentTarget as HTMLElement;
       curNotifyElement = closeElement.parentElement as HTMLElement;
     } else if (e instanceof HTMLElement) {
       curNotifyElement = e;
@@ -96,16 +96,16 @@ class Notify {
 
   private getTemplate(type: string, message: string) {
     return `
-      <div class="notify ${type}">
+      <div class="toast ${type}">
         <span class="message-info">${message}</span>
         <span class="close" onClick="closeNotify(event);">
-          <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0V0z" fill="currentColor"/><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg> 
+          <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24px" fill="rgba(255, 255, 255, 0)"><path d="M0 0h24v24H0z" fill="none"/><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
         </span>
       </div>
     `;
   }
 
-  private notify(type: string, message: string, options?: Options) {
+  private toast(type: string, message: string, options?: Options) {
     this.element.insertAdjacentHTML('beforeend', this.getTemplate(type, message));
     const element = this.element.lastElementChild as HTMLElement;
     if (!element) {
@@ -122,11 +122,11 @@ class Notify {
   }
 
   public success(message: string, options?: Options) {
-    this.notify('info', message, options);
+    this.toast('info', message, options);
   }
 
   public error(message: string, options?: Options) {
-    this.notify('error', message, options);
+    this.toast('error', message, options);
   }
 
   setDuration(duration: number) {
@@ -138,4 +138,4 @@ class Notify {
   }
 }
 
-export default new Notify();
+export default new Toast();
