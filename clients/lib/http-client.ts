@@ -15,7 +15,7 @@ function httpClient<TData>(
     if (response.status === 401) {
       alert('当前会话已失效，请重新登录!');
       window.location.href = window.location.href;
-      return;
+      return Promise.reject(new Error('当前会话已失效，请重新登录!'));
     }
 
     // todo optimize this
@@ -25,9 +25,9 @@ function httpClient<TData>(
 
     return response.json();
   }).then((resp) => {
-    const { code, message, data } = resp;
+    const { code, msg, data } = resp;
     if (code !== 0) {
-      return Promise.reject(new Error(message));
+      return Promise.reject(new Error(msg));
     }
 
     return data as TData;
