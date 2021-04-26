@@ -64,7 +64,6 @@ export default function EditEmployeesModal(
     const values = formRef.current?.getFieldsValue();
 
     const { userName, phone, email, sendPasswordBy, depID } = values;
-    const roleIDs = '3';
     if (!user.id) {
       const params: FormValues = {
         userName,
@@ -73,7 +72,6 @@ export default function EditEmployeesModal(
         sendPhoneMsg: sendPasswordBy && sendPasswordBy.includes('phone') ? 1 : -1,
         sendEmailMsg: sendPasswordBy && sendPasswordBy.includes('email') ? 1 : -1,
         depIDs: depID ? [depID] : [],
-        roleIDs: roleIDs ? [roleIDs] : [],
       };
       staffMutation.mutate(params);
     } else {
@@ -83,13 +81,8 @@ export default function EditEmployeesModal(
         phone,
         email,
         delete: [],
-        add: [],
         depIDs: depID ? [depID] : [],
       };
-      if (user.roleId !== values.roleIDs) {
-        params.add = [roleIDs];
-        params.delete = user.deleteId ? [user.deleteId] : [];
-      }
       staffMutation.mutate(params);
     }
   }
