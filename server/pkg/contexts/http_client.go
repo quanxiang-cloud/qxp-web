@@ -62,7 +62,8 @@ func DoRequest(req *http.Request) (*http.Response, error) {
 	return resp, nil
 }
 
-func retrieveResponse(req *http.Request) (*http.Response, []byte, string) {
+// RetrieveResponse will send req and return response & response body
+func RetrieveResponse(req *http.Request) (*http.Response, []byte, string) {
 	resp, err := DoRequest(req)
 	if err != nil {
 		return nil, nil, err.Error()
@@ -98,7 +99,7 @@ func SendRequest(ctx context.Context, method string, fullPath string, body []byt
 
 	Logger.Debugf("sending request, method: %s, url: %s, headers: %s", req.Method, req.URL, req.Header)
 
-	resp, respBody, errMsg := retrieveResponse(req)
+	resp, respBody, errMsg := RetrieveResponse(req)
 	if errMsg != "" {
 		return nil, errMsg
 	}
