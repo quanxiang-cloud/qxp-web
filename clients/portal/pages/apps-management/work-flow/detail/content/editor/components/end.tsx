@@ -3,15 +3,14 @@ import React from 'react';
 import Icon from '@c/icon';
 
 import { Params } from '../engine';
+import { Data } from '../store';
 
 export function end(params: Params) {
   return Promise.resolve({ end: 'end', ...params });
 }
 
 interface Props {
-  data: {
-    label: string;
-  };
+  data: Data;
 }
 
 export default function EndNodeComponent({ data }: Props) {
@@ -22,7 +21,9 @@ export default function EndNodeComponent({ data }: Props) {
     >
       <section className="flex items-center p-4 w-full h-full justify-center">
         <Icon name="stop_circle" className="mr-4 text-red-600" />
-        <span className="text-caption-no-color-weight font-medium text-gray-600">{data.label}</span>
+        <span className="text-caption-no-color-weight font-medium text-gray-600">
+          {data.nodeData.name}
+        </span>
       </section>
     </div>
   );

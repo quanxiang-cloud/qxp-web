@@ -20,7 +20,7 @@ export default forwardRef(function TriggerWay(
   ref?: Ref<HTMLInputElement>,
 ) {
   const { currentElement, formFieldOptions, ...inputProps } = props;
-  const { triggerWay } = currentElement.data;
+  const { triggerWay } = currentElement.data.businessData;
   useEffect(() => {
     if (triggerWay === 'whenAdd') {
       updateDataField('formData', 'whenAlterFields', () => []);
@@ -52,7 +52,7 @@ export default forwardRef(function TriggerWay(
         />
           新增数据时
       </label>
-      {currentElement.data.triggerWay === 'whenAdd' && (
+      {currentElement.data.businessData.triggerWay === 'whenAdd' && (
         <span className="pl-22 mb-8">新增工作表时，触发工作流</span>
       )}
       <label htmlFor="whenAlter" className="inline-flex items-center cursor-pointer self-start">
@@ -69,10 +69,10 @@ export default forwardRef(function TriggerWay(
         />
           修改数据时
       </label>
-      {currentElement.data.triggerWay === 'whenAlter' && (
+      {currentElement.data.businessData.triggerWay === 'whenAlter' && (
         <Select<string>
           placeholder="选择工作表中的字段"
-          defaultValue={currentElement.data.whenAlterFields}
+          defaultValue={currentElement.data.businessData.whenAlterFields}
           multiple
           onChange={(v: string[]) => updateDataField('formData', 'whenAlterFields', () => v)}
           className="h-32 py-4 border border-gray-300 select-border-radius

@@ -18,6 +18,7 @@ export default function DragNodeComponent({
   function onDragStart(event: DragEvent, nodeType: string, width: number, height: number) {
     event.dataTransfer.setData('application/reactflow', JSON.stringify({
       nodeType,
+      nodeName: text,
       width,
       height,
     }));

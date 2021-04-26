@@ -42,7 +42,7 @@ export default function FillInForm() {
             className="flex-1 flex flex-col justify-between h-full"
           >
             <div className="flex-1" style={{ height: 'calc(100% - 56px)' }}>
-              <FormSelector defaultValue={currentFormNodeElement.data.form.value} />
+              <FormSelector defaultValue={currentFormNodeElement.data.businessData.form.value} />
               <Tab
                 className="mt-10"
                 contentClassName="overflow-scroll"

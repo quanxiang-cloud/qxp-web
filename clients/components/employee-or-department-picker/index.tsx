@@ -72,6 +72,7 @@ export default function EmployeeOrDepartmentPickerModal({
           <Button
             modifier="primary"
             iconName="check"
+            type="button"
             loading={isOnGetSelected}
             onClick={onGetSelected}
           >

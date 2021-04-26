@@ -52,7 +52,10 @@ export default function Editor() {
     dagreGraph.setGraph({ rankdir: 'TB' });
     elements.forEach((el) => {
       if (isNode(el)) {
-        dagreGraph.setNode(el.id, { width: el.data.width, height: el.data.height });
+        dagreGraph.setNode(el.id, {
+          width: el.data.nodeData.width,
+          height: el.data.nodeData.height,
+        });
       } else {
         dagreGraph.setEdge(el.source as string, el.target as string);
       }
@@ -64,8 +67,8 @@ export default function Editor() {
         el.targetPosition = Position.Top;
         el.sourcePosition = Position.Bottom;
         el.position = {
-          x: nodeWithPosition.x - (el.data.width / 2) + (Math.random() / 1000),
-          y: nodeWithPosition.y - (el.data.height / 2) + index === 0 ? 0 : 150,
+          x: nodeWithPosition.x - (el.data.nodeData.width / 2) + (Math.random() / 1000),
+          y: nodeWithPosition.y - (el.data.nodeData.height / 2) + index === 0 ? 0 : 150,
         };
       }
       return el;
@@ -94,7 +97,7 @@ export default function Editor() {
       return;
     }
     // const reactFlowBounds = reactFlowWrapper.current.getBoundingClientRect();
-    const { nodeType: type, width, height } = JSON.parse(
+    const { nodeType: type, width, height, nodeName } = JSON.parse(
       e.dataTransfer.getData('application/reactflow')
     );
     const { source, target, position } = currentConnection;
@@ -134,7 +137,10 @@ export default function Editor() {
           id,
           type,
           position: { x: position.x - (width / 2), y: position.y - (height / 2) },
-          data: { width, height, ...getNodeInitialData(type) },
+          data: {
+            nodeData: { width, height, name: nodeName },
+            businessData: getNodeInitialData(type),
+          },
         });
       }
     });

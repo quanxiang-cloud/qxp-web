@@ -14,7 +14,7 @@ interface Props {
 
 export default function TriggerCondition({ currentElement, formFieldOptions }: Props) {
   const [openMore, setOpenMore] = useState(false);
-  const { triggerCondition = [] } = currentElement.data || {};
+  const { triggerCondition = [] } = currentElement.data.businessData || {};
 
   function onChange(v?: boolean) {
     setOpenMore(!!v);

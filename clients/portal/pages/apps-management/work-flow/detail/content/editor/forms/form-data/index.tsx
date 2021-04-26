@@ -56,7 +56,7 @@ export default function ComponentsSelector() {
             className="flex-1 flex flex-col justify-between h-full"
           >
             <div className="flex-1" style={{ height: 'calc(100% - 56px)' }}>
-              <FormSelector defaultValue={currentElement.data.form.value} />
+              <FormSelector defaultValue={currentElement.data.businessData.form.value} />
               <Tab
                 className="mt-10"
                 contentClassName="overflow-scroll"

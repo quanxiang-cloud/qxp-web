@@ -13,8 +13,6 @@ export type AsideDrawerType = '' | 'formDataForm' | 'fillInForm' | 'approveForm'
 export type CurrentConnection = {[key: string]: unknown};
 
 export interface FormDataData {
-  width: number;
-  height: number;
   form: { name: string; value: string; },
   triggerWay: 'whenAdd' | 'whenAlter' | '';
   whenAlterFields: string[];
@@ -22,17 +20,19 @@ export interface FormDataData {
   events: {},
 }
 
+export type AutoApproveRule = 'origin' | 'previous' | 'parent';
+
 export interface FillInDataBasicConfig {
   approvePersons: string[];
   multiplePersonApproveWay: 'and' | 'or';
   whenNoApprovePerson: 'skip' | 'transferAdmin';
-  autoApproveRules: string[];
-  approveRule: {
+  autoApproveRules: AutoApproveRule[];
+  timeRule: {
     deadLine: {
-      breakPoint: string;
-      day: number;
-      hours: number;
-      minutes: number;
+      breakPoint: 'firstEntry' | 'entry' | 'flowWorked';
+      day: string;
+      hours: string;
+      minutes: string;
       urge: {
         day: number;
         hours: number;
@@ -41,7 +41,7 @@ export interface FillInDataBasicConfig {
       }
     },
     whenTimeout: {
-      type: string;
+      type: 'noDealWith' | 'autoDealWith' | 'jump';
       value: string;
     };
   };
@@ -65,11 +65,18 @@ export interface FieldPermission {
   children: FieldPermission[];
 }
 
+export type BusinessData = FormDataData & FillInData;
+export type NodeData = { width: number, height: number, name: string };
+export type Data = {
+  businessData: BusinessData;
+  nodeData: NodeData;
+}
+
 export interface CurrentElement {
   id: string;
-  type: 'formData' | 'fillIn' | 'approve',
-  data: FormDataData & FillInData,
-  position: { x: number; y: number; }
+  type: 'formData' | 'fillIn' | 'approve';
+  data: Data;
+  position: { x: number; y: number; };
 }
 
 export interface StoreValue {
@@ -86,21 +93,20 @@ const store = new BehaviorSubject<StoreValue>({
       id: '1',
       type: 'formData',
       data: {
-        width: 200,
-        height: 72,
-        form: {
-          name: '',
-          value: '',
+        nodeData: { width: 200, height: 72, name: '工作表触发' },
+        businessData: {
+          form: { name: '', value: '' },
+          triggerWay: '',
+          whenAlterFields: [],
+          triggerCondition: [],
         },
-        triggerWay: '',
-        whenAlterFields: [],
-        triggerCondition: [],
       },
-      position: { x: 0, y: 0 } },
+      position: { x: 0, y: 0 },
+    },
     {
       id: '2',
       type: 'end',
-      data: { label: '结束', width: 100, height: 28 },
+      data: { nodeData: { name: '结束', width: 100, height: 28 } },
       position: { x: 0, y: 0 },
     },
     {
@@ -136,7 +142,30 @@ export function updateDataField(elementType: string, fieldName: string, updater:
         const newElement = { ...element };
         newElement.data = {
           ...newElement.data,
-          [fieldName]: updater(newElement.data[fieldName]),
+          businessData: {
+            ...newElement.data.businessData,
+            [fieldName]: updater(newElement.data.businessData[fieldName]),
+          },
+        };
+        return newElement;
+      }
+      return element;
+    }),
+  });
+}
+
+export function updateNodeData(elementType: string, fieldName: string, updater: Function) {
+  store.next({
+    ...store.value,
+    elements: store.value.elements.map((element): FlowElement => {
+      if (element.type === elementType) {
+        const newElement = { ...element };
+        newElement.data = {
+          ...newElement.data,
+          nodeData: {
+            ...newElement.data.nodeData,
+            [fieldName]: updater(newElement.data.nodeData[fieldName]),
+          },
         };
         return newElement;
       }

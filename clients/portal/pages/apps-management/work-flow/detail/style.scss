@@ -6,11 +6,19 @@ rect {
   left: unset !important;
   .drawer-container {
     @apply rounded-tl-none rounded-tr-none left-auto right-0 #{!important};
-    width: 384px !important;
+    width: 500px !important;
     box-shadow: -8px 0px 24px 4px rgba(148, 163, 184, 0.25);
     .drawer-main-content {
       @apply p-24 flex flex-col items-stretch;
       height: calc(100% - 56px);
     }
+  }
+}
+
+.work-flow-node-header-input {
+  border: none;
+  border-bottom: 1px solid transparent;
+  &:focus {
+    border-bottom: 1px solid currentColor;
   }
 }

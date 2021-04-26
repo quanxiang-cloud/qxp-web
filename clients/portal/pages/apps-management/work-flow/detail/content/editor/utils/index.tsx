@@ -50,16 +50,16 @@ const approveAndFillInCommonData = {
     multiplePersonApproveWay: '',
     whenNoApprovePerson: '',
     autoApproveRules: [],
-    approveRule: {
+    timeRule: {
       deadLine: {
         breakPoint: '',
-        day: -1,
-        hours: -1,
-        minutes: -1,
+        day: '',
+        hours: '',
+        minutes: '',
         urge: {
-          day: -1,
-          hours: -1,
-          minutes: -1,
+          day: '',
+          hours: '',
+          minutes: '',
           repeat: false,
         },
       },
