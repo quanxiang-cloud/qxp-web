@@ -7,21 +7,22 @@ export interface NumberPickerConfig {
   precision: number;
   required: boolean;
   valueSource: FormBuilder.ValueSource;
+  rangeSetting: FormBuilder.ValueRange;
 }
 
-// just for type friendly
-export const defaultConfig: NumberPickerConfig = {
-  title: '数字',
-  description: '',
-  displayModifier: 'normal',
-  placeholder: '',
-  sortable: false,
-  precision: 2,
-  required: false,
-  valueSource: 'customized',
-};
+// // just for type friendly
+// export const defaultConfig: NumberPickerConfig = {
+//   title: '数字',
+//   description: '',
+//   displayModifier: 'normal',
+//   placeholder: '',
+//   sortable: false,
+//   precision: 2,
+//   required: false,
+//   valueSource: 'customized',
+// };
 
-export function toSchema(value: typeof defaultConfig): FormBuilder.Schema {
+export function toSchema(value: NumberPickerConfig): FormBuilder.Schema {
   return {
     type: 'number',
     title: value.title,
@@ -39,6 +40,8 @@ export function toSchema(value: typeof defaultConfig): FormBuilder.Schema {
       sortable: value.sortable,
       permission: 3,
     },
+    ['minimum']: value.rangeSetting.min,
+    ['maximum']: value.rangeSetting.max,
   };
 }
 
@@ -60,6 +63,10 @@ export function toConfig(schema: FormBuilder.Schema): NumberPickerConfig {
     required: !!schema.required,
     // todo implement this
     valueSource: 'customized',
+    rangeSetting: {
+      min: undefined,
+      max: undefined,
+    },
   };
 }
 

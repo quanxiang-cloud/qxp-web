@@ -103,12 +103,12 @@ const schema: ISchema = {
         min: {
           title: '最小值',
           type: 'string',
-          'x-component': 'Input',
+          'x-component': 'NumberPicker',
         },
         max: {
           title: '最大值',
           type: 'string',
-          'x-component': 'Input',
+          'x-component': 'NumberPicker',
         },
       },
     },
