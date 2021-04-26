@@ -9,7 +9,7 @@ import Button from '@c/button';
 import IconButton from '@c/icon-btn';
 import MoreMenu from '@c/more-menu';
 import { usePortalGlobalValue } from '@portal/states_to_be_delete/portal';
-import notify from '@lib/notify';
+import toast from '@lib/toast';
 
 import { getUserAdminInfo } from './api';
 import EditEmployeesModal from './modal/edit-employees-modal';
@@ -115,7 +115,7 @@ export default function Employees({
         });
         exportEmployees(newData);
       } else {
-        notify.error('获取人员出错');
+        toast.error('获取人员出错');
       }
     });
   }

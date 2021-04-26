@@ -7,7 +7,7 @@ import Error from '@c/error';
 import Loading from '@c/loading';
 import { usePortalGlobalValue } from '@portal/states_to_be_delete/portal';
 import { getNestedPropertyToArray } from '@lib/utils';
-import { getUserFuncs, getUserRoles } from '@lib/api/auth';
+import { getUserFuncs, getUserAdminRoles } from '@lib/api/auth';
 
 const Dashboard = React.lazy(() => import('./pages/dashboard'));
 const MetaData = React.lazy(() => import('./pages/metadata'));
@@ -33,8 +33,8 @@ export default function Routes(): JSX.Element {
     },
   );
   const { data, isLoading: rolesIsLoading } = useQuery(
-    'GET_USER_ROLES',
-    () => getUserRoles(),
+    'GET_USER_ADMIN_ROLES',
+    () => getUserAdminRoles(),
     {
       refetchOnWindowFocus: false,
       retry: false,

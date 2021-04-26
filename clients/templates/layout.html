@@ -31,8 +31,8 @@
     <script>
       {{ if .}}
         window.USER = {{ .user }}
-        window.USER_FUNC_TAGS = {{ .userFuncTags }}
-        window.USER_ROLES = {{ .userRoles }}
+        window.ADMIN_USER_FUNC_TAGS = {{ .adminUserFuncTags }}
+        window.USER_ADMIN_ROLES = {{ .userAdminRoles }}
         window.CONFIG = {{ .CONFIG }}
         window.__verbose_log__ = {{.debugMode }}
       {{ end }}

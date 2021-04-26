@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Modal } from '@QCFE/lego-ui';
 
 import Button from '@c/button';
-import notify from '@lib/notify';
+import toast from '@lib/toast';
 
 import EmployeeOrDepartmentPicker from './picker';
 
@@ -50,7 +50,7 @@ export default function EmployeeOrDepartmentPickerModal({
       }
     }).catch((err) => {
       setIsOnGetSelected(false);
-      notify.error(err.message);
+      toast.error(err.message);
     });
   }
 
