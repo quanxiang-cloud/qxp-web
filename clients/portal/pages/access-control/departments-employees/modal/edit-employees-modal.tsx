@@ -6,7 +6,7 @@ import TreePicker from '@c/form/input/tree-picker-field';
 import Button from '@c/button';
 import Loading from '@c/loading';
 import { departmentToTreeNode } from '@lib/utils';
-import notify from '@lib/notify';
+import toast from '@lib/toast';
 
 import { SpecialSymbolsReg, PhoneReg } from '../utils';
 import { getERPTree, addDepUser, updateUser } from '../api';
@@ -46,11 +46,11 @@ export default function EditEmployeesModal(
   const staffMutation = useMutation(user.id ? updateUser : addDepUser, {
     onSuccess: (data) => {
       if (data && data.code === 0) {
-        notify.success('操作成功');
+        toast.success('操作成功');
         closeModal();
         queryClient.invalidateQueries('GET_USER_ADMIN_INFO');
       } else {
-        notify.error(data?.msg || '操作失败');
+        toast.error(data?.msg || '操作失败');
         closeModal();
       }
     },

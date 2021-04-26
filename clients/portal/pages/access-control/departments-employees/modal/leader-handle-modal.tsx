@@ -4,7 +4,7 @@ import { Modal } from '@QCFE/lego-ui';
 
 import Icon from '@c/icon';
 import Button from '@c/button';
-import notify from '@lib/notify';
+import toast from '@lib/toast';
 
 import { LeaderStatus } from '../type';
 import { setDEPLeader, cancelDEPLeader, LeaderParams } from '../api';
@@ -24,11 +24,11 @@ export default function LeaderHandleModal({ user, closeModal }: Props) {
   const mutation = useMutation(api, {
     onSuccess: (res) => {
       if (res && res.code === 0) {
-        notify.success('操作成功');
+        toast.success('操作成功');
         closeModal();
         queryClient.invalidateQueries('GET_USER_ADMIN_INFO');
       } else {
-        notify.error('操作失败');
+        toast.error('操作失败');
         closeModal();
       }
     },

@@ -7,7 +7,7 @@ import { userResetPassword } from '@lib/api/auth';
 import PassWordField from '@c/form/input/password-field';
 import Form, { FormRef } from '@c/form';
 import { isPassword } from '@lib/utils';
-import notify from '@lib/notify';
+import toast from '@lib/toast';
 
 interface Props {
   visible: boolean;
@@ -27,7 +27,7 @@ export default function ResetPasswordModal({ visible, onCancel }: Props) {
       window.location.pathname = '/login/password';
     },
     onError: (err: Error) => {
-      notify.error(err.message);
+      toast.error(err.message);
       setLoading(false);
     },
   });
