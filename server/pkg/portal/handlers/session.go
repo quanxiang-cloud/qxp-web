@@ -187,6 +187,34 @@ func getCurrentUser(r *http.Request) *User {
 // IsUserLogin judge wheather user is login
 func IsUserLogin(r *http.Request) bool {
 	token := contexts.Cache.Get(getTokenKey(r)).Val()
+	if token == "" {
+		refreshToken := contexts.Cache.Get(getRefreshTokenKey(r)).Val()
+		if refreshToken == "" {
+			return false
+		}
+
+		if !renewToken(r, refreshToken) {
+			return false
+		}
+
+		token = contexts.Cache.Get(getTokenKey(r)).Val()
+	}
+
+	// todo refactor this
+	_, errMsg := contexts.SendRequest(r.Context(), "POST", "/api/v1/org/userUserInfo", nil, map[string]string{
+		"Access-Token": token,
+	})
+
+	if errMsg != "" {
+		return false
+	}
+
+	return true
+}
+
+// HasToken return current session has token
+func HasToken(r *http.Request) bool {
+	token := contexts.Cache.Get(getTokenKey(r)).Val()
 	if token != "" {
 		return true
 	}

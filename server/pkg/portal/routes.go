@@ -23,7 +23,7 @@ func loginRequired(h http.HandlerFunc) http.HandlerFunc {
 
 func tokenRequired(h http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		if !handlers.IsUserLogin(r) {
+		if !handlers.HasToken(r) {
 			w.WriteHeader(http.StatusUnauthorized)
 			return
 		}
