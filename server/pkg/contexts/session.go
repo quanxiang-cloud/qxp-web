@@ -9,11 +9,14 @@ import (
 	"github.com/rbcervilla/redisstore"
 )
 
-// ContextKey is used for context.Context value. The value requires a key that is not primitive type.
-type ContextKey string
+type contextKey int
 
-// RequestID requestID type
-const RequestID ContextKey = "requestID"
+const (
+	// CtxRequestID is the key for request id
+	CtxRequestID contextKey = iota
+	// CtxUA is the key for user-agent
+	CtxUA
+)
 
 // GetSessionValue get value from session
 func GetSessionValue(r *http.Request, valueKey string) string {
@@ -25,7 +28,7 @@ func GetSessionValue(r *http.Request, valueKey string) string {
 
 // GetRequestID return requestID in of current request
 func GetRequestID(r *http.Request) string {
-	return r.Context().Value(RequestID).(string)
+	return r.Context().Value(CtxRequestID).(string)
 }
 
 // GetCurrentRequestSession get session of current request

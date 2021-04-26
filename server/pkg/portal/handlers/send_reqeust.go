@@ -7,11 +7,9 @@ import (
 )
 
 func sendRequest(ctx context.Context, method string, fullPath string, body interface{}) ([]byte, string) {
-	token := ctx.Value(ctxToken).(string)
-	ua := ctx.Value(ctxUA).(string)
+	token := contexts.GetContextValue(ctx, ctxToken)
 	headers := map[string]string{
 		"Access-Token": token,
-		"User-Agent":   ua,
 	}
 
 	bodyBytes, err := json.Marshal(body)
