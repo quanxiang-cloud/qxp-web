@@ -12,8 +12,15 @@ function httpClient<TData>(
     body: JSON.stringify(body || {}),
     headers: headers,
   }).then((response) => {
+    if (response.status === 401) {
+      alert('当前会话已失效，请重新登录!');
+      window.location.href = window.location.href;
+      return;
+    }
+
+    // todo optimize this
     if (response.status !== 200) {
-      return Promise.reject(new Error('todo some error message'));
+      return Promise.reject(`${response.status} ${response.statusText}`);
     }
 
     return response.json();
