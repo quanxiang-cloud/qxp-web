@@ -28,6 +28,7 @@ export default function ResetPasswordModal({ visible, onCancel }: Props) {
     },
     onError: (err: Error) => {
       notify.error(err.message);
+      setLoading(false);
     },
   });
 
