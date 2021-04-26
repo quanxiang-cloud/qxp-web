@@ -37,7 +37,8 @@ func NewHTTPClient(c *HTTPClientConfig) *http.Client {
 	return client
 }
 
-func doRequest(req *http.Request) (*http.Response, []byte, string) {
+// DoRequest send req with retry
+func DoRequest(req *http.Request) (*http.Response, error) {
 	var resp *http.Response
 	var err error
 
@@ -55,6 +56,15 @@ func doRequest(req *http.Request) (*http.Response, []byte, string) {
 
 	if err != nil {
 		Logger.Errorf("failed to send request to API server: %s", err.Error())
+		return nil, err
+	}
+
+	return resp, nil
+}
+
+func retrieveResponse(req *http.Request) (*http.Response, []byte, string) {
+	resp, err := DoRequest(req)
+	if err != nil {
 		return nil, nil, err.Error()
 	}
 
@@ -73,6 +83,7 @@ func doRequest(req *http.Request) (*http.Response, []byte, string) {
 func SendRequest(ctx context.Context, method string, fullPath string, body []byte, headers map[string]string) ([]byte, string) {
 	requestID := GetContextValue(ctx, CtxRequestID)
 
+	// todo refactor APIEndpoint+fullPath
 	req, err := http.NewRequest(method, APIEndpoint+fullPath, bytes.NewBuffer(body))
 	if err != nil {
 		Logger.Errorf("[request_id=%s] failed to build request: %s", requestID, err.Error())
@@ -87,12 +98,7 @@ func SendRequest(ctx context.Context, method string, fullPath string, body []byt
 
 	Logger.Debugf("sending request, method: %s, url: %s, headers: %s", req.Method, req.URL, req.Header)
 
-	var resp *http.Response
-	var respBody []byte
-	var errMsg string
-
-	resp, respBody, errMsg = doRequest(req)
-
+	resp, respBody, errMsg := retrieveResponse(req)
 	if errMsg != "" {
 		return nil, errMsg
 	}

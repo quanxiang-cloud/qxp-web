@@ -26,19 +26,19 @@ func ProxyAPIHandler(w http.ResponseWriter, r *http.Request) {
 
 	req, err := http.NewRequest(method, targetURL, r.Body)
 	if err != nil {
-		contexts.Logger.Error("failed to build billing request: %s", err.Error())
+		contexts.Logger.Error("failed to build request: %s", err.Error())
 		renderErrorPage(w, r, http.StatusInternalServerError, http.StatusText(http.StatusInternalServerError))
 		return
 	}
 
 	req.Header.Set("Access-Token", getToken(r))
 	req.Header.Set("Content-Type", r.Header.Get("Content-Type"))
+	req.Header.Set("User-Agent", r.Header.Get("User-Agent"))
 
 	contexts.Logger.Debugf(
 		"proxy api request, method: %s, url: %s, header: %s request_id: %s", method, targetURL, req.Header, contexts.GetRequestID(r))
 
-	// todo replace by context.doRequest
-	resp, err := contexts.HTTPClient.Do(req)
+	resp, err := contexts.DoRequest(req)
 	if err != nil {
 		contexts.Logger.Errorf("do request proxy error: %s, request_id: %s", err.Error(), contexts.GetRequestID(r))
 		w.WriteHeader(500)
