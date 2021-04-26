@@ -37,7 +37,6 @@ func HandleRetrievePasswordSubmit(w http.ResponseWriter, r *http.Request) {
 	}
 	respBody, errMsg := contexts.SendRequest(r.Context(), "POST", "/api/v1/nurturing/userForgetResetPWD", resetPasswordParams, map[string]string{
 		"Content-Type": "application/json",
-		"User-Agent":   r.Header.Get("User-Agent"),
 	})
 	if errMsg != "" {
 		contexts.Logger.Errorf("failed to reset password: %s, response: %s request_id: %s", errMsg, string(respBody), requestID)

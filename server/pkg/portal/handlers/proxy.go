@@ -33,11 +33,11 @@ func ProxyAPIHandler(w http.ResponseWriter, r *http.Request) {
 
 	req.Header.Set("Access-Token", getToken(r))
 	req.Header.Set("Content-Type", r.Header.Get("Content-Type"))
-	req.Header.Set("User-Agent", r.Header.Get("User-Agent"))
 
 	contexts.Logger.Debugf(
 		"proxy api request, method: %s, url: %s, header: %s request_id: %s", method, targetURL, req.Header, contexts.GetRequestID(r))
 
+	// todo replace by context.doRequest
 	resp, err := contexts.HTTPClient.Do(req)
 	if err != nil {
 		contexts.Logger.Errorf("do request proxy error: %s, request_id: %s", err.Error(), contexts.GetRequestID(r))

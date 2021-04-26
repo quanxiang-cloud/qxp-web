@@ -20,7 +20,8 @@ func getLoginTemplate(r *http.Request) string {
 
 // HandleLogin render login page
 func HandleLogin(w http.ResponseWriter, r *http.Request) {
-	if IsUserLogin(r) {
+	r, tokenValid := PrepareRequest(r)
+	if tokenValid {
 		http.Redirect(w, r, "/", http.StatusFound)
 		return
 	}
@@ -77,7 +78,6 @@ func HandleLoginSubmit(w http.ResponseWriter, r *http.Request) {
 
 	respBody, errMsg := contexts.SendRequest(r.Context(), "POST", "/api/v1/oauth2c/login", jsonStr, map[string]string{
 		"Content-Type": "application/json",
-		"User-Agent":   r.Header.Get("User-Agent"),
 	})
 
 	if errMsg != "" {

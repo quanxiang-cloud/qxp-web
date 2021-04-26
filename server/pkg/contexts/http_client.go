@@ -71,7 +71,7 @@ func doRequest(req *http.Request) (*http.Response, []byte, string) {
 
 // SendRequest is an util method for request API Server
 func SendRequest(ctx context.Context, method string, fullPath string, body []byte, headers map[string]string) ([]byte, string) {
-	requestID := ctx.Value(RequestID).(string)
+	requestID := GetContextValue(ctx, CtxRequestID)
 
 	req, err := http.NewRequest(method, APIEndpoint+fullPath, bytes.NewBuffer(body))
 	if err != nil {
@@ -82,6 +82,8 @@ func SendRequest(ctx context.Context, method string, fullPath string, body []byt
 	for key, value := range headers {
 		req.Header.Add(key, value)
 	}
+
+	req.Header.Add("User-Agent", GetContextValue(ctx, CtxUA))
 
 	Logger.Debugf("sending request, method: %s, url: %s, headers: %s", req.Method, req.URL, req.Header)
 
