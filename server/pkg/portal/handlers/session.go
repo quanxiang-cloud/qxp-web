@@ -118,7 +118,7 @@ func renewToken(r *http.Request, refreshToken string) bool {
 
 	expireTime, err := time.Parse(time.RFC3339, refreshTokenResponse.Data.Expire)
 	if err != nil {
-		// todo log error message
+		contexts.Logger.Errorf("invalid token expire value: %v, request_id: %s", refreshTokenResponse.Data.Expire, requestID)
 		return false
 	}
 
@@ -175,8 +175,7 @@ func getCurrentUser(ctx context.Context, token string) *User {
 
 	var user User
 	userRaw := gjson.Get(string(respBody), "data").Raw
-	err := json.Unmarshal([]byte(userRaw), &user)
-	if err != nil {
+	if err := json.Unmarshal([]byte(userRaw), &user); err != nil {
 		contexts.Logger.Errorf("failed to unmarshal user, err: %s", err.Error())
 		return nil
 	}

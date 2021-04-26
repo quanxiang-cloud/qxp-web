@@ -57,8 +57,7 @@ func HandleLoginSubmit(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if password == "" || username == "" {
-		// todo give this a better error message
-		renderTemplate(w, templateName, map[string]interface{}{"errorMessage": http.StatusText(http.StatusBadRequest)})
+		renderTemplate(w, templateName, map[string]interface{}{"errorMessage": "请输入用户名和密码"})
 		return
 	}
 
