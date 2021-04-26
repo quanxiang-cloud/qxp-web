@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"bytes"
 	"encoding/json"
 	"net/http"
 	"qxp-web/server/pkg/contexts"
@@ -76,7 +75,7 @@ func HandleLoginSubmit(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	respBuffer, errMsg := contexts.SendRequestWitoutAuth(r.Context(), "POST", "/api/v1/oauth2c/login", bytes.NewBuffer(jsonStr), map[string]string{
+	respBody, errMsg := contexts.SendRequest(r.Context(), "POST", "/api/v1/oauth2c/login", jsonStr, map[string]string{
 		"Content-Type": "application/json",
 		"User-Agent":   r.Header.Get("User-Agent"),
 	})
@@ -88,7 +87,7 @@ func HandleLoginSubmit(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var loginResponse LoginResponse
-	if err := json.Unmarshal(respBuffer.Bytes(), &loginResponse); err != nil {
+	if err := json.Unmarshal(respBody, &loginResponse); err != nil {
 		contexts.Logger.Errorf("failed to unmarshal login response body, err: %s, request_id: %s", err.Error(), requestID)
 		renderTemplate(w, templateName, map[string]interface{}{"errorMessage": http.StatusText(http.StatusInternalServerError)})
 		return
