@@ -205,8 +205,7 @@ func PrepareRequest(r *http.Request) (*http.Request, bool) {
 
 // HasToken return current session has token
 func HasToken(r *http.Request) bool {
-	token := getToken(r)
-	return token != ""
+	return "" != getToken(r)
 }
 
 // RedirectToLoginPage redirect to login page
