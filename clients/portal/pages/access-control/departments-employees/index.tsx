@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import TextHeader from '@c/text-header';
 import Error from '@c/error';
 import Search from '@c/search';
-import notify from '@lib/notify';
+import toast from '@lib/toast';
 import { usePortalGlobalValue } from '@portal/states_to_be_delete/portal';
 
 import DepartmentsTree from './departments-tree';
@@ -25,7 +25,7 @@ export default function DepartmentsEmployees() {
       return;
     }
     if (SpecialSymbolsReg.test(inputValue)) {
-      notify.error('不能输入特殊字符');
+      toast.error('不能输入特殊字符');
       return;
     }
     setSearchWord(inputValue);
@@ -44,7 +44,7 @@ export default function DepartmentsEmployees() {
   function handleOnBlur(val: string) {
     const newVal = val === '' ? val : inputValue;
     if (SpecialSymbolsReg.test(newVal)) {
-      notify.error('不能输入特殊字符');
+      toast.error('不能输入特殊字符');
       return;
     }
     setSearchWord(newVal);

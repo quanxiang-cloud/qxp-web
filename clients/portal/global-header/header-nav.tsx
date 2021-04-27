@@ -34,8 +34,14 @@ export default function HeaderLeft() {
     '/access-control/departments-employees',
     '/access-control/role-management',
   ].includes(location.pathname);
-  const isSystemControl = location.pathname === '/system';
-
+  const isSystemControl = [
+    '/system',
+    '/system/',
+    '/system/message',
+    '/system/message/',
+    '/system/message/send',
+    '/system/message/send/',
+  ].includes(location.pathname);
   return (
     <div className="flex items-center flex-2">
       <Link

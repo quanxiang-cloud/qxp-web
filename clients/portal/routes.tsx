@@ -7,11 +7,12 @@ import Error from '@c/error';
 import Loading from '@c/loading';
 import { usePortalGlobalValue } from '@portal/states_to_be_delete/portal';
 import { getNestedPropertyToArray } from '@lib/utils';
-import { getUserFuncs, getUserRoles } from '@lib/api/auth';
+import { getUserFuncs, getUserAdminRoles } from '@lib/api/auth';
 
 const Dashboard = React.lazy(() => import('./pages/dashboard'));
 const MetaData = React.lazy(() => import('./pages/metadata'));
 const AccessControl = React.lazy(() => import('./pages/access-control'));
+const SystemMgmt = React.lazy(() => import('./pages/system-mgmt'));
 
 const { USER } = window;
 if (USER && !isEmpty(USER)) {
@@ -31,8 +32,8 @@ export default function Routes(): JSX.Element {
     },
   );
   const { data, isLoading: rolesIsLoading } = useQuery(
-    'GET_USER_ROLES',
-    () => getUserRoles(),
+    'GET_USER_ADMIN_ROLES',
+    () => getUserAdminRoles(),
     {
       refetchOnWindowFocus: false,
       retry: false,
@@ -66,6 +67,7 @@ export default function Routes(): JSX.Element {
         <Route exact path="/" component={Dashboard} />
         <Route path="/metadata" component={MetaData} />
         <Route path="/access-control" component={AccessControl} />
+        <Route path="/system" component={SystemMgmt} />
         <Route component={Error} />
       </Switch>
     </>

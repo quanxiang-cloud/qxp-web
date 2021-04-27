@@ -101,3 +101,10 @@
   line-height: 24px;
   font-weight: 600
 }
+
+.text-toolbar {
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--gray-900);
+  line-height: 20px;
+}

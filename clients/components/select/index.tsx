@@ -25,7 +25,7 @@ interface BaseSelectProps<T> {
   onOptionsVisibilityChange?: (visible: boolean) => void;
   options: SelectOption<T>[];
   optionsDesc?: string;
-  placeholder?: string;
+  placeholder?: string | JSX.Element;
   style?: React.CSSProperties;
 }
 
@@ -246,6 +246,7 @@ export default class Select<T extends React.Key> extends React.Component<SelectP
     return (
       <SingleSelectTrigger
         selectedOption={selectedOption as SelectOption<React.Key> | undefined}
+        // @ts-ignore
         placeholder={placeholder}
       />
     );
