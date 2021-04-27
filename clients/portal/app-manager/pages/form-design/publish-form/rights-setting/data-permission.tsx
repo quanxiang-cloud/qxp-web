@@ -20,11 +20,11 @@ type Props = {
 
 const CONDITION = [{
   label: '所有',
-  value: 'all',
+  value: 'and',
 },
 {
   label: '任一',
-  value: 'and',
+  value: 'or',
 }];
 
 const OPERATORS = [

@@ -44,7 +44,6 @@ function FiltrateForm({ filtrates, showMoreFiltrate }: Props, ref?: React.Ref<an
             render={({ field }) => {
               return (
                 <FieldSwitch
-                  style={{ width: '288px' }}
                   {...{ ...field, value: field.value ? field.value : '' }}
                   filtrate={filtrate}
                 />

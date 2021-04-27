@@ -129,6 +129,7 @@ function FieldPermissions({ rightsID }: Props) {
       properties: {},
       title: '',
       type: 'object',
+      'x-internal': { permission: visibleField.length ? 1 : 0 },
     };
 
     fieldList.forEach((field) => {
