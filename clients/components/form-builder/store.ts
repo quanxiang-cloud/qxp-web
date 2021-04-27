@@ -82,7 +82,7 @@ export default class FormBuilderStore {
   internalFields: Array<FormItem>;
   @observable fields: Array<FormItem>;
   @observable activeFieldName = '';
-  @observable labelAlign = 'left';
+  @observable labelAlign = 'right';
 
   constructor({ schema }: Props) {
     const [internalFields, fields] = schemaToFields(schema);
@@ -126,6 +126,9 @@ export default class FormBuilderStore {
           // convert observable value to pure js object for debugging
           ...toSchema(toJS(configValue)),
           'x-index': index,
+          'x-mega-props': {
+            labelCol: 2,
+          },
         };
 
         return acc;

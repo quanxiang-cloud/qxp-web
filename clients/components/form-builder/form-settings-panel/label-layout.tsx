@@ -16,8 +16,8 @@ function FormLabelConfig(): JSX.Element {
     return (
       <>
         <div
-          className={classnames('content-item', { 'item-checked': store.labelAlign==='left' })}
-          onClick={() => handleClick('left')}
+          className={classnames('content-item', { 'item-checked': store.labelAlign==='right' })}
+          onClick={() => handleClick('right')}
         >
           <div>
             <span className="item-label"></span>
