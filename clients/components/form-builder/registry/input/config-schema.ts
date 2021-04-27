@@ -21,7 +21,7 @@ const schema: ISchema = {
           },
           'x-component': 'Input',
           'x-mega-props': {
-            labelCol: 12,
+            labelCol: 8,
           },
           'x-index': 0,
         },
@@ -31,7 +31,7 @@ const schema: ISchema = {
           default: '请输入',
           'x-component': 'Input',
           'x-mega-props': {
-            labelCol: 12,
+            labelCol: 8,
           },
           'x-index': 1,
         },
@@ -40,7 +40,7 @@ const schema: ISchema = {
           title: '描述内容',
           'x-component': 'Input',
           'x-mega-props': {
-            labelCol: 12,
+            labelCol: 8,
           },
           'x-index': 2,
         },
@@ -76,9 +76,9 @@ const schema: ISchema = {
           ],
           'x-component': 'select',
           'x-mega-props': {
-            labelCol: 12,
+            labelCol: 8,
           },
-          'x-index': 10,
+          'x-index': 4,
         },
         displayModifier: {
           type: 'string',
@@ -100,16 +100,16 @@ const schema: ISchema = {
           ],
           'x-component': 'RadioGroup',
           'x-mega-props': {
-            labelCol: 12,
+            labelCol: 8,
           },
           'x-index': 5,
         },
         sortable: {
-          title: '是否支持列表排序',
+          title: '列表排序',
           default: false,
           'x-component': 'Switch',
           'x-mega-props': {
-            labelCol: 12,
+            labelCol: 8,
           },
           'x-index': 6,
         },
@@ -118,7 +118,7 @@ const schema: ISchema = {
           default: false,
           'x-component': 'Switch',
           'x-mega-props': {
-            labelCol: 12,
+            labelCol: 8,
           },
           'x-index': 7,
         },
@@ -140,7 +140,7 @@ const schema: ISchema = {
           ],
           'x-component': 'select',
           'x-mega-props': {
-            labelCol: 12,
+            labelCol: 8,
           },
           'x-index': 8,
         },
