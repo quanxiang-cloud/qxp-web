@@ -10,12 +10,11 @@ import (
 
 func loginRequired(h http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		if !handlers.IsUserLogin(r) {
+		r, ok := handlers.PrepareRequest(r)
+		if !ok {
 			handlers.RedirectToLoginPage(w, r)
 			return
 		}
-
-		r = handlers.DecoratRequest(r)
 
 		h(w, r)
 	}
@@ -23,7 +22,7 @@ func loginRequired(h http.HandlerFunc) http.HandlerFunc {
 
 func tokenRequired(h http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		if !handlers.IsUserLogin(r) {
+		if !handlers.HasToken(r) {
 			w.WriteHeader(http.StatusUnauthorized)
 			return
 		}
@@ -51,5 +50,5 @@ func GetRouter() http.Handler {
 
 	r.PathPrefix("/").Methods("GET").HandlerFunc(loginRequired(handlers.PortalHandler))
 
-	return contexts.RequestIDMiddleware(r)
+	return contexts.WithUtilContext(r)
 }

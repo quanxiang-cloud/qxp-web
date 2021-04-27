@@ -2,7 +2,7 @@ import React from 'react';
 import { Modal } from '@QCFE/lego-ui';
 
 import Button from '@c/button';
-import notify from '@lib/notify';
+import toast from '@lib/toast';
 import { NodeRenderProps } from '@c/headless-tree/types';
 
 import { deleteDEP } from '../api';
@@ -15,13 +15,13 @@ export default function DeleteModal({ node, store, closeModal }: Props) {
   function handleOk() {
     deleteDEP(node.id).then(({ code, msg }) => {
       if (!code) {
-        notify.success('删除成功');
+        toast.success('删除成功');
         store.deleteNode(node);
         closeModal();
         return;
       }
 
-      notify.error(msg || '');
+      toast.error(msg || '');
     });
   }
 

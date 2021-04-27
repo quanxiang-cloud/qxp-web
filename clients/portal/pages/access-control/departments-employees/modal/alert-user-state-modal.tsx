@@ -3,7 +3,7 @@ import { useMutation, useQueryClient } from 'react-query';
 import { Modal } from '@QCFE/lego-ui';
 
 import Button from '@c/button';
-import notify from '@lib/notify';
+import toast from '@lib/toast';
 
 import { updateUserStatus } from '../api';
 import { UserStatus } from '../type';
@@ -21,11 +21,11 @@ export default function AccountHandleModal(
   const handleMutation = useMutation(updateUserStatus, {
     onSuccess: (res) => {
       if (res && res.code === 0) {
-        notify.success('操作成功');
+        toast.success('操作成功');
         closeModal();
         queryClient.invalidateQueries('GET_USER_ADMIN_INFO');
       } else {
-        notify.error('操作失败');
+        toast.error('操作失败');
         closeModal();
       }
     },

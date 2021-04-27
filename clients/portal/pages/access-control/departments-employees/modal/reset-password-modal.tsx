@@ -4,7 +4,7 @@ import { Modal, Form } from '@QCFE/lego-ui';
 
 import Button from '@c/button';
 import Icon from '@c/icon';
-import notify from '@lib/notify';
+import toast from '@lib/toast';
 
 import { resetUserPWD } from '../api';
 
@@ -31,9 +31,9 @@ export default function ResetPasswordModal({
   const resetMutation = useMutation(resetUserPWD, {
     onSuccess: (data) => {
       if (data && data.code === 0) {
-        notify.success('操作成功！');
+        toast.success('操作成功！');
       } else {
-        notify.error('操作失败！');
+        toast.error('操作失败！');
       }
       closeModal();
       clearSelectRows();
@@ -49,7 +49,7 @@ export default function ResetPasswordModal({
     } = formRef.current?.getFieldsValue();
     const { sendPasswordBy } = values;
     if (sendPasswordBy.length === 0) {
-      notify.error('请选择发送方式');
+      toast.error('请选择发送方式');
       return;
     }
     const checkedWay: sendPasswordBy = {

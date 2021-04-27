@@ -28,8 +28,7 @@ type CurrentUser = {
 
 interface Window {
   USER: CurrentUser;
-  USER_ROLES: Role[];
-  USER_FUNC_TAGS: string[];
-  CONFIG?: Record<string, any>;
-  [key: string]: any;
+  USER_ADMIN_ROLES: Role[];
+  ADMIN_USER_FUNC_TAGS: string[];
+  [key: string]: unknown;
 }
