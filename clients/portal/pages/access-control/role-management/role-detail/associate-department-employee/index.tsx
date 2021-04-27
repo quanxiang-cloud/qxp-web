@@ -63,7 +63,7 @@ export default function AssociateDepartmentEmployee({ roleID, isSuper }: Props) 
       });
       return true;
     } catch (e) {
-      notify.error(e.message);
+      toast.error(e.message);
     }
   }
 
