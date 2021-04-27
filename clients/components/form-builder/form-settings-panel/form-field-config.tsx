@@ -30,19 +30,39 @@ const { onFieldInputChange$, onFieldInit$ } = FormEffectHooks;
 
 const useOneToManyEffects = () => {
   const { setFieldState } = createFormActions();
-  let visible = false;
 
-  onFieldInit$('*(rangeSetting.range, rangeSetting.max,rangeSetting.min)').subscribe((field) => {
-    if (field.name === 'rangeSetting.range' && field.value !== undefined) {
-      visible = field.value.length===0 ? false : true;
+  onFieldInit$('min.minSet').subscribe((field) => {
+    if (field.value !== undefined) {
+      setFieldState('min.minimum', (state) => {
+        state.visible = field.value.length===0 ? false : true;
+      });
+      return;
     }
-    setFieldState('*(rangeSetting.max,rangeSetting.min)', (state) => {
-      state.visible = visible;
+    setFieldState('min.minimum', (state) => {
+      state.visible = false;
     });
   });
 
-  onFieldInputChange$('rangeSetting.range').subscribe(({ value }) => {
-    setFieldState('*(rangeSetting.min,rangeSetting.max)', (state) => {
+  onFieldInit$('max.maxSet').subscribe((field) => {
+    if (field.value !== undefined) {
+      setFieldState('max.maximum', (state) => {
+        state.visible = field.value.length===0 ? false : true;
+      });
+      return;
+    }
+    setFieldState('max.maximum', (state) => {
+      state.visible = false;
+    });
+  });
+
+  onFieldInputChange$('min.minSet').subscribe(({ value }) => {
+    setFieldState('min.minimum', (state) => {
+      state.visible = value.length===0 ? false : true;
+    });
+  });
+
+  onFieldInputChange$('max.maxSet').subscribe(({ value }) => {
+    setFieldState('max.maximum', (state) => {
       state.visible = value.length===0 ? false : true;
     });
   });

@@ -1,3 +1,4 @@
+
 export interface NumberPickerConfig {
   title: string;
   description?: string;
@@ -7,6 +8,9 @@ export interface NumberPickerConfig {
   precision: number;
   required: boolean;
   valueSource: FormBuilder.ValueSource;
+  // rangeSetting: FormBuilder.ValueRange;
+  minimum: number | undefined;
+  maximum: number | undefined;
 }
 
 // just for type friendly
@@ -19,9 +23,17 @@ export const defaultConfig: NumberPickerConfig = {
   precision: 2,
   required: false,
   valueSource: 'customized',
+  // rangeSetting: {
+  //   minSet: false,
+  //   minimum: undefined,
+  //   maxSet: false,
+  //   maximum: undefined,
+  // },
+  maximum: undefined,
+  minimum: undefined,
 };
 
-export function toSchema(value: typeof defaultConfig): FormBuilder.Schema {
+export function toSchema(value: NumberPickerConfig): FormBuilder.Schema {
   return {
     type: 'number',
     title: value.title,
@@ -39,6 +51,8 @@ export function toSchema(value: typeof defaultConfig): FormBuilder.Schema {
       sortable: value.sortable,
       permission: 3,
     },
+    ['minimum']: value.minimum,
+    ['maximum']: value.maximum,
   };
 }
 
@@ -58,8 +72,9 @@ export function toConfig(schema: FormBuilder.Schema): NumberPickerConfig {
     sortable: !!schema['x-internal']?.sortable,
     precision: schema['x-component-props']?.precision,
     required: !!schema.required,
-    // todo implement this
     valueSource: 'customized',
+    minimum: undefined,
+    maximum: undefined,
   };
 }
 
