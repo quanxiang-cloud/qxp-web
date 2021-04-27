@@ -34,7 +34,6 @@ export const defaultConfig: NumberPickerConfig = {
 };
 
 export function toSchema(value: NumberPickerConfig): FormBuilder.Schema {
-  console.log(value);
   return {
     type: 'number',
     title: value.title,
