@@ -37,5 +37,5 @@ html {
   background-image: url(/dist/images/viewport-bg.svg);
   background-size: cover;
   background-color: rgb(55, 95, 216, 15%);
-  height: 100vh;
+  min-height: 100vh;
 }

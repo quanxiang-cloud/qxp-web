@@ -7,8 +7,8 @@ type Props = {
   defaultValue?: RightsCreate
 }
 
-const Input = formFieldWrap({ field: <input className='input' />});
-const Textarea = formFieldWrap({ field: <textarea className='input' />});
+const Input = formFieldWrap({ field: <input className='input' /> });
+const Textarea = formFieldWrap({ field: <textarea className='input' /> });
 
 function BasicInfoForm(
   { defaultValue = { name: '', description: '' } }: Props,

@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import CheckBox from '@c/checkbox';
 import Button from '@c/button';
 import { fetchOperatePer, saveOperatePer } from '@appLib/api';
-import notify from '@lib/notify';
+import notify from '@lib/toast';
 
 type CardProps = {
   rightsCardData: any;

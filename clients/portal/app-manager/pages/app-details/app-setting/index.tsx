@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useParams, useHistory } from 'react-router-dom';
 import { inject, observer } from 'mobx-react';
 import { Switch, Route } from 'react-router-dom';

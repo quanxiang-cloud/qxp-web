@@ -4,7 +4,7 @@ import { union } from 'lodash';
 import Button from '@c/button';
 import Checkbox from '@c/checkbox';
 import { fetchFieldFilter, saveFieldFilter } from '@appLib/api';
-import notify from '@lib/notify';
+import notify from '@lib/toast';
 
 import store from '../../store';
 

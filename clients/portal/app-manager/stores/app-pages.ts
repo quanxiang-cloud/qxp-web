@@ -1,7 +1,7 @@
 import { observable, action } from 'mobx';
 
 import TreeStore from '@c/headless-tree/store';
-import notify from '@lib/notify';
+import notify from '@lib/toast';
 import appPageDataStore from '@appC/app-page-data/store';
 import { TreeNode } from '@c/headless-tree/types';
 import { getFilterField } from '../pages/form-design/utils';
