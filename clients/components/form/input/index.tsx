@@ -15,6 +15,7 @@ import { FormContext } from '..';
 
 interface BaseProps {
   validateMessage?: string;
+  valideteOnBlur?:boolean;
   rules?: (string | ((value: any) => string))[];
   controlClassName?: string;
   errorClassName?: string;
@@ -40,6 +41,7 @@ export default function Input(props: Props) {
     errorClassName,
     onChange,
     onBlur,
+    valideteOnBlur = false,
     label,
     beforeBeginIcon,
     beforeEndIcon,
@@ -62,7 +64,9 @@ export default function Input(props: Props) {
   }, []);
 
   function handleBlur(e: FocusEvent<HTMLInputElement & HTMLTextAreaElement>) {
-    validateField(id);
+    if (valideteOnBlur) {
+      validateField(id);
+    }
     onBlur && onBlur(e);
   }
 
