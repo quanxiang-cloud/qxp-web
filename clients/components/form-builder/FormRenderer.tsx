@@ -1,7 +1,7 @@
 import React from 'react';
 import { ISchemaFormActions, SchemaForm } from '@formily/antd';
 import omit from 'lodash/omit';
-import converter from './converter';
+// import converter from './converter';
 
 type FromRendererProps = {
   formSchema: Record<string, unknown>;
@@ -24,12 +24,12 @@ type FromRendererProps = {
  * @constructor
  */
 function FormRenderer(
-  { formSchema, actions, initialValues, className, setDefault, registry }: FromRendererProps,
+  { formSchema, actions, initialValues, className, registry }: FromRendererProps,
 ) {
   const { formAttrs, formContext } = formSchema;
   const schema = {
     type: 'object',
-    properties: converter(formSchema, setDefault, formAttrs as any),
+    // properties: converter(formSchema, setDefault, formAttrs as any),
   };
 
   return (
