@@ -108,9 +108,11 @@ function Form(
   function validateFields(ignoreErrorMessage?: boolean): Promise<boolean> {
     return new Promise((resolve) => {
       setFormState((state) => {
-        const isAllValid = Object.keys(state.fields).every((id) => {
-          return validateField(id, ignoreErrorMessage, state);
-        });
+        const isAllValid = Object.keys(state.fields)
+          .map((id) => {
+            return validateField(id, ignoreErrorMessage, state);
+          })
+          .every((result) => result);
         resolve(isAllValid);
         return state;
       });

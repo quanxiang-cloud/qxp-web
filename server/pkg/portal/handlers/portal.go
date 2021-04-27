@@ -13,14 +13,14 @@ func PortalHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	userFuncTags := getUserFuncTags(r)
-	userRoles := getUserRoles(r)
+	adminUserFuncTags := getAdminUserFuncTags(r)
+	userAdminRoles := getUserAdminRoles(r)
 
 	renderTemplate(w, "portal.html", map[string]interface{}{
-		"user":         user,
-		"userFuncTags": userFuncTags,
-		"userRoles":    userRoles,
-		"debugMode":    contexts.Config.DevMode,
-		"CONFIG":       contexts.Config.ClientConfig,
+		"user":              user,
+		"adminUserFuncTags": adminUserFuncTags,
+		"userAdminRoles":    userAdminRoles,
+		"debugMode":         contexts.Config.DevMode,
+		"CONFIG":            contexts.Config.ClientConfig,
 	})
 }

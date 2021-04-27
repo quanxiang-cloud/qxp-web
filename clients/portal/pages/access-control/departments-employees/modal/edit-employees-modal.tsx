@@ -6,7 +6,7 @@ import TreePicker from '@c/form/input/tree-picker-field';
 import Button from '@c/button';
 import Loading from '@c/loading';
 import { departmentToTreeNode } from '@lib/utils';
-import notify from '@lib/notify';
+import toast from '@lib/toast';
 
 import { SpecialSymbolsReg, PhoneReg } from '../utils';
 import { getERPTree, addDepUser, updateUser } from '../api';
@@ -46,11 +46,11 @@ export default function EditEmployeesModal(
   const staffMutation = useMutation(user.id ? updateUser : addDepUser, {
     onSuccess: (data) => {
       if (data && data.code === 0) {
-        notify.success('操作成功');
+        toast.success('操作成功');
         closeModal();
         queryClient.invalidateQueries('GET_USER_ADMIN_INFO');
       } else {
-        notify.error(data?.msg || '操作失败');
+        toast.error(data?.msg || '操作失败');
         closeModal();
       }
     },
@@ -64,7 +64,6 @@ export default function EditEmployeesModal(
     const values = formRef.current?.getFieldsValue();
 
     const { userName, phone, email, sendPasswordBy, depID } = values;
-    const roleIDs = '3';
     if (!user.id) {
       const params: FormValues = {
         userName,
@@ -73,7 +72,6 @@ export default function EditEmployeesModal(
         sendPhoneMsg: sendPasswordBy && sendPasswordBy.includes('phone') ? 1 : -1,
         sendEmailMsg: sendPasswordBy && sendPasswordBy.includes('email') ? 1 : -1,
         depIDs: depID ? [depID] : [],
-        roleIDs: roleIDs ? [roleIDs] : [],
       };
       staffMutation.mutate(params);
     } else {
@@ -83,13 +81,8 @@ export default function EditEmployeesModal(
         phone,
         email,
         delete: [],
-        add: [],
         depIDs: depID ? [depID] : [],
       };
-      if (user.roleId !== values.roleIDs) {
-        params.add = [roleIDs];
-        params.delete = user.deleteId ? [user.deleteId] : [];
-      }
       staffMutation.mutate(params);
     }
   }

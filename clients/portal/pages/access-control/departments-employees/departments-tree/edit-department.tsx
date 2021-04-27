@@ -5,7 +5,7 @@ import { Modal, Form } from '@QCFE/lego-ui';
 import Button from '@c/button';
 import DepartmentPicker from '@c/form/input/tree-picker-field';
 import Loading from '@c/loading';
-import notify from '@lib/notify';
+import toast from '@lib/toast';
 import { departmentToTreeNode } from '@lib/utils';
 
 import { createDepartment, editDepartment, getERPTree } from '../api';
@@ -83,14 +83,14 @@ export default function EditDepartment({ department, closeModal }: Props) {
     }
 
     if (!params.pid && !department.id) {
-      notify.error('请选择父级部门');
+      toast.error('请选择父级部门');
       return;
     }
 
     requestAPI(params).then((submitResponseData: any) => {
       switch (submitResponseData.code) {
       case 0:
-        notify.success('操作成功！');
+        toast.success('操作成功！');
         queryClient.invalidateQueries('GET_ERP_TREE');
         closeModal();
         break;
@@ -99,7 +99,7 @@ export default function EditDepartment({ department, closeModal }: Props) {
         setDepNameState('error');
         break;
       default:
-        notify.error('发生未知错误，Code:' + submitResponseData.code);
+        toast.error('发生未知错误，Code:' + submitResponseData.code);
       }
     }).catch(() => {
       // todo handle error

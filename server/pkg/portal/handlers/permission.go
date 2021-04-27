@@ -8,7 +8,7 @@ import (
 	"github.com/tidwall/gjson"
 )
 
-func getUserFuncTags(r *http.Request) []string {
+func getAdminUserFuncTags(r *http.Request) []string {
 	respBody, errMsg := sendRequest(r.Context(), "POST", "/api/v1/goalie/listUserFuncTag", map[string]string{})
 	if errMsg != "" {
 		contexts.Logger.Errorf("failed to get user func tags: %s", errMsg)
@@ -34,7 +34,7 @@ type Role struct {
 	Tag    string `json:"tag"`
 }
 
-func getUserRoles(r *http.Request) []Role {
+func getUserAdminRoles(r *http.Request) []Role {
 	respBody, errMsg := sendRequest(r.Context(), "POST", "/api/v1/goalie/listUserRole", map[string]string{})
 	if errMsg != "" {
 		contexts.Logger.Errorf("failed to get user roles: %s", errMsg)
