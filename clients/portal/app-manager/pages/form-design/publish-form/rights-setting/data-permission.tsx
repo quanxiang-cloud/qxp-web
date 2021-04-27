@@ -8,7 +8,7 @@ import FieldSwitch from '@appC/field-switch';
 import Icon from '@c/icon';
 import Button from '@c/button';
 import formFieldWrap from '@appC/form-field-wrap';
-import notify from '@lib/notify';
+import notify from '@lib/toast';
 import { fetchDataAccessPer, saveDataAccessPer } from '@appLib/api';
 
 import { getFilterField } from '../../utils';

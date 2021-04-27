@@ -44,11 +44,6 @@ export default class Captcha extends InputField {
     if (!this.sender) {
       return;
     }
-    const syncUsername = () => {
-      const validateResult = this.username?.validate() || false;
-      this.toggleSender(validateResult);
-    };
-    this.username.on('change', syncUsername);
   }
 
   bindEvents() {
