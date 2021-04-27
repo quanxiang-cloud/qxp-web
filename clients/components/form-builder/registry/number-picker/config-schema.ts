@@ -90,23 +90,43 @@ const schema: ISchema = {
       'x-component': 'select',
       'x-index': 8,
     },
-    rangeSetting: {
+    min: {
       type: 'object',
+      'x-component': 'mega-layout',
+      'x-component-props': {
+        grid: true,
+        columns: 2,
+      },
       properties: {
-        range: {
+        minSet: {
           type: 'object',
           'x-component': 'CheckboxGroup',
           enum: [
-            { label: '最大值最小值', value: true },
+            { label: '最小值', value: true },
           ],
         },
-        min: {
-          title: '最小值',
+        minimum: {
           type: 'string',
           'x-component': 'NumberPicker',
         },
-        max: {
-          title: '最大值',
+      },
+    },
+    max: {
+      type: 'object',
+      'x-component': 'mega-layout',
+      'x-component-props': {
+        grid: true,
+        columns: 2,
+      },
+      properties: {
+        maxSet: {
+          type: 'object',
+          'x-component': 'CheckboxGroup',
+          enum: [
+            { label: '最大值', value: true },
+          ],
+        },
+        maximum: {
           type: 'string',
           'x-component': 'NumberPicker',
         },
