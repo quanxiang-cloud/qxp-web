@@ -35,7 +35,7 @@ function AppAdmin() {
 
   const removeAdmin = (idArr: string[]) => {
     delAppAdminUsers({ appID: appId, userIDs: idArr }).then(() => {
-      setAppAdminList(appAdminList.filter(({ id }) => !idArr.includes(id)));
+      setAppAdminList(appAdminList.filter(({ id }: any) => !idArr.includes(id)));
     });
   };
 
@@ -82,7 +82,7 @@ function AppAdmin() {
     {
       id: 'dep',
       Header: '部门',
-      accessor: ({ dep }: Employee) => {
+      accessor: ({ dep }: any) => {
         return dep.departmentName || '未分配部门';
       },
     },
