@@ -11,10 +11,17 @@ type Props = {
 
 function SourceElement({ formItem }: Props): JSX.Element {
   const store = useContext(StoreContext);
-  const [{ isDragging }, dragRef] = useDrag<any, DropResult, any>({
+  const [{ isDragging }, dragRef] = useDrag<DragObject, DropResult, { isDragging: boolean; }>({
     type: 'SOURCE_ELEMENT',
     item: formItem,
-    end: () => store.append(formItem),
+    end: (_, monitor) => {
+      if (!monitor.didDrop()) {
+        return;
+      }
+
+      const { index } = monitor.getDropResult() || {};
+      store.append(formItem, index);
+    },
     collect: (monitor) => ({
       isDragging: monitor.isDragging(),
     }),

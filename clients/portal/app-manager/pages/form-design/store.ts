@@ -1,7 +1,7 @@
 import { action, observable, reaction, IReactionDisposer, computed } from 'mobx';
 
 import FormStore from '@c/form-builder/store';
-import notify from '@lib/notify';
+import notify from '@lib/toast';
 import {
   createFormScheme,
   fetchFormScheme,

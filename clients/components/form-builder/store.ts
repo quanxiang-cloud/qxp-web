@@ -156,32 +156,29 @@ export default class FormBuilderStore {
   }
 
   @computed get schemaForCanvas(): ISchema {
-    const originalProperties = toJS(this.schema.properties) || {};
-    const properties = Object.keys(originalProperties).reduce<Record<string, any>>((acc, key) => {
-      if (INTERNAL_FIELD_NAMES.includes(key)) {
+    const properties = Object.keys(toJS(this.schema.properties) || {})
+      .filter((key) => !INTERNAL_FIELD_NAMES.includes(key))
+      .reduce<Record<string, any>>((acc, key, index) => {
+        const childrenInvisible = !this.schema.properties?.[key].display;
+        const wrapperNode: ISchema = {
+          type: 'object',
+          'x-component': 'FormFieldWrapper',
+          'x-index': index,
+          // 'x-component-props': { childrenInvisible },
+          properties: {
+            [key]: {
+              ...this.schema.properties?.[key],
+              display: true,
+              title: childrenInvisible ? '******' : this.schema.properties?.[key].title,
+            },
+          } as { [key: string]: ISchema; },
+        };
+
+        const newKey = `wrap-${key}`;
+        acc[newKey] = wrapperNode;
+
         return acc;
-      }
-
-      const childrenInvisible = !this.schema.properties?.[key].display;
-      const wrapperNode: ISchema = {
-        type: 'object',
-        'x-component': 'FormFieldWrapper',
-        'x-index': this.schema.properties?.[key]['x-index'],
-        // 'x-component-props': { childrenInvisible },
-        properties: {
-          [key]: {
-            ...this.schema.properties?.[key],
-            display: true,
-            title: childrenInvisible ? '******' : this.schema.properties?.[key].title,
-          },
-        } as { [key: string]: ISchema; },
-      };
-
-      const newKey = `wrap-${key}`;
-      acc[newKey] = wrapperNode;
-
-      return acc;
-    }, {});
+      }, {});
 
     return {
       type: 'object',
@@ -208,13 +205,19 @@ export default class FormBuilderStore {
   }
 
   @action
-  append(field: SourceElement<any>) {
-    this.fields.push({
+  append(field: SourceElement<any>, index?: number) {
+    const newField = {
       ...field,
       // componentName: field.componentName.toLowerCase(), //Need change componentName to lowercase
       configValue: field.defaultConfig,
       fieldName: nanoid(8),
-    });
+    };
+    if (index === undefined) {
+      this.fields.push(newField);
+      return;
+    }
+
+    this.fields.splice(index, 0, newField);
   }
 
   @action
