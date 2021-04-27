@@ -174,7 +174,7 @@ const MsgTable = ({ msgMgmt: store, refresh }: Props & Pick<MobxStores, 'msgMgmt
     if (previewData.id) params.id = previewData.id;
     createMsg(params)
       .then((data)=>{
-        if (data&&data.code==0) {
+        if (data) {
           Message.success('操作成功');
           setPreviewInfo({ id: '', visible: false, title: '', status: MsgSendStatus.all });
           refresh();
@@ -367,7 +367,7 @@ const MsgTable = ({ msgMgmt: store, refresh }: Props & Pick<MobxStores, 'msgMgmt
     const params=sendMessageRef?.current?.saveDraft({ toParams: true });
     params && createMsg(params)
       .then((data)=>{
-        if (data&&data.code==0) {
+        if (data) {
           Message.success('操作成功');
           setPreviewInfo({ id: '', visible: false, title: '', status: MsgSendStatus.all });
           refresh(); // fixme
@@ -376,7 +376,7 @@ const MsgTable = ({ msgMgmt: store, refresh }: Props & Pick<MobxStores, 'msgMgmt
         } else {
           Message.error('操作失败');
         }
-      });
+      }).catch((err: Error)=> Message.error(err.message));
   };
 
   return (
