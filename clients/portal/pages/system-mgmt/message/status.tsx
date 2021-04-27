@@ -1,5 +1,5 @@
 import React from 'react';
-import classNames from 'classnames';
+import cs from 'classnames';
 import { MsgSendStatus } from '@portal/pages/system-mgmt/constants';
 // import { Popover } from '@c/popover'
 import { Tooltip } from '@QCFE/lego-ui';
@@ -22,8 +22,8 @@ const statusMap={
 const MsgStatus = ({ className, status, fail, success }: Props) => {
   const sendInfo = status === MsgSendStatus.success ? <span className={fail == 0 ? styles.simple_text : styles.warning_text}>&nbsp;({ success }/{success + fail})</span> :null;
 
-  const baseInfo = (<div className={classNames(styles.status, 'inline-flex align-center', className)}>
-    <span className={classNames('mr-10', styles.indicator, {
+  const baseInfo = (<div className={cs(styles.status, 'inline-flex align-center', className)}>
+    <span className={cs('mr-10', styles.indicator, {
       [styles.draft]: status === MsgSendStatus.draft,
       [styles.sending]: status === MsgSendStatus.sending,
       [styles.success]: status === MsgSendStatus.success,

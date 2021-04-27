@@ -1,5 +1,5 @@
 import React from 'react';
-import classNames from 'classnames';
+import cs from 'classnames';
 import { inject, observer } from 'mobx-react';
 import BtnBadge from '@c/btn-badge';
 import { MsgType } from '@portal/pages/system-mgmt/constants';
@@ -15,7 +15,7 @@ interface ItemProps {
 
 const TypeItem = ({ name, onClick, selected, count = 0 }: ItemProps) => {
   return (
-    <li onClick={onClick} className={classNames({ [styles.active]: selected })}>
+    <li onClick={onClick} className={cs({ [styles.active]: selected })}>
       <span>{name}</span>
       {count > 0 && <BtnBadge className={styles.float_count} count={count}/>}
     </li>

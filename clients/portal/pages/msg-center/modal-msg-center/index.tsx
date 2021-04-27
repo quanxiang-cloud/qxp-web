@@ -32,12 +32,14 @@ const ModalMsgCenter = () => {
 
   return (
     <Modal
-      visible
-      hideFooter
       fullscreen
       width='100vw'
-      title='消息中心'
-      toolbar={(<Toolbar/>)}
+      title={
+        (<div className='flex items-center'>
+          <span className='mr-16'>消息中心</span>
+          <Toolbar/>
+        </div>)
+      }
       onClose={handleClose}
     >
       <MsgBox/>

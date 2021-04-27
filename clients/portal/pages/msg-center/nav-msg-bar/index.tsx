@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import classNames from 'classnames';
+import cs from 'classnames';
 import { inject, observer } from 'mobx-react';
 import { get } from 'lodash';
 import { useQuery, useQueryClient } from 'react-query';
@@ -73,12 +73,13 @@ const NavMsgBar = ({ msgCenter: store }: Pick<MobxStores, 'msgCenter' | any>): J
     <>
       <div className={styles.wrap}>
         <div
-          className={classNames('relative flex justify-center items-center cursor-pointer', styles.navItem)}
+          className={cs('relative flex justify-center items-center cursor-pointer group', styles.navItem)}
           onClick={() => openUnreadMsgBox(true)}
           ref={toggleRef}
         >
           <Icon
             name="notifications_active"
+            className='group-hover:text-blue-600'
             size={20}
           />
           {countUnread > 0 && <BtnBadge className={styles.count_btn} count={countUnread}/>}

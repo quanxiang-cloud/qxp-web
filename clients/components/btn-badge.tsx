@@ -1,17 +1,15 @@
 import React from 'react';
-import classNames from 'classnames';
+import cs from 'classnames';
 
 interface Props {
   count?: number;
   className?: string;
 }
 
-const BtnBadge = ({ count=0, className }: Props) => {
+export default function BtnBadge({ count = 0, className }: Props) {
   return (
-    <button className={classNames('absolute btn btn--danger btn-badge h-4', className)}>
+    <button className={cs('absolute inline-flex items-center btn-badge bg-red-500', className)}>
       {count > 99 ? '99+' : count}
     </button>
   );
-};
-
-export default BtnBadge;
+}

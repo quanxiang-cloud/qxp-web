@@ -1,7 +1,7 @@
 import React from 'react';
 import dayjs from 'dayjs';
 import styles from './index.module.scss';
-import classNames from 'classnames';
+import cs from 'classnames';
 import Loading from '@c/loading';
 import FileList from './filelist';
 import { MsgType } from '@portal/pages/system-mgmt/constants';
@@ -59,7 +59,7 @@ const PreviewMsg = ({ prevData, hideReceivers, isPreview, canDownload, canMultiD
           <div className={styles.pre_receivers}>
             <div className={styles.pre_receivers_title}>该消息将发送至:</div>
             {receivers && receivers.map(({ id, type, name }) => (<span
-              className={classNames(styles.person, {
+              className={cs(styles.person, {
                 [styles.isDep]: type === 2,
                 [styles.isPerson]: type === 1,
               })}

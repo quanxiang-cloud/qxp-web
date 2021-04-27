@@ -1,6 +1,6 @@
 import React from 'react';
 // import {Breadcrumb} from '@QCFE/lego-ui';
-import classNames from 'classnames';
+import cs from 'classnames';
 import { NavLink, useHistory } from 'react-router-dom';
 import Icon from '@c/icon';
 import InfoCard from './info-card';
@@ -28,7 +28,7 @@ const Container = ({
   const renderBreadcrumb=()=> {
     // todo
     return (
-      <div className={classNames('flex items-center', styles.breadcrumb)}>
+      <div className={cs('flex items-center', styles.breadcrumb)}>
         <Icon name='reply' size={20} onClick={goBack}/>
         <NavLink to='/system'>系统管理</NavLink>
         <span className={styles.divider}>/</span>
@@ -40,7 +40,7 @@ const Container = ({
   };
 
   return (
-    <div className={classNames('py-20 px-58 flex justify-center items-start flex-grow overflow-hidden', className)}>
+    <div className={cs('py-20 px-58 flex justify-center items-start flex-grow overflow-hidden', className)}>
       {!hideInfoCard && <InfoCard/>}
       {
         asModalPage ? (

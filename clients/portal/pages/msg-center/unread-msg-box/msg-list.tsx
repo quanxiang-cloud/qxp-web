@@ -1,5 +1,5 @@
 import React from 'react';
-import classNames from 'classnames';
+import cs from 'classnames';
 import { useQuery } from 'react-query';
 import { getMessageList } from '@portal/api/message-center';
 import Loading from '@c/loading';
@@ -63,7 +63,7 @@ const MsgList = ({ className, getMsgDetail }: Props): JSX.Element => {
 
   const msgList = data?.data?.mes_list || [];
   return (
-    <div className={classNames(styles.msgList, className)}>
+    <div className={cs(styles.msgList, className)}>
       {renderMain(msgList)}
     </div>
   );

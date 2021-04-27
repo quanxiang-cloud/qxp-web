@@ -1,5 +1,5 @@
 import React, { useState, useRef, useMemo, useEffect } from 'react';
-import classNames from 'classnames';
+import cs from 'classnames';
 import { inject, observer } from 'mobx-react';
 import { Message, Table } from '@QCFE/lego-ui';
 import { useMutation, useQuery } from 'react-query';
@@ -212,7 +212,7 @@ const PanelList = ({ msgCenter }: Props & Pick<MobxStores, 'msgCenter' | any>) =
         <div className={styles.message_list}>
           <Toolbar ref={toolbarRef} {...toolbarOptions} />
           <Table
-            className={classNames('text-14 table-full', styles.table)}
+            className={cs('text-14 table-full', styles.table)}
             rowKey='id'
             rowSelection={rowSelection}
             columns={[
@@ -239,15 +239,14 @@ const PanelList = ({ msgCenter }: Props & Pick<MobxStores, 'msgCenter' | any>) =
             showSizeChanger
           />
         </div>
-        <Modal
-          visible={confirmInfo.visible}
+        {confirmInfo.visible && (<Modal
           width={632}
           height={240}
           className={styles.confirm_modal}
           title={confirmInfo.title}
           onClose={closeConfirmInfo}
           footer={(
-            <div className={classNames('modal-card-foot', styles.modal_card_foot)}>
+            <div className={cs('modal-card-foot', styles.modal_card_foot)}>
               <div className="flex flex-row justify-between items-center">
                 <Button
                   className="bg-white hover:bg-gray-100 transition cursor-pointer mr-20 mb-0"
@@ -269,7 +268,7 @@ const PanelList = ({ msgCenter }: Props & Pick<MobxStores, 'msgCenter' | any>) =
           )}
         >
           <div className={styles.content}>{confirmInfo.content}</div>
-        </Modal>
+        </Modal>)}
       </div>
     );
   };

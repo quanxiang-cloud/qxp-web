@@ -1,7 +1,7 @@
 import React from 'react';
 
 import styles from './index.module.scss';
-import classNames from 'classnames';
+import cs from 'classnames';
 import Icon from '@c/icon';
 
 interface Props {
@@ -18,10 +18,10 @@ const Receivers = ({
   onRemove,
 }: Props) => {
   return (
-    <div className={classNames(styles.receivers, className)}>
+    <div className={cs(styles.receivers, className)}>
       {receivers.map(({ id, name, type }: Qxp.MsgReceiver) => {
         return (
-          <span className={classNames(styles.person, {
+          <span className={cs(styles.person, {
             [styles.isDep]: type === 2,
             [styles.isPerson]: type === 1,
           })} key={id}>

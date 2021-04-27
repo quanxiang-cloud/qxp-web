@@ -1,6 +1,6 @@
 import React, { useState, useEffect, forwardRef, useImperativeHandle } from 'react';
 import ReactDom from 'react-dom';
-import classNames from 'classnames';
+import cs from 'classnames';
 import { get, debounce } from 'lodash';
 import { toJS } from 'mobx';
 import { useMutation, useQueryClient } from 'react-query';
@@ -312,12 +312,12 @@ export const Content = forwardRef(({ className, donotShowHeader, footer, modifyD
   });
 
   return (
-    <div className={classNames('full-width', className)}>
+    <div className={cs('full-width', className)}>
       <div className={styles.panel}>
         {!donotShowHeader&&(<div className={styles.header}>
           <div className={styles.title}>发送消息</div>
         </div>)}
-        <div className={classNames('send-msg-body', styles.body)}>
+        <div className={cs('send-msg-body', styles.body)}>
           <Form onSubmit={noop}>
             <Field>
               <Label>消息类型:</Label>
@@ -438,7 +438,7 @@ export const Content = forwardRef(({ className, donotShowHeader, footer, modifyD
             {/* @ts-ignore */}
             {chosenDepOrPerson.map(({ id, name, type }: Qxp.MsgReceiver, key) => {
               return (
-                <span className={classNames(styles.person, {
+                <span className={cs(styles.person, {
                   [styles.isDep]: type === 2,
                   [styles.isPerson]: type === 1,
                 })} key={id}>

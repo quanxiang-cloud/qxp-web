@@ -1,5 +1,5 @@
 import React from 'react';
-import classNames from 'classnames';
+import cs from 'classnames';
 import { inject, observer } from 'mobx-react';
 import { useRouting } from '@portal/hooks';
 import MsgList from './msg-list';
@@ -17,9 +17,9 @@ const UnreadMsgBox = React.forwardRef(({ msgCenter }: Pick<MobxStores, 'msgCente
   };
 
   return (
-    <div ref={ref} className={classNames(styles.msgBox)}>
+    <div ref={ref} className={cs(styles.msgBox)}>
       <div className={styles.header}>
-        <div className={classNames('text-h5', styles.title)}>
+        <div className={cs('text-h5', styles.title)}>
           <span>未读消息</span>
           <span className={styles.dot}/>
           <span>{msgCenter.countUnread}</span>

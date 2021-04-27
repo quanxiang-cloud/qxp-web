@@ -446,9 +446,8 @@ const MsgTable = ({ msgMgmt: store, refresh }: Props & Pick<MobxStores, 'msgMgmt
           footer={() => null}
         />)}
       </LegoModal>
-      <Modal
+      {modalInfo.visible && (<Modal
         title="删除消息"
-        visible={modalInfo.visible}
         width={632}
         height={240}
         onClose={closeModal}
@@ -487,7 +486,7 @@ const MsgTable = ({ msgMgmt: store, refresh }: Props & Pick<MobxStores, 'msgMgmt
         )}
       >
         <div className={styles.modal_card_content}>确定要删除该条消息吗？删除后不可恢复。</div>
-      </Modal>
+      </Modal>)}
     </>
   );
 };

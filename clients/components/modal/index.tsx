@@ -1,20 +1,17 @@
 import React from 'react';
 import { createPortal } from 'react-dom';
-import styled, { createGlobalStyle, keyframes } from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 
 import Icon from '@c/icon';
 import Button from '@c/button';
 
 interface Props {
   title?: string | React.ReactNode;
-  closable?: boolean;
   fullscreen?: boolean;
   width?: number | string;
   height?: number | string;
-  toolbar?: React.ReactNode | null;
   footer?: React.ReactNode | null;
-  hideFooter?: boolean;
-  visible?: boolean;
+  footerBtns?: Array<any>;
   okText?: string;
   cancelText?: string;
   className?: string;
@@ -22,78 +19,49 @@ interface Props {
   onConfirm?: () => void;
 }
 
-interface State {
-  visible?: boolean;
-}
-
-const GlobalStyle = createGlobalStyle<{ visible?: boolean }>`
-  body {
-    overflow-y: ${(props) => props.visible ? 'hidden' : 'auto'};
-  }
-`;
-
-export default class Modal extends React.PureComponent<Props, State> {
-  element = window.document.createElement('div');
+export default class Modal extends React.PureComponent<Props> {
+  element = document.createElement('div');
   constructor(props: Props) {
     super(props);
-    this.state = {
-      visible: props.visible,
-    };
-    window.document.body.append(this.element);
-  }
-
-  static getDerivedStateFromError(props: Partial<Props>) {
-    return { visible: props.visible };
+    document.body.append(this.element);
   }
 
   componentWillUnmount() {
     if (this.element) {
-      window.document.body.removeChild(this.element);
-    }
-  }
-
-  handleClose = (ev: unknown): void => {
-    this.setState({ visible: false });
-    if (this.props.onClose) {
-      this.props.onClose();
+      document.body.removeChild(this.element);
     }
   }
 
   render() {
-    const { visible, fullscreen, className, title, children, width = '632px',
-      height = 'auto', toolbar, footer, hideFooter, okText, cancelText, onClose,
-      onConfirm, closable = true } = this.props;
+    const { fullscreen, className, title, children, width = '632px',
+      height = 'auto', footer, footerBtns, okText, cancelText, onClose,
+      onConfirm } = this.props;
 
     return createPortal(
-      <Wrap className={className} visible={visible}>
-        <GlobalStyle visible={visible} />
+      <Wrap className={className}>
         <Mask />
         <Inner width={width} height={height} fullscreen={fullscreen}>
           <Header>
             <div className='md-header-left'>
               <div className='md-title'>{title}</div>
-              <div className='md-toolbar'>{toolbar}</div>
             </div>
-            <div className='md-header-right' onClick={this.handleClose}>
-              {closable && <Icon name='close' size={24} clickable />}
+            <div className='md-header-right' onClick={onClose}>
+              <Icon name='close' size={24} clickable />
             </div>
           </Header>
           <Body className='md-body' fullscreen={fullscreen}>
             {children}
           </Body>
-          {/* eslint-disable-next-line no-nested-ternary */}
-          {hideFooter ? null : footer ? footer : (
+          {footer ? footer : (
             <Footer>
-              <FooterInner>
-                <div className="flex items-center">
-                  <Button iconName="close" className="mr-20" onClick={onClose}>
-                    {okText ? okText : '取消'}
-                  </Button>
-                  <Button modifier="primary" iconName="check" onClick={onConfirm}>
-                    {cancelText ? cancelText : '确定'}
-                  </Button>
-                </div>
-              </FooterInner>
+              <div className="flex items-center">
+                <Button iconName="close" className="mr-20" onClick={onClose}>
+                  {okText ? okText : '取消'}
+                </Button>
+                <Button modifier="primary" iconName="check" onClick={onConfirm}>
+                  {cancelText ? cancelText : '确定'}
+                </Button>
+              </div>
             </Footer>
           )}
         </Inner>
@@ -179,14 +147,6 @@ const scaleAnimation = keyframes`
     transform: scale(1);
     opacity: 1;
   }
-  // 0% {
-  //   transform: translate3d(0, -20px, 0);
-  //   opacity: 0;
-  // }
-  // 100% {
-  //   transform: translate3d(0, 0, 0);
-  //   opacity: 1;
-  // }
 `;
 
 const Inner = styled.div<{ width: any, height: any, fullscreen?: boolean }>`
@@ -204,7 +164,7 @@ const Inner = styled.div<{ width: any, height: any, fullscreen?: boolean }>`
   animation: ${scaleAnimation} 0.3s;
 `;
 
-const Wrap = styled.div<{ visible?: boolean }>`
+const Wrap = styled.div`
   position: fixed;
   width: 100vw;
   height: 100vh;
@@ -212,8 +172,8 @@ const Wrap = styled.div<{ visible?: boolean }>`
   left: 0;
   right: 0;
   top: 0;
+  display: flex;
   align-items: center;
-  display: ${(props) => props.visible ? 'flex' : 'none'};
   transition: opacity .1s;
   justify-content: center;
   overflow: hidden;

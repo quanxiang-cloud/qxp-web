@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import classNames from 'classnames';
+import cs from 'classnames';
 import { inject, observer } from 'mobx-react';
 import { MsgReadStatus, MsgType } from '@portal/pages/system-mgmt/constants';
 import dayjs from 'dayjs';
@@ -109,19 +109,19 @@ const MsgItem = ({
   }, [curMsgId]);
 
   return (
-    <div ref={refItem} className={classNames(styles.msgItem, {
+    <div ref={refItem} className={cs(styles.msgItem, {
       [styles.active]: curMsgId === id,
     }, className)} onClick={handleClick}>
       <div className={styles.msgItemInner}>
         <span className='inline-flex items-center'>
-          <span className={classNames(styles.statusIcon, {
+          <span className={cs(styles.statusIcon, {
             [styles.statusUnread]: read === MsgReadStatus.unread,
             [styles.statusRead]: read === MsgReadStatus.read,
           })}/>
           <span className={styles.txt} title={title}>{title}</span>
         </span>
         {!hideType && (
-          <span className={classNames(styles.type, {
+          <span className={cs(styles.type, {
             [styles.system]: sort === MsgType.system,
             [styles.alert]: sort === MsgType.notify,
           })}>
