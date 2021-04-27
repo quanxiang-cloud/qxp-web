@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 import Icon from '@c/icon';
 
@@ -14,8 +14,8 @@ const BUILD_NAV = [
     type: 'form',
     url: '/apps/formDesign/formBuild',
   },
-  { title: '新建流程表单', desc: '流程审批。', type: 'flow', url: '' },
-  { title: '新建仪表', desc: '仪表盘是数据可视化工具，可用于数据展示分析。', type: 'meter', url: '' },
+  // { title: '新建流程表单', desc: '流程审批。', type: 'flow', url: '' },
+  // { title: '新建仪表', desc: '仪表盘是数据可视化工具，可用于数据展示分析。', type: 'meter', url: '' },
 ];
 
 function PageBuildNav({ pageId }: Props) {

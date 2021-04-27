@@ -1,11 +1,9 @@
 import { action, observable, computed } from 'mobx';
 
 class AppPageDataStore {
-  @observable showMoreFiltrate = false;
-
-  @observable filterList = [];
-
   @observable tableConfig: any = {};
+  @observable filtrates: FilterField[] = [];
+  @observable tableColumns = [];
 
   @computed get order(): any {
     if ('order' in this.tableConfig) {
@@ -27,13 +25,13 @@ class AppPageDataStore {
   }
 
   @action
-  setShowMoreFiltrate = (value: boolean) => {
-    this.showMoreFiltrate = value;
+  setFiltrates = (filtrates: FilterField[]) => {
+    this.filtrates = filtrates;
   }
 
   @action
-  setFilterList = (filterList: any) => {
-    this.filterList = filterList;
+  setTableColumns = (tableColumns: any) => {
+    this.tableColumns = tableColumns;
   }
 }
 

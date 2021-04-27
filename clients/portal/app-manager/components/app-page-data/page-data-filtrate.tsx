@@ -5,13 +5,11 @@ import Button from '@c/button';
 import Icon from '@c/icon';
 
 import FiltrateForm from './filtrate-form';
+import store from './store';
 
-type Props = {
-  filtrates: FilterField[];
-}
-
-function PageDataFiltrate({ filtrates }: Props) {
+function PageDataFiltrate() {
   const [showMoreFiltrate, setShowMoreFiltrate] = useState(false);
+  const { filtrates } = store;
   const filterDom = useRef<any>();
 
   const search = () => {

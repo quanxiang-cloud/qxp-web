@@ -26,7 +26,7 @@ function PageSetting() {
       <div className='flex-1 flex overflow-hidden'>
         <div className='flex-1 p-20'>
           <p className='text-caption-no-color text-gray-400 mb-8'>预览页面视图</p>
-          <AppPageData filtrates={store.filtrates} tableColumns={store.tableColumn} />
+          <AppPageData />
         </div>
         <PageSettingConfig />
       </div>

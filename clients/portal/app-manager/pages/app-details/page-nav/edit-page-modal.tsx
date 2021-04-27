@@ -30,7 +30,7 @@ function EditPageModal({ pageInfo, onCancel, onSubmit, appID }: Props) {
 
   useEffect(() => {
     fetchGroupList(appID).then((res) => {
-      setGroupList(res.data.group.map(({ id, name }: GroupList) => {
+      setGroupList((res.data.group || []).map(({ id, name }: GroupList) => {
         return { value: id, label: name };
       }));
     });

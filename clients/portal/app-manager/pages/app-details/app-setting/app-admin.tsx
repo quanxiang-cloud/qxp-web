@@ -120,13 +120,16 @@ function AppAdmin() {
           loading={loading}
           onSelectChange={handleSelectChange}
         />
-        <EmployeeOrDepartmentPickerModal
-          visible={employeeVisible}
-          employees={appAdminList}
-          departments={[]}
-          onOk={addAdmin}
-          onCancel={() => setEmployeeVisible(false)}
-        />
+        {employeeVisible && (
+          <EmployeeOrDepartmentPickerModal
+            title='添加管理员'
+            submitText='保存'
+            employees={appAdminList}
+            departments={[]}
+            onSubmit={addAdmin}
+            onCancel={() => setEmployeeVisible(false)}
+          />
+        )}
       </div>
     </>
   );

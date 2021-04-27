@@ -160,7 +160,7 @@ export const updateFormScheme = (data: any) => {
   });
 };
 
-export const fetchPageScheme = (tableID: string) => {
+export const fetchPageFilterScheme = (tableID: string) => {
   return request({
     url: `/api/v1/structor/schema/${tableID}`,
     method: 'post',
@@ -202,6 +202,14 @@ export const fetchRights = (formID: string) => {
 export const deleteRights = (data: any) => {
   return request({
     url: '/api/v1/structor/permission/perGroup/delete',
+    method: 'post',
+    data,
+  });
+};
+
+export const movePerGroup = (data: any) => {
+  return request({
+    url: '/api/v1/structor/permission/perGroup/move',
     method: 'post',
     data,
   });
@@ -262,3 +270,5 @@ export const saveFieldFilter = (data: any) => {
     data,
   });
 };
+
+

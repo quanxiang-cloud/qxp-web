@@ -8,11 +8,7 @@ import Pagination from '@c/pagination';
 
 import store from './store';
 
-type Props = {
-  tableColumns: any[]
-}
-
-function PageDataTable({ tableColumns }: Props) {
+function PageDataTable() {
   const handleSelectChange = (selectArr: any) => {
     console.log('selectArr: ', selectArr);
   };
@@ -36,9 +32,10 @@ function PageDataTable({ tableColumns }: Props) {
       </div>
       <Table
         showCheckbox
+        emptyTips='暂无数据'
         rowKey="id"
         onSelectChange={handleSelectChange}
-        columns={tableColumns}
+        columns={store.tableColumns}
         data={[]}
       />
       {store.pageSize ? (

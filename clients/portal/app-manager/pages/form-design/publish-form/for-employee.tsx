@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { observer } from 'mobx-react';
+import { Sortable } from '@QCFE/lego-ui';
 
 import Button from '@c/button';
 import TextHeader from '@c/text-header';
@@ -31,11 +32,20 @@ function ForEmployee() {
 
     if (store.rightsList.length) {
       return (
-        <div className='px-20 overflow-auto'>
+        <Sortable
+          tag="div"
+          className='px-20 overflow-auto'
+          options={{
+            handle: '.rights-group-handle',
+            draggable: '.rights-group-block',
+            animation: 150,
+          }}
+          onChange={store.rightsGroupSort}
+        >
           {store.rightsList.map((rights: Rights) => (
             <RightsItem key={rights.id} rights={rights} actions={handleClick} />
           ))}
-        </div>
+        </Sortable>
       );
     }
     return (

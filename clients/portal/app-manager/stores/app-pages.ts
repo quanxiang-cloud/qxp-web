@@ -1,7 +1,10 @@
 import { observable, action } from 'mobx';
 
 import TreeStore from '@c/headless-tree/store';
+import notify from '@lib/notify';
+import appPageDataStore from '@appC/app-page-data/store';
 import { TreeNode } from '@c/headless-tree/types';
+import { getFilterField } from '../pages/form-design/utils';
 import {
   fetchPageList,
   createPage,
@@ -10,8 +13,50 @@ import {
   deleteGroup,
   deletePage,
   movePage,
+  fetchFormScheme,
 } from '@appLib/api';
-import notify from '@lib/notify';
+
+function getPageDataSchema(config: any, schema: any) {
+  const { pageTableShowRule = {}, pageTableConfig, filtrate=[] } = config || {};
+  const { setFiltrates, setTableConfig, setTableColumns } = appPageDataStore;
+  const fieldsMap = schema?.properties || {};
+  const tableColumns: any[] = [];
+  let recordColNum = 0;
+  let fixedColumnIndex: number[] = [];
+  switch (pageTableShowRule.fixedRule) {
+  case 'one':
+    fixedColumnIndex = [0];
+    break;
+  case 'previous_two':
+    fixedColumnIndex = [0, 1];
+    break;
+  }
+
+  Object.keys(fieldsMap).forEach((key: string) => {
+    const hasVisible = pageTableConfig ? 'visible' in pageTableConfig[key] : false;
+    if ((hasVisible && pageTableConfig[key].visible) || !hasVisible) {
+      tableColumns.push({
+        id: key,
+        Header: fieldsMap[key].title || '',
+        accessor: key,
+        fixed: fixedColumnIndex.includes(recordColNum),
+      });
+      recordColNum += 1;
+    }
+  });
+
+  if (pageTableConfig) {
+    tableColumns.sort((a, b) => {
+      return pageTableConfig[b.id].sort - pageTableConfig[a.id].sort;
+    });
+  }
+
+  setFiltrates(filtrate.map((field: PageField) => {
+    return getFilterField(field);
+  }));
+  setTableColumns(tableColumns);
+  setTableConfig(pageTableShowRule);
+}
 
 function getTreeData(pageList: any[], root: any, level = 1) {
   const treeList = pageList.map((pageData) => {
@@ -48,7 +93,9 @@ class AppPagesStore {
 
   @observable treeStore: TreeStore<any> | null = null;
   @observable pageListLoading = false;
+  @observable fetchSchemeLoading = false;
   @observable appId = '';
+  @observable formScheme = null;
   @observable curPage = {};
 
   @action
@@ -132,6 +179,20 @@ class AppPagesStore {
 
   @action
   setCurPage = (pageInfo: PageInfo) => {
+    if (pageInfo.id) {
+      this.fetchSchemeLoading = true;
+      fetchFormScheme(pageInfo.id).then((res) => {
+        this.formScheme = res.data;
+        const { config, schema } = res.data;
+        getPageDataSchema(config, schema);
+        this.fetchSchemeLoading = false;
+      }).catch(() => {
+        this.fetchSchemeLoading = false;
+      });
+    } else {
+      this.formScheme = null;
+    }
+
     this.curPage = pageInfo;
   }
 

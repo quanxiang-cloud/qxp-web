@@ -25,7 +25,7 @@ type PageField = {
   expand?: boolean;
   filter?: boolean;
   visible?: boolean;
-  sort?: number;
+  sort: number;
   option?: FilterOption;
   enum?: EnumItem[];
 }

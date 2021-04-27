@@ -10,6 +10,7 @@ import {
   createPerGroup,
   fetchRights,
   deleteRights,
+  movePerGroup,
   updatePerGroup,
 } from '@appLib/api';
 import appPageDataStore from '@appC/app-page-data/store';
@@ -18,7 +19,9 @@ import { getFilterField, getAttribute } from './utils';
 
 class FormDesignStore {
   destroyFetchScheme: IReactionDisposer;
+  destroySetTableColumn: IReactionDisposer;
   destroySetTableConfig: IReactionDisposer;
+  destroySetFiltrates: IReactionDisposer;
   @observable pageID = '';
   @observable pageLoading = true;
   @observable formStore: any = null;
@@ -28,35 +31,6 @@ class FormDesignStore {
   @observable rightsList: Rights[] = [];
   @observable allFiltrate: PageField[] = [];
   @observable rightsLoading = false;
-
-  @computed get tableColumn(): any[] {
-    const column: any[] = [];
-    let recordColNum = 0;
-    let fixedColumnIndex: number[] = [];
-    switch (this.pageTableShowRule.fixedRule) {
-    case 'one':
-      fixedColumnIndex = [0];
-      break;
-    case 'previous_two':
-      fixedColumnIndex = [0, 1];
-      break;
-    }
-
-    [...this.fieldList].sort((a: any, b: any) => {
-      return a.sort - b.sort;
-    }).forEach((field) => {
-      if (field.visible) {
-        column.push({
-          id: field.id,
-          Header: field.label,
-          accessor: field.id,
-          fixed: fixedColumnIndex.includes(recordColNum),
-        });
-        recordColNum += 1;
-      }
-    });
-    return column;
-  }
 
   @computed get fieldList(): PageField[] {
     const fieldsMap = this.formStore?.schema?.properties || {};
@@ -73,21 +47,51 @@ class FormDesignStore {
     });
   }
 
-  @computed get filtrates(): FilterField[] {
-    const filtrates: FilterField[] = [];
-
-    this.allFiltrate.forEach((field: PageField) => {
-      if (this.fieldList.findIndex(({ id }: PageField) => field.id === id) === -1) {
-        return;
-      }
-      filtrates.push(getFilterField(field));
-    });
-
-    return filtrates;
-  }
-
   constructor() {
     this.destroyFetchScheme = reaction(() => this.pageID, this.fetchFormScheme);
+
+    this.destroySetFiltrates = reaction(() => {
+      const filtrates: FilterField[] = [];
+
+      this.allFiltrate.forEach((field: PageField) => {
+        if (this.fieldList.findIndex(({ id }: PageField) => field.id === id) === -1) {
+          return;
+        }
+        filtrates.push(getFilterField(field));
+      });
+
+      return filtrates;
+    }, appPageDataStore.setFiltrates);
+
+    this.destroySetTableColumn = reaction(() => {
+      const column: any[] = [];
+      let recordColNum = 0;
+      let fixedColumnIndex: number[] = [];
+      switch (this.pageTableShowRule.fixedRule) {
+      case 'one':
+        fixedColumnIndex = [0];
+        break;
+      case 'previous_two':
+        fixedColumnIndex = [0, 1];
+        break;
+      }
+
+      [...this.fieldList].sort((a: PageField, b: PageField) => {
+        return a.sort - b.sort;
+      }).forEach((field) => {
+        if (field.visible) {
+          column.push({
+            id: field.id,
+            Header: field.label,
+            accessor: field.id,
+            fixed: fixedColumnIndex.includes(recordColNum),
+          });
+          recordColNum += 1;
+        }
+      });
+      return column;
+    }, appPageDataStore.setTableColumns);
+
     this.destroySetTableConfig = reaction(() => {
       return this.pageTableShowRule;
     }, appPageDataStore.setTableConfig);
@@ -216,7 +220,6 @@ class FormDesignStore {
 
   @action
   updatePerGroup = (rights:Rights) => {
-    console.log('rights: ', rights);
     return updatePerGroup(rights).then(()=>{
       this.rightsList = this.rightsList.map((_rights)=>{
         if (rights.id===_rights.id) {
@@ -225,7 +228,29 @@ class FormDesignStore {
         return _rights;
       });
       notify.success('修改成功！');
+      return true;
     });
+  }
+
+  @action
+  rightsGroupSort = (rightsIdList: string[]) => {
+    const newRightsList: Rights[] = [];
+    movePerGroup({
+      moveArr: rightsIdList.map((id, index) => {
+        const rights = this.rightsList.find((_rights) => _rights.id===id);
+        if (rights) {
+          newRightsList.push({
+            ...rights,
+            sequence: index,
+          });
+        }
+        return {
+          id,
+          sequence: index,
+        };
+      }),
+    });
+    this.rightsList = newRightsList;
   }
 }
 

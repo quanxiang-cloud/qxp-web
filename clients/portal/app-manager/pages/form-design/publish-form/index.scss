@@ -14,6 +14,7 @@
 
 .pb-form-right-action {
   justify-content: flex-end;
+  align-items: center;
   flex: 1;
   color: var(--blue-600);
   >span {
@@ -22,18 +23,39 @@
 }
 
 .pb-form-right-user,.pb-form-right-dep {
+  position: relative;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
   font-size: 14px;
   line-height: 22px;
   border-radius: 4px 0px;
-  padding: 1px 8px;
+  padding-right: 8px;
+
+  span {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 24px;
+    height: 24px;
+    margin-right: 8px;
+  }
 }
 
 .pb-form-right-user {
   color:var(--blue-600);
   background-color: var(--blue-100);
+
+  span {
+    background-color: var(--blue-600);
+  }
 }
 
 .pb-form-right-dep {
   color: var(--yellow-600);
   background-color: var(--yellow-50);
+
+  span {
+    background-color: var(--yellow-600);
+  }
 }

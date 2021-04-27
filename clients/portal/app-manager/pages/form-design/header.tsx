@@ -33,7 +33,7 @@ function FormDesignHeader() {
           size={20}
           name='keyboard_backspace'
         />
-        正在设计表单：固定资产转移申请
+        正在设计表单
         <Icon className='ml-8' name='edit' size={20} />
       </div>
       <Tab onChange={tabChange} activeTab={pageType} tabs={TABS} />
