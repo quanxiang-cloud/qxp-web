@@ -31,8 +31,26 @@ const { onFieldInputChange$, onFieldInit$ } = FormEffectHooks;
 const useOneToManyEffects = () => {
   const { setFieldState } = createFormActions();
 
-  onFieldInit$('*(min.minimum,max.maximum)').subscribe(() => {
-    setFieldState('*(min.minimum,max.maximum)', (state) => {
+  onFieldInit$('min.minSet').subscribe((field) => {
+    if (field.value !== undefined) {
+      setFieldState('min.minimum', (state) => {
+        state.visible = field.value.length===0 ? false : true;
+      });
+      return;
+    }
+    setFieldState('min.minimum', (state) => {
+      state.visible = false;
+    });
+  });
+
+  onFieldInit$('max.maxSet').subscribe((field) => {
+    if (field.value !== undefined) {
+      setFieldState('max.maximum', (state) => {
+        state.visible = field.value.length===0 ? false : true;
+      });
+      return;
+    }
+    setFieldState('max.maximum', (state) => {
       state.visible = false;
     });
   });
