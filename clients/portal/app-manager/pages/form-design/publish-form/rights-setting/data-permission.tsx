@@ -8,7 +8,7 @@ import FieldSwitch from '@appC/field-switch';
 import Icon from '@c/icon';
 import Button from '@c/button';
 import formFieldWrap from '@appC/form-field-wrap';
-import notify from '@lib/toast';
+import toast from '@lib/toast';
 import { fetchDataAccessPer, saveDataAccessPer } from '@appLib/api';
 
 import { getFilterField } from '../../utils';
@@ -20,11 +20,11 @@ type Props = {
 
 const CONDITION = [{
   label: '所有',
-  value: 'all',
+  value: 'and',
 },
 {
   label: '任一',
-  value: 'and',
+  value: 'or',
 }];
 
 const OPERATORS = [
@@ -113,7 +113,7 @@ export default function DataPermission({ rightsID }: Props) {
       };
     });
     saveDataAccessPer({ perGroupID: rightsID, tag, conditions: _conditions }).then(() => {
-      notify.success('保存成功！');
+      toast.success('保存成功！');
     });
   };
 

@@ -4,7 +4,7 @@ import { union } from 'lodash';
 import Button from '@c/button';
 import Checkbox from '@c/checkbox';
 import { fetchFieldFilter, saveFieldFilter } from '@appLib/api';
-import notify from '@lib/toast';
+import toast from '@lib/toast';
 
 import store from '../../store';
 
@@ -129,6 +129,7 @@ function FieldPermissions({ rightsID }: Props) {
       properties: {},
       title: '',
       type: 'object',
+      'x-internal': { permission: visibleField.length ? 1 : 0 },
     };
 
     fieldList.forEach((field) => {
@@ -144,7 +145,7 @@ function FieldPermissions({ rightsID }: Props) {
     });
 
     saveFieldFilter({ permissionGroupID: rightsID, schema }).then(() => {
-      notify.success('保存成功！');
+      toast.success('保存成功！');
     });
   };
 

@@ -1,7 +1,7 @@
 import { observable, action } from 'mobx';
 
 import TreeStore from '@c/headless-tree/store';
-import notify from '@lib/toast';
+import toast from '@lib/toast';
 import appPageDataStore from '@appC/app-page-data/store';
 import { TreeNode } from '@c/headless-tree/types';
 import { getFilterField } from '../pages/form-design/utils';
@@ -109,7 +109,7 @@ class AppPagesStore {
     return (type === 'delGroup' ? deleteGroup({ ...data, group_id: '' }) :
       deletePage({ ...data, group_id: node.data.groupID })).then(() => {
       this.treeStore?.deleteNode(node);
-      notify.success('删除成功');
+      toast.success('删除成功');
     });
   }
 
@@ -122,7 +122,7 @@ class AppPagesStore {
           name: groupInfo.name || '',
           data: { ...node.data, ...groupInfo },
         });
-        notify.success('修改成功');
+        toast.success('修改成功');
       } else {
         const newGroup = { ...res.data, name: groupInfo.name, menuType: 1 };
         this.treeStore?.addChildren('root', [{
@@ -139,7 +139,7 @@ class AppPagesStore {
           parentId: 'root',
           children: [],
         }]);
-        notify.success('创建成功');
+        toast.success('创建成功');
       }
     });
   }
@@ -148,7 +148,7 @@ class AppPagesStore {
   editPage = (pageInfo: PageInfo, node: TreeNode<any>) => {
     if (pageInfo.id) {
       return updatePage(pageInfo).then(() => {
-        notify.success('修改成功');
+        toast.success('修改成功');
         this.treeStore?.updateNode({
           ...node,
           name: pageInfo.name || '',
@@ -172,7 +172,7 @@ class AppPagesStore {
           parentId: pageInfo.groupID || 'root',
           children: [],
         }]);
-        notify.success('创建成功');
+        toast.success('创建成功');
       });
     }
   }

@@ -44,7 +44,7 @@ function AppList({ isLoading, appList, openCreatedModal }: Props) {
   }
 
   return (
-    <div className='px-20 flex gap-20 flex-wrap'>
+    <div className='app-list-container'>
       {appList.map((appInfo: AppInfo) => (
         <AppItem onClick={goDetails} key={appInfo.id} appInfo={appInfo} openModal={openModal} />
       ))}

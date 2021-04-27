@@ -27,6 +27,7 @@ class AppDetailsStore {
     const { id, useStatus } = this.appDetails;
     return updateAppStatus({ id, useStatus: -1 * useStatus }).then(() => {
       this.appDetails.useStatus = -1 * useStatus;
+      this.rootStore.appListStore.updateApp(this.appDetails);
       Message.success({ content: useStatus < 0 ? '发布成功！' : '下架成功' });
     });
   }

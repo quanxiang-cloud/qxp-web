@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import CheckBox from '@c/checkbox';
 import Button from '@c/button';
 import { fetchOperatePer, saveOperatePer } from '@appLib/api';
-import notify from '@lib/toast';
+import toast from '@lib/toast';
 
 type CardProps = {
   rightsCardData: any;
@@ -132,7 +132,7 @@ export default function Authorized({ rightsID }: Props) {
 
   const handleSave = () => {
     saveOperatePer({ perGroupID: rightsID, authority: actionNumber }).then(()=>{
-      notify.success('保存成功！');
+      toast.success('保存成功！');
     });
   };
 

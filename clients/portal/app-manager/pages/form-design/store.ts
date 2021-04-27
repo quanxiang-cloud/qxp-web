@@ -1,7 +1,7 @@
 import { action, observable, reaction, IReactionDisposer, computed } from 'mobx';
 
 import FormStore from '@c/form-builder/store';
-import notify from '@lib/toast';
+import toast from '@lib/toast';
 import {
   createFormScheme,
   fetchFormScheme,
@@ -120,7 +120,7 @@ class FormDesignStore {
     deleteRights({ id, moveArr: delAfter.map((AFrights, sequence) => {
       return { id: AFrights.id, sequence };
     }) }).then(() => {
-      notify.success('删除成功!');
+      toast.success('删除成功!');
       this.rightsList = delAfter;
     });
   }
@@ -173,7 +173,7 @@ class FormDesignStore {
   @action
   createFormScheme = () => {
     createFormScheme({ tableID: this.pageID, schema: this.formStore.schema }).then(() => {
-      notify.success('创建成功!');
+      toast.success('创建成功!');
     });
   }
 
@@ -184,7 +184,7 @@ class FormDesignStore {
       schema: this.formStore.schema,
       tableID: this.pageID,
     }).then(() => {
-      notify.success('保存成功!');
+      toast.success('保存成功!');
     });
   }
 
@@ -203,7 +203,7 @@ class FormDesignStore {
         pageTableShowRule: this.pageTableShowRule,
       },
     }).then(() => {
-      notify.success('保存成功!');
+      toast.success('保存成功!');
     });
   }
 
@@ -227,7 +227,7 @@ class FormDesignStore {
         }
         return _rights;
       });
-      notify.success('修改成功！');
+      toast.success('修改成功！');
       return true;
     });
   }
