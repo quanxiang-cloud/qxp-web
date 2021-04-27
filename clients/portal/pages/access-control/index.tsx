@@ -32,7 +32,7 @@ export default function Index() {
     return <Error desc="您没有权限, 请联系管理员..." />;
   }
   return (
-    <div className="h-full py-20 px-58 flex justify-center items-start flex-grow overflow-hidden"
+    <div className="py-20 px-58 flex justify-center items-start flex-grow "
       style={{ height: 'calc(100vh - 62px)' }} >
       <div className="w-316  rounded-12 mr-20">
         <SideNavCard cardTitle={(
@@ -59,14 +59,12 @@ export default function Index() {
         defaultActiveLink={{ basePath: '/access-control', menuId: 'departments-employees' }}
         />
       </div>
-      <div className="h-full flex-grow bg-white rounded-12 overflow-hidden">
-        <Switch>
-          <Route exact path="/access-control" component={DepartmentsEmployees} />
-          <Route path="/access-control/departments-employees" component={DepartmentsEmployees} />
-          <Route path="/access-control/role-management" component={RoleManagement} />
-          <Route component={() => (<Error desc={'Menu page is not found'} />)} />
-        </Switch>
-      </div>
+      <Switch>
+        <Route exact path="/access-control" component={DepartmentsEmployees} />
+        <Route path="/access-control/departments-employees" component={DepartmentsEmployees} />
+        <Route path="/access-control/role-management" component={RoleManagement} />
+        <Route component={() => (<Error desc={'Menu page is not found'} />)} />
+      </Switch>
     </div>
   );
 }
