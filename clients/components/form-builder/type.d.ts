@@ -49,10 +49,6 @@ declare namespace FormBuilder {
   type DisplayModifier = 'normal' | 'readonly' | 'hidden';
   type Schema = ISchema & { 'x-internal'?: Record<string, unknown> };
   type ValueSource = 'customized' | 'linkage' | 'formula';
-  type ValueRange = {
-    min: number | undefined,
-    max: number | undefined,
-  }
 }
 
 // interface Schema {
