@@ -2,7 +2,7 @@ import React, { useRef } from 'react';
 import { inject } from 'mobx-react';
 import { Modal, Message } from '@QCFE/lego-ui';
 
-import Button from '@appC/button';
+import Button from '@c/button';
 
 import CreatedEditApp from './created-edit-app';
 
@@ -34,13 +34,13 @@ function CreatedAppModal({ onCancel, appListStore }: Props) {
       className="static-modal"
       footer={
         (<div className="flex items-center">
-          <Button icon='close' onClick={onCancel}>
+          <Button iconName='close' onClick={onCancel}>
             取消
           </Button>
           <div className="px-2"></div>
           <Button
-            isPrimary
-            icon='check'
+            modifier='primary'
+            iconName='check'
             onClick={handleSubmit}
           >
             确定

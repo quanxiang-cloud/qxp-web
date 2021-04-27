@@ -3,7 +3,7 @@ import { inject } from 'mobx-react';
 import { Modal } from '@QCFE/lego-ui';
 
 import Icon from '@c/icon';
-import Button from '@appC/button';
+import Button from '@c/button';
 
 import '../index.scss';
 
@@ -44,13 +44,13 @@ function AppSetStatusModal({ onCancel, appId, status = 'publish', appListStore }
       className="static-modal"
       footer={
         (<div className="flex items-center">
-          <Button icon='close' onClick={onCancel}>
+          <Button iconName='close' onClick={onCancel}>
             取消
           </Button>
           <div className="px-2"></div>
           <Button
-            isPrimary
-            icon='check'
+            modifier='primary'
+            iconName='check'
             onClick={handleSubmit}
           >
             {TEXT[status].sureText}

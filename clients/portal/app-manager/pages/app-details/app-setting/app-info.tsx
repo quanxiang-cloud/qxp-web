@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import { inject, observer } from 'mobx-react';
 
-import Button from '@appC/button';
+import Button from '@c/button';
 import PageLoading from '@appC/page-loading';
 import TextHeader from '@c/text-header';
 
@@ -35,7 +35,7 @@ function AppInfo({ appDetailsStore }: Props) {
       />
       <div className='px-20 py-24'>
         <CreatedEditApp appInfo={appDetailsStore.appDetails} ref={formRef} />
-        <Button onClick={handleSubmit} isPrimary icon='save'>保存修改</Button>
+        <Button onClick={handleSubmit} modifier='primary' iconName='save'>保存修改</Button>
       </div>
     </>
   );

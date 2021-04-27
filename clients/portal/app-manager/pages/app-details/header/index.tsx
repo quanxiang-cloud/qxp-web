@@ -4,7 +4,7 @@ import { inject, observer } from 'mobx-react';
 
 import Icon from '@c/icon';
 import PopConfirm from '@c/pop-confirm';
-import Button from '@appC/button';
+import Button from '@c/button';
 import NavButton from '@appC/nav-button';
 
 import AppDropdown from './app-dropdown';
@@ -59,24 +59,24 @@ function DetailsHeader({ appDetailsStore }: DetailsHeaderProps) {
       <div className='flex'>
         {appDetailsStore.appDetails.useStatus > 0 ? (
           <PopConfirm content={statusTipsContent(false)} onOk={updateAppStatus}>
-            <Button icon='toggle_on' isPrimary>
+            <Button iconName='toggle_on' modifier='primary'>
               下线应用
             </Button>
           </PopConfirm>
         ) : (
           <PopConfirm content={statusTipsContent(true)} onOk={updateAppStatus}>
-            <Button icon='toggle_on' isPrimary>
+            <Button iconName='toggle_on' modifier='primary'>
               发布应用
             </Button>
           </PopConfirm>
         )}
         <hr className='app-global-header-hr' />
-        <Button className='mr-16' icon='login'>
+        <Button className='mr-16' iconName='login'>
           进入应用访问
         </Button>
         <Button
           onClick={goAppSetting}
-          icon='settings'
+          iconName='settings'
         >
           应用管理
         </Button>

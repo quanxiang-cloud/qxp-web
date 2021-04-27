@@ -2,7 +2,7 @@ import React from 'react';
 
 import More from '@c/more';
 import Icon from '@c/icon';
-import Button from '@appC/button';
+import Button from '@c/button';
 
 import NavButton from '../nav-button';
 import NotifyIcon from './notify-icon';
@@ -47,7 +47,7 @@ function IndexHeader() {
         {NAV_LIST.map((navItem) => <NavButton key={navItem.icon} {...navItem} />)}
       </div>
       <div className='flex gap-x-20'>
-        <Button icon='login'>
+        <Button iconName='login'>
           进入访问端
         </Button>
         <NotifyIcon unreadNum={5} />

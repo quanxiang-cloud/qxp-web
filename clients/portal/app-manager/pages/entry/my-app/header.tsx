@@ -1,7 +1,7 @@
 import React from 'react';
 import { RadioButton, RadioGroup } from '@QCFE/lego-ui';
 
-import Button from '@appC/button';
+import Button from '@c/button';
 import Search from '@appC/search';
 
 import './index.scss';
@@ -36,7 +36,7 @@ function Header({ changeParams, params, setModalType }: Props) {
           </RadioButton>
         ))}
       </RadioGroup>
-      <Button onClick={() => setModalType('CreatedApp')} isPrimary icon="add">
+      <Button onClick={() => setModalType('CreatedApp')} modifier='primary' iconName="add">
         新建应用
       </Button>
 

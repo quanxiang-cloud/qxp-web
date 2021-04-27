@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { Modal, Form } from '@QCFE/lego-ui';
 
-import Button from '@appC/button';
+import Button from '@c/button';
 import SelectField from '@appC/select-field';
 import { fetchGroupList } from '@appLib/api';
 import AppIconSelect from '@c/app-icon-select';
@@ -54,13 +54,13 @@ function EditPageModal({ pageInfo, onCancel, onSubmit, appID }: Props) {
       onCancel={onCancel}
       footer={
         (<div className="flex items-center">
-          <Button icon='close' onClick={onCancel}>
+          <Button iconName='close' onClick={onCancel}>
             取消
           </Button>
           <div className="px-2"></div>
           <Button
-            isPrimary
-            icon='check'
+            modifier='primary'
+            iconName='check'
             onClick={handleSubmit}
           >
             确定
