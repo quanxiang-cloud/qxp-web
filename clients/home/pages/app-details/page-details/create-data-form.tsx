@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { SchemaForm } from '@formily/antd';
+import { SchemaForm, FormButtonGroup } from '@formily/antd';
 
 import Breadcrumb from '@c/breadcrumb';
 import Icon from '@c/icon';
@@ -16,14 +16,13 @@ type Props = {
 }
 
 function CreateDataForm({ goBack, defaultValues }: Props) {
-  const [tempFormValue, setTempFormValue] = useState({});
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = () => {
+  const handleSubmit = (formData: any) => {
     setLoading(true);
     formDataCurd(store.curPage.id as string, {
       method: 'create',
-      entity: tempFormValue,
+      entity: formData,
     }).then(() => {
       toast.success('提交成功');
       goBack();
@@ -49,28 +48,29 @@ function CreateDataForm({ goBack, defaultValues }: Props) {
       </div>
       <div className='user-app-schema-form'>
         <SchemaForm
+          onSubmit={handleSubmit}
           defaultValue={defaultValues}
           components={{ ...registry.components }}
           schema={store.formScheme.schema}
-          onChange={(value: any) => setTempFormValue(value)}
-        />
-      </div>
-      <div className='px-40 py-16 text-right bg-gray-100'>
-        <Button
-          className="mr-20"
-          iconName="close"
-          onClick={goBack}
         >
-          取消
-        </Button>
-        <Button
-          modifier="primary"
-          iconName="check"
-          loading={loading}
-          onClick={handleSubmit}
-        >
-          确认新建
-        </Button>
+          <FormButtonGroup className='pl-96'>
+            <Button
+              className="mr-20"
+              iconName="close"
+              onClick={goBack}
+            >
+              取消
+            </Button>
+            <Button
+              type='submit'
+              modifier="primary"
+              iconName="check"
+              loading={loading}
+            >
+              确认新建
+            </Button>
+          </FormButtonGroup>
+        </SchemaForm>
       </div>
     </div>
   );

@@ -148,6 +148,7 @@ class AppPagesStore {
       };
 
       getPageTreeData(res.data.menu, treeData);
+
       this.treeStore = new TreeStore({
         rootNode: (treeData) as TreeNode<any>,
         hideRootNode: true,
