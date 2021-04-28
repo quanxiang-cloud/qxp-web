@@ -12,6 +12,26 @@
   border-radius: 12px;
 }
 
+html {
+  background-color: #e6ecf9;
+}
+
+/* todo remove this */
+#root {
+  height: 100vh;
+}
+
+.mb-0-i {
+  margin-bottom:0 !important;
+}
+
+.right-content-container {
+  @apply bg-white self-stretch flex flex-1;
+
+  height: calc(100vh - 120px);
+  border-radius: 12px;
+}
+
 .max-w-screen {
   max-width: 1440px;
 }
@@ -27,15 +47,4 @@ html {
 
 .text-btn:hover {
   color: #254ee6;
-}
-
-.mb-0-i {
-  margin-bottom:0 !important;
-}
-
-#root {
-  background-image: url(/dist/images/viewport-bg.svg);
-  background-size: cover;
-  background-color: rgb(55, 95, 216, 15%);
-  min-height: 100vh;
 }
