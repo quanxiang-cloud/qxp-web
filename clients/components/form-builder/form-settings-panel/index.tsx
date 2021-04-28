@@ -1,25 +1,32 @@
 import React from 'react';
-import { Tabs } from 'antd';
+import Tab2 from '@c/tab2';
 
 // import FormConfig from './form-config';
 import FormFieldConfig from './form-field-config';
 import FormConfig from './label-layout';
 import { FieldConfigContext, fieldConfigContext } from './form-field-config-context';
 
-const { TabPane } = Tabs;
-
 function FormSettingPanel() {
   return (
-    <Tabs size="small" className="form-settings-panel">
-      <TabPane tab="字段属性" key="fieldAttr" className="form-settings-panel__panel">
-        <FieldConfigContext.Provider value={fieldConfigContext}>
-          <FormFieldConfig />
-        </FieldConfigContext.Provider>
-      </TabPane>
-      <TabPane tab="表单配置" key="formAttr" className="form-settings-panel__panel">
-        <FormConfig />
-      </TabPane>
-    </Tabs>
+    <Tab2
+      style={{ width: '296px' }}
+      strechNavs
+      items={[
+        {
+          id: 'fieldAttr',
+          name: '字段属性',
+          content: (
+            <FieldConfigContext.Provider value={fieldConfigContext}>
+              <FormFieldConfig />
+            </FieldConfigContext.Provider>
+          ),
+        },
+        {
+          id: 'formAttr',
+          name: '表单配置',
+          content: (<FormConfig />),
+        }]}
+    />
   );
 }
 
