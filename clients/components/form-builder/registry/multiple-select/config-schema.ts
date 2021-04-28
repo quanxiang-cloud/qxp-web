@@ -22,7 +22,7 @@ const schema: ISchema = {
           },
           'x-component': 'Input',
           'x-mega-props': {
-            labelCol: 8,
+            labelAlign: 'top',
           },
           'x-index': 0,
         },
@@ -31,7 +31,7 @@ const schema: ISchema = {
           title: '描述内容',
           'x-component': 'Input',
           'x-mega-props': {
-            labelCol: 8,
+            labelAlign: 'top',
           },
           'x-index': 2,
         },
@@ -55,50 +55,27 @@ const schema: ISchema = {
           ],
           'x-component': 'RadioGroup',
           'x-mega-props': {
-            labelCol: 8,
+            labelAlign: 'top',
           },
           'x-index': 3,
         },
-        // optionsLayout: {
-        //   type: 'string',
-        //   title: '排列方式',
-        //   default: 'horizontal',
-        //   enum: [
-        //     {
-        //       label: '横向排列',
-        //       value: 'horizontal',
-        //     },
-        //     {
-        //       label: '纵向排列',
-        //       value: 'vertical',
-        //     },
-        //   ],
-        //   'x-component': 'RadioGroup',
-        //   'x-index': 4,
-        // },
         sortable: {
           title: '列表排序',
           default: false,
           'x-component': 'Switch',
-          'x-mega-props': {
-            labelCol: 8,
-          },
           'x-index': 5,
         },
         required: {
           title: '是否必填',
           default: false,
           'x-component': 'Switch',
-          'x-mega-props': {
-            labelCol: 8,
-          },
           'x-index': 6,
         },
         availableOptions: {
           type: 'array',
           'x-component': 'ArrayTable',
           'x-mega-props': {
-            labelCol: 8,
+            labelAlign: 'top',
           },
           'x-component-props': {
             operationsWidth: 80,
