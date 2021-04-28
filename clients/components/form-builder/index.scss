@@ -153,8 +153,15 @@
 
 .form-field-wrapper {
   min-height: 80px;
-  padding: 16px 60px;
+  padding-left: 60px;
+  padding-right: 60px;
+  padding-top: 16px;
   border: 1px solid transparent;
+}
+
+// override extra bottom margin in canvas
+.form-field-wrapper .ant-form-item {
+  margin-bottom: 0;
 }
 
 .form-field-wrapper--active {
