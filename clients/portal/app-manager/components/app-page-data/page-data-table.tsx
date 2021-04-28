@@ -38,10 +38,9 @@ function PageDataTable() {
       return;
     }
     store.setParams({});
-  }, []);
+  }, [store.tableID]);
 
   const handleSelectChange = (selectArr: any) => {
-    console.log('selectArr: ', selectArr);
     setSelected(selectArr);
   };
 

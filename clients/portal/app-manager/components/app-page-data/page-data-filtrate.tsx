@@ -13,7 +13,13 @@ function PageDataFiltrate() {
   const filterDom = useRef<any>();
 
   const search = () => {
-    console.log(filterDom.current.getValues());
+    const condition: any = [];
+    const values = filterDom.current.getValues();
+    Object.keys(values).map((key) => {
+      const curFiltrate = store.filtrates.find(({ id }) => id === key);
+      condition.push({ key, op: curFiltrate?.compareSymbol || 'like', value: values[key] });
+    });
+    console.log(condition);
   };
 
   const reset = () => {

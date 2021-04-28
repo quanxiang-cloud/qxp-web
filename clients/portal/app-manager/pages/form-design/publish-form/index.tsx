@@ -20,7 +20,7 @@ function PublishForm() {
   ];
   return (
     <div className="max-w-screen app-entry-container flex-1 w-full">
-      <SideNavCard menuData={MENU} />
+      <SideNavCard className='w-316' menuData={MENU} />
       <div className="app-right-box bg-white">
         {navType === 'forEmployee' && <ForEmployee />}
       </div>
