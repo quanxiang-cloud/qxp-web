@@ -43,9 +43,9 @@ const FormPage = () => {
         <Button iconName='preview' onClick={() => setPreviewModalVisible(true)}>
           预览
         </Button>
-        <span className='text-underline-no-color cursor-pointer'>
+        {/* <span className='text-underline-no-color cursor-pointer'>
           🎬 查看新手指引
-        </span>
+        </span> */}
       </div>
       <FormBuilder store={store.formStore} />
       <Modal

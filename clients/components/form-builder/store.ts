@@ -128,7 +128,7 @@ export default class FormBuilderStore {
           ...toSchema(toJS(configValue)),
           'x-index': index,
           'x-mega-props': {
-            labelCol: 2,
+            labelCol: this.labelAlign === 'right' ? 4 : undefined,
           },
         };
 

@@ -5,3 +5,4 @@ webpack.*.js
 scripts/*
 tailwind.config.js
 clients/components/table/react-table-config.d.ts
+cypress
