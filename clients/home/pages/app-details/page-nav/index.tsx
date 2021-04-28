@@ -31,11 +31,11 @@ function PageNav() {
     <div className='app-details-nav'>
       <div className='app-page-tree-wrapper'>
         <Tree
+          hideRootNode
           nodeDraggable={(): boolean => false}
           store={treeStore}
           canDropOn={(): boolean => false}
           NodeRender={PageItemRender}
-          RootNodeRender={() => <div className='px-16'>页面列表</div>}
           onSelect={onSelect}
         />
       </div>
