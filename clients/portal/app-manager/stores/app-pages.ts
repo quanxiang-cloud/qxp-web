@@ -2,7 +2,6 @@ import { observable, action } from 'mobx';
 
 import TreeStore from '@c/headless-tree/store';
 import toast from '@lib/toast';
-import appPageDataStore from '@appC/app-page-data/store';
 import { getPageDataSchema, getPageTreeData } from '@lib/utils';
 import { TreeNode } from '@c/headless-tree/types';
 import {
@@ -115,8 +114,7 @@ class AppPagesStore {
       fetchFormScheme(pageInfo.id).then((res) => {
         this.formScheme = res.data;
         const { config, schema } = res.data;
-        getPageDataSchema(config, schema);
-        appPageDataStore.setTableID(pageInfo.id as string);
+        getPageDataSchema(config, schema, pageInfo.id as string);
         this.fetchSchemeLoading = false;
       }).catch(() => {
         this.fetchSchemeLoading = false;

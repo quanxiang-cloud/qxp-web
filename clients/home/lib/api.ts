@@ -1,13 +1,33 @@
-import httpClient from '@lib/http-client';
+import request from '@appLib/request';
 
 export const fetchUserList = () => {
-  return httpClient('/api/v1/app-center/userList', { page: 1, limit: 9999 });
+  return request({
+    method: 'post',
+    url: '/api/v1/app-center/userList',
+    data: { page: 1, limit: 9999 },
+  });
 };
 
 export const fetchPageList = (appID: string) => {
-  return httpClient('/api/v1/structor/menu/list', { appID });
+  return request({
+    method: 'post',
+    url: '/api/v1/structor/menu/list',
+    data: { appID },
+  });
 };
 
 export const fetchFormScheme = (tableID: string) => {
-  return httpClient('/api/v1/structor/table/getByID', { tableID });
+  return request({
+    method: 'post',
+    url: '/api/v1/structor/table/getByID',
+    data: { tableID },
+  });
+};
+
+export const formDataCurd = (tableID: string, data: any) => {
+  return request({
+    method: 'post',
+    url: `/api/v1/structor/form/${tableID}`,
+    data,
+  });
 };

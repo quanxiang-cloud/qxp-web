@@ -245,9 +245,9 @@ export function getPageTreeData(pageList: any[], root: any, level = 1) {
   root.children = treeList;
 }
 
-export function getPageDataSchema(config: any, schema: any) {
+export function getPageDataSchema(config: any, schema: any, pageID: string) {
   const { pageTableShowRule = {}, pageTableConfig, filtrate = [] } = config || {};
-  const { setFiltrates, setTableConfig, setTableColumns } = appPageDataStore;
+  const { setFiltrates, setTableConfig, setTableColumns, setTableID } = appPageDataStore;
   const fieldsMap = schema?.properties || {};
   const tableColumns: any[] = [];
   let recordColNum = 0;
@@ -262,7 +262,9 @@ export function getPageDataSchema(config: any, schema: any) {
   }
 
   Object.keys(fieldsMap).forEach((key: string) => {
-    const hasVisible = pageTableConfig ? 'visible' in pageTableConfig[key] : false;
+    const hasVisible = pageTableConfig && pageTableConfig[key] ?
+      'visible' in pageTableConfig[key] : false;
+
     if ((hasVisible && pageTableConfig[key].visible) || !hasVisible) {
       tableColumns.push({
         id: key,
@@ -276,7 +278,7 @@ export function getPageDataSchema(config: any, schema: any) {
 
   if (pageTableConfig) {
     tableColumns.sort((a, b) => {
-      return pageTableConfig[b.id].sort - pageTableConfig[a.id].sort;
+      return pageTableConfig[b.id]?.sort - pageTableConfig[a.id]?.sort;
     });
   }
 
@@ -285,4 +287,5 @@ export function getPageDataSchema(config: any, schema: any) {
   }));
   setTableColumns(tableColumns);
   setTableConfig(pageTableShowRule);
+  setTableID(pageID);
 }

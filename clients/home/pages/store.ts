@@ -4,8 +4,6 @@ import TreeStore from '@c/headless-tree/store';
 import { TreeNode } from '@c/headless-tree/types';
 import { getPageTreeData } from '@lib/utils';
 import { getPageDataSchema } from '@lib/utils';
-import appPageDataStore from '@appC/app-page-data/store';
-
 
 import { fetchUserList, fetchPageList, fetchFormScheme } from '../lib/api';
 
@@ -14,9 +12,9 @@ class UserAppStore {
   @observable appID = '';
   @observable listLoading = false;
   @observable pageListLoading = false;
-  @observable curPage: any = {};
+  @observable curPage: PageInfo = {};
   @observable fetchSchemeLoading = true;
-  @observable formScheme = null;
+  @observable formScheme:any = null;
   @observable treeStore: TreeStore<any> | null = null;
 
   @action
@@ -39,7 +37,7 @@ class UserAppStore {
         children: [],
       };
 
-      getPageTreeData(res.menu, treeData);
+      getPageTreeData(res.data.menu, treeData);
       this.treeStore = new TreeStore({
         rootNode: (treeData) as TreeNode<any>,
       });
@@ -52,10 +50,9 @@ class UserAppStore {
     if (pageInfo.id) {
       this.fetchSchemeLoading = true;
       fetchFormScheme(pageInfo.id).then((res: any) => {
-        this.formScheme = res;
-        const { config, schema } = res;
-        getPageDataSchema(config, schema);
-        appPageDataStore.setTableID(pageInfo.id as string);
+        this.formScheme = res.data;
+        const { config, schema } = res.data;
+        getPageDataSchema(config, schema, pageInfo.id as string);
         this.fetchSchemeLoading = false;
       }).catch(() => {
         this.fetchSchemeLoading = false;
@@ -72,7 +69,7 @@ class UserAppStore {
     this.listLoading = true;
     fetchUserList().then((res: any) => {
       this.listLoading = false;
-      this.appList = res.data || [];
+      this.appList = res.data.data || [];
     }).catch(() => {
       this.listLoading = false;
     });

@@ -40,7 +40,7 @@ function PageDataTable() {
   return (
     <div className='app-page-data-container flex-1'>
       <div className='mb-16 flex items-center gap-x-16'>
-        <Button modifier='primary' iconName='add'>新建</Button>
+        <Button onClick={store.createFun} modifier='primary' iconName='add'>新建</Button>
         {/* {textBtnRender('导入', 'file_download')}
         {textBtnRender('导出', 'file_upload')} */}
         {textBtnRender('删除', 'restore_from_trash')}

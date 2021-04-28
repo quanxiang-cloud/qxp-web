@@ -12,9 +12,12 @@ import './index.scss';
 
 function Dashboard() {
   const history = useHistory();
+
   useEffect(() => {
     document.title = '工作台';
+    store.fetchAppList();
   }, []);
+
   return (
     <>
       <main className="py-40 px-58 relative"
