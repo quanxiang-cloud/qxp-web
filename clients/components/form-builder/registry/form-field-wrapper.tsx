@@ -1,4 +1,5 @@
 import React from 'react';
+import { useDrop } from 'react-dnd';
 import classnames from 'classnames';
 import { observer } from 'mobx-react';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
@@ -62,10 +63,29 @@ function renderActions(store: FormBuilderStore): JSX.Element {
   );
 }
 
+type CollectedProps = {
+  isOver: boolean;
+}
+
 function InnerWrapper(props: ISchemaFieldComponentProps) {
   const store = React.useContext(StoreContext);
-  const ref = React.useRef<HTMLDivElement>(null);
   const active = store.activeFieldWrapperName == props.name;
+
+  const [{ isOver }, drop] = useDrop<DragObject, DropResult, CollectedProps>({
+    accept: 'SOURCE_ELEMENT',
+    drop: () => {
+      return {
+        id: props.name,
+        item: 'something?',
+        index: props.props['x-index'],
+        // todo refactor this
+        dropPosition: 'up',
+      };
+    },
+    collect: (monitor) => ({
+      isOver: monitor.isOver(),
+    }),
+  });
 
   function handleFieldClick() {
     // todo refactor this
@@ -77,10 +97,10 @@ function InnerWrapper(props: ISchemaFieldComponentProps) {
 
   return (
     <div
-      ref={ref}
+      ref={drop}
       onClick={handleFieldClick}
       className={classnames('relative', 'form-field-wrapper', {
-        'form-field-wrapper--active': active,
+        'form-field-wrapper--active': active || isOver,
         'form-field-wrapper--hidden-children': childrenInvisible,
       })}
     >

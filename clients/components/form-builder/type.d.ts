@@ -14,6 +14,8 @@ type DropResult = {
   dropPosition: string;
 }
 
+type DragObject = SourceElement<any>;
+
 type Source = Partial<{
   item: any;
   path: string;
