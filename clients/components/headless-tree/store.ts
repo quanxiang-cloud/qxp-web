@@ -77,11 +77,12 @@ export default class TreeStore<T> {
     return nodeList.map((node, index) => {
       if (node.level > expandLevel) {
         invisibleNodeCount = invisibleNodeCount + 1;
+        const positionY = (index - invisibleNodeCount) * TREE_NODE_HEIGHT;
 
         return {
           ...node,
           visible: false,
-          positionY: (index - invisibleNodeCount) * TREE_NODE_HEIGHT,
+          positionY: this.hideRootNode ? positionY - TREE_NODE_HEIGHT : positionY,
         };
       }
 
@@ -94,7 +95,6 @@ export default class TreeStore<T> {
       }
 
       const positionY = (index - invisibleNodeCount) * TREE_NODE_HEIGHT;
-
       return { ...node, positionY: this.hideRootNode ? positionY - TREE_NODE_HEIGHT : positionY };
     });
   }
