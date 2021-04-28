@@ -10,7 +10,6 @@ type MenuItem = {
   name: string;
   icon: string;
   url: string;
-  replace?: boolean;
 };
 
 type defaultActive = {
@@ -20,33 +19,23 @@ type defaultActive = {
 
 type Props = {
   menuData: MenuItem[];
-  width?: number;
   cardTitle?: string | React.ReactNode;
   className?: string;
   defaultActiveLink?: defaultActive
 }
 
-export default function SideNavCard({
-  menuData,
-  cardTitle,
-  className = '',
-  width = 316,
-  defaultActiveLink,
-}: Props) {
+export default function SideNavCard({ menuData, cardTitle, className = '', defaultActiveLink }: Props) {
   return (
-    <div
-      style={{ width: width + 'px', minWidth: width + 'px' }}
-      className={`bg-white rounded-12 ${className}`}
-    >
+    <div className={`bg-white rounded-12 ${className}`}>
       {cardTitle ? cardTitle : null}
       <div className="p-20">
         <ul className="w-auto">
-          {menuData.map(({ id, icon, name, url, replace = false }) => {
+          {menuData.map(({ id, icon, name, url }) => {
             return (
               <li key={id}>
                 <NavLink
-                  replace={replace}
                   to={url}
+                  exact
                   className='side-nav-link rounded-l-8 transition-all duration-300'
                   activeClassName='side-nav-link-active'
                   isActive={(match, location) => {

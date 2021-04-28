@@ -10,7 +10,7 @@ type SingleSelectTriggerProps<T> = {
 
 type MultipleSelectTriggerProps<T> = {
   selectedOption?: SelectOption<T>[];
-  placeholder: string | JSX.Element;
+  placeholder: string;
   onUnselect: (value: T) => void;
 };
 
