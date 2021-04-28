@@ -5,15 +5,17 @@ import Breadcrumb from '@c/breadcrumb';
 import Icon from '@c/icon';
 import Button from '@c/button';
 import registry from '@c/form-builder/registry';
+import toast from '@lib/toast';
 import { formDataCurd } from '../../../lib/api';
 
 import store from '../../store';
 
 type Props = {
   goBack: () => void;
+  defaultValues: any;
 }
 
-function CreateDataForm({ goBack }: Props) {
+function CreateDataForm({ goBack, defaultValues }: Props) {
   const [tempFormValue, setTempFormValue] = useState({});
   const [loading, setLoading] = useState(false);
 
@@ -22,8 +24,11 @@ function CreateDataForm({ goBack }: Props) {
     formDataCurd(store.curPage.id as string, {
       method: 'create',
       entity: tempFormValue,
-    }).then(()=>{
+    }).then(() => {
+      toast.success('提交成功');
       goBack();
+    }).catch(() => {
+      setLoading(false);
     });
   };
 
@@ -38,15 +43,16 @@ function CreateDataForm({ goBack }: Props) {
             </a>
           </Breadcrumb.Item>
           <Breadcrumb.Item>
-            新建申请
+            {defaultValues ? '编辑申请' : '新建申请'}
           </Breadcrumb.Item>
         </Breadcrumb>
       </div>
       <div className='user-app-schema-form'>
         <SchemaForm
+          defaultValue={defaultValues}
           components={{ ...registry.components }}
           schema={store.formScheme.schema}
-          onChange={(value:any) => setTempFormValue(value)}
+          onChange={(value: any) => setTempFormValue(value)}
         />
       </div>
       <div className='px-40 py-16 text-right bg-gray-100'>

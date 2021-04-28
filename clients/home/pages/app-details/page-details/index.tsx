@@ -16,10 +16,16 @@ function PageDetails() {
 
   useEffect(() => {
     appDataStore.setCreateFun(() => setShowCreateForm(true));
+    appDataStore.allowRequestData = true;
   }, []);
 
   if (showCreateForm) {
-    return <CreateDataForm goBack={() => setShowCreateForm(false)} />;
+    return (
+      <CreateDataForm
+        defaultValues={appDataStore.curItemFormData}
+        goBack={() => setShowCreateForm(false)}
+      />
+    );
   }
 
   const contentRender = () => {

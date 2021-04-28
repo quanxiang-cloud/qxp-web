@@ -1,36 +1,56 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useEffect, useState } from 'react';
 import { observer } from 'mobx-react';
 
 import Button from '@c/button';
 import Icon from '@c/icon';
 import Table from '@c/table';
 import Pagination from '@c/pagination';
+import PopConfirm from '@c/pop-confirm';
 
 import store from './store';
 
 function PageDataTable() {
-  const columns = useMemo(()=>{
+  const [selected, setSelected] = useState([]);
+  const columns = useMemo(() => {
     return store.tableColumns.length ? [...store.tableColumns, {
       id: 'action',
       Header: '',
       accessor: (data: any) => {
         return (
           <div className='text-center'>
-            <span className='mr-16 text-blue-600 cursor-pointer'>修改</span>
-            <span className='text-red-600 cursor-pointer'>删除</span>
+            <span
+              onClick={() => store.goEdit(data)}
+              className='mr-16 text-blue-600 cursor-pointer'
+            >
+              修改
+            </span>
+            <PopConfirm content='确认删除该数据？' onOk={() => store.delFormData([data.id])} >
+              <span className='text-red-600 cursor-pointer'>删除</span>
+            </PopConfirm>
           </div>
         );
       },
     }] : store.tableColumns;
   }, [store.tableColumns]);
 
+  useEffect(() => {
+    if (!store.allowRequestData) {
+      return;
+    }
+    store.setParams({});
+  }, []);
+
   const handleSelectChange = (selectArr: any) => {
     console.log('selectArr: ', selectArr);
+    setSelected(selectArr);
   };
 
-  const textBtnRender = (text: string, icon: string) => {
+  const textBtnRender = (text: string, icon: string, onClick: () => void) => {
     return (
-      <div className='inline-flex items-center cursor-pointer hover:text-blue-600'>
+      <div
+        onClick={onClick}
+        className='inline-flex items-center cursor-pointer hover:text-blue-600'
+      >
         <Icon size={20} className='mr-4 app-icon-color-inherit' name={icon} />
         {text}
       </div>
@@ -43,23 +63,27 @@ function PageDataTable() {
         <Button onClick={store.createFun} modifier='primary' iconName='add'>新建</Button>
         {/* {textBtnRender('导入', 'file_download')}
         {textBtnRender('导出', 'file_upload')} */}
-        {textBtnRender('删除', 'restore_from_trash')}
+        {selected.length > 0 && textBtnRender('批量删除',
+          'restore_from_trash',
+          () => store.delFormData(selected)
+        )}
       </div>
       <Table
         showCheckbox
         emptyTips='暂无数据'
         rowKey="id"
+        loading={store.listLoading}
         onSelectChange={handleSelectChange}
         columns={columns}
-        data={[]}
+        data={store.formDataList}
       />
       {store.pageSize ? (
         <Pagination
-          current={1}
-          total={1}
-          pageSize={store.pageSize}
-          onChange={(page: number) => {
-            console.log('page: ', page);
+          current={store.params.page}
+          total={store.total}
+          pageSize={store.params.size}
+          onChange={(page: number, size: number) => {
+            store.setParams({ page, size });
           }}
         />
       ) : null}
