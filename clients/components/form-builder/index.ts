@@ -1,6 +1,5 @@
 import FormBuilder from './form-builder';
 import registry from './registry';
-import { useFormPreview, useLinkageSetting, useDataSetting } from './hooks';
 
 import './index.scss';
 
@@ -14,7 +13,4 @@ export default FormBuilder;
 export {
   FormBuilder,
   registry,
-  useFormPreview,
-  useLinkageSetting,
-  useDataSetting,
 };
