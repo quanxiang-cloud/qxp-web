@@ -26,6 +26,7 @@ module.exports = function(env) {
       'retrieve-password': './clients/login/retrieve-password',
       404: './clients/404/index.ts',
       'app-manager': './clients/portal/app-manager/index.tsx',
+      home: './clients/home/index.tsx',
     },
 
     output: {
@@ -139,6 +140,12 @@ module.exports = function(env) {
         chunks: ['retrieve-password'],
         template: './clients/templates/retrieve-password.html',
         filename: `${__dirname}/dist/templates/retrieve-password.html`,
+      }),
+      new HtmlWebpackPlugin({
+        inject: false,
+        chunks: ['home'],
+        template: './clients/templates/home.html',
+        filename: `${__dirname}/dist/templates/home.html`,
       }),
       env !== 'production' ? new WebpackNotifierPlugin({ alwaysNotify: true }) : null,
     ].filter(Boolean),
