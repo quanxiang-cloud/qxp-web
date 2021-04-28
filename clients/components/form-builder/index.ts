@@ -3,11 +3,6 @@ import registry from './registry';
 
 import './index.scss';
 
-// const actions: ISchemaFormActions = {
-//   getSchema(): Schema;
-//   getFormSchema(): Schema;
-// };
-
 export default FormBuilder;
 
 export {

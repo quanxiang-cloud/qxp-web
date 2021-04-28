@@ -12,7 +12,6 @@ export interface NumberPickerConfig {
   maximum: number | undefined;
 }
 
-// just for type friendly
 export const defaultConfig: NumberPickerConfig = {
   title: '数字',
   description: '',

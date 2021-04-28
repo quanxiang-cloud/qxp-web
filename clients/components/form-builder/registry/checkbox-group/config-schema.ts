@@ -121,13 +121,6 @@ const schema: ISchema = {
           ],
         },
         availableOptions: {
-          // 'x-component-props': {
-          //   initialValues: [
-          //     { label: 'One', value: 'One', title: 'One' },
-          //     { label: 'Two', value: 'Two', title: 'Two' },
-          //     { label: 'Three', value: 'Three', title: 'Three' },
-          //   ],
-          // },
           type: 'array',
           'x-component': 'ArrayTable',
           'x-component-props': {
