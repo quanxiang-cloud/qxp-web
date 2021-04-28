@@ -8,10 +8,6 @@ import Loading from '@c/loading';
 import locales from './locales';
 import Routes from './routes';
 
-// ensure web socket connection
-// todo how about on app-manager page?
-import '@lib/push';
-
 export default function Application() {
   return (
     <LocaleProvider locales={locales} >

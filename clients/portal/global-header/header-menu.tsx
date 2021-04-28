@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 
 import More from '@c/more';
-import NavMsgBar from '@portal/pages/msg-center/nav-msg-bar';
 import Icon from '@c/icon';
 
 import ResetPasswordModal from './reset-password-modal';
@@ -15,7 +14,6 @@ export default function HeaderMenu() {
         visible={openResetPasswordModal}
         onCancel={() => setOpenResetPasswordModal(false)}
       />
-      <NavMsgBar />
       <div className="mr-56 header-nav-btn group">
         <div className="header-nav-btn-icon-wrapper">
           <Icon
