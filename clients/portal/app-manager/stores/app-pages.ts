@@ -131,7 +131,8 @@ class AppPagesStore {
     this.appId = appId;
     this.pageListLoading = true;
     fetchPageList(appId).then((res) => {
-      const treeData = {
+      // todo fix any type
+      const treeData: any = {
         data: {},
         name: '',
         id: 'root',
@@ -149,6 +150,7 @@ class AppPagesStore {
       getPageTreeData(res.data.menu, treeData);
       this.treeStore = new TreeStore({
         rootNode: (treeData) as TreeNode<any>,
+        hideRootNode: true,
       });
       this.pageListLoading = false;
     });

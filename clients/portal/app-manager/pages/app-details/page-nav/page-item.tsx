@@ -50,7 +50,7 @@ function PageItem({ node, store, onMenuClick }: Props) {
         {node.name}
       </span>
       <div className={cs('opacity-0 group-hover:opacity-100', { 'opacity-100': isActive })}>
-        {isPage && (<Icon className='mr-16 cursor-grab' name='drag_indicator' size={20} />)}
+        {/* {isPage && (<Icon className='mr-16 cursor-grab' name='drag_indicator' size={20} />)} */}
         <MoreMenu
           menus={MENUS}
           placement="bottom-end"

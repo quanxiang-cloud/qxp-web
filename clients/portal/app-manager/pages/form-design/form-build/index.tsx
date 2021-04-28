@@ -8,24 +8,15 @@ import Button from '@c/button';
 
 import { Modal } from '@QCFE/lego-ui';
 
-import { SchemaForm } from '@formily/antd';
+import { FormButtonGroup, SchemaForm } from '@formily/antd';
 import toast from '@lib/toast';
 
 const FormPage = () => {
   const [previewModalVisible, setPreviewModalVisible] = useState(false);
-  const [tempFormValue, setTempFormValue] = useState({});
 
   if (!store.formStore) {
     return null;
   }
-
-  const handleSimulateSubmit = () => {
-    toast.success('提交表单：' + JSON.stringify(tempFormValue));
-  };
-
-  const handleFormChange = (value: React.SetStateAction<{}>) => {
-    setTempFormValue(value);
-  };
 
   const handlePreviewClose = () => {
     setPreviewModalVisible(false);
@@ -51,33 +42,23 @@ const FormPage = () => {
       <FormBuilder store={store.formStore} />
       <Modal
         title="预览表单"
-        onOk={handleSimulateSubmit}
         onCancel={handlePreviewClose}
         visible={previewModalVisible}
-        footer={
-          (<div>
-            <Button
-              className="mr-16"
-              onClick={handlePreviewClose}
-            >
-              关闭
-            </Button>
-            <Button
-              modifier="primary"
-              onClick={handleSimulateSubmit}
-            >
-              模拟提交
-            </Button>
-          </div>
-          )
-        }
+        footer={null}
       >
         <SchemaForm
           className="w-588"
           components={{ ...registry.components }}
           schema={store.formStore.schemaForPreview}
-          onChange={handleFormChange}
-        />
+          onSubmit={(value) => {
+            toast.success('提交表单：' + JSON.stringify(value));
+          }}
+        >
+          <FormButtonGroup offset={4}>
+            <Button type="submit" modifier="primary">模拟提交</Button>
+            <Button type="submit" onClick={handlePreviewClose}>关闭</Button>
+          </FormButtonGroup>
+        </SchemaForm>
       </Modal>
     </>
   );
