@@ -20,6 +20,10 @@ $node-height: 56px;
   transition: transform 200ms ease-in-out;
   cursor: pointer;
 
+  .svg-icon {
+    color: currentColor;
+  }
+
   &:hover {
     background-color: #F1F5F9;
 
