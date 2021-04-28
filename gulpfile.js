@@ -39,10 +39,10 @@ function copyTemplates() {
     .pipe(gulp.dest('./dist/templates'));
 }
 
-function copyAssets() {
+function copyImages() {
   return gulp
-    .src('./clients/assets/**/*')
-    .pipe(gulp.dest('./dist'));
+    .src('./clients/assets/images/**/*')
+    .pipe(gulp.dest('./dist/images'));
 }
 
 function buildIcons() {
@@ -50,7 +50,7 @@ function buildIcons() {
 }
 
 const buildAssets = gulp.parallel(
-  copyAssets,
+  copyImages,
   copyTemplates,
   buildIcons,
 );
@@ -63,7 +63,14 @@ exports.webpack = (done) => {
 
 exports.default = gulp.parallel(buildAssets,
   () => {
-    runWebpack(webpackConfig({ mode: 'development' }));
+    gulp.watch(
+      ['./webpack.config.js'],
+      { ignoreInitial: false },
+      gulp.series((done) => {
+        runWebpack(webpackConfig({ mode: 'development' })).then(done);
+      })
+    );
+
     portalServer = spawn('air');
     portalServer.stderr.pipe(process.stderr);
     portalServer.stdout.pipe(process.stdout);

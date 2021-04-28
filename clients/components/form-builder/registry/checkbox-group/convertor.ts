@@ -11,7 +11,6 @@ export interface CheckboxGroupConfig {
   availableOptions: Array<{ label: string; value: any; title: string }>,
 }
 
-// just for type friendly
 export const defaultConfig: CheckboxGroupConfig = {
   title: '复选框',
   description: '',

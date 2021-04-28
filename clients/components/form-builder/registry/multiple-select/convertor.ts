@@ -9,7 +9,6 @@ export interface MultipleSelectConfig {
   valueSource: FormBuilder.ValueSource;
   availableOptions: Array<{ label: string; value: any; title: string }>,
 }
-// just for type friendly
 export const defaultConfig: MultipleSelectConfig = {
   title: '下拉复选框',
   description: '',

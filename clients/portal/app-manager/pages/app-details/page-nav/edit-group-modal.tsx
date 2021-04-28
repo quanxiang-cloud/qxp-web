@@ -28,10 +28,9 @@ function EditGroupModal({ name, id, onCancel, onSubmit }: Props) {
       onCancel={onCancel}
       footer={
         (<div className="flex items-center">
-          <Button iconName='close' onClick={onCancel}>
+          <Button className="mr-20" iconName='close' onClick={onCancel}>
             取消
           </Button>
-          <div className="px-2"></div>
           <Button
             modifier='primary'
             iconName='check'

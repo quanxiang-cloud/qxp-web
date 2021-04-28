@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 import AppIcon from '@c/app-icon';
 
-const COLORS: BgColor[] = [
+export const COLORS: BgColor[] = [
   'indigo',
   'amber',
   'teal',

@@ -25,7 +25,7 @@ interface BaseSelectProps<T> {
   onOptionsVisibilityChange?: (visible: boolean) => void;
   options: SelectOption<T>[];
   optionsDesc?: string;
-  placeholder?: string | JSX.Element;
+  placeholder?: string;
   style?: React.CSSProperties;
 }
 
@@ -128,13 +128,6 @@ export default class Select<T extends React.Key> extends React.Component<SelectP
       triggerActive,
       selectedOption: selectedOption,
     };
-  }
-
-  componentDidUpdate(preProps: SelectProps<T>) {
-    if (preProps.value !== this.props.value) {
-      this.setState({ selectedValue: this.props.value });
-      (this as any).value = this.props.value;
-    }
   }
 
   getTriggerWidth(): number {
@@ -246,7 +239,6 @@ export default class Select<T extends React.Key> extends React.Component<SelectP
     return (
       <SingleSelectTrigger
         selectedOption={selectedOption as SelectOption<React.Key> | undefined}
-        // @ts-ignore
         placeholder={placeholder}
       />
     );

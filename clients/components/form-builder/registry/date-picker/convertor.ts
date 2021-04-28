@@ -17,7 +17,6 @@ export interface DatePickerConfig {
   valueSource: FormBuilder.ValueSource;
 }
 
-// just for type friendly
 export const defaultConfig: DatePickerConfig = {
   title: '时间日期',
   description: '',

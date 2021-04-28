@@ -4,7 +4,7 @@ $sub-pages-z-index: 2;
 $global-header-z-index: $sidebar-z-index + 1;
 $preview-shared-container-z-index: $base-z-index + 10;
 $modal-z-index: $preview-shared-container-z-index + 10;
-$popper-z-index: $modal-z-index + 100;
+$popper-z-index: $modal-z-index + 10;
 $toaster-z-index: $popper-z-index + 10;
 $tooltip-z-index: $toaster-z-index + 10;
 

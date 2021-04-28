@@ -6,9 +6,10 @@ import { FormBuilder } from '@c/form-builder';
 import registry from '@c/form-builder/registry';
 import Button from '@c/button';
 
-import { Modal, Message } from '@QCFE/lego-ui';
+import { Modal } from '@QCFE/lego-ui';
 
 import { SchemaForm } from '@formily/antd';
+import toast from '@lib/toast';
 
 const FormPage = () => {
   const [previewModalVisible, setPreviewModalVisible] = useState(false);
@@ -19,7 +20,7 @@ const FormPage = () => {
   }
 
   const handleSimulateSubmit = () => {
-    Message.success('提交表单：' + JSON.stringify(tempFormValue));
+    toast.success('提交表单：' + JSON.stringify(tempFormValue));
   };
 
   const handleFormChange = (value: React.SetStateAction<{}>) => {

@@ -1,11 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import { Provider as MobxProvider } from 'mobx-react';
-import { RecoilRoot } from 'recoil';
 
 import App from './application';
-import stores from './stores';
 import './scss/index.scss';
 import './index.css';
 
@@ -19,15 +16,9 @@ const queryClient = new QueryClient({
   },
 });
 
-Object.assign(window, { _stores: stores }); // fixme: debug
-
 ReactDOM.render(
-  <MobxProvider {...stores}>
-    <QueryClientProvider client={queryClient}>
-      <RecoilRoot>
-        <App/>
-      </RecoilRoot>
-    </QueryClientProvider>
-  </MobxProvider>,
+  <QueryClientProvider client={queryClient}>
+    <App/>
+  </QueryClientProvider>,
   document.getElementById('root'),
 );

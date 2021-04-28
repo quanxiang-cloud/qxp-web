@@ -1,7 +1,6 @@
 import React from 'react';
 import Tab2 from '@c/tab2';
 
-// import FormConfig from './form-config';
 import FormFieldConfig from './form-field-config';
 import FormConfig from './label-layout';
 import { FieldConfigContext, fieldConfigContext } from './form-field-config-context';
@@ -9,8 +8,8 @@ import { FieldConfigContext, fieldConfigContext } from './form-field-config-cont
 function FormSettingPanel() {
   return (
     <Tab2
-      style={{ width: '296px' }}
       strechNavs
+      style={{ width: '296px' }}
       items={[
         {
           id: 'fieldAttr',

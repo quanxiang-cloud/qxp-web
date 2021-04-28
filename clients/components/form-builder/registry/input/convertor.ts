@@ -1,4 +1,3 @@
-// just for type friendly
 export interface InputConfig {
   title: string;
   description?: string;

@@ -11,7 +11,6 @@ export interface RadioGroupConfig {
   availableOptions: Array<{ label: string; value: any; title: string }>,
 }
 
-// just for type friendly
 export const defaultConfig: RadioGroupConfig = {
   title: '单选框',
   description: '',
