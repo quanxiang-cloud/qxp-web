@@ -1,5 +1,6 @@
 import React from 'react';
 import { useHistory, useParams } from 'react-router-dom';
+import { parse } from 'query-string';
 
 import Icon from '@c/icon';
 import Tab, { TabProps } from '@appC/tab';
@@ -19,13 +20,17 @@ function FormDesignHeader() {
   const { pageType, pageId } = useParams<any>();
   const history = useHistory();
 
+  // todo get pageName from API
+  const { pageName } = parse(window.location.search);
+
   const tabChange = (tabKey: string) => {
     if (store.formStore.hasEdit) {
       toast.error('请先保存表单设计');
       return;
     }
     const navType = tabKey === 'publishForm' ? '/forEmployee' : '';
-    history.replace(`/apps/formDesign/${tabKey}/${pageId}${navType}`);
+    const query = pageName ? `?pageName=${pageName}` : '';
+    history.replace(`/apps/formDesign/${tabKey}/${pageId}${navType}${query}`);
   };
 
   return (
@@ -39,7 +44,8 @@ function FormDesignHeader() {
           size={20}
           name='keyboard_backspace'
         />
-        正在设计表单
+        <span className="text-h6-bold mr-4">正在设计表单{pageName ? ':' : ''}</span>
+        <span className="text-body2">{pageName ? pageName : ''}</span>
       </div>
       <Tab onChange={tabChange} activeTab={pageType} tabs={TABS} />
       <div className='flex justify-end'>

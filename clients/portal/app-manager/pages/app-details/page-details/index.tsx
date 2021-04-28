@@ -17,9 +17,8 @@ type Props = {
 function PageDetails({ appPagesStore }: Props) {
   const { curPage } = appPagesStore;
   const history = useHistory();
-
   const goFormBuild = () => {
-    history.push(`/apps/formDesign/formBuild/${curPage.id}`);
+    history.push(`/apps/formDesign/formBuild/${curPage.id}?pageName=${curPage.name}`);
   };
 
   const contentRender = () => {
