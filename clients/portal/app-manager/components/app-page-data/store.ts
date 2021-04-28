@@ -10,6 +10,7 @@ class AppPageDataStore {
   @observable formDataList: any[] = [];
   @observable tableColumns = [];
   @observable params = { condition: [], sort: [] };
+  @observable createFun = () => { };
 
   constructor() {
     this.destroyFetchTableData = reaction(() => this.pageParams, this.fetchFormDataList);
@@ -54,6 +55,11 @@ class AppPageDataStore {
   @action
   setTableColumns = (tableColumns: any) => {
     this.tableColumns = tableColumns;
+  }
+
+  @action
+  setCreateFun = (createFun: () => void) => {
+    this.createFun = createFun;
   }
 
   @action

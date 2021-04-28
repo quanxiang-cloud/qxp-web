@@ -1,0 +1,10 @@
+.user-app-item {
+  cursor: pointer;
+  min-width: 232px;
+  padding: 16px 20px;
+  transition: all .2s;
+
+  &:hover {
+    box-shadow: 0px 8px 24px 4px rgba(148, 163, 184, 0.25);
+  }
+}

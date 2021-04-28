@@ -1,4 +1,6 @@
 import { TreeNode } from '@c/headless-tree/types';
+import { getFilterField } from '@portal/app-manager/pages/form-design/utils';
+import appPageDataStore from '@appC/app-page-data/store';
 
 /**
  * send http post request
@@ -214,4 +216,73 @@ export const last = <T>(arg: T[]) => {
 
 export function isPassword(pwd: string) {
   return /^(?=.*\d)(?=.*[a-zA-Z])(?=.*[~!@#$%^&*.\(\)\-\+\[\]\|\"\'])[\da-zA-Z~!@#$%^&*.\(\)\-\+\[\]\|\"\']{8,}$/.test(pwd);
+}
+
+export function getPageTreeData(pageList: any[], root: any, level = 1) {
+  const treeList = pageList.map((pageData) => {
+    const treeData = {
+      data: pageData,
+      name: pageData.name || '',
+      id: pageData.id || '',
+      path: '',
+      isLeaf: pageData.menuType === 0,
+      expanded: false,
+      order: pageData.sort,
+      visible: true,
+      childrenStatus: 'resolved',
+      level: level,
+      parentId: root.id,
+      children: [],
+    };
+
+    if (pageData.child) {
+      getPageTreeData(pageData.child, treeData, level + 1);
+    }
+
+    return treeData;
+  });
+
+  root.children = treeList;
+}
+
+export function getPageDataSchema(config: any, schema: any) {
+  const { pageTableShowRule = {}, pageTableConfig, filtrate = [] } = config || {};
+  const { setFiltrates, setTableConfig, setTableColumns } = appPageDataStore;
+  const fieldsMap = schema?.properties || {};
+  const tableColumns: any[] = [];
+  let recordColNum = 0;
+  let fixedColumnIndex: number[] = [];
+  switch (pageTableShowRule.fixedRule) {
+  case 'one':
+    fixedColumnIndex = [0];
+    break;
+  case 'previous_two':
+    fixedColumnIndex = [0, 1];
+    break;
+  }
+
+  Object.keys(fieldsMap).forEach((key: string) => {
+    const hasVisible = pageTableConfig ? 'visible' in pageTableConfig[key] : false;
+    if ((hasVisible && pageTableConfig[key].visible) || !hasVisible) {
+      tableColumns.push({
+        id: key,
+        Header: fieldsMap[key].title || '',
+        accessor: key,
+        fixed: fixedColumnIndex.includes(recordColNum),
+      });
+      recordColNum += 1;
+    }
+  });
+
+  if (pageTableConfig) {
+    tableColumns.sort((a, b) => {
+      return pageTableConfig[b.id].sort - pageTableConfig[a.id].sort;
+    });
+  }
+
+  setFiltrates(filtrate.map((field: PageField) => {
+    return getFilterField(field);
+  }));
+  setTableColumns(tableColumns);
+  setTableConfig(pageTableShowRule);
 }
