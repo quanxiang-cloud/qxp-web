@@ -8655,6 +8655,7 @@ _:-ms-fullscreen .ant-picker-range-wrapper .ant-picker-year-panel .ant-picker-ce
   min-width: 24px;
   height: 24px;
   line-height: 24px;
+  text-align: center;
   border-radius: 2px;
   transition: background 0.3s, border 0.3s;
 }
