@@ -54,10 +54,9 @@ function EditPageModal({ pageInfo, onCancel, onSubmit, appID }: Props) {
       onCancel={onCancel}
       footer={
         (<div className="flex items-center">
-          <Button iconName='close' onClick={onCancel}>
+          <Button iconName='close' onClick={onCancel} className="mr-20">
             取消
           </Button>
-          <div className="px-2"></div>
           <Button
             modifier='primary'
             iconName='check'
