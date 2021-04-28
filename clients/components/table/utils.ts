@@ -53,6 +53,11 @@ export function useFixedStyle<T extends {}>(columns: UnionColumns<T>[]): GetFixe
   useEffect(() => {
     const columnsFixedStyle = useComputeColumnsPosition(columns as FixedColumn<T>[]);
     fn.current = (index: number) => {
+      // todo fixme
+      if (!(columns as FixedColumn<T>[])[index]) {
+        return {};
+      }
+
       if ((columns as FixedColumn<T>[])[index].fixed) {
         return columnsFixedStyle[index];
       }
