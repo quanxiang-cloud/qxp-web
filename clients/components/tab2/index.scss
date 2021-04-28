@@ -1,11 +1,13 @@
 .tab-warpper {
   @apply transition duration-300 overflow-hidden;
+
   .tab-navs {
     display: flex;
     flex-direction: row;
     width: 100%;
     background: #fff;
     margin-bottom: 1px;
+
     .tab-nav-item {
       @apply transition;
       color: #475569;
@@ -46,11 +48,13 @@
       flex-grow: 1;
     }
   }
+
   .tab-content {
     width: 100%;
     background: #fff;
     padding: 16px 20px;
-    overflow: hidden;
+    overflow: auto;
+
     .tab-content-item{
       @apply transition-opacity;
       opacity: 0;
