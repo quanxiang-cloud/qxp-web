@@ -85,8 +85,16 @@ function PageNav({ appPagesStore }: Props) {
 
   return (
     <div className='app-details-nav'>
-      <div className='flex justify-between px-16 py-20'>
-        <span className='text-h6-bold text-gray-400'>导航</span>
+      <div className='flex flex-end px-16 py-20'>
+        <span className='text-h6-bold text-gray-400 mr-auto'>导航</span>
+        <Tooltip content='添加页面'>
+          <Icon
+            onClick={() => setModalType('editPage')}
+            className='app-page-add-group mr-16'
+            size={20}
+            name='post_add'
+          />
+        </Tooltip>
         <Tooltip content='添加分组'>
           <Icon
             onClick={() => setModalType('editGroup')}
@@ -98,19 +106,20 @@ function PageNav({ appPagesStore }: Props) {
       </div>
       <div className='app-page-tree-wrapper'>
         <Tree
-          nodeDraggable={(node): boolean => node.data.menuType === 0}
-          onDrop={onDrop}
+          hideRootNode
+          // nodeDraggable={(node): boolean => node.data.menuType === 0}
+          // onDrop={onDrop}
           store={treeStore}
-          canDropOn={(node): boolean => !node.isLeaf}
+          // canDropOn={(node): boolean => !node.isLeaf}
           NodeRender={PageItemRender}
           RootNodeRender={() => <div className='px-16'>页面列表</div>}
           onSelect={onSelect}
         />
       </div>
-      <div onClick={() => setModalType('editPage')} className='add-page-add-btn'>
+      {/* <div onClick={() => setModalType('editPage')} className='add-page-add-btn'>
         <Icon size={24} className='mr-8 app-icon-color-inherit' name='add' />
         <span className='text-body1'>新建页面</span>
-      </div>
+      </div> */}
       <DelModal
         type={modalType === 'delGroup' ? 'group' : 'page'}
         visible={modalType === 'delPage' || modalType === 'delGroup'}
