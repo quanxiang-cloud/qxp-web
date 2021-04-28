@@ -8,7 +8,6 @@ export interface NumberPickerConfig {
   precision: number;
   required: boolean;
   valueSource: FormBuilder.ValueSource;
-  // rangeSetting: FormBuilder.ValueRange;
   minimum: number | undefined;
   maximum: number | undefined;
 }
@@ -23,12 +22,6 @@ export const defaultConfig: NumberPickerConfig = {
   precision: 2,
   required: false,
   valueSource: 'customized',
-  // rangeSetting: {
-  //   minSet: false,
-  //   minimum: undefined,
-  //   maxSet: false,
-  //   maximum: undefined,
-  // },
   maximum: undefined,
   minimum: undefined,
 };
