@@ -16,6 +16,7 @@ type Props = {
   picker?: 'day' | 'week' | 'month';
   inputValue?: string;
   className?: string;
+  style? :React.CSSProperties;
   onChange: (d: string) => void;
 }
 
@@ -82,11 +83,11 @@ export default class DatePicker extends React.Component<Props> {
   }
 
   render(): JSX.Element {
-    const { inputValue, className } = this.props;
+    const { inputValue, className, style } = this.props;
 
     return (
       <>
-        <div ref={this.reference} className={cs('date-picker__input', className, {
+        <div ref={this.reference} style={style} className={cs('date-picker__input', className, {
           'date-picker--has-selected-day': !!this.selectedDate,
         })}>
           <input
