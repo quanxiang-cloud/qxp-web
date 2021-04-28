@@ -87,7 +87,7 @@ export default class DatePicker extends React.Component<Props> {
 
     return (
       <>
-        <div ref={this.reference} className={cs('date-picker__input', className, {
+        <div ref={this.reference} style={style} className={cs('date-picker__input', className, {
           'date-picker--has-selected-day': !!this.selectedDate,
         })}>
           <input

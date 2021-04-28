@@ -118,7 +118,9 @@ export default function Authorized({ rightsID }: Props) {
 
   useEffect(() => {
     fetchOperatePer(rightsID).then((res) => {
-      setActionNumber(res.data.authority);
+      if (res.data) {
+        setActionNumber(res.data.authority);
+      }
     });
   }, [rightsID]);
 

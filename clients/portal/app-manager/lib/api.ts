@@ -271,3 +271,10 @@ export const saveFieldFilter = (data: any) => {
   });
 };
 
+export const formDataCurd = (tableID: string, data:any) => {
+  return request({
+    url: `/api/v1/structor/form/${tableID}`,
+    method: 'post',
+    data,
+  });
+};

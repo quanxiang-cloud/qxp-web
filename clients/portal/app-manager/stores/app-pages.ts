@@ -17,7 +17,7 @@ import {
 } from '@appLib/api';
 
 function getPageDataSchema(config: any, schema: any) {
-  const { pageTableShowRule = {}, pageTableConfig, filtrate=[] } = config || {};
+  const { pageTableShowRule = {}, pageTableConfig, filtrate = [] } = config || {};
   const { setFiltrates, setTableConfig, setTableColumns } = appPageDataStore;
   const fieldsMap = schema?.properties || {};
   const tableColumns: any[] = [];
@@ -185,6 +185,7 @@ class AppPagesStore {
         this.formScheme = res.data;
         const { config, schema } = res.data;
         getPageDataSchema(config, schema);
+        appPageDataStore.setTableID(pageInfo.id as string);
         this.fetchSchemeLoading = false;
       }).catch(() => {
         this.fetchSchemeLoading = false;

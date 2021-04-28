@@ -18,12 +18,6 @@ const FormPage = () => {
     return null;
   }
 
-  const hasScheme = !!store.formMetadata.id;
-
-  const handlePreview = () => {
-    setPreviewModalVisible(true);
-  };
-
   const handleSimulateSubmit = () => {
     Message.success('提交表单：' + JSON.stringify(tempFormValue));
   };
@@ -42,11 +36,11 @@ const FormPage = () => {
         <Button
           iconName='save'
           modifier="primary"
-          onClick={(hasScheme ? store.updateFormScheme : store.createFormScheme)}
+          onClick={(store.hasSchema ? store.updateFormScheme : store.createFormScheme)}
         >
           保存表单
         </Button>
-        <Button iconName='preview' onClick={handlePreview}>
+        <Button iconName='preview' onClick={() => setPreviewModalVisible(true)}>
           预览
         </Button>
         <span className='text-underline-no-color cursor-pointer'>

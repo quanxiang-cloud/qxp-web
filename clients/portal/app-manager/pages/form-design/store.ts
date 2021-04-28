@@ -25,7 +25,7 @@ class FormDesignStore {
   @observable pageID = '';
   @observable pageLoading = true;
   @observable formStore: any = null;
-  @observable formMetadata: any = {};
+  @observable hasSchema = false;
   @observable pageTableConfig: any = {};
   @observable pageTableShowRule: any = {};
   @observable rightsList: Rights[] = [];
@@ -156,9 +156,9 @@ class FormDesignStore {
 
     this.pageLoading = true;
     fetchFormScheme(pageID).then((res) => {
-      const { schema = {}, config, ...others } = res.data || {};
+      const { schema = {}, config } = res.data || {};
+      this.hasSchema = res.data? true: false;
       this.formStore = new FormStore({ schema });
-      this.formMetadata = others;
       if (config) {
         this.pageTableConfig = config.pageTableConfig || {};
         this.allFiltrate = config.filtrate || [];
@@ -173,6 +173,7 @@ class FormDesignStore {
   @action
   createFormScheme = () => {
     createFormScheme({ tableID: this.pageID, schema: this.formStore.schema }).then(() => {
+      this.formStore.hasEdit = false;
       toast.success('创建成功!');
     });
   }
@@ -180,10 +181,10 @@ class FormDesignStore {
   @action
   updateFormScheme = () => {
     updateFormScheme({
-      id: this.formMetadata.id,
       schema: this.formStore.schema,
       tableID: this.pageID,
     }).then(() => {
+      this.formStore.hasEdit = false;
       toast.success('保存成功!');
     });
   }

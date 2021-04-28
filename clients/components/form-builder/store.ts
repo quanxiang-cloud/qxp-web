@@ -83,6 +83,7 @@ export default class FormBuilderStore {
   @observable fields: Array<FormItem>;
   @observable activeFieldName = '';
   @observable labelAlign = 'left';
+  @observable hasEdit = false;
 
   constructor({ schema }: Props) {
     const [internalFields, fields] = schemaToFields(schema);
@@ -209,6 +210,7 @@ export default class FormBuilderStore {
 
   @action
   append(field: SourceElement<any>) {
+    this.hasEdit = true;
     this.fields.push({
       ...field,
       // componentName: field.componentName.toLowerCase(), //Need change componentName to lowercase
@@ -219,6 +221,7 @@ export default class FormBuilderStore {
 
   @action
   delete(fieldName: string) {
+    this.hasEdit = true;
     this.fields = this.fields.filter((field) => field.fieldName !== fieldName);
   }
 
@@ -236,6 +239,7 @@ export default class FormBuilderStore {
 
     const newField = { ...field, fieldName: nanoid(8) };
     this.fields.splice(index + 1, 0, newField);
+    this.hasEdit = true;
   }
 
   @action
@@ -252,6 +256,7 @@ export default class FormBuilderStore {
 
     const [previous, current] = this.fields.slice(index - 1, index + 1);
     this.fields.splice(index - 1, 2, current, previous);
+    this.hasEdit = true;
   }
 
   @action
@@ -268,10 +273,12 @@ export default class FormBuilderStore {
 
     const [previous, current] = this.fields.slice(index, index + 2);
     this.fields.splice(index, 2, current, previous);
+    this.hasEdit = true;
   }
 
   @action
   updateFieldConfig(value: any) {
+    this.hasEdit = true;
     this.fields = this.fields.map((f) => {
       if (f.fieldName !== this.activeFieldName) {
         return f;

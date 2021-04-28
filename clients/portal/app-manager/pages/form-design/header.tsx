@@ -4,7 +4,9 @@ import { useHistory, useParams } from 'react-router-dom';
 import Icon from '@c/icon';
 import Tab, { TabProps } from '@appC/tab';
 import NavButton from '@appC/nav-button';
+import toast from '@lib/toast';
 
+import store from './store';
 import './index.scss';
 
 const TABS: TabProps[] = [
@@ -18,6 +20,10 @@ function FormDesignHeader() {
   const history = useHistory();
 
   const tabChange = (tabKey: string) => {
+    if (store.formStore.hasEdit) {
+      toast.error('请先保存表单设计');
+      return;
+    }
     const navType = tabKey === 'publishForm' ? '/forEmployee' : '';
     history.replace(`/apps/formDesign/${tabKey}/${pageId}${navType}`);
   };

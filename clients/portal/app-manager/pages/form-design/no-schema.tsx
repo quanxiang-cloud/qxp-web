@@ -5,7 +5,10 @@ import AbsoluteCentered from '@appC/absolute-centered';
 export default function NoSchema() {
   return (
     <AbsoluteCentered>
-      <div className='text-h5'>请先添加数据!</div>
+      <div className='app-no-data'>
+        <img src='/dist/images/drag_tips.svg' />
+        <span>请先添加数据!</span>
+      </div>
     </AbsoluteCentered>
   );
 }

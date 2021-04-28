@@ -9,6 +9,14 @@ import Checkbox from '@c/checkbox';
 import './index.scss';
 import store from '../store';
 
+function getFieldType(field: PageField) {
+  if (field.isSystem) {
+    return '系统字段';
+  }
+
+  return `控件：${field.label}`;
+}
+
 function infoRender(title: string, desc: string) {
   return (
     <div className='ml-8'>
@@ -103,11 +111,11 @@ function FilterSetting() {
               className='flex items-center flex-1 cursor-pointer'
             >
               <Icon name={field.expand ? 'expand_less' : 'expand_more'} />
-              {infoRender(field.label, '系统字段')}
+              {infoRender(field.label, getFieldType(field))}
             </div>
           ) : (
             <div className='flex items-center flex-1'>
-              {infoRender(field.label, '系统字段')}
+              {infoRender(field.label, getFieldType(field))}
             </div>
           )}
           <Checkbox

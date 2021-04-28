@@ -24,7 +24,7 @@ function FormDesign() {
   }, [pageId]);
 
   const contentRender = () => {
-    if (store.pageLoading) {
+    if (store.pageLoading || !store.formStore) {
       return <PageLoad />;
     }
 
@@ -32,7 +32,7 @@ function FormDesign() {
       return <FormBuild />;
     }
 
-    if (!store.formMetadata.id) {
+    if (store.formStore.fields.length === 0) {
       return <NoSchema />;
     }
 

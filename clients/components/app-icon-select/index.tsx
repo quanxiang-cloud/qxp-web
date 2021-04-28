@@ -7,18 +7,31 @@ import Popper from '@c/popper';
 
 type Value = string;
 
-type Option = {
-  value: Value;
-  label: React.ReactNode;
-  disabled?: boolean;
-}
-
 type Props = {
   onChange: (value: Value) => void
   value: Value;
   placeholder?: string;
-  options: Option[]
+  options?: string[]
 }
+
+const APP_ICON_LIST = [
+  'event_available',
+  'people_alt',
+  'person_add_alt_1',
+  'role',
+  'theme',
+  'backup-shared',
+  'application_management',
+  'fact_check',
+  'insert_chart',
+  'record',
+  'request_quote',
+  'cogwheel',
+  'flight_takeoff',
+  'donut_large',
+  'color_picker',
+  'black',
+];
 
 const modifiers = [
   {
@@ -55,15 +68,15 @@ function IconSelect({
 
     return (
       <div className='app-icon-select-option-box' style={{ width: width + 'px' }}>
-        {options.map(({ value: _value }: Option) => (
+        {(options ? options : APP_ICON_LIST).map((icon) => (
           <div
-            onClick={() => optionClick(_value)}
+            onClick={() => optionClick(icon)}
             className={cs('app-icon-select-option',
-              { 'app-icon-select-active': _value === iconName }
+              { 'app-icon-select-active': icon === iconName }
             )}
-            key={_value}
+            key={icon}
           >
-            <Icon className='app-icon-color-inherit' name={_value} size={24} />
+            <Icon className='app-icon-color-inherit' name={icon} size={24} />
           </div>
         ))}
       </div>

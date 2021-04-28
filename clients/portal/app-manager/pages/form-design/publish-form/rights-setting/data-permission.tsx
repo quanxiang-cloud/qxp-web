@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useForm, Controller } from 'react-hook-form';
-import moment from 'moment';
 import { isArray, uniqueId } from 'lodash';
 
 import Select from '@c/select';
@@ -47,13 +46,16 @@ const FormFieldSelect = formFieldWrap({ FieldFC: Select });
 
 export default function DataPermission({ rightsID }: Props) {
   const [conditions, setConditions] = useState<any[]>([]);
-  const [tag, setTag] = useState('all');
-  const { handleSubmit, control, formState: { errors } } = useForm();
+  const [tag, setTag] = useState('and');
+  const { handleSubmit, control, setValue, formState: { errors } } = useForm();
 
   const fieldList = store.fieldList.map((field) => getFilterField(field));
 
   useEffect(() => {
     fetchDataAccessPer(rightsID).then((res) => {
+      if (!res.data) {
+        return;
+      }
       setConditions(
         res.data.conditions.map((condition: any) => {
           const filtrate: FilterField | undefined = fieldList.find(({ id }) => {
@@ -88,6 +90,7 @@ export default function DataPermission({ rightsID }: Props) {
       }
       return condition;
     }));
+    setValue('condition-' + rowID, '');
   };
 
   const addCondition = () => {
@@ -101,9 +104,12 @@ export default function DataPermission({ rightsID }: Props) {
   const handleSave = (formData: any) => {
     const _conditions = conditions.map((condition) => {
       let value = formData[`condition-${condition.id}`];
-
-      if (!isArray(value)) {
-        value = moment(value).isValid() ? [new Date(value).getTime()] : [value];
+      if (condition.filtrate.type === 'date') {
+        value = isArray(value) ? value.map((date: string) => {
+          return new Date(date).getTime();
+        }) : [new Date(value).getTime()];
+      } else {
+        value = isArray(value) ? value : [value];
       }
 
       return {
@@ -112,6 +118,7 @@ export default function DataPermission({ rightsID }: Props) {
         value,
       };
     });
+
     saveDataAccessPer({ perGroupID: rightsID, tag, conditions: _conditions }).then(() => {
       toast.success('保存成功！');
     });

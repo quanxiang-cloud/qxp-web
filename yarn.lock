@@ -1139,9 +1139,9 @@
   resolved "https://registry.npm.taobao.org/@icons/material/download/@icons/material-0.2.4.tgz#e90c9f71768b3736e76d7dd6783fc6c2afa88bc8"
   integrity sha1-6QyfcXaLNzbnbX3WeD/Gwq+oi8g=
 
-"@mariusmarais/tailwind-cascade@^0.0.4":
+"@mariusmarais/tailwind-cascade@^0.0.3":
   version "0.0.3"
-  resolved "https://registry.nlark.com/@mariusmarais/tailwind-cascade/download/@mariusmarais/tailwind-cascade-0.0.3.tgz#fc92d846a923753724953aa5646886129635e0c2"
+  resolved "http://r.npm.internal.yunify.com/@mariusmarais/tailwind-cascade/download/@mariusmarais/tailwind-cascade-0.0.3.tgz#fc92d846a923753724953aa5646886129635e0c2"
   integrity sha1-/JLYRqkjdTcklTqlZGiGEpY14MI=
   dependencies:
     classnames "^2.2.6"

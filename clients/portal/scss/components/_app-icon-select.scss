@@ -26,6 +26,8 @@
   
   .app-icon-select-option-box {
     display: flex;
+    flex-wrap: wrap;
+    max-width: 363px;
     gap: 5px;
     padding: 16px;
     background: #FFFFFF;

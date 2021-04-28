@@ -95,12 +95,6 @@ function EditPageModal({ pageInfo, onCancel, onSubmit, appID }: Props) {
               rule: { required: true },
             },
           ]}
-          options={[
-            { value: 'toggle_on' },
-            { value: 'settings' },
-            { value: 'login' },
-            { value: 'restore_from_trash' },
-          ]}
         />
         <Form.TextAreaField
           name='describe'

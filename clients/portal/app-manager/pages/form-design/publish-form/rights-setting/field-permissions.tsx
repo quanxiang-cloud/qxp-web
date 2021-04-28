@@ -25,7 +25,7 @@ function FieldPermissions({ rightsID }: Props) {
 
   useEffect(() => {
     fetchFieldFilter(rightsID).then((res) => {
-      const { schema } = res.data;
+      const { schema } = res.data || {};
       if (schema) {
         const visibleList: string[] = [];
         const revisableList: string[] = [];
