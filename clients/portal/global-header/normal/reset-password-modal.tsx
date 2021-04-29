@@ -1,8 +1,8 @@
 import React, { useState, FocusEvent, useRef } from 'react';
-import { Modal } from '@QCFE/lego-ui';
 import { useMutation } from 'react-query';
 
 import Button from '@c/button';
+import Modal from '@c/modal';
 import { userResetPassword } from '@lib/api/auth';
 import PassWordField from '@c/form/input/password-field';
 import Form, { FormRef } from '@c/form';
@@ -19,7 +19,6 @@ export default function ResetPasswordModal({ visible, onCancel }: Props) {
     old: '',
     new: '',
   });
-  const [isForbidden, setIsForbidden] = useState(false);
   const formRef = useRef<FormRef>(null);
   const [loading, setLoading] = useState(false);
   const mutation = useMutation(userResetPassword, {
@@ -45,21 +44,21 @@ export default function ResetPasswordModal({ visible, onCancel }: Props) {
     return function(e: FocusEvent<HTMLInputElement & HTMLTextAreaElement>) {
       const { value } = e.target;
       setValues((values) => ({ ...values, [type]: value }));
-      formRef.current?.isAllValid().then((isAllValid) => {
-        setIsForbidden(!isAllValid);
-      });
     };
+  }
+
+  if(!visible){
+    return null;
   }
 
   return (
     <Modal
       title="重置密码"
-      onCancel={onCancel}
-      visible={visible}
-      bodyStyle={{
-        width: '632px',
-        maxWidth: '100%',
-      }}
+      onClose={onCancel}
+      // bodyStyle={{
+      //   width: '632px',
+      //   maxWidth: '100%',
+      // }}
       footer={
         (<div className="flex flex-row justify-between items-center">
           <Button
@@ -72,7 +71,6 @@ export default function ResetPasswordModal({ visible, onCancel }: Props) {
           <Button
             modifier='primary'
             loading={loading}
-            forbidden={isForbidden || !values.new || !values.old}
             iconName="check"
             onClick={onResetSubmit}
           >

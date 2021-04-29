@@ -5,20 +5,32 @@ import { Control } from '@QCFE/lego-ui';
 import Icon from '@c/icon';
 import Popper from '@c/popper';
 
-type Value = string;
-
-type Option = {
-  value: Value;
-  label: React.ReactNode;
-  disabled?: boolean;
-}
-
 type Props = {
-  onChange: (value: Value) => void
-  value: Value;
+  onChange: (value: string) => void
+  value: string;
   placeholder?: string;
-  options: Option[]
+  options?: string[]
 }
+
+export const APP_ICON_LIST = [
+  'event_available',
+  'people_alt',
+  'person_add_alt_1',
+  'insights',
+  'addchart',
+  'account_balance_wallet',
+  'track_changes',
+  'approval',
+  'workspaces_outline',
+  'tune',
+  'fact_check',
+  'insert_chart',
+  'request_quote',
+  'flight_takeoff',
+  'donut_large',
+  'school',
+  'science',
+];
 
 const modifiers = [
   {
@@ -44,7 +56,7 @@ function IconSelect({
     setIsVisible(visible);
   };
 
-  const optionClick = (_value: Value) => {
+  const optionClick = (_value: string) => {
     popperRef.current?.close();
     onChange(_value);
     setIconName(_value);
@@ -55,15 +67,15 @@ function IconSelect({
 
     return (
       <div className='app-icon-select-option-box' style={{ width: width + 'px' }}>
-        {options.map(({ value: _value }: Option) => (
+        {(options ? options : APP_ICON_LIST).map((icon) => (
           <div
-            onClick={() => optionClick(_value)}
+            key={icon}
+            onClick={() => optionClick(icon)}
             className={cs('app-icon-select-option',
-              { 'app-icon-select-active': _value === iconName }
+              { 'app-icon-select-active': icon === iconName }
             )}
-            key={_value}
           >
-            <Icon className='app-icon-color-inherit' name={_value} size={24} />
+            <Icon className='app-icon-color-inherit' name={icon} size={24} />
           </div>
         ))}
       </div>

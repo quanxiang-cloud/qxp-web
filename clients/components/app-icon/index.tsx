@@ -31,9 +31,9 @@ function AppIcon(
       } as React.CSSProperties}
       className={`
         app-bg-icon
-        app-bg-icon-circle 
-        ${className} 
-        bg-gradient-${themeColor} 
+        app-bg-icon-circle
+        ${className}
+        bg-gradient-${themeColor}
         bg-icon-circle-${themeColor}`
       }
       {...restProps}

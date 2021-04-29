@@ -2,7 +2,7 @@ import React from 'react';
 import cs from 'classnames';
 import { twCascade } from '@mariusmarais/tailwind-cascade';
 
-import { Icon } from '@QCFE/lego-ui';
+import Icon from '@c/icon';
 import Popper from '@c/popper';
 
 import { SingleSelectTrigger, MultipleSelectTrigger } from './trigger';
@@ -25,7 +25,7 @@ interface BaseSelectProps<T> {
   onOptionsVisibilityChange?: (visible: boolean) => void;
   options: SelectOption<T>[];
   optionsDesc?: string;
-  placeholder?: string;
+  placeholder?: string | JSX.Element;
   style?: React.CSSProperties;
 }
 
@@ -186,10 +186,10 @@ export default class Select<T extends React.Key> extends React.Component<SelectP
             return (
               <div
                 key={option.value}
-                className={cs('select-options__option', 'select-option')}
-                onClick={(): void => {
-                  this.handleClick(option.value);
-                }}
+                onClick={(): void => this.handleClick(option.value)}
+                className={cs('select-options__option', 'select-option', {
+                  'select-option--selected': isSelected,
+                })}
               >
                 <div className="select-option__content">{option.label}</div>
                 {isSelected && <Icon name="check" />}
@@ -239,6 +239,7 @@ export default class Select<T extends React.Key> extends React.Component<SelectP
     return (
       <SingleSelectTrigger
         selectedOption={selectedOption as SelectOption<React.Key> | undefined}
+        // @ts-ignore
         placeholder={placeholder}
       />
     );

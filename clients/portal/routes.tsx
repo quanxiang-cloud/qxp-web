@@ -14,6 +14,7 @@ const MetaData = React.lazy(() => import('./pages/metadata'));
 const AccessControl = React.lazy(() => import('./pages/access-control'));
 const AppsManagement = React.lazy(() => import('./pages/apps-management'));
 const NewFlow = React.lazy(() => import('./pages/apps-management/work-flow/detail'));
+const SystemMgmt = React.lazy(() => import('./pages/system-mgmt'));
 
 const { USER } = window;
 if (USER && !isEmpty(USER)) {
@@ -70,6 +71,7 @@ export default function Routes(): JSX.Element {
         <Route path="/access-control" component={AccessControl} />
         <Route path="/apps-management" component={AppsManagement} />
         <Route path="/flow/new/:type" component={NewFlow} />
+        <Route path="/system" component={SystemMgmt} />
         <Route component={Error} />
       </Switch>
     </>

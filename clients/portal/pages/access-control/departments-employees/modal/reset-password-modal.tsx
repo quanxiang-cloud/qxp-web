@@ -1,10 +1,11 @@
 import React, { createRef } from 'react';
 import { useMutation } from 'react-query';
-import { Modal, Form } from '@QCFE/lego-ui';
+import { Form } from '@QCFE/lego-ui';
 
 import Button from '@c/button';
 import Icon from '@c/icon';
 import toast from '@lib/toast';
+import Modal from '@c/modal';
 
 import { resetUserPWD } from '../api';
 
@@ -65,10 +66,9 @@ export default function ResetPasswordModal({
 
   return (
     <Modal
-      visible
       title="重置密码"
       className="static-modal"
-      onCancel={closeModal}
+      onClose={closeModal}
       footer={
         (<div className="flex items-center">
           <Button

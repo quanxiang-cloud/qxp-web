@@ -8,12 +8,16 @@ import Loading from '@c/loading';
 import locales from './locales';
 import Routes from './routes';
 
+// ensure web socket connection
+// todo how about on app-manager page?
+import '@lib/push';
+
 export default function Application() {
   return (
     <LocaleProvider locales={locales} >
       <Router>
         <GlobalHeader />
-        <React.Suspense fallback={<Loading className="h-full" desc="加载中..." />}>
+        <React.Suspense fallback={<Loading className="w-screen h-screen" desc="加载中..." />}>
           <Routes />
         </React.Suspense>
       </Router>

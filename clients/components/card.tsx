@@ -40,7 +40,7 @@ export default function Card({
   });
 
   return (
-    <div style={style} className={twCascade('bg-light-50 mt-20', classNames, className)}>
+    <div style={style} className={twCascade('bg-white mt-20', classNames, className)}>
       <TextHeader
         title={title}
         titleClassName={titleClassName}

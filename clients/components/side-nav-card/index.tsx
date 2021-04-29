@@ -40,7 +40,6 @@ export default function SideNavCard({
               <li key={id}>
                 <NavLink
                   to={url}
-                  exact
                   className='side-nav-link rounded-l-8 transition-all duration-300'
                   activeClassName='side-nav-link-active'
                   isActive={(match, location) => {

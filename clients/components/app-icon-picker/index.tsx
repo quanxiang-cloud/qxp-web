@@ -1,10 +1,8 @@
 import React from 'react';
 import { Control } from '@QCFE/lego-ui';
 
-import Icon from '@c/icon';
-
-import IconSelect from '@c/app-icon-select';
-import ColorPicker from './color-picker';
+import IconSelect, { APP_ICON_LIST } from '@c/app-icon-select';
+import ColorPicker, { COLORS } from './color-picker';
 
 import { BgColor } from '@c/app-icon';
 
@@ -24,16 +22,16 @@ export default class AppIconPicker extends React.Component<Props> {
   state: AppIconInfo;
   constructor(props: Props) {
     super(props);
+
     this.state = {
-      iconName: props.defaultAppIcon?.iconName || '',
-      bgColor: props.defaultAppIcon?.bgColor || 'indigo',
+      iconName: props.defaultAppIcon?.iconName || APP_ICON_LIST[0],
+      bgColor: props.defaultAppIcon?.bgColor || COLORS[0],
     };
 
-    const { defaultAppIcon, onChange, onBlur } = props;
-    if (defaultAppIcon) {
-      onChange && onChange(defaultAppIcon);
-      onBlur && onBlur(defaultAppIcon);
-    }
+    // todo fix this
+    const { onChange, onBlur } = props;
+    onChange && onChange(this.state);
+    onBlur && onBlur(this.state);
   }
 
   handleFormChange = (newFormData: any) => {
@@ -51,17 +49,13 @@ export default class AppIconPicker extends React.Component<Props> {
         <IconSelect
           onChange={(_iconName: string) => this.handleFormChange({ iconName: _iconName })}
           value={iconName}
-          options={[
-            { value: 'toggle_on', label: <Icon size={24} name='toggle_on' /> },
-            { value: 'settings', label: <Icon size={24} name='settings' /> },
-            { value: 'login', label: <Icon size={24} name='login' /> },
-            { value: 'restore_from_trash', label: <Icon size={24} name='restore_from_trash' /> },
-          ]} />
+        />
         <ColorPicker
           className='mt-8'
           defaultColor={bgColor}
           onChange={(bgColor: BgColor) => this.handleFormChange({ bgColor })}
-          iconName={iconName} />
+          iconName={iconName}
+        />
       </Control>
     );
   }

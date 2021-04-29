@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { Modal } from '@QCFE/lego-ui';
 
 import Button from '@c/button';
+import Modal from '@c/modal';
 import toast from '@lib/toast';
 
 import EmployeeOrDepartmentPicker from './picker';
@@ -56,10 +56,10 @@ export default function EmployeeOrDepartmentPickerModal({
 
   return (
     <Modal
-      visible
       title={title}
-      onCancel={onCancel}
-      className="owner-bind-modal"
+      onClose={onCancel}
+      width={1234}
+      height={760}
       footer={
         (<div className="flex flex-row justify-between items-center">
           <Button
