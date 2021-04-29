@@ -17,9 +17,9 @@ export const defaultConfig: MultipleSelectConfig = {
   required: false,
   valueSource: 'customized',
   availableOptions: [
-    { label: 'One', value: 'One', title: 'One' },
-    { label: 'Two', value: 'Two', title: 'Two' },
-    { label: 'Three', value: 'Three', title: 'Three' },
+    { label: '选项一', value: '选项一', title: '选项一' },
+    { label: '选项二', value: '选项二', title: '选项二' },
+    { label: '选项三', value: '选项三', title: '选项三' },
   ],
 };
 
