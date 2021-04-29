@@ -12,6 +12,7 @@ import { getUserFuncs, getUserAdminRoles } from '@lib/api/auth';
 const Dashboard = React.lazy(() => import('./pages/dashboard'));
 const MetaData = React.lazy(() => import('./pages/metadata'));
 const AccessControl = React.lazy(() => import('./pages/access-control'));
+const SystemMgmt = React.lazy(() => import('./pages/system-mgmt'));
 
 const { USER } = window;
 if (USER && !isEmpty(USER)) {
@@ -66,6 +67,7 @@ export default function Routes(): JSX.Element {
         <Route exact path="/" component={Dashboard} />
         <Route path="/metadata" component={MetaData} />
         <Route path="/access-control" component={AccessControl} />
+        <Route path="/system" component={SystemMgmt} />
         <Route component={Error} />
       </Switch>
     </>

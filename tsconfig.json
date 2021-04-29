@@ -46,7 +46,7 @@
     "paths": {
       "@portal/*": ["./clients/portal/*"],
       "@c/*": ["./clients/components/*"],
-      "@lib/*": ["./clients/lib/*"],
+      "@lib/*": ["./clients/lib/*"]
     } /* A series of entries which re-map imports to lookup locations relative to the 'baseUrl'. */,
     // "rootDirs": [],                        /* List of root folders whose combined content represents the structure of the project at runtime. */
     "typeRoots": [
@@ -72,5 +72,14 @@
     "forceConsistentCasingInFileNames": true /* Disallow inconsistently-cased references to the same file. */
   },
   "include": ["**/*.ts", "**/*.tsx"],
-  "exclude": ["./dist/"]
+  "exclude": ["./dist/"],
+  "plugins": [
+    {
+      "name":  "typescript-plugin-css-modules",
+      "options": {
+        "classnameTransform": "dashes",
+        "customMatcher": "\\.module\\.scss$"
+      }
+    }
+  ]
 }

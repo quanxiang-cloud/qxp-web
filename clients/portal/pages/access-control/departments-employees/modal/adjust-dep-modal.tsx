@@ -1,10 +1,11 @@
 import React, { createRef } from 'react';
 import { useQuery, useMutation, useQueryClient } from 'react-query';
-import { Modal, Form, Loading } from '@QCFE/lego-ui';
+import { Form, Loading } from '@QCFE/lego-ui';
 
 import DepartmentPicker from '@c/form/input/tree-picker-field';
 import Button from '@c/button';
 import toast from '@lib/toast';
+import Modal from '@c/modal';
 import { departmentToTreeNode } from '@lib/utils';
 
 import { getERPTree, batchAdjustDep } from '../api';
@@ -72,10 +73,9 @@ export default function AdjustDepModal({ users: userList, closeModal }: Props) {
 
   return (
     <Modal
-      visible
       title="调整部门"
       className="static-modal"
-      onCancel={closeModal}
+      onClose={closeModal}
       footer={
         (<div className="flex items-center">
           <Button

@@ -68,6 +68,7 @@ export default class Captcha extends InputField {
     if (errorMessage && pageErrorElement) {
       pageErrorElement.innerText = errorMessage;
       pageErrorElement.classList.remove('hidden');
+      // @ts-ignore
       this.errorId = setTimeout(() => {
         pageErrorElement.classList.add('hidden');
       }, 3000);
@@ -98,6 +99,7 @@ export default class Captcha extends InputField {
       })
       .catch(resetVars);
     element.classList.add('disabled');
+    // @ts-ignore
     tid = setInterval(() => {
       counter -= 1;
       element.innerText = `${counter} 后重新获取`;

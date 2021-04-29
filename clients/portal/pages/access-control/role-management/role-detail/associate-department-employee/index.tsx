@@ -37,14 +37,13 @@ export default function AssociateDepartmentEmployee({ roleID, isSuper }: Props) 
   const mutation = useMutation(
     (arg: IUpdateRoleAssociations) => updateRoleAssociations(arg), {
       onSuccess: () => {
-        setShowBindModal(false);
         queryClient.invalidateQueries('GET_ROLE_ASSOCIATIONS');
         queryClient.invalidateQueries('GET_ROLE_ASSOCIATIONS_ALL');
       },
     }
   );
 
-  function onAssociate(
+  async function onAssociate(
     departments: EmployeeOrDepartmentOfRole[],
     employees: EmployeeOrDepartmentOfRole[]
   ) {
@@ -56,11 +55,16 @@ export default function AssociateDepartmentEmployee({ roleID, isSuper }: Props) 
     const adds = newSets.filter((member) => {
       return !oldSets.find((m) => m.ownerID === member.ownerID);
     });
-    return mutation.mutateAsync({
-      roleID: roleID as string,
-      add: adds.map(({ type, ownerID }) => ({ type, ownerID })),
-      delete: deletes?.map(({ id }) => id),
-    });
+    try {
+      await mutation.mutateAsync({
+        roleID: roleID as string,
+        add: adds.map(({ type, ownerID }) => ({ type, ownerID })),
+        delete: deletes?.map(({ id }) => id),
+      });
+      return true;
+    } catch (e) {
+      toast.error(e.message);
+    }
   }
 
   function onCancelAssociation(records: EmployeeOrDepartmentOfRole[]) {
