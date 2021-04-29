@@ -34,7 +34,7 @@ function PageDetails({ appPagesStore }: Props) {
       );
     }
 
-    return <PageBuildNav pageId={curPage.id} />;
+    return <PageBuildNav pageId={curPage.id} pageName={curPage.name} />;
   };
 
   if (!curPage.id) {
