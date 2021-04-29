@@ -75,6 +75,12 @@ class UserAppStore {
       this.listLoading = false;
     });
   }
+
+  @action
+  clear = () => {
+    this.formScheme = null;
+    this.treeStore = null;
+  }
 }
 
 export default new UserAppStore();

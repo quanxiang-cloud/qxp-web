@@ -11,6 +11,9 @@ function AppDetails() {
 
   useEffect(() => {
     store.fetchPageList(appID);
+    return () => {
+      store.clear();
+    };
   }, []);
 
   return (

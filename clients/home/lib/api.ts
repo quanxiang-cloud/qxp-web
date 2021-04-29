@@ -19,8 +19,7 @@ export const fetchPageList = (appID: string) => {
 export const fetchFormScheme = (tableID: string) => {
   return request({
     method: 'post',
-    url: '/api/v1/structor/table/getByID',
-    data: { tableID },
+    url: `/api/v1/structor/schema/${tableID}`,
   });
 };
 
