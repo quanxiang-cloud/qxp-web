@@ -9,6 +9,7 @@ import {
   createPage,
   updatePage,
   createGroup,
+  updateGroup,
   deleteGroup,
   deletePage,
   movePage,
@@ -45,32 +46,42 @@ class AppPagesStore {
 
   @action
   editGroup = (groupInfo: GroupInfo, node: TreeNode<any>) => {
-    return createGroup({ appID: this.appId, ...groupInfo }).then((res) => {
-      if (groupInfo.id) {
+    if (groupInfo.id) {
+      return updateGroup({ appID: this.appId, ...groupInfo }).then((res) => {
         this.treeStore?.updateNode({
           ...node,
           name: groupInfo.name || '',
           data: { ...node.data, ...groupInfo },
         });
         toast.success('修改成功');
-      } else {
-        const newGroup = { ...res.data, name: groupInfo.name, menuType: 1 };
-        this.treeStore?.addChildren('root', [{
-          data: newGroup,
-          name: newGroup.name || '',
-          id: newGroup.id || '',
-          path: '',
-          isLeaf: false,
-          expanded: false,
-          order: this.treeStore.rootNode.children?.length || 1,
-          visible: true,
-          childrenStatus: 'resolved',
-          level: 1,
-          parentId: 'root',
-          children: [],
-        }]);
-        toast.success('创建成功');
-      }
+      });
+    }
+    return createGroup({ appID: this.appId, ...groupInfo }).then((res) => {
+      // if (groupInfo.id) {
+      //   this.treeStore?.updateNode({
+      //     ...node,
+      //     name: groupInfo.name || '',
+      //     data: { ...node.data, ...groupInfo },
+      //   });
+      //   toast.success('修改成功');
+      // } else {
+      const newGroup = { ...res.data, name: groupInfo.name, menuType: 1 };
+      this.treeStore?.addChildren('root', [{
+        data: newGroup,
+        name: newGroup.name || '',
+        id: newGroup.id || '',
+        path: '',
+        isLeaf: false,
+        expanded: false,
+        order: this.treeStore.rootNode.children?.length || 1,
+        visible: true,
+        childrenStatus: 'resolved',
+        level: 1,
+        parentId: 'root',
+        children: [],
+      }]);
+      toast.success('创建成功');
+      // }
     });
   }
 
