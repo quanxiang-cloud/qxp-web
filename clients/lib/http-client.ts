@@ -17,12 +17,6 @@ function httpClient<TData>(
       window.location.href = window.location.href;
       return Promise.reject(new Error('当前会话已失效，请重新登录!'));
     }
-
-    // todo optimize this
-    if (response.status !== 200) {
-      return Promise.reject(`${response.status} ${response.statusText}`);
-    }
-
     return response.json();
   }).then((resp) => {
     const { code, msg, data } = resp;

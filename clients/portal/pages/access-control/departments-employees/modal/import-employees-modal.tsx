@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { useMutation } from 'react-query';
 import cs from 'classnames';
-import { Modal, CheckboxGroup, Checkbox, Table, Upload } from '@QCFE/lego-ui';
+import { CheckboxGroup, Checkbox, Table, Upload } from '@QCFE/lego-ui';
 
 import Icon from '@c/icon';
 import Button from '@c/button';
 import toast from '@lib/toast';
+import Modal from '@c/modal';
 
 import { FileUploadStatus } from '../type';
 import { exportEmployeesFail } from '../utils';
@@ -193,10 +194,9 @@ export default function ImportEmployeesModal({ currDepId, closeModal }: Props) {
   return (
     <>
       <Modal
-        visible
         title="excel 批量导入成员"
         className="static-modal"
-        onCancel={closeModal}
+        onClose={closeModal}
         footer={
           uploadStatus.status !== FileUploadStatus.fail ? (
             <div className="flex items-center">

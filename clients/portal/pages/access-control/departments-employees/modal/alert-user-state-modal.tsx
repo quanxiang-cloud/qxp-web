@@ -1,8 +1,8 @@
 import React from 'react';
 import { useMutation, useQueryClient } from 'react-query';
-import { Modal } from '@QCFE/lego-ui';
 
 import Button from '@c/button';
+import Modal from '@c/modal';
 import toast from '@lib/toast';
 
 import { updateUserStatus } from '../api';
@@ -55,10 +55,9 @@ export default function AccountHandleModal(
 
   return (
     <Modal
-      visible
       title={`${titleText}账号`}
       className="static-modal"
-      onCancel={closeModal}
+      onClose={closeModal}
       footer={
         (<div className="flex items-center">
           <Button

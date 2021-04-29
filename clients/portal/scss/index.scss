@@ -115,7 +115,7 @@ body {
     bottom: 0;
     right: 0;
     position: absolute;
-    z-index: -1;
+    //z-index: -1;
   }
 }
 
@@ -190,18 +190,9 @@ body {
 }
 
 .modal {
-  &.owner-bind-modal {
-    .modal-content {
-      width: 1234px !important;
-      height: 760px !important;
-      max-width: 98% !important;
-      max-height: 98% !important;
-    }
-  }
-
   .modal-card-head {
     @extend .header-background-image;
-    opacity: 0.95 !important;
+    //opacity: 0.95 !important;
   }
 
   .modal-card-foot {
@@ -376,6 +367,23 @@ input {
   }
 }
 
+.pt-20 {
+  padding-top: 20px;
+}
+
+.mt-20 {
+  margin-top: 20px;
+}
+
+.pointer {
+  cursor: pointer;
+}
+
 .min-w-259 {
   min-width: 259px;
 }
+
+.w-212 {
+  width: 212px;
+}
+

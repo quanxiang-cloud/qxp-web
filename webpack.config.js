@@ -10,12 +10,13 @@ const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 // env: 'production' | 'development';
 module.exports = function (env) {
   const NODE_ENV = process.env.NODE_ENV || env.mode || 'production';
+  const isDev = NODE_ENV === 'development';
 
   return {
     mode: NODE_ENV ? NODE_ENV : 'production',
-    watch: NODE_ENV === 'development',
+    watch: isDev,
     bail: NODE_ENV !== 'development',
-    devtool: NODE_ENV === 'development' ? 'source-map': false,
+    devtool: isDev ? 'cheap-module-source-map': false,
 
     entry: {
       portal: './clients/portal/index.tsx',
@@ -35,7 +36,7 @@ module.exports = function (env) {
 
     resolve: {
       // Add '.ts' and '.tsx' as resolvable extensions.
-      extensions: ['.ts', '.tsx', '.js', '.jsx'],
+      extensions: ['.ts', '.tsx', '.js', '.jsx', ".css", ".scss"],
       plugins: [new TsconfigPathsPlugin()],
     },
 
@@ -74,7 +75,7 @@ module.exports = function (env) {
     },
 
     optimization: {
-      // minimize: true,
+      minimize: !isDev,
       minimizer: [
         new CssMinimizerPlugin(),
         new TerserPlugin(),

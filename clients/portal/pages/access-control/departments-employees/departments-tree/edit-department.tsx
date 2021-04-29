@@ -1,8 +1,9 @@
 import React, { createRef, useState } from 'react';
 import { useQuery, useQueryClient } from 'react-query';
-import { Modal, Form } from '@QCFE/lego-ui';
+import { Form } from '@QCFE/lego-ui';
 
 import Button from '@c/button';
+import Modal from '@c/modal';
 import DepartmentPicker from '@c/form/input/tree-picker-field';
 import Loading from '@c/loading';
 import toast from '@lib/toast';
@@ -108,11 +109,9 @@ export default function EditDepartment({ department, closeModal }: Props) {
 
   return (
     <Modal
-      visible
-      appendToBody
       title={title}
       className="static-modal"
-      onCancel={closeModal}
+      onClose={closeModal}
       footer={
         (<div className="flex items-center">
           <Button
