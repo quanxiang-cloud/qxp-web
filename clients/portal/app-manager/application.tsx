@@ -8,6 +8,14 @@ import GlobalHeader from './components/global-header';
 import stores from './stores';
 import routers from './routers';
 
+import MsgStores from '../stores';
+
+// todo delete this
+const allStores = {
+  ...stores,
+  ...MsgStores,
+};
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -19,7 +27,7 @@ const queryClient = new QueryClient({
 
 function App() {
   return (
-    <Provider {...stores}>
+    <Provider {...allStores}>
       <QueryClientProvider client={queryClient}>
         <div className="min-h-screen bg-5976e01a">
           <BrowserRouter>
