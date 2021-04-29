@@ -221,7 +221,7 @@ export default class FormBuilderStore {
       return;
     }
 
-    this.fields.splice(index, 0, newField);
+    this.fields.splice(index + 1, 0, newField);
     this.hasEdit = true;
   }
 
