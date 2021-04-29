@@ -1,6 +1,6 @@
 $select-min-width: 90px;
 $select-max-width: 500px;
-$select-option-height: 28px;
+$select-option-height: 36px;
 
 @include block(select-options) {
   padding: 16px 0;
@@ -54,6 +54,11 @@ $select-option-height: 28px;
 
   &:hover {
     background-color: var(--gray-100);
+  }
+
+  @include modifier(selected) {
+    // todo rename to primary color
+    color: var(--blue-600);
   }
 
   @include modifier(disabled) {

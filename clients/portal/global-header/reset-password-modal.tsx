@@ -1,8 +1,8 @@
 import React, { useState, FocusEvent, useRef } from 'react';
-import { Modal } from '@QCFE/lego-ui';
 import { useMutation } from 'react-query';
 
 import Button from '@c/button';
+import Modal from '@c/modal';
 import { userResetPassword } from '@lib/api/auth';
 import PassWordField from '@c/form/input/password-field';
 import Form, { FormRef } from '@c/form';
@@ -47,15 +47,18 @@ export default function ResetPasswordModal({ visible, onCancel }: Props) {
     };
   }
 
+  if(!visible){
+    return null;
+  }
+
   return (
     <Modal
       title="重置密码"
-      onCancel={onCancel}
-      visible={visible}
-      bodyStyle={{
-        width: '632px',
-        maxWidth: '100%',
-      }}
+      onClose={onCancel}
+      // bodyStyle={{
+      //   width: '632px',
+      //   maxWidth: '100%',
+      // }}
       footer={
         (<div className="flex flex-row justify-between items-center">
           <Button

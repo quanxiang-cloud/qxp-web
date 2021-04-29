@@ -1,9 +1,9 @@
 import React from 'react';
 import { useMutation, useQueryClient } from 'react-query';
-import { Modal } from '@QCFE/lego-ui';
 
 import Icon from '@c/icon';
 import Button from '@c/button';
+import Modal from '@c/modal';
 import toast from '@lib/toast';
 
 import { LeaderStatus } from '../type';
@@ -45,10 +45,9 @@ export default function LeaderHandleModal({ user, closeModal }: Props) {
 
   return (
     <Modal
-      visible
       title={`${title}主管`}
       className='static-modal'
-      onCancel={closeModal}
+      onClose={closeModal}
       footer={
         (<div className="flex items-center">
           <Button

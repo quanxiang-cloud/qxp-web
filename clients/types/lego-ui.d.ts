@@ -235,4 +235,23 @@ declare module '@QCFE/lego-ui' {
     validateOnBlur?: boolean;
     maxLength?: number;
   }
+
+  export interface BadgeProps {
+    count?: number;
+    children?: React.ReactNode;
+    overflowCount?: number;
+    status?: 'default' | 'success' | 'error' | 'warning' | 'white';
+    type?: 'default' | 'collection' | 'dot';
+    style?: Record<string, unknown>,
+    text?: string,
+    className?: string,
+
+  }
+  class Badge extends React.Component<BadgeProps, {}> {}
+
+  interface BreadcrumbProps {
+    className?: string;
+  }
+  class Breadcrumb extends React.Component<BreadcrumbProps, {}> {}
+  // Breadcrumb.BreadcrumbItem
 }

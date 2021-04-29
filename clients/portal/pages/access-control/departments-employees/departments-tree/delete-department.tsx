@@ -1,7 +1,7 @@
 import React from 'react';
-import { Modal } from '@QCFE/lego-ui';
 
 import Button from '@c/button';
+import Modal from '@c/modal';
 import toast from '@lib/toast';
 import { NodeRenderProps } from '@c/headless-tree/types';
 
@@ -27,11 +27,9 @@ export default function DeleteModal({ node, store, closeModal }: Props) {
 
   return (
     <Modal
-      visible
-      appendToBody
       title="删除"
       className="static-modal"
-      onCancel={closeModal}
+      onClose={closeModal}
       footer={
         (<div className="flex items-center">
           <Button
