@@ -102,8 +102,9 @@ body {
 ////////////////// background /////////////////////////
 .header-background-image {
   position: relative;
+  z-index: 1;
 
-  &::after {
+  &::before {
     content: '';
     background-image: url('/dist/images/maskHeaderBackgroundImage.png');
     background-position: top right;
@@ -115,7 +116,7 @@ body {
     bottom: 0;
     right: 0;
     position: absolute;
-    //z-index: -1;
+    z-index: -1;
   }
 }
 

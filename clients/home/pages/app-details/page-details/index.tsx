@@ -14,6 +14,11 @@ function PageDetails() {
   const { curPage, fetchSchemeLoading, formScheme } = store;
   const [showCreateForm, setShowCreateForm] = useState(false);
 
+  const goBack = () => {
+    appDataStore.curItemFormData = null;
+    setShowCreateForm(false);
+  };
+
   useEffect(() => {
     appDataStore.setCreateFun(() => setShowCreateForm(true));
     appDataStore.allowRequestData = true;
@@ -23,7 +28,7 @@ function PageDetails() {
     return (
       <CreateDataForm
         defaultValues={appDataStore.curItemFormData}
-        goBack={() => setShowCreateForm(false)}
+        goBack={goBack}
       />
     );
   }

@@ -18,19 +18,21 @@ function FieldSort({ showOnChange, fieldList, sortChange }: Props) {
     return sortTmp;
   }, [fieldList]);
 
-  const renderList = (lists: PageField[]) => lists.map((field: PageField) => (
-    <div className="page-field-sort-item" key={field.id} data-id={field.id}>
-      {field.label}
-      <div className='page-field-sort-action'>
-        <Checkbox
-          value={field.id}
-          checked={field.visible}
-          onChange={showOnChange}
-        />
-        <Icon className='page-field-drag ml-22' clickable changeable name="drag_indicator" />
+  const renderList = (lists: PageField[]) => lists.map((field: PageField) => {
+    return (
+      <div className="page-field-sort-item" key={field.id} data-id={field.id}>
+        {field.label}
+        <div className='page-field-sort-action'>
+          <Checkbox
+            value={field.id}
+            checked={field.visible}
+            onChange={showOnChange}
+          />
+          <Icon className='page-field-drag ml-22' clickable changeable name="drag_indicator" />
+        </div>
       </div>
-    </div>
-  ));
+    );
+  });
 
   return (
     <div>

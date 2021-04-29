@@ -6,6 +6,7 @@ import toast from '@lib/toast';
 
 class AppPageDataStore {
   destroyFetchTableData: IReactionDisposer;
+  destroySetTableConfig: IReactionDisposer;
   @observable tableConfig: any = {};
   @observable noFiltratesTips: React.ReactNode = '尚未配置筛选条件。'
   @observable listLoading = false;
@@ -26,6 +27,9 @@ class AppPageDataStore {
 
   constructor() {
     this.destroyFetchTableData = reaction(() => this.params, this.fetchFormDataList);
+    this.destroySetTableConfig = reaction(() => {
+      return { size: this.pageSize };
+    }, this.setParams);
   }
 
   @computed get order(): any {
@@ -91,6 +95,9 @@ class AppPageDataStore {
 
   @action
   fetchFormDataList = (params: any) => {
+    if (!this.allowRequestData) {
+      return;
+    }
     this.listLoading = true;
     formDataCurd(this.tableID, {
       method: 'find',

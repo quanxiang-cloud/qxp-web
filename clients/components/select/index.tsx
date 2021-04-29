@@ -130,6 +130,12 @@ export default class Select<T extends React.Key> extends React.Component<SelectP
     };
   }
 
+  componentDidUpdate(preProps: SelectProps<T>) {
+    if (preProps.value !== this.props.value) {
+      this.setState({ selectedValue: this.props.value });
+    }
+  }
+
   getTriggerWidth(): number {
     const rects = this.triggerContentRef.current?.parentElement?.getClientRects();
     if (!rects || !rects.length) {
@@ -279,7 +285,7 @@ export default class Select<T extends React.Key> extends React.Component<SelectP
               <div className="select-trigger__content" ref={this.triggerContentRef}>
                 {triggerRender ? this.renderCustomTrigger() : this.renderDefaultTrigger()}
               </div>
-              <Icon name="chevron-down" style={arrowStyle} className="trigger-arrow-icon" />
+              <Icon name="expand_more" style={arrowStyle} className="trigger-arrow-icon" />
             </div>
           )
         }

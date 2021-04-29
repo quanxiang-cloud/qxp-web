@@ -48,6 +48,7 @@ class UserAppStore {
 
   @action
   setCurPage = (pageInfo: PageInfo) => {
+    this.formScheme = null;
     if (pageInfo.id) {
       this.fetchSchemeLoading = true;
       fetchFormScheme(pageInfo.id).then((res: any) => {
@@ -58,8 +59,6 @@ class UserAppStore {
       }).catch(() => {
         this.fetchSchemeLoading = false;
       });
-    } else {
-      this.formScheme = null;
     }
 
     this.curPage = pageInfo;
@@ -80,6 +79,7 @@ class UserAppStore {
   clear = () => {
     this.formScheme = null;
     this.treeStore = null;
+    this.curPage = {};
   }
 }
 

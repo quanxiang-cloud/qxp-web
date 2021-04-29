@@ -24,7 +24,7 @@ export default function HeaderLeft() {
     return {};
   }
 
-  const isHome = location.pathname === '/apps';
+  const isHome = location.pathname === '/';
 
   return (
     <div className="flex items-center flex-2">

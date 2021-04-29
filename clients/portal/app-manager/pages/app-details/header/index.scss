@@ -28,12 +28,14 @@
   width: 298px;
 }
 
-.app-global-header-drop-more {
+.app-details-header-drop-more {
+  max-height: 600px;
+  overflow-y: auto;
   left: 0;
   right: auto!important;
 }
 
-.app-global-header-cur-app {
+.app-details-header-cur-app {
   max-width: 250px;
   white-space: nowrap;
   font-weight: 600;

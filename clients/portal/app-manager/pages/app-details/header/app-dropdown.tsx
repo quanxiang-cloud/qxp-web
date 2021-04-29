@@ -44,8 +44,8 @@ function AppDropdown({ appListStore, appDetails }: Props) {
   const { bgColor, iconName } = (appIcon ? JSON.parse(appIcon) : {}) as AppIconInfo;
 
   return (
-    <More contentClassName='app-global-header-drop-more' items={appListItems}>
-      <div className='flex items-center cursor-pointer app-global-header-cur-app'>
+    <More className='aa' contentClassName='app-details-header-drop-more' items={appListItems}>
+      <div className='flex items-center cursor-pointer app-details-header-cur-app'>
         <AppIcon className='mr-8' size={32} themeColor={bgColor} iconName={iconName} />
         <span className='text-overflow-1'>{appName}</span>
         <span className='ml-6 text-gray-500 mr-4'>({useStatus > 0 ? '已发布' : '未发布'})</span>

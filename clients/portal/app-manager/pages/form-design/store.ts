@@ -36,7 +36,9 @@ class FormDesignStore {
 
   @computed get fieldList(): PageField[] {
     const fieldsMap = this.formStore?.schema?.properties || {};
-    return Object.keys(fieldsMap).map((key: string, index: number) => {
+    return Object.keys(fieldsMap).filter((_key: string) => {
+      return _key !== '_id';
+    }).map((key: string, index: number) => {
       return {
         id: key,
         label: fieldsMap[key].title || '',
@@ -52,7 +54,7 @@ class FormDesignStore {
   constructor() {
     this.destroyFetchScheme = reaction(() => this.pageID, this.fetchFormScheme);
 
-    this.destroySetAllFiltrate = reaction(() => this.fieldList.length, ()=>{
+    this.destroySetAllFiltrate = reaction(() => this.fieldList.length, () => {
       if (!this.formStore) {
         return;
       }
@@ -84,11 +86,13 @@ class FormDesignStore {
         return a.sort - b.sort;
       }).forEach((field) => {
         if (field.visible) {
+          const isFixed = fixedColumnIndex.includes(recordColNum);
           column.push({
             id: field.id,
             Header: field.label,
             accessor: field.id,
-            fixed: fixedColumnIndex.includes(recordColNum),
+            fixed: isFixed,
+            width: isFixed ? 150 : 0,
           });
           recordColNum += 1;
         }

@@ -61,13 +61,12 @@ const SORT_OPTION = [
 const PAGE_SIZE_OPTION = [
   { label: '10条/页', value: 10 },
   { label: '20条/页', value: 20 },
-  { label: '30条/页', value: 30 },
   { label: '50条/页', value: 50 },
   { label: '100条/页', value: 100 },
-  { label: '200条/页', value: 200 },
 ];
 
 const FIXED_RULE_OPTION = [
+  { label: '无固定列', value: '' },
   { label: '固定首列', value: 'one' },
   { label: '固定前两列', value: 'previous_two' },
 ];

@@ -48,8 +48,8 @@ function AppDropdown() {
   const { bgColor, iconName } = (appIcon ? JSON.parse(appIcon) : {}) as AppIconInfo;
 
   return (
-    <More contentClassName='app-global-header-drop-more' items={appListItems}>
-      <div className='flex items-center cursor-pointer app-global-header-cur-app'>
+    <More contentClassName='app-details-header-drop-more' items={appListItems}>
+      <div className='flex items-center cursor-pointer app-details-header-cur-app'>
         <AppIcon className='mr-8' size={32} themeColor={bgColor} iconName={iconName} />
         <span className='text-overflow-1'>{appName}</span>
         <Icon style={{ minWidth: '20px' }} name='expand_more' size={20} />

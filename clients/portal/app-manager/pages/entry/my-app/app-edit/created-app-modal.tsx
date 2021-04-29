@@ -19,7 +19,7 @@ function CreatedAppModal({ onCancel, appListStore }: Props) {
     if (formDom.validateFields()) {
       const data = formDom.getFieldsValue();
       data.appIcon = JSON.stringify(data.appIcon);
-      appListStore.createdApp(data).then(() => {
+      appListStore.createdApp({ ...data, useStatus: -1 }).then(() => {
         Message.success({ content: '创建应用成功！' });
         onCancel();
       });

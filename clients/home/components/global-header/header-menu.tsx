@@ -25,7 +25,7 @@ export default function HeaderMenu() {
           />
         </div>
         <span className="header-nav-btn-text group-hover:text-blue-600">
-              帮助文档
+          帮助文档
         </span>
       </div>
       <div className="header-nav-btn group">

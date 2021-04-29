@@ -291,11 +291,13 @@ export function getPageDataSchema(config: any, schema: any, pageID: string) {
       'visible' in pageTableConfig[key] : false;
 
     if (key !== '_id' && ((hasVisible && pageTableConfig[key].visible) || !hasVisible)) {
+      const isFixed = fixedColumnIndex.includes(recordColNum);
       tableColumns.push({
         id: key,
         Header: fieldsMap[key].title || '',
         accessor: (data: any) => getTableCellData(data[key], fieldsMap[key]),
-        fixed: fixedColumnIndex.includes(recordColNum),
+        fixed: isFixed,
+        width: isFixed && 150,
       });
       recordColNum += 1;
     }
