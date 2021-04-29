@@ -88,7 +88,7 @@ function FormFieldConfig(): JSX.Element {
 
   if (!store.activeField) {
     return (
-      <span>请选择</span>
+      <span>前选择表单字段</span>
     );
   }
 
