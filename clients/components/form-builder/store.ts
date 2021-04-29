@@ -22,22 +22,22 @@ const INTERNAL_FIELDS: Array<FormItem> = [
     configValue: { displayModifier: 'hidden', title: 'id' },
   },
   {
-    fieldName: '_created_time',
+    fieldName: 'created_at',
     componentName: 'DatePicker',
     configValue: { displayModifier: 'hidden', title: '创建时间' },
   },
   {
-    fieldName: '_updated_time',
+    fieldName: 'updated_at',
     componentName: 'DatePicker',
     configValue: { displayModifier: 'hidden', title: '修改时间' },
   },
   {
-    fieldName: '_created_by',
+    fieldName: 'creator_name',
     componentName: 'Input',
     configValue: { displayModifier: 'hidden', title: '创建者' },
   },
   {
-    fieldName: '_updated_by',
+    fieldName: 'modifier_name',
     componentName: 'Input',
     configValue: { displayModifier: 'hidden', title: '修改者' },
   },

@@ -14,7 +14,7 @@ function AppDetails() {
     return () => {
       store.clear();
     };
-  }, []);
+  }, [appID]);
 
   return (
     <div className='flex flex-col h-screen'>

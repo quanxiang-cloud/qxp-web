@@ -28,6 +28,10 @@ function DetailsHeader({ appDetailsStore }: DetailsHeaderProps) {
     history.push(`/apps/details/${appDetailsStore.appDetails.id}/setting/info`);
   };
 
+  const goAppVisit = () => {
+    window.location.href = '//home.qxp.localhost/appDetails/' + appId;
+  };
+
   const statusTipsContent = (isPublish: boolean) => {
     if (isPublish) {
       return (
@@ -52,7 +56,14 @@ function DetailsHeader({ appDetailsStore }: DetailsHeaderProps) {
   return (
     <div className="app-global-header app-details-header">
       <div className='flex items-center'>
-        <NavButton {...{ name: '应用管理', icon: 'dashboard_customize', inside: true, url: '/apps/list' }} />
+        <NavButton
+          {...{
+            name: '应用管理',
+            icon: 'dashboard_customize',
+            inside: true,
+            url: '/apps/list',
+          }}
+        />
         <span className='mr-16 ml-8'>/</span>
         <AppDropdown appDetails={appDetailsStore.appDetails} />
       </div>
@@ -71,9 +82,9 @@ function DetailsHeader({ appDetailsStore }: DetailsHeaderProps) {
           </PopConfirm>
         )}
         <hr className='app-global-header-hr' />
-        {/* <Button className='mr-16' iconName='login'>
+        <Button onClick={goAppVisit} className='mr-16' iconName='login'>
           进入应用访问
-        </Button> */}
+        </Button>
         <Button
           onClick={goAppSetting}
           iconName='settings'

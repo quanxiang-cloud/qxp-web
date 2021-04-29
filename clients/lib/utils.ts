@@ -1,4 +1,5 @@
 import { TreeNode } from '@c/headless-tree/types';
+import moment from 'moment';
 import { getFilterField } from '@portal/app-manager/pages/form-design/utils';
 import appPageDataStore from '@appC/app-page-data/store';
 
@@ -269,7 +270,12 @@ export function getPageDataSchema(config: any, schema: any, pageID: string) {
       tableColumns.push({
         id: key,
         Header: fieldsMap[key].title || '',
-        accessor: key,
+        accessor: (data:any) => {
+          if (moment(data[key]).isValid()) {
+            return moment(data[key]).format('YYYY-MM-DD HH:mm:ss');
+          }
+          return data[key];
+        },
         fixed: fixedColumnIndex.includes(recordColNum),
       });
       recordColNum += 1;

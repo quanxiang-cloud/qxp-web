@@ -22,6 +22,10 @@ function AppSetting({ appDetailsStore }: Props) {
   const { appId } = useParams<any>();
   const history = useHistory();
 
+  const goBack = () => {
+    history.push('/apps/details/' + appId);
+  };
+
   const MENU = [
     {
       id: 'info',
@@ -46,7 +50,7 @@ function AppSetting({ appDetailsStore }: Props) {
           <Breadcrumb.Item>
             <a>
               <Icon size={23} name='reply' />
-              <span onClick={() => history.goBack()}>{appDetailsStore.appDetails.appName}</span>
+              <span onClick={goBack}>{appDetailsStore.appDetails.appName}</span>
             </a>
           </Breadcrumb.Item>
           <Breadcrumb.Item>
