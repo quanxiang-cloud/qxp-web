@@ -112,6 +112,14 @@ export const createGroup = (data: any) => {
   });
 };
 
+export const updateGroup = (data: any) => {
+  return request({
+    url: '/api/v1/structor/menu/update',
+    method: 'post',
+    data,
+  });
+};
+
 export const deleteGroup = (data: any) => {
   return request({
     url: '/api/v1/structor/group/delete',
