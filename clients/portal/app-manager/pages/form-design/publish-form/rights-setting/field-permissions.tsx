@@ -30,6 +30,9 @@ function FieldPermissions({ rightsID }: Props) {
         const visibleList: string[] = [];
         const revisableList: string[] = [];
         fieldList.forEach((field) => {
+          if (!schema.properties[field.id]) {
+            return;
+          }
           switch (schema.properties[field.id]['x-internal'].permission) {
           case 3:
             visibleList.push(field.id);

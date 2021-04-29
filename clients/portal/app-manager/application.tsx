@@ -1,10 +1,13 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'mobx-react';
 import { QueryClient, QueryClientProvider } from 'react-query';
+import { isEmpty } from 'lodash';
+
+import { usePortalGlobalValue } from '@portal/states_to_be_delete/portal';
+import { getNestedPropertyToArray } from '@lib/utils';
 
 import GlobalHeader from './components/global-header';
-
 import stores from './stores';
 import routers from './routers';
 
@@ -17,7 +20,25 @@ const queryClient = new QueryClient({
   },
 });
 
+const { USER } = window;
+if (USER && !isEmpty(USER)) {
+  USER.depIds = getNestedPropertyToArray<string>(USER?.dep, 'id', 'child');
+}
+
 function App() {
+  const [_, setValue] = usePortalGlobalValue();
+
+  useEffect(() => {
+    setValue((val) => ({
+      ...val,
+      userInfo: {
+        ...USER,
+        depIds: USER?.depIds || [],
+        authority: window.ADMIN_USER_FUNC_TAGS || [],
+        roles: window.USER_ADMIN_ROLES || [],
+      },
+    }));
+  }, []);
   return (
     <Provider {...stores}>
       <QueryClientProvider client={queryClient}>

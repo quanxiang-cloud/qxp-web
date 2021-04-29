@@ -104,12 +104,18 @@ export default function DataPermission({ rightsID }: Props) {
   const handleSave = (formData: any) => {
     const _conditions = conditions.map((condition) => {
       let value = formData[`condition-${condition.id}`];
-      if (condition.filtrate.type === 'date') {
+      switch (condition.filtrate.type) {
+      case 'date':
         value = isArray(value) ? value.map((date: string) => {
           return new Date(date).getTime();
         }) : [new Date(value).getTime()];
-      } else {
+        break;
+      case 'number':
+        value = isArray(value) ? value.map((_value) => Number(_value)) : [Number(value)];
+        break;
+      default:
         value = isArray(value) ? value : [value];
+        break;
       }
 
       return {

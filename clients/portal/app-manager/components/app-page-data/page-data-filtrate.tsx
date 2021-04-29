@@ -22,20 +22,29 @@ function PageDataFiltrate() {
     const values = filterDom.current.getValues();
     Object.keys(values).map((key) => {
       const curFiltrate = store.filtrates.find(({ id }) => id === key);
-      if (values[key]) {
-        if (curFiltrate?.type === 'date_range') {
-          const { start, end } = values[key];
-          values[key] = [moment(start).format(), moment(end).format()];
-        } else if (curFiltrate?.type === 'date') {
-          values[key] = [moment(values[key]).format()];
-        } else {
-          values[key] = [values[key]];
-        }
-      } else {
-        values[key] = [];
+      if (!values[key]) {
+        return;
       }
+
+      switch (curFiltrate?.type) {
+      case 'date_range':
+        const { start, end } = values[key];
+        values[key] = [moment(start).format(), moment(end).format()];
+        break;
+      case 'date':
+        values[key] = [moment(values[key]).format()];
+        break;
+      case 'number':
+        values[key] = [Number(values[key])];
+        break;
+      default:
+        values[key] = [values[key]];
+        break;
+      }
+
       condition.push({ key, op: 'like', value: values[key] });
     });
+
     store.setParams({ condition });
   };
 
