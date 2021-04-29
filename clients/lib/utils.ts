@@ -216,7 +216,7 @@ export const last = <T>(arg: T[]) => {
 };
 
 export function isPassword(pwd: string) {
-  return /^(?=.*\d)(?=.*[a-zA-Z])(?=.*[~!@#$%^&*.\(\)\-\+\[\]\|\"\'])[\da-zA-Z~!@#$%^&*.\(\)\-\+\[\]\|\"\']{8,}$/.test(pwd);
+  return /^(?=.*\d)(?=.*[a-zA-Z])(?=.*[~!@#$%^&*.\(\)\-\+\[\]\|\"\'\_])[\da-zA-Z~!@#$%^&*.\(\)\-\+\[\]\|\"\'\_]{8,}$/.test(pwd);
 }
 
 export function getPageTreeData(pageList: any[], root: any, level = 1) {

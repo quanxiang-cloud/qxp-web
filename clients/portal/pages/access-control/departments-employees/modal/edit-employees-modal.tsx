@@ -1,10 +1,11 @@
 import React, { createRef } from 'react';
 import { useQuery, useMutation, useQueryClient } from 'react-query';
-import { Modal, Form } from '@QCFE/lego-ui';
+import { Form } from '@QCFE/lego-ui';
 
 import TreePicker from '@c/form/input/tree-picker-field';
 import Button from '@c/button';
 import Loading from '@c/loading';
+import Modal from '@c/modal';
 import { departmentToTreeNode } from '@lib/utils';
 import toast from '@lib/toast';
 
@@ -96,8 +97,7 @@ export default function EditEmployeesModal(
   return (
     <Modal
       title={`${titleText}员工`}
-      visible
-      onCancel={closeModal}
+      onClose={closeModal}
       className="static-modal"
       footer={
         (<div className="flex items-center">
