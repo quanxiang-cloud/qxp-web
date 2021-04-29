@@ -139,7 +139,7 @@ export default class FormBuilderStore {
       title: '',
       type: 'object',
       properties: properties,
-      'x-external': {
+      'x-internal': {
         version: '1.3.13',
       },
     };

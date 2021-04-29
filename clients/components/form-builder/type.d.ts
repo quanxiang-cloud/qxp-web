@@ -1,5 +1,5 @@
 type ISchema = import('@formily/react-schema-renderer').ISchema & {
-  'x-external'?: {
+  'x-internal'?: {
     version?: string;
     sortable?: boolean;
     permission?: number;
