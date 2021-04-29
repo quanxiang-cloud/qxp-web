@@ -1,3 +1,4 @@
+import React from 'react';
 import { action, observable, computed, reaction, IReactionDisposer } from 'mobx';
 
 import { formDataCurd } from '@appLib/api';
@@ -6,6 +7,7 @@ import toast from '@lib/toast';
 class AppPageDataStore {
   destroyFetchTableData: IReactionDisposer;
   @observable tableConfig: any = {};
+  @observable noFiltratesTips: React.ReactNode = '尚未配置筛选条件。'
   @observable listLoading = false;
   @observable tableID = '';
   @observable curItemFormData = null;
@@ -103,6 +105,14 @@ class AppPageDataStore {
     }).catch(() => {
       this.listLoading = false;
     });
+  }
+
+  @action
+  clear = () => {
+    this.formDataList = [];
+    this.tableConfig = {};
+    this.filtrates = [];
+    this.tableColumns = [];
   }
 }
 

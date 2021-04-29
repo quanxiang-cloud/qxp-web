@@ -4,6 +4,8 @@ import { useForm, Controller } from 'react-hook-form';
 
 import FieldSwitch from '@appC/field-switch';
 
+import store from '../store';
+
 import './index.scss';
 
 type Props = {
@@ -28,7 +30,7 @@ function FiltrateForm({ filtrates, showMoreFiltrate }: Props, ref?: React.Ref<an
           className='mr-8 inline-block'
           src='/dist/images/message_details_empty_tips.svg'
         />
-        尚未配置筛选条件。点击 配置筛选条件，便于数据查询筛选。
+        {store.noFiltratesTips}
       </div>
     );
   }

@@ -200,6 +200,9 @@ class FormDesignStore {
   clear = () => {
     this.pageID = '';
     this.formStore = null;
+    this.pageTableConfig = {};
+    this.pageTableShowRule = {};
+    this.allFiltrate = [];
   }
 
   @action

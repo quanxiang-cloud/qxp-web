@@ -246,6 +246,30 @@ export function getPageTreeData(pageList: any[], root: any, level = 1) {
   root.children = treeList;
 }
 
+function getTableCellData(initValue: any, field: any) {
+  if (field.type === 'datetime') {
+    if (Array.isArray(initValue)) {
+      return initValue.map((value: string) => {
+        return moment(value).format('YYYY-MM-DD HH:mm:ss');
+      }).join('-');
+    }
+
+    return moment(initValue).format('YYYY-MM-DD HH:mm:ss');
+  }
+
+  if (field.enum && field.enum.length) {
+    if (Array.isArray(initValue)) {
+      return initValue.map((_value: string) => {
+        return field.enum.find(({ value }: any) => value === _value)?.label || '';
+      }).join(',');
+    }
+
+    return field.enum.find(({ value }: any) => value === initValue)?.label || '';
+  }
+
+  return initValue;
+}
+
 export function getPageDataSchema(config: any, schema: any, pageID: string) {
   const { pageTableShowRule = {}, pageTableConfig, filtrate = [] } = config || {};
   const { setFiltrates, setTableConfig, setTableColumns, setTableID } = appPageDataStore;
@@ -266,16 +290,11 @@ export function getPageDataSchema(config: any, schema: any, pageID: string) {
     const hasVisible = pageTableConfig && pageTableConfig[key] ?
       'visible' in pageTableConfig[key] : false;
 
-    if ((hasVisible && pageTableConfig[key].visible) || !hasVisible) {
+    if (key !== '_id' && ((hasVisible && pageTableConfig[key].visible) || !hasVisible)) {
       tableColumns.push({
         id: key,
         Header: fieldsMap[key].title || '',
-        accessor: (data:any) => {
-          if (moment(data[key]).isValid()) {
-            return moment(data[key]).format('YYYY-MM-DD HH:mm:ss');
-          }
-          return data[key];
-        },
+        accessor: (data: any) => getTableCellData(data[key], fieldsMap[key]),
         fixed: fixedColumnIndex.includes(recordColNum),
       });
       recordColNum += 1;

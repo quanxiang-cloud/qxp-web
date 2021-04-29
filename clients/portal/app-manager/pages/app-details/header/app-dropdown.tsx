@@ -38,7 +38,7 @@ function AppDropdown({ appListStore, appDetails }: Props) {
         <AppInfoView appInfo={appInfo} />
       </div>
     ));
-  }, [appListStore.appList]);
+  }, [appListStore.appList, appDetails.id]);
 
   const { appIcon = '', useStatus, appName } = appDetails;
   const { bgColor, iconName } = (appIcon ? JSON.parse(appIcon) : {}) as AppIconInfo;
@@ -49,7 +49,7 @@ function AppDropdown({ appListStore, appDetails }: Props) {
         <AppIcon className='mr-8' size={32} themeColor={bgColor} iconName={iconName} />
         <span className='text-overflow-1'>{appName}</span>
         <span className='ml-6 text-gray-500 mr-4'>({useStatus > 0 ? '已发布' : '未发布'})</span>
-        <Icon name='expand_more' size={20} />
+        <Icon style={{ minWidth: '20px' }} name='expand_more' size={20} />
       </div>
     </More>
   );
