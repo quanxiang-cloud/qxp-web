@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { SchemaForm, FormButtonGroup } from '@formily/antd';
+import { SchemaForm, FormButtonGroup, setValidationLanguage } from '@formily/antd';
 
 import Breadcrumb from '@c/breadcrumb';
 import Icon from '@c/icon';
@@ -9,6 +9,8 @@ import toast from '@lib/toast';
 import { formDataCurd } from '../../../lib/api';
 
 import store from '../../store';
+
+setValidationLanguage('zh');
 
 type Props = {
   goBack: () => void;

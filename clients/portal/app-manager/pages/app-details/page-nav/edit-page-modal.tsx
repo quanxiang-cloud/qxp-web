@@ -107,7 +107,7 @@ function EditPageModal({ pageInfo, onCancel, onSubmit, appID }: Props) {
             },
           ]}
         />
-        {!curAppID && (
+        {!curAppID && groupList.length > 0 && (
           <SelectField
             name='groupID'
             defaultValue={groupID}

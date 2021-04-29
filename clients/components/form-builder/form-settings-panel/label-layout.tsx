@@ -52,7 +52,7 @@ function FormLabelConfig(): JSX.Element {
             {renderLayoutOption()}
           </div>
         </div>
-        <div className="pb-24">
+        {/* <div className="pb-24">
           <div className="item-title">
             表单提交校验规则:
             <Icon className='ml-2' name="info" size={18} />
@@ -61,7 +61,7 @@ function FormLabelConfig(): JSX.Element {
             <Icon className='mr-8' name='add' size={20} />
             添加表单校验规则
           </div>
-        </div>
+        </div> */}
       </div>
     </>
   );

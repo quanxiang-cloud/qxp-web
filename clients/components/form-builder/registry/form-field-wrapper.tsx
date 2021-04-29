@@ -1,6 +1,6 @@
 import React from 'react';
 import { useDrop } from 'react-dnd';
-import classnames from 'classnames';
+import cs from 'classnames';
 import { observer } from 'mobx-react';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 
@@ -8,11 +8,19 @@ import Icon from '@c/icon';
 import { StoreContext } from '../context';
 import FormBuilderStore from '../store';
 
-function renderActions(store: FormBuilderStore): JSX.Element {
+function renderActions(store: FormBuilderStore, index: number): JSX.Element {
+  const hideMoveUp = index === 0;
+  // todo refactor this
+  const hideMoveDown = index === store.fields.length - 1;
+
   return (
     <div className="absolute flex -top-16 right-16 z-10">
       <span
-        className={classnames('field-action-icon', 'mr-8')}
+        className={cs({
+          'mr-8': !hideMoveUp,
+          'field-action-icon': !hideMoveUp,
+          hidden: hideMoveUp,
+        })}
         onClick={() => {
           if (!store.activeField) {
             return;
@@ -24,7 +32,10 @@ function renderActions(store: FormBuilderStore): JSX.Element {
         <Icon name="arrow_upward" size={20} />
       </span>
       <span
-        className={classnames('field-action-icon', 'mr-8')}
+        className={cs({
+          'field-action-icon mr-8': !hideMoveDown,
+          hidden: hideMoveDown,
+        })}
         onClick={() => {
           if (!store.activeField) {
             return;
@@ -36,7 +47,7 @@ function renderActions(store: FormBuilderStore): JSX.Element {
         <Icon name="arrow_downward" size={20} />
       </span>
       <span
-        className={classnames('field-action-icon', 'mr-8')}
+        className={cs('field-action-icon', 'mr-8')}
         onClick={() => {
           if (!store.activeField) {
             return;
@@ -99,12 +110,12 @@ function InnerWrapper(props: ISchemaFieldComponentProps) {
     <div
       ref={drop}
       onClick={handleFieldClick}
-      className={classnames('relative', 'form-field-wrapper', {
+      className={cs('relative', 'form-field-wrapper', {
         'form-field-wrapper--active': active || isOver,
         'form-field-wrapper--hidden-children': childrenInvisible,
       })}
     >
-      {active && renderActions(store)}
+      {active && renderActions(store, props.props['x-index'])}
       {props.children}
     </div>
   );

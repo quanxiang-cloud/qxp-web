@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { useDrop } from 'react-dnd';
-import { createAsyncFormActions, SchemaForm } from '@formily/antd';
+import { createAsyncFormActions, SchemaForm, setValidationLanguage } from '@formily/antd';
 
 import Icon from '@c/icon';
 
@@ -10,6 +10,7 @@ import registry from './registry';
 import FormFieldWrapper from './registry/form-field-wrapper';
 
 const actions = createAsyncFormActions();
+setValidationLanguage('zh');
 
 function FormFields(): JSX.Element {
   const store = useContext(StoreContext);
