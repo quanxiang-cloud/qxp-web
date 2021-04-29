@@ -1,4 +1,11 @@
-type ISchema = import('@formily/react-schema-renderer').ISchema;
+type ISchema = import('@formily/react-schema-renderer').ISchema & {
+  'x-internal'?: {
+    version?: string;
+    sortable?: boolean;
+    permission?: number;
+    [key: string]: any;
+  };
+};
 
 type DropPosition = {
   id: string;
