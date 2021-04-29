@@ -14,10 +14,11 @@ import store from './store';
 import './index.scss';
 
 function FormDesign() {
-  const { pageType, pageId } = useParams<any>();
+  const { pageType, pageId, appID } = useParams<any>();
 
   useEffect(() => {
     store.setPageID(pageId);
+    store.appID = appID;
     return () => {
       store.clear();
     };

@@ -15,10 +15,10 @@ type Props = {
 }
 
 function PageDetails({ appPagesStore }: Props) {
-  const { curPage } = appPagesStore;
+  const { curPage, appId } = appPagesStore;
   const history = useHistory();
   const goFormBuild = () => {
-    history.push(`/apps/formDesign/formBuild/${curPage.id}?pageName=${curPage.name}`);
+    history.push(`/apps/formDesign/formBuild/${curPage.id}/${appId}?pageName=${curPage.name}`);
   };
 
   const contentRender = () => {
@@ -34,7 +34,7 @@ function PageDetails({ appPagesStore }: Props) {
       );
     }
 
-    return <PageBuildNav pageId={curPage.id} pageName={curPage.name} />;
+    return <PageBuildNav appID={appId} pageId={curPage.id} pageName={curPage.name} />;
   };
 
   if (!curPage.id) {

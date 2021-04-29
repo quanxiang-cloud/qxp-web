@@ -24,6 +24,7 @@ class FormDesignStore {
   destroySetFiltrates: IReactionDisposer;
   destroySetAllFiltrate: IReactionDisposer;
   @observable pageID = '';
+  @observable appID = '';
   @observable pageLoading = true;
   @observable formStore: any = null;
   @observable hasSchema = false;
@@ -111,6 +112,7 @@ class FormDesignStore {
       ...rights,
       sequence: this.rightsList.length,
       formID: this.pageID,
+      appID: this.appID,
     };
     return createPerGroup(_rights).then((res) => {
       this.rightsList = [...this.rightsList, { ..._rights, ...res.data }];

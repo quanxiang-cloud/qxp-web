@@ -17,10 +17,9 @@ const TABS: TabProps[] = [
 ];
 
 function FormDesignHeader() {
-  const { pageType, pageId } = useParams<any>();
+  const { pageType, pageId, appID } = useParams<any>();
   const history = useHistory();
 
-  // todo get pageName from API
   const { pageName } = parse(window.location.search);
 
   const tabChange = (tabKey: string) => {
@@ -30,7 +29,7 @@ function FormDesignHeader() {
     }
     const navType = tabKey === 'publishForm' ? '/forEmployee' : '';
     const query = pageName ? `?pageName=${pageName}` : '';
-    history.replace(`/apps/formDesign/${tabKey}/${pageId}${navType}${query}`);
+    history.replace(`/apps/formDesign/${tabKey}/${pageId}/${appID}${navType}${query}`);
   };
 
   return (
