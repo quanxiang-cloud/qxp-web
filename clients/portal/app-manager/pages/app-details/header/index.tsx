@@ -52,7 +52,7 @@ function DetailsHeader({ appDetailsStore }: DetailsHeaderProps) {
   return (
     <div className="app-global-header app-details-header">
       <div className='flex items-center'>
-        <NavButton {...{ name: '应用管理', icon: 'apps', inside: true, url: '/apps/list' }} />
+        <NavButton {...{ name: '应用管理', icon: 'dashboard_customize', inside: true, url: '/apps/list' }} />
         <span className='mr-16 ml-8'>/</span>
         <AppDropdown appDetails={appDetailsStore.appDetails} />
       </div>
