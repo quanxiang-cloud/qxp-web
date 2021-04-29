@@ -24,7 +24,7 @@ function PageDataTable() {
             >
               修改
             </span>
-            <PopConfirm content='确认删除该数据？' onOk={() => store.delFormData([data.id])} >
+            <PopConfirm content='确认删除该数据？' onOk={() => store.delFormData([data._id])} >
               <span className='text-red-600 cursor-pointer'>删除</span>
             </PopConfirm>
           </div>
@@ -70,7 +70,7 @@ function PageDataTable() {
       <Table
         showCheckbox
         emptyTips='暂无数据'
-        rowKey="id"
+        rowKey="_id"
         loading={store.listLoading}
         onSelectChange={handleSelectChange}
         columns={columns}

@@ -51,8 +51,8 @@ class UserAppStore {
     if (pageInfo.id) {
       this.fetchSchemeLoading = true;
       fetchFormScheme(pageInfo.id).then((res: any) => {
-        this.formScheme = res.data;
-        const { config, schema } = res.data;
+        this.formScheme = res.schema;
+        const { config, schema } = res.schema;
         getPageDataSchema(config, schema, pageInfo.id as string);
         this.fetchSchemeLoading = false;
       }).catch(() => {

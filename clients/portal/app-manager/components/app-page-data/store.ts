@@ -81,8 +81,8 @@ class AppPageDataStore {
     formDataCurd(this.tableID, {
       method: 'delete',
       condition: ids.map((id) => ({ key: id, op: 'eq', value: '' })),
-    }).then((res) => {
-      // this.formDataList = res.data.entities;
+    }).then(() => {
+      this.formDataList = this.formDataList.filter(({ _id }) => !ids.includes(_id));
       toast.success('删除成功!');
     });
   }

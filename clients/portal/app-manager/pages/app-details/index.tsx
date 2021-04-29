@@ -1,11 +1,18 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { inject } from 'mobx-react';
 import { Route } from 'react-router-dom';
 
 import Header from './header';
 import AppDetailsContent from './app-details-content';
 import AppSetting from './app-setting';
 
-function AppDetails() {
+function AppDetails({ appPagesStore }: any) {
+  useEffect(() => {
+    return () => {
+      appPagesStore.clear();
+    };
+  }, []);
+
   return (
     <div>
       <Header />
@@ -15,4 +22,4 @@ function AppDetails() {
   );
 }
 
-export default AppDetails;
+export default inject('appPagesStore')(AppDetails);

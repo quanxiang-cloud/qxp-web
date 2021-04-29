@@ -161,6 +161,11 @@ class AppPagesStore {
   movePage = (moveData: any) => {
     return movePage(moveData);
   }
+
+  @action
+  clear = () => {
+    this.treeStore = null;
+  }
 }
 
 export default AppPagesStore;

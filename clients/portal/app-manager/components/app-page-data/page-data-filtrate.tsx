@@ -17,9 +17,13 @@ function PageDataFiltrate() {
     const values = filterDom.current.getValues();
     Object.keys(values).map((key) => {
       const curFiltrate = store.filtrates.find(({ id }) => id === key);
+      if (curFiltrate?.type === 'date_range' && values[key] ) {
+        const { start, end } = values[key];
+        values[key] = [start, end];
+      }
       condition.push({ key, op: curFiltrate?.compareSymbol || 'like', value: values[key] });
     });
-    console.log(condition);
+    store.setParams({ condition });
   };
 
   const reset = () => {

@@ -20,10 +20,27 @@ function CreateDataForm({ goBack, defaultValues }: Props) {
 
   const handleSubmit = (formData: any) => {
     setLoading(true);
-    formDataCurd(store.curPage.id as string, {
-      method: 'create',
-      entity: formData,
-    }).then(() => {
+    let reqData = {};
+    if (defaultValues) {
+      reqData = {
+        method: 'update#set',
+        entity: formData,
+        condition: [
+          {
+            key: defaultValues._id,
+            op: 'op',
+            value: '',
+          },
+        ],
+      };
+    } else {
+      reqData = {
+        method: 'create',
+        entity: formData,
+      };
+    }
+
+    formDataCurd(store.curPage.id as string, reqData).then(() => {
       toast.success('提交成功');
       goBack();
     }).catch(() => {

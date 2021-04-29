@@ -71,9 +71,9 @@ function DetailsHeader({ appDetailsStore }: DetailsHeaderProps) {
           </PopConfirm>
         )}
         <hr className='app-global-header-hr' />
-        <Button className='mr-16' iconName='login'>
+        {/* <Button className='mr-16' iconName='login'>
           进入应用访问
-        </Button>
+        </Button> */}
         <Button
           onClick={goAppSetting}
           iconName='settings'

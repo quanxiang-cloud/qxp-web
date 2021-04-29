@@ -1,8 +1,7 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
 
-import IndexHeader from './index-header';
-import './index.scss';
+import IndexGlobalHeader from '@portal/global-header';
 
 const HEADER_LIST = [
   { key: 'none', urls: ['/apps/formDesign', '/apps/details'] },
@@ -25,7 +24,7 @@ function GlobalHeader() {
     return null;
 
   default:
-    return (<IndexHeader />);
+    return (<IndexGlobalHeader />);
   }
 }
 
