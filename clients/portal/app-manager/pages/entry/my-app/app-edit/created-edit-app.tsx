@@ -25,6 +25,10 @@ function CreatedEditApp({ appInfo }: Props, ref?: React.ForwardedRef<Form>): JSX
             help: '请输入应用名称',
             rule: { required: true },
           },
+          {
+            help: '不超过 30 个字符',
+            rule: { maxLength: 30 },
+          },
         ]}
       />
       <AppIconPickerField
