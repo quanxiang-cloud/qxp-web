@@ -11,7 +11,7 @@ export const fetchUserList = () => {
 export const fetchPageList = (appID: string) => {
   return request({
     method: 'post',
-    url: '/api/v1/structor/menu/list',
+    url: '/api/v1/structor/menu/user/list',
     data: { appID },
   });
 };

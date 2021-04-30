@@ -41,3 +41,9 @@ type FilterField = {
   precision?: number;
   enum?: EnumItem[];
 }
+
+type Condition = {
+  key?: string;
+  op?: string;
+  value?: any;
+}

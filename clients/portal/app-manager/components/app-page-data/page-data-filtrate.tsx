@@ -26,23 +26,29 @@ function PageDataFiltrate() {
         return;
       }
 
+      const _condition: Condition = { key };
+
       switch (curFiltrate?.type) {
       case 'date_range':
         const { start, end } = values[key];
-        values[key] = [moment(start).format(), moment(end).format()];
+        _condition.value = [moment(start).format(), moment(end).format()];
+        _condition.op = 'range';
         break;
       case 'date':
-        values[key] = [moment(values[key]).format()];
+        _condition.value = [moment(values[key]).format()];
+        _condition.op = 'range';
         break;
       case 'number':
-        values[key] = [Number(values[key])];
+        _condition.value = [Number(values[key])];
+        _condition.op = curFiltrate.compareSymbol;
         break;
       default:
-        values[key] = [values[key]];
+        _condition.value = [values[key]];
+        _condition.op = 'like';
         break;
       }
 
-      condition.push({ key, op: 'like', value: values[key] });
+      condition.push(_condition);
     });
 
     store.setParams({ condition });

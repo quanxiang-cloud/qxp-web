@@ -23,7 +23,8 @@
   }
 }
 
-.pb-form-right-user,.pb-form-right-dep {
+.pb-form-right-user, .pb-form-right-dep {
+  max-width: 150px;
   position: relative;
   display: flex;
   align-items: center;
@@ -39,6 +40,7 @@
     align-items: center;
     width: 24px;
     height: 24px;
+    min-width: 24px;
     margin-right: 8px;
   }
 }

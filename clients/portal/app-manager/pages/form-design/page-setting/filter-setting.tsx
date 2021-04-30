@@ -83,15 +83,15 @@ function FilterSetting() {
           options={[
             {
               label: '大于',
-              value: '>',
+              value: 'gt',
             },
             {
               label: '小于',
-              value: '<',
+              value: 'lt',
             },
             {
               label: '等于',
-              value: '=',
+              value: 'eq',
             },
           ]}
           value={field.option?.compareSymbol}
