@@ -15,7 +15,7 @@ type Props = {
 
 function RightSetting({ rights }: Props) {
   return (
-    <div className='p-20'>
+    <div className='p-20 h-full'>
       <Tab
         className="mt-4 py-16"
         contentClassName="rounded-12 rounded-tl-none"
