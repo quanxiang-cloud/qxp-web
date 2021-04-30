@@ -1,4 +1,5 @@
 module.exports = {
+  current: 'currentColor',
   black: {
     50: 'var(--black-50)',
     100: 'var(--black-100)',
