@@ -47,7 +47,7 @@ export default function HeaderLeft() {
       <a
         href='/'
         className={twCascade(
-          'header-nav-btn group mr-12',
+          'header-nav-btn group mr-20',
           className(isHome)
         )}
       >

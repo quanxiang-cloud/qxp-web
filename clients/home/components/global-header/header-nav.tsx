@@ -31,7 +31,7 @@ export default function HeaderLeft() {
       <Link
         to="/"
         className={twCascade(
-          'header-nav-btn group mr-12',
+          'header-nav-btn group mr-20',
           className(isHome)
         )}
       >
