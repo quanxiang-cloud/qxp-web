@@ -2,6 +2,19 @@ html {
   overflow: auto;
 }
 
+.max-w-screen {
+  max-width: 1440px;
+}
+
+.text-btn {
+  cursor: pointer;
+  color: #375FF3;
+}
+
+.text-btn:hover {
+  color: #254ee6;
+}
+
 .app-manager-height {
   height: calc(100vh - 64px);
 }
@@ -13,7 +26,7 @@ html {
 .app-no-data {
   text-align: center;
   width: 100%;
-  
+
   img {
     margin: 0 auto 16px;
     display: block;
