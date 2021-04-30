@@ -230,6 +230,7 @@ const MsgTable = ({ msgMgmt: store, refresh }: Props & Pick<MobxStores, 'msgMgmt
       title: (
         <Select
           value={status}
+          defaultValue={status}
           options={MessageStatus}
           onChange={setStatus}
         >
@@ -250,6 +251,7 @@ const MsgTable = ({ msgMgmt: store, refresh }: Props & Pick<MobxStores, 'msgMgmt
       title: (
         <Select
           value={messageType}
+          defaultValue={messageType}
           options={EnumMessage}
           onChange={setMessageType}
         >
@@ -383,21 +385,21 @@ const MsgTable = ({ msgMgmt: store, refresh }: Props & Pick<MobxStores, 'msgMgmt
         )}
       />)}
 
-      {previewInfo.visible && <ModalContent
+      {previewInfo.visible && (<ModalContent
         handleClose={handleClose}
         confirmSend={debounce(confirmSend, 1000)}
         data={previewData}
         status={previewInfo.status}
-      />}
+      />)}
       {modifyModal.visible &&
-        <Modal
+        (<Modal
           width={1324}
           title="修改草稿"
           onClose={handleModifyModalClose}
           footer={(
             <>
               <Button
-                onClick={debounce(saveDraft, 1000, {leading: true})}
+                onClick={debounce(saveDraft, 1000, { leading: true })}
                 iconName="book"
                 className='mr-20'
               >
@@ -425,7 +427,7 @@ const MsgTable = ({ msgMgmt: store, refresh }: Props & Pick<MobxStores, 'msgMgmt
             ref={sendMessageRef}
             footer={() => null}
           />)}
-        </Modal>
+        </Modal>)
       }
       {modalInfo.visible && (
         <Modal
