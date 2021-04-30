@@ -30,7 +30,7 @@ function CreateDataForm({ goBack, defaultValues }: Props) {
         condition: [
           {
             key: '_id',
-            op: 'op',
+            op: 'eq',
             value: [defaultValues._id],
           },
         ],

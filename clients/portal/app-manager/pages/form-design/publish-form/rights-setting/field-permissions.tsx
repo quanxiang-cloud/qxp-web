@@ -38,7 +38,7 @@ function FieldPermissions({ rightsID }: Props) {
             visibleList.push(field.id);
             revisableList.push(field.id);
             break;
-          case 2:
+          case 1:
             visibleList.push(field.id);
             break;
           }
@@ -133,7 +133,7 @@ function FieldPermissions({ rightsID }: Props) {
         _id: {
           title: '_id',
           'x-internal': {
-            permission: 2,
+            permission: 1,
           },
         },
       },
@@ -145,11 +145,11 @@ function FieldPermissions({ rightsID }: Props) {
     fieldList.forEach((field) => {
       const visible = visibleField.includes(field.id);
       const revisable = revisableField.includes(field.id);
-      const permissions = [visible ? 1 : 0, revisable ? 1 : 0].join('');
+      const permissions = (visible ? 1 : 0) | (revisable ? 10 : 0);
       schema.properties[field.id] = {
         title: field.label,
         'x-internal': {
-          permission: parseInt(permissions, 2),
+          permission: parseInt(permissions.toString(), 2),
         },
       };
     });
