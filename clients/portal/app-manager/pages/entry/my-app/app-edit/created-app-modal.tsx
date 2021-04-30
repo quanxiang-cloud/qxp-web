@@ -1,4 +1,5 @@
 import React, { useRef } from 'react';
+import { useHistory } from 'react-router-dom';
 import { inject } from 'mobx-react';
 import { Modal, Message } from '@QCFE/lego-ui';
 
@@ -12,6 +13,7 @@ type Props = {
 }
 
 function CreatedAppModal({ onCancel, appListStore }: Props) {
+  const history = useHistory();
   const formRef: any = useRef(null);
 
   const handleSubmit = () => {
@@ -19,9 +21,10 @@ function CreatedAppModal({ onCancel, appListStore }: Props) {
     if (formDom.validateFields()) {
       const data = formDom.getFieldsValue();
       data.appIcon = JSON.stringify(data.appIcon);
-      appListStore.createdApp({ ...data, useStatus: -1 }).then(() => {
+      appListStore.createdApp({ ...data, useStatus: -1 }).then((res: string) => {
         Message.success({ content: '创建应用成功！' });
         onCancel();
+        history.push(`/apps/details/${res}`);
       });
     }
   };

@@ -29,10 +29,14 @@ function Header({ changeParams, params, setModalType }: Props) {
           changeParams({ status });
         }}
         buttonWidth="104px"
+        style={{
+          marginBottom: 0,
+        }}
       >
         {STATUS_LIST.map(({ value, name }) => (
           <RadioButton className='rounded-12' key={value} value={value}>
-            {name}
+            {name}·
+            {value}
           </RadioButton>
         ))}
       </RadioGroup>
