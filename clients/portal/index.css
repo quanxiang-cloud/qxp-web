@@ -1,10 +1,6 @@
-@import "./css/reset.css";
-@import "./css/colors.css";
-@import "./css/typography.css";
-@import "./css/border.css";
-@import "./css/btn.css";
-@import "./css/animation.css";
+@import "./css/all.css";
 
+/* todo delete this */
 .right-content-container {
   @apply bg-white self-stretch flex flex-1;
 
