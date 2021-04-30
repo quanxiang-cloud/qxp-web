@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery } from 'react-query';
-import { Table } from '@QCFE/lego-ui';
+import Table from '@c/table';
 
 import EmptyTips from '@c/empty-tips';
 import Pagination from '@c/pagination';
@@ -149,13 +149,14 @@ export default function Employees({
     },
   };
 
-  const columns: EmployeeTableColumn[] = [...EmployeesColumns];
+  const columns: any[] = [...EmployeesColumns];
+
   if (userInfo.authority.includes('accessControl/mailList/manage')) {
     columns.push({
-      title: '',
-      dataIndex: '',
+      Header: '操作',
+      id: 'action',
       width: 40,
-      render: (text: string, record: Employee) => {
+      accessor: (record: Employee) => {
         const menu = EmployeesActions.filter((menu) => {
           return menu.authority.includes(record?.useStatus || 0) &&
             menu.leader.includes(record?.isDEPLeader || 0);
@@ -219,7 +220,7 @@ export default function Employees({
         />)
       }
 
-      <div className="h-full flex flex-grow flex-col overflow-hidden">
+      <div className="h-full flex flex-grow flex-col">
         <div className="flex items-center ml-20 mb-20">
           <div className="text-h6">{department.departmentName}</div>
           <div className="text-12 text-gray-400">（{employeesList?.total || 0}人）</div>
@@ -277,29 +278,20 @@ export default function Employees({
             )}
           </Authorized>
         </div>
-        <div className="max-h-380 flex flex-grow mt-16 flex-col px-20 overflow-auto">
 
-          {
-            (employeesList?.data && employeesList?.data.length > 0) && (
-              <div className="qxp-table flex w-full border-b">
-                <Table
-                  className="text-14 table-full"
-                  dataSource={employeesList?.data || []}
-                  columns={columns}
-                  rowKey="id"
-                  rowSelection={rowSelection}
-                  // emptyText={<EmptyTips text="无成员数据" className="py-32" />}
-                  loading={isLoading}
-                />
-              </div>)
-          }
-          {
-            (employeesList?.data && employeesList?.data.length === 0) && (
-              <div className="qxp-table w-full flex items-center justify-center">
-                <EmptyTips text="无成员数据" className="py-32" />
-              </div>
-            )
-          }
+        <div className="qxp-table flex w-full border-b  mt-16 px-20" style={{
+          height: 'calc(100% - 142px)' }}>
+          <Table
+            showCheckbox
+            className="text-14 h-full"
+            data={employeesList?.data || []}
+            columns={columns}
+            emptyTips={(
+              <EmptyTips text="无成员数据" className="py-32" />
+            )}
+            rowKey="id"
+            initialSelectedRowKeys={rowSelection?.selectedRowKeys||[]} loading={isLoading}
+          />
         </div>
         {
           (employeesList?.data && employeesList?.data.length > 0) && (
