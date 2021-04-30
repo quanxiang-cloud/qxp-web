@@ -77,7 +77,7 @@ function PageDataTable() {
         columns={columns}
         data={store.formDataList}
       />
-      {store.pageSize ? (
+      {store.tableConfig.pageSize ? (
         <Pagination
           current={store.params.page}
           total={store.total}

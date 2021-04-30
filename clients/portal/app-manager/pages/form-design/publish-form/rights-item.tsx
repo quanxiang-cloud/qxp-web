@@ -22,12 +22,14 @@ function RightsItem({ rights, actions }: Props) {
       rights.scopes.forEach((scope)=>{
         if (scope.type===1) {
           users.push({
+            id: scope.id,
             ownerID: scope.id,
             type: 1,
             ownerName: scope.name,
           });
         } else {
           deptList.push({
+            id: scope.id,
             ownerID: scope.id,
             type: 2,
             ownerName: scope.name,

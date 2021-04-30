@@ -15,19 +15,19 @@ const SORT_OPTION = [
     label: (
       <div className='flex items-center'>
         <Icon className='mr-8' name='arrow_circle_down' />
-      按新建时间最新的在前
+      按创建时间最新的在前
       </div>
     ),
-    value: '1',
+    value: '-created_at',
   },
   {
     label: (
       <div className='flex items-center'>
         <Icon className='mr-8' name='arrow_circle_up' />
-      按新建时间最旧的在前
+      按创建时间最旧的在前
       </div>
     ),
-    value: '2',
+    value: 'created_at',
   },
   {
     label: (
@@ -36,7 +36,7 @@ const SORT_OPTION = [
       按修改时间最新的在前
       </div>
     ),
-    value: '3',
+    value: '-updated_at',
   },
   {
     label: (
@@ -45,7 +45,7 @@ const SORT_OPTION = [
       按修改时间最旧的在前
       </div>
     ),
-    value: '4',
+    value: 'updated_at',
   },
   // {
   //   label: (

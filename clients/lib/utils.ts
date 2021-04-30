@@ -305,7 +305,7 @@ export function getPageDataSchema(config: any, schema: any, pageID: string) {
 
   if (pageTableConfig) {
     tableColumns.sort((a, b) => {
-      return pageTableConfig[b.id]?.sort - pageTableConfig[a.id]?.sort;
+      return pageTableConfig[a.id]?.sort - pageTableConfig[b.id]?.sort;
     });
   }
 

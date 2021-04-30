@@ -29,9 +29,9 @@ function CreateDataForm({ goBack, defaultValues }: Props) {
         entity: formData,
         condition: [
           {
-            key: defaultValues._id,
+            key: '_id',
             op: 'op',
-            value: '',
+            value: [defaultValues._id],
           },
         ],
       };

@@ -1,5 +1,5 @@
 import React from 'react';
-import { action, observable, computed, reaction, IReactionDisposer } from 'mobx';
+import { action, observable, reaction, IReactionDisposer } from 'mobx';
 
 import { formDataCurd } from '@appLib/api';
 import toast from '@lib/toast';
@@ -21,29 +21,15 @@ class AppPageDataStore {
     condition: [],
     sort: [],
     page: 1,
-    size: this.pageSize ? this.pageSize : 99999,
+    size: 10,
   };
   @observable createFun = () => { };
 
   constructor() {
     this.destroyFetchTableData = reaction(() => this.params, this.fetchFormDataList);
     this.destroySetTableConfig = reaction(() => {
-      return { size: this.pageSize };
+      return { size: this.tableConfig.pageSize || 9999, sort: [this.tableConfig.order] };
     }, this.setParams);
-  }
-
-  @computed get order(): any {
-    if ('order' in this.tableConfig) {
-      return this.tableConfig.order;
-    }
-    return null;
-  }
-
-  @computed get pageSize(): null | number {
-    if ('pageSize' in this.tableConfig) {
-      return this.tableConfig.pageSize;
-    }
-    return null;
   }
 
   @action
@@ -86,7 +72,7 @@ class AppPageDataStore {
   delFormData = (ids: string[]) => {
     formDataCurd(this.tableID, {
       method: 'delete',
-      condition: ids.map((id) => ({ key: id, op: 'eq', value: '' })),
+      condition: ids.map((id) => ({ key: '_id', op: 'eq', value: [id] })),
     }).then(() => {
       this.formDataList = this.formDataList.filter(({ _id }) => !ids.includes(_id));
       toast.success('删除成功!');
@@ -95,7 +81,7 @@ class AppPageDataStore {
 
   @action
   fetchFormDataList = (params: any) => {
-    if (!this.allowRequestData) {
+    if (!this.allowRequestData || !this.tableID) {
       return;
     }
     this.listLoading = true;

@@ -129,7 +129,14 @@ function FieldPermissions({ rightsID }: Props) {
 
   const handleSave = () => {
     const schema: any = {
-      properties: {},
+      properties: {
+        _id: {
+          title: '_id',
+          'x-internal': {
+            permission: 2,
+          },
+        },
+      },
       title: '',
       type: 'object',
       'x-internal': { permission: visibleField.length ? 1 : 0 },
