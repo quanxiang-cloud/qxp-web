@@ -32,7 +32,7 @@ function Dashboard() {
         />
         <div className="px-6 mt-40">
           <Card
-            className="px-32 py-20"
+            className="px-32 py-20 user-app-list-container"
             headerClassName="ml-8"
             title="我的应用"
             itemTitleClassName="text-h5"
