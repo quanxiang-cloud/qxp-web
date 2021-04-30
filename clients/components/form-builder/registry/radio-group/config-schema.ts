@@ -17,6 +17,7 @@ const schema: ISchema = {
           // https://github.com/alibaba/formily/issues/1053
           // this bug has not been fix in current release
           // description: '标题名称',
+          maxLength: 10,
           'x-rules': {
             required: true,
             message: '请输入标题名称',
