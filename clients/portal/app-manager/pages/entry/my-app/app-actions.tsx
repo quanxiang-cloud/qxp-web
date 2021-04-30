@@ -54,7 +54,7 @@ function AppActions({ openModal, appInfo }: Props) {
       history.push(`/apps/details/${appInfo.id}/setting/info`);
       break;
     case 'visit':
-      window.location.href = '//home.qxp.localhost/appDetails/' + appInfo.id;
+      window.location.href = `//${window.CONFIG.home_hostname}/appDetails/` + appInfo.id;
       break;
     case 'delete':
       openModal('delete', appInfo);

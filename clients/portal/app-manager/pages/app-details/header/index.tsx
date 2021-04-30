@@ -29,7 +29,7 @@ function DetailsHeader({ appDetailsStore }: DetailsHeaderProps) {
   };
 
   const goAppVisit = () => {
-    window.location.href = '//home.qxp.localhost/appDetails/' + appId;
+    window.location.href = `//${window.CONFIG.home_hostname}/appDetails/` + appId;
   };
 
   const statusTipsContent = (isPublish: boolean) => {
