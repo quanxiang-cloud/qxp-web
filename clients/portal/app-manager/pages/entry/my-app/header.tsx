@@ -32,7 +32,8 @@ function Header({ changeParams, params, setModalType }: Props) {
       >
         {STATUS_LIST.map(({ value, name }) => (
           <RadioButton className='rounded-12' key={value} value={value}>
-            {name}
+            {name}·
+            {value}
           </RadioButton>
         ))}
       </RadioGroup>
