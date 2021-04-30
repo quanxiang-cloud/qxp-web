@@ -3,6 +3,8 @@
 @import "./variables/colors.css";
 @import "./variables/global.css";
 
+@import './components/dropdown.css';
+
 @import "./typography.css";
 @import "./border.css";
 @import "./btn.css";
