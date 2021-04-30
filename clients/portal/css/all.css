@@ -1,5 +1,5 @@
 @import "./reset.css";
-@import "./colors.css";
+@import "./variables/index.css";
 @import "./typography.css";
 @import "./border.css";
 @import "./btn.css";
