@@ -15,6 +15,7 @@ const schema: ISchema = {
           // https://github.com/alibaba/formily/issues/1053
           // this bug has not been fix in current release
           // description: '标题名称',
+          maxLength: 50,
           'x-rules': {
             required: true,
             message: '请输入标题名称',
@@ -38,6 +39,7 @@ const schema: ISchema = {
         description: {
           type: 'string',
           title: '描述内容',
+          maxLength: 50,
           'x-component': 'Input',
           'x-mega-props': {
             labelAlign: 'top',
