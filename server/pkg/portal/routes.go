@@ -49,7 +49,7 @@ func GetRouter() http.Handler {
 	r.Path("/retrievePassword").Methods("POST").HandlerFunc(handlers.HandleRetrievePasswordSubmit)
 
 	// todo server this request in a different package
-	r.Host(contexts.Config.ClientConfig.HomeHostname).Methods("GET").HandlerFunc(loginRequired(handlers.HomeHandler))
+	// r.Host(contexts.Config.ClientConfig.HomeHostname).Methods("GET").HandlerFunc(loginRequired(handlers.HomeHandler))
 
 	r.PathPrefix("/apps").Methods("GET").HandlerFunc(loginRequired(handlers.AppManagerHandler))
 	r.PathPrefix("/").Methods("GET").HandlerFunc(loginRequired(handlers.PortalHandler))

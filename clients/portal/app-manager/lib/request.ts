@@ -1,8 +1,9 @@
 import axios, {
   Method, AxiosPromise, AxiosResponse, AxiosError, ResponseType, CancelToken,
 } from 'axios';
-import { Message } from '@QCFE/lego-ui';
 import { stringify } from 'query-string';
+
+import toast from '@lib/toast';
 
 axios.defaults.timeout = 11000;
 axios.defaults.headers.common['X-Proxy'] = 'API';
@@ -31,7 +32,7 @@ export default (opt: APIRequestParam): AxiosPromise => {
       },
     }).then((response: APIResponse) => {
       if (response.data.code !== 0) {
-        Message.error(response.data.msg);
+        toast.error(response.data.msg);
         reject(response);
       }
 
@@ -40,7 +41,7 @@ export default (opt: APIRequestParam): AxiosPromise => {
       axios.isCancel(error);
       const { response } = error;
       if (response?.status !== 200) {
-        Message.error('网络出错，请稍后再试！');
+        toast.error('网络出错，请稍后再试！');
       }
       reject(response);
     });

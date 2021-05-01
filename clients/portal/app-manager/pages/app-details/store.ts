@@ -5,6 +5,9 @@ import toast from '@lib/toast';
 import { getPageDataSchema, getPageTreeData } from '@lib/utils';
 import { TreeNode } from '@c/headless-tree/types';
 import {
+  fetchAppDetails,
+  updateAppStatus,
+  updateApp,
   fetchPageList,
   createPage,
   updatePage,
@@ -16,18 +19,48 @@ import {
   fetchFormScheme,
 } from '@appLib/api';
 
-class AppPagesStore {
-  rootStore: any;
-  constructor(rootStore: any) {
-    this.rootStore = rootStore;
-  }
+import appListStore from '../entry/my-app/store';
 
+class AppDetailsStore {
+  @observable appDetails: any = {};
+  @observable loading = false;
+  @observable appId = '';
   @observable treeStore: TreeStore<any> | null = null;
   @observable pageListLoading = false;
   @observable fetchSchemeLoading = false;
-  @observable appId = '';
   @observable formScheme = null;
-  @observable curPage = {};
+  @observable curPage: PageInfo = {};
+
+  @action
+  updateAppStatus = () => {
+    const { id, useStatus } = this.appDetails;
+    return updateAppStatus({ id, useStatus: -1 * useStatus }).then(() => {
+      this.appDetails.useStatus = -1 * useStatus;
+      appListStore.updateApp(this.appDetails);
+      toast.success(useStatus < 0 ? '发布成功！' : '下架成功');
+    });
+  }
+
+  @action
+  fetchAppDetails = (appId: string) => {
+    this.loading = true;
+    this.appId = appId;
+    return fetchAppDetails(appId).then((res) => {
+      this.appDetails = res.data || {};
+      this.loading = false;
+    }).catch(() => {
+      this.loading = false;
+    });
+  }
+
+  @action
+  updateApp = (appInfo: any) => {
+    return updateApp({ id: this.appDetails.id, ...appInfo }).then(() => {
+      this.appDetails = { ...this.appDetails, ...appInfo };
+      appListStore.updateApp(this.appDetails);
+      toast.success('修改成功！');
+    });
+  }
 
   @action
   deletePageOrGroup = (node: TreeNode<any>, type: string) => {
@@ -47,7 +80,7 @@ class AppPagesStore {
   @action
   editGroup = (groupInfo: GroupInfo, node: TreeNode<any>) => {
     if (groupInfo.id) {
-      return updateGroup({ appID: this.appId, ...groupInfo }).then((res) => {
+      return updateGroup({ appID: this.appId, ...groupInfo }).then(() => {
         this.treeStore?.updateNode({
           ...node,
           name: groupInfo.name || '',
@@ -56,15 +89,8 @@ class AppPagesStore {
         toast.success('修改成功');
       });
     }
+
     return createGroup({ appID: this.appId, ...groupInfo }).then((res) => {
-      // if (groupInfo.id) {
-      //   this.treeStore?.updateNode({
-      //     ...node,
-      //     name: groupInfo.name || '',
-      //     data: { ...node.data, ...groupInfo },
-      //   });
-      //   toast.success('修改成功');
-      // } else {
       const newGroup = { ...res.data, name: groupInfo.name, menuType: 1 };
       this.treeStore?.addChildren('root', [{
         data: newGroup,
@@ -81,7 +107,6 @@ class AppPagesStore {
         children: [],
       }]);
       toast.success('创建成功');
-      // }
     });
   }
 
@@ -179,4 +204,4 @@ class AppPagesStore {
   }
 }
 
-export default AppPagesStore;
+export default new AppDetailsStore();

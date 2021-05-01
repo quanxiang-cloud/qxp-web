@@ -30,8 +30,12 @@ function AppActions({ openModal, appInfo }: Props) {
     },
     {
       key: 'visit',
+      disabled: appInfo.useStatus < 0,
       label: (
-        <div className="flex items-center"><Icon name="login" className="mr-4" />访问应用</div>
+        <div className='flex items-center'>
+          <Icon name="login" className="mr-4" />
+          访问应用
+        </div>
       ),
     },
     {

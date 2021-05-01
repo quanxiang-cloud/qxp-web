@@ -1,17 +1,20 @@
 import React, { useEffect } from 'react';
-import { inject } from 'mobx-react';
-import { Route } from 'react-router-dom';
+import { Route, useParams } from 'react-router-dom';
 
 import Header from './header';
 import AppDetailsContent from './app-details-content';
 import AppSetting from './app-setting';
+import appDetailsStore from './store';
 
-function AppDetails({ appPagesStore }: any) {
+function AppDetails() {
+  const { appId } = useParams<any>();
+
   useEffect(() => {
+    appDetailsStore.fetchAppDetails(appId);
     return () => {
-      appPagesStore.clear();
+      appDetailsStore.clear();
     };
-  }, []);
+  }, [appId]);
 
   return (
     <div>
@@ -22,4 +25,4 @@ function AppDetails({ appPagesStore }: any) {
   );
 }
 
-export default inject('appPagesStore')(AppDetails);
+export default AppDetails;

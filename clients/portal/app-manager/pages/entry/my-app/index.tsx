@@ -1,25 +1,43 @@
 import React, { useEffect, useState } from 'react';
-import { observer, inject } from 'mobx-react';
+import { observer } from 'mobx-react';
 
 import TextHeader from '@c/text-header';
 
 import CreatedAppModal from './app-edit/created-app-modal';
 import Header from './header';
 import AppList from './app-list';
-
+import store from './store';
 import './index.scss';
 
-type Props = {
-  appListStore?: any
-}
-
-function MyApp({ appListStore }: Props) {
+function MyApp() {
   const [modalType, setModalType] = useState('');
-  const { isListLoading, changeParams, appRenderList, params, appList } = appListStore;
+  const [countMaps, setCountMaps] = useState({
+    all: 0,
+    published: 0,
+    unPublished: 0,
+  });
+  const { isListLoading, changeParams, appRenderList, params, appList } = store;
 
   useEffect(() => {
-    appListStore.fetchAppList();
+    store.fetchAppList();
   }, []);
+
+  useEffect(() => {
+    let published = 0;
+    let unPublished = 0;
+    appList.forEach((app: AppInfo) => {
+      if (app.useStatus > 0) {
+        published += 1;
+      } else {
+        unPublished += 1;
+      }
+    });
+    setCountMaps({
+      all: appList.length,
+      published,
+      unPublished,
+    });
+  }, [appList]);
 
   return (
     <div className="flex flex-col h-full">
@@ -29,7 +47,12 @@ function MyApp({ appListStore }: Props) {
         action="👋 快速开始"
         className="my-app-header header-background-image "
       />
-      <Header setModalType={setModalType} changeParams={changeParams} params={params} />
+      <Header
+        countMaps={countMaps}
+        setModalType={setModalType}
+        changeParams={changeParams}
+        params={params}
+      />
       <AppList
         openCreatedModal={() => setModalType('CreatedApp')}
         isLoading={isListLoading}
@@ -40,4 +63,4 @@ function MyApp({ appListStore }: Props) {
   );
 }
 
-export default inject('appListStore')(observer(MyApp));
+export default observer(MyApp);

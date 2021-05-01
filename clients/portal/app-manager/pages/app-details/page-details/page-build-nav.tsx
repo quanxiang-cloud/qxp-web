@@ -4,9 +4,9 @@ import { Link } from 'react-router-dom';
 import Icon from '@c/icon';
 
 type Props = {
-  pageId: string;
-  pageName: string;
-  appID: string;
+  pageId: string | undefined;
+  pageName: string | undefined;
+  appID: string | undefined;
 }
 
 const BUILD_NAV = [

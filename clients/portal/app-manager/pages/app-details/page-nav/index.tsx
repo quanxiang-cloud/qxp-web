@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
-import { inject, observer } from 'mobx-react';
+import { observer } from 'mobx-react';
 import { Tooltip } from '@QCFE/lego-ui';
 
 import PageLoading from '@appC/page-loading';
@@ -12,13 +12,10 @@ import EditGroupModal from './edit-group-modal';
 import EditPageModal from './edit-page-modal';
 import DelModal from './del-modal';
 import PageItem from './page-item';
+import appPagesStore from '../store';
 import './index.scss';
 
-type Props = {
-  appPagesStore?: any;
-}
-
-function PageNav({ appPagesStore }: Props) {
+function PageNav() {
   const [modalType, setModalType] = useState('');
   const [curEditNode, setCurEditNode] = useState<null | TreeNode<any>>(null);
   const { appId } = useParams<any>();
@@ -33,19 +30,19 @@ function PageNav({ appPagesStore }: Props) {
   };
 
   const delPageOrGroup = () => {
-    deletePageOrGroup(curEditNode, modalType).then(() => {
+    deletePageOrGroup(curEditNode as TreeNode<any>, modalType).then(() => {
       closeModal();
     });
   };
 
   const handleEditPage = (pageInfo: PageInfo) => {
-    editPage(pageInfo, curEditNode).then(() => {
+    editPage(pageInfo, curEditNode as TreeNode<any>).then(() => {
       closeModal();
     });
   };
 
   const handleEditGroup = (groupInfo: GroupInfo) => {
-    return editGroup(groupInfo, curEditNode);
+    return editGroup(groupInfo, curEditNode as TreeNode<any>);
   };
 
   const closeModal = () => {
@@ -146,4 +143,4 @@ function PageNav({ appPagesStore }: Props) {
   );
 }
 
-export default inject('appPagesStore')(observer(PageNav));
+export default observer(PageNav);

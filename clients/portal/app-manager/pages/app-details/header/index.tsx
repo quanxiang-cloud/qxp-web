@@ -1,31 +1,32 @@
 import React, { useEffect } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
-import { inject, observer } from 'mobx-react';
+import { observer } from 'mobx-react';
 
 import Icon from '@c/icon';
 import PopConfirm from '@c/pop-confirm';
 import Button from '@c/button';
 import NavButton from '@appC/nav-button';
 
-import AppDropdown from './app-dropdown';
+import AppDropdown from '@c/app-dropdown';
+import appDetailsStore from '../store';
+import appListStore from '../../entry/my-app/store';
 import './index.scss';
 
-interface DetailsHeaderProps {
-  appDetailsStore?: any
-}
-
-function DetailsHeader({ appDetailsStore }: DetailsHeaderProps) {
+function DetailsHeader() {
   const history = useHistory();
   const { appId } = useParams<any>();
+  const { updateAppStatus, appDetails } = appDetailsStore;
 
   useEffect(() => {
-    appDetailsStore.setAppId(appId);
-  }, [appId]);
-
-  const { updateAppStatus } = appDetailsStore;
+    appListStore.fetchAppList();
+  }, []);
 
   const goAppSetting = () => {
-    history.push(`/apps/details/${appDetailsStore.appDetails.id}/setting/info`);
+    history.push(`/apps/details/${appDetails.id}/setting/info`);
+  };
+
+  const handleChange = (newAppId: string) => {
+    history.replace(location.pathname.replace(appId, newAppId));
   };
 
   const goAppVisit = () => {
@@ -53,6 +54,8 @@ function DetailsHeader({ appDetailsStore }: DetailsHeaderProps) {
     );
   };
 
+  const isPublish = appDetails.useStatus > 0;
+
   return (
     <div className="app-global-header app-details-header">
       <div className='flex items-center'>
@@ -65,10 +68,10 @@ function DetailsHeader({ appDetailsStore }: DetailsHeaderProps) {
           }}
         />
         <span className='mr-16 ml-8'>/</span>
-        <AppDropdown appDetails={appDetailsStore.appDetails} />
+        <AppDropdown appList={appListStore.appList} curApp={appId} onChange={handleChange} />
       </div>
       <div className='flex'>
-        {appDetailsStore.appDetails.useStatus > 0 ? (
+        {isPublish ? (
           <PopConfirm content={statusTipsContent(false)} onOk={updateAppStatus}>
             <Button iconName='toggle_on' modifier='primary'>
               下线应用
@@ -82,7 +85,7 @@ function DetailsHeader({ appDetailsStore }: DetailsHeaderProps) {
           </PopConfirm>
         )}
         <hr className='app-global-header-hr' />
-        <Button onClick={goAppVisit} className='mr-16' iconName='login'>
+        <Button forbidden={!isPublish} onClick={goAppVisit} className='mr-16' iconName='login'>
           进入应用访问
         </Button>
         <Button
@@ -98,4 +101,4 @@ function DetailsHeader({ appDetailsStore }: DetailsHeaderProps) {
   );
 }
 
-export default inject('appDetailsStore')(observer(DetailsHeader));
+export default observer(DetailsHeader);

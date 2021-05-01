@@ -8,16 +8,9 @@ import { usePortalGlobalValue } from '@portal/states_to_be_delete/portal';
 import { getNestedPropertyToArray } from '@lib/utils';
 
 import GlobalHeader from './components/global-header';
-import stores from './stores';
 import routers from './routers';
 
 import MsgStores from '../stores';
-
-// todo delete this
-const allStores = {
-  ...stores,
-  ...MsgStores,
-};
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -48,7 +41,7 @@ function App() {
     }));
   }, []);
   return (
-    <Provider {...allStores}>
+    <Provider {...MsgStores}>
       <QueryClientProvider client={queryClient}>
         <div className="min-h-screen bg-5976e01a">
           <BrowserRouter>

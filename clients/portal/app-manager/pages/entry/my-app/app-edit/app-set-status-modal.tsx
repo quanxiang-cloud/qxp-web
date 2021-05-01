@@ -1,17 +1,16 @@
 import React from 'react';
-import { inject } from 'mobx-react';
 import { Modal } from '@QCFE/lego-ui';
 
 import Icon from '@c/icon';
 import Button from '@c/button';
 
+import store from '../store';
 import '../index.scss';
 
 type Props = {
   appId: string;
   status: 'publish' | 'soldOut';
   onCancel: () => void;
-  appListStore?: any;
 }
 
 const TEXT = {
@@ -29,9 +28,9 @@ const TEXT = {
   },
 };
 
-function AppSetStatusModal({ onCancel, appId, status = 'publish', appListStore }: Props) {
+function AppSetStatusModal({ onCancel, appId, status = 'publish' }: Props) {
   const handleSubmit = () => {
-    appListStore.updateAppStatus(appId, status === 'publish' ? 1 : -1).then(() => {
+    store.updateAppStatus(appId, status === 'publish' ? 1 : -1).then(() => {
       onCancel();
     });
   };
@@ -70,4 +69,4 @@ function AppSetStatusModal({ onCancel, appId, status = 'publish', appListStore }
   );
 }
 
-export default inject('appListStore')(AppSetStatusModal);
+export default AppSetStatusModal;

@@ -10,15 +10,16 @@ type Props = {
   params: any;
   changeParams: (obj: any) => void;
   setModalType: (modalType: string) => void;
+  countMaps: AppCountMaps;
 }
 
 const STATUS_LIST = [
-  { value: 0, name: '全部应用' },
-  { value: 1, name: '已发布' },
-  { value: -1, name: '未发布' },
+  { value: 0, key: 'all', name: '全部应用' },
+  { value: 1, key: 'published', name: '已发布' },
+  { value: -1, key: 'unPublished', name: '未发布' },
 ];
 
-function Header({ changeParams, params, setModalType }: Props) {
+function Header({ changeParams, params, setModalType, countMaps }: Props) {
   return (
     <div className='app-filter-column'>
       <Search onSearch={(keyword) => changeParams({ keyword })} />
@@ -33,10 +34,10 @@ function Header({ changeParams, params, setModalType }: Props) {
           marginBottom: 0,
         }}
       >
-        {STATUS_LIST.map(({ value, name }) => (
+        {STATUS_LIST.map(({ value, name, key }) => (
           <RadioButton className='rounded-12' key={value} value={value}>
             {name}·
-            {value}
+            {(countMaps as any)[key]}
           </RadioButton>
         ))}
       </RadioGroup>

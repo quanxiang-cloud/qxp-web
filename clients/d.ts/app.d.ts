@@ -16,3 +16,9 @@ type InitialState = {
   visibleAppManager:boolean;
   appList: AppInfo[];
 }
+
+type AppCountMaps = {
+  all: number,
+  published: number,
+  unPublished: number,
+};

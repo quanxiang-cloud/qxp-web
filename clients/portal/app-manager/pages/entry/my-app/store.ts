@@ -1,7 +1,7 @@
-import { observable, action, reaction } from 'mobx';
-import { Message } from '@QCFE/lego-ui';
+import { observable, action, reaction, IReactionDisposer } from 'mobx';
 import { intersection } from 'lodash';
 
+import toast from '@lib/toast';
 import { fetchAppList, updateAppStatus, delApp, createdApp } from '@appLib/api';
 
 type Params = {
@@ -18,8 +18,8 @@ function findKeyword(list: AppInfo[], appName: string) {
 }
 
 class AppListStore {
-  searchChange: any
-  constructor(rootStore: any) {
+  searchChange: IReactionDisposer
+  constructor() {
     this.searchChange = reaction(() => this.params, this.setRenderList);
   }
 
@@ -36,7 +36,7 @@ class AppListStore {
     return delApp(_id).then(() => {
       this.appList = this.appList.filter(({ id }) => id !== _id);
       this.appRenderList = this.appRenderList.filter(({ id }) => id !== _id);
-      Message.success({ content: '删除成功！' });
+      toast.success('删除成功！');
     });
   }
 
@@ -62,7 +62,7 @@ class AppListStore {
           return appInfo;
         });
       });
-      Message.success({ content: useStatus > 0 ? '发布成功！' : '下架成功' });
+      toast.success(useStatus > 0 ? '发布成功！' : '下架成功');
     });
   }
 
@@ -105,4 +105,4 @@ class AppListStore {
   }
 }
 
-export default AppListStore;
+export default new AppListStore();

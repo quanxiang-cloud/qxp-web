@@ -1,17 +1,14 @@
 import React, { useRef } from 'react';
-import { inject, observer } from 'mobx-react';
+import { observer } from 'mobx-react';
 
 import Button from '@c/button';
 import PageLoading from '@appC/page-loading';
 import TextHeader from '@c/text-header';
 
 import CreatedEditApp from '../../entry/my-app/app-edit/created-edit-app';
+import appDetailsStore from '../store';
 
-type Props = {
-  appDetailsStore?: any;
-}
-
-function AppInfo({ appDetailsStore }: Props) {
+function AppInfo() {
   const formRef: any = useRef();
 
   const handleSubmit = () => {
@@ -41,4 +38,4 @@ function AppInfo({ appDetailsStore }: Props) {
   );
 }
 
-export default inject('appDetailsStore')(observer(AppInfo));
+export default observer(AppInfo);

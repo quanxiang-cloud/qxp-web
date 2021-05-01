@@ -1,6 +1,6 @@
 import React from 'react';
 import { useParams, useHistory } from 'react-router-dom';
-import { inject, observer } from 'mobx-react';
+import { observer } from 'mobx-react';
 import { Switch, Route } from 'react-router-dom';
 
 import SideNavCard from '@c/side-nav-card';
@@ -11,14 +11,11 @@ import Icon from '@c/icon';
 
 import AppInfo from './app-info';
 import AppAdmin from './app-admin';
+import appDetailsStore from '../store';
 
 import './index.scss';
 
-type Props = {
-  appDetailsStore?: any;
-}
-
-function AppSetting({ appDetailsStore }: Props) {
+function AppSetting() {
   const { appId } = useParams<any>();
   const history = useHistory();
 
@@ -81,4 +78,4 @@ function AppSetting({ appDetailsStore }: Props) {
   );
 }
 
-export default inject('appDetailsStore')(observer(AppSetting));
+export default observer(AppSetting);

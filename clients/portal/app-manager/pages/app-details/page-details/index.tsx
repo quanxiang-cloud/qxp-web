@@ -1,5 +1,5 @@
 import React from 'react';
-import { inject, observer } from 'mobx-react';
+import { observer } from 'mobx-react';
 import { useHistory } from 'react-router-dom';
 
 import TextHeader from '@c/text-header';
@@ -8,13 +8,10 @@ import PageLoading from '@appC/page-loading';
 import Button from '@c/button';
 
 import PageBuildNav from './page-build-nav';
+import appPagesStore from '../store';
 import './index.scss';
 
-type Props = {
-  appPagesStore?: any
-}
-
-function PageDetails({ appPagesStore }: Props) {
+function PageDetails() {
   const { curPage, appId } = appPagesStore;
   const history = useHistory();
   const goFormBuild = () => {
@@ -44,7 +41,7 @@ function PageDetails({ appPagesStore }: Props) {
   return (
     <div className='flex flex-col flex-1 relative'>
       <TextHeader
-        title={curPage.name}
+        title={curPage.name || ''}
         action={appPagesStore.formScheme ? (
           <Button onClick={goFormBuild} modifier='primary' iconName='edit'>设计表单</Button>
         ) : '📌  表单、流程、报表何时使用？快速上手'}
@@ -55,4 +52,4 @@ function PageDetails({ appPagesStore }: Props) {
   );
 }
 
-export default inject('appPagesStore')(observer(PageDetails));
+export default observer(PageDetails);

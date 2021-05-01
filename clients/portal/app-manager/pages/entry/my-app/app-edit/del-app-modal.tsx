@@ -1,24 +1,23 @@
 import React, { useRef } from 'react';
-import { inject } from 'mobx-react';
 import { Modal, Form } from '@QCFE/lego-ui';
 
 import Icon from '@c/icon';
 import Button from '@c/button';
 
+import store from '../store';
 import '../index.scss';
 
 type Props = {
   appInfo: AppInfo;
   onCancel: () => void;
-  appListStore?: any;
 }
 
-function DeleteAppModal({ onCancel, appInfo, appListStore }: Props) {
+function DeleteAppModal({ onCancel, appInfo }: Props) {
   const ref: any = useRef();
   const handleSubmit = () => {
     const formRef: any = ref.current;
     if (formRef.validateFields()) {
-      appListStore.delApp(appInfo.id).then(() => {
+      store.delApp(appInfo.id).then(() => {
         onCancel();
       });
     }
@@ -71,4 +70,4 @@ function DeleteAppModal({ onCancel, appInfo, appListStore }: Props) {
   );
 }
 
-export default inject('appListStore')(DeleteAppModal);
+export default DeleteAppModal;

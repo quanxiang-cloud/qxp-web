@@ -1,16 +1,13 @@
 import React, { useEffect } from 'react';
-import { inject, observer } from 'mobx-react';
+import { observer } from 'mobx-react';
 import { useParams } from 'react-router-dom';
 
 import PageNav from './page-nav';
 import PageDetails from './page-details';
+import appPagesStore from './store';
 import './index.scss';
 
-type Props = {
-  appPagesStore: any
-}
-
-function AppDetailsContent({ appPagesStore }: Props) {
+function AppDetailsContent() {
   const { appId } = useParams<any>();
 
   useEffect(() => {
@@ -25,4 +22,4 @@ function AppDetailsContent({ appPagesStore }: Props) {
   );
 }
 
-export default inject('appPagesStore')(observer(AppDetailsContent));
+export default observer(AppDetailsContent);

@@ -1,18 +1,18 @@
 import React, { useRef } from 'react';
 import { useHistory } from 'react-router-dom';
-import { inject } from 'mobx-react';
-import { Modal, Message } from '@QCFE/lego-ui';
+import { Modal } from '@QCFE/lego-ui';
 
+import toast from '@lib/toast';
 import Button from '@c/button';
 
 import CreatedEditApp from './created-edit-app';
+import store from '../store';
 
 type Props = {
   onCancel: () => void;
-  appListStore?: any;
 }
 
-function CreatedAppModal({ onCancel, appListStore }: Props) {
+function CreatedAppModal({ onCancel }: Props) {
   const history = useHistory();
   const formRef: any = useRef(null);
 
@@ -21,8 +21,8 @@ function CreatedAppModal({ onCancel, appListStore }: Props) {
     if (formDom.validateFields()) {
       const data = formDom.getFieldsValue();
       data.appIcon = JSON.stringify(data.appIcon);
-      appListStore.createdApp({ ...data, useStatus: -1 }).then((res: string) => {
-        Message.success({ content: '创建应用成功！' });
+      store.createdApp({ ...data, useStatus: -1 }).then((res: string) => {
+        toast.success('创建应用成功！');
         onCancel();
         history.push(`/apps/details/${res}`);
       });
@@ -55,4 +55,4 @@ function CreatedAppModal({ onCancel, appListStore }: Props) {
   );
 }
 
-export default inject('appListStore')(CreatedAppModal);
+export default CreatedAppModal;
