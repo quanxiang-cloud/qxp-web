@@ -22,7 +22,7 @@ function AppDropdown({ appList, onChange, curApp, hiddenStatus }: Props) {
     return appList.map((appInfo: AppInfo) => (
       <div
         className={cs('app-dropdown-drop-item',
-          { 'app-dropdown-drop-item-active': appDetails.id === appInfo.id })}
+          { 'app-dropdown-drop-item-active': appDetails?.id === appInfo.id })}
         key={appInfo.id}
         onClick={() => onChange(appInfo.id)}
       >
