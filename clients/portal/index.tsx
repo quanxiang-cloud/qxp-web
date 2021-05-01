@@ -7,7 +7,7 @@ import { RecoilRoot } from 'recoil';
 import App from './application';
 import stores from './stores';
 import './scss/index.scss';
-import './index.css';
+import '../styles/index.css';
 
 const queryClient = new QueryClient({
   defaultOptions: {

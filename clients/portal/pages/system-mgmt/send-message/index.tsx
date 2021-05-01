@@ -482,7 +482,7 @@ export const Content = forwardRef(({ className, donotShowHeader, footer, modifyD
           employees={_chosenDepOrPerson.filter((itm)=>itm.type==1)}
         />
       )}
-      {openPreviewModal && <Modal
+      {openPreviewModal && (<Modal
         title='消息预览并发送'
         width={960}
         onClose={() => setOpenPreviewModal(false)}
@@ -507,7 +507,7 @@ export const Content = forwardRef(({ className, donotShowHeader, footer, modifyD
         )}
       >
         <PreviewMsg prevData={prevData} isPreview canMultiDownload={false} canDownload={false}/>
-      </Modal>}
+      </Modal>)}
     </div>);
 });
 
