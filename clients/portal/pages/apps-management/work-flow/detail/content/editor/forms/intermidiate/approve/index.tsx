@@ -2,12 +2,14 @@ import React, { FormEvent } from 'react';
 
 import useObservable from '@lib/hooks/use-observable';
 import Drawer from '@c/drawer';
-import Icon from '@c/icon';
 import Tab from '@c/tab';
-import Button from '@c/button';
+import FormSelector from '@flow/detail/content/editor/forms/form-selector';
+import store, {
+  StoreValue, CurrentElement, updateStore, updateDataField,
+} from '@flow/detail/content/editor/store';
+import SaveButtonGroup
+  from '@flow/detail/content/editor/components/_common/action-save-button-group';
 
-import store, { StoreValue, CurrentElement, updateStore } from '../../../store';
-import FormSelector from '../../form-selector';
 import BasicConfig from '../basic-config';
 import FieldPermission from '../field-permission';
 import OperatorPermission from '../operator-permission';
@@ -20,7 +22,7 @@ export default function FillInForm() {
 
   function onSubmit(e: FormEvent) {
     e.preventDefault();
-    console.log('准备提交');
+    console.debug('ready');
   }
 
   return (
@@ -28,10 +30,7 @@ export default function FillInForm() {
       {asideDrawerType === 'approveForm' && (
         <Drawer
           title={(
-            <div className="flex items-center">
-              <span className="text-h5 mr-8">审批</span>
-              <Icon name="edit" />
-            </div>
+            <span className="text-h5 mr-8">审批</span>
           )}
           distanceTop={0}
           onCancel={() => updateStore(null, () => ({ asideDrawerType: '' }))}
@@ -42,10 +41,13 @@ export default function FillInForm() {
             className="flex-1 flex flex-col justify-between h-full"
           >
             <div className="flex-1" style={{ height: 'calc(100% - 56px)' }}>
-              <FormSelector defaultValue={currentFormNodeElement.data.businessData.form.value} />
+              <FormSelector
+                changeable={false}
+                defaultValue={currentFormNodeElement.data.businessData.form.value}
+              />
               <Tab
                 className="mt-10"
-                contentClassName="overflow-scroll"
+                contentClassName="overflow-x-visible overflow-y-scroll bg-white"
                 style={{ height: 'calc(100% - 56px)' }}
                 items={[{
                   id: 'basicConfig',
@@ -54,7 +56,14 @@ export default function FillInForm() {
                 }, {
                   id: 'fieldPermission',
                   name: '字段权限',
-                  content: <FieldPermission />,
+                  content: (
+                    <FieldPermission
+                      onChange={(fieldPermission) => {
+                        updateDataField('approve', 'fieldPermission', () => fieldPermission);
+                      }}
+                      defaultValue={currentElement.data.businessData.fieldPermission}
+                    />
+                  ),
                 }, {
                   id: 'operatorPermission',
                   name: '操作权限',
@@ -66,23 +75,7 @@ export default function FillInForm() {
                 }]}
               />
             </div>
-            <div className="flex justify-end flex-none">
-              <Button
-                className="mr-20"
-                iconName="close"
-                type="button"
-                onClick={() => updateStore(null, () => ({ asideDrawerType: '' }))}
-              >
-              取消
-              </Button>
-              <Button
-                modifier="primary"
-                iconName="save"
-                type="submit"
-              >
-              保存
-              </Button>
-            </div>
+            <SaveButtonGroup />
           </form>
         </Drawer>
       )}

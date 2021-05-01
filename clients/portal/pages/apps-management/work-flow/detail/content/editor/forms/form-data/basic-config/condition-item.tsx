@@ -3,7 +3,7 @@ import React from 'react';
 import Select from '@c/select';
 
 import {
-  Condition,
+  Operator,
   updateTriggerConditionField,
 } from '../../../store';
 
@@ -13,59 +13,62 @@ export type ConditionItemOptions = {
 }[]
 
 interface Props {
-  condition: Condition;
+  condition: {
+    key: string;
+    op: Operator;
+    value: string;
+  };
   options: ConditionItemOptions;
 }
 
 export default function ConditionItem({ condition, options }: Props) {
-  const operatorOptions = [{
+  const operatorOptions: {label: string; value: Operator}[] = [{
     label: '大于',
-    value: '>',
+    value: 'gt',
   }, {
     label: '等于',
-    value: '=',
+    value: 'eq',
   }, {
     label: '小于',
-    value: '<',
+    value: 'lt',
   }, {
     label: '不等于',
-    value: '!=',
+    value: 'neq',
   }];
 
   return (
     <>
       <Select
         placeholder="选择工作表中的字段"
-        defaultValue={condition.fieldValue}
+        defaultValue={condition.key}
         onChange={(v: string) => {
           updateTriggerConditionField(condition, {
-            fieldValue: v,
-            fieldName: options.find(({ value }) => value === v)?.label || '',
+            key: v,
           });
         }}
-        className="h-32 border border-gray-300 select-border-radius
+        className="h-32 border border-gray-300 input-border-radius
               px-12 text-12 flex items-center flex-1 mb-8"
         options={options}
       />
       <div className="flex flex-row justify-between items-center mb-12">
         <Select
           placeholder="判断符"
-          defaultValue={condition.operator}
-          onChange={(v : string) => {
+          defaultValue={condition.op}
+          onChange={(v : Operator) => {
             updateTriggerConditionField(condition, {
-              operator: v,
+              op: v,
             });
           }}
-          className="h-32 border border-gray-300 select-border-radius
+          className="h-32 border border-gray-300 input-border-radius
               px-12 text-12 flex items-center flex-1 mr-12"
           options={operatorOptions}
         />
         <input
           className="input"
-          defaultValue={condition.operatorValue}
+          defaultValue={condition.value}
           onChange={(e) => {
             updateTriggerConditionField(condition, {
-              operatorValue: e.target.value,
+              value: e.target.value,
             });
           }}
         />

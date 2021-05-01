@@ -20,7 +20,7 @@ export default function WorkFlowCard() {
         className="h-full transition-opacity flex flex-col flex-1 mt-0"
         headerClassName="bg-gray-1000 px-20 py-16 header-background-image h-56 shadow-header"
         itemTitleClassName="text-h5"
-        desc="可以定义平台内的账号拥有的权限。"
+        desc="使用可视化工作流技术为业务高效流转提供支持，轻松创建业务流程应用"
         action={<a className="ease-linear text-underline">📌 快速开始？</a>}
         contentClassName={contentHeight}
         descClassName="text-caption"

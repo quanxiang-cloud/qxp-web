@@ -31,7 +31,7 @@ export default function NewFlow({ onChange, currentOperateType }: Props) {
           />,
           <AsideMenuItem
             key="variables"
-            iconName="device_hub"
+            iconName="settings_ethernet"
             text="工作流变量"
             onClick={() => onChange('variables')}
             isActive={currentOperateType === 'variables'}

@@ -10,6 +10,7 @@ export interface ITabItem {
 export interface ITab {
   className?: string;
   headerClassName?: string;
+  activeTitleClassName?: string;
   contentClassName?: string;
   items: ITabItem[];
   currentKey?: string | number;
@@ -21,6 +22,7 @@ export interface ITab {
 export default function Tab({
   className,
   headerClassName,
+  activeTitleClassName,
   titleClassName,
   contentClassName,
   items,
@@ -37,7 +39,7 @@ export default function Tab({
   }, []);
 
   return (
-    <div style={style} className={twCascade('transition duration-300 overflow-hidden', className)}>
+    <div style={style} className={twCascade('transition duration-300', className)}>
       <header className={twCascade('flex flex-row w-full', headerClassName)} ref={headerRef}>
         {items.map((item) => {
           const active = item.id == key;
@@ -53,6 +55,9 @@ export default function Tab({
                   'text-blue-600': active,
                   'font-semibold': active,
                   'text-gray-600': !active,
+                  ...(activeTitleClassName ? {
+                    [activeTitleClassName]: active,
+                  } : {}),
                 },
                 titleClassName,
               )}
@@ -68,7 +73,11 @@ export default function Tab({
       </header>
       <div
         className={
-          twCascade('w-full bg-blue-100 px-20 py-16 overflow-hidden', contentClassName)
+          twCascade(
+            'w-full bg-blue-100 px-20 py-16',
+            contentClassName,
+            contentClassName?.includes('overflow') ? '' : 'overflow-hidden'
+          )
         }
         style={{
           height: `calc(100% - ${height})`,

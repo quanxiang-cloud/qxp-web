@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { twCascade } from '@mariusmarais/tailwind-cascade';
 import { Icon } from '@QCFE/lego-ui';
 
@@ -24,9 +24,10 @@ export interface IMore<T> {
     | 'auto-start' | 'auto-end' | undefined;
   onOpen?: () => void;
   onClose?: () => void;
+  open?: boolean;
 }
 
-export default function More<T>({
+function More<T>({
   className,
   items,
   params,
@@ -42,6 +43,7 @@ export default function More<T>({
   header,
   onOpen,
   onClose,
+  open,
 }: IMore<T>) {
   return (
     <Popover
@@ -52,6 +54,7 @@ export default function More<T>({
       onMouseOut={onMouseOut}
       onOpen={onOpen}
       onClose={onClose}
+      open={open}
       content={(
         <List<T>
           header={header}
@@ -60,7 +63,7 @@ export default function More<T>({
           itemClassName={twCascade('hover:bg-blue-100', contentItemClassName)}
           className={
             twCascade(
-              'min-w-90 z-10 py-16 shadow-title bg-white',
+              'min-w-90 z-20 py-16 shadow-title bg-white',
               'rounded-6 absolute right-0 top-full mr-2 mt-12',
               contentClassName,
             )
@@ -83,3 +86,5 @@ export default function More<T>({
     </Popover>
   );
 }
+
+export default memo(More) as typeof More;

@@ -1,68 +1,105 @@
 import { BehaviorSubject } from 'rxjs';
 import { ArrowHeadType, Elements, FlowElement } from 'react-flow-renderer';
 
-export type Condition = {
-  fieldName: string,
-  fieldValue: string;
-  operator: string;
-  operatorValue: string;
+export type Operator = 'eq' | 'neq' | 'gt' | 'gte' | 'lt' | 'lte' | '';
+export type TriggerConditionExpressionItem = TriggerCondition | {
+  key: string;
+  op: Operator;
+  value: string;
+};
+export type TriggerConditionExpression = TriggerConditionExpressionItem[]
+export interface TriggerCondition {
+  op: 'or' | 'and' | '';
+  expr: TriggerConditionExpression;
 }
-export type AndCondition = Condition[];
-export type Conditions = AndCondition[];
+
 export type AsideDrawerType = '' | 'formDataForm' | 'fillInForm' | 'approveForm' | 'components';
 export type CurrentConnection = {[key: string]: unknown};
+export type TriggerWayValue = 'whenAdd' | 'whenAlter' | '';
+export type TriggerWay = TriggerWayValue[];
 
 export interface FormDataData {
   form: { name: string; value: string; },
-  triggerWay: 'whenAdd' | 'whenAlter' | '';
+  triggerWay: TriggerWay;
   whenAlterFields: string[];
-  triggerCondition: Conditions;
+  triggerCondition: TriggerCondition;
   events: {},
 }
 
-export type AutoApproveRule = 'origin' | 'previous' | 'parent';
+export interface UrgeItem {
+  day: string;
+  hours: string;
+  minutes: string;
+}
+export interface Urge extends UrgeItem {
+  repeat: {
+    day: string;
+    hours: string;
+    minutes: string;
+  };
+}
 
-export interface FillInDataBasicConfig {
-  approvePersons: string[];
-  multiplePersonApproveWay: 'and' | 'or';
-  whenNoApprovePerson: 'skip' | 'transferAdmin';
-  autoApproveRules: AutoApproveRule[];
+export type AutoApproveRule = 'origin' | 'previous' | 'parent';
+export interface WhenTimeout {
+  type: 'noDealWith' | 'autoDealWith' | 'jump' | '';
+  value: string;
+}
+
+export interface BasicNodeConfig {
+  persons: {
+    employees: EmployeeOrDepartmentOfRole[];
+    departments: EmployeeOrDepartmentOfRole[];
+  };
+  multiplePersonWay: 'and' | 'or';
+  whenNoPerson: 'skip' | 'transferAdmin';
+  autoRules: AutoApproveRule[];
   timeRule: {
     deadLine: {
       breakPoint: 'firstEntry' | 'entry' | 'flowWorked';
       day: string;
       hours: string;
       minutes: string;
-      urge: {
-        day: number;
-        hours: number;
-        minutes: number;
-        repeat: boolean;
-      }
+      urge: Urge;
     },
-    whenTimeout: {
-      type: 'noDealWith' | 'autoDealWith' | 'jump';
-      value: string;
-    };
+    whenTimeout: WhenTimeout;
   };
 }
 
-export type ApproveDataBasicConfig = FillInDataBasicConfig;
-
 export interface FillInData {
-  basicConfig: FillInDataBasicConfig;
+  basicConfig: BasicNodeConfig;
   fieldPermission: FieldPermission;
   operatorPermission: {value: string; text: string;}[];
   events: {};
 }
 
-export interface FieldPermission {
+export interface CustomFieldPermission {
   fieldName: string;
   read: boolean;
   write: boolean;
-  initialValue: string;
-  submitValue: string;
-  children: FieldPermission[];
+  initialValue: {
+    variable: string;
+    static: string;
+  };
+  submitValue: {
+    variable: string;
+    static: string;
+  };
+  id: string;
+  children?: string[];
+  parent?: string;
+}
+
+export interface SystemFieldPermission {
+  fieldName: string;
+  read: boolean;
+  id: string;
+  children?: string[];
+  parent?: string;
+}
+
+export interface FieldPermission {
+  custom: CustomFieldPermission[];
+  system: SystemFieldPermission[];
 }
 
 export type BusinessData = FormDataData & FillInData;
@@ -83,11 +120,25 @@ export interface StoreValue {
   asideDrawerType: AsideDrawerType;
   currentConnection: CurrentConnection;
   elements: Elements;
+  name: string;
+  version: string;
+  cancelable: boolean;
+  urgeable: boolean;
+  seeStatusAndMsg: boolean;
+  nodeAdminMsg: boolean;
+  status: string;
 }
 
 const store = new BehaviorSubject<StoreValue>({
+  name: '',
+  version: '0.1',
+  status: 'draft',
   asideDrawerType: '',
   currentConnection: {},
+  cancelable: false,
+  urgeable: false,
+  seeStatusAndMsg: false,
+  nodeAdminMsg: false,
   elements: [
     {
       id: '1',
@@ -96,9 +147,8 @@ const store = new BehaviorSubject<StoreValue>({
         nodeData: { width: 200, height: 72, name: '工作表触发' },
         businessData: {
           form: { name: '', value: '' },
-          triggerWay: '',
+          triggerWay: [],
           whenAlterFields: [],
-          triggerCondition: [],
         },
       },
       position: { x: 0, y: 0 },
@@ -174,22 +224,51 @@ export function updateNodeData(elementType: string, fieldName: string, updater: 
   });
 }
 
-export function updateTriggerConditionField(
-  currentCondition: Condition,
-  newData: Partial<Condition>
-) {
-  updateDataField('formData', 'triggerCondition', (conditions: Conditions) => {
-    return conditions.map((andCondition) => {
-      return andCondition.map((condition): Condition => {
-        if (condition === currentCondition) {
-          return {
-            ...condition,
-            ...newData,
-          };
+function _updateTriggerConditionField(
+  conditions: TriggerCondition,
+  currentCondition: TriggerConditionExpressionItem,
+  newData: Partial<TriggerConditionExpressionItem> | null,
+): TriggerCondition {
+  const { expr } = conditions;
+
+  if (!expr) {
+    return {
+      ...conditions,
+      ...newData,
+    } as TriggerCondition;
+  }
+
+  return {
+    ...conditions,
+    expr: expr.map((exprItem) => {
+      if (exprItem === currentCondition) {
+        if (newData === null) {
+          return false;
         }
-        return condition;
-      });
-    });
+        return {
+          ...exprItem,
+          ...newData,
+        };
+      } else if (
+        (exprItem as TriggerCondition).expr && (exprItem as TriggerCondition).expr.length
+      ) {
+        return _updateTriggerConditionField(
+          exprItem as TriggerCondition,
+          currentCondition,
+          newData
+        );
+      } else {
+        return exprItem;
+      }
+    }).filter(Boolean) as TriggerConditionExpression,
+  };
+}
+export function updateTriggerConditionField(
+  currentCondition: TriggerConditionExpressionItem,
+  newData: Partial<TriggerConditionExpressionItem> | null,
+) {
+  updateDataField('formData', 'triggerCondition', (conditions: TriggerCondition) => {
+    return _updateTriggerConditionField(conditions, currentCondition, newData);
   });
 }
 

@@ -18,7 +18,7 @@ export default function HeaderLeft({ location }: Props) {
     '/access-control/departments-employees',
     '/access-control/role-management',
   ].includes(location.pathname);
-  const isSystemControl = location.pathname === '/system';
+  const isSystemControl = location.pathname === '/system/message';
 
   return (
     <div className="flex items-center flex-2">
@@ -44,7 +44,7 @@ export default function HeaderLeft({ location }: Props) {
         />
       </Authorized>
       <NavButton
-        to="/system"
+        to="/system/message"
         iconName="system_management"
         isActive={isSystemControl}
         text="系统管理"

@@ -4,13 +4,12 @@ import React, {
   InputHTMLAttributes,
   forwardRef,
   Ref,
-  useEffect,
 } from 'react';
 
 import Select from '@c/select';
 
 import { ConditionItemOptions } from './condition-item';
-import { CurrentElement, updateDataField } from '../../../store';
+import { CurrentElement, updateDataField, TriggerWay, TriggerWayValue } from '../../../store';
 
 export default forwardRef(function TriggerWay(
   props: DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement> & {
@@ -20,17 +19,22 @@ export default forwardRef(function TriggerWay(
   ref?: Ref<HTMLInputElement>,
 ) {
   const { currentElement, formFieldOptions, ...inputProps } = props;
-  const { triggerWay } = currentElement.data.businessData;
-  useEffect(() => {
-    if (triggerWay === 'whenAdd') {
-      updateDataField('formData', 'whenAlterFields', () => []);
-    }
-  }, [triggerWay]);
+  const { triggerWay, whenAlterFields } = currentElement.data.businessData;
 
-  function onChange(name: string) {
+  function onChange(name: TriggerWayValue) {
     return (e: ChangeEvent<HTMLInputElement>) => {
-      if (e.target.checked) {
-        updateDataField('formData', 'triggerWay', () => name);
+      const { checked } = e.target;
+      updateDataField('formData', 'triggerWay', (s: TriggerWay) => {
+        if (checked && !s.includes(name)) {
+          return [...s, name];
+        }
+        if (!checked) {
+          return s.filter((way) => way !== name);
+        }
+        return s;
+      });
+      if (!checked && name === 'whenAlter') {
+        updateDataField('formData', 'whenAlterFields', () => []);
       }
     };
   }
@@ -38,7 +42,7 @@ export default forwardRef(function TriggerWay(
   return (
     <div className="mb-24 flex flex-col">
       <div className="mb-8">触发方式</div>
-      <label htmlFor="whenAdd" className="mb-4 inline-flex items-center cursor-pointer self-start">
+      <label htmlFor="whenAdd" className="mb-8 inline-flex items-center cursor-pointer self-start">
         <input
           {...inputProps}
           ref={ref}
@@ -48,11 +52,11 @@ export default forwardRef(function TriggerWay(
           type="checkbox"
           value="whenAdd"
           onChange={onChange('whenAdd')}
-          checked={triggerWay === 'whenAdd'}
+          checked={triggerWay.includes('whenAdd')}
         />
           新增数据时
       </label>
-      {currentElement.data.businessData.triggerWay === 'whenAdd' && (
+      {triggerWay.includes('whenAdd') && (
         <span className="pl-22 mb-8">新增工作表时，触发工作流</span>
       )}
       <label htmlFor="whenAlter" className="inline-flex items-center cursor-pointer self-start">
@@ -65,17 +69,17 @@ export default forwardRef(function TriggerWay(
           type="checkbox"
           value="whenAlter"
           onChange={onChange('whenAlter')}
-          checked={triggerWay === 'whenAlter'}
+          checked={triggerWay.includes('whenAlter')}
         />
           修改数据时
       </label>
-      {currentElement.data.businessData.triggerWay === 'whenAlter' && (
+      {triggerWay.includes('whenAlter') && (
         <Select<string>
           placeholder="选择工作表中的字段"
-          defaultValue={currentElement.data.businessData.whenAlterFields}
+          value={whenAlterFields}
           multiple
           onChange={(v: string[]) => updateDataField('formData', 'whenAlterFields', () => v)}
-          className="h-32 py-4 border border-gray-300 select-border-radius
+          className="h-32 py-4 border border-gray-300 input-border-radius
                 px-12 text-12 flex items-center flex-1 mb-8 ml-22 mt-8"
           options={formFieldOptions}
         />

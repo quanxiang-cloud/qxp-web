@@ -14,10 +14,6 @@
   @apply rounded-tl-8 rounded-tr-2 rounded-br-8 rounded-bl-8;
 }
 
-.select-border-radius {
-  @apply rounded-tl-2 rounded-tr-8 rounded-br-8 rounded-bl-8;
-}
-
 .pagination-border {
   @apply border-t border-gray-200;
 }
@@ -26,6 +22,3 @@
   @apply rounded-tl-4 rounded-tr-12 rounded-br-12 rounded-bl-12;
 }
 
-.btn-border-radius {
-  @apply rounded-tl-8 rounded-tr-2 rounded-br-8 rounded-bl-8;
-}

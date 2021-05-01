@@ -1,15 +1,8 @@
 import React from 'react';
 import cs from 'classnames';
 
-import Icon from '@c/icon';
-
-import { Params } from '../engine';
-
 import { updateStore, Data } from '../store';
-
-export function formData(params: Params) {
-  return Promise.resolve({ formData: 'formData', ...params });
-}
+import NodeHeader from './_common/node-header';
 
 interface Props {
   data: Data;
@@ -27,13 +20,13 @@ export default function FormDataNodeComponent({ data }: Props) {
       )}
       onClick={() => updateStore(null, () => ({ asideDrawerType: 'formDataForm' }))}
     >
-      <header className="flex items-center py-4 px-12 bg-gray-100 rounded-tl-8
-        rounded-tr-8 rounded-br-2 rounded-bl-8">
-        <Icon name="form-data" className="mr-4" />
-        <span className="text-caption-no-color-weight font-medium text-gray-600">
-          {data.nodeData.name}
-        </span>
-      </header>
+      <NodeHeader
+        title={data.nodeData.name}
+        type="formData"
+        className="bg-gray-100"
+        iconName="form-data"
+        titleClassName="text-gray-600 bg-gray-100"
+      />
       <footer className="p-8 flex items-center flex-1">
         {isNew && (
           <span className="text-caption text-gray-400 px-4">选择工作表</span>

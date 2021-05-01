@@ -46,10 +46,13 @@ export const getCenter = ({
 
 const approveAndFillInCommonData = {
   basicConfig: {
-    approvePersons: [],
-    multiplePersonApproveWay: '',
-    whenNoApprovePerson: '',
-    autoApproveRules: [],
+    persons: {
+      employees: [],
+      departments: [],
+    },
+    multiplePersonWay: '',
+    whenNoPerson: '',
+    autoRules: [],
     timeRule: {
       deadLine: {
         breakPoint: '',
@@ -60,7 +63,11 @@ const approveAndFillInCommonData = {
           day: '',
           hours: '',
           minutes: '',
-          repeat: false,
+          repeat: {
+            day: '',
+            hours: '',
+            minutes: '',
+          },
         },
       },
       whenTimeout: {
@@ -79,7 +86,6 @@ export function getNodeInitialData(type: 'formData' | 'approve' | 'fillIn') {
       form: { name: '', value: '' },
       triggerWay: '',
       whenAlterFields: [],
-      triggerCondition: [],
       events: {},
     },
     approve: deepClone(approveAndFillInCommonData),

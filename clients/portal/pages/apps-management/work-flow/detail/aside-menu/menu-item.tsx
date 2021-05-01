@@ -12,7 +12,9 @@ interface Props {
 
 export default function AsideMenuItem({ iconName, text, onClick, isActive }: Props) {
   return (
-    <div className="flex items-center py-16 px-24" onClick={onClick}>
+    <div className={cs('flex items-center py-16 px-24', {
+      'bg-blue-100': isActive,
+    })} onClick={onClick}>
       <Icon name={iconName} className={cs('mr-8 group-hover:text-blue-600', {
         'text-blue-600': isActive,
       })} />

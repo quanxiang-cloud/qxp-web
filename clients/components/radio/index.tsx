@@ -6,6 +6,7 @@ import React, {
   Ref,
   ChangeEvent,
   useEffect,
+  memo,
 } from 'react';
 import cs from 'classnames';
 
@@ -19,7 +20,7 @@ export type Props = DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTM
 
 function InternalRadio(props: Props, ref?: Ref<HTMLInputElement>) {
   const { defaultChecked, className, onChange, label, checked: isChecked, ...inputProps } = props;
-  const [checked, setChecked] = useState(false);
+  const [checked, setChecked] = useState(defaultChecked);
   const id = uuid();
 
   useEffect(() => {
@@ -73,5 +74,5 @@ function InternalRadio(props: Props, ref?: Ref<HTMLInputElement>) {
 
 const Radio = forwardRef(InternalRadio);
 
-export default Radio;
+export default memo(Radio) as typeof Radio;
 

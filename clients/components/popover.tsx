@@ -31,6 +31,7 @@ export interface Props {
   onMouseOut?: () => void;
   onOpen?: () => void;
   onClose?: () => void;
+  open?: boolean;
 }
 
 export default function Popover({
@@ -46,6 +47,7 @@ export default function Popover({
   onMouseOut,
   onOpen = () => {},
   onClose = () => {},
+  open = false,
 }: Props) {
   const clickAwayRef = useRef<HTMLDivElement | null>(null);
   const triggerRef = useRef<HTMLDivElement | null>(null);
@@ -65,7 +67,15 @@ export default function Popover({
   useEffect(() => {
     isOpen ? onOpen() : onClose();
   }, [isOpen]);
-  useClickAway(clickAwayRef, () => setIsOpen(false));
+  useEffect(() => {
+    setIsOpen(open);
+  }, [open]);
+  useClickAway(clickAwayRef, (e) => {
+    if ((e.target as HTMLDivElement).classList.contains('select-option__content')) {
+      return;
+    }
+    setIsOpen(false);
+  });
   const onContentClick = (e: MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) {
       return;

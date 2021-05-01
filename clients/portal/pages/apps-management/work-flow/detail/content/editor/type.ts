@@ -44,6 +44,8 @@ export interface EdgeTextProps extends HTMLAttributes<SVGElement> {
   labelBgStyle?: CSSProperties;
   labelBgPadding?: [number, number];
   labelBgBorderRadius?: number;
+  rectClassName?: string;
+  textClassName?: string;
 }
 
 export interface Rect extends Dimensions, XYPosition {}

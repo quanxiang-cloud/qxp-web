@@ -5,7 +5,7 @@ import { twCascade } from '@mariusmarais/tailwind-cascade';
 import TextHeader from './text-header';
 
 export interface Props {
-  title: string | JSX.Element;
+  title?: string | JSX.Element;
   desc?: string;
   action?: string | JSX.Element;
   content?: JSX.Element;
@@ -41,16 +41,18 @@ export default function Card({
 
   return (
     <div style={style} className={twCascade('bg-white mt-20', classNames, className)}>
-      <TextHeader
-        title={title}
-        titleClassName={titleClassName}
-        itemTitleClassName={itemTitleClassName}
-        desc={desc}
-        action={action}
-        actionClassName={headerActionClassName}
-        className={headerClassName}
-        descClassName={descClassName}
-      />
+      {title && (
+        <TextHeader
+          title={title}
+          titleClassName={titleClassName}
+          itemTitleClassName={itemTitleClassName}
+          desc={desc}
+          action={action}
+          actionClassName={headerActionClassName}
+          className={headerClassName}
+          descClassName={descClassName}
+        />
+      )}
       {(content || children) && (
         <main className={twCascade('h-full flex flex-grow', contentClassName)}>
           {content || children}

@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { twCascade } from '@mariusmarais/tailwind-cascade';
 
-import { uuid, isFunction, isObject } from '@lib/utils';
+import { isFunction, isObject } from '@lib/utils';
 import Icon from './icon';
 
 export interface IItem<T> {
@@ -21,7 +21,7 @@ export interface IList<T> {
   header?: JSX.Element;
 }
 
-export default function List<T extends unknown>({
+function List<T extends unknown>({
   className,
   itemClassName,
   items = [],
@@ -31,7 +31,7 @@ export default function List<T extends unknown>({
   return (
     <ul className={twCascade('flex flex-col', className)}>
       {header}
-      {items.map((item: JSX.Element | (() => JSX.Element) | IItem<T>) => {
+      {items.map((item: JSX.Element | (() => JSX.Element) | IItem<T>, index: number) => {
         const isElement = React.isValidElement(item);
         const isFunc = isFunction(item);
         const isObj = isObject(item) && !isElement && !isFunc;
@@ -57,7 +57,7 @@ export default function List<T extends unknown>({
           );
         }
         return (
-          <li key={uuid()} className={twCascade('transition', itemClassName)}>
+          <li key={index} className={twCascade('transition', itemClassName)}>
             {isFunc && (item as () => JSX.Element)()}
             {isElement && item}
           </li>
@@ -66,3 +66,5 @@ export default function List<T extends unknown>({
     </ul>
   );
 }
+
+export default memo(List) as typeof List;

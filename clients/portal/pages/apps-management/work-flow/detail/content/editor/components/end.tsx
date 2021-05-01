@@ -2,12 +2,7 @@ import React from 'react';
 
 import Icon from '@c/icon';
 
-import { Params } from '../engine';
 import { Data } from '../store';
-
-export function end(params: Params) {
-  return Promise.resolve({ end: 'end', ...params });
-}
 
 interface Props {
   data: Data;

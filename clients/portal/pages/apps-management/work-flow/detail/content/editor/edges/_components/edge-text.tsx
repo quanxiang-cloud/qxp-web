@@ -1,4 +1,5 @@
 import React, { memo, useRef, useState, useEffect } from 'react';
+import cs from 'classnames';
 
 import { EdgeTextProps, Rect } from '../../type';
 
@@ -14,6 +15,8 @@ function EdgeText({
   children,
   width,
   height,
+  rectClassName,
+  textClassName,
   ...rest
 }: EdgeTextProps) {
   const edgeRef = useRef<SVGTextElement>(null);
@@ -49,14 +52,14 @@ function EdgeText({
           x={-labelBgPadding[0]-9}
           y={-labelBgPadding[1]-4.5}
           height={height || edgeTextBbox.height + (2 * labelBgPadding[1])}
-          className="react-flow__edge-textbg"
+          className={cs('react-flow__edge-textbg', rectClassName)}
           style={labelBgStyle}
           rx={labelBgBorderRadius}
           ry={labelBgBorderRadius}
         />
       )}
       <text
-        className="react-flow__edge-text"
+        className={cs('react-flow__edge-text', textClassName)}
         y={edgeTextBbox.height / 2}
         dy="0.3em"
         ref={edgeRef}

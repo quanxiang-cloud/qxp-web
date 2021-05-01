@@ -3,6 +3,8 @@ import cs from 'classnames';
 
 import Icon from '@c/icon';
 import Button from '@c/button';
+import useObservable from '@lib/hooks/use-observable';
+import store, { StoreValue } from '@flow/detail/content/editor/store';
 
 import ControlButton from './control-button';
 
@@ -39,6 +41,8 @@ function Controls({
 }: Props) {
   const setInteractive = useStoreActions((actions) => actions.setInteractive);
   const { zoomIn, zoomOut, fitView } = useZoomPanHelper();
+  const { elements = [] } = useObservable<StoreValue>(store) || {};
+  const formDataElement = elements.find(({ type }) => type === 'formData');
 
   const isInteractive = useStoreState(
     (s) => s.nodesDraggable && s.nodesConnectable && s.elementsSelectable
@@ -71,8 +75,9 @@ function Controls({
         modifier="primary"
         iconName="toggle_on"
         className="py-5"
+        forbidden={!formDataElement?.data.businessData.form.name}
       >
-        发布
+        保存
       </Button>
       <div
         className="bg-white shadow-flow-header rounded-4 overflow-hidden flex flex-row items-center"

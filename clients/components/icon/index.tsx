@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import cs from 'classnames';
 
 interface Props extends React.SVGProps<SVGSVGElement> {
@@ -47,4 +47,4 @@ function Icon(
   );
 }
 
-export default React.forwardRef(Icon);
+export default memo(React.forwardRef(Icon)) as typeof Icon;

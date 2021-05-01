@@ -1,4 +1,5 @@
 import { TreeNode } from '@c/headless-tree/types';
+import toast from '@lib/toast';
 
 /**
  * send http post request
@@ -214,4 +215,25 @@ export const last = <T>(arg: T[]) => {
 
 export function isPassword(pwd: string) {
   return /^(?=.*\d)(?=.*[a-zA-Z])(?=.*[~!@#$%^&*.\(\)\-\+\[\]\|\"\'\_])[\da-zA-Z~!@#$%^&*.\(\)\-\+\[\]\|\"\'\_]{8,}$/.test(pwd);
+}
+
+export function copyToClipboard(str: string, msg: string) {
+  const el = document.createElement('textarea');
+  el.value = str;
+  el.setAttribute('readonly', '');
+  el.style.position = 'absolute';
+  el.style.left = '-9999px';
+  document.body.appendChild(el);
+  const selected =
+    document.getSelection()?.rangeCount as number > 0 ?
+      document.getSelection()?.getRangeAt(0) :
+      false;
+  el.select();
+  document.execCommand('copy');
+  document.body.removeChild(el);
+  if (selected) {
+    document.getSelection()?.removeAllRanges();
+    document.getSelection()?.addRange(selected);
+  }
+  toast.success(msg || '复制成功');
 }

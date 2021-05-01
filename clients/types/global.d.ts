@@ -32,3 +32,8 @@ interface Window {
   ADMIN_USER_FUNC_TAGS: string[];
   [key: string]: any;
 }
+
+interface Pagination {
+  current: number;
+  pageSize: number;
+}

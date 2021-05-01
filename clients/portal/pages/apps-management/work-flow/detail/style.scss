@@ -7,6 +7,7 @@ rect {
   .drawer-container {
     @apply rounded-tl-none rounded-tr-none left-auto right-0 #{!important};
     width: 500px !important;
+    padding-bottom: 64px;
     box-shadow: -8px 0px 24px 4px rgba(148, 163, 184, 0.25);
     .drawer-main-content {
       @apply p-24 flex flex-col items-stretch;
@@ -20,5 +21,27 @@ rect {
   border-bottom: 1px solid transparent;
   &:focus {
     border-bottom: 1px solid currentColor;
+    box-shadow: none;
   }
+}
+
+.work-flow-urge {
+  li:hover {
+    background: unset;
+    cursor: default;
+  }
+}
+
+.urgeAction {
+  button:first-child {
+    @apply rounded-8 mr-16 border-gray-300 #{!important};
+  }
+
+  button:last-child {
+    @apply rounded-8 bg-blue-100 border-blue-600 text-blue-600 #{!important};
+  }
+}
+
+.work-flow-form-selector {
+  background: transparent;
 }

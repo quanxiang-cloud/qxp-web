@@ -1,18 +1,18 @@
-import React, { Children, isValidElement, useState, ReactElement } from 'react';
+import React, { Children, isValidElement, useState, ReactElement, memo } from 'react';
 
 interface Props {
-  children: ReactElement[];
+  children: (boolean | ReactElement)[];
   onChange: (value: string | number | boolean) => void;
 }
 
-export default function RadioGroup({ children, onChange }: Props) {
+function RadioGroup({ children, onChange }: Props) {
   const [checkedIndex, setCheckedIndex] = useState(-1);
 
   return (
     <>
       {
         Children.map(children, (child, index) => {
-          if (isValidElement(child)) {
+          if (isValidElement(child) && child.props.value != null) {
             return React.cloneElement(child as ReactElement, {
               onChange: (value: string | number | boolean) => {
                 setCheckedIndex(index);
@@ -27,3 +27,5 @@ export default function RadioGroup({ children, onChange }: Props) {
     </>
   );
 }
+
+export default memo(RadioGroup) as typeof RadioGroup;

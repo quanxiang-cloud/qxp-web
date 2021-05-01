@@ -225,7 +225,7 @@ export default class Select<T extends React.Key> extends React.Component<SelectP
       return (
         <MultipleSelectTrigger
           selectedOption={selectedOption as SelectOption<T>[] | undefined}
-          placeholder={placeholder}
+          placeholder={placeholder as string}
           onUnselect={(value): void => {
             this.handleClick(value);
           }}
@@ -244,7 +244,9 @@ export default class Select<T extends React.Key> extends React.Component<SelectP
 
   render(): React.ReactNode {
     const { triggerActive, selectedValue } = this.state;
-    const { children, triggerRender, name, inputRef, style, className, disabled, id } = this.props;
+    const {
+      children, triggerRender, name, inputRef, style, className, disabled, id,
+    } = this.props;
 
     const arrowStyle: React.CSSProperties | undefined = triggerActive ? {
       transform: 'rotate(180deg)',

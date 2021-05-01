@@ -1,15 +1,16 @@
 import React, { FormEvent } from 'react';
+import cs from 'classnames';
 
 import Drawer from '@c/drawer';
 import useObservable from '@lib/hooks/use-observable';
-import Icon from '@c/icon';
 import Tab from '@c/tab';
-import Button from '@c/button';
+import store, { StoreValue, CurrentElement, updateStore } from '@flow/detail/content/editor/store';
+import SaveButtonGroup
+  from '@flow/detail/content/editor/components/_common/action-save-button-group';
 
 import FormSelector from '../form-selector';
 import TriggerWay from './basic-config/trigger-way';
 import TriggerCondition from './basic-config/trigger-condition';
-import store, { StoreValue, CurrentElement, updateStore } from '../../store';
 
 const formFieldOptions = [{
   label: '修改时间',
@@ -42,10 +43,7 @@ export default function ComponentsSelector() {
       {asideDrawerType === 'formDataForm' && (
         <Drawer
           title={(
-            <div className="flex items-center">
-              <span className="text-h5 mr-8">工作表触发</span>
-              <Icon name="edit" />
-            </div>
+            <span className="text-h5 mr-8">工作表触发</span>
           )}
           distanceTop={0}
           onCancel={() => updateStore(null, () => ({ asideDrawerType: '' }))}
@@ -59,7 +57,13 @@ export default function ComponentsSelector() {
               <FormSelector defaultValue={currentElement.data.businessData.form.value} />
               <Tab
                 className="mt-10"
-                contentClassName="overflow-scroll"
+                headerClassName="border-gray-200 border-b-1"
+                titleClassName={cs(
+                  'bg-white hover:bg-white',
+                  'hover:border-blue-600 hover:border-b-4'
+                )}
+                activeTitleClassName="border-blue-600 border-b-4"
+                contentClassName="overflow-scroll bg-white"
                 style={{ height: 'calc(100% - 56px)' }}
                 items={[{
                   id: 'basicConfig',
@@ -85,23 +89,7 @@ export default function ComponentsSelector() {
                 }]}
               />
             </div>
-            <div className="flex justify-end flex-none">
-              <Button
-                className="mr-20"
-                iconName="close"
-                type="button"
-                onClick={() => updateStore(null, () => ({ asideDrawerType: '' }))}
-              >
-                取消
-              </Button>
-              <Button
-                modifier="primary"
-                iconName="save"
-                type="submit"
-              >
-                保存
-              </Button>
-            </div>
+            <SaveButtonGroup />
           </form>
         </Drawer>
       )}

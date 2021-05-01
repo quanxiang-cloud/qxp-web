@@ -1,16 +1,19 @@
 import React, { forwardRef, Ref } from 'react';
+import cs from 'classnames';
 
 import Select from '@c/select';
 import Icon from '@c/icon';
+import ToolTip from '@c/tooltip';
 
 import { updateDataField } from '../store';
 
 interface Props {
   defaultValue: string;
+  changeable?: boolean;
 }
 
 export default forwardRef(function FormSelector(
-  { defaultValue }: Props,
+  { defaultValue, changeable = true }: Props,
   ref?: Ref<HTMLInputElement>
 ) {
   const options = [{
@@ -34,26 +37,58 @@ export default forwardRef(function FormSelector(
   }];
 
   return (
-    <div className="flex items-center mb-22">
+    <div className="px-16 py-10 flex items-center mb-22 bg-gray-100
+    input-border-radius h-40">
       <div className="inline-flex items-center mr-8">
         <Icon name="article" size={20} className="mr-8" />
         <span className="text-body2">工作表:</span>
       </div>
-      <Select
-        inputRef={ref}
-        name="workForm"
-        placeholder="请选择"
-        defaultValue={defaultValue}
-        onChange={
-          (v: string) => updateDataField('formData', 'form', () => ({
-            value: v,
-            name: options.find(({ value }) => value === v)?.label,
-          }))
-        }
-        className="h-28 border border-gray-300 select-border-radius
-              px-12 text-12 flex items-center flex-1"
-        options={options}
-      />
+      {changeable && (
+        <Select
+          disabled={!changeable}
+          inputRef={ref}
+          name="workForm"
+          placeholder="请选择"
+          defaultValue={defaultValue}
+          onChange={
+            (v: string) => updateDataField('formData', 'form', () => ({
+              value: v,
+              name: options.find(({ value }) => value === v)?.label,
+            }))
+          }
+          className={cs(
+            'h-28 border-none px-12 text-12 flex items-center',
+            'flex-1 work-flow-form-selector'
+          )}
+          options={options}
+        />
+      )}
+      {!changeable && (
+        <ToolTip
+          position="top"
+          label="已自动关联开始节点工作表，暂不支持更改"
+          labelClassName="whitespace-nowrap"
+        >
+          <Select
+            disabled={!changeable}
+            inputRef={ref}
+            name="workForm"
+            placeholder="请选择"
+            defaultValue={defaultValue}
+            onChange={
+              (v: string) => updateDataField('formData', 'form', () => ({
+                value: v,
+                name: options.find(({ value }) => value === v)?.label,
+              }))
+            }
+            className={cs(
+              'h-28 border-none px-12 text-12 flex items-center',
+              'flex-1 work-flow-form-selector'
+            )}
+            options={options}
+          />
+        </ToolTip>
+      )}
     </div>
   );
 });
