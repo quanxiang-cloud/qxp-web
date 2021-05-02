@@ -111,21 +111,12 @@ const Header = styled.div`
   min-height: 56px;
   border-bottom: 1px solid #E2E8F0;
   position: relative;
-  &::after {
-    content: '';
-    background-image: url(/dist/images/md-header-bg.png);
-    background-position: top right;
-    background-size: contain;
-    background-repeat: no-repeat;
-    opacity: 0.1;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
-    position: absolute;
-    z-index: -1;
-  }
-  
+  background: white;
+  background-image: url(/dist/images/md-header-bg.jpg);
+  background-position: top right;
+  background-size: contain;
+  background-repeat: no-repeat;
+
   .md-header-left {
     display: flex;
     flex: 1;
@@ -148,7 +139,7 @@ const Body = styled.div<{ fullscreen?: boolean }>`
   ${({fullscreen}) => fullscreen ? css`
       height: calc(100vh - 56px);
     ` : css`
-      padding: 24px 40px; 
+      padding: 24px 40px;
       height: 100%;
     `}
 `;
@@ -181,16 +172,16 @@ const InnerWrap = styled.div<{ width: number | string, height: number | string, 
   height: ${(props) => typeof props.height === 'number' ? props.height + 'px' : props.height};
   background: white;
   ${({fullscreen}) => fullscreen ? css`
-    width: 100vw; 
+    width: 100vw;
     height: 100vh;
     position: relative;
     top: 56px;
   ` : css`
     margin: auto;  // FFC auto box
     max-width: calc(100vw - 42px);
-    max-height: calc(100vh - 42px);  
+    max-height: calc(100vh - 42px);
   `};
-  z-index: 110;
+  z-index: 14;
   border-radius: 12px;
   animation: ${scaleAnimation} 0.3s;
 `;
@@ -208,7 +199,7 @@ const Wrap = styled.div`
   transition: opacity .1s;
   justify-content: center;
   overflow: hidden;
-  z-index: 100;
+  z-index: 13;
   box-shadow: inset 0px -1px 0px #E2E8F0;
 
   ${Mask} {
