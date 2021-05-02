@@ -19,7 +19,6 @@ interface Props<T> {
   onSelect?: (data: T) => void;
   className?: string;
   itemClassName?: string;
-  hideRootNode?: boolean;
 }
 
 @observer
@@ -109,59 +108,14 @@ export default class Tree<T> extends React.Component<Props<T>> {
     });
   }
 
-  renderRootNode(): JSX.Element {
-    const {
-      RootNodeRender,
-      itemClassName,
-    } = this.props;
-    const {
-      nodeList,
-      currentFocusedNode,
-      renamingNodeID,
-      draggingNode,
-    } = this.props.store;
-
-    const rootNode = nodeList[0];
-
-    return (
-      <div
-        key={rootNode.id}
-        onClick={(): void => this.handleNodeClick(rootNode)}
-        className={cs('group', 'tree-node', {
-          'tree-node--focused': rootNode.id === currentFocusedNode.id,
-          'tree-node--fade': renamingNodeID,
-          'tree-node--accept-drop': this.isRootAcceptDrop,
-        }, itemClassName)}
-        onDragLeave={(): void => this.setAcceptDrop(false)}
-        onDragOver={(e): void => {
-          if (draggingNode?.id !== rootNode.id) {
-            e.preventDefault();
-            e.dataTransfer.dropEffect = 'move';
-            this.setAcceptDrop(true);
-          } else {
-            this.setAcceptDrop(false);
-          }
-        }}
-        onDrop={(): void => {
-          this.handleDrop(rootNode);
-          this.setAcceptDrop(false);
-        }}
-      >
-        <div className="tree-node__content">
-          <RootNodeRender node={rootNode} store={this.props.store} />
-        </div>
-      </div>
-    );
-  }
-
   render(): JSX.Element {
     const {
       NodeRender,
+      RootNodeRender,
       nodeDraggable,
       canDropOn,
       className,
       itemClassName,
-      hideRootNode,
     } = this.props;
     const {
       nodeList,
@@ -178,9 +132,37 @@ export default class Tree<T> extends React.Component<Props<T>> {
 
     const upwardFocusedStyleToParent = currentFocusedNode.id != actualFocusedNodeID;
 
+    const rootNode = nodeList[0];
+
     return (
       <div className={cs('tree', className)}>
-        { hideRootNode ? null : this.renderRootNode()}
+        <div
+          key={rootNode.id}
+          onClick={(): void => this.handleNodeClick(rootNode)}
+          className={cs('group', 'tree-node', {
+            'tree-node--focused': rootNode.id === currentFocusedNode.id,
+            'tree-node--fade': renamingNodeID,
+            'tree-node--accept-drop': this.isRootAcceptDrop,
+          }, itemClassName)}
+          onDragLeave={(): void => this.setAcceptDrop(false)}
+          onDragOver={(e): void => {
+            if (draggingNode?.id !== rootNode.id) {
+              e.preventDefault();
+              e.dataTransfer.dropEffect = 'move';
+              this.setAcceptDrop(true);
+            } else {
+              this.setAcceptDrop(false);
+            }
+          }}
+          onDrop={(): void => {
+            this.handleDrop(rootNode);
+            this.setAcceptDrop(false);
+          }}
+        >
+          <div className="tree-node__content">
+            <RootNodeRender node={rootNode} store={this.props.store} />
+          </div>
+        </div>
         {
           nodeList.slice(1).map((node) => {
             return (

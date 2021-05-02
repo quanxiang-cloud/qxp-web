@@ -19,13 +19,11 @@ const TREE_NODE_HEIGHT = 56;
 export type TreeStoreProps<T> = {
   rootNode: TreeNode<T>;
   onGetChildren?: (parentNode: TreeNode<T>) => Promise<TreeNode<T>[]>;
-  hideRootNode?: boolean,
 }
 
 export default class TreeStore<T> {
   static ID_FOR_NODE_UNSUBMITTED = 'ID_FOR_NODE_UNSUBMITTED';
 
-  hideRootNode: boolean;
   @observable rootNode: TreeNode<T>;
   @observable currentFocusedNodeID = '';
   @observable renamingNodeID = '';
@@ -34,9 +32,8 @@ export default class TreeStore<T> {
 
   onGetChildren: (parentNode: TreeNode<T>) => Promise<TreeNode<T>[]> = defaultGetChildren;
 
-  constructor({ rootNode, onGetChildren, hideRootNode }: TreeStoreProps<T>, autoSelect?: boolean) {
+  constructor({ rootNode, onGetChildren }: TreeStoreProps<T>, autoSelect?: boolean) {
     this.rootNode = rootNode;
-    this.hideRootNode = !!hideRootNode;
     this.autoSelect = autoSelect !== false;
     if (autoSelect) {
       this.currentFocusedNodeID = rootNode.id;
@@ -77,12 +74,11 @@ export default class TreeStore<T> {
     return nodeList.map((node, index) => {
       if (node.level > expandLevel) {
         invisibleNodeCount = invisibleNodeCount + 1;
-        const positionY = (index - invisibleNodeCount) * TREE_NODE_HEIGHT;
 
         return {
           ...node,
           visible: false,
-          positionY: this.hideRootNode ? positionY - TREE_NODE_HEIGHT : positionY,
+          positionY: (index - invisibleNodeCount) * TREE_NODE_HEIGHT,
         };
       }
 
@@ -94,8 +90,7 @@ export default class TreeStore<T> {
         expandLevel = node.level;
       }
 
-      const positionY = (index - invisibleNodeCount) * TREE_NODE_HEIGHT;
-      return { ...node, positionY: this.hideRootNode ? positionY - TREE_NODE_HEIGHT : positionY };
+      return { ...node, positionY: (index - invisibleNodeCount) * TREE_NODE_HEIGHT };
     });
   }
 
