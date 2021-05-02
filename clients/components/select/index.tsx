@@ -1,6 +1,5 @@
 import * as React from 'react';
 import cs from 'classnames';
-import { twCascade } from '@mariusmarais/tailwind-cascade';
 
 import Icon from '@c/icon';
 import Popper from '@c/popper';
@@ -182,7 +181,7 @@ export default class Select<T extends React.Key> extends React.Component<SelectP
     const { selectedValue } = this.state;
 
     return (
-      <div className="select-options" style={{ width: `${this.getTriggerWidth()}px` }}>
+      <div className="dropdown-options" style={{ width: `${this.getTriggerWidth()}px` }}>
         {optionsDesc && (<p className="select-options__desc">{optionsDesc}</p>)}
         {
           options.map((option) => {
@@ -193,12 +192,10 @@ export default class Select<T extends React.Key> extends React.Component<SelectP
               <div
                 key={option.value}
                 onClick={(): void => this.handleClick(option.value)}
-                className={cs('select-options__option', 'select-option', {
-                  'select-option--selected': isSelected,
-                })}
+                className={cs('dropdown-options__option', { 'text-blue-600': isSelected })}
               >
-                <div className="select-option__content">{option.label}</div>
-                {isSelected && <Icon name="check" />}
+                <div className="truncate min-w-0">{option.label}</div>
+                {isSelected && <Icon name="check" className="text-current" />}
               </div>
             );
           })
@@ -266,8 +263,8 @@ export default class Select<T extends React.Key> extends React.Component<SelectP
             <div
               ref={this.reference}
               style={style}
-              className={twCascade('select-trigger flex items-center', className, {
-                'select-trigger--active': triggerActive && !disabled,
+              className={cs('dropdown-trigger', className, {
+                'border-blue-600': triggerActive && !disabled,
                 'select-trigger--disabled': disabled,
               })}
             >
@@ -285,7 +282,7 @@ export default class Select<T extends React.Key> extends React.Component<SelectP
               <div className="select-trigger__content" ref={this.triggerContentRef}>
                 {triggerRender ? this.renderCustomTrigger() : this.renderDefaultTrigger()}
               </div>
-              <Icon name="expand_more" style={arrowStyle} className="trigger-arrow-icon" />
+              <Icon name="keyboard_arrow_down" style={arrowStyle} className="trigger-arrow-icon" />
             </div>
           )
         }
