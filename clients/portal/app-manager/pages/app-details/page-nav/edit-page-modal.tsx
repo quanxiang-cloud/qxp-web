@@ -8,7 +8,7 @@ import AppIconSelect from '@c/app-icon-select';
 
 type Props = {
   onCancel: () => void;
-  onSubmit: any;
+  onSubmit: (pageInfo: PageInfo) => void;
   appID: string;
   pageInfo?: PageInfo;
 };

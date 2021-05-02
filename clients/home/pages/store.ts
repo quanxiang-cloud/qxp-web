@@ -1,8 +1,7 @@
 import { observable, action } from 'mobx';
+import { TreeData } from '@atlaskit/tree';
 
-import TreeStore from '@c/headless-tree/store';
-import { TreeNode } from '@c/headless-tree/types';
-import { getPageTreeData } from '@lib/utils';
+import { getPagesTreeData } from '@lib/utils';
 import { getPageDataSchema } from '@lib/utils';
 
 import { fetchUserList, fetchPageList, fetchFormScheme } from '../lib/api';
@@ -12,36 +11,20 @@ class UserAppStore {
   @observable appID = '';
   @observable listLoading = false;
   @observable pageListLoading = false;
-  @observable curPage: PageInfo = {};
+  @observable curPage: PageInfo = { id: '' };
   @observable fetchSchemeLoading = true;
   @observable formScheme:any = null;
-  @observable treeStore: TreeStore<any> | null = null;
+  @observable pagesTreeData: TreeData = {
+    rootId: 'ROOT',
+    items: {},
+  };
 
   @action
   fetchPageList = (appID: string) => {
     this.appID = appID;
     this.pageListLoading = true;
     fetchPageList(appID).then((res: any) => {
-      const treeData = {
-        data: {},
-        name: '',
-        id: 'root',
-        parentId: '',
-        path: '',
-        isLeaf: false,
-        expanded: true,
-        order: 0,
-        level: 0,
-        visible: true,
-        childrenStatus: 'resolved',
-        children: [],
-      };
-
-      getPageTreeData(res.data.menu, treeData);
-      this.treeStore = new TreeStore({
-        rootNode: (treeData) as TreeNode<any>,
-        hideRootNode: true,
-      });
+      this.pagesTreeData = getPagesTreeData(res.data.menu);
       this.pageListLoading = false;
     });
   }
@@ -78,8 +61,11 @@ class UserAppStore {
   @action
   clear = () => {
     this.formScheme = null;
-    this.treeStore = null;
-    this.curPage = {};
+    this.pagesTreeData = {
+      rootId: 'ROOT',
+      items: {},
+    };
+    this.curPage = { id: '' };
   }
 }
 

@@ -136,7 +136,15 @@ export const deletePage = (data: any) => {
   });
 };
 
-export const movePage = (data: any) => {
+export type MovePageParams = {
+  id: string;
+  appID: string;
+  fromSort: number;
+  toSort: number;
+  fromGroupID: string;
+  toGroupID: string;
+}
+export const movePage = (data: MovePageParams) => {
   return request({
     url: '/api/v1/structor/menu/transfer',
     method: 'post',

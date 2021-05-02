@@ -1,9 +1,9 @@
-import { observable, action } from 'mobx';
+import { observable, action, toJS } from 'mobx';
+import { omit } from 'lodash';
+import { mutateTree, TreeData, TreeItem } from '@atlaskit/tree';
 
-import TreeStore from '@c/headless-tree/store';
 import toast from '@lib/toast';
-import { getPageDataSchema, getPageTreeData } from '@lib/utils';
-import { TreeNode } from '@c/headless-tree/types';
+import { getPageDataSchema, getPagesTreeData } from '@lib/utils';
 import {
   fetchAppDetails,
   updateAppStatus,
@@ -15,7 +15,6 @@ import {
   updateGroup,
   deleteGroup,
   deletePage,
-  movePage,
   fetchFormScheme,
 } from '@appLib/api';
 
@@ -25,11 +24,14 @@ class AppDetailsStore {
   @observable appDetails: any = {};
   @observable loading = false;
   @observable appId = '';
-  @observable treeStore: TreeStore<any> | null = null;
   @observable pageListLoading = false;
   @observable fetchSchemeLoading = false;
   @observable formScheme = null;
-  @observable curPage: PageInfo = {};
+  @observable curPage: PageInfo = { id: '' };
+  @observable pagesTreeData: TreeData = {
+    rootId: 'ROOT',
+    items: {},
+  };
 
   @action
   updateAppStatus = () => {
@@ -63,84 +65,98 @@ class AppDetailsStore {
   }
 
   @action
-  deletePageOrGroup = (node: TreeNode<any>, type: string) => {
+  updatePagesTree = (treeData: TreeData) => {
+    this.pagesTreeData = treeData;
+  }
+
+  @action
+  deletePageOrGroup = (treeItem: TreeItem, type: string) => {
     const data = {
-      id: node.data.id,
-      appID: node.data.appID,
-      sort: node.data.sort,
+      id: treeItem.data.id,
+      appID: treeItem.data.appID,
+      sort: treeItem.data.sort,
+      group_id: type === 'delGroup' ? '' : treeItem.data.groupID,
     };
 
-    return (type === 'delGroup' ? deleteGroup({ ...data, group_id: '' }) :
-      deletePage({ ...data, group_id: node.data.groupID })).then(() => {
-      this.treeStore?.deleteNode(node);
+    const method = type === 'delGroup' ? deleteGroup : deletePage;
+
+    return method(data).then(() => {
+      const items = omit(toJS(this.pagesTreeData.items), treeItem.id as string);
+      const groupID = data.group_id || 'ROOT';
+      items[groupID] = {
+        ...items[groupID],
+        children: items[groupID].children?.filter((childID) => childID !== treeItem.id),
+      };
+      this.pagesTreeData = {
+        items,
+        rootId: this.pagesTreeData.rootId,
+      };
+
       toast.success('删除成功');
     });
   }
 
   @action
-  editGroup = (groupInfo: GroupInfo, node: TreeNode<any>) => {
+  editGroup = (groupInfo: GroupInfo) => {
     if (groupInfo.id) {
       return updateGroup({ appID: this.appId, ...groupInfo }).then(() => {
-        this.treeStore?.updateNode({
-          ...node,
-          name: groupInfo.name || '',
-          data: { ...node.data, ...groupInfo },
+        this.pagesTreeData = mutateTree(toJS(this.pagesTreeData), groupInfo.id as string, {
+          id: groupInfo.id,
+          data: groupInfo,
         });
+
         toast.success('修改成功');
       });
     }
 
     return createGroup({ appID: this.appId, ...groupInfo }).then((res) => {
       const newGroup = { ...res.data, name: groupInfo.name, menuType: 1 };
-      this.treeStore?.addChildren('root', [{
-        data: newGroup,
-        name: newGroup.name || '',
-        id: newGroup.id || '',
-        path: '',
-        isLeaf: false,
-        expanded: false,
-        order: this.treeStore.rootNode.children?.length || 1,
-        visible: true,
-        childrenStatus: 'resolved',
-        level: 1,
-        parentId: 'root',
+      const items = toJS(this.pagesTreeData.items);
+      items.ROOT.children.push(newGroup.id);
+      items[newGroup.id] = {
+        id: newGroup.id,
         children: [],
-      }]);
+        hasChildren: true,
+        isExpanded: true,
+        isChildrenLoading: false,
+        data: newGroup,
+      };
+
+      this.pagesTreeData = {
+        items,
+        rootId: 'ROOT',
+      };
+
       toast.success('创建成功');
     });
   }
 
   @action
-  editPage = (pageInfo: PageInfo, node: TreeNode<any>) => {
+  editPage = (pageInfo: PageInfo) => {
     if (pageInfo.id) {
       return updatePage(pageInfo).then(() => {
         toast.success('修改成功');
-        this.treeStore?.updateNode({
-          ...node,
-          name: pageInfo.name || '',
-          data: { ...node.data, ...pageInfo },
+        this.pagesTreeData = mutateTree(toJS(this.pagesTreeData), pageInfo.id, {
+          id: pageInfo.id,
+          data: pageInfo,
         });
       });
-    } else {
-      return createPage({ appID: this.appId, ...pageInfo }).then((res) => {
-        const newPage = { ...res.data, ...pageInfo, menuType: 0 };
-        this.treeStore?.addChildren(pageInfo.groupID || 'root', [{
-          data: newPage,
-          name: newPage.name || '',
-          id: newPage.id || '',
-          path: '',
-          isLeaf: true,
-          expanded: false,
-          order: this.treeStore.rootNode.children?.length || 1,
-          visible: true,
-          childrenStatus: 'resolved',
-          level: 1,
-          parentId: pageInfo.groupID || 'root',
-          children: [],
-        }]);
-        toast.success('创建成功');
-      });
     }
+
+    return createPage({ appID: this.appId, ...pageInfo }).then((res) => {
+      const newPage = { ...res.data, ...pageInfo, menuType: 0 };
+      const items = toJS(this.pagesTreeData.items);
+      items[newPage.groupID || 'ROOT'].children.push(newPage.id);
+      items[newPage.id] = {
+        id: newPage.id,
+        data: newPage,
+        children: [],
+        hasChildren: false,
+      };
+
+      this.pagesTreeData = { items, rootId: 'ROOT' };
+      toast.success('创建成功');
+    });
   }
 
   @action
@@ -167,40 +183,17 @@ class AppDetailsStore {
     this.appId = appId;
     this.pageListLoading = true;
     fetchPageList(appId).then((res) => {
-      // todo fix any type
-      const treeData: any = {
-        data: {},
-        name: '',
-        id: 'root',
-        parentId: '',
-        path: '',
-        isLeaf: false,
-        expanded: true,
-        order: 0,
-        level: 0,
-        visible: true,
-        childrenStatus: 'resolved',
-        children: [],
-      };
-
-      getPageTreeData(res.data.menu, treeData);
-
-      this.treeStore = new TreeStore({
-        rootNode: (treeData) as TreeNode<any>,
-        hideRootNode: true,
-      });
+      this.pagesTreeData = getPagesTreeData(res.data.menu);
       this.pageListLoading = false;
     });
   }
 
   @action
-  movePage = (moveData: any) => {
-    return movePage(moveData);
-  }
-
-  @action
   clear = () => {
-    this.treeStore = null;
+    this.pagesTreeData = {
+      rootId: 'ROOT',
+      items: {},
+    };
   }
 }
 

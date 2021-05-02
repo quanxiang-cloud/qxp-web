@@ -69,6 +69,15 @@
     lodash "^4.17.21"
     resize-observer-polyfill "^1.5.0"
 
+"@atlaskit/tree@^8.2.0":
+  version "8.2.0"
+  resolved "https://registry.npm.taobao.org/@atlaskit/tree/download/@atlaskit/tree-8.2.0.tgz#92acb031ad7708901adc46897ff3c4677801e845"
+  integrity sha1-kqywMa13CJAa3EaJf/PEZ3gB6EU=
+  dependencies:
+    "@babel/runtime" "^7.0.0"
+    css-box-model "^1.2.0"
+    react-beautiful-dnd-next "11.0.5"
+
 "@babel/code-frame@7.12.11":
   version "7.12.11"
   resolved "https://registry.npm.taobao.org/@babel/code-frame/download/@babel/code-frame-7.12.11.tgz#f4ad435aa263db935b8f10f2c552d23fb716a63f"
@@ -918,6 +927,21 @@
     "@babel/plugin-transform-react-jsx-development" "^7.12.17"
     "@babel/plugin-transform-react-pure-annotations" "^7.12.1"
 
+"@babel/runtime-corejs2@^7.4.5":
+  version "7.14.0"
+  resolved "https://registry.nlark.com/@babel/runtime-corejs2/download/@babel/runtime-corejs2-7.14.0.tgz?cache=0&sync_timestamp=1619727646528&other_urls=https%3A%2F%2Fregistry.nlark.com%2F%40babel%2Fruntime-corejs2%2Fdownload%2F%40babel%2Fruntime-corejs2-7.14.0.tgz#5519b92ccc819bd3d0a1ecb25ab3cb5a775485f8"
+  integrity sha1-VRm5LMyBm9PQoeyyWrPLWndUhfg=
+  dependencies:
+    core-js "^2.6.5"
+    regenerator-runtime "^0.13.4"
+
+"@babel/runtime@^7.0.0":
+  version "7.14.0"
+  resolved "https://registry.nlark.com/@babel/runtime/download/@babel/runtime-7.14.0.tgz?cache=0&sync_timestamp=1619727389508&other_urls=https%3A%2F%2Fregistry.nlark.com%2F%40babel%2Fruntime%2Fdownload%2F%40babel%2Fruntime-7.14.0.tgz#46794bc20b612c5f75e62dd071e24dfd95f1cbe6"
+  integrity sha1-RnlLwgthLF915i3QceJN/ZXxy+Y=
+  dependencies:
+    regenerator-runtime "^0.13.4"
+
 "@babel/runtime@^7.1.2", "@babel/runtime@^7.10.1", "@babel/runtime@^7.10.2", "@babel/runtime@^7.10.4", "@babel/runtime@^7.11.1", "@babel/runtime@^7.11.2", "@babel/runtime@^7.12.1", "@babel/runtime@^7.12.5", "@babel/runtime@^7.5.5", "@babel/runtime@^7.6.2", "@babel/runtime@^7.6.3", "@babel/runtime@^7.7.2", "@babel/runtime@^7.8.4", "@babel/runtime@^7.9.2":
   version "7.13.17"
   resolved "https://registry.nlark.com/@babel/runtime/download/@babel/runtime-7.13.17.tgz#8966d1fc9593bf848602f0662d6b4d0069e3a7ec"
@@ -1210,7 +1234,7 @@
   resolved "https://registry.npm.taobao.org/@types/history/download/@types/history-4.7.8.tgz#49348387983075705fe8f4e02fb67f7daaec4934"
   integrity sha1-STSDh5gwdXBf6PTgL7Z/farsSTQ=
 
-"@types/hoist-non-react-statics@*":
+"@types/hoist-non-react-statics@*", "@types/hoist-non-react-statics@^3.3.0":
   version "3.3.1"
   resolved "https://registry.nlark.com/@types/hoist-non-react-statics/download/@types/hoist-non-react-statics-3.3.1.tgz#1124aafe5118cb591977aeb1ceaaed1070eb039f"
   integrity sha1-ESSq/lEYy1kZd66xzqrtEHDrA58=
@@ -1294,6 +1318,16 @@
   dependencies:
     "@types/draft-js" "*"
     "@types/react" "*"
+
+"@types/react-redux@^7.1.16":
+  version "7.1.16"
+  resolved "https://registry.npm.taobao.org/@types/react-redux/download/@types/react-redux-7.1.16.tgz#0fbd04c2500c12105494c83d4a3e45c084e3cb21"
+  integrity sha1-D70EwlAMEhBUlMg9Sj5FwITjyyE=
+  dependencies:
+    "@types/hoist-non-react-statics" "^3.3.0"
+    "@types/react" "*"
+    hoist-non-react-statics "^3.3.0"
+    redux "^4.0.0"
 
 "@types/react-router-dom@^5.1.7":
   version "5.1.7"
@@ -2675,7 +2709,7 @@ core-js-compat@^3.9.0, core-js-compat@^3.9.1:
     browserslist "^4.16.4"
     semver "7.0.0"
 
-core-js@^2.4.0:
+core-js@^2.4.0, core-js@^2.6.5:
   version "2.6.12"
   resolved "https://registry.nlark.com/core-js/download/core-js-2.6.12.tgz#d9333dfa7b065e347cc5682219d6f690859cc2ec"
   integrity sha1-2TM9+nsGXjR8xWgiGdb2kIWcwuw=
@@ -2734,6 +2768,13 @@ cross-spawn@^7.0.2, cross-spawn@^7.0.3:
     path-key "^3.1.0"
     shebang-command "^2.0.0"
     which "^2.0.1"
+
+css-box-model@^1.1.2, css-box-model@^1.2.0:
+  version "1.2.1"
+  resolved "https://registry.npm.taobao.org/css-box-model/download/css-box-model-1.2.1.tgz#59951d3b81fd6b2074a62d49444415b0d2b4d7c1"
+  integrity sha1-WZUdO4H9ayB0pi1JREQVsNK018E=
+  dependencies:
+    tiny-invariant "^1.0.6"
 
 css-color-keywords@^1.0.0:
   version "1.0.0"
@@ -5359,6 +5400,11 @@ mdn-data@2.0.4:
   resolved "https://registry.nlark.com/mdn-data/download/mdn-data-2.0.4.tgz?cache=0&sync_timestamp=1619048987572&other_urls=https%3A%2F%2Fregistry.nlark.com%2Fmdn-data%2Fdownload%2Fmdn-data-2.0.4.tgz#699b3c38ac6f1d728091a64650b65d388502fd5b"
   integrity sha1-aZs8OKxvHXKAkaZGULZdOIUC/Vs=
 
+memoize-one@^5.0.4:
+  version "5.2.1"
+  resolved "https://registry.nlark.com/memoize-one/download/memoize-one-5.2.1.tgz?cache=0&sync_timestamp=1619230320235&other_urls=https%3A%2F%2Fregistry.nlark.com%2Fmemoize-one%2Fdownload%2Fmemoize-one-5.2.1.tgz#8337aa3c4335581839ec01c3d594090cebe8f00e"
+  integrity sha1-gzeqPEM1WBg57AHD1ZQJDOvo8A4=
+
 memory-fs@^0.5.0:
   version "0.5.0"
   resolved "https://registry.npm.taobao.org/memory-fs/download/memory-fs-0.5.0.tgz#324c01288b88652966d161db77838720845a8e3c"
@@ -6714,6 +6760,11 @@ quick-lru@^5.1.1:
   resolved "https://registry.npm.taobao.org/quick-lru/download/quick-lru-5.1.1.tgz?cache=0&sync_timestamp=1610612249309&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fquick-lru%2Fdownload%2Fquick-lru-5.1.1.tgz#366493e6b3e42a3a6885e2e99d18f80fb7a8c932"
   integrity sha1-NmST5rPkKjpoheLpnRj4D7eoyTI=
 
+raf-schd@^4.0.0:
+  version "4.0.3"
+  resolved "https://registry.npm.taobao.org/raf-schd/download/raf-schd-4.0.3.tgz?cache=0&sync_timestamp=1618282126076&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fraf-schd%2Fdownload%2Fraf-schd-4.0.3.tgz#5d6c34ef46f8b2a0e880a8fcdb743efc5bfdbc1a"
+  integrity sha1-XWw070b4sqDogKj823Q+/Fv9vBo=
+
 randombytes@^2.1.0:
   version "2.1.0"
   resolved "https://registry.npm.taobao.org/randombytes/download/randombytes-2.1.0.tgz#df6f84372f0270dc65cdf6291349ab7a473d4f2a"
@@ -7064,6 +7115,20 @@ rc-virtual-list@^3.0.1, rc-virtual-list@^3.2.0:
     rc-resize-observer "^1.0.0"
     rc-util "^5.0.7"
 
+react-beautiful-dnd-next@11.0.5:
+  version "11.0.5"
+  resolved "https://registry.nlark.com/react-beautiful-dnd-next/download/react-beautiful-dnd-next-11.0.5.tgz#41e693733bbdeb6269b9e4b923a36de2e99ed761"
+  integrity sha1-QeaTczu962JpueS5I6Nt4ume12E=
+  dependencies:
+    "@babel/runtime-corejs2" "^7.4.5"
+    css-box-model "^1.1.2"
+    memoize-one "^5.0.4"
+    raf-schd "^4.0.0"
+    react-redux "^7.0.3"
+    redux "^4.0.1"
+    tiny-invariant "^1.0.4"
+    use-memo-one "^1.1.0"
+
 react-color@^2.19.3:
   version "2.19.3"
   resolved "https://registry.npm.taobao.org/react-color/download/react-color-2.19.3.tgz?cache=0&sync_timestamp=1603862152183&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Freact-color%2Fdownload%2Freact-color-2.19.3.tgz#ec6c6b4568312a3c6a18420ab0472e146aa5683d"
@@ -7158,7 +7223,7 @@ react-input-autosize@^2.2.2:
   dependencies:
     prop-types "^15.5.8"
 
-react-is@^16.12.0, react-is@^16.6.0, react-is@^16.7.0, react-is@^16.8.1:
+react-is@^16.12.0, react-is@^16.13.1, react-is@^16.6.0, react-is@^16.7.0, react-is@^16.8.1:
   version "16.13.1"
   resolved "https://registry.nlark.com/react-is/download/react-is-16.13.1.tgz#789729a4dc36de2999dc156dd6c1d9c18cea56a4"
   integrity sha1-eJcppNw23imZ3BVt1sHZwYzqVqQ=
@@ -7179,6 +7244,18 @@ react-query@^3.12.0:
     "@babel/runtime" "^7.5.5"
     broadcast-channel "^3.4.1"
     match-sorter "^6.0.2"
+
+react-redux@^7.0.3:
+  version "7.2.4"
+  resolved "https://registry.nlark.com/react-redux/download/react-redux-7.2.4.tgz#1ebb474032b72d806de2e0519cd07761e222e225"
+  integrity sha1-HrtHQDK3LYBt4uBRnNB3YeIi4iU=
+  dependencies:
+    "@babel/runtime" "^7.12.1"
+    "@types/react-redux" "^7.1.16"
+    hoist-non-react-statics "^3.3.2"
+    loose-envify "^1.4.0"
+    prop-types "^15.7.2"
+    react-is "^16.13.1"
 
 react-router-dom@^5.2.0:
   version "5.2.0"
@@ -7362,7 +7439,7 @@ reduce-css-calc@^2.1.8:
     css-unit-converter "^1.1.1"
     postcss-value-parser "^3.3.0"
 
-redux@^4.0.5:
+redux@^4.0.0, redux@^4.0.1, redux@^4.0.5:
   version "4.1.0"
   resolved "https://registry.nlark.com/redux/download/redux-4.1.0.tgz?cache=0&other_urls=https%3A%2F%2Fregistry.nlark.com%2Fredux%2Fdownload%2Fredux-4.1.0.tgz#eb049679f2f523c379f1aff345c8612f294c88d4"
   integrity sha1-6wSWefL1I8N58a/zRchhLylMiNQ=
@@ -8463,7 +8540,7 @@ timsort@^0.3.0:
   resolved "https://registry.npm.taobao.org/timsort/download/timsort-0.3.0.tgz#405411a8e7e6339fe64db9a234de11dc31e02bd4"
   integrity sha1-QFQRqOfmM5/mTbmiNN4R3DHgK9Q=
 
-tiny-invariant@^1.0.2:
+tiny-invariant@^1.0.2, tiny-invariant@^1.0.4, tiny-invariant@^1.0.6:
   version "1.1.0"
   resolved "https://registry.nlark.com/tiny-invariant/download/tiny-invariant-1.1.0.tgz#634c5f8efdc27714b7f386c35e6760991d230875"
   integrity sha1-Y0xfjv3CdxS384bDXmdgmR0jCHU=
@@ -8830,6 +8907,11 @@ url-loader@^4.1.1:
     loader-utils "^2.0.0"
     mime-types "^2.1.27"
     schema-utils "^3.0.0"
+
+use-memo-one@^1.1.0:
+  version "1.1.2"
+  resolved "https://registry.npm.taobao.org/use-memo-one/download/use-memo-one-1.1.2.tgz#0c8203a329f76e040047a35a1197defe342fab20"
+  integrity sha1-DIIDoyn3bgQAR6NaEZfe/jQvqyA=
 
 use@^3.1.0:
   version "3.1.1"

@@ -1,48 +1,44 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState } from 'react';
+import { toJS } from 'mobx';
+import { TreeItem } from '@atlaskit/tree';
 import { useParams } from 'react-router-dom';
 import { observer } from 'mobx-react';
 import { Tooltip } from '@QCFE/lego-ui';
 
 import PageLoading from '@appC/page-loading';
-import Tree from '@c/headless-tree';
-import { TreeNode } from '@c/headless-tree/types';
 import Icon from '@c/icon';
+import AppPagesTree from './app-pages-tree';
 
 import EditGroupModal from './edit-group-modal';
 import EditPageModal from './edit-page-modal';
 import DelModal from './del-modal';
-import PageItem from './page-item';
 import appPagesStore from '../store';
 import './index.scss';
 
 function PageNav() {
   const [modalType, setModalType] = useState('');
-  const [curEditNode, setCurEditNode] = useState<null | TreeNode<any>>(null);
+  const [curEditNode, setCurEditNode] = useState<null | TreeItem>(null);
   const { appId } = useParams<any>();
-  const { treeStore, editPage, setCurPage, editGroup, deletePageOrGroup, movePage } = appPagesStore;
+  const { setCurPage, editGroup, deletePageOrGroup } = appPagesStore;
 
-  const onSelect = (pageNode: PageInfo) => {
-    if (pageNode.menuType === 1) {
+  function delPageOrGroup() {
+    if (!curEditNode) {
       return;
     }
 
-    setCurPage(pageNode);
-  };
-
-  const delPageOrGroup = () => {
-    deletePageOrGroup(curEditNode as TreeNode<any>, modalType).then(() => {
+    deletePageOrGroup(curEditNode, modalType).then(() => {
       closeModal();
     });
-  };
+  }
 
-  const handleEditPage = (pageInfo: PageInfo) => {
-    editPage(pageInfo, curEditNode as TreeNode<any>).then(() => {
+  function handleEditPage(pageInfo: PageInfo) {
+    appPagesStore.editPage(pageInfo).then(() => {
       closeModal();
     });
-  };
+  }
 
   const handleEditGroup = (groupInfo: GroupInfo) => {
-    return editGroup(groupInfo, curEditNode as TreeNode<any>);
+    return editGroup(groupInfo);
   };
 
   const closeModal = () => {
@@ -50,33 +46,12 @@ function PageNav() {
     setCurEditNode(null);
   };
 
-  const handleMenuClick = (key: string, node: any) => {
-    setCurEditNode(node);
+  const handleMenuClick = (key: string, treeItem: TreeItem) => {
+    setCurEditNode(treeItem);
     setModalType(key);
   };
 
-  const onDrop = (dropTo: TreeNode<any>, draggingNode: TreeNode<any>) => {
-    if (dropTo.isLeaf) {
-      return Promise.resolve(false);
-    }
-
-    return movePage({
-      id: draggingNode.id,
-      appID: appId,
-      fromSort: draggingNode.data.sort,
-      toSort: dropTo.data.sort,
-      fromGroupID: draggingNode.data.groupID,
-      toGroupID: dropTo.id,
-    }).then(() => {
-      return true;
-    });
-  };
-
-  const PageItemRender = useCallback((props) => {
-    return (<PageItem {...props} onMenuClick={handleMenuClick} />);
-  }, []);
-
-  if (!treeStore) {
+  if (appPagesStore.pageListLoading) {
     return <div className='app-details-nav'><PageLoading /></div>;
   }
 
@@ -102,15 +77,12 @@ function PageNav() {
         </Tooltip>
       </div>
       <div className='app-page-tree-wrapper'>
-        <Tree
-          hideRootNode
-          // nodeDraggable={(node): boolean => node.data.menuType === 0}
-          // onDrop={onDrop}
-          store={treeStore}
-          // canDropOn={(node): boolean => !node.isLeaf}
-          NodeRender={PageItemRender}
-          RootNodeRender={() => <div className='px-16'>页面列表</div>}
-          onSelect={onSelect}
+        <AppPagesTree
+          tree={toJS(appPagesStore.pagesTreeData)}
+          onMenuClick={handleMenuClick}
+          selectedPage={appPagesStore.curPage}
+          onSelectPage={setCurPage}
+          onChange={appPagesStore.updatePagesTree}
         />
       </div>
       {/* <div onClick={() => setModalType('editPage')} className='add-page-add-btn'>
@@ -125,8 +97,8 @@ function PageNav() {
       />
       {modalType === 'editGroup' && (
         <EditGroupModal
-          id={curEditNode?.id}
-          name={curEditNode?.name}
+          id={curEditNode?.id as string}
+          name={curEditNode?.data.name}
           onCancel={closeModal}
           onSubmit={handleEditGroup}
         />

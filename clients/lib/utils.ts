@@ -1,11 +1,10 @@
-import { TreeNode } from '@c/headless-tree/types';
 import moment from 'moment';
+import { TreeData, TreeItem } from '@atlaskit/tree';
+
+import { TreeNode } from '@c/headless-tree/types';
 import { getFilterField } from '@portal/app-manager/pages/form-design/utils';
 import appPageDataStore from '@appC/app-page-data/store';
 
-/**
- * send http post request
- */
 export function httpPost<T>(
   url: string,
   data?: string | null,
@@ -219,31 +218,51 @@ export function isPassword(pwd: string) {
   return /^(?=.*\d)(?=.*[a-zA-Z])(?=.*[~!@#$%^&*.\(\)\-\+\[\]\|\"\'\_])[\da-zA-Z~!@#$%^&*.\(\)\-\+\[\]\|\"\'\_]{8,}$/.test(pwd);
 }
 
-export function getPageTreeData(pageList: any[], root: any, level = 1) {
-  const treeList = pageList.map((pageData) => {
-    const treeData = {
-      data: pageData,
-      name: pageData.name || '',
-      id: pageData.id || '',
-      path: '',
-      isLeaf: pageData.menuType === 0,
-      expanded: false,
-      order: pageData.sort,
-      visible: true,
-      childrenStatus: 'resolved',
-      level: level,
-      parentId: root.id,
-      children: [],
+function _buildTreeDataItems(
+  items: { [key: string]: TreeItem },
+  menus: Array<PageInfo>,
+): { [key: string]: TreeItem } {
+  const childItems = menus.map((page) => {
+    return _buildTreeDataItems(items, page.child || []);
+  }).reduce((acc, childItems) => {
+    return { ...acc, ...childItems };
+  }, {});
+
+  const newItems = menus.reduce<{ [key: string]: TreeItem}>((acc, page) => {
+    acc[page.id] = {
+      id: page.id,
+      children: (page.child || []).map((childPage) => childPage.id),
+      hasChildren: page.menuType === 1,
+      isExpanded: false,
+      isChildrenLoading: false,
+      data: page,
     };
+    return acc;
+  }, items);
 
-    if (pageData.child) {
-      getPageTreeData(pageData.child, treeData, level + 1);
-    }
+  return {
+    ...childItems,
+    ...newItems,
+  };
+}
 
-    return treeData;
-  });
+export function getPagesTreeData(menus: Array<PageInfo>): TreeData {
+  const rootItem: { [key: string]: TreeItem } = {
+    ROOT: {
+      id: 'ROOT',
+      children: menus.map((childPage) => childPage.id),
+      hasChildren: !!menus.length,
+      isExpanded: true,
+      isChildrenLoading: false,
+    },
+  };
 
-  root.children = treeList;
+  const treeData: TreeData = {
+    rootId: 'ROOT',
+    items: _buildTreeDataItems(rootItem, menus),
+  };
+
+  return treeData;
 }
 
 function getTableCellData(initValue: any, field: any) {
