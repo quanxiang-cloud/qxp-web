@@ -9,7 +9,6 @@ import { LocaleProvider } from '@QCFE/lego-ui';
 // ensure web socket connection
 // todo how about on app-manager page?
 import '@lib/push';
-import Loading from '@c/loading';
 
 import App from './application';
 import stores from './stores';
@@ -35,9 +34,7 @@ ReactDOM.render(
       <RecoilRoot>
         <LocaleProvider locales={locales}>
           <Router>
-            <React.Suspense fallback={<Loading className="w-screen h-screen" desc="加载中..." />}>
-              <App/>
-            </React.Suspense>
+            <App/>
           </Router>
         </LocaleProvider>
       </RecoilRoot>

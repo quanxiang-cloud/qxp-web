@@ -20,7 +20,7 @@ if (USER && !isEmpty(USER)) {
 }
 
 export default function Routes(): JSX.Element {
-  const [, setValue] = usePortalGlobalValue();
+  const [_, setValue] = usePortalGlobalValue();
   const { data: funcs, isLoading: funcsIsLoading } = useQuery(
     ['GET_USER_FUNCS', USER?.depIds],
     getUserFuncs,
@@ -57,12 +57,12 @@ export default function Routes(): JSX.Element {
     return <Loading desc="加载中..." className="w-screen h-screen" />;
   }
 
-  if (!funcs || !data?.total || (funcs && !funcs.includes('application'))) {
-    return <Error desc="您没有权限, 请联系管理员..." />;
-  }
+  // if (!funcs || !data?.total || (funcs && !funcs.includes('application'))) {
+  //   return <Error desc="您没有权限, 请联系管理员..." />;
+  // }
 
   return (
-    <>
+    <React.Suspense fallback={<Loading className="w-screen h-screen" desc="加载中..." />}>
       <Switch>
         <Route exact path="/" component={Dashboard} />
         <Route path="/metadata" component={MetaData} />
@@ -70,6 +70,6 @@ export default function Routes(): JSX.Element {
         <Route path="/system" component={SystemMgmt} />
         <Route component={Error} />
       </Switch>
-    </>
+    </React.Suspense>
   );
 }
