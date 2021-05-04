@@ -1,11 +1,11 @@
 import React from 'react';
 import cs from 'classnames';
 import { useQuery } from 'react-query';
-import { getMessageList } from '@portal/pages/msg-center/api';
+import { getMessageList } from '@portal/modules/msg-center/api';
 import Loading from '@c/loading';
 import Error from '@c/error';
 import MsgItem from '../msg-item';
-import { MsgReadStatus } from '@portal/pages/system-mgmt/constants';
+import { MsgReadStatus } from '@portal/modules/system-mgmt/constants';
 // import {default as mockMsgList} from '@portal/mock/mock-msg-list';
 
 import styles from './index.module.scss';

@@ -1,6 +1,6 @@
 import fetcher from '@lib/fetcher';
 import httpClient from '@lib/http-client';
-import { MsgReadStatus, MsgType } from '@portal/pages/system-mgmt/constants';
+import { MsgReadStatus, MsgType } from '@portal/modules/system-mgmt/constants';
 
 type QueryFilter={
   status?: MsgReadStatus | number;

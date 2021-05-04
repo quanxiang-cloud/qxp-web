@@ -2,7 +2,7 @@ import React from 'react';
 import cs from 'classnames';
 import { inject, observer } from 'mobx-react';
 import BtnBadge from '@c/btn-badge';
-import { MsgType } from '@portal/pages/system-mgmt/constants';
+import { MsgType } from '@portal/modules/system-mgmt/constants';
 
 import styles from './index.module.scss';
 

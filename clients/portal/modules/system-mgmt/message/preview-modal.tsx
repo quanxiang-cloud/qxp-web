@@ -2,7 +2,7 @@ import React from 'react';
 import styles from './index.module.scss';
 import Modal from '@c/modal';
 import PreviewMsg from '../send-message/preview-msg';
-import { MsgSendStatus } from '@portal/pages/system-mgmt/constants';
+import { MsgSendStatus } from '@portal/modules/system-mgmt/constants';
 
 interface Props {
     handleClick: () => void

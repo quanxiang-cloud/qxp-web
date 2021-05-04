@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { inject, observer } from 'mobx-react';
 import Loading from '@c/loading';
 import styles from '../index.module.scss';
-import PreviewMsg from '@portal/pages/system-mgmt/send-message/preview-msg';
+import PreviewMsg from '@portal/modules/system-mgmt/send-message/preview-msg';
 import NoMsg from '../no-msg';
 
 interface Props {

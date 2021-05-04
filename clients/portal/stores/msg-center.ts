@@ -1,7 +1,7 @@
 // message center store
 import { observable, action, computed } from 'mobx';
 import { find, get } from 'lodash';
-import { MsgType } from '@portal/pages/system-mgmt/constants';
+import { MsgType } from '@portal/modules/system-mgmt/constants';
 
 class MsgCenter {
   @observable.shallow

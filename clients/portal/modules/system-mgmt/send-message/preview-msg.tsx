@@ -4,7 +4,7 @@ import styles from './index.module.scss';
 import cs from 'classnames';
 import Loading from '@c/loading';
 import FileList from './filelist';
-import { MsgType } from '@portal/pages/system-mgmt/constants';
+import { MsgType } from '@portal/modules/system-mgmt/constants';
 import { usePortalGlobalValue } from '@portal/states_to_be_delete/portal';
 
 interface Props {

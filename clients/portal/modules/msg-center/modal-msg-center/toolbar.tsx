@@ -4,7 +4,7 @@ import { throttle } from 'lodash';
 import { inject, observer } from 'mobx-react';
 import { useQueryClient } from 'react-query';
 import Icon from '@c/icon';
-import { MsgReadStatus } from '@portal/pages/system-mgmt/constants';
+import { MsgReadStatus } from '@portal/modules/system-mgmt/constants';
 
 const Toolbar = ({ msgCenter }: Pick<MobxStores, 'msgCenter' | any>) => {
   const { countUnread, filterCheckUnread, setUnreadFilter }=msgCenter;

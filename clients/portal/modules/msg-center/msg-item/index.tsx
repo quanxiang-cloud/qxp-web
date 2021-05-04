@@ -1,12 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react';
 import cs from 'classnames';
 import { inject, observer } from 'mobx-react';
-import { MsgReadStatus, MsgType } from '@portal/pages/system-mgmt/constants';
+import { MsgReadStatus, MsgType } from '@portal/modules/system-mgmt/constants';
 import dayjs from 'dayjs';
 
 import { Message } from '@QCFE/lego-ui';
 import { useQueryClient, useMutation } from 'react-query';
-import { getMsgById } from '@portal/pages/msg-center/api';
+import { getMsgById } from '@portal/modules/msg-center/api';
 
 import { getQuery } from '@portal/utils';
 import { useRouting } from '../hooks';

@@ -6,7 +6,7 @@ import Table from '@c/lego-table';
 import EmptyData from '@c/empty-tips';
 import Pagination from '@c/pagination';
 // todo remove this
-import { adminSearchUserList } from '@portal/pages/access-control/role-management/api';
+import { adminSearchUserList } from '@portal/modules/access-control/role-management/api';
 import Loading from '@c/loading';
 
 import OwnerStore from '../store';

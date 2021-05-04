@@ -10,7 +10,7 @@ import { Editor } from 'react-draft-wysiwyg';
 import { EditorState, convertToRaw, ContentState } from 'draft-js';
 import draftToHtml from 'draftjs-to-html';
 import htmlToDraft from 'html-to-draftjs';
-import { MsgType } from '@portal/pages/system-mgmt/constants';
+import { MsgType } from '@portal/modules/system-mgmt/constants';
 import Button from '@c/button';
 import Icon from '@c/icon';
 import Modal from '@c/modal';
@@ -19,7 +19,7 @@ import editorToolbarOptions from './editor-toolbar';
 // import ModalSelectReceiver from './dialog-select-receiver';
 import PreviewMsg from './preview-msg';
 import { usePortalGlobalValue } from '@portal/states_to_be_delete/portal';
-import { createMsg } from '@portal/pages/system-mgmt/api';
+import { createMsg } from '@portal/modules/system-mgmt/api';
 import Filelist from './filelist';
 import ModalSelectReceiver from '@c/employee-or-department-picker';
 

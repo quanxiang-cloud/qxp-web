@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useSetRecoilState, useRecoilValue } from 'recoil';
 import { useQuery } from 'react-query';
-import { getMsgList } from '@portal/pages/system-mgmt/api';
+import { getMsgList } from '@portal/modules/system-mgmt/api';
 
 import { PageParams, Data, KeyWord, RequestInfo, PageInfo } from './delcare';
 
