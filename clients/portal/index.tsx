@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { BrowserRouter as Router } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { Provider as MobxProvider } from 'mobx-react';
 import { RecoilRoot } from 'recoil';
@@ -8,6 +9,7 @@ import { LocaleProvider } from '@QCFE/lego-ui';
 // ensure web socket connection
 // todo how about on app-manager page?
 import '@lib/push';
+import Loading from '@c/loading';
 
 import App from './application';
 import stores from './stores';
@@ -32,7 +34,11 @@ ReactDOM.render(
     <QueryClientProvider client={queryClient}>
       <RecoilRoot>
         <LocaleProvider locales={locales}>
-          <App/>
+          <Router>
+            <React.Suspense fallback={<Loading className="w-screen h-screen" desc="加载中..." />}>
+              <App/>
+            </React.Suspense>
+          </Router>
         </LocaleProvider>
       </RecoilRoot>
     </QueryClientProvider>
