@@ -81,6 +81,7 @@ export default function MoreMenu<T extends React.Key>({
             ref={reference}
             changeable
             clickable
+            size={20}
             name={iconName ? iconName : 'more_horiz'}
             className={className}
           />

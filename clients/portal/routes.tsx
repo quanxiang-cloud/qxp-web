@@ -9,10 +9,10 @@ import { usePortalGlobalValue } from '@portal/states_to_be_delete/portal';
 import { getNestedPropertyToArray } from '@lib/utils';
 import { getUserFuncs, getUserAdminRoles } from '@lib/api/auth';
 
-const Dashboard = React.lazy(() => import('./pages/dashboard'));
-const MetaData = React.lazy(() => import('./pages/metadata'));
-const AccessControl = React.lazy(() => import('./pages/access-control'));
-const SystemMgmt = React.lazy(() => import('./pages/system-mgmt'));
+const Dashboard = React.lazy(() => import('./modules/dashboard'));
+const MetaData = React.lazy(() => import('./modules/metadata'));
+const AccessControl = React.lazy(() => import('./modules/access-control'));
+const SystemMgmt = React.lazy(() => import('./modules/system-mgmt'));
 
 const { USER } = window;
 if (USER && !isEmpty(USER)) {
