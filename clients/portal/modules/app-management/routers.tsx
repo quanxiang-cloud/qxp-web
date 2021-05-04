@@ -4,19 +4,28 @@ import { Route, Switch } from 'react-router';
 import PageLoading from '@portal/modules/app-management/components/page-loading';
 import Error from '@c/error';
 
-const AppList = lazy(
-  () => import('./pages/app-list'),
+const AppManagerEntry = lazy(
+  () => import('./pages/entry'),
 );
 
 const AppDetails = lazy(
   () => import('./pages/app-details'),
 );
 
+const FormDesign = lazy(
+  () => import('./pages/form-design'),
+);
+
 export default (
   <Suspense fallback={(<PageLoading />)}>
     <Switch>
-      <Route exact path="/" component={AppList} />
-      <Route exact path="/appDetails/:appID" component={AppDetails} />
+      <Route exact path="/apps/:navType" component={AppManagerEntry} />
+      <Route path="/apps/details/:appId" component={AppDetails} />
+      <Route
+        exact
+        path="/apps/formDesign/:pageType/:pageId/:appID/:navType?"
+        component={FormDesign}
+      />
       <Route component={Error} />
     </Switch>
   </Suspense>

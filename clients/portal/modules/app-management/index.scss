@@ -2,8 +2,17 @@ html {
   overflow: auto;
 }
 
-body {
-  background-color: initial;
+.max-w-screen {
+  max-width: 1440px;
+}
+
+.text-btn {
+  cursor: pointer;
+  color: #375FF3;
+}
+
+.text-btn:hover {
+  color: #254ee6;
 }
 
 .app-management-height {
@@ -43,6 +52,15 @@ body {
   @apply flex justify-center items-start gap-x-20 mx-auto;
   padding: 20px 58px 0;
   height: calc(100vh - 64px);
+}
+
+.my-app-header {
+  @apply px-20 py-16;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 24px;
+  background-color: rgba(241, 245, 249, 1);
+  box-shadow: inset 0px -1px 0px #e2e8f0;
 }
 
 .text-icon-btn {

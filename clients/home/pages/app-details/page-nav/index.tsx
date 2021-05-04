@@ -1,7 +1,7 @@
 import React from 'react';
 import { observer } from 'mobx-react';
 
-import PageLoading from '@appC/page-loading';
+import PageLoading from '@portal/modules/app-management/components/page-loading';
 
 import AppPagesTree from './app-pages-tree';
 import store from '../../store';

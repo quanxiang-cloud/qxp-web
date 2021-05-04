@@ -2,8 +2,8 @@ import moment from 'moment';
 import { TreeData, TreeItem } from '@atlaskit/tree';
 
 import { TreeNode } from '@c/headless-tree/types';
-import { getFilterField } from '@portal/app-manager/pages/form-design/utils';
-import appPageDataStore from '@appC/app-page-data/store';
+import { getFilterField } from '@portal/modules/app-management/pages/form-design/utils';
+import appPageDataStore from '@portal/modules/app-management/components/app-page-data/store';
 
 export function httpPost<T>(
   url: string,

@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { observer } from 'mobx-react';
 import { useHistory } from 'react-router-dom';
 
-import NavButton from '@appC/nav-button';
+import NavButton from '@portal/modules/app-management/components/nav-button';
 
 import AppDropdown from '@c/app-dropdown';
 

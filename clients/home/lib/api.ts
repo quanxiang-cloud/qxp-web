@@ -1,4 +1,4 @@
-import request from '@appLib/request';
+import request from '@portal/modules/app-management/lib/request';
 
 export const fetchUserList = () => {
   return request({

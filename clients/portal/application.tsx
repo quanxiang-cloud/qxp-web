@@ -9,7 +9,7 @@ import locales from './locales';
 import Routes from './routes';
 
 // ensure web socket connection
-// todo how about on app-manager page?
+// todo how about on app-management page?
 import '@lib/push';
 
 export default function Application() {

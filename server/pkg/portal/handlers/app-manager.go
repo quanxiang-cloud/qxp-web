@@ -15,7 +15,7 @@ func AppManagerHandler(w http.ResponseWriter, r *http.Request) {
 	adminUserFuncTags := getAdminUserFuncTags(r)
 	userAdminRoles := getUserAdminRoles(r)
 
-	renderTemplate(w, "app-manager.html", map[string]interface{}{
+	renderTemplate(w, "app-management.html", map[string]interface{}{
 		"user":              user,
 		"adminUserFuncTags": adminUserFuncTags,
 		"userAdminRoles":    userAdminRoles,
