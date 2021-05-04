@@ -6,6 +6,12 @@ import Search from '@portal/modules/app-management/components/search';
 
 import './index.scss';
 
+type AppCountMaps = {
+  all: number,
+  published: number,
+  unPublished: number,
+};
+
 type Props = {
   params: any;
   changeParams: (obj: any) => void;
