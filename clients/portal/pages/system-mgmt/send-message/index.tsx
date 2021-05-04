@@ -19,7 +19,7 @@ import editorToolbarOptions from './editor-toolbar';
 // import ModalSelectReceiver from './dialog-select-receiver';
 import PreviewMsg from './preview-msg';
 import { usePortalGlobalValue } from '@portal/states_to_be_delete/portal';
-import { createMsg } from '@portal/api/message-mgmt';
+import { createMsg } from '@portal/pages/system-mgmt/api';
 import Filelist from './filelist';
 import ModalSelectReceiver from '@c/employee-or-department-picker';
 

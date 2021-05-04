@@ -6,7 +6,7 @@ import dayjs from 'dayjs';
 import { useRouting } from '@portal/hooks';
 import { Message } from '@QCFE/lego-ui';
 import { useQueryClient, useMutation } from 'react-query';
-import { getMsgById } from '@portal/api/message-center';
+import { getMsgById } from '@portal/pages/msg-center/api';
 import { getQuery } from '@portal/utils';
 
 import styles from './index.module.scss';

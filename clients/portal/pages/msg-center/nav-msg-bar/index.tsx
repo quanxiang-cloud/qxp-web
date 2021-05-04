@@ -3,7 +3,7 @@ import cs from 'classnames';
 import { inject, observer } from 'mobx-react';
 import { get } from 'lodash';
 import { useQuery, useQueryClient } from 'react-query';
-import { getUnreadMsgCount } from '@portal/api/message-center';
+import { getUnreadMsgCount } from '@portal/pages/msg-center/api';
 import Icon from '@c/icon';
 
 import UnreadMsgBox from '../unread-msg-box';
