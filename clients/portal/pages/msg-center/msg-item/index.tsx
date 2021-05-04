@@ -3,11 +3,13 @@ import cs from 'classnames';
 import { inject, observer } from 'mobx-react';
 import { MsgReadStatus, MsgType } from '@portal/pages/system-mgmt/constants';
 import dayjs from 'dayjs';
-import { useRouting } from '@portal/hooks';
+
 import { Message } from '@QCFE/lego-ui';
 import { useQueryClient, useMutation } from 'react-query';
 import { getMsgById } from '@portal/pages/msg-center/api';
+
 import { getQuery } from '@portal/utils';
+import { useRouting } from '../hooks';
 
 import styles from './index.module.scss';
 
@@ -32,7 +34,7 @@ const MsgItem = ({
 }: Qxp.MsgItem & Props & Pick<MobxStores, 'msgCenter' | any>) => {
   const [read, setRead]=useState(read_status);
   const refItem=useRef(null);
-  const [, queryPage]=useRouting();
+  const queryPage = useRouting();
   const queryClient=useQueryClient();
   const { curMsgId }=store;
 

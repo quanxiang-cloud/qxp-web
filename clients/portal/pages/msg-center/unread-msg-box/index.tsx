@@ -1,13 +1,13 @@
 import React from 'react';
 import cs from 'classnames';
 import { inject, observer } from 'mobx-react';
-import { useRouting } from '@portal/hooks';
+import { useRouting } from '../hooks';
 import MsgList from './msg-list';
 
 import styles from './index.module.scss';
 
 const UnreadMsgBox = React.forwardRef(({ msgCenter }: Pick<MobxStores, 'msgCenter' | any>, ref: any) => {
-  const [, queryPage]=useRouting();
+  const queryPage = useRouting();
   const { openUnreadMsgBox, openMsgCenter, setCurMsgId, setUnreadFilter }=msgCenter;
 
   const toMsgCenter= (extParams?: {id?: string}) => {

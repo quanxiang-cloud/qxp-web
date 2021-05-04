@@ -2,7 +2,7 @@ import React from 'react';
 import { observer } from 'mobx-react';
 
 import Modal from '@c/modal';
-import { useRouting } from '@portal/hooks';
+import { useRouting } from '../hooks';
 
 import Toolbar from './toolbar';
 import MsgBox from './msg-box';
@@ -10,7 +10,7 @@ import msgCenter from '../../../stores/msg-center';
 
 const ModalMsgCenter = () => {
   const { msgCenterOpen, openMsgCenter } = msgCenter;
-  const [, queryPage] = useRouting();
+  const queryPage = useRouting();
 
   const handleClose = () => {
     queryPage('', {

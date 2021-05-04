@@ -1,11 +1,11 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
+import { useHistory } from 'react-router';
 import { inject, observer } from 'mobx-react';
 import TextHeader from '@c/text-header';
 import Error from '@c/error';
 import Search from '@c/search';
 import Button from '@c/button';
 import { usePortalGlobalValue } from '@portal/states_to_be_delete/portal';
-import { useRouting } from '@portal/hooks';
 import Container from '../container';
 import MsgTable from './msg-table';
 import Authorized from '@c/authorized';
@@ -38,11 +38,9 @@ const useDebounceState = (defaultState: any, timer: number, cb?: (params: any) =
   return [state, f];
 };
 
-const MessagesPage = ({ msgMgmt: msgStore }: Pick<MobxStores, 'msgMgmt' | any>) => {
-  // const { searchWord, setSearch }=msgStore;
-  // const [inputValue, setInputValue] = useState<string>('');
+const MessagesPage = () => {
   const [{ userInfo }] = usePortalGlobalValue();
-  const [history] = useRouting();
+  const history = useHistory();
   const [inputValue, setInputValue] = useRecoilState(KeyWord);
   const setPageInfo = useSetRecoilState(PageInfo);
   useEffect(() => {

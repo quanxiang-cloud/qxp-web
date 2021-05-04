@@ -12,8 +12,7 @@ import { getMessageList, deleteMsgByIds, setMsgAsReadByIds, getUnreadMsgCount, s
 import { MsgType, MsgReadStatus } from '@portal/pages/system-mgmt/constants';
 import Pagination from '@c/pagination';
 import Modal from '@c/modal';
-import Button from '@c/button';
-import { useRouting } from '@portal/hooks';
+import { useRouting } from '../../../hooks';
 import NoMsg from '../no-msg';
 
 import styles from '../index.module.scss';
@@ -24,7 +23,7 @@ interface Props {
 
 const PanelList = ({ msgCenter }: Props & Pick<MobxStores, 'msgCenter' | any>) => {
   const { paging, selectType, filterCheckUnread }=msgCenter;
-  const [, queryPage]=useRouting();
+  const queryPage = useRouting();
   const getQueryParams=()=> {
     const params={
       read_status: filterCheckUnread ? MsgReadStatus.unread : undefined,
