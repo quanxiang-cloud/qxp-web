@@ -51,7 +51,6 @@ func GetRouter() http.Handler {
 	// todo server this request in a different package
 	r.Host(contexts.Config.ClientConfig.HomeHostname).Methods("GET").HandlerFunc(loginRequired(handlers.HomeHandler))
 
-	r.PathPrefix("/apps").Methods("GET").HandlerFunc(loginRequired(handlers.AppManagerHandler))
 	r.PathPrefix("/").Methods("GET").HandlerFunc(loginRequired(handlers.PortalHandler))
 
 	return contexts.WithUtilContext(r)

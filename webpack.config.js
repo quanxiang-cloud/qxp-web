@@ -25,7 +25,6 @@ module.exports = function(env) {
       'reset-password': './clients/login/reset-password',
       'retrieve-password': './clients/login/retrieve-password',
       404: './clients/404/index.ts',
-      'app-management': './clients/portal/modules/app-management/index.tsx',
       home: './clients/home/index.tsx',
     },
 
@@ -128,12 +127,6 @@ module.exports = function(env) {
         chunks: ['reset-password'],
         template: './clients/templates/reset-password.html',
         filename: `${__dirname}/dist/templates/reset-password.html`,
-      }),
-      new HtmlWebpackPlugin({
-        inject: false,
-        chunks: ['app-management'],
-        template: './clients/templates/app-management.html',
-        filename: `${__dirname}/dist/templates/app-management.html`,
       }),
       new HtmlWebpackPlugin({
         inject: false,

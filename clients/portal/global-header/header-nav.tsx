@@ -1,5 +1,5 @@
 import React from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, Link } from 'react-router-dom';
 import { twCascade } from '@mariusmarais/tailwind-cascade';
 
 import Icon from '@c/icon';
@@ -44,8 +44,8 @@ export default function HeaderLeft() {
   ].includes(location.pathname);
   return (
     <div className="flex items-center flex-2">
-      <a
-        href='/'
+      <Link
+        to="/"
         className={twCascade(
           'header-nav-btn group mr-20',
           className(isHome)
@@ -65,9 +65,9 @@ export default function HeaderLeft() {
         >
           工作台
         </span>
-      </a>
-      <a
-        href="/apps/list"
+      </Link>
+      <Link
+        to="/apps/list"
         className={twCascade(
           'header-nav-btn group mr-20',
           className(isAppManagement)
@@ -87,10 +87,10 @@ export default function HeaderLeft() {
         >
           应用管理
         </span>
-      </a>
+      </Link>
       <Authorized authority={['accessControl']}>
-        <a
-          href="/access-control"
+        <Link
+          to="/access-control"
           className={twCascade(
             'header-nav-btn group mr-20',
             className(isAccess)
@@ -110,10 +110,10 @@ export default function HeaderLeft() {
           >
             访问控制
           </span>
-        </a>
+        </Link>
       </Authorized>
-      <a
-        href="/system"
+      <Link
+        to="/system"
         className={twCascade(
           'header-nav-btn group mr-20',
           className(isSystemControl)
@@ -133,7 +133,7 @@ export default function HeaderLeft() {
         >
           系统管理
         </span>
-      </a>
+      </Link>
     </div>
   );
 }

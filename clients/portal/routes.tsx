@@ -13,6 +13,15 @@ const Dashboard = React.lazy(() => import('./modules/dashboard'));
 const MetaData = React.lazy(() => import('./modules/metadata'));
 const AccessControl = React.lazy(() => import('./modules/access-control'));
 const SystemMgmt = React.lazy(() => import('./modules/system-mgmt'));
+const AppManagerEntry = React.lazy(
+  () => import('./modules/app-management/pages/entry'),
+);
+const AppDetails = React.lazy(
+  () => import('./modules/app-management/pages/app-details'),
+);
+const FormDesign = React.lazy(
+  () => import('./modules/app-management/pages/form-design'),
+);
 
 const { USER } = window;
 if (USER && !isEmpty(USER)) {
@@ -62,14 +71,21 @@ export default function Routes(): JSX.Element {
   // }
 
   return (
-    <>
+    <React.Suspense fallback={<Loading className="w-screen h-screen" desc="加载中..." />}>
       <Switch>
         <Route exact path="/" component={Dashboard} />
         <Route path="/metadata" component={MetaData} />
         <Route path="/access-control" component={AccessControl} />
         <Route path="/system" component={SystemMgmt} />
+        <Route exact path="/apps/:navType" component={AppManagerEntry} />
+        <Route path="/apps/details/:appId" component={AppDetails} />
+        <Route
+          exact
+          path="/apps/formDesign/:pageType/:pageId/:appID/:navType?"
+          component={FormDesign}
+        />
         <Route component={Error} />
       </Switch>
-    </>
+    </React.Suspense>
   );
 }
