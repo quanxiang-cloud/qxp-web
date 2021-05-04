@@ -1,9 +1,14 @@
 import React from 'react';
+import { useLocation } from 'react-router';
 
 import HeaderNav from './header-nav';
 import HeaderMenu from './header-menu';
 
-export default function GlobalHeader() {
+const HEADER_LIST = [
+  { key: 'none', urls: ['/apps/formDesign', '/apps/details'] },
+];
+
+function IndexGlobalHeader() {
   return (
     <>
       <div className="flex justify-between items-center py-8 px-24 bg-white">
@@ -18,3 +23,25 @@ export default function GlobalHeader() {
     </>
   );
 }
+
+function getHeaderType(path: string) {
+  for (const headers of HEADER_LIST) {
+    for (const url of headers.urls) {
+      if (path.startsWith(url)) {
+        return headers.key;
+      }
+    }
+  }
+}
+
+function GlobalHeader() {
+  const location = useLocation();
+  switch (getHeaderType(location.pathname)) {
+  case 'none':
+    return null;
+  default:
+    return (<IndexGlobalHeader />);
+  }
+}
+
+export default GlobalHeader;
