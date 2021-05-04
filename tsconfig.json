@@ -47,7 +47,7 @@
       "@portal/*": ["./clients/portal/*"],
       "@c/*": ["./clients/components/*"],
       "@lib/*": ["./clients/lib/*"],
-      "@flow/*": ["./clients/portal/pages/apps-management/work-flow/*"],
+      "@flow/*": ["./clients/portal/modules/apps-management/work-flow/*"],
     } /* A series of entries which re-map imports to lookup locations relative to the 'baseUrl'. */,
     // "rootDirs": [],                        /* List of root folders whose combined content represents the structure of the project at runtime. */
     "typeRoots": [
