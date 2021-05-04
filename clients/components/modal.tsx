@@ -136,7 +136,7 @@ const Header = styled.div`
 
 const Body = styled.div<{ fullscreen?: boolean }>`
   overflow: scroll;
-  ${({fullscreen}) => fullscreen ? css`
+  ${({ fullscreen }) => fullscreen ? css`
       height: calc(100vh - 56px);
     ` : css`
       padding: 24px 40px;
@@ -171,7 +171,7 @@ const InnerWrap = styled.div<{ width: number | string, height: number | string, 
   width: ${(props) => typeof props.width === 'number' ? props.width + 'px' : props.width};
   height: ${(props) => typeof props.height === 'number' ? props.height + 'px' : props.height};
   background: white;
-  ${({fullscreen}) => fullscreen ? css`
+  ${({ fullscreen }) => fullscreen ? css`
     width: 100vw;
     height: 100vh;
     position: relative;

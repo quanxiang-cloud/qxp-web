@@ -1,5 +1,5 @@
-import React, {useEffect} from 'react';
-import {observer} from 'mobx-react';
+import React, { useEffect } from 'react';
+import { observer } from 'mobx-react';
 import Types from './types';
 import ListPanel from './panel-list';
 import DetailPanel from './panel-detail';

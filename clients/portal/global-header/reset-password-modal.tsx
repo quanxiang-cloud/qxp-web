@@ -47,7 +47,7 @@ export default function ResetPasswordModal({ visible, onCancel }: Props) {
     };
   }
 
-  if(!visible){
+  if (!visible) {
     return null;
   }
 
