@@ -6,7 +6,7 @@ import NormalHeader from './normal';
 const paths = [
   '/apps/formDesign',
   '/apps/details',
-  '/flow/new',
+  '/apps/flow/new',
 ];
 
 function shouldHideHeader(currentPath: string): boolean {

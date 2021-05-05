@@ -23,7 +23,7 @@ export default function Routes(): JSX.Element {
         path="/apps/formDesign/:pageType/:pageId/:appID/:navType?"
         component={FormDesign}
       />
-      <Route path="/flow/new/:type" component={NewFlow} />
+      <Route path="/apps/flow/new/:type" component={NewFlow} />
     </Switch>
   );
 }

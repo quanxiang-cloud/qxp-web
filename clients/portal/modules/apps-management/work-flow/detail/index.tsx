@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 
+import Header from './flow-header';
 import AsideMenu from './aside-menu';
 import Content from './content';
 
@@ -11,9 +12,12 @@ export default function Detail() {
   >('edit');
 
   return (
-    <section className="flex-1 flex">
-      <AsideMenu onChange={setCurrentOperateType} currentOperateType={currentOperateType} />
-      <Content currentOperateType={currentOperateType} />
-    </section>
+    <>
+      <Header />
+      <section className="flex-1 flex">
+        <AsideMenu onChange={setCurrentOperateType} currentOperateType={currentOperateType} />
+        <Content currentOperateType={currentOperateType} />
+      </section>
+    </>
   );
 }

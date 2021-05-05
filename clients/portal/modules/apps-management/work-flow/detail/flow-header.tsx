@@ -6,13 +6,13 @@ import Button from '@c/button';
 import { last } from '@lib/utils';
 import More from '@c/more';
 import useObservable from '@lib/hooks/use-observable';
-import ActionButtonGroup from '@flow/detail/content/editor/components/_common/action-button-group';
+import ActionButtonGroup from './content/editor/components/_common/action-button-group';
 
-import NavButton from '../nav-button';
+import NavButton from '../../../../global-header/nav-button';
 import store, {
   StoreValue,
   updateStore,
-} from '@flow/detail/content/editor/store';
+} from './content/editor/store';
 
 export default function GlobalHeader() {
   const { pathname } = useLocation();

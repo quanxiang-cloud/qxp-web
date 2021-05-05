@@ -16,7 +16,7 @@ export default function({ onTriggerTypeChange }: Props) {
   const history = useHistory();
 
   function newWorkFlow(flowType: string) {
-    history.push(`/flow/new/${flowType}`);
+    history.push(`/apps/flow/new/${flowType}`);
   }
 
   return (
