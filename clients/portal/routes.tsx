@@ -9,19 +9,12 @@ import { usePortalGlobalValue } from '@portal/states_to_be_delete/portal';
 import { getNestedPropertyToArray } from '@lib/utils';
 import { getUserFuncs, getUserAdminRoles } from '@lib/api/auth';
 
+import AppsRoutes from './modules/apps-management/routes';
+
 const Dashboard = React.lazy(() => import('./modules/dashboard'));
 const MetaData = React.lazy(() => import('./modules/metadata'));
 const AccessControl = React.lazy(() => import('./modules/access-control'));
 const SystemMgmt = React.lazy(() => import('./modules/system-mgmt'));
-const AppManagerEntry = React.lazy(
-  () => import('./modules/apps-management/pages/entry'),
-);
-const AppDetails = React.lazy(
-  () => import('./modules/apps-management/pages/app-details'),
-);
-const FormDesign = React.lazy(
-  () => import('./modules/apps-management/pages/form-design'),
-);
 
 const { USER } = window;
 if (USER && !isEmpty(USER)) {
@@ -77,13 +70,7 @@ export default function Routes(): JSX.Element {
         <Route path="/metadata" component={MetaData} />
         <Route path="/access-control" component={AccessControl} />
         <Route path="/system" component={SystemMgmt} />
-        <Route exact path="/apps/:navType" component={AppManagerEntry} />
-        <Route path="/apps/details/:appId" component={AppDetails} />
-        <Route
-          exact
-          path="/apps/formDesign/:pageType/:pageId/:appID/:navType?"
-          component={FormDesign}
-        />
+        <Route path="/apps" component={AppsRoutes} />
         <Route component={Error} />
       </Switch>
     </React.Suspense>
