@@ -4,10 +4,6 @@ import { useLocation } from 'react-router';
 import HeaderNav from './header-nav';
 import HeaderMenu from './header-menu';
 
-const HEADER_LIST = [
-  { key: 'none', urls: ['/apps/formDesign', '/apps/details'] },
-];
-
 function IndexGlobalHeader() {
   return (
     <>
@@ -24,24 +20,23 @@ function IndexGlobalHeader() {
   );
 }
 
-function getHeaderType(path: string) {
-  for (const headers of HEADER_LIST) {
-    for (const url of headers.urls) {
-      if (path.startsWith(url)) {
-        return headers.key;
-      }
-    }
-  }
+const paths = [
+  '/apps/formDesign',
+  '/apps/details',
+  '/flow/new',
+];
+
+function shouldHideHeader(currentPath: string): boolean {
+  return paths.some((path) => currentPath.startsWith(path));
 }
 
 function GlobalHeader() {
-  const location = useLocation();
-  switch (getHeaderType(location.pathname)) {
-  case 'none':
+  const { pathname } = useLocation();
+  if (shouldHideHeader(pathname)) {
     return null;
-  default:
-    return (<IndexGlobalHeader />);
   }
+
+  return (<IndexGlobalHeader />);
 }
 
 export default GlobalHeader;
