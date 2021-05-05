@@ -14,13 +14,13 @@ const MetaData = React.lazy(() => import('./modules/metadata'));
 const AccessControl = React.lazy(() => import('./modules/access-control'));
 const SystemMgmt = React.lazy(() => import('./modules/system-mgmt'));
 const AppManagerEntry = React.lazy(
-  () => import('./modules/app-management/pages/entry'),
+  () => import('./modules/apps-management/pages/entry'),
 );
 const AppDetails = React.lazy(
-  () => import('./modules/app-management/pages/app-details'),
+  () => import('./modules/apps-management/pages/app-details'),
 );
 const FormDesign = React.lazy(
-  () => import('./modules/app-management/pages/form-design'),
+  () => import('./modules/apps-management/pages/form-design'),
 );
 
 const { USER } = window;

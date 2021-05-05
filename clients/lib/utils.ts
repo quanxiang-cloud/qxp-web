@@ -2,9 +2,9 @@ import moment from 'moment';
 import { TreeData, TreeItem } from '@atlaskit/tree';
 
 import { TreeNode } from '@c/headless-tree/types';
-// todo starry tan, move this into app-management
-import { getFilterField } from '@portal/modules/app-management/pages/form-design/utils';
-import appPageDataStore from '@portal/modules/app-management/components/app-page-data/store';
+// todo starry tan, move this into apps-management
+import { getFilterField } from '@portal/modules/apps-management/pages/form-design/utils';
+import appPageDataStore from '@portal/modules/apps-management/components/app-page-data/store';
 
 export function httpPost<T>(
   url: string,

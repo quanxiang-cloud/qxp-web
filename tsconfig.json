@@ -45,8 +45,8 @@
     "baseUrl": "." /* Base directory to resolve non-absolute module names. */,
     "paths": {
       // todo remove this
-      "@appLib/*": ["clients/portal/modules/app-management/lib/*"],
-      "@appC/*": ["clients/portal/modules/app-management/components/*"],
+      "@appLib/*": ["clients/portal/modules/apps-management/lib/*"],
+      "@appC/*": ["clients/portal/modules/apps-management/components/*"],
       "@portal/*": ["./clients/portal/*"],
       "@c/*": ["./clients/components/*"],
       "@lib/*": ["./clients/lib/*"]

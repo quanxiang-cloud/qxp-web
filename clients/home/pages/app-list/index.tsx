@@ -4,7 +4,7 @@ import { useHistory } from 'react-router-dom';
 
 import Avatar from '@c/avatar';
 import Card from '@c/card';
-import AppInfoView from '@portal/modules/app-management/components/app-info-view';
+import AppInfoView from '@portal/modules/apps-management/components/app-info-view';
 
 import store from '../store';
 

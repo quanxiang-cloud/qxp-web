@@ -3,7 +3,7 @@ import cs from 'classnames';
 
 import More from '@c/more';
 import Icon from '@c/icon';
-import AppInfoView from '@portal/modules/app-management/components/app-info-view';
+import AppInfoView from '@portal/modules/apps-management/components/app-info-view';
 import AppIcon from '@c/app-icon';
 
 import './index.scss';

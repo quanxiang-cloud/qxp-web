@@ -1,50 +1,37 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { observer } from 'mobx-react';
+import { useHistory } from 'react-router-dom';
 
 import TextHeader from '@c/text-header';
 import AppPageData from '@portal/modules/apps-management/components/app-page-data';
 import PageLoading from '@portal/modules/apps-management/components/page-loading';
-import appDataStore from '@portal/modules/apps-management/components/app-page-data/store';
+import Button from '@c/button';
 
-import store from '../../store';
-import CreateDataForm from './create-data-form';
+import PageBuildNav from './page-build-nav';
+import appPagesStore from '../store';
 import './index.scss';
 
 function PageDetails() {
-  const { curPage, fetchSchemeLoading, formScheme } = store;
-  const [showCreateForm, setShowCreateForm] = useState(false);
-
-  const goBack = () => {
-    appDataStore.curItemFormData = null;
-    setShowCreateForm(false);
+  const { curPage, appId } = appPagesStore;
+  const history = useHistory();
+  const goFormBuild = () => {
+    history.push(`/apps/formDesign/formBuild/${curPage.id}/${appId}?pageName=${curPage.name}`);
   };
 
-  useEffect(() => {
-    appDataStore.setCreateFun(() => setShowCreateForm(true));
-    appDataStore.allowRequestData = true;
-  }, []);
-
-  if (showCreateForm) {
-    return (
-      <CreateDataForm
-        defaultValues={appDataStore.curItemFormData}
-        goBack={goBack}
-      />
-    );
-  }
-
   const contentRender = () => {
-    if (fetchSchemeLoading) {
+    if (appPagesStore.fetchSchemeLoading) {
       return <PageLoading />;
     }
 
-    if (formScheme) {
+    if (appPagesStore.formScheme) {
       return (
         <div className='p-20'>
           <AppPageData />
         </div>
       );
     }
+
+    return <PageBuildNav appID={appId} pageId={curPage.id} pageName={curPage.name} />;
   };
 
   if (!curPage.id) {
@@ -55,6 +42,9 @@ function PageDetails() {
     <div className='flex flex-col flex-1 relative'>
       <TextHeader
         title={curPage.name || ''}
+        action={appPagesStore.formScheme ? (
+          <Button onClick={goFormBuild} modifier='primary' iconName='edit'>设计表单</Button>
+        ) : '📌  表单、流程、报表何时使用？快速上手'}
         className="bg-white px-20 py-18 header-background-image"
         itemTitleClassName="text-h5" />
       {contentRender()}
