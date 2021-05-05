@@ -13,6 +13,8 @@ import AppInfo from './app-info';
 import AppAdmin from './app-admin';
 import appDetailsStore from '../store';
 
+const workflows = React.lazy(() => import('../../../work-flow/list'));
+
 import './index.scss';
 
 function AppSetting() {
@@ -71,6 +73,7 @@ function AppSetting() {
           <Switch>
             <Route exact path="/apps/details/:appId/setting/info" component={AppInfo} />
             <Route exact path="/apps/details/:appId/setting/adminUsers" component={AppAdmin} />
+            <Route path="/apps/details/:appId/setting/workflows" component={workflows} />
           </Switch>
         </div>
       </div>

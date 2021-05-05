@@ -64,7 +64,7 @@ function DetailsHeader() {
             name: '应用管理',
             icon: 'dashboard_customize',
             inside: true,
-            url: '/apps/list',
+            url: '/apps',
           }}
         />
         <span className='mr-16 ml-8'>/</span>

@@ -26,7 +26,7 @@ export default function HeaderLeft() {
   }
 
   const isHome = location.pathname === '/';
-  const isAppManagement = location.pathname === '/apps/list';
+  const isAppManagement = location.pathname.startsWith('/apps');
 
   const isAccess = [
     '/access-control',
@@ -67,7 +67,7 @@ export default function HeaderLeft() {
         </span>
       </Link>
       <Link
-        to="/apps/list"
+        to="/apps"
         className={twCascade(
           'header-nav-btn group mr-20',
           className(isAppManagement)

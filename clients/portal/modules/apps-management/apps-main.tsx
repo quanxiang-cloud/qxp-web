@@ -5,16 +5,14 @@ import SideNavCard from '@c/side-nav-card';
 import ItemWithTitleDesc from '@c/item-with-title-desc';
 import AppIcon from '@c/app-icon';
 
-import MyApp from './my-app';
-
-import './index.scss';
+import MyApp from './pages/entry/my-app';
 
 const MENU = [
   {
     id: 'MyApp',
     icon: 'dashboard_customize',
     name: '我的应用',
-    url: '/apps/list',
+    url: '/apps',
   },
   // {
   //   id: 'PlatformSetting',
@@ -41,7 +39,7 @@ function AppManagerEntry() {
       )} menuData={MENU} />
       <div className="app-right-box bg-opacity-50 bg-white">
         <Switch>
-          <Route path="/apps/list" component={MyApp} />
+          <Route path="/apps" component={MyApp} />
         </Switch>
       </div>
     </div>
