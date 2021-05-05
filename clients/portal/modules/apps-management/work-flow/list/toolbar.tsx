@@ -8,6 +8,8 @@ import TextHeader from '@c/text-header';
 import ItemWithTitleDesc from '@c/item-with-title-desc';
 import Icon from '@c/icon';
 
+import './style.scss';
+
 interface Props {
   onTriggerTypeChange: (value: 'FORM_DATA' | 'FORM_TIME' | '') => void;
 }
