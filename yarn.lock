@@ -4445,11 +4445,6 @@ immer@^9.0.1:
   resolved "https://registry.nlark.com/immer/download/immer-9.0.2.tgz?cache=0&sync_timestamp=1619363065556&other_urls=https%3A%2F%2Fregistry.nlark.com%2Fimmer%2Fdownload%2Fimmer-9.0.2.tgz#83e4593df9914acaecfd9fac6a8601ef44d883fc"
   integrity sha1-g+RZPfmRSsrs/Z+saoYB70TYg/w=
 
-immutable@^4.0.0-rc.12:
-  version "4.0.0-rc.12"
-  resolved "https://registry.npm.taobao.org/immutable/download/immutable-4.0.0-rc.12.tgz#ca59a7e4c19ae8d9bf74a97bdf0f6e2f2a5d0217"
-  integrity sha1-ylmn5MGa6Nm/dKl73w9uLypdAhc=
-
 immutable@~3.7.4:
   version "3.7.6"
   resolved "https://registry.npm.taobao.org/immutable/download/immutable-3.7.6.tgz#13b4d3cb12befa15482a26fe1b2ebae640071e4b"

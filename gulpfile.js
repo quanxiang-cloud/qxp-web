@@ -1,6 +1,7 @@
 const util = require('util');
 const gulp = require('gulp');
 const webpack = require('webpack');
+const { EventEmitter } = require('events');
 
 const { generateSprite } = require('./scripts/svg-to-sprite');
 
@@ -61,7 +62,14 @@ exports.webpack = (done) => {
   runWebpack(webpackConfig({ mode: 'production' })).then(done);
 };
 
-exports.default = gulp.parallel(buildAssets,
+function server() {
+  portalServer = spawn('air');
+  portalServer.stderr.pipe(process.stderr);
+  portalServer.stdout.pipe(process.stdout);
+  return portalServer;
+}
+
+exports.default = gulp.parallel(buildAssets, server,
   () => {
     gulp.watch(
       ['./webpack.config.js'],
@@ -70,9 +78,5 @@ exports.default = gulp.parallel(buildAssets,
         runWebpack(webpackConfig({ mode: 'development' })).then(done);
       })
     );
-
-    portalServer = spawn('air');
-    portalServer.stderr.pipe(process.stderr);
-    portalServer.stdout.pipe(process.stdout);
-  }
+  },
 );
