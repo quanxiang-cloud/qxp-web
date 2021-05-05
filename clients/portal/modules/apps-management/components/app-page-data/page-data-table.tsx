@@ -69,7 +69,7 @@ function PageDataTable() {
       </div>
       <Table
         showCheckbox
-        style={{maxHeight: '500px'}}
+        style={{ maxHeight: '500px' }}
         emptyTips='暂无数据'
         rowKey="_id"
         loading={store.listLoading}
