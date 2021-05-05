@@ -30,7 +30,7 @@ export default function HeaderLeft({ location }: Props) {
         text="工作台"
       />
       <NavButton
-        to="/apps-management"
+        to="/apps"
         iconName="dashboard_customize"
         isActive={isAppManagement}
         text="应用管理"
