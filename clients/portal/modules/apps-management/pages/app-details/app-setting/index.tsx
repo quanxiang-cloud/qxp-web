@@ -40,6 +40,13 @@ function AppSetting() {
       name: '应用管理员',
       url: `/apps/details/${appId}/setting/adminUsers`,
     },
+    {
+      id: 'workflows',
+      icon: 'linear_scale',
+      replace: true,
+      name: '工作流',
+      url: `/apps/details/${appId}/setting/workflows`,
+    },
   ];
 
   return (
