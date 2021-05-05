@@ -41,7 +41,7 @@ module.exports = {
     lineHeight: {
       24: '24px',
       28: '28px',
-      48: '48px'
+      48: '48px',
     },
     fontSize: {
       24: ['24px', '32px'],
@@ -59,6 +59,7 @@ module.exports = {
       10: '10px',
       12: '12px',
       none: '0px',
+      full: '50%',
     },
     // disable responsive
     screens: {
@@ -133,9 +134,12 @@ module.exports = {
       zIndex: {
         '-z-1': -1,
       },
+      cursor: {
+        grab: 'grab',
+      },
       textColor: {
-        'inherit': 'inherit'
-      }
+        inherit: 'inherit',
+      },
     },
   },
 };

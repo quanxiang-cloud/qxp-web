@@ -15,6 +15,15 @@ const AccessControl = React.lazy(() => import('./modules/access-control'));
 const SystemMgmt = React.lazy(() => import('./modules/system-mgmt'));
 const AppsManagement = React.lazy(() => import('./modules/apps-management'));
 const NewFlow = React.lazy(() => import('./modules/apps-management/work-flow/detail'));
+const AppManagerEntry = React.lazy(
+  () => import('./modules/apps-management/pages/entry'),
+);
+const AppDetails = React.lazy(
+  () => import('./modules/apps-management/pages/app-details'),
+);
+const FormDesign = React.lazy(
+  () => import('./modules/apps-management/pages/form-design'),
+);
 
 const { USER } = window;
 if (USER && !isEmpty(USER)) {
@@ -72,6 +81,13 @@ export default function Routes(): JSX.Element {
         <Route path="/apps-management" component={AppsManagement} />
         <Route path="/flow/new/:type" component={NewFlow} />
         <Route path="/system" component={SystemMgmt} />
+        <Route exact path="/apps/:navType" component={AppManagerEntry} />
+        <Route path="/apps/details/:appId" component={AppDetails} />
+        <Route
+          exact
+          path="/apps/formDesign/:pageType/:pageId/:appID/:navType?"
+          component={FormDesign}
+        />
         <Route component={Error} />
       </Switch>
     </React.Suspense>

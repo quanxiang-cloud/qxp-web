@@ -1,0 +1,214 @@
+.form-builder {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+}
+
+.source-element-panel {
+  width: 296px;
+  padding: 20px;
+  overflow: auto;
+
+  background-color: white;
+}
+
+.source-element-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  row-gap: 8px;
+  column-gap: 8px;
+  margin-bottom: 24px;
+  padding-bottom: 24px;
+
+  &:not(:last-child) {
+    border-bottom: 1px solid var(--gray-200);
+  }
+}
+
+.source-element-section__title {
+  grid-column: 1 / 3;
+}
+
+.source-element-section__element {
+  display: flex;
+  align-items: center;
+  border-radius: 2px;
+  height: 32px;
+  padding: 0 8px;
+
+  background-color: var(--gray-100);
+  cursor: move;
+  // &.is-dragging {
+  //   color: ${(props) => props.theme.primaryColor};
+  //   border-color: ${(props) => props.theme.primaryColor};
+  // }
+}
+
+.form-settings-panel {
+  width: 296px;
+
+  background-color: white;
+
+  .ant-tabs-content-holder {
+    overflow: auto;
+  }
+}
+
+.item-title {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.content-item {
+  position: relative;
+  padding: 12px;
+  width: 120px;
+  height: 84px;
+  background-color: #FFFFFF;
+  border: 1px solid #CBD5E1;
+  border-radius: 8px;
+  &:hover {
+    cursor: pointer;
+    border-color: #375FF3;
+  }
+}
+
+.form-settings-panel__panel {
+  padding: 0 20px;
+  color: #475569;
+}
+
+.layout-content {
+  display: flex;
+  justify-content: space-between;
+}
+
+.item-checked {
+  position: relative;
+  border-color: #375FF3;
+  &:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right:0;
+    border: 16px solid transparent;
+    border-top-right-radius: 6px;
+    border-color: #375FF3 #375FF3 transparent transparent;
+  }
+  .check-icon {
+    display: block;
+  }
+}
+
+.check-icon {
+  display: none;
+  position: absolute;
+  top: 2px;
+  right: 4px;
+}
+
+.item-label {
+  display: inline-block;
+  margin-right: 2px;
+  width: 24px;
+  height: 16px;
+  background: #CBD5E1;
+  border-radius: 2px;
+}
+
+.item-body {
+  display: inline-block;
+  width: 68px;
+  height: 16px;
+  background: #F1F5F9;
+  border-radius: 2px;
+}
+
+// todo remove this after support layout shortcut
+.form-builder .canvas-wrapper {
+  padding: 56px 20px;
+  overflow: auto;
+}
+
+.form-builder .form-builder-canvas {
+  padding: 20px 0px;
+  border-radius: 12px;
+  background-color: white;
+}
+
+.form-builder-canvas__empty-tip {
+  display: flex;
+  height: 300px;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+
+  .text {
+    margin-top: 8px;
+    color: #939aa9;
+  }
+}
+
+.form-field-wrapper {
+  min-height: 80px;
+  padding-left: 60px;
+  padding-right: 60px;
+  padding-top: 16px;
+  border: 1px solid transparent;
+}
+
+// override extra bottom margin in canvas
+.form-field-wrapper .ant-form-item {
+  margin-bottom: 0;
+}
+
+.form-field-wrapper--active {
+  border-color: var(--blue-600);
+  background-color: var(--blue-100);
+}
+
+.form-field-wrapper--hidden-children::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  background-image: repeating-linear-gradient(45deg, var(--gray-300) 25%, transparent 25%, transparent 75%, var(--gray-300) 75%, var(--gray-300)), repeating-linear-gradient(45deg, var(--gray-300) 25%, transparent 25%, transparent 75%, var(--gray-300) 75%, var(--gray-300));
+  background-position: 0 0, 20px 20px;
+  background-size: calc(2 * 20px) calc(2 * 20px);
+}
+
+.form-builder .field-action-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 32px;
+  width: 32px;
+  background-color: white;
+  border-radius: 50%;
+  box-shadow: 0px 8px 24px 4px rgba(148, 163, 184, 0.25);
+
+  cursor: pointer;
+}
+
+.form-builder .operate-icon {
+  display: block;
+  cursor: pointer;
+  &:hover {
+    color: #375FF3;
+  }
+}
+
+.delete-container {
+  position: relative;
+  width: 32px;
+}
+
+.delete-icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}

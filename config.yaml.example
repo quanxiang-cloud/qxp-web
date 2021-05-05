@@ -29,3 +29,5 @@ portal_server:
 
 client_config:
   websocket_hostname: keeper.test
+  home_hostname: home.qxp.localhost
+  portal_hostname: portal.qxp.localhost

@@ -1,0 +1,55 @@
+.app-page-build-nav {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  row-gap: 32px;
+  flex: 1 1 auto;
+  background-color: #fff;
+  margin: 20px 20px 0 20px;
+}
+
+.app-page-build-nav-item {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  width: 572px;
+  height: 84px;
+  padding: 0 20px;
+  border-radius: 12px 2px 12px 12px;
+  transition: transform .3s;
+
+  &:hover {
+    transform: translateY(-5px);
+  }
+}
+
+.app-page-build-nav-bg-form {
+  background: linear-gradient(90deg, #5EEAD4 0%, #2DD4BF 100%);
+  box-shadow: 0px 8px 24px rgba(20, 184, 166, 0.25);
+}
+
+.app-page-build-nav-bg-flow {
+  background: linear-gradient(89.94deg, #FDBA74 0.05%, #FB923C 99.95%);
+  box-shadow: 0px 8px 24px rgba(249, 115, 22, 0.25);
+}
+
+.app-page-build-nav-bg-meter {
+  background: linear-gradient(180deg, #A5B4FC 0%, #818CF8 100%);
+  box-shadow: 0px 8px 24px rgba(99, 102, 241, 0.25);
+}
+
+.user-app-schema-form {
+  display: grid;
+  grid-template-columns: 60%;
+  justify-content: center;
+  overflow-y: auto;
+  flex: 1;
+  padding: 40px;
+  background-color: #fff;
+  border-radius: 12px 12px 0 0;
+
+  .ant-form-item-label {
+    width: 100px;
+  }
+}

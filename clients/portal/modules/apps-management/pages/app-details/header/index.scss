@@ -1,0 +1,24 @@
+.app-global-header-status-tips-title {
+  @apply text-yellow-600 mb-8 flex items-center;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 22px;
+}
+
+.app-global-header-hr {
+  width: 1px;
+  height: 32px;
+  margin: 0 24px;
+  background-color: #E2E8F0;
+}
+
+.app-details-header {
+  position: relative;
+  z-index: 10;
+  box-shadow: 0px 8px 24px 4px rgba(148, 163, 184, 0.25);
+}
+
+.app-global-header {
+ @apply flex justify-between px-24 bg-white items-center;
+ height: 64px;
+}

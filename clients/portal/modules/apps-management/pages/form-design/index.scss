@@ -1,0 +1,25 @@
+.form-design-header {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  padding: 0 20px;
+  background: rgba(241, 245, 249, 1);
+  box-shadow: inset 0px -1px 0px #E2E8F0;
+}
+
+.form-design-tool {
+  display: flex;
+  align-items: center;
+  position: relative;
+  column-gap: 16px;
+  height: 56px;
+  padding: 0 20px;
+  background: #FFFFFF;
+  box-shadow: 0px 8px 24px 4px rgba(148, 163, 184, 0.25);
+}
+
+.form-design {
+  .form-builder {
+    height: calc(100vh - 112px);
+  }
+}

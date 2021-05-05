@@ -35,8 +35,11 @@ type PortalServerConfig struct {
 	TemplatesDir string `yaml:"templates_dir" default:"/qxp/dist/templates" split_words:"true"`
 }
 
+// ClientConfig containe configs for frontend
 type ClientConfig struct {
 	WebsocketHostname string `yaml:"websocket_hostname" default:"keeper" vaildate:"required" split_words:"true" json:"websocket_hostname"`
+	HomeHostname      string `yaml:"home_hostname" default:"home.qxp.com" split_words:"true" json:"home_hostname"`
+	PortalHostname    string `yaml:"portal_hostname" default:"portal.qxp.com" split_words:"true" json:"portal_hostname"`
 }
 
 // Configuration is the type of project config file

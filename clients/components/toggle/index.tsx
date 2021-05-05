@@ -4,7 +4,7 @@ import cs from 'classnames';
 import './index.scss';
 
 type Props = {
-  onChange: (value?: boolean) => void
+  onChange: (value: boolean) => void
   onText?: string
   offText?: string
   disabled?: boolean

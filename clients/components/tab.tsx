@@ -89,8 +89,8 @@ export default function Tab({
               key={item.id}
               className={twCascade(
                 item.id === key ?
-                  'opacity-100 h-full visible pointer-events-auto' :
-                  'opacity-0 h-0 invisible pointer-events-none',
+                  'opacity-100 h-full visible overflow-auto pointer-events-auto' :
+                  'opacity-0 h-0 hidden pointer-events-none',
                 'transition-opacity',
               )}
             >

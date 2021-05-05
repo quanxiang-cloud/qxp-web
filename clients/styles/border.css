@@ -6,6 +6,10 @@
   @apply rounded-tl-12 rounded-tr-2 rounded-br-12 rounded-bl-12;
 }
 
+.icon-border-radius-8 {
+  border-radius: 8px 8px 8px 2px;
+}
+
 .tab-border {
   @apply rounded-tl-8 rounded-tr-8;
 }
@@ -21,4 +25,3 @@
 .box-border-radius {
   @apply rounded-tl-4 rounded-tr-12 rounded-br-12 rounded-bl-12;
 }
-
