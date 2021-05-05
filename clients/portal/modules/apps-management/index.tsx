@@ -24,19 +24,22 @@ const MENU = [
 function AppManagerEntry() {
   return (
     <div className="max-w-screen app-entry-container">
-      <SideNavCard cardTitle={(
-        <div className="access-background-image p-20 opacity-90">
-          <ItemWithTitleDesc
-            title="应用管理"
-            desc="对企业的自建应用进行统一管理"
-            itemRender={(
-              <AppIcon themeColor='amber' iconName='dashboard_customize' size={48} />
-            )}
-            titleClassName="text-h4"
-            descClassName="text-caption"
-          />
-        </div>
-      )} menuData={MENU} />
+      <SideNavCard
+        cardTitle={(
+          <div className="access-background-image p-20 opacity-90">
+            <ItemWithTitleDesc
+              title="应用管理"
+              desc="对企业的自建应用进行统一管理"
+              itemRender={(
+                <AppIcon themeColor='amber' iconName='dashboard_customize' size={48} />
+              )}
+              titleClassName="text-h4"
+              descClassName="text-caption"
+            />
+          </div>
+        )}
+        menuData={MENU}
+      />
       <div className="app-right-box bg-opacity-50 bg-white">
         <Switch>
           <Route path="/apps" component={MyApp} />
