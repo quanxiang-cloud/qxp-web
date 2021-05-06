@@ -9,7 +9,7 @@
   }
 
   .dropdown-options__option {
-    @apply flex items-center justify-between px-16 h-36 cursor-pointer select-none hover:bg-gray-100;
+    @apply flex items-center justify-between px-16 h-36 cursor-pointer select-none font-medium hover:bg-gray-100;
   }
 
   .dropdown-trigger {
