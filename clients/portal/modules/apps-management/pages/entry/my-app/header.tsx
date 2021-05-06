@@ -4,6 +4,8 @@ import { RadioButton, RadioGroup } from '@QCFE/lego-ui';
 import Button from '@c/button';
 import Search from '@portal/modules/apps-management/components/search';
 
+import { Params } from './store';
+
 import './index.scss';
 
 type AppCountMaps = {
@@ -13,13 +15,19 @@ type AppCountMaps = {
 };
 
 type Props = {
-  params: any;
-  changeParams: (obj: any) => void;
+  params: Params;
+  changeParams: (obj: Params) => void;
   setModalType: (modalType: string) => void;
   countMaps: AppCountMaps;
 }
 
-const STATUS_LIST = [
+type Status = {
+  value: number;
+  key: 'all' | 'published' | 'unPublished';
+  name: string;
+}
+
+const STATUS_LIST: Array<Status> = [
   { value: 0, key: 'all', name: '全部应用' },
   { value: 1, key: 'published', name: '已发布' },
   { value: -1, key: 'unPublished', name: '未发布' },
@@ -28,12 +36,12 @@ const STATUS_LIST = [
 function Header({ changeParams, params, setModalType, countMaps }: Props) {
   return (
     <div className='app-filter-column'>
-      <Search onSearch={(keyword) => changeParams({ keyword })} />
+      <Search onSearch={(keyword) => changeParams({ ...params, keyword })} />
       <RadioGroup
         wrapClassName='mb-0-i'
         value={params.status}
         onChange={(status) => {
-          changeParams({ status });
+          changeParams({ ...params, status });
         }}
         buttonWidth="104px"
         style={{
@@ -43,7 +51,7 @@ function Header({ changeParams, params, setModalType, countMaps }: Props) {
         {STATUS_LIST.map(({ value, name, key }) => (
           <RadioButton className='rounded-12' key={value} value={value}>
             {name}·
-            {(countMaps as any)[key]}
+            {countMaps[key]}
           </RadioButton>
         ))}
       </RadioGroup>

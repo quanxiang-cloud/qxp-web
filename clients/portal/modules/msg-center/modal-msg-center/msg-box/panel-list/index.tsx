@@ -8,7 +8,9 @@ import Loading from '@c/loading';
 import Error from '@c/error';
 import MsgItem from '@portal/modules/msg-center/msg-item';
 import Toolbar from './toolbar';
-import { getMessageList, deleteMsgByIds, setMsgAsReadByIds, getUnreadMsgCount, setAllMsgAdRead } from '@portal/modules/msg-center/api';
+import {
+  getMessageList, deleteMsgByIds, setMsgAsReadByIds, getUnreadMsgCount, setAllMsgAdRead,
+} from '@portal/modules/msg-center/api';
 import { MsgType, MsgReadStatus } from '@portal/modules/system-mgmt/constants';
 import Pagination from '@c/pagination';
 import Modal from '@c/modal';
@@ -32,8 +34,15 @@ const PanelList = ({ msgCenter }: Props & Pick<MobxStores, 'msgCenter' | any>) =
     return { ...params, ...paging };
   };
   const [selectedRows, setSelectedRows] = useState<string[]>([]);
-  const { isLoading, isError, data, isFetching, refetch } = useQuery(['all-messages', getQueryParams()], getMessageList, {});
-  const { data: countUnreadMsg, refetch: unReadRefetch }=useQuery('count-unread-msg', getUnreadMsgCount);
+  const { isLoading, isError, data, isFetching, refetch } = useQuery(
+    ['all-messages', getQueryParams()],
+    getMessageList,
+    {}
+  );
+  const { data: countUnreadMsg, refetch: unReadRefetch }=useQuery(
+    'count-unread-msg',
+    getUnreadMsgCount
+  );
 
   msgCenter.setUnreadTypeCounts(get(countUnreadMsg, 'data.type_num', []));
 

@@ -14,7 +14,7 @@ import './index.scss';
 
 function DetailsHeader() {
   const history = useHistory();
-  const { appId } = useParams<any>();
+  const { appId } = useParams<{appId: string}>();
   const { updateAppStatus, appDetails } = appDetailsStore;
 
   useEffect(() => {
