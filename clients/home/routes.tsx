@@ -12,14 +12,14 @@ const AppDetails = lazy(
   () => import('./pages/app-details'),
 );
 
-const Approvals = lazy(() => import('./pages/approvals'));
+const Approvals = lazy(() => import('./pages/approvals/routes'));
 
 export default (
   <Suspense fallback={(<PageLoading />)}>
     <Switch>
       <Route exact path="/" component={Dashboard} />
       <Route exact path="/apps/:appID" component={AppDetails} />
-      <Route exact path="/approvals" component={Approvals} />
+      <Route path="/approvals" component={Approvals} />
       <Route component={Error} />
     </Switch>
   </Suspense>

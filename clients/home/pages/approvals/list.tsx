@@ -1,8 +1,8 @@
 import React from 'react';
 import cs from 'classnames';
 
+import { useURLSearch } from '@lib/hooks';
 import TodoApprovals from './todo-approvals';
-import { useHistory, useLocation } from 'react-router';
 
 type ListType = 'todo' | 'done' | 'cc_to_me' | 'my_applies';
 
@@ -17,10 +17,6 @@ const typeList: Array<{ label: string, value: ListType } | 'divide'> = [
   { label: '我发起的', value: 'my_applies' },
 ];
 
-function useURLQuery(): URLSearchParams {
-  return new URLSearchParams(useLocation().search);
-}
-
 type ApprovalTypeListProps = {
   listType: ListType;
   onClick: (catalog: ListType) => void;
@@ -28,7 +24,7 @@ type ApprovalTypeListProps = {
 
 function ApprovalTypeList({ listType, onClick }: ApprovalTypeListProps): JSX.Element {
   return (
-    <div className="bg-white h-full" style={{ width: '200px' }}>
+    <div className="bg-white h-full flex-shrink-0" style={{ width: '200px' }}>
       {
         typeList.map((type, index) => {
           if (type === 'divide') {
@@ -57,10 +53,10 @@ function ApprovalTypeList({ listType, onClick }: ApprovalTypeListProps): JSX.Ele
 }
 
 function Approvals(): JSX.Element {
-  const listType = useURLQuery().get('list') || 'todo';
-  const history = useHistory();
+  const [search, setSearch] = useURLSearch();
+  const listType = search.get('list') || 'todo';
   function handleChangeList(toList: string) {
-    history.push(`/approvals?list=${toList}`);
+    setSearch({ list: toList });
   }
 
   return (

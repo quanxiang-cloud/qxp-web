@@ -31,6 +31,8 @@ const sortOptions = [
 ];
 
 function TodoApprovals(): JSX.Element {
+  React.useEffect(() => store.fetchApprovals(), []);
+
   return (
     <div>
       <div className="flex justify-between items-center mb-16">
@@ -52,9 +54,14 @@ function TodoApprovals(): JSX.Element {
           <IconBtn iconName="sort" />
         </Select>
       </div>
-      {store.approvals.map((approval) => {
+      {/* {store.approvals.map((approval) => {
         return (<ApprovalCard key={approval.id} />);
-      })}
+      })} */}
+      {
+        Array.from(new Array(10)).map((_, index) => index).map((index) => {
+          return (<ApprovalCard key={index} />);
+        })
+      }
       <Pagination current={store.pageNumber} pageSize={store.pageSize} onChange={store.paginate} />
     </div>
   );

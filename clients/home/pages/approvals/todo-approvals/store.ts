@@ -1,4 +1,5 @@
 import httpClient from '@lib/http-client';
+import toast from '@lib/toast';
 import { action, computed, observable, reaction } from 'mobx';
 
 // type ApprovalCatalog = 'todo' | 'done' | 'cc_to_me' | 'my_applies';
@@ -58,6 +59,8 @@ class Store {
       this.approvals = dataList;
       this.total = total;
       this.loading = false;
+    }).catch((err) => {
+      toast.error(err);
     });
   }
 }
