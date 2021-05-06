@@ -142,7 +142,7 @@ export default class PureTree extends Component<Props> {
   ) => {
     const { tree } = this.props;
 
-    if (!destination) {
+    if (!destination || destination.index === source.index) {
       return;
     }
     const newTree = moveItemOnTree(tree, source, destination);
@@ -161,8 +161,7 @@ export default class PureTree extends Component<Props> {
       fromGroupID: fromGroupID as string,
       toGroupID: toGroupID as string,
     }).catch((err) => {
-      // todo give this a better error message
-      toast.error('移动页面位置失败:', err);
+      toast.error('移动页面位置失败:', err.data.msg);
     });
   };
 
