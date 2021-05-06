@@ -11,7 +11,7 @@ interface Props {
   className?: string;
 }
 
-const MsgBox = (props: Props) => {
+const MsgBox = ({ className }: Props) => {
   useEffect(() => {
     return () => {
       msgCenter.reset && msgCenter.reset();
@@ -19,7 +19,7 @@ const MsgBox = (props: Props) => {
   }, []);
 
   return (
-    <div className={styles.wrap}>
+    <div className={`${styles.wrap} ${className}`}>
       <Types />
       <ListPanel/>
       <DetailPanel/>
