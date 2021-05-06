@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { Provider as MobxProvider } from 'mobx-react';
-import { RecoilRoot } from 'recoil';
 import { LocaleProvider } from '@QCFE/lego-ui';
 
 // ensure web socket connection
@@ -31,13 +30,11 @@ Object.assign(window, { _stores: stores }); // fixme: debug
 ReactDOM.render(
   <MobxProvider {...stores}>
     <QueryClientProvider client={queryClient}>
-      <RecoilRoot>
-        <LocaleProvider locales={locales}>
-          <Router>
-            <App/>
-          </Router>
-        </LocaleProvider>
-      </RecoilRoot>
+      <LocaleProvider locales={locales}>
+        <Router>
+          <App/>
+        </Router>
+      </LocaleProvider>
     </QueryClientProvider>
   </MobxProvider>,
   document.getElementById('root'),

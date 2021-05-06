@@ -33,7 +33,6 @@
     "react-router-dom": "^5.2.0",
     "react-table": "^7.6.3",
     "react-use": "^17.2.1",
-    "recoil": "^0.2.0",
     "styled-components": "^5.2.3",
     "xlsx": "^0.16.9"
   },
