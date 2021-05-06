@@ -6,7 +6,7 @@ import { FormBuilder } from '@c/form-builder';
 import registry from '@c/form-builder/registry';
 import Button from '@c/button';
 
-import { Modal } from '@QCFE/lego-ui';
+import Modal from '@c/modal';
 
 import { FormButtonGroup, SchemaForm } from '@formily/antd';
 import toast from '@lib/toast';
@@ -40,10 +40,9 @@ const FormPage = () => {
         </span> */}
       </div>
       <FormBuilder store={store.formStore} />
-      <Modal
+      {(previewModalVisible)&&(<Modal
         title="预览表单"
-        onCancel={handlePreviewClose}
-        visible={previewModalVisible}
+        onClose={handlePreviewClose}
         footer={null}
       >
         <SchemaForm
@@ -59,7 +58,7 @@ const FormPage = () => {
             <Button type="submit" onClick={handlePreviewClose}>关闭</Button>
           </FormButtonGroup>
         </SchemaForm>
-      </Modal>
+      </Modal>)}
     </>
   );
 };

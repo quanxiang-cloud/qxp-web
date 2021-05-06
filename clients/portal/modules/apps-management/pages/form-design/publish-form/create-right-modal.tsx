@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { Modal } from '@QCFE/lego-ui';
+import Modal from '@c/modal';
 
 import Button from '@c/button';
 
@@ -29,10 +29,9 @@ function CreateRightModal({ onCancel }: Props) {
 
   return (
     <Modal
-      visible
       className="static-modal"
       title='新建权限组'
-      onCancel={onCancel}
+      onClose={onCancel}
       footer={
         (<div className="flex flex-row justify-between items-center">
           <Button

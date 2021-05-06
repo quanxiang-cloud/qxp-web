@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Table, Message } from '@QCFE/lego-ui';
-import { inject, observer } from 'mobx-react';
+import { observer } from 'mobx-react';
+import msgMgmt from '@portal/stores/msg-mgmt';
 import dayjs from 'dayjs';
 import { debounce } from 'lodash';
 import { MsgSendStatus, MsgType } from '@portal/modules/system-mgmt/constants';
@@ -22,8 +23,6 @@ import Select from '@c/select';
 
 import { Content as SendMessage } from '../send-message/index';
 
-import { Data, PageInfo, RequestInfo, MessaeStatus, MessageType } from '../delcare';
-import { useRecoilState, useRecoilValue } from 'recoil';
 import Authorized from '@c/authorized';
 import styles from './index.module.scss';
 
@@ -92,20 +91,33 @@ const EnumMessage = [
   },
 ];
 
-const MsgTable = ({ msgMgmt: store, refresh }: Props & Pick<MobxStores, 'msgMgmt' | any>) => {
+const MsgTable = ({ refresh }: Props) => {
+  const {
+    data,
+    pageInfo,
+    requestInfo,
+    messageStatus: status,
+    messageType,
+    setPageInfo,
+    setMessageType,
+    setMessageStatus: setStatus,
+  } = msgMgmt;
+
   const queryClient=useQueryClient();
-  const data = useRecoilValue(Data);
-  const [pageInfo, setPageInfo] = useRecoilState(PageInfo);
 
-  const { isLoading, isError, isFetching } = useRecoilValue(RequestInfo);
-
-  const [previewInfo, setPreviewInfo] = useState({ visible: false, id: '', title: '', status: MsgSendStatus.all });
+  const [previewInfo, setPreviewInfo] = useState({
+    visible: false, id: '', title: '', status: MsgSendStatus.all,
+  });
   const [previewData, setPreviewData] = useState<any>(null);
-
   const [modifyModal, setModifyModal] = useState<any>({ visible: false, id: undefined });
   const [modifyData, setModifyData] = useState<any>(null);
-
+  const [rowSelectionKyes, setRowSelectionKyes] = useState([]);
+  const [modalInfo, setModalInfo] = useState({ visible: false, id: '' });
   const sendMessageRef = useRef<any>();
+
+  const closeModal = () => setModalInfo({ visible: false, id: '' });
+
+  const { isLoading, isError, isFetching } = requestInfo;
 
   const refreshMsg = () => {
     queryClient.invalidateQueries('msg-mgmt-msg-list');
@@ -186,17 +198,14 @@ const MsgTable = ({ msgMgmt: store, refresh }: Props & Pick<MobxStores, 'msgMgmt
       });
   };
 
-  const handleClose = () => setPreviewInfo({ visible: false, id: '', title: '', status: MsgSendStatus.all });
+  const handleClose = () => setPreviewInfo(
+    {
+      visible: false, id: '', title: '', status: MsgSendStatus.all,
+    });
 
-  const pageChange = (page: number, pageSize: number) => setPageInfo( (_current) =>({ ..._current, current: page, pageSize }));
-
-  const [rowSelectionKyes, setRowSelectionKyes] = useState([]);
-
-  const [modalInfo, setModalInfo] = useState({ visible: false, id: '' });
-  const closeModal = () => setModalInfo({ visible: false, id: '' });
-
-  const [status, setStatus] = useRecoilState<MsgSendStatus>(MessaeStatus);
-  const [messageType, setMessageType] = useRecoilState(MessageType);
+  const pageChange = (page: number, pageSize: number) => setPageInfo(
+    { ...pageInfo, current: page, pageSize }
+  );
 
   if (isLoading ) {
     return <Loading/>;
@@ -245,7 +254,11 @@ const MsgTable = ({ msgMgmt: store, refresh }: Props & Pick<MobxStores, 'msgMgmt
       ),
       dataIndex: 'status',
       width: 160,
-      render: ( _ : any, { status, fail, success }: { status: MsgSendStatus, fail: number, success: number }) => <Status {...{ status, fail, success }}/>,
+      render: ( _ : any, { status, fail, success }: {
+         status: MsgSendStatus,
+         fail: number, success: number }) =>
+        (<Status {...{ status, fail, success }
+        }/>),
     },
     {
       title: (
@@ -263,7 +276,9 @@ const MsgTable = ({ msgMgmt: store, refresh }: Props & Pick<MobxStores, 'msgMgmt
       ),
       dataIndex: 'title',
       width: 'auto',
-      render: (_: any, { id, title, sort, status } : { status: MsgSendStatus, id: string, title: string, sort: MsgType })=>{
+      render: (_: any, { id, title, sort, status } : {
+         status: MsgSendStatus, id: string, title: string, sort: MsgType
+        })=>{
         const handleClick = () => {
           setPreviewInfo({ id, visible: true, title, status });
         };
@@ -289,7 +304,12 @@ const MsgTable = ({ msgMgmt: store, refresh }: Props & Pick<MobxStores, 'msgMgmt
       dataIndex: 'updated_at',
       width: 180,
       render: ( _: any, { updated_at } : Qxp.QueryMsgResult) => {
-        return <span>{dayjs(parseInt(String(updated_at * 1000))).format('YYYY-MM-DD HH:mm:ss')}</span>;
+        return (
+          <span>
+            {dayjs(parseInt(String(updated_at * 1000)))
+              .format('YYYY-MM-DD HH:mm:ss')}
+          </span>
+        );
       },
     },
     {
@@ -337,7 +357,11 @@ const MsgTable = ({ msgMgmt: store, refresh }: Props & Pick<MobxStores, 'msgMgmt
         ];
         return (
           <Authorized authority={['system/mangage']}>
-            <MoreMenu onChange={console.log} placement="bottom-end" className="opacity-1" menus={menus}/>
+            <MoreMenu
+              onChange={console.log}
+              placement="bottom-end"
+              className="opacity-1"
+              menus={menus}/>
           </Authorized>
         );
       },
@@ -409,7 +433,8 @@ const MsgTable = ({ msgMgmt: store, refresh }: Props & Pick<MobxStores, 'msgMgmt
                 className="bg-gray-700 mr-20"
                 modifier="primary"
                 onClick={() => {
-                  sendMessageRef?.current?.previewAndPublish && sendMessageRef?.current?.previewAndPublish();
+                  sendMessageRef?.current?.previewAndPublish &&
+                  sendMessageRef?.current?.previewAndPublish();
                 }}
                 iconName="send"
               >
@@ -454,4 +479,4 @@ const MsgTable = ({ msgMgmt: store, refresh }: Props & Pick<MobxStores, 'msgMgmt
   );
 };
 
-export default inject('msgMgmt')(observer(MsgTable));
+export default observer(MsgTable);
