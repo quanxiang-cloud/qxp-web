@@ -4,8 +4,8 @@ import { Route, Switch } from 'react-router';
 import PageLoading from '@portal/modules/apps-management/components/page-loading';
 import Error from '@c/error';
 
-const AppList = lazy(
-  () => import('./pages/app-list'),
+const Dashboard = lazy(
+  () => import('./pages/dashboard'),
 );
 
 const AppDetails = lazy(
@@ -15,7 +15,7 @@ const AppDetails = lazy(
 export default (
   <Suspense fallback={(<PageLoading />)}>
     <Switch>
-      <Route exact path="/" component={AppList} />
+      <Route exact path="/" component={Dashboard} />
       <Route exact path="/appDetails/:appID" component={AppDetails} />
       <Route component={Error} />
     </Switch>
