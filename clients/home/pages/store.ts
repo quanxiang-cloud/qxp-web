@@ -13,7 +13,7 @@ class UserAppStore {
   @observable pageListLoading = false;
   @observable curPage: PageInfo = { id: '' };
   @observable fetchSchemeLoading = true;
-  @observable formScheme:any = null;
+  @observable formScheme: any = null;
   @observable pagesTreeData: TreeData = {
     rootId: 'ROOT',
     items: {},
@@ -31,6 +31,10 @@ class UserAppStore {
 
   @action
   setCurPage = (pageInfo: PageInfo) => {
+    if (pageInfo.id === this.curPage.id) {
+      return;
+    }
+    
     this.formScheme = null;
     if (pageInfo.id) {
       this.fetchSchemeLoading = true;

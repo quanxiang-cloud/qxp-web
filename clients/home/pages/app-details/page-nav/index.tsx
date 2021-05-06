@@ -9,10 +9,6 @@ import './index.scss';
 
 function PageNav() {
   const onSelect = (pageNode: PageInfo) => {
-    if (pageNode.menuType === 1) {
-      return;
-    }
-
     store.setCurPage(pageNode);
   };
 
