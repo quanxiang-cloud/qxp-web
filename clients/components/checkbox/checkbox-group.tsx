@@ -15,63 +15,65 @@ interface Props {
   value?: Array<CheckboxValueType>;
   disabled?: boolean;
   onChange?: (checkedValue: Array<CheckboxValueType>) => void;
-  options?: Array<CheckboxOptionType | string>;
+  options?: Array<CheckboxOptionType> | Array<string>;
 }
 
 function CheckboxGroup({
   defaultValue,
+  value,
+  disabled,
   options = [],
   onChange,
-  ...restProps
 }: Props) {
-  const [value, setValue] = React.useState<CheckboxValueType[]>(
-    restProps.value || defaultValue || [],
+  const _options = options.map((option: CheckboxOptionType | string) => {
+    if (typeof option === 'string') {
+      return {
+        label: option,
+        value: option,
+      };
+    }
+    return option;
+  });
+
+  const [checkedValue, setCheckedValue] = React.useState<CheckboxValueType[]>(
+    value || defaultValue || [],
   );
 
   React.useEffect(() => {
-    if ('value' in restProps) {
-      setValue(restProps.value || []);
+    if (value) {
+      setCheckedValue(value || []);
     }
-  }, [restProps.value]);
+  }, [value]);
 
   const toggleOption = (option: CheckboxOptionType) => {
-    const optionIndex = value.indexOf(option.value);
-    const newValue = [...value];
-    if (optionIndex === -1) {
-      newValue.push(option.value);
+    const newValue = new Set(checkedValue);
+    const isExist = newValue.has(option.value);
+    if (!isExist) {
+      newValue.add(option.value);
     } else {
-      newValue.splice(optionIndex, 1);
+      newValue.delete(option.value);
     }
-    if (!('value' in restProps)) {
-      setValue(newValue);
+    const arrayValue = Array.from(newValue);
+    if (!value) {
+      setCheckedValue(arrayValue);
     }
-    onChange?.(newValue);
+    onChange?.(arrayValue);
   };
-
-  const getOptions = (): Array<CheckboxOptionType> =>
-    options.map((option) => {
-      if (typeof option === 'string') {
-        return {
-          label: option,
-          value: option,
-        };
-      }
-      return option;
-    });
 
   let children;
   if (options && options.length > 0) {
-    children = getOptions().map((option: any) => {
+    children = _options.map((option: any) => {
       return (
         <Checkbox
           key={option.value}
-          disabled={'disabled' in option ? option.disabled : restProps.disabled}
+          disabled={option.disabled || disabled}
           value={option.value}
-          checked={value.indexOf(option.value) !== -1}
+          checked={checkedValue.indexOf(option.value) !== -1}
           label={option.label}
           onChange={() => toggleOption(option)}
           className="mr-20"
-        />);
+        />
+      );
     });
   }
 
