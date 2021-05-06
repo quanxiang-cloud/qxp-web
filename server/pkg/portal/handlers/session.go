@@ -185,6 +185,11 @@ func getCurrentUser(ctx context.Context, token string) *User {
 
 // PrepareRequest assign token and user on request context
 func PrepareRequest(r *http.Request) (*http.Request, bool) {
+	session := contexts.GetCurrentRequestSession(r)
+	if session.IsNew {
+		return r, false
+	}
+
 	token := getToken(r)
 	if token == "" {
 		return r, false
@@ -205,6 +210,11 @@ func PrepareRequest(r *http.Request) (*http.Request, bool) {
 
 // HasToken return current session has token
 func HasToken(r *http.Request) bool {
+	session := contexts.GetCurrentRequestSession(r)
+	if session.IsNew {
+		return false
+	}
+
 	return "" != getToken(r)
 }
 
