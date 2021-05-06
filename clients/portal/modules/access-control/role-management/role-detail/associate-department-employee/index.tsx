@@ -17,7 +17,7 @@ export interface Props {
 
 export default function AssociateDepartmentEmployee({ roleID, isSuper }: Props) {
   const [showBindModal, setShowBindModal] = useState(false);
-  const [showBindType, setShowBindType] = useState<string | number>(1);
+  const [showBindType, setShowBindType] = useState<number>(1);
   const queryClient = useQueryClient();
 
   const { data, isLoading, isError, error } = useQuery(
