@@ -18,7 +18,7 @@ const queryClient = new QueryClient({
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <div className="min-h-screen bg-5976e01a">
+      <div className="min-h-screen">
         <BrowserRouter>
           <GlobalHeader />
           {routers}
