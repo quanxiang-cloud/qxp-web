@@ -36,12 +36,12 @@ const STATUS_LIST: Array<Status> = [
 function Header({ changeParams, params, setModalType, countMaps }: Props) {
   return (
     <div className='app-filter-column'>
-      <Search onSearch={(keyword) => changeParams({ ...params, keyword })} />
+      <Search onSearch={(appName) => changeParams({ appName })} />
       <RadioGroup
         wrapClassName='mb-0-i'
-        value={params.status}
-        onChange={(status) => {
-          changeParams({ ...params, status });
+        value={params.useStatus}
+        onChange={(useStatus) => {
+          changeParams({ useStatus });
         }}
         buttonWidth="104px"
         style={{

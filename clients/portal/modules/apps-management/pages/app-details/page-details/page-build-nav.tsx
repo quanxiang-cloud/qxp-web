@@ -26,7 +26,8 @@ function PageBuildNav({ pageId, pageName, appID }: Props) {
       {BUILD_NAV.map(({ title, desc, type, url }) => (
         <Link
           to={`${url}/${pageId}/${appID}?pageName=${pageName}`}
-          key={type} className={`app-page-build-nav-bg-${type} app-page-build-nav-item`}
+          key={type}
+          className={`app-page-build-nav-bg-${type} app-page-build-nav-item`}
         >
           <Icon className='mr-8' name='list_alt' type='light' size={44} />
           <div className='flex-1 text-white'>

@@ -1,10 +1,10 @@
 import request from './request';
 
-export const fetchAppList = () => {
+export const fetchAppList = (data: any) => {
   return request({
     url: '/api/v1/app-center/adminList',
     method: 'post',
-    data: { page: 1, limit: 9999 },
+    data: { page: 1, limit: 9999, ...data },
   });
 };
 

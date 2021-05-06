@@ -190,6 +190,7 @@ class AppDetailsStore {
 
   @action
   clear = () => {
+    this.curPage = { id: '' };
     this.pagesTreeData = {
       rootId: 'ROOT',
       items: {},

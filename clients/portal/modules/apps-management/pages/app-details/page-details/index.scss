@@ -13,12 +13,13 @@
 }
 
 .app-page-build-nav-item {
-  cursor: pointer;
   display: flex;
   align-items: center;
-  width: 572px;
+  position: relative;
+  width: 49%;
   height: 84px;
   padding: 0 20px;
+  cursor: pointer;
   border-radius: 12px 2px 12px 12px;
   transition: transform .3s;
 
@@ -30,6 +31,16 @@
 .app-page-build-nav-bg-form {
   background: linear-gradient(90deg, #5EEAD4 0%, #2DD4BF 100%);
   box-shadow: 0px 8px 24px rgba(20, 184, 166, 0.25);
+
+  &::after {
+    content: '';
+    position: absolute;
+    right: 64px;
+    display: block;
+    width: 84px;
+    height: 84px;
+    background: url('/dist/images/nav-bg-form.svg') 100%;
+  }
 }
 
 .app-page-build-nav-bg-flow {

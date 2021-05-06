@@ -51,12 +51,12 @@ function RightsCard({ rightsCardData, onChange, selectNumber }: CardProps) {
     } else {
       setCheckAll(false);
     }
-    onChange(parseInt(selected.join(''), 2), key);
+    onChange(parseInt([...selected].reverse().join(''), 2), key);
   }, [selected]);
 
   useEffect(() => {
     if (selectNumber) {
-      const selectArr = selectNumber.toString(2).split('');
+      const selectArr = selectNumber.toString(2).split('').reverse();
       setSelected(
         options.map((_: any, index: number) => {
           return selectArr[index] ? Number(selectArr[index]) : 0;
@@ -64,7 +64,7 @@ function RightsCard({ rightsCardData, onChange, selectNumber }: CardProps) {
 
       );
     }
-  }, [selectNumber]);
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newSelected = [...selected];
@@ -115,29 +115,37 @@ function RightsCard({ rightsCardData, onChange, selectNumber }: CardProps) {
 
 export default function Authorized({ rightsID }: Props) {
   const [actionNumber, setActionNumber] = useState<number>(0);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchOperatePer(rightsID).then((res) => {
       if (res.data) {
         setActionNumber(res.data.authority);
       }
-    });
+      setLoading(false);
+    }).catch(() => {
+      setLoading(false);
+    })
   }, [rightsID]);
 
   const handleChange = (selected: number, key: string) => {
     switch (key) {
-    case 'action':
-      setActionNumber(selected);
-      break;
+      case 'action':
+        setActionNumber(selected);
+        break;
     }
   };
 
   const handleSave = () => {
-    saveOperatePer({ perGroupID: rightsID, authority: actionNumber }).then(()=>{
+    saveOperatePer({ perGroupID: rightsID, authority: actionNumber }).then(() => {
       toast.success('保存成功！');
     });
   };
 
+  if (loading) {
+    return null;
+  }
+  
   return (
     <>
       {RIGHTS.map((rightsCardData) => {

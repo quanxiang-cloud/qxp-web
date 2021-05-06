@@ -226,6 +226,9 @@ export default class FormBuilderStore {
 
     this.fields.splice(index + 1, 0, newField);
     this.hasEdit = true;
+
+    // focus new added filed
+    this.setActiveFieldKey(newField.fieldName);
   }
 
   @action

@@ -21,14 +21,14 @@ const PADDING_PER_LEVEL = 16;
 const getIcon = (item: TreeItem) => {
   if (item.data.menuType === 0) {
     // todo should has an default icon name
-    return (<Icon className='mr-8 text-current' name={item.data.icon} size={24} />);
+    return (<Icon className='mr-8 text-current flex-shrink-0' name={item.data.icon} size={24} />);
   }
 
   if (item.isExpanded) {
-    return (<Icon className='mr-8 text-current' name="arrow_drop_up" size={24} />);
+    return (<Icon className='mr-8 text-current flex-shrink-0' name="arrow_drop_up" size={24} />);
   }
 
-  return (<Icon className='mr-8 text-current' name="arrow_drop_down" size={24} />);
+  return (<Icon className='mr-8 text-current flex-shrink-0' name="arrow_drop_down" size={24} />);
 };
 
 type NodeRenderProps = RenderItemParams & {
@@ -93,9 +93,9 @@ function NodeRender(
         onClick={handleClick}
       >
         {getIcon(item)}
-        <span>{item.data ? item.data.name : ''}</span>
+        <span className="truncate">{item.data ? item.data.name : ''}</span>
         <div
-          className={cs('ml-auto opacity-0 group-hover:opacity-100', {
+          className={cs('ml-auto opacity-0 group-hover:opacity-100 flex-shrink-0', {
             'opacity-100': isActive,
           })}
         >

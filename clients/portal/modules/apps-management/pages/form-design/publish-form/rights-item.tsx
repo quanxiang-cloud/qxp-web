@@ -84,8 +84,8 @@ function RightsItem({ rights, actions }: Props) {
           </div>
         </div>
         <div className='flex gap-8 flex-wrap'>
-          {(rights.scopes || []).map(({ name, type }: any) => (
-            <div className={`pb-form-right-${type === 1 ? 'user' : 'dep'}`} key={name}>
+          {(rights.scopes || []).map(({ name, type, id }: any) => (
+            <div className={`pb-form-right-${type === 1 ? 'user' : 'dep'}`} key={id}>
               <span>
                 <Icon
                   type='light'
