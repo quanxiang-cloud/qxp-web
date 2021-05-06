@@ -8,11 +8,11 @@ interface Props {
   onChange?: (val:string) => void;
   onBlur?(val?: string): void;
   onKeyDown?(e?: React.KeyboardEvent): void;
-  classname?: string;
+  className?: string;
 }
 
 export default function Search(
-  { value: _value, placeholder, onChange, onKeyDown, onBlur, classname }: Props) {
+  { value: _value, placeholder, onChange, onKeyDown, onBlur, className }: Props) {
   const [value, setValue] = useState(_value);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>)=>{
@@ -27,7 +27,7 @@ export default function Search(
   }
 
   return (
-    <div className={`px-16 py-6 rounded-r-6 rounded-tl-2 rounded-bl-6 bg-gray-100 flex items-center ${classname}`}>
+    <div className={`px-16 py-6 rounded-r-6 rounded-tl-2 rounded-bl-6 bg-gray-100 flex items-center ${className}`}>
       <Icon name="search" size={20} className='mr-8' />
       <input
         style={{ background: 'none', width: 122, boxShadow: 'none' }}
