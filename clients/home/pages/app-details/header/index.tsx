@@ -11,10 +11,11 @@ import './index.scss';
 
 function DetailsHeader() {
   const history = useHistory();
-  const { appID, appList } = store;
+  const { appID } = store;
+
   useEffect(() => {
     store.fetchAppList().then(() => {
-      if (appList.findIndex(({ id }: AppInfo) => id === store.appID) === -1) {
+      if (store.appList.findIndex(({ id }: AppInfo) => id === store.appID) === -1) {
         toast.error('应用不存在！2秒后跳转到首页');
         setTimeout(() => {
           history.replace('/')
@@ -34,7 +35,7 @@ function DetailsHeader() {
         <span className='mr-16 ml-8'>/</span>
         <AppDropdown
           hiddenStatus={true}
-          appList={appList}
+          appList={store.appList}
           curApp={appID}
           onChange={handleChange}
         />
