@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Modal } from '@QCFE/lego-ui';
+import Modal from '@c/modal';
 import { useParams } from 'react-router-dom';
 
 import toast from '@lib/toast';
@@ -142,30 +142,31 @@ function AppAdmin() {
           loading={loading}
           onSelectChange={handleSelectChange}
         />
-        <Modal
-          title='批量移除'
-          className="static-modal"
-          onCancel={() => setModalType('')}
-          visible={modalType === 'batchRemove'}
-          footer={(
-            <div className="flex items-center">
-              <Button iconName='close' onClick={() => setModalType('')}>
+        {(modalType === 'batchRemove')&&
+          (<Modal
+            title='批量移除'
+            className="static-modal"
+            onClose={() => setModalType('')}
+            footer={(
+              <div className="flex items-center">
+                <Button iconName='close' onClick={() => setModalType('')}>
                 取消
-              </Button>
-              <div className="px-2"></div>
-              <Button
-                modifier='primary'
-                iconName='check'
-                loading={delLoading}
-                onClick={batchRemove}
-              >
+                </Button>
+                <div className="px-2"></div>
+                <Button
+                  modifier='primary'
+                  iconName='check'
+                  loading={delLoading}
+                  onClick={batchRemove}
+                >
                 确定移除
-              </Button>
-            </div>
-          )}
-        >
+                </Button>
+              </div>
+            )}
+          >
           确定要批量移除应用的管理员吗？
-        </Modal>
+          </Modal>)
+        }
         {modalType === 'addAdmin' && (
           <EmployeeOrDepartmentPickerModal
             title='添加管理员'

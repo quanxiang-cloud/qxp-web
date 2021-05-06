@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 import { useHistory } from 'react-router-dom';
-import { Modal } from '@QCFE/lego-ui';
+import Modal from '@c/modal';
 
 import toast from '@lib/toast';
 import Button from '@c/button';
@@ -31,9 +31,8 @@ function CreatedAppModal({ onCancel }: Props) {
 
   return (
     <Modal
-      visible
       title='新建应用'
-      onCancel={onCancel}
+      onClose={onCancel}
       className="static-modal"
       footer={
         (<div className="flex items-center">
