@@ -16,7 +16,7 @@ function MyApp() {
     published: 0,
     unPublished: 0,
   });
-  const { isListLoading, changeParams, appRenderList, params, appList } = store;
+  const { isListLoading, changeParams, params, appList, allAppList } = store;
 
   useEffect(() => {
     store.fetchAppList();
@@ -25,7 +25,7 @@ function MyApp() {
   useEffect(() => {
     let published = 0;
     let unPublished = 0;
-    appList.forEach((app: AppInfo) => {
+    allAppList.forEach((app: AppInfo) => {
       if (app.useStatus > 0) {
         published += 1;
       } else {
@@ -33,11 +33,11 @@ function MyApp() {
       }
     });
     setCountMaps({
-      all: appList.length,
+      all: allAppList.length,
       published,
       unPublished,
     });
-  }, [appList]);
+  }, [allAppList]);
 
   return (
     <div className="flex flex-col h-full">
@@ -56,7 +56,7 @@ function MyApp() {
       <AppList
         openCreatedModal={() => setModalType('CreatedApp')}
         isLoading={isListLoading}
-        appList={appRenderList}
+        appList={appList}
       />
       {modalType === 'CreatedApp' && (<CreatedAppModal onCancel={() => setModalType('')} />)}
     </div>

@@ -68,7 +68,7 @@ function DetailsHeader() {
           }}
         />
         <span className='mr-16 ml-8'>/</span>
-        <AppDropdown appList={appListStore.appList} curApp={appId} onChange={handleChange} />
+        <AppDropdown appList={appListStore.allAppList} curApp={appId} onChange={handleChange} />
       </div>
       <div className='flex'>
         {isPublish ? (
