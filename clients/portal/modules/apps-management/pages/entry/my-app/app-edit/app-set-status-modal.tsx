@@ -1,5 +1,5 @@
 import React from 'react';
-import { Modal } from '@QCFE/lego-ui';
+import Modal from '@c/modal';
 
 import Icon from '@c/icon';
 import Button from '@c/button';
@@ -37,9 +37,8 @@ function AppSetStatusModal({ onCancel, appId, status = 'publish' }: Props) {
 
   return (
     <Modal
-      visible
       title={TEXT[status].modalTitle}
-      onCancel={onCancel}
+      onClose={onCancel}
       className="static-modal"
       footer={
         (<div className="flex items-center">
