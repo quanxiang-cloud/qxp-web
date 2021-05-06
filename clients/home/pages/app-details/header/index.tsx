@@ -3,7 +3,7 @@ import { observer } from 'mobx-react';
 import { useHistory } from 'react-router-dom';
 
 import NavButton from '@portal/modules/apps-management/components/nav-button';
-
+import toast from '@lib/toast';
 import AppDropdown from '@c/app-dropdown';
 
 import store from '../../store';
@@ -11,12 +11,20 @@ import './index.scss';
 
 function DetailsHeader() {
   const history = useHistory();
+  const { appID, appList } = store;
   useEffect(() => {
-    store.fetchAppList();
+    store.fetchAppList().then(() => {
+      if (appList.findIndex(({ id }: AppInfo) => id === store.appID) === -1) {
+        toast.error('应用不存在！2秒后跳转到首页');
+        setTimeout(() => {
+          history.replace('/')
+        }, 2000);
+      }
+    });
   }, []);
 
-  const handleChange = (newAppId:string) => {
-    history.replace(location.pathname.replace(store.appID, newAppId));
+  const handleChange = (newAppId: string) => {
+    history.replace(location.pathname.replace(appID, newAppId));
   };
 
   return (
@@ -26,8 +34,8 @@ function DetailsHeader() {
         <span className='mr-16 ml-8'>/</span>
         <AppDropdown
           hiddenStatus={true}
-          appList={store.appList}
-          curApp={store.appID}
+          appList={appList}
+          curApp={appID}
           onChange={handleChange}
         />
       </div>

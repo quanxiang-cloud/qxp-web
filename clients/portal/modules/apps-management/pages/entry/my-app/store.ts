@@ -85,7 +85,6 @@ class AppListStore {
 
   @action
   createdApp = (appInfo: AppInfo) => {
-    debugger;
     return createdApp(appInfo).then((res) => {
       const newApp = { ...appInfo, ...res.data };
       this.appList = [newApp, ...this.appList];

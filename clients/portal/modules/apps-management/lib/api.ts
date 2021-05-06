@@ -140,6 +140,7 @@ export type MovePageParams = {
   id: string;
   appID: string;
   fromSort: number;
+  Name: string;
   toSort: number;
   fromGroupID: string;
   toGroupID: string;
