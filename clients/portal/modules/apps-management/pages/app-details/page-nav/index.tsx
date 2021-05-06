@@ -18,7 +18,7 @@ import './index.scss';
 function PageNav() {
   const [modalType, setModalType] = useState('');
   const [curEditNode, setCurEditNode] = useState<null | TreeItem>(null);
-  const { appId } = useParams<any>();
+  const { appId } = useParams<{appId: string}>();
   const { setCurPage, editGroup, deletePageOrGroup } = appPagesStore;
 
   function delPageOrGroup() {

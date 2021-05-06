@@ -8,7 +8,7 @@ import appPagesStore from './store';
 import './index.scss';
 
 function AppDetailsContent() {
-  const { appId } = useParams<any>();
+  const { appId } = useParams<{appId: string}>();
 
   useEffect(() => {
     appPagesStore.fetchPageList(appId);

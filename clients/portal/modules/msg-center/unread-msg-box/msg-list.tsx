@@ -39,9 +39,11 @@ const MsgList = ({ className, getMsgDetail }: Props): JSX.Element => {
 
     return (
       <ul className={styles.items}>
-        {msgList.map((msg: Qxp.MsgItem) => (<div onClick={()=>handleClick(msg.id)} className='hover:bg-gray-100' key={msg.id} >
-          <MsgItem {...msg} readonly />
-        </div>))}
+        {msgList.map((msg: Qxp.MsgItem) => (
+          <div onClick={()=>handleClick(msg.id)} className='hover:bg-gray-100' key={msg.id} >
+            <MsgItem {...msg} readonly />
+          </div>))
+        }
       </ul>
     );
   };

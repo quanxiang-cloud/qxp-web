@@ -1,7 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import cs from 'classnames';
-import { inject, observer } from 'mobx-react';
+import { observer } from 'mobx-react';
 import { MsgReadStatus, MsgType } from '@portal/modules/system-mgmt/constants';
+import msgCenter from '@portal/stores/msg-center';
 import dayjs from 'dayjs';
 
 import { Message } from '@QCFE/lego-ui';
@@ -30,18 +31,17 @@ const MsgItem = ({
   hideType,
   onClick,
   readonly,
-  msgCenter: store,
-}: Qxp.MsgItem & Props & Pick<MobxStores, 'msgCenter' | any>) => {
+}: Qxp.MsgItem & Props) => {
   const [read, setRead]=useState(read_status);
   const refItem=useRef(null);
   const queryPage = useRouting();
   const queryClient=useQueryClient();
-  const { curMsgId }=store;
+  const { curMsgId }=msgCenter;
 
   useEffect(()=> {
-    const msgId = getQuery('id') || store.curMsgId || '';
+    const msgId = getQuery('id') || msgCenter.curMsgId || '';
     if (msgId === id) {
-      store.setCurMsgId(msgId);
+      msgCenter.setCurMsgId(msgId);
       readMsg.mutate({
         queryKey: ['', {
           id,
@@ -68,11 +68,11 @@ const MsgItem = ({
 
   const readMsg = useMutation(getMsgById, {
     onMutate: ()=> {
-      store.setLoadingDetail(true);
+      msgCenter.setLoadingDetail(true);
     },
     onSuccess: (data: any) => {
-      store.setLoadingDetail(false);
-      store.setDetail(data.data);
+      msgCenter.setLoadingDetail(false);
+      msgCenter.setDetail(data.data);
       // change msg read_status
       if (read_status === MsgReadStatus.unread) {
         setRead(MsgReadStatus.read);
@@ -81,7 +81,7 @@ const MsgItem = ({
       }
     },
     onError: (err: Error) => {
-      store.setLoadingDetail(false);
+      msgCenter.setLoadingDetail(false);
       Message.error(err.message);
     },
   });
@@ -90,8 +90,8 @@ const MsgItem = ({
     if (readonly) {
       return;
     }
-    if (id !== store.curMsgId) {
-      store.setCurMsgId(id);
+    if (id !== msgCenter.curMsgId) {
+      msgCenter.setCurMsgId(id);
       queryPage('', { id });
 
       readMsg.mutate({
@@ -141,4 +141,4 @@ const MsgItem = ({
   );
 };
 
-export default inject('msgCenter')(observer(MsgItem));
+export default observer(MsgItem);

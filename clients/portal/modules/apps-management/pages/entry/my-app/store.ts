@@ -2,9 +2,11 @@ import { observable, action, reaction, IReactionDisposer } from 'mobx';
 import { intersection } from 'lodash';
 
 import toast from '@lib/toast';
-import { fetchAppList, updateAppStatus, delApp, createdApp } from '@portal/modules/apps-management/lib/api';
+import {
+  fetchAppList, updateAppStatus, delApp, createdApp,
+} from '@portal/modules/apps-management/lib/api';
 
-type Params = {
+export type Params = {
   status: number;
   keyword: string;
 }
@@ -79,7 +81,7 @@ class AppListStore {
   }
 
   @action
-  changeParams = (newParams: any) => {
+  changeParams = (newParams: Params) => {
     this.params = { ...this.params, ...newParams };
   }
 
