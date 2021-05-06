@@ -5,6 +5,7 @@
 
 @import './components/dropdown.css';
 
+@import "./layout.css";
 @import "./typography.css";
 @import "./border.css";
 @import "./btn.css";

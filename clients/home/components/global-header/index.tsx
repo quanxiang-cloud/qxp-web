@@ -6,7 +6,7 @@ import HeaderMenu from './header-menu';
 
 export default function GlobalHeader() {
   const location = useLocation();
-  if (location.pathname.startsWith('/appDetails')) {
+  if (location.pathname.startsWith('/apps')) {
     return null;
   }
 

@@ -41,7 +41,7 @@ function Dashboard() {
                 <div className='flex flex-wrap gap-20'>
                   {store.appList.map((appInfo: AppInfo) => (
                     <AppInfoView
-                      onClick={() => history.push('/appDetails/' + appInfo.id)}
+                      onClick={() => history.push('/apps/' + appInfo.id)}
                       className='rounded-12 bg-white user-app-item'
                       key={appInfo.id}
                       appInfo={appInfo}

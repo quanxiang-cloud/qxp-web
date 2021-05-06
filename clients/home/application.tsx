@@ -4,7 +4,7 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 
 import GlobalHeader from './components/global-header';
 
-import routers from './routers';
+import routers from './routes';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -18,7 +18,7 @@ const queryClient = new QueryClient({
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <div className="min-h-screen bg-5976e01a">
+      <div className="min-h-screen">
         <BrowserRouter>
           <GlobalHeader />
           {routers}
