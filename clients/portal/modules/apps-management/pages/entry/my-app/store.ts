@@ -5,9 +5,9 @@ import {
   fetchAppList, updateAppStatus, delApp, createdApp,
 } from '@portal/modules/apps-management/lib/api';
 
-type Params = {
-  useStatus: number;
-  appName: string;
+export type Params = {
+  useStatus?: number;
+  appName?: string;
 }
 
 class AppListStore {
