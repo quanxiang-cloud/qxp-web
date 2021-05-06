@@ -4,7 +4,7 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 
 import GlobalHeader from './components/global-header';
 
-import routers from './routers';
+import routers from './routes';
 
 const queryClient = new QueryClient({
   defaultOptions: {
