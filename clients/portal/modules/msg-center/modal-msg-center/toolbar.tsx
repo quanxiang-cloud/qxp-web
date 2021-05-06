@@ -1,21 +1,21 @@
 import React from 'react';
 import { Checkbox } from '@QCFE/lego-ui';
 import { throttle } from 'lodash';
-import { inject, observer } from 'mobx-react';
+import { observer } from 'mobx-react';
 import { useQueryClient } from 'react-query';
 import Icon from '@c/icon';
 import { MsgReadStatus } from '@portal/modules/system-mgmt/constants';
+import msgCenter from '@portal/stores/msg-center';
 
-const Toolbar = ({ msgCenter }: Pick<MobxStores, 'msgCenter' | any>) => {
-  const { countUnread, filterCheckUnread, setUnreadFilter }=msgCenter;
-  const queryClient=useQueryClient();
-
-  const onChangeUnreadType=(ev: any, checkUnread: boolean)=> {
+const Toolbar = () => {
+  const { countUnread, filterCheckUnread, setUnreadFilter } = msgCenter;
+  const queryClient = useQueryClient();
+  const onChangeUnreadType = (ev: any, checkUnread: boolean) => {
     setUnreadFilter(checkUnread);
     msgCenter.reset();
   };
 
-  const refetch=()=> {
+  const refetch = () => {
     queryClient.invalidateQueries('all-messages');
     msgCenter.reset();
   };
@@ -32,9 +32,9 @@ const Toolbar = ({ msgCenter }: Pick<MobxStores, 'msgCenter' | any>) => {
         <span className='ml-8'>仅看未读</span>
         <span className='ml-8'>({countUnread})</span>
       </div>
-      <Icon name='cached' size={20} className='cursor-pointer' onClick={throttle(refetch, 1000)}/>
+      <Icon name='cached' size={20} className='cursor-pointer' onClick={throttle(refetch, 1000)} />
     </div>
   );
 };
 
-export default inject('msgCenter')(observer(Toolbar));
+export default observer(Toolbar);

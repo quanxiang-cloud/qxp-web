@@ -1,40 +1,31 @@
-import React, { useEffect } from 'react';
-import { inject, observer } from 'mobx-react';
+import React from 'react';
+import { observer } from 'mobx-react';
 import Loading from '@c/loading';
 import styles from '../index.module.scss';
 import PreviewMsg from '@portal/modules/system-mgmt/send-message/preview-msg';
 import NoMsg from '../no-msg';
+import msgCenter from '@portal/stores/msg-center';
 
-interface Props {
-  className?: string;
-}
-
-const PanelDetail = ({ msgCenter }: Props & Pick<MobxStores, 'msgCenter' | any>) => {
-  const { loadingDetail, messageDetail, curMsgId } = msgCenter;
-
-  useEffect(()=> {
-
-  }, [curMsgId]);
+const PanelDetail = () => {
+  let messageDetail:any = {};
+  const { loadingDetail } = msgCenter;
 
   if (loadingDetail) return <Loading />;
+  messageDetail = msgCenter.messageDetail;
 
-  if (messageDetail == null) {
+  if (!messageDetail) {
     return (
       <NoMsg noDetail tips='点击消息标题查看详情' />
     );
+  } else {
+    messageDetail.receivers = messageDetail.recivers;
   }
-
-  const { recivers } = messageDetail;
-
-  const data = Object.assign({}, messageDetail, {
-    receivers: recivers || [],
-  });
 
   return (
     <div className={styles.detailPanel}>
-      <PreviewMsg prevData={data} hideReceivers isPreview canMultiDownload canDownload />
+      <PreviewMsg prevData={messageDetail} hideReceivers isPreview canMultiDownload canDownload />
     </div>
   );
 };
 
-export default inject('msgCenter')(observer(PanelDetail));
+export default (observer(PanelDetail));
