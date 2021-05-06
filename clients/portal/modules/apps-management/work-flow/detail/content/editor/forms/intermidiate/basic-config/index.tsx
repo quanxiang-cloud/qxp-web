@@ -13,19 +13,18 @@ import TimerSelector from './timer-selector';
 import WhenTimeout from './when-timeout';
 
 import {
-  updateDataField,
   BasicNodeConfig,
-  CurrentElement,
   WhenTimeout as WhenTimeoutType,
   Urge as UrgeType,
 } from '../../../store';
 
 interface Props {
   type: 'approve' | 'fillIn';
-  currentElement: CurrentElement;
+  value: BasicNodeConfig;
+  onChange: (config: BasicNodeConfig) => void;
 }
 
-export default function BasicConfig({ type, currentElement }: Props) {
+export default function BasicConfig({ type, value, onChange }: Props) {
   const [openMore, setOpenMore] = useState(false);
   const [showAddPersonModal, setShowAddPersonModal] = useState(false);
   const typeText = type === 'approve' ? '审批' : '填写';
@@ -34,77 +33,59 @@ export default function BasicConfig({ type, currentElement }: Props) {
     setShowAddPersonModal(true);
   }
 
-  function onUpdate(keyOrFunc: string | Function, value?: number | boolean | string) {
-    if (typeof keyOrFunc === 'string') {
-      updateDataField(type, 'basicConfig',
-        (basicConfig: BasicNodeConfig) => ({
-          ...basicConfig,
-          [keyOrFunc]: value,
-        })
-      );
-    } else if (typeof keyOrFunc === 'function') {
-      updateDataField(type, 'basicConfig', keyOrFunc);
-    }
+  function onUpdate(key: string, val?: any): void {
+    onChange({
+      ...value,
+      [key]: val,
+    });
   }
 
   function onUpdateAutoRules(e: ChangeEvent<HTMLInputElement>) {
-    const { checked, value } = e.target;
-    ((basicConfig: BasicNodeConfig) => {
-      const { autoRules } = basicConfig;
-      return {
-        ...basicConfig,
-        autoRules: checked ? [...autoRules, value] : autoRules.filter(
-          (autoApproveRule) => autoApproveRule !== value
-        ),
-      };
-    });
+    const { autoRules } = value;
+    const { checked, value: val } = e.target;
+    onUpdate('autoRules',
+      checked ?
+        [...autoRules, val] :
+        autoRules.filter((autoApproveRule) => autoApproveRule !== val)
+    );
   }
 
   function onTimeRuleUpdate(key: 'deadLine' | 'whenTimeout', secondKey: string) {
     return (v:
       string | number | boolean | ChangeEvent<HTMLInputElement> | UrgeType | WhenTimeoutType
-    ) => (
-      (basicConfig: BasicNodeConfig) => {
-        if (!secondKey) {
-          return {
-            ...basicConfig,
-            timeRule: {
-              ...basicConfig.timeRule,
-              whenTimeout: v,
-            },
-          };
-        }
-        return {
-          ...basicConfig,
-          timeRule: {
-            ...basicConfig.timeRule,
-            [key]: {
-              ...basicConfig.timeRule[key],
-              [secondKey as string]: (v as ChangeEvent<HTMLInputElement>).target?.value || v,
-            },
+    ) => {
+      if (!secondKey) {
+        onUpdate('timeRule', {
+          ...value.timeRule,
+          whenTimeout: v,
+        });
+      } else {
+        onUpdate('timeRule', {
+          ...value.timeRule,
+          [key]: {
+            ...value.timeRule[key],
+            [secondKey as string]: (v as ChangeEvent<HTMLInputElement>).target?.value || v,
           },
-        };
-      });
+        });
+      }
+    };
   }
 
   async function onSetPersons(
     departments: EmployeeOrDepartmentOfRole[],
     employees: EmployeeOrDepartmentOfRole[]
   ) {
-    updateDataField(type, 'basicConfig',
-      (basicConfig: BasicNodeConfig) => ({
-        ...basicConfig,
-        persons: {
-          employees,
-          departments,
-        },
-      })
-    );
+    onChange({
+      ...value,
+      persons: {
+        employees,
+        departments,
+      },
+    });
     return true;
   }
 
-  const { basicConfig } = currentElement.data.businessData;
-  const { employees, departments } = basicConfig.persons;
+  const { employees, departments } = value.persons;
 
   return (
     <div>
@@ -154,13 +135,13 @@ export default function BasicConfig({ type, currentElement }: Props) {
             className="mr-16"
             label="或签"
             value="or"
-            defaultChecked={basicConfig.multiplePersonWay === 'or'}
+            defaultChecked={value.multiplePersonWay === 'or'}
           />
           <Radio
             className="mr-16"
             label="会签"
             value="and"
-            defaultChecked={basicConfig.multiplePersonWay === 'and'}
+            defaultChecked={value.multiplePersonWay === 'and'}
           />
         </RadioGroup>
       </div>
@@ -171,13 +152,13 @@ export default function BasicConfig({ type, currentElement }: Props) {
             className="mr-16"
             label="自动跳过该节点"
             value="skip"
-            defaultChecked={basicConfig.whenNoPerson === 'skip'}
+            defaultChecked={value.whenNoPerson === 'skip'}
           />
           <Radio
             className="mr-16"
             label="转交给管理员"
             value="transferAdmin"
-            defaultChecked={basicConfig.whenNoPerson === 'transferAdmin'}
+            defaultChecked={value.whenNoPerson === 'transferAdmin'}
           />
         </RadioGroup>
       </div>
@@ -191,7 +172,7 @@ export default function BasicConfig({ type, currentElement }: Props) {
               className="mb-8 inline-flex"
               labelClassName="text-body2"
               labelStyle={{ color: 'var(--gray-900)' }}
-              defaultChecked={basicConfig.autoRules.includes('origin')}
+              defaultChecked={value.autoRules.includes('origin')}
               onChange={onUpdateAutoRules}
             />
             <Checkbox
@@ -200,7 +181,7 @@ export default function BasicConfig({ type, currentElement }: Props) {
               className="mb-8 inline-flex"
               labelClassName="text-body2"
               labelStyle={{ color: 'var(--gray-900)' }}
-              defaultChecked={basicConfig.autoRules.includes('parent')}
+              defaultChecked={value.autoRules.includes('parent')}
               onChange={onUpdateAutoRules}
             />
             <Checkbox
@@ -209,7 +190,7 @@ export default function BasicConfig({ type, currentElement }: Props) {
               className="mb-24 inline-flex"
               labelClassName="text-body2"
               labelStyle={{ color: 'var(--gray-900)' }}
-              defaultChecked={basicConfig.autoRules.includes('previous')}
+              defaultChecked={value.autoRules.includes('previous')}
               onChange={onUpdateAutoRules}
             />
           </div>
@@ -241,37 +222,37 @@ export default function BasicConfig({ type, currentElement }: Props) {
               className="mb-8 flex"
               label="不处理"
               value="entry"
-              defaultChecked={basicConfig.timeRule.deadLine.breakPoint === 'entry'}
+              defaultChecked={value.timeRule.deadLine.breakPoint === 'entry'}
             />
             <Radio
               className="mb-8 flex"
               label="自动处理"
               value="firstEntry"
-              defaultChecked={basicConfig.timeRule.deadLine.breakPoint === 'firstEntry'}
+              defaultChecked={value.timeRule.deadLine.breakPoint === 'firstEntry'}
             />
             <Radio
               className="mb-8 flex"
               label="跳转至其他节点"
               value="flowWorked"
-              defaultChecked={basicConfig.timeRule.deadLine.breakPoint === 'flowWorked'}
+              defaultChecked={value.timeRule.deadLine.breakPoint === 'flowWorked'}
             />
           </RadioGroup>
           <TimerSelector
             onDayChange={onTimeRuleUpdate('deadLine', 'day')}
             onHoursChange={onTimeRuleUpdate('deadLine', 'hours')}
             onMinutesChange={onTimeRuleUpdate('deadLine', 'minutes')}
-            defaultDay={basicConfig.timeRule.deadLine.day}
-            defaultHours={basicConfig.timeRule.deadLine.hours}
-            defaultMinutes={basicConfig.timeRule.deadLine.minutes}
+            defaultDay={value.timeRule.deadLine.day}
+            defaultHours={value.timeRule.deadLine.hours}
+            defaultMinutes={value.timeRule.deadLine.minutes}
           />
           <Urge
             onSave={onTimeRuleUpdate('deadLine', 'urge')}
-            defaultValue={basicConfig.timeRule.deadLine.urge}
+            defaultValue={value.timeRule.deadLine.urge}
           />
         </div>
         <WhenTimeout
           onChange={onTimeRuleUpdate('whenTimeout', '')}
-          defaultValue={basicConfig.timeRule.whenTimeout}
+          defaultValue={value.timeRule.whenTimeout}
         />
       </div>
     </div>

@@ -5,42 +5,88 @@ import Toggle from '@c/toggle';
 import Icon from '@c/icon';
 
 import {
-  updateDataField,
-  CurrentElement,
-  updateTriggerConditionField,
-  TriggerCondition,
+  TriggerCondition as TriggerConditionType,
   Operator,
+  TriggerConditionExpressionItem,
+  TriggerConditionExpression,
 } from '../../../store';
 import ConditionItem, { ConditionItemOptions } from './condition-item';
 
 interface Props {
-  currentElement: CurrentElement;
+  value: TriggerConditionType;
   formFieldOptions: ConditionItemOptions;
+  onChange: (triggerCondition: TriggerConditionType) => void;
 }
 
-export default function TriggerCondition({ currentElement, formFieldOptions }: Props) {
+export default function TriggerCondition({ value, formFieldOptions, onChange }: Props) {
   const [openMore, setOpenMore] = useState(false);
-  const { triggerCondition } = currentElement.data.businessData || {};
 
-  function onChange(v?: boolean) {
+  function updateTriggerConditionField(
+    conditions: TriggerConditionType,
+    currentCondition: TriggerConditionExpressionItem,
+    newData: Partial<TriggerConditionExpressionItem> | null,
+  ): TriggerConditionType {
+    const { expr } = conditions;
+
+    if (!expr) {
+      return {
+        ...conditions,
+        ...newData,
+      } as TriggerConditionType;
+    }
+
+    return {
+      ...conditions,
+      expr: expr.map((exprItem) => {
+        if (exprItem === currentCondition) {
+          if (newData === null) {
+            return false;
+          }
+          return {
+            ...exprItem,
+            ...newData,
+          };
+        } else if (
+          (exprItem as TriggerConditionType).expr && (exprItem as TriggerConditionType).expr.length
+        ) {
+          return updateTriggerConditionField(
+            exprItem as TriggerConditionType,
+            currentCondition,
+            newData
+          );
+        } else {
+          return exprItem;
+        }
+      }).filter(Boolean) as TriggerConditionExpression,
+    };
+  }
+
+  function onValueChange(v?: boolean) {
     setOpenMore(!!v);
-    if (v && !triggerCondition) {
+    if (v && !value) {
       addOrCondition();
     }
   }
 
-  function onDelete(triggerCondition: TriggerCondition) {
-    return () => updateTriggerConditionField(triggerCondition, null);
+  function onDelete(curCondition: TriggerConditionType) {
+    onChange(updateTriggerConditionField(value, curCondition, null));
+  }
+
+  function onTriggerConditionItemChange(
+    curCondition: TriggerConditionExpressionItem,
+    val: Partial<TriggerConditionExpressionItem>
+  ) {
+    onChange(updateTriggerConditionField(value, curCondition, val));
   }
 
   function andConditionRender(
-    triggerCondition: TriggerCondition,
+    triggerCondition: TriggerConditionType,
   ) {
     return (
       <div>
         {triggerCondition.expr.map((condition, index) => {
-          if ((condition as TriggerCondition).expr) {
-            return andConditionRender(condition as TriggerCondition);
+          if ((condition as TriggerConditionType).expr) {
+            return andConditionRender(condition as TriggerConditionType);
           }
 
           return (
@@ -49,8 +95,7 @@ export default function TriggerCondition({ currentElement, formFieldOptions }: P
                 <span>{index === 0 ? '当' : '且'}</span>
                 {index === 0 && (
                   <span
-                    onClick={
-                      onDelete(triggerCondition)}
+                    onClick={() => onDelete(triggerCondition)}
                   >
                     <Icon name="delete" className="cursor-pointer" />
                   </span>
@@ -59,6 +104,7 @@ export default function TriggerCondition({ currentElement, formFieldOptions }: P
               <ConditionItem
                 condition={condition as { value: string; key: string; op: Operator }}
                 options={formFieldOptions}
+                onChange={(v) => onTriggerConditionItemChange(condition, v)}
               />
             </div>
           );
@@ -68,26 +114,24 @@ export default function TriggerCondition({ currentElement, formFieldOptions }: P
   }
 
   function addOrCondition() {
-    updateDataField(
-      'formData',
-      'triggerCondition',
-      (conditions: TriggerCondition): TriggerCondition => {
-        if (!conditions) {
-          return {
-            op: 'or',
-            expr: [{
-              op: 'and',
-              expr: [{
-                key: '',
-                op: '',
-                value: '',
-              }],
-            }],
-          };
-        }
-        return {
-          ...conditions,
-          expr: [...conditions.expr, {
+    if (!value) {
+      onChange({
+        op: 'or',
+        expr: [{
+          op: 'and',
+          expr: [{
+            key: '',
+            op: '',
+            value: '',
+          }],
+        }],
+      });
+    } else {
+      onChange({
+        ...value,
+        expr: [
+          ...value.expr,
+          {
             op: 'and',
             expr: [{
               key: '',
@@ -95,24 +139,24 @@ export default function TriggerCondition({ currentElement, formFieldOptions }: P
               value: '',
             }],
           }],
-        };
       });
+    }
   }
 
-  function addAndCondition(condition: TriggerCondition) {
+  function addAndCondition(condition: TriggerConditionType) {
     return () => {
-      updateTriggerConditionField(condition, {
+      onChange(updateTriggerConditionField(value, condition, {
         ...condition,
         expr: [...condition.expr, {
           key: '',
           op: '',
           value: '',
         }],
-      });
+      }));
     };
   }
 
-  function conditionRender(conditions: TriggerCondition = { op: 'or', expr: [] }) {
+  function conditionRender(conditions: TriggerConditionType = { op: 'or', expr: [] }) {
     if (!conditions.expr) {
       return null;
     }
@@ -149,7 +193,7 @@ export default function TriggerCondition({ currentElement, formFieldOptions }: P
           <div className="text-body2">触发条件</div>
           <span className="text-caption">设置触发筛选条件，满足条件后触发工作流</span>
         </div>
-        <Toggle onChange={onChange} />
+        <Toggle onChange={onValueChange} />
       </div>
       <div className={cs('overflow-hidden transition', {
         visible: openMore,
@@ -159,7 +203,7 @@ export default function TriggerCondition({ currentElement, formFieldOptions }: P
         'opacity-0': !openMore,
         'opacity-1': openMore,
       })}>
-        {conditionRender(triggerCondition)}
+        {conditionRender(value)}
         <div
           className={cs(
             'flex items-center border border-dashed border-gray-300 small-border-radius',

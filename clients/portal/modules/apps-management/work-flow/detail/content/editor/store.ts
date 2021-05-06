@@ -1,5 +1,7 @@
 import { BehaviorSubject } from 'rxjs';
-import { ArrowHeadType, Elements, FlowElement } from 'react-flow-renderer';
+import { ArrowHeadType, Elements, FlowElement, Edge } from 'react-flow-renderer';
+
+import { uuid } from '@lib/utils';
 
 export type Operator = 'eq' | 'neq' | 'gt' | 'gte' | 'lt' | 'lte' | '';
 export type TriggerConditionExpressionItem = TriggerCondition | {
@@ -13,9 +15,9 @@ export interface TriggerCondition {
   expr: TriggerConditionExpression;
 }
 
-export type AsideDrawerType = '' | 'formDataForm' | 'fillInForm' | 'approveForm' | 'components';
+export type AsideDrawerType = string | 'formDataForm' | 'fillInForm' | 'approveForm' | 'components';
 export type CurrentConnection = {[key: string]: unknown};
-export type TriggerWayValue = 'whenAdd' | 'whenAlter' | '';
+export type TriggerWayValue = string | 'whenAdd' | 'whenAlter' | '';
 export type TriggerWay = TriggerWayValue[];
 
 export interface FormDataData {
@@ -122,6 +124,8 @@ export interface StoreValue {
   elements: Elements;
   name: string;
   version: string;
+  processKey: string,
+  triggerMode: string | 'FORM_DATA' | 'FORM_TIME',
   cancelable: boolean;
   urgeable: boolean;
   seeStatusAndMsg: boolean;
@@ -129,10 +133,12 @@ export interface StoreValue {
   status: string;
 }
 
-const store = new BehaviorSubject<StoreValue>({
+export const storeInitialData = {
   name: '',
   version: '0.1',
   status: 'draft',
+  processKey: uuid(),
+  triggerMode: 'FORM_DATA',
   asideDrawerType: '',
   currentConnection: {},
   cancelable: false,
@@ -168,7 +174,43 @@ const store = new BehaviorSubject<StoreValue>({
       arrowHeadType: ArrowHeadType.ArrowClosed,
     },
   ],
-});
+};
+
+const store = new BehaviorSubject<StoreValue>(storeInitialData);
+
+export function removeNodeById(id: string) {
+  let sourceId;
+  let targetId;
+  const newElements: FlowElement[] = [];
+
+  const { elements } = store.value;
+  elements.forEach((element) => {
+    if ((element as Edge).target === id) {
+      sourceId = (element as Edge).source;
+    }
+    if ((element as Edge).source === id) {
+      targetId = (element as Edge).target;
+    }
+    if (id !== element.id && (element as Edge).source !== id && (element as Edge).target !== id) {
+      newElements.push(element);
+    }
+  });
+  if (sourceId && targetId) {
+    newElements.push({
+      id: `e${sourceId}-${targetId}`,
+      type: 'plus',
+      source: sourceId,
+      target: targetId,
+      label: '+',
+      arrowHeadType: ArrowHeadType.ArrowClosed,
+    });
+  }
+
+  store.next({
+    ...store.value,
+    elements: newElements,
+  });
+}
 
 export function updateStore(key: string | null, updater: Function) {
   const value = store.value as any;
@@ -184,19 +226,29 @@ export function updateStore(key: string | null, updater: Function) {
   });
 }
 
-export function updateDataField(elementType: string, fieldName: string, updater: Function) {
+export function updateDataField(elementType: string, fieldName: string | null, updater: Function) {
   store.next({
     ...store.value,
     elements: store.value.elements.map((element): FlowElement => {
       if (element.type === elementType) {
         const newElement = { ...element };
-        newElement.data = {
-          ...newElement.data,
-          businessData: {
-            ...newElement.data.businessData,
-            [fieldName]: updater(newElement.data.businessData[fieldName]),
-          },
-        };
+        if (fieldName) {
+          newElement.data = {
+            ...newElement.data,
+            businessData: {
+              ...newElement.data.businessData,
+              [fieldName]: updater(newElement.data.businessData[fieldName]),
+            },
+          };
+        } else {
+          newElement.data = {
+            ...newElement.data,
+            businessData: {
+              ...newElement.data.businessData,
+              ...updater(newElement.data.businessData),
+            },
+          };
+        }
         return newElement;
       }
       return element;

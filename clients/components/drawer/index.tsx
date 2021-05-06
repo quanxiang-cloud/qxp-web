@@ -9,7 +9,7 @@ type Props = {
   onCancel: () => void;
   title: string | JSX.Element;
   children: React.ReactNode;
-  distanceTop: number;
+  distanceTop?: number;
   className?: string;
 }
 

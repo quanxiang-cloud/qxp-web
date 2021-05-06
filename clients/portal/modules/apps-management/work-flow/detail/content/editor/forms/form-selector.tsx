@@ -1,4 +1,4 @@
-import React, { forwardRef, Ref } from 'react';
+import React, { forwardRef, Ref, useState, useEffect } from 'react';
 import cs from 'classnames';
 
 import Select from '@c/select';
@@ -6,35 +6,23 @@ import Icon from '@c/icon';
 import ToolTip from '@c/tooltip';
 
 import { updateDataField } from '../store';
+import { getFormDataOptions, Options } from './api';
 
 interface Props {
-  defaultValue: string;
+  value: string;
   changeable?: boolean;
+  onChange?: (value: { value: string; name: string }) => void;
 }
 
 export default forwardRef(function FormSelector(
-  { defaultValue, changeable = true }: Props,
+  { value, changeable = true, onChange = () => {} }: Props,
   ref?: Ref<HTMLInputElement>
 ) {
-  const options = [{
-    label: '出差申请单',
-    value: '1',
-  }, {
-    label: '差旅报销',
-    value: '2',
-  }, {
-    label: '请假单',
-    value: '3',
-  }, {
-    label: '离职申请表',
-    value: '4',
-  }, {
-    label: '测试表单',
-    value: '5',
-  }, {
-    label: '公有云工单示例',
-    value: '6',
-  }];
+  const [options, setOptions] = useState<Options>([]);
+
+  useEffect(() => {
+    getFormDataOptions().then((options) => setOptions(options));
+  }, []);
 
   return (
     <div className="px-16 py-10 flex items-center mb-22 bg-gray-100
@@ -49,13 +37,11 @@ export default forwardRef(function FormSelector(
           inputRef={ref}
           name="workForm"
           placeholder="请选择"
-          defaultValue={defaultValue}
-          onChange={
-            (v: string) => updateDataField('formData', 'form', () => ({
-              value: v,
-              name: options.find(({ value }) => value === v)?.label,
-            }))
-          }
+          value={value}
+          onChange={(v: string) => onChange({
+            value: v,
+            name: options.find(({ value }) => value === v)?.label || '',
+          })}
           className={cs(
             'h-28 border-none px-12 text-12 flex items-center',
             'flex-1 work-flow-form-selector'
@@ -74,7 +60,7 @@ export default forwardRef(function FormSelector(
             inputRef={ref}
             name="workForm"
             placeholder="请选择"
-            defaultValue={defaultValue}
+            value={value}
             onChange={
               (v: string) => updateDataField('formData', 'form', () => ({
                 value: v,

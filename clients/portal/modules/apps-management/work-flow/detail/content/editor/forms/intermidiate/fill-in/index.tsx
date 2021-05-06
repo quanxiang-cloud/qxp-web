@@ -1,10 +1,10 @@
-import React, { FormEvent } from 'react';
+import React, { FormEvent, useState } from 'react';
 
 import useObservable from '@lib/hooks/use-observable';
 import Drawer from '@c/drawer';
 import Tab from '@c/tab';
 import store, {
-  StoreValue, CurrentElement, updateStore, updateDataField,
+  StoreValue, CurrentElement, updateStore, updateDataField, FillInData, BasicNodeConfig,
 } from '@flow/detail/content/editor/store';
 import SaveButtonGroup
   from '@flow/detail/content/editor/components/_common/action-save-button-group';
@@ -19,10 +19,21 @@ export default function FillInForm() {
   const { asideDrawerType, elements = [] } = useObservable<StoreValue>(store) || {};
   const currentFormNodeElement = elements.find(({ type }) => type === 'formData') as CurrentElement;
   const currentElement = elements.find(({ type }) => type === 'fillIn') as CurrentElement;
+  const [formData, setFormData] = useState<FillInData>(currentElement?.data?.businessData);
 
   function onSubmit(e: FormEvent) {
     e.preventDefault();
-    console.debug('ready');
+    updateDataField('approve', null, () => formData);
+    console.log(formData.basicConfig);
+  }
+
+  function onFieldChange(fieldName: string) {
+    return (value: BasicNodeConfig) => {
+      setFormData((f) => ({
+        ...f,
+        [fieldName]: value,
+      }));
+    };
   }
 
   return (
@@ -43,7 +54,7 @@ export default function FillInForm() {
             <div className="flex-1" style={{ height: 'calc(100% - 56px)' }}>
               <FormSelector
                 changeable={false}
-                defaultValue={currentFormNodeElement.data.businessData.form.value}
+                value={currentFormNodeElement.data.businessData.form.value}
               />
               <Tab
                 className="mt-10"
@@ -52,7 +63,13 @@ export default function FillInForm() {
                 items={[{
                   id: 'basicConfig',
                   name: '基础配置',
-                  content: <BasicConfig type="fillIn" currentElement={currentElement} />,
+                  content: (
+                    <BasicConfig
+                      type="fillIn"
+                      value={formData.basicConfig}
+                      onChange={onFieldChange('basicConfig')}
+                    />
+                  ),
                 }, {
                   id: 'fieldPermission',
                   name: '字段权限',

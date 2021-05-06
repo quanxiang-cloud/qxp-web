@@ -4,13 +4,10 @@ import Select from '@c/select';
 
 import {
   Operator,
-  updateTriggerConditionField,
+  TriggerConditionExpressionItem,
 } from '../../../store';
 
-export type ConditionItemOptions = {
-  label: string;
-  value: string;
-}[]
+import { Options } from '../../api';
 
 interface Props {
   condition: {
@@ -18,10 +15,13 @@ interface Props {
     op: Operator;
     value: string;
   };
-  options: ConditionItemOptions;
+  options: Options;
+  onChange: (value: Partial<TriggerConditionExpressionItem>) => void;
 }
 
-export default function ConditionItem({ condition, options }: Props) {
+export type ConditionItemOptions = Options;
+
+export default function ConditionItem({ condition, options, onChange }: Props) {
   const operatorOptions: {label: string; value: Operator}[] = [{
     label: '大于',
     value: 'gt',
@@ -41,11 +41,7 @@ export default function ConditionItem({ condition, options }: Props) {
       <Select
         placeholder="选择工作表中的字段"
         defaultValue={condition.key}
-        onChange={(v: string) => {
-          updateTriggerConditionField(condition, {
-            key: v,
-          });
-        }}
+        onChange={(v: string) => onChange({ key: v })}
         className="h-32 border border-gray-300 input-border-radius
               px-12 text-12 flex items-center flex-1 mb-8"
         options={options}
@@ -54,11 +50,7 @@ export default function ConditionItem({ condition, options }: Props) {
         <Select
           placeholder="判断符"
           defaultValue={condition.op}
-          onChange={(v : Operator) => {
-            updateTriggerConditionField(condition, {
-              op: v,
-            });
-          }}
+          onChange={(v : Operator) => onChange({ op: v })}
           className="h-32 border border-gray-300 input-border-radius
               px-12 text-12 flex items-center flex-1 mr-12"
           options={operatorOptions}
@@ -66,11 +58,7 @@ export default function ConditionItem({ condition, options }: Props) {
         <input
           className="input"
           defaultValue={condition.value}
-          onChange={(e) => {
-            updateTriggerConditionField(condition, {
-              value: e.target.value,
-            });
-          }}
+          onChange={(e) => onChange({ value: e.target.value })}
         />
       </div>
     </>

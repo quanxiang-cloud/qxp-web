@@ -1,41 +1,61 @@
-import React, { FormEvent } from 'react';
+import React, { FormEvent, useState, useEffect } from 'react';
 import cs from 'classnames';
 
 import Drawer from '@c/drawer';
 import useObservable from '@lib/hooks/use-observable';
 import Tab from '@c/tab';
-import store, { StoreValue, CurrentElement, updateStore } from '@flow/detail/content/editor/store';
+import store, {
+  StoreValue,
+  CurrentElement,
+  updateStore,
+  FormDataData,
+  TriggerWay as TriggerWayType,
+  TriggerCondition as TriggerConditionType,
+  updateDataField,
+} from '@flow/detail/content/editor/store';
 import SaveButtonGroup
   from '@flow/detail/content/editor/components/_common/action-save-button-group';
 
-import FormSelector from '../form-selector';
 import TriggerWay from './basic-config/trigger-way';
+import FormSelector from '../form-selector';
 import TriggerCondition from './basic-config/trigger-condition';
+import { Options, getFormFieldOptions } from '../api';
 
-const formFieldOptions = [{
-  label: '修改时间',
-  value: '1',
-}, {
-  label: '创建时间',
-  value: '2',
-}, {
-  label: '创建人',
-  value: '3',
-}, {
-  label: '申请时间',
-  value: '4',
-}];
-
-export default function ComponentsSelector() {
+export default function FormDataForm() {
   const { asideDrawerType, elements = [] } = useObservable<StoreValue>(store) || {};
   const currentElement = elements.find(({ type }) => type === 'formData') as CurrentElement;
+  const [formData, setFormData] = useState<FormDataData>(currentElement?.data?.businessData);
+  const [formFieldOptions, setFormFieldOptions] = useState<Options>([]);
+
+  useEffect(() => {
+    if (currentElement?.data?.businessData) {
+      setFormData(currentElement.data.businessData);
+    }
+  }, [currentElement?.data?.businessData]);
+
+  useEffect(() => {
+    getFormFieldOptions().then(setFormFieldOptions);
+  }, []);
+
   if (!currentElement) {
     return null;
   }
 
   function onSubmit(e: FormEvent) {
     e.preventDefault();
-    // console.log(elements);
+    updateDataField('formData', null, () => formData);
+  }
+
+  function onFormChange(value: { value: string; name: string; }) {
+    setFormData((s) => ({ ...s, form: { ...value } }));
+  }
+
+  function onTriggerWayChange(value: { triggerWay?: TriggerWayType, whenAlterFields?: string[]; }) {
+    setFormData((s) => ({ ...s, ...value }));
+  }
+
+  function onTriggerConditionChange(triggerCondition: TriggerConditionType) {
+    setFormData((s) => ({ ...s, triggerCondition }));
   }
 
   return (
@@ -54,7 +74,10 @@ export default function ComponentsSelector() {
             className="flex-1 flex flex-col justify-between h-full"
           >
             <div className="flex-1" style={{ height: 'calc(100% - 56px)' }}>
-              <FormSelector defaultValue={currentElement.data.businessData.form.value} />
+              <FormSelector
+                value={formData.form.value}
+                onChange={onFormChange}
+              />
               <Tab
                 className="mt-10"
                 headerClassName="border-gray-200 border-b-1"
@@ -72,11 +95,16 @@ export default function ComponentsSelector() {
                     <div className="mt-24">
                       <TriggerWay
                         formFieldOptions={formFieldOptions}
-                        currentElement={currentElement}
+                        triggerWayValue={{
+                          triggerWay: formData.triggerWay,
+                          whenAlterFields: formData.whenAlterFields,
+                        }}
+                        onValueChange={onTriggerWayChange}
                       />
                       <TriggerCondition
                         formFieldOptions={formFieldOptions}
-                        currentElement={currentElement}
+                        value={formData.triggerCondition}
+                        onChange={onTriggerConditionChange}
                       />
                     </div>
                   ),

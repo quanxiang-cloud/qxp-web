@@ -16,32 +16,26 @@ interface Props {
   defaultValue?: Urge;
 }
 
-export default function Urge({ onSave, defaultValue }: Props) {
-  const [openRepeatSetting, setOpenRepeatSetting] = useState(false);
-  const [isUrgeOpen, setIsUrgeOpen] = useState(false);
-  const [urge, setUrge] = useState<Urge>(defaultValue || {
+const initialUrge = {
+  day: '',
+  hours: '',
+  minutes: '',
+  repeat: {
     day: '',
     hours: '',
     minutes: '',
-    repeat: {
-      day: '',
-      hours: '',
-      minutes: '',
-    },
-  });
+  },
+};
+
+export default function Urge({ onSave, defaultValue }: Props) {
+  const [openRepeatSetting, setOpenRepeatSetting] = useState(false);
+  const [isUrgeOpen, setIsUrgeOpen] = useState(false);
+  const [urge, setUrge] = useState<Urge>(defaultValue || initialUrge);
 
   function onClearUrge(e: MouseEvent) {
     e.stopPropagation();
-    setUrge({
-      day: '',
-      hours: '',
-      minutes: '',
-      repeat: {
-        day: '',
-        hours: '',
-        minutes: '',
-      },
-    });
+    setUrge(initialUrge);
+    onSave(initialUrge);
     setOpenRepeatSetting(false);
   }
 

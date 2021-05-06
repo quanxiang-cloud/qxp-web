@@ -9,33 +9,33 @@ import React, {
 import Select from '@c/select';
 
 import { ConditionItemOptions } from './condition-item';
-import { CurrentElement, updateDataField, TriggerWay, TriggerWayValue } from '../../../store';
+import { TriggerWay, TriggerWayValue } from '../../../store';
 
 export default forwardRef(function TriggerWay(
   props: DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement> & {
-    currentElement: CurrentElement;
+    triggerWayValue: { triggerWay: TriggerWay; whenAlterFields: string[]; };
     formFieldOptions: ConditionItemOptions;
+    onValueChange: (arg: { triggerWay?: TriggerWay; whenAlterFields?: string[]; }) => void;
   },
   ref?: Ref<HTMLInputElement>,
 ) {
-  const { currentElement, formFieldOptions, ...inputProps } = props;
-  const { triggerWay, whenAlterFields } = currentElement.data.businessData;
+  const { formFieldOptions, onValueChange, triggerWayValue, ...inputProps } = props;
+  const { triggerWay, whenAlterFields } = triggerWayValue;
 
-  function onChange(name: TriggerWayValue) {
+  function onTypeChange(name: TriggerWayValue) {
     return (e: ChangeEvent<HTMLInputElement>) => {
       const { checked } = e.target;
-      updateDataField('formData', 'triggerWay', (s: TriggerWay) => {
-        if (checked && !s.includes(name)) {
-          return [...s, name];
-        }
-        if (!checked) {
-          return s.filter((way) => way !== name);
-        }
-        return s;
-      });
-      if (!checked && name === 'whenAlter') {
-        updateDataField('formData', 'whenAlterFields', () => []);
+      let newTriggerWay = triggerWay;
+      if (checked && !triggerWay.includes(name)) {
+        newTriggerWay = [...triggerWay, name];
       }
+      if (!checked) {
+        newTriggerWay = triggerWay.filter((way) => way !== name);
+      }
+      if (!newTriggerWay.includes('whenAlter')) {
+        return onValueChange({ triggerWay: newTriggerWay, whenAlterFields: [] });
+      }
+      onValueChange({ triggerWay: newTriggerWay });
     };
   }
 
@@ -51,7 +51,7 @@ export default forwardRef(function TriggerWay(
           id="whenAdd"
           type="checkbox"
           value="whenAdd"
-          onChange={onChange('whenAdd')}
+          onChange={onTypeChange('whenAdd')}
           checked={triggerWay.includes('whenAdd')}
         />
           新增数据时
@@ -68,7 +68,7 @@ export default forwardRef(function TriggerWay(
           id="whenAlter"
           type="checkbox"
           value="whenAlter"
-          onChange={onChange('whenAlter')}
+          onChange={onTypeChange('whenAlter')}
           checked={triggerWay.includes('whenAlter')}
         />
           修改数据时
@@ -78,7 +78,7 @@ export default forwardRef(function TriggerWay(
           placeholder="选择工作表中的字段"
           value={whenAlterFields}
           multiple
-          onChange={(v: string[]) => updateDataField('formData', 'whenAlterFields', () => v)}
+          onChange={(v: string[]) => onValueChange({ whenAlterFields: v })}
           className="h-32 py-4 border border-gray-300 input-border-radius
                 px-12 text-12 flex items-center flex-1 mb-8 ml-22 mt-8"
           options={formFieldOptions}

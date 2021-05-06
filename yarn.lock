@@ -8027,7 +8027,7 @@ run-parallel@^1.1.9:
   dependencies:
     queue-microtask "^1.2.2"
 
-rxjs-compat@^6.6.3:
+rxjs-compat@^6.6.3, rxjs-compat@^6.6.7:
   version "6.6.7"
   resolved "https://registry.npm.taobao.org/rxjs-compat/download/rxjs-compat-6.6.7.tgz#6eb4ef75c0a58ea672854a701ccc8d49f41e69cb"
   integrity sha1-brTvdcCljqZyhUpwHMyNSfQeacs=
