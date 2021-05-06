@@ -89,7 +89,7 @@ const MessagesPage = () => {
               placeholder="输入消息标题、操作人名称"
               value={inputValue}
               onChange={searchValueChange}
-              classname={styles.search}
+              className={styles.search}
             />
           </div>
           <div className="qxp-table my-20 px-20 w-full flex overflow-auto flex-col">
