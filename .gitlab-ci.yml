@@ -45,6 +45,15 @@ build_all:
     - docker push "$IMAGE_PREFIX/qxp-web-nginx:$IMAGE_TAG"
     - docker push "$IMAGE_PREFIX/qxp-web-portal:$IMAGE_TAG"
 
+deploy_alpha:
+  tags:
+    - qxp-web-runner
+  stage: build
+  only:
+    - alpha
+  script:
+    - ./scripts/deploy_alpha.sh
+
 deploy_testing:
   tags:
     - qxp-web-runner

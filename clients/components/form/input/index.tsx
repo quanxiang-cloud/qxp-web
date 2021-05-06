@@ -1,4 +1,4 @@
-import classnames from 'classnames';
+import cs from 'classnames';
 import { omit } from 'lodash';
 import React, {
   DetailedHTMLProps,
@@ -15,6 +15,7 @@ import { FormContext } from '..';
 
 interface BaseProps {
   validateMessage?: string;
+  valideteOnBlur?:boolean;
   rules?: (string | ((value: any) => string))[];
   controlClassName?: string;
   errorClassName?: string;
@@ -40,6 +41,7 @@ export default function Input(props: Props) {
     errorClassName,
     onChange,
     onBlur,
+    valideteOnBlur = false,
     label,
     beforeBeginIcon,
     beforeEndIcon,
@@ -62,7 +64,9 @@ export default function Input(props: Props) {
   }, []);
 
   function handleBlur(e: FocusEvent<HTMLInputElement & HTMLTextAreaElement>) {
-    validateField(id);
+    if (valideteOnBlur) {
+      validateField(id);
+    }
     onBlur && onBlur(e);
   }
 
@@ -77,19 +81,19 @@ export default function Input(props: Props) {
     type: props.type,
   }, ['validateMessage', 'afterBeginIcon', 'className', 'layout']);
 
-  const className = classnames('input-border-radius border pr-32 w-full outline-none pl-4', {
+  const className = cs('input-border-radius border pr-32 w-full outline-none pl-4', {
     'border-gray-300': !error,
     'border-red-600': error,
   });
 
   return (
-    <div className={classnames('input-control flex', controlClassName, {
+    <div className={cs('input-control flex', controlClassName, {
       'flex-row': layout === 'horizontal',
       'flex-col': layout === 'vertical',
       'items-center': layout === 'horizontal',
     })}>
       {label && (
-        <label htmlFor={id} className={classnames('text-body2 flex', {
+        <label htmlFor={id} className={cs('text-body2 flex', {
           'mb-8': layout === 'vertical',
           'mr-8': layout === 'horizontal',
         })}>
@@ -122,7 +126,7 @@ export default function Input(props: Props) {
       </div>
       <p
         className={
-          classnames('text-caption-no-color text-red-600 m-0', errorClassName, {
+          cs('text-caption-no-color text-red-600 m-0', errorClassName, {
             'ml-8': layout === 'horizontal',
           })
         }

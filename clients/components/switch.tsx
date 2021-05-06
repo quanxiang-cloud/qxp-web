@@ -1,22 +1,22 @@
 import React from 'react';
 import useCss from 'react-use/lib/useCss';
-import classnames from 'classnames';
+import cs from 'classnames';
 import { RadioGroup as LegoRadioGroup, RadioButton as LegoRadioButton } from '@QCFE/lego-ui';
 
-interface ISwitchOption {
+interface ISwitchOption<Value> {
   label: string;
-  value: string | number;
+  value: Value;
 }
 
-interface ISwitch {
+interface ISwitch<Value extends React.Key> {
   className?: string;
-  options: ISwitchOption[];
-  onChange?: (value: string | number) => void;
+  options: ISwitchOption<Value>[];
+  onChange?: (value: Value) => void;
 }
 
-export default function Switch({ ...props }: ISwitch) {
+export default function Switch<Value extends React.Key>({ ...props }: ISwitch<Value>) {
   return (
-    <div className={classnames(useCss({
+    <div className={cs(useCss({
       display: 'inline-block',
       'margin-right': '16px',
       'label:hover': {

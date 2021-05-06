@@ -44,11 +44,6 @@ export default class Captcha extends InputField {
     if (!this.sender) {
       return;
     }
-    const syncUsername = () => {
-      const validateResult = this.username?.validate() || false;
-      this.toggleSender(validateResult);
-    };
-    this.username.on('change', syncUsername);
   }
 
   bindEvents() {
@@ -60,6 +55,7 @@ export default class Captcha extends InputField {
 
   callSendApi() {
     return httpPost(this.url, JSON.stringify({ userName: this.username?.value }), {
+      // todo refactor this
       'X-Proxy': 'API-NO-AUTH',
     });
   }
@@ -72,6 +68,7 @@ export default class Captcha extends InputField {
     if (errorMessage && pageErrorElement) {
       pageErrorElement.innerText = errorMessage;
       pageErrorElement.classList.remove('hidden');
+      // @ts-ignore
       this.errorId = setTimeout(() => {
         pageErrorElement.classList.add('hidden');
       }, 3000);
@@ -94,13 +91,15 @@ export default class Captcha extends InputField {
     this.isSending = true;
     this.callSendApi()
       .then((resp: unknown) => {
-        const res = resp as ResponseToBeDelete<string>;
+        // todo fixme
+        const res = resp as any;
         if (res.code !== 0) {
           this.showError(res.msg);
         }
       })
       .catch(resetVars);
     element.classList.add('disabled');
+    // @ts-ignore
     tid = setInterval(() => {
       counter -= 1;
       element.innerText = `${counter} 后重新获取`;
@@ -136,7 +135,7 @@ export default class Captcha extends InputField {
         this.errMessage = '验证码至少为6位';
       }
       isValid = false;
-      this.action.classList.add('disabled');
+      // this.action.classList.add('disabled');
     }
     if (isValid) {
       this.errMessage = '';

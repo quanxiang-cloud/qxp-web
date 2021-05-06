@@ -1,7 +1,8 @@
 @import './scss/index.scss';
 
-@import '../portal/css/typography.css';
-@import '../portal/css/colors.css';
+// todo refactor this
+@import '../styles/typography.css';
+@import '../styles/variables/colors.css';
 
 html {
   font-size: 62.5%;

@@ -85,7 +85,6 @@ export abstract class InputField implements IInputField {
   }
 
   baseBindEvents() {
-    this.inputElement.onblur = () => this.validate(false);
     this.inputElement.onchange = (e: Event) => {
       if (this.isCheckbox) {
         this.value = (e.target as HTMLInputElement).checked;
@@ -95,7 +94,6 @@ export abstract class InputField implements IInputField {
       if (!this.name) {
         return;
       }
-      localStorage.setItem(this.name, String(this.value));
     };
   }
 

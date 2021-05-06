@@ -9,4 +9,5 @@ interface Role {
   id: string;
   name: string;
   tag: string;
+  roleID: string;
 }

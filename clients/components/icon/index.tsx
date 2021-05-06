@@ -1,5 +1,5 @@
 import React from 'react';
-import classnames from 'classnames';
+import cs from 'classnames';
 
 interface Props extends React.SVGProps<SVGSVGElement> {
   name: string;
@@ -36,7 +36,7 @@ function Icon(
       ref={ref}
       data-name={name}
       style={_style}
-      className={classnames('svg-icon', `svg-icon--${type}`, className, {
+      className={cs('svg-icon', `svg-icon--${type}`, className, {
         'svg-icon--changeable': changeable,
         'svg-icon--clickable': clickable,
         'svg-icon--disabled': disabled,

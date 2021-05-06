@@ -1,5 +1,5 @@
 import * as React from 'react';
-import classnames from 'classnames';
+import cs from 'classnames';
 import { Placement } from '@popperjs/core';
 
 import Icon from '@c/icon';
@@ -12,7 +12,6 @@ export type MenuItem<T> = {
 }
 
 type Props<T> = {
-  menuDesc?: string;
   iconName?: string;
   className?: string;
   onVisibilityChange?: (visible: boolean) => void;
@@ -25,7 +24,6 @@ type Props<T> = {
 
 type MenuItemsProps<T> = {
   onClick: (key: T) => void;
-  menuDesc?: string;
   items: MenuItem<T>[];
 }
 
@@ -40,11 +38,10 @@ const modifiers = [
 
 // todo combine with select component
 function RenderMenuItems<T extends React.Key>(
-  { menuDesc, items, onClick }: MenuItemsProps<T>
+  { items, onClick }: MenuItemsProps<T>
 ): JSX.Element {
   return (
-    <div className="select-options">
-      {menuDesc && (<p className="select-options__desc">{menuDesc}</p>)}
+    <div className="dropdown-options">
       {
         items.map(({ key, label, disabled }) => {
           return (
@@ -54,7 +51,7 @@ function RenderMenuItems<T extends React.Key>(
                 e.stopPropagation();
                 !disabled && onClick(key);
               }}
-              className={classnames('select-options__option', 'select-option', {
+              className={cs('dropdown-options__option', {
                 'select-option--disabled': disabled,
               })}
             >
@@ -70,7 +67,7 @@ function RenderMenuItems<T extends React.Key>(
 // todo fix this
 // opened more-menu will not be closed when another more-menu opened
 export default function MoreMenu<T extends React.Key>({
-  iconName, className, menus, children, onVisibilityChange, onChange, menuDesc, placement,
+  iconName, className, menus, children, onVisibilityChange, onChange, placement,
 }: Props<T>): JSX.Element {
   // todo fix this ref any type
   const reference = React.useRef<any>(null);
@@ -84,6 +81,7 @@ export default function MoreMenu<T extends React.Key>({
             ref={reference}
             changeable
             clickable
+            size={20}
             name={iconName ? iconName : 'more_horiz'}
             className={className}
           />
@@ -98,7 +96,6 @@ export default function MoreMenu<T extends React.Key>({
       >
         <RenderMenuItems
           items={menus}
-          menuDesc={menuDesc}
           onClick={(key): void => {
             popperRef.current?.close();
             onChange(key);

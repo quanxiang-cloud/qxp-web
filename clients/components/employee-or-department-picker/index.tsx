@@ -1,41 +1,37 @@
 import React, { useState } from 'react';
-import { Modal } from '@QCFE/lego-ui';
 
 import Button from '@c/button';
-import Loading from '@c/loading';
-import Error from '@c/error';
+import Modal from '@c/modal';
+import toast from '@lib/toast';
 
 import EmployeeOrDepartmentPicker from './picker';
 
 interface Props {
-  onOk: (
+  title: string;
+  submitText: string;
+  onSubmit: (
     departments: EmployeeOrDepartmentOfRole[],
     employees: EmployeeOrDepartmentOfRole[]
-  ) => Promise<unknown>;
-  visible: boolean;
+  ) => Promise<boolean | void>;
   onCancel: () => void;
   employees?: EmployeeOrDepartmentOfRole[];
   departments?: EmployeeOrDepartmentOfRole[];
-  isLoading?: boolean;
-  errorMessage?: string;
 }
 
 export default function EmployeeOrDepartmentPickerModal({
   departments,
   employees,
-  onOk,
-  visible,
+  onSubmit,
   onCancel,
-  isLoading,
-  errorMessage,
+  title,
+  submitText,
 }: Props) {
   const [departmentsOrEmployees, setDepartmentsOrEmployees] = useState<
     EmployeeOrDepartmentOfRole[]
   >([]);
-  const [isBindLoading, setIsBindLoading] = useState(false);
-  const [errMsg, setErrMsg] = useState('');
+  const [isOnGetSelected, setIsOnGetSelected] = useState(false);
 
-  function onBind() {
+  function onGetSelected() {
     const employees: EmployeeOrDepartmentOfRole[] = [];
     const departments: EmployeeOrDepartmentOfRole[] = [];
     departmentsOrEmployees.forEach((departmentOrEmployees) => {
@@ -45,20 +41,25 @@ export default function EmployeeOrDepartmentPickerModal({
         departments.push(departmentOrEmployees);
       }
     });
-    setIsBindLoading(true);
-    onOk(departments, employees).then(() => {
-      setIsBindLoading(false);
+    setIsOnGetSelected(true);
+    onSubmit(departments, employees).then((isOk) => {
+      if (isOk) {
+        onCancel();
+      } else {
+        setIsOnGetSelected(false);
+      }
     }).catch((err) => {
-      setErrMsg(err.message);
+      setIsOnGetSelected(false);
+      toast.error(err.message);
     });
   }
 
   return (
     <Modal
-      title="角色关联员工与部门"
-      onCancel={onCancel}
-      className="owner-bind-modal"
-      visible={visible}
+      title={title}
+      onClose={onCancel}
+      width={1234}
+      height={760}
       footer={
         (<div className="flex flex-row justify-between items-center">
           <Button
@@ -71,27 +72,19 @@ export default function EmployeeOrDepartmentPickerModal({
           <Button
             modifier="primary"
             iconName="check"
-            loading={isBindLoading}
-            onClick={onBind}
+            loading={isOnGetSelected}
+            onClick={onGetSelected}
           >
-            确定关联
+            {submitText}
           </Button>
         </div>)
       }
     >
-      {isLoading && (
-        <Loading desc="加载中..." />
-      )}
-      {(errorMessage || errMsg) && (
-        <Error desc={errorMessage || errMsg} />
-      )}
-      {!isLoading && !errorMessage && (
-        <EmployeeOrDepartmentPicker
-          departments={departments}
-          employees={employees}
-          onChange={setDepartmentsOrEmployees}
-        />
-      )}
+      <EmployeeOrDepartmentPicker
+        departments={departments}
+        employees={employees}
+        onChange={setDepartmentsOrEmployees}
+      />
     </Modal>
   );
 }

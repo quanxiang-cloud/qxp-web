@@ -7,36 +7,37 @@ import Error from '@c/error';
 import Loading from '@c/loading';
 import { usePortalGlobalValue } from '@portal/states_to_be_delete/portal';
 import { getNestedPropertyToArray } from '@lib/utils';
-import { getUserFuncs, getUserRoles } from '@lib/api/auth';
+import { getUserFuncs, getUserAdminRoles } from '@lib/api/auth';
 
-const Dashboard = React.lazy(() => import('./pages/dashboard'));
-const MetaData = React.lazy(() => import('./pages/metadata'));
-const AccessControl = React.lazy(() => import('./pages/access-control'));
+const Dashboard = React.lazy(() => import('./modules/dashboard'));
+const MetaData = React.lazy(() => import('./modules/metadata'));
+const AccessControl = React.lazy(() => import('./modules/access-control'));
+const SystemMgmt = React.lazy(() => import('./modules/system-mgmt'));
 
-const { userInfo } = window.__global || {};
-if (userInfo && !isEmpty(userInfo)) {
-  userInfo.depIds = getNestedPropertyToArray<string>(userInfo?.dep, 'id', 'child');
+const { USER } = window;
+if (USER && !isEmpty(USER)) {
+  USER.depIds = getNestedPropertyToArray<string>(USER?.dep, 'id', 'child');
 }
 
 export default function Routes(): JSX.Element {
-  const [, setValue] = usePortalGlobalValue();
+  const [_, setValue] = usePortalGlobalValue();
   const { data: funcs, isLoading: funcsIsLoading } = useQuery(
-    ['GET_USER_FUNCS', userInfo?.depIds],
+    ['GET_USER_FUNCS', USER?.depIds],
     getUserFuncs,
     {
       refetchOnWindowFocus: false,
       cacheTime: -1,
       retry: false,
-      enabled: !!(userInfo?.depIds && userInfo.depIds.length),
+      enabled: !!(USER?.depIds && USER.depIds.length),
     },
   );
   const { data, isLoading: rolesIsLoading } = useQuery(
-    'GET_USER_ROLES',
-    () => getUserRoles(userInfo?.id || '', userInfo?.depIds || []),
+    'GET_USER_ADMIN_ROLES',
+    () => getUserAdminRoles(),
     {
       refetchOnWindowFocus: false,
       retry: false,
-      enabled: !!(userInfo?.id && userInfo?.depIds && userInfo?.depIds.length),
+      enabled: !!(USER?.id && USER?.depIds && USER?.depIds.length),
     },
   );
 
@@ -44,8 +45,8 @@ export default function Routes(): JSX.Element {
     setValue((val) => ({
       ...val,
       userInfo: {
-        ...userInfo,
-        depIds: userInfo?.depIds || [],
+        ...USER,
+        depIds: USER?.depIds || [],
         authority: funcs || [],
         roles: data?.roles || [],
       },
@@ -56,18 +57,19 @@ export default function Routes(): JSX.Element {
     return <Loading desc="加载中..." className="w-screen h-screen" />;
   }
 
-  if (!funcs || !data?.total || (funcs && !funcs.includes('application'))) {
-    return <Error desc="您没有权限, 请联系管理员..." />;
-  }
+  // if (!funcs || !data?.total || (funcs && !funcs.includes('application'))) {
+  //   return <Error desc="您没有权限, 请联系管理员..." />;
+  // }
 
   return (
-    <>
+    <React.Suspense fallback={<Loading className="w-screen h-screen" desc="加载中..." />}>
       <Switch>
         <Route exact path="/" component={Dashboard} />
         <Route path="/metadata" component={MetaData} />
         <Route path="/access-control" component={AccessControl} />
+        <Route path="/system" component={SystemMgmt} />
         <Route component={Error} />
       </Switch>
-    </>
+    </React.Suspense>
   );
 }

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 
-import More from '@c/more';
+import MoreMenu from '@c/more-menu';
+import NavMsgBar from '@portal/modules/msg-center/nav-msg-bar';
 import Icon from '@c/icon';
 
 import ResetPasswordModal from './reset-password-modal';
@@ -14,6 +15,7 @@ export default function HeaderMenu() {
         visible={openResetPasswordModal}
         onCancel={() => setOpenResetPasswordModal(false)}
       />
+      <NavMsgBar />
       <div className="mr-56 header-nav-btn group">
         <div className="header-nav-btn-icon-wrapper">
           <Icon
@@ -34,35 +36,19 @@ export default function HeaderMenu() {
             size={20}
           />
         </div>
-        <More
-          items={[
-            <span
-              key="reset_password"
-              onClick={() => setOpenResetPasswordModal(true)}
-              className="cursor-pointer flex items-center h-36
-              pl-16 hover:bg-blue-100 transition whitespace-nowrap text-button
-              text-gray-900 hover:text-gray-600"
-            >
-              重置密码
-            </span>,
-            <form
-              key="logout"
-              action="/logout"
-              method="post"
-              className="w-full h-full"
-            >
-              <button
-                type="submit"
-                className="cursor-pointer flex items-center h-36 px-16
-                hover:bg-blue-100 transition w-full whitespace-nowrap text-button
-                text-gray-900 hover:text-gray-600"
-              >
-                登出
-              </button>
-            </form>,
+        <MoreMenu
+          menus={[
+            { key: 'resetPassword', label: '重置密码' },
+            { key: 'logout', label: '登出' },
           ]}
-          className="flex items-center justify-center"
-          contentClassName="w-48"
+          onChange={(menuKey) => {
+            if (menuKey === 'logout') {
+              window.location.href = '/logout';
+              return;
+            }
+
+            setOpenResetPasswordModal(true);
+          }}
         >
           <div
             className="cursor-pointer flex items-center h-36
@@ -71,7 +57,7 @@ export default function HeaderMenu() {
             个人中心
             <Icon name="caret-down" style={{ marginLeft: '8px' }} />
           </div>
-        </More>
+        </MoreMenu>
       </div>
     </div>
   );

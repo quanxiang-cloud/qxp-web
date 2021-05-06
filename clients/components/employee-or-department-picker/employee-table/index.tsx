@@ -6,7 +6,7 @@ import Table from '@c/lego-table';
 import EmptyData from '@c/empty-tips';
 import Pagination from '@c/pagination';
 // todo remove this
-import { adminSearchUserList } from '@portal/pages/access-control/role-management/api';
+import { adminSearchUserList } from '@portal/modules/access-control/role-management/api';
 import Loading from '@c/loading';
 
 import OwnerStore from '../store';
@@ -25,7 +25,7 @@ export default observer(function EmployeeTable({
   ownerStore,
 }: IEmployeeTable) {
   const store = ownerStore.employeeStore;
-  const { pageNumber: current, pageSize, total } = store.pagination;
+  const { current, pageSize, total } = store.pagination;
 
   const { data, isLoading } = useQuery(
     [
@@ -90,6 +90,7 @@ export default observer(function EmployeeTable({
   function renderTotalTip() {
     return (
       <div className="text-12 text-gray-600">
+        已选<span className="ml-4">{store.selectedKeys.length}</span>，
         共<span className="mx-4">{total || 0}</span>条数据
       </div>
     );

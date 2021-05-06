@@ -1,0 +1,130 @@
+.btn {
+  flex-shrink: 0;
+
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  padding-left: 16px;
+  padding-right: 16px;
+  height: 32px;
+  line-height: 30px;
+
+  font-weight: 400;
+  font-size: 14px;
+
+  border-radius: 8px 2px 8px 8px;
+  border: 1px solid var(--gray-700);
+  background-color: white;
+
+  cursor: pointer;
+  user-select: none;
+}
+
+.btn--disabled {
+  cursor: not-allowed;
+}
+
+.btn {
+  color: var(--gray-600);
+}
+
+.btn:hover:not(.btn--forbidden) {
+  color: var(--gray-900);
+  border-color: var(--gray-800);
+}
+
+.btn:hover:active {
+  color: white;
+  background-color: var(--gray-900);
+}
+
+.btn:not(.icon-btn) .icon {
+  margin-right: 8px;
+}
+
+.btn--primary {
+  color: white;
+  background-color: var(--gray-700);
+}
+
+.btn--primary:hover:not(.btn--forbidden) {
+  color: white;
+  background-color: var(--gray-600);
+}
+
+.btn--primary:hover:active {
+  background-color: var(--gray-800);
+}
+
+.btn--forbidden {
+  cursor: not-allowed;
+}
+
+.icon-btn {
+  padding-left: 0;
+  padding-right: 0;
+  width: 32px;
+  border: 1px solid var(--gray-600);
+}
+
+.icon-btn:hover:not(.btn--forbidden) {
+  border-color: var(--gray-800);
+}
+
+.icon-btn:hover:not(.btn--forbidden) svg {
+  color: var(--gray-800);
+}
+
+.icon-btn:hover:active {
+  background-color: var(--gray-900);
+}
+
+.icon-btn:hover:active svg {
+  color: white;
+}
+
+.header-nav-btn-icon {
+  @apply fill-current text-gray-600;
+}
+
+.header-nav-btn-text {
+  @apply text-button;
+}
+
+.header-nav-btn-icon-wrapper {
+  @apply w-20 h-20 mr-4 flex items-center;
+}
+
+.btn--danger {
+  color: white;
+  background-color: var(--red-500);
+}
+
+.btn-badge {
+  border-radius: 8px 8px 8px 2px;
+  padding: 6px;
+  border: none;
+  height: 20px;
+}
+
+@layer components {
+  .button-border-radius {
+    @apply rounded-tl-8 rounded-tr-2 rounded-br-8 rounded-bl-8;
+  }
+
+  .button-reverse-border-radius {
+    @apply rounded-tl-8 rounded-tr-8 rounded-br-8 rounded-bl-2;
+  }
+
+  .light-button {
+    @apply bg-white;
+  }
+
+  .opacity-button {
+    @apply cursor-pointer flex justify-between items-center button-border-radius rounded-tr-none px-16 py-5 border-1.5 border-solid border-gray-600;
+  }
+
+  .header-nav-btn {
+    @apply flex justify-between items-center px-8 py-5 transition-all hover:bg-blue-100 button-reverse-border-radius cursor-pointer;
+  }
+}

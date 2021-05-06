@@ -9,7 +9,7 @@ import Loading from '@c/loading';
 // todo remove this
 import {
   getDepartmentStructure,
-} from '@portal/pages/access-control/role-management/api';
+} from '@portal/modules/access-control/role-management/api';
 import Error from '@c/error';
 
 import EmployeeTable from './employee-table';
@@ -42,33 +42,30 @@ export default observer(function EmployeeOrDepartmentPicker({
   }, [store?.owners.length]);
 
   const onDepartmentTreeChange = (prevNodes: Department[], currentNodes: Department[]) => {
-    setStore((store) => {
-      if (!store) {
-        return store;
-      }
-      const add: EmployeeOrDepartmentOfRole[] = [];
-      const remove: string[] = [];
-      currentNodes.filter((node) => !prevNodes.find((n) => n.id === node.id)).forEach((node) => {
-        const parent = store.departmentTreeStore.getNodeParents(node.id)[0];
-        add.push({
-          type: 2,
-          ownerID: node.id,
-          ownerName: node.departmentName,
-          phone: '',
-          email: '',
-          departmentName: parent?.name,
-          departmentID: parent?.id,
-          createdAt: -1,
-          id: node.id,
-        });
+    if (!store) {
+      return;
+    }
+    const add: EmployeeOrDepartmentOfRole[] = [];
+    const remove: string[] = [];
+    currentNodes.filter((node) => !prevNodes.find((n) => n.id === node.id)).forEach((node) => {
+      const parent = store.departmentTreeStore.getNodeParents(node.id)[0];
+      add.push({
+        type: 2,
+        ownerID: node.id,
+        ownerName: node.departmentName,
+        phone: '',
+        email: '',
+        departmentName: parent?.name,
+        departmentID: parent?.id,
+        createdAt: -1,
+        id: node.id,
       });
-      prevNodes.filter((node) => !currentNodes.find((n) => n.id === node.id)).forEach((node) => {
-        remove.push(node.id);
-      });
-      add.length && store.addOwners(add);
-      remove.length && store.removeOwners(remove);
-      return store;
     });
+    prevNodes.filter((node) => !currentNodes.find((n) => n.id === node.id)).forEach((node) => {
+      remove.push(node.id);
+    });
+    add.length && store.addOwners(add);
+    remove.length && store.removeOwners(remove);
   };
 
   useEffect(() => {
@@ -85,7 +82,7 @@ export default observer(function EmployeeOrDepartmentPicker({
   }
 
   return (
-    <div className="flex flex-row w-full">
+    <div className="flex flex-row w-full h-full">
       <Tab
         className="mr-20 flex-2"
         contentClassName="rounded-12 rounded-tl-none"
@@ -105,7 +102,7 @@ export default observer(function EmployeeOrDepartmentPicker({
                   appendix="close"
                 />
                 <div className="flex flex-row mr-4" style={{ height: 'calc(100% - 48px)' }}>
-                  <div className="h-full flex flex-col overflow-hidden flex-2 mr-20 min-w-max">
+                  <div className="w-212 h-full flex flex-col overflow-hidden mr-20">
                     <TextHeader
                       className="mb-8 pb-0"
                       title="选择部门"
@@ -174,7 +171,6 @@ export default observer(function EmployeeOrDepartmentPicker({
       />
       <div className="vertical-line flex-grow-0"></div>
       <SelectedList
-        className="flex-1"
         ownerStore={store}
       />
     </div>

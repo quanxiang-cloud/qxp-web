@@ -35,6 +35,10 @@ type PortalServerConfig struct {
 	TemplatesDir string `yaml:"templates_dir" default:"/qxp/dist/templates" split_words:"true"`
 }
 
+type ClientConfig struct {
+	WebsocketHostname string `yaml:"websocket_hostname" default:"keeper" vaildate:"required" split_words:"true" json:"websocket_hostname"`
+}
+
 // Configuration is the type of project config file
 type Configuration struct {
 	DevMode           bool `yaml:"dev_mode" split_words:"true"`
@@ -45,6 +49,8 @@ type Configuration struct {
 	APIEndpoint *APIEndpointConfig `yaml:"api_endpoint" validate:"required" split_words:"true"`
 
 	PortalServer *PortalServerConfig `yaml:"portal_server" vaildate:"required" split_words:"true"`
+
+	ClientConfig *ClientConfig `yaml:"client_config" vaildate:"required" split_words:"true"`
 }
 
 func initConfig(configFile string) Configuration {

@@ -1,13 +1,20 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { BrowserRouter as Router } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from 'react-query';
+import { Provider as MobxProvider } from 'mobx-react';
+import { RecoilRoot } from 'recoil';
+import { LocaleProvider } from '@QCFE/lego-ui';
 
-import { AppContextProvider } from '@clients/_legacy/providers/context';
+// ensure web socket connection
+// todo how about on app-manager page?
+import '@lib/push';
 
 import App from './application';
-
+import stores from './stores';
+import locales from './locales';
 import './scss/index.scss';
-import './index.css';
+import '../styles/index.css';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -19,11 +26,19 @@ const queryClient = new QueryClient({
   },
 });
 
+Object.assign(window, { _stores: stores }); // fixme: debug
+
 ReactDOM.render(
-  <AppContextProvider>
+  <MobxProvider {...stores}>
     <QueryClientProvider client={queryClient}>
-      <App />
+      <RecoilRoot>
+        <LocaleProvider locales={locales}>
+          <Router>
+            <App/>
+          </Router>
+        </LocaleProvider>
+      </RecoilRoot>
     </QueryClientProvider>
-  </AppContextProvider>,
+  </MobxProvider>,
   document.getElementById('root'),
 );

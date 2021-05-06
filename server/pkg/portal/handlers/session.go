@@ -1,13 +1,23 @@
 package handlers
 
 import (
+	"context"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"log"
 	"net/http"
 	"qxp-web/server/pkg/contexts"
 	"time"
+
+	"github.com/tidwall/gjson"
+)
+
+type contextKey int
+
+const (
+	ctxUser contextKey = iota
+	ctxToken
+	ctxUA
 )
 
 // LoginResponseData login response data struct
@@ -45,6 +55,28 @@ type RefreshTokenData struct {
 	Expire       string `json:"expiry"`
 }
 
+// Department represents department fields
+type Department struct {
+	ID                 string `json:"id"`
+	Grade              int    `json:"grade"`
+	Pid                string `json:"pid"`
+	SuperID            string `json:"superID"`
+	DepartmentLeaderID string `json:"departmentLeaderID"`
+	DepartmentName     string `json:"departmentName"`
+}
+
+// User represents user fields
+type User struct {
+	ID       string     `json:"id"`
+	UserName string     `json:"userName"`
+	Email    string     `json:"email"`
+	Phone    string     `json:"phone"`
+	Avatar   string     `json:"avatar"`
+	Status   int        `json:"status"`
+	DepIds   []string   `json:"depIds"`
+	Dep      Department `json:"dep"`
+}
+
 func getTokenKey(r *http.Request) string {
 	session := contexts.GetCurrentRequestSession(r)
 
@@ -57,51 +89,16 @@ func getRefreshTokenKey(r *http.Request) string {
 	return fmt.Sprintf("portal:session:%s:refresh_token", session.ID)
 }
 
-// IsUserLogin judge wheather user is login
-func IsUserLogin(r *http.Request) bool {
-	token := contexts.Cache.Get(getTokenKey(r)).Val()
-	if token != "" {
-		return true
-	}
-
-	refreshToken := contexts.Cache.Get(getRefreshTokenKey(r)).Val()
-	if refreshToken == "" {
-		return false
-	}
-
-	return renewToken(r, refreshToken)
-}
-
-func GetToken(r *http.Request) string {
-	tokenKey := getTokenKey(r)
-	token := contexts.Cache.Get(tokenKey).Val()
-	if token != "" {
-		return token
-	}
-
-	refreshToken := GetRefreshToken(r)
-	if refreshToken == "" {
-		return ""
-	}
-
-	if !renewToken(r, refreshToken) {
-		return ""
-	}
-
-	return contexts.Cache.Get(tokenKey).Val()
-}
-
-func GetRefreshToken(r *http.Request) string {
+func getRefreshToken(r *http.Request) string {
 	return contexts.Cache.Get(getRefreshTokenKey(r)).Val()
 }
 
 // renewToken refresh token
 func renewToken(r *http.Request, refreshToken string) bool {
 	requestID := contexts.GetRequestID(r)
-	respBuffer, errMsg := contexts.SendRequest(r.Context(), "POST", "/api/v1/oauth2c/in/refresh", nil, map[string]string{
+	respBody, errMsg := contexts.SendRequest(r.Context(), "POST", "/api/v1/oauth2c/in/refresh", nil, map[string]string{
 		"Content-Type":  "application/x-www-form-urlencoded",
 		"Refresh-Token": refreshToken,
-		"User-Agent":    r.Header.Get("User-Agent"),
 	})
 
 	if errMsg != "" {
@@ -110,7 +107,7 @@ func renewToken(r *http.Request, refreshToken string) bool {
 	}
 
 	var refreshTokenResponse RefreshTokenResponse
-	if err := json.Unmarshal(respBuffer.Bytes(), &refreshTokenResponse); err != nil {
+	if err := json.Unmarshal(respBody, &refreshTokenResponse); err != nil {
 		contexts.Logger.Errorf("failed to unmarshal refresh token body, err: %s, request_id: %s", err.Error(), requestID)
 		return false
 	}
@@ -121,16 +118,16 @@ func renewToken(r *http.Request, refreshToken string) bool {
 
 	expireTime, err := time.Parse(time.RFC3339, refreshTokenResponse.Data.Expire)
 	if err != nil {
-		// todo log error message
+		contexts.Logger.Errorf("invalid token expire value: %v, request_id: %s", refreshTokenResponse.Data.Expire, requestID)
 		return false
 	}
 
-	SaveToken(r, refreshTokenResponse.Data.AccessToken, refreshTokenResponse.Data.RefreshToken, expireTime)
+	saveToken(r, refreshTokenResponse.Data.AccessToken, refreshTokenResponse.Data.RefreshToken, expireTime)
 
 	return true
 }
 
-func SaveToken(r *http.Request, token string, refreshToken string, expireTime time.Time) {
+func saveToken(r *http.Request, token string, refreshToken string, expireTime time.Time) {
 	tokenKey := getTokenKey(r)
 	refreshTokenKey := getRefreshTokenKey(r)
 	duration := time.Until(expireTime) - time.Hour
@@ -146,6 +143,81 @@ func SaveToken(r *http.Request, token string, refreshToken string, expireTime ti
 	}
 }
 
+// getToken return token with auto-renew
+func getToken(r *http.Request) string {
+	tokenKey := getTokenKey(r)
+	token := contexts.Cache.Get(tokenKey).Val()
+	if token != "" {
+		return token
+	}
+
+	refreshToken := getRefreshToken(r)
+	if refreshToken == "" {
+		return ""
+	}
+
+	if !renewToken(r, refreshToken) {
+		return ""
+	}
+
+	return contexts.Cache.Get(tokenKey).Val()
+}
+
+func getCurrentUser(ctx context.Context, token string) *User {
+	respBody, errMsg := contexts.SendRequest(ctx, "POST", "/api/v1/org/userUserInfo", nil, map[string]string{
+		"Access-Token": token,
+	})
+
+	if errMsg != "" {
+		contexts.Logger.Errorf("get user info error: %s", errMsg)
+		return nil
+	}
+
+	var user User
+	userRaw := gjson.Get(string(respBody), "data").Raw
+	if err := json.Unmarshal([]byte(userRaw), &user); err != nil {
+		contexts.Logger.Errorf("failed to unmarshal user, err: %s", err.Error())
+		return nil
+	}
+
+	return &user
+}
+
+// PrepareRequest assign token and user on request context
+func PrepareRequest(r *http.Request) (*http.Request, bool) {
+	session := contexts.GetCurrentRequestSession(r)
+	if session.IsNew {
+		return r, false
+	}
+
+	token := getToken(r)
+	if token == "" {
+		return r, false
+	}
+
+	user := getCurrentUser(r.Context(), token)
+	if user == nil {
+		return r, false
+	}
+
+	ctx := r.Context()
+	ctx = context.WithValue(ctx, ctxToken, token)
+	ctx = context.WithValue(ctx, ctxUser, user)
+	r = r.WithContext(ctx)
+
+	return r, true
+}
+
+// HasToken return current session has token
+func HasToken(r *http.Request) bool {
+	session := contexts.GetCurrentRequestSession(r)
+	if session.IsNew {
+		return false
+	}
+
+	return "" != getToken(r)
+}
+
 // RedirectToLoginPage redirect to login page
 func RedirectToLoginPage(w http.ResponseWriter, r *http.Request) {
 	session := contexts.GetCurrentRequestSession(r)
@@ -157,43 +229,4 @@ func RedirectToLoginPage(w http.ResponseWriter, r *http.Request) {
 
 	// path: /login/password /login/captcha
 	http.Redirect(w, r, "/login/password", http.StatusFound)
-}
-
-// ShouldLogin redirect to login if 401
-// todo delete this
-func ShouldLogin(w http.ResponseWriter, r *http.Request, resp *http.Response) bool {
-	if resp.StatusCode == 401 {
-		http.Redirect(w, r, "/login/password", http.StatusFound)
-		return true
-	}
-	return false
-}
-
-func GetUserInfo(w http.ResponseWriter, r *http.Request, token string) (
-	map[string]interface{}, error) {
-
-	requestID := contexts.GetRequestID(r)
-	var userInfoResponse map[string]interface{} 
-	respBuffer, errMsg := contexts.SendRequest(r.Context(), "POST", "/api/v1/org/userUserInfo", r.Body, map[string]string{
-		"Access-Token":  token,
-	})
-
-	if errMsg != "" {
-		contexts.Logger.Errorf("Get user info error: %s, request_id: %s", errMsg, requestID)
-		if len(errMsg) >= len("401") && (errMsg[len(errMsg)-len("401"):] == "401" || errMsg[len(errMsg)-len("400"):] == "400") {
-			return userInfoResponse, errors.New(errMsg)
-		}
-		return userInfoResponse, nil
-	}
-
-	err := json.Unmarshal(respBuffer.Bytes(), &userInfoResponse)
-	if err != nil {
-		contexts.Logger.Errorf(
-			"failed to unmarshal user info body, err: %s, request_id: %s", 
-			err.Error(), 
-			requestID,
-		)
-	}
-
-	return userInfoResponse, nil 
 }

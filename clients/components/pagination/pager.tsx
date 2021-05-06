@@ -1,5 +1,5 @@
 import React from 'react';
-import classnames from 'classnames';
+import cs from 'classnames';
 
 interface Props {
   key: number;
@@ -12,7 +12,7 @@ function Pager({ page, active, onClick }: Props) {
   return (
     <li
       onClick={onClick}
-      className={classnames('pagination-comp-page', { active })}
+      className={cs('pagination-comp-page', { active })}
     >
       {page}
     </li>

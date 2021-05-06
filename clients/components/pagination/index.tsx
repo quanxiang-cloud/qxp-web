@@ -1,5 +1,5 @@
 import React from 'react';
-import classnames from 'classnames';
+import cs from 'classnames';
 import { Input } from '@QCFE/lego-ui';
 
 import SvgIcon from '@c/icon';
@@ -138,7 +138,7 @@ function Pagination({
 
   const prevIcon = (
     <li
-      className={classnames('pagination-comp-page', {
+      className={cs('pagination-comp-page', {
         'pagination-comp-disabled': pageParams.current === 1,
       })}
       onClick={handPrev}>
@@ -148,7 +148,7 @@ function Pagination({
 
   const nextIcon = (
     <li
-      className={classnames('pagination-comp-page', {
+      className={cs('pagination-comp-page', {
         'pagination-comp-disabled': pageParams.current === calcPage(),
       })}
       onClick={handleNext}>
@@ -244,10 +244,9 @@ function Pagination({
         <div className="flex items-center">
           <div className="text-12 mr-6 text-center leading-28">每页</div>
           <Select
+            style={{ height: '28px', padding: '0 12px' }}
             value={pageParams.pageSize}
             onChange={changePageSize}
-            className="h-28 border border-gray-300 select-border-radius
-            px-12 text-12 flex items-center"
             options={pageSizeOptions ? pageSizeOptions.map((page: number) => ({
               label: `${page} 条`,
               value: page,
@@ -282,7 +281,7 @@ function Pagination({
       <div>
         {totalText}
       </div>
-      <ul className={classnames('pagination-comp', className)}>
+      <ul className={cs('pagination-comp', className)}>
         {prevIcon}
         {pagerList}
         {nextIcon}

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import moment from 'moment';
-import classnames from 'classnames';
+import cs from 'classnames';
 import { observer } from 'mobx-react';
 import { observable, action } from 'mobx';
 
@@ -18,6 +18,7 @@ type Props = {
   dateFormat?: string;
   inputValue?: string;
   className?: string;
+  style?: React.CSSProperties;
   onChange: (d: { start: string; end: string; readableCode: string }) => void;
 }
 
@@ -57,7 +58,7 @@ export default class RangePicker extends React.Component<Props> {
   }
 
   @action
-  handleChangeRangeType = (rangeType: any): void => {
+  handleChangeRangeType = (rangeType: RangeType): void => {
     this.rangeType = rangeType;
   }
 
@@ -169,11 +170,11 @@ export default class RangePicker extends React.Component<Props> {
   }
 
   render(): JSX.Element {
-    const { inputValue, readableCode, className } = this.props;
+    const { inputValue, readableCode, className, style } = this.props;
 
     return (
       <>
-        <div ref={this.reference} className={classnames('date-picker__input', className, {
+        <div ref={this.reference} style={style} className={cs('date-picker__input', className, {
           'date-picker--has-selected-day': readableCode,
         })}>
           <input

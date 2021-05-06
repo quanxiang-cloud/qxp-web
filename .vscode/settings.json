@@ -7,4 +7,5 @@
     "handle"
   ],
   "files.eol": "\n",
+  "go.lintTool": "golint",
 }

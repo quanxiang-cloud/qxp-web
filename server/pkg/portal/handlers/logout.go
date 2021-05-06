@@ -14,8 +14,8 @@ type LogoutResponse struct {
 
 // LogoutHandler render logout page
 func LogoutHandler(w http.ResponseWriter, r *http.Request) {
-	token := GetToken(r)
-	refreshToken := GetRefreshToken(r)
+	token := getToken(r)
+	refreshToken := getRefreshToken(r)
 
 	tokenKey := getTokenKey(r)
 	refreshTokenKey := getRefreshTokenKey(r)
@@ -27,7 +27,6 @@ func LogoutHandler(w http.ResponseWriter, r *http.Request) {
 		"Content-Type":  "application/x-www-form-urlencoded",
 		"Refresh-Token": refreshToken,
 		"Access-Token":  token,
-		"User-Agent":    r.Header.Get("User-Agent"),
 	})
 
 	http.Redirect(w, r, "/", http.StatusFound)
