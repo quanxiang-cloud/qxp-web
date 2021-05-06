@@ -58,7 +58,7 @@ export default class RangePicker extends React.Component<Props> {
   }
 
   @action
-  handleChangeRangeType = (rangeType: any): void => {
+  handleChangeRangeType = (rangeType: RangeType): void => {
     this.rangeType = rangeType;
   }
 
