@@ -1,11 +1,13 @@
 import React, { useEffect, useRef } from 'react';
 import cs from 'classnames';
-import { inject, observer } from 'mobx-react';
-import { get } from 'lodash';
+import { observer } from 'mobx-react';
+import msgCenter from '@portal/stores/msg-center';
 import { useQuery, useQueryClient } from 'react-query';
+
 import { getUnreadMsgCount } from '@portal/modules/msg-center/api';
 import Icon from '@c/icon';
 
+import { get } from 'lodash';
 import UnreadMsgBox from '../unread-msg-box';
 import ModalMsgCenter from '../modal-msg-center';
 import BtnBadge from '@c/btn-badge';
@@ -14,11 +16,11 @@ import { getQuery } from '@portal/utils';
 
 import styles from './index.module.scss';
 
-const NavMsgBar = ({ msgCenter: store }: Pick<MobxStores, 'msgCenter' | any>): JSX.Element => {
+const NavMsgBar = (): JSX.Element => {
   const toggleRef = useRef(null);
   const msgBoxRef = useRef(null);
   const queryClient = useQueryClient();
-  const { openUnreadMsgBox, msgBoxOpen, openMsgCenter, countUnread } = store;
+  const { openUnreadMsgBox, msgBoxOpen, openMsgCenter, countUnread } = msgCenter;
   const { data: countUnreadMsg }=useQuery('count-unread-msg', getUnreadMsgCount);
 
   const handleClickOuter = (ev: MouseEvent) => {
@@ -32,7 +34,9 @@ const NavMsgBar = ({ msgCenter: store }: Pick<MobxStores, 'msgCenter' | any>): J
     }
   };
 
-  store.setUnreadTypeCounts(get(countUnreadMsg, 'data.type_num', []));
+  useEffect(() => {
+    msgCenter.setUnreadTypeCounts(get(countUnreadMsg, 'data.type_num', []));
+  }, [countUnreadMsg]);
 
   useEffect(() => {
     document.body.addEventListener('click', handleClickOuter);
@@ -58,7 +62,7 @@ const NavMsgBar = ({ msgCenter: store }: Pick<MobxStores, 'msgCenter' | any>): J
   };
 
   useEffect(() => {
-    const listener = (data: any) => {
+    const listener = () => {
       // when new message come
       queryClient.invalidateQueries('count-unread-msg');
       queryClient.invalidateQueries('all-messages');
@@ -73,7 +77,9 @@ const NavMsgBar = ({ msgCenter: store }: Pick<MobxStores, 'msgCenter' | any>): J
     <>
       <div className={styles.wrap}>
         <div
-          className={cs('relative flex justify-center items-center cursor-pointer group', styles.navItem)}
+          className={
+            cs('relative flex justify-center items-center cursor-pointer group', styles.navItem)
+          }
           onClick={() => openUnreadMsgBox(true)}
           ref={toggleRef}
         >
@@ -91,4 +97,4 @@ const NavMsgBar = ({ msgCenter: store }: Pick<MobxStores, 'msgCenter' | any>): J
   );
 };
 
-export default inject('msgCenter')(observer(NavMsgBar));
+export default observer(NavMsgBar);

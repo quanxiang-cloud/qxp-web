@@ -1,9 +1,9 @@
 import React from 'react';
 import cs from 'classnames';
-import { inject, observer } from 'mobx-react';
-import BtnBadge from '@c/btn-badge';
+import { observer } from 'mobx-react';
 import { MsgType } from '@portal/modules/system-mgmt/constants';
-
+import BtnBadge from '@c/btn-badge';
+import msgCenter from '@portal/stores/msg-center';
 import styles from './index.module.scss';
 
 interface ItemProps {
@@ -27,16 +27,29 @@ interface Props {
   onClick?: (...args: any[]) => void;
 }
 
-const Types = ({ className, msgCenter }: Props & Pick<MobxStores, 'msgCenter' | any>) => {
+const Types = ({ className }: Props ) => {
   const { selectType, changeType }=msgCenter;
 
   return (
-    <ul className={styles.typePanel}>
-      <TypeItem selected={selectType === MsgType.all} onClick={() => changeType(MsgType.all)} name='全部类型' count={msgCenter.countUnread}/>
-      <TypeItem selected={selectType === MsgType.notify} onClick={() => changeType(MsgType.notify)} name='通知公告' count={msgCenter.countUnreadNotifyMsg}/>
-      <TypeItem selected={selectType === MsgType.system} onClick={() => changeType(MsgType.system)} name='系统消息' count={msgCenter.countUnreadSystemMsg}/>
+    <ul className={`${styles.typePanel} ${className}`}>
+      <TypeItem
+        selected={selectType === MsgType.all}
+        onClick={() => changeType(MsgType.all)}
+        name='全部类型'
+        count={msgCenter.countUnread}
+      />
+      <TypeItem
+        selected={selectType === MsgType.notify}
+        onClick={() => changeType(MsgType.notify)}
+        name='通知公告'
+        count={msgCenter.countUnreadNotifyMsg}/>
+      <TypeItem
+        selected={selectType === MsgType.system}
+        onClick={() => changeType(MsgType.system)}
+        name='系统消息'
+        count={msgCenter.countUnreadSystemMsg}/>
     </ul>
   );
 };
 
-export default inject('msgCenter')(observer(Types));
+export default observer(Types);

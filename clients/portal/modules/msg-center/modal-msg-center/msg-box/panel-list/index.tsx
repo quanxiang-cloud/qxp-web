@@ -1,6 +1,6 @@
 import React, { useState, useRef, useMemo, useEffect } from 'react';
 import cs from 'classnames';
-import { inject, observer } from 'mobx-react';
+import { observer } from 'mobx-react';
 import { Message, Table } from '@QCFE/lego-ui';
 import { useMutation, useQuery } from 'react-query';
 import { get } from 'lodash';
@@ -9,53 +9,58 @@ import Error from '@c/error';
 import MsgItem from '@portal/modules/msg-center/msg-item';
 import Toolbar from './toolbar';
 import {
-  getMessageList, deleteMsgByIds, setMsgAsReadByIds, getUnreadMsgCount, setAllMsgAdRead,
+  getMessageList,
+  deleteMsgByIds,
+  setMsgAsReadByIds,
+  getUnreadMsgCount,
+  setAllMsgAdRead,
 } from '@portal/modules/msg-center/api';
 import { MsgType, MsgReadStatus } from '@portal/modules/system-mgmt/constants';
 import Pagination from '@c/pagination';
 import Modal from '@c/modal';
 import { useRouting } from '../../../hooks';
 import NoMsg from '../no-msg';
-
+import msgCenter from '@portal/stores/msg-center';
 import styles from '../index.module.scss';
 
-interface Props {
-  className?: string;
-}
-
-const PanelList = ({ msgCenter }: Props & Pick<MobxStores, 'msgCenter' | any>) => {
-  const { paging, selectType, filterCheckUnread }=msgCenter;
+const PanelList = () => {
+  const { paging, selectType, filterCheckUnread } = msgCenter;
   const queryPage = useRouting();
-  const getQueryParams=()=> {
-    const params={
+  const getQueryParams = () => {
+    const params = {
       read_status: filterCheckUnread ? MsgReadStatus.unread : undefined,
       sort: selectType === MsgType.all ? undefined : selectType,
     };
     return { ...params, ...paging };
   };
   const [selectedRows, setSelectedRows] = useState<string[]>([]);
-  const { isLoading, isError, data, isFetching, refetch } = useQuery(
+  const { isLoading,
+    isError,
+    data,
+    isFetching,
+    refetch,
+  } = useQuery(
     ['all-messages', getQueryParams()],
-    getMessageList,
-    {}
+    getMessageList, {}
   );
-  const { data: countUnreadMsg, refetch: unReadRefetch }=useQuery(
+  const { data: countUnreadMsg,
+    refetch: unReadRefetch,
+  } = useQuery(
     'count-unread-msg',
     getUnreadMsgCount
   );
-
-  msgCenter.setUnreadTypeCounts(get(countUnreadMsg, 'data.type_num', []));
 
   const [confirmInfo, setConfirmInfo] = useState({
     visible: false,
     title: '',
     content: '',
-    cb: ()=>{},
+    cb: () => { },
   });
 
   const toolbarRef = useRef<any>();
 
-  const msgList = useMemo(()=>{
+  const msgList = useMemo(() => {
+    msgCenter.setUnreadTypeCounts(get(countUnreadMsg, 'data.type_num', []));
     return data?.data?.mes_list || [];
   }, [data]);
 
@@ -63,19 +68,19 @@ const PanelList = ({ msgCenter }: Props & Pick<MobxStores, 'msgCenter' | any>) =
     return data?.data?.total || 0;
   }, [data]);
 
-  const canIUseReadBtn = useMemo(()=>{
+  const canIUseReadBtn = useMemo(() => {
     return msgList
-      .filter((itm: any)=>selectedRows.some((id)=>id==itm.id))
-      .filter((itm: any)=>itm.read_status == MsgReadStatus.unread)
+      .filter((itm: any) => selectedRows.some((id) => id == itm.id))
+      .filter((itm: any) => itm.read_status == MsgReadStatus.unread)
       .length > 0;
   }, [selectedRows, msgList]);
 
-  const canIUseDelBtn = useMemo(()=>{
-    return selectedRows .length > 0;
+  const canIUseDelBtn = useMemo(() => {
+    return selectedRows.length > 0;
   }, [selectedRows]);
 
-  const deleteMsgMutation=useMutation(deleteMsgByIds, {
-    onSuccess: (data: any)=> {
+  const deleteMsgMutation = useMutation(deleteMsgByIds, {
+    onSuccess: () => {
       closeConfirmInfo();
       msgCenter.reset();
       queryPage('', { id: undefined });
@@ -84,12 +89,12 @@ const PanelList = ({ msgCenter }: Props & Pick<MobxStores, 'msgCenter' | any>) =
       // console.log('msgList: ', msgList, ', msgTotal: ', msgTotal);
       // console.log('success data: ', data);
     },
-    onError: (err: Error)=> {
+    onError: (err: Error) => {
       Message.warning(`删除失败: ${err.message}`);
     },
   });
 
-  useEffect(()=>{
+  useEffect(() => {
     setSelectedRows([]);
   }, [isLoading]);
 
@@ -104,7 +109,7 @@ const PanelList = ({ msgCenter }: Props & Pick<MobxStores, 'msgCenter' | any>) =
   }, [msgList, msgTotal]);
 
   if (isLoading || isFetching) {
-    return <Loading/>;
+    return <Loading />;
   }
   if (isError) {
     return <Error desc='获取数据失败' />;
@@ -115,7 +120,7 @@ const PanelList = ({ msgCenter }: Props & Pick<MobxStores, 'msgCenter' | any>) =
       visible: false,
       title: '',
       content: '',
-      cb: ()=>{},
+      cb: () => { },
     });
   };
 
@@ -124,7 +129,7 @@ const PanelList = ({ msgCenter }: Props & Pick<MobxStores, 'msgCenter' | any>) =
       visible: true,
       title: '全部已读',
       content: '确定要将全部类型的消息标记为已读吗?',
-      cb: ()=>{
+      cb: () => {
         setAllMsgAdRead()
           .then((response) => {
             if (response.code == 0) {
@@ -146,14 +151,14 @@ const PanelList = ({ msgCenter }: Props & Pick<MobxStores, 'msgCenter' | any>) =
       visible: true,
       title: '标记已读',
       content: `确定要将已选中的${selectedRows.length}条消息标记为已读吗?`,
-      cb: ()=>{
+      cb: () => {
         setMsgAsReadByIds(selectedRows)
           .then((response) => {
             if (response.code == 0) {
               refetch();
               unReadRefetch();
-              setSelectedRows((rows)=> {
-                return rows.filter((id)=> !selectedRows.includes(id));
+              setSelectedRows((rows) => {
+                return rows.filter((id) => !selectedRows.includes(id));
               });
               closeConfirmInfo();
             } else {
@@ -169,7 +174,7 @@ const PanelList = ({ msgCenter }: Props & Pick<MobxStores, 'msgCenter' | any>) =
       visible: true,
       title: '删除消息',
       content: `确定要将已选中的${selectedRows.length}条消息删除吗?`,
-      cb: ()=>{
+      cb: () => {
         deleteMsgMutation.mutate(selectedRows);
       },
     });
@@ -197,11 +202,11 @@ const PanelList = ({ msgCenter }: Props & Pick<MobxStores, 'msgCenter' | any>) =
     },
   };
 
-  const setAllChecked = ()=>{
-    setSelectedRows(msgList.map((itm: any)=>itm.id));
+  const setAllChecked = () => {
+    setSelectedRows(msgList.map((itm: any) => itm.id));
   };
 
-  const setAllUnchecked = ()=> setSelectedRows([]);
+  const setAllUnchecked = () => setSelectedRows([]);
 
   const renderTable = () => {
     const toolbarOptions = {
@@ -243,7 +248,7 @@ const PanelList = ({ msgCenter }: Props & Pick<MobxStores, 'msgCenter' | any>) =
             pageSize={paging.limit}
             current={paging.page}
             total={msgTotal}
-            onChange={(page, limit)=> msgCenter.setPaging({ page, limit })}
+            onChange={(page, limit) => msgCenter.setPaging({ page, limit })}
             showSizeChanger
           />
         </div>
@@ -267,4 +272,4 @@ const PanelList = ({ msgCenter }: Props & Pick<MobxStores, 'msgCenter' | any>) =
   );
 };
 
-export default inject('msgCenter')(observer(PanelList));
+export default observer(PanelList);
