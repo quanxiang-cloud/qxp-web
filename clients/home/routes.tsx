@@ -16,7 +16,7 @@ export default (
   <Suspense fallback={(<PageLoading />)}>
     <Switch>
       <Route exact path="/" component={Dashboard} />
-      <Route exact path="/appDetails/:appID" component={AppDetails} />
+      <Route exact path="/apps/:appID" component={AppDetails} />
       <Route component={Error} />
     </Switch>
   </Suspense>
