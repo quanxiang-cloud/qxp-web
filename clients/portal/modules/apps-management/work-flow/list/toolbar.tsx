@@ -35,7 +35,7 @@ export default function({ onTriggerTypeChange }: Props) {
           label: '工作表时间触发',
           value: 'FORM_TIME',
         }]}
-        onChange={(value) => onTriggerTypeChange(value as ('FORM_DATA' | 'FORM_TIME' | ''))}
+        onChange={(value) => onTriggerTypeChange(value)}
       />
       <More<JSX.Element>
         contentClassName="left-0 right-auto w-552"
