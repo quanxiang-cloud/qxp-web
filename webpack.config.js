@@ -65,23 +65,6 @@ module.exports = function(env) {
           exclude: /node_modules/,
           use: [{ loader: 'ts-loader' }],
         },
-        // todo remove this
-        {
-          test: /\.js(x?)$/,
-          exclude: /node_modules/,
-          use: {
-            loader: "babel-loader",
-            options: {
-              presets: ['@babel/preset-env', '@babel/preset-react']
-            }
-          }
-        },
-        // All output '.js' files will have any sourcemaps re-processed by 'source-map-loader'.
-        {
-          enforce: 'pre',
-          test: /\.js$/,
-          loader: 'source-map-loader',
-        },
       ],
     },
 

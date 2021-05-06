@@ -1,7 +1,9 @@
 import { observable, action, reaction, IReactionDisposer } from 'mobx';
 
 import toast from '@lib/toast';
-import { fetchAppList, updateAppStatus, delApp, createdApp } from '@portal/modules/apps-management/lib/api';
+import {
+  fetchAppList, updateAppStatus, delApp, createdApp,
+} from '@portal/modules/apps-management/lib/api';
 
 type Params = {
   useStatus: number;
@@ -62,7 +64,7 @@ class AppListStore {
   }
 
   @action
-  changeParams = (newParams: any) => {
+  changeParams = (newParams: Params) => {
     this.params = { ...this.params, ...newParams };
   }
 

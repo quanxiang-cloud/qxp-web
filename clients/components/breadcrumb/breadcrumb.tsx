@@ -1,6 +1,7 @@
 import React, { cloneElement, PropsWithChildren } from 'react';
 import cs from 'classnames';
 import BreadcrumbItem from './breadcrumb-item';
+import { Link } from 'react-router-dom';
 
 interface Segment {
   key: string;
@@ -53,26 +54,32 @@ function Breadcrumb({
           </div>
         )
         );
-      } else {
-        return segments.map((link, idx) => (
+      }
+
+      return segments.map((link, index) => {
+        const isLast = index === segments.length - 1;
+
+        if (isLast) {
+          return (
+            <div key={link.key} className={cs(className, 'qxp-breadcrumb-item')}>
+              <span>{link.text}</span>
+            </div>
+          );
+        }
+
+        return (
           <div key={link.key} className={cs(className, 'qxp-breadcrumb-item')}>
-            { idx === segments.length - 1 ?
-              (<span>
-                {link.text}
-              </span>) :
-              (
-                <a
-                  href={link.path}
-                  className={cs(className, 'qxp-breadcrumb-link')}
-                >
+            {
+              !link.path ? link.text : (
+                <Link to={link.path} className={cs(className, 'qxp-breadcrumb-link')}>
                   {link.text}
-                </a>
+                </Link>
               )
             }
             <span className="qxp-breadcrumb-separator">{separator}</span>
           </div>
-        ));
-      }
+        );
+      });
     }
     return (defaultCrumbRender);
   };

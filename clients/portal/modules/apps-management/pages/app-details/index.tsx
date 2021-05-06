@@ -7,7 +7,7 @@ import AppSetting from './app-setting';
 import appDetailsStore from './store';
 
 function AppDetails() {
-  const { appId } = useParams<any>();
+  const { appId } = useParams<{appId: string}>();
 
   useEffect(() => {
     appDetailsStore.fetchAppDetails(appId);

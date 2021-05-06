@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
+import msgMgmt from '@portal/stores/msg-mgmt';
 import { useHistory } from 'react-router';
-import { inject, observer } from 'mobx-react';
+import { observer } from 'mobx-react';
 import TextHeader from '@c/text-header';
 import Error from '@c/error';
 import Search from '@c/search';
@@ -9,10 +10,7 @@ import { usePortalGlobalValue } from '@portal/states_to_be_delete/portal';
 import Container from '../container';
 import MsgTable from './msg-table';
 import Authorized from '@c/authorized';
-
-import { useRecoilState, useSetRecoilState } from 'recoil';
 import { useInitData } from '../hooks';
-import { KeyWord, PageInfo } from '../delcare';
 
 import styles from './index.module.scss';
 
@@ -39,10 +37,14 @@ const useDebounceState = (defaultState: any, timer: number, cb?: (params: any) =
 };
 
 const MessagesPage = () => {
-  const [{ userInfo }] = usePortalGlobalValue();
   const history = useHistory();
-  const [inputValue, setInputValue] = useRecoilState(KeyWord);
-  const setPageInfo = useSetRecoilState(PageInfo);
+  const [{ userInfo }] = usePortalGlobalValue();
+  const {
+    keyword: inputValue,
+    pageInfo,
+    setKeyword: setInputValue,
+    setPageInfo,
+  } = msgMgmt;
   useEffect(() => {
     document.title = '系统管理 - 消息管理';
   }, []);
@@ -51,7 +53,7 @@ const MessagesPage = () => {
 
   const [_, searchValueChange] = useDebounceState(inputValue, 500, (newValue) => {
     setInputValue(newValue);
-    setPageInfo((_current) => ({ ..._current, current: 1 }));
+    setPageInfo({ ...pageInfo, current: 1 });
   });
 
   if (!userInfo.authority.includes('platform')) {
@@ -101,4 +103,4 @@ const MessagesPage = () => {
   );
 };
 
-export default inject('msgMgmt')(observer(MessagesPage));
+export default observer(MessagesPage);

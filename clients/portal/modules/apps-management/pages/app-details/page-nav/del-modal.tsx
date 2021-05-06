@@ -1,6 +1,5 @@
 import React from 'react';
-import { Modal } from '@QCFE/lego-ui';
-
+import Modal from '@c/modal';
 import Icon from '@c/icon';
 import Button from '@c/button';
 
@@ -30,36 +29,38 @@ const TEXT = {
 
 function DelModal({ onCancel, visible, type = 'page', onOk }: Props) {
   return (
-    <Modal
-      visible={visible}
-      title={TEXT[type].modalTitle}
-      onCancel={onCancel}
-      className="static-modal"
-      footer={
-        (<div className="flex items-center">
-          <Button iconName='close' onClick={onCancel} className="mr-20">
+    <>
+      {visible&&(
+        <Modal
+          title={TEXT[type].modalTitle}
+          onClose={onCancel}
+          className="static-modal"
+          footer={
+            (<div className="flex items-center">
+              <Button iconName='close' onClick={onCancel} className="mr-20">
             取消
-          </Button>
-          <Button
-            modifier='primary'
-            iconName='check'
-            onClick={onOk}
-          >
-            {TEXT[type].sureText}
-          </Button>
-        </div>)
-      }
-    >
-      <div className='flex-1'>
-        <p className='app-status-modal-title text-yellow-600'>
-          <Icon size={20} className='mr-8 app-icon-color-inherit' name='error_outline' />
-          {TEXT[type].title}
-        </p>
-        <p className='pl-28'>
-          {TEXT[type].content}
-        </p>
-      </div>
-    </Modal>
+              </Button>
+              <Button
+                modifier='primary'
+                iconName='check'
+                onClick={onOk}
+              >
+                {TEXT[type].sureText}
+              </Button>
+            </div>)
+          }
+        >
+          <div className='flex-1'>
+            <p className='app-status-modal-title text-yellow-600'>
+              <Icon size={20} className='mr-8 app-icon-color-inherit' name='error_outline' />
+              {TEXT[type].title}
+            </p>
+            <p className='pl-28'>
+              {TEXT[type].content}
+            </p>
+          </div>
+        </Modal>)}
+    </>
   );
 }
 
