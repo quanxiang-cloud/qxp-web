@@ -28,8 +28,7 @@ function Checkbox(
         ref={resolvedRef}
         type="checkbox"
         onChange={onChange}
-        readOnly={!onChange}
-        className={cs('checkbox__input', {
+        className={classnames('checkbox__input', {
           'checkbox__input--indeterminate': indeterminate,
         })}
       />
