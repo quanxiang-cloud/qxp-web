@@ -1,7 +1,7 @@
 import React from 'react';
 import { observer } from 'mobx-react';
 
-import AppPageData from '@portal/modules/apps-management/components/app-page-data';
+import AppPageData from '@c/app-page-data';
 import Button from '@c/button';
 
 import PageSettingConfig from './page-setting-config';

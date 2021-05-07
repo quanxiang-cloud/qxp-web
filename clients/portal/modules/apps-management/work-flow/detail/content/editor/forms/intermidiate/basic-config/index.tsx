@@ -133,13 +133,13 @@ export default function BasicConfig({ type, value, onChange }: Props) {
         <RadioGroup onChange={(v) => onUpdate('multiplePersonWay', v)}>
           <Radio
             className="mr-16"
-            label="或签"
+            label={type === 'approve' ? '或签' : '任填'}
             value="or"
             defaultChecked={value.multiplePersonWay === 'or'}
           />
           <Radio
             className="mr-16"
-            label="会签"
+            label={type === 'approve' ? '会签' : '全填'}
             value="and"
             defaultChecked={value.multiplePersonWay === 'and'}
           />
@@ -220,19 +220,19 @@ export default function BasicConfig({ type, value, onChange }: Props) {
           <RadioGroup onChange={onTimeRuleUpdate('deadLine', 'breakPoint')}>
             <Radio
               className="mb-8 flex"
-              label="不处理"
+              label="进入该节点后"
               value="entry"
               defaultChecked={value.timeRule.deadLine.breakPoint === 'entry'}
             />
             <Radio
               className="mb-8 flex"
-              label="自动处理"
+              label="首次进入该节点后"
               value="firstEntry"
               defaultChecked={value.timeRule.deadLine.breakPoint === 'firstEntry'}
             />
             <Radio
               className="mb-8 flex"
-              label="跳转至其他节点"
+              label="工作流开始后"
               value="flowWorked"
               defaultChecked={value.timeRule.deadLine.breakPoint === 'flowWorked'}
             />

@@ -1,14 +1,18 @@
 import React, { useState } from 'react';
 import { useLocation, useHistory } from 'react-router-dom';
+import cs from 'classnames';
+import { useMutation } from 'react-query';
 
 import Icon from '@c/icon';
 import Button from '@c/button';
 import { last } from '@lib/utils';
 import More from '@c/more';
 import useObservable from '@lib/hooks/use-observable';
-import ActionButtonGroup from './content/editor/components/_common/action-button-group';
+import toast from '@lib/toast';
 
 import NavButton from '../../../../global-header/nav-button';
+import ActionButtonGroup from './content/editor/components/_common/action-button-group';
+import { toggleWorkFlow } from './api';
 import store, {
   StoreValue,
   updateStore,
@@ -16,7 +20,7 @@ import store, {
 
 export default function GlobalHeader() {
   const { pathname } = useLocation();
-  const { name = '', status } = useObservable<StoreValue>(store) || {};
+  const { name = '', status, id } = useObservable<StoreValue>(store) || {};
   const [workFlowName, setWorkFlowName] = useState(name);
   const [isWorkFlowNameMenuOpen, setIsWorkFlowNameMenuOpen] = useState(false);
   const paramsMap = {
@@ -25,6 +29,14 @@ export default function GlobalHeader() {
   };
   const type = last(pathname.split('/')) as 'form-data' | 'form-time';
   const history = useHistory();
+  const toggleMutation = useMutation(toggleWorkFlow, {
+    onSuccess: (respData) => {
+      toast.error(status === 'ENABLE' ? '下架成功' : '发布成功');
+    },
+    onError: (e: Error) => {
+      toast.error(e.message);
+    },
+  });
 
   function onCancelSetWorkFlowName() {
     setWorkFlowName(name);
@@ -36,8 +48,18 @@ export default function GlobalHeader() {
     setIsWorkFlowNameMenuOpen(false);
   }
 
-  function onSubmit() {
-    console.log(store.value);
+  function onPublishSubmit() {
+    toggleMutation.mutate({
+      id: id as string,
+      status: 'ENABLE',
+    });
+  }
+
+  function onUnPublishSubmit() {
+    toggleMutation.mutate({
+      id: id as string,
+      status: 'DISABLE',
+    });
   }
 
   return (
@@ -94,23 +116,39 @@ export default function GlobalHeader() {
         <div className="mr-32 pr-24 flex items-center border-r-1 border-gray-200">
           <span className="text-body2-no-color text-gray-400 mr-18">当前状态:</span>
           <span
-            className="text-body2-no-color text-gray-600 bg-gray-100 px-8 py-1
-            rounded-tl-6 rounded-br-6 mr-24">
-            {status === 'draft' ? '草稿' : '已发布'}
+            className={cs('text-body2-no-color px-8 py-1 rounded-tl-6 rounded-br-6 mr-24', {
+              'text-gray-600': status === 'DISABLE',
+              'bg-gray-100': status === 'DISABLE',
+              'text-green-600': status === 'ENABLE',
+              'bg-green-50': status === 'ENABLE',
+            })}>
+            {status === 'DISABLE' ? '草稿' : '已发布'}
           </span>
-          <Button
-            modifier="primary"
-            iconName="toggle_on"
-            className="py-5"
-            onClick={onSubmit}
-          >
-            发布
-          </Button>
+          {status === 'DISABLE' && (
+            <Button
+              modifier="primary"
+              forbidden={!id}
+              iconName="toggle_on"
+              className="py-5"
+              onClick={onPublishSubmit}
+            >
+              发布
+            </Button>
+          )}
+          {status === 'ENABLE' && (
+            <Button
+              forbidden={!id}
+              iconName="toggle_on"
+              className="py-5"
+              onClick={onUnPublishSubmit}
+            >
+              下架
+            </Button>
+          )}
         </div>
         <NavButton
           className="mr-0"
-          iconName="book"
-          text="帮助文档"
+          iconName="help"
         />
       </section>
     </header>

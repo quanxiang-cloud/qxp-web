@@ -1,19 +1,22 @@
 import React, { memo, useCallback, HTMLAttributes } from 'react';
 import cs from 'classnames';
-
-import Icon from '@c/icon';
-import Button from '@c/button';
-import useObservable from '@lib/hooks/use-observable';
-import store, { StoreValue } from '@flow/detail/content/editor/store';
-
-import ControlButton from './control-button';
-
+import { useMutation } from 'react-query';
 import {
   useZoomPanHelper,
   FitViewParams,
   useStoreState,
   useStoreActions,
 } from 'react-flow-renderer';
+
+import Icon from '@c/icon';
+import Button from '@c/button';
+import useObservable from '@lib/hooks/use-observable';
+import store, { StoreValue, updateStore } from '@flow/detail/content/editor/store';
+import toast from '@lib/toast';
+
+import ControlButton from './control-button';
+
+import { saveWorkFlow, SaveWorkFlow } from '../../../api';
 
 export interface Props extends HTMLAttributes<HTMLDivElement> {
   showZoom?: boolean;
@@ -41,7 +44,7 @@ function Controls({
 }: Props) {
   const setInteractive = useStoreActions((actions) => actions.setInteractive);
   const { zoomIn, zoomOut, fitView } = useZoomPanHelper();
-  const { elements = [] } = useObservable<StoreValue>(store) || {};
+  const { elements = [], id, name, triggerMode } = useObservable<StoreValue>(store) || {};
   const formDataElement = elements.find(({ type }) => type === 'formData');
 
   const isInteractive = useStoreState(
@@ -69,13 +72,39 @@ function Controls({
     onInteractiveChange?.(!isInteractive);
   }, [isInteractive, setInteractive, onInteractiveChange]);
 
+  const saveMutation = useMutation(saveWorkFlow, {
+    onSuccess: (respData) => {
+      toast.success('保存成功');
+      updateStore(null, () => ({
+        creatorId: respData.creatorId,
+        id: respData.id,
+      }));
+    },
+    onError: (err: Error) => {
+      toast.error(err.message);
+    },
+  });
+
+  const onSaveWorkFlow = useCallback(() => {
+    const saveData: SaveWorkFlow = {
+      bpmnText: JSON.stringify(elements),
+      name: name as string,
+      triggerMode: triggerMode as string,
+    };
+    if (id) {
+      saveData.id = id;
+    }
+    saveMutation.mutate(saveData);
+  }, [saveMutation]);
+
   return (
     <div className={cs('flex flex-row items-center justify-between', className)}>
       <Button
         modifier="primary"
         iconName="toggle_on"
         className="py-5"
-        forbidden={!formDataElement?.data.businessData.form.name}
+        forbidden={!formDataElement?.data.businessData.form.name || !name || !triggerMode}
+        onClick={onSaveWorkFlow}
       >
         保存
       </Button>

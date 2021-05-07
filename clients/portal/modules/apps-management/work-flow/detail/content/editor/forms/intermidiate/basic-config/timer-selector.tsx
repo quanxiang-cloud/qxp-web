@@ -34,7 +34,7 @@ export default function TimerSelector({
           className="input w-full flex-1"
           style={{ paddingRight: 36 }}
           onChange={onDayChange}
-          defaultValue={defaultDay}
+          value={defaultDay}
           onWheel={onWheel}
         />
         <span className="absolute right-5 top-1/2 transform -translate-y-1/2
@@ -50,7 +50,7 @@ export default function TimerSelector({
           max="24"
           maxLength={2}
           onChange={onHoursChange}
-          defaultValue={defaultHours}
+          value={defaultHours}
           onWheel={onWheel}
         />
         <span className="absolute right-5 top-1/2 transform -translate-y-1/2
@@ -66,7 +66,7 @@ export default function TimerSelector({
           max="60"
           maxLength={2}
           onChange={onMinutesChange}
-          defaultValue={defaultMinutes}
+          value={defaultMinutes}
           onWheel={onWheel}
         />
         <span className="absolute right-5 top-1/2 transform -translate-y-1/2

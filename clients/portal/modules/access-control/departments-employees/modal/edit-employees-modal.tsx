@@ -45,17 +45,16 @@ export default function EditEmployeesModal(
   });
 
   const staffMutation = useMutation(user.id ? updateUser : addDepUser, {
-    onSuccess: (data) => {
-      if (data && data.code === 0) {
-        toast.success('操作成功');
-        closeModal();
-        queryClient.invalidateQueries('GET_USER_ADMIN_INFO');
-      } else {
-        toast.error(data?.msg || '操作失败');
-        closeModal();
-      }
+    onSuccess: () => {
+      toast.success('操作成功');
+      closeModal();
+      queryClient.invalidateQueries('GET_USER_ADMIN_INFO');
     },
-  });
+    onError: (error: string) => {
+      toast.error(error);
+    },
+  },
+  );
 
   function handleSubmit() {
     const isValidate = formRef.current?.validateForm();

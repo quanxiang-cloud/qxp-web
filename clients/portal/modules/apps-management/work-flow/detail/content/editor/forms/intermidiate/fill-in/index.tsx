@@ -1,10 +1,17 @@
-import React, { FormEvent, useState } from 'react';
+import React, { FormEvent, useState, useEffect } from 'react';
 
 import useObservable from '@lib/hooks/use-observable';
 import Drawer from '@c/drawer';
 import Tab from '@c/tab';
 import store, {
-  StoreValue, CurrentElement, updateStore, updateDataField, FillInData, BasicNodeConfig,
+  StoreValue,
+  CurrentElement,
+  updateStore,
+  updateDataField,
+  FillInData,
+  BasicNodeConfig,
+  FieldPermission as FieldPermissionType,
+  OperationPermission as OperationPermissionType,
 } from '@flow/detail/content/editor/store';
 import SaveButtonGroup
   from '@flow/detail/content/editor/components/_common/action-save-button-group';
@@ -19,16 +26,21 @@ export default function FillInForm() {
   const { asideDrawerType, elements = [] } = useObservable<StoreValue>(store) || {};
   const currentFormNodeElement = elements.find(({ type }) => type === 'formData') as CurrentElement;
   const currentElement = elements.find(({ type }) => type === 'fillIn') as CurrentElement;
-  const [formData, setFormData] = useState<FillInData>(currentElement?.data?.businessData);
+  const [formData, setFormData] = useState<FillInData>(currentElement?.data?.businessData || {});
 
   function onSubmit(e: FormEvent) {
     e.preventDefault();
-    updateDataField('approve', null, () => formData);
-    console.log(formData.basicConfig);
+    updateDataField('fillIn', null, () => formData);
   }
 
+  useEffect(() => {
+    if (currentElement?.data?.businessData) {
+      setFormData(currentElement.data.businessData);
+    }
+  }, [currentElement?.data?.businessData]);
+
   function onFieldChange(fieldName: string) {
-    return (value: BasicNodeConfig) => {
+    return (value: BasicNodeConfig | FieldPermissionType | OperationPermissionType) => {
       setFormData((f) => ({
         ...f,
         [fieldName]: value,
@@ -41,7 +53,7 @@ export default function FillInForm() {
       {asideDrawerType === 'fillInForm' && (
         <Drawer
           title={(
-            <span className="text-h5 mr-8">审批</span>
+            <span className="text-h5 mr-8">填写</span>
           )}
           distanceTop={0}
           onCancel={() => updateStore(null, () => ({ asideDrawerType: '' }))}
@@ -75,16 +87,19 @@ export default function FillInForm() {
                   name: '字段权限',
                   content: (
                     <FieldPermission
-                      onChange={(fieldPermission) => {
-                        updateDataField('fillIn', 'fieldPermission', () => fieldPermission);
-                      }}
-                      defaultValue={currentElement.data.businessData.fieldPermission}
+                      onChange={onFieldChange('fieldPermission')}
+                      value={formData.fieldPermission}
                     />
                   ),
                 }, {
                   id: 'operatorPermission',
                   name: '操作权限',
-                  content: <OperatorPermission />,
+                  content: (
+                    <OperatorPermission
+                      value={formData.operatorPermission}
+                      onChange={onFieldChange('operatorPermission')}
+                    />
+                  ),
                 }, {
                   id: 'events',
                   name: '事件',

@@ -77,7 +77,10 @@ const approveAndFillInCommonData = {
     },
   },
   fieldPermission: {},
-  operatorPermission: [],
+  operatorPermission: {
+    custom: [],
+    default: [],
+  },
   events: {},
 };
 export function getNodeInitialData(type: 'formData' | 'approve' | 'fillIn') {

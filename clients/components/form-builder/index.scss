@@ -38,10 +38,6 @@
   border: 1px solid var(--gray-100);
   background-color: var(--gray-100);
   cursor: move;
-  // &.is-dragging {
-  //   color: ${(props) => props.theme.primaryColor};
-  //   border-color: ${(props) => props.theme.primaryColor};
-  // }
 }
 
 .form-settings-panel {
@@ -71,7 +67,7 @@
   border-radius: 8px;
   &:hover {
     cursor: pointer;
-    border-color: #375FF3;
+    border-color: var(--blue-600);
   }
 }
 
@@ -87,7 +83,7 @@
 
 .item-checked {
   position: relative;
-  border-color: #375FF3;
+  border-color: var(--blue-600);
   &:before {
     content: '';
     position: absolute;
@@ -95,7 +91,7 @@
     right:0;
     border: 16px solid transparent;
     border-top-right-radius: 6px;
-    border-color: #375FF3 #375FF3 transparent transparent;
+    border-color: var(--blue-600) var(--blue-600) transparent transparent;
   }
   .check-icon {
     display: block;
@@ -114,7 +110,7 @@
   margin-right: 2px;
   width: 24px;
   height: 16px;
-  background: #CBD5E1;
+  background: var(--gray-300);
   border-radius: 2px;
 }
 
@@ -167,18 +163,6 @@
 .form-field-wrapper--active {
   border-color: var(--blue-600);
   background-color: var(--blue-100);
-}
-
-.form-field-wrapper--hidden-children::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  right: 0;
-  left: 0;
-  bottom: 0;
-  background-image: repeating-linear-gradient(45deg, var(--gray-300) 25%, transparent 25%, transparent 75%, var(--gray-300) 75%, var(--gray-300)), repeating-linear-gradient(45deg, var(--gray-300) 25%, transparent 25%, transparent 75%, var(--gray-300) 75%, var(--gray-300));
-  background-position: 0 0, 20px 20px;
-  background-size: calc(2 * 20px) calc(2 * 20px);
 }
 
 .form-builder .field-action-icon {

@@ -9,7 +9,7 @@ import { getWorkFlowInfo } from './api';
 import Loading from '@c/loading';
 import Error from '@c/error';
 
-import store from './content/editor/store';
+import { updateStore } from './content/editor/store';
 
 import './style.scss';
 
@@ -18,7 +18,7 @@ export default function Detail() {
     'edit' | 'settings' | 'variables'
   >('edit');
 
-  const { id } = useParams() as { id: string };
+  const { id, type } = useParams() as { id: string; type: string; };
 
   const { data, isLoading, isError } = useQuery(['GET_WORK_FLOW_INFO', id], getWorkFlowInfo, {
     enabled: !!id,
@@ -28,8 +28,7 @@ export default function Detail() {
     if (!data) {
       return;
     }
-    store.next({
-      ...store.value,
+    updateStore(null, () => ({
       elements: JSON.parse(data.bpmnText),
       name: data.name,
       cancelable: data.canCancel === '1',
@@ -37,7 +36,8 @@ export default function Detail() {
       seeStatusAndMsg: data.canViewStatusMsg === '1',
       nodeAdminMsg: data.canMsg === '1',
       status: data.status,
-    });
+      triggerMode: type || data.triggerMode,
+    }));
   }, [data]);
 
   if (isLoading) {
