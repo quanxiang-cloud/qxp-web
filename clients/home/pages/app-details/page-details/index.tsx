@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { observer } from 'mobx-react';
 
 import TextHeader from '@c/text-header';
-import AppPageData from '@portal/modules/apps-management/components/app-page-data';
+import AppPageData from '@c/app-page-data';
+import appDataStore from '@c/app-page-data/store';
 import PageLoading from '@portal/modules/apps-management/components/page-loading';
-import appDataStore from '@portal/modules/apps-management/components/app-page-data/store';
 
 import store from '../../store';
 import CreateDataForm from './create-data-form';
@@ -22,6 +22,9 @@ function PageDetails() {
   useEffect(() => {
     appDataStore.setCreateFun(() => setShowCreateForm(true));
     appDataStore.allowRequestData = true;
+    return () => {
+      appDataStore.clear();
+    }
   }, []);
 
   if (showCreateForm) {

@@ -13,7 +13,7 @@ import {
   movePerGroup,
   updatePerGroup,
 } from '@portal/modules/apps-management/lib/api';
-import appPageDataStore from '@portal/modules/apps-management/components/app-page-data/store';
+import appPageDataStore from '@c/app-page-data/store';
 
 import { getFilterField, getAttribute } from './utils';
 

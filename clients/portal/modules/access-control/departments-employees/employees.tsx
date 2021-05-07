@@ -107,16 +107,14 @@ export default function Employees({
       page: 1,
       limit: 10000,
     }).then((res) => {
-      if (res && res.data) {
-        const { data } = res;
-        const newData: Employee[] = data.map((user) => {
-          user.depName = user.dep && user.dep.departmentName;
-          return user;
-        });
-        exportEmployees(newData);
-      } else {
-        toast.error('获取人员出错');
-      }
+      const { data } = res;
+      const newData: Employee[] = data.map((user) => {
+        user.depName = user.dep && user.dep.departmentName;
+        return user;
+      });
+      exportEmployees(newData);
+    }).catch((error) => {
+      toast.error(error);
     });
   }
 
@@ -137,17 +135,10 @@ export default function Employees({
     refetch();
   }
 
-  const rowSelection = {
-    selectedRowKeys: selectedUserIds,
-    getCheckboxProps: (record: any) => ({
-      disabled: record.useStatus === -2,
-      name: record.id,
-    }),
-    onChange: (selectedRowKeys: string[], selectedRows: Employee[]) => {
-      setSelectedUserIds(selectedRowKeys);
-      setSelectedUsers(selectedRows);
-    },
-  };
+  function handleSelectChange(selectedRowKeys: string[], selectedRows: Employee[]) {
+    setSelectedUserIds(selectedRowKeys);
+    setSelectedUsers(selectedRows);
+  }
 
   const columns: any[] = [...EmployeesColumns];
 
@@ -279,18 +270,22 @@ export default function Employees({
           </Authorized>
         </div>
 
-        <div className="qxp-table flex w-full border-b  mt-16 px-20" style={{
-          height: 'calc(100% - 142px)' }}>
+        <div
+          className="qxp-table flex w-full border-b  mt-16 px-20"
+          style={{ height: 'calc(100% - 142px)' }}
+        >
           <Table
             showCheckbox
             className="text-14 h-full"
             data={employeesList?.data || []}
+            onSelectChange={handleSelectChange}
             columns={columns}
             emptyTips={(
               <EmptyTips text="无成员数据" className="py-32" />
             )}
             rowKey="id"
-            initialSelectedRowKeys={rowSelection?.selectedRowKeys||[]} loading={isLoading}
+            initialSelectedRowKeys={selectedUserIds || []}
+            loading={isLoading}
           />
         </div>
         {

@@ -74,7 +74,7 @@ export default function Table<T extends Record<string, any>>({
     const selectedRows = selectedFlatRows.map(({ original }) => original);
     const selectedKeys = selectedRows.map((row) => row[rowKey] as string);
     onSelectChange(selectedKeys, selectedRows);
-  }, [selectedRowIds]);
+  }, [Object.keys(selectedRowIds).length]);
 
   const tableFooterRender = () => {
     if (loading) {

@@ -1,10 +1,10 @@
 function httpClient<TData>(
-  path: string, body?: any, additionalHeaders?: HeadersInit
+  path: string, body?: any, additionalHeaders?: HeadersInit,
 ): Promise<TData> {
   const headers = {
-    ...additionalHeaders,
-    'content-type': 'application/json',
     'X-Proxy': 'API',
+    'Content-Type': 'application/json',
+    ...additionalHeaders,
   };
 
   return fetch(path, {
@@ -16,6 +16,9 @@ function httpClient<TData>(
       alert('当前会话已失效，请重新登录!');
       window.location.href = window.location.href;
       return Promise.reject(new Error('当前会话已失效，请重新登录!'));
+    }
+    if (response.status === 500) {
+      return Promise.reject(new Error('请求失败!'));
     }
     return response.json();
   }).then((resp) => {

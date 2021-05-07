@@ -3,7 +3,8 @@ import { omit } from 'lodash';
 import { mutateTree, TreeData, TreeItem } from '@atlaskit/tree';
 
 import toast from '@lib/toast';
-import { getPageDataSchema, getPagesTreeData } from '@lib/utils';
+import { getPagesTreeData } from '@lib/utils';
+import { getPageDataSchema } from '@c/app-page-data/utils';
 import {
   fetchAppDetails,
   updateAppStatus,

@@ -70,15 +70,12 @@ export default function ImportEmployeesModal({ currDepId, closeModal }: Props) {
   const [importLoading, setImportLoading] = useState(false);
 
   const tempMutation = useMutation(getUserTemplate, {
-    onSuccess: (res) => {
-      if (res && res.code === 0) {
-        const { data } = res;
-        if (data && data.fileURL) {
-          downEmployeesTemp(data.fileURL, '模板文件.xlsx');
-        }
-      } else {
-        toast.error('操作失败');
-      }
+    onSuccess: (data) => {
+      const { fileURL } = data;
+      downEmployeesTemp(fileURL, '模板文件.xlsx');
+    },
+    onError: () => {
+      toast.error('操作失败');
     },
   });
 
@@ -116,12 +113,12 @@ export default function ImportEmployeesModal({ currDepId, closeModal }: Props) {
   });
 
   const resetMutation = useMutation(resetUserPWD, {
-    onSuccess: (data) => {
-      if (data && data.code === 0) {
-        toast.success('操作成功！');
-      } else {
-        toast.error('操作失败！');
-      }
+    onSuccess: () => {
+      toast.success('操作成功！');
+      closeModal();
+    },
+    onError: () => {
+      toast.error('操作失败！');
       closeModal();
     },
   });

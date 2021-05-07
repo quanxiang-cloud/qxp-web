@@ -1,6 +1,6 @@
 import React from 'react';
 
-import AbsoluteCentered from '@portal/modules/apps-management/components/absolute-centered';
+import AbsoluteCentered from '@c/absolute-centered';
 
 export default function NoSchema() {
   return (
