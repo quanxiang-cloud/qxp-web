@@ -92,7 +92,7 @@ function RightsItem({ rights, actions }: Props) {
                   name={type === 1 ? 'person' : 'device_hub'}
                 />
               </span>
-              <div title={name} className='text-overflow-1'>
+              <div title={name} className="truncate">
                 {name}
               </div>
             </div>
