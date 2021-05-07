@@ -52,7 +52,7 @@ function PageDetails() {
   }
 
   return (
-    <div className='flex flex-col flex-1 relative'>
+    <div className='flex flex-col flex-1 relative overflow-hidden'>
       <TextHeader
         title={curPage.name || ''}
         className="bg-white px-20 py-18 header-background-image"

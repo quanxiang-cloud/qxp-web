@@ -75,14 +75,14 @@ class AppDetailsStore {
       id: treeItem.data.id,
       appID: treeItem.data.appID,
       sort: treeItem.data.sort,
-      group_id: type === 'delGroup' ? '' : treeItem.data.groupID,
+      groupID: type === 'delGroup' ? '' : treeItem.data.groupID,
     };
 
     const method = type === 'delGroup' ? deleteGroup : deletePage;
 
     return method(data).then(() => {
       const items = omit(toJS(this.pagesTreeData.items), treeItem.id as string);
-      const groupID = data.group_id || 'ROOT';
+      const groupID = data.groupID || 'ROOT';
       items[groupID] = {
         ...items[groupID],
         children: items[groupID].children?.filter((childID) => childID !== treeItem.id),

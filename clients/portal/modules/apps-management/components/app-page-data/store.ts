@@ -28,7 +28,10 @@ class AppPageDataStore {
   constructor() {
     this.destroyFetchTableData = reaction(() => this.params, this.fetchFormDataList);
     this.destroySetTableConfig = reaction(() => {
-      return { size: this.tableConfig.pageSize || 9999, sort: [this.tableConfig.order] };
+      return {
+        size: this.tableConfig.pageSize || 9999,
+        sort: this.tableConfig.order ? [this.tableConfig.order] : []
+      };
     }, this.setParams);
   }
 
