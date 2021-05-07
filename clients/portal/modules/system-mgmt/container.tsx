@@ -20,12 +20,12 @@ const Container = ({
   hideInfoCard,
   asModalPage,
 }: Props) => {
-  const history=useHistory();
-  const goBack=()=> {
+  const history = useHistory();
+  const goBack = ()=> {
     history.goBack();
   };
 
-  const renderBreadcrumb=()=> {
+  const renderBreadcrumb = ()=> {
     // todo
     return (
       <div className={cs('flex items-center', styles.breadcrumb)}>

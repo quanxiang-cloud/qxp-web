@@ -7,7 +7,7 @@ import styles from '../index.module.scss';
 
 const Toolbar = forwardRef((props: any, ref) => {
   const [checkAll, setCheckAll] = useState(false);
-  const [interm, setInterm]=useState(false);
+  const [interm, setInterm] = useState(false);
 
   useImperativeHandle(ref, ()=>{
     return {

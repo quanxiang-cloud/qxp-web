@@ -19,11 +19,9 @@ export const useInitData = () => {
     isFetching,
     data,
     refetch,
-  } = useQuery([
-    'msg-mgmt-msg-list',
-    keyword,
-    pageParams,
-  ], () => getMsgList({ ...pageParams, key_word: keyword }));
+  } = useQuery(['msg-mgmt-msg-list', keyword, pageParams], () => {
+    return getMsgList({ ...pageParams, key_word: keyword });
+  });
 
   useEffect(() => {
     setRequestInfo({ isLoading, isError, isFetching });

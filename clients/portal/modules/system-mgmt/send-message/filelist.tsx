@@ -24,11 +24,11 @@ interface Props {
   messageTitle?: string;
 }
 
-const regImage=/jpe?g|png|gif|svg/i;
+const regImage = /jpe?g|png|gif|svg/i;
 
-const isImageExt=(filename: string): boolean=> {
-  const parts=filename.split('.');
-  const name=parts[parts.length - 1];
+const isImageExt = (filename: string): boolean=> {
+  const parts = filename.split('.');
+  const name = parts[parts.length - 1];
   return regImage.test(name);
 };
 
@@ -41,23 +41,23 @@ const Filelist = ({
   isPreview,
   messageTitle,
 }: Props) => {
-  const handleDownload=(link: string, filename: string)=> {
+  const handleDownload = (link: string, filename: string)=> {
     if (!candownload) {
       return;
     }
     saveAs(link, filename);
   };
 
-  const dlViaBlob=(url: string)=> {
+  const dlViaBlob = (url: string)=> {
     return fetch(url).then((res)=> ({ url, blob: res.blob() })).catch((err: Error)=> Message.error(err.message));
   };
 
   const exportZip = (blobs: Array<{url: string, blob: any}>) => {
     const zip = jsZip();
     blobs.forEach(({ url, blob }) => {
-      const urlInst=new URL(url);
-      const urlPath=urlInst.pathname.split('/');
-      zip.file(decodeURIComponent(urlPath[urlPath.length-1]), blob);
+      const urlInst = new URL(url);
+      const urlPath = urlInst.pathname.split('/');
+      zip.file(decodeURIComponent(urlPath[urlPath.length - 1]), blob);
     });
     zip.generateAsync({
       type: 'blob',
@@ -67,16 +67,16 @@ const Filelist = ({
     });
   };
 
-  const dlAndZip=(urls: string[])=> {
+  const dlAndZip = (urls: string[])=> {
     // @ts-ignore
     return Promise.all(urls.map((url)=> dlViaBlob(url))).then(exportZip);
   };
 
-  const handleZipDl=()=> {
+  const handleZipDl = ()=> {
     dlAndZip(files.map((file)=> file.file_url));
   };
 
-  const renderList=()=> {
+  const renderList = ()=> {
     return (
       <>
         {files.map((itm, idx) => (
