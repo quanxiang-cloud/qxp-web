@@ -42,7 +42,7 @@ function AppDropdown({ appList, onChange, curApp, hiddenStatus }: Props) {
     <More className='aa' contentClassName='app-dropdown-drop-more' items={appListItems}>
       <div className='flex items-center cursor-pointer app-dropdown-cur-app'>
         <AppIcon className='mr-8' size={32} themeColor={bgColor} iconName={iconName} />
-        <span className='text-overflow-1'>{appName}</span>
+        <span className="truncate">{appName}</span>
         {!hiddenStatus && (
           <span className='ml-6 text-gray-500 mr-4'>({useStatus > 0 ? '已发布' : '未发布'})</span>
         )}

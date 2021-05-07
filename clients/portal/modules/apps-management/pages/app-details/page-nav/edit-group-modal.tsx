@@ -5,7 +5,7 @@ import Button from '@c/button';
 
 type Props = {
   onCancel: () => void;
-  onSubmit: (groupInfo: GroupInfo) => Promise<unknown>;
+  onSubmit: (groupInfo: PageInfo) => Promise<unknown>;
   name?: string;
   id?: string;
 };
