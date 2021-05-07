@@ -132,15 +132,11 @@ const PanelList = () => {
       cb: () => {
         setAllMsgAdRead()
           .then((response) => {
-            if (response.code == 0) {
-              refetch();
-              unReadRefetch();
-              closeConfirmInfo();
-              msgCenter.reset();
-              queryPage('', { id: undefined });
-            } else {
-              Message.warning('操作失败');
-            }
+            refetch();
+            unReadRefetch();
+            closeConfirmInfo();
+            msgCenter.reset();
+            queryPage('', { id: undefined });
           });
       },
     });
@@ -153,17 +149,13 @@ const PanelList = () => {
       content: `确定要将已选中的${selectedRows.length}条消息标记为已读吗?`,
       cb: () => {
         setMsgAsReadByIds(selectedRows)
-          .then((response) => {
-            if (response.code == 0) {
-              refetch();
-              unReadRefetch();
-              setSelectedRows((rows) => {
-                return rows.filter((id) => !selectedRows.includes(id));
-              });
-              closeConfirmInfo();
-            } else {
-              Message.warning('操作失败');
-            }
+          .then(() => {
+            refetch();
+            unReadRefetch();
+            setSelectedRows((rows) => {
+              return rows.filter((id) => !selectedRows.includes(id));
+            });
+            closeConfirmInfo();
           });
       },
     });

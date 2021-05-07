@@ -27,7 +27,7 @@ function AppIcon(
       ref={ref}
       style={{
         '--app-Icon-size': size + 'px',
-        '--app-icon-border-radius': (size * 0.27) + 'px',
+        '--app-corner-12-2-12-12': (size * 0.27) + 'px',
       } as React.CSSProperties}
       className={`
         app-bg-icon

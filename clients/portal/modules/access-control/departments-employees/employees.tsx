@@ -107,16 +107,14 @@ export default function Employees({
       page: 1,
       limit: 10000,
     }).then((res) => {
-      if (res && res.data) {
-        const { data } = res;
-        const newData: Employee[] = data.map((user) => {
-          user.depName = user.dep && user.dep.departmentName;
-          return user;
-        });
-        exportEmployees(newData);
-      } else {
-        toast.error('获取人员出错');
-      }
+      const { data } = res;
+      const newData: Employee[] = data.map((user) => {
+        user.depName = user.dep && user.dep.departmentName;
+        return user;
+      });
+      exportEmployees(newData);
+    }).catch((error) => {
+      toast.error(error);
     });
   }
 
@@ -290,7 +288,8 @@ export default function Employees({
               <EmptyTips text="无成员数据" className="py-32" />
             )}
             rowKey="id"
-            initialSelectedRowKeys={rowSelection?.selectedRowKeys||[]} loading={isLoading}
+            initialSelectedRowKeys={rowSelection?.selectedRowKeys||[]}
+            loading={isLoading}
           />
         </div>
         {

@@ -116,6 +116,8 @@ const Header = styled.div`
   background-position: top right;
   background-size: contain;
   background-repeat: no-repeat;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
 
   .md-header-left {
     display: flex;
@@ -135,7 +137,7 @@ const Header = styled.div`
 `;
 
 const Body = styled.div<{ fullscreen?: boolean }>`
-  overflow: scroll;
+  overflow: auto;
   ${({ fullscreen }) => fullscreen ? css`
       height: calc(100vh - 56px);
     ` : css`
