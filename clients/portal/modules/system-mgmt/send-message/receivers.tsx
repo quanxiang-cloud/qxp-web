@@ -26,7 +26,13 @@ const Receivers = ({
             [styles.isPerson]: type === 1,
           })} key={id}>
             <span>{name}</span>
-            {!readonly && <Icon name='close' className={styles.close} onClick={() => onRemove && onRemove(id)}/>}
+            {!readonly && (
+              <Icon
+                name='close'
+                className={styles.close}
+                onClick={() => onRemove && onRemove(id)}
+              />
+            )}
           </span>
         );
       })}

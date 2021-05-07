@@ -36,8 +36,19 @@ const Toolbar = forwardRef((props: any, ref) => {
           }}
           className='mr-16'
         />
-        <Button forbidden={!props.canIUseReadBtn} onClick={props.handleCheckedReaded} className='mr-16'>标为已读</Button>
-        <Button forbidden={!props.canIUseDelBtn} onClick={props.handleDeleteMessage}>删除</Button>
+        <Button
+          forbidden={!props.canIUseReadBtn}
+          onClick={props.handleCheckedReaded}
+          className='mr-16'
+        >
+          标为已读
+        </Button>
+        <Button
+          forbidden={!props.canIUseDelBtn}
+          onClick={props.handleDeleteMessage}
+        >
+          删除
+        </Button>
       </div>
       <div>
         <Button
