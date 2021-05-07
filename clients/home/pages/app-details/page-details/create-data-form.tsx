@@ -87,7 +87,7 @@ function CreateDataForm({ goBack, defaultValues }: Props) {
               iconName="check"
               loading={loading}
             >
-              确认新建
+              {defaultValues ? '保存' : '确认新建'}
             </Button>
           </FormButtonGroup>
         </SchemaForm>

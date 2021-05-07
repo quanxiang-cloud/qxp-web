@@ -4,7 +4,11 @@ import { getFilterField } from '@portal/modules/apps-management/pages/form-desig
 
 import appPageDataStore from './store';
 
-function getTableCellData(initValue: any, field: any) {
+function getTableCellData(initValue: string | string[], field: PageField) {
+  if (!initValue) {
+    return '——'
+  }
+
   if (field.type === 'datetime') {
     if (Array.isArray(initValue)) {
       return initValue.map((value: string) => {
@@ -18,6 +22,10 @@ function getTableCellData(initValue: any, field: any) {
   if (field.enum && field.enum.length) {
     if (Array.isArray(initValue)) {
       return initValue.map((_value: string) => {
+        if (!field.enum) {
+          return ''
+        }
+
         return field.enum.find(({ value }: any) => value === _value)?.label || '';
       }).join(',');
     }

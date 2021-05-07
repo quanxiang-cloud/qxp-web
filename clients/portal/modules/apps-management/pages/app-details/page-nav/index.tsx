@@ -37,7 +37,7 @@ function PageNav() {
     });
   }
 
-  const handleEditGroup = (groupInfo: GroupInfo) => {
+  const handleEditGroup = (groupInfo: PageInfo) => {
     return editGroup(groupInfo);
   };
 

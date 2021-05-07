@@ -11,9 +11,8 @@ import {
   updateApp,
   fetchPageList,
   createPage,
-  updatePage,
+  updatePageOrGroup,
   createGroup,
-  updateGroup,
   deleteGroup,
   deletePage,
   fetchFormScheme,
@@ -98,9 +97,9 @@ class AppDetailsStore {
   }
 
   @action
-  editGroup = (groupInfo: GroupInfo) => {
+  editGroup = (groupInfo: PageInfo) => {
     if (groupInfo.id) {
-      return updateGroup({ appID: this.appId, ...groupInfo }).then(() => {
+      return updatePageOrGroup({ appID: this.appId, ...groupInfo }).then(() => {
         this.pagesTreeData = mutateTree(toJS(this.pagesTreeData), groupInfo.id as string, {
           id: groupInfo.id,
           data: groupInfo,
@@ -135,7 +134,7 @@ class AppDetailsStore {
   @action
   editPage = (pageInfo: PageInfo) => {
     if (pageInfo.id) {
-      return updatePage(pageInfo).then(() => {
+      return updatePageOrGroup(pageInfo).then(() => {
         toast.success('修改成功');
         this.pagesTreeData = mutateTree(toJS(this.pagesTreeData), pageInfo.id, {
           id: pageInfo.id,
