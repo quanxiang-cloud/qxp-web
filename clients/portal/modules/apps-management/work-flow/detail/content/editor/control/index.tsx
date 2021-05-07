@@ -1,6 +1,7 @@
 import React, { memo, useCallback, HTMLAttributes } from 'react';
 import cs from 'classnames';
 import { useMutation } from 'react-query';
+import { useParams } from 'react-router-dom';
 import {
   useZoomPanHelper,
   FitViewParams,
@@ -42,9 +43,11 @@ function Controls({
   className,
   children,
 }: Props) {
+  const { type } = useParams();
+
   const setInteractive = useStoreActions((actions) => actions.setInteractive);
   const { zoomIn, zoomOut, fitView } = useZoomPanHelper();
-  const { elements = [], id, name, triggerMode } = useObservable<StoreValue>(store) || {};
+  const { elements = [], id, name, triggerMode, version } = useObservable<StoreValue>(store) || {};
   const formDataElement = elements.find(({ type }) => type === 'formData');
 
   const isInteractive = useStoreState(
@@ -87,13 +90,17 @@ function Controls({
 
   const onSaveWorkFlow = useCallback(() => {
     const saveData: SaveWorkFlow = {
-      bpmnText: JSON.stringify(elements),
+      bpmnText: JSON.stringify({
+        version,
+        shapes: elements,
+      }),
       name: name as string,
       triggerMode: triggerMode as string,
     };
-    if (id) {
+    if (id && !type) {
       saveData.id = id;
     }
+
     saveMutation.mutate(saveData);
   }, [saveMutation]);
 

@@ -5,7 +5,6 @@ import Select from '@c/select';
 import Icon from '@c/icon';
 import ToolTip from '@c/tooltip';
 
-import { updateDataField } from '../store';
 import { getFormDataOptions, Options } from './api';
 
 interface Props {
@@ -56,17 +55,11 @@ export default forwardRef(function FormSelector(
           labelClassName="whitespace-nowrap"
         >
           <Select
-            disabled={!changeable}
+            disabled
             inputRef={ref}
             name="workForm"
             placeholder="请选择"
             value={value}
-            onChange={
-              (v: string) => updateDataField('formData', 'form', () => ({
-                value: v,
-                name: options.find(({ value }) => value === v)?.label,
-              }))
-            }
             className={cs(
               'h-28 border-none px-12 text-12 flex items-center',
               'flex-1 work-flow-form-selector'

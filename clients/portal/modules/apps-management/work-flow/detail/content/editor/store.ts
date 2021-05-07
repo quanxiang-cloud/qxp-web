@@ -156,51 +156,55 @@ export interface StoreValue {
   status: string;
 }
 
-export const storeInitialData = {
-  id: '',
-  name: '',
-  version: '0.1',
-  status: 'DISABLE',
-  processKey: uuid(),
-  triggerMode: 'FORM_DATA',
-  asideDrawerType: '',
-  currentConnection: {},
-  cancelable: false,
-  urgeable: false,
-  seeStatusAndMsg: false,
-  nodeAdminMsg: false,
-  elements: [
-    {
-      id: '1',
-      type: 'formData',
-      data: {
-        nodeData: { width: 200, height: 72, name: '工作表触发' },
-        businessData: {
-          form: { name: '', value: '' },
-          triggerWay: [],
-          whenAlterFields: [],
+export const getStoreInitialData = () => {
+  const startId = uuid();
+  const endId = uuid();
+  return {
+    id: uuid(),
+    name: '',
+    version: '0.1',
+    status: 'DISABLE',
+    processKey: uuid(),
+    triggerMode: 'FORM_DATA',
+    asideDrawerType: '',
+    currentConnection: {},
+    cancelable: false,
+    urgeable: false,
+    seeStatusAndMsg: false,
+    nodeAdminMsg: false,
+    elements: [
+      {
+        id: startId,
+        type: 'formData',
+        data: {
+          nodeData: { width: 200, height: 72, name: '工作表触发' },
+          businessData: {
+            form: { name: '', value: '' },
+            triggerWay: [],
+            whenAlterFields: [],
+          },
         },
+        position: { x: 0, y: 0 },
       },
-      position: { x: 0, y: 0 },
-    },
-    {
-      id: '2',
-      type: 'end',
-      data: { nodeData: { name: '结束', width: 100, height: 28 } },
-      position: { x: 0, y: 0 },
-    },
-    {
-      id: 'e1-2',
-      type: 'plus',
-      source: '1',
-      target: '2',
-      label: '+',
-      arrowHeadType: ArrowHeadType.ArrowClosed,
-    },
-  ],
+      {
+        id: endId,
+        type: 'end',
+        data: { nodeData: { name: '结束', width: 100, height: 28 } },
+        position: { x: 0, y: 0 },
+      },
+      {
+        id: `e${startId}-${endId}`,
+        type: 'plus',
+        source: startId,
+        target: endId,
+        label: '+',
+        arrowHeadType: ArrowHeadType.ArrowClosed,
+      },
+    ],
+  };
 };
 
-const store = new BehaviorSubject<StoreValue>(storeInitialData);
+const store = new BehaviorSubject<StoreValue>(getStoreInitialData());
 
 export function removeNodeById(id: string) {
   let sourceId;
