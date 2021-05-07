@@ -28,8 +28,10 @@ export default function Detail() {
     if (!data) {
       return;
     }
+    const bpmn = JSON.parse(data.bpmnText);
     updateStore(null, () => ({
-      elements: JSON.parse(data.bpmnText),
+      elements: bpmn.shapes,
+      version: bpmn.version,
       name: data.name,
       cancelable: data.canCancel === '1',
       urgeable: data.canUrge === '1',

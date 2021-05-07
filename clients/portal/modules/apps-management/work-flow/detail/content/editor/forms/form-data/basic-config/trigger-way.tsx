@@ -74,15 +74,21 @@ export default forwardRef(function TriggerWay(
           修改数据时
       </label>
       {triggerWay.includes('whenAlter') && (
-        <Select<string>
-          placeholder="选择工作表中的字段"
-          value={whenAlterFields}
-          multiple
-          onChange={(v: string[]) => onValueChange({ whenAlterFields: v })}
-          className="h-32 py-4 border border-gray-300 input-border-radius
-                px-12 text-12 flex items-center flex-1 mb-8 ml-22 mt-8"
-          options={formFieldOptions}
-        />
+        <>
+          <Select<string>
+            placeholder="选择工作表中的字段"
+            value={whenAlterFields}
+            multiple
+            onChange={(v: string[]) => onValueChange({ whenAlterFields: v })}
+            className="h-32 py-4 border border-gray-300 input-border-radius
+                  px-12 text-12 flex items-center flex-1 mb-8 ml-22 mt-8"
+            options={formFieldOptions}
+          />
+          <span className="ml-22 text-caption">
+            修改已有工作表中的指定数据时，触发工作流。若不指定则表示修改任意字段均
+可触发
+          </span>
+        </>
       )}
     </div>
   );

@@ -21,7 +21,7 @@ const NavMsgBar = (): JSX.Element => {
   const msgBoxRef = useRef(null);
   const queryClient = useQueryClient();
   const { openUnreadMsgBox, msgBoxOpen, openMsgCenter, countUnread } = msgCenter;
-  const { data: countUnreadMsg }=useQuery('count-unread-msg', getUnreadMsgCount);
+  const { data: countUnreadMsg } = useQuery('count-unread-msg', getUnreadMsgCount);
 
   const handleClickOuter = (ev: MouseEvent) => {
     const { target } = ev;
