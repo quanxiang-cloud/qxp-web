@@ -67,6 +67,7 @@ function CreateDataForm({ goBack, defaultValues }: Props) {
       </div>
       <div className='user-app-schema-form'>
         <SchemaForm
+          className='p-40'
           onSubmit={handleSubmit}
           defaultValue={defaultValues}
           components={{ ...registry.components }}
