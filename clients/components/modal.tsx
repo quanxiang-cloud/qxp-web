@@ -116,6 +116,8 @@ const Header = styled.div`
   background-position: top right;
   background-size: contain;
   background-repeat: no-repeat;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
 
   .md-header-left {
     display: flex;
