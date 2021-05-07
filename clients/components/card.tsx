@@ -54,7 +54,7 @@ export default function Card({
         />
       )}
       {(content || children) && (
-        <main className={twCascade('h-full flex flex-grow', contentClassName)}>
+        <main className={twCascade('flex flex-grow', contentClassName)}>
           {content || children}
         </main>
       )}

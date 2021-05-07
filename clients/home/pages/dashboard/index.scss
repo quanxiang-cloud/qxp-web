@@ -1,6 +1,7 @@
 .user-app-item {
   cursor: pointer;
   min-width: 232px;
+  max-width: 280px;
   padding: 16px 20px;
   transition: all .2s;
 
@@ -11,4 +12,22 @@
 
 .user-app-list-container {
   background-color: rgba(255, 255, 255, 0.45);
+}
+
+.message-handel-list {
+  width: 360px;
+  height: 56px;
+  line-height: 56px;
+}
+
+.border-y {
+  border-top: 1px solid #E2E8F0;
+  border-bottom: 1px solid #E2E8F0;
+}
+
+.rbtn {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
 }
