@@ -96,7 +96,7 @@ export const createPage = (data: PageInfo) => {
   });
 };
 
-export const updatePage = (data: PageInfo) => {
+export const updatePageOrGroup = (data: PageInfo) => {
   return request({
     url: '/api/v1/structor/menu/update',
     method: 'post',
@@ -107,14 +107,6 @@ export const updatePage = (data: PageInfo) => {
 export const createGroup = (data: any) => {
   return request({
     url: '/api/v1/structor/group/create',
-    method: 'post',
-    data,
-  });
-};
-
-export const updateGroup = (data: any) => {
-  return request({
-    url: '/api/v1/structor/menu/update',
     method: 'post',
     data,
   });

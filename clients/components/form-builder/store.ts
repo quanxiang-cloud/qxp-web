@@ -171,7 +171,6 @@ export default class FormBuilderStore {
           type: 'object',
           'x-component': 'FormFieldWrapper',
           'x-index': index,
-          // 'x-component-props': { childrenInvisible },
           properties: {
             [key]: {
               ...this.schema.properties?.[key],

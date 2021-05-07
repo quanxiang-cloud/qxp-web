@@ -18,11 +18,6 @@ declare enum MsgSendStatus {
   success = 3, // 发送成功
 }
 
-type QueryFuncCtx = {
-  queryKey: [string, Record<string, unknown>],
-  pageParams?: Record<string, unknown>
-}
-
 declare namespace Qxp {
   interface MsgTypeCount {
     total: number;

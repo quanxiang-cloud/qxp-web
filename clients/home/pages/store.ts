@@ -1,8 +1,8 @@
 import { observable, action } from 'mobx';
 import { TreeData } from '@atlaskit/tree';
 
-import { getPagesTreeData } from '@lib/utils';
-import { getPageDataSchema } from '@lib/utils';
+import { buildAppPagesTreeData } from '@lib/utils';
+import { getPageDataSchema } from '@c/app-page-data/utils';
 
 import { fetchUserList, fetchPageList, fetchFormScheme } from '../lib/api';
 
@@ -10,7 +10,7 @@ class UserAppStore {
   @observable appList = [];
   @observable appID = '';
   @observable listLoading = false;
-  @observable pageListLoading = false;
+  @observable pageListLoading = true;
   @observable curPage: PageInfo = { id: '' };
   @observable fetchSchemeLoading = true;
   @observable formScheme: any = null;
@@ -24,7 +24,7 @@ class UserAppStore {
     this.appID = appID;
     this.pageListLoading = true;
     fetchPageList(appID).then((res: any) => {
-      this.pagesTreeData = getPagesTreeData(res.data.menu);
+      this.pagesTreeData = buildAppPagesTreeData(res.data.menu);
       this.pageListLoading = false;
     });
   }
@@ -45,7 +45,7 @@ class UserAppStore {
             schema.properties[key].readOnly = true;
           }
         })
-        
+
         this.formScheme = res.schema;
         getPageDataSchema(config, schema, pageInfo.id as string);
         this.fetchSchemeLoading = false;
@@ -71,6 +71,7 @@ class UserAppStore {
   @action
   clear = () => {
     this.formScheme = null;
+    this.pageListLoading = true;
     this.pagesTreeData = {
       rootId: 'ROOT',
       items: {},

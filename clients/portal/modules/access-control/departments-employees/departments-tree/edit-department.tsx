@@ -14,7 +14,7 @@ import { createDepartment, editDepartment, getERPTree } from '../api';
 const { TextField } = Form;
 // const string for form input help text
 const HELP_TEXT_NORMAL = '名称不超过 30 个字符，请修改！';
-const HELP_TEXT_DUPLICATED = '名称已存在，请修改！';
+// const HELP_TEXT_DUPLICATED = '名称已存在，请修改！';
 const HELP_TEXT_REG_ERROR = '只能包含汉字、英文、横线("-")以及下划线("_")，请修改！';
 
 interface Props {
@@ -88,22 +88,12 @@ export default function EditDepartment({ department, closeModal }: Props) {
       return;
     }
 
-    requestAPI(params).then((submitResponseData: any) => {
-      switch (submitResponseData.code) {
-      case 0:
-        toast.success('操作成功！');
-        queryClient.invalidateQueries('GET_ERP_TREE');
-        closeModal();
-        break;
-      case 50014000003:
-        setDepNameHelpText(HELP_TEXT_DUPLICATED);
-        setDepNameState('error');
-        break;
-      default:
-        toast.error('发生未知错误，Code:' + submitResponseData.code);
-      }
-    }).catch(() => {
-      // todo handle error
+    requestAPI(params).then(() => {
+      toast.success('操作成功！');
+      queryClient.invalidateQueries('GET_ERP_TREE');
+      closeModal();
+    }).catch((error) => {
+      toast.error('发生未知错误:' + error);
     });
   };
 

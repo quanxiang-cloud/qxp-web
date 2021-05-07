@@ -3,16 +3,16 @@ import { omit } from 'lodash';
 import { mutateTree, TreeData, TreeItem } from '@atlaskit/tree';
 
 import toast from '@lib/toast';
-import { getPageDataSchema, getPagesTreeData } from '@lib/utils';
+import { buildAppPagesTreeData } from '@lib/utils';
+import { getPageDataSchema } from '@c/app-page-data/utils';
 import {
   fetchAppDetails,
   updateAppStatus,
   updateApp,
   fetchPageList,
   createPage,
-  updatePage,
+  updatePageOrGroup,
   createGroup,
-  updateGroup,
   deleteGroup,
   deletePage,
   fetchFormScheme,
@@ -97,9 +97,9 @@ class AppDetailsStore {
   }
 
   @action
-  editGroup = (groupInfo: GroupInfo) => {
+  editGroup = (groupInfo: PageInfo) => {
     if (groupInfo.id) {
-      return updateGroup({ appID: this.appId, ...groupInfo }).then(() => {
+      return updatePageOrGroup({ appID: this.appId, ...groupInfo }).then(() => {
         this.pagesTreeData = mutateTree(toJS(this.pagesTreeData), groupInfo.id as string, {
           id: groupInfo.id,
           data: groupInfo,
@@ -134,7 +134,7 @@ class AppDetailsStore {
   @action
   editPage = (pageInfo: PageInfo) => {
     if (pageInfo.id) {
-      return updatePage(pageInfo).then(() => {
+      return updatePageOrGroup(pageInfo).then(() => {
         toast.success('修改成功');
         this.pagesTreeData = mutateTree(toJS(this.pagesTreeData), pageInfo.id, {
           id: pageInfo.id,
@@ -183,7 +183,7 @@ class AppDetailsStore {
     this.appId = appId;
     this.pageListLoading = true;
     fetchPageList(appId).then((res) => {
-      this.pagesTreeData = getPagesTreeData(res.data.menu);
+      this.pagesTreeData = buildAppPagesTreeData(res.data.menu);
       this.pageListLoading = false;
     });
   }

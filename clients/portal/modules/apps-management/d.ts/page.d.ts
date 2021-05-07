@@ -10,10 +10,3 @@ type PageInfo = {
   sort?: number;
 
 }
-
-type GroupInfo = {
-  id?: string;
-  appID?: string;
-  name?: string;
-  groupID?: string;
-}

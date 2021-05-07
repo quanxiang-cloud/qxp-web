@@ -178,7 +178,7 @@ body {
   transform: translateY(-16px);
   > .picNoMsg {
     @extend %picNoMsg;
-    background: url("/dist/images/empty-msg-box.svg") no-repeat;
+    background: url("/dist/images/message_empty_tips.svg") no-repeat;
   }
   > .picNoDetail {
     @extend %picNoMsg;

@@ -28,7 +28,7 @@ function FiltrateForm({ filtrates, showMoreFiltrate }: Props, ref?: React.Ref<an
           width='32'
           height='32'
           className='mr-8 inline-block'
-          src='/dist/images/message_details_empty_tips.svg'
+          src='/dist/images/empty-msg-detail.svg'
         />
         {store.noFiltratesTips}
       </div>

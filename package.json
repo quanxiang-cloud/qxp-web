@@ -58,7 +58,6 @@
     "@types/file-saver": "^2.0.2",
     "@types/html-to-draftjs": "^1.4.0",
     "@types/lodash": "^4.14.168",
-    "@types/node": "^14.14.36",
     "@types/qs": "^6.9.6",
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
