@@ -43,7 +43,7 @@ export default function Index() {
               itemRender={
                 (<div
                   className="bg-gradient-green-to-top-right
-                icon-border-radius w-48 h-48 flex-initial
+                corner-12-2-12-12 w-48 h-48 flex-initial
                 flex items-center justify-center
                 "
                 >

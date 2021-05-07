@@ -81,7 +81,7 @@ export default function Input(props: Props) {
     type: props.type,
   }, ['validateMessage', 'afterBeginIcon', 'className', 'layout']);
 
-  const className = cs('input-border-radius border pr-32 w-full outline-none pl-4', {
+  const className = cs('corner-2-8-8-8 border pr-32 w-full outline-none pl-4', {
     'border-gray-300': !error,
     'border-red-600': error,
   });

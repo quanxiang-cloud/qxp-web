@@ -89,7 +89,7 @@ export default function ResetPasswordModal({
       }
     >
       <div className="w-full flex flex-col">
-        <div className="w-full box-border-radius px-18 py-12 mb-20 bg-blue-100 flex items-center">
+        <div className="w-full corner-4-12-12-12 px-18 py-12 mb-20 bg-blue-100 flex items-center">
           <Icon
             name="info"
             size={24}

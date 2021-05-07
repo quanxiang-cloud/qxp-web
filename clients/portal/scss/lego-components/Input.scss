@@ -205,14 +205,14 @@ textarea.textarea:not([readonly]):not([disabled]) {
       }
       &:first-of-type {
         .select-control {
-          border-bottom-left-radius: $select-input-border-radius;
-          border-top-left-radius: $select-input-border-radius;
+          border-bottom-left-radius: $select-corner-2-8-8-8;
+          border-top-left-radius: $select-corner-2-8-8-8;
         }
       }
       &:last-of-type {
         .select-control {
-          border-top-right-radius: $select-input-border-radius;
-          border-bottom-right-radius: $select-input-border-radius;
+          border-top-right-radius: $select-corner-2-8-8-8;
+          border-bottom-right-radius: $select-corner-2-8-8-8;
         }
       }
     }
