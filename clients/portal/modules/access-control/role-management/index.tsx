@@ -46,7 +46,7 @@ export default function RoleManagement() {
       descClassName="text-caption"
     >
       <div className="flex flex-grow  items-stretch h-full">
-        <div className="h-full pb-4 w-259 border-r">
+        <div className="h-full pb-4 w-259 border-r min-w-259">
           <RoleList items={roleList} onChange={setRoleId} />
         </div>
         <div className="h-full flex-grow p-20 pb-0">
