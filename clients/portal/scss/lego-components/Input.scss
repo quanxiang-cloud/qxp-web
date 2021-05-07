@@ -204,18 +204,6 @@ textarea.textarea:not([readonly]):not([disabled]) {
       .select-control {
         border-radius: 0;
       }
-      &:first-of-type {
-        .select-control {
-          border-bottom-left-radius: $select-corner-2-8-8-8;
-          border-top-left-radius: $select-corner-2-8-8-8;
-        }
-      }
-      &:last-of-type {
-        .select-control {
-          border-top-right-radius: $select-corner-2-8-8-8;
-          border-bottom-right-radius: $select-corner-2-8-8-8;
-        }
-      }
     }
   }
 }
