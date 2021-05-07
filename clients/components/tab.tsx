@@ -47,7 +47,7 @@ export default function Tab({
             <div
               key={item.id}
               className={twCascade(
-                'whitespace-nowrap py-5 tab-border',
+                'whitespace-nowrap py-5 rounded-tl-8 rounded-tr-8',
                 'px-16 cursor-pointer text-body2-no-color hover:bg-blue-100',
                 'hover:text-blue-600 transition duration-300',
                 {

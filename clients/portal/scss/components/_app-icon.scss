@@ -4,8 +4,8 @@
     height: var(--app-Icon-size);
     min-width: var(--app-Icon-size);
     min-height: var(--app-Icon-size);
-    border-radius: calc(var(--app-icon-border-radius)) 2px calc(var(--app-icon-border-radius))
-        calc(var(--app-icon-border-radius));
+    border-radius: calc(var(--app-corner-12-2-12-12)) 2px calc(var(--app-corner-12-2-12-12))
+        calc(var(--app-corner-12-2-12-12));
     & > .svg-icon {
         z-index: 1;
     }

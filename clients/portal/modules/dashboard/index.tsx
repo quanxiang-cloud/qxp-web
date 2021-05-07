@@ -49,7 +49,7 @@ export default function Dashboard() {
                     itemRender={
                       (<div
                         className={twCascade(
-                          'w-44 h-44 p-8 flex items-center justify-center icon-border-radius',
+                          'w-44 h-44 p-8 flex items-center justify-center corner-12-2-12-12',
                           'bg-gradient-green-to-top-right rounded-lg rounded-tr-none',
                         )}
                       >
@@ -67,7 +67,7 @@ export default function Dashboard() {
                     itemRender={
                       (<div
                         className={twCascade(
-                          'w-44 h-44 p-8 flex items-center justify-center icon-border-radius',
+                          'w-44 h-44 p-8 flex items-center justify-center corner-12-2-12-12',
                           'bg-gradient-yellow-to-top-right rounded-lg rounded-tr-none',
                         )}
                       >
@@ -83,7 +83,7 @@ export default function Dashboard() {
                     itemRender={
                       (<div
                         className={twCascade(
-                          'w-44 h-44 p-8 flex items-center justify-center icon-border-radius',
+                          'w-44 h-44 p-8 flex items-center justify-center corner-12-2-12-12',
                           'bg-gradient-blue-to-top-right rounded-lg rounded-tr-none',
                         )}
                       >
@@ -114,7 +114,7 @@ export default function Dashboard() {
                       desc="12"
                       itemRender={
                         (<div
-                          className="w-16 h-16 bg-gradient-green-to-top-right icon-border-radius"
+                          className="w-16 h-16 bg-gradient-green-to-top-right corner-12-2-12-12"
                         />)
                       }
                       textDirection="row"
@@ -130,7 +130,7 @@ export default function Dashboard() {
                       itemRender={
                         (<div
                           className={twCascade(
-                            'w-16 h-16 bg-gradient-yellow-to-top-right icon-border-radius',
+                            'w-16 h-16 bg-gradient-yellow-to-top-right corner-12-2-12-12',
                             'rounded rounded-tr-none',
                           )}
                         />)
@@ -148,7 +148,7 @@ export default function Dashboard() {
                       itemRender={
                         (<div
                           className={twCascade(
-                            'w-16 h-16 bg-gradient-blue-to-top-right icon-border-radius',
+                            'w-16 h-16 bg-gradient-blue-to-top-right corner-12-2-12-12',
                             'rounded rounded-tr-none',
                           )}
                         />)
