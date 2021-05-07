@@ -509,11 +509,6 @@
   resolved "https://registry.nlark.com/@types/node/download/@types/node-15.0.1.tgz?cache=0&sync_timestamp=1619534647758&other_urls=https%3A%2F%2Fregistry.nlark.com%2F%40types%2Fnode%2Fdownload%2F%40types%2Fnode-15.0.1.tgz#ef34dea0881028d11398be5bf4e856743e3dc35a"
   integrity sha1-7zTeoIgQKNETmL5b9OhWdD49w1o=
 
-"@types/node@^14.14.36":
-  version "14.14.42"
-  resolved "https://registry.nlark.com/@types/node/download/@types/node-14.14.42.tgz?cache=0&sync_timestamp=1619467068604&other_urls=https%3A%2F%2Fregistry.nlark.com%2F%40types%2Fnode%2Fdownload%2F%40types%2Fnode-14.14.42.tgz#20271ce899f35eb6cd525f500bfa8f4c9e27ecd6"
-  integrity sha1-ICcc6JnzXrbNUl9QC/qPTJ4n7NY=
-
 "@types/parse-json@^4.0.0":
   version "4.0.0"
   resolved "https://registry.npm.taobao.org/@types/parse-json/download/@types/parse-json-4.0.0.tgz#2f8bb441434d163b35fb8ffdccd7138927ffb8c0"
