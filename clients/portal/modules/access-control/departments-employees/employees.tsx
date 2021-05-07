@@ -137,17 +137,10 @@ export default function Employees({
     refetch();
   }
 
-  const rowSelection = {
-    selectedRowKeys: selectedUserIds,
-    getCheckboxProps: (record: any) => ({
-      disabled: record.useStatus === -2,
-      name: record.id,
-    }),
-    onChange: (selectedRowKeys: string[], selectedRows: Employee[]) => {
-      setSelectedUserIds(selectedRowKeys);
-      setSelectedUsers(selectedRows);
-    },
-  };
+  function handleSelectChange(selectedRowKeys: string[], selectedRows: Employee[]) {
+    setSelectedUserIds(selectedRowKeys);
+    setSelectedUsers(selectedRows);
+  }
 
   const columns: any[] = [...EmployeesColumns];
 
@@ -280,17 +273,20 @@ export default function Employees({
         </div>
 
         <div className="qxp-table flex w-full border-b  mt-16 px-20" style={{
-          height: 'calc(100% - 142px)' }}>
+          height: 'calc(100% - 142px)'
+        }}>
           <Table
             showCheckbox
             className="text-14 h-full"
             data={employeesList?.data || []}
+            onSelectChange={handleSelectChange}
             columns={columns}
             emptyTips={(
               <EmptyTips text="无成员数据" className="py-32" />
             )}
             rowKey="id"
-            initialSelectedRowKeys={rowSelection?.selectedRowKeys||[]} loading={isLoading}
+            initialSelectedRowKeys={selectedUserIds || []}
+            loading={isLoading}
           />
         </div>
         {
