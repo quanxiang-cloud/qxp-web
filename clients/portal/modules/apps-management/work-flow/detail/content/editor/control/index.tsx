@@ -43,7 +43,7 @@ function Controls({
   className,
   children,
 }: Props) {
-  const { type } = useParams();
+  const { type } = useParams<{ type: string; }>();
 
   const setInteractive = useStoreActions((actions) => actions.setInteractive);
   const { zoomIn, zoomOut, fitView } = useZoomPanHelper();
