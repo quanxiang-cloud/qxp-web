@@ -1,27 +1,23 @@
-.input-border-radius {
+.corner-2-8-8-8 {
   @apply rounded-tl-2 rounded-tr-8 rounded-br-8 rounded-bl-8;
 }
 
-.icon-border-radius {
+.corner-12-2-12-12 {
   @apply rounded-tl-12 rounded-tr-2 rounded-br-12 rounded-bl-12;
 }
 
-.icon-border-radius-8 {
-  border-radius: 8px 8px 8px 2px;
+.corner-8-8-8-2 {
+  @apply rounded-tl-8 rounded-tr-8 rounded-br-8 rounded-bl-2;
 }
 
-.tab-border {
-  @apply rounded-tl-8 rounded-tr-8;
-}
-
-.small-border-radius {
+.corner-8-2-8-8-8 {
   @apply rounded-tl-8 rounded-tr-2 rounded-br-8 rounded-bl-8;
 }
 
-.pagination-border {
-  @apply border-t border-gray-200;
+.corner-2-8-8-8 {
+  @apply rounded-tl-2 rounded-tr-8 rounded-br-8 rounded-bl-8;
 }
 
-.box-border-radius {
+.corner-4-12-12-12 {
   @apply rounded-tl-4 rounded-tr-12 rounded-br-12 rounded-bl-12;
 }

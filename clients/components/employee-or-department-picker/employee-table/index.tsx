@@ -142,7 +142,7 @@ export default observer(function EmployeeTable({
           renderTotalTip={renderTotalTip}
           showLessItems
           onChange={store.setPagination}
-          className="pagination-border"
+          className="border-t border-gray-200"
         />
       </div>
     </div>
