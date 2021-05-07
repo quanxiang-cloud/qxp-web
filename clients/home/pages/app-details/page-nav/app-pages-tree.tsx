@@ -8,6 +8,7 @@ import Tree, {
   ItemId,
 } from '@atlaskit/tree';
 
+import AbsoluteCentered from '@c/absolute-centered';
 import Icon from '@c/icon';
 
 const PADDING_PER_LEVEL = 16;
@@ -94,6 +95,16 @@ export default class PureTree extends Component<Props, { tree: TreeData }> {
   render() {
     const { tree } = this.state;
     const { selectedPage } = this.props;
+
+    if (tree.items.ROOT.hasChildren === false) {
+      return (
+        <AbsoluteCentered>
+          <div className='app-no-data'>
+            <img src='/dist/images/empty-tips.svg' />
+          </div>
+        </AbsoluteCentered>
+      )
+    }
 
     return (
       <Tree
