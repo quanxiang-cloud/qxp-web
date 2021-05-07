@@ -32,7 +32,7 @@ export const useInitData = () => {
   useEffect(() => {
     if (!isError) {
       setData(data);
-      data && setPageInfo({ ...pageInfo, total: data.data.total });
+      data && setPageInfo({ ...pageInfo, total: (data as any).data.total });
     }
   }, [data, isError]);
 

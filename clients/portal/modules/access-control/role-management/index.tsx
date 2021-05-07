@@ -50,7 +50,7 @@ export default function RoleManagement() {
           <RoleList items={roleList} onChange={setRoleId} />
         </div>
         <div className="h-full flex-grow p-20 pb-0">
-          <RoleDetail role={roleList.find(({ id }) => id == roleId)} />
+          <RoleDetail role={roleList.find(({ id }: any) => id == roleId)} />
         </div>
       </div>
     </Card>

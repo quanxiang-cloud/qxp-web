@@ -61,11 +61,11 @@ const PanelList = () => {
 
   const msgList = useMemo(() => {
     msgCenter.setUnreadTypeCounts(get(countUnreadMsg, 'data.type_num', []));
-    return data?.data?.mes_list || [];
+    return (data as any)?.data?.mes_list || [];
   }, [data]);
 
   const msgTotal = useMemo(() => {
-    return data?.data?.total || 0;
+    return (data as any)?.data?.total || 0;
   }, [data]);
 
   const canIUseReadBtn = useMemo(() => {
