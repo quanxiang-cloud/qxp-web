@@ -3,6 +3,7 @@ import { TreeData } from '@atlaskit/tree';
 
 import { buildAppPagesTreeData } from '@lib/utils';
 import { getPageDataSchema } from '@c/app-page-data/utils';
+import appDataStore from '@c/app-page-data/store';
 
 import { fetchUserList, fetchPageList, fetchFormScheme } from '../lib/api';
 
@@ -34,7 +35,8 @@ class UserAppStore {
     if (pageInfo.id === this.curPage.id) {
       return;
     }
-
+    
+    appDataStore.clear();
     this.formScheme = null;
     if (pageInfo.id) {
       this.fetchSchemeLoading = true;
