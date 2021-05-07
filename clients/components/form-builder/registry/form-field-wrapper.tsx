@@ -104,16 +104,11 @@ function InnerWrapper(props: ISchemaFieldComponentProps) {
     store.setActiveFieldKey(props.name.slice(5));
   }
 
-  const childrenInvisible = props.props['x-component-props'].childrenInvisible;
-
   return (
     <div
       ref={drop}
       onClick={handleFieldClick}
-      className={cs('relative', 'form-field-wrapper', {
-        'form-field-wrapper--active': active || isOver,
-        'form-field-wrapper--hidden-children': childrenInvisible,
-      })}
+      className={cs('relative', 'form-field-wrapper', { 'form-field-wrapper--active': active || isOver })}
     >
       {active && renderActions(store, props.props['x-index'])}
       {props.children}
