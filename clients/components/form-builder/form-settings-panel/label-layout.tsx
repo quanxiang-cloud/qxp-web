@@ -16,7 +16,7 @@ function FormLabelConfig(): JSX.Element {
     return (
       <>
         <div
-          className={classnames('content-item', { 'item-checked': store.labelAlign==='right' })}
+          className={classnames('content-item', { 'item-checked': store.labelAlign === 'right' })}
           onClick={() => handleClick('right')}
         >
           <div>
@@ -31,7 +31,7 @@ function FormLabelConfig(): JSX.Element {
           <Icon name='done' type="light" className="check-icon"/>
         </div>
         <div
-          className={classnames('content-item', { 'item-checked': store.labelAlign==='top' })}
+          className={classnames('content-item', { 'item-checked': store.labelAlign === 'top' })}
           onClick={() => handleClick('top')}
         >
           <div className="item-label"></div>

@@ -32,11 +32,11 @@ const MsgItem = ({
   onClick,
   readonly,
 }: Qxp.MsgItem & Props) => {
-  const [read, setRead]=useState(read_status);
-  const refItem=useRef(null);
+  const [read, setRead] = useState(read_status);
+  const refItem = useRef(null);
   const queryPage = useRouting();
-  const queryClient=useQueryClient();
-  const { curMsgId }=msgCenter;
+  const queryClient = useQueryClient();
+  const { curMsgId } = msgCenter;
 
   useEffect(()=> {
     const msgId = getQuery('id') || msgCenter.curMsgId || '';
@@ -51,8 +51,8 @@ const MsgItem = ({
     }
   }, []);
 
-  const checkRow=()=> {
-    const activeCls='msg-item-active';
+  const checkRow = ()=> {
+    const activeCls = 'msg-item-active';
     if (refItem.current) {
       // @ts-ignore
       const trElem = refItem.current.parentNode.parentNode;
