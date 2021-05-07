@@ -73,8 +73,7 @@ export default function Urge({ onSave, defaultValue }: Props) {
     setIsUrgeOpen(false);
   }
 
-  function onCancel(e: MouseEvent) {
-    onClearUrge(e);
+  function onCancel() {
     setIsUrgeOpen(false);
   }
 

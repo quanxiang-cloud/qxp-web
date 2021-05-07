@@ -1,82 +1,59 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useQuery } from 'react-query';
 
 import Toggle from '@c/toggle';
 import Icon from '@c/icon';
 import Tooltip from '@c/tooltip';
+import Loading from '@c/loading';
+import Error from '@c/error';
 
-interface DefaultOperation {
-  enabled: boolean;
-  changeable: boolean;
-  name: string;
-  defaultText: string;
-  text: string;
+import { getOperationList } from '../../api';
+import {
+  DefaultOperation,
+  CustomOperation,
+  OperationPermission as OperationPermissionType,
+} from '../../../store';
+
+interface Props {
+  value: OperationPermissionType;
+  onChange: (value: OperationPermissionType) => void;
 }
 
-interface CustomOperation {
-  enabled: boolean;
-  changeable: boolean;
-  name: string;
-  defaultText?: string;
-  text?: string;
-}
+export default function OperatorPermission({ value, onChange }: Props) {
+  const { data, isLoading, isError } = useQuery(['GET_OPERATION_LIST'], getOperationList);
+  const [mergedOperations, setMergedOperations] = useState<OperationPermissionType>(value);
 
-interface OperationPermission {
-  default: DefaultOperation[];
-  custom: CustomOperation[];
-}
+  useEffect(() => {
+    if (data) {
+      mergeOperation();
+    }
+  }, [data, value]);
 
-export default function OperatorPermission() {
-  const [operations, setOperations] = useState<OperationPermission>({
-    default: [{
-      enabled: true,
-      changeable: false,
-      name: '操作',
-      defaultText: 'pass',
-      text: '通过',
-    }, {
-      enabled: true,
-      changeable: false,
-      name: '驳回',
-      defaultText: 'reject',
-      text: '不同意',
-    }],
-    custom: [{
-      enabled: false,
-      changeable: true,
-      name: '转交',
-    }, {
-      enabled: true,
-      changeable: true,
-      name: '邀请阅示',
-      defaultText: 'notification',
-      text: '通知',
-    }, {
-      enabled: false,
-      changeable: true,
-      name: '回退',
-    }, {
-      enabled: false,
-      changeable: true,
-      name: '打回',
-    }, {
-      enabled: false,
-      changeable: true,
-      name: '抄送',
-    }, {
-      enabled: false,
-      changeable: true,
-      name: '加签',
-    }],
-  });
+  function mergeOperation() {
+    const { custom, default: df } = value;
+    const isCustomEmpty = !custom.length;
+    const isDefaultEmpty = !df.length;
+    data?.custom.forEach((op) => {
+      if (isCustomEmpty || !custom.find(({ name }) => name === op.name)) {
+        custom.push(op);
+      }
+    });
+    data?.default.forEach((op) => {
+      if (isDefaultEmpty || !df.find(({ name }) => name === op.name)) {
+        df.push(op as DefaultOperation);
+      }
+    });
+    setMergedOperations({ custom, default: df });
+  }
 
   function onUpdateOperation(
     type: 'default' | 'custom',
     operation: DefaultOperation,
     value: Partial<DefaultOperation>,
   ) {
-    setOperations((ops) => ({
-      ...ops,
-      [type]: operations[type].map((o: CustomOperation) => {
+    onChange({
+      ...mergedOperations,
+      [type]: mergedOperations[type].map((o: CustomOperation) => {
         if (operation == o) {
           return {
             ...o,
@@ -85,7 +62,7 @@ export default function OperatorPermission() {
         }
         return o;
       }),
-    }));
+    });
   }
 
   function listRender(label: string, operation: DefaultOperation[], type: 'default' | 'custom') {
@@ -158,6 +135,14 @@ export default function OperatorPermission() {
     );
   }
 
+  if (isLoading || !mergedOperations) {
+    return <Loading desc="加载中..." />;
+  }
+
+  if (isError) {
+    return <Error desc="出错了..." />;
+  }
+
   return (
     <>
       <div className="text-caption-no-color text-gray-400 mt-16 mb-12">
@@ -168,8 +153,8 @@ export default function OperatorPermission() {
         <div className="mr-100">操作</div>
         <div>按钮文案</div>
       </header>
-      {listRender('默认操作', operations.default, 'default')}
-      {listRender('自定义操作', operations.custom as DefaultOperation[], 'custom')}
+      {listRender('默认操作', mergedOperations.default, 'default')}
+      {listRender('自定义操作', mergedOperations.custom as DefaultOperation[], 'custom')}
     </>
   );
 }

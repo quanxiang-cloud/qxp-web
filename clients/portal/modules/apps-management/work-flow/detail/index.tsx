@@ -18,7 +18,7 @@ export default function Detail() {
     'edit' | 'settings' | 'variables'
   >('edit');
 
-  const { id } = useParams() as { id: string };
+  const { id, type } = useParams() as { id: string; type: string; };
 
   const { data, isLoading, isError } = useQuery(['GET_WORK_FLOW_INFO', id], getWorkFlowInfo, {
     enabled: !!id,
@@ -37,6 +37,7 @@ export default function Detail() {
       seeStatusAndMsg: data.canViewStatusMsg === '1',
       nodeAdminMsg: data.canMsg === '1',
       status: data.status,
+      triggerMode: type || data.triggerMode,
     });
   }, [data]);
 
