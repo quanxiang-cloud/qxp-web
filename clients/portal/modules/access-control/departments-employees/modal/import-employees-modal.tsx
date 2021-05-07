@@ -298,7 +298,7 @@ export default function ImportEmployeesModal({ currDepId, closeModal }: Props) {
                       >
                         <div className="flex items-center">
                           <div
-                            className="w-16 h-16 bg-blue-600 icon-border-radius
+                            className="w-16 h-16 bg-blue-600 corner-12-2-12-12
                           flex items-center justify-center mr-8"
                           >
                             <Icon size={12} name="book" type="light" />

@@ -68,6 +68,7 @@ export default function DepartmentsEmployees() {
       }}>
         <div className='w-208 ml-20 mt-20'>
           <Search
+            className="bg-gray-100"
             placeholder="搜索员工名称"
             value={inputValue}
             onChange={(value: string) => setInputValue(value)}

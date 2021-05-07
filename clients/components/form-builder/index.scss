@@ -34,7 +34,8 @@
   border-radius: 2px;
   height: 32px;
   padding: 0 8px;
-
+  border-radius: 8px 2px 8px 8px;
+  border: 1px solid var(--gray-100);
   background-color: var(--gray-100);
   cursor: move;
   // &.is-dragging {

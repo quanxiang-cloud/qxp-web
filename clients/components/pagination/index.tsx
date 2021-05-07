@@ -274,7 +274,7 @@ function Pagination({
             onChange={handleInputChange}
             onBlur={handleInputOnblur}
             onKeyDown={handleInputKeydown}
-            className="w-40 h-28 border border-gray-300 select-border-radius
+            className="w-40 h-28 border border-gray-300 corner-2-8-8-8
             px-12 text-12 flex items-center"
           />
           <div className="text-12 ml-6 text-center leading-28">页</div>

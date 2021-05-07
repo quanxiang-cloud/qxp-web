@@ -1,5 +1,5 @@
 function httpClient<TData>(
-  url: string, body?: any, additionalHeaders?: HeadersInit
+  path: string, body?: any, additionalHeaders?: HeadersInit
 ): Promise<TData> {
   const headers = {
     ...additionalHeaders,
@@ -7,7 +7,7 @@ function httpClient<TData>(
     'X-Proxy': 'API',
   };
 
-  return fetch(url, {
+  return fetch(path, {
     method: 'POST',
     body: JSON.stringify(body || {}),
     headers: headers,
