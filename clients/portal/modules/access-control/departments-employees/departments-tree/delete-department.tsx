@@ -13,15 +13,12 @@ interface Props extends NodeRenderProps<Department> {
 
 export default function DeleteModal({ node, store, closeModal }: Props) {
   function handleOk() {
-    deleteDEP(node.id).then(({ code, msg }) => {
-      if (!code) {
-        toast.success('删除成功');
-        store.deleteNode(node);
-        closeModal();
-        return;
-      }
-
-      toast.error(msg || '');
+    deleteDEP(node.id).then(() => {
+      toast.success('删除成功');
+      store.deleteNode(node);
+      closeModal();
+    }).catch((error) => {
+      toast.error(error || '');
     });
   }
 

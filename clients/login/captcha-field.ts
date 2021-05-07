@@ -1,5 +1,5 @@
 import { IInputField, InputField, query, OnValidateAll, parseValidateAllResult } from './atom';
-import { httpPost } from '@lib/utils';
+import httpClient from '@lib/http-client';
 import UserName from './username';
 
 export default class Captcha extends InputField {
@@ -54,7 +54,7 @@ export default class Captcha extends InputField {
   }
 
   callSendApi() {
-    return httpPost(this.url, JSON.stringify({ userName: this.username?.value }), {
+    return httpClient(this.url, { userName: this.username?.value }, {
       // todo refactor this
       'X-Proxy': 'API-NO-AUTH',
     });

@@ -19,17 +19,17 @@ export default function AccountHandleModal(
   const queryClient = useQueryClient();
 
   const handleMutation = useMutation(updateUserStatus, {
-    onSuccess: (res) => {
-      if (res && res.code === 0) {
-        toast.success('操作成功');
-        closeModal();
-        queryClient.invalidateQueries('GET_USER_ADMIN_INFO');
-      } else {
-        toast.error('操作失败');
-        closeModal();
-      }
+    onSuccess: () => {
+      toast.success('操作成功');
+      closeModal();
+      queryClient.invalidateQueries('GET_USER_ADMIN_INFO');
     },
-  });
+    onError: () => {
+      toast.error('操作失败');
+      closeModal();
+    },
+  },
+  );
 
   const titleText: string = handleTitle(status);
 
