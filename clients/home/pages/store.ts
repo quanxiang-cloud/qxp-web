@@ -34,13 +34,19 @@ class UserAppStore {
     if (pageInfo.id === this.curPage.id) {
       return;
     }
-    
+
     this.formScheme = null;
     if (pageInfo.id) {
       this.fetchSchemeLoading = true;
       fetchFormScheme(pageInfo.id).then((res: any) => {
-        this.formScheme = res.schema;
         const { config, schema } = res.schema;
+        Object.keys(schema.properties).forEach((key) => {
+          if (schema.properties[key]['x-internal'].permission === 1) {
+            schema.properties[key].readOnly = true;
+          }
+        })
+        
+        this.formScheme = res.schema;
         getPageDataSchema(config, schema, pageInfo.id as string);
         this.fetchSchemeLoading = false;
       }).catch(() => {

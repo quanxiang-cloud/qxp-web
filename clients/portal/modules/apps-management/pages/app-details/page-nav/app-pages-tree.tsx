@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import cs from 'classnames';
+import { isNumber } from 'lodash';
 import Tree, {
   mutateTree,
   moveItemOnTree,
@@ -69,6 +70,7 @@ function NodeRender(
           <span className="font-normal">删除</span>
         </div>
       ),
+      disabled: !isPage && item.children.length > 0
     },
   ];
   function handleClick(): void {
@@ -157,8 +159,8 @@ export default class PureTree extends Component<Props> {
       id: treeItem.id as string,
       Name: treeItem.data.name,
       appID: treeItem.data.appID,
-      fromSort: source.index,
-      toSort: destination.index || 0,
+      fromSort: source.index + 1,
+      toSort: isNumber(destination.index) ? destination.index  + 1 : 1,
       fromGroupID: fromGroupID as string,
       toGroupID: toGroupID as string,
     }).catch((err) => {
