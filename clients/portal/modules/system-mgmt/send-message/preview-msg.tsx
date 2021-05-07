@@ -25,7 +25,7 @@ const PreviewMsg = ({ prevData, hideReceivers, isPreview, canDownload, canMultiD
 
   const [{ userInfo }] = usePortalGlobalValue();
 
-  const { title, content, receivers, sort, type, handle_name }=prevData;
+  const { title, content, receivers, sort, type, handle_name } = prevData;
   const msgType = typeof sort !== 'undefined' ? sort : type; // todo
 
   let txt = '';

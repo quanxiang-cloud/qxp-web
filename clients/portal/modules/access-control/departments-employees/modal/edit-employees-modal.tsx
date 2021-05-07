@@ -146,7 +146,7 @@ export default function EditEmployeesModal(
           validateOnChange
           name="phone"
           label="手机号码"
-          disabled={user.id? true: false}
+          disabled={user.id ? true : false}
           defaultValue={user.phone}
           placeholder="请输入手机号码"
           help="企业成员的真实手机号"
@@ -171,7 +171,7 @@ export default function EditEmployeesModal(
           validateOnChange
           name="email"
           label="邮箱"
-          disabled={user.id? true: false}
+          disabled={user.id ? true : false}
           defaultValue={user.email}
           placeholder="例如：name@company.com"
           help={EMAIL_HELP}

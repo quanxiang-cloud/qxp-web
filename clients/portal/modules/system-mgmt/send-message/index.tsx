@@ -110,7 +110,7 @@ export const Content = forwardRef(({ className, donotShowHeader, footer, modifyD
   }, []);
 
   const addFile = (file: FileInfo) => setFiles((currentFiles) => ([...currentFiles, file]));
-  const updateFile=(name: string, data: Partial<FileInfo>)=> {
+  const updateFile = (name: string, data: Partial<FileInfo>)=> {
     setFiles((currentFiles) => {
       const curFile = currentFiles.find((f) => f.filename === name);
       Object.assign(curFile, data);
@@ -177,7 +177,7 @@ export const Content = forwardRef(({ className, donotShowHeader, footer, modifyD
 
   const removeReceiver = (key: number) => {
     // @ts-ignore
-    setChosenDepOrPerson((current) => current.filter((_, idx)=>idx!=key));
+    setChosenDepOrPerson((current) => current.filter((_, idx)=>idx != key));
   };
 
   const validateForm = () => {
@@ -254,7 +254,7 @@ export const Content = forwardRef(({ className, donotShowHeader, footer, modifyD
   const saveDraft = (options?: {toParams?: boolean}) => {
     const formData = validateForm();
     if (formData) {
-      const params={
+      const params = {
         id: modifyData?.id,
         template_id: 'quanliang',
         // @ts-ignore
@@ -285,7 +285,7 @@ export const Content = forwardRef(({ className, donotShowHeader, footer, modifyD
     }
   };
 
-  const getCurrentFiles=()=> {
+  const getCurrentFiles = ()=> {
     return [...files];
   };
 
@@ -315,7 +315,7 @@ export const Content = forwardRef(({ className, donotShowHeader, footer, modifyD
   return (
     <div className={cs('w-full', className)}>
       <div className={styles.panel}>
-        {!donotShowHeader&&(<div className={styles.header}>
+        {!donotShowHeader && (<div className={styles.header}>
           <div className={styles.title}>发送消息</div>
         </div>)}
         <div className={cs('send-msg-body', styles.body)}>
@@ -477,9 +477,9 @@ export const Content = forwardRef(({ className, donotShowHeader, footer, modifyD
           title="选择员工或部门"
           submitText="确定选择"
           // @ts-ignore
-          departments={_chosenDepOrPerson.filter((itm)=>itm.type==2)}
+          departments={_chosenDepOrPerson.filter((itm)=>itm.type == 2)}
           // @ts-ignore
-          employees={_chosenDepOrPerson.filter((itm)=>itm.type==1)}
+          employees={_chosenDepOrPerson.filter((itm)=>itm.type == 1)}
         />
       )}
       {openPreviewModal && (<Modal
