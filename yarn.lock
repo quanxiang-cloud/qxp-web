@@ -3109,11 +3109,6 @@ gulplog@^1.0.0:
   dependencies:
     glogg "^1.0.0"
 
-hamt_plus@1.0.2:
-  version "1.0.2"
-  resolved "https://registry.npm.taobao.org/hamt_plus/download/hamt_plus-1.0.2.tgz#e21c252968c7e33b20f6a1b094cd85787a265601"
-  integrity sha1-4hwlKWjH4zsg9qGwlM2FeHomVgE=
-
 has-bigints@^1.0.1:
   version "1.0.1"
   resolved "https://registry.npm.taobao.org/has-bigints/download/has-bigints-1.0.1.tgz#64fe6acb020673e3b78db035a5af69aa9d07b113"
@@ -5775,13 +5770,6 @@ rechoir@^0.7.0:
   integrity sha1-MmUP1SwhqyUqpdZbGTEEQcfgOso=
   dependencies:
     resolve "^1.9.0"
-
-recoil@^0.2.0:
-  version "0.2.0"
-  resolved "https://registry.npm.taobao.org/recoil/download/recoil-0.2.0.tgz#69344b5bec3129272560d8d9d6001ada3ee4d80c"
-  integrity sha1-aTRLW+wxKSclYNjZ1gAa2j7k2Aw=
-  dependencies:
-    hamt_plus "1.0.2"
 
 reduce-css-calc@^2.1.8:
   version "2.1.8"
