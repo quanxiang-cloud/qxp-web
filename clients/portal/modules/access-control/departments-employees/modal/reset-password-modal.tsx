@@ -30,12 +30,13 @@ export default function ResetPasswordModal({
   const formRef = createRef<Form>();
 
   const resetMutation = useMutation(resetUserPWD, {
-    onSuccess: (data) => {
-      if (data && data.code === 0) {
-        toast.success('操作成功！');
-      } else {
-        toast.error('操作失败！');
-      }
+    onSuccess: () => {
+      toast.success('操作成功！');
+      closeModal();
+      clearSelectRows();
+    },
+    onError: () => {
+      toast.error('操作失败！');
       closeModal();
       clearSelectRows();
     },

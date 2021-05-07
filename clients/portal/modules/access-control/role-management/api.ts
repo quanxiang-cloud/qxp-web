@@ -1,6 +1,6 @@
 import { QueryFunctionContext } from 'react-query';
 
-import httpClient from '@lib/http';
+import httpClient from '@lib/http-client';
 
 export async function getRoles() {
   const { roles } = await httpClient('/api/v1/goalie/listRole');
