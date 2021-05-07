@@ -97,7 +97,7 @@ class MsgCenter {
 
   @action
   setLoadingDetail=(loading: boolean)=> {
-    this.loadingDetail=loading;
+    this.loadingDetail = loading;
   }
 
   @action
@@ -113,7 +113,7 @@ class MsgCenter {
   @action
   reset = () => {
     this.curMsgId = '';
-    this.messageDetail=null;
+    this.messageDetail = null;
   }
 }
 

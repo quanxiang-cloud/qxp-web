@@ -103,7 +103,7 @@ const MsgTable = ({ refresh }: Props) => {
     setMessageStatus: setStatus,
   } = msgMgmt;
 
-  const queryClient=useQueryClient();
+  const queryClient = useQueryClient();
 
   const [previewInfo, setPreviewInfo] = useState({
     visible: false, id: '', title: '', status: MsgSendStatus.all,
@@ -169,7 +169,7 @@ const MsgTable = ({ refresh }: Props) => {
         value: previewData.content || '',
       }],
       // @ts-ignore
-      channel: previewData.channel||previewData.chanel, // letter: 站内信，email: 邮件
+      channel: previewData.channel || previewData.chanel, // letter: 站内信，email: 邮件
       // @ts-ignore
       type: previewData.type, // 1. verifycode 2、not verifycode
       // @ts-ignore
@@ -179,7 +179,7 @@ const MsgTable = ({ refresh }: Props) => {
       // @ts-ignore
       recivers: previewData.receivers,
       // @ts-ignore
-      mes_attachment: previewData.mes_attachment||[],
+      mes_attachment: previewData.mes_attachment || [],
       //     url: string
       // filename:
     };
@@ -283,14 +283,14 @@ const MsgTable = ({ refresh }: Props) => {
           setPreviewInfo({ id, visible: true, title, status });
         };
         return (<PreviewModal handleClick={handleClick} title={(<div>
-          {( sort != MsgType.all ) &&(<span
+          {( sort != MsgType.all ) && (<span
             className={
               cs(
                 styles.msg_type_tip,
                 {
                   [styles.msg_type_tip_notice]: sort == MsgType.notify,
                 })
-            }>{(EnumMessage.find((itm)=>itm.value==sort)||{}).label}</span>)}
+            }>{(EnumMessage.find((itm)=>itm.value == sort) || {}).label}</span>)}
           <span className={styles.msg_title} title={title}>{title}</span>
         </div>)} />);
       },
@@ -369,7 +369,7 @@ const MsgTable = ({ refresh }: Props) => {
   ];
 
   const saveDraft = () => {
-    const params=sendMessageRef?.current?.saveDraft({ toParams: true });
+    const params = sendMessageRef?.current?.saveDraft({ toParams: true });
     params && createMsg(params)
       .then((data)=>{
         if (data) {

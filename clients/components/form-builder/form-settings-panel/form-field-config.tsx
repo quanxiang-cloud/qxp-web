@@ -34,7 +34,7 @@ const useOneToManyEffects = () => {
   onFieldInit$('minSet').subscribe((field) => {
     if (field.value !== undefined) {
       setFieldState('minimum', (state) => {
-        state.visible = field.value.length===0 ? false : true;
+        state.visible = field.value.length === 0 ? false : true;
       });
       return;
     }
@@ -46,7 +46,7 @@ const useOneToManyEffects = () => {
   onFieldInit$('maxSet').subscribe((field) => {
     if (field.value !== undefined) {
       setFieldState('maximum', (state) => {
-        state.visible = field.value.length===0 ? false : true;
+        state.visible = field.value.length === 0 ? false : true;
       });
       return;
     }
@@ -57,13 +57,13 @@ const useOneToManyEffects = () => {
 
   onFieldInputChange$('minSet').subscribe(({ value }) => {
     setFieldState('minimum', (state) => {
-      state.visible = value.length===0 ? false : true;
+      state.visible = value.length === 0 ? false : true;
     });
   });
 
   onFieldInputChange$('maxSet').subscribe(({ value }) => {
     setFieldState('maximum', (state) => {
-      state.visible = value.length===0 ? false : true;
+      state.visible = value.length === 0 ? false : true;
     });
   });
 };

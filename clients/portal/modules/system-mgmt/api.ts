@@ -10,21 +10,23 @@ type QueryFilter={
 }
 
 // 发送消息和在草稿基础上，更新消息
-export const createMsg=async (msgData: Qxp.NewMsgData)=> {
+export const createMsg = async (msgData: Qxp.NewMsgData)=> {
   return await httpClient('/api/v1/message/manager/create', msgData);
 };
 
 // 根据id删除消息
-export const deleteMsgById=async (id: string)=> {
-  return await httpClient('/api/v1/message/manager/delete', { id });
+export const deleteMsgById = async (id: string)=> {
+  // todo fix any type
+  return await httpClient<any>('/api/v1/message/manager/delete', { id });
 };
 
 // 获取消息详情
-export const getMsgById=async (id: string): Promise<Qxp.NewMsgData>=> {
+export const getMsgById = async (id: string): Promise<Qxp.NewMsgData>=> {
   return await httpClient('/api/v1/message/manager/getMesByID', { id });
 };
 
 // 带条件查询消息列表
-export const getMsgList=async (filter: QueryFilter)=> {
-  return await httpClient('/api/v1/message/manager/getMesList', filter);
+export const getMsgList = async (filter: QueryFilter)=> {
+  // todo fix any type
+  return await httpClient<any>('/api/v1/message/manager/getMesList', filter);
 };

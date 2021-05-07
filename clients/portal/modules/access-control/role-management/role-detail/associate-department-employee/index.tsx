@@ -49,17 +49,17 @@ export default function AssociateDepartmentEmployee({ roleID, isSuper }: Props) 
   ) {
     const newSets = [...departments, ...employees];
     const oldSets = data?.departmentsOrEmployees || [];
-    const deletes = oldSets.filter((member: any) => {
+    const deletes = oldSets.filter((member: { ownerID: string; }) => {
       return !newSets.find((m) => m.ownerID === member.ownerID);
     });
     const adds = newSets.filter((member) => {
-      return !oldSets.find((m: any) => m.ownerID === member.ownerID);
+      return !oldSets.find((m: { ownerID: string; }) => m.ownerID === member.ownerID);
     });
     try {
       await mutation.mutateAsync({
         roleID: roleID as string,
         add: adds.map(({ type, ownerID }) => ({ type, ownerID })),
-        delete: deletes?.map(({ id }: any) => id),
+        delete: deletes?.map(({ id }: { id: string }) => id),
       });
       return true;
     } catch (e) {

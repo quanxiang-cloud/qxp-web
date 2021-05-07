@@ -5,7 +5,7 @@ export const getQuery = (key: string) => {
   return search[key];
 };
 
-export const omitEmpty = (obj: Record<string, any>) => {
+export const omitEmpty = (obj: any) => {
   const copy = {};
   for (const p in obj) {
     if (obj.hasOwnProperty(p) && obj[p] !== undefined) {

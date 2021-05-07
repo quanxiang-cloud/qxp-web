@@ -28,7 +28,7 @@ interface Props {
 }
 
 const Types = ({ className }: Props ) => {
-  const { selectType, changeType }=msgCenter;
+  const { selectType, changeType } = msgCenter;
 
   return (
     <ul className={`${styles.typePanel} ${className}`}>
