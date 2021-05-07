@@ -140,6 +140,7 @@ export interface CurrentElement {
 }
 
 export interface StoreValue {
+  creatorId?: string;
   id?: string;
   asideDrawerType: AsideDrawerType;
   currentConnection: CurrentConnection;
@@ -159,7 +160,7 @@ export const storeInitialData = {
   id: '',
   name: '',
   version: '0.1',
-  status: 'draft',
+  status: 'DISABLE',
   processKey: uuid(),
   triggerMode: 'FORM_DATA',
   asideDrawerType: '',

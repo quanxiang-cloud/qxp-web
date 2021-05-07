@@ -9,7 +9,7 @@ import { getWorkFlowInfo } from './api';
 import Loading from '@c/loading';
 import Error from '@c/error';
 
-import store from './content/editor/store';
+import { updateStore } from './content/editor/store';
 
 import './style.scss';
 
@@ -28,8 +28,7 @@ export default function Detail() {
     if (!data) {
       return;
     }
-    store.next({
-      ...store.value,
+    updateStore(null, () => ({
       elements: JSON.parse(data.bpmnText),
       name: data.name,
       cancelable: data.canCancel === '1',
@@ -38,7 +37,7 @@ export default function Detail() {
       nodeAdminMsg: data.canMsg === '1',
       status: data.status,
       triggerMode: type || data.triggerMode,
-    });
+    }));
   }, [data]);
 
   if (isLoading) {

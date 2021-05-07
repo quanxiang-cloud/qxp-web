@@ -11,7 +11,7 @@ import {
 import Icon from '@c/icon';
 import Button from '@c/button';
 import useObservable from '@lib/hooks/use-observable';
-import store, { StoreValue } from '@flow/detail/content/editor/store';
+import store, { StoreValue, updateStore } from '@flow/detail/content/editor/store';
 import toast from '@lib/toast';
 
 import ControlButton from './control-button';
@@ -73,8 +73,12 @@ function Controls({
   }, [isInteractive, setInteractive, onInteractiveChange]);
 
   const saveMutation = useMutation(saveWorkFlow, {
-    onSuccess: () => {
+    onSuccess: (respData) => {
       toast.success('保存成功');
+      updateStore(null, () => ({
+        creatorId: respData.creatorId,
+        id: respData.id,
+      }));
     },
     onError: (err: Error) => {
       toast.error(err.message);
@@ -99,7 +103,7 @@ function Controls({
         modifier="primary"
         iconName="toggle_on"
         className="py-5"
-        forbidden={!formDataElement?.data.businessData.form.name}
+        forbidden={!formDataElement?.data.businessData.form.name || !name || !triggerMode}
         onClick={onSaveWorkFlow}
       >
         保存

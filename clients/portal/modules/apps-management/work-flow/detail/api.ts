@@ -73,9 +73,9 @@ export function updateWorkflow({ queryKey }: QueryFunctionContext) {
   );
 }
 
-export function ToggleWorkFlow({ queryKey }: QueryFunctionContext) {
-  return httpClient('/api/v1/flow/updateFlowStatus', queryKey[1] as {
+export function toggleWorkFlow(data: {
     id: string;
-    status: 'enabled' | 'disabled';
-  });
+    status: 'ENABLE' | 'DISABLE';
+}) {
+  return httpClient('/api/v1/flow/updateFlowStatus', data);
 }
