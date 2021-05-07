@@ -195,7 +195,7 @@ export default function DepartmentTable({ isSuper, onCancelAssociation, roleID, 
           <Pagination
             {...pagination}
             renderTotalTip={renderTotalTip}
-            className="rounded-bl-12 rounded-br-12 pagination-border"
+            className="rounded-bl-12 rounded-br-12 border-t border-gray-200"
             onChange={(pageNumber, pageSize) => {
               setPagination({ current: pageNumber, pageSize, total: pagination.total });
             }}

@@ -34,7 +34,7 @@ function NavButton(nav: Nav) {
     <div
       onClick={() => jump(nav.url, nav.inside)}
       className={cs(
-        'app-nav-button icon-border-radius-8',
+        'app-nav-button corner-8-8-8-2',
         { 'app-nav-button-active': nav.active }
       )}
     >
