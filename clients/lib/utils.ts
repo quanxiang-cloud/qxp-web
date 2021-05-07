@@ -243,7 +243,7 @@ function _buildTreeDataItems(
   };
 }
 
-export function getPagesTreeData(menus: Array<PageInfo>): TreeData {
+export function buildAppPagesTreeData(menus: Array<PageInfo>): TreeData {
   const rootItem: { [key: string]: TreeItem } = {
     ROOT: {
       id: 'ROOT',
