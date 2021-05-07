@@ -1,14 +1,10 @@
 import { QueryFunctionContext } from 'react-query';
 
-import httpClient from '@lib/http-client';
-import { httpPost } from '@lib/utils';
+import httpClient from '@lib/http';
 
-// 获取角色列表
 export async function getRoles() {
-  const { data } = await httpPost<{ roles: Role[]; }>('/api/v1/goalie/listRole', null, {
-    'Content-Type': 'application/x-www-form-urlencoded',
-  });
-  return data?.roles;
+  const { roles } = await httpClient('/api/v1/goalie/listRole');
+  return roles;
 }
 
 // 获取角色功能集
@@ -22,33 +18,22 @@ export interface IRoleFuncItem {
 export interface IRoleFunc {
   [key: string]: IRoleFuncItem;
 }
-export const getRoleFunctions = ({ queryKey }: QueryFunctionContext) =>
-  httpPost<
-    {
-      func: IRoleFunc;
-      lastSaveTime: number;
-    }
-  >(
-    '/api/v1/goalie/listRoleFunc',
-    JSON.stringify({
-      roleID: queryKey[1],
-    }),
-  ).then(({ data }) => ({ func: data?.func, lastSaveTime: data?.lastSaveTime }));
+export async function getRoleFunctions({ queryKey }: QueryFunctionContext) {
+  const data: {
+    func: IRoleFunc;
+    lastSaveTime: number;
+  } = await httpClient('/api/v1/goalie/listRoleFunc', { roleID: queryKey[1] });
+  return data;
+}
 
-// 设置用户功能集
-export const setRoleFunctions = ({ queryKey }: QueryFunctionContext) =>
-  httpPost<
-    {
-      code: number;
-    }
-  >(
-    '/api/v1/goalie/updateRoleFunc',
-    JSON.stringify({
-      roleID: queryKey[1],
-      add: queryKey[2],
-      ...(queryKey[3] ? { delete: queryKey[3] } : {}),
-    }),
-  ).then(({ data, code }) => ({ code, data }));
+// 设置用户功能集-暂未调用
+export async function setRoleFunctions({ queryKey }: QueryFunctionContext) {
+  return await httpClient('/api/v1/goalie/updateRoleFunc', {
+    roleID: queryKey[1],
+    add: queryKey[2],
+    ...(queryKey[3] ? { delete: queryKey[3] } : {}),
+  });
+}
 
 // 获取角色关联
 interface GetRoleAssociationParams {
@@ -60,17 +45,12 @@ interface GetRoleAssociationParams {
 export async function getRoleAssociations({ queryKey }: QueryFunctionContext<[
   string, GetRoleAssociationParams
 ]>) {
-  const { data } = await httpPost<
-    {
-      owners: EmployeeOrDepartmentOfRole[];
-      total: number;
-    }
-  >('/api/v1/goalie/listRoleOwner', JSON.stringify(queryKey[1]));
+  const data: any = await httpClient('/api/v1/goalie/listRoleOwner', queryKey[1]);
   return ({
-    departments: data?.owners.filter(({ type }) => type === 2) || [],
-    employees: data?.owners.filter(({ type }) => type === 1) || [],
+    departments: data.owners.filter(({ type }: {type: number}) => type === 2) || [],
+    employees: data.owners.filter(({ type }: {type: number}) => type === 1) || [],
     departmentsOrEmployees: data?.owners || [],
-    total: data?.total || 0,
+    total: data.total || 0,
   });
 }
 
@@ -83,14 +63,10 @@ export interface IUpdateRoleAssociations {
     ownerID?: string;
   }[];
 }
-export const updateRoleAssociations = (arg: IUpdateRoleAssociations) =>
-  httpPost<
-    {
-      roles: Role[];
-    }
-  >('/api/v1/goalie/updateRoleOwner', JSON.stringify(arg)).then(({ data }) => {
-    roles: data?.roles || [];
-  });
+
+export async function updateRoleAssociations(arg: IUpdateRoleAssociations) {
+  return await httpClient('/api/v1/goalie/updateRoleOwner', arg);
+}
 
 // search for department structure
 export const getDepartmentStructure = () => {
@@ -114,21 +90,15 @@ export interface IUser {
   userIconURL: string;
   userName: string;
 }
-export const adminSearchUserList = async ({ queryKey }: QueryFunctionContext) => {
-  const { data } = await httpPost<
-    {
-      // eslint-disable-next-line camelcase
-      total_count: number;
-      data: IUser[];
-    }
-  >(
-    '/api/v1/org/adminUserList',
-    JSON.stringify(
+export async function adminSearchUserList({ queryKey }: QueryFunctionContext) {
+  const data: {
+    data: IUser[],
+    total_count: number
+  } = await httpClient('/api/v1/org/adminUserList',
       queryKey[1] as {
         depID: string;
         userName?: string;
       },
-    ),
   );
-  return { users: data?.data, total: data?.total_count };
-};
+  return { users: data.data, total: data.total_count };
+}

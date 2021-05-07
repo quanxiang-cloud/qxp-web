@@ -1,4 +1,5 @@
-import { httpPost, httpFile } from '@lib/utils';
+import { httpPost } from '@lib/utils';
+import httpClient from '@lib/http';
 
 import { FormValues } from './modal/edit-employees-modal';
 import { UserStatus } from './type';
@@ -340,7 +341,7 @@ export type FileParams = {
  * @returns 导入
  */
 export const importTempFile = ({ depID, file }: FileParams) => {
-  return httpFile('/api/v1/org/importFile', { depID, file });
+  return httpClient('/api/v1/org/importFile', { depID, file }, undefined, true);
 };
 
 export function createDepartment(params: {
