@@ -157,10 +157,10 @@ export interface StoreValue {
 }
 
 export const getStoreInitialData = () => {
-  const startId = uuid();
-  const endId = uuid();
+  const startId = 'formData' + uuid();
+  const endId = 'end' + uuid();
   return {
-    id: uuid(),
+    id: '',
     name: '',
     version: '0.1',
     status: 'DISABLE',

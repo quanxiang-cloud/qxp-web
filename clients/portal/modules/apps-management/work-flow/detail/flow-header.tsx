@@ -30,8 +30,8 @@ export default function GlobalHeader() {
   const type = last(pathname.split('/')) as 'form-data' | 'form-time';
   const history = useHistory();
   const toggleMutation = useMutation(toggleWorkFlow, {
-    onSuccess: (respData) => {
-      toast.error(status === 'ENABLE' ? '下架成功' : '发布成功');
+    onSuccess: () => {
+      toast.success(status === 'ENABLE' ? '下架成功' : '发布成功');
     },
     onError: (e: Error) => {
       toast.error(e.message);
