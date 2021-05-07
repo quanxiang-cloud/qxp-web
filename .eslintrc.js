@@ -63,7 +63,7 @@ module.exports = {
     'max-len': [
       1,
       {
-        code: 100,
+        code: 110,
         ignoreComments: true,
         ignorePattern: '^(\\s*[a-zA-Z_]+: \'[^\']+\'[,;]*)|(.*interpolate.*)|(.*require.*)|(.*_\\.template.*)|(<svg .*)|(<rect .*)|(<polygon .*)$',
         ignoreRegExpLiterals: true,
