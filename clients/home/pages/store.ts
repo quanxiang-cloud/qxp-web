@@ -1,7 +1,8 @@
 import { observable, action } from 'mobx';
 import { TreeData } from '@atlaskit/tree';
 
-import { getPagesTreeData, getPageDataSchema } from '@lib/utils';
+import { getPagesTreeData } from '@lib/utils';
+import { getPageDataSchema } from '@c/app-page-data/utils';
 
 import { fetchUserList, fetchPageList, fetchFormScheme } from '../lib/api';
 

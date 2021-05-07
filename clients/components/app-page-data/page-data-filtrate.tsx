@@ -18,7 +18,7 @@ function PageDataFiltrate() {
       return;
     }
 
-    const condition: any = [];
+    const condition: Condition[] = [];
     const values = filterDom.current.getValues();
     Object.keys(values).map((key) => {
       const curFiltrate = store.filtrates.find(({ id }) => id === key);
@@ -29,23 +29,23 @@ function PageDataFiltrate() {
       const _condition: Condition = { key };
 
       switch (curFiltrate?.type) {
-      case 'date_range':
-        const { start, end } = values[key];
-        _condition.value = [moment(start).format(), moment(end).format()];
-        _condition.op = 'range';
-        break;
-      case 'date':
-        _condition.value = [moment(values[key]).format()];
-        _condition.op = 'range';
-        break;
-      case 'number':
-        _condition.value = [Number(values[key])];
-        _condition.op = curFiltrate.compareSymbol;
-        break;
-      default:
-        _condition.value = [values[key]];
-        _condition.op = 'like';
-        break;
+        case 'date_range':
+          const { start, end } = values[key];
+          _condition.value = [moment(start).format(), moment(end).format()];
+          _condition.op = 'range';
+          break;
+        case 'date':
+          _condition.value = [moment(values[key]).format()];
+          _condition.op = 'lt';
+          break;
+        case 'number':
+          _condition.value = [Number(values[key])];
+          _condition.op = curFiltrate.compareSymbol;
+          break;
+        default:
+          _condition.value = Array.isArray(values[key]) ? values[key] : [values[key]];
+          _condition.op = 'like';
+          break;
       }
 
       condition.push(_condition);
@@ -56,7 +56,7 @@ function PageDataFiltrate() {
 
   const reset = () => {
     const resObj: any = {};
-    filtrates.map(({ id })=> {
+    filtrates.map(({ id }) => {
       resObj[id] = '';
     });
     filterDom.current.reset(resObj);

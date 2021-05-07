@@ -4,6 +4,13 @@ import { action, observable, reaction, IReactionDisposer } from 'mobx';
 import { formDataCurd } from '@portal/modules/apps-management/lib/api';
 import toast from '@lib/toast';
 
+type Params = {
+  condition?: Condition[] | [],
+  sort?: string[] | [],
+  page?: number,
+  size?: number,
+}
+
 class AppPageDataStore {
   destroyFetchTableData: IReactionDisposer;
   destroySetTableConfig: IReactionDisposer;
@@ -17,7 +24,7 @@ class AppPageDataStore {
   @observable formDataList: any[] = [];
   @observable total = 0;
   @observable tableColumns = [];
-  @observable params = {
+  @observable params: Params = {
     condition: [],
     sort: [],
     page: 1,
@@ -36,7 +43,7 @@ class AppPageDataStore {
   }
 
   @action
-  setParams = (params: any) => {
+  setParams = (params: Params) => {
     this.params = { ...this.params, ...params };
   }
 
@@ -109,6 +116,12 @@ class AppPageDataStore {
     this.tableConfig = {};
     this.filtrates = [];
     this.tableColumns = [];
+    this.params = {
+      condition: [],
+      sort: [],
+      page: 1,
+      size: 10,
+    };
   }
 }
 

@@ -3,7 +3,7 @@ import { observer } from 'mobx-react';
 import { useHistory } from 'react-router-dom';
 
 import TextHeader from '@c/text-header';
-import AppPageData from '@portal/modules/apps-management/components/app-page-data';
+import AppPageData from '@c/app-page-data';
 import PageLoading from '@portal/modules/apps-management/components/page-loading';
 import Button from '@c/button';
 
