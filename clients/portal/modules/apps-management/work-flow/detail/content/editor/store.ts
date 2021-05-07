@@ -67,10 +67,31 @@ export interface BasicNodeConfig {
   };
 }
 
+export interface DefaultOperation {
+  enabled: boolean;
+  changeable: boolean;
+  name: string;
+  defaultText: string;
+  text: string;
+}
+
+export interface CustomOperation {
+  enabled: boolean;
+  changeable: boolean;
+  name: string;
+  defaultText?: string;
+  text?: string;
+}
+
+export interface OperationPermission {
+  default: DefaultOperation[];
+  custom: CustomOperation[];
+}
+
 export interface FillInData {
   basicConfig: BasicNodeConfig;
   fieldPermission: FieldPermission;
-  operatorPermission: {value: string; text: string;}[];
+  operatorPermission: OperationPermission;
   events: {};
 }
 
@@ -119,6 +140,7 @@ export interface CurrentElement {
 }
 
 export interface StoreValue {
+  id?: string;
   asideDrawerType: AsideDrawerType;
   currentConnection: CurrentConnection;
   elements: Elements;
@@ -134,6 +156,7 @@ export interface StoreValue {
 }
 
 export const storeInitialData = {
+  id: '',
   name: '',
   version: '0.1',
   status: 'draft',

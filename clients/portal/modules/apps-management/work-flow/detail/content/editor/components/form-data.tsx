@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import cs from 'classnames';
 
 import { updateStore, Data } from '../store';
@@ -10,6 +10,13 @@ interface Props {
 
 export default function FormDataNodeComponent({ data }: Props) {
   const isNew = !data.businessData.form.name;
+  const lastTime = useRef(+new Date());
+
+  function onMouseUp() {
+    if (+new Date - lastTime.current < 100) {
+      updateStore(null, () => ({ asideDrawerType: 'formDataForm' }));
+    }
+  }
 
   return (
     <div
@@ -18,7 +25,8 @@ export default function FormDataNodeComponent({ data }: Props) {
         'rounded-bl-8 bg-white flex flex-col',
         `w-${data.nodeData.width}`, `h-${data.nodeData.height}`
       )}
-      onClick={() => updateStore(null, () => ({ asideDrawerType: 'formDataForm' }))}
+      onMouseDown={() => lastTime.current = +new Date()}
+      onMouseUp={onMouseUp}
     >
       <NodeHeader
         title={data.nodeData.name}

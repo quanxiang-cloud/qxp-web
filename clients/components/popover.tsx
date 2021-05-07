@@ -71,7 +71,12 @@ export default function Popover({
     setIsOpen(open);
   }, [open]);
   useClickAway(clickAwayRef, (e) => {
-    if ((e.target as HTMLDivElement).classList.contains('select-option__content')) {
+    const el = e.target as HTMLDivElement;
+    const els = [el, el.parentElement, el.parentElement?.parentElement];
+    if (els.some(
+      (el) => el?.classList.contains('dropdown-options__option') ||
+      el?.classList.contains('dropdown-options')
+    )) {
       return;
     }
     setIsOpen(false);

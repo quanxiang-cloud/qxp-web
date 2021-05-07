@@ -44,14 +44,16 @@ export function getWorkFlowInfo({ queryKey }: QueryFunctionContext) {
   return httpClient<WorkFlow>(`/api/v1/flow/flowInfo/${queryKey[1] as string}`);
 }
 
-interface SaveWorkFlow {
+export interface SaveWorkFlow {
   bpmnText: string;
-  id: string;
+  id?: string;
+  name: string;
+  triggerMode: string;
 }
-export function saveWorkFlow({ queryKey }: QueryFunctionContext) {
+export function saveWorkFlow(flowData: SaveWorkFlow) {
   return httpClient<WorkFlow>(
-    '/api/v1/flow/saveFlowBpmn',
-    queryKey[1] as SaveWorkFlow,
+    '/api/v1/flow/saveFlow',
+    flowData,
   );
 }
 

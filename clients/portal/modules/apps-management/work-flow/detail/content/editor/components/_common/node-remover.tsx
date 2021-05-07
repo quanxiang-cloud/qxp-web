@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, MouseEvent } from 'react';
 
 import More from '@c/more';
 import Icon from '@c/icon';
@@ -8,13 +8,22 @@ import { removeNodeById } from '../../store';
 
 interface Props {
   id: string;
+  type?: 'dark' | 'primary' | 'light';
 }
 
-export default function NodeRemover({ id }: Props) {
+export default function NodeRemover({ id, type = 'dark' }: Props) {
   const [showRemoveModal, setShowRemoveModal] = useState(false);
 
   function onRemoveNode() {
     removeNodeById(id);
+  }
+
+  function onMouseDown(e: MouseEvent) {
+    e.stopPropagation();
+  }
+
+  function onMouseUp(e: MouseEvent) {
+    e.stopPropagation();
   }
 
   return (
@@ -26,13 +35,22 @@ export default function NodeRemover({ id }: Props) {
       open={showRemoveModal}
       items={[
         (
-          <div key="remove-tip" className="mb-16" onClick={(e) => e.stopPropagation()}>
+          <div
+            key="remove-tip"
+            className="mb-16"
+            onMouseDown={onMouseDown}
+            onMouseUp={onMouseUp}
+          >
             <Icon name="info" className="text-yellow-600" />
             <span className="text-yellow-600 ml-8">是否删除该节点</span>
           </div>
         ),
         (
-          <div key="remove-action" onClick={(e) => e.stopPropagation()}>
+          <div
+            key="remove-action"
+            onMouseDown={onMouseDown}
+            onMouseUp={onMouseUp}
+          >
             <ActionButtonGroup
               onCancel={() => setShowRemoveModal(false)}
               onSubmit={onRemoveNode}
@@ -42,12 +60,14 @@ export default function NodeRemover({ id }: Props) {
       ]}
     >
       <Icon
-        name="cancel"
-        type="dark"
+        name="close"
+        type={type}
         onClick={(e) => {
           setShowRemoveModal(true);
           e.stopPropagation();
         }}
+        onMouseDown={onMouseDown}
+        onMouseUp={onMouseUp}
       />
     </More>
   );

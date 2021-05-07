@@ -1,145 +1,86 @@
 import React, { useState, useEffect } from 'react';
+import { useQuery } from 'react-query';
 
 import Toggle from '@c/toggle';
+import Loading from '@c/loading';
+import Error from '@c/error';
 
 import CustomFieldTable from './custom-field-table';
 import SystemFieldTable from './system-field-table';
 import { FieldPermission, CustomFieldPermission, SystemFieldPermission } from '../../../store';
+import { getFieldsList } from '../../api';
 
 interface Props {
-  defaultValue?: FieldPermission;
+  value: FieldPermission;
   onChange: (fieldPermission: FieldPermission) => void;
 }
 
-export default function({ defaultValue, onChange }: Props) {
+export default function({ value, onChange }: Props) {
   const [editable, setEditable] = useState(false);
-  let defaultValues = defaultValue;
-  if (!defaultValue?.custom || !defaultValue.system) {
-    defaultValues = {
-      custom: [{
-        id: '1',
-        fieldName: '姓名',
-        read: true,
-        write: false,
-        initialValue: {
-          variable: '',
-          static: '',
-        },
-        submitValue: {
-          variable: '',
-          static: '',
-        },
-      }, {
-        id: '2',
-        fieldName: '年龄',
-        read: true,
-        write: false,
-        initialValue: {
-          variable: '',
-          static: '',
-        },
-        submitValue: {
-          variable: '',
-          static: '',
-        },
-      }, {
-        id: '3',
-        fieldName: '明细',
-        read: true,
-        write: false,
-        initialValue: {
-          variable: '',
-          static: '',
-        },
-        submitValue: {
-          variable: '',
-          static: '',
-        },
-        children: ['4', '5', '6'],
-      }, {
-        id: '4',
-        fieldName: '金额',
-        read: true,
-        write: false,
-        initialValue: {
-          variable: '',
-          static: '',
-        },
-        submitValue: {
-          variable: '',
-          static: '',
-        },
-        parent: '3',
-      }, {
-        id: '5',
-        fieldName: '规格',
-        read: false,
-        write: false,
-        initialValue: {
-          variable: '',
-          static: '',
-        },
-        submitValue: {
-          variable: '',
-          static: '',
-        },
-        parent: '3',
-      }, {
-        id: '6',
-        fieldName: '数量',
-        read: true,
-        write: false,
-        initialValue: {
-          variable: '',
-          static: '',
-        },
-        submitValue: {
-          variable: '',
-          static: '',
-        },
-        parent: '3',
-      }, {
-        id: '7',
-        fieldName: '附件',
-        read: true,
-        write: false,
-        initialValue: {
-          variable: '',
-          static: '',
-        },
-        submitValue: {
-          variable: '',
-          static: '',
-        },
-      }],
-      system: [{
-        id: '1',
-        fieldName: '提交时间',
-        read: true,
-      }, {
-        id: '2',
-        fieldName: '发起人',
-        read: true,
-      }],
-    };
-  }
-
-  const [fieldPermission, setFieldPermissions] = useState<FieldPermission>(defaultValues || {
+  const [mergedFieldPermissions, setMergedFieldPermissions] = useState<FieldPermission>({
     custom: [],
     system: [],
   });
 
+  const { data, isLoading, isError } = useQuery(['GET_FIELDS_LIST'], getFieldsList);
+
   useEffect(() => {
-    onChange(fieldPermission);
-  }, [fieldPermission]);
+    if (data) {
+      mergeField();
+    }
+  }, [value, data]);
 
   function onUpdateFields(type: 'custom' | 'system') {
-    return (value: (CustomFieldPermission | SystemFieldPermission)[]) => {
-      setFieldPermissions((sf) => ({
-        ...sf,
-        [type]: value,
-      }));
+    return (val: (CustomFieldPermission | SystemFieldPermission)[]) => {
+      onChange({
+        ...mergedFieldPermissions,
+        [type]: val,
+      });
     };
+  }
+
+  function mergeField() {
+    const { custom = [], system = [] } = value || {};
+    const isCustomEmpty = !custom.length;
+    const isSystemEmpty = !system.length;
+    data?.custom.forEach((field) => {
+      if (isCustomEmpty || !custom.find(({ id }) => id === field.name)) {
+        custom.push({
+          id: field.name,
+          fieldName: field.label,
+          read: false,
+          write: false,
+          initialValue: {
+            variable: '',
+            static: '',
+          },
+          submitValue: {
+            variable: '',
+            static: '',
+          },
+          parent: field.parent,
+          children: field.children,
+        });
+      }
+    });
+    data?.system.forEach((field) => {
+      if (isSystemEmpty || !system.find(({ id }) => id === field.name)) {
+        system.push({
+          id: field.name,
+          fieldName: field.label,
+          read: false,
+        });
+      }
+    });
+    setMergedFieldPermissions({ system, custom });
+  }
+
+  if (isLoading) {
+    return <Loading desc="加载中..." />;
+  }
+
+  if (isError) {
+    return <Error desc="出错了..." />;
   }
 
   return (
@@ -154,7 +95,7 @@ export default function({ defaultValue, onChange }: Props) {
         </header>
         <CustomFieldTable
           editable={editable}
-          fields={fieldPermission.custom}
+          fields={mergedFieldPermissions.custom}
           updateFields={onUpdateFields('custom')}
         />
       </section>
@@ -162,7 +103,10 @@ export default function({ defaultValue, onChange }: Props) {
         <header className="flex justify-between items-center mb-12 mt-16">
           <div className="text-caption-no-color text-gray-400">系统字段</div>
         </header>
-        <SystemFieldTable fields={fieldPermission.system} updateFields={onUpdateFields('system')} />
+        <SystemFieldTable
+          fields={mergedFieldPermissions.system}
+          updateFields={onUpdateFields('system')}
+        />
       </section>
     </>
   );
