@@ -1,5 +1,58 @@
 import { TreeNode } from '@c/headless-tree/types';
 
+/**
+ * send http post request
+ */
+export function httpPost<T>(
+  url: string,
+  data?: string | null,
+  headers?: { [key: string]: string },
+): Promise<ResponseToBeDelete<T> | never> {
+  const req = new XMLHttpRequest();
+  req.open('POST', url, true);
+  if (!headers || !headers['X-Proxy']) {
+    req.setRequestHeader('X-Proxy', 'API');
+  }
+  let keys: string[] = [];
+  if (headers) {
+    keys = Object.keys(headers);
+    keys.forEach((key) => {
+      req.setRequestHeader(key, headers[key]);
+    });
+  }
+  if (!keys.find((key) => key.toLocaleLowerCase() === 'content-type')) {
+    req.setRequestHeader('Content-Type', 'application/json; charset=utf-8');
+  }
+  return new Promise(
+    (resolve: (arg: ResponseToBeDelete<T>) => void, reject: (...data: unknown[]) => void) => {
+      req.onload = () => {
+        const contentType = req.getResponseHeader('Content-Type');
+        let response: ResponseToBeDelete<T>;
+        if (contentType?.startsWith('application/json')) {
+          response = JSON.parse(req.responseText);
+        } else {
+          response = (req.responseText as unknown) as ResponseToBeDelete<T>;
+        }
+        if (req.status >= 400) {
+          if (req.statusText.toLocaleLowerCase() === 'unauthorized' || req.status === 401) {
+            window.location.pathname = '/login/password';
+            return;
+          }
+          return reject(response.msg);
+        }
+        resolve(response);
+      };
+      req.onerror = () => {
+        reject(req);
+      };
+      if (data) {
+        req.send(data);
+      } else {
+        req.send();
+      }
+    });
+}
+
 export const httpFile = async (url: string, data?: Record<string, string | Blob>) => {
   const formData = new FormData();
   if (data) {
