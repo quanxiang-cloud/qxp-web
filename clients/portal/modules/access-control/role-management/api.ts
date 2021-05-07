@@ -1,10 +1,11 @@
 import { QueryFunctionContext } from 'react-query';
 
 import httpClient from '@lib/http-client';
+import { IRoleListItem } from './role-list-item';
 
 export async function getRoles() {
   const { roles } = await httpClient('/api/v1/goalie/listRole');
-  return roles;
+  return roles as IRoleListItem[];
 }
 
 // 获取角色功能集
