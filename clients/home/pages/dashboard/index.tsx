@@ -116,18 +116,17 @@ function Dashboard() {
             headerClassName="ml-8"
             title="我的应用"
             itemTitleClassName="text-h5"
-            content={(
-              <div className='flex flex-wrap gap-20 justify-between'>
-                {store.appList.map((appInfo: AppInfo) => (
-                  <AppInfoView
-                    onClick={() => history.push('/apps/' + appInfo.id)}
-                    className='rounded-12 bg-white user-app-item'
-                    key={appInfo.id}
-                    appInfo={appInfo}
-                  />
-                ))}
-              </div>
-            )}
+            contentClassName="grid grid-cols-4 gap-16"
+            content={(<>
+              {store.appList.map((appInfo: AppInfo) => (
+                <AppInfoView
+                  onClick={() => history.push('/apps/' + appInfo.id)}
+                  className='rounded-12 bg-white user-app-item'
+                  key={appInfo.id}
+                  appInfo={appInfo}
+                />
+              ))}
+            </>)}
           />
         </div>
       </main>
