@@ -7,6 +7,7 @@ export interface InputConfig {
   valueFormat: 'phone' | 'post_code' | 'mobile_phone' | 'id_number' | 'email' | string;
   required: boolean;
   valueSource: FormBuilder.ValueSource;
+  defaultValue: string;
 }
 
 export const defaultConfig: InputConfig = {
@@ -18,6 +19,7 @@ export const defaultConfig: InputConfig = {
   valueFormat: '',
   required: false,
   valueSource: 'customized',
+  defaultValue: '',
 };
 
 export function toSchema(value: typeof defaultConfig): FormBuilder.Schema {
@@ -32,6 +34,7 @@ export function toSchema(value: typeof defaultConfig): FormBuilder.Schema {
     'x-component': 'Input',
     ['x-component-props']: {
       placeholder: value.placeholder,
+      defaultValue: value.defaultValue,
     },
     ['x-internal']: {
       sortable: value.sortable,
@@ -53,6 +56,7 @@ export function toConfig(schema: FormBuilder.Schema): InputConfig {
     description: schema.description as string,
     displayModifier: displayModifier,
     placeholder: schema['x-component-props']?.placeholder || '',
+    defaultValue: schema['x-component-props']?.defaultValue || '',
     sortable: !!schema['x-internal']?.sortable,
     valueFormat: schema.format || '',
     required: !!schema.required,

@@ -113,7 +113,7 @@ const schema: ISchema = {
           'x-index': 6,
         },
         valueSource: {
-          title: '默认值',
+          title: '数值源',
           enum: [
             {
               label: '自定义',
@@ -132,7 +132,28 @@ const schema: ISchema = {
           'x-mega-props': {
             labelAlign: 'top',
           },
+          'x-linkages': [
+            {
+              type: 'value:state',
+              target: 'defaultValue',
+              state: {
+                visible: '{{ $value === "customized" }}',
+              },
+            },
+          ],
           'x-index': 7,
+        },
+        defaultValue: {
+          type: 'string',
+          title: '默认值',
+          'x-component': 'Input',
+          'x-component-props': {
+            placeholder: '请输入默认值',
+          },
+          'x-mega-props': {
+            labelAlign: 'top',
+          },
+          'x-index': 8,
         },
       },
     },
