@@ -118,8 +118,10 @@ function Dashboard() {
             headerClassName="ml-8"
             title="我的应用"
             itemTitleClassName="text-h5"
+            contentClassName="grid grid-cols-4 gap-16"
             content={(
-              <div className='flex flex-wrap gap-20 justify-between'>
+              // <div className='grid grid-cols-4'>
+              <>
                 {store.appList.map((appInfo: AppInfo) => (
                   <AppInfoView
                     onClick={() => history.push('/apps/' + appInfo.id)}
@@ -128,7 +130,8 @@ function Dashboard() {
                     appInfo={appInfo}
                   />
                 ))}
-              </div>
+                {/* </div> */}
+              </>
             )}
           />
         </div>
