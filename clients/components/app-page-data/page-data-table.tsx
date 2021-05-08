@@ -45,6 +45,10 @@ function PageDataTable() {
     setSelected(selectArr);
   };
 
+  const handleRowClick = (rowID: string, rowData: any) => {
+    console.log('rowID: string, rowData: any: ', rowID, rowData);
+  }
+
   const textBtnRender = (text: string, icon: string, onClick: () => void) => {
     return (
       <div
@@ -74,6 +78,7 @@ function PageDataTable() {
         emptyTips='暂无数据'
         rowKey="_id"
         loading={store.listLoading}
+        onRowClick={handleRowClick}
         onSelectChange={handleSelectChange}
         columns={columns}
         data={store.formDataList}

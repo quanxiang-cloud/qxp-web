@@ -20,14 +20,13 @@ function PageDataFiltrate() {
 
     const condition: Condition[] = [];
     const values = filterDom.current.getValues();
-    Object.keys(values).map((key) => {
+    Object.keys(values).forEach((key) => {
       const curFiltrate = store.filtrates.find(({ id }) => id === key);
-      if (!values[key]) {
+      if (!values[key] || (Array.isArray(values[key]) && values[key].length === 0)) {
         return;
       }
 
       const _condition: Condition = { key };
-
       switch (curFiltrate?.type) {
         case 'date_range':
           const { start, end } = values[key];

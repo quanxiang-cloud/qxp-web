@@ -19,6 +19,7 @@ interface Props<T extends Record<string, any>> {
   emptyTips?: React.ReactNode;
   initialSelectedRowKeys?: string[];
   loading?: boolean;
+  onRowClick?: (rowID: string, selectedRow: T) => void;
   onSelectChange?: (selectedKeys: string[], selectedRows: T[]) => void;
   rowKey: string;
   showCheckbox?: boolean;
@@ -32,6 +33,7 @@ export default function Table<T extends Record<string, any>>({
   emptyTips,
   initialSelectedRowKeys,
   loading,
+  onRowClick,
   onSelectChange,
   rowKey,
   showCheckbox,
@@ -130,12 +132,12 @@ export default function Table<T extends Record<string, any>>({
               return (
                 <tr
                   {...row.getRowProps()}
+                  onClick={() => onRowClick?.(row.id, row.original)}
                   key={row.id}
                   className='qxp-table-tr'
                 >
                   {row.cells.map((cell, index) => {
                     const hasFixed = (extendsColumns[index] as FixedColumn<any>).fixed;
-
                     return (
                       <td
                         {...cell.getCellProps()}
