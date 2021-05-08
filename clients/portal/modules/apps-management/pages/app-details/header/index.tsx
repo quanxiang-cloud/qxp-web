@@ -30,7 +30,7 @@ function DetailsHeader() {
   };
 
   const goAppVisit = () => {
-    window.location.href = `//${window.CONFIG.home_hostname}/apps/` + appId;
+    window.open(`//${window.CONFIG.home_hostname}/apps/` + appId);
   };
 
   const statusTipsContent = (isPublish: boolean) => {
