@@ -6,7 +6,7 @@ import { FormBuilder } from '@c/form-builder';
 import registry from '@c/form-builder/registry';
 import Button from '@c/button';
 
-import Modal from '@c/modal';
+import Modal from '@c/modal2';
 
 import { FormButtonGroup, SchemaForm } from '@formily/antd';
 import toast from '@lib/toast';
@@ -40,25 +40,23 @@ const FormPage = () => {
         </span> */}
       </div>
       <FormBuilder store={store.formStore} />
-      {(previewModalVisible)&&(<Modal
-        title="预览表单"
-        onClose={handlePreviewClose}
-        footer={null}
-      >
-        <SchemaForm
-          className="w-588"
-          components={{ ...registry.components }}
-          schema={store.formStore.schemaForPreview}
-          onSubmit={(value) => {
-            toast.success('提交表单：' + JSON.stringify(value));
-          }}
-        >
-          <FormButtonGroup offset={4}>
-            <Button type="submit" modifier="primary">模拟提交</Button>
-            <Button type="submit" onClick={handlePreviewClose}>关闭</Button>
-          </FormButtonGroup>
-        </SchemaForm>
-      </Modal>)}
+      {previewModalVisible && (
+        <Modal title="预览表单" onClose={handlePreviewClose}>
+          <SchemaForm
+            className="w-588"
+            components={{ ...registry.components }}
+            schema={store.formStore.schemaForPreview}
+            onSubmit={(value) => {
+              toast.success('提交表单：' + JSON.stringify(value));
+            }}
+          >
+            <FormButtonGroup offset={4}>
+              <Button type="submit" modifier="primary">模拟提交</Button>
+              <Button type="submit" onClick={handlePreviewClose}>关闭</Button>
+            </FormButtonGroup>
+          </SchemaForm>
+        </Modal>
+      )}
     </>
   );
 };

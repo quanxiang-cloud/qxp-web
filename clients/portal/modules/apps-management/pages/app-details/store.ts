@@ -92,6 +92,11 @@ class AppDetailsStore {
         rootId: this.pagesTreeData.rootId,
       };
 
+      // todo refactor this
+      if (this.curPage.id === treeItem.id && type !== 'delGroup') {
+        this.curPage = { id: '' };
+      }
+
       toast.success('删除成功');
     });
   }
@@ -140,6 +145,10 @@ class AppDetailsStore {
           id: pageInfo.id,
           data: pageInfo,
         });
+
+        if (pageInfo.id === this.curPage.id) {
+          this.curPage = pageInfo;
+        }
       });
     }
 

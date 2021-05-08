@@ -70,7 +70,7 @@ function NodeRender(
           <span className="font-normal">删除</span>
         </div>
       ),
-      disabled: !isPage && item.children.length > 0
+      disabled: !isPage && item.children.length > 0,
     },
   ];
   function handleClick(): void {
@@ -160,7 +160,7 @@ export default class PureTree extends Component<Props> {
       Name: treeItem.data.name,
       appID: treeItem.data.appID,
       fromSort: source.index + 1,
-      toSort: isNumber(destination.index) ? destination.index  + 1 : 1,
+      toSort: isNumber(destination.index) ? destination.index + 1 : 1,
       fromGroupID: fromGroupID as string,
       toGroupID: toGroupID as string,
     }).catch((err) => {

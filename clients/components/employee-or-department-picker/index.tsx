@@ -41,6 +41,10 @@ export default function EmployeeOrDepartmentPickerModal({
         departments.push(departmentOrEmployees);
       }
     });
+    if (employees.length === 0 && departments.length === 0) {
+      toast.error('请选择人员或部门');
+      return;
+    }
     setIsOnGetSelected(true);
     onSubmit(departments, employees).then((isOk) => {
       if (isOk) {
