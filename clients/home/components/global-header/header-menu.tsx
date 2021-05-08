@@ -33,69 +33,64 @@ export default function HeaderMenu() {
   }
 
   return (
-    <div className="flex justify-end items-center flex-2">
+    <div className="flex-2 flex justify-end items-center">
       <ResetPasswordModal
         visible={openResetPasswordModal}
         onCancel={() => setOpenResetPasswordModal(false)}
       />
-      {/* <NavMsgBar /> */}
-      <div className="flex justify-end items-center flex-2">
-        <Button>
+      <Button className="mr-32">
           进入应用管理
-        </Button>
+      </Button>
+      <div className="px-8 py-5 cursor-pointer">
+        <Icon
+          name="notifications"
+          className="group-hover:text-blue-600 header-nav-btn-icon"
+          size={20}
+        />
       </div>
-      <div className="flex justify-end items-center flex-1">
-        <div className="px-8 py-5 cursor-pointer">
-          <Icon
-            name="notifications"
-            className="group-hover:text-blue-600 header-nav-btn-icon"
-            size={20}
-          />
+      <div className="px-8 py-5 cursor-pointer">
+        <Icon
+          name="assignment"
+          className="group-hover:text-blue-600 header-nav-btn-icon"
+          size={20}
+        />
+      </div>
+      <div className="px-8 py-5 cursor-pointer">
+        <Icon
+          name="help_outline"
+          className="group-hover:text-blue-600 header-nav-btn-icon"
+          size={20}
+        />
+      </div>
+      <div className="header-nav-btn group">
+        <div className="w-24 h-24 corner-4-0-4-4 text-center text-white text-14 leading-24"
+          style={{
+            backgroundColor: imgInfo.color,
+          }}
+        >
+          {imgInfo.name}
         </div>
-        <div className="px-8 py-5 cursor-pointer">
-          <Icon
-            name="assignment"
-            className="group-hover:text-blue-600 header-nav-btn-icon"
-            size={20}
-          />
-        </div>
-        <div className="px-8 py-5 cursor-pointer">
-          <Icon
-            name="help_outline"
-            className="group-hover:text-blue-600 header-nav-btn-icon"
-            size={20}
-          />
-        </div>
-        <div className="header-nav-btn group">
-          <div className="w-24 h-24 corner-4-0-4-4 text-center text-white text-14 leading-24"
-            style={{
-              backgroundColor: imgInfo.color,
-            }}
-          >
-            {imgInfo.name}
-          </div>
-          <MoreMenu
-            menus={[
-              { key: 'resetPassword', label: '重置密码' },
-              { key: 'logout', label: '登出' },
-            ]}
-            onChange={(menuKey) => {
-              if (menuKey === 'logout') {
-                window.location.href = '/logout';
-                return;
-              }
+        <MoreMenu
+          menus={[
+            { key: 'resetPassword', label: '重置密码' },
+            { key: 'logout', label: '登出' },
+          ]}
+          onChange={(menuKey) => {
+            if (menuKey === 'logout') {
+              window.location.href = '/logout';
+              return;
+            }
 
-              setOpenResetPasswordModal(true);
-            }}
-          >
-            <div
-              className="cursor-pointer flex items-center h-36
+            setOpenResetPasswordModal(true);
+          }}
+        >
+          <div
+            className="cursor-pointer flex items-center h-36
             hover:blue-100 transition group-hover:text-blue-600"
-            >
-              <Icon name="arrow_drop_down" size={20} />
-            </div>
-          </MoreMenu>
-        </div>
+          >
+            <Icon name="arrow_drop_down" size={20} />
+          </div>
+        </MoreMenu>
       </div>
     </div>
   );
