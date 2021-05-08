@@ -52,9 +52,8 @@ function Dashboard() {
         style={{ height: 'calc(100vh - 62px)', overflow: 'scroll' }}>
         <div className="flex justify-between items-center">
           <Card
-            title=""
             className="flex-2 user-card user-info-bg"
-            itemTitleClassName="text-h5 hidden"
+            itemTitleClassName="text-h5"
             content={(<>
               <div className="z-10">
                 <Avatar
@@ -91,9 +90,8 @@ function Dashboard() {
             </>)}
           />
           <Card
-            title=""
             className="flex-2 user-card user-card-last"
-            itemTitleClassName="text-h5 hidden"
+            itemTitleClassName="text-h5"
             contentClassName="flex-col"
             content={(<>
               {HANDLE_LIST.map(({ name, key, icon, count }) => {
@@ -118,18 +116,17 @@ function Dashboard() {
             headerClassName="ml-8"
             title="我的应用"
             itemTitleClassName="text-h5"
-            content={(
-              <div className='flex flex-wrap gap-20 justify-between'>
-                {store.appList.map((appInfo: AppInfo) => (
-                  <AppInfoView
-                    onClick={() => history.push('/apps/' + appInfo.id)}
-                    className='rounded-12 bg-white user-app-item'
-                    key={appInfo.id}
-                    appInfo={appInfo}
-                  />
-                ))}
-              </div>
-            )}
+            contentClassName="grid grid-cols-4 gap-16"
+            content={(<>
+              {store.appList.map((appInfo: AppInfo) => (
+                <AppInfoView
+                  onClick={() => history.push('/apps/' + appInfo.id)}
+                  className='rounded-12 bg-white user-app-item'
+                  key={appInfo.id}
+                  appInfo={appInfo}
+                />
+              ))}
+            </>)}
           />
         </div>
       </main>
