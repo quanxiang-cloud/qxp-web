@@ -5,6 +5,7 @@ import Breadcrumb from '@c/breadcrumb';
 import Icon from '@c/icon';
 import Button from '@c/button';
 import registry from '@c/form-builder/registry';
+import { visibleHiddenLinkageEffect } from '@c/form-builder';
 import toast from '@lib/toast';
 import { formDataCurd } from '../../../lib/api';
 
@@ -72,6 +73,12 @@ function CreateDataForm({ goBack, defaultValues }: Props) {
           defaultValue={defaultValues}
           components={{ ...registry.components }}
           schema={store.formScheme.schema}
+          effects={() => {
+            visibleHiddenLinkageEffect(
+              // todo refactor formStore any type
+              store.formScheme.schema['x-internal']?.visibleHiddenLinkages || []
+            );
+          }}
         >
           <FormButtonGroup className='pl-96'>
             <Button

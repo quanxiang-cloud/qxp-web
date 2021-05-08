@@ -37,7 +37,7 @@ export function toSchema(value: typeof defaultConfig): FormBuilder.Schema {
     enum: value.availableOptions.map((option) => {
       return {
         ...option,
-        value: nanoid(8),
+        value: option.value || nanoid(8),
         title: option.label,
         name: option.label,
       };

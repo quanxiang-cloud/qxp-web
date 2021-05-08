@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { observer } from 'mobx-react';
 import store from '../store';
 
-import { FormBuilder } from '@c/form-builder';
+import { FormBuilder, visibleHiddenLinkageEffect } from '@c/form-builder';
 import registry from '@c/form-builder/registry';
 import Button from '@c/button';
 
@@ -10,6 +10,17 @@ import Modal from '@c/modal2';
 
 import { FormButtonGroup, SchemaForm } from '@formily/antd';
 import toast from '@lib/toast';
+
+// const demoVisibleHideLinkages: VisibleHideLinkage[] = [
+//   {
+//     key: 'demo',
+//     ruleJoinOperator: 'every',
+//     rules: [
+//       { sourceKey: 'jj0g8EIR', compareOperator: '===', compareValue: 'Q2mEpSlX' },
+//     ],
+//     targetKeys: ['7XAplB3V'],
+//   },
+// ];
 
 const FormPage = () => {
   const [previewModalVisible, setPreviewModalVisible] = useState(false);
@@ -46,8 +57,12 @@ const FormPage = () => {
             className="w-588"
             components={{ ...registry.components }}
             schema={store.formStore.schemaForPreview}
-            onSubmit={(value) => {
-              toast.success('提交表单：' + JSON.stringify(value));
+            onSubmit={(value) => toast.success('提交表单：' + JSON.stringify(value))}
+            effects={() => {
+              visibleHiddenLinkageEffect(
+                // todo refactor formStore any type
+                store.formStore.schema['x-internal']?.visibleHiddenLinkages || []
+              );
             }}
           >
             <FormButtonGroup offset={4}>
