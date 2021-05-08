@@ -117,7 +117,7 @@ function Dashboard() {
             itemTitleClassName="text-h5"
             content={
               (
-                <div className='flex flex-wrap gap-20'>
+                <div className='flex flex-wrap gap-20 justify-between'>
                   {store.appList.map((appInfo: AppInfo) => (
                     <AppInfoView
                       onClick={() => history.push('/apps/' + appInfo.id)}
