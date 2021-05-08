@@ -1,5 +1,5 @@
 type PageInfo = {
-  id: string;
+  id?: string;
   appID?: string;
   name?: string;
   icon?: string;
