@@ -46,8 +46,8 @@ export const getCenter = ({
 
 const approveAndFillInCommonData = {
   basicConfig: {
-    persons: {
-      employees: [],
+    approvePersons: {
+      users: [],
       departments: [],
     },
     multiplePersonWay: '',

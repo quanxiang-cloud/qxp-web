@@ -48,8 +48,8 @@ export interface WhenTimeout {
 }
 
 export interface BasicNodeConfig {
-  persons: {
-    employees: EmployeeOrDepartmentOfRole[];
+  approvePersons: {
+    users: EmployeeOrDepartmentOfRole[];
     departments: EmployeeOrDepartmentOfRole[];
   };
   multiplePersonWay: 'and' | 'or';

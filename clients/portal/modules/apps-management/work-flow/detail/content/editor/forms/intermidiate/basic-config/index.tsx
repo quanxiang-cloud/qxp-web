@@ -73,19 +73,19 @@ export default function BasicConfig({ type, value, onChange }: Props) {
 
   async function onSetPersons(
     departments: EmployeeOrDepartmentOfRole[],
-    employees: EmployeeOrDepartmentOfRole[]
+    users: EmployeeOrDepartmentOfRole[]
   ) {
     onChange({
       ...value,
-      persons: {
-        employees,
+      approvePersons: {
+        users,
         departments,
       },
     });
     return true;
   }
 
-  const { employees, departments } = value.persons;
+  const { users: employees, departments } = value.approvePersons;
 
   return (
     <div>

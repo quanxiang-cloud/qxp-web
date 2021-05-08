@@ -27,14 +27,14 @@ export default function FillInNodeComponent({ data, id }: Props) {
 
   function getPerson() {
     return [
-      ...basicConfig.persons.employees,
-      ...basicConfig.persons.departments,
+      ...basicConfig.approvePersons.users,
+      ...basicConfig.approvePersons.departments,
     ].map((v) => v.ownerName || v.departmentName).join('; ');
   }
 
   const hasFillInRule = !!basicConfig.multiplePersonWay;
-  const hasFillInPerson = !!basicConfig.persons.departments.length ||
-    !!basicConfig.persons.employees.length;
+  const hasFillInPerson = !!basicConfig.approvePersons.departments.length ||
+    !!basicConfig.approvePersons.users.length;
 
   return (
     <div

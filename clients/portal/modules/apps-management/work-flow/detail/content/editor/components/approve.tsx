@@ -27,14 +27,14 @@ export default function ApproveNodeComponent({ data, id }: Props) {
 
   function getPerson() {
     return [
-      ...basicConfig.persons.employees,
-      ...basicConfig.persons.departments,
+      ...basicConfig.approvePersons.users,
+      ...basicConfig.approvePersons.departments,
     ].map((v) => v.ownerName || v.departmentName).join('; ');
   }
 
   const hasApproveRule = !!basicConfig.multiplePersonWay;
-  const hasApprovePerson = !!basicConfig.persons.departments.length ||
-    !!basicConfig.persons.employees.length;
+  const hasApprovePerson = !!basicConfig.approvePersons.departments.length ||
+    !!basicConfig.approvePersons.users.length;
 
   return (
     <div
