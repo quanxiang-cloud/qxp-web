@@ -14,7 +14,7 @@ export const createdApp = (data: AppInfo) => {
     method: 'post',
     data,
   }).then((res) => {
-    createPage({ describe: '补充说明信息。', icon: 'event_available', name: '示例页面', appID: res.data.id });
+    createPage({ describe: '补充说明信息。', icon: 'event_available', name: '示例页面', appID: res.data.id, id: '' });
     return res;
   });
 };
