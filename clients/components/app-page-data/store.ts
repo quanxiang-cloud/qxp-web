@@ -4,6 +4,7 @@ import { action, observable, reaction, IReactionDisposer } from 'mobx';
 import { formDataCurd } from '@portal/modules/apps-management/lib/api';
 import toast from '@lib/toast';
 
+import { Scheme } from './utils';
 type Params = {
   condition?: Condition[] | [],
   sort?: string[] | [],
@@ -24,6 +25,7 @@ class AppPageDataStore {
   @observable filtrates: FilterField[] = [];
   @observable formDataList: any[] = [];
   @observable total = 0;
+  @observable fields: Scheme[] = [];
   @observable tableColumns = [];
   @observable params: Params = {
     condition: [],
@@ -46,6 +48,17 @@ class AppPageDataStore {
   @action
   setParams = (params: Params) => {
     this.params = { ...this.params, ...params };
+  }
+
+  @action
+  setFieldsMap = (fieldsMap: Scheme) => {
+    const fields: Scheme[] = [];
+    Object.keys(fieldsMap).forEach((key: string) => {
+      if (key !== '_id') {
+        fields.push({ id: key, ...fieldsMap[key] })
+      }
+    });
+    this.fields = fields;
   }
 
   @action
@@ -92,7 +105,7 @@ class AppPageDataStore {
   }
 
   @action
-  fetchFormDataList = (params: any) => {
+  fetchFormDataList = (params: Params) => {
     if (!this.allowRequestData || !this.pageID) {
       return;
     }
@@ -110,6 +123,20 @@ class AppPageDataStore {
     }).catch(() => {
       this.listLoading = false;
     });
+  }
+
+  @action
+  fetchFormDataDetails = (dataID: string) => {
+    return formDataCurd(this.pageID, {
+      method: 'findOne',
+      condition: [
+        {
+          key: "_id",
+          op: "eq",
+          value: [dataID]
+        }
+      ]
+    })
   }
 
   @action

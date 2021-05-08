@@ -125,7 +125,12 @@ export default class FormBuilderStore {
 
         acc[fieldName] = {
           // convert observable value to pure js object for debugging
-          ...toSchema(toJS(configValue)),
+          ...{
+            ...toSchema(toJS(configValue)), 'x-internal': toSchema(toJS(configValue))['x-internal'] ? {
+              ...toSchema(toJS(configValue))['x-internal'],
+              isSystem: configValue.isSystem ? true : false
+            } : { isSystem: configValue.isSystem ? true : false }
+          },
           'x-index': index,
           'x-mega-props': {
             labelCol: this.labelAlign === 'right' ? 4 : undefined,

@@ -15,7 +15,7 @@ export type Config = {
   }
 };
 
-function getTableCellData(initValue: string | string[], field: PageField) {
+export function getTableCellData(initValue: string | string[], field: PageField) {
   if (!initValue) {
     return '——'
   }
@@ -44,12 +44,16 @@ function getTableCellData(initValue: string | string[], field: PageField) {
     return field.enum.find(({ value }: any) => value === initValue)?.label || '';
   }
 
+  if (Array.isArray(initValue)) {
+    return initValue.join(',');
+  }
+
   return initValue;
 }
 
 export function getPageDataSchema(config: Config, schema: Scheme, pageID: string, pageName?: string) {
   const { pageTableShowRule = {}, pageTableConfig = {}, filtrate = [] } = config || {};
-  const { setFiltrates, setTableConfig, setTableColumns, setPageID } = appPageDataStore;
+  const { setFiltrates, setTableConfig, setTableColumns, setPageID, setFieldsMap } = appPageDataStore;
   const fieldsMap = schema?.properties || {};
   const tableColumns: any[] = [];
   let recordColNum = 0;
@@ -65,7 +69,6 @@ export function getPageDataSchema(config: Config, schema: Scheme, pageID: string
 
   Object.keys(fieldsMap).forEach((key: string) => {
     const hasVisible = pageTableConfig[key] ? 'visible' in pageTableConfig[key] : false;
-
     if (key !== '_id' && ((hasVisible && pageTableConfig[key].visible) || !hasVisible)) {
       const isFixed = fixedColumnIndex.includes(recordColNum);
       tableColumns.push({
@@ -74,7 +77,6 @@ export function getPageDataSchema(config: Config, schema: Scheme, pageID: string
         accessor: (data: any) => getTableCellData(data[key], fieldsMap[key]),
         fixed: isFixed,
         width: isFixed && 150,
-        isSystem: fieldsMap[key].isSystem ? true : false,
       });
       recordColNum += 1;
     }
@@ -96,4 +98,5 @@ export function getPageDataSchema(config: Config, schema: Scheme, pageID: string
   setTableColumns(tableColumns);
   setTableConfig(pageTableShowRule);
   setPageID(pageID, pageName);
+  setFieldsMap(fieldsMap);
 }

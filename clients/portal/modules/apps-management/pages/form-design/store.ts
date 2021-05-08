@@ -44,7 +44,7 @@ class FormDesignStore {
         label: fieldsMap[key].title || '',
         type: fieldsMap[key].type,
         enum: fieldsMap[key].enum,
-        isSystem: fieldsMap[key].isSystem ? true : false,
+        isSystem: fieldsMap[key]['x-internal'].isSystem ? true : false,
         cProps: fieldsMap[key]['x-component-props'],
         ...getAttribute(this.pageTableConfig[key], fieldsMap[key]['x-index']),
       };

@@ -12,7 +12,7 @@ import store from './store';
 
 function PageDataTable() {
   const [selected, setSelected] = useState([]);
-  const [curRow, setCurRow] = useState(null);
+  const [curRow, setCurRow] = useState<Record<string, any> | null>(null);
 
   const columns = useMemo(() => {
     return store.tableColumns.length ? [...store.tableColumns, {
@@ -96,7 +96,7 @@ function PageDataTable() {
           }}
         />
       ) : null}
-      {curRow ? <DetailsDrawer row={curRow} onCancel={() => setCurRow(null)} /> : null}
+      {curRow ? <DetailsDrawer rowID={curRow?._id} onCancel={() => setCurRow(null)} /> : null}
     </div>
   );
 }

@@ -1,16 +1,18 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { observer } from 'mobx-react';
 import cs from 'classnames';
 
 import Tab from '@c/tab2';
 import Icon from '@c/icon';
 import PopConfirm from '@c/pop-confirm';
+import PageLoading from '@portal/modules/apps-management/components/page-loading';
 
+import { getTableCellData } from './utils';
 import store from './store';
 
 type Props = {
   onCancel: () => void;
-  row: Record<string, any> | null;
+  rowID: string;
 }
 
 type InfoData = {
@@ -18,26 +20,36 @@ type InfoData = {
   value: string;
 }
 
-function DetailsDrawer({ onCancel, row }: Props) {
+function DetailsDrawer({ onCancel, rowID }: Props) {
   const [beganClose, setBeganClose] = useState<boolean>(false);
   const [visible, setVisible] = useState<boolean>(false);
+  const [loading, setLoading] = useState(true);
+  const [formDataItem, setInfoData] = useState(null);
+
+  useEffect(() => {
+    store.fetchFormDataDetails(rowID).then((res) => {
+      setInfoData(res.data);
+      setLoading(false);
+    }).catch(() => {
+      setLoading(false);
+    })
+  }, [])
 
   const [details, systems] = useMemo(() => {
+    if (formDataItem === null) {
+      return [[], []];
+    }
     const _details: InfoData[] = [];
     const _systems: InfoData[] = [];
-    store.tableColumns.forEach((column: any) => {
-      if (row === null) {
-        return;
-      }
-
-      if (column.isSystem) {
-        _systems.push({ label: column.Header, value: column.accessor(row)})
+    store.fields.forEach((field: any) => {
+      if (field['x-internal'].isSystem) {
+        _systems.push({ label: field.title, value: getTableCellData((formDataItem as any)[field.id], field) })
       } else {
-        _details.push({ label: column.Header, value: column.accessor(row) })
+        _details.push({ label: field.title, value: getTableCellData((formDataItem as any)[field.id], field) })
       }
     })
     return [_details, _systems];
-  }, [store.tableColumns, row]);
+  }, [formDataItem]);
 
   const handleCancel = () => {
     setBeganClose(true);
@@ -48,7 +60,7 @@ function DetailsDrawer({ onCancel, row }: Props) {
   };
 
   const delData = () => {
-    store.delFormData([row?._id]).then(()=>{
+    store.delFormData([rowID]).then(() => {
       handleCancel();
     })
   }
@@ -66,6 +78,8 @@ function DetailsDrawer({ onCancel, row }: Props) {
     )
   }
 
+  const title = store.tableColumns.length && formDataItem ? (store.tableColumns[0] as any).accessor(formDataItem) : '';
+
   return (
     <div
       className={cs('page-data-drawer-modal-mask', {
@@ -75,31 +89,37 @@ function DetailsDrawer({ onCancel, row }: Props) {
     >
       <div className='page-data-drawer-container'>
         <div className='page-data-drawer-header'>
-          <span className='text-h5'>{store.pageName}</span>
+          <span className='text-h5'>{store.pageName}：{title}</span>
           <div className='flex items-center gap-x-12'>
-            <span onClick={() => store.goEdit(row)} className='icon-text-btn'><Icon size={20} name='edit' />修改</span>
+            <span onClick={() => store.goEdit(formDataItem)} className='icon-text-btn'><Icon size={20} name='edit' />修改</span>
             <PopConfirm content='确认删除该数据？' onOk={delData} >
               <span className='icon-text-btn'><Icon size={20} name='delete' />删除</span>
             </PopConfirm>
             <Icon onClick={handleCancel} clickable changeable name='close' size={24} />
           </div>
         </div>
-        <div className='page-data-drawer-main-content'>
-          <Tab
-            className='rounded-12'
-            items={[
-              {
-                id: 'details',
-                name: '详细信息',
-                content: cardRender(details),
-              },
-              {
-                id: 'system',
-                name: '系统信息',
-                content: cardRender(systems),
-              }]}
-          />
-        </div>
+        {loading ? (
+          <div className='relative h-280'>
+            <PageLoading />
+          </div>
+        ) : (
+          <div className='page-data-drawer-main-content'>
+            <Tab
+              className='rounded-12'
+              items={[
+                {
+                  id: 'details',
+                  name: '详细信息',
+                  content: cardRender(details),
+                },
+                {
+                  id: 'system',
+                  name: '系统信息',
+                  content: cardRender(systems),
+                }]}
+            />
+          </div>
+        )}
       </div>
     </div>
   );
