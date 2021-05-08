@@ -52,7 +52,6 @@ function Dashboard() {
         style={{ height: 'calc(100vh - 62px)', overflow: 'scroll' }}>
         <div className="flex justify-between items-center">
           <Card
-            title=""
             className="flex-2 user-card user-info-bg"
             itemTitleClassName="text-h5"
             content={(<>
@@ -91,7 +90,6 @@ function Dashboard() {
             </>)}
           />
           <Card
-            title=""
             className="flex-2 user-card user-card-last"
             itemTitleClassName="text-h5"
             contentClassName="flex-col"
@@ -119,20 +117,16 @@ function Dashboard() {
             title="我的应用"
             itemTitleClassName="text-h5"
             contentClassName="grid grid-cols-4 gap-16"
-            content={(
-              // <div className='grid grid-cols-4'>
-              <>
-                {store.appList.map((appInfo: AppInfo) => (
-                  <AppInfoView
-                    onClick={() => history.push('/apps/' + appInfo.id)}
-                    className='rounded-12 bg-white user-app-item'
-                    key={appInfo.id}
-                    appInfo={appInfo}
-                  />
-                ))}
-                {/* </div> */}
-              </>
-            )}
+            content={(<>
+              {store.appList.map((appInfo: AppInfo) => (
+                <AppInfoView
+                  onClick={() => history.push('/apps/' + appInfo.id)}
+                  className='rounded-12 bg-white user-app-item'
+                  key={appInfo.id}
+                  appInfo={appInfo}
+                />
+              ))}
+            </>)}
           />
         </div>
       </main>
