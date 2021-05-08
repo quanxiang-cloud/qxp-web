@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
-import { useLocation, useHistory } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import cs from 'classnames';
 import { useMutation } from 'react-query';
 
 import Icon from '@c/icon';
 import Button from '@c/button';
-import { last } from '@lib/utils';
 import More from '@c/more';
 import useObservable from '@lib/hooks/use-observable';
 import toast from '@lib/toast';
@@ -19,15 +18,14 @@ import store, {
 } from './content/editor/store';
 
 export default function GlobalHeader() {
-  const { pathname } = useLocation();
   const { name = '', status, id } = useObservable<StoreValue>(store) || {};
   const [workFlowName, setWorkFlowName] = useState(name);
   const [isWorkFlowNameMenuOpen, setIsWorkFlowNameMenuOpen] = useState(false);
+  const { type } = useParams<{ type: 'form-data' | 'form-time'; }>();
   const paramsMap = {
     'form-data': '工作表触发',
     'form-time': '工作表时间触发',
   };
-  const type = last(pathname.split('/')) as 'form-data' | 'form-time';
   const history = useHistory();
   const toggleMutation = useMutation(toggleWorkFlow, {
     onSuccess: () => {

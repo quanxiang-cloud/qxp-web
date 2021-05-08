@@ -16,7 +16,7 @@ export default function FillInNodeComponent({ data, id }: Props) {
   const { nodeData, businessData: { basicConfig } } = data;
 
   function onMouseUp() {
-    if (+new Date - lastTime.current < 100) {
+    if (+new Date - lastTime.current < 200) {
       updateStore(null, () => ({ asideDrawerType: 'fillInForm' }));
     }
   }
