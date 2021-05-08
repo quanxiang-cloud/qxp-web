@@ -18,7 +18,7 @@ function DetailsHeader() {
       if (store.appList.findIndex(({ id }: AppInfo) => id === store.appID) === -1) {
         toast.error('应用不存在！2秒后跳转到首页');
         setTimeout(() => {
-          history.replace('/')
+          history.replace('/');
         }, 2000);
       }
     });
@@ -31,7 +31,7 @@ function DetailsHeader() {
   return (
     <div className="app-global-header app-details-header">
       <div className='flex items-center'>
-        <NavButton {...{ name: '工作台', icon: 'add_task', inside: true, url: '/' }} />
+        <NavButton {...{ name: '工作台', icon: 'home', inside: true, url: '/' }} />
         <span className='mr-16 ml-8'>/</span>
         <AppDropdown
           hiddenStatus={true}
