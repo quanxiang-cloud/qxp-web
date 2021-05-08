@@ -4,6 +4,17 @@ import { getFilterField } from '@portal/modules/apps-management/pages/form-desig
 
 import appPageDataStore from './store';
 
+export type Scheme = Record<string, any>;
+export type Config = {
+  filtrate?: PageField[];
+  pageTableConfig?: Record<string, any>;
+  pageTableShowRule?: {
+    fixedRule?: string;
+    order?: string;
+    pageSize?: number | null;
+  }
+};
+
 function getTableCellData(initValue: string | string[], field: PageField) {
   if (!initValue) {
     return '——'
@@ -36,9 +47,9 @@ function getTableCellData(initValue: string | string[], field: PageField) {
   return initValue;
 }
 
-export function getPageDataSchema(config: any, schema: any, pageID: string) {
-  const { pageTableShowRule = {}, pageTableConfig, filtrate = [] } = config || {};
-  const { setFiltrates, setTableConfig, setTableColumns, setTableID } = appPageDataStore;
+export function getPageDataSchema(config: Config, schema: Scheme, pageID: string, pageName?: string) {
+  const { pageTableShowRule = {}, pageTableConfig = {}, filtrate = [] } = config || {};
+  const { setFiltrates, setTableConfig, setTableColumns, setPageID } = appPageDataStore;
   const fieldsMap = schema?.properties || {};
   const tableColumns: any[] = [];
   let recordColNum = 0;
@@ -53,8 +64,7 @@ export function getPageDataSchema(config: any, schema: any, pageID: string) {
   }
 
   Object.keys(fieldsMap).forEach((key: string) => {
-    const hasVisible = pageTableConfig && pageTableConfig[key] ?
-      'visible' in pageTableConfig[key] : false;
+    const hasVisible = pageTableConfig[key] ? 'visible' in pageTableConfig[key] : false;
 
     if (key !== '_id' && ((hasVisible && pageTableConfig[key].visible) || !hasVisible)) {
       const isFixed = fixedColumnIndex.includes(recordColNum);
@@ -64,6 +74,7 @@ export function getPageDataSchema(config: any, schema: any, pageID: string) {
         accessor: (data: any) => getTableCellData(data[key], fieldsMap[key]),
         fixed: isFixed,
         width: isFixed && 150,
+        isSystem: fieldsMap[key].isSystem ? true : false,
       });
       recordColNum += 1;
     }
@@ -80,5 +91,5 @@ export function getPageDataSchema(config: any, schema: any, pageID: string) {
   }));
   setTableColumns(tableColumns);
   setTableConfig(pageTableShowRule);
-  setTableID(pageID);
+  setPageID(pageID, pageName);
 }

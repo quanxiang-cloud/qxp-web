@@ -19,27 +19,27 @@ const INTERNAL_FIELDS: Array<FormItem> = [
   {
     fieldName: '_id',
     componentName: 'Input',
-    configValue: { displayModifier: 'hidden', title: 'id' },
+    configValue: { displayModifier: 'hidden', title: 'id', isSystem: true },
   },
   {
     fieldName: 'created_at',
     componentName: 'DatePicker',
-    configValue: { displayModifier: 'hidden', title: '创建时间' },
+    configValue: { displayModifier: 'hidden', title: '创建时间', isSystem: true },
   },
   {
     fieldName: 'updated_at',
     componentName: 'DatePicker',
-    configValue: { displayModifier: 'hidden', title: '修改时间' },
+    configValue: { displayModifier: 'hidden', title: '修改时间', isSystem: true },
   },
   {
     fieldName: 'creator_name',
     componentName: 'Input',
-    configValue: { displayModifier: 'hidden', title: '创建者' },
+    configValue: { displayModifier: 'hidden', title: '创建者', isSystem: true },
   },
   {
     fieldName: 'modifier_name',
     componentName: 'Input',
-    configValue: { displayModifier: 'hidden', title: '修改者' },
+    configValue: { displayModifier: 'hidden', title: '修改者', isSystem: true },
   },
 ];
 
@@ -113,8 +113,8 @@ export default class FormBuilderStore {
   }
 
   @computed get schema(): ISchema {
-    const properties = this.internalFields
-      .concat(this.fields)
+    const properties = this.fields
+      .concat(this.internalFields)
       .reduce<Record<string, any>>((acc, field, index) => {
         const { fieldName, componentName, configValue } = field;
 
@@ -145,7 +145,7 @@ export default class FormBuilderStore {
     };
   }
 
-  @computed get schemaForPreview():ISchema {
+  @computed get schemaForPreview(): ISchema {
     const { properties } = this.schema;
     return {
       type: 'object',

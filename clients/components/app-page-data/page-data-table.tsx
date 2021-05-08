@@ -7,11 +7,13 @@ import Table from '@c/table';
 import Pagination from '@c/pagination';
 import PopConfirm from '@c/pop-confirm';
 
+import DetailsDrawer from './details-drawer';
 import store from './store';
 
 function PageDataTable() {
   const [selected, setSelected] = useState([]);
-  
+  const [curRow, setCurRow] = useState(null);
+
   const columns = useMemo(() => {
     return store.tableColumns.length ? [...store.tableColumns, {
       id: 'action',
@@ -39,14 +41,14 @@ function PageDataTable() {
       return;
     }
     store.setParams({});
-  }, [store.tableID]);
+  }, [store.pageID]);
 
   const handleSelectChange = (selectArr: any) => {
     setSelected(selectArr);
   };
 
-  const handleRowClick = (rowID: string, rowData: any) => {
-    console.log('rowID: string, rowData: any: ', rowID, rowData);
+  const handleRowClick = (_: string, rowData: any) => {
+    setCurRow(rowData);
   }
 
   const textBtnRender = (text: string, icon: string, onClick: () => void) => {
@@ -93,6 +95,7 @@ function PageDataTable() {
           }}
         />
       ) : null}
+      {curRow ? <DetailsDrawer row={curRow} onCancel={() => setCurRow(null)} /> : null}
     </div>
   );
 }

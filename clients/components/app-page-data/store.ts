@@ -17,7 +17,8 @@ class AppPageDataStore {
   @observable tableConfig: any = {};
   @observable noFiltratesTips: React.ReactNode = '尚未配置筛选条件。'
   @observable listLoading = false;
-  @observable tableID = '';
+  @observable pageID = '';
+  @observable pageName = '';
   @observable curItemFormData = null;
   @observable allowRequestData = false;
   @observable filtrates: FilterField[] = [];
@@ -48,8 +49,9 @@ class AppPageDataStore {
   }
 
   @action
-  setTableID = (tableID: string) => {
-    this.tableID = tableID;
+  setPageID = (pageID: string, pageName?: string) => {
+    this.pageID = pageID;
+    pageName && (this.pageName = pageName);
   }
 
   @action
@@ -80,7 +82,7 @@ class AppPageDataStore {
 
   @action
   delFormData = (ids: string[]) => {
-    formDataCurd(this.tableID, {
+    return formDataCurd(this.pageID, {
       method: 'delete',
       condition: ids.map((id) => ({ key: '_id', op: 'eq', value: [id] })),
     }).then(() => {
@@ -91,11 +93,11 @@ class AppPageDataStore {
 
   @action
   fetchFormDataList = (params: any) => {
-    if (!this.allowRequestData || !this.tableID) {
+    if (!this.allowRequestData || !this.pageID) {
       return;
     }
     this.listLoading = true;
-    formDataCurd(this.tableID, {
+    formDataCurd(this.pageID, {
       method: 'find',
       page: 1,
       condition: [],
@@ -116,7 +118,7 @@ class AppPageDataStore {
     this.tableConfig = {};
     this.filtrates = [];
     this.tableColumns = [];
-    this.tableID = '';
+    this.pageID = '';
     this.params = {
       condition: [],
       sort: [],

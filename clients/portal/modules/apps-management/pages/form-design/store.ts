@@ -44,7 +44,7 @@ class FormDesignStore {
         label: fieldsMap[key].title || '',
         type: fieldsMap[key].type,
         enum: fieldsMap[key].enum,
-        isSystem: !fieldsMap[key].display,
+        isSystem: fieldsMap[key].isSystem ? true : false,
         cProps: fieldsMap[key]['x-component-props'],
         ...getAttribute(this.pageTableConfig[key], index),
       };
@@ -74,12 +74,12 @@ class FormDesignStore {
       let recordColNum = 0;
       let fixedColumnIndex: number[] = [];
       switch (this.pageTableShowRule.fixedRule) {
-      case 'one':
-        fixedColumnIndex = [0];
-        break;
-      case 'previous_two':
-        fixedColumnIndex = [0, 1];
-        break;
+        case 'one':
+          fixedColumnIndex = [0];
+          break;
+        case 'previous_two':
+          fixedColumnIndex = [0, 1];
+          break;
       }
 
       [...this.fieldList].sort((a: PageField, b: PageField) => {

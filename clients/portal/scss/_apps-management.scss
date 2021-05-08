@@ -3,15 +3,6 @@
   max-width: 1440px;
 }
 
-.text-btn {
-  cursor: pointer;
-  color: #375FF3;
-}
-
-.text-btn:hover {
-  color: #254ee6;
-}
-
 .apps-management-height {
   height: calc(100vh - var(--global-header-height));
 }
