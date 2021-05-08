@@ -1,11 +1,14 @@
-import React, { forwardRef, Ref, useState, useEffect } from 'react';
+import React, { forwardRef, Ref } from 'react';
 import cs from 'classnames';
+import { useParams } from 'react-router-dom';
+import { useQuery } from 'react-query';
 
 import Select from '@c/select';
 import Icon from '@c/icon';
 import ToolTip from '@c/tooltip';
+import toast from '@lib/toast';
 
-import { getFormDataOptions, Options } from './api';
+import { getFormDataOptions } from './api';
 
 interface Props {
   value: string;
@@ -17,11 +20,17 @@ export default forwardRef(function FormSelector(
   { value, changeable = true, onChange = () => {} }: Props,
   ref?: Ref<HTMLInputElement>
 ) {
-  const [options, setOptions] = useState<Options>([]);
+  const { appID } = useParams<{appID: string}>();
 
-  useEffect(() => {
-    getFormDataOptions().then((options) => setOptions(options));
-  }, []);
+  const {
+    data: options = [],
+    isError,
+    error = '获取工作表失败',
+  } = useQuery(['GET_WORK_FORM_LIST', appID], getFormDataOptions);
+
+  if (isError) {
+    toast.error(error);
+  }
 
   return (
     <div className="px-16 py-10 flex items-center mb-22 bg-gray-100

@@ -18,11 +18,11 @@ const workflows = React.lazy(() => import('../../../work-flow/list'));
 import './index.scss';
 
 function AppSetting() {
-  const { appId } = useParams<any>();
+  const { appID } = useParams<any>();
   const history = useHistory();
 
   const goBack = () => {
-    history.push('/apps/details/' + appId);
+    history.push('/apps/details/' + appID);
   };
 
   const MENU = [
@@ -31,21 +31,21 @@ function AppSetting() {
       icon: 'description',
       replace: true,
       name: '应用信息',
-      url: `/apps/details/${appId}/setting/info`,
+      url: `/apps/details/${appID}/setting/info`,
     },
     {
       id: 'adminUsers',
       icon: 'admin_panel_settings',
       replace: true,
       name: '应用管理员',
-      url: `/apps/details/${appId}/setting/adminUsers`,
+      url: `/apps/details/${appID}/setting/adminUsers`,
     },
     {
       id: 'workflows',
       icon: 'linear_scale',
       replace: true,
       name: '工作流',
-      url: `/apps/details/${appId}/setting/workflows`,
+      url: `/apps/details/${appID}/setting/workflows`,
     },
   ];
 
@@ -78,9 +78,9 @@ function AppSetting() {
         )} menuData={MENU} />
         <div className="app-right-box bg-white">
           <Switch>
-            <Route exact path="/apps/details/:appId/setting/info" component={AppInfo} />
-            <Route exact path="/apps/details/:appId/setting/adminUsers" component={AppAdmin} />
-            <Route path="/apps/details/:appId/setting/workflows" component={workflows} />
+            <Route exact path="/apps/details/:appID/setting/info" component={AppInfo} />
+            <Route exact path="/apps/details/:appID/setting/adminUsers" component={AppAdmin} />
+            <Route path="/apps/details/:appID/setting/workflows" component={workflows} />
           </Switch>
         </div>
       </div>

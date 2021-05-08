@@ -8,6 +8,7 @@ import Toggle from '@c/toggle';
 import Tag from '@c/tag';
 import RadioGroup from '@c/radio/group';
 import EmployeeOrDepartmentPicker from '@c/employee-or-department-picker';
+
 import Urge from './urge';
 import TimerSelector from './timer-selector';
 import WhenTimeout from './when-timeout';
@@ -73,19 +74,19 @@ export default function BasicConfig({ type, value, onChange }: Props) {
 
   async function onSetPersons(
     departments: EmployeeOrDepartmentOfRole[],
-    employees: EmployeeOrDepartmentOfRole[]
+    users: EmployeeOrDepartmentOfRole[]
   ) {
     onChange({
       ...value,
-      persons: {
-        employees,
+      approvePersons: {
+        users,
         departments,
       },
     });
     return true;
   }
 
-  const { employees, departments } = value.persons;
+  const { users: employees, departments } = value.approvePersons;
 
   return (
     <div>

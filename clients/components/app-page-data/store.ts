@@ -116,6 +116,7 @@ class AppPageDataStore {
     this.tableConfig = {};
     this.filtrates = [];
     this.tableColumns = [];
+    this.tableID = '';
     this.params = {
       condition: [],
       sort: [],

@@ -1,4 +1,4 @@
-import React, { KeyboardEvent } from 'react';
+import React, { KeyboardEvent, MouseEvent } from 'react';
 import cs from 'classnames';
 
 import Icon from '@c/icon';
@@ -17,6 +17,14 @@ interface Props {
 export default function NodeHeader({
   type, title, className, iconClassName, titleClassName, iconName,
 }: Props) {
+  function onMouseDown(e: MouseEvent) {
+    e.stopPropagation();
+  }
+
+  function onMouseUp(e: MouseEvent) {
+    e.stopPropagation();
+  }
+
   return (
     <header
       className={cs(
@@ -28,6 +36,8 @@ export default function NodeHeader({
       <Icon name={iconName} className={cs('mr-4', iconClassName)} />
       <input
         onClick={(e) => e.stopPropagation()}
+        onMouseDown={onMouseDown}
+        onMouseUp={onMouseUp}
         onChange={(e) => updateNodeData(type, 'name', () => e.target.value)}
         onKeyDown={(e: KeyboardEvent<HTMLInputElement>) => {
           if (e.key === 'Enter') {

@@ -105,7 +105,7 @@ export default function CustomEdge({
         />
       </g>
       {!hasForm && (
-        <foreignObject x={centerX + 20} y={centerY - 18} width="205" height="36">
+        <foreignObject x={centerX + 20} y={centerY - 18} width="220" height="36">
           <ToolTip
             show={showTooltip}
             position="right"

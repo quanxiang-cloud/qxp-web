@@ -1,6 +1,8 @@
 .user-app-item {
   cursor: pointer;
-  min-width: 232px;
+  min-width: 340px;
+  max-width: 340px;
+  height: 76px;
   padding: 16px 20px;
   transition: all .2s;
 
@@ -11,4 +13,81 @@
 
 .user-app-list-container {
   background-color: rgba(255, 255, 255, 0.45);
+}
+
+.user-info-bg {
+  background-image: url('/dist/images/work-avator-bgc.svg');
+  background-size: cover;
+}
+
+.user-card {
+  align-self: stretch;
+  padding: 20px 40px;
+  margin-right: 20px;
+  font-size: 16px;
+}
+
+.user-card-last {
+  padding: 8px 20px;
+  font-size: 14px;
+}
+
+.backlog {
+  width: 128px;
+  height: 70px;
+  padding: 5px 0 5px 16px;
+  margin-right: 8px;
+  font-size: 24px;
+  border-radius: 12px;
+  > p {
+    font-size: 16px;
+    color: #94A3B8;
+  }
+  &:hover {
+    background-color: var(--gray-100);
+    cursor: pointer;
+  }
+}
+
+.message-handel-list {
+  position: relative;
+  height: 56px;
+  line-height: 56px;
+}
+
+.nav-icon {
+  padding: 5px 8px;
+  cursor: pointer;
+  .icon-hover {
+    &:hover {
+      fill: currentColor;
+      color: var(--blue-600);
+    }
+  }
+}
+
+.untreated {
+  // w-24 h-24 corner-4-0-4-4 text-center text-white text-14 leading-24
+  width: 26px;
+  height: 20px;
+  line-height: 20px;
+  margin-right: 18px;
+  background: #EF4444;
+  border-radius: 8px 8px 8px 2px;
+  text-align: center;
+  font-size: 12px;
+  color: #FFFFFF;
+}
+
+.border-y {
+  border-top: 1px solid #E2E8F0;
+  border-bottom: 1px solid #E2E8F0;
+}
+
+.rbtns {
+  display: flex;
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
 }

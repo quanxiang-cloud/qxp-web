@@ -8,7 +8,7 @@ import store from '../store';
 import '../index.scss';
 
 type Props = {
-  appId: string;
+  appID: string;
   status: 'publish' | 'soldOut';
   onCancel: () => void;
 }
@@ -28,9 +28,9 @@ const TEXT = {
   },
 };
 
-function AppSetStatusModal({ onCancel, appId, status = 'publish' }: Props) {
+function AppSetStatusModal({ onCancel, appID, status = 'publish' }: Props) {
   const handleSubmit = () => {
-    store.updateAppStatus(appId, status === 'publish' ? 1 : -1).then(() => {
+    store.updateAppStatus(appID, status === 'publish' ? 1 : -1).then(() => {
       onCancel();
     });
   };

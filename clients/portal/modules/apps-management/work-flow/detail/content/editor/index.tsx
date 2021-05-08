@@ -108,7 +108,7 @@ export default function Editor() {
     //   x: e.clientX - reactFlowBounds.left,
     //   y: e.clientY - reactFlowBounds.top,
     // });
-    const id = uuid();
+    const id = type + uuid();
     function updateElementPosition(
       element: FlowElement<any>,
       insertPosition: number,

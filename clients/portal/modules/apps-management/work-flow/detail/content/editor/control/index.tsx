@@ -43,11 +43,21 @@ function Controls({
   className,
   children,
 }: Props) {
-  const { type } = useParams();
+  const { type } = useParams<{ type: string; }>();
 
   const setInteractive = useStoreActions((actions) => actions.setInteractive);
   const { zoomIn, zoomOut, fitView } = useZoomPanHelper();
-  const { elements = [], id, name, triggerMode, version } = useObservable<StoreValue>(store) || {};
+  const {
+    elements = [],
+    id,
+    name,
+    triggerMode,
+    version,
+    cancelable: canCancel,
+    urgeable: canUrge,
+    seeStatusAndMsg: canViewStatusMsg,
+    nodeAdminMsg: canMsg,
+  } = useObservable<StoreValue>(store) || {};
   const formDataElement = elements.find(({ type }) => type === 'formData');
 
   const isInteractive = useStoreState(
@@ -96,6 +106,10 @@ function Controls({
       }),
       name: name as string,
       triggerMode: triggerMode as string,
+      canCancel: canCancel ? 1 : 0,
+      canUrge: canUrge ? 1 : 0,
+      canMsg: canMsg ? 1 : 0,
+      canViewStatusMsg: canViewStatusMsg ? 1 : 0,
     };
     if (id && !type) {
       saveData.id = id;

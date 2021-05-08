@@ -1,26 +1,29 @@
 import React, { useEffect } from 'react';
 import { Route, useParams } from 'react-router-dom';
 
+import appDataStore from '@c/app-page-data/store';
+
 import Header from './header';
 import AppDetailsContent from './app-details-content';
 import AppSetting from './app-setting';
 import appDetailsStore from './store';
 
 function AppDetails() {
-  const { appId } = useParams<{appId: string}>();
+  const { appID } = useParams<{appID: string}>();
 
   useEffect(() => {
-    appDetailsStore.fetchAppDetails(appId);
+    appDetailsStore.fetchAppDetails(appID);
     return () => {
       appDetailsStore.clear();
+      appDataStore.clear();
     };
-  }, [appId]);
+  }, [appID]);
 
   return (
     <div>
       <Header />
-      <Route exact path='/apps/details/:appId' component={AppDetailsContent} />
-      <Route path='/apps/details/:appId/setting' component={AppSetting} />
+      <Route exact path='/apps/details/:appID' component={AppDetailsContent} />
+      <Route path='/apps/details/:appID/setting' component={AppSetting} />
     </div>
   );
 }

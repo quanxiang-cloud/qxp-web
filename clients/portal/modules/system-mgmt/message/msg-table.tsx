@@ -461,7 +461,7 @@ const MsgTable = ({ refresh }: Props) => {
           onConfirm={() => {
             deleteMsgById(modalInfo.id)
               .then((data) => {
-                if (data && data.code == 0) {
+                if (data && (data as any).code == 0) {
                   Message.success('操作成功');
                   refresh();
                   refreshMsg();

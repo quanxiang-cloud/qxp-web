@@ -23,7 +23,7 @@ import appListStore from '../entry/my-app/store';
 class AppDetailsStore {
   @observable appDetails: any = {};
   @observable loading = false;
-  @observable appId = '';
+  @observable appID = '';
   @observable pageListLoading = false;
   @observable fetchSchemeLoading = false;
   @observable formScheme = null;
@@ -44,10 +44,10 @@ class AppDetailsStore {
   }
 
   @action
-  fetchAppDetails = (appId: string) => {
+  fetchAppDetails = (appID: string) => {
     this.loading = true;
-    this.appId = appId;
-    return fetchAppDetails(appId).then((res) => {
+    this.appID = appID;
+    return fetchAppDetails(appID).then((res) => {
       this.appDetails = res.data || {};
       this.loading = false;
     }).catch(() => {
@@ -99,7 +99,7 @@ class AppDetailsStore {
   @action
   editGroup = (groupInfo: PageInfo) => {
     if (groupInfo.id) {
-      return updatePageOrGroup({ appID: this.appId, ...groupInfo }).then(() => {
+      return updatePageOrGroup({ appID: this.appID, ...groupInfo }).then(() => {
         this.pagesTreeData = mutateTree(toJS(this.pagesTreeData), groupInfo.id as string, {
           id: groupInfo.id,
           data: groupInfo,
@@ -109,7 +109,7 @@ class AppDetailsStore {
       });
     }
 
-    return createGroup({ appID: this.appId, ...groupInfo }).then((res) => {
+    return createGroup({ appID: this.appID, ...groupInfo }).then((res) => {
       const newGroup = { ...res.data, name: groupInfo.name, menuType: 1 };
       const items = toJS(this.pagesTreeData.items);
       items.ROOT.children.push(newGroup.id);
@@ -140,10 +140,14 @@ class AppDetailsStore {
           id: pageInfo.id,
           data: pageInfo,
         });
+
+        if (pageInfo.id === this.curPage.id) {
+          this.curPage = pageInfo;
+        }
       });
     }
 
-    return createPage({ appID: this.appId, ...pageInfo }).then((res) => {
+    return createPage({ appID: this.appID, ...pageInfo }).then((res) => {
       const newPage = { ...res.data, ...pageInfo, menuType: 0 };
       const items = toJS(this.pagesTreeData.items);
       items[newPage.groupID || 'ROOT'].children.push(newPage.id);
@@ -179,10 +183,10 @@ class AppDetailsStore {
   }
 
   @action
-  fetchPageList = (appId: string) => {
-    this.appId = appId;
+  fetchPageList = (appID: string) => {
+    this.appID = appID;
     this.pageListLoading = true;
-    fetchPageList(appId).then((res) => {
+    fetchPageList(appID).then((res) => {
       this.pagesTreeData = buildAppPagesTreeData(res.data.menu);
       this.pageListLoading = false;
     });

@@ -54,7 +54,7 @@ function AppList({ isLoading, appList, openCreatedModal }: Props) {
       {modalType === 'publish' && curApp !== null && (
         <AppSetStatusModal
           status={curApp.useStatus > 0 ? 'soldOut' : 'publish'}
-          appId={curApp.id}
+          appID={curApp.id}
           onCancel={() => setModalType('')}
         />
       )}

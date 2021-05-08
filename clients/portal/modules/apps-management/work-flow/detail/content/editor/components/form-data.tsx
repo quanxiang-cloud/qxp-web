@@ -13,7 +13,7 @@ export default function FormDataNodeComponent({ data }: Props) {
   const lastTime = useRef(+new Date());
 
   function onMouseUp() {
-    if (+new Date - lastTime.current < 100) {
+    if (+new Date - lastTime.current < 200) {
       updateStore(null, () => ({ asideDrawerType: 'formDataForm' }));
     }
   }

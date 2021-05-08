@@ -20,7 +20,7 @@ function FieldSort({ showOnChange, fieldList, sortChange }: Props) {
 
   const renderList = (lists: PageField[]) => lists.map((field: PageField) => {
     return (
-      <div className="page-field-sort-item" key={field.id} data-id={field.id}>
+      <div className="page-field-sort-item bg-white" key={field.id} data-id={field.id}>
         {field.label}
         <div className='page-field-sort-action'>
           <Checkbox
