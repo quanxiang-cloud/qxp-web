@@ -37,7 +37,7 @@ export default function HeaderLeft() {
       >
         <div className="header-nav-btn-icon-wrapper">
           <Icon
-            name="add_task"
+            name="home"
             className="group-hover:text-blue-600 header-nav-btn-icon"
             size={20}
             style={style(isHome)}
