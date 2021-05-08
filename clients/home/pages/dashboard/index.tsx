@@ -52,20 +52,21 @@ function Dashboard() {
           />
           <div className="w-20 "></div>
           <Card
-            className="flex-3 self-stretch ml-0 px-40 pt-20 text-16 relative"
+            className="flex-3 self-stretch ml-0 px-40 py-20 text-16 relative"
             title="待办事项"
+            headerClassName="pb-32"
             itemTitleClassName="text-h5"
             content={
               (<>
-                <div className="w-128 h-70 px-16">
+                <div className="backlog text-red-600">
                     12
                   <p>已超时</p>
                 </div>
-                <div className="w-128 h-70 px-16">
+                <div className="backlog text-yellow-600">
                     4
                   <p>催办</p>
                 </div>
-                <div className="w-128 h-70 px-16">
+                <div className="backlog text-gray-900">
                     16
                   <p>全部待办</p>
                 </div>
@@ -75,10 +76,11 @@ function Dashboard() {
           />
           <div className="w-20 "></div>
           <Card
-            className="flex-2 self-stretch flex flex-col px-20 py-8 text-16"
+            className="flex-2 self-stretch px-20 py-8 text-16"
             itemTitleClassName="text-h5"
+            contentClassName="flex-col"
             content={
-              (<div>
+              (<>
                 <div className="message-handel-list relative">
                   <Icon className="mr-8" name="addchart" size={18} />
                   我发起的
@@ -94,7 +96,7 @@ function Dashboard() {
                   抄送给我
                   <Icon className="rbtn" name="chevron_right" size={18} />
                 </div>
-              </div>)
+              </>)
             }
           />
         </div>
