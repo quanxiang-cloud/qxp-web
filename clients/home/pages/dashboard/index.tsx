@@ -54,7 +54,7 @@ function Dashboard() {
           <Card
             title=""
             className="flex-2 user-card user-info-bg"
-            itemTitleClassName="text-h5 hidden"
+            itemTitleClassName="text-h5"
             content={(<>
               <div className="z-10">
                 <Avatar
@@ -93,7 +93,7 @@ function Dashboard() {
           <Card
             title=""
             className="flex-2 user-card user-card-last"
-            itemTitleClassName="text-h5 hidden"
+            itemTitleClassName="text-h5"
             contentClassName="flex-col"
             content={(<>
               {HANDLE_LIST.map(({ name, key, icon, count }) => {
