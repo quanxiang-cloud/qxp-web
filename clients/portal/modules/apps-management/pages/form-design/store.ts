@@ -38,7 +38,7 @@ class FormDesignStore {
     const fieldsMap = this.formStore?.schema?.properties || {};
     return Object.keys(fieldsMap).filter((_key: string) => {
       return _key !== '_id';
-    }).map((key: string, index: number) => {
+    }).map((key: string) => {
       return {
         id: key,
         label: fieldsMap[key].title || '',
@@ -46,7 +46,7 @@ class FormDesignStore {
         enum: fieldsMap[key].enum,
         isSystem: fieldsMap[key].isSystem ? true : false,
         cProps: fieldsMap[key]['x-component-props'],
-        ...getAttribute(this.pageTableConfig[key], index),
+        ...getAttribute(this.pageTableConfig[key], fieldsMap[key]['x-index']),
       };
     });
   }

@@ -80,9 +80,13 @@ export function getPageDataSchema(config: Config, schema: Scheme, pageID: string
     }
   });
 
-  if (pageTableConfig) {
+  if (Object.keys(pageTableConfig).filter((key: string) => 'sort' in pageTableConfig[key]).length > 0) {
     tableColumns.sort((a, b) => {
       return pageTableConfig[a.id]?.sort - pageTableConfig[b.id]?.sort;
+    });
+  } else {
+    tableColumns.sort((a, b) => {
+      return fieldsMap[a.id]['x-index'] - fieldsMap[b.id]['x-index'];
     });
   }
 

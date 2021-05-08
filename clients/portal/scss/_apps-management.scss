@@ -3,6 +3,10 @@
   max-width: 1440px;
 }
 
+.min-w-screen {
+  min-width: 1200px;
+}
+
 .apps-management-height {
   height: calc(100vh - var(--global-header-height));
 }

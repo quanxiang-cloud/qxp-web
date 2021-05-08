@@ -22,6 +22,12 @@ function PageDataTable() {
         return (
           <div className='text-center'>
             <span
+              onClick={() => setCurRow(data)}
+              className='mr-16 text-blue-600 cursor-pointer'
+            >
+              查看
+            </span>
+            <span
               onClick={() => store.goEdit(data)}
               className='mr-16 text-blue-600 cursor-pointer'
             >
@@ -46,10 +52,6 @@ function PageDataTable() {
   const handleSelectChange = (selectArr: any) => {
     setSelected(selectArr);
   };
-
-  const handleRowClick = (_: string, rowData: any) => {
-    setCurRow(rowData);
-  }
 
   const textBtnRender = (text: string, icon: string, onClick: () => void) => {
     return (
@@ -80,7 +82,6 @@ function PageDataTable() {
         emptyTips='暂无数据'
         rowKey="_id"
         loading={store.listLoading}
-        onRowClick={handleRowClick}
         onSelectChange={handleSelectChange}
         columns={columns}
         data={store.formDataList}
