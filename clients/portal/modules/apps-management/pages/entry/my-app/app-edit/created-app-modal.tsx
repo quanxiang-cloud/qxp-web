@@ -4,7 +4,6 @@ import Modal from '@c/modal';
 
 import toast from '@lib/toast';
 import Button from '@c/button';
-import { createPage } from '@portal/modules/apps-management/lib/api';
 
 import CreatedEditApp from './created-edit-app';
 import store from '../store';
@@ -25,7 +24,6 @@ function CreatedAppModal({ onCancel }: Props) {
       store.createdApp({ ...data, useStatus: -1 }).then((res: string) => {
         toast.success('创建应用成功！');
         onCancel();
-        createPage({ describe: '补充说明信息。', icon: 'event_available', name: '示例页面', appID: res });
         history.push(`/apps/details/${res}`);
       });
     }

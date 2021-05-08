@@ -193,8 +193,6 @@ class AppDetailsStore {
     this.pageListLoading = true;
     fetchPageList(appId).then((res) => {
       this.pagesTreeData = buildAppPagesTreeData(res.data.menu);
-      this.curPage = res.data.menu && res.data.menu[0];
-      this.curPage.id && this.setCurPage(this.curPage);
       this.pageListLoading = false;
     });
   }
