@@ -29,7 +29,7 @@ export default function Variables() {
   return (
     <div className="w-full flex flex-col">
       <TextHeader
-        className="w-full h-56 items-center flex px-20 bg-gray-1000
+        className="h-56 items-center flex px-20 bg-gray-1000
         shadow-header text-gray-900 mb-20 pb-0"
         title="工作流变量"
         titleClassName="text-h5"
@@ -39,10 +39,10 @@ export default function Variables() {
           <div className="text-underline text-body2 cursor-pointer">如何使用变量</div>
         )}
       />
-      <Card className="self-center rounded-12 overflow-hidden px-24 py-16 flex-1 mb-100">
+      <Card className="self-center rounded-12 overflow-hidden px-24 py-16 flex-1 mb-100 w-full max-w-%90">
         <Table
-          wrapperClassName="items-center w-800"
-          className="w-800"
+          wrapperClassName="items-center m-w-90%"
+          className="w-full"
           rowKey="id"
           columns={[{
             Header: () => getHeader('名称'),

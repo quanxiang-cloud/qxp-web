@@ -12,7 +12,7 @@ interface Props {
 
 export default function AsideMenuItem({ iconName, text, onClick, isActive }: Props) {
   return (
-    <div className={cs('flex items-center py-16 px-24', {
+    <div className={cs('flex items-center py-16 pl-24 pr-100', {
       'bg-blue-100': isActive,
     })} onClick={onClick}>
       <Icon name={iconName} className={cs('mr-8 group-hover:text-blue-600', {
@@ -25,7 +25,7 @@ export default function AsideMenuItem({ iconName, text, onClick, isActive }: Pro
             'font-medium': isActive,
             'text-gray-900': !isActive,
             'font-normal': !isActive,
-          })}
+          }, 'whitespace-nowrap')}
       >
         {text}
       </span>

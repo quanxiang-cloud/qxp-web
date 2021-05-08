@@ -11,7 +11,7 @@ interface Props {
 
 export default function NewFlow({ onChange, currentOperateType }: Props) {
   return (
-    <aside className="w-142 h-full bg-white shadow-flow-aside">
+    <aside className="h-full bg-white shadow-flow-aside">
       <List
         itemClassName="cursor-pointer hover:bg-blue-100 group"
         items={[

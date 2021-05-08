@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import cs from 'classnames';
 
 import { updateStore, Data } from '../store';
@@ -12,6 +12,7 @@ interface Props {
 
 export default function FillInNodeComponent({ data, id }: Props) {
   const lastTime = useRef(+new Date());
+  const [showRemover, setShowRemover] = useState(false);
 
   const { nodeData, businessData: { basicConfig } } = data;
 
@@ -32,6 +33,14 @@ export default function FillInNodeComponent({ data, id }: Props) {
     ].map((v) => v.ownerName || v.departmentName).join('; ');
   }
 
+  function onMouseEnter() {
+    setShowRemover(true);
+  }
+
+  function onMouseLeave() {
+    setShowRemover(false);
+  }
+
   const hasFillInRule = !!basicConfig.multiplePersonWay;
   const hasFillInPerson = !!basicConfig.approvePersons.departments.length ||
     !!basicConfig.approvePersons.users.length;
@@ -45,6 +54,8 @@ export default function FillInNodeComponent({ data, id }: Props) {
       )}
       onMouseDown={() => lastTime.current = +new Date()}
       onMouseUp={onMouseUp}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
     >
       <div className="relative">
         <NodeHeader
@@ -55,7 +66,7 @@ export default function FillInNodeComponent({ data, id }: Props) {
           iconClassName="text-white"
           titleClassName="text-white bg-teal-500"
         />
-        <NodeRemover id={id} type="light" />
+        <NodeRemover visible={showRemover} id={id} type="light" />
       </div>
       <footer className="p-8 flex items-center flex-1">
         {(hasFillInRule || hasFillInPerson) && (
