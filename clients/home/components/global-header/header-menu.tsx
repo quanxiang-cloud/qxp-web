@@ -7,8 +7,30 @@ import Icon from '@c/icon';
 
 import ResetPasswordModal from './reset-password-modal';
 
+const imgBgColors: string[] = ['#6366F1', '#F59E0B', '#10B981', '#F97316',
+  '#A855F7', '#14B8A6', '#EF4444', '#06B6D4'];
+const getImgColor = (text: string, colors = imgBgColors) => {
+  const reg = /^[a-zA-Z]*$/;
+  let _text = text;
+  if (reg.test(text)) {
+    _text = text.toUpperCase();
+  }
+  const num: number = _text.charCodeAt(0) % 8;
+  return {
+    name: _text,
+    color: colors[num],
+  };
+};
+
 export default function HeaderMenu() {
   const [openResetPasswordModal, setOpenResetPasswordModal] = useState<boolean>(false);
+  const username = window.USER.userName;
+  let head = '';
+  let imgInfo: { name: string, color: string } = { name: '', color: '' };
+  if (username) {
+    head = username.substring(0, 1);
+    imgInfo = getImgColor(head);
+  }
 
   return (
     <div className="flex justify-end items-center flex-2">
@@ -45,12 +67,12 @@ export default function HeaderMenu() {
           />
         </div>
         <div className="header-nav-btn group">
-          <div className="header-nav-btn-icon-wrapper">
-            <Icon
-              name="settings"
-              className="group-hover:text-blue-600 header-nav-btn-icon"
-              size={20}
-            />
+          <div className="w-24 h-24 corner-4-0-4-4 text-center text-white text-14 leading-24"
+            style={{
+              backgroundColor: imgInfo.color,
+            }}
+          >
+            {imgInfo.name}
           </div>
           <MoreMenu
             menus={[
@@ -70,7 +92,7 @@ export default function HeaderMenu() {
               className="cursor-pointer flex items-center h-36
             hover:blue-100 transition group-hover:text-blue-600"
             >
-              <Icon name="caret-down" style={{ marginLeft: '8px' }} />
+              <Icon name="arrow_drop_down" size={20} />
             </div>
           </MoreMenu>
         </div>
