@@ -117,18 +117,16 @@ function Dashboard() {
             title="我的应用"
             itemTitleClassName="text-h5"
             contentClassName="grid grid-cols-4 gap-16"
-            content={(
-              <>
-                {store.appList.map((appInfo: AppInfo) => (
-                  <AppInfoView
-                    onClick={() => history.push('/apps/' + appInfo.id)}
-                    className='rounded-12 bg-white user-app-item'
-                    key={appInfo.id}
-                    appInfo={appInfo}
-                  />
-                ))}
-              </>
-            )}
+            content={(<>
+              {store.appList.map((appInfo: AppInfo) => (
+                <AppInfoView
+                  onClick={() => history.push('/apps/' + appInfo.id)}
+                  className='rounded-12 bg-white user-app-item'
+                  key={appInfo.id}
+                  appInfo={appInfo}
+                />
+              ))}
+            </>)}
           />
         </div>
       </main>
