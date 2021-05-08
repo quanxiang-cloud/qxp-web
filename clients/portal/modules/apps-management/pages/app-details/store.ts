@@ -140,6 +140,10 @@ class AppDetailsStore {
           id: pageInfo.id,
           data: pageInfo,
         });
+
+        if (pageInfo.id === this.curPage.id) {
+          this.curPage = pageInfo;
+        }
       });
     }
 
