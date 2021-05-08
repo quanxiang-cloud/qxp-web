@@ -11,6 +11,19 @@ import store from '../store';
 
 import './index.scss';
 
+type Status = {
+  value: number;
+  key: 'timeout' | 'urgency' | 'all';
+  name: string;
+  color: string;
+}
+
+const UNTREATED_LIST: Array<Status> = [
+  { value: 12, key: 'timeout', name: '已超时', color: 'text-red-600' },
+  { value: 4, key: 'urgency', name: '催办', color: 'text-yellow-600' },
+  { value: 16, key: 'all', name: '全部待办', color: 'text-gray-900' },
+];
+
 function Dashboard() {
   const history = useHistory();
 
@@ -50,32 +63,23 @@ function Dashboard() {
             }
           />
           <Card
-          // flex-2 self-stretch px-40 py-20 text-16 mr-20
             className="flex-3 user-card relative"
             title="待办事项"
             headerClassName="pb-32"
             itemTitleClassName="text-h5"
             content={
               (<>
-                <div className="backlog text-red-600">
-                  {12}
-                  <p>已超时</p>
-                </div>
-                <div className="backlog text-yellow-600">
-                  {4}
-                  <p>催办</p>
-                </div>
-                <div className="backlog text-gray-900">
-                  {16}
-                  <p>全部待办</p>
-                </div>
+                {UNTREATED_LIST.map(({ value, name, key, color }) => (
+                  <div className={`backlog ${color}`} key={key}>
+                    {value}
+                    <p>{name}</p>
+                  </div>
+                ))}
                 <img className="absolute bottom-0 right-0" src="/dist/images/frame.svg" alt=""/>
               </>)
             }
           />
-          {/* <div className="w-20 "></div> */}
           <Card
-          // flex-2 self-stretch px-40 py-20 text-16 mr-20
             className="flex-2 user-card user-card-last"
             itemTitleClassName="text-h5"
             contentClassName="flex-col"
