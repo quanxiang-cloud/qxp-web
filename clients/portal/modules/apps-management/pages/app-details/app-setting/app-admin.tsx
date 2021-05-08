@@ -18,9 +18,9 @@ function AppAdmin() {
   const [selectedIdArr, setSelectedArr] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const [delLoading, setDelLoading] = useState(false);
-  const { appId } = useParams<{appId: string}>();
+  const { appID } = useParams<{appID: string}>();
   const [, setTotal] = useState(0);
-  const [params] = useState({ page: 1, limit: 9999, id: appId });
+  const [params] = useState({ page: 1, limit: 9999, id: appID });
   const [appAdminList, setAppAdminList] = useState([]);
 
   const fetchAdmins = () => {
@@ -36,7 +36,7 @@ function AppAdmin() {
 
   const removeAdmin = (idArr: string[]) => {
     setDelLoading(true);
-    return delAppAdminUsers({ appID: appId, userIDs: idArr }).then(() => {
+    return delAppAdminUsers({ appID: appID, userIDs: idArr }).then(() => {
       setDelLoading(false);
       setAppAdminList(appAdminList.filter(({ id }: any) => !idArr.includes(id)));
       toast.success('删除成功！');
@@ -63,7 +63,7 @@ function AppAdmin() {
       return Promise.reject({ message: '' });
     }
 
-    return appAddAdmin({ appId, userIDs: employees.map(({ id }) => id) }).then(() => {
+    return appAddAdmin({ appID, userIDs: employees.map(({ id }) => id) }).then(() => {
       fetchAdmins();
       setModalType('');
     });
@@ -142,7 +142,7 @@ function AppAdmin() {
           loading={loading}
           onSelectChange={handleSelectChange}
         />
-        {(modalType === 'batchRemove')&&
+        {(modalType === 'batchRemove') &&
           (<Modal
             title='批量移除'
             className="static-modal"

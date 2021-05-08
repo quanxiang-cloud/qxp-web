@@ -18,7 +18,7 @@ import './index.scss';
 function PageNav() {
   const [modalType, setModalType] = useState('');
   const [curEditNode, setCurEditNode] = useState<null | TreeItem>(null);
-  const { appId } = useParams<{appId: string}>();
+  const { appID } = useParams<{appID: string}>();
   const { setCurPage, editGroup, deletePageOrGroup } = appPagesStore;
 
   function delPageOrGroup() {
@@ -105,7 +105,7 @@ function PageNav() {
       )}
       {modalType === 'editPage' && (
         <EditPageModal
-          appID={appId}
+          appID={appID}
           pageInfo={curEditNode?.data}
           onCancel={closeModal}
           onSubmit={handleEditPage}

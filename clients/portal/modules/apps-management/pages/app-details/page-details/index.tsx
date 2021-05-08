@@ -12,10 +12,10 @@ import appPagesStore from '../store';
 import './index.scss';
 
 function PageDetails() {
-  const { curPage, appId } = appPagesStore;
+  const { curPage, appID } = appPagesStore;
   const history = useHistory();
   const goFormBuild = () => {
-    history.push(`/apps/formDesign/formBuild/${curPage.id}/${appId}?pageName=${curPage.name}`);
+    history.push(`/apps/formDesign/formBuild/${curPage.id}/${appID}?pageName=${curPage.name}`);
   };
 
   const contentRender = () => {
@@ -31,7 +31,7 @@ function PageDetails() {
       );
     }
 
-    return <PageBuildNav appID={appId} pageId={curPage.id} pageName={curPage.name} />;
+    return <PageBuildNav appID={appID} pageId={curPage.id} pageName={curPage.name} />;
   };
 
   if (!curPage.id) {

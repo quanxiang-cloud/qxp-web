@@ -14,7 +14,7 @@ import './index.scss';
 
 function DetailsHeader() {
   const history = useHistory();
-  const { appId } = useParams<{appId: string}>();
+  const { appID } = useParams<{appID: string}>();
   const { updateAppStatus, appDetails } = appDetailsStore;
 
   useEffect(() => {
@@ -26,11 +26,11 @@ function DetailsHeader() {
   };
 
   const handleChange = (newAppId: string) => {
-    history.replace(location.pathname.replace(appId, newAppId));
+    history.replace(location.pathname.replace(appID, newAppId));
   };
 
   const goAppVisit = () => {
-    window.open(`//${window.CONFIG.home_hostname}/apps/` + appId);
+    window.open(`//${window.CONFIG.home_hostname}/apps/` + appID);
   };
 
   const statusTipsContent = (isPublish: boolean) => {
@@ -68,7 +68,7 @@ function DetailsHeader() {
           }}
         />
         <span className='mr-16 ml-8'>/</span>
-        <AppDropdown appList={appListStore.allAppList} curApp={appId} onChange={handleChange} />
+        <AppDropdown appList={appListStore.allAppList} curApp={appID} onChange={handleChange} />
       </div>
       <div className='flex'>
         {isPublish ? (

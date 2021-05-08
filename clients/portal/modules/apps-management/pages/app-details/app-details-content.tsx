@@ -8,11 +8,11 @@ import appPagesStore from './store';
 import './index.scss';
 
 function AppDetailsContent() {
-  const { appId } = useParams<{appId: string}>();
+  const { appID } = useParams<{appID: string}>();
 
   useEffect(() => {
-    appPagesStore.fetchPageList(appId);
-  }, [appId]);
+    appPagesStore.fetchPageList(appID);
+  }, [appID]);
 
   return (
     <div className='apps-management-height flex relative'>
