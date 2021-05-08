@@ -25,11 +25,9 @@ const getImgColor = (text: string, colors = imgBgColors) => {
 export default function HeaderMenu() {
   const [openResetPasswordModal, setOpenResetPasswordModal] = useState<boolean>(false);
   const username = window.USER.userName;
-  let head = '';
   let imgInfo: { name: string, color: string } = { name: '', color: '' };
   if (username) {
-    head = username.substring(0, 1);
-    imgInfo = getImgColor(head);
+    imgInfo = getImgColor(username.substring(0, 1));
   }
 
   return (
@@ -41,24 +39,24 @@ export default function HeaderMenu() {
       <Button className="mr-32">
           进入应用管理
       </Button>
-      <div className="px-8 py-5 cursor-pointer">
+      <div className="nav-icon">
         <Icon
+          className='icon-hover'
           name="notifications"
-          className="group-hover:text-blue-600 header-nav-btn-icon"
           size={20}
         />
       </div>
-      <div className="px-8 py-5 cursor-pointer">
+      <div className="nav-icon">
         <Icon
+          className='icon-hover'
           name="assignment"
-          className="group-hover:text-blue-600 header-nav-btn-icon"
           size={20}
         />
       </div>
-      <div className="px-8 py-5 cursor-pointer">
+      <div className="nav-icon">
         <Icon
+          className='icon-hover'
           name="help_outline"
-          className="group-hover:text-blue-600 header-nav-btn-icon"
           size={20}
         />
       </div>
