@@ -95,7 +95,7 @@ const schema: ISchema = {
           'x-index': 6,
         },
         valueSource: {
-          title: '默认值',
+          title: '数值源',
           enum: [
             {
               label: '自定义',

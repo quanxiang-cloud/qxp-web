@@ -11,6 +11,7 @@ import store from './store';
 
 function PageDataTable() {
   const [selected, setSelected] = useState([]);
+  
   const columns = useMemo(() => {
     return store.tableColumns.length ? [...store.tableColumns, {
       id: 'action',

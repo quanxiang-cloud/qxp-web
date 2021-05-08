@@ -58,7 +58,7 @@ function AppActions({ openModal, appInfo }: Props) {
       history.push(`/apps/details/${appInfo.id}/setting/info`);
       break;
     case 'visit':
-      window.location.href = `//${window.CONFIG.home_hostname}/apps/` + appInfo.id;
+      window.open(`//${window.CONFIG.home_hostname}/apps/` + appInfo.id);
       break;
     case 'delete':
       openModal('delete', appInfo);
