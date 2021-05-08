@@ -68,7 +68,7 @@ function Dashboard() {
                   </div>
                   <div className="mt-8">
                     <img className="inline-block mr-8" src="/dist/images/dep.svg" />
-                      部门：{window.USER.depIds}
+                      部门：{window.USER.dep.departmentName}
                   </div>
                 </div>
               </div>
