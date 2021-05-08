@@ -28,9 +28,9 @@ export const useInitData = () => {
   }, [isLoading, isError]);
 
   useEffect(() => {
-    if (!isError) {
+    if (!isError && data) {
       setData(data);
-      data && setPageInfo({ ...pageInfo, total: data.data.total });
+      data && setPageInfo({ ...pageInfo, total: data.total });
     }
   }, [data, isError]);
 
