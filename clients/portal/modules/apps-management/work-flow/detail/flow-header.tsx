@@ -31,7 +31,7 @@ export default function GlobalHeader() {
   const history = useHistory();
   const toggleMutation = useMutation(toggleWorkFlow, {
     onSuccess: () => {
-      toast.success(status === 'ENABLE' ? '下架成功' : '发布成功');
+      toast.success(status === 'ENABLE' ? '工作流下架成功' : '工作流发布成功');
       updateStore('status', () => status === 'DISABLE' ? 'ENABLE' : 'DISABLE');
     },
     onError: (e: Error) => {
