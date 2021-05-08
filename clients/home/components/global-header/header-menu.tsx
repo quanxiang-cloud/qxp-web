@@ -45,21 +45,21 @@ export default function HeaderMenu() {
         </Button>
       </div>
       <div className="flex justify-end items-center flex-1">
-        <div className="px-8 py-5">
+        <div className="px-8 py-5 cursor-pointer">
           <Icon
             name="notifications"
             className="group-hover:text-blue-600 header-nav-btn-icon"
             size={20}
           />
         </div>
-        <div className="px-8 py-5">
+        <div className="px-8 py-5 cursor-pointer">
           <Icon
             name="assignment"
             className="group-hover:text-blue-600 header-nav-btn-icon"
             size={20}
           />
         </div>
-        <div className="px-8 py-5">
+        <div className="px-8 py-5 cursor-pointer">
           <Icon
             name="help_outline"
             className="group-hover:text-blue-600 header-nav-btn-icon"
