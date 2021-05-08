@@ -85,7 +85,7 @@ function Dashboard() {
             contentClassName="flex-col"
             content={
               (<>
-                <div className="message-handel-list relative">
+                <div className="message-handel-list">
                   <Icon className="mr-8" name="addchart" size={20} />
                   我发起的
                   <div className="rbtns">
@@ -93,7 +93,7 @@ function Dashboard() {
                     <Icon name="chevron_right" size={20} />
                   </div>
                 </div>
-                <div className="message-handel-list border-y relative">
+                <div className="message-handel-list border-y">
                   <Icon className="mr-8" name="done_all" size={20} />
                   我已处理
                   <div className="rbtns">
@@ -101,7 +101,7 @@ function Dashboard() {
                     <Icon name="chevron_right" size={20} />
                   </div>
                 </div>
-                <div className="message-handel-list relative">
+                <div className="message-handel-list">
                   <Icon className="mr-8" name="send_me" size={20} />
                   抄送给我
                   <div className="rbtns">
