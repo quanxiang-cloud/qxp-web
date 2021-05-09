@@ -54,52 +54,6 @@ export async function getFormFieldOptions({ queryKey }: QueryFunctionContext): P
   return parseFormFieldOptions(data || {});
 }
 
-export interface FieldList {
-  custom: {label: string; name: string, children?: string[]; parent?: string}[];
-  system: {label: string; name: string}[];
-}
-export function getFieldsList(): Promise<FieldList> {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve({
-        custom: [{
-          label: '姓名',
-          name: 'username',
-        }, {
-          label: '年龄',
-          name: 'age',
-        }, {
-          label: '明细',
-          name: 'detail',
-          children: ['4', '5', '6'],
-        }, {
-          label: '金额',
-          name: 'amount',
-          parent: 'detail',
-        }, {
-          label: '规格',
-          name: 'specification',
-          parent: 'detail',
-        }, {
-          label: '数量',
-          name: 'number',
-          parent: 'detail',
-        }, {
-          label: '附件',
-          name: 'annex',
-        }],
-        system: [{
-          label: '提交时间',
-          name: 'submit_time',
-        }, {
-          label: '发起人',
-          name: 'sponsor',
-        }],
-      });
-    }, 100);
-  });
-}
-
 export interface OperationItem {
   enabled: boolean;
   changeable: boolean;

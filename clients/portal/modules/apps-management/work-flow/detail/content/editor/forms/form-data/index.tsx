@@ -77,7 +77,7 @@ export default function FormDataForm() {
           >
             <div className="flex-1" style={{ height: 'calc(100% - 56px)' }}>
               <FormSelector
-                value={formData.form.value}
+                value={formData?.form.value}
                 onChange={onFormChange}
               />
               <Tab

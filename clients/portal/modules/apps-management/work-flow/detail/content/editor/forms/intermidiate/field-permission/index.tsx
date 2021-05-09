@@ -4,11 +4,14 @@ import { useQuery } from 'react-query';
 import Toggle from '@c/toggle';
 import Loading from '@c/loading';
 import Error from '@c/error';
+import useObservable from '@lib/hooks/use-observable';
 
 import CustomFieldTable from './custom-field-table';
 import SystemFieldTable from './system-field-table';
-import { FieldPermission, CustomFieldPermission, SystemFieldPermission } from '../../../store';
-import { getFieldsList } from '../../api';
+import store, {
+  StoreValue, FieldPermission, CustomFieldPermission, SystemFieldPermission, CurrentElement,
+} from '@flow/detail/content/editor/store';
+import { getFormFieldOptions } from '../../api';
 
 interface Props {
   value: FieldPermission;
@@ -17,12 +20,19 @@ interface Props {
 
 export default function({ value, onChange }: Props) {
   const [editable, setEditable] = useState(false);
+  const { elements = [] } = useObservable<StoreValue>(store) || {};
+  const currentElement = elements?.find(({ type }) => type === 'formData') as CurrentElement;
   const [mergedFieldPermissions, setMergedFieldPermissions] = useState<FieldPermission>({
     custom: [],
     system: [],
   });
 
-  const { data, isLoading, isError } = useQuery(['GET_FIELDS_LIST'], getFieldsList);
+  const { data = [], isLoading, isError } = useQuery(
+    ['GET_WORK_FORM_FIELD_LIST', currentElement?.data?.businessData?.form?.value],
+    getFormFieldOptions, {
+      enabled: !!currentElement?.data?.businessData?.form?.value,
+    }
+  );
 
   useEffect(() => {
     if (data) {
@@ -42,11 +52,10 @@ export default function({ value, onChange }: Props) {
   function mergeField() {
     const { custom = [], system = [] } = value || {};
     const isCustomEmpty = !custom.length;
-    const isSystemEmpty = !system.length;
-    data?.custom.forEach((field) => {
-      if (isCustomEmpty || !custom.find(({ id }) => id === field.name)) {
+    data?.forEach((field) => {
+      if (isCustomEmpty || !custom.find(({ id }) => id === field.value)) {
         custom.push({
-          id: field.name,
+          id: field.value,
           fieldName: field.label,
           read: false,
           write: false,
@@ -58,17 +67,8 @@ export default function({ value, onChange }: Props) {
             variable: '',
             static: '',
           },
-          parent: field.parent,
-          children: field.children,
-        });
-      }
-    });
-    data?.system.forEach((field) => {
-      if (isSystemEmpty || !system.find(({ id }) => id === field.name)) {
-        system.push({
-          id: field.name,
-          fieldName: field.label,
-          read: false,
+          parent: undefined,
+          children: [],
         });
       }
     });
@@ -99,15 +99,17 @@ export default function({ value, onChange }: Props) {
           updateFields={onUpdateFields('custom')}
         />
       </section>
-      <section className="pb-56">
-        <header className="flex justify-between items-center mb-12 mt-16">
-          <div className="text-caption-no-color text-gray-400">系统字段</div>
-        </header>
-        <SystemFieldTable
-          fields={mergedFieldPermissions.system}
-          updateFields={onUpdateFields('system')}
-        />
-      </section>
+      {!!mergedFieldPermissions.system.length && (
+        <section className="pb-56">
+          <header className="flex justify-between items-center mb-12 mt-16">
+            <div className="text-caption-no-color text-gray-400">系统字段</div>
+          </header>
+          <SystemFieldTable
+            fields={mergedFieldPermissions.system}
+            updateFields={onUpdateFields('system')}
+          />
+        </section>
+      )}
     </>
   );
 }
