@@ -3,6 +3,7 @@ import moment from 'moment';
 import { getFilterField } from '@portal/modules/apps-management/pages/form-design/utils';
 
 import appPageDataStore from './store';
+import React from 'react';
 
 export type Scheme = Record<string, any>;
 export type Config = {
@@ -14,6 +15,20 @@ export type Config = {
     pageSize?: number | null;
   }
 };
+
+export function operateButton(wIndex: number, authority: number, button: React.ReactNode) {
+  const weightArr = authority.toString(2).split('').reverse();
+  if (weightArr.length < 7) {
+    for (let index = 0; index < 7 - weightArr.length; index++) {
+      weightArr.push('0');
+    }
+  }
+  if (weightArr[wIndex - 1] === '0') {
+    return null;
+  }
+
+  return button;
+}
 
 export function getTableCellData(initValue: string | string[], field: PageField) {
   if (!initValue) {

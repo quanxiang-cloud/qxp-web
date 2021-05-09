@@ -7,7 +7,7 @@ import Icon from '@c/icon';
 import PopConfirm from '@c/pop-confirm';
 import PageLoading from '@portal/modules/apps-management/components/page-loading';
 
-import { getTableCellData } from './utils';
+import { getTableCellData, operateButton } from './utils';
 import store from './store';
 
 type Props = {
@@ -91,10 +91,20 @@ function DetailsDrawer({ onCancel, rowID }: Props) {
         <div className='page-data-drawer-header'>
           <span className='text-h5'>{store.pageName}：{title}</span>
           <div className='flex items-center gap-x-12'>
-            <span onClick={() => store.goEdit(formDataItem)} className='icon-text-btn'><Icon size={20} name='edit' />修改</span>
-            <PopConfirm content='确认删除该数据？' onOk={delData} >
-              <span className='icon-text-btn'><Icon size={20} name='delete' />删除</span>
-            </PopConfirm>
+            {operateButton(3, store.authority, (
+              <span
+                onClick={() => store.goEdit(formDataItem)}
+                className='icon-text-btn'
+              >
+                <Icon size={20} name='edit' />
+                修改
+              </span>
+            ))}
+            {operateButton(4, store.authority, (
+              <PopConfirm content='确认删除该数据？' onOk={delData} >
+                <span className='icon-text-btn'><Icon size={20} name='delete' />删除</span>
+              </PopConfirm>
+            ))}
             <Icon onClick={handleCancel} clickable changeable name='close' size={24} />
           </div>
         </div>

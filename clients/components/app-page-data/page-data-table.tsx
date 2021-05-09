@@ -9,6 +9,7 @@ import PopConfirm from '@c/pop-confirm';
 
 import DetailsDrawer from './details-drawer';
 import store from './store';
+import { operateButton } from './utils';
 
 function PageDataTable() {
   const [selected, setSelected] = useState([]);
@@ -21,21 +22,27 @@ function PageDataTable() {
       accessor: (data: any) => {
         return (
           <div className='text-center'>
-            <span
-              onClick={() => setCurRow(data)}
-              className='mr-16 text-blue-600 cursor-pointer'
-            >
-              查看
-            </span>
-            <span
-              onClick={() => store.goEdit(data)}
-              className='mr-16 text-blue-600 cursor-pointer'
-            >
-              修改
-            </span>
-            <PopConfirm content='确认删除该数据？' onOk={() => store.delFormData([data._id])} >
-              <span className='text-red-600 cursor-pointer'>删除</span>
-            </PopConfirm>
+            {operateButton(1, store.authority, (
+              <span
+                onClick={() => setCurRow(data)}
+                className='mr-16 text-blue-600 cursor-pointer'
+              >
+                查看
+              </span>
+            ))}
+            {operateButton(3, store.authority, (
+              <span
+                onClick={() => store.goEdit(data)}
+                className='mr-16 text-blue-600 cursor-pointer'
+              >
+                修改
+              </span>
+            ))}
+            {operateButton(4, store.authority, (
+              <PopConfirm content='确认删除该数据？' onOk={() => store.delFormData([data._id])} >
+                <span className='text-red-600 cursor-pointer'>删除</span>
+              </PopConfirm>
+            ))}
           </div>
         );
       },
@@ -43,6 +50,7 @@ function PageDataTable() {
   }, [store.tableColumns]);
 
   useEffect(() => {
+    store.fetchActionAuthorized();
     if (!store.allowRequestData) {
       return;
     }
@@ -68,13 +76,17 @@ function PageDataTable() {
   return (
     <div className='app-page-data-container flex-1'>
       <div className='mb-16 flex items-center gap-x-16'>
-        <Button onClick={store.createFun} modifier='primary' iconName='add'>新建</Button>
+        {operateButton(2, store.authority, (
+          <Button onClick={store.createFun} modifier='primary' iconName='add'>新建</Button>
+        ))}
+        {operateButton(4, store.authority, (
+          selected.length > 0 && textBtnRender('批量删除',
+            'restore_from_trash',
+            () => store.delFormData(selected)
+          )
+        ))}
         {/* {textBtnRender('导入', 'file_download')}
         {textBtnRender('导出', 'file_upload')} */}
-        {selected.length > 0 && textBtnRender('批量删除',
-          'restore_from_trash',
-          () => store.delFormData(selected)
-        )}
       </div>
       <Table
         showCheckbox
