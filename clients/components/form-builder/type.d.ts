@@ -141,3 +141,19 @@ declare namespace FormBuilder {
 //     [key: string]: any;
 //   };
 // }
+
+type CompareOperator = '===' | '>' | '<' | '!==';
+type CompareRule = {
+  sourceKey: string;
+  compareOperator: CompareOperator;
+  compareValue: string | number | string[] | number[];
+}
+
+type VisibleHiddenLinkage = {
+  key: string;
+  ruleJoinOperator: 'every' | 'some';
+  rules: CompareRule[];
+  targetKeys: string[];
+}
+
+type Comparator = (values: Record<string, any>) => boolean;

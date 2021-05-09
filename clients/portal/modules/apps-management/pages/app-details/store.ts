@@ -173,7 +173,7 @@ class AppDetailsStore {
     if (pageInfo.id === this.curPage.id) {
       return;
     }
-    
+
     if (pageInfo.id) {
       this.fetchSchemeLoading = true;
       fetchFormScheme(pageInfo.id).then((res) => {

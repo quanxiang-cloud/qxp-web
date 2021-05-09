@@ -44,7 +44,7 @@ const INTERNAL_FIELDS: Array<FormItem> = [
 ];
 
 // todo refactor this
-const INTERNAL_FIELD_NAMES = INTERNAL_FIELDS.map(({ fieldName }) => fieldName);
+export const INTERNAL_FIELD_NAMES = INTERNAL_FIELDS.map(({ fieldName }) => fieldName);
 
 // todo support tree structure
 function schemaToFields({ properties }: FormBuilder.Schema): [Array<FormItem>, Array<FormItem>] {
@@ -82,13 +82,16 @@ export default class FormBuilderStore {
   internalFields: Array<FormItem>;
   @observable fields: Array<FormItem>;
   @observable activeFieldName = '';
-  @observable labelAlign = 'right';
+  @observable labelAlign: 'right' | 'top' = 'right';
+  @observable visibleHiddenLinkages: VisibleHiddenLinkage[] = [];
   @observable hasEdit = false;
 
   constructor({ schema }: Props) {
     const [internalFields, fields] = schemaToFields(schema);
     this.internalFields = internalFields;
     this.fields = fields;
+
+    this.visibleHiddenLinkages = schema['x-internal']?.visibleHiddenLinkages || [];
   }
 
   @computed get activeField(): FormItem | null {
@@ -128,8 +131,8 @@ export default class FormBuilderStore {
           ...{
             ...toSchema(toJS(configValue)), 'x-internal': toSchema(toJS(configValue))['x-internal'] ? {
               ...toSchema(toJS(configValue))['x-internal'],
-              isSystem: configValue.isSystem ? true : false
-            } : { isSystem: configValue.isSystem ? true : false }
+              isSystem: configValue.isSystem ? true : false,
+            } : { isSystem: configValue.isSystem ? true : false },
           },
           'x-index': index,
           'x-mega-props': {
@@ -146,6 +149,7 @@ export default class FormBuilderStore {
       properties: properties,
       'x-internal': {
         version: '1.3.13',
+        visibleHiddenLinkages: toJS(this.visibleHiddenLinkages),
       },
     };
   }
@@ -154,6 +158,10 @@ export default class FormBuilderStore {
     const { properties } = this.schema;
     return {
       type: 'object',
+      'x-internal': {
+        version: '1.3.13',
+        visibleHiddenLinkages: this.visibleHiddenLinkages,
+      },
       properties: {
         FIELDs: {
           type: 'object',
@@ -206,8 +214,28 @@ export default class FormBuilderStore {
     };
   }
 
-  @action updateLabelAlign(labelAlign: 'left' | 'right' | 'top') {
+  @action updateLabelAlign(labelAlign: 'right' | 'top') {
     this.labelAlign = labelAlign;
+  }
+
+  @action deleteLinkage(key: string) {
+    this.visibleHiddenLinkages = this.visibleHiddenLinkages.filter((linkage) => {
+      return linkage.key !== key;
+    });
+  }
+
+  @action handleLinkageChange(linkage: VisibleHiddenLinkage): void {
+    if (!linkage.key) {
+      this.visibleHiddenLinkages.push({
+        ...linkage,
+        key: nanoid(8),
+      });
+      return;
+    }
+
+    this.visibleHiddenLinkages = this.visibleHiddenLinkages.map((config) => {
+      return config.key === linkage.key ? linkage : config;
+    });
   }
 
   @action

@@ -125,14 +125,14 @@ export default function Authorized({ rightsID }: Props) {
       setLoading(false);
     }).catch(() => {
       setLoading(false);
-    })
+    });
   }, [rightsID]);
 
   const handleChange = (selected: number, key: string) => {
     switch (key) {
-      case 'action':
-        setActionNumber(selected);
-        break;
+    case 'action':
+      setActionNumber(selected);
+      break;
     }
   };
 
@@ -145,7 +145,7 @@ export default function Authorized({ rightsID }: Props) {
   if (loading) {
     return null;
   }
-  
+
   return (
     <>
       {RIGHTS.map((rightsCardData) => {

@@ -24,7 +24,7 @@ function PageDetails() {
     appDataStore.allowRequestData = true;
     return () => {
       appDataStore.clear();
-    }
+    };
   }, []);
 
   if (showCreateForm) {

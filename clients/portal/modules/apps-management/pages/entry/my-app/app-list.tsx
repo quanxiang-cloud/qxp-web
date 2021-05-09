@@ -36,7 +36,7 @@ function AppList({ isLoading, appList, openCreatedModal }: Props) {
       <div className='app-no-data mt-58'>
         <img src='/dist/images/new_tips.svg' />
         <span>无应用数据。点击
-          <span onClick={openCreatedModal} className='text-btn'>新建应用</span>
+          <span onClick={openCreatedModal} className='text-btn'>&nbsp;新建应用</span>
           ，开始构建应用
         </span>
       </div>

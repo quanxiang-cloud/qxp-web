@@ -18,7 +18,7 @@
 .app-no-data {
   text-align: center;
   width: 100%;
-
+  color: var(--gray-400);
   img {
     margin: 0 auto 16px;
     display: block;
@@ -52,6 +52,10 @@
   font-size: 16px;
   line-height: 24px;
   background-color: rgba(241, 245, 249, 1);
+  box-shadow: inset 0px -1px 0px #e2e8f0;
+}
+
+.my-app-headertitle {
   box-shadow: inset 0px -1px 0px #e2e8f0;
 }
 

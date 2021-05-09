@@ -32,7 +32,7 @@ export function operateButton(wIndex: number, authority: number, button: React.R
 
 export function getTableCellData(initValue: string | string[], field: PageField) {
   if (!initValue) {
-    return '——'
+    return '——';
   }
 
   if (field.type === 'datetime') {
@@ -49,7 +49,7 @@ export function getTableCellData(initValue: string | string[], field: PageField)
     if (Array.isArray(initValue)) {
       return initValue.map((_value: string) => {
         if (!field.enum) {
-          return ''
+          return '';
         }
 
         return field.enum.find(({ value }: any) => value === _value)?.label || '';
@@ -74,12 +74,12 @@ export function getPageDataSchema(config: Config, schema: Scheme, pageID: string
   let recordColNum = 0;
   let fixedColumnIndex: number[] = [];
   switch (pageTableShowRule.fixedRule) {
-    case 'one':
-      fixedColumnIndex = [0];
-      break;
-    case 'previous_two':
-      fixedColumnIndex = [0, 1];
-      break;
+  case 'one':
+    fixedColumnIndex = [0];
+    break;
+  case 'previous_two':
+    fixedColumnIndex = [0, 1];
+    break;
   }
 
   Object.keys(fieldsMap).forEach((key: string) => {

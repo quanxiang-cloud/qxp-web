@@ -142,7 +142,7 @@ function AppAdmin() {
           loading={loading}
           onSelectChange={handleSelectChange}
         />
-        {(modalType === 'batchRemove')&&
+        {(modalType === 'batchRemove') &&
           (<Modal
             title='批量移除'
             className="static-modal"

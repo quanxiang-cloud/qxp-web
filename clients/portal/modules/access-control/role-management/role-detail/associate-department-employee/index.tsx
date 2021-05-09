@@ -36,11 +36,11 @@ export default function AssociateDepartmentEmployee({ roleID, isSuper }: Props) 
 
   const mutation = useMutation(
     (arg: IUpdateRoleAssociations) => updateRoleAssociations(arg), {
-    onSuccess: () => {
-      queryClient.invalidateQueries('GET_ROLE_ASSOCIATIONS');
-      queryClient.invalidateQueries('GET_ROLE_ASSOCIATIONS_ALL');
-    },
-  }
+      onSuccess: () => {
+        queryClient.invalidateQueries('GET_ROLE_ASSOCIATIONS');
+        queryClient.invalidateQueries('GET_ROLE_ASSOCIATIONS_ALL');
+      },
+    }
   );
 
   async function onAssociate(

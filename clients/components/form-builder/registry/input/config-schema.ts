@@ -141,11 +141,9 @@ const schema: ISchema = {
           'x-index': 8,
           'x-linkages': [
             {
-              type: 'value:state',
+              type: 'value:visible',
               target: 'defaultValue',
-              state: {
-                visible: '{{ $value === "customized" }}',
-              },
+              condition: '{{ $value === "customized" }}',
             },
           ],
         },
