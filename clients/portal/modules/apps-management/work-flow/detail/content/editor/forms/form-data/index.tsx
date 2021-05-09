@@ -1,5 +1,6 @@
 import React, { FormEvent, useState, useEffect } from 'react';
 import cs from 'classnames';
+import { useQuery } from 'react-query';
 
 import Drawer from '@c/drawer';
 import useObservable from '@lib/hooks/use-observable';
@@ -19,23 +20,24 @@ import SaveButtonGroup
 import TriggerWay from './basic-config/trigger-way';
 import FormSelector from '../form-selector';
 import TriggerCondition from './basic-config/trigger-condition';
-import { Options, getFormFieldOptions } from '../api';
+import { getFormFieldOptions } from '../api';
 
 export default function FormDataForm() {
   const { asideDrawerType, elements = [] } = useObservable<StoreValue>(store) || {};
   const currentElement = elements.find(({ type }) => type === 'formData') as CurrentElement;
   const [formData, setFormData] = useState<FormDataData>(currentElement?.data?.businessData);
-  const [formFieldOptions, setFormFieldOptions] = useState<Options>([]);
+  const { data: formFieldOptions = [] } = useQuery(
+    ['GET_WORK_FORM_FIELD_LIST', formData?.form?.value],
+    getFormFieldOptions, {
+      enabled: !!formData?.form?.value,
+    }
+  );
 
   useEffect(() => {
     if (currentElement?.data?.businessData) {
       setFormData(currentElement.data.businessData);
     }
   }, [currentElement?.data?.businessData]);
-
-  useEffect(() => {
-    getFormFieldOptions().then(setFormFieldOptions);
-  }, []);
 
   if (!currentElement) {
     return null;
@@ -75,7 +77,7 @@ export default function FormDataForm() {
           >
             <div className="flex-1" style={{ height: 'calc(100% - 56px)' }}>
               <FormSelector
-                value={formData.form.value}
+                value={formData?.form.value}
                 onChange={onFormChange}
               />
               <Tab

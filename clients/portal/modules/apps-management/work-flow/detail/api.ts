@@ -49,6 +49,11 @@ export interface SaveWorkFlow {
   id?: string;
   name: string;
   triggerMode: string;
+  canCancel: 0 | 1;
+  canMsg: 0 | 1;
+  canUrge: 0 | 1;
+  canViewStatusMsg: 0 | 1;
+  appId: string;
 }
 export function saveWorkFlow(flowData: SaveWorkFlow) {
   return httpClient<WorkFlow>(
@@ -59,10 +64,10 @@ export function saveWorkFlow(flowData: SaveWorkFlow) {
 
 interface UpdateWorkFlow {
   bpmnText: string;
-  canCancel: '0' | '1';
-  canMsg: '0' | '1';
-  canUrge: '0' | '1';
-  canViewStatusMsg: '0' | '1';
+  canCancel: 0 | 1;
+  canMsg: 0 | 1;
+  canUrge: 0 | 1;
+  canViewStatusMsg: 0 | 1;
   name: string;
   modifierId: string;
 }

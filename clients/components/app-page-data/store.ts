@@ -4,6 +4,7 @@ import { action, observable, reaction, IReactionDisposer } from 'mobx';
 import { formDataCurd } from '@portal/modules/apps-management/lib/api';
 import toast from '@lib/toast';
 
+import { Scheme } from './utils';
 type Params = {
   condition?: Condition[] | [],
   sort?: string[] | [],
@@ -17,12 +18,14 @@ class AppPageDataStore {
   @observable tableConfig: any = {};
   @observable noFiltratesTips: React.ReactNode = '尚未配置筛选条件。'
   @observable listLoading = false;
-  @observable tableID = '';
+  @observable pageID = '';
+  @observable pageName = '';
   @observable curItemFormData = null;
   @observable allowRequestData = false;
   @observable filtrates: FilterField[] = [];
   @observable formDataList: any[] = [];
   @observable total = 0;
+  @observable fields: Scheme[] = [];
   @observable tableColumns = [];
   @observable params: Params = {
     condition: [],
@@ -37,7 +40,7 @@ class AppPageDataStore {
     this.destroySetTableConfig = reaction(() => {
       return {
         size: this.tableConfig.pageSize || 9999,
-        sort: this.tableConfig.order ? [this.tableConfig.order] : []
+        sort: this.tableConfig.order ? [this.tableConfig.order] : [],
       };
     }, this.setParams);
   }
@@ -48,8 +51,20 @@ class AppPageDataStore {
   }
 
   @action
-  setTableID = (tableID: string) => {
-    this.tableID = tableID;
+  setFieldsMap = (fieldsMap: Scheme) => {
+    const fields: Scheme[] = [];
+    Object.keys(fieldsMap).forEach((key: string) => {
+      if (key !== '_id') {
+        fields.push({ id: key, ...fieldsMap[key] });
+      }
+    });
+    this.fields = fields;
+  }
+
+  @action
+  setPageID = (pageID: string, pageName?: string) => {
+    this.pageID = pageID;
+    pageName && (this.pageName = pageName);
   }
 
   @action
@@ -80,7 +95,7 @@ class AppPageDataStore {
 
   @action
   delFormData = (ids: string[]) => {
-    formDataCurd(this.tableID, {
+    return formDataCurd(this.pageID, {
       method: 'delete',
       condition: ids.map((id) => ({ key: '_id', op: 'eq', value: [id] })),
     }).then(() => {
@@ -90,12 +105,12 @@ class AppPageDataStore {
   }
 
   @action
-  fetchFormDataList = (params: any) => {
-    if (!this.allowRequestData || !this.tableID) {
+  fetchFormDataList = (params: Params) => {
+    if (!this.allowRequestData || !this.pageID) {
       return;
     }
     this.listLoading = true;
-    formDataCurd(this.tableID, {
+    formDataCurd(this.pageID, {
       method: 'find',
       page: 1,
       condition: [],
@@ -111,11 +126,26 @@ class AppPageDataStore {
   }
 
   @action
+  fetchFormDataDetails = (dataID: string) => {
+    return formDataCurd(this.pageID, {
+      method: 'findOne',
+      condition: [
+        {
+          key: '_id',
+          op: 'eq',
+          value: [dataID],
+        },
+      ],
+    });
+  }
+
+  @action
   clear = () => {
     this.formDataList = [];
     this.tableConfig = {};
     this.filtrates = [];
     this.tableColumns = [];
+    this.pageID = '';
     this.params = {
       condition: [],
       sort: [],

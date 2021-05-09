@@ -1,4 +1,5 @@
 import React, { useState, MouseEvent } from 'react';
+import cs from 'classnames';
 
 import More from '@c/more';
 import Icon from '@c/icon';
@@ -9,9 +10,10 @@ import { removeNodeById } from '../../store';
 interface Props {
   id: string;
   type?: 'dark' | 'primary' | 'light';
+  visible?: boolean;
 }
 
-export default function NodeRemover({ id, type = 'dark' }: Props) {
+export default function NodeRemover({ id, type = 'dark', visible = true }: Props) {
   const [showRemoveModal, setShowRemoveModal] = useState(false);
 
   function onRemoveNode() {
@@ -61,6 +63,12 @@ export default function NodeRemover({ id, type = 'dark' }: Props) {
     >
       <Icon
         name="close"
+        className={cs('transition-all', {
+          'cursor-default': !visible,
+          'pointer-events-none': !visible,
+          'opacity-0': !visible,
+          'opacity-1': visible,
+        })}
         type={type}
         onClick={(e) => {
           setShowRemoveModal(true);

@@ -1,11 +1,10 @@
-import React, { useState } from 'react';
-import { useLocation, useHistory } from 'react-router-dom';
+import React, { useState, MouseEvent, useRef, useEffect } from 'react';
+import { useHistory, useParams } from 'react-router-dom';
 import cs from 'classnames';
 import { useMutation } from 'react-query';
 
 import Icon from '@c/icon';
 import Button from '@c/button';
-import { last } from '@lib/utils';
 import More from '@c/more';
 import useObservable from '@lib/hooks/use-observable';
 import toast from '@lib/toast';
@@ -19,24 +18,37 @@ import store, {
 } from './content/editor/store';
 
 export default function GlobalHeader() {
-  const { pathname } = useLocation();
   const { name = '', status, id } = useObservable<StoreValue>(store) || {};
   const [workFlowName, setWorkFlowName] = useState(name);
   const [isWorkFlowNameMenuOpen, setIsWorkFlowNameMenuOpen] = useState(false);
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const flowNameInputRef = useRef<HTMLInputElement>(null);
+  const { type } = useParams<{ type: 'form-data' | 'form-time'; }>();
   const paramsMap = {
     'form-data': '工作表触发',
     'form-time': '工作表时间触发',
   };
-  const type = last(pathname.split('/')) as 'form-data' | 'form-time';
   const history = useHistory();
   const toggleMutation = useMutation(toggleWorkFlow, {
-    onSuccess: (respData) => {
-      toast.error(status === 'ENABLE' ? '下架成功' : '发布成功');
+    onSuccess: () => {
+      toast.success(status === 'ENABLE' ? '工作流下架成功' : '工作流发布成功');
+      updateStore('status', () => status === 'DISABLE' ? 'ENABLE' : 'DISABLE');
     },
     onError: (e: Error) => {
       toast.error(e.message);
     },
   });
+
+  useEffect(() => {
+    if (!flowNameInputRef.current) {
+      return;
+    }
+    if (isWorkFlowNameMenuOpen) {
+      flowNameInputRef.current.focus();
+    } else {
+      flowNameInputRef.current.blur();
+    }
+  }, [isWorkFlowNameMenuOpen]);
 
   function onCancelSetWorkFlowName() {
     setWorkFlowName(name);
@@ -48,29 +60,66 @@ export default function GlobalHeader() {
     setIsWorkFlowNameMenuOpen(false);
   }
 
-  function onPublishSubmit() {
-    toggleMutation.mutate({
-      id: id as string,
-      status: 'ENABLE',
-    });
+  function onConfirmSubmit(e: MouseEvent) {
+    e.stopPropagation();
+    setIsConfirmOpen(!!id);
   }
 
-  function onUnPublishSubmit() {
-    toggleMutation.mutate({
-      id: id as string,
-      status: 'DISABLE',
-    });
+  function handleSubmit() {
+    if (status === 'DISABLE') {
+      toggleMutation.mutate({
+        id: id as string,
+        status: 'ENABLE',
+      });
+    } else if (status === 'ENABLE') {
+      toggleMutation.mutate({
+        id: id as string,
+        status: 'DISABLE',
+      });
+    }
+    setIsConfirmOpen(false);
+  }
+
+  function renderActionButtons() {
+    return (
+      <>
+        {status === 'DISABLE' && (
+          <Button
+            modifier="primary"
+            forbidden={!id}
+            iconName="toggle_on"
+            className="py-5"
+            onClick={onConfirmSubmit}
+          >
+            发布
+          </Button>
+        )}
+        {status === 'ENABLE' && (
+          <Button
+            forbidden={!id}
+            iconName="toggle_on"
+            className="py-5"
+            onClick={onConfirmSubmit}
+          >
+            下架
+          </Button>
+        )}
+      </>
+    );
   }
 
   return (
     <header className="flex justify-between items-center py-18 px-24 bg-white shadow-flow-header">
       <section className="flex flex-row items-center">
-        <Icon
-          name="arrow-go-back"
-          size={22}
-          className="mr-22 cursor-pointer"
-          onClick={() => history.goBack()}
-        />
+        <div className="cursor-pointer flex items-center" onClick={() => history.goBack()}>
+          <Icon
+            name="arrow-go-back"
+            size={22}
+            className="mr-4"
+          />
+          <span className="text-body2">返回</span>
+        </div>
+        <span className="ml-8 mr-10">/</span>
         <span
           className="mr-8 text-caption-no-color text-amber-600 px-6 bg-amber-50
           rounded-tl-6 rounded-br-6"
@@ -91,6 +140,7 @@ export default function GlobalHeader() {
               >
                 <div className="text-body2 text-gray-600 mb-8">工作流名称</div>
                 <input
+                  ref={flowNameInputRef}
                   className="input mb-4"
                   value={workFlowName}
                   onChange={(e) => setWorkFlowName(e.target.value)}
@@ -124,26 +174,49 @@ export default function GlobalHeader() {
             })}>
             {status === 'DISABLE' ? '草稿' : '已发布'}
           </span>
-          {status === 'DISABLE' && (
-            <Button
-              modifier="primary"
-              forbidden={!id}
-              iconName="toggle_on"
-              className="py-5"
-              onClick={onPublishSubmit}
+          {!isConfirmOpen && renderActionButtons()}
+          {isConfirmOpen && (
+            <More<JSX.Element>
+              open
+              contentItemClassName="hover:bg-white"
+              contentClassName="p-0 right-0 shadow-more-action"
+              items={[(
+                <div
+                  key="toggleWorkFlow"
+                  className="flex flex-col p-20"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <div
+                    className="whitespace-nowrap flex flex-nowrap items-center text-body2 text-gray-600 mb-8"
+                  >
+                    <Icon size={20} name="info" className="text-yellow-600 mr-10" />
+                    <span className="text-h6-bold text-yellow-600 mr-152">
+                      确定要{status === 'DISABLE' ? '发布' : '下架'}该工作流吗?
+                    </span>
+                  </div>
+                  <div className="text-body2 pl-24 mb-16">
+                    {status === 'DISABLE' && (
+                      <>
+                        发布后，新触发的数据将按该工作流进行流转。
+                      </>
+                    )}
+                    {status === 'ENABLE' && (
+                      <>
+                        下架后，该工作流将会失效，且无法被触发；已触发的数据不受影响。
+                      </>
+                    )}
+                  </div>
+                  <ActionButtonGroup
+                    onCancel={() => setIsConfirmOpen(false)}
+                    onSubmit={handleSubmit}
+                    className="p-0"
+                    okText={status === 'DISABLE' ? '确定发布' : '确定下架'}
+                  />
+                </div>
+              )]}
             >
-              发布
-            </Button>
-          )}
-          {status === 'ENABLE' && (
-            <Button
-              forbidden={!id}
-              iconName="toggle_on"
-              className="py-5"
-              onClick={onUnPublishSubmit}
-            >
-              下架
-            </Button>
+              {renderActionButtons()}
+            </More>
           )}
         </div>
         <NavButton

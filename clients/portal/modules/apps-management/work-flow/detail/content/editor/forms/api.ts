@@ -1,102 +1,57 @@
+import { QueryFunctionContext } from 'react-query';
+
+import httpClient from '@lib/http-client';
+
 export type Options = {
   label: string;
   value: string;
 }[];
 
-export function getFormDataOptions(): Promise<Options> {
-  return new Promise((r) => {
-    setTimeout(() => {
-      r(
-        [{
-          label: '出差申请单',
-          value: '1',
-        }, {
-          label: '差旅报销',
-          value: '2',
-        }, {
-          label: '请假单',
-          value: '3',
-        }, {
-          label: '离职申请表',
-          value: '4',
-        }, {
-          label: '测试表单',
-          value: '5',
-        }, {
-          label: '公有云工单示例',
-          value: '6',
-        }]
-      );
-    }, 100);
+interface MenuListItem {
+  id: string;
+  name: string;
+  child: MenuListItem[];
+}
+export async function getFormDataOptions({ queryKey }: QueryFunctionContext): Promise<Options> {
+  const data = await httpClient<{
+      menu: MenuListItem[],
+  }>('/api/v1/structor/menu/list', {
+    appID: queryKey[1],
   });
-}
-
-export function getFormFieldOptions(): Promise<Options> {
-  return new Promise((r) => {
-    setTimeout(() => {
-      r(
-        [{
-          label: '修改时间',
-          value: '1',
-        }, {
-          label: '创建时间',
-          value: '2',
-        }, {
-          label: '创建人',
-          value: '3',
-        }, {
-          label: '申请时间',
-          value: '4',
-        }]
-      );
-    }, 100);
-  });
-}
-
-export interface FieldList {
-  custom: {label: string; name: string, children?: string[]; parent?: string}[];
-  system: {label: string; name: string}[];
-}
-export function getFieldsList(): Promise<FieldList> {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve({
-        custom: [{
-          label: '姓名',
-          name: 'username',
-        }, {
-          label: '年龄',
-          name: 'age',
-        }, {
-          label: '明细',
-          name: 'detail',
-          children: ['4', '5', '6'],
-        }, {
-          label: '金额',
-          name: 'amount',
-          parent: 'detail',
-        }, {
-          label: '规格',
-          name: 'specification',
-          parent: 'detail',
-        }, {
-          label: '数量',
-          name: 'number',
-          parent: 'detail',
-        }, {
-          label: '附件',
-          name: 'annex',
-        }],
-        system: [{
-          label: '提交时间',
-          name: 'submit_time',
-        }, {
-          label: '发起人',
-          name: 'sponsor',
-        }],
+  function parseMenuList(menuList: MenuListItem[]) {
+    return menuList.reduce((prev: {label: string; value: string}[], current) => {
+      prev.push({
+        label: current.name,
+        value: current.id,
       });
-    }, 100);
+      if (current.child) {
+        prev.push(...parseMenuList(current.child));
+      }
+      return prev;
+    }, []);
+  }
+  return parseMenuList(data.menu);
+}
+
+interface FormFieldOptions {
+  table?: {
+    [key: string]: { title: string; type: string; }
+  }
+}
+export async function getFormFieldOptions({ queryKey }: QueryFunctionContext): Promise<Options> {
+  const data = await httpClient<FormFieldOptions | null>('/api/v1/structor/process/getByID', {
+    tableID: queryKey[1],
   });
+  function parseFormFieldOptions({ table = {} }: FormFieldOptions) {
+    return Object.entries(table).reduce((prev: {label: string; value: string;}[], [id, value]) => {
+      prev.push({
+        label: value.title,
+        value: id,
+      });
+      return prev;
+    }, []);
+  }
+  return parseFormFieldOptions(data || {});
 }
 
 export interface OperationItem {

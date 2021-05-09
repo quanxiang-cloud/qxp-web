@@ -4,9 +4,20 @@ import { getFilterField } from '@portal/modules/apps-management/pages/form-desig
 
 import appPageDataStore from './store';
 
-function getTableCellData(initValue: string | string[], field: PageField) {
+export type Scheme = Record<string, any>;
+export type Config = {
+  filtrate?: PageField[];
+  pageTableConfig?: Record<string, any>;
+  pageTableShowRule?: {
+    fixedRule?: string;
+    order?: string;
+    pageSize?: number | null;
+  }
+};
+
+export function getTableCellData(initValue: string | string[], field: PageField) {
   if (!initValue) {
-    return '——'
+    return '——';
   }
 
   if (field.type === 'datetime') {
@@ -23,7 +34,7 @@ function getTableCellData(initValue: string | string[], field: PageField) {
     if (Array.isArray(initValue)) {
       return initValue.map((_value: string) => {
         if (!field.enum) {
-          return ''
+          return '';
         }
 
         return field.enum.find(({ value }: any) => value === _value)?.label || '';
@@ -33,29 +44,31 @@ function getTableCellData(initValue: string | string[], field: PageField) {
     return field.enum.find(({ value }: any) => value === initValue)?.label || '';
   }
 
+  if (Array.isArray(initValue)) {
+    return initValue.join(',');
+  }
+
   return initValue;
 }
 
-export function getPageDataSchema(config: any, schema: any, pageID: string) {
-  const { pageTableShowRule = {}, pageTableConfig, filtrate = [] } = config || {};
-  const { setFiltrates, setTableConfig, setTableColumns, setTableID } = appPageDataStore;
+export function getPageDataSchema(config: Config, schema: Scheme, pageID: string, pageName?: string) {
+  const { pageTableShowRule = {}, pageTableConfig = {}, filtrate = [] } = config || {};
+  const { setFiltrates, setTableConfig, setTableColumns, setPageID, setFieldsMap } = appPageDataStore;
   const fieldsMap = schema?.properties || {};
   const tableColumns: any[] = [];
   let recordColNum = 0;
   let fixedColumnIndex: number[] = [];
   switch (pageTableShowRule.fixedRule) {
-    case 'one':
-      fixedColumnIndex = [0];
-      break;
-    case 'previous_two':
-      fixedColumnIndex = [0, 1];
-      break;
+  case 'one':
+    fixedColumnIndex = [0];
+    break;
+  case 'previous_two':
+    fixedColumnIndex = [0, 1];
+    break;
   }
 
   Object.keys(fieldsMap).forEach((key: string) => {
-    const hasVisible = pageTableConfig && pageTableConfig[key] ?
-      'visible' in pageTableConfig[key] : false;
-
+    const hasVisible = pageTableConfig[key] ? 'visible' in pageTableConfig[key] : false;
     if (key !== '_id' && ((hasVisible && pageTableConfig[key].visible) || !hasVisible)) {
       const isFixed = fixedColumnIndex.includes(recordColNum);
       tableColumns.push({
@@ -69,9 +82,13 @@ export function getPageDataSchema(config: any, schema: any, pageID: string) {
     }
   });
 
-  if (pageTableConfig) {
+  if (Object.keys(pageTableConfig).filter((key: string) => 'sort' in pageTableConfig[key]).length > 0) {
     tableColumns.sort((a, b) => {
       return pageTableConfig[a.id]?.sort - pageTableConfig[b.id]?.sort;
+    });
+  } else {
+    tableColumns.sort((a, b) => {
+      return fieldsMap[a.id]['x-index'] - fieldsMap[b.id]['x-index'];
     });
   }
 
@@ -80,5 +97,6 @@ export function getPageDataSchema(config: any, schema: any, pageID: string) {
   }));
   setTableColumns(tableColumns);
   setTableConfig(pageTableShowRule);
-  setTableID(pageID);
+  setPageID(pageID, pageName);
+  setFieldsMap(fieldsMap);
 }

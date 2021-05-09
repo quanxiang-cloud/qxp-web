@@ -35,8 +35,9 @@ module.exports = {
       80: '80px',
       96: '96px',
       100: '100px',
-      144: "144px",
-      200: "200px",
+      144: '144px',
+      152: '152px',
+      200: '200px',
     },
     lineHeight: {
       24: '24px',
@@ -74,6 +75,7 @@ module.exports = {
         header: "inset 0px -1px 0px #E2E8F0",
         'flow-header': "0px 8px 24px 4px rgba(148, 163, 184, 0.25)",
         'flow-aside': "inset -1px 0px 0px #E2E8F0",
+        'more-action': "0px 8px 24px rgba(148, 163, 184, 0.25)",
       },
       width: {
         24: '24px',

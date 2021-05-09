@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import cs from 'classnames';
 
 import { updateStore, Data } from '../store';
@@ -12,11 +12,12 @@ interface Props {
 
 export default function ApproveNodeComponent({ data, id }: Props) {
   const lastTime = useRef(+new Date());
+  const [showRemover, setShowRemover] = useState(false);
 
   const { nodeData, businessData: { basicConfig } } = data;
 
   function onMouseUp() {
-    if (+new Date - lastTime.current < 100) {
+    if (+new Date - lastTime.current < 200) {
       updateStore(null, () => ({ asideDrawerType: 'approveForm' }));
     }
   }
@@ -27,14 +28,22 @@ export default function ApproveNodeComponent({ data, id }: Props) {
 
   function getPerson() {
     return [
-      ...basicConfig.persons.employees,
-      ...basicConfig.persons.departments,
+      ...basicConfig.approvePersons.users,
+      ...basicConfig.approvePersons.departments,
     ].map((v) => v.ownerName || v.departmentName).join('; ');
   }
 
+  function onMouseEnter() {
+    setShowRemover(true);
+  }
+
+  function onMouseLeave() {
+    setShowRemover(false);
+  }
+
   const hasApproveRule = !!basicConfig.multiplePersonWay;
-  const hasApprovePerson = !!basicConfig.persons.departments.length ||
-    !!basicConfig.persons.employees.length;
+  const hasApprovePerson = !!basicConfig.approvePersons.departments.length ||
+    !!basicConfig.approvePersons.users.length;
 
   return (
     <div
@@ -45,6 +54,8 @@ export default function ApproveNodeComponent({ data, id }: Props) {
       )}
       onMouseDown={() => lastTime.current = +new Date()}
       onMouseUp={onMouseUp}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
     >
       <div className="relative">
         <NodeHeader
@@ -55,7 +66,7 @@ export default function ApproveNodeComponent({ data, id }: Props) {
           iconClassName="text-white"
           titleClassName="text-white bg-indigo-500"
         />
-        <NodeRemover id={id} type="light" />
+        <NodeRemover visible={showRemover} id={id} type="light" />
       </div>
       <footer className="p-8 flex flex-1 flex-col justify-center">
         {(hasApproveRule || hasApprovePerson) && (

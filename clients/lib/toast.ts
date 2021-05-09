@@ -113,9 +113,15 @@ class Toast {
     `;
   }
 
-  private toast(type: string, message: string, options?: Options) {
+  private toast(type: string, message: string | Error | unknown, options?: Options) {
+    let msg = message;
+    if (msg instanceof Error) {
+      msg = msg.message;
+    } else if (typeof msg !== 'string') {
+      msg = String(msg);
+    }
     this.element.insertAdjacentHTML('beforeend', this.getTemplate(
-      type, message, options?.duration === -1
+      type, msg as string, options?.duration === -1
     ));
     const element = this.element.lastElementChild as HTMLElement;
     if (!element) {
@@ -131,11 +137,11 @@ class Toast {
     setTimeout(() => this.close(element), options?.duration || this.duration);
   }
 
-  public success(message: string, options?: Options) {
+  public success(message: string | Error | unknown, options?: Options) {
     this.toast('info', message, options);
   }
 
-  public error(message: string, options?: Options) {
+  public error(message: string | Error | unknown, options?: Options) {
     this.toast('error', message, options);
   }
 

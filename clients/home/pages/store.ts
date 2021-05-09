@@ -3,6 +3,7 @@ import { TreeData } from '@atlaskit/tree';
 
 import { buildAppPagesTreeData } from '@lib/utils';
 import { getPageDataSchema } from '@c/app-page-data/utils';
+import appDataStore from '@c/app-page-data/store';
 
 import { fetchUserList, fetchPageList, fetchFormScheme } from '../lib/api';
 
@@ -35,6 +36,7 @@ class UserAppStore {
       return;
     }
 
+    appDataStore.clear();
     this.formScheme = null;
     if (pageInfo.id) {
       this.fetchSchemeLoading = true;
@@ -44,10 +46,10 @@ class UserAppStore {
           if (schema.properties[key]['x-internal'].permission === 1) {
             schema.properties[key].readOnly = true;
           }
-        })
+        });
 
         this.formScheme = res.schema;
-        getPageDataSchema(config, schema, pageInfo.id as string);
+        getPageDataSchema(config, schema, pageInfo.id, pageInfo.name);
         this.fetchSchemeLoading = false;
       }).catch(() => {
         this.fetchSchemeLoading = false;

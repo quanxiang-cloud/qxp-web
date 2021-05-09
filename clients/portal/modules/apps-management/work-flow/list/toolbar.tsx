@@ -1,5 +1,5 @@
 import React from 'react';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 
 import Switch from '@c/switch';
 import Button from '@c/button';
@@ -16,9 +16,10 @@ interface Props {
 
 export default function({ onTriggerTypeChange }: Props) {
   const history = useHistory();
+  const { appID } = useParams<{ appID: string; }>();
 
   function newWorkFlow(flowType: string) {
-    history.push(`/apps/flow/new/${flowType}`);
+    history.push(`/apps/flow/new/${flowType}/${appID}`);
   }
 
   return (

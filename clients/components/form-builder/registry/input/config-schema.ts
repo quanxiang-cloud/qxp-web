@@ -119,7 +119,7 @@ const schema: ISchema = {
           'x-index': 7,
         },
         valueSource: {
-          title: '默认值',
+          title: '数值源',
           enum: [
             {
               label: '自定义',
@@ -139,6 +139,25 @@ const schema: ISchema = {
             labelAlign: 'top',
           },
           'x-index': 8,
+          'x-linkages': [
+            {
+              type: 'value:visible',
+              target: 'defaultValue',
+              condition: '{{ $value === "customized" }}',
+            },
+          ],
+        },
+        defaultValue: {
+          type: 'string',
+          title: '默认值',
+          'x-component': 'Input',
+          'x-component-props': {
+            placeholder: '请输入默认值',
+          },
+          'x-mega-props': {
+            labelAlign: 'top',
+          },
+          'x-index': 9,
         },
       },
     },

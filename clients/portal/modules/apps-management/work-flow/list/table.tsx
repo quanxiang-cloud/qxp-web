@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation } from 'react-query';
 import cs from 'classnames';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 
 import Table from '@c/table';
 import ModalConfirm from '@c/modal-confirm';
@@ -29,6 +29,7 @@ const statusMap = {
 };
 
 export default function WorkFlowTable({ type }: Props) {
+  const { appID } = useParams<{appID: string}>();
   const [state, setState] = useState<State>({
     currentEditWorkFlow: null,
     currentDeleteWorkFlow: null,
@@ -165,7 +166,12 @@ export default function WorkFlowTable({ type }: Props) {
         <div className="mt-72 mb-16 flex flex-col items-center">
           <Icon name="workflow-list-empty" size={120} />
           <p className="text-caption">
-            暂无工作流。点击 <Link to="/apps/flow/new/form-data" className="text-blue-600">新建工作流</Link>，开始构建工作流
+            暂无工作流。点击
+            <Link
+              to={`/apps/flow/new/form-data/${appID}`}
+              className="text-blue-600">
+                新建工作流
+            </Link>，开始构建工作流
           </p>
         </div>
       )}

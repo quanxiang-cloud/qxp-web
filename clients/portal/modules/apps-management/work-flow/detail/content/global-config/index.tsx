@@ -56,7 +56,7 @@ export default function GlobalConfig() {
         全局配置
       </div>
       {options.map((option) => (
-        <section key={option.field} className="bg-white rounded-12 flex p-20 mb-16 w-800 max-w-%90">
+        <section key={option.field} className="bg-white rounded-12 flex p-20 mb-16 w-full max-w-%90">
           <Toggle
             defaultChecked={option.checked}
             className="mr-16"

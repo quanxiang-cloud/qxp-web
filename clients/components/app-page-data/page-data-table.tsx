@@ -7,10 +7,13 @@ import Table from '@c/table';
 import Pagination from '@c/pagination';
 import PopConfirm from '@c/pop-confirm';
 
+import DetailsDrawer from './details-drawer';
 import store from './store';
 
 function PageDataTable() {
   const [selected, setSelected] = useState([]);
+  const [curRow, setCurRow] = useState<Record<string, any> | null>(null);
+
   const columns = useMemo(() => {
     return store.tableColumns.length ? [...store.tableColumns, {
       id: 'action',
@@ -18,6 +21,12 @@ function PageDataTable() {
       accessor: (data: any) => {
         return (
           <div className='text-center'>
+            <span
+              onClick={() => setCurRow(data)}
+              className='mr-16 text-blue-600 cursor-pointer'
+            >
+              查看
+            </span>
             <span
               onClick={() => store.goEdit(data)}
               className='mr-16 text-blue-600 cursor-pointer'
@@ -38,7 +47,7 @@ function PageDataTable() {
       return;
     }
     store.setParams({});
-  }, [store.tableID]);
+  }, [store.pageID]);
 
   const handleSelectChange = (selectArr: any) => {
     setSelected(selectArr);
@@ -87,6 +96,7 @@ function PageDataTable() {
           }}
         />
       ) : null}
+      {curRow ? <DetailsDrawer rowID={curRow?._id} onCancel={() => setCurRow(null)} /> : null}
     </div>
   );
 }
