@@ -26,7 +26,7 @@ export default function HeaderLeft() {
   }
 
   const isHome = location.pathname === '/';
-  const isAppManagement = location.pathname === '/apps';
+  const isAppManagement = location.pathname.startsWith('/apps');
   const isAccess = [
     '/access-control',
     '/access-control/',
