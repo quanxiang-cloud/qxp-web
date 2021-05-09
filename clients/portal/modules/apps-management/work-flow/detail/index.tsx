@@ -18,10 +18,10 @@ export default function Detail() {
     'edit' | 'settings' | 'variables'
   >('edit');
 
-  const { id, type } = useParams() as { id: string; type: string; };
+  const { flowID, type } = useParams() as { flowID: string; type: string; };
 
-  const { data, isLoading, isError } = useQuery(['GET_WORK_FLOW_INFO', id], getWorkFlowInfo, {
-    enabled: !!id,
+  const { data, isLoading, isError } = useQuery(['GET_WORK_FLOW_INFO', flowID], getWorkFlowInfo, {
+    enabled: !!flowID,
   });
 
   useEffect(() => {
@@ -39,6 +39,8 @@ export default function Detail() {
       nodeAdminMsg: data.canMsg === '1',
       status: data.status,
       triggerMode: type || data.triggerMode,
+      id: data.id,
+      processKey: data.processKey,
     }));
   }, [data]);
 

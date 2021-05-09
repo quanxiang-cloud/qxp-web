@@ -164,7 +164,7 @@ export const getStoreInitialData = () => {
     name: '',
     version: '0.1',
     status: 'DISABLE',
-    processKey: uuid(),
+    processKey: '',
     triggerMode: 'FORM_DATA',
     asideDrawerType: '',
     currentConnection: {},

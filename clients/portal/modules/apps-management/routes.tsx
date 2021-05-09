@@ -17,6 +17,7 @@ export default function Routes(): JSX.Element {
         component={FormDesign}
       />
       <Route path="/apps/flow/new/:type/:appID" component={NewFlow} />
+      <Route path="/apps/flow/:appID/:flowID" component={NewFlow} />
     </Switch>
   );
 }
