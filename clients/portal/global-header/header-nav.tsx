@@ -8,16 +8,16 @@ import Authorized from '@c/authorized';
 export default function HeaderLeft() {
   const location = useLocation();
 
-  function className(condition: boolean) {
-    if (condition) {
+  function className(isActive: boolean) {
+    if (isActive) {
       return {
-        'bg-blue-100': condition,
+        'bg-blue-100': isActive,
       };
     }
   }
 
-  function style(condition: boolean) {
-    if (condition) {
+  function style(isActive: boolean) {
+    if (isActive) {
       return {
         color: 'var(--blue-600)',
       };
@@ -26,7 +26,7 @@ export default function HeaderLeft() {
   }
 
   const isHome = location.pathname === '/';
-  const isAppManagement = location.pathname === '/app-management';
+  const isAppManagement = location.pathname === '/apps';
   const isAccess = [
     '/access-control',
     '/access-control/',
@@ -41,6 +41,7 @@ export default function HeaderLeft() {
     '/system/message/send',
     '/system/message/send/',
   ].includes(location.pathname);
+  // const isSystemControl = location.pathname === '/system/message';
   return (
     <div className="flex items-center flex-2">
       <Link
@@ -66,7 +67,7 @@ export default function HeaderLeft() {
         </span>
       </Link>
       <Link
-        to="/app-management"
+        to="/apps"
         className={twCascade(
           'header-nav-btn group mr-20',
           className(isAppManagement)
@@ -112,7 +113,7 @@ export default function HeaderLeft() {
         </Link>
       </Authorized>
       <Link
-        to="/system"
+        to="/system/message"
         className={twCascade(
           'header-nav-btn group mr-20',
           className(isSystemControl)
