@@ -131,8 +131,8 @@ export default class FormBuilderStore {
           ...{
             ...toSchema(toJS(configValue)), 'x-internal': toSchema(toJS(configValue))['x-internal'] ? {
               ...toSchema(toJS(configValue))['x-internal'],
-              isSystem: configValue.isSystem ? true : false
-            } : { isSystem: configValue.isSystem ? true : false }
+              isSystem: configValue.isSystem ? true : false,
+            } : { isSystem: configValue.isSystem ? true : false },
           },
           'x-index': index,
           'x-mega-props': {

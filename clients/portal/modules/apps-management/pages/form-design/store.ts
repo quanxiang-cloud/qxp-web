@@ -74,12 +74,12 @@ class FormDesignStore {
       let recordColNum = 0;
       let fixedColumnIndex: number[] = [];
       switch (this.pageTableShowRule.fixedRule) {
-        case 'one':
-          fixedColumnIndex = [0];
-          break;
-        case 'previous_two':
-          fixedColumnIndex = [0, 1];
-          break;
+      case 'one':
+        fixedColumnIndex = [0];
+        break;
+      case 'previous_two':
+        fixedColumnIndex = [0, 1];
+        break;
       }
 
       [...this.fieldList].sort((a: PageField, b: PageField) => {

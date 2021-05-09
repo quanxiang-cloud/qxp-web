@@ -46,7 +46,7 @@ class UserAppStore {
           if (schema.properties[key]['x-internal'].permission === 1) {
             schema.properties[key].readOnly = true;
           }
-        })
+        });
 
         this.formScheme = res.schema;
         getPageDataSchema(config, schema, pageInfo.id, pageInfo.name);

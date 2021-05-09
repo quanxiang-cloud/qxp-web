@@ -30,7 +30,7 @@ const TEXT = {
 function DelModal({ onCancel, visible, type = 'page', onOk }: Props) {
   return (
     <>
-      {visible&&(
+      {visible && (
         <Modal
           title={TEXT[type].modalTitle}
           onClose={onCancel}

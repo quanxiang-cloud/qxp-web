@@ -40,7 +40,7 @@ class AppPageDataStore {
     this.destroySetTableConfig = reaction(() => {
       return {
         size: this.tableConfig.pageSize || 9999,
-        sort: this.tableConfig.order ? [this.tableConfig.order] : []
+        sort: this.tableConfig.order ? [this.tableConfig.order] : [],
       };
     }, this.setParams);
   }
@@ -55,7 +55,7 @@ class AppPageDataStore {
     const fields: Scheme[] = [];
     Object.keys(fieldsMap).forEach((key: string) => {
       if (key !== '_id') {
-        fields.push({ id: key, ...fieldsMap[key] })
+        fields.push({ id: key, ...fieldsMap[key] });
       }
     });
     this.fields = fields;
@@ -131,12 +131,12 @@ class AppPageDataStore {
       method: 'findOne',
       condition: [
         {
-          key: "_id",
-          op: "eq",
-          value: [dataID]
-        }
-      ]
-    })
+          key: '_id',
+          op: 'eq',
+          value: [dataID],
+        },
+      ],
+    });
   }
 
   @action
