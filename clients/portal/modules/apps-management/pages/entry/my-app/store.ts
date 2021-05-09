@@ -56,7 +56,7 @@ class AppListStore {
       this.appList = res.data.data;
       if (JSON.stringify(params) === '{}') {
         this.allAppList = this.appList;
-      };
+      }
       this.isListLoading = false;
     }).catch(() => {
       this.isListLoading = false;
@@ -70,7 +70,6 @@ class AppListStore {
 
   @action
   createdApp = (appInfo: AppInfo) => {
-    debugger;
     return createdApp(appInfo).then((res) => {
       const newApp = { ...appInfo, ...res.data };
       this.appList = [newApp, ...this.appList];

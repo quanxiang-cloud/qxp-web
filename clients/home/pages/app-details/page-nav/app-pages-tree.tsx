@@ -103,7 +103,7 @@ export default class PureTree extends Component<Props, { tree: TreeData }> {
             <img src='/dist/images/empty-tips.svg' />
           </div>
         </AbsoluteCentered>
-      )
+      );
     }
 
     return (

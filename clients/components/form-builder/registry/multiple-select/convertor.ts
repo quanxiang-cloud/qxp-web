@@ -34,7 +34,7 @@ export function toSchema(value: MultipleSelectConfig): FormBuilder.Schema {
     enum: (value.availableOptions || []).map((option) => {
       return {
         ...option,
-        value: nanoid(8),
+        value: option.value || nanoid(8),
         title: option.label,
         name: option.label,
       };

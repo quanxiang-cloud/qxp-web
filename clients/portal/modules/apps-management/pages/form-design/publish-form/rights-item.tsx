@@ -20,7 +20,7 @@ function RightsItem({ rights, actions }: Props) {
       const users:any = [];
       const deptList:any = [];
       rights.scopes.forEach((scope)=>{
-        if (scope.type===1) {
+        if (scope.type === 1) {
           users.push({
             id: scope.id,
             ownerID: scope.id,
