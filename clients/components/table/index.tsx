@@ -19,6 +19,7 @@ interface Props<T extends Record<string, any>> {
   emptyTips?: React.ReactNode;
   initialSelectedRowKeys?: string[];
   loading?: boolean;
+  onRowClick?: (rowID: string, selectedRow: T) => void;
   onSelectChange?: (selectedKeys: string[], selectedRows: T[]) => void;
   rowKey: string;
   showCheckbox?: boolean;
@@ -32,6 +33,7 @@ export default function Table<T extends Record<string, any>>({
   emptyTips,
   initialSelectedRowKeys,
   loading,
+  onRowClick,
   onSelectChange,
   rowKey,
   showCheckbox,
@@ -72,7 +74,8 @@ export default function Table<T extends Record<string, any>>({
     const selectedRows = selectedFlatRows.map(({ original }) => original);
     const selectedKeys = selectedRows.map((row) => row[rowKey] as string);
     onSelectChange(selectedKeys, selectedRows);
-  }, [selectedRowIds]);
+    // todo fix this
+  }, [Object.keys(selectedRowIds).length]);
 
   const tableFooterRender = () => {
     if (loading) {
@@ -130,12 +133,12 @@ export default function Table<T extends Record<string, any>>({
               return (
                 <tr
                   {...row.getRowProps()}
+                  onClick={() => onRowClick?.(row.id, row.original)}
                   key={row.id}
                   className='qxp-table-tr'
                 >
                   {row.cells.map((cell, index) => {
                     const hasFixed = (extendsColumns[index] as FixedColumn<any>).fixed;
-
                     return (
                       <td
                         {...cell.getCellProps()}
