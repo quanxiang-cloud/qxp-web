@@ -30,6 +30,7 @@ export const defaultConfig: DatePickerConfig = {
 
 export function toSchema(value: typeof defaultConfig): FormBuilder.Schema {
   let xComponent = 'DatePicker';
+  const timeFormat = value.valueFormat?.split(' ')[1];
   switch (value.valueFormat) {
   case 'YYYY':
     xComponent = 'YearPicker';
@@ -57,6 +58,7 @@ export function toSchema(value: typeof defaultConfig): FormBuilder.Schema {
     ['x-component-props']: {
       placeholder: value.placeholder,
       format: value.valueFormat,
+      showTime: timeFormat !== undefined ? { format: timeFormat } : false,
     },
     ['x-internal']: {
       sortable: value.sortable,

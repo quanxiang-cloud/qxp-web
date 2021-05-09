@@ -35,7 +35,7 @@ class UserAppStore {
     if (pageInfo.id === this.curPage.id) {
       return;
     }
-    
+
     appDataStore.clear();
     this.formScheme = null;
     if (pageInfo.id) {
@@ -46,10 +46,10 @@ class UserAppStore {
           if (schema.properties[key]['x-internal'].permission === 1) {
             schema.properties[key].readOnly = true;
           }
-        })
+        });
 
         this.formScheme = res.schema;
-        getPageDataSchema(config, schema, pageInfo.id as string);
+        getPageDataSchema(config, schema, pageInfo.id, pageInfo.name);
         this.fetchSchemeLoading = false;
       }).catch(() => {
         this.fetchSchemeLoading = false;

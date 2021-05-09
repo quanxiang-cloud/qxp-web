@@ -42,6 +42,7 @@ function PageDetails() {
     <div className='flex flex-col flex-1 relative'>
       <TextHeader
         title={curPage.name || ''}
+        desc={curPage.describe || ''}
         action={appPagesStore.formScheme ? (
           <Button onClick={goFormBuild} modifier='primary' iconName='edit'>设计表单</Button>
         ) : '📌  表单、流程、报表何时使用？快速上手'}

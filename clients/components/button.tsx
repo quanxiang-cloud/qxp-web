@@ -14,12 +14,13 @@ interface Props extends React.DetailedHTMLProps<
 }
 
 function Button(
-  { children, iconName, className, modifier, forbidden, loading, ...rest }: Props,
+  { children, iconName, className, modifier, forbidden, loading, type = 'button', ...rest }: Props,
   ref?: Ref<HTMLButtonElement>
 ) {
   return (
     <button
       {...rest}
+      type={type}
       ref={ref}
       className={cs('btn', className, {
         [`btn--${modifier}`]: modifier,
