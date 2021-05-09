@@ -4,7 +4,23 @@ import { useLocation } from 'react-router';
 import HeaderNav from './header-nav';
 import HeaderMenu from './header-menu';
 
-function IndexGlobalHeader() {
+const paths = [
+  '/apps/formDesign',
+  '/apps/details',
+  '/apps/flow/new',
+];
+
+function shouldHideHeader(currentPath: string): boolean {
+  return paths.some((path) => currentPath.startsWith(path));
+}
+
+export default function GlobalHeader() {
+  const { pathname } = useLocation();
+
+  if (shouldHideHeader(pathname)) {
+    return null;
+  }
+
   return (
     <>
       <div className="flex justify-between items-center py-8 px-24 bg-white">
@@ -19,24 +35,3 @@ function IndexGlobalHeader() {
     </>
   );
 }
-
-const paths = [
-  '/apps/formDesign',
-  '/apps/details',
-  '/flow/new',
-];
-
-function shouldHideHeader(currentPath: string): boolean {
-  return paths.some((path) => currentPath.startsWith(path));
-}
-
-function GlobalHeader() {
-  const { pathname } = useLocation();
-  if (shouldHideHeader(pathname)) {
-    return null;
-  }
-
-  return (<IndexGlobalHeader />);
-}
-
-export default GlobalHeader;
