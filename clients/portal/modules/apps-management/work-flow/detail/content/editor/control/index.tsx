@@ -44,7 +44,6 @@ function Controls({
   children,
 }: Props) {
   const { type, appID } = useParams<{ type: string; appID: string; }>();
-
   const setInteractive = useStoreActions((actions) => actions.setInteractive);
   const { zoomIn, zoomOut, fitView } = useZoomPanHelper();
   const {
@@ -59,7 +58,9 @@ function Controls({
     nodeAdminMsg: canMsg,
   } = useObservable<StoreValue>(store) || {};
   const formDataElement = elements.find(({ type }) => type === 'formData');
-
+  const hasOneApproveOrFillInNode = !!elements.find(({
+    type,
+  }) => type === 'approve' || type === 'fillIn');
   const isInteractive = useStoreState(
     (s) => s.nodesDraggable && s.nodesConnectable && s.elementsSelectable
   );
@@ -125,7 +126,12 @@ function Controls({
         modifier="primary"
         iconName="toggle_on"
         className="py-5"
-        forbidden={!formDataElement?.data.businessData.form.name || !name || !triggerMode}
+        forbidden={
+          !formDataElement?.data.businessData.form.name ||
+          !name ||
+          !triggerMode ||
+          !hasOneApproveOrFillInNode
+        }
         onClick={onSaveWorkFlow}
       >
         保存

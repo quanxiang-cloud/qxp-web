@@ -18,13 +18,15 @@ import store, {
 } from './content/editor/store';
 
 export default function GlobalHeader() {
-  const { name = '', status, id } = useObservable<StoreValue>(store) || {};
+  const { name = '', status, id, triggerMode } = useObservable<StoreValue>(store) || {};
   const [workFlowName, setWorkFlowName] = useState(name);
   const [isWorkFlowNameMenuOpen, setIsWorkFlowNameMenuOpen] = useState(false);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const flowNameInputRef = useRef<HTMLInputElement>(null);
   const { type } = useParams<{ type: 'form-data' | 'form-time'; }>();
   const paramsMap = {
+    FORM_DATA: '工作表触发',
+    FORM_TIME: '工作表时间触发',
     'form-data': '工作表触发',
     'form-time': '工作表时间触发',
   };
@@ -124,7 +126,7 @@ export default function GlobalHeader() {
           className="mr-8 text-caption-no-color text-amber-600 px-6 bg-amber-50
           rounded-tl-6 rounded-br-6"
         >
-          {paramsMap[type]}
+          {paramsMap[type || triggerMode]}
         </span>
         <div className="flex items-center">
           <span className="mr-8 text-h6 font-semibold">{name || '未命名工作流'}</span>

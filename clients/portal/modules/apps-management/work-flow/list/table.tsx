@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation } from 'react-query';
 import cs from 'classnames';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useHistory } from 'react-router-dom';
 
 import Table from '@c/table';
 import ModalConfirm from '@c/modal-confirm';
@@ -30,6 +30,7 @@ const statusMap = {
 
 export default function WorkFlowTable({ type }: Props) {
   const { appID } = useParams<{appID: string}>();
+  const history = useHistory();
   const [state, setState] = useState<State>({
     currentEditWorkFlow: null,
     currentDeleteWorkFlow: null,
@@ -62,6 +63,12 @@ export default function WorkFlowTable({ type }: Props) {
   useEffect(() => {
     setStatusFilter('');
   }, [type]);
+
+  useEffect(() => {
+    if (state.currentEditWorkFlow) {
+      history.push(`/apps/flow/${appID}/${state.currentEditWorkFlow.id}`);
+    }
+  }, [state.currentEditWorkFlow]);
 
   function onRowActionChange(key: 'edit' | 'delete' | 'see', row: Flow) {
     const actionMap = {
