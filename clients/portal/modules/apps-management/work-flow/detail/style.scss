@@ -45,3 +45,16 @@ rect {
 .work-flow-form-selector {
   background: transparent;
 }
+
+.animate-node-error {
+  animation: animate-node-error 1.5s forwards;
+}
+
+@keyframes animate-node-error {
+  0%, 100% {
+    @apply border-red-600;
+  }
+  50% {
+    @apply border-red-200;
+  }
+}

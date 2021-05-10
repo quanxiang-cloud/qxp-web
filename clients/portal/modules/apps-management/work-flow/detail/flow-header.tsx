@@ -2,6 +2,7 @@ import React, { useState, MouseEvent, useRef, useEffect } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import cs from 'classnames';
 import { useMutation } from 'react-query';
+import { FlowElement } from 'react-flow-renderer';
 
 import Icon from '@c/icon';
 import Button from '@c/button';
@@ -34,9 +35,25 @@ export default function GlobalHeader() {
   const toggleMutation = useMutation(toggleWorkFlow, {
     onSuccess: () => {
       toast.success(status === 'ENABLE' ? '工作流下架成功' : '工作流发布成功');
-      updateStore('status', () => status === 'DISABLE' ? 'ENABLE' : 'DISABLE');
+      updateStore<StoreValue>(null, (st) => ({
+        ...st,
+        status: status === 'DISABLE' ? 'ENABLE' : 'DISABLE',
+        errors: {
+          ...st.errors,
+          publish: {},
+        },
+      }));
     },
-    onError: (e: Error) => {
+    onError: (e: ErrorWithData<{ data: FlowElement}>) => {
+      if (e.data) {
+        updateStore<Record<string, unknown>>('errors', (err) => ({
+          ...err,
+          publish: {
+            data: e.data,
+            msg: e.message,
+          },
+        }));
+      }
       toast.error(e.message);
     },
   });
