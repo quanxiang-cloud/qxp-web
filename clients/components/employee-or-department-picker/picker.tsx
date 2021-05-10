@@ -10,7 +10,7 @@ import Loading from '@c/loading';
 import {
   getDepartmentStructure,
 } from '@portal/modules/access-control/role-management/api';
-import Error from '@c/error';
+import ErrorTips from '@c/error-tips';
 
 import EmployeeTable from './employee-table';
 import SelectedList from './selected-list';
@@ -78,7 +78,7 @@ export default observer(function EmployeeOrDepartmentPicker({
     return <Loading desc="加载中..." />;
   }
   if (isError) {
-    return <Error desc="something wrong" />;
+    return <ErrorTips desc="something wrong" />;
   }
 
   return (
