@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
 import { observer } from 'mobx-react';
 
@@ -26,15 +26,20 @@ export default observer(function EmployeeTable({
   ownerStore,
 }: IEmployeeTable) {
   const store = ownerStore.employeeStore;
-
+  const [loading, setLoading] = useState(true);
   const { current, pageSize, total } = store.pagination;
 
-  const { data, isLoading } = useQuery(
+  const { data } = useQuery(
     [
       'adminSearchUserList',
       { depID, userName, page: current, limit: pageSize },
     ],
-    adminSearchUserList,
+    (pa) => {
+      return adminSearchUserList({ queryKey: pa.queryKey }).then((res) => {
+        setLoading(false);
+        return res;
+      });
+    },
     {
       refetchOnWindowFocus: false,
       enabled: !!depID,
@@ -55,7 +60,7 @@ export default observer(function EmployeeTable({
     }
   }, [data, ownerStore.owners]);
 
-  if (isLoading && store.selectedKeys.length === 0) {
+  if (loading) {
     return <Loading desc="加载中..." />;
   }
 
@@ -88,7 +93,6 @@ export default observer(function EmployeeTable({
     }
     store.setSelectedKeys(keys);
   };
-  console.log(...store.selectedKeys);
 
   function renderTotalTip() {
     return (
@@ -103,8 +107,8 @@ export default observer(function EmployeeTable({
     <div className={className}>
       <Table
         showCheckbox
-        className="rounded-bl-none rounded-br-none"
-        onRowClick={(rowID:string, selectedRow: any) => {
+        className="rounded-bl-none rounded-br-none aa"
+        onRowClick={(rowID: string, selectedRow: any) => {
           const newKeys = store.selectedKeys.includes(selectedRow.id) ?
             store.selectedKeys.filter((k) => k !== selectedRow.id) :
             [...store.selectedKeys, selectedRow.id];
@@ -148,7 +152,7 @@ export default observer(function EmployeeTable({
           },
         ]}
         initialSelectedRowKeys={store.selectedKeys}
-        // initialSelectedRowKeys={['dfe6b7e2-445b-4227-969f-7ac7373599dc']}
+      // initialSelectedRowKeys={['dfe6b7e2-445b-4227-969f-7ac7373599dc']}
       />
       <div className="h-52 bg-white">
         <Pagination
