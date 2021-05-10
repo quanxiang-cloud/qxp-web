@@ -40,6 +40,14 @@ function AppAdmin() {
       setDelLoading(false);
       setAppAdminList(appAdminList.filter(({ id }: any) => !idArr.includes(id)));
       toast.success('删除成功！');
+      const userInfo = window.localStorage.getItem('globalState') &&
+        JSON.parse(window.localStorage.getItem('globalState') || JSON.stringify(null));
+      if (idArr.includes(userInfo.userInfo.id)) {
+        toast.error('权限不符！2秒后跳转到首页');
+        setTimeout(() => {
+          window.location.href = '/apps';
+        }, 2000);
+      }
     }).catch(()=>{
       setDelLoading(false);
     });

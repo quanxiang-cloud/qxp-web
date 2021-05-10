@@ -1,4 +1,4 @@
-import { nanoid } from 'nanoid';
+import { generateRandomFormFieldID } from '../../utils';
 
 export interface SelectConfig {
   title: string;
@@ -35,7 +35,7 @@ export function toSchema(value: SelectConfig): FormBuilder.Schema {
     enum: (value.availableOptions || []).map((option) => {
       return {
         ...option,
-        value: option.value || nanoid(8),
+        value: option.value || generateRandomFormFieldID(),
         title: option.label,
         name: option.label,
       };
