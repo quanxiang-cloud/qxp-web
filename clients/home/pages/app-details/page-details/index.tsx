@@ -43,9 +43,7 @@ function PageDetails() {
 
     if (formScheme) {
       return (
-        <div className='p-20'>
-          <AppPageData />
-        </div>
+        <AppPageData className='p-20 overflow-x-hidden' />
       );
     }
   };
