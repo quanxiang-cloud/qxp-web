@@ -39,7 +39,7 @@ export function toSchema(value: MultipleSelectConfig): FormBuilder.Schema {
         name: option.label,
       };
     }),
-    'x-component': 'Select',
+    'x-component': 'MultipleSelect',
     // todo support optionsLayout
     ['x-component-props']: {
       mode: 'multiple',
