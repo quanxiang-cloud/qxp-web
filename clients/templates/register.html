@@ -1,58 +1,60 @@
 {{template "layout" .}}
 
 {{define "header_styles"}}
-  <title>注册</title>
-  <link rel="stylesheet" href="<%= htmlWebpackPlugin.files.css[0] %>">
+<title>注册</title>
+<link rel="stylesheet" href="<%= htmlWebpackPlugin.files.css[0] %>">
 {{end}}
 
 {{define "content"}}
-    <main class="flex va-top flex-1 column align-center">
+<main class="flex va-top flex-1 column align-center">
 
-      <header class="flex row space-between align-center w-p-100">
-        <div class="logo-company">
-          <img class="va-middle" src="/dist/images/logo.png" alt="logo">
-          <span class="text-black-100 fs-16 va-middle">全象云</span>
-        </div>
-        <div class="to-login">
-          <span class="text-black-200 fs-14">已有账号?</span>
-          <a href="/login/password" class="br-3 text-white-n00 bg-dark-n15 fs-14">立即登录</a>
-        </div>
-      </header>
+  <header class="flex row space-between align-center w-p-100">
+    <div class="logo-company">
+      <img class="va-middle" src="/dist/images/logo.png" alt="logo">
+      <span class="text-black-100 fs-16 va-middle">全象云</span>
+    </div>
+    <div class="to-login">
+      <span class="text-black-200 fs-14">已有账号?</span>
+      <a href="/login/password" class="br-3 text-white-n00 bg-dark-n15 fs-14">立即登录</a>
+    </div>
+  </header>
 
-      <form action="/register" class="inline-flex column text-left w360 w-m-p-100 flex-1 justify-center">
-        <h1 class="text-black-100 fs-24 mb-40">欢迎注册</h1>
+  <form action="/register"
+    class="inline-flex column text-left w360 w-m-p-100 flex-1 justify-center">
+    <h1 class="text-black-100 fs-24 mb-40">欢迎注册</h1>
 
-        <div class="input-field mb-24">
-          <input type="text" class="w-p-100 br-3" placeholder="邮箱或手机号">
-        </div>
-        <div class="input-field with-appendix mb-24 flex">
-          <input type="text" class="br-3 flex-1 br-r-0" placeholder="输入验证码">
-          <button class="clickable fs-12 px-12">获取验证码</button>
-        </div>
-        <div class="input-field with-appendix-inner mb-16 relative">
-          <input type="password" class="w-p-100 br-3 pr-36" placeholder="设置登录密码">
-          <i class="w16 h16 absolute right-8 top-center clickable">
-            <img src="/dist/images/eye-close.png" alt="eye-closed" class="w-p-100 h-p-100">
-          </i>
-        </div>
+    <div class="input-field mb-24">
+      <input type="text" class="w-p-100 br-3" placeholder="邮箱或手机号">
+    </div>
+    <div class="input-field with-appendix mb-24 flex">
+      <input type="text" class="br-3 flex-1 br-r-0" placeholder="输入验证码">
+      <button class="clickable fs-12 px-12">获取验证码</button>
+    </div>
+    <div class="input-field with-appendix-inner mb-16 relative">
+      <input type="password" class="w-p-100 br-3 pr-36" placeholder="设置登录密码">
+      <i class="w16 h16 absolute right-8 top-center clickable">
+        <img src="/dist/images/eye-close.png" alt="eye-closed" class="w-p-100 h-p-100">
+      </i>
+    </div>
 
-        <label class="input-field flex mb-16 align-center" for="protocol">
-          <input type="checkbox" name="protocol" id="protocol" class="br-3 clickable mr-8">
-          <span class="fs-14 text-black-200 clickable">
-            我已阅读并同意<a href="#" class="link-dark">《全象云用户协议》</a>
-          </span>
-        </label>
+    <label class="input-field flex mb-16 align-center" for="protocol">
+      <input type="checkbox" name="protocol" id="protocol" class="br-3 clickable mr-8">
+      <span class="fs-14 text-black-200 clickable">
+        我已阅读并同意<a href="#" class="link-dark">《全象云用户协议》</a>
+      </span>
+    </label>
 
-        <button class="text-white-n00 bg-blue-b10 text-center fs-14 br-3 bd-none outline-none clickable">注册</button>
-      </form>
+    <button
+      class="text-white-n00 bg-blue-b10 text-center fs-14 br-3 bd-none outline-none clickable">注册</button>
+  </form>
 
-    </main>
+</main>
 
-    <aside class="h-p-100 inline-block">
-      <img class="h-p-100" src="/dist/images/register-bg.png" alt="aside-image">
-    </aside>
+<aside class="h-p-100 inline-block" style="width:25%">
+  <img class="h-p-100" src="/dist/images/register-bg.png" alt="aside-image">
+</aside>
 {{end}}
 
 {{define "bottom_scripts"}}
-  <script src="<%= htmlWebpackPlugin.files.js[0] %>"></script>
+<script src="<%= htmlWebpackPlugin.files.js[0] %>"></script>
 {{end}}
