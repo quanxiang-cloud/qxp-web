@@ -19,8 +19,11 @@ function SourceElement({ formItem }: Props): JSX.Element {
         return;
       }
 
-      const { index } = monitor.getDropResult() || {};
-      store.append(formItem, index);
+      const dropResult = monitor.getDropResult();
+      if (!dropResult) {
+        return;
+      }
+      store.append(formItem, dropResult);
     },
     collect: (monitor) => ({
       isDragging: monitor.isDragging(),
