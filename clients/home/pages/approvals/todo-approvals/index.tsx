@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { observer } from 'mobx-react';
 
 import Switch from '@c/switch';
@@ -9,20 +9,20 @@ import Pagination from '@c/pagination';
 import IconBtn from '@c/icon-btn';
 
 import store from './store';
-import ApprovalCard from '../approval-card';
+import TaskList from '../task-list';
 
 const status = [
-  { label: '全部', value: 'ALL' },
-  { label: '已超时', value: 'outdate' },
-  { label: '被催办', value: 'urge' },
+  { label: '全部', value: '' },
+  { label: '已超时', value: 'OVERTIME' },
+  { label: '被催办', value: 'URGE' },
 ];
 
-const catalogs = [
-  { label: '全部', value: '全部' },
-  { label: '待审批', value: '待审批' },
-  { label: '待填写', value: '待填写' },
-  { label: '待阅示', value: '待阅示' },
-  { label: '其他', value: '其他' },
+const handleTypes = [
+  { label: '全部', value: '' },
+  { label: '待审批', value: 'REVIEW' },
+  { label: '待填写', value: 'WRITE' },
+  { label: '待阅示', value: 'READ' },
+  { label: '其他', value: 'OTHER' },
 ];
 
 const sortOptions = [
@@ -31,38 +31,36 @@ const sortOptions = [
 ];
 
 function TodoApprovals(): JSX.Element {
-  React.useEffect(() => store.fetchApprovals(), []);
+  useEffect(() => {
+    document.title = '我的流程 - 待处理列表'; // todo
+    store.fetchApprovals();
+  }, []);
 
   return (
     <div>
       <div className="flex justify-between items-center mb-16">
-        <Switch
-          className="mr-16"
-          onChange={(value) => store.changeStatus(value)}
-          options={status}
-        />
-        <Select
-          className="mr-16"
-          multiple={false}
-          value={store.catalog}
-          options={catalogs}
-          onChange={(value) => store.changeCatalog(value)}
-        />
-        <Checkbox label="仅看我代理的" className="mr-auto" />
-        <Search className="mr-16" placeholder="搜索流程、发起人等" />
-        <Select multiple={false} options={sortOptions}>
-          <IconBtn iconName="sort" />
-        </Select>
+        <div className="flex flex-1">
+          <Switch
+            className="mr-16"
+            onChange={store.changeTagType}
+            options={status}
+          />
+          <Select
+            className="mr-16"
+            multiple={false}
+            value={store.handleType}
+            options={handleTypes}
+            onChange={store.changeHandleType}
+          />
+          {/*<Checkbox label="仅看我代理的" className="mr-auto" />*/}
+        </div>
+        <Search className="w-259" placeholder="搜索流程、发起人、应用" value={store.keyword} onChange={store.changeKeyword}/>
+        {/*<Select multiple={false} options={sortOptions}>*/}
+        {/*  <IconBtn iconName="import_export" className="btn-sort" />*/}
+        {/*</Select>*/}
       </div>
-      {/* {store.approvals.map((approval) => {
-        return (<ApprovalCard key={approval.id} />);
-      })} */}
-      {
-        Array.from(new Array(10)).map((_, index) => index).map((index) => {
-          return (<ApprovalCard key={index} />);
-        })
-      }
-      <Pagination current={store.pageNumber} pageSize={store.pageSize} onChange={store.paginate} />
+      <TaskList tasks={store.approvals} store={store} />
+      <Pagination current={store.pageNumber} total={store.total} pageSize={store.pageSize} onChange={store.paginate} />
     </div>
   );
 }

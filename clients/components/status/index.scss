@@ -1,0 +1,42 @@
+.status {
+  display: inline-flex;
+  &-indicator {
+    width: 8px;
+    height: 8px;
+
+    background: var(--gray-300);
+    opacity: 0.75;
+    border-radius: 50%;
+    //filter: blur(20px);
+
+    &-review {
+      background: var(--gray-300);
+    }
+
+    &-in_review {
+      background: var(--blue-600);
+    }
+
+    &-agree, &-complete {
+      background: #16A34A;
+    }
+
+    &-refuse {
+      background: #F59E0B;
+    }
+
+    &-cancel {
+      background: #DC2626;
+    }
+
+    &-send_back {
+      background: #D97706;
+    }
+  }
+
+  &-label {
+    font-size: 12px;
+    line-height: 20px;
+    color: #475569;
+  }
+}

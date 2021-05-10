@@ -1,4 +1,5 @@
 const path = require('path');
+// const webpack=require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
@@ -6,6 +7,7 @@ const TerserPlugin = require('terser-webpack-plugin');
 const WebpackNotifierPlugin = require('webpack-notifier');
 const WebpackBar = require('webpackbar');
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 
 // env: 'production' | 'development';
 module.exports = function(env) {
@@ -16,7 +18,7 @@ module.exports = function(env) {
     mode: NODE_ENV ? NODE_ENV : 'production',
     watch: isDev,
     bail: NODE_ENV !== 'development',
-    devtool: isDev ? 'cheap-module-source-map': false,
+    devtool: isDev ? 'eval-cheap-module-source-map': false,
 
     entry: {
       portal: './clients/portal/index.tsx',
@@ -63,7 +65,12 @@ module.exports = function(env) {
         {
           test: /\.ts(x?)$/,
           exclude: /node_modules/,
-          use: [{ loader: 'ts-loader' }],
+          use: [{
+            loader: "ts-loader",
+            options: {
+              transpileOnly: true,
+            }
+          }],
         },
       ],
     },
@@ -77,6 +84,10 @@ module.exports = function(env) {
     },
 
     plugins: [
+      // new webpack.DllReferencePlugin({
+      //   context: __dirname,
+      //   manifest: path.join(__dirname, 'dist', 'vendor-manifest.json')
+      // }),
       new WebpackBar(),
       new MiniCssExtractPlugin({
         filename: NODE_ENV === 'production' ? '[name].[contenthash].css' : '[name].css',
@@ -124,6 +135,7 @@ module.exports = function(env) {
         filename: `${__dirname}/dist/templates/home.html`,
       }),
       env !== 'production' ? new WebpackNotifierPlugin({ alwaysNotify: true }) : null,
+      new ForkTsCheckerWebpackPlugin(),
     ].filter(Boolean),
   };
 };

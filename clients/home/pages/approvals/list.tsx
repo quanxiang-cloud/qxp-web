@@ -4,17 +4,18 @@ import cs from 'classnames';
 import { useURLSearch } from '@lib/hooks';
 import TodoApprovals from './todo-approvals';
 
-type ListType = 'todo' | 'done' | 'cc_to_me' | 'my_applies';
+type ListType = 'todo' | 'done' | 'cc_to_me' | 'my_applies' | 'all';
 
 // eslint-disable-next-line max-len
 const listClassName = 'h-56 flex items-center justify-between hover:bg-blue-100 px-24 font-normal';
 
 const typeList: Array<{ label: string, value: ListType } | 'divide'> = [
+  { label: '我发起的', value: 'my_applies' },
   { label: '待我处理', value: 'todo' },
   { label: '我已处理', value: 'done' },
   { label: '抄送给我', value: 'cc_to_me' },
   'divide',
-  { label: '我发起的', value: 'my_applies' },
+  { label: '全部', value: 'all' },
 ];
 
 type ApprovalTypeListProps = {

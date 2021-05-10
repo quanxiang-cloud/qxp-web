@@ -6,7 +6,8 @@
   "scripts": {
     "lint": "eslint 'clients/**/*.tsx' 'clients/**/*.ts' --fix",
     "preview:icon": "node scripts/preview-icons.js",
-    "start": "gulp"
+    "start": "gulp",
+    "build:vendor": "webpack -c webpack.dll.js --progress"
   },
   "dependencies": {
     "@QCFE/lego-ui": "^0.1.30",
@@ -75,6 +76,7 @@
     "eslint-plugin-react": "^7.22.0",
     "eslint-plugin-unused-imports": "^1.1.1",
     "file-loader": "^6.2.0",
+    "fork-ts-checker-webpack-plugin": "^6.2.6",
     "gulp": "^4.0.2",
     "html-webpack-plugin": "^5.3.1",
     "mini-css-extract-plugin": "^1.3.9",
