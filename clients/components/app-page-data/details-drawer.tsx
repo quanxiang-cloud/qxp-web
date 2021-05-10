@@ -43,9 +43,15 @@ function DetailsDrawer({ onCancel, rowID }: Props) {
     const _systems: InfoData[] = [];
     store.fields.forEach((field: any) => {
       if (field['x-internal'].isSystem) {
-        _systems.push({ label: field.title, value: getTableCellData((formDataItem as any)[field.id], field) });
+        _systems.push({
+          label: field.title,
+          value: getTableCellData((formDataItem as any)[field.id], field),
+        });
       } else {
-        _details.push({ label: field.title, value: getTableCellData((formDataItem as any)[field.id], field) });
+        _details.push({
+          label: field.title,
+          value: getTableCellData((formDataItem as any)[field.id], field),
+        });
       }
     });
     return [_details, _systems];
@@ -78,7 +84,8 @@ function DetailsDrawer({ onCancel, rowID }: Props) {
     );
   };
 
-  const title = store.tableColumns.length && formDataItem ? (store.tableColumns[0] as any).accessor(formDataItem) : '';
+  const title = store.tableColumns.length && formDataItem ?
+    (store.tableColumns[0] as any).accessor(formDataItem) : '';
 
   return (
     <div

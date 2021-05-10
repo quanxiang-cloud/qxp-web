@@ -26,7 +26,7 @@ interface Props {
 
 const regImage = /jpe?g|png|gif|svg/i;
 
-const isImageExt = (filename: string): boolean=> {
+const isImageExt = (filename: string): boolean => {
   const parts = filename.split('.');
   const name = parts[parts.length - 1];
   return regImage.test(name);
@@ -41,18 +41,20 @@ const Filelist = ({
   isPreview,
   messageTitle,
 }: Props) => {
-  const handleDownload = (link: string, filename: string)=> {
+  const handleDownload = (link: string, filename: string) => {
     if (!candownload) {
       return;
     }
     saveAs(link, filename);
   };
 
-  const dlViaBlob = (url: string)=> {
-    return fetch(url).then((res)=> ({ url, blob: res.blob() })).catch((err: Error)=> Message.error(err.message));
+  const dlViaBlob = (url: string) => {
+    return fetch(url).then((res) => {
+      return { url, blob: res.blob() };
+    }).catch((err: Error) => Message.error(err.message));
   };
 
-  const exportZip = (blobs: Array<{url: string, blob: any}>) => {
+  const exportZip = (blobs: Array<{ url: string, blob: any }>) => {
     const zip = jsZip();
     blobs.forEach(({ url, blob }) => {
       const urlInst = new URL(url);
@@ -67,16 +69,16 @@ const Filelist = ({
     });
   };
 
-  const dlAndZip = (urls: string[])=> {
+  const dlAndZip = (urls: string[]) => {
     // @ts-ignore
-    return Promise.all(urls.map((url)=> dlViaBlob(url))).then(exportZip);
+    return Promise.all(urls.map((url) => dlViaBlob(url))).then(exportZip);
   };
 
-  const handleZipDl = ()=> {
-    dlAndZip(files.map((file)=> file.file_url));
+  const handleZipDl = () => {
+    dlAndZip(files.map((file) => file.file_url));
   };
 
-  const renderList = ()=> {
+  const renderList = () => {
     return (
       <>
         {files.map((itm, idx) => (
@@ -93,11 +95,11 @@ const Filelist = ({
               percent={itm.percent}
               status={itm.status}
               key={itm.file_url}
-              // onIconClick={() => {
-              //   this.uploader.resend(fileId);
-              // }}
+            // onIconClick={() => {
+            //   this.uploader.resend(fileId);
+            // }}
             />)}
-            {deleteFiles ? <Icon onClick={() => deleteFiles(itm.file_name)} name="close" clickable/> : null}
+            {deleteFiles ? <Icon onClick={() => deleteFiles(itm.file_name)} name="close" clickable /> : null}
           </div>
         ))}
       </>
@@ -115,7 +117,7 @@ const Filelist = ({
           <legend>
             附件
             {canMultiDownload &&
-            <span className='cursor-pointer ml-8 text-12 text-blue-600' onClick={handleZipDl}>打包下载</span>}
+              <span className='cursor-pointer ml-8 text-12 text-blue-600' onClick={handleZipDl}>打包下载</span>}
           </legend>
           {renderList()}
         </fieldset>

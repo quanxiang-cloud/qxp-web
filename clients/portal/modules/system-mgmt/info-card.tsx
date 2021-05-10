@@ -3,7 +3,7 @@ import ItemWithTitleDesc from '@c/item-with-title-desc';
 import SideNavCard from '@c/side-nav-card';
 import AppIcon from '@c/app-icon';
 
-const InfoCard = (props: any) => {
+const InfoCard = () => {
   const MENU = [
     {
       id: 'message',

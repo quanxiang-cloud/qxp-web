@@ -131,7 +131,7 @@ const PanelList = () => {
       content: '确定要将全部类型的消息标记为已读吗?',
       cb: () => {
         setAllMsgAdRead()
-          .then((response) => {
+          .then(() => {
             refetch();
             unReadRefetch();
             closeConfirmInfo();

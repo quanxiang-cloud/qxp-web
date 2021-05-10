@@ -77,7 +77,12 @@ interface ContentProps {
   className?: string
 }
 
-export const Content = forwardRef(({ className, donotShowHeader, footer, modifyData, handleClose }: ContentProps, ref ) => {
+export const Content = forwardRef(({
+  className,
+  donotShowHeader,
+  footer,
+  modifyData,
+  handleClose }: ContentProps, ref ) => {
   const [msgType, setMsgType] = useState( modifyData?.sort || MsgType.notify );
   const [title, setTitle] = useState( modifyData?.title || '' );
   const [prevData, setPrevData] = useState<Qxp.DraftData | null>(null);

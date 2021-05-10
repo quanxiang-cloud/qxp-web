@@ -3,7 +3,7 @@ import { action, observable, reaction, IReactionDisposer } from 'mobx';
 
 import { formDataCurd } from '@portal/modules/apps-management/lib/api';
 import toast from '@lib/toast';
-import httpClient from '@lib/http-client'
+import httpClient from '@lib/http-client';
 
 import { Scheme } from './utils';
 type Params = {
@@ -148,7 +148,7 @@ class AppPageDataStore {
       { formID: this.pageID }
     ).then((res: any) => {
       this.authority = res?.authority || 0;
-    })
+    });
   }
 
   @action

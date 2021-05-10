@@ -19,7 +19,7 @@ export type Config = {
 export function operateButton(wIndex: number, authority: number, button: React.ReactNode) {
   const weightArr = authority.toString(2).split('').reverse();
   if (weightArr.length < 7) {
-    for (let index = 0; index < 7 - weightArr.length; index++) {
+    for (let index = 0; index < 7 - weightArr.length; index += 1) {
       weightArr.push('0');
     }
   }
