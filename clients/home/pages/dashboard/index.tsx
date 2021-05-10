@@ -9,6 +9,7 @@ import Icon from '@c/icon';
 import AppInfoView from '@portal/modules/apps-management/components/app-info-view';
 
 import store from '../store';
+import approvalStore from '../approvals/todo-approvals/store';
 
 import './index.scss';
 
@@ -83,7 +84,10 @@ function Dashboard() {
             itemTitleClassName="text-h5"
             content={(<>
               {UNTREATED_LIST.map(({ value, name, key, color }) => (
-                <div className={`backlog ${color}`} key={key} onClick={() => history.push('/approvals')}>
+                <div className={`backlog ${color}`} key={key} onClick={() => {
+                  approvalStore.status = key;
+                  history.push('/approvals');
+                }}>
                   {value}
                   <p>{name}</p>
                 </div>
