@@ -3,6 +3,7 @@ import cs from 'classnames';
 import { useQuery } from 'react-query';
 
 import Drawer from '@c/drawer';
+import toast from '@lib/toast';
 import useObservable from '@lib/hooks/use-observable';
 import Tab from '@c/tab';
 import store, {
@@ -26,12 +27,14 @@ export default function FormDataForm() {
   const { asideDrawerType, elements = [] } = useObservable<StoreValue>(store) || {};
   const currentElement = elements.find(({ type }) => type === 'formData') as CurrentElement;
   const [formData, setFormData] = useState<FormDataData>(currentElement?.data?.businessData);
-  const { data: formFieldOptions = [] } = useQuery(
+  const { data: formFieldOptions = [], isError } = useQuery(
     ['GET_WORK_FORM_FIELD_LIST', formData?.form?.value],
     getFormFieldOptions, {
       enabled: !!formData?.form?.value,
     }
   );
+
+  isError && toast.error('获取工作表字段列表失败');
 
   useEffect(() => {
     if (currentElement?.data?.businessData) {

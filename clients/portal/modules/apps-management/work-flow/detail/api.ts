@@ -3,10 +3,10 @@ import { QueryFunctionContext } from 'react-query';
 
 interface WorkFlow {
   bpmnText: string;
-  canCancel: '0' | '1';
-  canMsg: '0' | '1';
-  canUrge: '0' | '1';
-  canViewStatusMsg: '0' | '1';
+  canCancel: '0' | '1' | 1 | 0;
+  canMsg: '0' | '1' | 1 | 0;
+  canUrge: '0' | '1' | 0 | 1;
+  canViewStatusMsg: '0' | '1' | 1 | 0;
   createTime: string;
   creatorAvatar: string;
   creatorId: string;
