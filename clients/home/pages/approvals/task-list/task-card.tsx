@@ -17,7 +17,7 @@ export default function TaskCard({ task }: Props): JSX.Element {
   const history = useHistory();
 
   function handleClick() {
-    history.push(`/approvals/${task.id}`);
+    history.push(`/approvals/${task.processInstanceId}/${task.id}`);
   }
 
   const { id, name, assignee, createTime, flowInstanceEntity } = task;
