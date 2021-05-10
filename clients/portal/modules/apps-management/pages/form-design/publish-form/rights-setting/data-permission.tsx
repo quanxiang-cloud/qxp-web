@@ -142,7 +142,7 @@ export default function DataPermission({ rightsID }: Props) {
         />
         条件的数据
       </div>
-      <form>
+      <div>
         {conditions.map((condition) => (
           <div key={condition.id} className='flex gap-x-8 mt-24 items-center'>
             <div>
@@ -204,12 +204,12 @@ export default function DataPermission({ rightsID }: Props) {
               clickable
               changeable
               onClick={() => handleRemove(condition.id)}
-              name='restore_from_trash'
+              name='delete'
               size={20}
             />
           </div>
         ))}
-      </form>
+      </div>
       <div className='mt-24'>
         <span onClick={addCondition} className='text-icon-btn'><Icon name='add' /> 添加筛选条件</span>
       </div>
