@@ -2,33 +2,14 @@ import React, { useState } from 'react';
 
 import MoreMenu from '@c/more-menu';
 // import NavMsgBar from '@portal/modules/msg-center/nav-msg-bar';
-import Button from '@c/button';
+// import Button from '@c/button';
 import Icon from '@c/icon';
 
 import ResetPasswordModal from './reset-password-modal';
-
-const imgBgColors: string[] = ['#6366F1', '#F59E0B', '#10B981', '#F97316',
-  '#A855F7', '#14B8A6', '#EF4444', '#06B6D4'];
-const getImgColor = (text: string, colors = imgBgColors) => {
-  const reg = /^[a-zA-Z]*$/;
-  let _text = text;
-  if (reg.test(text)) {
-    _text = text.toUpperCase();
-  }
-  const num: number = _text.charCodeAt(0) % 8;
-  return {
-    name: _text,
-    color: colors[num],
-  };
-};
+import Avatar from '@c/avatar';
 
 export default function HeaderMenu() {
   const [openResetPasswordModal, setOpenResetPasswordModal] = useState<boolean>(false);
-  const username = window.USER.userName;
-  let imgInfo: { name: string, color: string } = { name: '', color: '' };
-  if (username) {
-    imgInfo = getImgColor(username.substring(0, 1));
-  }
 
   return (
     <div className="flex-2 flex justify-end items-center">
@@ -36,7 +17,7 @@ export default function HeaderMenu() {
         visible={openResetPasswordModal}
         onCancel={() => setOpenResetPasswordModal(false)}
       />
-      <Button className="mr-32">
+      {/* <Button className="mr-32">
           进入应用管理
       </Button>
       <div className="nav-icon">
@@ -59,15 +40,16 @@ export default function HeaderMenu() {
           name="help_outline"
           size={20}
         />
-      </div>
+      </div> */}
       <div className="header-nav-btn group">
-        <div className="w-24 h-24 corner-4-0-4-4 text-center text-white text-14 leading-24"
-          style={{
-            backgroundColor: imgInfo.color,
-          }}
-        >
-          {imgInfo.name}
-        </div>
+        <Avatar
+          username={window.USER.userName}
+          title={false}
+          size={24}
+          textSize={14}
+          cornerClassName="corner-4-0-4-4"
+          avatar=''
+        />
         <MoreMenu
           menus={[
             { key: 'resetPassword', label: '重置密码' },
