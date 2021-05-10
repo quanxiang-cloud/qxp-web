@@ -2,7 +2,8 @@ import React, { useEffect } from 'react';
 import { useQuery } from 'react-query';
 import { observer } from 'mobx-react';
 
-import Table from '@c/lego-table';
+// import Table from '@c/lego-table';
+import Table from '@c/table';
 import EmptyData from '@c/empty-tips';
 import Pagination from '@c/pagination';
 // todo remove this
@@ -25,6 +26,7 @@ export default observer(function EmployeeTable({
   ownerStore,
 }: IEmployeeTable) {
   const store = ownerStore.employeeStore;
+
   const { current, pageSize, total } = store.pagination;
 
   const { data, isLoading } = useQuery(
@@ -53,7 +55,7 @@ export default observer(function EmployeeTable({
     }
   }, [data, ownerStore.owners]);
 
-  if (isLoading) {
+  if (isLoading && store.selectedKeys.length === 0) {
     return <Loading desc="加载中..." />;
   }
 
@@ -86,6 +88,7 @@ export default observer(function EmployeeTable({
     }
     store.setSelectedKeys(keys);
   };
+  console.log(...store.selectedKeys);
 
   function renderTotalTip() {
     return (
@@ -99,42 +102,53 @@ export default observer(function EmployeeTable({
   return (
     <div className={className}>
       <Table
+        showCheckbox
         className="rounded-bl-none rounded-br-none"
-        onRow={(record: EmployeeOrDepartmentOfRole) => {
-          return {
-            onClick: () => {
-              const newKeys = store.selectedKeys.includes(record.id) ?
-                store.selectedKeys.filter((k) => k !== record.id) :
-                [...store.selectedKeys, record.id];
-              onUpdateSelectedKeys(newKeys);
-            },
-          };
+        onRowClick={(rowID:string, selectedRow: any) => {
+          const newKeys = store.selectedKeys.includes(selectedRow.id) ?
+            store.selectedKeys.filter((k) => k !== selectedRow.id) :
+            [...store.selectedKeys, selectedRow.id];
+          onUpdateSelectedKeys(newKeys);
         }}
-        emptyText={<EmptyData text="无成员数据" className="py-10" />}
+        // onSelectChange={(rselectedRowKeys: string[]) => {
+        //   debugger;
+        //   for (const i of rselectedRowKeys) {
+        //     const newKeys = store.selectedKeys.includes(i) ?
+        //       store.selectedKeys.filter((k) => k !== i) :
+        //       [...store.selectedKeys, i];
+        //     onUpdateSelectedKeys(newKeys);
+        //   }
+        // }}
+        emptyTips={<EmptyData text="无成员数据" className="py-10" />}
         rowKey="id"
-        dataSource={data?.users || []}
+        data={data?.users || []}
         columns={[
           {
-            title: '员工姓名',
-            dataIndex: 'userName',
+            Header: '员工姓名',
+            id: 'userName',
+            accessor: 'userName',
           },
           {
-            title: '手机号',
-            dataIndex: 'phone',
+            Header: '手机号',
+            id: 'phone',
+            accessor: 'phone',
+
           },
           {
-            title: '邮箱',
-            dataIndex: 'email',
+            Header: '邮箱',
+            id: 'email',
+            accessor: 'email',
           },
           {
-            title: '部门',
-            dataIndex: 'dep.departmentName',
+            Header: '部门',
+            id: 'dep.departmentName',
+            accessor: ({ dep }: Employee) => {
+              return dep?.departmentName;
+            },
           },
         ]}
-        rowSelection={{
-          selectedRowKeys: store.selectedKeys,
-          onChange: onUpdateSelectedKeys,
-        }}
+        initialSelectedRowKeys={store.selectedKeys}
+        // initialSelectedRowKeys={['dfe6b7e2-445b-4227-969f-7ac7373599dc']}
       />
       <div className="h-52 bg-white">
         <Pagination

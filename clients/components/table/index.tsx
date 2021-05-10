@@ -47,6 +47,7 @@ export default function Table<T extends Record<string, any>>({
   }
   const hiddenColumns = showCheckbox ? [] : ['_selector'];
   const fixedStyle = useFixedStyle(extendsColumns);
+  console.log(initialSelectedRowKeys);
 
   const {
     getTableProps,

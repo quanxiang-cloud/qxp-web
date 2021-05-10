@@ -136,6 +136,9 @@ export default function Employees({
   }
 
   function handleSelectChange(selectedRowKeys: string[], selectedRows: Employee[]) {
+    console.log(selectedRowKeys);
+    console.log(selectedRows);
+
     setSelectedUserIds(selectedRowKeys);
     setSelectedUsers(selectedRows);
   }
