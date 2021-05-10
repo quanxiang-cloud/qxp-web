@@ -49,7 +49,9 @@ const Filelist = ({
   };
 
   const dlViaBlob = (url: string)=> {
-    return fetch(url).then((res)=> ({ url, blob: res.blob() })).catch((err: Error)=> Message.error(err.message));
+    return fetch(url)
+      .then((res) => ({ url, blob: res.blob() }))
+      .catch((err: Error) => Message.error(err.message));
   };
 
   const exportZip = (blobs: Array<{url: string, blob: any}>) => {
@@ -67,13 +69,13 @@ const Filelist = ({
     });
   };
 
-  const dlAndZip = (urls: string[])=> {
+  const dlAndZip = (urls: string[]) => {
     // @ts-ignore
-    return Promise.all(urls.map((url)=> dlViaBlob(url))).then(exportZip);
+    return Promise.all(urls.map((url) => dlViaBlob(url))).then(exportZip);
   };
 
-  const handleZipDl = ()=> {
-    dlAndZip(files.map((file)=> file.file_url));
+  const handleZipDl = () => {
+    dlAndZip(files.map((file) => file.file_url));
   };
 
   const renderList = ()=> {
@@ -82,22 +84,23 @@ const Filelist = ({
         {files.map((itm, idx) => (
           <div className={styles.file_itm} key={idx}>
             <span
-              className={cs('inline-flex items-center', candownload ? 'cursor-pointer' : 'cursor-default')}
               onClick={() => handleDownload(itm.file_url, itm.file_name)}
+              className={cs('inline-flex items-center', {
+                'cursor-pointer': 'candownload',
+              })}
             >
-              <span className={cs(styles.typeFile, { [styles.typeImage]: isImageExt(itm.file_name) })} />
+              <span className={cs(styles.typeFile, { [styles.typeImage]: isImageExt(itm.file_name) })}/>
               {itm.file_name}
             </span>
-            {!hideProgress && (<Progress
-              className='mr-40'
-              percent={itm.percent}
-              status={itm.status}
-              key={itm.file_url}
-              // onIconClick={() => {
-              //   this.uploader.resend(fileId);
-              // }}
-            />)}
-            {deleteFiles ? <Icon onClick={() => deleteFiles(itm.file_name)} name="close" clickable/> : null}
+            {!hideProgress && (
+              <Progress
+                className='mr-40'
+                percent={itm.percent}
+                status={itm.status}
+                key={itm.file_url}
+              />
+            )}
+            {deleteFiles && (<Icon onClick={() => deleteFiles(itm.file_name)} name="close" clickable/>)}
           </div>
         ))}
       </>
@@ -115,7 +118,9 @@ const Filelist = ({
           <legend>
             附件
             {canMultiDownload &&
-            <span className='cursor-pointer ml-8 text-12 text-blue-600' onClick={handleZipDl}>打包下载</span>}
+            (<span className='cursor-pointer ml-8 text-12 text-blue-600' onClick={handleZipDl}>
+              打包下载
+            </span>)}
           </legend>
           {renderList()}
         </fieldset>

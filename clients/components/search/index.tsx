@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import cs from 'classnames';
-
 import Icon from '../icon';
 
 interface Props {
