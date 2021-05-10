@@ -9,7 +9,7 @@ import { getWorkFlowInfo } from './api';
 import Loading from '@c/loading';
 import Error from '@c/error';
 
-import { updateStore } from './content/editor/store';
+import { updateStore, initStore } from './content/editor/store';
 
 import './style.scss';
 
@@ -43,6 +43,10 @@ export default function Detail() {
       processKey: data.processKey,
     }));
   }, [data]);
+
+  useEffect(() => {
+    !flowID && initStore();
+  }, [flowID]);
 
   if (isLoading) {
     return <Loading desc="加载中..." />;

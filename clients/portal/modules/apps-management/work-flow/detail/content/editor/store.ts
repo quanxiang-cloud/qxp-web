@@ -206,6 +206,10 @@ export const getStoreInitialData = () => {
 
 const store = new BehaviorSubject<StoreValue>(getStoreInitialData());
 
+export function initStore() {
+  store.next(getStoreInitialData());
+}
+
 export function removeNodeById(id: string) {
   let sourceId;
   let targetId;

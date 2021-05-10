@@ -1,5 +1,6 @@
 import React, { useState, useCallback, useRef, DragEvent } from 'react';
 import dagre from 'dagre';
+import { useParams } from 'react-router-dom';
 import ReactFlow, {
   ReactFlowProvider,
   ConnectionLineType,
@@ -43,6 +44,7 @@ export default function Editor() {
   const { currentConnection, elements } = useObservable(store) || {};
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
+  const { flowID } = useParams<{ flowID: string; }>();
 
   function setElements(elements: Elements) {
     updateStore(null, () => ({ elements }));
@@ -66,10 +68,12 @@ export default function Editor() {
         const nodeWithPosition = dagreGraph.node(el.id);
         el.targetPosition = Position.Top;
         el.sourcePosition = Position.Bottom;
-        el.position = {
-          x: nodeWithPosition.x - (el.data.nodeData.width / 2) + (Math.random() / 1000),
-          y: nodeWithPosition.y - (el.data.nodeData.height / 2) + index === 0 ? 0 : 150,
-        };
+        if (el.position.x === 0 && el.position.y === 0) {
+          el.position = {
+            x: nodeWithPosition.x - (el.data.nodeData.width / 2) + (Math.random() / 1000),
+            y: nodeWithPosition.y - (el.data.nodeData.height / 2) + index === 0 ? 0 : 150,
+          };
+        }
       }
       return el;
     });
@@ -159,7 +163,7 @@ export default function Editor() {
   const onLoad = useCallback((reactFlowInstance) => {
     const { fitView } = reactFlowInstance;
     setReactFlowInstance(reactFlowInstance);
-    setElements(getLayoutedElements(elements));
+    !flowID && setElements(getLayoutedElements(elements));
     setTimeout(fitView, 0);
   }, [elements]);
 
