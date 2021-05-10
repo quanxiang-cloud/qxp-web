@@ -226,7 +226,7 @@ const MsgTable = ({ refresh }: Props) => {
     },
   };
 
-  const msgList = data?.data?.messages || [];
+  const msgList = data?.messages || [];
 
   const handleModifyModalClose = () => {
     setModifyModal({ visible: false, id: undefined });

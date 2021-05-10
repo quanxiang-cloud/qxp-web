@@ -53,6 +53,7 @@ export interface SaveWorkFlow {
   canMsg: 0 | 1;
   canUrge: 0 | 1;
   canViewStatusMsg: 0 | 1;
+  appId: string;
 }
 export function saveWorkFlow(flowData: SaveWorkFlow) {
   return httpClient<WorkFlow>(

@@ -104,10 +104,10 @@ export default function CustomEdge({
           height="28"
         />
       </g>
-      {!hasForm && (
+      {!hasForm && showTooltip && (
         <foreignObject x={centerX + 20} y={centerY - 18} width="220" height="36">
           <ToolTip
-            show={showTooltip}
+            show
             position="right"
             label="请先为开始节点选择一张工作表"
             style={{

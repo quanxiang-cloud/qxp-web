@@ -49,7 +49,7 @@ export default function ResetPasswordModal({ visible, onCancel }: Props) {
 
   return (
     <>
-      {(visible) &&(<Modal
+      {(visible) && (<Modal
         title="重置密码"
         onClose={onCancel}
         width='632px'

@@ -43,7 +43,7 @@ function Controls({
   className,
   children,
 }: Props) {
-  const { type } = useParams<{ type: string; }>();
+  const { type, appID } = useParams<{ type: string; appID: string; }>();
 
   const setInteractive = useStoreActions((actions) => actions.setInteractive);
   const { zoomIn, zoomOut, fitView } = useZoomPanHelper();
@@ -110,6 +110,7 @@ function Controls({
       canUrge: canUrge ? 1 : 0,
       canMsg: canMsg ? 1 : 0,
       canViewStatusMsg: canViewStatusMsg ? 1 : 0,
+      appId: appID,
     };
     if (id && !type) {
       saveData.id = id;

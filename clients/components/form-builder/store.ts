@@ -19,32 +19,32 @@ const INTERNAL_FIELDS: Array<FormItem> = [
   {
     fieldName: '_id',
     componentName: 'Input',
-    configValue: { displayModifier: 'hidden', title: 'id' },
+    configValue: { displayModifier: 'hidden', title: 'id', isSystem: true },
   },
   {
     fieldName: 'created_at',
     componentName: 'DatePicker',
-    configValue: { displayModifier: 'hidden', title: '创建时间' },
+    configValue: { displayModifier: 'hidden', title: '创建时间', isSystem: true },
   },
   {
     fieldName: 'updated_at',
     componentName: 'DatePicker',
-    configValue: { displayModifier: 'hidden', title: '修改时间' },
+    configValue: { displayModifier: 'hidden', title: '修改时间', isSystem: true },
   },
   {
     fieldName: 'creator_name',
     componentName: 'Input',
-    configValue: { displayModifier: 'hidden', title: '创建者' },
+    configValue: { displayModifier: 'hidden', title: '创建者', isSystem: true },
   },
   {
     fieldName: 'modifier_name',
     componentName: 'Input',
-    configValue: { displayModifier: 'hidden', title: '修改者' },
+    configValue: { displayModifier: 'hidden', title: '修改者', isSystem: true },
   },
 ];
 
 // todo refactor this
-const INTERNAL_FIELD_NAMES = INTERNAL_FIELDS.map(({ fieldName }) => fieldName);
+export const INTERNAL_FIELD_NAMES = INTERNAL_FIELDS.map(({ fieldName }) => fieldName);
 
 // todo support tree structure
 function schemaToFields({ properties }: FormBuilder.Schema): [Array<FormItem>, Array<FormItem>] {
@@ -82,13 +82,16 @@ export default class FormBuilderStore {
   internalFields: Array<FormItem>;
   @observable fields: Array<FormItem>;
   @observable activeFieldName = '';
-  @observable labelAlign = 'right';
+  @observable labelAlign: 'right' | 'top' = 'right';
+  @observable visibleHiddenLinkages: VisibleHiddenLinkage[] = [];
   @observable hasEdit = false;
 
   constructor({ schema }: Props) {
     const [internalFields, fields] = schemaToFields(schema);
     this.internalFields = internalFields;
     this.fields = fields;
+
+    this.visibleHiddenLinkages = schema['x-internal']?.visibleHiddenLinkages || [];
   }
 
   @computed get activeField(): FormItem | null {
@@ -113,8 +116,8 @@ export default class FormBuilderStore {
   }
 
   @computed get schema(): ISchema {
-    const properties = this.internalFields
-      .concat(this.fields)
+    const properties = this.fields
+      .concat(this.internalFields)
       .reduce<Record<string, any>>((acc, field, index) => {
         const { fieldName, componentName, configValue } = field;
 
@@ -125,7 +128,12 @@ export default class FormBuilderStore {
 
         acc[fieldName] = {
           // convert observable value to pure js object for debugging
-          ...toSchema(toJS(configValue)),
+          ...{
+            ...toSchema(toJS(configValue)), 'x-internal': toSchema(toJS(configValue))['x-internal'] ? {
+              ...toSchema(toJS(configValue))['x-internal'],
+              isSystem: configValue.isSystem ? true : false,
+            } : { isSystem: configValue.isSystem ? true : false },
+          },
           'x-index': index,
           'x-mega-props': {
             labelCol: this.labelAlign === 'right' ? 4 : undefined,
@@ -141,14 +149,19 @@ export default class FormBuilderStore {
       properties: properties,
       'x-internal': {
         version: '1.3.13',
+        visibleHiddenLinkages: toJS(this.visibleHiddenLinkages),
       },
     };
   }
 
-  @computed get schemaForPreview():ISchema {
+  @computed get schemaForPreview(): ISchema {
     const { properties } = this.schema;
     return {
       type: 'object',
+      'x-internal': {
+        version: '1.3.13',
+        visibleHiddenLinkages: this.visibleHiddenLinkages,
+      },
       properties: {
         FIELDs: {
           type: 'object',
@@ -201,8 +214,28 @@ export default class FormBuilderStore {
     };
   }
 
-  @action updateLabelAlign(labelAlign: 'left' | 'right' | 'top') {
+  @action updateLabelAlign(labelAlign: 'right' | 'top') {
     this.labelAlign = labelAlign;
+  }
+
+  @action deleteLinkage(key: string) {
+    this.visibleHiddenLinkages = this.visibleHiddenLinkages.filter((linkage) => {
+      return linkage.key !== key;
+    });
+  }
+
+  @action handleLinkageChange(linkage: VisibleHiddenLinkage): void {
+    if (!linkage.key) {
+      this.visibleHiddenLinkages.push({
+        ...linkage,
+        key: nanoid(8),
+      });
+      return;
+    }
+
+    this.visibleHiddenLinkages = this.visibleHiddenLinkages.map((config) => {
+      return config.key === linkage.key ? linkage : config;
+    });
   }
 
   @action

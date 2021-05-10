@@ -14,19 +14,20 @@ interface Props extends React.DetailedHTMLProps<
 }
 
 function Button(
-  { children, iconName, className, modifier, forbidden, loading, ...rest }: Props,
+  { children, iconName, className, modifier, forbidden, loading, type = 'button', ...rest }: Props,
   ref?: Ref<HTMLButtonElement>
 ) {
   return (
     <button
       {...rest}
+      type={type}
       ref={ref}
       className={cs('btn', className, {
         [`btn--${modifier}`]: modifier,
         'btn--forbidden': forbidden,
         'btn--loading': loading,
         'opacity-50': forbidden,
-        'pointer-events-none': loading,
+        'pointer-events-none': loading || forbidden,
       })}
       disabled={forbidden}
     >
@@ -37,6 +38,7 @@ function Button(
           size={20}
           className={cs('fill-current text-inherit mr-8', {
             'animate-spin': loading,
+            'pointer-events-none': loading || forbidden,
           })}
         />
       )}

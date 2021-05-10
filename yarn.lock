@@ -6720,9 +6720,9 @@ react-flow-renderer@9.5.1:
     react-redux "^7.2.3"
     redux "^4.0.5"
 
-react-hook-form@^7.0.5:
+react-hook-form@^7.4.2:
   version "7.4.2"
-  resolved "https://registry.nlark.com/react-hook-form/download/react-hook-form-7.4.2.tgz?cache=0&sync_timestamp=1620353514116&other_urls=https%3A%2F%2Fregistry.nlark.com%2Freact-hook-form%2Fdownload%2Freact-hook-form-7.4.2.tgz#7d68f7fbdb8477a8ed7efe880cd507a8b074f6c0"
+  resolved "https://registry.nlark.com/react-hook-form/download/react-hook-form-7.4.2.tgz#7d68f7fbdb8477a8ed7efe880cd507a8b074f6c0"
   integrity sha1-fWj3+9uEd6jtfv6IDNUHqLB09sA=
 
 react-input-autosize@^2.2.2:
