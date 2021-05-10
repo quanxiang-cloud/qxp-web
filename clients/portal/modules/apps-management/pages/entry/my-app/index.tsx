@@ -40,7 +40,7 @@ function MyApp() {
   }, [allAppList]);
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full pb-20">
       <TextHeader
         title="我的应用"
         desc="一个应用是由若干表单、流程表单、报表、自定义页面组成的业务管理系统。"

@@ -27,6 +27,7 @@
   display: grid;
   grid-gap: 20px;
   padding: 0 20px;
+  overflow-y: auto;
   grid-template-columns: repeat(3, minmax(100px, 33%));
 }
 
