@@ -115,7 +115,7 @@ class AppDetailsStore {
     }
 
     return createGroup({ appID: this.appId, ...groupInfo }).then((res) => {
-      const newGroup = { ...res.data, name: groupInfo.name, menuType: 1 };
+      const newGroup = { ...res.data, name: groupInfo.name, menuType: 1, appID: this.appId };
       const items = toJS(this.pagesTreeData.items);
       items.ROOT.children.push(newGroup.id);
       items[newGroup.id] = {
@@ -153,7 +153,7 @@ class AppDetailsStore {
     }
 
     return createPage({ appID: this.appId, ...pageInfo }).then((res) => {
-      const newPage = { ...res.data, ...pageInfo, menuType: 0 };
+      const newPage = { ...res.data, ...pageInfo, menuType: 0, appID: this.appId };
       const items = toJS(this.pagesTreeData.items);
       items[newPage.groupID || 'ROOT'].children.push(newPage.id);
       items[newPage.id] = {
