@@ -35,7 +35,7 @@ const NavMsgBar = (): JSX.Element => {
   };
 
   useEffect(() => {
-    msgCenter.setUnreadTypeCounts(get(countUnreadMsg, 'data.type_num', []));
+    msgCenter.setUnreadTypeCounts(get(countUnreadMsg, 'type_num', []));
   }, [countUnreadMsg]);
 
   useEffect(() => {
