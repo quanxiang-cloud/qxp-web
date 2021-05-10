@@ -11,17 +11,6 @@ import Modal from '@c/modal2';
 import { FormButtonGroup, SchemaForm } from '@formily/antd';
 import toast from '@lib/toast';
 
-// const demoVisibleHideLinkages: VisibleHideLinkage[] = [
-//   {
-//     key: 'demo',
-//     ruleJoinOperator: 'every',
-//     rules: [
-//       { sourceKey: 'jj0g8EIR', compareOperator: '===', compareValue: 'Q2mEpSlX' },
-//     ],
-//     targetKeys: ['7XAplB3V'],
-//   },
-// ];
-
 const FormPage = () => {
   const [previewModalVisible, setPreviewModalVisible] = useState(false);
 
@@ -36,15 +25,15 @@ const FormPage = () => {
   return (
     <>
       <div className='form-design-tool'>
+        <Button iconName='preview' onClick={() => setPreviewModalVisible(true)}>
+          预览
+        </Button>
         <Button
           iconName='save'
           modifier="primary"
-          onClick={(store.hasSchema ? store.updateFormScheme : store.createFormScheme)}
+          onClick={store.saveFormScheme}
         >
           保存表单
-        </Button>
-        <Button iconName='preview' onClick={() => setPreviewModalVisible(true)}>
-          预览
         </Button>
         {/* <span className='text-underline-no-color cursor-pointer'>
           🎬 查看新手指引

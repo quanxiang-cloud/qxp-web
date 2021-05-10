@@ -13,15 +13,12 @@ function PageSetting() {
   return (
     <>
       <div className='form-design-tool'>
+        <span className='text-underline-no-color cursor-pointer flex-1'>
+          🎬 查看新手指引
+        </span>
         <Button onClick={store.savePageConfig} iconName='save' modifier="primary">
           保存页面设置
         </Button>
-        {/* <Button iconName='preview'>
-          预览
-        </Button> */}
-        <span className='text-underline-no-color cursor-pointer'>
-          🎬 查看新手指引
-        </span>
       </div>
       <div className='flex-1 flex overflow-hidden'>
         <div className='flex-1 p-20'>

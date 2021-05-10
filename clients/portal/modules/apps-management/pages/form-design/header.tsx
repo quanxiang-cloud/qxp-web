@@ -1,12 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import { parse } from 'qs';
 
 import Icon from '@c/icon';
 import Tab, { TabProps } from '@portal/modules/apps-management/components/tab';
 import NavButton from '@portal/modules/apps-management/components/nav-button';
-import toast from '@lib/toast';
 
+import NotSavedModal from './not-saved-modal';
 import store from './store';
 import './index.scss';
 
@@ -17,14 +17,16 @@ const TABS: TabProps[] = [
 ];
 
 function FormDesignHeader() {
+  const [showNotSavedTips, setShowNotSavedTips] = useState(false);
   const { pageType, pageId, appID } = useParams<any>();
+
   const history = useHistory();
 
   const { pageName } = parse(window.location.search);
 
   const tabChange = (tabKey: string) => {
     if (store.formStore.hasEdit) {
-      toast.error('请先保存表单设计');
+      setShowNotSavedTips(true);
       return;
     }
     const navType = tabKey === 'publishForm' ? '/forEmployee' : '';
@@ -50,6 +52,9 @@ function FormDesignHeader() {
       <div className='flex justify-end'>
         <NavButton name='帮助文档' icon='book' url='' />
       </div>
+      {showNotSavedTips && (
+        <NotSavedModal onCancel={() => setShowNotSavedTips(false)} />
+      )}
     </div>
   );
 }
