@@ -20,11 +20,22 @@ const getImgColor = (text: string, colors = imgBgColors) => {
 
 export interface Avatar {
   username?: string;
-  bio: string;
+  bio?: string;
+  size?: number | undefined;
+  textSize?: number;
+  cornerClassName?: string;
+  title?: boolean;
   avatar?: string;
 }
 
-export default function Avatar({ username = '', bio }: Avatar) {
+export default function Avatar({
+  username = '',
+  bio,
+  title,
+  size = 48,
+  cornerClassName,
+  textSize = 24,
+}: Avatar) {
   let head = '';
   let imgInfo: { name: string, color: string } = { name: '', color: '' };
   if (username) {
@@ -39,8 +50,8 @@ export default function Avatar({ username = '', bio }: Avatar) {
           <>
             {
               (head && imgInfo) && (
-                <div className=" w-48 h-48 corner-12-2-12-12
-              text-center text-white text-24 leading-48"
+                <div className={`w-${size} h-${size} ${cornerClassName}
+                  text-center text-white text-${textSize} leading-${size}`}
                 style={{
                   backgroundColor: imgInfo.color,
                 }}
@@ -52,8 +63,8 @@ export default function Avatar({ username = '', bio }: Avatar) {
           </>
         )
       }
-      title={`${username}, 下午好!`}
-      desc={bio}
+      title={ title ? `${username}, 下午好!` : ''}
+      desc={bio ? bio : ''}
       titleClassName="text-h4"
     />
   );
