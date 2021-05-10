@@ -3,7 +3,7 @@ import useCss from 'react-use/lib/useCss';
 import { useQuery } from 'react-query';
 
 import Card from '@c/card';
-import Error from '@c/error';
+import ErrorTips from '@c/error-tips';
 import { usePortalGlobalValue } from '@portal/states_to_be_delete/portal';
 
 import RoleList from './role-list';
@@ -31,7 +31,7 @@ export default function RoleManagement() {
     return null;
   }
   if (!userInfo.authority.includes('accessControl/role/read')) {
-    return <Error desc="您没有权限, 请联系管理员..." />;
+    return <ErrorTips desc="您没有权限, 请联系管理员..." />;
   }
 
   return (
