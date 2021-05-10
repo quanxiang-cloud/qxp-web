@@ -21,7 +21,7 @@ function BasicInfoForm(
   }));
 
   return (
-    <form>
+    <div>
       <Input
         label='权限组名称名称'
         help='不超过 30 个字符，权限组名称不可重复。'
@@ -36,7 +36,7 @@ function BasicInfoForm(
         defaultValue={defaultValue.description}
         register={register('description', { required: '请输入描述信息', maxLength: { value: 50, message: '不能超过50个字符' } })}
       />
-    </form>
+    </div>
   );
 }
 

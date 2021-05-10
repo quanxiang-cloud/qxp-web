@@ -7,7 +7,7 @@ import Icon from '@c/icon';
 import PopConfirm from '@c/pop-confirm';
 import PageLoading from '@portal/modules/apps-management/components/page-loading';
 
-import { getTableCellData } from './utils';
+import { getTableCellData, operateButton } from './utils';
 import store from './store';
 
 type Props = {
@@ -43,9 +43,15 @@ function DetailsDrawer({ onCancel, rowID }: Props) {
     const _systems: InfoData[] = [];
     store.fields.forEach((field: any) => {
       if (field['x-internal'].isSystem) {
-        _systems.push({ label: field.title, value: getTableCellData((formDataItem as any)[field.id], field) });
+        _systems.push({
+          label: field.title,
+          value: getTableCellData((formDataItem as any)[field.id], field),
+        });
       } else {
-        _details.push({ label: field.title, value: getTableCellData((formDataItem as any)[field.id], field) });
+        _details.push({
+          label: field.title,
+          value: getTableCellData((formDataItem as any)[field.id], field),
+        });
       }
     });
     return [_details, _systems];
@@ -78,7 +84,8 @@ function DetailsDrawer({ onCancel, rowID }: Props) {
     );
   };
 
-  const title = store.tableColumns.length && formDataItem ? (store.tableColumns[0] as any).accessor(formDataItem) : '';
+  const title = store.tableColumns.length && formDataItem ?
+    (store.tableColumns[0] as any).accessor(formDataItem) : '';
 
   return (
     <div
@@ -91,10 +98,20 @@ function DetailsDrawer({ onCancel, rowID }: Props) {
         <div className='page-data-drawer-header'>
           <span className='text-h5'>{store.pageName}：{title}</span>
           <div className='flex items-center gap-x-12'>
-            <span onClick={() => store.goEdit(formDataItem)} className='icon-text-btn'><Icon size={20} name='edit' />修改</span>
-            <PopConfirm content='确认删除该数据？' onOk={delData} >
-              <span className='icon-text-btn'><Icon size={20} name='delete' />删除</span>
-            </PopConfirm>
+            {operateButton(3, store.authority, (
+              <span
+                onClick={() => store.goEdit(formDataItem)}
+                className='icon-text-btn'
+              >
+                <Icon size={20} name='edit' />
+                修改
+              </span>
+            ))}
+            {operateButton(4, store.authority, (
+              <PopConfirm content='确认删除该数据？' onOk={delData} >
+                <span className='icon-text-btn'><Icon size={20} name='delete' />删除</span>
+              </PopConfirm>
+            ))}
             <Icon onClick={handleCancel} clickable changeable name='close' size={24} />
           </div>
         </div>

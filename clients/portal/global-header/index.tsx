@@ -1,12 +1,13 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
 
-import NormalHeader from './normal';
+import HeaderNav from './header-nav';
+import HeaderMenu from './header-menu';
 
 const paths = [
   '/apps/formDesign',
   '/apps/details',
-  '/apps/flow/',
+  '/apps/flow/new',
 ];
 
 function shouldHideHeader(currentPath: string): boolean {
@@ -15,9 +16,22 @@ function shouldHideHeader(currentPath: string): boolean {
 
 export default function GlobalHeader() {
   const { pathname } = useLocation();
+
   if (shouldHideHeader(pathname)) {
     return null;
   }
 
-  return (<NormalHeader />);
+  return (
+    <>
+      <div className="flex justify-between items-center py-8 px-24 bg-white">
+        <HeaderNav />
+        <img
+          className="flex-1 h-46"
+          src="/dist/images/quanxiangyun.svg"
+          alt="quanxiangyun"
+        />
+        <HeaderMenu />
+      </div>
+    </>
+  );
 }

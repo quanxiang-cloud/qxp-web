@@ -3,6 +3,7 @@ import { action, observable, reaction, IReactionDisposer } from 'mobx';
 
 import { formDataCurd } from '@portal/modules/apps-management/lib/api';
 import toast from '@lib/toast';
+import httpClient from '@lib/http-client';
 
 import { Scheme } from './utils';
 type Params = {
@@ -20,13 +21,14 @@ class AppPageDataStore {
   @observable listLoading = false;
   @observable pageID = '';
   @observable pageName = '';
+  @observable authority = 0;
   @observable curItemFormData = null;
   @observable allowRequestData = false;
   @observable filtrates: FilterField[] = [];
   @observable formDataList: any[] = [];
   @observable total = 0;
   @observable fields: Scheme[] = [];
-  @observable tableColumns = [];
+  @observable tableColumns: any[] = [];
   @observable params: Params = {
     condition: [],
     sort: [],
@@ -140,9 +142,20 @@ class AppPageDataStore {
   }
 
   @action
+  fetchActionAuthorized = () => {
+    httpClient(
+      '/api/v1/structor/permission/operatePer/getByScopeID',
+      { formID: this.pageID }
+    ).then((res: any) => {
+      this.authority = res?.authority || 0;
+    });
+  }
+
+  @action
   clear = () => {
     this.formDataList = [];
     this.tableConfig = {};
+    this.authority = 0;
     this.filtrates = [];
     this.tableColumns = [];
     this.pageID = '';

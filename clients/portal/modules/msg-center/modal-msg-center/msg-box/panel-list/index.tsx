@@ -43,6 +43,7 @@ const PanelList = () => {
     ['all-messages', getQueryParams()],
     getMessageList, {}
   );
+
   const { data: countUnreadMsg,
     refetch: unReadRefetch,
   } = useQuery(
@@ -60,12 +61,12 @@ const PanelList = () => {
   const toolbarRef = useRef<any>();
 
   const msgList = useMemo(() => {
-    msgCenter.setUnreadTypeCounts(get(countUnreadMsg, 'data.type_num', []));
-    return (data as any)?.data?.mes_list || [];
+    msgCenter.setUnreadTypeCounts(get(countUnreadMsg, 'type_num', []));
+    return (data as any)?.mes_list || [];
   }, [data]);
 
   const msgTotal = useMemo(() => {
-    return (data as any)?.data?.total || 0;
+    return (data as any)?.total || 0;
   }, [data]);
 
   const canIUseReadBtn = useMemo(() => {
@@ -131,7 +132,7 @@ const PanelList = () => {
       content: '确定要将全部类型的消息标记为已读吗?',
       cb: () => {
         setAllMsgAdRead()
-          .then((response) => {
+          .then(() => {
             refetch();
             unReadRefetch();
             closeConfirmInfo();
