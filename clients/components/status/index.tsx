@@ -19,8 +19,7 @@ const statusMap = {
   CANCEL: '取消',
   COMPLETE: '完成',
   SEND_BACK: '待补充',
-}
-
+};
 
 function Status({ label, value, className }: Props) {
   return (

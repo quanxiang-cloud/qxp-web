@@ -49,8 +49,8 @@ function EdgeText({
       {labelShowBg && (
         <rect
           width={width || edgeTextBbox.width + (2 * labelBgPadding[0])}
-          x={-labelBgPadding[0]-9}
-          y={-labelBgPadding[1]-4.5}
+          x={-labelBgPadding[0] - 9}
+          y={-labelBgPadding[1] - 4.5}
           height={height || edgeTextBbox.height + (2 * labelBgPadding[1])}
           className={cs('react-flow__edge-textbg', rectClassName)}
           style={labelBgStyle}

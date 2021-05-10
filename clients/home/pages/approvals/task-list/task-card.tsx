@@ -55,7 +55,7 @@ export default function TaskCard({ task }: Props): JSX.Element {
         <div className="right-info px-20 py-12 flex flex-1 justify-between pl-40">
           <div className="flex flex-col">
             {
-              _.values(flowInstanceEntity.formData).map(({title, value}: {title: string, value: string}, idx)=> (
+              _.values(flowInstanceEntity.formData).map(({ title, value }: {title: string, value: string}, idx)=> (
                 <p key={idx} className="mb-4 form-data-item"><span>{title}: </span><span>{value}</span></p>
               ))
             }

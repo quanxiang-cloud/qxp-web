@@ -3,10 +3,8 @@ import { observer } from 'mobx-react';
 
 import Switch from '@c/switch';
 import Select from '@c/select';
-import Checkbox from '@c/checkbox';
 import Search from '@c/search';
 import Pagination from '@c/pagination';
-import IconBtn from '@c/icon-btn';
 
 import store from './store';
 import TaskList from '../task-list';
@@ -52,12 +50,12 @@ function TodoApprovals(): JSX.Element {
             options={handleTypes}
             onChange={store.changeHandleType}
           />
-          {/*<Checkbox label="仅看我代理的" className="mr-auto" />*/}
+          {/* <Checkbox label="仅看我代理的" className="mr-auto" />*/}
         </div>
         <Search className="w-259" placeholder="搜索流程、发起人、应用" value={store.keyword} onChange={store.changeKeyword}/>
-        {/*<Select multiple={false} options={sortOptions}>*/}
+        {/* <Select multiple={false} options={sortOptions}>*/}
         {/*  <IconBtn iconName="import_export" className="btn-sort" />*/}
-        {/*</Select>*/}
+        {/* </Select>*/}
       </div>
       <TaskList tasks={store.approvals} store={store} />
       <Pagination current={store.pageNumber} total={store.total} pageSize={store.pageSize} onChange={store.paginate} />

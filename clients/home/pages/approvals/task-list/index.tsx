@@ -13,7 +13,7 @@ interface Props {
 
 function TaskList({ tasks, store, className }: Props) {
   if (store.loading) {
-    return <Loading />
+    return <Loading />;
   }
 
   return (
