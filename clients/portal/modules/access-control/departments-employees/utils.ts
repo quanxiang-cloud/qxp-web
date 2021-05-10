@@ -84,7 +84,11 @@ export const exportEmployees = ( data: Employee[]) => {
   });
 };
 
-export function exportEmployeesFail(headers: EmployeeTableColumn[], data: Employee[], fileName: string) {
+export function exportEmployeesFail(
+  headers: EmployeeTableColumn[],
+  data: Employee[],
+  fileName: string
+) {
   const _headers = headers
     .map((item, i) =>
       Object.assign(

@@ -50,15 +50,6 @@ const EnumMessageLabel = {
   [MsgType.notify]: '通知公告',
 };
 
-const getOptions = (labels: any, keyname?: string )=>{
-  const keys = Object.keys(labels);
-
-  return keys.map((key)=>({
-    label: labels[key],
-    [keyname || 'key']: key,
-  }));
-};
-
 const MessageStatus = [
   {
     value: MsgSendStatus.all,
@@ -111,13 +102,12 @@ const MsgTable = ({ refresh }: Props) => {
   const [previewData, setPreviewData] = useState<any>(null);
   const [modifyModal, setModifyModal] = useState<any>({ visible: false, id: undefined });
   const [modifyData, setModifyData] = useState<any>(null);
-  const [rowSelectionKyes, setRowSelectionKyes] = useState([]);
   const [modalInfo, setModalInfo] = useState({ visible: false, id: '' });
   const sendMessageRef = useRef<any>();
 
   const closeModal = () => setModalInfo({ visible: false, id: '' });
 
-  const { isLoading, isError, isFetching } = requestInfo;
+  const { isLoading, isError } = requestInfo;
 
   const refreshMsg = () => {
     queryClient.invalidateQueries('msg-mgmt-msg-list');
@@ -132,12 +122,10 @@ const MsgTable = ({ refresh }: Props) => {
 
     getMsgById(previewInfo.id)
       .then((response: any) => {
-        if (response.code == 0) {
-          const { recivers } = response.data;
-          setPreviewData(Object.assign({}, response.data, { receivers: recivers }));
-        } else {
-          Message.warning('异常查询');
-        }
+        const { recivers } = response;
+        setPreviewData(Object.assign({}, response, { receivers: recivers }));
+      }).catch(() => {
+        Message.warning('异常查询');
       });
   }, [previewInfo]);
 
@@ -149,12 +137,10 @@ const MsgTable = ({ refresh }: Props) => {
 
     getMsgById(modifyModal.id)
       .then((response: any) => {
-        if (response.code == 0) {
-          const { recivers } = response.data;
-          setModifyData(Object.assign({}, response.data, { receivers: recivers }));
-        } else {
-          Message.warning('异常查询');
-        }
+        const { recivers } = response;
+        setModifyData(Object.assign({}, response, { receivers: recivers }));
+      }).catch(() => {
+        Message.warning('异常查询');
       });
   }, [modifyModal]);
 
@@ -214,17 +200,6 @@ const MsgTable = ({ refresh }: Props) => {
   if (isError) {
     return <Error desc='获取数据失败'/>;
   }
-
-  const rowSelection = {
-    selectedRowKeys: rowSelectionKyes,
-    getCheckboxProps: (record: any) => ({
-      disabled: record.useStatus === -2,
-      name: record.id,
-    }),
-    onChange(e:any) {
-      setRowSelectionKyes(e);
-    },
-  };
 
   const msgList = data?.messages || [];
 
@@ -358,7 +333,7 @@ const MsgTable = ({ refresh }: Props) => {
         return (
           <Authorized authority={['system/mangage']}>
             <MoreMenu
-              onChange={console.log}
+              onChange={() => {}}
               placement="bottom-end"
               className="opacity-1"
               menus={menus}/>

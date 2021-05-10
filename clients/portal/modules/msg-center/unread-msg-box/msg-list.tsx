@@ -40,7 +40,11 @@ const MsgList = ({ className, getMsgDetail }: Props): JSX.Element => {
     return (
       <ul className={styles.items}>
         {msgList.map((msg: Qxp.MsgItem) => (
-          <div onClick={()=>handleClick(msg.id)} className='hover:bg-gray-100' key={msg.id} >
+          <div
+            onClick={()=>handleClick(msg.id)}
+            className='hover:bg-gray-100'
+            key={msg.id}
+          >
             <MsgItem {...msg} readonly />
           </div>))
         }
@@ -63,7 +67,7 @@ const MsgList = ({ className, getMsgDetail }: Props): JSX.Element => {
     return <Error desc='获取数据失败' />;
   }
 
-  const msgList = (data as any)?.data?.mes_list || [];
+  const msgList = data?.mes_list || [];
   return (
     <div className={cs(styles.msgList, className)}>
       {renderMain(msgList)}
