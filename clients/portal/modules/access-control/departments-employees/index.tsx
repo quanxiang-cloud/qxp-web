@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
 import TextHeader from '@c/text-header';
-import Error from '@c/error';
+import ErrorTips from '@c/error-tips';
 import Search from '@c/search';
 import toast from '@lib/toast';
 import { usePortalGlobalValue } from '@portal/states_to_be_delete/portal';
@@ -51,7 +51,7 @@ export default function DepartmentsEmployees() {
   }
 
   if (!userInfo.authority.includes('accessControl/mailList/read')) {
-    return (<Error desc="您没有权限, 请联系管理员..." />);
+    return (<ErrorTips desc="您没有权限, 请联系管理员..." />);
   }
 
   return (

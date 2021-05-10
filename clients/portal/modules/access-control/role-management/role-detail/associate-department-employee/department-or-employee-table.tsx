@@ -5,7 +5,7 @@ import EmptyData from '@c/empty-tips';
 import More from '@c/more';
 import Pagination from '@c/pagination';
 import Loading from '@c/loading';
-import Error from '@c/error';
+import ErrorTips from '@c/error-tips';
 import Table from '@c/lego-table';
 import { usePortalGlobalValue } from '@portal/states_to_be_delete/portal';
 
@@ -120,7 +120,7 @@ export default function DepartmentTable({ isSuper, onCancelAssociation, roleID, 
     return <Loading desc="加载中..." />;
   }
   if (isError) {
-    return <Error desc="something wrong!" />;
+    return <ErrorTips desc="something wrong!" />;
   }
 
   const columns: EmployeeTableColumn[] = [];

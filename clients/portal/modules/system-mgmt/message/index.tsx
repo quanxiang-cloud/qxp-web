@@ -3,7 +3,7 @@ import msgMgmt from '@portal/stores/msg-mgmt';
 import { useHistory } from 'react-router';
 import { observer } from 'mobx-react';
 import TextHeader from '@c/text-header';
-import Error from '@c/error';
+import ErrorTips from '@c/error-tips';
 import Search from '@c/search';
 import Button from '@c/button';
 import { usePortalGlobalValue } from '@portal/states_to_be_delete/portal';
@@ -57,7 +57,7 @@ const MessagesPage = () => {
   });
 
   if (!userInfo.authority.includes('platform')) {
-    return (<Error desc="您没有权限, 请联系管理员..." />);
+    return (<ErrorTips desc="您没有权限, 请联系管理员..." />);
   }
 
   const toSendMsg = () => {
