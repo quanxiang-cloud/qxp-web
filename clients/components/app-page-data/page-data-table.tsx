@@ -16,9 +16,14 @@ function PageDataTable() {
   const [curRow, setCurRow] = useState<Record<string, any> | null>(null);
 
   const columns = useMemo(() => {
-    return store.tableColumns.length ? [...store.tableColumns, {
-      id: 'action',
-      Header: '',
+    if (store.tableColumns.length === 0) {
+      return [];
+    }
+
+    const columnsTmp = [...store.tableColumns];
+    const actionColumn = columnsTmp.pop();
+    return [...columnsTmp, {
+      ...actionColumn,
       accessor: (data: any) => {
         return (
           <div className='text-center'>
@@ -46,7 +51,7 @@ function PageDataTable() {
           </div>
         );
       },
-    }] : store.tableColumns;
+    }];
   }, [store.tableColumns]);
 
   useEffect(() => {

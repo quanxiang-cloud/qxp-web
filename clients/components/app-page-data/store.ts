@@ -28,7 +28,7 @@ class AppPageDataStore {
   @observable formDataList: any[] = [];
   @observable total = 0;
   @observable fields: Scheme[] = [];
-  @observable tableColumns = [];
+  @observable tableColumns: any[] = [];
   @observable params: Params = {
     condition: [],
     sort: [],
