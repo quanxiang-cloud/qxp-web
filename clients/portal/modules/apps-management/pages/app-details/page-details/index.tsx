@@ -46,7 +46,7 @@ function PageDetails() {
         action={appPagesStore.formScheme ? (
           <Button onClick={goFormBuild} modifier='primary' iconName='edit'>设计表单</Button>
         ) : '📌  表单、流程、报表何时使用？快速上手'}
-        className="bg-white px-20 h-62 py-0 header-background-image"
+        className="bg-white px-20 h-62 py-0 header-background-image gap-x-20"
         itemTitleClassName="text-h5" />
       {contentRender()}
     </div>
