@@ -5,7 +5,7 @@ import { Message, Table } from '@QCFE/lego-ui';
 import { useMutation, useQuery } from 'react-query';
 import { get } from 'lodash';
 import Loading from '@c/loading';
-import Error from '@c/error';
+import ErrorTips from '@c/error-tips';
 import MsgItem from '@portal/modules/msg-center/msg-item';
 import Toolbar from './toolbar';
 import {
@@ -113,7 +113,7 @@ const PanelList = () => {
     return <Loading />;
   }
   if (isError) {
-    return <Error desc='获取数据失败' />;
+    return <ErrorTips desc='获取数据失败' />;
   }
 
   const closeConfirmInfo = () => {

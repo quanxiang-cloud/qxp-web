@@ -7,7 +7,7 @@ import { debounce } from 'lodash';
 import { MsgSendStatus, MsgType } from '@portal/modules/system-mgmt/constants';
 import Status from './status';
 import Loading from '@c/loading';
-import Error from '@c/error';
+import ErrorTips from '@c/error-tips';
 import MoreMenu from '@c/more-menu';
 import SvgIcon from '@c/icon';
 import Pagination from '@c/pagination';
@@ -198,7 +198,7 @@ const MsgTable = ({ refresh }: Props) => {
   }
 
   if (isError) {
-    return <Error desc='获取数据失败'/>;
+    return <ErrorTips desc='获取数据失败'/>;
   }
 
   const msgList = data?.messages || [];

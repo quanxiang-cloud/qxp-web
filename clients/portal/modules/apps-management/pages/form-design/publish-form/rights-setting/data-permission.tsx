@@ -216,7 +216,6 @@ export default function DataPermission({ rightsID }: Props) {
       <div className='mt-20'>
         <Button
           modifier='primary'
-          forbidden={conditions.length === 0}
           onClick={handleSubmit(handleSave)}
         >
           保存
