@@ -1,0 +1,101 @@
+%text-overflow {
+  white-space: nowrap;
+  max-width: 8rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.approval-card {
+  border-radius: 0 12px 12px 12px;
+  .left-info {
+    width: 360px;
+    &:hover {
+      box-shadow: 0px 8px 24px rgba(148, 163, 184, 0.25);
+      border-radius: 12px;
+      border-top-left-radius: 0;
+    }
+
+    .task-info {
+      font-size: 14px;
+      line-height: 22px;
+      color: #0F172A;
+      font-weight: 600;
+      margin-left: 8px;
+      &:first-child, &:last-child {
+        @extend %text-overflow;
+      }
+      &:last-child {
+        max-width: 20rem;
+      }
+    }
+
+    .bottom-info {
+      font-size: 12px;
+      line-height: 20px;
+
+      > span {
+        margin-right: 18px;
+      }
+
+      .info-label {
+        color: #94A3B8;
+        @extend %text-overflow;
+
+        > svg {
+          color: #94A3B8;
+        }
+
+        & ~ span {
+          color: #475569;
+          @extend %text-overflow;
+        }
+      }
+    }
+  }
+  .right-info {
+    flex: 1;
+    > div:first-child {
+      min-width: 200px;
+    }
+
+    .form-data-item {
+      font-size: 12px;
+      line-height: 20px;
+      > span:first-child {
+        color: #94A3B8;
+        margin-right: 4px;
+      }
+      > span:last-child {
+        color: #0F172A;
+      }
+    }
+    .create-time {
+      font-size: 12px;
+      line-height: 20px;
+      color: #94A3B8;
+    }
+  }
+}
+
+.no-data {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+
+  > .pic {
+    width: 120px;
+    height: 120px;
+    background-size: contain;
+    background: url("/dist/images/no-approval-task.svg") no-repeat;
+  }
+  > .tips {
+    margin-top: 20px;
+    font-size: 12px;
+    line-height: 20px;
+    text-align: center;
+    color: #94A3B8;
+  }
+}

@@ -13,7 +13,7 @@ function httpClient<TData>(
     headers: headers,
   }).then((response) => {
     if (response.status === 401) {
-      window.location.href = window.location.href;
+      window.location.reload();
       return Promise.reject(new Error('当前会话已失效，请重新登录!'));
     }
     if (response.status === 500) {
