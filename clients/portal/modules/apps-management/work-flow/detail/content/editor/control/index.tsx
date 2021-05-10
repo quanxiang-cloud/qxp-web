@@ -43,7 +43,7 @@ function Controls({
   className,
   children,
 }: Props) {
-  const { type, appID } = useParams<{ type: string; appID: string; }>();
+  const { appID } = useParams<{ type: string; appID: string; }>();
   const setInteractive = useStoreActions((actions) => actions.setInteractive);
   const { zoomIn, zoomOut, fitView } = useZoomPanHelper();
   const {
@@ -99,7 +99,7 @@ function Controls({
     },
   });
 
-  const onSaveWorkFlow = useCallback(() => {
+  function onSaveWorkFlow() {
     const saveData: SaveWorkFlow = {
       bpmnText: JSON.stringify({
         version,
@@ -113,12 +113,11 @@ function Controls({
       canViewStatusMsg: canViewStatusMsg ? 1 : 0,
       appId: appID,
     };
-    if (id && !type) {
+    if (id) {
       saveData.id = id;
     }
-
     saveMutation.mutate(saveData);
-  }, [saveMutation]);
+  }
 
   return (
     <div className={cs('flex flex-row items-center justify-between', className)}>

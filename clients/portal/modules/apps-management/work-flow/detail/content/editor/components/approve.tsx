@@ -21,7 +21,7 @@ export default function ApproveNodeComponent({ data, id }: Props) {
 
   function onMouseUp() {
     if (+new Date - lastTime.current < 200) {
-      updateStore(null, () => ({ asideDrawerType: 'approveForm' }));
+      updateStore(null, () => ({ asideDrawerType: id }));
     }
   }
 

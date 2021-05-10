@@ -25,7 +25,7 @@ import Events from '../events';
 export default function ApproveForm() {
   const { asideDrawerType, elements = [] } = useObservable<StoreValue>(store) || {};
   const currentFormNodeElement = elements.find(({ type }) => type === 'formData') as CurrentElement;
-  const currentElement = elements.find(({ type }) => type === 'approve') as CurrentElement;
+  const currentElement = elements.find(({ id }) => id === asideDrawerType) as CurrentElement;
   const [formData, setFormData] = useState<FillInData>(currentElement?.data?.businessData);
 
   function onSubmit(e: FormEvent) {
@@ -48,9 +48,13 @@ export default function ApproveForm() {
     };
   }
 
+  if (!currentElement || !formData?.basicConfig) {
+    return null;
+  }
+
   return (
     <>
-      {asideDrawerType === 'approveForm' && (
+      {currentElement.type === 'approve' && (
         <Drawer
           title={(
             <span className="text-h5 mr-8">审批</span>

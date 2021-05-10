@@ -4,8 +4,9 @@ import RadioGroup from '@c/radio/group';
 import Radio from '@c/radio';
 import Select from '@c/select';
 import usePrevious from '@lib/hooks/use-previous';
+import useObservable from '@lib/hooks/use-observable';
 
-import { WhenTimeout } from '../../../store';
+import store, { WhenTimeout, StoreValue } from '../../../store';
 
 interface Props {
   defaultValue?: WhenTimeout;
@@ -17,6 +18,7 @@ export default function WhenTimeout({ defaultValue, onChange }: Props) {
     type: '',
     value: '',
   });
+  const { elements = [] } = useObservable<StoreValue>(store) || {};
   const previousType = usePrevious(timeoutData.type);
   useEffect(() => {
     onChange(timeoutData);
@@ -74,13 +76,16 @@ export default function WhenTimeout({ defaultValue, onChange }: Props) {
         />
         {timeoutData.type === 'jump' && (
           <Select
-            options={[{
-              label: '节点名称1',
-              value: 'node1',
-            }, {
-              label: '节点名称2',
-              value: 'node2',
-            }]}
+            options={elements.reduce(
+              (cur: {label: string; value: string;}[], next) => {
+                if (next.type !== 'formData' && next.data) {
+                  cur.push({
+                    label: next.data.nodeData.name,
+                    value: next.id,
+                  });
+                }
+                return cur;
+              }, [])}
             placeholder="选择工作流中的节点"
             defaultValue={timeoutData.value}
             onChange={handleChange('value')}

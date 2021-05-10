@@ -15,7 +15,7 @@ export interface TriggerCondition {
   expr: TriggerConditionExpression;
 }
 
-export type AsideDrawerType = string | 'formDataForm' | 'fillInForm' | 'approveForm' | 'components';
+export type AsideDrawerType = string | 'components';
 export type CurrentConnection = {[key: string]: unknown};
 export type TriggerWayValue = string | 'whenAdd' | 'whenAlter' | '';
 export type TriggerWay = TriggerWayValue[];
@@ -134,7 +134,7 @@ export type Data = {
 
 export interface CurrentElement {
   id: string;
-  type: 'formData' | 'fillIn' | 'approve';
+  type: string | 'formData' | 'fillIn' | 'approve';
   data: Data;
   position: { x: number; y: number; };
 }
