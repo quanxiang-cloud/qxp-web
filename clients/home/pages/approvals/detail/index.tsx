@@ -1,11 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import Breadcrumb from '@c/breadcrumb';
 import { useURLSearch } from '@lib/hooks';
 
+import TaskFrom from './form';
+
 function ApprovalDetail(): JSX.Element {
   const [search] = useURLSearch();
   const listType = search.get('list') || 'todo';
+  const [formValues, setFormValues] = useState<Record<string, any>>({});
+
+  console.log(formValues);
 
   return (
     <div>
@@ -16,6 +21,7 @@ function ApprovalDetail(): JSX.Element {
         ]}
       />
       <h1>this is approval detail page</h1>
+      <TaskFrom onChange={setFormValues} />
     </div>
   );
 }

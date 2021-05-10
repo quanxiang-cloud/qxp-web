@@ -73,8 +73,8 @@ export const signTask = async (params: Record<string, any>) => {
 };
 
 // 获取任务的表单
-export const getTaskFormById = async (params: Record<string, any>) => {
-  return await httpClient('/api/v1/flow/instance/getTaskForm/{processInstanceId}/{taskId}', params);
+export const getTaskFormById = async (processInstanceID: string, taskID: string) => {
+  return await httpClient(`/api/v1/flow/instance/getTaskForm/${processInstanceID}/${taskID}`);
 };
 
 // 流程任务审核
