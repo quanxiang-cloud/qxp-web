@@ -69,7 +69,15 @@ export default class Modal extends React.PureComponent<Props> {
   }
 
   render() {
-    const { fullscreen, className, title, children, width = '632px', height = 'auto', onClose } = this.props;
+    const {
+      fullscreen,
+      className,
+      title,
+      children,
+      width = '632px',
+      height = 'auto',
+      onClose,
+    } = this.props;
 
     return createPortal(
       <Wrap className={className}>
@@ -166,8 +174,12 @@ const scaleAnimation = keyframes`
     opacity: 1;
   }
 `;
-
-const InnerWrap = styled.div<{ width: number | string, height: number | string, fullscreen?: boolean }>`
+type InnerWrapPrapProps = {
+  width: number | string,
+   height: number | string,
+   fullscreen?: boolean
+}
+const InnerWrap = styled.div<InnerWrapPrapProps>`
   display: flex;
   flex-direction: column;
   width: ${(props) => typeof props.width === 'number' ? props.width + 'px' : props.width};

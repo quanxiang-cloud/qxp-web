@@ -43,7 +43,12 @@ const Toolbar = forwardRef((props: any, ref) => {
         >
           标为已读
         </Button>
-        <Button forbidden={!props.canIUseDelBtn} onClick={props.handleDeleteMessage}>删除</Button>
+        <Button
+          forbidden={!props.canIUseDelBtn}
+          onClick={props.handleDeleteMessage}
+        >
+          删除
+        </Button>
       </div>
       <div>
         <Button
