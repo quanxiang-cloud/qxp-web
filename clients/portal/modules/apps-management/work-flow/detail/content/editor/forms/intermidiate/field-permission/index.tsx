@@ -3,7 +3,7 @@ import { useQuery } from 'react-query';
 
 import Toggle from '@c/toggle';
 import Loading from '@c/loading';
-import Error from '@c/error';
+import ErrorTips from '@c/error-tips';
 import useObservable from '@lib/hooks/use-observable';
 
 import CustomFieldTable from './custom-field-table';
@@ -80,7 +80,7 @@ export default function({ value, onChange }: Props) {
   }
 
   if (isError) {
-    return <Error desc="出错了..." />;
+    return <ErrorTips desc="出错了..." />;
   }
 
   return (

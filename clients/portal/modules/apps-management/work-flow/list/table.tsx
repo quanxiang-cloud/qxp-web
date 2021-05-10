@@ -5,7 +5,7 @@ import { Link, useParams, useHistory } from 'react-router-dom';
 
 import Table from '@c/table';
 import ModalConfirm from '@c/modal-confirm';
-import ErrorTips from '@c/error';
+import ErrorTips from '@c/error-tips';
 import toast from '@lib/toast';
 import TableMoreFilterMenu from '@c/more-menu/table-filter';
 import TableMoreActionMenu from '@c/more-menu/table-action';
