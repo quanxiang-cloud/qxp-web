@@ -52,12 +52,12 @@ function TodoApprovals(): JSX.Element {
           />
           {/* <Checkbox label="仅看我代理的" className="mr-auto" />*/}
         </div>
-        <Search className="w-259" placeholder="搜索流程、发起人、应用" value={store.keyword} onChange={store.changeKeyword}/>
+        <Search className="w-259" placeholder="搜索流程、发起人、应用" value={store.keyword} onChange={store.changeKeyword} />
         {/* <Select multiple={false} options={sortOptions}>*/}
         {/*  <IconBtn iconName="import_export" className="btn-sort" />*/}
         {/* </Select>*/}
       </div>
-      <TaskList tasks={store.approvals} store={store} />
+      <TaskList tasks={store.approvals} store={store} taskType='todo' />
       <Pagination current={store.pageNumber} total={store.total} pageSize={store.pageSize} onChange={store.paginate} />
     </div>
   );
