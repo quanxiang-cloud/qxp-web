@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 import MoreMenu from '@c/more-menu';
-// import NavMsgBar from '@portal/modules/msg-center/nav-msg-bar';
+import NavMsgBar from '@portal/modules/msg-center/nav-msg-bar';
 // import Button from '@c/button';
 import Icon from '@c/icon';
 
@@ -17,6 +17,7 @@ export default function HeaderMenu() {
         visible={openResetPasswordModal}
         onCancel={() => setOpenResetPasswordModal(false)}
       />
+      <NavMsgBar />
       {/* <Button className="mr-32">
           进入应用管理
       </Button>
