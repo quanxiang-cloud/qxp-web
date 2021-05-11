@@ -11,6 +11,7 @@ export default class UserName extends InputField {
       this.errMessage = '';
     }
     if (this.value === '') {
+      this.errMessage = '账号不能为空';
       isValid = false;
     }
 
