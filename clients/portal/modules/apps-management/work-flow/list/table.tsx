@@ -159,6 +159,7 @@ export default function WorkFlowTable({ type }: Props) {
     <div className="mt-32 flex flex-col flex-1">
       {!isError && (
         <Table
+          style={{ maxHeight: 'calc(100vh - 350px)' }}
           rowKey="id"
           data={filteredData || []}
           // @ts-ignore

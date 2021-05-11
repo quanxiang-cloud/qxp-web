@@ -24,12 +24,10 @@ interface Props<T extends Record<string, any>> {
   rowKey: string;
   showCheckbox?: boolean;
   style?: React.CSSProperties;
-  wrapperClassName?: string;
 }
 
 export default function Table<T extends Record<string, any>>({
   className,
-  wrapperClassName,
   columns,
   data,
   emptyTips,
@@ -95,7 +93,7 @@ export default function Table<T extends Record<string, any>>({
   }
 
   return (
-    <div className={cs('qxp-table-wrapper', wrapperClassName)}>
+    <div className="qxp-table-wrapper">
       <div className={cs('qxp-table', className)} style={style}>
         <table {...getTableProps()}>
           <colgroup id="colgroup">

@@ -39,10 +39,8 @@ export default function Variables() {
           <div className="text-underline text-body2 cursor-pointer">如何使用变量</div>
         )}
       />
-      <Card className="self-center rounded-12 overflow-hidden px-24 py-16 flex-1 mb-100 w-full max-w-%90">
+      <Card className="self-center rounded-12 overflow-hidden px-24 py-16 mb-100 w-full max-w-%90">
         <Table
-          wrapperClassName="items-center m-w-90%"
-          className="w-full"
           rowKey="id"
           columns={[{
             Header: () => getHeader('名称'),
