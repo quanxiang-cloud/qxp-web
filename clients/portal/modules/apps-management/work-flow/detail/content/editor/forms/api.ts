@@ -83,26 +83,14 @@ export function getOperationList(): Promise<{
       custom: [{
         enabled: false,
         changeable: true,
-        name: '提交',
-        text: '提交',
-        value: 'SUBMIT',
-      }, {
-        enabled: false,
-        changeable: true,
-        name: '再次提交',
-        text: '再次提交',
-        value: 'RE_SUBMIT',
-      }, {
-        enabled: false,
-        changeable: true,
         name: '撤回',
         text: '撤回',
         value: 'CANCEL',
       }, {
         enabled: false,
         changeable: true,
-        name: '填写',
-        text: '填写',
+        name: '提交',
+        text: '提交',
         value: 'FILL_IN',
       }, {
         enabled: false,

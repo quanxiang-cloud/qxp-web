@@ -194,7 +194,7 @@ export default function WorkFlowTable({ type }: Props) {
         <Pagination
           {...pagination}
           total={data?.total}
-          renderTotalTip={(total) => `共 ${total} 条数据`}
+          renderTotalTip={() => `共 ${data?.total || 0} 条数据`}
           onChange={(current, pageSize) => setPagination({ current, pageSize })}
         />
       )}
