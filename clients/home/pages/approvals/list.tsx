@@ -2,7 +2,12 @@ import React from 'react';
 import cs from 'classnames';
 
 import { useURLSearch } from '@lib/hooks';
+import Icon from '@c/icon';
 import TodoApprovals from './todo-approvals';
+import CCToMeApprovals from './cc-to-me-approvals';
+import MyApplyApprovals from './my-applies';
+import DoneApprovals from './done-approvals';
+import AllApprovals from './all-approvals';
 
 type ListType = 'todo' | 'done' | 'cc_to_me' | 'my_applies' | 'all';
 
@@ -23,6 +28,14 @@ type ApprovalTypeListProps = {
   onClick: (catalog: ListType) => void;
 }
 
+const typeIconMap = {
+  todo: 'alarm',
+  done: 'done_all',
+  cc_to_me: 'send',
+  my_applies: 'addchart',
+  all: 'format_align_justify',
+}
+
 function ApprovalTypeList({ listType, onClick }: ApprovalTypeListProps): JSX.Element {
   return (
     <div className="bg-white h-full flex-shrink-0" style={{ width: '200px' }}>
@@ -41,10 +54,13 @@ function ApprovalTypeList({ listType, onClick }: ApprovalTypeListProps): JSX.Ele
               onClick={() => onClick(value)}
               className={cs(listClassName, {
                 'cursor-pointer': value !== listType,
-                'text-blue-500 font-medium': value === listType,
+                'text-blue-500 font-medium bg-blue-100': value === listType,
               })}
             >
-              {label}
+              <span>
+                <Icon name={typeIconMap[value]} className="mr-10" />
+                {label}
+              </span>
             </div>
           );
         })
@@ -56,6 +72,7 @@ function ApprovalTypeList({ listType, onClick }: ApprovalTypeListProps): JSX.Ele
 function Approvals(): JSX.Element {
   const [search, setSearch] = useURLSearch();
   const listType = search.get('list') || 'todo';
+
   function handleChangeList(toList: string) {
     setSearch({ list: toList });
   }
@@ -65,6 +82,10 @@ function Approvals(): JSX.Element {
       <ApprovalTypeList listType={listType as ListType} onClick={handleChangeList} />
       <div className="px-20 pt-20 overflow-auto flex-grow">
         {listType === 'todo' && (<TodoApprovals />)}
+        {listType === 'my_applies' && <MyApplyApprovals />}
+        {listType === 'cc_to_me' && <CCToMeApprovals />}
+        {listType === 'done' && <DoneApprovals />}
+        {listType === 'all' && <AllApprovals />}
       </div>
     </div>
   );

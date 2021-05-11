@@ -20,13 +20,14 @@ const tipsMap = {
   cc_to_me: '暂无抄送给我的工作流',
 }
 
-function TaskList({ tasks, store, className, taskType = 'todo' }: Props) {
+function TaskList({ tasks, store, className, taskType }: Props) {
   if (store.loading) {
     return <Loading />;
   }
 
   if (!tasks.length) {
-    return <NoData tips={tipsMap[taskType]} />;
+    // @ts-ignore
+    return <NoData tips={tipsMap[taskType] || '暂无工作流'} />;
   }
 
   return (

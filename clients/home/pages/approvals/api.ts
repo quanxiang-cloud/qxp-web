@@ -7,6 +7,30 @@ export const getWaitReviewList = async (params: Record<string, any>)
   return await httpClient('/api/v1/flow/instance/waitReviewList', params);
 };
 
+// 分页查询我已处理的任务
+export const getMyReviewedList = async (params: Record<string, any>)
+  : Promise<{ dataList: any, total: number }> => {
+  return await httpClient('/api/v1/flow/instance/reviewedList', params);
+};
+
+// 分页查询我申请的流程
+export const getMyApplyList = async (params: Record<string, any>)
+  : Promise<{ dataList: any, total: number }> => {
+  return await httpClient('/api/v1/flow/instance/myApplyList', params);
+};
+
+// 分页查询抄送给我的流程
+export const getCCToMeList = async (params: Record<string, any>)
+  : Promise<{ dataList: any, total: number }> => {
+  return await httpClient('/api/v1/flow/instance/ccToMeList', params);
+};
+
+// 分页查询全部流程
+export const getAllTaskList = async (params: Record<string, any>)
+  : Promise<{ dataList: any, total: number }> => {
+  return await httpClient('/api/v1/flow/instance/allList', params);
+};
+
 // 获取流程实例数量
 export const getFlowInstanceCount = async (params: Record<string, any>) => {
   return await httpClient('/api/v1/flow/instance/getFlowInstanceCount', params);
@@ -15,11 +39,6 @@ export const getFlowInstanceCount = async (params: Record<string, any>) => {
 // 获取阻塞的流程列表
 export const getBlockList = async (params: Record<string, any>) => {
   return await httpClient('/api/v1/flow/instance/getBlockList', params);
-};
-
-// 分页查询我已处理的任务
-export const getMyReviewedList = async (params: Record<string, any>) => {
-  return await httpClient('/api/v1/flow/instance/reviewedList', params);
 };
 
 // 获取任务的表单权限
@@ -40,11 +59,6 @@ export const ccFLow = async (params: Record<string, any>) => {
 // 启动流程
 export const startFLow = async (params: Record<string, any>) => {
   return await httpClient('/api/v1/flow/instance/startFlow', params);
-};
-
-// 分页查询我申请的流程
-export const getMyApplyList = async (params: Record<string, any>) => {
-  return await httpClient('/api/v1/flow/instance/myApplyList', params);
 };
 
 // 抄送/阅示处理

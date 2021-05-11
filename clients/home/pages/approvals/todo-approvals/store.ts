@@ -40,7 +40,7 @@ class TodoApprovalStore extends Store {
   fetchApprovals = async () => {
     this.loading = true;
     try {
-      const { dataList, total } = await getWaitReviewList(this.query);
+      const { dataList = [], total } = await getWaitReviewList(this.query);
       this.approvals = dataList;
       this.total = total;
       this.loading = false;

@@ -5,6 +5,7 @@ import Switch from '@c/switch';
 import Select from '@c/select';
 import Search from '@c/search';
 import Pagination from '@c/pagination';
+import IconBtn from '@c/icon-btn';
 
 import store from './store';
 import TaskList from '../task-list';
@@ -52,13 +53,24 @@ function TodoApprovals(): JSX.Element {
           />
           {/* <Checkbox label="仅看我代理的" className="mr-auto" />*/}
         </div>
-        <Search className="w-259" placeholder="搜索流程、发起人、应用" value={store.keyword} onChange={store.changeKeyword} />
-        {/* <Select multiple={false} options={sortOptions}>*/}
-        {/*  <IconBtn iconName="import_export" className="btn-sort" />*/}
-        {/* </Select>*/}
+        <Search className="w-259 mr-16" placeholder="搜索流程、发起人、应用" value={store.keyword}
+                onChange={store.changeKeyword} />
+        <Select multiple={false} options={sortOptions}>
+          <IconBtn iconName="import_export" className="btn-sort" />
+        </Select>
       </div>
       <TaskList tasks={store.approvals} store={store} taskType='todo' />
-      <Pagination current={store.pageNumber} total={store.total} pageSize={store.pageSize} onChange={store.paginate} />
+      <Pagination
+        current={store.pageNumber}
+        total={store.total}
+        pageSize={store.pageSize}
+        onChange={store.paginate}
+        renderTotalTip={(total) => (
+          <div className="text-12 text-gray-600">
+            共<span className="mx-4">{store.total || 0}</span>条数据
+          </div>
+        )}
+      />
     </div>
   );
 }
