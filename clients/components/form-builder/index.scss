@@ -58,9 +58,7 @@
 }
 
 .content-item {
-  position: relative;
   padding: 12px;
-  width: 120px;
   height: 84px;
   background-color: #FFFFFF;
   border: 1px solid #CBD5E1;
@@ -69,6 +67,14 @@
     cursor: pointer;
     border-color: var(--blue-600);
   }
+}
+
+.item-container {
+  display: grid;
+  align-items: center;
+  grid-template-columns: 1fr 3fr;
+  gap: 4px;
+  row-gap: 8px;
 }
 
 .form-settings-panel__panel {
@@ -107,7 +113,6 @@
 
 .item-label {
   display: inline-block;
-  margin-right: 2px;
   width: 24px;
   height: 16px;
   background: var(--gray-300);

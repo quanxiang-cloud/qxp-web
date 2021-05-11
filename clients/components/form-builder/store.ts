@@ -1,8 +1,8 @@
-import { nanoid } from 'nanoid';
 import { action, computed, observable, toJS } from 'mobx';
 
-import registry from './registry';
 import logger from '@lib/logger';
+import registry from './registry';
+import { generateRandomFormFieldID } from './utils';
 
 export type FormItem = {
   componentName: string;
@@ -126,14 +126,14 @@ export default class FormBuilderStore {
           logger.error(`failed to find component: [${componentName}] in registry`);
         }
 
+        const parsedSchema = toSchema(toJS(configValue));
+        // ensure 'x-internal' exist
+        parsedSchema['x-internal'] = parsedSchema['x-internal'] || {};
+        parsedSchema['x-internal'].isSystem = !!configValue.isSystem;
+
         acc[fieldName] = {
           // convert observable value to pure js object for debugging
-          ...{
-            ...toSchema(toJS(configValue)), 'x-internal': toSchema(toJS(configValue))['x-internal'] ? {
-              ...toSchema(toJS(configValue))['x-internal'],
-              isSystem: configValue.isSystem ? true : false,
-            } : { isSystem: configValue.isSystem ? true : false },
-          },
+          ...parsedSchema,
           'x-index': index,
           'x-mega-props': {
             labelCol: this.labelAlign === 'right' ? 4 : undefined,
@@ -228,7 +228,7 @@ export default class FormBuilderStore {
     if (!linkage.key) {
       this.visibleHiddenLinkages.push({
         ...linkage,
-        key: nanoid(8),
+        key: generateRandomFormFieldID(),
       });
       return;
     }
@@ -249,7 +249,7 @@ export default class FormBuilderStore {
       ...field,
       // componentName: field.componentName.toLowerCase(), //Need change componentName to lowercase
       configValue: field.defaultConfig,
-      fieldName: nanoid(8),
+      fieldName: generateRandomFormFieldID(),
     };
     if (index === undefined) {
       this.fields.push(newField);
@@ -281,7 +281,7 @@ export default class FormBuilderStore {
       return;
     }
 
-    const newField = { ...field, fieldName: nanoid(8) };
+    const newField = { ...field, fieldName: generateRandomFormFieldID() };
     this.fields.splice(index + 1, 0, newField);
     this.hasEdit = true;
   }
