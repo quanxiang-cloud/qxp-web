@@ -65,11 +65,11 @@ function Dashboard() {
                 />
                 <div className="pl-48 mt-20">
                   <div>
-                    <img className="inline-block mr-8" src="/dist/images/user-email.svg" />
+                    <img className="inline-block mr-8" src="/dist/images/email.svg" />
                       邮箱：{window.USER.email}
                   </div>
                   <div className="mt-8">
-                    <img className="inline-block mr-8" src="/dist/images/dep.svg" />
+                    <img className="inline-block mr-8" src="/dist/images/department.svg" />
                       部门：{window.USER.dep.departmentName}
                   </div>
                 </div>
@@ -88,7 +88,7 @@ function Dashboard() {
                   <p>{name}</p>
                 </div>
               ))}
-              <img className="absolute bottom-0 right-0" src="/dist/images/frame.svg" alt=""/>
+              <img className="absolute bottom-0 right-0" src="/dist/images/todo-card-bgc.svg" alt=""/>
             </>)}
           />
           <Card
