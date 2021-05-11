@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useState } from 'react';
+import React, { ChangeEvent, useState, useEffect } from 'react';
 import cs from 'classnames';
 
 import Icon from '@c/icon';
@@ -29,6 +29,14 @@ export default function BasicConfig({ type, value, onChange }: Props) {
   const [openMore, setOpenMore] = useState(false);
   const [showAddPersonModal, setShowAddPersonModal] = useState(false);
   const typeText = type === 'approve' ? '审批' : '填写';
+
+  useEffect(() => {
+    const { deadLine: { breakPoint, day, hours, minutes, urge }, whenTimeout } = value.timeRule;
+    setOpenMore(
+      !!(breakPoint || day || hours || minutes || urge.day || urge.hours || urge.minutes || 
+      urge.repeat.day || urge.repeat.hours || urge.repeat.minutes || whenTimeout.value)
+    )
+  }, [value.timeRule]);
 
   function onAdd() {
     setShowAddPersonModal(true);
@@ -206,7 +214,7 @@ export default function BasicConfig({ type, value, onChange }: Props) {
               '限制该节点填写所需要的时间，满足条件后可进行催办、按需处理等'
           }</span>
         </div>
-        <Toggle onChange={(v) => setOpenMore(!!v)} />
+        <Toggle onChange={(v) => setOpenMore(!!v)} defaultChecked={openMore} />
       </div>
       <div className={cs('transition overflow-hidden pb-200', {
         visible: openMore,
