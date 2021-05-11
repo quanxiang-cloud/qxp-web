@@ -60,53 +60,45 @@ export default class Captcha extends InputField {
     });
   }
 
-  showError(errorMessage?: string) {
+  showError(errorMessage?: string | undefined) {
     if (this.errorId) {
       clearTimeout(this.errorId);
     }
-    const pageErrorElement = query<HTMLSpanElement>('span.error');
+    const pageErrorElement = query<HTMLSpanElement>('div.captcha-hints');
     if (errorMessage && pageErrorElement) {
       pageErrorElement.innerText = errorMessage;
-      pageErrorElement.classList.remove('hidden');
-      // @ts-ignore
-      this.errorId = setTimeout(() => {
-        pageErrorElement.classList.add('hidden');
-      }, 3000);
     }
   }
 
   sendCode() {
     let counter = 60;
-    let tid = 0;
+    let tid: NodeJS.Timeout;
     const element = this.sender as HTMLButtonElement;
-
     const resetVars = (errorMessage?: string) => {
+      element.classList.remove('disabled');
+      element.innerText = '获取验证码';
       this.showError(errorMessage);
       clearInterval(tid);
       this.toggleSender(this.username?.validate() || false);
       counter = 60;
-      element.innerText = '获取验证码';
       this.isSending = false;
     };
     this.isSending = true;
     this.callSendApi()
-      .then((resp: unknown) => {
+      .then(() => {
         // todo fixme
-        const res = resp as any;
-        if (res.code !== 0) {
-          this.showError(res.msg);
-        }
+        (this.errorElement as HTMLElement).textContent = '';
+        // @ts-ignore
+        tid = setInterval(() => {
+          counter -= 1;
+          element.innerText = `${counter} 后重新获取`;
+          if (counter <= 0) {
+            resetVars();
+          }
+        }, 1000);
       })
       .catch(resetVars);
     element.classList.add('disabled');
-    // @ts-ignore
-    tid = setInterval(() => {
-      counter -= 1;
-      element.innerText = `${counter} 后重新获取`;
-      if (counter <= 0) {
-        resetVars();
-      }
-    }, 1000);
   }
 
   onSendCode(e: Event) {
@@ -132,10 +124,9 @@ export default class Captcha extends InputField {
         this.errMessage = '验证码不能为空';
       }
       if (this.value !== '') {
-        this.errMessage = '验证码至少为6位';
+        this.errMessage = '请输入 6 位数字验证码';
       }
       isValid = false;
-      // this.action.classList.add('disabled');
     }
     if (isValid) {
       this.errMessage = '';
