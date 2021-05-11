@@ -27,9 +27,9 @@ class UserAppStore {
     { key: '', value: 0, name: '全部待办', color: 'text-gray-900' },
   ];
   @observable HANDLE_LIST = [
-    { key: 0, name: '我发起的', icon: 'addchart' },
-    { key: 1, name: '我已处理', icon: 'done_all' },
-    { key: 2, name: '抄送给我', icon: 'send_me', count: 0 },
+    { key: 0, name: '我发起的', icon: 'addchart', link: 'my_applies' },
+    { key: 1, name: '我已处理', icon: 'done_all', link: 'done' },
+    { key: 2, name: '抄送给我', icon: 'send_me', count: 0, link: 'cc_to_me' },
   ];
 
   @action

@@ -41,11 +41,11 @@ function Dashboard() {
                 <div className="pl-48 mt-20">
                   <div>
                     <img className="inline-block mr-8" src="/dist/images/user-email.svg" />
-                      邮箱：{window.USER.email}
+                    邮箱：{window.USER.email}
                   </div>
                   <div className="mt-8">
                     <img className="inline-block mr-8" src="/dist/images/dep.svg" />
-                      部门：{window.USER.dep.departmentName}
+                    部门：{window.USER.dep.departmentName}
                   </div>
                 </div>
               </div>
@@ -58,12 +58,12 @@ function Dashboard() {
             itemTitleClassName="text-h5"
             content={(<>
               {store.TODO_LIST.map(({ value, name, key, color }) => (
-                <div className={`backlog ${color}`} key={key}>
+                <div className={`backlog ${color}`} key={key} onClick={() => history.push('/approvals')}>
                   {value}
                   <p>{name}</p>
                 </div>
               ))}
-              <img className="absolute bottom-0 right-0" src="/dist/images/frame.svg" alt=""/>
+              <img className="absolute bottom-0 right-0" src="/dist/images/frame.svg" alt="" />
             </>)}
           />
           <Card
@@ -71,9 +71,13 @@ function Dashboard() {
             itemTitleClassName="text-h5"
             contentClassName="flex-col"
             content={(<>
-              {store.HANDLE_LIST.map(({ name, key, icon, count }) => {
+              {store.HANDLE_LIST.map(({ name, key, icon, count, link }) => {
                 return (
-                  <div className={cs('message-handel-list', { 'border-y': key === 1 })} key={key}>
+                  <div
+                    className={cs('message-handel-list', { 'border-y': key === 1 })}
+                    key={key}
+                    onClick={() => history.push(`/approvals?list=${link}`)}
+                  >
                     <Icon className="mr-8" name={icon} size={20} />
                     {name}
                     <div className="rbtns">

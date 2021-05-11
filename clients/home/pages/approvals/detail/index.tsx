@@ -98,7 +98,7 @@ function ApprovalDetail(): JSX.Element {
             }
             return (
               <span key={name}><Icon name="api" />{text ?? defaultText ?? name}</span>
-            )
+            );
           })}
           <span>
             <Select multiple={false} options={moreActions} onChange={() => {}}>
@@ -126,12 +126,12 @@ function ApprovalDetail(): JSX.Element {
                   >
                     {text ?? defaultText ?? name}
                   </Button>
-                )
+                );
               }
               if (name === '驳回' || value === 'REFUSE') {
                 return (
                   <Button iconName="close" modifier="danger" onClick={() => setModalTypeReject(true)}>{text ?? defaultText ?? name}</Button>
-                )
+                );
               }
             })
           }
