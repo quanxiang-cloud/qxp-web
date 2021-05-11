@@ -12,25 +12,12 @@ import store from '../store';
 
 import './index.scss';
 
-type Status = {
-  value: number;
-  key: 'timeout' | 'urgency' | 'all';
-  name: string;
-  color: string;
-}
-
 type handel = {
   key: number;
   name: string;
   icon: string;
   count: null | number
 }
-
-const UNTREATED_LIST: Array<Status> = [
-  { value: 12, key: 'timeout', name: '已超时', color: 'text-red-600' },
-  { value: 4, key: 'urgency', name: '催办', color: 'text-yellow-600' },
-  { value: 16, key: 'all', name: '全部待办', color: 'text-gray-900' },
-];
 
 const HANDLE_LIST: Array<handel> = [
   { key: 0, name: '我发起的', icon: 'addchart', count: 0 },
@@ -43,6 +30,7 @@ function Dashboard() {
 
   useEffect(() => {
     document.title = '工作台';
+    store.fetchTodoList();
     store.fetchAppList();
   }, []);
 
@@ -82,7 +70,7 @@ function Dashboard() {
             headerClassName="pb-32"
             itemTitleClassName="text-h5"
             content={(<>
-              {UNTREATED_LIST.map(({ value, name, key, color }) => (
+              {store.TODO_LIST.map(({ value, name, key, color }) => (
                 <div className={`backlog ${color}`} key={key}>
                   {value}
                   <p>{name}</p>
