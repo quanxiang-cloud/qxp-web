@@ -45,5 +45,5 @@ type FilterField = {
 type Condition = {
   key?: string;
   op?: string;
-  value?: any;
+  value?: Array<string | number | Date>;
 }

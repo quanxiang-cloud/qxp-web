@@ -3,11 +3,11 @@ import cs from 'classnames';
 
 import './index.scss';
 
-interface Props extends React.InputHTMLAttributes<any> {
+interface Props extends React.InputHTMLAttributes<string> {
   label?: string;
   help?: string;
-  error?: any;
-  onChange?: any;
+  error?: Record<string, any>;
+  onChange?: (value: any) => void;
   register: any;
   [key: string]: any;
 }

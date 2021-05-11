@@ -14,6 +14,7 @@ import {
   updatePerGroup,
 } from '@portal/modules/apps-management/lib/api';
 import appPageDataStore from '@c/app-page-data/store';
+import { PageTableShowRule } from '@c/app-page-data/utils';
 
 import { getFilterField, getAttribute } from './utils';
 
@@ -28,16 +29,16 @@ class FormDesignStore {
   @observable saveSchemeLoading = false;
   @observable initScheme = {};
   @observable pageLoading = true;
-  @observable formStore: any = null;
+  @observable formStore: FormStore | null = null;
   @observable hasSchema = false;
-  @observable pageTableConfig: any = {};
-  @observable pageTableShowRule: any = {};
+  @observable pageTableConfig: Record<string, any> = {};
+  @observable pageTableShowRule: PageTableShowRule = {};
   @observable rightsList: Rights[] = [];
   @observable allFiltrate: PageField[] = [];
   @observable rightsLoading = false;
 
   @computed get fieldList(): PageField[] {
-    const fieldsMap = this.formStore?.schema?.properties || {};
+    const fieldsMap:any = this.formStore?.schema?.properties || {};
     return Object.keys(fieldsMap).filter((_key: string) => {
       return _key !== '_id';
     }).map((key: string) => {
@@ -61,6 +62,10 @@ class FormDesignStore {
         return;
       }
       this.allFiltrate = this.allFiltrate.filter(({ id }) => {
+        if (!this.formStore?.schema?.properties) {
+          return false;
+        }
+
         return id in this.formStore?.schema?.properties;
       });
     });
@@ -162,7 +167,7 @@ class FormDesignStore {
   }
 
   @action
-  setPageTableShowRule = (newRule: any) => {
+  setPageTableShowRule = (newRule: PageTableShowRule) => {
     this.pageTableShowRule = { ...this.pageTableShowRule, ...newRule };
   }
 
@@ -204,10 +209,10 @@ class FormDesignStore {
   saveFormScheme = () => {
     this.saveSchemeLoading = true;
     return (this.hasSchema ? updateFormScheme : createFormScheme)({
-      schema: this.formStore.schema,
+      schema: this.formStore?.schema,
       tableID: this.pageID,
     }).then(() => {
-      this.formStore.hasEdit = false;
+      (this.formStore as FormStore).hasEdit = false;
       toast.success(this.hasSchema ? '保存成功!' : '创建成功!');
       this.saveSchemeLoading = false;
     }).catch(() => {

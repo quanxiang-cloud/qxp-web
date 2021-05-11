@@ -13,13 +13,17 @@ import {
 import EmployeeOrDepartmentPickerModal from '@c/employee-or-department-picker';
 import { UnionColumns } from 'react-table';
 
+type Admin = {
+  id: string;
+  userName: string;
+}
+
 function AppAdmin() {
   const [modalType, setModalType] = useState('');
   const [selectedIdArr, setSelectedArr] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const [delLoading, setDelLoading] = useState(false);
   const { appId } = useParams<{appId: string}>();
-  const [, setTotal] = useState(0);
   const [params] = useState({ page: 1, limit: 9999, id: appId });
   const [appAdminList, setAppAdminList] = useState([]);
 
@@ -27,8 +31,7 @@ function AppAdmin() {
     setLoading(true);
     fetchAppAdminUsers(params).then((res) => {
       setLoading(false);
-      setTotal(res.data.total_count);
-      setAppAdminList(res.data.data.map((admin: any) => {
+      setAppAdminList(res.data.data.map((admin: Admin) => {
         return { ...admin, ownerID: admin.id, type: 1, ownerName: admin.userName };
       }));
     });
@@ -38,7 +41,7 @@ function AppAdmin() {
     setDelLoading(true);
     return delAppAdminUsers({ appID: appId, userIDs: idArr }).then(() => {
       setDelLoading(false);
-      setAppAdminList(appAdminList.filter(({ id }: any) => !idArr.includes(id)));
+      setAppAdminList(appAdminList.filter(({ id }) => !idArr.includes(id)));
       toast.success('删除成功！');
       const userInfo = window.localStorage.getItem('globalState') &&
         JSON.parse(window.localStorage.getItem('globalState') || JSON.stringify(null));
@@ -64,7 +67,7 @@ function AppAdmin() {
   };
 
   const addAdmin = (
-    departments: EmployeeOrDepartmentOfRole[],
+    _: EmployeeOrDepartmentOfRole[],
     employees: EmployeeOrDepartmentOfRole[]) => {
     if (employees.length === 0) {
       toast.error('请选择添加为管理员的员工');

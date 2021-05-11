@@ -10,3 +10,13 @@ type PageInfo = {
   sort?: number;
 
 }
+
+type AppParams = {
+  appId: string
+}
+
+type FormDesignParams = {
+  pageId: string;
+  appID: string;
+  pageType: string;
+}

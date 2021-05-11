@@ -16,7 +16,7 @@ import appDetailsStore from '../store';
 import './index.scss';
 
 function AppSetting() {
-  const { appId } = useParams<any>();
+  const { appId } = useParams<AppParams>();
   const history = useHistory();
 
   const goBack = () => {

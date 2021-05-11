@@ -4,11 +4,11 @@ import Select from '@c/select';
 import DatePicker from '@c/date-picker';
 import RangePicker from '@c/range-picker';
 
-type Props = {
+type Props<T> = {
   filtrate: FilterField;
-  onChange: (value: any) => void;
+  onChange: (value: T) => void;
   className?: string;
-  value?: any;
+  value?: T;
   style?: React.CSSProperties;
 }
 
@@ -30,7 +30,7 @@ function numberVerify(e: any, precision: number | undefined) {
   }
 }
 
-function FieldSwitch({ filtrate, className, ...otherProps }: Props, ref: React.Ref<any>) {
+function FieldSwitch({ filtrate, className, ...otherProps }: Props<any>, ref: React.Ref<any>) {
   switch (filtrate.type) {
   case 'string':
     return <input ref={ref} className={`input ${className}`} {...otherProps} />;
@@ -48,11 +48,11 @@ function FieldSwitch({ filtrate, className, ...otherProps }: Props, ref: React.R
   case 'select':
     return (
       <Select
-        multiple={filtrate.multiple ? true : false}
+        multiple={!!filtrate.multiple}
         className={`'w-full ${className}`}
         ref={ref}
         {...otherProps}
-        options={(filtrate.enum || []) as any}
+        options={filtrate.enum || []}
       />
     );
   case 'date':

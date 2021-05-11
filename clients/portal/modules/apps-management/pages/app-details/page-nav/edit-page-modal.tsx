@@ -39,7 +39,7 @@ function EditPageModal({ pageInfo, onCancel, onSubmit, appID }: Props) {
 
   const ref: any = useRef();
   const handleSubmit = () => {
-    const formRef: any = ref.current;
+    const formRef = ref.current;
     if (formRef.validateFields()) {
       onSubmit({ ...(pageInfo || {}), ...formRef.getFieldsValue() });
     }

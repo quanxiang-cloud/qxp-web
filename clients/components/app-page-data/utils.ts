@@ -6,14 +6,15 @@ import appPageDataStore from './store';
 import React from 'react';
 
 export type Scheme = Record<string, any>;
+export type PageTableShowRule = {
+  fixedRule?: string;
+  order?: string;
+  pageSize?: number | null;
+}
 export type Config = {
   filtrate?: PageField[];
   pageTableConfig?: Record<string, any>;
-  pageTableShowRule?: {
-    fixedRule?: string;
-    order?: string;
-    pageSize?: number | null;
-  }
+  pageTableShowRule?: PageTableShowRule;
 };
 
 export function operateButton(wIndex: number, authority: number, button: React.ReactNode) {

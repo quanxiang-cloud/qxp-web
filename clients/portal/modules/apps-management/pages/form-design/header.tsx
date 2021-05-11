@@ -18,14 +18,14 @@ const TABS: TabProps[] = [
 
 function FormDesignHeader() {
   const [showNotSavedTips, setShowNotSavedTips] = useState(false);
-  const { pageType, pageId, appID } = useParams<any>();
+  const { pageType, pageId, appID } = useParams<FormDesignParams>();
 
   const history = useHistory();
 
   const { pageName } = parse(window.location.search);
 
   const tabChange = (tabKey: string) => {
-    if (store.formStore.hasEdit) {
+    if (store.formStore?.hasEdit) {
       setShowNotSavedTips(true);
       return;
     }

@@ -21,7 +21,12 @@ import {
 import appListStore from '../entry/my-app/store';
 
 class AppDetailsStore {
-  @observable appDetails: any = {};
+  @observable appDetails: AppInfo = {
+    id: '',
+    useStatus: 0,
+    appName: '',
+    appIcon: '',
+  };
   @observable loading = false;
   @observable appId = '';
   @observable pageListLoading = false;
@@ -56,7 +61,7 @@ class AppDetailsStore {
   }
 
   @action
-  updateApp = (appInfo: any) => {
+  updateApp = (appInfo: Pick<AppInfo, 'appName' | 'appIcon' | 'useStatus'>) => {
     return updateApp({ id: this.appDetails.id, ...appInfo }).then(() => {
       this.appDetails = { ...this.appDetails, ...appInfo };
       appListStore.updateApp(this.appDetails);

@@ -13,7 +13,7 @@ type Props = {
 function EditGroupModal({ name, id, onCancel, onSubmit }: Props) {
   const ref: any = useRef();
   const handleSubmit = () => {
-    const formRef: any = ref.current;
+    const formRef = ref.current;
     if (formRef.validateFields()) {
       onSubmit({ ...formRef.getFieldsValue(), id }).then(() => {
         onCancel();

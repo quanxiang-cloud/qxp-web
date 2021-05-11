@@ -49,8 +49,7 @@ const FormPage = () => {
             onSubmit={(value) => toast.success('提交表单：' + JSON.stringify(value))}
             effects={() => {
               visibleHiddenLinkageEffect(
-                // todo refactor formStore any type
-                store.formStore.schema['x-internal']?.visibleHiddenLinkages || []
+                store.formStore?.schema['x-internal']?.visibleHiddenLinkages || []
               );
             }}
           >
