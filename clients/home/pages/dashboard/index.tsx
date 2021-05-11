@@ -9,12 +9,13 @@ import Icon from '@c/icon';
 import AppInfoView from '@portal/modules/apps-management/components/app-info-view';
 
 import store from '../store';
+import approvalStore from '../approvals/todo-approvals/store';
 
 import './index.scss';
 
 type Status = {
   value: number;
-  key: 'timeout' | 'urgency' | 'all';
+  key: 'OVERTIME' | 'URGE' | '';
   name: string;
   color: string;
 }
@@ -27,9 +28,9 @@ type handel = {
 }
 
 const UNTREATED_LIST: Array<Status> = [
-  { value: 12, key: 'timeout', name: '已超时', color: 'text-red-600' },
-  { value: 4, key: 'urgency', name: '催办', color: 'text-yellow-600' },
-  { value: 16, key: 'all', name: '全部待办', color: 'text-gray-900' },
+  { value: 12, key: 'OVERTIME', name: '已超时', color: 'text-red-600' },
+  { value: 4, key: 'URGE', name: '催办', color: 'text-yellow-600' },
+  { value: 16, key: '', name: '全部待办', color: 'text-gray-900' },
 ];
 
 const HANDLE_LIST: Array<handel> = [
@@ -63,7 +64,7 @@ function Dashboard() {
                   bio="不是杰出者才能做梦，而是善梦者才杰出"
                   avatar=''
                 />
-                <div className="pl-48 mt-20">
+                <div className="pl-48 mt-20 text-16">
                   <div>
                     <img className="inline-block mr-8" src="/dist/images/email.svg" />
                       邮箱：{window.USER.email}
@@ -83,7 +84,10 @@ function Dashboard() {
             itemTitleClassName="text-h5"
             content={(<>
               {UNTREATED_LIST.map(({ value, name, key, color }) => (
-                <div className={`backlog ${color}`} key={key}>
+                <div className={`backlog ${color}`} key={key} onClick={() => {
+                  approvalStore.status = key;
+                  history.push('/approvals');
+                }}>
                   {value}
                   <p>{name}</p>
                 </div>
@@ -114,10 +118,10 @@ function Dashboard() {
         </div>
         <div className="px-6 mt-40">
           <Card
-            className="px-32 py-20 user-app-list-container"
+            className="px-32 py-20"
             headerClassName="ml-8"
-            title="我的应用"
-            itemTitleClassName="text-h5"
+            title={<span>我的应用  <span className="ml-4 text-gray-400">({store.appList.length})</span></span>}
+            itemTitleClassName="text-h6"
             contentClassName="grid grid-cols-4 gap-16"
             content={(<>
               {store.appList.map((appInfo: AppInfo) => (
