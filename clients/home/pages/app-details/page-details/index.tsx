@@ -20,6 +20,10 @@ function PageDetails() {
   };
 
   useEffect(() => {
+    setShowCreateForm(false);
+  }, [formScheme]);
+
+  useEffect(() => {
     appDataStore.setCreateFun(() => setShowCreateForm(true));
     appDataStore.allowRequestData = true;
     return () => {
@@ -27,7 +31,7 @@ function PageDetails() {
     };
   }, []);
 
-  if (showCreateForm) {
+  if (showCreateForm && formScheme) {
     return (
       <CreateDataForm
         defaultValues={appDataStore.curItemFormData}

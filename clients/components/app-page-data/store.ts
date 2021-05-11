@@ -153,6 +153,7 @@ class AppPageDataStore {
 
   @action
   clear = () => {
+    this.curItemFormData = null;
     this.formDataList = [];
     this.tableConfig = {};
     this.authority = 0;
