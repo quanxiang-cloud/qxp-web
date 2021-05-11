@@ -3,6 +3,8 @@ import { ArrowHeadType, Elements, FlowElement, Edge } from 'react-flow-renderer'
 
 import { uuid } from '@lib/utils';
 
+import { getNodeInitialData } from './utils';
+
 export type Operator = 'eq' | 'neq' | 'gt' | 'gte' | 'lt' | 'lte' | '';
 export type TriggerConditionExpressionItem = TriggerCondition | {
   key: string;
@@ -324,6 +326,30 @@ export function updateNodeData(elementType: string, fieldName: string, updater: 
       return element;
     }),
   });
+}
+
+export function resetElementsData(
+  type: 'formData' | 'approve' | 'fillIn', 
+  value: Partial<BusinessData>
+) {
+  store.next({
+    ...store.value,
+    elements: store.value.elements.map((element) => {
+      if (element.type && ['formData', 'approve', 'fillIn'].includes(element.type)) {
+        if (element.type === type) {
+          element.data.businessData = { 
+            ...getNodeInitialData('formData'),
+            ...value,
+          }
+        } else {
+          element.data.businessData = getNodeInitialData(
+            element.type as 'formData' | 'approve' | 'fillIn'
+          );
+        }
+      }
+      return element;
+    })
+  })
 }
 
 export default store;
