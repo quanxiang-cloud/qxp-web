@@ -73,6 +73,7 @@ export interface DefaultOperation {
   name: string;
   defaultText: string;
   text: string;
+  value: string;
 }
 
 export interface CustomOperation {
@@ -81,6 +82,7 @@ export interface CustomOperation {
   name: string;
   defaultText?: string;
   text?: string;
+  value: string;
 }
 
 export interface OperationPermission {
