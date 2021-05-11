@@ -87,16 +87,16 @@ export default function OperatorPermission({ value, onChange }: Props) {
               />
               <div>{op.name}</div>
               <div className="relative w-188">
-                {(op.text || op.defaultText) && (
+                {(op.text || op.name) && (
                   <>
                     <input
                       className="input w-full pr-36"
-                      value={op.text || op.defaultText}
+                      value={op.text || op.name}
                       onChange={(v) => onUpdateOperation(type, op, {
                         text: v.target.value,
                       })}
                     />
-                    {op.text !== op.defaultText && (
+                    {op.text !== op.name && (
                       <Tooltip
                         position="top"
                         label="恢复默认"
@@ -109,13 +109,13 @@ export default function OperatorPermission({ value, onChange }: Props) {
                           size={20}
                           className="cursor-pointer"
                           onClick={() => onUpdateOperation(type, op, {
-                            text: op.defaultText,
+                            text: op.name,
                           })}
                         />
                       </Tooltip>
                     )}
                     {
-                      op.text === op.defaultText && (
+                      op.text === op.name && (
                         <Icon
                           name="refresh"
                           size={20}

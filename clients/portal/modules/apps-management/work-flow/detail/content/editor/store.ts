@@ -71,7 +71,6 @@ export interface DefaultOperation {
   enabled: boolean;
   changeable: boolean;
   name: string;
-  defaultText: string;
   text: string;
   value: string;
 }
@@ -80,7 +79,6 @@ export interface CustomOperation {
   enabled: boolean;
   changeable: boolean;
   name: string;
-  defaultText?: string;
   text?: string;
   value: string;
 }

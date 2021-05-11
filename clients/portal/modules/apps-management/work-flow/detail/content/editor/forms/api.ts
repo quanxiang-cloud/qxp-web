@@ -58,7 +58,6 @@ export interface OperationItem {
   enabled: boolean;
   changeable: boolean;
   name: string;
-  defaultText?: string;
   text?: string;
   value: string;
 }
@@ -72,14 +71,12 @@ export function getOperationList(): Promise<{
         enabled: true,
         changeable: false,
         name: '通过',
-        defaultText: '通过',
         text: '通过',
         value: 'AGREE',
       }, {
         enabled: true,
         changeable: false,
         name: '拒绝',
-        defaultText: '拒绝',
         text: '拒绝',
         value: 'REFUSE',
       }],
@@ -87,70 +84,60 @@ export function getOperationList(): Promise<{
         enabled: false,
         changeable: true,
         name: '提交',
-        defaultText: '提交',
         text: '提交',
         value: 'SUBMIT',
       }, {
         enabled: false,
         changeable: true,
         name: '再次提交',
-        defaultText: '再次提交',
         text: '再次提交',
         value: 'RE_SUBMIT',
       }, {
         enabled: false,
         changeable: true,
         name: '撤回',
-        defaultText: '撤回',
         text: '撤回',
         value: 'CANCEL',
       }, {
         enabled: false,
         changeable: true,
         name: '填写',
-        defaultText: '填写',
         text: '填写',
         value: 'FILL_IN',
       }, {
         enabled: false,
         changeable: true,
         name: '委托',
-        defaultText: '委托',
         text: '委托',
         value: 'ENTRUST',
       }, {
         enabled: false,
         changeable: true,
         name: '退回某步',
-        defaultText: '退回某步',
         text: '退回某步',
         value: 'STEP_BACK',
       }, {
         enabled: false,
         changeable: true,
         name: '打回重填',
-        defaultText: '打回重填',
         text: '打回重填',
         value: 'SEND_BACK',
       }, {
         enabled: false,
         changeable: true,
         name: '抄送',
-        defaultText: '抄送',
         text: '抄送',
         value: 'CC',
       }, {
         enabled: false,
         changeable: true,
         name: '加签',
-        defaultText: '加签',
         text: '加签',
         value: 'ADD_SIGN',
       }, {
         enabled: false,
         changeable: true,
         name: '阅示',
-        defaultText: '阅示',
         text: '阅示',
         value: 'READ',
       }],
