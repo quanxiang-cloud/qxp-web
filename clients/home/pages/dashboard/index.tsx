@@ -118,10 +118,10 @@ function Dashboard() {
         </div>
         <div className="px-6 mt-40">
           <Card
-            className="px-32 py-20 user-app-list-container"
+            className="px-32 py-20"
             headerClassName="ml-8"
             title={<span>我的应用  <span className="ml-4 text-gray-400">({store.appList.length})</span></span>}
-            itemTitleClassName="text-h5"
+            itemTitleClassName="text-h6"
             contentClassName="grid grid-cols-4 gap-16"
             content={(<>
               {store.appList.map((appInfo: AppInfo) => (

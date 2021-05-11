@@ -2,6 +2,7 @@
   cursor: pointer;
   height: 76px;
   padding: 16px 20px;
+  border: 1px solid var(--gray-200);
   transition: all .2s;
 
   &:hover {
