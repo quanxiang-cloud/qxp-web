@@ -9,7 +9,6 @@ import Icon from '@c/icon';
 import AppInfoView from '@portal/modules/apps-management/components/app-info-view';
 
 import store from '../store';
-import approvalStore from '../approvals/todo-approvals/store';
 
 import './index.scss';
 
