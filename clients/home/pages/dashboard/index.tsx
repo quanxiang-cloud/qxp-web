@@ -64,7 +64,7 @@ function Dashboard() {
                   bio="不是杰出者才能做梦，而是善梦者才杰出"
                   avatar=''
                 />
-                <div className="pl-48 mt-20">
+                <div className="pl-48 mt-20 text-16">
                   <div>
                     <img className="inline-block mr-8" src="/dist/images/user-email.svg" />
                       邮箱：{window.USER.email}
@@ -120,7 +120,7 @@ function Dashboard() {
           <Card
             className="px-32 py-20 user-app-list-container"
             headerClassName="ml-8"
-            title="我的应用"
+            title={<span>我的应用  <span className="ml-4 text-gray-400">({store.appList.length})</span></span>}
             itemTitleClassName="text-h5"
             contentClassName="grid grid-cols-4 gap-16"
             content={(<>
