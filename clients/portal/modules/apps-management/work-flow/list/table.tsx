@@ -21,7 +21,6 @@ interface Props {
 interface State {
   currentEditWorkFlow: Flow | null,
   currentDeleteWorkFlow: Flow | null,
-  currentSeeWorkFlow: Flow | null,
 }
 
 const statusMap = {
@@ -35,7 +34,6 @@ export default function WorkFlowTable({ type }: Props) {
   const [state, setState] = useState<State>({
     currentEditWorkFlow: null,
     currentDeleteWorkFlow: null,
-    currentSeeWorkFlow: null,
   });
   const [statusFilter, setStatusFilter] = useState('');
   const [pagination, setPagination] = useState({
@@ -74,11 +72,10 @@ export default function WorkFlowTable({ type }: Props) {
     }
   }, [state.currentEditWorkFlow]);
 
-  function onRowActionChange(key: 'edit' | 'delete' | 'see', row: Flow) {
+  function onRowActionChange(key: 'edit' | 'delete', row: Flow) {
     const actionMap = {
       edit: 'currentEditWorkFlow',
       delete: 'currentDeleteWorkFlow',
-      see: 'currentSeeWorkFlow',
     };
     const sk = actionMap[key];
     setState((s) => ({ ...s, [sk]: row }));
@@ -135,7 +132,6 @@ export default function WorkFlowTable({ type }: Props) {
             menus={[
               { key: 'edit', label: '修改', iconName: 'edit' },
               { key: 'delete', label: '删除', iconName: 'delete' },
-              { key: 'see', label: '查看', iconName: 'eye-open' },
             ]}
             onChange={(key) => onRowActionChange(key, model.cell.row.original)}
           >
@@ -163,6 +159,7 @@ export default function WorkFlowTable({ type }: Props) {
     <div className="mt-32 flex flex-col flex-1">
       {!isError && (
         <Table
+          style={{ maxHeight: 'calc(100vh - 350px)' }}
           rowKey="id"
           data={filteredData || []}
           // @ts-ignore
@@ -198,7 +195,7 @@ export default function WorkFlowTable({ type }: Props) {
         <Pagination
           {...pagination}
           total={data?.total}
-          renderTotalTip={(total) => `共 ${total} 条数据`}
+          renderTotalTip={() => `共 ${data?.total || 0} 条数据`}
           onChange={(current, pageSize) => setPagination({ current, pageSize })}
         />
       )}

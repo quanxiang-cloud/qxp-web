@@ -102,7 +102,7 @@ export default function BasicConfig({ type, value, onChange }: Props) {
       )}
       <div className="text-body2-no-color text-gray-600">{typeText}人</div>
       {(!!departments.length || !!employees.length) && (
-        <div className="mt-8 mb-12 py-8 px-12 border border-gray-300 input-border-radius">
+        <div className="mt-8 mb-12 py-8 px-12 border border-gray-300 corner-2-8-8-8">
           {[...departments, ...employees].map((member) => (
             <Tag<string>
               className="mr-6 rounded-tl-4 rounded-br-4 mb-8"
@@ -121,7 +121,7 @@ export default function BasicConfig({ type, value, onChange }: Props) {
       )}
       <div
         className={cs(
-          'flex items-center border border-dashed border-gray-300 small-border-radius',
+          'flex items-center border border-dashed border-gray-300 corner-8-2-8-8',
           'py-5 text-button mb-24 mt-8 justify-center cursor-pointer h-32',
         )}
         onClick={onAdd}
@@ -216,7 +216,7 @@ export default function BasicConfig({ type, value, onChange }: Props) {
         'opacity-0': !openMore,
         'opacity-1': openMore,
       })}>
-        <div className="bg-gray-100 p-16 input-border-radius mb-16">
+        <div className="bg-gray-100 p-16 corner-2-8-8-8 mb-16">
           <div className="text-body2 mb-8">负责人需在以下时间内处理：</div>
           <RadioGroup onChange={onTimeRuleUpdate('deadLine', 'breakPoint')}>
             <Radio

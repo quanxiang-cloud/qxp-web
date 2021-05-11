@@ -97,6 +97,8 @@ function PageDataTable() {
         showCheckbox
         emptyTips='暂无数据'
         rowKey="_id"
+        // todo refactor this
+        style={{ maxHeight: 'calc(100vh - 400px)' }}
         loading={store.listLoading}
         onSelectChange={handleSelectChange}
         columns={columns}

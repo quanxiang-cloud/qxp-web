@@ -152,7 +152,7 @@ export default function Urge({ onSave, defaultValue }: Props) {
         ]}
       >
         <div
-          className="input-border-radius mt-16 bg-gray-100 px-16 py-5 flex items-center
+          className="corner-2-8-8-8 mt-16 bg-gray-100 px-16 py-5 flex items-center
            cursor-pointer justify-between"
           onClick={() => setIsUrgeOpen(true)}
         >

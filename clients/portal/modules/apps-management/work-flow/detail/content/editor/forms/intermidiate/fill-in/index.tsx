@@ -1,5 +1,6 @@
 import React, { FormEvent, useState, useEffect } from 'react';
 import cs from 'classnames';
+import { isEqual } from 'lodash';
 
 import useObservable from '@lib/hooks/use-observable';
 import Drawer from '@c/drawer';
@@ -13,6 +14,7 @@ import store, {
   BasicNodeConfig,
   FieldPermission as FieldPermissionType,
   OperationPermission as OperationPermissionType,
+  Errors,
 } from '@flow/detail/content/editor/store';
 import SaveButtonGroup
   from '@flow/detail/content/editor/components/_common/action-save-button-group';
@@ -24,7 +26,7 @@ import OperatorPermission from '../operator-permission';
 import Events from '../events';
 
 export default function FillInForm() {
-  const { asideDrawerType, elements = [] } = useObservable<StoreValue>(store) || {};
+  const { asideDrawerType, elements = [], errors } = useObservable<StoreValue>(store) || {};
   const currentFormNodeElement = elements.find(({ type }) => type === 'formData') as CurrentElement;
   const currentElement = elements.find(({ id }) => id === asideDrawerType) as CurrentElement;
   const [formData, setFormData] = useState<FillInData>(currentElement?.data?.businessData || {});
@@ -40,6 +42,23 @@ export default function FillInForm() {
     }
   }, [currentElement?.data?.businessData]);
 
+  useEffect(() => {
+    if (!currentElement?.data?.businessData || !formData) {
+      return;
+    }
+    if (!isEqual(currentElement?.data?.businessData, formData)) {
+      updateStore<Errors>('errors', (err) => {
+        err.dataNotSaveMap.set(currentElement, true);
+        return { ...err };
+      });
+    } else {
+      updateStore<Errors>('errors', (err) => {
+        err.dataNotSaveMap.delete(currentElement);
+        return { ...err };
+      });
+    }
+  }, [currentElement?.data?.businessData, formData]);
+
   function onFieldChange(fieldName: string) {
     return (value: BasicNodeConfig | FieldPermissionType | OperationPermissionType) => {
       setFormData((f) => ({
@@ -53,6 +72,26 @@ export default function FillInForm() {
     return null;
   }
 
+  function onCancel() {
+    if (errors?.dataNotSaveMap?.get(currentElement)) {
+      updateStore<StoreValue>(null, (s) => ({
+        ...s,
+        showDataNotSaveConfirm: true,
+        currentDataNotSaveConfirmCallback: () => updateStore<StoreValue>(null, (s) => {
+          s.errors.dataNotSaveMap.delete(currentElement);
+          return {
+            ...s,
+            asideDrawerType: '',
+            errors: s.errors,
+          };
+        }),
+      }));
+      return false;
+    } else {
+      updateStore<StoreValue>(null, (s) => ({ ...s, asideDrawerType: '' }));
+    }
+  }
+
   return (
     <>
       {currentElement.type === 'fillIn' && (
@@ -61,7 +100,7 @@ export default function FillInForm() {
             <span className="text-h5 mr-8">填写</span>
           )}
           distanceTop={0}
-          onCancel={() => updateStore(null, () => ({ asideDrawerType: '' }))}
+          onCancel={onCancel}
           className="flow-editor-drawer"
         >
           <form
@@ -109,6 +148,7 @@ export default function FillInForm() {
                     <OperatorPermission
                       value={formData.operatorPermission}
                       onChange={onFieldChange('operatorPermission')}
+                      type={currentElement?.type}
                     />
                   ),
                 }, {

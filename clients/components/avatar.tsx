@@ -32,9 +32,9 @@ export default function Avatar({
   username = '',
   bio,
   title,
-  size = 48,
+  size,
   cornerClassName,
-  textSize = 24,
+  textSize,
 }: Avatar) {
   let head = '';
   let imgInfo: { name: string, color: string } = { name: '', color: '' };
@@ -51,8 +51,10 @@ export default function Avatar({
             {
               (head && imgInfo) && (
                 <div className={`w-${size} h-${size} ${cornerClassName}
-                  text-center text-white text-${textSize} leading-${size}`}
+                  text-center text-white`}
                 style={{
+                  lineHeight: size + 'px',
+                  fontSize: textSize + 'px',
                   backgroundColor: imgInfo.color,
                 }}
                 >

@@ -23,7 +23,7 @@ export default function TaskCard({ task }: Props): JSX.Element {
   const { id, name, assignee, createTime, flowInstanceEntity } = task;
 
   return (
-    <div className="input-border-radius bg-white mb-16 approval-card">
+    <div className="corner-2-8-8-8 bg-white mb-16 approval-card">
       <div className="flex">
         <div className="left-info p-20 cursor-pointer" onClick={handleClick}>
           <div className="flex flex-col justify-between">

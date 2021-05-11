@@ -26,6 +26,14 @@ export const defaultConfig: NumberPickerConfig = {
 };
 
 export function toSchema(value: NumberPickerConfig): FormBuilder.Schema {
+  let point = value.precision;
+  if (value.precision < 0 ) {
+    point = 0;
+  }
+  if (value.precision > 4) {
+    point = 4;
+  }
+
   return {
     type: 'number',
     title: value.title,
@@ -36,8 +44,8 @@ export function toSchema(value: NumberPickerConfig): FormBuilder.Schema {
     'x-component': 'NumberPicker',
     ['x-component-props']: {
       placeholder: value.placeholder,
-      precision: value.precision,
-      step: 1 / Math.pow(10, value.precision),
+      precision: point,
+      step: 1 / Math.pow(10, point),
     },
     ['x-internal']: {
       sortable: value.sortable,

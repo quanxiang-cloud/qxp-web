@@ -20,11 +20,11 @@ function RenderLayoutOption({ labelAlign, onChange }: RenderLayoutOptionProps) {
         className={classnames('content-item', { 'item-checked': labelAlign === 'right' })}
         onClick={() => onChange('right')}
       >
-        <div>
+        <div className="item-container">
           <span className="item-label"></span>
           <span className="item-body"></span>
         </div>
-        <div>
+        <div className="item-container mt-8">
           <span className="item-label"></span>
           <span className="item-body"></span>
         </div>
@@ -35,8 +35,10 @@ function RenderLayoutOption({ labelAlign, onChange }: RenderLayoutOptionProps) {
         className={classnames('content-item', { 'item-checked': labelAlign === 'top' })}
         onClick={() => onChange('top')}
       >
-        <div className="item-label"></div>
-        <div className="item-body" style={{ width: '96px' }}></div>
+        <div className="grid grid-cols-1">
+          <span className="item-label"></span>
+          <span className="item-body mt-8" style={{ width: '96px' }}></span>
+        </div>
         <div className="text-center">上下</div>
         <Icon name='done' type="light" className="check-icon" />
       </div>

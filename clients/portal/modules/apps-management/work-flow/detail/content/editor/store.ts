@@ -71,16 +71,16 @@ export interface DefaultOperation {
   enabled: boolean;
   changeable: boolean;
   name: string;
-  defaultText: string;
   text: string;
+  value: string;
 }
 
 export interface CustomOperation {
   enabled: boolean;
   changeable: boolean;
   name: string;
-  defaultText?: string;
   text?: string;
+  value: string;
 }
 
 export interface OperationPermission {
@@ -139,6 +139,14 @@ export interface CurrentElement {
   position: { x: number; y: number; };
 }
 
+export type Errors = Record<string, unknown> & {
+    publish: {
+      data?: FlowElement;
+      msg?: string;
+    },
+    dataNotSaveMap: Map<CurrentElement, boolean>;
+};
+
 export interface StoreValue {
   creatorId?: string;
   id?: string;
@@ -154,12 +162,9 @@ export interface StoreValue {
   seeStatusAndMsg: boolean;
   nodeAdminMsg: boolean;
   status: string;
-  errors: Record<string, unknown> & {
-    publish: {
-      data?: FlowElement;
-      msg?: string;
-    }
-  };
+  errors: Errors;
+  currentDataNotSaveConfirmCallback?: Function;
+  showDataNotSaveConfirm?: boolean;
 }
 
 export const getStoreInitialData = () => {
@@ -168,6 +173,7 @@ export const getStoreInitialData = () => {
   return {
     errors: {
       publish: {},
+      dataNotSaveMap: new Map(),
     },
     id: '',
     name: '',

@@ -6,7 +6,7 @@ import toast from '@lib/toast';
 import TextHeader from '@c/text-header';
 import PopConfirm from '@c/pop-confirm';
 import Button from '@c/button';
-import Table from '@c/table/index';
+import Table from '@c/table';
 import {
   appAddAdmin, fetchAppAdminUsers, delAppAdminUsers,
 } from '@portal/modules/apps-management/lib/api';
@@ -144,7 +144,8 @@ function AppAdmin() {
         <Table
           showCheckbox
           rowKey="id"
-          style={{ maxHeight: 'calc(100vh - 272px)' }}
+          // todo refactor this
+          style={{ maxHeight: 'calc(100vh - 300px)' }}
           columns={columns}
           data={appAdminList}
           loading={loading}

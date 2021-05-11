@@ -1,4 +1,5 @@
 import React from 'react';
+import cs from 'classnames';
 
 import Table from '@c/table';
 import Checkbox from '@c/checkbox';
@@ -118,6 +119,7 @@ export default function CustomFieldTable({ editable, fields, updateFields }: Pro
   return (
     <Table
       rowKey="id"
+      className={cs({ 'mb-200': editable })}
       columns={[{
         Header: '字段',
         accessor: 'fieldName',

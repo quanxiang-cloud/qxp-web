@@ -17,10 +17,11 @@ import {
 interface Props {
   value: OperationPermissionType;
   onChange: (value: OperationPermissionType) => void;
+  type?: 'approve' | 'fillIn';
 }
 
-export default function OperatorPermission({ value, onChange }: Props) {
-  const { data, isLoading, isError } = useQuery(['GET_OPERATION_LIST'], getOperationList);
+export default function OperatorPermission({ value, onChange, type }: Props) {
+  const { data, isLoading, isError } = useQuery(['GET_OPERATION_LIST', type], getOperationList);
   const [mergedOperations, setMergedOperations] = useState<OperationPermissionType>(value);
 
   useEffect(() => {
@@ -38,7 +39,7 @@ export default function OperatorPermission({ value, onChange }: Props) {
         custom.push(op);
       }
     });
-    data?.default.forEach((op) => {
+    data?.default?.forEach((op) => {
       if (isDefaultEmpty || !df.find(({ name }) => name === op.name)) {
         df.push(op as DefaultOperation);
       }
@@ -66,6 +67,10 @@ export default function OperatorPermission({ value, onChange }: Props) {
   }
 
   function listRender(label: string, operation: DefaultOperation[], type: 'default' | 'custom') {
+    if (!operation.length) {
+      return null;
+    }
+
     return (
       <>
         <div className="text-caption-no-color text-gray-400 pl-20 py-10 pr-20 shadow-header">
@@ -87,16 +92,16 @@ export default function OperatorPermission({ value, onChange }: Props) {
               />
               <div>{op.name}</div>
               <div className="relative w-188">
-                {(op.text || op.defaultText) && (
+                {(op.text || op.name) && (
                   <>
                     <input
                       className="input w-full pr-36"
-                      value={op.text || op.defaultText}
+                      value={op.text || op.name}
                       onChange={(v) => onUpdateOperation(type, op, {
                         text: v.target.value,
                       })}
                     />
-                    {op.text !== op.defaultText && (
+                    {op.text !== op.name && (
                       <Tooltip
                         position="top"
                         label="恢复默认"
@@ -109,13 +114,13 @@ export default function OperatorPermission({ value, onChange }: Props) {
                           size={20}
                           className="cursor-pointer"
                           onClick={() => onUpdateOperation(type, op, {
-                            text: op.defaultText,
+                            text: op.name,
                           })}
                         />
                       </Tooltip>
                     )}
                     {
-                      op.text === op.defaultText && (
+                      op.text === op.name && (
                         <Icon
                           name="refresh"
                           size={20}

@@ -34,18 +34,20 @@ function Dashboard() {
                 <Avatar
                   username={window.USER.userName}
                   title={true}
+                  size={48}
+                  textSize={24}
                   cornerClassName="corner-12-2-12-12"
                   bio="不是杰出者才能做梦，而是善梦者才杰出"
                   avatar=''
                 />
-                <div className="pl-48 mt-20">
+                <div className="pl-48 mt-20 text-16">
                   <div>
-                    <img className="inline-block mr-8" src="/dist/images/user-email.svg" />
-                    邮箱：{window.USER.email}
+                    <img className="inline-block mr-8" src="/dist/images/email.svg" />
+                      邮箱：{window.USER.email}
                   </div>
                   <div className="mt-8">
-                    <img className="inline-block mr-8" src="/dist/images/dep.svg" />
-                    部门：{window.USER.dep.departmentName}
+                    <img className="inline-block mr-8" src="/dist/images/department.svg" />
+                      部门：{window.USER.dep.departmentName}
                   </div>
                 </div>
               </div>
@@ -63,7 +65,7 @@ function Dashboard() {
                   <p>{name}</p>
                 </div>
               ))}
-              <img className="absolute bottom-0 right-0" src="/dist/images/frame.svg" alt="" />
+              <img className="absolute bottom-0 right-0" src="/dist/images/todo-card-bgc.svg" alt=""/>
             </>)}
           />
           <Card
@@ -92,10 +94,10 @@ function Dashboard() {
         </div>
         <div className="px-6 mt-40">
           <Card
-            className="px-32 py-20 user-app-list-container"
+            className="px-32 py-20"
             headerClassName="ml-8"
-            title="我的应用"
-            itemTitleClassName="text-h5"
+            title={<span>我的应用  <span className="ml-4 text-gray-400">({store.appList.length})</span></span>}
+            itemTitleClassName="text-h6"
             contentClassName="grid grid-cols-4 gap-16"
             content={(<>
               {store.appList.map((appInfo: AppInfo) => (

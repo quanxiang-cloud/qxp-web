@@ -26,6 +26,8 @@ export default function Dashboard() {
         <Avatar
           username={value.userInfo.userName}
           title={true}
+          size={48}
+          textSize={24}
           cornerClassName="corner-12-2-12-12"
           bio="万物皆有裂痕，那是光透过来的地方"
           avatar={value.userInfo.userIconURL}

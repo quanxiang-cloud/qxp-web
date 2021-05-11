@@ -48,7 +48,7 @@ export default function({ onTriggerTypeChange }: Props) {
             onClick={() => newWorkFlow('form-data')}
           >
             <ItemWithTitleDesc
-              itemRender={(<Icon size={44} name="form-data" className="icon-border-radius" />)}
+              itemRender={(<Icon size={44} name="form-data" className="corner-12-2-12-12" />)}
               title="工作表触发"
               titleClassName="text-h6"
               desc="当工作表中新增记录或已有记录发生变更时触发"
@@ -68,7 +68,7 @@ export default function({ onTriggerTypeChange }: Props) {
             onClick={() => newWorkFlow('form-time')}
           >
             <ItemWithTitleDesc
-              itemRender={(<Icon size={44} name="form-time" className="icon-border-radius" />)}
+              itemRender={(<Icon size={44} name="form-time" className="corner-12-2-12-12" />)}
               title="工作时间触发"
               titleClassName="text-h6"
               desc="指定一个工作表中的时间字段，并将该时间作为触发工作流的时间"

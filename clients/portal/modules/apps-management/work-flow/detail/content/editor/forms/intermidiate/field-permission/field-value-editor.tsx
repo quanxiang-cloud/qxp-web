@@ -101,7 +101,7 @@ function FieldValueEditor({ defaultValue = { variable: '', static: '' }, onSave 
                 defaultValue={value.variable}
                 onChange={(value: string) => setValue((v) => ({ ...v, variable: value }))}
                 placeholder="选择工作流中的变量"
-                className="h-32 py-4 border border-gray-300 input-border-radius
+                className="h-32 py-4 border border-gray-300 corner-2-8-8-8
                   px-12 text-12 flex items-center flex-1 mb-8 mt-8"
               />
             )

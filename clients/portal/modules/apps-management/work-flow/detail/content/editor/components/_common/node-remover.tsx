@@ -32,7 +32,7 @@ export default function NodeRemover({ id, type = 'dark', visible = true }: Props
     <More
       placement="right-start"
       className="absolute right-10 top-1/2 transform -translate-y-1/2"
-      contentClassName="left-full top-0 mt-0 w-316 p-20 cursor-default"
+      contentClassName="left-full top-0 mt-0 w-316 p-20 cursor-default corner-4-12-12-12 border border-gray-300"
       contentItemClassName="hover:bg-white"
       open={showRemoveModal}
       items={[
@@ -54,6 +54,7 @@ export default function NodeRemover({ id, type = 'dark', visible = true }: Props
             onMouseUp={onMouseUp}
           >
             <ActionButtonGroup
+              className="p-0"
               onCancel={() => setShowRemoveModal(false)}
               onSubmit={onRemoveNode}
             />
@@ -64,10 +65,10 @@ export default function NodeRemover({ id, type = 'dark', visible = true }: Props
       <Icon
         name="close"
         className={cs('transition-all', {
-          'cursor-default': !visible,
-          'pointer-events-none': !visible,
-          'opacity-0': !visible,
-          'opacity-1': visible,
+          'cursor-default': !visible && !showRemoveModal,
+          'pointer-events-none': !visible && !showRemoveModal,
+          'opacity-0': !visible && !showRemoveModal,
+          'opacity-1': visible || showRemoveModal,
         })}
         type={type}
         onClick={(e) => {

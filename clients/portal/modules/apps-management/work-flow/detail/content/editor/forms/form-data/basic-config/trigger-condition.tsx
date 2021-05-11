@@ -163,7 +163,7 @@ export default function TriggerCondition({ value, formFieldOptions, onChange }: 
     return conditions.expr.map((triggerCondition, index) => {
       return (
         <div key={index}>
-          <section className="input-border-radius bg-gray-100 px-16 py-12">
+          <section className="corner-2-8-8-8 bg-gray-100 px-16 py-12">
             {triggerCondition.op === 'and' && andConditionRender(triggerCondition)}
             {triggerCondition.op === 'and' &&
               triggerCondition.expr.length < formFieldOptions.length && (
@@ -207,7 +207,7 @@ export default function TriggerCondition({ value, formFieldOptions, onChange }: 
         {conditionRender(value)}
         <div
           className={cs(
-            'flex items-center border border-dashed border-gray-300 small-border-radius',
+            'flex items-center border border-dashed border-gray-300 corner-8-2-8-8',
             'py-5 text-button my-16 justify-center cursor-pointer h-32',
           )}
           onClick={() => addOrCondition()}
