@@ -12,19 +12,6 @@ import store from '../store';
 
 import './index.scss';
 
-type handel = {
-  key: number;
-  name: string;
-  icon: string;
-  count: null | number
-}
-
-const HANDLE_LIST: Array<handel> = [
-  { key: 0, name: '我发起的', icon: 'addchart', count: 0 },
-  { key: 1, name: '我已处理', icon: 'done_all', count: null },
-  { key: 2, name: '抄送给我', icon: 'send_me', count: 15 },
-];
-
 function Dashboard() {
   const history = useHistory();
 
@@ -84,14 +71,13 @@ function Dashboard() {
             itemTitleClassName="text-h5"
             contentClassName="flex-col"
             content={(<>
-              {HANDLE_LIST.map(({ name, key, icon, count }) => {
-                const number = count === 0 ? null : count;
+              {store.HANDLE_LIST.map(({ name, key, icon, count }) => {
                 return (
                   <div className={cs('message-handel-list', { 'border-y': key === 1 })} key={key}>
                     <Icon className="mr-8" name={icon} size={20} />
                     {name}
                     <div className="rbtns">
-                      {number && (<div className="untreated">{number}</div>)}
+                      {count !== undefined && (<div className="untreated">{count}</div>)}
                       <Icon name="chevron_right" size={20} />
                     </div>
                   </div>
