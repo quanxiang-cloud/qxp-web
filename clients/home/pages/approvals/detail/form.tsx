@@ -3,6 +3,7 @@ import cs from 'classnames';
 import { useQuery } from 'react-query';
 import { useParams } from 'react-router';
 import { SchemaForm } from '@formily/antd';
+import toast from '@lib/toast';
 
 import { visibleHiddenLinkageEffect } from '@c/form-builder';
 import registry from '@c/form-builder/registry';
@@ -24,7 +25,7 @@ function parseFormValue(formData: TaskFormData): Record<string, any> {
 function TaskForm({ onChange, className }: Props): JSX.Element {
   const { processInstanceID, taskID } = useParams<{ processInstanceID: string; taskID: string }>();
   const {
-    isLoading, data, isError,
+    isLoading, data, isError, error,
   } = useQuery<TaskForm, Error>(
     [processInstanceID, taskID],
     () => getTaskFormById(processInstanceID, taskID)
@@ -37,6 +38,7 @@ function TaskForm({ onChange, className }: Props): JSX.Element {
   }
 
   if (!data || isError) {
+    toast.error(error?.message);
     return (
       <div>something wrong, please try again later</div>
     );
