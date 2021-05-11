@@ -1,11 +1,13 @@
 import { observable, action } from 'mobx';
 import { TreeData } from '@atlaskit/tree';
+import toast from '@lib/toast';
 
 import { buildAppPagesTreeData } from '@lib/utils';
 import { getPageDataSchema } from '@c/app-page-data/utils';
 import appDataStore from '@c/app-page-data/store';
 
 import { fetchUserList, fetchPageList, fetchFormScheme } from '../lib/api';
+import { getFlowInstanceCount } from './approvals/api';
 
 class UserAppStore {
   @observable appList = [];
@@ -19,6 +21,11 @@ class UserAppStore {
     rootId: 'ROOT',
     items: {},
   };
+  @observable TODO_LIST = [
+    { key: 'OVERTIME', value: 0, name: '已超时', color: 'text-red-600' },
+    { key: 'URGE', value: 0, name: '催办', color: 'text-yellow-600' },
+    { key: '', value: 0, name: '全部待办', color: 'text-gray-900' },
+  ];
 
   @action
   fetchPageList = (appID: string) => {
@@ -79,6 +86,18 @@ class UserAppStore {
       items: {},
     };
     this.curPage = { id: '' };
+  }
+
+  @action
+  fetchTodoList = async () => {
+    try {
+      const { overTimeCount = 0, urgeCount = 0, waitHandleCount = 0 } = await getFlowInstanceCount({ 'User-Id': window.USER.id });
+      this.TODO_LIST[0].value = overTimeCount;
+      this.TODO_LIST[1].value = urgeCount;
+      this.TODO_LIST[2].value = waitHandleCount;
+    } catch (err) {
+      toast.error(err);
+    }
   }
 }
 
