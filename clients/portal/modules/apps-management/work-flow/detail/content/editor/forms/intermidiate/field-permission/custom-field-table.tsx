@@ -117,6 +117,7 @@ export default function CustomFieldTable({ editable, fields, updateFields }: Pro
 
   return (
     <Table
+      className={editable ? 'mb-200' : ''}
       rowKey="id"
       columns={[{
         Header: '字段',

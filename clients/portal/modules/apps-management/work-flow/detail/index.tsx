@@ -9,8 +9,10 @@ import { getWorkFlowInfo } from './api';
 import Loading from '@c/loading';
 import ErrorTips from '@c/error-tips';
 import toast from '@lib/toast';
+import Confirm from '@c/modal-confirm';
+import useObservable from '@lib/hooks/use-observable';
 
-import { updateStore, initStore } from './content/editor/store';
+import store, { updateStore, initStore, StoreValue } from './content/editor/store';
 
 import './style.scss';
 
@@ -18,6 +20,9 @@ export default function Detail() {
   const [currentOperateType, setCurrentOperateType] = useState<
     'edit' | 'settings' | 'variables'
   >('edit');
+  const {
+    showDataNotSaveConfirm, currentDataNotSaveConfirmCallback,
+  } = useObservable<StoreValue>(store) || {};
 
   const { flowID, type } = useParams() as { flowID: string; type: string; };
 
@@ -61,9 +66,27 @@ export default function Detail() {
     return <ErrorTips desc="出错了..." />;
   }
 
+  function onConfirmCancel() {
+    updateStore('showDataNotSaveConfirm', () => false);
+  }
+
+  function onConfirmSubmit() {
+    onConfirmCancel();
+    currentDataNotSaveConfirmCallback && currentDataNotSaveConfirmCallback();
+  }
+
   return (
     <>
       <Header />
+      {showDataNotSaveConfirm && (
+        <Confirm
+          title="工作流未保存"
+          onCancel={onConfirmCancel}
+          onSubmit={onConfirmSubmit}
+        >
+          <p>您修改了工作流但未保存，离开后将丢失更改，确定要离开吗？</p>
+        </Confirm>
+      )}
       <section className="flex-1 flex">
         <AsideMenu onChange={setCurrentOperateType} currentOperateType={currentOperateType} />
         <Content currentOperateType={currentOperateType} />

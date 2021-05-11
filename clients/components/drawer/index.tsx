@@ -6,7 +6,7 @@ import Icon from '@c/icon';
 import './index.scss';
 
 type Props = {
-  onCancel: () => void;
+  onCancel: () => boolean | void;
   title: string | JSX.Element;
   children: React.ReactNode;
   distanceTop?: number;
@@ -23,11 +23,13 @@ function Drawer({ onCancel, title, children, className, distanceTop = 56 }: Prop
     if (isUnmounted) {
       return;
     }
-    setBeganClose(true);
-    setTimeout(() => {
-      setVisible(true);
-      onCancel();
-    }, 300);
+    const isOk = onCancel();
+    if (isOk !== false) {
+      setBeganClose(true);
+      setTimeout(() => {
+        setVisible(true);
+      }, 300);
+    }
   };
 
   useEffect(() => {
