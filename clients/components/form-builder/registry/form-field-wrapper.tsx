@@ -1,6 +1,7 @@
 import React from 'react';
-import { useDrop } from 'react-dnd';
 import cs from 'classnames';
+import { throttle } from 'lodash';
+import { useDrop } from 'react-dnd';
 import { observer } from 'mobx-react';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 
@@ -76,13 +77,22 @@ function renderActions(store: FormBuilderStore, index: number): JSX.Element {
 
 type CollectedProps = {
   isOver: boolean;
+  wrapperY?: number;
+  wrapperHeight?: number;
 }
 
 function InnerWrapper(props: ISchemaFieldComponentProps) {
   const store = React.useContext(StoreContext);
   const active = store.activeFieldWrapperName == props.name;
+  const wrapperRef = React.useRef<HTMLDivElement | null>(null);
+  const [dropPosition, setDropPosition] = React.useState<DropPosition>('upper');
 
-  const [{ isOver }, drop] = useDrop<DragObject, DropResult, CollectedProps>({
+  const throttledSetPosition = throttle((pointerY: number, targetY: number, targetHeight: number) => {
+    const position = pointerY - targetY > targetHeight / 2 ? 'below' : 'upper';
+    setDropPosition(position);
+  }, 100);
+
+  const [{ isOver, wrapperY, wrapperHeight }, drop] = useDrop<DragObject, DropResult, CollectedProps>({
     accept: 'SOURCE_ELEMENT',
     drop: () => {
       return {
@@ -90,12 +100,30 @@ function InnerWrapper(props: ISchemaFieldComponentProps) {
         item: 'something?',
         index: props.props['x-index'],
         // todo refactor this
-        dropPosition: 'up',
+        dropPosition: dropPosition,
       };
     },
-    collect: (monitor) => ({
-      isOver: monitor.isOver(),
-    }),
+    hover: (item, monitor) => {
+      if (!monitor.isOver()) {
+        return false;
+      }
+
+      const xyCoord = monitor.getClientOffset();
+      if (!xyCoord || !wrapperY || !wrapperHeight) {
+        return;
+      }
+
+      throttledSetPosition(xyCoord.y, wrapperY, wrapperHeight);
+    },
+    collect: (monitor) => {
+      const { y, height } = wrapperRef.current?.getBoundingClientRect() || {};
+
+      return {
+        wrapperY: y,
+        wrapperHeight: height,
+        isOver: monitor.isOver(),
+      };
+    },
   });
 
   function handleFieldClick() {
@@ -104,11 +132,16 @@ function InnerWrapper(props: ISchemaFieldComponentProps) {
     store.setActiveFieldKey(props.name.slice(5));
   }
 
+  drop(wrapperRef);
+
   return (
     <div
-      ref={drop}
+      ref={wrapperRef}
       onClick={handleFieldClick}
-      className={cs('relative', 'form-field-wrapper', { 'form-field-wrapper--active': active || isOver })}
+      className={cs('relative', 'form-field-wrapper', {
+        'form-field-wrapper--active': active,
+        [`form-field-wrapper--insert-${dropPosition}`]: isOver,
+      })}
     >
       {active && renderActions(store, props.props['x-index'])}
       {props.children}

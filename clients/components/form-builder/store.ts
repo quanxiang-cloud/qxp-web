@@ -244,20 +244,22 @@ export default class FormBuilderStore {
   }
 
   @action
-  append(field: SourceElement<any>, index?: number) {
+  append(field: SourceElement<any>, { index, dropPosition }: DropResult) {
+    this.hasEdit = true;
+
     const newField = {
       ...field,
-      // componentName: field.componentName.toLowerCase(), //Need change componentName to lowercase
       configValue: field.defaultConfig,
       fieldName: generateRandomFormFieldID(),
     };
-    if (index === undefined) {
+
+    if (!this.fields.length) {
       this.fields.push(newField);
       return;
     }
 
-    this.fields.splice(index + 1, 0, newField);
-    this.hasEdit = true;
+    const insertAt = dropPosition === 'below' ? index + 1 : index;
+    this.fields.splice(insertAt, 0, newField);
 
     // focus new added filed
     this.setActiveFieldKey(newField.fieldName);
