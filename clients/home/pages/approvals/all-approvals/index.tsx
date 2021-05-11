@@ -13,7 +13,7 @@ function TodoApprovals(): JSX.Element {
 
     return () => {
       store.reset();
-    }
+    };
   }, []);
 
   return (

@@ -31,7 +31,7 @@ function TodoApprovals(): JSX.Element {
 
     return () => {
       store.reset();
-    }
+    };
   }, []);
 
   return (
@@ -45,7 +45,7 @@ function TodoApprovals(): JSX.Element {
           />
         </div>
         <Search className="w-259 mr-16" placeholder="搜索流程、发起人、应用" value={store.keyword}
-                onChange={store.changeKeyword} />
+          onChange={store.changeKeyword} />
         <Select multiple={false} options={sortOptions} onChange={store.changeOrderType}>
           <IconBtn iconName="import_export" className="btn-sort" />
         </Select>
