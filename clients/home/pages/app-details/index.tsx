@@ -17,7 +17,7 @@ function AppDetails() {
   }, [appID]);
 
   return (
-    <div className='flex flex-col h-screen'>
+    <div className='flex flex-col h-screen overflow-y-hidden'>
       <Header />
       <div className='flex-1 flex overflow-hidden'>
         <PageNav />

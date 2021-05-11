@@ -126,14 +126,14 @@ export default class FormBuilderStore {
           logger.error(`failed to find component: [${componentName}] in registry`);
         }
 
+        const parsedSchema = toSchema(toJS(configValue));
+        // ensure 'x-internal' exist
+        parsedSchema['x-internal'] = parsedSchema['x-internal'] || {};
+        parsedSchema['x-internal'].isSystem = !!configValue.isSystem;
+
         acc[fieldName] = {
           // convert observable value to pure js object for debugging
-          ...{
-            ...toSchema(toJS(configValue)), 'x-internal': toSchema(toJS(configValue))['x-internal'] ? {
-              ...toSchema(toJS(configValue))['x-internal'],
-              isSystem: configValue.isSystem ? true : false,
-            } : { isSystem: configValue.isSystem ? true : false },
-          },
+          ...parsedSchema,
           'x-index': index,
           'x-mega-props': {
             labelCol: this.labelAlign === 'right' ? 4 : undefined,

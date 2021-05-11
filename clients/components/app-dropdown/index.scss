@@ -5,6 +5,7 @@
 
 .app-dropdown-drop-more {
   max-height: 600px;
+  border: 1px solid var(--gray-300);
   overflow-y: auto;
   left: 0;
   right: auto!important;

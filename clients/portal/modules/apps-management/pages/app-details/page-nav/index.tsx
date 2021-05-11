@@ -85,10 +85,6 @@ function PageNav() {
           onChange={appPagesStore.updatePagesTree}
         />
       </div>
-      {/* <div onClick={() => setModalType('editPage')} className='add-page-add-btn'>
-        <Icon size={24} className='mr-8 app-icon-color-inherit' name='add' />
-        <span className='text-body1'>新建页面</span>
-      </div> */}
       <DelModal
         type={modalType === 'delGroup' ? 'group' : 'page'}
         visible={modalType === 'delPage' || modalType === 'delGroup'}

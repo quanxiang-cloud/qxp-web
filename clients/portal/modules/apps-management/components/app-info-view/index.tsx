@@ -22,7 +22,7 @@ function AppInfoView({ appInfo, onClick, className = '' }: Props) {
         size={44}
       />
       <div className='flex-1 app-info-view-text overflow-hidden'>
-        <p className='truncate app-info-view-name'>{appInfo.appName}</p>
+        <p className='truncate app-info-view-name text-gray-900'>{appInfo.appName}</p>
         {'useStatus' in appInfo && (
           <p className='app-info-view-status'>{appInfo.useStatus > 0 ? '已发布' : '未发布'}</p>
         )}

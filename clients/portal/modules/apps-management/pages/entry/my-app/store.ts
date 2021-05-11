@@ -53,7 +53,7 @@ class AppListStore {
   fetchAppList = (params = {}) => {
     this.isListLoading = true;
     return fetchAppList(params).then((res) => {
-      this.appList = res.data.data;
+      this.appList = res.data?.data || [];
       if (JSON.stringify(params) === '{}') {
         this.allAppList = this.appList;
       }
