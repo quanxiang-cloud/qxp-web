@@ -32,10 +32,11 @@ export default function BasicConfig({ type, value, onChange }: Props) {
 
   useEffect(() => {
     const { deadLine: { breakPoint, day, hours, minutes, urge }, whenTimeout } = value.timeRule;
-    setOpenMore(
-      !!(breakPoint || day || hours || minutes || urge.day || urge.hours || urge.minutes || 
-      urge.repeat.day || urge.repeat.hours || urge.repeat.minutes || whenTimeout.value)
+    const isOpen = !!(breakPoint || day || hours || minutes || urge.day || urge.hours || 
+      urge.minutes || urge.repeat.day || urge.repeat.hours || urge.repeat.minutes || 
+      whenTimeout.value
     )
+    isOpen && setOpenMore(true);
   }, [value.timeRule]);
 
   function onAdd() {

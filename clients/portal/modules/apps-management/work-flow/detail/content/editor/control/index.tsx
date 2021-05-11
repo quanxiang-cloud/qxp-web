@@ -1,7 +1,7 @@
 import React, { memo, useCallback, HTMLAttributes } from 'react';
 import cs from 'classnames';
 import { useMutation } from 'react-query';
-import { useParams } from 'react-router-dom';
+import { useParams, useHistory } from 'react-router-dom';
 import {
   useZoomPanHelper,
   FitViewParams,
@@ -43,6 +43,7 @@ function Controls({
   className,
   children,
 }: Props) {
+  const history = useHistory();
   const { appID } = useParams<{ type: string; appID: string; }>();
   const setInteractive = useStoreActions((actions) => actions.setInteractive);
   const { zoomIn, zoomOut, fitView } = useZoomPanHelper();
@@ -89,10 +90,7 @@ function Controls({
   const saveMutation = useMutation(saveWorkFlow, {
     onSuccess: (respData) => {
       toast.success('保存成功');
-      updateStore(null, () => ({
-        creatorId: respData.creatorId,
-        id: respData.id,
-      }));
+      history.push(`/apps/flow/${appID}/${respData.id}`)
     },
     onError: (err: Error) => {
       toast.error(err.message);

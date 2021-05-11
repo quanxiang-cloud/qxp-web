@@ -22,7 +22,7 @@ export default function TriggerCondition({ value, formFieldOptions, onChange }: 
   const [openMore, setOpenMore] = useState(false);
 
   useEffect(() => {
-    setOpenMore(!!value?.expr?.length);
+    !!value?.expr?.length && setOpenMore(true);
   }, [value?.expr?.length]);
 
   function updateTriggerConditionField(
