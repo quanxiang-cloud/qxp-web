@@ -99,7 +99,7 @@ class AppPageDataStore {
   delFormData = (ids: string[]) => {
     return formDataCurd(this.pageID, {
       method: 'delete',
-      condition: ids.map((id) => ({ key: '_id', op: 'eq', value: [id] })),
+      condition: [{ key: '_id', op: ids.length > 1 ? 'in' : 'eq', value: ids }],
     }).then(() => {
       this.formDataList = this.formDataList.filter(({ _id }) => !ids.includes(_id));
       toast.success('删除成功!');
