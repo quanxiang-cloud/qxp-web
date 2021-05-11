@@ -32,9 +32,9 @@ export default function Avatar({
   username = '',
   bio,
   title,
-  size = 48,
+  size,
   cornerClassName,
-  textSize = 24,
+  textSize,
 }: Avatar) {
   let head = '';
   let imgInfo: { name: string, color: string } = { name: '', color: '' };

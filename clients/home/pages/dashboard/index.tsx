@@ -60,6 +60,8 @@ function Dashboard() {
                 <Avatar
                   username={window.USER.userName}
                   title={true}
+                  size={48}
+                  textSize={24}
                   cornerClassName="corner-12-2-12-12"
                   bio="不是杰出者才能做梦，而是善梦者才杰出"
                   avatar=''
