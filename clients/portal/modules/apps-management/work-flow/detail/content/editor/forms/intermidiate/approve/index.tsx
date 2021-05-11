@@ -148,6 +148,7 @@ export default function ApproveForm() {
                     <OperatorPermission
                       value={formData.operatorPermission}
                       onChange={onFieldChange('operatorPermission')}
+                      type={currentElement?.type}
                     />
                   ),
                 }, {

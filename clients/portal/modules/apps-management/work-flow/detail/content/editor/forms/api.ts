@@ -61,74 +61,82 @@ export interface OperationItem {
   text?: string;
   value: string;
 }
-export function getOperationList(): Promise<{
-  default: OperationItem[];
+
+const  operationList = {
+  default: [{
+    enabled: true,
+    changeable: false,
+    name: '通过',
+    text: '通过',
+    value: 'AGREE',
+  }, {
+    enabled: true,
+    changeable: false,
+    name: '拒绝',
+    text: '拒绝',
+    value: 'REFUSE',
+  }],
+  custom: [{
+    enabled: false,
+    changeable: true,
+    name: '撤回',
+    text: '撤回',
+    value: 'CANCEL',
+  }, {
+    enabled: false,
+    changeable: true,
+    name: '提交',
+    text: '提交',
+    value: 'FILL_IN',
+  }, {
+    enabled: false,
+    changeable: true,
+    name: '委托',
+    text: '委托',
+    value: 'ENTRUST',
+  }, {
+    enabled: false,
+    changeable: true,
+    name: '退回某步',
+    text: '退回某步',
+    value: 'STEP_BACK',
+  }, {
+    enabled: false,
+    changeable: true,
+    name: '打回重填',
+    text: '打回重填',
+    value: 'SEND_BACK',
+  }, {
+    enabled: false,
+    changeable: true,
+    name: '抄送',
+    text: '抄送',
+    value: 'CC',
+  }, {
+    enabled: false,
+    changeable: true,
+    name: '加签',
+    text: '加签',
+    value: 'ADD_SIGN',
+  }, {
+    enabled: false,
+    changeable: true,
+    name: '阅示',
+    text: '阅示',
+    value: 'READ',
+  }],
+}
+export function getOperationList({ queryKey }: QueryFunctionContext): Promise<{
+  default?: OperationItem[];
   custom: OperationItem[];
 }> {
   return new Promise((r) => {
-    return r({
-      default: [{
-        enabled: true,
-        changeable: false,
-        name: '通过',
-        text: '通过',
-        value: 'AGREE',
-      }, {
-        enabled: true,
-        changeable: false,
-        name: '拒绝',
-        text: '拒绝',
-        value: 'REFUSE',
-      }],
-      custom: [{
-        enabled: false,
-        changeable: true,
-        name: '撤回',
-        text: '撤回',
-        value: 'CANCEL',
-      }, {
-        enabled: false,
-        changeable: true,
-        name: '提交',
-        text: '提交',
-        value: 'FILL_IN',
-      }, {
-        enabled: false,
-        changeable: true,
-        name: '委托',
-        text: '委托',
-        value: 'ENTRUST',
-      }, {
-        enabled: false,
-        changeable: true,
-        name: '退回某步',
-        text: '退回某步',
-        value: 'STEP_BACK',
-      }, {
-        enabled: false,
-        changeable: true,
-        name: '打回重填',
-        text: '打回重填',
-        value: 'SEND_BACK',
-      }, {
-        enabled: false,
-        changeable: true,
-        name: '抄送',
-        text: '抄送',
-        value: 'CC',
-      }, {
-        enabled: false,
-        changeable: true,
-        name: '加签',
-        text: '加签',
-        value: 'ADD_SIGN',
-      }, {
-        enabled: false,
-        changeable: true,
-        name: '阅示',
-        text: '阅示',
-        value: 'READ',
-      }],
-    });
+    const type = queryKey[1];
+    if (type === 'fillIn') {
+      return r({
+        custom: operationList.custom,
+      })
+    }
+    return r(operationList);
   });
 }

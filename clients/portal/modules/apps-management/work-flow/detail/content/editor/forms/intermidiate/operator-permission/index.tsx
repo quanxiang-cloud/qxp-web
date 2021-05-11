@@ -17,10 +17,11 @@ import {
 interface Props {
   value: OperationPermissionType;
   onChange: (value: OperationPermissionType) => void;
+  type?: 'approve' | 'fillIn';
 }
 
-export default function OperatorPermission({ value, onChange }: Props) {
-  const { data, isLoading, isError } = useQuery(['GET_OPERATION_LIST'], getOperationList);
+export default function OperatorPermission({ value, onChange, type }: Props) {
+  const { data, isLoading, isError } = useQuery(['GET_OPERATION_LIST', type], getOperationList);
   const [mergedOperations, setMergedOperations] = useState<OperationPermissionType>(value);
 
   useEffect(() => {
@@ -38,7 +39,7 @@ export default function OperatorPermission({ value, onChange }: Props) {
         custom.push(op);
       }
     });
-    data?.default.forEach((op) => {
+    data?.default?.forEach((op) => {
       if (isDefaultEmpty || !df.find(({ name }) => name === op.name)) {
         df.push(op as DefaultOperation);
       }
@@ -66,6 +67,10 @@ export default function OperatorPermission({ value, onChange }: Props) {
   }
 
   function listRender(label: string, operation: DefaultOperation[], type: 'default' | 'custom') {
+    if (!operation.length) {
+      return null;
+    }
+
     return (
       <>
         <div className="text-caption-no-color text-gray-400 pl-20 py-10 pr-20 shadow-header">

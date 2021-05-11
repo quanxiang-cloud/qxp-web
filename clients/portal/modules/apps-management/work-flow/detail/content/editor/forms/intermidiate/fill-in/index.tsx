@@ -148,6 +148,7 @@ export default function FillInForm() {
                     <OperatorPermission
                       value={formData.operatorPermission}
                       onChange={onFieldChange('operatorPermission')}
+                      type={currentElement?.type}
                     />
                   ),
                 }, {
