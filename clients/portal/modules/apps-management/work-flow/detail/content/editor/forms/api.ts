@@ -62,7 +62,7 @@ export interface OperationItem {
   value: string;
 }
 
-const  operationList = {
+const operationList = {
   default: [{
     enabled: true,
     changeable: false,
@@ -125,7 +125,7 @@ const  operationList = {
     text: '阅示',
     value: 'READ',
   }],
-}
+};
 export function getOperationList({ queryKey }: QueryFunctionContext): Promise<{
   default?: OperationItem[];
   custom: OperationItem[];
@@ -135,7 +135,7 @@ export function getOperationList({ queryKey }: QueryFunctionContext): Promise<{
     if (type === 'fillIn') {
       return r({
         custom: operationList.custom,
-      })
+      });
     }
     return r(operationList);
   });

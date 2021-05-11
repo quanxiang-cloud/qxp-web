@@ -1,7 +1,6 @@
 import React from 'react';
 import { useHistory } from 'react-router';
 import dayjs from 'dayjs';
-import _ from 'lodash';
 
 import Avatar from '../avatar';
 import Status from '@c/status';
@@ -70,7 +69,7 @@ export default function TaskCard({ task }: Props): JSX.Element {
                   <p key={keyName} className="mb-4 form-data-item">
                     <span>{title}: </span><span>{getEnumLabelFromSchema(flowInstanceEntity?.formSchema?.table || {}, keyName, value)}</span>
                   </p>
-                )
+                );
               })
             }
           </div>

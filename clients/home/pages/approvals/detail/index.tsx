@@ -19,7 +19,7 @@ import registry from '@c/form-builder/registry';
 
 import Panel from './panel';
 import * as apis from '../api';
-import {parseFormValue} from '../utils';
+import { parseFormValue } from '../utils';
 
 import './index.scss';
 
@@ -78,7 +78,17 @@ function ApprovalDetail(): JSX.Element {
   const [modalTypeReject, setModalTypeReject] = useState(false);
   const [reviewRejectComment, setReviewRejectComment] = useState('');
 
+  const [modalTypeFillIn, setModalTypeFillIn] = useState(false);
+  const [reviewFillInComment, setReviewFillInComment] = useState('');
+
   // console.log('detail form data:', formValues);
+
+  const handleAction = (actionName: string, actionValue?: string) => {
+    if (actionName === '提交' || actionValue === 'FILL_IN') {
+      setModalTypeFillIn(true);
+    }
+    // todo: other actions
+  };
 
   const renderToolbarActions = () => {
     const { custom = [], default: defaultActions = [] } = data?.operatorPermission || {} as { custom: PermissionItem[], default: PermissionItem[] };
@@ -86,12 +96,14 @@ function ApprovalDetail(): JSX.Element {
     return (
       <>
         <div className="left-btns task-custom-actions flex flex-1">
-          {custom.map(({ name, enabled, defaultText, text }: PermissionItem) => {
+          {custom.map(({ name, value, enabled, defaultText, text }: PermissionItem) => {
             if (!enabled) {
               return null;
             }
             return (
-              <span key={name}><Icon name="api" />{text ?? defaultText ?? name}</span>
+              <span key={name} onClick={(ev) => handleAction(name, value)}>
+                <Icon name="api" />{text ?? defaultText ?? name}
+              </span>
             );
           })}
           <span>
@@ -177,7 +189,7 @@ function ApprovalDetail(): JSX.Element {
                 <span className="inline-flex items-center cursor-pointer" onClick={() => history.goBack()}>
                   <Icon name="keyboard_backspace" className="mr-6" />返回
                 </span>
-              )
+              ),
           },
           { key: 'list', text: '审批列表', path: `/approvals?list=${listType}` },
           { key: 'current', text: data?.flowName },
@@ -266,6 +278,35 @@ function ApprovalDetail(): JSX.Element {
             name="comment"
             placeholder="输入拒绝意见 (选填)"
             onChange={(ev: unknown, value: string) => setReviewRejectComment(value)} />
+        </Modal>
+      )}
+
+      {modalTypeFillIn && (
+        <Modal
+          title={`提交 ${data?.flowName}`}
+          okText='确定提交'
+          onClose={() => setModalTypeFillIn(false)}
+          onConfirm={async () => {
+            try {
+              const data = await apis.reviewTask(processInstanceID, taskID, {
+                remark: reviewFillInComment,
+                handleType: 'FILL_IN',
+              });
+              if (data) {
+                toast.success('提交成功');
+                setModalTypeFillIn(false);
+                history.push('/approvals?list=done');
+              }
+            } catch (err) {
+              toast.error(err.message);
+            }
+          }}
+        >
+          <TextArea
+            rows={4}
+            name="comment"
+            placeholder="输入提交意见 (选填)"
+            onChange={(ev: unknown, value: string) => setReviewFillInComment(value)} />
         </Modal>
       )}
     </div>
