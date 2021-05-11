@@ -5,7 +5,7 @@ import Toggle from '@c/toggle';
 import Icon from '@c/icon';
 import Tooltip from '@c/tooltip';
 import Loading from '@c/loading';
-import Error from '@c/error';
+import ErrorTips from '@c/error-tips';
 
 import { getOperationList } from '../../api';
 import {
@@ -140,7 +140,7 @@ export default function OperatorPermission({ value, onChange }: Props) {
   }
 
   if (isError) {
-    return <Error desc="出错了..." />;
+    return <ErrorTips desc="出错了..." />;
   }
 
   return (

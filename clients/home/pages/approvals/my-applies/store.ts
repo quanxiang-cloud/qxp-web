@@ -50,7 +50,7 @@ class MyAppliedApprovalStore extends Store {
     this.beginDate = start;
     this.endDate = end;
     this.readableDate = readableCode;
-    console.log('date range: ', readableCode)
+    console.log('date range: ', readableCode);
   }
 }
 

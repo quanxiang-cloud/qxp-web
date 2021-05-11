@@ -1,7 +1,9 @@
 import React, { useRef, useState } from 'react';
 import cs from 'classnames';
 
-import { updateStore, Data } from '../store';
+import useObservable from '@lib/hooks/use-observable';
+
+import store, { updateStore, Data, StoreValue } from '../store';
 import NodeHeader from './_common/node-header';
 import NodeRemover from './_common/node-remover';
 
@@ -11,6 +13,7 @@ interface Props {
 }
 
 export default function ApproveNodeComponent({ data, id }: Props) {
+  const { errors } = useObservable<StoreValue>(store) || {};
   const lastTime = useRef(+new Date());
   const [showRemover, setShowRemover] = useState(false);
 
@@ -18,7 +21,7 @@ export default function ApproveNodeComponent({ data, id }: Props) {
 
   function onMouseUp() {
     if (+new Date - lastTime.current < 200) {
-      updateStore(null, () => ({ asideDrawerType: 'approveForm' }));
+      updateStore(null, () => ({ asideDrawerType: id }));
     }
   }
 
@@ -45,12 +48,17 @@ export default function ApproveNodeComponent({ data, id }: Props) {
   const hasApprovePerson = !!basicConfig.approvePersons.departments.length ||
     !!basicConfig.approvePersons.users.length;
 
+  const hasError = id === errors?.publish?.data?.id;
+
   return (
     <div
       className={cs(
         'shadow-title rounded-tl-8 rounded-tr-8 rounded-br-2',
-        'rounded-bl-8 bg-white flex flex-col',
-        `w-${nodeData.width}`, `m-h-${nodeData.height}`
+        'rounded-bl-8 bg-white flex flex-col border relative',
+        `w-${nodeData.width}`, `m-h-${nodeData.height}`,
+        {
+          'border-red-600 border-dashed animate-node-error': hasError,
+        }
       )}
       onMouseDown={() => lastTime.current = +new Date()}
       onMouseUp={onMouseUp}

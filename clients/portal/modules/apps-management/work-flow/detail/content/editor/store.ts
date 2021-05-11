@@ -15,7 +15,7 @@ export interface TriggerCondition {
   expr: TriggerConditionExpression;
 }
 
-export type AsideDrawerType = string | 'formDataForm' | 'fillInForm' | 'approveForm' | 'components';
+export type AsideDrawerType = string | 'components';
 export type CurrentConnection = {[key: string]: unknown};
 export type TriggerWayValue = string | 'whenAdd' | 'whenAlter' | '';
 export type TriggerWay = TriggerWayValue[];
@@ -134,7 +134,7 @@ export type Data = {
 
 export interface CurrentElement {
   id: string;
-  type: 'formData' | 'fillIn' | 'approve';
+  type: string | 'formData' | 'fillIn' | 'approve';
   data: Data;
   position: { x: number; y: number; };
 }
@@ -154,12 +154,21 @@ export interface StoreValue {
   seeStatusAndMsg: boolean;
   nodeAdminMsg: boolean;
   status: string;
+  errors: Record<string, unknown> & {
+    publish: {
+      data?: FlowElement;
+      msg?: string;
+    }
+  };
 }
 
 export const getStoreInitialData = () => {
   const startId = 'formData' + uuid();
   const endId = 'end' + uuid();
   return {
+    errors: {
+      publish: {},
+    },
     id: '',
     name: '',
     version: '0.1',
@@ -244,7 +253,10 @@ export function removeNodeById(id: string) {
   });
 }
 
-export function updateStore(key: string | null, updater: Function) {
+export function updateStore<T>(
+  key: string | null,
+  updater: (st: T) => T
+) {
   const value = store.value as any;
   if (!key) {
     return store.next({

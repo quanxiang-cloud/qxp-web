@@ -5,18 +5,19 @@ import { Link, useParams, useHistory } from 'react-router-dom';
 
 import Table from '@c/table';
 import ModalConfirm from '@c/modal-confirm';
-import Error from '@c/error';
+import ErrorTips from '@c/error-tips';
 import toast from '@lib/toast';
 import TableMoreFilterMenu from '@c/more-menu/table-filter';
 import TableMoreActionMenu from '@c/more-menu/table-action';
 import Icon from '@c/icon';
 import Pagination from '@c/pagination';
 
-import { getFlowList, deleteFlow } from './api';
+import { deleteFlow, getFlowList } from './api';
 
 interface Props {
   type: 'FORM_DATA' | 'FORM_TIME' | '';
 }
+
 interface State {
   currentEditWorkFlow: Flow | null,
   currentDeleteWorkFlow: Flow | null,
@@ -42,11 +43,14 @@ export default function WorkFlowTable({ type }: Props) {
     pageSize: 20,
   });
   const { data, isLoading, isError, refetch } = useQuery(
-    ['GET_FLOW_LIST', type, pagination],
-    getFlowList, {
-      cacheTime: -1,
-      refetchOnWindowFocus: false,
-    });
+    ['GET_FLOW_LIST', type, pagination, appID],
+    () => getFlowList({
+      appId: appID,
+      page: pagination.current,
+      size: pagination.pageSize,
+      triggerMode: type ? type : undefined,
+    })
+  );
   const deleteFlowMutation = useMutation('DELETE_FLOW', deleteFlow, {
     onSuccess: (ok) => {
       if (!ok) {
@@ -167,7 +171,7 @@ export default function WorkFlowTable({ type }: Props) {
         />
       )}
       {isError && (
-        <Error desc="something wrong..."/>
+        <ErrorTips desc="something wrong..."/>
       )}
       {!hasData && !isLoading && (
         <div className="mt-72 mb-16 flex flex-col items-center">

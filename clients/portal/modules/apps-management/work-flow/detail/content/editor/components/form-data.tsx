@@ -6,15 +6,16 @@ import NodeHeader from './_common/node-header';
 
 interface Props {
   data: Data;
+  id: string;
 }
 
-export default function FormDataNodeComponent({ data }: Props) {
+export default function FormDataNodeComponent({ data, id }: Props) {
   const isNew = !data.businessData.form.name;
   const lastTime = useRef(+new Date());
 
   function onMouseUp() {
     if (+new Date - lastTime.current < 200) {
-      updateStore(null, () => ({ asideDrawerType: 'formDataForm' }));
+      updateStore(null, () => ({ asideDrawerType: id }));
     }
   }
 

@@ -26,3 +26,11 @@ type ApprovalTask = {
   durationInMillis?: number; // Task duration time
 };
 
+type TaskFormData = Record<string, { title: string; type: 'string' | 'number' | string; value: any }>;
+
+type TaskForm = {
+  form: { table: ISchema },
+  formData: TaskFormData;
+}
+
+type TaskHandleType = 'AGREE' | 'REFUSE' | 'FILL_IN'

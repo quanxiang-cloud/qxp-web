@@ -72,7 +72,7 @@ const MsgItem = ({
     },
     onSuccess: (data: any) => {
       msgCenter.setLoadingDetail(false);
-      msgCenter.setDetail(data.data);
+      msgCenter.setDetail(data);
       // change msg read_status
       if (read_status === MsgReadStatus.unread) {
         setRead(MsgReadStatus.read);

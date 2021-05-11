@@ -42,8 +42,13 @@ function PageDataFiltrate() {
         _condition.op = curFiltrate.compareSymbol;
         break;
       default:
-        _condition.value = Array.isArray(values[key]) ? values[key] : [values[key]];
-        _condition.op = 'like';
+        if (Array.isArray(values[key])) {
+          _condition.op = 'in';
+          _condition.value = values[key];
+        } else {
+          _condition.op = 'like';
+          _condition.value = [values[key]];
+        }
         break;
       }
 

@@ -77,9 +77,9 @@ export const stepBack = async (params: Record<string, any>) => {
   return await httpClient('/api/v1/flow/instance/stepBack/{processInstanceId}/{taskId}', params);
 };
 
-// 任务审核
-export const reviewTask = async (params: Record<string, any>) => {
-  return await httpClient('/api/v1/flow/instance/reviewTask/{processInstanceId}/{taskId}', params);
+// 任务审核（通过任务）
+export const reviewTask = async (processInstanceId: string, taskId: string, params: {handleType: TaskHandleType, remark?: string}) => {
+  return await httpClient(`/api/v1/flow/instance/reviewTask/${processInstanceId}/${taskId}`, params);
 };
 
 // 加签
@@ -88,7 +88,7 @@ export const signTask = async (params: Record<string, any>) => {
 };
 
 // 获取任务的表单
-export const getTaskFormById = async (processInstanceID: string, taskID: string) => {
+export const getTaskFormById = async (processInstanceID: string, taskID: string): Promise<TaskForm> => {
   return await httpClient(`/api/v1/flow/instance/getTaskForm/${processInstanceID}/${taskID}`);
 };
 

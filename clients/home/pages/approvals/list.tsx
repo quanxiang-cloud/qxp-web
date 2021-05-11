@@ -34,7 +34,7 @@ const typeIconMap = {
   cc_to_me: 'send',
   my_applies: 'addchart',
   all: 'format_align_justify',
-}
+};
 
 function ApprovalTypeList({ listType, onClick }: ApprovalTypeListProps): JSX.Element {
   return (

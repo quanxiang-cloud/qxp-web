@@ -1,5 +1,16 @@
 export default {
-  options: ['history', 'inline', 'blockType', 'fontSize', 'fontFamily', 'list', 'textAlign', 'link', 'image', 'remove'],
+  options: [
+    'history',
+    'inline',
+    'blockType',
+    'fontSize',
+    'fontFamily',
+    'list',
+    'textAlign',
+    'link',
+    'image',
+    'remove',
+  ],
   inline: {
     inDropdown: false,
     className: undefined,
@@ -29,7 +40,17 @@ export default {
   //   dropdownClassName: undefined,
   // },
   fontFamily: {
-    options: ['宋体', 'Arial', 'Serif', 'Sans-serif', 'Courier', 'Courier New', 'Georgia', 'Tahoma', 'Times New Roman'],
+    options: [
+      '宋体',
+      'Arial',
+      'Serif',
+      'Sans-serif',
+      'Courier',
+      'Courier New',
+      'Georgia',
+      'Tahoma',
+      'Times New Roman',
+    ],
     className: undefined,
     component: undefined,
     dropdownClassName: undefined,

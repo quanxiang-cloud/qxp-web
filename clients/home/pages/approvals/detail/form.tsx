@@ -1,21 +1,18 @@
-import httpClient from '@lib/http-client';
 import React from 'react';
+import cs from 'classnames';
 import { useQuery } from 'react-query';
 import { useParams } from 'react-router';
 import { SchemaForm } from '@formily/antd';
+import toast from '@lib/toast';
 
 import { visibleHiddenLinkageEffect } from '@c/form-builder';
 import registry from '@c/form-builder/registry';
 
-// todo refactor this type
-type TaskFormData = Record<string, { title: string; type: 'string' | 'number' | string; value: any }>;
-type TaskForm = {
-  form: { table: ISchema },
-  formData: TaskFormData;
-}
+import { getTaskFormById } from '../api';
 
 type Props = {
   onChange: (value: any) => void;
+  className?: string;
 }
 
 function parseFormValue(formData: TaskFormData): Record<string, any> {
@@ -25,14 +22,10 @@ function parseFormValue(formData: TaskFormData): Record<string, any> {
   }, {} as Record<string, any>);
 }
 
-async function getTaskFormById(processInstanceID: string, taskID: string): Promise<TaskForm> {
-  return await httpClient(`/api/v1/flow/instance/getTaskForm/${processInstanceID}/${taskID}`);
-}
-
-function TaskForm({ onChange }: Props): JSX.Element {
+function TaskForm({ onChange, className }: Props): JSX.Element {
   const { processInstanceID, taskID } = useParams<{ processInstanceID: string; taskID: string }>();
   const {
-    isLoading, data, isError,
+    isLoading, data, isError, error,
   } = useQuery<TaskForm, Error>(
     [processInstanceID, taskID],
     () => getTaskFormById(processInstanceID, taskID)
@@ -45,13 +38,14 @@ function TaskForm({ onChange }: Props): JSX.Element {
   }
 
   if (!data || isError) {
+    toast.error(error?.message);
     return (
       <div>something wrong, please try again later</div>
     );
   }
 
   return (
-    <div>
+    <div className={cs('task-form', className)}>
       <SchemaForm
         defaultValue={parseFormValue(data.formData)}
         components={{ ...registry.components }}

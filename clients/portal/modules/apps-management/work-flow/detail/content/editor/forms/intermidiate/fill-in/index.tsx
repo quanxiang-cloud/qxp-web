@@ -25,7 +25,7 @@ import Events from '../events';
 export default function FillInForm() {
   const { asideDrawerType, elements = [] } = useObservable<StoreValue>(store) || {};
   const currentFormNodeElement = elements.find(({ type }) => type === 'formData') as CurrentElement;
-  const currentElement = elements.find(({ type }) => type === 'fillIn') as CurrentElement;
+  const currentElement = elements.find(({ id }) => id === asideDrawerType) as CurrentElement;
   const [formData, setFormData] = useState<FillInData>(currentElement?.data?.businessData || {});
 
   function onSubmit(e: FormEvent) {
@@ -48,9 +48,13 @@ export default function FillInForm() {
     };
   }
 
+  if (!currentElement || !formData?.basicConfig) {
+    return null;
+  }
+
   return (
     <>
-      {asideDrawerType === 'fillInForm' && (
+      {currentElement.type === 'fillIn' && (
         <Drawer
           title={(
             <span className="text-h5 mr-8">填写</span>

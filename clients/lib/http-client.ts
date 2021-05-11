@@ -22,8 +22,12 @@ function httpClient<TData>(
     return response.json();
   }).then((resp) => {
     const { code, msg, data } = resp;
-    if (code !== 0 || (data && ((typeof data.code !== 'undefined') && (data.code !== 0)))) {
-      return Promise.reject(new Error(msg));
+    if (code !== 0) {
+      const e = new Error(msg);
+      if (data) {
+        Object.assign(e, { data });
+      }
+      return Promise.reject(e);
     }
 
     return data as TData;

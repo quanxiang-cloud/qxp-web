@@ -3,7 +3,7 @@ import cs from 'classnames';
 import { useQuery } from 'react-query';
 import { getMessageList } from '@portal/modules/msg-center/api';
 import Loading from '@c/loading';
-import Error from '@c/error';
+import ErrorTips from '@c/error-tips';
 import MsgItem from '../msg-item';
 import { MsgReadStatus } from '@portal/modules/system-mgmt/constants';
 // import {default as mockMsgList} from '@portal/mock/mock-msg-list';
@@ -40,7 +40,11 @@ const MsgList = ({ className, getMsgDetail }: Props): JSX.Element => {
     return (
       <ul className={styles.items}>
         {msgList.map((msg: Qxp.MsgItem) => (
-          <div onClick={()=>handleClick(msg.id)} className='hover:bg-gray-100' key={msg.id} >
+          <div
+            onClick={()=>handleClick(msg.id)}
+            className='hover:bg-gray-100'
+            key={msg.id}
+          >
             <MsgItem {...msg} readonly />
           </div>))
         }
@@ -60,10 +64,10 @@ const MsgList = ({ className, getMsgDetail }: Props): JSX.Element => {
     return <Loading/>;
   }
   if (isError) {
-    return <Error desc='获取数据失败' />;
+    return <ErrorTips desc='获取数据失败' />;
   }
 
-  const msgList = (data as any)?.data?.mes_list || [];
+  const msgList = data?.mes_list || [];
   return (
     <div className={cs(styles.msgList, className)}>
       {renderMain(msgList)}

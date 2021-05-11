@@ -3,7 +3,7 @@ import { Route, Switch } from 'react-router';
 import { useQuery } from 'react-query';
 import { isEmpty } from 'lodash';
 
-import Error from '@c/error';
+import ErrorTips from '@c/error-tips';
 import Loading from '@c/loading';
 import { usePortalGlobalValue } from '@portal/states_to_be_delete/portal';
 import { getNestedPropertyToArray } from '@lib/utils';
@@ -71,7 +71,7 @@ export default function Routes(): JSX.Element {
         <Route path="/access-control" component={AccessControl} />
         <Route path="/system" component={SystemMgmt} />
         <Route path="/apps" component={AppsRoutes} />
-        <Route component={Error} />
+        <Route component={ErrorTips} />
       </Switch>
     </React.Suspense>
   );

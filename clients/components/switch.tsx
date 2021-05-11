@@ -12,6 +12,7 @@ interface ISwitch<Value extends React.Key> {
   className?: string;
   options: ISwitchOption<Value>[];
   onChange?: (value: Value) => void;
+  defaultValue?: string;
 }
 
 export default function Switch<Value extends React.Key>({ ...props }: ISwitch<Value>) {
@@ -43,7 +44,7 @@ export default function Switch<Value extends React.Key>({ ...props }: ISwitch<Va
       },
     }), props.className)}>
       <LegoRadioGroup
-        defaultValue={props.options[0]['value']}
+        defaultValue={props.defaultValue ? props.defaultValue : props.options[0]['value']}
         onChange={props.onChange}
       >
         {

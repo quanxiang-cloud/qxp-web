@@ -38,3 +38,5 @@ interface Pagination {
   current: number;
   pageSize: number;
 }
+
+type ErrorWithData<T> = Error & T;

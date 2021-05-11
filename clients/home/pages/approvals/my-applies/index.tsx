@@ -32,7 +32,7 @@ function TodoApprovals(): JSX.Element {
 
     return () => {
       store.reset();
-    }
+    };
   }, []);
 
   return (
@@ -49,14 +49,14 @@ function TodoApprovals(): JSX.Element {
               return (
                 <span className="text-sm"><span
                   className="text-gray-400 mr-10">状态:</span>{option?.selectedOption?.label || '请选择'}</span>
-              )
+              );
             }}
           />
           <RangePicker onChange={store.changeDate} readableCode={store.readableDate} />
           {/* <Checkbox label="仅看我代理的" className="mr-auto" />*/}
         </div>
         <Search className="w-259 mr-16" placeholder="搜索流程、发起人、应用" value={store.keyword}
-                onChange={store.changeKeyword} />
+          onChange={store.changeKeyword} />
         <Select multiple={false} options={sortOptions}>
           <IconBtn iconName="import_export" className="btn-sort" />
         </Select>

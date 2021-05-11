@@ -18,7 +18,7 @@ const tipsMap = {
   todo: '暂无需要处理的工作流',
   done: '未处理过工作流',
   cc_to_me: '暂无抄送给我的工作流',
-}
+};
 
 function TaskList({ tasks, store, className, taskType }: Props) {
   if (store.loading) {
