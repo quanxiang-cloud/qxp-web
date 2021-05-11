@@ -15,7 +15,7 @@ type Props = {
 function DeleteAppModal({ onCancel, appInfo }: Props) {
   const ref: any = useRef();
   const handleSubmit = () => {
-    const formRef: any = ref.current;
+    const formRef = ref.current;
     if (formRef.validateFields()) {
       store.delApp(appInfo.id).then(() => {
         onCancel();

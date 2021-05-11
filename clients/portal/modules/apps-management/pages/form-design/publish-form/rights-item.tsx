@@ -13,12 +13,19 @@ type Props = {
   actions: (key: string, rights: Rights) => void
 }
 
+type UserOrDept = {
+  id: string,
+  ownerID: string,
+  type: number,
+  ownerName: string,
+}
+
 function RightsItem({ rights, actions }: Props) {
   const [modalType, setModalType] = useState('');
   const userAndDept = useMemo(() => {
     if (rights.scopes && rights.scopes.length) {
-      const users:any = [];
-      const deptList:any = [];
+      const users: UserOrDept[] = [];
+      const deptList: UserOrDept[] = [];
       rights.scopes.forEach((scope)=>{
         if (scope.type === 1) {
           users.push({
@@ -42,7 +49,7 @@ function RightsItem({ rights, actions }: Props) {
     return { users: [], deptList: [] };
   }, [rights.scopes]);
 
-  const handleAdd = (deptList: any[], employees: any[]) => {
+  const handleAdd = (deptList: EmployeeOrDepartmentOfRole[], employees: EmployeeOrDepartmentOfRole[]) => {
     const scopes: DeptAndUser[] = [];
     deptList.forEach((dept) => {
       scopes.push({
@@ -84,7 +91,7 @@ function RightsItem({ rights, actions }: Props) {
           </div>
         </div>
         <div className='flex gap-8 flex-wrap'>
-          {(rights.scopes || []).map(({ name, type, id }: any) => (
+          {(rights.scopes || []).map(({ name, type, id }) => (
             <div className={`pb-form-right-${type === 1 ? 'user' : 'dep'}`} key={id}>
               <span>
                 <Icon
@@ -108,8 +115,8 @@ function RightsItem({ rights, actions }: Props) {
         <EmployeeOrDepartmentPickerModal
           title='添加部门与员工'
           submitText='提交'
-          employees={userAndDept.users}
-          departments={userAndDept.deptList}
+          employees={userAndDept.users as EmployeeOrDepartmentOfRole[]}
+          departments={userAndDept.deptList as EmployeeOrDepartmentOfRole[]}
           onSubmit={handleAdd}
           onCancel={() => setModalType('')}
         />

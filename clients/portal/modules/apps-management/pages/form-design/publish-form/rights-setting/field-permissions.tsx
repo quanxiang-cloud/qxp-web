@@ -128,7 +128,7 @@ function FieldPermissions({ rightsID }: Props) {
   };
 
   const handleSave = () => {
-    const schema: any = {
+    const schema: Record<string, any> = {
       properties: {
         _id: {
           title: '_id',

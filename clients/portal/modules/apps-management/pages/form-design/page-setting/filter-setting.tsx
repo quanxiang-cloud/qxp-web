@@ -9,6 +9,8 @@ import Checkbox from '@c/checkbox';
 import './index.scss';
 import store from '../store';
 
+type FieldConfig = Pick<PageField, 'option' | 'expand' | 'filter'>
+
 function getFieldType(field: PageField) {
   if (field.isSystem) {
     return '系统字段';
@@ -53,7 +55,7 @@ function FilterSetting() {
     setFilterModalVisible(false);
   };
 
-  const handleChangeField = (id: string, newData: any) => {
+  const handleChangeField = (id: string, newData: FieldConfig) => {
     setFieldList(
       fieldList.map((field) => {
         if (field.id === id) {

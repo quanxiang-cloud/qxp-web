@@ -20,14 +20,7 @@ const InfoCard = () => {
             title="系统管理"
             desc="对系统全局配置的统一管理"
             itemRender={
-              (<div
-                className="bg-gradient-green-to-top-right
-                corner-12-2-12-12 w-48 h-48 flex-initial
-                flex items-center justify-center
-                "
-              >
-                <AppIcon themeColor="fuchsia" size={48} iconName="system_management" />
-              </div>)
+              (<AppIcon themeColor="fuchsia" size={48} iconName="system_management" />)
             }
             titleClassName="text-h4"
             descClassName="text-caption"
