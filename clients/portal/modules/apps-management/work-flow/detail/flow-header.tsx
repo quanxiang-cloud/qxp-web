@@ -150,7 +150,7 @@ export default function GlobalHeader() {
           <More<JSX.Element>
             open={isWorkFlowNameMenuOpen}
             contentItemClassName="hover:bg-white"
-            contentClassName="w-316 -left-80 p-0"
+            contentClassName="w-316 -left-80 p-0 corner-4-12-12-12 border border-gray-300 overflow-hidden"
             items={[(
               <div
                 key="editWorkflow"
@@ -162,9 +162,9 @@ export default function GlobalHeader() {
                   ref={flowNameInputRef}
                   className="input mb-4"
                   value={workFlowName}
-                  onChange={(e) => setWorkFlowName(e.target.value)}
+                  onChange={(e) => e.target.value.length <= 30 && setWorkFlowName(e.target.value)}
                 />
-                <span className="text-caption text-gray-600">不超过3个字</span>
+                <span className="text-caption text-gray-600">不超过30个字符</span>
                 <ActionButtonGroup
                   onCancel={onCancelSetWorkFlowName}
                   onSubmit={onSubmitWorkFlowName}
@@ -198,7 +198,7 @@ export default function GlobalHeader() {
             <More<JSX.Element>
               open
               contentItemClassName="hover:bg-white"
-              contentClassName="p-0 right-0 shadow-more-action"
+              contentClassName="p-0 right-0 shadow-more-action corner-12-2-12-12 border border-gray-300 overflow-hidden"
               items={[(
                 <div
                   key="toggleWorkFlow"
