@@ -19,4 +19,5 @@ type FormDesignParams = {
   pageId: string;
   appID: string;
   pageType: string;
+  navType?: string;
 }

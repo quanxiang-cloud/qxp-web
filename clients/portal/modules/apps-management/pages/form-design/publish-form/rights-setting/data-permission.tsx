@@ -17,6 +17,14 @@ type Props = {
   rightsID: string;
 }
 
+type FieldCondition = {
+  id: string;
+  key?: string;
+  value?: any;
+  op?: string;
+  filtrate?: FilterField;
+}
+
 const CONDITION = [{
   label: '所有',
   value: 'and',
@@ -45,7 +53,7 @@ const FormFieldSwitch = formFieldWrap({ FieldFC: FieldSwitch });
 const FormFieldSelect = formFieldWrap({ FieldFC: Select });
 
 export default function DataPermission({ rightsID }: Props) {
-  const [conditions, setConditions] = useState<any[]>([]);
+  const [conditions, setConditions] = useState<FieldCondition[]>([]);
   const [tag, setTag] = useState('and');
   const { handleSubmit, control, setValue, formState: { errors } } = useForm();
 
@@ -57,7 +65,7 @@ export default function DataPermission({ rightsID }: Props) {
         return;
       }
       setConditions(
-        res.data.conditions.map((condition: any) => {
+        res.data.conditions.map((condition: FieldCondition) => {
           const filtrate: FilterField | undefined = fieldList.find(({ id }) => {
             return id === condition.key;
           });
@@ -83,7 +91,7 @@ export default function DataPermission({ rightsID }: Props) {
     label: field.label,
   }));
 
-  const handleFieldChange = (rowID: number, field: string) => {
+  const handleFieldChange = (rowID: string, field: string) => {
     setConditions(conditions.map((condition) => {
       if (condition.id === rowID) {
         return { ...condition, filtrate: fieldList.find(({ id }) => id === field) };
@@ -97,14 +105,14 @@ export default function DataPermission({ rightsID }: Props) {
     setConditions([...conditions, { id: uniqueId() }]);
   };
 
-  const handleRemove = (_id: number) => {
+  const handleRemove = (_id: string) => {
     setConditions(conditions.filter(({ id }) => _id !== id));
   };
 
   const handleSave = (formData: any) => {
     const _conditions = conditions.map((condition) => {
       let value = formData[`condition-${condition.id}`];
-      switch (condition.filtrate.type) {
+      switch (condition.filtrate?.type) {
       case 'date':
         value = isArray(value) ? value.map((date: string) => {
           return new Date(date).getTime();

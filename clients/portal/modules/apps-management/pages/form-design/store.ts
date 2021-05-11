@@ -1,4 +1,5 @@
 import { action, observable, reaction, IReactionDisposer, computed } from 'mobx';
+import { UnionColumns } from 'react-table';
 
 import FormStore from '@c/form-builder/store';
 import toast from '@lib/toast';
@@ -14,7 +15,7 @@ import {
   updatePerGroup,
 } from '@portal/modules/apps-management/lib/api';
 import appPageDataStore from '@c/app-page-data/store';
-import { PageTableShowRule } from '@c/app-page-data/utils';
+import { PageTableShowRule, Scheme } from '@c/app-page-data/utils';
 
 import { getFilterField, getAttribute } from './utils';
 
@@ -77,10 +78,10 @@ class FormDesignStore {
     }, appPageDataStore.setFiltrates);
 
     this.destroySetTableColumn = reaction(() => {
-      const column: any[] = [];
+      const column: UnionColumns<any>[] = [];
       let recordColNum = 0;
       let fixedColumnIndex: number[] = [];
-      let action: any = {
+      let action: UnionColumns<any> = {
         id: 'action',
         Header: '操作',
       };
@@ -160,7 +161,7 @@ class FormDesignStore {
   }
 
   @action
-  setAllPageTableConfig = (values: any[]) => {
+  setAllPageTableConfig = (values: Scheme[]) => {
     values.forEach((value) => {
       this.pageTableConfig[value.id] = { ...this.pageTableConfig[value.id], ...value };
     });
@@ -172,7 +173,7 @@ class FormDesignStore {
   }
 
   @action
-  setPageTableConfig = (key: string, newConfig: any) => {
+  setPageTableConfig = (key: string, newConfig: Scheme) => {
     const _config = { [key]: { ...this.pageTableConfig[key], ...newConfig } };
     this.pageTableConfig = { ...this.pageTableConfig, ..._config };
   }

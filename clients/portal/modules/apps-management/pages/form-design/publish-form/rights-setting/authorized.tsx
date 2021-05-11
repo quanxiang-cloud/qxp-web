@@ -6,7 +6,14 @@ import { fetchOperatePer, saveOperatePer } from '@portal/modules/apps-management
 import toast from '@lib/toast';
 
 type CardProps = {
-  rightsCardData: any;
+  rightsCardData: {
+    key: string;
+    title: string;
+    options: Array<{
+      label: string;
+      value: string;
+    }>
+  };
   onChange: (selectNumber: number, key: string) => void;
   selectNumber: number;
 }
@@ -58,7 +65,7 @@ function RightsCard({ rightsCardData, onChange, selectNumber }: CardProps) {
     if (selectNumber) {
       const selectArr = selectNumber.toString(2).split('').reverse();
       setSelected(
-        options.map((_: any, index: number) => {
+        options.map((_, index: number) => {
           return selectArr[index] ? Number(selectArr[index]) : 0;
         })
 
@@ -99,7 +106,7 @@ function RightsCard({ rightsCardData, onChange, selectNumber }: CardProps) {
         </span>
       </div>
       <div className='pb-authorized-checkbox-box'>
-        {options.map(({ label }: any, index: number) => (
+        {options.map(({ label }, index: number) => (
           <CheckBox
             checked={selected[index] === 1}
             onChange={handleChange}

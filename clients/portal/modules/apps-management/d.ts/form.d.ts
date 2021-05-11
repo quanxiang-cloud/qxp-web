@@ -1,6 +1,6 @@
 type FilterOption = {
-  range: boolean;
-  compareSymbol: string;
+  range?: boolean;
+  compareSymbol?: string;
 }
 
 type EnumItem = {
