@@ -44,7 +44,7 @@ export default function FormDataForm() {
 
   function onSubmit(e: FormEvent) {
     e.preventDefault();
-    updateDataField('formData', null, () => formData);
+    updateDataField(currentElement.id, null, () => formData);
   }
 
   function onFormChange(value: { value: string; name: string; }) {
@@ -59,7 +59,7 @@ export default function FormDataForm() {
     setFormData((s) => ({ ...s, triggerCondition }));
   }
 
-  if (!currentElement || !formData) {
+  if (!currentElement || !formData?.form) {
     return null;
   }
 
@@ -80,7 +80,7 @@ export default function FormDataForm() {
           >
             <div className="flex-1" style={{ height: 'calc(100% - 56px)' }}>
               <FormSelector
-                value={formData?.form.value}
+                value={formData?.form?.value}
                 onChange={onFormChange}
               />
               <Tab

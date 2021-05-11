@@ -30,7 +30,7 @@ export default function ApproveForm() {
 
   function onSubmit(e: FormEvent) {
     e.preventDefault();
-    updateDataField('approve', null, () => formData);
+    updateDataField(currentElement.id, null, () => formData);
   }
 
   useEffect(() => {

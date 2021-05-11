@@ -30,7 +30,7 @@ export default function FillInForm() {
 
   function onSubmit(e: FormEvent) {
     e.preventDefault();
-    updateDataField('fillIn', null, () => formData);
+    updateDataField(currentElement.id, null, () => formData);
   }
 
   useEffect(() => {
