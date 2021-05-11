@@ -34,7 +34,7 @@ export default forwardRef(function FormSelector(
 
   return (
     <div className="px-16 py-10 flex items-center mb-22 bg-gray-100
-    input-border-radius h-40">
+    corner-2-8-8-8 h-40">
       <div className="inline-flex items-center mr-8">
         <Icon name="article" size={20} className="mr-8" />
         <span className="text-body2">工作表:</span>

@@ -42,7 +42,7 @@ export default function ConditionItem({ condition, options, onChange }: Props) {
         placeholder="选择工作表中的字段"
         defaultValue={condition.key}
         onChange={(v: string) => onChange({ key: v })}
-        className="h-32 border border-gray-300 input-border-radius
+        className="h-32 border border-gray-300 corner-2-8-8-8
               px-12 text-12 flex items-center flex-1 mb-8"
         options={options}
       />
@@ -51,7 +51,7 @@ export default function ConditionItem({ condition, options, onChange }: Props) {
           placeholder="判断符"
           defaultValue={condition.op}
           onChange={(v : Operator) => onChange({ op: v })}
-          className="h-32 border border-gray-300 input-border-radius
+          className="h-32 border border-gray-300 corner-2-8-8-8
               px-12 text-12 flex items-center flex-1 mr-12"
           options={operatorOptions}
         />

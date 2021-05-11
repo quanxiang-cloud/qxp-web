@@ -37,7 +37,7 @@ export default function WhenTimeout({ defaultValue, onChange }: Props) {
   }
 
   return (
-    <div className="bg-gray-100 p-16 input-border-radius mb-20">
+    <div className="bg-gray-100 p-16 corner-2-8-8-8 mb-20">
       <div className="text-body2 mb-8">超时后: </div>
       <RadioGroup onChange={handleChange('type')}>
         <Radio
@@ -64,7 +64,7 @@ export default function WhenTimeout({ defaultValue, onChange }: Props) {
             placeholder="选择自动通过或驳回"
             defaultValue={timeoutData.value}
             onChange={handleChange('value')}
-            className="h-32 py-4 border border-gray-300 input-border-radius
+            className="h-32 py-4 border border-gray-300 corner-2-8-8-8
                 px-12 text-12 flex items-center flex-1 mb-8 ml-22 mt-8"
           />
         )}
@@ -89,7 +89,7 @@ export default function WhenTimeout({ defaultValue, onChange }: Props) {
             placeholder="选择工作流中的节点"
             defaultValue={timeoutData.value}
             onChange={handleChange('value')}
-            className="h-32 py-4 border border-gray-300 input-border-radius
+            className="h-32 py-4 border border-gray-300 corner-2-8-8-8
                 px-12 text-12 flex items-center flex-1 mb-8 ml-22 mt-8"
           />
         )}

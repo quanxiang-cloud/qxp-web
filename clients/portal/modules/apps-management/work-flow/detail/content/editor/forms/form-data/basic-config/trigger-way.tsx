@@ -80,7 +80,7 @@ export default forwardRef(function TriggerWay(
             value={whenAlterFields}
             multiple
             onChange={(v: string[]) => onValueChange({ whenAlterFields: v })}
-            className="h-32 py-4 border border-gray-300 input-border-radius
+            className="h-32 py-4 border border-gray-300 corner-2-8-8-8
                   px-12 text-12 flex items-center flex-1 mb-8 ml-22 mt-8"
             options={formFieldOptions}
           />
