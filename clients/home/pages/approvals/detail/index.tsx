@@ -84,7 +84,7 @@ function ApprovalDetail(): JSX.Element {
   const [modalTypeReject, setModalTypeReject] = useState(false);
   const [reviewRejectComment, setReviewRejectComment] = useState('');
 
-  console.log('detail form data:', formValues);
+  // console.log('detail form data:', formValues);
 
   const renderToolbarActions = () => {
     const { custom = [], default: defaultActions = [] } = data?.operatorPermission || {} as { custom: PermissionItem[], default: PermissionItem[] };
@@ -123,6 +123,7 @@ function ApprovalDetail(): JSX.Element {
                     modifier="primary"
                     className="btn-item-done"
                     onClick={() => setModalTypeReview(true)}
+                    key={name}
                   >
                     {text ?? defaultText ?? name}
                   </Button>
@@ -130,7 +131,9 @@ function ApprovalDetail(): JSX.Element {
               }
               if (name === '驳回' || value === 'REFUSE') {
                 return (
-                  <Button iconName="close" modifier="danger" onClick={() => setModalTypeReject(true)}>{text ?? defaultText ?? name}</Button>
+                  <Button iconName="close" modifier="danger" onClick={() => setModalTypeReject(true)} key={name}>
+                    {text ?? defaultText ?? name}
+                  </Button>
                 );
               }
             })
@@ -174,7 +177,15 @@ function ApprovalDetail(): JSX.Element {
     <div>
       <Breadcrumb
         segments={[
-          { key: 'list', text: '返回审批列表', path: `/approvals?list=${listType}` },
+          {
+            key: 'back', text: '返回', render: (seg) =>
+              (
+                <span className="inline-flex items-center cursor-pointer" onClick={() => history.goBack()}>
+                  <Icon name="keyboard_backspace" className="mr-6" />返回
+                </span>
+              )
+          },
+          { key: 'list', text: '审批列表', path: `/approvals?list=${listType}` },
           { key: 'current', text: data?.flowName },
         ]}
         className="px-24 py-20"
@@ -189,6 +200,8 @@ function ApprovalDetail(): JSX.Element {
         </Panel>
         <Panel className="approval-detail-tab w-400">
           <Tab
+            activeTitleClassName="border-blue-600 border-b-4"
+            headerClassName="border-gray-200 border-b-1"
             items={[
               {
                 id: 'history',

@@ -52,7 +52,7 @@ function TodoApprovals(): JSX.Element {
               );
             }}
           />
-          <RangePicker onChange={store.changeDate} readableCode={store.readableDate} />
+          <RangePicker onChange={store.changeDate} readableCode={store.readableDate} className="w-259" />
           {/* <Checkbox label="仅看我代理的" className="mr-auto" />*/}
         </div>
         <Search className="w-259 mr-16" placeholder="搜索流程、发起人、应用" value={store.keyword}

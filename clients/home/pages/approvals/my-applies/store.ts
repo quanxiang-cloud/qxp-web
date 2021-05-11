@@ -20,7 +20,7 @@ class MyAppliedApprovalStore extends Store {
       keyword: this.keyword,
       page: this.pageNumber,
       size: this.pageSize,
-      status: this.status,
+      status: this.status === 'ALL' ? '' : this.status,
       beginDate: this.beginDate,
       endDate: this.endDate,
     };
@@ -37,8 +37,9 @@ class MyAppliedApprovalStore extends Store {
     this.loading = true;
     try {
       const { dataList = [], total } = await getMyApplyList(this.query);
-      this.approvals = dataList;
-      this.total = total;
+      // filter item without id
+      this.approvals = dataList.filter((item: ApprovalTask)=> item.id);
+      this.total = total - (dataList.length - this.approvals.length);
       this.loading = false;
     } catch (err) {
       toast.error(err);
@@ -50,7 +51,6 @@ class MyAppliedApprovalStore extends Store {
     this.beginDate = start;
     this.endDate = end;
     this.readableDate = readableCode;
-    console.log('date range: ', readableCode);
   }
 }
 

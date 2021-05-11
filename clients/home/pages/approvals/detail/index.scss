@@ -44,8 +44,9 @@
 
   &-tab {
     width: 400px;
-    background: #F1F5F9;
+    background: #F1F5F9 !important;
     box-shadow: inset 1px 0px 0px #E2E8F0;
+    padding: 15px 20px;
   }
 }
 

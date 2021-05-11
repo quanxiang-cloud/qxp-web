@@ -32,8 +32,8 @@ function TaskList({ tasks, store, className, taskType }: Props) {
 
   return (
     <div className={className}>
-      {tasks.map((task) => {
-        return (<TaskCard key={task.id} task={task} />);
+      {tasks.map((task, idx) => {
+        return (<TaskCard key={[task.id, idx].join('-')} task={task} />);
       })}
     </div>
   );
