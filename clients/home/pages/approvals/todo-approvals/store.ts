@@ -8,6 +8,7 @@ class TodoApprovalStore extends Store {
   @observable tagType = '';
   // handle type : ALL，REVIEW, WRITE， READ， OTHER
   @observable handleType = '';
+  @observable status = '';
 
   constructor() {
     super();

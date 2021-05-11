@@ -2,7 +2,7 @@ import React from 'react';
 import { Switch, Route } from 'react-router-dom';
 
 import ItemWithTitleDesc from '@c/item-with-title-desc';
-import Error from '@c/error';
+import ErrorTips from '@c/error-tips';
 import { usePortalGlobalValue } from '@portal/states_to_be_delete/portal';
 import SideNavCard from '@c/side-nav-card';
 import AppIcon from '@c/app-icon';
@@ -29,7 +29,7 @@ export default function Index() {
   const [{ userInfo }] = usePortalGlobalValue();
 
   if (!userInfo.authority.includes('accessControl')) {
-    return <Error desc="您没有权限, 请联系管理员..." />;
+    return <ErrorTips desc="您没有权限, 请联系管理员..." />;
   }
   return (
     <div className="py-20 px-58 flex justify-center items-start flex-grow "
@@ -63,7 +63,7 @@ export default function Index() {
         <Route exact path="/access-control" component={DepartmentsEmployees} />
         <Route path="/access-control/departments-employees" component={DepartmentsEmployees} />
         <Route path="/access-control/role-management" component={RoleManagement} />
-        <Route component={() => (<Error desc={'Menu page is not found'} />)} />
+        <Route component={() => (<ErrorTips desc={'Menu page is not found'} />)} />
       </Switch>
     </div>
   );

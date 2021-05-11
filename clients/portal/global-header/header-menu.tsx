@@ -2,55 +2,40 @@ import React, { useState } from 'react';
 
 import MoreMenu from '@c/more-menu';
 import NavMsgBar from '@portal/modules/msg-center/nav-msg-bar';
-// import Button from '@c/button';
 import Icon from '@c/icon';
 
 import ResetPasswordModal from './reset-password-modal';
-import Avatar from '@c/avatar';
 
 export default function HeaderMenu() {
   const [openResetPasswordModal, setOpenResetPasswordModal] = useState<boolean>(false);
 
   return (
-    <div className="flex-2 flex justify-end items-center">
+    <div className="flex justify-end items-center flex-2">
       <ResetPasswordModal
         visible={openResetPasswordModal}
         onCancel={() => setOpenResetPasswordModal(false)}
       />
       <NavMsgBar />
-      {/* <Button className="mr-32">
-          进入应用管理
-      </Button>
-      <div className="nav-icon">
-        <Icon
-          className='icon-hover'
-          name="notifications"
-          size={20}
-        />
+      <div className="mr-56 header-nav-btn group">
+        <div className="header-nav-btn-icon-wrapper">
+          <Icon
+            name="book"
+            className="group-hover:text-blue-600 header-nav-btn-icon"
+            size={20}
+          />
+        </div>
+        <span className="header-nav-btn-text group-hover:text-blue-600">
+              帮助文档
+        </span>
       </div>
-      <div className="nav-icon">
-        <Icon
-          className='icon-hover'
-          name="assignment"
-          size={20}
-        />
-      </div>
-      <div className="nav-icon">
-        <Icon
-          className='icon-hover'
-          name="help_outline"
-          size={20}
-        />
-      </div> */}
       <div className="header-nav-btn group">
-        <Avatar
-          username={window.USER.userName}
-          title={false}
-          size={24}
-          textSize={14}
-          cornerClassName="corner-4-0-4-4"
-          avatar=''
-        />
+        <div className="header-nav-btn-icon-wrapper">
+          <Icon
+            name="settings"
+            className="group-hover:text-blue-600 header-nav-btn-icon"
+            size={20}
+          />
+        </div>
         <MoreMenu
           menus={[
             { key: 'resetPassword', label: '重置密码' },
@@ -69,7 +54,8 @@ export default function HeaderMenu() {
             className="cursor-pointer flex items-center h-36
             hover:blue-100 transition group-hover:text-blue-600"
           >
-            <Icon name="arrow_drop_down" size={20} />
+            个人中心
+            <Icon name="caret-down" style={{ marginLeft: '8px' }} />
           </div>
         </MoreMenu>
       </div>

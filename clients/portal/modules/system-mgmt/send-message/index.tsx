@@ -1,7 +1,7 @@
 import React, { useState, useEffect, forwardRef, useImperativeHandle } from 'react';
 import ReactDom from 'react-dom';
 import cs from 'classnames';
-import { get, debounce } from 'lodash';
+import { debounce } from 'lodash';
 import { toJS } from 'mobx';
 import { useMutation, useQueryClient } from 'react-query';
 import { useHistory } from 'react-router-dom';
@@ -18,7 +18,6 @@ import Container from '../container';
 import editorToolbarOptions from './editor-toolbar';
 // import ModalSelectReceiver from './dialog-select-receiver';
 import PreviewMsg from './preview-msg';
-import { usePortalGlobalValue } from '@portal/states_to_be_delete/portal';
 import { createMsg } from '@portal/modules/system-mgmt/api';
 import Filelist from './filelist';
 import ModalSelectReceiver from '@c/employee-or-department-picker';
@@ -31,9 +30,9 @@ const { TextField } = Form;
 
 const noop = () => {};
 
-interface Props {
-  className?: string;
-}
+// interface Props {
+//   className?: string;
+// }
 
 interface FileInfo {
   url: string;
@@ -43,7 +42,7 @@ interface FileInfo {
   percentage?: number;
 }
 
-const SendMessage = (props: Props) => {
+const SendMessage = () => {
   useEffect(() => {
     document.title = '消息管理 - 发送消息';
   }, []);
@@ -77,19 +76,29 @@ interface ContentProps {
   className?: string
 }
 
-export const Content = forwardRef(({ className, donotShowHeader, footer, modifyData, handleClose }: ContentProps, ref ) => {
+function ContentWithoutRef({
+  className,
+  donotShowHeader,
+  footer,
+  modifyData,
+  handleClose,
+}: ContentProps, ref: React.Ref<unknown> | undefined ) {
   const [msgType, setMsgType] = useState( modifyData?.sort || MsgType.notify );
   const [title, setTitle] = useState( modifyData?.title || '' );
   const [prevData, setPrevData] = useState<Qxp.DraftData | null>(null);
 
-  const [editorCont, setEditorCont] = useState( modifyData?.content ? EditorState.createWithContent(ContentState.createFromBlockArray(htmlToDraft(modifyData.content).contentBlocks)) : EditorState.createEmpty());
+  const [editorCont, setEditorCont] = useState( modifyData?.content ?
+    EditorState.createWithContent(
+      ContentState.createFromBlockArray(
+        htmlToDraft(modifyData.content).contentBlocks)
+    ) : EditorState.createEmpty());
 
   const [openReceiverModal, setOpenReceiverModal] = useState(false);
   const [openPreviewModal, setOpenPreviewModal] = useState(false);
 
   const [_chosenDepOrPerson, setChosenDepOrPerson] = useState( modifyData?.recivers || [] ); // 已选中的员工或部门
-  const [{ userInfo }] = usePortalGlobalValue();
   // @ts-ignore
+  // eslint-disable-next-line max-len
   const [files, setFiles] = useState<Array<FileInfo>>((modifyData?.mes_attachment || []).map((itm: {file_name: string, file_url: string}) => ({
     filename: itm.file_name,
     url: itm.file_url,
@@ -97,12 +106,14 @@ export const Content = forwardRef(({ className, donotShowHeader, footer, modifyD
   })));
   const chosenDepOrPerson = useMemo(()=>{
     // @ts-ignore
-    return _chosenDepOrPerson.map(({ id, type, name, ownerName, departmentName }) => ({ id, type, name: name || ownerName || departmentName }));
+    return _chosenDepOrPerson.map(({ id, type, name, ownerName, departmentName }) => (
+      { id, type, name: name || ownerName || departmentName }
+    ));
   }, [_chosenDepOrPerson]);
   const [dom, setDom] = useState<Element|null>(null);
 
   const deleteFiles = (name: string) => {
-    setFiles((curFiles) => curFiles.filter((file, idx) => file.filename !== name ));
+    setFiles((curFiles) => curFiles.filter((file) => file.filename !== name ));
   };
 
   useEffect(()=>{
@@ -117,8 +128,6 @@ export const Content = forwardRef(({ className, donotShowHeader, footer, modifyD
       return [...currentFiles];
     });
   };
-
-  const roleId = get(userInfo, 'roles[0].roleID', '3'); // fixme
 
   const queryClient = useQueryClient();
   const history = useHistory();
@@ -424,7 +433,7 @@ export const Content = forwardRef(({ className, donotShowHeader, footer, modifyD
                   });
                 }}
                 onSuccess={handleFileSuccessUpload}
-                onError={(err, res)=> Message.error(err.message)}
+                onError={(err)=> Message.error(err.message)}
               >
                 <div className={`${styles.upload} flex align-center`}>
                   <Icon name="attachment" />
@@ -509,6 +518,7 @@ export const Content = forwardRef(({ className, donotShowHeader, footer, modifyD
         <PreviewMsg prevData={prevData} isPreview canMultiDownload={false} canDownload={false}/>
       </Modal>)}
     </div>);
-});
+}
+export const Content = forwardRef(ContentWithoutRef);
 
 export default SendMessage;

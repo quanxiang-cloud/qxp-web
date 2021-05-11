@@ -42,6 +42,7 @@ function TodoApprovals(): JSX.Element {
           <Switch
             className="mr-16"
             onChange={store.changeTagType}
+            defaultValue={store.status}
             options={status}
           />
           <Select

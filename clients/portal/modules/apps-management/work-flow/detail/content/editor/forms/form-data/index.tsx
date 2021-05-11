@@ -25,7 +25,7 @@ import { getFormFieldOptions } from '../api';
 
 export default function FormDataForm() {
   const { asideDrawerType, elements = [] } = useObservable<StoreValue>(store) || {};
-  const currentElement = elements.find(({ type }) => type === 'formData') as CurrentElement;
+  const currentElement = elements.find(({ id }) => id === asideDrawerType) as CurrentElement;
   const [formData, setFormData] = useState<FormDataData>(currentElement?.data?.businessData);
   const { data: formFieldOptions = [], isError } = useQuery(
     ['GET_WORK_FORM_FIELD_LIST', formData?.form?.value],
@@ -41,10 +41,6 @@ export default function FormDataForm() {
       setFormData(currentElement.data.businessData);
     }
   }, [currentElement?.data?.businessData]);
-
-  if (!currentElement) {
-    return null;
-  }
 
   function onSubmit(e: FormEvent) {
     e.preventDefault();
@@ -63,9 +59,13 @@ export default function FormDataForm() {
     setFormData((s) => ({ ...s, triggerCondition }));
   }
 
+  if (!currentElement || !formData) {
+    return null;
+  }
+
   return (
     <>
-      {asideDrawerType === 'formDataForm' && (
+      {currentElement.type === 'formData' && (
         <Drawer
           title={(
             <span className="text-h5 mr-8">工作表触发</span>

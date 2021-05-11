@@ -16,7 +16,13 @@ interface Props {
   canMultiDownload?: boolean;
 }
 
-const PreviewMsg = ({ prevData, hideReceivers, isPreview, canDownload, canMultiDownload }: Props) => {
+const PreviewMsg = ({
+  prevData,
+  hideReceivers,
+  isPreview,
+  canDownload,
+  canMultiDownload,
+}: Props) => {
   if (!prevData) {
     return (
       <Loading />
@@ -36,14 +42,13 @@ const PreviewMsg = ({ prevData, hideReceivers, isPreview, canDownload, canMultiD
   } else {
     txt = '未知消息类型';
   }
-
+  const infoText = [dayjs().format('YYYY-MM-DD HH:mm:ss'), txt, handle_name || userInfo.userName].join(' · ');
   return (
     <div className={styles.previewMsg}>
       <div className={styles.previewMsgContent}>
         <div className={styles.title}>{title}</div>
-        <div className={styles.info}>{[dayjs().format('YYYY-MM-DD HH:mm:ss'), txt, handle_name || userInfo.userName].join(' · ')}</div>
+        <div className={styles.info}>{infoText}</div>
         <div dangerouslySetInnerHTML={{ __html: content }} />
-
         <FileList
           candownload={canDownload}
           files={(prevData.mes_attachment || [])}

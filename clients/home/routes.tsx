@@ -2,7 +2,7 @@ import React, { lazy, Suspense } from 'react';
 import { Route, Switch } from 'react-router';
 
 import PageLoading from '@portal/modules/apps-management/components/page-loading';
-import Error from '@c/error';
+import ErrorTips from '@c/error-tips';
 
 const Dashboard = lazy(
   () => import('./pages/dashboard'),
@@ -20,7 +20,7 @@ export default (
       <Route exact path="/" component={Dashboard} />
       <Route exact path="/apps/:appID" component={AppDetails} />
       <Route path="/approvals" component={Approvals} />
-      <Route component={Error} />
+      <Route component={ErrorTips} />
     </Switch>
   </Suspense>
 );

@@ -3,6 +3,7 @@ import moment from 'moment';
 import { getFilterField } from '@portal/modules/apps-management/pages/form-design/utils';
 
 import appPageDataStore from './store';
+import React from 'react';
 
 export type Scheme = Record<string, any>;
 export type Config = {
@@ -14,6 +15,20 @@ export type Config = {
     pageSize?: number | null;
   }
 };
+
+export function operateButton(wIndex: number, authority: number, button: React.ReactNode) {
+  const weightArr = authority.toString(2).split('').reverse();
+  if (weightArr.length < 7) {
+    for (let index = 0; index < 7 - weightArr.length; index += 1) {
+      weightArr.push('0');
+    }
+  }
+  if (weightArr[wIndex - 1] === '0') {
+    return null;
+  }
+
+  return button;
+}
 
 export function getTableCellData(initValue: string | string[], field: PageField) {
   if (!initValue) {
@@ -58,12 +73,23 @@ export function getPageDataSchema(config: Config, schema: Scheme, pageID: string
   const tableColumns: any[] = [];
   let recordColNum = 0;
   let fixedColumnIndex: number[] = [];
+  let action: any = {
+    id: 'action',
+    Header: '操作',
+  };
   switch (pageTableShowRule.fixedRule) {
   case 'one':
     fixedColumnIndex = [0];
     break;
   case 'previous_two':
     fixedColumnIndex = [0, 1];
+    break;
+  case 'action':
+    action = { ...action, fixed: true, width: 150 };
+    break;
+  case 'one_action':
+    fixedColumnIndex = [0];
+    action = { ...action, fixed: true, width: 150 };
     break;
   }
 
@@ -95,7 +121,7 @@ export function getPageDataSchema(config: Config, schema: Scheme, pageID: string
   setFiltrates(filtrate.map((field: PageField) => {
     return getFilterField(field);
   }));
-  setTableColumns(tableColumns);
+  setTableColumns([...tableColumns, action]);
   setTableConfig(pageTableShowRule);
   setPageID(pageID, pageName);
   setFieldsMap(fieldsMap);

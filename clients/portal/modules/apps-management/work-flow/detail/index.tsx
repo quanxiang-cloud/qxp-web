@@ -7,7 +7,7 @@ import AsideMenu from './aside-menu';
 import Content from './content';
 import { getWorkFlowInfo } from './api';
 import Loading from '@c/loading';
-import Error from '@c/error';
+import ErrorTips from '@c/error-tips';
 
 import { updateStore, initStore } from './content/editor/store';
 
@@ -53,7 +53,7 @@ export default function Detail() {
   }
 
   if (isError) {
-    return <Error desc="出错了..." />;
+    return <ErrorTips desc="出错了..." />;
   }
 
   return (

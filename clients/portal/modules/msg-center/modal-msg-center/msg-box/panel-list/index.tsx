@@ -5,7 +5,7 @@ import { Message, Table } from '@QCFE/lego-ui';
 import { useMutation, useQuery } from 'react-query';
 import { get } from 'lodash';
 import Loading from '@c/loading';
-import Error from '@c/error';
+import ErrorTips from '@c/error-tips';
 import MsgItem from '@portal/modules/msg-center/msg-item';
 import Toolbar from './toolbar';
 import {
@@ -43,6 +43,7 @@ const PanelList = () => {
     ['all-messages', getQueryParams()],
     getMessageList, {}
   );
+
   const { data: countUnreadMsg,
     refetch: unReadRefetch,
   } = useQuery(
@@ -60,12 +61,12 @@ const PanelList = () => {
   const toolbarRef = useRef<any>();
 
   const msgList = useMemo(() => {
-    msgCenter.setUnreadTypeCounts(get(countUnreadMsg, 'data.type_num', []));
-    return (data as any)?.data?.mes_list || [];
+    msgCenter.setUnreadTypeCounts(get(countUnreadMsg, 'type_num', []));
+    return (data as any)?.mes_list || [];
   }, [data]);
 
   const msgTotal = useMemo(() => {
-    return (data as any)?.data?.total || 0;
+    return (data as any)?.total || 0;
   }, [data]);
 
   const canIUseReadBtn = useMemo(() => {
@@ -112,7 +113,7 @@ const PanelList = () => {
     return <Loading />;
   }
   if (isError) {
-    return <Error desc='获取数据失败' />;
+    return <ErrorTips desc='获取数据失败' />;
   }
 
   const closeConfirmInfo = () => {
@@ -131,7 +132,7 @@ const PanelList = () => {
       content: '确定要将全部类型的消息标记为已读吗?',
       cb: () => {
         setAllMsgAdRead()
-          .then((response) => {
+          .then(() => {
             refetch();
             unReadRefetch();
             closeConfirmInfo();

@@ -36,7 +36,10 @@ const STATUS_LIST: Array<Status> = [
 function Header({ changeParams, params, setModalType, countMaps }: Props) {
   return (
     <div className='app-filter-column'>
-      <Search onSearch={(appName) => changeParams({ appName })} />
+      <Search
+        placeholder='请输入应用名称'
+        onSearch={(appName) => changeParams({ appName })}
+      />
       <RadioGroup
         wrapClassName='mb-0-i'
         value={params.useStatus}

@@ -28,8 +28,10 @@ function formFieldWrap({ field, FieldFC }: WrapProps) {
       <div className='form-field-box'>
         {label ? <label className='form-field-label'>{label}</label> : null}
         {isValidElement(field) ?
-          React.cloneElement(field, { ...props,
-            className: cs(className, field.props.className, { 'form-input-error': error }) }) :
+          React.cloneElement(field, {
+            ...props,
+            className: cs(className, field.props.className, { 'form-input-error': error }),
+          }) :
           <FieldFC className={cs(className, { 'form-input-error': error })} {...props} />
         }
         {help && !error ? (

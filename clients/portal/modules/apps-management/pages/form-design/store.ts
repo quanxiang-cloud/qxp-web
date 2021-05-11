@@ -73,12 +73,23 @@ class FormDesignStore {
       const column: any[] = [];
       let recordColNum = 0;
       let fixedColumnIndex: number[] = [];
+      let action: any = {
+        id: 'action',
+        Header: '操作',
+      };
       switch (this.pageTableShowRule.fixedRule) {
       case 'one':
         fixedColumnIndex = [0];
         break;
       case 'previous_two':
         fixedColumnIndex = [0, 1];
+        break;
+      case 'action':
+        action = { ...action, fixed: true, width: 150 };
+        break;
+      case 'one_action':
+        fixedColumnIndex = [0];
+        action = { ...action, fixed: true, width: 150 };
         break;
       }
 
@@ -97,7 +108,7 @@ class FormDesignStore {
           recordColNum += 1;
         }
       });
-      return column;
+      return [...column, action];
     }, appPageDataStore.setTableColumns);
 
     this.destroySetTableConfig = reaction(() => {

@@ -4,6 +4,7 @@ import { Modal, Form } from '@QCFE/lego-ui';
 import Button from '@c/button';
 import SelectField from '@portal/modules/apps-management/components/select-field';
 import { fetchGroupList } from '@portal/modules/apps-management/lib/api';
+import { APP_ICON_LIST } from '@c/app-icon-select';
 import AppIconSelect from '@c/app-icon-select';
 
 type Props = {
@@ -44,7 +45,7 @@ function EditPageModal({ pageInfo, onCancel, onSubmit, appID }: Props) {
     }
   };
 
-  const { name, icon, describe, groupID, appID: curAppID } = pageInfo || {};
+  const { name, icon, describe, groupID, appID: curAppID } = pageInfo || { icon: APP_ICON_LIST[0] };
 
   return (
     <Modal
