@@ -1,4 +1,5 @@
 import React, { FormEvent, useState, useEffect } from 'react';
+import cs from 'classnames';
 
 import useObservable from '@lib/hooks/use-observable';
 import Drawer from '@c/drawer';
@@ -30,7 +31,7 @@ export default function FillInForm() {
 
   function onSubmit(e: FormEvent) {
     e.preventDefault();
-    updateDataField('fillIn', null, () => formData);
+    updateDataField(currentElement.id, null, () => formData);
   }
 
   useEffect(() => {
@@ -74,7 +75,13 @@ export default function FillInForm() {
               />
               <Tab
                 className="mt-10"
-                contentClassName="overflow-x-visible overflow-y-scroll bg-white"
+                headerClassName="border-gray-200 border-b-1"
+                titleClassName={cs(
+                  'bg-white hover:bg-white',
+                  'hover:border-blue-600 hover:border-b-4'
+                )}
+                activeTitleClassName="border-blue-600 border-b-4"
+                contentClassName="overflow-scroll bg-white"
                 style={{ height: 'calc(100% - 56px)' }}
                 items={[{
                   id: 'basicConfig',

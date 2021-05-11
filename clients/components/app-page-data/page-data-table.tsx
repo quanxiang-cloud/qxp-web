@@ -79,7 +79,7 @@ function PageDataTable() {
   };
 
   return (
-    <div className='app-page-data-container flex-1'>
+    <div className='app-page-data-container flex-1 flex flex-col'>
       <div className='mb-16 flex items-center gap-x-16'>
         {operateButton(2, store.authority, (
           <Button onClick={store.createFun} modifier='primary' iconName='add'>新建</Button>
@@ -95,7 +95,6 @@ function PageDataTable() {
       </div>
       <Table
         showCheckbox
-        style={{ maxHeight: '500px' }}
         emptyTips='暂无数据'
         rowKey="_id"
         loading={store.listLoading}

@@ -22,3 +22,13 @@
 html {
   background-color: #e6ecf9;
 }
+
+.beauty-scroll::-webkit-scrollbar {
+  width: 8px;
+}
+
+.beauty-scroll::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.1);
+  background: var(--gray-300);
+}

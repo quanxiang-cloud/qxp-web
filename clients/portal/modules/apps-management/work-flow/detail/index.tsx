@@ -8,6 +8,7 @@ import Content from './content';
 import { getWorkFlowInfo } from './api';
 import Loading from '@c/loading';
 import ErrorTips from '@c/error-tips';
+import toast from '@lib/toast';
 
 import { updateStore, initStore } from './content/editor/store';
 
@@ -28,20 +29,24 @@ export default function Detail() {
     if (!data) {
       return;
     }
-    const bpmn = JSON.parse(data.bpmnText);
-    updateStore(null, () => ({
-      elements: bpmn.shapes,
-      version: bpmn.version,
-      name: data.name,
-      cancelable: data.canCancel === 1,
-      urgeable: data.canUrge === 1,
-      seeStatusAndMsg: data.canViewStatusMsg === 1,
-      nodeAdminMsg: data.canMsg === 1,
-      status: data.status,
-      triggerMode: type || data.triggerMode,
-      id: data.id,
-      processKey: data.processKey,
-    }));
+    try {
+      const bpmn = JSON.parse(data.bpmnText);
+      updateStore(null, () => ({
+        elements: bpmn.shapes,
+        version: bpmn.version,
+        name: data.name,
+        cancelable: data.canCancel === 1,
+        urgeable: data.canUrge === 1,
+        seeStatusAndMsg: data.canViewStatusMsg === 1,
+        nodeAdminMsg: data.canMsg === 1,
+        status: data.status,
+        triggerMode: type || data.triggerMode,
+        id: data.id,
+        processKey: data.processKey,
+      }));
+    } catch (error) {
+      toast.error(error);
+    }
   }, [data]);
 
   useEffect(() => {

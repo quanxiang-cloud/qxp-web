@@ -39,7 +39,7 @@ function AppDropdown({ appList, onChange, curApp, hiddenStatus }: Props) {
   const { bgColor, iconName } = (appIcon ? JSON.parse(appIcon) : {}) as AppIconInfo;
 
   return (
-    <More className='aa' contentClassName='app-dropdown-drop-more' items={appListItems}>
+    <More className='aa' contentClassName='app-dropdown-drop-more beauty-scroll' items={appListItems}>
       <div className='flex items-center cursor-pointer app-dropdown-cur-app'>
         <AppIcon className='mr-8' size={32} themeColor={bgColor} iconName={iconName} />
         <span className="truncate">{appName}</span>

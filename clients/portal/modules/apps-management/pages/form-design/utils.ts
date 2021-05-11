@@ -16,7 +16,7 @@ export function getFilterField(field: PageField):FilterField {
     return {
       ...filter,
       type: 'select',
-      multiple: true,
+      multiple: false,
       enum: field.enum,
     };
   }

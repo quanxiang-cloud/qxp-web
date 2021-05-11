@@ -64,7 +64,7 @@ export default function TriggerCondition({ value, formFieldOptions, onChange }: 
   function onValueChange(v?: boolean) {
     setOpenMore(!!v);
     if (v && !value) {
-      addOrCondition();
+      addOrCondition(true);
     }
   }
 
@@ -113,10 +113,10 @@ export default function TriggerCondition({ value, formFieldOptions, onChange }: 
     );
   }
 
-  function addOrCondition() {
+  function addOrCondition(isInit?: boolean) {
     if (!value) {
       onChange({
-        op: 'or',
+        op: isInit ? '' : 'or',
         expr: [{
           op: 'and',
           expr: [{
@@ -128,7 +128,7 @@ export default function TriggerCondition({ value, formFieldOptions, onChange }: 
       });
     } else {
       onChange({
-        ...value,
+        op: value.expr.length ? 'or' : '',
         expr: [
           ...value.expr,
           {
@@ -156,8 +156,8 @@ export default function TriggerCondition({ value, formFieldOptions, onChange }: 
     };
   }
 
-  function conditionRender(conditions: TriggerConditionType = { op: 'or', expr: [] }) {
-    if (!conditions.expr) {
+  function conditionRender(conditions: TriggerConditionType) {
+    if (!conditions?.expr) {
       return null;
     }
     return conditions.expr.map((triggerCondition, index) => {
@@ -178,7 +178,8 @@ export default function TriggerCondition({ value, formFieldOptions, onChange }: 
               </footer>
             )}
           </section>
-          {conditions.op === 'or' && (index < conditions.expr.length - 1) && (
+          {(conditions.op === 'or' || conditions.op === '') &&
+            (index < conditions.expr.length - 1 ) && (
             <p className="px-16 my-16">或</p>
           )}
         </div>
@@ -209,7 +210,7 @@ export default function TriggerCondition({ value, formFieldOptions, onChange }: 
             'flex items-center border border-dashed border-gray-300 small-border-radius',
             'py-5 text-button my-16 justify-center cursor-pointer h-32',
           )}
-          onClick={addOrCondition}
+          onClick={() => addOrCondition()}
         >
           <Icon name="add" className="mr-8" size={20} />
           <span>添加或条件</span>

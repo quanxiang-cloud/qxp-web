@@ -270,11 +270,11 @@ export function updateStore<T>(
   });
 }
 
-export function updateDataField(elementType: string, fieldName: string | null, updater: Function) {
+export function updateDataField(id: string, fieldName: string | null, updater: Function) {
   store.next({
     ...store.value,
     elements: store.value.elements.map((element): FlowElement => {
-      if (element.type === elementType) {
+      if (element.id === id) {
         const newElement = { ...element };
         if (fieldName) {
           newElement.data = {
@@ -317,54 +317,6 @@ export function updateNodeData(elementType: string, fieldName: string, updater: 
       }
       return element;
     }),
-  });
-}
-
-function _updateTriggerConditionField(
-  conditions: TriggerCondition,
-  currentCondition: TriggerConditionExpressionItem,
-  newData: Partial<TriggerConditionExpressionItem> | null,
-): TriggerCondition {
-  const { expr } = conditions;
-
-  if (!expr) {
-    return {
-      ...conditions,
-      ...newData,
-    } as TriggerCondition;
-  }
-
-  return {
-    ...conditions,
-    expr: expr.map((exprItem) => {
-      if (exprItem === currentCondition) {
-        if (newData === null) {
-          return false;
-        }
-        return {
-          ...exprItem,
-          ...newData,
-        };
-      } else if (
-        (exprItem as TriggerCondition).expr && (exprItem as TriggerCondition).expr.length
-      ) {
-        return _updateTriggerConditionField(
-          exprItem as TriggerCondition,
-          currentCondition,
-          newData
-        );
-      } else {
-        return exprItem;
-      }
-    }).filter(Boolean) as TriggerConditionExpression,
-  };
-}
-export function updateTriggerConditionField(
-  currentCondition: TriggerConditionExpressionItem,
-  newData: Partial<TriggerConditionExpressionItem> | null,
-) {
-  updateDataField('formData', 'triggerCondition', (conditions: TriggerCondition) => {
-    return _updateTriggerConditionField(conditions, currentCondition, newData);
   });
 }
 

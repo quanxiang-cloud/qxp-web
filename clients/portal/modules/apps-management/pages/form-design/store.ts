@@ -25,6 +25,8 @@ class FormDesignStore {
   destroySetAllFiltrate: IReactionDisposer;
   @observable pageID = '';
   @observable appID = '';
+  @observable saveSchemeLoading = false;
+  @observable initScheme = {};
   @observable pageLoading = true;
   @observable formStore: any = null;
   @observable hasSchema = false;
@@ -171,6 +173,11 @@ class FormDesignStore {
   }
 
   @action
+  reSetFormScheme = () => {
+    this.formStore = new FormStore({ schema: this.initScheme });
+  }
+
+  @action
   fetchFormScheme = (pageID: string) => {
     if (!pageID) {
       return;
@@ -180,6 +187,7 @@ class FormDesignStore {
     fetchFormScheme(pageID).then((res) => {
       const { schema = {}, config } = res.data || {};
       this.hasSchema = res.data ? true : false;
+      this.initScheme = schema;
       this.formStore = new FormStore({ schema });
       if (config) {
         this.pageTableConfig = config.pageTableConfig || {};
@@ -193,21 +201,17 @@ class FormDesignStore {
   }
 
   @action
-  createFormScheme = () => {
-    createFormScheme({ tableID: this.pageID, schema: this.formStore.schema }).then(() => {
-      this.formStore.hasEdit = false;
-      toast.success('创建成功!');
-    });
-  }
-
-  @action
-  updateFormScheme = () => {
-    updateFormScheme({
+  saveFormScheme = () => {
+    this.saveSchemeLoading = true;
+    return (this.hasSchema ? updateFormScheme : createFormScheme)({
       schema: this.formStore.schema,
       tableID: this.pageID,
     }).then(() => {
       this.formStore.hasEdit = false;
-      toast.success('保存成功!');
+      toast.success(this.hasSchema ? '保存成功!' : '创建成功!');
+      this.saveSchemeLoading = false;
+    }).catch(() => {
+      this.saveSchemeLoading = false;
     });
   }
 
