@@ -50,24 +50,15 @@
   }
 
   .tab-content {
-    width: 100%;
     background: #fff;
     padding: 16px 20px;
     overflow: auto;
 
     .tab-content-item{
-      @apply transition-opacity;
-      opacity: 0;
-      height: 0;
-      width: 0;
-      pointer-events: none;
+      display: none;
     }
     .show{
-      opacity: 1;
-      width: 100%;
-      height: 100%;
-      visibility: visible;
-      pointer-events: auto;
+      display: block;
     }
   }
 }
