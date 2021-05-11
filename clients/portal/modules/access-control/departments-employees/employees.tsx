@@ -157,7 +157,7 @@ export default function Employees({
             menus={menu}
             placement="bottom-end"
             className="opacity-1"
-            onChange={(key) => {
+            onMenuClick={(key) => {
               if (key === 'edit') {
                 handleUserInfo(record);
                 return;
@@ -256,7 +256,7 @@ export default function Employees({
                   menus={ExpandActions}
                   placement="bottom-end"
                   className="opacity-1"
-                  onChange={(key) => {
+                  onMenuClick={(key) => {
                     if (key === 'export') {
                       handleEmployeesExport();
                       return;
