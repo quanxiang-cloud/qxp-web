@@ -7,10 +7,20 @@ import Avatar from '../avatar';
 import Status from '@c/status';
 import Icon from '@c/icon';
 
+import { mapFormDataWithKey } from '../utils';
+
 import './index.scss';
 
 interface Props {
   task: ApprovalTask;
+}
+
+function getEnumLabelFromSchema(schema: Record<string, any>, key: string, value: string) {
+  const enumData = schema?.properties?.[key]?.enum || [];
+  if (enumData.length) {
+    return (enumData.find((v: {value: any}) => v.value === value))?.label || value;
+  }
+  return value;
 }
 
 export default function TaskCard({ task }: Props): JSX.Element {
@@ -20,7 +30,7 @@ export default function TaskCard({ task }: Props): JSX.Element {
     history.push(`/approvals/${task.processInstanceId}/${task.id}`);
   }
 
-  const { id, name, assignee, createTime, flowInstanceEntity } = task;
+  const { name, createTime, flowInstanceEntity } = task;
 
   return (
     <div className="corner-2-8-8-8 bg-white mb-16 approval-card">
@@ -55,9 +65,13 @@ export default function TaskCard({ task }: Props): JSX.Element {
         <div className="right-info px-20 py-12 flex flex-1 justify-between pl-40">
           <div className="flex flex-col">
             {
-              _.values(flowInstanceEntity.formData).map(({ title, value }: {title: string, value: string}, idx)=> (
-                <p key={idx} className="mb-4 form-data-item"><span>{title}: </span><span>{value}</span></p>
-              ))
+              mapFormDataWithKey(flowInstanceEntity?.formData || {}).map(({ title, value, keyName }: { title: string, value: string, keyName: string }) => {
+                return (
+                  <p key={keyName} className="mb-4 form-data-item">
+                    <span>{title}: </span><span>{getEnumLabelFromSchema(flowInstanceEntity?.formSchema?.table || {}, keyName, value)}</span>
+                  </p>
+                )
+              })
             }
           </div>
           <div className="create-time">

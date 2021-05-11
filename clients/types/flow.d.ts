@@ -29,6 +29,7 @@ interface FlowInstance {
   creatorName?: string;
   flowId?: string;
   formData?: object;
+  formSchema?: {table: object};
   formId?: string;
   formInstanceId?: string;
   id?: string;

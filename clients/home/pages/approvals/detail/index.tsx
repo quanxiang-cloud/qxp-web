@@ -19,6 +19,7 @@ import registry from '@c/form-builder/registry';
 
 import Panel from './panel';
 import * as apis from '../api';
+import {parseFormValue} from '../utils';
 
 import './index.scss';
 
@@ -56,13 +57,6 @@ const actionMap = {
   // 操作: '',
   // 驳回: '',
 };
-
-function parseFormValue(formData: TaskFormData): Record<string, any> {
-  return Object.entries(formData).reduce((acc, [key, { value }]) => {
-    acc[key] = value;
-    return acc;
-  }, {} as Record<string, any>);
-}
 
 function ApprovalDetail(): JSX.Element {
   const [search] = useURLSearch();
