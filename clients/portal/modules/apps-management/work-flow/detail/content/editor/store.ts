@@ -69,7 +69,7 @@ export interface BasicNodeConfig {
   };
 }
 
-export interface DefaultOperation {
+export interface SystemOperation {
   enabled: boolean;
   changeable: boolean;
   name: string;
@@ -86,7 +86,7 @@ export interface CustomOperation {
 }
 
 export interface OperationPermission {
-  default: DefaultOperation[];
+  system: SystemOperation[];
   custom: CustomOperation[];
 }
 
@@ -329,7 +329,7 @@ export function updateNodeData(elementType: string, fieldName: string, updater: 
 }
 
 export function resetElementsData(
-  type: 'formData' | 'approve' | 'fillIn', 
+  type: 'formData' | 'approve' | 'fillIn',
   value: Partial<BusinessData>
 ) {
   store.next({
@@ -337,10 +337,10 @@ export function resetElementsData(
     elements: store.value.elements.map((element) => {
       if (element.type && ['formData', 'approve', 'fillIn'].includes(element.type)) {
         if (element.type === type) {
-          element.data.businessData = { 
+          element.data.businessData = {
             ...getNodeInitialData('formData'),
             ...value,
-          }
+          };
         } else {
           element.data.businessData = getNodeInitialData(
             element.type as 'formData' | 'approve' | 'fillIn'
@@ -348,8 +348,8 @@ export function resetElementsData(
         }
       }
       return element;
-    })
-  })
+    }),
+  });
 }
 
 export default store;

@@ -41,15 +41,15 @@ export default forwardRef(function FormSelector(
       onChange({
         value: val,
         name: options.find(({ value }) => value === val)?.label || '',
-      })
+      });
     }
   }
 
   function onSubmitWorkFormChange() {
-    const form =  {
+    const form = {
       value: currentWorkTable,
       name: options.find(({ value }) => value === currentWorkTable)?.label || '',
-    }
+    };
     onChange(form);
     resetElementsData('formData', { form });
     onCancelSubmitWorkForm();
@@ -102,7 +102,7 @@ export default forwardRef(function FormSelector(
         </ToolTip>
       )}
       {currentWorkTable && (
-        <ConfirmModal 
+        <ConfirmModal
           title="更换触发工作表"
           onCancel={onCancelSubmitWorkForm}
           onSubmit={onSubmitWorkFormChange}

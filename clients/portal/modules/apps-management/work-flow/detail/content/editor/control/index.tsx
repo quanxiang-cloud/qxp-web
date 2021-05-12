@@ -12,7 +12,7 @@ import {
 import Icon from '@c/icon';
 import Button from '@c/button';
 import useObservable from '@lib/hooks/use-observable';
-import store, { StoreValue, updateStore } from '@flow/detail/content/editor/store';
+import store, { StoreValue } from '@flow/detail/content/editor/store';
 import toast from '@lib/toast';
 
 import ControlButton from './control-button';
@@ -90,7 +90,7 @@ function Controls({
   const saveMutation = useMutation(saveWorkFlow, {
     onSuccess: (respData) => {
       toast.success('保存成功');
-      history.push(`/apps/flow/${appID}/${respData.id}`)
+      history.push(`/apps/flow/${appID}/${respData.id}`);
     },
     onError: (err: Error) => {
       toast.error(err.message);

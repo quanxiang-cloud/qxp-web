@@ -9,7 +9,7 @@ import ErrorTips from '@c/error-tips';
 
 import { getOperationList } from '../../api';
 import {
-  DefaultOperation,
+  SystemOperation,
   CustomOperation,
   OperationPermission as OperationPermissionType,
 } from '../../../store';
@@ -31,26 +31,26 @@ export default function OperatorPermission({ value, onChange, type }: Props) {
   }, [data, value]);
 
   function mergeOperation() {
-    const { custom, default: df } = value;
+    const { custom, system } = value;
     const isCustomEmpty = !custom.length;
-    const isDefaultEmpty = !df.length;
+    const isSystemEmpty = !system.length;
     data?.custom.forEach((op) => {
       if (isCustomEmpty || !custom.find(({ name }) => name === op.name)) {
         custom.push(op);
       }
     });
-    data?.default?.forEach((op) => {
-      if (isDefaultEmpty || !df.find(({ name }) => name === op.name)) {
-        df.push(op as DefaultOperation);
+    data?.system?.forEach((op) => {
+      if (isSystemEmpty || !system.find(({ name }) => name === op.name)) {
+        system.push(op as SystemOperation);
       }
     });
-    setMergedOperations({ custom, default: df });
+    setMergedOperations({ custom, system });
   }
 
   function onUpdateOperation(
-    type: 'default' | 'custom',
-    operation: DefaultOperation,
-    value: Partial<DefaultOperation>,
+    type: 'system' | 'custom',
+    operation: SystemOperation,
+    value: Partial<SystemOperation>,
   ) {
     onChange({
       ...mergedOperations,
@@ -66,7 +66,7 @@ export default function OperatorPermission({ value, onChange, type }: Props) {
     });
   }
 
-  function listRender(label: string, operation: DefaultOperation[], type: 'default' | 'custom') {
+  function listRender(label: string, operation: SystemOperation[], type: 'system' | 'custom') {
     if (!operation.length) {
       return null;
     }
@@ -158,8 +158,8 @@ export default function OperatorPermission({ value, onChange, type }: Props) {
         <div className="mr-100">操作</div>
         <div>按钮文案</div>
       </header>
-      {listRender('默认操作', mergedOperations.default, 'default')}
-      {listRender('自定义操作', mergedOperations.custom as DefaultOperation[], 'custom')}
+      {listRender('默认操作', mergedOperations.system, 'system')}
+      {listRender('自定义操作', mergedOperations.custom as SystemOperation[], 'custom')}
     </>
   );
 }
