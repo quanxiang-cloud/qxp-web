@@ -13,7 +13,7 @@ function PageItem({ node, store, onMenuClick }: Props) {
   const isActive = store.currentFocusedNode.id === node.id;
   const isPage = node.data.menuType === 0;
 
-  const MENUS: MenuItem<string>[] = [
+  const MENUS: MenuItem[] = [
     isPage ?
       {
         key: 'editPage',
@@ -54,7 +54,7 @@ function PageItem({ node, store, onMenuClick }: Props) {
         <MoreMenu
           menus={MENUS}
           placement="bottom-end"
-          onChange={(key: string) => onMenuClick(key, node)}
+          onMenuClick={(key: string) => onMenuClick(key, node)}
         >
           <Icon
             changeable

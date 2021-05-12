@@ -52,6 +52,9 @@ class RetrieveUser extends User {
 }
 
 function customeValidator(value: string) {
+  if (value === '') {
+    return '新密码不能为空';
+  }
   if (value && !isPassword(value)) {
     return '密码必须包含数字、字母和符号，长度至少为 8 位';
   }

@@ -35,12 +35,12 @@ export const EmployeesColumns = [
   },
 ];
 
-export type AuthorMenuItem<T> = {
+export type AuthorMenuItem = {
   authority: number[];
   leader: number[];
-} & MenuItem<T>;
+} & MenuItem;
 
-export const EmployeesActions: AuthorMenuItem<string>[] = [
+export const EmployeesActions: AuthorMenuItem[] = [
   {
     key: 'edit',
     label: (
@@ -120,7 +120,7 @@ export const EmployeesActions: AuthorMenuItem<string>[] = [
   },
 ];
 
-export const ExpandActions: MenuItem<string>[] = [
+export const ExpandActions: MenuItem[] = [
   {
     key: 'export',
     label: (
