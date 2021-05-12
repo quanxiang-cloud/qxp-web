@@ -23,7 +23,7 @@
 
 .wrap {
   display: grid;
-  grid-template-columns: 200px minmax(464px, 40%) 1fr;
+  grid-template-columns: 200px 464px 1fr;
   background: white;
   height: calc(100% - 56px);
 
