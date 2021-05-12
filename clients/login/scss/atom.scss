@@ -94,6 +94,10 @@
   border-radius: 12px;
 }
 
+.br-16 {
+  border-radius: 16px;
+}
+
 .text-center {
   text-align: center;
 }
@@ -247,6 +251,14 @@
   color: #375FF3;
 }
 
+.text-gray-600{
+  color:var(--gray-600);
+}
+
+.text-gray-400 {
+  color:var(--gray-400);
+}
+
 .bg-gray-7 {
   background-color: #334155;
 }
@@ -350,4 +362,8 @@
 .py-64 {
   padding-top: 64px;
   padding-bottom: 64px;
+}
+
+.opacity-50{
+  opacity: .5;
 }

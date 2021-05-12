@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { observer } from 'mobx-react';
 
-import MoreMenu, { MenuItem } from '@c/more-menu';
+import MoreMenu from '@c/more-menu';
 import Authorized from '@c/authorized';
 import Icon from '@c/icon';
 import { NodeRenderProps } from '@c/headless-tree/types';
@@ -9,7 +9,7 @@ import { NodeRenderProps } from '@c/headless-tree/types';
 import EditDepartment from './edit-department';
 import DeleteDepartment from './delete-department';
 
-const MENUS: MenuItem<string>[] = [
+const MENUS = [
   {
     key: 'add',
     label: (
@@ -83,7 +83,7 @@ function DepartmentNode({ node, store }: NodeRenderProps<Department>): JSX.Eleme
           menus={MENUS}
           placement="bottom-end"
           className="opacity-0 group-hover:opacity-100"
-          onChange={(key) => {
+          onMenuClick={(key) => {
             if (key === 'add') {
               onAdd();
               return;

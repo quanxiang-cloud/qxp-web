@@ -40,6 +40,12 @@ class PasswordUser extends User {
     return this.password.validate();
   }
 }
+function customeValidator(value: string ) {
+  if (value === '') {
+    return '密码不能为空';
+  }
+  return '';
+}
 
 new PasswordUser({
   username: {
@@ -52,6 +58,7 @@ new PasswordUser({
     name: 'login:password:password',
     inputElement: query<HTMLInputElement>('input[name="password"]'),
     errorElement: query<HTMLInputElement>('.password-hints'),
+    customeValidator,
   },
   action: query<HTMLButtonElement>('.btn-login'),
 });

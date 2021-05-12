@@ -333,7 +333,7 @@ const MsgTable = ({ refresh }: Props) => {
         return (
           <Authorized authority={['system/mangage']}>
             <MoreMenu
-              onChange={() => {}}
+              onMenuClick={() => {}}
               placement="bottom-end"
               className="opacity-1"
               menus={menus}/>
