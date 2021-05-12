@@ -2,15 +2,15 @@ import React, { useEffect } from 'react';
 import cs from 'classnames';
 import {
   useTable,
-  FixedColumn,
   UnionColumns,
   TableOptions,
+  useRowSelect,
 } from 'react-table';
 
 import TableLoading from './table-loading';
-import { getDefaultSelectMap, useFixedStyle } from './utils';
-import hooks from './hooks';
+import { getDefaultSelectMap, useExtendColumns } from './utils';
 import './index.scss';
+import useSticky from './use-sticky';
 
 interface Props<T extends Record<string, any>> {
   className?: string;
@@ -39,15 +39,7 @@ export default function Table<T extends Record<string, any>>({
   showCheckbox,
   style,
 }: Props<T>): JSX.Element {
-  const extendsColumns = [...columns];
-  // todo refactor this
-  const firstColumnFixed = columns.length > 0 && (columns[0] as FixedColumn<T>).fixed;
-  if (showCheckbox) {
-    extendsColumns.unshift({ width: 40, fixed: firstColumnFixed, id: '_selector' });
-  }
-  const hiddenColumns = showCheckbox ? [] : ['_selector'];
-  const fixedStyle = useFixedStyle(extendsColumns);
-
+  const extendsColumns = useExtendColumns(columns, showCheckbox);
   const {
     getTableProps,
     getTableBodyProps,
@@ -57,14 +49,11 @@ export default function Table<T extends Record<string, any>>({
     selectedFlatRows,
     state: { selectedRowIds },
   } = useTable(({
-    columns,
     data,
+    columns: extendsColumns,
     getRowId: (row) => row[rowKey],
-    initialState: {
-      hiddenColumns,
-      selectedRowIds: getDefaultSelectMap(initialSelectedRowKeys),
-    },
-  }) as TableOptions<T>, ...hooks);
+    initialState: { selectedRowIds: getDefaultSelectMap(initialSelectedRowKeys) },
+  }) as TableOptions<T>, useRowSelect, useSticky);
 
   useEffect(() => {
     if (!onSelectChange) {
@@ -97,29 +86,22 @@ export default function Table<T extends Record<string, any>>({
       <div className={cs('qxp-table', className)} style={style}>
         <table {...getTableProps()}>
           <colgroup id="colgroup">
-            {headerGroups[0].headers.map((header, index) => {
-              const fixed = (extendsColumns[index] as FixedColumn<any>).fixed;
+            {headerGroups[0].headers.map((header) => {
               return (
                 <col
+                  { ...header.getHeaderProps() }
                   key={header.id}
-                  style={fixed ? { width: `${header.width}px` } : {}}
                 />
               );
             })}
           </colgroup>
           <thead>
             <tr>
-              {headerGroups[0].headers.map((header, index) => {
-                const hasFixed = (extendsColumns[index] as FixedColumn<any>).fixed;
-                // todo explain this
-                const zIndex = hasFixed ? extendsColumns.length - index + 1 : undefined;
-
+              {headerGroups[0].headers.map((header) => {
                 return (
                   <th
                     {...header.getHeaderProps()}
                     key={header.id}
-                    className={cs({ 'table__header-fixed': hasFixed })}
-                    style={{ ...fixedStyle(index), zIndex }}
                   >
                     {header.render('Header')}
                   </th>
@@ -137,14 +119,11 @@ export default function Table<T extends Record<string, any>>({
                   key={row.id}
                   className='qxp-table-tr'
                 >
-                  {row.cells.map((cell, index) => {
-                    const hasFixed = (extendsColumns[index] as FixedColumn<any>).fixed;
+                  {row.cells.map((cell) => {
                     return (
                       <td
                         {...cell.getCellProps()}
                         key={cell.column.id}
-                        className={cs({ 'table__cell-fixed': hasFixed })}
-                        style={fixedStyle(index)}
                       >
                         {cell.render('Cell')}
                       </td>

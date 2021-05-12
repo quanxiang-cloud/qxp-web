@@ -35,6 +35,18 @@
       z-index: 2;
     }
 
+    [data-sticky-td] {
+      position: sticky;
+    }
+
+    [data-sticky-last-left-td] {
+      box-shadow: 2px 0px 3px var(--gray-200);
+    }
+
+    [data-sticky-first-right-td] {
+      box-shadow: -2px 0px 3px var(--gray-200);
+    }
+
     tbody {
       tr {
 
@@ -80,10 +92,6 @@
       display: inline-block;
       margin-bottom: 8px;
     }
-  }
-
-  .qxp-table-content {
-    // overflow: auto;
   }
 
   .qxp-table-total-tips {

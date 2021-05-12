@@ -76,7 +76,7 @@ function DetailsDrawer({ onCancel, rowID }: Props) {
       <div className='grid gap-20 grid-cols-2'>
         {list.map(({ label, value }) => (
           <div className='page-data-info-view' key={label + value}>
-            <div className='text-body2-no-color text-gray-600 truncate'>{label}</div>
+            <div className='text-body2-no-color text-gray-600'>{label}</div>
             <div className='text-body2 truncate'>{value}</div>
           </div>
         ))}

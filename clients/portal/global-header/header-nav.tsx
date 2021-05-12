@@ -1,5 +1,5 @@
 import React from 'react';
-import { useLocation, Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { twCascade } from '@mariusmarais/tailwind-cascade';
 
 import Icon from '@c/icon';
@@ -47,7 +47,7 @@ export default function HeaderLeft() {
       <Link
         to="/"
         className={twCascade(
-          'header-nav-btn group mr-20',
+          'header-nav-btn group mr-12',
           className(isHome)
         )}
       >
@@ -85,7 +85,7 @@ export default function HeaderLeft() {
           className="header-nav-btn-text group-hover:text-blue-600"
           style={style(isAppManagement)}
         >
-          应用管理
+              应用管理
         </span>
       </Link>
       <Authorized authority={['accessControl']}>
