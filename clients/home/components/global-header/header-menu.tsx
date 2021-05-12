@@ -56,7 +56,7 @@ export default function HeaderMenu() {
             { key: 'resetPassword', label: '重置密码' },
             { key: 'logout', label: '登出' },
           ]}
-          onChange={(menuKey) => {
+          onMenuClick={(menuKey) => {
             if (menuKey === 'logout') {
               window.location.href = '/logout';
               return;

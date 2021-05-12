@@ -14,18 +14,18 @@ const modifiers = [
   },
 ];
 
-export type MenuItem = {
-  key: React.Key;
+export type MenuItem<T extends React.Key = string> = {
+  key: T;
   label: React.ReactNode;
   disabled?: boolean | undefined;
 }
 
-type MenusProps = {
-  onClick: (key: React.Key) => void;
-  items: MenuItem[];
+type MenusProps<T extends React.Key> = {
+  onClick: (key: T) => void;
+  items: MenuItem<T>[];
 }
 
-function Menus({ items, onClick }: MenusProps): JSX.Element {
+function Menus<T extends React.Key>({ items, onClick }: MenusProps<T>): JSX.Element {
   return (
     <div className="dropdown-options">
       {
@@ -48,23 +48,23 @@ function Menus({ items, onClick }: MenusProps): JSX.Element {
   );
 }
 
-type Props = {
+type Props<T extends React.Key> = {
   iconName?: string;
   className?: string;
   onVisibilityChange?: (visible: boolean) => void;
-  onMenuClick: (key: React.Key) => void;
-  menus: MenuItem[];
+  onMenuClick: (key: T) => void;
+  menus: MenuItem<T>[];
   placement?: Placement;
   children?: React.ReactElement;
 }
 
-export default function MoreMenu({
+export default function MoreMenu<T extends React.Key>({
   iconName, className, menus, children, onVisibilityChange, onMenuClick, placement,
-}: Props): JSX.Element {
+}: Props<T>): JSX.Element {
   const reference = React.useRef<Element>(null);
   const popperRef = React.useRef<Popper>(null);
 
-  function handleMenuClick(key: React.Key) {
+  function handleMenuClick(key: T) {
     popperRef.current?.close();
     onMenuClick(key);
   }
