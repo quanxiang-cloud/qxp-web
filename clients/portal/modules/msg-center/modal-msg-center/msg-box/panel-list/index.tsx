@@ -6,8 +6,8 @@ import { useMutation, useQuery } from 'react-query';
 import { get } from 'lodash';
 import Loading from '@c/loading';
 import ErrorTips from '@c/error-tips';
-import MsgItem from '@portal/modules/msg-center/msg-item';
 import Toolbar from './toolbar';
+import MoreMenu from '@c/more-menu';
 import {
   getMessageList,
   deleteMsgByIds,
@@ -22,7 +22,8 @@ import { useRouting } from '../../../hooks';
 import NoMsg from '../no-msg';
 import msgCenter from '@portal/stores/msg-center';
 import styles from '../index.module.scss';
-
+import SvgIcon from '@c/icon';
+import MsgItem from '../../../msg-item/index';
 const PanelList = () => {
   const { paging, selectType, filterCheckUnread } = msgCenter;
   const queryPage = useRouting();
@@ -143,13 +144,13 @@ const PanelList = () => {
     });
   };
 
-  const handleCheckedReaded = () => {
+  const handleCheckedReaded = (title?:string, id?:string) => {
     setConfirmInfo({
       visible: true,
       title: '标记已读',
-      content: `确定要将已选中的${selectedRows.length}条消息标记为已读吗?`,
+      content: id ? `确定要将${title}信息标记为已读?` : `确定要将已选中的${selectedRows.length}条消息标记为已读吗?`,
       cb: () => {
-        setMsgAsReadByIds(selectedRows)
+        setMsgAsReadByIds(id ? [id] : selectedRows)
           .then(() => {
             refetch();
             unReadRefetch();
@@ -162,13 +163,13 @@ const PanelList = () => {
     });
   };
 
-  const handleDeleteMessage = () => {
+  const handleDeleteMessage = (title?:string, id?:string) => {
     setConfirmInfo({
       visible: true,
       title: '删除消息',
-      content: `确定要将已选中的${selectedRows.length}条消息删除吗?`,
+      content: id ? `确定要将${title}信息删除?` : `确定要将已选中的${selectedRows.length}条消息删除吗?`,
       cb: () => {
-        deleteMsgMutation.mutate(selectedRows);
+        deleteMsgMutation.mutate(id ? [id] : selectedRows);
       },
     });
   };
@@ -231,6 +232,45 @@ const PanelList = () => {
                     hideType
                   />
                 ),
+              },
+              {
+                title: '',
+                render: (msg: Qxp.MsgItem) => {
+                  const { title, id } = msg;
+                  const menus = [
+                    {
+                      key: 'delete',
+                      label: (
+                        <div className="flex items-center" onClick={() => {
+                          handleDeleteMessage(title, id);
+                        }}>
+                          <SvgIcon name="restore_from_trash" size={16} className="mr-8" />
+                          <span className="font-normal">删除&emsp;&emsp;</span>
+                        </div>
+
+                      ),
+                    },
+                    {
+                      key: 'mark',
+                      label: (
+                        <div className="flex items-center" onClick={() => {
+                          handleCheckedReaded(title, id);
+                        }}>
+                          <SvgIcon name="restore_from_trash" size={16} className="mr-8" />
+                          <span className="font-normal">标记为已读&emsp;&emsp;</span>
+                        </div>
+
+                      ),
+                    },
+                  ];
+                  return (
+                    <MoreMenu
+                      onChange={() => {}}
+                      placement="bottom-end"
+                      className="opacity-1"
+                      menus={menus}/>
+                  );
+                },
               },
             ]}
             dataSource={msgList}
