@@ -153,7 +153,6 @@
 }
 
 .form-field-wrapper {
-  min-height: 80px;
   padding-left: 60px;
   padding-right: 60px;
   padding-top: 16px;
@@ -168,6 +167,14 @@
 .form-field-wrapper--active {
   border-color: var(--blue-600);
   background-color: var(--blue-100);
+}
+
+.form-field-wrapper--insert-upper {
+  padding-top: 48px;
+}
+
+.form-field-wrapper--insert-below {
+  padding-bottom: 32px;
 }
 
 .form-builder .field-action-icon {

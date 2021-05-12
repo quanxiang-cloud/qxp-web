@@ -7,18 +7,13 @@ type ISchema = import('@formily/react-schema-renderer').ISchema & {
   };
 };
 
-type DropPosition = {
-  id: string;
-  index: number;
-  path: string;
-  dropPosition: string;
-}
+type DropPosition = 'upper' | 'below';
 
 type DropResult = {
   id: string;
   item: any;
   index: number;
-  dropPosition: string;
+  dropPosition: DropPosition;
 }
 
 type DragObject = SourceElement<any>;

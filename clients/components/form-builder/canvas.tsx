@@ -24,8 +24,7 @@ function FormFields(): JSX.Element {
         id: 'todo delete this',
         item: 'something?',
         index: 0,
-        // todo refactor this
-        dropPosition: 'up',
+        dropPosition: 'upper',
       };
     },
     collect: (monitor) => ({
