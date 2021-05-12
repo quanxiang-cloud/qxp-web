@@ -35,7 +35,7 @@ export default function({ value, onChange }: Props) {
   );
 
   useEffect(() => {
-    if ((value.custom.length || value.system.length) && data.length) {
+    if ((value?.custom?.length || value?.system?.length) && data.length) {
       mergeField();
     }
   }, [value, data]);
