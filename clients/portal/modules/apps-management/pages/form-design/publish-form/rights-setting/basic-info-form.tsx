@@ -34,7 +34,7 @@ function BasicInfoForm(
         help='对权限组的补充说明。以便于区分不同的权限组控制的数据范围。'
         error={errors.description}
         defaultValue={defaultValue.description}
-        register={register('description', { required: '请输入描述信息', maxLength: { value: 50, message: '不能超过50个字符' } })}
+        register={register('description', { maxLength: { value: 50, message: '不能超过50个字符' } })}
       />
     </div>
   );
