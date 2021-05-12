@@ -70,7 +70,7 @@ export default function Editor() {
         el.sourcePosition = Position.Bottom;
         if (el.position.x === 0 && el.position.y === 0) {
           el.position = {
-            x: nodeWithPosition.x - (el.data.nodeData.width / 2) + (Math.random() / 1000),
+            x: nodeWithPosition.x - (el.data.nodeData.width / 2),
             y: nodeWithPosition.y - (el.data.nodeData.height / 2) + index === 0 ? 0 : 150,
           };
         }
