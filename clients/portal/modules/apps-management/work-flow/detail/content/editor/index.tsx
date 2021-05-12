@@ -210,7 +210,7 @@ export default function Editor() {
               }}
               nodeStrokeWidth={3}
             />
-            <Control className="left-16 top-16 right-16 flex absolute" style={{ zIndex: -1 }} />
+            <Control className="left-16 top-16 right-16 flex absolute z-10" />
           </ReactFlow>
         </div>
         <Components />

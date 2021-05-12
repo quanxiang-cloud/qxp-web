@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery } from 'react-query';
+import { isEqual } from 'lodash';
 
 import Toggle from '@c/toggle';
 import Icon from '@c/icon';
 import Tooltip from '@c/tooltip';
 import Loading from '@c/loading';
 import ErrorTips from '@c/error-tips';
+import usePrevious from '@lib/hooks/use-previous';
 
 import { getOperationList } from '../../api';
 import {
@@ -25,26 +27,42 @@ export default function OperatorPermission({ value, onChange, type }: Props) {
   const [mergedOperations, setMergedOperations] = useState<OperationPermissionType>(value);
 
   useEffect(() => {
-    if (data) {
+    if ((data?.custom?.length || data?.system?.length) || 
+    (value?.system?.length || value?.system?.length)) {
       mergeOperation();
     }
   }, [data, value]);
 
+  const previousMergedOperations = usePrevious(mergedOperations);
+
+  useEffect(() => {
+    if (!isEqual(mergedOperations, previousMergedOperations)) {
+      onChange(mergedOperations)
+    }
+  }, [mergedOperations]);
+
   function mergeOperation() {
-    const { custom, system } = value;
+    const { custom, system = [] } = value;
     const isCustomEmpty = !custom.length;
     const isSystemEmpty = !system.length;
+    const customValues = custom.map(({ value }) => value);
+    const systemValues = system.map(({ value }) => value);
+    const dataCustomValues = data?.custom.map(({ value }) => value) || [];
+    const dataSystemValues = data?.system?.map(({ value }) => value) || [];
     data?.custom.forEach((op) => {
-      if (isCustomEmpty || !custom.find(({ name }) => name === op.name)) {
+      if (isCustomEmpty || !customValues.includes(op.value)) {
         custom.push(op);
       }
     });
     data?.system?.forEach((op) => {
-      if (isSystemEmpty || !system.find(({ name }) => name === op.name)) {
+      if (isSystemEmpty || !systemValues.includes(op.value)) {
         system.push(op as SystemOperation);
       }
     });
-    setMergedOperations({ custom, system });
+    setMergedOperations({ 
+      custom: custom.filter(op => op.value && dataCustomValues.includes(op.value)), 
+      system: system.filter(op => op.value && dataSystemValues.includes(op.value)) 
+    });
   }
 
   function onUpdateOperation(
@@ -67,7 +85,7 @@ export default function OperatorPermission({ value, onChange, type }: Props) {
   }
 
   function listRender(label: string, operation: SystemOperation[], type: 'system' | 'custom') {
-    if (!operation.length) {
+    if (!operation?.length) {
       return null;
     }
 
@@ -79,7 +97,7 @@ export default function OperatorPermission({ value, onChange, type }: Props) {
         {operation.map((op) => {
           return (
             <div
-              key={op.name}
+              key={op.value || op.name}
               className="flex items-center justify-between pr-20 py-16 shadow-header"
             >
               <Toggle
@@ -147,6 +165,8 @@ export default function OperatorPermission({ value, onChange, type }: Props) {
   if (isError) {
     return <ErrorTips desc="出错了..." />;
   }
+
+  console.log(value);
 
   return (
     <>
