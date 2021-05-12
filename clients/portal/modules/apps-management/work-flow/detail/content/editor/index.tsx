@@ -71,7 +71,7 @@ export default function Editor() {
         if (el.position.x === 0 && el.position.y === 0) {
           el.position = {
             x: nodeWithPosition.x - (el.data.nodeData.width / 2),
-            y: nodeWithPosition.y - (el.data.nodeData.height / 2) + index === 0 ? 0 : 150,
+            y: nodeWithPosition.y + (index * 80),
           };
         }
       }
