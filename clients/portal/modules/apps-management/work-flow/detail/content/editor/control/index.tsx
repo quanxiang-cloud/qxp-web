@@ -118,7 +118,7 @@ function Controls({
   }
 
   return (
-    <div className={cs('flex flex-row items-center justify-between', className)}>
+    <div className={cs('flex flex-row items-center justify-between', className)} style={style}>
       <Button
         modifier="primary"
         iconName="toggle_on"
@@ -135,7 +135,6 @@ function Controls({
       </Button>
       <div
         className="bg-white shadow-flow-header rounded-4 overflow-hidden flex flex-row items-center"
-        style={style}
       >
         {showZoom && (
           <>
