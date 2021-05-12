@@ -265,7 +265,7 @@ const PanelList = () => {
                   ];
                   return (
                     <MoreMenu
-                      onChange={() => {}}
+                      onMenuClick={() => {}}
                       placement="bottom-end"
                       className="opacity-1"
                       menus={menus}/>
