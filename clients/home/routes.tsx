@@ -1,5 +1,5 @@
 import React, { lazy, Suspense } from 'react';
-import { Route, Switch } from 'react-router';
+import { Route, Switch } from 'react-router-dom';
 
 import PageLoading from '@portal/modules/apps-management/components/page-loading';
 import ErrorTips from '@c/error-tips';
