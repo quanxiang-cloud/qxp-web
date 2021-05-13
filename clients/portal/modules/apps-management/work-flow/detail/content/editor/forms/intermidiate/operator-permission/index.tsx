@@ -166,8 +166,6 @@ export default function OperatorPermission({ value, onChange, type }: Props) {
     return <ErrorTips desc="出错了..." />;
   }
 
-  console.log(value);
-
   return (
     <>
       <div className="text-caption-no-color text-gray-400 mt-16 mb-12">

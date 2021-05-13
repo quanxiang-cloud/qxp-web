@@ -96,6 +96,10 @@ export default function BasicConfig({ type, value, onChange }: Props) {
   }
 
   const { users: employees, departments } = value.approvePersons;
+  const tagBackgroundColorMap = {
+    1: 'var(--blue-100)',
+    2: 'var(--yellow-100)',
+  };
 
   return (
     <div>
@@ -114,11 +118,35 @@ export default function BasicConfig({ type, value, onChange }: Props) {
         <div className="mt-8 mb-12 py-8 px-12 border border-gray-300 corner-2-8-8-8">
           {[...departments, ...employees].map((member) => (
             <Tag<string>
-              className="mr-6 rounded-tl-4 rounded-br-4 mb-8"
-              style={{ backgroundColor: 'white' }}
+              className="mr-6 rounded-tl-4 rounded-br-4 mb-8 overflow-hidden h-24"
+              style={{
+                backgroundColor: tagBackgroundColorMap[member.type],
+                paddingLeft: 0,
+              }}
               key={member.id}
               id={member.id}
-              value={member.ownerName}
+              value={(
+                <div
+                  className="rounded-tl-4 flex items-center mr-4 h-full"
+                >
+                  <div
+                    className={cs('flex w-24 justify-center items-center mr-8 h-full', {
+                      'bg-blue-600': member.type === 1,
+                      'bg-yellow-600': member.type === 2,
+                    })}
+                  >
+                    <Icon name="person" className="text-white" />
+                  </div>
+                  <span
+                    className={cs({
+                      'text-blue-600': member.type === 1,
+                      'text-yellow-600': member.type === 2,
+                    })}
+                  >
+                    {member.ownerName}
+                  </span>
+                </div>
+              )}
               deleteIconSize={16}
               onDelete={() => onSetPersons(
                 departments.filter(({ id }) => id !== member.id),
