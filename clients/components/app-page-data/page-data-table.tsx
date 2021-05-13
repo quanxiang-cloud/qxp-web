@@ -26,7 +26,7 @@ function PageDataTable() {
       ...actionColumn,
       accessor: (data: any) => {
         return (
-          <div className='text-center'>
+          <div>
             {operateButton(1, store.authority, (
               <span
                 onClick={() => setCurRow(data)}

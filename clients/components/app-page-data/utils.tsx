@@ -1,10 +1,10 @@
+import React from 'react';
 import moment from 'moment';
 
 import { getFilterField } from '@portal/modules/apps-management/pages/form-design/utils';
 import { UnionColumns } from 'react-table';
 
 import appPageDataStore from './store';
-import React from 'react';
 
 export type Scheme = Record<string, any>;
 export type PageTableShowRule = {
@@ -34,7 +34,7 @@ export function operateButton(wIndex: number, authority: number, button: React.R
 
 export function getTableCellData(initValue: string | string[], field: PageField) {
   if (!initValue) {
-    return '——';
+    return (<span className='text-gray-300'>——</span>);
   }
 
   if (field.type === 'datetime') {
@@ -122,15 +122,13 @@ export function getPageDataSchema(config: Config, schema: Scheme, pageID: string
     }
   });
 
-  if (Object.keys(pageTableConfig).filter((key: string) => 'sort' in pageTableConfig[key]).length > 0) {
-    tableColumns.sort((a, b) => {
-      return pageTableConfig[a.id]?.sort - pageTableConfig[b.id]?.sort;
-    });
-  } else {
-    tableColumns.sort((a, b) => {
-      return fieldsMap[a.id]['x-index'] - fieldsMap[b.id]['x-index'];
-    });
-  }
+  tableColumns.sort((a, b) => {
+    const sortA = pageTableConfig[a.id]?.sort ?
+      pageTableConfig[a.id]?.sort : fieldsMap[a.id]['x-index'];
+    const sortB = pageTableConfig[b.id]?.sort ?
+      pageTableConfig[b.id]?.sort : fieldsMap[b.id]['x-index'];
+    return sortA - sortB;
+  });
 
   setFiltrates(filtrate.map((field: PageField) => {
     return getFilterField(field);

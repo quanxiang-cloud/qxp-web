@@ -17,7 +17,7 @@ type Props = {
 
 type InfoData = {
   label: string;
-  value: string;
+  value: string | React.ReactNode;
 }
 
 function DetailsDrawer({ onCancel, rowID }: Props) {
