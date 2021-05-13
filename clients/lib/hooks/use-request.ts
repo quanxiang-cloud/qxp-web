@@ -2,7 +2,15 @@ import { useState, useEffect, useReducer } from 'react';
 
 import { CancellableRequest } from '../cancellable-request';
 
-export default function useRequest<T>(input: RequestInfo, fetchOptions?: RequestInit) {
+export default function useRequest<T>(input: RequestInfo, fetchOptions?: RequestInit): [
+  T | null,
+  {
+    setRequest: React.Dispatch<React.SetStateAction<CancellableRequest<T>>>;
+    retry: () => void;
+    cancel: () => void;
+    retryNo: number;
+  }
+] {
   const [data, setData] = useState<T | null>(null);
   const [tryNo, incTryNo] = useReducer((x) => x + 1, 0);
   const [request, setRequest] = useState(() => new CancellableRequest<T>(input, fetchOptions));

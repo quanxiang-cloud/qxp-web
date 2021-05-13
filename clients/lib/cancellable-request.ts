@@ -6,7 +6,13 @@ export class CancellableRequest<T> {
   fetch = async (): Promise<T> => {
     const fetchOptions = this.fetchOptions || {};
     fetchOptions.signal = this.abortController.signal;
-    const resp = await fetch(this.input, fetchOptions);
+    const resp = await fetch(this.input, {
+      ...fetchOptions,
+      headers: {
+        'X-Proxy': 'API',
+        ...(fetchOptions.headers || {}),
+      },
+    });
     const data = await resp.json();
     return data;
   }

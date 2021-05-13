@@ -5,6 +5,7 @@ import Table from '@c/table';
 import Checkbox from '@c/checkbox';
 import ToolTip from '@c/tooltip';
 import Icon from '@c/icon';
+import useRequest from '@lib/hooks/use-request';
 
 import { CustomFieldPermission } from '../../../store';
 import FieldValueEditor from './field-value-editor';
@@ -16,6 +17,16 @@ interface Props {
 }
 
 export default function CustomFieldTable({ editable, fields, updateFields }: Props) {
+  const [data] = useRequest<{
+    code: number;
+    data: {name: string; code: string; desc: string;}[];
+    msg: string;
+  }>('/api/v1/flow/getVariableList', {
+    method: 'POST',
+    credentials: 'same-origin',
+  });
+  const variableOptions = data?.data?.map(({ name, code }) => ({ label: name, value: code }));
+
   function getHeader(model: any, key: 'read' | 'write', label: string) {
     let checkedNumber = 0;
     model.data.forEach((dt: CustomFieldPermission) => {
@@ -57,9 +68,14 @@ export default function CustomFieldTable({ editable, fields, updateFields }: Pro
   function getValueHeader(label: string, tip: string) {
     return (
       <div className="flex items-center">
-        <span>{label}</span>
-        <ToolTip labelClassName="whitespace-nowrap text-12 py-8 px-16" position="left" label={tip}>
-          <Icon name="info" />
+        <span className="mr-4">{label}</span>
+        <ToolTip
+          inline
+          labelClassName="whitespace-nowrap text-12 py-8 px-16"
+          position="left"
+          label={tip}
+        >
+          <Icon name="info" size={20} />
         </ToolTip>
       </div>
     );
@@ -98,6 +114,7 @@ export default function CustomFieldTable({ editable, fields, updateFields }: Pro
     if (editable) {
       return (
         <FieldValueEditor
+          variableOptions={variableOptions}
           defaultValue={model.cell.value}
           onSave={(value: { static: string; variable: string; }) => {
             updateFields(model.data.map((dt: CustomFieldPermission) => {
@@ -153,6 +170,7 @@ export default function CustomFieldTable({ editable, fields, updateFields }: Pro
             Header: '字段',
             accessor: 'fieldName',
             Cell: (model: any) => getCell(model),
+            fixed: true,
           }, {
             Header: (model: any) => getHeader(model, 'read', '查看'),
             accessor: 'read',

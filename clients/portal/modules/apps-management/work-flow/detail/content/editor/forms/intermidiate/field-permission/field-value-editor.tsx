@@ -19,31 +19,18 @@ interface Props {
     variable: string;
     static: string;
   }) => void;
+  variableOptions?: {label: string; value: string;}[];
 }
 
-function FieldValueEditor({ defaultValue = { variable: '', static: '' }, onSave }: Props) {
+function FieldValueEditor({
+  defaultValue = { variable: '', static: '' },
+  variableOptions,
+  onSave,
+}: Props) {
   const [type, setType] = useState(defaultValue.variable ? 'variable' : 'static');
   const [isEditorOpen, setIsEditorOpen] = useState(false);
   const [value, setValue] = useState(defaultValue);
-  const variables = [{
-    label: '变量名称1 ${bmp_originator1}',
-    value: '${bmp_originator1}',
-  }, {
-    label: '变量名2 ${bmp_originator2}',
-    value: '${bmp_originator2}',
-  }, {
-    label: '变量名2 ${bmp_originator3}',
-    value: '${bmp_originator3}',
-  }, {
-    label: '变量名2 ${bmp_originator4}',
-    value: '${bmp_originator4}',
-  }, {
-    label: '变量名2 ${bmp_originator5}',
-    value: '${bmp_originator5}',
-  }];
-
   const previousType = usePrevious(type);
-
   useEffect(() => {
     if (previousType !== type) {
       setValue({
@@ -97,7 +84,7 @@ function FieldValueEditor({ defaultValue = { variable: '', static: '' }, onSave 
           {
             type === 'variable' && (
               <Select<string>
-                options={variables}
+                options={variableOptions || []}
                 defaultValue={value.variable}
                 onChange={(value: string) => setValue((v) => ({ ...v, variable: value }))}
                 placeholder="选择工作流中的变量"

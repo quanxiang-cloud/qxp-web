@@ -5,8 +5,18 @@ import Card from '@c/card';
 import Table from '@c/table';
 import Icon from '@c/icon';
 import { copyToClipboard } from '@lib/utils';
+import useRequest from '@lib/hooks/use-request';
 
 export default function Variables() {
+  const [data] = useRequest<{
+    code: number;
+    data: {name: string; code: string; desc: string;}[];
+    msg: string;
+  }>('/api/v1/flow/getVariableList', {
+    method: 'POST',
+    credentials: 'same-origin',
+  });
+
   function getHeader(name: string) {
     return (
       <span className="text-body-no-color text-gray-400">{name}</span>
@@ -41,34 +51,20 @@ export default function Variables() {
       />
       <Card className="self-center rounded-12 overflow-hidden px-24 py-16 mb-100 w-full max-w-%90">
         <Table
-          rowKey="id"
+          rowKey="code"
           columns={[{
             Header: () => getHeader('名称'),
             accessor: 'name',
           }, {
             Header: () => getHeader('标识'),
-            accessor: 'value',
+            accessor: 'code',
             Cell: (model: any) => getCell(model),
           }, {
             Header: () => getHeader('注释'),
-            accessor: 'comment',
+            accessor: 'desc',
           }]}
-          data={[{
-            name: '发起人',
-            value: '${bmp_originator1}',
-            comment: '一句话说明',
-            id: '1',
-          }, {
-            name: '发起人',
-            value: '${bmp_originator1}',
-            comment: '一句话说明',
-            id: '2',
-          }, {
-            name: '发起人',
-            value: '${bmp_originator1}',
-            comment: '一句话说明',
-            id: '3',
-          }]}
+          data={data?.data || []}
+          loading={!data?.data}
         />
       </Card>
     </div>
