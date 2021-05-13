@@ -86,15 +86,10 @@ function getStickyProps(header: any, instance: any): { style: React.CSSPropertie
   };
 
   const isLastLeftSticky = columnIsLastLeftSticky(header.id, headers);
-
   if (isLastLeftSticky) {
     // @ts-ignore
     dataAttrs['data-sticky-last-left-td'] = true;
-  }
-
-  const isFirstRightSticky = columnIsFirstRightSticky(header.id, headers);
-
-  if (isFirstRightSticky) {
+  } else if (columnIsFirstRightSticky(header.id, headers)) {
     // @ts-ignore
     dataAttrs['data-sticky-first-right-td'] = true;
   }
@@ -113,7 +108,8 @@ const useSticky = (hooks: any) => {
 
   hooks.getCellProps.push((props: any, { instance, cell }: any) => {
     const nextProps = getStickyProps(cell.column, instance);
-    nextProps.style.zIndex = undefined;
+    // all cell should have the same z-index
+    nextProps.style.zIndex = 1;
     return [props, nextProps];
   });
 };
