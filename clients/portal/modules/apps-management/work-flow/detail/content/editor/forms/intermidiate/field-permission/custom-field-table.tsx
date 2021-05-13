@@ -143,6 +143,7 @@ export default function CustomFieldTable({ editable, fields, updateFields }: Pro
             Header: '字段',
             accessor: 'fieldName',
             Cell: (model: any) => getCell(model),
+            fixed: true,
           }, {
             Header: (model: any) => getHeader(model, 'read', '查看'),
             accessor: 'read',
