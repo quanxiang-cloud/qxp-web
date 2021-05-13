@@ -31,11 +31,6 @@ export default function FillInForm() {
   const currentElement = elements.find(({ id }) => id === asideDrawerType) as CurrentElement;
   const [formData, setFormData] = useState<FillInData>(currentElement?.data?.businessData || {});
 
-  function onSubmit(e: FormEvent) {
-    e.preventDefault();
-    updateDataField(currentElement.id, null, () => formData);
-  }
-
   useEffect(() => {
     if (currentElement?.data?.businessData) {
       setFormData(currentElement.data.businessData);
@@ -48,16 +43,21 @@ export default function FillInForm() {
     }
     if (!isEqual(currentElement?.data?.businessData, formData)) {
       updateStore<Errors>('errors', (err) => {
-        err.dataNotSaveMap.set(currentElement, true);
+        err.dataNotSaveMap.set(currentElement?.id, true);
         return { ...err };
       });
     } else {
       updateStore<Errors>('errors', (err) => {
-        err.dataNotSaveMap.delete(currentElement);
+        err.dataNotSaveMap.delete(currentElement?.id);
         return { ...err };
       });
     }
   }, [currentElement?.data?.businessData, formData]);
+
+  function onSubmit(e: FormEvent) {
+    e.preventDefault();
+    updateDataField(currentElement.id, null, () => formData);
+  }
 
   function onFieldChange(fieldName: string) {
     return (value: BasicNodeConfig | FieldPermissionType | OperationPermissionType) => {
@@ -68,28 +68,40 @@ export default function FillInForm() {
     };
   }
 
-  if (!currentElement || !formData?.basicConfig) {
-    return null;
+  function closePanel() {
+    updateStore<StoreValue>(null, (s) => {
+      s.errors.dataNotSaveMap.delete(currentElement?.id);
+      return {
+        ...s,
+        asideDrawerType: '',
+        errors: s.errors,
+      };
+    });
   }
 
   function onCancel() {
-    if (errors?.dataNotSaveMap?.get(currentElement)) {
+    if (errors?.dataNotSaveMap?.get(currentElement?.id)) {
       updateStore<StoreValue>(null, (s) => ({
         ...s,
         showDataNotSaveConfirm: true,
-        currentDataNotSaveConfirmCallback: () => updateStore<StoreValue>(null, (s) => {
-          s.errors.dataNotSaveMap.delete(currentElement);
-          return {
-            ...s,
-            asideDrawerType: '',
-            errors: s.errors,
-          };
-        }),
+        currentDataNotSaveConfirmCallback: () => closePanel(),
       }));
       return false;
     } else {
       updateStore<StoreValue>(null, (s) => ({ ...s, asideDrawerType: '' }));
     }
+  }
+
+  function onLeave() {
+    if (errors?.dataNotSaveMap?.get(currentElement?.id)) {
+      closePanel();
+    } else {
+      updateStore<StoreValue>(null, (s) => ({ ...s, asideDrawerType: '' }));
+    }
+  }
+
+  if (!currentElement || !formData?.basicConfig) {
+    return null;
   }
 
   return (
@@ -158,7 +170,7 @@ export default function FillInForm() {
                 }]}
               />
             </div>
-            <SaveButtonGroup />
+            <SaveButtonGroup onCancel={onLeave} />
           </form>
         </Drawer>
       )}

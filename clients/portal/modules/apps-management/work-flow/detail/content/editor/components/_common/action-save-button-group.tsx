@@ -3,9 +3,11 @@ import cs from 'classnames';
 
 import Button from '@c/button';
 
-import { updateStore } from '@flow/detail/content/editor/store';
+interface Props {
+  onCancel: () => void;
+}
 
-export default function() {
+export default function({ onCancel }: Props) {
   return (
     <div className={cs(
       'flex justify-end flex-none z-10 bg-gray-100 absolute left-0',
@@ -15,7 +17,7 @@ export default function() {
         className="mr-20"
         iconName="close"
         type="button"
-        onClick={() => updateStore(null, () => ({ asideDrawerType: '' }))}
+        onClick={onCancel}
       >
         取消
       </Button>

@@ -146,7 +146,7 @@ export type Errors = Record<string, unknown> & {
       data?: FlowElement;
       msg?: string;
     },
-    dataNotSaveMap: Map<CurrentElement, boolean>;
+    dataNotSaveMap: Map<string, boolean>;
 };
 
 export interface StoreValue {

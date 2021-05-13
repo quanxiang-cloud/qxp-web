@@ -50,12 +50,12 @@ export default function FormDataForm() {
     }
     if (!isEqual(currentElement?.data?.businessData, formData)) {
       updateStore<Errors>('errors', (err) => {
-        err.dataNotSaveMap.set(currentElement, true);
+        err.dataNotSaveMap.set(currentElement.id, true);
         return { ...err };
       });
     } else {
       updateStore<Errors>('errors', (err) => {
-        err.dataNotSaveMap.delete(currentElement);
+        err.dataNotSaveMap.delete(currentElement.id);
         return { ...err };
       });
     }
@@ -78,28 +78,40 @@ export default function FormDataForm() {
     setFormData((s) => ({ ...s, triggerCondition }));
   }
 
-  if (!currentElement || !formData?.form) {
-    return null;
+  function closePanel() {
+    updateStore<StoreValue>(null, (s) => {
+      s.errors.dataNotSaveMap.delete(currentElement?.id);
+      return {
+        ...s,
+        asideDrawerType: '',
+        errors: s.errors,
+      };
+    });
   }
 
   function onCancel() {
-    if (errors?.dataNotSaveMap?.get(currentElement)) {
+    if (errors?.dataNotSaveMap?.get(currentElement?.id)) {
       updateStore<StoreValue>(null, (s) => ({
         ...s,
         showDataNotSaveConfirm: true,
-        currentDataNotSaveConfirmCallback: () => updateStore<StoreValue>(null, (s) => {
-          s.errors.dataNotSaveMap.delete(currentElement);
-          return {
-            ...s,
-            asideDrawerType: '',
-            errors: s.errors,
-          };
-        }),
+        currentDataNotSaveConfirmCallback: () => closePanel(),
       }));
       return false;
     } else {
       updateStore<StoreValue>(null, (s) => ({ ...s, asideDrawerType: '' }));
     }
+  }
+
+  function onLeave() {
+    if (errors?.dataNotSaveMap?.get(currentElement?.id)) {
+      closePanel();
+    } else {
+      updateStore<StoreValue>(null, (s) => ({ ...s, asideDrawerType: '' }));
+    }
+  }
+
+  if (!currentElement || !formData?.form) {
+    return null;
   }
 
   return (
@@ -161,7 +173,7 @@ export default function FormDataForm() {
                 }]}
               />
             </div>
-            <SaveButtonGroup />
+            <SaveButtonGroup onCancel={onLeave} />
           </form>
         </Drawer>
       )}
