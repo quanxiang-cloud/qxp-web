@@ -166,7 +166,7 @@ class FormDesignStore {
 
   @action
   fetchFormScheme = (pageID: string) => {
-    if (!pageID) {
+    if (!pageID || !this.appID) {
       return;
     }
 
