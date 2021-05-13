@@ -5,6 +5,9 @@
   width: 100%;
   background-color: white;
 
+  // create a new stacking context for preventing z-index out bound of sticky element
+  opacity: 0.99999999;
+
   .qxp-table {
     max-height: 100%;
     overflow: auto;

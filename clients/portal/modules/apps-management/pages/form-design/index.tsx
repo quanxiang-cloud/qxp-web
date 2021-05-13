@@ -18,7 +18,7 @@ function FormDesign() {
 
   useEffect(() => {
     store.setPageID(pageId);
-    store.appID = appID;
+    store.setAppID(appID);
     return () => {
       store.clear();
     };

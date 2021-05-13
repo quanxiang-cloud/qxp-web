@@ -24,7 +24,7 @@ function FieldPermissions({ rightsID }: Props) {
   const fieldRevisable = fieldList.filter(({ isSystem }) => !isSystem);
 
   useEffect(() => {
-    fetchFieldFilter(rightsID).then((res) => {
+    fetchFieldFilter(store.appID, rightsID).then((res) => {
       const { schema } = res.data || {};
       if (schema) {
         const visibleList: string[] = [];
@@ -154,7 +154,7 @@ function FieldPermissions({ rightsID }: Props) {
       };
     });
 
-    saveFieldFilter({ permissionGroupID: rightsID, schema }).then(() => {
+    saveFieldFilter(store.appID, { permissionGroupID: rightsID, schema }).then(() => {
       toast.success('保存成功！');
     });
   };

@@ -106,9 +106,22 @@ export function setFixedParameters(
   return [...tableColumns, action];
 }
 
-export function getPageDataSchema(config: Config, schema: Scheme, pageID: string, pageName?: string) {
+export function getPageDataSchema(
+  config: Config,
+  schema: Scheme,
+  pageID: string,
+  appID: string,
+  pageName?: string
+) {
   const { pageTableShowRule = {}, pageTableConfig = {}, filtrate = [] } = config || {};
-  const { setFiltrates, setTableConfig, setTableColumns, setPageID, setFieldsMap } = appPageDataStore;
+  const {
+    setFiltrates,
+    setTableConfig,
+    setTableColumns,
+    setPageID,
+    setFieldsMap,
+    setAppID,
+  } = appPageDataStore;
   const fieldsMap = schema?.properties || {};
   const tableColumns: any[] = [];
   Object.keys(fieldsMap).forEach((key: string) => {
@@ -137,4 +150,5 @@ export function getPageDataSchema(config: Config, schema: Scheme, pageID: string
   setTableConfig(pageTableShowRule);
   setPageID(pageID, pageName);
   setFieldsMap(fieldsMap);
+  setAppID(appID);
 }

@@ -94,7 +94,7 @@ export default function DataPermission({ rightsID }: Props) {
   const fieldList = store.fieldList.map((field) => getFilterField(field));
 
   useEffect(() => {
-    fetchDataAccessPer(rightsID).then((res) => {
+    fetchDataAccessPer(store.appID, rightsID).then((res) => {
       if (!res.data) {
         return;
       }
@@ -168,7 +168,7 @@ export default function DataPermission({ rightsID }: Props) {
       };
     });
 
-    saveDataAccessPer({ perGroupID: rightsID, tag, conditions: _conditions }).then(() => {
+    saveDataAccessPer(store.appID, { perGroupID: rightsID, tag, conditions: _conditions }).then(() => {
       toast.success('保存成功！');
     });
   };

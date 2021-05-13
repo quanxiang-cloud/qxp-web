@@ -77,7 +77,7 @@ export const delAppAdminUsers = (data: any) => {
 
 export const fetchPageList = (appID: string) => {
   return request({
-    url: '/api/v1/structor/menu/list',
+    url: `/api/v1/structor/${appID}/menu/list`,
     method: 'post',
     data: { appID },
   });
@@ -85,7 +85,7 @@ export const fetchPageList = (appID: string) => {
 
 export const fetchGroupList = (appID: string) => {
   return request({
-    url: '/api/v1/structor/group/list',
+    url: `/api/v1/structor/${appID}/group/list`,
     method: 'post',
     data: { appID },
   });
@@ -93,7 +93,7 @@ export const fetchGroupList = (appID: string) => {
 
 export const createPage = (data: PageInfo) => {
   return request({
-    url: '/api/v1/structor/menu/create',
+    url: `/api/v1/structor/${data.appID}/menu/create`,
     method: 'post',
     data,
   });
@@ -101,7 +101,7 @@ export const createPage = (data: PageInfo) => {
 
 export const updatePageOrGroup = (data: PageInfo) => {
   return request({
-    url: '/api/v1/structor/menu/update',
+    url: `/api/v1/structor/${data.appID}/menu/update`,
     method: 'post',
     data,
   });
@@ -109,7 +109,7 @@ export const updatePageOrGroup = (data: PageInfo) => {
 
 export const createGroup = (data: any) => {
   return request({
-    url: '/api/v1/structor/group/create',
+    url: `/api/v1/structor/${data.appID}/group/create`,
     method: 'post',
     data,
   });
@@ -117,7 +117,7 @@ export const createGroup = (data: any) => {
 
 export const deleteGroup = (data: any) => {
   return request({
-    url: '/api/v1/structor/group/delete',
+    url: `/api/v1/structor/${data.appID}/group/delete`,
     method: 'post',
     data,
   });
@@ -125,7 +125,7 @@ export const deleteGroup = (data: any) => {
 
 export const deletePage = (data: any) => {
   return request({
-    url: '/api/v1/structor/menu/delete',
+    url: `/api/v1/structor/${data.appID}/menu/delete`,
     method: 'post',
     data,
   });
@@ -142,151 +142,129 @@ export type MovePageParams = {
 }
 export const movePage = (data: MovePageParams) => {
   return request({
-    url: '/api/v1/structor/menu/transfer',
+    url: `/api/v1/structor/${data.appID}/menu/transfer`,
     method: 'post',
     data,
   });
 };
 
-export const createFormScheme = (data: any) => {
+export const createFormScheme = (appID: string, data: any) => {
   return request({
-    url: '/api/v1/structor/table/create',
+    url: `/api/v1/structor/${appID}/table/create`,
     method: 'post',
     data,
   });
 };
 
-export const fetchFormScheme = (tableID: string) => {
+export const fetchFormScheme = (appID:string, tableID: string) => {
   return request({
-    url: '/api/v1/structor/table/getByID',
+    url: `/api/v1/structor/${appID}/table/getByID`,
     method: 'post',
     data: { tableID },
   });
 };
 
-export const updateFormScheme = (data: any) => {
+export const updateFormScheme = (appID: string, data: any) => {
   return request({
-    url: '/api/v1/structor/table/update',
+    url: `/api/v1/structor/${appID}/table/update`,
     method: 'post',
     data,
   });
 };
 
-export const fetchPageFilterScheme = (tableID: string) => {
+export const createPageScheme = (appID: string, data: any) => {
   return request({
-    url: `/api/v1/structor/schema/${tableID}`,
-    method: 'post',
-  });
-};
-
-export const createPageScheme = (data: any) => {
-  return request({
-    url: '/api/v1/structor/config/create',
+    url: `/api/v1/structor/${appID}/config/create`,
     method: 'post',
     data,
   });
 };
 
-export const updatePageScheme = (data: any) => {
+export const createPerGroup = (appID: string, data: RightsCreate) => {
   return request({
-    url: '/api/v1/structor/config/update',
+    url: `/api/v1/structor/${appID}/permission/perGroup/create`,
     method: 'post',
     data,
   });
 };
 
-export const createPerGroup = (data: RightsCreate) => {
+export const fetchRights = (appID: string, formID: string) => {
   return request({
-    url: '/api/v1/structor/permission/perGroup/create',
-    method: 'post',
-    data,
-  });
-};
-
-export const fetchRights = (formID: string) => {
-  return request({
-    url: '/api/v1/structor/permission/perGroup/getList',
+    url: `/api/v1/structor/${appID}/permission/perGroup/getList`,
     method: 'post',
     data: { formID },
   });
 };
 
-export const deleteRights = (data: any) => {
+export const deleteRights = (appID: string, data: any) => {
   return request({
-    url: '/api/v1/structor/permission/perGroup/delete',
+    url: `/api/v1/structor/${appID}/permission/perGroup/delete`,
     method: 'post',
     data,
   });
 };
 
-export const movePerGroup = (data: any) => {
+export const movePerGroup = (appID: string, data: any) => {
   return request({
-    url: '/api/v1/structor/permission/perGroup/move',
+    url: `/api/v1/structor/${appID}/permission/perGroup/move`,
     method: 'post',
     data,
   });
 };
 
-export const updatePerGroup = (data: Rights) => {
+export const updatePerGroup = (appID: string, data: Rights) => {
   return request({
-    url: '/api/v1/structor/permission/perGroup/update',
+    url: `/api/v1/structor/${appID}/permission/perGroup/update`,
     method: 'post',
     data,
   });
 };
 
-export const fetchOperatePer = (perGroupID: string) => {
+export const fetchOperatePer = (appID: string, perGroupID: string) => {
   return request({
-    url: '/api/v1/structor/permission/operatePer/get',
+    url: `/api/v1/structor/${appID}/permission/operatePer/get`,
     method: 'post',
     data: { perGroupID },
   });
 };
 
-export const saveOperatePer = (data: any) => {
+export const saveOperatePer = (appID: string, data: any) => {
   return request({
-    url: '/api/v1/structor/permission/operatePer/save',
+    url: `/api/v1/structor/${appID}/permission/operatePer/save`,
     method: 'post',
     data,
   });
 };
 
-export const fetchDataAccessPer = (perGroupID: string) => {
+export const fetchDataAccessPer = (appID: string, perGroupID: string) => {
   return request({
-    url: '/api/v1/structor/permission/dataAccessPer/get',
+    url: `/api/v1/structor/${appID}/permission/dataAccessPer/get`,
     method: 'post',
     data: { perGroupID },
   });
 };
 
-export const saveDataAccessPer = (data: any) => {
+export const saveDataAccessPer = (appID: string, data: any) => {
   return request({
-    url: '/api/v1/structor/permission/dataAccessPer/save',
+    url: `/api/v1/structor/${appID}/permission/dataAccessPer/save`,
     method: 'post',
     data,
   });
 };
 
-export const fetchFieldFilter = (permissionGroupID: string) => {
+export const fetchFieldFilter = (appID: string, permissionGroupID: string) => {
   return request({
-    url: '/api/v1/structor/filter/get',
+    url: `/api/v1/structor/${appID}/filter/get`,
     method: 'post',
     data: { permissionGroupID },
   });
 };
 
-export const saveFieldFilter = (data: any) => {
+export const saveFieldFilter = (appID: string, data: any) => {
   return request({
-    url: '/api/v1/structor/filter/save',
+    url: `/api/v1/structor/${appID}/filter/save`,
     method: 'post',
     data,
   });
 };
 
-export const formDataCurd = (tableID: string, data: any) => {
-  return request({
-    method: 'post',
-    url: `/api/v1/structor/form/${tableID}`,
-    data,
-  });
-};
