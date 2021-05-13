@@ -1,5 +1,6 @@
-import React, { useState, useCallback, useRef, DragEvent } from 'react';
+import React, { useState, useRef, DragEvent } from 'react';
 import dagre from 'dagre';
+import cs from 'classnames';
 import { useParams } from 'react-router-dom';
 import ReactFlow, {
   ReactFlowProvider,
@@ -16,6 +17,7 @@ import ReactFlow, {
   FlowElement,
   Elements,
   ArrowHeadType,
+  OnLoadParams,
 } from 'react-flow-renderer';
 
 import { uuid } from '@lib/utils';
@@ -43,7 +45,8 @@ dagreGraph.setDefaultEdgeLabel(() => ({}));
 export default function Editor() {
   const { currentConnection, elements } = useObservable(store) || {};
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
-  const [reactFlowInstance, setReactFlowInstance] = useState(null);
+  const [fitViewFinished, setFitViewFinished] = useState(false);
+  const [reactFlowInstance, setReactFlowInstance] = useState<OnLoadParams>();
   const { flowID } = useParams<{ flowID: string; }>();
 
   function setElements(elements: Elements) {
@@ -160,15 +163,20 @@ export default function Editor() {
     updateStore(null, () => ({ currentConnection: {} }));
   }
 
-  const onLoad = useCallback((reactFlowInstance) => {
+  function onLoad(reactFlowInstance: OnLoadParams) {
     const { fitView } = reactFlowInstance;
     setReactFlowInstance(reactFlowInstance);
     !flowID && setElements(getLayoutedElements(elements));
-    setTimeout(fitView, 0);
-  }, [elements]);
+    setTimeout(() => {
+      fitView();
+      setFitViewFinished(true);
+    }, 0);
+  }
 
   return (
-    <div className="w-full h-full flex-1 relative">
+    <div className={cs('w-full h-full flex-1 relative transition', {
+      'opacity-0': !fitViewFinished,
+    })}>
       <ReactFlowProvider>
         <div className="reactflow-wrapper w-full h-full" ref={reactFlowWrapper}>
           <ReactFlow

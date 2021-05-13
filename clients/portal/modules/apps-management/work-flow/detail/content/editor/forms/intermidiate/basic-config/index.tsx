@@ -100,6 +100,10 @@ export default function BasicConfig({ type, value, onChange }: Props) {
     1: 'var(--blue-100)',
     2: 'var(--yellow-100)',
   };
+  const tagIconNameMap = {
+    1: 'person-filled',
+    2: 'device_hub',
+  };
 
   return (
     <div>
@@ -118,7 +122,7 @@ export default function BasicConfig({ type, value, onChange }: Props) {
         <div className="mt-8 mb-12 py-8 px-12 border border-gray-300 corner-2-8-8-8">
           {[...departments, ...employees].map((member) => (
             <Tag<string>
-              className="mr-6 rounded-tl-4 rounded-br-4 mb-8 overflow-hidden h-24"
+              className="mr-8 rounded-tl-4 rounded-br-4 mb-8 overflow-hidden h-24"
               style={{
                 backgroundColor: tagBackgroundColorMap[member.type],
                 paddingLeft: 0,
@@ -135,7 +139,7 @@ export default function BasicConfig({ type, value, onChange }: Props) {
                       'bg-yellow-600': member.type === 2,
                     })}
                   >
-                    <Icon name="person" className="text-white" />
+                    <Icon name={tagIconNameMap[member.type]} className="text-white" />
                   </div>
                   <span
                     className={cs({
