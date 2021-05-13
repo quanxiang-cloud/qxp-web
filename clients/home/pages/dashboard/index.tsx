@@ -4,6 +4,7 @@ import { useHistory } from 'react-router-dom';
 import cs from 'classnames';
 
 import Avatar from '@c/avatar';
+import ItemWithTitleDesc from '@c/item-with-title-desc';
 import Card from '@c/card';
 import Icon from '@c/icon';
 import AppInfoView from '@portal/modules/apps-management/components/app-info-view';
@@ -56,14 +57,14 @@ function Dashboard() {
             itemTitleClassName="text-h5"
             content={(<>
               <div className="z-10">
-                <Avatar
-                  username={window.USER.userName}
-                  title={true}
-                  size={48}
-                  textSize={24}
-                  cornerClassName="corner-12-2-12-12"
-                  bio="不是杰出者才能做梦，而是善梦者才杰出"
-                  avatar=''
+                <ItemWithTitleDesc
+                  itemRender={(<Avatar
+                    username={window.USER.userName}
+                    size={48}
+                  />)}
+                  title={`${window.USER.userName}, 下午好!`}
+                  desc="不是杰出者才能做梦，而是善梦者才杰出"
+                  titleClassName="text-h4"
                 />
                 <div className="pl-48 mt-20 text-16">
                   <div>
