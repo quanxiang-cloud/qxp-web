@@ -143,15 +143,21 @@ export default class PureTree extends Component<Props> {
     destination?: TreeDestinationPosition,
   ) => {
     const { tree } = this.props;
-    if (!destination || destination.index === source.index) {
+    if (!destination || (destination.index === source.index && destination.parentId === source.parentId)) {
       return;
     }
 
-    const newTree = moveItemOnTree(tree, source, destination);
-    this.props.onChange(newTree);
-
     const treeItemID = tree.items[source.parentId].children[source.index];
     const treeItem = tree.items[treeItemID];
+    const targetItem = tree.items[destination.parentId];
+
+    if (destination.parentId !== 'ROOT' && (treeItem.data.menuType === 1 || targetItem.data.menuType === 0)) {
+      return;
+    }
+
+    destination.index = destination.index || 0;
+    const newTree = moveItemOnTree({ ...tree }, source, destination);
+    this.props.onChange(newTree);
 
     const fromGroupID = source.parentId === 'ROOT' ? '' : source.parentId;
     const toGroupID = destination.parentId === 'ROOT' ? '' : destination.parentId;
@@ -174,6 +180,7 @@ export default class PureTree extends Component<Props> {
     return (
       <Tree
         isDragEnabled
+        isNestingEnabled
         tree={tree}
         onExpand={this.onExpand}
         onCollapse={this.onCollapse}
