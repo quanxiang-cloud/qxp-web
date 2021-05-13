@@ -4,7 +4,6 @@
     "antd",
     "export",
     "formily",
-    "handle"
   ],
   "files.eol": "\n",
   "go.lintTool": "golint",
