@@ -39,7 +39,7 @@ class FormDesignStore {
   @observable rightsLoading = false;
 
   @computed get fieldList(): PageField[] {
-    const fieldsMap:any = this.formStore?.schema?.properties || {};
+    const fieldsMap: any = this.formStore?.schema?.properties || {};
     return Object.keys(fieldsMap).filter((_key: string) => {
       return _key !== '_id';
     }).map((key: string) => {
@@ -56,7 +56,9 @@ class FormDesignStore {
   }
 
   constructor() {
-    this.destroyFetchScheme = reaction(() => this.pageID, this.fetchFormScheme);
+    this.destroyFetchScheme = reaction(() => {
+      return { pageID: this.pageID, appID: this.appID };
+    }, this.fetchFormScheme);
 
     this.destroySetAllFiltrate = reaction(() => this.fieldList.length, () => {
       if (!this.formStore) {
@@ -165,13 +167,13 @@ class FormDesignStore {
   }
 
   @action
-  fetchFormScheme = (pageID: string) => {
-    if (!pageID) {
+  fetchFormScheme = ({ pageID, appID }: { pageID: string, appID: string}) => {
+    if (!pageID || !appID) {
       return;
     }
 
     this.pageLoading = true;
-    fetchFormScheme(this.appID, pageID).then((res) => {
+    fetchFormScheme(appID, pageID).then((res) => {
       const { schema = {}, config } = res.data || {};
       this.hasSchema = res.data ? true : false;
       this.initScheme = schema;

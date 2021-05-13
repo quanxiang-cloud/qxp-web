@@ -17,12 +17,12 @@ function FormDesign() {
   const { pageType, pageId, appID } = useParams<FormDesignParams>();
 
   useEffect(() => {
-    store.setPageID(pageId);
     store.setAppID(appID);
+    store.setPageID(pageId);
     return () => {
       store.clear();
     };
-  }, [pageId]);
+  }, []);
 
   const contentRender = () => {
     if (store.pageLoading || !store.formStore) {
