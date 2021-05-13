@@ -60,11 +60,14 @@ export default function FillInNodeComponent({ data, id, xPos, yPos }: Props) {
       className={cs(
         'shadow-title rounded-tl-8 rounded-tr-8 rounded-br-2',
         'rounded-bl-8 bg-white flex flex-col',
-        `w-${nodeData.width}`, `h-${nodeData.height}`,
         {
           'border-red-600 border-dashed animate-node-error': hasError,
         }
       )}
+      style={{
+        width: nodeData.width,
+        height: nodeData.height,
+      }}
       onMouseDown={() => lastTime.current = +new Date()}
       onMouseUp={onMouseUp}
       onMouseEnter={onMouseEnter}

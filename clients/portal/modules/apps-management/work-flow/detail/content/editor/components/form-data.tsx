@@ -29,8 +29,11 @@ export default function FormDataNodeComponent({ data, id, xPos, yPos }: Props) {
       className={cs(
         'shadow-title rounded-tl-8 rounded-tr-8 rounded-br-2',
         'rounded-bl-8 bg-white flex flex-col',
-        `w-${data.nodeData.width}`, `h-${data.nodeData.height}`
       )}
+      style={{
+        width: data.nodeData.width,
+        height: data.nodeData.height,
+      }}
       onMouseDown={() => lastTime.current = +new Date()}
       onMouseUp={onMouseUp}
     >
