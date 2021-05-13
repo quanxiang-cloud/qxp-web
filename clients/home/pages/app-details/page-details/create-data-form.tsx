@@ -1,15 +1,11 @@
 import React, { useState } from 'react';
-import { SchemaForm, FormButtonGroup, setValidationLanguage } from '@formily/antd';
-import { ConfigProvider } from 'antd';
-import zhCN from 'antd/lib/locale/zh_CN';
+import { FormButtonGroup, setValidationLanguage } from '@formily/antd';
 
 import Breadcrumb from '@c/breadcrumb';
 import Icon from '@c/icon';
 import Button from '@c/button';
-import registry from '@c/form-builder/registry';
 import toast from '@lib/toast';
-import { visibleHiddenLinkageEffect } from '@c/form-builder';
-import { wrapSchemaByMegaLayout } from '@c/form-builder/utils';
+import { FormRenderer } from '@c/form-builder';
 
 import { formDataCurd } from '../../../lib/api';
 import store from '../../store';
@@ -70,39 +66,30 @@ function CreateDataForm({ goBack, defaultValues }: Props) {
         </Breadcrumb>
       </div>
       <div className='user-app-schema-form'>
-        <ConfigProvider locale={zhCN}>
-          <SchemaForm
-            className='p-40'
-            onSubmit={handleSubmit}
-            defaultValue={defaultValues}
-            components={{ ...registry.components }}
-            schema={wrapSchemaByMegaLayout(store.formScheme.schema)}
-            effects={() => {
-              visibleHiddenLinkageEffect(
-              // todo refactor formStore any type
-                store.formScheme.schema['x-internal']?.visibleHiddenLinkages || []
-              );
-            }}
-          >
-            <FormButtonGroup className='pl-96'>
-              <Button
-                className="mr-20"
-                iconName="close"
-                onClick={goBack}
-              >
+        <FormRenderer
+          className='p-40'
+          onSubmit={handleSubmit}
+          defaultValue={defaultValues}
+          schema={store.formScheme.schema}
+        >
+          <FormButtonGroup className='pl-96'>
+            <Button
+              className="mr-20"
+              iconName="close"
+              onClick={goBack}
+            >
               取消
-              </Button>
-              <Button
-                type='submit'
-                modifier="primary"
-                iconName="check"
-                loading={loading}
-              >
-                {defaultValues ? '保存' : '确认新建'}
-              </Button>
-            </FormButtonGroup>
-          </SchemaForm>
-        </ConfigProvider>
+            </Button>
+            <Button
+              type='submit'
+              modifier="primary"
+              iconName="check"
+              loading={loading}
+            >
+              {defaultValues ? '保存' : '确认新建'}
+            </Button>
+          </FormButtonGroup>
+        </FormRenderer>
       </div>
     </div>
   );
