@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import msgMgmt from '@portal/stores/msg-mgmt';
-import { useHistory } from 'react-router';
+import { useHistory } from 'react-router-dom';
 import { observer } from 'mobx-react';
 import TextHeader from '@c/text-header';
 import ErrorTips from '@c/error-tips';
