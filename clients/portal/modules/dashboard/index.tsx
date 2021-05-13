@@ -23,10 +23,14 @@ export default function Dashboard() {
         <div className="absolute top-42 right-64 -z-z-1 w-214 h-160">
           <img src="/dist/images/work-figure.svg" alt="dashboard"/>
         </div>
-        <Avatar
-          username={value.userInfo.userName}
-          bio="万物皆有裂痕，那是光透过来的地方"
-          avatar={value.userInfo.userIconURL}
+        <ItemWithTitleDesc
+          itemRender={(<Avatar
+            username={value.userInfo.userName}
+            size={48}
+          />)}
+          title={`${value.userInfo.userName}, 下午好!`}
+          desc="万物皆有裂痕，那是光透过来的地方"
+          titleClassName="text-h4"
         />
         <div className="px-6 mt-40">
           <Card

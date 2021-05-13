@@ -1,10 +1,16 @@
 import React from 'react';
 
-import ItemWithTitleDesc from './item-with-title-desc';
+const imgBgColors: string[] = [
+  '#6366F1',
+  '#F59E0B',
+  '#10B981',
+  '#F97316',
+  '#A855F7',
+  '#14B8A6',
+  '#EF4444',
+  '#06B6D4',
+];
 
-// todo refactor
-const imgBgColors: string[] = ['#6366F1', '#F59E0B', '#10B981', '#F97316',
-  '#A855F7', '#14B8A6', '#EF4444', '#06B6D4'];
 const getImgColor = (text: string, colors = imgBgColors) => {
   const reg = /^[a-zA-Z]*$/;
   let _text = text;
@@ -18,13 +24,29 @@ const getImgColor = (text: string, colors = imgBgColors) => {
   };
 };
 
+type AvatarSize = 24 | 48;
+
+const AvatarStyle: Record<AvatarSize, { fontSize: number; cornerClassName: string}> = {
+  24: {
+    fontSize: 14,
+    cornerClassName: 'corner-4-0-4-4',
+  },
+  48: {
+    fontSize: 28,
+    cornerClassName: 'corner-12-2-12-12',
+  },
+};
+
 export interface Avatar {
-  username?: string;
-  bio: string;
-  avatar?: string;
+  username?: string | undefined;
+  size?: AvatarSize;
 }
 
-export default function Avatar({ username = '', bio }: Avatar) {
+export default function Avatar({
+  username = '',
+  size = 24,
+}: Avatar) {
+  const avatarStyle = AvatarStyle[size];
   let head = '';
   let imgInfo: { name: string, color: string } = { name: '', color: '' };
   if (username) {
@@ -33,28 +55,17 @@ export default function Avatar({ username = '', bio }: Avatar) {
   }
 
   return (
-    <ItemWithTitleDesc
-      itemRender={
-        (
-          <>
-            {
-              (head && imgInfo) && (
-                <div className=" w-48 h-48 corner-12-2-12-12
-              text-center text-white text-24 leading-48"
-                style={{
-                  backgroundColor: imgInfo.color,
-                }}
-                >
-                  {imgInfo.name}
-                </div>
-              )
-            }
-          </>
-        )
-      }
-      title={`${username}, 下午好!`}
-      desc={bio}
-      titleClassName="text-h4"
-    />
+    <div
+      className={`${avatarStyle.cornerClassName} text-center text-white`}
+      style={{
+        width: size,
+        height: size,
+        lineHeight: `${size}px`,
+        fontSize: avatarStyle.fontSize,
+        backgroundColor: imgInfo.color,
+      }}
+    >
+      {imgInfo.name}
+    </div>
   );
 }
