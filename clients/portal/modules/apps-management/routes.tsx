@@ -1,5 +1,5 @@
 import React from 'react';
-import { Route, Switch } from 'react-router';
+import { Route, Switch } from 'react-router-dom';
 
 const AppsIndex = React.lazy( () => import('./index'));
 const AppDetails = React.lazy(() => import('./pages/app-details'));
