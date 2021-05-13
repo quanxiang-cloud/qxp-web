@@ -5,6 +5,8 @@ import Button from '@c/button';
 import { fetchOperatePer, saveOperatePer } from '@portal/modules/apps-management/lib/api';
 import toast from '@lib/toast';
 
+import store from '../../store';
+
 type CardProps = {
   rightsCardData: {
     key: string;
@@ -125,7 +127,7 @@ export default function Authorized({ rightsID }: Props) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchOperatePer(rightsID).then((res) => {
+    fetchOperatePer(store.appID, rightsID).then((res) => {
       if (res.data) {
         setActionNumber(res.data.authority);
       }
@@ -144,7 +146,7 @@ export default function Authorized({ rightsID }: Props) {
   };
 
   const handleSave = () => {
-    saveOperatePer({ perGroupID: rightsID, authority: actionNumber }).then(() => {
+    saveOperatePer(store.appID, { perGroupID: rightsID, authority: actionNumber }).then(() => {
       toast.success('保存成功！');
     });
   };

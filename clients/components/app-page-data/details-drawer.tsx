@@ -28,8 +28,8 @@ function DetailsDrawer({ onCancel, rowID }: Props) {
   const [formDataItem, setInfoData] = useState(null);
 
   useEffect(() => {
-    store.fetchFormDataDetails(rowID).then((res) => {
-      setInfoData(res.data);
+    store.fetchFormDataDetails(rowID).then((res: any) => {
+      setInfoData(res);
       setLoading(false);
     }).catch(() => {
       setLoading(false);

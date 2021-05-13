@@ -40,7 +40,7 @@ class UserAppStore {
     this.formScheme = null;
     if (pageInfo.id) {
       this.fetchSchemeLoading = true;
-      fetchFormScheme(pageInfo.id).then((res: any) => {
+      fetchFormScheme(this.appID, pageInfo.id).then((res: any) => {
         const { config, schema } = res.schema;
         Object.keys(schema.properties).forEach((key) => {
           if (schema.properties[key]['x-internal'].permission === 1) {
@@ -49,7 +49,7 @@ class UserAppStore {
         });
 
         this.formScheme = res.schema;
-        getPageDataSchema(config, schema, pageInfo.id, pageInfo.name);
+        getPageDataSchema(config, schema, pageInfo.id, this.appID, pageInfo.name);
         this.fetchSchemeLoading = false;
       }).catch(() => {
         this.fetchSchemeLoading = false;

@@ -45,7 +45,7 @@ function CreateDataForm({ goBack, defaultValues }: Props) {
       };
     }
 
-    formDataCurd(store.curPage.id as string, reqData).then(() => {
+    formDataCurd(store.appID, store.curPage.id as string, reqData).then(() => {
       toast.success('提交成功');
       goBack();
     }).catch(() => {

@@ -1,7 +1,6 @@
 import React from 'react';
 import { action, observable, reaction, IReactionDisposer } from 'mobx';
 
-import { formDataCurd } from '@portal/modules/apps-management/lib/api';
 import toast from '@lib/toast';
 import httpClient from '@lib/http-client';
 
@@ -20,6 +19,7 @@ class AppPageDataStore {
   @observable noFiltratesTips: React.ReactNode = '尚未配置筛选条件。'
   @observable listLoading = false;
   @observable pageID = '';
+  @observable appID = '';
   @observable pageName = '';
   @observable authority = 0;
   @observable curItemFormData = null;
@@ -70,6 +70,11 @@ class AppPageDataStore {
   }
 
   @action
+  setAppID = (appID: string) => {
+    this.appID = appID;
+  }
+
+  @action
   setTableConfig = (tableConfig: any) => {
     this.tableConfig = tableConfig;
   }
@@ -97,7 +102,7 @@ class AppPageDataStore {
 
   @action
   delFormData = (ids: string[]) => {
-    return formDataCurd(this.pageID, {
+    return httpClient(`/api/v1/structor/${this.appID}/form/${this.pageID}`, {
       method: 'delete',
       condition: [{ key: '_id', op: ids.length > 1 ? 'in' : 'eq', value: ids }],
     }).then(() => {
@@ -112,15 +117,15 @@ class AppPageDataStore {
       return;
     }
     this.listLoading = true;
-    formDataCurd(this.pageID, {
+    httpClient(`/api/v1/structor/${this.appID}/form/${this.pageID}`, {
       method: 'find',
       page: 1,
       condition: [],
       sort: [],
       ...params,
-    }).then((res) => {
-      this.formDataList = res.data.entities;
-      this.total = res.data.total || 0;
+    }).then((res: any) => {
+      this.formDataList = res.entities;
+      this.total = res.total || 0;
       this.listLoading = false;
     }).catch(() => {
       this.listLoading = false;
@@ -129,7 +134,7 @@ class AppPageDataStore {
 
   @action
   fetchFormDataDetails = (dataID: string) => {
-    return formDataCurd(this.pageID, {
+    return httpClient(`/api/v1/structor/${this.appID}/form/${this.pageID}`, {
       method: 'findOne',
       condition: [
         {
@@ -144,7 +149,7 @@ class AppPageDataStore {
   @action
   fetchActionAuthorized = () => {
     httpClient(
-      '/api/v1/structor/permission/operatePer/getByScopeID',
+      `/api/v1/structor/${this.appID}/permission/operatePer/getByScopeID`,
       { formID: this.pageID }
     ).then((res: any) => {
       this.authority = res?.authority || 0;

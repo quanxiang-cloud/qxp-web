@@ -112,7 +112,7 @@ class FormDesignStore {
       formID: this.pageID,
       appID: this.appID,
     };
-    return createPerGroup(_rights).then((res) => {
+    return createPerGroup(this.appID, _rights).then((res) => {
       this.rightsList = [...this.rightsList, { ..._rights, ...res.data }];
     });
   }
@@ -120,7 +120,7 @@ class FormDesignStore {
   @action
   deleteRight = (id: string) => {
     const delAfter = this.rightsList.filter((rights) => id !== rights.id);
-    deleteRights({
+    deleteRights(this.appID, {
       id, moveArr: delAfter.map((AFrights, sequence) => {
         return { id: AFrights.id, sequence };
       }),
@@ -133,6 +133,12 @@ class FormDesignStore {
   @action
   setPageID = (pageID: string) => {
     this.pageID = pageID;
+  }
+
+  @action
+  setAppID = (appID: string) => {
+    this.appID = appID;
+    appPageDataStore.setAppID(appID);
   }
 
   @action
@@ -165,7 +171,7 @@ class FormDesignStore {
     }
 
     this.pageLoading = true;
-    fetchFormScheme(pageID).then((res) => {
+    fetchFormScheme(this.appID, pageID).then((res) => {
       const { schema = {}, config } = res.data || {};
       this.hasSchema = res.data ? true : false;
       this.initScheme = schema;
@@ -184,7 +190,7 @@ class FormDesignStore {
   @action
   saveFormScheme = () => {
     this.saveSchemeLoading = true;
-    return (this.hasSchema ? updateFormScheme : createFormScheme)({
+    return (this.hasSchema ? updateFormScheme : createFormScheme)(this.appID, {
       schema: this.formStore?.schema,
       tableID: this.pageID,
     }).then(() => {
@@ -208,7 +214,7 @@ class FormDesignStore {
 
   @action
   savePageConfig = () => {
-    createPageScheme({
+    createPageScheme(this.appID, {
       tableID: this.pageID, config: {
         pageTableConfig: this.pageTableConfig,
         filtrate: this.allFiltrate,
@@ -222,7 +228,7 @@ class FormDesignStore {
   @action
   fetchRights = () => {
     this.rightsLoading = true;
-    fetchRights(this.pageID).then((res) => {
+    fetchRights(this.appID, this.pageID).then((res) => {
       this.rightsList = res.data.list;
       this.rightsLoading = false;
     }).catch(() => {
@@ -232,7 +238,7 @@ class FormDesignStore {
 
   @action
   updatePerGroup = (rights: Rights) => {
-    return updatePerGroup(rights).then(() => {
+    return updatePerGroup(this.appID, rights).then(() => {
       this.rightsList = this.rightsList.map((_rights) => {
         if (rights.id === _rights.id) {
           return { ..._rights, ...rights };
@@ -247,7 +253,7 @@ class FormDesignStore {
   @action
   rightsGroupSort = (rightsIdList: string[]) => {
     const newRightsList: Rights[] = [];
-    movePerGroup({
+    movePerGroup(this.appID, {
       moveArr: rightsIdList.map((id, index) => {
         const rights = this.rightsList.find((_rights) => _rights.id === id);
         if (rights) {
