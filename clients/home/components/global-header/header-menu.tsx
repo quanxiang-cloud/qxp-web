@@ -45,11 +45,6 @@ export default function HeaderMenu() {
       <div className="header-nav-btn group">
         <Avatar
           username={window.USER.userName}
-          title={false}
-          size={24}
-          textSize={14}
-          cornerClassName="corner-4-0-4-4"
-          avatar=''
         />
         <MoreMenu
           menus={[
