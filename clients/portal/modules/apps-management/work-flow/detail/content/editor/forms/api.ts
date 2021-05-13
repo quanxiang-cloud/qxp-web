@@ -15,7 +15,7 @@ interface MenuListItem {
 export async function getFormDataOptions({ queryKey }: QueryFunctionContext): Promise<Options> {
   const data = await httpClient<{
       menu: MenuListItem[],
-  }>('/api/v1/structor/menu/list', {
+  }>(`/api/v1/structor/${queryKey[1]}/menu/list`, {
     appID: queryKey[1],
   });
   function parseMenuList(menuList: MenuListItem[]) {
@@ -39,9 +39,10 @@ interface FormFieldOptions {
   }
 }
 export async function getFormFieldOptions({ queryKey }: QueryFunctionContext): Promise<Options> {
-  const data = await httpClient<FormFieldOptions | null>('/api/v1/structor/process/getByID', {
-    tableID: queryKey[1],
-  });
+  const data = await httpClient<FormFieldOptions | null>(
+    `/api/v1/structor/${queryKey[2]}/process/getByID`, {
+      tableID: queryKey[1],
+    });
   function parseFormFieldOptions({ table = {} }: FormFieldOptions) {
     return Object.entries(table).reduce((prev: {label: string; value: string;}[], [id, value]) => {
       prev.push({

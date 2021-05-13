@@ -2,6 +2,7 @@ import React, { FormEvent, useState, useEffect } from 'react';
 import cs from 'classnames';
 import { useQuery } from 'react-query';
 import { isEqual } from 'lodash';
+import { useParams } from 'react-router-dom';
 
 import Drawer from '@c/drawer';
 import toast from '@lib/toast';
@@ -26,11 +27,12 @@ import TriggerCondition from './basic-config/trigger-condition';
 import { getFormFieldOptions } from '../api';
 
 export default function FormDataForm() {
+  const { appID } = useParams<{ appID: string }>();
   const { asideDrawerType, elements = [], errors } = useObservable<StoreValue>(store) || {};
   const currentElement = elements.find(({ id }) => id === asideDrawerType) as CurrentElement;
   const [formData, setFormData] = useState<FormDataData>(currentElement?.data?.businessData);
   const { data: formFieldOptions = [], isError } = useQuery(
-    ['GET_WORK_FORM_FIELD_LIST', formData?.form?.value],
+    ['GET_WORK_FORM_FIELD_LIST', formData?.form?.value, appID],
     getFormFieldOptions, {
       enabled: !!formData?.form?.value,
     }
