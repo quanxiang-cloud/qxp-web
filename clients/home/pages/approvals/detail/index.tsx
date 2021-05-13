@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { TextArea } from '@QCFE/lego-ui';
 import { useParams, useHistory } from 'react-router';
 import { useQuery } from 'react-query';
-import { SchemaForm } from '@formily/antd';
 
 import Breadcrumb from '@c/breadcrumb';
 import { useURLSearch } from '@lib/hooks';
@@ -14,8 +13,7 @@ import Modal from '@c/modal';
 import toast from '@lib/toast';
 import Loading from '@c/loading';
 
-import { visibleHiddenLinkageEffect } from '@c/form-builder';
-import registry from '@c/form-builder/registry';
+import { FormRenderer } from '@c/form-builder';
 
 import Panel from './panel';
 import * as apis from '../api';
@@ -163,17 +161,10 @@ function ApprovalDetail(): JSX.Element {
 
     return (
       <div className='task-form'>
-        <SchemaForm
+        <FormRenderer
           defaultValue={parseFormValue(data.formData)}
-          components={{ ...registry.components }}
           schema={data.form.table}
-          onChange={setFormValues}
-          effects={() => {
-            visibleHiddenLinkageEffect(
-              // todo refactor formStore any type
-              data.form.table['x-internal']?.visibleHiddenLinkages || []
-            );
-          }}
+          onFormValueChange={setFormValues}
         />
       </div>
     );
