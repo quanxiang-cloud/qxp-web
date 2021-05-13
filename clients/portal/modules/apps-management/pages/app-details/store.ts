@@ -181,10 +181,10 @@ class AppDetailsStore {
 
     if (pageInfo.id) {
       this.fetchSchemeLoading = true;
-      fetchFormScheme(this.appId, pageInfo.id).then((res) => {
+      fetchFormScheme(this.appID, pageInfo.id).then((res) => {
         this.formScheme = res.data;
         const { config, schema } = res.data;
-        getPageDataSchema(config, schema, pageInfo.id as string, this.appId);
+        getPageDataSchema(config, schema, pageInfo.id as string, this.appID);
         this.fetchSchemeLoading = false;
       }).catch(() => {
         this.fetchSchemeLoading = false;
