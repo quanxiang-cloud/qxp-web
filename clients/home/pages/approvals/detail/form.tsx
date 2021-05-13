@@ -1,7 +1,7 @@
 import httpClient from '@lib/http-client';
 import React from 'react';
 import { useQuery } from 'react-query';
-import { useParams } from 'react-router';
+import { useParams } from 'react-router-dom';
 import { SchemaForm } from '@formily/antd';
 
 import { visibleHiddenLinkageEffect } from '@c/form-builder';

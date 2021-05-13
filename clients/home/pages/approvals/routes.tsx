@@ -1,5 +1,5 @@
 import React from 'react';
-import { Route, Switch } from 'react-router';
+import { Route, Switch } from 'react-router-dom';
 
 const Approvals = React.lazy(() => import('./list'));
 const ApprovalDetail = React.lazy(() => import('./detail'));
