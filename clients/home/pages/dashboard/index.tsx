@@ -50,7 +50,7 @@ function Dashboard() {
     <>
       <main className="py-40 px-58 relative"
         style={{ height: 'calc(100vh - 62px)', overflow: 'scroll' }}>
-        <div className="flex justify-between items-center">
+        <div className="flex justify-between items-center px-6">
           <Card
             className="flex-2 user-card user-info-bg"
             itemTitleClassName="text-h5"
@@ -59,6 +59,8 @@ function Dashboard() {
                 <Avatar
                   username={window.USER.userName}
                   title={true}
+                  size={48}
+                  textSize={24}
                   cornerClassName="corner-12-2-12-12"
                   bio="不是杰出者才能做梦，而是善梦者才杰出"
                   avatar=''
