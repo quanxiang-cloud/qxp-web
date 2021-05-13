@@ -1,5 +1,5 @@
 import qs from 'qs';
-import { useHistory, useLocation } from 'react-router';
+import { useHistory, useLocation } from 'react-router-dom';
 
 type SetSearch = (init?: string[][] | Record<string, string> | string | URLSearchParams) => void;
 
