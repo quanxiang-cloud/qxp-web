@@ -1,6 +1,7 @@
 import moment from 'moment';
 
 import { getFilterField } from '@portal/modules/apps-management/pages/form-design/utils';
+import { UnionColumns } from 'react-table';
 
 import appPageDataStore from './store';
 import React from 'react';
@@ -67,45 +68,57 @@ export function getTableCellData(initValue: string | string[], field: PageField)
   return initValue;
 }
 
-export function getPageDataSchema(config: Config, schema: Scheme, pageID: string, pageName?: string) {
-  const { pageTableShowRule = {}, pageTableConfig = {}, filtrate = [] } = config || {};
-  const { setFiltrates, setTableConfig, setTableColumns, setPageID, setFieldsMap } = appPageDataStore;
-  const fieldsMap = schema?.properties || {};
-  const tableColumns: any[] = [];
-  let recordColNum = 0;
-  let fixedColumnIndex: number[] = [];
-  let action: any = {
+function addFixedParameters(fixedList: number[], tableColumns: UnionColumns<Record<string, any>>[]) {
+  fixedList.forEach((index) => {
+    if (tableColumns[index]) {
+      tableColumns[index] = { ...tableColumns[index], fixed: true, width: 150 };
+    }
+  });
+}
+
+export function setFixedParameters(
+  fixedRule: string | undefined,
+  tableColumns: UnionColumns<Record<string, any>>[]
+) {
+  if (!fixedRule) {
+    return tableColumns;
+  }
+
+  let action: UnionColumns<any> = {
     id: 'action',
     Header: '操作',
   };
-  switch (pageTableShowRule.fixedRule) {
+  switch (fixedRule) {
   case 'one':
-    fixedColumnIndex = [0];
+    addFixedParameters([0], tableColumns);
     break;
   case 'previous_two':
-    fixedColumnIndex = [0, 1];
+    addFixedParameters([0, 1], tableColumns);
     break;
   case 'action':
     action = { ...action, fixed: true, width: 150 };
     break;
   case 'one_action':
-    fixedColumnIndex = [0];
+    addFixedParameters([0], tableColumns);
     action = { ...action, fixed: true, width: 150 };
     break;
   }
+  return [...tableColumns, action];
+}
 
+export function getPageDataSchema(config: Config, schema: Scheme, pageID: string, pageName?: string) {
+  const { pageTableShowRule = {}, pageTableConfig = {}, filtrate = [] } = config || {};
+  const { setFiltrates, setTableConfig, setTableColumns, setPageID, setFieldsMap } = appPageDataStore;
+  const fieldsMap = schema?.properties || {};
+  const tableColumns: any[] = [];
   Object.keys(fieldsMap).forEach((key: string) => {
     const hasVisible = pageTableConfig[key] ? 'visible' in pageTableConfig[key] : false;
     if (key !== '_id' && ((hasVisible && pageTableConfig[key].visible) || !hasVisible)) {
-      const isFixed = fixedColumnIndex.includes(recordColNum);
       tableColumns.push({
         id: key,
         Header: fieldsMap[key].title || '',
         accessor: (data: any) => getTableCellData(data[key], fieldsMap[key]),
-        fixed: isFixed,
-        width: isFixed && 150,
       });
-      recordColNum += 1;
     }
   });
 
@@ -122,7 +135,7 @@ export function getPageDataSchema(config: Config, schema: Scheme, pageID: string
   setFiltrates(filtrate.map((field: PageField) => {
     return getFilterField(field);
   }));
-  setTableColumns([...tableColumns, action]);
+  setTableColumns(setFixedParameters(pageTableShowRule.fixedRule, tableColumns));
   setTableConfig(pageTableShowRule);
   setPageID(pageID, pageName);
   setFieldsMap(fieldsMap);
