@@ -1,8 +1,10 @@
+import { createFormActions, FormEffectHooks } from '@formily/antd';
+
 import FormBuilder from './form-builder';
 import registry from './registry';
+import FormRenderer from './form-renderer';
 
 import './index.scss';
-import { createFormActions, FormEffectHooks } from '@formily/antd';
 
 const { onFormValuesChange$ } = FormEffectHooks;
 
@@ -42,4 +44,5 @@ export {
   FormBuilder,
   registry,
   visibleHiddenLinkageEffect,
+  FormRenderer,
 };
