@@ -17,7 +17,8 @@ type Props = {
 
 type InfoData = {
   label: string;
-  value: string;
+  key: string;
+  value: string | React.ReactNode;
 }
 
 function DetailsDrawer({ onCancel, rowID }: Props) {
@@ -45,11 +46,13 @@ function DetailsDrawer({ onCancel, rowID }: Props) {
       if (field['x-internal'].isSystem) {
         _systems.push({
           label: field.title,
+          key: field.id,
           value: getTableCellData((formDataItem as any)[field.id], field),
         });
       } else {
         _details.push({
           label: field.title,
+          key: field.id,
           value: getTableCellData((formDataItem as any)[field.id], field),
         });
       }
@@ -74,8 +77,8 @@ function DetailsDrawer({ onCancel, rowID }: Props) {
   const cardRender = (list: InfoData[]) => {
     return (
       <div className='grid gap-20 grid-cols-2'>
-        {list.map(({ label, value }) => (
-          <div className='page-data-info-view' key={label + value}>
+        {list.map(({ label, value, key }) => (
+          <div className='page-data-info-view' key={key}>
             <div className='text-body2-no-color text-gray-600'>{label}</div>
             <div className='text-body2 truncate'>{value}</div>
           </div>

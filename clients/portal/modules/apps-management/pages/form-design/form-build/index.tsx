@@ -1,15 +1,13 @@
 import React, { useState } from 'react';
 import { observer } from 'mobx-react';
-import store from '../store';
-
-import { FormBuilder, visibleHiddenLinkageEffect } from '@c/form-builder';
-import registry from '@c/form-builder/registry';
-import Button from '@c/button';
+import { FormButtonGroup } from '@formily/antd';
 
 import Modal from '@c/modal2';
-
-import { FormButtonGroup, SchemaForm } from '@formily/antd';
+import Button from '@c/button';
 import toast from '@lib/toast';
+import { FormBuilder, FormRenderer } from '@c/form-builder';
+
+import store from '../store';
 
 const FormPage = () => {
   const [previewModalVisible, setPreviewModalVisible] = useState(false);
@@ -42,22 +40,16 @@ const FormPage = () => {
       <FormBuilder store={store.formStore} />
       {previewModalVisible && (
         <Modal title="预览表单" onClose={handlePreviewClose}>
-          <SchemaForm
+          <FormRenderer
             className="w-588"
-            components={{ ...registry.components }}
-            schema={store.formStore.schemaForPreview}
+            schema={store.formStore.schema}
             onSubmit={(value) => toast.success('提交表单：' + JSON.stringify(value))}
-            effects={() => {
-              visibleHiddenLinkageEffect(
-                store.formStore?.schema['x-internal']?.visibleHiddenLinkages || []
-              );
-            }}
           >
             <FormButtonGroup offset={4}>
               <Button type="submit" modifier="primary">模拟提交</Button>
               <Button type="submit" onClick={handlePreviewClose}>关闭</Button>
             </FormButtonGroup>
-          </SchemaForm>
+          </FormRenderer>
         </Modal>
       )}
     </>

@@ -1,9 +1,10 @@
+import React from 'react';
 import moment from 'moment';
 
 import { getFilterField } from '@portal/modules/apps-management/pages/form-design/utils';
+import { UnionColumns } from 'react-table';
 
 import appPageDataStore from './store';
-import React from 'react';
 
 export type Scheme = Record<string, any>;
 export type PageTableShowRule = {
@@ -33,7 +34,7 @@ export function operateButton(wIndex: number, authority: number, button: React.R
 
 export function getTableCellData(initValue: string | string[], field: PageField) {
   if (!initValue) {
-    return '——';
+    return (<span className='text-gray-300'>——</span>);
   }
 
   if (field.type === 'datetime') {
@@ -67,62 +68,72 @@ export function getTableCellData(initValue: string | string[], field: PageField)
   return initValue;
 }
 
-export function getPageDataSchema(config: Config, schema: Scheme, pageID: string, pageName?: string) {
-  const { pageTableShowRule = {}, pageTableConfig = {}, filtrate = [] } = config || {};
-  const { setFiltrates, setTableConfig, setTableColumns, setPageID, setFieldsMap } = appPageDataStore;
-  const fieldsMap = schema?.properties || {};
-  const tableColumns: any[] = [];
-  let recordColNum = 0;
-  let fixedColumnIndex: number[] = [];
-  let action: any = {
+function addFixedParameters(fixedList: number[], tableColumns: UnionColumns<Record<string, any>>[]) {
+  fixedList.forEach((index) => {
+    if (tableColumns[index]) {
+      tableColumns[index] = { ...tableColumns[index], fixed: true, width: 150 };
+    }
+  });
+}
+
+export function setFixedParameters(
+  fixedRule: string | undefined,
+  tableColumns: UnionColumns<Record<string, any>>[]
+) {
+  if (!fixedRule) {
+    return tableColumns;
+  }
+
+  let action: UnionColumns<any> = {
     id: 'action',
     Header: '操作',
   };
-  switch (pageTableShowRule.fixedRule) {
+  switch (fixedRule) {
   case 'one':
-    fixedColumnIndex = [0];
+    addFixedParameters([0], tableColumns);
     break;
   case 'previous_two':
-    fixedColumnIndex = [0, 1];
+    addFixedParameters([0, 1], tableColumns);
     break;
   case 'action':
     action = { ...action, fixed: true, width: 150 };
     break;
   case 'one_action':
-    fixedColumnIndex = [0];
+    addFixedParameters([0], tableColumns);
     action = { ...action, fixed: true, width: 150 };
     break;
   }
+  return [...tableColumns, action];
+}
 
+export function getPageDataSchema(config: Config, schema: Scheme, pageID: string, pageName?: string) {
+  const { pageTableShowRule = {}, pageTableConfig = {}, filtrate = [] } = config || {};
+  const { setFiltrates, setTableConfig, setTableColumns, setPageID, setFieldsMap } = appPageDataStore;
+  const fieldsMap = schema?.properties || {};
+  const tableColumns: any[] = [];
   Object.keys(fieldsMap).forEach((key: string) => {
     const hasVisible = pageTableConfig[key] ? 'visible' in pageTableConfig[key] : false;
     if (key !== '_id' && ((hasVisible && pageTableConfig[key].visible) || !hasVisible)) {
-      const isFixed = fixedColumnIndex.includes(recordColNum);
       tableColumns.push({
         id: key,
         Header: fieldsMap[key].title || '',
         accessor: (data: any) => getTableCellData(data[key], fieldsMap[key]),
-        fixed: isFixed,
-        width: isFixed && 150,
       });
-      recordColNum += 1;
     }
   });
 
-  if (Object.keys(pageTableConfig).filter((key: string) => 'sort' in pageTableConfig[key]).length > 0) {
-    tableColumns.sort((a, b) => {
-      return pageTableConfig[a.id]?.sort - pageTableConfig[b.id]?.sort;
-    });
-  } else {
-    tableColumns.sort((a, b) => {
-      return fieldsMap[a.id]['x-index'] - fieldsMap[b.id]['x-index'];
-    });
-  }
+  tableColumns.sort((a, b) => {
+    const sortA = pageTableConfig[a.id]?.sort ?
+      pageTableConfig[a.id]?.sort : fieldsMap[a.id]['x-index'];
+    const sortB = pageTableConfig[b.id]?.sort ?
+      pageTableConfig[b.id]?.sort : fieldsMap[b.id]['x-index'];
+    return sortA - sortB;
+  });
 
   setFiltrates(filtrate.map((field: PageField) => {
     return getFilterField(field);
   }));
-  setTableColumns([...tableColumns, action]);
+  setTableColumns(setFixedParameters(pageTableShowRule.fixedRule, tableColumns));
   setTableConfig(pageTableShowRule);
   setPageID(pageID, pageName);
   setFieldsMap(fieldsMap);

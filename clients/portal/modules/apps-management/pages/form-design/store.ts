@@ -15,7 +15,7 @@ import {
   updatePerGroup,
 } from '@portal/modules/apps-management/lib/api';
 import appPageDataStore from '@c/app-page-data/store';
-import { PageTableShowRule, Scheme } from '@c/app-page-data/utils';
+import { PageTableShowRule, Scheme, setFixedParameters } from '@c/app-page-data/utils';
 
 import { getFilterField, getAttribute } from './utils';
 
@@ -79,44 +79,19 @@ class FormDesignStore {
 
     this.destroySetTableColumn = reaction(() => {
       const column: UnionColumns<any>[] = [];
-      let recordColNum = 0;
-      let fixedColumnIndex: number[] = [];
-      let action: UnionColumns<any> = {
-        id: 'action',
-        Header: '操作',
-      };
-      switch (this.pageTableShowRule.fixedRule) {
-      case 'one':
-        fixedColumnIndex = [0];
-        break;
-      case 'previous_two':
-        fixedColumnIndex = [0, 1];
-        break;
-      case 'action':
-        action = { ...action, fixed: true, width: 150 };
-        break;
-      case 'one_action':
-        fixedColumnIndex = [0];
-        action = { ...action, fixed: true, width: 150 };
-        break;
-      }
-
       [...this.fieldList].sort((a: PageField, b: PageField) => {
         return a.sort - b.sort;
       }).forEach((field) => {
         if (field.visible) {
-          const isFixed = fixedColumnIndex.includes(recordColNum);
           column.push({
             id: field.id,
             Header: field.label,
             accessor: field.id,
-            fixed: isFixed,
-            width: isFixed ? 150 : 0,
           });
-          recordColNum += 1;
         }
       });
-      return [...column, action];
+
+      return setFixedParameters(this.pageTableShowRule.fixedRule, column);
     }, appPageDataStore.setTableColumns);
 
     this.destroySetTableConfig = reaction(() => {
