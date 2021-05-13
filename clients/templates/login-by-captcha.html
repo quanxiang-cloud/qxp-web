@@ -1,55 +1,53 @@
 {{template "layout" .}}
 
 {{define "header_styles"}}
-  <title>登录</title>
-  <link rel="stylesheet" href="<%= htmlWebpackPlugin.files.css[0] %>">
+<title>登录</title>
+<link rel="stylesheet" href="<%= htmlWebpackPlugin.files.css[0] %>">
 {{end}}
 
 {{define "content"}}
-    <main class="flex va-top flex-1 column align-center bg-main">
-      <header class="flex row space-between align-center w-p-100">
-        <div class="logo-company">
-          <img class="va-middle" src="/dist/images/logo.svg" alt="logo">
-          <span class="text-black-100 fs-16 va-middle">全象云</span>
-        </div>
-      </header>
+<main class="flex va-top flex-1 column align-center bg-main">
+  <header class="flex row space-between align-center w-p-100">
+    <div class="logo-company">
+      <img class="va-middle" src="/dist/images/logo.svg" alt="logo">
+      <span class="text-black-100 fs-16 va-middle">全象云</span>
+    </div>
+  </header>
 
-      <form action="/login/captcha{{if .redirectUrl}}?redirectUrl={{.redirectUrl}}{{end}}" method="post" class="inline-flex column text-left w360 w-m-p-100 flex-1 justify-center">
-        <h1 class="flex space-between mb-40 text-h3">
-          欢迎登录
-          <a class="text-button flex align-center text-blue-b10" href="/login/password">
-            密码登录
-          </a>
-        </h1>
-        <p class="error-message">
-          {{ if .errorMessage }}
-            {{ .errorMessage }}
-          {{ end }}
-        </p>
-        <div class="input-field mb-21">
-          <input name="username" type="text" class="w-p-100 text-body2" placeholder="手机号或邮箱">
-          <div class="username-hints fs-12 text-red mt-3"></div>
-        </div>
-        <div class="input-field with-appendix flex relative">
-          <input name="captcha" type="text" class="flex-1 text-body2" placeholder="输入验证码">
-          <span 
-            type="button" 
-            class="clickable fs-12 pr-4 py-1 send text-body2 absolute right-10 top-center text-blue-b10"
-          >
-            获取验证码
-          </span>
-        </div>
-        <div class="captcha-hints fs-12 mb-24 text-red mt-3"></div>
-        <button type="submit" class="btn-login text-white-n00 bg-gray-7 py-5 text-center bd-none outline-none clickable text-button">登录</button>
-      </form>
+  <form action="/login/captcha{{if .redirectUrl}}?redirectUrl={{.redirectUrl}}{{end}}" method="post"
+    class="inline-flex column text-left w360 w-m-p-100 flex-1 justify-center">
+    <h1 class="flex space-between mb-40 text-h3">
+      欢迎登录
+      <a class="text-button flex align-center text-blue-b10" href="/login/password">
+        密码登录
+      </a>
+    </h1>
+    <p class="error-message">
+      {{ if .errorMessage }}
+      {{ .errorMessage }}
+      {{ end }}
+    </p>
+    <div class="input-field mb-21">
+      <input name="username" type="text" class="w-p-100 text-body2" placeholder="手机号或邮箱">
+      <div class="username-hints fs-12 text-red mt-3"></div>
+    </div>
+    <div class="input-field with-appendix flex relative">
+      <input name="captcha" type="text" class="flex-1 text-body2" placeholder="输入验证码">
+      <span type="button"
+        class="clickable fs-12 pr-4 py-1 send text-body2 absolute right-10 top-center text-blue-b10">
+        获取验证码
+      </span>
+    </div>
+    <div class="captcha-hints fs-12 mb-24 text-red mt-3"></div>
+    <button type="submit"
+      class="btn-login text-white-n00 bg-gray-7 py-5 text-center bd-none outline-none clickable text-button">登录</button>
+  </form>
 
-    </main>
+</main>
 
-    <aside class="h-p-100 inline-block" style="width:25%">
-      <img class="h-p-100" src="/dist/images/register-bg.png" alt="aside-image">
-    </aside>
+<aside class="right-aside"></aside>
 {{end}}
 
 {{define "bottom_scripts"}}
-  <script src="<%= htmlWebpackPlugin.files.js[0] %>"></script>
+<script src="<%= htmlWebpackPlugin.files.js[0] %>"></script>
 {{end}}
