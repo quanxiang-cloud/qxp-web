@@ -1,6 +1,26 @@
 import { customAlphabet } from 'nanoid';
+import { get } from 'lodash';
 const nanoid = customAlphabet('1234567890qwertyuioplkjhgfdsazxcvbnmQWERTYUIOPLKJHGFDSAZXCVBNM', 8);
 
 export function generateRandomFormFieldID(): string {
   return nanoid();
+}
+
+export function wrapSchemaByMegaLayout(schema: ISchema): ISchema {
+  const properties = get(schema, 'properties', {});
+  const xInternal = get(schema, 'x-internal', {});
+  const labelAlign = get(xInternal, 'labelAlign', 'right');
+
+  return {
+    type: 'object',
+    'x-internal': xInternal,
+    properties: {
+      FIELDs: {
+        properties,
+        type: 'object',
+        'x-component': 'mega-layout',
+        'x-component-props': { labelAlign },
+      },
+    },
+  };
 }
