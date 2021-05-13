@@ -30,8 +30,12 @@ function PageDataFiltrate() {
       switch (curFiltrate?.type) {
       case 'date_range':
         const { start, end } = values[key];
+        if (!values[key].readableCode) {
+          return;
+        }
+
         _condition.value = [moment(start).format(), moment(end).format()];
-        _condition.op = 'range';
+        _condition.op = 'between';
         break;
       case 'date':
         _condition.value = [moment(values[key]).format()];
