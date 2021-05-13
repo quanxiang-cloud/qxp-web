@@ -7,7 +7,7 @@ import { updateNodeData } from '../../store';
 
 interface Props {
   title: string;
-  type: string;
+  id: string;
   className: string;
   titleClassName: string;
   iconName: string;
@@ -15,7 +15,7 @@ interface Props {
 }
 
 export default function NodeHeader({
-  type, title, className, iconClassName, titleClassName, iconName,
+  id, title, className, iconClassName, titleClassName, iconName,
 }: Props) {
   function onMouseDown(e: MouseEvent) {
     e.stopPropagation();
@@ -38,7 +38,7 @@ export default function NodeHeader({
         onClick={(e) => e.stopPropagation()}
         onMouseDown={onMouseDown}
         onMouseUp={onMouseUp}
-        onChange={(e) => updateNodeData(type, 'name', () => e.target.value)}
+        onChange={(e) => updateNodeData(id, 'name', () => e.target.value)}
         onKeyDown={(e: KeyboardEvent<HTMLInputElement>) => {
           if (e.key === 'Enter') {
             (e.target as HTMLInputElement).blur();

@@ -308,11 +308,11 @@ export function updateDataField(id: string, fieldName: string | null, updater: F
   });
 }
 
-export function updateNodeData(elementType: string, fieldName: string, updater: Function) {
+export function updateNodeData(elementId: string, fieldName: string, updater: Function) {
   store.next({
     ...store.value,
     elements: store.value.elements.map((element): FlowElement => {
-      if (element.type === elementType) {
+      if (element.id === elementId) {
         const newElement = { ...element };
         newElement.data = {
           ...newElement.data,
@@ -322,6 +322,25 @@ export function updateNodeData(elementType: string, fieldName: string, updater: 
           },
         };
         return newElement;
+      }
+      return element;
+    }),
+  });
+}
+
+export function updateElement(
+  elementId: string,
+  fieldName: keyof FlowElement | 'position',
+  updater: Function
+) {
+  store.next({
+    ...store.value,
+    elements: store.value.elements.map((element) => {
+      if (element.id === elementId) {
+        const newElement = { ...element };
+        return Object.assign(newElement, {
+          [fieldName]: updater(newElement[fieldName as keyof FlowElement]),
+        });
       }
       return element;
     }),
