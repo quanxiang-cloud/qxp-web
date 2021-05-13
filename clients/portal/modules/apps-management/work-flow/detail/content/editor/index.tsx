@@ -173,7 +173,7 @@ export default function Editor() {
     }, 0);
   }
 
-  // console.log(elements?.map(({ position }: any) => position).filter(Boolean));
+  console.log(elements?.map(({ position }: any) => position).filter(Boolean));
 
   return (
     <div className={cs('w-full h-full flex-1 relative transition', {
