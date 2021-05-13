@@ -27,8 +27,7 @@ export default function OperatorPermission({ value, onChange, type }: Props) {
   const [mergedOperations, setMergedOperations] = useState<OperationPermissionType>(value);
 
   useEffect(() => {
-    if ((data?.custom?.length || data?.system?.length) || 
-    (value?.system?.length || value?.system?.length)) {
+    if (data?.custom?.length || data?.system?.length) {
       mergeOperation();
     }
   }, [data, value]);
@@ -37,7 +36,7 @@ export default function OperatorPermission({ value, onChange, type }: Props) {
 
   useEffect(() => {
     if (!isEqual(mergedOperations, previousMergedOperations)) {
-      onChange(mergedOperations)
+      onChange(mergedOperations);
     }
   }, [mergedOperations]);
 
@@ -59,9 +58,9 @@ export default function OperatorPermission({ value, onChange, type }: Props) {
         system.push(op as SystemOperation);
       }
     });
-    setMergedOperations({ 
-      custom: custom.filter(op => op.value && dataCustomValues.includes(op.value)), 
-      system: system.filter(op => op.value && dataSystemValues.includes(op.value)) 
+    setMergedOperations({
+      custom: custom.filter((op) => op.value && dataCustomValues.includes(op.value)),
+      system: system.filter((op) => op.value && dataSystemValues.includes(op.value)),
     });
   }
 

@@ -94,7 +94,7 @@ export default function CustomFieldTable({ editable, fields, updateFields }: Pro
     );
   }
 
-  function getValueCell(model: any, key: 'initialValue' | 'submitValue') {
+  function getValueCell(model: any, key: 'initialValue' | 'submitValue', editable: boolean) {
     if (editable) {
       return (
         <FieldValueEditor
@@ -117,31 +117,62 @@ export default function CustomFieldTable({ editable, fields, updateFields }: Pro
   }
 
   return (
-    <Table
-      rowKey="id"
-      className={cs({ 'mb-200': editable })}
-      columns={[{
-        Header: '字段',
-        accessor: 'fieldName',
-        Cell: (model: any) => getCell(model),
-      }, {
-        Header: (model: any) => getHeader(model, 'read', '查看'),
-        accessor: 'read',
-        Cell: (model: any) => getCell(model, 'read'),
-      }, {
-        Header: (model: any) => getHeader(model, 'write', '编辑'),
-        accessor: 'write',
-        Cell: (model: any) => getCell(model, 'write'),
-      }, {
-        Header: () => getValueHeader('初始值', '该节点初次打开工作表时对应字段呈现初始值'),
-        accessor: 'initialValue',
-        Cell: (model: any) => getValueCell(model, 'initialValue'),
-      }, {
-        Header: () => getValueHeader('提交值', '该节点提交工作表后对应字段呈现提交值'),
-        accessor: 'submitValue',
-        Cell: (model: any) => getValueCell(model, 'submitValue'),
-      }]}
-      data={fields}
-    />
+    <>
+      {editable && (
+        <Table
+          rowKey="id"
+          className={cs({ 'mb-200': editable })}
+          columns={[{
+            Header: '字段',
+            accessor: 'fieldName',
+            Cell: (model: any) => getCell(model),
+          }, {
+            Header: (model: any) => getHeader(model, 'read', '查看'),
+            accessor: 'read',
+            Cell: (model: any) => getCell(model, 'read'),
+          }, {
+            Header: (model: any) => getHeader(model, 'write', '编辑'),
+            accessor: 'write',
+            Cell: (model: any) => getCell(model, 'write'),
+          }, {
+            Header: () => getValueHeader('初始值', '该节点初次打开工作表时对应字段呈现初始值'),
+            accessor: 'initialValue',
+            Cell: (model: any) => getValueCell(model, 'initialValue', editable),
+          }, {
+            Header: () => getValueHeader('提交值', '该节点提交工作表后对应字段呈现提交值'),
+            accessor: 'submitValue',
+            Cell: (model: any) => getValueCell(model, 'submitValue', editable),
+          }]}
+          data={fields}
+        />
+      )}
+      {!editable && (
+        <Table
+          rowKey="id"
+          columns={[{
+            Header: '字段',
+            accessor: 'fieldName',
+            Cell: (model: any) => getCell(model),
+          }, {
+            Header: (model: any) => getHeader(model, 'read', '查看'),
+            accessor: 'read',
+            Cell: (model: any) => getCell(model, 'read'),
+          }, {
+            Header: (model: any) => getHeader(model, 'write', '编辑'),
+            accessor: 'write',
+            Cell: (model: any) => getCell(model, 'write'),
+          }, {
+            Header: () => getValueHeader('初始值', '该节点初次打开工作表时对应字段呈现初始值'),
+            accessor: 'initialValue',
+            Cell: (model: any) => getValueCell(model, 'initialValue', editable),
+          }, {
+            Header: () => getValueHeader('提交值', '该节点提交工作表后对应字段呈现提交值'),
+            accessor: 'submitValue',
+            Cell: (model: any) => getValueCell(model, 'submitValue', editable),
+          }]}
+          data={fields}
+        />
+      )}
+    </>
   );
 }
