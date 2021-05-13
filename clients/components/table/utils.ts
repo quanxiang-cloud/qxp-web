@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useMemo } from 'react';
 import { FixedColumn, IdType, UnionColumns } from 'react-table';
 
 import checkboxColumn from './checkbox-column';
@@ -15,17 +15,19 @@ export const getDefaultSelectMap = (keys: string[] | undefined): Record<IdType<a
   return keyMap;
 };
 
-export function useExtendColumns<T = any>(originalColumns: UnionColumns<T>[], showCheckbox?: boolean) {
-  const [columns, setColumns] = useState(originalColumns);
-
-  useEffect(() => {
-    if (showCheckbox) {
-      const firstColumnFixed = originalColumns.length > 0 && (originalColumns[0] as FixedColumn<any>).fixed;
-      setColumns([
-        { ...checkboxColumn, fixed: firstColumnFixed },
-        ...originalColumns,
-      ]);
+export function useExtendColumns<T = any>(
+  originalColumns: UnionColumns<T>[],
+  showCheckbox?: boolean,
+): UnionColumns<T>[] {
+  return useMemo(() => {
+    if (!showCheckbox) {
+      return originalColumns;
     }
+
+    const firstColumnFixed = originalColumns.length > 0 && (originalColumns[0] as FixedColumn<any>).fixed;
+    return [
+      { ...checkboxColumn, fixed: firstColumnFixed },
+      ...originalColumns,
+    ];
   }, [showCheckbox, originalColumns]);
-  return columns;
 }
