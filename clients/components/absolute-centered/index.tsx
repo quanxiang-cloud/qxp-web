@@ -13,11 +13,7 @@ const style: React.CSSProperties = {
 };
 
 function AbsoluteCentered({ className = '', children }: Props) {
-  return (
-    <div style={style} className={className}>
-      { children}
-    </div>
-  );
+  return (<div style={style} className={className}>{children}</div>);
 }
 
 export default AbsoluteCentered;

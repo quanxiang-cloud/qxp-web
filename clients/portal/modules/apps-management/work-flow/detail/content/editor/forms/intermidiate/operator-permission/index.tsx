@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery } from 'react-query';
+import { isEqual } from 'lodash';
 
 import Toggle from '@c/toggle';
 import Icon from '@c/icon';
 import Tooltip from '@c/tooltip';
 import Loading from '@c/loading';
 import ErrorTips from '@c/error-tips';
+import usePrevious from '@lib/hooks/use-previous';
 
 import { getOperationList } from '../../api';
 import {
-  DefaultOperation,
+  SystemOperation,
   CustomOperation,
   OperationPermission as OperationPermissionType,
 } from '../../../store';
@@ -25,32 +27,47 @@ export default function OperatorPermission({ value, onChange, type }: Props) {
   const [mergedOperations, setMergedOperations] = useState<OperationPermissionType>(value);
 
   useEffect(() => {
-    if (data) {
+    if (data?.custom?.length || data?.system?.length) {
       mergeOperation();
     }
   }, [data, value]);
 
+  const previousMergedOperations = usePrevious(mergedOperations);
+
+  useEffect(() => {
+    if (!isEqual(mergedOperations, previousMergedOperations)) {
+      onChange(mergedOperations);
+    }
+  }, [mergedOperations]);
+
   function mergeOperation() {
-    const { custom, default: df } = value;
+    const { custom, system = [] } = value;
     const isCustomEmpty = !custom.length;
-    const isDefaultEmpty = !df.length;
+    const isSystemEmpty = !system.length;
+    const customValues = custom.map(({ value }) => value);
+    const systemValues = system.map(({ value }) => value);
+    const dataCustomValues = data?.custom.map(({ value }) => value) || [];
+    const dataSystemValues = data?.system?.map(({ value }) => value) || [];
     data?.custom.forEach((op) => {
-      if (isCustomEmpty || !custom.find(({ name }) => name === op.name)) {
+      if (isCustomEmpty || !customValues.includes(op.value)) {
         custom.push(op);
       }
     });
-    data?.default?.forEach((op) => {
-      if (isDefaultEmpty || !df.find(({ name }) => name === op.name)) {
-        df.push(op as DefaultOperation);
+    data?.system?.forEach((op) => {
+      if (isSystemEmpty || !systemValues.includes(op.value)) {
+        system.push(op as SystemOperation);
       }
     });
-    setMergedOperations({ custom, default: df });
+    setMergedOperations({
+      custom: custom.filter((op) => op.value && dataCustomValues.includes(op.value)),
+      system: system.filter((op) => op.value && dataSystemValues.includes(op.value)),
+    });
   }
 
   function onUpdateOperation(
-    type: 'default' | 'custom',
-    operation: DefaultOperation,
-    value: Partial<DefaultOperation>,
+    type: 'system' | 'custom',
+    operation: SystemOperation,
+    value: Partial<SystemOperation>,
   ) {
     onChange({
       ...mergedOperations,
@@ -66,8 +83,8 @@ export default function OperatorPermission({ value, onChange, type }: Props) {
     });
   }
 
-  function listRender(label: string, operation: DefaultOperation[], type: 'default' | 'custom') {
-    if (!operation.length) {
+  function listRender(label: string, operation: SystemOperation[], type: 'system' | 'custom') {
+    if (!operation?.length) {
       return null;
     }
 
@@ -79,7 +96,7 @@ export default function OperatorPermission({ value, onChange, type }: Props) {
         {operation.map((op) => {
           return (
             <div
-              key={op.name}
+              key={op.value || op.name}
               className="flex items-center justify-between pr-20 py-16 shadow-header"
             >
               <Toggle
@@ -158,8 +175,8 @@ export default function OperatorPermission({ value, onChange, type }: Props) {
         <div className="mr-100">操作</div>
         <div>按钮文案</div>
       </header>
-      {listRender('默认操作', mergedOperations.default, 'default')}
-      {listRender('自定义操作', mergedOperations.custom as DefaultOperation[], 'custom')}
+      {listRender('默认操作', mergedOperations.system, 'system')}
+      {listRender('自定义操作', mergedOperations.custom as SystemOperation[], 'custom')}
     </>
   );
 }

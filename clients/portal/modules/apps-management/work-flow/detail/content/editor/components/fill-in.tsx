@@ -6,16 +6,21 @@ import useObservable from '@lib/hooks/use-observable';
 import store, { updateStore, Data, StoreValue } from '../store';
 import NodeHeader from './_common/node-header';
 import NodeRemover from './_common/node-remover';
+import usePositionChange from './usePositionChange';
 
 interface Props {
   data: Data;
   id: string;
+  xPos: number;
+  yPos: number;
 }
 
-export default function FillInNodeComponent({ data, id }: Props) {
+export default function FillInNodeComponent({ data, id, xPos, yPos }: Props) {
   const { errors } = useObservable<StoreValue>(store) || {};
   const lastTime = useRef(+new Date());
   const [showRemover, setShowRemover] = useState(false);
+
+  usePositionChange({ id, xPos, yPos });
 
   const { nodeData, businessData: { basicConfig } } = data;
 
@@ -68,7 +73,7 @@ export default function FillInNodeComponent({ data, id }: Props) {
       <div className="relative">
         <NodeHeader
           title={nodeData.name}
-          type="fillIn"
+          id={id}
           className="bg-teal-500"
           iconName="edit"
           iconClassName="text-white"

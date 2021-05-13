@@ -5,28 +5,6 @@ import { Placement } from '@popperjs/core';
 import Icon from '@c/icon';
 import Popper from '@c/popper';
 
-export type MenuItem<T> = {
-  key: T;
-  label: React.ReactNode;
-  disabled?: boolean | undefined;
-}
-
-type Props<T> = {
-  iconName?: string;
-  className?: string;
-  onVisibilityChange?: (visible: boolean) => void;
-  onChange: (key: T) => void;
-  menus: MenuItem<T>[];
-  placement?: Placement;
-  likeBtn?: boolean;
-  children?: React.ReactElement;
-}
-
-type MenuItemsProps<T> = {
-  onClick: (key: T) => void;
-  items: MenuItem<T>[];
-}
-
 const modifiers = [
   {
     name: 'offset',
@@ -36,10 +14,18 @@ const modifiers = [
   },
 ];
 
-// todo combine with select component
-function RenderMenuItems<T extends React.Key>(
-  { items, onClick }: MenuItemsProps<T>
-): JSX.Element {
+export type MenuItem<T extends React.Key = string> = {
+  key: T;
+  label: React.ReactNode;
+  disabled?: boolean | undefined;
+}
+
+type MenusProps<T extends React.Key> = {
+  onClick: (key: T) => void;
+  items: MenuItem<T>[];
+}
+
+function Menus<T extends React.Key>({ items, onClick }: MenusProps<T>): JSX.Element {
   return (
     <div className="dropdown-options">
       {
@@ -47,13 +33,11 @@ function RenderMenuItems<T extends React.Key>(
           return (
             <div
               key={key}
+              className={cs('dropdown-options__option', { 'select-option--disabled': disabled })}
               onClick={(e): void => {
                 e.stopPropagation();
                 !disabled && onClick(key);
               }}
-              className={cs('dropdown-options__option', {
-                'select-option--disabled': disabled,
-              })}
             >
               <div className="select-option__content py-6">{label}</div>
             </div>
@@ -64,21 +48,33 @@ function RenderMenuItems<T extends React.Key>(
   );
 }
 
-// todo fix this
-// opened more-menu will not be closed when another more-menu opened
+type Props<T extends React.Key> = {
+  iconName?: string;
+  className?: string;
+  onVisibilityChange?: (visible: boolean) => void;
+  onMenuClick: (key: T) => void;
+  menus: MenuItem<T>[];
+  placement?: Placement;
+  children?: React.ReactElement;
+}
+
 export default function MoreMenu<T extends React.Key>({
-  iconName, className, menus, children, onVisibilityChange, onChange, placement,
+  iconName, className, menus, children, onVisibilityChange, onMenuClick, placement,
 }: Props<T>): JSX.Element {
-  // todo fix this ref any type
-  const reference = React.useRef<any>(null);
+  const reference = React.useRef<Element>(null);
   const popperRef = React.useRef<Popper>(null);
+
+  function handleMenuClick(key: T) {
+    popperRef.current?.close();
+    onMenuClick(key);
+  }
 
   return (
     <>
       {
         children ? React.cloneElement(children, { ref: reference }) : (
           <Icon
-            ref={reference}
+            ref={reference as React.RefObject<SVGSVGElement>}
             changeable
             clickable
             size={20}
@@ -94,13 +90,7 @@ export default function MoreMenu<T extends React.Key>({
         placement={placement || 'bottom-start'}
         modifiers={modifiers}
       >
-        <RenderMenuItems
-          items={menus}
-          onClick={(key): void => {
-            popperRef.current?.close();
-            onChange(key);
-          }}
-        />
+        <Menus items={menus} onClick={handleMenuClick} />
       </Popper>
     </>
   );

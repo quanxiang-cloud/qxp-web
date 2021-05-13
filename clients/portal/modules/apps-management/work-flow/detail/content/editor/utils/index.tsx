@@ -79,7 +79,7 @@ const approveAndFillInCommonData = {
   fieldPermission: {},
   operatorPermission: {
     custom: [],
-    default: [],
+    system: [],
   },
   events: {},
 };

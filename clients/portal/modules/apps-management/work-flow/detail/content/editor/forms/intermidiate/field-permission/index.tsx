@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery } from 'react-query';
+import { isEqual } from 'lodash';
 
 import Toggle from '@c/toggle';
 import Loading from '@c/loading';
 import ErrorTips from '@c/error-tips';
 import useObservable from '@lib/hooks/use-observable';
+import usePrevious from '@lib/hooks/use-previous';
 
 import CustomFieldTable from './custom-field-table';
 import SystemFieldTable from './system-field-table';
@@ -35,10 +37,18 @@ export default function({ value, onChange }: Props) {
   );
 
   useEffect(() => {
-    if (data) {
+    if (data.length) {
       mergeField();
     }
   }, [value, data]);
+
+  const previousMergedFieldPermissions = usePrevious(mergedFieldPermissions);
+
+  useEffect(() => {
+    if (!isEqual(previousMergedFieldPermissions, mergedFieldPermissions)) {
+      onChange(mergedFieldPermissions);
+    }
+  }, [mergedFieldPermissions]);
 
   function onUpdateFields(type: 'custom' | 'system') {
     return (val: (CustomFieldPermission | SystemFieldPermission)[]) => {
@@ -51,9 +61,11 @@ export default function({ value, onChange }: Props) {
 
   function mergeField() {
     const { custom = [], system = [] } = value || {};
+    const customIds = custom.map(({ id }) => id);
+    const dataIds = data?.map(({ value }) => value) || [];
     const isCustomEmpty = !custom.length;
     data?.forEach((field) => {
-      if (isCustomEmpty || !custom.find(({ id }) => id === field.value)) {
+      if (isCustomEmpty || !customIds.includes(field.value)) {
         custom.push({
           id: field.value,
           fieldName: field.label,
@@ -72,7 +84,7 @@ export default function({ value, onChange }: Props) {
         });
       }
     });
-    setMergedFieldPermissions({ system, custom });
+    setMergedFieldPermissions({ system, custom: custom.filter(({ id }) => dataIds.includes(id)) });
   }
 
   if (isLoading) {
@@ -85,20 +97,22 @@ export default function({ value, onChange }: Props) {
 
   return (
     <>
-      <section className="mt-14">
-        <header className="flex justify-between items-center mb-10">
-          <div className="text-caption-no-color text-gray-400">自定义字段</div>
-          <div className="flex justify-between items-center">
-            <span className="mr-8">为字段赋值</span>
-            <Toggle onChange={() => setEditable((s) => !s)} />
-          </div>
-        </header>
-        <CustomFieldTable
-          editable={editable}
-          fields={mergedFieldPermissions.custom}
-          updateFields={onUpdateFields('custom')}
-        />
-      </section>
+      {!!mergedFieldPermissions.custom.length && (
+        <section className="mt-14">
+          <header className="flex justify-between items-center mb-10">
+            <div className="text-caption-no-color text-gray-400">自定义字段</div>
+            <div className="flex justify-between items-center">
+              <span className="mr-8">为字段赋值</span>
+              <Toggle onChange={() => setEditable((s) => !s)} />
+            </div>
+          </header>
+          <CustomFieldTable
+            editable={editable}
+            fields={mergedFieldPermissions.custom}
+            updateFields={onUpdateFields('custom')}
+          />
+        </section>
+      )}
       {!!mergedFieldPermissions.system.length && (
         <section className="pb-56">
           <header className="flex justify-between items-center mb-12 mt-16">
@@ -109,6 +123,9 @@ export default function({ value, onChange }: Props) {
             updateFields={onUpdateFields('system')}
           />
         </section>
+      )}
+      {!mergedFieldPermissions.custom.length && !mergedFieldPermissions.system.length && (
+        <div className="mt-20 flex justify-center text-gray-400">该工作表未设置字段</div>
       )}
     </>
   );

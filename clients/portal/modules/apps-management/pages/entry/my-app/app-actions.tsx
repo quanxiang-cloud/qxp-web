@@ -12,7 +12,7 @@ type Props = {
 function AppActions({ openModal, appInfo }: Props) {
   const history = useHistory();
 
-  const menus: MenuItem<string>[] = [
+  const menus: MenuItem[] = [
     {
       key: 'publish',
       label: (
@@ -69,7 +69,7 @@ function AppActions({ openModal, appInfo }: Props) {
     <MoreMenu
       menus={menus}
       placement="bottom-end"
-      onChange={handleClick}
+      onMenuClick={handleClick}
     />
   );
 }

@@ -146,7 +146,7 @@ function PageSettingConfig() {
           />
         </div>,
         <Select
-          value={pageTableShowRule.pageSize}
+          value={pageTableShowRule.pageSize || 0}
           onChange={(pageSize: number) => setPageTableShowRule({ pageSize })}
           disabled={!pageTableShowRule.pageSize}
           options={PAGE_SIZE_OPTION} />

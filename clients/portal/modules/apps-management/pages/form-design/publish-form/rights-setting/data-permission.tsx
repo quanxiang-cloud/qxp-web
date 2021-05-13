@@ -17,6 +17,14 @@ type Props = {
   rightsID: string;
 }
 
+type FieldCondition = {
+  id: string;
+  key?: string;
+  value?: any;
+  op?: string;
+  filtrate?: FilterField;
+}
+
 const CONDITION = [{
   label: '所有',
   value: 'and',
@@ -41,11 +49,45 @@ const OPERATORS = [
   },
 ];
 
+const OPERATORS_COMPARE = [
+  {
+    label: '等于',
+    value: 'eq',
+  },
+  {
+    label: '大于',
+    value: 'gt',
+  },
+  {
+    label: '小于',
+    value: 'lt',
+  },
+  {
+    label: '大于等于',
+    value: 'egt',
+  },
+  {
+    label: '小于等于',
+    value: 'elt',
+  },
+];
+
+function getOperators(type: string) {
+  switch (type) {
+  case 'number':
+  case 'date':
+    return OPERATORS_COMPARE;
+
+  default:
+    return OPERATORS;
+  }
+}
+
 const FormFieldSwitch = formFieldWrap({ FieldFC: FieldSwitch });
 const FormFieldSelect = formFieldWrap({ FieldFC: Select });
 
 export default function DataPermission({ rightsID }: Props) {
-  const [conditions, setConditions] = useState<any[]>([]);
+  const [conditions, setConditions] = useState<FieldCondition[]>([]);
   const [tag, setTag] = useState('and');
   const { handleSubmit, control, setValue, formState: { errors } } = useForm();
 
@@ -57,7 +99,7 @@ export default function DataPermission({ rightsID }: Props) {
         return;
       }
       setConditions(
-        res.data.conditions.map((condition: any) => {
+        res.data.conditions.map((condition: FieldCondition) => {
           const filtrate: FilterField | undefined = fieldList.find(({ id }) => {
             return id === condition.key;
           });
@@ -83,13 +125,14 @@ export default function DataPermission({ rightsID }: Props) {
     label: field.label,
   }));
 
-  const handleFieldChange = (rowID: number, field: string) => {
+  const handleFieldChange = (rowID: string, field: string) => {
     setConditions(conditions.map((condition) => {
       if (condition.id === rowID) {
         return { ...condition, filtrate: fieldList.find(({ id }) => id === field) };
       }
       return condition;
     }));
+    setValue('operators-' + rowID, '');
     setValue('condition-' + rowID, '');
   };
 
@@ -97,14 +140,14 @@ export default function DataPermission({ rightsID }: Props) {
     setConditions([...conditions, { id: uniqueId() }]);
   };
 
-  const handleRemove = (_id: number) => {
+  const handleRemove = (_id: string) => {
     setConditions(conditions.filter(({ id }) => _id !== id));
   };
 
   const handleSave = (formData: any) => {
     const _conditions = conditions.map((condition) => {
       let value = formData[`condition-${condition.id}`];
-      switch (condition.filtrate.type) {
+      switch (condition.filtrate?.type) {
       case 'date':
         value = isArray(value) ? value.map((date: string) => {
           return new Date(date).getTime();
@@ -168,37 +211,44 @@ export default function DataPermission({ rightsID }: Props) {
                 }
               />
             </div>
-            <Controller
-              name={'operators-' + condition.id}
-              control={control}
-              defaultValue={condition.op || 'eq'}
-              render={({ field }) => (
-                <Select
-                  {...field}
-                  options={OPERATORS}
-                  style={{ width: '120px' }}
-                />
-              )
-              }
-            />
             {condition.filtrate ? (
-              <div>
-                <Controller
-                  name={'condition-' + condition.id}
-                  control={control}
-                  defaultValue={condition.value}
-                  rules={{ required: true }}
-                  render={({ field }) => (
-                    <FormFieldSwitch
-                      error={errors['condition-' + condition.id]}
-                      register={{ ...field, value: field.value ? field.value : '' }}
-                      filtrate={condition.filtrate}
-                      style={{ width: '420px' }}
-                    />
-                  )
-                  }
-                />
-              </div>
+              <>
+                <div>
+                  <Controller
+                    name={'operators-' + condition.id}
+                    control={control}
+                    defaultValue={condition.op || 'eq'}
+                    rules={{ required: true }}
+                    render={({ field }) => (
+                      <FormFieldSelect
+                        style={{ width: '120px' }}
+                        error={errors['operators-' + condition.id]}
+                        register={field}
+                        options={getOperators((condition.filtrate as FilterField).type)}
+
+                      />
+                    )
+                    }
+                  />
+                </div>
+                <div>
+                  <Controller
+                    name={'condition-' + condition.id}
+                    control={control}
+                    defaultValue={condition.value}
+                    rules={{ required: true }}
+                    render={({ field }) => (
+                      <FormFieldSwitch
+                        error={errors['condition-' + condition.id]}
+                        register={{ ...field, value: field.value ? field.value : '' }}
+                        filtrate={condition.filtrate}
+                        style={{ width: '420px' }}
+                      />
+                    )
+                    }
+                  />
+                </div>
+              </>
             ) : null}
             <Icon
               clickable

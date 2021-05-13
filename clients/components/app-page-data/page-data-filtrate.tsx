@@ -35,7 +35,7 @@ function PageDataFiltrate() {
         break;
       case 'date':
         _condition.value = [moment(values[key]).format()];
-        _condition.op = 'lt';
+        _condition.op = 'eq';
         break;
       case 'number':
         _condition.value = [Number(values[key])];

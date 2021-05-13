@@ -6,11 +6,11 @@ import SideNavCard from '@c/side-nav-card';
 import ForEmployee from './for-employee';
 
 function PublishForm() {
-  const { navType } = useParams<any>();
+  const { navType } = useParams<FormDesignParams>();
   const location = useLocation();
 
   const getUrl = (menuId: string) => {
-    return location.pathname.replace(navType, menuId) + location.search;
+    return location.pathname.replace(navType as string, menuId) + location.search;
   };
 
   const MENU = [

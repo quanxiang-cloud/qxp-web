@@ -37,7 +37,7 @@ interface SingleSelectProps<T> extends BaseSelectProps<T> {
   multiple?: false;
   value?: T;
   defaultValue?: T;
-  onChange?: (value: T) => void;
+  onChange?: (value: T) => void | boolean;
   triggerRender?: SingleTriggerRenderFunc<T>;
 }
 
@@ -146,8 +146,10 @@ export default class Select<T extends React.Key> extends React.Component<SelectP
 
   handleClick = (value: T): void => {
     if (!this.props.multiple) {
-      this.setState({ selectedValue: value });
-      this.props.onChange?.(value);
+      const isOk = this.props.onChange?.(value);
+      if (isOk !== false) {
+        this.setState({ selectedValue: value });
+      }
       this.popperRef.current && this.popperRef.current.close();
 
       return;

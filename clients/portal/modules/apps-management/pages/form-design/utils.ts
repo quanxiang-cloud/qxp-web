@@ -1,4 +1,4 @@
-export function getFilterField(field: PageField):FilterField {
+export function getFilterField(field: PageField): FilterField {
   const filter = {
     id: field.id,
     placeholder: field.cProps.placeholder || '',
@@ -37,7 +37,7 @@ export function getFilterField(field: PageField):FilterField {
   };
 }
 
-export function getAttribute(config: any, index: number) {
+export function getAttribute(config: Record<string, any>, index: number) {
   if (!config) {
     return {
       visible: true,

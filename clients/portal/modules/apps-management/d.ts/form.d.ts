@@ -1,6 +1,6 @@
 type FilterOption = {
-  range: boolean;
-  compareSymbol: string;
+  range?: boolean;
+  compareSymbol?: string;
 }
 
 type EnumItem = {
@@ -45,5 +45,5 @@ type FilterField = {
 type Condition = {
   key?: string;
   op?: string;
-  value?: any;
+  value?: Array<string | number | Date>;
 }

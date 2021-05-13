@@ -14,7 +14,7 @@ import store from './store';
 import './index.scss';
 
 function FormDesign() {
-  const { pageType, pageId, appID } = useParams<any>();
+  const { pageType, pageId, appID } = useParams<FormDesignParams>();
 
   useEffect(() => {
     store.setPageID(pageId);

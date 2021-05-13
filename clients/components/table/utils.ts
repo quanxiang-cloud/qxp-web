@@ -1,5 +1,7 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { FixedColumn, IdType, UnionColumns } from 'react-table';
+
+import checkboxColumn from './checkbox-column';
 
 export const getDefaultSelectMap = (keys: string[] | undefined): Record<IdType<any>, boolean> => {
   if (!keys) {
@@ -66,4 +68,19 @@ export function useFixedStyle<T extends {}>(columns: UnionColumns<T>[]): GetFixe
   }, [columns]);
 
   return fn.current;
+}
+
+export function useExtendColumns<T = any>(originalColumns: UnionColumns<T>[], showCheckbox?: boolean) {
+  const [columns, setColumns] = useState(originalColumns);
+
+  useEffect(() => {
+    if (showCheckbox) {
+      const firstColumnFixed = originalColumns.length > 0 && (originalColumns[0] as FixedColumn<any>).fixed;
+      setColumns([
+        { ...checkboxColumn, fixed: firstColumnFixed },
+        ...originalColumns,
+      ]);
+    }
+  }, [showCheckbox, originalColumns]);
+  return columns;
 }

@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Route, Switch } from 'react-router';
+import { Route, Switch } from 'react-router-dom';
 import { useQuery } from 'react-query';
 import { isEmpty } from 'lodash';
 

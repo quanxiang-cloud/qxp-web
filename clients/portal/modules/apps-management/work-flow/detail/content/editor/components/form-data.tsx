@@ -3,15 +3,20 @@ import cs from 'classnames';
 
 import { updateStore, Data } from '../store';
 import NodeHeader from './_common/node-header';
+import usePositionChange from './usePositionChange';
 
 interface Props {
   data: Data;
   id: string;
+  xPos: number;
+  yPos: number;
 }
 
-export default function FormDataNodeComponent({ data, id }: Props) {
+export default function FormDataNodeComponent({ data, id, xPos, yPos }: Props) {
   const isNew = !data.businessData.form.name;
   const lastTime = useRef(+new Date());
+
+  usePositionChange({ id, xPos, yPos });
 
   function onMouseUp() {
     if (+new Date - lastTime.current < 200) {
@@ -31,7 +36,7 @@ export default function FormDataNodeComponent({ data, id }: Props) {
     >
       <NodeHeader
         title={data.nodeData.name}
-        type="formData"
+        id={id}
         className="bg-gray-100"
         iconName="form-data"
         titleClassName="text-gray-600 bg-gray-100"

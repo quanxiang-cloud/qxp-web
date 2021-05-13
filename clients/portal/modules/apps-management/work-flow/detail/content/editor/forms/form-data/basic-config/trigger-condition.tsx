@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import cs from 'classnames';
 
 import Toggle from '@c/toggle';
@@ -20,6 +20,10 @@ interface Props {
 
 export default function TriggerCondition({ value, formFieldOptions, onChange }: Props) {
   const [openMore, setOpenMore] = useState(false);
+
+  useEffect(() => {
+    !!value?.expr?.length && setOpenMore(true);
+  }, [value?.expr?.length]);
 
   function updateTriggerConditionField(
     conditions: TriggerConditionType,
@@ -194,7 +198,7 @@ export default function TriggerCondition({ value, formFieldOptions, onChange }: 
           <div className="text-body2">触发条件</div>
           <span className="text-caption">设置触发筛选条件，满足条件后触发工作流</span>
         </div>
-        <Toggle onChange={onValueChange} />
+        <Toggle onChange={onValueChange} defaultChecked={openMore} />
       </div>
       <div className={cs('overflow-hidden transition', {
         visible: openMore,

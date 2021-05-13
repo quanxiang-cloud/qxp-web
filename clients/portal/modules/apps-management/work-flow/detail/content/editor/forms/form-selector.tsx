@@ -1,4 +1,4 @@
-import React, { forwardRef, Ref } from 'react';
+import React, { forwardRef, Ref, useState } from 'react';
 import cs from 'classnames';
 import { useParams } from 'react-router-dom';
 import { useQuery } from 'react-query';
@@ -7,8 +7,10 @@ import Select from '@c/select';
 import Icon from '@c/icon';
 import ToolTip from '@c/tooltip';
 import toast from '@lib/toast';
+import ConfirmModal from '@c/modal-confirm';
 
 import { getFormDataOptions } from './api';
+import { resetElementsData } from '../store';
 
 interface Props {
   value: string;
@@ -21,6 +23,7 @@ export default forwardRef(function FormSelector(
   ref?: Ref<HTMLInputElement>
 ) {
   const { appID } = useParams<{appID: string}>();
+  const [currentWorkTable, setCurrentWorkTable] = useState('');
 
   const {
     data: options = [],
@@ -28,8 +31,32 @@ export default forwardRef(function FormSelector(
     error = '获取工作表失败',
   } = useQuery(['GET_WORK_FORM_LIST', appID], getFormDataOptions);
 
-  if (isError) {
-    toast.error(error);
+  isError && toast.error(error);
+
+  function onWorkFormChange(val: string) {
+    if (value) {
+      setCurrentWorkTable(val);
+      return false;
+    } else {
+      onChange({
+        value: val,
+        name: options.find(({ value }) => value === val)?.label || '',
+      });
+    }
+  }
+
+  function onSubmitWorkFormChange() {
+    const form = {
+      value: currentWorkTable,
+      name: options.find(({ value }) => value === currentWorkTable)?.label || '',
+    };
+    onChange(form);
+    resetElementsData('formData', { form });
+    onCancelSubmitWorkForm();
+  }
+
+  function onCancelSubmitWorkForm() {
+    setCurrentWorkTable('');
   }
 
   return (
@@ -46,10 +73,7 @@ export default forwardRef(function FormSelector(
           name="workForm"
           placeholder="请选择"
           value={value}
-          onChange={(v: string) => onChange({
-            value: v,
-            name: options.find(({ value }) => value === v)?.label || '',
-          })}
+          onChange={onWorkFormChange}
           className={cs(
             'h-28 border-none px-12 text-12 flex items-center',
             'flex-1 work-flow-form-selector'
@@ -76,6 +100,17 @@ export default forwardRef(function FormSelector(
             options={options}
           />
         </ToolTip>
+      )}
+      {currentWorkTable && (
+        <ConfirmModal
+          title="更换触发工作表"
+          onCancel={onCancelSubmitWorkForm}
+          onSubmit={onSubmitWorkFormChange}
+        >
+          <p className="text-body2">
+            更换新的触发工作表后，该节点及其他关联节点配置将会被重置，确定要更换吗？
+          </p>
+        </ConfirmModal>
       )}
     </div>
   );

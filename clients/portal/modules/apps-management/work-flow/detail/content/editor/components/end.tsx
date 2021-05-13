@@ -3,12 +3,18 @@ import React from 'react';
 import Icon from '@c/icon';
 
 import { Data } from '../store';
+import usePositionChange from './usePositionChange';
 
 interface Props {
   data: Data;
+  id: string;
+  xPos: number;
+  yPos: number;
 }
 
-export default function EndNodeComponent({ data }: Props) {
+export default function EndNodeComponent({ data, id, xPos, yPos }: Props) {
+  usePositionChange({ xPos, id, yPos });
+
   return (
     <div
       className="shadow-flow-header rounded-tl-8 rounded-tr-8 rounded-br-0 rounded-bl-8

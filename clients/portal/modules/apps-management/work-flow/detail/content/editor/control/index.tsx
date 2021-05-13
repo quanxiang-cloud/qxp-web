@@ -1,7 +1,7 @@
 import React, { memo, useCallback, HTMLAttributes } from 'react';
 import cs from 'classnames';
 import { useMutation } from 'react-query';
-import { useParams } from 'react-router-dom';
+import { useParams, useHistory } from 'react-router-dom';
 import {
   useZoomPanHelper,
   FitViewParams,
@@ -12,7 +12,7 @@ import {
 import Icon from '@c/icon';
 import Button from '@c/button';
 import useObservable from '@lib/hooks/use-observable';
-import store, { StoreValue, updateStore } from '@flow/detail/content/editor/store';
+import store, { StoreValue } from '@flow/detail/content/editor/store';
 import toast from '@lib/toast';
 
 import ControlButton from './control-button';
@@ -43,6 +43,7 @@ function Controls({
   className,
   children,
 }: Props) {
+  const history = useHistory();
   const { appID } = useParams<{ type: string; appID: string; }>();
   const setInteractive = useStoreActions((actions) => actions.setInteractive);
   const { zoomIn, zoomOut, fitView } = useZoomPanHelper();
@@ -89,10 +90,7 @@ function Controls({
   const saveMutation = useMutation(saveWorkFlow, {
     onSuccess: (respData) => {
       toast.success('保存成功');
-      updateStore(null, () => ({
-        creatorId: respData.creatorId,
-        id: respData.id,
-      }));
+      history.push(`/apps/flow/${appID}/${respData.id}`);
     },
     onError: (err: Error) => {
       toast.error(err.message);
@@ -120,7 +118,7 @@ function Controls({
   }
 
   return (
-    <div className={cs('flex flex-row items-center justify-between', className)}>
+    <div className={cs('flex flex-row items-center justify-between', className)} style={style}>
       <Button
         modifier="primary"
         iconName="toggle_on"
@@ -137,7 +135,6 @@ function Controls({
       </Button>
       <div
         className="bg-white shadow-flow-header rounded-4 overflow-hidden flex flex-row items-center"
-        style={style}
       >
         {showZoom && (
           <>

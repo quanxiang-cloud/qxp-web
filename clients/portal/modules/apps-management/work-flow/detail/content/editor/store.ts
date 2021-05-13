@@ -3,6 +3,8 @@ import { ArrowHeadType, Elements, FlowElement, Edge } from 'react-flow-renderer'
 
 import { uuid } from '@lib/utils';
 
+import { getNodeInitialData } from './utils';
+
 export type Operator = 'eq' | 'neq' | 'gt' | 'gte' | 'lt' | 'lte' | '';
 export type TriggerConditionExpressionItem = TriggerCondition | {
   key: string;
@@ -67,7 +69,7 @@ export interface BasicNodeConfig {
   };
 }
 
-export interface DefaultOperation {
+export interface SystemOperation {
   enabled: boolean;
   changeable: boolean;
   name: string;
@@ -84,7 +86,7 @@ export interface CustomOperation {
 }
 
 export interface OperationPermission {
-  default: DefaultOperation[];
+  system: SystemOperation[];
   custom: CustomOperation[];
 }
 
@@ -306,11 +308,11 @@ export function updateDataField(id: string, fieldName: string | null, updater: F
   });
 }
 
-export function updateNodeData(elementType: string, fieldName: string, updater: Function) {
+export function updateNodeData(elementId: string, fieldName: string, updater: Function) {
   store.next({
     ...store.value,
     elements: store.value.elements.map((element): FlowElement => {
-      if (element.type === elementType) {
+      if (element.id === elementId) {
         const newElement = { ...element };
         newElement.data = {
           ...newElement.data,
@@ -320,6 +322,49 @@ export function updateNodeData(elementType: string, fieldName: string, updater: 
           },
         };
         return newElement;
+      }
+      return element;
+    }),
+  });
+}
+
+export function updateElement(
+  elementId: string,
+  fieldName: keyof FlowElement | 'position',
+  updater: Function
+) {
+  store.next({
+    ...store.value,
+    elements: store.value.elements.map((element) => {
+      if (element.id === elementId) {
+        const newElement = { ...element };
+        return Object.assign(newElement, {
+          [fieldName]: updater(newElement[fieldName as keyof FlowElement]),
+        });
+      }
+      return element;
+    }),
+  });
+}
+
+export function resetElementsData(
+  type: 'formData' | 'approve' | 'fillIn',
+  value: Partial<BusinessData>
+) {
+  store.next({
+    ...store.value,
+    elements: store.value.elements.map((element) => {
+      if (element.type && ['formData', 'approve', 'fillIn'].includes(element.type)) {
+        if (element.type === type) {
+          element.data.businessData = {
+            ...getNodeInitialData('formData'),
+            ...value,
+          };
+        } else {
+          element.data.businessData = getNodeInitialData(
+            element.type as 'formData' | 'approve' | 'fillIn'
+          );
+        }
       }
       return element;
     }),

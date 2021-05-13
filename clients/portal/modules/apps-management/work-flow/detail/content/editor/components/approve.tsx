@@ -6,16 +6,21 @@ import useObservable from '@lib/hooks/use-observable';
 import store, { updateStore, Data, StoreValue } from '../store';
 import NodeHeader from './_common/node-header';
 import NodeRemover from './_common/node-remover';
+import usePositionChange from './usePositionChange';
 
 interface Props {
   data: Data;
   id: string;
+  xPos: number;
+  yPos: number;
 }
 
-export default function ApproveNodeComponent({ data, id }: Props) {
+export default function ApproveNodeComponent({ data, id, xPos, yPos }: Props) {
   const { errors } = useObservable<StoreValue>(store) || {};
   const lastTime = useRef(+new Date());
   const [showRemover, setShowRemover] = useState(false);
+
+  usePositionChange({ xPos, yPos, id });
 
   const { nodeData, businessData: { basicConfig } } = data;
 
@@ -68,7 +73,7 @@ export default function ApproveNodeComponent({ data, id }: Props) {
       <div className="relative">
         <NodeHeader
           title={nodeData.name}
-          type="approve"
+          id={id}
           iconName="approves"
           className="bg-indigo-500"
           iconClassName="text-white"

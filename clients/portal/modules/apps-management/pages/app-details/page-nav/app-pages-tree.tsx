@@ -14,7 +14,7 @@ import Tree, {
 
 import { movePage } from '@portal/modules/apps-management/lib/api';
 import Icon from '@c/icon';
-import MoreMenu, { MenuItem } from '@c/more-menu';
+import MoreMenu from '@c/more-menu';
 import toast from '@lib/toast';
 
 const PADDING_PER_LEVEL = 16;
@@ -43,7 +43,7 @@ function NodeRender(
 ): JSX.Element {
   const isPage = item.data.menuType === 0;
 
-  const MENUS: MenuItem<string>[] = [
+  const MENUS = [
     isPage ?
       {
         key: 'editPage',
@@ -105,7 +105,7 @@ function NodeRender(
           <MoreMenu
             menus={MENUS}
             placement="bottom-end"
-            onChange={(key: string) => onMenuClick(key, item)}
+            onMenuClick={(key) => onMenuClick(key, item)}
           >
             <Icon
               changeable

@@ -63,7 +63,7 @@ export interface OperationItem {
 }
 
 const operationList = {
-  default: [{
+  system: [{
     enabled: true,
     changeable: false,
     name: '通过',
@@ -127,7 +127,7 @@ const operationList = {
   }],
 };
 export function getOperationList({ queryKey }: QueryFunctionContext): Promise<{
-  default?: OperationItem[];
+  system?: OperationItem[];
   custom: OperationItem[];
 }> {
   return new Promise((r) => {
