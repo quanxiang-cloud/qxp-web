@@ -13,9 +13,10 @@ interface ISwitch<Value extends React.Key> {
   options: ISwitchOption<Value>[];
   onChange?: (value: Value) => void;
   defaultValue?: string;
+  optionRenderer?: (option: ISwitchOption<Value>)=> React.ReactNode;
 }
 
-export default function Switch<Value extends React.Key>({ ...props }: ISwitch<Value>) {
+export default function Switch<Value extends React.Key>(props: ISwitch<Value>) {
   return (
     <div className={cs(useCss({
       display: 'inline-block',
@@ -52,7 +53,7 @@ export default function Switch<Value extends React.Key>({ ...props }: ISwitch<Va
             return (<LegoRadioButton
               key={option['value']}
               value={option['value']}>
-              {option['label']}
+              {props.optionRenderer ? props.optionRenderer(option) : option['label']}
             </LegoRadioButton>);
           })
         }

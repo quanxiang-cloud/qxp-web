@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { observer } from 'mobx-react';
+import { useQuery } from 'react-query';
 
 import Switch from '@c/switch';
 import Select from '@c/select';
@@ -8,6 +9,7 @@ import Pagination from '@c/pagination';
 
 import store from './store';
 import TaskList from '../task-list';
+import { getFlowInstanceCount } from '../api';
 
 const status = [
   { label: '全部', value: '' },
@@ -29,11 +31,15 @@ const sortOptions = [
 ];
 
 function TodoApprovals(): JSX.Element {
+  const { data: flowInstCount } = useQuery(['flow-instance-count'], async () => {
+    return await getFlowInstanceCount({});
+  });
+
   useEffect(() => {
     document.title = '我的流程 - 待处理列表'; // todo
     store.fetchAll();
 
-    return ()=> {
+    return () => {
       store.reset();
     };
   }, []);
@@ -47,6 +53,21 @@ function TodoApprovals(): JSX.Element {
             onChange={store.changeTagType}
             defaultValue={store.tagType}
             options={status}
+            optionRenderer={({ value, label }) => {
+              let count = 0;
+              if (value === '') {
+                count = store.total;
+              }
+              if (value === 'OVERTIME') {
+                count = flowInstCount?.overTimeCount || 0;
+              }
+              if (value === 'URGE') {
+                count = flowInstCount?.urgeCount || 0;
+              }
+              return (
+                <span>{label + ' · ' + count}</span>
+              );
+            }}
           />
           <Select
             className="mr-16"
@@ -64,7 +85,7 @@ function TodoApprovals(): JSX.Element {
           {/* <Checkbox label="仅看我代理的" className="mr-auto" />*/}
         </div>
         <Search className="w-259" placeholder="搜索流程、发起人、应用" value={store.keyword}
-          onChange={store.changeKeyword} />
+                onChange={store.changeKeyword} />
         {/* <Select multiple={false} options={sortOptions}>*/}
         {/*  <IconBtn iconName="import_export" className="btn-sort" />*/}
         {/* </Select>*/}

@@ -33,7 +33,7 @@ export const getAllTaskList = async (params: Record<string, any>)
 
 // 获取流程实例数量
 export const getFlowInstanceCount = async (params: Record<string, any>)
-  : Promise<{ overTimeCount: number | undefined, urgeCount: number | undefined, waitHandleCount: number | undefined, ccToMeCount: number | undefined }> => {
+  : Promise<{ overTimeCount?: number, urgeCount?: number, waitHandleCount?: number, ccToMeCount?: number }> => {
   return await httpClient('/api/v1/flow/instance/getFlowInstanceCount', params);
 };
 
