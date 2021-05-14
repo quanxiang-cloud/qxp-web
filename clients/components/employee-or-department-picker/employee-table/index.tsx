@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useQuery } from 'react-query';
 import { observer } from 'mobx-react';
 import cs from 'classnames';
@@ -26,7 +26,6 @@ export default observer(function EmployeeTable({
   ownerStore,
 }: IEmployeeTable) {
   const store = ownerStore.employeeStore;
-  const [loading, setLoading] = useState(true);
   const { current, pageSize, total } = store.pagination;
   const [isLoading, setIsLoading] = React.useState(true);
 
@@ -61,7 +60,7 @@ export default observer(function EmployeeTable({
     }
   }, [data, ownerStore.owners]);
 
-  if (loading) {
+  if (isLoading) {
     return <Loading desc="加载中..." />;
   }
 
@@ -122,6 +121,7 @@ export default observer(function EmployeeTable({
             {
               Header: '员工姓名',
               id: 'userName',
+              fixed: true,
               accessor: 'userName',
             },
             {
