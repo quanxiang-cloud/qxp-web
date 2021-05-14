@@ -26,8 +26,8 @@ type HTTPClientConfig struct {
 	IdleConnTimeout int `yaml:"idle_conn_timeout" default:"90" split_words:"true"`
 }
 
-// PortalServerConfig server config
-type PortalServerConfig struct {
+// ServerConfig server config
+type ServerConfig struct {
 	ServerPort   int    `yaml:"server_port" default:"80" split_words:"true"`
 	LogLevel     string `yaml:"log_level" default:"warning" split_words:"true"`
 	LogDir       string `yaml:"log_dir" default:"/var/log/qxp" split_words:"true"`
@@ -51,7 +51,8 @@ type Configuration struct {
 	Redis       *RedisConfig       `yaml:"redis"`
 	APIEndpoint *APIEndpointConfig `yaml:"api_endpoint" validate:"required" split_words:"true"`
 
-	PortalServer *PortalServerConfig `yaml:"portal_server" vaildate:"required" split_words:"true"`
+	PortalServer *ServerConfig `yaml:"portal_server" vaildate:"required" split_words:"true"`
+	HomeServer   *ServerConfig `yaml:"home_server" vaildate:"required" split_words:"true"`
 
 	ClientConfig *ClientConfig `yaml:"client_config" vaildate:"required" split_words:"true"`
 }

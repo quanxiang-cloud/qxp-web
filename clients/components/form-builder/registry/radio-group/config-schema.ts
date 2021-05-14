@@ -1,6 +1,6 @@
 import { ISchema } from '@formily/react-schema-renderer';
 
-import { deleteOperate, extraOperations, addOperate } from '../operates';
+import { deleteOperate, extraOperations } from '../operates';
 
 const schema: ISchema = {
   type: 'object',
@@ -132,7 +132,7 @@ const schema: ISchema = {
             renderMoveDown: () => null,
             renderMoveUp: () => null,
             renderExtraOperations: extraOperations,
-            renderAddition: addOperate,
+            renderAddition: () => null,
           },
           'x-index': 8,
           items: {
@@ -141,11 +141,16 @@ const schema: ISchema = {
               label: {
                 type: 'string',
                 title: '选项',
+                required: true,
                 'x-component': 'Input',
                 'x-index': 1,
               },
             },
           },
+        },
+        add: {
+          type: 'object',
+          'x-component': 'addOperate',
         },
       },
     },
