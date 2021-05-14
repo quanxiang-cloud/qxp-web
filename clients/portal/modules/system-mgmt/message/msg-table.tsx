@@ -124,13 +124,11 @@ const MsgTable = ({ refresh }: Props) => {
     }
 
     getMsgById(previewInfo.id)
-      .then((response: any) => {
-        if (response.code == 0) {
-          const { recivers } = response.data;
-          setPreviewData(Object.assign({}, response.data, { receivers: recivers }));
-        } else {
-          Message.warning('异常查询');
-        }
+      .then((response) => {
+        const { recivers } = response;
+        setPreviewData(Object.assign({}, response, { receivers: recivers }));
+      }).catch(() => {
+        Message.warning('异常查询');
       });
   }, [previewInfo]);
 
@@ -142,12 +140,10 @@ const MsgTable = ({ refresh }: Props) => {
 
     getMsgById(modifyModal.id)
       .then((response: any) => {
-        if (response.code == 0) {
-          const { recivers } = response.data;
-          setModifyData(Object.assign({}, response.data, { receivers: recivers }));
-        } else {
-          Message.warning('异常查询');
-        }
+        const { recivers } = response;
+        setModifyData(Object.assign({}, response, { receivers: recivers }));
+      }).catch(() => {
+        Message.warning('异常查询');
       });
   }, [modifyModal]);
 
@@ -445,15 +441,13 @@ const MsgTable = ({ refresh }: Props) => {
           onClose={closeModal}
           onConfirm={() => {
             deleteMsgById(modalInfo.id)
-              .then((data) => {
-                if (data && data.code == 0) {
-                  Message.success('操作成功');
-                  refresh();
-                  refreshMsg();
-                  closeModal();
-                } else {
-                  Message.error('操作失败');
-                }
+              .then(() => {
+                Message.success('操作成功');
+                refresh();
+                refreshMsg();
+                closeModal();
+              }).catch(() => {
+                Message.error('操作失败');
               });
           }}
         >

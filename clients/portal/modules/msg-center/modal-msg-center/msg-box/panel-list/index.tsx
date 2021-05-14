@@ -1,11 +1,10 @@
 import React, { useState, useRef, useMemo, useEffect } from 'react';
+import { useMutation, useQuery } from 'react-query';
 import cs from 'classnames';
 import { observer } from 'mobx-react';
-import { Message } from '@QCFE/lego-ui';
-import { useMutation, useQuery } from 'react-query';
+import { Message, Table } from '@QCFE/lego-ui';
 import { get } from 'lodash';
 
-import Table from '@c/table';
 import Loading from '@c/loading';
 import ErrorTips from '@c/error-tips';
 import MsgItem from '@portal/modules/msg-center/msg-item';
@@ -24,7 +23,6 @@ import msgCenter from '@portal/stores/msg-center';
 import Toolbar from './toolbar';
 import { useRouting } from '../../../hooks';
 import NoMsg from '../no-msg';
-
 import styles from '../index.module.scss';
 
 const PanelList = () => {
@@ -176,19 +174,26 @@ const PanelList = () => {
     });
   };
 
-  const onUpdateSelectedKeys = (keys: string[]) => {
-    setSelectedRows(keys);
-    // todo
-    if (keys.length == msgList.length) {
-      toolbarRef.current.allcheck(true);
-      toolbarRef.current.interm(false);
-    } else if (keys.length > 0) {
-      toolbarRef.current.allcheck(false);
-      toolbarRef.current.interm(true);
-    } else {
-      toolbarRef.current.allcheck(false);
-      toolbarRef.current.interm(false);
-    }
+  const rowSelection = {
+    selectedRowKeys: selectedRows,
+    getCheckboxProps: (record: any) => ({
+      // disabled: record.read_status === MsgReadStatus.read,
+      name: record.id,
+    }),
+    onChange(keys: any) {
+      setSelectedRows(keys);
+      // todo
+      if (keys.length == msgList.length) {
+        toolbarRef.current.allcheck(true);
+        toolbarRef.current.interm(false);
+      } else if (keys.length > 0) {
+        toolbarRef.current.allcheck(false);
+        toolbarRef.current.interm(true);
+      } else {
+        toolbarRef.current.allcheck(false);
+        toolbarRef.current.interm(false);
+      }
+    },
   };
 
   const setAllChecked = () => {
@@ -213,30 +218,24 @@ const PanelList = () => {
       <div className={styles.message_list_warp}>
         <div className={styles.message_list}>
           <Toolbar ref={toolbarRef} {...toolbarOptions} />
-          {
-            msgList.length > 0 &&
-            (<Table
-              className={cs('text-14 table-full', styles.table)}
-              showCheckbox
-              rowKey='id'
-              columns={[
-                {
-                  Header: '',
-                  id: 'sdf',
-                  accessor: (msg: Qxp.MsgItem) => (
-                    <MsgItem
-                      className={styles.msgItem}
-                      {...msg}
-                      hideType
-                    />
-                  ),
-                },
-              ]}
-              data={msgList || []}
-              initialSelectedRowKeys={selectedRows || []}
-              onSelectChange={onUpdateSelectedKeys}
-            />)
-          }
+          <Table
+            className={cs('text-14 table-full', styles.table)}
+            rowKey='id'
+            rowSelection={rowSelection}
+            columns={[
+              {
+                title: '',
+                render: (msg: Qxp.MsgItem) => (
+                  <MsgItem
+                    className={styles.msgItem}
+                    {...msg}
+                    hideType
+                  />
+                ),
+              },
+            ]}
+            dataSource={msgList}
+          />
         </div>
         <div>
           <Pagination
