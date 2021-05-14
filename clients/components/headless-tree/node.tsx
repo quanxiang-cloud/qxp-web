@@ -101,6 +101,7 @@ export default function renderNode<T>({
         setAcceptDrop(false);
       }}
       className={cs('group', 'tree-node', className, {
+        'tree-node--isLeaf': node.isLeaf,
         'tree-node--focused': node.id === currentFocusedNodeID && !upwardFocusedStyleToParent,
         'tree-node--focused-on-parent': bubbledFocusedStyle,
         'tree-node--fade': renamingNodeID && node.id !== renamingNodeID,
