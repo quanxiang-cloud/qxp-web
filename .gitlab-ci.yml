@@ -65,7 +65,7 @@ deploy_testing:
     - gitlab-ci
   script:
     - IMAGE_TAG="v$(date "+%Y%m%d")-$(git rev-parse --short HEAD)"
-    - bash -c "helm upgrade qxp-web-portal /root/helm-re/qxp-web-portal --set image.tag=$IMAGE_TAG"
-    - bash -c "helm upgrade qxp-web-home /root/helm-re/qxp-web-home --set image.tag=$IMAGE_TAG"
-    - bash -c "helm upgrade qxp-web-nginx /root/helm-re/qxp-web-nginx --set image.tag=$IMAGE_TAG"
+    - bash -c "helm upgrade qxp-web-portal /root/deployment/qxp-web-portal --set image.tag=$IMAGE_TAG"
+    - bash -c "helm upgrade qxp-web-home /root/deployment/qxp-web-home --set image.tag=$IMAGE_TAG"
+    - bash -c "helm upgrade qxp-web-nginx /root/deployment/qxp-web-nginx --set image.tag=$IMAGE_TAG"
     - echo "deploy testing done!"
