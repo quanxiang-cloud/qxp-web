@@ -1,9 +1,7 @@
 import React, { useEffect } from 'react';
 import { observer } from 'mobx-react';
-import Select from '@c/select';
 import Search from '@c/search';
 import Pagination from '@c/pagination';
-import IconBtn from '@c/icon-btn';
 
 import store from './store';
 import TaskList from '../task-list';
@@ -27,11 +25,11 @@ function TodoApprovals(): JSX.Element {
     <div>
       <div className="flex justify-between items-center mb-16">
         <div className="flex flex-1" />
-        <Search className="w-259 mr-16" placeholder="搜索流程、发起人、应用" value={store.keyword}
+        <Search className="w-259" placeholder="搜索流程、发起人、应用" value={store.keyword}
           onChange={store.changeKeyword} />
-        <Select multiple={false} options={sortOptions} onChange={store.changeOrderType}>
-          <IconBtn iconName="import_export" className="btn-sort" />
-        </Select>
+        {/* <Select multiple={false} options={sortOptions} onChange={store.changeOrderType}>*/}
+        {/*  <IconBtn iconName="import_export" className="btn-sort" />*/}
+        {/* </Select>*/}
       </div>
       <TaskList tasks={store.approvals} store={store} taskType='todo' />
       <Pagination

@@ -4,7 +4,6 @@ import { observer } from 'mobx-react';
 import Select from '@c/select';
 import Search from '@c/search';
 import Pagination from '@c/pagination';
-import IconBtn from '@c/icon-btn';
 import RangePicker from '@c/range-picker';
 
 import store from './store';
@@ -55,11 +54,11 @@ function TodoApprovals(): JSX.Element {
           <RangePicker onChange={store.changeDate} readableCode={store.readableDate} className="w-259" />
           {/* <Checkbox label="仅看我代理的" className="mr-auto" />*/}
         </div>
-        <Search className="w-259 mr-16" placeholder="搜索流程、发起人、应用" value={store.keyword}
+        <Search className="w-259" placeholder="搜索流程、发起人、应用" value={store.keyword}
           onChange={store.changeKeyword} />
-        <Select multiple={false} options={sortOptions}>
-          <IconBtn iconName="import_export" className="btn-sort" />
-        </Select>
+        {/* <Select multiple={false} options={sortOptions}>*/}
+        {/*  <IconBtn iconName="import_export" className="btn-sort" />*/}
+        {/* </Select>*/}
       </div>
       <TaskList tasks={store.approvals} store={store} taskType='todo' />
       <Pagination

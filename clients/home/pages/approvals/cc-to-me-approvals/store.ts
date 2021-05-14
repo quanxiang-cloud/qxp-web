@@ -45,11 +45,6 @@ class TodoApprovalStore extends Store {
   }
 
   @action
-  readFlow = () => {
-    // todo: 标为已读
-  }
-
-  @action
   reset = () => {
     this.total = 0;
     this.pageNumber = 1;

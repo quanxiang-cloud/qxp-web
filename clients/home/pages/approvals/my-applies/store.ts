@@ -38,7 +38,7 @@ class MyAppliedApprovalStore extends Store {
     try {
       const { dataList = [], total } = await getMyApplyList(this.query);
       // filter item without id
-      this.approvals = dataList.filter((item: ApprovalTask)=> item.id);
+      this.approvals = dataList.filter((item: ApprovalTask) => item.id);
       this.total = total - (dataList.length - this.approvals.length);
       this.loading = false;
     } catch (err) {
@@ -51,6 +51,20 @@ class MyAppliedApprovalStore extends Store {
     this.beginDate = start;
     this.endDate = end;
     this.readableDate = readableCode;
+  }
+
+  @action
+  reset = () => {
+    this.total = 0;
+    this.pageNumber = 1;
+    this.pageSize = 10;
+    this.loading = false;
+    this.keyword = '';
+    this.orderType = '';
+    this.status = '';
+    // this.beginDate='';
+    // this.endDate='';
+    // this.readableDate = 'customized:recent_seven_days';
   }
 }
 

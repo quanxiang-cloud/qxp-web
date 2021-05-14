@@ -117,3 +117,8 @@ export const getProcessHistory = async (params: Record<string, any>) => {
 export const sendBack = async (params: Record<string, any>) => {
   return await httpClient('/api/v1/flow/instance/sendBack/{processInstanceId}/{taskId}', params);
 };
+
+// 全部已读
+export const readAll = async (params: string[]) => {
+  return await httpClient('/api/v1/flow/instance/handleCc', params);
+};
