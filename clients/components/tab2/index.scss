@@ -1,71 +1,68 @@
-.tab-warpper {
-  @apply transition overflow-hidden;
-
-  .tab-navs {
-    display: flex;
-    flex-direction: row;
-    width: 100%;
-    background: #fff;
-    margin-bottom: 1px;
-
-    .tab-nav-item {
-      @apply transition;
-      color: #475569;
-      font-size: 14px;
-      text-align: center;
-      white-space: nowrap;
-      padding: 9px 12px;
-      cursor: pointer;
-      position: relative;
-      &:hover {
-        color: var(--blue-600);
-      }
-      &::after {
-        @apply transition;
-        width: 100%;
-        height: 4px;
-        background: #375ff3;
-        border-radius: 4px 4px 0px 0px;
-        content: "";
-        display: block;
-        opacity: 0;
-        position: absolute;
-        left: 0;
-        bottom: -1px;
-      }
-      &:not(.active):hover {
-        &::after {
-          opacity: 0.5;
-        }
-      }
-    }
-    .active {
-      &::after {
-        opacity: 1;
-      }
-    }
-    .strech-navs {
-      flex-grow: 1;
-    }
+.tab-wrapper {
+	@apply transition;
+	height: 100%;
+	overflow: hidden;
+  
+	.tab-navs {
+	  display: flex;
+	  flex-direction: row;
+	  width: 100%;
+	  background: #fff;
+	  margin-bottom: 1px;
+  
+	  .tab-nav-item {
+		@apply transition;
+		color: #475569;
+		font-size: 14px;
+		text-align: center;
+		white-space: nowrap;
+		padding: 9px 12px;
+		cursor: pointer;
+		position: relative;
+		&:hover {
+		  color: var(--blue-600);
+		}
+		&::after {
+		  @apply transition;
+		  width: 100%;
+		  height: 4px;
+		  background: #375ff3;
+		  border-radius: 4px 4px 0px 0px;
+		  content: "";
+		  display: block;
+		  opacity: 0;
+		  position: absolute;
+		  left: 0;
+		  bottom: -1px;
+		}
+		&:not(.active):hover {
+		  &::after {
+			opacity: 0.5;
+		  }
+		}
+	  }
+	  .active {
+		&::after {
+		  opacity: 1;
+		}
+	  }
+	  .strech-navs {
+		flex-grow: 1;
+	  }
+	}
+  
+	.tab-content {
+	  height: 100%;
+	  background: #fff;
+	  padding: 16px 20px;
+	  overflow: auto;
+  
+	  .tab-content-item{
+		height: 100%;
+		display: none;
+	  }
+	  .show{
+		display: block;
+	  }
+	}
   }
-
-  .tab-content {
-    width: 100%;
-    background: #fff;
-    padding: 16px 20px;
-    overflow: auto;
-
-    .tab-content-item{
-      @apply transition-opacity;
-      opacity: 0;
-      height: 0;
-      pointer-events: none;
-    }
-    .show{
-      opacity: 1;
-      height: 100%;
-      visibility: visible;
-      pointer-events: auto;
-    }
-  }
-}
