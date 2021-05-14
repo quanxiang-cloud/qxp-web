@@ -19,6 +19,7 @@ $node-height: 56px;
   background-color: white;
   transition: transform 200ms ease-in-out;
   cursor: pointer;
+  color: var(--gray-900);
 
   .svg-icon {
     color: currentColor;
@@ -30,6 +31,16 @@ $node-height: 56px;
     &:not(.tree-node--focused) {
       color: #0F172A;
     }
+  }
+
+  &:active {
+    &:not(.tree-node--focused) {
+      color: var(--blue-600);
+    }
+  }
+
+  &--isLeaf {
+    color: var(--gray-600);
   }
 
   @include modifier(focused) {
@@ -114,6 +125,8 @@ $node-height: 56px;
     @apply flex-shrink-0;
     margin-left: 8px;
   }
+
+
 }
 
 .employee-select-tree {
