@@ -17,13 +17,13 @@ interface Props {
 }
 
 const initialUrge = {
-  day: '',
-  hours: '',
-  minutes: '',
+  day: 0,
+  hours: 0,
+  minutes: 0,
   repeat: {
-    day: '',
-    hours: '',
-    minutes: '',
+    day: 0,
+    hours: 0,
+    minutes: 0,
   },
 };
 
@@ -39,14 +39,14 @@ export default function Urge({ onSave, defaultValue }: Props) {
     setOpenRepeatSetting(false);
   }
 
-  function onSetUrge(key: string, value: string) {
+  function onSetUrge(key: string, value: number) {
     setUrge((s) => ({
       ...s,
       [key]: value,
     }));
   }
 
-  function onSetUrgeRepeat(key: string, value: string) {
+  function onSetUrgeRepeat(key: string, value: number) {
     setUrge((s) => ({
       ...s,
       repeat: {
@@ -61,7 +61,7 @@ export default function Urge({ onSave, defaultValue }: Props) {
     if (isChecked) {
       setOpenRepeatSetting(true);
     } else {
-      setUrge((s) => ({ ...s, repeat: { day: '', hours: '', minutes: '' } }));
+      setUrge((s) => ({ ...s, repeat: { day: 0, hours: 0, minutes: 0 } }));
       setOpenRepeatSetting(false);
     }
   }
@@ -113,9 +113,9 @@ export default function Urge({ onSave, defaultValue }: Props) {
               </ToolTip>
             </div>
             <TimerSelector
-              onDayChange={(e) => onSetUrge('day', e.target.value)}
-              onHoursChange={(e) => onSetUrge('hours', e.target.value)}
-              onMinutesChange={(e) => onSetUrge('minutes', e.target.value)}
+              onDayChange={(e) => onSetUrge('day', +e.target.value)}
+              onHoursChange={(e) => onSetUrge('hours', +e.target.value)}
+              onMinutesChange={(e) => onSetUrge('minutes', +e.target.value)}
               defaultDay={urge.day}
               defaultHours={urge.hours}
               defaultMinutes={urge.minutes}
@@ -134,9 +134,9 @@ export default function Urge({ onSave, defaultValue }: Props) {
             {openRepeatSetting && (
               <>
                 <TimerSelector
-                  onDayChange={(e) => onSetUrgeRepeat('day', e.target.value)}
-                  onHoursChange={(e) => onSetUrgeRepeat('hours', e.target.value)}
-                  onMinutesChange={(e) => onSetUrgeRepeat('minutes', e.target.value)}
+                  onDayChange={(e) => onSetUrgeRepeat('day', +e.target.value)}
+                  onHoursChange={(e) => onSetUrgeRepeat('hours', +e.target.value)}
+                  onMinutesChange={(e) => onSetUrgeRepeat('minutes', +e.target.value)}
                   defaultDay={urge.repeat.day}
                   defaultHours={urge.repeat.hours}
                   defaultMinutes={urge.repeat.minutes}

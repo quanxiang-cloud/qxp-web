@@ -31,15 +31,15 @@ export interface FormDataData {
 }
 
 export interface UrgeItem {
-  day: string;
-  hours: string;
-  minutes: string;
+  day: number;
+  hours: number;
+  minutes: number;
 }
 export interface Urge extends UrgeItem {
   repeat: {
-    day: string;
-    hours: string;
-    minutes: string;
+    day: number;
+    hours: number;
+    minutes: number;
   };
 }
 
@@ -60,9 +60,9 @@ export interface BasicNodeConfig {
   timeRule: {
     deadLine: {
       breakPoint: 'firstEntry' | 'entry' | 'flowWorked';
-      day: string;
-      hours: string;
-      minutes: string;
+      day: number;
+      hours: number;
+      minutes: number;
       urge: Urge;
     },
     whenTimeout: WhenTimeout;

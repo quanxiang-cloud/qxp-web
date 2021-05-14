@@ -70,11 +70,12 @@ export default function BasicConfig({ type, value, onChange }: Props) {
           whenTimeout: v,
         });
       } else {
+        const val = (v as ChangeEvent<HTMLInputElement>).target?.value || v;
         onUpdate('timeRule', {
           ...value.timeRule,
           [key]: {
             ...value.timeRule[key],
-            [secondKey as string]: (v as ChangeEvent<HTMLInputElement>).target?.value || v,
+            [secondKey as string]: ['day', 'hours', 'minutes'].includes(secondKey) ? +val : val,
           },
         });
       }

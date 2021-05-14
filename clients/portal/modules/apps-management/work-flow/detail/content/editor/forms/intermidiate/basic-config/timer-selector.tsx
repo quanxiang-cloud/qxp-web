@@ -4,9 +4,9 @@ interface Props {
   onDayChange: ChangeEventHandler<HTMLInputElement>;
   onHoursChange: ChangeEventHandler<HTMLInputElement>;
   onMinutesChange: ChangeEventHandler<HTMLInputElement>;
-  defaultDay: string;
-  defaultHours: string;
-  defaultMinutes: string;
+  defaultDay: number;
+  defaultHours: number;
+  defaultMinutes: number;
   style?: CSSProperties,
 }
 
