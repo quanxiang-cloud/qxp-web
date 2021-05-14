@@ -17,3 +17,7 @@
 .corner-4-12-12-12 {
   @apply rounded-tl-4 rounded-tr-12 rounded-br-12 rounded-bl-12;
 }
+
+.corner-4-0-4-4 {
+  @apply rounded-tl-4 rounded-br-4 rounded-bl-4;
+}

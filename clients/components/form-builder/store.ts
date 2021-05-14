@@ -2,7 +2,7 @@ import { action, computed, observable, toJS } from 'mobx';
 
 import logger from '@lib/logger';
 import registry from './registry';
-import { generateRandomFormFieldID } from './utils';
+import { generateRandomFormFieldID, wrapSchemaByMegaLayout } from './utils';
 
 export type FormItem = {
   componentName: string;
@@ -149,30 +149,14 @@ export default class FormBuilderStore {
       properties: properties,
       'x-internal': {
         version: '1.3.13',
+        labelAlign: this.labelAlign,
         visibleHiddenLinkages: toJS(this.visibleHiddenLinkages),
       },
     };
   }
 
   @computed get schemaForPreview(): ISchema {
-    const { properties } = this.schema;
-    return {
-      type: 'object',
-      'x-internal': {
-        version: '1.3.13',
-        visibleHiddenLinkages: this.visibleHiddenLinkages,
-      },
-      properties: {
-        FIELDs: {
-          type: 'object',
-          'x-component': 'mega-layout',
-          'x-component-props': {
-            labelAlign: this.labelAlign,
-          },
-          properties: properties,
-        },
-      },
-    };
+    return wrapSchemaByMegaLayout(toJS(this.schema));
   }
 
   @computed get schemaForCanvas(): ISchema {
