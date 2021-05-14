@@ -119,7 +119,7 @@ function Dashboard() {
         </div>
         <div>
           <Card
-            className="px-32 py-20 mt-16"
+            className="p-20 mt-16"
             headerClassName="ml-8"
             title={<span>我的应用  <span className="ml-4 text-gray-400">({store.appList.length})</span></span>}
             itemTitleClassName="text-h6"
