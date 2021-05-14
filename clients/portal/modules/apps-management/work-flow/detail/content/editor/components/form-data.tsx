@@ -32,7 +32,7 @@ export default function FormDataNodeComponent({ data, id, xPos, yPos }: Props) {
       )}
       style={{
         width: data.nodeData.width,
-        height: data.nodeData.height,
+        minHeight: data.nodeData.height,
       }}
       onMouseDown={() => lastTime.current = +new Date()}
       onMouseUp={onMouseUp}

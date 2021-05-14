@@ -66,7 +66,7 @@ export default function FillInNodeComponent({ data, id, xPos, yPos }: Props) {
       )}
       style={{
         width: nodeData.width,
-        height: nodeData.height,
+        minHeight: nodeData.height,
       }}
       onMouseDown={() => lastTime.current = +new Date()}
       onMouseUp={onMouseUp}
