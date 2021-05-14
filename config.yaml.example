@@ -27,6 +27,14 @@ portal_server:
   # enable log to stdout
   enable_stdout: false
 
+home_server:
+  server_port: 9031
+  log_level: debug
+  log_dir: /path/to/logs/qxp-web
+  templates_dir: /path/to/qxp-web/dist/templates
+  # enable log to stdout
+  enable_stdout: false
+
 client_config:
   websocket_hostname: keeper.test
   home_hostname: home.qxp.localhost

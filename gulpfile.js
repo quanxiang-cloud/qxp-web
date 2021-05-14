@@ -1,12 +1,10 @@
 const util = require('util');
 const gulp = require('gulp');
 const webpack = require('webpack');
-const { EventEmitter } = require('events');
+const { spawn, exec } = require('child_process');
 
 const { generateSprite } = require('./scripts/svg-to-sprite');
-
 const promiseExec = util.promisify(require('child_process').exec);
-const { spawn } = require('child_process');
 const webpackConfig = require('./webpack.config');
 
 function clean(cb) {
@@ -50,33 +48,29 @@ function buildIcons() {
   return generateSprite();
 }
 
-const buildAssets = gulp.parallel(
-  copyStatics,
-  copyTemplates,
-  buildIcons,
-);
-
-exports.buildIcons = buildIcons;
-exports.buildAssets = buildAssets;
-exports.webpack = (done) => {
-  runWebpack(webpackConfig({ mode: 'production' })).then(done);
-};
-
-function server() {
-  portalServer = spawn('air');
-  portalServer.stderr.pipe(process.stderr);
-  portalServer.stdout.pipe(process.stdout);
-  return portalServer;
+function getServerTask(serverName) {
+  return gulp.series(
+    () => exec(`go build -o ./bin/${serverName} server/cmd/${serverName}/main.go`),
+    () => {
+      childProcess = spawn(`./bin/${serverName}`, ['-c', 'config.yaml']);
+      childProcess.stderr.pipe(process.stderr);
+      childProcess.stdout.pipe(process.stdout);
+      return childProcess;
+    }
+  );
 }
 
-exports.default = gulp.parallel(buildAssets, server,
-  () => {
-    gulp.watch(
-      ['./webpack.config.js'],
-      { ignoreInitial: false },
-      gulp.series((done) => {
-        runWebpack(webpackConfig({ mode: 'development' })).then(done);
-      })
-    );
-  },
-);
+function webpackWatchTask() {
+  return runWebpack(webpackConfig({ mode: 'development' }));
+}
+
+const buildAssetsTask = gulp.parallel(copyStatics, copyTemplates, buildIcons);
+const serverTask = gulp.parallel(getServerTask('portal'), getServerTask('home'));
+
+exports.webpack = webpackWatchTask;
+exports.buildIcons = buildIcons;
+exports.buildAssets = buildAssetsTask;
+exports.server = serverTask;
+exports.client = gulp.parallel(buildAssetsTask, webpackWatchTask);
+
+exports.default = gulp.series(clean, gulp.parallel(buildAssetsTask, serverTask, webpackWatchTask));
