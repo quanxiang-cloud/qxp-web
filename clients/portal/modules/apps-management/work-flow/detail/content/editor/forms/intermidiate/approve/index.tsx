@@ -23,7 +23,6 @@ import SaveButtonGroup
 import BasicConfig from '../basic-config';
 import FieldPermission from '../field-permission';
 import OperatorPermission from '../operator-permission';
-import Events from '../events';
 
 export default function ApproveForm() {
   const { asideDrawerType, elements = [], errors } = useObservable<StoreValue>(store) || {};
@@ -163,10 +162,6 @@ export default function ApproveForm() {
                       type={currentElement?.type}
                     />
                   ),
-                }, {
-                  id: 'events',
-                  name: '事件',
-                  content: <Events />,
                 }]}
               />
             </div>

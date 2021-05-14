@@ -166,12 +166,6 @@ export default function FormDataForm() {
                       />
                     </div>
                   ),
-                }, {
-                  id: 'events',
-                  name: '事件',
-                  content: (
-                    <div>TODO</div>
-                  ),
                 }]}
               />
             </div>
