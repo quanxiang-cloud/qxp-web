@@ -80,10 +80,6 @@ export function setFixedParameters(
   fixedRule: string | undefined,
   tableColumns: UnionColumns<Record<string, any>>[]
 ) {
-  if (!fixedRule) {
-    return tableColumns;
-  }
-
   let action: UnionColumns<any> = {
     id: 'action',
     Header: '操作',
