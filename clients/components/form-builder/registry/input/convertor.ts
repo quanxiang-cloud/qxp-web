@@ -22,7 +22,7 @@ export const defaultConfig: InputConfig = {
   defaultValue: '',
 };
 
-export function toSchema(value: typeof defaultConfig): FormBuilder.Schema {
+export function toSchema(value: InputConfig): FormBuilder.Schema {
   return {
     type: 'string',
     title: value.title,
