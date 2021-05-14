@@ -109,9 +109,10 @@ function VisibleHiddenLinkageConfig({ sourceSchema, onClose, linkageKey, onSubmi
         if (availableCompareValues?.availableCompareValues.length !== 0) {
           state.props['x-component'] = 'Select';
           state.props.enum = availableCompareValues?.availableCompareValues;
-          return;
+        } else {
+          state.props['x-component'] = compareField;
+          state.props.enum = undefined;
         }
-        state.props.enum = undefined;
       });
     });
   }
