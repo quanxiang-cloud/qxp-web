@@ -170,7 +170,7 @@ export default function WorkFlowTable({ type }: Props) {
       {isError && (
         <ErrorTips desc="something wrong..."/>
       )}
-      {!hasData && !isLoading && (
+      {!hasData && !isLoading && !isError && (
         <div className="mt-72 mb-16 flex flex-col items-center">
           <Icon name="workflow-list-empty" size={120} />
           <p className="text-caption">
