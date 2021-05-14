@@ -2,15 +2,15 @@ import React, { useEffect, useState } from 'react';
 import { observer } from 'mobx-react';
 
 import Switch from '@c/switch';
-import Select from '@c/select';
 import Search from '@c/search';
 import Pagination from '@c/pagination';
-import IconBtn from '@c/icon-btn';
 import Button from '@c/button';
 import Modal from '@c/modal';
+import toast from '@lib/toast';
 
 import store from './store';
 import TaskList from '../task-list';
+import { readAll } from '../api';
 
 const status = [
   { label: '全部', value: -1 },
@@ -46,12 +46,12 @@ function TodoApprovals(): JSX.Element {
         </div>
         <Search className="w-259 mr-16" placeholder="搜索流程、发起人、应用" value={store.keyword}
           onChange={store.changeKeyword} />
-        <Select multiple={false} options={sortOptions} onChange={store.changeOrderType}>
-          <IconBtn iconName="import_export" className="btn-sort" />
-        </Select>
+        {/* <Select multiple={false} options={sortOptions} onChange={store.changeOrderType}>*/}
+        {/*  <IconBtn iconName="import_export" className="btn-sort" />*/}
+        {/* </Select>*/}
         <Button
-          className="bg-gray-700 ml-16"
-          onClick={()=> setOpenReadFlow(true)}
+          className="bg-gray-700"
+          onClick={() => setOpenReadFlow(true)}
           modifier="primary"
           iconName="done_all"
         >
@@ -73,8 +73,19 @@ function TodoApprovals(): JSX.Element {
       {openReadFlow && (
         <Modal
           title="全部标为已读"
-          onConfirm={store.readFlow}
-          onClose={()=> setOpenReadFlow(false)}
+          onConfirm={async () => {
+            try {
+              const data = await readAll(store.approvals.map((item)=> item.id));
+              if (data) {
+                toast.success('操作成功');
+                setOpenReadFlow(false);
+                await store.fetchAll();
+              }
+            } catch (err) {
+              toast.error(`操作失败: ${err.message}`);
+            }
+          }}
+          onClose={() => setOpenReadFlow(false)}
         >
           确定要将所有未读抄送标记为已读吗？
         </Modal>

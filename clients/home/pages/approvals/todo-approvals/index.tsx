@@ -5,7 +5,6 @@ import Switch from '@c/switch';
 import Select from '@c/select';
 import Search from '@c/search';
 import Pagination from '@c/pagination';
-import IconBtn from '@c/icon-btn';
 
 import store from './store';
 import TaskList from '../task-list';
@@ -17,7 +16,7 @@ const status = [
 ];
 
 const handleTypes = [
-  { label: '全部', value: '' },
+  { label: '全部', value: 'ALL' },
   { label: '待审批', value: 'REVIEW' },
   { label: '待填写', value: 'WRITE' },
   { label: '待阅示', value: 'READ' },
@@ -32,7 +31,11 @@ const sortOptions = [
 function TodoApprovals(): JSX.Element {
   useEffect(() => {
     document.title = '我的流程 - 待处理列表'; // todo
-    store.fetchApprovals();
+    store.fetchAll();
+
+    return ()=> {
+      store.reset();
+    };
   }, []);
 
   return (
@@ -42,7 +45,7 @@ function TodoApprovals(): JSX.Element {
           <Switch
             className="mr-16"
             onChange={store.changeTagType}
-            defaultValue={store.status}
+            defaultValue={store.tagType}
             options={status}
           />
           <Select
@@ -51,14 +54,20 @@ function TodoApprovals(): JSX.Element {
             value={store.handleType}
             options={handleTypes}
             onChange={store.changeHandleType}
+            triggerRender={(option) => {
+              return (
+                <span className="text-sm"><span
+                  className="text-gray-400 mr-10">处理类型:</span>{option?.selectedOption?.label || '请选择'}</span>
+              );
+            }}
           />
           {/* <Checkbox label="仅看我代理的" className="mr-auto" />*/}
         </div>
-        <Search className="w-259 mr-16" placeholder="搜索流程、发起人、应用" value={store.keyword}
+        <Search className="w-259" placeholder="搜索流程、发起人、应用" value={store.keyword}
           onChange={store.changeKeyword} />
-        <Select multiple={false} options={sortOptions}>
-          <IconBtn iconName="import_export" className="btn-sort" />
-        </Select>
+        {/* <Select multiple={false} options={sortOptions}>*/}
+        {/*  <IconBtn iconName="import_export" className="btn-sort" />*/}
+        {/* </Select>*/}
       </div>
       <TaskList tasks={store.approvals} store={store} taskType='todo' />
       <Pagination

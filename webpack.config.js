@@ -88,7 +88,7 @@ module.exports = function(env) {
       //   context: __dirname,
       //   manifest: path.join(__dirname, 'dist', 'vendor-manifest.json')
       // }),
-      // new WebpackBar(),
+      new WebpackBar(),
       new MiniCssExtractPlugin({
         filename: NODE_ENV === 'production' ? '[name].[contenthash].css' : '[name].css',
       }),
