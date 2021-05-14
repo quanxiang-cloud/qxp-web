@@ -138,13 +138,13 @@ export default observer(function EmployeeOrDepartmentPicker({
             name: '按部门',
             content: (
               <>
-                <SearchInput
+                {/* <SearchInput
                   className="mb-8"
                   name="departmentName"
                   placeholder="搜索部门名称姓名..."
                   onChange={store.setDepartmentKeyword}
                   appendix="close"
-                />
+                /> */}
                 <div
                   className="h-full flex flex-col overflow-hidden"
                   style={{ height: 'calc(100% - 48px)' }}
