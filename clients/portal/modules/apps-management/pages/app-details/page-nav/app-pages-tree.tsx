@@ -19,6 +19,22 @@ import toast from '@lib/toast';
 
 const PADDING_PER_LEVEL = 16;
 
+function getFirstPage(menus: ItemId[], source: Record<string, TreeItem>): PageInfo | undefined {
+  for (const menuKey of menus) {
+    const menu = source[menuKey];
+    if (menu.data.menuType === 0) {
+      return menu.data;
+    } else {
+      if (menu.hasChildren) {
+        const firstPage: PageInfo | undefined = getFirstPage(menu.children, source);
+        if (firstPage) {
+          return firstPage;
+        }
+      }
+    }
+  }
+}
+
 const getIcon = (item: TreeItem) => {
   if (item.data.menuType === 0) {
     // todo should has an default icon name
@@ -128,6 +144,24 @@ type Props = {
 }
 
 export default class PureTree extends Component<Props> {
+  componentDidMount() {
+    const { tree } = this.props;
+    if (!this.props.selectedPage?.id) {
+      const firstPage = getFirstPage(tree.items.ROOT.children, tree.items);
+      if (!firstPage) {
+        return;
+      }
+      this.props.onSelectPage(firstPage);
+      if (firstPage.groupID) {
+        this.props.onChange(mutateTree(tree, firstPage.groupID, { isExpanded: true }));
+      }
+    } else {
+      if (this.props.selectedPage.groupID) {
+        this.props.onChange(mutateTree(tree, this.props.selectedPage.groupID, { isExpanded: true }));
+      }
+    }
+  }
+
   onExpand = (itemId: ItemId) => {
     const { tree } = this.props;
     this.props.onChange(mutateTree(tree, itemId, { isExpanded: true }));

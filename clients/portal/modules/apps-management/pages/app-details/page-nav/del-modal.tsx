@@ -23,7 +23,7 @@ const TEXT = {
     modalTitle: '删除分组',
     sureText: '确认删除分组',
     title: '确定要删除分组吗？ ',
-    content: '删除分组后，分组下的二级菜单页面将默认变为一级页面。',
+    content: '',
   },
 };
 

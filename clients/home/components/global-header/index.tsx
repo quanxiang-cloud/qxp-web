@@ -12,10 +12,10 @@ export default function GlobalHeader() {
 
   return (
     <>
-      <div className="flex justify-between items-center py-8 px-24 bg-white home-global-header">
+      <div className="flex justify-between items-center py-2 px-24 bg-white home-global-header">
         <HeaderNav />
         <img
-          className="flex-1 h-46"
+          className="flex-1 h-48"
           src="/dist/images/quanxiangyun.svg"
           alt="quanxiangyun"
         />

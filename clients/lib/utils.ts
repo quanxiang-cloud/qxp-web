@@ -1,3 +1,4 @@
+import qs from 'qs';
 import { TreeData, TreeItem } from '@atlaskit/tree';
 
 import { TreeNode } from '@c/headless-tree/types';
@@ -197,7 +198,7 @@ function _buildTreeDataItems(
     return { ...acc, ...childItems };
   }, {});
 
-  const newItems = menus.reduce<{ [key: string]: TreeItem}>((acc, page) => {
+  const newItems = menus.reduce<{ [key: string]: TreeItem }>((acc, page) => {
     acc[page.id] = {
       id: page.id,
       children: (page.child || []).map((childPage) => childPage.id),
@@ -232,4 +233,13 @@ export function buildAppPagesTreeData(menus: Array<PageInfo>): TreeData {
   };
 
   return treeData;
+}
+
+export function getQuery<T>(): T {
+  const search = window.location.search;
+  if (search) {
+    return qs.parse(search.split('?').pop() || '') as unknown as T;
+  }
+
+  return {} as T;
 }

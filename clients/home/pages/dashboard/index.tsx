@@ -24,9 +24,9 @@ function Dashboard() {
 
   return (
     <>
-      <main className="py-40 px-58 relative"
-        style={{ height: 'calc(100vh - 62px)', overflow: 'scroll' }}>
-        <div className="flex justify-between items-center px-6">
+      <main className="px-20 relative"
+        style={{ overflow: 'auto' }}>
+        <div className="flex justify-between items-center">
           <Card
             className="flex-2 user-card user-info-bg"
             itemTitleClassName="text-h5"
@@ -93,9 +93,9 @@ function Dashboard() {
             </>)}
           />
         </div>
-        <div className="px-6 mt-40">
+        <div>
           <Card
-            className="px-32 py-20"
+            className="p-20 mt-16"
             headerClassName="ml-8"
             title={<span>我的应用  <span className="ml-4 text-gray-400">({store.appList.length})</span></span>}
             itemTitleClassName="text-h6"

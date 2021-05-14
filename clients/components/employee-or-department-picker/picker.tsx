@@ -102,7 +102,7 @@ export default observer(function EmployeeOrDepartmentPicker({
                   appendix="close"
                 />
                 <div className="flex flex-row mr-4" style={{ height: 'calc(100% - 48px)' }}>
-                  <div className="w-212 h-full flex flex-col overflow-hidden mr-20">
+                  <div className="w-221 h-full flex flex-col overflow-hidden mr-20">
                     <TextHeader
                       className="mb-8 pb-0"
                       title="选择部门"
@@ -112,8 +112,7 @@ export default observer(function EmployeeOrDepartmentPicker({
                     <EmployeeSelectTree
                       store={store.employeeTreeStore}
                       className="employee-select-tree"
-                      wrapperClassName="flex-1 bg-white rounded-tl-12 rounded-bl-12
-                      border-r border-gray-200"
+                      wrapperClassName="flex-1 bg-white rounded-12 border-gray-200"
                     />
                   </div>
                   <div className="h-full flex flex-col overflow-hidden flex-5">
@@ -125,7 +124,6 @@ export default observer(function EmployeeOrDepartmentPicker({
                     <EmployeeTable
                       userName={store.usernameKeyword}
                       depID={store.employeeTreeStore.currentFocusedNode.id || ''}
-                      className="overflow-scroll"
                       ownerStore={store}
                     />
                   </div>
@@ -138,13 +136,13 @@ export default observer(function EmployeeOrDepartmentPicker({
             name: '按部门',
             content: (
               <>
-                <SearchInput
+                {/* <SearchInput
                   className="mb-8"
                   name="departmentName"
                   placeholder="搜索部门名称姓名..."
                   onChange={store.setDepartmentKeyword}
                   appendix="close"
-                />
+                /> */}
                 <div
                   className="h-full flex flex-col overflow-hidden"
                   style={{ height: 'calc(100% - 48px)' }}

@@ -1,4 +1,4 @@
-import { observable, action, toJS } from 'mobx';
+import { observable, action, toJS, reaction, IReactionDisposer } from 'mobx';
 import { omit } from 'lodash';
 import { mutateTree, TreeData, TreeItem } from '@atlaskit/tree';
 
@@ -21,6 +21,7 @@ import {
 import appListStore from '../entry/my-app/store';
 
 class AppDetailsStore {
+  destroySetCurPage: IReactionDisposer;
   @observable appDetails: AppInfo = {
     id: '',
     useStatus: 0,
@@ -29,7 +30,8 @@ class AppDetailsStore {
   };
   @observable loading = false;
   @observable appID = '';
-  @observable pageListLoading = false;
+  @observable pageID = '';
+  @observable pageListLoading = true;
   @observable fetchSchemeLoading = false;
   @observable formScheme = null;
   @observable curPage: PageInfo = { id: '' };
@@ -37,6 +39,21 @@ class AppDetailsStore {
     rootId: 'ROOT',
     items: {},
   };
+
+  constructor() {
+    this.destroySetCurPage = reaction(() => {
+      if (!this.pageID || this.pageListLoading) {
+        return;
+      }
+
+      return this.pagesTreeData.items[this.pageID].data;
+    }, this.setCurPage);
+  }
+
+  @action
+  setPageID = (pageID: string) => {
+    this.pageID = pageID;
+  }
 
   @action
   updateAppStatus = () => {
@@ -92,15 +109,17 @@ class AppDetailsStore {
         ...items[groupID],
         children: items[groupID].children?.filter((childID) => childID !== treeItem.id),
       };
+      // todo refactor this
+      if (this.curPage.id === treeItem.id && type !== 'delGroup') {
+        window.history.replaceState('', '', window.location.pathname);
+        this.pageID = '';
+        this.curPage = { id: '' };
+      }
+
       this.pagesTreeData = {
         items,
         rootId: this.pagesTreeData.rootId,
       };
-
-      // todo refactor this
-      if (this.curPage.id === treeItem.id && type !== 'delGroup') {
-        this.curPage = { id: '' };
-      }
 
       toast.success('删除成功');
     });
@@ -175,23 +194,19 @@ class AppDetailsStore {
 
   @action
   setCurPage = (pageInfo: PageInfo) => {
-    if (pageInfo.id === this.curPage.id) {
+    if (!pageInfo) {
       return;
     }
 
-    if (pageInfo.id) {
-      this.fetchSchemeLoading = true;
-      fetchFormScheme(this.appID, pageInfo.id).then((res) => {
-        this.formScheme = res.data;
-        const { config, schema } = res.data;
-        getPageDataSchema(config, schema, pageInfo.id as string, this.appID);
-        this.fetchSchemeLoading = false;
-      }).catch(() => {
-        this.fetchSchemeLoading = false;
-      });
-    } else {
-      this.formScheme = null;
-    }
+    this.fetchSchemeLoading = true;
+    fetchFormScheme(this.appID, pageInfo.id).then((res) => {
+      this.formScheme = res.data;
+      const { config, schema } = res.data;
+      getPageDataSchema(config, schema, pageInfo.id as string, this.appID);
+      this.fetchSchemeLoading = false;
+    }).catch(() => {
+      this.fetchSchemeLoading = false;
+    });
 
     this.curPage = pageInfo;
   }
@@ -209,6 +224,9 @@ class AppDetailsStore {
   @action
   clear = () => {
     this.curPage = { id: '' };
+    this.pageListLoading = true;
+    this.appID = '';
+    this.pageID = '';
     this.pagesTreeData = {
       rootId: 'ROOT',
       items: {},

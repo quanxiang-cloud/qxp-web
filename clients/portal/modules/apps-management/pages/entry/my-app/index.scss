@@ -25,10 +25,12 @@
 
 .app-list-container {
   display: grid;
+  height: 100%;
   grid-gap: 20px;
   padding: 0 20px;
   overflow-y: auto;
   grid-template-columns: repeat(3, minmax(100px, 33%));
+  grid-template-rows: repeat(auto-fill, 76px); 
 }
 
 @media screen and (max-width: 1100px) {

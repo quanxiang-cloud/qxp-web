@@ -1,10 +1,11 @@
 import React, { useEffect } from 'react';
 import { useQuery } from 'react-query';
 import { observer } from 'mobx-react';
+import cs from 'classnames';
 
-import Table from '@c/lego-table';
-import EmptyData from '@c/empty-tips';
+import Table from '@c/table';
 import Pagination from '@c/pagination';
+import EmptyTips from '@c/empty-tips';
 // todo remove this
 import { adminSearchUserList } from '@portal/modules/access-control/role-management/api';
 import Loading from '@c/loading';
@@ -26,13 +27,19 @@ export default observer(function EmployeeTable({
 }: IEmployeeTable) {
   const store = ownerStore.employeeStore;
   const { current, pageSize, total } = store.pagination;
+  const [isLoading, setIsLoading] = React.useState(true);
 
-  const { data, isLoading } = useQuery(
+  const { data } = useQuery(
     [
       'adminSearchUserList',
       { depID, userName, page: current, limit: pageSize },
     ],
-    adminSearchUserList,
+    (params) => {
+      return adminSearchUserList({ queryKey: params.queryKey }).then((res) => {
+        setIsLoading(false);
+        return res;
+      });
+    },
     {
       refetchOnWindowFocus: false,
       enabled: !!depID,
@@ -97,45 +104,48 @@ export default observer(function EmployeeTable({
   }
 
   return (
-    <div className={className}>
-      <Table
-        className="rounded-bl-none rounded-br-none"
-        onRow={(record: EmployeeOrDepartmentOfRole) => {
-          return {
-            onClick: () => {
-              const newKeys = store.selectedKeys.includes(record.id) ?
-                store.selectedKeys.filter((k) => k !== record.id) :
-                [...store.selectedKeys, record.id];
-              onUpdateSelectedKeys(newKeys);
+    <div
+      className={cs('h-full bg-white', className)}
+    >
+      <div
+        className="flex w-full border-b"
+        style={{ height: 'calc(100% - 80px)' }}
+      >
+        <Table
+          // className="rounded-bl-none rounded-br-none h-full"
+          showCheckbox
+          rowKey="id"
+          data={data?.users || []}
+          emptyTips={<EmptyTips text="无成员数据" className="py-10" />}
+          columns={[
+            {
+              Header: '员工姓名',
+              id: 'userName',
+              fixed: true,
+              accessor: 'userName',
             },
-          };
-        }}
-        emptyText={<EmptyData text="无成员数据" className="py-10" />}
-        rowKey="id"
-        dataSource={data?.users || []}
-        columns={[
-          {
-            title: '员工姓名',
-            dataIndex: 'userName',
-          },
-          {
-            title: '手机号',
-            dataIndex: 'phone',
-          },
-          {
-            title: '邮箱',
-            dataIndex: 'email',
-          },
-          {
-            title: '部门',
-            dataIndex: 'dep.departmentName',
-          },
-        ]}
-        rowSelection={{
-          selectedRowKeys: store.selectedKeys,
-          onChange: onUpdateSelectedKeys,
-        }}
-      />
+            {
+              Header: '手机号',
+              id: 'phone',
+              accessor: 'phone',
+            },
+            {
+              Header: '邮箱',
+              id: 'email',
+              accessor: 'email',
+            },
+            {
+              Header: '部门',
+              id: 'dep.departmentName',
+              accessor: ({ dep }: Employee) => {
+                return dep?.departmentName;
+              },
+            },
+          ]}
+          initialSelectedRowKeys={store.selectedKeys || []}
+          onSelectChange={onUpdateSelectedKeys}
+        />
+      </div>
       <div className="h-52 bg-white">
         <Pagination
           {...store.pagination}

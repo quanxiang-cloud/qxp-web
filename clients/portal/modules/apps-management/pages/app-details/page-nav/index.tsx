@@ -1,14 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { toJS } from 'mobx';
 import { TreeItem } from '@atlaskit/tree';
-import { useParams } from 'react-router-dom';
+import { useParams, useHistory } from 'react-router-dom';
 import { observer } from 'mobx-react';
 import { Tooltip } from '@QCFE/lego-ui';
 
 import PageLoading from '@portal/modules/apps-management/components/page-loading';
 import Icon from '@c/icon';
-import AppPagesTree from './app-pages-tree';
+import { getQuery } from '@lib/utils';
 
+import AppPagesTree from './app-pages-tree';
 import EditGroupModal from './edit-group-modal';
 import EditPageModal from './edit-page-modal';
 import DelModal from './del-modal';
@@ -17,9 +18,23 @@ import './index.scss';
 
 function PageNav() {
   const [modalType, setModalType] = useState('');
+  const history = useHistory();
   const [curEditNode, setCurEditNode] = useState<null | TreeItem>(null);
-  const { appID } = useParams<{appID: string}>();
-  const { setCurPage, editGroup, deletePageOrGroup } = appPagesStore;
+  const { appID } = useParams<{ appID: string }>();
+  const { pageID } = getQuery<{ pageID: string }>();
+  const { editGroup, deletePageOrGroup, setPageID } = appPagesStore;
+
+  useEffect(() => {
+    appPagesStore.fetchPageList(appID);
+  }, [appID]);
+
+  useEffect(() => {
+    setPageID(pageID);
+  }, [pageID]);
+
+  const handleSelectPage = (pageInfo: PageInfo) => {
+    history.push(`/apps/details/${appID}?pageID=${pageInfo.id}`);
+  };
 
   function delPageOrGroup() {
     if (!curEditNode) {
@@ -81,7 +96,7 @@ function PageNav() {
           tree={toJS(appPagesStore.pagesTreeData)}
           onMenuClick={handleMenuClick}
           selectedPage={appPagesStore.curPage}
-          onSelectPage={setCurPage}
+          onSelectPage={handleSelectPage}
           onChange={appPagesStore.updatePagesTree}
         />
       </div>
