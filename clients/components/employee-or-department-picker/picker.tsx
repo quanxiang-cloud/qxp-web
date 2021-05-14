@@ -125,7 +125,6 @@ export default observer(function EmployeeOrDepartmentPicker({
                     <EmployeeTable
                       userName={store.usernameKeyword}
                       depID={store.employeeTreeStore.currentFocusedNode.id || ''}
-                      className="overflow-scroll"
                       ownerStore={store}
                     />
                   </div>

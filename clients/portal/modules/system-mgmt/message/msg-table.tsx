@@ -1,29 +1,32 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Table, Message } from '@QCFE/lego-ui';
-import { observer } from 'mobx-react';
-import msgMgmt from '@portal/stores/msg-mgmt';
 import dayjs from 'dayjs';
+import { Message } from '@QCFE/lego-ui';
+import { observer } from 'mobx-react';
 import { debounce } from 'lodash';
+import cs from 'classnames';
+
+import msgMgmt from '@portal/stores/msg-mgmt';
 import { MsgSendStatus, MsgType } from '@portal/modules/system-mgmt/constants';
-import Status from './status';
 import Loading from '@c/loading';
 import ErrorTips from '@c/error-tips';
 import MoreMenu from '@c/more-menu';
+import Authorized from '@c/authorized';
 import SvgIcon from '@c/icon';
 import Pagination from '@c/pagination';
 import Modal from '@c/modal';
 import Button from '@c/button';
 import { createMsg, deleteMsgById } from '@portal/modules/system-mgmt/api';
-import PreviewModal, { ModalContent } from './preview-modal';
+import PreviewModal from './preview-modal';
 import { getMsgById } from '@portal/modules/system-mgmt/api';
-import cs from 'classnames';
 import { useQueryClient } from 'react-query';
-import EmptyData from '@c/empty-tips';
+import EmptyTips from '@c/empty-tips';
 import Select from '@c/select';
+import Table from '@c/table';
 
+import Status from './status';
+import { ModalContent } from './preview-modal';
 import { Content as SendMessage } from '../send-message/index';
 
-import Authorized from '@c/authorized';
 import styles from './index.module.scss';
 
 enum MessageAction {
@@ -121,13 +124,11 @@ const MsgTable = ({ refresh }: Props) => {
     }
 
     getMsgById(previewInfo.id)
-      .then((response: any) => {
-        if (response.code == 0) {
-          const { recivers } = response.data;
-          setPreviewData(Object.assign({}, response.data, { receivers: recivers }));
-        } else {
-          Message.warning('异常查询');
-        }
+      .then((response) => {
+        const { recivers } = response;
+        setPreviewData(Object.assign({}, response, { receivers: recivers }));
+      }).catch(() => {
+        Message.warning('异常查询');
       });
   }, [previewInfo]);
 
@@ -139,12 +140,10 @@ const MsgTable = ({ refresh }: Props) => {
 
     getMsgById(modifyModal.id)
       .then((response: any) => {
-        if (response.code == 0) {
-          const { recivers } = response.data;
-          setModifyData(Object.assign({}, response.data, { receivers: recivers }));
-        } else {
-          Message.warning('异常查询');
-        }
+        const { recivers } = response;
+        setModifyData(Object.assign({}, response, { receivers: recivers }));
+      }).catch(() => {
+        Message.warning('异常查询');
       });
   }, [modifyModal]);
 
@@ -215,14 +214,14 @@ const MsgTable = ({ refresh }: Props) => {
 
   const cols = [
     {
-      title: (
+      Header: (
         <Select
           value={status}
           defaultValue={status}
           options={MessageStatus}
           onChange={setStatus}
         >
-          <div className={`flex content-center ${styles.text_blue} pointer`}>
+          <div className={`flex content-center items-center ${styles.text_blue} pointer`}>
             <div>{EnumStatusLabel[status]}</div>
             <SvgIcon
               name="filter_alt"
@@ -231,31 +230,32 @@ const MsgTable = ({ refresh }: Props) => {
           </div>
         </Select>
       ),
-      dataIndex: 'status',
+      id: 'status',
       width: 160,
-      render: ( _ : any, { status, fail, success }: {
+      accessor: ( { status, fail, success } : {
          status: MsgSendStatus,
-         fail: number, success: number }) =>
-        (<Status {...{ status, fail, success }
-        }/>),
+         fail: number, success: number }) => (
+        <Status {...{ status, fail, success }
+        }/>
+      ),
     },
     {
-      title: (
+      Header: (
         <Select
           value={messageType}
           defaultValue={messageType}
           options={EnumMessage}
           onChange={setMessageType}
         >
-          <div className={`flex content-center ${styles.text_blue} pointer`}>
+          <div className={`flex content-center items-center ${styles.text_blue} pointer`}>
             <div>{EnumMessageLabel[messageType]}</div>
             <SvgIcon name="filter_alt" className={cs(styles.text_blue, styles.status_icon)}/>
           </div>
         </Select>
       ),
-      dataIndex: 'title',
+      id: 'title',
       width: 'auto',
-      render: (_: any, { id, title, sort, status } : {
+      accessor: ({ id, title, sort, status } : {
          status: MsgSendStatus, id: string, title: string, sort: MsgType
         })=>{
         const handleClick = () => {
@@ -275,14 +275,15 @@ const MsgTable = ({ refresh }: Props) => {
       },
     },
     {
-      title: '操作人',
-      render: ({ handle_name }: Qxp.QueryMsgResult) => handle_name || <span>无</span>,
+      Header: '操作人',
+      id: '操作人',
+      accessor: ({ handle_name }: Qxp.QueryMsgResult) => handle_name || <span>无</span>,
     },
     {
-      title: '更新时间',
-      dataIndex: 'updated_at',
+      Header: '更新时间',
+      id: 'updated_at',
       width: 180,
-      render: ( _: any, { updated_at } : Qxp.QueryMsgResult) => {
+      accessor: ({ updated_at } : Qxp.QueryMsgResult) => {
         return (
           <span>
             {dayjs(parseInt(String(updated_at * 1000)))
@@ -292,8 +293,9 @@ const MsgTable = ({ refresh }: Props) => {
       },
     },
     {
-      title: '',
-      render: (itm: Qxp.QueryMsgResult) => {
+      Header: '',
+      id: 'updated_ats',
+      accessor: (itm: Qxp.QueryMsgResult) => {
         const { status, id } = itm;
         const confirmSend = () => {
           setPreviewInfo({ id, visible: true, title: itm.title, status });
@@ -368,11 +370,11 @@ const MsgTable = ({ refresh }: Props) => {
       <div className={cs('w-full', styles.tableWrap)}>
         <Table
           className='text-14 table-full'
-          dataSource={msgList}
+          data={msgList}
+          // @ts-ignore
           columns={cols}
           rowKey="id"
-          // rowSelection={rowSelection}
-          emptyText={<EmptyData text='暂无消息数据' className="pt-40" />}
+          emptyTips={<EmptyTips text='暂无消息数据' className="pt-40" />}
           loading={isLoading}
         />
       </div>
@@ -439,15 +441,13 @@ const MsgTable = ({ refresh }: Props) => {
           onClose={closeModal}
           onConfirm={() => {
             deleteMsgById(modalInfo.id)
-              .then((data) => {
-                if (data && data.code == 0) {
-                  Message.success('操作成功');
-                  refresh();
-                  refreshMsg();
-                  closeModal();
-                } else {
-                  Message.error('操作失败');
-                }
+              .then(() => {
+                Message.success('操作成功');
+                refresh();
+                refreshMsg();
+                closeModal();
+              }).catch(() => {
+                Message.error('操作失败');
               });
           }}
         >

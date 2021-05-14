@@ -1,13 +1,13 @@
 import React, { useState, useRef, useMemo, useEffect } from 'react';
+import { useMutation, useQuery } from 'react-query';
 import cs from 'classnames';
 import { observer } from 'mobx-react';
 import { Message, Table } from '@QCFE/lego-ui';
-import { useMutation, useQuery } from 'react-query';
 import { get } from 'lodash';
+
 import Loading from '@c/loading';
 import ErrorTips from '@c/error-tips';
 import MsgItem from '@portal/modules/msg-center/msg-item';
-import Toolbar from './toolbar';
 import {
   getMessageList,
   deleteMsgByIds,
@@ -18,9 +18,11 @@ import {
 import { MsgType, MsgReadStatus } from '@portal/modules/system-mgmt/constants';
 import Pagination from '@c/pagination';
 import Modal from '@c/modal';
+import msgCenter from '@portal/stores/msg-center';
+
+import Toolbar from './toolbar';
 import { useRouting } from '../../../hooks';
 import NoMsg from '../no-msg';
-import msgCenter from '@portal/stores/msg-center';
 import styles from '../index.module.scss';
 
 const PanelList = () => {
@@ -61,11 +63,11 @@ const PanelList = () => {
 
   const msgList = useMemo(() => {
     msgCenter.setUnreadTypeCounts(get(countUnreadMsg, 'data.type_num', []));
-    return data?.data?.mes_list || [];
+    return data?.mes_list || [];
   }, [data]);
 
   const msgTotal = useMemo(() => {
-    return data?.data?.total || 0;
+    return data?.total || 0;
   }, [data]);
 
   const canIUseReadBtn = useMemo(() => {
