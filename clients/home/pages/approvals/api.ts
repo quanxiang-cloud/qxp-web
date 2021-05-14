@@ -48,13 +48,13 @@ export const getTaskFormPermission = async (params: Record<string, any>) => {
 };
 
 // 阅示
-export const readFlow = async (params: Record<string, any>) => {
-  return await httpClient('/api/v1/flow/instance/readFlow/{processInstanceId}/{taskId}', params);
+export const readFlow = async (processInstanceId: string, taskId: string, params: Record<string, any>) => {
+  return await httpClient(`/api/v1/flow/instance/readFlow/${processInstanceId}/${taskId}`, params);
 };
 
 // 抄送
-export const ccFLow = async (params: Record<string, any>) => {
-  return await httpClient('/api/v1/flow/instance/ccFlow/{processInstanceId}/{taskId}', params);
+export const ccFLow = async (processInstanceId: string, taskId: string, params: Record<string, any>) => {
+  return await httpClient(`/api/v1/flow/instance/ccFlow/${processInstanceId}/${taskId}`, params);
 };
 
 // 启动流程
@@ -78,7 +78,7 @@ export const stepBack = async (params: Record<string, any>) => {
 };
 
 // 任务审核（通过任务）
-export const reviewTask = async (processInstanceId: string, taskId: string, params: { handleType: TaskHandleType, remark?: string })
+export const reviewTask = async (processInstanceId: string, taskId: string, params: { handleType: string; remark: any })
   : Promise<{ data: any }> => {
   return await httpClient(`/api/v1/flow/instance/reviewTask/${processInstanceId}/${taskId}`, params);
 };

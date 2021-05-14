@@ -1,8 +1,10 @@
 .approval-detail {
   &-toolbar {
     position: sticky;
-    top: 20px;
+    top: 0;
     box-shadow: inset 0px -1px 0px #E2E8F0;
+    background: white;
+    z-index: 10;
 
     .left-btns {
       > span{
@@ -18,6 +20,7 @@
     }
 
     .right-btns {
+      width: 200px;
       > button {
         border: none;
         margin-right: 16px;
