@@ -19,6 +19,7 @@ $node-height: 56px;
   background-color: white;
   transition: transform 200ms ease-in-out;
   cursor: pointer;
+  color: var(--gray-900);
 
   .svg-icon {
     color: currentColor;
@@ -30,6 +31,16 @@ $node-height: 56px;
     &:not(.tree-node--focused) {
       color: #0F172A;
     }
+  }
+
+  &:active {
+    &:not(.tree-node--focused) {
+      color: var(--blue-600);
+    }
+  }
+
+  &--isLeaf {
+    color: var(--gray-600);
   }
 
   @include modifier(focused) {
@@ -82,7 +93,7 @@ $node-height: 56px;
     transform: rotate(-90deg);
 
     &:hover {
-      background-color: rgba(96, 125, 139, 0.2);
+      background-color: rgba(96, 125, 139, 0.2)
     }
 
     @include modifier(opened) {
@@ -102,7 +113,7 @@ $node-height: 56px;
 }
 
 .tree-wrapper {
-  min-width: 258px;
+  min-width: 221px;
   @apply overflow-auto select-none;
 
   .tree-node {
@@ -118,10 +129,19 @@ $node-height: 56px;
 
 .employee-select-tree {
   .tree-node {
-    @apply cursor-pointer font-semibold;
+    @apply cursor-pointer font-normal text-gray-900;
+
 
     &:hover {
-      @apply text-blue-600;
+      &:not(.tree-node--focused) {
+        @apply text-gray-900;
+      }
+    }
+
+    &:active {
+      &:not(.tree-node--focused) {
+        @apply text-blue-600;
+      }
     }
 
     .tree-node__content {
@@ -129,5 +149,14 @@ $node-height: 56px;
         @apply w-full truncate;
       }
     }
+  }
+
+  .tree-node--isLeaf {
+    color: var(--gray-600);
+  }
+
+  .tree-node--focused {
+    color: var(--blue-600);
+    font-weight: 600;
   }
 }
