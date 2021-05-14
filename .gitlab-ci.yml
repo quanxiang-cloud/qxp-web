@@ -41,9 +41,11 @@ build_all:
     - go mod vendor
     - IMAGE_TAG="v$(date "+%Y%m%d")-$(git rev-parse --short HEAD)"
     - docker build -t "$IMAGE_PREFIX/qxp-web-portal:$IMAGE_TAG" -f ./deploy/Dockerfile-portal .
+    - docker build -t "$IMAGE_PREFIX/qxp-web-home:$IMAGE_TAG" -f ./deploy/Dockerfile-home .
     - docker build -t "$IMAGE_PREFIX/qxp-web-nginx:$IMAGE_TAG" -f ./deploy/Dockerfile-nginx .
     - docker push "$IMAGE_PREFIX/qxp-web-nginx:$IMAGE_TAG"
     - docker push "$IMAGE_PREFIX/qxp-web-portal:$IMAGE_TAG"
+    - docker push "$IMAGE_PREFIX/qxp-web-home:$IMAGE_TAG"
 
 deploy_alpha:
   tags:
@@ -66,4 +68,3 @@ deploy_testing:
     - bash -c "helm upgrade qxp-web-portal /root/helm-re/qxp-web-portal --set image.tag=$IMAGE_TAG"
     - bash -c "helm upgrade qxp-web-nginx /root/helm-re/qxp-web-nginx --set image.tag=$IMAGE_TAG"
     - echo "deploy testing done!"
-

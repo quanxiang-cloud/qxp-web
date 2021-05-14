@@ -7,15 +7,15 @@ COPY ./server/ ./server/
 COPY ./vendor/ ./vendor/
 COPY go.mod .
 COPY go.sum .
-RUN CGO_ENABLED=0 go build -o home -ldflags='-s -w' -installsuffix cgo ./server/cmd/home/main.go
+RUN CGO_ENABLED=0 go build -o portal -ldflags='-s -w' -installsuffix cgo ./server/cmd/portal/main.go
 
 FROM scratch
 
-WORKDIR /home
-COPY --from=builder /build/home /qxp-web/bin/
+WORKDIR /portal
+COPY --from=builder /build/portal /qxp-web/bin/
 
 EXPOSE 80
 
 COPY ./dist/templates/ /qxp-web/dist/templates/
 
-CMD ["/qxp-web/bin/home", "-c", "/qxp-web/etc/config.yaml"]
+CMD ["/qxp-web/bin/portal", "-c", "/qxp-web/etc/config.yaml"]
