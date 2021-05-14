@@ -48,5 +48,22 @@ export function extraOperations(idx: number) {
 }
 
 export function addOperate() {
-  return <Button>添加选项</Button>;
+  const { actions } = useContext(FieldConfigContext);
+
+  const mutator = actions.createMutators('availableOptions');
+
+  const options = actions.getFieldValue('availableOptions');
+  return (<Button onClick={() => {
+    let hasNullOption = false;
+    options.forEach((element: any) => {
+      if (element.label === '' || element.label === undefined) {
+        hasNullOption = true;
+        return;
+      }
+    });
+
+    if (hasNullOption === false) {
+      mutator.push({ label: '', value: '', title: '' });
+    }
+  }}>添加选项</Button>);
 }
