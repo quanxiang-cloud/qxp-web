@@ -151,7 +151,6 @@ const schema: ISchema = {
         add: {
           type: 'object',
           'x-component': 'addOperate',
-          // 'x-render': addOperate,
         },
       },
     },
