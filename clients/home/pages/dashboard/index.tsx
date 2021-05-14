@@ -24,8 +24,10 @@ function Dashboard() {
 
   return (
     <>
-      <main className="py-40 px-58 relative"
-        style={{ height: 'calc(100vh - 62px)', overflow: 'scroll' }}>
+      <main
+        className="py-40 px-58 relative"
+        style={{ height: 'calc(100vh - 62px)' }}
+      >
         <div className="flex justify-between items-center px-6">
           <Card
             className="flex-2 user-card user-info-bg"
