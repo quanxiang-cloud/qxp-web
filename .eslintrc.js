@@ -29,17 +29,13 @@ module.exports = {
     '@typescript-eslint/ban-types': 'off',
     '@typescript-eslint/camelcase': 'off',
     '@typescript-eslint/explicit-module-boundary-types': 'off',
-    '@typescript-eslint/no-empty-function': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
-    '@typescript-eslint/no-this-alias': 'off',
     '@typescript-eslint/no-unused-vars': ['warn', { varsIgnorePattern: '_' }],
-    'arrow-body-style': 'off',
     camelcase: 'off',
     'arrow-parens': [
       'error',
       'always',
     ],
-    'class-methods-use-this': 'off',
     'comma-dangle': [
       'error',
       {
@@ -53,7 +49,6 @@ module.exports = {
     'func-names': 'off',
     'function-paren-newline': 'off',
     'import/extensions': 'off',
-    'import/no-unresolved': 'off',
     'import/prefer-default-export': 'off',
     indent: [
       'error',
