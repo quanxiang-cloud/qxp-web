@@ -91,3 +91,11 @@ body {
 .retrieve-password-wrapper {
   box-shadow: 0 56px #f1f5f9;
 }
+
+.right-aside {
+  display: inline-block;
+  height: 100%;
+  width:25%;
+  background: rgba(255, 255, 255, 0.65) url(/dist/images/login-rightbgc.svg) no-repeat center;
+  background-size: contain;
+}

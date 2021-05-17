@@ -53,7 +53,7 @@ function findHeadersSameLevel(header: any, headers: any) {
 
 function getStickyProps(header: any, instance: any): { style: React.CSSProperties } {
   let style = {};
-  const dataAttrs = {};
+  const dataAttrs: Record<string, string | boolean> = {};
 
   if (!header.fixed) {
     return {
@@ -66,7 +66,6 @@ function getStickyProps(header: any, instance: any): { style: React.CSSPropertie
     ...cellStylesSticky,
   };
 
-  // @ts-ignore
   dataAttrs['data-sticky-td'] = true;
 
   const headers = findHeadersSameLevel(header, instance.flatHeaders);
@@ -87,10 +86,8 @@ function getStickyProps(header: any, instance: any): { style: React.CSSPropertie
 
   const isLastLeftSticky = columnIsLastLeftSticky(header.id, headers);
   if (isLastLeftSticky) {
-    // @ts-ignore
     dataAttrs['data-sticky-last-left-td'] = true;
   } else if (columnIsFirstRightSticky(header.id, headers)) {
-    // @ts-ignore
     dataAttrs['data-sticky-first-right-td'] = true;
   }
 
