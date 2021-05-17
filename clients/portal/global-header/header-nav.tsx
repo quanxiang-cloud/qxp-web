@@ -3,7 +3,6 @@ import { Link, useLocation } from 'react-router-dom';
 import { twCascade } from '@mariusmarais/tailwind-cascade';
 
 import Icon from '@c/icon';
-import Authorized from '@c/authorized';
 
 export default function HeaderLeft() {
   const location = useLocation();
@@ -85,33 +84,31 @@ export default function HeaderLeft() {
           className="header-nav-btn-text group-hover:text-blue-600"
           style={style(isAppManagement)}
         >
-              应用管理
+          应用管理
         </span>
       </Link>
-      <Authorized authority={['accessControl']}>
-        <Link
-          to="/access-control"
-          className={twCascade(
-            'header-nav-btn group mr-20',
-            className(isAccess)
-          )}
-        >
-          <div className="header-nav-btn-icon-wrapper">
-            <Icon
-              name="admin_panel_settings"
-              className="group-hover:text-blue-600 header-nav-btn-icon"
-              style={style(isAccess)}
-              size={20}
-            />
-          </div>
-          <span
-            className="header-nav-btn-text group-hover:text-blue-600"
+      <Link
+        to="/access-control"
+        className={twCascade(
+          'header-nav-btn group mr-20',
+          className(isAccess)
+        )}
+      >
+        <div className="header-nav-btn-icon-wrapper">
+          <Icon
+            name="admin_panel_settings"
+            className="group-hover:text-blue-600 header-nav-btn-icon"
             style={style(isAccess)}
-          >
-            访问控制
-          </span>
-        </Link>
-      </Authorized>
+            size={20}
+          />
+        </div>
+        <span
+          className="header-nav-btn-text group-hover:text-blue-600"
+          style={style(isAccess)}
+        >
+          访问控制
+        </span>
+      </Link>
       <Link
         to="/system/message"
         className={twCascade(
