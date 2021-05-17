@@ -19,7 +19,7 @@ function MyApp() {
   const { isListLoading, changeParams, params, appList, allAppList } = store;
 
   useEffect(() => {
-    store.fetchAppList();
+    store.changeParams({});
   }, []);
 
   useEffect(() => {
