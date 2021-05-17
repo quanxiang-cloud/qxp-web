@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import {
   SchemaForm,
@@ -68,12 +68,13 @@ type Props = {
 }
 
 function VisibleHiddenLinkageConfig({ sourceSchema, onClose, linkageKey, onSubmit }: Props): JSX.Element {
-  const [compareField, setCompareField] = useState('Select');
+  // const [compareField, setCompareField] = useState('Select');
   const linkages = (sourceSchema['x-internal']?.visibleHiddenLinkages || []) as VisibleHiddenLinkage[];
   const defaultValue = linkages.find((linkage) => linkage.key === linkageKey) || DEFAULT_VALUE;
   const availableFields = Object.entries(sourceSchema.properties || {})
     .filter(([key]) => !INTERNAL_FIELD_NAMES.includes(key))
     .map(([key, value]) => {
+      console.log(value);
       return { value: key, label: value.title || key, availableCompareValues: value.enum || [],
         'x-component': value['x-component'] || 'Select',
       };
@@ -97,8 +98,9 @@ function VisibleHiddenLinkageConfig({ sourceSchema, onClose, linkageKey, onSubmi
         return sourceKeyOption.value === value;
       });
 
-      if (availableCompareValues?.availableCompareValues.length === 0) {
-        setCompareField(availableCompareValues['x-component']);
+      let compareField = '';
+      if (availableCompareValues) {
+        compareField = availableCompareValues['x-component'];
       }
 
       const path = FormPath.transform(name, /\d/, ($1) => {
@@ -107,11 +109,15 @@ function VisibleHiddenLinkageConfig({ sourceSchema, onClose, linkageKey, onSubmi
 
       setFieldState(path, (state) => {
         if (availableCompareValues?.availableCompareValues.length !== 0) {
-          state.props['x-component'] = 'Select';
           state.props.enum = availableCompareValues?.availableCompareValues;
+          state.value = [];
+          if (compareField === 'CheckboxGroup' || compareField === 'MultipleSelect') {
+            state.props['x-component'] = 'Select';
+            state.props['x-component-props'] = { mode: 'multiple' };
+          }
         } else {
-          state.props['x-component'] = compareField;
           state.props.enum = undefined;
+          state.props['x-component'] = compareField;
         }
       });
     });
@@ -157,7 +163,7 @@ function VisibleHiddenLinkageConfig({ sourceSchema, onClose, linkageKey, onSubmi
               required
               name="compareValue"
               default=""
-              x-component={compareField}
+              x-component='Select'
             />
           </Field>
         </Field>

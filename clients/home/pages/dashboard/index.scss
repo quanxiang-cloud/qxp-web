@@ -10,13 +10,14 @@
   }
 }
 
-.user-app-list-container {
-  background-color: rgba(255, 255, 255, 0.45);
-}
-
 .user-info-bg {
   background-image: url('/dist/images/user-card-bgc.svg');
   background-size: cover;
+}
+
+.todo-list-bg {
+  @apply bg-white bg-no-repeat bg-right-bottom;
+  background-image: url('/dist/images/todo-card-bgc.svg');
 }
 
 .user-card {

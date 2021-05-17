@@ -25,7 +25,7 @@ function Dashboard() {
   return (
     <>
       <main className="px-20 relative"
-        style={{ overflow: 'auto' }}>
+        style={{ height: 'calc(100vh - 52px)', overflow: 'auto' }}>
         <div className="flex justify-between items-center">
           <Card
             className="flex-2 user-card user-info-bg"
@@ -55,7 +55,7 @@ function Dashboard() {
             </>)}
           />
           <Card
-            className="flex-3 user-card relative"
+            className="flex-3 user-card todo-list-bg relative"
             title="待办事项"
             headerClassName="pb-32"
             itemTitleClassName="text-h5"
@@ -66,7 +66,6 @@ function Dashboard() {
                   <p>{name}</p>
                 </div>
               ))}
-              <img className="absolute bottom-0 right-0" src="/dist/images/todo-card-bgc.svg" alt=""/>
             </>)}
           />
           <Card
