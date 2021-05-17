@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import {
   SchemaForm,
@@ -68,7 +68,7 @@ type Props = {
 }
 
 function VisibleHiddenLinkageConfig({ sourceSchema, onClose, linkageKey, onSubmit }: Props): JSX.Element {
-  const [compareField, setCompareField] = useState('Select');
+  // const [compareField, setCompareField] = useState('Select');
   const linkages = (sourceSchema['x-internal']?.visibleHiddenLinkages || []) as VisibleHiddenLinkage[];
   const defaultValue = linkages.find((linkage) => linkage.key === linkageKey) || DEFAULT_VALUE;
   const availableFields = Object.entries(sourceSchema.properties || {})
@@ -89,6 +89,7 @@ function VisibleHiddenLinkageConfig({ sourceSchema, onClose, linkageKey, onSubmi
     const { setFieldState } = createFormActions();
 
     onFieldChange$('rules.*.sourceKey').subscribe(({ name, value }) => {
+      let compareField = '';
       if (!value || !name) {
         return;
       }
@@ -98,7 +99,7 @@ function VisibleHiddenLinkageConfig({ sourceSchema, onClose, linkageKey, onSubmi
       });
 
       if (availableCompareValues?.availableCompareValues.length === 0) {
-        setCompareField(availableCompareValues['x-component']);
+        compareField = availableCompareValues['x-component'];
       }
 
       const path = FormPath.transform(name, /\d/, ($1) => {
@@ -110,8 +111,8 @@ function VisibleHiddenLinkageConfig({ sourceSchema, onClose, linkageKey, onSubmi
           state.props['x-component'] = 'Select';
           state.props.enum = availableCompareValues?.availableCompareValues;
         } else {
-          state.props['x-component'] = compareField;
           state.props.enum = undefined;
+          state.props['x-component'] = compareField;
         }
       });
     });
@@ -157,7 +158,7 @@ function VisibleHiddenLinkageConfig({ sourceSchema, onClose, linkageKey, onSubmi
               required
               name="compareValue"
               default=""
-              x-component={compareField}
+              x-component='Select'
             />
           </Field>
         </Field>
