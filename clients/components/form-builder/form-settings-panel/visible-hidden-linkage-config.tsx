@@ -74,6 +74,7 @@ function VisibleHiddenLinkageConfig({ sourceSchema, onClose, linkageKey, onSubmi
   const availableFields = Object.entries(sourceSchema.properties || {})
     .filter(([key]) => !INTERNAL_FIELD_NAMES.includes(key))
     .map(([key, value]) => {
+      console.log(value);
       return { value: key, label: value.title || key, availableCompareValues: value.enum || [],
         'x-component': value['x-component'] || 'Select',
       };
@@ -89,7 +90,6 @@ function VisibleHiddenLinkageConfig({ sourceSchema, onClose, linkageKey, onSubmi
     const { setFieldState } = createFormActions();
 
     onFieldChange$('rules.*.sourceKey').subscribe(({ name, value }) => {
-      let compareField = '';
       if (!value || !name) {
         return;
       }
@@ -98,7 +98,8 @@ function VisibleHiddenLinkageConfig({ sourceSchema, onClose, linkageKey, onSubmi
         return sourceKeyOption.value === value;
       });
 
-      if (availableCompareValues?.availableCompareValues.length === 0) {
+      let compareField = '';
+      if (availableCompareValues) {
         compareField = availableCompareValues['x-component'];
       }
 
@@ -108,8 +109,12 @@ function VisibleHiddenLinkageConfig({ sourceSchema, onClose, linkageKey, onSubmi
 
       setFieldState(path, (state) => {
         if (availableCompareValues?.availableCompareValues.length !== 0) {
-          state.props['x-component'] = 'Select';
           state.props.enum = availableCompareValues?.availableCompareValues;
+          state.value = [];
+          if (compareField === 'CheckboxGroup' || compareField === 'MultipleSelect') {
+            state.props['x-component'] = 'Select';
+            state.props['x-component-props'] = { mode: 'multiple' };
+          }
         } else {
           state.props.enum = undefined;
           state.props['x-component'] = compareField;
