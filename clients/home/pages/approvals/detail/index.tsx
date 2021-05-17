@@ -16,7 +16,6 @@ import Panel from './panel';
 import Toolbar from './toolbar';
 import ActionModals from './action-modals';
 import * as apis from '../api';
-import { parseFormValue } from '../utils';
 
 import store from './store';
 
@@ -62,7 +61,7 @@ function ApprovalDetail(): JSX.Element {
     return (
       <div className='task-form'>
         <FormRenderer
-          defaultValue={parseFormValue(data.formData)}
+          defaultValue={data.formData}
           schema={data.form.table}
           onFormValueChange={setFormValues}
         />

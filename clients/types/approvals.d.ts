@@ -24,7 +24,7 @@ type ApprovalTask = {
   durationInMillis?: number; // Task duration time
 };
 
-type TaskFormData = Record<string, { title: string; type: 'string' | 'number' | string; value: any }>;
+type TaskFormData = Record<string, any>;
 
 type TaskForm = {
   form: { table: ISchema },
