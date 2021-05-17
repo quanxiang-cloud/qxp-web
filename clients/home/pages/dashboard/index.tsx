@@ -25,7 +25,7 @@ function Dashboard() {
   return (
     <>
       <main className="px-20 relative"
-        style={{ overflow: 'auto' }}>
+        style={{ height: 'calc(100vh - 52px)', overflow: 'auto' }}>
         <div className="flex justify-between items-center">
           <Card
             className="flex-2 user-card user-info-bg"
