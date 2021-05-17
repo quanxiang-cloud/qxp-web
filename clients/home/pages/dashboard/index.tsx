@@ -80,7 +80,7 @@ function Dashboard() {
             </>)}
           />
           <Card
-            className="flex-3 user-card relative"
+            className="flex-3 user-card todo-list-bg relative"
             title="待办事项"
             headerClassName="pb-32"
             itemTitleClassName="text-h5"
@@ -93,7 +93,6 @@ function Dashboard() {
                   <p>{name}</p>
                 </div>
               ))}
-              <img className="absolute bottom-0 right-0" src="/dist/images/todo-card-bgc.svg" alt=""/>
             </>)}
           />
           <Card
