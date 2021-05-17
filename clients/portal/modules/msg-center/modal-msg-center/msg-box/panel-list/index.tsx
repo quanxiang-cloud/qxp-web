@@ -276,8 +276,7 @@ const PanelList = () => {
                           return;
                         }
                       }}
-                    >
-                    </MoreMenu>
+                    />
                   );
                 },
               },
