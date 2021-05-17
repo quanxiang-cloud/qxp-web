@@ -20,10 +20,13 @@
     }
 
     .right-btns {
-      width: 200px;
+      width: 240px;
+      display: flex;
+      flex-wrap: wrap;
       > button {
         border: none;
         margin-right: 16px;
+        margin-bottom: 10px;
         &:last-child {
           margin-right: 0;
         }

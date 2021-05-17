@@ -16,7 +16,6 @@ import Icon from '@c/icon';
 import Modal from '@c/modal';
 import Container from '../container';
 import editorToolbarOptions from './editor-toolbar';
-// import ModalSelectReceiver from './dialog-select-receiver';
 import PreviewMsg from './preview-msg';
 import { createMsg } from '@portal/modules/system-mgmt/api';
 import Filelist from './filelist';

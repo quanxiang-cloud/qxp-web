@@ -114,11 +114,17 @@ export const getProcessHistory = async (params: Record<string, any>) => {
 };
 
 // 打回重填
-export const sendBack = async (params: Record<string, any>) => {
-  return await httpClient('/api/v1/flow/instance/sendBack/{processInstanceId}/{taskId}', params);
+export const sendBack = async (processInstanceID: string, taskID: string, params: { handleType: string; remark: any })
+  : Promise<{ data: any }> => {
+  return await httpClient(`/api/v1/flow/instance/sendBack/${processInstanceID}/${taskID}`, params);
 };
 
 // 全部已读
 export const readAll = async (params: string[]) => {
   return await httpClient('/api/v1/flow/instance/handleCc', params);
+};
+
+// 撤销
+export const cancelTask = async (processInstanceId: string) => {
+  return await httpClient(`/api/v1/flow/instance/cancel/${processInstanceId}`);
 };

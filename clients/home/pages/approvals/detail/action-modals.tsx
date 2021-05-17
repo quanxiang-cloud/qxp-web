@@ -3,10 +3,13 @@ import { observer } from 'mobx-react';
 import { useMutation } from 'react-query';
 import { useHistory, useParams } from 'react-router-dom';
 import { TextArea } from '@QCFE/lego-ui';
+import { toJS } from 'mobx';
 import toast from '@lib/toast';
 import Modal from '@c/modal';
 import Button from '@c/button';
+import Icon from '@c/icon';
 import ReceiverPicker from '@c/employee-or-department-picker';
+import ReceiverList from '@c/employee-receiver-list';
 
 import store from './store';
 import * as apis from '../api';
@@ -22,6 +25,7 @@ function ActionModals({ flowName }: Props) {
   const { processInstanceID, taskID } = useParams<{ processInstanceID: string; taskID: string }>();
   const history = useHistory();
   const [showReceiverPicker, setShowPicker] = useState(false);
+  const [chosenEmployees, setChosenEmployees] = useState([]);
   const { action, modalInfo } = store;
 
   const handleTaskMutation = useMutation((params: Record<string, any>) => {
@@ -34,7 +38,7 @@ function ActionModals({ flowName }: Props) {
 
     // 撤回
     if (action === TaskHandleType.hasCancelBtn) {
-      // todo: api missing
+      return apis.cancelTask(processInstanceID);
     }
 
     if (action === TaskHandleType.deliver) {
@@ -46,15 +50,27 @@ function ActionModals({ flowName }: Props) {
     }
 
     if (action === TaskHandleType.send_back) {
-
+      const { remark } = modalInfo.payload;
+      if (!remark) {
+        store.setShowTips(true);
+        return Promise.reject(false);
+      }
+      return apis.sendBack(processInstanceID, taskID, {
+        handleType: action,
+        remark,
+      });
     }
 
     // 抄送
     if (action === TaskHandleType.cc) {
+      if (!chosenEmployees.length) {
+        store.setShowTips(true);
+        return Promise.reject(false);
+      }
       return apis.ccFLow(processInstanceID, taskID, {
         handleType: action,
         remark: modalInfo.payload.remark || '',
-        handleUserIds: [],
+        handleUserIds: chosenEmployees.map((v: { id: string }) => v.id),
       });
     }
 
@@ -90,15 +106,20 @@ function ActionModals({ flowName }: Props) {
   }, {
     onSuccess: (data) => {
       toast.success('操作成功');
-      store.openModal(false);
+      store.reset();
+      setChosenEmployees([]);
       history.push('/approvals?list=done');
     },
     onError: (err: Error) => {
+      if (!err) {
+        return;
+      }
       toast.error(err.message || '操作失败');
     },
   });
 
   const renderContent = () => {
+    const { payload } = store.modalInfo;
     if ([TaskHandleType.agree, TaskHandleType.refuse, TaskHandleType.fill_in].includes(action as TaskHandleType)) {
       return (
         <TextArea
@@ -125,15 +146,44 @@ function ActionModals({ flowName }: Props) {
 
     }
 
+    // 打回重填
     if (action === TaskHandleType.send_back) {
-
+      return (
+        <div>
+          <p className="text-yellow-600 flex items-center mb-24">
+            <Icon name="info" className="text-yellow-600 mr-8" />
+            将工作流任务打回至初始节点，发起人重新填写后继续流转，不中断任务
+          </p>
+          <div>
+            <TextArea
+              rows={4}
+              name="comment"
+              placeholder={`输入${actionMap[action]?.text}原因`}
+              onChange={(ev: unknown, value: string) => {
+                store.setShowTips(!!value);
+                store.setModalInfo({ payload: { remark: value } });
+              }}
+            />
+            {store.showTips && !payload.remark && <p className="text-red-600">请输入打回重填原因</p>}
+          </div>
+        </div>
+      );
     }
 
     // 抄送
     if (action === TaskHandleType.cc) {
       return (
         <div>
-          <Button iconName="add" className="mb-28" onClick={() => setShowPicker(true)}>添加抄送人</Button>
+          <div className="mb-24">
+            <Button iconName="add" onClick={() => setShowPicker(true)}>添加抄送人</Button>
+            {store.showTips && !chosenEmployees.length && <p className="text-red-600">请选择抄送人</p>}
+          </div>
+          <ReceiverList
+            className="mb-24"
+            receivers={chosenEmployees}
+            onRemove={(id) => {
+              setChosenEmployees((current) => current.filter((item: { id: string }) => item.id != id));
+            }} />
           <TextArea
             rows={4}
             name="comment"
@@ -182,7 +232,11 @@ function ActionModals({ flowName }: Props) {
       <Modal
         title={`${store.modalInfo.title} ${flowName || ''}`}
         okText={`确定${store.modalInfo.title}`}
-        onClose={() => store.openModal(false)}
+        onClose={() => {
+          store.openModal(false);
+          store.reset();
+          // setChosenEmployees([]);
+        }}
         onConfirm={() => {
           handleTaskMutation.mutate({});
         }}
@@ -192,12 +246,19 @@ function ActionModals({ flowName }: Props) {
 
       {showReceiverPicker && (
         <ReceiverPicker
-          onSubmit={() => Promise.resolve(true)}
+          onSubmit={(departments, employees) => {
+            const receivers = employees.map((v) => toJS(v));
+            setShowPicker(false);
+            // @ts-ignore
+            setChosenEmployees(receivers);
+            return Promise.resolve(true);
+          }}
           onCancel={() => setShowPicker(false)}
-          title="选择员工或部门"
+          title="选择抄送人"
           submitText="确定选择"
+          employees={chosenEmployees}
           departments={[]}
-          employees={[]}
+          onlyEmployees
         />
       )}
     </>

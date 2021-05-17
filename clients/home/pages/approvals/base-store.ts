@@ -6,7 +6,7 @@ export default class BaseStore {
   @observable pageSize = 10;
   @observable loading = false;
   @observable keyword = '';
-  @observable orderType = '';
+  @observable orderType = 'DESC';
 
   @computed get query(): Record<string, any> {
     return {
@@ -40,6 +40,6 @@ export default class BaseStore {
     this.pageSize = 10;
     this.loading = false;
     this.keyword = '';
-    this.orderType = '';
+    this.orderType = 'DESC';
   }
 }

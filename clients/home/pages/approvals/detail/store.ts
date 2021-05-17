@@ -11,6 +11,7 @@ type ModalInfo = {
 class TaskDetailStore {
   @observable action = '';
   @observable modalOpen = false;
+  @observable showTips = false;
 
   @observable modalInfo: ModalInfo = {
     title: '',
@@ -28,8 +29,8 @@ class TaskDetailStore {
   }
 
   @action
-  openModal = (open: boolean) => {
-    this.modalOpen = open;
+  openModal = (open?: boolean) => {
+    this.modalOpen = Boolean(open);
   }
 
   @action
@@ -46,10 +47,16 @@ class TaskDetailStore {
     });
   }
 
+  @action
+  setShowTips = (show?: boolean) => {
+    this.showTips = Boolean(show);
+  }
+
   reset = () => {
     this.action = '';
     this.modalOpen = false;
     this.modalInfo = { title: '', payload: {} };
+    this.showTips = false;
   }
 }
 

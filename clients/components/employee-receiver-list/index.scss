@@ -1,0 +1,38 @@
+.employee-receiver {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  max-width: 764px;
+
+  .receiver {
+    display: inline-flex;
+    align-items: center;
+    background: #F0F6FF;
+    border-radius: 4px 0;
+    padding: 2px 8px;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 22px;
+    color: #375FF3;
+    margin-right: 8px;
+    margin-bottom: 8px;
+
+    &.is-employee {
+      background: #F0F6FF;
+      color: #375FF3;
+    }
+    &.is-department {
+      color: #D97706;
+      background: #FFFBEB;
+    }
+  }
+
+  .btn-close {
+    position: relative;
+    top: 1px;
+    width: 10px;
+    height: 10px;
+    color: #64748B;
+    cursor: pointer;
+  }
+}
