@@ -18,7 +18,7 @@ function DetailsHeader() {
   const { updateAppStatus, appDetails } = appDetailsStore;
 
   useEffect(() => {
-    appListStore.fetchAppList();
+    appListStore.fetchAppList({ useStatus: 0, appName: '' });
   }, []);
 
   const goAppSetting = () => {
