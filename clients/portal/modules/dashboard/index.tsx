@@ -7,12 +7,10 @@ import List from '@c/list';
 import ItemWithTitleDesc from '@c/item-with-title-desc';
 import AppIcon from '@c/app-icon';
 import { uuid } from '@lib/utils';
-import { usePortalGlobalValue } from '@portal/states_to_be_delete/portal';
 
 import './index.scss';
 
 export default function Dashboard() {
-  const [value] = usePortalGlobalValue();
   useEffect(() => {
     document.title = '工作台';
   }, []);

@@ -35,7 +35,7 @@ class AppPageDataStore {
     page: 1,
     size: 10,
   };
-  @observable createFun = () => { };
+  @observable createFun?: () => void;
 
   constructor() {
     this.destroyFetchTableData = reaction(() => this.params, this.fetchFormDataList);
@@ -97,7 +97,7 @@ class AppPageDataStore {
   @action
   goEdit = (formData: any) => {
     this.curItemFormData = formData;
-    this.createFun();
+    this.createFun?.();
   }
 
   @action
