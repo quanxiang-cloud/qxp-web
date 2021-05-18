@@ -1,13 +1,13 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useRef } from 'react';
 import { Radio, Input, Select, Switch, NumberPicker, ArrayTable, Checkbox } from '@formily/antd-components';
 import { SchemaForm, ISchema, FormEffectHooks, createFormActions } from '@formily/antd';
 
-import { StoreContext } from '../context';
+import { StoreContext } from '../../context';
 import { observer } from 'mobx-react';
 import { toJS } from 'mobx';
 
-import { FieldConfigContext } from './form-field-config-context';
-import { addOperate } from '../registry/operates';
+import { FieldConfigContext } from './context';
+import { addOperate } from '../../registry/operates';
 
 const components = {
   ArrayTable,
@@ -87,6 +87,16 @@ function FormFieldConfigTrue({ onChange, initialValue, schema }: Props): JSX.Ele
 
 function FormFieldConfig(): JSX.Element {
   const store = useContext(StoreContext);
+  const formFieldConfigWrap = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (formFieldConfigWrap.current) {
+      const parent = formFieldConfigWrap.current.parentNode;
+      if (parent) {
+        parent.scrollTop = 0;
+      }
+    }
+  }, [store.activeFieldName]);
 
   if (!store.activeField) {
     return (
@@ -95,13 +105,16 @@ function FormFieldConfig(): JSX.Element {
   }
 
   return (
-    <FormFieldConfigTrue
+    <div ref={formFieldConfigWrap}>
+      <FormFieldConfigTrue
       // assign key to FormFieldConfigTrue to force re-render when activeFieldName changed
-      key={toJS(store.activeFieldName)}
-      onChange={(value) => store.updateFieldConfig(value)}
-      initialValue={toJS(store.activeField.configValue)}
-      schema={store.activeFieldConfigSchema || {}}
-    />
+        key={toJS(store.activeFieldName)}
+        onChange={(value) => store.updateFieldConfig(value)}
+        initialValue={toJS(store.activeField.configValue)}
+        schema={store.activeFieldConfigSchema || {}}
+      />
+    </div>
+
   );
 }
 

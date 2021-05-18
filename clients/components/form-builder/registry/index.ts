@@ -2,7 +2,7 @@ import { DatePicker } from '@formily/antd-components';
 import { Dictionary, groupBy, orderBy } from 'lodash';
 import elements, { Elements } from './elements';
 
-const AVAILABLE_CATEGORIES: Array<{ title: string; key: ElementCategory }> = [
+const AVAILABLE_CATEGORIES: Array<{ title: string; key: FormBuilder.ElementCategory }> = [
   { title: '基础字段', key: 'basic' },
   // { title: '高级字段', key: 'advance' },
   // { title: '布局字段', key: 'layout' },
@@ -11,8 +11,8 @@ const AVAILABLE_CATEGORIES: Array<{ title: string; key: ElementCategory }> = [
 class Registry {
   elements: Elements;
   components: { [key: string]: React.JSXElementConstructor<any>; } = {};
-  categories: Array<{ title: string; key: ElementCategory }>;
-  categorizedElements: Dictionary<SourceElement<any>[]>;
+  categories: Array<{ title: string; key: FormBuilder.ElementCategory }>;
+  categorizedElements: Dictionary<FormBuilder.SourceElement<any>[]>;
 
   constructor() {
     this.elements = elements;
@@ -39,10 +39,6 @@ class Registry {
     // todo fix this
     this.components.YearPicker = DatePicker.YearPicker;
     this.components.MonthPicker = DatePicker.MonthPicker;
-  }
-
-  getFormComponent(type: string) {
-    return this.elements[type]?.component;
   }
 }
 

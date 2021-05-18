@@ -15,7 +15,7 @@ import { Input, Select, DatePicker, NumberPicker } from '@formily/antd-component
 import Modal from '@c/modal';
 import Icon from '@c/icon';
 import Button from '@c/button';
-import { INTERNAL_FIELD_NAMES } from '../store';
+import { INTERNAL_FIELD_NAMES } from '../../store';
 
 const { onFieldInputChange$ } = FormEffectHooks;
 const RowStyleLayout = styled((props) => <div {...props} />)`
@@ -78,7 +78,7 @@ const OPERATORS = {
   ],
 };
 
-const DEFAULT_VALUE: VisibleHiddenLinkage = {
+const DEFAULT_VALUE: FormBuilder.VisibleHiddenLinkage = {
   key: '',
   ruleJoinOperator: 'every',
   rules: [{ sourceKey: '', compareOperator: '===', compareValue: '' }],
@@ -89,11 +89,13 @@ type Props = {
   onClose: () => void;
   sourceSchema: ISchema;
   linkageKey: string;
-  onSubmit: (linkage: VisibleHiddenLinkage) => void;
+  onSubmit: (linkage: FormBuilder.VisibleHiddenLinkage) => void;
 }
 
 function VisibleHiddenLinkageConfig({ sourceSchema, onClose, linkageKey, onSubmit }: Props): JSX.Element {
-  const linkages = (sourceSchema['x-internal']?.visibleHiddenLinkages || []) as VisibleHiddenLinkage[];
+  const linkages = (
+    sourceSchema['x-internal']?.visibleHiddenLinkages || []
+  ) as FormBuilder.VisibleHiddenLinkage[];
   const defaultValue = linkages.find((linkage) => linkage.key === linkageKey) || DEFAULT_VALUE;
   const availableFields = Object.entries(sourceSchema.properties || {})
     .filter(([key]) => !INTERNAL_FIELD_NAMES.includes(key))
