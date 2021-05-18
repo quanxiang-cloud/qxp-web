@@ -73,13 +73,13 @@ function PageDataFiltrate() {
   const noFilter = filtrates.length === 0;
 
   return (
-    <div className='app-page-data-container app-page-data-filtrate'>
+    <div className='form-app-data-table-container form-app-data-table-filtrate'>
       <FiltrateForm ref={filterDom} filtrates={filtrates} showMoreFiltrate={showMoreFiltrate} />
       <div>
         {filtrates.length > 3 ? (
           <span
             onClick={() => setShowMoreFiltrate(!showMoreFiltrate)}
-            className='app-page-data-filtrate-more'
+            className='form-app-data-table-filtrate-more'
           >
             {showMoreFiltrate ? '收起' : '展开'}全部
             <Icon

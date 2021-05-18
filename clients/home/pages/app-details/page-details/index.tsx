@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { observer } from 'mobx-react';
 
 import TextHeader from '@c/text-header';
-import AppPageData from '@c/app-page-data';
-import appDataStore from '@c/app-page-data/store';
+import FormAppDataTable from '@c/form-app-data-table';
+import appDataStore from '@c/form-app-data-table/store';
 import PageLoading from '@c/page-loading';
 
 import store from '../../store';
@@ -40,29 +40,20 @@ function PageDetails() {
     );
   }
 
-  const contentRender = () => {
-    if (fetchSchemeLoading) {
-      return <PageLoading />;
-    }
-
-    if (formScheme) {
-      return (
-        <AppPageData className='p-20 overflow-x-hidden' />
-      );
-    }
-  };
-
   if (!curPage.id) {
     return null;
   }
 
   return (
-    <div className='flex flex-col flex-1 relative overflow-hidden'>
+    <div className='relative h-full flex-1'>
       <TextHeader
         title={curPage.name || ''}
         className="bg-white px-20 py-18 header-background-image"
         itemTitleClassName="text-h5" />
-      {contentRender()}
+      {fetchSchemeLoading && <PageLoading />}
+      {formScheme && !fetchSchemeLoading ? (
+        <FormAppDataTable style={{ height: 'calc(100% - 62px)' }} className='p-20' />
+      ) : null}
     </div>
   );
 }

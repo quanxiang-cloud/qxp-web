@@ -4,7 +4,7 @@ import { mutateTree, TreeData, TreeItem } from '@atlaskit/tree';
 
 import toast from '@lib/toast';
 import { buildAppPagesTreeData } from '@lib/utils';
-import { getPageDataSchema } from '@c/app-page-data/utils';
+import { getPageDataSchema } from '@c/form-app-data-table/utils';
 import {
   fetchAppDetails,
   updateAppStatus,
@@ -43,10 +43,10 @@ class AppDetailsStore {
   constructor() {
     this.destroySetCurPage = reaction(() => {
       if (!this.pageID || this.pageListLoading) {
-        return;
+        return '';
       }
 
-      return this.pagesTreeData.items[this.pageID].data;
+      return this.pageID;
     }, this.setCurPage);
   }
 
@@ -193,11 +193,12 @@ class AppDetailsStore {
   }
 
   @action
-  setCurPage = (pageInfo: PageInfo) => {
-    if (!pageInfo) {
+  setCurPage = (pageID: string) => {
+    if (!pageID) {
       return;
     }
 
+    const pageInfo = this.pagesTreeData.items[pageID].data;
     this.fetchSchemeLoading = true;
     fetchFormScheme(this.appID, pageInfo.id).then((res) => {
       this.formScheme = res.data;

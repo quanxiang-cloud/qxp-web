@@ -14,7 +14,7 @@ type Nav = {
   active?: boolean;
 }
 
-function NavButton(nav: Nav) {
+function HeaderNav(nav: Nav) {
   const history = useHistory();
 
   const jump = (url: string | undefined, isInside: boolean | undefined) => {
@@ -44,5 +44,5 @@ function NavButton(nav: Nav) {
   );
 }
 
-export default NavButton;
+export default HeaderNav;
 

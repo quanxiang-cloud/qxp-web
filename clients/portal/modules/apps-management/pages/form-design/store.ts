@@ -14,8 +14,8 @@ import {
   movePerGroup,
   updatePerGroup,
 } from './api';
-import appPageDataStore from '@c/app-page-data/store';
-import { PageTableShowRule, Scheme, setFixedParameters } from '@c/app-page-data/utils';
+import appPageDataStore from '@c/form-app-data-table/store';
+import { PageTableShowRule, Scheme, setFixedParameters } from '@c/form-app-data-table/utils';
 
 import { getFilterField, getAttribute } from './utils';
 

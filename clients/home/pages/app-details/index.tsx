@@ -7,7 +7,7 @@ import PageDetails from './page-details';
 import store from '../store';
 
 function AppDetails() {
-  const { appID } = useParams<any>();
+  const { appID } = useParams<{ appID: string }>();
 
   useEffect(() => {
     store.fetchPageList(appID);
@@ -17,9 +17,9 @@ function AppDetails() {
   }, [appID]);
 
   return (
-    <div className='flex flex-col h-screen overflow-y-hidden'>
+    <div className='h-screen'>
       <Header />
-      <div className='flex-1 flex overflow-hidden'>
+      <div style={{height: 'calc(100vh - 62px)'}} className='flex overflow-hidden'>
         <PageNav />
         <PageDetails />
       </div>

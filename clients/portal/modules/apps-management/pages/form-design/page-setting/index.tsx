@@ -1,7 +1,7 @@
 import React from 'react';
 import { observer } from 'mobx-react';
 
-import AppPageData from '@c/app-page-data';
+import FormAppDataTable from '@c/form-app-data-table';
 import Button from '@c/button';
 
 import PageSettingConfig from './page-setting-config';
@@ -23,7 +23,7 @@ function PageSetting() {
       <div className='flex-1 flex overflow-hidden'>
         <div className='flex-1 p-20'>
           <p className='text-caption-no-color text-gray-400 mb-8'>预览页面视图</p>
-          <AppPageData />
+          <FormAppDataTable />
         </div>
         <PageSettingConfig />
       </div>

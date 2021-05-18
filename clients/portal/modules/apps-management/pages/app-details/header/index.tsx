@@ -5,7 +5,7 @@ import { observer } from 'mobx-react';
 import Icon from '@c/icon';
 import PopConfirm from '@c/pop-confirm';
 import Button from '@c/button';
-import NavButton from '@portal/modules/apps-management/components/nav-button';
+import HeaderNav from '@c/header-nav';
 
 import AppDropdown from '@c/app-dropdown';
 import appDetailsStore from '../store';
@@ -59,7 +59,7 @@ function DetailsHeader() {
   return (
     <div className="app-global-header app-details-header">
       <div className='flex items-center'>
-        <NavButton
+        <HeaderNav
           {...{
             name: '应用管理',
             icon: 'dashboard_customize',
@@ -95,7 +95,7 @@ function DetailsHeader() {
           应用管理
         </Button>
         <hr className='app-global-header-hr' />
-        <NavButton {...{ name: '帮助文档', icon: 'book', url: '' }} />
+        <HeaderNav {...{ name: '帮助文档', icon: 'book', url: '' }} />
       </div>
     </div>
   );

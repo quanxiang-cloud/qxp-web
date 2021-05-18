@@ -8,8 +8,7 @@ import PopConfirm from '@c/pop-confirm';
 import Button from '@c/button';
 import Table from '@c/table';
 import EmployeeOrDepartmentPickerModal from '@c/employee-or-department-picker';
-import Modal from '@c/modal';
-
+import Modal from '@c/modal2';
 
 import {
   appAddAdmin, fetchAppAdminUsers, delAppAdminUsers,
@@ -124,74 +123,67 @@ function AppAdmin() {
     <>
       <TextHeader
         title="应用管理员"
-        className="app-list-header header-background-image "
+        className="app-list-header header-background-image mb-24"
       />
-      <div className='px-20 py-24'>
-        <div className='mb-20 flex'>
-          <Button
-            onClick={() => setModalType('addAdmin')}
-            className='mr-16'
-            modifier='primary'
-            iconName='add'
-          >
+      <Button
+        onClick={() => setModalType('addAdmin')}
+        className='mr-16 ml-20'
+        modifier='primary'
+        iconName='add'
+      >
             添加管理员
-          </Button>
-          {selectedIdArr.length > 0 && (
-            <Button
-              onClick={() => setModalType('batchRemove')}
-              modifier='primary'
-              iconName='restore_from_trash'
-            >
+      </Button>
+      {selectedIdArr.length > 0 && (
+        <Button
+          onClick={() => setModalType('batchRemove')}
+          modifier='primary'
+          iconName='restore_from_trash'
+        >
               批量移除
-            </Button>
-          )}
-        </div>
-        <Table
-          showCheckbox
-          rowKey="id"
-          // todo refactor this
-          style={{ maxHeight: 'calc(100vh - 300px)' }}
-          columns={columns}
-          data={appAdminList}
-          loading={loading}
-          onSelectChange={handleSelectChange}
-        />
-        {(modalType === 'batchRemove') &&
+        </Button>
+      )}
+      <Table
+        showCheckbox
+        rowKey="id"
+        className='m-20'
+        style={{ maxHeight: 'calc(100vh - 300px)' }}
+        columns={columns}
+        data={appAdminList}
+        loading={loading}
+        onSelectChange={handleSelectChange}
+      />
+      {(modalType === 'batchRemove') &&
           (<Modal
             title='批量移除'
-            className="static-modal"
             onClose={() => setModalType('')}
-            footer={(
-              <div className="flex items-center">
-                <Button iconName='close' onClick={() => setModalType('')}>
-                取消
-                </Button>
-                <div className="px-2"></div>
-                <Button
-                  modifier='primary'
-                  iconName='check'
-                  loading={delLoading}
-                  onClick={batchRemove}
-                >
-                确定移除
-                </Button>
-              </div>
-            )}
+            footerBtnSchema={
+              [{
+                key: 'close',
+                iconName: 'close',
+                onClick: () => setModalType(''),
+                text: '取消',
+              }, {
+                key: 'check',
+                iconName: 'check',
+                modifier: 'primary',
+                onClick: batchRemove,
+                loading: delLoading,
+                text: '确定移除',
+              }]}
           >
           确定要批量移除应用的管理员吗？
           </Modal>)
-        }
-        {modalType === 'addAdmin' && (
-          <EmployeeOrDepartmentPickerModal
-            title='添加管理员'
-            submitText='保存'
-            employees={appAdminList}
-            departments={[]}
-            onSubmit={addAdmin}
-            onCancel={() => setModalType('')}
-          />
-        )}
-      </div>
+      }
+      {modalType === 'addAdmin' && (
+        <EmployeeOrDepartmentPickerModal
+          title='添加管理员'
+          submitText='保存'
+          employees={appAdminList}
+          departments={[]}
+          onSubmit={addAdmin}
+          onCancel={() => setModalType('')}
+        />
+      )}
     </>
   );
 }

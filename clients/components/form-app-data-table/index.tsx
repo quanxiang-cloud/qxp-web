@@ -6,15 +6,16 @@ import './index.scss';
 
 type Props = {
   className?: string;
+  style?: React.CSSProperties
 }
 
-function AppPageData({ className = '' }: Props) {
+function FormAppDataTable({ className = '', style }: Props) {
   return (
-    <div className={`flex flex-col ${className}`}>
+    <div style={style} className={`flex flex-col ${className}`}>
       <PageDataFiltrate />
       <PageDataTable />
     </div>
   );
 }
 
-export default AppPageData;
+export default FormAppDataTable;

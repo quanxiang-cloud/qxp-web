@@ -35,7 +35,9 @@ class AppPageDataStore {
     page: 1,
     size: 10,
   };
-  @observable createFun = () => { };
+  @observable createFun = () => {
+    '';
+  };
 
   constructor() {
     this.destroyFetchTableData = reaction(() => this.params, this.fetchFormDataList);

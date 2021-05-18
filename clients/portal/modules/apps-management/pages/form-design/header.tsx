@@ -4,7 +4,7 @@ import { parse } from 'qs';
 
 import Icon from '@c/icon';
 import Tab, { TabProps } from '@portal/modules/apps-management/components/tab';
-import NavButton from '@portal/modules/apps-management/components/nav-button';
+import HeaderNav from '@c/header-nav';
 
 import NotSavedModal from './not-saved-modal';
 import store from './store';
@@ -50,7 +50,7 @@ function FormDesignHeader() {
       </div>
       <Tab onChange={tabChange} activeTab={pageType} tabs={TABS} />
       <div className='flex justify-end'>
-        <NavButton name='帮助文档' icon='book' url='' />
+        <HeaderNav name='帮助文档' icon='book' url='' />
       </div>
       {showNotSavedTips && (
         <NotSavedModal onCancel={() => setShowNotSavedTips(false)} />

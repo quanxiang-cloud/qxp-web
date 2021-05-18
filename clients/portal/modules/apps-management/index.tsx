@@ -23,8 +23,9 @@ const MENU = [
 
 function AppManagerEntry() {
   return (
-    <div className="max-w-screen app-entry-container">
+    <div className="app-entry-container">
       <SideNavCard
+        className='w-316'
         cardTitle={(
           <div className="access-background-image p-20 opacity-90">
             <ItemWithTitleDesc

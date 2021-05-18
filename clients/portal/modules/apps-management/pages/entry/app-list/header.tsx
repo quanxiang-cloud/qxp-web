@@ -2,7 +2,7 @@ import React from 'react';
 import { RadioButton, RadioGroup } from '@QCFE/lego-ui';
 
 import Button from '@c/button';
-import Search from '@portal/modules/apps-management/components/search';
+import Search from '@c/search';
 
 import { Params } from './store';
 
@@ -34,11 +34,25 @@ const STATUS_LIST: Array<Status> = [
 ];
 
 function Header({ changeParams, params, setModalType, countMaps }: Props) {
+  const search = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      changeParams({ appName: (e.target as any).value });
+    }
+  };
+
+  const clear = (val:string) => {
+    if (val === '') {
+      changeParams({ appName: '' });
+    }
+  };
+
   return (
     <div className='app-filter-column'>
       <Search
+        className="w-214"
         placeholder='请输入应用名称'
-        onSearch={(appName) => changeParams({ appName })}
+        onChange={clear}
+        onKeyDown={search}
       />
       <RadioGroup
         wrapClassName='mb-0-i'

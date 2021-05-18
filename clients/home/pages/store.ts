@@ -3,8 +3,8 @@ import { TreeData } from '@atlaskit/tree';
 import toast from '@lib/toast';
 
 import { buildAppPagesTreeData } from '@lib/utils';
-import { getPageDataSchema } from '@c/app-page-data/utils';
-import appDataStore from '@c/app-page-data/store';
+import { getPageDataSchema } from '@c/form-app-data-table/utils';
+import appDataStore from '@c/form-app-data-table/store';
 
 import { fetchUserList, fetchPageList, fetchFormScheme } from '../lib/api';
 import { getFlowInstanceCount } from './approvals/api';

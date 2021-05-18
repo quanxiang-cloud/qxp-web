@@ -13,7 +13,7 @@ interface Props {
 
 export default function Search(
   { value: _value, placeholder, onChange, onKeyDown, onBlur, className }: Props) {
-  const [value, setValue] = useState(_value);
+  const [value, setValue] = useState(_value || '');
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>)=>{
     setValue(e.target.value);
