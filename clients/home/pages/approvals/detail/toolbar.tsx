@@ -31,6 +31,10 @@ function Toolbar({ permission, onClickAction, globalActions }: Props) {
   //   return ({ enabled: true, value: v, ...actionMap[v] });
   // })
   //
+  // system = ['AGREE', 'REFUSE'].map((v: string) => {
+  //   return ({ enabled: true, value: v, ...actionMap[v] });
+  // })
+  //
   // Object.assign(globalActions, {
   //   hasCancelBtn: true,
   //   hasCcHandleBtn: true,
@@ -58,7 +62,7 @@ function Toolbar({ permission, onClickAction, globalActions }: Props) {
             placement="bottom-end"
             onMenuClick={(key) => {
               if (key === 'print') {
-                window.print();
+                setTimeout(window.print, 0);
               }
               if (key === 'share') {
 

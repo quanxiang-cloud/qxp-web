@@ -44,6 +44,10 @@ function ApprovalDetail(): JSX.Element {
     document.title = '流程详情';
   }, []);
 
+  useEffect(() => {
+    setFormValues(data?.formData);
+  }, [data]);
+
   // console.log('detail form data:', formValues);
 
   const renderSchemaForm = () => {
@@ -115,7 +119,7 @@ function ApprovalDetail(): JSX.Element {
           />
         </Panel>
       </div>
-      <ActionModals flowName={data?.flowName} />
+      <ActionModals flowName={data?.flowName} getFormData={()=> formValues} />
     </div>
   );
 }

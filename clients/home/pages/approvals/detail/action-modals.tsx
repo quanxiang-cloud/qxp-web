@@ -19,9 +19,10 @@ import actionMap from './action-map';
 interface Props {
   className?: string;
   flowName?: string;
+  getFormData: ()=> Record<string, any>;
 }
 
-function ActionModals({ flowName }: Props) {
+function ActionModals({ flowName, getFormData }: Props) {
   const { processInstanceID, taskID } = useParams<{ processInstanceID: string; taskID: string }>();
   const history = useHistory();
   const [showReceiverPicker, setShowPicker] = useState(false);
@@ -33,6 +34,7 @@ function ActionModals({ flowName }: Props) {
       return apis.reviewTask(processInstanceID, taskID, {
         handleType: action,
         remark: modalInfo.payload.remark || '',
+        formData: getFormData(),
       });
     }
 
@@ -85,7 +87,15 @@ function ActionModals({ flowName }: Props) {
 
     // 邀请阅示
     if (action === TaskHandleType.read) {
-
+      if (!chosenEmployees.length) {
+        store.setShowTips(true);
+        return Promise.reject(false);
+      }
+      return apis.readFlow(processInstanceID, taskID, {
+        handleType: action,
+        remark: modalInfo.payload.remark || '',
+        handleUserIds: chosenEmployees.map((v: { id: string }) => v.id),
+      });
     }
 
     // 处理阅示
@@ -187,7 +197,7 @@ function ActionModals({ flowName }: Props) {
           <TextArea
             rows={4}
             name="comment"
-            placeholder={`输入${actionMap[action]?.text}意见 (选填)`}
+            placeholder={`输入${actionMap[action]?.text}原因 (选填)`}
             onChange={(ev: unknown, value: string) => store.setModalInfo({ payload: { remark: value } })}
           />
         </div>
@@ -199,13 +209,33 @@ function ActionModals({ flowName }: Props) {
 
     }
 
+    // 加签
     if (action === TaskHandleType.add_sign) {
 
     }
 
     // 邀请阅示
     if (action === TaskHandleType.read) {
-
+      return (
+        <div>
+          <div className="mb-24">
+            <Button iconName="add" onClick={() => setShowPicker(true)}>添加阅示人</Button>
+            {store.showTips && !chosenEmployees.length && <p className="text-red-600">请选择阅示人</p>}
+          </div>
+          <ReceiverList
+            className="mb-24"
+            receivers={chosenEmployees}
+            onRemove={(id) => {
+              setChosenEmployees((current) => current.filter((item: { id: string }) => item.id != id));
+            }} />
+          <TextArea
+            rows={4}
+            name="comment"
+            placeholder={`输入${actionMap[action]?.text}原因 (选填)`}
+            onChange={(ev: unknown, value: string) => store.setModalInfo({ payload: { remark: value } })}
+          />
+        </div>
+      );
     }
 
     // 处理阅示
@@ -213,6 +243,7 @@ function ActionModals({ flowName }: Props) {
 
     }
 
+    // 重新提交
     if (action === TaskHandleType.hasResubmitBtn) {
 
     }
