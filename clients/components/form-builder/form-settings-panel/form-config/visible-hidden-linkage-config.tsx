@@ -15,7 +15,7 @@ import { Input, Select, DatePicker, NumberPicker } from '@formily/antd-component
 import Modal from '@c/modal2';
 import Icon from '@c/icon';
 import Button from '@c/button';
-import { INTERNAL_FIELD_NAMES } from '../store';
+import { INTERNAL_FIELD_NAMES } from '../../store';
 
 const { onFieldInputChange$ } = FormEffectHooks;
 const RowStyleLayout = styled((props) => <div {...props} />)`

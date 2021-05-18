@@ -2,7 +2,7 @@ import React from 'react';
 import Tab2 from '@c/tab2';
 
 import FormFieldConfig from './form-field-config';
-import FormConfig from './label-layout';
+import FormConfig from './form-config';
 import { FieldConfigContext, fieldConfigContext } from './form-field-config-context';
 
 function FormSettingPanel() {

@@ -5,9 +5,9 @@ import { toJS } from 'mobx';
 
 import Icon from '@c/icon';
 
-import { StoreContext } from '../context';
+import { StoreContext } from '../../context';
 import VisibleHiddenLinkageConfig from './visible-hidden-linkage-config';
-import { INTERNAL_FIELD_NAMES } from '../store';
+import { INTERNAL_FIELD_NAMES } from '../../store';
 // import ColumnNumberOption from './columns-count';
 
 type RenderLayoutOptionProps = {
@@ -135,7 +135,7 @@ function VisibleHiddenLinkageList({ onEdit }: VisibleHiddenLinkagesProps): JSX.E
   );
 }
 
-function FormLabelConfig(): JSX.Element {
+function FormConfig(): JSX.Element {
   const store = useContext(StoreContext);
   const [isLinkageConfigVisible, setLinkageConfigVisible] = React.useState(false);
   const [editingLinkage, setEditingLinkage] = React.useState('');
@@ -197,4 +197,4 @@ function FormLabelConfig(): JSX.Element {
   );
 }
 
-export default observer(FormLabelConfig);
+export default observer(FormConfig);
