@@ -159,22 +159,22 @@ function AppAdmin() {
             title='批量移除'
             className="static-modal"
             onClose={() => setModalType('')}
-            footer={(
-              <div className="flex items-center">
-                <Button iconName='close' onClick={() => setModalType('')}>
-                取消
-                </Button>
-                <div className="px-2"></div>
-                <Button
-                  modifier='primary'
-                  iconName='check'
-                  loading={delLoading}
-                  onClick={batchRemove}
-                >
-                确定移除
-                </Button>
-              </div>
-            )}
+            footerBtns={[
+              {
+                text: '取消',
+                key: 'cancel',
+                iconName: 'close',
+                onClick: () => setModalType(''),
+              },
+              {
+                text: '确定移除',
+                key: 'confirm',
+                iconName: 'check',
+                loading: delLoading,
+                modifier: 'primary',
+                onClick: batchRemove,
+              },
+            ]}
           >
           确定要批量移除应用的管理员吗？
           </Modal>)

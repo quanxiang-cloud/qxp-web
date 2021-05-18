@@ -2,7 +2,7 @@ import React from 'react';
 import { useQuery } from 'react-query';
 
 import ItemWithTitleDesc from '@c/item-with-title-desc';
-import Tab from '@c/tab';
+import Tab from '@c/tab2';
 import Loading from '@c/loading';
 
 import { getRoleFunctions } from '../api';
@@ -42,7 +42,7 @@ export default function RoleDetail({ role }: IRoleDetail) {
       />
       <Tab
         style={{ height: 'calc(100% - 24px)' }}
-        className="mt-4 py-16"
+        className="py-16"
         contentClassName="rounded-12 rounded-tl-none"
         items={[
           {

@@ -14,7 +14,6 @@ import Authorized from '@c/authorized';
 import SvgIcon from '@c/icon';
 import Pagination from '@c/pagination';
 import Modal from '@c/modal';
-import Button from '@c/button';
 import { createMsg, deleteMsgById } from '@portal/modules/system-mgmt/api';
 import PreviewModal from './preview-modal';
 import { getMsgById } from '@portal/modules/system-mgmt/api';
@@ -37,7 +36,7 @@ enum MessageAction {
 
 interface Props {
   className?: string;
-  refresh: ()=>void;
+  refresh: () => void;
 }
 
 const EnumStatusLabel: any = {
@@ -108,7 +107,31 @@ const MsgTable = ({ refresh }: Props) => {
   const [modalInfo, setModalInfo] = useState({ visible: false, id: '' });
   const sendMessageRef = useRef<any>();
 
-  const closeModal = () => setModalInfo({ visible: false, id: '' });
+  const openMsgDelModal = () => {
+    const msgDelModal = Modal.open({
+      title: '删除消息',
+      content: '确定要删除该条消息吗？删除后不可恢复。',
+      onConfirm: () => {
+        deleteMsgById(modalInfo.id)
+          .then((data) => {
+            if (data && data.code == 0) {
+              Message.success('操作成功');
+              refresh();
+              refreshMsg();
+              closeModal();
+              msgDelModal.close();
+            } else {
+              Message.error('操作失败');
+            }
+          });
+      },
+      onCancel: closeModal,
+    });
+  };
+
+  const closeModal = () => {
+    setModalInfo({ visible: false, id: '' });
+  };
 
   const { isLoading, isError } = requestInfo;
 
@@ -117,7 +140,7 @@ const MsgTable = ({ refresh }: Props) => {
     queryClient.invalidateQueries('count-unread-msg');
   };
 
-  useEffect(()=>{
+  useEffect(() => {
     if (!previewInfo.visible || !previewInfo.id) {
       setPreviewData(null);
       return;
@@ -132,7 +155,7 @@ const MsgTable = ({ refresh }: Props) => {
       });
   }, [previewInfo]);
 
-  useEffect(()=>{
+  useEffect(() => {
     if (!modifyModal.visible || !modifyModal.id) {
       setPreviewData(null);
       return;
@@ -175,7 +198,7 @@ const MsgTable = ({ refresh }: Props) => {
     // @ts-ignore
     if (previewData.id) params.id = previewData.id;
     createMsg(params)
-      .then((data)=>{
+      .then((data) => {
         if (data) {
           Message.success('操作成功');
           setPreviewInfo({ id: '', visible: false, title: '', status: MsgSendStatus.all });
@@ -196,12 +219,12 @@ const MsgTable = ({ refresh }: Props) => {
     { ...pageInfo, current: page, pageSize }
   );
 
-  if (isLoading ) {
-    return <Loading/>;
+  if (isLoading) {
+    return <Loading />;
   }
 
   if (isError) {
-    return <ErrorTips desc='获取数据失败'/>;
+    return <ErrorTips desc='获取数据失败' />;
   }
 
   const msgList = data?.messages || [];
@@ -232,11 +255,12 @@ const MsgTable = ({ refresh }: Props) => {
       ),
       id: 'status',
       width: 160,
-      accessor: ( { status, fail, success } : {
-         status: MsgSendStatus,
-         fail: number, success: number }) => (
+      accessor: ({ status, fail, success }: {
+        status: MsgSendStatus,
+        fail: number, success: number
+      }) => (
         <Status {...{ status, fail, success }
-        }/>
+        } />
       ),
     },
     {
@@ -249,27 +273,27 @@ const MsgTable = ({ refresh }: Props) => {
         >
           <div className={`flex content-center items-center ${styles.text_blue} pointer`}>
             <div>{EnumMessageLabel[messageType]}</div>
-            <SvgIcon name="filter_alt" className={cs(styles.text_blue, styles.status_icon)}/>
+            <SvgIcon name="filter_alt" className={cs(styles.text_blue, styles.status_icon)} />
           </div>
         </Select>
       ),
       id: 'title',
       width: 'auto',
-      accessor: ({ id, title, sort, status } : {
-         status: MsgSendStatus, id: string, title: string, sort: MsgType
-        })=>{
+      accessor: ({ id, title, sort, status }: {
+        status: MsgSendStatus, id: string, title: string, sort: MsgType
+      }) => {
         const handleClick = () => {
           setPreviewInfo({ id, visible: true, title, status });
         };
         return (<PreviewModal handleClick={handleClick} title={(<div>
-          {( sort != MsgType.all ) && (<span
+          {(sort != MsgType.all) && (<span
             className={
               cs(
                 styles.msg_type_tip,
                 {
                   [styles.msg_type_tip_notice]: sort == MsgType.notify,
                 })
-            }>{(EnumMessage.find((itm)=>itm.value == sort) || {}).label}</span>)}
+            }>{(EnumMessage.find((itm) => itm.value == sort) || {}).label}</span>)}
           <span className={styles.msg_title} title={title}>{title}</span>
         </div>)} />);
       },
@@ -283,7 +307,7 @@ const MsgTable = ({ refresh }: Props) => {
       Header: '更新时间',
       id: 'updated_at',
       width: 180,
-      accessor: ({ updated_at } : Qxp.QueryMsgResult) => {
+      accessor: ({ updated_at }: Qxp.QueryMsgResult) => {
         return (
           <span>
             {dayjs(parseInt(String(updated_at * 1000)))
@@ -301,7 +325,10 @@ const MsgTable = ({ refresh }: Props) => {
           setPreviewInfo({ id, visible: true, title: itm.title, status });
         };
 
-        const confirmDelete = ()=> setModalInfo({ visible: true, id: itm.id });
+        const confirmDelete = () => {
+          openMsgDelModal();
+          setModalInfo({ visible: true, id: itm.id });
+        };
 
         const handleModifyModal = () => setModifyModal({ visible: true, id: itm.id });
 
@@ -367,7 +394,7 @@ const MsgTable = ({ refresh }: Props) => {
   const saveDraft = () => {
     const params = sendMessageRef?.current?.saveDraft({ toParams: true });
     params && createMsg(params)
-      .then((data)=>{
+      .then((data) => {
         if (data) {
           Message.success('操作成功');
           setPreviewInfo({ id: '', visible: false, title: '', status: MsgSendStatus.all });
@@ -377,7 +404,7 @@ const MsgTable = ({ refresh }: Props) => {
         } else {
           Message.error('操作失败');
         }
-      }).catch((err: Error)=> Message.error(err.message));
+      }).catch((err: Error) => Message.error(err.message));
   };
 
   return (
@@ -416,59 +443,37 @@ const MsgTable = ({ refresh }: Props) => {
           width={1324}
           title="修改草稿"
           onClose={handleModifyModalClose}
-          footer={(
-            <>
-              <Button
-                onClick={debounce(saveDraft, 1000, { leading: true })}
-                iconName="book"
-                className='mr-20'
-              >
-                存草稿
-              </Button>
-              <Button
-                className="bg-gray-700 mr-20"
-                modifier="primary"
-                onClick={() => {
-                  sendMessageRef?.current?.previewAndPublish &&
-                  sendMessageRef?.current?.previewAndPublish();
-                }}
-                iconName="send"
-              >
-                预览并发送
-              </Button>
-            </>
-          )}
+          footerBtns={[
+            {
+              text: '存草稿',
+              key: 'save',
+              iconName: 'book',
+              onClick: () => {
+                debounce(saveDraft, 1000, { leading: true });
+              },
+            },
+            {
+              text: '预览并发送',
+              key: 'send',
+              iconName: 'send',
+              modifier: 'primary',
+              onClick: () => {
+                sendMessageRef?.current?.previewAndPublish && sendMessageRef?.current?.previewAndPublish();
+              },
+            },
+          ]}
         >
           {modifyData &&
-          (<SendMessage
-            donotShowHeader
-            className={styles.draftModal}
-            handleClose={handleModifyModalClose}
-            modifyData={modifyData}
-            ref={sendMessageRef}
-            footer={() => null}
-          />)}
+            (<SendMessage
+              donotShowHeader
+              className={styles.draftModal}
+              handleClose={handleModifyModalClose}
+              modifyData={modifyData}
+              ref={sendMessageRef}
+              footer={() => null}
+            />)}
         </Modal>)
       }
-      {modalInfo.visible && (
-        <Modal
-          title="删除消息"
-          onClose={closeModal}
-          onConfirm={() => {
-            deleteMsgById(modalInfo.id)
-              .then(() => {
-                Message.success('操作成功');
-                refresh();
-                refreshMsg();
-                closeModal();
-              }).catch(() => {
-                Message.error('操作失败');
-              });
-          }}
-        >
-          <div className={styles.modal_card_content}>确定要删除该条消息吗？删除后不可恢复。</div>
-        </Modal>
-      )}
     </>
   );
 };

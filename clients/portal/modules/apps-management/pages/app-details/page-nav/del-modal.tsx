@@ -1,7 +1,6 @@
 import React from 'react';
 import Modal from '@c/modal';
 import Icon from '@c/icon';
-import Button from '@c/button';
 
 import '../index.scss';
 
@@ -35,20 +34,21 @@ function DelModal({ onCancel, visible, type = 'page', onOk }: Props) {
           title={TEXT[type].modalTitle}
           onClose={onCancel}
           className="static-modal"
-          footer={
-            (<div className="flex items-center">
-              <Button iconName='close' onClick={onCancel} className="mr-20">
-            取消
-              </Button>
-              <Button
-                modifier='primary'
-                iconName='check'
-                onClick={onOk}
-              >
-                {TEXT[type].sureText}
-              </Button>
-            </div>)
-          }
+          footerBtns={[
+            {
+              text: '取消',
+              key: 'cancel',
+              iconName: 'close',
+              onClick: onCancel,
+            },
+            {
+              text: TEXT[type].sureText,
+              key: 'confirm',
+              iconName: 'check',
+              modifier: 'primary',
+              onClick: onOk,
+            },
+          ]}
         >
           <div className='flex-1'>
             <p className='app-status-modal-title text-yellow-600'>

@@ -3,7 +3,6 @@ import { useQuery, useMutation, useQueryClient } from 'react-query';
 import { Form, Loading } from '@QCFE/lego-ui';
 
 import DepartmentPicker from '@c/form/input/tree-picker-field';
-import Button from '@c/button';
 import toast from '@lib/toast';
 import Modal from '@c/modal';
 import { departmentToTreeNode } from '@lib/utils';
@@ -75,24 +74,21 @@ export default function AdjustDepModal({ users: userList, closeModal }: Props) {
       title="调整部门"
       className="static-modal"
       onClose={closeModal}
-      footer={
-        (<div className="flex items-center">
-          <Button
-            iconName="close"
-            onClick={closeModal}
-            className="mr-20"
-          >
-            取消
-          </Button>
-          <Button
-            modifier="primary"
-            iconName="check"
-            onClick={handleSubmit}
-          >
-            确定
-          </Button>
-        </div>)
-      }
+      footerBtns={[
+        {
+          text: '取消',
+          key: 'cancel',
+          iconName: 'close',
+          onClick: closeModal,
+        },
+        {
+          text: '确定',
+          key: 'confirm',
+          iconName: 'check',
+          modifier: 'primary',
+          onClick: handleSubmit,
+        },
+      ]}
     >
       <div className="w-full">
         <div className="w-full">

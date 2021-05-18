@@ -1,6 +1,5 @@
 import React from 'react';
 
-import Button from '@c/button';
 import Modal from '@c/modal';
 import toast from '@lib/toast';
 import { NodeRenderProps } from '@c/headless-tree/types';
@@ -27,24 +26,21 @@ export default function DeleteModal({ node, store, closeModal }: Props) {
       title="删除"
       className="static-modal"
       onClose={closeModal}
-      footer={
-        (<div className="flex items-center">
-          <Button
-            iconName="close"
-            className="mr-20"
-            onClick={closeModal}
-          >
-            取消
-          </Button>
-          <Button
-            modifier="primary"
-            iconName="check"
-            onClick={handleOk}
-          >
-            确定删除
-          </Button>
-        </div>)
-      }
+      footerBtns={[
+        {
+          text: '取消',
+          key: 'cancel',
+          iconName: 'close',
+          onClick: closeModal,
+        },
+        {
+          text: '确定删除',
+          key: 'confirm',
+          iconName: 'check',
+          modifier: 'primary',
+          onClick: handleOk,
+        },
+      ]}
     >
       <div className="text-14">
         确定要删除

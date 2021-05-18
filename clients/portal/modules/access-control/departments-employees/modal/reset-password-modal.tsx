@@ -2,7 +2,6 @@ import React, { createRef } from 'react';
 import { useMutation } from 'react-query';
 import { Form } from '@QCFE/lego-ui';
 
-import Button from '@c/button';
 import Icon from '@c/icon';
 import toast from '@lib/toast';
 import Modal from '@c/modal';
@@ -70,24 +69,21 @@ export default function ResetPasswordModal({
       title="重置密码"
       className="static-modal"
       onClose={closeModal}
-      footer={
-        (<div className="flex items-center">
-          <Button
-            iconName="close"
-            onClick={closeModal}
-            className="mr-20"
-          >
-            取消
-          </Button>
-          <Button
-            modifier="primary"
-            iconName="check"
-            onClick={handleReset}
-          >
-            发送重置密码
-          </Button>
-        </div>)
-      }
+      footerBtns={[
+        {
+          text: '取消',
+          key: 'cancel',
+          iconName: 'close',
+          onClick: closeModal,
+        },
+        {
+          text: '发送重置密码',
+          key: 'confirm',
+          iconName: 'check',
+          modifier: 'primary',
+          onClick: handleReset,
+        },
+      ]}
     >
       <div className="w-full flex flex-col">
         <div className="w-full corner-4-12-12-12 px-18 py-12 mb-20 bg-blue-100 flex items-center">
