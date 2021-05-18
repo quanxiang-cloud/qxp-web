@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useQuery } from 'react-query';
 import { observer } from 'mobx-react';
 
-import Tab from '@c/tab';
+import Tab from '@c/tab2';
 import TextHeader from '@c/text-header';
 import SearchInput from '@c/form/input/search-input';
 import Loading from '@c/loading';
@@ -101,7 +101,7 @@ export default observer(function EmployeeOrDepartmentPicker({
                   onChange={(value) => store.setUsernameKeyword(value)}
                   appendix="close"
                 />
-                <div className="flex flex-row mr-4" style={{ height: 'calc(100% - 48px)' }}>
+                <div className="flex flex-row mr-4" style={{ height: 'calc(100% - 65px)' }}>
                   <div className="w-221 h-full flex flex-col overflow-hidden mr-20">
                     <TextHeader
                       className="mb-8 pb-0"
