@@ -5,7 +5,6 @@ import registry, { Registry } from './registry';
 import Store from './store';
 
 const defaultContext: ContextProps = {
-  updateData: () => {},
   activeItem: {},
   registry: registry,
 };
@@ -13,7 +12,6 @@ const defaultContext: ContextProps = {
 type ContextProps = {
   registry: Registry;
   activeItem: any;
-  updateData: (source: Source, target: TargetItem, dropPosition: string) => void,
   data?: any;
   setData?: (data: any) => void;
   deleteItem?: (item: any, index: number) => void;
