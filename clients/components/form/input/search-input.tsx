@@ -18,7 +18,7 @@ export default function SearchInput({
   visible,
   placeholder,
   onChange,
-  onClear = () => {},
+  onClear,
   prefix,
   appendix,
   name,
@@ -62,7 +62,7 @@ export default function SearchInput({
               onClick={() => {
                 setVal('');
                 setIsVisible(false);
-                onClear();
+                onClear?.();
               }}
             />
           )}

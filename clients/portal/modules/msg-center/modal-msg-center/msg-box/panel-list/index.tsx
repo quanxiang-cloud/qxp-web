@@ -3,7 +3,7 @@ import { useMutation, useQuery } from 'react-query';
 import cs from 'classnames';
 import { observer } from 'mobx-react';
 import { Message, Table } from '@QCFE/lego-ui';
-import { get } from 'lodash';
+import { get, noop } from 'lodash';
 
 import Loading from '@c/loading';
 import ErrorTips from '@c/error-tips';
@@ -60,7 +60,7 @@ const PanelList = () => {
     visible: false,
     title: '',
     content: '',
-    cb: () => { },
+    cb: noop,
   });
 
   const toolbarRef = useRef<any>();
@@ -126,7 +126,7 @@ const PanelList = () => {
       visible: false,
       title: '',
       content: '',
-      cb: () => { },
+      cb: noop,
     });
   };
 
