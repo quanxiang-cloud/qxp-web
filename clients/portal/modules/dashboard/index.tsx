@@ -7,12 +7,10 @@ import List from '@c/list';
 import ItemWithTitleDesc from '@c/item-with-title-desc';
 import AppIcon from '@c/app-icon';
 import { uuid } from '@lib/utils';
-import { usePortalGlobalValue } from '@portal/states_to_be_delete/portal';
 
 import './index.scss';
 
 export default function Dashboard() {
-  const [value] = usePortalGlobalValue();
   useEffect(() => {
     document.title = '工作台';
   }, []);
@@ -25,10 +23,10 @@ export default function Dashboard() {
         </div>
         <ItemWithTitleDesc
           itemRender={(<Avatar
-            username={value.userInfo.userName}
+            username={window.USER.userName}
             size={48}
           />)}
-          title={`${value.userInfo.userName}, 下午好!`}
+          title={`${window.USER.userName}, 下午好!`}
           desc="万物皆有裂痕，那是光透过来的地方"
           titleClassName="text-h4"
         />
