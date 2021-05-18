@@ -3,13 +3,21 @@ import cs from 'classnames';
 import { throttle } from 'lodash';
 import { useDrop } from 'react-dnd';
 import { observer } from 'mobx-react';
-import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 
 import Icon from '@c/icon';
+import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 import { StoreContext } from '../context';
 import FormBuilderStore from '../store';
 
-function renderActions(store: FormBuilderStore, index: number): JSX.Element {
+type DragObject = FormBuilder.DragObject;
+type DropResult = FormBuilder.DropResult;
+type CollectedProps = {
+  isOver: boolean;
+  wrapperY?: number;
+  wrapperHeight?: number;
+}
+
+function Actions({ store, index }: { store: FormBuilderStore, index: number }): JSX.Element {
   const hideMoveUp = index === 0;
   // todo refactor this
   const hideMoveDown = index === store.fields.length - 1;
@@ -75,14 +83,6 @@ function renderActions(store: FormBuilderStore, index: number): JSX.Element {
   );
 }
 
-type DragObject = FormBuilder.DragObject;
-type DropResult = FormBuilder.DropResult;
-type CollectedProps = {
-  isOver: boolean;
-  wrapperY?: number;
-  wrapperHeight?: number;
-}
-
 function InnerWrapper(props: ISchemaFieldComponentProps) {
   const store = React.useContext(StoreContext);
   const active = store.activeFieldWrapperName == props.name;
@@ -145,7 +145,7 @@ function InnerWrapper(props: ISchemaFieldComponentProps) {
         [`form-field-wrapper--insert-${dropPosition}`]: isOver,
       })}
     >
-      {active && renderActions(store, props.props['x-index'])}
+      {active && (<Actions store={store} index={props.props['x-index']} />)}
       {props.children}
     </div>
   );
