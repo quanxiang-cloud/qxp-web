@@ -2,12 +2,12 @@ import React, { useContext } from 'react';
 import { Radio, Input, Select, Switch, NumberPicker, ArrayTable, Checkbox } from '@formily/antd-components';
 import { SchemaForm, ISchema, FormEffectHooks, createFormActions } from '@formily/antd';
 
-import { StoreContext } from '../context';
+import { StoreContext } from '../../context';
 import { observer } from 'mobx-react';
 import { toJS } from 'mobx';
 
-import { FieldConfigContext } from './form-field-config-context';
-import { addOperate } from '../registry/operates';
+import { FieldConfigContext } from './context';
+import { addOperate } from '../../registry/operates';
 
 const components = {
   ArrayTable,

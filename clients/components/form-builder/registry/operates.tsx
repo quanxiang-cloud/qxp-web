@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import classnames from 'classnames';
 
-import { FieldConfigContext } from '../form-settings-panel/form-field-config-context';
+import { FieldConfigContext } from '../form-settings-panel/form-field-config/context';
 import Icon from '@c/icon';
 import Button from '@c/button';
 
