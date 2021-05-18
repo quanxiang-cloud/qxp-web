@@ -4,7 +4,6 @@ import cs from 'classnames';
 import { CheckboxGroup, Checkbox, Table, Upload } from '@QCFE/lego-ui';
 
 import Icon from '@c/icon';
-import Button from '@c/button';
 import toast from '@lib/toast';
 import Modal from '@c/modal';
 
@@ -194,36 +193,30 @@ export default function ImportEmployeesModal({ currDepId, closeModal }: Props) {
         title="excel 批量导入成员"
         className="static-modal"
         onClose={closeModal}
-        footer={
-          uploadStatus.status !== FileUploadStatus.fail ? (
-            <div className="flex items-center">
-              <Button
-                iconName="close"
-                className="mr-20"
-                onClick={closeModal}
-              >
-                取消
-              </Button>
-              {btnStatus === 0 ? (
-                <Button
-                  modifier="primary"
-                  iconName="check"
-                  onClick={importEmployeesTemp}
-                  loading={importLoading}
-                >
-                  确定导入
-                </Button>
-              ) : (
-                <Button
-                  modifier="primary"
-                  iconName="check"
-                  onClick={handleSubmit}
-                >
-                  确定
-                </Button>
-              )}
-            </div>
-          ) : null
+        footerBtns={
+          uploadStatus.status !== FileUploadStatus.fail ?
+            [
+              {
+                text: '取消',
+                key: 'cancel',
+                iconName: 'close',
+                onClick: closeModal,
+              },
+              btnStatus === 0 ? {
+                text: '确定导入',
+                key: 'confirm',
+                iconName: 'check',
+                modifier: 'primary',
+                loading: importLoading,
+                onClick: importEmployeesTemp,
+              } : {
+                text: '确定',
+                key: 'confirm',
+                iconName: 'check',
+                modifier: 'primary',
+                onClick: handleSubmit,
+              },
+            ] : []
         }
       >
         <div className="w-full text-14">

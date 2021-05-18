@@ -2,7 +2,6 @@ import React from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 
 import Icon from '@c/icon';
-import Button from '@c/button';
 import Modal from '@c/modal';
 import toast from '@lib/toast';
 
@@ -46,24 +45,21 @@ export default function LeaderHandleModal({ user, closeModal }: Props) {
       title={`${title}主管`}
       className='static-modal'
       onClose={closeModal}
-      footer={
-        (<div className="flex items-center">
-          <Button
-            iconName="close"
-            onClick={closeModal}
-            className="mr-20"
-          >
-            取消
-          </Button>
-          <Button
-            modifier="primary"
-            iconName="check"
-            onClick={handleSubmit}
-          >
-            确定{title}主管
-          </Button>
-        </div>)
-      }
+      footerBtns={[
+        {
+          text: '取消',
+          key: 'cancel',
+          iconName: 'close',
+          onClick: closeModal,
+        },
+        {
+          text: '确定' + title + '主管',
+          key: 'confirm',
+          iconName: 'check',
+          modifier: 'primary',
+          onClick: handleSubmit,
+        },
+      ]}
     >
       <div>
         <div className='flex items-center'>

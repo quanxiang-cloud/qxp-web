@@ -2,7 +2,6 @@ import React, { createRef, useState } from 'react';
 import { useQuery, useQueryClient } from 'react-query';
 import { Form } from '@QCFE/lego-ui';
 
-import Button from '@c/button';
 import Modal from '@c/modal';
 import DepartmentPicker from '@c/form/input/tree-picker-field';
 import Loading from '@c/loading';
@@ -12,9 +11,7 @@ import { departmentToTreeNode } from '@lib/utils';
 import { createDepartment, editDepartment, getERPTree } from '../api';
 
 const { TextField } = Form;
-// const string for form input help text
 const HELP_TEXT_NORMAL = '名称不超过 30 个字符，请修改！';
-// const HELP_TEXT_DUPLICATED = '名称已存在，请修改！';
 const HELP_TEXT_REG_ERROR = '只能包含汉字、英文、横线("-")以及下划线("_")，请修改！';
 
 interface Props {
@@ -102,24 +99,21 @@ export default function EditDepartment({ department, closeModal }: Props) {
       title={title}
       className="static-modal"
       onClose={closeModal}
-      footer={
-        (<div className="flex items-center">
-          <Button
-            iconName="close"
-            className="mr-20"
-            onClick={closeModal}
-          >
-            取消
-          </Button>
-          <Button
-            modifier="primary"
-            iconName="check"
-            onClick={okModalHandle}
-          >
-            {submitBtnText}
-          </Button>
-        </div>)
-      }
+      footerBtns={[
+        {
+          text: '取消',
+          key: 'cancel',
+          iconName: 'close',
+          onClick: closeModal,
+        },
+        {
+          text: submitBtnText,
+          key: 'confirm',
+          iconName: 'check',
+          modifier: 'primary',
+          onClick: okModalHandle,
+        },
+      ]}
     >
       <Form layout="vertical" ref={formRef}>
         <TextField

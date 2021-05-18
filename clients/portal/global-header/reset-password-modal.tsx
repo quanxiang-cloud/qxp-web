@@ -1,7 +1,6 @@
 import React, { useState, FocusEvent, useRef } from 'react';
 import { useMutation } from 'react-query';
 
-import Button from '@c/button';
 import Modal from '@c/modal';
 import { userResetPassword } from '@lib/api/auth';
 import PassWordField from '@c/form/input/password-field';
@@ -55,29 +54,22 @@ export default function ResetPasswordModal({ visible, onCancel }: Props) {
     <Modal
       title="重置密码"
       onClose={onCancel}
-      // bodyStyle={{
-      //   width: '632px',
-      //   maxWidth: '100%',
-      // }}
-      footer={
-        (<div className="flex flex-row justify-between items-center">
-          <Button
-            className="mr-20"
-            iconName="close"
-            onClick={onCancel}
-          >
-            取消
-          </Button>
-          <Button
-            modifier='primary'
-            loading={loading}
-            iconName="check"
-            onClick={onResetSubmit}
-          >
-            确定重置
-          </Button>
-        </div>)
-      }
+      footerBtns={[
+        {
+          text: '取消',
+          key: 'cancel',
+          iconName: 'close',
+          onClick: onCancel,
+        },
+        {
+          text: '确定重置',
+          key: 'confirm',
+          iconName: 'check',
+          loading: loading,
+          modifier: 'primary',
+          onClick: onResetSubmit,
+        },
+      ]}
     >
       <Form className="w-full" ref={formRef}>
         <PassWordField
