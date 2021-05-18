@@ -9,7 +9,7 @@ import msgMgmt from '@portal/stores/msg-mgmt';
 import { MsgSendStatus, MsgType } from '@portal/modules/system-mgmt/constants';
 import Loading from '@c/loading';
 import ErrorTips from '@c/error-tips';
-import MoreMenu from '@c/more-menu';
+import MoreMenu, { MenuItem } from '@c/more-menu';
 import Authorized from '@c/authorized';
 import SvgIcon from '@c/icon';
 import Pagination from '@c/pagination';
@@ -307,7 +307,7 @@ const MsgTable = ({ refresh }: Props) => {
 
         if (status !== 1) return null;
 
-        const menus = [
+        const menus: MenuItem<MessageAction>[] = [
           {
             key: MessageAction.send,
             label: (

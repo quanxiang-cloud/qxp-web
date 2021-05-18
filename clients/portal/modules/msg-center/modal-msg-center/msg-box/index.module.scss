@@ -23,7 +23,7 @@
 
 .wrap {
   display: grid;
-  grid-template-columns: 200px minmax(464px, 40%) 1fr;
+  grid-template-columns: 200px 464px 1fr;
   background: white;
   height: calc(100% - 56px);
 
@@ -178,7 +178,7 @@ body {
   transform: translateY(-16px);
   > .picNoMsg {
     @extend %picNoMsg;
-    background: url("/dist/images/empty-msg-box.svg") no-repeat;
+    background: url("/dist/images/message_empty_tips.svg") no-repeat;
   }
   > .picNoDetail {
     @extend %picNoMsg;
