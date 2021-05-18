@@ -16,7 +16,6 @@ import Icon from '@c/icon';
 import Modal from '@c/modal';
 import Container from '../container';
 import editorToolbarOptions from './editor-toolbar';
-// import ModalSelectReceiver from './dialog-select-receiver';
 import PreviewMsg from './preview-msg';
 import { createMsg } from '@portal/modules/system-mgmt/api';
 import Filelist from './filelist';
@@ -27,10 +26,6 @@ import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import { useMemo } from 'react';
 
 const { TextField } = Form;
-
-// interface Props {
-//   className?: string;
-// }
 
 interface FileInfo {
   url: string;
@@ -493,25 +488,21 @@ function ContentWithoutRef({
         title='消息预览并发送'
         width={960}
         onClose={() => setOpenPreviewModal(false)}
-        footer={(
-          <div className="flex flex-row justify-between items-center">
-            <Button
-              className="bg-white hover:bg-gray-100 transition cursor-pointer mr-20 mb-0"
-              iconName="close"
-              onClick={() => setOpenPreviewModal(false)}
-            >
-            取消
-            </Button>
-            <Button
-              className="bg-gray-700 hover:bg-gray-900 transition cursor-pointer mb-0"
-              modifier="primary"
-              iconName="done"
-              onClick={debounce(()=>confirmSend(true), 1000)}
-            >
-            确定发送
-            </Button>
-          </div>
-        )}
+        footerBtns={[
+          {
+            text: '取消',
+            key: 'cancel',
+            iconName: 'close',
+            onClick: () => setOpenPreviewModal(false),
+          },
+          {
+            text: '确定发送',
+            key: 'confirm',
+            iconName: 'done',
+            modifier: 'primary',
+            onClick: debounce(()=>confirmSend(true), 1000),
+          },
+        ]}
       >
         <PreviewMsg prevData={prevData} isPreview canMultiDownload={false} canDownload={false}/>
       </Modal>)}

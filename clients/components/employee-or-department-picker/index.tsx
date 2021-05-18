@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 
-import Button from '@c/button';
 import Modal from '@c/modal';
 import toast from '@lib/toast';
 
@@ -64,25 +63,22 @@ export default function EmployeeOrDepartmentPickerModal({
       onClose={onCancel}
       width={1234}
       height={760}
-      footer={
-        (<div className="flex flex-row justify-between items-center">
-          <Button
-            className="mr-20"
-            iconName="close"
-            onClick={onCancel}
-          >
-            取消
-          </Button>
-          <Button
-            modifier="primary"
-            iconName="check"
-            loading={isOnGetSelected}
-            onClick={onGetSelected}
-          >
-            {submitText}
-          </Button>
-        </div>)
-      }
+      footerBtns={[
+        {
+          text: '取消',
+          key: 'cancel',
+          iconName: 'close',
+          onClick: onCancel,
+        },
+        {
+          text: submitText,
+          key: 'confirm',
+          iconName: 'check',
+          modifier: 'primary',
+          loading: isOnGetSelected,
+          onClick: onGetSelected,
+        },
+      ]}
     >
       <EmployeeOrDepartmentPicker
         departments={departments}

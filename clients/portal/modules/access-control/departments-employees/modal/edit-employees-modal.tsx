@@ -3,7 +3,6 @@ import { useQuery, useMutation, useQueryClient } from 'react-query';
 import { Form } from '@QCFE/lego-ui';
 
 import TreePicker from '@c/form/input/tree-picker-field';
-import Button from '@c/button';
 import Loading from '@c/loading';
 import Modal from '@c/modal';
 import { departmentToTreeNode } from '@lib/utils';
@@ -98,23 +97,21 @@ export default function EditEmployeesModal(
       title={`${titleText}员工`}
       onClose={closeModal}
       className="static-modal"
-      footer={
-        (<div className="flex items-center">
-          <Button
-            iconName="close"
-            className="mr-20"
-            onClick={closeModal}>
-            取消
-          </Button>
-          <Button
-            modifier="primary"
-            iconName="check"
-            onClick={handleSubmit}
-          >
-            确定{titleText}
-          </Button>
-        </div>)
-      }
+      footerBtns={[
+        {
+          text: '取消',
+          key: 'cancel',
+          iconName: 'close',
+          onClick: closeModal,
+        },
+        {
+          text: '确定' + titleText,
+          key: 'confirm',
+          iconName: 'check',
+          modifier: 'primary',
+          onClick: handleSubmit,
+        },
+      ]}
     >
       <Form layout="vertical" ref={formRef}>
         <TextField

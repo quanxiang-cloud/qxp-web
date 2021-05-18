@@ -3,7 +3,7 @@ import { useMutation, useQuery } from 'react-query';
 import cs from 'classnames';
 import { observer } from 'mobx-react';
 import { Message, Table } from '@QCFE/lego-ui';
-import { get, noop } from 'lodash';
+import { get } from 'lodash';
 
 import Loading from '@c/loading';
 import ErrorTips from '@c/error-tips';
@@ -19,10 +19,9 @@ import {
 } from '@portal/modules/msg-center/api';
 import { MsgType, MsgReadStatus } from '@portal/modules/system-mgmt/constants';
 import Pagination from '@c/pagination';
-import Modal from '@c/modal';
 import msgCenter from '@portal/stores/msg-center';
-
 import Toolbar from './toolbar';
+import Modal from '@c/modal';
 import { useRouting } from '../../../hooks';
 import NoMsg from '../no-msg';
 
@@ -56,13 +55,6 @@ const PanelList = () => {
     getUnreadMsgCount
   );
 
-  const [confirmInfo, setConfirmInfo] = useState({
-    visible: false,
-    title: '',
-    content: '',
-    cb: noop,
-  });
-
   const toolbarRef = useRef<any>();
 
   const msgList = useMemo(() => {
@@ -87,7 +79,6 @@ const PanelList = () => {
 
   const deleteMsgMutation = useMutation(deleteMsgByIds, {
     onSuccess: () => {
-      closeConfirmInfo();
       msgCenter.reset();
       queryPage('', { id: undefined });
       refetch();
@@ -121,59 +112,48 @@ const PanelList = () => {
     return <ErrorTips desc='获取数据失败' />;
   }
 
-  const closeConfirmInfo = () => {
-    setConfirmInfo({
-      visible: false,
-      title: '',
-      content: '',
-      cb: noop,
-    });
-  };
-
   const handleAllReaded = () => {
-    setConfirmInfo({
-      visible: true,
+    const allReadedModal = Modal.open({
       title: '全部已读',
       content: '确定要将全部类型的消息标记为已读吗?',
-      cb: () => {
+      onConfirm: () => {
         setAllMsgAdRead()
           .then(() => {
             refetch();
             unReadRefetch();
-            closeConfirmInfo();
             msgCenter.reset();
             queryPage('', { id: undefined });
+            allReadedModal.close();
           });
       },
     });
   };
 
   const handleCheckedReaded = (title?:string, id?:string) => {
-    setConfirmInfo({
-      visible: true,
+    const checkedReadedModal = Modal.open({
       title: '标记已读',
       content: id ? `确定要将${title}信息标记为已读?` : `确定要将已选中的${selectedRows.length}条消息标记为已读吗?`,
-      cb: () => {
+      onConfirm: () => {
         setMsgAsReadByIds(id ? [id] : selectedRows)
           .then(() => {
             refetch();
             unReadRefetch();
+            checkedReadedModal.close();
             setSelectedRows((rows) => {
               return rows.filter((id) => !selectedRows.includes(id));
             });
-            closeConfirmInfo();
           });
       },
     });
   };
 
   const handleDeleteMessage = (title?:string, id?:string) => {
-    setConfirmInfo({
-      visible: true,
+    const deleteMessageModal = Modal.open({
       title: '删除消息',
       content: id ? `确定要将${title}信息删除?` : `确定要将已选中的${selectedRows.length}条消息删除吗?`,
-      cb: () => {
+      onConfirm: () => {
         deleteMsgMutation.mutate(id ? [id] : selectedRows);
+        deleteMessageModal.close();
       },
     });
   };
@@ -293,15 +273,6 @@ const PanelList = () => {
             showSizeChanger
           />
         </div>
-        {confirmInfo.visible && (
-          <Modal
-            title={confirmInfo.title}
-            onClose={closeConfirmInfo}
-            onConfirm={confirmInfo.cb}
-          >
-            <div className={styles.content}>{confirmInfo.content}</div>
-          </Modal>
-        )}
       </div>
     );
   };

@@ -1,108 +1,115 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import styled, { createGlobalStyle, keyframes, css } from 'styled-components';
+import cs from 'classnames';
 
 import Icon from '@c/icon';
 import Button from '@c/button';
+import creatModal from './dialog-modal';
+
+interface FooterBtnProps {
+  text: React.ReactNode;
+  key: React.Key;
+  loading?: boolean;
+  iconName?: string;
+  className?: string;
+  forbidden?: boolean;
+  style?: React.CSSProperties;
+  modifier?: 'primary' | 'danger';
+  onClick: (key: React.Key, e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
+}
 
 interface Props {
   title?: string | React.ReactNode;
   fullscreen?: boolean;
   width?: number | string;
   height?: number | string;
-  footer?: React.ReactNode | null;
-  okText?: string;
-  cancelText?: string;
   className?: string;
+  children?: React.ReactNode
   onClose?: () => void;
-  onConfirm?: () => void;
+  footerBtns?: FooterBtnProps[]
 }
+
+export default function Modal({
+  title,
+  fullscreen,
+  className,
+  width = 'auto',
+  height = 'auto',
+  children,
+  onClose,
+  footerBtns = [],
+}: Props) {
+  const [element] = useState(document.createElement('div'));
+
+  useEffect(() => {
+    document.body.append(element);
+    return () => {
+      document.body.removeChild(element);
+    };
+  }, []);
+
+  const renderFooter = () => {
+    if (!footerBtns.length) {
+      return null;
+    } else {
+      return (
+        <Footer>
+          {
+            footerBtns.map(({
+              className = '',
+              text,
+              key,
+              onClick,
+              ...restProps
+            }) => (
+              <Button
+                {...restProps}
+                key={key}
+                className={
+                  cs(className, 'mr-20')
+                }
+                onClick={(e) => onClick(key, e)}
+              >
+                {text}
+              </Button>
+            ))
+          }
+        </Footer>
+      );
+    }
+  };
+
+  return createPortal(
+    <Wrap className={className}>
+      <GlobalStyle />
+      <Mask />
+      <InnerWrap width={width} height={height} fullscreen={fullscreen}>
+        <Header>
+          <div className='md-header-left'>
+            <div className='md-title'>{title}</div>
+          </div>
+          <div className='md-header-right'>
+            <Icon name='close' size={24} clickable onClick={onClose} />
+          </div>
+        </Header>
+        <Body className='md-body' fullscreen={fullscreen}>
+          {children}
+        </Body>
+        {renderFooter()}
+      </InnerWrap>
+    </Wrap>,
+    element
+  );
+}
+
+Modal.open = creatModal;
 
 const GlobalStyle = createGlobalStyle`
   body {
     overflow-y: hidden;
   }
 `;
-
-export default class Modal extends React.PureComponent<Props> {
-  element = document.createElement('div');
-  constructor(props: Props) {
-    super(props);
-    document.body.append(this.element);
-  }
-
-  componentWillUnmount() {
-    if (this.element) {
-      document.body.removeChild(this.element);
-    }
-  }
-
-  renderFooter() {
-    const { footer, onClose, onConfirm, okText = '确定', cancelText = '取消' } = this.props;
-    if (footer === null) {
-      return null;
-    }
-
-    return (
-      <Footer>
-        {footer ? footer : (
-          <>
-            <Button
-              className="bg-white hover:bg-gray-100 transition cursor-pointer mr-20 mb-0"
-              iconName="close"
-              onClick={onClose}
-            >
-              {cancelText}
-            </Button>
-            <Button
-              className="bg-gray-700 hover:bg-gray-900 transition cursor-pointer mb-0"
-              modifier="primary"
-              iconName="done"
-              onClick={onConfirm}
-            >
-              {okText}
-            </Button>
-          </>
-        )}
-      </Footer>
-    );
-  }
-
-  render() {
-    const {
-      fullscreen,
-      className,
-      title,
-      children,
-      width = '632px',
-      height = 'auto',
-      onClose,
-    } = this.props;
-
-    return createPortal(
-      <Wrap className={className}>
-        <GlobalStyle />
-        <Mask />
-        <InnerWrap width={width} height={height} fullscreen={fullscreen}>
-          <Header>
-            <div className='md-header-left'>
-              <div className='md-title'>{title}</div>
-            </div>
-            <div className='md-header-right'>
-              <Icon name='close' size={24} clickable onClick={onClose} />
-            </div>
-          </Header>
-          <Body className='md-body' fullscreen={fullscreen}>
-            {children}
-          </Body>
-          {this.renderFooter()}
-        </InnerWrap>
-      </Wrap>,
-      this.element
-    );
-  }
-}
-
 const Mask = styled.div`
   background: #0F172A;
   opacity: 0.65;
@@ -118,14 +125,14 @@ const Header = styled.div`
   height: 56px;
   min-height: 56px;
   border-bottom: 1px solid #E2E8F0;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
   position: relative;
   background: white;
   background-image: url(/dist/images/md-header-bg.jpg);
   background-position: top right;
   background-size: contain;
   background-repeat: no-repeat;
-  border-top-left-radius: 12px;
-  border-top-right-radius: 12px;
 
   .md-header-left {
     display: flex;
@@ -174,16 +181,17 @@ const scaleAnimation = keyframes`
     opacity: 1;
   }
 `;
-type InnerWrapPrapProps = {
+
+const InnerWrap = styled.div<{
   width: number | string,
-   height: number | string,
-   fullscreen?: boolean
-}
-const InnerWrap = styled.div<InnerWrapPrapProps>`
+  height: number | string,
+  fullscreen?: boolean
+}>`
   display: flex;
   flex-direction: column;
   width: ${(props) => typeof props.width === 'number' ? props.width + 'px' : props.width};
   height: ${(props) => typeof props.height === 'number' ? props.height + 'px' : props.height};
+  ${(props) => props.width === 'auto' ? 'min-width: 632px' : ''};
   background: white;
   ${({ fullscreen }) => fullscreen ? css`
     width: 100vw;

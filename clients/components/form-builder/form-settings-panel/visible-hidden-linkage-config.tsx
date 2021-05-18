@@ -12,7 +12,7 @@ import { ArrayList } from '@formily/react-shared-components';
 import { toArr, FormPath } from '@formily/shared';
 import { Input, Select, DatePicker, NumberPicker } from '@formily/antd-components';
 
-import Modal from '@c/modal2';
+import Modal from '@c/modal';
 import Icon from '@c/icon';
 import Button from '@c/button';
 import { INTERNAL_FIELD_NAMES } from '../store';
