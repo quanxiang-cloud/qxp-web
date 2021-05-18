@@ -31,7 +31,7 @@ export default function Tab({
   contentClassName,
   strechNavs = false,
   currentKey,
-  onChange = () => { },
+  onChange,
 }: Props) {
   const [key, setKey] = useState<string | number>(currentKey || items[0].id);
   const [height, setHeight] = useState<string>('39px');
@@ -61,7 +61,7 @@ export default function Tab({
             )}
             onClick={() => {
               setKey(item.id);
-              onChange(item.id);
+              onChange?.(item.id);
             }}
           >
             {item.name}

@@ -24,7 +24,7 @@ export default function TreePicker<T extends { id: string} >({
   defaultValue,
   onChange,
   visible,
-  onToggle = () => {},
+  onToggle,
 }: Props<T>) {
   const [store, setStore] = useState<Store<T>>();
   const isFirstLoadRef = useRef(true);
