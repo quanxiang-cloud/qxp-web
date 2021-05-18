@@ -74,7 +74,6 @@ function VisibleHiddenLinkageConfig({ sourceSchema, onClose, linkageKey, onSubmi
   const availableFields = Object.entries(sourceSchema.properties || {})
     .filter(([key]) => !INTERNAL_FIELD_NAMES.includes(key))
     .map(([key, value]) => {
-      console.log(value);
       return { value: key, label: value.title || key, availableCompareValues: value.enum || [],
         'x-component': value['x-component'] || 'Select',
       };

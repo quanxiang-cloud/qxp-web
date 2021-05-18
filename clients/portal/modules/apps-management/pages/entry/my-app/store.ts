@@ -50,11 +50,11 @@ class AppListStore {
   }
 
   @action
-  fetchAppList = (params = {}) => {
+  fetchAppList = (params: Params) => {
     this.isListLoading = true;
     return fetchAppList(params).then((res) => {
       this.appList = res.data?.data || [];
-      if (JSON.stringify(params) === '{}') {
+      if (params.useStatus === 0 && params.appName === '') {
         this.allAppList = this.appList;
       }
       this.isListLoading = false;

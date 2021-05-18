@@ -27,8 +27,6 @@ import { useMemo } from 'react';
 
 const { TextField } = Form;
 
-const noop = () => {};
-
 // interface Props {
 //   className?: string;
 // }
@@ -327,7 +325,7 @@ function ContentWithoutRef({
           <div className={styles.title}>发送消息</div>
         </div>)}
         <div className={cs('send-msg-body', styles.body)}>
-          <Form onSubmit={noop}>
+          <Form>
             <Field>
               <Label>消息类型:</Label>
               <Control>
