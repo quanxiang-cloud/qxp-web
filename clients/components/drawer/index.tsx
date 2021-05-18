@@ -39,9 +39,7 @@ function Drawer({ onCancel, title, children, distanceTop = 56 }: Props) {
           <span className='text-h5'>{title}</span>
           <Icon onClick={handleCancel} clickable changeable name='close' size={24} />
         </div>
-        <div className='drawer-main-content' style={{
-          height: 'calc(100% - 56px)',
-        }}>
+        <div className='drawer-main-content'>
           {children}
         </div>
       </div>
