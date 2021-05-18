@@ -8,7 +8,7 @@ import Icon from '@c/icon';
 import { StoreContext } from '../context';
 import VisibleHiddenLinkageConfig from './visible-hidden-linkage-config';
 import { INTERNAL_FIELD_NAMES } from '../store';
-import ColumnNumberOption from './columns-count';
+// import ColumnNumberOption from './columns-count';
 
 type RenderLayoutOptionProps = {
   labelAlign: 'right' | 'top';
@@ -146,7 +146,7 @@ function FormLabelConfig(): JSX.Element {
 
   return (
     <>
-      <ColumnNumberOption />
+      {/* <ColumnNumberOption /> */}
       <div className="pt-6">
         <div className="pb-24">
           <div className="item-title">字段标题位置</div>
