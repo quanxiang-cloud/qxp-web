@@ -3,11 +3,13 @@ import { useMutation, useQuery } from 'react-query';
 import cs from 'classnames';
 import { observer } from 'mobx-react';
 import { Message, Table } from '@QCFE/lego-ui';
-import { get } from 'lodash';
+import { get, noop } from 'lodash';
 
 import Loading from '@c/loading';
 import ErrorTips from '@c/error-tips';
+import MoreMenu from '@c/more-menu';
 import MsgItem from '@portal/modules/msg-center/msg-item';
+import SvgIcon from '@c/icon';
 import {
   getMessageList,
   deleteMsgByIds,
@@ -23,6 +25,7 @@ import msgCenter from '@portal/stores/msg-center';
 import Toolbar from './toolbar';
 import { useRouting } from '../../../hooks';
 import NoMsg from '../no-msg';
+
 import styles from '../index.module.scss';
 
 const PanelList = () => {
@@ -45,6 +48,7 @@ const PanelList = () => {
     ['all-messages', getQueryParams()],
     getMessageList, {}
   );
+
   const { data: countUnreadMsg,
     refetch: unReadRefetch,
   } = useQuery(
@@ -56,7 +60,7 @@ const PanelList = () => {
     visible: false,
     title: '',
     content: '',
-    cb: () => { },
+    cb: noop,
   });
 
   const toolbarRef = useRef<any>();
@@ -122,7 +126,7 @@ const PanelList = () => {
       visible: false,
       title: '',
       content: '',
-      cb: () => { },
+      cb: noop,
     });
   };
 
@@ -144,13 +148,13 @@ const PanelList = () => {
     });
   };
 
-  const handleCheckedReaded = () => {
+  const handleCheckedReaded = (title?:string, id?:string) => {
     setConfirmInfo({
       visible: true,
       title: '标记已读',
-      content: `确定要将已选中的${selectedRows.length}条消息标记为已读吗?`,
+      content: id ? `确定要将${title}信息标记为已读?` : `确定要将已选中的${selectedRows.length}条消息标记为已读吗?`,
       cb: () => {
-        setMsgAsReadByIds(selectedRows)
+        setMsgAsReadByIds(id ? [id] : selectedRows)
           .then(() => {
             refetch();
             unReadRefetch();
@@ -163,13 +167,13 @@ const PanelList = () => {
     });
   };
 
-  const handleDeleteMessage = () => {
+  const handleDeleteMessage = (title?:string, id?:string) => {
     setConfirmInfo({
       visible: true,
       title: '删除消息',
-      content: `确定要将已选中的${selectedRows.length}条消息删除吗?`,
+      content: id ? `确定要将${title}信息删除?` : `确定要将已选中的${selectedRows.length}条消息删除吗?`,
       cb: () => {
-        deleteMsgMutation.mutate(selectedRows);
+        deleteMsgMutation.mutate(id ? [id] : selectedRows);
       },
     });
   };
@@ -232,6 +236,49 @@ const PanelList = () => {
                     hideType
                   />
                 ),
+              },
+              {
+                title: '',
+                render: (msg: Qxp.MsgItem) => {
+                  const { title, id } = msg;
+                  const menus = [
+                    {
+                      key: 'delete',
+                      label: (
+                        <div className="flex items-center">
+                          <SvgIcon name="restore_from_trash" size={16} className="mr-8" />
+                          <span className="font-normal">删除&emsp;&emsp;</span>
+                        </div>
+
+                      ),
+                    },
+                    {
+                      key: 'remark',
+                      label: (
+                        <div className="flex items-center" >
+                          <SvgIcon name="done_all" size={16} className="mr-8" />
+                          <span className="font-normal">标记为已读&emsp;&emsp;</span>
+                        </div>
+
+                      ),
+                    },
+                  ];
+                  return (
+                    <MoreMenu
+                      menus={menus}
+                      onMenuClick={(menuKey) => {
+                        if (menuKey === 'delete') {
+                          handleDeleteMessage(title, id);
+                          return;
+                        }
+                        if (menuKey === 'remark') {
+                          handleCheckedReaded(title, id);
+                          return;
+                        }
+                      }}
+                    />
+                  );
+                },
               },
             ]}
             dataSource={msgList}

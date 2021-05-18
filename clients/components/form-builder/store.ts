@@ -83,6 +83,7 @@ export default class FormBuilderStore {
   @observable fields: Array<FormItem>;
   @observable activeFieldName = '';
   @observable labelAlign: 'right' | 'top' = 'right';
+  @observable columnsCount: 1 | 2 = 1;
   @observable visibleHiddenLinkages: VisibleHiddenLinkage[] = [];
   @observable hasEdit = false;
 
@@ -92,6 +93,7 @@ export default class FormBuilderStore {
     this.fields = fields;
 
     this.visibleHiddenLinkages = schema['x-internal']?.visibleHiddenLinkages || [];
+    this.columnsCount = schema['x-internal']?.columns || 1;
   }
 
   @computed get activeField(): FormItem | null {
@@ -150,6 +152,7 @@ export default class FormBuilderStore {
       'x-internal': {
         version: '1.3.13',
         labelAlign: this.labelAlign,
+        columns: this.columnsCount,
         visibleHiddenLinkages: toJS(this.visibleHiddenLinkages),
       },
     };
@@ -191,6 +194,9 @@ export default class FormBuilderStore {
           'x-component': 'mega-layout',
           'x-component-props': {
             labelAlign: this.labelAlign,
+            grid: true,
+            columns: this.columnsCount,
+            autoRow: true,
           },
           properties: properties,
         },
@@ -317,5 +323,10 @@ export default class FormBuilderStore {
       f.configValue = toJS(value);
       return f;
     });
+  }
+
+  @action
+  setColumnsCount(count: 1 | 2): void {
+    this.columnsCount = count;
   }
 }

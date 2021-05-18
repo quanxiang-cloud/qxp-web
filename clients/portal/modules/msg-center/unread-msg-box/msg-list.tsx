@@ -67,7 +67,7 @@ const MsgList = ({ className, getMsgDetail }: Props): JSX.Element => {
     return <ErrorTips desc='获取数据失败' />;
   }
 
-  const msgList = data?.data?.mes_list || [];
+  const msgList = data?.mes_list || [];
   return (
     <div className={cs(styles.msgList, className)}>
       {renderMain(msgList)}

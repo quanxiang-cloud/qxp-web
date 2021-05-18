@@ -26,7 +26,7 @@ interface Props {
 
 const regImage = /jpe?g|png|gif|svg/i;
 
-const isImageExt = (filename: string): boolean=> {
+const isImageExt = (filename: string): boolean => {
   const parts = filename.split('.');
   const name = parts[parts.length - 1];
   return regImage.test(name);
@@ -41,7 +41,7 @@ const Filelist = ({
   isPreview,
   messageTitle,
 }: Props) => {
-  const handleDownload = (link: string, filename: string)=> {
+  const handleDownload = (link: string, filename: string) => {
     if (!candownload) {
       return;
     }
@@ -54,7 +54,7 @@ const Filelist = ({
       .catch((err: Error) => Message.error(err.message));
   };
 
-  const exportZip = (blobs: Array<{url: string, blob: any}>) => {
+  const exportZip = (blobs: Array<{ url: string, blob: any }>) => {
     const zip = jsZip();
     blobs.forEach(({ url, blob }) => {
       const urlInst = new URL(url);
@@ -78,7 +78,7 @@ const Filelist = ({
     dlAndZip(files.map((file) => file.file_url));
   };
 
-  const renderList = ()=> {
+  const renderList = () => {
     return (
       <>
         {files.map((itm, idx) => (

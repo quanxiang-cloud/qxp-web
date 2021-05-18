@@ -9,7 +9,7 @@ import msgMgmt from '@portal/stores/msg-mgmt';
 import { MsgSendStatus, MsgType } from '@portal/modules/system-mgmt/constants';
 import Loading from '@c/loading';
 import ErrorTips from '@c/error-tips';
-import MoreMenu from '@c/more-menu';
+import MoreMenu, { MenuItem } from '@c/more-menu';
 import Authorized from '@c/authorized';
 import SvgIcon from '@c/icon';
 import Pagination from '@c/pagination';
@@ -307,11 +307,11 @@ const MsgTable = ({ refresh }: Props) => {
 
         if (status !== 1) return null;
 
-        const menus = [
+        const menus: MenuItem<MessageAction>[] = [
           {
             key: MessageAction.send,
             label: (
-              <div className="flex items-center" onClick={confirmSend}>
+              <div className="flex items-center">
                 <SvgIcon name="send" size={16} className="mr-8" />
                 <span className="font-normal">发送&emsp;&emsp;</span>
               </div>
@@ -320,7 +320,7 @@ const MsgTable = ({ refresh }: Props) => {
           {
             key: MessageAction.modify,
             label: (
-              <div className="flex items-center" onClick={handleModifyModal}>
+              <div className="flex items-center">
                 <SvgIcon name="edit" size={16} className="mr-8" />
                 <span className="font-normal">修改&emsp;&emsp;</span>
               </div>
@@ -329,7 +329,7 @@ const MsgTable = ({ refresh }: Props) => {
           {
             key: MessageAction.delete,
             label: (
-              <div className="flex items-center" onClick={confirmDelete}>
+              <div className="flex items-center">
                 <SvgIcon name="restore_from_trash" size={16} className="mr-8" />
                 <span className="font-normal">删除&emsp;&emsp;</span>
               </div>
@@ -339,10 +339,25 @@ const MsgTable = ({ refresh }: Props) => {
         return (
           <Authorized authority={['system/mangage']}>
             <MoreMenu
-              onMenuClick={() => {}}
               placement="bottom-end"
               className="opacity-1"
-              menus={menus}/>
+              menus={menus}
+              onMenuClick={(key: MessageAction) => {
+                switch (key) {
+                case MessageAction.send:
+                  confirmSend();
+                  break;
+                case MessageAction.modify:
+                  handleModifyModal();
+                  break;
+                case MessageAction.delete:
+                  confirmDelete();
+                  break;
+                default:
+                  break;
+                }
+              }}
+            />
           </Authorized>
         );
       },

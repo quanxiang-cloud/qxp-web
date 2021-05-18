@@ -7,6 +7,7 @@ import { observer } from 'mobx-react';
 import { toJS } from 'mobx';
 
 import { FieldConfigContext } from './form-field-config-context';
+import { addOperate } from '../registry/operates';
 
 const components = {
   ArrayTable,
@@ -18,6 +19,7 @@ const components = {
   CheckboxGroup: Checkbox.Group,
   Select,
   Switch,
+  addOperate,
 };
 
 type Props = {

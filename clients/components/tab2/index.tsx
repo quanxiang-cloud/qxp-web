@@ -37,7 +37,7 @@ export default function Tab<T extends React.Key>({
 }: Props<T>) {
   const navsRef = useRef(null);
   const [key, setKey] = useState<string | number>(currentKey || items[0].id);
-  const [height, setHeight] = useState<string>('39px');
+  const [height, setHeight] = useState(39);
 
   useEffect(() => {
     setHeight((navsRef.current as unknown as HTMLDivElement)?.offsetHeight);

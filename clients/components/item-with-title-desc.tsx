@@ -23,7 +23,7 @@ export default function ItemWithTitleDesc({
   descClassName,
   textDirection,
   className,
-  onClick = () => {},
+  onClick,
 }: IItemWithTitleDesc) {
   return (
     <div

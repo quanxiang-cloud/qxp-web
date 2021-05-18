@@ -25,7 +25,7 @@ export default function Tab({
   contentClassName,
   items,
   currentKey,
-  onChange = () => {},
+  onChange,
   style,
 }: ITab) {
   const [key, setKey] = useState<string | number>(currentKey || items[0].id);
@@ -58,7 +58,7 @@ export default function Tab({
               )}
               onClick={() => {
                 setKey(item.id);
-                onChange(item.id);
+                onChange?.(item.id);
               }}
             >
               {item.name}

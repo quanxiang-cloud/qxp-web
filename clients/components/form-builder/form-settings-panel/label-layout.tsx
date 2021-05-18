@@ -1,13 +1,14 @@
 import React, { useContext } from 'react';
-import classnames from 'classnames';
+import cs from 'classnames';
 import { observer } from 'mobx-react';
+import { toJS } from 'mobx';
 
 import Icon from '@c/icon';
 
 import { StoreContext } from '../context';
 import VisibleHiddenLinkageConfig from './visible-hidden-linkage-config';
 import { INTERNAL_FIELD_NAMES } from '../store';
-import { toJS } from 'mobx';
+import ColumnNumberOption from './columns-count';
 
 type RenderLayoutOptionProps = {
   labelAlign: 'right' | 'top';
@@ -17,7 +18,7 @@ function RenderLayoutOption({ labelAlign, onChange }: RenderLayoutOptionProps) {
   return (
     <>
       <div
-        className={classnames('content-item', { 'item-checked': labelAlign === 'right' })}
+        className={cs('content-item', { 'item-checked': labelAlign === 'right' })}
         onClick={() => onChange('right')}
       >
         <div className="item-container">
@@ -32,7 +33,7 @@ function RenderLayoutOption({ labelAlign, onChange }: RenderLayoutOptionProps) {
         <Icon name='done' type="light" className="check-icon" />
       </div>
       <div
-        className={classnames('content-item', { 'item-checked': labelAlign === 'top' })}
+        className={cs('content-item', { 'item-checked': labelAlign === 'top' })}
         onClick={() => onChange('top')}
       >
         <div className="grid grid-cols-1">
@@ -120,7 +121,7 @@ function VisibleHiddenLinkageList({ onEdit }: VisibleHiddenLinkagesProps): JSX.E
                   />
                 </span>
               </div>
-              <div>当满足一下所有条件时: </div>
+              <div>当满足以下所有条件时: </div>
               {readableRules.map((rule) => (
                 <div key={rule} className="text-h6-bold pl-12 mb-8">- {rule}</div>
               ))}
@@ -145,6 +146,7 @@ function FormLabelConfig(): JSX.Element {
 
   return (
     <>
+      <ColumnNumberOption />
       <div className="pt-6">
         <div className="pb-24">
           <div className="item-title">字段标题位置</div>
