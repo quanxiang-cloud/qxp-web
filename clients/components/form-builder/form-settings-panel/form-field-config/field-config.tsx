@@ -70,7 +70,7 @@ const useOneToManyEffects = () => {
   });
 };
 
-function FormFieldConfigTrue({ onChange, initialValue, schema }: Props): JSX.Element {
+function SchemaFieldConfig({ onChange, initialValue, schema }: Props): JSX.Element {
   const { actions } = useContext(FieldConfigContext);
   return (
     <SchemaForm
@@ -94,15 +94,27 @@ function FormFieldConfig(): JSX.Element {
     );
   }
 
-  return (
-    <FormFieldConfigTrue
-      // assign key to FormFieldConfigTrue to force re-render when activeFieldName changed
-      key={toJS(store.activeFieldName)}
-      onChange={(value) => store.updateFieldConfig(value)}
-      initialValue={toJS(store.activeField.configValue)}
-      schema={store.activeFieldConfigSchema || {}}
-    />
-  );
+  if (store.activeFieldConfigSchema) {
+    return (
+      <SchemaFieldConfig
+        // assign key to FormFieldConfigTrue to force re-render when activeFieldName changed
+        key={toJS(store.activeFieldName)}
+        onChange={(value) => store.updateFieldConfig(value)}
+        initialValue={toJS(store.activeField.configValue)}
+        schema={store.activeFieldConfigSchema || {}}
+      />
+    );
+  }
+
+  if (store.activeFieldConfigForm) {
+    return React.createElement(store.activeFieldConfigForm, {
+      key: toJS(store.activeFieldName),
+      onChange: (value: any) => store.updateFieldConfig(value),
+      initialValue: toJS(store.activeField.configValue),
+    });
+  }
+
+  return (<div>当前字段不支持配置</div>);
 }
 
 export default observer(FormFieldConfig);

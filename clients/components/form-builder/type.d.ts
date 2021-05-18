@@ -18,7 +18,8 @@ declare namespace FormBuilder {
     // use this as sourceElement key
     componentName: string;
     component: React.JSXElementConstructor<any>;
-    configSchema: ISchema;
+    configSchema?: ISchema;
+    configForm?: React.JSXElementConstructor<any>;
     defaultConfig: T;
     // transform configuration to the node of schema used by SchemaForm
     toSchema: (value: T) => ISchema;
