@@ -5,7 +5,7 @@ import { useParams, useHistory } from 'react-router-dom';
 import { observer } from 'mobx-react';
 import { Tooltip } from '@QCFE/lego-ui';
 
-import PageLoading from '@portal/modules/apps-management/components/page-loading';
+import PageLoading from '@c/page-loading';
 import Icon from '@c/icon';
 import { getQuery } from '@lib/utils';
 

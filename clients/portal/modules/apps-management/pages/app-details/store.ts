@@ -16,9 +16,9 @@ import {
   deleteGroup,
   deletePage,
   fetchFormScheme,
-} from '@portal/modules/apps-management/lib/api';
+} from './api';
 
-import appListStore from '../entry/my-app/store';
+import appListStore from '../entry/app-list/store';
 
 class AppDetailsStore {
   destroySetCurPage: IReactionDisposer;

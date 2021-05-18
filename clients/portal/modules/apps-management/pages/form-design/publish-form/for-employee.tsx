@@ -4,7 +4,7 @@ import { Sortable } from '@QCFE/lego-ui';
 
 import Button from '@c/button';
 import TextHeader from '@c/text-header';
-import PageLoading from '@portal/modules/apps-management/components/page-loading';
+import PageLoading from '@c/page-loading';
 
 import CreateRightModal from './create-right-modal';
 import RightsItem from './rights-item';
@@ -62,7 +62,7 @@ function ForEmployee() {
         title="对员工发布"
         desc='将员工加入权限组，授权他们查看或管理数据。'
         action="🔨 如何维护权限组"
-        className="my-app-header header-background-image"
+        className="app-list-header header-background-image"
       />
       <div className='m-20'>
         <Button

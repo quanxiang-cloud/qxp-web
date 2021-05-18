@@ -4,7 +4,7 @@ import { observer } from 'mobx-react';
 import TextHeader from '@c/text-header';
 import AppPageData from '@c/app-page-data';
 import appDataStore from '@c/app-page-data/store';
-import PageLoading from '@portal/modules/apps-management/components/page-loading';
+import PageLoading from '@c/page-loading';
 
 import store from '../../store';
 import CreateDataForm from './create-data-form';

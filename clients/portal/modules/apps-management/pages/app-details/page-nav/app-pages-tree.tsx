@@ -12,10 +12,11 @@ import Tree, {
   TreeDestinationPosition,
 } from '@atlaskit/tree';
 
-import { movePage } from '@portal/modules/apps-management/lib/api';
 import Icon from '@c/icon';
 import MoreMenu from '@c/more-menu';
 import toast from '@lib/toast';
+
+import { movePage } from '../api';
 
 const PADDING_PER_LEVEL = 16;
 

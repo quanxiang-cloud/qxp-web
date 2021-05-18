@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 
-import PageLoading from '@portal/modules/apps-management/components/page-loading';
+import PageLoading from '@c/page-loading';
 
 import DeleteAppModal from './app-edit/del-app-modal';
 import AppSetStatusModal from './app-edit/app-set-status-modal';

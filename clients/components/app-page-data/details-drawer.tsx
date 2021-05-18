@@ -5,7 +5,7 @@ import cs from 'classnames';
 import Tab from '@c/tab2';
 import Icon from '@c/icon';
 import PopConfirm from '@c/pop-confirm';
-import PageLoading from '@portal/modules/apps-management/components/page-loading';
+import PageLoading from '@c/page-loading';
 
 import { getTableCellData, operateButton } from './utils';
 import store from './store';

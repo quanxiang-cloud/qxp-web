@@ -61,7 +61,6 @@ function Header({ changeParams, params, setModalType, countMaps }: Props) {
       <Button onClick={() => setModalType('CreatedApp')} modifier='primary' iconName="add">
         新建应用
       </Button>
-
     </div>
   );
 }

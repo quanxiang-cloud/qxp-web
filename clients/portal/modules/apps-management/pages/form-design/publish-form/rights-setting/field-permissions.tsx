@@ -3,7 +3,7 @@ import { union } from 'lodash';
 
 import Button from '@c/button';
 import Checkbox from '@c/checkbox';
-import { fetchFieldFilter, saveFieldFilter } from '@portal/modules/apps-management/lib/api';
+import { fetchFieldFilter, saveFieldFilter } from '../../api';
 import toast from '@lib/toast';
 
 import store from '../../store';

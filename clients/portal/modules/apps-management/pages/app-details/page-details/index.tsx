@@ -4,7 +4,7 @@ import { useHistory } from 'react-router-dom';
 
 import TextHeader from '@c/text-header';
 import AppPageData from '@c/app-page-data';
-import PageLoading from '@portal/modules/apps-management/components/page-loading';
+import PageLoading from '@c/page-loading';
 import Button from '@c/button';
 
 import PageBuildNav from './page-build-nav';

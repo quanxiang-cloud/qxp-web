@@ -13,7 +13,7 @@ import {
   deleteRights,
   movePerGroup,
   updatePerGroup,
-} from '@portal/modules/apps-management/lib/api';
+} from './api';
 import appPageDataStore from '@c/app-page-data/store';
 import { PageTableShowRule, Scheme, setFixedParameters } from '@c/app-page-data/utils';
 

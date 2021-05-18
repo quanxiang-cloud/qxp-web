@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
-import { Modal, Form } from '@QCFE/lego-ui';
+import { Form } from '@QCFE/lego-ui';
 
-import Button from '@c/button';
+import Modal from '@c/modal2';
 
 type Props = {
   onCancel: () => void;
@@ -23,23 +23,21 @@ function EditGroupModal({ name, id, onCancel, onSubmit }: Props) {
 
   return (
     <Modal
-      visible
       title={id ? '修改分组名称' : '新建分组'}
-      onCancel={onCancel}
-      footer={
-        (<div className="flex items-center">
-          <Button className="mr-20" iconName='close' onClick={onCancel}>
-            取消
-          </Button>
-          <Button
-            modifier='primary'
-            iconName='check'
-            onClick={handleSubmit}
-          >
-            确定
-          </Button>
-        </div>)
-      }>
+      onClose={onCancel}
+      footerBtnSchema={[{
+        key: 'close',
+        iconName: 'close',
+        onClick: onCancel,
+        text: '取消',
+      }, {
+        key: 'check',
+        iconName: 'check',
+        modifier: 'primary',
+        onClick: handleSubmit,
+        text: '确定',
+      }]}
+    >
       <Form layout='vertical' ref={ref}>
         <Form.TextField
           name='name'

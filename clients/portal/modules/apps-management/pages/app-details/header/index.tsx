@@ -9,7 +9,7 @@ import NavButton from '@portal/modules/apps-management/components/nav-button';
 
 import AppDropdown from '@c/app-dropdown';
 import appDetailsStore from '../store';
-import appListStore from '../../entry/my-app/store';
+import appListStore from '../../entry/app-list/store';
 import './index.scss';
 
 function DetailsHeader() {

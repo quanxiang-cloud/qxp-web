@@ -1,4 +1,4 @@
-import { observable, action } from 'mobx';
+import { observable, action, IReactionDisposer, reaction } from 'mobx';
 import { TreeData } from '@atlaskit/tree';
 import toast from '@lib/toast';
 
@@ -10,8 +10,10 @@ import { fetchUserList, fetchPageList, fetchFormScheme } from '../lib/api';
 import { getFlowInstanceCount } from './approvals/api';
 
 class UserAppStore {
+  destroySetCurPage: IReactionDisposer;
   @observable appList = [];
   @observable appID = '';
+  @observable pageID= '';
   @observable listLoading = false;
   @observable pageListLoading = true;
   @observable curPage: PageInfo = { id: '' };
@@ -32,6 +34,16 @@ class UserAppStore {
     { key: 2, name: '抄送给我', icon: 'send_me', count: 0, link: 'cc_to_me' },
   ];
 
+  constructor() {
+    this.destroySetCurPage = reaction(() => {
+      if (!this.pageID || this.pageListLoading) {
+        return;
+      }
+
+      return this.pagesTreeData.items[this.pageID].data;
+    }, this.setCurPage);
+  }
+
   @action
   fetchPageList = (appID: string) => {
     this.appID = appID;
@@ -43,8 +55,13 @@ class UserAppStore {
   }
 
   @action
+  setPageID = (pageID:string) => {
+    this.pageID = pageID;
+  }
+
+  @action
   setCurPage = (pageInfo: PageInfo) => {
-    if (pageInfo.id === this.curPage.id) {
+    if (!pageInfo) {
       return;
     }
 
@@ -96,7 +113,12 @@ class UserAppStore {
   @action
   fetchTodoList = async () => {
     try {
-      const { overTimeCount = 0, urgeCount = 0, waitHandleCount = 0, ccToMeCount = 0 } = await getFlowInstanceCount({ 'User-Id': window.USER.id });
+      const {
+        overTimeCount = 0,
+        urgeCount = 0,
+        waitHandleCount = 0,
+        ccToMeCount = 0,
+      } = await getFlowInstanceCount({ 'User-Id': window.USER.id });
       this.TODO_LIST[0].value = overTimeCount;
       this.TODO_LIST[1].value = urgeCount;
       this.TODO_LIST[2].value = waitHandleCount;

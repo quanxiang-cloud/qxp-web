@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Modal from '@c/modal';
+import { UnionColumns } from 'react-table';
 import { useParams } from 'react-router-dom';
 
 import toast from '@lib/toast';
@@ -7,11 +7,13 @@ import TextHeader from '@c/text-header';
 import PopConfirm from '@c/pop-confirm';
 import Button from '@c/button';
 import Table from '@c/table';
+import EmployeeOrDepartmentPickerModal from '@c/employee-or-department-picker';
+import Modal from '@c/modal';
+
+
 import {
   appAddAdmin, fetchAppAdminUsers, delAppAdminUsers,
-} from '@portal/modules/apps-management/lib/api';
-import EmployeeOrDepartmentPickerModal from '@c/employee-or-department-picker';
-import { UnionColumns } from 'react-table';
+} from '../api';
 
 type Admin = {
   id: string;
@@ -122,7 +124,7 @@ function AppAdmin() {
     <>
       <TextHeader
         title="应用管理员"
-        className="my-app-header header-background-image "
+        className="app-list-header header-background-image "
       />
       <div className='px-20 py-24'>
         <div className='mb-20 flex'>
