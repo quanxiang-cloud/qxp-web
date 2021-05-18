@@ -84,7 +84,7 @@ export default class FormBuilderStore {
   @observable activeFieldName = '';
   @observable labelAlign: 'right' | 'top' = 'right';
   @observable columnsCount: 1 | 2 = 1;
-  @observable visibleHiddenLinkages: VisibleHiddenLinkage[] = [];
+  @observable visibleHiddenLinkages: FormBuilder.VisibleHiddenLinkage[] = [];
   @observable hasEdit = false;
 
   constructor({ schema }: Props) {
@@ -214,7 +214,7 @@ export default class FormBuilderStore {
     });
   }
 
-  @action handleLinkageChange(linkage: VisibleHiddenLinkage): void {
+  @action handleLinkageChange(linkage: FormBuilder.VisibleHiddenLinkage): void {
     if (!linkage.key) {
       this.visibleHiddenLinkages.push({
         ...linkage,
@@ -234,7 +234,7 @@ export default class FormBuilderStore {
   }
 
   @action
-  append(field: SourceElement<any>, { index, dropPosition }: DropResult) {
+  append(field: FormBuilder.SourceElement<any>, { index, dropPosition }: FormBuilder.DropResult) {
     this.hasEdit = true;
 
     const newField = {

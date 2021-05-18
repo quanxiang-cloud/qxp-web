@@ -3,7 +3,7 @@ import { Select } from '@formily/antd-components';
 import configSchema from './config-schema';
 import { defaultConfig, toSchema, toConfig, SelectConfig } from './convertor';
 
-const SelectField: Omit<SourceElement<SelectConfig>, 'displayOrder'> = {
+const SelectField: Omit<FormBuilder.SourceElement<SelectConfig>, 'displayOrder'> = {
   configSchema,
   toConfig,
   displayName: '下拉单选框',

@@ -18,13 +18,13 @@ const availableElements = [
   MultipleSelect,
 ];
 
-export type Elements = { [key: string]: SourceElement<any> };
+export type Elements = { [key: string]: FormBuilder.SourceElement<any> };
 
 const elements = availableElements.reduce<Elements>((acc, element, index) => {
   acc[element.componentName.toLowerCase()] = {
     ...element,
     displayOrder: index,
-  } as SourceElement<any>;
+  };
 
   return acc;
 }, {});

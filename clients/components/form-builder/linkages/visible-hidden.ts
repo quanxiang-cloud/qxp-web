@@ -2,7 +2,7 @@ import { createFormActions, FormEffectHooks } from '@formily/antd';
 
 const { onFormValuesChange$ } = FormEffectHooks;
 
-function getComparator(linkage: VisibleHiddenLinkage): Comparator {
+function getComparator(linkage: FormBuilder.VisibleHiddenLinkage): FormBuilder.Comparator {
   return (values: Record<string, any>): boolean => {
     const pairs = linkage.rules.map(({ sourceKey, compareOperator, compareValue }) => {
       return [values[sourceKey], compareOperator, compareValue];
@@ -15,10 +15,10 @@ function getComparator(linkage: VisibleHiddenLinkage): Comparator {
   };
 }
 
-export default function visibleHiddenLinkageEffect(linkages: VisibleHiddenLinkage[]) {
+export default function visibleHiddenLinkageEffect(linkages: FormBuilder.VisibleHiddenLinkage[]) {
   const { setFieldState } = createFormActions();
 
-  const comparatorsAndTargetKey: Array<[Comparator, string]> = linkages.map((linkages) => {
+  const comparatorsAndTargetKey: Array<[FormBuilder.Comparator, string]> = linkages.map((linkages) => {
     // *(abc,def,gij)
     const targetKeys = `*(${linkages.targetKeys.join(',')})`;
     return [getComparator(linkages), targetKeys];

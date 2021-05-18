@@ -75,6 +75,8 @@ function renderActions(store: FormBuilderStore, index: number): JSX.Element {
   );
 }
 
+type DragObject = FormBuilder.DragObject;
+type DropResult = FormBuilder.DropResult;
 type CollectedProps = {
   isOver: boolean;
   wrapperY?: number;
@@ -85,7 +87,7 @@ function InnerWrapper(props: ISchemaFieldComponentProps) {
   const store = React.useContext(StoreContext);
   const active = store.activeFieldWrapperName == props.name;
   const wrapperRef = React.useRef<HTMLDivElement | null>(null);
-  const [dropPosition, setDropPosition] = React.useState<DropPosition>('upper');
+  const [dropPosition, setDropPosition] = React.useState<FormBuilder.DropPosition>('upper');
 
   const throttledSetPosition = throttle((pointerY: number, targetY: number, targetHeight: number) => {
     const position = pointerY - targetY > targetHeight / 2 ? 'below' : 'upper';

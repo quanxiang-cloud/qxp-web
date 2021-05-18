@@ -6,12 +6,14 @@ import { StoreContext } from '../context';
 import { observer } from 'mobx-react';
 
 type Props = {
-  formItem: SourceElement<any>;
+  formItem: FormBuilder.SourceElement<any>;
 }
+
+type CollectedProps = { isDragging: boolean; }
 
 function SourceElement({ formItem }: Props): JSX.Element {
   const store = useContext(StoreContext);
-  const [{ isDragging }, dragRef] = useDrag<DragObject, DropResult, { isDragging: boolean; }>({
+  const [{ isDragging }, dragRef] = useDrag<FormBuilder.DragObject, FormBuilder.DropResult, CollectedProps>({
     type: 'SOURCE_ELEMENT',
     item: formItem,
     end: (_, monitor) => {
