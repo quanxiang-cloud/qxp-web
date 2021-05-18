@@ -40,10 +40,6 @@ class Registry {
     this.components.YearPicker = DatePicker.YearPicker;
     this.components.MonthPicker = DatePicker.MonthPicker;
   }
-
-  getFormComponent(type: string) {
-    return this.elements[type]?.component;
-  }
 }
 
 export { Registry };
