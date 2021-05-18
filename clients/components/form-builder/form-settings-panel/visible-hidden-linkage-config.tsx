@@ -17,7 +17,7 @@ import Icon from '@c/icon';
 import Button from '@c/button';
 import { INTERNAL_FIELD_NAMES } from '../store';
 
-const { onFieldChange$ } = FormEffectHooks;
+const { onFieldInputChange$ } = FormEffectHooks;
 const RowStyleLayout = styled((props) => <div {...props} />)`
   .ant-btn {
     margin-right: 16px;
@@ -53,6 +53,31 @@ function ArrayCustom(props: any): JSX.Element {
 
 ArrayCustom.isFieldComponent = true;
 
+const OPERATORS = {
+  Input: [
+    { value: '===', label: '等于' },
+    { value: '!==', label: '不等于' },
+  ],
+  Select: [
+    { value: '===', label: '等于' },
+    { value: '!==', label: '不等于' },
+    { value: '∈', label: '包含' },
+    { value: '∉', label: '不包含' },
+  ],
+  DatePicker: [
+    { value: '===', label: '等于' },
+    { value: '!==', label: '不等于' },
+    { value: '>', label: '早于' },
+    { value: '<', label: '晚于' },
+  ],
+  NumberPicker: [
+    { value: '===', label: '等于' },
+    { value: '!==', label: '不等于' },
+    { value: '>', label: '大于' },
+    { value: '<', label: '小于' },
+  ],
+};
+
 const DEFAULT_VALUE: VisibleHiddenLinkage = {
   key: '',
   ruleJoinOperator: 'every',
@@ -68,7 +93,6 @@ type Props = {
 }
 
 function VisibleHiddenLinkageConfig({ sourceSchema, onClose, linkageKey, onSubmit }: Props): JSX.Element {
-  // const [compareField, setCompareField] = useState('Select');
   const linkages = (sourceSchema['x-internal']?.visibleHiddenLinkages || []) as VisibleHiddenLinkage[];
   const defaultValue = linkages.find((linkage) => linkage.key === linkageKey) || DEFAULT_VALUE;
   const availableFields = Object.entries(sourceSchema.properties || {})
@@ -80,15 +104,13 @@ function VisibleHiddenLinkageConfig({ sourceSchema, onClose, linkageKey, onSubmi
     });
 
   const sourceKeyOptions = availableFields.filter((availableField) => {
-    return availableField['x-component'] !== 'Input';
-  }).filter((availableField) => {
     return availableField['x-component'] !== 'textarea';
   });
 
   function setCompareValueOptions() {
     const { setFieldState } = createFormActions();
 
-    onFieldChange$('rules.*.sourceKey').subscribe(({ name, value }) => {
+    onFieldInputChange$('rules.*.sourceKey').subscribe(({ name, value }) => {
       if (!value || !name) {
         return;
       }
@@ -104,6 +126,25 @@ function VisibleHiddenLinkageConfig({ sourceSchema, onClose, linkageKey, onSubmi
 
       const path = FormPath.transform(name, /\d/, ($1) => {
         return `rules.${$1}.compareValue`;
+      });
+
+      setFieldState(FormPath.transform(name, /\d/, ($1) => {
+        return `rules.${$1}.compareOperator`;
+      }), (state) => {
+        switch (compareField) {
+        case 'Input':
+          state.props.enum = OPERATORS.Input;
+          break;
+        case 'DatePicker':
+          state.props.enum = OPERATORS.DatePicker;
+          break;
+        case 'NumberPicker':
+          state.props.enum = OPERATORS.NumberPicker;
+          break;
+        default:
+          state.props.enum = OPERATORS.Select;
+          break;
+        }
       });
 
       setFieldState(path, (state) => {
@@ -150,12 +191,7 @@ function VisibleHiddenLinkageConfig({ sourceSchema, onClose, linkageKey, onSubmi
               name="compareOperator"
               x-component="Select"
               title=""
-              enum={[
-                { value: '===', label: '等于' },
-                { value: '!==', label: '不等于' },
-                // { value: '>', label: '大与' },
-                // { value: '<', label: '小于' },
-              ]}
+              enum={OPERATORS.Select}
             />
             <Field
               title=""
