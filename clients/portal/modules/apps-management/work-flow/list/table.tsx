@@ -81,7 +81,24 @@ export default function WorkFlowTable({ type }: Props) {
     setState((s) => ({ ...s, [sk]: row }));
   }
 
+  function onRowDoubleClick(_: any, rowOriginal: Flow) {
+    onRowActionChange('edit', rowOriginal);
+  }
+
   const columns = [
+    {
+      Header: '名称',
+      accessor: 'name',
+      Cell: (model: any) => {
+        return (
+          <span
+            className="cursor-pointer"
+            onClick={() => onRowActionChange('edit', model.cell.row.original)}>
+            {model.cell.value}
+          </span>
+        );
+      },
+    },
     {
       accessor: 'status',
       Header: () => {
@@ -114,10 +131,6 @@ export default function WorkFlowTable({ type }: Props) {
           </div>
         );
       },
-    },
-    {
-      Header: '名称',
-      accessor: 'name',
     }, {
       Header: '操作人',
       accessor: 'modifierName',
@@ -165,6 +178,7 @@ export default function WorkFlowTable({ type }: Props) {
           // @ts-ignore
           columns={columns}
           loading={isLoading}
+          onRowDoubleClick={onRowDoubleClick}
         />
       )}
       {isError && (

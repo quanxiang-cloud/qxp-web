@@ -10,6 +10,9 @@ import RadioGroup from '@c/radio/group';
 import EmployeeOrDepartmentPicker from '@c/employee-or-department-picker';
 import { toggleArray } from '@lib/utils';
 import { mergeDataAdapter } from '@flow/detail/content/editor/utils';
+import useObservable from '@lib/hooks/use-observable';
+import store from '@flow/detail/content/editor/store';
+import type { StoreValue, AutoApproveRule } from '@flow/detail/content/editor/type';
 
 import Urge from './urge';
 import TimerSelector from './timer-selector';
@@ -28,6 +31,7 @@ interface Props {
 }
 
 export default function BasicConfig({ type, value, onChange: _onChange }: Props) {
+  const { validating } = useObservable<StoreValue>(store);
   const [showAddPersonModal, setShowAddPersonModal] = useState(false);
   const typeText = type === 'approve' ? '审批' : '填写';
   const { timeRule } = value;
@@ -61,6 +65,54 @@ export default function BasicConfig({ type, value, onChange: _onChange }: Props)
   function onTimeRuleUpdate<T>(path: string) {
     return (v: T) => onChange(
       mergeDataAdapter<T, BasicNodeConfig>(value, `timeRule.${path}`, () => v)
+    );
+  }
+
+  function autoApproveBuilder(label: string, key: AutoApproveRule) {
+    return (
+      <Checkbox
+        label={label}
+        value={key}
+        className="mb-8 inline-flex"
+        labelClassName="text-body2"
+        labelStyle={{ color: 'var(--gray-900)' }}
+        defaultChecked={value.autoRules.includes(key)}
+        onChange={onUpdateAutoRules}
+      />
+    );
+  }
+
+  function breakPointBuilder(label: string, key: string) {
+    return (
+      <Radio
+        className="mb-8 flex"
+        label={label}
+        error={validating && !deadLine.breakPoint}
+        value={key}
+        defaultChecked={deadLine.breakPoint === key}
+      />
+    );
+  }
+
+  function noPersonBuilder(label: string, key: string) {
+    return (
+      <Radio
+        className="mr-16"
+        label={label}
+        value={key}
+        defaultChecked={value.whenNoPerson === key}
+      />
+    );
+  }
+
+  function multiplePersonBuilder(label: string, key: string) {
+    return (
+      <Radio
+        className="mr-16"
+        label={label}
+        value={key}
+        defaultChecked={value.multiplePersonWay === key}
+      />
     );
   }
 
@@ -145,68 +197,24 @@ export default function BasicConfig({ type, value, onChange: _onChange }: Props)
       <div className="text-body2-no-color text-gray-600 mb-8">多人{typeText}时</div>
       <div className="flex items-center mb-24">
         <RadioGroup onChange={(v) => onUpdate('multiplePersonWay', v)}>
-          <Radio
-            className="mr-16"
-            label={type === 'approve' ? '或签' : '任填'}
-            value="or"
-            defaultChecked={value.multiplePersonWay === 'or'}
-          />
-          <Radio
-            className="mr-16"
-            label={type === 'approve' ? '会签' : '全填'}
-            value="and"
-            defaultChecked={value.multiplePersonWay === 'and'}
-          />
+          {multiplePersonBuilder(type === 'approve' ? '或签' : '任填', 'or')}
+          {multiplePersonBuilder(type === 'approve' ? '会签' : '全填', 'and')}
         </RadioGroup>
       </div>
       <div className="text-body2-no-color text-gray-600 mb-8">无{typeText}人时</div>
       <div className="flex items-center mb-24">
         <RadioGroup onChange={(v) => onUpdate('whenNoPerson', v)}>
-          <Radio
-            className="mr-16"
-            label="自动跳过该节点"
-            value="skip"
-            defaultChecked={value.whenNoPerson === 'skip'}
-          />
-          <Radio
-            className="mr-16"
-            label="转交给管理员"
-            value="transferAdmin"
-            defaultChecked={value.whenNoPerson === 'transferAdmin'}
-          />
+          {noPersonBuilder('自动跳过该节点', 'skip')}
+          {noPersonBuilder('转交给管理员', 'transferAdmin')}
         </RadioGroup>
       </div>
       {type === 'approve' && (
         <>
           <div className="text-body2-no-color text-gray-600 mb-8">自动审批通过规则</div>
           <div className="flex flex-col">
-            <Checkbox
-              label="审批人为发起人时"
-              value="origin"
-              className="mb-8 inline-flex"
-              labelClassName="text-body2"
-              labelStyle={{ color: 'var(--gray-900)' }}
-              defaultChecked={value.autoRules.includes('origin')}
-              onChange={onUpdateAutoRules}
-            />
-            <Checkbox
-              label="审批人与上一节点审批人相同时"
-              value="parent"
-              className="mb-8 inline-flex"
-              labelClassName="text-body2"
-              labelStyle={{ color: 'var(--gray-900)' }}
-              defaultChecked={value.autoRules.includes('parent')}
-              onChange={onUpdateAutoRules}
-            />
-            <Checkbox
-              label="审批人与前置节点 (非上一个节点) 审批人相同时"
-              value="previous"
-              className="mb-24 inline-flex"
-              labelClassName="text-body2"
-              labelStyle={{ color: 'var(--gray-900)' }}
-              defaultChecked={value.autoRules.includes('previous')}
-              onChange={onUpdateAutoRules}
-            />
+            {autoApproveBuilder('审批人为发起人时', 'origin')}
+            {autoApproveBuilder('审批人与上一节点审批人相同时', 'parent')}
+            {autoApproveBuilder('审批人与前置节点 (非上一个节点) 审批人相同时', 'previous')}
           </div>
         </>
       )}
@@ -235,25 +243,13 @@ export default function BasicConfig({ type, value, onChange: _onChange }: Props)
         <div className="bg-gray-100 p-16 corner-2-8-8-8 mb-16">
           <div className="text-body2 mb-8">负责人需在以下时间内处理：</div>
           <RadioGroup onChange={onTimeRuleUpdate('deadLine.breakPoint')}>
-            <Radio
-              className="mb-8 flex"
-              label="进入该节点后"
-              value="entry"
-              defaultChecked={deadLine.breakPoint === 'entry'}
-            />
-            <Radio
-              className="mb-8 flex"
-              label="首次进入该节点后"
-              value="firstEntry"
-              defaultChecked={deadLine.breakPoint === 'firstEntry'}
-            />
-            <Radio
-              className="mb-8 flex"
-              label="工作流开始后"
-              value="flowWorked"
-              defaultChecked={deadLine.breakPoint === 'flowWorked'}
-            />
+            {breakPointBuilder('进入该节点后', 'entry')}
+            {breakPointBuilder('首次进入该节点后', 'firstEntry')}
+            {breakPointBuilder('工作流开始后', 'flowWorked')}
           </RadioGroup>
+          <div className={cs({ 'text-red-600': validating && !deadLine.breakPoint })}>
+            请设置处理节点
+          </div>
           <TimerSelector
             onDayChange={onTimeRuleUpdate('deadLine.day')}
             onHoursChange={onTimeRuleUpdate('deadLine.hours')}

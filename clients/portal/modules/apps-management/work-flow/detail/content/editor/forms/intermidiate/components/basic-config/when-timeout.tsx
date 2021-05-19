@@ -54,20 +54,30 @@ export default function WhenTimeout({ defaultValue, onChange }: Props) {
           defaultChecked={timeoutData.type === 'autoDealWith'}
         />
         {timeoutData.type === 'autoDealWith' && (
-          <Select
-            options={[{
-              label: '通过',
-              value: 'pass',
-            }, {
-              label: '驳回',
-              value: 'reject',
-            }]}
-            placeholder="选择自动通过或驳回"
-            defaultValue={timeoutData.value}
-            onChange={handleChange('value')}
-            className="h-32 py-4 border border-gray-300 corner-2-8-8-8
-                px-12 text-12 flex items-center flex-1 mb-8 ml-22 mt-8"
-          />
+          <>
+            <Select
+              options={[{
+                label: '通过',
+                value: 'pass',
+              }, {
+                label: '驳回',
+                value: 'reject',
+              }]}
+              placeholder="选择自动通过或驳回"
+              defaultValue={timeoutData.value}
+              onChange={handleChange('value')}
+              className={
+                cs(
+                  'h-32 py-4 border corner-2-8-8-8 px-12 text-12 flex items-center',
+                  'flex-1 mb-8 ml-22 mt-8', {
+                    'border-red-600': validating && !timeoutData.value,
+                    'border-gray-300': !validating || timeoutData.value,
+                  })}
+            />
+            {validating && !timeoutData.value && (
+              <div className="text-red-600 mt-4">请选择自动处理的方式</div>
+            )}
+          </>
         )}
         <Radio
           className="mb-8 flex"

@@ -16,10 +16,13 @@ export type Props = DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTM
   onChange?: (value: string | number | boolean) => void;
   label?: string;
   value: string | number | boolean;
+  error?: boolean;
 };
 
 function InternalRadio(props: Props, ref?: Ref<HTMLInputElement>) {
-  const { defaultChecked, className, onChange, label, checked: isChecked, ...inputProps } = props;
+  const {
+    defaultChecked, error, className, onChange, label, checked: isChecked, ...inputProps
+  } = props;
   const [checked, setChecked] = useState(defaultChecked);
   const id = uuid();
 
@@ -40,9 +43,11 @@ function InternalRadio(props: Props, ref?: Ref<HTMLInputElement>) {
     <div className={cs('flex items-center', className)}>
       <div
         className={cs(
-          'w-16 h-16 mr-8 border border-gray-400 flex justify-center items-center transition', {
+          'w-16 h-16 mr-8 border flex justify-center items-center transition', {
             'bg-white': !checked,
             'bg-blue-600': checked,
+            'border-red-600': error,
+            'border-gray-400': !error,
           }, 'cursor-pointer')}
         style={{ borderRadius: '50%' }}
         onClick={() => handleChange(true)}

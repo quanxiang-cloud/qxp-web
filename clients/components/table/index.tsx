@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, MouseEvent } from 'react';
 import cs from 'classnames';
 import {
   useTable,
@@ -6,6 +6,8 @@ import {
   TableOptions,
   useRowSelect,
 } from 'react-table';
+
+import { getHTMLParentElement } from '@lib/utils';
 
 import TableLoading from './table-loading';
 import { getDefaultSelectMap, useExtendColumns } from './utils';
@@ -20,6 +22,7 @@ interface Props<T extends Record<string, any>> {
   initialSelectedRowKeys?: string[];
   loading?: boolean;
   onRowClick?: (rowID: string, selectedRow: T) => void;
+  onRowDoubleClick?: (rowID: string, selectedRow: T) => void;
   onSelectChange?: (selectedKeys: string[], selectedRows: T[]) => void;
   rowKey: string;
   showCheckbox?: boolean;
@@ -34,6 +37,7 @@ export default function Table<T extends Record<string, any>>({
   initialSelectedRowKeys,
   loading,
   onRowClick,
+  onRowDoubleClick,
   onSelectChange,
   rowKey,
   showCheckbox,
@@ -76,6 +80,29 @@ export default function Table<T extends Record<string, any>>({
     }
   };
 
+  let clickCount = 0;
+  const onClick = (e: MouseEvent<HTMLTableRowElement>) => {
+    clickCount += 1;
+    setTimeout(() => {
+      const rowEl = getHTMLParentElement('tr', e.target as HTMLTableRowElement);
+      if (!rowEl) {
+        return;
+      }
+      let row;
+      try {
+        row = JSON.parse(rowEl.dataset.row as string);
+      } catch {
+        return;
+      }
+      if (clickCount == 1) {
+        onRowClick?.(row.id, row.selectedRow);
+      } else if (clickCount > 1) {
+        onRowDoubleClick?.(row.id, row.selectedRow);
+      }
+      clickCount = 0;
+    }, 300);
+  };
+
   if (!headerGroups.length) {
     // todo render error tips
     return <TableLoading />;
@@ -115,9 +142,13 @@ export default function Table<T extends Record<string, any>>({
               return (
                 <tr
                   {...row.getRowProps()}
-                  onClick={() => onRowClick?.(row.id, row.original)}
+                  onClick={onClick}
                   key={row.id}
                   className='qxp-table-tr'
+                  data-row={JSON.stringify({
+                    id: row?.id ?? '',
+                    selectedRow: row?.original ?? {},
+                  })}
                 >
                   {row.cells.map((cell) => {
                     return (
