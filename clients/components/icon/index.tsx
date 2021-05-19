@@ -1,7 +1,7 @@
 import React, { memo } from 'react';
 import cs from 'classnames';
 
-interface Props extends React.SVGProps<SVGSVGElement> {
+export interface Props extends React.SVGProps<SVGSVGElement> {
   name: string;
   type?: 'dark' | 'primary' | 'light';
   size?: number;

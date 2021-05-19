@@ -29,8 +29,15 @@ function TodoApprovals(): JSX.Element {
         <div className="flex flex-1" />
         <Search className="w-259 mr-16" placeholder="搜索流程、发起人、应用" value={store.keyword}
           onChange={store.changeKeyword} />
-        <Select multiple={false} options={sortOptions} onChange={store.changeOrderType}>
-          <IconBtn iconName="import_export" className="btn-sort" />
+        <Select multiple={false} options={sortOptions} onChange={store.changeOrderType} value={store.orderType}>
+          <IconBtn
+            iconName="import_export"
+            className="border-none hover:bg-gray-100"
+            style={{ border: 'none' }}
+            iconProps={{
+              type: 'primary',
+            }}
+          />
         </Select>
       </div>
       <TaskList tasks={store.approvals} store={store} taskType='todo' />
