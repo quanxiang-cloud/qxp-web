@@ -111,15 +111,17 @@ export interface WhenTimeout {
   type: 'noDealWith' | 'autoDealWith' | 'jump' | '';
   value: string;
 }
+export type BreakPoint = 'firstEntry' | 'entry' | 'flowWorked';
+export interface DeadLine {
+  breakPoint: BreakPoint;
+  day: number;
+  hours: number;
+  minutes: number;
+  urge: Urge;
+}
 export type TimeRule = {
   enabled: boolean;
-  deadLine: {
-    breakPoint: 'firstEntry' | 'entry' | 'flowWorked';
-    day: number;
-    hours: number;
-    minutes: number;
-    urge: Urge;
-  },
+  deadLine: DeadLine;
   whenTimeout: WhenTimeout;
 }
 
@@ -220,6 +222,7 @@ export interface StoreValue {
   creatorId?: string;
   apiFetched: boolean;
   validating: boolean;
+  saved: boolean;
   id?: string;
   nodeIdForDrawerForm: AsideDrawerType;
   currentConnection: CurrentConnection;

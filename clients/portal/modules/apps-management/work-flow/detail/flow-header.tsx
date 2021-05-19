@@ -20,7 +20,7 @@ import store, {
 } from './content/editor/store';
 
 export default function GlobalHeader() {
-  const { name = '', status, id, triggerMode } = useObservable<StoreValue>(store);
+  const { name = '', status, id, triggerMode, saved } = useObservable<StoreValue>(store);
   const [workFlowName, setWorkFlowName] = useState(name);
   const [isWorkFlowNameMenuOpen, setIsWorkFlowNameMenuOpen] = useState(false);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
@@ -188,6 +188,15 @@ export default function GlobalHeader() {
               onClick={() => setIsWorkFlowNameMenuOpen(true)}
             />
           </More>
+          {saved && (
+            <span
+              className={cs(
+                'text-body2-no-color px-8 py-1 rounded-tl-6 rounded-br-6 mr-24 ml-18',
+                'text-green-600 bg-green-50',
+              )}>
+              已保存
+            </span>
+          )}
         </div>
       </section>
       <section className="flex flex-row items-center">

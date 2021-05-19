@@ -10,6 +10,7 @@ export const getStoreInitialData = () => {
   const startId = 'formData' + uuid();
   const endId = 'end' + uuid();
   return {
+    saved: false,
     errors: {
       publish: {},
       dataNotSaveMap: new Map(),
@@ -101,9 +102,14 @@ export function updateBusinessDataByKey<T>(
   });
 }
 
-export function updateBusinessData(id: string, updater: (v: BusinessData) => BusinessData) {
+export function updateBusinessData(
+  id: string,
+  updater: (v: BusinessData) => BusinessData,
+  storeValue?: Partial<StoreValue>,
+) {
   store.next({
     ...store.value,
+    ...(storeValue ?? {}),
     elements: store.value.elements.map((element): FlowElement => {
       if (element.id === id && element?.data) {
         update(element, 'data.businessData', updater);
@@ -147,6 +153,7 @@ export function resetElementsData(
 ) {
   store.next({
     ...store.value,
+    saved: false,
     elements: store.value.elements.map((element) => {
       if (!isNode(element) || !element.data) {
         return element;
@@ -167,6 +174,22 @@ export function resetElementsData(
 
 export function getNodeElementById(id: string): CurrentElement {
   return store.value.elements.find((element) => element.id === id) as CurrentElement;
+}
+
+export function buildBpmnText(
+  version: string,
+  nodeID: string,
+  newBusinessData: BusinessData
+) {
+  return JSON.stringify({
+    version,
+    shapes: store.value.elements.map((el) => {
+      if (el.id === nodeID) {
+        return { ...el, data: { ...el.data, businessData: newBusinessData } };
+      }
+      return el;
+    }),
+  });
 }
 
 export default store;

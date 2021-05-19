@@ -44,6 +44,17 @@ export default function FieldPermission({ value, onChange: _onChange }: Props) {
     }
   }, [value, data]);
 
+  useEffect(() => {
+    if (mergedFieldPermissions.custom.some(({
+      initialValue: { static: is, variable: iv },
+      submitValue: { static: ss, variable: sv },
+    }) => {
+      return is || iv || ss || sv;
+    })) {
+      setEditable(true);
+    }
+  }, [mergedFieldPermissions.custom]);
+
   function onChange(fieldPermission: FieldPermission) {
     _onChange({ fieldPermission });
   }
@@ -101,7 +112,7 @@ export default function FieldPermission({ value, onChange: _onChange }: Props) {
             <div className="text-caption-no-color text-gray-400">自定义字段</div>
             <div className="flex justify-between items-center">
               <span className="mr-8">为字段赋值</span>
-              <Toggle onChange={() => setEditable((s) => !s)} />
+              <Toggle defaultChecked={editable} onChange={() => setEditable((s) => !s)} />
             </div>
           </header>
           <CustomFieldTable

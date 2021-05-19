@@ -1,5 +1,6 @@
 import React, { useState, FormEvent, useEffect } from 'react';
 import { isEqual } from 'lodash';
+import { useParams } from 'react-router-dom';
 
 import Drawer from '@c/drawer';
 import useObservable from '@lib/hooks/use-observable';
@@ -15,24 +16,37 @@ import store, {
   getNodeElementById,
   updateStore,
   updateBusinessData,
+  buildBpmnText,
 } from '@flow/detail/content/editor/store';
 
 import FormSelector from './intermidiate/components/form-selector';
 import FormDataForm from './form-data';
 import ApproveForm from './intermidiate/approve';
 import { getNodeInitialData, mergeDataAdapter } from '../utils';
+import useSave from './hooks/use-save';
 
 export default function NodeFormWrapper() {
-  const { nodeIdForDrawerForm, validating } = useObservable<StoreValue>(store);
+  const {
+    nodeIdForDrawerForm, validating,
+    id,
+    name,
+    triggerMode,
+    version,
+    cancelable: canCancel,
+    urgeable: canUrge,
+    seeStatusAndMsg: canViewStatusMsg,
+    nodeAdminMsg: canMsg,
+  } = useObservable<StoreValue>(store);
+  const { appID } = useParams<{ appID: string }>();
   const currentNodeElement = getNodeElementById(nodeIdForDrawerForm);
   const data = currentNodeElement?.data?.businessData;
   const [formData, setFormData] = useState<BusinessData>(data);
   const [formDataChanged, setFormDataChanged] = useState(false);
-
   const { type: nodeType } = currentNodeElement ?? {};
   const isFormDataNode = nodeType === 'formData';
   const isApproveNode = nodeType === 'approve';
   const isFillInNode = nodeType === 'fillIn';
+  const saver = useSave(appID, id);
 
   useEffect(() => {
     setFormData((f) => ({
@@ -40,6 +54,10 @@ export default function NodeFormWrapper() {
       form: data?.form || f?.form,
     }));
   }, [data]);
+
+  useEffect(() => {
+    formDataChanged && updateStore((s) => ({ ...s, saved: false }));
+  }, [formDataChanged]);
 
   useEffect(() => {
     updateStore((s) => ({ ...s, validating: false }));
@@ -74,8 +92,11 @@ export default function NodeFormWrapper() {
   }
 
   function timeRuleValidator(timeRule: TimeRule) {
+    const { deadLine, whenTimeout } = timeRule ?? {};
     if (timeRule?.enabled) {
-      if (timeRule.whenTimeout.type === 'jump' && !timeRule.whenTimeout.value) {
+      if (
+        ((whenTimeout?.type === 'jump' || whenTimeout?.type === 'autoDealWith') &&
+        !whenTimeout?.value) || !deadLine?.breakPoint.length) {
         return false;
       }
 
@@ -118,8 +139,19 @@ export default function NodeFormWrapper() {
     }
     if (formDataIsValid()) {
       setFormDataChanged(false);
-      updateBusinessData(nodeIdForDrawerForm, (b) => ({ ...b, ...saveData }));
-      closePanel();
+      saver({
+        bpmnText: buildBpmnText(version, nodeIdForDrawerForm, formData),
+        name: name as string,
+        triggerMode: triggerMode as string,
+        canCancel: canCancel ? 1 : 0,
+        canUrge: canUrge ? 1 : 0,
+        canMsg: canMsg ? 1 : 0,
+        canViewStatusMsg: canViewStatusMsg ? 1 : 0,
+        appId: appID,
+      }, () => {
+        updateBusinessData(nodeIdForDrawerForm, (b) => ({ ...b, ...saveData }), { saved: true });
+        closePanel();
+      });
     } else {
       updateStore((s) => ({ ...s, validating: true }));
     }
@@ -163,7 +195,7 @@ export default function NodeFormWrapper() {
     const isChanged = !isEqual(oldData, newData);
     setFormDataChanged(isChanged);
     setFormData((f) => ({ ...f, ...nodeForm }));
-    if (nodeType !== 'formData') {
+    if (nodeType !== 'formData' || !oldData.triggerCondition) {
       return;
     }
     const { triggerCondition: { op: oldOp, expr: oldExpr } } = oldData;

@@ -263,3 +263,11 @@ export function jsonValidator<T>(data: T, schema: Record<string, (v: any) => boo
     return validator(values.length === 1 ? values[0] : values);
   });
 }
+
+export function getHTMLParentElement(selector: string, el: HTMLElement | null): HTMLElement | void {
+  if (el?.matches(selector)) {
+    return el;
+  } else if (el) {
+    return getHTMLParentElement(selector, el.parentElement);
+  }
+}
