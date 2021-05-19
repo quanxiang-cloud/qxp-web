@@ -4,8 +4,7 @@ import { ConfigProvider } from 'antd';
 import zhCN from 'antd/lib/locale/zh_CN';
 
 import registry from './registry';
-// todo fix this
-import { visibleHiddenLinkageEffect } from './index';
+import visibleHiddenLinkageEffect from './linkages/visible-hidden';
 import { wrapSchemaByMegaLayout } from './utils';
 
 setValidationLanguage('zh');

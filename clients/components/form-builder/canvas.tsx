@@ -17,7 +17,7 @@ type CollectedProps = {
 function FormFields(): JSX.Element {
   const store = useContext(StoreContext);
 
-  const [{ isOver }, drop] = useDrop<DragObject, DropResult, CollectedProps>({
+  const [{ isOver }, drop] = useDrop<FormBuilder.DragObject, FormBuilder.DropResult, CollectedProps>({
     accept: 'SOURCE_ELEMENT',
     drop: () => {
       return {
