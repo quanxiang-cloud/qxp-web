@@ -211,6 +211,7 @@ class FormDesignStore {
     this.pageTableConfig = {};
     this.pageTableShowRule = {};
     this.allFiltrate = [];
+    this.appPageStore.clear();
   }
 
   @action

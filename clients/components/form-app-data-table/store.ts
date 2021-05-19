@@ -146,6 +146,9 @@ class AppPageDataStore {
 
   @action
   fetchActionAuthorized = () => {
+    if (!this.pageID) {
+      return;
+    }
     httpClient(
       `/api/v1/structor/${this.appID}/permission/operatePer/getByScopeID`,
       { formID: this.pageID }

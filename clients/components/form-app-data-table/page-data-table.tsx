@@ -56,10 +56,10 @@ function PageDataTable() {
   }, [store.tableColumns]);
 
   useEffect(() => {
+    store.fetchActionAuthorized();
     if (!store.allowRequestData) {
       return;
     }
-    store.fetchActionAuthorized();
     store.setParams({});
   }, [store.pageID]);
 
