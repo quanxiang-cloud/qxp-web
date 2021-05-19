@@ -1,8 +1,8 @@
-import { Cascader } from 'antd';
-
 import configSchema from './config-schema';
 import { defaultConfig, toSchema, toConfig, CascadeConfig } from './convertor';
 import CustomizedDatasetBtn from './customized-dataset-btn';
+import CascadeSelector from './cascade-selector';
+import DatasetSelector from './dataset-selector';
 
 const InputField: Omit<FormBuilder.SourceElement<CascadeConfig>, 'displayOrder'> = {
   configSchema,
@@ -11,11 +11,10 @@ const InputField: Omit<FormBuilder.SourceElement<CascadeConfig>, 'displayOrder'>
   defaultConfig: defaultConfig,
   toSchema,
   toConfig,
-  // todo this is not a form field
-  component: Cascader,
+  component: CascadeSelector,
   category: 'advance',
   componentName: 'CascadeSelector',
-  configDependencies: { CustomizedDatasetBtn },
+  configDependencies: { CustomizedDatasetBtn, DatasetSelector },
 };
 
 export default InputField;
