@@ -262,14 +262,24 @@ function ActionModals({ flowName, getFormData }: Props) {
     <>
       <Modal
         title={`${store.modalInfo.title} ${flowName || ''}`}
-        okText={`确定${store.modalInfo.title}`}
+        footerBtns={[
+          {
+            key: 'close',
+            text: '取消',
+            onClick: () => {
+              store.openModal(false);
+              store.reset();
+            },
+          },
+          {
+            key: 'sure',
+            text: `确定${store.modalInfo.title}`,
+            onClick: () => handleTaskMutation.mutate({}),
+          },
+        ]}
         onClose={() => {
           store.openModal(false);
           store.reset();
-          // setChosenEmployees([]);
-        }}
-        onConfirm={() => {
-          handleTaskMutation.mutate({});
         }}
       >
         {renderContent()}

@@ -34,6 +34,19 @@ function TodoApprovals(): JSX.Element {
     };
   }, []);
 
+  const setReadAll = async () => {
+    try {
+      const data = await readAll(store.approvals.map((item) => item.id));
+      if (data) {
+        toast.success('操作成功');
+        setOpenReadFlow(false);
+        await store.fetchAll();
+      }
+    } catch (err) {
+      toast.error(`操作失败: ${err.message}`);
+    }
+  };
+
   return (
     <div>
       <div className="flex justify-between items-center mb-16">
@@ -73,18 +86,18 @@ function TodoApprovals(): JSX.Element {
       {openReadFlow && (
         <Modal
           title="全部标为已读"
-          onConfirm={async () => {
-            try {
-              const data = await readAll(store.approvals.map((item)=> item.id));
-              if (data) {
-                toast.success('操作成功');
-                setOpenReadFlow(false);
-                await store.fetchAll();
-              }
-            } catch (err) {
-              toast.error(`操作失败: ${err.message}`);
-            }
-          }}
+          footerBtns={[
+            {
+              key: 'close',
+              onClick: () => setOpenReadFlow(false),
+              text: '取消',
+            },
+            {
+              key: 'ok',
+              onClick: setReadAll,
+              text: '确定',
+            },
+          ]}
           onClose={() => setOpenReadFlow(false)}
         >
           确定要将所有未读抄送标记为已读吗？
