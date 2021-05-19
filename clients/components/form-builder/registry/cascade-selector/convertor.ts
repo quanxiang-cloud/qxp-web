@@ -33,10 +33,6 @@ export function toSchema(value: CascadeConfig): FormBuilder.Schema {
     readOnly: value.displayModifier === 'readonly',
     display: value.displayModifier !== 'hidden',
     'x-component': 'CascadeSelector',
-    properties: {
-      label: { type: 'string' },
-      value: { type: 'string' },
-    },
     ['x-component-props']: {
       expandTrigger: 'hover',
       placeholder: value.placeholder,
