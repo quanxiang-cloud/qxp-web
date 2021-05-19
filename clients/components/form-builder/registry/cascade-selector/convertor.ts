@@ -26,7 +26,7 @@ export const defaultConfig: CascadeConfig = {
 
 export function toSchema(value: CascadeConfig): FormBuilder.Schema {
   return {
-    type: 'object',
+    type: 'label-value',
     title: value.title,
     description: value.description,
     required: value.required,
