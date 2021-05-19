@@ -24,6 +24,7 @@ declare namespace FormBuilder {
     // transform configuration to the node of schema used by SchemaForm
     toSchema: (value: T) => ISchema;
     toConfig: (schema: FormBuilder.Schema) => T;
+    configDependencies?: Record<string, React.JSXElementConstructor<any>>;
   };
 
   type DropPosition = 'upper' | 'below';
@@ -51,7 +52,7 @@ declare namespace FormBuilder {
 
   type Schema = ISchema & { 'x-internal'?: Record<string, unknown> };
 
-  type ValueSource = 'customized' | 'linkage' | 'formula';
+  type ValueSource = 'customized' | 'linkage' | 'formula' | string;
 
   type DragObject = SourceElement<any>;
 

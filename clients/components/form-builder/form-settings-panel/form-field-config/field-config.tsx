@@ -9,7 +9,7 @@ import { toJS } from 'mobx';
 import { FieldConfigContext } from './context';
 import { addOperate } from '../../registry/operates';
 
-const components = {
+const COMMON_CONFIG_COMPONENTS = {
   ArrayTable,
   Input,
   NumberPicker,
@@ -26,6 +26,7 @@ type Props = {
   onChange: (value: any) => void;
   initialValue: any;
   schema: ISchema;
+  components: Record<string, React.JSXElementConstructor<any>>;
 }
 
 const { onFieldInputChange$, onFieldInit$ } = FormEffectHooks;
@@ -70,7 +71,7 @@ const useOneToManyEffects = () => {
   });
 };
 
-function SchemaFieldConfig({ onChange, initialValue, schema }: Props): JSX.Element {
+function SchemaFieldConfig({ onChange, initialValue, schema, components }: Props): JSX.Element {
   const { actions } = useContext(FieldConfigContext);
   return (
     <SchemaForm
@@ -94,7 +95,7 @@ function FormFieldConfig(): JSX.Element {
     );
   }
 
-  if (store.activeFieldConfigSchema) {
+  if (store.activeFieldSourceElement?.configSchema) {
     return (
       <SchemaFieldConfig
         // assign key to FormFieldConfigTrue to force re-render when activeFieldName changed
@@ -102,12 +103,16 @@ function FormFieldConfig(): JSX.Element {
         onChange={(value) => store.updateFieldConfig(value)}
         initialValue={toJS(store.activeField.configValue)}
         schema={store.activeFieldConfigSchema || {}}
+        components={{
+          ...COMMON_CONFIG_COMPONENTS,
+          ...store.activeFieldSourceElement?.configDependencies,
+        }}
       />
     );
   }
 
-  if (store.activeFieldConfigForm) {
-    return React.createElement(store.activeFieldConfigForm, {
+  if (store.activeFieldSourceElement?.configForm) {
+    return React.createElement(store.activeFieldSourceElement.configForm, {
       key: toJS(store.activeFieldName),
       onChange: (value: any) => store.updateFieldConfig(value),
       initialValue: toJS(store.activeField.configValue),
