@@ -72,6 +72,12 @@ declare namespace FormBuilder {
   }
 
   type Comparator = (values: Record<string, any>) => boolean;
+
+  interface CascadeOption {
+    value: string;
+    label: string;
+    children?: CascadeOption[];
+  }
 }
 
 // a copy of formliy Schema type definition for reference

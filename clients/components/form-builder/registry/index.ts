@@ -4,7 +4,7 @@ import elements, { Elements } from './elements';
 
 const AVAILABLE_CATEGORIES: Array<{ title: string; key: FormBuilder.ElementCategory }> = [
   { title: '基础字段', key: 'basic' },
-  // { title: '高级字段', key: 'advance' },
+  { title: '高级字段', key: 'advance' },
   // { title: '布局字段', key: 'layout' },
 ];
 
