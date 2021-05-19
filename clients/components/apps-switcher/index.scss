@@ -8,7 +8,8 @@
   border: 1px solid var(--gray-300);
   overflow-y: auto;
   left: 0;
-  right: auto;
+  box-shadow: 0px 8px 24px rgba(148, 163, 184, 0.25);
+  border-radius: 12px;
 }
 
 .app-dropdown-cur-app {

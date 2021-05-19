@@ -7,7 +7,7 @@ import PopConfirm from '@c/pop-confirm';
 import Button from '@c/button';
 import HeaderNav from '@c/header-nav';
 
-import AppDropdown from '@c/app-dropdown';
+import AppsSwitcher from '@c/apps-switcher';
 import appDetailsStore from '../store';
 import appListStore from '../../entry/app-list/store';
 import './index.scss';
@@ -68,7 +68,7 @@ function DetailsHeader() {
           }}
         />
         <span className='mr-16 ml-8'>/</span>
-        <AppDropdown appList={appListStore.allAppList} curApp={appID} onChange={handleChange} />
+        <AppsSwitcher apps={appListStore.allAppList} currentAppID={appID} onChange={handleChange} />
       </div>
       <div className='flex'>
         {isPublish ? (

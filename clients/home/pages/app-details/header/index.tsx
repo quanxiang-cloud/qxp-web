@@ -4,7 +4,7 @@ import { useHistory, useParams } from 'react-router-dom';
 
 import HeaderNav from '@c/header-nav';
 import toast from '@lib/toast';
-import AppDropdown from '@c/app-dropdown';
+import AppsSwitcher from '@c/apps-switcher';
 
 import { fetchUserList } from '../../../lib/api';
 import './index.scss';
@@ -35,10 +35,10 @@ function DetailsHeader() {
       <div className='flex items-center'>
         <HeaderNav {...{ name: '工作台', icon: 'home', inside: true, url: '/' }} />
         <span className='mr-16 ml-8'>/</span>
-        <AppDropdown
+        <AppsSwitcher
           hiddenStatus={true}
-          appList={appList}
-          curApp={appID}
+          apps={appList}
+          currentAppID={appID}
           onChange={handleChange}
         />
       </div>
