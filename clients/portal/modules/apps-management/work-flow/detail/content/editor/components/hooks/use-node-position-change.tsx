@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-import { updateElement } from '@flow/detail/content/editor/store';
+import { updateElementByKey } from '@flow/detail/content/editor/store';
 
 interface Props {
   xPos: number;
@@ -10,7 +10,7 @@ interface Props {
 
 export default function usePositionChange({ xPos, yPos, id }: Props) {
   useEffect(() => {
-    updateElement(id, 'position', () => ({
+    updateElementByKey(id, 'position', () => ({
       x: xPos,
       y: yPos,
     }));

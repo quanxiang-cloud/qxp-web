@@ -9,18 +9,23 @@ export default function useRequest<T>(input: RequestInfo, fetchOptions?: Request
     retry: () => void;
     cancel: () => void;
     retryNo: number;
+    loading: boolean;
   }
 ] {
   const [data, setData] = useState<T | null>(null);
+  const [loading, setLoading] = useState(false);
   const [tryNo, incTryNo] = useReducer((x) => x + 1, 0);
   const [request, setRequest] = useState(() => new CancellableRequest<T>(input, fetchOptions));
   useEffect(() => {
+    setLoading(true);
     request.fetch()
       .then(setData)
       .catch((e) => {
         if (!e.message.match(/The user aborted a request/)) {
           throw e;
         }
+      }).finally(() => {
+        setLoading(false);
       });
     return () => {
       setData(null);
@@ -37,5 +42,5 @@ export default function useRequest<T>(input: RequestInfo, fetchOptions?: Request
     request.cancel();
   }
 
-  return [data, { setRequest, retry, cancel, retryNo: tryNo }];
+  return [data, { setRequest, retry, cancel, retryNo: tryNo, loading }];
 }

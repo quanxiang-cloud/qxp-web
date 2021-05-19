@@ -1,14 +1,15 @@
-import React, { DragEvent, useState } from 'react';
+import React, { DragEvent, useState, MouseEvent } from 'react';
 import { getSmoothStepPath, getMarkerEnd } from 'react-flow-renderer';
 import cs from 'classnames';
 
 import ToolTip from '@c/tooltip/tip';
 import useObservable from '@lib/hooks/use-observable';
 
-import store, { StoreValue, updateStore } from '../store';
-import { EdgeProps } from '../type';
+import store, { updateStoreByKey } from '../store';
+import type { EdgeProps, StoreValue } from '../type';
 import { getCenter } from '../utils';
 import EdgeText from './_components/edge-text';
+import useEdgeSwitch from './hooks/use-edge-switch';
 
 export default function CustomEdge({
   id,
@@ -44,19 +45,32 @@ export default function CustomEdge({
     sourcePosition,
     targetPosition,
   });
-  const { elements = [] } = useObservable<StoreValue>(store) || {};
+  const { elements = [] } = useObservable<StoreValue>(store);
+  const switcher = useEdgeSwitch();
   const formDataElement = elements.find(({ type }) => type === 'formData');
 
   function onDragOver(e: DragEvent) {
     e.preventDefault();
-    updateStore('currentConnection', () => ({
+    updateStoreByKey('currentConnection', () => ({
       source,
       target,
       position: { x: centerX, y: centerY },
     }));
   }
 
-  const hasForm = !!formDataElement?.data.businessData.form.name;
+  function onShowComponentSelector(e: MouseEvent<SVGElement>) {
+    e.stopPropagation();
+    if (!hasForm) {
+      return;
+    }
+    switcher(id, {
+      source,
+      target,
+      position: { x: centerX, y: centerY },
+    });
+  }
+
+  const hasForm = !!formDataElement?.data?.businessData.form.name;
   const cursorClassName = cs({ 'cursor-not-allowed': !hasForm });
 
   return (
@@ -85,20 +99,7 @@ export default function CustomEdge({
           y={centerY}
           onDragOver={onDragOver}
           label={label}
-          onClick={(e) => {
-            e.stopPropagation();
-            if (!hasForm) {
-              return;
-            }
-            updateStore(null, () => ({
-              asideDrawerType: 'components',
-              currentConnection: {
-                source,
-                target,
-                position: { x: centerX, y: centerY },
-              },
-            }));
-          }}
+          onClick={onShowComponentSelector}
           labelBgBorderRadius={14}
           width="28"
           height="28"

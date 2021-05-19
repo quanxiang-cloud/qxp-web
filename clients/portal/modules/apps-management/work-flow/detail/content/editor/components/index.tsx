@@ -4,14 +4,15 @@ import Drawer from '@c/drawer';
 import useObservable from '@lib/hooks/use-observable';
 
 import store, { updateStore } from '../store';
+import type { StoreValue } from '../type';
 import DragNode from './drag-node';
 
 export default function ComponentsSelector() {
-  const { asideDrawerType } = useObservable(store) || {};
+  const { nodeIdForDrawerForm } = useObservable<StoreValue>(store);
 
   return (
     <>
-      {asideDrawerType === 'components' && (
+      {nodeIdForDrawerForm === 'components' && (
         <Drawer
           title={(
             <div>
@@ -20,7 +21,7 @@ export default function ComponentsSelector() {
             </div>
           )}
           distanceTop={0}
-          onCancel={() => updateStore(null, () => ({ asideDrawerType: '' }))}
+          onCancel={() => updateStore((s) => ({ ...s, nodeIdForDrawerForm: '' }))}
           className="flow-editor-drawer"
         >
           <div>

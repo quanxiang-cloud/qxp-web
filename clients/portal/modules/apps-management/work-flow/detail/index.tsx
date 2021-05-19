@@ -2,17 +2,22 @@ import React, { useState, useEffect } from 'react';
 import { useQuery } from 'react-query';
 import { useParams } from 'react-router-dom';
 
-import Header from './flow-header';
-import AsideMenu from './aside-menu';
-import Content from './content';
-import { getWorkFlowInfo } from './api';
 import Loading from '@c/loading';
 import ErrorTips from '@c/error-tips';
 import toast from '@lib/toast';
 import Confirm from '@c/modal-confirm';
 import useObservable from '@lib/hooks/use-observable';
 
-import store, { updateStore, initStore, StoreValue } from './content/editor/store';
+import Header from './flow-header';
+import AsideMenu from './aside-menu';
+import Content from './content';
+import { getWorkFlowInfo } from './api';
+import type { StoreValue } from './content/editor/type';
+import store, {
+  updateStore,
+  updateStoreByKey,
+  initStore,
+} from './content/editor/store';
 
 import './style.scss';
 
@@ -22,9 +27,9 @@ export default function Detail() {
   >('edit');
   const {
     showDataNotSaveConfirm, currentDataNotSaveConfirmCallback,
-  } = useObservable<StoreValue>(store) || {};
+  } = useObservable<StoreValue>(store);
 
-  const { flowID, type } = useParams() as { flowID: string; type: string; };
+  const { flowID, type } = useParams<{ flowID: string; type: string; }>();
 
   const { data, isLoading, isError } = useQuery(['GET_WORK_FLOW_INFO', flowID], getWorkFlowInfo, {
     enabled: !!flowID,
@@ -36,7 +41,8 @@ export default function Detail() {
     }
     try {
       const bpmn = JSON.parse(data.bpmnText);
-      updateStore(null, () => ({
+      updateStore((s) => ({
+        ...s,
         elements: bpmn.shapes,
         version: bpmn.version,
         name: data.name,
@@ -50,7 +56,7 @@ export default function Detail() {
         processKey: data.processKey,
       }));
     } catch (error) {
-      toast.error(error);
+      toast.error('bpmn 数据格式解析错误!');
     }
   }, [data]);
 
@@ -67,7 +73,7 @@ export default function Detail() {
   }
 
   function onConfirmCancel() {
-    updateStore('showDataNotSaveConfirm', () => false);
+    updateStoreByKey('showDataNotSaveConfirm', () => false);
   }
 
   function onConfirmSubmit() {

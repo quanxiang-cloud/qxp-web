@@ -2,12 +2,12 @@ import React from 'react';
 
 import Select from '@c/select';
 
-import {
+import type {
   Operator,
   TriggerConditionExpressionItem,
-} from '../../../store';
+} from '@flow/detail/content/editor/type';
 
-import { Options } from '../../api';
+import { Options } from '@flow/detail/content/editor/forms/api';
 
 interface Props {
   condition: {

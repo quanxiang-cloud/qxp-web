@@ -1,9 +1,10 @@
 import React, { useRef } from 'react';
 import cs from 'classnames';
 
-import { updateStore, Data } from '../store';
+import type { Data } from '../type';
 import NodeHeader from './_common/node-header';
-import usePositionChange from './usePositionChange';
+import usePositionChange from './hooks/use-node-position-change';
+import useNodeSwitch from './hooks/use-node-switch';
 
 interface Props {
   data: Data;
@@ -17,10 +18,11 @@ export default function FormDataNodeComponent({ data, id, xPos, yPos }: Props) {
   const lastTime = useRef(+new Date());
 
   usePositionChange({ id, xPos, yPos });
+  const switcher = useNodeSwitch();
 
   function onMouseUp() {
     if (+new Date - lastTime.current < 200) {
-      updateStore(null, () => ({ asideDrawerType: id }));
+      switcher(id);
     }
   }
 

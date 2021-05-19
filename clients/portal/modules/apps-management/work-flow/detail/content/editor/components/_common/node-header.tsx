@@ -2,8 +2,7 @@ import React, { KeyboardEvent, MouseEvent } from 'react';
 import cs from 'classnames';
 
 import Icon from '@c/icon';
-
-import { updateNodeData } from '../../store';
+import { updateNodeDataByKey } from '@flow/detail/content/editor/store';
 
 interface Props {
   title: string;
@@ -38,7 +37,7 @@ export default function NodeHeader({
         onClick={(e) => e.stopPropagation()}
         onMouseDown={onMouseDown}
         onMouseUp={onMouseUp}
-        onChange={(e) => updateNodeData(id, 'name', () => e.target.value)}
+        onChange={(e) => updateNodeDataByKey(id, 'name', () => e.target.value)}
         onKeyDown={(e: KeyboardEvent<HTMLInputElement>) => {
           if (e.key === 'Enter') {
             (e.target as HTMLInputElement).blur();

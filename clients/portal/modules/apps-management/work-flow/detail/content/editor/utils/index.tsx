@@ -1,6 +1,9 @@
-import { Position } from 'react-flow-renderer';
+import { Position, ArrowHeadType, XYPosition } from 'react-flow-renderer';
+import { update } from 'lodash';
 
 import { deepClone } from '@lib/utils';
+
+import type { NodeType } from '../type';
 
 export interface GetCenterParams {
   sourceX: number;
@@ -54,6 +57,7 @@ const approveAndFillInCommonData = {
     whenNoPerson: '',
     autoRules: [],
     timeRule: {
+      enabled: false,
       deadLine: {
         breakPoint: '',
         day: '',
@@ -83,16 +87,57 @@ const approveAndFillInCommonData = {
   },
   events: {},
 };
-export function getNodeInitialData(type: 'formData' | 'approve' | 'fillIn') {
+export function getNodeInitialData(type: NodeType) {
   const dataMap = {
     formData: {
       form: { name: '', value: '' },
-      triggerWay: '',
+      triggerWay: [],
       whenAlterFields: [],
+      triggerCondition: { op: '', expr: [] },
       events: {},
     },
     approve: deepClone(approveAndFillInCommonData),
     fillIn: deepClone(approveAndFillInCommonData),
+    end: {},
   };
   return dataMap[type];
+}
+
+export function edgeBuilder(startId: string, endId: string) {
+  return {
+    id: `e${startId}-${endId}`,
+    type: 'plus',
+    source: startId,
+    target: endId,
+    label: '+',
+    arrowHeadType: ArrowHeadType.ArrowClosed,
+  };
+}
+
+export function nodeBuilder(
+  id: string,
+  type: NodeType,
+  name: string,
+  options: { position?: XYPosition; width?: number; height?: number; } = {
+    position: { x: 0, y: 0 },
+    width: 200,
+    height: 72,
+  }) {
+  return {
+    id, type, data: {
+      nodeData: { width: options.width as number, height: options.height as number, name },
+      businessData: getNodeInitialData(type),
+    },
+    position: options.position as XYPosition,
+  };
+}
+
+export function mergeDataAdapter<T, S>(
+  originalData: S,
+  path: string,
+  updater: (v: T) => T
+) {
+  const newData = deepClone(originalData);
+  update(newData, path, updater);
+  return newData as S;
 }

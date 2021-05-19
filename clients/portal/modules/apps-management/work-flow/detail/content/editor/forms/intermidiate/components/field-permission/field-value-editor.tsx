@@ -5,10 +5,8 @@ import Icon from '@c/icon';
 import RadioGroup from '@c/radio/group';
 import Radio from '@c/radio';
 import Select from '@c/select';
-
 import usePrevious from '@lib/hooks/use-previous';
-
-import ActionButtonGroup from '../../../components/_common/action-button-group';
+import ActionButtonGroup from '@flow/detail/content/editor/components/_common/action-button-group';
 
 interface Props {
   defaultValue?: {

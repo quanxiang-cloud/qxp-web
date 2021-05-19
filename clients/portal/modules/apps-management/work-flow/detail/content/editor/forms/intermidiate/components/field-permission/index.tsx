@@ -1,38 +1,40 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery } from 'react-query';
-import { isEqual } from 'lodash';
+import { useParams } from 'react-router-dom';
 
 import Toggle from '@c/toggle';
 import Loading from '@c/loading';
 import ErrorTips from '@c/error-tips';
 import useObservable from '@lib/hooks/use-observable';
-import usePrevious from '@lib/hooks/use-previous';
+import store from '@flow/detail/content/editor/store';
+import { getFormFieldOptions } from '@flow/detail/content/editor/forms/api';
+import type {
+  StoreValue, FieldPermission, CustomFieldPermission, SystemFieldPermission, CurrentElement, BusinessData,
+} from '@flow/detail/content/editor/type';
 
 import CustomFieldTable from './custom-field-table';
 import SystemFieldTable from './system-field-table';
-import store, {
-  StoreValue, FieldPermission, CustomFieldPermission, SystemFieldPermission, CurrentElement,
-} from '@flow/detail/content/editor/store';
-import { getFormFieldOptions } from '../../api';
 
 interface Props {
   value: FieldPermission;
-  onChange: (fieldPermission: FieldPermission) => void;
+  onChange: (value: Partial<BusinessData>) => void;
 }
 
-export default function({ value, onChange }: Props) {
+export default function FieldPermission({ value, onChange: _onChange }: Props) {
+  const { appID } = useParams<{ appID: string; }>();
   const [editable, setEditable] = useState(false);
-  const { elements = [] } = useObservable<StoreValue>(store) || {};
-  const currentElement = elements?.find(({ type }) => type === 'formData') as CurrentElement;
+  const { elements = [] } = useObservable<StoreValue>(store);
+  const currentNodeElement = elements?.find(({ type }) => type === 'formData') as CurrentElement;
+  const workFormValue = currentNodeElement?.data?.businessData?.form?.value;
   const [mergedFieldPermissions, setMergedFieldPermissions] = useState<FieldPermission>({
     custom: [],
     system: [],
   });
 
   const { data = [], isLoading, isError } = useQuery(
-    ['GET_WORK_FORM_FIELD_LIST', currentElement?.data?.businessData?.form?.value],
+    ['GET_WORK_FORM_FIELD_LIST', workFormValue, appID],
     getFormFieldOptions, {
-      enabled: !!currentElement?.data?.businessData?.form?.value,
+      enabled: !!workFormValue && !!appID,
     }
   );
 
@@ -42,13 +44,9 @@ export default function({ value, onChange }: Props) {
     }
   }, [value, data]);
 
-  const previousMergedFieldPermissions = usePrevious(mergedFieldPermissions);
-
-  useEffect(() => {
-    if (!isEqual(previousMergedFieldPermissions, mergedFieldPermissions)) {
-      onChange(mergedFieldPermissions);
-    }
-  }, [mergedFieldPermissions]);
+  function onChange(fieldPermission: FieldPermission) {
+    _onChange({ fieldPermission });
+  }
 
   function onUpdateFields(type: 'custom' | 'system') {
     return (val: (CustomFieldPermission | SystemFieldPermission)[]) => {
@@ -60,9 +58,9 @@ export default function({ value, onChange }: Props) {
   }
 
   function mergeField() {
-    const { custom = [], system = [] } = value || {};
-    const customIds = custom.map(({ id }) => id);
-    const dataIds = data?.map(({ value }) => value) || [];
+    const { custom = [], system = [] } = value ?? {};
+    const customIds = custom?.map(({ id }) => id);
+    const dataIds = data?.map(({ value }) => value) ?? [];
     const isCustomEmpty = !custom.length;
     data?.forEach((field) => {
       if (isCustomEmpty || !customIds.includes(field.value)) {

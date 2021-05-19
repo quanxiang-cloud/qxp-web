@@ -10,16 +10,17 @@ import More from '@c/more';
 import useObservable from '@lib/hooks/use-observable';
 import toast from '@lib/toast';
 
-import NavButton from '../../../../global-header/nav-button';
+import NavButton from '@portal/global-header/nav-button';
 import ActionButtonGroup from './content/editor/components/_common/action-button-group';
 import { toggleWorkFlow } from './api';
+import type { StoreValue } from './content/editor/type';
 import store, {
-  StoreValue,
   updateStore,
+  updateStoreByKey,
 } from './content/editor/store';
 
 export default function GlobalHeader() {
-  const { name = '', status, id, triggerMode } = useObservable<StoreValue>(store) || {};
+  const { name = '', status, id, triggerMode } = useObservable<StoreValue>(store);
   const [workFlowName, setWorkFlowName] = useState(name);
   const [isWorkFlowNameMenuOpen, setIsWorkFlowNameMenuOpen] = useState(false);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
@@ -35,18 +36,18 @@ export default function GlobalHeader() {
   const toggleMutation = useMutation(toggleWorkFlow, {
     onSuccess: () => {
       toast.success(status === 'ENABLE' ? '工作流下架成功' : '工作流发布成功');
-      updateStore<StoreValue>(null, (st) => ({
-        ...st,
+      updateStore((s) => ({
+        ...s,
         status: status === 'DISABLE' ? 'ENABLE' : 'DISABLE',
         errors: {
-          ...st.errors,
+          ...s.errors,
           publish: {},
         },
       }));
     },
     onError: (e: ErrorWithData<{ data: FlowElement}>) => {
       if (e.data) {
-        updateStore<Record<string, unknown>>('errors', (err) => ({
+        updateStoreByKey<Record<string, unknown>>('errors', (err) => ({
           ...err,
           publish: {
             data: e.data,
@@ -75,7 +76,7 @@ export default function GlobalHeader() {
   }
 
   function onSubmitWorkFlowName() {
-    updateStore('name', () => workFlowName);
+    updateStoreByKey('name', () => workFlowName);
     setIsWorkFlowNameMenuOpen(false);
   }
 
@@ -99,19 +100,27 @@ export default function GlobalHeader() {
     setIsConfirmOpen(false);
   }
 
+  function onConfirmTip() {
+    if (!id) {
+      toast.error('请先配置并保存工作流后再试');
+    }
+  }
+
   function renderActionButtons() {
     return (
       <>
         {status === 'DISABLE' && (
-          <Button
-            modifier="primary"
-            forbidden={!id}
-            iconName="toggle_on"
-            className="py-5"
-            onClick={onConfirmSubmit}
-          >
-            发布
-          </Button>
+          <div className={cs({ 'cursor-not-allowed': !id })} onClick={onConfirmTip}>
+            <Button
+              modifier="primary"
+              forbidden={!id}
+              iconName="toggle_on"
+              className="py-5"
+              onClick={onConfirmSubmit}
+            >
+              发布
+            </Button>
+          </div>
         )}
         {status === 'ENABLE' && (
           <Button
@@ -198,7 +207,8 @@ export default function GlobalHeader() {
             <More<JSX.Element>
               open
               contentItemClassName="hover:bg-white"
-              contentClassName="p-0 right-0 shadow-more-action corner-12-2-12-12 border border-gray-300 overflow-hidden"
+              contentClassName={cs('p-0 right-0 shadow-more-action corner-12-2-12-12',
+                'border border-gray-300 overflow-hidden')}
               items={[(
                 <div
                   key="toggleWorkFlow"

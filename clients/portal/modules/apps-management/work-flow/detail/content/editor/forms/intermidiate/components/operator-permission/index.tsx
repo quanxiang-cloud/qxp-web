@@ -1,28 +1,27 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery } from 'react-query';
-import { isEqual } from 'lodash';
 
 import Toggle from '@c/toggle';
 import Icon from '@c/icon';
 import Tooltip from '@c/tooltip';
 import Loading from '@c/loading';
 import ErrorTips from '@c/error-tips';
-import usePrevious from '@lib/hooks/use-previous';
-
-import { getOperationList } from '../../api';
-import {
+import { getOperationList } from '@flow/detail/content/editor/forms/api';
+import type {
   SystemOperation,
   CustomOperation,
   OperationPermission as OperationPermissionType,
-} from '../../../store';
+  NodeType,
+  BusinessData,
+} from '@flow/detail/content/editor/type';
 
 interface Props {
   value: OperationPermissionType;
-  onChange: (value: OperationPermissionType) => void;
-  type?: 'approve' | 'fillIn';
+  onChange: (value: Partial<BusinessData>) => void;
+  type?: NodeType;
 }
 
-export default function OperatorPermission({ value, onChange, type }: Props) {
+export default function OperatorPermission({ value, onChange: _onChange, type }: Props) {
   const { data, isLoading, isError } = useQuery(['GET_OPERATION_LIST', type], getOperationList);
   const [mergedOperations, setMergedOperations] = useState<OperationPermissionType>(value);
 
@@ -32,13 +31,9 @@ export default function OperatorPermission({ value, onChange, type }: Props) {
     }
   }, [data, value]);
 
-  const previousMergedOperations = usePrevious(mergedOperations);
-
-  useEffect(() => {
-    if (!isEqual(mergedOperations, previousMergedOperations)) {
-      onChange(mergedOperations);
-    }
-  }, [mergedOperations]);
+  function onChange(operatorPermission: OperationPermissionType) {
+    _onChange({ operatorPermission });
+  }
 
   function mergeOperation() {
     const { custom, system = [] } = value;

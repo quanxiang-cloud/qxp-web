@@ -2,8 +2,7 @@ import React from 'react';
 
 import Table from '@c/table';
 import Checkbox from '@c/checkbox';
-
-import { SystemFieldPermission } from '../../../store';
+import type { SystemFieldPermission } from '@flow/detail/content/editor/type';
 
 interface Props {
   fields: SystemFieldPermission[];

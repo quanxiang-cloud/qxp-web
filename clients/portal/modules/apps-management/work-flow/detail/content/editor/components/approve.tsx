@@ -2,11 +2,13 @@ import React, { useRef, useState } from 'react';
 import cs from 'classnames';
 
 import useObservable from '@lib/hooks/use-observable';
+import type { Data, StoreValue } from '@flow/detail/content/editor/type';
 
-import store, { updateStore, Data, StoreValue } from '../store';
+import store from '../store';
 import NodeHeader from './_common/node-header';
 import NodeRemover from './_common/node-remover';
-import usePositionChange from './usePositionChange';
+import usePositionChange from './hooks/use-node-position-change';
+import useNodeSwitch from './hooks/use-node-switch';
 
 interface Props {
   data: Data;
@@ -16,9 +18,10 @@ interface Props {
 }
 
 export default function ApproveNodeComponent({ data, id, xPos, yPos }: Props) {
-  const { errors } = useObservable<StoreValue>(store) || {};
+  const { errors } = useObservable<StoreValue>(store);
   const lastTime = useRef(+new Date());
   const [showRemover, setShowRemover] = useState(false);
+  const switcher = useNodeSwitch();
 
   usePositionChange({ xPos, yPos, id });
 
@@ -26,7 +29,7 @@ export default function ApproveNodeComponent({ data, id, xPos, yPos }: Props) {
 
   function onMouseUp() {
     if (+new Date - lastTime.current < 200) {
-      updateStore(null, () => ({ asideDrawerType: id }));
+      switcher(id);
     }
   }
 

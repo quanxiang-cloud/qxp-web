@@ -6,8 +6,8 @@ import Checkbox from '@c/checkbox';
 import ToolTip from '@c/tooltip';
 import Icon from '@c/icon';
 import useRequest from '@lib/hooks/use-request';
+import type { CustomFieldPermission } from '@flow/detail/content/editor/type';
 
-import { CustomFieldPermission } from '../../../store';
 import FieldValueEditor from './field-value-editor';
 
 interface Props {

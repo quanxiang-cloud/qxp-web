@@ -5,11 +5,10 @@ import More from '@c/more';
 import Icon from '@c/icon';
 import Checkbox from '@c/checkbox';
 import ToolTip from '@c/tooltip';
-
-import ActionButtonGroup from '../../../components/_common/action-button-group';
+import type { Urge, UrgeItem } from '@flow/detail/content/editor/type';
+import ActionButtonGroup from '@flow/detail/content/editor/components/_common/action-button-group';
 
 import TimerSelector from './timer-selector';
-import { Urge, UrgeItem } from '../../../store';
 
 interface Props {
   onSave: (urge: Urge) => void;
@@ -30,6 +29,7 @@ const initialUrge = {
 export default function Urge({ onSave, defaultValue }: Props) {
   const [openRepeatSetting, setOpenRepeatSetting] = useState(false);
   const [isUrgeOpen, setIsUrgeOpen] = useState(false);
+  const [validating, setValidating] = useState(false);
   const [urge, setUrge] = useState<Urge>(defaultValue || initialUrge);
 
   function onClearUrge(e: MouseEvent) {
@@ -39,21 +39,25 @@ export default function Urge({ onSave, defaultValue }: Props) {
     setOpenRepeatSetting(false);
   }
 
-  function onSetUrge(key: string, value: number) {
-    setUrge((s) => ({
-      ...s,
-      [key]: value,
-    }));
+  function onSetUrge(key: string) {
+    return (value: string) => {
+      setUrge((s) => ({
+        ...s,
+        [key]: value,
+      }));
+    };
   }
 
-  function onSetUrgeRepeat(key: string, value: number) {
-    setUrge((s) => ({
-      ...s,
-      repeat: {
-        ...s.repeat,
-        [key]: value,
-      },
-    }));
+  function onSetUrgeRepeat(key: string) {
+    return (value: string) => {
+      setUrge((s) => ({
+        ...s,
+        repeat: {
+          ...s.repeat,
+          [key]: value,
+        },
+      }));
+    };
   }
 
   function onSetRepeat(e: ChangeEvent<HTMLInputElement>) {
@@ -69,11 +73,17 @@ export default function Urge({ onSave, defaultValue }: Props) {
   function onSubmit(e: MouseEvent) {
     e.stopPropagation();
     e.preventDefault();
+    if ((openRepeatSetting && (!+urge?.repeat?.day || !+urge?.repeat?.hours ||
+      !+urge?.repeat?.minutes)) || !+urge?.day || !+urge?.hours || !+urge?.minutes) {
+      setValidating(true);
+      return;
+    }
     onSave(urge);
-    setIsUrgeOpen(false);
+    onCancel();
   }
 
   function onCancel() {
+    setValidating(false);
     setIsUrgeOpen(false);
   }
 
@@ -113,13 +123,14 @@ export default function Urge({ onSave, defaultValue }: Props) {
               </ToolTip>
             </div>
             <TimerSelector
-              onDayChange={(e) => onSetUrge('day', +e.target.value)}
-              onHoursChange={(e) => onSetUrge('hours', +e.target.value)}
-              onMinutesChange={(e) => onSetUrge('minutes', +e.target.value)}
+              onDayChange={onSetUrge('day')}
+              onHoursChange={onSetUrge('hours')}
+              onMinutesChange={onSetUrge('minutes')}
               defaultDay={urge.day}
               defaultHours={urge.hours}
               defaultMinutes={urge.minutes}
               style={{ borderBottom: 'none' }}
+              validating={validating}
             />
             <div className="bg-blue-100 py-5 px-16 mb-16 text-blue-600">
               提前 <span>
@@ -134,9 +145,9 @@ export default function Urge({ onSave, defaultValue }: Props) {
             {openRepeatSetting && (
               <>
                 <TimerSelector
-                  onDayChange={(e) => onSetUrgeRepeat('day', +e.target.value)}
-                  onHoursChange={(e) => onSetUrgeRepeat('hours', +e.target.value)}
-                  onMinutesChange={(e) => onSetUrgeRepeat('minutes', +e.target.value)}
+                  onDayChange={onSetUrgeRepeat('day')}
+                  onHoursChange={onSetUrgeRepeat('hours')}
+                  onMinutesChange={onSetUrgeRepeat('minutes')}
                   defaultDay={urge.repeat.day}
                   defaultHours={urge.repeat.hours}
                   defaultMinutes={urge.repeat.minutes}

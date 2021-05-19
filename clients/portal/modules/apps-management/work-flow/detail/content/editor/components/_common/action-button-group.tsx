@@ -8,14 +8,19 @@ interface Props {
   onSubmit: MouseEventHandler<HTMLButtonElement>;
   className?: string;
   okText?: string;
+  onClick?: MouseEventHandler<HTMLDivElement>;
 }
 
 export default function ActionButtonGroup({
-  onCancel, onSubmit, className, okText = '确定',
+  onCancel, onSubmit, className, okText = '确定', onClick,
 }: Props) {
   return (
     <div
       key="urgeAction"
+      onClick={(e) => {
+        onClick && onClick(e);
+        e.stopPropagation();
+      }}
       className={twCascade(
         'flex justify-end pr-16 pb-16 urgeAction',
         className)

@@ -5,12 +5,13 @@ import Icon from '@c/icon';
 import ToolTip from '@c/tooltip';
 import useObservable from '@lib/hooks/use-observable';
 
-import store, { StoreValue, updateStore } from '../editor/store';
+import store, { updateStoreByKey } from '../editor/store';
+import type { StoreValue } from '../editor/type';
 
 export default function GlobalConfig() {
   const {
     cancelable, urgeable, seeStatusAndMsg, nodeAdminMsg,
-  } = useObservable<StoreValue>(store) || {};
+  } = useObservable<StoreValue>(store);
 
   const options = [{
     field: 'cancelable',
@@ -38,9 +39,9 @@ export default function GlobalConfig() {
     checked: nodeAdminMsg,
   }];
 
-  function onChange(type: string) {
+  function onChange(type: keyof StoreValue) {
     return (checked?: boolean) => {
-      updateStore(type, () => !!checked);
+      updateStoreByKey(type, () => !!checked);
     };
   }
 
@@ -60,7 +61,7 @@ export default function GlobalConfig() {
           <Toggle
             defaultChecked={option.checked}
             className="mr-16"
-            onChange={onChange(option.field)}
+            onChange={onChange(option.field as keyof StoreValue)}
           />
           <div>
             <div className="text-body2-no-color text-gray-600 mb-4 flex items-center">

@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
+import cs from 'classnames';
 
 import RadioGroup from '@c/radio/group';
 import Radio from '@c/radio';
 import Select from '@c/select';
 import usePrevious from '@lib/hooks/use-previous';
 import useObservable from '@lib/hooks/use-observable';
-
-import store, { WhenTimeout, StoreValue } from '../../../store';
+import store from '@flow/detail/content/editor/store';
+import type { WhenTimeout, StoreValue } from '@flow/detail/content/editor/type';
 
 interface Props {
   defaultValue?: WhenTimeout;
@@ -18,7 +19,7 @@ export default function WhenTimeout({ defaultValue, onChange }: Props) {
     type: '',
     value: '',
   });
-  const { elements = [] } = useObservable<StoreValue>(store) || {};
+  const { elements = [], validating } = useObservable<StoreValue>(store);
   const previousType = usePrevious(timeoutData.type);
   useEffect(() => {
     onChange(timeoutData);
@@ -75,23 +76,32 @@ export default function WhenTimeout({ defaultValue, onChange }: Props) {
           defaultChecked={timeoutData.type === 'jump'}
         />
         {timeoutData.type === 'jump' && (
-          <Select
-            options={elements.reduce(
-              (cur: {label: string; value: string;}[], next) => {
-                if (next.type !== 'formData' && next.data) {
-                  cur.push({
-                    label: next.data.nodeData.name,
-                    value: next.id,
-                  });
-                }
-                return cur;
-              }, [])}
-            placeholder="选择工作流中的节点"
-            defaultValue={timeoutData.value}
-            onChange={handleChange('value')}
-            className="h-32 py-4 border border-gray-300 corner-2-8-8-8
-                px-12 text-12 flex items-center flex-1 mb-8 ml-22 mt-8"
-          />
+          <div className="mb-8 ml-22">
+            <Select
+              className={cs(
+                'h-32 py-4 border corner-2-8-8-8 px-12 text-12 flex',
+                'items-center flex-1 mt-8', {
+                  'border-red-600': validating && !timeoutData.value,
+                  'border-gray-300': !validating || timeoutData.value,
+                })}
+              options={elements.reduce(
+                (cur: {label: string; value: string;}[], next) => {
+                  if (next.type !== 'formData' && next.data) {
+                    cur.push({
+                      label: next.data.nodeData.name,
+                      value: next.id,
+                    });
+                  }
+                  return cur;
+                }, [])}
+              placeholder="选择工作流中的节点"
+              defaultValue={timeoutData.value}
+              onChange={handleChange('value')}
+            />
+            {validating && !timeoutData.value && (
+              <div className="text-red-600 mt-4">请选择工作流中的节点</div>
+            )}
+          </div>
         )}
       </RadioGroup>
     </div>
