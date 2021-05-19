@@ -16,7 +16,6 @@ import Icon from '@c/icon';
 import Modal from '@c/modal';
 import Container from '../container';
 import editorToolbarOptions from './editor-toolbar';
-// import ModalSelectReceiver from './dialog-select-receiver';
 import PreviewMsg from './preview-msg';
 import { createMsg } from '@portal/modules/system-mgmt/api';
 import Filelist from './filelist';
@@ -27,8 +26,6 @@ import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import { useMemo } from 'react';
 
 const { TextField } = Form;
-
-const noop = () => {};
 
 // interface Props {
 //   className?: string;
@@ -328,7 +325,7 @@ function ContentWithoutRef({
           <div className={styles.title}>发送消息</div>
         </div>)}
         <div className={cs('send-msg-body', styles.body)}>
-          <Form onSubmit={noop}>
+          <Form>
             <Field>
               <Label>消息类型:</Label>
               <Control>

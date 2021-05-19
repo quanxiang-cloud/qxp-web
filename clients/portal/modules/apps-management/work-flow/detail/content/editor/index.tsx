@@ -30,11 +30,10 @@ import Approve from './nodes/approve';
 import Plus from './edges/plus';
 import Control from './control';
 import Components from './components';
-import FormDataForm from './forms/form-data';
-import FillInForm from './forms/intermidiate/fill-in';
-import ApproveForm from './forms/intermidiate/approve';
 import store, { updateStore } from './store';
+import type { StoreValue } from './type';
 import { getNodeInitialData } from './utils';
+import DrawerForm from './forms';
 
 import 'react-flow-renderer/dist/style.css';
 import 'react-flow-renderer/dist/theme-default.css';
@@ -43,14 +42,14 @@ const dagreGraph = new dagre.graphlib.Graph();
 dagreGraph.setDefaultEdgeLabel(() => ({}));
 
 export default function Editor() {
-  const { currentConnection, elements } = useObservable(store) || {};
+  const { currentConnection, elements } = useObservable<StoreValue>(store);
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
   const [fitViewFinished, setFitViewFinished] = useState(false);
   const [reactFlowInstance, setReactFlowInstance] = useState<OnLoadParams>();
   const { flowID } = useParams<{ flowID: string; }>();
 
   function setElements(elements: Elements) {
-    updateStore(null, () => ({ elements }));
+    updateStore((s) => ({ ...s, elements }));
   }
 
   function getLayoutedElements(elements: Elements) {
@@ -160,7 +159,7 @@ export default function Editor() {
       id: `e${id}-${target}`, source: id, target, label: '+',
       arrowHeadType: ArrowHeadType.ArrowClosed,
     });
-    updateStore(null, () => ({ currentConnection: {} }));
+    updateStore((s) => ({ ...s, currentConnection: {} }));
   }
 
   function onLoad(reactFlowInstance: OnLoadParams) {
@@ -222,9 +221,7 @@ export default function Editor() {
           </ReactFlow>
         </div>
         <Components />
-        <FormDataForm />
-        <ApproveForm />
-        <FillInForm />
+        <DrawerForm />
       </ReactFlowProvider>
     </div>
   );

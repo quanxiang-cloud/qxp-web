@@ -3,7 +3,7 @@ import { useMutation, useQuery } from 'react-query';
 import cs from 'classnames';
 import { observer } from 'mobx-react';
 import { Message, Table } from '@QCFE/lego-ui';
-import { get } from 'lodash';
+import { get, noop } from 'lodash';
 
 import Loading from '@c/loading';
 import ErrorTips from '@c/error-tips';
@@ -60,7 +60,7 @@ const PanelList = () => {
     visible: false,
     title: '',
     content: '',
-    cb: () => { },
+    cb: noop,
   });
 
   const toolbarRef = useRef<any>();
@@ -126,7 +126,7 @@ const PanelList = () => {
       visible: false,
       title: '',
       content: '',
-      cb: () => { },
+      cb: noop,
     });
   };
 
@@ -245,9 +245,7 @@ const PanelList = () => {
                     {
                       key: 'delete',
                       label: (
-                        <div className="flex items-center" onClick={() => {
-                          handleDeleteMessage(title, id);
-                        }}>
+                        <div className="flex items-center">
                           <SvgIcon name="restore_from_trash" size={16} className="mr-8" />
                           <span className="font-normal">删除&emsp;&emsp;</span>
                         </div>
@@ -255,12 +253,10 @@ const PanelList = () => {
                       ),
                     },
                     {
-                      key: 'mark',
+                      key: 'remark',
                       label: (
-                        <div className="flex items-center" onClick={() => {
-                          handleCheckedReaded(title, id);
-                        }}>
-                          <SvgIcon name="restore_from_trash" size={16} className="mr-8" />
+                        <div className="flex items-center" >
+                          <SvgIcon name="done_all" size={16} className="mr-8" />
                           <span className="font-normal">标记为已读&emsp;&emsp;</span>
                         </div>
 
@@ -269,10 +265,18 @@ const PanelList = () => {
                   ];
                   return (
                     <MoreMenu
-                      onMenuClick={() => {}}
-                      placement="bottom-end"
-                      className="opacity-1"
-                      menus={menus}/>
+                      menus={menus}
+                      onMenuClick={(menuKey) => {
+                        if (menuKey === 'delete') {
+                          handleDeleteMessage(title, id);
+                          return;
+                        }
+                        if (menuKey === 'remark') {
+                          handleCheckedReaded(title, id);
+                          return;
+                        }
+                      }}
+                    />
                   );
                 },
               },

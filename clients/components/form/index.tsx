@@ -1,3 +1,4 @@
+import { noop } from 'lodash';
 import React, {
   PropsWithChildren,
   useState,
@@ -40,9 +41,9 @@ interface Context {
 export const FormContext = createContext<Context>({
   fields: {},
   errors: {},
-  setField() {},
-  addField() {},
-  validateField() {},
+  setField: noop,
+  addField: noop,
+  validateField: noop,
 });
 
 export interface FormRef {

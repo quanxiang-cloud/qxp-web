@@ -10,6 +10,7 @@ export function wrapSchemaByMegaLayout(schema: ISchema): ISchema {
   const properties = get(schema, 'properties', {});
   const xInternal = get(schema, 'x-internal', {});
   const labelAlign = get(xInternal, 'labelAlign', 'right');
+  // const columnsCount = get(xInternal, 'columns', 1);
 
   return {
     type: 'object',
@@ -19,7 +20,12 @@ export function wrapSchemaByMegaLayout(schema: ISchema): ISchema {
         properties,
         type: 'object',
         'x-component': 'mega-layout',
-        'x-component-props': { labelAlign },
+        'x-component-props': {
+          labelAlign,
+          // grid: true,
+          // columns: columnsCount,
+          // autoRow: true,
+        },
       },
     },
   };

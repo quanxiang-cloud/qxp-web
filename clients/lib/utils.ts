@@ -1,5 +1,6 @@
 import qs from 'qs';
 import { TreeData, TreeItem } from '@atlaskit/tree';
+import { get } from 'lodash';
 
 import { TreeNode } from '@c/headless-tree/types';
 import toast from '@lib/toast';
@@ -242,4 +243,23 @@ export function getQuery<T>(): T {
   }
 
   return {} as T;
+}
+
+export function noop() {}
+
+export function toggleArray<T>(arr1: T[], value: T, condition = true) {
+  if (condition && arr1.includes(value)) {
+    return arr1.filter((v) => v !== value);
+  }
+  return [...arr1, value];
+}
+
+export function jsonValidator<T>(data: T, schema: Record<string, (v: any) => boolean>) {
+  return Object.entries(schema).every(([path, validator]) => {
+    const values = path.split(',').reduce((cur: any[], next) => {
+      cur.push(get(data, next));
+      return cur;
+    }, []);
+    return validator(values.length === 1 ? values[0] : values);
+  });
 }

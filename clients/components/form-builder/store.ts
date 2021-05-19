@@ -83,7 +83,8 @@ export default class FormBuilderStore {
   @observable fields: Array<FormItem>;
   @observable activeFieldName = '';
   @observable labelAlign: 'right' | 'top' = 'right';
-  @observable visibleHiddenLinkages: VisibleHiddenLinkage[] = [];
+  @observable columnsCount: 1 | 2 = 1;
+  @observable visibleHiddenLinkages: FormBuilder.VisibleHiddenLinkage[] = [];
   @observable hasEdit = false;
 
   constructor({ schema }: Props) {
@@ -92,6 +93,7 @@ export default class FormBuilderStore {
     this.fields = fields;
 
     this.visibleHiddenLinkages = schema['x-internal']?.visibleHiddenLinkages || [];
+    this.columnsCount = schema['x-internal']?.columns || 1;
   }
 
   @computed get activeField(): FormItem | null {
@@ -106,13 +108,21 @@ export default class FormBuilderStore {
     return `wrap-${this.activeField?.fieldName}`;
   }
 
-  @computed get activeFieldConfigSchema(): ISchema | null {
+  @computed get activeFieldSourceElement(): FormBuilder.SourceElement<any> | null {
     const componentName = this.activeField?.componentName;
     if (!componentName) {
       return null;
     }
 
-    return registry.elements[componentName.toLocaleLowerCase()].configSchema;
+    return registry.elements[componentName.toLocaleLowerCase()] || null;
+  }
+
+  @computed get activeFieldConfigSchema(): ISchema | null {
+    return this.activeFieldSourceElement?.configSchema || null;
+  }
+
+  @computed get activeFieldConfigForm(): React.JSXElementConstructor<any> | null {
+    return this.activeFieldSourceElement?.configForm || null;
   }
 
   @computed get schema(): ISchema {
@@ -150,6 +160,8 @@ export default class FormBuilderStore {
       'x-internal': {
         version: '1.3.13',
         labelAlign: this.labelAlign,
+        // columns: this.columnsCount,
+        columns: 1,
         visibleHiddenLinkages: toJS(this.visibleHiddenLinkages),
       },
     };
@@ -191,6 +203,9 @@ export default class FormBuilderStore {
           'x-component': 'mega-layout',
           'x-component-props': {
             labelAlign: this.labelAlign,
+            grid: true,
+            columns: this.columnsCount,
+            autoRow: true,
           },
           properties: properties,
         },
@@ -208,7 +223,7 @@ export default class FormBuilderStore {
     });
   }
 
-  @action handleLinkageChange(linkage: VisibleHiddenLinkage): void {
+  @action handleLinkageChange(linkage: FormBuilder.VisibleHiddenLinkage): void {
     if (!linkage.key) {
       this.visibleHiddenLinkages.push({
         ...linkage,
@@ -228,7 +243,7 @@ export default class FormBuilderStore {
   }
 
   @action
-  append(field: SourceElement<any>, { index, dropPosition }: DropResult) {
+  append(field: FormBuilder.SourceElement<any>, { index, dropPosition }: FormBuilder.DropResult) {
     this.hasEdit = true;
 
     const newField = {
@@ -317,5 +332,10 @@ export default class FormBuilderStore {
       f.configValue = toJS(value);
       return f;
     });
+  }
+
+  @action
+  setColumnsCount(count: 1 | 2): void {
+    this.columnsCount = count;
   }
 }

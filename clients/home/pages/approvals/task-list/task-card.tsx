@@ -6,8 +6,6 @@ import Avatar from '../avatar';
 import Status from '@c/status';
 import Icon from '@c/icon';
 
-import { mapFormDataWithKey } from '../utils';
-
 import './index.scss';
 
 interface Props {
@@ -15,9 +13,9 @@ interface Props {
 }
 
 function getEnumLabelFromSchema(schema: Record<string, any>, key: string, value: string) {
-  const enumData = schema?.properties?.[key]?.enum || [];
+  const enumData = schema?.[key]?.enum || [];
   if (enumData.length) {
-    return (enumData.find((v: {value: any}) => v.value === value))?.label || value;
+    return (enumData.find((v: { value: any }) => v.value === value))?.label || value;
   }
   return value;
 }
@@ -64,10 +62,14 @@ export default function TaskCard({ task }: Props): JSX.Element {
         <div className="right-info px-20 py-12 flex flex-1 justify-between pl-40">
           <div className="flex flex-col">
             {
-              mapFormDataWithKey(flowInstanceEntity?.formData || {}).map(({ title, value, keyName }: { title: string, value: string, keyName: string }) => {
+              Object.entries(flowInstanceEntity?.formData || {}).map(([keyName, value]) => {
+                const properties = flowInstanceEntity?.formSchema?.properties as Record<string, any>;
+                if (!properties[keyName] || properties[keyName]?.display === false) {
+                  return null;
+                }
                 return (
                   <p key={keyName} className="mb-4 form-data-item">
-                    <span>{title}: </span><span>{getEnumLabelFromSchema(flowInstanceEntity?.formSchema?.table || {}, keyName, value)}</span>
+                    <span>{properties[keyName]?.title || keyName}: </span><span>{getEnumLabelFromSchema(properties, keyName, value)}</span>
                   </p>
                 );
               })

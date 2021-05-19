@@ -3,9 +3,9 @@ import cs from 'classnames';
 
 import More from '@c/more';
 import Icon from '@c/icon';
+import { removeNodeById } from '@flow/detail/content/editor/store';
 
 import ActionButtonGroup from './action-button-group';
-import { removeNodeById } from '../../store';
 
 interface Props {
   id: string;

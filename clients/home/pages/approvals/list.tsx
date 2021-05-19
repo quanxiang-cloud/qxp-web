@@ -52,7 +52,7 @@ function ApprovalTypeList({ listType, countMap, onClick }: ApprovalTypeListProps
     if (count > 0) {
       return <BtnBadge count={count} className="relative text-white" />;
     }
-  }
+  };
 
   return (
     <div className="bg-white h-full flex-shrink-0" style={{ width: '200px' }}>

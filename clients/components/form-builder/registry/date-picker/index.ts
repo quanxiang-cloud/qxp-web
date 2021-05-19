@@ -3,7 +3,7 @@ import { DatePicker } from '@formily/antd-components';
 import configSchema from './config-schema';
 import { defaultConfig, toSchema, toConfig, DatePickerConfig } from './convertor';
 
-const DatePickerField: Omit<SourceElement<DatePickerConfig>, 'displayOrder'> = {
+const DatePickerField: Omit<FormBuilder.SourceElement<DatePickerConfig>, 'displayOrder'> = {
   configSchema,
   toConfig,
   toSchema,

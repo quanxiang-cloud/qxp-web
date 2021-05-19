@@ -1,13 +1,18 @@
 import toast from '@lib/toast';
 import { action, computed, observable, reaction } from 'mobx';
+import day from 'dayjs';
 import Store from '../base-store';
 import { getMyApplyList } from '../api';
+
+// default query recent 7 days
+const beginDay = day().subtract(7, 'day').format('YYYY-MM-DD');
+const endDay = day().format('YYYY-MM-DD');
 
 class MyAppliedApprovalStore extends Store {
   @observable approvals: ApprovalTask[] = [];
   @observable status = '';
-  @observable beginDate = '';
-  @observable endDate = '';
+  @observable beginDate = beginDay;
+  @observable endDate = endDay;
   @observable readableDate = 'customized:recent_seven_days';
 
   constructor() {
@@ -62,9 +67,9 @@ class MyAppliedApprovalStore extends Store {
     this.keyword = '';
     this.orderType = '';
     this.status = '';
-    // this.beginDate='';
-    // this.endDate='';
-    // this.readableDate = 'customized:recent_seven_days';
+    this.beginDate = beginDay;
+    this.endDate = endDay;
+    this.readableDate = 'customized:recent_seven_days';
   }
 }
 

@@ -95,7 +95,7 @@ class AppPageDataStore {
   @action
   goEdit = (formData: any) => {
     this.curItemFormData = formData;
-    this.createFun();
+    this.createFun?.();
   }
 
   @action

@@ -16,7 +16,6 @@ import Panel from './panel';
 import Toolbar from './toolbar';
 import ActionModals from './action-modals';
 import * as apis from '../api';
-import { parseFormValue } from '../utils';
 
 import store from './store';
 
@@ -45,6 +44,10 @@ function ApprovalDetail(): JSX.Element {
     document.title = '流程详情';
   }, []);
 
+  useEffect(() => {
+    setFormValues(data?.formData);
+  }, [data]);
+
   // console.log('detail form data:', formValues);
 
   const renderSchemaForm = () => {
@@ -62,7 +65,7 @@ function ApprovalDetail(): JSX.Element {
     return (
       <div className='task-form'>
         <FormRenderer
-          defaultValue={parseFormValue(data.formData)}
+          defaultValue={data.formData}
           schema={data.form.table}
           onFormValueChange={setFormValues}
         />
@@ -116,7 +119,7 @@ function ApprovalDetail(): JSX.Element {
           />
         </Panel>
       </div>
-      <ActionModals flowName={data?.flowName} />
+      <ActionModals flowName={data?.flowName} getFormData={()=> formValues} />
     </div>
   );
 }

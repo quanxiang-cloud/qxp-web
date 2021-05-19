@@ -2,8 +2,8 @@ import React from 'react';
 
 import Icon from '@c/icon';
 
-import { Data } from '../store';
-import usePositionChange from './usePositionChange';
+import type { Data } from '../type';
+import usePositionChange from './hooks/use-node-position-change';
 
 interface Props {
   data: Data;

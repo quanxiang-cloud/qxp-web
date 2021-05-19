@@ -3,27 +3,33 @@ import cs from 'classnames';
 
 import Toggle from '@c/toggle';
 import Icon from '@c/icon';
+import useObservable from '@lib/hooks/use-observable';
 
-import {
+import store from '@flow/detail/content/editor/store';
+import type {
   TriggerCondition as TriggerConditionType,
-  Operator,
   TriggerConditionExpressionItem,
   TriggerConditionExpression,
-} from '../../../store';
+  BusinessData,
+  StoreValue,
+  TriggerConditionValue,
+} from '@flow/detail/content/editor/type';
+
 import ConditionItem, { ConditionItemOptions } from './condition-item';
 
 interface Props {
   value: TriggerConditionType;
   formFieldOptions: ConditionItemOptions;
-  onChange: (triggerCondition: TriggerConditionType) => void;
+  onChange: (v: Partial<BusinessData>) => void;
 }
 
-export default function TriggerCondition({ value, formFieldOptions, onChange }: Props) {
-  const [openMore, setOpenMore] = useState(false);
+export default function TriggerCondition({ value, formFieldOptions, onChange: _onChange }: Props) {
+  const [openMore, setOpenMore] = useState(!!value?.expr?.length);
+  const { validating } = useObservable<StoreValue>(store);
 
   useEffect(() => {
-    !!value?.expr?.length && setOpenMore(true);
-  }, [value?.expr?.length]);
+    setOpenMore(!!value?.expr?.length);
+  }, [value]);
 
   function updateTriggerConditionField(
     conditions: TriggerConditionType,
@@ -67,9 +73,16 @@ export default function TriggerCondition({ value, formFieldOptions, onChange }: 
 
   function onValueChange(v?: boolean) {
     setOpenMore(!!v);
-    if (v && !value) {
+    if (!v) {
+      return onChange({ op: '', expr: [] });
+    }
+    if (v && !value?.expr?.length) {
       addOrCondition(true);
     }
+  }
+
+  function onChange(triggerCondition: TriggerConditionType) {
+    _onChange({ triggerCondition });
   }
 
   function onDelete(curCondition: TriggerConditionType) {
@@ -106,7 +119,7 @@ export default function TriggerCondition({ value, formFieldOptions, onChange }: 
                 )}
               </header>
               <ConditionItem
-                condition={condition as { value: string; key: string; op: Operator }}
+                condition={condition as TriggerConditionValue}
                 options={formFieldOptions}
                 onChange={(v) => onTriggerConditionItemChange(condition, v)}
               />
@@ -165,30 +178,47 @@ export default function TriggerCondition({ value, formFieldOptions, onChange }: 
       return null;
     }
     return conditions.expr.map((triggerCondition, index) => {
+      const isValid = triggerCondition.op === 'and' && validating ?
+        triggerCondition.expr.every((exp) => {
+          const expItem = exp as TriggerConditionValue;
+          return !!(expItem.key && expItem.op && expItem.value);
+        }) : true;
+
       return (
         <div key={index}>
-          <section className="corner-2-8-8-8 bg-gray-100 px-16 py-12">
-            {triggerCondition.op === 'and' && andConditionRender(triggerCondition)}
-            {triggerCondition.op === 'and' &&
+          <div className={cs('border', {
+            'border-red-600': !isValid,
+          })}>
+            <section className="corner-2-8-8-8 bg-gray-100 px-16 py-12">
+              {triggerCondition.op === 'and' && andConditionRender(triggerCondition)}
+              {triggerCondition.op === 'and' &&
               triggerCondition.expr.length < formFieldOptions.length && (
-              <footer
-                className="self-start inline-flex items-center cursor-pointer"
-                onClick={addAndCondition(triggerCondition)}
-              >
-                <Icon name="add" className="text-blue-600 mr-3" />
-                <span className="text-blue-600">
+                <footer
+                  className="self-start inline-flex items-center cursor-pointer"
+                  onClick={addAndCondition(triggerCondition)}
+                >
+                  <Icon name="add" className="text-blue-600 mr-3" />
+                  <span className="text-blue-600">
                 添加且条件
-                </span>
-              </footer>
-            )}
-          </section>
-          {(conditions.op === 'or' || conditions.op === '') &&
+                  </span>
+                </footer>
+              )}
+            </section>
+            {(conditions.op === 'or' || conditions.op === '') &&
             (index < conditions.expr.length - 1 ) && (
-            <p className="px-16 my-16">或</p>
+              <p className="px-16 my-16">或</p>
+            )}
+          </div>
+          {!isValid && (
+            <div className="text-caption-no-color text-red-600 mt-4 mb-8">请先完善筛选条件</div>
           )}
         </div>
       );
     });
+  }
+
+  if (!formFieldOptions?.length) {
+    return null;
   }
 
   return (

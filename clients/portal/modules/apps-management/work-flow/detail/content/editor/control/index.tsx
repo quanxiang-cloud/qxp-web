@@ -12,12 +12,13 @@ import {
 import Icon from '@c/icon';
 import Button from '@c/button';
 import useObservable from '@lib/hooks/use-observable';
-import store, { StoreValue } from '@flow/detail/content/editor/store';
+import store from '@flow/detail/content/editor/store';
+import type { StoreValue } from '@flow/detail/content/editor/type';
 import toast from '@lib/toast';
 
 import ControlButton from './control-button';
 
-import { saveWorkFlow, SaveWorkFlow } from '../../../api';
+import { saveWorkFlow, SaveWorkFlow } from '@flow/detail/api';
 
 export interface Props extends HTMLAttributes<HTMLDivElement> {
   showZoom?: boolean;
@@ -57,11 +58,19 @@ function Controls({
     urgeable: canUrge,
     seeStatusAndMsg: canViewStatusMsg,
     nodeAdminMsg: canMsg,
-  } = useObservable<StoreValue>(store) || {};
+  } = useObservable<StoreValue>(store);
   const formDataElement = elements.find(({ type }) => type === 'formData');
-  const hasOneApproveOrFillInNode = !!elements.find(({
+  const form = formDataElement?.data?.businessData?.form;
+  const approveOrFillInNode = elements.find(({ type }) => type === 'approve' || type === 'fillIn');
+  const approveOrFillInNodes = elements.filter(({
     type,
   }) => type === 'approve' || type === 'fillIn');
+  const approvePersons = approveOrFillInNodes?.map(({
+    data,
+  }) => data?.businessData?.basicConfig?.approvePersons);
+  const hasApprovePersons = approvePersons?.every((
+    approvePerson
+  ) => approvePerson?.departments?.length || approvePerson?.users?.length);
   const isInteractive = useStoreState(
     (s) => s.nodesDraggable && s.nodesConnectable && s.elementsSelectable
   );
@@ -90,7 +99,7 @@ function Controls({
   const saveMutation = useMutation(saveWorkFlow, {
     onSuccess: (respData) => {
       toast.success('保存成功');
-      history.push(`/apps/flow/${appID}/${respData.id}`);
+      appID && respData?.id && history.push(`/apps/flow/${appID}/${respData?.id}`);
     },
     onError: (err: Error) => {
       toast.error(err.message);
@@ -117,22 +126,37 @@ function Controls({
     saveMutation.mutate(saveData);
   }
 
+  function onSaveTip() {
+    if (!name) {
+      return toast.error('请配置工作流名称');
+    }
+    if (!form?.value) {
+      return toast.error('请选择工作表');
+    }
+    if (!approveOrFillInNode) {
+      return toast.error('请配置审批或填写节点');
+    }
+    if (!hasApprovePersons) {
+      return toast.error('请为审批或填写节点配置审批人');
+    }
+  }
+
+  const saveForbidden = !form?.name || !name || !triggerMode || !approveOrFillInNode ||
+    !hasApprovePersons;
+
   return (
     <div className={cs('flex flex-row items-center justify-between', className)} style={style}>
-      <Button
-        modifier="primary"
-        iconName="toggle_on"
-        className="py-5"
-        forbidden={
-          !formDataElement?.data.businessData.form.name ||
-          !name ||
-          !triggerMode ||
-          !hasOneApproveOrFillInNode
-        }
-        onClick={onSaveWorkFlow}
-      >
+      <div onClick={onSaveTip} className={cs({ 'cursor-not-allowed': saveForbidden })}>
+        <Button
+          modifier="primary"
+          iconName="toggle_on"
+          className="py-5"
+          forbidden={saveForbidden}
+          onClick={onSaveWorkFlow}
+        >
         保存
-      </Button>
+        </Button>
+      </div>
       <div
         className="bg-white shadow-flow-header rounded-4 overflow-hidden flex flex-row items-center"
       >
