@@ -3,8 +3,7 @@ import { TreeData } from '@atlaskit/tree';
 import toast from '@lib/toast';
 
 import { buildAppPagesTreeData } from '@lib/utils';
-import { getPageDataSchema } from '@c/form-app-data-table/utils';
-import appDataStore from '@c/form-app-data-table/store';
+import AppDataStore from '@c/form-app-data-table/store';
 
 import { fetchUserList, fetchPageList, fetchFormScheme } from '../lib/api';
 import { getFlowInstanceCount } from './approvals/api';
@@ -12,8 +11,10 @@ import { getFlowInstanceCount } from './approvals/api';
 class UserAppStore {
   destroySetCurPage: IReactionDisposer;
   @observable appList = [];
+  @observable showCreateForm = false;
   @observable appID = '';
-  @observable pageID= '';
+  @observable pageID = '';
+  @observable appDataStore: AppDataStore = new AppDataStore({ schema: {} });
   @observable listLoading = false;
   @observable pageListLoading = true;
   @observable curPage: PageInfo = { id: '' };
@@ -45,6 +46,11 @@ class UserAppStore {
   }
 
   @action
+  setShowCreateForm = (showCreateForm: boolean) => {
+    this.showCreateForm = showCreateForm;
+  }
+
+  @action
   fetchPageList = (appID: string) => {
     this.appID = appID;
     this.pageListLoading = true;
@@ -55,7 +61,7 @@ class UserAppStore {
   }
 
   @action
-  setPageID = (pageID:string) => {
+  setPageID = (pageID: string) => {
     this.pageID = pageID;
   }
 
@@ -65,26 +71,33 @@ class UserAppStore {
       return;
     }
 
-    appDataStore.clear();
+    this.showCreateForm = false;
     this.formScheme = null;
-    if (pageInfo.id) {
-      this.fetchSchemeLoading = true;
-      fetchFormScheme(this.appID, pageInfo.id).then((res: any) => {
-        const { config, schema } = res.schema;
+    this.fetchSchemeLoading = true;
+    fetchFormScheme(this.appID, pageInfo.id).then((res: any) => {
+      const { config, schema } = res.schema || {};
+      if (schema) {
         Object.keys(schema.properties).forEach((key) => {
           if (schema.properties[key]['x-internal'].permission === 1) {
             schema.properties[key].readOnly = true;
           }
         });
 
-        this.formScheme = res.schema;
-        getPageDataSchema(config, schema, pageInfo.id, this.appID, pageInfo.name);
-        this.fetchSchemeLoading = false;
-      }).catch(() => {
-        this.fetchSchemeLoading = false;
-      });
-    }
-
+        this.appDataStore = new AppDataStore({
+          schema: schema,
+          config: config,
+          pageID: pageInfo.id,
+          pageName: pageInfo.name,
+          appID: this.appID,
+          allowRequestData: true,
+          createFun: () => this.setShowCreateForm(true),
+        });
+      }
+      this.formScheme = res.schema;
+      this.fetchSchemeLoading = false;
+    }).catch(() => {
+      this.fetchSchemeLoading = false;
+    });
     this.curPage = pageInfo;
   }
 

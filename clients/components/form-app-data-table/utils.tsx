@@ -4,8 +4,6 @@ import moment from 'moment';
 import { getFilterField } from '@portal/modules/apps-management/pages/form-design/utils';
 import { UnionColumns } from 'react-table';
 
-import appPageDataStore from './store';
-
 export type Scheme = Record<string, any>;
 export type PageTableShowRule = {
   fixedRule?: string;
@@ -105,24 +103,19 @@ export function setFixedParameters(
 export function getPageDataSchema(
   config: Config,
   schema: Scheme,
-  pageID: string,
-  appID: string,
-  pageName?: string
 ) {
   const { pageTableShowRule = {}, pageTableConfig = {}, filtrate = [] } = config || {};
-  const {
-    setFiltrates,
-    setTableConfig,
-    setTableColumns,
-    setPageID,
-    setFieldsMap,
-    setAppID,
-  } = appPageDataStore;
   const fieldsMap = schema?.properties || {};
+  const fields: Scheme[] = [];
   const tableColumns: any[] = [];
   Object.keys(fieldsMap).forEach((key: string) => {
+    if (key === '_id') {
+      return;
+    }
+
+    fields.push({ id: key, ...fieldsMap[key] });
     const hasVisible = pageTableConfig[key] ? 'visible' in pageTableConfig[key] : false;
-    if (key !== '_id' && ((hasVisible && pageTableConfig[key].visible) || !hasVisible)) {
+    if ((hasVisible && pageTableConfig[key].visible) || !hasVisible) {
       tableColumns.push({
         id: key,
         Header: fieldsMap[key].title || '',
@@ -139,12 +132,12 @@ export function getPageDataSchema(
     return sortA - sortB;
   });
 
-  setFiltrates(filtrate.map((field: PageField) => {
-    return getFilterField(field);
-  }));
-  setTableColumns(setFixedParameters(pageTableShowRule.fixedRule, tableColumns));
-  setTableConfig(pageTableShowRule);
-  setPageID(pageID, pageName);
-  setFieldsMap(fieldsMap);
-  setAppID(appID);
+  return {
+    filtrates: filtrate.map((field: PageField) => {
+      return getFilterField(field);
+    }),
+    tableColumns: setFixedParameters(pageTableShowRule.fixedRule, tableColumns),
+    pageTableShowRule,
+    fields,
+  };
 }

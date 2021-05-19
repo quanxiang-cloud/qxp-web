@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { observer } from 'mobx-react';
 
 import TextHeader from '@c/text-header';
 import FormAppDataTable from '@c/form-app-data-table';
-import appDataStore from '@c/form-app-data-table/store';
 import PageLoading from '@c/page-loading';
 
 import store from '../../store';
@@ -11,25 +10,12 @@ import CreateDataForm from './create-data-form';
 import './index.scss';
 
 function PageDetails() {
-  const { curPage, fetchSchemeLoading, formScheme } = store;
-  const [showCreateForm, setShowCreateForm] = useState(false);
+  const { curPage, fetchSchemeLoading, formScheme, appDataStore, showCreateForm, setShowCreateForm } = store;
 
   const goBack = () => {
     appDataStore.curItemFormData = null;
     setShowCreateForm(false);
   };
-
-  useEffect(() => {
-    setShowCreateForm(false);
-  }, [formScheme]);
-
-  useEffect(() => {
-    appDataStore.setCreateFun(() => setShowCreateForm(true));
-    appDataStore.allowRequestData = true;
-    return () => {
-      appDataStore.clear();
-    };
-  }, []);
 
   if (showCreateForm && formScheme) {
     return (
@@ -52,7 +38,7 @@ function PageDetails() {
         itemTitleClassName="text-h5" />
       {fetchSchemeLoading && <PageLoading />}
       {formScheme && !fetchSchemeLoading ? (
-        <FormAppDataTable style={{ height: 'calc(100% - 62px)' }} className='p-20' />
+        <FormAppDataTable store={appDataStore} style={{ height: 'calc(100% - 62px)' }} className='p-20' />
       ) : null}
     </div>
   );

@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useContext } from 'react';
 import { observer } from 'mobx-react';
 import cs from 'classnames';
 
@@ -8,7 +8,7 @@ import PopConfirm from '@c/pop-confirm';
 import PageLoading from '@c/page-loading';
 
 import { getTableCellData, operateButton } from './utils';
-import store from './store';
+import { StoreContext } from './context';
 
 type Props = {
   onCancel: () => void;
@@ -22,6 +22,7 @@ type InfoData = {
 }
 
 function DetailsDrawer({ onCancel, rowID }: Props) {
+  const store = useContext(StoreContext);
   const [beganClose, setBeganClose] = useState<boolean>(false);
   const [visible, setVisible] = useState<boolean>(false);
   const [loading, setLoading] = useState(true);

@@ -1,10 +1,10 @@
-import React, { useImperativeHandle } from 'react';
+import React, { useImperativeHandle, useContext } from 'react';
 import { observer } from 'mobx-react';
 import { useForm, Controller } from 'react-hook-form';
 
 import FieldSwitch from '@portal/modules/apps-management/components/field-switch';
 
-import store from '../store';
+import { StoreContext } from '../context';
 
 import './index.scss';
 
@@ -14,6 +14,7 @@ type Props = {
 }
 
 function FiltrateForm({ filtrates, showMoreFiltrate }: Props, ref?: React.Ref<any>) {
+  const store = useContext(StoreContext);
   const { getValues, reset, control } = useForm();
 
   useImperativeHandle(ref, () => ({

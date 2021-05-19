@@ -1,8 +1,6 @@
 import React, { useEffect } from 'react';
 import { Route, useParams } from 'react-router-dom';
 
-import appDataStore from '@c/form-app-data-table/store';
-
 import Header from './header';
 import AppDetailsContent from './app-details-content';
 import AppSetting from './app-setting';
@@ -15,7 +13,6 @@ function AppDetails() {
     appDetailsStore.fetchAppDetails(appID);
     return () => {
       appDetailsStore.clear();
-      appDataStore.clear();
     };
   }, [appID]);
 

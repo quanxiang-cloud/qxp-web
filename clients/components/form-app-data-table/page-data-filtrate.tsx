@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useContext } from 'react';
 import moment from 'moment';
 import { observer } from 'mobx-react';
 
@@ -6,10 +6,11 @@ import Button from '@c/button';
 import Icon from '@c/icon';
 
 import FiltrateForm from './filtrate-form';
-import store from './store';
+import { StoreContext } from './context';
 
 function PageDataFiltrate() {
   const [showMoreFiltrate, setShowMoreFiltrate] = useState(false);
+  const store = useContext(StoreContext);
   const { filtrates } = store;
   const filterDom = useRef<any>();
 

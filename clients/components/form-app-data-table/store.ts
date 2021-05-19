@@ -4,12 +4,23 @@ import { action, observable, reaction, IReactionDisposer } from 'mobx';
 import toast from '@lib/toast';
 import httpClient from '@lib/http-client';
 
-import { Scheme } from './utils';
+import { Scheme, Config, getPageDataSchema } from './utils';
+
 type Params = {
   condition?: Condition[] | [],
   sort?: string[] | [],
   page?: number,
   size?: number,
+}
+
+type InitData = {
+  schema: Scheme;
+  config?: Config;
+  pageID?: string;
+  appID?: string;
+  pageName?: string;
+  createFun?: () => void;
+  allowRequestData?: boolean;
 }
 
 class AppPageDataStore {
@@ -39,7 +50,19 @@ class AppPageDataStore {
     '';
   };
 
-  constructor() {
+  constructor({ schema, pageID, pageName, appID, config, allowRequestData, createFun }: InitData) {
+    this.pageName = pageName || '';
+    this.appID = appID || '';
+    this.pageID = pageID || '';
+    this.allowRequestData = !!allowRequestData;
+    if (createFun) {
+      this.createFun = createFun;
+    }
+    const { filtrates, tableColumns, pageTableShowRule, fields } = getPageDataSchema(config || {}, schema);
+    this.fields = fields;
+    this.setFiltrates(filtrates);
+    this.setTableColumns(tableColumns);
+    this.setTableConfig(pageTableShowRule);
     this.destroyFetchTableData = reaction(() => this.params, this.fetchFormDataList);
     this.destroySetTableConfig = reaction(() => {
       return {
@@ -55,28 +78,6 @@ class AppPageDataStore {
   }
 
   @action
-  setFieldsMap = (fieldsMap: Scheme) => {
-    const fields: Scheme[] = [];
-    Object.keys(fieldsMap).forEach((key: string) => {
-      if (key !== '_id') {
-        fields.push({ id: key, ...fieldsMap[key] });
-      }
-    });
-    this.fields = fields;
-  }
-
-  @action
-  setPageID = (pageID: string, pageName?: string) => {
-    this.pageID = pageID;
-    pageName && (this.pageName = pageName);
-  }
-
-  @action
-  setAppID = (appID: string) => {
-    this.appID = appID;
-  }
-
-  @action
   setTableConfig = (tableConfig: any) => {
     this.tableConfig = tableConfig;
   }
@@ -89,11 +90,6 @@ class AppPageDataStore {
   @action
   setTableColumns = (tableColumns: any) => {
     this.tableColumns = tableColumns;
-  }
-
-  @action
-  setCreateFun = (createFun: () => void) => {
-    this.createFun = createFun;
   }
 
   @action
@@ -176,4 +172,4 @@ class AppPageDataStore {
   }
 }
 
-export default new AppPageDataStore();
+export default AppPageDataStore;

@@ -12,7 +12,7 @@ import appPagesStore from '../store';
 import './index.scss';
 
 function PageDetails() {
-  const { curPage, appID, formScheme, fetchSchemeLoading } = appPagesStore;
+  const { curPage, appID, formScheme, fetchSchemeLoading, appDataStore } = appPagesStore;
   const history = useHistory();
   const goFormBuild = () => {
     history.push(`/apps/formDesign/formBuild/${curPage.id}/${appID}?pageName=${curPage.name}`);
@@ -35,7 +35,7 @@ function PageDetails() {
       />
       {fetchSchemeLoading && <PageLoading />}
       {!fetchSchemeLoading && (formScheme ?
-        <FormAppDataTable style={{ height: 'calc(100% - 62px)'}} className='p-20' /> : (
+        <FormAppDataTable store={appDataStore} style={{ height: 'calc(100% - 62px)' }} className='p-20' /> : (
           <PageBuildNav appID={appID} pageId={curPage.id} pageName={curPage.name} />
         ))}
     </div>

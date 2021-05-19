@@ -1,4 +1,4 @@
-import React, { useMemo, useEffect, useState } from 'react';
+import React, { useMemo, useEffect, useState, useContext } from 'react';
 import { observer } from 'mobx-react';
 
 import Button from '@c/button';
@@ -8,10 +8,11 @@ import Pagination from '@c/pagination';
 import PopConfirm from '@c/pop-confirm';
 
 import DetailsDrawer from './details-drawer';
-import store from './store';
+import { StoreContext } from './context';
 import { operateButton } from './utils';
 
 function PageDataTable() {
+  const store = useContext(StoreContext);
   const [selected, setSelected] = useState([]);
   const [curRow, setCurRow] = useState<Record<string, any> | null>(null);
 
@@ -55,10 +56,10 @@ function PageDataTable() {
   }, [store.tableColumns]);
 
   useEffect(() => {
-    store.fetchActionAuthorized();
     if (!store.allowRequestData) {
       return;
     }
+    store.fetchActionAuthorized();
     store.setParams({});
   }, [store.pageID]);
 
