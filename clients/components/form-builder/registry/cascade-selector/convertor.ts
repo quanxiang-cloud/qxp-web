@@ -26,13 +26,17 @@ export const defaultConfig: CascadeConfig = {
 
 export function toSchema(value: CascadeConfig): FormBuilder.Schema {
   return {
-    type: 'string',
+    type: 'object',
     title: value.title,
     description: value.description,
     required: value.required,
     readOnly: value.displayModifier === 'readonly',
     display: value.displayModifier !== 'hidden',
     'x-component': 'CascadeSelector',
+    properties: {
+      label: { type: 'string' },
+      value: { type: 'string' },
+    },
     ['x-component-props']: {
       expandTrigger: 'hover',
       placeholder: value.placeholder,

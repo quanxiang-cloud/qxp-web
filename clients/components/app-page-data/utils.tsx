@@ -32,7 +32,7 @@ export function operateButton(wIndex: number, authority: number, button: React.R
   return button;
 }
 
-export function getTableCellData(initValue: string | string[], field: PageField) {
+export function getTableCellData(initValue: string | string[] | Record<string, unknown>, field: PageField): string | JSX.Element {
   if (!initValue) {
     return (<span className='text-gray-300'>——</span>);
   }
@@ -65,7 +65,15 @@ export function getTableCellData(initValue: string | string[], field: PageField)
     return initValue.join(',');
   }
 
-  return initValue;
+  if (typeof initValue === 'string') {
+    return initValue;
+  }
+
+  if (initValue?.label) {
+    return initValue?.label as string;
+  }
+
+  return initValue.toString();
 }
 
 function addFixedParameters(fixedList: number[], tableColumns: UnionColumns<Record<string, any>>[]) {

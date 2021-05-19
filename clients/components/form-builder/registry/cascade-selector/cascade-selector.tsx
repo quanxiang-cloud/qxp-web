@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
 import { Cascader } from 'antd';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
-import { CascaderOptionType } from 'antd/lib/cascader';
+import { CascaderOptionType, CascaderValueType } from 'antd/lib/cascader';
 import { omit } from 'lodash';
 
 import { datasetRecord } from './mock-dataset';
@@ -46,11 +46,18 @@ function CascadeSelector(props: ISchemaFieldComponentProps): JSX.Element {
   const { predefinedDataset, valueSource } = props.props['x-internal'];
   const options = useFetchOptions({ predefinedDataset, valueSource, options: cascadeProps.options });
 
+  function handleChange(_value: CascaderValueType, selected?: CascaderOptionType[]) {
+    const valueToSave = (selected || []).map(({ value }) => value).join('/');
+    const labelToSave = (selected || []).map(({ label }) => label).join(' / ');
+    props.mutators.change({ label: labelToSave, value: valueToSave });
+  }
+
   return (
     <Cascader
       {...omit(cascadeProps, 'options')}
+      value={(props.value?.value || '').split('/')}
       options={options}
-      onChange={props.mutators.change}
+      onChange={handleChange}
     />
   );
 }
