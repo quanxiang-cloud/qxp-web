@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import { Form } from '@QCFE/lego-ui';
 
-import Modal from '@c/modal2';
+import Modal from '@c/modal';
 import Icon from '@c/icon';
 
 import store from '../store';
@@ -28,7 +28,7 @@ function DeleteAppModal({ onCancel, appInfo }: Props) {
       title='删除应用'
       onClose={onCancel}
       className="static-modal"
-      footerBtnSchema={[{
+      footerBtns={[{
         key: 'close',
         iconName: 'close',
         onClick: onCancel,

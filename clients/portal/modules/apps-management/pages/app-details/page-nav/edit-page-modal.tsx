@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { Form } from '@QCFE/lego-ui';
 
-import Modal from '@c/modal2';
+import Modal from '@c/modal';
 
 import SelectField from '@portal/modules/apps-management/components/select-field';
 import { APP_ICON_LIST } from '@c/app-icon-select';
@@ -54,7 +54,7 @@ function EditPageModal({ pageInfo, onCancel, onSubmit, appID }: Props) {
       className="static-modal"
       title={curAppID ? '修改名称与图标' : '新建页面'}
       onClose={onCancel}
-      footerBtnSchema={[{
+      footerBtns={[{
         key: 'close',
         iconName: 'close',
         onClick: onCancel,
