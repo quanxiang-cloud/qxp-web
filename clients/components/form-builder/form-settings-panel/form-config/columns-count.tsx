@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import cs from 'classnames';
 import { observer } from 'mobx-react';
 
-import { StoreContext } from '../context';
+import { StoreContext } from '../../context';
 
 function ColumnNumberOption(): JSX.Element {
   const store = useContext(StoreContext);

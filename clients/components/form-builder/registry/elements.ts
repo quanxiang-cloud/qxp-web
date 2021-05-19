@@ -6,6 +6,7 @@ import NumberPicker from './number-picker';
 import DatePicker from './date-picker';
 import Select from './select';
 import MultipleSelect from './multiple-select';
+import CascadeSelector from './cascade-selector';
 
 const availableElements = [
   Input,
@@ -16,15 +17,16 @@ const availableElements = [
   DatePicker,
   Select,
   MultipleSelect,
+  CascadeSelector,
 ];
 
-export type Elements = { [key: string]: SourceElement<any> };
+export type Elements = { [key: string]: FormBuilder.SourceElement<any> };
 
 const elements = availableElements.reduce<Elements>((acc, element, index) => {
   acc[element.componentName.toLowerCase()] = {
     ...element,
     displayOrder: index,
-  } as SourceElement<any>;
+  };
 
   return acc;
 }, {});

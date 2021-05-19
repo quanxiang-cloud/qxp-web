@@ -3,7 +3,7 @@ import { Checkbox } from '@formily/antd-components';
 import configSchema from './config-schema';
 import { defaultConfig, toSchema, toConfig } from './convertor';
 
-const CheckboxGroupField: Omit<SourceElement<typeof defaultConfig>, 'displayOrder'> = {
+const CheckboxGroupField: Omit<FormBuilder.SourceElement<typeof defaultConfig>, 'displayOrder'> = {
   configSchema,
   toConfig,
   displayName: '复选框',
