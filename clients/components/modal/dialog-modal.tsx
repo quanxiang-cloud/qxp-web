@@ -1,5 +1,5 @@
 import React from 'react';
-import Modal from '@c/modal2';
+import Modal from '@c/modal';
 import ReactDOM from 'react-dom';
 
 interface Params {
@@ -28,35 +28,30 @@ export default function creatModal({
   const close = () => {
     ReactDOM.unmountComponentAtNode(modalDom);
     modalDom.remove();
+    onCancel && onCancel();
   };
-  const show = () => {
-    ReactDOM.render((
-      <Modal
-        title={title}
-        footerBtnSchema={[
-          {
-            text: cancelText,
-            key: 'cancel',
-            onClick: () => {
-              close();
-              onCancel && onCancel();
-            },
-            modifier: cancelModifier,
-          },
-          {
-            text: confirmText,
-            key: 'confirm',
-            onClick: onConfirm,
-            modifier: confirmModifier,
-          },
-        ]}
-      >
-        {content}
-      </Modal>
-    ), modalDom);
-  };
-  return {
-    show,
-    close,
-  };
+
+  ReactDOM.render((
+    <Modal
+      title={title}
+      onClose={close}
+      footerBtns={[
+        {
+          text: cancelText,
+          key: 'cancel',
+          onClick: close,
+          modifier: cancelModifier,
+        },
+        {
+          text: confirmText,
+          key: 'confirm',
+          onClick: onConfirm,
+          modifier: confirmModifier,
+        },
+      ]}
+    >
+      {content}
+    </Modal>
+  ), modalDom);
+  return { close };
 }

@@ -1,8 +1,6 @@
 import React, { useState, useRef } from 'react';
 import Modal from '@c/modal';
 
-import Button from '@c/button';
-
 import BasicInfoForm from './rights-setting/basic-info-form';
 
 import store from '../store';
@@ -32,25 +30,22 @@ function CreateRightModal({ onCancel }: Props) {
       className="static-modal"
       title='新建权限组'
       onClose={onCancel}
-      footer={
-        (<div className="flex flex-row justify-between items-center">
-          <Button
-            className="mr-20"
-            iconName="close"
-            onClick={onCancel}
-          >
-            取消
-          </Button>
-          <Button
-            modifier="primary"
-            iconName="check"
-            loading={loading}
-            onClick={onSubmit}
-          >
-            保存
-          </Button>
-        </div>)
-      }
+      footerBtns={[
+        {
+          text: '取消',
+          key: 'cancel',
+          iconName: 'close',
+          onClick: onCancel,
+        },
+        {
+          text: '保存',
+          key: 'confirm',
+          iconName: 'check',
+          loading: loading,
+          modifier: 'primary',
+          onClick: onSubmit,
+        },
+      ]}
     >
       <BasicInfoForm ref={formRef} />
     </Modal>

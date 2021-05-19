@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useRef } from 'react';
 import { Radio, Input, Select, Switch, NumberPicker, ArrayTable, Checkbox } from '@formily/antd-components';
 import { SchemaForm, ISchema, FormEffectHooks, createFormActions } from '@formily/antd';
 
@@ -88,6 +88,13 @@ function SchemaFieldConfig({ onChange, initialValue, schema, components }: Props
 
 function FormFieldConfig(): JSX.Element {
   const store = useContext(StoreContext);
+  const formFieldConfigWrap = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (formFieldConfigWrap.current) {
+      (formFieldConfigWrap.current.parentNode as HTMLDivElement).scrollTop = 0;
+    }
+  }, [store.activeFieldName]);
 
   if (!store.activeField) {
     return (
@@ -97,17 +104,20 @@ function FormFieldConfig(): JSX.Element {
 
   if (store.activeFieldSourceElement?.configSchema) {
     return (
-      <SchemaFieldConfig
-        // assign key to FormFieldConfigTrue to force re-render when activeFieldName changed
-        key={toJS(store.activeFieldName)}
-        onChange={(value) => store.updateFieldConfig(value)}
-        initialValue={toJS(store.activeField.configValue)}
-        schema={store.activeFieldConfigSchema || {}}
-        components={{
-          ...COMMON_CONFIG_COMPONENTS,
-          ...store.activeFieldSourceElement?.configDependencies,
-        }}
-      />
+      <div ref={formFieldConfigWrap}>
+        <SchemaFieldConfig
+          // assign key to FormFieldConfigTrue to force re-render when activeFieldName changed
+          key={toJS(store.activeFieldName)}
+          onChange={(value) => store.updateFieldConfig(value)}
+          initialValue={toJS(store.activeField.configValue)}
+          schema={store.activeFieldConfigSchema || {}}
+          components={{
+            ...COMMON_CONFIG_COMPONENTS,
+            ...store.activeFieldSourceElement?.configDependencies,
+          }}
+        />
+      </div>
+
     );
   }
 

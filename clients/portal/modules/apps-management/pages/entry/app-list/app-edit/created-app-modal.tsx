@@ -3,7 +3,6 @@ import { useHistory } from 'react-router-dom';
 import Modal from '@c/modal';
 
 import toast from '@lib/toast';
-import Button from '@c/button';
 
 import CreatedEditApp from './created-edit-app';
 import store from '../store';
@@ -34,20 +33,21 @@ function CreatedAppModal({ onCancel }: Props) {
       title='新建应用'
       onClose={onCancel}
       className="static-modal"
-      footer={
-        (<div className="flex items-center">
-          <Button iconName='close' onClick={onCancel} className="mr-20">
-            取消
-          </Button>
-          <Button
-            modifier='primary'
-            iconName='check'
-            onClick={handleSubmit}
-          >
-            确定
-          </Button>
-        </div>)
-      }
+      footerBtns={[
+        {
+          text: '取消',
+          key: 'cancel',
+          iconName: 'close',
+          onClick: onCancel,
+        },
+        {
+          text: '确定',
+          key: 'confirm',
+          iconName: 'check',
+          modifier: 'primary',
+          onClick: handleSubmit,
+        },
+      ]}
     >
       <CreatedEditApp ref={formRef} />
     </Modal>

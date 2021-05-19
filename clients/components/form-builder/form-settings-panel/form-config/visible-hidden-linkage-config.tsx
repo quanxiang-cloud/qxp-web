@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import {
   SchemaForm,
@@ -10,12 +10,15 @@ import {
 } from '@formily/antd';
 import { ArrayList } from '@formily/react-shared-components';
 import { toArr, FormPath } from '@formily/shared';
-import { Input, Select, DatePicker, NumberPicker } from '@formily/antd-components';
+import { Input, Select as AntdSelect, DatePicker, NumberPicker } from '@formily/antd-components';
 
-import Modal from '@c/modal2';
+import Modal from '@c/modal';
 import Icon from '@c/icon';
 import Button from '@c/button';
+import Select from '@c/select';
 import { INTERNAL_FIELD_NAMES } from '../../store';
+import Store from '../../store';
+import { toJS } from 'mobx';
 
 const { onFieldInputChange$ } = FormEffectHooks;
 const RowStyleLayout = styled((props) => <div {...props} />)`
@@ -87,12 +90,14 @@ const DEFAULT_VALUE: FormBuilder.VisibleHiddenLinkage = {
 
 type Props = {
   onClose: () => void;
-  sourceSchema: ISchema;
   linkageKey: string;
+  store: Store;
   onSubmit: (linkage: FormBuilder.VisibleHiddenLinkage) => void;
 }
 
-function VisibleHiddenLinkageConfig({ sourceSchema, onClose, linkageKey, onSubmit }: Props): JSX.Element {
+function VisibleHiddenLinkageConfig({ onClose, store, linkageKey, onSubmit }: Props): JSX.Element {
+  const [tag, setTag] = useState('every');
+  const sourceSchema = toJS(store.schema);
   const linkages = (
     sourceSchema['x-internal']?.visibleHiddenLinkages || []
   ) as FormBuilder.VisibleHiddenLinkage[];
@@ -101,7 +106,7 @@ function VisibleHiddenLinkageConfig({ sourceSchema, onClose, linkageKey, onSubmi
     .filter(([key]) => !INTERNAL_FIELD_NAMES.includes(key))
     .map(([key, value]) => {
       return { value: key, label: value.title || key, availableCompareValues: value.enum || [],
-        'x-component': value['x-component'] || 'Select',
+        'x-component': value['x-component'] || 'AntdSelect',
       };
     });
 
@@ -153,8 +158,8 @@ function VisibleHiddenLinkageConfig({ sourceSchema, onClose, linkageKey, onSubmi
         if (availableCompareValues?.availableCompareValues.length !== 0) {
           state.props.enum = availableCompareValues?.availableCompareValues;
           state.value = [];
+          state.props['x-component'] = 'AntdSelect';
           if (compareField === 'CheckboxGroup' || compareField === 'MultipleSelect') {
-            state.props['x-component'] = 'Select';
             state.props['x-component-props'] = { mode: 'multiple' };
           }
         } else {
@@ -167,9 +172,32 @@ function VisibleHiddenLinkageConfig({ sourceSchema, onClose, linkageKey, onSubmi
 
   return (
     <Modal title="编辑字段显隐条件" onClose={onClose}>
-      <p>满足以下条件时</p>
+      <div className='flex items-center mb-16'>
+        满足以下
+        <Select
+          className='mx-4'
+          value={tag}
+          onChange={(tag: string) => {
+            setTag(tag);
+            store.visibleHiddenLinkages.map((linkage: any) => {
+              linkage.ruleJoinOperator = tag;
+              return linkage;
+            });
+            store.linkageCondition = tag === 'every' ? '所有' : '任一';
+          }}
+          options={[{
+            label: '所有',
+            value: 'every',
+          },
+          {
+            label: '任一',
+            value: 'some',
+          }]}
+        />
+      条件时
+      </div>
       <SchemaForm
-        components={{ ArrayCustom, Input, Select, DatePicker, NumberPicker, TextArea: Input }}
+        components={{ ArrayCustom, Input, AntdSelect, DatePicker, NumberPicker, TextArea: Input }}
         defaultValue={defaultValue}
         onSubmit={onSubmit}
         effects={() => setCompareValueOptions()}
@@ -184,14 +212,14 @@ function VisibleHiddenLinkageConfig({ sourceSchema, onClose, linkageKey, onSubmi
             <Field
               required
               name="sourceKey"
-              x-component="Select"
+              x-component="AntdSelect"
               title=""
               enum={sourceKeyOptions.map(({ label, value }) => ({ label, value }))}
             />
             <Field
               required
               name="compareOperator"
-              x-component="Select"
+              x-component="AntdSelect"
               title=""
               enum={OPERATORS.Select}
             />
@@ -200,14 +228,14 @@ function VisibleHiddenLinkageConfig({ sourceSchema, onClose, linkageKey, onSubmi
               required
               name="compareValue"
               default=""
-              x-component='Select'
+              x-component='AntdSelect'
             />
           </Field>
         </Field>
         <Field
           required
           name="targetKeys"
-          x-component="Select"
+          x-component="AntdSelect"
           title="显示以下字段"
           enum={availableFields.map(({ label, value }) => ({ label, value }))}
           x-component-props={{ mode: 'multiple' }}

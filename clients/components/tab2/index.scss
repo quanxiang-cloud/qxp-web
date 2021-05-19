@@ -1,64 +1,63 @@
-.tab-warpper {
-  @apply transition overflow-hidden;
+.tab-wrapper {
+	@apply transition;
+	height: 100%;
+	background: #fff;
+	overflow: hidden;
+	position: relative;
+	display: flex;
+	flex-direction: column;
 
-  .tab-navs {
-    display: flex;
-    flex-direction: row;
-    width: 100%;
-    background: #fff;
-    margin-bottom: 1px;
-
-    .tab-nav-item {
-      @apply transition;
-      color: #475569;
-      font-size: 14px;
-      text-align: center;
-      white-space: nowrap;
-      padding: 9px 12px;
-      cursor: pointer;
-      position: relative;
-      &:hover {
-        color: var(--blue-600);
-      }
-      &::after {
-        @apply transition;
-        width: 100%;
-        height: 4px;
-        background: #375ff3;
-        border-radius: 4px 4px 0px 0px;
-        content: "";
-        display: block;
-        opacity: 0;
-        position: absolute;
-        left: 0;
-        bottom: -1px;
-      }
-      &:not(.active):hover {
-        &::after {
-          opacity: 0.5;
-        }
-      }
-    }
-    .active {
-      &::after {
-        opacity: 1;
-      }
-    }
-    .strech-navs {
-      flex-grow: 1;
-    }
+	.tab-navs {
+	  display: flex;
+	  flex-direction: row;
+	  width: 100%;
+	  background: #fff;
+	  margin-bottom: 1px;
+  
+	  .tab-nav-item {
+		@apply transition;
+		color: #475569;
+		font-size: 14px;
+		text-align: center;
+		white-space: nowrap;
+		padding: 9px 12px;
+		cursor: pointer;
+		position: relative;
+		&:hover {
+		  color: var(--blue-600);
+		}
+		&::after {
+		  @apply transition;
+		  width: 100%;
+		  height: 4px;
+		  background: #375ff3;
+		  border-radius: 4px 4px 0px 0px;
+		  content: "";
+		  display: block;
+		  opacity: 0;
+		  position: absolute;
+		  left: 0;
+		  bottom: -1px;
+		}
+		&:not(.active):hover {
+		  &::after {
+			opacity: 0.5;
+		  }
+		}
+	  }
+	  .active {
+		&::after {
+		  opacity: 1;
+		}
+	  }
+	  .strech-navs {
+		flex-grow: 1;
+	  }
+	}
+  
+	.tab-content {
+		flex-grow: 1;
+		padding: 16px 20px;
+		overflow: auto;
+	}
   }
-
-  .tab-content {
-    background: #fff;
-    padding: 16px 20px;
-    overflow: auto;
-
-    .tab-content-item{
-      display: none;
-    }
-    .show{
-      display: block;
-    }
-  }
-}

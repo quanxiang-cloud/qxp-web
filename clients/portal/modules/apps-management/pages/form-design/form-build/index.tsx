@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { observer } from 'mobx-react';
 import { FormButtonGroup } from '@formily/antd';
 
-import Modal from '@c/modal2';
+import Modal from '@c/modal';
 import Button from '@c/button';
 import toast from '@lib/toast';
 import { FormBuilder, FormRenderer } from '@c/form-builder';

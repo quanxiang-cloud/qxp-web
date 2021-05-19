@@ -85,6 +85,7 @@ export default class FormBuilderStore {
   @observable labelAlign: 'right' | 'top' = 'right';
   @observable columnsCount: 1 | 2 = 1;
   @observable visibleHiddenLinkages: FormBuilder.VisibleHiddenLinkage[] = [];
+  @observable linkageCondition = '所有'
   @observable hasEdit = false;
 
   constructor({ schema }: Props) {

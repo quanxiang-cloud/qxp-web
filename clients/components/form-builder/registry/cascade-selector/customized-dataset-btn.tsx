@@ -2,7 +2,7 @@ import React from 'react';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 
 import Button from '@c/button';
-import Modal from '@c/modal2';
+import Modal from '@c/modal';
 
 type EditDatasetModalProps = {
   options: FormBuilder.CascadeOption[];
@@ -36,7 +36,7 @@ function EditDatasetModal({ onClose, onSave }: EditDatasetModalProps): JSX.Eleme
 
   return (
     <Modal
-      footerBtnSchema={[
+      footerBtns={[
         {
           key: 'cancel',
           text: '取消',

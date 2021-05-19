@@ -2,7 +2,6 @@ import React from 'react';
 import Modal from '@c/modal';
 
 import Icon from '@c/icon';
-import Button from '@c/button';
 
 import store from '../store';
 import '../index.scss';
@@ -40,20 +39,21 @@ function AppSetStatusModal({ onCancel, appID, status = 'publish' }: Props) {
       title={TEXT[status].modalTitle}
       onClose={onCancel}
       className="static-modal"
-      footer={
-        (<div className="flex items-center">
-          <Button iconName='close' onClick={onCancel} className="mr-20">
-            取消
-          </Button>
-          <Button
-            modifier='primary'
-            iconName='check'
-            onClick={handleSubmit}
-          >
-            {TEXT[status].sureText}
-          </Button>
-        </div>)
-      }
+      footerBtns={[
+        {
+          text: '取消',
+          key: 'cancel',
+          iconName: 'close',
+          onClick: onCancel,
+        },
+        {
+          text: TEXT[status].sureText,
+          key: 'confirm',
+          iconName: 'check',
+          modifier: 'primary',
+          onClick: handleSubmit,
+        },
+      ]}
     >
       <div className='flex-1'>
         <p className='app-status-modal-title text-yellow-600'>

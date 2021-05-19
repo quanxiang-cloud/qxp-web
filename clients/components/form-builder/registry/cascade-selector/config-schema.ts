@@ -105,11 +105,11 @@ const schema: ISchema = {
           'x-component': 'CustomizedDatasetBtn',
           'x-index': 5,
         },
-        // predefinedDataset: {
-        //   title: '级联选项',
-        //   'x-component': 'PredefinedDatasetSelect',
-        //   'x-index': 6,
-        // },
+        predefinedDataset: {
+          title: '级联选项',
+          'x-component': 'DatasetSelector',
+          'x-index': 6,
+        },
         // showFullPath: {
         //   title: '结果显示路径',
         //   default: false,

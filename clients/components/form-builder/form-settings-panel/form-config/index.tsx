@@ -1,7 +1,6 @@
 import React, { useContext } from 'react';
 import cs from 'classnames';
 import { observer } from 'mobx-react';
-import { toJS } from 'mobx';
 
 import Icon from '@c/icon';
 
@@ -121,7 +120,7 @@ function VisibleHiddenLinkageList({ onEdit }: VisibleHiddenLinkagesProps): JSX.E
                   />
                 </span>
               </div>
-              <div>当满足以下所有条件时: </div>
+              <div>当满足以下{store.linkageCondition}条件时: </div>
               {readableRules.map((rule) => (
                 <div key={rule} className="text-h6-bold pl-12 mb-8">- {rule}</div>
               ))}
@@ -181,7 +180,7 @@ function FormConfig(): JSX.Element {
       {isLinkageConfigVisible && (
         <VisibleHiddenLinkageConfig
           linkageKey={editingLinkage}
-          sourceSchema={toJS(store.schema)}
+          store={store}
           onSubmit={(linkage) => {
             store.handleLinkageChange(linkage);
             setLinkageConfigVisible(false);

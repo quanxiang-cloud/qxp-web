@@ -1,17 +1,19 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
+
+import TabNavs from './tab-navs';
 
 import cs from 'classnames';
 
 import './index.scss';
 
-export interface TabItem {
-  id: string | number;
+export type TabItem<T extends React.Key = string> = {
+  id: T;
   name: string;
   content: React.ReactNode;
 }
 
-export interface Props {
-  items: TabItem[];
+export type Props<T extends React.Key>= {
+  items: TabItem<T>[];
   strechNavs?: boolean
   className?: string;
   navsClassName?: string;
@@ -19,10 +21,10 @@ export interface Props {
   contentClassName?: string;
   style?: Record<string, unknown>;
   currentKey?: string | number;
-  onChange?: (key: string | number) => void;
+  onChange?: (key: T) => void;
 }
 
-export default function Tab({
+export default function Tab<T extends React.Key>({
   items,
   style,
   className,
@@ -32,73 +34,34 @@ export default function Tab({
   strechNavs = false,
   currentKey,
   onChange,
-}: Props) {
-  const [key, setKey] = useState<string | number>(currentKey || items[0].id);
-  const [height, setHeight] = useState<string>('39px');
+}: Props<T>) {
   const navsRef = useRef(null);
+  const [key, setKey] = useState<string | number>(currentKey || items[0].id);
 
-  useEffect(() => {
-    setHeight((navsRef.current as unknown as HTMLDivElement)?.style.height);
-  }, []);
-
-  const tabNavRender = (items: TabItem[], key: string | number) => {
-    return (
-      items.map((item) => {
-        const active = item.id == key;
-        return (
-          <div
-            key={item.id}
-            className={cs(
-              'tab-nav-item',
-              strechNavs && 'strech-navs',
-              active && 'active',
-              {
-                'text-blue-600': active,
-                'font-semibold': active,
-                'text-gray-600': !active,
-              },
-              navTitleClassName,
-            )}
-            onClick={() => {
-              setKey(item.id);
-              onChange?.(item.id);
-            }}
-          >
-            {item.name}
-          </div>
-        );
-      })
-    );
+  const tabContentRender = (items: TabItem<T>[], key: string | number) => {
+    return items.find((item) => item.id === key)?.content;
   };
 
-  const tabContentRender = (items: TabItem[], key: string | number) => {
-    return items.map((item) => {
-      return (
-        <div
-          key={item.id}
-          className={
-            cs(item.id === key && 'show', 'tab-content-item')
-          }
-        >
-          {item.content}
-        </div>
-      );
-    });
+  const handleNavItemClick = (id: any) => {
+    setKey(id);
+    onChange?.(id);
   };
 
   return (
     <div
       style={style}
-      className={cs('tab-warpper', className)}
+      className={cs('tab-wrapper', className)}
     >
-      <div
+      <TabNavs
         ref={navsRef}
-        className={cs('tab-navs', navsClassName)}
-      >
-        {tabNavRender(items, key)}
-      </div>
+        navs={items}
+        currentKey={key}
+        strechNavs={strechNavs}
+        navsClassName={navsClassName}
+        navTitleClassName={navTitleClassName}
+        onClick={handleNavItemClick}
+      />
       <div
-        style={{ height: `calc(100% - ${height})` }}
         className={cs('tab-content', contentClassName)}
       >
         {tabContentRender(items, key)}
@@ -106,3 +69,5 @@ export default function Tab({
     </div>
   );
 }
+
+Tab.TabNavs = TabNavs;

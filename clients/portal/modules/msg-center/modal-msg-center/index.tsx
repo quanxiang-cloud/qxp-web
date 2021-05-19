@@ -35,7 +35,6 @@ const ModalMsgCenter = () => {
         </div>)
       }
       onClose={handleClose}
-      footer={null}
     >
       <MsgBox/>
     </Modal>

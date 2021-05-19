@@ -1,7 +1,6 @@
 import React from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 
-import Button from '@c/button';
 import Modal from '@c/modal';
 import toast from '@lib/toast';
 
@@ -58,24 +57,21 @@ export default function AccountHandleModal(
       title={`${titleText}账号`}
       className="static-modal"
       onClose={closeModal}
-      footer={
-        (<div className="flex items-center">
-          <Button
-            iconName="close"
-            onClick={closeModal}
-            className="mr-20"
-          >
-            取消
-          </Button>
-          <Button
-            iconName="check"
-            modifier="primary"
-            onClick={handleSubmit}
-          >
-            {titleText}账号
-          </Button>
-        </div>)
-      }
+      footerBtns={[
+        {
+          text: '取消',
+          key: 'cancel',
+          iconName: 'close',
+          onClick: closeModal,
+        },
+        {
+          text: titleText + '账号',
+          key: 'confirm',
+          iconName: 'check',
+          modifier: 'primary',
+          onClick: handleSubmit,
+        },
+      ]}
     >
       {status === UserStatus.delete && (
         <div className="text-14">

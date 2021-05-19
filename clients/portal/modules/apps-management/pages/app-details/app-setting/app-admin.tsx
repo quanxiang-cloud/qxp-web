@@ -8,7 +8,7 @@ import PopConfirm from '@c/pop-confirm';
 import Button from '@c/button';
 import Table from '@c/table';
 import EmployeeOrDepartmentPickerModal from '@c/employee-or-department-picker';
-import Modal from '@c/modal2';
+import Modal from '@c/modal';
 
 import {
   appAddAdmin, fetchAppAdminUsers, delAppAdminUsers,
@@ -156,20 +156,22 @@ function AppAdmin() {
           (<Modal
             title='批量移除'
             onClose={() => setModalType('')}
-            footerBtnSchema={
-              [{
-                key: 'close',
+            footerBtns={[
+              {
+                text: '取消',
+                key: 'cancel',
                 iconName: 'close',
                 onClick: () => setModalType(''),
-                text: '取消',
-              }, {
-                key: 'check',
+              },
+              {
+                text: '确定移除',
+                key: 'confirm',
                 iconName: 'check',
+                loading: delLoading,
                 modifier: 'primary',
                 onClick: batchRemove,
-                loading: delLoading,
-                text: '确定移除',
-              }]}
+              },
+            ]}
           >
           确定要批量移除应用的管理员吗？
           </Modal>)

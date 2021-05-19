@@ -1,7 +1,7 @@
 import React from 'react';
 import { observer } from 'mobx-react';
 
-import Modal from '@c/modal2';
+import Modal from '@c/modal';
 
 import store from './store';
 
@@ -25,7 +25,7 @@ function NotSavedModal({ onCancel }: Props) {
     <Modal
       title='提示'
       onClose={onCancel}
-      footerBtnSchema={[
+      footerBtns={[
         {
           key: '1',
           text: '否，放弃保存',

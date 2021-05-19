@@ -1,12 +1,12 @@
 import React from 'react';
-import Tab2 from '@c/tab2';
+import Tab from '@c/tab2';
 
 import FormConfig from './form-config';
 import FormFieldConfig from './form-field-config';
 
 function FormSettingPanel() {
   return (
-    <Tab2
+    <Tab
       strechNavs
       style={{ width: '296px' }}
       items={[
