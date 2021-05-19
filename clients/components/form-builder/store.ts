@@ -152,7 +152,8 @@ export default class FormBuilderStore {
       'x-internal': {
         version: '1.3.13',
         labelAlign: this.labelAlign,
-        columns: this.columnsCount,
+        // columns: this.columnsCount,
+        columns: 1,
         visibleHiddenLinkages: toJS(this.visibleHiddenLinkages),
       },
     };
