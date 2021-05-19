@@ -108,13 +108,21 @@ export default class FormBuilderStore {
     return `wrap-${this.activeField?.fieldName}`;
   }
 
-  @computed get activeFieldConfigSchema(): ISchema | null {
+  @computed get activeFieldSourceElement(): FormBuilder.SourceElement<any> | null {
     const componentName = this.activeField?.componentName;
     if (!componentName) {
       return null;
     }
 
-    return registry.elements[componentName.toLocaleLowerCase()].configSchema;
+    return registry.elements[componentName.toLocaleLowerCase()] || null;
+  }
+
+  @computed get activeFieldConfigSchema(): ISchema | null {
+    return this.activeFieldSourceElement?.configSchema || null;
+  }
+
+  @computed get activeFieldConfigForm(): React.JSXElementConstructor<any> | null {
+    return this.activeFieldSourceElement?.configForm || null;
   }
 
   @computed get schema(): ISchema {
@@ -152,7 +160,8 @@ export default class FormBuilderStore {
       'x-internal': {
         version: '1.3.13',
         labelAlign: this.labelAlign,
-        columns: this.columnsCount,
+        // columns: this.columnsCount,
+        columns: 1,
         visibleHiddenLinkages: toJS(this.visibleHiddenLinkages),
       },
     };

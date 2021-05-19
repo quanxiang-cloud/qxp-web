@@ -9,7 +9,7 @@ import { toJS } from 'mobx';
 import { FieldConfigContext } from './context';
 import { addOperate } from '../../registry/operates';
 
-const components = {
+const COMMON_CONFIG_COMPONENTS = {
   ArrayTable,
   Input,
   NumberPicker,
@@ -26,6 +26,7 @@ type Props = {
   onChange: (value: any) => void;
   initialValue: any;
   schema: ISchema;
+  components: Record<string, React.JSXElementConstructor<any>>;
 }
 
 const { onFieldInputChange$, onFieldInit$ } = FormEffectHooks;
@@ -70,7 +71,7 @@ const useOneToManyEffects = () => {
   });
 };
 
-function FormFieldConfigTrue({ onChange, initialValue, schema }: Props): JSX.Element {
+function SchemaFieldConfig({ onChange, initialValue, schema, components }: Props): JSX.Element {
   const { actions } = useContext(FieldConfigContext);
   return (
     <SchemaForm
@@ -91,10 +92,7 @@ function FormFieldConfig(): JSX.Element {
 
   useEffect(() => {
     if (formFieldConfigWrap.current) {
-      const parent = formFieldConfigWrap.current.parentNode;
-      if (parent) {
-        parent.scrollTop = 0;
-      }
+      (formFieldConfigWrap.current.parentNode as HTMLDivElement).scrollTop = 0;
     }
   }, [store.activeFieldName]);
 
@@ -104,18 +102,34 @@ function FormFieldConfig(): JSX.Element {
     );
   }
 
-  return (
-    <div ref={formFieldConfigWrap}>
-      <FormFieldConfigTrue
-      // assign key to FormFieldConfigTrue to force re-render when activeFieldName changed
-        key={toJS(store.activeFieldName)}
-        onChange={(value) => store.updateFieldConfig(value)}
-        initialValue={toJS(store.activeField.configValue)}
-        schema={store.activeFieldConfigSchema || {}}
-      />
-    </div>
+  if (store.activeFieldSourceElement?.configSchema) {
+    return (
+      <div ref={formFieldConfigWrap}>
+        <SchemaFieldConfig
+          // assign key to FormFieldConfigTrue to force re-render when activeFieldName changed
+          key={toJS(store.activeFieldName)}
+          onChange={(value) => store.updateFieldConfig(value)}
+          initialValue={toJS(store.activeField.configValue)}
+          schema={store.activeFieldConfigSchema || {}}
+          components={{
+            ...COMMON_CONFIG_COMPONENTS,
+            ...store.activeFieldSourceElement?.configDependencies,
+          }}
+        />
+      </div>
 
-  );
+    );
+  }
+
+  if (store.activeFieldSourceElement?.configForm) {
+    return React.createElement(store.activeFieldSourceElement.configForm, {
+      key: toJS(store.activeFieldName),
+      onChange: (value: any) => store.updateFieldConfig(value),
+      initialValue: toJS(store.activeField.configValue),
+    });
+  }
+
+  return (<div>当前字段不支持配置</div>);
 }
 
 export default observer(FormFieldConfig);
