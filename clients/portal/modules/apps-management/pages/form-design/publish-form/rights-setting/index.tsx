@@ -1,6 +1,6 @@
 import React from 'react';
 
-import Tab from '@c/tab';
+import Tab from '@c/tab2';
 
 import DataPermission from './data-permission';
 import BasicInfo from './basic-info';

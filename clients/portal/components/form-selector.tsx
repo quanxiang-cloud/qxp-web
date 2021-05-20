@@ -7,7 +7,7 @@ import Select from '@c/select';
 import Icon from '@c/icon';
 import ToolTip from '@c/tooltip';
 import toast from '@lib/toast';
-import ConfirmModal from '@c/modal-confirm';
+import Modal from '@c/modal';
 import { noop } from '@lib/utils';
 
 import { getFormDataOptions } from '@flow/detail/content/editor/forms/api';
@@ -114,15 +114,27 @@ function WorkFormSelector(
           </ToolTip>
         )}
         {currentWorkTable && (
-          <ConfirmModal
+          <Modal
             title="更换触发工作表"
-            onCancel={onCancelSubmitWorkForm}
-            onSubmit={onSubmitWorkFormChange}
+            onClose={onCancelSubmitWorkForm}
+            footerBtns={[
+              {
+                text: '取消',
+                key: 'cancel',
+                onClick: onCancelSubmitWorkForm,
+              },
+              {
+                text: '确定',
+                key: 'confirm',
+                modifier: 'primary',
+                onClick: onSubmitWorkFormChange,
+              },
+            ]}
           >
             <p className="text-body2">
               更换新的触发工作表后，该节点及其他关联节点配置将会被重置，确定要更换吗？
             </p>
-          </ConfirmModal>
+          </Modal>
         )}
       </div>
       {validating && !value.value && (

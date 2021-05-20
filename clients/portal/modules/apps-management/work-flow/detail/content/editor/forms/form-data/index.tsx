@@ -1,10 +1,9 @@
 import React, { useEffect } from 'react';
-import cs from 'classnames';
 import { useQuery } from 'react-query';
 import { useParams } from 'react-router-dom';
 
 import toast from '@lib/toast';
-import Tab from '@c/tab';
+import Tab from '@c/tab2';
 import type {
   BusinessData,
 } from '@flow/detail/content/editor/type';
@@ -38,14 +37,6 @@ export default function FormDataForm({ formID, value, onChange }: Props) {
   return (
     <Tab
       className="mt-10"
-      headerClassName="border-gray-200 border-b-1"
-      titleClassName={cs(
-        'bg-white hover:bg-white',
-        'hover:border-blue-600 hover:border-b-4'
-      )}
-      activeTitleClassName="border-blue-600 border-b-4"
-      contentClassName="overflow-scroll bg-white"
-      style={{ height: 'calc(100% - 56px)' }}
       items={[{
         id: 'basicConfig',
         name: '基础配置',
