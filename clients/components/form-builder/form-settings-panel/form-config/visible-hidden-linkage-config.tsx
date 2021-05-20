@@ -102,12 +102,15 @@ function VisibleHiddenLinkageConfig({ onClose, store, linkageKey, onSubmit }: Pr
     sourceSchema['x-internal']?.visibleHiddenLinkages || []
   ) as FormBuilder.VisibleHiddenLinkage[];
   const defaultValue = linkages.find((linkage) => linkage.key === linkageKey) || DEFAULT_VALUE;
-  const availableFields = Object.entries(sourceSchema.properties || {})
+  const existingCondistions: Array<string> = [];
+  let availableFields = Object.entries(sourceSchema.properties || {})
     .filter(([key]) => !INTERNAL_FIELD_NAMES.includes(key))
     .map(([key, value]) => {
       return { value: key, label: value.title || key, availableCompareValues: value.enum || [],
         'x-component': value['x-component'] || 'AntdSelect',
       };
+    }).filter((availableField) => {
+      return availableField['x-component'] !== 'textarea';
     });
 
   const sourceKeyOptions = availableFields.filter((availableField) => {
@@ -116,11 +119,37 @@ function VisibleHiddenLinkageConfig({ onClose, store, linkageKey, onSubmit }: Pr
 
   function setCompareValueOptions() {
     const { setFieldState } = createFormActions();
-
+    let index = 0;
     onFieldInputChange$('rules.*.sourceKey').subscribe(({ name, value }) => {
       if (!value || !name) {
         return;
       }
+
+      const path = FormPath.transform(name, /\d/, ($1) => {
+        index = Number($1);
+        existingCondistions[index] = value;
+        return `rules.${$1}.compareValue`;
+      });
+
+      availableFields = Object.entries(sourceSchema.properties || {})
+        .filter(([key]) => !INTERNAL_FIELD_NAMES.includes(key))
+        .map(([key, value]) => {
+          return { value: key, label: value.title || key, availableCompareValues: value.enum || [],
+            'x-component': value['x-component'] || 'AntdSelect',
+          };
+        })
+        .filter((availableField) => {
+          return availableField['x-component'] !== 'textarea';
+        });
+      availableFields = availableFields.filter((availableField) => {
+        return !existingCondistions.includes(availableField.value);
+      });
+
+      setFieldState('targetKeys', (state) => {
+        state.props.enum = availableFields.map(({ label, value }) => {
+          return { label, value };
+        });
+      });
 
       const availableCompareValues = sourceKeyOptions.find((sourceKeyOption) => {
         return sourceKeyOption.value === value;
@@ -130,10 +159,6 @@ function VisibleHiddenLinkageConfig({ onClose, store, linkageKey, onSubmit }: Pr
       if (availableCompareValues) {
         compareField = availableCompareValues['x-component'];
       }
-
-      const path = FormPath.transform(name, /\d/, ($1) => {
-        return `rules.${$1}.compareValue`;
-      });
 
       setFieldState(FormPath.transform(name, /\d/, ($1) => {
         return `rules.${$1}.compareOperator`;
@@ -197,7 +222,7 @@ function VisibleHiddenLinkageConfig({ onClose, store, linkageKey, onSubmit }: Pr
       条件时
       </div>
       <SchemaForm
-        components={{ ArrayCustom, Input, AntdSelect, DatePicker, NumberPicker, TextArea: Input }}
+        components={{ ArrayCustom, Input, AntdSelect, DatePicker, NumberPicker }}
         defaultValue={defaultValue}
         onSubmit={onSubmit}
         effects={() => setCompareValueOptions()}
