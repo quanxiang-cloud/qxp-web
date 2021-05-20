@@ -70,45 +70,50 @@ const operationList = {
     name: '通过',
     text: '通过',
     value: 'AGREE',
+    only: 'approve',
   }, {
     enabled: true,
     changeable: false,
     name: '拒绝',
     text: '拒绝',
     value: 'REFUSE',
+    only: 'approve',
+  }, {
+    enabled: true,
+    changeable: false,
+    name: '提交',
+    text: '提交',
+    value: 'FILL_IN',
+    only: 'fillIn',
   }],
   custom: [{
-    enabled: false,
+    enabled: false, // common
     changeable: true,
     name: '撤回',
     text: '撤回',
     value: 'CANCEL',
   }, {
-    enabled: false,
+    enabled: false, // common
     changeable: true,
-    name: '提交',
-    text: '提交',
-    value: 'FILL_IN',
-  }, {
-    enabled: false,
-    changeable: true,
-    name: '委托',
-    text: '委托',
+    name: '转交',
+    text: '转交',
     value: 'ENTRUST',
   }, {
     enabled: false,
     changeable: true,
-    name: '退回某步',
-    text: '退回某步',
+    name: '回退',
+    text: '回退',
     value: 'STEP_BACK',
+    only: 'approve',
   }, {
     enabled: false,
     changeable: true,
     name: '打回重填',
     text: '打回重填',
     value: 'SEND_BACK',
+    only: 'approve',
   }, {
-    enabled: false,
+    enabled: false, // common
     changeable: true,
     name: '抄送',
     text: '抄送',
@@ -119,11 +124,12 @@ const operationList = {
     name: '加签',
     text: '加签',
     value: 'ADD_SIGN',
+    only: 'approve',
   }, {
-    enabled: false,
+    enabled: false, // common
     changeable: true,
-    name: '阅示',
-    text: '阅示',
+    name: '邀请阅示',
+    text: '邀请阅示',
     value: 'READ',
   }],
 };
@@ -133,11 +139,9 @@ export function getOperationList({ queryKey }: QueryFunctionContext): Promise<{
 }> {
   return new Promise((r) => {
     const type = queryKey[1];
-    if (type === 'fillIn') {
-      return r({
-        custom: operationList.custom,
-      });
-    }
-    return r(operationList);
+    return r({
+      system: operationList.system.filter(({ only }) => !only || only === type),
+      custom: operationList.custom.filter(({ only }) => !only || only === type),
+    });
   });
 }

@@ -23,7 +23,9 @@ interface Props {
 
 export default function OperatorPermission({ value, onChange: _onChange, type }: Props) {
   const { data, isLoading, isError } = useQuery(['GET_OPERATION_LIST', type], getOperationList);
-  const [mergedOperations, setMergedOperations] = useState<OperationPermissionType>(value);
+  const [mergedOperations, setMergedOperations] = useState<OperationPermissionType>({
+    system: [], custom: [],
+  });
 
   useEffect(() => {
     if (data?.custom?.length || data?.system?.length) {
@@ -36,26 +38,26 @@ export default function OperatorPermission({ value, onChange: _onChange, type }:
   }
 
   function mergeOperation() {
-    const { custom, system = [] } = value;
+    const { custom = [], system = [] } = value;
     const isCustomEmpty = !custom.length;
     const isSystemEmpty = !system.length;
-    const customValues = custom.map(({ value }) => value);
-    const systemValues = system.map(({ value }) => value);
-    const dataCustomValues = data?.custom.map(({ value }) => value) || [];
-    const dataSystemValues = data?.system?.map(({ value }) => value) || [];
+    const customValues = custom.map(({ name, value }) => `${value}.${name}`);
+    const systemValues = system.map(({ name, value }) => `${value}.${name}`);
+    const dataCustomValues = data?.custom?.map(({ name, value }) => `${value}.${name}`) ?? [];
+    const dataSystemValues = data?.system?.map(({ name, value }) => `${value}.${name}`) ?? [];
     data?.custom.forEach((op) => {
-      if (isCustomEmpty || !customValues.includes(op.value)) {
+      if (isCustomEmpty || !customValues.includes(`${op.value}.${op.name}`)) {
         custom.push(op);
       }
     });
     data?.system?.forEach((op) => {
-      if (isSystemEmpty || !systemValues.includes(op.value)) {
+      if (isSystemEmpty || !systemValues.includes(`${op.value}.${op.name}`)) {
         system.push(op as SystemOperation);
       }
     });
     setMergedOperations({
-      custom: custom.filter((op) => op.value && dataCustomValues.includes(op.value)),
-      system: system.filter((op) => op.value && dataSystemValues.includes(op.value)),
+      custom: custom.filter((op) => dataCustomValues.includes(`${op.value}.${op.name}`)),
+      system: system.filter((op) => dataSystemValues.includes(`${op.value}.${op.name}`)),
     });
   }
 

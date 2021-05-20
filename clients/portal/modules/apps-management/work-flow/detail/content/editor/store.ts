@@ -176,6 +176,11 @@ export function getNodeElementById(id: string): CurrentElement {
   return store.value.elements.find((element) => element.id === id) as CurrentElement;
 }
 
+export function numberTransform(keys: string[], data: any) {
+  keys.forEach((key) => update(data, key, (v) => +v));
+  return data;
+}
+
 export function buildBpmnText(
   version: string,
   nodeID: string,
@@ -184,10 +189,25 @@ export function buildBpmnText(
   return JSON.stringify({
     version,
     shapes: store.value.elements.map((el) => {
+      let data;
       if (el.id === nodeID) {
-        return { ...el, data: { ...el.data, businessData: newBusinessData } };
+        data = { ...el, data: { ...el.data, businessData: newBusinessData } };
       }
-      return el;
+      data = el;
+      if (!['approve', 'fillIn'].includes(data.type as string)) {
+        return data;
+      }
+      return numberTransform([
+        'data.businessData.basicConfig.timeRule.deadLine.day',
+        'data.businessData.basicConfig.timeRule.deadLine.hours',
+        'data.businessData.basicConfig.timeRule.deadLine.minutes',
+        'data.businessData.basicConfig.timeRule.deadLine.urge.day',
+        'data.businessData.basicConfig.timeRule.deadLine.urge.hours',
+        'data.businessData.basicConfig.timeRule.deadLine.urge.minutes',
+        'data.businessData.basicConfig.timeRule.deadLine.urge.repeat.day',
+        'data.businessData.basicConfig.timeRule.deadLine.urge.repeat.hours',
+        'data.businessData.basicConfig.timeRule.deadLine.urge.repeat.minutes',
+      ], data);
     }),
   });
 }
