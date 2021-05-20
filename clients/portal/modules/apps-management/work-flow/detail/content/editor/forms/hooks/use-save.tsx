@@ -13,7 +13,7 @@ export default function useSave(appID: string, id?: string) {
     onSuccess: (respData) => {
       toast.success('保存成功');
       if (appID && respData?.id && !id) {
-        history.push(`/apps/flow/${appID}/${respData?.id}`);
+        history.replace(`/apps/flow/${appID}/${respData?.id}`);
       } else {
         callback.current?.();
       }

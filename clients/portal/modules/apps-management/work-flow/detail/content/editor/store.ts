@@ -2,6 +2,7 @@ import { BehaviorSubject } from 'rxjs';
 import { FlowElement, Edge, isNode } from 'react-flow-renderer';
 import { uuid } from '@lib/utils';
 import { update } from 'lodash';
+import moment from 'moment';
 
 import { edgeBuilder, getNodeInitialData, nodeBuilder } from './utils';
 import type { StoreValue, BusinessData, CurrentElement, Data, NodeType } from './type';
@@ -16,7 +17,7 @@ export const getStoreInitialData = () => {
       dataNotSaveMap: new Map(),
     },
     id: '',
-    name: '',
+    name: '未命名工作流' + moment().format('YYYY-MM-DD-HH-mm-ss'),
     apiFetched: false,
     validating: false,
     version: '0.1',

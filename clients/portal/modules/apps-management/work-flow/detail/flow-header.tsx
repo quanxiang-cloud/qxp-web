@@ -1,4 +1,4 @@
-import React, { useState, MouseEvent, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, MouseEvent } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import cs from 'classnames';
 import { useMutation } from 'react-query';
@@ -19,7 +19,7 @@ import store, {
   updateStoreByKey,
 } from './content/editor/store';
 
-export default function GlobalHeader() {
+export default function FlowHeader() {
   const { name = '', status, id, triggerMode, saved } = useObservable<StoreValue>(store);
   const [workFlowName, setWorkFlowName] = useState(name);
   const [isWorkFlowNameMenuOpen, setIsWorkFlowNameMenuOpen] = useState(false);
@@ -136,10 +136,15 @@ export default function GlobalHeader() {
     );
   }
 
+  function onGoBack(e: MouseEvent) {
+    e.stopPropagation();
+    history.goBack();
+  }
+
   return (
     <header className="flex justify-between items-center py-18 px-24 bg-white shadow-flow-header">
       <section className="flex flex-row items-center">
-        <div className="cursor-pointer flex items-center" onClick={() => history.goBack()}>
+        <div className="cursor-pointer flex items-center" onClick={onGoBack}>
           <Icon
             name="arrow-go-back"
             size={22}
@@ -155,7 +160,7 @@ export default function GlobalHeader() {
           {paramsMap[type || triggerMode]}
         </span>
         <div className="flex items-center">
-          <span className="mr-8 text-h6 font-semibold">{name || '未命名工作流'}</span>
+          <span className="mr-8 text-h6 font-semibold">{name}</span>
           <More<JSX.Element>
             open={isWorkFlowNameMenuOpen}
             contentItemClassName="hover:bg-white"
