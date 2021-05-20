@@ -16,6 +16,11 @@ export type Config = {
   pageTableShowRule?: PageTableShowRule;
 };
 
+type Option = {
+  value: string;
+  label: string;
+}
+
 export function operateButton(wIndex: number, authority: number, button: React.ReactNode) {
   const weightArr = authority.toString(2).split('').reverse();
   if (weightArr.length < 7) {
@@ -30,7 +35,10 @@ export function operateButton(wIndex: number, authority: number, button: React.R
   return button;
 }
 
-export function getTableCellData(initValue: string | string[] | Record<string, unknown>, field: PageField): string | JSX.Element {
+export function getTableCellData(
+  initValue: string | string[] | Record<string, unknown>,
+  field: ISchema
+): string | JSX.Element {
   if (!initValue) {
     return (<span className='text-gray-300'>——</span>);
   }
@@ -52,11 +60,20 @@ export function getTableCellData(initValue: string | string[] | Record<string, u
           return '';
         }
 
-        return field.enum.find(({ value }: any) => value === _value)?.label || '';
+        const enumTmp = field.enum[0];
+        if (enumTmp.toString() === '[Object Object]') {
+          return (field.enum.find(({ value }: any) => value === _value) as Option)?.label || '';
+        }
+
+        return _value;
       }).join(',');
     }
 
-    return field.enum.find(({ value }: any) => value === initValue)?.label || '';
+    if (field.enum[0].toString() === '[Object Object]') {
+      return (field.enum.find(({ value }: any) => value === initValue) as Option)?.label || '';
+    }
+
+    return initValue as string;
   }
 
   if (Array.isArray(initValue)) {
