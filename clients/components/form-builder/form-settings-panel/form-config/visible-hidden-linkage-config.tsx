@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import {
   SchemaForm,
@@ -17,8 +17,6 @@ import Icon from '@c/icon';
 import Button from '@c/button';
 import Select from '@c/select';
 import { INTERNAL_FIELD_NAMES } from '../../store';
-import { toJS } from 'mobx';
-import { StoreContext } from '@c/form-builder/context';
 
 const { onFieldInputChange$ } = FormEffectHooks;
 const RowStyleLayout = styled((props) => <div {...props} />)`
@@ -91,13 +89,12 @@ const DEFAULT_VALUE: FormBuilder.VisibleHiddenLinkage = {
 type Props = {
   onClose: () => void;
   linkageKey: string;
+  sourceSchema: ISchema;
   onSubmit: (linkage: FormBuilder.VisibleHiddenLinkage) => void;
 }
 
-function VisibleHiddenLinkageConfig({ onClose, linkageKey, onSubmit }: Props): JSX.Element {
-  const store = useContext(StoreContext);
+function VisibleHiddenLinkageConfig({ onClose, sourceSchema, linkageKey, onSubmit }: Props): JSX.Element {
   const [tag, setTag] = useState('every');
-  const sourceSchema = toJS(store.schema);
   const linkages = (
     sourceSchema['x-internal']?.visibleHiddenLinkages || []
   ) as FormBuilder.VisibleHiddenLinkage[];

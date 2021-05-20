@@ -7,6 +7,7 @@ import Icon from '@c/icon';
 import { StoreContext } from '../../context';
 import VisibleHiddenLinkageConfig from './visible-hidden-linkage-config';
 import { INTERNAL_FIELD_NAMES } from '../../store';
+import { toJS } from 'mobx';
 
 type RenderLayoutOptionProps = {
   labelAlign: 'right' | 'top';
@@ -179,7 +180,7 @@ function FormConfig(): JSX.Element {
       {isLinkageConfigVisible && (
         <VisibleHiddenLinkageConfig
           linkageKey={editingLinkage}
-          // sourceSchema={toJS(store.schema))}
+          sourceSchema={toJS(store.schema)}
           onSubmit={(linkage) => {
             store.handleLinkageChange(linkage);
             setLinkageConfigVisible(false);
