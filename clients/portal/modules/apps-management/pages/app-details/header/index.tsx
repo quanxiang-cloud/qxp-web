@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import { observer } from 'mobx-react';
 
@@ -8,17 +8,20 @@ import Button from '@c/button';
 import HeaderNav from '@c/header-nav';
 
 import AppsSwitcher from '@c/apps-switcher';
+import { fetchAppList } from '../../entry/app-list/api';
 import appDetailsStore from '../store';
-import appListStore from '../../entry/app-list/store';
 import './index.scss';
 
 function DetailsHeader() {
   const history = useHistory();
+  const [apps, setApps] = useState<AppInfo[]>([]);
   const { appID } = useParams<{appID: string}>();
   const { updateAppStatus, appDetails } = appDetailsStore;
 
   useEffect(() => {
-    appListStore.fetchAppList({ useStatus: 0, appName: '' });
+    fetchAppList({}).then((res)=>{
+      setApps(res.data.data || []);
+    });
   }, []);
 
   const goAppSetting = () => {
@@ -68,7 +71,7 @@ function DetailsHeader() {
           }}
         />
         <span className='mr-16 ml-8'>/</span>
-        <AppsSwitcher apps={appListStore.allAppList} currentAppID={appID} onChange={handleChange} />
+        <AppsSwitcher apps={apps} currentAppID={appID} onChange={handleChange} />
       </div>
       <div className='flex'>
         {isPublish ? (

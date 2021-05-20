@@ -41,7 +41,8 @@
 }
 
 .app-entry-container {
-  @apply flex justify-center items-start gap-x-20 mx-auto pt-20;
+  @apply flex justify-center items-start gap-x-20 mx-auto;
+  padding: 20px 20px 0;;
   width: 100%;
   max-width: 1324px;
   height: calc(100vh - 64px);

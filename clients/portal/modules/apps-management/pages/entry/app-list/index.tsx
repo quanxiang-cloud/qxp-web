@@ -15,6 +15,9 @@ function MyApp() {
 
   useEffect(() => {
     store.changeParams({});
+    return () => {
+      store.isListLoading = true;
+    };
   }, []);
 
   return (
