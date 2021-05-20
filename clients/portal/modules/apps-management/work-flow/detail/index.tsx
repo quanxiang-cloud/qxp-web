@@ -43,7 +43,7 @@ export default function Detail() {
       const bpmn = JSON.parse(data.bpmnText);
       updateStore((s) => ({
         ...s,
-        elements: bpmn.shapes,
+        elements: bpmn.shapes.filter(Boolean),
         version: bpmn.version,
         name: data.name,
         cancelable: data.canCancel === 1,

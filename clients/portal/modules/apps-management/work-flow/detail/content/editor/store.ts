@@ -184,16 +184,18 @@ export function numberTransform(keys: string[], data: any) {
 export function buildBpmnText(
   version: string,
   nodeID: string,
-  newBusinessData: BusinessData
+  newBusinessData: Partial<BusinessData>,
 ) {
   return JSON.stringify({
     version,
     shapes: store.value.elements.map((el) => {
-      let data;
-      if (el.id === nodeID) {
-        data = { ...el, data: { ...el.data, businessData: newBusinessData } };
+      let data: any = el;
+      if (el.id == nodeID) {
+        data = {
+          ...el,
+          data: { ...el.data, businessData: { ...el.data?.businessData, ...newBusinessData } },
+        };
       }
-      data = el;
       if (!['approve', 'fillIn'].includes(data.type as string)) {
         return data;
       }

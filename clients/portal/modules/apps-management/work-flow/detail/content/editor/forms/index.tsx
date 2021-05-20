@@ -140,7 +140,7 @@ export default function NodeFormWrapper() {
     if (formDataIsValid()) {
       setFormDataChanged(false);
       saver({
-        bpmnText: buildBpmnText(version, nodeIdForDrawerForm, formData),
+        bpmnText: buildBpmnText(version, nodeIdForDrawerForm, saveData),
         name: name as string,
         triggerMode: triggerMode as string,
         canCancel: canCancel ? 1 : 0,
