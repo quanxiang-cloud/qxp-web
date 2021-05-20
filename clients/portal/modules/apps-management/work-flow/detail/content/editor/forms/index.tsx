@@ -207,7 +207,6 @@ export default function NodeFormWrapper() {
   }
 
   function onResetFormData(form: NodeWorkForm) {
-    // TODO
     const newInitialFormData = getNodeInitialData(currentNodeElement?.type);
     newInitialFormData && setFormData({
       ...newInitialFormData,
