@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation } from 'react-query';
 import cs from 'classnames';
 import { Link, useParams, useHistory } from 'react-router-dom';
+import moment from 'moment';
 
 import Table from '@c/table';
 import ModalConfirm from '@c/modal-confirm';
@@ -137,6 +138,7 @@ export default function WorkFlowTable({ type }: Props) {
     }, {
       Header: '更新时间',
       accessor: 'modifyTime',
+      Cell: (model: any) => moment(model.cell.value).format('YYYY-MM-DD HH:mm:ss'),
     }, {
       accessor: 'id',
       Cell: (model: any) => {
