@@ -5,7 +5,7 @@ import { Link, useParams, useHistory } from 'react-router-dom';
 import moment from 'moment';
 
 import Table from '@c/table';
-import ModalConfirm from '@c/modal-confirm';
+import Modal from '@c/modal';
 import ErrorTips from '@c/error-tips';
 import toast from '@lib/toast';
 import TableMoreFilterMenu from '@c/more-menu/table-filter';
@@ -216,14 +216,28 @@ export default function WorkFlowTable({ type }: Props) {
         />
       )}
       {!!state.currentDeleteWorkFlow && (
-        <ModalConfirm
+        <Modal
           title="删除工作流"
-          onSubmit={() => {
-            deleteFlowMutation.mutate(state.currentDeleteWorkFlow?.id as string);
-          }}
-          onCancel={() => {
+          onClose={() => {
             setState((s) => ({ ...s, currentDeleteWorkFlow: null }));
           }}
+          footerBtns={[
+            {
+              text: '取消',
+              key: 'cancel',
+              onClick: () => {
+                setState((s) => ({ ...s, currentDeleteWorkFlow: null }));
+              },
+            },
+            {
+              text: '确定',
+              key: 'confirm',
+              modifier: 'primary',
+              onClick: () => {
+                deleteFlowMutation.mutate(state.currentDeleteWorkFlow?.id as string);
+              },
+            },
+          ]}
         >
           <p className="text-h5">
             确定要删除工作流
@@ -232,7 +246,7 @@ export default function WorkFlowTable({ type }: Props) {
             </span>
             吗？删除后将无法恢复！
           </p>
-        </ModalConfirm>
+        </Modal>
       )}
     </div>
   );

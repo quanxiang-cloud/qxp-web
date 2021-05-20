@@ -6,7 +6,7 @@ import { pick } from 'lodash';
 
 import Breadcrumb from '@c/breadcrumb';
 import { useURLSearch } from '@lib/hooks';
-import Tab from '@c/tab';
+import Tab from '@c/tab2';
 import Icon from '@c/icon';
 import toast from '@lib/toast';
 import Loading from '@c/loading';
@@ -102,8 +102,6 @@ function ApprovalDetail(): JSX.Element {
         </Panel>
         <Panel className="approval-detail-tab w-400">
           <Tab
-            activeTitleClassName="border-blue-600 border-b-4"
-            headerClassName="border-gray-200 border-b-1"
             items={[
               {
                 id: 'history',

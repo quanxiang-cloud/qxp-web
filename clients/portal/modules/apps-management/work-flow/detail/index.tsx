@@ -5,7 +5,7 @@ import { useParams } from 'react-router-dom';
 import Loading from '@c/loading';
 import ErrorTips from '@c/error-tips';
 import toast from '@lib/toast';
-import Confirm from '@c/modal-confirm';
+import Modal from '@c/modal';
 import useObservable from '@lib/hooks/use-observable';
 
 import Header from './flow-header';
@@ -85,13 +85,25 @@ export default function Detail() {
     <>
       <Header />
       {showDataNotSaveConfirm && (
-        <Confirm
+        <Modal
           title="工作流未保存"
-          onCancel={onConfirmCancel}
-          onSubmit={onConfirmSubmit}
+          onClose={onConfirmCancel}
+          footerBtns={[
+            {
+              text: '取消',
+              key: 'cancel',
+              onClick: onConfirmCancel,
+            },
+            {
+              text: '确定',
+              key: 'confirm',
+              modifier: 'primary',
+              onClick: onConfirmSubmit,
+            },
+          ]}
         >
           <p>您修改了工作流但未保存，离开后将丢失更改，确定要离开吗？</p>
-        </Confirm>
+        </Modal>
       )}
       <section className="flex-1 flex">
         <AsideMenu onChange={setCurrentOperateType} currentOperateType={currentOperateType} />

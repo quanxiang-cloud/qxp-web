@@ -12,7 +12,7 @@ export type TabItem<T extends React.Key = string> = {
   content: React.ReactNode;
 }
 
-export type Props<T extends React.Key>= {
+export type Props<T extends React.Key> = {
   items: TabItem<T>[];
   strechNavs?: boolean
   className?: string;

@@ -1,7 +1,6 @@
 import React from 'react';
-import cs from 'classnames';
 
-import Tab from '@c/tab';
+import Tab from '@c/tab2';
 
 import type { BusinessData, NodeType } from '@flow/detail/content/editor/type';
 
@@ -19,14 +18,6 @@ export default function ApproveForm({ value, onChange, nodeType }: Props) {
   return (
     <Tab
       className="mt-10"
-      headerClassName="border-gray-200 border-b-1"
-      titleClassName={cs(
-        'bg-white hover:bg-white',
-        'hover:border-blue-600 hover:border-b-4'
-      )}
-      activeTitleClassName="border-blue-600 border-b-4"
-      contentClassName="overflow-scroll bg-white"
-      style={{ height: 'calc(100% - 56px)' }}
       items={[{
         id: 'basicConfig',
         name: '基础配置',
