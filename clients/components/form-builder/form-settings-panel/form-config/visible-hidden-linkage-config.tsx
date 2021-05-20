@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import styled from 'styled-components';
 import {
   SchemaForm,
@@ -17,8 +17,8 @@ import Icon from '@c/icon';
 import Button from '@c/button';
 import Select from '@c/select';
 import { INTERNAL_FIELD_NAMES } from '../../store';
-import Store from '../../store';
 import { toJS } from 'mobx';
+import { StoreContext } from '@c/form-builder/context';
 
 const { onFieldInputChange$ } = FormEffectHooks;
 const RowStyleLayout = styled((props) => <div {...props} />)`
@@ -91,11 +91,11 @@ const DEFAULT_VALUE: FormBuilder.VisibleHiddenLinkage = {
 type Props = {
   onClose: () => void;
   linkageKey: string;
-  store: Store;
   onSubmit: (linkage: FormBuilder.VisibleHiddenLinkage) => void;
 }
 
-function VisibleHiddenLinkageConfig({ onClose, store, linkageKey, onSubmit }: Props): JSX.Element {
+function VisibleHiddenLinkageConfig({ onClose, linkageKey, onSubmit }: Props): JSX.Element {
+  const store = useContext(StoreContext);
   const [tag, setTag] = useState('every');
   const sourceSchema = toJS(store.schema);
   const linkages = (
@@ -204,11 +204,7 @@ function VisibleHiddenLinkageConfig({ onClose, store, linkageKey, onSubmit }: Pr
           value={tag}
           onChange={(tag: string) => {
             setTag(tag);
-            store.visibleHiddenLinkages.map((linkage: any) => {
-              linkage.ruleJoinOperator = tag;
-              return linkage;
-            });
-            store.linkageCondition = tag === 'every' ? '所有' : '任一';
+            defaultValue.ruleJoinOperator = tag as 'every' | 'some';
           }}
           options={[{
             label: '所有',
@@ -224,7 +220,10 @@ function VisibleHiddenLinkageConfig({ onClose, store, linkageKey, onSubmit }: Pr
       <SchemaForm
         components={{ ArrayCustom, Input, AntdSelect, DatePicker, NumberPicker }}
         defaultValue={defaultValue}
-        onSubmit={onSubmit}
+        onSubmit={(value) => {
+          value.ruleJoinOperator = tag;
+          onSubmit(value);
+        }}
         effects={() => setCompareValueOptions()}
       >
         <Field
