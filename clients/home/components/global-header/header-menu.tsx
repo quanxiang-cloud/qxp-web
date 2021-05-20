@@ -43,9 +43,6 @@ export default function HeaderMenu() {
         />
       </div> */}
       <div className="header-nav-btn group">
-        <Avatar
-          username={window.USER.userName}
-        />
         <MoreMenu
           menus={[
             { key: 'resetPassword', label: '重置密码' },
@@ -64,6 +61,9 @@ export default function HeaderMenu() {
             className="cursor-pointer flex items-center h-36
             hover:blue-100 transition group-hover:text-blue-600"
           >
+            <Avatar
+              username={window.USER.userName}
+            />
             <Icon name="arrow_drop_down" size={20} />
           </div>
         </MoreMenu>
