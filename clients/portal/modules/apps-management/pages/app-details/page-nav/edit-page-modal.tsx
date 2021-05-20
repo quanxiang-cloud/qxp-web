@@ -7,6 +7,7 @@ import SelectField from '@portal/modules/apps-management/components/select-field
 import { APP_ICON_LIST } from '@c/app-icon-select';
 import AppIconSelect from '@c/app-icon-select';
 
+import store from '../store';
 import { fetchGroupList } from '../api';
 
 type Props = {
@@ -30,6 +31,7 @@ const IconSelectField = Form.getFormField(AppIconSelect);
 
 function EditPageModal({ pageInfo, onCancel, onSubmit, appID }: Props) {
   const [groupList, setGroupList] = useState<Option[]>([]);
+  const ref: any = useRef();
 
   useEffect(() => {
     fetchGroupList(appID).then((res) => {
@@ -39,7 +41,28 @@ function EditPageModal({ pageInfo, onCancel, onSubmit, appID }: Props) {
     });
   }, [appID]);
 
-  const ref: any = useRef();
+  const validateRepeat = (value: string) => {
+    let repeated = true;
+    for (const pageInfo of store.pageInitList) {
+      if (pageInfo.menuType === 1) {
+        if (pageInfo.child?.length) {
+          for (const _pageInfo of pageInfo.child) {
+            if (_pageInfo.name === value) {
+              repeated = false;
+              return;
+            }
+          }
+        }
+      } else {
+        if (pageInfo.name === value) {
+          repeated = false;
+          return;
+        }
+      }
+    }
+    return repeated;
+  };
+
   const handleSubmit = () => {
     const formRef = ref.current;
     if (formRef.validateFields()) {
@@ -82,6 +105,10 @@ function EditPageModal({ pageInfo, onCancel, onSubmit, appID }: Props) {
             {
               help: '名称不超过 30 字符，请修改！ ',
               rule: { maxLength: 30 },
+            },
+            {
+              help: '页面名称重复',
+              rule: validateRepeat,
             },
           ]}
         />

@@ -30,6 +30,7 @@ class AppDetailsStore {
   };
   @observable appDataStore: AppDataStore = new AppDataStore({ schema: {} });
   @observable loading = false;
+  @observable pageInitList: PageInfo[] = [];
   @observable appID = '';
   @observable pageID = '';
   @observable pageListLoading = true;
@@ -225,6 +226,7 @@ class AppDetailsStore {
     this.appID = appID;
     this.pageListLoading = true;
     fetchPageList(appID).then((res) => {
+      this.pageInitList = res.data.menu;
       this.pagesTreeData = buildAppPagesTreeData(res.data.menu);
       this.pageListLoading = false;
     });

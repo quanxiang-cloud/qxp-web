@@ -3,6 +3,8 @@ import { Form } from '@QCFE/lego-ui';
 
 import Modal from '@c/modal';
 
+import store from '../store';
+
 type Props = {
   onCancel: () => void;
   onSubmit: (groupInfo: PageInfo) => Promise<unknown>;
@@ -19,6 +21,14 @@ function EditGroupModal({ name, id, onCancel, onSubmit }: Props) {
         onCancel();
       });
     }
+  };
+
+  const validateRepeat = (value: string) => {
+    return store.pageInitList.findIndex((pageInfo: PageInfo) => {
+      if (pageInfo.menuType === 1 ) {
+        return pageInfo.name === value;
+      }
+    }) === -1;
   };
 
   return (
@@ -52,6 +62,10 @@ function EditGroupModal({ name, id, onCancel, onSubmit }: Props) {
             {
               help: '不能超过30个字符',
               rule: { maxLength: 30 },
+            },
+            {
+              rule: validateRepeat,
+              help: '分组名称重复',
             },
           ]}
         />
