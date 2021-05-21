@@ -34,7 +34,7 @@ export default function TimerSelector({
   }
 
   const isTimeInValid = validating && (
-    +defaultDay <= 0 || +defaultHours <= 0 || +defaultMinutes <= 0);
+    +defaultDay <= 0 && +defaultHours <= 0 && +defaultMinutes <= 0);
 
   function inputBuilder(
     value: number,
