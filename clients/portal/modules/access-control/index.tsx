@@ -52,12 +52,14 @@ export default function Index() {
         defaultActiveLink={{ basePath: '/access-control', menuId: 'departments-employees' }}
         />
       </div>
-      <Switch>
-        <Route exact path="/access-control" component={DepartmentsEmployees} />
-        <Route path="/access-control/departments-employees" component={DepartmentsEmployees} />
-        <Route path="/access-control/role-management" component={RoleManagement} />
-        <Route component={() => (<ErrorTips desc={'Menu page is not found'} />)} />
-      </Switch>
+      <div className="h-full transition-opacity flex flex-col flex-1">
+        <Switch>
+          <Route exact path="/access-control" component={DepartmentsEmployees} />
+          <Route path="/access-control/departments-employees" component={DepartmentsEmployees} />
+          <Route path="/access-control/role-management" component={RoleManagement} />
+          <Route component={() => (<ErrorTips desc={'Menu page is not found'} />)} />
+        </Switch>
+      </div>
     </div>
   );
 }
