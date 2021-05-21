@@ -1,3 +1,5 @@
+import throttle from '@lib/decorators/throttle';
+
 interface Options {
   duration?: number;
 }
@@ -113,6 +115,7 @@ class Toast {
     `;
   }
 
+  @throttle()
   private toast(type: string, message: string | Error | unknown, options?: Options) {
     let msg = message;
     if (msg instanceof Error) {

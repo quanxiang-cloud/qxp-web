@@ -1,17 +1,48 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
+import { useParams } from 'react-router-dom';
 
 import Toggle from '@c/toggle';
 import Icon from '@c/icon';
 import ToolTip from '@c/tooltip';
 import useObservable from '@lib/hooks/use-observable';
 
-import store, { updateStoreByKey } from '../editor/store';
+import store, { updateStoreByKey, updateStore } from '../editor/store';
+import useSave from '../editor/forms/hooks/use-save';
+
 import type { StoreValue } from '../editor/type';
 
 export default function GlobalConfig() {
   const {
-    cancelable, urgeable, seeStatusAndMsg, nodeAdminMsg,
+    cancelable, urgeable, seeStatusAndMsg, nodeAdminMsg, id, name, version, elements,
+    triggerMode,
   } = useObservable<StoreValue>(store);
+  const { appID } = useParams<{ appID: string }>();
+  const changedRef = useRef<{ key: keyof StoreValue, checked: boolean }>();
+
+  const saver = useSave(appID, id);
+  useEffect(() => {
+    if (!changedRef.current?.key || !id || !name || !triggerMode) {
+      return;
+    }
+    saver({
+      bpmnText: JSON.stringify({
+        version,
+        shapes: elements,
+      }),
+      name: name as string,
+      triggerMode: triggerMode as string,
+      canCancel: cancelable ? 1 : 0,
+      canUrge: urgeable ? 1 : 0,
+      canMsg: nodeAdminMsg ? 1 : 0,
+      canViewStatusMsg: seeStatusAndMsg ? 1 : 0,
+      appId: appID,
+    },
+    () => updateStore((s) => ({ ...s, saved: true })),
+    () => changedRef.current?.key && updateStoreByKey(
+      changedRef.current?.key,
+      () => !changedRef.current?.checked
+    ));
+  }, [cancelable, urgeable, seeStatusAndMsg, nodeAdminMsg]);
 
   const options = [{
     field: 'cancelable',
@@ -41,6 +72,7 @@ export default function GlobalConfig() {
 
   function onChange(type: keyof StoreValue) {
     return (checked?: boolean) => {
+      changedRef.current = { key: type, checked: !!checked };
       updateStoreByKey(type, () => !!checked);
     };
   }
