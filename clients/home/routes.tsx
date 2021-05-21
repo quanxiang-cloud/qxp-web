@@ -1,7 +1,7 @@
 import React, { lazy, Suspense } from 'react';
 import { Route, Switch } from 'react-router-dom';
 
-import PageLoading from '@portal/modules/apps-management/components/page-loading';
+import PageLoading from '@c/page-loading';
 import ErrorTips from '@c/error-tips';
 
 const Dashboard = lazy(

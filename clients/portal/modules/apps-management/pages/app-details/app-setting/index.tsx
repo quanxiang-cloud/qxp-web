@@ -16,11 +16,11 @@ import appDetailsStore from '../store';
 import './index.scss';
 
 function AppSetting() {
-  const { appId } = useParams<AppParams>();
+  const { appID } = useParams<any>();
   const history = useHistory();
 
   const goBack = () => {
-    history.push('/apps/details/' + appId);
+    history.push('/apps/details/' + appID);
   };
 
   const MENU = [
@@ -29,14 +29,14 @@ function AppSetting() {
       icon: 'description',
       replace: true,
       name: '应用信息',
-      url: `/apps/details/${appId}/setting/info`,
+      url: `/apps/details/${appID}/setting/info`,
     },
     {
       id: 'adminUsers',
       icon: 'admin_panel_settings',
       replace: true,
       name: '应用管理员',
-      url: `/apps/details/${appId}/setting/adminUsers`,
+      url: `/apps/details/${appID}/setting/adminUsers`,
     },
   ];
 
@@ -56,21 +56,23 @@ function AppSetting() {
         </Breadcrumb>
       </div>
       <div className="flex justify-center items-start gap-x-20 flex-1">
-        <SideNavCard cardTitle={(
-          <div className="access-background-image p-20 opacity-90">
-            <ItemWithTitleDesc
-              title="应用管理"
-              desc="常规的基础设置和工作流编排"
-              itemRender={<AppIcon themeColor='fuchsia' iconName='settings' size={48} />}
-              titleClassName="text-2 leading-8 font-bold mb-2"
-              descClassName="leading-8"
-            />
-          </div>
-        )} menuData={MENU} />
+        <SideNavCard
+          className='w-316'
+          cardTitle={(
+            <div className="access-background-image p-20 opacity-90">
+              <ItemWithTitleDesc
+                title="应用管理"
+                desc="常规的基础设置和工作流编排"
+                itemRender={<AppIcon themeColor='fuchsia' iconName='settings' size={48} />}
+                titleClassName="text-2 leading-8 font-bold mb-2"
+                descClassName="leading-8"
+              />
+            </div>
+          )} menuData={MENU} />
         <div className="app-right-box bg-white">
           <Switch>
-            <Route exact path="/apps/details/:appId/setting/info" component={AppInfo} />
-            <Route exact path="/apps/details/:appId/setting/adminUsers" component={AppAdmin} />
+            <Route exact path="/apps/details/:appID/setting/info" component={AppInfo} />
+            <Route exact path="/apps/details/:appID/setting/adminUsers" component={AppAdmin} />
           </Switch>
         </div>
       </div>

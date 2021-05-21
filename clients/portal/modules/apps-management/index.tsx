@@ -5,11 +5,11 @@ import SideNavCard from '@c/side-nav-card';
 import ItemWithTitleDesc from '@c/item-with-title-desc';
 import AppIcon from '@c/app-icon';
 
-import MyApp from './pages/entry/my-app';
+import AppList from './pages/entry/app-list';
 
 const MENU = [
   {
-    id: 'MyApp',
+    id: 'AppList',
     icon: 'dashboard_customize',
     name: '我的应用',
     url: '/apps',
@@ -23,8 +23,9 @@ const MENU = [
 
 function AppManagerEntry() {
   return (
-    <div className="max-w-screen app-entry-container">
+    <div className="app-entry-container">
       <SideNavCard
+        className='w-316'
         cardTitle={(
           <div className="access-background-image p-20 opacity-90">
             <ItemWithTitleDesc
@@ -42,7 +43,7 @@ function AppManagerEntry() {
       />
       <div className="app-right-box bg-opacity-50 bg-white">
         <Switch>
-          <Route path="/apps" component={MyApp} />
+          <Route path="/apps" component={AppList} />
         </Switch>
       </div>
     </div>

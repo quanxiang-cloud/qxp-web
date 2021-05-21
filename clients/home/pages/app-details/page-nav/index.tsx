@@ -1,15 +1,25 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useHistory, useParams } from 'react-router-dom';
 import { observer } from 'mobx-react';
 
-import PageLoading from '@portal/modules/apps-management/components/page-loading';
+import PageLoading from '@c/page-loading';
+import { getQuery } from '@lib/utils';
 
 import AppPagesTree from './app-pages-tree';
 import store from '../../store';
 import './index.scss';
 
 function PageNav() {
+  const history = useHistory();
+  const { pageID } = getQuery<{ pageID: string }>();
+  const { appID } = useParams<{ appID: string }>();
+
+  useEffect(() => {
+    store.setPageID(pageID);
+  }, [pageID]);
+
   const onSelect = (pageNode: PageInfo) => {
-    store.setCurPage(pageNode);
+    history.replace(`/apps/${appID}?pageID=${pageNode.id}`);
   };
 
   if (store.pageListLoading) {

@@ -1,26 +1,28 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { observer } from 'mobx-react';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 
-import NavButton from '@portal/modules/apps-management/components/nav-button';
+import HeaderNav from '@c/header-nav';
 import toast from '@lib/toast';
-import AppDropdown from '@c/app-dropdown';
+import AppsSwitcher from '@c/apps-switcher';
 
-import store from '../../store';
+import { fetchUserList } from '../../../lib/api';
 import './index.scss';
 
 function DetailsHeader() {
   const history = useHistory();
-  const { appID } = store;
+  const [appList, setAppList] = useState([]);
+  const { appID } = useParams<{ appID: string}>();
 
   useEffect(() => {
-    store.fetchAppList().then(() => {
-      if (store.appList.findIndex(({ id }: AppInfo) => id === store.appID) === -1) {
+    fetchUserList().then((res) => {
+      if (res.data.data.findIndex(({ id }: AppInfo) => id === appID) === -1) {
         toast.error('应用不存在！2秒后跳转到首页');
         setTimeout(() => {
           history.replace('/');
         }, 2000);
       }
+      setAppList(res.data.data);
     });
   }, []);
 
@@ -31,12 +33,12 @@ function DetailsHeader() {
   return (
     <div className="app-global-header app-details-header">
       <div className='flex items-center'>
-        <NavButton {...{ name: '工作台', icon: 'home', inside: true, url: '/' }} />
+        <HeaderNav {...{ name: '工作台', icon: 'home', inside: true, url: '/' }} />
         <span className='mr-16 ml-8'>/</span>
-        <AppDropdown
+        <AppsSwitcher
           hiddenStatus={true}
-          appList={store.appList}
-          curApp={appID}
+          apps={appList}
+          currentAppID={appID}
           onChange={handleChange}
         />
       </div>

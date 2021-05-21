@@ -9,7 +9,7 @@ export default function Routes(): JSX.Element {
   return (
     <Switch>
       <Route exact path="/apps" component={AppsIndex} />
-      <Route path="/apps/details/:appId" component={AppDetails} />
+      <Route path="/apps/details/:appID" component={AppDetails} />
       <Route
         exact
         path="/apps/formDesign/:pageType/:pageId/:appID/:navType?"

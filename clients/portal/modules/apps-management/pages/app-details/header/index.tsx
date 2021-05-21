@@ -1,24 +1,27 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import { observer } from 'mobx-react';
 
 import Icon from '@c/icon';
 import PopConfirm from '@c/pop-confirm';
 import Button from '@c/button';
-import NavButton from '@portal/modules/apps-management/components/nav-button';
+import HeaderNav from '@c/header-nav';
 
-import AppDropdown from '@c/app-dropdown';
+import AppsSwitcher from '@c/apps-switcher';
+import { fetchAppList } from '../../entry/app-list/api';
 import appDetailsStore from '../store';
-import appListStore from '../../entry/my-app/store';
 import './index.scss';
 
 function DetailsHeader() {
   const history = useHistory();
-  const { appId } = useParams<{appId: string}>();
+  const [apps, setApps] = useState<AppInfo[]>([]);
+  const { appID } = useParams<{appID: string}>();
   const { updateAppStatus, appDetails } = appDetailsStore;
 
   useEffect(() => {
-    appListStore.fetchAppList({ useStatus: 0, appName: '' });
+    fetchAppList({}).then((res)=>{
+      setApps(res.data.data || []);
+    });
   }, []);
 
   const goAppSetting = () => {
@@ -26,11 +29,11 @@ function DetailsHeader() {
   };
 
   const handleChange = (newAppId: string) => {
-    history.replace(location.pathname.replace(appId, newAppId));
+    history.replace(location.pathname.replace(appID, newAppId));
   };
 
   const goAppVisit = () => {
-    window.open(`//${window.CONFIG.home_hostname}/apps/` + appId);
+    window.open(`//${window.CONFIG.home_hostname}/apps/` + appID);
   };
 
   const statusTipsContent = (isPublish: boolean) => {
@@ -59,7 +62,7 @@ function DetailsHeader() {
   return (
     <div className="app-global-header app-details-header">
       <div className='flex items-center'>
-        <NavButton
+        <HeaderNav
           {...{
             name: '应用管理',
             icon: 'dashboard_customize',
@@ -68,7 +71,7 @@ function DetailsHeader() {
           }}
         />
         <span className='mr-16 ml-8'>/</span>
-        <AppDropdown appList={appListStore.allAppList} curApp={appId} onChange={handleChange} />
+        <AppsSwitcher apps={apps} currentAppID={appID} onChange={handleChange} />
       </div>
       <div className='flex'>
         {isPublish ? (
@@ -95,7 +98,7 @@ function DetailsHeader() {
           应用管理
         </Button>
         <hr className='app-global-header-hr' />
-        <NavButton {...{ name: '帮助文档', icon: 'book', url: '' }} />
+        <HeaderNav {...{ name: '帮助文档', icon: 'book', url: '' }} />
       </div>
     </div>
   );

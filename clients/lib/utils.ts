@@ -1,6 +1,9 @@
+import qs from 'qs';
 import { TreeData, TreeItem } from '@atlaskit/tree';
+import { get } from 'lodash';
 
 import { TreeNode } from '@c/headless-tree/types';
+import toast from '@lib/toast';
 
 export const httpFile = async (url: string, data?: Record<string, string | Blob>) => {
   const formData = new FormData();
@@ -165,6 +168,27 @@ export function isPassword(pwd: string) {
   return /^(?=.*\d)(?=.*[a-zA-Z])(?=.*[~!@#$%^&*.\(\)\-\+\[\]\|\"\'\_])[\da-zA-Z~!@#$%^&*.\(\)\-\+\[\]\|\"\'\_]{8,}$/.test(pwd);
 }
 
+export function copyToClipboard(str: string, msg: string) {
+  const el = document.createElement('textarea');
+  el.value = str;
+  el.setAttribute('readonly', '');
+  el.style.position = 'absolute';
+  el.style.left = '-9999px';
+  document.body.appendChild(el);
+  const selected =
+    document.getSelection()?.rangeCount as number > 0 ?
+      document.getSelection()?.getRangeAt(0) :
+      false;
+  el.select();
+  document.execCommand('copy');
+  document.body.removeChild(el);
+  if (selected) {
+    document.getSelection()?.removeAllRanges();
+    document.getSelection()?.addRange(selected);
+  }
+  toast.success(msg || '复制成功');
+}
+
 function _buildTreeDataItems(
   items: { [key: string]: TreeItem },
   menus: Array<PageInfo>,
@@ -175,7 +199,7 @@ function _buildTreeDataItems(
     return { ...acc, ...childItems };
   }, {});
 
-  const newItems = menus.reduce<{ [key: string]: TreeItem}>((acc, page) => {
+  const newItems = menus.reduce<{ [key: string]: TreeItem }>((acc, page) => {
     acc[page.id] = {
       id: page.id,
       children: (page.child || []).map((childPage) => childPage.id),
@@ -210,4 +234,40 @@ export function buildAppPagesTreeData(menus: Array<PageInfo>): TreeData {
   };
 
   return treeData;
+}
+
+export function getQuery<T>(): T {
+  const search = window.location.search;
+  if (search) {
+    return qs.parse(search.split('?').pop() || '') as unknown as T;
+  }
+
+  return {} as T;
+}
+
+export function noop() {}
+
+export function toggleArray<T>(arr1: T[], value: T, condition = true) {
+  if (condition && arr1.includes(value)) {
+    return arr1.filter((v) => v !== value);
+  }
+  return [...arr1, value];
+}
+
+export function jsonValidator<T>(data: T, schema: Record<string, (v: any) => boolean>) {
+  return Object.entries(schema).every(([path, validator]) => {
+    const values = path.split(',').reduce((cur: any[], next) => {
+      cur.push(get(data, next));
+      return cur;
+    }, []);
+    return validator(values.length === 1 ? values[0] : values);
+  });
+}
+
+export function getHTMLParentElement(selector: string, el: HTMLElement | null): HTMLElement | void {
+  if (el?.matches(selector)) {
+    return el;
+  } else if (el) {
+    return getHTMLParentElement(selector, el.parentElement);
+  }
 }

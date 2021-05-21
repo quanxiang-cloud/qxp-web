@@ -1,8 +1,8 @@
 import React, { useRef } from 'react';
-import { Modal, Form } from '@QCFE/lego-ui';
+import { Form } from '@QCFE/lego-ui';
 
+import Modal from '@c/modal';
 import Icon from '@c/icon';
-import Button from '@c/button';
 
 import store from '../store';
 import '../index.scss';
@@ -25,24 +25,21 @@ function DeleteAppModal({ onCancel, appInfo }: Props) {
 
   return (
     <Modal
-      visible
       title='删除应用'
-      onCancel={onCancel}
+      onClose={onCancel}
       className="static-modal"
-      footer={
-        (<div className="flex items-center">
-          <Button iconName='close' onClick={onCancel} className="mr-20">
-            取消
-          </Button>
-          <Button
-            modifier='primary'
-            iconName='check'
-            onClick={handleSubmit}
-          >
-            删除应用
-          </Button>
-        </div>)
-      }
+      footerBtns={[{
+        key: 'close',
+        iconName: 'close',
+        onClick: onCancel,
+        text: '取消',
+      }, {
+        key: 'check',
+        iconName: 'check',
+        modifier: 'primary',
+        onClick: handleSubmit,
+        text: '删除应用',
+      }]}
     >
       <div className='flex-1'>
         <p className='app-del-title'>

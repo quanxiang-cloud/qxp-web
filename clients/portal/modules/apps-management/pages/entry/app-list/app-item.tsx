@@ -9,7 +9,7 @@ type Props = {
   appInfo: AppInfo;
   openModal: (modalType: string, appInfo: AppInfo) => void;
   readonly?: boolean;
-  onClick?: (appId: string) => void;
+  onClick?: (appID: string) => void;
 }
 
 function AppItem({ appInfo, onClick, readonly, openModal }: Props) {

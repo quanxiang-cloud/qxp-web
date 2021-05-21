@@ -8,7 +8,7 @@ import Icon from '@c/icon';
 import Button from '@c/button';
 import formFieldWrap from '@portal/modules/apps-management/components/form-field-wrap';
 import toast from '@lib/toast';
-import { fetchDataAccessPer, saveDataAccessPer } from '@portal/modules/apps-management/lib/api';
+import { fetchDataAccessPer, saveDataAccessPer } from '../../api';
 
 import { getFilterField } from '../../utils';
 import store from '../../store';

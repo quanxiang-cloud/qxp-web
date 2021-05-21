@@ -2,10 +2,10 @@ import React, { useRef } from 'react';
 import { observer } from 'mobx-react';
 
 import Button from '@c/button';
-import PageLoading from '@portal/modules/apps-management/components/page-loading';
+import PageLoading from '@c/page-loading';
 import TextHeader from '@c/text-header';
 
-import CreatedEditApp from '../../entry/my-app/app-edit/created-edit-app';
+import CreatedEditApp from '../../entry/app-list/app-edit/created-edit-app';
 import appDetailsStore from '../store';
 
 function AppInfo() {
@@ -28,7 +28,7 @@ function AppInfo() {
     <>
       <TextHeader
         title="基础设置"
-        className="my-app-header header-background-image "
+        className="app-list-header header-background-image "
       />
       <div className='px-20 py-24'>
         <CreatedEditApp appInfo={appDetailsStore.appDetails} ref={formRef} />

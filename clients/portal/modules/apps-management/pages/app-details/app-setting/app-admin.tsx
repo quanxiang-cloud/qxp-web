@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Modal from '@c/modal';
+import { UnionColumns } from 'react-table';
 import { useParams } from 'react-router-dom';
 
 import toast from '@lib/toast';
@@ -7,11 +7,12 @@ import TextHeader from '@c/text-header';
 import PopConfirm from '@c/pop-confirm';
 import Button from '@c/button';
 import Table from '@c/table';
+import EmployeeOrDepartmentPickerModal from '@c/employee-or-department-picker';
+import Modal from '@c/modal';
+
 import {
   appAddAdmin, fetchAppAdminUsers, delAppAdminUsers,
-} from '@portal/modules/apps-management/lib/api';
-import EmployeeOrDepartmentPickerModal from '@c/employee-or-department-picker';
-import { UnionColumns } from 'react-table';
+} from '../api';
 
 type Admin = {
   id: string;
@@ -23,8 +24,8 @@ function AppAdmin() {
   const [selectedIdArr, setSelectedArr] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const [delLoading, setDelLoading] = useState(false);
-  const { appId } = useParams<{appId: string}>();
-  const [params] = useState({ page: 1, limit: 9999, id: appId });
+  const { appID } = useParams<{ appID: string }>();
+  const [params] = useState({ page: 1, limit: 9999, id: appID });
   const [appAdminList, setAppAdminList] = useState([]);
 
   const fetchAdmins = () => {
@@ -39,7 +40,7 @@ function AppAdmin() {
 
   const removeAdmin = (idArr: string[]) => {
     setDelLoading(true);
-    return delAppAdminUsers({ appID: appId, userIDs: idArr }).then(() => {
+    return delAppAdminUsers({ appID: appID, userIDs: idArr }).then(() => {
       setDelLoading(false);
       setAppAdminList(appAdminList.filter(({ id }) => !idArr.includes(id)));
       toast.success('删除成功！');
@@ -51,7 +52,7 @@ function AppAdmin() {
           window.location.href = '/apps';
         }, 2000);
       }
-    }).catch(()=>{
+    }).catch(() => {
       setDelLoading(false);
     });
   };
@@ -69,12 +70,12 @@ function AppAdmin() {
   const addAdmin = (
     _: EmployeeOrDepartmentOfRole[],
     employees: EmployeeOrDepartmentOfRole[]) => {
-    if (employees.length === 0) {
+    if (employees.length === 0 && appAdminList.length === 0) {
       toast.error('请选择添加为管理员的员工');
       return Promise.reject({ message: '' });
     }
 
-    return appAddAdmin({ appId, userIDs: employees.map(({ id }) => id) }).then(() => {
+    return appAddAdmin({ appID, userIDs: employees.map(({ id }) => id) }).then(() => {
       fetchAdmins();
       setModalType('');
     });
@@ -110,7 +111,7 @@ function AppAdmin() {
     {
       id: 'action',
       Header: '操作',
-      accessor: ({ id }: {id: string}): JSX.Element => (
+      accessor: ({ id }: { id: string }): JSX.Element => (
         <PopConfirm onOk={() => removeAdmin([id])} content={<span>确认删除改管理员？</span>} >
           <span className='text-btn'>移除</span>
         </PopConfirm>
@@ -122,74 +123,69 @@ function AppAdmin() {
     <>
       <TextHeader
         title="应用管理员"
-        className="my-app-header header-background-image "
+        className="app-list-header header-background-image mb-24"
       />
-      <div className='px-20 py-24'>
-        <div className='mb-20 flex'>
-          <Button
-            onClick={() => setModalType('addAdmin')}
-            className='mr-16'
-            modifier='primary'
-            iconName='add'
-          >
-            添加管理员
-          </Button>
-          {selectedIdArr.length > 0 && (
-            <Button
-              onClick={() => setModalType('batchRemove')}
-              modifier='primary'
-              iconName='restore_from_trash'
-            >
-              批量移除
-            </Button>
-          )}
-        </div>
-        <Table
-          showCheckbox
-          rowKey="id"
-          // todo refactor this
-          style={{ maxHeight: 'calc(100vh - 300px)' }}
-          columns={columns}
-          data={appAdminList}
-          loading={loading}
-          onSelectChange={handleSelectChange}
-        />
-        {(modalType === 'batchRemove') &&
-          (<Modal
-            title='批量移除'
-            className="static-modal"
-            onClose={() => setModalType('')}
-            footerBtns={[
-              {
-                text: '取消',
-                key: 'cancel',
-                iconName: 'close',
-                onClick: () => setModalType(''),
-              },
-              {
-                text: '确定移除',
-                key: 'confirm',
-                iconName: 'check',
-                loading: delLoading,
-                modifier: 'primary',
-                onClick: batchRemove,
-              },
-            ]}
-          >
+      <Button
+        onClick={() => setModalType('addAdmin')}
+        className='mr-16 ml-20'
+        modifier='primary'
+        iconName='add'
+      >
+        添加管理员
+      </Button>
+      {selectedIdArr.length > 0 && (
+        <Button
+          onClick={() => setModalType('batchRemove')}
+          modifier='primary'
+          iconName='restore_from_trash'
+        >
+          批量移除
+        </Button>
+      )}
+      <Table
+        showCheckbox
+        rowKey="id"
+        className='m-20'
+        style={{ maxHeight: 'calc(100vh - 300px)' }}
+        columns={columns}
+        data={appAdminList}
+        loading={loading}
+        onSelectChange={handleSelectChange}
+      />
+      {(modalType === 'batchRemove') &&
+        (<Modal
+          title='批量移除'
+          onClose={() => setModalType('')}
+          footerBtns={[
+            {
+              text: '取消',
+              key: 'cancel',
+              iconName: 'close',
+              onClick: () => setModalType(''),
+            },
+            {
+              text: '确定移除',
+              key: 'confirm',
+              iconName: 'check',
+              loading: delLoading,
+              modifier: 'primary',
+              onClick: batchRemove,
+            },
+          ]}
+        >
           确定要批量移除应用的管理员吗？
-          </Modal>)
-        }
-        {modalType === 'addAdmin' && (
-          <EmployeeOrDepartmentPickerModal
-            title='添加管理员'
-            submitText='保存'
-            employees={appAdminList}
-            departments={[]}
-            onSubmit={addAdmin}
-            onCancel={() => setModalType('')}
-          />
-        )}
-      </div>
+        </Modal>)
+      }
+      {modalType === 'addAdmin' && (
+        <EmployeeOrDepartmentPickerModal
+          title='添加管理员'
+          submitText='保存'
+          employees={appAdminList}
+          departments={[]}
+          onSubmit={addAdmin}
+          onCancel={() => setModalType('')}
+        />
+      )}
     </>
   );
 }

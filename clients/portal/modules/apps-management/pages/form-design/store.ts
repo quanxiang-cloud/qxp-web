@@ -13,9 +13,9 @@ import {
   deleteRights,
   movePerGroup,
   updatePerGroup,
-} from '@portal/modules/apps-management/lib/api';
-import appPageDataStore from '@c/app-page-data/store';
-import { PageTableShowRule, Scheme, setFixedParameters } from '@c/app-page-data/utils';
+} from './api';
+import AppPageDataStore from '@c/form-app-data-table/store';
+import { PageTableShowRule, Scheme, setFixedParameters } from '@c/form-app-data-table/utils';
 
 import { getFilterField, getAttribute } from './utils';
 
@@ -28,6 +28,7 @@ class FormDesignStore {
   @observable pageID = '';
   @observable appID = '';
   @observable saveSchemeLoading = false;
+  @observable appPageStore = new AppPageDataStore({ schema: {} });
   @observable initScheme = {};
   @observable pageLoading = true;
   @observable formStore: FormStore | null = null;
@@ -77,7 +78,7 @@ class FormDesignStore {
       return this.allFiltrate.map((field: PageField) => {
         return getFilterField(field);
       });
-    }, appPageDataStore.setFiltrates);
+    }, this.appPageStore.setFiltrates);
 
     this.destroySetTableColumn = reaction(() => {
       const column: UnionColumns<any>[] = [];
@@ -94,11 +95,11 @@ class FormDesignStore {
       });
 
       return setFixedParameters(this.pageTableShowRule.fixedRule, column);
-    }, appPageDataStore.setTableColumns);
+    }, this.appPageStore.setTableColumns);
 
     this.destroySetTableConfig = reaction(() => {
       return this.pageTableShowRule;
-    }, appPageDataStore.setTableConfig);
+    }, this.appPageStore.setTableConfig);
   }
 
   @action
@@ -140,7 +141,6 @@ class FormDesignStore {
   @action
   setAppID = (appID: string) => {
     this.appID = appID;
-    appPageDataStore.setAppID(appID);
   }
 
   @action
@@ -211,7 +211,7 @@ class FormDesignStore {
     this.pageTableConfig = {};
     this.pageTableShowRule = {};
     this.allFiltrate = [];
-    appPageDataStore.clear();
+    this.appPageStore.clear();
   }
 
   @action

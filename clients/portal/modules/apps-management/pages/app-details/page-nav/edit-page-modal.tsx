@@ -1,11 +1,14 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { Modal, Form } from '@QCFE/lego-ui';
+import { Form } from '@QCFE/lego-ui';
 
-import Button from '@c/button';
+import Modal from '@c/modal';
+
 import SelectField from '@portal/modules/apps-management/components/select-field';
-import { fetchGroupList } from '@portal/modules/apps-management/lib/api';
 import { APP_ICON_LIST } from '@c/app-icon-select';
 import AppIconSelect from '@c/app-icon-select';
+
+import store from '../store';
+import { fetchGroupList } from '../api';
 
 type Props = {
   onCancel: () => void;
@@ -28,6 +31,7 @@ const IconSelectField = Form.getFormField(AppIconSelect);
 
 function EditPageModal({ pageInfo, onCancel, onSubmit, appID }: Props) {
   const [groupList, setGroupList] = useState<Option[]>([]);
+  const ref: any = useRef();
 
   useEffect(() => {
     fetchGroupList(appID).then((res) => {
@@ -37,7 +41,28 @@ function EditPageModal({ pageInfo, onCancel, onSubmit, appID }: Props) {
     });
   }, [appID]);
 
-  const ref: any = useRef();
+  const validateRepeat = (value: string) => {
+    let repeated = true;
+    for (const pageInfo of store.pageInitList) {
+      if (pageInfo.menuType === 1) {
+        if (pageInfo.child?.length) {
+          for (const _pageInfo of pageInfo.child) {
+            if (_pageInfo.name === value) {
+              repeated = false;
+              return;
+            }
+          }
+        }
+      } else {
+        if (pageInfo.name === value) {
+          repeated = false;
+          return;
+        }
+      }
+    }
+    return repeated;
+  };
+
   const handleSubmit = () => {
     const formRef = ref.current;
     if (formRef.validateFields()) {
@@ -49,24 +74,21 @@ function EditPageModal({ pageInfo, onCancel, onSubmit, appID }: Props) {
 
   return (
     <Modal
-      visible
-      className="static-modal"
       title={curAppID ? '修改名称与图标' : '新建页面'}
-      onCancel={onCancel}
-      footer={
-        (<div className="flex items-center">
-          <Button iconName='close' onClick={onCancel} className="mr-20">
-            取消
-          </Button>
-          <Button
-            modifier='primary'
-            iconName='check'
-            onClick={handleSubmit}
-          >
-            确定
-          </Button>
-        </div>)
-      }>
+      onClose={onCancel}
+      footerBtns={[{
+        key: 'close',
+        iconName: 'close',
+        onClick: onCancel,
+        text: '取消',
+      }, {
+        key: 'check',
+        iconName: 'check',
+        modifier: 'primary',
+        onClick: handleSubmit,
+        text: '确定',
+      }]}
+    >
       <Form layout='vertical' ref={ref}>
         <Form.TextField
           name='name'
@@ -82,6 +104,10 @@ function EditPageModal({ pageInfo, onCancel, onSubmit, appID }: Props) {
             {
               help: '名称不超过 30 字符，请修改！ ',
               rule: { maxLength: 30 },
+            },
+            {
+              help: '页面名称重复',
+              rule: validateRepeat,
             },
           ]}
         />

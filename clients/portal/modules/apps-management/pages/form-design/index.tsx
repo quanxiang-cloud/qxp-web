@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { observer } from 'mobx-react';
 import { useParams } from 'react-router-dom';
 
-import PageLoad from '@portal/modules/apps-management/components/page-loading';
+import PageLoad from '@c/page-loading';
 
 import FormBuild from './form-build';
 import PageSetting from './page-setting';

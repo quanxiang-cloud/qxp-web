@@ -42,11 +42,13 @@
 
 .app-entry-container {
   @apply flex justify-center items-start gap-x-20 mx-auto;
-  padding: 20px 58px 0;
+  padding: 20px 20px 0;;
+  width: 100%;
+  max-width: 1324px;
   height: calc(100vh - 64px);
 }
 
-.my-app-header {
+.app-list-header {
   @apply px-20 py-16;
   font-weight: 600;
   font-size: 16px;
@@ -55,7 +57,7 @@
   box-shadow: inset 0px -1px 0px #e2e8f0;
 }
 
-.my-app-headertitle {
+.app-list-headertitle {
   box-shadow: inset 0px -1px 0px #e2e8f0;
 }
 
