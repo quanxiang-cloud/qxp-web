@@ -10,7 +10,7 @@ import {
 } from '@formily/antd';
 import { ArrayList } from '@formily/react-shared-components';
 import { toArr, FormPath } from '@formily/shared';
-import { Input, Select as AntdSelect, DatePicker, NumberPicker } from '@formily/antd-components';
+import { Input, Select as AntdSelect, DatePicker, NumberPicker, Switch } from '@formily/antd-components';
 
 import Modal from '@c/modal';
 import Icon from '@c/icon';
@@ -84,6 +84,7 @@ const DEFAULT_VALUE: FormBuilder.VisibleHiddenLinkage = {
   ruleJoinOperator: 'every',
   rules: [{ sourceKey: '', compareOperator: '===', compareValue: '' }],
   targetKeys: [],
+  isShow: false,
 };
 
 type Props = {
@@ -215,7 +216,7 @@ function VisibleHiddenLinkageConfig({ onClose, sourceSchema, linkageKey, onSubmi
       条件时
       </div>
       <SchemaForm
-        components={{ ArrayCustom, Input, AntdSelect, DatePicker, NumberPicker }}
+        components={{ ArrayCustom, Input, AntdSelect, DatePicker, NumberPicker, Switch }}
         defaultValue={defaultValue}
         onSubmit={(value) => {
           value.ruleJoinOperator = tag;
@@ -253,11 +254,12 @@ function VisibleHiddenLinkageConfig({ onClose, sourceSchema, linkageKey, onSubmi
             />
           </Field>
         </Field>
+        <Field x-component="Switch" title="显示以下字段" name="isShow" />
         <Field
           required
           name="targetKeys"
           x-component="AntdSelect"
-          title="显示以下字段"
+          // title="显示以下字段"
           enum={availableFields.map(({ label, value }) => ({ label, value }))}
           x-component-props={{ mode: 'multiple' }}
         />
