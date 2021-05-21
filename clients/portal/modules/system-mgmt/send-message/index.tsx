@@ -45,6 +45,7 @@ const SendMessage = () => {
       hideInfoCard
       asModalPage
       className={styles.wrap}
+      pageName='发送消息'
     >
       <Content />
     </Container>
