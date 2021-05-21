@@ -127,11 +127,12 @@ textarea.textarea:not([readonly]):not([disabled]) {
   }
 }
 
+.from>.field:not(:last-child) {
+  margin-bottom: 24px;
+}
+
 .field {
   display: flex;
-  &:not(:last-child) {
-    margin-bottom: 24px;
-  }
   .control {
     label {
       line-height: 1.7143;
@@ -289,15 +290,15 @@ input.input.is-large {
   }
 }
 
-input[type='number'] {
-  -moz-appearance: textfield;
-}
+// input[type='number'] {
+//   -moz-appearance: textfield;
+// }
 
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
+// input::-webkit-outer-spin-button,
+// input::-webkit-inner-spin-button {
+//   -webkit-appearance: none;
+//   margin: 0;
+// }
 
 .input-password input,
 input[type='password'] {

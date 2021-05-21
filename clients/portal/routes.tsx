@@ -9,6 +9,8 @@ import { usePortalGlobalValue } from '@portal/states_to_be_delete/portal';
 import { getNestedPropertyToArray } from '@lib/utils';
 import { getUserFuncs, getUserAdminRoles } from '@lib/api/auth';
 
+import AppsRoutes from './modules/apps-management/routes';
+
 const Dashboard = React.lazy(() => import('./modules/dashboard'));
 const MetaData = React.lazy(() => import('./modules/metadata'));
 const AccessControl = React.lazy(() => import('./modules/access-control'));
@@ -68,6 +70,7 @@ export default function Routes(): JSX.Element {
         <Route path="/metadata" component={MetaData} />
         <Route path="/access-control" component={AccessControl} />
         <Route path="/system" component={SystemMgmt} />
+        <Route path="/apps" component={AppsRoutes} />
         <Route component={ErrorTips} />
       </Switch>
     </React.Suspense>

@@ -28,7 +28,7 @@ export default function ItemWithTitleDesc({
   return (
     <div
       className={
-        twCascade('flex justify-start items-center', className)
+        twCascade('flex justify-start', className)
       }
       onClick={onClick}
     >

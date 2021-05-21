@@ -1,0 +1,60 @@
+html {
+  overflow: auto;
+}
+
+body {
+  background-color: initial;
+}
+
+.apps-management-height {
+  height: calc(100vh - var(--global-header-height));
+}
+
+.app-icon-color-inherit {
+  color: inherit;
+}
+
+.app-no-data {
+  text-align: center;
+  width: 100%;
+
+  img {
+    margin: 0 auto 16px;
+    display: block;
+    width: 120px;
+    height: 120px;
+  }
+
+  span {
+    text-align: center;
+    font-size: 12px;
+    line-height: 20px;
+  }
+}
+
+.app-right-box {
+  @apply flex-1 rounded-tl-12 rounded-tr-12;
+  position: relative;
+  overflow: hidden;
+  height:100%;
+}
+
+.app-entry-container {
+  @apply flex justify-center items-start gap-x-20 mx-auto;
+  padding: 20px 58px 0;
+  height: calc(100vh - 64px);
+}
+
+.text-icon-btn {
+  @apply items-center cursor-pointer hover:text-blue-600 inline-flex;
+  svg {
+    color: inherit;
+    margin-right: 4px;
+  }
+}
+
+.home-global-header {
+  position: relative;
+  z-index: 2;
+  box-shadow: 0px 8px 24px 4px rgba(148, 163, 184, 0.25);
+}

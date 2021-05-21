@@ -2,13 +2,13 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
-const TerserPlugin = require("terser-webpack-plugin");
+const TerserPlugin = require('terser-webpack-plugin');
 const WebpackNotifierPlugin = require('webpack-notifier');
 const WebpackBar = require('webpackbar');
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 
 // env: 'production' | 'development';
-module.exports = function (env) {
+module.exports = function(env) {
   const NODE_ENV = process.env.NODE_ENV || env.mode || 'production';
   const isDev = NODE_ENV === 'development';
 
@@ -25,6 +25,7 @@ module.exports = function (env) {
       'reset-password': './clients/login/reset-password',
       'retrieve-password': './clients/login/retrieve-password',
       404: './clients/404/index.ts',
+      home: './clients/home/index.tsx',
     },
 
     output: {
@@ -44,11 +45,10 @@ module.exports = function (env) {
       rules: [
         {
           test: /\.s[ac]ss$/,
-          exclude: /node_modules/,
           use: [
             MiniCssExtractPlugin.loader,
             { loader: 'css-loader', options: { url: false } },
-            { loader: 'postcss-loader', },
+            { loader: 'postcss-loader' },
             { loader: 'sass-loader' },
           ],
         },
@@ -57,19 +57,13 @@ module.exports = function (env) {
           use: [
             MiniCssExtractPlugin.loader,
             { loader: 'css-loader', options: { url: false } },
-            { loader: 'postcss-loader', },
+            { loader: 'postcss-loader' },
           ],
         },
         {
           test: /\.ts(x?)$/,
           exclude: /node_modules/,
           use: [{ loader: 'ts-loader' }],
-        },
-        // All output '.js' files will have any sourcemaps re-processed by 'source-map-loader'.
-        {
-          enforce: 'pre',
-          test: /\.js$/,
-          loader: 'source-map-loader',
         },
       ],
     },
@@ -122,6 +116,12 @@ module.exports = function (env) {
         chunks: ['retrieve-password'],
         template: './clients/templates/retrieve-password.html',
         filename: `${__dirname}/dist/templates/retrieve-password.html`,
+      }),
+      new HtmlWebpackPlugin({
+        inject: false,
+        chunks: ['home'],
+        template: './clients/templates/home.html',
+        filename: `${__dirname}/dist/templates/home.html`,
       }),
       env !== 'production' ? new WebpackNotifierPlugin({ alwaysNotify: true }) : null,
     ].filter(Boolean),

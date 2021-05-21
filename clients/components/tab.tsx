@@ -37,7 +37,9 @@ export default function Tab({
   }, []);
 
   return (
-    <div style={style} className={twCascade('transition duration-300 overflow-hidden', className)}>
+    <div
+      style={style}
+      className={twCascade('h-full transition duration-300 overflow-hidden', className)}>
       <header className={twCascade('flex flex-row w-full', headerClassName)} ref={headerRef}>
         {items.map((item) => {
           const active = item.id == key;
@@ -80,8 +82,8 @@ export default function Tab({
               key={item.id}
               className={twCascade(
                 item.id === key ?
-                  'opacity-100 h-full visible pointer-events-auto' :
-                  'opacity-0 h-0 invisible pointer-events-none',
+                  'opacity-100 h-full visible overflow-auto pointer-events-auto' :
+                  'opacity-0 h-0 hidden pointer-events-none',
                 'transition-opacity',
               )}
             >

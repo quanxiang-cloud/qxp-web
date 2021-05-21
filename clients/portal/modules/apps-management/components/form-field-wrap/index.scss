@@ -1,0 +1,35 @@
+.form-field-box:not(:last-child) {
+  margin-bottom: 24px;
+}
+
+.form-field-box {
+  position: relative;
+}
+
+.form-field-label {
+  display: inline-block;
+  margin-bottom: 8px;
+  color: var(--gray-600);
+}
+
+.form-field-tips {
+  color: var(--gray-600);
+}
+
+.form-field-error {
+  color: var( --red-600);
+}
+
+.form-field-error, .form-field-tips {
+  margin-top: 4px;
+  font-size: 12px;
+  line-height: 20px;
+}
+
+.form-input-error {
+  border-color: var( --red-600)!important;
+
+  input {
+    border-color: var( --red-600)!important;
+  }
+}

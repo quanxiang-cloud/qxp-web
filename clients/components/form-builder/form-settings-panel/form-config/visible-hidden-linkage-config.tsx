@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import styled from 'styled-components';
 import {
   SchemaForm,
@@ -10,14 +10,14 @@ import {
 } from '@formily/antd';
 import { ArrayList } from '@formily/react-shared-components';
 import { toArr, FormPath } from '@formily/shared';
-import { Input, Select as AntdSelect, DatePicker, NumberPicker } from '@formily/antd-components';
+import { Input, Select as AntdSelect, DatePicker, NumberPicker, Switch } from '@formily/antd-components';
 
 import Modal from '@c/modal';
 import Icon from '@c/icon';
 import Button from '@c/button';
 import Select from '@c/select';
 import { INTERNAL_FIELD_NAMES } from '../../store';
-import Store from '../../store';
+import { StoreContext } from '@c/form-builder/context';
 import { toJS } from 'mobx';
 
 const { onFieldInputChange$ } = FormEffectHooks;
@@ -57,23 +57,23 @@ function ArrayCustom(props: any): JSX.Element {
 ArrayCustom.isFieldComponent = true;
 
 const OPERATORS = {
-  Input: [
+  Default: [
     { value: '===', label: '等于' },
     { value: '!==', label: '不等于' },
   ],
-  Select: [
+  Multiple: [
     { value: '===', label: '等于' },
     { value: '!==', label: '不等于' },
     { value: '∈', label: '包含' },
     { value: '∉', label: '不包含' },
   ],
-  DatePicker: [
+  Date: [
     { value: '===', label: '等于' },
     { value: '!==', label: '不等于' },
     { value: '>', label: '早于' },
     { value: '<', label: '晚于' },
   ],
-  NumberPicker: [
+  Number: [
     { value: '===', label: '等于' },
     { value: '!==', label: '不等于' },
     { value: '>', label: '大于' },
@@ -86,41 +86,70 @@ const DEFAULT_VALUE: FormBuilder.VisibleHiddenLinkage = {
   ruleJoinOperator: 'every',
   rules: [{ sourceKey: '', compareOperator: '===', compareValue: '' }],
   targetKeys: [],
+  isShow: false,
 };
 
 type Props = {
   onClose: () => void;
   linkageKey: string;
-  store: Store;
+  sourceSchema: ISchema;
   onSubmit: (linkage: FormBuilder.VisibleHiddenLinkage) => void;
 }
 
-function VisibleHiddenLinkageConfig({ onClose, store, linkageKey, onSubmit }: Props): JSX.Element {
+function VisibleHiddenLinkageConfig({ onClose, sourceSchema, linkageKey, onSubmit }: Props): JSX.Element {
+  const store = useContext(StoreContext);
   const [tag, setTag] = useState('every');
-  const sourceSchema = toJS(store.schema);
   const linkages = (
     sourceSchema['x-internal']?.visibleHiddenLinkages || []
   ) as FormBuilder.VisibleHiddenLinkage[];
   const defaultValue = linkages.find((linkage) => linkage.key === linkageKey) || DEFAULT_VALUE;
-  const availableFields = Object.entries(sourceSchema.properties || {})
-    .filter(([key]) => !INTERNAL_FIELD_NAMES.includes(key))
-    .map(([key, value]) => {
-      return { value: key, label: value.title || key, availableCompareValues: value.enum || [],
-        'x-component': value['x-component'] || 'AntdSelect',
-      };
-    });
+  const existingCondistions: Array<string> = [];
+  let existingTargetKeys: Array<string> = [];
+  store.visibleHiddenLinkages.map(({ targetKeys }) => {
+    existingTargetKeys = existingTargetKeys.concat(toJS(targetKeys));
+  });
+  let availableFields = initAvaliableFields();
 
   const sourceKeyOptions = availableFields.filter((availableField) => {
     return availableField['x-component'] !== 'textarea';
   });
 
+  function initAvaliableFields() {
+    return Object.entries(sourceSchema.properties || {})
+      .filter(([key]) => !INTERNAL_FIELD_NAMES.includes(key))
+      .filter(([key, value]) => {
+        return !existingTargetKeys.includes(key);
+      })
+      .map(([key, value]) => {
+        return { value: key, label: value.title || key, availableCompareValues: value.enum || [],
+          'x-component': value['x-component'] || 'AntdSelect',
+        };
+      });
+  }
+
   function setCompareValueOptions() {
     const { setFieldState } = createFormActions();
-
+    let index = 0;
     onFieldInputChange$('rules.*.sourceKey').subscribe(({ name, value }) => {
       if (!value || !name) {
         return;
       }
+
+      const path = FormPath.transform(name, /\d/, ($1) => {
+        index = Number($1);
+        existingCondistions[index] = value;
+        return `rules.${$1}.compareValue`;
+      });
+
+      availableFields = initAvaliableFields().filter((availableField) => {
+        return !existingCondistions.includes(availableField.value);
+      });
+
+      setFieldState('targetKeys', (state) => {
+        state.props.enum = availableFields.map(({ label, value }) => {
+          return { label, value };
+        });
+      });
 
       const availableCompareValues = sourceKeyOptions.find((sourceKeyOption) => {
         return sourceKeyOption.value === value;
@@ -131,25 +160,24 @@ function VisibleHiddenLinkageConfig({ onClose, store, linkageKey, onSubmit }: Pr
         compareField = availableCompareValues['x-component'];
       }
 
-      const path = FormPath.transform(name, /\d/, ($1) => {
-        return `rules.${$1}.compareValue`;
-      });
-
       setFieldState(FormPath.transform(name, /\d/, ($1) => {
         return `rules.${$1}.compareOperator`;
       }), (state) => {
         switch (compareField) {
-        case 'Input':
-          state.props.enum = OPERATORS.Input;
+        case 'MultipleSelect':
+          state.props.enum = OPERATORS.Multiple;
+          break;
+        case 'CheckboxGroup':
+          state.props.enum = OPERATORS.Multiple;
           break;
         case 'DatePicker':
-          state.props.enum = OPERATORS.DatePicker;
+          state.props.enum = OPERATORS.Date;
           break;
         case 'NumberPicker':
-          state.props.enum = OPERATORS.NumberPicker;
+          state.props.enum = OPERATORS.Number;
           break;
         default:
-          state.props.enum = OPERATORS.Select;
+          state.props.enum = OPERATORS.Default;
           break;
         }
       });
@@ -179,11 +207,7 @@ function VisibleHiddenLinkageConfig({ onClose, store, linkageKey, onSubmit }: Pr
           value={tag}
           onChange={(tag: string) => {
             setTag(tag);
-            store.visibleHiddenLinkages.map((linkage: any) => {
-              linkage.ruleJoinOperator = tag;
-              return linkage;
-            });
-            store.linkageCondition = tag === 'every' ? '所有' : '任一';
+            defaultValue.ruleJoinOperator = tag as 'every' | 'some';
           }}
           options={[{
             label: '所有',
@@ -197,9 +221,12 @@ function VisibleHiddenLinkageConfig({ onClose, store, linkageKey, onSubmit }: Pr
       条件时
       </div>
       <SchemaForm
-        components={{ ArrayCustom, Input, AntdSelect, DatePicker, NumberPicker, TextArea: Input }}
+        components={{ ArrayCustom, Input, AntdSelect, DatePicker, NumberPicker, Switch }}
         defaultValue={defaultValue}
-        onSubmit={onSubmit}
+        onSubmit={(value) => {
+          value.ruleJoinOperator = tag;
+          onSubmit(value);
+        }}
         effects={() => setCompareValueOptions()}
       >
         <Field
@@ -221,7 +248,7 @@ function VisibleHiddenLinkageConfig({ onClose, store, linkageKey, onSubmit }: Pr
               name="compareOperator"
               x-component="AntdSelect"
               title=""
-              enum={OPERATORS.Select}
+              enum={OPERATORS.Default}
             />
             <Field
               title=""
@@ -232,11 +259,12 @@ function VisibleHiddenLinkageConfig({ onClose, store, linkageKey, onSubmit }: Pr
             />
           </Field>
         </Field>
+        <Field x-component="Switch" title="显示以下字段" name="isShow" />
         <Field
           required
           name="targetKeys"
           x-component="AntdSelect"
-          title="显示以下字段"
+          // title="显示以下字段"
           enum={availableFields.map(({ label, value }) => ({ label, value }))}
           x-component-props={{ mode: 'multiple' }}
         />

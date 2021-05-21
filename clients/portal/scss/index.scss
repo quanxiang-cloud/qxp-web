@@ -2,12 +2,16 @@
 @import './lego';
 @import './form.scss';
 
+@import './apps-management';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 html {
   font-size: 62.5%;
+  overflow: auto;
+  min-width: 1280px;
 }
 
 body {
@@ -102,8 +106,9 @@ body {
 ////////////////// background /////////////////////////
 .header-background-image {
   position: relative;
+  z-index: 1;
 
-  &::after {
+  &::before {
     content: '';
     background-image: url('/dist/images/maskHeaderBackgroundImage.png');
     background-position: top right;
@@ -115,7 +120,7 @@ body {
     bottom: 0;
     right: 0;
     position: absolute;
-    //z-index: -1;
+    z-index: -1;
   }
 }
 
@@ -367,18 +372,27 @@ input {
   }
 }
 
+// todo remove this
+.full-width {
+  width: 100%;
+}
+
+// todo remove this
 .pt-20 {
   padding-top: 20px;
 }
 
+// todo remove this
 .mt-20 {
   margin-top: 20px;
 }
 
+// todo remove this
 .pointer {
   cursor: pointer;
 }
 
+// todo remove this
 .min-w-259 {
   min-width: 259px;
 }
