@@ -55,23 +55,23 @@ function ArrayCustom(props: any): JSX.Element {
 ArrayCustom.isFieldComponent = true;
 
 const OPERATORS = {
-  Input: [
+  Default: [
     { value: '===', label: '等于' },
     { value: '!==', label: '不等于' },
   ],
-  Select: [
+  Multiple: [
     { value: '===', label: '等于' },
     { value: '!==', label: '不等于' },
     { value: '∈', label: '包含' },
     { value: '∉', label: '不包含' },
   ],
-  DatePicker: [
+  Date: [
     { value: '===', label: '等于' },
     { value: '!==', label: '不等于' },
     { value: '>', label: '早于' },
     { value: '<', label: '晚于' },
   ],
-  NumberPicker: [
+  Number: [
     { value: '===', label: '等于' },
     { value: '!==', label: '不等于' },
     { value: '>', label: '大于' },
@@ -162,17 +162,20 @@ function VisibleHiddenLinkageConfig({ onClose, sourceSchema, linkageKey, onSubmi
         return `rules.${$1}.compareOperator`;
       }), (state) => {
         switch (compareField) {
-        case 'Input':
-          state.props.enum = OPERATORS.Input;
+        case 'MultipleSelect':
+          state.props.enum = OPERATORS.Multiple;
+          break;
+        case 'CheckboxGroup':
+          state.props.enum = OPERATORS.Multiple;
           break;
         case 'DatePicker':
-          state.props.enum = OPERATORS.DatePicker;
+          state.props.enum = OPERATORS.Date;
           break;
         case 'NumberPicker':
-          state.props.enum = OPERATORS.NumberPicker;
+          state.props.enum = OPERATORS.Number;
           break;
         default:
-          state.props.enum = OPERATORS.Select;
+          state.props.enum = OPERATORS.Default;
           break;
         }
       });
@@ -243,7 +246,7 @@ function VisibleHiddenLinkageConfig({ onClose, sourceSchema, linkageKey, onSubmi
               name="compareOperator"
               x-component="AntdSelect"
               title=""
-              enum={OPERATORS.Select}
+              enum={OPERATORS.Default}
             />
             <Field
               title=""
