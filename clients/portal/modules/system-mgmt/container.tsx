@@ -12,6 +12,8 @@ interface Props {
   children: React.ReactNode;
   hideInfoCard?: boolean;
   asModalPage?: boolean; // 类似modal的页面
+  pageName?: string;
+  style?: React.CSSProperties;
 }
 
 const Container = ({
@@ -19,6 +21,8 @@ const Container = ({
   children,
   hideInfoCard,
   asModalPage,
+  pageName,
+  style,
 }: Props) => {
   const history = useHistory();
   const goBack = ()=> {
@@ -34,13 +38,16 @@ const Container = ({
         <span className={styles.divider}>/</span>
         <NavLink to='/system/message'>消息管理</NavLink>
         <span className={styles.divider}>/</span>
-        <span className={styles.current}>发送消息</span>
+        <span className={styles.current}>{pageName}</span>
       </div>
     );
   };
 
   return (
-    <div className={cs('py-20 px-58 flex justify-center items-start flex-grow overflow-hidden', className)}>
+    <div
+      className={cs('py-20 px-58 flex justify-center items-start flex-grow overflow-hidden', className)}
+      style={style}
+    >
       {!hideInfoCard && <InfoCard/>}
       {
         asModalPage ? (

@@ -1,6 +1,6 @@
 import { createFormActions, FormEffectHooks } from '@formily/antd';
 
-const { onFormValuesChange$ } = FormEffectHooks;
+const { onFormInit$, onFormValuesChange$ } = FormEffectHooks;
 
 function getComparator(linkage: FormBuilder.VisibleHiddenLinkage): FormBuilder.Comparator {
   return (values: Record<string, any>): boolean => {
@@ -57,6 +57,13 @@ export default function visibleHiddenLinkageEffect(linkages: FormBuilder.Visible
     const targetKeys = `*(${linkages.targetKeys.join(',')})`;
     const isShow = linkages.isShow;
     return [getComparator(linkages), targetKeys, isShow];
+  });
+
+  onFormInit$().subscribe(({ values }) => {
+    comparatorsAndTargetKey.forEach(([comparator, targetKey, isShow]) => {
+      const isVisible = isShow === true ? comparator(values) : !comparator(values);
+      setFieldState(targetKey, (state) => state.visible = isVisible);
+    });
   });
 
   onFormValuesChange$().subscribe(({ values }) => {

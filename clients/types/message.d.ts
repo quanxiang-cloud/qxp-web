@@ -33,6 +33,8 @@ declare namespace Qxp {
     sort?: MsgType;
     created_at?: number;
     update_at?: number;
+    mes_attachment?: any;
+    receivers?: any;
   }
 
   type MsgReceiver = {
@@ -62,6 +64,11 @@ declare namespace Qxp {
     is_send?: boolean; // 是否需要发送
     recivers?: Array<MsgReceiver>,
     mes_attachment?: Array<File>
+    content?: string;
+    handle_name?: string;
+    send_num?: number;
+    fail?: number;
+    success?: number;
   }
 
   interface QueryMsgResult {
