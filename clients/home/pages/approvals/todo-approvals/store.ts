@@ -21,6 +21,7 @@ class TodoApprovalStore extends Store {
       size: this.pageSize,
       tagType: this.tagType,
       handleType: this.handleType === 'ALL' ? '' : this.handleType,
+      orderType: this.orderType,
     };
   }
 
@@ -56,7 +57,7 @@ class TodoApprovalStore extends Store {
     this.pageSize = 10;
     this.loading = false;
     this.keyword = '';
-    this.orderType = '';
+    this.orderType = 'DESC';
     this.tagType = '';
     this.handleType = '';
   }

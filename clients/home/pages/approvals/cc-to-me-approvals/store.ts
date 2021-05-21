@@ -51,7 +51,7 @@ class TodoApprovalStore extends Store {
     this.pageSize = 10;
     this.loading = false;
     this.keyword = '';
-    this.orderType = '';
+    this.orderType = 'DESC';
     this.status = -1;
   }
 }

@@ -5,6 +5,7 @@ import Select from '@c/select';
 import Search from '@c/search';
 import Pagination from '@c/pagination';
 import RangePicker from '@c/range-picker';
+import IconBtn from '@c/icon-btn';
 
 import store from './store';
 import TaskList from '../task-list';
@@ -54,11 +55,18 @@ function TodoApprovals(): JSX.Element {
           <RangePicker onChange={store.changeDate} readableCode={store.readableDate} className="w-259" />
           {/* <Checkbox label="仅看我代理的" className="mr-auto" />*/}
         </div>
-        <Search className="w-259" placeholder="搜索流程、发起人、应用" value={store.keyword}
+        <Search className="w-25 mr-16" placeholder="搜索流程、发起人、应用" value={store.keyword}
           onChange={store.changeKeyword} />
-        {/* <Select multiple={false} options={sortOptions}>*/}
-        {/*  <IconBtn iconName="import_export" className="btn-sort" />*/}
-        {/* </Select>*/}
+        <Select multiple={false} options={sortOptions} onChange={store.changeOrderType} value={store.orderType}>
+          <IconBtn
+            iconName="import_export"
+            className="border-none hover:bg-gray-100"
+            style={{ border: 'none' }}
+            iconProps={{
+              type: 'primary',
+            }}
+          />
+        </Select>
       </div>
       <TaskList tasks={store.approvals} store={store} taskType='todo' />
       <Pagination

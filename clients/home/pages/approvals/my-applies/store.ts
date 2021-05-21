@@ -28,6 +28,7 @@ class MyAppliedApprovalStore extends Store {
       status: this.status === 'ALL' ? '' : this.status,
       beginDate: this.beginDate,
       endDate: this.endDate,
+      orderType: this.orderType,
     };
   }
 
@@ -65,7 +66,7 @@ class MyAppliedApprovalStore extends Store {
     this.pageSize = 10;
     this.loading = false;
     this.keyword = '';
-    this.orderType = '';
+    this.orderType = 'DESC';
     this.status = '';
     this.beginDate = beginDay;
     this.endDate = endDay;

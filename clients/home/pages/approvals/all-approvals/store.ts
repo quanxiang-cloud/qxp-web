@@ -16,6 +16,7 @@ class AllApprovalStore extends Store {
       keyword: this.keyword,
       page: this.pageNumber,
       size: this.pageSize,
+      orderType: this.orderType,
     };
   }
 

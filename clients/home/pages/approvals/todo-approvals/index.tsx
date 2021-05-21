@@ -6,6 +6,7 @@ import Switch from '@c/switch';
 import Select from '@c/select';
 import Search from '@c/search';
 import Pagination from '@c/pagination';
+import IconBtn from '@c/icon-btn';
 
 import store from './store';
 import TaskList from '../task-list';
@@ -26,8 +27,8 @@ const handleTypes = [
 ];
 
 const sortOptions = [
-  { value: 'updated_time', label: '最新的代办优先' },
-  { value: 'created_time', label: '最早的代办优先' },
+  { value: 'DESC', label: '最新的代办优先' },
+  { value: 'ASC', label: '最早的代办优先' },
 ];
 
 function TodoApprovals(): JSX.Element {
@@ -84,11 +85,18 @@ function TodoApprovals(): JSX.Element {
           />
           {/* <Checkbox label="仅看我代理的" className="mr-auto" />*/}
         </div>
-        <Search className="w-259" placeholder="搜索流程、发起人、应用" value={store.keyword}
+        <Search className="w-259 mr-16" placeholder="搜索流程、发起人、应用" value={store.keyword}
           onChange={store.changeKeyword} />
-        {/* <Select multiple={false} options={sortOptions}>*/}
-        {/*  <IconBtn iconName="import_export" className="btn-sort" />*/}
-        {/* </Select>*/}
+        <Select multiple={false} options={sortOptions} onChange={store.changeOrderType} value={store.orderType}>
+          <IconBtn
+            iconName="import_export"
+            className="border-none hover:bg-gray-100"
+            style={{ border: 'none' }}
+            iconProps={{
+              type: 'primary',
+            }}
+          />
+        </Select>
       </div>
       <TaskList tasks={store.approvals} store={store} taskType='todo' />
       <Pagination

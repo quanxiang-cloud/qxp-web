@@ -7,6 +7,8 @@ import Pagination from '@c/pagination';
 import Button from '@c/button';
 import Modal from '@c/modal';
 import toast from '@lib/toast';
+import Select from '@c/select';
+import IconBtn from '@c/icon-btn';
 
 import store from './store';
 import TaskList from '../task-list';
@@ -59,17 +61,24 @@ function TodoApprovals(): JSX.Element {
         </div>
         <Search className="w-259 mr-16" placeholder="搜索流程、发起人、应用" value={store.keyword}
           onChange={store.changeKeyword} />
-        {/* <Select multiple={false} options={sortOptions} onChange={store.changeOrderType}>*/}
-        {/*  <IconBtn iconName="import_export" className="btn-sort" />*/}
-        {/* </Select>*/}
         <Button
-          className="bg-gray-700"
+          className="bg-gray-700 mr-16"
           onClick={() => setOpenReadFlow(true)}
           modifier="primary"
           iconName="done_all"
         >
           全部标为已读
         </Button>
+        <Select multiple={false} options={sortOptions} onChange={store.changeOrderType} value={store.orderType}>
+          <IconBtn
+            iconName="import_export"
+            className="border-none hover:bg-gray-100"
+            style={{ border: 'none' }}
+            iconProps={{
+              type: 'primary',
+            }}
+          />
+        </Select>
       </div>
       <TaskList tasks={store.approvals} store={store} taskType='todo' />
       <Pagination
