@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 
 import TabNavs from './tab-navs';
 
@@ -12,7 +12,7 @@ export type TabItem<T extends React.Key = string> = {
   content: React.ReactNode;
 }
 
-export type Props<T extends React.Key>= {
+export type Props<T extends React.Key> = {
   items: TabItem<T>[];
   strechNavs?: boolean
   className?: string;
@@ -37,25 +37,9 @@ export default function Tab<T extends React.Key>({
 }: Props<T>) {
   const navsRef = useRef(null);
   const [key, setKey] = useState<string | number>(currentKey || items[0].id);
-  const [height, setHeight] = useState(39);
-
-  useEffect(() => {
-    setHeight((navsRef.current as unknown as HTMLDivElement)?.offsetHeight);
-  }, []);
 
   const tabContentRender = (items: TabItem<T>[], key: string | number) => {
-    return items.map((item) => {
-      return (
-        <div
-          key={item.id}
-          className={
-            cs(item.id === key && 'show', 'tab-content-item')
-          }
-        >
-          {item.content}
-        </div>
-      );
-    });
+    return items.find((item) => item.id === key)?.content;
   };
 
   const handleNavItemClick = (id: any) => {
@@ -78,7 +62,6 @@ export default function Tab<T extends React.Key>({
         onClick={handleNavItemClick}
       />
       <div
-        style={{ height: `calc(100% - ${height})px` }}
         className={cs('tab-content', contentClassName)}
       >
         {tabContentRender(items, key)}
