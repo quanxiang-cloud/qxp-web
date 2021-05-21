@@ -69,6 +69,7 @@ declare namespace FormBuilder {
     ruleJoinOperator: 'every' | 'some';
     rules: CompareRule[];
     targetKeys: string[];
+    isShow: boolean;
   }
 
   type Comparator = (values: Record<string, any>) => boolean;

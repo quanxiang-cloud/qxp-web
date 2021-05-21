@@ -22,7 +22,7 @@ const statusMap = {
 const MsgStatus = ({ className, status, fail, success }: Props) => {
   const sendInfo = status !== MsgSendStatus.success ? null : (
     <span className={fail == 0 ? styles.simple_text : styles.warning_text}>
-      &nbsp;({ success}/{success + fail})
+      &nbsp;({ success}/{success + fail}人)
     </span>
   );
 

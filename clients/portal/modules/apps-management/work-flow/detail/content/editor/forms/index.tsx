@@ -100,7 +100,7 @@ export default function NodeFormWrapper() {
         return false;
       }
 
-      return !!(timeRule.deadLine.day && timeRule.deadLine.hours && timeRule.deadLine.minutes);
+      return !!(timeRule.deadLine.day || timeRule.deadLine.hours || timeRule.deadLine.minutes);
     }
     return true;
   }

@@ -6,6 +6,7 @@ import { usePortalGlobalValue } from '@portal/states_to_be_delete/portal';
 
 const Message = lazy(()=> import('./message'));
 const SendMessage = lazy(()=> import('./send-message'));
+const MessageDetails = lazy(()=> import('./message-details'));
 
 export default function Index() {
   const [{ userInfo }] = usePortalGlobalValue();
@@ -20,6 +21,7 @@ export default function Index() {
     <Switch>
       <Route exact path={`${path}/message`} component={Message} />
       <Route path={`${path}/message/send`} component={SendMessage} />
+      <Route path={`${path}/message/details/:id`} component={MessageDetails} />
       <Redirect from={path} to={`${path}/message`} />
       <Route component={() => (<ErrorTips desc={'Menu page is not found'} />)} />
     </Switch>

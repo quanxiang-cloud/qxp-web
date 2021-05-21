@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import dayjs from 'dayjs';
+import { useHistory } from 'react-router-dom';
 import { Message } from '@QCFE/lego-ui';
 import { observer } from 'mobx-react';
 import { debounce } from 'lodash';
@@ -95,7 +96,7 @@ const MsgTable = ({ refresh }: Props) => {
     setMessageType,
     setMessageStatus: setStatus,
   } = msgMgmt;
-
+  const history = useHistory();
   const queryClient = useQueryClient();
 
   const [previewInfo, setPreviewInfo] = useState({
@@ -283,7 +284,7 @@ const MsgTable = ({ refresh }: Props) => {
         status: MsgSendStatus, id: string, title: string, sort: MsgType
       }) => {
         const handleClick = () => {
-          setPreviewInfo({ id, visible: true, title, status });
+          history.push(`/system/message/details/${id}`);
         };
         return (<PreviewModal handleClick={handleClick} title={(<div>
           {(sort != MsgType.all) && (<span

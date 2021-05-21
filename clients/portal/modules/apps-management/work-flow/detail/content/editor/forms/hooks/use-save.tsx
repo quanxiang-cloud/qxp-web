@@ -7,7 +7,7 @@ import toast from '@lib/toast';
 
 export default function useSave(appID: string, id?: string) {
   const history = useHistory();
-  const callback = useRef<Function>();
+  const callback = useRef<{onOk: Function; onError?: Function}>();
 
   const saveMutation = useMutation(saveWorkFlow, {
     onSuccess: (respData) => {
@@ -15,16 +15,19 @@ export default function useSave(appID: string, id?: string) {
       if (appID && respData?.id && !id) {
         history.replace(`/apps/flow/${appID}/${respData?.id}`);
       } else {
-        callback.current?.();
+        callback.current?.onOk?.();
       }
     },
     onError: (err: Error) => {
       toast.error(err.message);
+      callback.current?.onError?.();
     },
   });
 
-  function onSaveWorkFlow(data: SaveWorkFlow, onOk: Function) {
-    callback.current = onOk;
+  function onSaveWorkFlow(data: SaveWorkFlow, onOk: Function, onError?: Function) {
+    callback.current = {
+      onOk, onError,
+    };
     const saveData: SaveWorkFlow = data;
     if (id) {
       saveData.id = id;

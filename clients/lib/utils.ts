@@ -245,8 +245,6 @@ export function getQuery<T>(): T {
   return {} as T;
 }
 
-export function noop() {}
-
 export function toggleArray<T>(arr1: T[], value: T, condition = true) {
   if (condition && arr1.includes(value)) {
     return arr1.filter((v) => v !== value);

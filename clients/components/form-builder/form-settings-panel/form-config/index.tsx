@@ -7,7 +7,7 @@ import Icon from '@c/icon';
 import { StoreContext } from '../../context';
 import VisibleHiddenLinkageConfig from './visible-hidden-linkage-config';
 import { INTERNAL_FIELD_NAMES } from '../../store';
-// import ColumnNumberOption from './columns-count';
+import { toJS } from 'mobx';
 
 type RenderLayoutOptionProps = {
   labelAlign: 'right' | 'top';
@@ -120,11 +120,11 @@ function VisibleHiddenLinkageList({ onEdit }: VisibleHiddenLinkagesProps): JSX.E
                   />
                 </span>
               </div>
-              <div>当满足以下{store.linkageCondition}条件时: </div>
+              <div>当满足以下{store.visibleHiddenLinkages[index].ruleJoinOperator === 'every' ? '所有' : '任一'}条件时: </div>
               {readableRules.map((rule) => (
                 <div key={rule} className="text-h6-bold pl-12 mb-8">- {rule}</div>
               ))}
-              <div>显示以下字段: </div>
+              <div>{store.visibleHiddenLinkages[index].isShow === true ? '显示' : '隐藏'}以下字段: </div>
               <div className="text-h6-bold pl-12 mb-8">{readableTargets}</div>
             </div>
           );
@@ -180,7 +180,7 @@ function FormConfig(): JSX.Element {
       {isLinkageConfigVisible && (
         <VisibleHiddenLinkageConfig
           linkageKey={editingLinkage}
-          store={store}
+          sourceSchema={toJS(store.schema)}
           onSubmit={(linkage) => {
             store.handleLinkageChange(linkage);
             setLinkageConfigVisible(false);

@@ -23,7 +23,7 @@ function BasicInfoForm(
   return (
     <div>
       <Input
-        label='权限组名称名称'
+        label='权限组名称'
         help='不超过 30 个字符，权限组名称不可重复。'
         error={errors.name}
         defaultValue={defaultValue.name}
