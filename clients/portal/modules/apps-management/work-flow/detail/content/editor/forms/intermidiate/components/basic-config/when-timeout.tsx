@@ -19,7 +19,7 @@ export default function WhenTimeout({ defaultValue, onChange }: Props) {
     type: '',
     value: '',
   });
-  const { elements = [], validating } = useObservable<StoreValue>(store);
+  const { elements = [], validating, nodeIdForDrawerForm } = useObservable<StoreValue>(store);
   const previousType = usePrevious(timeoutData.type);
   useEffect(() => {
     onChange(timeoutData);
@@ -96,7 +96,7 @@ export default function WhenTimeout({ defaultValue, onChange }: Props) {
                 })}
               options={elements.reduce(
                 (cur: {label: string; value: string;}[], next) => {
-                  if (next.type !== 'formData' && next.data) {
+                  if (next.id !== nodeIdForDrawerForm && next.data) {
                     cur.push({
                       label: next.data.nodeData.name,
                       value: next.id,
