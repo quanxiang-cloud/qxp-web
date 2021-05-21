@@ -107,8 +107,6 @@ function VisibleHiddenLinkageConfig({ onClose, sourceSchema, linkageKey, onSubmi
       return { value: key, label: value.title || key, availableCompareValues: value.enum || [],
         'x-component': value['x-component'] || 'AntdSelect',
       };
-    }).filter((availableField) => {
-      return availableField['x-component'] !== 'textarea';
     });
 
   const sourceKeyOptions = availableFields.filter((availableField) => {
@@ -135,9 +133,6 @@ function VisibleHiddenLinkageConfig({ onClose, sourceSchema, linkageKey, onSubmi
           return { value: key, label: value.title || key, availableCompareValues: value.enum || [],
             'x-component': value['x-component'] || 'AntdSelect',
           };
-        })
-        .filter((availableField) => {
-          return availableField['x-component'] !== 'textarea';
         });
       availableFields = availableFields.filter((availableField) => {
         return !existingCondistions.includes(availableField.value);
