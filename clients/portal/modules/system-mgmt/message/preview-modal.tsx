@@ -10,11 +10,12 @@ interface Props {
 }
 
 const PreviewModal = ({ title, handleClick }: Props) => {
-  return (<div >
+  return (
     <div
       onClick={handleClick}
-      className={styles.pre_modal_hover_title}>{title}</div>
-  </div>);
+      className={styles.pre_modal_hover_title}>{title}
+    </div>
+  );
 };
 
 export const ModalContent = ({ status, handleClose, confirmSend, data }: any) => {
