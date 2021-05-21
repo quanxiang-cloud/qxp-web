@@ -52,15 +52,16 @@ function getComparator(linkage: FormBuilder.VisibleHiddenLinkage): FormBuilder.C
 export default function visibleHiddenLinkageEffect(linkages: FormBuilder.VisibleHiddenLinkage[]) {
   const { setFieldState } = createFormActions();
 
-  const comparatorsAndTargetKey: Array<[FormBuilder.Comparator, string]> = linkages.map((linkages) => {
+  const comparatorsAndTargetKey: Array<[FormBuilder.Comparator, string, boolean]> = linkages.map((linkages) => {
     // *(abc,def,gij)
     const targetKeys = `*(${linkages.targetKeys.join(',')})`;
-    return [getComparator(linkages), targetKeys];
+    const isShow = linkages.isShow;
+    return [getComparator(linkages), targetKeys, isShow];
   });
 
   onFormValuesChange$().subscribe(({ values }) => {
-    comparatorsAndTargetKey.forEach(([comparator, targetKey]) => {
-      const isVisible = comparator(values);
+    comparatorsAndTargetKey.forEach(([comparator, targetKey, isShow]) => {
+      const isVisible = isShow === true ? comparator(values) : !comparator(values);
       setFieldState(targetKey, (state) => state.visible = isVisible);
     });
   });

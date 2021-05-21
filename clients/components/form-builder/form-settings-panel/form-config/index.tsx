@@ -124,7 +124,7 @@ function VisibleHiddenLinkageList({ onEdit }: VisibleHiddenLinkagesProps): JSX.E
               {readableRules.map((rule) => (
                 <div key={rule} className="text-h6-bold pl-12 mb-8">- {rule}</div>
               ))}
-              <div>显示以下字段: </div>
+              <div>{store.visibleHiddenLinkages[index].isShow === true ? '显示' : '隐藏'}以下字段: </div>
               <div className="text-h6-bold pl-12 mb-8">{readableTargets}</div>
             </div>
           );
