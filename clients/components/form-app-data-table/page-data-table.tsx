@@ -80,7 +80,7 @@ function PageDataTable() {
   };
 
   return (
-    <div className='form-app-data-table-container flex flex-col flex-1'>
+    <div className='form-app-data-table-container flex flex-col'>
       <div className='mb-16 flex items-center gap-x-16'>
         {operateButton(2, store.authority, (
           <Button onClick={store.createFun} modifier='primary' iconName='add'>新建</Button>

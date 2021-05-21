@@ -74,7 +74,6 @@ function EditPageModal({ pageInfo, onCancel, onSubmit, appID }: Props) {
 
   return (
     <Modal
-      className="static-modal"
       title={curAppID ? '修改名称与图标' : '新建页面'}
       onClose={onCancel}
       footerBtns={[{

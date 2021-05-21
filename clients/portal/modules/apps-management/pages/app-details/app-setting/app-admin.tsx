@@ -24,7 +24,7 @@ function AppAdmin() {
   const [selectedIdArr, setSelectedArr] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const [delLoading, setDelLoading] = useState(false);
-  const { appID } = useParams<{appID: string}>();
+  const { appID } = useParams<{ appID: string }>();
   const [params] = useState({ page: 1, limit: 9999, id: appID });
   const [appAdminList, setAppAdminList] = useState([]);
 
@@ -52,7 +52,7 @@ function AppAdmin() {
           window.location.href = '/apps';
         }, 2000);
       }
-    }).catch(()=>{
+    }).catch(() => {
       setDelLoading(false);
     });
   };
@@ -70,7 +70,7 @@ function AppAdmin() {
   const addAdmin = (
     _: EmployeeOrDepartmentOfRole[],
     employees: EmployeeOrDepartmentOfRole[]) => {
-    if (employees.length === 0) {
+    if (employees.length === 0 && appAdminList.length === 0) {
       toast.error('请选择添加为管理员的员工');
       return Promise.reject({ message: '' });
     }
@@ -111,7 +111,7 @@ function AppAdmin() {
     {
       id: 'action',
       Header: '操作',
-      accessor: ({ id }: {id: string}): JSX.Element => (
+      accessor: ({ id }: { id: string }): JSX.Element => (
         <PopConfirm onOk={() => removeAdmin([id])} content={<span>确认删除改管理员？</span>} >
           <span className='text-btn'>移除</span>
         </PopConfirm>
@@ -131,7 +131,7 @@ function AppAdmin() {
         modifier='primary'
         iconName='add'
       >
-            添加管理员
+        添加管理员
       </Button>
       {selectedIdArr.length > 0 && (
         <Button
@@ -139,7 +139,7 @@ function AppAdmin() {
           modifier='primary'
           iconName='restore_from_trash'
         >
-              批量移除
+          批量移除
         </Button>
       )}
       <Table
@@ -153,28 +153,28 @@ function AppAdmin() {
         onSelectChange={handleSelectChange}
       />
       {(modalType === 'batchRemove') &&
-          (<Modal
-            title='批量移除'
-            onClose={() => setModalType('')}
-            footerBtns={[
-              {
-                text: '取消',
-                key: 'cancel',
-                iconName: 'close',
-                onClick: () => setModalType(''),
-              },
-              {
-                text: '确定移除',
-                key: 'confirm',
-                iconName: 'check',
-                loading: delLoading,
-                modifier: 'primary',
-                onClick: batchRemove,
-              },
-            ]}
-          >
+        (<Modal
+          title='批量移除'
+          onClose={() => setModalType('')}
+          footerBtns={[
+            {
+              text: '取消',
+              key: 'cancel',
+              iconName: 'close',
+              onClick: () => setModalType(''),
+            },
+            {
+              text: '确定移除',
+              key: 'confirm',
+              iconName: 'check',
+              loading: delLoading,
+              modifier: 'primary',
+              onClick: batchRemove,
+            },
+          ]}
+        >
           确定要批量移除应用的管理员吗？
-          </Modal>)
+        </Modal>)
       }
       {modalType === 'addAdmin' && (
         <EmployeeOrDepartmentPickerModal

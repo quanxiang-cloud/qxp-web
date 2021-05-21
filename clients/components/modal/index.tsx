@@ -221,7 +221,7 @@ const Wrap = styled.div`
   transition: opacity .1s;
   justify-content: center;
   overflow: hidden;
-  z-index: 13;
+  z-index: 20;
   box-shadow: inset 0px -1px 0px #E2E8F0;
 
   ${Mask} {

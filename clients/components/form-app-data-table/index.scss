@@ -7,6 +7,7 @@
 
 .form-app-data-table-filtrate {
   display: flex;
+  flex-shrink: 0;
   column-gap: 24px;
   margin-bottom: 16px;
 }
