@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import styled from 'styled-components';
 import {
   SchemaForm,
@@ -17,6 +17,8 @@ import Icon from '@c/icon';
 import Button from '@c/button';
 import Select from '@c/select';
 import { INTERNAL_FIELD_NAMES } from '../../store';
+import { StoreContext } from '@c/form-builder/context';
+import { toJS } from 'mobx';
 
 const { onFieldInputChange$ } = FormEffectHooks;
 const RowStyleLayout = styled((props) => <div {...props} />)`
@@ -95,23 +97,35 @@ type Props = {
 }
 
 function VisibleHiddenLinkageConfig({ onClose, sourceSchema, linkageKey, onSubmit }: Props): JSX.Element {
+  const store = useContext(StoreContext);
   const [tag, setTag] = useState('every');
   const linkages = (
     sourceSchema['x-internal']?.visibleHiddenLinkages || []
   ) as FormBuilder.VisibleHiddenLinkage[];
   const defaultValue = linkages.find((linkage) => linkage.key === linkageKey) || DEFAULT_VALUE;
   const existingCondistions: Array<string> = [];
-  let availableFields = Object.entries(sourceSchema.properties || {})
-    .filter(([key]) => !INTERNAL_FIELD_NAMES.includes(key))
-    .map(([key, value]) => {
-      return { value: key, label: value.title || key, availableCompareValues: value.enum || [],
-        'x-component': value['x-component'] || 'AntdSelect',
-      };
-    });
+  let existingTargetKeys: Array<string> = [];
+  store.visibleHiddenLinkages.map(({ targetKeys }) => {
+    existingTargetKeys = existingTargetKeys.concat(toJS(targetKeys));
+  });
+  let availableFields = initAvaliableFields();
 
   const sourceKeyOptions = availableFields.filter((availableField) => {
     return availableField['x-component'] !== 'textarea';
   });
+
+  function initAvaliableFields() {
+    return Object.entries(sourceSchema.properties || {})
+      .filter(([key]) => !INTERNAL_FIELD_NAMES.includes(key))
+      .filter(([key, value]) => {
+        return !existingTargetKeys.includes(key);
+      })
+      .map(([key, value]) => {
+        return { value: key, label: value.title || key, availableCompareValues: value.enum || [],
+          'x-component': value['x-component'] || 'AntdSelect',
+        };
+      });
+  }
 
   function setCompareValueOptions() {
     const { setFieldState } = createFormActions();
@@ -127,14 +141,7 @@ function VisibleHiddenLinkageConfig({ onClose, sourceSchema, linkageKey, onSubmi
         return `rules.${$1}.compareValue`;
       });
 
-      availableFields = Object.entries(sourceSchema.properties || {})
-        .filter(([key]) => !INTERNAL_FIELD_NAMES.includes(key))
-        .map(([key, value]) => {
-          return { value: key, label: value.title || key, availableCompareValues: value.enum || [],
-            'x-component': value['x-component'] || 'AntdSelect',
-          };
-        });
-      availableFields = availableFields.filter((availableField) => {
+      availableFields = initAvaliableFields().filter((availableField) => {
         return !existingCondistions.includes(availableField.value);
       });
 
