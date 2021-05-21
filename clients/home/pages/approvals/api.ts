@@ -48,7 +48,7 @@ export const getTaskFormPermission = async (params: Record<string, any>) => {
 };
 
 // 阅示
-export const readFlow = async (processInstanceId: string, taskId: string, params: Record<string, any>): Promise<{data: any}> => {
+export const readFlow = async (processInstanceId: string, taskId: string, params: Record<string, any>): Promise<{ data: any }> => {
   return await httpClient(`/api/v1/flow/instance/readFlow/${processInstanceId}/${taskId}`, params);
 };
 
@@ -73,8 +73,8 @@ export const startFlowById = async (params: Record<string, any>) => {
 };
 
 // 退回某步
-export const stepBack = async (params: Record<string, any>) => {
-  return await httpClient('/api/v1/flow/instance/stepBack/{processInstanceId}/{taskId}', params);
+export const stepBack = async (processInstanceId: string, taskId: string, params: Record<string, any>) => {
+  return await httpClient(`/api/v1/flow/instance/stepBack/${processInstanceId}/${taskId}`, params);
 };
 
 // 任务审核（通过任务）
@@ -127,4 +127,19 @@ export const readAll = async (params: string[]) => {
 // 撤销
 export const cancelTask = async (processInstanceId: string) => {
   return await httpClient(`/api/v1/flow/instance/cancel/${processInstanceId}`);
+};
+
+// 转交
+export const deliverTask = async (processInstanceId: string, taskId: string, params: { handleType: string, remark: any, [key: string]: any }) => {
+  return await httpClient(`/api/v1/flow/instance/deliverTask/${processInstanceId}/${taskId}`, params);
+};
+
+// 获取可回退的节点列表
+export const getStepbackActivityList = async (processInstanceId: string): Promise<any> => {
+  return await httpClient(`/api/v1/flow/instance/stepBackActivityList/${processInstanceId}`);
+};
+
+// 处理阅示
+export const handleReadTask = async (processInstanceId: string, taskId: string, params: Record<string, any>)=> {
+  return await httpClient(`/api/v1/flow/instance/handleRead/${processInstanceId}/${taskId}`, params);
 };

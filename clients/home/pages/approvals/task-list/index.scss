@@ -1,6 +1,6 @@
 %text-overflow {
   white-space: nowrap;
-  max-width: 8rem;
+  max-width: 10rem;
   overflow: hidden;
   text-overflow: ellipsis;
 }
@@ -46,8 +46,10 @@
         }
 
         & ~ span {
+          display: inline-flex;
           color: #475569;
           @extend %text-overflow;
+          overflow-x: scroll;
         }
       }
     }

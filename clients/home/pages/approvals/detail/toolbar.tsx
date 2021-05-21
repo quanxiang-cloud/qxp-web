@@ -1,10 +1,16 @@
-import React from 'react';
+import React, { useRef, useState } from 'react';
 import Icon from '@c/icon';
 import Button from '@c/button';
 import cs from 'classnames';
+import { useParams } from 'react-router-dom';
+import { TextArea } from '@QCFE/lego-ui';
 
 import actionMap from './action-map';
 import MoreMenu from '@c/more-menu';
+import PopConfirm from '@c/pop-confirm';
+import toast from '@lib/toast';
+
+import { handleReadTask } from '../api';
 
 interface Props {
   className?: string;
@@ -15,8 +21,8 @@ interface Props {
 
 const moreActions = [
   { label: <span><Icon name="print" className="mr-12" />打印</span>, key: 'print' },
-  { label: <span><Icon name="share" className="mr-12" />分享</span>, key: 'share' },
-  { label: <span><Icon name="trending_up" className="mr-12" />流转图</span>, key: 'chart' },
+  // { label: <span><Icon name="share" className="mr-12" />分享</span>, key: 'share' },
+  // { label: <span><Icon name="trending_up" className="mr-12" />流转图</span>, key: 'chart' },
 ];
 
 const getIconByAction = (action: string) => {
@@ -24,16 +30,28 @@ const getIconByAction = (action: string) => {
 };
 
 function Toolbar({ permission, onClickAction, globalActions }: Props) {
+  const { processInstanceID, taskID } = useParams<{ processInstanceID: string; taskID: string }>();
+  const [comment, setComment] = useState('');
+  const commentRef = useRef<{node: HTMLTextAreaElement}>(null);
+
   const { custom = [], system = [] } = permission;
 
   // fixme: mock
-  // custom = ['FILL_IN', 'DELIVER', 'STEP_BACK', 'SEND_BACK', 'CC', 'ADD_SIGN', 'READ'].map((v) => {
+  // custom = [
+  //   'FILL_IN',
+  //   'DELIVER',
+  //   'STEP_BACK',
+  //   'SEND_BACK',
+  //   'CC',
+  //   // 'ADD_SIGN',
+  //   'READ',
+  // ].map((v) => {
   //   return ({ enabled: true, value: v, ...actionMap[v] });
-  // })
+  // });
   //
   // system = ['AGREE', 'REFUSE'].map((v: string) => {
   //   return ({ enabled: true, value: v, ...actionMap[v] });
-  // })
+  // });
   //
   // Object.assign(globalActions, {
   //   hasCancelBtn: true,
@@ -103,6 +121,57 @@ function Toolbar({ permission, onClickAction, globalActions }: Props) {
           Object.entries(globalActions).map(([action, enabled], idx) => {
             if (!enabled) {
               return null;
+            }
+
+            if (action === 'hasReadHandleBtn') {
+              return (
+                <PopConfirm content={(
+                  <div>
+                    <div className="mb-8" style={{ width: '374px' }}>请输入阅示意见</div>
+                    <TextArea
+                      rows={2}
+                      // @ts-ignore
+                      ref={commentRef}
+                      name="comment"
+                      placeholder=''
+                      defaultValue={comment}
+                      // onChange={(ev: unknown, value: string) => setComment(value)}
+                    />
+                    <MoreMenu
+                      menus={[
+                        { label: '我已阅示，非常赞同', key: '我已阅示，非常赞同' },
+                        { label: '我已阅示，这个情况还是慎重处理吧', key: '我已阅示，这个情况还是慎重处理吧' },
+                        { label: '我已阅示', key: '我已阅示' },
+                      ]}
+                      onMenuClick={(key) => {
+                        setComment(key);
+                        // @ts-ignore
+                        commentRef?.current?.setState({ value: key });
+                      }}
+                    >
+                      <span className="inline-flex text-blue-600 mt-20 cursor-pointer">选择常用语</span>
+                    </MoreMenu>
+                  </div>
+                )}
+                okText="提交"
+                onOk={()=> {
+                  handleReadTask(processInstanceID, taskID, { remark: commentRef?.current?.node.value || '' }).then((data) => {
+                    if (data) {
+                      toast.success('操作成功');
+                    }
+                  }).catch((err)=> toast.error(err.message || '操作失败'));
+                }}
+                key={`${action}-${idx}`}
+                >
+                  <Button
+                    iconName={getIconByAction(action)}
+                    modifier="primary"
+                    key={`${action}-${idx}`}
+                  >
+                    {actionMap[action].text}
+                  </Button>
+                </PopConfirm>
+              );
             }
             return (
               <Button
