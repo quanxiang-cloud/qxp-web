@@ -18,7 +18,7 @@ function runWebpack(webpackConfig) {
         console.error('err:', err);
         console.log(stats.toString({ 'errors-warnings': true }));
 
-        return reject();
+        return resolve();
       }
 
       console.log(stats.toString({ normal: true, colors: true }));
