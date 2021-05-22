@@ -117,14 +117,6 @@ export default class FormBuilderStore {
     return registry.elements[componentName.toLocaleLowerCase()] || null;
   }
 
-  @computed get activeFieldConfigSchema(): ISchema | null {
-    return this.activeFieldSourceElement?.configSchema || null;
-  }
-
-  @computed get activeFieldConfigForm(): React.JSXElementConstructor<any> | null {
-    return this.activeFieldSourceElement?.configForm || null;
-  }
-
   @computed get schema(): ISchema {
     const properties = this.fields
       .concat(this.internalFields)

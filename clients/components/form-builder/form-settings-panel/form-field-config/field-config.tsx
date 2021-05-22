@@ -110,7 +110,7 @@ function FormFieldConfig(): JSX.Element {
           key={toJS(store.activeFieldName)}
           onChange={(value) => store.updateFieldConfig(value)}
           initialValue={toJS(store.activeField.configValue)}
-          schema={store.activeFieldConfigSchema || {}}
+          schema={store.activeFieldSourceElement?.configSchema}
           components={{
             ...COMMON_CONFIG_COMPONENTS,
             ...store.activeFieldSourceElement?.configDependencies,
