@@ -1,13 +1,12 @@
 .qxp-table-wrapper {
   display: flex;
   flex-direction: column;
-  overflow: hidden;
   box-sizing: border-box;
   width: 100%;
   background-color: white;
 
   // create a new stacking context for preventing z-index out bound of sticky element
-  opacity: 0.99999999;
+  opacity: 0.999;
 
   .qxp-table {
     max-height: 100%;

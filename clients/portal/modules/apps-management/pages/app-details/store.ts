@@ -5,6 +5,8 @@ import { mutateTree, TreeData, TreeItem } from '@atlaskit/tree';
 import toast from '@lib/toast';
 import { buildAppPagesTreeData } from '@lib/utils';
 import AppDataStore from '@c/form-app-data-table/store';
+
+import { fetchAppList } from '../entry/app-list/api';
 import {
   fetchAppDetails,
   updateAppStatus,
@@ -18,8 +20,6 @@ import {
   fetchFormScheme,
 } from './api';
 
-import appListStore from '../entry/app-list/store';
-
 class AppDetailsStore {
   destroySetCurPage: IReactionDisposer;
   @observable appDetails: AppInfo = {
@@ -31,6 +31,7 @@ class AppDetailsStore {
   @observable appDataStore: AppDataStore = new AppDataStore({ schema: {} });
   @observable loading = false;
   @observable pageInitList: PageInfo[] = [];
+  @observable apps: AppInfo[] = [];
   @observable appID = '';
   @observable pageID = '';
   @observable pageListLoading = true;
@@ -58,11 +59,24 @@ class AppDetailsStore {
   }
 
   @action
+  fetchAppList = () => {
+    fetchAppList({}).then((res) => {
+      this.apps = res.data.data;
+    });
+  }
+
+  @action
   updateAppStatus = () => {
     const { id, useStatus } = this.appDetails;
     return updateAppStatus({ id, useStatus: -1 * useStatus }).then(() => {
       this.appDetails.useStatus = -1 * useStatus;
-      appListStore.updateApp(this.appDetails);
+      this.apps = this.apps.map((appInfo) => {
+        if (appInfo.id === id) {
+          return { ...appInfo, ...this.appDetails };
+        }
+
+        return appInfo;
+      });
       toast.success(useStatus < 0 ? '发布成功！' : '下架成功');
     });
   }
@@ -83,7 +97,12 @@ class AppDetailsStore {
   updateApp = (appInfo: Pick<AppInfo, 'appName' | 'appIcon' | 'useStatus'>) => {
     return updateApp({ id: this.appDetails.id, ...appInfo }).then(() => {
       this.appDetails = { ...this.appDetails, ...appInfo };
-      appListStore.updateApp(this.appDetails);
+      this.apps = this.apps.map((_appInfo) => {
+        if (_appInfo.id === this.appDetails.id) {
+          return { ..._appInfo, ...appInfo };
+        }
+        return _appInfo;
+      });
       toast.success('修改成功！');
     });
   }

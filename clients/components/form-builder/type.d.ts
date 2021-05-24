@@ -36,18 +36,6 @@ declare namespace FormBuilder {
     dropPosition: DropPosition;
   }
 
-  type Source = Partial<{
-    item: any;
-    path: string;
-    index: number;
-  }>;
-
-  type TargetItem = {
-    id: string;
-    index: number;
-    path: string;
-  }
-
   type DisplayModifier = 'normal' | 'readonly' | 'hidden';
 
   type Schema = ISchema & { 'x-internal'?: Record<string, unknown> };

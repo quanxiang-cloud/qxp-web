@@ -89,6 +89,8 @@ const DEFAULT_VALUE: FormBuilder.VisibleHiddenLinkage = {
   isShow: false,
 };
 
+const DISABLE_FIELD: Array<string | undefined> = ['textarea', 'CascadeSelector'];
+
 type Props = {
   onClose: () => void;
   linkageKey: string;
@@ -110,9 +112,16 @@ function VisibleHiddenLinkageConfig({ onClose, sourceSchema, linkageKey, onSubmi
   });
   let availableFields = initAvaliableFields();
 
-  const sourceKeyOptions = availableFields.filter((availableField) => {
-    return availableField['x-component'] !== 'textarea';
-  });
+  const sourceKeyOptions = Object.entries(sourceSchema.properties || {})
+    .filter(([key]) => !INTERNAL_FIELD_NAMES.includes(key))
+    .filter(([key, value]) => {
+      return !DISABLE_FIELD.includes(value['x-component']);
+    })
+    .map(([key, value]) => {
+      return { value: key, label: value.title || key, availableCompareValues: value.enum || [],
+        'x-component': value['x-component'] || 'AntdSelect',
+      };
+    });
 
   function initAvaliableFields() {
     return Object.entries(sourceSchema.properties || {})

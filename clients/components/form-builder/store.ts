@@ -37,9 +37,19 @@ const INTERNAL_FIELDS: Array<FormItem> = [
     configValue: { displayModifier: 'hidden', title: '创建者', isSystem: true },
   },
   {
+    fieldName: 'creator_id',
+    componentName: 'Input',
+    configValue: { displayModifier: 'hidden', title: '创建者 ID', isSystem: true },
+  },
+  {
     fieldName: 'modifier_name',
     componentName: 'Input',
     configValue: { displayModifier: 'hidden', title: '修改者', isSystem: true },
+  },
+  {
+    fieldName: 'modifier_id',
+    componentName: 'Input',
+    configValue: { displayModifier: 'hidden', title: '修改者 ID', isSystem: true },
   },
 ];
 
@@ -115,14 +125,6 @@ export default class FormBuilderStore {
     }
 
     return registry.elements[componentName.toLocaleLowerCase()] || null;
-  }
-
-  @computed get activeFieldConfigSchema(): ISchema | null {
-    return this.activeFieldSourceElement?.configSchema || null;
-  }
-
-  @computed get activeFieldConfigForm(): React.JSXElementConstructor<any> | null {
-    return this.activeFieldSourceElement?.configForm || null;
   }
 
   @computed get schema(): ISchema {
