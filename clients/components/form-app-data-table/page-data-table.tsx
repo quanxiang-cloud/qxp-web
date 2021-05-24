@@ -94,15 +94,17 @@ function PageDataTable() {
         {/* {textBtnRender('导入', 'file_download')}
         {textBtnRender('导出', 'file_upload')} */}
       </div>
-      <Table
-        showCheckbox
-        emptyTips='暂无数据'
-        rowKey="_id"
-        loading={store.listLoading}
-        onSelectChange={handleSelectChange}
-        columns={columns}
-        data={store.formDataList}
-      />
+      <div className='flex' style={{ maxHeight: `calc(100% - ${store.tableConfig.pageSize ? 100 : 48}px)` }}>
+        <Table
+          showCheckbox
+          emptyTips='暂无数据'
+          rowKey="_id"
+          loading={store.listLoading}
+          onSelectChange={handleSelectChange}
+          columns={columns}
+          data={store.formDataList}
+        />
+      </div>
       {store.tableConfig.pageSize ? (
         <Pagination
           current={store.params.page}
