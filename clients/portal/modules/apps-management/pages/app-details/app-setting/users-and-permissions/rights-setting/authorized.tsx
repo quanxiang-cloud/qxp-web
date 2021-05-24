@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react';
 
 import CheckBox from '@c/checkbox';
 import Button from '@c/button';
-import { fetchOperatePer, saveOperatePer } from '../../api';
+import { fetchOperatePer, saveOperatePer } from '../api';
 import toast from '@lib/toast';
 
-import store from '../../store';
+import store from '../store';
 
 type CardProps = {
   rightsCardData: {

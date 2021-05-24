@@ -3,7 +3,7 @@ import React, { useRef, useState } from 'react';
 import Button from '@c/button';
 
 import BasicInfoForm from './basic-info-form';
-import store from '../../store';
+import store from '../store';
 
 type Props = {
   rights: Rights

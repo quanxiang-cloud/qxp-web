@@ -5,12 +5,11 @@ import Drawer from '@c/drawer';
 import EmployeeOrDepartmentPickerModal from '@c/employee-or-department-picker';
 
 import RightSetting from './rights-setting';
-import store from '../store';
 import './index.scss';
 
 type Props = {
   rights: Rights;
-  actions: (key: string, rights: Rights) => void
+  actions: (key: string, rights: Rights) => void | Promise<boolean | void>;
 }
 
 type UserOrDept = {
@@ -66,7 +65,7 @@ function RightsItem({ rights, actions }: Props) {
         name: employee.ownerName,
       });
     });
-    return store.updatePerGroup({ id: rights.id, scopes });
+    return actions('update', { id: rights.id, scopes }) as Promise<boolean | void>;
   };
 
   return (

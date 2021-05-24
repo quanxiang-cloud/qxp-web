@@ -77,7 +77,7 @@ type PageInfo = {
 }
 
 type AppParams = {
-  appId: string
+  appID: string
 }
 
 type FormDesignParams = {

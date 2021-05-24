@@ -24,8 +24,8 @@ function DetailsHeader() {
     });
   }, []);
 
-  const goAppSetting = () => {
-    history.push(`/apps/details/${appDetails.id}/setting/info`);
+  const goAppSetting = (navType:string) => {
+    history.push(`/apps/details/${appDetails.id}/setting/${navType}`);
   };
 
   const handleChange = (newAppId: string) => {
@@ -74,6 +74,13 @@ function DetailsHeader() {
         <AppsSwitcher apps={apps} currentAppID={appID} onChange={handleChange} />
       </div>
       <div className='flex'>
+        <Button
+          onClick={() => goAppSetting('usersAndPermissions')}
+          className='mr-16'
+          iconName='group'
+        >
+          用户及权限
+        </Button>
         {isPublish ? (
           <PopConfirm content={statusTipsContent(false)} onOk={updateAppStatus}>
             <Button iconName='toggle_on' modifier='primary'>
@@ -92,7 +99,7 @@ function DetailsHeader() {
           进入应用访问
         </Button>
         <Button
-          onClick={goAppSetting}
+          onClick={() => goAppSetting('info')}
           iconName='settings'
         >
           应用管理

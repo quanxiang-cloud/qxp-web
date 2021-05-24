@@ -7,11 +7,11 @@ import FieldSwitch from '@portal/modules/apps-management/components/field-switch
 import Icon from '@c/icon';
 import Button from '@c/button';
 import formFieldWrap from '@portal/modules/apps-management/components/form-field-wrap';
+import { getFilterField } from '@portal/modules/apps-management/pages/form-design/utils';
 import toast from '@lib/toast';
-import { fetchDataAccessPer, saveDataAccessPer } from '../../api';
+import { fetchDataAccessPer, saveDataAccessPer } from '../api';
 
-import { getFilterField } from '../../utils';
-import store from '../../store';
+import store from '../store';
 
 type Props = {
   rightsID: string;

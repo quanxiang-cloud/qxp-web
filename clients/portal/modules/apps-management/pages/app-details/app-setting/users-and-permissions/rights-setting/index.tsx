@@ -2,10 +2,8 @@ import React from 'react';
 
 import Tab from '@c/tab2';
 
-import DataPermission from './data-permission';
 import BasicInfo from './basic-info';
-import Authorized from './authorized';
-import FieldPermissions from './field-permissions';
+import PageFormTable from './page-form-table';
 
 import './index.scss';
 
@@ -26,19 +24,9 @@ function RightSetting({ rights }: Props) {
             content: (<BasicInfo rights={rights} />),
           },
           {
-            id: 'authorized',
-            name: '操作权限',
-            content: (<Authorized rightsID={rights.id} />),
-          },
-          {
-            id: 'fieldPermissions',
-            name: '字段查看权限',
-            content: (<FieldPermissions rightsID={rights.id} />),
-          },
-          {
-            id: 'association',
-            name: '数据查看权限',
-            content: (<DataPermission rightsID={rights.id} />),
+            id: 'worksheetPer',
+            name: '工作表权限设置',
+            content: (<PageFormTable />),
           },
         ]}
       />
