@@ -10,6 +10,7 @@ export type Options = {
 interface MenuListItem {
   id: string;
   name: string;
+  groupID: string;
   child: MenuListItem[];
 }
 export async function getFormDataOptions({ queryKey }: QueryFunctionContext): Promise<Options> {
@@ -20,6 +21,9 @@ export async function getFormDataOptions({ queryKey }: QueryFunctionContext): Pr
   });
   function parseMenuList(menuList: MenuListItem[]) {
     return menuList.reduce((prev: {label: string; value: string}[], current) => {
+      if (current.groupID) {
+        return prev;
+      }
       prev.push({
         label: current.name,
         value: current.id,

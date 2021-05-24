@@ -17,7 +17,7 @@ export default function({ fields, updateFields }: Props) {
         checkedNumber += 1;
       }
     });
-    const indeterminate = checkedNumber < model.data.length && checkedNumber > 0;
+    const indeterminate = (checkedNumber < model.data.length) && (checkedNumber > 0);
     const isChecked = checkedNumber === model.data.length;
     return (
       <div className="flex items-center">

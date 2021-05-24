@@ -6,7 +6,7 @@ import Drawer from '@c/drawer';
 import useObservable from '@lib/hooks/use-observable';
 import usePrevious from '@lib/hooks/use-previous';
 import { jsonValidator } from '@lib/utils';
-import FormSelector from '@portal/components/form-selector';
+import FormSelector from '@portal/components/work-table-selector';
 import type {
   StoreValue, BusinessData, NodeWorkForm, TriggerCondition, TriggerConditionValue,
   TimeRule, NodeType, TriggerWay,
@@ -63,6 +63,8 @@ export default function NodeFormWrapper() {
     updateStore((s) => ({ ...s, validating: false }));
     setFormDataChanged(false);
   }, [nodeIdForDrawerForm]);
+
+  useEffect(saveWorkFlow, [name]);
 
   const previousNodeID = usePrevious(currentNodeElement?.id) ?? '';
   useEffect(() => {
@@ -131,27 +133,35 @@ export default function NodeFormWrapper() {
     return jsonValidator<BusinessData>(formData, jsonValidatorMap[nodeType]);
   }
 
-  function onSubmit(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    const { form, ...saveData } = formData;
+  const previousName = usePrevious(name);
+  function saveWorkFlow() {
+    if (!name || !previousName) {
+      return;
+    }
+    const { form, ...saveData } = formData ?? {};
     if (isFormDataNode) {
       Object.assign(saveData, { form });
     }
+    saver({
+      bpmnText: buildBpmnText(version, nodeIdForDrawerForm, saveData),
+      name: name as string,
+      triggerMode: triggerMode as string,
+      canCancel: canCancel ? 1 : 0,
+      canUrge: canUrge ? 1 : 0,
+      canMsg: canMsg ? 1 : 0,
+      canViewStatusMsg: canViewStatusMsg ? 1 : 0,
+      appId: appID,
+    }, () => {
+      updateBusinessData(nodeIdForDrawerForm, (b) => ({ ...b, ...saveData }), { saved: true });
+      closePanel();
+    });
+  }
+
+  function onSubmit(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
     if (formDataIsValid()) {
       setFormDataChanged(false);
-      saver({
-        bpmnText: buildBpmnText(version, nodeIdForDrawerForm, saveData),
-        name: name as string,
-        triggerMode: triggerMode as string,
-        canCancel: canCancel ? 1 : 0,
-        canUrge: canUrge ? 1 : 0,
-        canMsg: canMsg ? 1 : 0,
-        canViewStatusMsg: canViewStatusMsg ? 1 : 0,
-        appId: appID,
-      }, () => {
-        updateBusinessData(nodeIdForDrawerForm, (b) => ({ ...b, ...saveData }), { saved: true });
-        closePanel();
-      });
+      saveWorkFlow();
     } else {
       updateStore((s) => ({ ...s, validating: true }));
     }

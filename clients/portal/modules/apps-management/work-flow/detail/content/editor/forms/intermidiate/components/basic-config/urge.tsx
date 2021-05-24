@@ -73,8 +73,7 @@ export default function Urge({ onSave, defaultValue }: Props) {
   function onSubmit(e: MouseEvent) {
     e.stopPropagation();
     e.preventDefault();
-    if ((openRepeatSetting && (!+urge?.repeat?.day || !+urge?.repeat?.hours ||
-      !+urge?.repeat?.minutes)) || !+urge?.day || !+urge?.hours || !+urge?.minutes) {
+    if (openRepeatSetting && !+urge?.day && !+urge?.hours && !+urge?.minutes) {
       setValidating(true);
       return;
     }
@@ -101,8 +100,15 @@ export default function Urge({ onSave, defaultValue }: Props) {
     return text;
   }
 
-  const hasUrge = urge.day || urge.hours || urge.minutes;
-  const hasRepeat = urge.repeat.day || urge.repeat.hours || urge.repeat.minutes;
+  function hasTime(arg: Urge): boolean {
+    return ['day', 'hours', 'minutes'].some((key: string) => {
+      // @ts-ignore
+      return arg[key] && arg[key] !== '0';
+    });
+  }
+
+  const hasUrge = hasTime(urge);
+  const hasRepeat = hasTime(urge.repeat as Urge);
 
   return (
     <div>

@@ -30,10 +30,14 @@ function WorkFormSelector(
   const [currentWorkTable, setCurrentWorkTable] = useState('');
 
   const {
-    data: options = [],
+    data: workTableData = [],
     isError,
     error = '获取工作表失败',
   } = useQuery(['GET_WORK_FORM_LIST', appID], getFormDataOptions);
+
+  console.log(workTableData);
+
+  const options = workTableData.filter((workTable) => workTable);
 
   isError && toast.error(error);
 

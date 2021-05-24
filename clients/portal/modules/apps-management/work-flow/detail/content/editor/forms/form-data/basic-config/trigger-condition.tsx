@@ -192,7 +192,7 @@ export default function TriggerCondition({ value, formFieldOptions, onChange: _o
             <section className="corner-2-8-8-8 bg-gray-100 px-16 py-12">
               {triggerCondition.op === 'and' && andConditionRender(triggerCondition)}
               {triggerCondition.op === 'and' &&
-              triggerCondition.expr.length < formFieldOptions.length && (
+              (triggerCondition.expr.length < formFieldOptions.length) && (
                 <footer
                   className="self-start inline-flex items-center cursor-pointer"
                   onClick={addAndCondition(triggerCondition)}

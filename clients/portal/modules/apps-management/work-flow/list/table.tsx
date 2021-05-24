@@ -135,6 +135,9 @@ export default function WorkFlowTable({ type }: Props) {
     }, {
       Header: '操作人',
       accessor: 'modifierName',
+      Cell: (model: any) => {
+        return model.cell.value ?? model.cell.row.original.creatorName;
+      },
     }, {
       Header: '更新时间',
       accessor: 'modifyTime',

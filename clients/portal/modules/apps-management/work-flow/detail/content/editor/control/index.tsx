@@ -69,16 +69,16 @@ function Controls({
       >
         {showZoom && (
           <>
-            <ControlButton onClick={onZoomInHandler}>
-              <Icon name="add_circle_outline"/>
+            <ControlButton onClick={onZoomOutHandler}>
+              <Icon name="remove_circle_outline"/>
             </ControlButton>
             <div
               className="flex items-center bg-white cursor-text"
             >
               {`${Math.ceil(zoomLevel * 100)}%`}
             </div>
-            <ControlButton onClick={onZoomOutHandler}>
-              <Icon name="remove_circle_outline"/>
+            <ControlButton onClick={onZoomInHandler}>
+              <Icon name="add_circle_outline"/>
             </ControlButton>
           </>
         )}
