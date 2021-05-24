@@ -33,7 +33,7 @@ function DetailsHeader() {
   return (
     <div className="app-global-header app-details-header">
       <div className='flex items-center'>
-        <HeaderNav {...{ name: '工作台', icon: 'home', inside: true, url: '/' }} />
+        <HeaderNav {...{ name: '工作台', icon: 'home_add_task', inside: true, url: '/' }} />
         <span className='mr-16 ml-8'>/</span>
         <AppsSwitcher
           hiddenStatus={true}

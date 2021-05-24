@@ -33,7 +33,7 @@
 }
 
 .backlog {
-  width: 128px;
+  width: 96px;
   height: 70px;
   padding: 5px 16px;
   margin-right: 8px;
@@ -51,8 +51,10 @@
 
 .message-handel-list {
   position: relative;
-  height: 56px;
-  line-height: 56px;
+  display: flex;
+  align-items: center;
+  height: 38px;
+  line-height: 38px;
 }
 
 .nav-icon {
@@ -90,4 +92,6 @@
   top: 50%;
   right: 0;
   transform: translateY(-50%);
+  font-size: 16px;
+  font-weight: 500;
 }
