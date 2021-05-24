@@ -46,6 +46,9 @@ const SendMessage = () => {
       asModalPage
       className={styles.wrap}
       pageName='发送消息'
+      style={{
+        height: 'calc(100vh - 62px)',
+      }}
     >
       <Content />
     </Container>
@@ -245,7 +248,7 @@ function ContentWithoutRef({
           file_url: itm.url,
         };
       }).filter(Boolean),
-      //     url: string
+      // url: string
       // filename:
     };
     // @ts-ignore
@@ -316,141 +319,149 @@ function ContentWithoutRef({
   });
 
   return (
-    <div className={cs('w-full', className)}>
+    <div
+      className="w-full overflow-hidden"
+      style={{ height: 'calc(100% - 24px)' }}
+    >
       <div className={styles.panel}>
         {!donotShowHeader && (<div className={styles.header}>
           <div className={styles.title}>发送消息</div>
         </div>)}
-        <div className={cs('send-msg-body', styles.body)}>
-          <Form>
-            <Field>
-              <Label>消息类型:</Label>
-              <Control>
-                <RadioGroup name='type' value={msgType} onChange={setMsgType}>
-                  <Radio value={MsgType.notify}>通知公告</Radio>
-                  <Radio value={MsgType.system}>系统消息</Radio>
-                </RadioGroup>
-              </Control>
-            </Field>
-            <TextField
-            // @ts-ignore
-              validateOnBlur
-              validateOnChange
-              name="title"
-              label="标题:"
-              placeholder="请输入消息标题"
-              help='不超过 50 个字符。'
-              maxLength={50}
-              value={title}
-              onChange={setTitle}
-              schemas={[
-                {
-                  rule: { required: true },
-                  help: '标题不能为空 ',
-                },
-              ]}
-            />
-            <Field>
-              <Label className={styles.labelCont}>内容:</Label>
-              <Control>
-                <Editor
-                  wrapperId={8888}
-                  editorState={editorCont}
-                  wrapperClassName={styles.editorWrap}
-                  editorClassName={styles.editor}
-                  onEditorStateChange={handleChangeEditor}
-                  // onContentStateChange={handleChangeEditor}
-                  toolbar={editorToolbarOptions}
-                  placeholder='在此输入正文'
-                  localization={{
-                    locale: 'zh',
-                  }}
-                />
-              </Control>
-            </Field>
-            <Field>
-              <Label>发送至:</Label>
-              <Control>
-                <Button
-                  onClick={() => setOpenReceiverModal(true)}
-                  iconName="add"
-                >
-                选择
-                </Button>
-              </Control>
-            </Field>
-          </Form>
-
-          {dom && ReactDom.createPortal(
-            <div className={styles.upload_warp}>
-              <Filelist
-                candownload
-                deleteFiles={deleteFiles}
-                files={files.map((itm) => ({
-                  file_url: itm.url,
-                  file_name: itm.filename,
-                  percent: itm.percentage,
-                  showProgress: itm.showProgress,
-                  status: itm.status,
-                }))}
+        <div
+          className={cs('send-msg-body', styles.body)}
+          style={{ height: 'calc(100% - 56px)' }}
+        >
+          <div className='h-full overflow-auto w-full' style={{ height: 'calc(100% - 64px)' }}>
+            <Form className='w-full' >
+              <Field>
+                <Label>消息类型:</Label>
+                <Control>
+                  <RadioGroup name='type' value={msgType} onChange={setMsgType}>
+                    <Radio value={MsgType.notify}>通知公告</Radio>
+                    <Radio value={MsgType.system}>系统消息</Radio>
+                  </RadioGroup>
+                </Control>
+              </Field>
+              <TextField
+                // @ts-ignore
+                validateOnBlur
+                validateOnChange
+                name="title"
+                label="标题:"
+                placeholder="请输入消息标题"
+                help='不超过 50 个字符。'
+                maxLength={50}
+                value={title}
+                onChange={setTitle}
+                schemas={[
+                  {
+                    rule: { required: true },
+                    help: '标题不能为空 ',
+                  },
+                ]}
               />
-              <Upload
-                headers={{ 'X-Proxy': 'API' }}
-                multiple
-                action="/api/v1/fileserver/uploadFile"
-                beforeUpload={(file)=> {
-                  if (file.size > 1024 * 1024 * 5) {
-                    Message.error('文件大小不能超过5M');
-                    return false;
-                  }
-                  if (files.find((f) => f.filename === file.name)) {
-                    Message.warning('文件已存在，请勿重复上传');
-                    return false;
-                  }
-                  return true;
-                }}
-                onStart={(file)=> {
-                  addFile({
-                    filename: file.name,
-                    url: '',
-                    percentage: 0,
-                    showProgress: true,
-                    status: 'active',
-                  });
-                }}
-                onProgress={(step, file)=> {
-                  // @ts-ignore
-                  const percent = typeof step.percent === 'number' ? Math.round(step.percent) : 0;
-                  updateFile(file.name, {
-                    percentage: percent,
-                    showProgress: true,
-                  });
-                }}
-                onSuccess={handleFileSuccessUpload}
-                onError={(err)=> Message.error(err.message)}
-              >
-                <div className={`${styles.upload} flex align-center`}>
-                  <Icon name="attachment" />
-                  <div>上传附件</div>
-                </div>
-              </Upload>
-            </div>,
-            dom
-          )}
+              <Field>
+                <Label className={styles.labelCont}>内容:</Label>
+                <Control>
+                  <Editor
+                    wrapperId={8888}
+                    editorState={editorCont}
+                    wrapperClassName={styles.editorWrap}
+                    editorClassName={styles.editor}
+                    onEditorStateChange={handleChangeEditor}
+                    // onContentStateChange={handleChangeEditor}
+                    toolbar={editorToolbarOptions}
+                    placeholder='在此输入正文'
+                    localization={{
+                      locale: 'zh',
+                    }}
+                  />
+                </Control>
+              </Field>
+              <Field>
+                <Label>发送至:</Label>
+                <Control>
+                  <Button
+                    onClick={() => setOpenReceiverModal(true)}
+                    iconName="add"
+                  >
+                    选择
+                  </Button>
+                </Control>
+              </Field>
+            </Form>
 
-          <div className={styles.chosenPersons}>
-            {/* @ts-ignore */}
-            {chosenDepOrPerson.map(({ id, name, type }: Qxp.MsgReceiver, key) => {
-              return (
-                <span className={cs(styles.person, {
-                  [styles.isDep]: type === 2,
-                  [styles.isPerson]: type === 1,
-                })} key={id}>
-                  <span>{name}</span>
-                  <Icon name='close' className={styles.close} onClick={() => removeReceiver(key)} />
-                </span>
-              );
-            })}
+            {dom && ReactDom.createPortal(
+              <div className={styles.upload_warp}>
+                <Filelist
+                  candownload
+                  deleteFiles={deleteFiles}
+                  files={files.map((itm) => ({
+                    file_url: itm.url,
+                    file_name: itm.filename,
+                    percent: itm.percentage,
+                    showProgress: itm.showProgress,
+                    status: itm.status,
+                  }))}
+                />
+                <Upload
+                  headers={{ 'X-Proxy': 'API' }}
+                  multiple
+                  action="/api/v1/fileserver/uploadFile"
+                  beforeUpload={(file)=> {
+                    if (file.size > 1024 * 1024 * 5) {
+                      Message.error('文件大小不能超过5M');
+                      return false;
+                    }
+                    if (files.find((f) => f.filename === file.name)) {
+                      Message.warning('文件已存在，请勿重复上传');
+                      return false;
+                    }
+                    return true;
+                  }}
+                  onStart={(file)=> {
+                    addFile({
+                      filename: file.name,
+                      url: '',
+                      percentage: 0,
+                      showProgress: true,
+                      status: 'active',
+                    });
+                  }}
+                  onProgress={(step, file)=> {
+                    // @ts-ignore
+                    const percent = typeof step.percent === 'number' ? Math.round(step.percent) : 0;
+                    updateFile(file.name, {
+                      percentage: percent,
+                      showProgress: true,
+                    });
+                  }}
+                  onSuccess={handleFileSuccessUpload}
+                  onError={(err)=> Message.error(err.message)}
+                >
+                  <div className={`${styles.upload} flex align-center`}>
+                    <Icon name="attachment" />
+                    <div>上传附件</div>
+                  </div>
+                </Upload>
+              </div>,
+              dom
+            )}
+
+            <div className={styles.chosenPersons}>
+              {/* @ts-ignore */}
+              {chosenDepOrPerson.map(({ id, name, type }: Qxp.MsgReceiver, key) => {
+                return (
+                  <span className={cs(styles.person, {
+                    [styles.isDep]: type === 2,
+                    [styles.isPerson]: type === 1,
+                  })} key={id}>
+                    <span>{name}</span>
+                    <Icon name='close' className={styles.close} onClick={() => removeReceiver(key)} />
+                  </span>
+                );
+              })}
+            </div>
           </div>
           { footer ? footer() : (<div className={styles.footer}>
             <Button
@@ -459,7 +470,7 @@ function ContentWithoutRef({
               iconName="book"
               className='mr-20'
             >
-            存草稿
+              存草稿
             </Button>
             <Button
               className="bg-gray-700 mr-20"
@@ -467,7 +478,7 @@ function ContentWithoutRef({
               onClick={previewAndPublish}
               iconName="send"
             >
-            预览并发送
+              预览并发送
             </Button>
           </div>)}
         </div>
