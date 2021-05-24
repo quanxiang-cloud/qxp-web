@@ -37,9 +37,19 @@ const INTERNAL_FIELDS: Array<FormItem> = [
     configValue: { displayModifier: 'hidden', title: '创建者', isSystem: true },
   },
   {
+    fieldName: 'creator_id',
+    componentName: 'Input',
+    configValue: { displayModifier: 'hidden', title: '创建者 ID', isSystem: true },
+  },
+  {
     fieldName: 'modifier_name',
     componentName: 'Input',
     configValue: { displayModifier: 'hidden', title: '修改者', isSystem: true },
+  },
+  {
+    fieldName: 'modifier_id',
+    componentName: 'Input',
+    configValue: { displayModifier: 'hidden', title: '修改者 ID', isSystem: true },
   },
 ];
 
