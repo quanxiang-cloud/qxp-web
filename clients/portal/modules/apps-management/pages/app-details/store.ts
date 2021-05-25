@@ -210,6 +210,7 @@ class AppDetailsStore {
 
       this.pagesTreeData = { items, rootId: 'ROOT' };
       toast.success('创建成功');
+      return res.data.id;
     });
   }
 
