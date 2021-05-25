@@ -1,7 +1,9 @@
 import React from 'react';
+import zhCN from 'antd/lib/date-picker/locale/zh_CN';
+import { DatePicker } from 'antd';
 
 import Select from '@c/select';
-import DatePicker from '@c/date-picker';
+// import DatePicker from '@c/date-picker';
 import RangePicker from '@c/range-picker';
 
 type Props<T> = {
@@ -58,9 +60,12 @@ function FieldSwitch({ filtrate, className, ...otherProps }: Props<any>, ref: Re
   case 'date':
     return (
       <DatePicker
+        locale={zhCN}
         ref={ref}
-        selectedDate={otherProps.value}
-        className={`'w-full ${className}`}
+        defaultValue={otherProps.value}
+        className={`'w-full input ${className}`}
+        format={filtrate.cProps.format}
+        showTime={filtrate.cProps.showTime}
         {...otherProps}
       />
     );

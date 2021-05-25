@@ -50,6 +50,7 @@ type FilterField = {
   label: string;
   type: string,
   placeholder: string;
+  cProps: Record<string, any>
   multiple?: boolean;
   compareSymbol?: string;
   step?: number;
