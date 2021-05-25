@@ -16,6 +16,7 @@ import Panel from './panel';
 import Toolbar from './toolbar';
 import ActionModals from './action-modals';
 import * as apis from '../api';
+import { wrapSchemaWithFieldPermission } from './utils';
 
 import store from './store';
 
@@ -66,7 +67,7 @@ function ApprovalDetail(): JSX.Element {
       <div className='task-form'>
         <FormRenderer
           defaultValue={data.formData}
-          schema={data.form.table}
+          schema={wrapSchemaWithFieldPermission(data.form.table, data?.fieldPermission?.custom)}
           onFormValueChange={setFormValues}
         />
       </div>
