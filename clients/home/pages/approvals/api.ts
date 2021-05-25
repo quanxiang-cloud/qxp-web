@@ -140,6 +140,6 @@ export const getStepbackActivityList = async (processInstanceId: string): Promis
 };
 
 // 处理阅示
-export const handleReadTask = async (processInstanceId: string, taskId: string, params: Record<string, any>)=> {
-  return await httpClient(`/api/v1/flow/instance/handleRead/${processInstanceId}/${taskId}`, params);
+export const handleReadTask = async (processInstanceId: string, taskId: string, remark?: string)=> {
+  return await httpClient(`/api/v1/flow/instance/handleRead/${processInstanceId}/${taskId}`, remark);
 };

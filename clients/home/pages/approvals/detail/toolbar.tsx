@@ -155,9 +155,11 @@ function Toolbar({ permission, onClickAction, globalActions }: Props) {
                 )}
                 okText="提交"
                 onOk={()=> {
-                  handleReadTask(processInstanceID, taskID, { remark: commentRef?.current?.node.value || '' }).then((data) => {
+                  handleReadTask(processInstanceID, taskID, commentRef?.current?.node.value || '').then((data) => {
                     if (data) {
                       toast.success('操作成功');
+                    } else {
+                      toast.error('操作失败');
                     }
                   }).catch((err)=> toast.error(err.message || '操作失败'));
                 }}
