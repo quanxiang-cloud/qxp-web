@@ -193,7 +193,15 @@ export default function NodeFormWrapper() {
   }
 
   function closePanel() {
-    updateStore((s) => ({ ...s, nodeIdForDrawerForm: '' }));
+    updateStore((s) => ({
+      ...s,
+      nodeIdForDrawerForm: '',
+      showDataNotSaveConfirm: false,
+      errors: {
+        ...s.errors,
+        dataNotSaveMap: new Map(),
+      },
+    }));
   }
 
   function onCancel() {

@@ -8,6 +8,7 @@ export type Option = {
   label: string;
   value: string;
   children?: Option[];
+  type?: string;
 };
 
 export type Options = Option[];
@@ -23,17 +24,22 @@ export async function getFormFieldOptions({ queryKey }: QueryFunctionContext): P
       tableID: queryKey[1],
     });
   function parseFormFieldOptions({ table = {} }: FormFieldOptions) {
-    return Object.entries(table).reduce((prev: {label: string; value: string;}[], [id, value]) => {
+    return Object.entries(table).reduce((prev: {
+      label: string;
+      value: string;
+      type: string;
+    }[], [id, value]) => {
       if (!WorkTableInternalFields.includes(id)) {
         prev.push({
           label: value.title,
           value: id,
+          type: value.type,
         });
       }
       return prev;
     }, []);
   }
-  return parseFormFieldOptions(data || {});
+  return parseFormFieldOptions(data ?? {});
 }
 
 export interface OperationItem {

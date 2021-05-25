@@ -25,13 +25,12 @@ export default function useNodeSwitch() {
       }
     });
     if (hasNotSaveNode) {
-      updateStore((s) => ({
+      return updateStore((s) => ({
         ...s,
         showDataNotSaveConfirm: true,
         currentDataNotSaveConfirmCallback: () => activeNodeForm(id),
       }));
-    } else {
-      activeNodeForm(id);
     }
+    activeNodeForm(id);
   };
 }

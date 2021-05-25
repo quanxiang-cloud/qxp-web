@@ -26,13 +26,12 @@ export default function useNodeSwitch() {
       }
     });
     if (hasNotSaveNode) {
-      updateStore((s) => ({
+      return updateStore((s) => ({
         ...s,
         showDataNotSaveConfirm: true,
         currentDataNotSaveConfirmCallback: () => activeComponentSelectorForm(currentConnection),
       }));
-    } else {
-      activeComponentSelectorForm(currentConnection);
     }
+    activeComponentSelectorForm(currentConnection);
   };
 }
