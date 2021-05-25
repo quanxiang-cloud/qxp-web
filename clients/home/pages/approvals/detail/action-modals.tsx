@@ -139,7 +139,7 @@ function ActionModals({ flowName, getFormData }: Props) {
       toast.success('操作成功');
       store.reset();
       setChosenEmployees([]);
-      history.push('/approvals?list=done');
+      history.push('/approvals?list=todo');
     },
     onError: (err: Error) => {
       if (!err) {
