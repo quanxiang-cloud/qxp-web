@@ -73,11 +73,11 @@ function ContentWithoutRef({
           className='w-full m-auto px-52 overflow-auto'
           style={{ height: 'calc(100% - 56px)' }}
         >
-          <div className='pt-48'>
+          <div className='pt-40'>
             <div className='mb-24 font-semibold text-20 leading-28 text-gray-900'>
               {msgDetail?.title}
             </div>
-            <div dangerouslySetInnerHTML={{ __html: msgDetail?.content as any }} />
+            <div className='mb-50' dangerouslySetInnerHTML={{ __html: msgDetail?.content as any }} />
             <FileList
               candownload={true}
               files={(msgDetail?.mes_attachment || [])}
@@ -87,10 +87,10 @@ function ContentWithoutRef({
               messageTitle={msgDetail?.title}
             />
           </div>
-          <div className='pb-48'>
-            <ul >
-              <li>发送时间: <span>{dayjs().format('YYYY-MM-DD HH:mm:ss')}</span></li>
-              <li>操作人: <span>{msgDetail?.handle_name}</span></li>
+          <div className='message-detail-footer'>
+            <ul>
+              <li>发送时间:<span>{dayjs().format('YYYY-MM-DD HH:mm:ss')}</span></li>
+              <li>操作人:<span>{msgDetail?.handle_name}</span></li>
               <li>消息类型: <span>{txt}</span></li>
               <li>
                 发送结果:
@@ -98,7 +98,8 @@ function ContentWithoutRef({
                   共 {msgDetail?.send_num}人，发送失败 {msgDetail?.fail} 人，发送成功 {msgDetail?.send_num} 人
                 </span>
               </li>
-              <li>发送范围:
+              <li>
+                发送范围:
                 <span>
                   {recivers?.type}
                   {recivers && recivers.map((reciver: { id: string; type: 1 | 2; name: string }) => (<Person
@@ -145,23 +146,15 @@ const Header = styled.div`
 const Person = styled.span`
     display: inline-flex;
     align-items: center;
-    background: #F0F6FF;
+    background: #F1F5F9;
     border-radius: 4px 0px;
     padding: 2px 8px;
     font-size: 14px;
     font-weight: 400;
     line-height: 22px;
-    color: #375FF3;
+    color: #475569;
     margin-right: 8px;
     margin-bottom: 8px;
-    &.isDep {
-      color: #D97706;
-      background: #FFFBEB;
-    }
-    &.isPerson {
-  
-    }
-
 `;
 export const Content = forwardRef(ContentWithoutRef);
 
