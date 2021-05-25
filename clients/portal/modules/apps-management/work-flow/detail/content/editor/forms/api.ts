@@ -2,10 +2,15 @@ import { QueryFunctionContext } from 'react-query';
 
 import httpClient from '@lib/http-client';
 
-export type Options = {
+import { WorkTableInternalFields } from '../utils/constants';
+
+export type Option = {
   label: string;
   value: string;
-}[];
+  children?: Option[];
+};
+
+export type Options = Option[];
 
 interface MenuListItem {
   id: string;
@@ -20,17 +25,17 @@ export async function getFormDataOptions({ queryKey }: QueryFunctionContext): Pr
     appID: queryKey[1],
   });
   function parseMenuList(menuList: MenuListItem[]) {
-    return menuList.reduce((prev: {label: string; value: string}[], current) => {
-      if (current.groupID) {
-        return prev;
-      }
+    if (!menuList) {
+      return [];
+    }
+    return menuList.reduce((prev: Options, current) => {
       prev.push({
         label: current.name,
         value: current.id,
+        children: [
+          ...parseMenuList(current.child),
+        ],
       });
-      if (current.child) {
-        prev.push(...parseMenuList(current.child));
-      }
       return prev;
     }, []);
   }
@@ -49,10 +54,12 @@ export async function getFormFieldOptions({ queryKey }: QueryFunctionContext): P
     });
   function parseFormFieldOptions({ table = {} }: FormFieldOptions) {
     return Object.entries(table).reduce((prev: {label: string; value: string;}[], [id, value]) => {
-      prev.push({
-        label: value.title,
-        value: id,
-      });
+      if (!WorkTableInternalFields.includes(id)) {
+        prev.push({
+          label: value.title,
+          value: id,
+        });
+      }
       return prev;
     }, []);
   }

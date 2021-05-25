@@ -46,8 +46,8 @@ export default function FieldPermission({ value, onChange: _onChange }: Props) {
 
   useEffect(() => {
     if (mergedFieldPermissions.custom.some(({
-      initialValue: { static: is, variable: iv },
-      submitValue: { static: ss, variable: sv },
+      initialValue: { staticValue: is, variable: iv },
+      submitValue: { staticValue: ss, variable: sv },
     }) => {
       return is || iv || ss || sv;
     })) {
@@ -82,11 +82,11 @@ export default function FieldPermission({ value, onChange: _onChange }: Props) {
           write: false,
           initialValue: {
             variable: '',
-            static: '',
+            staticValue: '',
           },
           submitValue: {
             variable: '',
-            static: '',
+            staticValue: '',
           },
           parent: undefined,
           children: [],

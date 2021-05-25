@@ -2,6 +2,7 @@ import React, { useState, FormEvent, useEffect } from 'react';
 import { isEqual } from 'lodash';
 import { useParams } from 'react-router-dom';
 
+import Modal from '@c/modal';
 import Drawer from '@c/drawer';
 import useObservable from '@lib/hooks/use-observable';
 import usePrevious from '@lib/hooks/use-previous';
@@ -18,6 +19,7 @@ import store, {
   updateStore,
   updateBusinessData,
   buildBpmnText,
+  resetElementsData,
 } from '@flow/detail/content/editor/store';
 
 import FormDataForm from './form-data';
@@ -42,11 +44,30 @@ export default function NodeFormWrapper() {
   const data = currentNodeElement?.data?.businessData;
   const [formData, setFormData] = useState<BusinessData>(data);
   const [formDataChanged, setFormDataChanged] = useState(false);
+  const saver = useSave(appID, id);
+  const [currentWorkTable, setCurrentWorkTable] = useState<{
+    name: string;
+    value: string;
+  }>();
+
   const { type: nodeType } = currentNodeElement ?? {};
   const isFormDataNode = nodeType === 'formData';
   const isApproveNode = nodeType === 'approve';
   const isFillInNode = nodeType === 'fillIn';
-  const saver = useSave(appID, id);
+
+  function onSubmitWorkFormChange() {
+    if (!currentWorkTable) {
+      return;
+    }
+    resetElementsData('formData', { form: currentWorkTable });
+    onResetFormData(currentWorkTable);
+    onCancelSubmitWorkForm();
+    setFormDataChanged(true);
+  }
+
+  function onCancelSubmitWorkForm() {
+    setCurrentWorkTable(undefined);
+  }
 
   useEffect(() => {
     setFormData((f) => ({
@@ -183,13 +204,16 @@ export default function NodeFormWrapper() {
         currentDataNotSaveConfirmCallback: () => closePanel(),
       }));
       return false;
-    } else {
-      closePanel();
     }
+    closePanel();
   }
 
   function onWorkFormChange(formValue: NodeWorkForm) {
-    setFormDataChanged(!isEqual(formData, { ...formData, form: formValue }));
+    const isWorkFormChanged = formData.form.value && formData.form.value !== formValue.value;
+    if (isWorkFormChanged) {
+      return setCurrentWorkTable(formValue);
+    }
+    setFormDataChanged(true);
     updateFormData('form', () => formValue);
   }
 
@@ -255,7 +279,6 @@ export default function NodeFormWrapper() {
             <FormSelector
               value={formData.form}
               onChange={onWorkFormChange}
-              onResetFormData={onResetFormData}
               changeable={isFormDataNode}
               validating={validating}
             />
@@ -276,6 +299,29 @@ export default function NodeFormWrapper() {
           )}
         </div>
         <SaveButtonGroup onCancel={closePanel} />
+        {currentWorkTable && (
+          <Modal
+            title="更换触发工作表"
+            onClose={onCancelSubmitWorkForm}
+            footerBtns={[
+              {
+                text: '取消',
+                key: 'cancel',
+                onClick: onCancelSubmitWorkForm,
+              },
+              {
+                text: '确定',
+                key: 'confirm',
+                modifier: 'primary',
+                onClick: onSubmitWorkFormChange,
+              },
+            ]}
+          >
+            <p className="text-body2">
+              更换新的触发工作表后，该节点及其他关联节点配置将会被重置，确定要更换吗？
+            </p>
+          </Modal>
+        )}
       </form>
     </Drawer>
   );

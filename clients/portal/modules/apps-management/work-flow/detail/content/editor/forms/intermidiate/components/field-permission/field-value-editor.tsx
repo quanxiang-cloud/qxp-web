@@ -7,25 +7,20 @@ import Radio from '@c/radio';
 import Select from '@c/select';
 import usePrevious from '@lib/hooks/use-previous';
 import ActionButtonGroup from '@flow/detail/content/editor/components/_common/action-button-group';
+import type { FieldValue } from '@flow/detail/content/editor/type';
 
 interface Props {
-  defaultValue?: {
-    variable: string;
-    static: string;
-  };
-  onSave: (value: {
-    variable: string;
-    static: string;
-  }) => void;
+  defaultValue?: FieldValue;
+  onSave: (value: FieldValue) => void;
   variableOptions?: {label: string; value: string;}[];
 }
 
 function FieldValueEditor({
-  defaultValue = { variable: '', static: '' },
+  defaultValue = { variable: '', staticValue: '' },
   variableOptions,
   onSave,
 }: Props) {
-  const [type, setType] = useState(defaultValue.variable ? 'variable' : 'static');
+  const [type, setType] = useState(defaultValue.variable ? 'variable' : 'staticValue');
   const [isEditorOpen, setIsEditorOpen] = useState(false);
   const [value, setValue] = useState(defaultValue);
   const previousType = usePrevious(type);
@@ -33,7 +28,7 @@ function FieldValueEditor({
     if (previousType !== type) {
       setValue({
         variable: '',
-        static: '',
+        staticValue: '',
       });
     }
   }, [type]);
@@ -73,8 +68,8 @@ function FieldValueEditor({
                 className="mr-16"
               />
               <Radio
-                defaultChecked={type === 'static'}
-                value="static"
+                defaultChecked={type === 'staticValue'}
+                value="staticValue"
                 label="使用固定值"
               />
             </RadioGroup>
@@ -92,13 +87,13 @@ function FieldValueEditor({
             )
           }
           {
-            type === 'static' && (
+            type === 'staticValue' && (
               <input
                 className="input transition-none"
                 type="text"
                 autoFocus
-                defaultValue={value.static}
-                onChange={(e) => setValue((v) => ({ ...v, static: e.target.value }))}
+                defaultValue={value.staticValue}
+                onChange={(e) => setValue((v) => ({ ...v, staticValue: e.target.value }))}
               />
             )
           }
@@ -107,10 +102,10 @@ function FieldValueEditor({
       )]}
     >
       <div onClick={() => setIsEditorOpen(true)}>
-        {(defaultValue.static || defaultValue.variable) && (
-          <span className="cursor-pointer">{defaultValue.static || defaultValue.variable}</span>
+        {(defaultValue.staticValue || defaultValue.variable) && (
+          <span className="cursor-pointer">{defaultValue.staticValue || defaultValue.variable}</span>
         )}
-        {(!defaultValue.static && !defaultValue.variable) && (
+        {(!defaultValue.staticValue && !defaultValue.variable) && (
           <Icon
             name="edit"
             className="ml-4 cursor-pointer"

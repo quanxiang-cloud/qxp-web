@@ -6,7 +6,7 @@ import Checkbox from '@c/checkbox';
 import ToolTip from '@c/tooltip';
 import Icon from '@c/icon';
 import useRequest from '@lib/hooks/use-request';
-import type { CustomFieldPermission } from '@flow/detail/content/editor/type';
+import type { CustomFieldPermission, FieldValue } from '@flow/detail/content/editor/type';
 
 import FieldValueEditor from './field-value-editor';
 
@@ -120,7 +120,7 @@ export default function CustomFieldTable({ editable, fields, updateFields }: Pro
         <FieldValueEditor
           variableOptions={variableOptions}
           defaultValue={model.cell.value}
-          onSave={(value: { static: string; variable: string; }) => {
+          onSave={(value: FieldValue) => {
             updateFields(model.data.map((dt: CustomFieldPermission) => {
               if (dt.id === model.cell.row.id) {
                 return {

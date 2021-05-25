@@ -163,19 +163,16 @@ export interface FillInData {
   operatorPermission: OperationPermission;
   events: {};
 }
-
+export interface FieldValue {
+  variable: string;
+  staticValue: string;
+}
 export interface CustomFieldPermission {
   fieldName: string;
   read: boolean;
   write: boolean;
-  initialValue: {
-    variable: string;
-    static: string;
-  };
-  submitValue: {
-    variable: string;
-    static: string;
-  };
+  initialValue: FieldValue;
+  submitValue: FieldValue;
   id: string;
   children?: string[];
   parent?: string;

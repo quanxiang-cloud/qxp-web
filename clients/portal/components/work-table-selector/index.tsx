@@ -1,73 +1,74 @@
-import React, { forwardRef, Ref, useState } from 'react';
+import React, { forwardRef, Ref, useEffect } from 'react';
 import cs from 'classnames';
 import { useParams } from 'react-router-dom';
 import { useQuery } from 'react-query';
+import { Cascader } from 'antd';
+import { CascaderOptionType } from 'antd/lib/cascader';
+import { last } from 'lodash';
 
-import Select from '@c/select';
 import Icon from '@c/icon';
 import ToolTip from '@c/tooltip';
 import toast from '@lib/toast';
-import Modal from '@c/modal';
 import { noop } from '@lib/utils';
 
-import { getFormDataOptions } from '@flow/detail/content/editor/forms/api';
-import { resetElementsData } from '@flow/detail/content/editor/store';
+import { getFormDataOptions, Options } from '@flow/detail/content/editor/forms/api';
 import type { NodeWorkForm } from '@flow/detail/content/editor/type';
 
 interface Props {
   value: NodeWorkForm;
   changeable?: boolean;
   onChange?: (value: NodeWorkForm) => void;
-  onResetFormData: (form: NodeWorkForm) => void;
   validating: boolean;
 }
 
 function WorkFormSelector(
-  { value, changeable = true, onChange = noop, onResetFormData, validating }: Props,
-  ref?: Ref<HTMLInputElement>
+  { value, changeable = true, onChange = noop, validating }: Props,
+  ref?: Ref<Cascader>
 ) {
   const { appID } = useParams<{appID: string}>();
-  const [currentWorkTable, setCurrentWorkTable] = useState('');
 
   const {
-    data: workTableData = [],
+    data: options = [],
     isError,
     error = '获取工作表失败',
-  } = useQuery(['GET_WORK_FORM_LIST', appID], getFormDataOptions);
+  } = useQuery(['GET_WORK_FORM_LIST', appID], getFormDataOptions, {
+    enabled: !!appID,
+  });
 
-  console.log(workTableData);
+  useEffect(() => {
+    isError && toast.error(error);
+  }, [isError]);
 
-  const options = workTableData.filter((workTable) => workTable);
+  function onWorkFormChange(_: unknown, selectedOptions?: CascaderOptionType[]) {
+    const table = last(selectedOptions);
+    onChange({
+      value: table?.value as string,
+      name: table?.label as string,
+    });
+  }
 
-  isError && toast.error(error);
-
-  function onWorkFormChange(val: string) {
-    if (value.value && value.value != val) {
-      setCurrentWorkTable(val);
-      return false;
-    } else {
-      const label = options.find(({ value: _value }) => _value === val)?.label;
-      label && onChange({
-        value: val,
-        name: label,
-      });
+  function getPathWhenMatch(
+    val: string,
+    dataSource: Options,
+    map?: Record<string, string[]>,
+    id?: number
+  ) {
+    const pathMap: Record<string, string[]> = map ?? {};
+    for (let index = 0; index < dataSource.length; index += 1) {
+      const { value, children } = dataSource[index];
+      const currentIndex = id ?? index;
+      if (!pathMap[currentIndex]) {
+        pathMap[currentIndex] = [];
+      }
+      pathMap[currentIndex].push(value);
+      if (children) {
+        getPathWhenMatch(val, children, pathMap, currentIndex) as string[];
+      }
     }
+    return Object.entries(pathMap).find(([, value]) => value.includes(val))?.[1] ?? [];
   }
 
-  function onSubmitWorkFormChange() {
-    const label = options.find(({ value }) => value === currentWorkTable)?.label;
-    if (!label) {
-      return;
-    }
-    const form = { value: currentWorkTable, name: label };
-    resetElementsData('formData', { form });
-    onResetFormData(form);
-    onCancelSubmitWorkForm();
-  }
-
-  function onCancelSubmitWorkForm() {
-    setCurrentWorkTable('');
-  }
+  const currentValuePath = getPathWhenMatch(value.value, options);
 
   return (
     <>
@@ -80,12 +81,16 @@ function WorkFormSelector(
           <span className="text-body2">工作表:</span>
         </div>
         {changeable && (
-          <Select
-            inputRef={ref}
-            name="workForm"
-            placeholder="请选择"
-            value={value.value}
+          <Cascader
+            allowClear={false}
+            bordered={false}
+            options={options}
+            expandTrigger={'hover'}
             onChange={onWorkFormChange}
+            placeholder="请选择"
+            value={currentValuePath}
+            popupClassName="ml-12"
+            ref={ref}
             className={cs(
               'h-28 border-none px-12 text-12 flex items-center',
               'flex-1 work-flow-form-selector text-body2-no-color',
@@ -94,7 +99,6 @@ function WorkFormSelector(
                 'text-gray-400': validating && !value.value,
               },
             )}
-            options={options}
           />
         )}
         {!changeable && (
@@ -103,42 +107,23 @@ function WorkFormSelector(
             label="已自动关联开始节点工作表，暂不支持更改"
             labelClassName="whitespace-nowrap"
           >
-            <Select
+            <Cascader
               disabled
-              inputRef={ref}
-              name="workForm"
+              allowClear={false}
+              bordered={false}
+              options={options}
+              expandTrigger={'hover'}
+              onChange={onWorkFormChange}
               placeholder="请选择"
-              value={value.value}
+              value={currentValuePath}
+              popupClassName="ml-12"
+              ref={ref}
               className={cs(
                 'h-28 border-none px-12 text-12 flex items-center',
                 'flex-1 work-flow-form-selector',
               )}
-              options={options}
             />
           </ToolTip>
-        )}
-        {currentWorkTable && (
-          <Modal
-            title="更换触发工作表"
-            onClose={onCancelSubmitWorkForm}
-            footerBtns={[
-              {
-                text: '取消',
-                key: 'cancel',
-                onClick: onCancelSubmitWorkForm,
-              },
-              {
-                text: '确定',
-                key: 'confirm',
-                modifier: 'primary',
-                onClick: onSubmitWorkFormChange,
-              },
-            ]}
-          >
-            <p className="text-body2">
-              更换新的触发工作表后，该节点及其他关联节点配置将会被重置，确定要更换吗？
-            </p>
-          </Modal>
         )}
       </div>
       {validating && !value.value && (
