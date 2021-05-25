@@ -1,18 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useImperativeHandle, forwardRef } from 'react';
 import { union } from 'lodash';
 
-import Button from '@c/button';
 import Checkbox from '@c/checkbox';
-import { fetchFieldFilter, saveFieldFilter } from '../api';
-import toast from '@lib/toast';
-
-import store from '../store';
 
 type Props = {
-  rightsID: string
+  fields: Fields[];
+  fieldPer: Record<string, any>;
+  className?: string;
 }
 
-function FieldPermissions({ rightsID }: Props) {
+function FieldPermissions({ fields, className = '', fieldPer }: Props, ref: React.Ref<any>) {
   const [visibleField, setVisibleField] = useState<string[]>([]);
   const [revisableField, setRevisableField] = useState<string[]>([]);
   const [vIndeterminate, setVIndeterminate] = useState(false);
@@ -20,46 +17,76 @@ function FieldPermissions({ rightsID }: Props) {
   const [vCheckAll, setVCheckAll] = useState(false);
   const [rCheckAll, setRCheckAll] = useState(false);
 
-  const { fieldList } = store;
-  const fieldRevisable = fieldList.filter(({ isSystem }) => !isSystem);
+  const fieldRevisable = fields.filter((field) => !field['x-internal']?.isSystem);
+
+  useImperativeHandle(ref, () => ({
+    getFieldPer: getFieldPer,
+  }));
+
+  const getFieldPer = () => {
+    const schema: Record<string, any> = {
+      properties: {
+        _id: {
+          title: '_id',
+          'x-internal': {
+            permission: 1,
+          },
+        },
+      },
+      title: '',
+      type: 'object',
+      'x-internal': { permission: visibleField.length ? 1 : 0 },
+    };
+
+    fields.forEach((field) => {
+      const visible = visibleField.includes(field.id);
+      const revisable = revisableField.includes(field.id);
+      const permissions = (visible ? 1 : 0) | (revisable ? 10 : 0);
+      schema.properties[field.id] = {
+        title: field.title,
+        'x-internal': {
+          permission: parseInt(permissions.toString(), 2),
+        },
+      };
+    });
+
+    return schema;
+  };
 
   useEffect(() => {
-    fetchFieldFilter(store.appID, rightsID).then((res) => {
-      const { schema } = res.data || {};
-      if (schema) {
-        const visibleList: string[] = [];
-        const revisableList: string[] = [];
-        fieldList.forEach((field) => {
-          if (!schema.properties[field.id]) {
-            return;
-          }
-          switch (schema.properties[field.id]['x-internal'].permission) {
-          case 3:
-            visibleList.push(field.id);
-            revisableList.push(field.id);
-            break;
-          case 1:
-            visibleList.push(field.id);
-            break;
-          }
-        });
-        setVisibleField(visibleList);
-        setRevisableField(revisableList);
-      } else {
-        const event: any = {
-          target: {
-            checked: true,
-          },
-        };
-        handleRCheckAll(event);
-        handleVCheckAll(event);
-      }
-    });
+    if (fieldPer) {
+      const visibleList: string[] = [];
+      const revisableList: string[] = [];
+      fields.forEach((field) => {
+        if (!fieldPer.properties[field.id]) {
+          return;
+        }
+        switch (fieldPer.properties[field.id]['x-internal'].permission) {
+        case 3:
+          visibleList.push(field.id);
+          revisableList.push(field.id);
+          break;
+        case 1:
+          visibleList.push(field.id);
+          break;
+        }
+      });
+      setVisibleField(visibleList);
+      setRevisableField(revisableList);
+    } else {
+      const event: any = {
+        target: {
+          checked: true,
+        },
+      };
+      handleRCheckAll(event);
+      handleVCheckAll(event);
+    }
   }, []);
 
   useEffect(() => {
-    setVIndeterminate(visibleField.length > 0 && visibleField.length !== fieldList.length);
-    if (visibleField.length === fieldList.length) {
+    setVIndeterminate(visibleField.length > 0 && visibleField.length !== fields.length);
+    if (visibleField.length === fields.length) {
       setVCheckAll(true);
     } else {
       setVCheckAll(false);
@@ -109,7 +136,7 @@ function FieldPermissions({ rightsID }: Props) {
   const handleVCheckAll = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.checked) {
       setVisibleField(
-        fieldList.map(({ id }) => id)
+        fields.map(({ id }) => id)
       );
     } else {
       setRevisableField([]);
@@ -127,40 +154,8 @@ function FieldPermissions({ rightsID }: Props) {
     }
   };
 
-  const handleSave = () => {
-    const schema: Record<string, any> = {
-      properties: {
-        _id: {
-          title: '_id',
-          'x-internal': {
-            permission: 1,
-          },
-        },
-      },
-      title: '',
-      type: 'object',
-      'x-internal': { permission: visibleField.length ? 1 : 0 },
-    };
-
-    fieldList.forEach((field) => {
-      const visible = visibleField.includes(field.id);
-      const revisable = revisableField.includes(field.id);
-      const permissions = (visible ? 1 : 0) | (revisable ? 10 : 0);
-      schema.properties[field.id] = {
-        title: field.label,
-        'x-internal': {
-          permission: parseInt(permissions.toString(), 2),
-        },
-      };
-    });
-
-    saveFieldFilter(store.appID, { permissionGroupID: rightsID, schema }).then(() => {
-      toast.success('保存成功！');
-    });
-  };
-
   return (
-    <div className=''>
+    <div className={className}>
       <div className='flex items-center justify-between mb-12'>
         <span className='text-caption-no-color text-gray-400'>系统字段不可修改。例如：提交时间、更新时间</span>
         <p className='flex gap-x-16'>
@@ -180,15 +175,15 @@ function FieldPermissions({ rightsID }: Props) {
       </div>
       <div className='pb-field-box'>
         <div className='pb-field-item-title'><span>字段</span><span>可见</span><span>可修改</span></div>
-        {fieldList.map((field) => (
+        {fields.map((field) => (
           <div key={field.id} className='pb-field-item'>
-            <span>{field.label}</span>
+            <span>{field.title}</span>
             <Checkbox
               checked={visibleField.includes(field.id)}
               value={field.id}
               onChange={handleVisibleChange}
             />
-            {!field.isSystem && (
+            {!field['x-internal']?.isSystem && (
               <Checkbox
                 checked={revisableField.includes(field.id)}
                 value={field.id}
@@ -198,11 +193,8 @@ function FieldPermissions({ rightsID }: Props) {
           </div>
         ))}
       </div>
-      <div className='mt-20'>
-        <Button onClick={handleSave} modifier='primary'>保存</Button>
-      </div>
     </div>
   );
 }
 
-export default FieldPermissions;
+export default forwardRef(FieldPermissions);

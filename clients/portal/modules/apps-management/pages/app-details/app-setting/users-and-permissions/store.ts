@@ -1,23 +1,24 @@
-import { action, observable, computed } from 'mobx';
+import { action, observable } from 'mobx';
 
 import toast from '@lib/toast';
 
+import { fetchPageList } from '../../api';
 import {
   fetchRights,
   movePerGroup,
   updatePerGroup,
   createPerGroup,
   deleteRights,
+  fetchPerGroupForm,
+  deleteFormPer,
 } from './api';
 
 class UserAndPerStore {
   @observable rightsLoading = true;
+  @observable perFormLoading = true;
+  @observable perFormList: PageInfo[] = [];
   @observable rightsList: Rights[] = [];
   @observable appID = '';
-
-  @computed get fieldList(): PageField[] {
-    return [];
-  }
 
   @action
   addRightsGroup = (rights: RightsCreate) => {
@@ -83,6 +84,37 @@ class UserAndPerStore {
       }),
     });
     this.rightsList = newRightsList;
+  }
+
+  @action
+  fetchPerGroupForm = () => {
+    this.perFormLoading = true;
+    Promise.all([fetchPageList(this.appID), fetchPerGroupForm(this.appID)]).then(([allPageRes, perPage])=>{
+      console.log('allPageRes, perPage: ', allPageRes, perPage);
+      let allPages: PageInfo[] = [];
+      allPageRes.data.menu.forEach((menu: PageInfo) => {
+        if (menu.menuType === 1 && menu.child?.length) {
+          allPages = allPages.concat(menu.child.map((cMenu)=>{
+            return { ...cMenu, name: `${menu.name}/${cMenu.name}` };
+          }));
+          return;
+        }
+
+        allPages.push(menu);
+      });
+      this.perFormList = allPages;
+      this.perFormLoading = false;
+      console.log(allPages, 'allPages');
+    }).catch(()=>{
+      this.perFormLoading = false;
+    });
+  }
+
+  @action
+  deleteFormPer = (formID: string, perGroupID:string)=>{
+    deleteFormPer(this.appID, { formID, perGroupID }).then(()=>{
+      toast.success('清除成功');
+    });
   }
 }
 

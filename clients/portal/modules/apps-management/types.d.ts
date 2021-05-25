@@ -104,3 +104,5 @@ type DeptAndUser = {
   id: string;
   name: string;
 }
+
+type Fields = ISchema & { id: string };

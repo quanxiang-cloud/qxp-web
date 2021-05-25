@@ -18,7 +18,7 @@ function UsersAndPermissions() {
   }, [appID]);
 
   return (
-    <div>
+    <>
       <TextHeader
         title='用户及权限'
         desc='设置应用内页面的字段权限、数据权限、以及操作权限'
@@ -37,7 +37,7 @@ function UsersAndPermissions() {
       {modalType === 'creatRight' && (
         <CreateRightModal onCancel={() => setModalType('')} />
       )}
-    </div>
+    </>
   );
 }
 

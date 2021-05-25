@@ -15,7 +15,6 @@ function RightSetting({ rights }: Props) {
   return (
     <div className='p-20 h-full'>
       <Tab
-        className="mt-4 py-16"
         contentClassName="rounded-12 rounded-tl-none"
         items={[
           {
@@ -26,7 +25,7 @@ function RightSetting({ rights }: Props) {
           {
             id: 'worksheetPer',
             name: '工作表权限设置',
-            content: (<PageFormTable />),
+            content: (<PageFormTable rightsGroupID={rights.id} />),
           },
         ]}
       />

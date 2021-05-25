@@ -47,3 +47,11 @@
     justify-self: start;
   }
 }
+
+.rights-hidden {
+ position: absolute;
+ height: 0;
+ z-index: -1;
+ opacity: 0;
+ pointer-events:none；
+}

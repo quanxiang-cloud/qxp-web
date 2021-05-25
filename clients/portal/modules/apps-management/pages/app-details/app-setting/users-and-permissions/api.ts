@@ -1,4 +1,5 @@
 import request from '@portal/modules/apps-management/lib/request';
+import httpClient from '@lib/http-client';
 
 export const createPerGroup = (appID: string, data: RightsCreate) => {
   return request({
@@ -86,3 +87,35 @@ export const saveFieldFilter = (appID: string, data: any) => {
     data,
   });
 };
+
+// 0.4
+
+export const fetchPerGroupForm = (appID: string) => {
+  return httpClient(`/api/v1/structor/${appID}/permission/perGroup/getForm`);
+};
+
+type PerDataReq = {
+  formID: string;
+  perGroupID: string;
+}
+
+export const fetchPerData = (appID: string, data: PerDataReq) => {
+  return httpClient(`/api/v1/structor/${appID}/permission/perGroup/getPerData`, data);
+};
+
+type PerData = {
+  formID: string;
+  perGroupID: string;
+  authority: number;
+  schema: any;
+  conditions: Condition[];
+}
+
+export const savePer = (appID: string, data: PerData) => {
+  return httpClient(`/api/v1/structor/${appID}/permission/perGroup/saveForm`, data);
+};
+
+export const deleteFormPer = (appID: string, data: PerDataReq) => {
+  return httpClient(`/api/v1/structor/${appID}/m/permission/perGroup/deleteForm`, data);
+};
+
