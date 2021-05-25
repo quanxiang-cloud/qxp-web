@@ -19,11 +19,12 @@ interface Props {
   value: Value;
   changeable?: boolean;
   onChange?: (value: Value) => void;
-  validating: boolean;
+  validating?: boolean;
+  errorMessage?: string;
 }
 
 function WorkFormSelector(
-  { value, changeable = true, onChange = noop, validating }: Props,
+  { value, changeable = true, onChange = noop, validating, errorMessage }: Props,
   ref?: Ref<Cascader>
 ) {
   const { appID } = useParams<{appID: string}>();
@@ -129,7 +130,7 @@ function WorkFormSelector(
       </div>
       {validating && !value.value && (
         <div className="mb-22 text-caption-no-color text-red-600 mt-4">
-          请选择一张工作表用以触发工作流
+          {errorMessage ?? '请选择一张工作表用以触发工作流'}
         </div>
       )}
     </>
