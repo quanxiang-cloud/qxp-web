@@ -12,36 +12,6 @@ export type Option = {
 
 export type Options = Option[];
 
-interface MenuListItem {
-  id: string;
-  name: string;
-  groupID: string;
-  child: MenuListItem[];
-}
-export async function getFormDataOptions({ queryKey }: QueryFunctionContext): Promise<Options> {
-  const data = await httpClient<{
-      menu: MenuListItem[],
-  }>(`/api/v1/structor/${queryKey[1]}/menu/list`, {
-    appID: queryKey[1],
-  });
-  function parseMenuList(menuList: MenuListItem[]) {
-    if (!menuList) {
-      return [];
-    }
-    return menuList.reduce((prev: Options, current) => {
-      prev.push({
-        label: current.name,
-        value: current.id,
-        children: [
-          ...parseMenuList(current.child),
-        ],
-      });
-      return prev;
-    }, []);
-  }
-  return parseMenuList(data.menu);
-}
-
 interface FormFieldOptions {
   table?: {
     [key: string]: { title: string; type: string; }

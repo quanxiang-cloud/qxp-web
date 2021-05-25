@@ -11,13 +11,14 @@ import ToolTip from '@c/tooltip';
 import toast from '@lib/toast';
 import { noop } from '@lib/utils';
 
-import { getFormDataOptions, Options } from '@flow/detail/content/editor/forms/api';
-import type { NodeWorkForm } from '@flow/detail/content/editor/type';
+import { getFormDataOptions, Options } from './api';
+
+export type Value = { name: string; value: string }
 
 interface Props {
-  value: NodeWorkForm;
+  value: Value;
   changeable?: boolean;
-  onChange?: (value: NodeWorkForm) => void;
+  onChange?: (value: Value) => void;
   validating: boolean;
 }
 
