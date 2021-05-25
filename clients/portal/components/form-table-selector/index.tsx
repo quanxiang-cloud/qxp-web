@@ -23,7 +23,7 @@ interface Props {
   errorMessage?: string;
 }
 
-function WorkFormSelector(
+function FormTableSelector(
   { value, changeable = true, onChange = noop, validating, errorMessage }: Props,
   ref?: Ref<Cascader>
 ) {
@@ -137,4 +137,4 @@ function WorkFormSelector(
   );
 }
 
-export default forwardRef(WorkFormSelector);
+export default forwardRef(FormTableSelector);
