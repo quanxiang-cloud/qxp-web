@@ -31,6 +31,7 @@ export default function NodeFormWrapper() {
   const {
     nodeIdForDrawerForm, validating,
     id,
+    status,
     name,
     triggerMode,
     version,
@@ -205,7 +206,7 @@ export default function NodeFormWrapper() {
   }
 
   function onCancel() {
-    if (formDataChanged) {
+    if (formDataChanged && (status !== 'ENABLE')) {
       updateStore((s) => ({
         ...s,
         showDataNotSaveConfirm: true,
@@ -275,7 +276,7 @@ export default function NodeFormWrapper() {
         <span className="text-h5 mr-8">{drawerTitleMap[nodeType]}</span>
       )}
       distanceTop={0}
-      onCancel={onCancel}
+      onCancel={closePanel}
       className="flow-editor-drawer"
     >
       <form
@@ -306,7 +307,7 @@ export default function NodeFormWrapper() {
             />
           )}
         </div>
-        <SaveButtonGroup onCancel={closePanel} />
+        <SaveButtonGroup onCancel={onCancel} />
         {currentWorkTable && (
           <Modal
             title="更换触发工作表"

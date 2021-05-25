@@ -26,7 +26,7 @@ export default function Detail() {
     'edit' | 'settings' | 'variables'
   >('edit');
   const {
-    showDataNotSaveConfirm, currentDataNotSaveConfirmCallback,
+    showDataNotSaveConfirm, currentDataNotSaveConfirmCallback, status,
   } = useObservable<StoreValue>(store);
 
   const { flowID, type } = useParams<{ flowID: string; type: string; }>();
@@ -84,7 +84,7 @@ export default function Detail() {
   return (
     <>
       <Header />
-      {showDataNotSaveConfirm && (
+      {showDataNotSaveConfirm && (status !== 'ENABLE') && (
         <Modal
           title="工作流未保存"
           onClose={onConfirmCancel}
