@@ -5,7 +5,7 @@
   border: 1px solid var(--gray-300);
   box-sizing: border-box;
   box-shadow: 0px 8px 24px rgba(148, 163, 184, 0.25);
-  border-radius: 12px 2px 12px 12px;
+  border-radius: 12px;
 }
 
 .pop-confirm-content-btn-box {
@@ -15,7 +15,7 @@
   margin-top: 16px;
 
   .pop-confirm-content-btn {
-    border-radius: 12px;
+    border-radius: 8px;
   }
 
   .pop-confirm-content-btn-cancel {
