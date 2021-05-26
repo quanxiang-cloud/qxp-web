@@ -48,8 +48,9 @@ function PageNav() {
   }
 
   function handleEditPage(pageInfo: PageInfo) {
-    appPagesStore.editPage(pageInfo).then(() => {
+    appPagesStore.editPage(pageInfo).then((id) => {
       closeModal();
+      history.push(`/apps/details/${appID}?pageID=${id}`);
     });
   }
 
