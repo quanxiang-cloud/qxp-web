@@ -9,39 +9,38 @@ function getComparator(linkage: FormBuilder.VisibleHiddenLinkage): FormBuilder.C
     });
 
     return pairs[linkage.ruleJoinOperator].call(pairs, ([value, compareOperator, compareValue]) => {
-      let body = `return value ${compareOperator} compareValue`;
+      // 策略模式
+      const strategys: Record<string, Function> = {
+        isInclusion: () => {
+          const source = value.length > 1 ? value.join('\',\'') : value;
+          const result = compareValue.length > 1 ? compareValue.join('\',\'') : compareValue;
+          const bodyStrategy: Record<string, string> = {
+            '∈': `return [\'${result}\'].every((val) => [\'${source}\'].includes(val))`,
+            '∉': `return [\'${result}\'].every((val) => ![\'${source}\'].includes(val))`,
+            '===': `return [\'${result}\'].length === [\'${source}\'].length && [\'${result}\'].every((val) => [\'${source}\'].includes(val))`,
+            '!==': `return [\'${result}\'].length !== [\'${source}\'].length || [\'${result}\'].every((val) => ![\'${source}\'].includes(val))`,
+          };
+          return bodyStrategy[compareOperator] ?? `return value ${compareOperator} compareValue`;
+        },
+        isInitInclusion: () => {
+          const bodyStrategy: Record<string, string> = {
+            '∈': 'return value === compareValue',
+            '∉': 'return value !== compareValue',
+          };
+          return bodyStrategy[compareOperator] ?? `return value ${compareOperator} compareValue`;
+        },
+      };
 
-      if (typeof value === 'object' && typeof compareValue === 'object') {
-        switch (compareOperator) {
-        case '∈':
-          const sourceInclude = value.length > 1 ? value.join('\',\'') : value;
-          const resultInclude = compareValue.length > 1 ? compareValue.join('\',\'') : compareValue;
-          body = `return [\'${resultInclude}\'].every((val) => [\'${sourceInclude}\'].includes(val))`;
-          break;
-        case '∉':
-          const sourceExclude = value.length > 1 ? value.join('\',\'') : value;
-          const resultExclude = compareValue.length > 1 ? compareValue.join('\',\'') : compareValue;
-          body = `return [\'${resultExclude}\'].every((val) => ![\'${sourceExclude}\'].includes(val))`;
-          break;
-        default:
-          body = `return value ${compareOperator} compareValue`;
-          break;
-        }
-      }
+      const keys = [
+        (typeof value === 'object' && typeof compareValue === 'object') ? 'isInclusion' : '',
+        value === undefined ? 'isInitInclusion' : '',
+      ];
 
-      if (value === undefined) {
-        switch (compareOperator) {
-        case '∈':
-          body = 'return value === compareValue';
-          break;
-        case '∉':
-          body = 'return value !== compareValue';
-          break;
-        default:
-          body = `return value ${compareOperator} compareValue`;
-          break;
-        }
-      }
+      const executors = keys.map((key) => {
+        return strategys[key];
+      }).find((executor) => executor !== undefined);
+
+      const body = executors ? executors() : `return value ${compareOperator} compareValue`;
 
       const executor = new Function('value', 'compareValue', body);
       return executor(value, compareValue);

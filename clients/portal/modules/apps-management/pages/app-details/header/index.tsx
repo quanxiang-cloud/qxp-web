@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import { observer } from 'mobx-react';
 
@@ -8,20 +8,16 @@ import Button from '@c/button';
 import HeaderNav from '@c/header-nav';
 
 import AppsSwitcher from '@c/apps-switcher';
-import { fetchAppList } from '../../entry/app-list/api';
 import appDetailsStore from '../store';
 import './index.scss';
 
 function DetailsHeader() {
   const history = useHistory();
-  const [apps, setApps] = useState<AppInfo[]>([]);
   const { appID } = useParams<{appID: string}>();
-  const { updateAppStatus, appDetails } = appDetailsStore;
+  const { updateAppStatus, appDetails, apps } = appDetailsStore;
 
   useEffect(() => {
-    fetchAppList({}).then((res)=>{
-      setApps(res.data.data || []);
-    });
+    appDetailsStore.fetchAppList();
   }, []);
 
   const goAppSetting = (navType:string) => {

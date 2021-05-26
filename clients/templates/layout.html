@@ -20,7 +20,7 @@
         window.ADMIN_USER_FUNC_TAGS = {{ .adminUserFuncTags }}
         window.USER_ADMIN_ROLES = {{ .userAdminRoles }}
         window.CONFIG = {{ .CONFIG }}
-        window.__verbose_log__ = {{.debugMode }}
+        window.__verbose_log__ = {{ .debugMode }}
       {{ end }}
     </script>
     {{block "content" .}}{{end}} {{block "bottom_scripts" .}}{{end}}

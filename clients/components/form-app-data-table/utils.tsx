@@ -61,7 +61,7 @@ export function getTableCellData(
         }
 
         const enumTmp = field.enum[0];
-        if (enumTmp.toString() === '[Object Object]') {
+        if (typeof enumTmp === 'object') {
           return (field.enum.find(({ value }: any) => value === _value) as Option)?.label || '';
         }
 
@@ -69,7 +69,7 @@ export function getTableCellData(
       }).join(',');
     }
 
-    if (field.enum[0].toString() === '[Object Object]') {
+    if (typeof field.enum[0] === 'object') {
       return (field.enum.find(({ value }: any) => value === initValue) as Option)?.label || '';
     }
 

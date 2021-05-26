@@ -9,27 +9,25 @@
     z-index: 10;
   }
 }
-
+  
 body{
   .wrap {
     display: flex;
     justify-content: flex-start;
-    overflow: auto;
     padding-bottom: 0;
     flex-direction: column;
-    padding-top: 20px;
   }
   .panel {
     position: relative;
     width: 100%;
-    //height: 100vh;
+    height: 100%;
     margin-top: 16px;
     background: #FFFFFF;
-    //box-shadow: inset 0px -1px 0px #E2E8F0;
     border-radius: 12px 12px 0px 0px;
-
+  
     :global{
       .form.is-horizon-layout{
+        padding-top: 48px;
         max-width: initial ;
       }
       .form.is-horizon-layout > .field > .control{
@@ -41,16 +39,16 @@ body{
           padding-left: 8px;
         }
       }
-
+  
       .form.is-horizon-layout > .field .label{
         width: 240px;
       }
-
+  
       .form.is-horizon-layout > .field{
         position: relative;
         margin-bottom: 36px;
       }
-
+  
       .form.is-horizon-layout > .field .help{
         position: absolute;
         left: 240px;
@@ -59,8 +57,8 @@ body{
         margin-left: 0;
       }
     }
-
-
+  
+    
     .header {
       position: relative;
       display: flex;
@@ -83,7 +81,7 @@ body{
         right: 0;
         position: absolute;
       }
-
+  
       .title {
         font-size: 1.6rem;
         font-weight: 600;
@@ -92,14 +90,10 @@ body{
       }
     }
     .body {
-      padding-top: 48px;
-      //padding-bottom: 42px;
       height: auto;
-      //max-width: 1200px;
       margin: auto;
 
       .editorWrap {
-        // height: 346px;
         overflow: scroll;
         background: #FFFFFF;
         border: 1px solid #CBD5E1;
@@ -117,8 +111,6 @@ body{
       :global{
         .rdw-editor-main{
           height: 340px;
-          // height: auto;
-          // max-height: ;
         }
         .DraftEditor-root{
           padding: 0 16px
@@ -269,7 +261,7 @@ body{
       background: #FFFFFF;
       box-sizing: border-box;
       border-radius: 2px 8px 8px 8px;
-      margin-bottom: 202px;
+      margin-bottom: 40px;
       padding: 20px;
 
       > legend {
@@ -289,3 +281,4 @@ body{
 .upload_warp{
   padding: 16px;
 }
+  

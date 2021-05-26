@@ -3,6 +3,7 @@ export function getFilterField(field: PageField): FilterField {
     id: field.id,
     placeholder: field.cProps.placeholder || '',
     label: field.label,
+    cProps: field.cProps,
   };
 
   if (field.type === 'datetime') {

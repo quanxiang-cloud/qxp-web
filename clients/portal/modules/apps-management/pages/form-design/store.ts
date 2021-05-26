@@ -54,7 +54,7 @@ class FormDesignStore {
       return { pageID: this.pageID, appID: this.appID };
     }, this.fetchFormScheme);
 
-    this.destroySetAllFiltrate = reaction(() => this.fieldList.length, () => {
+    this.destroySetAllFiltrate = reaction(() => this.fieldList, () => {
       if (!this.formStore) {
         return;
       }
