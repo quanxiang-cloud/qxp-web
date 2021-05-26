@@ -3,7 +3,7 @@ import httpClient from '@lib/http-client';
 
 export const createPerGroup = (appID: string, data: RightsCreate) => {
   return request({
-    url: `/api/v1/structor/${appID}/permission/perGroup/create`,
+    url: `/api/v1/structor/${appID}/m/permission/perGroup/create`,
     method: 'post',
     data,
   });
@@ -11,14 +11,14 @@ export const createPerGroup = (appID: string, data: RightsCreate) => {
 
 export const fetchRights = (appID: string) => {
   return request({
-    url: `/api/v1/structor/${appID}/permission/perGroup/getList`,
+    url: `/api/v1/structor/${appID}/m/permission/perGroup/getList`,
     method: 'post',
   });
 };
 
 export const deleteRights = (appID: string, data: any) => {
   return request({
-    url: `/api/v1/structor/${appID}/permission/perGroup/delete`,
+    url: `/api/v1/structor/${appID}/m/permission/perGroup/delete`,
     method: 'post',
     data,
   });
@@ -26,7 +26,7 @@ export const deleteRights = (appID: string, data: any) => {
 
 export const movePerGroup = (appID: string, data: any) => {
   return request({
-    url: `/api/v1/structor/${appID}/permission/perGroup/move`,
+    url: `/api/v1/structor/${appID}/m/permission/perGroup/move`,
     method: 'post',
     data,
   });
@@ -34,7 +34,7 @@ export const movePerGroup = (appID: string, data: any) => {
 
 export const updatePerGroup = (appID: string, data: Rights) => {
   return request({
-    url: `/api/v1/structor/${appID}/permission/perGroup/update`,
+    url: `/api/v1/structor/${appID}/m/permission/perGroup/update`,
     method: 'post',
     data,
   });
@@ -42,7 +42,7 @@ export const updatePerGroup = (appID: string, data: Rights) => {
 
 export const fetchOperatePer = (appID: string, perGroupID: string) => {
   return request({
-    url: `/api/v1/structor/${appID}/permission/operatePer/get`,
+    url: `/api/v1/structor/${appID}/m/permission/operatePer/get`,
     method: 'post',
     data: { perGroupID },
   });
@@ -50,7 +50,7 @@ export const fetchOperatePer = (appID: string, perGroupID: string) => {
 
 export const saveOperatePer = (appID: string, data: any) => {
   return request({
-    url: `/api/v1/structor/${appID}/permission/operatePer/save`,
+    url: `/api/v1/structor/${appID}/m/permission/operatePer/save`,
     method: 'post',
     data,
   });
@@ -58,7 +58,7 @@ export const saveOperatePer = (appID: string, data: any) => {
 
 export const fetchDataAccessPer = (appID: string, perGroupID: string) => {
   return request({
-    url: `/api/v1/structor/${appID}/permission/dataAccessPer/get`,
+    url: `/api/v1/structor/${appID}/m/permission/dataAccessPer/get`,
     method: 'post',
     data: { perGroupID },
   });
@@ -66,7 +66,7 @@ export const fetchDataAccessPer = (appID: string, perGroupID: string) => {
 
 export const saveDataAccessPer = (appID: string, data: any) => {
   return request({
-    url: `/api/v1/structor/${appID}/permission/dataAccessPer/save`,
+    url: `/api/v1/structor/${appID}/m/permission/dataAccessPer/save`,
     method: 'post',
     data,
   });
@@ -74,7 +74,7 @@ export const saveDataAccessPer = (appID: string, data: any) => {
 
 export const fetchFieldFilter = (appID: string, permissionGroupID: string) => {
   return request({
-    url: `/api/v1/structor/${appID}/filter/get`,
+    url: `/api/v1/structor/${appID}/m/filter/get`,
     method: 'post',
     data: { permissionGroupID },
   });
@@ -82,7 +82,7 @@ export const fetchFieldFilter = (appID: string, permissionGroupID: string) => {
 
 export const saveFieldFilter = (appID: string, data: any) => {
   return request({
-    url: `/api/v1/structor/${appID}/filter/save`,
+    url: `/api/v1/structor/${appID}/m/filter/save`,
     method: 'post',
     data,
   });
@@ -91,7 +91,7 @@ export const saveFieldFilter = (appID: string, data: any) => {
 // 0.4
 
 export const fetchPerGroupForm = (appID: string) => {
-  return httpClient(`/api/v1/structor/${appID}/permission/perGroup/getForm`);
+  return httpClient(`/api/v1/structor/${appID}/m/permission/perGroup/getForm`);
 };
 
 type PerDataReq = {
@@ -100,7 +100,7 @@ type PerDataReq = {
 }
 
 export const fetchPerData = (appID: string, data: PerDataReq) => {
-  return httpClient(`/api/v1/structor/${appID}/permission/perGroup/getPerData`, data);
+  return httpClient(`/api/v1/structor/${appID}/m/permission/perGroup/getPerData`, data);
 };
 
 type PerData = {
@@ -112,7 +112,7 @@ type PerData = {
 }
 
 export const savePer = (appID: string, data: PerData) => {
-  return httpClient(`/api/v1/structor/${appID}/permission/perGroup/saveForm`, data);
+  return httpClient(`/api/v1/structor/${appID}/m/permission/perGroup/saveForm`, data);
 };
 
 export const deleteFormPer = (appID: string, data: PerDataReq) => {
