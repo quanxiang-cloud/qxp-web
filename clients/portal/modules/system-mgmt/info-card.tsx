@@ -14,7 +14,7 @@ const InfoCard = () => {
     {
       id: 'dataset',
       icon: 'article',
-      name: '数据集管理',
+      name: '数据集',
       url: '/system/dataset',
     },
   ];

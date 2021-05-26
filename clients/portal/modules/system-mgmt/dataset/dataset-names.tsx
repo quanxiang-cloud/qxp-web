@@ -44,7 +44,7 @@ function DatasetNames(props: Props) {
         <>
           <div className="dataset-names--toolbar flex items-center">
             <Search placeholder="请输入名称进行查询" />
-            <Button iconName="add" modifier="primary" onClick={() => setAddDataModal(true)}>新增</Button>
+            <Button iconName="add" className="btn--add" onClick={() => setAddDataModal(true)}>分组</Button>
           </div>
           <div className="mt-20">
             {store.names.map(({ id, name, tag }) => {
@@ -61,7 +61,6 @@ function DatasetNames(props: Props) {
                   <MoreMenu
                     className="action-more mr-10"
                     onMenuClick={(key) => {
-                      // console.log('handle action: ', id, key);
                       if (key === 'edit') {
                         setEditModal(true);
                       }
@@ -157,12 +156,13 @@ function DatasetNames(props: Props) {
                   name: dataset_name,
                   tag: dataset_tag,
                   type,
-                  // content: '',
-                }).then((data) => {
+                  content: store.activeDataset?.content,
+                }).then(async (data) => {
                   if (data) {
                     toast.success('更新成功');
                     setEditModal(false);
-                    store.fetchAllNames();
+                    await store.fetchAllNames();
+                    await store.fetchDataset(store.activeId);
                   } else {
                     toast.error('更新失败');
                   }
@@ -194,7 +194,10 @@ function DatasetNames(props: Props) {
               key: 'confirm',
               iconName: 'check',
               modifier: 'primary',
-              onClick: () => setDeleteModal(false),
+              onClick: () => {
+                // todo: api not ready
+                setDeleteModal(false);
+              },
             },
           ]}
         >

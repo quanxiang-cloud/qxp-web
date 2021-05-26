@@ -13,7 +13,7 @@ interface Props {
 function Dataset(props: Props) {
   return (
     <Container>
-      <div className="flex overflow-hidden">
+      <div className="flex overflow-hidden dataset">
         <DatasetNames/>
         <DatasetContent/>
       </div>

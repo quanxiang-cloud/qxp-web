@@ -5,6 +5,12 @@
 }
 
 .dataset {
+  button.btn--add {
+    height: 28px;
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
   &-names {
     width: 300px;
     min-height: calc(100vh - 100px);
@@ -13,11 +19,6 @@
     &--toolbar {
       position: sticky;
 
-      button.btn {
-        height: 28px;
-        padding-left: 8px;
-        padding-right: 8px;
-      }
       input {
         width: 140px !important;
       }
@@ -41,6 +42,29 @@
   }
 
   &-content {
+    &--title {
+      font-size: 14px;
+      font-weight: 500;
+    }
 
+    &--toolbar {
+
+    }
+
+    &--datas {
+      .data-list-items {
+        &--item {
+          &:hover {
+            .data-list-items--item-actions {
+              visibility: visible;
+            }
+          }
+          &-actions {
+            visibility: hidden;
+          }
+        }
+      }
+
+    }
   }
 }

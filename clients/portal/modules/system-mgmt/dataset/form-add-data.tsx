@@ -16,7 +16,6 @@ function FormAddData({ editInfo }: Props, ref: React.LegacyRef<Form>) {
   // @ts-ignore
   useImperativeHandle(ref, () => {
     return {
-      // @ts-ignore
       getValues: () => ({
         // @ts-ignore
         ...formAddRef?.current.getFieldsValue(),
@@ -38,7 +37,7 @@ function FormAddData({ editInfo }: Props, ref: React.LegacyRef<Form>) {
         </Control>
       </Field>
       <TextField
-        label="Name:"
+        label="名称:"
         name="dataset_name"
         placeholder="数据集名称"
         validateOnChange

@@ -1,4 +1,4 @@
-import { observable, action } from 'mobx';
+import { observable, action, computed, toJS } from 'mobx';
 
 import toast from '@lib/toast';
 import * as apis from './api';
@@ -10,6 +10,22 @@ class DatasetStore {
   @observable loadingDataset = false;
   @observable activeId = '';
   @observable activeDataset: Dataset | null = null;
+
+  @computed get dataList() {
+    const dataset = toJS(this.activeDataset);
+    if (!dataset) {
+      return [];
+    }
+    let dataList;
+
+    try {
+      dataList = JSON.parse(dataset.content || '[]');
+    } catch (err) {
+      dataList = [];
+    }
+
+    return dataList;
+  }
 
   @action
   fetchAllNames = async () => {
