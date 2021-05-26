@@ -59,3 +59,8 @@ rect {
     @apply border-red-200;
   }
 }
+
+.ant-cascader-menus {
+  max-height: calc(100vh - 120px);
+  overflow: scroll;
+}

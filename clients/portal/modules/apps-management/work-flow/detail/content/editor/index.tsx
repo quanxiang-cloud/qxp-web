@@ -167,7 +167,7 @@ export default function Editor() {
     setReactFlowInstance(reactFlowInstance);
     !flowID && setElements(getLayoutedElements(elements));
     setTimeout(() => {
-      fitView();
+      fitView({ padding: 1.2 });
       setFitViewFinished(true);
     }, 0);
   }

@@ -5,6 +5,7 @@ import Toggle from '@c/toggle';
 import Icon from '@c/icon';
 import ToolTip from '@c/tooltip';
 import useObservable from '@lib/hooks/use-observable';
+import toast from '@lib/toast';
 
 import store, { updateStoreByKey, updateStore } from '../editor/store';
 import useSave from '../editor/forms/hooks/use-save';
@@ -14,7 +15,7 @@ import type { StoreValue } from '../editor/type';
 export default function GlobalConfig() {
   const {
     cancelable, urgeable, seeStatusAndMsg, nodeAdminMsg, id, name, version, elements,
-    triggerMode,
+    triggerMode, status,
   } = useObservable<StoreValue>(store);
   const { appID } = useParams<{ appID: string }>();
   const changedRef = useRef<{ key: keyof StoreValue, checked: boolean }>();
@@ -42,7 +43,7 @@ export default function GlobalConfig() {
       changedRef.current?.key,
       () => !changedRef.current?.checked
     ));
-  }, [cancelable, urgeable, seeStatusAndMsg, nodeAdminMsg]);
+  }, [changedRef.current]);
 
   const options = [{
     field: 'cancelable',
@@ -90,11 +91,18 @@ export default function GlobalConfig() {
       </div>
       {options.map((option) => (
         <section key={option.field} className="bg-white rounded-12 flex p-20 mb-16 w-full max-w-%90">
-          <Toggle
-            defaultChecked={option.checked}
-            className="mr-16"
-            onChange={onChange(option.field as keyof StoreValue)}
-          />
+          <div onClick={() => {
+            if (status === 'ENABLE') {
+              return toast.error('启用状态的流程无法编辑');
+            }
+          }}>
+            <Toggle
+              defaultChecked={option.checked}
+              className="mr-16"
+              onChange={onChange(option.field as keyof StoreValue)}
+              disabled={status === 'ENABLE'}
+            />
+          </div>
           <div>
             <div className="text-body2-no-color text-gray-600 mb-4 flex items-center">
               <span className="mr-8">{option.title}</span>

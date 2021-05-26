@@ -110,7 +110,7 @@ export default function OperatorPermission({ value, onChange: _onChange, type }:
                   <>
                     <input
                       className="input w-full pr-36"
-                      defaultValue={op.text || op.name}
+                      value={op.text}
                       onChange={(v) => onUpdateOperation(type, op, {
                         text: v.target.value,
                       })}
