@@ -73,9 +73,6 @@ function RightsItem({ rights, actions }: Props) {
       <div className='pb-form-right-title'>
         <span className='text-h5 mr-8'>{rights.name}</span>
         <span className='text-caption-no-color text-gray-600'>{rights.description}</span>
-        <span className='text-caption-no-color bg-red-50 text-red-600 mx-8 px-6'>
-          优先级：{rights.sequence}
-        </span>
         <p className='pb-form-right-action flex gap-x-16'>
           <Icon className='cursor-grab rights-group-handle' name='drag_indicator' />
           <span onClick={() => setModalType('setting')}>修改</span>

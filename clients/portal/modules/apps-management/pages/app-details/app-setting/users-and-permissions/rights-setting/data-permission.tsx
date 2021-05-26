@@ -1,11 +1,7 @@
-import React, { useState, useEffect, forwardRef, useImperativeHandle } from 'react';
-import { useForm, Controller } from 'react-hook-form';
-import { isArray, uniqueId } from 'lodash';
+import React, { useState, forwardRef, useImperativeHandle, useRef } from 'react';
+import { Radio } from 'antd';
 
-import Select from '@c/select';
-import FieldSwitch from '@portal/modules/apps-management/components/field-switch';
-import Icon from '@c/icon';
-import formFieldWrap from '@portal/modules/apps-management/components/form-field-wrap';
+import DataFilter from './data-filter';
 
 type Props = {
   fields: Fields[];
@@ -13,259 +9,93 @@ type Props = {
   className?: string;
 }
 
-type FieldCondition = {
-  id: string;
-  key?: string;
-  value?: any;
-  op?: string;
-  filtrate?: any;
+type ConditionItemMap = {
+  arr: Condition[];
+  tag: string;
 }
 
-const CONDITION = [{
-  label: '所有',
-  value: 'and',
-},
-{
-  label: '任一',
-  value: 'or',
-}];
-
-const OPERATORS = [
-  {
-    label: '等于',
-    value: 'eq',
-  },
-  {
-    label: '模糊',
-    value: 'like',
-  },
-  {
-    label: '包含',
-    value: 'in',
-  },
-];
-
-const OPERATORS_COMPARE = [
-  {
-    label: '等于',
-    value: 'eq',
-  },
-  {
-    label: '大于',
-    value: 'gt',
-  },
-  {
-    label: '小于',
-    value: 'lt',
-  },
-  {
-    label: '大于等于',
-    value: 'egt',
-  },
-  {
-    label: '小于等于',
-    value: 'elt',
-  },
-];
-
-function getOperators(type: string) {
-  switch (type) {
-  case 'number':
-  case 'date':
-    return OPERATORS_COMPARE;
-
-  default:
-    return OPERATORS;
-  }
+type ConditionMap = {
+  find?: ConditionItemMap;
+  delete?: ConditionItemMap;
+  update?: ConditionItemMap;
 }
 
-const FormFieldSwitch = formFieldWrap({ FieldFC: FieldSwitch });
-const FormFieldSelect = formFieldWrap({ FieldFC: Select });
+const OPTIONS = [
+  { label: '全部', value: 'all' },
+  { label: '自定义条件', value: 'custom' },
+];
 
 function DataPermission({ fields, className = '', dataPer }: Props, ref: React.Ref<any>) {
-  const [conditions, setConditions] = useState<FieldCondition[]>([]);
-  const [tag, setTag] = useState('and');
-  const { trigger, control, setValue, getValues, formState: { errors } } = useForm();
+  const [view, setViewPer] = useState({ key: 'all', conditions: [] });
+  const [edit, setEditPer] = useState({ key: 'all', conditions: [] });
+  const [del, setDelPer] = useState({ key: 'all', conditions: [] });
+  const viewRef = useRef<{ getDataPer:() => Promise<ConditionItemMap | string> }>(null);
+  const editRef = useRef<{ getDataPer:() => Promise<ConditionItemMap | string> }>(null);
+  const delRef = useRef<{ getDataPer:() => Promise<ConditionItemMap | string> }>(null);
 
-  const fieldList = fields.map((field) => field);
+  const getDataPer = () => {
+    return Promise.all([
+      view.key === 'custom' ? viewRef.current?.getDataPer() : '',
+      edit.key === 'custom' ? editRef.current?.getDataPer() : '',
+      del.key === 'custom' ? delRef.current?.getDataPer() : '',
+    ]).then(([dataView, dataEdit, dataDel]) => {
+      if (dataView !== 'notPass' && dataEdit !== 'notPass' && dataDel !== 'notPass') {
+        const conditions: ConditionMap = {};
+        if (view.key === 'custom' && typeof dataView !== 'string') {
+          conditions.find = dataView;
+        }
+        if (edit.key === 'custom' && typeof dataEdit !== 'string') {
+          conditions.update = dataEdit;
+        }
+        if (del.key === 'custom' && typeof dataDel !== 'string') {
+          conditions.delete = dataDel;
+        }
+        return conditions;
+      }
+
+      return false;
+    });
+  };
 
   useImperativeHandle(ref, () => ({
     getDataPer: getDataPer,
   }));
 
-  useEffect(() => {
-    if (!dataPer) {
-      return;
-    }
-
-    const conditionsTmp: FieldCondition[] = [];
-    dataPer.forEach((condition: Condition) => {
-      const filtrate: any = fieldList.find(({ id }) => {
-        return id === condition.key;
-      });
-
-      if (filtrate) {
-        conditionsTmp.push({
-          id: uniqueId(),
-          op: condition.op,
-          value: filtrate.multiple ? condition.value : (condition as any).value[0],
-          key: condition.key,
-          filtrate,
-        });
-      }
-    });
-    setConditions(conditionsTmp);
-  }, []);
-
-  const fieldOption = fieldList.map((field) => ({
-    value: field.id,
-    label: field.title,
-  }));
-
-  const handleFieldChange = (rowID: string, field: string) => {
-    setConditions(conditions.map((condition) => {
-      if (condition.id === rowID) {
-        return { ...condition, filtrate: fieldList.find(({ id }) => id === field) };
-      }
-      return condition;
-    }));
-    setValue('operators-' + rowID, '');
-    setValue('condition-' + rowID, '');
-  };
-
-  const addCondition = () => {
-    setConditions([...conditions, { id: uniqueId() }]);
-  };
-
-  const handleRemove = (_id: string) => {
-    setConditions(conditions.filter(({ id }) => _id !== id));
-  };
-
-  const getDataPer = () => {
-    if (conditions.length === 0) {
-      return Promise.resolve([]);
-    }
-
-    return trigger().then((flag) => {
-      if (flag) {
-        const formData = getValues();
-        const _conditions = conditions.map((condition) => {
-          let value = formData[`condition-${condition.id}`];
-          switch (condition.filtrate?.type) {
-          case 'date':
-            value = isArray(value) ? value.map((date: string) => {
-              return new Date(date).getTime();
-            }) : [new Date(value).getTime()];
-            break;
-          case 'number':
-            value = isArray(value) ? value.map((_value) => Number(_value)) : [Number(value)];
-            break;
-          default:
-            value = isArray(value) ? value : [value];
-            break;
-          }
-
-          return {
-            key: formData[`field-${condition.id}`],
-            op: formData[`operators-${condition.id}`],
-            value,
-          };
-        });
-
-        return _conditions;
-      }
-    });
-  };
-
   return (
     <div className={className}>
-      <div className='flex items-center'>
-        筛选出符合以下
-        <Select
-          className='mx-4'
-          value={tag}
-          onChange={(tag: string) => setTag(tag)}
-          options={CONDITION}
+      <div className='mb-20'>
+        <p>查看</p>
+        <Radio.Group
+          value={view.key}
+          onChange={(e) => setViewPer({ ...view, key: e.target.value })}
+          className='my-16'
+          options={OPTIONS}
         />
-        条件的数据
+        {view.key === 'custom' && (
+          <DataFilter ref={viewRef} fields={fields} baseConditions={view.conditions} />
+        )}
+      </div>
+      <div className='mb-20'>
+        <p>编辑</p>
+        <Radio.Group
+          value={edit.key}
+          onChange={(e) => setEditPer({ ...edit, key: e.target.value })}
+          className='my-16'
+          options={OPTIONS}
+        />
+        {edit.key === 'custom' && (
+          <DataFilter ref={editRef} fields={fields} baseConditions={edit.conditions} />
+        )}
       </div>
       <div>
-        {conditions.map((condition) => (
-          <div key={condition.id} className='flex gap-x-8 mt-24 items-center'>
-            <div>
-              <Controller
-                name={'field-' + condition.id}
-                control={control}
-                defaultValue={condition.key}
-                rules={{ required: true }}
-                render={({ field }) => {
-                  return (
-                    <FormFieldSelect
-                      style={{ width: '250px' }}
-                      error={errors['field-' + condition.id]}
-                      register={{ name: field.name, ref: field.ref, value: field.value }}
-                      options={fieldOption}
-                      onChange={(_field: string) => {
-                        handleFieldChange(condition.id, _field);
-                        field.onChange(_field);
-                      }}
-                    />
-                  );
-                }
-                }
-              />
-            </div>
-            {condition.filtrate ? (
-              <>
-                <div>
-                  <Controller
-                    name={'operators-' + condition.id}
-                    control={control}
-                    defaultValue={condition.op || 'eq'}
-                    rules={{ required: true }}
-                    render={({ field }) => (
-                      <FormFieldSelect
-                        style={{ width: '100px' }}
-                        error={errors['operators-' + condition.id]}
-                        register={field}
-                        options={getOperators((condition.filtrate as FilterField).type)}
-
-                      />
-                    )
-                    }
-                  />
-                </div>
-                <div>
-                  <Controller
-                    name={'condition-' + condition.id}
-                    control={control}
-                    defaultValue={condition.value}
-                    rules={{ required: true }}
-                    render={({ field }) => (
-                      <FormFieldSwitch
-                        error={errors['condition-' + condition.id]}
-                        register={{ ...field, value: field.value ? field.value : '' }}
-                        filtrate={condition.filtrate}
-                        style={{ width: '300px' }}
-                      />
-                    )
-                    }
-                  />
-                </div>
-              </>
-            ) : null}
-            <Icon
-              clickable
-              changeable
-              onClick={() => handleRemove(condition.id)}
-              name='delete'
-              size={20}
-            />
-          </div>
-        ))}
-      </div>
-      <div className='mt-24'>
-        <span onClick={addCondition} className='text-icon-btn'><Icon name='add' /> 添加筛选条件</span>
+        <p>删除</p>
+        <Radio.Group
+          value={del.key}
+          onChange={(e) => setDelPer({ ...del, key: e.target.value })}
+          className='my-16'
+          options={OPTIONS}
+        />
+        {del.key === 'custom' && <DataFilter ref={delRef} fields={fields} baseConditions={del.conditions} />}
       </div>
     </div>
   );

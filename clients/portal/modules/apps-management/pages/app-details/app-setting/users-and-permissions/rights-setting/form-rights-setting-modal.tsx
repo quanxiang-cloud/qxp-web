@@ -20,18 +20,18 @@ type Props = {
 }
 
 type PerData = {
-  dataAccess: any,
-  filter: any,
-  opt: number,
+  conditions: any,
+  schema: any,
+  authority: number,
 }
 
 function RightsSettingModal({ onCancel, rightsGroupID, pageForm }: Props) {
   const [fields, setFields] = useState<Fields[]>([]);
   const [activeTab, setActiveTab] = useState('authorized');
   const [perData, setPerData] = useState<PerData>({
-    dataAccess: null,
-    filter: null,
-    opt: 0,
+    conditions: null,
+    schema: null,
+    authority: 0,
   });
   const [loading, setLoading] = useState(true);
   const fieldRef = useRef<{ getFieldPer:() => any }>(null);
@@ -40,6 +40,7 @@ function RightsSettingModal({ onCancel, rightsGroupID, pageForm }: Props) {
 
   const handleSave = () => {
     dataPerRef.current?.getDataPer().then((conditions)=>{
+      console.log('conditions: ', conditions);
       if (conditions) {
         savePer(store.appID, {
           formID: pageForm.id,
@@ -62,7 +63,6 @@ function RightsSettingModal({ onCancel, rightsGroupID, pageForm }: Props) {
       fetchFormScheme(store.appID, pageForm.id),
       fetchPerData(store.appID, { formID: pageForm.id, perGroupID: rightsGroupID }),
     ]).then(([schemeRes, perDataRes]) => {
-      console.log('schemeRes, perDataRes: ', schemeRes, perDataRes);
       if (schemeRes.data) {
         const fieldsMap = schemeRes.data.schema.properties;
         const fieldsTmp: Fields[] = [];
@@ -72,7 +72,12 @@ function RightsSettingModal({ onCancel, rightsGroupID, pageForm }: Props) {
           }
         });
         setFields(fieldsTmp.sort((a, b) => (a as any)['x-index'] - (b as any)['x-index']));
-        setPerData(perDataRes as any);
+        const { dataAccess, filter, opt } = perDataRes as any;
+        setPerData({
+          conditions: dataAccess ? dataAccess.conditions : null,
+          schema: filter ? filter.schema : null,
+          authority: opt ? opt.authority : 0,
+        });
       }
       setLoading(false);
     });
@@ -123,18 +128,18 @@ function RightsSettingModal({ onCancel, rightsGroupID, pageForm }: Props) {
             ]}
           />
           <Authorized
-            authorized={perData.opt}
+            authorized={perData.authority}
             ref={authorizedRef}
             className={cs({ ['rights-hidden']: activeTab !== 'authorized' })}
           />
           <FieldPermissions
-            fieldPer={perData.filter}
+            fieldPer={perData.schema}
             ref={fieldRef}
             className={cs({ ['rights-hidden']: activeTab !== 'fieldPermissions' })}
             fields={fields}
           />
           <DataPermission
-            dataPer={perData.dataAccess}
+            dataPer={perData.conditions}
             ref={dataPerRef}
             className={cs({ ['rights-hidden']: activeTab !== 'dataPermission' })}
             fields={fields}
