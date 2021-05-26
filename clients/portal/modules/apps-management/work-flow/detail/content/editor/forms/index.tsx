@@ -1,4 +1,4 @@
-import React, { useState, FormEvent, useEffect } from 'react';
+import React, { useState, MouseEvent, useEffect } from 'react';
 import { isEqual } from 'lodash';
 import { useParams } from 'react-router-dom';
 
@@ -29,16 +29,9 @@ import useSave from './hooks/use-save';
 
 export default function NodeFormWrapper() {
   const {
-    nodeIdForDrawerForm, validating,
-    id,
-    status,
-    name,
-    triggerMode,
-    version,
-    cancelable: canCancel,
-    urgeable: canUrge,
-    seeStatusAndMsg: canViewStatusMsg,
-    nodeAdminMsg: canMsg,
+    nodeIdForDrawerForm, validating, id, status, name, triggerMode, version,
+    cancelable: canCancel, urgeable: canUrge, seeStatusAndMsg: canViewStatusMsg,
+    nodeAdminMsg: canMsg, elements,
   } = useObservable<StoreValue>(store);
   const { appID } = useParams<{ appID: string }>();
   const currentNodeElement = getNodeElementById(nodeIdForDrawerForm);
@@ -86,7 +79,7 @@ export default function NodeFormWrapper() {
     setFormDataChanged(false);
   }, [nodeIdForDrawerForm]);
 
-  useEffect(saveWorkFlow, [name]);
+  useEffect(saveWorkFlow, [name, elements?.length]);
 
   const previousNodeID = usePrevious(currentNodeElement?.id) ?? '';
   useEffect(() => {
@@ -157,7 +150,7 @@ export default function NodeFormWrapper() {
 
   const previousName = usePrevious(name);
   function saveWorkFlow() {
-    if (!name || !previousName) {
+    if (!name || !previousName || !elements?.length) {
       return;
     }
     const { form, ...saveData } = formData ?? {};
@@ -179,7 +172,7 @@ export default function NodeFormWrapper() {
     });
   }
 
-  function onSubmit(e: FormEvent<HTMLFormElement>) {
+  function onSubmit(e: MouseEvent<HTMLDivElement>) {
     e.preventDefault();
     if (formDataIsValid()) {
       setFormDataChanged(false);
@@ -279,8 +272,7 @@ export default function NodeFormWrapper() {
       onCancel={closePanel}
       className="flow-editor-drawer"
     >
-      <form
-        onSubmit={onSubmit}
+      <div
         className="flex-1 flex flex-col justify-between h-full"
       >
         <div className="flex-1" style={{ height: 'calc(100% - 56px)' }}>
@@ -307,7 +299,7 @@ export default function NodeFormWrapper() {
             />
           )}
         </div>
-        <SaveButtonGroup onCancel={onCancel} />
+        <SaveButtonGroup onSave={onSubmit} onCancel={onCancel} />
         {currentWorkTable && (
           <Modal
             title="更换触发工作表"
@@ -331,7 +323,7 @@ export default function NodeFormWrapper() {
             </p>
           </Modal>
         )}
-      </form>
+      </div>
     </Drawer>
   );
 }

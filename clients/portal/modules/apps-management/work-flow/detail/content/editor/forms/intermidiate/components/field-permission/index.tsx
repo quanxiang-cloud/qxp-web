@@ -7,7 +7,7 @@ import Loading from '@c/loading';
 import ErrorTips from '@c/error-tips';
 import useObservable from '@lib/hooks/use-observable';
 import store from '@flow/detail/content/editor/store';
-import { getFormFieldOptions } from '@flow/detail/content/editor/forms/api';
+import { getFormFieldOptions, getFormFieldSchema } from '@flow/detail/content/editor/forms/api';
 import type {
   StoreValue, FieldPermission, CustomFieldPermission, SystemFieldPermission, CurrentElement, BusinessData,
 } from '@flow/detail/content/editor/type';
@@ -34,6 +34,13 @@ export default function FieldPermission({ value, onChange: _onChange }: Props) {
   const { data = [], isLoading, isError } = useQuery(
     ['GET_WORK_FORM_FIELD_LIST', workFormValue, appID],
     getFormFieldOptions, {
+      enabled: !!workFormValue && !!appID,
+    }
+  );
+
+  const { data: schema = {} } = useQuery(
+    ['GET_WORK_FORM_FIELD_SCHEMA', workFormValue, appID],
+    getFormFieldSchema, {
       enabled: !!workFormValue && !!appID,
     }
   );
@@ -118,6 +125,7 @@ export default function FieldPermission({ value, onChange: _onChange }: Props) {
           <CustomFieldTable
             editable={editable}
             fields={mergedFieldPermissions.custom}
+            schemaMap={schema.properties ?? {}}
             updateFields={onUpdateFields('custom')}
           />
         </section>

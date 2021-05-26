@@ -8,17 +8,20 @@ import Select from '@c/select';
 import usePrevious from '@lib/hooks/use-previous';
 import ActionButtonGroup from '@flow/detail/content/editor/components/_common/action-button-group';
 import type { FieldValue } from '@flow/detail/content/editor/type';
+import FormRenderer from '@c/form-builder/form-renderer';
 
 interface Props {
   defaultValue?: FieldValue;
   onSave: (value: FieldValue) => void;
   variableOptions?: {label: string; value: string;}[];
+  schema: ISchema;
 }
 
 function FieldValueEditor({
   defaultValue = { variable: '', staticValue: '' },
   variableOptions,
   onSave,
+  schema,
 }: Props) {
   const [type, setType] = useState(defaultValue.variable ? 'variable' : 'staticValue');
   const [isEditorOpen, setIsEditorOpen] = useState(false);
@@ -45,6 +48,10 @@ function FieldValueEditor({
   function onSubmit() {
     onSave(value);
     setIsEditorOpen(false);
+  }
+
+  function onFormValueChange(value: Record<string, string>) {
+    setValue((v) => ({ ...v, staticValue: Object.values(value)[0] }));
   }
 
   return (
@@ -87,17 +94,18 @@ function FieldValueEditor({
             )
           }
           {
-            type === 'staticValue' && (
-              <input
-                className="input transition-none"
-                type="text"
-                autoFocus
-                defaultValue={value.staticValue}
-                onChange={(e) => setValue((v) => ({ ...v, staticValue: e.target.value }))}
-              />
+            type === 'staticValue' && schema && (
+              <>
+                <FormRenderer
+                  schema={schema}
+                  defaultValue={value.staticValue}
+                  onFormValueChange={onFormValueChange}
+                >
+                  <ActionButtonGroup className="mt-16" onCancel={onCancel} onSubmit={onSubmit} />
+                </FormRenderer>
+              </>
             )
           }
-          <ActionButtonGroup className="mt-16" onCancel={onCancel} onSubmit={onSubmit} />
         </div>
       )]}
     >

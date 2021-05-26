@@ -13,33 +13,45 @@ export type Option = {
 
 export type Options = Option[];
 
-interface FormFieldOptions {
-  table?: {
-    [key: string]: { title: string; type: string; }
+interface SchemaResponse {
+  schema?: {
+    properties?: {
+      [key: string]: ISchema;
+    }
   }
 }
-export async function getFormFieldOptions({ queryKey }: QueryFunctionContext): Promise<Options> {
-  const data = await httpClient<FormFieldOptions | null>(
-    `/api/v1/structor/${queryKey[2]}/process/getByID`, {
+
+export async function getFormFieldSchema({ queryKey }: QueryFunctionContext) {
+  const data = await httpClient<SchemaResponse | null>(
+    `/api/v1/structor/${queryKey[2]}/m/table/getByID`, {
       tableID: queryKey[1],
     });
-  function parseFormFieldOptions({ table = {} }: FormFieldOptions) {
-    return Object.entries(table).reduce((prev: {
+  return data?.schema ?? {};
+}
+
+export async function getFormFieldOptions({ queryKey }: QueryFunctionContext): Promise<Options> {
+  const schema = await getFormFieldSchema({ queryKey });
+  function parseFormFieldOptions(schema: {
+    properties?: {
+      [key: string]: ISchema;
+    }
+  } = {}) {
+    return Object.entries(schema.properties ?? {}).reduce((prev: {
       label: string;
       value: string;
       type: string;
     }[], [id, value]) => {
       if (!WorkTableInternalFields.includes(id)) {
         prev.push({
-          label: value.title,
+          label: value.title as string,
           value: id,
-          type: value.type,
+          type: value.type as string,
         });
       }
       return prev;
     }, []);
   }
-  return parseFormFieldOptions(data ?? {});
+  return parseFormFieldOptions(schema ?? {});
 }
 
 export interface OperationItem {

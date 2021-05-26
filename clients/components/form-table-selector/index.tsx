@@ -37,7 +37,7 @@ function FormTableSelector(
   });
 
   useEffect(() => {
-    isError && toast.error(error);
+    isError && toast.error(error as string);
   }, [isError]);
 
   function onWorkFormChange(_: unknown, selectedOptions?: CascaderOptionType[]) {

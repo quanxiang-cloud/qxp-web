@@ -14,9 +14,12 @@ interface Props {
   fields: CustomFieldPermission[];
   updateFields: (value: CustomFieldPermission[]) => void;
   editable: boolean;
+  schemaMap: Record<string, ISchema>;
 }
 
-export default function CustomFieldTable({ editable, fields, updateFields }: Props) {
+export default function CustomFieldTable({
+  editable, fields, updateFields, schemaMap,
+}: Props) {
   const [data] = useRequest<{
     code: number;
     data: {name: string; code: string; desc: string;}[];
@@ -120,6 +123,13 @@ export default function CustomFieldTable({ editable, fields, updateFields }: Pro
         <FieldValueEditor
           variableOptions={variableOptions}
           defaultValue={model.cell.value}
+          schema={{
+            title: '',
+            type: 'object',
+            properties: {
+              [model.cell.row.id]: schemaMap[model.cell.row.id],
+            },
+          }}
           onSave={(value: FieldValue) => {
             updateFields(model.data.map((dt: CustomFieldPermission) => {
               if (dt.id === model.cell.row.id) {

@@ -1,13 +1,14 @@
-import React from 'react';
+import React, { MouseEventHandler } from 'react';
 import cs from 'classnames';
 
 import Button from '@c/button';
 
 interface Props {
   onCancel: () => void;
+  onSave: MouseEventHandler;
 }
 
-export default function({ onCancel }: Props) {
+export default function({ onCancel, onSave }: Props) {
   return (
     <div className={cs(
       'flex justify-end flex-none z-10 bg-gray-100 absolute left-0',
@@ -25,6 +26,7 @@ export default function({ onCancel }: Props) {
         modifier="primary"
         iconName="save"
         type="submit"
+        onClick={onSave}
       >
         保存
       </Button>
