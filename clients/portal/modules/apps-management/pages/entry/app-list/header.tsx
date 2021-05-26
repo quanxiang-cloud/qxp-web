@@ -66,7 +66,7 @@ function Header({ changeParams, params, setModalType, countMaps }: Props) {
         }}
       >
         {STATUS_LIST.map(({ value, name, key }) => (
-          <RadioButton className='rounded-12' key={value} value={value}>
+          <RadioButton className='rounded-8' key={value} value={value}>
             {name}·
             {countMaps[key]}
           </RadioButton>
