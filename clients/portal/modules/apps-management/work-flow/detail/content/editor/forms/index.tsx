@@ -7,7 +7,7 @@ import Drawer from '@c/drawer';
 import useObservable from '@lib/hooks/use-observable';
 import usePrevious from '@lib/hooks/use-previous';
 import { jsonValidator } from '@lib/utils';
-import FormSelector from '@portal/components/form-table-selector';
+import FormSelector from '@c/form-table-selector';
 import type {
   StoreValue, BusinessData, NodeWorkForm, TriggerCondition, TriggerConditionValue,
   TimeRule, NodeType, TriggerWay,

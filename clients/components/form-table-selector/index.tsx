@@ -4,12 +4,11 @@ import { useParams } from 'react-router-dom';
 import { useQuery } from 'react-query';
 import { Cascader } from 'antd';
 import { CascaderOptionType } from 'antd/lib/cascader';
-import { last } from 'lodash';
+import { last, noop } from 'lodash';
 
 import Icon from '@c/icon';
 import ToolTip from '@c/tooltip';
 import toast from '@lib/toast';
-import { noop } from '@lib/utils';
 
 import { getFormDataOptions, Options } from './api';
 

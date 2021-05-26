@@ -20,7 +20,7 @@ export type Options = Option[];
 export async function getFormDataOptions({ queryKey }: QueryFunctionContext): Promise<Options> {
   const data = await httpClient<{
       menu: MenuListItem[],
-  }>(`/api/v1/structor/${queryKey[1]}/menu/list`, {
+  }>(`/api/v1/structor/${queryKey[1]}/m/menu/list`, {
     appID: queryKey[1],
   });
   function parseMenuList(menuList: MenuListItem[]) {
