@@ -1,0 +1,46 @@
+.form-add-dataset {
+  > .field .label {
+    width: calc(100% / 4) !important;
+  }
+}
+
+.dataset {
+  &-names {
+    width: 300px;
+    min-height: calc(100vh - 100px);
+    border-right: 1px solid var(--gray-200);
+
+    &--toolbar {
+      position: sticky;
+
+      button.btn {
+        height: 28px;
+        padding-left: 8px;
+        padding-right: 8px;
+      }
+      input {
+        width: 140px !important;
+      }
+    }
+
+    .name-item {
+      border-radius: 8px;
+      &.active {
+        background-color: var(--gray-100);
+      }
+
+      &:hover {
+        .action-more {
+          visibility: visible;
+        }
+      }
+      .action-more {
+        visibility: hidden;
+      }
+    }
+  }
+
+  &-content {
+
+  }
+}
