@@ -74,7 +74,6 @@ function RightsItem({ rights, actions }: Props) {
         <span className='text-h5 mr-8'>{rights.name}</span>
         <span className='text-caption-no-color text-gray-600'>{rights.description}</span>
         <p className='pb-form-right-action flex gap-x-16'>
-          <Icon className='cursor-grab rights-group-handle' name='drag_indicator' />
           <span onClick={() => setModalType('setting')}>修改</span>
           <span className='text-red-400' onClick={() => actions('del', rights)}>删除</span>
         </p>

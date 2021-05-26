@@ -10,6 +10,7 @@ import formFieldWrap from '@portal/modules/apps-management/components/form-field
 type Props = {
   fields: Fields[];
   baseConditions: Condition[];
+  initTag?: string;
   className?: string;
 }
 
@@ -82,9 +83,9 @@ function getOperators(type: string) {
 const FormFieldSwitch = formFieldWrap({ FieldFC: FieldSwitch });
 const FormFieldSelect = formFieldWrap({ FieldFC: Select });
 
-function DataFilter({ fields, className = '', baseConditions }: Props, ref: React.Ref<any>) {
+function DataFilter({ fields, className = '', baseConditions, initTag = 'and' }: Props, ref: React.Ref<any>) {
   const [conditions, setConditions] = useState<FieldCondition[]>([]);
-  const [tag, setTag] = useState('and');
+  const [tag, setTag] = useState(initTag);
   const { trigger, control, setValue, getValues, formState: { errors } } = useForm();
 
   const fieldList = fields.map((field) => field);

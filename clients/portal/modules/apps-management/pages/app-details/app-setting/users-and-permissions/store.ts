@@ -87,14 +87,17 @@ class UserAndPerStore {
   }
 
   @action
-  fetchPerGroupForm = () => {
+  fetchPerGroupForm = (perGroupID: string) => {
     this.perFormLoading = true;
-    Promise.all([fetchPageList(this.appID), fetchPerGroupForm(this.appID)]).then(([allPageRes, perPage])=>{
-      console.log('allPageRes, perPage: ', allPageRes, perPage);
+    Promise.all([
+      fetchPageList(this.appID),
+      fetchPerGroupForm(this.appID, perGroupID),
+    ]).then(([allPageRes, perPage]) => {
+      const { formArr = [] } = perPage as { formArr: { id: string, authority: number }[] };
       let allPages: PageInfo[] = [];
       allPageRes.data.menu.forEach((menu: PageInfo) => {
         if (menu.menuType === 1 && menu.child?.length) {
-          allPages = allPages.concat(menu.child.map((cMenu)=>{
+          allPages = allPages.concat(menu.child.map((cMenu) => {
             return { ...cMenu, name: `${menu.name}/${cMenu.name}` };
           }));
           return;
@@ -102,17 +105,31 @@ class UserAndPerStore {
 
         allPages.push(menu);
       });
-      this.perFormList = allPages;
+      this.perFormList = allPages.map((page) => {
+        const curFormPer = formArr.find(({ id }) => id === page.id);
+        return { ...page, authority: curFormPer ? curFormPer.authority : 0 };
+      });
       this.perFormLoading = false;
-      console.log(allPages, 'allPages');
-    }).catch(()=>{
+    }).catch(() => {
       this.perFormLoading = false;
     });
   }
 
   @action
-  deleteFormPer = (formID: string, perGroupID:string)=>{
-    deleteFormPer(this.appID, { formID, perGroupID }).then(()=>{
+  updatePerFormList = (newPerForm: PageInfo & { authority: number }) => {
+    this.perFormList = this.perFormList.map((perForm)=>{
+      if (perForm.id === newPerForm.id) {
+        return { ...perForm, ...newPerForm };
+      }
+
+      return perForm;
+    });
+  }
+
+  @action
+  deleteFormPer = (formID: string, perGroupID: string) => {
+    return deleteFormPer(this.appID, { formID, perGroupID }).then(() => {
+      this.updatePerFormList({ id: formID, authority: 0 });
       toast.success('清除成功');
     });
   }

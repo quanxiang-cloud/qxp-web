@@ -5,13 +5,13 @@ import DataFilter from './data-filter';
 
 type Props = {
   fields: Fields[];
-  dataPer: Condition[];
+  dataPer: ConditionMap;
   className?: string;
 }
 
 type ConditionItemMap = {
   arr: Condition[];
-  tag: string;
+  tag: 'or' | 'and';
 }
 
 type ConditionMap = {
@@ -26,9 +26,21 @@ const OPTIONS = [
 ];
 
 function DataPermission({ fields, className = '', dataPer }: Props, ref: React.Ref<any>) {
-  const [view, setViewPer] = useState({ key: 'all', conditions: [] });
-  const [edit, setEditPer] = useState({ key: 'all', conditions: [] });
-  const [del, setDelPer] = useState({ key: 'all', conditions: [] });
+  const [view, setViewPer] = useState({
+    key: dataPer.find?.arr ? 'custom' : 'all',
+    tag: dataPer.find?.tag,
+    conditions: dataPer.find?.arr || [],
+  });
+  const [edit, setEditPer] = useState({
+    key: dataPer.update?.arr ? 'custom' : 'all',
+    tag: dataPer.update?.tag,
+    conditions: dataPer.update?.arr || [],
+  });
+  const [del, setDelPer] = useState({
+    key: dataPer.delete?.arr ? 'custom' : 'all',
+    tag: dataPer.delete?.tag,
+    conditions: dataPer.delete?.arr || [],
+  });
   const viewRef = useRef<{ getDataPer:() => Promise<ConditionItemMap | string> }>(null);
   const editRef = useRef<{ getDataPer:() => Promise<ConditionItemMap | string> }>(null);
   const delRef = useRef<{ getDataPer:() => Promise<ConditionItemMap | string> }>(null);
@@ -72,7 +84,7 @@ function DataPermission({ fields, className = '', dataPer }: Props, ref: React.R
           options={OPTIONS}
         />
         {view.key === 'custom' && (
-          <DataFilter ref={viewRef} fields={fields} baseConditions={view.conditions} />
+          <DataFilter initTag={view.tag} ref={viewRef} fields={fields} baseConditions={view.conditions} />
         )}
       </div>
       <div className='mb-20'>
@@ -84,7 +96,7 @@ function DataPermission({ fields, className = '', dataPer }: Props, ref: React.R
           options={OPTIONS}
         />
         {edit.key === 'custom' && (
-          <DataFilter ref={editRef} fields={fields} baseConditions={edit.conditions} />
+          <DataFilter initTag={edit.tag} ref={editRef} fields={fields} baseConditions={edit.conditions} />
         )}
       </div>
       <div>
@@ -95,7 +107,9 @@ function DataPermission({ fields, className = '', dataPer }: Props, ref: React.R
           className='my-16'
           options={OPTIONS}
         />
-        {del.key === 'custom' && <DataFilter ref={delRef} fields={fields} baseConditions={del.conditions} />}
+        {del.key === 'custom' && (
+          <DataFilter initTag={del.tag} ref={delRef} fields={fields} baseConditions={del.conditions} />
+        )}
       </div>
     </div>
   );

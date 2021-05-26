@@ -26,10 +26,11 @@ type PerData = {
 }
 
 function RightsSettingModal({ onCancel, rightsGroupID, pageForm }: Props) {
+  const [submitLoading, setSubLoading] = useState(false);
   const [fields, setFields] = useState<Fields[]>([]);
   const [activeTab, setActiveTab] = useState('authorized');
   const [perData, setPerData] = useState<PerData>({
-    conditions: null,
+    conditions: {},
     schema: null,
     authority: 0,
   });
@@ -39,20 +40,33 @@ function RightsSettingModal({ onCancel, rightsGroupID, pageForm }: Props) {
   const dataPerRef = useRef<{ getDataPer:() => Promise<Condition[]> }>(null);
 
   const handleSave = () => {
-    dataPerRef.current?.getDataPer().then((conditions)=>{
-      console.log('conditions: ', conditions);
+    setSubLoading(true);
+    dataPerRef.current?.getDataPer().then((conditions) => {
+      const authority = authorizedRef.current?.getAuthorizedPer() || 0;
+      if (authority === 0) {
+        store.deleteFormPer(pageForm.id, rightsGroupID).then(() => {
+          store.updatePerFormList({ ...pageForm, authority: 0 });
+          onCancel();
+        });
+        return;
+      }
+
       if (conditions) {
         savePer(store.appID, {
           formID: pageForm.id,
           perGroupID: rightsGroupID,
-          authority: authorizedRef.current?.getAuthorizedPer() || 0,
           schema: fieldRef.current?.getFieldPer(),
           conditions,
+          authority,
         }).then(() => {
           toast.success('保存成功!');
+          store.updatePerFormList({ ...pageForm, authority });
           onCancel();
+        }).catch(() => {
+          setSubLoading(false);
         });
       } else {
+        setSubLoading(false);
         toast.error('数据权限填写不完整');
       }
     });
@@ -74,7 +88,7 @@ function RightsSettingModal({ onCancel, rightsGroupID, pageForm }: Props) {
         setFields(fieldsTmp.sort((a, b) => (a as any)['x-index'] - (b as any)['x-index']));
         const { dataAccess, filter, opt } = perDataRes as any;
         setPerData({
-          conditions: dataAccess ? dataAccess.conditions : null,
+          conditions: dataAccess ? dataAccess.conditions : {},
           schema: filter ? filter.schema : null,
           authority: opt ? opt.authority : 0,
         });
@@ -91,12 +105,15 @@ function RightsSettingModal({ onCancel, rightsGroupID, pageForm }: Props) {
         {
           key: 'close',
           text: '取消',
+          iconName: 'close',
           onClick: onCancel,
         },
         {
           key: 'ok',
           text: '保存',
+          iconName: 'check',
           modifier: 'primary',
+          loading: submitLoading,
           onClick: handleSave,
         },
       ]}

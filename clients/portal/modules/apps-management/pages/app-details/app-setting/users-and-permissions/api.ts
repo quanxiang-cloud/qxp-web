@@ -90,8 +90,8 @@ export const saveFieldFilter = (appID: string, data: any) => {
 
 // 0.4
 
-export const fetchPerGroupForm = (appID: string) => {
-  return httpClient(`/api/v1/structor/${appID}/m/permission/perGroup/getForm`);
+export const fetchPerGroupForm = (appID: string, perGroupID: string) => {
+  return httpClient(`/api/v1/structor/${appID}/m/permission/perGroup/getForm`, { perGroupID });
 };
 
 type PerDataReq = {

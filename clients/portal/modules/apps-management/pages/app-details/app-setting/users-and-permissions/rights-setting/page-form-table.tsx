@@ -22,7 +22,7 @@ function PageFormTable({ rightsGroupID }: { rightsGroupID: string }) {
   };
 
   useEffect(() => {
-    store.fetchPerGroupForm();
+    store.fetchPerGroupForm(rightsGroupID);
   }, []);
 
   const columns: any = [
@@ -33,8 +33,23 @@ function PageFormTable({ rightsGroupID }: { rightsGroupID: string }) {
     },
     {
       Header: '操作权限',
-      id: 'authorized',
-      accessor: 'authorized',
+      id: 'authority',
+      accessor: ({ authority }: { authority: number }) => {
+        if (authority) {
+          return (
+            <span>
+              {[
+                authority >= 1 ? '查看' : '',
+                authority >= 3 ? '新建' : '',
+                authority >= 7 ? '修改' : '',
+                authority >= 15 ? '删除' : '',
+              ].filter((text) => text).join(',')}
+            </span>
+          );
+        }
+
+        return <span>未设置</span>;
+      },
     },
     {
       Header: '操作',
