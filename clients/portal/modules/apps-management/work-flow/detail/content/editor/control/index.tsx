@@ -2,7 +2,6 @@ import React, { memo, useCallback, HTMLAttributes } from 'react';
 import cs from 'classnames';
 import {
   useZoomPanHelper,
-  FitViewParams,
   useStoreState,
   useStoreActions,
 } from 'react-flow-renderer';
@@ -10,12 +9,12 @@ import {
 import Icon from '@c/icon';
 
 import ControlButton from './control-button';
+import useFitView from '../hooks/use-fit-view';
 
 export interface Props extends HTMLAttributes<HTMLDivElement> {
   showZoom?: boolean;
   showFitView?: boolean;
   showInteractive?: boolean;
-  fitViewParams?: FitViewParams;
   onZoomIn?: () => void;
   onZoomOut?: () => void;
   onFitView?: () => void;
@@ -27,7 +26,6 @@ function Controls({
   showZoom = true,
   showFitView = true,
   showInteractive = true,
-  fitViewParams,
   onZoomIn,
   onZoomOut,
   onFitView,
@@ -36,11 +34,12 @@ function Controls({
   children,
 }: Props) {
   const setInteractive = useStoreActions((actions) => actions.setInteractive);
-  const { zoomIn, zoomOut, fitView } = useZoomPanHelper();
+  const { zoomIn, zoomOut } = useZoomPanHelper();
   const isInteractive = useStoreState(
     (s) => s.nodesDraggable && s.nodesConnectable && s.elementsSelectable
   );
   const zoomLevel = useStoreState((state) => state.transform[2]);
+  const fitView = useFitView();
 
   const onZoomInHandler = useCallback(() => {
     zoomIn?.();
@@ -53,9 +52,9 @@ function Controls({
   }, [zoomOut, onZoomOut]);
 
   const onFitViewHandler = useCallback(() => {
-    fitView?.(fitViewParams);
+    fitView?.();
     onFitView?.();
-  }, [fitView, fitViewParams, onFitView]);
+  }, [fitView, onFitView]);
 
   const onInteractiveChangeHandler = useCallback(() => {
     setInteractive?.(!isInteractive);

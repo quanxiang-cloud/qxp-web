@@ -31,8 +31,8 @@ export default function NodeRemover({ id, type = 'dark', visible = true }: Props
   return (
     <More
       placement="right-start"
-      className="absolute right-10 top-1/2 transform -translate-y-1/2"
-      contentClassName="left-full top-0 mt-0 w-316 p-20 cursor-default corner-4-12-12-12
+      className="absolute right-0 px-10 top-1/2 transform -translate-y-1/2"
+      contentClassName="left-full top-0 mt-0 w-172 p-10 cursor-default corner-4-12-12-12
       border border-gray-300"
       contentItemClassName="hover:bg-white"
       open={showRemoveModal}

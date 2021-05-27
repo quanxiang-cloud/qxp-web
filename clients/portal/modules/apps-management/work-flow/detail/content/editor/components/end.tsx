@@ -10,10 +10,11 @@ interface Props {
   id: string;
   xPos: number;
   yPos: number;
+  isDragging: boolean;
 }
 
-export default function EndNodeComponent({ data, id, xPos, yPos }: Props) {
-  usePositionChange({ xPos, id, yPos });
+export default function EndNodeComponent({ data, id, xPos, yPos, isDragging }: Props) {
+  usePositionChange({ xPos, id, yPos }, isDragging);
 
   return (
     <div

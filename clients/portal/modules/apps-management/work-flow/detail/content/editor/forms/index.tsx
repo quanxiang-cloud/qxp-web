@@ -31,7 +31,7 @@ export default function NodeFormWrapper() {
   const {
     nodeIdForDrawerForm, validating, id, status, name, triggerMode, version,
     cancelable: canCancel, urgeable: canUrge, seeStatusAndMsg: canViewStatusMsg,
-    nodeAdminMsg: canMsg, elements,
+    nodeAdminMsg: canMsg, elements, needSaveFlow,
   } = useObservable<StoreValue>(store);
   const { appID } = useParams<{ appID: string }>();
   const currentNodeElement = getNodeElementById(nodeIdForDrawerForm);
@@ -80,6 +80,9 @@ export default function NodeFormWrapper() {
   }, [nodeIdForDrawerForm]);
 
   useEffect(saveWorkFlow, [name, elements?.length]);
+  useEffect(() => {
+    needSaveFlow && saveWorkFlow();
+  }, [needSaveFlow]);
 
   const previousNodeID = usePrevious(currentNodeElement?.id) ?? '';
   useEffect(() => {
@@ -130,6 +133,10 @@ export default function NodeFormWrapper() {
     return isTriggerWayValid;
   }
 
+  function multiplePersonWayValidator(way: string) {
+    return !!way;
+  }
+
   function formDataIsValid() {
     const jsonValidatorMap: Record<NodeType, Record<string, (v: any) => boolean>> = {
       formData: {
@@ -139,9 +146,11 @@ export default function NodeFormWrapper() {
       },
       fillIn: {
         'basicConfig.timeRule': timeRuleValidator,
+        'basicConfig.multiplePersonWay': multiplePersonWayValidator,
       },
       approve: {
         'basicConfig.timeRule': timeRuleValidator,
+        'basicConfig.multiplePersonWay': multiplePersonWayValidator,
       },
       end: {},
     };
@@ -167,7 +176,9 @@ export default function NodeFormWrapper() {
       canViewStatusMsg: canViewStatusMsg ? 1 : 0,
       appId: appID,
     }, () => {
-      updateBusinessData(nodeIdForDrawerForm, (b) => ({ ...b, ...saveData }), { saved: true });
+      updateBusinessData(nodeIdForDrawerForm, (b) => ({ ...b, ...saveData }), {
+        saved: true, needSaveFlow: false,
+      });
       closePanel();
     });
   }

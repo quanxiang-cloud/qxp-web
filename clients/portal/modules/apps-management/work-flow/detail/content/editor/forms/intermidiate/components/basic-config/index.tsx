@@ -112,6 +112,7 @@ export default function BasicConfig({ type, value, onChange: _onChange }: Props)
         label={label}
         value={key}
         defaultChecked={value.multiplePersonWay === key}
+        error={validating && !value.multiplePersonWay}
       />
     );
   }
@@ -195,12 +196,20 @@ export default function BasicConfig({ type, value, onChange: _onChange }: Props)
         <span>添加{typeText}人</span>
       </div>
       <div className="text-body2-no-color text-gray-600 mb-8">多人{typeText}时</div>
-      <div className="flex items-center mb-24">
+      <div className={cs('flex items-center', {
+        'mb-24': !validating || value.multiplePersonWay,
+        'mb-3': validating && value.multiplePersonWay,
+      })}>
         <RadioGroup onChange={(v) => onUpdate('multiplePersonWay', v)}>
           {multiplePersonBuilder(type === 'approve' ? '或签' : '任填', 'or')}
           {multiplePersonBuilder(type === 'approve' ? '会签' : '全填', 'and')}
         </RadioGroup>
       </div>
+      {validating && !value.multiplePersonWay && (
+        <div className="text-red-600 mb-24">
+          请选择审批规则
+        </div>
+      )}
       <div className="text-body2-no-color text-gray-600 mb-8">无{typeText}人时</div>
       <div className="flex items-center mb-24">
         <RadioGroup onChange={(v) => onUpdate('whenNoPerson', v)}>
@@ -218,7 +227,7 @@ export default function BasicConfig({ type, value, onChange: _onChange }: Props)
           </div>
         </>
       )}
-      <div className="flex items-center justify-between mb-16">
+      <div className="flex items-center justify-between mb-16 mt-24">
         <div>
           <div className="text-body2">{typeText}用时限制</div>
           <span className="text-caption">{
@@ -247,9 +256,11 @@ export default function BasicConfig({ type, value, onChange: _onChange }: Props)
             {breakPointBuilder('首次进入该节点后', 'firstEntry')}
             {breakPointBuilder('工作流开始后', 'flowWorked')}
           </RadioGroup>
-          <div className={cs({ 'text-red-600': validating && !deadLine.breakPoint })}>
-            请设置处理节点
-          </div>
+          {validating && !deadLine.breakPoint && (
+            <div className={'text-red-600'}>
+              请设置处理节点
+            </div>
+          )}
           <TimerSelector
             onDayChange={onTimeRuleUpdate('deadLine.day')}
             onHoursChange={onTimeRuleUpdate('deadLine.hours')}

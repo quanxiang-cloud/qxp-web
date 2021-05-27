@@ -150,7 +150,7 @@ class AppPageDataStore {
       return;
     }
     httpClient(
-      `/api/v1/structor/${this.appID}/permission/operatePer/getByScopeID`,
+      `/api/v1/structor/${this.appID}/m/permission/operatePer/getByScopeID`,
       { formID: this.pageID }
     ).then((res: any) => {
       this.authority = res?.authority || 0;

@@ -1,4 +1,5 @@
 import React from 'react';
+import { ReactFlowProvider } from 'react-flow-renderer';
 
 import Editor from './editor';
 import GlobalConfig from './global-config';
@@ -12,7 +13,9 @@ export default function Content({ currentOperateType }: Props) {
   return (
     <main className="flex flex-1">
       {currentOperateType === 'edit' && (
-        <Editor />
+        <ReactFlowProvider>
+          <Editor />
+        </ReactFlowProvider>
       )}
       {currentOperateType === 'settings' && (
         <GlobalConfig />

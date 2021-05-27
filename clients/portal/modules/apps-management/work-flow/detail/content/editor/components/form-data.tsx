@@ -11,13 +11,14 @@ interface Props {
   id: string;
   xPos: number;
   yPos: number;
+  isDragging: boolean;
 }
 
-export default function FormDataNodeComponent({ data, id, xPos, yPos }: Props) {
+export default function FormDataNodeComponent({ data, id, xPos, yPos, isDragging }: Props) {
   const isNew = !data.businessData.form.name;
   const lastTime = useRef(+new Date());
 
-  usePositionChange({ id, xPos, yPos });
+  usePositionChange({ id, xPos, yPos }, isDragging);
   const switcher = useNodeSwitch();
 
   function onMouseUp() {

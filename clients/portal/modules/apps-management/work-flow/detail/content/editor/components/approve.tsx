@@ -15,15 +15,16 @@ interface Props {
   id: string;
   xPos: number;
   yPos: number;
+  isDragging: boolean;
 }
 
-export default function ApproveNodeComponent({ data, id, xPos, yPos }: Props) {
+export default function ApproveNodeComponent({ data, id, xPos, yPos, isDragging }: Props) {
   const { errors } = useObservable<StoreValue>(store);
   const lastTime = useRef(+new Date());
   const [showRemover, setShowRemover] = useState(false);
   const switcher = useNodeSwitch();
 
-  usePositionChange({ xPos, yPos, id });
+  usePositionChange({ xPos, yPos, id }, isDragging);
 
   const { nodeData, businessData: { basicConfig } } = data;
 

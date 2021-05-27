@@ -10,7 +10,7 @@ export const createFormScheme = (appID: string, data: any) => {
 
 export const fetchFormScheme = (appID: string, tableID: string) => {
   return request({
-    url: `/api/v1/structor/${appID}/table/getByID`,
+    url: `/api/v1/structor/${appID}/m/table/getByID`,
     method: 'post',
     data: { tableID },
   });

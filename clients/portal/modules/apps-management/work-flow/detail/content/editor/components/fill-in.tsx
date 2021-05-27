@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import cs from 'classnames';
 
 import useObservable from '@lib/hooks/use-observable';
@@ -15,15 +15,18 @@ interface Props {
   id: string;
   xPos: number;
   yPos: number;
+  isDragging: boolean;
 }
 
-export default function FillInNodeComponent({ data, id, xPos, yPos }: Props) {
-  const { errors } = useObservable<StoreValue>(store);
+export default function FillInNodeComponent({ data, id, xPos, yPos, isDragging }: Props) {
+  const { errors, nodeIdForDrawerForm } = useObservable<StoreValue>(store);
   const lastTime = useRef(+new Date());
   const [showRemover, setShowRemover] = useState(false);
   const switcher = useNodeSwitch();
-
-  usePositionChange({ id, xPos, yPos });
+  usePositionChange({ id, xPos, yPos }, isDragging);
+  useEffect(() => {
+    nodeIdForDrawerForm && setShowRemover(false);
+  }, [nodeIdForDrawerForm]);
 
   const { nodeData, businessData: { basicConfig } } = data;
 

@@ -1,9 +1,8 @@
-import React, { useState, useRef, DragEvent } from 'react';
+import React, { useState, useRef, DragEvent, useEffect } from 'react';
 import dagre from 'dagre';
 import cs from 'classnames';
 import { useParams } from 'react-router-dom';
 import ReactFlow, {
-  ReactFlowProvider,
   ConnectionLineType,
   isNode,
   Position,
@@ -34,6 +33,7 @@ import store, { updateStore } from './store';
 import type { StoreValue } from './type';
 import { getNodeInitialData } from './utils';
 import DrawerForm from './forms';
+import useFitView from './hooks/use-fit-view';
 
 import 'react-flow-renderer/dist/style.css';
 import 'react-flow-renderer/dist/theme-default.css';
@@ -47,6 +47,11 @@ export default function Editor() {
   const [fitViewFinished, setFitViewFinished] = useState(false);
   const [reactFlowInstance, setReactFlowInstance] = useState<OnLoadParams>();
   const { flowID } = useParams<{ flowID: string; }>();
+  const fitView = useFitView(() => setFitViewFinished(true));
+
+  useEffect(() => {
+    updateStore((s) => ({ ...s, flowInstance: reactFlowInstance }));
+  }, []);
 
   function setElements(elements: Elements) {
     updateStore((s) => ({ ...s, elements }));
@@ -163,66 +168,60 @@ export default function Editor() {
   }
 
   function onLoad(reactFlowInstance: OnLoadParams) {
-    const { fitView } = reactFlowInstance;
     setReactFlowInstance(reactFlowInstance);
     !flowID && setElements(getLayoutedElements(elements));
-    setTimeout(() => {
-      fitView({ padding: 1.2 });
-      setFitViewFinished(true);
-    }, 0);
+    setTimeout(fitView);
   }
 
   return (
     <div className={cs('w-full h-full flex-1 relative transition', {
       'opacity-0': !fitViewFinished,
     })}>
-      <ReactFlowProvider>
-        <div className="reactflow-wrapper w-full h-full" ref={reactFlowWrapper}>
-          <ReactFlow
-            className="cursor-move"
-            elements={elements}
-            onConnect={onConnect}
-            onElementsRemove={onElementsRemove}
-            connectionLineType={ConnectionLineType.Step}
-            onLoad={onLoad}
-            onDrop={onDrop}
-            onDragOver={onDragOver}
-            nodeTypes={{
-              formData: FormDataNode,
-              end: End,
-              fillIn: FillIn,
-              approve: Approve,
+      <div className="reactflow-wrapper w-full h-full" ref={reactFlowWrapper}>
+        <ReactFlow
+          className="cursor-move"
+          elements={elements}
+          onConnect={onConnect}
+          onElementsRemove={onElementsRemove}
+          connectionLineType={ConnectionLineType.Step}
+          onLoad={onLoad}
+          onDrop={onDrop}
+          onDragOver={onDragOver}
+          nodeTypes={{
+            formData: FormDataNode,
+            end: End,
+            fillIn: FillIn,
+            approve: Approve,
+          }}
+          edgeTypes={{
+            plus: Plus,
+          }}
+        >
+          <Background
+            variant={BackgroundVariant.Dots}
+            gap={12}
+            size={0.5}
+          />
+          <MiniMap
+            nodeColor={(node) => {
+              switch (node.type) {
+              case 'input':
+                return 'red';
+              case 'default':
+                return '#00ff00';
+              case 'output':
+                return 'rgb(0,0,255)';
+              default:
+                return '#eee';
+              }
             }}
-            edgeTypes={{
-              plus: Plus,
-            }}
-          >
-            <Background
-              variant={BackgroundVariant.Dots}
-              gap={12}
-              size={0.5}
-            />
-            <MiniMap
-              nodeColor={(node) => {
-                switch (node.type) {
-                case 'input':
-                  return 'red';
-                case 'default':
-                  return '#00ff00';
-                case 'output':
-                  return 'rgb(0,0,255)';
-                default:
-                  return '#eee';
-                }
-              }}
-              nodeStrokeWidth={3}
-            />
-            <Control className="left-16 top-16 right-16 flex absolute z-10" />
-          </ReactFlow>
-        </div>
-        <Components />
-        <DrawerForm />
-      </ReactFlowProvider>
+            nodeStrokeWidth={3}
+          />
+          <Control className="left-16 top-16 right-16 flex absolute z-10" />
+        </ReactFlow>
+      </div>
+      <Components />
+      <DrawerForm />
     </div>
   );
 }
