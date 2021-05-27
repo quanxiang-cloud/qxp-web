@@ -152,9 +152,10 @@ class AppPageDataStore {
     if (!this.pageID) {
       return;
     }
+
     const side = window.SIDE === 'portal' ? 'm' : 'home';
     httpClient(
-      `/api/v1/structor/${this.appID}/${side}/permission/operatePer/getByScopeID`,
+      `/api/v1/structor/${this.appID}/${side}/permission/operatePer/getOperate`,
       { formID: this.pageID }
     ).then((res: any) => {
       this.authority = res?.authority || 0;

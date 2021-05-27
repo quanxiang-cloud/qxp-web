@@ -7,6 +7,7 @@ import Table from '@c/table';
 import Pagination from '@c/pagination';
 import PopConfirm from '@c/pop-confirm';
 
+import AdvancedQuery from './advanced-query';
 import DetailsDrawer from './details-drawer';
 import { StoreContext } from './context';
 import { operateButton } from './utils';
@@ -81,18 +82,21 @@ function PageDataTable() {
 
   return (
     <div className='form-app-data-table-container flex flex-col'>
-      <div className='mb-16 flex items-center gap-x-16'>
-        {operateButton(2, store.authority, (
-          <Button onClick={store.createFun} modifier='primary' iconName='add'>新建</Button>
-        ))}
-        {operateButton(4, store.authority, (
-          selected.length > 0 && textBtnRender('批量删除',
-            'restore_from_trash',
-            () => store.delFormData(selected)
-          )
-        ))}
-        {/* {textBtnRender('导入', 'file_download')}
+      <div className='flex justify-between'>
+        <div className='mb-16 flex items-center gap-x-16'>
+          {operateButton(2, store.authority, (
+            <Button onClick={store.createFun} modifier='primary' iconName='add'>新建</Button>
+          ))}
+          {operateButton(4, store.authority, (
+            selected.length > 0 && textBtnRender('批量删除',
+              'restore_from_trash',
+              () => store.delFormData(selected)
+            )
+          ))}
+          {/* {textBtnRender('导入', 'file_download')}
         {textBtnRender('导出', 'file_upload')} */}
+        </div>
+        <AdvancedQuery fields={store.fields} />
       </div>
       <div className='flex-1 overflow-hidden'>
         <Table

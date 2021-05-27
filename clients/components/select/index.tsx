@@ -16,6 +16,7 @@ export type SelectOption<T> = {
 
 interface BaseSelectProps<T> {
   className?: string;
+  optionClassName?: string;
   disabled?: boolean;
   // inputRef?: React.RefObject<HTMLInputElement>;
   inputRef?: React.Ref<HTMLInputElement>;
@@ -177,11 +178,11 @@ export default class Select<T extends React.Key> extends React.Component<SelectP
   }
 
   renderOptions(): JSX.Element {
-    const { options, optionsDesc } = this.props;
+    const { options, optionsDesc, optionClassName } = this.props;
     const { selectedValue } = this.state;
 
     return (
-      <div className="dropdown-options" style={{ width: `${this.getTriggerWidth()}px` }}>
+      <div className={`${optionClassName} dropdown-options`} style={{ width: `${this.getTriggerWidth()}px` }}>
         {optionsDesc && (<p className="select-options__desc">{optionsDesc}</p>)}
         {
           options.map((option) => {

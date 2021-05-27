@@ -7,9 +7,11 @@ import FieldSwitch from '@portal/modules/apps-management/components/field-switch
 import Icon from '@c/icon';
 import formFieldWrap from '@portal/modules/apps-management/components/form-field-wrap';
 
+import './index.scss';
+
 type Props = {
   fields: Fields[];
-  baseConditions: Condition[];
+  baseConditions?: Condition[];
   initTag?: string;
   className?: string;
 }
@@ -20,6 +22,16 @@ type FieldCondition = {
   value?: any;
   op?: string;
   filtrate?: any;
+}
+
+export type ConditionItemMap = {
+  arr: Condition[];
+  tag: 'or' | 'and';
+}
+
+export type RefProps = {
+  getDataPer: () => Promise<ConditionItemMap | string>;
+  empty: () => void;
 }
 
 const CONDITION = [{
@@ -92,6 +104,7 @@ function DataFilter({ fields, className = '', baseConditions, initTag = 'and' }:
 
   useImperativeHandle(ref, () => ({
     getDataPer: getDataPer,
+    empty: () => setConditions([]),
   }));
 
   useEffect(() => {
@@ -195,7 +208,7 @@ function DataFilter({ fields, className = '', baseConditions, initTag = 'and' }:
         />
         条件的数据
       </div>
-      <div>
+      <div className='qxp-data-filter-box beauty-scroll'>
         {conditions.map((condition) => (
           <div key={condition.id} className='flex gap-x-8 mt-24 items-center'>
             <div>
@@ -208,6 +221,7 @@ function DataFilter({ fields, className = '', baseConditions, initTag = 'and' }:
                   return (
                     <FormFieldSelect
                       style={{ width: '250px' }}
+                      optionClassName='qxp-data-filter-options'
                       error={errors['field-' + condition.id]}
                       register={{ name: field.name, ref: field.ref, value: field.value }}
                       options={fieldOption}
