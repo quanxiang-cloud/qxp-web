@@ -5,7 +5,7 @@ import {
 
 export default function useFitView(callback?: Function) {
   const flowStore = useStore();
-  const { setCenter } = useZoomPanHelper();
+  const { setCenter, fitView } = useZoomPanHelper();
 
   function focus() {
     const { nodes } = flowStore.getState();
@@ -17,6 +17,7 @@ export default function useFitView(callback?: Function) {
       const x = el.offsetWidth / 2;
       const y = el.offsetHeight / 2;
       setCenter(x, y, 1.0);
+      fitView({ padding: 0.5 });
     }
     callback && callback();
   }

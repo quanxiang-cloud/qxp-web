@@ -200,7 +200,7 @@ export default function NodeFormWrapper() {
   function closePanel() {
     updateStore((s) => ({
       ...s,
-      nodeIdForDrawerForm: '',
+      nodeIdForDrawerForm: s.nodeIdForDrawerForm === 'components' ? s.nodeIdForDrawerForm : '',
       showDataNotSaveConfirm: false,
       errors: {
         ...s.errors,

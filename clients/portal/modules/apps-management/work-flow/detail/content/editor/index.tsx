@@ -51,7 +51,7 @@ export default function Editor() {
 
   useEffect(() => {
     updateStore((s) => ({ ...s, flowInstance: reactFlowInstance }));
-  }, []);
+  }, [reactFlowInstance]);
 
   function setElements(elements: Elements) {
     updateStore((s) => ({ ...s, elements }));
