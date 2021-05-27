@@ -51,9 +51,18 @@ func FormSchemaHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Printf("proxy api request, method: %s, url: %s,request_id: %s ", method, url, requestID)
 
 	sm := &schema{}
-	if err = json.Unmarshal(body, sm); err != nil {
-		contexts.Logger.Error("Unmarshal err, %v\n", err)
-		return
+	if strings.HasSuffix(path,"/"){
+		path = path[:len(path)-2]
+	}
+	paths := strings.Split(path,"/")
+	if len(paths[len(paths)-1]) >= 32{
+		sm.TableID = paths[len(paths)-1]
+	}
+	if body != nil && len(body) > 0{
+		if err = json.Unmarshal(body, sm); err != nil {
+			contexts.Logger.Error("Unmarshal err, %v\n", err)
+			return
+		}
 	}
 
 	c,rest,err := schemaHandler(r,sm,path)
@@ -78,9 +87,6 @@ func FormSchemaHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func schemaHandler(r *http.Request,sm *schema,path string) (int,interface{},error) {
-	if strings.HasSuffix(path,"/"){
-		path = path[:len(path)-1]
-	}
 	paths := strings.Split(path,"/")
 	switch paths[len(paths)-1] {
 	case "create", "update" :
@@ -250,7 +256,7 @@ func doFill(r *http.Request,vm map[string]interface{},tableID,fieldNme ,cate str
 				path := fmt.Sprintf("%s%s%s", base,cp.AppID,formSchema)
 				// 用户端，请求权限过滤后的schema
 				if cate == "user"{
-					path = fmt.Sprintf("%s%s%s",base,cp.AppID,cp.TableID)
+					path = fmt.Sprintf("%s%s%s%s",base,cp.AppID,userSchema,cp.TableID)
 				}
 				str, err := json.Marshal(&tb)
 				if err != nil {
