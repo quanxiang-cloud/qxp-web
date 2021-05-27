@@ -15,7 +15,7 @@ import toast from '@lib/toast';
 import FormAddData from './form-add-data';
 
 import store from './store';
-import { createDataset, updateDataset } from './api';
+import { createDataset, updateDataset, deleteDataset } from './api';
 
 interface Props {
   className?: string;
@@ -25,7 +25,6 @@ function DatasetNames(props: Props) {
   const [editModal, setEditModal] = useState(false);
   const [deleteModal, setDeleteModal] = useState(false);
   const [addDataModal, setAddDataModal] = useState(false);
-  const [datasetType, setDatasetType] = useState<DatasetType>(1);
   const [submitting, setSubmitting] = useState(false);
   const formAddRef = useRef<Form>(null);
 
@@ -195,8 +194,20 @@ function DatasetNames(props: Props) {
               iconName: 'check',
               modifier: 'primary',
               onClick: () => {
-                // todo: api not ready
-                setDeleteModal(false);
+                setSubmitting(true);
+                deleteDataset(store.activeId).then(async (data) => {
+                  if (data) {
+                    toast.success('删除成功');
+                    setDeleteModal(false);
+                    await store.fetchAllNames();
+                    if (store.names.length) {
+                      store.setActive(store.names[0].id);
+                    }
+                  } else {
+                    toast.error('更新失败');
+                  }
+                }).catch((err: Error) => toast.error(err.message))
+                  .finally(() => setSubmitting(false));
               },
             },
           ]}
