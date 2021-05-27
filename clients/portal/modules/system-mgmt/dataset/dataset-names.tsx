@@ -1,8 +1,9 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { observer } from 'mobx-react';
 import { toJS } from 'mobx';
 import cs from 'classnames';
 import { Form } from '@QCFE/lego-ui';
+import { debounce } from 'lodash';
 
 import Search from '@c/search';
 import Loading from '@c/loading';
@@ -29,53 +30,60 @@ function DatasetNames(props: Props) {
   const formAddRef = useRef<Form>(null);
 
   useEffect(() => {
-    store.fetchAllNames().then(() => {
-      if (store.names.length) {
-        store.setActive(store.names[0].id);
-      }
-    });
+    store.fetchAllNames();
     return store.reset;
+  }, []);
+
+  const debounceSearch = useCallback(debounce(() => {
+    store.fetchAllNames({ name: store.search });
+  }, 1000), []);
+
+  const handleSearch = useCallback((val: string) => {
+    store.setSearch(val);
+    debounceSearch();
   }, []);
 
   return (
     <div className="dataset-names py-20 px-10 mr-20">
+      <div className="dataset-names--toolbar flex items-center">
+        <Search
+          placeholder="请输入名称进行查询"
+          value={store.search}
+          onChange={handleSearch}
+        />
+        <Button iconName="add" className="btn--add" onClick={() => setAddDataModal(true)}>分组</Button>
+      </div>
       {store.loadingNames ? <Loading /> : (
-        <>
-          <div className="dataset-names--toolbar flex items-center">
-            <Search placeholder="请输入名称进行查询" />
-            <Button iconName="add" className="btn--add" onClick={() => setAddDataModal(true)}>分组</Button>
-          </div>
-          <div className="mt-20">
-            {store.names.map(({ id, name, tag }) => {
-              return (
-                <div
-                  className={cs('name-item flex items-center cursor-pointer pl-20 py-8 hover:bg-gray-100', {
-                    active: store.activeId === id,
-                  })}
-                  key={id}
-                  onClick={() => store.setActive(id)}
-                >
-                  <Icon name="insert_drive_file" size={20} />
-                  <span className="ml-10 flex-grow">{name}</span>
-                  <MoreMenu
-                    className="action-more mr-10"
-                    onMenuClick={(key) => {
-                      if (key === 'edit') {
-                        setEditModal(true);
-                      }
-                      if (key === 'delete') {
-                        setDeleteModal(true);
-                      }
-                    }}
-                    menus={[
-                      { label: '编辑', key: 'edit' },
-                      { label: '删除分组', key: 'delete' },
-                    ]} />
-                </div>
-              );
-            })}
-          </div>
-        </>
+        <div className="mt-20">
+          {store.names.length ? store.names.map(({ id, name, tag }) => {
+            return (
+              <div
+                className={cs('name-item flex items-center cursor-pointer pl-20 py-8 hover:bg-gray-100', {
+                  active: store.activeId === id,
+                })}
+                key={id}
+                onClick={() => store.setActive(id)}
+              >
+                <Icon name="insert_drive_file" size={20} />
+                <span className="ml-10 flex-grow">{name}</span>
+                <MoreMenu
+                  className="action-more mr-10"
+                  onMenuClick={(key) => {
+                    if (key === 'edit') {
+                      setEditModal(true);
+                    }
+                    if (key === 'delete') {
+                      setDeleteModal(true);
+                    }
+                  }}
+                  menus={[
+                    { label: '编辑', key: 'edit' },
+                    { label: '删除分组', key: 'delete' },
+                  ]} />
+              </div>
+            );
+          }) : <div className="flex justify-center">数据集为空</div>}
+        </div>
       )}
       {addDataModal && (
         <Modal
@@ -200,11 +208,8 @@ function DatasetNames(props: Props) {
                     toast.success('删除成功');
                     setDeleteModal(false);
                     await store.fetchAllNames();
-                    if (store.names.length) {
-                      store.setActive(store.names[0].id);
-                    }
                   } else {
-                    toast.error('更新失败');
+                    toast.error('删除失败');
                   }
                 }).catch((err: Error) => toast.error(err.message))
                   .finally(() => setSubmitting(false));

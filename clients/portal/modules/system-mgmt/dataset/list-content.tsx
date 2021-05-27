@@ -80,9 +80,9 @@ function ListContent(props: Props) {
               <div className="data-list-items--item flex items-center mb-10" key={idx}>
                 <span className="inline-flex flex-1 mr-20">
                   Label: <Input type="text" size="small" value={label}
-                                onChange={(e, val) => handleChangeField(idx, 'label', val)} className="mr-10" />
+                    onChange={(e, val) => handleChangeField(idx, 'label', val)} className="mr-10" />
                   Value: <Input type="text" size="small" value={value}
-                                onChange={(e, val) => handleChangeField(idx, 'value', val)} />
+                    onChange={(e, val) => handleChangeField(idx, 'value', val)} />
                 </span>
                 <span className="data-list-items--item-actions">
                   <span className="cursor-pointer inline-flex items-center" onClick={() => removeItem(idx)}>

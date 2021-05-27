@@ -143,19 +143,19 @@ function TreeContent(props: Props) {
 
     return (
       <div className="data-tree-items--item mb-10" key={[nodePath, idx].join('--')} data-path={nodePath} data-idx={idx}
-           style={{
-             transform: `translateX(${level * 10}px)`,
-           }}>
+        style={{
+          transform: `translateX(${level * 10}px)`,
+        }}>
         <div className="flex items-center tree-row-item">
           <span className="inline-flex flex-1 flex-grow-0 mr-20">
                   Label: <Input type="text" size="small" value={label}
-                                onChange={(e, val) => handleChangeField(nodePath, 'label', val)} className="mr-10" />
+              onChange={(e, val) => handleChangeField(nodePath, 'label', val)} className="mr-10" />
                   Value: <Input type="text" size="small" value={value}
-                                onChange={(e, val) => handleChangeField(nodePath, 'value', val)} />
+              onChange={(e, val) => handleChangeField(nodePath, 'value', val)} />
           </span>
           <span className="data-tree-items--item-actions flex">
             <span className="cursor-pointer flex items-center mr-10"
-                  onClick={() => addSubNode(prefix, idx)}>
+              onClick={() => addSubNode(prefix, idx)}>
               <Icon name="add" /><span>子节点</span>
             </span>
             <span className="cursor-pointer flex items-center" onClick={() => removeItem(nodePath)}>
@@ -186,7 +186,7 @@ function TreeContent(props: Props) {
       </div>
       <div className="flex items-center mt-20">
         <Button forbidden={!!tree.items} iconName="add" className="btn--add mr-10"
-                onClick={() => setTree({ label: '', value: genId(), items: [] })}>数据项</Button>
+          onClick={() => setTree({ label: '', value: genId(), items: [] })}>数据项</Button>
         <Button iconName="done" modifier="primary" className="btn--add" onClick={handleSave}>保存</Button>
       </div>
     </div>

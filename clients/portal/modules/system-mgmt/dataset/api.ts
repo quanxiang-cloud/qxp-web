@@ -18,4 +18,4 @@ export const updateDataset = async (dataset: Dataset): Promise<{ id?: string }> 
 
 export const deleteDataset = async (id: string): Promise<{ id?: string }> => {
   return await httpClient('/api/v1/structor/dataset/m/delete', { id });
-}
+};

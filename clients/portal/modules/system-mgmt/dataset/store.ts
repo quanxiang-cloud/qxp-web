@@ -29,11 +29,15 @@ class DatasetStore {
   }
 
   @action
-  fetchAllNames = async () => {
+  fetchAllNames = async (params?: Record<string, string>) => {
     this.loadingNames = true;
     try {
-      const { list } = await apis.getDatasetNames();
+      const { list } = await apis.getDatasetNames(params);
       this.names = list;
+      // check first name
+      if (this.names.length) {
+        this.setActive(this.names[0].id);
+      }
     } catch (err) {
       toast.error(err.message);
     }
