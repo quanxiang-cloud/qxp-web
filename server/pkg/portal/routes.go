@@ -37,7 +37,8 @@ func GetRouter() http.Handler {
 
 	r.Headers("X-Proxy", "API").HandlerFunc(tokenRequired(handlers.ProxyAPIHandler))
 	r.Headers("X-Proxy", "API-NO-AUTH").HandlerFunc(handlers.ProxyAPIHandler)
-
+	r.Headers("X-Proxy", "FORM_DATA").HandlerFunc(handlers.FormDataHandler)
+	r.Headers("X-Proxy", "FORM_SCHEMA").HandlerFunc(handlers.FormSchemaHandler)
 	r.Path("/_otp").Methods("GET").HandlerFunc(tokenRequired((handlers.OTPHandler)))
 
 	r.Path("/login/{type}").Methods("GET").HandlerFunc(handlers.HandleLogin)
