@@ -65,6 +65,22 @@
         }
       }
 
+      .data-tree-items {
+        .tree-row-item {
+          input {
+            min-width: 80px;
+          }
+          &:hover {
+            .data-tree-items--item-actions {
+              visibility: visible;
+            }
+          }
+          .data-tree-items--item-actions {
+            visibility: hidden;
+          }
+        }
+      }
+
     }
   }
 }

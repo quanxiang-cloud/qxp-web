@@ -1,6 +1,6 @@
 type DatasetListType = 1;
-type DatasetHierachyType = 2;
-type DatasetType = DatasetListType | DatasetHierachyType;
+type DatasetTreeType = 2;
+type DatasetType = DatasetListType | DatasetTreeType;
 
 type Dataset = {
   id: string;

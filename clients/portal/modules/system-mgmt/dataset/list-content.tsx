@@ -22,7 +22,6 @@ function ListContent(props: Props) {
   };
   const removeItem = (idx: number) => {
     setStagingItems((prevItems) => {
-      // return prevItems.splice(idx, 1);
       return prevItems.filter((v, index) => index !== idx);
     });
   };
@@ -80,8 +79,10 @@ function ListContent(props: Props) {
                   Value: <Input type="text" size="small" value={value}
                     onChange={(e, val) => handleChangeField(idx, 'value', val)} />
                 </span>
-                <span className="data-list-items--item-actions inline-flex items-center">
-                  <Icon name="delete" className="cursor-pointer" onClick={() => removeItem(idx)} />
+                <span className="data-list-items--item-actions">
+                  <span className="cursor-pointer inline-flex items-center" onClick={() => removeItem(idx)}>
+                    <Icon name="delete" />删除
+                  </span>
                 </span>
               </div>
             );

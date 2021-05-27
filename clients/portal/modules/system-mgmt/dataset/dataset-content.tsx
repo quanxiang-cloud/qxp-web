@@ -30,9 +30,13 @@ function DatasetContent(props: Props) {
   };
 
   return (
-    <div className="dataset-content flex flex-1 flex-col py-20">
+    <div className="dataset-content flex flex-1 flex-col py-20 overflow-auto">
       <div className="dataset-content--title mb-20">
         数据集: {store.activeDataset?.name} (类型: {store.activeDataset?.type === 1 ? '数组' : '层级'})
+      </div>
+      <div>
+        <p>ID: <span className="text-gray-400">{store.activeDataset?.id}</span></p>
+        <p>Tag: <span className="text-gray-400">{store.activeDataset?.tag}</span></p>
       </div>
       <div className="dataset-content--datas mt-20 pr-20">
         {store.loadingDataset ? <Loading /> : renderContent()}
