@@ -94,7 +94,7 @@ function PageDataTable() {
         {/* {textBtnRender('导入', 'file_download')}
         {textBtnRender('导出', 'file_upload')} */}
       </div>
-      <div className='flex' style={{ maxHeight: `calc(100% - ${store.tableConfig.pageSize ? 100 : 48}px)` }}>
+      <div className='flex-1 overflow-hidden'>
         <Table
           showCheckbox
           emptyTips='暂无数据'

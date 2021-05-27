@@ -124,8 +124,10 @@ function FilterSetting() {
             checked={field.filter ? true : false}
             onChange={(e) => {
               handleChangeField(field.id,
-                e.target.checked ? { filter: true, option: { compareSymbol: '>' } } :
-                  { filter: false, option: {} }
+                e.target.checked ? {
+                  filter: true,
+                  option: { compareSymbol: field.type === 'number' ? 'gt' : '' },
+                } : { filter: false, option: {} }
               );
             }}
           />

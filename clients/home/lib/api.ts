@@ -11,7 +11,7 @@ export const fetchUserList = () => {
 export const fetchPageList = (appID: string) => {
   return request({
     method: 'post',
-    url: `/api/v1/structor/${appID}/menu/user/list`,
+    url: `/api/v1/structor/${appID}/home/menu/user/list`,
     data: { appID },
   });
 };
@@ -19,14 +19,14 @@ export const fetchPageList = (appID: string) => {
 export const fetchFormScheme = (appID: string, tableID: string) => {
   return request({
     method: 'post',
-    url: `/api/v1/structor/${appID}/schema/${tableID}`,
+    url: `/api/v1/structor/${appID}/home/schema/${tableID}`,
   });
 };
 
 export const formDataCurd = (appID: string, tableID: string, data: any) => {
   return request({
     method: 'post',
-    url: `/api/v1/structor/${appID}/form/${tableID}`,
+    url: `/api/v1/structor/${appID}/home/form/${tableID}`,
     data,
   });
 };

@@ -1,5 +1,4 @@
 import React, { useRef, cloneElement, isValidElement } from 'react';
-
 import { Placement } from '@popperjs/core';
 import Button from '../button';
 import Popper from '../popper';
@@ -35,9 +34,9 @@ function PopConfirm({
   onOk,
   cancelText = '取消',
   okText = '确定',
-}: Props) {
+}: Props ) {
   const popperRef = useRef<Popper>(null);
-  const reference = React.useRef<any>(null);
+  const reference = useRef<any>(null);
 
   const handleCancel = () => {
     onCancel && onCancel();
@@ -71,7 +70,7 @@ function PopConfirm({
         placement={placement || 'bottom-start'}
         modifiers={modifiers}
       >
-        <div className='pop-confirm-content'>
+        <div className="pop-confirm-content">
           {content}
           <div className='pop-confirm-content-btn-box'>
             <Button

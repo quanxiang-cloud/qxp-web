@@ -46,7 +46,7 @@ export default function ItemWithTitleDesc({
       >
         {title && <div className={twCascade(titleClassName)}>{title}</div>}
         {desc && (
-          <span className={twCascade('flex items-center', descClassName)}>{desc}</span>
+          <span className={twCascade('flex items-center leading-24', descClassName)}>{desc}</span>
         )}
       </div>
     </div>
