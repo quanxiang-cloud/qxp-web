@@ -16,7 +16,7 @@ import (
 const (
 	base = "/api/v1/structor/"
 	form = "/home/form/"
-	userSchema = "/m/schema/"
+	userSchema = "/home/schema/"
 	subForm = "/home/subForm/"
 	formSchema = "/m/table/getByID"
 	querySubTable = "/m/subTable/getByCondition"
@@ -141,10 +141,61 @@ func doUpdate(r *http.Request,in *input,p map[string]string)(int,interface{},err
 			if err != nil{
 				continue
 			}
+			var path = ""
 			if subTable.SubTableType == blankTable{
 				// 不校验权限
-				// path := fmt.Sprintf("%s%s%s%s",base,subTable.AppID,subForm,subTable.SubTableID)
-
+				path = fmt.Sprintf("%s%s%s%s",base,subTable.AppID,subForm,subTable.SubTableID)
+			}else {
+				path = fmt.Sprintf("%s%s%s%s",base,subTable.AppID,form,subTable.SubTableID)
+			}
+			if df.New != nil{
+				for i:=0;i< len(df.New); i++{
+					sn, err := json.Marshal(df.New[i])
+					if err != nil {
+						continue
+					}
+					_, _, err = sendRequest2Struct(r, "POST", path, sn)
+					if err != nil {
+						contexts.Logger.Errorf("failed to create table: %s subTable data response body, err: %s, request_id: %s",subTable.TableID, err.Error(), contexts.GetRequestID(r))
+					}
+				}
+			}
+			if df.Updated != nil{
+				for i:=0;i< len(df.Updated); i++{
+					su, err := json.Marshal(df.Updated[i])
+					if err != nil {
+						continue
+					}
+					_, _, err = sendRequest2Struct(r, "POST", path, su)
+					if err != nil {
+						contexts.Logger.Errorf("failed to update table: %s subTable data response body, err: %s, request_id: %s",subTable.TableID, err.Error(), contexts.GetRequestID(r))
+					}
+				}
+			}
+			if df.Deleted != nil{
+				v := make([]interface{},0,len(df.Deleted))
+				for i:=0;i< len(df.Deleted); i++{
+					v = append(v,df.Deleted[i])
+				}
+				con := Condition{
+					Key: "_id",
+					Op: "in",
+					Value: v,
+				}
+				in = &input{
+					Method: "delete",
+					Condition: []Condition{
+						con,
+					},
+				}
+				sd, err := json.Marshal(df.Deleted[i])
+				if err != nil {
+					continue
+				}
+				_, _, err = sendRequest2Struct(r, "POST", path, sd)
+				if err != nil {
+					contexts.Logger.Errorf("failed to delete table: %s subTable data response body, err: %s, request_id: %s",subTable.TableID, err.Error(), contexts.GetRequestID(r))
+				}
 			}
 		}
 	}

@@ -79,7 +79,7 @@ func FormSchemaHandler(w http.ResponseWriter, r *http.Request) {
 
 func schemaHandler(r *http.Request,sm *schema,path string) (int,interface{},error) {
 	if strings.HasSuffix(path,"/"){
-		path = path[:len(path)-1]
+		path = path[:len(path)-2]
 	}
 	paths := strings.Split(path,"/")
 	switch paths[len(paths)-1] {
@@ -250,7 +250,7 @@ func doFill(r *http.Request,vm map[string]interface{},tableID,fieldNme ,cate str
 				path := fmt.Sprintf("%s%s%s", base,cp.AppID,formSchema)
 				// 用户端，请求权限过滤后的schema
 				if cate == "user"{
-					path = fmt.Sprintf("%s%s%s",base,cp.AppID,cp.TableID)
+					path = fmt.Sprintf("%s%s%s%s",base,cp.AppID,userSchema,cp.TableID)
 				}
 				str, err := json.Marshal(&tb)
 				if err != nil {
