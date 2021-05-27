@@ -51,9 +51,18 @@ func FormSchemaHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Printf("proxy api request, method: %s, url: %s,request_id: %s ", method, url, requestID)
 
 	sm := &schema{}
-	if err = json.Unmarshal(body, sm); err != nil {
-		contexts.Logger.Error("Unmarshal err, %v\n", err)
-		return
+	if strings.HasSuffix(path,"/"){
+		path = path[:len(path)-2]
+	}
+	paths := strings.Split(path,"/")
+	if len(paths[len(paths)-1]) >= 32{
+		sm.TableID = paths[len(paths)-1]
+	}
+	if body != nil && len(body) > 0{
+		if err = json.Unmarshal(body, sm); err != nil {
+			contexts.Logger.Error("Unmarshal err, %v\n", err)
+			return
+		}
 	}
 
 	c,rest,err := schemaHandler(r,sm,path)
@@ -78,9 +87,6 @@ func FormSchemaHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func schemaHandler(r *http.Request,sm *schema,path string) (int,interface{},error) {
-	if strings.HasSuffix(path,"/"){
-		path = path[:len(path)-2]
-	}
 	paths := strings.Split(path,"/")
 	switch paths[len(paths)-1] {
 	case "create", "update" :
