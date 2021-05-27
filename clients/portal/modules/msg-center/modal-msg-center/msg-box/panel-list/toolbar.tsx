@@ -1,6 +1,5 @@
 import React, { useState, forwardRef, useImperativeHandle } from 'react';
-import { Checkbox } from '@QCFE/lego-ui';
-// import Checkbox from '@c/checkbox';
+import Checkbox from '@c/checkbox';
 import Button from '@c/button';
 
 import styles from '../index.module.scss';
