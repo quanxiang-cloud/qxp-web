@@ -23,7 +23,7 @@ export default function Index() {
       <Route exact path={`${path}/message`} component={Message} />
       <Route path={`${path}/message/send`} component={SendMessage} />
       <Route path={`${path}/message/details/:id`} component={MessageDetails} />
-      <Route path={`${path}/dataset`} component={Dataset} />
+      <Route path={`${path}/dataset/:dataId?`} component={Dataset} />
       <Redirect from={path} to={`${path}/message`} />
       <Route component={() => (<ErrorTips desc={'Menu page is not found'} />)} />
     </Switch>

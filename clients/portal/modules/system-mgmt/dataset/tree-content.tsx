@@ -85,7 +85,7 @@ function TreeContent(props: Props) {
     checkItem(tree);
 
     if (!valid) {
-      toast.error('label和value 不能为空');
+      toast.error('label不能为空');
       return;
     }
 
@@ -149,9 +149,11 @@ function TreeContent(props: Props) {
         <div className="flex items-center tree-row-item">
           <span className="inline-flex flex-1 flex-grow-0 mr-20">
                   Label: <Input type="text" size="small" value={label}
-              onChange={(e, val) => handleChangeField(nodePath, 'label', val)} className="mr-10" />
-                  Value: <Input type="text" size="small" value={value}
-              onChange={(e, val) => handleChangeField(nodePath, 'value', val)} />
+              onChange={(e, val) => handleChangeField(nodePath, 'label', val)} />
+            <span style={{ display: 'none' }}>
+                 Value: <Input type="text" size="small" value={value}
+                onChange={(e, val) => handleChangeField(nodePath, 'value', val)} />
+            </span>
           </span>
           <span className="data-tree-items--item-actions flex">
             <span className="cursor-pointer flex items-center mr-10"

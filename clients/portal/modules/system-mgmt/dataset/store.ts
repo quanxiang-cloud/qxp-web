@@ -34,10 +34,6 @@ class DatasetStore {
     try {
       const { list } = await apis.getDatasetNames(params);
       this.names = list;
-      // check first name
-      if (this.names.length) {
-        this.setActive(this.names[0].id);
-      }
     } catch (err) {
       toast.error(err.message);
     }
@@ -67,7 +63,11 @@ class DatasetStore {
 
   @action
   setActive = (id: string) => {
-    this.activeId = id;
+    if (!id && this.names.length) {
+      this.activeId = this.names[0].id;
+    } else {
+      this.activeId = id;
+    }
   }
 
   @action

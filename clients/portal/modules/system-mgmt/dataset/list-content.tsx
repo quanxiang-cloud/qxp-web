@@ -40,7 +40,7 @@ function ListContent(props: Props) {
   const handleSave = () => {
     // todo: validate
     if (stagingItems.some((v) => !v.label || !v.value)) {
-      toast.error('label和value不能为空');
+      toast.error('label不能为空');
       return;
     }
     // const values = stagingItems.map(({ value }) => value);
@@ -80,9 +80,11 @@ function ListContent(props: Props) {
               <div className="data-list-items--item flex items-center mb-10" key={idx}>
                 <span className="inline-flex flex-1 mr-20">
                   Label: <Input type="text" size="small" value={label}
-                    onChange={(e, val) => handleChangeField(idx, 'label', val)} className="mr-10" />
-                  Value: <Input type="text" size="small" value={value}
-                    onChange={(e, val) => handleChangeField(idx, 'value', val)} />
+                    onChange={(e, val) => handleChangeField(idx, 'label', val)} />
+                  <span style={{ display: 'none' }}>
+                    Value: <Input type="text" size="small" value={value}
+                      onChange={(e, val) => handleChangeField(idx, 'value', val)} />
+                  </span>
                 </span>
                 <span className="data-list-items--item-actions">
                   <span className="cursor-pointer inline-flex items-center" onClick={() => removeItem(idx)}>
@@ -97,7 +99,8 @@ function ListContent(props: Props) {
         )}
       </div>
       <div className="flex items-center mt-20">
-        <Button iconName="add" className="btn--add mr-10" onClick={() => addItem({ label: '', value: genId() })}>数据项</Button>
+        <Button iconName="add" className="btn--add mr-10"
+          onClick={() => addItem({ label: '', value: genId() })}>数据项</Button>
         <Button iconName="done" modifier="primary" className="btn--add" onClick={handleSave}>保存</Button>
       </div>
     </div>

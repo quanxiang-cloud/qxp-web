@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { observer } from 'mobx-react';
+import { useParams, useHistory } from 'react-router-dom';
 import { toJS } from 'mobx';
 import cs from 'classnames';
 import { Form } from '@QCFE/lego-ui';
@@ -28,9 +29,13 @@ function DatasetNames(props: Props) {
   const [addDataModal, setAddDataModal] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const formAddRef = useRef<Form>(null);
+  const history = useHistory();
+  const { dataId = '' } = useParams<{ dataId?: string }>();
 
   useEffect(() => {
-    store.fetchAllNames();
+    store.fetchAllNames().then(() => {
+      store.setActive(dataId);
+    });
     return store.reset;
   }, []);
 
@@ -62,7 +67,10 @@ function DatasetNames(props: Props) {
                   active: store.activeId === id,
                 })}
                 key={id}
-                onClick={() => store.setActive(id)}
+                onClick={() => {
+                  history.push(`/system/dataset/${id}`);
+                  store.setActive(id);
+                }}
               >
                 <Icon name="insert_drive_file" size={20} />
                 <span className="ml-10 flex-grow">{name}</span>
