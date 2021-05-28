@@ -48,7 +48,7 @@ export default function TreePickerField<T extends { id: string; }>({
 
   return (
     <div
-      className="flex flex-col items-center w-full"
+      className="flex flex-col items-center w-full mb-24"
       ref={domRef as LegacyRef<HTMLDivElement>}
     >
       <TreePicker<T>
