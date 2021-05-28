@@ -11,12 +11,14 @@ export type TabProps = {
 type Props = {
   activeTab: string;
   tabs: TabProps[];
-  onChange: (tab: string) => void
+  onChange: (tab: string) => void;
+  className?: string;
+  size?: 'small' | 'normal' | 'big';
 }
 
-function Tab({ activeTab, onChange, tabs }: Props) {
+function Tab({ activeTab, onChange, tabs, size = 'big', className = '' }: Props) {
   return (
-    <div className='qxp-tab-container'>
+    <div className={`qxp-tab-container qxp-tab-size-${size} ${className}`}>
       {tabs.map(({ label, key }) => (
         <div
           className={cs('qxp-tab-item', { 'qxp-tab-active': activeTab === key })}

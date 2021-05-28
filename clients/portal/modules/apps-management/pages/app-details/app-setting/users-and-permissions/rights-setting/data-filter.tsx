@@ -1,20 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, forwardRef, useImperativeHandle } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { isArray, uniqueId } from 'lodash';
 
 import Select from '@c/select';
 import FieldSwitch from '@portal/modules/apps-management/components/field-switch';
 import Icon from '@c/icon';
-import Button from '@c/button';
 import formFieldWrap from '@portal/modules/apps-management/components/form-field-wrap';
-import toast from '@lib/toast';
-import { fetchDataAccessPer, saveDataAccessPer } from '../../api';
-
-import { getFilterField } from '../../utils';
-import store from '../../store';
 
 type Props = {
-  rightsID: string;
+  fields: Fields[];
+  baseConditions: Condition[];
+  initTag?: string;
+  className?: string;
 }
 
 type FieldCondition = {
@@ -22,7 +19,7 @@ type FieldCondition = {
   key?: string;
   value?: any;
   op?: string;
-  filtrate?: FilterField;
+  filtrate?: any;
 }
 
 const CONDITION = [{
@@ -86,43 +83,44 @@ function getOperators(type: string) {
 const FormFieldSwitch = formFieldWrap({ FieldFC: FieldSwitch });
 const FormFieldSelect = formFieldWrap({ FieldFC: Select });
 
-export default function DataPermission({ rightsID }: Props) {
+function DataFilter({ fields, className = '', baseConditions, initTag = 'and' }: Props, ref: React.Ref<any>) {
   const [conditions, setConditions] = useState<FieldCondition[]>([]);
-  const [tag, setTag] = useState('and');
-  const { handleSubmit, control, setValue, formState: { errors } } = useForm();
+  const [tag, setTag] = useState(initTag);
+  const { trigger, control, setValue, getValues, formState: { errors } } = useForm();
 
-  const fieldList = store.fieldList.map((field) => getFilterField(field));
+  const fieldList = fields.map((field) => field);
+
+  useImperativeHandle(ref, () => ({
+    getDataPer: getDataPer,
+  }));
 
   useEffect(() => {
-    fetchDataAccessPer(store.appID, rightsID).then((res) => {
-      if (!res.data) {
-        return;
+    if (!baseConditions) {
+      return;
+    }
+
+    const conditionsTmp: FieldCondition[] = [];
+    baseConditions.forEach((condition: Condition) => {
+      const filtrate: any = fieldList.find(({ id }) => {
+        return id === condition.key;
+      });
+
+      if (filtrate) {
+        conditionsTmp.push({
+          id: uniqueId(),
+          op: condition.op,
+          value: filtrate.multiple ? condition.value : (condition as any).value[0],
+          key: condition.key,
+          filtrate,
+        });
       }
-      setConditions(
-        res.data.conditions.map((condition: FieldCondition) => {
-          const filtrate: FilterField | undefined = fieldList.find(({ id }) => {
-            return id === condition.key;
-          });
-
-          if (!filtrate) {
-            return {};
-          }
-
-          return {
-            id: uniqueId(),
-            op: condition.op,
-            value: filtrate.multiple ? condition.value : condition.value[0],
-            key: condition.key,
-            filtrate,
-          };
-        })
-      );
     });
-  }, []);
+    setConditions(conditionsTmp);
+  }, [baseConditions]);
 
   const fieldOption = fieldList.map((field) => ({
     value: field.id,
-    label: field.label,
+    label: field.title,
   }));
 
   const handleFieldChange = (rowID: string, field: string) => {
@@ -144,39 +142,51 @@ export default function DataPermission({ rightsID }: Props) {
     setConditions(conditions.filter(({ id }) => _id !== id));
   };
 
-  const handleSave = (formData: any) => {
-    const _conditions = conditions.map((condition) => {
-      let value = formData[`condition-${condition.id}`];
-      switch (condition.filtrate?.type) {
-      case 'date':
-        value = isArray(value) ? value.map((date: string) => {
-          return new Date(date).getTime();
-        }) : [new Date(value).getTime()];
-        break;
-      case 'number':
-        value = isArray(value) ? value.map((_value) => Number(_value)) : [Number(value)];
-        break;
-      default:
-        value = isArray(value) ? value : [value];
-        break;
+  const getDataPer = () => {
+    if (conditions.length === 0) {
+      return Promise.resolve({ arr: [], tag });
+    }
+
+    return trigger().then((flag) => {
+      if (flag) {
+        const formData = getValues();
+        const _conditions = conditions.map((condition) => {
+          let value = formData[`condition-${condition.id}`];
+          switch (condition.filtrate?.type) {
+          case 'date':
+            value = isArray(value) ? value.map((date: string) => {
+              return new Date(date).getTime();
+            }) : [new Date(value).getTime()];
+            break;
+          case 'number':
+            value = isArray(value) ? value.map((_value) => Number(_value)) : [Number(value)];
+            break;
+          default:
+            value = isArray(value) ? value : [value];
+            break;
+          }
+
+          return {
+            key: formData[`field-${condition.id}`],
+            op: formData[`operators-${condition.id}`],
+            value,
+          };
+        });
+
+        return {
+          arr: _conditions,
+          tag,
+        };
       }
 
-      return {
-        key: formData[`field-${condition.id}`],
-        op: formData[`operators-${condition.id}`],
-        value,
-      };
-    });
-
-    saveDataAccessPer(store.appID, { perGroupID: rightsID, tag, conditions: _conditions }).then(() => {
-      toast.success('保存成功！');
+      return 'notPass';
     });
   };
 
   return (
-    <div>
+    <div className={className}>
       <div className='flex items-center'>
-        筛选出符合以下
+        满足以下
         <Select
           className='mx-4'
           value={tag}
@@ -197,7 +207,7 @@ export default function DataPermission({ rightsID }: Props) {
                 render={({ field }) => {
                   return (
                     <FormFieldSelect
-                      style={{ width: '288px' }}
+                      style={{ width: '250px' }}
                       error={errors['field-' + condition.id]}
                       register={{ name: field.name, ref: field.ref, value: field.value }}
                       options={fieldOption}
@@ -221,7 +231,7 @@ export default function DataPermission({ rightsID }: Props) {
                     rules={{ required: true }}
                     render={({ field }) => (
                       <FormFieldSelect
-                        style={{ width: '120px' }}
+                        style={{ width: '100px' }}
                         error={errors['operators-' + condition.id]}
                         register={field}
                         options={getOperators((condition.filtrate as FilterField).type)}
@@ -242,7 +252,7 @@ export default function DataPermission({ rightsID }: Props) {
                         error={errors['condition-' + condition.id]}
                         register={{ ...field, value: field.value ? field.value : '' }}
                         filtrate={condition.filtrate}
-                        style={{ width: '420px' }}
+                        style={{ width: '300px' }}
                       />
                     )
                     }
@@ -263,14 +273,8 @@ export default function DataPermission({ rightsID }: Props) {
       <div className='mt-24'>
         <span onClick={addCondition} className='text-icon-btn'><Icon name='add' /> 添加筛选条件</span>
       </div>
-      <div className='mt-20'>
-        <Button
-          modifier='primary'
-          onClick={handleSubmit(handleSave)}
-        >
-          保存
-        </Button>
-      </div>
     </div>
   );
 }
+
+export default forwardRef(DataFilter);

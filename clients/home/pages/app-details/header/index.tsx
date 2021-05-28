@@ -4,6 +4,7 @@ import { useHistory, useParams } from 'react-router-dom';
 
 import HeaderNav from '@c/header-nav';
 import toast from '@lib/toast';
+import Select from '@c/select';
 import AppsSwitcher from '@c/apps-switcher';
 
 import { fetchUserList } from '../../../lib/api';
@@ -13,6 +14,12 @@ function DetailsHeader() {
   const history = useHistory();
   const [appList, setAppList] = useState([]);
   const { appID } = useParams<{ appID: string}>();
+  const options = [
+    {
+      label: '应用管理员',
+      value: 'admin',
+    },
+  ];
 
   useEffect(() => {
     fetchUserList().then((res) => {
@@ -41,6 +48,9 @@ function DetailsHeader() {
           currentAppID={appID}
           onChange={handleChange}
         />
+      </div>
+      <div>
+        <Select className='w-144' options={options} />
       </div>
     </div>
   );

@@ -1,11 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useImperativeHandle, forwardRef } from 'react';
 
 import CheckBox from '@c/checkbox';
-import Button from '@c/button';
-import { fetchOperatePer, saveOperatePer } from '../../api';
-import toast from '@lib/toast';
-
-import store from '../../store';
 
 type CardProps = {
   rightsCardData: {
@@ -21,7 +16,8 @@ type CardProps = {
 }
 
 type Props = {
-  rightsID: string;
+  className?: string;
+  authorized: number;
 }
 
 const RIGHTS = [
@@ -33,8 +29,8 @@ const RIGHTS = [
       { label: '新建', value: 'add' },
       { label: '修改', value: 'edit' },
       { label: '删除', value: 'del' },
-      { label: '导入', value: 'import' },
-      { label: '导出', value: 'export' },
+      // { label: '导入', value: 'import' },
+      // { label: '导出', value: 'export' },
     ],
   },
   // {
@@ -78,11 +74,18 @@ function RightsCard({ rightsCardData, onChange, selectNumber }: CardProps) {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newSelected = [...selected];
     if (e.target.checked) {
+      if (Number(e.target.value) !== 0) {
+        newSelected[0] = 1;
+      }
       newSelected[Number(e.target.value)] = 1;
       setSelected(newSelected);
     } else {
-      newSelected[Number(e.target.value)] = 0;
-      setSelected(newSelected);
+      if (Number(e.target.value) === 0) {
+        setSelected(newSelected.map(() => 0));
+      } else {
+        newSelected[Number(e.target.value)] = 0;
+        setSelected(newSelected);
+      }
     }
   };
 
@@ -122,20 +125,12 @@ function RightsCard({ rightsCardData, onChange, selectNumber }: CardProps) {
   );
 }
 
-export default function Authorized({ rightsID }: Props) {
-  const [actionNumber, setActionNumber] = useState<number>(0);
-  const [loading, setLoading] = useState(true);
+function Authorized({ className = '', authorized = 0 }: Props, ref: React.Ref<any>) {
+  const [actionNumber, setActionNumber] = useState<number>(authorized);
 
-  useEffect(() => {
-    fetchOperatePer(store.appID, rightsID).then((res) => {
-      if (res.data) {
-        setActionNumber(res.data.authority);
-      }
-      setLoading(false);
-    }).catch(() => {
-      setLoading(false);
-    });
-  }, [rightsID]);
+  useImperativeHandle(ref, () => ({
+    getAuthorizedPer: () => actionNumber,
+  }));
 
   const handleChange = (selected: number, key: string) => {
     switch (key) {
@@ -145,18 +140,8 @@ export default function Authorized({ rightsID }: Props) {
     }
   };
 
-  const handleSave = () => {
-    saveOperatePer(store.appID, { perGroupID: rightsID, authority: actionNumber }).then(() => {
-      toast.success('保存成功！');
-    });
-  };
-
-  if (loading) {
-    return null;
-  }
-
   return (
-    <>
+    <div className={className}>
       {RIGHTS.map((rightsCardData) => {
         return (
           <RightsCard
@@ -167,9 +152,8 @@ export default function Authorized({ rightsID }: Props) {
           />
         );
       })}
-      <div>
-        <Button onClick={handleSave} modifier='primary'>保存</Button>
-      </div>
-    </>
+    </div>
   );
 }
+
+export default forwardRef(Authorized);

@@ -78,7 +78,7 @@ type PageInfo = {
 }
 
 type AppParams = {
-  appId: string
+  appID: string
 }
 
 type FormDesignParams = {
@@ -105,3 +105,5 @@ type DeptAndUser = {
   id: string;
   name: string;
 }
+
+type Fields = ISchema & { id: string };

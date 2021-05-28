@@ -3,20 +3,20 @@ import Modal from '@c/modal';
 
 import BasicInfoForm from './rights-setting/basic-info-form';
 
-import store from '../store';
+import store from './store';
 
 type Props = {
-  onCancel: () => void
+  onCancel: () => void;
 }
 
 function CreateRightModal({ onCancel }: Props) {
   const [loading, setLoading] = useState(false);
   const formRef = useRef<any>();
 
-  const onSubmit = () => {
+  const handleSubmit = () => {
     formRef.current?.handleSubmit((rights: RightsCreate) => {
       setLoading(true);
-      store.addRight(rights).then(() => {
+      store.addRightsGroup(rights).then(() => {
         setLoading(false);
         onCancel();
       }).catch(() => {
@@ -43,7 +43,7 @@ function CreateRightModal({ onCancel }: Props) {
           iconName: 'check',
           loading: loading,
           modifier: 'primary',
-          onClick: onSubmit,
+          onClick: handleSubmit,
         },
       ]}
     >
