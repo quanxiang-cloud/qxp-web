@@ -21,7 +21,7 @@ function Avatar({ name, link }: Props) {
     );
   }
 
-  const firstLetter = (name || '')[0];
+  const firstLetter = (name || '').substring(0, 1);
   return (
     <div
       className="inline-flex justify-center items-center rounded-4 rounded-tr-none w-24 h-24 text-white text-lg"
