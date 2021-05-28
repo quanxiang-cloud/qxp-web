@@ -13,6 +13,8 @@ export type FormItem = {
 
 type Props = {
   schema: FormBuilder.Schema;
+  appID: string;
+  pageID: string;
 }
 
 const INTERNAL_FIELDS: Array<FormItem> = [
