@@ -22,7 +22,7 @@ export default function GlobalConfig() {
 
   const saver = useSave(appID, id);
   useEffect(() => {
-    if (!changedRef.current?.key || !id || !name || !triggerMode) {
+    if (!changedRef.current?.key || !name || !triggerMode) {
       return;
     }
     saver({
