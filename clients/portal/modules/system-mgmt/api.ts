@@ -9,6 +9,14 @@ type QueryFilter={
   key_word?: string
 }
 
+type LogQueryFilter = {
+  userName?: string;
+  operationTimeBegin?: number;
+  operationTimeEnd?: number;
+  page?: number;
+  size?: number;
+}
+
 // 发送消息和在草稿基础上，更新消息
 export const createMsg = async (msgData: Qxp.NewMsgData)=> {
   return await httpClient('/api/v1/message/manager/create', msgData);
@@ -29,4 +37,9 @@ export const getMsgById = async (id: string): Promise<Qxp.NewMsgData>=> {
 export const getMsgList = async (filter: QueryFilter)=> {
   // todo fix any type
   return await httpClient<any>('/api/v1/message/manager/getMesList', filter);
+};
+
+// 查询审计日志列表
+export const getLogList = async (filter: LogQueryFilter)=> {
+  return await httpClient<any>('/api/v1/audit/search', filter);
 };

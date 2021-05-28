@@ -3,7 +3,7 @@ import msgMgmt from '@portal/stores/msg-mgmt';
 import { useQuery } from 'react-query';
 import { getMsgList } from '@portal/modules/system-mgmt/api';
 
-export const useInitData = () => {
+export const useMsgInitData = () => {
   const {
     keyword,
     pageParams,

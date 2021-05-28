@@ -101,8 +101,10 @@ export default observer(function EmployeeOrDepartmentPicker({
                   onChange={(value) => store.setUsernameKeyword(value)}
                   appendix="close"
                 />
-                <div className="flex flex-row mr-4" style={{ height: 'calc(100% - 65px)' }}>
-                  <div className="w-221 h-full flex flex-col overflow-hidden mr-20">
+                <div className="flex flex-row mr-4"
+                  style={{ height: 'calc(100% - 65px)' }}>
+                  <div
+                    className="w-221 h-full flex flex-col overflow-hidden mr-20 border-r-2 border-gray-200">
                     <TextHeader
                       className="mb-8 pb-0"
                       title="选择部门"
