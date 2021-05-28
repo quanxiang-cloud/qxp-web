@@ -6,7 +6,7 @@ import PageLoad from '@c/page-loading';
 
 import FormBuild from './form-build';
 import PageSetting from './page-setting';
-import PublishForm from './publish-form';
+// import PublishForm from './publish-form';
 import FormDesignHeader from './header';
 import NoSchema from './no-schema';
 import store from './store';
@@ -41,9 +41,9 @@ function FormDesign() {
       return <PageSetting />;
     }
 
-    if (pageType === 'publishForm') {
-      return <PublishForm />;
-    }
+    // if (pageType === 'publishForm') {
+    //   return <PublishForm />;
+    // }
   };
 
   return (
