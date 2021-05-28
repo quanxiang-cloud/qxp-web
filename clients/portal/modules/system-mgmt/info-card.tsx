@@ -11,6 +11,12 @@ const InfoCard = () => {
       name: '消息管理',
       url: '/system/message',
     },
+    {
+      id: 'dataset',
+      icon: 'article',
+      name: '数据集',
+      url: '/system/dataset',
+    },
   ];
   return (
     <div className="w-316 bg-white rounded-12 mr-20">
