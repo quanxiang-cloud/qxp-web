@@ -11,6 +11,7 @@ import { getQuery } from '@lib/utils';
 
 import AppPagesTree from './app-pages-tree';
 import EditGroupModal from './edit-group-modal';
+import AddGroupPoper from './add-group-poper';
 import EditPageModal from './edit-page-modal';
 import DelModal from './del-modal';
 import appPagesStore from '../store';
@@ -47,8 +48,9 @@ function PageNav() {
   }
 
   function handleEditPage(pageInfo: PageInfo) {
-    appPagesStore.editPage(pageInfo).then(() => {
+    appPagesStore.editPage(pageInfo).then((id) => {
       closeModal();
+      history.push(`/apps/details/${appID}?pageID=${id}`);
     });
   }
 
@@ -72,7 +74,7 @@ function PageNav() {
 
   return (
     <div className='app-details-nav'>
-      <div className='flex flex-end px-16 py-20'>
+      <div className='flex flex-end px-16 py-20 justify-center'>
         <span className='text-h6-bold text-gray-400 mr-auto'>导航</span>
         <Tooltip content='添加页面'>
           <Icon
@@ -83,11 +85,9 @@ function PageNav() {
           />
         </Tooltip>
         <Tooltip content='添加分组'>
-          <Icon
-            onClick={() => setModalType('editGroup')}
-            className='app-page-add-group'
-            size={20}
-            name='create_new_folder'
+          <AddGroupPoper
+            id={curEditNode?.id as string}
+            onSubmit={handleEditGroup}
           />
         </Tooltip>
       </div>

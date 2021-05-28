@@ -31,6 +31,7 @@ interface Window {
   USER_ADMIN_ROLES: Role[];
   ADMIN_USER_FUNC_TAGS: string[];
   CONFIG: { [key: string]: any; }
+  SIDE: 'portal' | 'home';
   [key: string]: any;
 }
 

@@ -3,8 +3,6 @@ import { useParams, useLocation } from 'react-router-dom';
 
 import SideNavCard from '@c/side-nav-card';
 
-import ForEmployee from './for-employee';
-
 function PublishForm() {
   const { navType } = useParams<FormDesignParams>();
   const location = useLocation();
@@ -27,7 +25,6 @@ function PublishForm() {
     <div className="app-entry-container flex-1 w-full px-58">
       <SideNavCard className='w-316' menuData={MENU} />
       <div className="app-right-box bg-white">
-        {navType === 'forEmployee' && <ForEmployee />}
       </div>
     </div>
   );

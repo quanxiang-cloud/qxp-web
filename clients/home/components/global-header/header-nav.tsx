@@ -7,21 +7,13 @@ import Icon from '@c/icon';
 export default function HeaderLeft() {
   const location = useLocation();
 
-  function className(condition: boolean) {
-    if (condition) {
-      return {
-        'bg-blue-100': condition,
-      };
-    }
-  }
-
   function style(condition: boolean) {
     if (condition) {
       return {
-        color: 'var(--blue-600)',
+        color: 'var(--gray-600)',
       };
     }
-    return {};
+    return { color: 'var(--gray-400)' };
   }
 
   const isHome = location.pathname === '/';
@@ -32,19 +24,18 @@ export default function HeaderLeft() {
         to="/"
         className={twCascade(
           'header-nav-btn group mr-20',
-          className(isHome)
         )}
       >
         <div className="header-nav-btn-icon-wrapper">
           <Icon
-            name="home"
-            className="group-hover:text-blue-600 header-nav-btn-icon"
+            name="home_add_task"
+            className="group-hover:text-gray-600 header-nav-btn-icon"
             size={20}
             style={style(isHome)}
           />
         </div>
         <span
-          className="header-nav-btn-text group-hover:text-blue-600"
+          className="header-nav-btn-text group-hover:text-gray-600"
           style={style(isHome)}
         >
           工作台

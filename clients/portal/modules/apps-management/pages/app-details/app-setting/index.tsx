@@ -9,6 +9,7 @@ import Breadcrumb from '@c/breadcrumb';
 import AppIcon from '@c/app-icon';
 import Icon from '@c/icon';
 
+import UsersAndPermissions from './users-and-permissions';
 import AppInfo from './app-info';
 import AppAdmin from './app-admin';
 import appDetailsStore from '../store';
@@ -47,6 +48,13 @@ function AppSetting() {
       name: '工作流',
       url: `/apps/details/${appID}/setting/workflows`,
     },
+    {
+      id: 'usersAndPermissions',
+      icon: 'group',
+      replace: true,
+      name: '用户及权限',
+      url: `/apps/details/${appID}/setting/usersAndPermissions`,
+    },
   ];
 
   return (
@@ -83,6 +91,11 @@ function AppSetting() {
             <Route exact path="/apps/details/:appID/setting/info" component={AppInfo} />
             <Route exact path="/apps/details/:appID/setting/adminUsers" component={AppAdmin} />
             <Route path="/apps/details/:appID/setting/workflows" component={workflows} />
+            <Route
+              exact
+              path="/apps/details/:appID/setting/usersAndPermissions"
+              component={UsersAndPermissions}
+            />
           </Switch>
         </div>
       </div>

@@ -34,7 +34,7 @@ export const fetchPageList = (appID: string) => {
 
 export const createPage = (data: PageInfo) => {
   return request({
-    url: `/api/v1/structor/${data.appID}/menu/create`,
+    url: `/api/v1/structor/${data.appID}/m/menu/create`,
     method: 'post',
     data,
   });
@@ -42,7 +42,7 @@ export const createPage = (data: PageInfo) => {
 
 export const updatePageOrGroup = (data: PageInfo) => {
   return request({
-    url: `/api/v1/structor/${data.appID}/menu/update`,
+    url: `/api/v1/structor/${data.appID}/m/menu/update`,
     method: 'post',
     data,
   });
@@ -50,7 +50,7 @@ export const updatePageOrGroup = (data: PageInfo) => {
 
 export const createGroup = (data: any) => {
   return request({
-    url: `/api/v1/structor/${data.appID}/group/create`,
+    url: `/api/v1/structor/${data.appID}/m/group/create`,
     method: 'post',
     data,
   });
@@ -58,7 +58,7 @@ export const createGroup = (data: any) => {
 
 export const deleteGroup = (data: any) => {
   return request({
-    url: `/api/v1/structor/${data.appID}/group/delete`,
+    url: `/api/v1/structor/${data.appID}/m/group/delete`,
     method: 'post',
     data,
   });
@@ -66,7 +66,7 @@ export const deleteGroup = (data: any) => {
 
 export const deletePage = (data: any) => {
   return request({
-    url: `/api/v1/structor/${data.appID}/menu/delete`,
+    url: `/api/v1/structor/${data.appID}/m/menu/delete`,
     method: 'post',
     data,
   });
@@ -115,7 +115,7 @@ export type MovePageParams = {
 }
 export const movePage = (data: MovePageParams) => {
   return request({
-    url: `/api/v1/structor/${data.appID}/menu/transfer`,
+    url: `/api/v1/structor/${data.appID}/m/menu/transfer`,
     method: 'post',
     data,
   });
@@ -123,7 +123,7 @@ export const movePage = (data: MovePageParams) => {
 
 export const fetchGroupList = (appID: string) => {
   return request({
-    url: `/api/v1/structor/${appID}/group/list`,
+    url: `/api/v1/structor/${appID}/m/group/list`,
     method: 'post',
     data: { appID },
   });

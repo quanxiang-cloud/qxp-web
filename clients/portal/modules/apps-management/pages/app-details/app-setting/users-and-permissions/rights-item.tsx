@@ -5,12 +5,11 @@ import Drawer from '@c/drawer';
 import EmployeeOrDepartmentPickerModal from '@c/employee-or-department-picker';
 
 import RightSetting from './rights-setting';
-import store from '../store';
 import './index.scss';
 
 type Props = {
   rights: Rights;
-  actions: (key: string, rights: Rights) => void
+  actions: (key: string, rights: Rights) => void | Promise<boolean | void>;
 }
 
 type UserOrDept = {
@@ -66,7 +65,7 @@ function RightsItem({ rights, actions }: Props) {
         name: employee.ownerName,
       });
     });
-    return store.updatePerGroup({ id: rights.id, scopes });
+    return actions('update', { id: rights.id, scopes }) as Promise<boolean | void>;
   };
 
   return (
@@ -74,11 +73,7 @@ function RightsItem({ rights, actions }: Props) {
       <div className='pb-form-right-title'>
         <span className='text-h5 mr-8'>{rights.name}</span>
         <span className='text-caption-no-color text-gray-600'>{rights.description}</span>
-        <span className='text-caption-no-color bg-red-50 text-red-600 mx-8 px-6'>
-          优先级：{rights.sequence}
-        </span>
         <p className='pb-form-right-action flex gap-x-16'>
-          <Icon className='cursor-grab rights-group-handle' name='drag_indicator' />
           <span onClick={() => setModalType('setting')}>修改</span>
           <span className='text-red-400' onClick={() => actions('del', rights)}>删除</span>
         </p>

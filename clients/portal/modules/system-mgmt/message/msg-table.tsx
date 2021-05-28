@@ -295,7 +295,7 @@ const MsgTable = ({ refresh }: Props) => {
                   [styles.msg_type_tip_notice]: sort == MsgType.notify,
                 })
             }>{(EnumMessage.find((itm) => itm.value == sort) || {}).label}</span>)}
-          <span className={styles.msg_title} title={title}>{title}</span>
+          <span className={cs('message_name', styles.msg_title)} title={title}>{title}</span>
         </div>)} />);
       },
     },
@@ -412,7 +412,7 @@ const MsgTable = ({ refresh }: Props) => {
     <>
       <div className={cs('w-full', styles.tableWrap)}>
         <Table
-          className='text-14 table-full'
+          className={cs('massage_table text-14 table-full', styles.massage_table)}
           data={msgList}
           // @ts-ignore
           columns={cols}

@@ -13,6 +13,8 @@ export type FormItem = {
 
 type Props = {
   schema: FormBuilder.Schema;
+  appID: string;
+  pageID: string;
 }
 
 const INTERNAL_FIELDS: Array<FormItem> = [
@@ -89,6 +91,8 @@ function schemaToFields({ properties }: FormBuilder.Schema): [Array<FormItem>, A
 }
 
 export default class FormBuilderStore {
+  appID: string;
+  pageID: string;
   internalFields: Array<FormItem>;
   @observable fields: Array<FormItem>;
   @observable activeFieldName = '';
@@ -97,10 +101,13 @@ export default class FormBuilderStore {
   @observable visibleHiddenLinkages: FormBuilder.VisibleHiddenLinkage[] = [];
   @observable hasEdit = false;
 
-  constructor({ schema }: Props) {
+  constructor({ schema, appID, pageID }: Props) {
     const [internalFields, fields] = schemaToFields(schema);
     this.internalFields = internalFields;
     this.fields = fields;
+
+    this.appID = appID;
+    this.pageID = pageID;
 
     this.visibleHiddenLinkages = schema['x-internal']?.visibleHiddenLinkages || [];
     this.columnsCount = schema['x-internal']?.columns || 1;

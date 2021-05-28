@@ -1,0 +1,22 @@
+.message-detail-footer {
+  color: var(--gray-400);
+  font-size: 12px;
+  line-height: 20px;
+  padding-top: 24px;
+  padding-bottom: 65px;
+  border-top: 1px dashed var(--gray-300);
+
+  li {
+    margin: 4px 0;
+
+    > span {
+      margin-left: 4px;
+    }
+  }
+}
+
+.massage_table {
+  tr:hover .message_name {
+    color: var(--blue-600);
+  }
+}

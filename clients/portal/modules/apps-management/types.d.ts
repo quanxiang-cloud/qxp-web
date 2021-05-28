@@ -50,6 +50,7 @@ type FilterField = {
   label: string;
   type: string,
   placeholder: string;
+  cProps: Record<string, any>
   multiple?: boolean;
   compareSymbol?: string;
   step?: number;
@@ -77,7 +78,7 @@ type PageInfo = {
 }
 
 type AppParams = {
-  appId: string
+  appID: string
 }
 
 type FormDesignParams = {
@@ -104,3 +105,5 @@ type DeptAndUser = {
   id: string;
   name: string;
 }
+
+type Fields = ISchema & { id: string };

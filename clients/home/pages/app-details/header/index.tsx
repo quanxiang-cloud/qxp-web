@@ -4,6 +4,7 @@ import { useHistory, useParams } from 'react-router-dom';
 
 import HeaderNav from '@c/header-nav';
 import toast from '@lib/toast';
+import Select from '@c/select';
 import AppsSwitcher from '@c/apps-switcher';
 
 import { fetchUserList } from '../../../lib/api';
@@ -13,6 +14,12 @@ function DetailsHeader() {
   const history = useHistory();
   const [appList, setAppList] = useState([]);
   const { appID } = useParams<{ appID: string}>();
+  const options = [
+    {
+      label: '应用管理员',
+      value: 'admin',
+    },
+  ];
 
   useEffect(() => {
     fetchUserList().then((res) => {
@@ -33,7 +40,7 @@ function DetailsHeader() {
   return (
     <div className="app-global-header app-details-header">
       <div className='flex items-center'>
-        <HeaderNav {...{ name: '工作台', icon: 'home', inside: true, url: '/' }} />
+        <HeaderNav {...{ name: '工作台', icon: 'home_add_task', inside: true, url: '/' }} />
         <span className='mr-16 ml-8'>/</span>
         <AppsSwitcher
           hiddenStatus={true}
@@ -41,6 +48,9 @@ function DetailsHeader() {
           currentAppID={appID}
           onChange={handleChange}
         />
+      </div>
+      <div>
+        <Select className='w-144' options={options} />
       </div>
     </div>
   );

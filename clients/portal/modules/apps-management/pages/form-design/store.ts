@@ -8,11 +8,6 @@ import {
   fetchFormScheme,
   updateFormScheme,
   createPageScheme,
-  createPerGroup,
-  fetchRights,
-  deleteRights,
-  movePerGroup,
-  updatePerGroup,
 } from './api';
 import AppPageDataStore from '@c/form-app-data-table/store';
 import { PageTableShowRule, Scheme, setFixedParameters } from '@c/form-app-data-table/utils';
@@ -35,9 +30,7 @@ class FormDesignStore {
   @observable hasSchema = false;
   @observable pageTableConfig: Record<string, any> = {};
   @observable pageTableShowRule: PageTableShowRule = {};
-  @observable rightsList: Rights[] = [];
   @observable allFiltrate: PageField[] = [];
-  @observable rightsLoading = false;
 
   @computed get fieldList(): PageField[] {
     const fieldsMap: any = this.formStore?.schema?.properties || {};
@@ -61,7 +54,7 @@ class FormDesignStore {
       return { pageID: this.pageID, appID: this.appID };
     }, this.fetchFormScheme);
 
-    this.destroySetAllFiltrate = reaction(() => this.fieldList.length, () => {
+    this.destroySetAllFiltrate = reaction(() => this.fieldList, () => {
       if (!this.formStore) {
         return;
       }
@@ -108,32 +101,6 @@ class FormDesignStore {
   }
 
   @action
-  addRight = (rights: RightsCreate) => {
-    const _rights = {
-      ...rights,
-      sequence: this.rightsList.length,
-      formID: this.pageID,
-      appID: this.appID,
-    };
-    return createPerGroup(this.appID, _rights).then((res) => {
-      this.rightsList = [...this.rightsList, { ..._rights, ...res.data }];
-    });
-  }
-
-  @action
-  deleteRight = (id: string) => {
-    const delAfter = this.rightsList.filter((rights) => id !== rights.id);
-    deleteRights(this.appID, {
-      id, moveArr: delAfter.map((AFrights, sequence) => {
-        return { id: AFrights.id, sequence };
-      }),
-    }).then(() => {
-      toast.success('删除成功!');
-      this.rightsList = delAfter;
-    });
-  }
-
-  @action
   setPageID = (pageID: string) => {
     this.pageID = pageID;
   }
@@ -163,7 +130,7 @@ class FormDesignStore {
 
   @action
   reSetFormScheme = () => {
-    this.formStore = new FormStore({ schema: this.initScheme });
+    this.formStore = new FormStore({ schema: this.initScheme, appID: this.appID, pageID: this.pageID });
   }
 
   @action
@@ -177,7 +144,7 @@ class FormDesignStore {
       const { schema = {}, config } = res.data || {};
       this.hasSchema = res.data ? true : false;
       this.initScheme = schema;
-      this.formStore = new FormStore({ schema });
+      this.formStore = new FormStore({ schema, appID, pageID });
       if (config) {
         this.pageTableConfig = config.pageTableConfig || {};
         this.allFiltrate = config.filtrate || [];
@@ -225,52 +192,6 @@ class FormDesignStore {
     }).then(() => {
       toast.success('保存成功!');
     });
-  }
-
-  @action
-  fetchRights = () => {
-    this.rightsLoading = true;
-    fetchRights(this.appID, this.pageID).then((res) => {
-      this.rightsList = res.data.list;
-      this.rightsLoading = false;
-    }).catch(() => {
-      this.rightsLoading = false;
-    });
-  }
-
-  @action
-  updatePerGroup = (rights: Rights) => {
-    return updatePerGroup(this.appID, rights).then(() => {
-      this.rightsList = this.rightsList.map((_rights) => {
-        if (rights.id === _rights.id) {
-          return { ..._rights, ...rights };
-        }
-        return _rights;
-      });
-      toast.success('修改成功！');
-      return true;
-    });
-  }
-
-  @action
-  rightsGroupSort = (rightsIdList: string[]) => {
-    const newRightsList: Rights[] = [];
-    movePerGroup(this.appID, {
-      moveArr: rightsIdList.map((id, index) => {
-        const rights = this.rightsList.find((_rights) => _rights.id === id);
-        if (rights) {
-          newRightsList.push({
-            ...rights,
-            sequence: index,
-          });
-        }
-        return {
-          id,
-          sequence: index,
-        };
-      }),
-    });
-    this.rightsList = newRightsList;
   }
 }
 

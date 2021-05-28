@@ -102,11 +102,11 @@ const schema: ISchema = {
               value: 'customized',
             },
             {
-              label: '数据联动',
+              label: '关联已有数据',
               value: 'linkage',
             },
             {
-              label: '自定义公式',
+              label: '通过公式计算',
               value: 'formula',
             },
           ],

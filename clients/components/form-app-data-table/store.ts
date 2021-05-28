@@ -100,7 +100,8 @@ class AppPageDataStore {
 
   @action
   delFormData = (ids: string[]) => {
-    return httpClient(`/api/v1/structor/${this.appID}/form/${this.pageID}`, {
+    return httpClient(`/api/v1/structor/${this.appID}/` +
+      `${window.SIDE === 'portal' ? 'm' : 'home'}/form/${this.pageID}`, {
       method: 'delete',
       condition: [{ key: '_id', op: ids.length > 1 ? 'in' : 'eq', value: ids }],
     }).then(() => {
@@ -115,7 +116,8 @@ class AppPageDataStore {
       return;
     }
     this.listLoading = true;
-    httpClient(`/api/v1/structor/${this.appID}/form/${this.pageID}`, {
+    const side = window.SIDE === 'portal' ? 'm' : 'home';
+    httpClient(`/api/v1/structor/${this.appID}/${side}/form/${this.pageID}`, {
       method: 'find',
       page: 1,
       condition: [],
@@ -132,7 +134,8 @@ class AppPageDataStore {
 
   @action
   fetchFormDataDetails = (dataID: string) => {
-    return httpClient(`/api/v1/structor/${this.appID}/form/${this.pageID}`, {
+    const side = window.SIDE === 'portal' ? 'm' : 'home';
+    return httpClient(`/api/v1/structor/${this.appID}/${side}/form/${this.pageID}`, {
       method: 'findOne',
       condition: [
         {
@@ -149,8 +152,9 @@ class AppPageDataStore {
     if (!this.pageID) {
       return;
     }
+    const side = window.SIDE === 'portal' ? 'm' : 'home';
     httpClient(
-      `/api/v1/structor/${this.appID}/m/permission/operatePer/getByScopeID`,
+      `/api/v1/structor/${this.appID}/${side}/permission/operatePer/getByScopeID`,
       { formID: this.pageID }
     ).then((res: any) => {
       this.authority = res?.authority || 0;
