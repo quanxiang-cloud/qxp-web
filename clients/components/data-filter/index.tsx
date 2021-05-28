@@ -32,6 +32,7 @@ export type ConditionItemMap = {
 export type RefProps = {
   getDataPer: () => Promise<ConditionItemMap | string>;
   empty: () => void;
+  getDataValues: () => ConditionItemMap
 }
 
 const CONDITION = [{
@@ -92,6 +93,29 @@ function getOperators(type: string) {
   }
 }
 
+function getCondition(formData: any, condition: FieldCondition) {
+  let value = formData[`condition-${condition.id}`];
+  switch (condition.filtrate?.type) {
+  case 'date':
+    value = isArray(value) ? value.map((date: string) => {
+      return new Date(date).getTime();
+    }) : [new Date(value).getTime()];
+    break;
+  case 'number':
+    value = isArray(value) ? value.map((_value) => Number(_value)) : [Number(value)];
+    break;
+  default:
+    value = isArray(value) ? value : [value];
+    break;
+  }
+
+  return {
+    key: formData[`field-${condition.id}`],
+    op: formData[`operators-${condition.id}`],
+    value,
+  };
+}
+
 const FormFieldSwitch = formFieldWrap({ FieldFC: FieldSwitch });
 const FormFieldSelect = formFieldWrap({ FieldFC: Select });
 
@@ -104,6 +128,7 @@ function DataFilter({ fields, className = '', baseConditions, initTag = 'and' }:
 
   useImperativeHandle(ref, () => ({
     getDataPer: getDataPer,
+    getDataValues: getDataValues,
     empty: () => setConditions([]),
   }));
 
@@ -155,6 +180,29 @@ function DataFilter({ fields, className = '', baseConditions, initTag = 'and' }:
     setConditions(conditions.filter(({ id }) => _id !== id));
   };
 
+  const getDataValues = () => {
+    if (conditions.length === 0) {
+      return { arr: [], tag };
+    }
+
+    const formData = getValues();
+    const _conditions: Condition[] = [];
+    conditions.forEach((condition) => {
+      if (
+        formData[`field-${condition.id}`] &&
+        formData[`operators-${condition.id}`] &&
+        formData[`condition-${condition.id}`]
+      ) {
+        _conditions.push(getCondition(formData, condition));
+      }
+    });
+
+    return {
+      arr: _conditions,
+      tag,
+    };
+  };
+
   const getDataPer = () => {
     if (conditions.length === 0) {
       return Promise.resolve({ arr: [], tag });
@@ -164,26 +212,7 @@ function DataFilter({ fields, className = '', baseConditions, initTag = 'and' }:
       if (flag) {
         const formData = getValues();
         const _conditions = conditions.map((condition) => {
-          let value = formData[`condition-${condition.id}`];
-          switch (condition.filtrate?.type) {
-          case 'date':
-            value = isArray(value) ? value.map((date: string) => {
-              return new Date(date).getTime();
-            }) : [new Date(value).getTime()];
-            break;
-          case 'number':
-            value = isArray(value) ? value.map((_value) => Number(_value)) : [Number(value)];
-            break;
-          default:
-            value = isArray(value) ? value : [value];
-            break;
-          }
-
-          return {
-            key: formData[`field-${condition.id}`],
-            op: formData[`operators-${condition.id}`],
-            value,
-          };
+          return getCondition(formData, condition);
         });
 
         return {

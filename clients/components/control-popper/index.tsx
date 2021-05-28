@@ -2,6 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { createPopper, Instance, Placement, Modifier } from '@popperjs/core';
 
+import './index.scss';
+
 export type TriggerMethod = 'click' | 'hover' | 'focus' | 'forever';
 
 type Theme = 'light' | 'dark';
@@ -10,7 +12,7 @@ type Props = {
   reference: React.RefObject<Element>;
   children: React.ReactNode;
   visible: boolean;
-  onVisibilityChange?: (visible: boolean) => void;
+  onClose: () => void;
   enableArrow?: boolean;
   placement?: Placement;
   modifiers?: Array<Partial<Modifier<any, any>>>;
@@ -32,9 +34,13 @@ export default class ControlPopper extends React.Component<Props> {
   constructor(props: Props) {
     super(props);
 
-    const { theme = 'light' } = props;
+    const { theme = 'light', visible } = props;
 
-    this.popperContainer.classList.add('popper-container', `popper-container--${theme}`);
+    this.popperContainer.classList.add(
+      'popper-container',
+      `popper-container--${theme}`,
+      visible ? '' : 'qxp-popper-hidden'
+    );
 
     if (props.enableArrow) {
       const arrowEle = document.createElement('div');
@@ -47,9 +53,15 @@ export default class ControlPopper extends React.Component<Props> {
     this.createPopperInstance();
   }
 
-  componentDidUpdate(prevProps: Props) {
-    if (prevProps.visible !== this.props.visible) {
-      this.createPopperInstance();
+  componentDidUpdate(preProps: Props) {
+    if (preProps.visible === this.props.visible) {
+      return;
+    }
+
+    if (this.props.visible) {
+      this.popperContainer.classList.remove('qxp-popper-hidden');
+    } else {
+      this.popperContainer.classList.add('qxp-popper-hidden');
     }
   }
 
@@ -72,28 +84,14 @@ export default class ControlPopper extends React.Component<Props> {
     document.body.appendChild(this.popperContainer);
   }
 
-  // close popper when click outside of target or popper content
-  // onDocumentClick = (e: MouseEvent): boolean => {
-  //   if (!this.props.reference.current ||
-  //     this.popperContainer.contains(e.target as Node) ||
-  //     this.props.reference.current.contains(e.target as Node) ||
-  //     this.props.reference.current === e.target) {
-  //     return true;
-  //   }
-
-  //   this.close();
-
-  //   return true;
-  // }
-
   cleanUp(): void {
     this.instance?.destroy();
     this.popperContainer.remove();
   }
 
   render(): React.ReactPortal | null {
-    if (!this.props.reference.current || !this.props.visible) {
-      // this.cleanUp();
+    if (!this.props.reference.current) {
+      this.cleanUp();
       return null;
     }
 

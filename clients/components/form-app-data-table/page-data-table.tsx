@@ -96,9 +96,9 @@ function PageDataTable() {
           {/* {textBtnRender('导入', 'file_download')}
         {textBtnRender('导出', 'file_upload')} */}
         </div>
-        <AdvancedQuery fields={store.fields} />
+        <AdvancedQuery fields={store.fields} search={store.setParams} />
       </div>
-      <div className='flex-1 overflow-hidden'>
+      <div className='flex flex-1 overflow-hidden'>
         <Table
           showCheckbox
           emptyTips='暂无数据'

@@ -14,32 +14,39 @@ const modifiers = [
   },
 ];
 
-function AdvancedQuery({ fields }:any) {
+function AdvancedQuery({ fields, search }: any) {
   const [visible, setVisible] = useState(false);
+  const [condition, setCondition] = useState<Condition[]>([]);
   const popperRef = useRef<any>();
   const reference = useRef<any>();
   const dataFilterRef = useRef<RefProps>();
 
-  const optionsVisibilityChange = (visible: boolean) => {
-    console.log('visible: ', visible);
-  };
-
   const handleEmpty = () => {
     dataFilterRef.current?.empty();
+    setCondition([]);
+    search({ tag: 'and', condition: [] });
+    setVisible(false);
   };
 
   const handleSearch = () => {
-    dataFilterRef.current?.getDataPer().then((data)=>{
-      console.log('data: ', data);
-    });
+    if (!dataFilterRef.current) {
+      return;
+    }
+
+    const { arr, tag } = dataFilterRef.current.getDataValues();
+    if (arr.length) {
+      setCondition(arr);
+      search({ tag, condition: arr });
+      setVisible(false);
+    }
   };
 
   return (
     <>
       <Icon
         clickable
-        changeable
         onClick={() => setVisible(!visible)}
+        type={condition.length ? 'primary' : 'dark'}
         ref={reference}
         size={30}
         name='filter_alt'
@@ -48,9 +55,9 @@ function AdvancedQuery({ fields }:any) {
         visible={visible}
         ref={popperRef}
         reference={reference}
-        placement="bottom-start"
+        placement="auto-start"
         modifiers={modifiers}
-        onVisibilityChange={optionsVisibilityChange}
+        onClose={() => setVisible(false)}
       >
         <div className='advanced-query-container'>
           <DataFilter ref={dataFilterRef} fields={fields} />
