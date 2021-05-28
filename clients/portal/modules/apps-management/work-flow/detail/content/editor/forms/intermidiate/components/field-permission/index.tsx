@@ -15,6 +15,8 @@ import type {
 import CustomFieldTable from './custom-field-table';
 import SystemFieldTable from './system-field-table';
 
+import './style.scss';
+
 interface Props {
   value: FieldPermission;
   onChange: (value: Partial<BusinessData>) => void;

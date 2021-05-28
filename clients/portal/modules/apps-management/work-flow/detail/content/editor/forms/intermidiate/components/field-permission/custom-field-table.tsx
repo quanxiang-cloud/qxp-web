@@ -119,6 +119,10 @@ export default function CustomFieldTable({
 
   function getValueCell(model: any, key: 'initialValue' | 'submitValue', editable: boolean) {
     if (editable) {
+      const schema = schemaMap[model.cell.row.id];
+      if (schema['x-mega-props']) {
+        schema['x-mega-props'].labelAlign = 'top';
+      }
       return (
         <FieldValueEditor
           variableOptions={variableOptions}
@@ -127,7 +131,7 @@ export default function CustomFieldTable({
             title: '',
             type: 'object',
             properties: {
-              [model.cell.row.id]: schemaMap[model.cell.row.id],
+              [model.cell.row.id]: schema,
             },
           }}
           onSave={(value: FieldValue) => {
