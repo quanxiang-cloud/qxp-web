@@ -12,6 +12,12 @@ const InfoCard = () => {
       url: '/system/message',
     },
     {
+      id: 'log',
+      icon: 'assignment',
+      name: '系统日志',
+      url: '/system/log',
+    },
+    {
       id: 'dataset',
       icon: 'article',
       name: '数据集',

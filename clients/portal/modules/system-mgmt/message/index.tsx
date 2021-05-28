@@ -10,7 +10,7 @@ import { usePortalGlobalValue } from '@portal/states_to_be_delete/portal';
 import Container from '../container';
 import MsgTable from './msg-table';
 import Authorized from '@c/authorized';
-import { useInitData } from '../hooks';
+import { useMsgInitData } from '../hooks';
 
 import styles from './index.module.scss';
 
@@ -49,7 +49,7 @@ const MessagesPage = () => {
     document.title = '系统管理 - 消息管理';
   }, []);
 
-  const [refresh] = useInitData();
+  const [refresh] = useMsgInitData();
 
   const [_, searchValueChange] = useDebounceState(inputValue, 500, (newValue) => {
     setInputValue(newValue);
