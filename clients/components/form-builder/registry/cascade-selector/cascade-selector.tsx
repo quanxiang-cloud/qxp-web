@@ -11,16 +11,16 @@ import { datasetRecord } from './mock-dataset';
 
 interface Props {
   predefinedDataset?: string;
-  valueSource: 'customized' | 'predefined-dataset';
+  defaultValueFrom: 'customized' | 'predefined-dataset';
   options: CascaderOptionType[];
 }
 
-function useFetchOptions({ options, valueSource, predefinedDataset }: Props) {
+function useFetchOptions({ options, defaultValueFrom, predefinedDataset }: Props) {
   const [preparedOptions, setOptions] = useState(options || []);
-  useEffect(() => setOptions(options), [options, valueSource]);
+  useEffect(() => setOptions(options), [options, defaultValueFrom]);
 
-  const { data, isLoading, isError } = useQuery([valueSource, predefinedDataset], () => {
-    if (valueSource === 'customized' || !predefinedDataset) {
+  const { data, isLoading, isError } = useQuery([defaultValueFrom, predefinedDataset], () => {
+    if (defaultValueFrom === 'customized' || !predefinedDataset) {
       return options;
     }
 
@@ -43,8 +43,8 @@ function useFetchOptions({ options, valueSource, predefinedDataset }: Props) {
 
 function CascadeSelector(props: ISchemaFieldComponentProps): JSX.Element {
   const cascadeProps = props.props['x-component-props'];
-  const { predefinedDataset, valueSource } = props.props['x-internal'];
-  const options = useFetchOptions({ predefinedDataset, valueSource, options: cascadeProps.options });
+  const { predefinedDataset, defaultValueFrom } = props.props['x-internal'];
+  const options = useFetchOptions({ predefinedDataset, defaultValueFrom, options: cascadeProps.options });
 
   function handleChange(_value: CascaderValueType, selected?: CascaderOptionType[]) {
     const valueToSave = (selected || []).map(({ value }) => value).join('/');

@@ -4,10 +4,10 @@ import { observer } from 'mobx-react';
 
 import Icon from '@c/icon';
 
+import { INTERNAL_FIELD_NAMES } from '../../store';
 import { StoreContext } from '../../context';
 import VisibleHiddenLinkageConfig from './visible-hidden-linkage-config';
-import { INTERNAL_FIELD_NAMES } from '../../store';
-import { toJS } from 'mobx';
+import ValidationRules from './validation-rules';
 
 type RenderLayoutOptionProps = {
   labelAlign: 'right' | 'top';
@@ -161,10 +161,17 @@ function FormConfig(): JSX.Element {
               setLinkageConfigVisible(true);
             }}
           />
-          <div className='page-setting-filter' onClick={() => setLinkageConfigVisible(true)}>
+          <div className='page-setting-filter' onClick={() => {
+            setEditingLinkage('');
+            setLinkageConfigVisible(true);
+          }}>
             <Icon className='mr-8' name='add' size={20} />
             显隐规则
           </div>
+        </div>
+        <div className="pb-24">
+          <div className="item-title">表单提交验证规则</div>
+          <ValidationRules />
         </div>
         {/* <div className="pb-24">
           <div className="item-title">
@@ -180,7 +187,7 @@ function FormConfig(): JSX.Element {
       {isLinkageConfigVisible && (
         <VisibleHiddenLinkageConfig
           linkageKey={editingLinkage}
-          sourceSchema={toJS(store.schema)}
+          mode={editingLinkage === '' ? '新增' : '编辑'}
           onSubmit={(linkage) => {
             store.handleLinkageChange(linkage);
             setLinkageConfigVisible(false);

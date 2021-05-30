@@ -9,13 +9,16 @@ export function generateRandomFormFieldID(): string {
 
 export function wrapSchemaByMegaLayout(schema: ISchema): ISchema {
   const properties = get(schema, 'properties', {});
-  const xInternal = get(schema, 'x-internal', {});
+  const xInternal = get(schema, 'x-internal', { });
   const labelAlign = get(xInternal, 'labelAlign', 'right');
   // const columnsCount = get(xInternal, 'columns', 1);
 
   return {
     type: 'object',
-    'x-internal': xInternal,
+    'x-internal': {
+      ...xInternal,
+      defaultValueFrom: 'customized',
+    },
     properties: {
       FIELDs: {
         properties,

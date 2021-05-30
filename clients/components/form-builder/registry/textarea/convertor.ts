@@ -6,7 +6,7 @@ export interface TextareaConfig {
   sortable: boolean;
   valueFormat: 'phone' | 'post_code' | 'mobile_phone' | 'id_number' | 'email' | string;
   required: boolean;
-  valueSource: FormBuilder.ValueSource;
+  defaultValueFrom: FormBuilder.DefaultValueFrom;
   defaultValue: string;
 }
 
@@ -18,7 +18,7 @@ export const defaultConfig: TextareaConfig = {
   sortable: false,
   valueFormat: '',
   required: false,
-  valueSource: 'customized',
+  defaultValueFrom: 'customized',
   defaultValue: '',
 };
 
@@ -38,7 +38,7 @@ export function toSchema(value: TextareaConfig): FormBuilder.Schema {
     },
     ['x-internal']: {
       sortable: value.sortable,
-      valueSource: value.valueSource,
+      defaultValueFrom: value.defaultValueFrom,
       permission: 3,
     },
   };
@@ -62,6 +62,6 @@ export function toConfig(schema: FormBuilder.Schema): TextareaConfig {
     valueFormat: schema.format || '',
     required: !!schema.required,
     // todo implement this
-    valueSource: 'customized',
+    defaultValueFrom: 'customized',
   };
 }
