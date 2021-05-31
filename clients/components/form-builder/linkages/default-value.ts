@@ -38,7 +38,7 @@ function fetchLinkedTableData$(
   });
 
   const params: FetchLinkedTableDataParams = {
-    sort: linkage.linkedTableSortRules,
+    sort: (linkage.linkedTableSortRules || []).filter(Boolean),
     tag: linkage.ruleJoinOperator === 'every' ? 'and' : 'or',
     condition: conditions,
   };
@@ -93,7 +93,6 @@ function shouldFireEffect({ linkage, linkedRow, getFieldValue }: ShouldFireEffec
   if (!linkedRow) {
     return false;
   }
-
   const pairs = linkage.rules.map((rule) => {
     return {
       operator: rule.compareOperator,
