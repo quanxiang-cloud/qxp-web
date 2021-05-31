@@ -8,6 +8,8 @@ export interface NumberPickerConfig {
   precision: number;
   required: boolean;
   defaultValueFrom: FormBuilder.DefaultValueFrom;
+  defaultValue?: string;
+  defaultValueLinkage?: FormBuilder.DefaultValueLinkage;
   minimum: number | undefined;
   maximum: number | undefined;
 }
@@ -50,7 +52,8 @@ export function toSchema(value: NumberPickerConfig): FormBuilder.Schema {
     ['x-internal']: {
       sortable: value.sortable,
       permission: 3,
-      defaultValueFrom: 'customized',
+      defaultValueFrom: value.defaultValueFrom,
+      defaultValueLinkage: value.defaultValueLinkage,
     },
     ['minimum']: value.minimum,
     ['maximum']: value.maximum,
@@ -74,6 +77,7 @@ export function toConfig(schema: FormBuilder.Schema): NumberPickerConfig {
     precision: schema['x-component-props']?.precision,
     required: !!schema.required,
     defaultValueFrom: 'customized',
+    defaultValueLinkage: schema['x-internal']?.defaultValueLinkage,
     minimum: undefined,
     maximum: undefined,
   };
