@@ -1,103 +1,31 @@
 import React, { useContext, useEffect, useState } from 'react';
-import styled from 'styled-components';
+import { useParams } from 'react-router';
 import { toJS } from 'mobx';
 import { pick } from 'lodash';
 import {
-  FormSlot,
   SchemaForm,
-  SchemaField,
   SchemaMarkupField as Field,
   FormButtonGroup,
   createFormActions,
   FormEffectHooks,
-  ISchemaFieldComponentProps,
-  Schema,
 } from '@formily/antd';
-import { toArr, FormPath } from '@formily/shared';
-import { ArrayList } from '@formily/react-shared-components';
+import { FormPath } from '@formily/shared';
 import {
   Input, Select as AntdSelect, DatePicker, NumberPicker, Switch, FormItemGrid, Radio,
 } from '@formily/antd-components';
 
 import Modal from '@c/modal';
-import Icon from '@c/icon';
 import Button from '@c/button';
-import Select from '@c/select';
 
-import { INTERNAL_FIELD_NAMES } from '../../store';
-import { OPERATORS } from '../consts';
-import { operatorOption } from '../utils';
 import { StoreContext } from '@c/form-builder/context';
-import httpClient from '@lib/http-client';
-import logger from '@lib/logger';
-import { useParams } from 'react-router';
 
-type AppPage = {
-  id: string;
-  name: string;
-  child?: AppPage[];
-}
-
-function convertPagesToOptions(
-  appPages: AppPage[],
-  options: Array<{ label: string; value: string }>
-): Array<{ label: string; value: string }> {
-  appPages.forEach(({ id, name, child }) => {
-    options.push({ label: name, value: id });
-    if (Array.isArray(child)) {
-      convertPagesToOptions(child, options);
-    }
-  });
-
-  return options;
-}
-
-function getLinkageTables(appID: string): Promise<Array<{ label: string; value: string }>> {
-  return httpClient<{ menu: AppPage[] }>(
-    `/api/v1/structor/${appID}/${window.SIDE === 'portal' ? 'm' : 'home'}/menu/list`,
-    { appID }
-  ).then((res) => {
-    if (!res.menu || !res.menu.length) {
-      return [];
-    }
-
-    const appPages = res.menu;
-    return convertPagesToOptions(appPages, []);
-  }).catch((err) => {
-    logger.error(err);
-    return [];
-  });
-}
-
-function getTableSchema({ appID, tableID }: { appID: string; tableID: string }): Promise<ISchema> {
-  return httpClient<{ schema: ISchema }>(
-    `/api/v1/structor/${appID}/m/table/getByID`,
-    { tableID },
-  ).then(({ schema }) => {
-    return schema;
-  }).catch((err) => {
-    logger.error(err);
-    return {};
-  });
-}
+import { INTERNAL_FIELD_NAMES } from '../../../store';
+import { OPERATORS } from '../../consts';
+import { operatorOption } from '../../utils';
+import { ArrayCustom, JoinOperatorSelect } from './customized-fields';
+import { getLinkageTables, getTableSchema } from './get-tables';
 
 const { onFieldInputChange$ } = FormEffectHooks;
-const RowStyleLayout = styled.div`
-  .ant-btn {
-    margin-right: 16px;
-  }
-  .ant-form-item {
-    display: inline-flex;
-    margin-right: 16px;
-    margin-bottom: 16px;
-  }
-
-  > .ant-form-item {
-    margin-bottom: 0;
-    margin-right: 0;
-  }
-`;
-
 const COMPONENTS = {
   ArrayCustom,
   Input,
@@ -127,51 +55,6 @@ const DEFAULT_VALUE_LINKAGE: FormBuilder.DefaultValueLinkage = {
   }],
 };
 
-function ArrayCustom(props: ISchemaFieldComponentProps): JSX.Element {
-  const { value, path, mutators, schema } = props;
-  const onAdd = () => {
-    if (!schema.items) {
-      return;
-    }
-    mutators.push((schema.items as Schema).getEmptyValue());
-  };
-  const onRemove = (index: number) => mutators.remove(index);
-
-  return (
-    <ArrayList value={value}>
-      {toArr(value).map((item, index) => (
-        <RowStyleLayout key={index}>
-          <SchemaField path={FormPath.parse(path).concat(index)} />
-          <Icon clickable changeable name="delete" onClick={() => onRemove(index)} size={32} />
-        </RowStyleLayout>
-      ))}
-      <Button onClick={onAdd}>新增条件</Button>
-    </ArrayList>
-  );
-}
-
-ArrayCustom.isFieldComponent = true;
-
-function JoinOperatorSelect(props: ISchemaFieldComponentProps): JSX.Element {
-  return (
-    <div className="flex items-center">
-      满足以下
-      <Select
-        className='mx-4 w-40'
-        value={props.value}
-        onChange={(value: string) => props.mutators.change(value)}
-        options={[
-          { label: '所有', value: 'every' },
-          { label: '任一', value: 'some' },
-        ]}
-      />
-      条件时:
-    </div>
-  );
-}
-
-JoinOperatorSelect.isFieldComponent = true;
-
 type Option = {
   label: string;
   value: string;
@@ -200,7 +83,6 @@ function LinkageConfig({ onClose, onSubmit }: Props): JSX.Element {
     });
   }, []);
 
-  const { setFieldState, getFieldValue } = createFormActions();
   const fieldSchema = toJS(store.schema.properties || {});
 
   const currentFormFields = Object.keys(fieldSchema)
@@ -235,6 +117,8 @@ function LinkageConfig({ onClose, onSubmit }: Props): JSX.Element {
   }
 
   function formModelEffect() {
+    const { setFieldState, getFieldValue } = createFormActions();
+
     onFieldInputChange$('linkedTableID').subscribe(({ value }) => {
       getTableSchema({ appID: store.appID, tableID: value }).then((schema) => {
         const fields = Object.entries(schema.properties || {}).filter(([key, value]) => {
@@ -354,11 +238,9 @@ function LinkageConfig({ onClose, onSubmit }: Props): JSX.Element {
           default={defaultValue.linkedTable.id}
           enum={linkageTables}
         />
-        <FormSlot>
-          <h5 style={{ marginBottom: '16px' }}>取值规则</h5>
-        </FormSlot>
         <FormItemGrid gutter={20}>
           <Field
+            title="取值规则"
             name="linkField"
             x-component="AntdSelect"
             enum={linkedTableFields.map(({ label, value }) => ({ label, value }))}
@@ -367,14 +249,10 @@ function LinkageConfig({ onClose, onSubmit }: Props): JSX.Element {
             name="sortDesce"
             x-component="RadioGroup"
             default={false}
-            enum={[{
-              label: '升序',
-              value: false,
-            },
-            {
-              label: '降序',
-              value: true,
-            }]}
+            enum={[
+              { label: '升序', value: false },
+              { label: '降序', value: true },
+            ]}
           />
         </FormItemGrid>
         <Field
