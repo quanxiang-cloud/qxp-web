@@ -254,12 +254,6 @@ export default function EditEmployeesModal(
               name="leaderName "
               value={leader.userName}
               placeholder="直属上级姓名"
-              schemas={[
-                {
-                  rule: { required: true },
-                  help: '直属上级姓名',
-                },
-              ]}
             />
             <Button
               modifier="primary"
