@@ -70,8 +70,8 @@ class AppListStore {
   @action
   fetchAppList = (params: Params) => {
     this.isListLoading = true;
-    return fetchAppList(params).then((res) => {
-      this.appList = res.data?.data || [];
+    return fetchAppList(params).then((res: any) => {
+      this.appList = res?.data || [];
       if (params.useStatus === 0 && params.appName === '') {
         this.allAppList = this.appList;
       }
@@ -88,15 +88,15 @@ class AppListStore {
 
   @action
   createdApp = (appInfo: AppInfo) => {
-    return createdApp(appInfo).then((res) => {
-      const newApp = { ...appInfo, ...res.data };
+    return createdApp(appInfo).then((res: any) => {
+      const newApp = { ...appInfo, ...res };
       this.appList = [newApp, ...this.appList];
       this.allAppList = [newApp, ...this.allAppList];
       createPage({
         describe: '补充说明信息。',
         icon: 'event_available',
         name: '示例页面',
-        appID: res.data.id, id: '',
+        appID: res.id, id: '',
       });
       return newApp.id;
     });

@@ -1,97 +1,53 @@
-import request from '@portal/modules/apps-management/lib/request';
 import httpClient from '@lib/http-client';
 
-export const createPerGroup = (appID: string, data: RightsCreate) => {
-  return request({
-    url: `/api/v1/structor/${appID}/m/permission/perGroup/create`,
-    method: 'post',
-    data,
-  });
+export const createPerGroup = async (appID: string, data: RightsCreate) => {
+  return await await httpClient(`/api/v1/structor/${appID}/m/permission/perGroup/create`, data);
 };
 
-export const fetchRights = (appID: string) => {
-  return request({
-    url: `/api/v1/structor/${appID}/m/permission/perGroup/getList`,
-    method: 'post',
-  });
+export const fetchRights = async (appID: string) => {
+  return await httpClient(`/api/v1/structor/${appID}/m/permission/perGroup/getList`, {});
 };
 
-export const deleteRights = (appID: string, data: any) => {
-  return request({
-    url: `/api/v1/structor/${appID}/m/permission/perGroup/delete`,
-    method: 'post',
-    data,
-  });
+export const deleteRights = async (appID: string, data: any) => {
+  return await httpClient(`/api/v1/structor/${appID}/m/permission/perGroup/delete`, data);
 };
 
-export const movePerGroup = (appID: string, data: any) => {
-  return request({
-    url: `/api/v1/structor/${appID}/m/permission/perGroup/move`,
-    method: 'post',
-    data,
-  });
+export const movePerGroup = async (appID: string, data: any) => {
+  return await httpClient(`/api/v1/structor/${appID}/m/permission/perGroup/move`, data);
 };
 
-export const updatePerGroup = (appID: string, data: Rights) => {
-  return request({
-    url: `/api/v1/structor/${appID}/m/permission/perGroup/update`,
-    method: 'post',
-    data,
-  });
+export const updatePerGroup = async (appID: string, data: any) => {
+  return await httpClient(`/api/v1/structor/${appID}/m/permission/perGroup/update`, data);
 };
 
-export const fetchOperatePer = (appID: string, perGroupID: string) => {
-  return request({
-    url: `/api/v1/structor/${appID}/m/permission/operatePer/get`,
-    method: 'post',
-    data: { perGroupID },
-  });
+export const fetchOperatePer = async (appID: string, perGroupID: string) => {
+  return await httpClient(`/api/v1/structor/${appID}/m/permission/operatePer/get`, { perGroupID });
 };
 
-export const saveOperatePer = (appID: string, data: any) => {
-  return request({
-    url: `/api/v1/structor/${appID}/m/permission/operatePer/save`,
-    method: 'post',
-    data,
-  });
+export const saveOperatePer = async (appID: string, data: any) => {
+  return await httpClient(`/api/v1/structor/${appID}/m/permission/operatePer/save`, data);
 };
 
-export const fetchDataAccessPer = (appID: string, perGroupID: string) => {
-  return request({
-    url: `/api/v1/structor/${appID}/m/permission/dataAccessPer/get`,
-    method: 'post',
-    data: { perGroupID },
-  });
+export const fetchDataAccessPer = async (appID: string, perGroupID: string) => {
+  return await httpClient(`/api/v1/structor/${appID}/m/permission/dataAccessPer/get`, { perGroupID });
 };
 
-export const saveDataAccessPer = (appID: string, data: any) => {
-  return request({
-    url: `/api/v1/structor/${appID}/m/permission/dataAccessPer/save`,
-    method: 'post',
-    data,
-  });
+export const saveDataAccessPer = async (appID: string, data: any) => {
+  return await httpClient(`/api/v1/structor/${appID}/m/permission/dataAccessPer/save`, data);
 };
 
-export const fetchFieldFilter = (appID: string, permissionGroupID: string) => {
-  return request({
-    url: `/api/v1/structor/${appID}/m/filter/get`,
-    method: 'post',
-    data: { permissionGroupID },
-  });
+export const fetchFieldFilter = async (appID: string, permissionGroupID: string) => {
+  return await httpClient(`/api/v1/structor/${appID}/m/filter/get`, { permissionGroupID });
 };
 
-export const saveFieldFilter = (appID: string, data: any) => {
-  return request({
-    url: `/api/v1/structor/${appID}/m/filter/save`,
-    method: 'post',
-    data,
-  });
+export const saveFieldFilter = async (appID: string, data: any) => {
+  return await httpClient(`/api/v1/structor/${appID}/m/filter/save`, data);
 };
 
 // 0.4
 
-export const fetchPerGroupForm = (appID: string, perGroupID: string) => {
-  return httpClient(`/api/v1/structor/${appID}/m/permission/perGroup/getForm`, { perGroupID });
+export const fetchPerGroupForm = async (appID: string, perGroupID: string) => {
+  return await httpClient(`/api/v1/structor/${appID}/m/permission/perGroup/getForm`, { perGroupID });
 };
 
 type PerDataReq = {
@@ -99,8 +55,8 @@ type PerDataReq = {
   perGroupID: string;
 }
 
-export const fetchPerData = (appID: string, data: PerDataReq) => {
-  return httpClient(`/api/v1/structor/${appID}/m/permission/perGroup/getPerData`, data);
+export const fetchPerData = async (appID: string, data: PerDataReq) => {
+  return await httpClient(`/api/v1/structor/${appID}/m/permission/perGroup/getPerData`, data);
 };
 
 type PerData = {
@@ -111,11 +67,11 @@ type PerData = {
   conditions: Condition[];
 }
 
-export const savePer = (appID: string, data: PerData) => {
-  return httpClient(`/api/v1/structor/${appID}/m/permission/perGroup/saveForm`, data);
+export const savePer = async (appID: string, data: PerData) => {
+  return await httpClient(`/api/v1/structor/${appID}/m/permission/perGroup/saveForm`, data);
 };
 
-export const deleteFormPer = (appID: string, data: PerDataReq) => {
-  return httpClient(`/api/v1/structor/${appID}/m/permission/perGroup/deleteForm`, data);
+export const deleteFormPer = async (appID: string, data: PerDataReq) => {
+  return await httpClient(`/api/v1/structor/${appID}/m/permission/perGroup/deleteForm`, data);
 };
 

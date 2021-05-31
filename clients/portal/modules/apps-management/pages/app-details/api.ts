@@ -1,107 +1,55 @@
-import request from '@portal/modules/apps-management/lib/request';
+import httpClient from '@lib/http-client';
 
-export const fetchAppDetails = (id: string) => {
-  return request({
-    url: '/api/v1/app-center/one',
-    method: 'post',
-    data: { id },
-  });
+export const fetchAppDetails = async (id: string)=> {
+  return await httpClient('/api/v1/app-center/one', { id });
 };
 
-export const updateAppStatus = (data: any) => {
-  return request({
-    url: '/api/v1/app-center/updateStatus',
-    method: 'post',
-    data,
-  });
+export const updateAppStatus = async (data: any)=> {
+  return await httpClient('/api/v1/app-center/updateStatus', data);
 };
 
-export const updateApp = (data: AppInfo) => {
-  return request({
-    url: '/api/v1/app-center/update',
-    method: 'post',
-    data,
-  });
+export const updateApp = async (data: AppInfo)=> {
+  return await httpClient('/api/v1/app-center/update', data);
 };
 
-export const fetchPageList = (appID: string) => {
-  return request({
-    url: `/api/v1/structor/${appID}/m/menu/list`,
-    method: 'post',
-    data: { appID },
-  });
+export const fetchPageList = async (appID: string)=> {
+  return await httpClient(`/api/v1/structor/${appID}/m/menu/list`, { appID });
 };
 
-export const createPage = (data: PageInfo) => {
-  return request({
-    url: `/api/v1/structor/${data.appID}/m/menu/create`,
-    method: 'post',
-    data,
-  });
+export const createPage = async (data: PageInfo)=> {
+  return await httpClient(`/api/v1/structor/${data.appID}/m/menu/create`, data);
 };
 
-export const updatePageOrGroup = (data: PageInfo) => {
-  return request({
-    url: `/api/v1/structor/${data.appID}/m/menu/update`,
-    method: 'post',
-    data,
-  });
+export const updatePageOrGroup = async (data: PageInfo)=> {
+  return await httpClient(`/api/v1/structor/${data.appID}/m/menu/update`, data);
 };
 
-export const createGroup = (data: any) => {
-  return request({
-    url: `/api/v1/structor/${data.appID}/m/group/create`,
-    method: 'post',
-    data,
-  });
+export const createGroup = async (data: any)=> {
+  return await httpClient(`/api/v1/structor/${data.appID}/m/group/create`, data);
 };
 
-export const deleteGroup = (data: any) => {
-  return request({
-    url: `/api/v1/structor/${data.appID}/m/group/delete`,
-    method: 'post',
-    data,
-  });
+export const deleteGroup = async (data: any)=> {
+  return await httpClient(`/api/v1/structor/${data.appID}/m/group/delete`, data);
 };
 
-export const deletePage = (data: any) => {
-  return request({
-    url: `/api/v1/structor/${data.appID}/m/menu/delete`,
-    method: 'post',
-    data,
-  });
+export const deletePage = async (data: any)=> {
+  return await httpClient(`/api/v1/structor/${data.appID}/m/menu/delete`, data);
 };
 
-export const fetchFormScheme = (appID: string, tableID: string) => {
-  return request({
-    url: `/api/v1/structor/${appID}/m/table/getByID`,
-    method: 'post',
-    data: { tableID },
-  });
+export const fetchFormScheme = async (appID: string, tableID: string)=> {
+  return await httpClient(`/api/v1/structor/${appID}/m/table/getByID`, { tableID });
 };
 
-export const appAddAdmin = (data: any) => {
-  return request({
-    url: '/api/v1/app-center/addAdmin',
-    method: 'post',
-    data,
-  });
+export const appAddAdmin = async (data: any)=> {
+  return await httpClient('/api/v1/app-center/addAdmin', data);
 };
 
-export const fetchAppAdminUsers = (data: any) => {
-  return request({
-    url: '/api/v1/app-center/adminUsers',
-    method: 'post',
-    data,
-  });
+export const fetchAppAdminUsers = async (data: any)=> {
+  return await httpClient('/api/v1/app-center/adminUsers', data);
 };
 
-export const delAppAdminUsers = (data: any) => {
-  return request({
-    url: '/api/v1/app-center/delAdmin',
-    method: 'post',
-    data,
-  });
+export const delAppAdminUsers = async (data: any)=> {
+  return await httpClient('/api/v1/app-center/delAdmin', data);
 };
 
 export type MovePageParams = {
@@ -113,18 +61,11 @@ export type MovePageParams = {
   fromGroupID: string;
   toGroupID: string;
 }
-export const movePage = (data: MovePageParams) => {
-  return request({
-    url: `/api/v1/structor/${data.appID}/m/menu/transfer`,
-    method: 'post',
-    data,
-  });
+
+export const movePage = async (data: MovePageParams)=> {
+  return await httpClient(`/api/v1/structor/${data.appID}/m/menu/transfer`, data);
 };
 
-export const fetchGroupList = (appID: string) => {
-  return request({
-    url: `/api/v1/structor/${appID}/m/group/list`,
-    method: 'post',
-    data: { appID },
-  });
+export const fetchGroupList = async (appID: string)=> {
+  return await httpClient(`/api/v1/structor/${appID}/m/group/list`, { appID });
 };

@@ -60,8 +60,8 @@ class AppDetailsStore {
 
   @action
   fetchAppList = () => {
-    fetchAppList({}).then((res) => {
-      this.apps = res.data.data;
+    fetchAppList({}).then((res: any) => {
+      this.apps = res.data;
     });
   }
 
@@ -85,8 +85,8 @@ class AppDetailsStore {
   fetchAppDetails = (appID: string) => {
     this.loading = true;
     this.appID = appID;
-    return fetchAppDetails(appID).then((res) => {
-      this.appDetails = res.data || {};
+    return fetchAppDetails(appID).then((res: any) => {
+      this.appDetails = res || {};
       this.loading = false;
     }).catch(() => {
       this.loading = false;
@@ -159,8 +159,8 @@ class AppDetailsStore {
       });
     }
 
-    return createGroup({ appID: this.appID, ...groupInfo }).then((res) => {
-      const newGroup = { ...res.data, name: groupInfo.name, menuType: 1, appID: this.appID };
+    return createGroup({ appID: this.appID, ...groupInfo }).then((res: any) => {
+      const newGroup = { ...res, name: groupInfo.name, menuType: 1, appID: this.appID };
       const items = toJS(this.pagesTreeData.items);
       items.ROOT.children.push(newGroup.id);
       items[newGroup.id] = {
@@ -197,8 +197,8 @@ class AppDetailsStore {
       });
     }
 
-    return createPage({ appID: this.appID, ...pageInfo }).then((res) => {
-      const newPage = { ...res.data, ...pageInfo, menuType: 0, appID: this.appID };
+    return createPage({ appID: this.appID, ...pageInfo }).then((res: any) => {
+      const newPage = { ...res, ...pageInfo, menuType: 0, appID: this.appID };
       const items = toJS(this.pagesTreeData.items);
       items[newPage.groupID || 'ROOT'].children.push(newPage.id);
       items[newPage.id] = {
@@ -210,7 +210,7 @@ class AppDetailsStore {
 
       this.pagesTreeData = { items, rootId: 'ROOT' };
       toast.success('创建成功');
-      return res.data.id;
+      return res.id;
     });
   }
 
@@ -222,9 +222,9 @@ class AppDetailsStore {
 
     const pageInfo = this.pagesTreeData.items[pageID].data;
     this.fetchSchemeLoading = true;
-    fetchFormScheme(this.appID, pageInfo.id).then((res) => {
-      this.formScheme = res.data;
-      const { config, schema } = res.data;
+    fetchFormScheme(this.appID, pageInfo.id).then((res: any) => {
+      this.formScheme = res;
+      const { config, schema } = res;
       if (schema) {
         this.appDataStore = new AppDataStore({
           schema: schema,
@@ -245,9 +245,9 @@ class AppDetailsStore {
   fetchPageList = (appID: string) => {
     this.appID = appID;
     this.pageListLoading = true;
-    fetchPageList(appID).then((res) => {
-      this.pageInitList = res.data.menu;
-      this.pagesTreeData = buildAppPagesTreeData(res.data.menu);
+    fetchPageList(appID).then((res: any) => {
+      this.pageInitList = res.menu;
+      this.pagesTreeData = buildAppPagesTreeData(res.menu);
       this.pageListLoading = false;
     });
   }

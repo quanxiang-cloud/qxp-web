@@ -140,9 +140,9 @@ class FormDesignStore {
     }
 
     this.pageLoading = true;
-    fetchFormScheme(appID, pageID).then((res) => {
-      const { schema = {}, config } = res.data || {};
-      this.hasSchema = res.data ? true : false;
+    fetchFormScheme(appID, pageID).then((res: any) => {
+      const { schema = {}, config } = res || {};
+      this.hasSchema = res ? true : false;
       this.initScheme = schema;
       this.formStore = new FormStore({ schema, appID, pageID });
       if (config) {
