@@ -76,7 +76,7 @@ export function toConfig(schema: FormBuilder.Schema): NumberPickerConfig {
     sortable: !!schema['x-internal']?.sortable,
     precision: schema['x-component-props']?.precision,
     required: !!schema.required,
-    defaultValueFrom: 'customized',
+    defaultValueFrom: schema['x-internal']?.defaultValueFrom || 'customized',
     defaultValueLinkage: schema['x-internal']?.defaultValueLinkage,
     minimum: undefined,
     maximum: undefined,

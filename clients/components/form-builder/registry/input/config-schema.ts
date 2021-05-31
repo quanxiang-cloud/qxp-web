@@ -154,9 +154,6 @@ const schema: ISchema = {
         },
         defaultValueLinkage: {
           'x-component': 'DefaultValueLinkageConfigBtn',
-          'x-component-props': {
-            value: '设置数据联动',
-          },
           'x-index': 9,
         },
         defaultValue: {

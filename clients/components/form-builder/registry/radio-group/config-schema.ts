@@ -130,9 +130,6 @@ const schema: ISchema = {
         },
         linkageConfig: {
           'x-component': 'DefaultValueLinkageConfigBtn',
-          'x-component-props': {
-            value: '设置数据联动',
-          },
           'x-index': 8,
         },
         availableOptions: {

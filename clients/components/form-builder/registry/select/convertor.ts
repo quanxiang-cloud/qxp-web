@@ -66,7 +66,7 @@ export function toConfig(schema: FormBuilder.Schema): SelectConfig {
     sortable: !!schema['x-internal']?.sortable,
     required: !!schema.required,
     // todo implement this
-    defaultValueFrom: 'customized',
+    defaultValueFrom: schema['x-internal']?.defaultValueFrom || 'customized',
     // todo refactor this
     availableOptions: schema.enum as Array<{ label: string; value: any; title: string }> || [],
   };

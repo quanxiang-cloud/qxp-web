@@ -1,13 +1,13 @@
 import React, { useContext, useState } from 'react';
+import { observer } from 'mobx-react';
 import { parse } from 'qxp-formula/lib/src/logical-formula';
 
 import Button from '@c/button';
 import Modal from '@c/modal';
 import Icon from '@c/icon';
+import { INTERNAL_FIELD_NAMES } from '@c/form-builder/store';
 
 import { StoreContext } from '../../context';
-import { observer } from 'mobx-react';
-import { INTERNAL_FIELD_NAMES } from '@c/form-builder/store';
 
 const Operators: Array<FormBuilder.CompareOperator> = [
   '!=',

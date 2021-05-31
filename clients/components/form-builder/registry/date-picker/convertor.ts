@@ -85,6 +85,6 @@ export function toConfig(schema: FormBuilder.Schema): DatePickerConfig {
     valueFormat: schema['x-component-props']?.format,
     required: !!schema.required,
     // todo implement this
-    defaultValueFrom: 'customized',
+    defaultValueFrom: schema['x-internal']?.defaultValueFrom || 'customized',
   };
 }

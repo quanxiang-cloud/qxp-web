@@ -62,6 +62,6 @@ export function toConfig(schema: FormBuilder.Schema): TextareaConfig {
     valueFormat: schema.format || '',
     required: !!schema.required,
     // todo implement this
-    defaultValueFrom: 'customized',
+    defaultValueFrom: schema['x-internal']?.defaultValueFrom || 'customized',
   };
 }
