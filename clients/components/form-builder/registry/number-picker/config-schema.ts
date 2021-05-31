@@ -94,7 +94,7 @@ const schema: ISchema = {
           'x-component': 'Switch',
           'x-index': 7,
         },
-        valueSource: {
+        defaultValueFrom: {
           title: '数值源',
           enum: [
             {
@@ -115,6 +115,20 @@ const schema: ISchema = {
             labelAlign: 'top',
           },
           'x-index': 8,
+          'x-linkages': [
+            {
+              type: 'value:visible',
+              target: 'linkageConfig',
+              condition: '{{ $value === "linkage" }}',
+            },
+          ],
+        },
+        linkageConfig: {
+          'x-component': 'DefaultValueLinkageConfigBtn',
+          'x-component-props': {
+            value: '设置数据联动',
+          },
+          'x-index': 9,
         },
         min: {
           type: 'object',

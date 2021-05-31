@@ -6,8 +6,9 @@ export interface InputConfig {
   sortable: boolean;
   valueFormat: 'phone' | 'post_code' | 'mobile_phone' | 'id_number' | 'email' | string;
   required: boolean;
-  valueSource: FormBuilder.ValueSource;
+  defaultValueFrom: FormBuilder.DefaultValueFrom;
   defaultValue: string;
+  defaultValueLinkage?: FormBuilder.DefaultValueLinkage;
 }
 
 export const defaultConfig: InputConfig = {
@@ -18,8 +19,9 @@ export const defaultConfig: InputConfig = {
   sortable: false,
   valueFormat: '',
   required: false,
-  valueSource: 'customized',
+  defaultValueFrom: 'customized',
   defaultValue: '',
+  defaultValueLinkage: undefined,
 };
 
 export function toSchema(value: InputConfig): FormBuilder.Schema {
@@ -39,6 +41,8 @@ export function toSchema(value: InputConfig): FormBuilder.Schema {
     ['x-internal']: {
       sortable: value.sortable,
       permission: 3,
+      defaultValueFrom: value.defaultValueFrom,
+      defaultValueLinkage: value.defaultValueLinkage,
     },
   };
 }
@@ -60,7 +64,7 @@ export function toConfig(schema: FormBuilder.Schema): InputConfig {
     sortable: !!schema['x-internal']?.sortable,
     valueFormat: schema.format || '',
     required: !!schema.required,
-    // todo implement this
-    valueSource: 'customized',
+    defaultValueFrom: schema['x-internal']?.defaultValueFrom || 'customized',
+    defaultValueLinkage: schema['x-internal']?.defaultValueLinkage,
   };
 }

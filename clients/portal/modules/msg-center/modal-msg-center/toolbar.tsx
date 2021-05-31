@@ -1,5 +1,5 @@
 import React from 'react';
-import { Checkbox } from '@QCFE/lego-ui';
+import Checkbox from '@c/checkbox';
 import { throttle } from 'lodash';
 import { observer } from 'mobx-react';
 import { useQueryClient } from 'react-query';
@@ -10,8 +10,8 @@ import msgCenter from '@portal/stores/msg-center';
 const Toolbar = () => {
   const { countUnread, filterCheckUnread, setUnreadFilter } = msgCenter;
   const queryClient = useQueryClient();
-  const onChangeUnreadType = (ev: any, checkUnread: boolean) => {
-    setUnreadFilter(checkUnread);
+  const onChangeUnreadType = (ev: any) => {
+    setUnreadFilter(ev.target.checked);
     msgCenter.reset();
   };
 

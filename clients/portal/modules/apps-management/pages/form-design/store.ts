@@ -130,7 +130,7 @@ class FormDesignStore {
 
   @action
   reSetFormScheme = () => {
-    this.formStore = new FormStore({ schema: this.initScheme });
+    this.formStore = new FormStore({ schema: this.initScheme, appID: this.appID, pageID: this.pageID });
   }
 
   @action
@@ -144,7 +144,7 @@ class FormDesignStore {
       const { schema = {}, config } = res.data || {};
       this.hasSchema = res.data ? true : false;
       this.initScheme = schema;
-      this.formStore = new FormStore({ schema });
+      this.formStore = new FormStore({ schema, appID, pageID });
       if (config) {
         this.pageTableConfig = config.pageTableConfig || {};
         this.allFiltrate = config.filtrate || [];

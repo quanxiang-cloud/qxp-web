@@ -7,7 +7,7 @@ export interface NumberPickerConfig {
   sortable: boolean;
   precision: number;
   required: boolean;
-  valueSource: FormBuilder.ValueSource;
+  defaultValueFrom: FormBuilder.DefaultValueFrom;
   minimum: number | undefined;
   maximum: number | undefined;
 }
@@ -20,7 +20,7 @@ export const defaultConfig: NumberPickerConfig = {
   sortable: false,
   precision: 2,
   required: false,
-  valueSource: 'customized',
+  defaultValueFrom: 'customized',
   maximum: undefined,
   minimum: undefined,
 };
@@ -50,6 +50,7 @@ export function toSchema(value: NumberPickerConfig): FormBuilder.Schema {
     ['x-internal']: {
       sortable: value.sortable,
       permission: 3,
+      defaultValueFrom: 'customized',
     },
     ['minimum']: value.minimum,
     ['maximum']: value.maximum,
@@ -72,7 +73,7 @@ export function toConfig(schema: FormBuilder.Schema): NumberPickerConfig {
     sortable: !!schema['x-internal']?.sortable,
     precision: schema['x-component-props']?.precision,
     required: !!schema.required,
-    valueSource: 'customized',
+    defaultValueFrom: 'customized',
     minimum: undefined,
     maximum: undefined,
   };
