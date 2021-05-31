@@ -102,7 +102,7 @@ const schema: ISchema = {
             },
             {
               type: 'value:visible',
-              target: 'linkageConfig',
+              target: 'defaultValueLinkage',
               condition: '{{ $value === "linkage" }}',
             },
           ],
