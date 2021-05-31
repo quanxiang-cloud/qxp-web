@@ -121,6 +121,16 @@ const schema: ISchema = {
               target: 'defaultValueLinkage',
               condition: '{{ $value === "linkage" }}',
             },
+            {
+              type: 'value:visible',
+              target: 'min',
+              condition: '{{ $value === "customized" }}',
+            },
+            {
+              type: 'value:visible',
+              target: 'max',
+              condition: '{{ $value === "customized" }}',
+            },
           ],
         },
         defaultValueLinkage: {
@@ -133,6 +143,7 @@ const schema: ISchema = {
         min: {
           type: 'object',
           'x-component': 'mega-layout',
+          'x-index': 10,
           'x-component-props': {
             grid: true,
             columns: 2,
@@ -154,6 +165,7 @@ const schema: ISchema = {
         max: {
           type: 'object',
           'x-component': 'mega-layout',
+          'x-index': 11,
           'x-component-props': {
             grid: true,
             columns: 2,
