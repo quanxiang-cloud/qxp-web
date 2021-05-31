@@ -76,9 +76,9 @@ function RightsSettingModal({ onCancel, rightsGroupID, pageForm }: Props) {
     Promise.all([
       fetchFormScheme(store.appID, pageForm.id),
       fetchPerData(store.appID, { formID: pageForm.id, perGroupID: rightsGroupID }),
-    ]).then(([schemeRes, perDataRes]) => {
-      if (schemeRes.data) {
-        const fieldsMap = schemeRes.data.schema.properties;
+    ]).then(([schemeRes, perDataRes]: any) => {
+      if (schemeRes) {
+        const fieldsMap = schemeRes.schema.properties;
         const fieldsTmp: Fields[] = [];
         Object.keys(fieldsMap).forEach((key) => {
           if (key !== '_id') {

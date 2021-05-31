@@ -1,25 +1,13 @@
-import request from '@portal/modules/apps-management/lib/request';
+import httpClient from '@lib/http-client';
 
-export const fetchAppList = (data: any) => {
-  return request({
-    url: '/api/v1/app-center/adminList',
-    method: 'post',
-    data: { page: 1, limit: 9999, ...data },
-  });
+export const fetchAppList = async (data: any) => {
+  return await httpClient('/api/v1/app-center/adminList', { page: 1, limit: 9999, ...data });
 };
 
-export const createdApp = (data: AppInfo) => {
-  return request({
-    url: '/api/v1/app-center/add',
-    method: 'post',
-    data,
-  });
+export const createdApp = async (data: AppInfo) => {
+  return await httpClient('/api/v1/app-center/add', data);
 };
 
-export const delApp = (id: string) => {
-  return request({
-    url: '/api/v1/app-center/del',
-    method: 'post',
-    data: { id },
-  });
+export const delApp = async (id: string) => {
+  return await httpClient('/api/v1/app-center/del', { id });
 };

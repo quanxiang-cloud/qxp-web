@@ -53,7 +53,7 @@ class UserAppStore {
     this.appID = appID;
     this.pageListLoading = true;
     fetchPageList(appID).then((res: any) => {
-      this.pagesTreeData = buildAppPagesTreeData(res.data.menu);
+      this.pagesTreeData = buildAppPagesTreeData(res.menu);
       this.pageListLoading = false;
     });
   }
@@ -73,7 +73,7 @@ class UserAppStore {
     this.formScheme = null;
     this.fetchSchemeLoading = true;
     fetchFormScheme(this.appID, pageInfo.id).then((res: any) => {
-      const { config, schema } = res.schema || {};
+      const { config, schema } = res || {};
       if (schema) {
         Object.keys(schema.properties).forEach((key) => {
           if (schema.properties[key]['x-internal'].permission === 1) {
@@ -104,7 +104,7 @@ class UserAppStore {
     this.listLoading = true;
     return fetchUserList().then((res: any) => {
       this.listLoading = false;
-      this.appList = res.data.data || [];
+      this.appList = res.data || [];
     }).catch(() => {
       this.listLoading = false;
     });
