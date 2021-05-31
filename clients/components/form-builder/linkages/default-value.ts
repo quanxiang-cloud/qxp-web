@@ -43,8 +43,10 @@ function fetchLinkedTableData$(
     condition: conditions,
   };
 
+  // const side = window.SIDE === 'portal' ? 'm' : 'home';
+  const side = 'home';
   return ajax({
-    url: `/api/v1/structor/${linkage.linkedAppID}/form/${linkage.linkedTable.id}`,
+    url: `/api/v1/structor/${linkage.linkedAppID}/${side}/form/${linkage.linkedTable.id}`,
     method: 'POST',
     headers: {
       'X-Proxy': 'API',

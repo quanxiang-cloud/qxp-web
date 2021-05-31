@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 import { toJS } from 'mobx';
-import { pick } from 'lodash';
 import {
   SchemaForm,
   SchemaMarkupField as Field,
@@ -93,14 +92,14 @@ function LinkageConfig({ onClose, onSubmit }: Props): JSX.Element {
     }, []);
 
   function formatFormData(values: any): FormBuilder.DefaultValueLinkage {
-    values.rules = values.rules.map((rule: any) => {
-      const availableRules = pick(rule, ['fieldName', 'compareOperator', 'compareTo']);
-      if (rule.compareTo === 'currentFormValue') {
-        return { ...availableRules, currentFormField: rule.compareValue };
-      }
+    // const rules = values.rules.map((rule: any) => {
+    //   const availableRules = pick(rule, ['fieldName', 'compareOperator', 'compareTo']);
+    //   if (rule.compareTo === 'currentFormValue') {
+    //     return { ...availableRules, compareValue: rule.compareValue };
+    //   }
 
-      return { ...availableRules, fixedValue: rule.compareValue };
-    });
+    //   return { ...availableRules, compareValue: rule.compareValue };
+    // });
 
     return {
       linkedAppID: store.appID,
@@ -268,7 +267,7 @@ function LinkageConfig({ onClose, onSubmit }: Props): JSX.Element {
           <Field type="object">
             <Field
               required
-              name="linkedField"
+              name="fieldName"
               x-component="AntdSelect"
               x-component-props={{ placeholder: '联动表单字段' }}
               enum={linkedTableFields.map(({ label, value }) => ({ label, value }))}

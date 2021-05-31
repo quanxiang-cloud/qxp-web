@@ -1,5 +1,4 @@
-import React, { useContext, useState } from 'react';
-import { StoreContext } from '@c/form-builder/context';
+import React, { useState } from 'react';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 
 import Button from '@c/button';
@@ -7,7 +6,6 @@ import Button from '@c/button';
 import LinkageConfig from './default-value-linkage-config';
 
 function DefaultValueLinkageConfigBtn(props: ISchemaFieldComponentProps) {
-  const store = useContext(StoreContext);
   const [showModal, setShowModal] = useState(false);
 
   return (
@@ -20,7 +18,7 @@ function DefaultValueLinkageConfigBtn(props: ISchemaFieldComponentProps) {
           <LinkageConfig
             onClose={() => setShowModal(false)}
             onSubmit={(config) => {
-              console.log(config);
+              props.mutators.change(config);
               setShowModal(false);
             }}
           />

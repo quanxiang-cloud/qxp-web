@@ -101,7 +101,6 @@ export default class FormBuilderStore {
   @observable columnsCount: 1 | 2 = 1;
   @observable isLinkageConfigVisible = false;
   @observable visibleHiddenLinkages: FormBuilder.VisibleHiddenLinkage[] = [];
-  @observable linkageConfigs: Record<string, FormBuilder.DefaultValueLinkage> = {};
   @observable hasEdit = false;
   @observable validations: Array<ValidationFormula>;
 
@@ -155,8 +154,6 @@ export default class FormBuilderStore {
         // ensure 'x-internal' exist
         parsedSchema['x-internal'] = parsedSchema['x-internal'] || { defaultValueFrom: 'customized' };
         parsedSchema['x-internal'].isSystem = !!configValue.isSystem;
-
-        parsedSchema['x-internal'].defaultValueLinkage = this.linkageConfigs[fieldName];
 
         acc[fieldName] = {
           // convert observable value to pure js object for debugging
@@ -355,11 +352,6 @@ export default class FormBuilderStore {
       f.configValue = toJS(value);
       return f;
     });
-  }
-
-  @action
-  updateLinkageConfig(value: any) {
-    this.linkageConfigs[`${this.activeFieldName}`] = value;
   }
 
   @action
