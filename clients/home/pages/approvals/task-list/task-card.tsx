@@ -64,7 +64,7 @@ export default function TaskCard({ task }: Props): JSX.Element {
             {
               Object.entries(flowInstanceEntity?.formData || {}).map(([keyName, value]) => {
                 const properties = flowInstanceEntity?.formSchema?.properties as Record<string, any>;
-                if (!properties[keyName] || properties[keyName]?.display === false) {
+                if (!properties || !properties[keyName] || properties[keyName]?.display === false) {
                   return null;
                 }
                 return (

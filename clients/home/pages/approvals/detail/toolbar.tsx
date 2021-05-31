@@ -175,6 +175,11 @@ function Toolbar({ permission, onClickAction, globalActions }: Props) {
                 </PopConfirm>
               );
             }
+
+            if (['canMsg', 'canViewStatusAndMsg'].includes(action)) {
+              return null;
+            }
+
             return (
               <Button
                 iconName={getIconByAction(action)}
