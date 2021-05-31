@@ -92,22 +92,13 @@ function LinkageConfig({ onClose, onSubmit }: Props): JSX.Element {
     }, []);
 
   function formatFormData(values: any): FormBuilder.DefaultValueLinkage {
-    // const rules = values.rules.map((rule: any) => {
-    //   const availableRules = pick(rule, ['fieldName', 'compareOperator', 'compareTo']);
-    //   if (rule.compareTo === 'currentFormValue') {
-    //     return { ...availableRules, compareValue: rule.compareValue };
-    //   }
-
-    //   return { ...availableRules, compareValue: rule.compareValue };
-    // });
-
     return {
       linkedAppID: store.appID,
       linkedTable: {
         id: values.linkedTableID,
         name: linkageTables.find((option) => option.value === values.linkedTableID)?.label || '',
       },
-      linkedTableSortRules: [values.sortDesce ? '-' + values.linkField : values.linkField],
+      linkedTableSortRules: [values.sortOrder ? '-' + values.sortBy : values.sortBy],
       linkedField: values.linkedField,
       targetField: '',
       ruleJoinOperator: values.ruleJoinOperator,
@@ -134,16 +125,16 @@ function LinkageConfig({ onClose, onSubmit }: Props): JSX.Element {
 
         setLinkedTableFields(fields);
 
-        // const optionValues = fields.map(({ label, value }) => ({ label, value }));
-        // setFieldState('linkField', (state: any) => {
-        //   state.props.enum = optionValues;
-        // });
-        // setFieldState('rules.*.linkedField', (state) => {
-        //   state.props.enum = optionValues;
-        // });
-        // setFieldState('linkage', (state) => {
-        //   state.props.enum = optionValues;
-        // });
+        const optionValues = fields.map(({ label, value }) => ({ label, value }));
+        setFieldState('rules.*.formField', (state) => {
+          state.props.enum = optionValues;
+        });
+        setFieldState('linkedField', (state: any) => {
+          state.props.enum = optionValues;
+        });
+        setFieldState('sortBy', (state) => {
+          state.props.enum = optionValues;
+        });
       });
     });
 
@@ -240,12 +231,11 @@ function LinkageConfig({ onClose, onSubmit }: Props): JSX.Element {
         <FormItemGrid gutter={20}>
           <Field
             title="取值规则"
-            name="linkField"
+            name="sortBy"
             x-component="AntdSelect"
-            enum={linkedTableFields.map(({ label, value }) => ({ label, value }))}
           />
           <Field
-            name="sortDesce"
+            name="sortOrder"
             x-component="RadioGroup"
             default={false}
             enum={[
