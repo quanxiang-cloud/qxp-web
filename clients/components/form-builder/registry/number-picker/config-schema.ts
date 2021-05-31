@@ -131,6 +131,11 @@ const schema: ISchema = {
               target: 'max',
               condition: '{{ $value === "customized" }}',
             },
+            {
+              type: 'value:visible',
+              target: 'calculationFormula',
+              condition: '{{ $value === "formula" }}',
+            },
           ],
         },
         defaultValueLinkage: {
@@ -180,6 +185,10 @@ const schema: ISchema = {
               'x-component': 'NumberPicker',
             },
           },
+        },
+        calculationFormula: {
+          'x-component': 'CalculationFormulaBtn',
+          'x-index': 12,
         },
       },
     },

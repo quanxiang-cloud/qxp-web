@@ -12,6 +12,7 @@ export interface NumberPickerConfig {
   defaultValueLinkage?: FormBuilder.DefaultValueLinkage;
   minimum: number | undefined;
   maximum: number | undefined;
+  calculationFormula?: string;
 }
 
 export const defaultConfig: NumberPickerConfig = {
@@ -25,6 +26,7 @@ export const defaultConfig: NumberPickerConfig = {
   defaultValueFrom: 'customized',
   maximum: undefined,
   minimum: undefined,
+  calculationFormula: '',
 };
 
 export function toSchema(value: NumberPickerConfig): FormBuilder.Schema {
@@ -54,6 +56,7 @@ export function toSchema(value: NumberPickerConfig): FormBuilder.Schema {
       permission: 3,
       defaultValueFrom: value.defaultValueFrom,
       defaultValueLinkage: value.defaultValueLinkage,
+      calculationFormula: value.calculationFormula,
     },
     ['minimum']: value.minimum,
     ['maximum']: value.maximum,
@@ -80,6 +83,7 @@ export function toConfig(schema: FormBuilder.Schema): NumberPickerConfig {
     defaultValueLinkage: schema['x-internal']?.defaultValueLinkage,
     minimum: undefined,
     maximum: undefined,
+    calculationFormula: schema['x-internal']?.calculationFormula || '',
   };
 }
 

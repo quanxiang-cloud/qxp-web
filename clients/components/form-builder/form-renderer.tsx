@@ -8,6 +8,7 @@ import logger from '@lib/logger';
 import registry from './registry';
 import visibleHiddenLinkageEffect from './linkages/visible-hidden';
 import defaultValueLinkageEffect from './linkages/default-value';
+import calculationFormulaEffect from './linkages/calculation-formula';
 import { wrapSchemaByMegaLayout } from './utils';
 
 setValidationLanguage('zh');
@@ -89,6 +90,7 @@ function FormRenderer({ schema, defaultValue, className, onSubmit, onFormValueCh
             }
             // find all defaultValueLinkages and run defaultValueLinkageEffect
             defaultValueLinkageEffect(schema, actions);
+            calculationFormulaEffect(schema, actions);
           }}
         >
           {children}

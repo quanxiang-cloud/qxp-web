@@ -31,7 +31,7 @@
     "moment": "^2.29.1",
     "nanoid": "^3.1.22",
     "qs": "^6.10.1",
-    "qxp-formula": "^0.3.0",
+    "qxp-formula": "^0.3.3",
     "react": "^17.0.1",
     "react-color": "^2.19.3",
     "react-dnd": "^14.0.2",
