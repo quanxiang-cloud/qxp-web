@@ -41,14 +41,14 @@ interface Props {
 }
 
 const EnumStatusLabel: any = {
-  [MsgSendStatus.all]: '全部',
+  [MsgSendStatus.all]: '全部状态',
   [MsgSendStatus.success]: '已发送',
   [MsgSendStatus.sending]: '发送中',
   [MsgSendStatus.draft]: '草稿',
 };
 
 const EnumMessageLabel = {
-  [MsgType.all]: '全部',
+  [MsgType.all]: '全部消息类型',
   [MsgType.system]: '系统消息',
   [MsgType.notify]: '通知公告',
 };
@@ -56,7 +56,7 @@ const EnumMessageLabel = {
 const MessageStatus = [
   {
     value: MsgSendStatus.all,
-    label: '全部',
+    label: '全部状态',
   },
   {
     value: MsgSendStatus.success,
@@ -73,7 +73,7 @@ const MessageStatus = [
 
 const EnumMessage = [
   {
-    label: '全部',
+    label: '全部消息类型',
     value: MsgType.all,
   },
   {
@@ -245,11 +245,13 @@ const MsgTable = ({ refresh }: Props) => {
           options={MessageStatus}
           onChange={setStatus}
         >
-          <div className={`flex content-center items-center ${styles.text_blue} pointer`}>
+          <div
+            className={`flex content-center items-center ${EnumStatusLabel[status] !== '全部状态' ? styles.text_blue : ''} pointer`}
+          >
             <div>{EnumStatusLabel[status]}</div>
             <SvgIcon
               name="filter_alt"
-              className={cs(styles.text_blue, styles.status_icon)}
+              className={cs(EnumStatusLabel[status] !== '全部状态' ? styles.text_blue : '', styles.status_icon)}
             />
           </div>
         </Select>
@@ -272,9 +274,13 @@ const MsgTable = ({ refresh }: Props) => {
           options={EnumMessage}
           onChange={setMessageType}
         >
-          <div className={`flex content-center items-center ${styles.text_blue} pointer`}>
+          <div
+            className={`flex content-center items-center ${EnumMessageLabel[messageType] !== '全部消息类型' ? styles.text_blue : ''} pointer`}
+          >
             <div>{EnumMessageLabel[messageType]}</div>
-            <SvgIcon name="filter_alt" className={cs(styles.text_blue, styles.status_icon)} />
+            <SvgIcon
+              name="filter_alt"
+              className={cs(EnumMessageLabel[messageType] !== '全部消息类型' ? styles.text_blue : '', styles.status_icon)} />
           </div>
         </Select>
       ),
