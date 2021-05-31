@@ -1,17 +1,12 @@
 import React, { useState, forwardRef, useImperativeHandle, useRef } from 'react';
 import { Radio } from 'antd';
 
-import DataFilter from './data-filter';
+import DataFilter, { ConditionItemMap, RefProps } from '@c/data-filter';
 
 type Props = {
   fields: Fields[];
   dataPer: ConditionMap;
   className?: string;
-}
-
-type ConditionItemMap = {
-  arr: Condition[];
-  tag: 'or' | 'and';
 }
 
 type ConditionMap = {
@@ -41,9 +36,9 @@ function DataPermission({ fields, className = '', dataPer }: Props, ref: React.R
     tag: dataPer.delete?.tag,
     conditions: dataPer.delete?.arr || [],
   });
-  const viewRef = useRef<{ getDataPer:() => Promise<ConditionItemMap | string> }>(null);
-  const editRef = useRef<{ getDataPer:() => Promise<ConditionItemMap | string> }>(null);
-  const delRef = useRef<{ getDataPer:() => Promise<ConditionItemMap | string> }>(null);
+  const viewRef = useRef<RefProps>(null);
+  const editRef = useRef<RefProps>(null);
+  const delRef = useRef<RefProps>(null);
 
   const getDataPer = () => {
     return Promise.all([

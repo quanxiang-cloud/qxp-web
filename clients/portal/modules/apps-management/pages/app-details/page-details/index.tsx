@@ -23,7 +23,7 @@ function PageDetails() {
   }
 
   return (
-    <div className='relative flex-1'>
+    <div className='relative flex-1 overflow-hidden'>
       <TextHeader
         title={curPage.name || ''}
         desc={curPage.describe || ''}

@@ -7,9 +7,11 @@ import FieldSwitch from '@portal/modules/apps-management/components/field-switch
 import Icon from '@c/icon';
 import formFieldWrap from '@portal/modules/apps-management/components/form-field-wrap';
 
+import './index.scss';
+
 type Props = {
   fields: Fields[];
-  baseConditions: Condition[];
+  baseConditions?: Condition[];
   initTag?: string;
   className?: string;
 }
@@ -20,6 +22,17 @@ type FieldCondition = {
   value?: any;
   op?: string;
   filtrate?: any;
+}
+
+export type ConditionItemMap = {
+  arr: Condition[];
+  tag: 'or' | 'and';
+}
+
+export type RefProps = {
+  getDataPer: () => Promise<ConditionItemMap | string>;
+  empty: () => void;
+  getDataValues: () => ConditionItemMap
 }
 
 const CONDITION = [{
@@ -80,6 +93,29 @@ function getOperators(type: string) {
   }
 }
 
+function getCondition(formData: any, condition: FieldCondition) {
+  let value = formData[`condition-${condition.id}`];
+  switch (condition.filtrate?.type) {
+  case 'date':
+    value = isArray(value) ? value.map((date: string) => {
+      return new Date(date).getTime();
+    }) : [new Date(value).getTime()];
+    break;
+  case 'number':
+    value = isArray(value) ? value.map((_value) => Number(_value)) : [Number(value)];
+    break;
+  default:
+    value = isArray(value) ? value : [value];
+    break;
+  }
+
+  return {
+    key: formData[`field-${condition.id}`],
+    op: formData[`operators-${condition.id}`],
+    value,
+  };
+}
+
 const FormFieldSwitch = formFieldWrap({ FieldFC: FieldSwitch });
 const FormFieldSelect = formFieldWrap({ FieldFC: Select });
 
@@ -92,6 +128,8 @@ function DataFilter({ fields, className = '', baseConditions, initTag = 'and' }:
 
   useImperativeHandle(ref, () => ({
     getDataPer: getDataPer,
+    getDataValues: getDataValues,
+    empty: () => setConditions([]),
   }));
 
   useEffect(() => {
@@ -142,6 +180,29 @@ function DataFilter({ fields, className = '', baseConditions, initTag = 'and' }:
     setConditions(conditions.filter(({ id }) => _id !== id));
   };
 
+  const getDataValues = () => {
+    if (conditions.length === 0) {
+      return { arr: [], tag };
+    }
+
+    const formData = getValues();
+    const _conditions: Condition[] = [];
+    conditions.forEach((condition) => {
+      if (
+        formData[`field-${condition.id}`] &&
+        formData[`operators-${condition.id}`] &&
+        formData[`condition-${condition.id}`]
+      ) {
+        _conditions.push(getCondition(formData, condition));
+      }
+    });
+
+    return {
+      arr: _conditions,
+      tag,
+    };
+  };
+
   const getDataPer = () => {
     if (conditions.length === 0) {
       return Promise.resolve({ arr: [], tag });
@@ -151,26 +212,7 @@ function DataFilter({ fields, className = '', baseConditions, initTag = 'and' }:
       if (flag) {
         const formData = getValues();
         const _conditions = conditions.map((condition) => {
-          let value = formData[`condition-${condition.id}`];
-          switch (condition.filtrate?.type) {
-          case 'date':
-            value = isArray(value) ? value.map((date: string) => {
-              return new Date(date).getTime();
-            }) : [new Date(value).getTime()];
-            break;
-          case 'number':
-            value = isArray(value) ? value.map((_value) => Number(_value)) : [Number(value)];
-            break;
-          default:
-            value = isArray(value) ? value : [value];
-            break;
-          }
-
-          return {
-            key: formData[`field-${condition.id}`],
-            op: formData[`operators-${condition.id}`],
-            value,
-          };
+          return getCondition(formData, condition);
         });
 
         return {
@@ -195,7 +237,7 @@ function DataFilter({ fields, className = '', baseConditions, initTag = 'and' }:
         />
         条件的数据
       </div>
-      <div>
+      <div className='qxp-data-filter-box beauty-scroll'>
         {conditions.map((condition) => (
           <div key={condition.id} className='flex gap-x-8 mt-24 items-center'>
             <div>
@@ -208,6 +250,7 @@ function DataFilter({ fields, className = '', baseConditions, initTag = 'and' }:
                   return (
                     <FormFieldSelect
                       style={{ width: '250px' }}
+                      optionClassName='qxp-data-filter-options'
                       error={errors['field-' + condition.id]}
                       register={{ name: field.name, ref: field.ref, value: field.value }}
                       options={fieldOption}

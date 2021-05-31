@@ -31,7 +31,7 @@ function PageDetails() {
   }
 
   return (
-    <div className='relative h-full flex-1'>
+    <div className='relative h-full flex-1 overflow-hidden'>
       <TextHeader
         title={curPage.name || ''}
         className="bg-white px-20 py-18 header-background-image"

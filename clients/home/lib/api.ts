@@ -1,4 +1,5 @@
 import request from '@portal/modules/apps-management/lib/request';
+import httpClient from '@lib/http-client';
 
 export const fetchUserList = () => {
   return request({
@@ -29,4 +30,12 @@ export const formDataCurd = (appID: string, tableID: string, data: any) => {
     url: `/api/v1/structor/${appID}/home/form/${tableID}`,
     data,
   });
+};
+
+export const getPerOption = <T>(appID: string) => {
+  return httpClient<T>(`/api/v1/structor/${appID}/home/permission/perGroup/getPerOption`);
+};
+
+export const roleChange = <T>(appID: string, perGroupID:string) => {
+  return httpClient<T>(`/api/v1/structor/${appID}/home/permission/perGroup/saveUserPerMatch`, { perGroupID });
 };
