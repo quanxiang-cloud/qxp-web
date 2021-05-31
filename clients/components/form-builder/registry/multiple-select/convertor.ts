@@ -6,7 +6,7 @@ export interface MultipleSelectConfig {
   displayModifier: FormBuilder.DisplayModifier;
   sortable: boolean;
   required: boolean;
-  valueSource: FormBuilder.ValueSource;
+  defaultValueFrom: FormBuilder.DefaultValueFrom;
   availableOptions: Array<{ label: string; value: any; title: string }>,
 }
 export const defaultConfig: MultipleSelectConfig = {
@@ -15,7 +15,7 @@ export const defaultConfig: MultipleSelectConfig = {
   displayModifier: 'normal',
   sortable: false,
   required: false,
-  valueSource: 'customized',
+  defaultValueFrom: 'customized',
   availableOptions: [
     { label: '选项一', value: '选项一', title: '选项一' },
     { label: '选项二', value: '选项二', title: '选项二' },
@@ -47,6 +47,7 @@ export function toSchema(value: MultipleSelectConfig): FormBuilder.Schema {
     ['x-internal']: {
       sortable: value.sortable,
       permission: 3,
+      defaultValueFrom: 'customized',
     },
   };
 }
@@ -66,7 +67,7 @@ export function toConfig(schema: FormBuilder.Schema): MultipleSelectConfig {
     sortable: !!schema['x-internal']?.sortable,
     required: !!schema.required,
     // todo implement this
-    valueSource: 'customized',
+    defaultValueFrom: 'customized',
     // todo refactor this
     availableOptions: schema.enum as Array<{ label: string; value: any; title: string }> || [],
   };

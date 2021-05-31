@@ -25,15 +25,18 @@ function CreateDataForm({ goBack, defaultValues }: Props) {
     let reqData = {};
     if (defaultValues) {
       reqData = {
-        method: 'update#set',
+        method: 'update',
         entity: formData,
-        condition: [
-          {
-            key: '_id',
-            op: 'eq',
-            value: [defaultValues._id],
-          },
-        ],
+        conditions: {
+          condition: [
+            {
+              key: '_id',
+              op: 'eq',
+              value: [defaultValues._id],
+            },
+          ],
+          tag: '',
+        },
       };
     } else {
       reqData = {

@@ -70,7 +70,7 @@ const schema: ISchema = {
           },
           'x-index': 3,
         },
-        valueSource: {
+        defaultValueFrom: {
           title: '数值源',
           enum: [
             {

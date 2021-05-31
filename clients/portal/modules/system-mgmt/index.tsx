@@ -4,9 +4,11 @@ import { Switch, Route, useRouteMatch, Redirect } from 'react-router-dom';
 import ErrorTips from '@c/error-tips';
 import { usePortalGlobalValue } from '@portal/states_to_be_delete/portal';
 
-const Message = lazy(()=> import('./message'));
-const SendMessage = lazy(()=> import('./send-message'));
-const MessageDetails = lazy(()=> import('./message-details'));
+const Message = lazy(() => import('./message'));
+const SendMessage = lazy(() => import('./send-message'));
+const MessageDetails = lazy(() => import('./message-details'));
+const Dataset = lazy(() => import('./dataset'));
+const Log = lazy(()=> import('./audit-log'));
 
 export default function Index() {
   const [{ userInfo }] = usePortalGlobalValue();
@@ -20,8 +22,10 @@ export default function Index() {
   return (
     <Switch>
       <Route exact path={`${path}/message`} component={Message} />
+      <Route exact path={`${path}/log`} component={Log} />
       <Route path={`${path}/message/send`} component={SendMessage} />
       <Route path={`${path}/message/details/:id`} component={MessageDetails} />
+      <Route path={`${path}/dataset/:dataId?`} component={Dataset} />
       <Redirect from={path} to={`${path}/message`} />
       <Route component={() => (<ErrorTips desc={'Menu page is not found'} />)} />
     </Switch>

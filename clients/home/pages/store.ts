@@ -37,7 +37,7 @@ class UserAppStore {
 
   constructor() {
     this.destroySetCurPage = reaction(() => {
-      if (!this.pageID || this.pageListLoading) {
+      if (!this.pageID || this.pageListLoading || !this.pagesTreeData.items[this.pageID]) {
         return;
       }
 

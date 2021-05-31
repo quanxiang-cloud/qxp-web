@@ -155,7 +155,7 @@ export default class Header extends React.Component<Props> {
           onClick={(): void => this.handleShift(-1)}
           className="calendar-header__shift"
         >
-          <Icon name="previous" size={20} />
+          <Icon name="arrow_back_ios" size={20} />
         </span>
         <div className="calendar-header__date">
           <span
@@ -181,7 +181,7 @@ export default class Header extends React.Component<Props> {
           onClick={(): void => this.handleShift(1)}
           className="calendar-header__shift"
         >
-          <Icon name="next" size={20} />
+          <Icon name="arrow_forward_ios" size={20} />
         </span>
       </div>
     );

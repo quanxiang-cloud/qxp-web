@@ -14,15 +14,15 @@ import (
 )
 
 const (
-	base = "/api/v1/structor/"
-	form = "/home/form/"
-	userSchema = "/home/schema/"
-	subForm = "/home/subForm/"
-	formSchema = "/m/table/getByID"
-	querySubTable = "/m/subTable/getByCondition"
-	createSubTable = "/m/subTable/create"
-	foreignTable = "foreign_table"
-	blankTable = "sub_table"
+	base              = "/api/v1/structor/"
+	form              = "/home/form/"
+	userSchema        = "/home/schema/"
+	subForm           = "/home/subForm/"
+	formSchema        = "/m/table/getByID"
+	querySubTable     = "/m/subTable/getByCondition"
+	createSubTable    = "/m/subTable/create"
+	foreignTable      = "foreign_table"
+	blankTable        = "sub_table"
 	associatedRecords = "AssociatedRecords"
 )
 
@@ -30,7 +30,7 @@ type input struct {
 	Method    string
 	Condition []Condition
 	Entity    Entity
-	Ref      []map[string]interface{}
+	Ref       []map[string]interface{}
 }
 
 // Condition Condition
@@ -62,8 +62,8 @@ func FormDataHandler(w http.ResponseWriter, r *http.Request) {
 		contexts.Logger.Error("read body err, %v\n", err)
 		return
 	}
-	paths := strings.Split(path,"/")
-	qp := map[string]string{"appID":paths[4],"tableID":paths[len(paths)-1]}
+	paths := strings.Split(path, "/")
+	qp := map[string]string{"appID": paths[4], "tableID": paths[len(paths)-1]}
 
 	form := new(input)
 	if err = json.Unmarshal(body, form); err != nil {
@@ -75,8 +75,8 @@ func FormDataHandler(w http.ResponseWriter, r *http.Request) {
 		Code: 0,
 	}
 
-	c,rest,err := handler(r,form,qp)
-	if c == 0{
+	c, rest, err := handler(r, form, qp)
+	if c == 0 {
 		return
 	}
 	if err != nil {
@@ -96,90 +96,90 @@ func FormDataHandler(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
-func handler(r *http.Request,in *input,p map[string]string) (int,interface{},error) {
+func handler(r *http.Request, in *input, p map[string]string) (int, interface{}, error) {
 	switch in.Method {
-		case "findOne":
-			return doFindOne(r,in,p)
-		case "create":
-			c,err := doCreate(r,in.Entity,p)
-			return c,nil,err
-		case "update":
-			// update update#set
-			if in.Ref != nil && len(in.Ref) > 0 {
-				// diff 这里无法保证所有的请求都会成功，可能存在状态不一致的情况
-				return doUpdate(r,in,p)
-			}else {
-				return directRequest(r,in)
-			}
+	case "findOne":
+		return doFindOne(r, in, p)
+	case "create":
+		c, err := doCreate(r, in.Entity, p)
+		return c, nil, err
+	case "update":
+		// update update#set
+		if in.Ref != nil && len(in.Ref) > 0 {
+			// diff 这里无法保证所有的请求都会成功，可能存在状态不一致的情况
+			return doUpdate(r, in, p)
+		} else {
+			return directRequest(r, in)
+		}
 	case "delete":
-		return directRequest(r,in)
+		return directRequest(r, in)
 	}
-	return http.StatusOK,nil,nil
+	return http.StatusOK, nil, nil
 }
 
-func doUpdate(r *http.Request,in *input,p map[string]string)(int,interface{},error)  {
-	c,b,err := directRequest(r,in)
+func doUpdate(r *http.Request, in *input, p map[string]string) (int, interface{}, error) {
+	c, b, err := directRequest(r, in)
 	if b == nil {
-		return c,nil,err
+		return c, nil, err
 	}
 	if b.Code != 0 {
-		return c,b,err
+		return c, b, err
 	}
 	// 主数据成功了 更新子表单
 	ref := in.Ref
-	for i := 0;i< len(ref);i++{
-		for key,value := range ref[i]{
+	for i := 0; i < len(ref); i++ {
+		for key, value := range ref[i] {
 			st, err := json.Marshal(value)
 			if err != nil {
 				continue
 			}
 			var df diff
-			if err := json.Unmarshal(st,&df);err != nil{
+			if err := json.Unmarshal(st, &df); err != nil {
 				continue
 			}
-			subTable,err := getSubTable(r,p["appID"],p["tableID"],key)
-			if err != nil{
+			subTable, err := getSubTable(r, p["appID"], p["tableID"], key)
+			if err != nil {
 				continue
 			}
 			var path = ""
-			if subTable.SubTableType == blankTable{
+			if subTable.SubTableType == blankTable {
 				// 不校验权限
-				path = fmt.Sprintf("%s%s%s%s",base,subTable.AppID,subForm,subTable.SubTableID)
-			}else {
-				path = fmt.Sprintf("%s%s%s%s",base,subTable.AppID,form,subTable.SubTableID)
+				path = fmt.Sprintf("%s%s%s%s", base, subTable.AppID, subForm, subTable.SubTableID)
+			} else {
+				path = fmt.Sprintf("%s%s%s%s", base, subTable.AppID, form, subTable.SubTableID)
 			}
-			if df.New != nil{
-				for i:=0;i< len(df.New); i++{
+			if df.New != nil {
+				for i := 0; i < len(df.New); i++ {
 					sn, err := json.Marshal(df.New[i])
 					if err != nil {
 						continue
 					}
 					_, _, err = sendRequest2Struct(r, "POST", path, sn)
 					if err != nil {
-						contexts.Logger.Errorf("failed to create table: %s subTable data response body, err: %s, request_id: %s",subTable.TableID, err.Error(), contexts.GetRequestID(r))
+						contexts.Logger.Errorf("failed to create table: %s subTable data response body, err: %s, request_id: %s", subTable.TableID, err.Error(), contexts.GetRequestID(r))
 					}
 				}
 			}
-			if df.Updated != nil{
-				for i:=0;i< len(df.Updated); i++{
+			if df.Updated != nil {
+				for i := 0; i < len(df.Updated); i++ {
 					su, err := json.Marshal(df.Updated[i])
 					if err != nil {
 						continue
 					}
 					_, _, err = sendRequest2Struct(r, "POST", path, su)
 					if err != nil {
-						contexts.Logger.Errorf("failed to update table: %s subTable data response body, err: %s, request_id: %s",subTable.TableID, err.Error(), contexts.GetRequestID(r))
+						contexts.Logger.Errorf("failed to update table: %s subTable data response body, err: %s, request_id: %s", subTable.TableID, err.Error(), contexts.GetRequestID(r))
 					}
 				}
 			}
-			if df.Deleted != nil{
-				v := make([]interface{},0,len(df.Deleted))
-				for i:=0;i< len(df.Deleted); i++{
-					v = append(v,df.Deleted[i])
+			if df.Deleted != nil {
+				v := make([]interface{}, 0, len(df.Deleted))
+				for i := 0; i < len(df.Deleted); i++ {
+					v = append(v, df.Deleted[i])
 				}
 				con := Condition{
-					Key: "_id",
-					Op: "in",
+					Key:   "_id",
+					Op:    "in",
 					Value: v,
 				}
 				in = &input{
@@ -194,44 +194,44 @@ func doUpdate(r *http.Request,in *input,p map[string]string)(int,interface{},err
 				}
 				_, _, err = sendRequest2Struct(r, "POST", path, sd)
 				if err != nil {
-					contexts.Logger.Errorf("failed to delete table: %s subTable data response body, err: %s, request_id: %s",subTable.TableID, err.Error(), contexts.GetRequestID(r))
+					contexts.Logger.Errorf("failed to delete table: %s subTable data response body, err: %s, request_id: %s", subTable.TableID, err.Error(), contexts.GetRequestID(r))
 				}
 			}
 		}
 	}
-	return  http.StatusOK,nil,nil
+	return http.StatusOK, nil, nil
 }
 
-func directRequest(r *http.Request,in *input)(int,*response,error)  {
+func directRequest(r *http.Request, in *input) (int, *response, error) {
 	// 直接透传
 	path := r.URL.Path
 	jsonStr, err := json.Marshal(in)
 	if err != nil {
-		return http.StatusInternalServerError,nil,err
+		return http.StatusInternalServerError, nil, err
 	}
-	c,b,err := sendRequest2Struct(r,"POST",path,jsonStr)
-	if b != nil{
-		br,err := parseResp(b)
-		return c,br,err
+	c, b, err := sendRequest2Struct(r, "POST", path, jsonStr)
+	if b != nil {
+		br, err := parseResp(b)
+		return c, br, err
 	}
-	return c,nil,err
+	return c, nil, err
 }
 
-func doFindOne(r *http.Request,i *input,p map[string]string) (int,interface{},error) {
-	findPath := fmt.Sprintf("%s%s%s%s",base, p["appID"],form,p["tableID"])
+func doFindOne(r *http.Request, i *input, p map[string]string) (int, interface{}, error) {
+	findPath := fmt.Sprintf("%s%s%s%s", base, p["appID"], form, p["tableID"])
 	jsonStr, err := json.Marshal(i)
 	if err != nil {
-		return http.StatusInternalServerError,nil,err
+		return http.StatusInternalServerError, nil, err
 	}
 	c, b, err := sendRequest2Struct(r, "POST", findPath, jsonStr)
 	if c != http.StatusOK || err != nil {
-		return c,nil,err
+		return c, nil, err
 	}
-	resp,err := parseResp(b)
-	if err != nil{
-		return c,nil,err
+	resp, err := parseResp(b)
+	if err != nil {
+		return c, nil, err
 	}
-	if resp.Data != nil{
+	if resp.Data != nil {
 		value := reflect.ValueOf(resp.Data)
 		switch _t := reflect.TypeOf(resp.Data); _t.Kind() {
 		case reflect.Map:
@@ -239,62 +239,62 @@ func doFindOne(r *http.Request,i *input,p map[string]string) (int,interface{},er
 			for iter.Next() {
 				val := iter.Value().Elem()
 				switch val.Kind() {
-				case reflect.Array,reflect.Slice:
-					subTable,err := getSubTable(r,p["appID"],p["tableID"],iter.Key().String())
-					if err != nil{
-						return c,nil,err
+				case reflect.Array, reflect.Slice:
+					subTable, err := getSubTable(r, p["appID"], p["tableID"], iter.Key().String())
+					if err != nil {
+						return c, nil, err
 					}
-					if subTable == nil{
+					if subTable == nil {
 						break
 					}
-					subFindPath := fmt.Sprintf("%s%s%s%s",base, subTable.AppID,form,subTable.SubTableID)
+					subFindPath := fmt.Sprintf("%s%s%s%s", base, subTable.AppID, form, subTable.SubTableID)
 					subInput := new(input)
 					subInput.Method = "find"
-					subInput.Condition = []Condition{{Key: "_id",Op: "in",Value: val.Interface().([]interface{})}}
+					subInput.Condition = []Condition{{Key: "_id", Op: "in", Value: val.Interface().([]interface{})}}
 
 					str, err := json.Marshal(subInput)
 					if err != nil {
-						return http.StatusInternalServerError,nil,err
+						return http.StatusInternalServerError, nil, err
 					}
 					co, bf, err := sendRequest2Struct(r, "POST", subFindPath, str)
 					if co != http.StatusOK || err != nil {
-						return co,nil,err
+						return co, nil, err
 					}
-					subResp,err := parseResp(bf)
+					subResp, err := parseResp(bf)
 					if err != nil {
-						return co,nil,err
+						return co, nil, err
 					}
 					if subResp.Data != nil {
 						d := subResp.Data.(map[string]interface{})
-						if sd,ok := d["entities"];ok{
+						if sd, ok := d["entities"]; ok {
 							value.SetMapIndex(reflect.ValueOf(iter.Key().String()), reflect.ValueOf(sd))
 						}
 					}
 				}
 			}
-			return http.StatusOK,resp.Data,nil
+			return http.StatusOK, resp.Data, nil
 		}
 	}
-	return http.StatusOK,nil,nil
+	return http.StatusOK, nil, nil
 }
 
-func doCreate(r *http.Request,e Entity,p map[string]string)(int,error) {
+func doCreate(r *http.Request, e Entity, p map[string]string) (int, error) {
 	if e == nil {
-		return http.StatusBadRequest,errors.New("bad parameter")
+		return http.StatusBadRequest, errors.New("bad parameter")
 	}
 	requestID := contexts.GetRequestID(r)
 	value := reflect.ValueOf(e)
 	switch _t := reflect.TypeOf(e); _t.Kind() {
 	case reflect.Ptr:
-		return doCreate(r,value.Elem(),p)
+		return doCreate(r, value.Elem(), p)
 	case reflect.Array, reflect.Slice:
 		for i := 0; i < value.Len(); i++ {
 			if !value.Index(i).CanInterface() {
 				continue
 			}
-			c,err := doCreate(r,value.Index(i),p)
-			if err != nil{
-				return c,err
+			c, err := doCreate(r, value.Index(i), p)
+			if err != nil {
+				return c, err
 			}
 		}
 	case reflect.Map:
@@ -303,89 +303,89 @@ func doCreate(r *http.Request,e Entity,p map[string]string)(int,error) {
 		for iter.Next() {
 			val := iter.Value().Elem()
 			switch val.Kind() {
-			case reflect.Array,reflect.Slice:
-				subTable,err := getSubTable(r,p["appID"],p["tableID"],iter.Key().String())
-				if err != nil{
-					return http.StatusInternalServerError,err
+			case reflect.Array, reflect.Slice:
+				subTable, err := getSubTable(r, p["appID"], p["tableID"], iter.Key().String())
+				if err != nil {
+					return http.StatusInternalServerError, err
 				}
-				if subTable == nil{
+				if subTable == nil {
 					break
 				}
-				rp := make([]string,0,val.Len())
+				rp := make([]string, 0, val.Len())
 				// 先插入子表单数据
 				var subCreatePath string
 				// 已存在子表单
-				if subTable.SubTableType == foreignTable{
-					subCreatePath = fmt.Sprintf("%s%s%s%s",base, subTable.AppID,form,subTable.SubTableID)
+				if subTable.SubTableType == foreignTable {
+					subCreatePath = fmt.Sprintf("%s%s%s%s", base, subTable.AppID, form, subTable.SubTableID)
 				}
 				// 新建子表单
-				if subTable.SubTableType == blankTable{
-					subCreatePath = fmt.Sprintf("%s%s%s%s",base, subTable.AppID,subForm,subTable.SubTableID)
+				if subTable.SubTableType == blankTable {
+					subCreatePath = fmt.Sprintf("%s%s%s%s", base, subTable.AppID, subForm, subTable.SubTableID)
 				}
 				// 关联记录
-				if subTable.SubTableType == associatedRecords{
+				if subTable.SubTableType == associatedRecords {
 					break
 				}
-				for i := 0;i<val.Len();i++{
+				for i := 0; i < val.Len(); i++ {
 					subInput := new(input)
 					subInput.Method = "create"
 					subInput.Entity = val.Index(i).Interface()
-					sj,err := json.Marshal(subInput)
+					sj, err := json.Marshal(subInput)
 					if err != nil {
-						return http.StatusInternalServerError,err
+						return http.StatusInternalServerError, err
 					}
 					co, bf, err := sendRequest2Struct(r, "POST", subCreatePath, sj)
 					if co != http.StatusOK || err != nil {
 						contexts.Logger.Errorf("failed to create subTable response body, err: %s, request_id: %s", err.Error(), requestID)
-						return co,err
+						return co, err
 					}
-					subResp,err := parseResp(bf)
+					subResp, err := parseResp(bf)
 					if err != nil {
-						return co,err
+						return co, err
 					}
 
 					if subResp.Data != nil {
 						d := subResp.Data.(map[string]interface{})
-						if id,ok := d["_id"];ok{
-							rp = append(rp,id.(string))
+						if id, ok := d["_id"]; ok {
+							rp = append(rp, id.(string))
 						}
 					}
 				}
 				value.SetMapIndex(reflect.ValueOf(iter.Key().String()), reflect.ValueOf(rp))
 			}
 		}
-		createPath := fmt.Sprintf("%s%s%s%s",base, p["appID"],form,p["tableID"])
+		createPath := fmt.Sprintf("%s%s%s%s", base, p["appID"], form, p["tableID"])
 		mInput := new(input)
 		mInput.Method = "create"
 		mInput.Entity = value.Interface()
-		sj,err := json.Marshal(mInput)
+		sj, err := json.Marshal(mInput)
 		if err != nil {
-			return http.StatusInternalServerError,err
+			return http.StatusInternalServerError, err
 		}
 		cd, buf, err := sendRequest2Struct(r, "POST", createPath, sj)
 		if cd != http.StatusOK || err != nil {
-			contexts.Logger.Errorf("failed to create associatedRecords Table %s response body, err: %s, request_id: %s",p["tableID"], err.Error(), requestID)
-			return cd,err
+			contexts.Logger.Errorf("failed to create associatedRecords Table %s response body, err: %s, request_id: %s", p["tableID"], err.Error(), requestID)
+			return cd, err
 		}
-		_,err = parseResp(buf)
+		_, err = parseResp(buf)
 		if err != nil {
-			return cd,err
+			return cd, err
 		}
 	default:
-		return http.StatusOK,nil
+		return http.StatusOK, nil
 	}
-	return http.StatusOK,nil
+	return http.StatusOK, nil
 }
 
-func parseResp(b []byte) (*response,error) {
+func parseResp(b []byte) (*response, error) {
 	var resp response
 	if err := json.Unmarshal(b, &resp); err != nil {
-		return nil,err
+		return nil, err
 	}
-	if resp.Code != 0{
-		return nil,errors.New(resp.Msg)
+	if resp.Code != 0 {
+		return nil, errors.New(resp.Msg)
 	}
-	return &resp,nil
+	return &resp, nil
 }
 
 // GetSubTableReq GetSubTableReq
@@ -399,13 +399,13 @@ type GetSubTableReq struct {
 	// table type
 	SubTableType string `json:"subTableType"`
 	// filter
-	Filter  []string `json:"filter"`
+	Filter []string `json:"filter"`
 }
 
 type response struct {
-	Code int `json:"code"`
+	Code int         `json:"code"`
 	Data interface{} `json:"data"`
-	Msg string  `json:"msg,omitempty"`
+	Msg  string      `json:"msg,omitempty"`
 }
 
 func in(target string, filter *[]string) bool {
@@ -417,59 +417,60 @@ func in(target string, filter *[]string) bool {
 }
 
 type diff struct {
-	AppID string `json:"appID"`
-	TableID string `json:"tableID"`
+	AppID   string        `json:"appID"`
+	TableID string        `json:"tableID"`
 	Updated []interface{} `json:"updated"`
-	New []interface{} `json:"new"`
-	Deleted []string  `json:"deleted"`
+	New     []interface{} `json:"new"`
+	Deleted []string      `json:"deleted"`
 }
 
-func getSubTable(r *http.Request,appID,tableID,fieldName string) (*GetSubTableReq,error) {
+func getSubTable(r *http.Request, appID, tableID, fieldName string) (*GetSubTableReq, error) {
 	req := map[string]string{
-		"tableID" : tableID,
-		"fieldName" : fieldName,
+		"tableID":   tableID,
+		"fieldName": fieldName,
 	}
 	jsonStr, err := json.Marshal(req)
 	if err != nil {
-		return nil,err
+		return nil, err
 	}
-	path := fmt.Sprintf("%s%s%s",base, appID,querySubTable)
+	path := fmt.Sprintf("%s%s%s", base, appID, querySubTable)
 	c, body, err := sendRequest2Struct(r, "POST", path, jsonStr)
 	if c != http.StatusOK || err != nil {
-		return nil,err
+		return nil, err
 	}
-	resp,err := parseResp(body)
-	if err != nil{
-		return nil,err
+	resp, err := parseResp(body)
+	if err != nil {
+		return nil, err
 	}
 	// 并非子表单或关联表
-	if resp.Data == nil{
-		return nil,nil
+	if resp.Data == nil {
+		return nil, nil
 	}
 	st, err := json.Marshal(resp.Data)
 	if err != nil {
-		return nil,err
+		return nil, err
 	}
 	var subTable GetSubTableReq
 	err = json.Unmarshal(st, &subTable)
 	if err != nil {
-		return nil,err
+		return nil, err
 	}
-	return  &subTable,nil
+	return &subTable, nil
 }
 
-func sendRequest2Struct(r *http.Request, method string, fullPath string, body []byte)(int,[]byte,error){
+func sendRequest2Struct(r *http.Request, method string, fullPath string, body []byte) (int, []byte, error) {
 	req, err := http.NewRequest(method, contexts.APIEndpoint+fullPath, bytes.NewBuffer(body))
 	if err != nil {
 		contexts.Logger.Error("failed to build request: %s", err.Error())
 		// renderErrorPage(w, r, http.StatusInternalServerError, http.StatusText(http.StatusInternalServerError))
-		return http.StatusInternalServerError,nil,err
+		return http.StatusInternalServerError, nil, err
 	}
 
 	req.Header.Set("Access-Token", getToken(r))
 	req.Header.Set("Content-Type", r.Header.Get("Content-Type"))
 	req.Header.Set("User-Agent", r.Header.Get("User-Agent"))
 	req.Header.Set("User-Id", r.Header.Get("User-Id"))
+	req.Header.Set("X-Request-ID", contexts.GetRequestID(r))
 
 	contexts.Logger.Debugf(
 		"proxy api request, method: %s, url: %s, header: %s request_id: %s", method, fullPath, req.Header, contexts.GetRequestID(r))
@@ -477,10 +478,10 @@ func sendRequest2Struct(r *http.Request, method string, fullPath string, body []
 	resp, body, errMsg := contexts.RetrieveResponse(req)
 	if errMsg != "" {
 		contexts.Logger.Errorf("do request proxy error: %s, request_id: %s", err.Error(), contexts.GetRequestID(r))
-		return http.StatusInternalServerError,nil,errors.New(errMsg)
+		return http.StatusInternalServerError, nil, errors.New(errMsg)
 	}
-	if resp.StatusCode != http.StatusOK{
-		return resp.StatusCode,nil,errors.New("error")
+	if resp.StatusCode != http.StatusOK {
+		return resp.StatusCode, nil, errors.New("error")
 	}
-	return resp.StatusCode,body,nil
+	return resp.StatusCode, body, nil
 }

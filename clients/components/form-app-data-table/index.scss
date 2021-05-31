@@ -79,3 +79,13 @@
 .page-data-info-view {
   box-shadow: inset 0px -1px 0px var(--gray-200);
 }
+
+.advanced-query-container {
+  width: 735px;
+  padding: 20px;
+  border: 1px solid var(--gray-300);
+  overflow-y: auto;
+  box-shadow: 0px 8px 24px rgb(148 163 184 / 25%);
+  background-color: #fff;
+  border-radius: 12px;
+}

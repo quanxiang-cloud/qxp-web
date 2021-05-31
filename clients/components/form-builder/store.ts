@@ -1,4 +1,5 @@
 import { action, computed, observable, toJS } from 'mobx';
+import { nanoid } from 'nanoid';
 
 import logger from '@lib/logger';
 import registry from './registry';
@@ -98,8 +99,10 @@ export default class FormBuilderStore {
   @observable activeFieldName = '';
   @observable labelAlign: 'right' | 'top' = 'right';
   @observable columnsCount: 1 | 2 = 1;
+  @observable isLinkageConfigVisible = false;
   @observable visibleHiddenLinkages: FormBuilder.VisibleHiddenLinkage[] = [];
   @observable hasEdit = false;
+  @observable validations: Array<ValidationFormula>;
 
   constructor({ schema, appID, pageID }: Props) {
     const [internalFields, fields] = schemaToFields(schema);
@@ -111,6 +114,8 @@ export default class FormBuilderStore {
 
     this.visibleHiddenLinkages = schema['x-internal']?.visibleHiddenLinkages || [];
     this.columnsCount = schema['x-internal']?.columns || 1;
+
+    this.validations = schema['x-internal']?.validations || [];
   }
 
   @computed get activeField(): FormItem | null {
@@ -147,7 +152,7 @@ export default class FormBuilderStore {
 
         const parsedSchema = toSchema(toJS(configValue));
         // ensure 'x-internal' exist
-        parsedSchema['x-internal'] = parsedSchema['x-internal'] || {};
+        parsedSchema['x-internal'] = parsedSchema['x-internal'] || { defaultValueFrom: 'customized' };
         parsedSchema['x-internal'].isSystem = !!configValue.isSystem;
 
         acc[fieldName] = {
@@ -172,6 +177,8 @@ export default class FormBuilderStore {
         // columns: this.columnsCount,
         columns: 1,
         visibleHiddenLinkages: toJS(this.visibleHiddenLinkages),
+        validations: this.validations ? toJS(this.validations) : undefined,
+        defaultValueFrom: 'customized',
       },
     };
   }
@@ -224,6 +231,10 @@ export default class FormBuilderStore {
 
   @action updateLabelAlign(labelAlign: 'right' | 'top') {
     this.labelAlign = labelAlign;
+  }
+
+  @action updateLinkageConfigVisible(visible: boolean) {
+    this.isLinkageConfigVisible = visible;
   }
 
   @action deleteLinkage(key: string) {
@@ -346,5 +357,30 @@ export default class FormBuilderStore {
   @action
   setColumnsCount(count: 1 | 2): void {
     this.columnsCount = count;
+  }
+
+  @action
+  updateValidation(validation: ValidationFormula): void {
+    if (validation.id) {
+      this.validations = toJS(this.validations).map((rule) => {
+        if (rule.id === validation.id) {
+          return validation;
+        }
+
+        return rule;
+      });
+    }
+
+    this.validations.push({
+      ...validation,
+      id: nanoid(10),
+    });
+  }
+
+  @action
+  deleteValidation(id: string): void {
+    this.validations = this.validations.filter((rule) => {
+      return rule.id !== id;
+    });
   }
 }

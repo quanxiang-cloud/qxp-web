@@ -7,21 +7,34 @@ import toast from '@lib/toast';
 import Select from '@c/select';
 import AppsSwitcher from '@c/apps-switcher';
 
-import { fetchUserList } from '../../../lib/api';
+import { fetchUserList, getPerOption, roleChange } from '../../../lib/api';
+import store from '../../store';
 import './index.scss';
+
+type PerItem = {
+  id: string;
+  name: string;
+}
+
+type PerRes = {
+  optionPer: PerItem[];
+  selectPer: PerItem;
+}
 
 function DetailsHeader() {
   const history = useHistory();
   const [appList, setAppList] = useState([]);
-  const { appID } = useParams<{ appID: string}>();
-  const options = [
-    {
-      label: '应用管理员',
-      value: 'admin',
-    },
-  ];
+  const [options, setOptions] = useState<{ value: string, label: string }[]>([]);
+  const [curRole, setCurRole] = useState<string>();
+  const { appID } = useParams<{ appID: string }>();
 
   useEffect(() => {
+    getPerOption<PerRes>(appID).then((res) => {
+      const { optionPer = [], selectPer = { id: '' } } = res;
+      setCurRole(selectPer.id || '');
+      setOptions(optionPer.map(({ id, name }) => ({ value: id, label: name })));
+    });
+
     fetchUserList().then((res) => {
       if (res.data.data.findIndex(({ id }: AppInfo) => id === appID) === -1) {
         toast.error('应用不存在！2秒后跳转到首页');
@@ -37,6 +50,13 @@ function DetailsHeader() {
     history.replace(location.pathname.replace(appID, newAppId));
   };
 
+  const handleRoleChange = (roleID: string) => {
+    roleChange(appID, roleID).then(() => {
+      store.clear();
+      store.fetchPageList(appID);
+    });
+  };
+
   return (
     <div className="app-global-header app-details-header">
       <div className='flex items-center'>
@@ -49,8 +69,9 @@ function DetailsHeader() {
           onChange={handleChange}
         />
       </div>
-      <div>
-        <Select className='w-144' options={options} />
+      <div className='flex items-center'>
+        切换角色：
+        <Select value={curRole} onChange={handleRoleChange} className='w-144' options={options} />
       </div>
     </div>
   );

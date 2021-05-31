@@ -8,6 +8,7 @@ import { Scheme, Config, getPageDataSchema } from './utils';
 
 type Params = {
   condition?: Condition[] | [],
+  tag?: 'or' | 'and',
   sort?: string[] | [],
   page?: number,
   size?: number,
@@ -45,6 +46,7 @@ class AppPageDataStore {
     sort: [],
     page: 1,
     size: 10,
+    tag: 'and',
   };
   @observable createFun = () => {
     '';
@@ -103,7 +105,7 @@ class AppPageDataStore {
     return httpClient(`/api/v1/structor/${this.appID}/` +
       `${window.SIDE === 'portal' ? 'm' : 'home'}/form/${this.pageID}`, {
       method: 'delete',
-      condition: [{ key: '_id', op: ids.length > 1 ? 'in' : 'eq', value: ids }],
+      conditions: { condition: [{ key: '_id', op: ids.length > 1 ? 'in' : 'eq', value: ids }] },
     }).then(() => {
       this.formDataList = this.formDataList.filter(({ _id }) => !ids.includes(_id));
       toast.success('删除成功!');
@@ -115,14 +117,16 @@ class AppPageDataStore {
     if (!this.allowRequestData || !this.pageID) {
       return;
     }
+
     this.listLoading = true;
     const side = window.SIDE === 'portal' ? 'm' : 'home';
+    const { condition, tag, ...other } = params;
     httpClient(`/api/v1/structor/${this.appID}/${side}/form/${this.pageID}`, {
       method: 'find',
       page: 1,
-      condition: [],
+      conditions: { tag: tag, condition },
       sort: [],
-      ...params,
+      ...other,
     }).then((res: any) => {
       this.formDataList = res.entities;
       this.total = res.total || 0;
@@ -137,13 +141,16 @@ class AppPageDataStore {
     const side = window.SIDE === 'portal' ? 'm' : 'home';
     return httpClient(`/api/v1/structor/${this.appID}/${side}/form/${this.pageID}`, {
       method: 'findOne',
-      condition: [
-        {
-          key: '_id',
-          op: 'eq',
-          value: [dataID],
-        },
-      ],
+      conditions: {
+        condition: [
+          {
+            key: '_id',
+            op: 'eq',
+            value: [dataID],
+          },
+        ],
+        tag: 'and',
+      },
     });
   }
 
@@ -152,9 +159,10 @@ class AppPageDataStore {
     if (!this.pageID) {
       return;
     }
+
     const side = window.SIDE === 'portal' ? 'm' : 'home';
     httpClient(
-      `/api/v1/structor/${this.appID}/${side}/permission/operatePer/getByScopeID`,
+      `/api/v1/structor/${this.appID}/${side}/permission/operatePer/getOperate`,
       { formID: this.pageID }
     ).then((res: any) => {
       this.authority = res?.authority || 0;

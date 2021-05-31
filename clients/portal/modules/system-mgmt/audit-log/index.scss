@@ -1,0 +1,17 @@
+.search-log {
+  background-color: var(--gray-100);
+  input {
+    width:200px !important;
+  }
+}
+
+.log-table-wrap {
+  max-height: 500px;
+  overflow: auto;
+}
+
+.log-date-picker {
+  margin-left: 10px;
+  display: flex;
+  align-items: center;
+}

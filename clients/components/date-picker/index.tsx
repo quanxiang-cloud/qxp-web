@@ -98,7 +98,7 @@ export default class DatePicker extends React.Component<Props> {
           />
           <Icon
             className="date-picker__right-icon date-picker__calendar-icon"
-            name="calendar"
+            name="calendar_today"
             size={16}
           />
           <Icon

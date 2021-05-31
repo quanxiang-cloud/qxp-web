@@ -3,7 +3,7 @@ export interface CascadeConfig {
   description?: string;
   placeholder?: string;
   displayModifier: FormBuilder.DisplayModifier;
-  valueSource: FormBuilder.ValueSource;
+  defaultValueFrom: FormBuilder.DefaultValueFrom;
   customizedDataset?: FormBuilder.CascadeOption[];
   predefinedDataset?: string;
   showFullPath: boolean;
@@ -16,7 +16,7 @@ export const defaultConfig: CascadeConfig = {
   description: '',
   placeholder: '',
   displayModifier: 'normal',
-  valueSource: 'customized',
+  defaultValueFrom: 'customized',
   customizedDataset: [],
   predefinedDataset: '',
   showFullPath: true,
@@ -40,7 +40,7 @@ export function toSchema(value: CascadeConfig): FormBuilder.Schema {
     },
     ['x-internal']: {
       predefinedDataset: value.predefinedDataset,
-      valueSource: value.valueSource,
+      defaultValueFrom: value.defaultValueFrom,
       showFullPath: value.showFullPath,
       sortable: false,
       permission: 3,
@@ -61,7 +61,7 @@ export function toConfig(schema: FormBuilder.Schema): CascadeConfig {
     description: schema.description as string,
     displayModifier: displayModifier,
     placeholder: schema['x-component-props']?.placeholder || '',
-    valueSource: schema['x-component-props']?.valueSource || '',
+    defaultValueFrom: schema['x-component-props']?.defaultValueFrom || '',
     customizedDataset: schema['x-component-props']?.customizedDataset || [],
     predefinedDataset: schema['x-component-props']?.predefinedDataset || '',
     showFullPath: schema['x-component-props']?.showFullPath || true,
