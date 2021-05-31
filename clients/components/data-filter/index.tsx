@@ -6,19 +6,12 @@ import Select from '@c/select';
 import FieldSwitch from '@portal/modules/apps-management/components/field-switch';
 import Icon from '@c/icon';
 import formFieldWrap from '@portal/modules/apps-management/components/form-field-wrap';
-<<<<<<< HEAD:clients/components/data-filter/index.tsx
 
 import './index.scss';
 
 type Props = {
   fields: Fields[];
   baseConditions?: Condition[];
-=======
-
-type Props = {
-  fields: Fields[];
-  baseConditions: Condition[];
->>>>>>> master:clients/portal/modules/apps-management/pages/app-details/app-setting/users-and-permissions/rights-setting/data-filter.tsx
   initTag?: string;
   className?: string;
 }
@@ -29,7 +22,6 @@ type FieldCondition = {
   value?: any;
   op?: string;
   filtrate?: any;
-<<<<<<< HEAD:clients/components/data-filter/index.tsx
 }
 
 export type ConditionItemMap = {
@@ -41,8 +33,6 @@ export type RefProps = {
   getDataPer: () => Promise<ConditionItemMap | string>;
   empty: () => void;
   getDataValues: () => ConditionItemMap
-=======
->>>>>>> master:clients/portal/modules/apps-management/pages/app-details/app-setting/users-and-permissions/rights-setting/data-filter.tsx
 }
 
 const CONDITION = [{
@@ -138,11 +128,8 @@ function DataFilter({ fields, className = '', baseConditions, initTag = 'and' }:
 
   useImperativeHandle(ref, () => ({
     getDataPer: getDataPer,
-<<<<<<< HEAD:clients/components/data-filter/index.tsx
     getDataValues: getDataValues,
     empty: () => setConditions([]),
-=======
->>>>>>> master:clients/portal/modules/apps-management/pages/app-details/app-setting/users-and-permissions/rights-setting/data-filter.tsx
   }));
 
   useEffect(() => {
@@ -193,7 +180,6 @@ function DataFilter({ fields, className = '', baseConditions, initTag = 'and' }:
     setConditions(conditions.filter(({ id }) => _id !== id));
   };
 
-<<<<<<< HEAD:clients/components/data-filter/index.tsx
   const getDataValues = () => {
     if (conditions.length === 0) {
       return { arr: [], tag };
@@ -229,39 +215,6 @@ function DataFilter({ fields, className = '', baseConditions, initTag = 'and' }:
           return getCondition(formData, condition);
         });
 
-=======
-  const getDataPer = () => {
-    if (conditions.length === 0) {
-      return Promise.resolve({ arr: [], tag });
-    }
-
-    return trigger().then((flag) => {
-      if (flag) {
-        const formData = getValues();
-        const _conditions = conditions.map((condition) => {
-          let value = formData[`condition-${condition.id}`];
-          switch (condition.filtrate?.type) {
-          case 'date':
-            value = isArray(value) ? value.map((date: string) => {
-              return new Date(date).getTime();
-            }) : [new Date(value).getTime()];
-            break;
-          case 'number':
-            value = isArray(value) ? value.map((_value) => Number(_value)) : [Number(value)];
-            break;
-          default:
-            value = isArray(value) ? value : [value];
-            break;
-          }
-
-          return {
-            key: formData[`field-${condition.id}`],
-            op: formData[`operators-${condition.id}`],
-            value,
-          };
-        });
-
->>>>>>> master:clients/portal/modules/apps-management/pages/app-details/app-setting/users-and-permissions/rights-setting/data-filter.tsx
         return {
           arr: _conditions,
           tag,
@@ -297,10 +250,7 @@ function DataFilter({ fields, className = '', baseConditions, initTag = 'and' }:
                   return (
                     <FormFieldSelect
                       style={{ width: '250px' }}
-<<<<<<< HEAD:clients/components/data-filter/index.tsx
                       optionClassName='qxp-data-filter-options'
-=======
->>>>>>> master:clients/portal/modules/apps-management/pages/app-details/app-setting/users-and-permissions/rights-setting/data-filter.tsx
                       error={errors['field-' + condition.id]}
                       register={{ name: field.name, ref: field.ref, value: field.value }}
                       options={fieldOption}
