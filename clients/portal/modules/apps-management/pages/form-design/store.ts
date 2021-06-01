@@ -18,8 +18,8 @@ class FormDesignStore {
   destroyFetchScheme: IReactionDisposer;
   destroySetTableColumn: IReactionDisposer;
   destroySetTableConfig: IReactionDisposer;
-  destroySetFiltrates: IReactionDisposer;
-  destroySetAllFiltrate: IReactionDisposer;
+  destroySetFilters: IReactionDisposer;
+  destroySetAllFilter: IReactionDisposer;
   destroySetSchema: IReactionDisposer;
   @observable pageID = '';
   @observable appID = '';
@@ -31,7 +31,7 @@ class FormDesignStore {
   @observable hasSchema = false;
   @observable pageTableConfig: Record<string, any> = {};
   @observable pageTableShowRule: PageTableShowRule = {};
-  @observable filtrateMaps: FilterMaps = {};
+  @observable filterMaps: FilterMaps = {};
 
   @computed get fieldsMap(): Record<string, ISchema> {
     return this.formStore?.schema?.properties || {};
@@ -59,22 +59,22 @@ class FormDesignStore {
       return { pageID: this.pageID, appID: this.appID };
     }, this.fetchFormScheme);
 
-    this.destroySetAllFiltrate = reaction(() => this.fieldList, () => {
+    this.destroySetAllFilter = reaction(() => this.fieldList, () => {
       if (!this.formStore) {
         return;
       }
 
-      const hasFiltrateMaps = { ...this.filtrateMaps };
-      Object.keys(this.filtrateMaps).forEach((id) => {
+      const hasFilterMaps = { ...this.filterMaps };
+      Object.keys(this.filterMaps).forEach((id) => {
         if (this.formStore?.schema?.properties && !(id in this.formStore?.schema?.properties)) {
-          delete hasFiltrateMaps[id];
+          delete hasFilterMaps[id];
         }
       });
-      this.filtrateMaps = hasFiltrateMaps;
+      this.filterMaps = hasFilterMaps;
     });
 
     this.destroySetSchema = reaction(() => this.formStore?.schema, this.appPageStore.setSchema);
-    this.destroySetFiltrates = reaction(() => this.filtrateMaps, this.appPageStore.setFiltrates);
+    this.destroySetFilters = reaction(() => this.filterMaps, this.appPageStore.setFilters);
 
     this.destroySetTableColumn = reaction(() => {
       const column: UnionColumns<any>[] = [];
@@ -99,8 +99,8 @@ class FormDesignStore {
   }
 
   @action
-  setFiltrateMaps = (filtrates: FilterMaps) => {
-    this.filtrateMaps = filtrates;
+  setFilterMaps = (filters: FilterMaps) => {
+    this.filterMaps = filters;
   }
 
   @action
@@ -150,7 +150,7 @@ class FormDesignStore {
       this.formStore = new FormStore({ schema, appID, pageID });
       if (config) {
         this.pageTableConfig = config.pageTableConfig || {};
-        this.filtrateMaps = config.filtrate || {};
+        this.filterMaps = config.filter || {};
         this.pageTableShowRule = config.pageTableShowRule || {};
       }
       this.pageLoading = false;
@@ -180,7 +180,7 @@ class FormDesignStore {
     this.formStore = null;
     this.pageTableConfig = {};
     this.pageTableShowRule = {};
-    this.filtrateMaps = {};
+    this.filterMaps = {};
     this.appPageStore.clear();
   }
 
@@ -189,7 +189,7 @@ class FormDesignStore {
     createPageScheme(this.appID, {
       tableID: this.pageID, config: {
         pageTableConfig: this.pageTableConfig,
-        filtrate: this.filtrateMaps,
+        filter: this.filterMaps,
         pageTableShowRule: this.pageTableShowRule,
       },
     }).then(() => {

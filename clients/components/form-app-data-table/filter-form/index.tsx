@@ -9,13 +9,13 @@ import { StoreContext } from '../context';
 import './index.scss';
 
 type Props = {
-  showMoreFiltrate: boolean;
+  showMoreFilter: boolean;
 }
 
-function FiltrateForm({ showMoreFiltrate }: Props, ref?: React.Ref<any>) {
+function FilterForm({ showMoreFilter }: Props, ref?: React.Ref<any>) {
   const store = useContext(StoreContext);
-  const { fieldsMap, filtrateMaps } = store;
-  const filtrateKeys = Object.keys(filtrateMaps);
+  const { fieldsMap, filterMaps } = store;
+  const filterKeys = Object.keys(filterMaps);
   const { getValues, reset, control } = useForm();
 
   useImperativeHandle(ref, () => ({
@@ -23,7 +23,7 @@ function FiltrateForm({ showMoreFiltrate }: Props, ref?: React.Ref<any>) {
     reset: reset,
   }));
 
-  if (filtrateKeys.length === 0) {
+  if (filterKeys.length === 0) {
     return (
       <div className='text-caption-no-color text-gray-400 flex-1 flex items-center'>
         <img
@@ -32,16 +32,16 @@ function FiltrateForm({ showMoreFiltrate }: Props, ref?: React.Ref<any>) {
           className='mr-8 inline-block'
           src='/dist/images/empty-msg-detail.svg'
         />
-        {store.noFiltratesTips}
+        {store.noFiltersTips}
       </div>
     );
   }
 
   return (
-    <form className='app-page-filtrate-form'>
-      {(showMoreFiltrate ? filtrateKeys : filtrateKeys.slice(0, 3)).map((key) => (
+    <form className='app-page-filter-form'>
+      {(showMoreFilter ? filterKeys : filterKeys.slice(0, 3)).map((key) => (
         <div className='flex items-center' key={key}>
-          <label className='app-page-filtrate-label'>{fieldsMap[key]?.title}：</label>
+          <label className='app-page-filter-label'>{fieldsMap[key]?.title}：</label>
           <Controller
             name={key}
             control={control}
@@ -62,4 +62,4 @@ function FiltrateForm({ showMoreFiltrate }: Props, ref?: React.Ref<any>) {
   );
 }
 
-export default observer(React.forwardRef(FiltrateForm));
+export default observer(React.forwardRef(FilterForm));

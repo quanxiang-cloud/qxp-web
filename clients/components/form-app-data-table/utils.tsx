@@ -10,7 +10,7 @@ export type PageTableShowRule = {
   pageSize?: number | null;
 }
 export type Config = {
-  filtrate?: FilterMaps;
+  filter?: FilterMaps;
   pageTableConfig?: Record<string, any>;
   pageTableShowRule?: PageTableShowRule;
 };

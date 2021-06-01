@@ -5,13 +5,13 @@ import { observer } from 'mobx-react';
 import Button from '@c/button';
 import Icon from '@c/icon';
 
-import FiltrateForm from './filtrate-form';
+import FilterForm from './filter-form';
 import { StoreContext } from './context';
 
-function PageDataFiltrate() {
-  const [showMoreFiltrate, setShowMoreFiltrate] = useState(false);
+function PageDataFilter() {
+  const [showMoreFilter, setShowMoreFilter] = useState(false);
   const store = useContext(StoreContext);
-  const filtrateKeys = Object.keys(store.filtrateMaps);
+  const filterKeys = Object.keys(store.filterMaps);
 
   const filterDom = useRef<any>();
 
@@ -23,13 +23,13 @@ function PageDataFiltrate() {
     const condition: Condition[] = [];
     const values = filterDom.current.getValues();
     Object.keys(values).forEach((key) => {
-      const curFiltrate = store.fields.find(({ id }) => id === key);
-      if (!values[key] || (Array.isArray(values[key]) && values[key].length === 0) || !curFiltrate) {
+      const curFilter = store.fields.find(({ id }) => id === key);
+      if (!values[key] || (Array.isArray(values[key]) && values[key].length === 0) || !curFilter) {
         return;
       }
 
-      const _condition: Condition = { key, op: store.filtrateMaps[curFiltrate.id].compareSymbol };
-      switch (curFiltrate?.type) {
+      const _condition: Condition = { key, op: store.filterMaps[curFilter.id].compareSymbol };
+      switch (curFilter?.type) {
       case 'datetime':
         const [start, end] = values[key];
         _condition.value = [moment(start).format(), moment(end).format()];
@@ -54,32 +54,32 @@ function PageDataFiltrate() {
 
   const reset = () => {
     const resObj: Record<string, ''> = {};
-    filtrateKeys.map((id) => {
+    filterKeys.map((id) => {
       resObj[id] = '';
     });
     filterDom.current.reset(resObj);
   };
 
-  const noFilter = filtrateKeys.length === 0;
+  const noFilter = filterKeys.length === 0;
 
   if (noFilter) {
     return null;
   }
 
   return (
-    <div className='form-app-data-table-container form-app-data-table-filtrate'>
-      <FiltrateForm ref={filterDom} showMoreFiltrate={showMoreFiltrate} />
+    <div className='form-app-data-table-container form-app-data-table-filter'>
+      <FilterForm ref={filterDom} showMoreFilter={showMoreFilter} />
       <div>
-        {filtrateKeys.length > 3 ? (
+        {filterKeys.length > 3 ? (
           <span
-            onClick={() => setShowMoreFiltrate(!showMoreFiltrate)}
-            className='form-app-data-table-filtrate-more'
+            onClick={() => setShowMoreFilter(!showMoreFilter)}
+            className='form-app-data-table-filter-more'
           >
-            {showMoreFiltrate ? '收起' : '展开'}全部
+            {showMoreFilter ? '收起' : '展开'}全部
             <Icon
               size={16}
               className='ml-4 app-icon-color-inherit'
-              name={showMoreFiltrate ? 'expand_less' : 'expand_more'}
+              name={showMoreFilter ? 'expand_less' : 'expand_more'}
             />
           </span>
         ) : null}
@@ -92,4 +92,4 @@ function PageDataFiltrate() {
   );
 }
 
-export default observer(PageDataFiltrate);
+export default observer(PageDataFilter);

@@ -23,7 +23,7 @@ type FieldCondition = {
   key?: string;
   value?: any;
   op?: string;
-  filtrate?: Fields;
+  filter?: Fields;
 }
 
 export type ConditionItemMap = {
@@ -39,7 +39,7 @@ export type RefProps = {
 
 function getCondition(formData: any, condition: FieldCondition) {
   let value = formData[`condition-${condition.id}`];
-  switch (condition.filtrate?.type) {
+  switch (condition.filter?.type) {
   case 'datetime':
     value = isArray(value) ? value.map((date: string) => {
       return moment(date).format();
@@ -68,8 +68,6 @@ function DataFilter({ fields, className = '', baseConditions, initTag = 'and' }:
   const [tag, setTag] = useState(initTag);
   const { trigger, control, setValue, getValues, formState: { errors } } = useForm();
 
-  const fieldList = fields;
-
   useImperativeHandle(ref, () => ({
     getDataPer: getDataPer,
     getDataValues: getDataValues,
@@ -83,24 +81,24 @@ function DataFilter({ fields, className = '', baseConditions, initTag = 'and' }:
 
     const conditionsTmp: FieldCondition[] = [];
     baseConditions.forEach((condition: Condition) => {
-      const filtrate: any = fieldList.find(({ id }) => {
+      const filter = fields.find(({ id }) => {
         return id === condition.key;
       });
 
-      if (filtrate) {
+      if (filter) {
         conditionsTmp.push({
           id: uniqueId(),
           op: condition.op,
-          value: filtrate.multiple ? condition.value : (condition as any).value[0],
+          value: filter.enum && filter.enum.length ? condition.value : (condition as any).value[0],
           key: condition.key,
-          filtrate,
+          filter,
         });
       }
     });
     setConditions(conditionsTmp);
   }, [baseConditions]);
 
-  const fieldOption = fieldList.map((field) => ({
+  const fieldOption = fields.map((field) => ({
     value: field.id,
     label: field.title,
   }));
@@ -108,7 +106,7 @@ function DataFilter({ fields, className = '', baseConditions, initTag = 'and' }:
   const handleFieldChange = (rowID: string, field: string) => {
     setConditions(conditions.map((condition) => {
       if (condition.id === rowID) {
-        return { ...condition, filtrate: fieldList.find(({ id }) => id === field) };
+        return { ...condition, filter: fields.find(({ id }) => id === field) };
       }
       return condition;
     }));
@@ -213,7 +211,7 @@ function DataFilter({ fields, className = '', baseConditions, initTag = 'and' }:
                 }
               />
             </div>
-            {condition.filtrate ? (
+            {condition.filter ? (
               <>
                 <div>
                   <Controller
@@ -226,7 +224,7 @@ function DataFilter({ fields, className = '', baseConditions, initTag = 'and' }:
                         style={{ width: '100px' }}
                         error={errors['operators-' + condition.id]}
                         register={field}
-                        options={getOperators(condition.filtrate?.type || '', condition.filtrate?.enum)}
+                        options={getOperators(condition.filter?.type || '', condition.filter?.enum)}
 
                       />
                     )
@@ -243,7 +241,7 @@ function DataFilter({ fields, className = '', baseConditions, initTag = 'and' }:
                       <FormFieldSwitch
                         error={errors['condition-' + condition.id]}
                         register={{ ...field, value: field.value ? field.value : '' }}
-                        field={condition.filtrate}
+                        field={condition.filter}
                         style={{ width: '300px' }}
                       />
                     )

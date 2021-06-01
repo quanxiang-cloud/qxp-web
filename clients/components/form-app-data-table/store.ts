@@ -28,7 +28,7 @@ class AppPageDataStore {
   destroyFetchTableData: IReactionDisposer;
   destroySetTableConfig: IReactionDisposer;
   @observable tableConfig: any = {};
-  @observable noFiltratesTips: React.ReactNode = '尚未配置筛选条件。'
+  @observable noFiltersTips: React.ReactNode = '尚未配置筛选条件。'
   @observable listLoading = false;
   @observable pageID = '';
   @observable appID = '';
@@ -36,7 +36,7 @@ class AppPageDataStore {
   @observable authority = 0;
   @observable curItemFormData = null;
   @observable allowRequestData = false;
-  @observable filtrateMaps: FilterMaps = {};
+  @observable filterMaps: FilterMaps = {};
   @observable formDataList: any[] = [];
   @observable total = 0;
   @observable fields: Fields[] = [];
@@ -63,8 +63,8 @@ class AppPageDataStore {
       this.createFun = createFun;
     }
 
-    if (config?.filtrate) {
-      this.setFiltrates(config.filtrate || {});
+    if (config?.filter) {
+      this.setFilters(config.filter || {});
     }
 
     const { tableColumns, pageTableShowRule, fields } = getPageDataSchema(config || {}, schema);
@@ -104,8 +104,8 @@ class AppPageDataStore {
   }
 
   @action
-  setFiltrates = (filtrateMaps: FilterMaps) => {
-    this.filtrateMaps = filtrateMaps;
+  setFilters = (filterMaps: FilterMaps) => {
+    this.filterMaps = filterMaps;
   }
 
   @action
@@ -194,7 +194,7 @@ class AppPageDataStore {
     this.formDataList = [];
     this.tableConfig = {};
     this.authority = 0;
-    this.filtrateMaps = {};
+    this.filterMaps = {};
     this.tableColumns = [];
     this.pageID = '';
     this.params = {

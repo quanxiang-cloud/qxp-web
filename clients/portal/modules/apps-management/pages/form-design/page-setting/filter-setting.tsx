@@ -29,7 +29,7 @@ function infoRender(title: string, desc: string) {
 
 function FilterSetting() {
   const [filterModalVisible, setFilterModalVisible] = useState(false);
-  const [filterMaps, setFilterMaps] = useState<FilterMaps>(store.filtrateMaps);
+  const [filterMaps, setFilterMaps] = useState<FilterMaps>(store.filterMaps);
   const [expandList, setExpandList] = useState<string[]>([]);
   const { fieldList } = store;
   const handleCancel = () => {
@@ -101,7 +101,7 @@ function FilterSetting() {
   };
 
   const onSave = () => {
-    store.setFiltrateMaps(filterMaps);
+    store.setFilterMaps(filterMaps);
     setFilterModalVisible(false);
   };
 
