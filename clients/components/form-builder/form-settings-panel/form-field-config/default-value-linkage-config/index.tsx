@@ -22,7 +22,8 @@ import { INTERNAL_FIELD_NAMES } from '../../../store';
 import { OPERATORS } from '../../consts';
 import { operatorOption } from '../../utils';
 import { ArrayCustom, JoinOperatorSelect } from './customized-fields';
-import { getLinkageTables, getTableSchema } from './get-tables';
+import { getLinkageTables } from './get-tables';
+import { getTableSchema } from '@lib/http-client';
 
 const { onFieldInputChange$, onFieldValueChange$ } = FormEffectHooks;
 const COMPONENTS = {
@@ -121,8 +122,8 @@ function LinkageConfig({ onClose, onSubmit }: Props): JSX.Element {
     if (!tableID) {
       return;
     }
-    getTableSchema({ appID: store.appID, tableID }).then((schema) => {
-      const fields = Object.entries(schema.properties || {}).filter(([key, value]) => {
+    getTableSchema(store.appID, tableID).then(({ schema }) => {
+      const fields = Object.entries(schema?.properties || {}).filter(([key, value]) => {
         return !INTERNAL_FIELD_NAMES.includes(key) &&
           AVAILABLE_FIELD.includes(value['x-component'] || '');
       }).map(([key, value]) => {

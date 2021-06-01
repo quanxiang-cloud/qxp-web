@@ -17,7 +17,7 @@ class UserAppStore {
   @observable pageListLoading = true;
   @observable curPage: PageInfo = { id: '' };
   @observable fetchSchemeLoading = true;
-  @observable formScheme: any = null;
+  @observable formScheme: ISchema | null = null;
   @observable pagesTreeData: TreeData = {
     rootId: 'ROOT',
     items: {},

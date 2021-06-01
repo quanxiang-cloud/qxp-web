@@ -36,10 +36,6 @@ export const deletePage = async (data: any)=> {
   return await httpClient(`/api/v1/structor/${data.appID}/m/menu/delete`, data);
 };
 
-export const fetchFormScheme = async (appID: string, tableID: string)=> {
-  return await httpClient(`/api/v1/structor/${appID}/m/table/getByID`, { tableID });
-};
-
 export const appAddAdmin = async (data: any)=> {
   return await httpClient('/api/v1/app-center/addAdmin', data);
 };

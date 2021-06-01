@@ -20,6 +20,12 @@ type Props = {
 function CreateDataForm({ goBack, defaultValues }: Props) {
   const [loading, setLoading] = useState(false);
 
+  if (!store.formScheme) {
+    return (
+      <div>todo some error tips</div>
+    );
+  }
+
   const handleSubmit = (formData: any) => {
     setLoading(true);
     let reqData = {};
@@ -73,7 +79,7 @@ function CreateDataForm({ goBack, defaultValues }: Props) {
           className='p-40'
           onSubmit={handleSubmit}
           defaultValue={defaultValues}
-          schema={store.formScheme.schema}
+          schema={store.formScheme}
         >
           <FormButtonGroup className='pl-96'>
             <Button
