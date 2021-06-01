@@ -120,7 +120,7 @@ export default function EditEmployeesModal(
           submitText="确定关联"
           onSubmit={onAssociate}
           onCancel={() => setShowLeaderModal(false)}
-          current = {leader}
+          current={leader}
         />
       )}
       <Modal
