@@ -99,10 +99,10 @@ export default observer(function EmployeeTable({
           emptyTips={<EmptyTips text="无成员数据" className="py-10" />}
           columns={[
             {
-              Header: '',
-              id: 'radio',
+              Header: '员工姓名',
+              id: 'userName',
               fixed: true,
-              width: 40,
+              width: 120,
               accessor: ({ id, userName }: Employee) => {
                 const checked = (userLeader.id === id) || (leader.id === id);
                 const handleModifyModal = () => {
@@ -110,24 +110,18 @@ export default observer(function EmployeeTable({
                   onChange({ id, userName });
                 };
                 return (
-                  <input
-                    id={id}
-                    name="employee"
-                    type="radio"
-                    value={id}
-                    className="cursor-pointer"
-                    onClick={handleModifyModal}
-                    defaultChecked={checked}
-                  />);
-              },
-            },
-            {
-              Header: '员工姓名',
-              id: 'userName',
-              fixed: true,
-              accessor: ({ id, userName }: Employee) => {
-                return (
-                  <label className="cursor-pointer hover:text-blue-600" htmlFor={id}>{userName}</label>
+                  <label className="cursor-pointer hover:text-blue-600" htmlFor={id}>
+                    <input
+                      id={id}
+                      name="employee"
+                      type="radio"
+                      value={id}
+                      className="mr-2 cursor-pointer"
+                      onClick={handleModifyModal}
+                      defaultChecked={checked}
+                    />
+                    {userName}
+                  </label>
                 );
               },
             },
