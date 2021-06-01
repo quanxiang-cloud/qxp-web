@@ -31,4 +31,68 @@ function httpClient<TData>(
   });
 }
 
+type FormDataRequestQueryDeleteParams = {
+  method: 'find' | 'findOne' | 'delete';
+  conditions: {
+    condition: Array<{ key: string; op: string; value: Array<string | number>; }>;
+    tag?: 'and' | 'or';
+  }
+}
+
+type FormDataRequestCreateParams = {
+  method: 'create';
+  entity: any;
+}
+
+type FormDataRequestUpdateParams = {
+  method: 'update';
+  condition: {
+    condition: Array<{ key: string; op: string; value: Array<string | number>; }>;
+    tag?: 'and' | 'or';
+  };
+  entity: any;
+  ref?: Record<string, {
+    appID: string;
+    table: string;
+    updated: Array<any>;
+    new: Array<any>;
+    deleted: string[];
+  }>;
+}
+
+type FormDataRequestParams =
+  FormDataRequestQueryDeleteParams |
+  FormDataRequestCreateParams |
+  FormDataRequestUpdateParams;
+
+type FormDataResponse = { entities: Array<any>; total: number; };
+
+export function formDataRequest(appID: string, tableID: string, params: FormDataRequestParams) {
+  return httpClient<FormDataResponse>(
+    `/api/v1/structor/${appID}/home/form/${tableID}`,
+    params,
+    { 'X-Proxy': 'FORM_DATA' }
+  );
+}
+
+type GetTableSchemaResponse = { config: any; id: string; schema?: ISchema; tableID: string; };
+
+export function getTableSchema(appID: string, tableID: string) {
+  const side = window.SIDE === 'home' ? 'home' : 'm';
+
+  return httpClient<GetTableSchemaResponse>(
+    `/api/v1/structor/${appID}/${side}/table/getByID`,
+    { tableID },
+    { 'X-Proxy': 'FORM_SCHEMA' },
+  );
+}
+
+export function saveTableSchema(appID: string, tableID: string, schema: ISchema) {
+  return httpClient(
+    `/api/v1/structor/${appID}/m/table/create`,
+    { tableID, schema },
+    { 'X-Proxy': 'FORM_SCHEMA' },
+  );
+}
+
 export default httpClient;

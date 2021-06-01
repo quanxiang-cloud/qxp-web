@@ -5,11 +5,11 @@ import Modal from '@c/modal';
 import Tab from '@portal/modules/apps-management/components/tab';
 import PageLoading from '@c/page-loading';
 import toast from '@lib/toast';
+import { getTableSchema } from '@lib/http-client';
 
 import Authorized from './authorized';
 import DataPermission from './data-permission';
 import FieldPermissions from './field-permissions';
-import { fetchFormScheme } from '../../../api';
 import { fetchPerData, savePer } from '../api';
 import store from '../store';
 
@@ -74,11 +74,11 @@ function RightsSettingModal({ onCancel, rightsGroupID, pageForm }: Props) {
 
   useEffect(() => {
     Promise.all([
-      fetchFormScheme(store.appID, pageForm.id),
+      getTableSchema(store.appID, pageForm.id),
       fetchPerData(store.appID, { formID: pageForm.id, perGroupID: rightsGroupID }),
-    ]).then(([schemeRes, perDataRes]: any) => {
-      if (schemeRes) {
-        const fieldsMap = schemeRes.schema.properties;
+    ]).then(([{ schema }, perDataRes]: any) => {
+      if (schema) {
+        const fieldsMap = schema.properties;
         const fieldsTmp: Fields[] = [];
         Object.keys(fieldsMap).forEach((key) => {
           if (key !== '_id') {
