@@ -70,7 +70,9 @@ func FormDataHandler(w http.ResponseWriter, r *http.Request) {
 		contexts.Logger.Error("Unmarshal err, %v\n", err)
 		return
 	}
-	fmt.Printf("proxy api request, method: %s, url: %s,request_id: %s ", method, url, requestID)
+
+	contexts.Logger.Debugf("proxy api request, method: %s, url: %s,request_id: %s ", method, url, requestID)
+
 	fr := &response{
 		Code: 0,
 	}

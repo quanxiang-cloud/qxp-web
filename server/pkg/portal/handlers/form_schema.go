@@ -48,24 +48,24 @@ func FormSchemaHandler(w http.ResponseWriter, r *http.Request) {
 		contexts.Logger.Error("read body err, %v\n", err)
 		return
 	}
-	fmt.Printf("proxy api request, method: %s, url: %s,request_id: %s ", method, url, requestID)
+	contexts.Logger.Debugf("proxy api request, method: %s, url: %s,request_id: %s ", method, url, requestID)
 
 	sm := &schema{}
-	if strings.HasSuffix(path,"/"){
+	if strings.HasSuffix(path, "/") {
 		path = path[:len(path)-2]
 	}
-	paths := strings.Split(path,"/")
-	if len(paths[len(paths)-1]) >= 32{
+	paths := strings.Split(path, "/")
+	if len(paths[len(paths)-1]) >= 32 {
 		sm.TableID = paths[len(paths)-1]
 	}
-	if body != nil && len(body) > 0{
+	if body != nil && len(body) > 0 {
 		if err = json.Unmarshal(body, sm); err != nil {
 			contexts.Logger.Error("Unmarshal err, %v\n", err)
 			return
 		}
 	}
 
-	c,rest,err := schemaHandler(r,sm,path)
+	c, rest, err := schemaHandler(r, sm, path)
 	fr := &response{
 		Code: 0,
 	}
@@ -86,42 +86,42 @@ func FormSchemaHandler(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
-func schemaHandler(r *http.Request,sm *schema,path string) (int,interface{},error) {
-	paths := strings.Split(path,"/")
+func schemaHandler(r *http.Request, sm *schema, path string) (int, interface{}, error) {
+	paths := strings.Split(path, "/")
 	switch paths[len(paths)-1] {
-	case "create", "update" :
-		c,err := doCreateOrUpdate(r,sm,path)
-		return c,nil,err
+	case "create", "update":
+		c, err := doCreateOrUpdate(r, sm, path)
+		return c, nil, err
 	case "getByID":
-		return doFind(r,sm,path,"admin")
+		return doFind(r, sm, path, "admin")
 	}
 	// 应用端查询schema
-	if len(paths[len(paths)-1]) >= 32{
-		return doFind(r,sm,path,"user")
+	if len(paths[len(paths)-1]) >= 32 {
+		return doFind(r, sm, path, "user")
 	}
-	return http.StatusOK,nil,nil
+	return http.StatusOK, nil, nil
 }
 
-func doCreateOrUpdate(r *http.Request,sm *schema,path string) (int,error) {
+func doCreateOrUpdate(r *http.Request, sm *schema, path string) (int, error) {
 	s := sm.Schema
-	if prop,ok := s[Properties];ok{
+	if prop, ok := s[Properties]; ok {
 		p := prop.(map[string]interface{})
-		c,err := subFormHandler(r,p,path,sm.TableID)
+		c, err := subFormHandler(r, p, path, sm.TableID)
 		if c == http.StatusOK && err == nil {
 			// 主schema创建
 			jsonStr, err := json.Marshal(sm)
 			if err != nil {
-				return http.StatusInternalServerError,err
+				return http.StatusInternalServerError, err
 			}
-			co,_,err := sendRequest2Struct(r,"POST",path,jsonStr)
-			return co,err
+			co, _, err := sendRequest2Struct(r, "POST", path, jsonStr)
+			return co, err
 		}
-		return c,err
+		return c, err
 	}
-	return http.StatusOK,nil
+	return http.StatusOK, nil
 }
 
-func subFormHandler(r *http.Request,s map[string]interface{},path,tableID string)(int,error)  {
+func subFormHandler(r *http.Request, s map[string]interface{}, path, tableID string) (int, error) {
 	value := reflect.ValueOf(s)
 	switch reflect.TypeOf(s).Kind() {
 	case reflect.Map:
@@ -131,92 +131,92 @@ func subFormHandler(r *http.Request,s map[string]interface{},path,tableID string
 			switch val.Kind() {
 			case reflect.Map:
 				vm := val.Interface().(map[string]interface{})
-				c,err := createSub(r,vm,tableID,iter.Key().String())
-				if err != nil || c != http.StatusOK{
-					return c,err
+				c, err := createSub(r, vm, tableID, iter.Key().String())
+				if err != nil || c != http.StatusOK {
+					return c, err
 				}
 			}
 		}
 	}
-	return http.StatusOK,nil
+	return http.StatusOK, nil
 }
-func createSub(r *http.Request,vm map[string]interface{},tableID,fieldNme string)(int,error)  {
-	if tp,ok := vm[Type];ok && tp == Arr{
+func createSub(r *http.Request, vm map[string]interface{}, tableID, fieldNme string) (int, error) {
+	if tp, ok := vm[Type]; ok && tp == Arr {
 		// 存在子表单或关联表单
-		if cm,ok := vm[Component];ok{
+		if cm, ok := vm[Component]; ok {
 			cp := ComponentProp{}
-			if c,ok := vm[ComponentProps];ok{
-				err := genComponent(c,&cp)
+			if c, ok := vm[ComponentProps]; ok {
+				err := genComponent(c, &cp)
 				if err != nil {
-					return http.StatusInternalServerError,err
+					return http.StatusInternalServerError, err
 				}
 				st := SubTable{
-					AppID: cp.AppID,
-					TableID: tableID,
-					SubTableID: cp.TableID,
+					AppID:        cp.AppID,
+					TableID:      tableID,
+					SubTableID:   cp.TableID,
 					SubTableType: cm.(string),
-					FieldName: fieldNme,
-					Filter: cp.Columns,
+					FieldName:    fieldNme,
+					Filter:       cp.Columns,
 				}
-				if cm == SubTableF{
+				if cm == SubTableF {
 					st.SubTableType = cp.Subordination
 				}
-				path := fmt.Sprintf("%s%s%s",base, cp.AppID,createSubTable)
-				pa,err := json.Marshal(&st)
+				path := fmt.Sprintf("%s%s%s", base, cp.AppID, createSubTable)
+				pa, err := json.Marshal(&st)
 				if err != nil {
-					return http.StatusInternalServerError,err
+					return http.StatusInternalServerError, err
 				}
-				c,b,err := sendRequest2Struct(r,"POST",path,pa)
+				c, b, err := sendRequest2Struct(r, "POST", path, pa)
 				if c != http.StatusOK || err != nil {
-					return c,err
+					return c, err
 				}
-				_,err = parseResp(b)
+				_, err = parseResp(b)
 				if err != nil {
-					return c,err
+					return c, err
 				}
 			}
 		}
 	}
-	return http.StatusOK,nil
+	return http.StatusOK, nil
 }
 
-func doFind(r *http.Request,sm *schema,path,cate string) (int,interface{},error) {
-	p := map[string]string{"tableID":sm.TableID}
+func doFind(r *http.Request, sm *schema, path, cate string) (int, interface{}, error) {
+	p := map[string]string{"tableID": sm.TableID}
 	str, err := json.Marshal(p)
 	if err != nil {
-		return http.StatusInternalServerError,nil,err
+		return http.StatusInternalServerError, nil, err
 	}
-	c,b,err := sendRequest2Struct(r,"POST",path,str)
+	c, b, err := sendRequest2Struct(r, "POST", path, str)
 	if c != http.StatusOK || err != nil {
-		return c,nil,err
+		return c, nil, err
 	}
-	rp,err := parseResp(b)
+	rp, err := parseResp(b)
 	if err != nil {
-		return c,nil,err
+		return c, nil, err
 	}
 	if rp.Data != nil {
 		st, err := json.Marshal(rp.Data)
 		if err != nil {
-			return c,nil,err
+			return c, nil, err
 		}
 		var table Table
 		err = json.Unmarshal(st, &table)
 		if err != nil {
-			return c,nil,err
+			return c, nil, err
 		}
-		if prop,ok := table.Schema[Properties];ok{
+		if prop, ok := table.Schema[Properties]; ok {
 			p := prop.(map[string]interface{})
-			co,err := fillSchema(r,p,table.TableID,cate)
+			co, err := fillSchema(r, p, table.TableID, cate)
 			if err != nil {
-				return co,nil, err
+				return co, nil, err
 			}
 		}
-		return http.StatusOK,&table,nil
+		return http.StatusOK, &table, nil
 	}
-	return http.StatusOK,nil,nil
+	return http.StatusOK, nil, nil
 }
 
-func fillSchema(r *http.Request,schema map[string]interface{},tableID ,cate string) (int,error) {
+func fillSchema(r *http.Request, schema map[string]interface{}, tableID, cate string) (int, error) {
 	value := reflect.ValueOf(schema)
 	switch reflect.TypeOf(schema).Kind() {
 	case reflect.Map:
@@ -226,109 +226,109 @@ func fillSchema(r *http.Request,schema map[string]interface{},tableID ,cate stri
 			switch val.Kind() {
 			case reflect.Map:
 				vm := val.Interface().(map[string]interface{})
-				c,err := doFill(r,vm,tableID,iter.Key().String(),cate)
+				c, err := doFill(r, vm, tableID, iter.Key().String(), cate)
 				if err != nil {
-					return c,err
+					return c, err
 				}
 			}
 		}
 	}
-	return http.StatusOK,nil
+	return http.StatusOK, nil
 }
 
-func doFill(r *http.Request,vm map[string]interface{},tableID,fieldNme ,cate string) (int,error) {
-	if tp,ok := vm[Type];ok && tp == Arr{
+func doFill(r *http.Request, vm map[string]interface{}, tableID, fieldNme, cate string) (int, error) {
+	if tp, ok := vm[Type]; ok && tp == Arr {
 		// 存在子表单或关联表单
-		if cm,ok := vm[Component];ok{
+		if cm, ok := vm[Component]; ok {
 			cp := ComponentProp{}
-			if c,ok := vm[ComponentProps];ok{
-				err := genComponent(c,&cp)
+			if c, ok := vm[ComponentProps]; ok {
+				err := genComponent(c, &cp)
 				if err != nil {
-					return http.StatusInternalServerError,err
+					return http.StatusInternalServerError, err
 				}
 				tb := Table{
-					TableID:  cp.TableID,
+					TableID: cp.TableID,
 				}
-				if cm == SubTableF && cp.Subordination == blankTable{
-					return http.StatusOK,nil
+				if cm == SubTableF && cp.Subordination == blankTable {
+					return http.StatusOK, nil
 				}
 				// 管理端，不用过滤schema
-				path := fmt.Sprintf("%s%s%s", base,cp.AppID,formSchema)
+				path := fmt.Sprintf("%s%s%s", base, cp.AppID, formSchema)
 				// 用户端，请求权限过滤后的schema
-				if cate == "user"{
-					path = fmt.Sprintf("%s%s%s%s",base,cp.AppID,userSchema,cp.TableID)
+				if cate == "user" {
+					path = fmt.Sprintf("%s%s%s%s", base, cp.AppID, userSchema, cp.TableID)
 				}
 				str, err := json.Marshal(&tb)
 				if err != nil {
-					return http.StatusInternalServerError,err
+					return http.StatusInternalServerError, err
 				}
-				c,b,err := sendRequest2Struct(r,"POST",path,str)
+				c, b, err := sendRequest2Struct(r, "POST", path, str)
 				if c != http.StatusOK || err != nil {
-					return c,err
+					return c, err
 				}
-				rp,err := parseResp(b)
+				rp, err := parseResp(b)
 				if err != nil {
-					return c,err
+					return c, err
 				}
 				var ft map[string]interface{}
-				if rp.Data != nil{
+				if rp.Data != nil {
 					st, err := json.Marshal(rp.Data)
 					if err != nil {
-						return c,err
+						return c, err
 					}
 					var table Table
 					err = json.Unmarshal(st, &table)
 					if err != nil {
-						return c,err
+						return c, err
 					}
 					ft = table.Schema
 				}
 				// 判断是否存在 嵌套子表单
-				if po,ok := ft[Properties];ok{
+				if po, ok := ft[Properties]; ok {
 					p := po.(map[string]interface{})
-					cd,err := fillSchema(r,p,cp.TableID,cate)
+					cd, err := fillSchema(r, p, cp.TableID, cate)
 					if err != nil {
-						return cd,err
+						return cd, err
 					}
 				}
 				// 过滤子表单
 				sub := &SubTable{
-					TableID: tableID,
+					TableID:    tableID,
 					SubTableID: cp.TableID,
-					FieldName: fieldNme,
+					FieldName:  fieldNme,
 				}
 				sr, err := json.Marshal(sub)
 				if err != nil {
-					return http.StatusInternalServerError,err
+					return http.StatusInternalServerError, err
 				}
-				ph := fmt.Sprintf("%s%s%s",base, cp.AppID,querySubTable)
-				c1,b1,err := sendRequest2Struct(r,"POST",ph,sr)
-				if err != nil || c1 != http.StatusOK{
-					return c1,err
+				ph := fmt.Sprintf("%s%s%s", base, cp.AppID, querySubTable)
+				c1, b1, err := sendRequest2Struct(r, "POST", ph, sr)
+				if err != nil || c1 != http.StatusOK {
+					return c1, err
 				}
-				rs,err := parseResp(b1)
+				rs, err := parseResp(b1)
 				if err != nil {
-					return c,err
+					return c, err
 				}
-				if rs.Data != nil{
+				if rs.Data != nil {
 					st, err := json.Marshal(rs.Data)
 					if err != nil {
-						return c1,err
+						return c1, err
 					}
 					var stb SubTable
 					err = json.Unmarshal(st, &stb)
 					if err != nil {
-						return c1,err
+						return c1, err
 					}
-					if fpo,ok := ft[Properties];ok{
+					if fpo, ok := ft[Properties]; ok {
 						p := fpo.(map[string]interface{})
-						doFilter(p,&stb.Filter)
+						doFilter(p, &stb.Filter)
 					}
-					if cm == SubTableF && cp.Subordination == ForeignTable{
+					if cm == SubTableF && cp.Subordination == ForeignTable {
 						vm[Items] = ft
 					}
-					if cm == AssociatedRecords{
-						doFilter(ft,&stb.Filter)
+					if cm == AssociatedRecords {
+						doFilter(ft, &stb.Filter)
 						cp.AssociatedTable = ft
 						vm[ComponentProps] = &cp
 					}
@@ -339,19 +339,20 @@ func doFill(r *http.Request,vm map[string]interface{},tableID,fieldNme ,cate str
 	return http.StatusOK, nil
 }
 
-func genComponent(c interface{},cp *ComponentProp) error {
+func genComponent(c interface{}, cp *ComponentProp) error {
 	cb, cbErr := json.Marshal(c)
 	if cbErr != nil {
 		return cbErr
 	}
 	err := json.Unmarshal(cb, cp)
-	if err != nil{
+	if err != nil {
 		return err
 	}
 	return nil
 }
+
 // DoFilter filter map
-func doFilter(schema map[string]interface{},filter *[]string)  {
+func doFilter(schema map[string]interface{}, filter *[]string) {
 	if len(*filter) == 0 {
 		return
 	}
@@ -359,8 +360,8 @@ func doFilter(schema map[string]interface{},filter *[]string)  {
 	v := reflect.ValueOf(schema)
 	iter := v.MapRange()
 	for iter.Next() {
-		if !inArray(iter.Key().String(),filter){
-			delete(schema,iter.Key().String())
+		if !inArray(iter.Key().String(), filter) {
+			delete(schema, iter.Key().String())
 		}
 	}
 }
@@ -373,46 +374,45 @@ func inArray(target string, filter *[]string) bool {
 	return false
 }
 
-
 type schema struct {
-	TableID string                  `json:"tableID"`
-	Schema  map[string]interface{}  `json:"schema"`
+	TableID string                 `json:"tableID"`
+	Schema  map[string]interface{} `json:"schema"`
 }
 
 type SubTable struct {
 	// id pk
-	ID              string `json:"id"`
+	ID string `json:"id"`
 	// app id
-	AppID           string `json:"appID"`
+	AppID string `json:"appID"`
 	// table id
-	TableID         string `json:"tableID"`
+	TableID string `json:"tableID"`
 	// table key name
-	FieldName        string `json:"fieldName"`
+	FieldName string `json:"fieldName"`
 	// sub table id
-	SubTableID      string `json:"subTableID"`
+	SubTableID string `json:"subTableID"`
 	// table type
-	SubTableType    string  `json:"subTableType"`
+	SubTableType string `json:"subTableType"`
 	// filter
-	Filter     []string `json:"filter"`
+	Filter []string `json:"filter"`
 }
 
 type Table struct {
-	ID      string                          `json:"id"`
+	ID string `json:"id"`
 	// table id
-	TableID   string                        `json:"tableID"`
+	TableID string `json:"tableID"`
 	// table design json schema
-	Schema    map[string]interface{}        `json:"schema"`
+	Schema map[string]interface{} `json:"schema"`
 	// table page config json schema
-	Config    map[string]interface{}        `json:"config"`
+	Config map[string]interface{} `json:"config"`
 }
 
 // schema中 x-component-props 结构
 type ComponentProp struct {
-	AppID   string          `json:"appID"`
-	TableID string          `json:"tableID"`
-	Columns []string        `json:"columns"`
+	AppID   string   `json:"appID"`
+	TableID string   `json:"tableID"`
+	Columns []string `json:"columns"`
 	// 'sub_table | foreign_table'
-	Subordination string    `json:"subordination"`
+	Subordination string `json:"subordination"`
 	// 关联表schema
 	AssociatedTable interface{} `json:"associatedTable"`
 }
