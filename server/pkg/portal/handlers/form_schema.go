@@ -239,7 +239,7 @@ func fillSchema(r *http.Request, schema map[string]interface{}, tableID, cate st
 func doFill(r *http.Request, vm map[string]interface{}, tableID, fieldNme, cate string) (int, error) {
 	if tp, ok := vm[Type]; ok && tp == Arr {
 		// 存在子表单或关联表单
-		if cm, ok := vm[Component]; ok {
+		if cm, ok := vm[Component];ok && (cm == SubTableF || cm == associatedRecords){
 			cp := ComponentProp{}
 			if c, ok := vm[ComponentProps]; ok {
 				err := genComponent(c, &cp)
