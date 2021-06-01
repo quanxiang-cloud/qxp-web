@@ -1,7 +1,7 @@
 import React from 'react';
 import { twCascade } from '@mariusmarais/tailwind-cascade';
 
-import { uuid, isFunction, isObject } from '@lib/utils';
+import { isFunction, isObject } from '@lib/utils';
 import Icon from './icon';
 
 export interface IItem<T> {
@@ -54,7 +54,7 @@ export default function List<T extends unknown>({
           );
         }
         return (
-          <li key={uuid()} className={twCascade('transition', itemClassName)}>
+          <li key={(item as JSX.Element).key} className={twCascade('transition', itemClassName)}>
             {isFunc && (item as () => JSX.Element)()}
             {isElement && item}
           </li>
