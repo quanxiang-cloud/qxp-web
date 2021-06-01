@@ -40,9 +40,11 @@ interface Props {
 export default function EditEmployeesModal(
   { user, closeModal }: Props,
 ) {
-  const [leaderName, setLeaderName] = useState(user.leaderName ?? '');
-  const [leaderID, setLeaderID] = useState('');
   const [showLeaderModal, setShowLeaderModal] = useState(false);
+  const [leader, setLeader] = useState<Leader>({
+    id: user.leaderID ?? '',
+    userName: user.leaderName ?? '',
+  });
   const formRef = createRef<Form>();
   const titleText = `${user.id ? '修改' : '添加'}`;
   const queryClient = useQueryClient();
@@ -65,8 +67,7 @@ export default function EditEmployeesModal(
   async function onAssociate(
     leader: Leader,
   ) {
-    setLeaderID(leader.id);
-    setLeaderName(leader.userName);
+    setLeader(leader);
     setShowLeaderModal(false);
   }
 
@@ -81,7 +82,7 @@ export default function EditEmployeesModal(
     if (!user.id) {
       const params: FormValues = {
         position,
-        leaderID,
+        leaderID: leader.id,
         userName,
         phone,
         email,
@@ -93,7 +94,7 @@ export default function EditEmployeesModal(
     } else {
       const params: FormValues = {
         position,
-        leaderID,
+        leaderID: leader.id,
         id: user.id,
         userName,
         phone,
@@ -119,8 +120,7 @@ export default function EditEmployeesModal(
           submitText="确定关联"
           onSubmit={onAssociate}
           onCancel={() => setShowLeaderModal(false)}
-          // 直属领导信息
-          employee={user}
+          current = {leader}
         />
       )}
       <Modal
@@ -252,8 +252,7 @@ export default function EditEmployeesModal(
               className="flex-1 grid"
               validateOnChange
               name="leaderName "
-              value={leaderName}
-              defaultValue={user.leaderName}
+              value={leader.userName}
               placeholder="直属上级姓名"
               schemas={[
                 {

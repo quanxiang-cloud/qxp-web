@@ -18,9 +18,11 @@ interface IEmployeeTable {
   depID: string | null;
   ownerStore: OwnerStore;
   userLeader: Leader;
+  onChange: (leader: Leader) => void;
 }
 
 export default observer(function EmployeeTable({
+  onChange,
   className,
   depID,
   userName,
@@ -31,6 +33,7 @@ export default observer(function EmployeeTable({
   const { current, pageSize } = store.pagination;
   const [isLoading, setIsLoading] = React.useState(true);
 
+  const { setLeader } = ownerStore;
   const { data } = useQuery(
     [
       'adminSearchUserList',
@@ -52,7 +55,6 @@ export default observer(function EmployeeTable({
     store.setCurrentPage(1);
     store.setSelectedKeys([]);
     store.setTotal(0);
-    ownerStore.setLeader(userLeader.id, userLeader.userName);
   }, [depID]);
   useEffect(() => {
     if (data?.total) {
@@ -74,7 +76,7 @@ export default observer(function EmployeeTable({
           <>
             关联
             <span className="mx-4">
-              {leader.userName}
+              {userLeader.userName}
             </span>
             为直属上级
           </>
@@ -102,15 +104,18 @@ export default observer(function EmployeeTable({
               fixed: true,
               width: 40,
               accessor: ({ id, userName }: Employee) => {
-                const checked = userLeader.id === id;
+                const checked = (userLeader.id === id) || (leader.id === id);
                 const handleModifyModal = () => {
-                  ownerStore.setLeader(id, userName );
+                  setLeader(id, userName);
+                  onChange({ id, userName });
                 };
                 return (
                   <input
+                    id={id}
                     name="employee"
                     type="radio"
                     value={id}
+                    className="cursor-pointer"
                     onClick={handleModifyModal}
                     defaultChecked={checked}
                   />);
@@ -120,7 +125,11 @@ export default observer(function EmployeeTable({
               Header: '员工姓名',
               id: 'userName',
               fixed: true,
-              accessor: 'userName',
+              accessor: ({ id, userName }: Employee) => {
+                return (
+                  <label className="cursor-pointer hover:text-blue-600" htmlFor={id}>{userName}</label>
+                );
+              },
             },
             {
               Header: '手机号',
