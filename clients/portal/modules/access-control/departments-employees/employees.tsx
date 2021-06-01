@@ -275,7 +275,7 @@ export default function Employees({
                 </div>
                 <CheckBox
                   onChange={handleChange}
-                  label='包含字部门成员'
+                  label='包含子部门成员'
                 />
               </>
             )}

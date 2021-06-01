@@ -25,7 +25,7 @@ function RightsItem({ rights, actions }: Props) {
     if (rights.scopes && rights.scopes.length) {
       const users: UserOrDept[] = [];
       const deptList: UserOrDept[] = [];
-      rights.scopes.forEach((scope)=>{
+      rights.scopes.forEach((scope) => {
         if (scope.type === 1) {
           users.push({
             id: scope.id,
@@ -65,7 +65,8 @@ function RightsItem({ rights, actions }: Props) {
         name: employee.ownerName,
       });
     });
-    return actions('update', { id: rights.id, scopes }) as Promise<boolean | void>;
+
+    return actions('addUser', { id: rights.id, scopes }) as Promise<boolean | void>;
   };
 
   return (

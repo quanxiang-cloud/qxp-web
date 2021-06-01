@@ -6,7 +6,6 @@ import Card from '@c/card';
 import List from '@c/list';
 import ItemWithTitleDesc from '@c/item-with-title-desc';
 import AppIcon from '@c/app-icon';
-import { uuid } from '@lib/utils';
 
 import './index.scss';
 
@@ -45,7 +44,7 @@ export default function Dashboard() {
                 itemClassName="px-20 py-16 mr-20 bg-white rounded-12"
                 items={[
                   <ItemWithTitleDesc
-                    key={uuid()}
+                    key="meetingRoomPreorder"
                     title="会议室预订"
                     desc="已上线"
                     itemRender={
@@ -62,7 +61,7 @@ export default function Dashboard() {
                     descClassName="text-caption"
                   />,
                   <ItemWithTitleDesc
-                    key={uuid()}
+                    key="crmApp"
                     title="CRM"
                     titleClassName="text-h6"
                     desc="未上线"
@@ -79,7 +78,7 @@ export default function Dashboard() {
                     descClassName="text-caption"
                   />,
                   <ItemWithTitleDesc
-                    key={uuid()}
+                    key="createApp"
                     title="新建应用"
                     titleClassName="text-button"
                     itemRender={
@@ -111,7 +110,7 @@ export default function Dashboard() {
                   itemClassName="px-20 rounded-12 mb-20 bg-white"
                   items={[
                     <ItemWithTitleDesc
-                      key={uuid()}
+                      key="myInitiation"
                       title="我发起的"
                       desc="12"
                       itemRender={
@@ -126,7 +125,7 @@ export default function Dashboard() {
                       descClassName="text-h5 text-blue-1100"
                     />,
                     <ItemWithTitleDesc
-                      key={uuid()}
+                      key="myHandling"
                       title="我处理的"
                       desc="3"
                       itemRender={
@@ -144,7 +143,7 @@ export default function Dashboard() {
                       descClassName="text-16 font-bold"
                     />,
                     <ItemWithTitleDesc
-                      key={uuid()}
+                      key="ccToMe"
                       title="抄送我的"
                       desc="3"
                       itemRender={

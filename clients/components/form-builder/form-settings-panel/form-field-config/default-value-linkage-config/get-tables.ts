@@ -37,15 +37,3 @@ export function getLinkageTables(appID: string): Promise<Array<{ label: string; 
     return [];
   });
 }
-
-export function getTableSchema({ appID, tableID }: { appID: string; tableID: string }): Promise<ISchema> {
-  return httpClient<{ schema: ISchema }>(
-    `/api/v1/structor/${appID}/m/table/getByID`,
-    { tableID },
-  ).then(({ schema }) => {
-    return schema;
-  }).catch((err) => {
-    logger.error(err);
-    return {};
-  });
-}

@@ -6,10 +6,8 @@ import toast from '@lib/toast';
 import AppPageDataStore from '@c/form-app-data-table/store';
 import { PageTableShowRule, Scheme, setFixedParameters } from '@c/form-app-data-table/utils';
 
+import { getTableSchema, saveTableSchema } from '@lib/http-client';
 import {
-  createFormScheme,
-  fetchFormScheme,
-  updateFormScheme,
   createPageScheme,
 } from './api';
 import { getAttribute } from './utils';
@@ -143,7 +141,7 @@ class FormDesignStore {
     }
 
     this.pageLoading = true;
-    fetchFormScheme(appID, pageID).then((res: any) => {
+    getTableSchema(appID, pageID).then((res: any) => {
       const { schema = {}, config } = res || {};
       this.hasSchema = res ? true : false;
       this.initScheme = schema;
@@ -162,10 +160,7 @@ class FormDesignStore {
   @action
   saveFormScheme = () => {
     this.saveSchemeLoading = true;
-    return (this.hasSchema ? updateFormScheme : createFormScheme)(this.appID, {
-      schema: this.formStore?.schema,
-      tableID: this.pageID,
-    }).then(() => {
+    return saveTableSchema(this.appID, this.pageID, this.formStore?.schema || {}).then(() => {
       (this.formStore as FormStore).hasEdit = false;
       toast.success(this.hasSchema ? '保存成功!' : '创建成功!');
       this.saveSchemeLoading = false;

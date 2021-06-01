@@ -33,6 +33,16 @@ export const EmployeesColumns = [
       return dep?.departmentName;
     },
   },
+  {
+    Header: '岗位',
+    id: 'position',
+    accessor: 'position',
+  },
+  {
+    Header: '直属上级',
+    id: 'leaderName',
+    accessor: 'leaderName',
+  },
 ];
 
 export type AuthorMenuItem = {

@@ -4,6 +4,7 @@ import { mutateTree, TreeData, TreeItem } from '@atlaskit/tree';
 
 import toast from '@lib/toast';
 import { buildAppPagesTreeData } from '@lib/utils';
+import { getTableSchema } from '@lib/http-client';
 import AppDataStore from '@c/form-app-data-table/store';
 
 import { fetchAppList } from '../entry/app-list/api';
@@ -17,7 +18,6 @@ import {
   createGroup,
   deleteGroup,
   deletePage,
-  fetchFormScheme,
 } from './api';
 
 class AppDetailsStore {
@@ -222,7 +222,7 @@ class AppDetailsStore {
 
     const pageInfo = this.pagesTreeData.items[pageID].data;
     this.fetchSchemeLoading = true;
-    fetchFormScheme(this.appID, pageInfo.id).then((res: any) => {
+    getTableSchema(this.appID, pageInfo.id).then((res: any) => {
       this.formScheme = res;
       const { config, schema } = res;
       if (schema) {

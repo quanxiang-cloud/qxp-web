@@ -16,6 +16,7 @@ import EmployeeSelectTree from '@c/employee-or-department-picker/employee-select
 import OwnerStore from '@c/employee-or-department-picker/store';
 
 interface Props {
+  currentLeader?: Leader;
   employee?: Employee;
   onChange: (leader: Leader) => void;
   labelKey?: string;
@@ -23,11 +24,11 @@ interface Props {
 }
 
 export default observer(function DirectLeaderPicker<T extends { id: string; }>({
+  currentLeader,
   employee,
   onChange,
 }: Props) {
   const [store, setStore] = useState<OwnerStore>();
-
   const { data: department, isLoading, isError } = useQuery(
     ['GET_DEPARTMENT_STRUCTURE'],
     getDepartmentStructure,
@@ -35,10 +36,6 @@ export default observer(function DirectLeaderPicker<T extends { id: string; }>({
       refetchOnWindowFocus: false,
     },
   );
-
-  useEffect(() => {
-    onChange(store?.leader as Leader);
-  }, [store?.leader]);
 
   useEffect(() => {
     if (department) {
@@ -87,10 +84,8 @@ export default observer(function DirectLeaderPicker<T extends { id: string; }>({
               userName={store.usernameKeyword}
               depID={store.employeeTreeStore.currentFocusedNode.id || ''}
               ownerStore={store}
-              userLeader = {{
-                id: employee?.leaderID || '',
-                userName: employee?.leaderName || '',
-              }}
+              userLeader = {currentLeader as Leader}
+              onChange= {onChange}
             />
           </div>
         </div>

@@ -11,6 +11,7 @@ import {
   deleteRights,
   fetchPerGroupForm,
   deleteFormPer,
+  updatePerGroupUser,
 } from './api';
 
 class UserAndPerStore {
@@ -48,6 +49,20 @@ class UserAndPerStore {
       this.rightsLoading = false;
     }).catch(() => {
       this.rightsLoading = false;
+    });
+  }
+
+  @action
+  updatePerGroupUser = (rights: Rights) => {
+    return updatePerGroupUser(this.appID, rights).then(() => {
+      this.rightsList = this.rightsList.map((_rights) => {
+        if (rights.id === _rights.id) {
+          return { ..._rights, ...rights };
+        }
+        return _rights;
+      });
+      toast.success('修改成功！');
+      return true;
     });
   }
 
@@ -117,7 +132,7 @@ class UserAndPerStore {
 
   @action
   updatePerFormList = (newPerForm: PageInfo & { authority: number }) => {
-    this.perFormList = this.perFormList.map((perForm)=>{
+    this.perFormList = this.perFormList.map((perForm) => {
       if (perForm.id === newPerForm.id) {
         return { ...perForm, ...newPerForm };
       }
