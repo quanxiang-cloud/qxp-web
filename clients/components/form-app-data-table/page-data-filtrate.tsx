@@ -11,7 +11,8 @@ import { StoreContext } from './context';
 function PageDataFiltrate() {
   const [showMoreFiltrate, setShowMoreFiltrate] = useState(false);
   const store = useContext(StoreContext);
-  const { filtrates } = store;
+  const filtrateKeys = Object.keys(store.filtrateMaps);
+
   const filterDom = useRef<any>();
 
   const search = () => {
@@ -22,36 +23,24 @@ function PageDataFiltrate() {
     const condition: Condition[] = [];
     const values = filterDom.current.getValues();
     Object.keys(values).forEach((key) => {
-      const curFiltrate = store.filtrates.find(({ id }) => id === key);
-      if (!values[key] || (Array.isArray(values[key]) && values[key].length === 0)) {
+      const curFiltrate = store.fields.find(({ id }) => id === key);
+      if (!values[key] || (Array.isArray(values[key]) && values[key].length === 0) || !curFiltrate) {
         return;
       }
 
-      const _condition: Condition = { key };
+      const _condition: Condition = { key, op: store.filtrateMaps[curFiltrate.id].compareSymbol };
       switch (curFiltrate?.type) {
-      case 'date_range':
-        const { start, end } = values[key];
-        if (!values[key].readableCode) {
-          return;
-        }
-
+      case 'datetime':
+        const [start, end] = values[key];
         _condition.value = [moment(start).format(), moment(end).format()];
-        _condition.op = 'between';
-        break;
-      case 'date':
-        _condition.value = [moment(values[key]).format()];
-        _condition.op = 'eq';
         break;
       case 'number':
         _condition.value = [Number(values[key])];
-        _condition.op = curFiltrate.compareSymbol;
         break;
       default:
         if (Array.isArray(values[key])) {
-          _condition.op = 'in';
           _condition.value = values[key];
         } else {
-          _condition.op = 'like';
           _condition.value = [values[key]];
         }
         break;
@@ -64,20 +53,24 @@ function PageDataFiltrate() {
   };
 
   const reset = () => {
-    const resObj: any = {};
-    filtrates.map(({ id }) => {
+    const resObj: Record<string, ''> = {};
+    filtrateKeys.map((id) => {
       resObj[id] = '';
     });
     filterDom.current.reset(resObj);
   };
 
-  const noFilter = filtrates.length === 0;
+  const noFilter = filtrateKeys.length === 0;
+
+  if (noFilter) {
+    return null;
+  }
 
   return (
     <div className='form-app-data-table-container form-app-data-table-filtrate'>
-      <FiltrateForm ref={filterDom} filtrates={filtrates} showMoreFiltrate={showMoreFiltrate} />
+      <FiltrateForm ref={filterDom} showMoreFiltrate={showMoreFiltrate} />
       <div>
-        {filtrates.length > 3 ? (
+        {filtrateKeys.length > 3 ? (
           <span
             onClick={() => setShowMoreFiltrate(!showMoreFiltrate)}
             className='form-app-data-table-filtrate-more'
@@ -90,10 +83,10 @@ function PageDataFiltrate() {
             />
           </span>
         ) : null}
-        <Button forbidden={noFilter} onClick={search} className='mr-16' modifier='primary'>
+        <Button onClick={search} className='mr-16' modifier='primary'>
           查询
         </Button>
-        <Button forbidden={noFilter} onClick={reset}>重置</Button>
+        <Button onClick={reset}>重置</Button>
       </div>
     </div>
   );

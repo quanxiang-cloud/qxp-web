@@ -1,12 +1,14 @@
 import React, { useState, useEffect, forwardRef, useImperativeHandle } from 'react';
 import { useForm, Controller } from 'react-hook-form';
+import moment from 'moment';
 import { isArray, uniqueId } from 'lodash';
 
 import Select from '@c/select';
-import FieldSwitch from '@portal/modules/apps-management/components/field-switch';
+import FieldSwitch from '@c/field-switch';
 import Icon from '@c/icon';
-import formFieldWrap from '@portal/modules/apps-management/components/form-field-wrap';
+import formFieldWrap from '@c/form-field-wrap';
 
+import { CONDITION, getOperators } from './utils';
 import './index.scss';
 
 type Props = {
@@ -21,7 +23,7 @@ type FieldCondition = {
   key?: string;
   value?: any;
   op?: string;
-  filtrate?: any;
+  filtrate?: Fields;
 }
 
 export type ConditionItemMap = {
@@ -35,71 +37,13 @@ export type RefProps = {
   getDataValues: () => ConditionItemMap
 }
 
-const CONDITION = [{
-  label: '所有',
-  value: 'and',
-},
-{
-  label: '任一',
-  value: 'or',
-}];
-
-const OPERATORS = [
-  {
-    label: '等于',
-    value: 'eq',
-  },
-  {
-    label: '模糊',
-    value: 'like',
-  },
-  {
-    label: '包含',
-    value: 'in',
-  },
-];
-
-const OPERATORS_COMPARE = [
-  {
-    label: '等于',
-    value: 'eq',
-  },
-  {
-    label: '大于',
-    value: 'gt',
-  },
-  {
-    label: '小于',
-    value: 'lt',
-  },
-  {
-    label: '大于等于',
-    value: 'egt',
-  },
-  {
-    label: '小于等于',
-    value: 'elt',
-  },
-];
-
-function getOperators(type: string) {
-  switch (type) {
-  case 'number':
-  case 'date':
-    return OPERATORS_COMPARE;
-
-  default:
-    return OPERATORS;
-  }
-}
-
 function getCondition(formData: any, condition: FieldCondition) {
   let value = formData[`condition-${condition.id}`];
   switch (condition.filtrate?.type) {
-  case 'date':
+  case 'datetime':
     value = isArray(value) ? value.map((date: string) => {
-      return new Date(date).getTime();
-    }) : [new Date(value).getTime()];
+      return moment(date).format();
+    }) : [moment(value).format()];
     break;
   case 'number':
     value = isArray(value) ? value.map((_value) => Number(_value)) : [Number(value)];
@@ -124,7 +68,7 @@ function DataFilter({ fields, className = '', baseConditions, initTag = 'and' }:
   const [tag, setTag] = useState(initTag);
   const { trigger, control, setValue, getValues, formState: { errors } } = useForm();
 
-  const fieldList = fields.map((field) => field);
+  const fieldList = fields;
 
   useImperativeHandle(ref, () => ({
     getDataPer: getDataPer,
@@ -188,11 +132,16 @@ function DataFilter({ fields, className = '', baseConditions, initTag = 'and' }:
     const formData = getValues();
     const _conditions: Condition[] = [];
     conditions.forEach((condition) => {
+      const value = formData[`condition-${condition.id}`];
       if (
         formData[`field-${condition.id}`] &&
         formData[`operators-${condition.id}`] &&
-        formData[`condition-${condition.id}`]
+        value
       ) {
+        if (Array.isArray(value) && value.length === 0) {
+          return;
+        }
+
         _conditions.push(getCondition(formData, condition));
       }
     });
@@ -277,7 +226,7 @@ function DataFilter({ fields, className = '', baseConditions, initTag = 'and' }:
                         style={{ width: '100px' }}
                         error={errors['operators-' + condition.id]}
                         register={field}
-                        options={getOperators((condition.filtrate as FilterField).type)}
+                        options={getOperators(condition.filtrate?.type || '', condition.filtrate?.enum)}
 
                       />
                     )
@@ -294,7 +243,7 @@ function DataFilter({ fields, className = '', baseConditions, initTag = 'and' }:
                       <FormFieldSwitch
                         error={errors['condition-' + condition.id]}
                         register={{ ...field, value: field.value ? field.value : '' }}
-                        filtrate={condition.filtrate}
+                        field={condition.filtrate}
                         style={{ width: '300px' }}
                       />
                     )

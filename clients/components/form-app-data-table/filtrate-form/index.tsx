@@ -2,19 +2,20 @@ import React, { useImperativeHandle, useContext } from 'react';
 import { observer } from 'mobx-react';
 import { useForm, Controller } from 'react-hook-form';
 
-import FieldSwitch from '@portal/modules/apps-management/components/field-switch';
+import FieldSwitch from '@c/field-switch';
 
 import { StoreContext } from '../context';
 
 import './index.scss';
 
 type Props = {
-  filtrates: FilterField[];
   showMoreFiltrate: boolean;
 }
 
-function FiltrateForm({ filtrates, showMoreFiltrate }: Props, ref?: React.Ref<any>) {
+function FiltrateForm({ showMoreFiltrate }: Props, ref?: React.Ref<any>) {
   const store = useContext(StoreContext);
+  const { fieldsMap, filtrateMaps } = store;
+  const filtrateKeys = Object.keys(filtrateMaps);
   const { getValues, reset, control } = useForm();
 
   useImperativeHandle(ref, () => ({
@@ -22,7 +23,7 @@ function FiltrateForm({ filtrates, showMoreFiltrate }: Props, ref?: React.Ref<an
     reset: reset,
   }));
 
-  if (filtrates.length === 0) {
+  if (filtrateKeys.length === 0) {
     return (
       <div className='text-caption-no-color text-gray-400 flex-1 flex items-center'>
         <img
@@ -38,17 +39,18 @@ function FiltrateForm({ filtrates, showMoreFiltrate }: Props, ref?: React.Ref<an
 
   return (
     <form className='app-page-filtrate-form'>
-      {(showMoreFiltrate ? filtrates : filtrates.slice(0, 3)).map((filtrate: FilterField) => (
-        <div className='flex items-center' key={filtrate.id}>
-          <label className='app-page-filtrate-label'>{filtrate.label}：</label>
+      {(showMoreFiltrate ? filtrateKeys : filtrateKeys.slice(0, 3)).map((key) => (
+        <div className='flex items-center' key={key}>
+          <label className='app-page-filtrate-label'>{fieldsMap[key]?.title}：</label>
           <Controller
-            name={filtrate.id}
+            name={key}
             control={control}
             render={({ field }) => {
               return (
                 <FieldSwitch
+                  className='flex-1'
                   {...{ ...field, value: field.value ? field.value : '' }}
-                  filtrate={filtrate}
+                  field={fieldsMap[key]}
                 />
               );
             }

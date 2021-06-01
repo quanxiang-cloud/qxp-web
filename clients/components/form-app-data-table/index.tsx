@@ -5,6 +5,7 @@ import PageDataFiltrate from './page-data-filtrate';
 import { StoreContext } from './context';
 import Store from './store';
 import './index.scss';
+import { observer } from 'mobx-react';
 
 type Props = {
   className?: string;
@@ -23,4 +24,4 @@ function FormAppDataContent({ className = '', style, store }: Props) {
   );
 }
 
-export default FormAppDataContent;
+export default observer(FormAppDataContent);

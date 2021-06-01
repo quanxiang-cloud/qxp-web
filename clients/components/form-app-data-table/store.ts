@@ -36,10 +36,11 @@ class AppPageDataStore {
   @observable authority = 0;
   @observable curItemFormData = null;
   @observable allowRequestData = false;
-  @observable filtrates: FilterField[] = [];
+  @observable filtrateMaps: FilterMaps = {};
   @observable formDataList: any[] = [];
   @observable total = 0;
-  @observable fields: Scheme[] = [];
+  @observable fields: Fields[] = [];
+  @observable fieldsMap: Record<string, ISchema> = {};
   @observable tableColumns: any[] = [];
   @observable params: Params = {
     condition: [],
@@ -53,6 +54,7 @@ class AppPageDataStore {
   };
 
   constructor({ schema, pageID, pageName, appID, config, allowRequestData, createFun }: InitData) {
+    this.fieldsMap = schema?.properties || {};
     this.pageName = pageName || '';
     this.appID = appID || '';
     this.pageID = pageID || '';
@@ -60,9 +62,13 @@ class AppPageDataStore {
     if (createFun) {
       this.createFun = createFun;
     }
-    const { filtrates, tableColumns, pageTableShowRule, fields } = getPageDataSchema(config || {}, schema);
+
+    if (config?.filtrate) {
+      this.setFiltrates(config.filtrate || {});
+    }
+
+    const { tableColumns, pageTableShowRule, fields } = getPageDataSchema(config || {}, schema);
     this.fields = fields;
-    this.setFiltrates(filtrates);
     this.setTableColumns(tableColumns);
     this.setTableConfig(pageTableShowRule);
     this.destroyFetchTableData = reaction(() => this.params, this.fetchFormDataList);
@@ -80,13 +86,26 @@ class AppPageDataStore {
   }
 
   @action
+  setSchema = (schema: Scheme | undefined) => {
+    if (!schema) {
+      return;
+    }
+
+    this.fieldsMap = schema?.properties || {};
+    this.fields = Object.keys(this.fieldsMap).map((key) => ({
+      id: key,
+      ...this.fieldsMap[key],
+    }));
+  }
+
+  @action
   setTableConfig = (tableConfig: any) => {
     this.tableConfig = tableConfig;
   }
 
   @action
-  setFiltrates = (filtrates: FilterField[]) => {
-    this.filtrates = filtrates;
+  setFiltrates = (filtrateMaps: FilterMaps) => {
+    this.filtrateMaps = filtrateMaps;
   }
 
   @action
@@ -175,7 +194,7 @@ class AppPageDataStore {
     this.formDataList = [];
     this.tableConfig = {};
     this.authority = 0;
-    this.filtrates = [];
+    this.filtrateMaps = {};
     this.tableColumns = [];
     this.pageID = '';
     this.params = {

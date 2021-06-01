@@ -3,15 +3,18 @@ import zhCN from 'antd/lib/date-picker/locale/zh_CN';
 import { DatePicker } from 'antd';
 
 import Select from '@c/select';
-// import DatePicker from '@c/date-picker';
-import RangePicker from '@c/range-picker';
 
 type Props<T> = {
-  filtrate: FilterField;
+  field: ISchema;
   onChange: (value: T) => void;
   className?: string;
   value?: T;
   style?: React.CSSProperties;
+}
+
+type Option = {
+  label: string;
+  value: string;
 }
 
 function numberVerify(e: any, precision: number | undefined) {
@@ -32,54 +35,49 @@ function numberVerify(e: any, precision: number | undefined) {
   }
 }
 
-function FieldSwitch({ filtrate, className, ...otherProps }: Props<any>, ref: React.Ref<any>) {
-  switch (filtrate.type) {
-  case 'string':
-    return <input ref={ref} className={`input ${className}`} {...otherProps} />;
+function FieldSwitch({ field, className, ...otherProps }: Props<any>, ref: React.Ref<any>) {
+  if (field.enum && field.enum.length) {
+    return (
+      <Select
+        multiple={true}
+        className={`'w-full ${className}`}
+        ref={ref}
+        {...otherProps}
+        // todo enum other type
+        options={field.enum as unknown as Option[] || []}
+      />
+    );
+  }
+
+  switch (field.type) {
   case 'number':
     return (
       <input
         className={`input ${className}`}
-        step={filtrate.step}
+        step={field['x-component-props']?.step}
         ref={ref}
-        {...otherProps}
         type='number'
-        onKeyUp={(e) => numberVerify(e, filtrate.precision)}
-      />
-    );
-  case 'select':
-    return (
-      <Select
-        multiple={!!filtrate.multiple}
-        className={`'w-full ${className}`}
-        ref={ref}
+        onKeyUp={(e) => numberVerify(e, field['x-component-props']?.precision)}
         {...otherProps}
-        options={filtrate.enum || []}
       />
     );
-  case 'date':
+  case 'datetime':
     return (
-      <DatePicker
+      <DatePicker.RangePicker
         locale={zhCN}
         ref={ref}
         defaultValue={otherProps.value}
         className={`'w-full input ${className}`}
-        format={filtrate.cProps.format}
-        showTime={filtrate.cProps.showTime}
+        {...field['x-component-props']}
         {...otherProps}
       />
     );
-  case 'date_range':
+  case 'label-value':
     return (
-      <RangePicker
-        ref={ref}
-        className={`'w-full ${className}`}
-        readableCode={otherProps.value?.readableCode}
-        {...otherProps}
-      />
+      <div>未更新</div>
     );
   default:
-    return null;
+    return <input ref={ref} className={`input ${className}`} {...otherProps} />;
   }
 }
 
