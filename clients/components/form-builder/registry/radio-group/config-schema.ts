@@ -123,16 +123,13 @@ const schema: ISchema = {
             },
             {
               type: 'value:visible',
-              target: 'linkageConfig',
+              target: 'defaultValueLinkage',
               condition: '{{ $value === "linkage" }}',
             },
           ],
         },
         linkageConfig: {
           'x-component': 'DefaultValueLinkageConfigBtn',
-          'x-component-props': {
-            value: '设置数据联动',
-          },
           'x-index': 8,
         },
         availableOptions: {

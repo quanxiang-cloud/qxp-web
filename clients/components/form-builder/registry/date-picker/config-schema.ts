@@ -143,7 +143,7 @@ const schema: ISchema = {
           'x-linkages': [
             {
               type: 'value:visible',
-              target: 'linkageConfig',
+              target: 'defaultValueLinkage',
               condition: '{{ $value === "linkage" }}',
             },
           ],

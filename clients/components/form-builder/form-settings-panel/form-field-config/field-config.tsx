@@ -9,6 +9,7 @@ import { toJS } from 'mobx';
 import { FieldConfigContext } from './context';
 import { addOperate } from '../../registry/operates';
 import DefaultValueLinkageConfigBtn from './default-value-linkage-config-btn';
+import CalculationFormulaBtn from './calculation-formula-btn';
 
 const COMMON_CONFIG_COMPONENTS = {
   ArrayTable,
@@ -22,6 +23,7 @@ const COMMON_CONFIG_COMPONENTS = {
   Switch,
   addOperate,
   DefaultValueLinkageConfigBtn,
+  CalculationFormulaBtn,
 };
 
 type Props = {

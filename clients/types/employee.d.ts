@@ -13,6 +13,9 @@ interface Employee {
   isDEPLeader?: number;
   depName?: string;
   status?: number;
+  position?: string;
+  leaderName?: string;
+  leaderID?: string;
 }
 
 interface EmployeeOfRole {
@@ -33,4 +36,9 @@ type EmployeeTableColumn = {
   width?: number;
   key?: string;
   render?: (...args: any[]) => JSX.Element;
+}
+
+type Leader = {
+  id: string;
+  userName: string;
 }

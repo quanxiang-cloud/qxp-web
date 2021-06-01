@@ -26,6 +26,12 @@ class OwnerStore {
   usernameKeyword = '';
 
   @observable
+  leader = {
+    id: '',
+    userName: '',
+  };
+
+  @observable
   departmentKeyword = '';
 
   constructor(department: Department, members: EmployeeOrDepartmentOfRole[]) {
@@ -43,6 +49,14 @@ class OwnerStore {
   @action
   setUsernameKeyword = (keyword: string) => {
     this.usernameKeyword = keyword;
+  }
+
+  @action
+  setLeader = (id: string, userName: string) => {
+    this.leader = {
+      id,
+      userName,
+    };
   }
 
   @action

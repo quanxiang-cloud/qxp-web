@@ -16,6 +16,8 @@ function RightsGroups() {
       break;
     case 'update':
       return store.updatePerGroup(rights);
+    case 'addUser':
+      return store.updatePerGroupUser(rights);
     }
   };
 

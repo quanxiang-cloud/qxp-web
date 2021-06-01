@@ -30,9 +30,9 @@ function AppAdmin() {
 
   const fetchAdmins = () => {
     setLoading(true);
-    fetchAppAdminUsers(params).then((res) => {
+    fetchAppAdminUsers(params).then((res: any) => {
       setLoading(false);
-      setAppAdminList(res.data.data.map((admin: Admin) => {
+      setAppAdminList(res.data.map((admin: Admin) => {
         return { ...admin, ownerID: admin.id, type: 1, ownerName: admin.userName };
       }));
     });

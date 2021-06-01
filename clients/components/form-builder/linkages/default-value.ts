@@ -11,8 +11,10 @@ import compareOperatorMap from './compare-operator-map';
 const { onFieldValueChange$ } = FormEffectHooks;
 
 type FetchLinkedTableDataParams = {
-  condition?: Array<{ key: string; op: string; value: Array<any>; }>;
-  tag: 'and' | 'or';
+  conditions: {
+    condition: Array<{ key: string; op: string; value: Array<any>; }>;
+    tag: 'and' | 'or';
+  };
   sort: string[];
 }
 
@@ -38,9 +40,11 @@ function fetchLinkedTableData$(
   });
 
   const params: FetchLinkedTableDataParams = {
-    sort: linkage.linkedTableSortRules,
-    tag: linkage.ruleJoinOperator === 'every' ? 'and' : 'or',
-    condition: conditions,
+    sort: (linkage.linkedTableSortRules || []).filter(Boolean),
+    conditions: {
+      tag: linkage.ruleJoinOperator === 'every' ? 'and' : 'or',
+      condition: conditions,
+    },
   };
 
   // const side = window.SIDE === 'portal' ? 'm' : 'home';
@@ -93,7 +97,6 @@ function shouldFireEffect({ linkage, linkedRow, getFieldValue }: ShouldFireEffec
   if (!linkedRow) {
     return false;
   }
-
   const pairs = linkage.rules.map((rule) => {
     return {
       operator: rule.compareOperator,

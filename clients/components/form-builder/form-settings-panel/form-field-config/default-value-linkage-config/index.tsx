@@ -5,8 +5,8 @@ import {
   SchemaForm,
   SchemaMarkupField as Field,
   FormButtonGroup,
-  createFormActions,
   FormEffectHooks,
+  createAsyncFormActions,
 } from '@formily/antd';
 import { FormPath } from '@formily/shared';
 import {
@@ -22,9 +22,10 @@ import { INTERNAL_FIELD_NAMES } from '../../../store';
 import { OPERATORS } from '../../consts';
 import { operatorOption } from '../../utils';
 import { ArrayCustom, JoinOperatorSelect } from './customized-fields';
-import { getLinkageTables, getTableSchema } from './get-tables';
+import { getLinkageTables } from './get-tables';
+import { getTableSchema } from '@lib/http-client';
 
-const { onFieldInputChange$ } = FormEffectHooks;
+const { onFieldInputChange$, onFieldValueChange$ } = FormEffectHooks;
 const COMPONENTS = {
   ArrayCustom,
   Input,
@@ -70,16 +71,26 @@ type LinkedTableFieldOptions = Option & {
 }
 
 function LinkageConfig({ onClose, onSubmit }: Props): JSX.Element {
+  const actions = createAsyncFormActions();
+  const { setFieldState, getFieldValue } = actions;
   const store = useContext(StoreContext);
   const { pageId } = useParams<{ pageId: string }>();
   const [linkageTables, setLinkageTables] = useState<Array<Option>>([]);
   const [linkedTableFields, setLinkedTableFields] = useState<LinkedTableFieldOptions[]>([]);
+  const defaultValue: FormBuilder.DefaultValueLinkage =
+    store.activeField?.configValue.defaultValueLinkage || DEFAULT_VALUE_LINKAGE;
 
   useEffect(() => {
     getLinkageTables(store.appID).then((options) => {
       // filter off current page
       setLinkageTables(options.filter(({ value }) => value !== pageId));
     });
+  }, []);
+
+  useEffect(() => {
+    if (defaultValue.linkedTable.id) {
+      fetchLinkedTableFields(defaultValue.linkedTable.id);
+    }
   }, []);
 
   const fieldSchema = toJS(store.schema.properties || {});
@@ -92,22 +103,13 @@ function LinkageConfig({ onClose, onSubmit }: Props): JSX.Element {
     }, []);
 
   function formatFormData(values: any): FormBuilder.DefaultValueLinkage {
-    // const rules = values.rules.map((rule: any) => {
-    //   const availableRules = pick(rule, ['fieldName', 'compareOperator', 'compareTo']);
-    //   if (rule.compareTo === 'currentFormValue') {
-    //     return { ...availableRules, compareValue: rule.compareValue };
-    //   }
-
-    //   return { ...availableRules, compareValue: rule.compareValue };
-    // });
-
     return {
       linkedAppID: store.appID,
       linkedTable: {
         id: values.linkedTableID,
         name: linkageTables.find((option) => option.value === values.linkedTableID)?.label || '',
       },
-      linkedTableSortRules: [values.sortDesce ? '-' + values.linkField : values.linkField],
+      linkedTableSortRules: [values.sortOrder ? '-' + values.sortBy : values.sortBy],
       linkedField: values.linkedField,
       targetField: '',
       ruleJoinOperator: values.ruleJoinOperator,
@@ -115,36 +117,42 @@ function LinkageConfig({ onClose, onSubmit }: Props): JSX.Element {
     };
   }
 
-  function formModelEffect() {
-    const { setFieldState, getFieldValue } = createFormActions();
-
-    onFieldInputChange$('linkedTableID').subscribe(({ value }) => {
-      getTableSchema({ appID: store.appID, tableID: value }).then((schema) => {
-        const fields = Object.entries(schema.properties || {}).filter(([key, value]) => {
-          return !INTERNAL_FIELD_NAMES.includes(key) &&
-            AVAILABLE_FIELD.includes(value['x-component'] || '');
-        }).map(([key, value]) => {
-          return {
-            value: key,
-            label: (value.title || key) as string,
-            availableCompareValues: (value.enum || []) as Array<Option>,
-            'x-component': value['x-component'] || 'AntdSelect',
-          };
-        });
-
-        setLinkedTableFields(fields);
-
-        // const optionValues = fields.map(({ label, value }) => ({ label, value }));
-        // setFieldState('linkField', (state: any) => {
-        //   state.props.enum = optionValues;
-        // });
-        // setFieldState('rules.*.linkedField', (state) => {
-        //   state.props.enum = optionValues;
-        // });
-        // setFieldState('linkage', (state) => {
-        //   state.props.enum = optionValues;
-        // });
+  function fetchLinkedTableFields(tableID: string) {
+    // todo find why tableID is empty on form submit
+    if (!tableID) {
+      return;
+    }
+    getTableSchema(store.appID, tableID).then(({ schema }) => {
+      const fields = Object.entries(schema?.properties || {}).filter(([key, value]) => {
+        return !INTERNAL_FIELD_NAMES.includes(key) &&
+          AVAILABLE_FIELD.includes(value['x-component'] || '');
+      }).map(([key, value]) => {
+        return {
+          value: key,
+          label: (value.title || key) as string,
+          availableCompareValues: (value.enum || []) as Array<Option>,
+          'x-component': value['x-component'] || 'AntdSelect',
+        };
       });
+
+      const optionValues = fields.map(({ label, value }) => ({ label, value }));
+      setFieldState('rules.*.fieldName', (state) => {
+        state.props.enum = optionValues;
+      });
+      setFieldState('linkedField', (state: any) => {
+        state.props.enum = optionValues;
+      });
+      setFieldState('sortBy', (state) => {
+        state.props.enum = optionValues;
+      });
+
+      setLinkedTableFields(fields);
+    });
+  }
+
+  function formModelEffect() {
+    onFieldValueChange$('linkedTableID').subscribe(({ value }) => {
+      fetchLinkedTableFields(value);
     });
 
     onFieldInputChange$('rules.*.fieldName').subscribe(({ name, value }) => {
@@ -193,17 +201,17 @@ function LinkageConfig({ onClose, onSubmit }: Props): JSX.Element {
         let tips = '当前表单字段值';
 
         if (value === 'fixedValue') {
-          const fixFieldKey = getFieldValue(FormPath.transform(name, /\d/, ($1) => {
-            return `rules.${$1}.linkedField`;
-          }));
+          getFieldValue(FormPath.transform(name, /\d/, ($1) => {
+            return `rules.${$1}.formField`;
+          })).then((fixFieldKey) => {
+            const linkTableField = linkedTableFields.find((field) => field.value === fixFieldKey);
 
-          const linkTableField = linkedTableFields.find((field) => field.value === fixFieldKey);
-
-          options = linkTableField?.availableCompareValues ?? [];
-          if (options.length === 0) {
-            componentType = linkTableField?.['x-component'] ?? 'Input';
-          }
-          tips = '请输入固定值';
+            options = linkTableField?.availableCompareValues ?? [];
+            if (options.length === 0) {
+              componentType = linkTableField?.['x-component'] ?? 'Input';
+            }
+            tips = '请输入固定值';
+          });
         }
 
         state.props['x-component'] = componentType;
@@ -216,12 +224,10 @@ function LinkageConfig({ onClose, onSubmit }: Props): JSX.Element {
     });
   }
 
-  const defaultValue: FormBuilder.DefaultValueLinkage =
-    store.activeField?.configValue.defaultValueLinkage || DEFAULT_VALUE_LINKAGE;
-
   return (
     <Modal title="设置数据联动" onClose={onClose}>
       <SchemaForm
+        actions={actions}
         components={COMPONENTS}
         defaultValue={defaultValue}
         effects={formModelEffect}
@@ -240,12 +246,11 @@ function LinkageConfig({ onClose, onSubmit }: Props): JSX.Element {
         <FormItemGrid gutter={20}>
           <Field
             title="取值规则"
-            name="linkField"
+            name="sortBy"
             x-component="AntdSelect"
-            enum={linkedTableFields.map(({ label, value }) => ({ label, value }))}
           />
           <Field
-            name="sortDesce"
+            name="sortOrder"
             x-component="RadioGroup"
             default={false}
             enum={[
@@ -270,7 +275,6 @@ function LinkageConfig({ onClose, onSubmit }: Props): JSX.Element {
               name="fieldName"
               x-component="AntdSelect"
               x-component-props={{ placeholder: '联动表单字段' }}
-              enum={linkedTableFields.map(({ label, value }) => ({ label, value }))}
             />
             <Field
               required
@@ -293,10 +297,10 @@ function LinkageConfig({ onClose, onSubmit }: Props): JSX.Element {
               required
               name="compareValue"
               x-component='AntdSelect'
+              enum={currentFormFields}
               x-component-props={{
                 placeholder: '当前表单字段值',
               }}
-              enum={currentFormFields}
             />
           </Field>
         </Field>

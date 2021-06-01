@@ -35,14 +35,14 @@ function DetailsHeader() {
       setOptions(optionPer.map(({ id, name }) => ({ value: id, label: name })));
     });
 
-    fetchUserList().then((res) => {
-      if (res.data.data.findIndex(({ id }: AppInfo) => id === appID) === -1) {
+    fetchUserList().then((res: any) => {
+      if (res.data.findIndex(({ id }: AppInfo) => id === appID) === -1) {
         toast.error('应用不存在！2秒后跳转到首页');
         setTimeout(() => {
           history.replace('/');
         }, 2000);
       }
-      setAppList(res.data.data);
+      setAppList(res.data);
     });
   }, []);
 

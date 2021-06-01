@@ -6265,10 +6265,10 @@ quick-lru@^5.1.1:
   resolved "https://registry.nlark.com/quick-lru/download/quick-lru-5.1.1.tgz#366493e6b3e42a3a6885e2e99d18f80fb7a8c932"
   integrity sha1-NmST5rPkKjpoheLpnRj4D7eoyTI=
 
-qxp-formula@^0.3.0:
-  version "0.3.0"
-  resolved "http://r.npm.internal.yunify.com/qxp-formula/download/qxp-formula-0.3.0.tgz#71ee8c0c0c7d700b482dab1e8404414e44c3607e"
-  integrity sha1-ce6MDAx9cAtILasehARBTkTDYH4=
+qxp-formula@^0.3.3:
+  version "0.3.3"
+  resolved "http://r.npm.internal.yunify.com/qxp-formula/download/qxp-formula-0.3.3.tgz#aa7feef92b992e0e2322d98006aefb37d989910e"
+  integrity sha1-qn/u+SuZLg4jItmABq77N9mJkQ4=
   dependencies:
     nearley "^2.20.1"
 

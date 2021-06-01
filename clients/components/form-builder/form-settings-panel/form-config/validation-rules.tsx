@@ -1,13 +1,13 @@
 import React, { useContext, useState } from 'react';
+import { observer } from 'mobx-react';
 import { parse } from 'qxp-formula/lib/src/logical-formula';
 
 import Button from '@c/button';
 import Modal from '@c/modal';
 import Icon from '@c/icon';
+import { INTERNAL_FIELD_NAMES } from '@c/form-builder/store';
 
 import { StoreContext } from '../../context';
-import { observer } from 'mobx-react';
-import { INTERNAL_FIELD_NAMES } from '@c/form-builder/store';
 
 const Operators: Array<FormBuilder.CompareOperator> = [
   '!=',
@@ -123,6 +123,7 @@ function EditValidationModal({ onClose, ruleID }: EditValidationModalProps): JSX
     <Modal
       title={`${ruleID ? '编辑' : '新增'}验证规则`}
       onClose={onClose}
+      width={588}
       footerBtns={[
         { key: '取消', text: '取消', onClick: onClose },
         { key: '保存', text: '保存', onClick: onSave, modifier: 'primary' },
@@ -145,7 +146,10 @@ function EditValidationModal({ onClose, ruleID }: EditValidationModalProps): JSX
         <div className="mb-16">
           {fields.map(({ fieldName, title }) => {
             return (
-              <span key={fieldName} className="p-2 bg-gray-100 mr-4 border border-gray-300">
+              <span
+                key={fieldName}
+                className="inline-block mb-8 p-2 bg-gray-100 mr-4 border border-gray-300"
+              >
                 {fieldName}:{title}
               </span>
             );
@@ -155,7 +159,10 @@ function EditValidationModal({ onClose, ruleID }: EditValidationModalProps): JSX
       <div className="mb-8">比较符号和函数:</div>
       <div className="mb-16">
         {Operators.map((operator) => (
-          <span key={operator} className="p-2 bg-gray-100 mr-4 border border-gray-300">
+          <span
+            key={operator}
+            className="inline-block mb-8 p-2 bg-gray-100 mr-4 border border-gray-300"
+          >
             {operator}
           </span>
         ))}

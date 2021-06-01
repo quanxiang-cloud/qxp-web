@@ -3,10 +3,8 @@ import { UnionColumns } from 'react-table';
 
 import FormStore from '@c/form-builder/store';
 import toast from '@lib/toast';
+import { getTableSchema, saveTableSchema } from '@lib/http-client';
 import {
-  createFormScheme,
-  fetchFormScheme,
-  updateFormScheme,
   createPageScheme,
 } from './api';
 import AppPageDataStore from '@c/form-app-data-table/store';
@@ -140,9 +138,9 @@ class FormDesignStore {
     }
 
     this.pageLoading = true;
-    fetchFormScheme(appID, pageID).then((res) => {
-      const { schema = {}, config } = res.data || {};
-      this.hasSchema = res.data ? true : false;
+    getTableSchema(appID, pageID).then((res: any) => {
+      const { schema = {}, config } = res || {};
+      this.hasSchema = res ? true : false;
       this.initScheme = schema;
       this.formStore = new FormStore({ schema, appID, pageID });
       if (config) {
@@ -159,10 +157,7 @@ class FormDesignStore {
   @action
   saveFormScheme = () => {
     this.saveSchemeLoading = true;
-    return (this.hasSchema ? updateFormScheme : createFormScheme)(this.appID, {
-      schema: this.formStore?.schema,
-      tableID: this.pageID,
-    }).then(() => {
+    return saveTableSchema(this.appID, this.pageID, this.formStore?.schema || {}).then(() => {
       (this.formStore as FormStore).hasEdit = false;
       toast.success(this.hasSchema ? '保存成功!' : '创建成功!');
       this.saveSchemeLoading = false;

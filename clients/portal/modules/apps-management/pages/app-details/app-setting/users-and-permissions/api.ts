@@ -1,91 +1,51 @@
-import request from '@portal/modules/apps-management/lib/request';
 import httpClient from '@lib/http-client';
 
 export const createPerGroup = (appID: string, data: RightsCreate) => {
-  return request({
-    url: `/api/v1/structor/${appID}/m/permission/perGroup/create`,
-    method: 'post',
-    data,
-  });
+  return httpClient(`/api/v1/structor/${appID}/m/permission/perGroup/create`, data);
 };
 
 export const fetchRights = (appID: string) => {
-  return request({
-    url: `/api/v1/structor/${appID}/m/permission/perGroup/getList`,
-    method: 'post',
-  });
+  return httpClient(`/api/v1/structor/${appID}/m/permission/perGroup/getList`, {});
 };
 
 export const deleteRights = (appID: string, data: any) => {
-  return request({
-    url: `/api/v1/structor/${appID}/m/permission/perGroup/delete`,
-    method: 'post',
-    data,
-  });
+  return httpClient(`/api/v1/structor/${appID}/m/permission/perGroup/delete`, data);
 };
 
 export const movePerGroup = (appID: string, data: any) => {
-  return request({
-    url: `/api/v1/structor/${appID}/m/permission/perGroup/move`,
-    method: 'post',
-    data,
-  });
+  return httpClient(`/api/v1/structor/${appID}/m/permission/perGroup/move`, data);
 };
 
-export const updatePerGroup = (appID: string, data: Rights) => {
-  return request({
-    url: `/api/v1/structor/${appID}/m/permission/perGroup/update`,
-    method: 'post',
-    data,
-  });
+export const updatePerGroup = (appID: string, data: any) => {
+  return httpClient(`/api/v1/structor/${appID}/m/permission/perGroup/updateName`, data);
+};
+
+export const updatePerGroupUser = (appID: string, data: any) => {
+  return httpClient(`/api/v1/structor/${appID}/m/permission/perGroup/update`, data);
 };
 
 export const fetchOperatePer = (appID: string, perGroupID: string) => {
-  return request({
-    url: `/api/v1/structor/${appID}/m/permission/operatePer/get`,
-    method: 'post',
-    data: { perGroupID },
-  });
+  return httpClient(`/api/v1/structor/${appID}/m/permission/operatePer/get`, { perGroupID });
 };
 
 export const saveOperatePer = (appID: string, data: any) => {
-  return request({
-    url: `/api/v1/structor/${appID}/m/permission/operatePer/save`,
-    method: 'post',
-    data,
-  });
+  return httpClient(`/api/v1/structor/${appID}/m/permission/operatePer/save`, data);
 };
 
 export const fetchDataAccessPer = (appID: string, perGroupID: string) => {
-  return request({
-    url: `/api/v1/structor/${appID}/m/permission/dataAccessPer/get`,
-    method: 'post',
-    data: { perGroupID },
-  });
+  return httpClient(`/api/v1/structor/${appID}/m/permission/dataAccessPer/get`, { perGroupID });
 };
 
 export const saveDataAccessPer = (appID: string, data: any) => {
-  return request({
-    url: `/api/v1/structor/${appID}/m/permission/dataAccessPer/save`,
-    method: 'post',
-    data,
-  });
+  return httpClient(`/api/v1/structor/${appID}/m/permission/dataAccessPer/save`, data);
 };
 
 export const fetchFieldFilter = (appID: string, permissionGroupID: string) => {
-  return request({
-    url: `/api/v1/structor/${appID}/m/filter/get`,
-    method: 'post',
-    data: { permissionGroupID },
-  });
+  return httpClient(`/api/v1/structor/${appID}/m/filter/get`, { permissionGroupID });
 };
 
 export const saveFieldFilter = (appID: string, data: any) => {
-  return request({
-    url: `/api/v1/structor/${appID}/m/filter/save`,
-    method: 'post',
-    data,
-  });
+  return httpClient(`/api/v1/structor/${appID}/m/filter/save`, data);
 };
 
 // 0.4

@@ -8,6 +8,7 @@ import logger from '@lib/logger';
 import registry from './registry';
 import visibleHiddenLinkageEffect from './linkages/visible-hidden';
 import defaultValueLinkageEffect from './linkages/default-value';
+import calculationFormulaEffect from './linkages/calculation-formula';
 import { wrapSchemaByMegaLayout } from './utils';
 
 setValidationLanguage('zh');
@@ -69,30 +70,32 @@ function FormRenderer({ schema, defaultValue, className, onSubmit, onFormValueCh
 
   return (
     <ConfigProvider locale={zhCN}>
-      {errorMessage && (
-        <p className="text-red-600">{errorMessage}</p>
-      )}
-      <SchemaForm
-        actions={actions}
-        className={className}
-        onSubmit={handleSubmit}
-        onChange={handleOnChange}
-        defaultValue={defaultValue}
-        components={{ ...registry.components }}
-        schema={wrapSchemaByMegaLayout(schema)}
-        effects={() => {
-          if (schema['x-internal']?.visibleHiddenLinkages) {
-            visibleHiddenLinkageEffect(
-              schema['x-internal']?.visibleHiddenLinkages,
-              actions,
-            );
-          }
-          // find all defaultValueLinkages and run defaultValueLinkageEffect
-          defaultValueLinkageEffect(schema, actions);
-        }}
-      >
-        {children}
-      </SchemaForm>
+      <div className={className}>
+        {errorMessage && (
+          <p className="text-red-600">{errorMessage}</p>
+        )}
+        <SchemaForm
+          actions={actions}
+          onSubmit={handleSubmit}
+          onChange={handleOnChange}
+          defaultValue={defaultValue}
+          components={{ ...registry.components }}
+          schema={wrapSchemaByMegaLayout(schema)}
+          effects={() => {
+            if (schema['x-internal']?.visibleHiddenLinkages) {
+              visibleHiddenLinkageEffect(
+                schema['x-internal']?.visibleHiddenLinkages,
+                actions,
+              );
+            }
+            // find all defaultValueLinkages and run defaultValueLinkageEffect
+            defaultValueLinkageEffect(schema, actions);
+            calculationFormulaEffect(schema, actions);
+          }}
+        >
+          {children}
+        </SchemaForm>
+      </div>
     </ConfigProvider>
   );
 }

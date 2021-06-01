@@ -14,6 +14,7 @@ type ISchema = import('@formily/react-schema-renderer').ISchema & {
     validations?: Array<ValidationFormula>;
     defaultValueFrom: FormBuilder.DefaultValueFrom;
     defaultValueLinkage?: FormBuilder.DefaultValueLinkage;
+    calculationFormula?: string;
     [key: string]: any;
   };
 };

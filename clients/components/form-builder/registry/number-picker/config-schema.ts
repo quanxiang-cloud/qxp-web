@@ -118,21 +118,34 @@ const schema: ISchema = {
           'x-linkages': [
             {
               type: 'value:visible',
-              target: 'linkageConfig',
+              target: 'defaultValueLinkage',
               condition: '{{ $value === "linkage" }}',
+            },
+            {
+              type: 'value:visible',
+              target: 'min',
+              condition: '{{ $value === "customized" }}',
+            },
+            {
+              type: 'value:visible',
+              target: 'max',
+              condition: '{{ $value === "customized" }}',
+            },
+            {
+              type: 'value:visible',
+              target: 'calculationFormula',
+              condition: '{{ $value === "formula" }}',
             },
           ],
         },
-        linkageConfig: {
+        defaultValueLinkage: {
           'x-component': 'DefaultValueLinkageConfigBtn',
-          'x-component-props': {
-            value: '设置数据联动',
-          },
           'x-index': 9,
         },
         min: {
           type: 'object',
           'x-component': 'mega-layout',
+          'x-index': 10,
           'x-component-props': {
             grid: true,
             columns: 2,
@@ -154,6 +167,7 @@ const schema: ISchema = {
         max: {
           type: 'object',
           'x-component': 'mega-layout',
+          'x-index': 11,
           'x-component-props': {
             grid: true,
             columns: 2,
@@ -171,6 +185,10 @@ const schema: ISchema = {
               'x-component': 'NumberPicker',
             },
           },
+        },
+        calculationFormula: {
+          'x-component': 'CalculationFormulaBtn',
+          'x-index': 12,
         },
       },
     },

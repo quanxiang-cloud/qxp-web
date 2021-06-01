@@ -11,6 +11,7 @@ import {
   deleteRights,
   fetchPerGroupForm,
   deleteFormPer,
+  updatePerGroupUser,
 } from './api';
 
 class UserAndPerStore {
@@ -22,8 +23,8 @@ class UserAndPerStore {
 
   @action
   addRightsGroup = (rights: RightsCreate) => {
-    return createPerGroup(this.appID, rights).then((res) => {
-      this.rightsList = [...this.rightsList, { ...rights, ...res.data }];
+    return createPerGroup(this.appID, rights).then((res: any) => {
+      this.rightsList = [...this.rightsList, { ...rights, ...res }];
     });
   }
 
@@ -43,11 +44,25 @@ class UserAndPerStore {
   @action
   fetchRights = () => {
     this.rightsLoading = true;
-    fetchRights(this.appID).then((res) => {
-      this.rightsList = res.data.list;
+    fetchRights(this.appID).then((res: any) => {
+      this.rightsList = res.list;
       this.rightsLoading = false;
     }).catch(() => {
       this.rightsLoading = false;
+    });
+  }
+
+  @action
+  updatePerGroupUser = (rights: Rights) => {
+    return updatePerGroupUser(this.appID, rights).then(() => {
+      this.rightsList = this.rightsList.map((_rights) => {
+        if (rights.id === _rights.id) {
+          return { ..._rights, ...rights };
+        }
+        return _rights;
+      });
+      toast.success('修改成功！');
+      return true;
     });
   }
 
@@ -92,10 +107,10 @@ class UserAndPerStore {
     Promise.all([
       fetchPageList(this.appID),
       fetchPerGroupForm(this.appID, perGroupID),
-    ]).then(([allPageRes, perPage]) => {
+    ]).then(([allPageRes, perPage]: any) => {
       const { formArr = [] } = perPage as { formArr: { id: string, authority: number }[] };
       let allPages: PageInfo[] = [];
-      allPageRes.data.menu.forEach((menu: PageInfo) => {
+      allPageRes.menu.forEach((menu: PageInfo) => {
         if (menu.menuType === 1 && menu.child?.length) {
           allPages = allPages.concat(menu.child.map((cMenu) => {
             return { ...cMenu, name: `${menu.name}/${cMenu.name}` };
@@ -117,7 +132,7 @@ class UserAndPerStore {
 
   @action
   updatePerFormList = (newPerForm: PageInfo & { authority: number }) => {
-    this.perFormList = this.perFormList.map((perForm)=>{
+    this.perFormList = this.perFormList.map((perForm) => {
       if (perForm.id === newPerForm.id) {
         return { ...perForm, ...newPerForm };
       }
