@@ -12,7 +12,7 @@ type ISchema = import('@formily/react-schema-renderer').ISchema & {
     sortable?: boolean;
     permission?: number;
     validations?: Array<ValidationFormula>;
-    defaultValueFrom: FormBuilder.DefaultValueFrom;
+    defaultValueFrom?: FormBuilder.DefaultValueFrom;
     defaultValueLinkage?: FormBuilder.DefaultValueLinkage;
     calculationFormula?: string;
     [key: string]: any;
@@ -21,6 +21,8 @@ type ISchema = import('@formily/react-schema-renderer').ISchema & {
 
 declare namespace FormBuilder {
   type ElementCategory = 'basic' | 'advance' | 'layout';
+
+  type Subordination = 'foreign_table' | 'sub_table';
 
   type SourceElement<T> = {
     displayName: string;

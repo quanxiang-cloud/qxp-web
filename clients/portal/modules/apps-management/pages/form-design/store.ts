@@ -56,6 +56,7 @@ class FormDesignStore {
       if (!this.formStore) {
         return;
       }
+
       this.allFiltrate = this.allFiltrate.filter(({ id }) => {
         if (!this.formStore?.schema?.properties) {
           return false;
@@ -145,7 +146,7 @@ class FormDesignStore {
       this.formStore = new FormStore({ schema, appID, pageID });
       if (config) {
         this.pageTableConfig = config.pageTableConfig || {};
-        this.allFiltrate = config.filtrate || [];
+        this.allFiltrate = Array.isArray(config.filtrate) ? config.filtrate : [];
         this.pageTableShowRule = config.pageTableShowRule || {};
       }
       this.pageLoading = false;

@@ -99,9 +99,11 @@ function FormFieldConfig(): JSX.Element {
 
   if (!store.activeField) {
     return (
-      <span>前选择表单字段</span>
+      <span>请选择表单字段</span>
     );
   }
+
+  // console.log(store.activeFieldSourceElement?.configSchema);
 
   if (store.activeFieldSourceElement?.configSchema) {
     return (

@@ -529,6 +529,13 @@
   resolved "https://registry.npm.taobao.org/@types/qs/download/@types/qs-6.9.6.tgz?cache=0&sync_timestamp=1615109480659&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40types%2Fqs%2Fdownload%2F%40types%2Fqs-6.9.6.tgz#df9c3c8b31a247ec315e6996566be3171df4b3b1"
   integrity sha1-35w8izGiR+wxXmmWVmvjFx30s7E=
 
+"@types/react-beautiful-dnd@^13.0.0":
+  version "13.0.0"
+  resolved "https://registry.nlark.com/@types/react-beautiful-dnd/download/@types/react-beautiful-dnd-13.0.0.tgz?cache=0&sync_timestamp=1621252281966&other_urls=https%3A%2F%2Fregistry.nlark.com%2F%40types%2Freact-beautiful-dnd%2Fdownload%2F%40types%2Freact-beautiful-dnd-13.0.0.tgz#e60d3d965312fcf1516894af92dc3e9249587db4"
+  integrity sha1-5g09llMS/PFRaJSvktw+kklYfbQ=
+  dependencies:
+    "@types/react" "*"
+
 "@types/react-dom@^17.0.0":
   version "17.0.3"
   resolved "https://registry.npm.taobao.org/@types/react-dom/download/@types/react-dom-17.0.3.tgz#7fdf37b8af9d6d40127137865bb3fff8871d7ee1"
@@ -4546,7 +4553,7 @@ mdn-data@2.0.4:
   resolved "https://registry.nlark.com/mdn-data/download/mdn-data-2.0.4.tgz?cache=0&sync_timestamp=1619048987572&other_urls=https%3A%2F%2Fregistry.nlark.com%2Fmdn-data%2Fdownload%2Fmdn-data-2.0.4.tgz#699b3c38ac6f1d728091a64650b65d388502fd5b"
   integrity sha1-aZs8OKxvHXKAkaZGULZdOIUC/Vs=
 
-memoize-one@^5.0.4:
+memoize-one@^5.0.4, memoize-one@^5.1.1:
   version "5.2.1"
   resolved "https://registry.nlark.com/memoize-one/download/memoize-one-5.2.1.tgz?cache=0&sync_timestamp=1619230052606&other_urls=https%3A%2F%2Fregistry.nlark.com%2Fmemoize-one%2Fdownload%2Fmemoize-one-5.2.1.tgz#8337aa3c4335581839ec01c3d594090cebe8f00e"
   integrity sha1-gzeqPEM1WBg57AHD1ZQJDOvo8A4=
@@ -5918,7 +5925,7 @@ qxp-formula@^0.3.3:
   dependencies:
     nearley "^2.20.1"
 
-raf-schd@^4.0.0:
+raf-schd@^4.0.0, raf-schd@^4.0.2:
   version "4.0.3"
   resolved "https://registry.npm.taobao.org/raf-schd/download/raf-schd-4.0.3.tgz#5d6c34ef46f8b2a0e880a8fcdb743efc5bfdbc1a"
   integrity sha1-XWw070b4sqDogKj823Q+/Fv9vBo=
@@ -6300,6 +6307,19 @@ react-beautiful-dnd-next@11.0.5:
     tiny-invariant "^1.0.4"
     use-memo-one "^1.1.0"
 
+react-beautiful-dnd@^13.1.0:
+  version "13.1.0"
+  resolved "https://registry.npm.taobao.org/react-beautiful-dnd/download/react-beautiful-dnd-13.1.0.tgz#ec97c81093593526454b0de69852ae433783844d"
+  integrity sha1-7JfIEJNZNSZFSw3mmFKuQzeDhE0=
+  dependencies:
+    "@babel/runtime" "^7.9.2"
+    css-box-model "^1.2.0"
+    memoize-one "^5.1.1"
+    raf-schd "^4.0.2"
+    react-redux "^7.2.0"
+    redux "^4.0.4"
+    use-memo-one "^1.1.1"
+
 react-color@^2.19.3:
   version "2.19.3"
   resolved "https://registry.npm.taobao.org/react-color/download/react-color-2.19.3.tgz?cache=0&sync_timestamp=1603861975817&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Freact-color%2Fdownload%2Freact-color-2.19.3.tgz#ec6c6b4568312a3c6a18420ab0472e146aa5683d"
@@ -6416,7 +6436,7 @@ react-query@^3.12.0:
     broadcast-channel "^3.4.1"
     match-sorter "^6.0.2"
 
-react-redux@^7.0.3:
+react-redux@^7.0.3, react-redux@^7.2.0:
   version "7.2.4"
   resolved "https://registry.nlark.com/react-redux/download/react-redux-7.2.4.tgz#1ebb474032b72d806de2e0519cd07761e222e225"
   integrity sha1-HrtHQDK3LYBt4uBRnNB3YeIi4iU=
@@ -6603,7 +6623,7 @@ reduce-css-calc@^2.1.8:
     css-unit-converter "^1.1.1"
     postcss-value-parser "^3.3.0"
 
-redux@^4.0.0, redux@^4.0.1, redux@^4.0.5:
+redux@^4.0.0, redux@^4.0.1, redux@^4.0.4, redux@^4.0.5:
   version "4.1.0"
   resolved "https://registry.nlark.com/redux/download/redux-4.1.0.tgz?cache=0&sync_timestamp=1619286844146&other_urls=https%3A%2F%2Fregistry.nlark.com%2Fredux%2Fdownload%2Fredux-4.1.0.tgz#eb049679f2f523c379f1aff345c8612f294c88d4"
   integrity sha1-6wSWefL1I8N58a/zRchhLylMiNQ=
@@ -7982,7 +8002,7 @@ url-loader@^4.1.1:
     mime-types "^2.1.27"
     schema-utils "^3.0.0"
 
-use-memo-one@^1.1.0:
+use-memo-one@^1.1.0, use-memo-one@^1.1.1:
   version "1.1.2"
   resolved "https://registry.npm.taobao.org/use-memo-one/download/use-memo-one-1.1.2.tgz#0c8203a329f76e040047a35a1197defe342fab20"
   integrity sha1-DIIDoyn3bgQAR6NaEZfe/jQvqyA=

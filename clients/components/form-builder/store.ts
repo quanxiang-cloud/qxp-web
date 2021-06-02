@@ -105,6 +105,9 @@ export default class FormBuilderStore {
   @observable validations: Array<ValidationFormula>;
 
   constructor({ schema, appID, pageID }: Props) {
+    if (!schema?.properties) {
+      schema.properties = {};
+    }
     const [internalFields, fields] = schemaToFields(schema);
     this.internalFields = internalFields;
     this.fields = fields;
@@ -273,6 +276,7 @@ export default class FormBuilderStore {
     };
 
     if (!this.fields.length) {
+      this.setActiveFieldKey(newField.fieldName);
       this.fields.push(newField);
       return;
     }

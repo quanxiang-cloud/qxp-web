@@ -7,6 +7,7 @@ import DatePicker from './date-picker';
 import Select from './select';
 import MultipleSelect from './multiple-select';
 import CascadeSelector from './cascade-selector';
+import SubTable from './sub-table';
 
 const availableElements = [
   Input,
@@ -18,6 +19,7 @@ const availableElements = [
   Select,
   MultipleSelect,
   CascadeSelector,
+  SubTable,
 ];
 
 export type Elements = { [key: string]: FormBuilder.SourceElement<any> };

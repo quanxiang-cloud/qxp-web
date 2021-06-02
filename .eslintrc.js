@@ -103,6 +103,7 @@ module.exports = {
     'react/display-name': 'off',
     'react/forbid-prop-types': 'off',
     'react/jsx-no-bind': 'off',
+    'react/prop-types': 'off',
     'react/jsx-wrap-multilines': [
       'warn',
       {
