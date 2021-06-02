@@ -19,13 +19,14 @@ import ResetPasswordModal from './modal/reset-password-modal';
 import AlterUserStateModal from './modal/alert-user-state-modal';
 import AdjustDepModal from './modal/adjust-dep-modal';
 import LeaderHandleModal from './modal/leader-handle-modal';
+import ExportEmployees from './export-employees';
 
 import { exportEmployees } from './utils';
 import { UserStatus } from './type';
 import { EmployeesColumns, EmployeesActions, ExpandActions } from './constant';
 
 type ModalType = '' | 'edit_employees' | 'import_employees' | 'reset_password' |
-  'alert_user_state' | 'adjust_dep' | 'leader_handle';
+  'alert_user_state' | 'adjust_dep' | 'leader_handle' | 'export_employees';
 
 const initUserInfo = { id: '', userName: '', email: '', phone: '' };
 const initSearch = { page: 1, limit: 10, userName: '', includeChildDEPChild: 0 };
@@ -103,10 +104,16 @@ export default function Employees({
     setPageParams({ ...pageParams, page: current, limit: pageSize });
   }
 
-  function handleEmployeesExport() {
+  function openExportModal() {
+    openModal('export_employees');
+  }
+
+  // 导出数据
+  function handleEmployeesExport(ids: string[]) {
     getUserAdminInfo('', {
       useStatus: 1,
       page: 1,
+      depIDs: ids,
       limit: 10000,
     }).then((res) => {
       const { data } = res;
@@ -115,6 +122,7 @@ export default function Employees({
         return user;
       });
       exportEmployees(newData);
+      closeModal();
     }).catch((error) => {
       toast.error(error);
     });
@@ -194,6 +202,9 @@ export default function Employees({
 
   return (
     <>
+      {modalType === 'export_employees' && (
+        <ExportEmployees closeModal={closeModal} onSubmit={handleEmployeesExport} />
+      )}
       { modalType === 'leader_handle' &&
         (<LeaderHandleModal user={currUser} closeModal={closeModal} />)}
       { modalType === 'adjust_dep' &&
@@ -265,7 +276,7 @@ export default function Employees({
                     className="opacity-1"
                     onMenuClick={(key) => {
                       if (key === 'export') {
-                        handleEmployeesExport();
+                        openExportModal();
                         return;
                       }
                     }}
