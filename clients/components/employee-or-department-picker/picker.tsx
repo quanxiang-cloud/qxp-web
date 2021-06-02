@@ -22,10 +22,11 @@ interface Props {
   departments?: EmployeeOrDepartmentOfRole[];
   employees?: EmployeeOrDepartmentOfRole[];
   onChange: (departmentsOrEmployees: EmployeeOrDepartmentOfRole[]) => void;
+  onlyEmployees?: boolean;
 }
 
 export default observer(function EmployeeOrDepartmentPicker({
-  departments = [], employees = [], onChange,
+  departments = [], employees = [], onChange, onlyEmployees,
 }: Props) {
   const [store, setStore] = useState<OwnerStore>();
 
@@ -81,6 +82,96 @@ export default observer(function EmployeeOrDepartmentPicker({
     return <ErrorTips desc="something wrong" />;
   }
 
+  const renderEmployeePanel = () => {
+    return (
+      <>
+        <SearchInput
+          className="mb-16"
+          name="username"
+          placeholder="搜索员工姓名..."
+          onChange={(value) => store.setUsernameKeyword(value)}
+          appendix="close"
+        />
+        <div className="flex flex-row mr-4" style={{ height: 'calc(100% - 48px)' }}>
+          <div className="w-221 h-full flex flex-col overflow-hidden mr-20">
+            <TextHeader
+              className="mb-8 pb-0"
+              title="选择部门"
+              itemTitleClassName="text-h6-no-color-weight font-semibold"
+              descClassName="text-caption"
+            />
+            <EmployeeSelectTree
+              store={store.employeeTreeStore}
+              className="employee-select-tree"
+              wrapperClassName="flex-1 bg-white rounded-12 border-gray-200"
+            />
+          </div>
+          <div className="h-full flex flex-col overflow-hidden flex-5">
+            <TextHeader
+              className="mb-8 pb-0"
+              title={store.employeeTreeStore.currentFocusedNode.name || ''}
+              itemTitleClassName="text-h6-no-color-weight font-semibold"
+            />
+            <EmployeeTable
+              userName={store.usernameKeyword}
+              depID={store.employeeTreeStore.currentFocusedNode.id || ''}
+              ownerStore={store}
+            />
+          </div>
+        </div>
+      </>
+    );
+  };
+
+  const renderDepartmentPanel = () => {
+    return (
+      <>
+        {/* <SearchInput
+                  className="mb-8"
+                  name="departmentName"
+                  placeholder="搜索部门名称姓名..."
+                  onChange={store.setDepartmentKeyword}
+                  appendix="close"
+                /> */}
+        <div
+          className="h-full flex flex-col overflow-hidden"
+          style={{ height: 'calc(100% - 48px)' }}
+        >
+          <TextHeader
+            className="pb-0"
+            title="选择部门"
+            itemTitleClassName="text-h6-no-color-weight font-semibold"
+            desc="角色关联部门后，在该部门下添加员工时会默认自动带入该部门的角色。例如：部门关联角色“普通管理员”，添加新员工时，自动关联角色“普通管理员”。"
+            itemClassName="flex flex-col items-start"
+            textClassName="ml-0 mt-4"
+            descClassName="mb-8 text-caption"
+          />
+          <DepartmentSelectTree
+            store={store.departmentTreeStore}
+            wrapperClassName="flex-1 bg-white rounded-12"
+            onChange={onDepartmentTreeChange}
+          />
+        </div>
+      </>
+    );
+  };
+
+  const items = [
+    {
+      id: '1',
+      name: '按员工',
+      content: renderEmployeePanel(),
+    },
+  ];
+
+  if (!onlyEmployees) {
+    items.push({
+      id: '2',
+      name: '按部门',
+      content: renderDepartmentPanel(),
+    });
+  }
+
   return (
     <div className="flex flex-row w-full h-full">
       <Tab
@@ -88,88 +179,9 @@ export default observer(function EmployeeOrDepartmentPicker({
         contentClassName="rounded-12 rounded-tl-none"
         currentKey={store.tabKey}
         onChange={(key) => store.setTabKey(key as string)}
-        items={[
-          {
-            id: '1',
-            name: '按员工',
-            content: (
-              <>
-                <SearchInput
-                  className="mb-16"
-                  name="username"
-                  placeholder="搜索员工姓名..."
-                  onChange={(value) => store.setUsernameKeyword(value)}
-                  appendix="close"
-                />
-                <div className="flex flex-row mr-4"
-                  style={{ height: 'calc(100% - 65px)' }}>
-                  <div
-                    className="w-221 h-full flex flex-col overflow-hidden mr-20 border-r-2 border-gray-200">
-                    <TextHeader
-                      className="mb-8 pb-0"
-                      title="选择部门"
-                      itemTitleClassName="text-h6-no-color-weight font-semibold"
-                      descClassName="text-caption"
-                    />
-                    <EmployeeSelectTree
-                      store={store.employeeTreeStore}
-                      className="employee-select-tree"
-                      wrapperClassName="flex-1 bg-white rounded-12 border-gray-200"
-                    />
-                  </div>
-                  <div className="h-full flex flex-col overflow-hidden flex-5">
-                    <TextHeader
-                      className="mb-8 pb-0"
-                      title={store.employeeTreeStore.currentFocusedNode.name || ''}
-                      itemTitleClassName="text-h6-no-color-weight font-semibold"
-                    />
-                    <EmployeeTable
-                      userName={store.usernameKeyword}
-                      depID={store.employeeTreeStore.currentFocusedNode.id || ''}
-                      ownerStore={store}
-                    />
-                  </div>
-                </div>
-              </>
-            ),
-          },
-          {
-            id: '2',
-            name: '按部门',
-            content: (
-              <>
-                {/* <SearchInput
-                  className="mb-8"
-                  name="departmentName"
-                  placeholder="搜索部门名称姓名..."
-                  onChange={store.setDepartmentKeyword}
-                  appendix="close"
-                /> */}
-                <div
-                  className="h-full flex flex-col overflow-hidden"
-                  style={{ height: 'calc(100% - 48px)' }}
-                >
-                  <TextHeader
-                    className="pb-0"
-                    title="选择部门"
-                    itemTitleClassName="text-h6-no-color-weight font-semibold"
-                    desc="角色关联部门后，在该部门下添加员工时会默认自动带入该部门的角色。例如：部门关联角色“普通管理员”，添加新员工时，自动关联角色“普通管理员”。"
-                    itemClassName="flex flex-col items-start"
-                    textClassName="ml-0 mt-4"
-                    descClassName="mb-8 text-caption"
-                  />
-                  <DepartmentSelectTree
-                    store={store.departmentTreeStore}
-                    wrapperClassName="flex-1 bg-white rounded-12"
-                    onChange={onDepartmentTreeChange}
-                  />
-                </div>
-              </>
-            ),
-          },
-        ]}
+        items={items}
       />
-      <div className="vertical-line flex-grow-0"></div>
+      <div className="vertical-line flex-grow-0" />
       <SelectedList
         ownerStore={store}
       />

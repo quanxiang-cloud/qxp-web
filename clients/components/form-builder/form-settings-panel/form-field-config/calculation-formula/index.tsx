@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { parse } from 'qxp-formula/lib/src/logical-formula';
+import { parse } from 'qxp-formula';
 
 import Modal from '@c/modal';
 

@@ -15,6 +15,7 @@ interface Props {
   onCancel: () => void;
   employees?: EmployeeOrDepartmentOfRole[];
   departments?: EmployeeOrDepartmentOfRole[];
+  onlyEmployees?: boolean;
 }
 
 export default function EmployeeOrDepartmentPickerModal({
@@ -24,6 +25,7 @@ export default function EmployeeOrDepartmentPickerModal({
   onCancel,
   title,
   submitText,
+  onlyEmployees,
 }: Props) {
   const [departmentsOrEmployees, setDepartmentsOrEmployees] = useState<
     EmployeeOrDepartmentOfRole[]
@@ -84,6 +86,7 @@ export default function EmployeeOrDepartmentPickerModal({
         departments={departments}
         employees={employees}
         onChange={setDepartmentsOrEmployees}
+        onlyEmployees={onlyEmployees}
       />
     </Modal>
   );

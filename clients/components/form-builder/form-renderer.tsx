@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { SchemaForm, setValidationLanguage, IForm, createFormActions } from '@formily/antd';
 import { ConfigProvider } from 'antd';
 import zhCN from 'antd/lib/locale/zh_CN';
-import { parse, resolve, findVariables } from 'qxp-formula/lib/src/logical-formula';
+import { parse, resolve, findVariables } from 'qxp-formula';
 
 import logger from '@lib/logger';
 import registry from './registry';

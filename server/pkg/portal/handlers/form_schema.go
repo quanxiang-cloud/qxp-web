@@ -48,7 +48,7 @@ func FormSchemaHandler(w http.ResponseWriter, r *http.Request) {
 		contexts.Logger.Error("read body err, %v\n", err)
 		return
 	}
-	contexts.Logger.Debugf("proxy api request, method: %s, url: %s,request_id: %s ", method, url, requestID)
+	contexts.Logger.Debugf("schema proxy api request, method: %s, url: %s,body : %s,request_id: %s ", method, url,string(body), requestID)
 
 	sm := &schema{}
 	if strings.HasSuffix(path, "/") {
@@ -143,7 +143,7 @@ func subFormHandler(r *http.Request, s map[string]interface{}, path, tableID str
 func createSub(r *http.Request, vm map[string]interface{}, tableID, fieldNme string) (int, error) {
 	if tp, ok := vm[Type]; ok && tp == Arr {
 		// 存在子表单或关联表单
-		if cm, ok := vm[Component]; ok {
+		if cm, ok := vm[Component]; ok && (cm == SubTableF || cm == associatedRecords){
 			cp := ComponentProp{}
 			if c, ok := vm[ComponentProps]; ok {
 				err := genComponent(c, &cp)
@@ -283,14 +283,14 @@ func doFill(r *http.Request, vm map[string]interface{}, tableID, fieldNme, cate 
 					}
 					ft = table.Schema
 				}
-				// 判断是否存在 嵌套子表单
-				if po, ok := ft[Properties]; ok {
-					p := po.(map[string]interface{})
-					cd, err := fillSchema(r, p, cp.TableID, cate)
-					if err != nil {
-						return cd, err
-					}
-				}
+				// 判断是否存在 嵌套子表单(暂不考虑这种情况)
+				// if po, ok := ft[Properties]; ok {
+				// 	p := po.(map[string]interface{})
+				// 	cd, err := fillSchema(r, p, cp.TableID, cate)
+				// 	if err != nil {
+				// 		return cd, err
+				// 	}
+				// }
 				// 过滤子表单
 				sub := &SubTable{
 					TableID:    tableID,
