@@ -82,6 +82,17 @@ export default function ConfigForm({ onChange, initialValue }: Props) {
     actions.setFieldState('Fields.items', (state) => {
       state.value = items;
     });
+    actions.getFieldState('Fields.columns', (st1) => {
+      const columns: {title: string; dataIndex: string}[] = st1.value ?? [];
+      actions.setFieldState('Fields.columns', (st2) => {
+        st2.value = columns.map((col) => {
+          if (col.dataIndex === state.currentFieldKey) {
+            return { ...col, title: value.title };
+          }
+          return col;
+        });
+      });
+    });
   }
 
   function convertSchema({ properties }: FormBuilder.Schema = {}): any {

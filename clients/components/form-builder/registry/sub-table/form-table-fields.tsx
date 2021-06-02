@@ -7,6 +7,7 @@ import Popper from '@c/popper';
 import Select from '@c/select';
 import Icon from '@c/icon';
 import Toggle from '@c/toggle';
+import { INTERNAL_FIELD_NAMES } from '@c/form-builder/store';
 
 import { generateRandomFormFieldID } from '../../utils';
 import { ActionsContext } from './config-form';
@@ -97,12 +98,12 @@ function FormTableFields(props: ISchemaFieldComponentProps) {
   });
 
   function onUpdateFields(fields: any) {
-    const newColumns: {title: string; dataIndex: string}[] = [];
+    const newColumns: {title: string; dataIndex: string, sort: number; }[] = [];
     const newValue = {
       type: 'object',
       properties: fields.reduce((cur: any, next: any) => {
         const { value, schema, sort } = next;
-        newColumns.push({ title: schema?.title ?? '', dataIndex: value });
+        newColumns.push({ title: schema?.title ?? '', dataIndex: value, sort });
         cur[value] = {
           ...schema,
           'x-index': sort,
@@ -112,7 +113,9 @@ function FormTableFields(props: ISchemaFieldComponentProps) {
     };
     props.mutators.change(newValue);
     actions.setFieldState('Fields.columns', (state) => {
-      state.value = newColumns;
+      state.value = newColumns.sort((a, b) => a.sort - b.sort).map(({ title, dataIndex }) => ({
+        title, dataIndex,
+      }));
     });
   }
 
@@ -146,8 +149,12 @@ function FormTableFields(props: ISchemaFieldComponentProps) {
   }
 
   function onShowSubTableConfig(subTableKey: string) {
-    actions.setFieldState('Fields.curConfigSubTableKey', (state) => {
-      state.value = subTableKey;
+    actions.getFieldState('Fields.subordination', (st) => {
+      if (st.value !== 'foreign_table') {
+        actions.setFieldState('Fields.curConfigSubTableKey', (state) => {
+          state.value = subTableKey;
+        });
+      }
     });
   }
 
@@ -169,7 +176,12 @@ function FormTableFields(props: ISchemaFieldComponentProps) {
       <header className="flex justify-between items-center bg-gray-50 mb-16">
         <div className="mr-10">{title}</div>
         {isFromEmpty && (
-          <Select className="flex-1" placeholder="添加" options={currentOptions} onChange={onAddFields} />
+          <Select
+            className="flex-1"
+            placeholder="添加"
+            options={currentOptions.filter(({ value }) => !INTERNAL_FIELD_NAMES.includes(value))}
+            onChange={onAddFields}
+          />
         )}
         {!isFromEmpty && !!schemaOptions.length && (
           <>
@@ -183,18 +195,20 @@ function FormTableFields(props: ISchemaFieldComponentProps) {
               modifiers={[{ name: 'offset', options: { offset: [0, 0] } }]}
             >
               <ul className="flex flex-col py-12 px-28 border rounded h-280 overflow-y-scroll">
-                {schemaOptions.map(({ label, value, schema }) => {
-                  const isChecked = !!selectedFields.find(({ value: v }) => value === v);
-                  return (
-                    <li key={value} className="flex justify-between items-center my-5">
-                      <span className="mr-7">{label}</span>
-                      <Toggle
-                        defaultChecked={isChecked}
-                        onChange={(isOpen) => onToggleFields({ label, value, schema }, isOpen)}
-                      />
-                    </li>
-                  );
-                })}
+                {schemaOptions
+                  .filter(({ value }) => !INTERNAL_FIELD_NAMES.includes(value))
+                  .map(({ label, value, schema }) => {
+                    const isChecked = !!selectedFields.find(({ value: v }) => value === v);
+                    return (
+                      <li key={value} className="flex justify-between items-center my-5">
+                        <span className="mr-7">{label}</span>
+                        <Toggle
+                          defaultChecked={isChecked}
+                          onChange={(isOpen) => onToggleFields({ label, value, schema }, isOpen)}
+                        />
+                      </li>
+                    );
+                  })}
               </ul>
             </Popper>
           </>

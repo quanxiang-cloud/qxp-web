@@ -31,7 +31,6 @@ function Subordination(originalProps: ISchemaFieldComponentProps): JSX.Element {
 
   function onForeignTable() {
     actions.setFieldState('Fields.items', (state) => {
-      console.log('here');
       state.value = {
         type: 'object',
         properties: {},

@@ -1,10 +1,7 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 import { Table } from 'antd';
 import { Input, Radio, DatePicker } from '@formily/antd-components';
-import { useQuery } from 'react-query';
-
-import toast from '@lib/toast';
 
 import { getFormTableSchema } from './api';
 import logger from '@lib/logger';
@@ -32,24 +29,24 @@ interface Props extends ISchemaFieldComponentProps {
 }
 
 function SubTable(compProps: Props) {
+  const [schemaData, setSchemaData] = useState<{tableID: string; schema: ISchema} | null>(null);
   const { schema: definedSchema } = compProps;
   const { tableID, appID, columns: definedColumns } = compProps.props['x-component-props'];
-  const {
-    data, isError, error,
-  } = useQuery('GET_FORM_TABLE_SCHEMA', () => getFormTableSchema<{
-    schema: ISchema
-  }>({
-    appID,
-    tableID,
-  }), {
-    enabled: !!appID && !!tableID,
-  });
 
   useEffect(() => {
-    isError && toast.error(error as string);
-  }, [isError]);
+    if (!appID || !tableID) {
+      return;
+    }
+    getFormTableSchema<{
+      schema: ISchema;
+      tableID: string;
+    }>({ appID, tableID }).then(setSchemaData);
 
-  const schema = data?.schema ?? definedSchema.items as ISchema;
+    return () => setSchemaData(null);
+  }, [tableID, appID]);
+
+  const schema = appID && tableID && (schemaData?.tableID === tableID) && schemaData?.schema ?
+    schemaData?.schema : definedSchema.items as ISchema;
 
   const columns: any[] = (definedColumns?.map((v) => JSON.parse(v)) ?? [])?.map(({ dataIndex, title }: {
     title: string;
