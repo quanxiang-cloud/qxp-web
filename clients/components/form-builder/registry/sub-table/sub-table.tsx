@@ -32,8 +32,8 @@ interface Props extends ISchemaFieldComponentProps {
 }
 
 function SubTable(compProps: Props) {
-  const { props, schema: definedSchema } = compProps;
-  const { tableID, appID, columns: definedColumns } = props['x-component-props'];
+  const { schema: definedSchema } = compProps;
+  const { tableID, appID, columns: definedColumns } = compProps.props['x-component-props'];
   const {
     data, isError, error,
   } = useQuery('GET_FORM_TABLE_SCHEMA', () => getFormTableSchema<{
