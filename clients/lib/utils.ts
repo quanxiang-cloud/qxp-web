@@ -1,9 +1,14 @@
 import qs from 'qs';
 import { TreeData, TreeItem } from '@atlaskit/tree';
 import { get } from 'lodash';
-
 import { TreeNode } from '@c/headless-tree/types';
+import { nanoid } from 'nanoid';
+
 import toast from '@lib/toast';
+
+export function uuid() {
+  return nanoid();
+}
 
 export const httpFile = async (url: string, data?: Record<string, string | Blob>) => {
   const formData = new FormData();
@@ -259,3 +264,5 @@ export function getHTMLParentElement(selector: string, el: HTMLElement | null): 
     return getHTMLParentElement(selector, el.parentElement);
   }
 }
+
+export const noop = ()=> {};
