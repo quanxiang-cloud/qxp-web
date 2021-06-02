@@ -20,21 +20,43 @@ interface Props {
   onChange?: (value: Value) => void;
   validating?: boolean;
   errorMessage?: string;
+  exclude?: string[];
+}
+
+function buildOptions(optionsData: Options, exclude: string[]): Options {
+  if (!exclude?.length) {
+    return optionsData;
+  }
+  const options = [];
+  for (let index = 0; index < optionsData.length; index += 1) {
+    const op = optionsData[index];
+    if (!exclude.includes(op.value)) {
+      if (op.children?.length) {
+        options.push(...buildOptions(op.children, exclude));
+      } else {
+        options.push(op);
+      }
+    }
+  }
+
+  return options;
 }
 
 function FormTableSelector(
-  { value, changeable = true, onChange = noop, validating, errorMessage }: Props,
+  { value, changeable = true, onChange = noop, validating, errorMessage, exclude }: Props,
   ref?: Ref<Cascader>
 ) {
   const { appID } = useParams<{appID: string}>();
 
   const {
-    data: options = [],
+    data: optionsData = [],
     isError,
     error = '获取工作表失败',
   } = useQuery(['GET_WORK_FORM_LIST', appID], getFormDataOptions, {
     enabled: !!appID,
   });
+
+  const options = buildOptions(optionsData, exclude ?? []);
 
   useEffect(() => {
     isError && toast.error(error as string);

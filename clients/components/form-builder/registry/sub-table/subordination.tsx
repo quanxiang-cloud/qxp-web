@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { Radio, RadioChangeEvent } from 'antd';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 import { useMutation } from 'react-query';
@@ -6,10 +6,11 @@ import { useParams } from 'react-router-dom';
 import usePrevious from 'react-use/lib/usePrevious';
 
 import { createBlankFormTable } from './api';
-import { actions } from './config-form';
+import { ActionsContext } from './config-form';
 
 function Subordination(originalProps: ISchemaFieldComponentProps): JSX.Element {
   const { appID } = useParams<{ appID: string }>();
+  const actions = useContext(ActionsContext);
 
   const runnerMap: Record<string, Function> = {
     sub_table: onSubTable,
@@ -30,6 +31,7 @@ function Subordination(originalProps: ISchemaFieldComponentProps): JSX.Element {
 
   function onForeignTable() {
     actions.setFieldState('Fields.items', (state) => {
+      console.log('here');
       state.value = {
         type: 'object',
         properties: {},

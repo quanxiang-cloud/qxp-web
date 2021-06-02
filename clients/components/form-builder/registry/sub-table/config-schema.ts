@@ -133,12 +133,11 @@ const schema: ISchema = {
         },
         columns: {
           type: 'array',
-          enum: [],
-          'x-component': 'Select',
+          'x-component': 'Columns',
           'x-mega-props': {
             labelAlign: 'top',
           },
-          visible: false,
+          visible: true,
           'x-index': 9,
         },
       },

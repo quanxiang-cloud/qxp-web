@@ -1,15 +1,16 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useContext } from 'react';
 import { ISchemaFieldComponentProps } from '@formily/antd';
 import { useParams } from 'react-router-dom';
 import { omitBy } from 'lodash';
 
 import FormTableSelector from '@c/form-table-selector';
 
-import { actions } from './config-form';
+import { ActionsContext } from './config-form';
 import { getFormTableSchema } from './api';
 
 export default function FormTableSelectorWrapper({ value, onChange }: ISchemaFieldComponentProps) {
-  const { appID } = useParams<{ appID: string }>();
+  const { appID, pageId } = useParams<{ appID: string; pageId: string; }>();
+  const actions = useContext(ActionsContext);
 
   useEffect(() => {
     if (value) {
@@ -34,12 +35,30 @@ export default function FormTableSelectorWrapper({ value, onChange }: ISchemaFie
         };
       });
     });
+    actions.getFieldState('Fields.columns', (state) => {
+      const columns = state.initialValue as { title: string; dataIndex: string }[] ?? [];
+      actions.setFieldState('Fields.items', (st) => {
+        const properties = columns.reduce(
+          (cur: Record<string, ISchema>, next: {title: string; dataIndex: string}) => {
+            const sc = schema?.properties?.[next?.dataIndex];
+            if (sc) {
+              cur[next?.dataIndex] = sc;
+            }
+            return cur;
+          }, {});
+        st.value = {
+          type: 'object',
+          properties,
+        };
+      });
+    });
   }
 
   return (
     <FormTableSelector
       value={{ value }}
       onChange={handleChange}
+      exclude={[pageId]}
     />
   );
 }

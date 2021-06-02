@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { SchemaForm, createFormActions, FormEffectHooks } from '@formily/antd';
+import React, { useState, useEffect, useRef, createContext, useMemo } from 'react';
+import { SchemaForm, createFormActions, FormEffectHooks, ISchemaFormActions } from '@formily/antd';
 import { Input as input, Select as select, Switch, ArrayTable } from '@formily/antd-components';
 import { useParams } from 'react-router-dom';
 import { update } from 'lodash';
@@ -9,6 +9,7 @@ import Button from '@c/button';
 import formTableFields from './form-table-fields';
 import configSchema from './config-schema';
 import switcher from './switcher';
+import columns from './columns';
 import subordination from './subordination';
 import formTableSelectorWrapper from './form-table-selector-wrapper';
 
@@ -20,12 +21,13 @@ import sTextarea from './components/textarea';
 import sRadioGroup from './components/radio-group';
 import { addOperate } from '../operates';
 
+export const ActionsContext = createContext<ISchemaFormActions>(createFormActions());
+export const ItemActionsContext = createContext<ISchemaFormActions>(createFormActions());
+
 type State = {
   currentFieldKey: string;
 }
 
-export const actions = createFormActions();
-export const itemActions = createFormActions();
 const { onFieldValueChange$ } = FormEffectHooks;
 
 interface Props {
@@ -37,6 +39,8 @@ let currentKey = '';
 
 export default function ConfigForm({ onChange, initialValue }: Props) {
   const [state, setState] = useState<State>({ currentFieldKey: currentKey });
+  const actions = useMemo(() => createFormActions(), []);
+  const itemActions = useMemo(() => createFormActions(), []);
   const { appID } = useParams<{ appID: string}>();
   const componentMountedRef = useRef(false);
 
@@ -53,7 +57,7 @@ export default function ConfigForm({ onChange, initialValue }: Props) {
   const components: Record<string, any> = {
     switcher, textarea: input.TextArea, subordination, input,
     select, formTableFields, formTableSelectorWrapper, switch: Switch,
-    arraytable: ArrayTable, addoperate: addOperate,
+    arraytable: ArrayTable, addoperate: addOperate, columns,
   };
 
   const componentsForSubTable: any = {
@@ -122,25 +126,27 @@ export default function ConfigForm({ onChange, initialValue }: Props) {
 
   return (
     <>
-      <SchemaForm
-        initialValues={initialValue}
-        components={components}
-        onChange={onChange}
-        schema={configSchema}
-        actions={actions}
-        hidden={!!currentSubSchema}
-        effects={() => {
-          onFieldValueChange$('Fields.curConfigSubTableKey').subscribe((st) => {
-            if (!componentMountedRef.current) {
-              return;
-            }
-            setState({ currentFieldKey: st.value });
-            currentKey = st.value;
-          });
-        }}
-      />
+      <ActionsContext.Provider value={actions}>
+        <SchemaForm
+          initialValues={initialValue}
+          components={components}
+          onChange={onChange}
+          schema={configSchema}
+          actions={actions}
+          hidden={!!currentSubSchema}
+          effects={() => {
+            onFieldValueChange$('Fields.curConfigSubTableKey').subscribe((st) => {
+              if (!componentMountedRef.current) {
+                return;
+              }
+              setState({ currentFieldKey: st.value });
+              currentKey = st.value;
+            });
+          }}
+        />
+      </ActionsContext.Provider>
       {currentSubSchema && (
-        <>
+        <ItemActionsContext.Provider value={itemActions}>
           <div className="flex flex-row items-center mb-10">
             <Button className="mr-10" onClick={onGoBack}>返回</Button>
             <p>子表单</p>
@@ -152,7 +158,7 @@ export default function ConfigForm({ onChange, initialValue }: Props) {
             schema={currentSubSchemaDefault}
             actions={itemActions}
           />
-        </>
+        </ItemActionsContext.Provider>
       )}
     </>
   );

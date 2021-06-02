@@ -5,9 +5,7 @@ export async function createBlankFormTable({ appID }: { appID: string}): Promise
   {tableID: string} | null
 > {
   try {
-    return await httpClient(`/api/v1/structor/${appID}/m/table/createBlank`, null, {
-      'X-Proxy': 'FORM_SCHEMA',
-    });
+    return await httpClient(`/api/v1/structor/${appID}/m/table/createBlank`);
   } catch (err) {
     toast.error(err);
     return null;

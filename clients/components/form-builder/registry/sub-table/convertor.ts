@@ -29,28 +29,28 @@ export const defaultConfig: SubTableConfig = {
 };
 
 export function toSchema(value: SubTableConfig): FormBuilder.Schema {
-  const entries = Object.entries(value.items?.properties ?? {});
-  let lastIndex = entries.length;
+  // const entries = Object.entries(value.items?.properties ?? {});
+  // let lastIndex = entries.length;
 
-  const entriesMap: [string, ISchema][] = entries.map(([key, value]) => {
-    if (typeof value['x-index'] !== 'number') {
-      const newEntry = [key, { ...value, ['x-index']: lastIndex }];
-      lastIndex += 1;
-      return newEntry as [string, ISchema];
-    }
-    return [key, value] as [string, ISchema];
-  });
+  // const entriesMap: [string, ISchema][] = entries.map(([key, value]) => {
+  //   if (typeof value['x-index'] !== 'number') {
+  //     const newEntry = [key, { ...value, ['x-index']: lastIndex }];
+  //     lastIndex += 1;
+  //     return newEntry as [string, ISchema];
+  //   }
+  //   return [key, value] as [string, ISchema];
+  // });
 
-  const columns = entriesMap.sort((a, b) => {
-    return Number(a[1]['x-index']) - Number(b[1]['x-index']);
-  }).reduce((cur: {title: string; dataIndex: string;}[], next) => {
-    const [key, value] = next;
-    cur.push({
-      title: value.title as string ?? '',
-      dataIndex: key,
-    });
-    return cur;
-  }, []);
+  // const columns = entriesMap.sort((a, b) => {
+  //   return Number(a[1]['x-index']) - Number(b[1]['x-index']);
+  // }).reduce((cur: {title: string; dataIndex: string;}[], next) => {
+  //   const [key, value] = next;
+  //   cur.push({
+  //     title: value.title as string ?? '',
+  //     dataIndex: key,
+  //   });
+  //   return cur;
+  // }, []);
 
   const schema = {
     type: 'array',
@@ -61,7 +61,8 @@ export function toSchema(value: SubTableConfig): FormBuilder.Schema {
     display: true,
     'x-component': 'SubTable',
     ['x-component-props']: {
-      columns: (value?.columns ?? columns).map((v) => JSON.stringify(v)),
+      // columns: (columns.length ? columns : value?.columns).map((v) => JSON.stringify(v)),
+      columns: (value.columns ?? []).map((v) => JSON.stringify(v)),
       subordination: value.subordination,
       appID: value.appID,
       tableID: value.tableID,

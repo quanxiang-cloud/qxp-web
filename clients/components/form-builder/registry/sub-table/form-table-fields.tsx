@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useContext } from 'react';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 import { useFormEffects, FormEffectHooks } from '@formily/antd';
 import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd';
@@ -9,7 +9,7 @@ import Icon from '@c/icon';
 import Toggle from '@c/toggle';
 
 import { generateRandomFormFieldID } from '../../utils';
-import { actions } from './config-form';
+import { ActionsContext } from './config-form';
 import * as inputConverter from './components/input/convertor';
 import * as textareaConverter from './components/textarea/convertor';
 import * as radioGroupConverter from './components/radio-group/convertor';
@@ -31,8 +31,7 @@ function FormTableFields(props: ISchemaFieldComponentProps) {
   }[]>([]);
   const popReferences = useRef<HTMLDivElement>(null);
   const popRef = useRef<Popper>(null);
-
-  // console.log(props.value);
+  const actions = useContext(ActionsContext);
 
   useEffect(() => {
     const subTableSchemas = props.value?.properties ?? {};
@@ -52,7 +51,8 @@ function FormTableFields(props: ISchemaFieldComponentProps) {
 
   function getIndex() {
     const indexes = selectedFields.map(({ sort }) => sort);
-    return Math.max(...indexes) + 1;
+    const index = Math.max(...indexes);
+    return Math.abs(index) === Infinity ? 0 : index + 1;
   }
 
   function getSchemaFromLabel(label: string, currentIndex: number): ISchema {
@@ -97,10 +97,12 @@ function FormTableFields(props: ISchemaFieldComponentProps) {
   });
 
   function onUpdateFields(fields: any) {
+    const newColumns: {title: string; dataIndex: string}[] = [];
     const newValue = {
       type: 'object',
       properties: fields.reduce((cur: any, next: any) => {
         const { value, schema, sort } = next;
+        newColumns.push({ title: schema?.title ?? '', dataIndex: value });
         cur[value] = {
           ...schema,
           'x-index': sort,
@@ -109,6 +111,9 @@ function FormTableFields(props: ISchemaFieldComponentProps) {
       }, {}),
     };
     props.mutators.change(newValue);
+    actions.setFieldState('Fields.columns', (state) => {
+      state.value = newColumns;
+    });
   }
 
   function onAddFields(val: string) {
@@ -133,7 +138,7 @@ function FormTableFields(props: ISchemaFieldComponentProps) {
     if (isOpen) {
       return onUpdateFields(([...selectedFields, { label, schema, value, sort: getIndex() }]));
     }
-    setSelectedFields(selectedFields.filter(({ value: val }) => value !== val));
+    onUpdateFields(selectedFields.filter(({ value: val }) => value !== val));
   }
 
   function onRemove(index: number) {
