@@ -46,17 +46,10 @@ type PageField = {
 }
 
 type FilterField = {
-  id: string;
-  label: string;
-  type: string,
-  placeholder: string;
-  cProps: Record<string, any>
-  multiple?: boolean;
   compareSymbol?: string;
-  step?: number;
-  precision?: number;
-  enum?: EnumItem[];
 }
+
+type FilterMaps = Record<string, FilterField>;
 
 type Condition = {
   key?: string;
@@ -90,6 +83,7 @@ type FormDesignParams = {
 
 type Rights = {
   id: string;
+  add?: boolean;
   formID?: string;
   sequence?: number;
   scopes?: DeptAndUser[];

@@ -1,17 +1,19 @@
 import React, { useState, useEffect, forwardRef, useImperativeHandle } from 'react';
 import { useForm, Controller } from 'react-hook-form';
+import moment from 'moment';
 import { isArray, uniqueId } from 'lodash';
 
 import Select from '@c/select';
-import FieldSwitch from '@portal/modules/apps-management/components/field-switch';
+import FieldSwitch from '@c/field-switch';
 import Icon from '@c/icon';
-import formFieldWrap from '@portal/modules/apps-management/components/form-field-wrap';
+import formFieldWrap from '@c/form-field-wrap';
 
+import { CONDITION, getOperators } from './utils';
 import './index.scss';
 
 type Props = {
   fields: Fields[];
-  baseConditions?: Condition[];
+  initConditions?: Condition[];
   initTag?: string;
   className?: string;
 }
@@ -21,7 +23,7 @@ type FieldCondition = {
   key?: string;
   value?: any;
   op?: string;
-  filtrate?: any;
+  filter?: Fields;
 }
 
 export type ConditionItemMap = {
@@ -35,71 +37,13 @@ export type RefProps = {
   getDataValues: () => ConditionItemMap
 }
 
-const CONDITION = [{
-  label: '所有',
-  value: 'and',
-},
-{
-  label: '任一',
-  value: 'or',
-}];
-
-const OPERATORS = [
-  {
-    label: '等于',
-    value: 'eq',
-  },
-  {
-    label: '模糊',
-    value: 'like',
-  },
-  {
-    label: '包含',
-    value: 'in',
-  },
-];
-
-const OPERATORS_COMPARE = [
-  {
-    label: '等于',
-    value: 'eq',
-  },
-  {
-    label: '大于',
-    value: 'gt',
-  },
-  {
-    label: '小于',
-    value: 'lt',
-  },
-  {
-    label: '大于等于',
-    value: 'egt',
-  },
-  {
-    label: '小于等于',
-    value: 'elt',
-  },
-];
-
-function getOperators(type: string) {
-  switch (type) {
-  case 'number':
-  case 'date':
-    return OPERATORS_COMPARE;
-
-  default:
-    return OPERATORS;
-  }
-}
-
 function getCondition(formData: any, condition: FieldCondition) {
   let value = formData[`condition-${condition.id}`];
-  switch (condition.filtrate?.type) {
-  case 'date':
+  switch (condition.filter?.type) {
+  case 'datetime':
     value = isArray(value) ? value.map((date: string) => {
-      return new Date(date).getTime();
-    }) : [new Date(value).getTime()];
+      return moment(date).format();
+    }) : [moment(value).format()];
     break;
   case 'number':
     value = isArray(value) ? value.map((_value) => Number(_value)) : [Number(value)];
@@ -116,15 +60,29 @@ function getCondition(formData: any, condition: FieldCondition) {
   };
 }
 
+function getValue(field: Fields, initValue: Array<string | number | Date> | undefined) {
+  if (!initValue || initValue.length === 0) {
+    return '';
+  }
+
+  if (field.type === 'datetime') {
+    return Array.isArray(initValue) ? initValue.map((value) => moment(value)) : moment(initValue);
+  }
+
+  if (field.enum && field.enum.length) {
+    return initValue;
+  }
+
+  return initValue[0];
+}
+
 const FormFieldSwitch = formFieldWrap({ FieldFC: FieldSwitch });
 const FormFieldSelect = formFieldWrap({ FieldFC: Select });
 
-function DataFilter({ fields, className = '', baseConditions, initTag = 'and' }: Props, ref: React.Ref<any>) {
+function DataFilter({ fields, className = '', initConditions, initTag = 'and' }: Props, ref: React.Ref<any>) {
   const [conditions, setConditions] = useState<FieldCondition[]>([]);
   const [tag, setTag] = useState(initTag);
   const { trigger, control, setValue, getValues, formState: { errors } } = useForm();
-
-  const fieldList = fields.map((field) => field);
 
   useImperativeHandle(ref, () => ({
     getDataPer: getDataPer,
@@ -133,30 +91,30 @@ function DataFilter({ fields, className = '', baseConditions, initTag = 'and' }:
   }));
 
   useEffect(() => {
-    if (!baseConditions) {
+    if (!initConditions) {
       return;
     }
 
     const conditionsTmp: FieldCondition[] = [];
-    baseConditions.forEach((condition: Condition) => {
-      const filtrate: any = fieldList.find(({ id }) => {
+    initConditions.forEach((condition: Condition) => {
+      const filter = fields.find(({ id }) => {
         return id === condition.key;
       });
 
-      if (filtrate) {
+      if (filter) {
         conditionsTmp.push({
           id: uniqueId(),
           op: condition.op,
-          value: filtrate.multiple ? condition.value : (condition as any).value[0],
+          value: getValue(filter, condition.value),
           key: condition.key,
-          filtrate,
+          filter,
         });
       }
     });
     setConditions(conditionsTmp);
-  }, [baseConditions]);
+  }, [initConditions]);
 
-  const fieldOption = fieldList.map((field) => ({
+  const fieldOption = fields.map((field) => ({
     value: field.id,
     label: field.title,
   }));
@@ -164,7 +122,7 @@ function DataFilter({ fields, className = '', baseConditions, initTag = 'and' }:
   const handleFieldChange = (rowID: string, field: string) => {
     setConditions(conditions.map((condition) => {
       if (condition.id === rowID) {
-        return { ...condition, filtrate: fieldList.find(({ id }) => id === field) };
+        return { ...condition, filter: fields.find(({ id }) => id === field) };
       }
       return condition;
     }));
@@ -188,11 +146,16 @@ function DataFilter({ fields, className = '', baseConditions, initTag = 'and' }:
     const formData = getValues();
     const _conditions: Condition[] = [];
     conditions.forEach((condition) => {
+      const value = formData[`condition-${condition.id}`];
       if (
         formData[`field-${condition.id}`] &&
         formData[`operators-${condition.id}`] &&
-        formData[`condition-${condition.id}`]
+        value
       ) {
+        if (Array.isArray(value) && value.length === 0) {
+          return;
+        }
+
         _conditions.push(getCondition(formData, condition));
       }
     });
@@ -264,7 +227,7 @@ function DataFilter({ fields, className = '', baseConditions, initTag = 'and' }:
                 }
               />
             </div>
-            {condition.filtrate ? (
+            {condition.filter ? (
               <>
                 <div>
                   <Controller
@@ -277,7 +240,7 @@ function DataFilter({ fields, className = '', baseConditions, initTag = 'and' }:
                         style={{ width: '100px' }}
                         error={errors['operators-' + condition.id]}
                         register={field}
-                        options={getOperators((condition.filtrate as FilterField).type)}
+                        options={getOperators(condition.filter?.type || '', condition.filter?.enum)}
 
                       />
                     )
@@ -294,7 +257,7 @@ function DataFilter({ fields, className = '', baseConditions, initTag = 'and' }:
                       <FormFieldSwitch
                         error={errors['condition-' + condition.id]}
                         register={{ ...field, value: field.value ? field.value : '' }}
-                        filtrate={condition.filtrate}
+                        field={condition.filter}
                         style={{ width: '300px' }}
                       />
                     )

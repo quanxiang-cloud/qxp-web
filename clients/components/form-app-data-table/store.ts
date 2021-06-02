@@ -15,32 +15,36 @@ type Params = {
 }
 
 type InitData = {
-  schema: Scheme;
+  schema: FormBuilder.Schema;
   config?: Config;
   pageID?: string;
   appID?: string;
   pageName?: string;
-  createFun?: () => void;
   allowRequestData?: boolean;
 }
+
+export type FormData = Record<string, any>;
 
 class AppPageDataStore {
   destroyFetchTableData: IReactionDisposer;
   destroySetTableConfig: IReactionDisposer;
   @observable tableConfig: any = {};
-  @observable noFiltratesTips: React.ReactNode = '尚未配置筛选条件。'
+  @observable noFiltersTips: React.ReactNode = '尚未配置筛选条件。'
   @observable listLoading = false;
   @observable pageID = '';
   @observable appID = '';
   @observable pageName = '';
   @observable authority = 0;
-  @observable curItemFormData = null;
+  @observable curItemFormData: FormData | null = null;
   @observable allowRequestData = false;
-  @observable filtrates: FilterField[] = [];
+  @observable filterMaps: FilterMaps = {};
   @observable formDataList: any[] = [];
   @observable total = 0;
-  @observable fields: Scheme[] = [];
+  @observable fields: Fields[] = [];
+  @observable schema: FormBuilder.Schema = {};
+  @observable filterData: FormData = {};
   @observable tableColumns: any[] = [];
+  @observable createPageVisible = false;
   @observable params: Params = {
     condition: [],
     sort: [],
@@ -48,23 +52,8 @@ class AppPageDataStore {
     size: 10,
     tag: 'and',
   };
-  @observable createFun = () => {
-    '';
-  };
 
-  constructor({ schema, pageID, pageName, appID, config, allowRequestData, createFun }: InitData) {
-    this.pageName = pageName || '';
-    this.appID = appID || '';
-    this.pageID = pageID || '';
-    this.allowRequestData = !!allowRequestData;
-    if (createFun) {
-      this.createFun = createFun;
-    }
-    const { filtrates, tableColumns, pageTableShowRule, fields } = getPageDataSchema(config || {}, schema);
-    this.fields = fields;
-    this.setFiltrates(filtrates);
-    this.setTableColumns(tableColumns);
-    this.setTableConfig(pageTableShowRule);
+  constructor({ schema, pageID, pageName, appID, config, allowRequestData }: InitData) {
     this.destroyFetchTableData = reaction(() => this.params, this.fetchFormDataList);
     this.destroySetTableConfig = reaction(() => {
       return {
@@ -72,6 +61,20 @@ class AppPageDataStore {
         sort: this.tableConfig.order ? [this.tableConfig.order] : [],
       };
     }, this.setParams);
+    this.schema = schema || {};
+    this.pageName = pageName || '';
+    this.appID = appID || '';
+    this.pageID = pageID || '';
+    this.allowRequestData = !!allowRequestData;
+
+    if (config?.filter) {
+      this.setFilters(config.filter || {});
+    }
+
+    const { tableColumns, pageTableShowRule, fields } = getPageDataSchema(config || {}, schema);
+    this.fields = fields;
+    this.setTableColumns(tableColumns);
+    this.setTableConfig(pageTableShowRule);
   }
 
   @action
@@ -80,13 +83,26 @@ class AppPageDataStore {
   }
 
   @action
+  setSchema = (schema: Scheme | undefined) => {
+    if (!schema) {
+      return;
+    }
+
+    this.schema = schema;
+    this.fields = Object.keys(this.schema).map((key) => ({
+      id: key,
+      ...schema.properties[key],
+    }));
+  }
+
+  @action
   setTableConfig = (tableConfig: any) => {
     this.tableConfig = tableConfig;
   }
 
   @action
-  setFiltrates = (filtrates: FilterField[]) => {
-    this.filtrates = filtrates;
+  setFilters = (filterMaps: FilterMaps) => {
+    this.filterMaps = filterMaps;
   }
 
   @action
@@ -95,9 +111,14 @@ class AppPageDataStore {
   }
 
   @action
-  goEdit = (formData: any) => {
+  setVisibleCreatePage = (createPageVisible: boolean) => {
+    this.createPageVisible = createPageVisible;
+  }
+
+  @action
+  goEdit = (formData: FormData | null) => {
     this.curItemFormData = formData;
-    this.createFun?.();
+    this.setVisibleCreatePage(true);
   }
 
   @action
@@ -175,7 +196,7 @@ class AppPageDataStore {
     this.formDataList = [];
     this.tableConfig = {};
     this.authority = 0;
-    this.filtrates = [];
+    this.filterMaps = {};
     this.tableColumns = [];
     this.pageID = '';
     this.params = {

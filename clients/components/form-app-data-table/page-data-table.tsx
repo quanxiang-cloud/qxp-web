@@ -85,7 +85,13 @@ function PageDataTable() {
       <div className='flex justify-between'>
         <div className='mb-16 flex items-center gap-x-16'>
           {operateButton(2, store.authority, (
-            <Button onClick={store.createFun} modifier='primary' iconName='add'>新建</Button>
+            <Button
+              onClick={() => store.setVisibleCreatePage(true)}
+              modifier='primary'
+              iconName='add'
+            >
+              新建
+            </Button>
           ))}
           {operateButton(4, store.authority, (
             selected.length > 0 && textBtnRender('批量删除',
@@ -96,7 +102,12 @@ function PageDataTable() {
           {/* {textBtnRender('导入', 'file_download')}
         {textBtnRender('导出', 'file_upload')} */}
         </div>
-        <AdvancedQuery fields={store.fields} search={store.setParams} />
+        <AdvancedQuery
+          initConditions={store.params.condition}
+          tag={store.params.tag}
+          fields={store.fields}
+          search={store.setParams}
+        />
       </div>
       <div className='flex flex-1 overflow-hidden'>
         <Table
