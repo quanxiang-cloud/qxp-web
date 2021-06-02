@@ -45,8 +45,8 @@ export default function Popover({
   offsetY = 100,
   onMouseOver,
   onMouseOut,
-  onOpen = () => {},
-  onClose = () => {},
+  onOpen,
+  onClose,
   open = false,
 }: Props) {
   const clickAwayRef = useRef<HTMLDivElement | null>(null);
@@ -65,7 +65,7 @@ export default function Popover({
   });
   const [isOpen, setIsOpen] = useState(false);
   useEffect(() => {
-    isOpen ? onOpen() : onClose();
+    isOpen ? onOpen?.() : onClose?.();
   }, [isOpen]);
   useEffect(() => {
     setIsOpen(open);

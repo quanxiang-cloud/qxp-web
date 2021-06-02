@@ -14,7 +14,7 @@ type Props = React.DetailedHTMLProps<
 
 function Checkbox(
   {
-    className = '', label, indeterminate, onChange = () => {}, labelClassName,
+    className = '', label, indeterminate, onChange, labelClassName,
     labelStyle, ...inputProps
   }: Props,
   ref?: React.Ref<HTMLInputElement>
