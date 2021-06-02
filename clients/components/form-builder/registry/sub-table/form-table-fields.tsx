@@ -37,6 +37,9 @@ function FormTableFields(props: ISchemaFieldComponentProps) {
   useEffect(() => {
     const subTableSchemas = props.value?.properties ?? {};
     const fields = Object.entries(subTableSchemas).reduce((cur: any, next: any) => {
+      if (next[0] === '_id') {
+        return cur;
+      }
       cur.push({
         label: next[1].title,
         value: next[0],
@@ -56,8 +59,19 @@ function FormTableFields(props: ISchemaFieldComponentProps) {
     return Math.abs(index) === Infinity ? 0 : index + 1;
   }
 
-  function getSchemaFromLabel(label: string, currentIndex: number): ISchema {
+  function getSchemaFromLabel(label: string, currentIndex?: number): ISchema {
     const schemaMap: Record<string, ISchema> = {
+      id: {
+        display: false,
+        readOnly: false,
+        title: 'id',
+        type: 'string',
+        'x-component': 'Input',
+        'x-component-props': {},
+        'x-index': -1,
+        'x-internal': { isSystem: true, permission: 3 },
+        'x-mega-props': { labelCol: 4 },
+      },
       单行文本: {
         ...inputConverter.toSchema(inputConverter.defaultConfig),
         'x-index': currentIndex,
@@ -101,21 +115,35 @@ function FormTableFields(props: ISchemaFieldComponentProps) {
     const newColumns: {title: string; dataIndex: string, sort: number; }[] = [];
     const newValue = {
       type: 'object',
-      properties: fields.reduce((cur: any, next: any) => {
-        const { value, schema, sort } = next;
-        newColumns.push({ title: schema?.title ?? '', dataIndex: value, sort });
-        cur[value] = {
-          ...schema,
-          'x-index': sort,
-        };
-        return cur;
-      }, {}),
+      properties: {
+        ...fields.reduce((cur: any, next: any) => {
+          const { value, schema, sort } = next;
+          newColumns.push({ title: schema?.title ?? '', dataIndex: value, sort });
+          cur[value] = {
+            ...schema,
+            'x-index': sort,
+          };
+          return cur;
+        }, {}),
+        _id: getSchemaFromLabel('id'),
+      },
     };
     props.mutators.change(newValue);
     actions.setFieldState('Fields.columns', (state) => {
-      state.value = newColumns.sort((a, b) => a.sort - b.sort).map(({ title, dataIndex }) => ({
-        title, dataIndex,
-      }));
+      let hasId = false;
+      const sortedColumns = newColumns.sort((a, b) => {
+        if (a.dataIndex === '_id' || b.dataIndex === '_id') {
+          hasId = true;
+        }
+        return a.sort - b.sort;
+      }).map(({ title, dataIndex }) => ({ title, dataIndex }));
+      if (!hasId) {
+        sortedColumns.unshift({
+          title: 'id',
+          dataIndex: '_id',
+        });
+      }
+      state.value = sortedColumns;
     });
   }
 
