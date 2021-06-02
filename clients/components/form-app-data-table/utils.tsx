@@ -134,7 +134,7 @@ export function getPageDataSchema(
   const fields: Scheme[] = [];
   const tableColumns: any[] = [];
   Object.keys(fieldsMap).forEach((key: string) => {
-    if (key === '_id') {
+    if (key === '_id' || fieldsMap[key]?.['x-component'] === 'SubTable') {
       return;
     }
 
