@@ -264,5 +264,3 @@ export function getHTMLParentElement(selector: string, el: HTMLElement | null): 
     return getHTMLParentElement(selector, el.parentElement);
   }
 }
-
-export const noop = ()=> {};
