@@ -7,12 +7,17 @@ export const PhoneReg = /^[1](([3][0-9])|([4][5-9])|([5][0-3,5-9])|([6][5,6])|([
 
 export const excelHeader: EmployeeTableColumn[] = [
   {
-    title: '姓名',
+    title: '员工姓名',
     dataIndex: 'userName',
     key: 'userName',
   },
   {
-    title: '手机号',
+    title: '所属部门',
+    dataIndex: 'depName',
+    key: 'depName',
+  },
+  {
+    title: '手机号码',
     dataIndex: 'phone',
     key: 'phone',
   },
@@ -22,9 +27,14 @@ export const excelHeader: EmployeeTableColumn[] = [
     key: 'email',
   },
   {
-    title: '部门',
-    dataIndex: 'depName',
-    key: 'depName',
+    title: '职位',
+    dataIndex: 'position',
+    key: 'position',
+  },
+  {
+    title: '上级领导',
+    dataIndex: 'leaderName',
+    key: 'leaderName',
   },
 ];
 
@@ -75,7 +85,7 @@ export const exportEmployees = ( data: Employee[]) => {
     Sheets: {
       mySheet: Object.assign({}, output, {
         '!ref': ref,
-        '!cols': [{ wpx: 100 }, { wpx: 100 }, { wpx: 100 }, { wpx: 100 }],
+        '!cols': [{ wpx: 100 }, { wpx: 100 }, { wpx: 100 }, { wpx: 100 }, { wpx: 100 }, { wpx: 100 }],
       }),
     },
   };
