@@ -13,33 +13,6 @@ import store from '../store';
 
 import './index.scss';
 
-type Status = {
-  value: number;
-  key: 'OVERTIME' | 'URGE' | 'WAIT' | '';
-  name: string;
-  color: string;
-}
-
-type handel = {
-  key: number;
-  name: string;
-  icon: string;
-  count: null | number
-}
-
-const UNTREATED_LIST: Array<Status> = [
-  { value: 12, key: 'OVERTIME', name: '待审批', color: 'text-red-600' },
-  { value: 4, key: 'WAIT', name: '待填写', color: 'text-yellow-600' },
-  { value: 4, key: 'URGE', name: '待阅示', color: 'text-green-600' },
-  { value: 16, key: '', name: '全部待办', color: 'text-gray-900' },
-];
-
-const HANDLE_LIST: Array<handel> = [
-  { key: 0, name: '我发起的', icon: 'addchart', count: 0 },
-  { key: 1, name: '我已处理', icon: 'done_all', count: null },
-  { key: 2, name: '抄送给我', icon: 'send_me', count: 15 },
-];
-
 function Dashboard() {
   const history = useHistory();
 
@@ -119,7 +92,7 @@ function Dashboard() {
                     <Icon className="mr-8" name={icon} size={20} />
                     {name}
                     <div className="rbtns">
-                      {count !== undefined && (<div className="untreated">{count}</div>)}
+                      {(count !== undefined && count > 0 ) && (<div className="untreated">{count}</div>)}
                       <Icon name="chevron_right" size={20} />
                     </div>
                   </div>
