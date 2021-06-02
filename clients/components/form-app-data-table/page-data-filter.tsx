@@ -22,6 +22,7 @@ function PageDataFilter() {
 
     const condition: Condition[] = [];
     const values = filterDom.current.getValues();
+    console.log('values: ', values);
     Object.keys(values).forEach((key) => {
       const curFilter = store.fields.find(({ id }) => id === key);
       if (!values[key] || (Array.isArray(values[key]) && values[key].length === 0) || !curFilter) {
@@ -48,7 +49,7 @@ function PageDataFilter() {
 
       condition.push(_condition);
     });
-
+    store.filterData = values;
     store.setParams({ condition });
   };
 

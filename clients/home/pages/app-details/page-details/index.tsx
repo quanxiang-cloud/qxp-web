@@ -6,25 +6,10 @@ import FormAppDataTable from '@c/form-app-data-table';
 import PageLoading from '@c/page-loading';
 
 import store from '../../store';
-import CreateDataForm from './create-data-form';
 import './index.scss';
 
 function PageDetails() {
-  const { curPage, fetchSchemeLoading, formScheme, appDataStore, showCreateForm, setShowCreateForm } = store;
-
-  const goBack = () => {
-    appDataStore.curItemFormData = null;
-    setShowCreateForm(false);
-  };
-
-  if (showCreateForm && formScheme) {
-    return (
-      <CreateDataForm
-        defaultValues={appDataStore.curItemFormData}
-        goBack={goBack}
-      />
-    );
-  }
+  const { curPage, fetchSchemeLoading, formScheme, appDataStore } = store;
 
   if (!curPage.id) {
     return null;

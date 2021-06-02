@@ -14,16 +14,14 @@ const modifiers = [
   },
 ];
 
-function AdvancedQuery({ fields, search }: any) {
+function AdvancedQuery({ fields, search, initConditions, tag }: any) {
   const [visible, setVisible] = useState(false);
-  const [condition, setCondition] = useState<Condition[]>([]);
   const popperRef = useRef<any>();
   const reference = useRef<any>();
   const dataFilterRef = useRef<RefProps>();
 
   const handleEmpty = () => {
     dataFilterRef.current?.empty();
-    setCondition([]);
     search({ tag: 'and', condition: [] });
     setVisible(false);
   };
@@ -35,7 +33,6 @@ function AdvancedQuery({ fields, search }: any) {
 
     const { arr, tag } = dataFilterRef.current.getDataValues();
     if (arr.length) {
-      setCondition(arr);
       search({ tag, condition: arr });
       setVisible(false);
     }
@@ -46,7 +43,7 @@ function AdvancedQuery({ fields, search }: any) {
       <Icon
         clickable
         onClick={() => setVisible(!visible)}
-        type={condition.length ? 'primary' : 'dark'}
+        type={initConditions.length ? 'primary' : 'dark'}
         ref={reference}
         size={30}
         name='filter_alt'
@@ -60,7 +57,7 @@ function AdvancedQuery({ fields, search }: any) {
         onClose={() => setVisible(false)}
       >
         <div className='advanced-query-container'>
-          <DataFilter ref={dataFilterRef} fields={fields} />
+          <DataFilter initTag={tag} initConditions={initConditions} ref={dataFilterRef} fields={fields} />
           <div className='mt-20 flex justify-end gap-x-16'>
             <Button onClick={handleEmpty} iconName='clear'>清空</Button>
             <Button onClick={handleSearch} iconName='search' modifier='primary'>筛选</Button>

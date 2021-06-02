@@ -15,14 +15,15 @@ type Params = {
 }
 
 type InitData = {
-  schema: Scheme;
+  schema: FormBuilder.Schema;
   config?: Config;
   pageID?: string;
   appID?: string;
   pageName?: string;
-  createFun?: () => void;
   allowRequestData?: boolean;
 }
+
+export type FormData = Record<string, any>;
 
 class AppPageDataStore {
   destroyFetchTableData: IReactionDisposer;
@@ -34,14 +35,16 @@ class AppPageDataStore {
   @observable appID = '';
   @observable pageName = '';
   @observable authority = 0;
-  @observable curItemFormData = null;
+  @observable curItemFormData: FormData | null = null;
   @observable allowRequestData = false;
   @observable filterMaps: FilterMaps = {};
   @observable formDataList: any[] = [];
   @observable total = 0;
   @observable fields: Fields[] = [];
-  @observable fieldsMap: Record<string, ISchema> = {};
+  @observable schema: FormBuilder.Schema = {};
+  @observable filterData: FormData = {};
   @observable tableColumns: any[] = [];
+  @observable createPageVisible = false;
   @observable params: Params = {
     condition: [],
     sort: [],
@@ -49,19 +52,20 @@ class AppPageDataStore {
     size: 10,
     tag: 'and',
   };
-  @observable createFun = () => {
-    '';
-  };
 
-  constructor({ schema, pageID, pageName, appID, config, allowRequestData, createFun }: InitData) {
-    this.fieldsMap = schema?.properties || {};
+  constructor({ schema, pageID, pageName, appID, config, allowRequestData }: InitData) {
+    this.destroyFetchTableData = reaction(() => this.params, this.fetchFormDataList);
+    this.destroySetTableConfig = reaction(() => {
+      return {
+        size: this.tableConfig.pageSize || 9999,
+        sort: this.tableConfig.order ? [this.tableConfig.order] : [],
+      };
+    }, this.setParams);
+    this.schema = schema || {};
     this.pageName = pageName || '';
     this.appID = appID || '';
     this.pageID = pageID || '';
     this.allowRequestData = !!allowRequestData;
-    if (createFun) {
-      this.createFun = createFun;
-    }
 
     if (config?.filter) {
       this.setFilters(config.filter || {});
@@ -71,13 +75,6 @@ class AppPageDataStore {
     this.fields = fields;
     this.setTableColumns(tableColumns);
     this.setTableConfig(pageTableShowRule);
-    this.destroyFetchTableData = reaction(() => this.params, this.fetchFormDataList);
-    this.destroySetTableConfig = reaction(() => {
-      return {
-        size: this.tableConfig.pageSize || 9999,
-        sort: this.tableConfig.order ? [this.tableConfig.order] : [],
-      };
-    }, this.setParams);
   }
 
   @action
@@ -91,10 +88,10 @@ class AppPageDataStore {
       return;
     }
 
-    this.fieldsMap = schema?.properties || {};
-    this.fields = Object.keys(this.fieldsMap).map((key) => ({
+    this.schema = schema;
+    this.fields = Object.keys(this.schema).map((key) => ({
       id: key,
-      ...this.fieldsMap[key],
+      ...schema.properties[key],
     }));
   }
 
@@ -114,9 +111,14 @@ class AppPageDataStore {
   }
 
   @action
-  goEdit = (formData: any) => {
+  setVisibleCreatePage = (createPageVisible: boolean) => {
+    this.createPageVisible = createPageVisible;
+  }
+
+  @action
+  goEdit = (formData: FormData | null) => {
     this.curItemFormData = formData;
-    this.createFun?.();
+    this.setVisibleCreatePage(true);
   }
 
   @action

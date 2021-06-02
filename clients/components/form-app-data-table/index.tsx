@@ -1,5 +1,6 @@
 import React from 'react';
 
+import CreateDataForm from './create-data-form';
 import PageDataTable from './page-data-table';
 import PageDataFilter from './page-data-filter';
 import { StoreContext } from './context';
@@ -16,10 +17,12 @@ type Props = {
 function FormAppDataContent({ className = '', style, store }: Props) {
   return (
     <StoreContext.Provider value={store}>
-      <div style={style} className={`flex flex-col ${className}`}>
-        <PageDataFilter />
-        <PageDataTable />
-      </div>
+      {store.createPageVisible ? <CreateDataForm /> : (
+        <div style={style} className={`flex flex-col ${className}`}>
+          <PageDataFilter />
+          <PageDataTable />
+        </div>
+      )}
     </StoreContext.Provider>
   );
 }

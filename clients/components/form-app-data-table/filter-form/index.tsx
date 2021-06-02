@@ -1,4 +1,4 @@
-import React, { useImperativeHandle, useContext } from 'react';
+import React, { useImperativeHandle, useContext, useEffect } from 'react';
 import { observer } from 'mobx-react';
 import { useForm, Controller } from 'react-hook-form';
 
@@ -14,9 +14,13 @@ type Props = {
 
 function FilterForm({ showMoreFilter }: Props, ref?: React.Ref<any>) {
   const store = useContext(StoreContext);
-  const { fieldsMap, filterMaps } = store;
-  const filterKeys = Object.keys(filterMaps);
+  const filterKeys = Object.keys(store.filterMaps);
+  const fieldMaps = store.schema.properties || {};
   const { getValues, reset, control } = useForm();
+
+  useEffect(() => {
+    reset(store.filterData);
+  }, []);
 
   useImperativeHandle(ref, () => ({
     getValues: getValues,
@@ -41,7 +45,7 @@ function FilterForm({ showMoreFilter }: Props, ref?: React.Ref<any>) {
     <form className='app-page-filter-form'>
       {(showMoreFilter ? filterKeys : filterKeys.slice(0, 3)).map((key) => (
         <div className='flex items-center' key={key}>
-          <label className='app-page-filter-label'>{fieldsMap[key]?.title}：</label>
+          <label className='app-page-filter-label'>{fieldMaps[key]?.title}：</label>
           <Controller
             name={key}
             control={control}
@@ -49,8 +53,9 @@ function FilterForm({ showMoreFilter }: Props, ref?: React.Ref<any>) {
               return (
                 <FieldSwitch
                   className='flex-1'
-                  {...{ ...field, value: field.value ? field.value : '' }}
-                  field={fieldsMap[key]}
+                  {...field}
+                  value={field.value ? field.value : ''}
+                  field={fieldMaps[key]}
                 />
               );
             }

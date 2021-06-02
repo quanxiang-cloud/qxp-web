@@ -89,3 +89,17 @@
   background-color: #fff;
   border-radius: 12px;
 }
+
+.user-app-schema-form {
+  display: grid;
+  grid-template-columns: 60%;
+  justify-content: center;
+  overflow-y: auto;
+  flex: 1;
+  background-color: #fff;
+  border-radius: 12px;
+
+  .ant-form-item-label {
+    width: 100px;
+  }
+}

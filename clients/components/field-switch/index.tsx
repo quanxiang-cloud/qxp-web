@@ -9,6 +9,7 @@ type Props<T> = {
   onChange: (value: T) => void;
   className?: string;
   value?: T;
+  defaultValue?: T;
   style?: React.CSSProperties;
 }
 
@@ -66,7 +67,6 @@ function FieldSwitch({ field, className, ...otherProps }: Props<any>, ref: React
       <DatePicker.RangePicker
         locale={zhCN}
         ref={ref}
-        defaultValue={otherProps.value}
         className={`'w-full input ${className}`}
         {...field['x-component-props']}
         {...otherProps}

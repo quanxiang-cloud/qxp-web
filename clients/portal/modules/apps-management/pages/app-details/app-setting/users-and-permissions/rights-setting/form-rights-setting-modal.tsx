@@ -4,6 +4,7 @@ import cs from 'classnames';
 import Modal from '@c/modal';
 import Tab from '@portal/modules/apps-management/components/tab';
 import PageLoading from '@c/page-loading';
+import AbsoluteCentered from '@c/absolute-centered';
 import toast from '@lib/toast';
 import { getTableSchema } from '@lib/http-client';
 
@@ -76,7 +77,8 @@ function RightsSettingModal({ onCancel, rightsGroupID, pageForm }: Props) {
     Promise.all([
       getTableSchema(store.appID, pageForm.id),
       fetchPerData(store.appID, { formID: pageForm.id, perGroupID: rightsGroupID }),
-    ]).then(([{ schema }, perDataRes]: any) => {
+    ]).then(([schemaRes, perDataRes]: any) => {
+      const { schema } = schemaRes || {};
       if (schema) {
         const fieldsMap = schema.properties;
         const fieldsTmp: Fields[] = [];
@@ -118,11 +120,12 @@ function RightsSettingModal({ onCancel, rightsGroupID, pageForm }: Props) {
         },
       ]}
     >
-      {loading ? (
+      {loading && (
         <div className='h-56'>
           <PageLoading />
         </div>
-      ) : (
+      )}
+      {!loading && fields.length !== 0 && (
         <div>
           <Tab
             className='mb-16'
@@ -161,6 +164,13 @@ function RightsSettingModal({ onCancel, rightsGroupID, pageForm }: Props) {
             className={cs({ ['rights-hidden']: activeTab !== 'dataPermission' })}
             fields={fields}
           />
+        </div>
+      )}
+      {!loading && fields.length === 0 && (
+        <div className='h-56'>
+          <AbsoluteCentered>
+            未配置表单
+          </AbsoluteCentered>
         </div>
       )}
     </Modal>

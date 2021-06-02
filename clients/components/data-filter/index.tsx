@@ -13,7 +13,7 @@ import './index.scss';
 
 type Props = {
   fields: Fields[];
-  baseConditions?: Condition[];
+  initConditions?: Condition[];
   initTag?: string;
   className?: string;
 }
@@ -60,10 +60,26 @@ function getCondition(formData: any, condition: FieldCondition) {
   };
 }
 
+function getValue(field: Fields, initValue: Array<string | number | Date> | undefined) {
+  if (!initValue || initValue.length === 0) {
+    return '';
+  }
+
+  if (field.type === 'datetime') {
+    return Array.isArray(initValue) ? initValue.map((value) => moment(value)) : moment(initValue);
+  }
+
+  if (field.enum && field.enum.length) {
+    return initValue;
+  }
+
+  return initValue[0];
+}
+
 const FormFieldSwitch = formFieldWrap({ FieldFC: FieldSwitch });
 const FormFieldSelect = formFieldWrap({ FieldFC: Select });
 
-function DataFilter({ fields, className = '', baseConditions, initTag = 'and' }: Props, ref: React.Ref<any>) {
+function DataFilter({ fields, className = '', initConditions, initTag = 'and' }: Props, ref: React.Ref<any>) {
   const [conditions, setConditions] = useState<FieldCondition[]>([]);
   const [tag, setTag] = useState(initTag);
   const { trigger, control, setValue, getValues, formState: { errors } } = useForm();
@@ -75,12 +91,12 @@ function DataFilter({ fields, className = '', baseConditions, initTag = 'and' }:
   }));
 
   useEffect(() => {
-    if (!baseConditions) {
+    if (!initConditions) {
       return;
     }
 
     const conditionsTmp: FieldCondition[] = [];
-    baseConditions.forEach((condition: Condition) => {
+    initConditions.forEach((condition: Condition) => {
       const filter = fields.find(({ id }) => {
         return id === condition.key;
       });
@@ -89,14 +105,14 @@ function DataFilter({ fields, className = '', baseConditions, initTag = 'and' }:
         conditionsTmp.push({
           id: uniqueId(),
           op: condition.op,
-          value: filter.enum && filter.enum.length ? condition.value : (condition as any).value[0],
+          value: getValue(filter, condition.value),
           key: condition.key,
           filter,
         });
       }
     });
     setConditions(conditionsTmp);
-  }, [baseConditions]);
+  }, [initConditions]);
 
   const fieldOption = fields.map((field) => ({
     value: field.id,

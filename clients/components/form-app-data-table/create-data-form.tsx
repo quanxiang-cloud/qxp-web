@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { FormButtonGroup, setValidationLanguage } from '@formily/antd';
 
 import Breadcrumb from '@c/breadcrumb';
@@ -7,20 +7,17 @@ import Button from '@c/button';
 import toast from '@lib/toast';
 import { FormRenderer } from '@c/form-builder';
 
-import { formDataCurd } from '../../../lib/api';
-import store from '../../store';
+import { formDataCurd } from './api';
+import { StoreContext } from './context';
 
 setValidationLanguage('zh');
 
-type Props = {
-  goBack: () => void;
-  defaultValues: any;
-}
-
-function CreateDataForm({ goBack, defaultValues }: Props) {
+function CreateDataForm() {
+  const store = useContext(StoreContext);
+  const defaultValues = store.curItemFormData;
   const [loading, setLoading] = useState(false);
 
-  if (!store.formScheme) {
+  if (!store.fields.length) {
     return (
       <div>todo some error tips</div>
     );
@@ -51,22 +48,22 @@ function CreateDataForm({ goBack, defaultValues }: Props) {
       };
     }
 
-    formDataCurd(store.appID, store.curPage.id as string, reqData).then(() => {
+    formDataCurd(store.appID, store.pageID, reqData).then(() => {
       toast.success('提交成功');
-      goBack();
+      store.setVisibleCreatePage(false);
     }).catch(() => {
       setLoading(false);
     });
   };
 
   return (
-    <div className='flex flex-col flex-1 px-20 pt-20'>
+    <div style={{ maxHeight: 'calc(100% - 62px)' }} className='flex flex-col flex-1 px-20 pt-20'>
       <div className='mb-16'>
         <Breadcrumb className='flex items-center'>
           <Breadcrumb.Item>
             <a>
               <Icon size={23} name='reply' />
-              <span onClick={goBack}>{store.curPage.name}</span>
+              <span onClick={() => store.setVisibleCreatePage(false)}>{store.pageName}</span>
             </a>
           </Breadcrumb.Item>
           <Breadcrumb.Item>
@@ -79,13 +76,13 @@ function CreateDataForm({ goBack, defaultValues }: Props) {
           className='p-40'
           onSubmit={handleSubmit}
           defaultValue={defaultValues}
-          schema={store.formScheme}
+          schema={store.schema}
         >
           <FormButtonGroup className='pl-96'>
             <Button
               className="mr-20"
               iconName="close"
-              onClick={goBack}
+              onClick={() => store.setVisibleCreatePage(false)}
             >
               取消
             </Button>

@@ -79,7 +79,7 @@ function DataPermission({ fields, className = '', dataPer }: Props, ref: React.R
           options={OPTIONS}
         />
         {view.key === 'custom' && (
-          <DataFilter initTag={view.tag} ref={viewRef} fields={fields} baseConditions={view.conditions} />
+          <DataFilter initTag={view.tag} ref={viewRef} fields={fields} initConditions={view.conditions} />
         )}
       </div>
       <div className='mb-20'>
@@ -91,7 +91,7 @@ function DataPermission({ fields, className = '', dataPer }: Props, ref: React.R
           options={OPTIONS}
         />
         {edit.key === 'custom' && (
-          <DataFilter initTag={edit.tag} ref={editRef} fields={fields} baseConditions={edit.conditions} />
+          <DataFilter initTag={edit.tag} ref={editRef} fields={fields} initConditions={edit.conditions} />
         )}
       </div>
       <div>
@@ -103,7 +103,7 @@ function DataPermission({ fields, className = '', dataPer }: Props, ref: React.R
           options={OPTIONS}
         />
         {del.key === 'custom' && (
-          <DataFilter initTag={del.tag} ref={delRef} fields={fields} baseConditions={del.conditions} />
+          <DataFilter initTag={del.tag} ref={delRef} fields={fields} initConditions={del.conditions} />
         )}
       </div>
     </div>
