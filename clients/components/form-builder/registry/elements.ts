@@ -8,7 +8,7 @@ import Select from './select';
 import MultipleSelect from './multiple-select';
 import CascadeSelector from './cascade-selector';
 
-export const availableElements = [
+const availableElements = [
   Input,
   Textarea,
   RadioGroup,
