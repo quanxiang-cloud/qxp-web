@@ -225,7 +225,7 @@ function LinkageConfig({ onClose, onSubmit }: Props): JSX.Element {
   }
 
   return (
-    <Modal title="设置数据联动" onClose={onClose}>
+    <Modal title="设置数据联动" className="setting-data-linkage" onClose={onClose}>
       <SchemaForm
         actions={actions}
         components={COMPONENTS}
