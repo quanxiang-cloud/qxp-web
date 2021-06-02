@@ -18,9 +18,11 @@ interface IEmployeeTable {
   depID: string | null;
   ownerStore: OwnerStore;
   userLeader: Leader;
+  onChange: (leader: Leader) => void;
 }
 
 export default observer(function EmployeeTable({
+  onChange,
   className,
   depID,
   userName,
@@ -31,6 +33,7 @@ export default observer(function EmployeeTable({
   const { current, pageSize } = store.pagination;
   const [isLoading, setIsLoading] = React.useState(true);
 
+  const { setLeader } = ownerStore;
   const { data } = useQuery(
     [
       'adminSearchUserList',
@@ -52,7 +55,6 @@ export default observer(function EmployeeTable({
     store.setCurrentPage(1);
     store.setSelectedKeys([]);
     store.setTotal(0);
-    ownerStore.setLeader(userLeader.id, userLeader.userName);
   }, [depID]);
   useEffect(() => {
     if (data?.total) {
@@ -74,7 +76,7 @@ export default observer(function EmployeeTable({
           <>
             关联
             <span className="mx-4">
-              {leader.userName}
+              {userLeader.userName}
             </span>
             为直属上级
           </>
@@ -97,30 +99,31 @@ export default observer(function EmployeeTable({
           emptyTips={<EmptyTips text="无成员数据" className="py-10" />}
           columns={[
             {
-              Header: '',
-              id: 'radio',
-              fixed: true,
-              width: 40,
-              accessor: ({ id, userName }: Employee) => {
-                const checked = userLeader.id === id;
-                const handleModifyModal = () => {
-                  ownerStore.setLeader(id, userName );
-                };
-                return (
-                  <input
-                    name="employee"
-                    type="radio"
-                    value={id}
-                    onClick={handleModifyModal}
-                    defaultChecked={checked}
-                  />);
-              },
-            },
-            {
               Header: '员工姓名',
               id: 'userName',
               fixed: true,
-              accessor: 'userName',
+              width: 120,
+              accessor: ({ id, userName }: Employee) => {
+                const checked = (userLeader.id === id) || (leader.id === id);
+                const handleModifyModal = () => {
+                  setLeader(id, userName);
+                  onChange({ id, userName });
+                };
+                return (
+                  <label className="cursor-pointer hover:text-blue-600" htmlFor={id}>
+                    <input
+                      id={id}
+                      name="employee"
+                      type="radio"
+                      value={id}
+                      className="mr-2 cursor-pointer"
+                      onClick={handleModifyModal}
+                      defaultChecked={checked}
+                    />
+                    {userName}
+                  </label>
+                );
+              },
             },
             {
               Header: '手机号',

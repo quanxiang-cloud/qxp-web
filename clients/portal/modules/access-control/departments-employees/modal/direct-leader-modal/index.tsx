@@ -8,6 +8,7 @@ import DirectLeaderPicker from './direct-leader-picker';
 interface Props {
   title: string;
   submitText: string;
+  current: Leader;
   onSubmit: (
     leader: Leader
   ) => Promise<boolean | void>;
@@ -16,17 +17,14 @@ interface Props {
 }
 
 export default function DirectLeaderChoose({
-  employee,
   onSubmit,
   onCancel,
   title,
   submitText,
+  current,
 }: Props) {
   const [isOnGetSelected, setIsOnGetSelected] = useState(false);
-  const [leader, setLeader] = useState<Leader>({
-    id: '',
-    userName: '',
-  });
+  const [leader, setLeader] = useState<Leader>(current);
   function onGetSelected() {
     if (!leader.id.length) {
       toast.error('您还未关联直属上级');
@@ -59,7 +57,7 @@ export default function DirectLeaderChoose({
       ]}
     >
       <DirectLeaderPicker
-        employee={employee}
+        currentLeader={leader}
         onChange={setLeader}
       />
     </Modal>

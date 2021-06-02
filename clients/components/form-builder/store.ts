@@ -369,6 +369,7 @@ export default class FormBuilderStore {
 
         return rule;
       });
+      return;
     }
 
     this.validations.push({

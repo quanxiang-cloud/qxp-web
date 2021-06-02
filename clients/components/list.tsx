@@ -31,7 +31,7 @@ function List<T extends unknown>({
   return (
     <ul className={twCascade('flex flex-col', className)}>
       {header}
-      {items.map((item: JSX.Element | (() => JSX.Element) | IItem<T>, index: number) => {
+      {items.map((item: JSX.Element | (() => JSX.Element) | IItem<T>) => {
         const isElement = React.isValidElement(item);
         const isFunc = isFunction(item);
         const isObj = isObject(item) && !isElement && !isFunc;
@@ -57,7 +57,7 @@ function List<T extends unknown>({
           );
         }
         return (
-          <li key={index} className={twCascade('transition', itemClassName)}>
+          <li key={(item as JSX.Element).key} className={twCascade('transition', itemClassName)}>
             {isFunc && (item as () => JSX.Element)()}
             {isElement && item}
           </li>
