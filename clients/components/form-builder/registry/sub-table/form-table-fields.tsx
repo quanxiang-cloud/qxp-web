@@ -245,7 +245,7 @@ function FormTableFields(props: ISchemaFieldComponentProps) {
             >
               <ul className="flex flex-col py-12 px-28 border rounded h-280 overflow-y-scroll">
                 {schemaOptions
-                  .filter(({ value }) => !INTERNAL_FIELD_NAMES.includes(value))
+                  .filter(({ value }) => !['_id'].includes(value))
                   .map(({ label, value, schema }) => {
                     const isChecked = !!selectedFields.find(({ value: v }) => value === v);
                     return (
