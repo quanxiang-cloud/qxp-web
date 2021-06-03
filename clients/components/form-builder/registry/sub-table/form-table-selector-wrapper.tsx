@@ -1,22 +1,51 @@
-import React, { useEffect, useContext } from 'react';
-import { ISchemaFieldComponentProps } from '@formily/antd';
-import { useParams } from 'react-router-dom';
+import React, { useEffect, useContext, useState } from 'react';
+import { ISchemaFieldComponentProps, useFormEffects, FormEffectHooks } from '@formily/antd';
 import { omitBy } from 'lodash';
 
 import FormTableSelector from '@c/form-table-selector';
 
 import { ActionsContext } from './config-form';
+import { StoreContext } from '../../context';
 import { getFormTableSchema } from './api';
 
+const { onFieldValueChange$ } = FormEffectHooks;
+
 export default function FormTableSelectorWrapper({ value, onChange }: ISchemaFieldComponentProps) {
-  const { appID, pageId } = useParams<{ appID: string; pageId: string; }>();
+  const [appID, setAppID] = useState('');
+  const [pageId, setPageID] = useState('');
   const actions = useContext(ActionsContext);
+  const store = useContext(StoreContext);
+
+  useFormEffects(() => {
+    onFieldValueChange$('Fields.appID').subscribe((state) => {
+      if (state.value && !store.appID) {
+        setAppID(state.value);
+      }
+    });
+    onFieldValueChange$('Fields.tableID').subscribe((state) => {
+      if (state.value && !store.pageID) {
+        setPageID(state.value);
+      }
+    });
+  });
 
   useEffect(() => {
     if (value) {
       handleChange({ value });
     }
   }, []);
+
+  useEffect(() => {
+    if (store.appID) {
+      setAppID(store.appID);
+    }
+  }, [store.appID]);
+
+  useEffect(() => {
+    if (store.pageID) {
+      setPageID(store.pageID);
+    }
+  }, [store.pageID]);
 
   async function handleChange({ value }: { value: string }) {
     onChange(value);
