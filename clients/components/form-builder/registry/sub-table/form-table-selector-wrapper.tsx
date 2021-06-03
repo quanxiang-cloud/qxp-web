@@ -22,7 +22,7 @@ export default function FormTableSelectorWrapper({ value, onChange }: ISchemaFie
     onChange(value);
     const { schema } = await getFormTableSchema<{
       schema: ISchema;
-    }>({ appID, tableID: value }) ?? {};
+    }>({ appID, tableID: value }) || {};
     actions.setFieldState('Fields.workTableSchemaOptions', (state) => {
       if (!schema?.properties) {
         state.value = [];
@@ -38,7 +38,7 @@ export default function FormTableSelectorWrapper({ value, onChange }: ISchemaFie
       });
     });
     actions.getFieldState('Fields.columns', (state) => {
-      const columns = state.initialValue as { title: string; dataIndex: string }[] ?? [];
+      const columns = state.initialValue as { title: string; dataIndex: string }[] || [];
       actions.setFieldState('Fields.items', (st) => {
         const properties = columns.reduce(
           (cur: Record<string, ISchema>, next: {title: string; dataIndex: string}) => {

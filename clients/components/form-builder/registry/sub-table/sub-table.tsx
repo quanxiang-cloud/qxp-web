@@ -56,7 +56,7 @@ function SubTable(compProps: Props) {
   const schema = appID && tableID && (schemaData?.tableID === tableID) && schemaData?.schema ?
     schemaData?.schema : definedSchema.items as ISchema;
 
-  const parsedColumns = (definedColumns?.map((v) => JSON.parse(v)) ?? []) as Column[];
+  const parsedColumns = (definedColumns?.map((v) => JSON.parse(v)) || []) as Column[];
 
   const columns = parsedColumns?.map(({ dataIndex, title }: {
     title: string;
@@ -67,7 +67,7 @@ function SubTable(compProps: Props) {
       return null;
     }
     const componentName = sc['x-component']?.toLowerCase() as keyof Components;
-    const componentProps = sc['x-component-props'] ?? {};
+    const componentProps = sc['x-component-props'] || {};
     if (!components[componentName]) {
       logger.error('component %s is missing in subTable', componentName);
       return null;
@@ -101,7 +101,7 @@ function SubTable(compProps: Props) {
     };
   }).filter(Boolean);
 
-  const dataSource = [{ ...(schema?.properties ?? {}), key: 0 }];
+  const dataSource = [{ ...(schema?.properties || {}), key: 0 }];
 
   if (!columns.length || (columns.length === 1 && columns[0]?.dataIndex === '_id')) {
     return null;

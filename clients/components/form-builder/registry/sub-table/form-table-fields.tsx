@@ -55,9 +55,9 @@ function FormTableFields(props: ISchemaFieldComponentProps) {
         return cur;
       }
       cur.push({
-        label: schema?.title as string ?? '',
+        label: schema?.title as string || '',
         value: key,
-        sort: +(schema['x-index'] ?? selectedFields.length),
+        sort: +(schema['x-index'] || selectedFields.length),
         schema: schema,
       });
       return cur;
@@ -139,7 +139,7 @@ function FormTableFields(props: ISchemaFieldComponentProps) {
       properties: {
         ...fields.reduce((cur: ISchema, next: Field) => {
           const { value, schema, sort } = next;
-          newColumns.push({ title: schema?.title as string ?? '', dataIndex: value, sort });
+          newColumns.push({ title: schema?.title as string || '', dataIndex: value, sort });
           cur[value as keyof ISchema] = {
             ...schema,
             'x-index': sort,

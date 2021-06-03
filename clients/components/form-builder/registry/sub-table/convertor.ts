@@ -29,7 +29,7 @@ export const defaultConfig: SubTableConfig = {
 };
 
 export function toSchema(value: SubTableConfig): FormBuilder.Schema {
-  // const entries = Object.entries(value.items?.properties ?? {});
+  // const entries = Object.entries(value.items?.properties || {});
   // let lastIndex = entries.length;
 
   // const entriesMap: [string, ISchema][] = entries.map(([key, value]) => {
@@ -46,7 +46,7 @@ export function toSchema(value: SubTableConfig): FormBuilder.Schema {
   // }).reduce((cur: {title: string; dataIndex: string;}[], next) => {
   //   const [key, value] = next;
   //   cur.push({
-  //     title: value.title as string ?? '',
+  //     title: value.title as string || '',
   //     dataIndex: key,
   //   });
   //   return cur;
@@ -62,7 +62,7 @@ export function toSchema(value: SubTableConfig): FormBuilder.Schema {
     'x-component': 'SubTable',
     ['x-component-props']: {
       // columns: (columns.length ? columns : value?.columns).map((v) => JSON.stringify(v)),
-      columns: (value.columns ?? []).map((v) => JSON.stringify(v)),
+      columns: (value.columns || []).map((v) => JSON.stringify(v)),
       subordination: value.subordination,
       appID: value.appID,
       tableID: value.tableID,

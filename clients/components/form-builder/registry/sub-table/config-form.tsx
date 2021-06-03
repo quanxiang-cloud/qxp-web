@@ -108,7 +108,7 @@ export default function ConfigForm({ onChange, initialValue }: Props) {
       state.value = items;
     });
     actions.getFieldState('Fields.columns', (st1) => {
-      const columns: {title: string; dataIndex: string}[] = st1.value ?? [];
+      const columns: {title: string; dataIndex: string}[] = st1.value || [];
       actions.setFieldState('Fields.columns', (st2) => {
         st2.value = columns.map((col) => {
           if (col.dataIndex === state.currentFieldKey) {
@@ -131,7 +131,7 @@ export default function ConfigForm({ onChange, initialValue }: Props) {
     }).filter((key) => !INTERNAL_FIELD_NAMES.includes(key));
 
     const fields = sortedKeys.reduce((cur: Record<string, Store>, key) => {
-      const componentName = properties[key]['x-component']?.toLowerCase() ?? '';
+      const componentName = properties[key]['x-component']?.toLowerCase() || '';
       if (!componentsForSubTable?.[componentName]?.toConfig) {
         logger.error('fatal! there is no x-component in schema:', properties[key]);
         return {};

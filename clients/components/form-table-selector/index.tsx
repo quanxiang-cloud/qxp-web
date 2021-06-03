@@ -56,7 +56,7 @@ function FormTableSelector(
     enabled: !!appID,
   });
 
-  const options = buildOptions(optionsData, exclude ?? []);
+  const options = buildOptions(optionsData, exclude || []);
 
   useEffect(() => {
     isError && toast.error(error as string);
@@ -76,10 +76,10 @@ function FormTableSelector(
     map?: Record<string, string[]>,
     id?: number
   ) {
-    const pathMap: Record<string, string[]> = map ?? {};
+    const pathMap: Record<string, string[]> = map || {};
     for (let index = 0; index < dataSource.length; index += 1) {
       const { value, children } = dataSource[index];
-      const currentIndex = id ?? index;
+      const currentIndex = id || index;
       if (!pathMap[currentIndex]) {
         pathMap[currentIndex] = [];
       }
@@ -88,7 +88,7 @@ function FormTableSelector(
         getPathWhenMatch(val, children, pathMap, currentIndex) as string[];
       }
     }
-    return Object.entries(pathMap).find(([, value]) => value.includes(val))?.[1] ?? [];
+    return Object.entries(pathMap).find(([, value]) => value.includes(val))?.[1] || [];
   }
 
   const currentValuePath = getPathWhenMatch(value.value, options);
@@ -151,7 +151,7 @@ function FormTableSelector(
       </div>
       {validating && !value.value && (
         <div className="mb-22 text-caption-no-color text-red-600 mt-4">
-          {errorMessage ?? '请选择一张工作表用以触发工作流'}
+          {errorMessage || '请选择一张工作表用以触发工作流'}
         </div>
       )}
     </>

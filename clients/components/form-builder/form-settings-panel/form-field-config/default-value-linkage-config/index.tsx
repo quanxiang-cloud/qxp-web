@@ -206,9 +206,9 @@ function LinkageConfig({ onClose, onSubmit }: Props): JSX.Element {
           })).then((fixFieldKey) => {
             const linkTableField = linkedTableFields.find((field) => field.value === fixFieldKey);
 
-            options = linkTableField?.availableCompareValues ?? [];
+            options = linkTableField?.availableCompareValues || [];
             if (options.length === 0) {
-              componentType = linkTableField?.['x-component'] ?? 'Input';
+              componentType = linkTableField?.['x-component'] || 'Input';
             }
             tips = '请输入固定值';
           });
