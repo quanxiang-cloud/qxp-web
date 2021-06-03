@@ -1,7 +1,7 @@
 import React, { ChangeEvent, useEffect, useState } from 'react';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 import { Table } from 'antd';
-import { Input, Radio, DatePicker } from '@formily/antd-components';
+import { Input, Radio, DatePicker, NumberPicker, Select } from '@formily/antd-components';
 
 import { getFormTableSchema } from './api';
 import logger from '@lib/logger';
@@ -18,6 +18,9 @@ const components = {
   radiogroup: Radio.Group,
   textarea: Input.TextArea,
   datepicker: DatePicker,
+  numberpicker: NumberPicker,
+  select: Select,
+  multipleselect: Select,
 };
 
 interface Props extends ISchemaFieldComponentProps {
@@ -79,7 +82,7 @@ function SubTable(compProps: Props) {
           mutators: {
             ...compProps.mutators,
             change: (e: ChangeEvent<HTMLInputElement>) => {
-              const v = e.target.value;
+              const v = e?.target?.value || e;
               compProps.value[dataIndex] = v;
               compProps.mutators.change(compProps.value);
             },
@@ -88,6 +91,7 @@ function SubTable(compProps: Props) {
           value: compProps.value[dataIndex],
           props: {
             ...compProps.props,
+            enum: sc.enum,
             'x-component-props': {
               ...componentProps,
             },
@@ -99,7 +103,7 @@ function SubTable(compProps: Props) {
 
   const dataSource = [{ ...(schema?.properties ?? {}), key: 0 }];
 
-  if (!columns.length) {
+  if (!columns.length || (columns.length === 1 && columns[0]?.dataIndex === '_id')) {
     return null;
   }
 

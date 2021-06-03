@@ -6,7 +6,14 @@ import {
   ISchemaFormActions,
   ISchemaFieldComponentProps,
 } from '@formily/antd';
-import { Input as input, Select as select, Switch, ArrayTable } from '@formily/antd-components';
+import {
+  Input as input,
+  Select as select,
+  Switch,
+  ArrayTable,
+  NumberPicker,
+  DatePicker,
+} from '@formily/antd-components';
 import { useParams } from 'react-router-dom';
 import { update } from 'lodash';
 
@@ -23,9 +30,14 @@ import formTableSelectorWrapper from './form-table-selector-wrapper';
 import { SubTableConfig } from './convertor';
 import sInput from './components/input';
 import sTextarea from './components/textarea';
-import sRadioGroup from './components/radio-group';
+import sNumber from './components/number';
+import sDatePicker from './components/datetime';
+import sSelect from './components/select';
+import sMultipleSelect from './components/multiple-select';
 import { addOperate } from '../operates';
 import { Store } from 'antd/lib/form/interface';
+import DefaultValueLinkageConfigBtn
+  from '../../form-settings-panel/form-field-config/default-value-linkage-config-btn';
 
 export const ActionsContext = createContext<ISchemaFormActions>(createFormActions());
 export const ItemActionsContext = createContext<ISchemaFormActions>(createFormActions());
@@ -64,6 +76,8 @@ export default function ConfigForm({ onChange, initialValue }: Props) {
     switcher, textarea: input.TextArea, subordination, input,
     select, formTableFields, formTableSelectorWrapper, switch: Switch,
     arraytable: ArrayTable, addoperate: addOperate, columns,
+    numberpicker: NumberPicker, datepicker: DatePicker,
+    defaultvaluelinkageconfigbtn: DefaultValueLinkageConfigBtn,
   };
 
   const componentsForSubTable: Record<
@@ -72,7 +86,10 @@ export default function ConfigForm({ onChange, initialValue }: Props) {
     ...components,
     input: sInput,
     textarea: sTextarea,
-    radiogroup: sRadioGroup,
+    numberpicker: sNumber,
+    datepicker: sDatePicker,
+    select: sSelect,
+    multipleselect: sMultipleSelect,
   };
 
   function onFieldConfigValueChange(value: any) {

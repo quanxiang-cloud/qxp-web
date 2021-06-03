@@ -13,7 +13,10 @@ import { generateRandomFormFieldID } from '../../utils';
 import { ActionsContext } from './config-form';
 import * as inputConverter from './components/input/convertor';
 import * as textareaConverter from './components/textarea/convertor';
-import * as radioGroupConverter from './components/radio-group/convertor';
+import * as numberConverter from './components/number/convertor';
+import * as datetimeConverter from './components/datetime/convertor';
+import * as selectorConvertor from './components/select/convertor';
+import * as multipleSelectorConvertor from './components/multiple-select/convertor';
 
 const { onFieldValueChange$ } = FormEffectHooks;
 
@@ -91,20 +94,27 @@ function FormTableFields(props: ISchemaFieldComponentProps) {
         ...textareaConverter.toSchema(textareaConverter.defaultConfig),
         'x-index': currentIndex,
       },
-      单选框: {
-        ...radioGroupConverter.toSchema(radioGroupConverter.defaultConfig),
+      数字: {
+        ...numberConverter.toSchema(numberConverter.defaultConfig),
         'x-index': currentIndex,
       },
-      复选框: {},
-      数字: {},
-      日期时间: {},
-      下拉单选框: {},
-      下拉复选框: {},
+      日期时间: {
+        ...datetimeConverter.toSchema(datetimeConverter.defaultConfig),
+        'x-index': currentIndex,
+      },
+      下拉单选框: {
+        ...selectorConvertor.toSchema(selectorConvertor.defaultConfig),
+        'x-index': currentIndex,
+      },
+      下拉复选框: {
+        ...multipleSelectorConvertor.toSchema(multipleSelectorConvertor.defaultConfig),
+        'x-index': currentIndex,
+      },
     };
     return schemaMap[label];
   }
   const labels = [
-    '单行文本', '多行文本', '单选框', '复选框', '数字', '日期时间', '下拉单选框', '下拉复选框',
+    '单行文本', '多行文本', '数字', '日期时间', '下拉单选框', '下拉复选框',
   ];
   const currentOptions = labels.map((label) => ({ label, value: generateRandomFormFieldID() }));
 
