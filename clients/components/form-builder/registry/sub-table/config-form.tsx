@@ -1,10 +1,18 @@
-import React, { useState, useEffect, useRef, createContext, useMemo } from 'react';
-import { SchemaForm, createFormActions, FormEffectHooks, ISchemaFormActions } from '@formily/antd';
+import React, { useState, useEffect, useRef, createContext, useMemo, JSXElementConstructor } from 'react';
+import {
+  SchemaForm,
+  createFormActions,
+  FormEffectHooks,
+  ISchemaFormActions,
+  ISchemaFieldComponentProps,
+} from '@formily/antd';
 import { Input as input, Select as select, Switch, ArrayTable } from '@formily/antd-components';
 import { useParams } from 'react-router-dom';
 import { update } from 'lodash';
 
 import Button from '@c/button';
+import { INTERNAL_FIELD_NAMES } from '@c/form-builder/store';
+import logger from '@lib/logger';
 
 import formTableFields from './form-table-fields';
 import configSchema from './config-schema';
@@ -12,14 +20,12 @@ import switcher from './switcher';
 import columns from './columns';
 import subordination from './subordination';
 import formTableSelectorWrapper from './form-table-selector-wrapper';
-
 import { SubTableConfig } from './convertor';
-import { INTERNAL_FIELD_NAMES } from '@c/form-builder/store';
-
 import sInput from './components/input';
 import sTextarea from './components/textarea';
 import sRadioGroup from './components/radio-group';
 import { addOperate } from '../operates';
+import { Store } from 'antd/lib/form/interface';
 
 export const ActionsContext = createContext<ISchemaFormActions>(createFormActions());
 export const ItemActionsContext = createContext<ISchemaFormActions>(createFormActions());
@@ -54,13 +60,15 @@ export default function ConfigForm({ onChange, initialValue }: Props) {
     componentMountedRef.current = true;
   }, []);
 
-  const components: Record<string, any> = {
+  const components: Record<string, JSXElementConstructor<ISchemaFieldComponentProps>> = {
     switcher, textarea: input.TextArea, subordination, input,
     select, formTableFields, formTableSelectorWrapper, switch: Switch,
     arraytable: ArrayTable, addoperate: addOperate, columns,
   };
 
-  const componentsForSubTable: any = {
+  const componentsForSubTable: Record<
+    string, Omit<FormBuilder.SourceElement<any>, 'displayOrder'>
+  > = {
     ...components,
     input: sInput,
     textarea: sTextarea,
@@ -95,7 +103,7 @@ export default function ConfigForm({ onChange, initialValue }: Props) {
     });
   }
 
-  function convertSchema({ properties }: FormBuilder.Schema = {}): any {
+  function convertSchema({ properties }: FormBuilder.Schema = {}): Record<string, Store> {
     if (!properties) {
       return {};
     }
@@ -105,12 +113,10 @@ export default function ConfigForm({ onChange, initialValue }: Props) {
       return keyAIndex - keyBIndex;
     }).filter((key) => !INTERNAL_FIELD_NAMES.includes(key));
 
-    const fields = sortedKeys.reduce((cur: any, key) => {
+    const fields = sortedKeys.reduce((cur: Record<string, Store>, key) => {
       const componentName = properties[key]['x-component']?.toLowerCase() ?? '';
       if (!componentsForSubTable?.[componentName]?.toConfig) {
-        // @ts-ignore
-        // eslint-disable-next-line
-        console.error('fatal! there is no x-component in schema:', properties[key]);
+        logger.error('fatal! there is no x-component in schema:', properties[key]);
         return {};
       }
 
@@ -122,7 +128,6 @@ export default function ConfigForm({ onChange, initialValue }: Props) {
   }
 
   const currentSubSchema = initialValue.items?.properties?.[state.currentFieldKey];
-  // @ts-ignore
   const currentSchemaType = currentSubSchema?.['x-component']?.toLowerCase() as string;
   const currentSubSchemaDefault = componentsForSubTable[currentSchemaType]?.configSchema;
 

@@ -1,10 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React, { ChangeEvent, useEffect, useState } from 'react';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 import { Table } from 'antd';
 import { Input, Radio, DatePicker } from '@formily/antd-components';
 
 import { getFormTableSchema } from './api';
 import logger from '@lib/logger';
+
+type Column = {
+  title: string;
+  dataIndex: string;
+}
 
 type Components = typeof components;
 
@@ -48,7 +53,9 @@ function SubTable(compProps: Props) {
   const schema = appID && tableID && (schemaData?.tableID === tableID) && schemaData?.schema ?
     schemaData?.schema : definedSchema.items as ISchema;
 
-  const columns: any[] = (definedColumns?.map((v) => JSON.parse(v)) ?? [])?.map(({ dataIndex, title }: {
+  const parsedColumns = (definedColumns?.map((v) => JSON.parse(v)) ?? []) as Column[];
+
+  const columns = parsedColumns?.map(({ dataIndex, title }: {
     title: string;
     dataIndex: string;
   }) => {
@@ -71,7 +78,7 @@ function SubTable(compProps: Props) {
           ...compProps,
           mutators: {
             ...compProps.mutators,
-            change: (e: any) => {
+            change: (e: ChangeEvent<HTMLInputElement>) => {
               const v = e.target.value;
               compProps.value[dataIndex] = v;
               compProps.mutators.change(compProps.value);
@@ -97,7 +104,7 @@ function SubTable(compProps: Props) {
   }
 
   return (
-    <Table columns={columns} dataSource={dataSource} pagination={false} />
+    <Table columns={columns as Column[]} dataSource={dataSource} pagination={false} />
   );
 }
 

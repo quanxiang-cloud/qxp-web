@@ -19,6 +19,10 @@ type ISchema = import('@formily/react-schema-renderer').ISchema & {
   };
 };
 
+declare type SchemaProperties<T = ISchema> = {
+  [key: string]: T;
+};
+
 declare namespace FormBuilder {
   type ElementCategory = 'basic' | 'advance' | 'layout';
 

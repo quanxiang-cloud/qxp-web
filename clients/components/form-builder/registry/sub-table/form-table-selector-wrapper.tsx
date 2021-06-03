@@ -20,14 +20,16 @@ export default function FormTableSelectorWrapper({ value, onChange }: ISchemaFie
 
   async function handleChange({ value }: { value: string }) {
     onChange(value);
-    const { schema } = await getFormTableSchema({ appID, tableID: value }) ?? {};
+    const { schema } = await getFormTableSchema<{
+      schema: ISchema;
+    }>({ appID, tableID: value }) ?? {};
     actions.setFieldState('Fields.workTableSchemaOptions', (state) => {
       if (!schema?.properties) {
         state.value = [];
         return;
       }
       const schemas = omitBy(schema.properties, (value) => value?.['x-component'] === 'SubTable');
-      state.value = Object.entries(schemas).map(([key, value]: any) => {
+      state.value = Object.entries(schemas).map(([key, value]) => {
         return {
           label: value?.title,
           value: key,

@@ -17,37 +17,48 @@ import * as radioGroupConverter from './components/radio-group/convertor';
 
 const { onFieldValueChange$ } = FormEffectHooks;
 
+interface Option {
+  label: string;
+  value: string;
+  schema: ISchema;
+}
+
+interface Field extends Option {
+  sort: number;
+}
+
+type Column = {
+  title: string;
+  dataIndex: string;
+  sort: number;
+}
+
 function FormTableFields(props: ISchemaFieldComponentProps) {
   const [title, setTitle] = useState('');
-  const [schemaOptions, setSchemaOptions] = useState<{
-    label: string;
-    value: string;
-    schema: ISchema;
-  }[]>([]);
-  const [selectedFields, setSelectedFields] = useState<{
-    label: string;
-    value: string;
-    sort: number;
-    schema: ISchema;
-  }[]>([]);
+  const [schemaOptions, setSchemaOptions] = useState<Option[]>([]);
+  const [selectedFields, setSelectedFields] = useState<Field[]>([]);
   const popReferences = useRef<HTMLDivElement>(null);
   const popRef = useRef<Popper>(null);
   const actions = useContext(ActionsContext);
 
   useEffect(() => {
-    const subTableSchemas = props.value?.properties ?? {};
-    const fields = Object.entries(subTableSchemas).reduce((cur: any, next: any) => {
-      if (next[0] === '_id') {
+    if (!props.value?.properties || !Object.keys(props.value?.properties).length) {
+      return;
+    }
+    const subTableSchemas = props.value?.properties as SchemaProperties;
+    const fields = Object.entries(subTableSchemas).reduce((cur: Field[], next) => {
+      const [key, schema] = next;
+      if (key === '_id') {
         return cur;
       }
       cur.push({
-        label: next[1].title,
-        value: next[0],
-        sort: Number.isNaN(+next[1]['x-index']) ? selectedFields.length : +next[1]['x-index'],
-        schema: next[1],
+        label: schema?.title as string ?? '',
+        value: key,
+        sort: +(schema['x-index'] ?? selectedFields.length),
+        schema: schema,
       });
       return cur;
-    }, []).sort((a: any, b: any) => a.sort - b.sort);
+    }, []).sort((a, b) => a.sort - b.sort);
     setSelectedFields(fields);
   }, [props.value?.properties]);
 
@@ -111,15 +122,15 @@ function FormTableFields(props: ISchemaFieldComponentProps) {
     });
   });
 
-  function onUpdateFields(fields: any) {
-    const newColumns: {title: string; dataIndex: string, sort: number; }[] = [];
+  function onUpdateFields(fields: Field[]) {
+    const newColumns: Column[] = [];
     const newValue = {
       type: 'object',
       properties: {
-        ...fields.reduce((cur: any, next: any) => {
+        ...fields.reduce((cur: ISchema, next: Field) => {
           const { value, schema, sort } = next;
-          newColumns.push({ title: schema?.title ?? '', dataIndex: value, sort });
-          cur[value] = {
+          newColumns.push({ title: schema?.title as string ?? '', dataIndex: value, sort });
+          cur[value as keyof ISchema] = {
             ...schema,
             'x-index': sort,
           };

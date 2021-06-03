@@ -3,10 +3,6 @@ import { ISchema } from '@formily/react-schema-renderer';
 const schema: ISchema = {
   type: 'object',
   title: '单行文本',
-  // @ts-ignore
-  'x-internal': {
-    schemaType: 'input',
-  },
   properties: {
     Fields: {
       type: 'object',

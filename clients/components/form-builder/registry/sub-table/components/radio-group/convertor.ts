@@ -6,7 +6,7 @@ export interface RadioGroupConfig {
   displayModifier: FormBuilder.DisplayModifier;
   optionsLayout: 'horizontal' | 'vertical';
   required: boolean;
-  availableOptions: Array<{ label: string; value: any; title: string }>,
+  availableOptions: Array<{ label: string; value: string; title: string }>,
 }
 
 export const defaultConfig: RadioGroupConfig = {
@@ -61,10 +61,10 @@ export function toConfig(schema: FormBuilder.Schema): RadioGroupConfig {
     description: schema.description as string,
     displayModifier: displayModifier,
     // todo implement this
-    optionsLayout: schema['x-component-props']?.layout as any,
+    optionsLayout: schema['x-component-props']?.layout,
     required: !!schema.required,
     // todo implement this
     // todo refactor this
-    availableOptions: schema.enum as Array<{ label: string; value: any; title: string }> || [],
+    availableOptions: schema.enum as Array<{ label: string; value: string; title: string }> || [],
   };
 }
