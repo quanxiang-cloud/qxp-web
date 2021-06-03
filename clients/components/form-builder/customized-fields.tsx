@@ -95,7 +95,8 @@ function FormDataFilterRuleFieldFragments(
       <Field
         name="rules"
         type="array"
-        x-component="ArrayCustom"
+        title="条件列表"
+        x-component="RulesList"
       >
         <Field type="object">
           <Field

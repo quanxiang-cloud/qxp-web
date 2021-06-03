@@ -8,6 +8,7 @@ import Select from './select';
 import MultipleSelect from './multiple-select';
 import CascadeSelector from './cascade-selector';
 import SubTable from './sub-table';
+import AssociatedRecords from './associated-records';
 
 const availableElements = [
   Input,
@@ -20,6 +21,7 @@ const availableElements = [
   MultipleSelect,
   CascadeSelector,
   SubTable,
+  AssociatedRecords,
 ];
 
 export type Elements = { [key: string]: FormBuilder.SourceElement<any> };

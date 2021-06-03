@@ -47,8 +47,6 @@ function FormFields(): JSX.Element {
     );
   }
 
-  // console.log(store.schemaForCanvas);
-
   return (
     <div className="form-builder-canvas">
       <SchemaForm
