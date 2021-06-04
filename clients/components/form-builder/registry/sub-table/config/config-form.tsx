@@ -33,7 +33,7 @@ export default function ConfigForm({ onChange, initialValue: _initValue }: Props
 
   function effects() {
     onFieldValueChange$('Fields.curConfigSubTableKey').subscribe(({ value }) => {
-      setCurrenFieldKey(value);
+      value && setCurrenFieldKey(value);
     });
   }
 

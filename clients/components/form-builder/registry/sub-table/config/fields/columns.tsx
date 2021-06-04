@@ -5,7 +5,7 @@ import { useFormEffects, FormEffectHooks } from '@formily/antd';
 import Toggle from '@c/toggle';
 
 import { getFormTableSchema } from '../api';
-import { BLOCKED_FIELD_NAMES } from '../constants';
+import { BLOCKED_FIELD_NAMES, SUPPORTED_COMPONENTS_NAMES } from '../constants';
 
 const { onFieldValueChange$ } = FormEffectHooks;
 
@@ -38,11 +38,14 @@ function Columns({ value, mutators }: ISchemaFieldComponentProps) {
 
   const schemaOptions = Object.entries(currentSchema?.properties || {}).reduce((cur: Option[], next) => {
     const [key, sc] = next;
-    cur.push({
-      label: sc.title as string,
-      value: key,
-      schema: sc,
-    });
+    if (key !== '_id' && !BLOCKED_FIELD_NAMES.includes(key) &&
+      SUPPORTED_COMPONENTS_NAMES.includes(sc['x-component']?.toLocaleLowerCase() || '')) {
+      cur.push({
+        label: sc.title as string,
+        value: key,
+        schema: sc,
+      });
+    }
     return cur;
   }, []);
 
@@ -54,29 +57,25 @@ function Columns({ value, mutators }: ISchemaFieldComponentProps) {
   }
 
   return (
-    <div>
+    <div className="w-full">
       <header className="flex justify-between items-center bg-gray-50 mb-16">
         <div className="mr-10">子表字段</div>
       </header>
-      <ul className="flex flex-col py-12 px-28 border rounded h-280 overflow-y-scroll">
-        {schemaOptions
-          .filter(({ value, schema }) => {
-            return value !== '_id' && !BLOCKED_FIELD_NAMES.includes(
-              schema?.['x-component']?.toLowerCase() || ''
-            );
-          })
-          .map(({ label, value }) => {
+      {!!schemaOptions.length && (
+        <ul className="flex w-full flex-col py-12 px-28 border rounded">
+          {schemaOptions.map(({ label, value: val }) => {
             return (
-              <li key={value} className="flex justify-between items-center my-5">
+              <li key={val} className="flex justify-between items-center my-5">
                 <span className="mr-7">{label}</span>
                 <Toggle
-                  defaultChecked={value.includes(value)}
-                  onChange={(isOpen) => onToggleColumn(value, isOpen)}
+                  defaultChecked={value.includes(val)}
+                  onChange={(isOpen) => onToggleColumn(val, isOpen)}
                 />
               </li>
             );
           })}
-      </ul>
+        </ul>
+      )}
     </div>
   );
 }

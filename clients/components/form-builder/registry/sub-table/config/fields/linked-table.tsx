@@ -5,11 +5,6 @@ import FormTableSelector from '@c/form-table-selector';
 
 import { StoreContext } from '../context';
 
-// columns 和 items 没有任何交集
-// 从空白创建和选择已有分成两个组件
-// 不必走 x-proxy formSchema
-// 选择已有 黑名单, 白名单过滤 字段
-
 interface LinkedTable {
   appID: string;
   tableID: string;

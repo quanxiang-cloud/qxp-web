@@ -2,7 +2,6 @@ import React, { ChangeEvent, useEffect, useState } from 'react';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 import { Table } from 'antd';
 import { Input, Radio, DatePicker, NumberPicker, Select } from '@formily/antd-components';
-import { isEmpty } from 'lodash';
 
 import { getFormTableSchema } from '../config/api';
 import logger from '@lib/logger';
@@ -10,6 +9,7 @@ import logger from '@lib/logger';
 type Column = {
   title: string;
   dataIndex: string;
+  render: any;
 }
 
 type Components = typeof components;
@@ -38,41 +38,36 @@ interface Props extends ISchemaFieldComponentProps {
 }
 
 function SubTable(compProps: Props) {
+  console.log('subTable', compProps);
+
   const [schemaData, setSchemaData] = useState<{tableID: string; schema: ISchema} | null>(null);
   const { schema: definedSchema } = compProps;
-  const { tableID, appID, columns: definedColumns } = compProps.props['x-component-props'];
+  const {
+    tableID, appID, subordination, columns: definedColumns,
+  } = compProps.props['x-component-props'];
+  const isFromEmpty = subordination === 'sub_table';
+  const isFromForeign = subordination === 'foreign_table';
 
   useEffect(() => {
-    if (!appID || !tableID || !isEmpty((definedSchema.items as ISchema).properties)) {
-      setSchemaData(null);
+    if (!isFromForeign || !appID || !tableID) {
       return;
     }
-    getFormTableSchema<{
-      schema: ISchema;
-      tableID: string;
-    }>({ appID, tableID }).then(setSchemaData);
+    getFormTableSchema<{schema: ISchema; tableID: string;}>({ appID, tableID }).then(setSchemaData);
   }, [tableID, appID]);
 
-  const schema = schemaData?.schema || definedSchema.items as ISchema;
-  const parsedColumns = (definedColumns?.map((v) => JSON.parse(v)) || []) as Column[];
+  const schema = (isFromEmpty ? definedSchema.items : schemaData?.schema) as ISchema;
 
-  const columns = parsedColumns?.map(({ dataIndex, title }: {
-    title: string;
-    dataIndex: string;
-  }) => {
-    const sc = schema?.properties?.[dataIndex];
-    if (!sc) {
-      return null;
-    }
+  let columns = [];
+
+  function buildColumnFromSchema(dataIndex: string, sc: ISchema) {
     const componentName = sc['x-component']?.toLowerCase() as keyof Components;
     const componentProps = sc['x-component-props'] || {};
     if (!components[componentName]) {
       logger.error('component %s is missing in subTable', componentName);
       return null;
     }
-
     return {
-      title,
+      title: sc.title as string,
       dataIndex,
       render: () => {
         return React.createElement(components[componentName], {
@@ -97,7 +92,17 @@ function SubTable(compProps: Props) {
         });
       },
     };
-  }).filter(Boolean);
+  }
+
+  columns = Object.entries(schema?.properties || {}).reduce((cur: Column[], next) => {
+    const [key, sc] = next;
+    if ((isFromForeign && !definedColumns.includes(key)) || key === '_id') {
+      return cur;
+    }
+    const newColumn = buildColumnFromSchema(key, sc);
+    newColumn && cur.push(newColumn);
+    return cur;
+  }, []);
 
   const dataSource = [{ ...(schema?.properties || {}), key: 0 }];
 
