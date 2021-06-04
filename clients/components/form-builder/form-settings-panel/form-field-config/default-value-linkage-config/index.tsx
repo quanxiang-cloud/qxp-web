@@ -1,5 +1,4 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { useParams } from 'react-router';
 import { toJS } from 'mobx';
 import {
   SchemaForm,
@@ -74,7 +73,6 @@ function LinkageConfig({ onClose, onSubmit }: Props): JSX.Element {
   const actions = createAsyncFormActions();
   const { setFieldState, getFieldValue } = actions;
   const store = useContext(StoreContext);
-  const { pageId } = useParams<{ pageId: string }>();
   const [linkageTables, setLinkageTables] = useState<Array<Option>>([]);
   const [linkedTableFields, setLinkedTableFields] = useState<LinkedTableFieldOptions[]>([]);
   const defaultValue: FormBuilder.DefaultValueLinkage =
@@ -83,7 +81,7 @@ function LinkageConfig({ onClose, onSubmit }: Props): JSX.Element {
   useEffect(() => {
     getLinkageTables(store.appID).then((options) => {
       // filter off current page
-      setLinkageTables(options.filter(({ value }) => value !== pageId));
+      setLinkageTables(options.filter(({ value }) => value !== store.pageID));
     });
   }, []);
 
@@ -225,7 +223,7 @@ function LinkageConfig({ onClose, onSubmit }: Props): JSX.Element {
   }
 
   return (
-    <Modal title="设置数据联动" onClose={onClose}>
+    <Modal title="设置数据联动" className="setting-data-linkage" onClose={onClose}>
       <SchemaForm
         actions={actions}
         components={COMPONENTS}

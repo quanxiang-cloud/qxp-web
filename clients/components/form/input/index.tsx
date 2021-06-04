@@ -117,7 +117,7 @@ export default function Input(props: Props) {
               {...inputProps}
               onBlur={handleBlur}
               onChange={handleChange}
-              className={className}
+              className={cs('input', className)}
             />
           )}
           {afterBeginIcon}

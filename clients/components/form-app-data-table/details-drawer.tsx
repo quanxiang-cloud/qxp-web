@@ -9,6 +9,7 @@ import PageLoading from '@c/page-loading';
 
 import { getTableCellData, operateButton } from './utils';
 import { StoreContext } from './context';
+import { FormData } from './store';
 
 type Props = {
   onCancel: () => void;
@@ -26,7 +27,7 @@ function DetailsDrawer({ onCancel, rowID }: Props) {
   const [beganClose, setBeganClose] = useState<boolean>(false);
   const [visible, setVisible] = useState<boolean>(false);
   const [loading, setLoading] = useState(true);
-  const [formDataItem, setInfoData] = useState(null);
+  const [formDataItem, setInfoData] = useState<FormData | null>(null);
 
   useEffect(() => {
     store.fetchFormDataDetails(rowID).then((res: any) => {

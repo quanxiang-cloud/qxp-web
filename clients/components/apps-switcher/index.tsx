@@ -3,8 +3,9 @@ import cs from 'classnames';
 
 import Popper from '@c/popper';
 import Icon from '@c/icon';
-import AppInfoView from '@portal/modules/apps-management/components/app-info-view';
+import AppInfoView from '@c/app-info-view';
 import AppIcon from '@c/app-icon';
+import { parseJSON } from '@lib/utils';
 
 import './index.scss';
 
@@ -56,8 +57,8 @@ function AppsSwitcher({ apps, onChange, currentAppID, hiddenStatus }: Props) {
     return null;
   }
 
-  const { appIcon = '', useStatus, appName } = currentApp;
-  const { bgColor, iconName } = (appIcon ? JSON.parse(appIcon) : {}) as AppIconInfo;
+  const { appIcon = '{}', useStatus, appName } = currentApp;
+  const { bgColor, iconName } = parseJSON<AppIconInfo>(appIcon, { bgColor: 'amber', iconName: '' });
 
   return (
     <>

@@ -1,7 +1,6 @@
 import React from 'react';
 import moment from 'moment';
 
-import { getFilterField } from '@portal/modules/apps-management/pages/form-design/utils';
 import { UnionColumns } from 'react-table';
 
 export type Scheme = Record<string, any>;
@@ -11,7 +10,7 @@ export type PageTableShowRule = {
   pageSize?: number | null;
 }
 export type Config = {
-  filtrate?: PageField[];
+  filter?: FilterMaps;
   pageTableConfig?: Record<string, any>;
   pageTableShowRule?: PageTableShowRule;
 };
@@ -44,13 +43,14 @@ export function getTableCellData(
   }
 
   if (field.type === 'datetime') {
+    const format = field['x-component-props']?.format || 'YYYY-MM-DD HH:mm:ss';
     if (Array.isArray(initValue)) {
       return initValue.map((value: string) => {
-        return moment(value).format('YYYY-MM-DD HH:mm:ss');
+        return moment(value).format(format);
       }).join('-');
     }
 
-    return moment(initValue).format('YYYY-MM-DD HH:mm:ss');
+    return moment(initValue).format(format);
   }
 
   if (field.enum && field.enum.length) {
@@ -129,9 +129,9 @@ export function getPageDataSchema(
   config: Config,
   schema: Scheme,
 ) {
-  const { pageTableShowRule = {}, pageTableConfig = {}, filtrate = [] } = config || {};
+  const { pageTableShowRule = {}, pageTableConfig = {} } = config || {};
   const fieldsMap = schema?.properties || {};
-  const fields: Scheme[] = [];
+  const fields: Fields[] = [];
   const tableColumns: any[] = [];
   Object.keys(fieldsMap).forEach((key: string) => {
     if (key === '_id' || fieldsMap[key]?.['x-component'] === 'SubTable') {
@@ -158,9 +158,6 @@ export function getPageDataSchema(
   });
 
   return {
-    filtrates: filtrate.map((field: PageField) => {
-      return getFilterField(field);
-    }),
     tableColumns: setFixedParameters(pageTableShowRule.fixedRule, tableColumns),
     pageTableShowRule,
     fields,

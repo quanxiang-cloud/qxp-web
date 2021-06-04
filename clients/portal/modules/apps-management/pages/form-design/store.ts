@@ -3,21 +3,22 @@ import { UnionColumns } from 'react-table';
 
 import FormStore from '@c/form-builder/store';
 import toast from '@lib/toast';
+import AppPageDataStore from '@c/form-app-data-table/store';
+import { PageTableShowRule, Scheme, setFixedParameters } from '@c/form-app-data-table/utils';
+
 import { getTableSchema, saveTableSchema } from '@lib/http-client';
 import {
   createPageScheme,
 } from './api';
-import AppPageDataStore from '@c/form-app-data-table/store';
-import { PageTableShowRule, Scheme, setFixedParameters } from '@c/form-app-data-table/utils';
-
-import { getFilterField, getAttribute } from './utils';
+import { getAttribute } from './utils';
 
 class FormDesignStore {
   destroyFetchScheme: IReactionDisposer;
   destroySetTableColumn: IReactionDisposer;
   destroySetTableConfig: IReactionDisposer;
-  destroySetFiltrates: IReactionDisposer;
-  destroySetAllFiltrate: IReactionDisposer;
+  destroySetFilters: IReactionDisposer;
+  destroySetAllFilter: IReactionDisposer;
+  destroySetSchema: IReactionDisposer;
   @observable pageID = '';
   @observable appID = '';
   @observable saveSchemeLoading = false;
@@ -28,10 +29,14 @@ class FormDesignStore {
   @observable hasSchema = false;
   @observable pageTableConfig: Record<string, any> = {};
   @observable pageTableShowRule: PageTableShowRule = {};
-  @observable allFiltrate: PageField[] = [];
+  @observable filterMaps: FilterMaps = {};
+
+  @computed get fieldsMap(): Record<string, ISchema> {
+    return this.formStore?.schema?.properties || {};
+  }
 
   @computed get fieldList(): PageField[] {
-    const fieldsMap: any = this.formStore?.schema?.properties || {};
+    const fieldsMap: any = this.fieldsMap;
     return Object.keys(fieldsMap).filter((_key: string) => {
       return _key !== '_id';
     }).map((key: string) => {
@@ -52,25 +57,22 @@ class FormDesignStore {
       return { pageID: this.pageID, appID: this.appID };
     }, this.fetchFormScheme);
 
-    this.destroySetAllFiltrate = reaction(() => this.fieldList, () => {
+    this.destroySetAllFilter = reaction(() => this.fieldList, () => {
       if (!this.formStore) {
         return;
       }
 
-      this.allFiltrate = this.allFiltrate.filter(({ id }) => {
-        if (!this.formStore?.schema?.properties) {
-          return false;
+      const hasFilterMaps = { ...this.filterMaps };
+      Object.keys(this.filterMaps).forEach((id) => {
+        if (this.formStore?.schema?.properties && !(id in this.formStore?.schema?.properties)) {
+          delete hasFilterMaps[id];
         }
-
-        return id in this.formStore?.schema?.properties;
       });
+      this.filterMaps = hasFilterMaps;
     });
 
-    this.destroySetFiltrates = reaction(() => {
-      return this.allFiltrate.map((field: PageField) => {
-        return getFilterField(field);
-      });
-    }, this.appPageStore.setFiltrates);
+    this.destroySetSchema = reaction(() => this.formStore?.schema, this.appPageStore.setSchema);
+    this.destroySetFilters = reaction(() => this.filterMaps, this.appPageStore.setFilters);
 
     this.destroySetTableColumn = reaction(() => {
       const column: UnionColumns<any>[] = [];
@@ -95,8 +97,8 @@ class FormDesignStore {
   }
 
   @action
-  setFilterList = (filtrates: PageField[]) => {
-    this.allFiltrate = filtrates;
+  setFilterMaps = (filters: FilterMaps) => {
+    this.filterMaps = filters;
   }
 
   @action
@@ -146,7 +148,7 @@ class FormDesignStore {
       this.formStore = new FormStore({ schema, appID, pageID });
       if (config) {
         this.pageTableConfig = config.pageTableConfig || {};
-        this.allFiltrate = Array.isArray(config.filtrate) ? config.filtrate : [];
+        this.filterMaps = config.filter || {};
         this.pageTableShowRule = config.pageTableShowRule || {};
       }
       this.pageLoading = false;
@@ -173,7 +175,7 @@ class FormDesignStore {
     this.formStore = null;
     this.pageTableConfig = {};
     this.pageTableShowRule = {};
-    this.allFiltrate = [];
+    this.filterMaps = {};
     this.appPageStore.clear();
   }
 
@@ -182,7 +184,7 @@ class FormDesignStore {
     createPageScheme(this.appID, {
       tableID: this.pageID, config: {
         pageTableConfig: this.pageTableConfig,
-        filtrate: this.allFiltrate,
+        filter: this.filterMaps,
         pageTableShowRule: this.pageTableShowRule,
       },
     }).then(() => {

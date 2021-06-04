@@ -27,7 +27,7 @@ function Button(
         'btn--forbidden': forbidden,
         'btn--loading': loading,
         'opacity-50': forbidden,
-        'pointer-events-none': loading,
+        'pointer-events-none': loading || forbidden,
       })}
       disabled={forbidden}
     >
@@ -38,6 +38,7 @@ function Button(
           size={20}
           className={cs('fill-current text-inherit mr-8', {
             'animate-spin': loading,
+            'pointer-events-none': loading || forbidden,
           })}
         />
       )}

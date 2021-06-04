@@ -3,10 +3,10 @@ import { Form } from '@QCFE/lego-ui';
 
 import Modal from '@c/modal';
 
-import SelectField from '@portal/modules/apps-management/components/select-field';
 import { APP_ICON_LIST } from '@c/app-icon-select';
 import AppIconSelect from '@c/app-icon-select';
 
+import SelectField from './select-field';
 import store from '../store';
 import { fetchGroupList } from '../api';
 

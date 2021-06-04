@@ -1,7 +1,7 @@
 import React, { useImperativeHandle, forwardRef } from 'react';
 import { useForm } from 'react-hook-form';
 
-import formFieldWrap from '@portal/modules/apps-management/components/form-field-wrap';
+import formFieldWrap from '@c/form-field-wrap';
 
 type Props = {
   defaultValue?: RightsCreate

@@ -283,14 +283,14 @@ func doFill(r *http.Request, vm map[string]interface{}, tableID, fieldNme, cate 
 					}
 					ft = table.Schema
 				}
-				// 判断是否存在 嵌套子表单
-				if po, ok := ft[Properties]; ok {
-					p := po.(map[string]interface{})
-					cd, err := fillSchema(r, p, cp.TableID, cate)
-					if err != nil {
-						return cd, err
-					}
-				}
+				// 判断是否存在 嵌套子表单(暂不考虑这种情况)
+				// if po, ok := ft[Properties]; ok {
+				// 	p := po.(map[string]interface{})
+				// 	cd, err := fillSchema(r, p, cp.TableID, cate)
+				// 	if err != nil {
+				// 		return cd, err
+				// 	}
+				// }
 				// 过滤子表单
 				sub := &SubTable{
 					TableID:    tableID,

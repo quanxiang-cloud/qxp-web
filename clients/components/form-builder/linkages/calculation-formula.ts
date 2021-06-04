@@ -2,7 +2,7 @@ import { get } from 'lodash';
 import { of } from 'rxjs';
 import { switchMap, debounceTime, filter } from 'rxjs/operators';
 import { FormEffectHooks, ISchemaFormActions } from '@formily/antd';
-import { findVariables, parse, resolve } from 'qxp-formula/lib/src/logical-formula';
+import { findVariables, parse, resolve } from 'qxp-formula';
 
 import logger from '@lib/logger';
 
@@ -52,7 +52,8 @@ function executeFormula({ rawFormula, formActions, targetField }: ExecuteFormula
       }, {});
       return of([missingValueField, values]);
     }),
-    filter(([missingValueField]) => {
+    filter((input): input is [true, Record<string, any>] => {
+      const [missingValueField] = input;
       if (missingValueField) {
         return false;
       }

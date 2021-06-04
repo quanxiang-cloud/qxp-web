@@ -3,7 +3,7 @@ import { useHistory, useParams } from 'react-router-dom';
 import { parse } from 'qs';
 
 import Icon from '@c/icon';
-import Tab, { TabProps } from '@portal/modules/apps-management/components/tab';
+import Tab, { TabProps } from '@c/no-content-tab';
 import HeaderNav from '@c/header-nav';
 
 import NotSavedModal from './not-saved-modal';

@@ -1,7 +1,9 @@
 import React from 'react';
+import { observer } from 'mobx-react';
 
+import CreateDataForm from './create-data-form';
 import PageDataTable from './page-data-table';
-import PageDataFiltrate from './page-data-filtrate';
+import PageDataFilter from './page-data-filter';
 import { StoreContext } from './context';
 import Store from './store';
 import './index.scss';
@@ -15,12 +17,14 @@ type Props = {
 function FormAppDataContent({ className = '', style, store }: Props) {
   return (
     <StoreContext.Provider value={store}>
-      <div style={style} className={`flex flex-col ${className}`}>
-        <PageDataFiltrate />
-        <PageDataTable />
-      </div>
+      {store.createPageVisible ? <CreateDataForm /> : (
+        <div style={style} className={`flex flex-col ${className}`}>
+          <PageDataFilter />
+          <PageDataTable />
+        </div>
+      )}
     </StoreContext.Provider>
   );
 }
 
-export default FormAppDataContent;
+export default observer(FormAppDataContent);

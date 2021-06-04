@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
 import { observer } from 'mobx-react';
-import { parse } from 'qxp-formula/lib/src/logical-formula';
+import { parse } from 'qxp-formula';
 
 import Button from '@c/button';
 import Modal from '@c/modal';
