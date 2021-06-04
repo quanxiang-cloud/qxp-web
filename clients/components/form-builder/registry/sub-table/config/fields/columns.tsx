@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
-import { useFormEffects, FormEffectHooks } from '@formily/antd';
+import { useFormEffects, FormEffectHooks, IFieldState } from '@formily/antd';
 
 import Toggle from '@c/toggle';
 
 import { getFormTableSchema } from '../api';
 import { BLOCKED_FIELD_NAMES, SUPPORTED_COMPONENTS_NAMES } from '../constants';
+import { ActionsContext } from '../context';
 
 const { onFieldValueChange$ } = FormEffectHooks;
 
@@ -17,23 +18,36 @@ interface Option {
 
 function Columns({ value, mutators }: ISchemaFieldComponentProps) {
   const [currentSchema, setCurrentSchema] = useState<ISchema>();
+  const { actions } = useContext(ActionsContext);
 
-  useFormEffects(($, { getFieldState }) => {
-    onFieldValueChange$('Fields.linkedTable').subscribe((state) => {
-      const { tableID, appID } = state.value;
-      getFieldState('Fields.subordination', async (st) => {
-        if (tableID && appID && st.value === 'foreign_table') {
-          const resp = await getFormTableSchema<{
+  useEffect(() => {
+    if (!currentSchema && value?.length) {
+      actions.getFieldState('Fields.linkedTable', handleLinkedTableChange);
+    }
+  }, []);
+
+  function handleLinkedTableChange(state: IFieldState) {
+    const { tableID, appID } = state.value || {};
+    fetchSchema(tableID, appID);
+  }
+
+  function fetchSchema(tableID: string, appID: string) {
+    actions.getFieldState('Fields.subordination', async (st) => {
+      if (tableID && appID && st.value === 'foreign_table') {
+        const resp = await getFormTableSchema<{
             schema: ISchema;
             tableID: string;
             tableName: string;
           }>({ tableID, appID });
-          if (resp?.schema) {
-            setCurrentSchema(resp.schema);
-          }
+        if (resp?.schema) {
+          setCurrentSchema(resp.schema);
         }
-      });
+      }
     });
+  }
+
+  useFormEffects(() => {
+    onFieldValueChange$('Fields.linkedTable').subscribe(handleLinkedTableChange);
   });
 
   const schemaOptions = Object.entries(currentSchema?.properties || {}).reduce((cur: Option[], next) => {

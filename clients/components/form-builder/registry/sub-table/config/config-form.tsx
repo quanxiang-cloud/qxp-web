@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { update } from 'lodash';
+import { update, isUndefined } from 'lodash';
 import {
   SchemaForm, FormEffectHooks,
 } from '@formily/antd';
@@ -33,7 +33,9 @@ export default function ConfigForm({ onChange, initialValue: _initValue }: Props
 
   function effects() {
     onFieldValueChange$('Fields.curConfigSubTableKey').subscribe(({ value }) => {
-      value && setCurrenFieldKey(value);
+      if (!isUndefined(value)) {
+        setCurrenFieldKey(value);
+      }
     });
   }
 
