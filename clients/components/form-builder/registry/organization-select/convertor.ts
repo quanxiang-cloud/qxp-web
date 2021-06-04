@@ -36,10 +36,7 @@ export const toSchema = (config: DefaultConfig): FormBuilder.Schema => {
         'x-component': 'OrganizationPicker',
         ['x-component-props']: {
             placeholder: config.placeholder,
-        },
-        ['x-internal']: {
-            permission: 3,
-        },
+        }
     })
 
 }
