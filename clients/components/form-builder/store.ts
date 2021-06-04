@@ -341,7 +341,7 @@ export default class FormBuilderStore {
     this.hasEdit = true;
   }
 
-  //updateFieldConfig should be next method name
+  // updateFieldConfig should be next method name
   @action
   updateFieldConfig(value: any) {
     this.hasEdit = true;
@@ -355,14 +355,14 @@ export default class FormBuilderStore {
     });
   }
 
-  @action 
-  updateFieldConfigValue(targetName: string, value: any){
-    this.fields = this.fields.map(field=>{
-      if(field.fieldName == targetName){
-        field.configValue = toJS(value)
+  @action
+  updateFieldConfigValue(targetName: string, value: any) {
+    this.fields = this.fields.map((field)=>{
+      if (field.fieldName == targetName) {
+        field.configValue = toJS(value);
       }
-      return field
-    })
+      return field;
+    });
   }
 
   @action

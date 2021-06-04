@@ -1,11 +1,10 @@
 import * as React from 'react';
-import * as ReactDom from 'react-dom'
 import { useQuery } from 'react-query';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 
-import DropdownTreeSelect, { TreeData, Mode, TreeNode } from 'react-dropdown-tree-select'
-import { searchOrganziation, Organization } from './messy/api'
-import Cascader, { parseTree, searchTree } from './cascader'
+import { TreeData, Mode, TreeNode } from 'react-dropdown-tree-select';
+import { searchOrganziation } from './messy/api';
+import Cascader, { parseTree, searchTree } from './cascader';
 
 interface Props {
     data: TreeData
@@ -16,7 +15,6 @@ interface Props {
     className?: string;
     value?: string | string[]
 }
-
 
 // const parseTree = (data: Organization | undefined): TreeData => {
 //     if (!data) return {}
@@ -33,40 +31,35 @@ interface Props {
 // }
 
 const OrganizationPicker = (p: ISchemaFieldComponentProps) => {
-    const { data } = useQuery(['query_user_picker'], searchOrganziation)
-    const CascaderParams = {
-        mode: p.props.multiple == "signle" ? 'radioSelect' : 'multiSelect',
-        placeholder: p.props.placeholder,
-    } as Props
+  const { data } = useQuery(['query_user_picker'], searchOrganziation);
+  const CascaderParams = {
+    mode: p.props.multiple == 'signle' ? 'radioSelect' : 'multiSelect',
+    placeholder: p.props.placeholder,
+  } as Props;
 
-    React.useEffect(() => {
-        p.mutators.change(p.props.defaultValues)
-    }, [])
+  React.useEffect(() => {
+    p.mutators.change(p.props.defaultValues);
+  }, []);
 
-    const { optionalRange, rangeList } = p.props
+  const { optionalRange, rangeList } = p.props;
 
-    const TreeData = React.useMemo(() => {
-        if (optionalRange == 'customize') {
-            const Tree = parseTree(data)
-            return rangeList ? rangeList.map((itm: string) => searchTree(Tree as TreeNode, itm)).filter(Boolean) : []
-        } else {
-            return parseTree(data)
-        }
-    }, [data, optionalRange, rangeList])
+  const TreeData = React.useMemo(() => {
+    if (optionalRange == 'customize') {
+      const Tree = parseTree(data);
+      return rangeList ? rangeList.map((itm: string) => searchTree(Tree as TreeNode, itm)).filter(Boolean) : [];
+    } else {
+      return parseTree(data);
+    }
+  }, [data, optionalRange, rangeList]);
 
-
-    return <Cascader
-        {...CascaderParams}
-        data={TreeData}
-        value={p.value || []}
-        onChange={(selects) => p.mutators.change(selects.map(itm => itm.value))}
-    />
-}
-
-
-
-
+  return (<Cascader
+    {...CascaderParams}
+    data={TreeData}
+    value={p.value || []}
+    onChange={(selects) => p.mutators.change(selects.map((itm) => itm.value))}
+  />);
+};
 
 OrganizationPicker.isFieldComponent = true;
 
-export default OrganizationPicker
+export default OrganizationPicker;

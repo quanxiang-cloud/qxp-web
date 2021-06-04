@@ -8,7 +8,7 @@ import Select from './select';
 import MultipleSelect from './multiple-select';
 import CascadeSelector from './cascade-selector';
 import UserPicker from './user-picker';
-import OrganizationPicker from './organization-select'
+import OrganizationPicker from './organization-select';
 
 const availableElements = [
   Input,
@@ -21,7 +21,7 @@ const availableElements = [
   MultipleSelect,
   CascadeSelector,
   UserPicker,
-  OrganizationPicker
+  OrganizationPicker,
 ];
 
 export type Elements = { [key: string]: FormBuilder.SourceElement<any> };

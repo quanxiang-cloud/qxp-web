@@ -31,7 +31,7 @@ type FieldConfigContextType = {
 
 export const fieldConfigContext = {
   actions: createFormActions(),
-  asyncActions: createAsyncFormActions()
+  asyncActions: createAsyncFormActions(),
 };
 
 export const FieldConfigContext = React.createContext<FieldConfigContextType>(fieldConfigContext);

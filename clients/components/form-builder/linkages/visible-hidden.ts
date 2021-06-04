@@ -38,8 +38,8 @@ export default function visibleHiddenLinkageEffect(
   });
 
   onFieldInitialValueChange$().subscribe((somethings)=>{
-    console.log('_____fieldInitialValueChange',somethings)
-  })
+    console.log('_____fieldInitialValueChange', somethings);
+  });
 
   onFormInit$().subscribe(({ values }) => {
     comparatorsAndTargetKey.forEach(([comparator, targetKey, isShow]) => {
