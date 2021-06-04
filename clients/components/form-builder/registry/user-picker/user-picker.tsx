@@ -25,6 +25,7 @@ const UserPicker = (p: ISchemaFieldComponentProps): JSX.Element => {
 };
 
 const AllUserPicker = (p: ISchemaFieldComponentProps): JSX.Element => {
+
   const [options, setOptions] = React.useState<Option[]>([]);
   const [hasNext, setHasNext] = React.useState<boolean>(false);
   const [keyword, setKeyword] = React.useState<string>();
@@ -37,6 +38,8 @@ const AllUserPicker = (p: ISchemaFieldComponentProps): JSX.Element => {
     // setOptions(current => current.filter(({ value }) => Array.isArray(p.value) ? p.value.some(itm => itm == value) : value == p.value))
   }, [setKeyword, setOptions, setCurrent]);
 
+  const appID: string = p.props.appID
+
   const params = React.useMemo(() => {
     return {
       userName: keyword,
@@ -45,7 +48,7 @@ const AllUserPicker = (p: ISchemaFieldComponentProps): JSX.Element => {
     };
   }, [keyword, page]);
 
-  const { isLoading } = useQuery(['query_user_picker', params], () => searchUser(params), {
+  const { isLoading } = useQuery(['query_user_picker', params, appID], () => searchUser(appID, params), {
     onSuccess(data: Res) {
       if (data) {
         const newOptions = (data.data || []).map((itm) => ({

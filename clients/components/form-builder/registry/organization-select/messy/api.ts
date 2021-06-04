@@ -8,4 +8,4 @@ export interface Organization {
     child?: Organization[]
 }
 
-export const searchOrganziation = (props?: any): Promise<Organization> => httpClient('/api/v1/structor/616423a0-0d34-4091-90b9-55cb4671b0cd/home/org/DEPTree', props);
+export const searchOrganziation = (appID: string, props?: any): Promise<Organization> => httpClient(`/api/v1/structor/${appID}/home/org/DEPTree`, props);

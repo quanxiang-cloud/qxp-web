@@ -31,7 +31,10 @@ interface Props {
 // }
 
 const OrganizationPicker = (p: ISchemaFieldComponentProps) => {
-  const { data } = useQuery(['query_user_picker'], searchOrganziation);
+
+  const appID: string = p.props.appID
+
+  const { data } = useQuery(['query_user_picker', appID], ()=>searchOrganziation(appID));
   const CascaderParams = {
     mode: p.props.multiple == 'signle' ? 'radioSelect' : 'multiSelect',
     placeholder: p.props.placeholder,

@@ -268,7 +268,7 @@ export default class FormBuilderStore {
 
     const newField = {
       ...field,
-      configValue: field.defaultConfig,
+      configValue: { ...field.defaultConfig, appID: this.appID },
       fieldName: generateRandomFormFieldID(),
     };
 

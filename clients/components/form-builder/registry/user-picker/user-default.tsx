@@ -5,6 +5,7 @@ import debounce from 'lodash/debounce';
 import { searchUser, Res } from './messy/api';
 
 import { Option } from './messy/enum';
+import { StoreContext } from '../../context';
 
 const i = 0;
 
@@ -26,15 +27,6 @@ const UserDefault = (props: Props) => {
   if (isAllRange) return <AllUserComponent {...props} />;
 
   return <CustomizeComponent {...props} />;
-  if (isAllRange && isMultiple) {
-    return <AllUserComponent {...props} />;
-  } else if (isAllRange && !isMultiple) {
-    return <AllUserComponent {...props} />;
-  } else if (!isAllRange && isMultiple) {
-    return <CustomizeComponent {...props} />;
-  } else {
-    return <CustomizeComponent {...props} />;
-  }
 };
 
 const CustomizeComponent = (props: Props) => {
@@ -75,7 +67,9 @@ const AllUserComponent = (props: Props) => {
     };
   }, [keyword, page]);
 
-  const { isLoading } = useQuery(['query_user_picker_df', params], () => searchUser(params), {
+  const store = React.useContext(StoreContext)
+  const { appID } = store
+  const { isLoading } = useQuery(['query_user_picker_df', params, appID], () => searchUser(appID, params), {
     onSuccess(data: Res) {
       if (data) {
         const newOptions = (data.data || []).map((itm) => ({

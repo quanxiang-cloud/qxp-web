@@ -48,7 +48,6 @@ export const toSchema = (config: DefaultConfig): FormBuilder.Schema => {
       loading: config.loading,
       onSearch(value: string) {
         config.onSearch && config.onSearch(value);
-        console.log(value);
       },
 
       filterOption: (input: string, option: any[]) =>

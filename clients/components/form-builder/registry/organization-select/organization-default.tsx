@@ -4,6 +4,7 @@ import { useQuery } from 'react-query';
 import { TreeNode } from 'react-dropdown-tree-select';
 import { searchOrganziation } from './messy/api';
 import Cascader, { parseTree, searchTree } from './cascader';
+import { StoreContext } from '../../context';
 
 interface Props {
     value: string | string[];
@@ -16,8 +17,9 @@ interface Props {
 
 const OrganizationDefaultPicker = (props: Props) => {
   const { value, onChange, multiple, rangeList, optionalRange } = props;
-
-  const { data } = useQuery(['query_user_picker_df'], searchOrganziation);
+  const store = React.useContext(StoreContext)
+  const { appID } = store
+  const { data } = useQuery(['query_user_picker', appID], () => searchOrganziation(appID));
 
   const CustomizeTreeData = React.useMemo(() => {
     const Tree = parseTree(data);
