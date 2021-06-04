@@ -1,14 +1,13 @@
 import React, { useState } from 'react';
-// import { omit, omitBy } from 'lodash';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 import { useFormEffects, FormEffectHooks } from '@formily/antd';
 
 import Toggle from '@c/toggle';
 
+import { getFormTableSchema } from '../api';
 import { BLOCKED_FIELD_NAMES } from '../constants';
+
 const { onFieldValueChange$ } = FormEffectHooks;
-// import { ActionsContext, StoreContext } from '../context';
-// import { getFormTableSchema } from '../api';
 
 interface Option {
   label: string;
@@ -17,66 +16,42 @@ interface Option {
 }
 
 function Columns({ value, mutators }: ISchemaFieldComponentProps) {
-  const [schemaOptions, setSchemaOptions] = useState<Option[]>([]);
+  const [currentSchema, setCurrentSchema] = useState<ISchema>();
 
-  useFormEffects(() => {
-    onFieldValueChange$('Fields.linkedTable', () => {
-
+  useFormEffects(($, { getFieldState }) => {
+    onFieldValueChange$('Fields.linkedTable').subscribe((state) => {
+      const { tableID, appID } = state.value;
+      getFieldState('Fields.subordination', async (st) => {
+        if (tableID && appID && st.value === 'foreign_table') {
+          const resp = await getFormTableSchema<{
+            schema: ISchema;
+            tableID: string;
+            tableName: string;
+          }>({ tableID, appID });
+          if (resp?.schema) {
+            setCurrentSchema(resp.schema);
+          }
+        }
+      });
     });
   });
 
-  // actions.setFieldState('Fields.workTableSchemaOptions', (state) => {
-  //   const schemas = omitBy(schema.properties, (value) => value?.['x-component'] === 'SubTable');
-  //   state.value = Object.entries(schemas).map(([key, value]) => {
-  //     return {
-  //       label: value?.title,
-  //       value: key,
-  //       schema: value,
-  //     };
-  //   });
-  // });
-  // actions.getFieldState('Fields.subordination', (state) => {
-  //   actions.getFieldState('Fields.columns', (st) => {
-  //     const columns = st.value as {title: string; dataIndex: string}[];
-  //     const cols = columns.map(({ dataIndex }) => dataIndex);
-  //     let properties = {};
-  //     if (state.value === 'foreign_table') {
-  //       properties = Object.entries(schema.properties || {}).reduce(
-  //         (cur: SchemaProperties, next: [string, ISchema]) => {
-  //           const [key, sc] = next;
-  //           if (cols.includes(key)) {
-  //             cur[key] = sc;
-  //           }
-  //           return cur;
-  //         }, {});
-  //     }
-  //     actions.setFieldState('Fields.items', (state) => {
-  //       state.value = {
-  //         type: 'object',
-  //         properties,
-  //       };
-  //     });
-  //   });
-  // });
-  // const { schema, tableID, tableName } = await getFormTableSchema<{
-  //   schema: ISchema;
-  //   tableID: string;
-  //   tableName: string;
-  // }>(omit(newValue, 'tableName')) || {};
-  // if (schema?.properties) {
-  //   updateAvailableSchema(schema);
-  // }
+  const schemaOptions = Object.entries(currentSchema?.properties || {}).reduce((cur: Option[], next) => {
+    const [key, sc] = next;
+    cur.push({
+      label: sc.title as string,
+      value: key,
+      schema: sc,
+    });
+    return cur;
+  }, []);
 
-  // function onToggleFields({ label, value, schema }: {
-  //   label: string;
-  //   value: string;
-  //   schema: ISchema;
-  // }, isOpen: boolean) {
-  //   if (isOpen) {
-  //     return onUpdateFields(([...schemaList, { label, schema, value, sort: getIndex() }]));
-  //   }
-  //   onUpdateFields(schemaList.filter(({ value: val }) => value !== val));
-  // }
+  function onToggleColumn(key: string, checked: boolean) {
+    if (!checked) {
+      return mutators.change(value.filter((k: string) => k !== key));
+    }
+    mutators.change([...value, key]);
+  }
 
   return (
     <div>
@@ -90,14 +65,13 @@ function Columns({ value, mutators }: ISchemaFieldComponentProps) {
               schema?.['x-component']?.toLowerCase() || ''
             );
           })
-          .map(({ label, value, schema }) => {
-            const isChecked = !!schemaList.find(({ value: v }) => value === v);
+          .map(({ label, value }) => {
             return (
               <li key={value} className="flex justify-between items-center my-5">
                 <span className="mr-7">{label}</span>
                 <Toggle
-                  defaultChecked={isChecked}
-                  onChange={(isOpen) => onToggleFields({ label, value, schema }, isOpen)}
+                  defaultChecked={value.includes(value)}
+                  onChange={(isOpen) => onToggleColumn(value, isOpen)}
                 />
               </li>
             );
