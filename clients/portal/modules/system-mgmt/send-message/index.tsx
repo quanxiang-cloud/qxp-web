@@ -79,12 +79,12 @@ function ContentWithoutRef({
   footer,
   modifyData,
   handleClose,
-}: ContentProps, ref: React.Ref<unknown> | undefined ) {
-  const [msgType, setMsgType] = useState( modifyData?.sort || MsgType.notify );
-  const [title, setTitle] = useState( modifyData?.title || '' );
+}: ContentProps, ref: React.Ref<unknown> | undefined) {
+  const [msgType, setMsgType] = useState(modifyData?.sort || MsgType.notify);
+  const [title, setTitle] = useState(modifyData?.title || '');
   const [prevData, setPrevData] = useState<Qxp.DraftData | null>(null);
 
-  const [editorCont, setEditorCont] = useState( modifyData?.content ?
+  const [editorCont, setEditorCont] = useState(modifyData?.content ?
     EditorState.createWithContent(
       ContentState.createFromBlockArray(
         htmlToDraft(modifyData.content).contentBlocks)
@@ -93,32 +93,32 @@ function ContentWithoutRef({
   const [openReceiverModal, setOpenReceiverModal] = useState(false);
   const [openPreviewModal, setOpenPreviewModal] = useState(false);
 
-  const [_chosenDepOrPerson, setChosenDepOrPerson] = useState( modifyData?.recivers || [] ); // 已选中的员工或部门
+  const [_chosenDepOrPerson, setChosenDepOrPerson] = useState(modifyData?.recivers || []); // 已选中的员工或部门
   // @ts-ignore
   // eslint-disable-next-line max-len
-  const [files, setFiles] = useState<Array<FileInfo>>((modifyData?.mes_attachment || []).map((itm: {file_name: string, file_url: string}) => ({
+  const [files, setFiles] = useState<Array<FileInfo>>((modifyData?.mes_attachment || []).map((itm: { file_name: string, file_url: string }) => ({
     filename: itm.file_name,
     url: itm.file_url,
     status: 'success',
   })));
-  const chosenDepOrPerson = useMemo(()=>{
+  const chosenDepOrPerson = useMemo(() => {
     // @ts-ignore
     return _chosenDepOrPerson.map(({ id, type, name, ownerName, departmentName }) => (
       { id, type, name: name || ownerName || departmentName }
     ));
   }, [_chosenDepOrPerson]);
-  const [dom, setDom] = useState<Element|null>(null);
+  const [dom, setDom] = useState<Element | null>(null);
 
   const deleteFiles = (name: string) => {
-    setFiles((curFiles) => curFiles.filter((file) => file.filename !== name ));
+    setFiles((curFiles) => curFiles.filter((file) => file.filename !== name));
   };
 
-  useEffect(()=>{
+  useEffect(() => {
     setDom(document.getElementById('rdw-wrapper-8888'));
   }, []);
 
   const addFile = (file: FileInfo) => setFiles((currentFiles) => ([...currentFiles, file]));
-  const updateFile = (name: string, data: Partial<FileInfo>)=> {
+  const updateFile = (name: string, data: Partial<FileInfo>) => {
     setFiles((currentFiles) => {
       const curFile = currentFiles.find((f) => f.filename === name);
       Object.assign(curFile, data);
@@ -139,7 +139,7 @@ function ContentWithoutRef({
         queryClient.invalidateQueries('count-unread-msg');
         handleClose && handleClose();
         setOpenPreviewModal(false);
-        setTimeout(()=> {
+        setTimeout(() => {
           history.push('/system/message');
         }, 500);
       } else {
@@ -183,10 +183,21 @@ function ContentWithoutRef({
 
   const removeReceiver = (key: number) => {
     // @ts-ignore
-    setChosenDepOrPerson((current) => current.filter((_, idx)=>idx != key));
+    setChosenDepOrPerson((current) => current.filter((_, idx) => idx != key));
+  };
+
+  const byteCount = (s: string) => {
+    return encodeURI(s).split(/%..|./).length - 1;
   };
 
   const validateForm = () => {
+    const editorContent = getEditorCont(editorCont);
+    const formData = {
+      type: msgType,
+      title: title,
+      content: editorContent,
+      receivers: chosenDepOrPerson,
+    };
     if (!title) {
       Message.warning('请输入消息标题');
       return;
@@ -199,26 +210,26 @@ function ContentWithoutRef({
       Message.warning('请选择发送人');
       return;
     }
-    const formData = {
-      type: msgType,
-      title: title,
-      content: getEditorCont(editorCont),
-      receivers: chosenDepOrPerson,
-    };
 
-    // console.log('form data: ', formData);
+    if (byteCount(editorContent) > 10240) {
+      Message.warning('消息内容文本过长，请修改，或使用附件进行发送。');
+      return;
+    }
+
     return formData;
   };
 
   const previewAndPublish = () => {
     const validata = validateForm();
     if (!validata) return;
-    const formData = Object.assign({}, validata, { mes_attachment: files.map((itm)=>{
-      return {
-        file_name: itm.filename,
-        file_url: itm.url,
-      };
-    }).filter(Boolean) });
+    const formData = Object.assign({}, validata, {
+      mes_attachment: files.map((itm) => {
+        return {
+          file_name: itm.filename,
+          file_url: itm.url,
+        };
+      }).filter(Boolean),
+    });
     if (formData) {
       // @ts-ignore
       setPrevData(formData);
@@ -242,7 +253,7 @@ function ContentWithoutRef({
       is_send: send, // false: 保存为草稿
       // @ts-ignore
       recivers: prevData.receivers,
-      mes_attachment: files.map((itm)=>{
+      mes_attachment: files.map((itm) => {
         return {
           file_name: itm.filename,
           file_url: itm.url,
@@ -257,7 +268,7 @@ function ContentWithoutRef({
     createMsgMutation.mutate(params);
   };
 
-  const saveDraft = (options?: {toParams?: boolean}) => {
+  const saveDraft = (options?: { toParams?: boolean }) => {
     const formData = validateForm();
     if (formData) {
       const params = {
@@ -276,7 +287,7 @@ function ContentWithoutRef({
         is_send: false, // false: 保存为草稿
         // @ts-ignore
         recivers: formData.receivers,
-        mes_attachment: files.map((itm)=>{
+        mes_attachment: files.map((itm) => {
           return {
             file_name: itm.filename,
             file_url: itm.url,
@@ -291,7 +302,7 @@ function ContentWithoutRef({
     }
   };
 
-  const getCurrentFiles = ()=> {
+  const getCurrentFiles = () => {
     return [...files];
   };
 
@@ -310,7 +321,7 @@ function ContentWithoutRef({
     }
   };
 
-  useImperativeHandle(ref, ()=>{
+  useImperativeHandle(ref, () => {
     return {
       saveDraft,
       previewAndPublish,
@@ -408,7 +419,7 @@ function ContentWithoutRef({
                   headers={{ 'X-Proxy': 'API' }}
                   multiple
                   action="/api/v1/fileserver/uploadFile"
-                  beforeUpload={(file)=> {
+                  beforeUpload={(file) => {
                     if (file.size > 1024 * 1024 * 5) {
                       Message.error('文件大小不能超过5M');
                       return false;
@@ -419,7 +430,7 @@ function ContentWithoutRef({
                     }
                     return true;
                   }}
-                  onStart={(file)=> {
+                  onStart={(file) => {
                     addFile({
                       filename: file.name,
                       url: '',
@@ -428,7 +439,7 @@ function ContentWithoutRef({
                       status: 'active',
                     });
                   }}
-                  onProgress={(step, file)=> {
+                  onProgress={(step, file) => {
                     // @ts-ignore
                     const percent = typeof step.percent === 'number' ? Math.round(step.percent) : 0;
                     updateFile(file.name, {
@@ -437,7 +448,7 @@ function ContentWithoutRef({
                     });
                   }}
                   onSuccess={handleFileSuccessUpload}
-                  onError={(err)=> Message.error(err.message)}
+                  onError={(err) => Message.error(err.message)}
                 >
                   <div className={`${styles.upload} flex align-center`}>
                     <Icon name="attachment" />
@@ -463,7 +474,7 @@ function ContentWithoutRef({
               })}
             </div>
           </div>
-          { footer ? footer() : (<div className={styles.footer}>
+          {footer ? footer() : (<div className={styles.footer}>
             <Button
               // @ts-ignore
               onClick={debounce(saveDraft, 1000)}
@@ -491,9 +502,9 @@ function ContentWithoutRef({
           title="选择员工或部门"
           submitText="确定选择"
           // @ts-ignore
-          departments={_chosenDepOrPerson.filter((itm)=>itm.type == 2)}
+          departments={_chosenDepOrPerson.filter((itm) => itm.type == 2)}
           // @ts-ignore
-          employees={_chosenDepOrPerson.filter((itm)=>itm.type == 1)}
+          employees={_chosenDepOrPerson.filter((itm) => itm.type == 1)}
         />
       )}
       {openPreviewModal && (<Modal
@@ -512,11 +523,11 @@ function ContentWithoutRef({
             key: 'confirm',
             iconName: 'done',
             modifier: 'primary',
-            onClick: debounce(()=>confirmSend(true), 1000),
+            onClick: debounce(() => confirmSend(true), 1000),
           },
         ]}
       >
-        <PreviewMsg prevData={prevData} isPreview canMultiDownload={false} canDownload={false}/>
+        <PreviewMsg prevData={prevData} isPreview canMultiDownload={false} canDownload={false} />
       </Modal>)}
     </div>);
 }
