@@ -8,18 +8,14 @@ import { searchUser, Res } from './messy/api';
 
 import { Option } from './messy/enum';
 
-interface Props {
-    predefinedDataset?: string;
-    valueSource: 'customized' | 'predefined-dataset';
-}
+type OptionalRange = 'customize' | 'all'
 
 const PAGE_SIZE = 10;
 
 const { } = FormEffectHooks;
 
 const UserPicker = (p: ISchemaFieldComponentProps): JSX.Element => {
-  const { props } = p;
-  const { optionalRange } = props;
+  const optionalRange = p.props.optionalRange as OptionalRange;
 
   React.useEffect(() => {
     p.mutators.change(p.props.defaultValues);
