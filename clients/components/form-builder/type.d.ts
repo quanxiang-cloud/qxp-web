@@ -12,7 +12,7 @@ type ISchema = import('@formily/react-schema-renderer').ISchema & {
     sortable?: boolean;
     permission?: number;
     validations?: Array<ValidationFormula>;
-    defaultValueFrom: FormBuilder.DefaultValueFrom;
+    defaultValueFrom?: FormBuilder.DefaultValueFrom;
     defaultValueLinkage?: FormBuilder.DefaultValueLinkage;
     calculationFormula?: string;
     [key: string]: any;
