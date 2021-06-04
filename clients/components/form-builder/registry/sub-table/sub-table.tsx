@@ -2,6 +2,7 @@ import React, { ChangeEvent, useEffect, useState } from 'react';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 import { Table } from 'antd';
 import { Input, Radio, DatePicker, NumberPicker, Select } from '@formily/antd-components';
+import { isEmpty } from 'lodash';
 
 import { getFormTableSchema } from './api';
 import logger from '@lib/logger';
@@ -42,20 +43,17 @@ function SubTable(compProps: Props) {
   const { tableID, appID, columns: definedColumns } = compProps.props['x-component-props'];
 
   useEffect(() => {
-    if (!appID || !tableID) {
+    if (!appID || !tableID || !isEmpty((definedSchema.items as ISchema).properties)) {
+      setSchemaData(null);
       return;
     }
     getFormTableSchema<{
       schema: ISchema;
       tableID: string;
     }>({ appID, tableID }).then(setSchemaData);
-
-    return () => setSchemaData(null);
   }, [tableID, appID]);
 
-  const schema = appID && tableID && (schemaData?.tableID === tableID) && schemaData?.schema ?
-    schemaData?.schema : definedSchema.items as ISchema;
-
+  const schema = schemaData?.schema || definedSchema.items as ISchema;
   const parsedColumns = (definedColumns?.map((v) => JSON.parse(v)) || []) as Column[];
 
   const columns = parsedColumns?.map(({ dataIndex, title }: {

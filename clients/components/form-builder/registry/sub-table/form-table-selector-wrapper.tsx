@@ -1,6 +1,6 @@
-import React, { useEffect, useContext, useState } from 'react';
-import { ISchemaFieldComponentProps, useFormEffects, FormEffectHooks } from '@formily/antd';
-import { omitBy } from 'lodash';
+import React, { useEffect, useContext } from 'react';
+import { ISchemaFieldComponentProps } from '@formily/antd';
+import { omit, omitBy } from 'lodash';
 
 import FormTableSelector from '@c/form-table-selector';
 
@@ -8,55 +8,16 @@ import { ActionsContext } from './config-form';
 import { StoreContext } from '../../context';
 import { getFormTableSchema } from './api';
 
-const { onFieldValueChange$ } = FormEffectHooks;
-
-export default function FormTableSelectorWrapper({ value, onChange }: ISchemaFieldComponentProps) {
-  const [appID, setAppID] = useState('');
-  const [pageId, setPageID] = useState('');
-  const actions = useContext(ActionsContext);
-  const store = useContext(StoreContext);
-
-  useFormEffects(() => {
-    onFieldValueChange$('Fields.appID').subscribe((state) => {
-      if (state.value && !store.appID) {
-        setAppID(state.value);
-      }
-    });
-    onFieldValueChange$('Fields.tableID').subscribe((state) => {
-      if (state.value && !store.pageID) {
-        setPageID(state.value);
-      }
-    });
-  });
+function FormTableSelectorWrapper({ value, mutators }: ISchemaFieldComponentProps) {
+  const { actions } = useContext(ActionsContext);
+  const { pageID: pageId } = useContext(StoreContext);
 
   useEffect(() => {
-    if (value) {
-      handleChange({ value });
-    }
+    value && handleChange(value);
   }, []);
 
-  useEffect(() => {
-    if (store.appID) {
-      setAppID(store.appID);
-    }
-  }, [store.appID]);
-
-  useEffect(() => {
-    if (store.pageID) {
-      setPageID(store.pageID);
-    }
-  }, [store.pageID]);
-
-  async function handleChange({ value }: { value: string }) {
-    onChange(value);
-    const { schema } = await getFormTableSchema<{
-      schema: ISchema;
-    }>({ appID, tableID: value }) || {};
+  function updateAvailableSchema(schema: ISchema) {
     actions.setFieldState('Fields.workTableSchemaOptions', (state) => {
-      if (!schema?.properties) {
-        state.value = [];
-        return;
-      }
       const schemas = omitBy(schema.properties, (value) => value?.['x-component'] === 'SubTable');
       state.value = Object.entries(schemas).map(([key, value]) => {
         return {
@@ -66,30 +27,57 @@ export default function FormTableSelectorWrapper({ value, onChange }: ISchemaFie
         };
       });
     });
-    actions.getFieldState('Fields.columns', (state) => {
-      const columns = state.initialValue as { title: string; dataIndex: string }[] || [];
-      actions.setFieldState('Fields.items', (st) => {
-        const properties = columns.reduce(
-          (cur: Record<string, ISchema>, next: {title: string; dataIndex: string}) => {
-            const sc = schema?.properties?.[next?.dataIndex];
-            if (sc) {
-              cur[next?.dataIndex] = sc;
-            }
-            return cur;
-          }, {});
-        st.value = {
-          type: 'object',
-          properties,
-        };
+    actions.getFieldState('Fields.subordination', (state) => {
+      actions.getFieldState('Fields.columns', (st) => {
+        const columns = st.value as {title: string; dataIndex: string}[];
+        const cols = columns.map(({ dataIndex }) => dataIndex);
+        let properties = {};
+        if (state.value === 'foreign_table') {
+          properties = Object.entries(schema.properties || {}).reduce(
+            (cur: SchemaProperties, next: [string, ISchema]) => {
+              const [key, sc] = next;
+              if (cols.includes(key)) {
+                cur[key] = sc;
+              }
+              return cur;
+            }, {});
+        }
+        actions.setFieldState('Fields.items', (state) => {
+          state.value = {
+            type: 'object',
+            properties,
+          };
+        });
       });
     });
   }
 
+  async function handleChange(newValue: { tableID: string; appID: string; tableName: string; }) {
+    if (!newValue.tableID || !newValue.appID) {
+      return;
+    }
+    const { schema, tableID, tableName } = await getFormTableSchema<{
+      schema: ISchema;
+      tableID: string;
+      tableName: string;
+    }>(omit(newValue, 'tableName')) || {};
+    mutators.change({ ...newValue, tableID, tableName });
+    if (schema?.properties) {
+      updateAvailableSchema(schema);
+    }
+  }
+
   return (
     <FormTableSelector
-      value={{ value }}
-      onChange={handleChange}
+      value={{ value: value.tableID }}
+      onChange={({ name: tableName, value: tableID }) => handleChange({
+        ...value, tableID, tableName,
+      })}
       exclude={[pageId]}
     />
   );
 }
+
+FormTableSelectorWrapper.isFieldComponent = true;
+
+export default FormTableSelectorWrapper;

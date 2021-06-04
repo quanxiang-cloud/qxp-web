@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useContext } from 'react';
+import React, { useState, useRef, useContext } from 'react';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 import { useFormEffects, FormEffectHooks } from '@formily/antd';
 import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd';
@@ -30,40 +30,32 @@ interface Field extends Option {
   sort: number;
 }
 
-type Column = {
-  title: string;
-  dataIndex: string;
-  sort: number;
-}
+const supportedFields = [
+  'input', 'textarea', 'numberpicker', 'datepicker', 'select',
+];
 
 function FormTableFields(props: ISchemaFieldComponentProps) {
-  const [title, setTitle] = useState('');
+  const [title, setTitle] = useState('显示字段');
   const [schemaOptions, setSchemaOptions] = useState<Option[]>([]);
-  const [selectedFields, setSelectedFields] = useState<Field[]>([]);
   const popReferences = useRef<HTMLDivElement>(null);
   const popRef = useRef<Popper>(null);
-  const actions = useContext(ActionsContext);
+  const { actions } = useContext(ActionsContext);
 
-  useEffect(() => {
-    if (!props.value?.properties || !Object.keys(props.value?.properties).length) {
-      return;
-    }
-    const subTableSchemas = props.value?.properties as SchemaProperties;
-    const fields = Object.entries(subTableSchemas).reduce((cur: Field[], next) => {
-      const [key, schema] = next;
-      if (key === '_id') {
-        return cur;
-      }
-      cur.push({
-        label: schema?.title as string || '',
-        value: key,
-        sort: +(schema['x-index'] || selectedFields.length),
-        schema: schema,
-      });
+  const subTableSchemas = props.value?.properties as SchemaProperties;
+  const entries = Object.entries(subTableSchemas || {});
+  const selectedFields = entries.reduce((cur: Field[], next) => {
+    const [key, schema] = next;
+    if (key === '_id') {
       return cur;
-    }, []).sort((a, b) => a.sort - b.sort);
-    setSelectedFields(fields);
-  }, [props.value?.properties]);
+    }
+    cur.push({
+      label: schema?.title as string || '',
+      value: key,
+      sort: +(schema['x-index'] || entries.length),
+      schema: schema,
+    });
+    return cur;
+  }, []).sort((a, b) => a.sort - b.sort);
 
   const isFromEmpty = title === '子表字段';
 
@@ -118,54 +110,35 @@ function FormTableFields(props: ISchemaFieldComponentProps) {
   ];
   const currentOptions = labels.map((label) => ({ label, value: generateRandomFormFieldID() }));
 
-  function updateTitle(getFieldState: Function) {
-    const title = getFieldState('Fields.subordination').value === 'sub_table' ?
-      '子表字段' : '显示字段';
-    setTitle(title);
+  function updateTitle(value: string) {
+    setTitle(value === 'sub_table' ? '子表字段' : '显示字段');
   }
 
-  useFormEffects(($, { getFieldState }) => {
-    updateTitle(getFieldState);
-    onFieldValueChange$('Fields.subordination').subscribe(() => updateTitle(getFieldState));
+  useFormEffects(() => {
+    onFieldValueChange$('Fields.subordination').subscribe((state) => {
+      updateTitle(state.value);
+    });
     onFieldValueChange$('Fields.workTableSchemaOptions').subscribe((state) => {
       setSchemaOptions(state.value);
     });
   });
 
   function onUpdateFields(fields: Field[]) {
-    const newColumns: Column[] = [];
     const newValue = {
       type: 'object',
       properties: {
+        _id: getSchemaFromLabel('id'),
         ...fields.reduce((cur: ISchema, next: Field) => {
           const { value, schema, sort } = next;
-          newColumns.push({ title: schema?.title as string || '', dataIndex: value, sort });
           cur[value as keyof ISchema] = {
             ...schema,
             'x-index': sort,
           };
           return cur;
         }, {}),
-        _id: getSchemaFromLabel('id'),
       },
     };
     props.mutators.change(newValue);
-    actions.setFieldState('Fields.columns', (state) => {
-      let hasId = false;
-      const sortedColumns = newColumns.sort((a, b) => {
-        if (a.dataIndex === '_id' || b.dataIndex === '_id') {
-          hasId = true;
-        }
-        return a.sort - b.sort;
-      }).map(({ title, dataIndex }) => ({ title, dataIndex }));
-      if (!hasId) {
-        sortedColumns.unshift({
-          title: 'id',
-          dataIndex: '_id',
-        });
-      }
-      state.value = sortedColumns;
-    });
   }
 
   function onAddFields(val: string) {
@@ -245,7 +218,11 @@ function FormTableFields(props: ISchemaFieldComponentProps) {
             >
               <ul className="flex flex-col py-12 px-28 border rounded h-280 overflow-y-scroll">
                 {schemaOptions
-                  .filter(({ value }) => !['_id'].includes(value))
+                  .filter(({ value, schema }) => {
+                    return value !== '_id' && supportedFields.includes(
+                      schema?.['x-component']?.toLowerCase() || ''
+                    );
+                  })
                   .map(({ label, value, schema }) => {
                     const isChecked = !!selectedFields.find(({ value: v }) => value === v);
                     return (

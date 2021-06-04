@@ -76,31 +76,23 @@ const schema: ISchema = {
           'x-linkages': [
             {
               type: 'value:visible',
-              target: 'tableID',
+              target: 'linkedTable',
               condition: '{{ $value === "foreign_table" }}',
             },
           ],
         },
-        tableID: {
-          type: 'string',
-          default: '',
+        linkedTable: {
+          type: 'object',
+          default: {
+            appID: '',
+            tableID: '',
+            tableName: '',
+          },
           'x-component': 'FormTableSelectorWrapper',
           'x-mega-props': {
             labelAlign: 'top',
           },
-          visible: false,
           'x-index': 4,
-        },
-        appID: {
-          title: '应用ID',
-          type: 'string',
-          default: '',
-          'x-component': 'Input',
-          'x-mega-props': {
-            labelAlign: 'top',
-          },
-          visible: false,
-          'x-index': 5,
         },
         items: {
           type: 'object',
@@ -109,7 +101,7 @@ const schema: ISchema = {
             labelAlign: 'top',
           },
           visible: true,
-          'x-index': 6,
+          'x-index': 5,
         },
         curConfigSubTableKey: {
           type: 'string',
@@ -118,27 +110,29 @@ const schema: ISchema = {
           'x-mega-props': {
             labelAlign: 'top',
           },
-          'x-index': 7,
+          'x-index': 6,
           visible: false,
         },
         workTableSchemaOptions: {
           type: 'array',
+          default: [],
           enum: [],
           'x-component': 'Select',
           'x-mega-props': {
             labelAlign: 'top',
           },
           visible: false,
-          'x-index': 8,
+          'x-index': 7,
         },
         columns: {
           type: 'array',
+          default: [],
           'x-component': 'Columns',
           'x-mega-props': {
             labelAlign: 'top',
           },
           visible: true,
-          'x-index': 9,
+          'x-index': 8,
         },
       },
     },

@@ -2,15 +2,15 @@ import React, { useContext, useEffect } from 'react';
 import { Radio, RadioChangeEvent } from 'antd';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 import { useMutation } from 'react-query';
-import { useParams } from 'react-router-dom';
 import usePrevious from 'react-use/lib/usePrevious';
 
+import { StoreContext } from '../../context';
 import { createBlankFormTable } from './api';
 import { ActionsContext } from './config-form';
 
 function Subordination(originalProps: ISchemaFieldComponentProps): JSX.Element {
-  const { appID } = useParams<{ appID: string }>();
-  const actions = useContext(ActionsContext);
+  const { actions } = useContext(ActionsContext);
+  const { appID } = useContext(StoreContext);
 
   const runnerMap: Record<string, Function> = {
     sub_table: onSubTable,
@@ -19,14 +19,26 @@ function Subordination(originalProps: ISchemaFieldComponentProps): JSX.Element {
 
   const createTableMutation = useMutation(createBlankFormTable, {
     onSuccess: (data) => {
-      data?.tableID && actions.setFieldState('Fields.tableID', (state) => {
-        state.value = data.tableID;
+      data?.tableID && actions.getFieldState('Fields.linkedTable', (state) => {
+        actions.setFieldState('Fields.linkedTable', (st) => {
+          st.value = Object.assign(state.value || {
+            appID: '',
+            tableID: '',
+            tableName: '',
+          }, { tableID: data.tableID });
+        });
       });
     },
   });
 
   function onSubTable() {
     createTableMutation.mutate({ appID });
+    actions.setFieldState('Fields.items', (state) => {
+      state.value = {
+        type: 'object',
+        properties: {},
+      };
+    });
   }
 
   function onForeignTable() {
