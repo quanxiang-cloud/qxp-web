@@ -54,6 +54,10 @@ class AppPageDataStore {
   };
 
   constructor({ schema, pageID, pageName, appID, config, allowRequestData }: InitData) {
+    const { tableColumns, pageTableShowRule, fields } = getPageDataSchema(config || {}, schema);
+    this.fields = fields;
+    this.setTableColumns(tableColumns);
+    this.setTableConfig(pageTableShowRule);
     this.destroyFetchTableData = reaction(() => this.params, this.fetchFormDataList);
     this.destroySetTableConfig = reaction(() => {
       return {
@@ -70,11 +74,6 @@ class AppPageDataStore {
     if (config?.filter) {
       this.setFilters(config.filter || {});
     }
-
-    const { tableColumns, pageTableShowRule, fields } = getPageDataSchema(config || {}, schema);
-    this.fields = fields;
-    this.setTableColumns(tableColumns);
-    this.setTableConfig(pageTableShowRule);
   }
 
   @action

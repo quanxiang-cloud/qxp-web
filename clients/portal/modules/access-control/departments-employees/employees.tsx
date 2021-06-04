@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery } from 'react-query';
-import Table from '@c/table';
 
+import Table from '@c/table';
 import EmptyTips from '@c/empty-tips';
 import Pagination from '@c/pagination';
 import Authorized from '@c/authorized';
