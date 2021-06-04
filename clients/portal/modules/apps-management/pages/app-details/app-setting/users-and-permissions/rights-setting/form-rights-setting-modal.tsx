@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import cs from 'classnames';
 
 import Modal from '@c/modal';
-import Tab from '@portal/modules/apps-management/components/tab';
+import Tab from '@c/no-content-tab';
 import PageLoading from '@c/page-loading';
 import AbsoluteCentered from '@c/absolute-centered';
 import toast from '@lib/toast';
@@ -46,7 +46,7 @@ function RightsSettingModal({ onCancel, rightsGroupID, pageForm }: Props) {
       const authority = authorizedRef.current?.getAuthorizedPer() || 0;
       if (authority === 0) {
         store.deleteFormPer(pageForm.id, rightsGroupID).then(() => {
-          store.updatePerFormList({ ...pageForm, authority: 0 });
+          store.updatePerFormList({ ...pageForm, authority: 0 }, rightsGroupID);
           onCancel();
         });
         return;
@@ -61,7 +61,7 @@ function RightsSettingModal({ onCancel, rightsGroupID, pageForm }: Props) {
           authority,
         }).then(() => {
           toast.success('保存成功!');
-          store.updatePerFormList({ ...pageForm, authority });
+          store.updatePerFormList({ ...pageForm, authority }, rightsGroupID);
           onCancel();
         }).catch(() => {
           setSubLoading(false);

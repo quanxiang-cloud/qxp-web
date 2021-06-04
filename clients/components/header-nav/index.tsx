@@ -4,8 +4,6 @@ import { useHistory } from 'react-router-dom';
 
 import Icon from '@c/icon';
 
-import './index.scss';
-
 type Nav = {
   name: string | JSX.Element;
   icon: string;
