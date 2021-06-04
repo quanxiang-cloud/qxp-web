@@ -8,6 +8,8 @@ import { toJS } from 'mobx';
 
 import { FieldConfigContext } from './context';
 import { addOperate } from '../../registry/operates';
+import DefaultValueLinkageConfigBtn from './default-value-linkage-config-btn';
+import CalculationFormulaBtn from './calculation-formula-btn';
 
 const COMMON_CONFIG_COMPONENTS = {
   ArrayTable,
@@ -20,6 +22,8 @@ const COMMON_CONFIG_COMPONENTS = {
   Select,
   Switch,
   addOperate,
+  DefaultValueLinkageConfigBtn,
+  CalculationFormulaBtn,
 };
 
 type Props = {
@@ -27,51 +31,12 @@ type Props = {
   initialValue: any;
   schema: ISchema;
   components: Record<string, React.JSXElementConstructor<any>>;
+  effects?: () => void
 }
 
 const { onFieldInputChange$, onFieldInit$ } = FormEffectHooks;
 
-const useOneToManyEffects = () => {
-  const { setFieldState } = createFormActions();
-
-  onFieldInit$('minSet').subscribe((field) => {
-    if (field.value !== undefined) {
-      setFieldState('minimum', (state) => {
-        state.visible = field.value.length === 0 ? false : true;
-      });
-      return;
-    }
-    setFieldState('minimum', (state) => {
-      state.visible = false;
-    });
-  });
-
-  onFieldInit$('maxSet').subscribe((field) => {
-    if (field.value !== undefined) {
-      setFieldState('maximum', (state) => {
-        state.visible = field.value.length === 0 ? false : true;
-      });
-      return;
-    }
-    setFieldState('maximum', (state) => {
-      state.visible = false;
-    });
-  });
-
-  onFieldInputChange$('minSet').subscribe(({ value }) => {
-    setFieldState('minimum', (state) => {
-      state.visible = value.length === 0 ? false : true;
-    });
-  });
-
-  onFieldInputChange$('maxSet').subscribe(({ value }) => {
-    setFieldState('maximum', (state) => {
-      state.visible = value.length === 0 ? false : true;
-    });
-  });
-};
-
-function SchemaFieldConfig({ onChange, initialValue, schema, components }: Props): JSX.Element {
+function SchemaFieldConfig({ onChange, initialValue, schema, components, effects }: Props): JSX.Element {
   const { actions } = useContext(FieldConfigContext);
   return (
     <SchemaForm
@@ -81,7 +46,7 @@ function SchemaFieldConfig({ onChange, initialValue, schema, components }: Props
       onChange={onChange}
       schema={schema}
       actions={actions}
-      effects={() => useOneToManyEffects()}
+      effects={effects}
     />
   );
 }
@@ -95,6 +60,42 @@ function FormFieldConfig(): JSX.Element {
       (formFieldConfigWrap.current.parentNode as HTMLDivElement).scrollTop = 0;
     }
   }, [store.activeFieldName]);
+
+  const schemaFieldConfigEffects = () => {
+    const { setFieldState } = createFormActions();
+
+    onFieldInit$('minSet').subscribe((field) => {
+      let visible = false;
+      if (field.value !== undefined) {
+        visible = field.value.length === 0 ? false : true;
+      }
+      setFieldState('minimum', (state) => {
+        state.visible = visible;
+      });
+    });
+
+    onFieldInit$('maxSet').subscribe((field) => {
+      let visible = false;
+      if (field.value !== undefined) {
+        visible = field.value.length === 0 ? false : true;
+      }
+      setFieldState('maximum', (state) => {
+        state.visible = visible;
+      });
+    });
+
+    onFieldInputChange$('minSet').subscribe(({ value }) => {
+      setFieldState('minimum', (state) => {
+        state.visible = value.length === 0 ? false : true;
+      });
+    });
+
+    onFieldInputChange$('maxSet').subscribe(({ value }) => {
+      setFieldState('maximum', (state) => {
+        state.visible = value.length === 0 ? false : true;
+      });
+    });
+  };
 
   if (!store.activeField) {
     return (
@@ -115,9 +116,9 @@ function FormFieldConfig(): JSX.Element {
             ...COMMON_CONFIG_COMPONENTS,
             ...store.activeFieldSourceElement?.configDependencies,
           }}
+          effects={schemaFieldConfigEffects}
         />
       </div>
-
     );
   }
 

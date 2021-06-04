@@ -14,7 +14,7 @@ export interface DatePickerConfig {
   sortable: boolean;
   valueFormat: ValueFormat;
   required: boolean;
-  valueSource: FormBuilder.ValueSource;
+  defaultValueFrom: FormBuilder.DefaultValueFrom;
 }
 
 export const defaultConfig: DatePickerConfig = {
@@ -25,7 +25,7 @@ export const defaultConfig: DatePickerConfig = {
   sortable: false,
   valueFormat: '',
   required: false,
-  valueSource: 'customized',
+  defaultValueFrom: 'customized',
 };
 
 export function toSchema(value: typeof defaultConfig): FormBuilder.Schema {
@@ -63,6 +63,7 @@ export function toSchema(value: typeof defaultConfig): FormBuilder.Schema {
     ['x-internal']: {
       sortable: value.sortable,
       permission: 3,
+      defaultValueFrom: 'customized',
     },
   };
 }
@@ -84,6 +85,6 @@ export function toConfig(schema: FormBuilder.Schema): DatePickerConfig {
     valueFormat: schema['x-component-props']?.format,
     required: !!schema.required,
     // todo implement this
-    valueSource: 'customized',
+    defaultValueFrom: schema['x-internal']?.defaultValueFrom || 'customized',
   };
 }

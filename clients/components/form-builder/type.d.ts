@@ -1,8 +1,20 @@
+type ValidationFormula = {
+  id: string;
+  type: 'formula';
+  formula: string;
+  name: string;
+  message: string;
+}
+
 type ISchema = import('@formily/react-schema-renderer').ISchema & {
   'x-internal'?: {
     version?: string;
     sortable?: boolean;
     permission?: number;
+    validations?: Array<ValidationFormula>;
+    defaultValueFrom: FormBuilder.DefaultValueFrom;
+    defaultValueLinkage?: FormBuilder.DefaultValueLinkage;
+    calculationFormula?: string;
     [key: string]: any;
   };
 };
@@ -40,11 +52,12 @@ declare namespace FormBuilder {
 
   type Schema = ISchema & { 'x-internal'?: Record<string, unknown> };
 
-  type ValueSource = 'customized' | 'linkage' | 'formula' | string;
+  type DefaultValueFrom = 'customized' | 'linkage' | 'formula';
 
   type DragObject = SourceElement<any>;
 
-  type CompareOperator = '===' | '>' | '<' | '!==';
+  // eq in lt lte gt gte like between
+  type CompareOperator = '==' | '!=' | '>' | '>=' | '<=' | '<' | '∈' | '∉' | '⊇' | '⊋' | '∩' | '~' | '()';
 
   type CompareRule = {
     sourceKey: string;
@@ -67,10 +80,29 @@ declare namespace FormBuilder {
     label: string;
     children?: CascadeOption[];
   }
+
+  type DefaultValueLinkage = {
+    linkedAppID: string;
+    linkedTable: { id: string; name: string };
+    linkedTableSortRules: string[];
+    linkedField: string;
+    targetField: string;
+    ruleJoinOperator: 'every' | 'some';
+    rules: Array<{
+      fieldName: string;
+      compareOperator: CompareOperator;
+      compareTo: 'fixedValue';
+      compareValue: string | number | Array<string | number>;
+    } | {
+      fieldName: string;
+      compareOperator: CompareOperator;
+      compareTo: 'currentFormValue';
+      compareValue: string;
+    }>;
+  }
 }
 
-
-// a copy of formliy Schema type definition for reference
+// a copy of formily Schema type definition for reference
 // interface Schema {
 //   title: string;
 //   type: 'string' | 'object' | 'array' | 'number' | 'datetime';

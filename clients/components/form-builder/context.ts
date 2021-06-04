@@ -23,7 +23,7 @@ export const FormBuilderContext = React.createContext<ContextProps>(defaultConte
 
 export const useFormBuilderContext = () => React.useContext(FormBuilderContext);
 
-export const StoreContext = React.createContext<Store>(new Store({ schema: {} }));
+export const StoreContext = React.createContext<Store>(new Store({ schema: {}, appID: '', pageID: '' }));
 
 type FieldConfigContextType = {
   actions: ISchemaFormActions;

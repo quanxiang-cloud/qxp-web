@@ -8,6 +8,7 @@ import Authorized from '@c/authorized';
 import Button from '@c/button';
 import IconButton from '@c/icon-btn';
 import MoreMenu from '@c/more-menu';
+import CheckBox from '@c/checkbox';
 import { usePortalGlobalValue } from '@portal/states_to_be_delete/portal';
 import toast from '@lib/toast';
 
@@ -18,16 +19,17 @@ import ResetPasswordModal from './modal/reset-password-modal';
 import AlterUserStateModal from './modal/alert-user-state-modal';
 import AdjustDepModal from './modal/adjust-dep-modal';
 import LeaderHandleModal from './modal/leader-handle-modal';
+import ExportEmployees from './export-employees';
 
 import { exportEmployees } from './utils';
 import { UserStatus } from './type';
 import { EmployeesColumns, EmployeesActions, ExpandActions } from './constant';
 
 type ModalType = '' | 'edit_employees' | 'import_employees' | 'reset_password' |
-  'alert_user_state' | 'adjust_dep' | 'leader_handle';
+  'alert_user_state' | 'adjust_dep' | 'leader_handle' | 'export_employees';
 
 const initUserInfo = { id: '', userName: '', email: '', phone: '' };
-const initSearch = { page: 1, limit: 10, userName: '' };
+const initSearch = { page: 1, limit: 10, userName: '', includeChildDEPChild: 0 };
 
 interface Props {
   department: Department;
@@ -39,6 +41,7 @@ export default function Employees({
   searchWord,
 }: Props) {
   const [modalType, setModalType] = useState<ModalType>('');
+  const [check, setCheck] = useState(0);
   const [userState, setUserState] = useState<UserStatus>(UserStatus.normal);
   const [selectedUserIds, setSelectedUserIds] = useState<string[]>([]);
   const [selectedUsers, setSelectedUsers] = useState<Employee[]>([]);
@@ -55,11 +58,11 @@ export default function Employees({
   );
 
   useEffect(() => {
-    setPageParams({ ...pageParams, userName: searchWord });
-  }, [searchWord]);
+    setPageParams({ ...pageParams, userName: searchWord, includeChildDEPChild: check });
+  }, [searchWord, check]);
 
   useEffect(() => {
-    setPageParams(initSearch);
+    setPageParams({ page: 1, limit: 10, userName: '', includeChildDEPChild: check });
     setSelectedUserIds([]);
   }, [department.id]);
 
@@ -101,10 +104,16 @@ export default function Employees({
     setPageParams({ ...pageParams, page: current, limit: pageSize });
   }
 
-  function handleEmployeesExport() {
+  function openExportModal() {
+    openModal('export_employees');
+  }
+
+  // 导出数据
+  function handleEmployeesExport(ids: string[]) {
     getUserAdminInfo('', {
       useStatus: 1,
       page: 1,
+      depIDs: ids,
       limit: 10000,
     }).then((res) => {
       const { data } = res;
@@ -113,6 +122,7 @@ export default function Employees({
         return user;
       });
       exportEmployees(newData);
+      closeModal();
     }).catch((error) => {
       toast.error(error);
     });
@@ -133,6 +143,10 @@ export default function Employees({
   function closeFileModal() {
     closeModal();
     refetch();
+  }
+
+  function handleChange(e: React.ChangeEvent<HTMLInputElement & HTMLTextAreaElement>) {
+    setCheck(Number(e.target.checked));
   }
 
   function handleSelectChange(selectedRowKeys: string[], selectedRows: Employee[]) {
@@ -188,6 +202,9 @@ export default function Employees({
 
   return (
     <>
+      {modalType === 'export_employees' && (
+        <ExportEmployees closeModal={closeModal} onSubmit={handleEmployeesExport} />
+      )}
       { modalType === 'leader_handle' &&
         (<LeaderHandleModal user={currUser} closeModal={closeModal} />)}
       { modalType === 'adjust_dep' &&
@@ -216,7 +233,7 @@ export default function Employees({
           <div className="text-h6">{department.departmentName}</div>
           <div className="text-12 text-gray-400">（{employeesList?.total || 0}人）</div>
         </div>
-        <div className="flex items-stretch px-20">
+        <div className="flex items-stretch px-20 justify-between">
           <Authorized authority={['accessControl/mailList/manage']}>
             {selectedUserIds.length > 0 ? (
               <>
@@ -237,34 +254,40 @@ export default function Employees({
               </>
             ) : (
               <>
-                <Button
-                  modifier="primary"
-                  iconName="create_new_folder"
-                  onClick={() => openModal('import_employees')}
-                  className="mr-16"
-                >
+                <div>
+                  <Button
+                    modifier="primary"
+                    iconName="create_new_folder"
+                    onClick={() => openModal('import_employees')}
+                    className="mr-16"
+                  >
                   excel 批量导入
-                </Button>
-                <Button
-                  iconName="add"
-                  onClick={() => handleUserInfo(initUserInfo)}
-                  className="mr-16"
-                >
+                  </Button>
+                  <Button
+                    iconName="add"
+                    onClick={() => handleUserInfo(initUserInfo)}
+                    className="mr-16"
+                  >
                   添加员工
-                </Button>
-                <MoreMenu
-                  menus={ExpandActions}
-                  placement="bottom-end"
-                  className="opacity-1"
-                  onMenuClick={(key) => {
-                    if (key === 'export') {
-                      handleEmployeesExport();
-                      return;
-                    }
-                  }}
-                >
-                  <IconButton iconName="more_horiz" />
-                </MoreMenu>
+                  </Button>
+                  <MoreMenu
+                    menus={ExpandActions}
+                    placement="bottom-end"
+                    className="opacity-1"
+                    onMenuClick={(key) => {
+                      if (key === 'export') {
+                        openExportModal();
+                        return;
+                      }
+                    }}
+                  >
+                    <IconButton iconName="more_horiz" />
+                  </MoreMenu>
+                </div>
+                <CheckBox
+                  onChange={handleChange}
+                  label='包含子部门成员'
+                />
               </>
             )}
           </Authorized>

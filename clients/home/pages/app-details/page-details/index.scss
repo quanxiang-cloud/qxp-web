@@ -38,17 +38,3 @@
   background: linear-gradient(180deg, #A5B4FC 0%, #818CF8 100%);
   box-shadow: 0px 8px 24px rgba(99, 102, 241, 0.25);
 }
-
-.user-app-schema-form {
-  display: grid;
-  grid-template-columns: 60%;
-  justify-content: center;
-  overflow-y: auto;
-  flex: 1;
-  background-color: #fff;
-  border-radius: 12px 12px 0 0;
-
-  .ant-form-item-label {
-    width: 100px;
-  }
-}

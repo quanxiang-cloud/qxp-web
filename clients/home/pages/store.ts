@@ -9,7 +9,6 @@ import { fetchUserList, fetchPageList, fetchFormScheme } from '../lib/api';
 class UserAppStore {
   destroySetCurPage: IReactionDisposer;
   @observable appList = [];
-  @observable showCreateForm = false;
   @observable appID = '';
   @observable pageID = '';
   @observable appDataStore: AppDataStore = new AppDataStore({ schema: {} });
@@ -17,7 +16,7 @@ class UserAppStore {
   @observable pageListLoading = true;
   @observable curPage: PageInfo = { id: '' };
   @observable fetchSchemeLoading = true;
-  @observable formScheme: any = null;
+  @observable formScheme: ISchema | null = null;
   @observable pagesTreeData: TreeData = {
     rootId: 'ROOT',
     items: {},
@@ -35,7 +34,7 @@ class UserAppStore {
 
   constructor() {
     this.destroySetCurPage = reaction(() => {
-      if (!this.pageID || this.pageListLoading) {
+      if (!this.pageID || this.pageListLoading || !this.pagesTreeData.items[this.pageID]) {
         return;
       }
 
@@ -44,16 +43,11 @@ class UserAppStore {
   }
 
   @action
-  setShowCreateForm = (showCreateForm: boolean) => {
-    this.showCreateForm = showCreateForm;
-  }
-
-  @action
   fetchPageList = (appID: string) => {
     this.appID = appID;
     this.pageListLoading = true;
     fetchPageList(appID).then((res: any) => {
-      this.pagesTreeData = buildAppPagesTreeData(res.data.menu);
+      this.pagesTreeData = buildAppPagesTreeData(res.menu);
       this.pageListLoading = false;
     });
   }
@@ -69,11 +63,10 @@ class UserAppStore {
       return;
     }
 
-    this.showCreateForm = false;
     this.formScheme = null;
     this.fetchSchemeLoading = true;
     fetchFormScheme(this.appID, pageInfo.id).then((res: any) => {
-      const { config, schema } = res.schema || {};
+      const { config, schema } = res || {};
       if (schema) {
         Object.keys(schema.properties).forEach((key) => {
           if (schema.properties[key]['x-internal'].permission === 1) {
@@ -88,7 +81,6 @@ class UserAppStore {
           pageName: pageInfo.name,
           appID: this.appID,
           allowRequestData: true,
-          createFun: () => this.setShowCreateForm(true),
         });
       }
       this.formScheme = res.schema;
@@ -104,7 +96,7 @@ class UserAppStore {
     this.listLoading = true;
     return fetchUserList().then((res: any) => {
       this.listLoading = false;
-      this.appList = res.data.data || [];
+      this.appList = res.data || [];
     }).catch(() => {
       this.listLoading = false;
     });

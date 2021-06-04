@@ -1,15 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Modal, RadioGroup } from '@QCFE/lego-ui';
 import { observer } from 'mobx-react';
 
 import Icon from '@c/icon';
 import Button from '@c/button';
 import Checkbox from '@c/checkbox';
+import { getOperators } from '@c/data-filter/utils';
 
 import './index.scss';
 import store from '../store';
-
-type FieldConfig = Pick<PageField, 'option' | 'expand' | 'filter'>
 
 function getFieldType(field: PageField) {
   if (field.isSystem) {
@@ -30,109 +29,71 @@ function infoRender(title: string, desc: string) {
 
 function FilterSetting() {
   const [filterModalVisible, setFilterModalVisible] = useState(false);
-  const [fieldList, setFieldList] = useState<PageField[]>([]);
-
-  useEffect(() => {
-    if (!filterModalVisible) {
-      return;
-    }
-
-    setFieldList(
-      store.fieldList.map((field) => {
-        const filterField = store.allFiltrate.find(({ id }) => {
-          return id === field.id;
-        });
-        if (filterField) {
-          return filterField;
-        }
-
-        return field;
-      })
-    );
-  }, [store.fieldList, filterModalVisible]);
-
+  const [filterMaps, setFilterMaps] = useState<FilterMaps>(store.filterMaps);
+  const [expandList, setExpandList] = useState<string[]>([]);
+  const { fieldList } = store;
   const handleCancel = () => {
     setFilterModalVisible(false);
   };
 
-  const handleChangeField = (id: string, newData: FieldConfig) => {
-    setFieldList(
-      fieldList.map((field) => {
-        if (field.id === id) {
-          return { ...field, ...newData };
-        }
-        return field;
-      })
-    );
+  const handleChangeField = (id: string, newData: FilterField) => {
+    setFilterMaps({ ...filterMaps, [id]: newData });
   };
 
   const filterOptionRender = (field: PageField) => {
-    switch (field.type) {
-    case 'datetime':
-      return (
-        <Checkbox
-          disabled={!field.filter}
-          checked={field.option?.range ? true : false}
-          onChange={(e) => handleChangeField(field.id, { option: { range: e.target.checked } })}
-          label={infoRender('日期范围查询', '可选值来自字段配置填写的内容')}
-        />
-      );
-    case 'number':
-      return (
-        <RadioGroup
-          direction="column"
-          disabled={!field.filter}
-          options={[
-            {
-              label: '大于',
-              value: 'gt',
-            },
-            {
-              label: '小于',
-              value: 'lt',
-            },
-            {
-              label: '等于',
-              value: 'eq',
-            },
-          ]}
-          value={field.option?.compareSymbol}
-          onChange={(value) => handleChangeField(field.id, { option: { compareSymbol: value } })}
-        />
-      );
+    return (
+      <RadioGroup
+        direction="column"
+        disabled={!filterMaps[field.id]}
+        options={getOperators(field.type, field.enum)}
+        value={filterMaps[field.id]?.compareSymbol}
+        onChange={(value) => handleChangeField(field.id, { compareSymbol: value })}
+      />
+    );
+  };
+
+  const handleRemove = (fieldID: string) => {
+    const fieldMapsTmp = { ...filterMaps };
+    delete fieldMapsTmp[fieldID];
+    setFilterMaps(fieldMapsTmp);
+  };
+
+  const handleCheckChange = (e: React.ChangeEvent<HTMLInputElement>, field: PageField) => {
+    const [firstOption] = getOperators(field.type, field.enum);
+    if (e.target.checked) {
+      setFilterMaps({ ...filterMaps, [field.id]: { compareSymbol: firstOption.value } });
+    } else {
+      handleRemove(field.id);
+    }
+  };
+
+  const handleExpand = (id: string) => {
+    if (expandList.includes(id)) {
+      setExpandList(expandList.filter((_id)=>_id !== id));
+    } else {
+      setExpandList([...expandList, id]);
     }
   };
 
   const fieldFilterRender = (field: PageField) => {
+    const curFilter = filterMaps[field.id];
+    const isExpand = expandList.includes(field.id);
     return (
       <div key={field.id} className='page-setting-field-filter'>
         <div className='flex items-center justify-between py-8 px-16'>
-          {['datetime', 'number'].includes(field.type) ? (
-            <div
-              onClick={() => handleChangeField(field.id, { expand: !field.expand })}
-              className='flex items-center flex-1 cursor-pointer'
-            >
-              <Icon name={field.expand ? 'expand_less' : 'expand_more'} />
-              {infoRender(field.label, getFieldType(field))}
-            </div>
-          ) : (
-            <div className='flex items-center flex-1'>
-              {infoRender(field.label, getFieldType(field))}
-            </div>
-          )}
+          <div
+            onClick={() => handleExpand(field.id)}
+            className='flex items-center flex-1 cursor-pointer'
+          >
+            <Icon name={isExpand ? 'expand_less' : 'expand_more'} />
+            {infoRender(field.label, getFieldType(field))}
+          </div>
           <Checkbox
-            checked={field.filter ? true : false}
-            onChange={(e) => {
-              handleChangeField(field.id,
-                e.target.checked ? {
-                  filter: true,
-                  option: { compareSymbol: field.type === 'number' ? 'gt' : '' },
-                } : { filter: false, option: {} }
-              );
-            }}
+            checked={curFilter ? true : false}
+            onChange={(e) => handleCheckChange(e, field)}
           />
         </div>
-        {field.expand ? (
+        {isExpand ? (
           <div className='page-setting-filter-option'>{filterOptionRender(field)}</div>
         ) : null}
       </div>
@@ -140,8 +101,7 @@ function FilterSetting() {
   };
 
   const onSave = () => {
-    const filterList = fieldList.filter(({ filter }: PageField) => filter);
-    store.setFilterList(filterList);
+    store.setFilterMaps(filterMaps);
     setFilterModalVisible(false);
   };
 

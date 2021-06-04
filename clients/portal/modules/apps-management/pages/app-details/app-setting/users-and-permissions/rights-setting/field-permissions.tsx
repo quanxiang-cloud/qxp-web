@@ -1,0 +1,200 @@
+import React, { useState, useEffect, useImperativeHandle, forwardRef } from 'react';
+import { union } from 'lodash';
+
+import Checkbox from '@c/checkbox';
+
+type Props = {
+  fields: Fields[];
+  fieldPer: Record<string, any>;
+  className?: string;
+}
+
+function FieldPermissions({ fields, className = '', fieldPer }: Props, ref: React.Ref<any>) {
+  const [visibleField, setVisibleField] = useState<string[]>([]);
+  const [revisableField, setRevisableField] = useState<string[]>([]);
+  const [vIndeterminate, setVIndeterminate] = useState(false);
+  const [rIndeterminate, setRIndeterminate] = useState(false);
+  const [vCheckAll, setVCheckAll] = useState(false);
+  const [rCheckAll, setRCheckAll] = useState(false);
+
+  const fieldRevisable = fields.filter((field) => !field['x-internal']?.isSystem);
+
+  useImperativeHandle(ref, () => ({
+    getFieldPer: getFieldPer,
+  }));
+
+  const getFieldPer = () => {
+    const schema: Record<string, any> = {
+      properties: {
+        _id: {
+          title: '_id',
+          'x-internal': {
+            permission: 1,
+          },
+        },
+      },
+      title: '',
+      type: 'object',
+      'x-internal': { permission: visibleField.length ? 1 : 0 },
+    };
+
+    fields.forEach((field) => {
+      const visible = visibleField.includes(field.id);
+      const revisable = revisableField.includes(field.id);
+      const permissions = (visible ? 1 : 0) | (revisable ? 10 : 0);
+      schema.properties[field.id] = {
+        title: field.title,
+        'x-internal': {
+          permission: parseInt(permissions.toString(), 2),
+        },
+      };
+    });
+
+    return schema;
+  };
+
+  useEffect(() => {
+    if (fieldPer) {
+      const visibleList: string[] = [];
+      const revisableList: string[] = [];
+      fields.forEach((field) => {
+        if (!fieldPer.properties[field.id]) {
+          return;
+        }
+        switch (fieldPer.properties[field.id]['x-internal'].permission) {
+        case 3:
+          visibleList.push(field.id);
+          revisableList.push(field.id);
+          break;
+        case 1:
+          visibleList.push(field.id);
+          break;
+        }
+      });
+      setVisibleField(visibleList);
+      setRevisableField(revisableList);
+    } else {
+      const event: any = {
+        target: {
+          checked: true,
+        },
+      };
+      handleRCheckAll(event);
+      handleVCheckAll(event);
+    }
+  }, []);
+
+  useEffect(() => {
+    setVIndeterminate(visibleField.length > 0 && visibleField.length !== fields.length);
+    if (visibleField.length === fields.length) {
+      setVCheckAll(true);
+    } else {
+      setVCheckAll(false);
+    }
+  }, [visibleField]);
+
+  useEffect(() => {
+    setRIndeterminate(revisableField.length > 0 && revisableField.length !== fieldRevisable.length);
+    if (revisableField.length === fieldRevisable.length) {
+      setRCheckAll(true);
+    } else {
+      setRCheckAll(false);
+    }
+  }, [revisableField]);
+
+  const handleVisibleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value, checked } = e.target;
+    if (checked) {
+      setVisibleField([...visibleField, value]);
+    } else {
+      if (revisableField.includes(value)) {
+        setRevisableField(
+          revisableField.filter((id) => id !== value)
+        );
+      }
+
+      setVisibleField(
+        visibleField.filter((id) => id !== value)
+      );
+    }
+  };
+
+  const handleRevisableChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value, checked } = e.target;
+    if (checked) {
+      setRevisableField([...revisableField, value]);
+      if (!visibleField.includes(value)) {
+        setVisibleField([...visibleField, value]);
+      }
+    } else {
+      setRevisableField(
+        revisableField.filter((id) => id !== value)
+      );
+    }
+  };
+
+  const handleVCheckAll = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.checked) {
+      setVisibleField(
+        fields.map(({ id }) => id)
+      );
+    } else {
+      setRevisableField([]);
+      setVisibleField([]);
+    }
+  };
+
+  const handleRCheckAll = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.checked) {
+      const ids = fieldRevisable.map(({ id }) => id);
+      setVisibleField(union(visibleField, ids));
+      setRevisableField(ids);
+    } else {
+      setRevisableField([]);
+    }
+  };
+
+  return (
+    <div className={className}>
+      <div className='flex items-center justify-between mb-12'>
+        <span className='text-caption-no-color text-gray-400'>系统字段不可修改。例如：提交时间、更新时间</span>
+        <p className='flex gap-x-16'>
+          <Checkbox
+            onChange={handleVCheckAll}
+            checked={vCheckAll}
+            indeterminate={vIndeterminate}
+            label='全选可见'
+          />
+          <Checkbox
+            onChange={handleRCheckAll}
+            checked={rCheckAll}
+            indeterminate={rIndeterminate}
+            label='全选可修改'
+          />
+        </p>
+      </div>
+      <div className='pb-field-box'>
+        <div className='pb-field-item-title'><span>字段</span><span>可见</span><span>可修改</span></div>
+        {fields.map((field) => (
+          <div key={field.id} className='pb-field-item'>
+            <span>{field.title}</span>
+            <Checkbox
+              checked={visibleField.includes(field.id)}
+              value={field.id}
+              onChange={handleVisibleChange}
+            />
+            {!field['x-internal']?.isSystem && (
+              <Checkbox
+                checked={revisableField.includes(field.id)}
+                value={field.id}
+                onChange={handleRevisableChange}
+              />
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+export default forwardRef(FieldPermissions);

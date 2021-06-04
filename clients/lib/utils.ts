@@ -1,9 +1,14 @@
 import qs from 'qs';
 import { TreeData, TreeItem } from '@atlaskit/tree';
 import { get } from 'lodash';
-
 import { TreeNode } from '@c/headless-tree/types';
+import { nanoid } from 'nanoid';
+
 import toast from '@lib/toast';
+
+export function uuid() {
+  return nanoid();
+}
 
 export const httpFile = async (url: string, data?: Record<string, string | Blob>) => {
   const formData = new FormData();
@@ -23,16 +28,6 @@ export const httpFile = async (url: string, data?: Record<string, string | Blob>
 
   return await response.json();
 };
-
-/**
- * 生成一个 uuid
- * @return {string}
- */
-export const uuid = () =>
-  // @ts-ignore
-  ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, (c) =>
-    (c ^ (crypto.getRandomValues(new Uint8Array(1))[0] & (15 >> (c / 4)))).toString(16),
-  );
 
 /**
  * generate a type checker func

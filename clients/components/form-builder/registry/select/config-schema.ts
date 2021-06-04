@@ -73,7 +73,7 @@ const schema: ISchema = {
           'x-component': 'Switch',
           'x-index': 6,
         },
-        valueSource: {
+        defaultValueFrom: {
           title: '数值源',
           enum: [
             {
@@ -100,7 +100,19 @@ const schema: ISchema = {
               target: 'availableOptions',
               condition: '{{ $self.value === "customized" }}',
             },
+            {
+              type: 'value:visible',
+              target: 'defaultValueLinkage',
+              condition: '{{ $value === "linkage" }}',
+            },
           ],
+        },
+        linkageConfig: {
+          'x-component': 'DefaultValueLinkageConfigBtn',
+          'x-component-props': {
+            value: '设置数据联动',
+          },
+          'x-index': 8,
         },
         availableOptions: {
           type: 'array',
@@ -113,7 +125,7 @@ const schema: ISchema = {
             renderExtraOperations: extraOperations,
             renderAddition: addOperate,
           },
-          'x-index': 8,
+          'x-index': 9,
           items: {
             type: 'object',
             properties: {

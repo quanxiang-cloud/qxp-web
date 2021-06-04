@@ -107,6 +107,7 @@ function NodeRender(
     >
       <div
         className={cs('h-56', 'flex', 'items-center', 'px-18', 'group', 'hover:bg-gray-100', {
+          'app-page-tree-node-tail': isActive,
           'text-blue-600': isActive,
         })}
         onClick={handleClick}

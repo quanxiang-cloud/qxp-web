@@ -4,30 +4,57 @@ import { useHistory, useParams } from 'react-router-dom';
 
 import HeaderNav from '@c/header-nav';
 import toast from '@lib/toast';
+import Select from '@c/select';
 import AppsSwitcher from '@c/apps-switcher';
 
-import { fetchUserList } from '../../../lib/api';
+import { fetchUserList, getPerOption, roleChange } from '../../../lib/api';
+import store from '../../store';
 import './index.scss';
+
+type PerItem = {
+  id: string;
+  name: string;
+}
+
+type PerRes = {
+  optionPer: PerItem[];
+  selectPer: PerItem;
+}
 
 function DetailsHeader() {
   const history = useHistory();
   const [appList, setAppList] = useState([]);
-  const { appID } = useParams<{ appID: string}>();
+  const [options, setOptions] = useState<{ value: string, label: string }[]>([]);
+  const [curRole, setCurRole] = useState<string>();
+  const { appID } = useParams<{ appID: string }>();
 
   useEffect(() => {
-    fetchUserList().then((res) => {
-      if (res.data.data.findIndex(({ id }: AppInfo) => id === appID) === -1) {
+    getPerOption<PerRes>(appID).then((res) => {
+      const { optionPer = [], selectPer = { id: '' } } = res;
+      setCurRole(selectPer.id || '');
+      setOptions(optionPer.map(({ id, name }) => ({ value: id, label: name })));
+    });
+
+    fetchUserList().then((res: any) => {
+      if (res.data.findIndex(({ id }: AppInfo) => id === appID) === -1) {
         toast.error('应用不存在！2秒后跳转到首页');
         setTimeout(() => {
           history.replace('/');
         }, 2000);
       }
-      setAppList(res.data.data);
+      setAppList(res.data);
     });
   }, []);
 
   const handleChange = (newAppId: string) => {
     history.replace(location.pathname.replace(appID, newAppId));
+  };
+
+  const handleRoleChange = (roleID: string) => {
+    roleChange(appID, roleID).then(() => {
+      store.clear();
+      store.fetchPageList(appID);
+    });
   };
 
   return (
@@ -42,6 +69,12 @@ function DetailsHeader() {
           onChange={handleChange}
         />
       </div>
+      {options.length > 1 && (
+        <div className='flex items-center'>
+          切换角色：
+          <Select value={curRole} onChange={handleRoleChange} className='w-144' options={options} />
+        </div>
+      )}
     </div>
   );
 }

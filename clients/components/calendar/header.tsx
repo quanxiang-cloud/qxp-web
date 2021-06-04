@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import moment from 'moment';
 import cs from 'classnames';
 import { observer } from 'mobx-react';
@@ -20,7 +20,6 @@ type Props = {
 export default class Header extends React.Component<Props> {
   yearMenuRef = React.createRef<HTMLUListElement>();
   monthMenuRef = React.createRef<HTMLUListElement>();
-
   listOfYear: number[] = [];
 
   @observable isOpen = false;
@@ -156,7 +155,7 @@ export default class Header extends React.Component<Props> {
           onClick={(): void => this.handleShift(-1)}
           className="calendar-header__shift"
         >
-          <Icon name="previous" size={20} />
+          <Icon name="arrow_back_ios" size={20} />
         </span>
         <div className="calendar-header__date">
           <span
@@ -182,7 +181,7 @@ export default class Header extends React.Component<Props> {
           onClick={(): void => this.handleShift(1)}
           className="calendar-header__shift"
         >
-          <Icon name="next" size={20} />
+          <Icon name="arrow_forward_ios" size={20} />
         </span>
       </div>
     );

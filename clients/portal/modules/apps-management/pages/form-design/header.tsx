@@ -13,7 +13,7 @@ import './index.scss';
 const TABS: TabProps[] = [
   { label: '表单设计', key: 'formBuild' },
   { label: '页面配置', key: 'pageSetting' },
-  { label: '发布表单', key: 'publishForm' },
+  // { label: '发布表单', key: 'publishForm' },
 ];
 
 function FormDesignHeader() {

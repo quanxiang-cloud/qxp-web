@@ -94,7 +94,7 @@ const schema: ISchema = {
           'x-component': 'Switch',
           'x-index': 7,
         },
-        valueSource: {
+        defaultValueFrom: {
           title: '数值源',
           enum: [
             {
@@ -115,10 +115,37 @@ const schema: ISchema = {
             labelAlign: 'top',
           },
           'x-index': 8,
+          'x-linkages': [
+            {
+              type: 'value:visible',
+              target: 'defaultValueLinkage',
+              condition: '{{ $value === "linkage" }}',
+            },
+            {
+              type: 'value:visible',
+              target: 'min',
+              condition: '{{ $value === "customized" }}',
+            },
+            {
+              type: 'value:visible',
+              target: 'max',
+              condition: '{{ $value === "customized" }}',
+            },
+            {
+              type: 'value:visible',
+              target: 'calculationFormula',
+              condition: '{{ $value === "formula" }}',
+            },
+          ],
+        },
+        defaultValueLinkage: {
+          'x-component': 'DefaultValueLinkageConfigBtn',
+          'x-index': 9,
         },
         min: {
           type: 'object',
           'x-component': 'mega-layout',
+          'x-index': 10,
           'x-component-props': {
             grid: true,
             columns: 2,
@@ -140,6 +167,7 @@ const schema: ISchema = {
         max: {
           type: 'object',
           'x-component': 'mega-layout',
+          'x-index': 11,
           'x-component-props': {
             grid: true,
             columns: 2,
@@ -157,6 +185,10 @@ const schema: ISchema = {
               'x-component': 'NumberPicker',
             },
           },
+        },
+        calculationFormula: {
+          'x-component': 'CalculationFormulaBtn',
+          'x-index': 12,
         },
       },
     },

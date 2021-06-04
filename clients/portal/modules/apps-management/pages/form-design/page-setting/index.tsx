@@ -20,8 +20,8 @@ function PageSetting() {
           保存页面设置
         </Button>
       </div>
-      <div className='flex-1 flex overflow-hidden'>
-        <div className='flex-1 p-20'>
+      <div className='flex-1 flex  overflow-hidden'>
+        <div className='flex-1 p-20 overflow-hidden'>
           <p className='text-caption-no-color text-gray-400 mb-8'>预览页面视图</p>
           <FormAppDataTable store={store.appPageStore} />
         </div>

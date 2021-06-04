@@ -14,3 +14,9 @@
     }
   }
 }
+
+.massage_table {
+  tr:hover .message_name {
+    color: var(--blue-600);
+  }
+}

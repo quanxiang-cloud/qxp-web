@@ -3,28 +3,22 @@ import { UnionColumns } from 'react-table';
 
 import FormStore from '@c/form-builder/store';
 import toast from '@lib/toast';
-import {
-  createFormScheme,
-  fetchFormScheme,
-  updateFormScheme,
-  createPageScheme,
-  createPerGroup,
-  fetchRights,
-  deleteRights,
-  movePerGroup,
-  updatePerGroup,
-} from './api';
 import AppPageDataStore from '@c/form-app-data-table/store';
 import { PageTableShowRule, Scheme, setFixedParameters } from '@c/form-app-data-table/utils';
 
-import { getFilterField, getAttribute } from './utils';
+import { getTableSchema, saveTableSchema } from '@lib/http-client';
+import {
+  createPageScheme,
+} from './api';
+import { getAttribute } from './utils';
 
 class FormDesignStore {
   destroyFetchScheme: IReactionDisposer;
   destroySetTableColumn: IReactionDisposer;
   destroySetTableConfig: IReactionDisposer;
-  destroySetFiltrates: IReactionDisposer;
-  destroySetAllFiltrate: IReactionDisposer;
+  destroySetFilters: IReactionDisposer;
+  destroySetAllFilter: IReactionDisposer;
+  destroySetSchema: IReactionDisposer;
   @observable pageID = '';
   @observable appID = '';
   @observable saveSchemeLoading = false;
@@ -35,12 +29,14 @@ class FormDesignStore {
   @observable hasSchema = false;
   @observable pageTableConfig: Record<string, any> = {};
   @observable pageTableShowRule: PageTableShowRule = {};
-  @observable rightsList: Rights[] = [];
-  @observable allFiltrate: PageField[] = [];
-  @observable rightsLoading = false;
+  @observable filterMaps: FilterMaps = {};
+
+  @computed get fieldsMap(): Record<string, ISchema> {
+    return this.formStore?.schema?.properties || {};
+  }
 
   @computed get fieldList(): PageField[] {
-    const fieldsMap: any = this.formStore?.schema?.properties || {};
+    const fieldsMap: any = this.fieldsMap;
     return Object.keys(fieldsMap).filter((_key: string) => {
       return _key !== '_id';
     }).map((key: string) => {
@@ -61,24 +57,22 @@ class FormDesignStore {
       return { pageID: this.pageID, appID: this.appID };
     }, this.fetchFormScheme);
 
-    this.destroySetAllFiltrate = reaction(() => this.fieldList, () => {
+    this.destroySetAllFilter = reaction(() => this.fieldList, () => {
       if (!this.formStore) {
         return;
       }
-      this.allFiltrate = this.allFiltrate.filter(({ id }) => {
-        if (!this.formStore?.schema?.properties) {
-          return false;
-        }
 
-        return id in this.formStore?.schema?.properties;
+      const hasFilterMaps = { ...this.filterMaps };
+      Object.keys(this.filterMaps).forEach((id) => {
+        if (this.formStore?.schema?.properties && !(id in this.formStore?.schema?.properties)) {
+          delete hasFilterMaps[id];
+        }
       });
+      this.filterMaps = hasFilterMaps;
     });
 
-    this.destroySetFiltrates = reaction(() => {
-      return this.allFiltrate.map((field: PageField) => {
-        return getFilterField(field);
-      });
-    }, this.appPageStore.setFiltrates);
+    this.destroySetSchema = reaction(() => this.formStore?.schema, this.appPageStore.setSchema);
+    this.destroySetFilters = reaction(() => this.filterMaps, this.appPageStore.setFilters);
 
     this.destroySetTableColumn = reaction(() => {
       const column: UnionColumns<any>[] = [];
@@ -103,34 +97,8 @@ class FormDesignStore {
   }
 
   @action
-  setFilterList = (filtrates: PageField[]) => {
-    this.allFiltrate = filtrates;
-  }
-
-  @action
-  addRight = (rights: RightsCreate) => {
-    const _rights = {
-      ...rights,
-      sequence: this.rightsList.length,
-      formID: this.pageID,
-      appID: this.appID,
-    };
-    return createPerGroup(this.appID, _rights).then((res) => {
-      this.rightsList = [...this.rightsList, { ..._rights, ...res.data }];
-    });
-  }
-
-  @action
-  deleteRight = (id: string) => {
-    const delAfter = this.rightsList.filter((rights) => id !== rights.id);
-    deleteRights(this.appID, {
-      id, moveArr: delAfter.map((AFrights, sequence) => {
-        return { id: AFrights.id, sequence };
-      }),
-    }).then(() => {
-      toast.success('删除成功!');
-      this.rightsList = delAfter;
-    });
+  setFilterMaps = (filters: FilterMaps) => {
+    this.filterMaps = filters;
   }
 
   @action
@@ -163,7 +131,7 @@ class FormDesignStore {
 
   @action
   reSetFormScheme = () => {
-    this.formStore = new FormStore({ schema: this.initScheme });
+    this.formStore = new FormStore({ schema: this.initScheme, appID: this.appID, pageID: this.pageID });
   }
 
   @action
@@ -173,14 +141,14 @@ class FormDesignStore {
     }
 
     this.pageLoading = true;
-    fetchFormScheme(appID, pageID).then((res) => {
-      const { schema = {}, config } = res.data || {};
-      this.hasSchema = res.data ? true : false;
+    getTableSchema(appID, pageID).then((res: any) => {
+      const { schema = {}, config } = res || {};
+      this.hasSchema = res ? true : false;
       this.initScheme = schema;
-      this.formStore = new FormStore({ schema });
+      this.formStore = new FormStore({ schema, appID, pageID });
       if (config) {
         this.pageTableConfig = config.pageTableConfig || {};
-        this.allFiltrate = config.filtrate || [];
+        this.filterMaps = config.filter || {};
         this.pageTableShowRule = config.pageTableShowRule || {};
       }
       this.pageLoading = false;
@@ -192,10 +160,7 @@ class FormDesignStore {
   @action
   saveFormScheme = () => {
     this.saveSchemeLoading = true;
-    return (this.hasSchema ? updateFormScheme : createFormScheme)(this.appID, {
-      schema: this.formStore?.schema,
-      tableID: this.pageID,
-    }).then(() => {
+    return saveTableSchema(this.appID, this.pageID, this.formStore?.schema || {}).then(() => {
       (this.formStore as FormStore).hasEdit = false;
       toast.success(this.hasSchema ? '保存成功!' : '创建成功!');
       this.saveSchemeLoading = false;
@@ -210,7 +175,7 @@ class FormDesignStore {
     this.formStore = null;
     this.pageTableConfig = {};
     this.pageTableShowRule = {};
-    this.allFiltrate = [];
+    this.filterMaps = {};
     this.appPageStore.clear();
   }
 
@@ -219,58 +184,12 @@ class FormDesignStore {
     createPageScheme(this.appID, {
       tableID: this.pageID, config: {
         pageTableConfig: this.pageTableConfig,
-        filtrate: this.allFiltrate,
+        filter: this.filterMaps,
         pageTableShowRule: this.pageTableShowRule,
       },
     }).then(() => {
       toast.success('保存成功!');
     });
-  }
-
-  @action
-  fetchRights = () => {
-    this.rightsLoading = true;
-    fetchRights(this.appID, this.pageID).then((res) => {
-      this.rightsList = res.data.list;
-      this.rightsLoading = false;
-    }).catch(() => {
-      this.rightsLoading = false;
-    });
-  }
-
-  @action
-  updatePerGroup = (rights: Rights) => {
-    return updatePerGroup(this.appID, rights).then(() => {
-      this.rightsList = this.rightsList.map((_rights) => {
-        if (rights.id === _rights.id) {
-          return { ..._rights, ...rights };
-        }
-        return _rights;
-      });
-      toast.success('修改成功！');
-      return true;
-    });
-  }
-
-  @action
-  rightsGroupSort = (rightsIdList: string[]) => {
-    const newRightsList: Rights[] = [];
-    movePerGroup(this.appID, {
-      moveArr: rightsIdList.map((id, index) => {
-        const rights = this.rightsList.find((_rights) => _rights.id === id);
-        if (rights) {
-          newRightsList.push({
-            ...rights,
-            sequence: index,
-          });
-        }
-        return {
-          id,
-          sequence: index,
-        };
-      }),
-    });
-    this.rightsList = newRightsList;
   }
 }
 

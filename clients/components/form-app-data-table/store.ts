@@ -8,61 +8,52 @@ import { Scheme, Config, getPageDataSchema } from './utils';
 
 type Params = {
   condition?: Condition[] | [],
+  tag?: 'or' | 'and',
   sort?: string[] | [],
   page?: number,
   size?: number,
 }
 
 type InitData = {
-  schema: Scheme;
+  schema: FormBuilder.Schema;
   config?: Config;
   pageID?: string;
   appID?: string;
   pageName?: string;
-  createFun?: () => void;
   allowRequestData?: boolean;
 }
+
+export type FormData = Record<string, any>;
 
 class AppPageDataStore {
   destroyFetchTableData: IReactionDisposer;
   destroySetTableConfig: IReactionDisposer;
   @observable tableConfig: any = {};
-  @observable noFiltratesTips: React.ReactNode = '尚未配置筛选条件。'
+  @observable noFiltersTips: React.ReactNode = '尚未配置筛选条件。'
   @observable listLoading = false;
   @observable pageID = '';
   @observable appID = '';
   @observable pageName = '';
   @observable authority = 0;
-  @observable curItemFormData = null;
+  @observable curItemFormData: FormData | null = null;
   @observable allowRequestData = false;
-  @observable filtrates: FilterField[] = [];
+  @observable filterMaps: FilterMaps = {};
   @observable formDataList: any[] = [];
   @observable total = 0;
-  @observable fields: Scheme[] = [];
+  @observable fields: Fields[] = [];
+  @observable schema: FormBuilder.Schema = {};
+  @observable filterData: FormData = {};
   @observable tableColumns: any[] = [];
+  @observable createPageVisible = false;
   @observable params: Params = {
     condition: [],
     sort: [],
     page: 1,
     size: 10,
-  };
-  @observable createFun = () => {
-    '';
+    tag: 'and',
   };
 
-  constructor({ schema, pageID, pageName, appID, config, allowRequestData, createFun }: InitData) {
-    this.pageName = pageName || '';
-    this.appID = appID || '';
-    this.pageID = pageID || '';
-    this.allowRequestData = !!allowRequestData;
-    if (createFun) {
-      this.createFun = createFun;
-    }
-    const { filtrates, tableColumns, pageTableShowRule, fields } = getPageDataSchema(config || {}, schema);
-    this.fields = fields;
-    this.setFiltrates(filtrates);
-    this.setTableColumns(tableColumns);
-    this.setTableConfig(pageTableShowRule);
+  constructor({ schema, pageID, pageName, appID, config, allowRequestData }: InitData) {
     this.destroyFetchTableData = reaction(() => this.params, this.fetchFormDataList);
     this.destroySetTableConfig = reaction(() => {
       return {
@@ -70,6 +61,20 @@ class AppPageDataStore {
         sort: this.tableConfig.order ? [this.tableConfig.order] : [],
       };
     }, this.setParams);
+    this.schema = schema || {};
+    this.pageName = pageName || '';
+    this.appID = appID || '';
+    this.pageID = pageID || '';
+    this.allowRequestData = !!allowRequestData;
+
+    if (config?.filter) {
+      this.setFilters(config.filter || {});
+    }
+
+    const { tableColumns, pageTableShowRule, fields } = getPageDataSchema(config || {}, schema);
+    this.fields = fields;
+    this.setTableColumns(tableColumns);
+    this.setTableConfig(pageTableShowRule);
   }
 
   @action
@@ -78,13 +83,26 @@ class AppPageDataStore {
   }
 
   @action
+  setSchema = (schema: Scheme | undefined) => {
+    if (!schema) {
+      return;
+    }
+
+    this.schema = schema;
+    this.fields = Object.keys(this.schema).map((key) => ({
+      id: key,
+      ...schema.properties[key],
+    }));
+  }
+
+  @action
   setTableConfig = (tableConfig: any) => {
     this.tableConfig = tableConfig;
   }
 
   @action
-  setFiltrates = (filtrates: FilterField[]) => {
-    this.filtrates = filtrates;
+  setFilters = (filterMaps: FilterMaps) => {
+    this.filterMaps = filterMaps;
   }
 
   @action
@@ -93,9 +111,14 @@ class AppPageDataStore {
   }
 
   @action
-  goEdit = (formData: any) => {
+  setVisibleCreatePage = (createPageVisible: boolean) => {
+    this.createPageVisible = createPageVisible;
+  }
+
+  @action
+  goEdit = (formData: FormData | null) => {
     this.curItemFormData = formData;
-    this.createFun?.();
+    this.setVisibleCreatePage(true);
   }
 
   @action
@@ -103,7 +126,7 @@ class AppPageDataStore {
     return httpClient(`/api/v1/structor/${this.appID}/` +
       `${window.SIDE === 'portal' ? 'm' : 'home'}/form/${this.pageID}`, {
       method: 'delete',
-      condition: [{ key: '_id', op: ids.length > 1 ? 'in' : 'eq', value: ids }],
+      conditions: { condition: [{ key: '_id', op: ids.length > 1 ? 'in' : 'eq', value: ids }] },
     }).then(() => {
       this.formDataList = this.formDataList.filter(({ _id }) => !ids.includes(_id));
       toast.success('删除成功!');
@@ -115,14 +138,16 @@ class AppPageDataStore {
     if (!this.allowRequestData || !this.pageID) {
       return;
     }
+
     this.listLoading = true;
     const side = window.SIDE === 'portal' ? 'm' : 'home';
+    const { condition, tag, ...other } = params;
     httpClient(`/api/v1/structor/${this.appID}/${side}/form/${this.pageID}`, {
       method: 'find',
       page: 1,
-      condition: [],
+      conditions: { tag: tag, condition },
       sort: [],
-      ...params,
+      ...other,
     }).then((res: any) => {
       this.formDataList = res.entities;
       this.total = res.total || 0;
@@ -137,13 +162,16 @@ class AppPageDataStore {
     const side = window.SIDE === 'portal' ? 'm' : 'home';
     return httpClient(`/api/v1/structor/${this.appID}/${side}/form/${this.pageID}`, {
       method: 'findOne',
-      condition: [
-        {
-          key: '_id',
-          op: 'eq',
-          value: [dataID],
-        },
-      ],
+      conditions: {
+        condition: [
+          {
+            key: '_id',
+            op: 'eq',
+            value: [dataID],
+          },
+        ],
+        tag: 'and',
+      },
     });
   }
 
@@ -152,9 +180,10 @@ class AppPageDataStore {
     if (!this.pageID) {
       return;
     }
+
     const side = window.SIDE === 'portal' ? 'm' : 'home';
     httpClient(
-      `/api/v1/structor/${this.appID}/${side}/permission/operatePer/getByScopeID`,
+      `/api/v1/structor/${this.appID}/${side}/permission/operatePer/getOperate`,
       { formID: this.pageID }
     ).then((res: any) => {
       this.authority = res?.authority || 0;
@@ -167,7 +196,7 @@ class AppPageDataStore {
     this.formDataList = [];
     this.tableConfig = {};
     this.authority = 0;
-    this.filtrates = [];
+    this.filterMaps = {};
     this.tableColumns = [];
     this.pageID = '';
     this.params = {

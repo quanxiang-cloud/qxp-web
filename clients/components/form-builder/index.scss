@@ -63,6 +63,7 @@
   background-color: #FFFFFF;
   border: 1px solid #CBD5E1;
   border-radius: 8px;
+
   &:hover {
     cursor: pointer;
     border-color: var(--blue-600);
@@ -90,15 +91,17 @@
 .item-checked {
   position: relative;
   border-color: var(--blue-600);
+
   &:before {
     content: '';
     position: absolute;
     top: 0;
-    right:0;
+    right: 0;
     border: 16px solid transparent;
     border-top-right-radius: 6px;
     border-color: var(--blue-600) var(--blue-600) transparent transparent;
   }
+
   .check-icon {
     display: block;
   }
@@ -191,6 +194,7 @@
 .form-builder .operate-icon {
   display: block;
   cursor: pointer;
+
   &:hover {
     color: #375FF3;
   }
@@ -206,4 +210,10 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+}
+
+.setting-data-linkage {
+  .mega-layout-item-content {
+    flex-direction: column;
+  }
 }

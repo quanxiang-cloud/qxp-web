@@ -30,3 +30,17 @@
     padding: 0 16px;
   }
 }
+
+.app-page-tree-node-tail{
+  position: relative;
+  &::after{
+    content: '';
+    width: 3px;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    right: 0;
+    border-radius: 4px 0px 0px 4px;
+    background-color: var(--gray-600);
+  }
+}

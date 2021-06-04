@@ -9,6 +9,7 @@ import Breadcrumb from '@c/breadcrumb';
 import AppIcon from '@c/app-icon';
 import Icon from '@c/icon';
 
+import UsersAndPermissions from './users-and-permissions';
 import AppInfo from './app-info';
 import AppAdmin from './app-admin';
 import appDetailsStore from '../store';
@@ -37,6 +38,13 @@ function AppSetting() {
       replace: true,
       name: '应用管理员',
       url: `/apps/details/${appID}/setting/adminUsers`,
+    },
+    {
+      id: 'usersAndPermissions',
+      icon: 'group',
+      replace: true,
+      name: '用户及权限',
+      url: `/apps/details/${appID}/setting/usersAndPermissions`,
     },
   ];
 
@@ -73,6 +81,11 @@ function AppSetting() {
           <Switch>
             <Route exact path="/apps/details/:appID/setting/info" component={AppInfo} />
             <Route exact path="/apps/details/:appID/setting/adminUsers" component={AppAdmin} />
+            <Route
+              exact
+              path="/apps/details/:appID/setting/usersAndPermissions"
+              component={UsersAndPermissions}
+            />
           </Switch>
         </div>
       </div>
