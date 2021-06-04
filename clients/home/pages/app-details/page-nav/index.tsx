@@ -28,7 +28,7 @@ function PageNav() {
 
   return (
     <div className='app-details-nav'>
-      <div className='app-page-tree-wrapper'>
+      <div className='app-page-tree-wrapper pt-20'>
         <AppPagesTree
           onSelectPage={onSelect}
           selectedPage={store.curPage}
