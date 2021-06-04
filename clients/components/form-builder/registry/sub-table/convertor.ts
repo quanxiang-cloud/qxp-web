@@ -1,35 +1,32 @@
-
 export type SubTableConfig = {
   title: string;
-  description?: string;
-  display?: FormBuilder.DisplayModifier;
+  description: string;
   subordination: string;
-  items: ISchema;
+  subTableSchema: ISchema;
   required: boolean;
   linkedTable: {
     appID: string;
     tableID: string;
     tableName: string;
   }
-  columns: {title: string; dataIndex: string}[];
+  columns: string[];
 }
 
 export const defaultConfig: SubTableConfig = {
   title: '子表单',
   description: '子表单的描述内容',
-  display: 'normal',
-  subordination: 'foreign_table',
+  subordination: 'sub_table',
+  subTableSchema: {
+    type: 'object',
+    properties: {},
+  },
+  required: false,
   linkedTable: {
     appID: '',
     tableID: '',
     tableName: '',
   },
   columns: [],
-  items: {
-    type: 'object',
-    properties: {},
-  },
-  required: false,
 };
 
 export function toSchema(value: SubTableConfig): FormBuilder.Schema {
@@ -38,16 +35,14 @@ export function toSchema(value: SubTableConfig): FormBuilder.Schema {
     title: value.title,
     description: value.description,
     required: value.required,
-    readOnly: value.display === 'readonly',
-    display: true,
-    items: value.items,
+    items: value.subTableSchema,
     'x-component': 'SubTable',
     ['x-component-props']: {
-      columns: (value.columns || []).map((v) => JSON.stringify(v)),
+      columns: value.columns,
       subordination: value.subordination,
-      appID: value.linkedTable?.appID,
-      tableID: value.linkedTable?.tableID,
-      tableName: value.linkedTable?.tableName,
+      appID: value.linkedTable.appID,
+      tableID: value.linkedTable.tableID,
+      tableName: value.linkedTable.tableName,
     },
     ['x-internal']: {
       permission: 3,
@@ -56,15 +51,7 @@ export function toSchema(value: SubTableConfig): FormBuilder.Schema {
   };
 }
 
-type Column = {title: string; dataIndex: string};
 export function toConfig(schema: FormBuilder.Schema): SubTableConfig {
-  let display: FormBuilder.DisplayModifier = 'normal';
-  if (schema.readOnly) {
-    display = 'readonly';
-  } else if (!schema.display) {
-    display = 'hidden';
-  }
-
   if (!schema['x-component-props']) {
     throw new Error('toConfig failed, x-component-props is missing in schema');
   }
@@ -72,15 +59,14 @@ export function toConfig(schema: FormBuilder.Schema): SubTableConfig {
   return {
     title: schema.title as string,
     description: schema.description as string,
-    display,
     subordination: schema['x-component-props'].subordination,
+    subTableSchema: schema.items as ISchema,
+    required: !!schema.required,
     linkedTable: {
       appID: schema['x-component-props'].appID,
       tableID: schema['x-component-props'].tableID,
       tableName: schema['x-component-props'].tableName,
     },
-    columns: schema?.['x-component-props']?.columns.map((v: string) => JSON.parse(v)) as Column[],
-    items: schema.items as ISchema,
-    required: !!schema.required,
+    columns: schema['x-component-props'].columns,
   };
 }

@@ -14,9 +14,7 @@ export async function createBlankFormTable({ appID }: { appID: string}): Promise
 
 export async function getFormTableSchema<T>({ appID, tableID }: { appID: string, tableID: string }) {
   try {
-    return await httpClient<T>(`/api/v1/structor/${appID}/m/table/getByID`, { tableID },
-      { 'X-Proxy': 'FORM_SCHEMA' }
-    );
+    return await httpClient<T>(`/api/v1/structor/${appID}/m/table/getByID`, { tableID });
   } catch (err) {
     toast.error(err);
     return null;

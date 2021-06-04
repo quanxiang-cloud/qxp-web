@@ -33,27 +33,6 @@ const schema: ISchema = {
           },
           'x-index': 1,
         },
-        display: {
-          type: 'string',
-          title: '字段属性',
-          default: 'normal',
-          enum: [
-            {
-              label: '普通',
-              value: 'normal',
-            },
-            {
-              label: '只读',
-              value: 'readonly',
-            },
-          ],
-          'x-component': 'Switcher',
-          'x-mega-props': {
-            labelAlign: 'top',
-          },
-          visible: false,
-          'x-index': 2,
-        },
         subordination: {
           title: '子表来源',
           type: 'string',
@@ -72,12 +51,22 @@ const schema: ISchema = {
           'x-mega-props': {
             labelAlign: 'top',
           },
-          'x-index': 3,
+          'x-index': 2,
           'x-linkages': [
             {
               type: 'value:visible',
               target: 'linkedTable',
               condition: '{{ $value === "foreign_table" }}',
+            },
+            {
+              type: 'value:visible',
+              target: 'columns',
+              condition: '{{ $value === "foreign_table" }}',
+            },
+            {
+              type: 'value:visible',
+              target: 'subTableSchema',
+              condition: '{{ $value === "sub_table" }}',
             },
           ],
         },
@@ -88,19 +77,27 @@ const schema: ISchema = {
             tableID: '',
             tableName: '',
           },
-          'x-component': 'FormTableSelectorWrapper',
+          'x-component': 'LinkedTable',
+          'x-mega-props': {
+            labelAlign: 'top',
+          },
+          'x-index': 3,
+        },
+        subTableSchema: {
+          type: 'object',
+          'x-component': 'SubTableSchema',
           'x-mega-props': {
             labelAlign: 'top',
           },
           'x-index': 4,
         },
-        items: {
-          type: 'object',
-          'x-component': 'FormTableFields',
+        columns: {
+          type: 'array',
+          default: [],
+          'x-component': 'Columns',
           'x-mega-props': {
             labelAlign: 'top',
           },
-          visible: true,
           'x-index': 5,
         },
         curConfigSubTableKey: {
@@ -112,27 +109,6 @@ const schema: ISchema = {
           },
           'x-index': 6,
           visible: false,
-        },
-        workTableSchemaOptions: {
-          type: 'array',
-          default: [],
-          enum: [],
-          'x-component': 'Select',
-          'x-mega-props': {
-            labelAlign: 'top',
-          },
-          visible: false,
-          'x-index': 7,
-        },
-        columns: {
-          type: 'array',
-          default: [],
-          'x-component': 'Columns',
-          'x-mega-props': {
-            labelAlign: 'top',
-          },
-          visible: true,
-          'x-index': 8,
         },
       },
     },

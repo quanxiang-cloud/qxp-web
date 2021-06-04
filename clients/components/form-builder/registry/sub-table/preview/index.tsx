@@ -4,7 +4,7 @@ import { Table } from 'antd';
 import { Input, Radio, DatePicker, NumberPicker, Select } from '@formily/antd-components';
 import { isEmpty } from 'lodash';
 
-import { getFormTableSchema } from './api';
+import { getFormTableSchema } from '../config/api';
 import logger from '@lib/logger';
 
 type Column = {

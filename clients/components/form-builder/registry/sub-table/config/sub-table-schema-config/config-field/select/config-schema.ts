@@ -1,5 +1,5 @@
 import { ISchema } from '@formily/react-schema-renderer';
-import { deleteOperate, extraOperations, addOperate } from '../../operates';
+import { deleteOperate, extraOperations, addOperate } from '../../../fields/operates';
 
 const schema: ISchema = {
   type: 'object',

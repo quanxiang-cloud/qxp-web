@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import classnames from 'classnames';
 
-import { ItemActionsContext } from './config-form';
+import { ItemActionsContext } from '../context';
 import Icon from '@c/icon';
 import Button from '@c/button';
 
