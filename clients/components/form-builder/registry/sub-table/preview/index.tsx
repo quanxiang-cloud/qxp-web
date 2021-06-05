@@ -94,7 +94,7 @@ function SubTable(compProps: Props) {
 
   const val = value.length ? value : [emptyRow];
 
-  if (!columns.length || (columns.length === 1 && columns[0]?.dataIndex === '_id')) {
+  if (!columns.length) {
     return null;
   }
 
@@ -137,7 +137,7 @@ function SubTable(compProps: Props) {
                     />
                   ))}
                   <Button className="ml-10" onClick={onRemove.bind(null, index)}>
-                        remove
+                    remove
                   </Button>
                 </div>
               );
