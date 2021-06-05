@@ -38,8 +38,6 @@ interface Props extends ISchemaFieldComponentProps {
 }
 
 function SubTable(compProps: Props) {
-  console.log('subTable', compProps);
-
   const [schemaData, setSchemaData] = useState<{tableID: string; schema: ISchema} | null>(null);
   const { schema: definedSchema } = compProps;
   const {
