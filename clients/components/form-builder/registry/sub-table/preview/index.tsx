@@ -1,15 +1,21 @@
-import React, { ChangeEvent, useEffect, useState } from 'react';
+import React, { useEffect, useState, JSXElementConstructor, ChangeEvent } from 'react';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
-import { Table } from 'antd';
+import { Button } from 'antd';
 import { Input, Radio, DatePicker, NumberPicker, Select } from '@formily/antd-components';
+import {
+  InternalFieldList as FieldList,
+  FormItem,
+} from '@formily/antd';
+
+import logger from '@lib/logger';
 
 import { getFormTableSchema } from '../config/api';
-import logger from '@lib/logger';
 
 type Column = {
   title: string;
   dataIndex: string;
-  render: any;
+  component?: JSXElementConstructor<any>;
+  props: Record<string, unknown>;
 }
 
 type Components = typeof components;
@@ -39,7 +45,7 @@ interface Props extends ISchemaFieldComponentProps {
 
 function SubTable(compProps: Props) {
   const [schemaData, setSchemaData] = useState<{tableID: string; schema: ISchema} | null>(null);
-  const { schema: definedSchema } = compProps;
+  const { schema: definedSchema, value, mutators: ms, name } = compProps;
   const {
     tableID, appID, subordination, columns: definedColumns,
   } = compProps.props['x-component-props'];
@@ -55,8 +61,6 @@ function SubTable(compProps: Props) {
 
   const schema = (isFromEmpty ? definedSchema.items : schemaData?.schema) as ISchema;
 
-  let columns = [];
-
   function buildColumnFromSchema(dataIndex: string, sc: ISchema) {
     const componentName = sc['x-component']?.toLowerCase() as keyof Components;
     const componentProps = sc['x-component-props'] || {};
@@ -67,49 +71,82 @@ function SubTable(compProps: Props) {
     return {
       title: sc.title as string,
       dataIndex,
-      render: () => {
-        return React.createElement(components[componentName], {
-          ...compProps,
-          mutators: {
-            ...compProps.mutators,
-            change: (e: ChangeEvent<HTMLInputElement>) => {
-              const v = e?.target?.value || e;
-              compProps.value[dataIndex] = v;
-              compProps.mutators.change(compProps.value);
-            },
-          },
-          defaultValue: compProps.defaultValue,
-          value: compProps.value[dataIndex],
-          props: {
-            ...compProps.props,
-            enum: sc.enum,
-            'x-component-props': {
-              ...componentProps,
-            },
-          },
-        });
-      },
+      component: components[componentName],
+      props: componentProps,
     };
   }
 
-  columns = Object.entries(schema?.properties || {}).reduce((cur: Column[], next) => {
-    const [key, sc] = next;
-    if ((isFromForeign && !definedColumns.includes(key)) || key === '_id') {
+  const emptyRow: Record<string, string> = {};
+  const columns: Column[] = Object.entries(schema?.properties || {}).reduce(
+    (cur: Column[], next) => {
+      const [key, sc] = next;
+      const componentProps = sc['x-component-props'] || {};
+      if ((isFromForeign && !definedColumns.includes(key)) || key === '_id') {
+        return cur;
+      }
+      const newColumn = buildColumnFromSchema(key, sc);
+      if (newColumn) {
+        Object.assign(emptyRow, { [key]: sc.default || componentProps?.defaultValue });
+        cur.push(newColumn);
+      }
       return cur;
-    }
-    const newColumn = buildColumnFromSchema(key, sc);
-    newColumn && cur.push(newColumn);
-    return cur;
-  }, []);
+    }, []) as Column[];
 
-  const dataSource = [{ ...(schema?.properties || {}), key: 0 }];
+  const val = value.length ? value : [emptyRow];
 
   if (!columns.length || (columns.length === 1 && columns[0]?.dataIndex === '_id')) {
     return null;
   }
 
   return (
-    <Table columns={columns as Column[]} dataSource={dataSource} pagination={false} />
+    <FieldList
+      name={name}
+      initialValue={val}
+    >
+      {({ state, mutators }) => {
+        const onAdd = () => mutators.push();
+        return (
+          <div>
+            {state.value.map((item: any, index: number) => {
+              const onRemove = (index: number) => mutators.remove(index);
+              const onItemChange = (e: ChangeEvent<HTMLInputElement>, dataIndex: string) => {
+                ms.change(state.value.map((vItem: any, idx: number) => {
+                  if (index !== idx) {
+                    return vItem;
+                  }
+                  return {
+                    ...vItem,
+                    [dataIndex]: e.target.value,
+                  };
+                }));
+              };
+              return (
+                <div key={index} className="flex items-start justify-between">
+                  {columns.map(({ title, dataIndex, component, props }) => (
+                    <FormItem
+                      className="mr-8"
+                      key={dataIndex}
+                      name={`${name}.${index}.${dataIndex}`}
+                      component={component}
+                      title={title}
+                      props={props}
+                      value={item?.[dataIndex] || undefined}
+                      onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                        onItemChange(e, dataIndex);
+                      }}
+                    />
+                  ))}
+                  <Button className="ml-10" onClick={onRemove.bind(null, index)}>
+                        remove
+                  </Button>
+                </div>
+              );
+            })}
+            <Button className="mt-12" onClick={onAdd}>add</Button>
+          </div>
+        );
+      }}
+    </FieldList>
   );
 }
 
