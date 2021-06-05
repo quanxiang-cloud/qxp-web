@@ -23,7 +23,7 @@ function convertPagesToOptions(
 
 export function getLinkageTables(appID: string): Promise<Array<{ label: string; value: string }>> {
   return httpClient<{ menu: AppPage[] }>(
-    `/api/v1/structor/${appID}/${window.SIDE === 'portal' ? 'm' : 'home'}/menu/list`,
+    `/api/v1/structor/${appID}/m/menu/list`,
     { appID }
   ).then((res) => {
     if (!res.menu || !res.menu.length) {
