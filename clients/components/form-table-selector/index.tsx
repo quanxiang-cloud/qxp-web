@@ -93,6 +93,11 @@ function FormTableSelector(
 
   const currentValuePath = getPathWhenMatch(value.value, options);
 
+  const extra = {};
+  if (ref) {
+    Object.assign(extra, { ref });
+  }
+
   return (
     <>
       <div className={cs('px-16 py-10 border flex items-center corner-2-8-8-8 h-40', {
@@ -105,6 +110,7 @@ function FormTableSelector(
         </div>
         {changeable && (
           <Cascader
+            {...extra}
             allowClear={false}
             bordered={false}
             options={options}
@@ -113,7 +119,6 @@ function FormTableSelector(
             placeholder="请选择"
             value={currentValuePath}
             popupClassName="ml-12"
-            ref={ref}
             className={cs(
               'h-28 border-none px-12 text-12 flex items-center',
               'flex-1 work-flow-form-selector text-body2-no-color',
@@ -131,6 +136,7 @@ function FormTableSelector(
             labelClassName="whitespace-nowrap"
           >
             <Cascader
+              {...extra}
               disabled
               allowClear={false}
               bordered={false}
@@ -140,7 +146,6 @@ function FormTableSelector(
               placeholder="请选择"
               value={currentValuePath}
               popupClassName="ml-12"
-              ref={ref}
               className={cs(
                 'h-28 border-none px-12 text-12 flex items-center',
                 'flex-1 work-flow-form-selector',
