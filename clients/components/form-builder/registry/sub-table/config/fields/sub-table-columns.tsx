@@ -16,7 +16,7 @@ interface Option {
   schema: ISchema;
 }
 
-function Columns({ value, mutators }: ISchemaFieldComponentProps) {
+function SubTableColumns({ value, mutators }: ISchemaFieldComponentProps) {
   const [currentSchema, setCurrentSchema] = useState<ISchema>();
   const { actions } = useContext(ActionsContext);
 
@@ -94,6 +94,6 @@ function Columns({ value, mutators }: ISchemaFieldComponentProps) {
   );
 }
 
-Columns.isFieldComponent = true;
+SubTableColumns.isFieldComponent = true;
 
-export default Columns;
+export default SubTableColumns;

@@ -9,7 +9,7 @@ export type SubTableConfig = {
     tableID: string;
     tableName: string;
   }
-  columns: string[];
+  subTableColumns: string[];
 }
 
 export const defaultConfig: SubTableConfig = {
@@ -26,7 +26,7 @@ export const defaultConfig: SubTableConfig = {
     tableID: '',
     tableName: '',
   },
-  columns: [],
+  subTableColumns: [],
 };
 
 export function toSchema(value: SubTableConfig): FormBuilder.Schema {
@@ -39,7 +39,7 @@ export function toSchema(value: SubTableConfig): FormBuilder.Schema {
     items: value.subTableSchema,
     'x-component': 'SubTable',
     ['x-component-props']: {
-      columns: value.columns || [],
+      columns: value.subTableColumns || [],
       subordination: value.subordination,
       appID: value.linkedTable?.appID,
       tableID: value.linkedTable?.tableID,
@@ -64,6 +64,6 @@ export function toConfig(schema: FormBuilder.Schema): SubTableConfig {
       tableID: schema['x-component-props']?.tableID,
       tableName: schema['x-component-props']?.tableName,
     },
-    columns: schema['x-component-props']?.columns,
+    subTableColumns: schema['x-component-props']?.columns,
   };
 }

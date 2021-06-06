@@ -44,7 +44,7 @@ function Subordination({ value, mutators, props }: ISchemaFieldComponentProps): 
   }
 
   function onForeignTable() {
-    actions.setFieldState('Fields.columns', (state) => {
+    actions.setFieldState('Fields.subTableColumns', (state) => {
       state.value = [];
     });
   }

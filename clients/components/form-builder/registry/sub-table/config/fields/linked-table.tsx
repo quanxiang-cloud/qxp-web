@@ -5,12 +5,6 @@ import FormTableSelector from '@c/form-table-selector';
 
 import { StoreContext } from '../context';
 
-interface LinkedTable {
-  appID: string;
-  tableID: string;
-  tableName: string;
-}
-
 function LinkedTable({ value, mutators }: ISchemaFieldComponentProps) {
   const { pageID: pageId } = useContext(StoreContext);
 

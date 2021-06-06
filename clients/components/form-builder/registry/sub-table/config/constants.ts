@@ -11,7 +11,7 @@ import {
 
 import { INTERNAL_FIELD_NAMES } from '@c/form-builder/store';
 import SubTableSchema from './fields/sub-table-schema';
-import columns from './fields/columns';
+import SubTableColumns from './fields/sub-table-columns';
 import subordination from './fields/subordination';
 import LinkedTable from './fields/linked-table';
 import sInput from './sub-table-schema-config/config-field/input';
@@ -38,11 +38,11 @@ export const COMPONENTS: Record<string, JSXElementConstructor<ISchemaFieldCompon
   input,
   select,
   subtableschema: SubTableSchema,
+  subtablecolumns: SubTableColumns,
   linkedtable: LinkedTable,
   switch: Switch,
   arraytable: ArrayTable,
   addoperate: addOperate,
-  columns,
   numberpicker: NumberPicker,
   datepicker: DatePicker,
   defaultvaluelinkageconfigbtn: DefaultValueLinkageConfigBtn,

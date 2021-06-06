@@ -1,6 +1,7 @@
 import React, { useEffect, useState, JSXElementConstructor, ChangeEvent } from 'react';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 import { Button } from 'antd';
+import moment, { Moment } from 'moment';
 import { Input, Radio, DatePicker, NumberPicker, Select } from '@formily/antd-components';
 import {
   InternalFieldList as FieldList,
@@ -45,7 +46,7 @@ interface Props extends ISchemaFieldComponentProps {
 
 function SubTable(compProps: Props) {
   const [schemaData, setSchemaData] = useState<{tableID: string; schema: ISchema} | null>(null);
-  const { schema: definedSchema, value, mutators: ms, name } = compProps;
+  const { schema: definedSchema, initialValue, mutators: ms, name } = compProps;
   const {
     tableID, appID, subordination, columns: definedColumns,
   } = compProps.props['x-component-props'];
@@ -92,7 +93,17 @@ function SubTable(compProps: Props) {
       return cur;
     }, []) as Column[];
 
-  const val = value.length ? value : [emptyRow];
+  function getChangedValue(e: ChangeEvent<HTMLInputElement> | string | Moment) {
+    let changedValue = '';
+    if (moment.isMoment(e)) {
+      changedValue = e.format('YYYY-MM-DD HH:mm:ss');
+    } else if (typeof e === 'string') {
+      changedValue = e;
+    } else {
+      changedValue = e.target.value;
+    }
+    return changedValue;
+  }
 
   if (!columns.length) {
     return null;
@@ -101,7 +112,7 @@ function SubTable(compProps: Props) {
   return (
     <FieldList
       name={name}
-      initialValue={val}
+      initialValue={initialValue.length ? initialValue : [emptyRow]}
     >
       {({ state, mutators }) => {
         const onAdd = () => mutators.push();
@@ -109,14 +120,17 @@ function SubTable(compProps: Props) {
           <div>
             {state.value.map((item: any, index: number) => {
               const onRemove = (index: number) => mutators.remove(index);
-              const onItemChange = (e: ChangeEvent<HTMLInputElement>, dataIndex: string) => {
+              const onItemChange = (
+                e: ChangeEvent<HTMLInputElement> | string,
+                dataIndex: string
+              ) => {
                 ms.change(state.value.map((vItem: any, idx: number) => {
                   if (index !== idx) {
                     return vItem;
                   }
                   return {
                     ...vItem,
-                    [dataIndex]: e.target.value,
+                    [dataIndex]: getChangedValue(e),
                   };
                 }));
               };
@@ -124,7 +138,7 @@ function SubTable(compProps: Props) {
                 <div key={index} className="flex items-start justify-between">
                   {columns.map(({ title, dataIndex, component, props }) => (
                     <FormItem
-                      className="mr-8"
+                      className="mr-8 mb-8"
                       key={dataIndex}
                       name={`${name}.${index}.${dataIndex}`}
                       component={component}
@@ -137,12 +151,12 @@ function SubTable(compProps: Props) {
                     />
                   ))}
                   <Button className="ml-10" onClick={onRemove.bind(null, index)}>
-                    remove
+                    删除
                   </Button>
                 </div>
               );
             })}
-            <Button className="mt-12" onClick={onAdd}>add</Button>
+            <Button className="mt-12 mb-3" onClick={onAdd}>添加</Button>
           </div>
         );
       }}

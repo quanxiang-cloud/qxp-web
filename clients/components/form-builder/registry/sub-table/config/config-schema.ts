@@ -60,7 +60,7 @@ const schema: ISchema = {
             },
             {
               type: 'value:visible',
-              target: 'columns',
+              target: 'subTableColumns',
               condition: '{{ $value === "foreign_table" }}',
             },
             {
@@ -91,10 +91,10 @@ const schema: ISchema = {
           },
           'x-index': 4,
         },
-        columns: {
+        subTableColumns: {
           type: 'array',
           default: [],
-          'x-component': 'Columns',
+          'x-component': 'SubTableColumns',
           'x-mega-props': {
             labelAlign: 'top',
           },
