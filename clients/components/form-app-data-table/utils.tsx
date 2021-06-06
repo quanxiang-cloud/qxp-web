@@ -36,8 +36,9 @@ export function operateButton(wIndex: number, authority: number, button: React.R
 
 export function getTableCellData(
   initValue: string | string[] | Record<string, unknown>,
-  field: ISchema
-): string | JSX.Element {
+  field: ISchema,
+  includeSubTable?: boolean,
+): string | JSX.Element | Record<string, any>[] {
   if (!initValue) {
     return (<span className='text-gray-300'>——</span>);
   }
@@ -74,6 +75,10 @@ export function getTableCellData(
     }
 
     return initValue as string;
+  }
+
+  if (includeSubTable && field['x-component']?.toLowerCase() === 'subtable') {
+    return initValue as unknown as Record<string, any>[];
   }
 
   if (Array.isArray(initValue)) {
@@ -134,13 +139,14 @@ export function getPageDataSchema(
   const fields: Fields[] = [];
   const tableColumns: any[] = [];
   Object.keys(fieldsMap).forEach((key: string) => {
-    if (key === '_id' || fieldsMap[key]?.['x-component'] === 'SubTable') {
+    if (key === '_id') {
       return;
     }
 
     fields.push({ id: key, ...fieldsMap[key] });
     const hasVisible = pageTableConfig[key] ? 'visible' in pageTableConfig[key] : false;
-    if ((hasVisible && pageTableConfig[key].visible) || !hasVisible) {
+    if (((hasVisible && pageTableConfig[key].visible) || !hasVisible) &&
+      fieldsMap[key]['x-component']?.toLowerCase() !== 'subtable') {
       tableColumns.push({
         id: key,
         Header: fieldsMap[key].title || '',

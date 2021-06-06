@@ -1,6 +1,8 @@
 import React, { useState, useMemo, useEffect, useContext } from 'react';
 import { observer } from 'mobx-react';
 import cs from 'classnames';
+import { Table } from 'antd';
+import { ColumnType } from 'antd/lib/table';
 
 import Tab from '@c/tab2';
 import Icon from '@c/icon';
@@ -42,20 +44,21 @@ function DetailsDrawer({ onCancel, rowID }: Props) {
     if (formDataItem === null) {
       return [[], []];
     }
+
     const _details: InfoData[] = [];
     const _systems: InfoData[] = [];
     store.fields.forEach((field: any) => {
       if (field['x-internal'].isSystem) {
         _systems.push({
-          label: field.title,
+          label: field['x-component-props']?.tableName || field.title,
           key: field.id,
-          value: getTableCellData((formDataItem as any)[field.id], field),
+          value: getTableCellData((formDataItem as any)[field.id], field, true),
         });
       } else {
         _details.push({
-          label: field.title,
+          label: field['x-component-props']?.tableName || field.title,
           key: field.id,
-          value: getTableCellData((formDataItem as any)[field.id], field),
+          value: getTableCellData((formDataItem as any)[field.id], field, true),
         });
       }
     });
@@ -76,13 +79,44 @@ function DetailsDrawer({ onCancel, rowID }: Props) {
     });
   };
 
+  function buildSubTableColumns(fieldKey: string): ColumnType<object>[] {
+    const items = store.fields.find(({ id }) => id === fieldKey)?.items as ISchema;
+    return Object.entries(items?.properties || {}).reduce((
+      cur: ColumnType<object>[], next: [string, ISchema]
+    ) => {
+      const [key, sc] = next;
+      cur.push({
+        title: sc.title as string,
+        dataIndex: key,
+      });
+      return cur;
+    }, []);
+  }
+
+  function subTableRender(value: Record<string, unknown>[], fieldKey: string) {
+    if (!value) {
+      return null;
+    }
+    return (
+      <Table
+        pagination={false}
+        rowKey="id"
+        columns={buildSubTableColumns(fieldKey) || []}
+        dataSource={value}
+      />
+    );
+  }
+
   const cardRender = (list: InfoData[]) => {
     return (
       <div className='grid gap-20 grid-cols-2'>
         {list.map(({ label, value, key }) => (
           <div className='page-data-info-view' key={key}>
             <div className='text-body2-no-color text-gray-600'>{label}</div>
-            <div className='text-body2 truncate'>{value}</div>
+            {Array.isArray(value) && subTableRender(value as Record<string, unknown>[], key)}
+            {!Array.isArray(value) && (
+              <div className='text-body2 truncate'>{value}</div>
+            )}
           </div>
         ))}
       </div>
