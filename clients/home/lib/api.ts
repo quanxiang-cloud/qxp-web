@@ -8,8 +8,15 @@ export const fetchPageList = (appID: string)=> {
   return httpClient(`/api/v1/structor/${appID}/home/menu/user/list`, { appID });
 };
 
+// todo refactor
+type GetTableSchemaResponse = { config: any; id: string; schema?: ISchema; tableID: string; };
+
 export const fetchFormScheme = (appID: string, tableID: string) => {
-  return httpClient(`/api/v1/structor/${appID}/home/schema/${tableID}`);
+  return httpClient<GetTableSchemaResponse>(
+    `/api/v1/structor/${appID}/home/schema/${tableID}`,
+    { tableID },
+    { 'X-Proxy': 'FORM_SCHEMA' },
+  );
 };
 
 export const getPerOption = <T>(appID: string) => {
