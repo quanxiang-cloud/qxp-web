@@ -415,4 +415,5 @@ type ComponentProp struct {
 	Subordination string `json:"subordination"`
 	// 关联表schema
 	AssociatedTable interface{} `json:"associatedTable"`
+	Multiple   bool  `json:"multiple"`
 }
