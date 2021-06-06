@@ -21,6 +21,7 @@ function PageDataTable() {
     if (store.tableColumns.length === 0) {
       return [];
     }
+
     const columnsTmp = [...store.tableColumns];
     const actionColumn = columnsTmp.pop();
     return [...columnsTmp, {
