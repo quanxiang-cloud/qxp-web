@@ -264,3 +264,11 @@ export function getHTMLParentElement(selector: string, el: HTMLElement | null): 
     return getHTMLParentElement(selector, el.parentElement);
   }
 }
+
+export function parseJSON<T>(str: string, fallback: T): T {
+  try {
+    return JSON.parse(str);
+  } catch (e) {
+    return fallback;
+  }
+}

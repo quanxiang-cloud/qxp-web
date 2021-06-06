@@ -284,7 +284,7 @@ export default class Select<T extends React.Key> extends React.Component<SelectP
                   />
                 )
               }
-              <div className="select-trigger__content" ref={this.triggerContentRef}>
+              <div className="select-trigger__content flex gap-4" ref={this.triggerContentRef}>
                 {triggerRender ? this.renderCustomTrigger() : this.renderDefaultTrigger()}
               </div>
               <Icon name="keyboard_arrow_down" style={arrowStyle} className="trigger-arrow-icon" />

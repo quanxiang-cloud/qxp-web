@@ -48,7 +48,7 @@ func FormSchemaHandler(w http.ResponseWriter, r *http.Request) {
 		contexts.Logger.Error("read body err, %v\n", err)
 		return
 	}
-	contexts.Logger.Debugf("schema proxy api request, method: %s, url: %s,body : %s,request_id: %s ", method, url,string(body), requestID)
+	contexts.Logger.Debugf("schema proxy api request, method: %s, url: %s,body : %s,request_id: %s ", method, url, string(body), requestID)
 
 	sm := &schema{}
 	if strings.HasSuffix(path, "/") {
@@ -143,7 +143,7 @@ func subFormHandler(r *http.Request, s map[string]interface{}, path, tableID str
 func createSub(r *http.Request, vm map[string]interface{}, tableID, fieldNme string) (int, error) {
 	if tp, ok := vm[Type]; ok && tp == Arr {
 		// 存在子表单或关联表单
-		if cm, ok := vm[Component]; ok && (cm == SubTableF || cm == associatedRecords){
+		if cm, ok := vm[Component]; ok && (cm == SubTableF || cm == associatedRecords) {
 			cp := ComponentProp{}
 			if c, ok := vm[ComponentProps]; ok {
 				err := genComponent(c, &cp)
@@ -239,7 +239,7 @@ func fillSchema(r *http.Request, schema map[string]interface{}, tableID, cate st
 func doFill(r *http.Request, vm map[string]interface{}, tableID, fieldNme, cate string) (int, error) {
 	if tp, ok := vm[Type]; ok && tp == Arr {
 		// 存在子表单或关联表单
-		if cm, ok := vm[Component];ok && (cm == SubTableF || cm == associatedRecords){
+		if cm, ok := vm[Component]; ok && (cm == SubTableF || cm == associatedRecords) {
 			cp := ComponentProp{}
 			if c, ok := vm[ComponentProps]; ok {
 				err := genComponent(c, &cp)
@@ -328,7 +328,7 @@ func doFill(r *http.Request, vm map[string]interface{}, tableID, fieldNme, cate 
 						vm[Items] = ft
 					}
 					if cm == AssociatedRecords {
-						doFilter(ft, &stb.Filter)
+						// doFilter(ft, &stb.Filter)
 						cp.AssociatedTable = ft
 						vm[ComponentProps] = &cp
 					}
@@ -415,4 +415,5 @@ type ComponentProp struct {
 	Subordination string `json:"subordination"`
 	// 关联表schema
 	AssociatedTable interface{} `json:"associatedTable"`
+	Multiple   bool  `json:"multiple"`
 }

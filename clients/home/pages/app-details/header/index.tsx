@@ -69,10 +69,12 @@ function DetailsHeader() {
           onChange={handleChange}
         />
       </div>
-      <div className='flex items-center'>
-        切换角色：
-        <Select value={curRole} onChange={handleRoleChange} className='w-144' options={options} />
-      </div>
+      {options.length > 1 && (
+        <div className='flex items-center'>
+          切换角色：
+          <Select value={curRole} onChange={handleRoleChange} className='w-144' options={options} />
+        </div>
+      )}
     </div>
   );
 }

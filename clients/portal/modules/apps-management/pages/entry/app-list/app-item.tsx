@@ -1,6 +1,6 @@
 import React from 'react';
 
-import AppInfoView from '@portal/modules/apps-management/components/app-info-view';
+import AppInfoView from '@c/app-info-view';
 
 import AppActions from './app-actions';
 import './app-item.scss';

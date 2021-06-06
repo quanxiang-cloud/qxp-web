@@ -8,6 +8,7 @@ function FormSettingPanel() {
   return (
     <Tab
       strechNavs
+      separator
       style={{ width: '296px' }}
       items={[
         {

@@ -5,14 +5,14 @@
   border-radius: 12px;
 }
 
-.form-app-data-table-filtrate {
+.form-app-data-table-filter {
   display: flex;
   flex-shrink: 0;
   column-gap: 24px;
   margin-bottom: 16px;
 }
 
-.form-app-data-table-filtrate-more {
+.form-app-data-table-filter-more {
   margin-right: 40px;
   cursor: pointer;
   user-select:none;
@@ -88,4 +88,18 @@
   box-shadow: 0px 8px 24px rgb(148 163 184 / 25%);
   background-color: #fff;
   border-radius: 12px;
+}
+
+.user-app-schema-form {
+  display: grid;
+  grid-template-columns: 60%;
+  justify-content: center;
+  overflow-y: auto;
+  flex: 1;
+  background-color: #fff;
+  border-radius: 12px;
+
+  .ant-form-item-label {
+    width: 100px;
+  }
 }

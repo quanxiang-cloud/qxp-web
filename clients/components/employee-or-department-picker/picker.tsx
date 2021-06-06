@@ -93,7 +93,8 @@ export default observer(function EmployeeOrDepartmentPicker({
           appendix="close"
         />
         <div className="flex flex-row mr-4" style={{ height: 'calc(100% - 48px)' }}>
-          <div className="w-221 h-full flex flex-col overflow-hidden mr-20">
+          <div
+            className="w-221 h-full flex flex-col overflow-hidden mr-20 border-r border-gray-200">
             <TextHeader
               className="mb-8 pb-0"
               title="选择部门"

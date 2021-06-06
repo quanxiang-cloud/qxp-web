@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import useCss from 'react-use/lib/useCss';
 import cs from 'classnames';
 import { RadioGroup as LegoRadioGroup, RadioButton as LegoRadioButton } from '@QCFE/lego-ui';
@@ -12,11 +12,23 @@ interface ISwitch<Value extends React.Key> {
   className?: string;
   options: ISwitchOption<Value>[];
   onChange?: (value: Value) => void;
+  value?: Value;
   defaultValue?: string;
   optionRenderer?: (option: ISwitchOption<Value>)=> React.ReactNode;
 }
 
 export default function Switch<Value extends React.Key>(props: ISwitch<Value>) {
+  const [value, setValue] = useState<Value>();
+
+  useEffect(() => {
+    setValue(props.value);
+  }, [props.value]);
+
+  function onChange(value: Value) {
+    setValue(value);
+    props.onChange?.(value);
+  }
+
   return (
     <div className={cs(useCss({
       display: 'inline-block',
@@ -45,8 +57,9 @@ export default function Switch<Value extends React.Key>(props: ISwitch<Value>) {
       },
     }), props.className)}>
       <LegoRadioGroup
-        defaultValue={props.defaultValue ? props.defaultValue : props.options[0]['value']}
-        onChange={props.onChange}
+        defaultValue={props.options[0]['value']}
+        onChange={onChange}
+        value={value}
       >
         {
           props.options.map((option) => {

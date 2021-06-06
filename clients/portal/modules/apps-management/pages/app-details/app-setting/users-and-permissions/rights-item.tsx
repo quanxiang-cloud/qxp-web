@@ -79,29 +79,31 @@ function RightsItem({ rights, actions }: Props) {
           <span className='text-red-400' onClick={() => actions('del', rights)}>删除</span>
         </p>
       </div>
-      <div className='p-20'>
-        <div className='mb-4'>
-          <div onClick={() => setModalType('addUser')} className='text-icon-btn py-4 px-8'>
-            <Icon name='add' />
+      {rights.add ? (
+        <div className='p-20'>
+          <div className='mb-4'>
+            <div onClick={() => setModalType('addUser')} className='text-icon-btn py-4 px-8'>
+              <Icon name='add' />
             添加员工与部门
+            </div>
+          </div>
+          <div className='flex gap-8 flex-wrap'>
+            {(rights.scopes || []).map(({ name, type, id }) => (
+              <div className={`pb-form-right-${type === 1 ? 'user' : 'dep'}`} key={id}>
+                <span>
+                  <Icon
+                    type='light'
+                    name={type === 1 ? 'person' : 'device_hub'}
+                  />
+                </span>
+                <div title={name} className="truncate">
+                  {name}
+                </div>
+              </div>
+            ))}
           </div>
         </div>
-        <div className='flex gap-8 flex-wrap'>
-          {(rights.scopes || []).map(({ name, type, id }) => (
-            <div className={`pb-form-right-${type === 1 ? 'user' : 'dep'}`} key={id}>
-              <span>
-                <Icon
-                  type='light'
-                  name={type === 1 ? 'person' : 'device_hub'}
-                />
-              </span>
-              <div title={name} className="truncate">
-                {name}
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
+      ) : <div className='p-20'>该权限组无有效权限</div>}
       {modalType === 'setting' && (
         <Drawer title='编辑权限组' onCancel={() => setModalType('')}>
           <RightSetting rights={rights} />

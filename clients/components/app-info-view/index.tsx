@@ -1,6 +1,7 @@
 import React from 'react';
 
 import AppIcon from '@c/app-icon';
+import { parseJSON } from '@lib/utils';
 
 import './index.scss';
 
@@ -11,7 +12,7 @@ type Props = {
 }
 
 function AppInfoView({ appInfo, onClick, className = '' }: Props) {
-  const appIcon: AppIconInfo = JSON.parse(appInfo.appIcon);
+  const appIcon = parseJSON<AppIconInfo>(appInfo.appIcon, { bgColor: 'amber', iconName: '' });
 
   return (
     <div onClick={onClick} className={`${className} flex-1 flex overflow-hidden items-center`}>

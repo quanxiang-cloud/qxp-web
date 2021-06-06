@@ -2,6 +2,7 @@ import React from 'react';
 import { Form } from '@QCFE/lego-ui';
 
 import AppIconPicker from '@c/app-icon-picker';
+import { parseJSON } from '@lib/utils';
 
 type Props = {
   appInfo?: AppInfo;
@@ -10,7 +11,7 @@ type Props = {
 const AppIconPickerField = Form.getFormField(AppIconPicker);
 
 function CreatedEditApp({ appInfo }: Props, ref?: React.ForwardedRef<Form>): JSX.Element {
-  const { appName, appIcon } = appInfo || {};
+  const { appName, appIcon = '{}' } = appInfo || {};
 
   return (
     <Form ref={ref} layout='vertical'>
@@ -34,7 +35,7 @@ function CreatedEditApp({ appInfo }: Props, ref?: React.ForwardedRef<Form>): JSX
       <AppIconPickerField
         name='appIcon'
         label='应用图标'
-        defaultAppIcon={appIcon && JSON.parse(appIcon)}
+        defaultAppIcon={parseJSON<AppIconInfo | undefined>(appIcon, undefined)}
         schemas={[
           {
             help: '请选择应用图标',

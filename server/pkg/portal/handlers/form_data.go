@@ -28,9 +28,15 @@ const (
 
 type input struct {
 	Method    string
-	Condition []Condition
+	Conditions *InputConditionVo `json:"conditions"`
 	Entity    Entity
 	Ref       []map[string]interface{}
+}
+
+// InputConditionVo InputConditionVo
+type InputConditionVo struct {
+	Condition []Condition      `json:"condition"`
+	Tag       string           `json:"tag"`
 }
 
 // Condition Condition
@@ -186,8 +192,10 @@ func doUpdate(r *http.Request, in *input, p map[string]string) (int, interface{}
 				}
 				in = &input{
 					Method: "delete",
-					Condition: []Condition{
-						con,
+					Conditions: &InputConditionVo{
+						Condition: []Condition{
+							con,
+						},
 					},
 				}
 				sd, err := json.Marshal(df.Deleted[i])
@@ -252,7 +260,9 @@ func doFindOne(r *http.Request, i *input, p map[string]string) (int, interface{}
 					subFindPath := fmt.Sprintf("%s%s%s%s", base, subTable.AppID, form, subTable.SubTableID)
 					subInput := new(input)
 					subInput.Method = "find"
-					subInput.Condition = []Condition{{Key: "_id", Op: "in", Value: val.Interface().([]interface{})}}
+					subInput.Conditions = &InputConditionVo{
+						Condition: []Condition{{Key: "_id", Op: "in", Value: val.Interface().([]interface{})}},
+					}
 
 					str, err := json.Marshal(subInput)
 					if err != nil {
@@ -478,12 +488,9 @@ func sendRequest2Struct(r *http.Request, method string, fullPath string, body []
 		"proxy api request, method: %s, url: %s, header: %s request_id: %s", method, fullPath, req.Header, contexts.GetRequestID(r))
 
 	resp, body, errMsg := contexts.RetrieveResponse(req)
-	if errMsg != "" {
-		contexts.Logger.Errorf("do request proxy error: %s, request_id: %s", err.Error(), contexts.GetRequestID(r))
-		return http.StatusInternalServerError, nil, errors.New(errMsg)
-	}
-	if resp.StatusCode != http.StatusOK {
-		return resp.StatusCode, nil, errors.New("error")
+	if resp.StatusCode != http.StatusOK || errMsg != "" {
+		contexts.Logger.Errorf("encounter api error: %s, request_id: %s", errMsg, contexts.GetRequestID(r))
+		return resp.StatusCode, nil, errors.New(errMsg)
 	}
 	return resp.StatusCode, body, nil
 }

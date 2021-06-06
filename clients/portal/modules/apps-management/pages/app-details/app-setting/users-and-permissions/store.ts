@@ -14,10 +14,12 @@ import {
   updatePerGroupUser,
 } from './api';
 
+type PerPageInfo = PageInfo & { authority: number };
+
 class UserAndPerStore {
   @observable rightsLoading = true;
   @observable perFormLoading = true;
-  @observable perFormList: PageInfo[] = [];
+  @observable perFormList: PerPageInfo[] = [];
   @observable rightsList: Rights[] = [];
   @observable appID = '';
 
@@ -131,7 +133,7 @@ class UserAndPerStore {
   }
 
   @action
-  updatePerFormList = (newPerForm: PageInfo & { authority: number }) => {
+  updatePerFormList = (newPerForm: PerPageInfo, perGroupID: string) => {
     this.perFormList = this.perFormList.map((perForm) => {
       if (perForm.id === newPerForm.id) {
         return { ...perForm, ...newPerForm };
@@ -139,12 +141,22 @@ class UserAndPerStore {
 
       return perForm;
     });
+    const allPerSum = this.perFormList.reduce((accumulator, { authority }) => accumulator + authority, 0);
+    this.rightsList = this.rightsList.map((rights) => {
+      if (rights.id === perGroupID) {
+        return {
+          ...rights,
+          add: allPerSum !== 0,
+        };
+      }
+      return rights;
+    });
   }
 
   @action
   deleteFormPer = (formID: string, perGroupID: string) => {
     return deleteFormPer(this.appID, { formID, perGroupID }).then(() => {
-      this.updatePerFormList({ id: formID, authority: 0 });
+      this.updatePerFormList({ id: formID, authority: 0 }, perGroupID);
       toast.success('清除成功');
     });
   }

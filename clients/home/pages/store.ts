@@ -11,7 +11,6 @@ import { getFlowInstanceCount } from './approvals/api';
 class UserAppStore {
   destroySetCurPage: IReactionDisposer;
   @observable appList = [];
-  @observable showCreateForm = false;
   @observable appID = '';
   @observable pageID = '';
   @observable appDataStore: AppDataStore = new AppDataStore({ schema: {} });
@@ -46,11 +45,6 @@ class UserAppStore {
   }
 
   @action
-  setShowCreateForm = (showCreateForm: boolean) => {
-    this.showCreateForm = showCreateForm;
-  }
-
-  @action
   fetchPageList = (appID: string) => {
     this.appID = appID;
     this.pageListLoading = true;
@@ -71,7 +65,6 @@ class UserAppStore {
       return;
     }
 
-    this.showCreateForm = false;
     this.formScheme = null;
     this.fetchSchemeLoading = true;
     fetchFormScheme(this.appID, pageInfo.id).then((res: any) => {
@@ -90,7 +83,6 @@ class UserAppStore {
           pageName: pageInfo.name,
           appID: this.appID,
           allowRequestData: true,
-          createFun: () => this.setShowCreateForm(true),
         });
       }
       this.formScheme = res.schema;
