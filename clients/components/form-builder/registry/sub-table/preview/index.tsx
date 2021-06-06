@@ -97,10 +97,10 @@ function SubTable(compProps: Props) {
     let changedValue = '';
     if (moment.isMoment(e)) {
       changedValue = e.format('YYYY-MM-DD HH:mm:ss');
-    } else if (typeof e === 'string') {
-      changedValue = e;
+    } else if ((e as ChangeEvent<HTMLInputElement>).target) {
+      changedValue = (e as ChangeEvent<HTMLInputElement>).target.value;
     } else {
-      changedValue = e.target.value;
+      changedValue = e as string;
     }
     return changedValue;
   }

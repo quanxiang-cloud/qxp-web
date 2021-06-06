@@ -25,8 +25,8 @@ export default function ConfigForm({ onChange, initialValue: _initValue }: Props
   const subRef = useRef<any>();
 
   useEffect(() => {
-    return subRef.current?.unsubscribe();
-  });
+    return () => subRef.current?.unsubscribe();
+  }, []);
 
   const initialValue = {
     ..._initValue,

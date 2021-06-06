@@ -25,11 +25,8 @@ function SubTableColumns({ value, mutators }: ISchemaFieldComponentProps) {
     if (!currentSchema && value?.length) {
       actions.getFieldState('Fields.linkedTable', handleLinkedTableChange);
     }
-  }, []);
-
-  useEffect(() => {
     return () => subRef.current?.unsubscribe();
-  });
+  }, []);
 
   function handleLinkedTableChange(state: IFieldState) {
     const { tableID, appID } = state.value || {};
