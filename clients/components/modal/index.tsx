@@ -7,7 +7,7 @@ import Icon from '@c/icon';
 import Button from '@c/button';
 import creatModal from './dialog-modal';
 
-interface FooterBtnProps {
+export interface FooterBtnProps {
   text: React.ReactNode;
   key: React.Key;
   loading?: boolean;

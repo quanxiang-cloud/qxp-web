@@ -274,6 +274,7 @@ export default class FormBuilderStore {
 
     if (!this.fields.length) {
       this.fields.push(newField);
+      this.setActiveFieldKey(newField.fieldName);
       return;
     }
 
