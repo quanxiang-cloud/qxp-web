@@ -258,6 +258,9 @@ func doFindOne(r *http.Request, i *input, p map[string]string) (int, interface{}
 						break
 					}
 					subFindPath := fmt.Sprintf("%s%s%s%s", base, subTable.AppID, form, subTable.SubTableID)
+					if subTable.SubTableType == blankTable{
+						subFindPath = fmt.Sprintf("%s%s%s%s", base, subTable.AppID, subForm, subTable.SubTableID)
+					}
 					subInput := new(input)
 					subInput.Method = "find"
 					subInput.Conditions = &InputConditionVo{
