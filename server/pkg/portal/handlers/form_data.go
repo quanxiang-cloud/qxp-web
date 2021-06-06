@@ -488,12 +488,9 @@ func sendRequest2Struct(r *http.Request, method string, fullPath string, body []
 		"proxy api request, method: %s, url: %s, header: %s request_id: %s", method, fullPath, req.Header, contexts.GetRequestID(r))
 
 	resp, body, errMsg := contexts.RetrieveResponse(req)
-	if errMsg != "" {
-		contexts.Logger.Errorf("do request proxy error: %s, request_id: %s", err.Error(), contexts.GetRequestID(r))
-		return http.StatusInternalServerError, nil, errors.New(errMsg)
-	}
-	if resp.StatusCode != http.StatusOK {
-		return resp.StatusCode, nil, errors.New("error")
+	if resp.StatusCode != http.StatusOK || errMsg != "" {
+		contexts.Logger.Errorf("encounter api error: %s, request_id: %s", errMsg, contexts.GetRequestID(r))
+		return resp.StatusCode, nil, errors.New(errMsg)
 	}
 	return resp.StatusCode, body, nil
 }
