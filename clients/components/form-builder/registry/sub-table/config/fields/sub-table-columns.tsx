@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useRef } from 'react';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 import { useFormEffects, FormEffectHooks, IFieldState } from '@formily/antd';
 
@@ -19,12 +19,17 @@ interface Option {
 function SubTableColumns({ value, mutators }: ISchemaFieldComponentProps) {
   const [currentSchema, setCurrentSchema] = useState<ISchema>();
   const { actions } = useContext(ActionsContext);
+  const subRef = useRef<any>();
 
   useEffect(() => {
     if (!currentSchema && value?.length) {
       actions.getFieldState('Fields.linkedTable', handleLinkedTableChange);
     }
   }, []);
+
+  useEffect(() => {
+    return () => subRef.current?.unsubscribe();
+  });
 
   function handleLinkedTableChange(state: IFieldState) {
     const { tableID, appID } = state.value || {};
@@ -47,7 +52,7 @@ function SubTableColumns({ value, mutators }: ISchemaFieldComponentProps) {
   }
 
   useFormEffects(() => {
-    onFieldValueChange$('Fields.linkedTable').subscribe(handleLinkedTableChange);
+    subRef.current = onFieldValueChange$('Fields.linkedTable').subscribe(handleLinkedTableChange);
   });
 
   const schemaOptions = Object.entries(currentSchema?.properties || {}).reduce((cur: Option[], next) => {
@@ -64,10 +69,13 @@ function SubTableColumns({ value, mutators }: ISchemaFieldComponentProps) {
   }, []);
 
   function onToggleColumn(key: string, checked: boolean) {
+    let newValue = [];
     if (!checked) {
-      return mutators.change(value.filter((k: string) => k !== key));
+      newValue = value.filter((k: string) => k !== key);
+    } else {
+      newValue = [...value, key];
     }
-    mutators.change([...value, key]);
+    mutators.change([...new Set(['_id', ...newValue])]);
   }
 
   return (

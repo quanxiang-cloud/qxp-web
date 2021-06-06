@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect, useRef } from 'react';
 import { update, isUndefined } from 'lodash';
 import {
   SchemaForm, FormEffectHooks,
@@ -22,6 +22,11 @@ export default function ConfigForm({ onChange, initialValue: _initValue }: Props
   const [currentFieldKey, setCurrenFieldKey] = useState('');
   const { actions } = useContext(ActionsContext);
   const { appID } = useContext(StoreContext);
+  const subRef = useRef<any>();
+
+  useEffect(() => {
+    return subRef.current?.unsubscribe();
+  });
 
   const initialValue = {
     ..._initValue,
@@ -32,7 +37,7 @@ export default function ConfigForm({ onChange, initialValue: _initValue }: Props
   };
 
   function effects() {
-    onFieldValueChange$('Fields.curConfigSubTableKey').subscribe(({ value }) => {
+    subRef.current = onFieldValueChange$('Fields.curConfigSubTableKey').subscribe(({ value }) => {
       if (!isUndefined(value)) {
         setCurrenFieldKey(value);
       }
