@@ -15,7 +15,7 @@ interface ISwitch<Value extends React.Key> {
   value?: Value;
 }
 
-export default function Switch<Value extends React.Key>({ ...props }: ISwitch<Value>) {
+export default function Switch<Value extends React.Key>(props: ISwitch<Value>) {
   const [value, setValue] = useState<Value>();
 
   useEffect(() => {
