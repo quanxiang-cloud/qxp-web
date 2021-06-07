@@ -5,6 +5,7 @@ import DropdownTreeSelect, { TreeData, Mode, TreeNode } from 'react-dropdown-tre
 import 'react-dropdown-tree-select/dist/styles.css';
 import './index.scss';
 import { Organization } from './messy/api';
+import classNames from 'classnames';
 
 export interface Props {
   data: TreeData
@@ -22,7 +23,8 @@ export interface Props {
 const calcData = (data, value) => {
   const isArray = Array.isArray(data);
 
-  const tempArr = (isArray ? data : [data]);
+  const tempArr: any[] = [].concat(data)
+
 
   if (!tempArr.length) return [];
 
@@ -86,13 +88,11 @@ const Cascader = (props: Props) => {
 
   const selectsRef = React.useRef<TreeNode[]>();
 
-  const isFocus = React.useRef(false);
-
-
   return (<div className="cascader_bg">
     <DropdownTreeSelect
-      onFocus={() => isFocus.current = true}
-      className={`${className} ${mode != 'radioSelect' ? 'no_rm_cascader' : ''}`}
+      className={classNames(className, {
+        no_rm_cascader: 'radioSelect' != mode
+      })}
       mode={mode}
       keepChildrenOnSearch
       keepOpenOnSelect={mode != 'radioSelect'}

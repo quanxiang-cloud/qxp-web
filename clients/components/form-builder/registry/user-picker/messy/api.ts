@@ -1,12 +1,8 @@
-//
-
 import httpClient from '@lib/http-client';
-
 interface User {
     userName: string,
     id: string
 }
-
 export interface Res {
     data: User[];
     total_count: number

@@ -78,26 +78,24 @@ export default observer(function EmployeeOrDepartmentPicker({
 
   return (
     <div className="flex flex-row w-full h-full">
-      <>
-        <div
-          className="h-full flex flex-col overflow-hidden"
-          style={{ height: 'calc(100% - 48px)' }}
-        >
-          <TextHeader
-            className="pb-0"
-            title="选择部门"
-            itemTitleClassName="text-h6-no-color-weight font-semibold"
-            itemClassName="flex flex-col items-start"
-            textClassName="ml-0 mt-4"
-            descClassName="mb-8 text-caption"
-          />
-          <DepartmentSelectTree
-            store={store.departmentTreeStore}
-            wrapperClassName="flex-1 bg-white rounded-12"
-            onChange={onDepartmentTreeChange}
-          />
-        </div>
-      </>
+      <div
+        className="h-full flex flex-col overflow-hidden"
+        style={{ height: 'calc(100% - 48px)' }}
+      >
+        <TextHeader
+          className="pb-0"
+          title="选择部门"
+          itemTitleClassName="text-h6-no-color-weight font-semibold"
+          itemClassName="flex flex-col items-start"
+          textClassName="ml-0 mt-4"
+          descClassName="mb-8 text-caption"
+        />
+        <DepartmentSelectTree
+          store={store.departmentTreeStore}
+          wrapperClassName="flex-1 bg-white rounded-12"
+          onChange={onDepartmentTreeChange}
+        />
+      </div>
       <SelectedList
         ownerStore={store}
       />

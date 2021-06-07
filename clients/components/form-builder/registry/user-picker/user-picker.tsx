@@ -1,8 +1,6 @@
 import React from 'react';
 import { useQuery } from 'react-query';
-// import { Select } from '@formily/antd-components';
 import { Select } from 'antd'
-import { FormEffectHooks } from '@formily/antd';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 import debounce from 'lodash/debounce';
 import { searchUser, Res } from './messy/api';
@@ -12,8 +10,6 @@ import { Option } from './messy/enum';
 type OptionalRange = 'customize' | 'all'
 
 const PAGE_SIZE = 10;
-
-const { } = FormEffectHooks;
 
 const UserPicker = (p: ISchemaFieldComponentProps): JSX.Element => {
 

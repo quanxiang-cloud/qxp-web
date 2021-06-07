@@ -1,7 +1,6 @@
 //
 
 import httpClient from '@lib/http-client';
-
 export interface Organization {
     departmentName: string,
     id: string

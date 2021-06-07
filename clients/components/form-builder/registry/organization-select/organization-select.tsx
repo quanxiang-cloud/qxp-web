@@ -38,13 +38,13 @@ const OrganizationPicker = (p: ISchemaFieldComponentProps) => {
   }, [data, optionalRange, rangeList]);
 
 
-  const CascaderParams = {
+  const cascaderParams = {
     mode: p.props.multiple == 'signle' ? 'radioSelect' : 'multiSelect',
     placeholder: p.props.placeholder,
   } as Props;
 
   return <Cascader
-    {...CascaderParams}
+    {...cascaderParams}
     data={TreeData}
     value={(p.value || []).map((itm: TreeNode) => itm.value)}
     onChange={(selects) => p.mutators.change(selects)}

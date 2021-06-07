@@ -37,10 +37,6 @@ export default function visibleHiddenLinkageEffect(
     return [getComparator(linkages), targetKeys, isShow];
   });
 
-  onFieldInitialValueChange$().subscribe((somethings)=>{
-    console.log('_____fieldInitialValueChange', somethings);
-  });
-
   onFormInit$().subscribe(({ values }) => {
     comparatorsAndTargetKey.forEach(([comparator, targetKey, isShow]) => {
       const isVisible = isShow === true ? comparator(values) : !comparator(values);
