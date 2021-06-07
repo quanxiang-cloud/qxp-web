@@ -40,7 +40,7 @@ export default function NodeFormWrapper() {
   const [formDataChanged, setFormDataChanged] = useState(false);
   const saver = useSave(appID, id);
   const [currentWorkTable, setCurrentWorkTable] = useState<{
-    name: string;
+    name?: string;
     value: string;
   }>();
 

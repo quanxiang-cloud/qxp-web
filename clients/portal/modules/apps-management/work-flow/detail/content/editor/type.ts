@@ -80,7 +80,7 @@ export type CurrentConnection = {
 }
 export type TriggerWayValue = string | 'whenAdd' | 'whenAlter' | '';
 export type TriggerWay = TriggerWayValue[];
-export type NodeWorkForm = { name: string; value: string };
+export type NodeWorkForm = { name?: string; value: string };
 export type FormDataData = {
   form: NodeWorkForm;
   triggerWay: TriggerWay;
