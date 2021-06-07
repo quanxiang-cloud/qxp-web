@@ -23,8 +23,7 @@ export interface Props {
 const calcData = (data, value) => {
   const isArray = Array.isArray(data);
 
-  const tempArr: any[] = [].concat(data)
-
+  const tempArr: any[] = [].concat(data);
 
   if (!tempArr.length) return [];
 
@@ -91,7 +90,7 @@ const Cascader = (props: Props) => {
   return (<div className="cascader_bg">
     <DropdownTreeSelect
       className={classNames(className, {
-        no_rm_cascader: 'radioSelect' != mode
+        no_rm_cascader: 'radioSelect' != mode,
       })}
       mode={mode}
       keepChildrenOnSearch

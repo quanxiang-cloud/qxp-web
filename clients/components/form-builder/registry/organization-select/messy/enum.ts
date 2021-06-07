@@ -16,5 +16,5 @@ export const EnumMultiple = [
 
 export interface Option {
     label: string,
-    value: string 
+    value: string
 }

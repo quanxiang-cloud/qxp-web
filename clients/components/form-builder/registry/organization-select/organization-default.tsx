@@ -17,8 +17,8 @@ interface Props {
 
 const OrganizationDefaultPicker = (props: Props) => {
   const { value, onChange, multiple, rangeList, optionalRange } = props;
-  const store = React.useContext(StoreContext)
-  const { appID } = store
+  const store = React.useContext(StoreContext);
+  const { appID } = store;
   const { data } = useQuery(['query_user_picker', appID], () => searchOrganziation(appID));
 
   const CustomizeTreeData = React.useMemo(() => {
@@ -31,8 +31,8 @@ const OrganizationDefaultPicker = (props: Props) => {
   }, [data]);
 
   const MemoValue = React.useMemo(() => {
-    return (value || []).map((itm: TreeNode) => itm.value)
-  }, [value])
+    return (value || []).map((itm: TreeNode) => itm.value);
+  }, [value]);
 
   return (<Cascader
     mode={multiple == 'signle' ? 'radioSelect' : 'multiSelect'}

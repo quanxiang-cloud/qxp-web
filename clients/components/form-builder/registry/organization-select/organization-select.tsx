@@ -16,9 +16,8 @@ interface Props {
   value?: string | string[]
 }
 
-
 const OrganizationPicker = (p: ISchemaFieldComponentProps) => {
-  const appID: string = p.props.appID
+  const appID: string = p.props.appID;
 
   const { data } = useQuery(['query_user_picker', appID], () => searchOrganziation(appID));
 
@@ -37,18 +36,17 @@ const OrganizationPicker = (p: ISchemaFieldComponentProps) => {
     }
   }, [data, optionalRange, rangeList]);
 
-
   const cascaderParams = {
     mode: p.props.multiple == 'signle' ? 'radioSelect' : 'multiSelect',
     placeholder: p.props.placeholder,
   } as Props;
 
-  return <Cascader
+  return (<Cascader
     {...cascaderParams}
     data={TreeData}
     value={(p.value || []).map((itm: TreeNode) => itm.value)}
     onChange={(selects) => p.mutators.change(selects)}
-  />
+  />);
 };
 
 OrganizationPicker.isFieldComponent = true;

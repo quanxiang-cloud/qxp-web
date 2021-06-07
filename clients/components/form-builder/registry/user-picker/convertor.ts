@@ -33,10 +33,13 @@ export const defaultConfig: DefaultConfig = {
 };
 
 export const toSchema = (config: DefaultConfig): FormBuilder.Schema => {
-  const { defaultValues } = config
-  const isMultiple = config.multiple === 'multiple'
-  const isArr = Array.isArray(defaultValues)
+  const { defaultValues } = config;
+  const isMultiple = config.multiple === 'multiple';
+  const isArr = Array.isArray(defaultValues);
 
+  const multipleDefValues = isArr ? defaultValues : [defaultValues];
+  const singleDefValues = isArr ? defaultValues[0] : defaultValues;
+  const calcDefaultValues = isMultiple ? multipleDefValues : singleDefValues;
 
   return Object.assign(config, {
     type: 'label-value',
@@ -63,8 +66,7 @@ export const toSchema = (config: DefaultConfig): FormBuilder.Schema => {
       label: itm.ownerName,
       value: itm.id,
     })),
-    defaultValues: isMultiple ? (isArr ? defaultValues : [defaultValues]) : (isArr ? defaultValues[0] : defaultValues)
-    // defaultValues: config.multiple === 'multiple' ? config.defaultValues : config.defaultValues.slice(0, 1),
+    defaultValues: calcDefaultValues,
   });
 };
 

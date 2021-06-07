@@ -1,6 +1,6 @@
 import React from 'react';
 import { useQuery } from 'react-query';
-import { Select } from 'antd'
+import { Select } from 'antd';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 import debounce from 'lodash/debounce';
 import { searchUser, Res } from './messy/api';
@@ -12,31 +12,28 @@ type OptionalRange = 'customize' | 'all'
 const PAGE_SIZE = 10;
 
 const UserPicker = (p: ISchemaFieldComponentProps): JSX.Element => {
-
   const optionalRange = p.props.optionalRange as OptionalRange;
 
   React.useEffect(() => {
     p.mutators.change(p.props.defaultValues);
   }, []);
-  const value = Array.isArray(p.value || []) ? (p.value || []).map(({ value }: Option) => value) : p.value.value
+  const value = Array.isArray(p.value || []) ? (p.value || []).map(({ value }: Option) => value) : p.value.value;
 
   const xComponentsProps = Object.assign({}, p.props['x-component-props'], {
     onChange: (_: any, selects: Option[]) => {
-      p.mutators.change(selects)
-    }
+      p.mutators.change(selects);
+    },
   });
 
   const props = Object.assign({}, p, {
     value,
     'x-component-props': xComponentsProps,
-  })
-
+  });
 
   return (optionalRange == 'customize') ? <Select {...props} options={p.props.enum} {...p['x-component-props']} /> : <AllUserPicker {...props} />;
 };
 
 const AllUserPicker = (p: ISchemaFieldComponentProps): JSX.Element => {
-
   const [options, setOptions] = React.useState<Option[]>([]);
   const [hasNext, setHasNext] = React.useState<boolean>(false);
   const [keyword, setKeyword] = React.useState<string>();
@@ -49,7 +46,7 @@ const AllUserPicker = (p: ISchemaFieldComponentProps): JSX.Element => {
     // setOptions(current => current.filter(({ value }) => Array.isArray(p.value) ? p.value.some(itm => itm == value) : value == p.value))
   }, [setKeyword, setOptions, setCurrent]);
 
-  const appID: string = p.props.appID
+  const appID: string = p.props.appID;
 
   const params = React.useMemo(() => {
     return {
@@ -95,7 +92,6 @@ const AllUserPicker = (p: ISchemaFieldComponentProps): JSX.Element => {
 
     return Object.assign({}, p, { props });
   }, [p, options, hasNext, isLoading]);
-
 
   return <Select {...calcParams} {...calcParams['x-component-props']} options={options} />;
 };

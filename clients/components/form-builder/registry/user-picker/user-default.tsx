@@ -7,7 +7,6 @@ import { searchUser, Res } from './messy/api';
 import { Option } from './messy/enum';
 import { StoreContext } from '../../context';
 
-
 interface Props {
   value: Option | Option[];
   onChange: (value: Option) => void;
@@ -51,7 +50,7 @@ const AllUserComponent = (props: Props) => {
     setKeyword(str);
 
     setOptions((current) => {
-      return current.filter((itm) => Array.isArray(value) ? value.some(_itm => _itm.value == itm.value) : itm.value == value.value);
+      return current.filter((itm) => Array.isArray(value) ? value.some((_itm) => _itm.value == itm.value) : itm.value == value.value);
     });
     setCurrent(1);
   }, [setKeyword, setOptions, setCurrent, value]);
@@ -64,8 +63,8 @@ const AllUserComponent = (props: Props) => {
     };
   }, [keyword, page]);
 
-  const store = React.useContext(StoreContext)
-  const { appID } = store
+  const store = React.useContext(StoreContext);
+  const { appID } = store;
   const { isLoading } = useQuery(['query_user_picker_df', params, appID], () => searchUser(appID, params), {
     onSuccess(data: Res) {
       if (data) {
@@ -99,7 +98,7 @@ const AllUserComponent = (props: Props) => {
     // @ts-ignore
     filterOption={(input: string, option: any[]) => option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0}
     onChange={(_, selects) => {
-      return onChange(selects as Option)
+      return onChange(selects as Option);
     }}
   />);
 };

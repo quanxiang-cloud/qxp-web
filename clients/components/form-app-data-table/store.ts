@@ -1,5 +1,5 @@
 import React from 'react';
-import { action, observable, reaction, IReactionDisposer, computed, toJS } from 'mobx';
+import { action, observable, reaction, IReactionDisposer, computed } from 'mobx';
 
 import toast from '@lib/toast';
 import httpClient from '@lib/http-client';
@@ -157,27 +157,26 @@ class AppPageDataStore {
     });
   }
 
-  @computed 
+  @computed
   get formDataListLabel(): any[] {
-    const prproperties = this.schema.properties || {}
+    const prproperties = this.schema.properties || {};
 
     const complexKeys = Object.keys(prproperties)
-      .filter(key=>prproperties[key].type=='label-value')
+      .filter((key)=>prproperties[key].type == 'label-value');
 
-    return this.formDataList.map(itm => {
-      let newData: any = {} 
+    return this.formDataList.map((itm) => {
+      const newData: any = {};
 
       Object.keys(itm).forEach((key: string) => {
-        if(complexKeys.includes(key )){
-          newData[key] = itm[key].map((itm: any) => itm.label)
+        if (complexKeys.includes(key )) {
+          newData[key] = itm[key].map((itm: any) => itm.label);
         } else {
-          newData[key] = itm[key]
-
+          newData[key] = itm[key];
         }
-      })
+      });
 
-      return newData
-    })
+      return newData;
+    });
   }
 
   @action

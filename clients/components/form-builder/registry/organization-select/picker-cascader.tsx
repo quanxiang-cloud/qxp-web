@@ -13,8 +13,8 @@ interface PickerProps {
 }
 
 const Picker = ({ value, onChange, mode }: PickerProps) => {
-  const store = React.useContext(StoreContext)
-  const { appID } = store
+  const store = React.useContext(StoreContext);
+  const { appID } = store;
   const { data } = useQuery(['query_user_picker', appID], () => searchOrganziation(appID));
 
   const CascaderData = parseTree(data);
