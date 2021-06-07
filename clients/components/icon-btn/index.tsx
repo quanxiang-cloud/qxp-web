@@ -8,7 +8,7 @@ interface Props extends Omit<
   'children'
 > {
   iconName: string;
-  iconProps?: Partial<IconProps>;
+  iconProps?: Omit<Partial<IconProps>, 'ref'>;
   loading?: boolean;
   forbidden?: boolean;
 }
