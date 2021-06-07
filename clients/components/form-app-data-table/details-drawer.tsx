@@ -1,4 +1,5 @@
-import React, { useState, useMemo, useEffect, useContext } from 'react';
+import React, { useState, useMemo, useContext } from 'react';
+import { useQuery } from 'react-query';
 import { observer } from 'mobx-react';
 import cs from 'classnames';
 import { Table } from 'antd';
@@ -11,59 +12,58 @@ import PageLoading from '@c/page-loading';
 
 import { getTableCellData, operateButton } from './utils';
 import { StoreContext } from './context';
-import { FormData } from './store';
+import { getSchemaAndRecord } from './api';
 
 type Props = {
   onCancel: () => void;
   rowID: string;
 }
 
-type InfoData = {
+type FormDataProp = {
   label: string;
   key: string;
-  value: string | React.ReactNode;
+  value: any;
+  fieldSchema: ISchema;
 }
 
 function DetailsDrawer({ onCancel, rowID }: Props) {
   const store = useContext(StoreContext);
   const [beganClose, setBeganClose] = useState<boolean>(false);
   const [visible, setVisible] = useState<boolean>(false);
-  const [loading, setLoading] = useState(true);
-  const [formDataItem, setInfoData] = useState<FormData | null>(null);
-
-  useEffect(() => {
-    store.fetchFormDataDetails(rowID).then((res: any) => {
-      setInfoData(res);
-      setLoading(false);
-    }).catch(() => {
-      setLoading(false);
-    });
-  }, []);
+  // todo handle error case of getSchemaAndRecord
+  const { isLoading, data } = useQuery([], () => getSchemaAndRecord(store.appID, store.pageID, rowID));
 
   const [details, systems] = useMemo(() => {
-    if (formDataItem === null) {
+    if (!data) {
       return [[], []];
     }
 
-    const _details: InfoData[] = [];
-    const _systems: InfoData[] = [];
-    store.fields.forEach((field: any) => {
-      if (field['x-internal'].isSystem) {
+    const { record, schema } = data;
+    const _details: FormDataProp[] = [];
+    const _systems: FormDataProp[] = [];
+
+    Object.entries(schema.properties || {}).forEach(([fieldKey, fieldSchema]) => {
+      // ts bug?
+      if ((fieldSchema as ISchema)['x-internal']?.isSystem) {
         _systems.push({
-          label: field['x-component-props']?.tableName || field.title,
-          key: field.id,
-          value: getTableCellData((formDataItem as any)[field.id], field),
+          label: fieldSchema.title as string,
+          key: fieldKey,
+          value: getTableCellData(record[fieldKey], fieldSchema),
+          fieldSchema,
         });
-      } else {
-        _details.push({
-          label: field['x-component-props']?.tableName || field.title,
-          key: field.id,
-          value: getTableCellData((formDataItem as any)[field.id], field),
-        });
+        return;
       }
+
+      _details.push({
+        label: fieldSchema.title as string,
+        key: fieldKey,
+        value: getTableCellData(record[fieldKey], fieldSchema),
+        fieldSchema,
+      });
     });
+
     return [_details, _systems];
-  }, [formDataItem]);
+  }, [data]);
 
   const handleCancel = () => {
     setBeganClose(true);
@@ -99,6 +99,7 @@ function DetailsDrawer({ onCancel, rowID }: Props) {
     if (!value) {
       return null;
     }
+
     return (
       <Table
         pagination={false}
@@ -109,7 +110,7 @@ function DetailsDrawer({ onCancel, rowID }: Props) {
     );
   }
 
-  const cardRender = (list: InfoData[]) => {
+  const cardRender = (list: FormDataProp[]) => {
     return (
       <div className='grid gap-20 grid-cols-2'>
         {list.map(({ label, value, key }) => (
@@ -125,8 +126,8 @@ function DetailsDrawer({ onCancel, rowID }: Props) {
     );
   };
 
-  const title = store.tableColumns.length && formDataItem ?
-    (store.tableColumns[0] as any).accessor(formDataItem) : '';
+  const title = store.tableColumns.length && data?.record ?
+    (store.tableColumns[0] as any).accessor(data?.record) : '';
 
   return (
     <div
@@ -140,10 +141,7 @@ function DetailsDrawer({ onCancel, rowID }: Props) {
           <span className='text-h5'>{store.pageName}：{title}</span>
           <div className='flex items-center gap-x-12'>
             {operateButton(3, store.authority, (
-              <span
-                onClick={() => store.goEdit(formDataItem)}
-                className='icon-text-btn'
-              >
+              <span onClick={() => store.goEdit(data?.record || {})} className='icon-text-btn'>
                 <Icon size={20} name='edit' />
                 修改
               </span>
@@ -156,10 +154,8 @@ function DetailsDrawer({ onCancel, rowID }: Props) {
             <Icon onClick={handleCancel} clickable changeable name='close' size={24} />
           </div>
         </div>
-        {loading ? (
-          <div className='relative h-280'>
-            <PageLoading />
-          </div>
+        {isLoading ? (
+          <div className='relative h-280'><PageLoading /></div>
         ) : (
           <div className='page-data-drawer-main-content'>
             <Tab
@@ -174,7 +170,8 @@ function DetailsDrawer({ onCancel, rowID }: Props) {
                   id: 'system',
                   name: '系统信息',
                   content: cardRender(systems),
-                }]}
+                },
+              ]}
             />
           </div>
         )}
