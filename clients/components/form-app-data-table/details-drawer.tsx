@@ -52,13 +52,13 @@ function DetailsDrawer({ onCancel, rowID }: Props) {
         _systems.push({
           label: field['x-component-props']?.tableName || field.title,
           key: field.id,
-          value: getTableCellData((formDataItem as any)[field.id], field, true),
+          value: getTableCellData((formDataItem as any)[field.id], field),
         });
       } else {
         _details.push({
           label: field['x-component-props']?.tableName || field.title,
           key: field.id,
-          value: getTableCellData((formDataItem as any)[field.id], field, true),
+          value: getTableCellData((formDataItem as any)[field.id], field),
         });
       }
     });

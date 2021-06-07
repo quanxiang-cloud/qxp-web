@@ -103,8 +103,8 @@ function PageDataTable() {
         {textBtnRender('导出', 'file_upload')} */}
         </div>
         <AdvancedQuery
-          initConditions={store.params.condition}
-          tag={store.params.tag}
+          initConditions={store.params.condition as Condition[]}
+          tag={store.params.tag as 'or' | 'and'}
           fields={store.fields}
           search={store.setParams}
         />
@@ -122,9 +122,9 @@ function PageDataTable() {
       </div>
       {store.tableConfig.pageSize ? (
         <Pagination
-          current={store.params.page}
+          current={store.params.page as number}
           total={store.total}
-          pageSize={store.params.size}
+          pageSize={store.params.size as number}
           onChange={(page: number, size: number) => {
             store.setParams({ page, size });
           }}

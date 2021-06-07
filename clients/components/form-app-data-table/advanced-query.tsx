@@ -64,7 +64,11 @@ function AdvancedQuery({ fields, search, initConditions, tag }: Props) {
         onClose={() => setVisible(false)}
       >
         <div className='advanced-query-container'>
-          <DataFilter initTag={tag} initConditions={initConditions} ref={dataFilterRef} fields={fields} />
+          <DataFilter
+            initTag={tag as string}
+            initConditions={initConditions as Condition[]}
+            ref={dataFilterRef} fields={fields}
+          />
           <div className='mt-20 flex justify-end gap-x-16'>
             <Button onClick={handleEmpty} iconName='clear'>清空</Button>
             <Button onClick={handleSearch} iconName='search' modifier='primary'>筛选</Button>

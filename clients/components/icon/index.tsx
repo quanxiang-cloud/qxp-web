@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { LegacyRef } from 'react';
 import cs from 'classnames';
 
 import svgHash from './svg-hash';
@@ -35,7 +35,7 @@ function Icon(
   return (
     <svg
       {...props}
-      ref={ref}
+      ref={ref as LegacyRef<SVGSVGElement>}
       data-name={name}
       style={_style}
       className={cs('svg-icon', `svg-icon--${type}`, className, {

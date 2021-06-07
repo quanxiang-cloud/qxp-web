@@ -1,6 +1,5 @@
 import React, { useEffect, useState, JSXElementConstructor, ChangeEvent } from 'react';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
-import { Button } from 'antd';
 import moment, { Moment } from 'moment';
 import { Input, Radio, DatePicker, NumberPicker, Select } from '@formily/antd-components';
 import {
@@ -171,7 +170,7 @@ function SubTable(compProps: Props) {
                       ))}
                     </div>
                     <Icon
-                      className="ml-22"
+                      className="ml-22 cursor-pointer mt-4"
                       name="delete"
                       size={20}
                       onClick={onRemove.bind(null, index)}
@@ -180,7 +179,12 @@ function SubTable(compProps: Props) {
                 </div>
               );
             })}
-            <Button className="mt-12 mb-3" onClick={onAdd}>添加</Button>
+            <Icon
+              name="add"
+              size={24}
+              className="mt-12 mb-3 font-bold cursor-pointer"
+              onClick={onAdd}
+            />
           </div>
         );
       }}

@@ -104,9 +104,9 @@ function DataFilter({ fields, className = '', initConditions, initTag = 'and' }:
       if (filter) {
         conditionsTmp.push({
           id: uniqueId(),
-          op: condition.op,
+          op: condition.op as string,
           value: getValue(filter, condition.value),
-          key: condition.key,
+          key: condition.key as string,
           filter,
         });
       }
@@ -122,7 +122,7 @@ function DataFilter({ fields, className = '', initConditions, initTag = 'and' }:
   const handleFieldChange = (rowID: string, field: string) => {
     setConditions(conditions.map((condition) => {
       if (condition.id === rowID) {
-        return { ...condition, filter: fields.find(({ id }) => id === field) };
+        return { ...condition, filter: fields.find(({ id }) => id === field) } as FieldCondition;
       }
       return condition;
     }));
