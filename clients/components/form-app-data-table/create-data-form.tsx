@@ -9,6 +9,7 @@ import { FormRenderer } from '@c/form-builder';
 
 import { formDataCurd } from './api';
 import { StoreContext } from './context';
+import { toJS } from 'mobx';
 
 setValidationLanguage('zh');
 
@@ -75,7 +76,7 @@ function CreateDataForm() {
         <FormRenderer
           className='p-40'
           onSubmit={handleSubmit}
-          defaultValue={defaultValues}
+          defaultValue={toJS(defaultValues)}
           schema={store.schema}
         >
           <FormButtonGroup className='pl-96'>
