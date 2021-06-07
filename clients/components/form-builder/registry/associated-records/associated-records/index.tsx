@@ -31,11 +31,13 @@ function computeTableColumns(schema: ISchema, columns: string[]): Column<Record<
   }).filter(({ id }) => id !== '_id');
 }
 
-function AssociatedRecords({ associatedTable, columns, selected, appID, tableID, multiple, onChange }: Props): JSX.Element {
+function AssociatedRecords({
+  associatedTable, columns, selected, appID, tableID, multiple, onChange,
+}: Props): JSX.Element {
   // todo append operation column
   const [records, setRecords] = useState<Record<string, any>[]>([]);
   const [showSelectModal, setShowSelectModal] = useState(false);
-  const { isLoading, data, isError, error } = useQuery([], () => findTableRecords(appID, tableID, selected));
+  const { isLoading, data } = useQuery([], () => findTableRecords(appID, tableID, selected));
 
   useEffect(() => {
     setRecords(data || []);
@@ -54,6 +56,7 @@ function AssociatedRecords({ associatedTable, columns, selected, appID, tableID,
         <Icon
           changeable
           clickable
+          size={24}
           name="delete"
           onClick={() => {
             const _records = records.filter(({ _id }) => _id !== row._id);

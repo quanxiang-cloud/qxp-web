@@ -49,10 +49,7 @@ export default function SelectRecordsModal({
       Header: '',
       accessor: (row) => {
         return (
-          <div
-            className="cursor-pointer hover:text-blue-600"
-            onClick={() => onSubmit([row])}
-          >
+          <div className="cursor-pointer text-blue-600" onClick={() => onSubmit([row])}>
             选择
           </div>
         );
