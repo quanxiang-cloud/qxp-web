@@ -13,7 +13,8 @@ export interface DefaultConfig {
   defaultValues: string | string[];
   enums?: Option[];
   loading?: boolean;
-  onSearch?: (value: string) => string | void
+  onSearch?: (value: string) => string | void;
+  type: string
 }
 
 export const defaultConfig: DefaultConfig = {
@@ -28,6 +29,7 @@ export const defaultConfig: DefaultConfig = {
   rangeList: [],
   defaultValues: [],
   loading: false,
+  type: 'label-value',
 };
 
 export const toSchema = (config: DefaultConfig): FormBuilder.Schema => {
@@ -37,7 +39,7 @@ export const toSchema = (config: DefaultConfig): FormBuilder.Schema => {
 
 
   return Object.assign(config, {
-    type: config.multiple === 'multiple' ? 'array' : 'string',
+    type: 'label-value',
     title: config.title,
     description: config.description,
     required: config.required,
@@ -74,6 +76,7 @@ export const toConfig = (schema: FormBuilder.Schema): DefaultConfig => {
     displayModifier = 'hidden';
   }
   return {
+    type: 'label-value',
     title: schema.title as string,
     description: schema.description as string,
     displayModifier: displayModifier,

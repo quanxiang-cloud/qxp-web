@@ -8,10 +8,12 @@ export interface DefaultConfig {
     multiple?: 'signle' | 'multiple';
     rangeList: TreeNode[];
     optionalRange?: 'all' | 'customize';
-    defaultValues?: string[]
+    defaultValues?: string[];
+    type: string;
 }
 
 export const defaultConfig: DefaultConfig = {
+  type: 'label-value',
   title: '部门选择器',
   description: '',
   displayModifier: 'normal',
@@ -25,7 +27,7 @@ export const defaultConfig: DefaultConfig = {
 
 export const toSchema = (config: DefaultConfig): FormBuilder.Schema => {
   return Object.assign(config, {
-    type: 'string',
+    type: 'label-value',
     title: config.title,
     description: config.description,
     required: config.required,
@@ -48,6 +50,7 @@ export const toConfig = (schema: FormBuilder.Schema): DefaultConfig => {
   }
 
   return {
+    type: 'label-value',
     title: schema.title as string,
     description: schema.description as string,
     displayModifier: displayModifier,
