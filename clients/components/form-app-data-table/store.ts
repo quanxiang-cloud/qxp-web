@@ -35,7 +35,7 @@ class AppPageDataStore {
   @observable appID = '';
   @observable pageName = '';
   @observable authority = 0;
-  @observable curItemFormData: FormData | null = null;
+  @observable rowID: string | null = null;
   @observable allowRequestData = false;
   @observable filterMaps: FilterMaps = {};
   @observable formDataList: any[] = [];
@@ -111,13 +111,18 @@ class AppPageDataStore {
 
   @action
   setVisibleCreatePage = (createPageVisible: boolean) => {
+    if (!createPageVisible) {
+      this.rowID = null;
+    }
     this.createPageVisible = createPageVisible;
   }
 
-  // todo change formData to rowID
   @action
-  goEdit = (formData: FormData | null) => {
-    this.curItemFormData = formData;
+  goEdit = (formDataID: string | null) => {
+    if (!formDataID) {
+      return;
+    }
+    this.rowID = formDataID;
     this.setVisibleCreatePage(true);
   }
 
@@ -192,7 +197,7 @@ class AppPageDataStore {
 
   @action
   clear = () => {
-    this.curItemFormData = null;
+    this.rowID = null;
     this.formDataList = [];
     this.tableConfig = {};
     this.authority = 0;

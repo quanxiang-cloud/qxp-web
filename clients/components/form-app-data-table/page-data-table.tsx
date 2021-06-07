@@ -39,7 +39,7 @@ function PageDataTable() {
             ))}
             {operateButton(3, store.authority, (
               <span
-                onClick={() => store.goEdit(data)}
+                onClick={() => store.goEdit(data._id)}
                 className='mr-16 text-blue-600 cursor-pointer'
               >
                 修改

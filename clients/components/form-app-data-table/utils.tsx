@@ -1,5 +1,6 @@
 import React from 'react';
 import moment from 'moment';
+import { transform, isEqual, isArray, isObject } from 'lodash';
 
 import { UnionColumns } from 'react-table';
 
@@ -167,4 +168,26 @@ export function getPageDataSchema(
     pageTableShowRule,
     fields,
   };
+}
+
+export function difference(origObj: Record<string, unknown>, newObj: Record<string, unknown>) {
+  function changes(newObj: Record<string, unknown>, origObj: Record<string, unknown>) {
+    let arrayIndexCounter = 0;
+    return transform(newObj, function(
+      result: Record<string, unknown>,
+      value: any,
+      key
+    ) {
+      if (!isEqual(value, origObj[key])) {
+        // eslint-disable-next-line no-plusplus
+        const resultKey = isArray(origObj) ? arrayIndexCounter++ : key;
+        result[resultKey] = (isObject(value) && isObject(origObj[key])) ?
+          changes(
+            value as Record<string, unknown>,
+            origObj[key] as Record<string, unknown>
+          ) : value;
+      }
+    });
+  }
+  return changes(newObj, origObj);
 }

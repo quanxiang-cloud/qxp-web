@@ -272,3 +272,19 @@ export function parseJSON<T>(str: string, fallback: T): T {
     return fallback;
   }
 }
+
+export function compactObject(data: Record<string, any> | any[]) {
+  if ((typeof data !== 'object' && !Array.isArray(data)) || data == null) {
+    return data;
+  }
+  const isArray = Array.isArray(data);
+  return Object.entries(data).reduce((cur: any[] | Record<string, any>, [key, value]) => {
+    const vIsObject = (typeof value === 'object' && value !== null) || !Array.isArray(value);
+    if (isArray) {
+      (value !== null) && cur.push(vIsObject ? compactObject(value) : value);
+    } else {
+      (value !== null) && Object.assign(cur, { [key]: vIsObject ? compactObject(value) : value });
+    }
+    return cur;
+  }, isArray ? [] : {});
+}

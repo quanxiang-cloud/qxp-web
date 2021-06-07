@@ -39,12 +39,12 @@ type FormDataRequestQueryDeleteParams = {
   }
 }
 
-type FormDataRequestCreateParams = {
+export type FormDataRequestCreateParams = {
   method: 'create';
   entity: any;
 }
 
-type FormDataRequestUpdateParams = {
+export type FormDataRequestUpdateParams = {
   method: 'update';
   condition: {
     condition: Array<{ key: string; op: string; value: Array<string | number>; }>;
@@ -63,7 +63,7 @@ type FormDataRequestUpdateParams = {
 type FormDataRequestParams =
   FormDataRequestQueryDeleteParams |
   FormDataRequestCreateParams |
-  FormDataRequestUpdateParams;
+  FormDataRequestUpdateParams | {};
 
 type FormDataResponse = { entities: Array<any>; total: number; };
 

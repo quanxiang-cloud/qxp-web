@@ -1,22 +1,36 @@
 import React, { useState, useContext } from 'react';
 import { FormButtonGroup, setValidationLanguage } from '@formily/antd';
+import { toJS } from 'mobx';
+import { isEmpty, omit } from 'lodash';
+import { useQuery } from 'react-query';
+import { observer } from 'mobx-react';
 
 import Breadcrumb from '@c/breadcrumb';
 import Icon from '@c/icon';
 import Button from '@c/button';
 import toast from '@lib/toast';
 import { FormRenderer } from '@c/form-builder';
+import Loading from '@c/loading';
+import {
+  formDataRequest, FormDataRequestCreateParams, FormDataRequestUpdateParams,
+} from '@lib/http-client';
 
-import { formDataCurd } from './api';
 import { StoreContext } from './context';
-import { toJS } from 'mobx';
+import { difference } from './utils';
+import { findOneRecord } from './api';
+import { compactObject } from '@lib/utils';
 
 setValidationLanguage('zh');
 
 function CreateDataForm() {
   const store = useContext(StoreContext);
-  const defaultValues = store.curItemFormData;
+  const { rowID } = store;
   const [loading, setLoading] = useState(false);
+
+  const { data } = useQuery('GET_ONE_FORM_RECORD', () => {
+    return findOneRecord(store.appID, store.pageID, rowID as string);
+  }, { enabled: !!rowID, cacheTime: -1 });
+  const defaultValues = data?.entities[0] as Record<string, any>;
 
   if (!store.fields.length) {
     return (
@@ -24,23 +38,88 @@ function CreateDataForm() {
     );
   }
 
-  const handleSubmit = (formData: any) => {
+  if (rowID && !defaultValues) {
+    return <Loading desc="加载中..." />;
+  }
+
+  function buildBaseParams(isSubTable: boolean, formData: any, _id: string) {
+    return {
+      method: isSubTable ? 'update#set' : 'update',
+      entity: isSubTable ? omit(formData, ['_id']) : FormData,
+      conditions: {
+        condition: [
+          {
+            key: '_id',
+            op: 'eq',
+            value: _id ? [_id] : [],
+          },
+        ],
+        tag: '',
+      },
+    };
+  }
+
+  function buildSubData(subData: Record<string, any>) {
+    return buildBaseParams(true, subData, subData._id);
+  }
+
+  function parseUpdated(formData: any, fieldKey: string) {
+    const newData = formData[fieldKey] as Record<string, string>[];
+    return newData.filter(({ _id }) => !!_id).map(buildSubData);
+  }
+
+  function parseDeleted(formData: any, fieldKey: string) {
+    const newData = formData[fieldKey] as Record<string, string>[];
+    const oldData = (defaultValues || {})[fieldKey] as Record<string, string>[];
+
+    return oldData?.filter(
+      ({ _id }) => !!_id && !newData.find(({ _id: id }) => id === _id)
+    )?.map(buildSubData);
+  }
+
+  function parseNew(formData: any, fieldKey: string) {
+    const newData = formData[fieldKey] as Record<string, string>[];
+    return newData.filter(({ _id }) => !_id).map(buildSubData);
+  }
+
+  const handleSubmit = (data: any) => {
+    const formData = compactObject(data);
+    const schemaMap = store.schema.properties as ISchema;
+    const defaultValue = toJS(defaultValues);
+    const diffResult = difference(defaultValue || {}, formData);
+    const subTableChangedKeys = Object.keys(diffResult).filter(
+      (fieldKey) => schemaMap[fieldKey as keyof ISchema]?.['x-component']
+        .toLowerCase() === 'subtable',
+    );
+    const hasSubTableChanged = !!(subTableChangedKeys.length && defaultValues);
+
+    const ref: Record<string, {
+      appID: string;
+      table: string;
+      updated: Record<string, any>[];
+      new: Record<string, any>[];
+      deleted: Record<string, any>[];
+    }> = {};
+    if (hasSubTableChanged) {
+      subTableChangedKeys.forEach((fieldKey) => {
+        Object.assign(ref, {
+          [fieldKey]: {
+            appID: store.appID,
+            table: store.pageID,
+            updated: parseUpdated(diffResult, fieldKey),
+            new: parseNew(formData, fieldKey),
+            deleted: parseDeleted(formData, fieldKey),
+          },
+        });
+      });
+    }
+
     setLoading(true);
-    let reqData = {};
+    let reqData: FormDataRequestCreateParams | FormDataRequestUpdateParams | {} = {};
     if (defaultValues) {
       reqData = {
-        method: 'update',
-        entity: formData,
-        conditions: {
-          condition: [
-            {
-              key: '_id',
-              op: 'eq',
-              value: [defaultValues._id],
-            },
-          ],
-          tag: '',
-        },
+        ...buildBaseParams(hasSubTableChanged, formData, defaultValue._id),
+        ...(isEmpty(ref) ? {} : { ref }),
       };
     } else {
       reqData = {
@@ -49,10 +128,10 @@ function CreateDataForm() {
       };
     }
 
-    formDataCurd(store.appID, store.pageID, reqData).then(() => {
+    formDataRequest(store.appID, store.pageID, reqData).then(() => {
       toast.success('提交成功');
       store.setVisibleCreatePage(false);
-    }).catch(() => {
+    }).finally(() => {
       setLoading(false);
     });
   };
@@ -102,4 +181,4 @@ function CreateDataForm() {
   );
 }
 
-export default CreateDataForm;
+export default observer(CreateDataForm);

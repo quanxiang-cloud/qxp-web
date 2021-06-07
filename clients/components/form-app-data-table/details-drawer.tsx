@@ -2,8 +2,6 @@ import React, { useState, useMemo, useContext } from 'react';
 import { useQuery } from 'react-query';
 import { observer } from 'mobx-react';
 import cs from 'classnames';
-import { Table } from 'antd';
-import { ColumnType } from 'antd/lib/table';
 
 import Tab from '@c/tab2';
 import Icon from '@c/icon';
@@ -13,6 +11,7 @@ import PageLoading from '@c/page-loading';
 import { getTableCellData, operateButton } from './utils';
 import { StoreContext } from './context';
 import { getSchemaAndRecord } from './api';
+import SubTable from './sub-table';
 
 type Props = {
   onCancel: () => void;
@@ -79,44 +78,15 @@ function DetailsDrawer({ onCancel, rowID }: Props) {
     });
   };
 
-  function buildSubTableColumns(fieldKey: string): ColumnType<object>[] {
-    const items = store.fields.find(({ id }) => id === fieldKey)?.items as ISchema;
-    return Object.entries(items?.properties || {}).reduce((
-      cur: ColumnType<object>[], next: [string, ISchema]
-    ) => {
-      const [key, sc] = next;
-      if (key !== '_id') {
-        cur.push({
-          title: sc.title as string,
-          dataIndex: key,
-        });
-      }
-      return cur;
-    }, []);
-  }
-
-  function subTableRender(value: Record<string, unknown>[], fieldKey: string) {
-    if (!value) {
-      return null;
-    }
-
-    return (
-      <Table
-        pagination={false}
-        rowKey="_id"
-        columns={buildSubTableColumns(fieldKey) || []}
-        dataSource={value}
-      />
-    );
-  }
-
   const cardRender = (list: FormDataProp[]) => {
     return (
       <div className='grid gap-20 grid-cols-2'>
-        {list.map(({ label, value, key }) => (
+        {list.map(({ label, value, key, fieldSchema }) => (
           <div className='page-data-info-view' key={key}>
             <div className='text-body2-no-color text-gray-600'>{label}</div>
-            {Array.isArray(value) && subTableRender(value as Record<string, unknown>[], key)}
+            {fieldSchema?.['x-component']?.toLowerCase() === 'subtable' && (
+              <SubTable value={value as Record<string, unknown>[]} fieldKey={key} />
+            )}
             {!Array.isArray(value) && (
               <div className='text-body2 truncate'>{value}</div>
             )}
@@ -141,7 +111,7 @@ function DetailsDrawer({ onCancel, rowID }: Props) {
           <span className='text-h5'>{store.pageName}：{title}</span>
           <div className='flex items-center gap-x-12'>
             {operateButton(3, store.authority, (
-              <span onClick={() => store.goEdit(data?.record || {})} className='icon-text-btn'>
+              <span onClick={() => store.goEdit(data?.record?._id || '')} className='icon-text-btn'>
                 <Icon size={20} name='edit' />
                 修改
               </span>
