@@ -1,6 +1,8 @@
 import React from 'react';
 import cs from 'classnames';
 
+import svgHash from './svg-hash';
+
 interface Props extends React.SVGProps<SVGSVGElement> {
   name: string;
   type?: 'dark' | 'primary' | 'light';
@@ -42,7 +44,7 @@ function Icon(
         'svg-icon--disabled': disabled,
       })}
     >
-      <use xlinkHref={`/dist/images/sprite.svg#${name}`} />
+      <use xlinkHref={`${svgHash}#${name}`} />
     </svg>
   );
 }
