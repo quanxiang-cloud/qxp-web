@@ -39,8 +39,6 @@ type PageField = {
   isSystem: boolean;
   expand?: boolean;
   filter?: boolean;
-  visible?: boolean;
-  sort: number;
   option?: FilterOption;
   enum?: EnumItem[];
 }

@@ -7,7 +7,6 @@ import Tab, { TabProps } from '@c/no-content-tab';
 import HeaderNav from '@c/header-nav';
 
 import NotSavedModal from './not-saved-modal';
-import store from './store';
 import './index.scss';
 
 const TABS: TabProps[] = [
@@ -24,10 +23,10 @@ function FormDesignHeader() {
   const { pageName } = parse(window.location.search);
 
   const tabChange = (tabKey: string) => {
-    if (store.formStore?.hasEdit) {
-      setShowNotSavedTips(true);
-      return;
-    }
+    // if (store.formStore?.hasEdit) {
+    //   setShowNotSavedTips(true);
+    //   return;
+    // }
     const navType = tabKey === 'publishForm' ? '/forEmployee' : '';
     const query = pageName ? `?pageName=${pageName}` : '';
     history.replace(`/apps/formDesign/${tabKey}/${pageId}/${appID}${navType}${query}`);
