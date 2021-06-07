@@ -83,6 +83,7 @@ type FormDesignParams = {
 
 type Rights = {
   id: string;
+  types?: number;
   add?: boolean;
   formID?: string;
   sequence?: number;
