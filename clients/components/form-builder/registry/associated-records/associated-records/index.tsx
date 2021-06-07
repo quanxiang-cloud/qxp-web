@@ -14,7 +14,7 @@ type Props = {
   appID: string;
   tableID: string;
   columns: string[];
-  multiple: 'single' | 'multiple';
+  multiple: boolean;
   selected: string[];
   associatedTable: ISchema;
   onChange: (selectedKeys: string[]) => void;

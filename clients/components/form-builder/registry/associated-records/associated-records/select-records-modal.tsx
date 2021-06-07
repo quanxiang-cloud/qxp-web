@@ -27,7 +27,7 @@ type Props = {
   onSubmit: (selected: Record<string, any>[]) => void;
   appID: string;
   tableID: string;
-  multiple: 'single' | 'multiple';
+  multiple: boolean;
   associatedTable: ISchema;
   columns: string[];
 }
@@ -43,7 +43,7 @@ export default function SelectRecordsModal({
   } = useQuery([pageNumber], () => fetchTableData(appID, tableID, pageNumber, pageSize));
 
   const tableColumns = computeTableColumns(associatedTable, columns);
-  if (multiple === 'single') {
+  if (!multiple) {
     tableColumns.push({
       id: 'select_this',
       Header: '',
@@ -94,10 +94,10 @@ export default function SelectRecordsModal({
     <Modal
       title="选择关联记录"
       onClose={onClose}
-      footerBtns={multiple === 'multiple' ? btns : undefined}
+      footerBtns={multiple ? btns : undefined}
     >
       <Table
-        showCheckbox={multiple === 'multiple'}
+        showCheckbox={multiple}
         rowKey="_id"
         onSelectChange={(selectedKey, selectedRows) => setSelected(selectedRows)}
         columns={tableColumns}
