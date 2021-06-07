@@ -7,11 +7,11 @@ import Cascader, { parseTree, searchTree } from './cascader';
 import { StoreContext } from '../../context';
 
 interface Props {
-    value: string | string[];
-    onChange: (value: string | string[]) => void;
-    multiple: 'signle' | 'multiple';
-    rangeList: string[];
-    optionalRange: 'all' | 'customize';
+  value: TreeNode | TreeNode[];
+  onChange: (value: TreeNode | TreeNode[]) => void;
+  multiple: 'signle' | 'multiple';
+  rangeList: string[];
+  optionalRange: 'all' | 'customize';
 
 }
 
@@ -29,12 +29,17 @@ const OrganizationDefaultPicker = (props: Props) => {
   const TreeData = React.useMemo(() => {
     return parseTree(data);
   }, [data]);
+
+  const MemoValue = React.useMemo(() => {
+    return (value || []).map((itm: TreeNode) => itm.value)
+  }, [value])
+
   return (<Cascader
     mode={multiple == 'signle' ? 'radioSelect' : 'multiSelect'}
     data={optionalRange == 'customize' ? CustomizeTreeData : TreeData}
-    value={value || []}
+    value={MemoValue}
     onChange={(selects) => {
-      onChange(selects.map((itm) => itm.value));
+      onChange(selects);
     }}
   />);
 };

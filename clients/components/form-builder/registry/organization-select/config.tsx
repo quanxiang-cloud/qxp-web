@@ -26,8 +26,8 @@ const OrganizationPickerConfigForm = ({ initialValue, onChange }: Props): JSX.El
 
   return (<div>
     <Form defaultValue={initialValue} onChange={handleChange}>
-      <Field name="title" title="标题1" component={Input} />
-      <Field name="placeholder" title="占位提示2" component={Input} />
+      <Field name="title" title="标题" component={Input} />
+      <Field name="placeholder" title="占位提示" component={Input} />
       <Field name="description" title="描述内容" component={Input.TextArea} />
       <Field name="required" title="是否必填" component={Switch} />
       <Field name="multiple" title="部门选项" component={Radio.Group} dataSource={EnumMultiple} />

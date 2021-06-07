@@ -7,22 +7,20 @@ import { searchUser, Res } from './messy/api';
 import { Option } from './messy/enum';
 import { StoreContext } from '../../context';
 
-const i = 0;
 
 interface Props {
-    value: string | string[];
-    onChange: (value: string) => void;
-    rangeList: EmployeeOrDepartmentOfRole[];
-    multiple: 'signle' | 'multiple';
-    optionalRange: 'all' | 'customize';
+  value: Option | Option[];
+  onChange: (value: Option) => void;
+  rangeList: EmployeeOrDepartmentOfRole[];
+  multiple: 'signle' | 'multiple';
+  optionalRange: 'all' | 'customize';
 }
 
 const PAGE_SIZE = 10;
 
 const UserDefault = (props: Props) => {
-  const { optionalRange, multiple } = props;
+  const { optionalRange } = props;
   const isAllRange = optionalRange == 'all';
-  const isMultiple = multiple == 'multiple';
 
   if (isAllRange) return <AllUserComponent {...props} />;
 
@@ -38,7 +36,7 @@ const CustomizeComponent = (props: Props) => {
   }));
 
   // @ts-ignore
-  return <Select options={Options} mode={multiple} value={value} onChange={onChange} />;
+  return <Select options={Options} mode={multiple} value={Array.isArray(value) ? value.map(({ value }) => value) : value.value} onChange={onChange} />;
 };
 
 const AllUserComponent = (props: Props) => {
@@ -53,8 +51,7 @@ const AllUserComponent = (props: Props) => {
     setKeyword(str);
 
     setOptions((current) => {
-      console.log(current.filter((itm) => Array.isArray(value) ? value.includes(itm.value) : itm.value == value));
-      return current.filter((itm) => Array.isArray(value) ? value.includes(itm.value) : itm.value == value);
+      return current.filter((itm) => Array.isArray(value) ? value.some(_itm => _itm.value == itm.value) : itm.value == value.value);
     });
     setCurrent(1);
   }, [setKeyword, setOptions, setCurrent, value]);
@@ -98,11 +95,12 @@ const AllUserComponent = (props: Props) => {
       }
     }}
     options={options}
-    value={value}
+    value={Array.isArray(value) ? value.map(({ value }) => value) : value.value}
     // @ts-ignore
     filterOption={(input: string, option: any[]) => option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-    // @ts-ignore
-    onChange={(selects) => onChange(selects)}
+    onChange={(_, selects) => {
+      return onChange(selects as Option)
+    }}
   />);
 };
 

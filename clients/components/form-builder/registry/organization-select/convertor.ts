@@ -1,4 +1,4 @@
-
+import { TreeNode } from 'react-dropdown-tree-select';
 export interface DefaultConfig {
     title: string;
     description?: string;
@@ -6,7 +6,7 @@ export interface DefaultConfig {
     placeholder?: string;
     required: boolean;
     multiple?: 'signle' | 'multiple';
-    rangeList: string[];
+    rangeList: TreeNode[];
     optionalRange?: 'all' | 'customize';
     defaultValues?: string[]
 }

@@ -7,38 +7,20 @@ import { searchOrganziation } from './messy/api';
 import Cascader, { parseTree, searchTree } from './cascader';
 
 interface Props {
-    data: TreeData
-    placeholder?: string
-    mode?: Mode
-    onChange?: (currentNode: TreeNode, selectedNodes: TreeNode[]) => void
-    disabled?: boolean
-    className?: string;
-    value?: string | string[]
+  data: TreeData
+  placeholder?: string
+  mode?: Mode
+  onChange?: (currentNode: TreeNode, selectedNodes: TreeNode[]) => void
+  disabled?: boolean
+  className?: string;
+  value?: string | string[]
 }
 
-// const parseTree = (data: Organization | undefined): TreeData => {
-//     if (!data) return {}
-//     const label = data.departmentName
-//     const value = data.id
-
-//     const children = data.child ? data.child.map((itm: Organization) => parseTree(itm)) : null
-
-//     return {
-//         label,
-//         value,
-//         children
-//     }
-// }
 
 const OrganizationPicker = (p: ISchemaFieldComponentProps) => {
-
   const appID: string = p.props.appID
 
-  const { data } = useQuery(['query_user_picker', appID], ()=>searchOrganziation(appID));
-  const CascaderParams = {
-    mode: p.props.multiple == 'signle' ? 'radioSelect' : 'multiSelect',
-    placeholder: p.props.placeholder,
-  } as Props;
+  const { data } = useQuery(['query_user_picker', appID], () => searchOrganziation(appID));
 
   React.useEffect(() => {
     p.mutators.change(p.props.defaultValues);
@@ -55,12 +37,18 @@ const OrganizationPicker = (p: ISchemaFieldComponentProps) => {
     }
   }, [data, optionalRange, rangeList]);
 
-  return (<Cascader
+
+  const CascaderParams = {
+    mode: p.props.multiple == 'signle' ? 'radioSelect' : 'multiSelect',
+    placeholder: p.props.placeholder,
+  } as Props;
+
+  return <Cascader
     {...CascaderParams}
     data={TreeData}
-    value={p.value || []}
-    onChange={(selects) => p.mutators.change(selects.map((itm) => itm.value))}
-  />);
+    value={(p.value || []).map((itm: TreeNode) => itm.value)}
+    onChange={(selects) => p.mutators.change(selects)}
+  />
 };
 
 OrganizationPicker.isFieldComponent = true;

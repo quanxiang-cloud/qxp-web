@@ -1,19 +1,19 @@
 import { Option } from './messy/enum';
 
 export interface DefaultConfig {
-    title: string;
-    description?: string;
-    displayModifier: FormBuilder.DisplayModifier;
-    placeholder?: string;
-    required: boolean;
-    defaultValue: string | string[];
-    optionalRange?: 'all' | 'customize';
-    multiple?: 'signle' | 'multiple';
-    rangeList: EmployeeOrDepartmentOfRole[];
-    defaultValues: string | string[];
-    enums?: Option[];
-    loading?: boolean;
-    onSearch?: (value: string) => string | void
+  title: string;
+  description?: string;
+  displayModifier: FormBuilder.DisplayModifier;
+  placeholder?: string;
+  required: boolean;
+  defaultValue: string | string[];
+  optionalRange?: 'all' | 'customize';
+  multiple?: 'signle' | 'multiple';
+  rangeList: EmployeeOrDepartmentOfRole[];
+  defaultValues: string | string[];
+  enums?: Option[];
+  loading?: boolean;
+  onSearch?: (value: string) => string | void
 }
 
 export const defaultConfig: DefaultConfig = {
@@ -31,7 +31,10 @@ export const defaultConfig: DefaultConfig = {
 };
 
 export const toSchema = (config: DefaultConfig): FormBuilder.Schema => {
-  console.log('toSchema_', config, config.defaultValues);
+  const { defaultValues } = config
+  const isMultiple = config.multiple === 'multiple'
+  const isArr = Array.isArray(defaultValues)
+
 
   return Object.assign(config, {
     type: config.multiple === 'multiple' ? 'array' : 'string',
@@ -51,15 +54,15 @@ export const toSchema = (config: DefaultConfig): FormBuilder.Schema => {
       },
 
       filterOption: (input: string, option: any[]) =>
-      // @ts-ignore
+        // @ts-ignore
         option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0,
     },
     enum: config.optionalRange === 'all' ? [] : (config.rangeList || []).map((itm) => ({
       label: itm.ownerName,
       value: itm.id,
     })),
-    defaultValues: config.multiple === 'multiple' ? config.defaultValues : config.defaultValues.slice(0, 1),
-    defaultValue: config.multiple === 'multiple' ? config.defaultValues : config.defaultValues[0] || '',
+    defaultValues: isMultiple ? (isArr ? defaultValues : [defaultValues]) : (isArr ? defaultValues[0] : defaultValues)
+    // defaultValues: config.multiple === 'multiple' ? config.defaultValues : config.defaultValues.slice(0, 1),
   });
 };
 

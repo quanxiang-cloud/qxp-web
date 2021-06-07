@@ -7,15 +7,15 @@ import './index.scss';
 import { Organization } from './messy/api';
 
 export interface Props {
-    data: TreeData
-    placeholder?: string
-    mode?: Mode
-    onChange?: (selectedNodes: TreeNode[]) => void
-    disabled?: boolean
-    className?: string
-    value?: string | string[]
-    noMatches?: string
-    inlineSearchPlaceholder?: string
+  data: TreeData
+  placeholder?: string
+  mode?: Mode
+  onChange?: (selectedNodes: TreeNode[]) => void
+  disabled?: boolean
+  className?: string
+  value?: string | string[]
+  noMatches?: string
+  inlineSearchPlaceholder?: string
 }
 
 // @ts-ignore
@@ -28,7 +28,8 @@ const calcData = (data, value) => {
 
   // @ts-ignore
   const temp = tempArr.map(((itm) => {
-    itm.isDefaultValue = Array.isArray(value) ? value.includes(itm.value) : itm.value == value;
+    // itm.isDefaultValue = Array.isArray(value) ? value.includes(itm.value) : itm.value == value;
+    itm.checked = Array.isArray(value) ? value.includes(itm.value) : itm.value == value;
 
     itm.children && (itm.children = calcData(itm.children, value));
 
@@ -87,8 +88,9 @@ const Cascader = (props: Props) => {
 
   const isFocus = React.useRef(false);
 
-  const MemoNode = React.useMemo(() => {
-    return (<DropdownTreeSelect
+
+  return (<div className="cascader_bg">
+    <DropdownTreeSelect
       onFocus={() => isFocus.current = true}
       className={`${className} ${mode != 'radioSelect' ? 'no_rm_cascader' : ''}`}
       mode={mode}
@@ -114,12 +116,7 @@ const Cascader = (props: Props) => {
       }}
       disabled={disabled}
       data={calcData(data, value)}
-    />);
-  }, [data, mode, className, placeholder]);
-
-  return (<div className="cascader_bg">
-
-    {MemoNode}
+    />
   </div>);
 };
 

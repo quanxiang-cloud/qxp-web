@@ -53,18 +53,11 @@
   .node.focused {
     background-color: rgba(0, 0, 0, 0.08);
   }
-  // input[type="radio"] {
-  //   display: none;
-  // }
 
   input[type="checkbox"],
   input[type="radio"] {
     vertical-align: middle;
   }
 
-  .no_rm_cascader {
-    .tag-remove {
-      display: none;
-    }
-  }
+
 }

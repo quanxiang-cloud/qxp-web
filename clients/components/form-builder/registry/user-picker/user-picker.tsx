@@ -1,6 +1,7 @@
 import React from 'react';
 import { useQuery } from 'react-query';
-import { Select } from '@formily/antd-components';
+// import { Select } from '@formily/antd-components';
+import { Select } from 'antd'
 import { FormEffectHooks } from '@formily/antd';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 import debounce from 'lodash/debounce';
@@ -15,13 +16,27 @@ const PAGE_SIZE = 10;
 const { } = FormEffectHooks;
 
 const UserPicker = (p: ISchemaFieldComponentProps): JSX.Element => {
+
   const optionalRange = p.props.optionalRange as OptionalRange;
 
   React.useEffect(() => {
     p.mutators.change(p.props.defaultValues);
   }, []);
+  const value = Array.isArray(p.value || []) ? (p.value || []).map(({ value }: Option) => value) : p.value.value
 
-  return (optionalRange == 'customize') ? <Select {...p} /> : <AllUserPicker {...p} />;
+  const xComponentsProps = Object.assign({}, p.props['x-component-props'], {
+    onChange: (_: any, selects: Option[]) => {
+      p.mutators.change(selects)
+    }
+  });
+
+  const props = Object.assign({}, p, {
+    value,
+    'x-component-props': xComponentsProps,
+  })
+
+
+  return (optionalRange == 'customize') ? <Select {...props} options={p.props.enum} {...p['x-component-props']} /> : <AllUserPicker {...props} />;
 };
 
 const AllUserPicker = (p: ISchemaFieldComponentProps): JSX.Element => {
@@ -85,7 +100,8 @@ const AllUserPicker = (p: ISchemaFieldComponentProps): JSX.Element => {
     return Object.assign({}, p, { props });
   }, [p, options, hasNext, isLoading]);
 
-  return <Select {...calcParams} />;
+
+  return <Select {...calcParams} {...calcParams['x-component-props']} options={options} />;
 };
 
 UserPicker.isFieldComponent = true;
