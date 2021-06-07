@@ -74,10 +74,12 @@ function RightsItem({ rights, actions }: Props) {
       <div className='pb-form-right-title'>
         <span className='text-h5 mr-8'>{rights.name}</span>
         <span className='text-caption-no-color text-gray-600'>{rights.description}</span>
-        <p className='pb-form-right-action flex gap-x-16'>
-          <span onClick={() => setModalType('setting')}>修改</span>
-          <span className='text-red-400' onClick={() => actions('del', rights)}>删除</span>
-        </p>
+        {rights.types !== 1 && (
+          <p className='pb-form-right-action flex gap-x-16'>
+            <span onClick={() => setModalType('setting')}>修改</span>
+            <span className='text-red-400' onClick={() => actions('del', rights)}>删除</span>
+          </p>
+        )}
       </div>
       {rights.add ? (
         <div className='p-20'>

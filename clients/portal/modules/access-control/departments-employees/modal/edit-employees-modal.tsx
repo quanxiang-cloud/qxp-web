@@ -42,8 +42,8 @@ export default function EditEmployeesModal(
 ) {
   const [showLeaderModal, setShowLeaderModal] = useState(false);
   const [leader, setLeader] = useState<Leader>({
-    id: user.leaderID ?? '',
-    userName: user.leaderName ?? '',
+    id: user.leaderID || '',
+    userName: user.leaderName || '',
   });
   const formRef = createRef<Form>();
   const titleText = `${user.id ? '修改' : '添加'}`;

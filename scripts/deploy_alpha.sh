@@ -7,11 +7,9 @@ yarn install
 # build frontend assets
 rm -rf dist
 
-NODE_ENV=production ./node_modules/.bin/webpack --config webpack.config.js
-
-# # todo refactor
-# # copy built files
 node_modules/.bin/gulp buildAssets
+
+NODE_ENV=production ./node_modules/.bin/webpack --config webpack.config.js
 
 GOOS=linux go build -o ./dist/portal server/cmd/portal/main.go
 GOOS=linux go build -o ./dist/home server/cmd/home/main.go

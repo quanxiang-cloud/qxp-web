@@ -35,7 +35,7 @@ type PageField = {
   id: string;
   label: string;
   type: string,
-  cProps: ComponentProps;
+  cProps?: ComponentProps;
   isSystem: boolean;
   expand?: boolean;
   filter?: boolean;
@@ -83,6 +83,7 @@ type FormDesignParams = {
 
 type Rights = {
   id: string;
+  types?: number;
   add?: boolean;
   formID?: string;
   sequence?: number;

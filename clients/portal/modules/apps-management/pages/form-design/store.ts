@@ -1,4 +1,4 @@
-import { action, observable, reaction, IReactionDisposer, computed } from 'mobx';
+import { action, observable, reaction, IReactionDisposer, computed, toJS } from 'mobx';
 import { UnionColumns } from 'react-table';
 
 import FormStore from '@c/form-builder/store';
@@ -36,18 +36,22 @@ class FormDesignStore {
   }
 
   @computed get fieldList(): PageField[] {
-    const fieldsMap: any = this.fieldsMap;
-    return Object.keys(fieldsMap).filter((_key: string) => {
-      return _key !== '_id';
-    }).map((key: string) => {
+    return Object.entries(toJS(this.fieldsMap)).filter(([key, fieldSchema]) => {
+      if (key === '_id' || fieldSchema.type === 'array') {
+        return false;
+      }
+
+      return true;
+    }).map(([key, fieldSchema]) => {
       return {
         id: key,
-        label: fieldsMap[key].title || '',
-        type: fieldsMap[key].type,
-        enum: fieldsMap[key].enum,
-        isSystem: fieldsMap[key]['x-internal'].isSystem ? true : false,
-        cProps: fieldsMap[key]['x-component-props'],
-        ...getAttribute(this.pageTableConfig[key], fieldsMap[key]['x-index']),
+        label: (fieldSchema.title || '') as string,
+        type: fieldSchema.type || '',
+        // todo fix this type cast
+        enum: fieldSchema.enum as EnumItem[],
+        isSystem: fieldSchema['x-internal']?.isSystem ? true : false,
+        cProps: fieldSchema['x-component-props'],
+        ...getAttribute(this.pageTableConfig[key], fieldSchema['x-index'] || 0),
       };
     });
   }
