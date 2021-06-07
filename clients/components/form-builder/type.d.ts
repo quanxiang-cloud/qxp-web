@@ -75,6 +75,11 @@ declare namespace FormBuilder {
 
   type Comparator = (values: Record<string, any>) => boolean;
 
+  type Option = {
+    label: string;
+    value: string;
+  }
+
   interface CascadeOption {
     value: string;
     label: string;
