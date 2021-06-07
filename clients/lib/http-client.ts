@@ -78,13 +78,11 @@ export function formDataRequest(appID: string, tableID: string, params: FormData
 type GetTableSchemaResponse = { config: any; id: string; schema?: ISchema; tableID: string; };
 
 export function getTableSchema(appID: string, tableID: string) {
-  const side = window.SIDE === 'home' ? 'home' : 'm';
+  const path = window.SIDE === 'home' ?
+    `/api/v1/structor/${appID}/home/schema/${tableID}` :
+    `/api/v1/structor/${appID}/m/table/getByID`;
 
-  return httpClient<GetTableSchemaResponse>(
-    `/api/v1/structor/${appID}/${side}/table/getByID`,
-    { tableID },
-    { 'X-Proxy': 'FORM_SCHEMA' },
-  );
+  return httpClient<GetTableSchemaResponse>(path, { tableID }, { 'X-Proxy': 'FORM_SCHEMA' });
 }
 
 export function saveTableSchema(appID: string, tableID: string, schema: ISchema) {
