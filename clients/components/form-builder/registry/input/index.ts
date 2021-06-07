@@ -13,6 +13,7 @@ const InputField: Omit<FormBuilder.SourceElement<InputConfig>, 'displayOrder'> =
   component: Input,
   category: 'basic',
   componentName: 'Input',
+  compareOperators: ['==', '!='],
 };
 
 export default InputField;

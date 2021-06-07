@@ -22,7 +22,7 @@ import { INTERNAL_FIELD_NAMES } from '../../store';
 import { StoreContext } from '@c/form-builder/context';
 import { toJS } from 'mobx';
 
-import { OPERATORS } from '../consts';
+import { OPERATORS } from '../../constants';
 import { operatorOption } from '../utils';
 
 const COMPONENTS = {

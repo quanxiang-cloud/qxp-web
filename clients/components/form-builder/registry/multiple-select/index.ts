@@ -13,6 +13,7 @@ const MultipleSelectField: Omit<FormBuilder.SourceElement<MultipleSelectConfig>,
   component: Select,
   category: 'basic',
   componentName: 'MultipleSelect',
+  compareOperators: ['⊇', '⊋'],
 };
 
 export default MultipleSelectField;

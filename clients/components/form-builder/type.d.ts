@@ -37,6 +37,7 @@ declare namespace FormBuilder {
     toSchema: (value: T) => ISchema;
     toConfig: (schema: FormBuilder.Schema) => T;
     configDependencies?: Record<string, React.JSXElementConstructor<any>>;
+    compareOperators?: CompareOperator[];
   };
 
   type DropPosition = 'upper' | 'below';
