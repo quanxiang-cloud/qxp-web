@@ -9,6 +9,7 @@ import {
 } from '@formily/antd';
 
 import logger from '@lib/logger';
+import Icon from '@c/icon';
 
 import { getFormTableSchema } from '../config/api';
 
@@ -135,24 +136,47 @@ function SubTable(compProps: Props) {
                 }));
               };
               return (
-                <div key={index} className="flex items-start justify-between">
-                  {columns.map(({ title, dataIndex, component, props }) => (
-                    <FormItem
-                      className="mr-8 mb-8"
-                      key={dataIndex}
-                      name={`${name}.${index}.${dataIndex}`}
-                      component={component}
-                      title={title}
-                      props={props}
-                      value={item?.[dataIndex] || undefined}
-                      onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                        onItemChange(e, dataIndex);
-                      }}
+                <div key={index}>
+                  {index === 0 && (
+                    <div className="flex items-start justify-between">
+                      <div className={`flex-1 grid grid-cols-${columns.length}`}>
+                        {columns.map(({ title }, idx) => (
+                          <div key={idx}>{title}</div>
+                        ))}
+                      </div>
+                      <Icon
+                        className="ml-22 opacity-0"
+                        name="delete"
+                        size={20}
+                      />
+                    </div>
+                  )}
+                  <div className="flex items-start justify-between">
+                    <div className={`flex-1 grid grid-cols-${columns.length}`}>
+                      {columns.map(({ dataIndex, component, props }) => (
+                        <div key={dataIndex}>
+                          {component && (
+                            <FormItem
+                              className="mr-8 mb-8 w-full"
+                              name={`${name}.${index}.${dataIndex}`}
+                              component={component}
+                              props={props}
+                              value={item?.[dataIndex] || undefined}
+                              onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                                onItemChange(e, dataIndex);
+                              }}
+                            />
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                    <Icon
+                      className="ml-22"
+                      name="delete"
+                      size={20}
+                      onClick={onRemove.bind(null, index)}
                     />
-                  ))}
-                  <Button className="ml-10" onClick={onRemove.bind(null, index)}>
-                    删除
-                  </Button>
+                  </div>
                 </div>
               );
             })}

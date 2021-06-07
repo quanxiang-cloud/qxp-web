@@ -24,7 +24,7 @@ export const defaultConfig: SelectConfig = {
   ],
 };
 
-export function toSchema(value: SelectConfig): FormBuilder.Schema {
+export function toSchema(value: SelectConfig): ISchema {
   return {
     type: 'string',
     title: value.title,

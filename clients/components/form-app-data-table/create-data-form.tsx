@@ -77,7 +77,7 @@ function CreateDataForm() {
           className='p-40'
           onSubmit={handleSubmit}
           defaultValue={toJS(defaultValues)}
-          schema={store.schema}
+          schema={store.schema as ISchema}
         >
           <FormButtonGroup className='pl-96'>
             <Button

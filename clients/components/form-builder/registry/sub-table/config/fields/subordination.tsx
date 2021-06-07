@@ -17,7 +17,7 @@ function Subordination({ value, mutators, props }: ISchemaFieldComponentProps): 
   };
 
   useEffect(() => {
-    value === 'sub_table' && onSubTable();
+    value === 'sub_table' && onSubTable(false);
   }, []);
 
   const createTableMutation = useMutation(createBlankFormTable, {
@@ -36,13 +36,13 @@ function Subordination({ value, mutators, props }: ISchemaFieldComponentProps): 
     },
   });
 
-  function onSubTable() {
+  function onSubTable(reset = true) {
     actions.getFieldState('Fields.linkedTable', (state) => {
       if (state.tableID) {
         return;
       }
       createTableMutation.mutate({ appID });
-      actions.setFieldState('Fields.subTableSchema', (state) => {
+      reset && actions.setFieldState('Fields.subTableSchema', (state) => {
         state.value = {
           type: 'object',
           properties: {},

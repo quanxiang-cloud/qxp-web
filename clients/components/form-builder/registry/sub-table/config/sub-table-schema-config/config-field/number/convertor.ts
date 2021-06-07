@@ -20,7 +20,7 @@ export const defaultConfig: NumberPickerConfig = {
   required: false,
 };
 
-export function toSchema(value: NumberPickerConfig): FormBuilder.Schema {
+export function toSchema(value: NumberPickerConfig): ISchema {
   let point = value.precision;
   if (value.precision < 0 ) {
     point = 0;

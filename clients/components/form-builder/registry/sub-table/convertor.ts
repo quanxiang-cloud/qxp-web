@@ -29,7 +29,7 @@ export const defaultConfig: SubTableConfig = {
   subTableColumns: [],
 };
 
-export function toSchema(value: SubTableConfig): FormBuilder.Schema {
+export function toSchema(value: SubTableConfig): ISchema {
   return {
     type: 'array',
     title: value.title,

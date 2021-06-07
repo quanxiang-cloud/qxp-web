@@ -26,7 +26,7 @@ export const defaultConfig: DatePickerConfig = {
   defaultValue: '',
 };
 
-export function toSchema(value: typeof defaultConfig): FormBuilder.Schema {
+export function toSchema(value: typeof defaultConfig): ISchema {
   let xComponent = 'DatePicker';
   const timeFormat = value.valueFormat?.split(' ')[1];
   switch (value.valueFormat) {

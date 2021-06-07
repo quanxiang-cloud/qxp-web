@@ -70,7 +70,7 @@ function FormRenderer({ schema, defaultValue, className, onSubmit, onFormValueCh
 
   return (
     <ConfigProvider locale={zhCN}>
-      <div className={className}>
+      <div className={className || ''}>
         {errorMessage && (
           <p className="text-red-600">{errorMessage}</p>
         )}
@@ -93,7 +93,7 @@ function FormRenderer({ schema, defaultValue, className, onSubmit, onFormValueCh
             calculationFormulaEffect(schema, actions);
           }}
         >
-          {children}
+          {children as JSX.Element}
         </SchemaForm>
       </div>
     </ConfigProvider>

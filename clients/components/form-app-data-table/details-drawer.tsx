@@ -85,10 +85,12 @@ function DetailsDrawer({ onCancel, rowID }: Props) {
       cur: ColumnType<object>[], next: [string, ISchema]
     ) => {
       const [key, sc] = next;
-      cur.push({
-        title: sc.title as string,
-        dataIndex: key,
-      });
+      if (key !== '_id') {
+        cur.push({
+          title: sc.title as string,
+          dataIndex: key,
+        });
+      }
       return cur;
     }, []);
   }
@@ -100,7 +102,7 @@ function DetailsDrawer({ onCancel, rowID }: Props) {
     return (
       <Table
         pagination={false}
-        rowKey="id"
+        rowKey="_id"
         columns={buildSubTableColumns(fieldKey) || []}
         dataSource={value}
       />

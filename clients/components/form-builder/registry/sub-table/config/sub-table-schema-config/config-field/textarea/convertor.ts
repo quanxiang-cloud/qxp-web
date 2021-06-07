@@ -18,7 +18,7 @@ export const defaultConfig: TextareaConfig = {
   defaultValue: '',
 };
 
-export function toSchema(value: TextareaConfig): FormBuilder.Schema {
+export function toSchema(value: TextareaConfig): ISchema {
   return {
     type: 'string',
     title: value.title,

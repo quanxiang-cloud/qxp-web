@@ -171,7 +171,7 @@ class AppPageDataStore {
         ],
         tag: 'and',
       },
-    });
+    }, { 'X-Proxy': 'FORM_DATA' });
   }
 
   @action

@@ -18,7 +18,7 @@ export const defaultConfig: InputConfig = {
   defaultValue: '',
 };
 
-export function toSchema(value: InputConfig): FormBuilder.Schema {
+export function toSchema(value: InputConfig): ISchema {
   return {
     type: 'string',
     title: value.title,
