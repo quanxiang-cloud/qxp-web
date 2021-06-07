@@ -6,7 +6,11 @@ const { onFormInit$, onFormValuesChange$, onFieldInitialValueChange$ } = FormEff
 
 function getComparator(linkage: FormBuilder.VisibleHiddenLinkage): FormBuilder.Comparator {
   return (values: Record<string, any>): boolean => {
-    const pairs: Array<[any, FormBuilder.CompareOperator, any]> = linkage.rules.map(({ sourceKey, compareOperator, compareValue }) => {
+    const pairs: Array<[
+      any,
+      FormBuilder.CompareOperator,
+      any
+    ]> = linkage.rules.map(({ sourceKey, compareOperator, compareValue }) => {
       return [values[sourceKey], compareOperator, compareValue];
     });
 
@@ -30,7 +34,9 @@ export default function visibleHiddenLinkageEffect(
   linkages: FormBuilder.VisibleHiddenLinkage[],
   { setFieldState }: ISchemaFormActions,
 ) {
-  const comparatorsAndTargetKey: Array<[FormBuilder.Comparator, string, boolean]> = linkages.map((linkages) => {
+  const comparatorsAndTargetKey: Array<[
+    FormBuilder.Comparator, string, boolean
+  ]> = linkages.map((linkages) => {
     // *(abc,def,gij)
     const targetKeys = `*(${linkages.targetKeys.join(',')})`;
     const isShow = linkages.isShow;

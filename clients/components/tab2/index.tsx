@@ -14,7 +14,8 @@ export type TabItem<T extends React.Key = string> = {
 
 export type Props<T extends React.Key> = {
   items: TabItem<T>[];
-  strechNavs?: boolean
+  strechNavs?: boolean;
+  separator?: boolean;
   className?: string;
   navsClassName?: string;
   navTitleClassName?: string;
@@ -31,7 +32,8 @@ export default function Tab<T extends React.Key>({
   navsClassName,
   navTitleClassName,
   contentClassName,
-  strechNavs = false,
+  strechNavs,
+  separator,
   currentKey,
   onChange,
 }: Props<T>) {
@@ -57,6 +59,7 @@ export default function Tab<T extends React.Key>({
         navs={items}
         currentKey={key}
         strechNavs={strechNavs}
+        separator={separator}
         navsClassName={navsClassName}
         navTitleClassName={navTitleClassName}
         onClick={handleNavItemClick}

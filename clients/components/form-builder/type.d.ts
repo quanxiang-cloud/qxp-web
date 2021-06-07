@@ -12,7 +12,7 @@ type ISchema = import('@formily/react-schema-renderer').ISchema & {
     sortable?: boolean;
     permission?: number;
     validations?: Array<ValidationFormula>;
-    defaultValueFrom: FormBuilder.DefaultValueFrom;
+    defaultValueFrom?: FormBuilder.DefaultValueFrom;
     defaultValueLinkage?: FormBuilder.DefaultValueLinkage;
     calculationFormula?: string;
     [key: string]: any;
@@ -81,6 +81,18 @@ declare namespace FormBuilder {
     children?: CascadeOption[];
   }
 
+  type FormDataFilterRule = {
+    fieldName: string;
+    compareOperator: CompareOperator;
+    compareTo: 'fixedValue';
+    compareValue: string | number | Array<string | number>;
+  } | {
+    fieldName: string;
+    compareOperator: CompareOperator;
+    compareTo: 'currentFormValue';
+    compareValue: string;
+  }
+
   type DefaultValueLinkage = {
     linkedAppID: string;
     linkedTable: { id: string; name: string };
@@ -88,17 +100,7 @@ declare namespace FormBuilder {
     linkedField: string;
     targetField: string;
     ruleJoinOperator: 'every' | 'some';
-    rules: Array<{
-      fieldName: string;
-      compareOperator: CompareOperator;
-      compareTo: 'fixedValue';
-      compareValue: string | number | Array<string | number>;
-    } | {
-      fieldName: string;
-      compareOperator: CompareOperator;
-      compareTo: 'currentFormValue';
-      compareValue: string;
-    }>;
+    rules: Array<FormDataFilterRule>;
   }
 }
 

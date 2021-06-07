@@ -7,7 +7,7 @@ import Avatar from '@c/avatar';
 import ItemWithTitleDesc from '@c/item-with-title-desc';
 import Card from '@c/card';
 import Icon from '@c/icon';
-import AppInfoView from '@portal/modules/apps-management/components/app-info-view';
+import AppInfoView from '@c/app-info-view';
 
 import store from '../store';
 

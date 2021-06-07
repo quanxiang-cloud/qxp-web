@@ -3,14 +3,12 @@ import { Placement } from '@popperjs/core';
 import Button from '../button';
 import Popper from '../popper';
 
-import './index.scss';
-
 type Props = {
   children: React.ReactElement;
   content: React.ReactNode;
   cancelText?: string;
   okText?: string;
-  placement?: Placement
+  placement?: Placement;
   onCancel?: () => void;
   onOk?: () => (void | Promise<any>);
   onVisibilityChange?: (visible: boolean) => void;

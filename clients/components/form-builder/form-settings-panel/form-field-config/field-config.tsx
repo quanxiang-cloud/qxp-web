@@ -99,7 +99,7 @@ function FormFieldConfig(): JSX.Element {
 
   if (!store.activeField) {
     return (
-      <span>前选择表单字段</span>
+      <span>请选择表单字段</span>
     );
   }
 
@@ -108,6 +108,7 @@ function FormFieldConfig(): JSX.Element {
       <div ref={formFieldConfigWrap}>
         <SchemaFieldConfig
           // assign key to FormFieldConfigTrue to force re-render when activeFieldName changed
+          effects={schemaFieldConfigEffects}
           key={toJS(store.activeFieldName)}
           onChange={(value) => store.updateFieldConfig(value)}
           initialValue={toJS(store.activeField.configValue)}
@@ -116,7 +117,6 @@ function FormFieldConfig(): JSX.Element {
             ...COMMON_CONFIG_COMPONENTS,
             ...store.activeFieldSourceElement?.configDependencies,
           }}
-          effects={schemaFieldConfigEffects}
         />
       </div>
     );

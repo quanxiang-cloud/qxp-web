@@ -1,63 +1,82 @@
 .tab-wrapper {
-	@apply transition;
-	height: 100%;
-	background: #fff;
-	overflow: hidden;
-	position: relative;
-	display: flex;
-	flex-direction: column;
+  @apply transition;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: #fff;
+  overflow: hidden;
+  position: relative;
 
-	.tab-navs {
-	  display: flex;
-	  flex-direction: row;
-	  width: 100%;
-	  background: #fff;
-	  margin-bottom: 1px;
+  .tab-navs {
+    width: 100%;
+    display: flex;
+    overflow-x: auto;
+    flex-direction: row;
+    background: #fff;
+    margin-bottom: 1px;
+    border-bottom: 1px solid var(--gray-200);
 
-	  .tab-nav-item {
-		@apply transition;
-		font-size: 14px;
-		text-align: center;
-		white-space: nowrap;
-		padding: 9px 12px;
-		cursor: pointer;
-		position: relative;
-		&:hover {
-		  color: var(--blue-600);
-		}
-		&::after {
-		  @apply transition;
-		  width: 100%;
-		  height: 4px;
-		  background: #375ff3;
-		  border-radius: 4px 4px 0px 0px;
-		  content: "";
-		  display: block;
-		  opacity: 0;
-		  position: absolute;
-		  left: 0;
-		  bottom: -2px;
-		}
-		&:not(.active):hover {
-		  &::after {
-			opacity: 0.5;
-		  }
-		}
-	  }
-	  .active {
-		&::after {
-		  opacity: 1;
-		}
-	  }
-	  .strech-navs {
-			flex-grow: 1;
-	  }
-	}
+    .tab-nav-item {
+      @apply transition;
+      font-size: 14px;
+      text-align: center;
+      white-space: nowrap;
+      padding: 12px;
+      cursor: pointer;
+      position: relative;
+      
+      &:hover {
+        color: var(--blue-600);
+      }
 
-	.tab-content {
-		border-top: 1px solid var(--gray-200);
-		flex-grow: 1;
-		padding: 16px 20px;
-		overflow: auto;
-	}
+      &::after {
+        @apply transition;
+        opacity: 0;
+        content: "";
+        height: 4px;
+        width: 100%;
+        display: block;
+        background: #375ff3;
+        border-radius: 4px 4px 0px 0px;
+        position: absolute;
+        left: 0;
+        bottom: 0px;
+      }
+
+      &:not(.active):hover {
+        &::after {
+          opacity: 0.5;
+        }
+      }
+    }
+
+    .active {
+      &::after {
+        opacity: 1;
+      }
+    }
+    .strech-navs {
+      flex-grow: 1;
+    }
+
+    .tab-nav-item-separator:not(:last-child) {
+      &::before {
+        width: 1px;
+        height: 64%;
+        display: block;
+        content: "";
+        position: absolute;
+        right: -1px;
+        top: 50%;
+        background-color: var(--gray-200);
+        transform: translateY(-50%);
+      }
+    }
+  }
+
+  .tab-content {
+    flex-grow: 1;
+    padding: 16px 20px;
+    overflow: auto;
+  }
 }
