@@ -9,7 +9,7 @@ import store from '../../store';
 import './index.scss';
 
 function PageDetails() {
-  const { curPage, fetchSchemeLoading, formScheme, appDataStore } = store;
+  const { curPage, fetchSchemeLoading, formScheme } = store;
 
   if (!curPage.id) {
     return null;
@@ -23,7 +23,14 @@ function PageDetails() {
         itemTitleClassName="text-h5" />
       {fetchSchemeLoading && <PageLoading />}
       {formScheme && !fetchSchemeLoading ? (
-        <FormAppDataTable store={appDataStore} style={{ height: 'calc(100% - 62px)' }} className='p-20' />
+        <FormAppDataTable
+          pageName={store.pageName}
+          appID={store.appID}
+          pageID={store.pageID}
+          allowRequestData={true}
+          style={{ height: 'calc(100% - 62px)' }}
+          className='p-20'
+        />
       ) : null}
     </div>
   );
