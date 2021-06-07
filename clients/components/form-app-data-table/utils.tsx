@@ -138,13 +138,14 @@ export function getPageDataSchema(
   const fields: Fields[] = [];
   const tableColumns: any[] = [];
   Object.keys(fieldsMap).forEach((key: string) => {
-    if (key === '_id' || fieldsMap[key]['x-component']?.toLowerCase() === 'subtable') {
+    if (key === '_id') {
       return;
     }
 
     fields.push({ id: key, ...fieldsMap[key] });
     const hasVisible = pageTableConfig[key] ? 'visible' in pageTableConfig[key] : false;
-    if ((hasVisible && pageTableConfig[key].visible) || !hasVisible) {
+    if (((hasVisible && pageTableConfig[key].visible) || !hasVisible) &&
+      fieldsMap[key]['x-component']?.toLowerCase() !== 'subtable') {
       tableColumns.push({
         id: key,
         Header: fieldsMap[key].title || '',
