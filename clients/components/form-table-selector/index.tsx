@@ -12,7 +12,7 @@ import toast from '@lib/toast';
 
 import { getFormDataOptions, Options } from './api';
 
-export type Value = { name: string; value: string }
+export type Value = { name?: string; value: string }
 
 interface Props {
   value: Value;
