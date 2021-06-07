@@ -2,6 +2,7 @@ const util = require('util');
 const glob = require('glob');
 const path = require('path');
 const fs = require('fs');
+const crypto = require('crypto');
 const svgSpreact = require('svg-spreact');
 const svgoConfig = require('./svgo.config');
 const basePath = process.cwd();
