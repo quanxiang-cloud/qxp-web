@@ -34,9 +34,8 @@ build_all:
     - testing
     - gitlab-ci
   script:
-    - NODE_ENV=production ./node_modules/.bin/webpack --config webpack.config.js
-    # todo refactor
     - node_modules/.bin/gulp buildAssets
+    - NODE_ENV=production ./node_modules/.bin/webpack --config webpack.config.js
     - go mod tidy
     - go mod vendor
     - IMAGE_TAG="v$(date "+%Y%m%d")-$(git rev-parse --short HEAD)"
