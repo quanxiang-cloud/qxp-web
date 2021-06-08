@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 
 import Button from '@c/button';
 import Modal from '@c/modal';
+import EditableTree, { RefType } from '@c/editable-tree';
 
 type EditDatasetModalProps = {
   options: FormBuilder.CascadeOption[];
@@ -10,32 +11,20 @@ type EditDatasetModalProps = {
   onSave: (options: FormBuilder.CascadeOption[]) => void;
 }
 
-function EditDatasetModal({ onClose, onSave }: EditDatasetModalProps): JSX.Element {
-  function fakeSave() {
-    onSave([
-      {
-        value: 'foo',
-        label: 'foo',
-      },
-      {
-        value: 'bar',
-        label: 'bar',
-      },
-      {
-        value: 'bax',
-        label: 'bax',
-        children: [
-          {
-            value: 'baz',
-            label: 'baz',
-          },
-        ],
-      },
-    ]);
-  }
+function EditDatasetModal({ onClose, onSave, options }: EditDatasetModalProps): JSX.Element {
+  const treeRef = useRef<RefType>(null);
+
+  const handleSave = () => {
+    const treeData = treeRef.current?.getValues();
+    if (treeData) {
+      onSave(treeData);
+    }
+  };
 
   return (
     <Modal
+      title="设置级联选项"
+      onClose={onClose}
       footerBtns={[
         {
           key: 'cancel',
@@ -45,11 +34,16 @@ function EditDatasetModal({ onClose, onSave }: EditDatasetModalProps): JSX.Eleme
         {
           key: 'save',
           text: '保存',
-          onClick: fakeSave,
+          onClick: handleSave,
         },
       ]}
     >
-      hello world
+      <EditableTree
+        initialValue={options}
+        ref={treeRef}
+        onSave={(tree)=> tree}
+        hideSaveBtn
+      />
     </Modal>
   );
 }
@@ -59,7 +53,7 @@ function CustomizedDatasetBtn({ mutators, value }: ISchemaFieldComponentProps): 
 
   return (
     <>
-      <Button onClick={() => setModalVisible(true)}>设置数据集</Button>
+      <Button onClick={() => setModalVisible(true)}>设置</Button>
       {
         showEditDatasetModal && (
           <EditDatasetModal

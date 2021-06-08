@@ -7,6 +7,8 @@ import DatePicker from './date-picker';
 import Select from './select';
 import MultipleSelect from './multiple-select';
 import CascadeSelector from './cascade-selector';
+import FileUpload from './file-upload';
+import ImageUpload from './image-upload';
 
 const availableElements = [
   Input,
@@ -18,6 +20,8 @@ const availableElements = [
   Select,
   MultipleSelect,
   CascadeSelector,
+  FileUpload,
+  ImageUpload,
 ];
 
 export type Elements = { [key: string]: FormBuilder.SourceElement<any> };

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import Container from '../container';
 import DatasetNames from './dataset-names';
@@ -11,6 +11,10 @@ interface Props {
 }
 
 function Dataset(props: Props) {
+  useEffect(()=> {
+    document.title = '系统管理 - 数据集管理';
+  }, []);
+
   return (
     <Container>
       <div className="flex overflow-hidden dataset">

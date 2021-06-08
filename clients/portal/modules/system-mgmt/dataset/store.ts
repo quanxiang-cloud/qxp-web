@@ -19,8 +19,7 @@ class DatasetStore {
     let dataList;
 
     try {
-      const defaultCont = dataset.type === 1 ? '[]' : '{}';
-      dataList = JSON.parse(dataset.content || defaultCont);
+      dataList = JSON.parse(dataset.content || '[]');
     } catch (err) {
       dataList = [];
     }
