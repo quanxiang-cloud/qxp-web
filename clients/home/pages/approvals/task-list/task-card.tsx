@@ -3,7 +3,7 @@ import { useHistory } from 'react-router-dom';
 import dayjs from 'dayjs';
 
 import Avatar from '../avatar';
-import Status from '@c/status';
+import Status from '@c/process-node-status';
 import Icon from '@c/icon';
 
 import './index.scss';
