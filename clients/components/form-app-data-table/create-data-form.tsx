@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { FormButtonGroup, setValidationLanguage } from '@formily/antd';
 import { toJS } from 'mobx';
-import { isEmpty, omit } from 'lodash';
+import { isEmpty, omit, omitBy } from 'lodash';
 import { useQuery } from 'react-query';
 import { observer } from 'mobx-react';
 
@@ -10,6 +10,7 @@ import Icon from '@c/icon';
 import Button from '@c/button';
 import toast from '@lib/toast';
 import { FormRenderer } from '@c/form-builder';
+import { compactObject } from '@lib/utils';
 import Loading from '@c/loading';
 import {
   formDataRequest, FormDataRequestCreateParams, FormDataRequestUpdateParams,
@@ -18,7 +19,7 @@ import {
 import { StoreContext } from './context';
 import { difference } from './utils';
 import { findOneRecord } from './api';
-import { compactObject } from '@lib/utils';
+import { INTERNAL_FIELD_NAMES } from '@c/form-builder/store';
 
 setValidationLanguage('zh');
 
@@ -42,10 +43,10 @@ function CreateDataForm() {
     return <Loading desc="加载中..." />;
   }
 
-  function buildBaseParams(isSubTable: boolean, formData: any, _id: string) {
+  function buildBaseParams(isSubTable: boolean, formData: any, _id: string, method?: string) {
     return {
-      method: isSubTable ? 'update#set' : 'update',
-      entity: isSubTable ? omit(formData, ['_id']) : FormData,
+      method: method || 'update',
+      entity: isSubTable ? omit(formData, INTERNAL_FIELD_NAMES) : FormData,
       conditions: {
         condition: [
           {
@@ -59,27 +60,27 @@ function CreateDataForm() {
     };
   }
 
-  function buildSubData(subData: Record<string, any>) {
-    return buildBaseParams(true, subData, subData._id);
+  function buildSubData(subData: Record<string, any>, method: string) {
+    return buildBaseParams(true, omitBy(subData, Array.isArray), subData._id, method);
   }
 
   function parseUpdated(formData: any, fieldKey: string) {
     const newData = formData[fieldKey] as Record<string, string>[];
-    return newData.filter(({ _id }) => !!_id).map(buildSubData);
+    return newData.filter(({ _id }) => !!_id).map((data) => buildSubData(data, 'update'));
   }
 
-  function parseDeleted(formData: any, fieldKey: string) {
+  function parseDeleted(formData: any, fieldKey: string): string[] {
     const newData = formData[fieldKey] as Record<string, string>[];
     const oldData = (defaultValues || {})[fieldKey] as Record<string, string>[];
 
     return oldData?.filter(
       ({ _id }) => !!_id && !newData.find(({ _id: id }) => id === _id)
-    )?.map(buildSubData);
+    )?.map(({ _id }) => _id);
   }
 
   function parseNew(formData: any, fieldKey: string) {
     const newData = formData[fieldKey] as Record<string, string>[];
-    return newData.filter(({ _id }) => !_id).map(buildSubData);
+    return newData.filter(({ _id }) => !_id).map((data) => buildSubData(data, 'create'));
   }
 
   const handleSubmit = (data: any) => {
@@ -88,14 +89,13 @@ function CreateDataForm() {
     const defaultValue = toJS(defaultValues);
     const diffResult = difference(defaultValue || {}, formData);
     const subTableChangedKeys = Object.keys(diffResult).filter(
-      (fieldKey) => schemaMap[fieldKey as keyof ISchema]?.['x-component']
-        .toLowerCase() === 'subtable',
+      (fieldKey) => schemaMap[fieldKey as keyof ISchema]?.['type'] === 'array'
     );
     const hasSubTableChanged = !!(subTableChangedKeys.length && defaultValues);
 
     const ref: Record<string, {
       appID: string;
-      table: string;
+      tableID: string;
       updated: Record<string, any>[];
       new: Record<string, any>[];
       deleted: Record<string, any>[];
@@ -105,7 +105,7 @@ function CreateDataForm() {
         Object.assign(ref, {
           [fieldKey]: {
             appID: store.appID,
-            table: store.pageID,
+            tableID: store.pageID,
             updated: parseUpdated(diffResult, fieldKey),
             new: parseNew(formData, fieldKey),
             deleted: parseDeleted(formData, fieldKey),
@@ -118,7 +118,7 @@ function CreateDataForm() {
     let reqData: FormDataRequestCreateParams | FormDataRequestUpdateParams | {} = {};
     if (defaultValues) {
       reqData = {
-        ...buildBaseParams(hasSubTableChanged, formData, defaultValue._id),
+        ...buildBaseParams(hasSubTableChanged, omitBy(formData, Array.isArray), defaultValue._id),
         ...(isEmpty(ref) ? {} : { ref }),
       };
     } else {

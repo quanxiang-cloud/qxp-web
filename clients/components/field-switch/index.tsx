@@ -37,7 +37,7 @@ function numberVerify(e: any, precision: number | undefined) {
 }
 
 function FieldSwitch({ field, className, ...otherProps }: Props<any>, ref: React.Ref<any>) {
-  if (field.enum && field.enum.length) {
+  if (field?.enum && field?.enum.length) {
     return (
       <Select
         multiple={true}
@@ -45,12 +45,12 @@ function FieldSwitch({ field, className, ...otherProps }: Props<any>, ref: React
         ref={ref}
         {...otherProps}
         // todo enum other type
-        options={field.enum as unknown as Option[] || []}
+        options={field?.enum as unknown as Option[] || []}
       />
     );
   }
 
-  switch (field.type) {
+  switch (field?.type) {
   case 'number':
     return (
       <input
