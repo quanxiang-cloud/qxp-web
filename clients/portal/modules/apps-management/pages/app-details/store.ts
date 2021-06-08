@@ -5,7 +5,6 @@ import { mutateTree, TreeData, TreeItem } from '@atlaskit/tree';
 import toast from '@lib/toast';
 import { buildAppPagesTreeData } from '@lib/utils';
 import { getTableSchema } from '@lib/http-client';
-import AppDataStore from '@c/form-app-data-table/store';
 
 import { fetchAppList } from '../entry/app-list/api';
 import {
@@ -28,7 +27,6 @@ class AppDetailsStore {
     appName: '',
     appIcon: '',
   };
-  @observable appDataStore: AppDataStore = new AppDataStore({ schema: {} });
   @observable loading = false;
   @observable pageInitList: PageInfo[] = [];
   @observable apps: AppInfo[] = [];
@@ -224,15 +222,6 @@ class AppDetailsStore {
     this.fetchSchemeLoading = true;
     getTableSchema(this.appID, pageInfo.id).then((res: any) => {
       this.formScheme = res;
-      const { config, schema } = res;
-      if (schema) {
-        this.appDataStore = new AppDataStore({
-          schema: schema,
-          config: config,
-          appID: this.appID,
-          pageID: pageInfo.id,
-        });
-      }
       this.fetchSchemeLoading = false;
     }).catch(() => {
       this.fetchSchemeLoading = false;

@@ -1,4 +1,5 @@
 import React from 'react';
+import { UnionColumns } from 'react-table';
 import { action, observable, reaction, IReactionDisposer } from 'mobx';
 
 import toast from '@lib/toast';
@@ -37,7 +38,7 @@ class AppPageDataStore {
   @observable authority = 0;
   @observable curItemFormData: FormData | null = null;
   @observable allowRequestData = false;
-  @observable filterMaps: FilterMaps = {};
+  @observable filters: Filters = [];
   @observable formDataList: any[] = [];
   @observable total = 0;
   @observable fields: Fields[] = [];
@@ -71,8 +72,8 @@ class AppPageDataStore {
     this.pageID = pageID || '';
     this.allowRequestData = !!allowRequestData;
 
-    if (config?.filter) {
-      this.setFilters(config.filter || {});
+    if (config?.filters) {
+      this.setFilters(config.filters || []);
     }
   }
 
@@ -100,12 +101,12 @@ class AppPageDataStore {
   }
 
   @action
-  setFilters = (filterMaps: FilterMaps) => {
-    this.filterMaps = filterMaps;
+  setFilters = (filters: Filters) => {
+    this.filters = filters;
   }
 
   @action
-  setTableColumns = (tableColumns: any) => {
+  setTableColumns = (tableColumns: UnionColumns<any>[]) => {
     this.tableColumns = tableColumns;
   }
 
@@ -195,7 +196,7 @@ class AppPageDataStore {
     this.formDataList = [];
     this.tableConfig = {};
     this.authority = 0;
-    this.filterMaps = {};
+    this.filters = [];
     this.tableColumns = [];
     this.pageID = '';
     this.params = {

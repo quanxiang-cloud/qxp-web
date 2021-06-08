@@ -2,7 +2,6 @@ import { observable, action, IReactionDisposer, reaction } from 'mobx';
 import { TreeData } from '@atlaskit/tree';
 
 import { buildAppPagesTreeData } from '@lib/utils';
-import AppDataStore from '@c/form-app-data-table/store';
 
 import { fetchUserList, fetchPageList, fetchFormScheme } from '../lib/api';
 
@@ -11,11 +10,11 @@ class UserAppStore {
   @observable appList = [];
   @observable appID = '';
   @observable pageID = '';
-  @observable appDataStore: AppDataStore = new AppDataStore({ schema: {} });
   @observable listLoading = false;
   @observable pageListLoading = true;
   @observable curPage: PageInfo = { id: '' };
   @observable fetchSchemeLoading = true;
+  @observable pageName = '';
   @observable formScheme: ISchema | null = null;
   @observable pagesTreeData: TreeData = {
     rootId: 'ROOT',
@@ -66,23 +65,7 @@ class UserAppStore {
     this.formScheme = null;
     this.fetchSchemeLoading = true;
     fetchFormScheme(this.appID, pageInfo.id).then((res: any) => {
-      const { config, schema } = res || {};
-      if (schema) {
-        Object.keys(schema.properties).forEach((key) => {
-          if (schema.properties[key]['x-internal'].permission === 1) {
-            schema.properties[key].readOnly = true;
-          }
-        });
-
-        this.appDataStore = new AppDataStore({
-          schema: schema,
-          config: config,
-          pageID: pageInfo.id,
-          pageName: pageInfo.name,
-          appID: this.appID,
-          allowRequestData: true,
-        });
-      }
+      this.pageName = pageInfo.name || '';
       this.formScheme = res.schema;
       this.fetchSchemeLoading = false;
     }).catch(() => {

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState } from 'react';
 import { observer } from 'mobx-react';
 
 import Icon from '@c/icon';
@@ -74,12 +74,10 @@ const FIXED_RULE_OPTION = [
 ];
 
 function PageSettingConfig() {
-  const { fieldList, pageTableShowRule, setPageTableShowRule } = store;
+  const { fieldList, pageTableShowRule, setPageTableShowRule, pageTableColumns } = store;
   const [indeterminate, setIndeterminate] = useState(false);
 
-  const showListLength = useMemo(() => {
-    return store.fieldList.filter((field) => field.visible).length;
-  }, [store.fieldList]);
+  const showListLength = pageTableColumns.length;
 
   useEffect(() => {
     if (showListLength === 0 || showListLength === fieldList.length) {
@@ -100,28 +98,24 @@ function PageSettingConfig() {
 
   const handleCheckAll = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.checked) {
-      store.setAllPageTableConfig(
-        fieldList.map(({ id }) => ({ id, visible: true }))
+      store.setPageTableColumns(
+        fieldList.map(({ id }) => id)
       );
     } else {
-      store.setAllPageTableConfig(
-        fieldList.map(({ id }) => ({ id, visible: false }))
-      );
+      store.setPageTableColumns([]);
     }
   };
 
   const handleChecked = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.checked) {
-      store.setPageTableConfig(e.target.value, { visible: true });
+      store.setPageTableColumns([...pageTableColumns, e.target.value]);
     } else {
-      store.setPageTableConfig(e.target.value, { visible: false });
+      store.setPageTableColumns(pageTableColumns.filter((id) => id !== e.target.value));
     }
   };
 
   const handleSort = (keys: string[]) => {
-    store.setAllPageTableConfig(
-      keys.map((id: string, index: number) => ({ id, sort: index }))
-    );
+    store.setPageTableColumns(keys);
   };
 
   return (
@@ -171,6 +165,7 @@ function PageSettingConfig() {
         </div>,
         <FieldSort
           sortChange={handleSort}
+          selectKeys={pageTableColumns}
           fieldList={store.fieldList}
           showOnChange={handleChecked}
         />
