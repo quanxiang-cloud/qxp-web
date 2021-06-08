@@ -49,6 +49,8 @@ type FilterField = {
 
 type FilterMaps = Record<string, FilterField>;
 
+type Filters = string[];
+
 type Condition = {
   key?: string;
   op?: string;

@@ -22,13 +22,12 @@ class FormDesignStore {
   @observable appID = '';
   @observable saveSchemeLoading = false;
   @observable appPageStore = new AppPageDataStore({ schema: {} });
-  @observable initScheme = {};
   @observable pageLoading = true;
   @observable formStore: FormStore | null = null;
   @observable hasSchema = false;
   @observable pageTableColumns: string[] = [];
   @observable pageTableShowRule: PageTableShowRule = {};
-  @observable filterMaps: FilterMaps = {};
+  @observable filters: Filters = [];
 
   @computed get fieldsMap(): Record<string, ISchema> {
     return this.formStore?.schema?.properties || {};
@@ -68,20 +67,20 @@ class FormDesignStore {
         return;
       }
 
-      const hasFilterMaps = { ...this.filterMaps };
-      Object.keys(this.filterMaps).forEach((id) => {
-        if (this.formStore?.schema?.properties && !(id in this.formStore?.schema?.properties)) {
-          delete hasFilterMaps[id];
+      this.filters = this.filters.filter((id) => {
+        if (!this.formStore?.schema?.properties) {
+          return false;
         }
+
+        return id in this.formStore?.schema?.properties;
       });
-      this.filterMaps = hasFilterMaps;
     });
 
     this.destroySetSchema = reaction(() => this.formStore?.schema, this.appPageStore.setSchema);
-    this.destroySetFilters = reaction(() => this.filterMaps, this.appPageStore.setFilters);
+    this.destroySetFilters = reaction(() => this.filters, this.appPageStore.setFilters);
 
     this.destroySetTableColumn = reaction(() => {
-      const column: UnionColumns<any>[] = this.pageTableColumns.map((key)=>{
+      const column: UnionColumns<any>[] = this.pageTableColumns.map((key) => {
         return {
           id: key,
           Header: this.fieldsMap[key].title as string,
@@ -97,8 +96,8 @@ class FormDesignStore {
   }
 
   @action
-  setFilterMaps = (filters: FilterMaps) => {
-    this.filterMaps = filters;
+  setFilters = (filters: Filters) => {
+    this.filters = filters;
   }
 
   @action
@@ -122,11 +121,6 @@ class FormDesignStore {
   }
 
   @action
-  reSetFormScheme = () => {
-    this.formStore = new FormStore({ schema: this.initScheme, appID: this.appID, pageID: this.pageID });
-  }
-
-  @action
   fetchFormScheme = ({ pageID, appID }: { pageID: string, appID: string }) => {
     if (!pageID || !appID) {
       return;
@@ -136,10 +130,9 @@ class FormDesignStore {
     getTableSchema(appID, pageID).then((res) => {
       const { schema = {}, config = {} } = res || {};
       this.hasSchema = res ? true : false;
-      this.initScheme = schema;
       this.formStore = new FormStore({ schema, appID, pageID });
       this.pageTableColumns = config.pageTableColumns;
-      this.filterMaps = config.filters || [];
+      this.filters = config.filters || [];
       this.pageTableShowRule = config.pageTableShowRule || {};
       this.pageLoading = false;
     }).catch(() => {
@@ -154,7 +147,7 @@ class FormDesignStore {
       createPageScheme(this.appID, {
         tableID: this.pageID, config: {
           pageTableColumns: this.pageTableColumns,
-          filter: this.filterMaps,
+          filters: this.filters,
           pageTableShowRule: this.pageTableShowRule,
         },
       });
@@ -171,7 +164,7 @@ class FormDesignStore {
     this.formStore = null;
     this.pageTableColumns = [];
     this.pageTableShowRule = {};
-    this.filterMaps = {};
+    this.filters = [];
     this.appPageStore.clear();
   }
 
@@ -180,7 +173,7 @@ class FormDesignStore {
     createPageScheme(this.appID, {
       tableID: this.pageID, config: {
         pageTableColumns: this.pageTableColumns,
-        filter: this.filterMaps,
+        filters: this.filters,
         pageTableShowRule: this.pageTableShowRule,
       },
     }).then(() => {

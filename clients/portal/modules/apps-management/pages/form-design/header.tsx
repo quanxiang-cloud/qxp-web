@@ -7,6 +7,7 @@ import Tab, { TabProps } from '@c/no-content-tab';
 import HeaderNav from '@c/header-nav';
 
 import NotSavedModal from './not-saved-modal';
+import store from './store';
 import './index.scss';
 
 const TABS: TabProps[] = [
@@ -23,13 +24,21 @@ function FormDesignHeader() {
   const { pageName } = parse(window.location.search);
 
   const tabChange = (tabKey: string) => {
-    // if (store.formStore?.hasEdit) {
-    //   setShowNotSavedTips(true);
-    //   return;
-    // }
     const navType = tabKey === 'publishForm' ? '/forEmployee' : '';
     const query = pageName ? `?pageName=${pageName}` : '';
     history.replace(`/apps/formDesign/${tabKey}/${pageId}/${appID}${navType}${query}`);
+  };
+
+  const goBack = () => {
+    if (store.formStore?.hasEdit) {
+      setShowNotSavedTips(true);
+      return;
+    }
+    goPageDetails();
+  };
+
+  const goPageDetails = () => {
+    history.push(`/apps/details/${appID}?pageID=${pageId}`);
   };
 
   return (
@@ -38,7 +47,7 @@ function FormDesignHeader() {
         <Icon
           clickable
           changeable
-          onClick={() => history.goBack()}
+          onClick={goBack}
           className='mr-16'
           size={20}
           name='keyboard_backspace'
@@ -51,7 +60,10 @@ function FormDesignHeader() {
         <HeaderNav name='帮助文档' icon='book' url='' />
       </div>
       {showNotSavedTips && (
-        <NotSavedModal onCancel={() => setShowNotSavedTips(false)} />
+        <NotSavedModal
+          onAbandon={goPageDetails}
+          onCancel={() => setShowNotSavedTips(false)}
+        />
       )}
     </div>
   );
