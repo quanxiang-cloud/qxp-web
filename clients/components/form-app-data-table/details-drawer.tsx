@@ -97,7 +97,7 @@ function DetailsDrawer({ onCancel, rowID }: Props) {
   };
 
   const title = store.tableColumns.length && data?.record ?
-    (store.tableColumns[0] as any).accessor(data?.record) : '';
+    (store.tableColumns[0] as any)?.accessor?.(data?.record) : '';
 
   return (
     <div
