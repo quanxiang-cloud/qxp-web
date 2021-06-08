@@ -34,10 +34,6 @@ class FormDesignStore {
   }
 
   @computed get fieldList(): PageField[] {
-    if (!this.pageTableColumns) {
-      this.pageTableColumns = Object.keys(this.fieldsMap);
-    }
-
     return Object.entries(toJS(this.fieldsMap)).filter(([key, fieldSchema]) => {
       if (key === '_id' || fieldSchema.type === 'array') {
         return false;
@@ -67,6 +63,20 @@ class FormDesignStore {
         return;
       }
 
+      if (!this.pageTableColumns) {
+        this.pageTableColumns = this.fieldList.map(({ id }) => id).sort((key1, key2) => {
+          return this.fieldsMap[key1]['x-index'] || 0 - (this.fieldsMap[key2]['x-index'] || 0);
+        });
+      } else {
+        this.pageTableColumns = this.pageTableColumns.filter((id) => {
+          if (!this.formStore?.schema?.properties) {
+            return false;
+          }
+
+          return id in this.formStore?.schema?.properties;
+        });
+      }
+
       this.filters = this.filters.filter((id) => {
         if (!this.formStore?.schema?.properties) {
           return false;
@@ -80,6 +90,10 @@ class FormDesignStore {
     this.destroySetFilters = reaction(() => this.filters, this.appPageStore.setFilters);
 
     this.destroySetTableColumn = reaction(() => {
+      if (!this.pageTableColumns) {
+        return [];
+      }
+
       const column: UnionColumns<any>[] = this.pageTableColumns.map((key) => {
         return {
           id: key,

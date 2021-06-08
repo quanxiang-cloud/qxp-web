@@ -17,14 +17,16 @@ type Props = {
 function FieldSort({ showOnChange, fieldList, sortChange, selectKeys }: Props) {
   const [selectFields, noSelectFields] = useMemo(() => {
     const selectFieldsTmp: PageField[] = [];
-    const noSelectFieldsTmp: PageField[] = [];
-    fieldList.forEach((field) => {
-      if (selectKeys.includes(field.id)) {
+    const noSelectFieldsTmp: PageField[] = fieldList.filter((field) => {
+      return !selectKeys.includes(field.id);
+    });
+    selectKeys.forEach((key)=>{
+      const field = fieldList.find(({ id })=>id === key);
+      if (field) {
         selectFieldsTmp.push(field);
-      } else {
-        noSelectFieldsTmp.push(field);
       }
     });
+
     return [selectFieldsTmp, noSelectFieldsTmp];
   }, [fieldList, selectKeys]);
 

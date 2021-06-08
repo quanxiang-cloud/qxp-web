@@ -1,4 +1,5 @@
 import React from 'react';
+import { UnionColumns } from 'react-table';
 import { action, observable, reaction, IReactionDisposer } from 'mobx';
 
 import toast from '@lib/toast';
@@ -105,7 +106,7 @@ class AppPageDataStore {
   }
 
   @action
-  setTableColumns = (tableColumns: any) => {
+  setTableColumns = (tableColumns: UnionColumns<any>[]) => {
     this.tableColumns = tableColumns;
   }
 
