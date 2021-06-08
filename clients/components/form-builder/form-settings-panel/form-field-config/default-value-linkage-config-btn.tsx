@@ -16,6 +16,7 @@ function DefaultValueLinkageConfigBtn(props: ISchemaFieldComponentProps) {
       {
         showModal && (
           <LinkageConfig
+            linkage={props.value}
             onClose={() => setShowModal(false)}
             onSubmit={(config) => {
               props.mutators.change(config);

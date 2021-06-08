@@ -13,6 +13,7 @@ const TextArea: Omit<FormBuilder.SourceElement<TextareaConfig>, 'displayOrder'> 
   component: Input.TextArea,
   category: 'basic',
   componentName: 'textarea',
+  compareOperators: ['~'],
 };
 
 export default TextArea;

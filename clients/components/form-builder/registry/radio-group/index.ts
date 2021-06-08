@@ -13,6 +13,7 @@ const RadioField: Omit<FormBuilder.SourceElement<RadioGroupConfig>, 'displayOrde
   defaultConfig: defaultConfig,
   toConfig,
   toSchema,
+  compareOperators: ['==', '!=', '∈', '∉'],
 };
 
 export default RadioField;

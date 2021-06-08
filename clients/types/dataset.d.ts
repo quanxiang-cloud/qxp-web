@@ -20,5 +20,5 @@ type DatasetListItem = {
 type DatasetTreeItem = {
   label: string;
   value: string;
-  items: Array<DatasetTreeItem>;
+  children?: Array<DatasetTreeItem>;
 }

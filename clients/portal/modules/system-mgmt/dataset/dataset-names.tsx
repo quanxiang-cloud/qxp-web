@@ -56,7 +56,7 @@ function DatasetNames(props: Props) {
           value={store.search}
           onChange={handleSearch}
         />
-        <Button iconName="add" className="btn--add" onClick={() => setAddDataModal(true)}>分组</Button>
+        <Button iconName="add" className="btn--add" onClick={() => setAddDataModal(true)}>数据集</Button>
       </div>
       {store.loadingNames ? <Loading /> : (
         <div className="mt-20">
