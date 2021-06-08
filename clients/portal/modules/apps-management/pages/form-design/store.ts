@@ -166,6 +166,7 @@ class FormDesignStore {
         },
       });
       toast.success(this.hasSchema ? '保存成功!' : '创建成功!');
+      (this.formStore as FormStore).hasEdit = false;
       this.saveSchemeLoading = false;
     }).catch(() => {
       this.saveSchemeLoading = false;
