@@ -136,7 +136,6 @@ export function getPageDataSchema(
 ) {
   const { pageTableShowRule = {}, pageTableColumns = [] } = config || {};
   const fieldsMap = schema?.properties || {};
-  const fields: Fields[] = [];
   const tableColumns: UnionColumns<any>[] = pageTableColumns.map((key) => {
     return {
       id: key,
@@ -148,7 +147,6 @@ export function getPageDataSchema(
   return {
     tableColumns: setFixedParameters(pageTableShowRule.fixedRule, tableColumns),
     pageTableShowRule,
-    fields,
   };
 }
 
