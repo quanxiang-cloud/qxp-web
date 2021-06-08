@@ -1,0 +1,20 @@
+.data-tree-items {
+  .tree-row-item {
+    border-left: 1px solid #aaa;
+    input {
+      min-width: 80px;
+    }
+    //&:hover {
+    //  .data-tree-items--item-actions {
+    //    visibility: visible;
+    //  }
+    //}
+    //.data-tree-items--item-actions {
+    //  visibility: hidden;
+    //}
+
+    .icon-expand {
+      transform: rotate(180deg);
+    }
+  }
+}

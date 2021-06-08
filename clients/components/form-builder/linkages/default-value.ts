@@ -6,7 +6,7 @@ import { FormEffectHooks, ISchemaFormActions } from '@formily/antd';
 
 import logger from '@lib/logger';
 
-import compareOperatorMap from './compare-operator-map';
+import { compareOperatorMap } from '@c/form-builder/constants';
 
 const { onFieldValueChange$ } = FormEffectHooks;
 

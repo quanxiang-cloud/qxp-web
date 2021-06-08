@@ -1,11 +1,12 @@
 import httpClient from '@lib/http-client';
 
-export const getDatasetNames = async (filters?: Record<'name' | 'tag', string>): Promise<{ list: Dataset[] }> => {
+export const getDatasetNames = async (filters?: Record<string, unknown>): Promise<{ list: Dataset[] }> => {
   return await httpClient('/api/v1/structor/dataset/m/getByCondition', filters);
 };
 
 export const getDatasetById = async (id: string): Promise<Dataset> => {
-  return await httpClient('/api/v1/structor/dataset/m/get', { id });
+  const side = window.SIDE === 'home' ? 'home' : 'm';
+  return await httpClient(`/api/v1/structor/dataset/${side}/get`, { id });
 };
 
 export const createDataset = async (dataset: Omit<Dataset, 'id' | 'content'>): Promise<{ id: string }> => {

@@ -9,6 +9,8 @@ import MultipleSelect from './multiple-select';
 import CascadeSelector from './cascade-selector';
 import SubTable from './sub-table';
 import AssociatedRecords from './associated-records';
+import FileUpload from './file-upload';
+import ImageUpload from './image-upload';
 
 const availableElements = [
   Input,
@@ -22,6 +24,8 @@ const availableElements = [
   CascadeSelector,
   SubTable,
   AssociatedRecords,
+  FileUpload,
+  ImageUpload,
 ];
 
 export type Elements = { [key: string]: FormBuilder.SourceElement<any> };

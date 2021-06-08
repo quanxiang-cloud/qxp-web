@@ -13,6 +13,7 @@ const DatePickerField: Omit<FormBuilder.SourceElement<DatePickerConfig>, 'displa
   component: DatePicker,
   category: 'basic',
   componentName: 'DatePicker',
+  compareOperators: ['==', '!=', '>', '>=', '<=', '<'],
 };
 
 export default DatePickerField;

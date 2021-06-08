@@ -2,11 +2,13 @@ import React, { useEffect } from 'react';
 import { observer } from 'mobx-react';
 
 import Loading from '@c/loading';
+import toast from '@lib/toast';
 
 import ListContent from './list-content';
-import TreeContent from './tree-content';
+import TreeContent from '@c/editable-tree';
 
 import store from './store';
+import { updateDataset } from './api';
 
 interface Props {
   className?: string;
@@ -19,13 +21,36 @@ function DatasetContent(props: Props) {
     }
   }, [store.activeId]);
 
+  const handleSaveTree = (tree: DatasetTreeItem[]) => {
+    const serializeCont = JSON.stringify(tree);
+    if (serializeCont === JSON.stringify({ ...store.dataList })) {
+      toast.error('数据未更改');
+      return;
+    }
+
+    // @ts-ignore
+    updateDataset({
+      ...store.activeDataset,
+      content: serializeCont,
+    }).then((data) => {
+      if (data) {
+        toast.success('更新成功');
+        // @ts-ignore
+        // update current content
+        store.activeDataset.content = serializeCont;
+      } else {
+        toast.error('更新失败');
+      }
+    }).catch((err: Error) => toast.error(err.message));
+  };
+
   const renderContent = () => {
     if (store.activeDataset?.type === 1) {
       return <ListContent />;
     }
 
     if (store.activeDataset?.type === 2) {
-      return <TreeContent />;
+      return <TreeContent initialValue={store.dataList} onSave={handleSaveTree} />;
     }
   };
 
