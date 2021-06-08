@@ -53,14 +53,14 @@
     &--datas {
       .data-list-items {
         &--item {
-          &:hover {
-            .data-list-items--item-actions {
-              visibility: visible;
-            }
-          }
-          &-actions {
-            visibility: hidden;
-          }
+          //&:hover {
+          //  .data-list-items--item-actions {
+          //    visibility: visible;
+          //  }
+          //}
+          //&-actions {
+          //  visibility: hidden;
+          //}
         }
       }
 
@@ -69,14 +69,14 @@
           input {
             min-width: 80px;
           }
-          &:hover {
-            .data-tree-items--item-actions {
-              visibility: visible;
-            }
-          }
-          .data-tree-items--item-actions {
-            visibility: hidden;
-          }
+          //&:hover {
+          //  .data-tree-items--item-actions {
+          //    visibility: visible;
+          //  }
+          //}
+          //.data-tree-items--item-actions {
+          //  visibility: hidden;
+          //}
         }
       }
 

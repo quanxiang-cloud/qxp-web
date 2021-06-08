@@ -13,6 +13,7 @@ const CheckboxGroupField: Omit<FormBuilder.SourceElement<typeof defaultConfig>, 
   component: Checkbox.Group,
   category: 'basic',
   componentName: 'CheckboxGroup',
+  compareOperators: ['⊇', '⊋'],
 };
 
 export default CheckboxGroupField;

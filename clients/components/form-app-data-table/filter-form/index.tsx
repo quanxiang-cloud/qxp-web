@@ -14,7 +14,7 @@ type Props = {
 
 function FilterForm({ showMoreFilter }: Props, ref?: React.Ref<any>) {
   const store = useContext(StoreContext);
-  const filterKeys = Object.keys(store.filterMaps);
+  const { filters } = store;
   const fieldMaps = store.schema.properties || {};
   const { getValues, reset, control } = useForm();
 
@@ -27,7 +27,7 @@ function FilterForm({ showMoreFilter }: Props, ref?: React.Ref<any>) {
     reset: reset,
   }));
 
-  if (filterKeys.length === 0) {
+  if (filters.length === 0) {
     return (
       <div className='text-caption-no-color text-gray-400 flex-1 flex items-center'>
         <img
@@ -43,7 +43,7 @@ function FilterForm({ showMoreFilter }: Props, ref?: React.Ref<any>) {
 
   return (
     <form className='app-page-filter-form'>
-      {(showMoreFilter ? filterKeys : filterKeys.slice(0, 3)).map((key) => (
+      {(showMoreFilter ? filters : filters.slice(0, 3)).map((key) => (
         <div className='flex items-center' key={key}>
           <label className='app-page-filter-label'>{fieldMaps[key]?.title}：</label>
           <Controller

@@ -7,14 +7,10 @@ import store from './store';
 
 type Props = {
   onCancel: () => void;
+  onAbandon: () => void;
 }
 
-function NotSavedModal({ onCancel }: Props) {
-  const handleCancel = () => {
-    store.reSetFormScheme();
-    onCancel();
-  };
-
+function NotSavedModal({ onCancel, onAbandon }: Props) {
   const handleSave = () => {
     store.saveFormScheme().then(() => {
       onCancel();
@@ -29,7 +25,7 @@ function NotSavedModal({ onCancel }: Props) {
         {
           key: '1',
           text: '否，放弃保存',
-          onClick: handleCancel,
+          onClick: onAbandon,
           className: 'mr-20',
         },
         {

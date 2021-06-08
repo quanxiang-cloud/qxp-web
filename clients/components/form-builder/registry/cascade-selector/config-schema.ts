@@ -110,12 +110,12 @@ const schema: ISchema = {
           'x-component': 'DatasetSelector',
           'x-index': 6,
         },
-        // showFullPath: {
-        //   title: '结果显示路径',
-        //   default: false,
-        //   'x-component': 'Switch',
-        //   'x-index': 7,
-        // },
+        showFullPath: {
+          title: '结果显示路径',
+          default: false,
+          'x-component': 'Switch',
+          'x-index': 7,
+        },
         dropdownStyle: {
           type: 'string',
           title: '下拉菜单样式',

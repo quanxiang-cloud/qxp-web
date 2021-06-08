@@ -10,8 +10,8 @@ export type PageTableShowRule = {
   pageSize?: number | null;
 }
 export type Config = {
-  filter?: FilterMaps;
-  pageTableConfig?: Record<string, any>;
+  filters?: Filters;
+  pageTableColumns?: string[];
   pageTableShowRule?: PageTableShowRule;
 };
 
@@ -129,37 +129,18 @@ export function getPageDataSchema(
   config: Config,
   schema: Scheme,
 ) {
-  const { pageTableShowRule = {}, pageTableConfig = {} } = config || {};
+  const { pageTableShowRule = {}, pageTableColumns = [] } = config || {};
   const fieldsMap = schema?.properties || {};
-  const fields: Fields[] = [];
-  const tableColumns: any[] = [];
-  Object.keys(fieldsMap).forEach((key: string) => {
-    if (key === '_id') {
-      return;
-    }
-
-    fields.push({ id: key, ...fieldsMap[key] });
-    const hasVisible = pageTableConfig[key] ? 'visible' in pageTableConfig[key] : false;
-    if ((hasVisible && pageTableConfig[key].visible) || !hasVisible) {
-      tableColumns.push({
-        id: key,
-        Header: fieldsMap[key].title || '',
-        accessor: (data: any) => getTableCellData(data[key], fieldsMap[key]),
-      });
-    }
-  });
-
-  tableColumns.sort((a, b) => {
-    const sortA = pageTableConfig[a.id]?.sort ?
-      pageTableConfig[a.id]?.sort : fieldsMap[a.id]['x-index'];
-    const sortB = pageTableConfig[b.id]?.sort ?
-      pageTableConfig[b.id]?.sort : fieldsMap[b.id]['x-index'];
-    return sortA - sortB;
+  const tableColumns: UnionColumns<any>[] = pageTableColumns.map((key) => {
+    return {
+      id: key,
+      Header: fieldsMap[key].title || '',
+      accessor: (data: any) => getTableCellData(data[key], fieldsMap[key]),
+    };
   });
 
   return {
     tableColumns: setFixedParameters(pageTableShowRule.fixedRule, tableColumns),
     pageTableShowRule,
-    fields,
   };
 }

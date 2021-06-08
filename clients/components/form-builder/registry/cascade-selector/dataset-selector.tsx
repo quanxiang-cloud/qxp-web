@@ -3,20 +3,18 @@ import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 
 import Select, { SelectOption } from '@c/select';
 
-import mockDataset from './mock-dataset';
-
-function getDatasets(): Promise<SelectOption<any>[]> {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(mockDataset);
-    }, 1 * 1000);
-  });
-}
+import { getDatasetNames } from '@portal/modules/system-mgmt/dataset/api';
 
 function DatasetSelector({ mutators, value }: ISchemaFieldComponentProps): JSX.Element {
   const [options, setOptions] = React.useState<SelectOption<any>[]>([]);
+
   useEffect(() => {
-    getDatasets().then((datasetOptions) => setOptions(datasetOptions));
+    getDatasetNames({ type: 2 }).then(({ list }) => {
+      setOptions(list.map(({ id, name }) => ({
+        label: name,
+        value: id,
+      })));
+    });
   }, []);
 
   return (

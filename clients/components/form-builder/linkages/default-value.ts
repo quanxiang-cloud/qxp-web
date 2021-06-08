@@ -6,7 +6,7 @@ import { FormEffectHooks, ISchemaFormActions } from '@formily/antd';
 
 import logger from '@lib/logger';
 
-import compareOperatorMap from './compare-operator-map';
+import { compareOperatorMap } from '@c/form-builder/constants';
 
 const { onFieldValueChange$ } = FormEffectHooks;
 
@@ -155,7 +155,7 @@ function executeLinkage({ linkage, formActions }: ExecuteLinkage) {
         return shouldFireEffect({ linkedRow, linkage, getFieldValue });
       }),
     ).subscribe((linkedRow) => {
-      logger.debug('execute defaultValueLinkage form field', linkage.targetField);
+      logger.debug(`execute defaultValueLinkage on field: ${linkage.targetField}`);
       setFieldState(linkage.targetField, (state) => state.value = linkedRow[linkage.linkedField]);
     });
     return;
@@ -171,7 +171,7 @@ function executeLinkage({ linkage, formActions }: ExecuteLinkage) {
       return shouldFireEffect({ linkedRow, linkage, getFieldValue });
     }),
   ).subscribe((linkedRow) => {
-    logger.debug('execute defaultValueLinkage form field', linkage.targetField);
+    logger.debug(`execute defaultValueLinkage on field: ${linkage.targetField}`);
     setFieldState(linkage.targetField, (state) => state.value = linkedRow[linkage.linkedField]);
   });
 }
