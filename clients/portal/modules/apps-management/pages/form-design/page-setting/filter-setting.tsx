@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
-import { Modal, RadioGroup } from '@QCFE/lego-ui';
+import { Modal } from '@QCFE/lego-ui';
 import { observer } from 'mobx-react';
 
 import Icon from '@c/icon';
 import Button from '@c/button';
 import Checkbox from '@c/checkbox';
-import { getOperators } from '@c/data-filter/utils';
 
 import './index.scss';
 import store from '../store';
@@ -29,79 +28,44 @@ function infoRender(title: string, desc: string) {
 
 function FilterSetting() {
   const [filterModalVisible, setFilterModalVisible] = useState(false);
-  const [filterMaps, setFilterMaps] = useState<FilterMaps>(store.filterMaps);
-  const [expandList, setExpandList] = useState<string[]>([]);
+  const [filters, setFilters] = useState<Filters>(store.filters);
   const { fieldList } = store;
   const handleCancel = () => {
     setFilterModalVisible(false);
   };
 
-  const handleChangeField = (id: string, newData: FilterField) => {
-    setFilterMaps({ ...filterMaps, [id]: newData });
-  };
-
-  const filterOptionRender = (field: PageField) => {
-    return (
-      <RadioGroup
-        direction="column"
-        disabled={!filterMaps[field.id]}
-        options={getOperators(field.type, field.enum)}
-        value={filterMaps[field.id]?.compareSymbol}
-        onChange={(value) => handleChangeField(field.id, { compareSymbol: value })}
-      />
-    );
-  };
-
   const handleRemove = (fieldID: string) => {
-    const fieldMapsTmp = { ...filterMaps };
-    delete fieldMapsTmp[fieldID];
-    setFilterMaps(fieldMapsTmp);
+    setFilters(filters.filter((id)=>id !== fieldID));
   };
 
   const handleCheckChange = (e: React.ChangeEvent<HTMLInputElement>, field: PageField) => {
-    const [firstOption] = getOperators(field.type, field.enum);
     if (e.target.checked) {
-      setFilterMaps({ ...filterMaps, [field.id]: { compareSymbol: firstOption.value } });
+      setFilters([...filters, field.id]);
     } else {
       handleRemove(field.id);
     }
   };
 
-  const handleExpand = (id: string) => {
-    if (expandList.includes(id)) {
-      setExpandList(expandList.filter((_id)=>_id !== id));
-    } else {
-      setExpandList([...expandList, id]);
-    }
-  };
-
   const fieldFilterRender = (field: PageField) => {
-    const curFilter = filterMaps[field.id];
-    const isExpand = expandList.includes(field.id);
     return (
       <div key={field.id} className='page-setting-field-filter'>
         <div className='flex items-center justify-between py-8 px-16'>
           <div
-            onClick={() => handleExpand(field.id)}
             className='flex items-center flex-1 cursor-pointer'
           >
-            <Icon name={isExpand ? 'expand_less' : 'expand_more'} />
             {infoRender(field.label, getFieldType(field))}
           </div>
           <Checkbox
-            checked={curFilter ? true : false}
+            checked={filters.includes(field.id)}
             onChange={(e) => handleCheckChange(e, field)}
           />
         </div>
-        {isExpand ? (
-          <div className='page-setting-filter-option'>{filterOptionRender(field)}</div>
-        ) : null}
       </div>
     );
   };
 
   const onSave = () => {
-    store.setFilterMaps(filterMaps);
+    store.setFilters(filters);
     setFilterModalVisible(false);
   };
 

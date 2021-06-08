@@ -1,30 +1,75 @@
-import React from 'react';
-import { observer } from 'mobx-react';
+import React, { useEffect, useState } from 'react';
 
-import CreateDataForm from './create-data-form';
-import PageDataTable from './page-data-table';
-import PageDataFilter from './page-data-filter';
-import { StoreContext } from './context';
+import PageLoading from '@c/page-loading';
+import { getTableSchema } from '@lib/http-client';
+
+import FormAppDataContent from './form-app-data-content';
 import Store from './store';
-import './index.scss';
 
 type Props = {
+  pageID: string;
+  appID: string;
+  pageName?: string;
+  allowRequestData?: boolean;
   className?: string;
   style?: React.CSSProperties;
-  store: Store;
 }
 
-function FormAppDataContent({ className = '', style, store }: Props) {
+function FormAppDataTableWrap({
+  pageID,
+  appID,
+  pageName,
+  allowRequestData = false,
+  className = '',
+  style,
+}: Props) {
+  const [store, setStore] = useState<Store | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    setLoading(true);
+    getTableSchema(appID, pageID).then((res) => {
+      const { config, schema } = res || {};
+      if (schema) {
+        const fieldMaps: Record<string, ISchema> = schema.properties || {};
+        Object.keys(fieldMaps).forEach((key) => {
+          if (fieldMaps[key]['x-internal']?.permission === 1) {
+            fieldMaps[key].readOnly = true;
+          }
+        });
+
+        setStore(
+          new Store({
+            schema: schema,
+            config: config,
+            allowRequestData,
+            pageName,
+            appID,
+            pageID,
+          })
+        );
+      } else {
+        setStore(null);
+      }
+      setLoading(false);
+    }).catch(() => {
+      setLoading(false);
+    });
+  }, [pageID, appID]);
+
+  if (loading) {
+    return <PageLoading />;
+  }
+
+  if (!store) {
+    return null;
+  }
+
   return (
-    <StoreContext.Provider value={store}>
-      {store.createPageVisible ? <CreateDataForm /> : (
-        <div style={style} className={`flex flex-col ${className}`}>
-          <PageDataFilter />
-          <PageDataTable />
-        </div>
-      )}
-    </StoreContext.Provider>
+    <>
+      <FormAppDataContent className={className} style={style} store={store} />
+    </>
   );
 }
 
-export default observer(FormAppDataContent);
+export default FormAppDataTableWrap;

@@ -39,8 +39,6 @@ type PageField = {
   isSystem: boolean;
   expand?: boolean;
   filter?: boolean;
-  visible?: boolean;
-  sort: number;
   option?: FilterOption;
   enum?: EnumItem[];
 }
@@ -50,6 +48,8 @@ type FilterField = {
 }
 
 type FilterMaps = Record<string, FilterField>;
+
+type Filters = string[];
 
 type Condition = {
   key?: string;
