@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { observer } from 'mobx-react';
 
-import { Input } from '@QCFE/lego-ui';
 import Button from '@c/button';
 import Icon from '@c/icon';
 import toast from '@lib/toast';
@@ -78,17 +77,23 @@ function ListContent(props: Props) {
           stagingItems.map(({ label, value }: DatasetListItem, idx: number) => {
             return (
               <div className="data-list-items--item flex items-center mb-10" key={idx}>
-                <span className="inline-flex flex-1 mr-20">
-                  Label: <Input type="text" size="small" value={label}
-                    onChange={(e, val) => handleChangeField(idx, 'label', val)} />
-                  <span style={{ display: 'none' }}>
-                    Value: <Input type="text" size="small" value={value}
-                      onChange={(e, val) => handleChangeField(idx, 'value', val)} />
-                  </span>
+                <span className="inline-flex mr-20">
+                  Label:
+                  <input
+                    type="text"
+                    value={label}
+                    className="input ml-8"
+                    onChange={(ev) => handleChangeField(idx, 'label', ev.currentTarget.value)}
+                  />
+                  <span style={{ display: 'none' }}>Value: <input type="text" defaultValue={value} /></span>
                 </span>
                 <span className="data-list-items--item-actions">
-                  <span className="cursor-pointer inline-flex items-center" onClick={() => removeItem(idx)}>
-                    <Icon name="delete" />删除
+                  <span
+                    className="cursor-pointer inline-flex items-center hover:bg-gray-100"
+                    onClick={() => removeItem(idx)}
+                    title="删除"
+                  >
+                    <Icon name="delete" />
                   </span>
                 </span>
               </div>

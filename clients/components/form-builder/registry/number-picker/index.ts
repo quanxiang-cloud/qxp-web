@@ -13,6 +13,7 @@ const NumberPickerField: Omit<FormBuilder.SourceElement<NumberPickerConfig>, 'di
   component: NumberPicker,
   category: 'basic',
   componentName: 'NumberPicker',
+  compareOperators: ['==', '!=', '>', '>=', '<=', '<'],
 };
 
 export default NumberPickerField;

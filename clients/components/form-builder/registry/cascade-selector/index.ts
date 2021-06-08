@@ -15,6 +15,7 @@ const InputField: Omit<FormBuilder.SourceElement<CascadeConfig>, 'displayOrder'>
   category: 'advance',
   componentName: 'CascadeSelector',
   configDependencies: { CustomizedDatasetBtn, DatasetSelector },
+  compareOperators: ['==', '!='],
 };
 
 export default InputField;

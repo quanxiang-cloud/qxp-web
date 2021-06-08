@@ -3,11 +3,9 @@ import { useQuery } from 'react-query';
 import { Cascader } from 'antd';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 import { CascaderOptionType, CascaderValueType } from 'antd/lib/cascader';
-import { omit } from 'lodash';
+import { omit, last } from 'lodash';
 
-import { datasetRecord } from './mock-dataset';
-
-// import httpClient from '@lib/http-client';
+import { getDatasetById } from '@portal/modules/system-mgmt/dataset/api';
 
 interface Props {
   predefinedDataset?: string;
@@ -24,11 +22,16 @@ function useFetchOptions({ options, defaultValueFrom, predefinedDataset }: Props
       return options;
     }
 
-    // return httpClient<CascaderOptionType[]>('/api/dataset/some_id');
-    return new Promise<CascaderOptionType[]>((resolve) => {
-      setTimeout(() => resolve(datasetRecord[predefinedDataset] || []), 1 * 1000);
+    return getDatasetById(predefinedDataset).then(({ content }: Dataset) => {
+      let parsedCont;
+      try {
+        parsedCont = JSON.parse(content || '[]');
+      } catch (err) {
+        parsedCont = [];
+      }
+      return parsedCont;
     });
-  });
+  }, { cacheTime: -1 });
 
   useEffect(() => {
     if (isLoading || isError || !data) {
@@ -43,12 +46,17 @@ function useFetchOptions({ options, defaultValueFrom, predefinedDataset }: Props
 
 function CascadeSelector(props: ISchemaFieldComponentProps): JSX.Element {
   const cascadeProps = props.props['x-component-props'];
-  const { predefinedDataset, defaultValueFrom } = props.props['x-internal'];
+  const { predefinedDataset, defaultValueFrom, showFullPath } = props.props['x-internal'];
   const options = useFetchOptions({ predefinedDataset, defaultValueFrom, options: cascadeProps.options });
 
+  useEffect(() => {
+    // clear cascade when change value source
+    handleChange([], []);
+  }, [defaultValueFrom]);
+
   function handleChange(_value: CascaderValueType, selected?: CascaderOptionType[]) {
-    const valueToSave = (selected || []).map(({ value }) => value).join('/');
-    const labelToSave = (selected || []).map(({ label }) => label).join(' / ');
+    const labelToSave = (selected || []).map(({ label }) => label).join('/');
+    const valueToSave = _value.join('/');
     props.mutators.change({ label: labelToSave, value: valueToSave });
   }
 
@@ -56,6 +64,10 @@ function CascadeSelector(props: ISchemaFieldComponentProps): JSX.Element {
     <Cascader
       {...omit(cascadeProps, 'options')}
       value={(props.value?.value || '').split('/')}
+      displayRender={() => {
+        const labelParts = (props.value?.label || '').split('/');
+        return showFullPath ? labelParts.join(' / ') : last(labelParts);
+      }}
       options={options}
       onChange={handleChange}
     />

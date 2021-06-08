@@ -10,7 +10,7 @@ import { toArr, FormPath } from '@formily/shared';
 import { ArrayList } from '@formily/react-shared-components';
 
 // todo refactor this
-import { OPERATORS } from '@c/form-builder/form-settings-panel/consts';
+import { OPERATORS } from '@c/form-builder/constants';
 import Select from '@c/select';
 import Icon from '@c/icon';
 import Button from '@c/button';

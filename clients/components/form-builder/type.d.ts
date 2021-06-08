@@ -37,6 +37,7 @@ declare namespace FormBuilder {
     toSchema: (value: T) => ISchema;
     toConfig: (schema: FormBuilder.Schema) => T;
     configDependencies?: Record<string, React.JSXElementConstructor<any>>;
+    compareOperators?: CompareOperator[];
   };
 
   type DropPosition = 'upper' | 'below';
@@ -75,6 +76,11 @@ declare namespace FormBuilder {
 
   type Comparator = (values: Record<string, any>) => boolean;
 
+  type Option = {
+    label: string;
+    value: string;
+  }
+
   interface CascadeOption {
     value: string;
     label: string;
@@ -101,6 +107,11 @@ declare namespace FormBuilder {
     targetField: string;
     ruleJoinOperator: 'every' | 'some';
     rules: Array<FormDataFilterRule>;
+  }
+
+  interface UploadedFile {
+    url: string;
+    filename: string;
   }
 }
 

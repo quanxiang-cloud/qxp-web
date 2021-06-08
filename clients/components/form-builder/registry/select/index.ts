@@ -13,6 +13,7 @@ const SelectField: Omit<FormBuilder.SourceElement<SelectConfig>, 'displayOrder'>
   component: Select,
   category: 'basic',
   componentName: 'Select',
+  compareOperators: ['==', '!=', '∈', '∉'],
 };
 
 export default SelectField;

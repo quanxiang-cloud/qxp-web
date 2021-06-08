@@ -1,4 +1,4 @@
-import { OPERATORS } from './consts';
+import { OPERATORS } from '../constants';
 export function operatorOption(type: any): any {
   let operators = OPERATORS.Default;
   switch (type) {

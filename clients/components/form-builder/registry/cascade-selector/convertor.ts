@@ -5,7 +5,7 @@ export interface CascadeConfig {
   displayModifier: FormBuilder.DisplayModifier;
   defaultValueFrom: FormBuilder.DefaultValueFrom;
   customizedDataset?: FormBuilder.CascadeOption[];
-  predefinedDataset?: string;
+  predefinedDataset?: string; // dataset id
   showFullPath: boolean;
   dropdownStyle: 'cascade' | 'tree';
   required: boolean;
@@ -25,6 +25,7 @@ export const defaultConfig: CascadeConfig = {
 };
 
 export function toSchema(value: CascadeConfig): FormBuilder.Schema {
+  const { defaultValueFrom, customizedDataset, predefinedDataset } = value;
   return {
     type: 'label-value',
     title: value.title,
@@ -36,7 +37,7 @@ export function toSchema(value: CascadeConfig): FormBuilder.Schema {
     ['x-component-props']: {
       expandTrigger: 'hover',
       placeholder: value.placeholder,
-      options: value.customizedDataset,
+      options: defaultValueFrom === 'customized' ? customizedDataset : [],
     },
     ['x-internal']: {
       predefinedDataset: value.predefinedDataset,
@@ -44,6 +45,8 @@ export function toSchema(value: CascadeConfig): FormBuilder.Schema {
       showFullPath: value.showFullPath,
       sortable: false,
       permission: 3,
+      dropdownStyle: value.dropdownStyle,
+      required: value.required,
     },
   };
 }
@@ -61,11 +64,11 @@ export function toConfig(schema: FormBuilder.Schema): CascadeConfig {
     description: schema.description as string,
     displayModifier: displayModifier,
     placeholder: schema['x-component-props']?.placeholder || '',
-    defaultValueFrom: schema['x-component-props']?.defaultValueFrom || '',
-    customizedDataset: schema['x-component-props']?.customizedDataset || [],
-    predefinedDataset: schema['x-component-props']?.predefinedDataset || '',
-    showFullPath: schema['x-component-props']?.showFullPath || true,
-    dropdownStyle: schema['x-component-props']?.dropdownStyle || 'cascade',
+    defaultValueFrom: schema['x-internal']?.defaultValueFrom || 'customized',
+    customizedDataset: schema['x-component-props']?.options || [],
+    predefinedDataset: schema['x-internal']?.predefinedDataset || '',
+    showFullPath: schema['x-internal']?.showFullPath || true,
+    dropdownStyle: schema['x-internal']?.dropdownStyle || 'cascade',
     required: !!schema.required,
   };
 }

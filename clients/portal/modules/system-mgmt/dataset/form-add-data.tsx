@@ -30,7 +30,7 @@ function FormAddData({ editInfo }: Props, ref: React.LegacyRef<Form>) {
       <Field>
         <Label>类型:</Label>
         <Control>
-          <RadioGroup name='dataset_type' value={datasetType} onChange={setDatasetType}>
+          <RadioGroup name='dataset_type' value={datasetType} onChange={setDatasetType} disabled={!!editInfo}>
             <Radio value={1}>数组</Radio>
             <Radio value={2}>层级</Radio>
           </RadioGroup>

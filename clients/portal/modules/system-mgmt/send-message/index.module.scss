@@ -9,7 +9,7 @@
     z-index: 10;
   }
 }
-  
+
 body{
   .wrap {
     display: flex;
@@ -24,7 +24,7 @@ body{
     margin-top: 16px;
     background: #FFFFFF;
     border-radius: 12px 12px 0px 0px;
-  
+
     :global{
       .form.is-horizon-layout{
         padding-top: 48px;
@@ -39,16 +39,16 @@ body{
           padding-left: 8px;
         }
       }
-  
+
       .form.is-horizon-layout > .field .label{
         width: 240px;
       }
-  
+
       .form.is-horizon-layout > .field{
         position: relative;
         margin-bottom: 36px;
       }
-  
+
       .form.is-horizon-layout > .field .help{
         position: absolute;
         left: 240px;
@@ -57,8 +57,8 @@ body{
         margin-left: 0;
       }
     }
-  
-    
+
+
     .header {
       position: relative;
       display: flex;
@@ -81,7 +81,7 @@ body{
         right: 0;
         position: absolute;
       }
-  
+
       .title {
         font-size: 1.6rem;
         font-weight: 600;
@@ -219,6 +219,7 @@ body{
   .file_itm{
     display: flex;
     justify-content: space-between;
+    align-items: center;
     background-color: var( --blue-100);
     border-radius: 4px;
     padding: 4px;
@@ -227,7 +228,7 @@ body{
     position: relative;
     &>svg{
       position: absolute;
-      top: 0;
+      top: -3px;
       bottom: 0;
       right: 14px;
       transition: .3s;
@@ -281,4 +282,3 @@ body{
 .upload_warp{
   padding: 16px;
 }
-  

@@ -14,7 +14,7 @@ interface FileInfo {
   status?: 'success' | 'exception' | 'active';
 }
 
-interface Props {
+export interface FileListProps {
   deleteFiles?: (name: string) => void;
   files: Array<FileInfo>;
   candownload?: boolean;
@@ -40,9 +40,13 @@ const Filelist = ({
   hideProgress,
   isPreview,
   messageTitle,
-}: Props) => {
+}: FileListProps) => {
   const handleDownload = (link: string, filename: string) => {
     if (!candownload) {
+      return;
+    }
+    if (isImageExt(filename)) {
+      window.open(link, '_blank');
       return;
     }
     saveAs(link, filename);
@@ -65,7 +69,7 @@ const Filelist = ({
       type: 'blob',
       platform: 'UNIX',
     }).then((zipFile) => {
-      return saveAs(zipFile, `消息附件打包-${messageTitle || Date.now()}.zip`);
+      return saveAs(zipFile, `附件打包-${messageTitle || Date.now()}.zip`);
     });
   };
 
@@ -100,7 +104,7 @@ const Filelist = ({
                 key={itm.file_url}
               />
             )}
-            {deleteFiles && (<Icon onClick={() => deleteFiles(itm.file_name)} name="close" clickable/>)}
+            {deleteFiles && (<Icon onClick={() => deleteFiles(itm.file_name)} name="delete" clickable/>)}
           </div>
         ))}
       </>

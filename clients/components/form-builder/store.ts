@@ -9,7 +9,6 @@ export type FormItem = {
   componentName: string;
   fieldName: string;
   configValue: any;
-  title?: string;
 };
 
 type Props = {
