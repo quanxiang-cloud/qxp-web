@@ -70,7 +70,7 @@ export default function TreePicker<T extends { id: string} >({
             'h-280': visible,
             invisible: !visible,
             visible: visible,
-          }
+          },
         )}
         onSelect={(node) => {
           if (isFirstLoadRef.current) {

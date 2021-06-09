@@ -74,7 +74,7 @@ function FormTableSelector(
     val: string,
     dataSource: Options,
     map?: Record<string, string[]>,
-    id?: number
+    id?: number,
   ) {
     const pathMap: Record<string, string[]> = map || {};
     for (let index = 0; index < dataSource.length; index += 1) {

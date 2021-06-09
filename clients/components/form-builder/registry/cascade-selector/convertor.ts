@@ -26,6 +26,7 @@ export const defaultConfig: CascadeConfig = {
 
 export function toSchema(value: CascadeConfig): FormBuilder.Schema {
   const { defaultValueFrom, customizedDataset, predefinedDataset } = value;
+
   return {
     type: 'label-value',
     title: value.title,

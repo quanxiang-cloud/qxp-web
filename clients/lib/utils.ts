@@ -73,11 +73,6 @@ export const countBy = <T, S>(attr: string, exclude: string, fn: (arg: S) => boo
   return counter;
 };
 
-/**
- * @param key {string} 搜索的 key
- * @param value {T} 搜索的 key 对应的值
- * @param obj {S} 搜索的数据源
- */
 export const searchByKey = <T, S, K>(key: string, value: T, obj: S): K | void => {
   for (const k in obj) {
     if (k === key && ((obj[k] as unknown) as T) === value) {
@@ -92,10 +87,6 @@ export const searchByKey = <T, S, K>(key: string, value: T, obj: S): K | void =>
   return;
 };
 
-/**
- * deep clone array or object
- * @param obj {array | object}
- */
 export const deepClone = (obj: any) => {
   if (obj === null) return null;
   const clone = Object.assign({}, obj);
@@ -160,6 +151,7 @@ export const last = <T>(arg: T[]) => {
 };
 
 export function isPassword(pwd: string) {
+  // eslint-disable-next-line
   return /^(?=.*\d)(?=.*[a-zA-Z])(?=.*[~!@#$%^&*.\(\)\-\+\[\]\|\"\'\_])[\da-zA-Z~!@#$%^&*.\(\)\-\+\[\]\|\"\'\_]{8,}$/.test(pwd);
 }
 

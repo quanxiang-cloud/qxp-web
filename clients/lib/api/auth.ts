@@ -21,6 +21,6 @@ export async function userResetPassword({ old, new: newPassword }: Record<string
     {
       oldPassword: old,
       newPassword,
-    }
+    },
   );
 }

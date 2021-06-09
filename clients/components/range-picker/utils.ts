@@ -41,14 +41,15 @@ export const getInputValue = (readableCode: string | undefined): string => {
   switch (rangeType) {
   case 'day':
     return moment(range, 'YYYY-MM-DD').format('YYYY [年] M [月] D [日]');
-  case 'week':
+  case 'week': {
     const date = moment(range, 'YYYY-WW');
     const start = date.clone().startOf('isoWeek');
     const end = date.clone().endOf('isoWeek');
     return `${date.format('YYYY [年第] W [周]')} (${start.format('MMDD')} - ${end.format('MMDD')})`;
+  }
   case 'month':
     return moment(range, 'YYYY-MM').format('YYYY [年] M [月]');
-  case 'customized':
+  case 'customized': {
     const preset = presetOptions.find((option) => option.value === range);
 
     if (preset) {
@@ -62,6 +63,7 @@ export const getInputValue = (readableCode: string | undefined): string => {
     }
 
     return '';
+  }
   default:
     return '';
   }

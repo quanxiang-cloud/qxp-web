@@ -23,7 +23,7 @@ class CaptchaUser extends User {
 
   onValidateAll(
     context: UserName | Captcha,
-    isValid: boolean
+    isValid: boolean,
   ): boolean | (boolean | Promise<boolean>)[] {
     if (!this.username || !this.captcha || !isValid) {
       return false;

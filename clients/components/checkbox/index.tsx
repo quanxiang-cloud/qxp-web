@@ -12,7 +12,7 @@ type Props = React.DetailedHTMLProps<
 
 function Checkbox(
   { className = '', label, indeterminate, onChange, ...inputProps }: Props,
-  ref?: React.Ref<HTMLInputElement>
+  ref?: React.Ref<HTMLInputElement>,
 ): JSX.Element {
   const defaultRef = React.useRef();
   const resolvedRef: any = ref || defaultRef;

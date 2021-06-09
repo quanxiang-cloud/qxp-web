@@ -30,11 +30,12 @@ function PageDataFilter() {
 
       const _condition: Condition = { key };
       switch (curFilter?.type) {
-      case 'datetime':
+      case 'datetime': {
         const [start, end] = values[key];
         _condition.value = [moment(start).format(), moment(end).format()];
         _condition.op = 'range';
         break;
+      }
       case 'number':
         _condition.value = [Number(values[key])];
         _condition.op = 'eq';

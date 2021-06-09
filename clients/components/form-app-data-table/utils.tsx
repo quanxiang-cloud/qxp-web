@@ -106,7 +106,7 @@ function addFixedParameters(fixedList: number[], tableColumns: UnionColumns<Reco
 
 export function setFixedParameters(
   fixedRule: string | undefined,
-  tableColumns: UnionColumns<Record<string, any>>[]
+  tableColumns: UnionColumns<Record<string, any>>[],
 ) {
   let action: UnionColumns<any> = {
     id: 'action',

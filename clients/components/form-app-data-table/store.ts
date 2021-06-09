@@ -195,7 +195,7 @@ class AppPageDataStore {
     const side = window.SIDE === 'portal' ? 'm' : 'home';
     httpClient(
       `/api/v1/structor/${this.appID}/${side}/permission/operatePer/getOperate`,
-      { formID: this.pageID }
+      { formID: this.pageID },
     ).then((res: any) => {
       this.authority = res?.authority || 0;
     });

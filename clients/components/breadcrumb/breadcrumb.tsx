@@ -52,7 +52,7 @@ function Breadcrumb({
             {segmentRender(link)}
             <span className="qxp-breadcrumb-separator">{separator}</span>
           </div>
-        )
+        ),
         );
       }
 

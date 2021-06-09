@@ -4,7 +4,7 @@ import { omitEmpty } from '@portal/utils';
 
 // 获取未读消息列表
 export async function getMessageList(
-  { queryKey }: QueryFunctionContext<[string, Record<string, any>]>
+  { queryKey }: QueryFunctionContext<[string, Record<string, any>]>,
 ): Promise<Record<string, any>> {
   // const defaults = {
   //   read_status: MsgReadStatus.unread,
@@ -25,7 +25,7 @@ export async function getMsgById({ queryKey }: QueryFunctionContext) {
     read: false, // 是否标记为已读
   };
   return await httpClient('/api/v1/message/center/getById',
-    Object.assign(defaults, queryKey[1])
+    Object.assign(defaults, queryKey[1]),
   );
 }
 

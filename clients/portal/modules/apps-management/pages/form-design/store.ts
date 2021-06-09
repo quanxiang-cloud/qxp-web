@@ -110,32 +110,32 @@ class FormDesignStore {
   }
 
   @action
-  setFilters = (filters: Filters) => {
+  setFilters = (filters: Filters): void => {
     this.filters = filters;
   }
 
   @action
-  setPageID = (pageID: string) => {
+  setPageID = (pageID: string): void => {
     this.pageID = pageID;
   }
 
   @action
-  setAppID = (appID: string) => {
+  setAppID = (appID: string): void => {
     this.appID = appID;
   }
 
   @action
-  setPageTableColumns = (values: string[]) => {
+  setPageTableColumns = (values: string[]): void => {
     this.pageTableColumns = values;
   }
 
   @action
-  setPageTableShowRule = (newRule: PageTableShowRule) => {
+  setPageTableShowRule = (newRule: PageTableShowRule): void => {
     this.pageTableShowRule = { ...this.pageTableShowRule, ...newRule };
   }
 
   @action
-  fetchFormScheme = ({ pageID, appID }: { pageID: string, appID: string }) => {
+  fetchFormScheme = ({ pageID, appID }: { pageID: string, appID: string }): void => {
     if (!pageID || !appID) {
       return;
     }
@@ -155,9 +155,9 @@ class FormDesignStore {
   }
 
   @action
-  saveFormScheme = () => {
+  saveFormScheme = (): void => {
     this.saveSchemeLoading = true;
-    return saveTableSchema(this.appID, this.pageID, this.formStore?.schema || {}).then(() => {
+    saveTableSchema(this.appID, this.pageID, this.formStore?.schema || {}).then(() => {
       createPageScheme(this.appID, {
         tableID: this.pageID, config: {
           pageTableColumns: this.pageTableColumns,
@@ -174,7 +174,7 @@ class FormDesignStore {
   }
 
   @action
-  clear = () => {
+  clear = (): void => {
     this.pageID = '';
     this.formStore = null;
     this.pageTableColumns = [];
@@ -184,7 +184,7 @@ class FormDesignStore {
   }
 
   @action
-  savePageConfig = () => {
+  savePageConfig = (): void => {
     createPageScheme(this.appID, {
       tableID: this.pageID, config: {
         pageTableColumns: this.pageTableColumns,

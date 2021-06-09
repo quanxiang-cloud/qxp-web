@@ -56,7 +56,7 @@ type NodeRenderProps = RenderItemParams & {
 }
 
 function NodeRender(
-  { item, provided, onCollapse, onExpand, onMenuClick, isActive, onSelectPage }: NodeRenderProps
+  { item, provided, onCollapse, onExpand, onMenuClick, isActive, onSelectPage }: NodeRenderProps,
 ): JSX.Element {
   const isPage = item.data.menuType === 0;
 
