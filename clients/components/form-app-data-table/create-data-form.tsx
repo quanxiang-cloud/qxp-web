@@ -18,7 +18,7 @@ import {
 
 import { StoreContext } from './context';
 import { difference } from './utils';
-import { findOneRecord } from './api';
+import { getSchemaAndRecord } from './api';
 import { INTERNAL_FIELD_NAMES } from '@c/form-builder/store';
 
 setValidationLanguage('zh');
@@ -33,22 +33,26 @@ type RefType = Record<string, {
 
 function CreateDataForm(): JSX.Element {
   const store = useContext(StoreContext);
-  const { rowID } = store;
+  const { rowID = '' } = store;
   const [loading, setLoading] = useState(false);
 
-  const { data } = useQuery('GET_ONE_FORM_RECORD', () => {
-    return findOneRecord(store.appID, store.pageID, rowID as string);
-  }, { enabled: !!rowID, cacheTime: -1 });
-  const defaultValues = data?.entities[0] as Record<string, any>;
+  const {
+    data, isLoading, isError,
+  } = useQuery([], () => getSchemaAndRecord(store.appID, store.pageID, rowID || ''), {
+    enabled: !!(store.pageID && store.appID),
+  });
 
-  if (!store.fields.length) {
+  const defaultValues = data?.record;
+  const { schema } = data || { properties: { } };
+
+  if (isLoading) {
+    return <Loading desc="加载中..." />;
+  }
+
+  if (!store.fields.length || isError || !schema) {
     return (
       <div>todo some error tips</div>
     );
-  }
-
-  if (rowID && !defaultValues) {
-    return <Loading desc="加载中..." />;
   }
 
   function buildRequestParams(
@@ -110,7 +114,7 @@ function CreateDataForm(): JSX.Element {
 
   const handleSubmit = (data: any): void => {
     const formData = compactObject(data);
-    const schemaMap = store.schema.properties as ISchema;
+    const schemaMap = schema?.properties as ISchema || {};
     const defaultValue = toJS(defaultValues);
     const diffResult = difference(defaultValue || {}, formData);
     const subTableChangedKeys = Object.keys(diffResult).filter(
@@ -170,7 +174,7 @@ function CreateDataForm(): JSX.Element {
           className='p-40'
           onSubmit={handleSubmit}
           defaultValue={toJS(defaultValues)}
-          schema={store.schema as ISchema}
+          schema={schema as ISchema}
         >
           <FormButtonGroup className='pl-96'>
             <Button

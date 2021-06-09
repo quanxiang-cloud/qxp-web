@@ -5,7 +5,9 @@ import { observer } from 'mobx-react';
 
 import { StoreContext } from './context';
 
-function SubTable({ value, fieldKey }: { value: Record<string, unknown>[], fieldKey: string }) {
+function SubTable({ value, fieldKey }: {
+  value: Record<string, unknown>[], fieldKey: string
+}): JSX.Element | null {
   const store = useContext(StoreContext);
 
   if (!value) {

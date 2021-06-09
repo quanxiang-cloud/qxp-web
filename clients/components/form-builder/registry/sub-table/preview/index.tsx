@@ -1,4 +1,4 @@
-import React, { useEffect, useState, JSXElementConstructor, ChangeEvent } from 'react';
+import React, { JSXElementConstructor, ChangeEvent } from 'react';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 import moment, { Moment } from 'moment';
 import { Input, Radio, DatePicker, NumberPicker, Select } from '@formily/antd-components';
@@ -9,8 +9,6 @@ import {
 
 import logger from '@lib/logger';
 import Icon from '@c/icon';
-
-import { getFormTableSchema } from '../config/api';
 
 type Column = {
   title: string;
@@ -44,25 +42,19 @@ interface Props extends ISchemaFieldComponentProps {
   }
 }
 
-function SubTable(compProps: Props) {
-  const [schemaData, setSchemaData] = useState<{tableID: string; schema: ISchema} | null>(null);
-  const { schema: definedSchema, initialValue, mutators: ms, name } = compProps;
+function SubTable(compProps: Props): JSX.Element | null {
+  const { schema, initialValue, mutators: ms, name } = compProps;
   const {
-    tableID, appID, subordination, columns: definedColumns,
+    subordination, columns: definedColumns,
   } = compProps.props['x-component-props'];
-  const isFromEmpty = subordination === 'sub_table';
   const isFromForeign = subordination === 'foreign_table';
 
-  useEffect(() => {
-    if (!isFromForeign || !appID || !tableID) {
-      return;
-    }
-    getFormTableSchema<{schema: ISchema; tableID: string;}>({ appID, tableID }).then(setSchemaData);
-  }, [tableID, appID]);
-
-  const schema = (isFromEmpty ? definedSchema.items : schemaData?.schema) as ISchema;
-
-  function buildColumnFromSchema(dataIndex: string, sc: ISchema) {
+  function buildColumnFromSchema(dataIndex: string, sc: ISchema): {
+    title: string;
+    dataIndex: string;
+    component: JSXElementConstructor<any>;
+    props: Record<string, any>;
+  } | null {
     const componentName = sc['x-component']?.toLowerCase() as keyof Components;
     const componentProps = sc['x-component-props'] || {};
     if (!components[componentName]) {
@@ -93,7 +85,7 @@ function SubTable(compProps: Props) {
       return cur;
     }, []) as Column[];
 
-  function getChangedValue(e: ChangeEvent<HTMLInputElement> | string | Moment) {
+  function getChangedValue(e: ChangeEvent<HTMLInputElement> | string | Moment): string {
     let changedValue = '';
     if (moment.isMoment(e)) {
       changedValue = e.format('YYYY-MM-DD HH:mm:ss');
@@ -115,15 +107,15 @@ function SubTable(compProps: Props) {
       initialValue={initialValue.length ? initialValue : [emptyRow]}
     >
       {({ state, mutators }) => {
-        const onAdd = () => mutators.push();
+        const onAdd = (): any[] => mutators.push();
         return (
           <div>
             {state.value.map((item: any, index: number) => {
-              const onRemove = (index: number) => mutators.remove(index);
+              const onRemove = (index: number): void => mutators.remove(index);
               const onItemChange = (
                 e: ChangeEvent<HTMLInputElement> | string,
                 dataIndex: string,
-              ) => {
+              ): void => {
                 ms.change(state.value.map((vItem: any, idx: number) => {
                   if (index !== idx) {
                     return vItem;

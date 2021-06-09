@@ -2,10 +2,15 @@ import { formDataRequest, getTableSchema } from '@lib/http-client';
 
 type SchemaAndRecord = {
   schema: ISchema;
-  record: Record<string, any>;
+  record?: Record<string, any>;
 }
 
-export async function findOneRecord(appID: string, tableID: string, _id: string) {
+export async function findOneRecord(appID: string, tableID: string, _id?: string): Promise<{
+  entities: any[]
+}> {
+  if (!_id) {
+    return Promise.resolve({ entities: [] });
+  }
   const entities = await formDataRequest(appID, tableID, {
     method: 'findOne',
     conditions: {
@@ -17,7 +22,7 @@ export async function findOneRecord(appID: string, tableID: string, _id: string)
 }
 
 export function getSchemaAndRecord(
-  appID: string, tableID: string, recordID: string,
+  appID: string, tableID: string, recordID?: string,
 ): Promise<SchemaAndRecord> {
   return Promise.all([
     getTableSchema(appID, tableID),
@@ -25,10 +30,6 @@ export function getSchemaAndRecord(
   ]).then(([{ schema }, { entities }]) => {
     if (!schema) {
       return Promise.reject(new Error('没有找到表单 schema，请联系管理员。'));
-    }
-
-    if (!entities.length) {
-      return Promise.reject(new Error('表单记录不存在。'));
     }
 
     return { schema, record: entities[0] };

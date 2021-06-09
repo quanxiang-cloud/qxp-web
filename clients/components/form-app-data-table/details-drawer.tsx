@@ -30,7 +30,9 @@ function DetailsDrawer({ onCancel, rowID }: Props): JSX.Element {
   const [beganClose, setBeganClose] = useState<boolean>(false);
   const [visible, setVisible] = useState<boolean>(false);
   // todo handle error case of getSchemaAndRecord
-  const { isLoading, data } = useQuery([], () => getSchemaAndRecord(store.appID, store.pageID, rowID));
+  const {
+    isLoading, data, refetch,
+  } = useQuery([], () => getSchemaAndRecord(store.appID, store.pageID, rowID));
 
   const [details, systems] = useMemo(() => {
     if (!data) {
@@ -41,13 +43,18 @@ function DetailsDrawer({ onCancel, rowID }: Props): JSX.Element {
     const _details: FormDataProp[] = [];
     const _systems: FormDataProp[] = [];
 
+    if (!schema && store.appID && store.pageID) {
+      refetch();
+      return [[], []];
+    }
+
     Object.entries(schema.properties || {}).forEach(([fieldKey, fieldSchema]) => {
       // ts bug?
       if ((fieldSchema as ISchema)['x-internal']?.isSystem) {
         _systems.push({
           label: fieldSchema.title as string,
           key: fieldKey,
-          value: getTableCellData(record[fieldKey], fieldSchema),
+          value: getTableCellData(record?.[fieldKey], fieldSchema),
           fieldSchema,
         });
         return;
@@ -56,7 +63,7 @@ function DetailsDrawer({ onCancel, rowID }: Props): JSX.Element {
       _details.push({
         label: fieldSchema.title as string,
         key: fieldKey,
-        value: getTableCellData(record[fieldKey], fieldSchema),
+        value: getTableCellData(record?.[fieldKey], fieldSchema),
         fieldSchema,
       });
     });
