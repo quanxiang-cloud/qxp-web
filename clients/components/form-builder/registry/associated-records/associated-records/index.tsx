@@ -37,7 +37,9 @@ function AssociatedRecords({
   // todo append operation column
   const [records, setRecords] = useState<Record<string, any>[]>([]);
   const [showSelectModal, setShowSelectModal] = useState(false);
-  const { isLoading, data } = useQuery([], () => findTableRecords(appID, tableID, selected));
+  const { isLoading, data } = useQuery(['FIND_TABLE_RECORDS'], () => {
+    return findTableRecords(appID, tableID, selected);
+  });
 
   useEffect(() => {
     setRecords(data || []);
