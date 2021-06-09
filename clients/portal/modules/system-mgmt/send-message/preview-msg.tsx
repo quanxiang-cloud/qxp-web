@@ -5,7 +5,6 @@ import cs from 'classnames';
 import Loading from '@c/loading';
 import FileList from './filelist';
 import { MsgType } from '@portal/modules/system-mgmt/constants';
-import { usePortalGlobalValue } from '@portal/states_to_be_delete/portal';
 
 interface Props {
   className?: string;
@@ -22,14 +21,12 @@ const PreviewMsg = ({
   isPreview,
   canDownload,
   canMultiDownload,
-}: Props) => {
+}: Props): JSX.Element => {
   if (!prevData) {
     return (
       <Loading />
     );
   }
-
-  const [{ userInfo }] = usePortalGlobalValue();
 
   const { title, content, receivers, sort, type, handle_name } = prevData;
   const msgType = typeof sort !== 'undefined' ? sort : type; // todo
@@ -42,7 +39,10 @@ const PreviewMsg = ({
   } else {
     txt = '未知消息类型';
   }
-  const infoText = [dayjs().format('YYYY-MM-DD HH:mm:ss'), txt, handle_name || userInfo.userName].join(' · ');
+  const infoText = [
+    dayjs().format('YYYY-MM-DD HH:mm:ss'), txt, handle_name || window.USER.userName,
+  ].join(' · ');
+
   return (
     <div className={styles.previewMsg}>
       <div className={styles.previewMsgContent}>

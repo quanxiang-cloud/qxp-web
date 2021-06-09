@@ -40,8 +40,8 @@ const Filelist = ({
   hideProgress,
   isPreview,
   messageTitle,
-}: FileListProps) => {
-  const handleDownload = (link: string, filename: string) => {
+}: FileListProps): JSX.Element | null => {
+  const handleDownload = (link: string, filename: string): void => {
     if (!candownload) {
       return;
     }
@@ -52,13 +52,13 @@ const Filelist = ({
     saveAs(link, filename);
   };
 
-  const dlViaBlob = (url: string)=> {
+  const dlViaBlob = (url: string): Promise<Response> => {
     return fetch(url)
       .then((res) => ({ url, blob: res.blob() }))
       .catch((err: Error) => Message.error(err.message));
   };
 
-  const exportZip = (blobs: Array<{ url: string, blob: any }>) => {
+  const exportZip = (blobs: Array<{ url: string, blob: any }>): void => {
     const zip = jsZip();
     blobs.forEach(({ url, blob }) => {
       const urlInst = new URL(url);
@@ -73,22 +73,21 @@ const Filelist = ({
     });
   };
 
-  const dlAndZip = (urls: string[]) => {
-    // @ts-ignore
+  const dlAndZip = (urls: string[]): Promise<void> => {
     return Promise.all(urls.map((url) => dlViaBlob(url))).then(exportZip);
   };
 
-  const handleZipDl = () => {
+  const handleZipDl = (): void => {
     dlAndZip(files.map((file) => file.file_url));
   };
 
-  const renderList = () => {
+  const renderList = (): JSX.Element => {
     return (
       <>
         {files.map((itm, idx) => (
           <div className={styles.file_itm} key={idx}>
             <span
-              onClick={() => handleDownload(itm.file_url, itm.file_name)}
+              onClick={(): void => handleDownload(itm.file_url, itm.file_name)}
               className={cs('inline-flex items-center', {
                 'cursor-pointer': 'candownload',
               })}
@@ -104,7 +103,9 @@ const Filelist = ({
                 key={itm.file_url}
               />
             )}
-            {deleteFiles && (<Icon onClick={() => deleteFiles(itm.file_name)} name="delete" clickable/>)}
+            {deleteFiles && (
+              <Icon onClick={(): void => deleteFiles(itm.file_name)} name="delete" clickable/>
+            )}
           </div>
         ))}
       </>

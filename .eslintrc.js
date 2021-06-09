@@ -29,7 +29,7 @@ module.exports = {
     '@typescript-eslint/ban-ts-comment': 'warn',
     '@typescript-eslint/camelcase': 'off',
     '@typescript-eslint/explicit-function-return-type': ['warn', {
-      allowExpressions: false,
+      allowExpressions: true,
       allowTypedFunctionExpressions: true,
       allowHigherOrderFunctions: true,
       allowDirectConstAssertionInArrowFunctions: true,
@@ -48,6 +48,8 @@ module.exports = {
     camelcase: 'off',
     'arrow-parens': ['error', 'always'],
     indent: ['error', 2],
+    // https://github.com/typescript-eslint/typescript-eslint/issues/1824
+    // '@typescript-eslint/indent': ['error', 2],
     'max-len': [
       1,
       {
