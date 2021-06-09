@@ -44,7 +44,7 @@ export type FormDataRequestCreateParams = {
 
 export type FormDataRequestUpdateParams = {
   method: 'update';
-  condition: {
+  conditions: {
     condition: Array<{ key: string; op: string; value: Array<string | number>; }>;
     tag?: 'and' | 'or';
   };
@@ -87,7 +87,9 @@ export function getTableSchema(appID: string, tableID: string): Promise<GetTable
   return httpClient(path, { tableID }, { 'X-Proxy': 'FORM_SCHEMA' });
 }
 
-export function saveTableSchema(appID: string, tableID: string, schema: ISchema): Promise<{ tableID: string; }> {
+export function saveTableSchema(
+  appID: string, tableID: string, schema: ISchema,
+): Promise<{ tableID: string; }> {
   return httpClient(
     `/api/v1/structor/${appID}/m/table/create`,
     { tableID, schema },

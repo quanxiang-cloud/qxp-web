@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { FormButtonGroup, setValidationLanguage } from '@formily/antd';
 import { toJS } from 'mobx';
-import { isEmpty, omit, omitBy } from 'lodash';
+import { omit, omitBy } from 'lodash';
 import { useQuery } from 'react-query';
 import { observer } from 'mobx-react';
 
@@ -43,14 +43,14 @@ function CreateDataForm(): JSX.Element {
     return <Loading desc="加载中..." />;
   }
 
-  function buildBaseParams(
+  function buildRequestParams(
     isSubTable: boolean,
     formData: any,
     _id: string,
-    method?: string,
-  ): Record<string, any> {
+    method: 'create' | 'update',
+  ): FormDataRequestCreateParams | FormDataRequestUpdateParams {
     return {
-      method: method || 'update',
+      method,
       entity: isSubTable ? omit(formData, INTERNAL_FIELD_NAMES) : formData,
       conditions: {
         condition: [
@@ -60,13 +60,13 @@ function CreateDataForm(): JSX.Element {
             value: _id ? [_id] : [],
           },
         ],
-        tag: '',
       },
     };
   }
 
-  function buildSubData(subData: Record<string, any>, method: string): Record<string, any> {
-    return buildBaseParams(true, omitBy(subData, Array.isArray), subData._id, method);
+  function buildSubData(subData: Record<string, any>, method: 'create' | 'update'):
+    Record<string, any> {
+    return buildRequestParams(true, omitBy(subData, Array.isArray), subData._id, method);
   }
 
   function parseUpdated(formData: any, fieldKey: string): Record<string, any> {
@@ -120,18 +120,12 @@ function CreateDataForm(): JSX.Element {
     }
 
     setLoading(true);
-    let reqData: FormDataRequestCreateParams | FormDataRequestUpdateParams;
-    if (defaultValues) {
-      reqData = {
-        ...buildBaseParams(hasSubTableChanged, omitBy(formData, Array.isArray), defaultValue._id),
-        ...(isEmpty(ref) ? {} : { ref }),
-      } as unknown as FormDataRequestUpdateParams;
-    } else {
-      reqData = {
-        method: 'create',
-        entity: formData,
-      };
-    }
+    const reqData: FormDataRequestCreateParams | FormDataRequestUpdateParams = buildRequestParams(
+      hasSubTableChanged,
+      omitBy(formData, Array.isArray),
+      defaultValue._id,
+      defaultValues ? 'update' : 'create',
+    );
 
     formDataRequest(store.appID, store.pageID, reqData).then(() => {
       toast.success('提交成功');
