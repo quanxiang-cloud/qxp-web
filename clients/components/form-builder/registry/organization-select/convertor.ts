@@ -42,7 +42,7 @@ export const toSchema = (config: DefaultConfig): FormBuilder.Schema => {
       multiple: config.multiple,
       optionalRange: config.optionalRange,
       rangeList: config.rangeList,
-      defaultValues: config.defaultValues
+      defaultValues: config.defaultValues,
     },
   });
 };

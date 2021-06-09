@@ -67,7 +67,7 @@ export const toSchema = (config: DefaultConfig): FormBuilder.Schema => {
       optionalRange: config.optionalRange,
       rangeList: config.rangeList,
       defaultValues: calcDefaultValues,
-      defaultValue: config.defaultValue
+      defaultValue: config.defaultValue,
     },
     enum: config.optionalRange === 'all' ? [] : (config.rangeList || []).map((itm) => ({
       label: itm.ownerName,

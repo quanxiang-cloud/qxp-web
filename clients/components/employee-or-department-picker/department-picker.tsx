@@ -19,7 +19,7 @@ interface Props {
     onChange: (departmentsOrEmployees: EmployeeOrDepartmentOfRole[]) => void;
 }
 
-export default observer(function EmployeeOrDepartmentPicker({
+function EmployeeOrDepartmentPicker({
   departments = [], onChange,
 }: Props) {
   const [store, setStore] = useState<OwnerStore>();
@@ -101,4 +101,6 @@ export default observer(function EmployeeOrDepartmentPicker({
       />
     </div>
   );
-});
+}
+
+export default observer(EmployeeOrDepartmentPicker);
