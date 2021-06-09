@@ -23,7 +23,7 @@ import { INTERNAL_FIELD_NAMES } from '@c/form-builder/store';
 
 setValidationLanguage('zh');
 
-function CreateDataForm() {
+function CreateDataForm(): JSX.Element {
   const store = useContext(StoreContext);
   const { rowID } = store;
   const [loading, setLoading] = useState(false);
@@ -43,10 +43,15 @@ function CreateDataForm() {
     return <Loading desc="加载中..." />;
   }
 
-  function buildBaseParams(isSubTable: boolean, formData: any, _id: string, method?: string) {
+  function buildBaseParams(
+    isSubTable: boolean,
+    formData: any,
+    _id: string,
+    method?: string,
+  ): Record<string, any> {
     return {
       method: method || 'update',
-      entity: isSubTable ? omit(formData, INTERNAL_FIELD_NAMES) : FormData,
+      entity: isSubTable ? omit(formData, INTERNAL_FIELD_NAMES) : formData,
       conditions: {
         condition: [
           {
@@ -60,11 +65,11 @@ function CreateDataForm() {
     };
   }
 
-  function buildSubData(subData: Record<string, any>, method: string) {
+  function buildSubData(subData: Record<string, any>, method: string): Record<string, any> {
     return buildBaseParams(true, omitBy(subData, Array.isArray), subData._id, method);
   }
 
-  function parseUpdated(formData: any, fieldKey: string) {
+  function parseUpdated(formData: any, fieldKey: string): Record<string, any> {
     const newData = formData[fieldKey] as Record<string, string>[];
     return newData.filter(({ _id }) => !!_id).map((data) => buildSubData(data, 'update'));
   }
@@ -78,12 +83,12 @@ function CreateDataForm() {
     )?.map(({ _id }) => _id);
   }
 
-  function parseNew(formData: any, fieldKey: string) {
+  function parseNew(formData: any, fieldKey: string): Record<string, any> {
     const newData = formData[fieldKey] as Record<string, string>[];
     return newData.filter(({ _id }) => !_id).map((data) => buildSubData(data, 'create'));
   }
 
-  const handleSubmit = (data: any) => {
+  const handleSubmit = (data: any): void => {
     const formData = compactObject(data);
     const schemaMap = store.schema.properties as ISchema;
     const defaultValue = toJS(defaultValues);
@@ -115,12 +120,12 @@ function CreateDataForm() {
     }
 
     setLoading(true);
-    let reqData: FormDataRequestCreateParams | FormDataRequestUpdateParams | {} = {};
+    let reqData: FormDataRequestCreateParams | FormDataRequestUpdateParams;
     if (defaultValues) {
       reqData = {
         ...buildBaseParams(hasSubTableChanged, omitBy(formData, Array.isArray), defaultValue._id),
         ...(isEmpty(ref) ? {} : { ref }),
-      };
+      } as unknown as FormDataRequestUpdateParams;
     } else {
       reqData = {
         method: 'create',

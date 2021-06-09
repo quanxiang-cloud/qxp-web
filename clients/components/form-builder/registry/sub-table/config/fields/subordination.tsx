@@ -7,11 +7,13 @@ import { ActionsContext, StoreContext } from '../context';
 import { createBlankFormTable } from '../api';
 import { LINKED_TABLE } from '../constants';
 
+export type SubordinationType = 'sub_table' | 'foreign_table';
+
 function Subordination({ value, mutators, props }: ISchemaFieldComponentProps): JSX.Element {
   const { actions } = useContext(ActionsContext);
   const { appID } = useContext(StoreContext);
 
-  const runnerMap: Record<string, Function> = {
+  const runnerMap: Record<SubordinationType, (reset?: boolean) => void> = {
     sub_table: onSubTable,
     foreign_table: onForeignTable,
   };
@@ -36,7 +38,7 @@ function Subordination({ value, mutators, props }: ISchemaFieldComponentProps): 
     },
   });
 
-  function onSubTable(reset = true) {
+  function onSubTable(reset = true): void {
     actions.getFieldState('Fields.linkedTable', (state) => {
       if (state.tableID) {
         return;
@@ -51,22 +53,21 @@ function Subordination({ value, mutators, props }: ISchemaFieldComponentProps): 
     });
   }
 
-  function onForeignTable() {
+  function onForeignTable(): void {
     actions.setFieldState('Fields.subTableColumns', (state) => {
       state.value = [];
     });
   }
 
-  function onChange(e: RadioChangeEvent) {
-    const runner = runnerMap[e.target.value];
-    runner();
-    mutators.change(e);
+  function onChange(value: SubordinationType): void {
+    runnerMap[value]();
+    mutators.change(value);
   }
 
   return (
     <Radio.Group
       value={value}
-      onChange={onChange}
+      onChange={(e: RadioChangeEvent): void => onChange(e.target.value)}
     >
       {props.enum.map(({ label, value }: Record<string, string>) => {
         return (
