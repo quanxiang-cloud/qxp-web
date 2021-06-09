@@ -150,8 +150,10 @@ export function getPageDataSchema(
   };
 }
 
-export function difference(origObj: Record<string, unknown>, newObj: Record<string, unknown>) {
-  function changes(newObj: Record<string, unknown>, origObj: Record<string, unknown>) {
+export function difference(
+  origObj: Record<string, unknown>, newObj: Record<string, unknown>,
+): Record<string, any> {
+  function changes(newObj: Record<string, unknown>, origObj: Record<string, unknown>): Record<string, any> {
     let arrayIndexCounter = 0;
     return transform(newObj, function(
       result: Record<string, unknown>,
@@ -161,7 +163,7 @@ export function difference(origObj: Record<string, unknown>, newObj: Record<stri
       if (!isEqual(value, origObj[key])) {
         // eslint-disable-next-line no-plusplus
         const resultKey = isArray(origObj) ? arrayIndexCounter++ : key;
-        result[resultKey] = (isObject(value) && isObject(origObj[key])) ?
+        result[resultKey] = (isObject(value) && isObject(origObj[key])) && !(value as any)._id ?
           changes(
             value as Record<string, unknown>,
             origObj[key] as Record<string, unknown>,

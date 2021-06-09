@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { FormButtonGroup, setValidationLanguage } from '@formily/antd';
 import { toJS } from 'mobx';
-import { omit, omitBy } from 'lodash';
+import { omit, omitBy, isEmpty } from 'lodash';
 import { useQuery } from 'react-query';
 import { observer } from 'mobx-react';
 
@@ -22,6 +22,14 @@ import { findOneRecord } from './api';
 import { INTERNAL_FIELD_NAMES } from '@c/form-builder/store';
 
 setValidationLanguage('zh');
+
+type RefType = Record<string, {
+      appID: string;
+      tableID: string;
+      updated: Record<string, any>[];
+      new: Record<string, any>[];
+      deleted: Record<string, any>[];
+    }>;
 
 function CreateDataForm(): JSX.Element {
   const store = useContext(StoreContext);
@@ -44,29 +52,41 @@ function CreateDataForm(): JSX.Element {
   }
 
   function buildRequestParams(
-    isSubTable: boolean,
     formData: any,
     _id: string,
     method: 'create' | 'update',
+    ref?: RefType,
   ): FormDataRequestCreateParams | FormDataRequestUpdateParams {
-    return {
+    let params = {
       method,
-      entity: isSubTable ? omit(formData, INTERNAL_FIELD_NAMES) : formData,
-      conditions: {
-        condition: [
-          {
-            key: '_id',
-            op: 'eq',
-            value: _id ? [_id] : [],
-          },
-        ],
-      },
+      entity: omit(formData, INTERNAL_FIELD_NAMES),
     };
+    if (method === 'update') {
+      params = Object.assign(params, {
+        conditions: {
+          condition: [
+            {
+              key: '_id',
+              op: 'eq',
+              value: _id ? [_id] : [],
+            },
+          ],
+        },
+      });
+    }
+    if (ref && !isEmpty(ref)) {
+      params = Object.assign(params, { ref });
+    }
+    return params;
   }
 
   function buildSubData(subData: Record<string, any>, method: 'create' | 'update'):
     Record<string, any> {
-    return buildRequestParams(true, omitBy(subData, Array.isArray), subData._id, method);
+    return buildRequestParams(
+      method === 'update' ? omitBy(subData, Array.isArray) : subData,
+      subData._id,
+      method,
+    );
   }
 
   function parseUpdated(formData: any, fieldKey: string): Record<string, any> {
@@ -98,13 +118,7 @@ function CreateDataForm(): JSX.Element {
     );
     const hasSubTableChanged = !!(subTableChangedKeys.length && defaultValues);
 
-    const ref: Record<string, {
-      appID: string;
-      tableID: string;
-      updated: Record<string, any>[];
-      new: Record<string, any>[];
-      deleted: Record<string, any>[];
-    }> = {};
+    const ref: RefType = {};
     if (hasSubTableChanged) {
       subTableChangedKeys.forEach((fieldKey) => {
         Object.assign(ref, {
@@ -120,11 +134,12 @@ function CreateDataForm(): JSX.Element {
     }
 
     setLoading(true);
+    const initialMethod = defaultValues ? 'update' : 'create';
     const reqData: FormDataRequestCreateParams | FormDataRequestUpdateParams = buildRequestParams(
-      hasSubTableChanged,
-      omitBy(formData, Array.isArray),
-      defaultValue._id,
-      defaultValues ? 'update' : 'create',
+      initialMethod === 'create' ? formData : omitBy(formData, Array.isArray),
+      defaultValue?._id,
+      initialMethod,
+      ref,
     );
 
     formDataRequest(store.appID, store.pageID, reqData).then(() => {

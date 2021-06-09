@@ -44,7 +44,7 @@ export type FormDataRequestCreateParams = {
 
 export type FormDataRequestUpdateParams = {
   method: 'update';
-  conditions: {
+  conditions?: {
     condition: Array<{ key: string; op: string; value: Array<string | number>; }>;
     tag?: 'and' | 'or';
   };
