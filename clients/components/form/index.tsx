@@ -53,7 +53,7 @@ export interface FormRef {
 
 function Form(
   { children, layout = 'vertical', ...restProps }: Props,
-  ref?: ForwardedRef<FormRef>
+  ref?: ForwardedRef<FormRef>,
 ) {
   const [formState, setFormState] = useState<{ fields: Fields, errors: Errors }>({
     fields: {},
@@ -71,7 +71,7 @@ function Form(
 
   function setField(
     event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
-    field: Field
+    field: Field,
   ) {
     event && event.persist();
     if (!field.id) {

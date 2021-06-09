@@ -14,7 +14,7 @@ export interface Props {
 }
 
 export default function EmployeeSelectTree(
-  { store, className, itemClassName, wrapperClassName }: Props
+  { store, className, itemClassName, wrapperClassName }: Props,
 ) {
   return (
     <div className={cs('tree-wrapper', wrapperClassName)}>

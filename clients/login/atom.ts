@@ -27,9 +27,6 @@ export const isEmail = (s: string) =>
 export type OnValidateAll = (
   context: any, isValid: boolean
 ) => boolean | (boolean | Promise<boolean>)[];
-/**
- * 输入框 base
- */
 export abstract class InputField implements IInputField {
   name?: string;
   inputElement: HTMLInputElement;

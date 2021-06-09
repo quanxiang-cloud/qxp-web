@@ -46,7 +46,7 @@ export default function TextHeader({
         }
         descClassName={twCascade(
           'transition ease-linear text-12 text-blueGray-400',
-          descClassName
+          descClassName,
         )}
         textDirection={textDirection}
         className={itemClassName}

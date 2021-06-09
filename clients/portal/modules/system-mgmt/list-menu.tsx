@@ -50,7 +50,7 @@ export default function ListMenu() {
                       display: 'block',
                     },
                   },
-                })
+                }),
               )}
               activeClassName={useCss({
                 'background-color': '#F1F5F9',

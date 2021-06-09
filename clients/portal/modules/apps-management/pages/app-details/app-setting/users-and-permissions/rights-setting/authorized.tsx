@@ -65,7 +65,7 @@ function RightsCard({ rightsCardData, onChange, selectNumber }: CardProps) {
       setSelected(
         options.map((_, index: number) => {
           return selectArr[index] ? Number(selectArr[index]) : 0;
-        })
+        }),
 
       );
     }

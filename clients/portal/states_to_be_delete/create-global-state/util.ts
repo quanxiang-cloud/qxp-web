@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-types */
 export function on<T extends Window | Document | HTMLElement | EventTarget>(
   obj: T | null,
   ...args: Parameters<T['addEventListener']> | [string, Function | null, ...any]

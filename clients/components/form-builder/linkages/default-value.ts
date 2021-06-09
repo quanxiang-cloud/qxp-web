@@ -113,7 +113,7 @@ function shouldFireEffect({ linkage, linkedRow, getFieldValue }: ShouldFireEffec
       logger.error(
         'Error occurred while run comparator:', comparator,
         'with params:', leftValue, rightValue,
-        'Error:', error
+        'Error:', error,
       );
       return false;
     }

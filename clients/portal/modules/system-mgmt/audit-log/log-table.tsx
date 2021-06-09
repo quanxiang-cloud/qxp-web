@@ -24,7 +24,7 @@ const LogTable = ({ className }: Props) => {
   const { isLoading, isError } = logRequestInfo;
 
   const pageChange = (page: number, pageSize: number) => setLogPageInfo(
-    { ...logPageInfo, current: page, pageSize }
+    { ...logPageInfo, current: page, pageSize },
   );
 
   if (isLoading) {
@@ -77,9 +77,9 @@ const LogTable = ({ className }: Props) => {
       Header: '日志内容',
       id: 'detail',
       width: 'auto',
-      accessor: ({ detail }: QueryAuditLogResult) => (
-        <span>{detail ? detail : '无'}</span>
-      ),
+      accessor: ({ detail }: QueryAuditLogResult): JSX.Element => {
+        return <span>{detail ? detail : '无'}</span>;
+      },
     },
     {
       Header: '地理位置',

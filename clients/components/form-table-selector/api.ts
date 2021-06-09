@@ -45,7 +45,7 @@ export async function getFormDataOptions({ queryKey }: QueryFunctionContext): Pr
 export async function getFormListOptions({ queryKey }: QueryFunctionContext): Promise<Options> {
   const menus = await httpClient<{ menu: MenuListItem[] }>(
     `/api/v1/structor/${queryKey[1]}/${window.SIDE === 'portal' ? 'm' : 'home'}/menu/list`,
-    { appID: queryKey[1] }
+    { appID: queryKey[1] },
   );
 
   function parseMenuList(menuList: MenuListItem[]) {

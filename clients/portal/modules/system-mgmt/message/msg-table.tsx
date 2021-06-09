@@ -217,7 +217,7 @@ const MsgTable = ({ refresh }: Props) => {
     });
 
   const pageChange = (page: number, pageSize: number) => setPageInfo(
-    { ...pageInfo, current: page, pageSize }
+    { ...pageInfo, current: page, pageSize },
   );
 
   if (isLoading) {

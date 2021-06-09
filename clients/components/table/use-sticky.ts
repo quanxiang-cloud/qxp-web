@@ -3,7 +3,7 @@ interface Column {
   Header: any;
   columns?: Column[];
   getHeaderProps: () => {
-    style: object;
+    style: Record<string, any>;
   };
   id: string | number;
   parent?: Column;
