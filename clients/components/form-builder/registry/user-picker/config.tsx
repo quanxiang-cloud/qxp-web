@@ -33,9 +33,8 @@ const UserPickerConfigForm = ({ initialValue, onChange }: Props): JSX.Element =>
       <Field name="required" title="是否必填" component={Switch} />
       <Field name="multiple" title="人员选项" component={Radio.Group} dataSource={EnumMultiple} />
       <Field name="optionalRange" title="可选范围" component={Radio.Group} dataSource={EnumOptionalRange} />
-      <Field visible={initialValue.optionalRange == 'customize'} name="rangeList" title="可选范围" component={Picker} />
+      <Field isMy={initialValue.optionalRange == 'myDep'} visible={initialValue.optionalRange == 'customize'} name="rangeList" title="可选范围" component={Picker} />
       <Field name="defaultValues" title="默认值" optionalRange={initialValue.optionalRange} multiple={initialValue.multiple} rangeList={initialValue.rangeList} component={UserDefault} />
-
       {/* <Picker value={initialValue.rangeList} onChange={handleDefaultUserChange} /> */}
 
     </Form>

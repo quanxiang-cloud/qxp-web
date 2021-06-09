@@ -7,7 +7,7 @@ export interface DefaultConfig {
     required: boolean;
     multiple?: 'signle' | 'multiple';
     rangeList: TreeNode[];
-    optionalRange?: 'all' | 'customize';
+    optionalRange?: 'all' | 'customize' | 'myDep';
     defaultValues?: string[];
     type: string;
 }
@@ -38,6 +38,12 @@ export const toSchema = (config: DefaultConfig): FormBuilder.Schema => {
     ['x-component-props']: {
       placeholder: config.placeholder,
     },
+    ['x-internal']: {
+      multiple: config.multiple,
+      optionalRange: config.optionalRange,
+      rangeList: config.rangeList,
+      defaultValues: config.defaultValues
+    },
   });
 };
 
@@ -56,9 +62,9 @@ export const toConfig = (schema: FormBuilder.Schema): DefaultConfig => {
     displayModifier: displayModifier,
     placeholder: schema['x-component-props']?.placeholder || '',
     required: !!schema.required,
-    // @ts-ignore
-    defaultValues: schema?.defaultValues || [],
-    // @ts-ignore
-    rangeList: schema?.rangeList || [],
+    defaultValues: schema['x-internal']?.defaultValues || [],
+    rangeList: schema['x-internal']?.rangeList || [],
+    multiple: schema['x-internal']?.multiple,
+    optionalRange: schema['x-internal']?.optionalRange,
   };
 };

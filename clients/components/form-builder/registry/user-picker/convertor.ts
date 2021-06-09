@@ -7,14 +7,14 @@ export interface DefaultConfig {
   placeholder?: string;
   required: boolean;
   defaultValue: string | string[];
-  optionalRange?: 'all' | 'customize';
+  optionalRange?: 'all' | 'customize' | 'myDep';
   multiple?: 'signle' | 'multiple';
   rangeList: EmployeeOrDepartmentOfRole[];
   defaultValues: string | string[];
   enums?: Option[];
   loading?: boolean;
   onSearch?: (value: string) => string | void;
-  type: string
+  type: string;
 }
 
 export const defaultConfig: DefaultConfig = {
@@ -62,6 +62,13 @@ export const toSchema = (config: DefaultConfig): FormBuilder.Schema => {
         // @ts-ignore
         option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0,
     },
+    ['x-internal']: {
+      multiple: config.multiple,
+      optionalRange: config.optionalRange,
+      rangeList: config.rangeList,
+      defaultValues: calcDefaultValues,
+      defaultValue: config.defaultValue
+    },
     enum: config.optionalRange === 'all' ? [] : (config.rangeList || []).map((itm) => ({
       label: itm.ownerName,
       value: itm.id,
@@ -84,11 +91,10 @@ export const toConfig = (schema: FormBuilder.Schema): DefaultConfig => {
     displayModifier: displayModifier,
     placeholder: schema['x-component-props']?.placeholder || '',
     required: !!schema.required,
-    // @ts-ignore
-    defaultValue: schema?.defaultValue || [],
-    // @ts-ignore
-    defaultValues: schema?.defaultValues || [],
-    // @ts-ignore
-    rangeList: schema?.rangeList || [],
+    defaultValue: schema['x-internal']?.defaultValue || [],
+    defaultValues: schema['x-internal']?.defaultValues || [],
+    rangeList: schema['x-internal']?.rangeList || [],
+    multiple: schema['x-internal']?.multiple,
+    optionalRange: schema['x-internal']?.optionalRange,
   };
 };

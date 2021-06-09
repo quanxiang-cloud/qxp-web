@@ -9,3 +9,4 @@ export interface Res {
 }
 
 export const searchUser = (appID: string, props?: any): Promise<Res | null> => httpClient(`/api/v1/structor/${appID}/home/org/userList`, props);
+

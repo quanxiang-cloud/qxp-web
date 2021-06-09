@@ -20,7 +20,7 @@ export interface Props {
 }
 
 // @ts-ignore
-const calcData = (data, value) => {
+const calcData = (data, value, allChecked = false) => {
   const isArray = Array.isArray(data);
 
   const tempArr: any[] = [].concat(data);
@@ -30,9 +30,9 @@ const calcData = (data, value) => {
   // @ts-ignore
   const temp = tempArr.map(((itm) => {
     // itm.isDefaultValue = Array.isArray(value) ? value.includes(itm.value) : itm.value == value;
-    itm.checked = Array.isArray(value) ? value.includes(itm.value) : itm.value == value;
+    itm.checked = allChecked || (Array.isArray(value) ? value.includes(itm.value) : itm.value == value);
 
-    itm.children && (itm.children = calcData(itm.children, value));
+    itm.children && (itm.children = calcData(itm.children, value, itm.checked));
 
     return itm;
   }));
@@ -113,7 +113,7 @@ const Cascader = (props: Props) => {
           onChange(selectsRef.current || []);
         }
       }}
-      disabled={disabled}
+      disabled={disabled || false}
       data={calcData(data, value)}
     />
   </div>);

@@ -9,15 +9,21 @@ import { StoreContext } from '../../context';
 interface PickerProps {
   value: string | string[];
   onChange: (list: string[]) => void;
-  mode: 'radioSelect' | 'multiSelect'
+  mode: 'radioSelect' | 'multiSelect';
+  isMy: boolean
 }
 
-const Picker = ({ value, onChange, mode }: PickerProps) => {
+const Picker = ({ value, onChange, mode, isMy }: PickerProps) => {
+  if (isMy) {
+    const isMyDep = window.USER.dep.id == value[0];
+    isMyDep || onChange([window.USER.dep.id]);
+  }
+
   const store = React.useContext(StoreContext);
   const { appID } = store;
   const { data } = useQuery(['query_user_picker', appID], () => searchOrganziation(appID));
 
-  const CascaderData = parseTree(data);
+  const cascaderData = parseTree(data);
 
   const handleChange = (selects: TreeNode[]) => {
     onChange(selects.map((itm) => itm.value));
@@ -26,8 +32,9 @@ const Picker = ({ value, onChange, mode }: PickerProps) => {
   return (<Cascader
     mode={mode}
     value={value}
-    data={CascaderData}
+    data={cascaderData}
     onChange={handleChange}
+    disabled={isMy}
   />);
 };
 
