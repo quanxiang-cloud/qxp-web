@@ -9,7 +9,6 @@ import Button from '@c/button';
 import IconButton from '@c/icon-btn';
 import MoreMenu from '@c/more-menu';
 import CheckBox from '@c/checkbox';
-import { usePortalGlobalValue } from '@portal/states_to_be_delete/portal';
 import toast from '@lib/toast';
 
 import { getUserAdminInfo } from './api';
@@ -39,7 +38,7 @@ interface Props {
 export default function Employees({
   department,
   searchWord,
-}: Props) {
+}: Props): JSX.Element {
   const [modalType, setModalType] = useState<ModalType>('');
   const [check, setCheck] = useState(0);
   const [userState, setUserState] = useState<UserStatus>(UserStatus.normal);
@@ -47,7 +46,6 @@ export default function Employees({
   const [selectedUsers, setSelectedUsers] = useState<Employee[]>([]);
   const [currUser, setCurrUser] = useState<Employee>(initUserInfo);
   const [pageParams, setPageParams] = React.useState(initSearch);
-  const [{ userInfo }] = usePortalGlobalValue();
 
   const { data: employeesList, isLoading, refetch } = useQuery(
     ['GET_USER_ADMIN_INFO', pageParams, department.id],
@@ -66,27 +64,27 @@ export default function Employees({
     setSelectedUserIds([]);
   }, [department.id]);
 
-  function handleDepLeader(params: Employee) {
+  function handleDepLeader(params: Employee): void {
     setCurrUser(params);
     openModal('leader_handle');
   }
 
-  function handleUserInfo(user: Employee) {
+  function handleUserInfo(user: Employee): void {
     setCurrUser(user);
     openModal('edit_employees');
   }
 
-  function handleResetPWD(user: Employee) {
+  function handleResetPWD(user: Employee): void {
     setSelectedUsers([user]);
     openModal('reset_password');
   }
 
-  function handleCleanChecked() {
+  function handleCleanChecked(): void {
     setSelectedUserIds([]);
     setSelectedUsers([]);
   }
 
-  function renderTotalTip() {
+  function renderTotalTip(): JSX.Element {
     return (
       <div className="text-12 text-gray-600">
         共<span className="mx-4">{employeesList?.total || 0}</span>条数据
@@ -94,22 +92,22 @@ export default function Employees({
     );
   }
 
-  function handleUserState(status: UserStatus, user: Employee) {
+  function handleUserState(status: UserStatus, user: Employee): void {
     setCurrUser(user);
     setUserState(status);
     openModal('alert_user_state');
   }
 
-  function handlePageChange(current: number, pageSize: number) {
+  function handlePageChange(current: number, pageSize: number): void {
     setPageParams({ ...pageParams, page: current, limit: pageSize });
   }
 
-  function openExportModal() {
+  function openExportModal(): void {
     openModal('export_employees');
   }
 
   // 导出数据
-  function handleEmployeesExport(ids: string[]) {
+  function handleEmployeesExport(ids: string[]): void {
     getUserAdminInfo('', {
       useStatus: 1,
       page: 1,
@@ -128,11 +126,11 @@ export default function Employees({
     });
   }
 
-  function openModal(type: ModalType) {
+  function openModal(type: ModalType): void {
     setModalType(type);
   }
 
-  function closeModal() {
+  function closeModal(): void {
     if (modalType === 'alert_user_state') {
       handleCleanChecked();
     }
@@ -140,23 +138,23 @@ export default function Employees({
   }
 
   // Because the data will be imported in the middle, it needs to be refreshed
-  function closeFileModal() {
+  function closeFileModal(): void {
     closeModal();
     refetch();
   }
 
-  function handleChange(e: React.ChangeEvent<HTMLInputElement & HTMLTextAreaElement>) {
+  function handleChange(e: React.ChangeEvent<HTMLInputElement & HTMLTextAreaElement>): void {
     setCheck(Number(e.target.checked));
   }
 
-  function handleSelectChange(selectedRowKeys: string[], selectedRows: Employee[]) {
+  function handleSelectChange(selectedRowKeys: string[], selectedRows: Employee[]): void {
     setSelectedUserIds(selectedRowKeys);
     setSelectedUsers(selectedRows);
   }
 
   const columns: any[] = [...EmployeesColumns];
 
-  if (userInfo.authority.includes('accessControl/mailList/manage')) {
+  if (window.ADMIN_USER_FUNC_TAGS.includes('accessControl/mailList/manage')) {
     columns.push({
       Header: '操作',
       id: 'action',
@@ -171,7 +169,7 @@ export default function Employees({
             menus={menu}
             placement="bottom-end"
             className="opacity-1"
-            onMenuClick={(key) => {
+            onMenuClick={(key): void => {
               if (key === 'edit') {
                 handleUserInfo(record);
                 return;
@@ -224,7 +222,7 @@ export default function Employees({
         modalType === 'reset_password' && (<ResetPasswordModal
           userIds={selectedUsers.map((user) => user.id)}
           closeModal={closeModal}
-          clearSelectRows={() => setSelectedUserIds([])}
+          clearSelectRows={(): void => setSelectedUserIds([])}
         />)
       }
 
@@ -240,14 +238,14 @@ export default function Employees({
                 <Button
                   modifier="primary"
                   iconName="device_hub"
-                  onClick={() => openModal('adjust_dep')}
+                  onClick={(): void => openModal('adjust_dep')}
                   className="mr-16"
                 >
                   调整部门
                 </Button>
                 <Button
                   iconName="password"
-                  onClick={() => openModal('reset_password')}
+                  onClick={(): void => openModal('reset_password')}
                 >
                   重置密码
                 </Button>
@@ -258,14 +256,14 @@ export default function Employees({
                   <Button
                     modifier="primary"
                     iconName="create_new_folder"
-                    onClick={() => openModal('import_employees')}
+                    onClick={(): void => openModal('import_employees')}
                     className="mr-16"
                   >
                   excel 批量导入
                   </Button>
                   <Button
                     iconName="add"
-                    onClick={() => handleUserInfo(initUserInfo)}
+                    onClick={(): void => handleUserInfo(initUserInfo)}
                     className="mr-16"
                   >
                   添加员工
@@ -274,7 +272,7 @@ export default function Employees({
                     menus={ExpandActions}
                     placement="bottom-end"
                     className="opacity-1"
-                    onMenuClick={(key) => {
+                    onMenuClick={(key): void => {
                       if (key === 'export') {
                         openExportModal();
                         return;

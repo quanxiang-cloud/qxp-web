@@ -6,7 +6,6 @@ import TextHeader from '@c/text-header';
 import ErrorTips from '@c/error-tips';
 import Search from '@c/search';
 import Button from '@c/button';
-import { usePortalGlobalValue } from '@portal/states_to_be_delete/portal';
 import Container from '../container';
 import MsgTable from './msg-table';
 import Authorized from '@c/authorized';
@@ -14,7 +13,9 @@ import { useMsgInitData } from '../hooks';
 
 import styles from './index.module.scss';
 
-const useDebounceState = (defaultState: any, timer: number, cb?: (params: any) => void) => {
+const useDebounceState = (defaultState: any, timer: number, cb?: (params: any) => void): [
+  any, (newState: any) => void
+] => {
   const [state, setState] = useState(defaultState);
 
   const ref = useRef<number>();
@@ -22,23 +23,21 @@ const useDebounceState = (defaultState: any, timer: number, cb?: (params: any) =
   const f = useCallback((newState) => {
     clearTimeout(ref.current);
 
-    // @ts-ignore
-    ref.current = setTimeout(() => {
+    ref.current = window.setTimeout(() => {
       setState(newState);
       cb && cb(newState);
     }, timer);
   }, [setState, cb]);
 
   useEffect(() => {
-    return () => clearTimeout(ref.current);
+    return (): void => clearTimeout(ref.current);
   }, []);
 
   return [state, f];
 };
 
-const MessagesPage = () => {
+const MessagesPage = (): JSX.Element => {
   const history = useHistory();
-  const [{ userInfo }] = usePortalGlobalValue();
   const {
     keyword: inputValue,
     pageInfo,
@@ -56,11 +55,11 @@ const MessagesPage = () => {
     setPageInfo({ ...pageInfo, current: 1 });
   });
 
-  if (!userInfo.authority.includes('platform')) {
+  if (!window.ADMIN_USER_FUNC_TAGS.includes('platform')) {
     return (<ErrorTips desc="您没有权限, 请联系管理员..." />);
   }
 
-  const toSendMsg = () => {
+  const toSendMsg = (): void => {
     history.push('/system/message/send');
   };
 

@@ -4,17 +4,15 @@ import TextHeader from '@c/text-header';
 import ErrorTips from '@c/error-tips';
 import Search from '@c/search';
 import toast from '@lib/toast';
-import { usePortalGlobalValue } from '@portal/states_to_be_delete/portal';
 
 import DepartmentsTree from './departments-tree';
 import Employees from './employees';
 import { SpecialSymbolsReg } from './utils';
 
-export default function DepartmentsEmployees() {
+export default function DepartmentsEmployees(): JSX.Element {
   const [inputValue, setInputValue] = useState<string>('');
   const [searchWord, setSearchWord] = useState<string>('');
   const [currentDepartment, setCurrentDepartment] = useState<Department | null>(null);
-  const [{ userInfo }] = usePortalGlobalValue();
 
   useEffect(() => {
     document.title = '访问控制 - 企业通讯录';
@@ -31,17 +29,17 @@ export default function DepartmentsEmployees() {
     setSearchWord(inputValue);
   }
 
-  function handleSelectDep(dep: Department) {
+  function handleSelectDep(dep: Department): void {
     setCurrentDepartment(dep);
     handleClear();
   }
 
-  function handleClear() {
+  function handleClear(): void {
     setInputValue('');
     setSearchWord('');
   }
 
-  function handleOnBlur(val: string) {
+  function handleOnBlur(val: string): void {
     const newVal = val === '' ? val : inputValue;
     if (SpecialSymbolsReg.test(newVal)) {
       toast.error('不能输入特殊字符');
@@ -50,7 +48,7 @@ export default function DepartmentsEmployees() {
     setSearchWord(newVal);
   }
 
-  if (!userInfo.authority.includes('accessControl/mailList/read')) {
+  if (!window.ADMIN_USER_FUNC_TAGS.includes('accessControl/mailList/read')) {
     return (<ErrorTips desc="您没有权限, 请联系管理员..." />);
   }
 
@@ -71,7 +69,7 @@ export default function DepartmentsEmployees() {
             className="bg-gray-100"
             placeholder="搜索员工名称"
             value={inputValue}
-            onChange={(value: string) => setInputValue(value)}
+            onChange={(value: string): void => setInputValue(value)}
             onKeyDown={handleKeDown}
             onBlur={handleOnBlur}
           />

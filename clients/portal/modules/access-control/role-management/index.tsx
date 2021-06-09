@@ -4,13 +4,12 @@ import { useQuery } from 'react-query';
 
 import Card from '@c/card';
 import ErrorTips from '@c/error-tips';
-import { usePortalGlobalValue } from '@portal/states_to_be_delete/portal';
 
 import RoleList from './role-list';
 import RoleDetail from './role-detail';
 import { getRoles } from './api';
 
-export default function RoleManagement() {
+export default function RoleManagement(): JSX.Element | null {
   const { data: roleList = [], isLoading } = useQuery('getRoles', getRoles, {
     refetchOnWindowFocus: false,
   });
@@ -21,7 +20,6 @@ export default function RoleManagement() {
       setRoleId(roleList[0].id);
     }
   }, [roleList]);
-  const [{ userInfo }] = usePortalGlobalValue();
 
   const contentHeight = useCss({
     height: 'calc(100% - 56px)',
@@ -30,7 +28,7 @@ export default function RoleManagement() {
   if (isLoading || !roleList.length) {
     return null;
   }
-  if (!userInfo.authority.includes('accessControl/role/read')) {
+  if (!window.ADMIN_USER_FUNC_TAGS.includes('accessControl/role/read')) {
     return <ErrorTips desc="您没有权限, 请联系管理员..." />;
   }
 
