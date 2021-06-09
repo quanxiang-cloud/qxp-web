@@ -12,10 +12,10 @@ function SubTable({ value, fieldKey }: { value: Record<string, unknown>[], field
     return null;
   }
 
-  function buildSubTableColumns(fieldKey: string): ColumnType<object>[] {
+  function buildSubTableColumns(fieldKey: string): ColumnType<Record<string, any>>[] {
     const items = store.fields.find(({ id }) => id === fieldKey)?.items as ISchema;
     return Object.entries(items?.properties || {}).reduce((
-      cur: ColumnType<object>[], next: [string, ISchema],
+      cur: ColumnType<Record<string, any>>[], next: [string, ISchema],
     ) => {
       const [key, sc] = next;
       if (key !== '_id') {
