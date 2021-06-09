@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { FormButtonGroup, setValidationLanguage } from '@formily/antd';
 import { toJS } from 'mobx';
-import { omit, omitBy, isEmpty } from 'lodash';
+import { omit, omitBy, isEmpty, isObject } from 'lodash';
 import { useQuery } from 'react-query';
 import { observer } from 'mobx-react';
 
@@ -38,7 +38,9 @@ function CreateDataForm(): JSX.Element {
 
   const {
     data, isLoading, isError,
-  } = useQuery([], () => getSchemaAndRecord(store.appID, store.pageID, rowID || ''), {
+  } = useQuery([
+    'GET_SCHEMA_AND_RECORD_FOR_CREATE_OR_EDIT',
+  ], () => getSchemaAndRecord(store.appID, store.pageID, rowID || ''), {
     enabled: !!(store.pageID && store.appID),
   });
 
@@ -63,7 +65,7 @@ function CreateDataForm(): JSX.Element {
   ): FormDataRequestCreateParams | FormDataRequestUpdateParams {
     let params = {
       method,
-      entity: omit(formData, INTERNAL_FIELD_NAMES),
+      entity: isObject(formData) ? omit(formData, INTERNAL_FIELD_NAMES) : formData,
     };
     if (method === 'update') {
       params = Object.assign(params, {

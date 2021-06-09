@@ -265,7 +265,7 @@ export function parseJSON<T>(str: string, fallback: T): T {
   }
 }
 
-export function compactObject(data: Record<string, any> | any[]) {
+export function compactObject(data: Record<string, any> | any[]): Record<string, any> {
   if ((typeof data !== 'object' && !Array.isArray(data)) || data == null) {
     return data;
   }

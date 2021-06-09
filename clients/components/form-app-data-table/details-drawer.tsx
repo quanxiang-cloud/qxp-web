@@ -32,7 +32,10 @@ function DetailsDrawer({ onCancel, rowID }: Props): JSX.Element {
   // todo handle error case of getSchemaAndRecord
   const {
     isLoading, data, refetch,
-  } = useQuery([], () => getSchemaAndRecord(store.appID, store.pageID, rowID));
+  } = useQuery(
+    ['GET_SCHEMA_AND_RECORD_FOR_DETAIL'],
+    () => getSchemaAndRecord(store.appID, store.pageID, rowID),
+  );
 
   const [details, systems] = useMemo(() => {
     if (!data) {
