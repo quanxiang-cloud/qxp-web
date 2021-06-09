@@ -113,15 +113,19 @@ func handler(r *http.Request, in *input, p map[string]string) (int, interface{},
 		return c, nil, err
 	case "update":
 		// update update#set
-		ref := in.Ref.(map[string]interface{})
-		if in.Ref != nil && len(ref) > 0 {
-			// diff 这里无法保证所有的请求都会成功，可能存在状态不一致的情况
-			return doUpdate(r, in, p)
+		if in.Ref != nil{
+			ref := in.Ref.(map[string]interface{})
+			if len(ref) > 0{
+				// diff 这里无法保证所有的请求都会成功，可能存在状态不一致的情况
+				return doUpdate(r, in, p)
+			}
 		} else {
-			return directRequest(r, in)
+			c,r,err := directRequest(r, in)
+			return c,r.Data,err
 		}
 	case "delete":
-		return directRequest(r, in)
+		c,r,err := directRequest(r, in)
+		return c,r.Data,err
 	}
 	return http.StatusOK, nil, nil
 }
@@ -222,7 +226,10 @@ func doUpdate(r *http.Request, in *input, p map[string]string) (int, interface{}
 					}
 				}
 			}
-			updateData[key] = RemoveRepeatedElement(ids)
+			ss := RemoveRepeatedElement(ids)
+			if ss != nil && len(ss)>0{
+				updateData[key] = ss
+			}
 		}
 	}
 	if in.Entity != nil{
