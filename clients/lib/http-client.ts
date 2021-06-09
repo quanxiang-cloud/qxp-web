@@ -61,7 +61,7 @@ export type FormDataRequestUpdateParams = {
 type FormDataRequestParams =
   FormDataRequestQueryDeleteParams |
   FormDataRequestCreateParams |
-  FormDataRequestUpdateParams | {};
+  FormDataRequestUpdateParams;
 
 type FormDataResponse = { entities: Array<any>; total: number; };
 
