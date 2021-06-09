@@ -156,7 +156,7 @@ export function difference(origObj: Record<string, unknown>, newObj: Record<stri
     return transform(newObj, function(
       result: Record<string, unknown>,
       value: any,
-      key
+      key,
     ) {
       if (!isEqual(value, origObj[key])) {
         // eslint-disable-next-line no-plusplus
@@ -164,7 +164,7 @@ export function difference(origObj: Record<string, unknown>, newObj: Record<stri
         result[resultKey] = (isObject(value) && isObject(origObj[key])) ?
           changes(
             value as Record<string, unknown>,
-            origObj[key] as Record<string, unknown>
+            origObj[key] as Record<string, unknown>,
           ) : value;
       }
     });

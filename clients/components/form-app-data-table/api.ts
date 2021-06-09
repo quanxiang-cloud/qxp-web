@@ -17,7 +17,7 @@ export async function findOneRecord(appID: string, tableID: string, _id: string)
 }
 
 export function getSchemaAndRecord(
-  appID: string, tableID: string, recordID: string
+  appID: string, tableID: string, recordID: string,
 ): Promise<SchemaAndRecord> {
   return Promise.all([
     getTableSchema(appID, tableID),

@@ -15,7 +15,7 @@ function SubTable({ value, fieldKey }: { value: Record<string, unknown>[], field
   function buildSubTableColumns(fieldKey: string): ColumnType<object>[] {
     const items = store.fields.find(({ id }) => id === fieldKey)?.items as ISchema;
     return Object.entries(items?.properties || {}).reduce((
-      cur: ColumnType<object>[], next: [string, ISchema]
+      cur: ColumnType<object>[], next: [string, ISchema],
     ) => {
       const [key, sc] = next;
       if (key !== '_id') {

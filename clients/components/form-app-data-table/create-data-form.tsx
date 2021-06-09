@@ -74,7 +74,7 @@ function CreateDataForm() {
     const oldData = (defaultValues || {})[fieldKey] as Record<string, string>[];
 
     return oldData?.filter(
-      ({ _id }) => !!_id && !newData.find(({ _id: id }) => id === _id)
+      ({ _id }) => !!_id && !newData.find(({ _id: id }) => id === _id),
     )?.map(({ _id }) => _id);
   }
 
@@ -89,7 +89,7 @@ function CreateDataForm() {
     const defaultValue = toJS(defaultValues);
     const diffResult = difference(defaultValue || {}, formData);
     const subTableChangedKeys = Object.keys(diffResult).filter(
-      (fieldKey) => schemaMap[fieldKey as keyof ISchema]?.['type'] === 'array'
+      (fieldKey) => schemaMap[fieldKey as keyof ISchema]?.['type'] === 'array',
     );
     const hasSubTableChanged = !!(subTableChangedKeys.length && defaultValues);
 

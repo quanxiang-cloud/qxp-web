@@ -44,7 +44,7 @@ function buildOptions(optionsData: Options, exclude: string[]): Options {
 
 function FormTableSelector(
   { value, changeable = true, onChange = noop, validating, errorMessage, exclude }: Props,
-  ref?: Ref<Cascader>
+  ref?: Ref<Cascader>,
 ) {
   const { appID } = useParams<{appID: string}>();
 

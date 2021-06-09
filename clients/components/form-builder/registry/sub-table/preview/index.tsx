@@ -122,7 +122,7 @@ function SubTable(compProps: Props) {
               const onRemove = (index: number) => mutators.remove(index);
               const onItemChange = (
                 e: ChangeEvent<HTMLInputElement> | string,
-                dataIndex: string
+                dataIndex: string,
               ) => {
                 ms.change(state.value.map((vItem: any, idx: number) => {
                   if (index !== idx) {
