@@ -7894,10 +7894,10 @@ typescript-plugin-css-modules@^3.2.0:
     stylus "^0.54.7"
     tsconfig-paths "^3.9.0"
 
-typescript@^4.2.4:
-  version "4.2.4"
-  resolved "https://registry.nlark.com/typescript/download/typescript-4.2.4.tgz?cache=0&sync_timestamp=1620371948672&other_urls=https%3A%2F%2Fregistry.nlark.com%2Ftypescript%2Fdownload%2Ftypescript-4.2.4.tgz#8610b59747de028fda898a8aef0e103f156d0961"
-  integrity sha1-hhC1l0feAo/aiYqK7w4QPxVtCWE=
+typescript@^4.3.2:
+  version "4.3.2"
+  resolved "https://registry.nlark.com/typescript/download/typescript-4.3.2.tgz?cache=0&sync_timestamp=1623223597692&other_urls=https%3A%2F%2Fregistry.nlark.com%2Ftypescript%2Fdownload%2Ftypescript-4.3.2.tgz#399ab18aac45802d6f2498de5054fcbbe716a805"
+  integrity sha1-OZqxiqxFgC1vJJjeUFT8u+cWqAU=
 
 ua-parser-js@^0.7.18:
   version "0.7.28"
