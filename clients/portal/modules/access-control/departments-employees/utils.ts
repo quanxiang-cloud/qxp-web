@@ -98,7 +98,7 @@ export const exportEmployees = ( data: Employee[]) => {
 export function exportEmployeesFail(
   headers: EmployeeTableColumn[],
   data: Employee[],
-  fileName: string
+  fileName: string,
 ) {
   const _headers = headers
     .map((item, i) =>
@@ -108,15 +108,15 @@ export function exportEmployeesFail(
           key: item.key,
           title: item.title,
           position: String.fromCharCode(65 + i) + 1,
-        }
-      )
+        },
+      ),
     )
     .reduce(
       (prev: any, next: any) =>
         Object.assign({}, prev, {
           [next.position]: { key: next.key, v: next.title },
         }),
-      {}
+      {},
     );
 
   const _data = data
@@ -127,15 +127,15 @@ export function exportEmployeesFail(
           {
             content: item[key.key],
             position: String.fromCharCode(65 + j) + (i + 2),
-          }
-        )
-      )
+          },
+        ),
+      ),
     )
     .reduce((prev: any, next: any) => prev.concat(next))
     .reduce(
       (prev: any, next: any) =>
         Object.assign({}, prev, { [next.position]: { v: next.content } }),
-      {}
+      {},
     );
   const output = Object.assign({}, _headers, _data);
   const outputPos = Object.keys(output);

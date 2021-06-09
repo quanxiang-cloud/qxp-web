@@ -140,7 +140,7 @@ export default class Captcha extends InputField {
     }
     if (checkAll) {
       const onValidateAllResult: boolean | (boolean | Promise<boolean>)[] = this.onValidateAll(
-        this, isValid
+        this, isValid,
       );
       if (onValidateAllResult instanceof Array) {
         parseValidateAllResult(onValidateAllResult, this.errorElement).then((isAllValid) => {

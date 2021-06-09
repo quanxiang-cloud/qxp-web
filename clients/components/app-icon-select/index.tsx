@@ -72,7 +72,7 @@ function IconSelect({
             key={icon}
             onClick={() => optionClick(icon)}
             className={cs('app-icon-select-option',
-              { 'app-icon-select-active': icon === iconName }
+              { 'app-icon-select-active': icon === iconName },
             )}
           >
             <Icon className='app-icon-color-inherit' name={icon} size={24} />

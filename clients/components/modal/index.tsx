@@ -99,7 +99,7 @@ export default function Modal({
         {renderFooter()}
       </InnerWrap>
     </Wrap>,
-    element
+    element,
   );
 }
 

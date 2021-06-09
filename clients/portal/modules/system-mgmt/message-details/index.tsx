@@ -35,7 +35,7 @@ function ContentWithoutRef() {
   const { data: msgDetail, isLoading } = useQuery(
     'GET_MSG_BY_ID',
     () => getMsgById(param.id),
-    { refetchOnWindowFocus: false }
+    { refetchOnWindowFocus: false },
   );
 
   if (isLoading && !msgDetail) {

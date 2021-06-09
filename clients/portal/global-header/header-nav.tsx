@@ -47,7 +47,7 @@ export default function HeaderLeft() {
         to="/"
         className={twCascade(
           'header-nav-btn group mr-12',
-          className(isHome)
+          className(isHome),
         )}
       >
         <div className="header-nav-btn-icon-wrapper">
@@ -69,7 +69,7 @@ export default function HeaderLeft() {
         to="/apps"
         className={twCascade(
           'header-nav-btn group mr-20',
-          className(isAppManagement)
+          className(isAppManagement),
         )}
       >
         <div className="header-nav-btn-icon-wrapper">
@@ -91,7 +91,7 @@ export default function HeaderLeft() {
         to="/access-control"
         className={twCascade(
           'header-nav-btn group mr-20',
-          className(isAccess)
+          className(isAccess),
         )}
       >
         <div className="header-nav-btn-icon-wrapper">
@@ -113,7 +113,7 @@ export default function HeaderLeft() {
         to="/system/message"
         className={twCascade(
           'header-nav-btn group mr-20',
-          className(isSystemControl)
+          className(isSystemControl),
         )}
       >
         <div className="header-nav-btn-icon-wrapper">

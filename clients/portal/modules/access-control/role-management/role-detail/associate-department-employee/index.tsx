@@ -40,12 +40,12 @@ export default function AssociateDepartmentEmployee({ roleID, isSuper }: Props) 
         queryClient.invalidateQueries('GET_ROLE_ASSOCIATIONS');
         queryClient.invalidateQueries('GET_ROLE_ASSOCIATIONS_ALL');
       },
-    }
+    },
   );
 
   async function onAssociate(
     departments: EmployeeOrDepartmentOfRole[],
-    employees: EmployeeOrDepartmentOfRole[]
+    employees: EmployeeOrDepartmentOfRole[],
   ) {
     const newSets = [...departments, ...employees];
     const oldSets = data?.departmentsOrEmployees || [];

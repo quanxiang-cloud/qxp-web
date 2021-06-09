@@ -46,7 +46,7 @@ function FormAppDataTableWrap({
             pageName,
             appID,
             pageID,
-          })
+          }),
         );
       } else {
         setStore(null);

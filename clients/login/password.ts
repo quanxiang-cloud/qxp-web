@@ -20,7 +20,7 @@ class PasswordUser extends User {
 
   onValidateAll(
     context: UserName | Password,
-    isValid: boolean
+    isValid: boolean,
   ): boolean | (boolean | Promise<boolean>)[] {
     if (!this.username || !this.password || !isValid) {
       return false;

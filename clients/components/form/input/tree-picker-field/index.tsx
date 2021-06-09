@@ -75,7 +75,7 @@ export default function TreePickerField<T extends { id: string; }>({
                 'transition-all absolute cursor-pointer top-16 transform',
                 {
                   '-rotate-180': open,
-                }
+                },
               )
             }
             style={{

@@ -72,7 +72,7 @@ function AppAdmin() {
     employees: EmployeeOrDepartmentOfRole[]) => {
     if (employees.length === 0 && appAdminList.length === 0) {
       toast.error('请选择添加为管理员的员工');
-      return Promise.reject({ message: '' });
+      return Promise.reject(new Error('请选择添加为管理员的员工'));
     }
 
     return appAddAdmin({ appID, userIDs: employees.map(({ id }) => id) }).then(() => {

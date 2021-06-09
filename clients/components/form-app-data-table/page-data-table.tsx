@@ -96,7 +96,7 @@ function PageDataTable() {
           {operateButton(4, store.authority, (
             selected.length > 0 && textBtnRender('批量删除',
               'restore_from_trash',
-              () => store.delFormData(selected)
+              () => store.delFormData(selected),
             )
           ))}
           {/* {textBtnRender('导入', 'file_download')}
