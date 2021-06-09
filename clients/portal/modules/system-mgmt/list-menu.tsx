@@ -3,20 +3,16 @@ import { NavLink } from 'react-router-dom';
 import useCss from 'react-use/lib/useCss';
 import { twCascade } from '@mariusmarais/tailwind-cascade';
 
-import { usePortalGlobalValue } from '@portal/states_to_be_delete/portal';
-
 type MenuItem = {
   id: string;
   name: string;
   icon: string;
 };
 
-export default function ListMenu() {
-  const [{ userInfo }] = usePortalGlobalValue();
-
+export default function ListMenu(): JSX.Element {
   const menuData: MenuItem[] = [];
 
-  if (userInfo.authority.includes('platform')) {
+  if (window.ADMIN_USER_FUNC_TAGS.includes('platform')) {
     menuData.push({
       id: 'message',
       icon: '/dist/images/bell.svg',
