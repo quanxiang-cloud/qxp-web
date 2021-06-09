@@ -1,4 +1,4 @@
-import React, { forwardRef } from 'react';
+import React from 'react';
 import { useParams } from 'react-router-dom';
 import { useQuery } from 'react-query';
 import dayjs from 'dayjs';
@@ -29,14 +29,7 @@ const MessageDetails = () => {
   );
 };
 
-interface ContentWithoutProps {
-isPreview?: boolean;
-canDownload?: boolean;
-canMultiDownload?: boolean;
-}
-
-function ContentWithoutRef({
-}: ContentWithoutProps, ref: React.Ref<unknown> | undefined) {
+function ContentWithoutRef() {
   const param : { id: string} = useParams();
 
   const { data: msgDetail, isLoading } = useQuery(
@@ -156,6 +149,6 @@ const Person = styled.span`
     margin-right: 8px;
     margin-bottom: 8px;
 `;
-export const Content = forwardRef(ContentWithoutRef);
+export const Content = ContentWithoutRef;
 
 export default MessageDetails;
