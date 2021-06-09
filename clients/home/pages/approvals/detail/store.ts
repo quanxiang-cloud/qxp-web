@@ -35,7 +35,7 @@ class TaskDetailStore {
 
   @action
   handleClickAction = (action: TaskHandleType | string): void => {
-    if (!actionMap.hasOwnProperty(action)) {
+    if (!Object.prototype.hasOwnProperty.call(actionMap, action)) {
       toast.error(`action=${action} 未定义的操作`);
       return;
     }

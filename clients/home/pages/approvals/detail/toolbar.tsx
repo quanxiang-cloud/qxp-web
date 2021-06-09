@@ -82,12 +82,12 @@ function Toolbar({ permission, onClickAction, globalActions }: Props) {
               if (key === 'print') {
                 setTimeout(window.print, 0);
               }
-              if (key === 'share') {
+              // if (key === 'share') {
 
-              }
-              if (key === 'chart') {
+              // }
+              // if (key === 'chart') {
 
-              }
+              // }
             }}
           >
             <span className="inline-flex items-center">

@@ -102,9 +102,9 @@ function ActionModals({ flowName, getFormData }: Props) {
       return apis.readAll([processInstanceID]);
     }
 
-    if (action === TaskHandleType.add_sign) {
+    // if (action === TaskHandleType.add_sign) {
 
-    }
+    // }
 
     // 邀请阅示
     if (action === TaskHandleType.read) {
@@ -119,19 +119,19 @@ function ActionModals({ flowName, getFormData }: Props) {
       });
     }
 
-    // 处理阅示
-    if (action === TaskHandleType.hasReadHandleBtn) {
+    // // 处理阅示
+    // if (action === TaskHandleType.hasReadHandleBtn) {
 
-    }
+    // }
 
-    if (action === TaskHandleType.hasResubmitBtn) {
+    // if (action === TaskHandleType.hasResubmitBtn) {
 
-    }
+    // }
 
-    // 催办
-    if (action === TaskHandleType.hasUrgeBtn) {
+    // // 催办
+    // if (action === TaskHandleType.hasUrgeBtn) {
 
-    }
+    // }
 
     return Promise.reject(`未知操作: ${action}`);
   }, {
@@ -270,10 +270,10 @@ function ActionModals({ flowName, getFormData }: Props) {
       );
     }
 
-    // 加签: todo: moved to v0.5
-    if (action === TaskHandleType.add_sign) {
+    // // 加签: todo: moved to v0.5
+    // if (action === TaskHandleType.add_sign) {
 
-    }
+    // }
 
     // 邀请阅示
     if (action === TaskHandleType.read) {
@@ -299,20 +299,20 @@ function ActionModals({ flowName, getFormData }: Props) {
       );
     }
 
-    // 处理阅示
-    if (action === TaskHandleType.hasReadHandleBtn) {
+    // // 处理阅示
+    // if (action === TaskHandleType.hasReadHandleBtn) {
 
-    }
+    // }
 
-    // 重新提交
-    if (action === TaskHandleType.hasResubmitBtn) {
+    // // 重新提交
+    // if (action === TaskHandleType.hasResubmitBtn) {
 
-    }
+    // }
 
-    // 催办
-    if (action === TaskHandleType.hasUrgeBtn) {
+    // // 催办
+    // if (action === TaskHandleType.hasUrgeBtn) {
 
-    }
+    // }
   };
 
   if (!store.modalOpen) {
@@ -351,6 +351,7 @@ function ActionModals({ flowName, getFormData }: Props) {
 
       {showReceiverPicker && (
         <ReceiverPicker
+          onlyEmployees
           onSubmit={(departments, employees) => {
             const receivers = employees.map((v) => toJS(v));
             setShowPicker(false);
@@ -363,7 +364,6 @@ function ActionModals({ flowName, getFormData }: Props) {
           submitText="确定选择"
           employees={chosenEmployees}
           departments={[]}
-          onlyEmployees
         />
       )}
     </>
