@@ -20,9 +20,9 @@ export const defaultConfig: CheckboxGroupConfig = {
   required: false,
   defaultValueFrom: 'customized',
   availableOptions: [
-    { label: '选项一', value: '选项一', title: '选项一' },
-    { label: '选项二', value: '选项二', title: '选项二' },
-    { label: '选项三', value: '选项三', title: '选项三' },
+    { label: '选项一', value: 'option_1', title: '选项一' },
+    { label: '选项二', value: 'option_2', title: '选项二' },
+    { label: '选项三', value: 'option_3', title: '选项三' },
   ],
 };
 
