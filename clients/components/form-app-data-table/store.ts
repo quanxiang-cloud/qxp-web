@@ -164,10 +164,10 @@ class AppPageDataStore {
 
   @computed
   get formDataListLabel(): any[] {
-    const prproperties = this.schema.properties || {};
+    const properties = this.schema.properties || {};
 
-    const complexKeys = Object.keys(prproperties)
-      .filter((key)=>prproperties[key].type == 'label-value');
+    const complexKeys = Object.keys(properties)
+      .filter((key)=>properties[key].type == 'label-value');
 
     return this.formDataList.map((itm) => {
       const newData: any = {};

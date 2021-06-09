@@ -24,21 +24,23 @@ const UserPickerConfigForm = ({ initialValue, onChange }: Props): JSX.Element =>
     onChange(nextValue);
   }, [onChange, initialValue]);
 
-  return (<div>
-    <Form defaultValue={initialValue} onChange={handleChange}>
-      <Field name="title" title="标题" component={Input} />
-      <Field name="placeholder" title="占位提示" component={Input} />
-      <Field name="description" title="描述内容" component={Input.TextArea} />
-      <Field name="displayModifier" title="字段属性" component={Radio.Group} dataSource={EnumReadOnly} />
-      <Field name="required" title="是否必填" component={Switch} />
-      <Field name="multiple" title="人员选项" component={Radio.Group} dataSource={EnumMultiple} />
-      <Field name="optionalRange" title="可选范围" component={Radio.Group} dataSource={EnumOptionalRange} />
-      <Field isMy={initialValue.optionalRange == 'myDep'} visible={initialValue.optionalRange == 'customize'} name="rangeList" title="可选范围" component={Picker} />
-      <Field name="defaultValues" title="默认值" optionalRange={initialValue.optionalRange} multiple={initialValue.multiple} rangeList={initialValue.rangeList} component={UserDefault} />
-      {/* <Picker value={initialValue.rangeList} onChange={handleDefaultUserChange} /> */}
+  return (
+    <div>
+      <Form defaultValue={initialValue} onChange={handleChange}>
+        <Field name="title" title="标题" component={Input} />
+        <Field name="placeholder" title="占位提示" component={Input} />
+        <Field name="description" title="描述内容" component={Input.TextArea} />
+        <Field name="displayModifier" title="字段属性" component={Radio.Group} dataSource={EnumReadOnly} />
+        <Field name="required" title="是否必填" component={Switch} />
+        <Field name="multiple" title="人员选项" component={Radio.Group} dataSource={EnumMultiple} />
+        <Field name="optionalRange" title="可选范围" component={Radio.Group} dataSource={EnumOptionalRange} />
+        <Field isMy={initialValue.optionalRange == 'myDep'} visible={initialValue.optionalRange == 'customize'} name="rangeList" title="可选范围" component={Picker} />
+        <Field name="defaultValues" title="默认值" optionalRange={initialValue.optionalRange} multiple={initialValue.multiple} rangeList={initialValue.rangeList} component={UserDefault} />
+        {/* <Picker value={initialValue.rangeList} onChange={handleDefaultUserChange} /> */}
 
-    </Form>
-  </div>);
+      </Form>
+    </div>
+  );
 };
 
 export default UserPickerConfigForm;

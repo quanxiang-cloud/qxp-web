@@ -77,30 +77,32 @@ const AllUserComponent = (props: Props) => {
       }
     },
   });
-  return (< Select
-    // @ts-ignore
-    mode={multiple}
-    showSearch
-    loading={isLoading}
-    onSearch={debounce(_setKeyword, 300)}
-    onPopupScroll={(e) => {
-      if (!hasNext) return;
-      const dom = e.target;
-      const { scrollTop, clientHeight, scrollHeight } = dom as any;
-      if (scrollTop + clientHeight == scrollHeight) {
-        if (!isLoading) {
-          setCurrent((current) => 1 + current);
+  return (
+    <Select
+      // @ts-ignore
+      mode={multiple}
+      showSearch
+      loading={isLoading}
+      onSearch={debounce(_setKeyword, 300)}
+      onPopupScroll={(e) => {
+        if (!hasNext) return;
+        const dom = e.target;
+        const { scrollTop, clientHeight, scrollHeight } = dom as any;
+        if (scrollTop + clientHeight == scrollHeight) {
+          if (!isLoading) {
+            setCurrent((current) => 1 + current);
+          }
         }
-      }
-    }}
-    options={options}
-    value={Array.isArray(value) ? value.map(({ value }) => value) : value.value}
-    // @ts-ignore
-    filterOption={(input: string, option: any[]) => option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-    onChange={(_, selects) => {
-      return onChange(selects as Option);
-    }}
-  />);
+      }}
+      options={options}
+      value={Array.isArray(value) ? value.map(({ value }) => value) : value.value}
+      // @ts-ignore
+      filterOption={(input: string, option: any[]) => option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+      onChange={(_, selects) => {
+        return onChange(selects as Option);
+      }}
+    />
+  );
 };
 
 export default UserDefault;

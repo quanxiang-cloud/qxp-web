@@ -1,5 +1,5 @@
 
-import * as React from 'react';
+import React from 'react';
 
 import DropdownTreeSelect, { TreeData, Mode, TreeNode } from 'react-dropdown-tree-select';
 import 'react-dropdown-tree-select/dist/styles.css';
@@ -27,9 +27,7 @@ const calcData = (data, value, allChecked = false) => {
 
   if (!tempArr.length) return [];
 
-  // @ts-ignore
   const temp = tempArr.map(((itm) => {
-    // itm.isDefaultValue = Array.isArray(value) ? value.includes(itm.value) : itm.value == value;
     itm.checked = allChecked || (Array.isArray(value) ? value.includes(itm.value) : itm.value == value);
 
     itm.children && (itm.children = calcData(itm.children, value, itm.checked));
@@ -87,36 +85,38 @@ const Cascader = (props: Props) => {
 
   const selectsRef = React.useRef<TreeNode[]>();
 
-  return (<div className="cascader_bg">
-    <DropdownTreeSelect
-      className={classNames(className, {
-        no_rm_cascader: 'radioSelect' != mode,
-      })}
-      mode={mode}
-      keepChildrenOnSearch
-      keepOpenOnSelect={mode != 'radioSelect'}
-      keepTreeOnSearch
-      clearSearchOnChange
-      onChange={(_, selects) => {
-        if (mode == 'radioSelect') {
-          onChange && onChange(selects);
-        }
-        selectsRef.current = selects;
-      }}
-      texts={{
-        placeholder,
-        inlineSearchPlaceholder,
-        noMatches,
-      }}
-      onBlur={() => {
-        if (onChange) {
-          onChange(selectsRef.current || []);
-        }
-      }}
-      disabled={disabled || false}
-      data={calcData(data, value)}
-    />
-  </div>);
+  return (
+    <div className="cascader_bg">
+      <DropdownTreeSelect
+        className={classNames(className, {
+          no_rm_cascader: 'radioSelect' != mode,
+        })}
+        mode={mode}
+        keepChildrenOnSearch
+        keepOpenOnSelect={mode != 'radioSelect'}
+        keepTreeOnSearch
+        clearSearchOnChange
+        onChange={(_, selects) => {
+          if (mode == 'radioSelect') {
+            onChange && onChange(selects);
+          }
+          selectsRef.current = selects;
+        }}
+        texts={{
+          placeholder,
+          inlineSearchPlaceholder,
+          noMatches,
+        }}
+        onBlur={() => {
+          if (onChange) {
+            onChange(selectsRef.current || []);
+          }
+        }}
+        disabled={disabled || false}
+        data={calcData(data, value)}
+      />
+    </div>
+  );
 };
 
 export default Cascader;

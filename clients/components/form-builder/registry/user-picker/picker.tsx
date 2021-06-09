@@ -67,44 +67,46 @@ const Picker = ({ value: defaultValue = [], onChange, isMy }: Props) => {
     .substr(0, 20),
   [defaultValue]);
 
-  return (<div>
-    <div onClick={() => setVisible((v) => !v)}>
-      {defaultValue.length <= 0 ?
-        <Button> 选择成员范围</Button> :
-        <div className={'text_flow '}>{showName}</div>}
+  return (
+    <div>
+      <div onClick={() => setVisible((v) => !v)}>
+        {defaultValue.length <= 0 ?
+          <Button> 选择成员范围</Button> :
+          <div className={'text_flow '}>{showName}</div>}
 
-    </div>
+      </div>
 
-    {
-      visible && (<Modal
-        title={'员工可选范围'}
-        onClose={close}
-        width={1234}
-        height={760}
-        footerBtns={[
-          {
-            text: '取消',
-            key: 'cancel',
-            iconName: 'close',
-            onClick: close,
-          },
-          {
-            text: '确定',
-            key: 'confirm',
-            iconName: 'check',
-            modifier: 'primary',
-            onClick: handleSubmit,
-          },
-        ]}
+      {
+        visible && (<Modal
+          title={'员工可选范围'}
+          onClose={close}
+          width={1234}
+          height={760}
+          footerBtns={[
+            {
+              text: '取消',
+              key: 'cancel',
+              iconName: 'close',
+              onClick: close,
+            },
+            {
+              text: '确定',
+              key: 'confirm',
+              iconName: 'check',
+              modifier: 'primary',
+              onClick: handleSubmit,
+            },
+          ]}
 
-      >
-        <EmployeePicker
-          employees={defaultValue}
-          onChange={handleChange}
-        />
-      </Modal>)
-    }
-  </div >);
+        >
+          <EmployeePicker
+            employees={defaultValue}
+            onChange={handleChange}
+          />
+        </Modal>)
+      }
+    </div >
+  );
 };
 
 export default Picker;

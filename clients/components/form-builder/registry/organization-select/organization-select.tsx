@@ -41,12 +41,14 @@ const OrganizationPicker = (p: ISchemaFieldComponentProps) => {
     placeholder: p.props.placeholder,
   } as Props;
 
-  return (<Cascader
-    {...cascaderParams}
-    data={TreeData}
-    value={(p.value || []).map((itm: TreeNode) => itm.value)}
-    onChange={(selects) => p.mutators.change(selects)}
-  />);
+  return (
+    <Cascader
+      {...cascaderParams}
+      data={TreeData}
+      value={(p.value || []).map((itm: TreeNode) => itm.value)}
+      onChange={(selects) => p.mutators.change(selects)}
+    />
+  );
 };
 
 OrganizationPicker.isFieldComponent = true;

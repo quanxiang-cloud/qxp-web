@@ -73,7 +73,7 @@ export default observer(function EmployeeOrDepartmentPicker({
     return <Loading desc="加载中..." />;
   }
   if (isError) {
-    return <ErrorTips desc="something wrong" />;
+    return <ErrorTips desc="访问异常..." />;
   }
 
   return (

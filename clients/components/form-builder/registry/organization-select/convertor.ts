@@ -1,15 +1,15 @@
 import { TreeNode } from 'react-dropdown-tree-select';
 export interface DefaultConfig {
-    title: string;
-    description?: string;
-    displayModifier: FormBuilder.DisplayModifier;
-    placeholder?: string;
-    required: boolean;
-    multiple?: 'signle' | 'multiple';
-    rangeList: TreeNode[];
-    optionalRange?: 'all' | 'customize' | 'myDep';
-    defaultValues?: string[];
-    type: string;
+  title: string;
+  description?: string;
+  displayModifier: FormBuilder.DisplayModifier;
+  placeholder?: string;
+  required: boolean;
+  multiple?: 'signle' | 'multiple';
+  rangeList: TreeNode[];
+  optionalRange?: 'all' | 'customize' | 'myDep';
+  defaultValues?: string[];
+  type: string;
 }
 
 export const defaultConfig: DefaultConfig = {

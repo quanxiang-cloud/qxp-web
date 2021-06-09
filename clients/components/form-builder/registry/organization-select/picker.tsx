@@ -43,44 +43,45 @@ const Picker = ({ value: defaultValue = [], onChange }: Props) => {
     valueListRef.current = defaultValue;
   };
 
-  return (<div>
-    <div onClick={open}>
-      {defaultValue.length <= 0 ?
-        <Button> 选择部门范围</Button> :
-        <div className={'text_flow '}>{showName}</div>}
+  return (
+    <div>
+      <div onClick={open}>
+        {defaultValue.length <= 0 ?
+          <Button> 选择部门范围</Button> :
+          <div className={'text_flow '}>{showName}</div>}
+      </div>
 
-    </div>
+      {
+        visible && (<Modal
+          title={'部门可选范围'}
+          onClose={close}
+          width={764}
+          height={760}
+          footerBtns={[
+            {
+              text: '取消',
+              key: 'cancel',
+              iconName: 'close',
+              onClick: close,
+            },
+            {
+              text: '确定',
+              key: 'confirm',
+              iconName: 'check',
+              modifier: 'primary',
+              onClick: handleSubmit,
+            },
+          ]}
 
-    {
-      visible && (<Modal
-        title={'部门可选范围'}
-        onClose={close}
-        width={764}
-        height={760}
-        footerBtns={[
-          {
-            text: '取消',
-            key: 'cancel',
-            iconName: 'close',
-            onClick: close,
-          },
-          {
-            text: '确定',
-            key: 'confirm',
-            iconName: 'check',
-            modifier: 'primary',
-            onClick: handleSubmit,
-          },
-        ]}
-
-      >
-        <DepartmentPicker
-          departments={valueListRef.current}
-          onChange={handleChange}
-        />
-      </Modal>)
-    }
-  </div >);
+        >
+          <DepartmentPicker
+            departments={valueListRef.current}
+            onChange={handleChange}
+          />
+        </Modal>)
+      }
+    </div >
+  );
 };
 
 export default Picker;

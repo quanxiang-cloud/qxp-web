@@ -29,13 +29,15 @@ const Picker = ({ value, onChange, mode, isMy }: PickerProps) => {
     onChange(selects.map((itm) => itm.value));
   };
 
-  return (<Cascader
-    mode={mode}
-    value={value}
-    data={cascaderData}
-    onChange={handleChange}
-    disabled={isMy}
-  />);
+  return (
+    <Cascader
+      mode={mode}
+      value={value}
+      data={cascaderData}
+      onChange={handleChange}
+      disabled={isMy}
+    />
+  );
 };
 
 export default Picker;

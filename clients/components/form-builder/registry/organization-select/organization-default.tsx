@@ -34,14 +34,16 @@ const OrganizationDefaultPicker = (props: Props) => {
     return (value || []).map((itm: TreeNode) => itm.value);
   }, [value]);
 
-  return (<Cascader
-    mode={multiple == 'signle' ? 'radioSelect' : 'multiSelect'}
-    data={optionalRange == 'customize' ? CustomizeTreeData : TreeData}
-    value={MemoValue}
-    onChange={(selects) => {
-      onChange(selects);
-    }}
-  />);
+  return (
+    <Cascader
+      mode={multiple == 'signle' ? 'radioSelect' : 'multiSelect'}
+      data={optionalRange == 'customize' ? CustomizeTreeData : TreeData}
+      value={MemoValue}
+      onChange={(selects) => {
+        onChange(selects);
+      }}
+    />
+  );
 };
 
 export default OrganizationDefaultPicker;
