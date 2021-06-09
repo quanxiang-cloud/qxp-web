@@ -267,7 +267,7 @@ export default function ImportEmployeesModal({ currDepId, closeModal }: Props) {
                   <div
                     className={cs(
                       'w-full h-86 border rounded-8 border-dashed border-gray-700',
-                      'flex flex-col items-center justify-center group-hover:border-blue-600'
+                      'flex flex-col items-center justify-center group-hover:border-blue-600',
                     )}
                   >
                     <Icon
@@ -321,7 +321,7 @@ export default function ImportEmployeesModal({ currDepId, closeModal }: Props) {
           )}
           {
             [FileUploadStatus.success, FileUploadStatus.depSuccess].includes(
-              uploadStatus.status
+              uploadStatus.status,
             ) && (
               <div>
                 <p className="text-gray-600 font-semibold mt-24 mb-16">
@@ -340,7 +340,7 @@ export default function ImportEmployeesModal({ currDepId, closeModal }: Props) {
           }
           {
             [FileUploadStatus.depSuccess, FileUploadStatus.fail].includes(
-              uploadStatus.status
+              uploadStatus.status,
             ) && (
               <div>
                 <div className="mb-8 flex items-center">

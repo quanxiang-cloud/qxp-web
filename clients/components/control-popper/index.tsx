@@ -39,7 +39,7 @@ export default class ControlPopper extends React.Component<Props> {
     this.popperContainer.classList.add(
       'popper-container',
       `popper-container--${theme}`,
-      visible ? '' : 'qxp-popper-hidden'
+      visible ? '' : 'qxp-popper-hidden',
     );
 
     if (props.enableArrow) {

@@ -87,7 +87,7 @@ class Toast {
     }
 
     const curNotifyElementIndex = this.notifyInstances.findIndex(
-      (element) => element === curNotifyElement
+      (element) => element === curNotifyElement,
     );
 
     const notifyInstances = this.notifyInstances.slice(curNotifyElementIndex + 1) as HTMLElement[];

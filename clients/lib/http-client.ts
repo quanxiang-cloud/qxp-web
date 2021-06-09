@@ -1,6 +1,4 @@
-function httpClient<TData>(
-  path: string, body?: any, additionalHeaders?: HeadersInit,
-): Promise<TData> {
+function httpClient<TData>(path: string, body?: unknown, additionalHeaders?: HeadersInit): Promise<TData> {
   const headers = {
     'X-Proxy': 'API',
     'Content-Type': 'application/json',
@@ -71,25 +69,29 @@ type FormDataRequestParams =
 
 type FormDataResponse = { entities: Array<any>; total: number; };
 
-export function formDataRequest(appID: string, tableID: string, params: FormDataRequestParams) {
+export function formDataRequest(
+  appID: string,
+  tableID: string,
+  params: FormDataRequestParams,
+): Promise<FormDataResponse> {
   return httpClient<FormDataResponse>(
     `/api/v1/structor/${appID}/home/form/${tableID}`,
     params,
-    { 'X-Proxy': 'FORM_DATA' }
+    { 'X-Proxy': 'FORM_DATA' },
   );
 }
 
 type GetTableSchemaResponse = { config: any; id: string; schema?: ISchema; tableID: string; };
 
-export function getTableSchema(appID: string, tableID: string) {
+export function getTableSchema(appID: string, tableID: string): Promise<GetTableSchemaResponse> {
   const path = window.SIDE === 'home' ?
     `/api/v1/structor/${appID}/home/schema/${tableID}` :
     `/api/v1/structor/${appID}/m/table/getByID`;
 
-  return httpClient<GetTableSchemaResponse>(path, { tableID }, { 'X-Proxy': 'FORM_SCHEMA' });
+  return httpClient(path, { tableID }, { 'X-Proxy': 'FORM_SCHEMA' });
 }
 
-export function saveTableSchema(appID: string, tableID: string, schema: ISchema) {
+export function saveTableSchema(appID: string, tableID: string, schema: ISchema): Promise<{ tableID: string; }> {
   return httpClient(
     `/api/v1/structor/${appID}/m/table/create`,
     { tableID, schema },

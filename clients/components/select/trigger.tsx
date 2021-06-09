@@ -27,7 +27,7 @@ export function SingleSelectTrigger<T>({
 }
 
 export function MultipleSelectTrigger<T extends React.Key>(
-  { selectedOption, placeholder, onUnselect }: MultipleSelectTriggerProps<T>
+  { selectedOption, placeholder, onUnselect }: MultipleSelectTriggerProps<T>,
 ): JSX.Element {
   if (!selectedOption || !selectedOption.length) {
     return (<span>{placeholder}</span>);

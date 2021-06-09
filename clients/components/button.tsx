@@ -15,7 +15,7 @@ interface Props extends React.DetailedHTMLProps<
 
 function Button(
   { children, iconName, className, modifier, forbidden, loading, type = 'button', ...rest }: Props,
-  ref?: Ref<HTMLButtonElement>
+  ref?: Ref<HTMLButtonElement>,
 ) {
   return (
     <button

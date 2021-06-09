@@ -109,12 +109,12 @@ function FieldPermissions({ fields, className = '', fieldPer }: Props, ref: Reac
     } else {
       if (revisableField.includes(value)) {
         setRevisableField(
-          revisableField.filter((id) => id !== value)
+          revisableField.filter((id) => id !== value),
         );
       }
 
       setVisibleField(
-        visibleField.filter((id) => id !== value)
+        visibleField.filter((id) => id !== value),
       );
     }
   };
@@ -128,7 +128,7 @@ function FieldPermissions({ fields, className = '', fieldPer }: Props, ref: Reac
       }
     } else {
       setRevisableField(
-        revisableField.filter((id) => id !== value)
+        revisableField.filter((id) => id !== value),
       );
     }
   };
@@ -136,7 +136,7 @@ function FieldPermissions({ fields, className = '', fieldPer }: Props, ref: Reac
   const handleVCheckAll = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.checked) {
       setVisibleField(
-        fields.map(({ id }) => id)
+        fields.map(({ id }) => id),
       );
     } else {
       setRevisableField([]);

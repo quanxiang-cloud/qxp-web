@@ -33,7 +33,7 @@ function HeaderNav(nav: Nav) {
       onClick={() => jump(nav.url, nav.inside)}
       className={cs(
         'app-nav-button corner-8-8-8-2',
-        { 'app-nav-button-active': nav.active }
+        { 'app-nav-button-active': nav.active },
       )}
     >
       <Icon size={20} className='mr-4 app-icon-color-inherit' name={nav.icon} />

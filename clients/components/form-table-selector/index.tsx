@@ -24,7 +24,7 @@ interface Props {
 
 function FormTableSelector(
   { value, changeable = true, onChange = noop, validating, errorMessage }: Props,
-  ref?: Ref<Cascader>
+  ref?: Ref<Cascader>,
 ) {
   const { appID } = useParams<{appID: string}>();
 
@@ -52,7 +52,7 @@ function FormTableSelector(
     val: string,
     dataSource: Options,
     map?: Record<string, string[]>,
-    id?: number
+    id?: number,
   ) {
     const pathMap: Record<string, string[]> = map ?? {};
     for (let index = 0; index < dataSource.length; index += 1) {

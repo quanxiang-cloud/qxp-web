@@ -45,14 +45,14 @@ const PanelList = () => {
     refetch,
   } = useQuery(
     ['all-messages', getQueryParams()],
-    getMessageList, {}
+    getMessageList, {},
   );
 
   const { data: countUnreadMsg,
     refetch: unReadRefetch,
   } = useQuery(
     'count-unread-msg',
-    getUnreadMsgCount
+    getUnreadMsgCount,
   );
 
   const toolbarRef = useRef<any>();

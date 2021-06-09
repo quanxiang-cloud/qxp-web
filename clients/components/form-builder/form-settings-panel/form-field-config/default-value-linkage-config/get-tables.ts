@@ -20,7 +20,7 @@ type AppPage = {
 
 function convertPagesToOptions(
   appPages: AppPage[],
-  options: Array<{ label: string; value: string }>
+  options: Array<{ label: string; value: string }>,
 ): Array<{ label: string; value: string }> {
   appPages.forEach(({ id, name, child }) => {
     options.push({ label: name, value: id });
@@ -35,7 +35,7 @@ function convertPagesToOptions(
 export function getLinkageTables(appID: string): Promise<Array<{ label: string; value: string }>> {
   return httpClient<{ menu: AppPage[] }>(
     `/api/v1/structor/${appID}/m/menu/list`,
-    { appID }
+    { appID },
   ).then((res) => {
     if (!res.menu || !res.menu.length) {
       return [];

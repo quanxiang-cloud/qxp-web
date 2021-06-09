@@ -28,8 +28,8 @@ interface FlowInstance {
   creatorId?: string;
   creatorName?: string;
   flowId?: string;
-  formData?: object;
-  formSchema?: {properties: object};
+  formSchema?: {properties: Record<string, any>};
+  formData?: Record<string, any>;
   formId?: string;
   formInstanceId?: string;
   id?: string;

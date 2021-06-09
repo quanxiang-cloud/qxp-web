@@ -26,36 +26,28 @@ module.exports = {
     sourceType: 'module',
   },
   rules: {
-    '@typescript-eslint/ban-ts-comment': 'off',
-    '@typescript-eslint/ban-types': 'off',
+    '@typescript-eslint/ban-ts-comment': 'warn',
     '@typescript-eslint/camelcase': 'off',
-    '@typescript-eslint/explicit-module-boundary-types': 'off',
+    '@typescript-eslint/explicit-function-return-type': ['warn', {
+      allowExpressions: false,
+      allowTypedFunctionExpressions: true,
+      allowHigherOrderFunctions: true,
+      allowDirectConstAssertionInArrowFunctions: true,
+      allowConciseArrowFunctionExpressionsStartingWithVoid: false,
+    }],
+    '@typescript-eslint/explicit-module-boundary-types': ['warn', {
+      allowArgumentsExplicitlyTypedAsAny: true,
+      allowDirectConstAssertionInArrowFunctions: true,
+      allowedNames: [],
+      allowHigherOrderFunctions: true,
+      allowTypedFunctionExpressions: true,
+    }],
     '@typescript-eslint/no-explicit-any': 'off',
+    "@typescript-eslint/no-invalid-this": ["error"],
     '@typescript-eslint/no-unused-vars': ['warn', { varsIgnorePattern: '_' }],
     camelcase: 'off',
-    'arrow-parens': [
-      'error',
-      'always',
-    ],
-    'comma-dangle': [
-      'error',
-      {
-        arrays: 'always-multiline',
-        exports: 'always-multiline',
-        functions: 'ignore',
-        imports: 'always-multiline',
-        objects: 'always-multiline',
-      },
-    ],
-    'func-names': 'off',
-    'function-paren-newline': 'off',
-    'import/extensions': 'off',
-    'import/prefer-default-export': 'off',
-    indent: [
-      'error',
-      2,
-    ],
-    'jsx-a11y/no-static-element-interactions': 'off',
+    'arrow-parens': ['error', 'always'],
+    indent: ['error', 2],
     'max-len': [
       1,
       {
@@ -68,42 +60,18 @@ module.exports = {
         tabWidth: 2,
       },
     ],
-    'newline-per-chained-call': 'off',
     'no-console': 'warn',
-    'no-invalid-this': 0,
+    'no-invalid-this': 'off',
     'no-mixed-operators': 'error',
-    'no-multiple-empty-lines': [
-      'warn',
-      {
-        max: 1,
-      },
-    ],
+    'no-multiple-empty-lines': ['warn', { max: 1}],
     'no-nested-ternary': 'error',
     'no-param-reassign': 'error',
     'no-plusplus': 'error',
-    'no-underscore-dangle': 'off',
-    'no-unused-vars': 'off',
-    'object-curly-spacing': [
-      'warn',
-      'always',
-    ],
-    'prefer-promise-reject-errors': 'off',
-    'quote-props': [
-      'error',
-      'as-needed',
-    ],
-    quotes: [
-      'error',
-      'single',
-    ],
-    radix: [
-      1,
-      'as-needed',
-    ],
-    'react/destructuring-assignment': 'off',
+    'object-curly-spacing': ['warn', 'always'],
+    'quote-props': ['error', 'as-needed'],
+    quotes: ['error', 'single'],
+    radix: [1, 'as-needed'],
     'react/display-name': 'off',
-    'react/forbid-prop-types': 'off',
-    'react/jsx-no-bind': 'off',
     'react/jsx-wrap-multilines': [
       'warn',
       {
@@ -116,10 +84,6 @@ module.exports = {
         return: 'parens',
       },
     ],
-    'react/no-danger': 'off',
-    'react/no-find-dom-node': 'off',
-    'react/prefer-stateless-function': 'off',
-    'react/require-default-props': 'off',
     'react/sort-comp': [
       'warn',
       {
@@ -162,10 +126,7 @@ module.exports = {
       },
     ],
     'require-jsdoc': 'off',
-    semi: [
-      'error',
-      'always',
-    ],
+    semi: ['error', 'always'],
     'space-infix-ops': ['error', { int32Hint: false }],
     'unused-imports/no-unused-imports': 'error',
     'unused-imports/no-unused-vars': [
@@ -177,7 +138,6 @@ module.exports = {
         varsIgnorePattern: '^_',
       },
     ],
-    'valid-jsdoc': 'off',
   },
   settings: {
     react: {

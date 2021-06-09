@@ -59,8 +59,8 @@ class EmployeeStore {
   initialSelectedKeys = (users: IUser[], owners: EmployeeOrDepartmentOfRole[]) => {
     this.setSelectedKeys(
       owners.filter((owner) =>
-        users?.find((user) => user.id === owner.ownerID)
-      ).map(({ ownerID }) => ownerID)
+        users?.find((user) => user.id === owner.ownerID),
+      ).map(({ ownerID }) => ownerID),
     );
   }
 }
