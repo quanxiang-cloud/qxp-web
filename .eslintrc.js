@@ -29,7 +29,7 @@ module.exports = {
     '@typescript-eslint/ban-ts-comment': 'warn',
     '@typescript-eslint/camelcase': 'off',
     '@typescript-eslint/explicit-function-return-type': ['warn', {
-      allowExpressions: false,
+      allowExpressions: true,
       allowTypedFunctionExpressions: true,
       allowHigherOrderFunctions: true,
       allowDirectConstAssertionInArrowFunctions: true,
