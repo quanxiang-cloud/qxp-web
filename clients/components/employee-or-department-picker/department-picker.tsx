@@ -4,7 +4,7 @@ import { observer } from 'mobx-react';
 
 import TextHeader from '@c/text-header';
 import Loading from '@c/loading';
-// todo remove this
+
 import {
   getDepartmentStructure,
 } from '@portal/modules/access-control/role-management/api';

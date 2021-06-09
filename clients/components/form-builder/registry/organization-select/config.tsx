@@ -15,10 +15,9 @@ import { StoreContext } from '../../context';
 import { searchOrganziation } from './messy/api';
 
 const Field = (props: IAntdFormItemProps): JSX.Element => <MegaLayout labelAlign="top"><FormItem {...props} /></MegaLayout>;
-
 interface Props {
   initialValue: DefaultConfig
-  onChange: (params: any) => void
+  onChange: (params: DefaultConfig) => void
 }
 
 const OrganizationPickerConfigForm = ({ initialValue, onChange }: Props): JSX.Element => {

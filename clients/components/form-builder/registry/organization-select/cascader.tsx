@@ -53,8 +53,8 @@ export const parseTree = (data: Organization | undefined): TreeData => {
 };
 
 export const searchTree = (tree: TreeNode | TreeNode[], target: string) => {
-  const isArray = Array.isArray(tree);
-  const tempArr = (isArray ? tree : [tree]) as TreeNode[];
+
+  const tempArr = ([] as TreeNode[]).concat(tree)
 
   let node = null;
 

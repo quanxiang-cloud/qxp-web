@@ -2,7 +2,7 @@ import { FormEffectHooks, ISchemaFormActions } from '@formily/antd';
 
 import { compareOperatorMap } from '@c/form-builder/constants';
 
-const { onFormInit$, onFormValuesChange$, onFieldInitialValueChange$ } = FormEffectHooks;
+const { onFormInit$, onFormValuesChange$ } = FormEffectHooks;
 
 function getComparator(linkage: FormBuilder.VisibleHiddenLinkage): FormBuilder.Comparator {
   return (values: Record<string, any>): boolean => {

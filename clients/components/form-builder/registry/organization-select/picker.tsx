@@ -20,17 +20,17 @@ const Picker = ({ value: defaultValue = [], onChange }: Props) => {
   // use ref not state  avoid state change then refresh view
   const valueListRef = useRef<Array<EmployeeOrDepartmentOfRole>>(defaultValue);
 
-  const close = useCallback(() => setVisible(false), [setVisible]);
+  const close = () => setVisible(false);
 
-  const handleChange = useCallback((list: EmployeeOrDepartmentOfRole[]) => {
+  const handleChange = (list: EmployeeOrDepartmentOfRole[]) => {
     setValue(list);
     onChange(list);
-  }, [onChange]);
+  };
 
-  const handleSubmit = useCallback(() => {
+  const handleSubmit = () => {
     onChange(currentValue);
     close();
-  }, [onChange, close, currentValue]);
+  };
 
   const showName = useMemo(() => defaultValue
     .map((itm) => itm.ownerName)

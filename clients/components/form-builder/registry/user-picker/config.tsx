@@ -15,7 +15,7 @@ const Field = (props: IAntdFormItemProps): JSX.Element => <MegaLayout labelAlign
 
 interface Props {
     initialValue: DefaultConfig
-    onChange: (params: any) => void
+    onChange: (params: DefaultConfig) => void
 }
 
 const UserPickerConfigForm = ({ initialValue, onChange }: Props): JSX.Element => {
