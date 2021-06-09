@@ -96,10 +96,10 @@ export async function adminSearchUserList({ queryKey }: QueryFunctionContext) {
     data: IUser[],
     total_count: number
   } = await httpClient('/api/v1/org/adminUserList',
-      queryKey[1] as {
-        depID: string;
-        userName?: string;
-      },
+    queryKey[1] as {
+      depID: string;
+      userName?: string;
+    },
   );
   return { users: data.data, total: data.total_count };
 }

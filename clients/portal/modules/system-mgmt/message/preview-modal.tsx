@@ -5,8 +5,8 @@ import PreviewMsg from '../send-message/preview-msg';
 import { MsgSendStatus } from '@portal/modules/system-mgmt/constants';
 
 interface Props {
-    handleClick: () => void
-    title: string | JSX.Element
+  handleClick: () => void
+  title: string | JSX.Element
 }
 
 const PreviewModal = ({ title, handleClick }: Props) => {

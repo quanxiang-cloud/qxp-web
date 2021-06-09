@@ -19,7 +19,7 @@ export type Options = Option[];
 
 export async function getFormDataOptions({ queryKey }: QueryFunctionContext): Promise<Options> {
   const data = await httpClient<{
-      menu: MenuListItem[],
+    menu: MenuListItem[],
   }>(`/api/v1/structor/${queryKey[1]}/${window.SIDE === 'portal' ? 'm' : 'home'}/menu/list`, {
     appID: queryKey[1],
   });

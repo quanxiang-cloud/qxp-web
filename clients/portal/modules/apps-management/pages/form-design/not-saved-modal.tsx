@@ -10,8 +10,8 @@ type Props = {
   onAbandon: () => void;
 }
 
-function NotSavedModal({ onCancel, onAbandon }: Props) {
-  const handleSave = () => {
+function NotSavedModal({ onCancel, onAbandon }: Props): JSX.Element {
+  const handleSave = (): void => {
     store.saveFormScheme().then(() => {
       onCancel();
     });

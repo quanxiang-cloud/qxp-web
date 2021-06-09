@@ -155,9 +155,9 @@ class FormDesignStore {
   }
 
   @action
-  saveFormScheme = (): void => {
+  saveFormScheme = (): Promise<void> => {
     this.saveSchemeLoading = true;
-    saveTableSchema(this.appID, this.pageID, this.formStore?.schema || {}).then(() => {
+    return saveTableSchema(this.appID, this.pageID, this.formStore?.schema || {}).then(() => {
       createPageScheme(this.appID, {
         tableID: this.pageID, config: {
           pageTableColumns: this.pageTableColumns,

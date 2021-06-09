@@ -7,7 +7,6 @@ import Pagination from '@c/pagination';
 import Loading from '@c/loading';
 import ErrorTips from '@c/error-tips';
 import Table from '@c/lego-table';
-import { usePortalGlobalValue } from '@portal/states_to_be_delete/portal';
 
 import { getRoleAssociations } from '../../api';
 
@@ -24,10 +23,11 @@ interface Props {
   type: RoleBindType;
 }
 
-export default function DepartmentTable({ isSuper, onCancelAssociation, roleID, type }: Props) {
+export default function DepartmentTable(
+  { isSuper, onCancelAssociation, roleID, type }: Props,
+): JSX.Element {
   const [selectedKeys, setSelectedKeys] = useState<string[]>([]);
   const [pagination, setPagination] = useState(PAGINATION);
-  const [{ userInfo }] = usePortalGlobalValue();
   const [, setMemberIDMap] = useState<
     Map<string, EmployeeOrDepartmentOfRole>
   >();
@@ -69,12 +69,12 @@ export default function DepartmentTable({ isSuper, onCancelAssociation, roleID, 
 
   const rowSelection = {
     selectedRowKeys: selectedKeys,
-    onChange: function(selectedRowKeys: string[]) {
+    onChange: function(selectedRowKeys: string[]): void {
       setSelectedKeys(selectedRowKeys);
     },
   };
 
-  function onRowClick(record: DepartmentOfRole) {
+  function onRowClick(record: DepartmentOfRole): void {
     const id = record.ownerID as string;
     setSelectedKeys((arr: string[]) => {
       if (arr.includes(id)) {
@@ -86,7 +86,7 @@ export default function DepartmentTable({ isSuper, onCancelAssociation, roleID, 
   }
 
   function onCancel(record: EmployeeOrDepartmentOfRole) {
-    return function() {
+    return function(): void {
       setSelectedKeys((selectedKeys) => {
         setMemberIDMap((memberIDMap) => {
           const records = [];
@@ -107,7 +107,7 @@ export default function DepartmentTable({ isSuper, onCancelAssociation, roleID, 
     };
   }
 
-  function renderTotalTip() {
+  function renderTotalTip(): JSX.Element {
     return (
       <div className="text-12 text-gray-600">
         已选<span className="ml-4">{selectedKeys.length}</span>，
@@ -150,7 +150,7 @@ export default function DepartmentTable({ isSuper, onCancelAssociation, roleID, 
       dataIndex: 'departmentName',
     });
   }
-  if (!isSuper && userInfo.authority.includes('accessControl/role/manage')) {
+  if (!isSuper && window.ADMIN_USER_FUNC_TAGS.includes('accessControl/role/manage')) {
     columns.push({
       title: '',
       dataIndex: 'ownerID',
@@ -186,8 +186,8 @@ export default function DepartmentTable({ isSuper, onCancelAssociation, roleID, 
         emptyText={(
           <EmptyData text={type === 1 ? '无成员数据' : '无部门数据'} className="py-10" />
         )}
-        onRow={(record) => ({
-          onClick: () => onRowClick(record),
+        onRow={(record): { onClick: () => void } => ({
+          onClick: (): void => onRowClick(record),
         })}
       />
       {!isSuper && (
@@ -196,7 +196,7 @@ export default function DepartmentTable({ isSuper, onCancelAssociation, roleID, 
             {...pagination}
             renderTotalTip={renderTotalTip}
             className="rounded-bl-12 rounded-br-12 border-t border-gray-200"
-            onChange={(pageNumber, pageSize) => {
+            onChange={(pageNumber: number, pageSize: number): void => {
               setPagination({ current: pageNumber, pageSize, total: pagination.total });
             }}
           />
