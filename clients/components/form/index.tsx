@@ -125,8 +125,8 @@ function Form(
   }
 
   function validateField(id: string, ignoreErrorMessage?: boolean, state?: {
-      fields: Fields;
-      errors: Errors;
+    fields: Fields;
+    errors: Errors;
   }): boolean {
     let error = '';
     const field = state ? state.fields[id] : formState.fields[id];

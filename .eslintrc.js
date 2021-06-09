@@ -48,6 +48,8 @@ module.exports = {
     camelcase: 'off',
     'arrow-parens': ['error', 'always'],
     indent: ['error', 2],
+    // https://github.com/typescript-eslint/typescript-eslint/issues/1824
+    // '@typescript-eslint/indent': ['error', 2],
     'max-len': [
       1,
       {

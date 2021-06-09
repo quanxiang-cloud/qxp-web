@@ -7,13 +7,13 @@ import { TabItem } from './index';
 import './index.scss';
 
 type Props<T extends React.Key> = {
-    navs: TabItem<T>[];
-    currentKey: string | number;
-    strechNavs?: boolean;
-    separator?: boolean;
-    navTitleClassName?: string;
-    navsClassName?: string;
-    onClick?: (id: T) => void;
+  navs: TabItem<T>[];
+  currentKey: string | number;
+  strechNavs?: boolean;
+  separator?: boolean;
+  navTitleClassName?: string;
+  navsClassName?: string;
+  onClick?: (id: T) => void;
 }
 function TabNavs<T extends React.Key>({
   navs,

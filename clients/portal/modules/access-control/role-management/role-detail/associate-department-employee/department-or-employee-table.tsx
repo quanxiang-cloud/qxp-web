@@ -28,9 +28,7 @@ export default function DepartmentTable({ isSuper, onCancelAssociation, roleID, 
   const [selectedKeys, setSelectedKeys] = useState<string[]>([]);
   const [pagination, setPagination] = useState(PAGINATION);
   const [{ userInfo }] = usePortalGlobalValue();
-  const [, setMemberIDMap] = useState<
-    Map<string, EmployeeOrDepartmentOfRole>
-  >();
+  const [, setMemberIDMap] = useState<Map<string, EmployeeOrDepartmentOfRole>>();
   const [members, setMembers] = useState<EmployeeOrDepartmentOfRole[]>([]);
   useEffect(() => {
     const map = new Map<string, EmployeeOrDepartmentOfRole>();
