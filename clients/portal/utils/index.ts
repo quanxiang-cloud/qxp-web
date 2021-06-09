@@ -8,7 +8,7 @@ export const getQuery = (key: string) => {
 export const omitEmpty = (obj: any) => {
   const copy = {};
   for (const p in obj) {
-    if (obj.hasOwnProperty(p) && obj[p] !== undefined) {
+    if (Object.prototype.hasOwnProperty.call(obj, p) && obj[p] !== undefined) {
       Object.assign(copy, { [p]: obj[p] });
     }
   }

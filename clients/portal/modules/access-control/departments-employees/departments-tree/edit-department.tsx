@@ -58,7 +58,7 @@ export default function EditDepartment({ department, closeModal }: Props) {
       return;
     }
     const departmentName = value?.trim();
-    const reg = /^[\u4e00-\u9fa5A-Za-z0-9-\_]+$/g;
+    const reg = /^[\u4e00-\u9fa5A-Za-z0-9-_]+$/g;
     if (!reg.test(departmentName)) {
       setDepNameHelpText(HELP_TEXT_REG_ERROR);
       setDepNameState('error');

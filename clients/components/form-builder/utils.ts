@@ -1,6 +1,8 @@
 import { customAlphabet } from 'nanoid';
 import { get } from 'lodash';
+
 import { compareOperatorMap } from '@c/form-builder/constants';
+import elements from './registry/elements';
 
 const nanoid = customAlphabet('1234567890qwertyuioplkjhgfdsazxcvbnmQWERTYUIOPLKJHGFDSAZXCVBNM', 8);
 
@@ -34,6 +36,10 @@ export function wrapSchemaByMegaLayout(schema: ISchema): ISchema {
       },
     },
   };
+}
+
+export function getSourceElementOperator(elementName: string): FormBuilder.CompareOperator[] | undefined {
+  return elements[elementName.toLocaleLowerCase()]?.compareOperators;
 }
 
 export function getCompareOperatorOptions(operators: FormBuilder.CompareOperator[]) {

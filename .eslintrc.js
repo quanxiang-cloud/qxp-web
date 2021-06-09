@@ -1,8 +1,9 @@
 module.exports = {
   parser: '@typescript-eslint/parser',
   extends: [
-    'plugin:react/recommended',
     'google',
+    'plugin:react/recommended',
+    'eslint:recommended',
     'plugin:@typescript-eslint/recommended',
   ],
   plugins: [

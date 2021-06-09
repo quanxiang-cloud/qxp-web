@@ -11,7 +11,7 @@ import { StoreContext } from './context';
 function PageDataFilter() {
   const [showMoreFilter, setShowMoreFilter] = useState(false);
   const store = useContext(StoreContext);
-  const filterKeys = Object.keys(store.filterMaps);
+  const filterKeys = Object.keys(store.filters);
 
   const filterDom = useRef<any>();
 
@@ -28,20 +28,25 @@ function PageDataFilter() {
         return;
       }
 
-      const _condition: Condition = { key, op: store.filterMaps[curFilter.id].compareSymbol };
+      const _condition: Condition = { key };
       switch (curFilter?.type) {
-      case 'datetime':
+      case 'datetime': {
         const [start, end] = values[key];
         _condition.value = [moment(start).format(), moment(end).format()];
+        _condition.op = 'range';
         break;
+      }
       case 'number':
         _condition.value = [Number(values[key])];
+        _condition.op = 'eq';
         break;
       default:
         if (Array.isArray(values[key])) {
           _condition.value = values[key];
+          _condition.op = 'in';
         } else {
           _condition.value = [values[key]];
+          _condition.op = 'like';
         }
         break;
       }

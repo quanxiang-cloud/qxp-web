@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react';
+import cs from 'classnames';
 import { Sortable } from '@QCFE/lego-ui';
 
 import Checkbox from '@c/checkbox';
@@ -8,27 +9,42 @@ import './index.scss';
 
 type Props = {
   fieldList: PageField[];
+  selectKeys: string[];
   sortChange: (keys: string[]) => void;
   showOnChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-function FieldSort({ showOnChange, fieldList, sortChange }: Props) {
-  const fieldSortList = useMemo(() => {
-    const sortTmp = [...fieldList].sort((a, b) => a.sort - b.sort);
-    return sortTmp;
-  }, [fieldList]);
+function FieldSort({ showOnChange, fieldList, sortChange, selectKeys }: Props) {
+  const [selectFields, noSelectFields] = useMemo(() => {
+    const selectFieldsTmp: PageField[] = [];
+    const noSelectFieldsTmp: PageField[] = fieldList.filter((field) => {
+      return !selectKeys.includes(field.id);
+    });
+    selectKeys.forEach((key)=>{
+      const field = fieldList.find(({ id })=>id === key);
+      if (field) {
+        selectFieldsTmp.push(field);
+      }
+    });
 
-  const renderList = (lists: PageField[]) => lists.map((field: PageField) => {
+    return [selectFieldsTmp, noSelectFieldsTmp];
+  }, [fieldList, selectKeys]);
+
+  const renderList = (lists: PageField[], selected:boolean) => lists.map((field: PageField) => {
     return (
-      <div className="page-field-sort-item bg-white" key={field.id} data-id={field.id}>
+      <div
+        className={cs('page-field-sort-item bg-white', { 'field-sort': selected })}
+        key={field.id}
+        data-id={field.id}
+      >
         {field.label}
         <div className='page-field-sort-action'>
           <Checkbox
             value={field.id}
-            checked={field.visible}
+            checked={selected}
             onChange={showOnChange}
           />
-          <Icon className='page-field-drag ml-22' clickable changeable name="drag_indicator" />
+          {selected && <Icon className='page-field-drag ml-22' clickable changeable name="drag_indicator" />}
         </div>
       </div>
     );
@@ -44,12 +60,13 @@ function FieldSort({ showOnChange, fieldList, sortChange }: Props) {
         tag="div"
         options={{
           handle: '.page-field-drag',
-          draggable: '.page-field-sort-item',
+          draggable: '.field-sort',
           animation: 150,
         }}
         onChange={sortChange}
       >
-        {renderList(fieldSortList)}
+        {renderList(selectFields, true)}
+        {renderList(noSelectFields, false)}
       </Sortable>
     </div>
   );

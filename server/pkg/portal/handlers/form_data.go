@@ -30,7 +30,7 @@ type input struct {
 	Method    string
 	Conditions *InputConditionVo `json:"conditions"`
 	Entity    Entity
-	Ref       []map[string]interface{}
+	Ref       interface{}
 }
 
 // InputConditionVo InputConditionVo
@@ -113,7 +113,8 @@ func handler(r *http.Request, in *input, p map[string]string) (int, interface{},
 		return c, nil, err
 	case "update":
 		// update update#set
-		if in.Ref != nil && len(in.Ref) > 0 {
+		ref := in.Ref.(map[string]interface{})
+		if in.Ref != nil && len(ref) > 0 {
 			// diff 这里无法保证所有的请求都会成功，可能存在状态不一致的情况
 			return doUpdate(r, in, p)
 		} else {
@@ -126,17 +127,21 @@ func handler(r *http.Request, in *input, p map[string]string) (int, interface{},
 }
 
 func doUpdate(r *http.Request, in *input, p map[string]string) (int, interface{}, error) {
-	c, b, err := directRequest(r, in)
-	if b == nil {
-		return c, nil, err
+	in.Method = "findOne"
+	cf, bf, err := directRequest(r, in)
+	if bf == nil {
+		return cf, nil, err
 	}
-	if b.Code != 0 {
-		return c, b, err
+	if bf.Code != 0 {
+		return cf, bf.Msg, err
 	}
+	updateData := make(map[string]interface{})
+	dataOld := bf.Data.(map[string]interface{})
 	// 主数据成功了 更新子表单
-	ref := in.Ref
+	ref := in.Ref.(map[string]interface{})
 	for i := 0; i < len(ref); i++ {
-		for key, value := range ref[i] {
+		ids := make([]interface{},0)
+		for key, value := range ref {
 			st, err := json.Marshal(value)
 			if err != nil {
 				continue
@@ -162,9 +167,25 @@ func doUpdate(r *http.Request, in *input, p map[string]string) (int, interface{}
 					if err != nil {
 						continue
 					}
-					_, _, err = sendRequest2Struct(r, "POST", path, sn)
+					_, bf, err := sendRequest2Struct(r, "POST", path, sn)
 					if err != nil {
 						contexts.Logger.Errorf("failed to create table: %s subTable data response body, err: %s, request_id: %s", subTable.TableID, err.Error(), contexts.GetRequestID(r))
+					}
+					subResp, err := parseResp(bf)
+					if err != nil {
+						contexts.Logger.Errorf("failed to create table: %s subTable data response body, err: %s, request_id: %s", subTable.TableID, err.Error(), contexts.GetRequestID(r))
+					}
+
+					if subResp != nil && subResp.Data != nil {
+						d := subResp.Data.(map[string]interface{})
+						if id, ok := d["_id"]; ok {
+							if v,ok := dataOld[key];ok{
+								v1 := v.([]interface{})
+								v1 = append(v1,id)
+								// dataOld[key] = v1
+								ids = append(ids,v1...)
+							}
+						}
 					}
 				}
 			}
@@ -181,33 +202,43 @@ func doUpdate(r *http.Request, in *input, p map[string]string) (int, interface{}
 				}
 			}
 			if df.Deleted != nil {
-				v := make([]interface{}, 0, len(df.Deleted))
+				vi := make([]interface{},0)
 				for i := 0; i < len(df.Deleted); i++ {
-					v = append(v, df.Deleted[i])
-				}
-				con := Condition{
-					Key:   "_id",
-					Op:    "in",
-					Value: v,
-				}
-				in = &input{
-					Method: "delete",
-					Conditions: &InputConditionVo{
-						Condition: []Condition{
-							con,
-						},
-					},
-				}
-				sd, err := json.Marshal(df.Deleted[i])
-				if err != nil {
-					continue
-				}
-				_, _, err = sendRequest2Struct(r, "POST", path, sd)
-				if err != nil {
-					contexts.Logger.Errorf("failed to delete table: %s subTable data response body, err: %s, request_id: %s", subTable.TableID, err.Error(), contexts.GetRequestID(r))
+					if len(ids) > 0{
+						for _,value := range ids {
+							if value.(string) != df.Deleted[i]{
+								vi = append(vi,value)
+							}
+						}
+						ids = vi
+					}else if vo,ok := dataOld[key];ok{
+						v1 := vo.([]interface{})
+						for _,value := range v1 {
+							if value.(string) != df.Deleted[i]{
+								vi = append(vi,value)
+							}
+						}
+						ids = append(ids,vi...)
+					}
 				}
 			}
+			updateData[key] = RemoveRepeatedElement(ids)
 		}
+	}
+	if in.Entity != nil{
+		et := in.Entity.(map[string]interface{})
+		for ket,vet := range et{
+			updateData[ket] = vet
+		}
+	}
+	ud := &input{
+		Method: "update",
+		Conditions:in.Conditions,
+		Entity: updateData,
+	}
+	o, _, err := directRequest(r, ud)
+	if err != nil {
+		return o,nil,err
 	}
 	return http.StatusOK, nil, nil
 }
@@ -471,6 +502,23 @@ func getSubTable(r *http.Request, appID, tableID, fieldName string) (*GetSubTabl
 		return nil, err
 	}
 	return &subTable, nil
+}
+
+func RemoveRepeatedElement(arr []interface{}) (newArr []string) {
+	newArr = make([]string, 0)
+	for i := 0; i < len(arr); i++ {
+		repeat := false
+		for j := i + 1; j < len(arr); j++ {
+			if arr[i] == arr[j] {
+				repeat = true
+				break
+			}
+		}
+		if !repeat {
+			newArr = append(newArr, arr[i].(string))
+		}
+	}
+	return
 }
 
 func sendRequest2Struct(r *http.Request, method string, fullPath string, body []byte) (int, []byte, error) {
