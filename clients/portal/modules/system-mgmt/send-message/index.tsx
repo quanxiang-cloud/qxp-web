@@ -60,7 +60,7 @@ interface data {
   sort?: MsgType
   title?: string
   content?: any
-  recivers?: Array<object>, // fixme: typo
+  recivers?: Array<Record<string, any>>, // fixme: typo
   mes_attachment?: Array<FileInfo> | null
 }
 
@@ -87,7 +87,7 @@ function ContentWithoutRef({
   const [editorCont, setEditorCont] = useState(modifyData?.content ?
     EditorState.createWithContent(
       ContentState.createFromBlockArray(
-        htmlToDraft(modifyData.content).contentBlocks)
+        htmlToDraft(modifyData.content).contentBlocks),
     ) : EditorState.createEmpty());
 
   const [openReceiverModal, setOpenReceiverModal] = useState(false);
@@ -172,7 +172,7 @@ function ContentWithoutRef({
     const receivers = [...departments, ...employees].map((d) => toJS(d));
     if (!receivers.length) {
       Message.warning('请至少选择一个员工或部门');
-      return Promise.reject(false);
+      return Promise.reject(new Error('请至少选择一个员工或部门'));
     }
     setOpenReceiverModal(false);
     // console.log('receivers: ', receivers);
@@ -456,7 +456,7 @@ function ContentWithoutRef({
                   </div>
                 </Upload>
               </div>,
-              dom
+              dom,
             )}
 
             <div className={styles.chosenPersons}>

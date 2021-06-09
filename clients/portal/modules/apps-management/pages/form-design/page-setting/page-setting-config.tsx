@@ -99,7 +99,7 @@ function PageSettingConfig() {
   const handleCheckAll = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.checked) {
       store.setPageTableColumns(
-        fieldList.map(({ id }) => id)
+        fieldList.map(({ id }) => id),
       );
     } else {
       store.setPageTableColumns([]);
@@ -127,7 +127,7 @@ function PageSettingConfig() {
           value={pageTableShowRule.order}
           onChange={(order: string) => setPageTableShowRule({ order })}
           options={SORT_OPTION}
-        />
+        />,
       )}
       {configItemRender(
         <div className='flex items-center justify-between'>
@@ -143,14 +143,14 @@ function PageSettingConfig() {
           value={pageTableShowRule.pageSize || 0}
           onChange={(pageSize: number) => setPageTableShowRule({ pageSize })}
           disabled={!pageTableShowRule.pageSize}
-          options={PAGE_SIZE_OPTION} />
+          options={PAGE_SIZE_OPTION} />,
       )}
       {configItemRender('固定列  ',
         <Select
           value={pageTableShowRule.fixedRule}
           onChange={(fixedRule: string) => setPageTableShowRule({ fixedRule })}
           options={FIXED_RULE_OPTION}
-        />
+        />,
       )}
       {configItemRender(
         <div className='flex items-center justify-between'>
@@ -168,7 +168,7 @@ function PageSettingConfig() {
           selectKeys={pageTableColumns}
           fieldList={store.fieldList}
           showOnChange={handleChecked}
-        />
+        />,
       )}
     </div>
   );
