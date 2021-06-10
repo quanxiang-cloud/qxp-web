@@ -1,4 +1,4 @@
-import React, { CSSProperties } from 'react';
+import React from 'react';
 import cs from 'classnames';
 
 type Props = React.DetailedHTMLProps<
@@ -7,8 +7,6 @@ type Props = React.DetailedHTMLProps<
 > & {
   className?: string;
   label?: string | React.ReactElement;
-  labelClassName?: string;
-  labelStyle?: CSSProperties;
   indeterminate?: boolean;
 }
 
@@ -34,14 +32,7 @@ function Checkbox(
           'checkbox__input--indeterminate': indeterminate,
         })}
       />
-      {label && (
-        <span
-          className={cs('checkbox__label text-caption ml-8', labelClassName)}
-          style={labelStyle}
-        >
-          {label}
-        </span>
-      )}
+      {label ? (<span className="checkbox__label text-caption ml-8">{label}</span>) : null}
     </label>
   );
 }
