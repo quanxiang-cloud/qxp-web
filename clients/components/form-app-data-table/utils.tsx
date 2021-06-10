@@ -112,7 +112,7 @@ function addFixedParameters(
 export function setFixedParameters(
   fixedRule: string | undefined,
   tableColumns: UnionColumns<Record<string, any>>[],
-): unknown[] {
+): UnionColumns<any>[] {
   let action: UnionColumns<any> = {
     id: 'action',
     Header: '操作',

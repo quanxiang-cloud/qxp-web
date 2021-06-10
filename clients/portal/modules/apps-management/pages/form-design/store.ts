@@ -89,7 +89,7 @@ class FormDesignStore {
     this.destroySetSchema = reaction(() => this.formStore?.schema, this.appPageStore.setSchema);
     this.destroySetFilters = reaction(() => this.filters, this.appPageStore.setFilters);
 
-    this.destroySetTableColumn = reaction(() => {
+    this.destroySetTableColumn = reaction((): UnionColumns<any>[] => {
       if (!this.pageTableColumns) {
         return [];
       }
