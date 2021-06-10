@@ -75,7 +75,7 @@ function DetailsDrawer({ onCancel, rowID }: Props): JSX.Element {
 
     return [_details, _systems];
   }, [data]);
- 
+
   const handleCancel = (): void => {
     setBeganClose(true);
     setTimeout(() => {
@@ -105,7 +105,7 @@ function DetailsDrawer({ onCancel, rowID }: Props): JSX.Element {
             )}
             {fieldSchema?.['x-component']?.toLowerCase() === 'associatedrecords' && (
               <AssociatedRecords
-                schema={fieldSchema as Schema}
+                props={fieldSchema as Schema}
                 value={value}
                 readonly
               />

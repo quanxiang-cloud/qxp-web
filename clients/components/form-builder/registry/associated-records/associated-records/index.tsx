@@ -142,7 +142,7 @@ function AssociatedRecords({
 }
 
 function AssociatedRecordsFields(props: Partial<ISchemaFieldComponentProps>): JSX.Element {
-  const componentProps = props['x-component-props'] || props.props['x-component-props'];
+  const componentProps = props.props['x-component-props'];
   // todo handle error case
   return (
     <AssociatedRecords
