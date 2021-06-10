@@ -2,6 +2,8 @@ import React, { JSXElementConstructor, ChangeEvent } from 'react';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 import moment, { Moment } from 'moment';
 import { Input, Radio, DatePicker, NumberPicker, Select } from '@formily/antd-components';
+import { Table } from 'antd';
+import { pick } from 'lodash';
 import {
   InternalFieldList as FieldList,
   FormItem,
@@ -39,14 +41,21 @@ interface Props extends ISchemaFieldComponentProps {
       subordination: 'foreign_table' | 'sub_table';
       tableName: string;
     }
-  }
+  },
 }
 
-function SubTable(compProps: Props): JSX.Element | null {
-  const { schema: definedSchema, initialValue, mutators: ms, name } = compProps;
+function SubTable({
+  schema: definedSchema,
+  initialValue,
+  mutators: ms,
+  name,
+  props,
+  readonly,
+  value,
+}: Partial<Props>): JSX.Element | null {
   const {
     subordination, columns: definedColumns,
-  } = compProps.props['x-component-props'];
+  } = props?.['x-component-props'] || {};
   const isFromForeign = subordination === 'foreign_table';
 
   function buildColumnFromSchema(dataIndex: string, sc: ISchema): {
@@ -69,14 +78,14 @@ function SubTable(compProps: Props): JSX.Element | null {
     };
   }
 
-  const schema = definedSchema.items as ISchema;
+  const schema = definedSchema?.items as ISchema;
 
   const emptyRow: Record<string, string> = {};
   const columns: Column[] = Object.entries(schema?.properties || {}).reduce(
     (cur: Column[], next) => {
       const [key, sc] = next;
       const componentProps = sc['x-component-props'] || {};
-      if ((isFromForeign && !definedColumns.includes(key)) || key === '_id') {
+      if ((isFromForeign && !definedColumns?.includes(key)) || key === '_id') {
         return cur;
       }
       const newColumn = buildColumnFromSchema(key, sc);
@@ -103,6 +112,17 @@ function SubTable(compProps: Props): JSX.Element | null {
     return null;
   }
 
+  if (readonly) {
+    return (
+      <Table
+        pagination={false}
+        rowKey="_id"
+        columns={columns.map((column) => pick(column, ['dataIndex', 'title']))}
+        dataSource={columns.length ? value : []}
+      />
+    );
+  }
+
   return (
     <FieldList
       name={name}
@@ -118,7 +138,7 @@ function SubTable(compProps: Props): JSX.Element | null {
                 e: ChangeEvent<HTMLInputElement> | string,
                 dataIndex: string,
               ): void => {
-                ms.change(state.value.map((vItem: any, idx: number) => {
+                ms?.change(state.value.map((vItem: any, idx: number) => {
                   if (index !== idx) {
                     return vItem;
                   }

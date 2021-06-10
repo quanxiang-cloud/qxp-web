@@ -2,6 +2,7 @@ import React, { useState, useMemo, useContext } from 'react';
 import { useQuery } from 'react-query';
 import { observer } from 'mobx-react';
 import cs from 'classnames';
+import { Schema } from '@formily/react-schema-renderer';
 
 import Tab from '@c/tab2';
 import Icon from '@c/icon';
@@ -11,7 +12,7 @@ import PageLoading from '@c/page-loading';
 import { getTableCellData, operateButton } from './utils';
 import { StoreContext } from './context';
 import { getSchemaAndRecord } from './api';
-import SubTable from './sub-table';
+import SubTable from '../form-builder/registry/sub-table/preview';
 import AssociatedRecords from './associated-records';
 
 type Props = {
@@ -107,7 +108,8 @@ function DetailsDrawer({ onCancel, rowID }: Props): JSX.Element {
             {fieldSchema?.['x-component']?.toLowerCase() === 'subtable' && (
               <SubTable
                 value={value as Record<string, unknown>[]}
-                schema={getSchemaByComponentType(fieldSchema)}
+                schema={fieldSchema as Schema}
+                readonly
               />
             )}
             {fieldSchema?.['x-component']?.toLowerCase() === 'associatedrecords' && (
@@ -115,7 +117,7 @@ function DetailsDrawer({ onCancel, rowID }: Props): JSX.Element {
                 schema={getSchemaByComponentType(fieldSchema)}
                 appID={fieldSchema?.['x-component-props']?.appID}
                 tableID={fieldSchema?.['x-component-props']?.tableID}
-                selected={(value as {_id: string}[]).map(({ _id }) => _id) || []}
+                selected={value}
               />
             )}
             {fieldSchema?.type !== 'array' && (

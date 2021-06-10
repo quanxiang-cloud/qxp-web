@@ -10,11 +10,11 @@ import {
   findTableRecords,
 } from '../form-builder/registry/associated-records/associated-records/api';
 
-function AssociatedRecords({ schema, appID, tableID, selected }: {
+function AssociatedRecords({ schema, appID, tableID, selected = [] }: {
   schema: ISchema;
   appID: string;
   tableID: string;
-  selected: string[];
+  selected?: string[];
 }): JSX.Element | null {
   const { isLoading, data } = useQuery(['FIND_TABLE_RECORDS'], () => {
     return findTableRecords(appID, tableID, selected);
