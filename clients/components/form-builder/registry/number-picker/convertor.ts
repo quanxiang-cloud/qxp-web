@@ -29,7 +29,7 @@ export const defaultConfig: NumberPickerConfig = {
   calculationFormula: '',
 };
 
-export function toSchema(value: NumberPickerConfig): FormBuilder.Schema {
+export function toSchema(value: NumberPickerConfig): ISchema {
   let point = value.precision;
   if (value.precision < 0 ) {
     point = 0;
@@ -63,7 +63,7 @@ export function toSchema(value: NumberPickerConfig): FormBuilder.Schema {
   };
 }
 
-export function toConfig(schema: FormBuilder.Schema): NumberPickerConfig {
+export function toConfig(schema: ISchema): NumberPickerConfig {
   let displayModifier: FormBuilder.DisplayModifier = 'normal';
   if (schema.readOnly) {
     displayModifier = 'readonly';

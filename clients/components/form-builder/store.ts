@@ -12,7 +12,7 @@ export type FormItem = {
 };
 
 type Props = {
-  schema: FormBuilder.Schema;
+  schema: ISchema;
   appID: string;
   pageID: string;
 }
@@ -59,7 +59,7 @@ const INTERNAL_FIELDS: Array<FormItem> = [
 export const INTERNAL_FIELD_NAMES = INTERNAL_FIELDS.map(({ fieldName }) => fieldName);
 
 // todo support tree structure
-function schemaToFields({ properties }: FormBuilder.Schema): [Array<FormItem>, Array<FormItem>] {
+function schemaToFields({ properties }: ISchema): [Array<FormItem>, Array<FormItem>] {
   if (!properties) {
     return [INTERNAL_FIELDS, []];
   }
