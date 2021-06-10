@@ -14,7 +14,7 @@ export const defaultConfig: FileUploadConfig = {
   multiple: true,
 };
 
-export function toSchema(value: FileUploadConfig): FormBuilder.Schema {
+export function toSchema(value: FileUploadConfig): ISchema {
   return {
     type: 'array',
     title: value.title,
@@ -32,7 +32,7 @@ export function toSchema(value: FileUploadConfig): FormBuilder.Schema {
   };
 }
 
-export function toConfig(schema: FormBuilder.Schema): FileUploadConfig {
+export function toConfig(schema: ISchema): FileUploadConfig {
   let displayModifier: FormBuilder.DisplayModifier = 'normal';
   if (schema.readOnly) {
     displayModifier = 'readonly';

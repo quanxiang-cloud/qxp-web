@@ -16,7 +16,7 @@ export const defaultConfig: ImageUploadConfig = {
   autoCompress: false,
 };
 
-export function toSchema(value: ImageUploadConfig): FormBuilder.Schema {
+export function toSchema(value: ImageUploadConfig): ISchema {
   return {
     type: 'string',
     title: value.title,
@@ -35,7 +35,7 @@ export function toSchema(value: ImageUploadConfig): FormBuilder.Schema {
   };
 }
 
-export function toConfig(schema: FormBuilder.Schema): ImageUploadConfig {
+export function toConfig(schema: ISchema): ImageUploadConfig {
   let displayModifier: FormBuilder.DisplayModifier = 'normal';
   if (schema.readOnly) {
     displayModifier = 'readonly';

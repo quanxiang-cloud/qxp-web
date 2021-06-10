@@ -24,7 +24,7 @@ export const defaultConfig: CascadeConfig = {
   required: false,
 };
 
-export function toSchema(value: CascadeConfig): FormBuilder.Schema {
+export function toSchema(value: CascadeConfig): ISchema {
   const { defaultValueFrom, customizedDataset, predefinedDataset } = value;
 
   return {
@@ -52,7 +52,7 @@ export function toSchema(value: CascadeConfig): FormBuilder.Schema {
   };
 }
 
-export function toConfig(schema: FormBuilder.Schema): CascadeConfig {
+export function toConfig(schema: ISchema): CascadeConfig {
   let displayModifier: FormBuilder.DisplayModifier = 'normal';
   if (schema.readOnly) {
     displayModifier = 'readonly';

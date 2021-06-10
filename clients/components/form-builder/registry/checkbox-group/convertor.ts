@@ -26,7 +26,7 @@ export const defaultConfig: CheckboxGroupConfig = {
   ],
 };
 
-export function toSchema(value: CheckboxGroupConfig): FormBuilder.Schema {
+export function toSchema(value: CheckboxGroupConfig): ISchema {
   return {
     type: 'array',
     title: value.title,
@@ -53,7 +53,7 @@ export function toSchema(value: CheckboxGroupConfig): FormBuilder.Schema {
   };
 }
 
-export function toConfig(schema: FormBuilder.Schema): CheckboxGroupConfig {
+export function toConfig(schema: ISchema): CheckboxGroupConfig {
   let displayModifier: FormBuilder.DisplayModifier = 'normal';
   if (schema.readOnly) {
     displayModifier = 'readonly';
