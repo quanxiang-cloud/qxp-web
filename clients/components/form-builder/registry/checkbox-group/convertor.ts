@@ -28,7 +28,7 @@ export const defaultConfig: CheckboxGroupConfig = {
 
 export function toSchema(value: CheckboxGroupConfig): FormBuilder.Schema {
   return {
-    type: 'string',
+    type: 'array',
     title: value.title,
     description: value.description,
     required: value.required,

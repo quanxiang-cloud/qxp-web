@@ -24,11 +24,11 @@ import Button from '@c/button';
 import { StoreContext } from '@c/form-builder/context';
 import { JoinOperatorSelect, RulesList } from '@c/form-builder/customized-fields';
 import { INTERNAL_FIELD_NAMES } from '@c/form-builder/store';
+import { getCompareOperatorOptions, getSourceElementOperator } from '@c/form-builder/utils';
 
 import { getLinkageTables, fetchLinkedTableFields } from './get-tables';
 import SCHEMA from './schema';
 import { convertFormValues, convertLinkage } from './convertor';
-import { getCompareOperatorOptions, getSourceElementOperator } from '@c/form-builder/utils';
 
 const { onFieldValueChange$ } = FormEffectHooks;
 const COMPONENTS = {
@@ -87,7 +87,7 @@ function LinkageConfig({ onClose, onSubmit, linkage }: Props): JSX.Element {
       fieldSchema === 'datetime';
   }).map(([key, fieldSchema]) => ({ label: fieldSchema.title as string, value: key }));
 
-  function syncLinkedTableFields(fields: LinkedTableFieldOptions[]) {
+  function syncLinkedTableFields(fields: LinkedTableFieldOptions[]): void {
     const options = fields.map(({ label, value }) => ({ label, value }));
 
     setFieldState('rules.*.fieldName', (state) => state.props.enum = options);
@@ -112,7 +112,7 @@ function LinkageConfig({ onClose, onSubmit, linkage }: Props): JSX.Element {
     });
   }, []);
 
-  function formEffect() {
+  function formEffect(): void {
     onFieldValueChange$('linkedTableID').pipe(
       takeWhile(({ value }) => !!value),
       switchMap(({ value }) => from(fetchLinkedTableFields(store.appID, value))),
@@ -128,7 +128,7 @@ function LinkageConfig({ onClose, onSubmit, linkage }: Props): JSX.Element {
     ).subscribe(updateCompareValueFieldOnCompareToChanged);
   }
 
-  function updateCompareOperatorFieldOnFieldNameChanged({ name, value }: IFieldState) {
+  function updateCompareOperatorFieldOnFieldNameChanged({ name, value }: IFieldState): void {
     const xComponent = linkedTableFieldsRef.current.find((field) => {
       return field.value === value;
     })?.['x-component'];
@@ -155,7 +155,7 @@ function LinkageConfig({ onClose, onSubmit, linkage }: Props): JSX.Element {
     updateCompareValueFieldOnCompareToChanged(compareToFieldState);
   }
 
-  function updateCompareValueFieldOnCompareToChanged({ name, value }: IFieldState) {
+  function updateCompareValueFieldOnCompareToChanged({ name, value }: IFieldState): void {
     setFieldState(
       FormPath.transform(name, /\d/, ($1) => `rules.${$1}.compareValue`),
       (state) => {
