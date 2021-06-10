@@ -23,13 +23,13 @@ const availableElements = [
   DatePicker,
   Select,
   MultipleSelect,
-  CascadeSelector,
   SubTable,
   AssociatedRecords,
   UserPicker,
   OrganizationPicker,
   FileUpload,
   ImageUpload,
+  CascadeSelector,
 ];
 
 export type Elements = { [key: string]: FormBuilder.SourceElement<any> };

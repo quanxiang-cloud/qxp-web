@@ -8,7 +8,7 @@ import FilterConfigBtn from './filter-config-btn';
 const AssociatedRecordsField: Omit<FormBuilder.SourceElement<AssociatedRecordsConfig>, 'displayOrder'> = {
   configSchema,
   displayName: '关联记录',
-  icon: 'list',
+  icon: 'file_present',
   defaultConfig,
   toSchema,
   toConfig,
