@@ -179,8 +179,8 @@ class AppPageDataStore {
       const newData: any = {};
 
       Object.keys(itm).forEach((key: string) => {
-        if (complexKeys.includes(key )) {
-          newData[key] = itm[key].map((itm: any) => itm.label);
+        if (complexKeys.includes(key)) {
+          newData[key] = ([].concat(itm[key])).map((itm: any) => itm.label);
         } else {
           newData[key] = itm[key];
         }
