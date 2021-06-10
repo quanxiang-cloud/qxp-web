@@ -352,7 +352,10 @@ func doFindOne(r *http.Request, i *input, p map[string]string) (int, interface{}
 					if subTable == nil {
 						break
 					}
-
+					// 关联记录
+					if subTable.SubTableType == associatedRecords {
+						break
+					}
 					subFindPath := fmt.Sprintf("%s%s%s%s", base, subTable.AppID, form, subTable.SubTableID)
 					if subTable.SubTableType == blankTable{
 						subFindPath = fmt.Sprintf("%s%s%s%s", base, subTable.AppID, subForm, subTable.SubTableID)
