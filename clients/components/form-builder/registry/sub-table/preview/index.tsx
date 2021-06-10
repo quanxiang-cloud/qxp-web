@@ -43,7 +43,7 @@ interface Props extends ISchemaFieldComponentProps {
 }
 
 function SubTable(compProps: Props): JSX.Element | null {
-  const { schema, initialValue, mutators: ms, name } = compProps;
+  const { schema: definedSchema, initialValue, mutators: ms, name } = compProps;
   const {
     subordination, columns: definedColumns,
   } = compProps.props['x-component-props'];
@@ -68,6 +68,8 @@ function SubTable(compProps: Props): JSX.Element | null {
       props: componentProps,
     };
   }
+
+  const schema = definedSchema.items as ISchema;
 
   const emptyRow: Record<string, string> = {};
   const columns: Column[] = Object.entries(schema?.properties || {}).reduce(
