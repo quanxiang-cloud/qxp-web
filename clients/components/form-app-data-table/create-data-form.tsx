@@ -42,9 +42,10 @@ function CreateDataForm(): JSX.Element {
     'GET_SCHEMA_AND_RECORD_FOR_CREATE_OR_EDIT',
   ], () => getSchemaAndRecord(store.appID, store.pageID, rowID || ''), {
     enabled: !!(store.pageID && store.appID),
+    cacheTime: -1,
   });
 
-  const defaultValues = data?.record;
+  const defaultValues = rowID ? data?.record : undefined;
   const { schema } = data || { properties: { } };
 
   if (isLoading) {
