@@ -12,6 +12,7 @@ import { getTableCellData, operateButton } from './utils';
 import { StoreContext } from './context';
 import { getSchemaAndRecord } from './api';
 import SubTable from './sub-table';
+import AssociatedRecords from './associated-records';
 
 type Props = {
   onCancel: () => void;
@@ -88,6 +89,15 @@ function DetailsDrawer({ onCancel, rowID }: Props): JSX.Element {
     });
   };
 
+  function getSchemaByComponentType(schema: ISchema): ISchema {
+    const type = schema['x-component']?.toLowerCase() as 'associatedrecords' | 'subtable';
+    const typeMap = {
+      associatedrecords: schema['x-component-props']?.associatedTable,
+      subtable: schema.items,
+    };
+    return typeMap[type];
+  }
+
   const cardRender = (list: FormDataProp[]): JSX.Element => {
     return (
       <div className='grid gap-20 grid-cols-2'>
@@ -95,9 +105,20 @@ function DetailsDrawer({ onCancel, rowID }: Props): JSX.Element {
           <div className='page-data-info-view' key={key}>
             <div className='text-body2-no-color text-gray-600'>{label}</div>
             {fieldSchema?.['x-component']?.toLowerCase() === 'subtable' && (
-              <SubTable value={value as Record<string, unknown>[]} fieldKey={key} />
+              <SubTable
+                value={value as Record<string, unknown>[]}
+                schema={getSchemaByComponentType(fieldSchema)}
+              />
             )}
-            {!Array.isArray(value) && (
+            {fieldSchema?.['x-component']?.toLowerCase() === 'associatedrecords' && (
+              <AssociatedRecords
+                schema={getSchemaByComponentType(fieldSchema)}
+                appID={fieldSchema?.['x-component-props']?.appID}
+                tableID={fieldSchema?.['x-component-props']?.tableID}
+                selected={(value as {_id: string}[]).map(({ _id }) => _id) || []}
+              />
+            )}
+            {fieldSchema?.type !== 'array' && (
               <div className='text-body2 truncate'>{value}</div>
             )}
           </div>
