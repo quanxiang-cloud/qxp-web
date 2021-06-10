@@ -49,7 +49,7 @@ function ActionModals({ flowName, getFormData }: Props) {
     if (action === TaskHandleType.deliver) {
       if (!chosenEmployees.length) {
         store.setShowTips(true);
-        return Promise.reject(false);
+        return Promise.reject(new Error());
       }
       return apis.deliverTask(processInstanceID, taskID, {
         handleType: action,
@@ -62,7 +62,7 @@ function ActionModals({ flowName, getFormData }: Props) {
     if (action === TaskHandleType.step_back) {
       if (!stepBackId) {
         toast.error('请选择回退的节点');
-        return Promise.reject(false);
+        return Promise.reject(new Error());
       }
       return apis.stepBack(processInstanceID, taskID, {
         handleType: action,
@@ -76,7 +76,7 @@ function ActionModals({ flowName, getFormData }: Props) {
       const { remark } = modalInfo.payload;
       if (!remark) {
         store.setShowTips(true);
-        return Promise.reject(false);
+        return Promise.reject(new Error());
       }
       return apis.sendBack(processInstanceID, taskID, {
         handleType: action,
@@ -88,7 +88,7 @@ function ActionModals({ flowName, getFormData }: Props) {
     if (action === TaskHandleType.cc) {
       if (!chosenEmployees.length) {
         store.setShowTips(true);
-        return Promise.reject(false);
+        return Promise.reject(new Error());
       }
       return apis.ccFLow(processInstanceID, taskID, {
         handleType: action,
@@ -110,7 +110,7 @@ function ActionModals({ flowName, getFormData }: Props) {
     if (action === TaskHandleType.read) {
       if (!chosenEmployees.length) {
         store.setShowTips(true);
-        return Promise.reject(false);
+        return Promise.reject(new Error());
       }
       return apis.readFlow(processInstanceID, taskID, {
         handleType: action,
@@ -133,7 +133,7 @@ function ActionModals({ flowName, getFormData }: Props) {
 
     // }
 
-    return Promise.reject(`未知操作: ${action}`);
+    return Promise.reject(new Error(`未知操作: ${action}`));
   }, {
     onSuccess: (data) => {
       toast.success('操作成功');

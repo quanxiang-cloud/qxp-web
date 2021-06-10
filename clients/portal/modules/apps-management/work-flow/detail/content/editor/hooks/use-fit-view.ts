@@ -3,7 +3,10 @@ import {
   useZoomPanHelper,
 } from 'react-flow-renderer';
 
-export default function useFitView(callback?: Function) {
+// todo fix this, assign to lishengma
+type FunctionToBeRefactor = () => void;
+
+export default function useFitView(callback?: FunctionToBeRefactor) {
   const flowStore = useStore();
   const { setCenter, fitView } = useZoomPanHelper();
 

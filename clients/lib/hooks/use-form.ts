@@ -8,7 +8,8 @@ interface EventLike {
 }
 
 interface Props {
-  validation: Record<string, Function>;
+  // todo fix any type, assign to lishengma
+  validation: Record<string, (value: any) => any>;
   onSubmit: (e: unknown) => void;
 }
 

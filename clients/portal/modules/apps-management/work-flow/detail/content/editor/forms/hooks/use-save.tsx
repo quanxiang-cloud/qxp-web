@@ -5,9 +5,12 @@ import { useMutation } from 'react-query';
 
 import toast from '@lib/toast';
 
+// todo fix this, assign to lishengma
+type FunctionToBeRefactor = () => void;
+
 export default function useSave(appID: string, id?: string) {
   const history = useHistory();
-  const callback = useRef<{onOk: Function; onError?: Function}>();
+  const callback = useRef<{ onOk: FunctionToBeRefactor; onError?: FunctionToBeRefactor}>();
 
   const saveMutation = useMutation(saveWorkFlow, {
     onSuccess: (respData) => {
@@ -24,7 +27,7 @@ export default function useSave(appID: string, id?: string) {
     },
   });
 
-  function onSaveWorkFlow(data: SaveWorkFlow, onOk: Function, onError?: Function) {
+  function onSaveWorkFlow(data: SaveWorkFlow, onOk: FunctionToBeRefactor, onError?: FunctionToBeRefactor) {
     callback.current = {
       onOk, onError,
     };
