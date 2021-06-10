@@ -26,7 +26,7 @@ export const defaultConfig: RadioGroupConfig = {
   ],
 };
 
-export function toSchema(value: typeof defaultConfig): FormBuilder.Schema {
+export function toSchema(value: typeof defaultConfig): ISchema {
   return {
     type: 'string',
     title: value.title,
@@ -55,7 +55,7 @@ export function toSchema(value: typeof defaultConfig): FormBuilder.Schema {
   };
 }
 
-export function toConfig(schema: FormBuilder.Schema): RadioGroupConfig {
+export function toConfig(schema: ISchema): RadioGroupConfig {
   let displayModifier: FormBuilder.DisplayModifier = 'normal';
   if (schema.readOnly) {
     displayModifier = 'readonly';

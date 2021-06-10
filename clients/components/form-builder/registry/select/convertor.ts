@@ -24,7 +24,7 @@ export const defaultConfig: SelectConfig = {
   ],
 };
 
-export function toSchema(value: SelectConfig): FormBuilder.Schema {
+export function toSchema(value: SelectConfig): ISchema {
   return {
     type: 'string',
     title: value.title,
@@ -51,7 +51,7 @@ export function toSchema(value: SelectConfig): FormBuilder.Schema {
   };
 }
 
-export function toConfig(schema: FormBuilder.Schema): SelectConfig {
+export function toConfig(schema: ISchema): SelectConfig {
   let displayModifier: FormBuilder.DisplayModifier = 'normal';
   if (schema.readOnly) {
     displayModifier = 'readonly';

@@ -16,7 +16,7 @@ type Params = {
 }
 
 type InitData = {
-  schema: FormBuilder.Schema;
+  schema: ISchema;
   config?: Config;
   pageID?: string;
   appID?: string;
@@ -42,7 +42,7 @@ class AppPageDataStore {
   @observable formDataList: any[] = [];
   @observable total = 0;
   @observable fields: Fields[] = [];
-  @observable schema: FormBuilder.Schema = {};
+  @observable schema: ISchema = {};
   @observable filterData: FormData = {};
   @observable tableColumns: any[] = [];
   @observable createPageVisible = false;
