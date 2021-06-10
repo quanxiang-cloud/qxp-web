@@ -46,7 +46,7 @@ export default function NodeHeader({
         className={cs(
           'text-caption-no-color-weight font-medium',
           'outline-none work-flow-node-header-input',
-          titleClassName
+          titleClassName,
         )}
         defaultValue={title}
       />

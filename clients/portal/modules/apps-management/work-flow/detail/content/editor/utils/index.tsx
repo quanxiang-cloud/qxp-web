@@ -135,7 +135,7 @@ export function nodeBuilder(
 export function mergeDataAdapter<T, S>(
   originalData: S,
   path: string,
-  updater: (v: T) => T
+  updater: (v: T) => T,
 ) {
   const newData = deepClone(originalData);
   update(newData, path, updater);

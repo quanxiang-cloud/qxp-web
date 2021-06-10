@@ -34,7 +34,7 @@ export default function useForm({ validation, onSubmit }: Props) {
   function hasErrors() {
     const newErrors: Record<string, string> = {};
     Object.keys(validation).forEach(
-      (key) => (newErrors[key] = validation[key](form[key] || ''))
+      (key) => (newErrors[key] = validation[key](form[key] || '')),
     );
     setErrors(newErrors);
     return Object.keys(validation).some((key) => newErrors[key]);

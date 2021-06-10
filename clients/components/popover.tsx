@@ -75,7 +75,7 @@ export default function Popover({
     const els = [el, el.parentElement, el.parentElement?.parentElement];
     if (els.some(
       (el) => el?.classList.contains('dropdown-options__option') ||
-      el?.classList.contains('dropdown-options')
+      el?.classList.contains('dropdown-options'),
     )) {
       return;
     }

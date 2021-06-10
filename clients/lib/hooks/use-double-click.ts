@@ -5,7 +5,7 @@ import { identity } from '@lib/utils';
 export default function useDoubleClick(
   ref: any,
   onDoubleClick: Function = identity,
-  latency = 300
+  latency = 300,
 ) {
   useEffect(() => {
     if (!ref?.current || !onDoubleClick) {

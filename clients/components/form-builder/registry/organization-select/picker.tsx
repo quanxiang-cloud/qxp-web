@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef, useMemo } from 'react';
+import React, { useState, useRef, useMemo } from 'react';
 
 import Modal from '@c/modal';
 import DepartmentPicker from '@c/employee-or-department-picker/department-picker';

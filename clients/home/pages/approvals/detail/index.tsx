@@ -38,7 +38,7 @@ function ApprovalDetail(): JSX.Element {
     isLoading, data, isError, error,
   } = useQuery<any, Error>(
     [processInstanceID, taskID],
-    () => apis.getTaskFormById(processInstanceID, taskID)
+    () => apis.getTaskFormById(processInstanceID, taskID),
   );
 
   useEffect(() => {

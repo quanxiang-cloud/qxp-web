@@ -37,14 +37,14 @@ export default function FieldPermission({ value, onChange: _onChange }: Props) {
     ['GET_WORK_FORM_FIELD_LIST', workFormValue, appID],
     getFormFieldOptions, {
       enabled: !!workFormValue && !!appID,
-    }
+    },
   );
 
   const { data: schema = {} } = useQuery(
     ['GET_WORK_FORM_FIELD_SCHEMA', workFormValue, appID],
     getFormFieldSchema, {
       enabled: !!workFormValue && !!appID,
-    }
+    },
   );
 
   useEffect(() => {
