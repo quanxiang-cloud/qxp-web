@@ -1,4 +1,4 @@
-import { createFormActions, ISchemaFormActions } from '@formily/react-schema-renderer';
+import { createFormActions, createAsyncFormActions, ISchemaFormActions } from '@formily/react-schema-renderer';
 import React from 'react';
 
 import registry, { Registry } from './registry';
@@ -31,6 +31,7 @@ type FieldConfigContextType = {
 
 export const fieldConfigContext = {
   actions: createFormActions(),
+  asyncActions: createAsyncFormActions(),
 };
 
 export const FieldConfigContext = React.createContext<FieldConfigContextType>(fieldConfigContext);

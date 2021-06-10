@@ -1,6 +1,6 @@
 import React from 'react';
 import { UnionColumns } from 'react-table';
-import { action, observable, reaction, IReactionDisposer } from 'mobx';
+import { action, observable, reaction, IReactionDisposer, computed } from 'mobx';
 
 import toast from '@lib/toast';
 import httpClient from '@lib/http-client';
@@ -165,6 +165,28 @@ class AppPageDataStore {
       this.listLoading = false;
     }).catch(() => {
       this.listLoading = false;
+    });
+  }
+
+  @computed
+  get formDataListLabel(): any[] {
+    const properties = this.schema.properties || {};
+
+    const complexKeys = Object.keys(properties)
+      .filter((key)=>properties[key].type == 'label-value');
+
+    return this.formDataList.map((itm) => {
+      const newData: any = {};
+
+      Object.keys(itm).forEach((key: string) => {
+        if (complexKeys.includes(key )) {
+          newData[key] = itm[key].map((itm: any) => itm.label);
+        } else {
+          newData[key] = itm[key];
+        }
+      });
+
+      return newData;
     });
   }
 

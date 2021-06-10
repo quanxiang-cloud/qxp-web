@@ -267,7 +267,7 @@ export default class FormBuilderStore {
 
     const newField = {
       ...field,
-      configValue: field.defaultConfig,
+      configValue: { ...field.defaultConfig, appID: this.appID },
       fieldName: generateRandomFormFieldID(),
     };
 
@@ -341,6 +341,7 @@ export default class FormBuilderStore {
     this.hasEdit = true;
   }
 
+  // updateFieldConfig should be next method name
   @action
   updateFieldConfig(value: any) {
     this.hasEdit = true;
@@ -351,6 +352,16 @@ export default class FormBuilderStore {
 
       f.configValue = toJS(value);
       return f;
+    });
+  }
+
+  @action
+  updateFieldConfigValue(targetName: string, value: any) {
+    this.fields = this.fields.map((field)=>{
+      if (field.fieldName == targetName) {
+        field.configValue = toJS(value);
+      }
+      return field;
     });
   }
 

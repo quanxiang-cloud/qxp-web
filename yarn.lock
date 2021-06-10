@@ -1138,6 +1138,11 @@ array-unique@^0.3.2:
   resolved "https://registry.npm.taobao.org/array-unique/download/array-unique-0.3.2.tgz#a894b75d4bc4f6cd679ef3244a9fd8f46ae2d428"
   integrity sha1-qJS3XUvE9s1nnvMkSp/Y9Gri1Cg=
 
+array.partial@^1.0.5:
+  version "1.0.5"
+  resolved "http://r.npm.internal.yunify.com/array.partial/download/array.partial-1.0.5.tgz#f514595aacbf6a99ea20bbcffbcacc10316f0d56"
+  integrity sha1-9RRZWqy/apnqILvP+8rMEDFvDVY=
+
 array.prototype.flatmap@^1.2.4:
   version "1.2.4"
   resolved "https://registry.npm.taobao.org/array.prototype.flatmap/download/array.prototype.flatmap-1.2.4.tgz#94cfd47cc1556ec0747d97f7c7738c58122004c9"
@@ -6451,6 +6456,14 @@ react-drag-listview@^0.1.6:
     babel-runtime "^6.26.0"
     prop-types "^15.5.8"
 
+react-dropdown-tree-select@^2.5.1:
+  version "2.5.1"
+  resolved "http://r.npm.internal.yunify.com/react-dropdown-tree-select/download/react-dropdown-tree-select-2.5.1.tgz#071bef6193352cda8f3177d7f56e906a8fa175e3"
+  integrity sha1-BxvvYZM1LNqPMXfX9W6Qao+hdeM=
+  dependencies:
+    array.partial "^1.0.5"
+    react-infinite-scroll-component "^4.0.2"
+
 react-eva@^1.0.0-alpha.0:
   version "1.1.14"
   resolved "https://registry.npm.taobao.org/react-eva/download/react-eva-1.1.14.tgz#06e3953886cde47636fdd976b6183a851ee18202"
@@ -6468,6 +6481,11 @@ react-hook-form@^7.4.2:
   version "7.4.2"
   resolved "https://registry.nlark.com/react-hook-form/download/react-hook-form-7.4.2.tgz#7d68f7fbdb8477a8ed7efe880cd507a8b074f6c0"
   integrity sha1-fWj3+9uEd6jtfv6IDNUHqLB09sA=
+
+react-infinite-scroll-component@^4.0.2:
+  version "4.5.3"
+  resolved "http://r.npm.internal.yunify.com/react-infinite-scroll-component/download/react-infinite-scroll-component-4.5.3.tgz#008c2ec358628b490117ffc4aa6ce6982b26f8be"
+  integrity sha1-AIwuw1hii0kBF//EqmzmmCsm+L4=
 
 react-input-autosize@^2.2.2:
   version "2.2.2"

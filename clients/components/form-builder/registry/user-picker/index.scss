@@ -1,0 +1,7 @@
+.text_flow {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-decoration: underline;
+  cursor: grabbing;
+}
