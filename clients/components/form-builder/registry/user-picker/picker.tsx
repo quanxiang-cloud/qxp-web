@@ -27,9 +27,8 @@ const Picker = ({ value: defaultValue = [], onChange, isMy }: Props) => {
       id: itm.id,
     })) as EmployeeOrDepartmentOfRole[];
     onChange(isMy ? users : []);
-    console.log('>>effect', users);
+  
   }, [isMy, myDepUsers]);
-  console.log(defaultValue);
 
   const { isLoading } = useQuery(['query_user_picker_', window.USER.dep.id, appID], () => searchUser(appID, { depID: window.USER.dep.id }), {
     onSuccess(data: Res) {

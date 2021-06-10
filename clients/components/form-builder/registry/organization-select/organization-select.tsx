@@ -28,7 +28,7 @@ const OrganizationPicker = (p: ISchemaFieldComponentProps) => {
   const { optionalRange, rangeList } = p.props;
 
   const TreeData = React.useMemo(() => {
-    if (optionalRange == 'customize') {
+    if (optionalRange != 'all') {
       const Tree = parseTree(data);
       return rangeList ? rangeList.map((itm: string) => searchTree(Tree as TreeNode, itm)).filter(Boolean) : [];
     } else {
