@@ -13,7 +13,7 @@ import { getTableCellData, operateButton } from './utils';
 import { StoreContext } from './context';
 import { getSchemaAndRecord } from './api';
 import SubTable from '../form-builder/registry/sub-table/preview';
-import AssociatedRecords from './associated-records';
+import AssociatedRecords from '../form-builder/registry/associated-records/associated-records';
 
 type Props = {
   onCancel: () => void;
@@ -90,15 +90,6 @@ function DetailsDrawer({ onCancel, rowID }: Props): JSX.Element {
     });
   };
 
-  function getSchemaByComponentType(schema: ISchema): ISchema {
-    const type = schema['x-component']?.toLowerCase() as 'associatedrecords' | 'subtable';
-    const typeMap = {
-      associatedrecords: schema['x-component-props']?.associatedTable,
-      subtable: schema.items,
-    };
-    return typeMap[type];
-  }
-
   const cardRender = (list: FormDataProp[]): JSX.Element => {
     return (
       <div className='grid gap-20 grid-cols-2'>
@@ -114,10 +105,9 @@ function DetailsDrawer({ onCancel, rowID }: Props): JSX.Element {
             )}
             {fieldSchema?.['x-component']?.toLowerCase() === 'associatedrecords' && (
               <AssociatedRecords
-                schema={getSchemaByComponentType(fieldSchema)}
-                appID={fieldSchema?.['x-component-props']?.appID}
-                tableID={fieldSchema?.['x-component-props']?.tableID}
-                selected={value}
+                schema={fieldSchema as Schema}
+                value={value}
+                readonly
               />
             )}
             {fieldSchema?.type !== 'array' && (

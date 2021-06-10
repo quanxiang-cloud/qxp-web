@@ -12,7 +12,7 @@ import DetailsDrawer from './details-drawer';
 import { StoreContext } from './context';
 import { operateButton } from './utils';
 
-function PageDataTable() {
+function PageDataTable(): JSX.Element {
   const store = useContext(StoreContext);
   const [selected, setSelected] = useState([]);
   const [curRow, setCurRow] = useState<Record<string, any> | null>(null);
