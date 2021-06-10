@@ -1,7 +1,9 @@
 import React from 'react';
 import { twCascade } from '@mariusmarais/tailwind-cascade';
+import { isObject } from 'lodash';
 
-import { isFunction, isObject } from '@lib/utils';
+import { isFunction } from '@lib/utils';
+
 import Icon from './icon';
 
 export interface IItem<T> {
@@ -25,7 +27,7 @@ export default function List<T extends unknown>({
   itemClassName,
   items = [],
   params,
-}: IList<T>) {
+}: IList<T>): JSX.Element {
   return (
     <ul className={twCascade('flex flex-col', className)}>
       {items.map((item: JSX.Element | (() => JSX.Element) | IItem<T>) => {

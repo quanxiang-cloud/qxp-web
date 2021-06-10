@@ -10,7 +10,7 @@ import Icon from '@c/icon';
 import Button from '@c/button';
 import toast from '@lib/toast';
 import { FormRenderer } from '@c/form-builder';
-import { compactObject } from '@lib/utils';
+import { compactObject, isObjectArray } from '@lib/utils';
 import Loading from '@c/loading';
 import {
   formDataRequest, FormDataRequestCreateParams, FormDataRequestUpdateParams,
@@ -121,7 +121,9 @@ function CreateDataForm(): JSX.Element {
     const defaultValue = toJS(defaultValues);
     const diffResult = difference(defaultValue || {}, formData);
     const subTableChangedKeys = Object.keys(diffResult).filter(
-      (fieldKey) => schemaMap[fieldKey as keyof ISchema]?.['type'] === 'array',
+      (fieldKey) => schemaMap[fieldKey as keyof ISchema]?.[
+        'x-component'
+      ]?.toLowerCase() === 'subtable',
     );
     const hasSubTableChanged = !!(subTableChangedKeys.length && defaultValues);
 
@@ -143,7 +145,7 @@ function CreateDataForm(): JSX.Element {
     setLoading(true);
     const initialMethod = defaultValues ? 'update' : 'create';
     const reqData: FormDataRequestCreateParams | FormDataRequestUpdateParams = buildRequestParams(
-      initialMethod === 'create' ? formData : omitBy(formData, Array.isArray),
+      initialMethod === 'create' ? formData : omitBy(formData, isObjectArray),
       defaultValue?._id,
       initialMethod,
       ref,
