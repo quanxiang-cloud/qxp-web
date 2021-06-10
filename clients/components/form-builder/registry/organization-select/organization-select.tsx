@@ -22,7 +22,7 @@ const OrganizationPicker = (p: ISchemaFieldComponentProps) => {
   const { data } = useQuery(['query_user_picker', appID], () => searchOrganziation(appID));
 
   React.useEffect(() => {
-    p.mutators.change(p.props.defaultValues);
+    p.mutators.change(p.initialValue || p.props.defaultValues);
   }, []);
 
   const { optionalRange, rangeList } = p.props;

@@ -70,7 +70,7 @@ function DetailsDrawer({ onCancel, rowID }: Props): JSX.Element {
 
     return [_details, _systems];
   }, [data]);
-
+ 
   const handleCancel = (): void => {
     setBeganClose(true);
     setTimeout(() => {
