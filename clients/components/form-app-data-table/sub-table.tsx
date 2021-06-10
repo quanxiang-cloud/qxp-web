@@ -26,12 +26,14 @@ function SubTable({ value, schema }: {
     }, []);
   }
 
+  const columns = buildSubTableColumns();
+
   return (
     <Table
       pagination={false}
       rowKey="_id"
-      columns={buildSubTableColumns()}
-      dataSource={value}
+      columns={columns}
+      dataSource={columns.length ? value : []}
     />
   );
 }

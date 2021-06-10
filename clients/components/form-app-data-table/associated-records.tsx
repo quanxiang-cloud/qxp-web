@@ -20,7 +20,7 @@ function AssociatedRecords({ schema, appID, tableID, selected }: {
     return findTableRecords(appID, tableID, selected);
   });
 
-  if (isLoading) {
+  if (isLoading || !data) {
     return <Loading desc="加载中..." />;
   }
 
@@ -39,12 +39,14 @@ function AssociatedRecords({ schema, appID, tableID, selected }: {
     }, []);
   }
 
+  const columns = buildSubTableColumns();
+
   return (
     <Table
       pagination={false}
       rowKey="_id"
-      columns={buildSubTableColumns()}
-      dataSource={data}
+      columns={columns}
+      dataSource={columns.length ? data : []}
     />
   );
 }
