@@ -15,7 +15,7 @@ const UserPicker = (p: ISchemaFieldComponentProps): JSX.Element => {
   const optionalRange = p.props.optionalRange as OptionalRange;
 
   React.useEffect(() => {
-    p.mutators.change(p.props.defaultValues);
+    p.mutators.change(p.initialValue || p.props.defaultValues);
   }, []);
   const value = Array.isArray(p.value || []) ? (p.value || []).map(({ value }: Option) => value) : p.value.value;
 
@@ -34,6 +34,7 @@ const UserPicker = (p: ISchemaFieldComponentProps): JSX.Element => {
 };
 
 const AllUserPicker = (p: ISchemaFieldComponentProps): JSX.Element => {
+  console.log(p)
   const [options, setOptions] = React.useState<Option[]>([]);
   const [hasNext, setHasNext] = React.useState<boolean>(false);
   const [keyword, setKeyword] = React.useState<string>();
