@@ -139,7 +139,7 @@ export function getPageDataSchema(
   config: Config,
   schema: Scheme,
 ): {
-  tableColumns: unknown[];
+  tableColumns: UnionColumns<any>[];
   pageTableShowRule: PageTableShowRule;
 } {
   const { pageTableShowRule = {}, pageTableColumns = [] } = config || {};
