@@ -1,6 +1,5 @@
 import React from 'react';
 import moment from 'moment';
-import { transform, isEqual, isArray, isObject } from 'lodash';
 
 import { UnionColumns } from 'react-table';
 
@@ -19,22 +18,6 @@ export type Config = {
 type Option = {
   value: string;
   label: string;
-}
-
-export function operateButton(
-  wIndex: number, authority: number, button: React.ReactNode,
-): null | React.ReactNode {
-  const weightArr = authority.toString(2).split('').reverse();
-  if (weightArr.length < 7) {
-    for (let index = 0; index < 7 - weightArr.length; index += 1) {
-      weightArr.push('0');
-    }
-  }
-  if (weightArr[wIndex - 1] === '0') {
-    return null;
-  }
-
-  return button;
 }
 
 export function getTableCellData(
@@ -113,10 +96,7 @@ export function setFixedParameters(
   fixedRule: string | undefined,
   tableColumns: UnionColumns<Record<string, any>>[],
 ): UnionColumns<any>[] {
-  let action: UnionColumns<any> = {
-    id: 'action',
-    Header: '操作',
-  };
+  const actionIndex = tableColumns.findIndex(({ id })=>id === 'action');
   switch (fixedRule) {
   case 'one':
     addFixedParameters([0], tableColumns);
@@ -125,19 +105,21 @@ export function setFixedParameters(
     addFixedParameters([0, 1], tableColumns);
     break;
   case 'action':
-    action = { ...action, fixed: true, width: 150 };
+    if (actionIndex > -1) {
+      addFixedParameters([actionIndex], tableColumns);
+    }
     break;
   case 'one_action':
-    addFixedParameters([0], tableColumns);
-    action = { ...action, fixed: true, width: 150 };
+    addFixedParameters(actionIndex > -1 ? [0, actionIndex] : [0], tableColumns);
     break;
   }
-  return [...tableColumns, action];
+  return tableColumns;
 }
 
 export function getPageDataSchema(
   config: Config,
   schema: Scheme,
+  customColumns: UnionColumns<any>[],
 ): {
   tableColumns: UnionColumns<any>[];
   pageTableShowRule: PageTableShowRule;
@@ -153,31 +135,7 @@ export function getPageDataSchema(
   });
 
   return {
-    tableColumns: setFixedParameters(pageTableShowRule.fixedRule, tableColumns),
+    tableColumns: setFixedParameters(pageTableShowRule.fixedRule, [...tableColumns, ...customColumns]),
     pageTableShowRule,
   };
-}
-
-export function difference(
-  origObj: Record<string, unknown>, newObj: Record<string, unknown>,
-): Record<string, any> {
-  function changes(newObj: Record<string, unknown>, origObj: Record<string, unknown>): Record<string, any> {
-    let arrayIndexCounter = 0;
-    return transform(newObj, function(
-      result: Record<string, unknown>,
-      value: any,
-      key,
-    ) {
-      if (!isEqual(value, origObj[key])) {
-        // eslint-disable-next-line no-plusplus
-        const resultKey = isArray(origObj) ? arrayIndexCounter++ : key;
-        result[resultKey] = (isObject(value) && isObject(origObj[key])) && !(value as any)._id ?
-          changes(
-            value as Record<string, unknown>,
-            origObj[key] as Record<string, unknown>,
-          ) : value;
-      }
-    });
-  }
-  return changes(newObj, origObj);
 }

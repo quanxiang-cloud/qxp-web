@@ -68,7 +68,7 @@ export default function BasicConfig({ type, value, onChange: _onChange }: Props)
     );
   }
 
-  function autoApproveBuilder(label: string, key: AutoApproveRule) {
+  function autoApproveBuilder(label: string, key: AutoApproveRule): JSX.Element {
     return (
       <Checkbox
         label={label}
@@ -80,7 +80,7 @@ export default function BasicConfig({ type, value, onChange: _onChange }: Props)
     );
   }
 
-  function breakPointBuilder(label: string, key: string) {
+  function breakPointBuilder(label: string, key: string): JSX.Element {
     return (
       <Radio
         className="mb-8 flex"
@@ -92,7 +92,7 @@ export default function BasicConfig({ type, value, onChange: _onChange }: Props)
     );
   }
 
-  function noPersonBuilder(label: string, key: string) {
+  function noPersonBuilder(label: string, key: string): JSX.Element {
     return (
       <Radio
         className="mr-16"
@@ -103,7 +103,7 @@ export default function BasicConfig({ type, value, onChange: _onChange }: Props)
     );
   }
 
-  function multiplePersonBuilder(label: string, key: string) {
+  function multiplePersonBuilder(label: string, key: string): JSX.Element {
     return (
       <Radio
         className="mr-16"

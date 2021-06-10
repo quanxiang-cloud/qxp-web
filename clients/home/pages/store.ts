@@ -1,27 +1,13 @@
-import { observable, action, IReactionDisposer, reaction } from 'mobx';
-import { TreeData } from '@atlaskit/tree';
+import { observable, action } from 'mobx';
 import toast from '@lib/toast';
 
-import { buildAppPagesTreeData } from '@lib/utils';
-
-import { fetchUserList, fetchPageList, fetchFormScheme } from '../lib/api';
+import { fetchUserList } from '../lib/api';
 import { getFlowInstanceCount } from './approvals/api';
 
 class UserAppStore {
-  destroySetCurPage: IReactionDisposer;
   @observable appList = [];
-  @observable appID = '';
-  @observable pageID = '';
   @observable listLoading = false;
-  @observable pageListLoading = true;
-  @observable curPage: PageInfo = { id: '' };
-  @observable fetchSchemeLoading = true;
-  @observable pageName = '';
-  @observable formScheme: ISchema | null = null;
-  @observable pagesTreeData: TreeData = {
-    rootId: 'ROOT',
-    items: {},
-  };
+
   @observable TODO_LIST = [
     { key: 'OVERTIME', value: 0, name: '已超时', color: 'text-red-600' },
     { key: 'URGE', value: 0, name: '催办', color: 'text-yellow-600' },
@@ -33,49 +19,6 @@ class UserAppStore {
     { key: 2, name: '抄送给我', icon: 'send_me', count: 0, link: 'cc_to_me' },
   ];
 
-  constructor() {
-    this.destroySetCurPage = reaction(() => {
-      if (!this.pageID || this.pageListLoading || !this.pagesTreeData.items[this.pageID]) {
-        return;
-      }
-
-      return this.pagesTreeData.items[this.pageID].data;
-    }, this.setCurPage);
-  }
-
-  @action
-  fetchPageList = (appID: string) => {
-    this.appID = appID;
-    this.pageListLoading = true;
-    fetchPageList(appID).then((res: any) => {
-      this.pagesTreeData = buildAppPagesTreeData(res.menu);
-      this.pageListLoading = false;
-    });
-  }
-
-  @action
-  setPageID = (pageID: string) => {
-    this.pageID = pageID;
-  }
-
-  @action
-  setCurPage = (pageInfo: PageInfo) => {
-    if (!pageInfo) {
-      return;
-    }
-
-    this.formScheme = null;
-    this.fetchSchemeLoading = true;
-    fetchFormScheme(this.appID, pageInfo.id).then((res: any) => {
-      this.pageName = pageInfo.name || '';
-      this.formScheme = res.schema;
-      this.fetchSchemeLoading = false;
-    }).catch(() => {
-      this.fetchSchemeLoading = false;
-    });
-    this.curPage = pageInfo;
-  }
-
   @action
   fetchAppList = () => {
     this.listLoading = true;
@@ -85,17 +28,6 @@ class UserAppStore {
     }).catch(() => {
       this.listLoading = false;
     });
-  }
-
-  @action
-  clear = () => {
-    this.formScheme = null;
-    this.pageListLoading = true;
-    this.pagesTreeData = {
-      rootId: 'ROOT',
-      items: {},
-    };
-    this.curPage = { id: '' };
   }
 
   @action

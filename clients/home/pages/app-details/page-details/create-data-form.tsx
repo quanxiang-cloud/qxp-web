@@ -1,8 +1,7 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FormButtonGroup, setValidationLanguage } from '@formily/antd';
 import { toJS } from 'mobx';
 import { omit, omitBy, isEmpty } from 'lodash';
-import { useQuery } from 'react-query';
 import { observer } from 'mobx-react';
 
 import Breadcrumb from '@c/breadcrumb';
@@ -16,43 +15,50 @@ import {
   formDataRequest, FormDataRequestCreateParams, FormDataRequestUpdateParams,
 } from '@lib/http-client';
 
-import { StoreContext } from './context';
-import { difference } from './utils';
-import { getSchemaAndRecord } from './api';
+import { difference } from '../utils';
+import { getSchemaAndRecord, SchemaAndRecord } from '../api';
 import { INTERNAL_FIELD_NAMES } from '@c/form-builder/store';
 
 setValidationLanguage('zh');
 
+type Props = {
+  appID: string;
+  pageID: string;
+  title: string;
+  onCancel: () => void;
+  rowID?: string;
+}
+
 type RefType = Record<string, {
-      appID: string;
-      tableID: string;
-      updated: Record<string, any>[];
-      new: Record<string, any>[];
-      deleted: Record<string, any>[];
-    }>;
+  appID: string;
+  tableID: string;
+  updated: Record<string, any>[];
+  new: Record<string, any>[];
+  deleted: Record<string, any>[];
+}>;
 
-function CreateDataForm(): JSX.Element {
-  const store = useContext(StoreContext);
-  const { rowID = '' } = store;
+function CreateDataForm({ appID, pageID, rowID, onCancel, title }: Props): JSX.Element {
   const [loading, setLoading] = useState(false);
+  const [data, setData] = useState<SchemaAndRecord>({ schema: {} });
+  const [pageLoading, setPageLoading] = useState(true);
 
-  const {
-    data, isLoading, isError,
-  } = useQuery([], () => getSchemaAndRecord(store.appID, store.pageID, rowID || ''), {
-    enabled: !!(store.pageID && store.appID),
-  });
+  useEffect(() => {
+    getSchemaAndRecord(appID, pageID, rowID || '').then((res) => {
+      setData(res);
+      setPageLoading(false);
+    }).catch(()=>{
+      setPageLoading(false);
+    });
+  }, []);
 
-  const defaultValues = data?.record;
-  const { schema } = data || { properties: { } };
+  const { schema, record: defaultValues } = data;
 
-  if (isLoading) {
-    return <Loading desc="加载中..." />;
+  if (!schema) {
+    return <div>some error</div>;
   }
 
-  if (!store.fields.length || isError || !schema) {
-    return (
-      <div>todo some error tips</div>
-    );
+  if (pageLoading) {
+    return <Loading desc="加载中..." />;
   }
 
   function buildRequestParams(
@@ -127,8 +133,8 @@ function CreateDataForm(): JSX.Element {
       subTableChangedKeys.forEach((fieldKey) => {
         Object.assign(ref, {
           [fieldKey]: {
-            appID: store.appID,
-            tableID: store.pageID,
+            appID: appID,
+            tableID: pageID,
             updated: parseUpdated(diffResult, fieldKey),
             new: parseNew(formData, fieldKey),
             deleted: parseDeleted(formData, fieldKey),
@@ -146,9 +152,9 @@ function CreateDataForm(): JSX.Element {
       ref,
     );
 
-    formDataRequest(store.appID, store.pageID, reqData).then(() => {
+    formDataRequest(appID, pageID, reqData).then(() => {
       toast.success('提交成功');
-      store.setVisibleCreatePage(false);
+      onCancel();
     }).finally(() => {
       setLoading(false);
     });
@@ -161,7 +167,7 @@ function CreateDataForm(): JSX.Element {
           <Breadcrumb.Item>
             <a>
               <Icon size={23} name='reply' />
-              <span onClick={() => store.setVisibleCreatePage(false)}>{store.pageName}</span>
+              <span onClick={onCancel}>{title}</span>
             </a>
           </Breadcrumb.Item>
           <Breadcrumb.Item>
@@ -180,7 +186,7 @@ function CreateDataForm(): JSX.Element {
             <Button
               className="mr-20"
               iconName="close"
-              onClick={() => store.setVisibleCreatePage(false)}
+              onClick={onCancel}
             >
               取消
             </Button>

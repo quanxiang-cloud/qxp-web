@@ -8,7 +8,7 @@ import Select from '@c/select';
 import AppsSwitcher from '@c/apps-switcher';
 
 import { fetchUserList, getPerOption, roleChange } from '../../../lib/api';
-import store from '../../store';
+import store from '../store';
 import './index.scss';
 
 type PerItem = {
@@ -21,7 +21,7 @@ type PerRes = {
   selectPer: PerItem;
 }
 
-function DetailsHeader() {
+function DetailsHeader(): JSX.Element {
   const history = useHistory();
   const [appList, setAppList] = useState([]);
   const [options, setOptions] = useState<{ value: string, label: string }[]>([]);

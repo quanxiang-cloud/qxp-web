@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useContext } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useQuery } from 'react-query';
 import { observer } from 'mobx-react';
 import cs from 'classnames';
@@ -7,14 +7,16 @@ import Tab from '@c/tab2';
 import Icon from '@c/icon';
 import PopConfirm from '@c/pop-confirm';
 import PageLoading from '@c/page-loading';
+import { getTableCellData } from '@c/form-app-data-table/utils';
 
-import { getTableCellData, operateButton } from './utils';
-import { StoreContext } from './context';
-import { getSchemaAndRecord } from './api';
-import SubTable from './sub-table';
+import { getOperateButtonPer } from '../utils';
+import { getSchemaAndRecord } from '../api';
+import store from '../store';
 
 type Props = {
   onCancel: () => void;
+  goEdit: (rowID: string) => void;
+  delData: (rowIDs: string[]) => Promise<unknown>;
   rowID: string;
 }
 
@@ -25,8 +27,7 @@ type FormDataProp = {
   fieldSchema: ISchema;
 }
 
-function DetailsDrawer({ onCancel, rowID }: Props): JSX.Element {
-  const store = useContext(StoreContext);
+function DetailsDrawer({ onCancel, rowID, goEdit, delData }: Props): JSX.Element {
   const [beganClose, setBeganClose] = useState<boolean>(false);
   const [visible, setVisible] = useState<boolean>(false);
   // todo handle error case of getSchemaAndRecord
@@ -79,8 +80,8 @@ function DetailsDrawer({ onCancel, rowID }: Props): JSX.Element {
     }, 300);
   };
 
-  const delData = (): void => {
-    store.delFormData([rowID]).then(() => {
+  const handelDelete = (): void => {
+    delData([rowID]).then(() => {
       handleCancel();
     });
   };
@@ -92,7 +93,7 @@ function DetailsDrawer({ onCancel, rowID }: Props): JSX.Element {
           <div className='page-data-info-view' key={key}>
             <div className='text-body2-no-color text-gray-600'>{label}</div>
             {fieldSchema?.['x-component']?.toLowerCase() === 'subtable' && (
-              <SubTable value={value as Record<string, unknown>[]} fieldKey={key} />
+              <div></div>
             )}
             {!Array.isArray(value) && (
               <div className='text-body2 truncate'>{value}</div>
@@ -103,9 +104,6 @@ function DetailsDrawer({ onCancel, rowID }: Props): JSX.Element {
     );
   };
 
-  const title = store.tableColumns.length && data?.record ?
-    (store.tableColumns[0] as any)?.accessor?.(data?.record) : '';
-
   return (
     <div
       className={cs('page-data-drawer-modal-mask', {
@@ -115,19 +113,19 @@ function DetailsDrawer({ onCancel, rowID }: Props): JSX.Element {
     >
       <div className='page-data-drawer-container'>
         <div className='page-data-drawer-header'>
-          <span className='text-h5'>{store.pageName}：{title}</span>
+          <span className='text-h5'>{store.pageName}</span>
           <div className='flex items-center gap-x-12'>
-            {operateButton(3, store.authority, (
-              <span onClick={() => store.goEdit(data?.record?._id || '')} className='icon-text-btn'>
+            {getOperateButtonPer(3, store.authority) && (
+              <span onClick={() => goEdit(data?.record?._id || '')} className='icon-text-btn'>
                 <Icon size={20} name='edit' />
                 修改
               </span>
-            ))}
-            {operateButton(4, store.authority, (
-              <PopConfirm content='确认删除该数据？' onOk={delData} >
+            )}
+            {getOperateButtonPer(4, store.authority) && (
+              <PopConfirm content='确认删除该数据？' onOk={handelDelete} >
                 <span className='icon-text-btn'><Icon size={20} name='delete' />删除</span>
               </PopConfirm>
-            ))}
+            )}
             <Icon onClick={handleCancel} clickable changeable name='close' size={24} />
           </div>
         </div>

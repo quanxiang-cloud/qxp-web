@@ -101,7 +101,10 @@ class FormDesignStore {
           accessor: key,
         };
       });
-      return setFixedParameters(this.pageTableShowRule.fixedRule, column);
+      return setFixedParameters(
+        this.pageTableShowRule.fixedRule,
+        [...column, { id: 'action', Header: '操作', accessor: 'action' }],
+      );
     }, this.appPageStore.setTableColumns);
 
     this.destroySetTableConfig = reaction(() => {
@@ -156,6 +159,11 @@ class FormDesignStore {
 
   @action
   saveFormScheme = (): Promise<void> => {
+    if (this.pageTableColumns.length === 0) {
+      toast.error('请至少选择一个表格列');
+      return Promise.resolve();
+    }
+
     this.saveSchemeLoading = true;
     return saveTableSchema(this.appID, this.pageID, this.formStore?.schema || {}).then(() => {
       createPageScheme(this.appID, {
@@ -185,6 +193,11 @@ class FormDesignStore {
 
   @action
   savePageConfig = (): void => {
+    if (this.pageTableColumns.length === 0) {
+      toast.error('请至少选择一个表格列');
+      return;
+    }
+
     createPageScheme(this.appID, {
       tableID: this.pageID, config: {
         pageTableColumns: this.pageTableColumns,
