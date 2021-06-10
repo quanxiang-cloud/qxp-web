@@ -62,7 +62,7 @@ export default function TriggerCondition({ value, formFieldOptions, onChange: _o
           return updateTriggerConditionField(
             exprItem as TriggerConditionType,
             currentCondition,
-            newData
+            newData,
           );
         } else {
           return exprItem;
@@ -91,7 +91,7 @@ export default function TriggerCondition({ value, formFieldOptions, onChange: _o
 
   function onTriggerConditionItemChange(
     curCondition: TriggerConditionExpressionItem,
-    val: Partial<TriggerConditionExpressionItem>
+    val: Partial<TriggerConditionExpressionItem>,
   ) {
     onChange(updateTriggerConditionField(value, curCondition, val));
   }

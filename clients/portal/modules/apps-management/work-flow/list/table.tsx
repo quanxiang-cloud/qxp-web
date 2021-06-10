@@ -48,7 +48,7 @@ export default function WorkFlowTable({ type }: Props) {
       page: pagination.current,
       size: pagination.pageSize,
       triggerMode: type ? type : undefined,
-    })
+    }),
   );
   const deleteFlowMutation = useMutation('DELETE_FLOW', deleteFlow, {
     onSuccess: (ok) => {

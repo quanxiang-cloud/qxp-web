@@ -39,7 +39,7 @@ const modifiers = [
 
 // todo combine with select component
 function RenderMenuItems<T extends React.Key>(
-  { items, onClick }: MenuItemsProps<T>
+  { items, onClick }: MenuItemsProps<T>,
 ): JSX.Element {
   return (
     <div className="dropdown-options">

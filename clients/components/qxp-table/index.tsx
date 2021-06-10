@@ -32,7 +32,7 @@ export type Column<T> = {
 
 function Table<T>(
   props: Props<T>,
-  ref?: Ref<HTMLTableElement>
+  ref?: Ref<HTMLTableElement>,
 ) {
   const {
     columns,
@@ -66,7 +66,7 @@ function Table<T>(
           [
             'dataSource', 'columns', 'style', 'headerClassName', 'bodyClassName',
             'bodyCellClassName', 'headerCellClassName', 'loading',
-          ]
+          ],
         )}
         ref={ref}
         style={{

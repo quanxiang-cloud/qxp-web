@@ -36,7 +36,7 @@ function Controls({
   const setInteractive = useStoreActions((actions) => actions.setInteractive);
   const { zoomIn, zoomOut } = useZoomPanHelper();
   const isInteractive = useStoreState(
-    (s) => s.nodesDraggable && s.nodesConnectable && s.elementsSelectable
+    (s) => s.nodesDraggable && s.nodesConnectable && s.elementsSelectable,
   );
   const zoomLevel = useStoreState((state) => state.transform[2]);
   const fitView = useFitView();

@@ -56,7 +56,7 @@ export default function BasicConfig({ type, value, onChange: _onChange }: Props)
 
   async function onSetPersons(
     departments: EmployeeOrDepartmentOfRole[],
-    users: EmployeeOrDepartmentOfRole[]
+    users: EmployeeOrDepartmentOfRole[],
   ) {
     onUpdate('approvePersons', { users, departments });
     return true;
@@ -64,7 +64,7 @@ export default function BasicConfig({ type, value, onChange: _onChange }: Props)
 
   function onTimeRuleUpdate<T>(path: string) {
     return (v: T) => onChange(
-      mergeDataAdapter<T, BasicNodeConfig>(value, `timeRule.${path}`, () => v)
+      mergeDataAdapter<T, BasicNodeConfig>(value, `timeRule.${path}`, () => v),
     );
   }
 

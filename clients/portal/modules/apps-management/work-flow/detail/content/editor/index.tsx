@@ -109,7 +109,7 @@ export default function Editor() {
     }
     // const reactFlowBounds = reactFlowWrapper.current.getBoundingClientRect();
     const { nodeType: type, width, height, nodeName } = JSON.parse(
-      e.dataTransfer.getData('application/reactflow')
+      e.dataTransfer.getData('application/reactflow'),
     );
     const { source, target, position } = currentConnection;
     if (!source || !target || !position) {
@@ -123,7 +123,7 @@ export default function Editor() {
     function updateElementPosition(
       element: FlowElement<any>,
       insertPosition: number,
-      currentPosition: number
+      currentPosition: number,
     ) {
       if (!(element as any).position || element.id === id) {
         return element;

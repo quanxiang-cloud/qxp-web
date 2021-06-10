@@ -41,7 +41,7 @@ export default function GlobalConfig() {
     () => updateStore((s) => ({ ...s, saved: true })),
     () => changedRef.current?.key && updateStoreByKey(
       changedRef.current?.key,
-      () => !changedRef.current?.checked
+      () => !changedRef.current?.checked,
     ));
   }, [changedRef.current]);
 

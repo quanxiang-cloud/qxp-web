@@ -76,7 +76,7 @@ export default function Tab({
           twCascade(
             'w-full bg-blue-100 px-20 py-16',
             contentClassName,
-            contentClassName?.includes('overflow') ? '' : 'overflow-auto'
+            contentClassName?.includes('overflow') ? '' : 'overflow-auto',
           )
         }
         style={{

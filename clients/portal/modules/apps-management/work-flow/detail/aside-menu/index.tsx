@@ -58,7 +58,7 @@ export default function NewFlow({ onChange, currentOperateType }: Props) {
           name="login"
           className={cs(
             'transform cursor-pointer transition',
-            { 'rotate-180': !isCollapsed }
+            { 'rotate-180': !isCollapsed },
           )}
           onClick={onCollapse}
         />

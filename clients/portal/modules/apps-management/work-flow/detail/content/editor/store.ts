@@ -150,7 +150,7 @@ export function updateStoreByKey<T>(key: keyof StoreValue, updater: (st: T) => T
 export function updateBusinessDataByKey<T>(
   id: string,
   fieldName: keyof BusinessData,
-  updater: (v: T) => T
+  updater: (v: T) => T,
 ) {
   store.next({
     ...store.value,
@@ -210,7 +210,7 @@ export function updateElementByKey<T>(
 
 export function resetElementsData(
   type: NodeType,
-  value: Partial<BusinessData>
+  value: Partial<BusinessData>,
 ) {
   store.next({
     ...store.value,

@@ -86,7 +86,7 @@ export type FormDataData = {
   triggerWay: TriggerWay;
   whenAlterFields: string[];
   triggerCondition: TriggerCondition;
-  events: {};
+  events: Record<any, any>;
 }
 export type TriggerValue = {
   triggerWay: TriggerWay;
@@ -161,7 +161,7 @@ export interface FillInData {
   basicConfig: BasicNodeConfig;
   fieldPermission: FieldPermission;
   operatorPermission: OperationPermission;
-  events: {};
+  events: Record<any, any>;
 }
 export interface FieldValue {
   variable: string;
@@ -215,6 +215,9 @@ export type Errors = Record<string, unknown> & {
     dataNotSaveMap: Map<string, boolean>;
 };
 
+// todo fix this, assign to lishengma
+type FunctionToBeRefactor = () => void;
+
 export interface StoreValue {
   flowInstance?: OnLoadParams;
   creatorId?: string;
@@ -236,6 +239,6 @@ export interface StoreValue {
   nodeAdminMsg: boolean;
   status: string;
   errors: Errors;
-  currentDataNotSaveConfirmCallback?: Function;
+  currentDataNotSaveConfirmCallback?: FunctionToBeRefactor;
   showDataNotSaveConfirm?: boolean;
 }

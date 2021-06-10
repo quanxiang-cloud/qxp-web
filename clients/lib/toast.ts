@@ -124,7 +124,7 @@ class Toast {
       msg = String(msg);
     }
     this.element.insertAdjacentHTML('beforeend', this.getTemplate(
-      type, msg as string, options?.duration === -1
+      type, msg as string, options?.duration === -1,
     ));
     const element = this.element.lastElementChild as HTMLElement;
     if (!element) {

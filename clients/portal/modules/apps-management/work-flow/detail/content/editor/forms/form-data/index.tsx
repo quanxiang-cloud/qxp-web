@@ -24,13 +24,13 @@ export default function FormDataForm({ formID, value, onChange }: Props) {
     ['GET_WORK_FORM_FIELD_LIST', formID, appID],
     getFormFieldOptions, {
       enabled: !!formID && !!appID,
-    }
+    },
   );
 
   useEffect(() => {
     isError && toast.error('获取工作表字段列表失败');
     !!formID && !isLoading && !formFieldOptions.length && toast.error(
-      '该工作表没有设置字段, 请更换工作表!'
+      '该工作表没有设置字段, 请更换工作表!',
     );
   }, [isError, formID, isLoading, formFieldOptions.length]);
 

@@ -66,7 +66,7 @@ export default function ApproveNodeComponent({ data, id, xPos, yPos, isDragging 
         'rounded-bl-8 bg-white flex flex-col border relative',
         {
           'border-red-600 border-dashed animate-node-error': hasError,
-        }
+        },
       )}
       style={{
         width: nodeData.width,
