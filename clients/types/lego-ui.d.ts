@@ -254,4 +254,6 @@ declare module '@QCFE/lego-ui' {
   }
   class Breadcrumb extends React.Component<BreadcrumbProps, {}> {}
   // Breadcrumb.BreadcrumbItem
+
+  class TextArea extends React.Component<{rows: string | number, name: string; placeholder: string, onChange: any, className?: string}, {}> {}
 }

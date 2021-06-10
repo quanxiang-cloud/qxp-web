@@ -52,7 +52,7 @@ export function toSchema(value: SubTableConfig): ISchema {
   };
 }
 
-export function toConfig(schema: FormBuilder.Schema): SubTableConfig {
+export function toConfig(schema: ISchema): SubTableConfig {
   return {
     title: schema.title as string,
     description: schema.description as string,

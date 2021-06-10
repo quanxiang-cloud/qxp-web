@@ -1,4 +1,4 @@
-import React, { useRef, useState, MouseEvent } from 'react';
+import React, { useRef, useState, MouseEvent, useEffect } from 'react';
 import { usePopper } from 'react-popper';
 import { twCascade } from '@mariusmarais/tailwind-cascade';
 import useClickAway from 'react-use/lib/useClickAway';
@@ -29,6 +29,9 @@ export interface Props {
   offsetY?: number;
   onMouseOver?: () => void;
   onMouseOut?: () => void;
+  onOpen?: () => void;
+  onClose?: () => void;
+  open?: boolean;
 }
 
 export default function Popover({
@@ -42,6 +45,9 @@ export default function Popover({
   offsetY = 100,
   onMouseOver,
   onMouseOut,
+  onOpen,
+  onClose,
+  open = false,
 }: Props) {
   const clickAwayRef = useRef<HTMLDivElement | null>(null);
   const triggerRef = useRef<HTMLDivElement | null>(null);
@@ -58,7 +64,23 @@ export default function Popover({
     ],
   });
   const [isOpen, setIsOpen] = useState(false);
-  useClickAway(clickAwayRef, () => setIsOpen(false));
+  useEffect(() => {
+    isOpen ? onOpen?.() : onClose?.();
+  }, [isOpen]);
+  useEffect(() => {
+    setIsOpen(open);
+  }, [open]);
+  useClickAway(clickAwayRef, (e) => {
+    const el = e.target as HTMLDivElement;
+    const els = [el, el.parentElement, el.parentElement?.parentElement];
+    if (els.some(
+      (el) => el?.classList.contains('dropdown-options__option') ||
+      el?.classList.contains('dropdown-options'),
+    )) {
+      return;
+    }
+    setIsOpen(false);
+  });
   const onContentClick = (e: MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) {
       return;

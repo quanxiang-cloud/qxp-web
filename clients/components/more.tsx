@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { twCascade } from '@mariusmarais/tailwind-cascade';
 import { Icon } from '@QCFE/lego-ui';
 
@@ -6,10 +6,11 @@ import Popover from './popover';
 import List, { IITems } from './list';
 
 export interface IMore<T> {
+  items: IITems<T>;
+  header?: JSX.Element;
   className?: string;
   triggerClassName?: string;
   tooltipClassName?: string;
-  items: IITems<T>;
   params?: T;
   offsetX?: number;
   offsetY?: number;
@@ -18,9 +19,15 @@ export interface IMore<T> {
   onMouseOver?: () => void;
   onMouseOut?: () => void;
   contentItemClassName?: string;
+  placement?: 'bottom-end' | 'top' | 'right' | 'bottom' | 'left' | 'top-start' | 'top-end'
+    | 'bottom-start' | 'right-start' | 'right-end' | 'left-start' | 'left-end' | 'auto'
+    | 'auto-start' | 'auto-end' | undefined;
+  onOpen?: () => void;
+  onClose?: () => void;
+  open?: boolean;
 }
 
-export default function More<T>({
+function More<T>({
   className,
   items,
   params,
@@ -33,6 +40,10 @@ export default function More<T>({
   children,
   onMouseOver,
   onMouseOut,
+  header,
+  onOpen,
+  onClose,
+  open,
 }: IMore<T>) {
   return (
     <Popover
@@ -41,14 +52,18 @@ export default function More<T>({
       tooltipClassName={tooltipClassName}
       onMouseOver={onMouseOver}
       onMouseOut={onMouseOut}
+      onOpen={onOpen}
+      onClose={onClose}
+      open={open}
       content={(
         <List<T>
+          header={header}
           items={items}
           params={params}
           itemClassName={twCascade('hover:bg-blue-100', contentItemClassName)}
           className={
             twCascade(
-              'min-w-90 z-10 py-16 shadow-title bg-white',
+              'min-w-90 z-20 py-16 shadow-title bg-white',
               'rounded-6 absolute right-0 top-full mr-2 mt-12',
               contentClassName,
             )
@@ -71,3 +86,5 @@ export default function More<T>({
     </Popover>
   );
 }
+
+export default memo(More) as typeof More;

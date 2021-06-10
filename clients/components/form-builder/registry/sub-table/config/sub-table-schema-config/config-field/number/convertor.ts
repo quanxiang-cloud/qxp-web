@@ -50,7 +50,7 @@ export function toSchema(value: NumberPickerConfig): ISchema {
   };
 }
 
-export function toConfig(schema: FormBuilder.Schema): NumberPickerConfig {
+export function toConfig(schema: ISchema): NumberPickerConfig {
   let displayModifier: FormBuilder.DisplayModifier = 'normal';
   if (schema.readOnly) {
     displayModifier = 'readonly';

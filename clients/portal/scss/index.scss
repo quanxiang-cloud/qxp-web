@@ -1,5 +1,6 @@
 @import './components.scss';
-@import './form.scss';
+@import './group-hover';
+@import './form';
 @import './message';
 @import './apps-management';
 
@@ -105,21 +106,12 @@ body {
 ////////////////// background /////////////////////////
 .header-background-image {
   position: relative;
-  z-index: 1;
 
-  &::before {
-    content: '';
+  & {
     background-image: url('/dist/images/maskHeaderBackgroundImage.png');
     background-position: top right;
     background-size: contain;
     background-repeat: no-repeat;
-    opacity: 0.5;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
-    position: absolute;
-    z-index: -1;
   }
 }
 
@@ -369,27 +361,18 @@ input {
   }
 }
 
-// todo remove this
-.full-width {
-  width: 100%;
-}
-
-// todo remove this
 .pt-20 {
   padding-top: 20px;
 }
 
-// todo remove this
 .mt-20 {
   margin-top: 20px;
 }
 
-// todo remove this
 .pointer {
   cursor: pointer;
 }
 
-// todo remove this
 .min-w-259 {
   min-width: 259px;
 }

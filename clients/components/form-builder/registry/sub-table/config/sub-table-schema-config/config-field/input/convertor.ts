@@ -37,7 +37,7 @@ export function toSchema(value: InputConfig): ISchema {
   };
 }
 
-export function toConfig(schema: FormBuilder.Schema): InputConfig {
+export function toConfig(schema: ISchema): InputConfig {
   let displayModifier: FormBuilder.DisplayModifier = 'normal';
   if (schema.readOnly) {
     displayModifier = 'readonly';

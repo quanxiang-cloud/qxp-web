@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, memo, useEffect } from 'react';
 import cs from 'classnames';
 
 import './index.scss';
@@ -13,7 +13,7 @@ type Props = {
   style?: React.CSSProperties
 }
 
-export default function Toggle({
+function Toggle({
   onChange,
   onText,
   offText,
@@ -28,26 +28,29 @@ export default function Toggle({
     if (disabled) {
       return;
     }
-    onChange(!checked);
     setChecked(!checked);
+    onChange(!checked);
   };
 
-  return (
-    <div>
-      <label
-        className={cs('qxp-toggle', className, { disabled, checked })}
-        style={style}
-        onClick={handleToggleSwitch}
-      >
-        {onText && offText && (
-          <span
-            className={cs('text', { checked })}
-          >
-            {checked ? onText : offText}
-          </span>
-        )}
-      </label>
-    </div>
+  useEffect(() => {
+    setChecked(defaultChecked);
+  }, [defaultChecked]);
 
+  return (
+    <label
+      className={cs('qxp-toggle', className, { disabled, checked })}
+      style={style}
+      onClick={handleToggleSwitch}
+    >
+      {onText && offText && (
+        <span
+          className={cs('text', { checked })}
+        >
+          {checked ? onText : offText}
+        </span>
+      )}
+    </label>
   );
 }
+
+export default memo(Toggle);

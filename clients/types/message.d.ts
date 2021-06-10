@@ -38,9 +38,11 @@ declare namespace Qxp {
   }
 
   type MsgReceiver = {
-    type: number; // 1、人员  2、部门
+    type: 1 | 2; // 1、人员  2、部门
     id: string;
-    name: string;
+    name?: string;
+    ownerName?: string;
+    departmentName?: string;
   }
 
   type MsgArg = {

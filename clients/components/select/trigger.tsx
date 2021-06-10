@@ -39,6 +39,7 @@ export function MultipleSelectTrigger<T extends React.Key>(
         selectedOption.map(({ value, label }) => {
           return (
             <Tag
+              className="mr-5"
               key={value}
               id={value}
               value={label}

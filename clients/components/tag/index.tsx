@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { CSSProperties } from 'react';
 import cs from 'classnames';
 
 import { Icon } from '@QCFE/lego-ui';
@@ -8,23 +8,31 @@ type Props<T> = {
   id?: T;
   className?: string;
   onDelete?: (id: T, e: React.MouseEvent) => void;
+  style?: CSSProperties;
+  deleteIconSize?: number;
 }
 
-export default function Tag<T>({ value, id, className, onDelete }: Props<T>): JSX.Element {
+export default function Tag<T>({
+  value,
+  id,
+  className,
+  style,
+  onDelete,
+  deleteIconSize,
+}: Props<T>): JSX.Element {
   return (
-    <span className={cs('tag', className)}>
+    <span className={cs('tag inline-flex items-center', className)} style={style}>
       {value}
       {
         onDelete && (
-          <span style={{ marginLeft: '4px' }} onClick={(e): void => id && onDelete(id, e)}>
+          <span className="ml-4 flex items-center" onClick={(e): void => id && onDelete(id, e)}>
             <Icon
               changeable
               clickable
               name="close"
-              size={12}
+              size={deleteIconSize || 12}
             />
           </span>
-
         )
       }
     </span>

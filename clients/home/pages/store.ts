@@ -1,9 +1,11 @@
 import { observable, action, IReactionDisposer, reaction } from 'mobx';
 import { TreeData } from '@atlaskit/tree';
+import toast from '@lib/toast';
 
 import { buildAppPagesTreeData } from '@lib/utils';
 
 import { fetchUserList, fetchPageList, fetchFormScheme } from '../lib/api';
+import { getFlowInstanceCount } from './approvals/api';
 
 class UserAppStore {
   destroySetCurPage: IReactionDisposer;
@@ -94,6 +96,24 @@ class UserAppStore {
       items: {},
     };
     this.curPage = { id: '' };
+  }
+
+  @action
+  fetchTodoList = async () => {
+    try {
+      const {
+        overTimeCount = 0,
+        urgeCount = 0,
+        waitHandleCount = 0,
+        ccToMeCount = 0,
+      } = await getFlowInstanceCount({ 'User-Id': window.USER.id });
+      this.TODO_LIST[0].value = overTimeCount;
+      this.TODO_LIST[1].value = urgeCount;
+      this.TODO_LIST[2].value = waitHandleCount;
+      this.HANDLE_LIST[2].count = ccToMeCount;
+    } catch (err) {
+      toast.error(err);
+    }
   }
 }
 

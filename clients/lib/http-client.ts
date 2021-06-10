@@ -22,7 +22,11 @@ function httpClient<TData>(path: string, body?: unknown, additionalHeaders?: Hea
   }).then((resp) => {
     const { code, msg, data } = resp;
     if (code !== 0) {
-      return Promise.reject(new Error(msg));
+      const e = new Error(msg);
+      if (data) {
+        Object.assign(e, { data });
+      }
+      return Promise.reject(e);
     }
 
     return data as TData;

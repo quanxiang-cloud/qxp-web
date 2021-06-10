@@ -35,7 +35,7 @@ export const defaultConfig: AssociatedRecordsConfig = {
   required: false,
 };
 
-export function toSchema(value: AssociatedRecordsConfig): FormBuilder.Schema {
+export function toSchema(value: AssociatedRecordsConfig): ISchema {
   return {
     type: 'array',
     title: value.title,
@@ -60,7 +60,7 @@ export function toSchema(value: AssociatedRecordsConfig): FormBuilder.Schema {
   };
 }
 
-export function toConfig(schema: FormBuilder.Schema): AssociatedRecordsConfig {
+export function toConfig(schema: ISchema): AssociatedRecordsConfig {
   let displayModifier: FormBuilder.DisplayModifier = 'normal';
   if (schema.readOnly) {
     displayModifier = 'readonly';

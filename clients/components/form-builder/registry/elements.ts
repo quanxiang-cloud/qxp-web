@@ -9,6 +9,8 @@ import MultipleSelect from './multiple-select';
 import CascadeSelector from './cascade-selector';
 import SubTable from './sub-table';
 import AssociatedRecords from './associated-records';
+import UserPicker from './user-picker';
+import OrganizationPicker from './organization-select';
 import FileUpload from './file-upload';
 import ImageUpload from './image-upload';
 
@@ -24,6 +26,8 @@ const availableElements = [
   CascadeSelector,
   SubTable,
   AssociatedRecords,
+  UserPicker,
+  OrganizationPicker,
   FileUpload,
   ImageUpload,
 ];

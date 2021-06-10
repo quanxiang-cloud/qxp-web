@@ -7,6 +7,7 @@ interface Segment {
   key: string;
   text: string;
   path?: string;
+  render?: (segment: Segment) => React.ReactNode;
 }
 
 type Props = PropsWithChildren<{
@@ -70,10 +71,13 @@ function Breadcrumb({
         return (
           <div key={link.key} className={cs(className, 'qxp-breadcrumb-item')}>
             {
-              !link.path ? link.text : (
-                <Link to={link.path} className={cs(className, 'qxp-breadcrumb-link')}>
-                  {link.text}
-                </Link>
+              // eslint-disable-next-line no-nested-ternary
+              link.render ? link.render(link) : (
+                !link.path ? link.text : (
+                  <Link to={link.path} className={cs(className, 'qxp-breadcrumb-link')}>
+                    {link.text}
+                  </Link>
+                )
               )
             }
             <span className="qxp-breadcrumb-separator">{separator}</span>
