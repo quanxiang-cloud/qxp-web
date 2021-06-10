@@ -26,13 +26,20 @@ lint_js:
   script:
     - yarn run lint
 
+integrate:
+  tags:
+    - qxp-web-runner
+  stage: test
+  script:
+    - yarn run lint
+    - NODE_ENV=production ./node_modules/.bin/webpack --config webpack.config.js
+
 build_all:
   tags:
     - qxp-web-runner
   stage: build
   only:
     - testing
-    - gitlab-ci
   script:
     - node_modules/.bin/gulp buildAssets
     - NODE_ENV=production ./node_modules/.bin/webpack --config webpack.config.js
