@@ -30,7 +30,7 @@ const UserPicker = (p: ISchemaFieldComponentProps): JSX.Element => {
     'x-component-props': xComponentsProps,
   });
 
-  return (optionalRange != 'all') ? <Select {...props} options={p.props.enum} {...p['x-component-props']} /> : <AllUserPicker {...props} />;
+  return (optionalRange != 'all') ? <Select {...props} options={p.props.enum} {...xComponentsProps}/> : <AllUserPicker {...props} />;
 };
 
 const AllUserPicker = (p: ISchemaFieldComponentProps): JSX.Element => {
@@ -82,6 +82,9 @@ const AllUserPicker = (p: ISchemaFieldComponentProps): JSX.Element => {
           setCurrent((current) => 1 + current);
         }
       }
+    },
+    onChange: (_: any, selects: Option[]) => {
+      p.mutators.change(selects);
     },
 
   });

@@ -9,7 +9,7 @@ import { StoreContext } from '../../context';
 
 interface Props {
   value: Option | Option[];
-  onChange: (value: Option) => void;
+  onChange: (value: Option | Option[]) => void;
   rangeList: EmployeeOrDepartmentOfRole[];
   multiple: 'signle' | 'multiple';
   optionalRange: 'all' | 'customize';
@@ -35,7 +35,9 @@ const CustomizeComponent = (props: Props) => {
   }));
 
   // @ts-ignore
-  return <Select options={Options} mode={multiple} value={Array.isArray(value) ? value.map(({ value }) => value) : value.value} onChange={onChange} />;
+  return <Select options={Options} mode={multiple} value={Array.isArray(value) ? value.map(({ value }) => value) : value.value} onChange={(_, selects: Option|Option[])=>{
+    onChange(selects)
+  }} />;
 };
 
 const AllUserComponent = (props: Props) => {
