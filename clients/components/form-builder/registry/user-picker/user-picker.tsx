@@ -30,7 +30,7 @@ const UserPicker = (p: ISchemaFieldComponentProps): JSX.Element => {
     'x-component-props': xComponentsProps,
   });
 
-  return (optionalRange == 'customize') ? <Select {...props} options={p.props.enum} {...p['x-component-props']} /> : <AllUserPicker {...props} />;
+  return (optionalRange != 'all') ? <Select {...props} options={p.props.enum} {...p['x-component-props']} /> : <AllUserPicker {...props} />;
 };
 
 const AllUserPicker = (p: ISchemaFieldComponentProps): JSX.Element => {
@@ -69,31 +69,30 @@ const AllUserPicker = (p: ISchemaFieldComponentProps): JSX.Element => {
     },
   });
 
-  const calcParams = React.useMemo(() => {
-    const xComponentsProps = Object.assign({}, p.props['x-component-props'], {
-      loading: isLoading,
-      onSearch: debounce(_setKeyword, 500),
-      onPopupScroll(e: React.MouseEvent) {
-        if (!hasNext) return;
-        const dom = e.target;
-        const { scrollTop, clientHeight, scrollHeight } = dom as any;
-        if (scrollTop + clientHeight == scrollHeight) {
-          if (!isLoading) {
-            setCurrent((current) => 1 + current);
-          }
+
+  const xComponentsProps = Object.assign({}, p.props['x-component-props'], {
+    loading: isLoading,
+    onSearch: debounce(_setKeyword, 500),
+    onPopupScroll(e: React.MouseEvent) {
+      if (!hasNext) return;
+      const dom = e.target;
+      const { scrollTop, clientHeight, scrollHeight } = dom as any;
+      if (scrollTop + clientHeight == scrollHeight) {
+        if (!isLoading) {
+          setCurrent((current) => 1 + current);
         }
-      },
+      }
+    },
 
-    });
-    const props = Object.assign({}, p.props, {
-      enum: options,
-      'x-component-props': xComponentsProps,
-    });
+  });
+  const props = Object.assign({}, p.props, {
+    enum: options,
+    'x-component-props': xComponentsProps,
+  });
 
-    return Object.assign({}, p, { props });
-  }, [p, options, hasNext, isLoading]);
+  const calcParams = Object.assign({}, p, { props });
 
-  return <Select {...calcParams} {...calcParams['x-component-props']} options={options} />;
+  return <Select {...calcParams} options={options} {...xComponentsProps}/>;
 };
 
 UserPicker.isFieldComponent = true;

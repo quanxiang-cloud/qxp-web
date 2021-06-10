@@ -58,9 +58,9 @@ export const toSchema = (config: DefaultConfig): FormBuilder.Schema => {
         config.onSearch && config.onSearch(value);
       },
 
-      filterOption: (input: string, option: any[]) =>
-        // @ts-ignore
-        option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0,
+      filterOption: (input: string, option: Option) =>{
+        return option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0
+      }
     },
     ['x-internal']: {
       multiple: config.multiple,
