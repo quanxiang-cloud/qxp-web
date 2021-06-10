@@ -71,7 +71,7 @@ function DetailsDrawer({ onCancel, rowID, goEdit, delData }: Props): JSX.Element
 
     return [_details, _systems];
   }, [data]);
-
+ 
   const handleCancel = (): void => {
     setBeganClose(true);
     setTimeout(() => {

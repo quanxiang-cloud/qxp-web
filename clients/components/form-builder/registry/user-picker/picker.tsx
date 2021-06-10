@@ -7,6 +7,7 @@ import Modal from '@c/modal';
 import EmployeePicker from '@c/employee-or-department-picker/employee-picker';
 import Button from '@c/button';
 import './index.scss';
+import classNames from 'classnames';
 
 interface Props {
   // defaultValue: EmployeeOrDepartmentOfRole[];
@@ -68,13 +69,12 @@ const Picker = ({ value: defaultValue = [], onChange, isMy }: Props) => {
 
   return (
     <div>
-      <div onClick={() => setVisible((v) => !v)}>
+      <div 
+        className={classNames({ disabled_test: isMy })} onClick={() => isMy || setVisible((v) => !v)}>
         {defaultValue.length <= 0 ?
           <Button> 选择成员范围</Button> :
           <div className={'text_flow '}>{showName}</div>}
-
       </div>
-
       {
         visible && (<Modal
           title={'员工可选范围'}

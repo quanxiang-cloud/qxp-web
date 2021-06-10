@@ -21,11 +21,16 @@ type Option = {
 }
 
 export function getTableCellData(
-  initValue: string | string[] | Record<string, unknown>,
+  initValue: string | string[] | Record<string, unknown> | Record<string, unknown>[],
   field: ISchema,
 ): string | JSX.Element | Record<string, any>[] {
   if (field.type === 'array') {
     return initValue as unknown as Record<string, any>[] || [];
+  }
+
+  if (field.type === 'label-value') {
+    return (([] as Record<string, unknown>[]).concat(initValue as Record<string, unknown>[]))
+    .map(itm=>itm.label).join(',')
   }
 
   if (!initValue) {
@@ -35,7 +40,7 @@ export function getTableCellData(
   if (field.type === 'datetime') {
     const format = field['x-component-props']?.format || 'YYYY-MM-DD HH:mm:ss';
     if (Array.isArray(initValue)) {
-      return initValue.map((value: string) => {
+      return (initValue as string[]).map((value: string) => {
         return moment(value).format(format);
       }).join('-');
     }
@@ -45,7 +50,7 @@ export function getTableCellData(
 
   if (field.enum && field.enum.length) {
     if (Array.isArray(initValue)) {
-      return initValue.map((_value: string) => {
+      return (initValue as string[]).map((_value: string) => {
         if (!field.enum) {
           return '';
         }
