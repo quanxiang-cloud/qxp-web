@@ -16,7 +16,7 @@ type Props = {
   store: Store;
 }
 
-function FormBuilder({ className, store }: Props) {
+function FormBuilder({ className, store }: Props): JSX.Element {
   return (
     <ConfigProvider locale={zhCN}>
       <StoreContext.Provider value={store}>
