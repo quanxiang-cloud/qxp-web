@@ -5,7 +5,7 @@ import configForm from './config/config-form';
 const SubTableField: Omit<FormBuilder.SourceElement<SubTableConfig>, 'displayOrder'> = {
   configForm,
   displayName: '子表单',
-  icon: 'list',
+  icon: 'table_view',
   defaultConfig,
   toSchema,
   toConfig,
