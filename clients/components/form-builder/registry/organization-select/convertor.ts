@@ -25,7 +25,7 @@ export const defaultConfig: DefaultConfig = {
   defaultValues: [],
 };
 
-export const toSchema = (config: DefaultConfig): FormBuilder.Schema => {
+export const toSchema = (config: DefaultConfig): ISchema => {
   return Object.assign(config, {
     type: 'label-value',
     title: config.title,
@@ -47,7 +47,7 @@ export const toSchema = (config: DefaultConfig): FormBuilder.Schema => {
   });
 };
 
-export const toConfig = (schema: FormBuilder.Schema): DefaultConfig => {
+export const toConfig = (schema: ISchema): DefaultConfig => {
   let displayModifier: FormBuilder.DisplayModifier = 'normal';
   if (schema.readOnly) {
     displayModifier = 'readonly';

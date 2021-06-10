@@ -38,7 +38,7 @@ export function toSchema(value: TextareaConfig): ISchema {
   };
 }
 
-export function toConfig(schema: FormBuilder.Schema): TextareaConfig {
+export function toConfig(schema: ISchema): TextareaConfig {
   let displayModifier: FormBuilder.DisplayModifier = 'normal';
   if (schema.readOnly) {
     displayModifier = 'readonly';

@@ -67,7 +67,7 @@ export function toSchema(value: typeof defaultConfig): ISchema {
   };
 }
 
-export function toConfig(schema: FormBuilder.Schema): DatePickerConfig {
+export function toConfig(schema: ISchema): DatePickerConfig {
   let displayModifier: FormBuilder.DisplayModifier = 'normal';
   if (schema.readOnly) {
     displayModifier = 'readonly';
