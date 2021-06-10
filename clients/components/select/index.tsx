@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import cs from 'classnames';
 
 import Icon from '@c/icon';
@@ -38,7 +38,7 @@ interface SingleSelectProps<T> extends BaseSelectProps<T> {
   multiple?: false;
   value?: T;
   defaultValue?: T;
-  onChange?: (value: T) => void;
+  onChange?: (value: T) => void | boolean;
   triggerRender?: SingleTriggerRenderFunc<T>;
 }
 
@@ -147,8 +147,10 @@ export default class Select<T extends React.Key> extends React.Component<SelectP
 
   handleClick = (value: T): void => {
     if (!this.props.multiple) {
-      this.setState({ selectedValue: value });
-      this.props.onChange?.(value);
+      const isOk = this.props.onChange?.(value);
+      if (isOk !== false) {
+        this.setState({ selectedValue: value });
+      }
       this.popperRef.current && this.popperRef.current.close();
 
       return;
@@ -232,7 +234,7 @@ export default class Select<T extends React.Key> extends React.Component<SelectP
       return (
         <MultipleSelectTrigger
           selectedOption={selectedOption as SelectOption<T>[] | undefined}
-          placeholder={placeholder}
+          placeholder={placeholder as string}
           onUnselect={(value): void => {
             this.handleClick(value);
           }}
@@ -251,7 +253,9 @@ export default class Select<T extends React.Key> extends React.Component<SelectP
 
   render(): React.ReactNode {
     const { triggerActive, selectedValue } = this.state;
-    const { children, triggerRender, name, inputRef, style, className, disabled, id } = this.props;
+    const {
+      children, triggerRender, name, inputRef, style, className, disabled, id,
+    } = this.props;
 
     const arrowStyle: React.CSSProperties | undefined = triggerActive ? {
       transform: 'rotate(180deg)',

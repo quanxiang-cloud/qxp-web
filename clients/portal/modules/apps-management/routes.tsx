@@ -4,6 +4,7 @@ import { Route, Switch } from 'react-router-dom';
 const AppsIndex = React.lazy( () => import('./index'));
 const AppDetails = React.lazy(() => import('./pages/app-details'));
 const FormDesign = React.lazy(() => import('./pages/form-design'));
+const FlowDetail = React.lazy(() => import('./work-flow/detail'));
 
 export default function Routes(): JSX.Element {
   return (
@@ -15,6 +16,8 @@ export default function Routes(): JSX.Element {
         path="/apps/formDesign/:pageType/:pageId/:appID/:navType?"
         component={FormDesign}
       />
+      <Route path="/apps/flow/new/:type/:appID" component={FlowDetail} />
+      <Route path="/apps/flow/:appID/:flowID" component={FlowDetail} />
     </Switch>
   );
 }

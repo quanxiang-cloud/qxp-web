@@ -1,0 +1,63 @@
+.approval-detail {
+  &-toolbar {
+    position: sticky;
+    top: 0;
+    box-shadow: inset 0px -1px 0px #E2E8F0;
+    background: white;
+    z-index: 10;
+
+    .left-btns {
+      > span{
+        margin-right: 20px;
+        cursor: pointer;
+        padding: 5px;
+
+        &:hover {
+          background: #F0F6FF;
+          border-radius: 8px 8px 8px 2px;
+        }
+      }
+    }
+
+    .right-btns {
+      width: 240px;
+      display: flex;
+      flex-wrap: wrap;
+      > button {
+        border: none;
+        margin-right: 16px;
+        margin-bottom: 10px;
+        &:last-child {
+          margin-right: 0;
+        }
+
+        &.btn-item-done {
+          background: #16A34A;
+        }
+      }
+    }
+  }
+
+  // schema form
+  .task-form {
+    form {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      grid-row-gap: 24px;
+      grid-column-gap: 20px;
+    }
+  }
+
+  &-tab {
+    width: 400px;
+    background: #F1F5F9 !important;
+    box-shadow: inset 1px 0px 0px #E2E8F0;
+    padding: 15px 20px;
+  }
+}
+
+.approval-panel {
+  background: white;
+  border-radius: 12px;
+  min-height: calc(100vh - 100px);
+}

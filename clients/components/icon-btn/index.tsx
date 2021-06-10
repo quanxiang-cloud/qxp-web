@@ -1,19 +1,20 @@
 import React from 'react';
 import cs from 'classnames';
 
-import Icon from '@c/icon';
+import Icon, { Props as IconProps } from '@c/icon';
 
 interface Props extends Omit<
   React.DetailedHTMLProps<React.ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>,
   'children'
 > {
   iconName: string;
+  iconProps?: Omit<Partial<IconProps>, 'ref'>;
   loading?: boolean;
   forbidden?: boolean;
 }
 
 function IconBtn(
-  { iconName, className, loading, forbidden, ...restProps }: Props,
+  { iconName, className, loading, forbidden, iconProps = {}, ...restProps }: Props,
   ref?: React.Ref<HTMLButtonElement>,
 ): JSX.Element {
   return (
@@ -31,6 +32,7 @@ function IconBtn(
       <Icon
         name={loading ? 'loading' : iconName}
         className={cs({ 'animate-spin': loading })}
+        {...iconProps}
       />
     </button>
   );

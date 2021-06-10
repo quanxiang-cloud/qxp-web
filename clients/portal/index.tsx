@@ -25,8 +25,6 @@ const queryClient = new QueryClient({
   },
 });
 
-Object.assign(window, { _stores: stores }); // fixme: debug
-
 ReactDOM.render(
   <MobxProvider {...stores}>
     <QueryClientProvider client={queryClient}>

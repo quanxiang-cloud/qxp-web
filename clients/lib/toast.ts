@@ -1,3 +1,5 @@
+import throttle from '@lib/decorators/throttle';
+
 interface Options {
   duration?: number;
 }
@@ -43,10 +45,10 @@ class Toast {
       .toast .message-info {
         font-size: 14px;
         line-height: 22px;
-        margin-right: 64px;
       }
 
       .toast .close {
+        margin-left: 64px;
         cursor: pointer;
         color: #64748B;
         font-size: 20px;
@@ -57,11 +59,13 @@ class Toast {
       .toast.error {
         background: #FEF2F2;
         border: 1px solid #DC2626;
+        color: #DC2626;
       }
 
       .toast.info {
         background: #F0FDF4;;
         border: 1px solid #16A34A;
+        color: #16A34A;
       }
     `;
     document.head.appendChild(style);
@@ -73,11 +77,15 @@ class Toast {
     if (e instanceof Event) {
       const closeElement = e.currentTarget as HTMLElement;
       curNotifyElement = closeElement.parentElement as HTMLElement;
+      while (!curNotifyElement.classList.contains('toast')) {
+        curNotifyElement = curNotifyElement.parentElement as HTMLElement;
+      }
     } else if (e instanceof HTMLElement) {
       curNotifyElement = e;
     } else {
       curNotifyElement = this.notifyInstances[0] as HTMLElement;
     }
+
     const curNotifyElementIndex = this.notifyInstances.findIndex(
       (element) => element === curNotifyElement,
     );
@@ -94,19 +102,30 @@ class Toast {
     });
   }
 
-  private getTemplate(type: string, message: string) {
+  private getTemplate(type: string, message: string, closeable: boolean) {
     return `
       <div class="toast ${type}">
         <span class="message-info">${message}</span>
-        <span class="close" onClick="closeNotify(event);">
-          <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24px" fill="#64748B"><path d="M0 0h24v24H0z" fill="none"/><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
-        </span>
+        ${closeable ? `
+          <span class="close" onClick="closeNotify(event);">
+            <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24px" fill="#64748B"><path d="M0 0h24v24H0z" fill="none"/><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+          </span>
+        ` : ''}
       </div>
     `;
   }
 
-  private toast(type: string, message: string, options?: Options) {
-    this.element.insertAdjacentHTML('beforeend', this.getTemplate(type, message));
+  @throttle()
+  private toast(type: string, message: string | Error | unknown, options?: Options) {
+    let msg = message;
+    if (msg instanceof Error) {
+      msg = msg.message;
+    } else if (typeof msg !== 'string') {
+      msg = String(msg);
+    }
+    this.element.insertAdjacentHTML('beforeend', this.getTemplate(
+      type, msg as string, options?.duration === -1
+    ));
     const element = this.element.lastElementChild as HTMLElement;
     if (!element) {
       return;
@@ -121,11 +140,11 @@ class Toast {
     setTimeout(() => this.close(element), options?.duration || this.duration);
   }
 
-  public success(message: string, options?: Options) {
+  public success(message: string | Error | unknown, options?: Options) {
     this.toast('info', message, options);
   }
 
-  public error(message: string, options?: Options) {
+  public error(message: string | Error | unknown, options?: Options) {
     this.toast('error', message, options);
   }
 
