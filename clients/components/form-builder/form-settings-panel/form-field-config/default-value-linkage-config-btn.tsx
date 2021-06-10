@@ -5,14 +5,12 @@ import Button from '@c/button';
 
 import LinkageConfig from './default-value-linkage-config';
 
-function DefaultValueLinkageConfigBtn(props: ISchemaFieldComponentProps) {
+function DefaultValueLinkageConfigBtn(props: ISchemaFieldComponentProps): JSX.Element {
   const [showModal, setShowModal] = useState(false);
 
   return (
     <>
-      <Button onClick={() => setShowModal(true)}>
-        设置联动规则
-      </Button>
+      <Button onClick={() => setShowModal(true)}>设置联动规则</Button>
       {
         showModal && (
           <LinkageConfig
