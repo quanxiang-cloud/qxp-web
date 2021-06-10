@@ -74,8 +74,6 @@ export default function BasicConfig({ type, value, onChange: _onChange }: Props)
         label={label}
         value={key}
         className="mb-8 inline-flex"
-        labelClassName="text-body2"
-        labelStyle={{ color: 'var(--gray-900)' }}
         defaultChecked={value.autoRules.includes(key)}
         onChange={onUpdateAutoRules}
       />
