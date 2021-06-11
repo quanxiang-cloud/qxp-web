@@ -1,30 +1,12 @@
-import React, { useState } from 'react';
-import { Column } from 'react-table';
-import { get } from 'lodash';
+import React, { useRef } from 'react';
 
 import Modal, { FooterBtnProps } from '@c/modal';
-import Table from '@c/table';
-import Pagination from '@c/pagination';
-import { useQuery } from 'react-query';
-import { fetchTableData } from './api';
-
-// columns of SelectRecordsModal and AssociatedRecords should be different
-// refactor this or just use the same component in app-table-data
-function computeTableColumns(schema: ISchema, columns: string[]): Column<Record<string, any>>[] {
-  return columns.map((fieldKey) => {
-    const fieldSchema = get(schema, `properties.${fieldKey}`, {});
-
-    return {
-      id: fieldKey,
-      Header: fieldSchema.title || fieldKey,
-      accessor: fieldKey,
-    };
-  }).filter(({ id }) => id !== '_id');
-}
+import FormDataTable from '@c/form-app-data-table';
+import { Ref } from '@c/form-app-data-table/type';
 
 type Props = {
   onClose: () => void;
-  onSubmit: (selected: Record<string, any>[]) => void;
+  onSubmit: (selected: string[]) => void;
   appID: string;
   tableID: string;
   multiple: boolean;
@@ -33,45 +15,17 @@ type Props = {
 }
 
 export default function SelectRecordsModal({
-  onClose, appID, tableID, multiple, associatedTable, columns, onSubmit,
-}: Props):JSX.Element {
-  const [pageNumber, setPageNumber] = useState(1);
-  const [pageSize, setPageSize] = useState(50);
-  const [selected, setSelected] = useState<Record<string, any>[]>([]);
-  const {
-    data, isLoading, isError,
-  } = useQuery([pageNumber], () => fetchTableData(appID, tableID, pageNumber, pageSize));
+  onClose, appID, tableID, multiple, onSubmit,
+}: Props): JSX.Element {
+  const tableRef: React.Ref<any> = useRef<Ref>();
 
-  const tableColumns = computeTableColumns(associatedTable, columns);
-  if (!multiple) {
-    tableColumns.push({
-      id: 'select_this',
-      Header: '',
-      accessor: (row) => {
-        return (
-          <div className="cursor-pointer text-blue-600" onClick={() => onSubmit([row])}>
-            选择
-          </div>
-        );
-      },
-    });
-  }
+  const handleSubmit = (): void => {
+    if (!tableRef.current) {
+      return;
+    }
 
-  if (isLoading) {
-    return (
-      <Modal onClose={onClose}>
-        <div>loading...</div>
-      </Modal>
-    );
-  }
-
-  if (!data || isError) {
-    return (
-      <Modal onClose={onClose}>
-        <div>some error</div>
-      </Modal>
-    );
-  }
+    onSubmit(tableRef.current.getSelected());
+  };
 
   const btns: FooterBtnProps[] = [
     {
@@ -83,7 +37,7 @@ export default function SelectRecordsModal({
       key: 'submit',
       text: '确定',
       modifier: 'primary',
-      onClick: () => onSubmit(selected),
+      onClick: handleSubmit,
     },
   ];
 
@@ -93,20 +47,11 @@ export default function SelectRecordsModal({
       onClose={onClose}
       footerBtns={multiple ? btns : undefined}
     >
-      <Table
-        showCheckbox={multiple}
-        rowKey="_id"
-        onSelectChange={(selectedKey, selectedRows) => setSelected(selectedRows)}
-        columns={tableColumns}
-        data={data.entities}
-      />
-      <Pagination
-        pageSize={pageSize}
-        current={pageNumber}
-        onChange={(current, size) => {
-          setPageNumber(current);
-          setPageSize(size);
-        }}
+      <FormDataTable
+        allowRequestData
+        ref={tableRef}
+        pageID={tableID}
+        appID={appID}
       />
     </Modal>
   );

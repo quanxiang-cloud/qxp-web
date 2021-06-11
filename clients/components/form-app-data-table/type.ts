@@ -11,6 +11,7 @@ export type TableHeaderBtn = {
 
 export type Ref = {
   refresh: () => void;
+  getSelected: () => string[];
 }
 
 export type TableConfig = {

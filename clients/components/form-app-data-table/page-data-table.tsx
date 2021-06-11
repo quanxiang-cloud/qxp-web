@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useContext } from 'react';
 import { observer } from 'mobx-react';
 
 import Button from '@c/button';
@@ -11,7 +11,7 @@ import { StoreContext } from './context';
 
 function PageDataTable(): JSX.Element {
   const store = useContext(StoreContext);
-  const [selected, setSelected] = useState<string[]>([]);
+  const { selected, setSelected } = store;
 
   useEffect(() => {
     if (!store.allowRequestData) {
