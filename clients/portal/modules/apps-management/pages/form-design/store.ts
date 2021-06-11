@@ -143,9 +143,9 @@ class FormDesignStore {
     this.pageLoading = true;
     getTableSchema(appID, pageID).then((res) => {
       const { schema = {}, config = {} } = res || {};
-      this.hasSchema = res ? true : false;
+      this.hasSchema = !!res;
       this.formStore = new FormStore({ schema, appID, pageID });
-      this.pageTableColumns = config.pageTableColumns;
+      this.pageTableColumns = config.pageTableColumns || [];
       this.filters = config.filters || [];
       this.pageTableShowRule = config.pageTableShowRule || {};
       this.pageLoading = false;

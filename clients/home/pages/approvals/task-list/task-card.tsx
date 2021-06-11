@@ -1,5 +1,6 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
+import { isObject } from 'lodash';
 import dayjs from 'dayjs';
 
 import Avatar from '../avatar';
@@ -12,12 +13,12 @@ interface Props {
   task: ApprovalTask;
 }
 
-function getEnumLabelFromSchema(schema: Record<string, any>, key: string, value: string) {
+function getEnumLabelFromSchema(schema: Record<string, any>, key: string, value: string | Record<'label' | 'value', unknown>) {
   const enumData = schema?.[key]?.enum || [];
   if (enumData.length) {
     return (enumData.find((v: { value: any }) => v.value === value))?.label || value;
   }
-  return value;
+  return isObject(value) ? value.label : value;
 }
 
 export default function TaskCard({ task }: Props): JSX.Element {
@@ -69,7 +70,8 @@ export default function TaskCard({ task }: Props): JSX.Element {
                 }
                 return (
                   <p key={keyName} className="mb-4 form-data-item">
-                    <span>{properties[keyName]?.title || keyName}: </span><span>{getEnumLabelFromSchema(properties, keyName, value)}</span>
+                    <span>{properties[keyName]?.title || keyName}: </span>
+                    <span>{getEnumLabelFromSchema(properties, keyName, value)}</span>
                   </p>
                 );
               })
