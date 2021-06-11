@@ -30,7 +30,7 @@ export function getTableCellData(
 
   if (field.type === 'label-value') {
     return (([] as Record<string, unknown>[]).concat(initValue as Record<string, unknown>[]))
-    .map(itm=>itm.label).join(',')
+      .map((itm)=>itm.label).join(',');
   }
 
   if (!initValue) {
