@@ -151,9 +151,12 @@ function CreateDataForm(): JSX.Element {
       ref,
     );
 
-    formDataRequest(store.appID, store.pageID, reqData).then(() => {
-      toast.success('提交成功');
+    formDataRequest(store.appID, store.pageID, reqData).then((data) => {
       store.setVisibleCreatePage(false);
+      if (data?.errorCount) {
+        return toast.error(`提交成功, 失败记录数: ${data?.errorCount}`);
+      }
+      toast.success('提交成功');
     }).finally(() => {
       setLoading(false);
     });
