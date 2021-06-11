@@ -1,38 +1,41 @@
-import httpClient, { formDataRequest, getTableSchema } from '@lib/http-client';
+import httpClient, { getTableSchema } from '@lib/http-client';
 
 export type SchemaAndRecord = {
   schema: ISchema;
   record?: Record<string, any>;
 }
 
-export async function findOneRecord(appID: string, tableID: string, _id?: string): Promise<{
-  entities: any[]
-}> {
-  if (!_id) {
-    return Promise.resolve({ entities: [] });
-  }
-  const entities = await formDataRequest(appID, tableID, {
-    method: 'findOne',
-    conditions: {
-      condition: [{ key: '_id', op: 'eq', value: [_id] }],
+export function findOneRecord(appID: string, tableID: string, id: string): Promise<Record<string, any>> {
+  return httpClient<{ entity?: Record<string, any>; }>(
+    `/api/v1/structor/${appID}/home/form/${tableID}`,
+    {
+      method: 'findOne',
+      conditions: {
+        condition: [{ key: '_id', op: 'eq', value: [id] }],
+      },
     },
-  });
+    { 'X-Proxy': 'FORM_DATA' },
+  ).then(({ entity }) => {
+    if (!entity) {
+      return Promise.reject(new Error('没有找到记录'));
+    }
 
-  return { entities: entities ? [entities] : [] };
+    return entity;
+  });
 }
 
 export function getSchemaAndRecord(
-  appID: string, tableID: string, recordID?: string,
+  appID: string, tableID: string, recordID: string,
 ): Promise<SchemaAndRecord> {
   return Promise.all([
     getTableSchema(appID, tableID),
     findOneRecord(appID, tableID, recordID),
-  ]).then(([{ schema }, { entities }]) => {
+  ]).then(([{ schema }, record]) => {
     if (!schema) {
       return Promise.reject(new Error('没有找到表单 schema，请联系管理员。'));
     }
 
-    return { schema, record: entities[0] };
+    return { schema, record };
   });
 }
 
