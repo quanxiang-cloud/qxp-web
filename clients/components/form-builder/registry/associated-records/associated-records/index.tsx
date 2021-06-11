@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
+import { Table as AntTable } from 'antd';
+import { ColumnType } from 'antd/lib/table';
 
 import Table from '@c/table';
 import Button from '@c/button';
@@ -18,6 +20,7 @@ type Props = {
   selected: string[];
   associatedTable: ISchema;
   onChange: (selectedKeys: string[]) => void;
+  readonly: boolean;
 }
 
 function computeTableColumns(schema: ISchema, columns: string[]): Column<Record<string, any>>[] {
@@ -32,7 +35,7 @@ function computeTableColumns(schema: ISchema, columns: string[]): Column<Record<
 }
 
 function AssociatedRecords({
-  associatedTable, columns, selected, appID, tableID, multiple, onChange,
+  associatedTable, columns, selected, appID, tableID, multiple, onChange, readonly,
 }: Props): JSX.Element {
   // todo append operation column
   const [records, setRecords] = useState<Record<string, any>[]>([]);
@@ -79,6 +82,34 @@ function AssociatedRecords({
     );
   }
 
+  function buildSubTableColumns(): ColumnType<Record<string, any>>[] {
+    return Object.entries(associatedTable?.properties || {}).reduce((
+      cur: ColumnType<Record<string, any>>[], next: [string, ISchema],
+    ) => {
+      const [key, sc] = next;
+      if (key !== '_id') {
+        cur.push({
+          title: sc.title as string,
+          dataIndex: key,
+        });
+      }
+      return cur;
+    }, []);
+  }
+
+  const readOnlyColumns = buildSubTableColumns();
+
+  if (readonly) {
+    return (
+      <AntTable
+        pagination={false}
+        rowKey="_id"
+        columns={readOnlyColumns}
+        dataSource={columns.length ? data : []}
+      />
+    );
+  }
+
   return (
     <div className="w-full">
       <Table
@@ -110,18 +141,19 @@ function AssociatedRecords({
   );
 }
 
-function AssociatedRecordsFields(props: ISchemaFieldComponentProps) {
+function AssociatedRecordsFields(props: Partial<ISchemaFieldComponentProps>): JSX.Element {
   const componentProps = props.props['x-component-props'];
   // todo handle error case
   return (
     <AssociatedRecords
+      readonly={props.readonly}
       appID={componentProps.appID}
       tableID={componentProps.tableID}
       columns={componentProps.columns || []}
       multiple={componentProps.multiple || 'single'}
       selected={props.value || []}
       associatedTable={componentProps.associatedTable}
-      onChange={(selectedKeys) => props.mutators.change(selectedKeys)}
+      onChange={(selectedKeys) => props?.mutators?.change(selectedKeys)}
     />
   );
 }

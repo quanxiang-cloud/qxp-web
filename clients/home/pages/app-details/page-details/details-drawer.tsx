@@ -2,11 +2,14 @@ import React, { useState, useMemo } from 'react';
 import { useQuery } from 'react-query';
 import { observer } from 'mobx-react';
 import cs from 'classnames';
+import { Schema } from '@formily/react-schema-renderer';
 
 import Tab from '@c/tab2';
 import Icon from '@c/icon';
 import PopConfirm from '@c/pop-confirm';
 import PageLoading from '@c/page-loading';
+import SubTable from '@c/form-builder/registry/sub-table/preview';
+import AssociatedRecords from '@c/form-builder/registry/associated-records/associated-records';
 import { getTableCellData } from '@c/form-app-data-table/utils';
 
 import { getOperateButtonPer } from '../utils';
@@ -33,7 +36,10 @@ function DetailsDrawer({ onCancel, rowID, goEdit, delData }: Props): JSX.Element
   // todo handle error case of getSchemaAndRecord
   const {
     isLoading, data, refetch,
-  } = useQuery([], () => getSchemaAndRecord(store.appID, store.pageID, rowID));
+  } = useQuery(
+    ['GET_SCHEMA_AND_RECORD_FOR_DETAIL'],
+    () => getSchemaAndRecord(store.appID, store.pageID, rowID),
+  );
 
   const [details, systems] = useMemo(() => {
     if (!data) {
@@ -71,7 +77,7 @@ function DetailsDrawer({ onCancel, rowID, goEdit, delData }: Props): JSX.Element
 
     return [_details, _systems];
   }, [data]);
- 
+
   const handleCancel = (): void => {
     setBeganClose(true);
     setTimeout(() => {
@@ -93,9 +99,20 @@ function DetailsDrawer({ onCancel, rowID, goEdit, delData }: Props): JSX.Element
           <div className='page-data-info-view' key={key}>
             <div className='text-body2-no-color text-gray-600'>{label}</div>
             {fieldSchema?.['x-component']?.toLowerCase() === 'subtable' && (
-              <div></div>
+              <SubTable
+                value={value as Record<string, unknown>[]}
+                schema={fieldSchema as Schema}
+                readonly
+              />
             )}
-            {!Array.isArray(value) && (
+            {fieldSchema?.['x-component']?.toLowerCase() === 'associatedrecords' && (
+              <AssociatedRecords
+                props={fieldSchema as Schema}
+                value={value}
+                readonly
+              />
+            )}
+            {fieldSchema?.type !== 'array' && (
               <div className='text-body2 truncate'>{value}</div>
             )}
           </div>

@@ -5,7 +5,7 @@ import OrganizationPickerConfigForm from './config';
 
 const UserPicker: Omit<FormBuilder.SourceElement<DefaultConfig>, 'displayOrder'> = {
   displayName: '部门选择',
-  icon: 'text_fields',
+  icon: 'groups',
   category: 'advance',
   componentName: 'OrganizationPicker',
   toSchema,
