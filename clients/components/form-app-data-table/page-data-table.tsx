@@ -117,7 +117,7 @@ function PageDataTable() {
           loading={store.listLoading}
           onSelectChange={handleSelectChange}
           columns={columns}
-          data={store.formDataListLabel}
+          data={store.formDataList}
         />
       </div>
       {store.tableConfig.pageSize ? (
