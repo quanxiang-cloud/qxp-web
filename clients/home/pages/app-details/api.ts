@@ -1,6 +1,6 @@
-import { formDataRequest, getTableSchema } from '@lib/http-client';
+import httpClient, { formDataRequest, getTableSchema } from '@lib/http-client';
 
-type SchemaAndRecord = {
+export type SchemaAndRecord = {
   schema: ISchema;
   record?: Record<string, any>;
 }
@@ -35,3 +35,28 @@ export function getSchemaAndRecord(
     return { schema, record: entities[0] };
   });
 }
+
+export const fetchPageList = (appID: string) => {
+  return httpClient(`/api/v1/structor/${appID}/home/menu/user/list`, { appID });
+};
+
+// todo refactor
+type GetTableSchemaResponse = { config: any; id: string; schema?: ISchema; tableID: string; };
+
+export const fetchFormScheme = (appID: string, tableID: string) => {
+  return httpClient<GetTableSchemaResponse>(
+    `/api/v1/structor/${appID}/home/schema/${tableID}`,
+    { tableID },
+  );
+};
+
+export const formDataCurd = (appID: string, tableID: string, data: any) => {
+  return httpClient(`/api/v1/structor/${appID}/home/form/${tableID}`, data);
+};
+
+export const getOperate = <T>(appID: string, formID: string) => {
+  return httpClient<T>(
+    `/api/v1/structor/${appID}/home/permission/operatePer/getOperate`,
+    { formID },
+  );
+};

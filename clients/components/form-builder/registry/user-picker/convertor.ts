@@ -32,7 +32,7 @@ export const defaultConfig: DefaultConfig = {
   type: 'label-value',
 };
 
-export const toSchema = (config: DefaultConfig): FormBuilder.Schema => {
+export const toSchema = (config: DefaultConfig): ISchema => {
   const { defaultValues } = config;
   const isMultiple = config.multiple === 'multiple';
   const isArr = Array.isArray(defaultValues);
@@ -77,7 +77,7 @@ export const toSchema = (config: DefaultConfig): FormBuilder.Schema => {
   });
 };
 
-export const toConfig = (schema: FormBuilder.Schema): DefaultConfig => {
+export const toConfig = (schema: ISchema): DefaultConfig => {
   let displayModifier: FormBuilder.DisplayModifier = 'normal';
   if (schema.readOnly) {
     displayModifier = 'readonly';

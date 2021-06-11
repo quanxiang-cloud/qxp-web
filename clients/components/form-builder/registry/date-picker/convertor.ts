@@ -28,7 +28,7 @@ export const defaultConfig: DatePickerConfig = {
   defaultValueFrom: 'customized',
 };
 
-export function toSchema(value: typeof defaultConfig): FormBuilder.Schema {
+export function toSchema(value: typeof defaultConfig): ISchema {
   let xComponent = 'DatePicker';
   const timeFormat = value.valueFormat?.split(' ')[1];
   switch (value.valueFormat) {
@@ -68,7 +68,7 @@ export function toSchema(value: typeof defaultConfig): FormBuilder.Schema {
   };
 }
 
-export function toConfig(schema: FormBuilder.Schema): DatePickerConfig {
+export function toConfig(schema: ISchema): DatePickerConfig {
   let displayModifier: FormBuilder.DisplayModifier = 'normal';
   if (schema.readOnly) {
     displayModifier = 'readonly';

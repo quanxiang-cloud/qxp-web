@@ -35,7 +35,7 @@ export const defaultConfig: AssociatedRecordsConfig = {
   required: false,
 };
 
-export function toSchema(value: AssociatedRecordsConfig): FormBuilder.Schema {
+export function toSchema(value: AssociatedRecordsConfig): ISchema {
   return {
     type: 'array',
     title: value.title,
@@ -49,7 +49,7 @@ export function toSchema(value: AssociatedRecordsConfig): FormBuilder.Schema {
       appID: value?.linkedTable?.appID,
       tableID: value?.linkedTable?.tableID,
       tableName: value?.linkedTable?.tableName,
-      multiple: value.multiple,
+      multiple: !!value.multiple,
       columns: value.columns || [],
       associatedTable: value.linkedTable.associatedTable,
     },
@@ -60,7 +60,7 @@ export function toSchema(value: AssociatedRecordsConfig): FormBuilder.Schema {
   };
 }
 
-export function toConfig(schema: FormBuilder.Schema): AssociatedRecordsConfig {
+export function toConfig(schema: ISchema): AssociatedRecordsConfig {
   let displayModifier: FormBuilder.DisplayModifier = 'normal';
   if (schema.readOnly) {
     displayModifier = 'readonly';
@@ -78,7 +78,7 @@ export function toConfig(schema: FormBuilder.Schema): AssociatedRecordsConfig {
       tableName: schema['x-component-props']?.tableName,
       associatedTable: schema['x-component-props']?.associatedTable,
     },
-    multiple: schema['x-component-props']?.multiple || 'single',
+    multiple: !!schema['x-component-props']?.multiple,
     enableFilter: !schema['x-component-props']?.filter,
     filter: schema['x-component-props']?.filter,
     columns: schema['x-component-props']?.columns || [],

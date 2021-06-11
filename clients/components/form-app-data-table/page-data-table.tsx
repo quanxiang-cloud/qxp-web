@@ -1,106 +1,60 @@
-import React, { useMemo, useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { observer } from 'mobx-react';
 
 import Button from '@c/button';
-import Icon from '@c/icon';
 import Table from '@c/table';
 import Pagination from '@c/pagination';
 import PopConfirm from '@c/pop-confirm';
 
 import AdvancedQuery from './advanced-query';
-import DetailsDrawer from './details-drawer';
 import { StoreContext } from './context';
-import { operateButton } from './utils';
 
-function PageDataTable() {
+function PageDataTable(): JSX.Element {
   const store = useContext(StoreContext);
-  const [selected, setSelected] = useState([]);
-  const [curRow, setCurRow] = useState<Record<string, any> | null>(null);
-
-  const columns = useMemo(() => {
-    if (store.tableColumns.length === 0) {
-      return [];
-    }
-
-    const columnsTmp = [...store.tableColumns];
-    const actionColumn = columnsTmp.pop();
-    return [...columnsTmp, {
-      ...actionColumn,
-      accessor: (data: any) => {
-        return (
-          <div>
-            {operateButton(1, store.authority, (
-              <span
-                onClick={() => setCurRow(data)}
-                className='mr-16 text-blue-600 cursor-pointer'
-              >
-                查看
-              </span>
-            ))}
-            {operateButton(3, store.authority, (
-              <span
-                onClick={() => store.goEdit(data._id)}
-                className='mr-16 text-blue-600 cursor-pointer'
-              >
-                修改
-              </span>
-            ))}
-            {operateButton(4, store.authority, (
-              <PopConfirm content='确认删除该数据？' onOk={() => store.delFormData([data._id])} >
-                <span className='text-red-600 cursor-pointer'>删除</span>
-              </PopConfirm>
-            ))}
-          </div>
-        );
-      },
-    }];
-  }, [store.tableColumns]);
+  const [selected, setSelected] = useState<string[]>([]);
 
   useEffect(() => {
     if (!store.allowRequestData) {
       return;
     }
-    store.fetchActionAuthorized();
     store.setParams({});
   }, [store.pageID]);
 
-  const handleSelectChange = (selectArr: any) => {
+  const handleSelectChange = (selectArr: string[]): void => {
     setSelected(selectArr);
-  };
-
-  const textBtnRender = (text: string, icon: string, onClick: () => void) => {
-    return (
-      <div
-        onClick={onClick}
-        className='inline-flex items-center cursor-pointer hover:text-blue-600'
-      >
-        <Icon size={20} className='mr-4 app-icon-color-inherit' name={icon} />
-        {text}
-      </div>
-    );
   };
 
   return (
     <div className='form-app-data-table-container flex flex-col'>
       <div className='flex justify-between'>
         <div className='mb-16 flex items-center gap-x-16'>
-          {operateButton(2, store.authority, (
-            <Button
-              onClick={() => store.setVisibleCreatePage(true)}
-              modifier='primary'
-              iconName='add'
-            >
-              新建
-            </Button>
-          ))}
-          {operateButton(4, store.authority, (
-            selected.length > 0 && textBtnRender('批量删除',
-              'restore_from_trash',
-              () => store.delFormData(selected),
-            )
-          ))}
-          {/* {textBtnRender('导入', 'file_download')}
-        {textBtnRender('导出', 'file_upload')} */}
+          {store.tableHeaderBtnList.map(({ key, text, action, type, popText, iconName, isBatch }) => {
+            if (type === 'popConfirm') {
+              return (
+                <PopConfirm key={key} content={popText} onOk={() => action(selected)} >
+                  <Button
+                    forbidden={isBatch && selected.length === 0 ? true : false}
+                    iconName={iconName}
+                    modifier='primary'
+                  >
+                    {text}
+                  </Button>
+                </PopConfirm>
+              );
+            }
+            return (
+              <Button
+                iconName={iconName}
+                forbidden={isBatch && selected.length === 0 ? true : false}
+                modifier='primary'
+                key={key}
+                onClick={() => action(selected)}
+              >
+                {text}
+              </Button>
+            );
+          })}
+
         </div>
         <AdvancedQuery
           initConditions={store.params.condition as Condition[]}
@@ -116,7 +70,7 @@ function PageDataTable() {
           rowKey="_id"
           loading={store.listLoading}
           onSelectChange={handleSelectChange}
-          columns={columns}
+          columns={store.tableColumns}
           data={store.formDataList}
         />
       </div>
@@ -130,7 +84,6 @@ function PageDataTable() {
           }}
         />
       ) : null}
-      {curRow ? <DetailsDrawer rowID={curRow?._id} onCancel={() => setCurRow(null)} /> : null}
     </div>
   );
 }

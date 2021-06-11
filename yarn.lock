@@ -85,122 +85,130 @@
   dependencies:
     "@babel/highlight" "^7.10.4"
 
-"@babel/code-frame@^7.0.0", "@babel/code-frame@^7.12.13", "@babel/code-frame@^7.8.3":
-  version "7.12.13"
-  resolved "http://r.npm.internal.yunify.com/@babel/code-frame/download/@babel/code-frame-7.12.13.tgz#dcfc826beef65e75c50e21d3837d7d95798dd658"
-  integrity sha1-3PyCa+72XnXFDiHTg319lXmN1lg=
+"@babel/code-frame@^7.0.0", "@babel/code-frame@^7.14.5", "@babel/code-frame@^7.8.3":
+  version "7.14.5"
+  resolved "http://r.npm.internal.yunify.com/@babel/code-frame/download/@babel/code-frame-7.14.5.tgz#23b08d740e83f49c5e59945fbf1b43e80bbf4edb"
+  integrity sha1-I7CNdA6D9JxeWZRfvxtD6Au/Tts=
   dependencies:
-    "@babel/highlight" "^7.12.13"
+    "@babel/highlight" "^7.14.5"
 
-"@babel/generator@^7.14.2":
-  version "7.14.3"
-  resolved "http://r.npm.internal.yunify.com/@babel/generator/download/@babel/generator-7.14.3.tgz#0c2652d91f7bddab7cccc6ba8157e4f40dcedb91"
-  integrity sha1-DCZS2R973at8zMa6gVfk9A3O25E=
+"@babel/generator@^7.14.5":
+  version "7.14.5"
+  resolved "http://r.npm.internal.yunify.com/@babel/generator/download/@babel/generator-7.14.5.tgz#848d7b9f031caca9d0cd0af01b063f226f52d785"
+  integrity sha1-hI17nwMcrKnQzQrwGwY/Im9S14U=
   dependencies:
-    "@babel/types" "^7.14.2"
+    "@babel/types" "^7.14.5"
     jsesc "^2.5.1"
     source-map "^0.5.0"
 
 "@babel/helper-annotate-as-pure@^7.0.0":
-  version "7.12.13"
-  resolved "http://r.npm.internal.yunify.com/@babel/helper-annotate-as-pure/download/@babel/helper-annotate-as-pure-7.12.13.tgz#0f58e86dfc4bb3b1fcd7db806570e177d439b6ab"
-  integrity sha1-D1jobfxLs7H819uAZXDhd9Q5tqs=
+  version "7.14.5"
+  resolved "http://r.npm.internal.yunify.com/@babel/helper-annotate-as-pure/download/@babel/helper-annotate-as-pure-7.14.5.tgz#7bf478ec3b71726d56a8ca5775b046fc29879e61"
+  integrity sha1-e/R47Dtxcm1WqMpXdbBG/CmHnmE=
   dependencies:
-    "@babel/types" "^7.12.13"
+    "@babel/types" "^7.14.5"
 
-"@babel/helper-function-name@^7.14.2":
-  version "7.14.2"
-  resolved "http://r.npm.internal.yunify.com/@babel/helper-function-name/download/@babel/helper-function-name-7.14.2.tgz#397688b590760b6ef7725b5f0860c82427ebaac2"
-  integrity sha1-OXaItZB2C273cltfCGDIJCfrqsI=
+"@babel/helper-function-name@^7.14.5":
+  version "7.14.5"
+  resolved "http://r.npm.internal.yunify.com/@babel/helper-function-name/download/@babel/helper-function-name-7.14.5.tgz#89e2c474972f15d8e233b52ee8c480e2cfcd50c4"
+  integrity sha1-ieLEdJcvFdjiM7Uu6MSA4s/NUMQ=
   dependencies:
-    "@babel/helper-get-function-arity" "^7.12.13"
-    "@babel/template" "^7.12.13"
-    "@babel/types" "^7.14.2"
+    "@babel/helper-get-function-arity" "^7.14.5"
+    "@babel/template" "^7.14.5"
+    "@babel/types" "^7.14.5"
 
-"@babel/helper-get-function-arity@^7.12.13":
-  version "7.12.13"
-  resolved "http://r.npm.internal.yunify.com/@babel/helper-get-function-arity/download/@babel/helper-get-function-arity-7.12.13.tgz#bc63451d403a3b3082b97e1d8b3fe5bd4091e583"
-  integrity sha1-vGNFHUA6OzCCuX4diz/lvUCR5YM=
+"@babel/helper-get-function-arity@^7.14.5":
+  version "7.14.5"
+  resolved "http://r.npm.internal.yunify.com/@babel/helper-get-function-arity/download/@babel/helper-get-function-arity-7.14.5.tgz#25fbfa579b0937eee1f3b805ece4ce398c431815"
+  integrity sha1-Jfv6V5sJN+7h87gF7OTOOYxDGBU=
   dependencies:
-    "@babel/types" "^7.12.13"
+    "@babel/types" "^7.14.5"
+
+"@babel/helper-hoist-variables@^7.14.5":
+  version "7.14.5"
+  resolved "http://r.npm.internal.yunify.com/@babel/helper-hoist-variables/download/@babel/helper-hoist-variables-7.14.5.tgz#e0dd27c33a78e577d7c8884916a3e7ef1f7c7f8d"
+  integrity sha1-4N0nwzp45XfXyIhJFqPn7x98f40=
+  dependencies:
+    "@babel/types" "^7.14.5"
 
 "@babel/helper-module-imports@^7.0.0":
-  version "7.13.12"
-  resolved "http://r.npm.internal.yunify.com/@babel/helper-module-imports/download/@babel/helper-module-imports-7.13.12.tgz#c6a369a6f3621cb25da014078684da9196b61977"
-  integrity sha1-xqNppvNiHLJdoBQHhoTakZa2GXc=
+  version "7.14.5"
+  resolved "http://r.npm.internal.yunify.com/@babel/helper-module-imports/download/@babel/helper-module-imports-7.14.5.tgz#6d1a44df6a38c957aa7c312da076429f11b422f3"
+  integrity sha1-bRpE32o4yVeqfDEtoHZCnxG0IvM=
   dependencies:
-    "@babel/types" "^7.13.12"
+    "@babel/types" "^7.14.5"
 
-"@babel/helper-split-export-declaration@^7.12.13":
-  version "7.12.13"
-  resolved "http://r.npm.internal.yunify.com/@babel/helper-split-export-declaration/download/@babel/helper-split-export-declaration-7.12.13.tgz#e9430be00baf3e88b0e13e6f9d4eaf2136372b05"
-  integrity sha1-6UML4AuvPoiw4T5vnU6vITY3KwU=
+"@babel/helper-split-export-declaration@^7.14.5":
+  version "7.14.5"
+  resolved "http://r.npm.internal.yunify.com/@babel/helper-split-export-declaration/download/@babel/helper-split-export-declaration-7.14.5.tgz#22b23a54ef51c2b7605d851930c1976dd0bc693a"
+  integrity sha1-IrI6VO9RwrdgXYUZMMGXbdC8aTo=
   dependencies:
-    "@babel/types" "^7.12.13"
+    "@babel/types" "^7.14.5"
 
-"@babel/helper-validator-identifier@^7.14.0":
-  version "7.14.0"
-  resolved "http://r.npm.internal.yunify.com/@babel/helper-validator-identifier/download/@babel/helper-validator-identifier-7.14.0.tgz#d26cad8a47c65286b15df1547319a5d0bcf27288"
-  integrity sha1-0mytikfGUoaxXfFUcxml0Lzycog=
+"@babel/helper-validator-identifier@^7.14.5":
+  version "7.14.5"
+  resolved "http://r.npm.internal.yunify.com/@babel/helper-validator-identifier/download/@babel/helper-validator-identifier-7.14.5.tgz#d0f0e277c512e0c938277faa85a3968c9a44c0e8"
+  integrity sha1-0PDid8US4Mk4J3+qhaOWjJpEwOg=
 
-"@babel/highlight@^7.10.4", "@babel/highlight@^7.12.13":
-  version "7.14.0"
-  resolved "http://r.npm.internal.yunify.com/@babel/highlight/download/@babel/highlight-7.14.0.tgz#3197e375711ef6bf834e67d0daec88e4f46113cf"
-  integrity sha1-MZfjdXEe9r+DTmfQ2uyI5PRhE88=
+"@babel/highlight@^7.10.4", "@babel/highlight@^7.14.5":
+  version "7.14.5"
+  resolved "http://r.npm.internal.yunify.com/@babel/highlight/download/@babel/highlight-7.14.5.tgz#6861a52f03966405001f6aa534a01a24d99e8cd9"
+  integrity sha1-aGGlLwOWZAUAH2qlNKAaJNmejNk=
   dependencies:
-    "@babel/helper-validator-identifier" "^7.14.0"
+    "@babel/helper-validator-identifier" "^7.14.5"
     chalk "^2.0.0"
     js-tokens "^4.0.0"
 
-"@babel/parser@^7.12.13", "@babel/parser@^7.14.2":
-  version "7.14.4"
-  resolved "http://r.npm.internal.yunify.com/@babel/parser/download/@babel/parser-7.14.4.tgz#a5c560d6db6cd8e6ed342368dea8039232cbab18"
-  integrity sha1-pcVg1tts2ObtNCNo3qgDkjLLqxg=
+"@babel/parser@^7.14.5":
+  version "7.14.5"
+  resolved "http://r.npm.internal.yunify.com/@babel/parser/download/@babel/parser-7.14.5.tgz#4cd2f346261061b2518873ffecdf1612cb032829"
+  integrity sha1-TNLzRiYQYbJRiHP/7N8WEssDKCk=
 
 "@babel/runtime-corejs2@^7.4.5":
-  version "7.14.0"
-  resolved "http://r.npm.internal.yunify.com/@babel/runtime-corejs2/download/@babel/runtime-corejs2-7.14.0.tgz#5519b92ccc819bd3d0a1ecb25ab3cb5a775485f8"
-  integrity sha1-VRm5LMyBm9PQoeyyWrPLWndUhfg=
+  version "7.14.5"
+  resolved "http://r.npm.internal.yunify.com/@babel/runtime-corejs2/download/@babel/runtime-corejs2-7.14.5.tgz#2330fef47dc629436a82471f65ba151dc577902e"
+  integrity sha1-IzD+9H3GKUNqgkcfZboVHcV3kC4=
   dependencies:
     core-js "^2.6.5"
     regenerator-runtime "^0.13.4"
 
 "@babel/runtime@^7.0.0", "@babel/runtime@^7.1.2", "@babel/runtime@^7.10.1", "@babel/runtime@^7.10.2", "@babel/runtime@^7.10.4", "@babel/runtime@^7.11.1", "@babel/runtime@^7.11.2", "@babel/runtime@^7.12.1", "@babel/runtime@^7.12.5", "@babel/runtime@^7.13.10", "@babel/runtime@^7.5.5", "@babel/runtime@^7.6.2", "@babel/runtime@^7.6.3", "@babel/runtime@^7.7.2", "@babel/runtime@^7.8.4", "@babel/runtime@^7.9.2":
-  version "7.14.0"
-  resolved "http://r.npm.internal.yunify.com/@babel/runtime/download/@babel/runtime-7.14.0.tgz#46794bc20b612c5f75e62dd071e24dfd95f1cbe6"
-  integrity sha1-RnlLwgthLF915i3QceJN/ZXxy+Y=
+  version "7.14.5"
+  resolved "http://r.npm.internal.yunify.com/@babel/runtime/download/@babel/runtime-7.14.5.tgz#665450911c6031af38f81db530f387ec04cd9a98"
+  integrity sha1-ZlRQkRxgMa84+B21MPOH7ATNmpg=
   dependencies:
     regenerator-runtime "^0.13.4"
 
-"@babel/template@^7.12.13":
-  version "7.12.13"
-  resolved "http://r.npm.internal.yunify.com/@babel/template/download/@babel/template-7.12.13.tgz#530265be8a2589dbb37523844c5bcb55947fb327"
-  integrity sha1-UwJlvooliduzdSOETFvLVZR/syc=
+"@babel/template@^7.14.5":
+  version "7.14.5"
+  resolved "http://r.npm.internal.yunify.com/@babel/template/download/@babel/template-7.14.5.tgz#a9bc9d8b33354ff6e55a9c60d1109200a68974f4"
+  integrity sha1-qbydizM1T/blWpxg0RCSAKaJdPQ=
   dependencies:
-    "@babel/code-frame" "^7.12.13"
-    "@babel/parser" "^7.12.13"
-    "@babel/types" "^7.12.13"
+    "@babel/code-frame" "^7.14.5"
+    "@babel/parser" "^7.14.5"
+    "@babel/types" "^7.14.5"
 
 "@babel/traverse@^7.4.5":
-  version "7.14.2"
-  resolved "http://r.npm.internal.yunify.com/@babel/traverse/download/@babel/traverse-7.14.2.tgz#9201a8d912723a831c2679c7ebbf2fe1416d765b"
-  integrity sha1-kgGo2RJyOoMcJnnH678v4UFtdls=
+  version "7.14.5"
+  resolved "http://r.npm.internal.yunify.com/@babel/traverse/download/@babel/traverse-7.14.5.tgz#c111b0f58afab4fea3d3385a406f692748c59870"
+  integrity sha1-wRGw9Yr6tP6j0zhaQG9pJ0jFmHA=
   dependencies:
-    "@babel/code-frame" "^7.12.13"
-    "@babel/generator" "^7.14.2"
-    "@babel/helper-function-name" "^7.14.2"
-    "@babel/helper-split-export-declaration" "^7.12.13"
-    "@babel/parser" "^7.14.2"
-    "@babel/types" "^7.14.2"
+    "@babel/code-frame" "^7.14.5"
+    "@babel/generator" "^7.14.5"
+    "@babel/helper-function-name" "^7.14.5"
+    "@babel/helper-hoist-variables" "^7.14.5"
+    "@babel/helper-split-export-declaration" "^7.14.5"
+    "@babel/parser" "^7.14.5"
+    "@babel/types" "^7.14.5"
     debug "^4.1.0"
     globals "^11.1.0"
 
-"@babel/types@^7.12.13", "@babel/types@^7.13.12", "@babel/types@^7.14.2":
-  version "7.14.4"
-  resolved "http://r.npm.internal.yunify.com/@babel/types/download/@babel/types-7.14.4.tgz#bfd6980108168593b38b3eb48a24aa026b919bc0"
-  integrity sha1-v9aYAQgWhZOziz60iiSqAmuRm8A=
+"@babel/types@^7.14.5":
+  version "7.14.5"
+  resolved "http://r.npm.internal.yunify.com/@babel/types/download/@babel/types-7.14.5.tgz#3bb997ba829a2104cedb20689c4a5b8121d383ff"
+  integrity sha1-O7mXuoKaIQTO2yBonEpbgSHTg/8=
   dependencies:
-    "@babel/helper-validator-identifier" "^7.14.0"
+    "@babel/helper-validator-identifier" "^7.14.5"
     to-fast-properties "^2.0.0"
 
 "@ctrl/tinycolor@^3.4.0":
@@ -628,8 +636,8 @@
 
 "@types/dagre@^0.7.44":
   version "0.7.44"
-  resolved "https://registry.npmjs.org/@types/dagre/-/dagre-0.7.44.tgz#8f4b796b118ca29c132da7068fbc0d0351ee5851"
-  integrity sha512-N6HD+79w77ZVAaVO7JJDW5yJ9LAxM62FpgNGO9xEde+KVYjDRyhIMzfiErXpr1g0JPon9kwlBzoBK6s4fOww9Q==
+  resolved "http://r.npm.internal.yunify.com/@types/dagre/download/@types/dagre-0.7.44.tgz#8f4b796b118ca29c132da7068fbc0d0351ee5851"
+  integrity sha1-j0t5axGMopwTLacGj7wNA1HuWFE=
 
 "@types/draft-js@*":
   version "0.11.3"
@@ -641,8 +649,8 @@
 
 "@types/draftjs-to-html@^0.8.0":
   version "0.8.0"
-  resolved "https://registry.npmjs.org/@types/draftjs-to-html/-/draftjs-to-html-0.8.0.tgz#17b1c3f19847710e52367277578a6c50e311c87a"
-  integrity sha512-XiuzaCE088fhtlDi4GM6w2lzqAe2ZHjc7AqenU3LS6/j0Kmhgx7Gfw9NBVsp9KEG1beBqcFLaRbzjZsF15/rBA==
+  resolved "http://r.npm.internal.yunify.com/@types/draftjs-to-html/download/@types/draftjs-to-html-0.8.0.tgz#17b1c3f19847710e52367277578a6c50e311c87a"
+  integrity sha1-F7HD8ZhHcQ5SNnJ3V4psUOMRyHo=
   dependencies:
     "@types/draft-js" "*"
 
@@ -702,8 +710,8 @@
 
 "@types/html-to-draftjs@^1.4.0":
   version "1.4.0"
-  resolved "https://registry.npmjs.org/@types/html-to-draftjs/-/html-to-draftjs-1.4.0.tgz#bfd712d3c5993e0644b76d2654adeae214678fae"
-  integrity sha512-w7Te62TAk2xkl+f/PRepVfaVbsArRYRACqH7Rv9H97gKqglQye3Cf8EArsKuSsN7vW6/zf1kTCsm/jnSR0gDQA==
+  resolved "http://r.npm.internal.yunify.com/@types/html-to-draftjs/download/@types/html-to-draftjs-1.4.0.tgz#bfd712d3c5993e0644b76d2654adeae214678fae"
+  integrity sha1-v9cS08WZPgZEt20mVK3q4hRnj64=
   dependencies:
     "@types/draft-js" "*"
 
@@ -754,7 +762,7 @@
 
 "@types/react-beautiful-dnd@^13.0.0":
   version "13.0.0"
-  resolved "https://registry.nlark.com/@types/react-beautiful-dnd/download/@types/react-beautiful-dnd-13.0.0.tgz?cache=0&sync_timestamp=1621252281966&other_urls=https%3A%2F%2Fregistry.nlark.com%2F%40types%2Freact-beautiful-dnd%2Fdownload%2F%40types%2Freact-beautiful-dnd-13.0.0.tgz#e60d3d965312fcf1516894af92dc3e9249587db4"
+  resolved "http://r.npm.internal.yunify.com/@types/react-beautiful-dnd/download/@types/react-beautiful-dnd-13.0.0.tgz#e60d3d965312fcf1516894af92dc3e9249587db4"
   integrity sha1-5g09llMS/PFRaJSvktw+kklYfbQ=
   dependencies:
     "@types/react" "*"
@@ -809,9 +817,9 @@
     "@types/react" "*"
 
 "@types/react@*", "@types/react@^17.0.0":
-  version "17.0.10"
-  resolved "http://r.npm.internal.yunify.com/@types/react/download/@types/react-17.0.10.tgz#c8bb4e37cc642f7cc5532959cb5e2ead6c74dec9"
-  integrity sha1-yLtON8xkL3zFUylZy14urWx03sk=
+  version "17.0.11"
+  resolved "http://r.npm.internal.yunify.com/@types/react/download/@types/react-17.0.11.tgz#67fcd0ddbf5a0b083a0f94e926c7d63f3b836451"
+  integrity sha1-Z/zQ3b9aCwg6D5TpJsfWPzuDZFE=
   dependencies:
     "@types/prop-types" "*"
     "@types/scheduler" "*"
@@ -1826,8 +1834,8 @@ class-utils@^0.3.5:
 
 classcat@^5.0.3:
   version "5.0.3"
-  resolved "https://registry.npmjs.org/classcat/-/classcat-5.0.3.tgz#38eaa0ec6eb1b10faf101bbcef2afb319c23c17b"
-  integrity sha512-6dK2ke4VEJZOFx2ZfdDAl5OhEL8lvkl6EHF92IfRePfHxQTqir5NlcNVUv+2idjDqCX2NDc8m8YSAI5NI975ZQ==
+  resolved "http://r.npm.internal.yunify.com/classcat/download/classcat-5.0.3.tgz#38eaa0ec6eb1b10faf101bbcef2afb319c23c17b"
+  integrity sha1-OOqg7G6xsQ+vEBu87yr7MZwjwXs=
 
 classnames@*, classnames@2.x, classnames@^2.2.1, classnames@^2.2.3, classnames@^2.2.5, classnames@^2.2.6:
   version "2.3.1"
@@ -2816,9 +2824,9 @@ editorconfig@^0.15.3:
     sigmund "^1.0.1"
 
 electron-to-chromium@^1.3.723:
-  version "1.3.750"
-  resolved "http://r.npm.internal.yunify.com/electron-to-chromium/download/electron-to-chromium-1.3.750.tgz#7e5ef6f478316b0bd656af5942fe502610e97eaf"
-  integrity sha1-fl729HgxawvWVq9ZQv5QJhDpfq8=
+  version "1.3.752"
+  resolved "http://r.npm.internal.yunify.com/electron-to-chromium/download/electron-to-chromium-1.3.752.tgz#0728587f1b9b970ec9ffad932496429aef750d09"
+  integrity sha1-ByhYfxublw7J/62TJJZCmu91DQk=
 
 emoji-regex@^8.0.0:
   version "8.0.0"
@@ -6176,9 +6184,9 @@ postcss@^7.0.0, postcss@^7.0.1, postcss@^7.0.27, postcss@^7.0.32:
     supports-color "^6.1.0"
 
 postcss@^8.1.6, postcss@^8.2.1, postcss@^8.2.15, postcss@^8.2.8, postcss@^8.3.0:
-  version "8.3.0"
-  resolved "http://r.npm.internal.yunify.com/postcss/download/postcss-8.3.0.tgz#b1a713f6172ca427e3f05ef1303de8b65683325f"
-  integrity sha1-sacT9hcspCfj8F7xMD3otlaDMl8=
+  version "8.3.1"
+  resolved "http://r.npm.internal.yunify.com/postcss/download/postcss-8.3.1.tgz#71f380151c227f83b898294a46481f689f86b70a"
+  integrity sha1-cfOAFRwif4O4mClKRkgfaJ+Gtwo=
   dependencies:
     colorette "^1.2.2"
     nanoid "^3.1.23"
@@ -6518,9 +6526,9 @@ rc-pagination@~3.1.6:
     classnames "^2.2.1"
 
 rc-picker@~2.5.10:
-  version "2.5.10"
-  resolved "http://r.npm.internal.yunify.com/rc-picker/download/rc-picker-2.5.10.tgz#0db17c535a37abbe5d016bdcdfb13d6626f802d0"
-  integrity sha1-DbF8U1o3q75dAWvc37E9Zib4AtA=
+  version "2.5.12"
+  resolved "http://r.npm.internal.yunify.com/rc-picker/download/rc-picker-2.5.12.tgz#f5743276d2b29ec56a03b72b659332c06e4bb983"
+  integrity sha1-9XQydtKynsVqA7crZZMywG5LuYM=
   dependencies:
     "@babel/runtime" "^7.10.1"
     classnames "^2.2.1"
@@ -6716,7 +6724,7 @@ react-beautiful-dnd-next@11.0.5:
 
 react-beautiful-dnd@^13.1.0:
   version "13.1.0"
-  resolved "https://registry.npm.taobao.org/react-beautiful-dnd/download/react-beautiful-dnd-13.1.0.tgz#ec97c81093593526454b0de69852ae433783844d"
+  resolved "http://r.npm.internal.yunify.com/react-beautiful-dnd/download/react-beautiful-dnd-13.1.0.tgz#ec97c81093593526454b0de69852ae433783844d"
   integrity sha1-7JfIEJNZNSZFSw3mmFKuQzeDhE0=
   dependencies:
     "@babel/runtime" "^7.9.2"
@@ -6827,8 +6835,8 @@ react-fast-compare@^3.0.1:
 
 react-flow-renderer@9.5.1:
   version "9.5.1"
-  resolved "https://registry.npmjs.org/react-flow-renderer/-/react-flow-renderer-9.5.1.tgz#0b5ae6aef63515aaa0f31535fcebfdc09943f8ee"
-  integrity sha512-dXKQzemsqmkMvn+x1nyuCGnulfD6zW4k6RgZeOBEVoyWCPS7eVOdsB5iY3ZEEEjZwVts0hni0kWN6e4F/7i4oQ==
+  resolved "http://r.npm.internal.yunify.com/react-flow-renderer/download/react-flow-renderer-9.5.1.tgz#0b5ae6aef63515aaa0f31535fcebfdc09943f8ee"
+  integrity sha1-C1rmrvY1Faqg8xU1/Ov9wJlD+O4=
   dependencies:
     "@babel/runtime" "^7.13.10"
     "@types/d3" "^6.3.0"
@@ -8283,7 +8291,7 @@ typescript-plugin-css-modules@^3.2.0:
 
 typescript@^4.3.2:
   version "4.3.2"
-  resolved "https://registry.nlark.com/typescript/download/typescript-4.3.2.tgz?cache=0&sync_timestamp=1623223597692&other_urls=https%3A%2F%2Fregistry.nlark.com%2Ftypescript%2Fdownload%2Ftypescript-4.3.2.tgz#399ab18aac45802d6f2498de5054fcbbe716a805"
+  resolved "http://r.npm.internal.yunify.com/typescript/download/typescript-4.3.2.tgz#399ab18aac45802d6f2498de5054fcbbe716a805"
   integrity sha1-OZqxiqxFgC1vJJjeUFT8u+cWqAU=
 
 ua-parser-js@^0.7.18:

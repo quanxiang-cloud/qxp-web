@@ -30,9 +30,6 @@ integrate:
   tags:
     - qxp-web-runner
   stage: test
-  only:
-    - testing
-    - alpha
   script:
     - yarn run lint
     - NODE_ENV=production ./node_modules/.bin/webpack --config webpack.config.js

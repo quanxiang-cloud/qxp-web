@@ -12,8 +12,7 @@ export interface IAlterRoleFunc {
   id: string | number;
 }
 
-export default function AlterRoleFunc({ funcs: functions }: IAlterRoleFunc) {
-  // @ts-ignore
+export default function AlterRoleFunc({ funcs: functions }: IAlterRoleFunc): JSX.Element {
   const [funcs, setFuncs] = useState<IRoleFunc>(deepClone(functions));
   const total = countBy<IRoleFunc, boolean>('has', 'child', (v) => v, funcs);
   // const [addSets, setAddSets] = useState<string[]>([]);

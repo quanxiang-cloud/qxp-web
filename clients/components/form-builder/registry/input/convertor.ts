@@ -24,7 +24,7 @@ export const defaultConfig: InputConfig = {
   defaultValueLinkage: undefined,
 };
 
-export function toSchema(value: InputConfig): FormBuilder.Schema {
+export function toSchema(value: InputConfig): ISchema {
   return {
     type: 'string',
     title: value.title,
@@ -47,7 +47,7 @@ export function toSchema(value: InputConfig): FormBuilder.Schema {
   };
 }
 
-export function toConfig(schema: FormBuilder.Schema): InputConfig {
+export function toConfig(schema: ISchema): InputConfig {
   let displayModifier: FormBuilder.DisplayModifier = 'normal';
   if (schema.readOnly) {
     displayModifier = 'readonly';

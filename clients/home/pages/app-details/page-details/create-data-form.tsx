@@ -1,58 +1,64 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import { FormButtonGroup, setValidationLanguage } from '@formily/antd';
 import { toJS } from 'mobx';
-import { omit, omitBy, isEmpty } from 'lodash';
+import { omit, omitBy, isEmpty, isObject } from 'lodash';
 import { useQuery } from 'react-query';
 import { observer } from 'mobx-react';
 
 import Breadcrumb from '@c/breadcrumb';
 import Icon from '@c/icon';
 import Button from '@c/button';
+import Loading from '@c/loading';
 import toast from '@lib/toast';
 import { FormRenderer } from '@c/form-builder';
-import { compactObject } from '@lib/utils';
-import Loading from '@c/loading';
+import { compactObject, isObjectArray } from '@lib/utils';
+import { INTERNAL_FIELD_NAMES } from '@c/form-builder/store';
 import {
   formDataRequest, FormDataRequestCreateParams, FormDataRequestUpdateParams,
 } from '@lib/http-client';
 
-import { StoreContext } from './context';
-import { difference } from './utils';
-import { getSchemaAndRecord } from './api';
-import { INTERNAL_FIELD_NAMES } from '@c/form-builder/store';
+import { difference } from '../utils';
+import { getSchemaAndRecord } from '../api';
 
 setValidationLanguage('zh');
 
-type RefType = Record<string, {
-      appID: string;
-      tableID: string;
-      updated: Record<string, any>[];
-      new: Record<string, any>[];
-      deleted: Record<string, any>[];
-    }>;
+type Props = {
+  appID: string;
+  pageID: string;
+  title: string;
+  onCancel: () => void;
+  rowID?: string;
+}
 
-function CreateDataForm(): JSX.Element {
-  const store = useContext(StoreContext);
-  const { rowID = '' } = store;
+type RefType = Record<string, {
+  appID: string;
+  tableID: string;
+  updated: Record<string, any>[];
+  new: Record<string, any>[];
+  deleted: Record<string, any>[];
+}>;
+
+function CreateDataForm({ appID, pageID, rowID, onCancel, title }: Props): JSX.Element {
   const [loading, setLoading] = useState(false);
 
   const {
-    data, isLoading, isError,
-  } = useQuery([], () => getSchemaAndRecord(store.appID, store.pageID, rowID || ''), {
-    enabled: !!(store.pageID && store.appID),
+    data, isLoading,
+  } = useQuery([
+    'GET_SCHEMA_AND_RECORD_FOR_CREATE_OR_EDIT',
+  ], () => getSchemaAndRecord(appID, pageID, rowID || ''), {
+    enabled: !!(pageID && appID),
+    cacheTime: -1,
   });
 
-  const defaultValues = data?.record;
+  const defaultValues = rowID ? data?.record : undefined;
   const { schema } = data || { properties: { } };
 
   if (isLoading) {
     return <Loading desc="加载中..." />;
   }
 
-  if (!store.fields.length || isError || !schema) {
-    return (
-      <div>todo some error tips</div>
-    );
+  if (!schema) {
+    return <div>some error</div>;
   }
 
   function buildRequestParams(
@@ -63,7 +69,7 @@ function CreateDataForm(): JSX.Element {
   ): FormDataRequestCreateParams | FormDataRequestUpdateParams {
     let params = {
       method,
-      entity: omit(formData, INTERNAL_FIELD_NAMES),
+      entity: isObject(formData) ? omit(formData, INTERNAL_FIELD_NAMES) : formData,
     };
     if (method === 'update') {
       params = Object.assign(params, {
@@ -118,7 +124,9 @@ function CreateDataForm(): JSX.Element {
     const defaultValue = toJS(defaultValues);
     const diffResult = difference(defaultValue || {}, formData);
     const subTableChangedKeys = Object.keys(diffResult).filter(
-      (fieldKey) => schemaMap[fieldKey as keyof ISchema]?.['type'] === 'array',
+      (fieldKey) => schemaMap[fieldKey as keyof ISchema]?.[
+        'x-component'
+      ]?.toLowerCase() === 'subtable',
     );
     const hasSubTableChanged = !!(subTableChangedKeys.length && defaultValues);
 
@@ -127,8 +135,8 @@ function CreateDataForm(): JSX.Element {
       subTableChangedKeys.forEach((fieldKey) => {
         Object.assign(ref, {
           [fieldKey]: {
-            appID: store.appID,
-            tableID: store.pageID,
+            appID: appID,
+            tableID: pageID,
             updated: parseUpdated(diffResult, fieldKey),
             new: parseNew(formData, fieldKey),
             deleted: parseDeleted(formData, fieldKey),
@@ -140,17 +148,16 @@ function CreateDataForm(): JSX.Element {
     setLoading(true);
     const initialMethod = defaultValues ? 'update' : 'create';
     const reqData: FormDataRequestCreateParams | FormDataRequestUpdateParams = buildRequestParams(
-      initialMethod === 'create' ? formData : omitBy(formData, Array.isArray),
+      initialMethod === 'create' ? formData : omitBy(formData, isObjectArray),
       defaultValue?._id,
       initialMethod,
       ref,
     );
 
-    formDataRequest(store.appID, store.pageID, reqData).then(() => {
+    formDataRequest(appID, pageID, reqData).then(() => {
       toast.success('提交成功');
-      store.setVisibleCreatePage(false);
-    }).finally(() => {
       setLoading(false);
+      onCancel();
     });
   };
 
@@ -161,7 +168,7 @@ function CreateDataForm(): JSX.Element {
           <Breadcrumb.Item>
             <a>
               <Icon size={23} name='reply' />
-              <span onClick={() => store.setVisibleCreatePage(false)}>{store.pageName}</span>
+              <span onClick={onCancel}>{title}</span>
             </a>
           </Breadcrumb.Item>
           <Breadcrumb.Item>
@@ -180,7 +187,7 @@ function CreateDataForm(): JSX.Element {
             <Button
               className="mr-20"
               iconName="close"
-              onClick={() => store.setVisibleCreatePage(false)}
+              onClick={onCancel}
             >
               取消
             </Button>

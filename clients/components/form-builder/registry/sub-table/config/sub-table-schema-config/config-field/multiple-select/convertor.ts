@@ -52,7 +52,7 @@ export function toSchema(value: MultipleSelectConfig): ISchema {
   };
 }
 
-export function toConfig(schema: FormBuilder.Schema): MultipleSelectConfig {
+export function toConfig(schema: ISchema): MultipleSelectConfig {
   let displayModifier: FormBuilder.DisplayModifier = 'normal';
   if (schema.readOnly) {
     displayModifier = 'readonly';

@@ -5,7 +5,7 @@ import UserPickerConfigForm from './config';
 
 const UserPicker: Omit<FormBuilder.SourceElement<DefaultConfig>, 'displayOrder'> = {
   displayName: '人员选择',
-  icon: 'text_fields',
+  icon: 'person_add_alt',
   category: 'advance',
   componentName: 'UserPicker',
   toSchema,

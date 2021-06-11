@@ -51,7 +51,7 @@ export function toSchema(value: SelectConfig): ISchema {
   };
 }
 
-export function toConfig(schema: FormBuilder.Schema): SelectConfig {
+export function toConfig(schema: ISchema): SelectConfig {
   let displayModifier: FormBuilder.DisplayModifier = 'normal';
   if (schema.readOnly) {
     displayModifier = 'readonly';

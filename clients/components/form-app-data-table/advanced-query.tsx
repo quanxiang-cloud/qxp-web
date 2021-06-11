@@ -7,7 +7,7 @@ import ControlPopper from '@c/control-popper';
 
 type Props = {
   fields: Fields[];
-  search: (params: { tag: 'or' | 'and', condition: Condition[]}) => void;
+  search: (params: { tag: 'or' | 'and', condition: Condition[] }) => void;
   initConditions?: Condition[];
   tag?: 'or' | 'and';
 }
@@ -21,7 +21,7 @@ const modifiers = [
   },
 ];
 
-function AdvancedQuery({ fields, search, initConditions, tag }: Props) {
+function AdvancedQuery({ fields, search, initConditions, tag }: Props): JSX.Element {
   const [visible, setVisible] = useState(false);
   const popperRef = useRef<any>();
   const reference = useRef<any>();

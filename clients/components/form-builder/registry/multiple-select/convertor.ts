@@ -23,7 +23,7 @@ export const defaultConfig: MultipleSelectConfig = {
   ],
 };
 
-export function toSchema(value: MultipleSelectConfig): FormBuilder.Schema {
+export function toSchema(value: MultipleSelectConfig): ISchema {
   return {
     type: 'array',
     title: value.title,
@@ -52,7 +52,7 @@ export function toSchema(value: MultipleSelectConfig): FormBuilder.Schema {
   };
 }
 
-export function toConfig(schema: FormBuilder.Schema): MultipleSelectConfig {
+export function toConfig(schema: ISchema): MultipleSelectConfig {
   let displayModifier: FormBuilder.DisplayModifier = 'normal';
   if (schema.readOnly) {
     displayModifier = 'readonly';

@@ -22,7 +22,7 @@ export const defaultConfig: TextareaConfig = {
   defaultValue: '',
 };
 
-export function toSchema(value: TextareaConfig): FormBuilder.Schema {
+export function toSchema(value: TextareaConfig): ISchema {
   return {
     type: 'string',
     title: value.title,
@@ -44,7 +44,7 @@ export function toSchema(value: TextareaConfig): FormBuilder.Schema {
   };
 }
 
-export function toConfig(schema: FormBuilder.Schema): TextareaConfig {
+export function toConfig(schema: ISchema): TextareaConfig {
   let displayModifier: FormBuilder.DisplayModifier = 'normal';
   if (schema.readOnly) {
     displayModifier = 'readonly';

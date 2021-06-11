@@ -4,7 +4,8 @@ import { UnionColumns } from 'react-table';
 import FormStore from '@c/form-builder/store';
 import toast from '@lib/toast';
 import AppPageDataStore from '@c/form-app-data-table/store';
-import { PageTableShowRule, setFixedParameters } from '@c/form-app-data-table/utils';
+import { TableConfig } from '@c/form-app-data-table/type';
+import { setFixedParameters } from '@c/form-app-data-table/utils';
 
 import { getTableSchema, saveTableSchema } from '@lib/http-client';
 import {
@@ -26,7 +27,7 @@ class FormDesignStore {
   @observable formStore: FormStore | null = null;
   @observable hasSchema = false;
   @observable pageTableColumns: string[] = [];
-  @observable pageTableShowRule: PageTableShowRule = {};
+  @observable pageTableShowRule: TableConfig = {};
   @observable filters: Filters = [];
 
   @computed get fieldsMap(): Record<string, ISchema> {
@@ -101,7 +102,10 @@ class FormDesignStore {
           accessor: key,
         };
       });
-      return setFixedParameters(this.pageTableShowRule.fixedRule, column);
+      return setFixedParameters(
+        this.pageTableShowRule.fixedRule,
+        [...column, { id: 'action', Header: '操作', accessor: 'action' }],
+      );
     }, this.appPageStore.setTableColumns);
 
     this.destroySetTableConfig = reaction(() => {
@@ -130,7 +134,7 @@ class FormDesignStore {
   }
 
   @action
-  setPageTableShowRule = (newRule: PageTableShowRule): void => {
+  setPageTableShowRule = (newRule: TableConfig): void => {
     this.pageTableShowRule = { ...this.pageTableShowRule, ...newRule };
   }
 
@@ -156,6 +160,11 @@ class FormDesignStore {
 
   @action
   saveFormScheme = (): Promise<void> => {
+    if (this.pageTableColumns.length === 0) {
+      toast.error('请至少选择一个表格列');
+      return Promise.resolve();
+    }
+
     this.saveSchemeLoading = true;
     return saveTableSchema(this.appID, this.pageID, this.formStore?.schema || {}).then(() => {
       createPageScheme(this.appID, {
@@ -185,6 +194,11 @@ class FormDesignStore {
 
   @action
   savePageConfig = (): void => {
+    if (this.pageTableColumns.length === 0) {
+      toast.error('请至少选择一个表格列');
+      return;
+    }
+
     createPageScheme(this.appID, {
       tableID: this.pageID, config: {
         pageTableColumns: this.pageTableColumns,
