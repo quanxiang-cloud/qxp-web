@@ -8,17 +8,17 @@ import { observer } from 'mobx-react';
 import Breadcrumb from '@c/breadcrumb';
 import Icon from '@c/icon';
 import Button from '@c/button';
+import Loading from '@c/loading';
 import toast from '@lib/toast';
 import { FormRenderer } from '@c/form-builder';
 import { compactObject, isObjectArray } from '@lib/utils';
-import Loading from '@c/loading';
+import { INTERNAL_FIELD_NAMES } from '@c/form-builder/store';
 import {
   formDataRequest, FormDataRequestCreateParams, FormDataRequestUpdateParams,
 } from '@lib/http-client';
 
 import { difference } from '../utils';
 import { getSchemaAndRecord } from '../api';
-import { INTERNAL_FIELD_NAMES } from '@c/form-builder/store';
 
 setValidationLanguage('zh');
 
@@ -40,20 +40,9 @@ type RefType = Record<string, {
 
 function CreateDataForm({ appID, pageID, rowID, onCancel, title }: Props): JSX.Element {
   const [loading, setLoading] = useState(false);
-  // const [data, setData] = useState<SchemaAndRecord>({ schema: {} });
-  // const [pageLoading, setPageLoading] = useState(true);
-
-  // useEffect(() => {
-  //   getSchemaAndRecord(appID, pageID, rowID || '').then((res) => {
-  //     setData(res);
-  //     setPageLoading(false);
-  //   }).catch(()=>{
-  //     setPageLoading(false);
-  //   });
-  // }, []);
 
   const {
-    data, isLoading, isError,
+    data, isLoading,
   } = useQuery([
     'GET_SCHEMA_AND_RECORD_FOR_CREATE_OR_EDIT',
   ], () => getSchemaAndRecord(appID, pageID, rowID || ''), {
