@@ -105,7 +105,7 @@ function AssociatedRecords({
         pagination={false}
         rowKey="_id"
         columns={readOnlyColumns}
-        dataSource={columns.length ? data : []}
+        dataSource={readOnlyColumns.length ? data : []}
       />
     );
   }
