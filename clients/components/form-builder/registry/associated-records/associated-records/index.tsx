@@ -40,13 +40,9 @@ function AssociatedRecords({
   // todo append operation column
   const [records, setRecords] = useState<Record<string, any>[]>([]);
   const [showSelectModal, setShowSelectModal] = useState(false);
-  const { isLoading, data } = useQuery(['FIND_TABLE_RECORDS'], () => {
+  const { isLoading, data } = useQuery(['FIND_TABLE_RECORDS', selected], () => {
     return findTableRecords(appID, tableID, selected);
   });
-
-  useEffect(() => {
-    setRecords(data || []);
-  }, [data]);
 
   useEffect(() => {
     onChange(records.map(({ _id }) => _id));
@@ -116,7 +112,7 @@ function AssociatedRecords({
         className="mb-16"
         rowKey="_id"
         columns={tableColumns}
-        data={records}
+        data={data}
         emptyTips="没有关联记录"
       />
       <Button type="button" onClick={() => setShowSelectModal(true)}>选择关联记录</Button>
@@ -130,9 +126,10 @@ function AssociatedRecords({
           columns={columns}
           onSubmit={(newSelectedRecords) => {
             const selectedKeys = records.map(({ _id }) => _id);
-            const _records = newSelectedRecords.filter(({ _id }) => !selectedKeys.includes(_id));
+            const _records = newSelectedRecords.filter((id) => {
+              return !selectedKeys.includes(id);
+            }).map((id) => ({ _id: id }));
             setRecords(records.concat(_records));
-
             setShowSelectModal(false);
           }}
         />

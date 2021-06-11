@@ -30,12 +30,13 @@ class AppPageDataStore {
   destroyFetchTableData: IReactionDisposer;
   destroySetTableConfig: IReactionDisposer;
   @observable tableConfig: TableConfig = { pageSize: null, order: undefined };
-  @observable noFiltersTips: React.ReactNode = '尚未配置筛选条件。'
+  @observable noFiltersTips: React.ReactNode = '尚未配置筛选条件。';
   @observable listLoading = false;
   @observable pageID = '';
   @observable appID = '';
   @observable allowRequestData = false;
   @observable filters: Filters = [];
+  @observable selected: string[] = [];
   @observable formDataList: any[] = [];
   @observable total = 0;
   @observable fields: Fields[] = [];
@@ -82,6 +83,11 @@ class AppPageDataStore {
   }
 
   @action
+  setSelected = (selected: string[]): void => {
+    this.selected = selected;
+  }
+
+  @action
   setParams = (params: Params): void => {
     this.params = { ...this.params, ...params };
   }
@@ -117,15 +123,14 @@ class AppPageDataStore {
   }
 
   @action
-  fetchFormDataList = (params: Params) => {
+  fetchFormDataList = (params: Params): void => {
     if (!this.allowRequestData || !this.pageID) {
       return;
     }
 
     this.listLoading = true;
-    const side = window.SIDE === 'portal' ? 'm' : 'home';
     const { condition, tag, ...other } = params;
-    httpClient(`/api/v1/structor/${this.appID}/${side}/form/${this.pageID}`, {
+    httpClient(`/api/v1/structor/${this.appID}/home/form/${this.pageID}`, {
       method: 'find',
       page: 1,
       conditions: { tag: tag, condition },

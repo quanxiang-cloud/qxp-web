@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useImperativeHandle } from 'react';
+import { toJS } from 'mobx';
 import { UnionColumns } from 'react-table';
 
 import PageLoading from '@c/page-loading';
@@ -32,8 +33,9 @@ function FormAppDataTableWrap({
 
   useImperativeHandle(
     ref,
-    ()=>({
+    () => ({
       refresh: () => store?.setParams({}),
+      getSelected: () => toJS(store?.selected || []),
     }),
   );
 
