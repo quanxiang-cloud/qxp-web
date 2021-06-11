@@ -20,10 +20,6 @@ export function getTableCellData(
   initValue: string | string[] | Record<string, unknown> | Record<string, unknown>[] | undefined,
   field: ISchema,
 ): string | JSX.Element | Record<string, any>[] {
-  if (!initValue) {
-    return (<span className='text-gray-300'>——</span>);
-  }
-
   if (field.type === 'array') {
     return initValue as unknown as Record<string, any>[] || [];
   }
