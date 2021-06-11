@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -160,6 +161,9 @@ func createSub(r *http.Request, vm map[string]interface{}, tableID, fieldNme str
 				}
 				if cm == SubTableF {
 					st.SubTableType = cp.Subordination
+				}
+				if cp.AppID == "" || cp.TableID == "" {
+					return http.StatusBadRequest,errors.New("bad schema")
 				}
 				path := fmt.Sprintf("%s%s%s", base, cp.AppID, createSubTable)
 				pa, err := json.Marshal(&st)
