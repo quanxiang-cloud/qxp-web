@@ -1,10 +1,10 @@
 import React from 'react';
 import { UnionColumns } from 'react-table';
-import { action, observable, reaction, IReactionDisposer, computed } from 'mobx';
+import { action, observable, reaction, IReactionDisposer } from 'mobx';
 
 import httpClient from '@lib/http-client';
 
-import { TableHeaderBtn } from './type';
+import { TableHeaderBtn, TableConfig } from './type';
 import { Config, getPageDataSchema } from './utils';
 
 type Params = {
@@ -29,7 +29,7 @@ export type FormData = Record<string, any>;
 class AppPageDataStore {
   destroyFetchTableData: IReactionDisposer;
   destroySetTableConfig: IReactionDisposer;
-  @observable tableConfig: any = {};
+  @observable tableConfig: TableConfig = { pageSize: null, order: undefined };
   @observable noFiltersTips: React.ReactNode = '尚未配置筛选条件。'
   @observable listLoading = false;
   @observable pageID = '';
@@ -102,7 +102,7 @@ class AppPageDataStore {
   }
 
   @action
-  setTableConfig = (tableConfig: any): void => {
+  setTableConfig = (tableConfig: TableConfig): void => {
     this.tableConfig = tableConfig;
   }
 
@@ -140,32 +140,10 @@ class AppPageDataStore {
     });
   }
 
-  @computed
-  get formDataListLabel(): any[] {
-    const properties = this.schema.properties || {};
-
-    const complexKeys = Object.keys(properties)
-      .filter((key) => properties[key].type == 'label-value');
-
-    return this.formDataList.map((itm) => {
-      const newData: any = {};
-
-      Object.keys(itm).forEach((key: string) => {
-        if (complexKeys.includes(key)) {
-          newData[key] = ([].concat(itm[key])).map((itm: any) => itm.label);
-        } else {
-          newData[key] = itm[key];
-        }
-      });
-
-      return newData;
-    });
-  }
-
   @action
   clear = (): void => {
     this.formDataList = [];
-    this.tableConfig = {};
+    this.tableConfig = { pageSize: null, order: undefined };
     this.filters = [];
     this.tableColumns = [];
     this.pageID = '';

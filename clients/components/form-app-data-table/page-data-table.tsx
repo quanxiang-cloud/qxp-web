@@ -71,7 +71,7 @@ function PageDataTable(): JSX.Element {
           loading={store.listLoading}
           onSelectChange={handleSelectChange}
           columns={store.tableColumns}
-          data={store.formDataListLabel}
+          data={store.formDataList}
         />
       </div>
       {store.tableConfig.pageSize ? (

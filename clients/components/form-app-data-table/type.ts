@@ -12,3 +12,9 @@ export type TableHeaderBtn = {
 export type Ref = {
   refresh: () => void;
 }
+
+export type TableConfig = {
+  fixedRule?: string;
+  order?: string;
+  pageSize?: number | null;
+};

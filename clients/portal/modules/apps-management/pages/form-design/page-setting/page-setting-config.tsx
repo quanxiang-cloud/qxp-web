@@ -73,7 +73,7 @@ const FIXED_RULE_OPTION = [
   { label: '固定首列和操作列', value: 'one_action' },
 ];
 
-function PageSettingConfig() {
+function PageSettingConfig(): JSX.Element {
   const { fieldList, pageTableShowRule, setPageTableShowRule, pageTableColumns } = store;
   const [indeterminate, setIndeterminate] = useState(false);
 

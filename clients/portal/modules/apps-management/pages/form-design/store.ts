@@ -4,7 +4,8 @@ import { UnionColumns } from 'react-table';
 import FormStore from '@c/form-builder/store';
 import toast from '@lib/toast';
 import AppPageDataStore from '@c/form-app-data-table/store';
-import { PageTableShowRule, setFixedParameters } from '@c/form-app-data-table/utils';
+import { TableConfig } from '@c/form-app-data-table/type';
+import { setFixedParameters } from '@c/form-app-data-table/utils';
 
 import { getTableSchema, saveTableSchema } from '@lib/http-client';
 import {
@@ -26,7 +27,7 @@ class FormDesignStore {
   @observable formStore: FormStore | null = null;
   @observable hasSchema = false;
   @observable pageTableColumns: string[] = [];
-  @observable pageTableShowRule: PageTableShowRule = {};
+  @observable pageTableShowRule: TableConfig = {};
   @observable filters: Filters = [];
 
   @computed get fieldsMap(): Record<string, ISchema> {
@@ -133,7 +134,7 @@ class FormDesignStore {
   }
 
   @action
-  setPageTableShowRule = (newRule: PageTableShowRule): void => {
+  setPageTableShowRule = (newRule: TableConfig): void => {
     this.pageTableShowRule = { ...this.pageTableShowRule, ...newRule };
   }
 

@@ -1,18 +1,14 @@
 import React from 'react';
 import moment from 'moment';
-
 import { UnionColumns } from 'react-table';
 
+import { TableConfig } from './type';
+
 export type Scheme = Record<string, any>;
-export type PageTableShowRule = {
-  fixedRule?: string;
-  order?: string;
-  pageSize?: number | null;
-}
 export type Config = {
   filters?: Filters;
   pageTableColumns?: string[];
-  pageTableShowRule?: PageTableShowRule;
+  pageTableShowRule?: TableConfig;
 };
 
 type Option = {
@@ -21,16 +17,20 @@ type Option = {
 }
 
 export function getTableCellData(
-  initValue: string | string[] | Record<string, unknown> | Record<string, unknown>[],
+  initValue: string | string[] | Record<string, unknown> | Record<string, unknown>[] | undefined,
   field: ISchema,
 ): string | JSX.Element | Record<string, any>[] {
+  if (!initValue) {
+    return (<span className='text-gray-300'>——</span>);
+  }
+
   if (field.type === 'array') {
     return initValue as unknown as Record<string, any>[] || [];
   }
 
   if (field.type === 'label-value') {
     return (([] as Record<string, unknown>[]).concat(initValue as Record<string, unknown>[]))
-      .map((itm)=>itm.label).join(',');
+      .map((itm) => itm.label).join(',');
   }
 
   if (!initValue) {
@@ -101,7 +101,7 @@ export function setFixedParameters(
   fixedRule: string | undefined,
   tableColumns: UnionColumns<Record<string, any>>[],
 ): UnionColumns<any>[] {
-  const actionIndex = tableColumns.findIndex(({ id })=>id === 'action');
+  const actionIndex = tableColumns.findIndex(({ id }) => id === 'action');
   switch (fixedRule) {
   case 'one':
     addFixedParameters([0], tableColumns);
@@ -127,7 +127,7 @@ export function getPageDataSchema(
   customColumns: UnionColumns<any>[],
 ): {
   tableColumns: UnionColumns<any>[];
-  pageTableShowRule: PageTableShowRule;
+  pageTableShowRule: TableConfig;
 } {
   const { pageTableShowRule = {}, pageTableColumns = [] } = config || {};
   const fieldsMap = schema?.properties || {};

@@ -53,12 +53,12 @@ function CreateDataForm({ appID, pageID, rowID, onCancel, title }: Props): JSX.E
   const defaultValues = rowID ? data?.record : undefined;
   const { schema } = data || { properties: { } };
 
-  if (!schema) {
-    return <div>some error</div>;
-  }
-
   if (isLoading) {
     return <Loading desc="加载中..." />;
+  }
+
+  if (!schema) {
+    return <div>some error</div>;
   }
 
   function buildRequestParams(
@@ -156,9 +156,8 @@ function CreateDataForm({ appID, pageID, rowID, onCancel, title }: Props): JSX.E
 
     formDataRequest(appID, pageID, reqData).then(() => {
       toast.success('提交成功');
-      onCancel();
-    }).finally(() => {
       setLoading(false);
+      onCancel();
     });
   };
 
