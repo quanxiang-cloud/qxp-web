@@ -1,27 +1,9 @@
-import { createFormActions, ISchemaFormActions } from '@formily/react-schema-renderer';
 import React from 'react';
+import {
+  createFormActions, ISchemaFormActions,
+} from '@formily/react-schema-renderer';
 
-import registry, { Registry } from './registry';
 import Store from './store';
-
-const defaultContext: ContextProps = {
-  activeItem: {},
-  registry: registry,
-};
-
-type ContextProps = {
-  registry: Registry;
-  activeItem: any;
-  data?: any;
-  setData?: (data: any) => void;
-  deleteItem?: (item: any, index: number) => void;
-  duplicateItem?: (item: any, index: number) => void;
-  setCurrentActiveItem?: (item: any) => void;
-}
-
-export const FormBuilderContext = React.createContext<ContextProps>(defaultContext);
-
-export const useFormBuilderContext = () => React.useContext(FormBuilderContext);
 
 export const StoreContext = React.createContext<Store>(new Store({ schema: {}, appID: '', pageID: '' }));
 
