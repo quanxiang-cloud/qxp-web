@@ -6,7 +6,7 @@ import Card from '@c/card';
 import WorkFlowListTable from './table';
 import WorkFlowToolbar from './toolbar';
 
-export default function WorkFlowCard() {
+export default function WorkFlowCard(): JSX.Element {
   const contentHeight = useCss({
     height: 'calc(100% - 56px)',
   });

@@ -1,5 +1,5 @@
 import React, { DetailedHTMLProps, HTMLAttributes } from 'react';
-import { twCascade } from '@mariusmarais/tailwind-cascade';
+import cs from 'classnames';
 
 import { Column } from '.';
 
@@ -32,7 +32,7 @@ export default function TableRows<T>({
                 borderLeft: 'none',
                 borderRight: 'none',
               }}
-              className={twCascade('px-24 py-16 align-middle text-body', cellClassName)}
+              className={cs('px-24 py-16 align-middle text-body', cellClassName)}
             >
               {column.render ? column.render(data, row, index) : data}
             </td>

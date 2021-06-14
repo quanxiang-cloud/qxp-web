@@ -40,7 +40,7 @@ export default function Variables() {
     <div className="w-full flex flex-col">
       <TextHeader
         className="h-56 items-center flex px-20 bg-gray-1000
-        shadow-header text-gray-900 mb-20 pb-0"
+        shadow-header text-gray-900 mb-20"
         title="工作流变量"
         titleClassName="text-h5"
         descClassName="text-caption mt-1"

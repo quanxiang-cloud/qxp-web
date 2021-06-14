@@ -18,8 +18,11 @@ interface Props {
 }
 
 export default function CustomFieldTable({
-  editable, fields, updateFields, schemaMap,
-}: Props) {
+  editable, fields: originalFields, updateFields, schemaMap,
+}: Props): JSX.Element {
+  const fields = originalFields.filter((field) => {
+    return schemaMap[field.id]?.type !== 'array';
+  });
   const [data] = useRequest<{
     code: number;
     data: {name: string; code: string; desc: string;}[];
@@ -30,7 +33,7 @@ export default function CustomFieldTable({
   });
   const variableOptions = data?.data?.map(({ name, code }) => ({ label: name, value: code }));
 
-  function getHeader(model: any, key: 'read' | 'write', label: string) {
+  function getHeader(model: any, key: 'read' | 'write', label: string): JSX.Element {
     let checkedNumber = 0;
     model.data.forEach((dt: CustomFieldPermission) => {
       if (dt[key]) {
@@ -70,7 +73,7 @@ export default function CustomFieldTable({
     );
   }
 
-  function getValueHeader(label: string, tip: string) {
+  function getValueHeader(label: string, tip: string): JSX.Element {
     return (
       <div className="flex items-center">
         <span className="mr-4">{label}</span>
@@ -86,7 +89,7 @@ export default function CustomFieldTable({
     );
   }
 
-  function getCell(model: any, key?: 'read' | 'write') {
+  function getCell(model: any, key?: 'read' | 'write'): JSX.Element {
     const isChecked = model.cell.value;
     if (!key) {
       return (
@@ -117,7 +120,9 @@ export default function CustomFieldTable({
     );
   }
 
-  function getValueCell(model: any, key: 'initialValue' | 'submitValue', editable: boolean) {
+  function getValueCell(
+    model: any, key: 'initialValue' | 'submitValue', editable: boolean,
+  ): JSX.Element | null {
     if (editable) {
       const schema = schemaMap[model.cell.row.id];
       if (schema['x-mega-props']) {
@@ -151,7 +156,7 @@ export default function CustomFieldTable({
     return null;
   }
 
-  function renderTable() {
+  function renderTable(): JSX.Element {
     return (
       <Table
         rowKey="id"

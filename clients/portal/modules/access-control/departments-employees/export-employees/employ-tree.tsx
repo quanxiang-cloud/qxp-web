@@ -1,6 +1,6 @@
 import React from 'react';
 import { observer } from 'mobx-react';
-import { twCascade } from '@mariusmarais/tailwind-cascade';
+import cs from 'classnames';
 
 import Tree from '@c/headless-tree';
 import { NodeRenderProps } from '@c/headless-tree/types';
@@ -28,7 +28,7 @@ export default observer(function DepartmentSelectTree({
   }
 
   return (
-    <div className={twCascade('tree-wrapper', wrapperClassName)}>
+    <div className={cs('tree-wrapper', wrapperClassName)}>
       <Tree
         store={store}
         NodeRender={NodeRender}

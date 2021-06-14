@@ -1,4 +1,4 @@
-import React, { useState, isValidElement, useRef, useEffect } from 'react';
+import React, { useState, isValidElement, useEffect } from 'react';
 import cs from 'classnames';
 
 import Icon from '@c/icon';
@@ -16,25 +16,20 @@ type Props = {
 function Drawer({ onCancel, title, children, className, distanceTop = 56 }: Props) {
   const [beganClose, setBeganClose] = useState<boolean>(false);
   const [visible, setVisible] = useState<boolean>(false);
-  const [isUnmounted, setIsUnmounted] = useState<boolean>(false);
-  const paneRef = useRef<HTMLDivElement>(null);
+
+  let timeID = -1;
 
   const handleCancel = () => {
-    if (isUnmounted) {
-      return;
-    }
-    const isOk = onCancel();
-    if (isOk !== false) {
-      setBeganClose(true);
-      setTimeout(() => {
-        setVisible(true);
-      }, 300);
-    }
+    onCancel();
+    setBeganClose(true);
+    timeID = window.setTimeout(() => {
+      setVisible(true);
+    }, 300);
   };
 
   useEffect(() => {
     return () => {
-      setIsUnmounted(true);
+      clearTimeout(timeID);
     };
   }, []);
 
@@ -46,7 +41,6 @@ function Drawer({ onCancel, title, children, className, distanceTop = 56 }: Prop
       }, className)}
     >
       <div
-        ref={paneRef}
         style={{ '--distanceTop': distanceTop + 'px' } as React.CSSProperties}
         className='drawer-container'
       >
@@ -54,11 +48,7 @@ function Drawer({ onCancel, title, children, className, distanceTop = 56 }: Prop
           {typeof title === 'string' && (
             <span className='text-h5'>{title}</span>
           )}
-          {isValidElement(title) && (
-            <>
-              { title }
-            </>
-          )}
+          {isValidElement(title) && title }
           <Icon onClick={handleCancel} clickable changeable name='close' size={24} />
         </div>
         <div className='drawer-main-content'>

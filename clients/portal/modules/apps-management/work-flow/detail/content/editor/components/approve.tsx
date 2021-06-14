@@ -86,7 +86,12 @@ export default function ApproveNodeComponent({ data, id, xPos, yPos, isDragging 
           iconClassName="text-white"
           titleClassName="text-white bg-indigo-500"
         />
-        <NodeRemover visible={showRemover} id={id} type="light" />
+        <NodeRemover
+          onVisibilityChange={setShowRemover}
+          visible={showRemover}
+          id={id}
+          type="light"
+        />
       </div>
       <footer className="p-8 flex flex-1 flex-col justify-center">
         {(hasApproveRule || hasApprovePerson) && (

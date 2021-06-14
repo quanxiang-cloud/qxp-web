@@ -1,7 +1,7 @@
 import React, { useState, useRef, MutableRefObject, LegacyRef } from 'react';
 import useClickAway from 'react-use/lib/useClickAway';
 import { Icon } from '@QCFE/lego-ui';
-import { twCascade } from '@mariusmarais/tailwind-cascade';
+import cs from 'classnames';
 
 import { TreeNode } from '@c/headless-tree/types';
 
@@ -71,7 +71,7 @@ export default function TreePickerField<T extends { id: string; }>({
             name="chevron-down"
             size="20"
             className={
-              twCascade(
+              cs(
                 'transition-all absolute cursor-pointer top-16 transform',
                 {
                   '-rotate-180': open,

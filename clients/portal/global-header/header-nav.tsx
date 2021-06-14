@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { twCascade } from '@mariusmarais/tailwind-cascade';
+import cs from 'classnames';
 
 import Icon from '@c/icon';
 
@@ -45,7 +45,7 @@ export default function HeaderLeft() {
     <div className="flex items-center flex-2">
       <Link
         to="/"
-        className={twCascade(
+        className={cs(
           'header-nav-btn group mr-12',
           className(isHome),
         )}
@@ -67,7 +67,7 @@ export default function HeaderLeft() {
       </Link>
       <Link
         to="/apps"
-        className={twCascade(
+        className={cs(
           'header-nav-btn group mr-20',
           className(isAppManagement),
         )}
@@ -89,7 +89,7 @@ export default function HeaderLeft() {
       </Link>
       <Link
         to="/access-control"
-        className={twCascade(
+        className={cs(
           'header-nav-btn group mr-20',
           className(isAccess),
         )}
@@ -111,7 +111,7 @@ export default function HeaderLeft() {
       </Link>
       <Link
         to="/system/message"
-        className={twCascade(
+        className={cs(
           'header-nav-btn group mr-20',
           className(isSystemControl),
         )}

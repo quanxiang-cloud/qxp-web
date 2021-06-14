@@ -1,6 +1,6 @@
 import React from 'react';
 import { observer } from 'mobx-react';
-import { twCascade } from '@mariusmarais/tailwind-cascade';
+import cs from 'classnames';
 
 import { NodeRenderProps } from '@c/headless-tree/types';
 import Checkbox from '@c/checkbox';
@@ -39,7 +39,7 @@ export default observer(function DepartmentNode({ node, store, onChange }: Props
   return (
     <div
       onClick={handleClick}
-      className={twCascade('transition-all py-8 w-full flex items-center justify-between')}
+      className={cs('transition-all py-8 w-full flex items-center justify-between')}
     >
       <div className="ml-2 flex flex-row items-center w-full">
         <Checkbox

@@ -93,6 +93,7 @@ export default function AssociateDepartmentEmployee({ roleID, isSuper }: Props) 
       <div className="flex items-center">
         <Switch
           className="mb-16"
+          value={1}
           options={[{
             label: '员工',
             value: 1,

@@ -72,11 +72,11 @@ export default function Detail() {
     return <ErrorTips desc="出错了..." />;
   }
 
-  function onConfirmCancel() {
+  function onConfirmCancel(): void {
     updateStoreByKey('showDataNotSaveConfirm', () => false);
   }
 
-  function onConfirmSubmit() {
+  function onConfirmSubmit(): void {
     onConfirmCancel();
     currentDataNotSaveConfirmCallback && currentDataNotSaveConfirmCallback();
   }

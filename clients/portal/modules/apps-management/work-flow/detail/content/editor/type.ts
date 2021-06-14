@@ -215,9 +215,6 @@ export type Errors = Record<string, unknown> & {
     dataNotSaveMap: Map<string, boolean>;
 };
 
-// todo fix this, assign to lishengma
-type FunctionToBeRefactor = () => void;
-
 export interface StoreValue {
   flowInstance?: OnLoadParams;
   creatorId?: string;
@@ -239,6 +236,6 @@ export interface StoreValue {
   nodeAdminMsg: boolean;
   status: string;
   errors: Errors;
-  currentDataNotSaveConfirmCallback?: FunctionToBeRefactor;
+  currentDataNotSaveConfirmCallback?: () => void;
   showDataNotSaveConfirm?: boolean;
 }

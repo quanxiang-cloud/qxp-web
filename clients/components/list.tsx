@@ -1,5 +1,5 @@
 import React, { memo } from 'react';
-import { twCascade } from '@mariusmarais/tailwind-cascade';
+import cs from 'classnames';
 
 import { isFunction, isObject } from '@lib/utils';
 import Icon from './icon';
@@ -29,7 +29,7 @@ function List<T extends unknown>({
   header,
 }: IList<T>) {
   return (
-    <ul className={twCascade('flex flex-col', className)}>
+    <ul className={cs('flex', className)}>
       {header}
       {items.map((item: JSX.Element | (() => JSX.Element) | IItem<T>) => {
         const isElement = React.isValidElement(item);
@@ -43,7 +43,7 @@ function List<T extends unknown>({
               onClick={() => {
                 curItem.onclick && curItem.onclick(params);
               }}
-              className={twCascade(
+              className={cs(
                 'w-full h-36 px-16 flex items-center',
                 'cursor-pointer hover:blue-100 transition',
                 itemClassName,
@@ -57,7 +57,7 @@ function List<T extends unknown>({
           );
         }
         return (
-          <li key={(item as JSX.Element).key} className={twCascade('transition', itemClassName)}>
+          <li key={(item as JSX.Element).key} className={cs('transition', itemClassName)}>
             {isFunc && (item as () => JSX.Element)()}
             {isElement && item}
           </li>

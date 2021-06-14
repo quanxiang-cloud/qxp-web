@@ -13,7 +13,7 @@ interface ISwitch<Value extends React.Key> {
   options: ISwitchOption<Value>[];
   onChange?: (value: Value) => void;
   value?: Value;
-  defaultValue?: string;
+  defaultValue?: Value;
   optionRenderer?: (option: ISwitchOption<Value>)=> React.ReactNode;
 }
 
