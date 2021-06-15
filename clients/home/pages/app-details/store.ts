@@ -69,11 +69,14 @@ class UserAppDetailsStore {
   }
 
   @action
-  delFormData = (ids: string[]) => {
+  delFormData = (ids: string[]): Promise<void> => {
     return formDataCurd(this.appID, this.pageID, {
       method: 'delete',
       conditions: { condition: [{ key: '_id', op: ids.length > 1 ? 'in' : 'eq', value: ids }] },
-    }).then(() => {
+    }).then((data: any) => {
+      if (data?.errorCount) {
+        toast.success(`删除成功!, 失败记录数: ${data.errorCount}`);
+      }
       toast.success('删除成功!');
     });
   }

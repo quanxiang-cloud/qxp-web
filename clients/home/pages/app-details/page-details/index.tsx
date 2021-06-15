@@ -30,10 +30,9 @@ function PageDetails(): JSX.Element | null {
     setModalType('details');
   };
 
-  const delFormData = (ids: string[]): Promise<any> => {
-    return store.delFormData(ids).then(() => {
-      formTableRef.current?.refresh();
-    });
+  const delFormData = async (ids: string[]): Promise<any> => {
+    await store.delFormData(ids);
+    formTableRef.current?.refresh();
   };
 
   const tableHeaderBtnList: TableHeaderBtn[] = [

@@ -6,6 +6,9 @@ export type SchemaAndRecord = {
 }
 
 export function findOneRecord(appID: string, tableID: string, id: string): Promise<Record<string, any>> {
+  if (!id) {
+    return Promise.resolve({});
+  }
   return httpClient<{ entity?: Record<string, any>; }>(
     `/api/v1/structor/${appID}/home/form/${tableID}`,
     {
@@ -17,7 +20,8 @@ export function findOneRecord(appID: string, tableID: string, id: string): Promi
     { 'X-Proxy': 'FORM_DATA' },
   ).then(({ entity }) => {
     if (!entity) {
-      return Promise.reject(new Error('没有找到记录'));
+      // 只查 schema 的时候不要 reject
+      return {};
     }
 
     return entity;
