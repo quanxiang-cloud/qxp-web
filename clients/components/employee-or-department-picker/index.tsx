@@ -26,13 +26,13 @@ export default function EmployeeOrDepartmentPickerModal({
   title,
   submitText,
   onlyEmployees,
-}: Props) {
+}: Props): JSX.Element {
   const [departmentsOrEmployees, setDepartmentsOrEmployees] = useState<
     EmployeeOrDepartmentOfRole[]
   >([]);
   const [isOnGetSelected, setIsOnGetSelected] = useState(false);
 
-  function onGetSelected() {
+  function onGetSelected(): void {
     const employees: EmployeeOrDepartmentOfRole[] = [];
     const departments: EmployeeOrDepartmentOfRole[] = [];
     departmentsOrEmployees.forEach((departmentOrEmployees) => {
