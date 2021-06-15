@@ -19,6 +19,7 @@ const TREE_NODE_HEIGHT = 56;
 export type TreeStoreProps<T> = {
   rootNode: TreeNode<T>;
   onGetChildren?: (parentNode: TreeNode<T>) => Promise<TreeNode<T>[]>;
+  singleMode?: boolean;
 }
 
 export default class TreeStore<T> {

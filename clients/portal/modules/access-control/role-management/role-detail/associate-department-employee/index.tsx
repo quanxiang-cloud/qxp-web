@@ -15,7 +15,7 @@ export interface Props {
   isSuper: boolean;
 }
 
-export default function AssociateDepartmentEmployee({ roleID, isSuper }: Props) {
+export default function AssociateDepartmentEmployee({ roleID, isSuper }: Props): JSX.Element {
   const [showBindModal, setShowBindModal] = useState(false);
   const [showBindType, setShowBindType] = useState<number>(1);
   const queryClient = useQueryClient();
@@ -46,7 +46,7 @@ export default function AssociateDepartmentEmployee({ roleID, isSuper }: Props) 
   async function onAssociate(
     departments: EmployeeOrDepartmentOfRole[],
     employees: EmployeeOrDepartmentOfRole[],
-  ) {
+  ): Promise<true | undefined> {
     const newSets = [...departments, ...employees];
     const oldSets = data?.departmentsOrEmployees || [];
     const deletes = oldSets.filter((member: { ownerID: string; }) => {
@@ -67,7 +67,7 @@ export default function AssociateDepartmentEmployee({ roleID, isSuper }: Props) 
     }
   }
 
-  function onCancelAssociation(records: EmployeeOrDepartmentOfRole[]) {
+  function onCancelAssociation(records: EmployeeOrDepartmentOfRole[]): void {
     mutation.mutate({
       roleID: roleID as string,
       delete: records.map(({ id }) => id),

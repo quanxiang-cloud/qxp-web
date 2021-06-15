@@ -22,13 +22,25 @@ function selectedNodes<T>(nodeMap: NodeMap<T>, id: string): SelectedNodePaths<T>
   }));
 }
 
+function selectedNodeSingleMode<T>(nodeMap: NodeMap<T>): SelectedNodePaths<T> {
+  return Object.entries(nodeMap).reduce((cur: SelectedNodePaths<T>, next) => {
+    const [_, node] = next;
+    if (node.checkStatus === 'checked') {
+      cur.push([toJS(node)]);
+    }
+    return cur;
+  }, []);
+}
+
 export default class SelectableTreeStore<T> extends BaseStore<T> {
   _nodeMap: NodeMap<T> = {};
+  @observable singleMode: boolean;
   @observable nodeMap: NodeMap<T> = {};
 
   constructor(props: TreeStoreProps<T>) {
     super(props);
 
+    this.singleMode = !!props.singleMode;
     this.generateNodeMap();
   }
 
@@ -49,7 +61,9 @@ export default class SelectableTreeStore<T> extends BaseStore<T> {
 
   @computed get selectedNodePaths(): SelectedNodePaths<T> {
     const rootNodeID = this.rootNode.id;
-
+    if (this.singleMode) {
+      return selectedNodeSingleMode(this.nodeMap);
+    }
     return selectedNodes(this.nodeMap, rootNodeID);
   }
 
@@ -82,7 +96,7 @@ export default class SelectableTreeStore<T> extends BaseStore<T> {
     }
 
     this._nodeMap[id].checkStatus = checkStatus;
-    (this._nodeMap[id].children || []).forEach((id) => {
+    !this.singleMode && (this._nodeMap[id].children || []).forEach((id) => {
       this._toggleCheck(id, checkStatus);
     });
 
@@ -91,7 +105,7 @@ export default class SelectableTreeStore<T> extends BaseStore<T> {
       return;
     }
 
-    this.propagateCheckStatus(parentID, checkStatus);
+    !this.singleMode && this.propagateCheckStatus(parentID, checkStatus);
   }
 
   propagateCheckStatus(id: string, childCheckStatus: CheckStatus) {
