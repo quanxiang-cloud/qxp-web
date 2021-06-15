@@ -22,11 +22,18 @@ type Props = {
   children?: React.ReactElement | ((form: IForm) => React.ReactElement);
 }
 
-function FormRenderer({ schema, defaultValue, className, onSubmit, onFormValueChange, children }: Props) {
+function FormRenderer(
+  {
+    schema,
+    defaultValue,
+    className,
+    onSubmit,
+    onFormValueChange,
+    children,
+  }: Props): JSX.Element {
   const [errorMessage, setErrorMessage] = useState('');
   const actions = createFormActions();
-
-  function handleSubmit(values: any) {
+  function handleSubmit(values: any): void {
     const validations = schema['x-internal']?.validations || [];
     const valid = validations.every(({ formula, message }) => {
       try {
@@ -63,14 +70,14 @@ function FormRenderer({ schema, defaultValue, className, onSubmit, onFormValueCh
     }
   }
 
-  function handleOnChange(values: any) {
+  function handleOnChange(values: any): void {
     onFormValueChange?.(values);
     setErrorMessage('');
   }
 
   return (
     <ConfigProvider locale={zhCN}>
-      <div className={className}>
+      <div className={className || ''}>
         {errorMessage && (
           <p className="text-red-600">{errorMessage}</p>
         )}
@@ -93,7 +100,7 @@ function FormRenderer({ schema, defaultValue, className, onSubmit, onFormValueCh
             calculationFormulaEffect(schema, actions);
           }}
         >
-          {children}
+          {children as JSX.Element}
         </SchemaForm>
       </div>
     </ConfigProvider>

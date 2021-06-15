@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { memo } from 'react';
 import cs from 'classnames';
 
 import svgHash from './svg-hash';
 
-interface Props extends React.SVGProps<SVGSVGElement> {
+export interface Props extends React.SVGProps<SVGSVGElement> {
   name: string;
   type?: 'dark' | 'primary' | 'light';
   size?: number;
@@ -49,4 +49,4 @@ function Icon(
   );
 }
 
-export default React.forwardRef(Icon);
+export default memo(React.forwardRef(Icon)) as typeof Icon;

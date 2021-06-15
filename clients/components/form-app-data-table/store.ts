@@ -2,10 +2,10 @@ import React from 'react';
 import { UnionColumns } from 'react-table';
 import { action, observable, reaction, IReactionDisposer } from 'mobx';
 
-import toast from '@lib/toast';
 import httpClient from '@lib/http-client';
 
-import { Scheme, Config, getPageDataSchema } from './utils';
+import { TableHeaderBtn, TableConfig } from './type';
+import { Config, getPageDataSchema } from './utils';
 
 type Params = {
   condition?: Condition[] | [],
@@ -20,32 +20,30 @@ type InitData = {
   config?: Config;
   pageID?: string;
   appID?: string;
-  pageName?: string;
   allowRequestData?: boolean;
+  tableHeaderBtnList?: TableHeaderBtn[];
+  customColumns?: UnionColumns<any>[];
 }
 
 export type FormData = Record<string, any>;
-
 class AppPageDataStore {
   destroyFetchTableData: IReactionDisposer;
   destroySetTableConfig: IReactionDisposer;
-  @observable tableConfig: any = {};
-  @observable noFiltersTips: React.ReactNode = '尚未配置筛选条件。'
+  @observable tableConfig: TableConfig = { pageSize: null, order: undefined };
+  @observable noFiltersTips: React.ReactNode = '尚未配置筛选条件。';
   @observable listLoading = false;
   @observable pageID = '';
   @observable appID = '';
-  @observable pageName = '';
-  @observable authority = 0;
-  @observable curItemFormData: FormData | null = null;
   @observable allowRequestData = false;
   @observable filters: Filters = [];
+  @observable selected: string[] = [];
   @observable formDataList: any[] = [];
   @observable total = 0;
   @observable fields: Fields[] = [];
   @observable schema: ISchema = {};
   @observable filterData: FormData = {};
-  @observable tableColumns: any[] = [];
-  @observable createPageVisible = false;
+  @observable tableColumns: UnionColumns<FormData>[] = [];
+  @observable tableHeaderBtnList: TableHeaderBtn[] = [];
   @observable params: Params = {
     condition: [],
     sort: [],
@@ -54,14 +52,18 @@ class AppPageDataStore {
     tag: 'and',
   };
 
-  constructor({ schema, pageID, pageName, appID, config, allowRequestData }: InitData) {
-    const { tableColumns, pageTableShowRule } = getPageDataSchema(config || {}, schema);
-    this.fields = Object.entries(schema.properties || {}).map(([key, fieldSchema])=>{
-      return {
-        id: key,
-        ...fieldSchema,
-      };
-    });
+  constructor({
+    schema,
+    pageID,
+    appID,
+    config,
+    allowRequestData,
+    tableHeaderBtnList = [],
+    customColumns = [],
+  }: InitData) {
+    const { tableColumns, pageTableShowRule } = getPageDataSchema(config || {}, schema, customColumns);
+    this.setSchema(schema);
+    this.tableHeaderBtnList = tableHeaderBtnList;
     this.setTableColumns(tableColumns);
     this.setTableConfig(pageTableShowRule);
     this.destroyFetchTableData = reaction(() => this.params, this.fetchFormDataList);
@@ -71,8 +73,6 @@ class AppPageDataStore {
         sort: this.tableConfig.order ? [this.tableConfig.order] : [],
       };
     }, this.setParams);
-    this.schema = schema || {};
-    this.pageName = pageName || '';
     this.appID = appID || '';
     this.pageID = pageID || '';
     this.allowRequestData = !!allowRequestData;
@@ -83,71 +83,54 @@ class AppPageDataStore {
   }
 
   @action
-  setParams = (params: Params) => {
+  setSelected = (selected: string[]): void => {
+    this.selected = selected;
+  }
+
+  @action
+  setParams = (params: Params): void => {
     this.params = { ...this.params, ...params };
   }
 
   @action
-  setSchema = (schema: Scheme | undefined) => {
+  setSchema = (schema: ISchema | undefined): void => {
     if (!schema) {
       return;
     }
 
     this.schema = schema;
-    this.fields = Object.keys(this.schema).map((key) => ({
-      id: key,
-      ...schema.properties[key],
-    }));
-  }
-
-  @action
-  setTableConfig = (tableConfig: any) => {
-    this.tableConfig = tableConfig;
-  }
-
-  @action
-  setFilters = (filters: Filters) => {
-    this.filters = filters;
-  }
-
-  @action
-  setTableColumns = (tableColumns: UnionColumns<any>[]) => {
-    this.tableColumns = tableColumns;
-  }
-
-  @action
-  setVisibleCreatePage = (createPageVisible: boolean) => {
-    this.createPageVisible = createPageVisible;
-  }
-
-  @action
-  goEdit = (formData: FormData | null) => {
-    this.curItemFormData = formData;
-    this.setVisibleCreatePage(true);
-  }
-
-  @action
-  delFormData = (ids: string[]) => {
-    return httpClient(`/api/v1/structor/${this.appID}/` +
-      `${window.SIDE === 'portal' ? 'm' : 'home'}/form/${this.pageID}`, {
-      method: 'delete',
-      conditions: { condition: [{ key: '_id', op: ids.length > 1 ? 'in' : 'eq', value: ids }] },
-    }).then(() => {
-      this.formDataList = this.formDataList.filter(({ _id }) => !ids.includes(_id));
-      toast.success('删除成功!');
+    this.fields = Object.entries(schema.properties || {}).map(([key, fieldSchema]) => {
+      return {
+        id: key,
+        ...fieldSchema,
+      };
     });
   }
 
   @action
-  fetchFormDataList = (params: Params) => {
+  setTableConfig = (tableConfig: TableConfig): void => {
+    this.tableConfig = tableConfig;
+  }
+
+  @action
+  setFilters = (filters: Filters): void => {
+    this.filters = filters;
+  }
+
+  @action
+  setTableColumns = (tableColumns: UnionColumns<any>[]): void => {
+    this.tableColumns = tableColumns;
+  }
+
+  @action
+  fetchFormDataList = (params: Params): void => {
     if (!this.allowRequestData || !this.pageID) {
       return;
     }
 
     this.listLoading = true;
-    const side = window.SIDE === 'portal' ? 'm' : 'home';
     const { condition, tag, ...other } = params;
-    httpClient(`/api/v1/structor/${this.appID}/${side}/form/${this.pageID}`, {
+    httpClient(`/api/v1/structor/${this.appID}/home/form/${this.pageID}`, {
       method: 'find',
       page: 1,
       conditions: { tag: tag, condition },
@@ -163,44 +146,9 @@ class AppPageDataStore {
   }
 
   @action
-  fetchFormDataDetails = (dataID: string) => {
-    const side = window.SIDE === 'portal' ? 'm' : 'home';
-    return httpClient(`/api/v1/structor/${this.appID}/${side}/form/${this.pageID}`, {
-      method: 'findOne',
-      conditions: {
-        condition: [
-          {
-            key: '_id',
-            op: 'eq',
-            value: [dataID],
-          },
-        ],
-        tag: 'and',
-      },
-    });
-  }
-
-  @action
-  fetchActionAuthorized = () => {
-    if (!this.pageID) {
-      return;
-    }
-
-    const side = window.SIDE === 'portal' ? 'm' : 'home';
-    httpClient(
-      `/api/v1/structor/${this.appID}/${side}/permission/operatePer/getOperate`,
-      { formID: this.pageID },
-    ).then((res: any) => {
-      this.authority = res?.authority || 0;
-    });
-  }
-
-  @action
-  clear = () => {
-    this.curItemFormData = null;
+  clear = (): void => {
     this.formDataList = [];
-    this.tableConfig = {};
-    this.authority = 0;
+    this.tableConfig = { pageSize: null, order: undefined };
     this.filters = [];
     this.tableColumns = [];
     this.pageID = '';

@@ -32,13 +32,13 @@ const RowStyleLayout = styled((props) => <div {...props} />)`
 
 function RulesList(props: any): JSX.Element {
   const { value, path, mutators, schema } = props;
-  const onAdd = () => {
+  const onAdd = (): void => {
     if (!schema.items) {
       return;
     }
     mutators.push((schema.items as Schema).getEmptyValue());
   };
-  const onRemove = (index: number) => mutators.remove(index);
+  const onRemove = (index: number): void => mutators.remove(index);
 
   return (
     <ArrayList value={value}>
@@ -95,7 +95,8 @@ function FormDataFilterRuleFieldFragments(
       <Field
         name="rules"
         type="array"
-        x-component="ArrayCustom"
+        title="条件列表"
+        x-component="RulesList"
       >
         <Field type="object">
           <Field

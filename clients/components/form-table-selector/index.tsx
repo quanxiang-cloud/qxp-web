@@ -12,7 +12,7 @@ import toast from '@lib/toast';
 
 import { getFormDataOptions, Options } from './api';
 
-export type Value = { name: string; value: string }
+export type Value = { name?: string; value: string }
 
 interface Props {
   value: Value;
@@ -20,21 +20,43 @@ interface Props {
   onChange?: (value: Value) => void;
   validating?: boolean;
   errorMessage?: string;
+  exclude?: string[];
+}
+
+function buildOptions(optionsData: Options, exclude: string[]): Options {
+  if (!exclude?.length) {
+    return optionsData;
+  }
+  const options = [];
+  for (let index = 0; index < optionsData.length; index += 1) {
+    const op = optionsData[index];
+    if (!exclude.includes(op.value)) {
+      if (op.children?.length) {
+        options.push(...buildOptions(op.children, exclude));
+      } else {
+        options.push(op);
+      }
+    }
+  }
+
+  return options;
 }
 
 function FormTableSelector(
-  { value, changeable = true, onChange = noop, validating, errorMessage }: Props,
+  { value, changeable = true, onChange = noop, validating, errorMessage, exclude }: Props,
   ref?: Ref<Cascader>,
 ) {
   const { appID } = useParams<{appID: string}>();
 
   const {
-    data: options = [],
+    data: optionsData = [],
     isError,
     error = '获取工作表失败',
   } = useQuery(['GET_WORK_FORM_LIST', appID], getFormDataOptions, {
     enabled: !!appID,
   });
+
+  const options = buildOptions(optionsData, exclude || []);
 
   useEffect(() => {
     isError && toast.error(error as string);
@@ -54,10 +76,10 @@ function FormTableSelector(
     map?: Record<string, string[]>,
     id?: number,
   ) {
-    const pathMap: Record<string, string[]> = map ?? {};
+    const pathMap: Record<string, string[]> = map || {};
     for (let index = 0; index < dataSource.length; index += 1) {
       const { value, children } = dataSource[index];
-      const currentIndex = id ?? index;
+      const currentIndex = id || index;
       if (!pathMap[currentIndex]) {
         pathMap[currentIndex] = [];
       }
@@ -66,10 +88,15 @@ function FormTableSelector(
         getPathWhenMatch(val, children, pathMap, currentIndex) as string[];
       }
     }
-    return Object.entries(pathMap).find(([, value]) => value.includes(val))?.[1] ?? [];
+    return Object.entries(pathMap).find(([, value]) => value.includes(val))?.[1] || [];
   }
 
   const currentValuePath = getPathWhenMatch(value.value, options);
+
+  const extra = {};
+  if (ref) {
+    Object.assign(extra, { ref });
+  }
 
   return (
     <>
@@ -83,6 +110,7 @@ function FormTableSelector(
         </div>
         {changeable && (
           <Cascader
+            {...extra}
             allowClear={false}
             bordered={false}
             options={options}
@@ -91,7 +119,6 @@ function FormTableSelector(
             placeholder="请选择"
             value={currentValuePath}
             popupClassName="ml-12"
-            ref={ref}
             className={cs(
               'h-28 border-none px-12 text-12 flex items-center',
               'flex-1 work-flow-form-selector text-body2-no-color',
@@ -109,6 +136,7 @@ function FormTableSelector(
             labelClassName="whitespace-nowrap"
           >
             <Cascader
+              {...extra}
               disabled
               allowClear={false}
               bordered={false}
@@ -118,7 +146,6 @@ function FormTableSelector(
               placeholder="请选择"
               value={currentValuePath}
               popupClassName="ml-12"
-              ref={ref}
               className={cs(
                 'h-28 border-none px-12 text-12 flex items-center',
                 'flex-1 work-flow-form-selector',
@@ -129,7 +156,7 @@ function FormTableSelector(
       </div>
       {validating && !value.value && (
         <div className="mb-22 text-caption-no-color text-red-600 mt-4">
-          {errorMessage ?? '请选择一张工作表用以触发工作流'}
+          {errorMessage || '请选择一张工作表用以触发工作流'}
         </div>
       )}
     </>

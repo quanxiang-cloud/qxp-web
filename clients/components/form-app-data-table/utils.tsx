@@ -1,18 +1,14 @@
 import React from 'react';
 import moment from 'moment';
-
 import { UnionColumns } from 'react-table';
 
+import { TableConfig } from './type';
+
 export type Scheme = Record<string, any>;
-export type PageTableShowRule = {
-  fixedRule?: string;
-  order?: string;
-  pageSize?: number | null;
-}
 export type Config = {
   filters?: Filters;
   pageTableColumns?: string[];
-  pageTableShowRule?: PageTableShowRule;
+  pageTableShowRule?: TableConfig;
 };
 
 type Option = {
@@ -20,24 +16,19 @@ type Option = {
   label: string;
 }
 
-export function operateButton(wIndex: number, authority: number, button: React.ReactNode) {
-  const weightArr = authority.toString(2).split('').reverse();
-  if (weightArr.length < 7) {
-    for (let index = 0; index < 7 - weightArr.length; index += 1) {
-      weightArr.push('0');
-    }
-  }
-  if (weightArr[wIndex - 1] === '0') {
-    return null;
-  }
-
-  return button;
-}
-
 export function getTableCellData(
-  initValue: string | string[] | Record<string, unknown>,
+  initValue: string | string[] | Record<string, unknown> | Record<string, unknown>[] | undefined,
   field: ISchema,
-): string | JSX.Element {
+): string | JSX.Element | Record<string, any>[] {
+  if (field.type === 'array') {
+    return initValue as unknown as Record<string, any>[] || [];
+  }
+
+  if (field.type === 'label-value') {
+    return (([] as Record<string, unknown>[]).concat(initValue as Record<string, unknown>[]))
+      .map((itm) => itm.label).join(',');
+  }
+
   if (!initValue) {
     return (<span className='text-gray-300'>——</span>);
   }
@@ -45,7 +36,7 @@ export function getTableCellData(
   if (field.type === 'datetime') {
     const format = field['x-component-props']?.format || 'YYYY-MM-DD HH:mm:ss';
     if (Array.isArray(initValue)) {
-      return initValue.map((value: string) => {
+      return (initValue as string[]).map((value: string) => {
         return moment(value).format(format);
       }).join('-');
     }
@@ -55,7 +46,7 @@ export function getTableCellData(
 
   if (field.enum && field.enum.length) {
     if (Array.isArray(initValue)) {
-      return initValue.map((_value: string) => {
+      return (initValue as string[]).map((_value: string) => {
         if (!field.enum) {
           return '';
         }
@@ -91,7 +82,10 @@ export function getTableCellData(
   return initValue.toString();
 }
 
-function addFixedParameters(fixedList: number[], tableColumns: UnionColumns<Record<string, any>>[]) {
+function addFixedParameters(
+  fixedList: number[],
+  tableColumns: UnionColumns<Record<string, any>>[],
+): void {
   fixedList.forEach((index) => {
     if (tableColumns[index]) {
       tableColumns[index] = { ...tableColumns[index], fixed: true, width: 150 };
@@ -102,11 +96,8 @@ function addFixedParameters(fixedList: number[], tableColumns: UnionColumns<Reco
 export function setFixedParameters(
   fixedRule: string | undefined,
   tableColumns: UnionColumns<Record<string, any>>[],
-) {
-  let action: UnionColumns<any> = {
-    id: 'action',
-    Header: '操作',
-  };
+): UnionColumns<any>[] {
+  const actionIndex = tableColumns.findIndex(({ id }) => id === 'action');
   switch (fixedRule) {
   case 'one':
     addFixedParameters([0], tableColumns);
@@ -115,20 +106,25 @@ export function setFixedParameters(
     addFixedParameters([0, 1], tableColumns);
     break;
   case 'action':
-    action = { ...action, fixed: true, width: 150 };
+    if (actionIndex > -1) {
+      addFixedParameters([actionIndex], tableColumns);
+    }
     break;
   case 'one_action':
-    addFixedParameters([0], tableColumns);
-    action = { ...action, fixed: true, width: 150 };
+    addFixedParameters(actionIndex > -1 ? [0, actionIndex] : [0], tableColumns);
     break;
   }
-  return [...tableColumns, action];
+  return tableColumns;
 }
 
 export function getPageDataSchema(
   config: Config,
   schema: Scheme,
-) {
+  customColumns: UnionColumns<any>[],
+): {
+  tableColumns: UnionColumns<any>[];
+  pageTableShowRule: TableConfig;
+} {
   const { pageTableShowRule = {}, pageTableColumns = [] } = config || {};
   const fieldsMap = schema?.properties || {};
   const tableColumns: UnionColumns<any>[] = pageTableColumns.map((key) => {
@@ -140,7 +136,7 @@ export function getPageDataSchema(
   });
 
   return {
-    tableColumns: setFixedParameters(pageTableShowRule.fixedRule, tableColumns),
+    tableColumns: setFixedParameters(pageTableShowRule.fixedRule, [...tableColumns, ...customColumns]),
     pageTableShowRule,
   };
 }

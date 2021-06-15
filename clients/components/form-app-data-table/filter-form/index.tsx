@@ -12,7 +12,7 @@ type Props = {
   showMoreFilter: boolean;
 }
 
-function FilterForm({ showMoreFilter }: Props, ref?: React.Ref<any>) {
+function FilterForm({ showMoreFilter }: Props, ref?: React.Ref<any>): JSX.Element {
   const store = useContext(StoreContext);
   const { filters } = store;
   const fieldMaps = store.schema.properties || {};

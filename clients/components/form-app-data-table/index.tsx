@@ -1,15 +1,19 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useImperativeHandle } from 'react';
+import { toJS } from 'mobx';
+import { UnionColumns } from 'react-table';
 
 import PageLoading from '@c/page-loading';
 import { getTableSchema } from '@lib/http-client';
 
 import FormAppDataContent from './form-app-data-content';
 import Store from './store';
+import { TableHeaderBtn, Ref } from './type';
 
 type Props = {
   pageID: string;
   appID: string;
-  pageName?: string;
+  tableHeaderBtnList?: TableHeaderBtn[];
+  customColumns?: UnionColumns<any>[];
   allowRequestData?: boolean;
   className?: string;
   style?: React.CSSProperties;
@@ -18,13 +22,22 @@ type Props = {
 function FormAppDataTableWrap({
   pageID,
   appID,
-  pageName,
+  tableHeaderBtnList,
+  customColumns,
   allowRequestData = false,
   className = '',
   style,
-}: Props) {
+}: Props, ref: React.Ref<Ref>): JSX.Element | null {
   const [store, setStore] = useState<Store | null>(null);
   const [loading, setLoading] = useState(true);
+
+  useImperativeHandle(
+    ref,
+    () => ({
+      refresh: () => store?.setParams({}),
+      getSelected: () => toJS(store?.selected || []),
+    }),
+  );
 
   useEffect(() => {
     setLoading(true);
@@ -42,8 +55,9 @@ function FormAppDataTableWrap({
           new Store({
             schema: schema,
             config: config,
+            tableHeaderBtnList,
+            customColumns,
             allowRequestData,
-            pageName,
             appID,
             pageID,
           }),
@@ -72,4 +86,4 @@ function FormAppDataTableWrap({
   );
 }
 
-export default FormAppDataTableWrap;
+export default React.forwardRef(FormAppDataTableWrap);

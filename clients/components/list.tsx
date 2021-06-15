@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { twCascade } from '@mariusmarais/tailwind-cascade';
+import { isObject } from 'lodash';
 
-import { isFunction, isObject } from '@lib/utils';
+import { isFunction } from '@lib/utils';
+
 import Icon from './icon';
 
 export interface IItem<T> {
@@ -18,16 +20,19 @@ export interface IList<T> {
   itemClassName?: string;
   className?: string;
   params?: T;
+  header?: JSX.Element;
 }
 
-export default function List<T extends unknown>({
+function List<T extends unknown>({
   className,
   itemClassName,
   items = [],
   params,
-}: IList<T>) {
+  header,
+}: IList<T>): JSX.Element {
   return (
     <ul className={twCascade('flex flex-col', className)}>
+      {header}
       {items.map((item: JSX.Element | (() => JSX.Element) | IItem<T>) => {
         const isElement = React.isValidElement(item);
         const isFunc = isFunction(item);
@@ -63,3 +68,5 @@ export default function List<T extends unknown>({
     </ul>
   );
 }
+
+export default memo(List) as typeof List;

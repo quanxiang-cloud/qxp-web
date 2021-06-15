@@ -19,8 +19,14 @@ type ISchema = import('@formily/react-schema-renderer').ISchema & {
   };
 };
 
+declare type SchemaProperties<T = ISchema> = {
+  [key: string]: T;
+};
+
 declare namespace FormBuilder {
   type ElementCategory = 'basic' | 'advance' | 'layout';
+
+  type Subordination = 'foreign_table' | 'sub_table';
 
   type SourceElement<T> = {
     displayName: string;

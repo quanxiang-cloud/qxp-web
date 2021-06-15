@@ -7,6 +7,7 @@ interface Segment {
   key: string;
   text: string;
   path?: string;
+  render?: (segment: Segment) => React.ReactNode;
 }
 
 type Props = PropsWithChildren<{
@@ -24,7 +25,7 @@ function Breadcrumb({
   style,
   segments,
   segmentRender,
-}: Props) {
+}: Props): JSX.Element {
   const defaultCrumbRender = React.Children.map(children, (child, idx) => {
     if (!child) {
       return child;
@@ -41,7 +42,7 @@ function Breadcrumb({
   // else return link with a tag,
   // as segments come in , the children inside <Breadcrumb>  won't be rendered
   // without segments , must need the BreadCrumbItem inside the Breadcrumb ,follow the lego-ui
-  const breadcrumbChildrenRender = () => {
+  const breadcrumbChildrenRender = (): any[] | null | undefined => {
     if (segments) {
       if (segmentRender) {
         return segments.map((link) => (
@@ -70,10 +71,13 @@ function Breadcrumb({
         return (
           <div key={link.key} className={cs(className, 'qxp-breadcrumb-item')}>
             {
-              !link.path ? link.text : (
-                <Link to={link.path} className={cs(className, 'qxp-breadcrumb-link')}>
-                  {link.text}
-                </Link>
+              // eslint-disable-next-line no-nested-ternary
+              link.render ? link.render(link) : (
+                !link.path ? link.text : (
+                  <Link to={link.path} className={cs(className, 'qxp-breadcrumb-link')}>
+                    {link.text}
+                  </Link>
+                )
               )
             }
             <span className="qxp-breadcrumb-separator">{separator}</span>
