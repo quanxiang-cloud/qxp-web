@@ -1,3 +1,5 @@
+type TriggerMode = 'FORM_DATA' | 'FORM_TIME';
+
 interface Flow {
   bpmnText: string;
   canCancel: 0 | 1;
@@ -14,7 +16,7 @@ interface Flow {
   name: string;
   processKey: string;
   status: 'ENABLE' | 'DISABLE';
-  triggerMode: 'FORM_DATA' | 'FORM_TIME';
+  triggerMode: TriggerMode;
 }
 
 interface FlowInstance {
@@ -28,6 +30,7 @@ interface FlowInstance {
   creatorId?: string;
   creatorName?: string;
   flowId?: string;
+  formSchema?: {properties: Record<string, any>};
   formData?: Record<string, any>;
   formId?: string;
   formInstanceId?: string;

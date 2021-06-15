@@ -24,9 +24,8 @@ function FormDesignHeader() {
   const { pageName } = parse(window.location.search);
 
   const tabChange = (tabKey: string) => {
-    const navType = tabKey === 'publishForm' ? '/forEmployee' : '';
     const query = pageName ? `?pageName=${pageName}` : '';
-    history.replace(`/apps/formDesign/${tabKey}/${pageId}/${appID}${navType}${query}`);
+    history.replace(`/apps/formDesign/${tabKey}/${pageId}/${appID}${query}`);
   };
 
   const goBack = () => {

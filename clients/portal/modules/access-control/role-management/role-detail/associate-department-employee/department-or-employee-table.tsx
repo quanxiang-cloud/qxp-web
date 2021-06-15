@@ -2,11 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { useQuery } from 'react-query';
 
 import EmptyData from '@c/empty-tips';
-import More from '@c/more';
 import Pagination from '@c/pagination';
 import Loading from '@c/loading';
 import ErrorTips from '@c/error-tips';
 import Table from '@c/lego-table';
+import Icon from '@c/icon';
+import MoreMenu from '@c/more-menu';
 
 import { getRoleAssociations } from '../../api';
 
@@ -154,22 +155,19 @@ export default function DepartmentTable(
     columns.push({
       title: '',
       dataIndex: 'ownerID',
-      render: (ownerID: string, record: EmployeeOrDepartmentOfRole) => {
+      render: (_: string, record: EmployeeOrDepartmentOfRole) => {
         return (
-          <More<DepartmentOfRole>
-            items={[
-              {
-                id: ownerID,
-                iconName: '/dist/images/linkOff.svg',
-                text: '取消关联',
-                onclick: onCancel(record),
-              },
-            ]}
-            params={record}
-            className="inline-flex items-center justify-center"
-            contentClassName="w-48"
-            contentItemClassName="justify-center"
-          />
+          <div onClick={(e) => e.stopPropagation()}>
+            <MoreMenu
+              iconName="more_horiz"
+              className="rotate-90"
+              onMenuClick={onCancel(record)}
+              menus={[{
+                label: <span><Icon name="link_off" className="ml-6" />取消关联</span>,
+                key: 'cancelAssociate',
+              }]}
+            />
+          </div>
         );
       },
     });

@@ -1,4 +1,5 @@
 import React from 'react';
+import { useHistory } from 'react-router-dom';
 import { observer } from 'mobx-react';
 
 import Modal from '@c/modal';
@@ -11,8 +12,9 @@ type Props = {
 }
 
 function NotSavedModal({ onCancel, onAbandon }: Props): JSX.Element {
+  const history = useHistory();
   const handleSave = (): void => {
-    store.saveFormScheme().then(() => {
+    store.saveFormScheme(history).then(() => {
       onCancel();
     });
   };

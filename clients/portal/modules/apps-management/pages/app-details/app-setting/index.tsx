@@ -14,6 +14,8 @@ import AppInfo from './app-info';
 import AppAdmin from './app-admin';
 import appDetailsStore from '../store';
 
+const workflows = React.lazy(() => import('../../../work-flow/list'));
+
 import './index.scss';
 
 function AppSetting() {
@@ -38,6 +40,13 @@ function AppSetting() {
       replace: true,
       name: '应用管理员',
       url: `/apps/details/${appID}/setting/adminUsers`,
+    },
+    {
+      id: 'workflows',
+      icon: 'linear_scale',
+      replace: true,
+      name: '工作流',
+      url: `/apps/details/${appID}/setting/workflows`,
     },
     {
       id: 'usersAndPermissions',
@@ -81,6 +90,7 @@ function AppSetting() {
           <Switch>
             <Route exact path="/apps/details/:appID/setting/info" component={AppInfo} />
             <Route exact path="/apps/details/:appID/setting/adminUsers" component={AppAdmin} />
+            <Route path="/apps/details/:appID/setting/workflows" component={workflows} />
             <Route
               exact
               path="/apps/details/:appID/setting/usersAndPermissions"

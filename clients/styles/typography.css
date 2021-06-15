@@ -55,7 +55,23 @@
   color: var(--gray-900);
 }
 
+.text-body {
+  font-size: 14px;
+  line-height: 24px;
+  color: var(--gray-900);
+}
+
+.text-body-no-color {
+  font-size: 14px;
+  line-height: 24px;
+}
+
 .text-body2-no-color {
+  font-size: 14px;
+  line-height: 22px;
+}
+
+.text-body2-no-color-weight {
   font-size: 14px;
   line-height: 22px;
 }
@@ -73,6 +89,11 @@
 }
 
 .text-caption-no-color {
+  font-size: 12px;
+  line-height: 20px;
+}
+
+.text-caption-no-color-weight {
   font-size: 12px;
   line-height: 20px;
 }

@@ -39,7 +39,7 @@ export const excelHeader: EmployeeTableColumn[] = [
   },
 ];
 
-export const exportEmployees = ( data: Employee[]) => {
+export const exportEmployees = (data: Employee[]) => {
   const headers = excelHeader;
   const fileName = '人员列表.xlsx';
   const _headers = headers

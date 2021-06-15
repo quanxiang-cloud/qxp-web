@@ -1,10 +1,12 @@
+import * as H from 'history';
 import { action, observable, reaction, IReactionDisposer, computed, toJS } from 'mobx';
 import { UnionColumns } from 'react-table';
 
 import FormStore from '@c/form-builder/store';
 import toast from '@lib/toast';
 import AppPageDataStore from '@c/form-app-data-table/store';
-import { PageTableShowRule, setFixedParameters } from '@c/form-app-data-table/utils';
+import { TableConfig } from '@c/form-app-data-table/type';
+import { setFixedParameters } from '@c/form-app-data-table/utils';
 
 import { getTableSchema, saveTableSchema } from '@lib/http-client';
 import {
@@ -26,7 +28,7 @@ class FormDesignStore {
   @observable formStore: FormStore | null = null;
   @observable hasSchema = false;
   @observable pageTableColumns: string[] = [];
-  @observable pageTableShowRule: PageTableShowRule = {};
+  @observable pageTableShowRule: TableConfig = {};
   @observable filters: Filters = [];
 
   @computed get fieldsMap(): Record<string, ISchema> {
@@ -89,7 +91,7 @@ class FormDesignStore {
     this.destroySetSchema = reaction(() => this.formStore?.schema, this.appPageStore.setSchema);
     this.destroySetFilters = reaction(() => this.filters, this.appPageStore.setFilters);
 
-    this.destroySetTableColumn = reaction(() => {
+    this.destroySetTableColumn = reaction((): UnionColumns<any>[] => {
       if (!this.pageTableColumns) {
         return [];
       }
@@ -101,7 +103,11 @@ class FormDesignStore {
           accessor: key,
         };
       });
-      return setFixedParameters(this.pageTableShowRule.fixedRule, column);
+
+      return setFixedParameters(
+        this.pageTableShowRule.fixedRule,
+        [...column, { id: 'action', Header: '操作', accessor: 'action' }],
+      );
     }, this.appPageStore.setTableColumns);
 
     this.destroySetTableConfig = reaction(() => {
@@ -130,7 +136,7 @@ class FormDesignStore {
   }
 
   @action
-  setPageTableShowRule = (newRule: PageTableShowRule): void => {
+  setPageTableShowRule = (newRule: TableConfig): void => {
     this.pageTableShowRule = { ...this.pageTableShowRule, ...newRule };
   }
 
@@ -143,9 +149,9 @@ class FormDesignStore {
     this.pageLoading = true;
     getTableSchema(appID, pageID).then((res) => {
       const { schema = {}, config = {} } = res || {};
-      this.hasSchema = res ? true : false;
+      this.hasSchema = !!res;
       this.formStore = new FormStore({ schema, appID, pageID });
-      this.pageTableColumns = config.pageTableColumns;
+      this.pageTableColumns = config.pageTableColumns || [];
       this.filters = config.filters || [];
       this.pageTableShowRule = config.pageTableShowRule || {};
       this.pageLoading = false;
@@ -155,7 +161,13 @@ class FormDesignStore {
   }
 
   @action
-  saveFormScheme = (): Promise<void> => {
+  saveFormScheme = (history: H.History): Promise<void> => {
+    if (this.formStore?.fields.length && this.pageTableColumns && this.pageTableColumns.length === 0) {
+      toast.error('请在页面配置-字段显示和排序至少选择一个字段显示');
+      history.replace(`/apps/formDesign/pageSetting/${this.pageID}/${this.appID}`);
+      return Promise.resolve();
+    }
+
     this.saveSchemeLoading = true;
     return saveTableSchema(this.appID, this.pageID, this.formStore?.schema || {}).then(() => {
       createPageScheme(this.appID, {
@@ -185,6 +197,11 @@ class FormDesignStore {
 
   @action
   savePageConfig = (): void => {
+    if (this.pageTableColumns && this.pageTableColumns.length === 0) {
+      toast.error('请在页面配置-字段显示和排序至少选择一个字段显示');
+      return;
+    }
+
     createPageScheme(this.appID, {
       tableID: this.pageID, config: {
         pageTableColumns: this.pageTableColumns,

@@ -34,3 +34,10 @@ interface Window {
   SIDE: 'portal' | 'home';
   [key: string]: any;
 }
+
+interface Pagination {
+  current: number;
+  pageSize: number;
+}
+
+type ErrorWithData<T> = Error & T;
