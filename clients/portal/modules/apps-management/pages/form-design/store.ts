@@ -1,3 +1,4 @@
+import * as H from 'history';
 import { action, observable, reaction, IReactionDisposer, computed, toJS } from 'mobx';
 import { UnionColumns } from 'react-table';
 
@@ -102,6 +103,7 @@ class FormDesignStore {
           accessor: key,
         };
       });
+
       return setFixedParameters(
         this.pageTableShowRule.fixedRule,
         [...column, { id: 'action', Header: '操作', accessor: 'action' }],
@@ -159,9 +161,10 @@ class FormDesignStore {
   }
 
   @action
-  saveFormScheme = (): Promise<void> => {
-    if (this.pageTableColumns.length === 0) {
-      toast.error('请至少选择一个表格列');
+  saveFormScheme = (history: H.History): Promise<void> => {
+    if (this.formStore?.fields.length && this.pageTableColumns && this.pageTableColumns.length === 0) {
+      toast.error('请在页面配置-字段显示和排序至少选择一个字段显示');
+      history.replace(`/apps/formDesign/pageSetting/${this.pageID}/${this.appID}`);
       return Promise.resolve();
     }
 
@@ -194,8 +197,8 @@ class FormDesignStore {
 
   @action
   savePageConfig = (): void => {
-    if (this.pageTableColumns.length === 0) {
-      toast.error('请至少选择一个表格列');
+    if (this.pageTableColumns && this.pageTableColumns.length === 0) {
+      toast.error('请在页面配置-字段显示和排序至少选择一个字段显示');
       return;
     }
 

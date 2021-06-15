@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import { observer } from 'mobx-react';
 import { FormButtonGroup } from '@formily/antd';
 
@@ -11,6 +12,7 @@ import store from '../store';
 
 const FormPage = () => {
   const [previewModalVisible, setPreviewModalVisible] = useState(false);
+  const history = useHistory();
 
   if (!store.formStore) {
     return null;
@@ -22,13 +24,16 @@ const FormPage = () => {
   return (
     <>
       <div className='form-design-tool'>
-        <Button iconName='preview' onClick={() => setPreviewModalVisible(true)}>
+        <Button
+          iconName='preview'
+          onClick={() => setPreviewModalVisible(true)}
+        >
           预览
         </Button>
         <Button
           iconName='save'
           modifier="primary"
-          onClick={store.saveFormScheme}
+          onClick={() => store.saveFormScheme(history)}
         >
           保存表单
         </Button>
