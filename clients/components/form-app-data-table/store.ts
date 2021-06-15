@@ -3,7 +3,7 @@ import { UnionColumns } from 'react-table';
 import { action, observable, reaction, IReactionDisposer, computed } from 'mobx';
 
 import toast from '@lib/toast';
-import httpClient from '@lib/http-client';
+import httpClient, { FormDataResponse } from '@lib/http-client';
 
 import { Scheme, Config, getPageDataSchema } from './utils';
 
@@ -134,11 +134,15 @@ class AppPageDataStore {
 
   @action
   delFormData = (ids: string[]) => {
-    return httpClient(`/api/v1/structor/${this.appID}/` +
+    return httpClient<FormDataResponse>(`/api/v1/structor/${this.appID}/` +
       `${window.SIDE === 'portal' ? 'm' : 'home'}/form/${this.pageID}`, {
       method: 'delete',
       conditions: { condition: [{ key: '_id', op: ids.length > 1 ? 'in' : 'eq', value: ids }] },
-    }).then(() => {
+    }).then((data) => {
+      if (data?.errorCount) {
+        toast.error(`删除成功, 失败记录数 ${data.errorCount}`);
+        return this.fetchFormDataList(this.params);
+      }
       this.formDataList = this.formDataList.filter(({ _id }) => !ids.includes(_id));
       toast.success('删除成功!');
     });

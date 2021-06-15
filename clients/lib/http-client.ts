@@ -67,7 +67,7 @@ type FormDataRequestParams =
   FormDataRequestCreateParams |
   FormDataRequestUpdateParams;
 
-type FormDataResponse = { entities: Array<any>; total: number; errorCount?: number };
+export type FormDataResponse = { entity: any; errorCount: number; };
 
 export function formDataRequest(
   appID: string,

@@ -37,17 +37,19 @@ export function findTableRecords(
   });
 }
 
-export function fetchTableData(
+export async function fetchTableData(
   appID: string,
   tableID: string,
   pageNumber: number,
   pageSize: number,
-) {
-  return httpClient<FormDataResponse>(
-    `/api/v1/structor/${appID}/home/form/${tableID}`,
-    { method: 'find', page: pageNumber, size: pageSize },
-  ).catch((err) => {
+): Promise<FormDataResponse | null> {
+  try {
+    return httpClient<FormDataResponse>(
+      `/api/v1/structor/${appID}/home/form/${tableID}`,
+      { method: 'find', page: pageNumber, size: pageSize },
+    );
+  } catch (err) {
     logger.error(err);
     return null;
-  });
+  }
 }
