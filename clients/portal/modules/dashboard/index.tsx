@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { twCascade } from '@mariusmarais/tailwind-cascade';
+import cs from 'classnames';
 
 import Avatar from '@c/avatar';
 import Card from '@c/card';
@@ -31,7 +31,7 @@ export default function Dashboard() {
         />
         <div className="px-6 mt-40">
           <Card
-            className="px-32 py-20"
+            className="px-32 py-20 mb-20"
             headerClassName="ml-8"
             title="我的应用"
             itemTitleClassName="text-h5"
@@ -49,7 +49,7 @@ export default function Dashboard() {
                     desc="已上线"
                     itemRender={
                       (<div
-                        className={twCascade(
+                        className={cs(
                           'w-44 h-44 p-8 flex items-center justify-center corner-12-2-12-12',
                           'bg-gradient-green-to-top-right rounded-lg rounded-tr-none',
                         )}
@@ -67,7 +67,7 @@ export default function Dashboard() {
                     desc="未上线"
                     itemRender={
                       (<div
-                        className={twCascade(
+                        className={cs(
                           'w-44 h-44 p-8 flex items-center justify-center corner-12-2-12-12',
                           'bg-gradient-yellow-to-top-right rounded-lg rounded-tr-none',
                         )}
@@ -83,7 +83,7 @@ export default function Dashboard() {
                     titleClassName="text-button"
                     itemRender={
                       (<div
-                        className={twCascade(
+                        className={cs(
                           'w-44 h-44 p-8 flex items-center justify-center corner-12-2-12-12',
                           'bg-gradient-blue-to-top-right rounded-lg rounded-tr-none',
                         )}
@@ -130,7 +130,7 @@ export default function Dashboard() {
                       desc="3"
                       itemRender={
                         (<div
-                          className={twCascade(
+                          className={cs(
                             'w-16 h-16 bg-gradient-yellow-to-top-right corner-12-2-12-12',
                             'rounded rounded-tr-none',
                           )}
@@ -148,7 +148,7 @@ export default function Dashboard() {
                       desc="3"
                       itemRender={
                         (<div
-                          className={twCascade(
+                          className={cs(
                             'w-16 h-16 bg-gradient-blue-to-top-right corner-12-2-12-12',
                             'rounded rounded-tr-none',
                           )}
