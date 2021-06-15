@@ -10,11 +10,11 @@ import AlterRoleFunc from './alter-role-func';
 import AssociateDepartmentEmployee from './associate-department-employee';
 import { IRoleListItem } from '../role-list-item';
 
-export interface IRoleDetail {
+export interface Props {
   role?: IRoleListItem;
 }
 
-export default function RoleDetail({ role }: IRoleDetail) {
+export default function RoleDetail({ role }: Props): JSX.Element {
   const { data, isLoading } = useQuery(['getRoleFunctions', role?.id], getRoleFunctions, {
     refetchOnWindowFocus: false,
     enabled: !!role?.id,
