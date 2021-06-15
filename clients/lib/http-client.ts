@@ -22,7 +22,11 @@ function httpClient<TData>(path: string, body?: unknown, additionalHeaders?: Hea
   }).then((resp) => {
     const { code, msg, data } = resp;
     if (code !== 0) {
-      return Promise.reject(new Error(msg));
+      const e = new Error(msg);
+      if (data) {
+        Object.assign(e, { data });
+      }
+      return Promise.reject(e);
     }
 
     return data as TData;
@@ -37,14 +41,14 @@ type FormDataRequestQueryDeleteParams = {
   }
 }
 
-type FormDataRequestCreateParams = {
+export type FormDataRequestCreateParams = {
   method: 'create';
   entity: any;
 }
 
-type FormDataRequestUpdateParams = {
+export type FormDataRequestUpdateParams = {
   method: 'update';
-  condition: {
+  conditions?: {
     condition: Array<{ key: string; op: string; value: Array<string | number>; }>;
     tag?: 'and' | 'or';
   };
@@ -63,7 +67,7 @@ type FormDataRequestParams =
   FormDataRequestCreateParams |
   FormDataRequestUpdateParams;
 
-type FormDataResponse = { entities: Array<any>; total: number; };
+export type FormDataResponse = { entity: any; errorCount: number; };
 
 export function formDataRequest(
   appID: string,

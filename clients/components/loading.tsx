@@ -1,6 +1,6 @@
 import React from 'react';
 import { Loading as LegoLoading } from '@QCFE/lego-ui';
-import { twCascade } from '@mariusmarais/tailwind-cascade';
+import cs from 'classnames';
 
 export interface ILoading {
   desc?: string | JSX.Element;
@@ -10,7 +10,7 @@ export interface ILoading {
 export default function Loading({ desc = 'Loading...', className }: ILoading) {
   return (
     <div
-      className={twCascade(
+      className={cs(
         'w-full h-full flex flex-col items-center justify-center py-4',
         className,
       )}

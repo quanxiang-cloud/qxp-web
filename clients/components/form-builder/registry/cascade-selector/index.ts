@@ -7,7 +7,7 @@ import DatasetSelector from './dataset-selector';
 const InputField: Omit<FormBuilder.SourceElement<CascadeConfig>, 'displayOrder'> = {
   configSchema,
   displayName: '级联选择',
-  icon: 'text_fields',
+  icon: 'ballot',
   defaultConfig: defaultConfig,
   toSchema,
   toConfig,

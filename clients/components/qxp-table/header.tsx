@@ -1,5 +1,5 @@
 import React, { DetailedHTMLProps, HTMLAttributes } from 'react';
-import { twCascade } from '@mariusmarais/tailwind-cascade';
+import cs from 'classnames';
 
 import { Column } from '.';
 
@@ -21,7 +21,7 @@ export default function TableHeader<T>({ columns, className, cellClassName }: Pr
           width: column.width ?? 'auto',
         }}
         className={
-          twCascade('px-24 py-16 text-body-no-color text-gray-400 font-normal', cellClassName)
+          cs('px-24 py-16 text-body-no-color text-gray-400 font-normal', cellClassName)
         }
       >
         {column.title}

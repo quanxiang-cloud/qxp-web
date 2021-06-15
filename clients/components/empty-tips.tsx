@@ -1,5 +1,5 @@
 import React from 'react';
-import { twCascade } from '@mariusmarais/tailwind-cascade';
+import cs from 'classnames';
 
 export interface Props {
   text: string;
@@ -8,9 +8,9 @@ export interface Props {
 
 export default function EmptyTips({ text, className }: Props) {
   return (
-    <div className={twCascade('flex flex-col justify-center items-center', className)}>
+    <div className={cs('flex flex-col justify-center items-center', className)}>
       <img src="/dist/images/links.svg" alt="no data" className="mb-8" />
-      <span className={twCascade('text-12')}>{text}</span>
+      <span className={cs('text-12')}>{text}</span>
     </div>
   );
 }

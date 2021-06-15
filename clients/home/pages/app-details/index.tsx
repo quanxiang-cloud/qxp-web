@@ -4,9 +4,9 @@ import { useParams } from 'react-router-dom';
 import Header from './header';
 import PageNav from './page-nav';
 import PageDetails from './page-details';
-import store from '../store';
+import store from './store';
 
-function AppDetails() {
+function AppDetails(): JSX.Element {
   const { appID } = useParams<{ appID: string }>();
 
   useEffect(() => {

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Label } from '@QCFE/lego-ui';
-import { twCascade } from '@mariusmarais/tailwind-cascade';
+import cs from 'classnames';
 
 import { TreeNode } from '@c/headless-tree/types';
 import Tree from '@c/headless-tree';
@@ -62,7 +62,7 @@ export default function TreePicker<T extends { id: string} >({
         store={store}
         NodeRender={NodeRender}
         RootNodeRender={NodeRender}
-        className={twCascade(
+        className={cs(
           'transition-all border border-blue-1000 border-b-0 overflow-scroll',
           'visible rounded-tl-2 rounded-tr-8',
           {

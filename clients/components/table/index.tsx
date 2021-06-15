@@ -9,8 +9,9 @@ import {
 
 import TableLoading from './table-loading';
 import { getDefaultSelectMap, useExtendColumns } from './utils';
-import './index.scss';
 import useSticky from './use-sticky';
+
+import './index.scss';
 
 interface Props<T extends Record<string, any>> {
   className?: string;
@@ -118,6 +119,10 @@ export default function Table<T extends Record<string, any>>({
                   onClick={() => onRowClick?.(row.id, row.original)}
                   key={row.id}
                   className='qxp-table-tr'
+                  data-row={JSON.stringify({
+                    id: row?.id ?? '',
+                    selectedRow: row?.original ?? {},
+                  })}
                 >
                   {row.cells.map((cell) => {
                     return (

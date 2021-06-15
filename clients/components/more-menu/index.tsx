@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import cs from 'classnames';
 import { Placement } from '@popperjs/core';
 
@@ -64,7 +64,7 @@ export default function MoreMenu<T extends React.Key>({
   const reference = React.useRef<Element>(null);
   const popperRef = React.useRef<Popper>(null);
 
-  function handleMenuClick(key: T) {
+  function handleMenuClick(key: T): void {
     popperRef.current?.close();
     onMenuClick(key);
   }

@@ -7,7 +7,7 @@ import HeaderMenu from './header-menu';
 const paths = [
   '/apps/formDesign',
   '/apps/details',
-  '/apps/flow/new',
+  '/apps/flow/',
 ];
 
 function shouldHideHeader(currentPath: string): boolean {

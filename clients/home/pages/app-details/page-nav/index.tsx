@@ -6,7 +6,7 @@ import PageLoading from '@c/page-loading';
 import { getQuery } from '@lib/utils';
 
 import AppPagesTree from './app-pages-tree';
-import store from '../../store';
+import store from '../store';
 import './index.scss';
 
 function PageNav() {

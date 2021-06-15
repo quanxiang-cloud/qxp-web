@@ -1,5 +1,6 @@
 import React from 'react';
 import cs from 'classnames';
+import { noop } from 'lodash';
 
 type Props = React.DetailedHTMLProps<
   React.InputHTMLAttributes<HTMLInputElement>,
@@ -11,7 +12,9 @@ type Props = React.DetailedHTMLProps<
 }
 
 function Checkbox(
-  { className = '', label, indeterminate, onChange, ...inputProps }: Props,
+  {
+    className = '', label, indeterminate, onChange = noop, ...inputProps
+  }: Props,
   ref?: React.Ref<HTMLInputElement>,
 ): JSX.Element {
   const defaultRef = React.useRef();
@@ -32,7 +35,11 @@ function Checkbox(
           'checkbox__input--indeterminate': indeterminate,
         })}
       />
-      {label ? (<span className="checkbox__label text-caption ml-8">{label}</span>) : null}
+      {label && (
+        <span className="checkbox__label text-caption ml-8">
+          {label}
+        </span>
+      )}
     </label>
   );
 }

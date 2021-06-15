@@ -3,7 +3,7 @@ import React from 'react';
 import Icon from '@c/icon';
 import { NodeRenderProps } from '@c/headless-tree/types';
 
-function PageItem({ node }: NodeRenderProps<any>) {
+function PageItem({ node }: NodeRenderProps<any>): JSX.Element {
   const isPage = node.data.menuType === 0;
 
   return (
