@@ -1,5 +1,5 @@
 import React from 'react';
-import { twCascade } from '@mariusmarais/tailwind-cascade';
+import cs from 'classnames';
 
 import { isString } from '@lib/utils';
 
@@ -33,18 +33,18 @@ export default function TextHeader({
   itemTitleClassName,
 }: Props) {
   return (
-    <header className={twCascade('flex justify-between items-center pb-20 opacity-95', className)}>
+    <header className={cs('flex justify-between items-center py-20 opacity-95', className)}>
       <ItemWithTitleDesc
         desc={desc}
         itemRender={
           (<div
             className={
-              twCascade('text-gray-900 flex justify-between items-center', itemTitleClassName)
+              cs('text-gray-900 flex justify-between items-center', itemTitleClassName)
             }>
             {title}
           </div>)
         }
-        descClassName={twCascade(
+        descClassName={cs(
           'transition ease-linear text-12 text-blueGray-400',
           descClassName,
         )}
@@ -54,7 +54,7 @@ export default function TextHeader({
         textClassName={textClassName}
       />
       {isString(action) && (
-        <a className={twCascade('transition ease-linear text-14 underline text-gray-600')}>
+        <a className={cs('transition ease-linear text-14 underline text-gray-600')}>
           {action}
         </a>
       )}

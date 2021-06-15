@@ -100,6 +100,30 @@ export function getNodeInitialData(type: NodeType) {
     fillIn: deepClone(approveAndFillInCommonData),
     end: {},
   };
+  if (type !== 'formData' && type !== 'end') {
+    dataMap[type].operatorPermission.system = [{
+      enabled: true,
+      changeable: false,
+      name: '通过',
+      text: '通过',
+      value: 'AGREE',
+      only: 'approve',
+    }, {
+      enabled: true,
+      changeable: false,
+      name: '拒绝',
+      text: '拒绝',
+      value: 'REFUSE',
+      only: 'approve',
+    }, {
+      enabled: true,
+      changeable: false,
+      name: '提交',
+      text: '提交',
+      value: 'FILL_IN',
+      only: 'fillIn',
+    }].filter(({ only }) => only === type);
+  }
   return dataMap[type];
 }
 

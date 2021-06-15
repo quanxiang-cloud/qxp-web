@@ -1,6 +1,6 @@
 import React, { memo } from 'react';
 import { Link } from 'react-router-dom';
-import { twCascade } from '@mariusmarais/tailwind-cascade';
+import cs from 'classnames';
 
 import Icon from '@c/icon';
 
@@ -59,7 +59,7 @@ function NavButton({
       {to && (
         <Link
           to={to}
-          className={twCascade(
+          className={cs(
             'header-nav-btn group mr-20',
             className(isActive),
             cls,
@@ -69,7 +69,7 @@ function NavButton({
         </Link>
       )}
       {!to && (
-        <div className={twCascade('header-nav-btn group', cls)}>
+        <div className={cs('header-nav-btn group', cls)}>
           {render ? render() : navContent}
         </div>
       )}

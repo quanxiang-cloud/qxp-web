@@ -88,7 +88,12 @@ export default function FillInNodeComponent({ data, id, xPos, yPos, isDragging }
           iconClassName="text-white"
           titleClassName="text-white bg-teal-500"
         />
-        <NodeRemover visible={showRemover} id={id} type="light" />
+        <NodeRemover
+          onVisibilityChange={setShowRemover}
+          visible={showRemover}
+          id={id}
+          type="light"
+        />
       </div>
       <footer className="p-8 flex items-center flex-1">
         {(hasFillInRule || hasFillInPerson) && (

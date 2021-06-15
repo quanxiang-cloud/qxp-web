@@ -23,6 +23,7 @@ export default function NewFlow({ onChange, currentOperateType }: Props) {
       className="h-full bg-white shadow-flow-aside flex flex-col justify-between transition-all"
     >
       <List
+        className="flex-col"
         itemClassName="cursor-pointer hover:bg-blue-100 group"
         items={[
           <AsideMenuItem

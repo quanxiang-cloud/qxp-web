@@ -250,14 +250,6 @@ export function jsonValidator<T>(data: T, schema: Record<string, (v: any) => boo
   });
 }
 
-export function getHTMLParentElement(selector: string, el: HTMLElement | null): HTMLElement | void {
-  if (el?.matches(selector)) {
-    return el;
-  } else if (el) {
-    return getHTMLParentElement(selector, el.parentElement);
-  }
-}
-
 export function parseJSON<T>(str: string, fallback: T): T {
   try {
     return JSON.parse(str);

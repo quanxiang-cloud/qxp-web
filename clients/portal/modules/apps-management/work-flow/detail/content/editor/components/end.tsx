@@ -13,7 +13,7 @@ interface Props {
   isDragging: boolean;
 }
 
-export default function EndNodeComponent({ data, id, xPos, yPos, isDragging }: Props) {
+export default function EndNodeComponent({ data, id, xPos, yPos, isDragging }: Props): JSX.Element {
   usePositionChange({ xPos, id, yPos }, isDragging);
 
   return (

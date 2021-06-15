@@ -15,6 +15,7 @@ type Props = {
   placement?: Placement;
   modifiers?: Array<Partial<Modifier<any, any>>>;
   theme?: Theme;
+  className?: string;
 }
 
 const arrowModifier = {
@@ -37,10 +38,12 @@ export default class Popper2 extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
 
-    const { trigger = 'click', theme = 'light' } = props;
+    const { trigger = 'click', theme = 'light', className } = props;
+    const classNameList = ['popper-container', `popper-container--${theme}`];
+    className && classNameList.push(className);
 
     this.trigger = trigger;
-    this.popperContainer.classList.add('popper-container', `popper-container--${theme}`);
+    this.popperContainer.classList.add(...classNameList);
 
     if (props.enableArrow) {
       const arrowEle = document.createElement('div');
@@ -187,6 +190,10 @@ export default class Popper2 extends React.Component<Props, State> {
 
   setPopVisible = (popVisible: boolean): void => {
     this.setState({ popVisible });
+  }
+
+  get visible(): boolean {
+    return this.state.popVisible;
   }
 
   delaySetPopVisible(visible: boolean, delaySeconds: number): void {

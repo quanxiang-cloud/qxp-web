@@ -25,7 +25,7 @@ function Icon(
     ...props
   }: Props,
   ref?: React.Ref<SVGSVGElement>,
-) {
+): JSX.Element {
   const _style: React.CSSProperties = {
     ...style,
     width: `${size - 1}px`,

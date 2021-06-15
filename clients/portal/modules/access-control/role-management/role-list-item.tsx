@@ -1,5 +1,5 @@
 import React from 'react';
-import { twCascade } from '@mariusmarais/tailwind-cascade';
+import cs from 'classnames';
 import useCss from 'react-use/lib/useCss';
 import { identity } from '@lib/utils';
 
@@ -16,7 +16,7 @@ export interface IRoleListItem {
 export default function RoleListItem({ name, active, id, onClick = identity }: IRoleListItem) {
   return (
     <ItemWithTitleDesc
-      className={twCascade(
+      className={cs(
         'py-16 px-20 hover:text-blue-600 hover:bg-blue-100 hover:font-bold',
         'transition duration-300 flex items-center justify-center',
         {
@@ -40,7 +40,7 @@ export default function RoleListItem({ name, active, id, onClick = identity }: I
       itemRender={
         (<svg
           fill="#64748B"
-          className={twCascade('transition duration-300', {
+          className={cs('transition duration-300', {
             'fill-current': active,
             'text-text-blue-400': active,
           })}
@@ -72,7 +72,7 @@ export default function RoleListItem({ name, active, id, onClick = identity }: I
         </svg>)
       }
       title={name}
-      titleClassName={twCascade('text-h6-no-color-weight transition duration-300', {
+      titleClassName={cs('text-h6-no-color-weight transition duration-300', {
         'text-blue-600': active,
         'font-semibold': active,
       })}

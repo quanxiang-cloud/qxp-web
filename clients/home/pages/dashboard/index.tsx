@@ -28,7 +28,7 @@ function Dashboard() {
         style={{ height: 'calc(100vh - 52px)', overflow: 'auto' }}>
         <div className="flex justify-between items-center">
           <Card
-            className="flex-2 user-card user-info-bg"
+            className="flex-2 user-card user-info-bg mt-20"
             itemTitleClassName="text-h5"
             content={(<>
               <div className="z-10">
@@ -56,7 +56,7 @@ function Dashboard() {
             </>)}
           />
           <Card
-            className="flex-3 user-card todo-list-bg relative"
+            className="flex-3 user-card todo-list-bg relative mt-20"
             title="待办事项"
             action={
               <a className="transition ease-linear text-black-50 text-underline-no-color">查看全部</a>
@@ -73,7 +73,7 @@ function Dashboard() {
             </>)}
           />
           <Card
-            className="flex-2 user-card"
+            className="flex-2 user-card mt-20"
             title="我的申请"
             action={
               <a className="transition ease-linear text-black-50 text-underline-no-color">查看全部</a>

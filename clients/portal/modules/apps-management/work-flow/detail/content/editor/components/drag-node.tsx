@@ -14,8 +14,8 @@ interface RenderProps {
 
 export default function DragNodeComponent({
   text, type, width, height, iconName, iconClassName,
-}: RenderProps) {
-  function onDragStart(event: DragEvent, nodeType: string, width: number, height: number) {
+}: RenderProps): JSX.Element {
+  function onDragStart(event: DragEvent, nodeType: string, width: number, height: number): void {
     event.dataTransfer.setData('application/reactflow', JSON.stringify({
       nodeType,
       nodeName: text,

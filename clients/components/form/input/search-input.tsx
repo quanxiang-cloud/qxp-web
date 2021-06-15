@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Input, Field, Label, Control, Icon } from '@QCFE/lego-ui';
 import useDebounce from 'react-use/lib/useDebounce';
-import { twCascade } from '@mariusmarais/tailwind-cascade';
+import cs from 'classnames';
 
 export interface ISearchInput {
   name: string;
@@ -35,14 +35,14 @@ export default function SearchInput({
   );
 
   return (
-    <div className={twCascade('flex flex-row items-center', className)}>
+    <div className={cs('flex flex-row items-center', className)}>
       <Field className="flex flex-row items-center w-full">
         {typeof prefix === 'string' && <Label>{prefix}</Label>}
         {typeof prefix !== 'string' && prefix && <>{prefix}</>}
         <Control className="flex flex-row items-center w-full relative">
           <Icon name="magnifier" className="absolute left-16 z-10" />
           <Input
-            className={twCascade('search-input', {
+            className={cs('search-input', {
               'pr-28': appendix,
             })}
             type="text"

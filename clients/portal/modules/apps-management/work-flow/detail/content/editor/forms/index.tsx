@@ -134,6 +134,10 @@ export default function NodeFormWrapper() {
   }
 
   function multiplePersonWayValidator(way: string) {
+    const { users, departments } = formData.basicConfig.approvePersons;
+    if (users.length === 1 && !departments.length) {
+      return true;
+    }
     return !!way;
   }
 
@@ -268,11 +272,12 @@ export default function NodeFormWrapper() {
     end: '结束',
   };
 
+  const approveFormVisible = (isApproveNode || isFillInNode) && formData.basicConfig;
+  const formDataFormVisible = isFormDataNode && formData.form && formData.triggerWay;
+
   if (!currentNodeElement || !formData) {
     return null;
   }
-  const approveFormVisible = (isApproveNode || isFillInNode) && formData.basicConfig;
-  const formDataFormVisible = isFormDataNode && formData.form && formData.triggerWay;
 
   return (
     <Drawer

@@ -1,6 +1,6 @@
 import React from 'react';
 import useCss from 'react-use/lib/useCss';
-import { twCascade } from '@mariusmarais/tailwind-cascade';
+import cs from 'classnames';
 
 export interface Props {
   active: boolean;
@@ -19,7 +19,7 @@ export default function Hamburger({ active }: Props) {
     },
   };
   const className = {
-    hamburger: twCascade(useCss({
+    hamburger: cs(useCss({
       width: '24px',
       height: '24px',
       cursor: 'pointer',
