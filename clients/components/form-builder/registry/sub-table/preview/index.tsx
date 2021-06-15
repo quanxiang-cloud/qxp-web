@@ -18,6 +18,7 @@ type Column = {
   dataIndex: string;
   component?: JSXElementConstructor<any>;
   props: Record<string, unknown>;
+  dataSource?: any[];
 }
 
 type Components = typeof components;
@@ -64,9 +65,11 @@ function SubTable({
     dataIndex: string;
     component: JSXElementConstructor<any>;
     props: Record<string, any>;
+    dataSource?: any[];
   } | null {
     const componentName = sc['x-component']?.toLowerCase() as keyof Components;
     const componentProps = sc['x-component-props'] || {};
+    const dataSource = sc?.enum;
     if (!components[componentName]) {
       logger.error('component %s is missing in subTable', componentName);
       return null;
@@ -76,6 +79,7 @@ function SubTable({
       dataIndex,
       component: components[componentName],
       props: componentProps,
+      dataSource,
     };
   }
 
@@ -175,7 +179,7 @@ function SubTable({
                     className="flex items-center justify-between border border-gray-300 border-t-0"
                   >
                     <div className={`flex-1 grid grid-cols-${columns.length}`}>
-                      {columns.map(({ dataIndex, component, props }, idx) => (
+                      {columns.map(({ dataIndex, component, props, dataSource }, idx) => (
                         <div key={dataIndex} className={cs({
                           'border-r-1 border-gray-300': idx < columns.length,
                         })}>
@@ -185,6 +189,7 @@ function SubTable({
                               name={`${name}.${index}.${dataIndex}`}
                               component={component}
                               props={props}
+                              dataSource={dataSource}
                               value={item?.[dataIndex] || undefined}
                               onChange={(e: ChangeEvent<HTMLInputElement>) => {
                                 onItemChange(e, dataIndex);
