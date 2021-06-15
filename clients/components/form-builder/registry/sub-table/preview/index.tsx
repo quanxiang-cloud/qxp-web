@@ -141,7 +141,7 @@ function SubTable({
                 e: ChangeEvent<HTMLInputElement> | string,
                 dataIndex: string,
               ): void => {
-                ms?.change(state.value.map((vItem: any, idx: number) => {
+                const newValue = state.value.map((vItem: any, idx: number) => {
                   if (index !== idx) {
                     return vItem;
                   }
@@ -149,7 +149,9 @@ function SubTable({
                     ...vItem,
                     [dataIndex]: getChangedValue(e),
                   };
-                }));
+                });
+                ms?.change(newValue);
+                state.value = newValue;
               };
               return (
                 <div key={index}>
