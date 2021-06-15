@@ -36,7 +36,7 @@ function numberVerify(e: any, precision: number | undefined) {
   }
 }
 
-function FieldSwitch({ field, className, ...otherProps }: Props<any>, ref: React.Ref<any>) {
+function FieldSwitch({ field, className, ...otherProps }: Props<any>, ref: React.Ref<any>): JSX.Element {
   if (field?.enum && field?.enum.length) {
     return (
       <Select

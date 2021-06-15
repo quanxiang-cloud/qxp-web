@@ -34,7 +34,6 @@ const UserPicker = (p: ISchemaFieldComponentProps): JSX.Element => {
 };
 
 const AllUserPicker = (p: ISchemaFieldComponentProps): JSX.Element => {
-  console.log(p)
   const [options, setOptions] = React.useState<Option[]>([]);
   const [hasNext, setHasNext] = React.useState<boolean>(false);
   const [keyword, setKeyword] = React.useState<string>();
