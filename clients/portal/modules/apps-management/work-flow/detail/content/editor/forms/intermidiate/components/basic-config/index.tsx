@@ -71,7 +71,9 @@ export default function BasicConfig({ type, value, onChange: _onChange }: Props)
   function autoApproveBuilder(label: string, key: AutoApproveRule): JSX.Element {
     return (
       <Checkbox
-        label={label}
+        label={
+          (<span className="text-body2 text-gray-900">{label}</span>)
+        }
         value={key}
         className="mb-8 inline-flex"
         defaultChecked={value.autoRules.includes(key)}

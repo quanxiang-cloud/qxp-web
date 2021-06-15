@@ -25,7 +25,7 @@ function Breadcrumb({
   style,
   segments,
   segmentRender,
-}: Props) {
+}: Props): JSX.Element {
   const defaultCrumbRender = React.Children.map(children, (child, idx) => {
     if (!child) {
       return child;
@@ -42,7 +42,7 @@ function Breadcrumb({
   // else return link with a tag,
   // as segments come in , the children inside <Breadcrumb>  won't be rendered
   // without segments , must need the BreadCrumbItem inside the Breadcrumb ,follow the lego-ui
-  const breadcrumbChildrenRender = () => {
+  const breadcrumbChildrenRender = (): any[] | null | undefined => {
     if (segments) {
       if (segmentRender) {
         return segments.map((link) => (

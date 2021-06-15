@@ -1,5 +1,5 @@
 import React, { MouseEventHandler } from 'react';
-import { twCascade } from '@mariusmarais/tailwind-cascade';
+import cs from 'classnames';
 
 import Button from '@c/button';
 
@@ -21,7 +21,7 @@ export default function ActionButtonGroup({
         onClick && onClick(e);
         e.stopPropagation();
       }}
-      className={twCascade(
+      className={cs(
         'flex justify-end pr-16 pb-16 urgeAction',
         className)
       }>

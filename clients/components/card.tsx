@@ -1,6 +1,6 @@
 import React from 'react';
 import useCss from 'react-use/lib/useCss';
-import { twCascade } from '@mariusmarais/tailwind-cascade';
+import cs from 'classnames';
 
 import TextHeader from './text-header';
 
@@ -40,7 +40,7 @@ export default function Card({
   });
 
   return (
-    <div style={style} className={twCascade('bg-white mt-20', classNames, className)}>
+    <div style={style} className={cs('bg-white', classNames, className)}>
       {title && (
         <TextHeader
           title={title}
@@ -54,7 +54,7 @@ export default function Card({
         />
       )}
       {(content || children) && (
-        <main className={twCascade('flex flex-grow', contentClassName)}>
+        <main className={cs('flex flex-grow', contentClassName)}>
           {content || children}
         </main>
       )}

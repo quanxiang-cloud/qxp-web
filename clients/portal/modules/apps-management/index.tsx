@@ -21,7 +21,7 @@ const MENU = [
   // },
 ];
 
-function AppManagerEntry() {
+function AppManagerEntry(): JSX.Element {
   return (
     <div className="app-entry-container">
       <SideNavCard

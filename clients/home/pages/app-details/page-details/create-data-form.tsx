@@ -154,8 +154,12 @@ function CreateDataForm({ appID, pageID, rowID, onCancel, title }: Props): JSX.E
       ref,
     );
 
-    formDataRequest(appID, pageID, reqData).then(() => {
+    formDataRequest(appID, pageID, reqData).then((data) => {
+      if (data?.errorCount) {
+        return toast.error(`提交成功, 失败记录数: ${data?.errorCount}`);
+      }
       toast.success('提交成功');
+    }).finally(() => {
       setLoading(false);
       onCancel();
     });

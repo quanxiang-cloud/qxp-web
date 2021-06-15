@@ -1,7 +1,6 @@
 import React from 'react';
 import cs from 'classnames';
 import { MsgSendStatus } from '@portal/modules/system-mgmt/constants';
-// import { Popover } from '@c/popover'
 import { Tooltip } from '@QCFE/lego-ui';
 
 import styles from './index.module.scss';
@@ -19,7 +18,7 @@ const statusMap = {
   [MsgSendStatus.success]: '已成功',
 };
 
-const MsgStatus = ({ className, status, fail, success }: Props) => {
+const MsgStatus = ({ className, status, fail, success }: Props): JSX.Element => {
   const sendInfo = status !== MsgSendStatus.success ? null : (
     <span className={fail == 0 ? styles.simple_text : styles.warning_text}>
       &nbsp;({ success}/{success + fail}人)

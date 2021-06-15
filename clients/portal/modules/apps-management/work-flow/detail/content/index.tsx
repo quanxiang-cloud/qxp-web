@@ -9,7 +9,7 @@ interface Props {
   currentOperateType: string;
 }
 
-export default function Content({ currentOperateType }: Props) {
+export default function Content({ currentOperateType }: Props): JSX.Element {
   return (
     <main className="flex flex-1">
       {currentOperateType === 'edit' && (

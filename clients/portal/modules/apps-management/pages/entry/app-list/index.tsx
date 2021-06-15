@@ -9,7 +9,7 @@ import AppList from './app-list';
 import store from './store';
 import './index.scss';
 
-function MyApp() {
+function MyApp(): JSX.Element {
   const [modalType, setModalType] = useState('');
   const { isListLoading, changeParams, params, appList, countMaps } = store;
 

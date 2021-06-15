@@ -9,7 +9,7 @@ import Modal from '@c/modal';
 import ErrorTips from '@c/error-tips';
 import toast from '@lib/toast';
 import TableMoreFilterMenu from '@c/more-menu/table-filter';
-import TableMoreActionMenu from '@c/more-menu/table-action';
+import MoreMenu from '@c/more-menu';
 import Icon from '@c/icon';
 import Pagination from '@c/pagination';
 
@@ -29,7 +29,7 @@ const statusMap = {
   DISABLE: '草稿',
 };
 
-export default function WorkFlowTable({ type }: Props) {
+export default function WorkFlowTable({ type }: Props): JSX.Element {
   const { appID } = useParams<{appID: string}>();
   const history = useHistory();
   const [state, setState] = useState<State>({
@@ -73,17 +73,13 @@ export default function WorkFlowTable({ type }: Props) {
     }
   }, [state.currentEditWorkFlow]);
 
-  function onRowActionChange(key: 'edit' | 'delete', row: Flow) {
+  function onRowActionChange(key: 'edit' | 'delete', row: Flow): void {
     const actionMap = {
       edit: 'currentEditWorkFlow',
       delete: 'currentDeleteWorkFlow',
     };
     const sk = actionMap[key];
     setState((s) => ({ ...s, [sk]: row }));
-  }
-
-  function onRowDoubleClick(_: any, rowOriginal: Flow) {
-    onRowActionChange('edit', rowOriginal);
   }
 
   const columns = [
@@ -146,19 +142,19 @@ export default function WorkFlowTable({ type }: Props) {
       accessor: 'id',
       Cell: (model: any) => {
         return (
-          <TableMoreActionMenu
+          <MoreMenu
             menus={[
-              { key: 'edit', label: '修改', iconName: 'edit' },
-              { key: 'delete', label: '删除', iconName: 'delete' },
+              { key: 'edit', label: (<span><Icon name="edit" className="mr-6"/>修改</span>) },
+              { key: 'delete', label: (<span><Icon name="delete" className="mr-6"/>删除</span>) },
             ]}
-            onChange={(key) => onRowActionChange(key, model.cell.row.original)}
+            onMenuClick={(key) => onRowActionChange(key, model.cell.row.original)}
           >
             <Icon
               changeable
               clickable
               name="more_horiz"
             />
-          </TableMoreActionMenu>
+          </MoreMenu>
         );
       },
     },
@@ -176,14 +172,12 @@ export default function WorkFlowTable({ type }: Props) {
   return (
     <div className="mt-32 flex flex-col flex-1">
       {!isError && (
-        <Table
+        <Table<any>
           style={{ maxHeight: 'calc(100vh - 350px)' }}
           rowKey="id"
           data={filteredData || []}
-          // @ts-ignore
           columns={columns}
           loading={isLoading}
-          onRowDoubleClick={onRowDoubleClick}
         />
       )}
       {isError && (

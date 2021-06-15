@@ -140,7 +140,8 @@ func doUpdate(r *http.Request, in *input, p map[string]string) (int, interface{}
 		return cf, bf.Msg, err
 	}
 	updateData := make(map[string]interface{})
-	dataOld := bf.Data.(map[string]interface{})
+	dod := bf.Data.(map[string]interface{})
+	dataOld := dod["entity"].(map[string]interface{})
 	// 先更新子表单
 	ref := in.Ref.(map[string]interface{})
 	for i := 0; i < len(ref); i++ {
@@ -334,59 +335,61 @@ func doFindOne(r *http.Request, i *input, p map[string]string) (int, interface{}
 		return c, nil, err
 	}
 	if resp.Data != nil {
-		value := reflect.ValueOf(resp.Data)
-		switch _t := reflect.TypeOf(resp.Data); _t.Kind() {
-		case reflect.Map:
-			iter := value.MapRange()
-			for iter.Next() {
-				val := iter.Value().Elem()
-				switch val.Kind() {
-				case reflect.Array, reflect.Slice:
-					if val.Len() == 0{
-						break
-					}
-					subTable, err := getSubTable(r, p["appID"], p["tableID"], iter.Key().String())
-					if err != nil {
-						return c, nil, err
-					}
-					if subTable == nil {
-						break
-					}
-					// 关联记录
-					if subTable.SubTableType == associatedRecords {
-						break
-					}
-					subFindPath := fmt.Sprintf("%s%s%s%s", base, subTable.AppID, form, subTable.SubTableID)
-					if subTable.SubTableType == blankTable{
-						subFindPath = fmt.Sprintf("%s%s%s%s", base, subTable.AppID, subForm, subTable.SubTableID)
-					}
-					subInput := new(input)
-					subInput.Method = "find"
-					subInput.Conditions = &InputConditionVo{
-						Condition: []Condition{{Key: "_id", Op: "in", Value: val.Interface().([]interface{})}},
-					}
+		if rd,ok := resp.Data.(map[string]interface{});ok{
+			value := reflect.ValueOf(rd["entity"])
+			switch _t := reflect.TypeOf(resp.Data); _t.Kind() {
+			case reflect.Map:
+				iter := value.MapRange()
+				for iter.Next() {
+					val := iter.Value().Elem()
+					switch val.Kind() {
+					case reflect.Array, reflect.Slice:
+						if val.Len() == 0{
+							break
+						}
+						subTable, err := getSubTable(r, p["appID"], p["tableID"], iter.Key().String())
+						if err != nil {
+							return c, nil, err
+						}
+						if subTable == nil {
+							break
+						}
+						// 关联记录
+						if subTable.SubTableType == associatedRecords {
+							break
+						}
+						subFindPath := fmt.Sprintf("%s%s%s%s", base, subTable.AppID, form, subTable.SubTableID)
+						if subTable.SubTableType == blankTable{
+							subFindPath = fmt.Sprintf("%s%s%s%s", base, subTable.AppID, subForm, subTable.SubTableID)
+						}
+						subInput := new(input)
+						subInput.Method = "find"
+						subInput.Conditions = &InputConditionVo{
+							Condition: []Condition{{Key: "_id", Op: "in", Value: val.Interface().([]interface{})}},
+						}
 
-					str, err := json.Marshal(subInput)
-					if err != nil {
-						return http.StatusInternalServerError, nil, err
-					}
-					co, bf, err := sendRequest2Struct(r, "POST", subFindPath, str)
-					if co != http.StatusOK || err != nil {
-						return co, nil, err
-					}
-					subResp, err := parseResp(bf)
-					if err != nil {
-						return co, nil, err
-					}
-					if subResp.Data != nil {
-						d := subResp.Data.(map[string]interface{})
-						if sd, ok := d["entities"]; ok {
-							value.SetMapIndex(reflect.ValueOf(iter.Key().String()), reflect.ValueOf(sd))
+						str, err := json.Marshal(subInput)
+						if err != nil {
+							return http.StatusInternalServerError, nil, err
+						}
+						co, bf, err := sendRequest2Struct(r, "POST", subFindPath, str)
+						if co != http.StatusOK || err != nil {
+							return co, nil, err
+						}
+						subResp, err := parseResp(bf)
+						if err != nil {
+							return co, nil, err
+						}
+						if subResp.Data != nil {
+							d := subResp.Data.(map[string]interface{})
+							if sd, ok := d["entities"]; ok {
+								value.SetMapIndex(reflect.ValueOf(iter.Key().String()), reflect.ValueOf(sd))
+							}
 						}
 					}
 				}
+				return http.StatusOK, resp.Data, nil
 			}
-			return http.StatusOK, resp.Data, nil
 		}
 	}
 	return http.StatusOK, nil, nil
@@ -460,6 +463,7 @@ func doCreate(r *http.Request, e Entity, p map[string]string) (int, error) {
 
 					if subResp.Data != nil {
 						d := subResp.Data.(map[string]interface{})
+
 						if id, ok := d["_id"]; ok {
 							rp = append(rp, id.(string))
 						}

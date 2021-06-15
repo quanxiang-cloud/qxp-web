@@ -4,6 +4,7 @@ import moment, { Moment } from 'moment';
 import { Input, Radio, DatePicker, NumberPicker, Select } from '@formily/antd-components';
 import { Table } from 'antd';
 import { pick } from 'lodash';
+import cs from 'classnames';
 import {
   InternalFieldList as FieldList,
   FormItem,
@@ -17,6 +18,7 @@ type Column = {
   dataIndex: string;
   component?: JSXElementConstructor<any>;
   props: Record<string, unknown>;
+  dataSource?: any[];
 }
 
 type Components = typeof components;
@@ -63,9 +65,11 @@ function SubTable({
     dataIndex: string;
     component: JSXElementConstructor<any>;
     props: Record<string, any>;
+    dataSource?: any[];
   } | null {
     const componentName = sc['x-component']?.toLowerCase() as keyof Components;
     const componentProps = sc['x-component-props'] || {};
+    const dataSource = sc?.enum;
     if (!components[componentName]) {
       logger.error('component %s is missing in subTable', componentName);
       return null;
@@ -75,13 +79,16 @@ function SubTable({
       dataIndex,
       component: components[componentName],
       props: componentProps,
+      dataSource,
     };
   }
 
   const schema = definedSchema?.items as ISchema;
 
   const emptyRow: Record<string, string> = {};
-  const columns: Column[] = Object.entries(schema?.properties || {}).reduce(
+  const columns: Column[] = Object.entries(schema?.properties || {}).sort((a, b) => {
+    return (a[1]['x-index'] || 0) - (b[1]['x-index'] || 0);
+  }).reduce(
     (cur: Column[], next) => {
       const [key, sc] = next;
       const componentProps = sc['x-component-props'] || {};
@@ -131,14 +138,14 @@ function SubTable({
       {({ state, mutators }) => {
         const onAdd = (): any[] => mutators.push();
         return (
-          <div>
+          <div className="flex flex-col">
             {state.value.map((item: any, index: number) => {
               const onRemove = (index: number): void => mutators.remove(index);
               const onItemChange = (
                 e: ChangeEvent<HTMLInputElement> | string,
                 dataIndex: string,
               ): void => {
-                ms?.change(state.value.map((vItem: any, idx: number) => {
+                const newValue = state.value.map((vItem: any, idx: number) => {
                   if (index !== idx) {
                     return vItem;
                   }
@@ -146,34 +153,43 @@ function SubTable({
                     ...vItem,
                     [dataIndex]: getChangedValue(e),
                   };
-                }));
+                });
+                ms?.change(newValue);
+                state.value = newValue;
               };
               return (
                 <div key={index}>
                   {index === 0 && (
-                    <div className="flex items-start justify-between">
+                    <div className="flex items-start justify-between border border-gray-300">
                       <div className={`flex-1 grid grid-cols-${columns.length}`}>
                         {columns.map(({ title }, idx) => (
-                          <div key={idx}>{title}</div>
+                          <div key={idx} className={cs('text-center', {
+                            'border-r-1 border-gray-300': idx < columns.length,
+                          })}>{title}</div>
                         ))}
                       </div>
                       <Icon
-                        className="ml-22 opacity-0"
+                        className="mx-22 opacity-0"
                         name="delete"
                         size={20}
                       />
                     </div>
                   )}
-                  <div className="flex items-start justify-between">
+                  <div
+                    className="flex items-center justify-between border border-gray-300 border-t-0"
+                  >
                     <div className={`flex-1 grid grid-cols-${columns.length}`}>
-                      {columns.map(({ dataIndex, component, props }) => (
-                        <div key={dataIndex}>
+                      {columns.map(({ dataIndex, component, props, dataSource }, idx) => (
+                        <div key={dataIndex} className={cs({
+                          'border-r-1 border-gray-300': idx < columns.length,
+                        })}>
                           {component && (
                             <FormItem
-                              className="mr-8 mb-8 w-full"
+                              className="mx-8 mb-8 w-full mt-24"
                               name={`${name}.${index}.${dataIndex}`}
                               component={component}
                               props={props}
+                              dataSource={dataSource}
                               value={item?.[dataIndex] || undefined}
                               onChange={(e: ChangeEvent<HTMLInputElement>) => {
                                 onItemChange(e, dataIndex);
@@ -184,7 +200,7 @@ function SubTable({
                       ))}
                     </div>
                     <Icon
-                      className="ml-22 cursor-pointer mt-4"
+                      className="mx-22 cursor-pointer"
                       name="delete"
                       size={20}
                       onClick={onRemove.bind(null, index)}

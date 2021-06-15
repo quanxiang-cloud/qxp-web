@@ -1,5 +1,6 @@
 .create-flow-menu-group {
   &:hover {
+    @apply bg-gray-1000;
     > svg {
       @apply w-32 h-32 #{!important}
     }

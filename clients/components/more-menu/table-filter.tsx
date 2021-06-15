@@ -1,17 +1,11 @@
-import * as React from 'react';
-import cs from 'classnames';
+import React from 'react';
 import { Placement } from '@popperjs/core';
 
 import Icon from '@c/icon';
-import Popper from '@c/popper';
 
-export type MenuItem<T> = {
-  key: T;
-  label: React.ReactNode;
-  disabled?: boolean | undefined;
-}
+import MoreMenu, { MenuItem } from './index';
 
-type Props<T> = {
+type Props<T extends React.Key = string> = {
   iconName?: string;
   className?: string;
   onVisibilityChange?: (visible: boolean) => void;
@@ -23,73 +17,38 @@ type Props<T> = {
   checkedKey?: React.Key;
 }
 
-type MenuItemsProps<T> = {
-  onClick: (key: T) => void;
-  items: MenuItem<T>[];
-  checkedKey?: T;
-}
-
-const modifiers = [
-  {
-    name: 'offset',
-    options: {
-      offset: [0, 4],
-    },
-  },
-];
-
-// todo combine with select component
-function RenderMenuItems<T extends React.Key>(
-  { items, onClick, checkedKey }: MenuItemsProps<T>,
-): JSX.Element {
-  return (
-    <div className="dropdown-options">
-      {
-        items.map(({ key, label, disabled }) => {
-          const isChecked = checkedKey === key;
-          return (
-            <div
-              key={key}
-              onClick={(e): void => {
-                e.stopPropagation();
-                !disabled && onClick(key);
-              }}
-              className={cs('dropdown-options__option flex justify-between items-center', {
-                'select-option--disabled': disabled,
-              })}
-            >
-              <div className="select-option__content py-6 mr-5">{label}</div>
-              {isChecked && (
-                <Icon name="check" />
-              )}
-              {!isChecked && (
-                <span></span>
-              )}
-            </div>
-          );
-        })
-      }
-    </div>
-  );
-}
-
-// todo fix this
-// opened more-menu will not be closed when another more-menu opened
 export default function TableMoreFilterMenu<T extends React.Key>({
-  iconName, className, menus, children, onVisibilityChange, onChange, placement,
-  checkedKey,
+  iconName, className, menus, children, onVisibilityChange, onChange, placement, checkedKey,
 }: Props<T>): JSX.Element {
-  // todo fix this ref any type
-  const reference = React.useRef<any>(null);
-  const popperRef = React.useRef<Popper>(null);
+  const reference = React.useRef<SVGSVGElement>(null);
   const [curCheckedKey, setCurCheckedKey] = React.useState<React.Key>(checkedKey || '');
 
   React.useEffect(() => {
     setCurCheckedKey(checkedKey || '');
   }, [checkedKey]);
 
+  function onMenuClick(key: React.Key): void {
+    setCurCheckedKey(key === curCheckedKey ? '' : key);
+    onChange((key === curCheckedKey ? '' : key) as T);
+  }
+
   return (
-    <>
+    <MoreMenu<React.Key>
+      placement={placement}
+      onVisibilityChange={onVisibilityChange}
+      onMenuClick={onMenuClick}
+      menus={menus.map((menu) => {
+        const checked = curCheckedKey === menu.key;
+        return {
+          ...menu,
+          label: (
+            <span>
+              {menu.label} {checked ? <Icon className="ml-6" name="check" /> : null}
+            </span>
+          ),
+        };
+      })}
+    >
       {
         children ? React.cloneElement(children, { ref: reference }) : (
           <Icon
@@ -101,23 +60,6 @@ export default function TableMoreFilterMenu<T extends React.Key>({
           />
         )
       }
-      <Popper
-        ref={popperRef}
-        reference={reference}
-        onVisibilityChange={onVisibilityChange}
-        placement={placement || 'bottom-start'}
-        modifiers={modifiers}
-      >
-        <RenderMenuItems
-          checkedKey={curCheckedKey}
-          items={menus}
-          onClick={(key): void => {
-            setCurCheckedKey(key);
-            popperRef.current?.close();
-            onChange(key as T);
-          }}
-        />
-      </Popper>
-    </>
+    </MoreMenu>
   );
 }

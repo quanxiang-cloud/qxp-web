@@ -107,9 +107,9 @@ function DetailsDrawer({ onCancel, rowID, goEdit, delData }: Props): JSX.Element
             )}
             {fieldSchema?.['x-component']?.toLowerCase() === 'associatedrecords' && (
               <AssociatedRecords
+                readonly
                 props={fieldSchema as Schema}
                 value={value}
-                readonly
               />
             )}
             {fieldSchema?.type !== 'array' && (

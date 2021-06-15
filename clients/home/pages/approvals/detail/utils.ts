@@ -13,8 +13,8 @@ export const wrapSchemaWithFieldPermission = (schema: ISchema, permissions: Reco
         },
       });
     } else {
-      // if not defined field permission, set field as visible, readonly
-      Object.assign(acc, { [key]: { ...fieldSchema, visible: true, editable: false } });
+      // if not defined field permission, set field as invisible, readonly
+      Object.assign(acc, { [key]: { visible: false, editable: false, ...fieldSchema } });
     }
     return acc;
   }, {});
