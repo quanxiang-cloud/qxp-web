@@ -6,8 +6,7 @@
   "scripts": {
     "lint": "eslint 'clients/**/*.tsx' 'clients/**/*.ts' --fix",
     "preview:icon": "node scripts/preview-icons.js",
-    "start": "gulp",
-    "build:vendor": "webpack -c webpack.dll.js --progress"
+    "start": "gulp"
   },
   "dependencies": {
     "@QCFE/lego-ui": "^0.1.30",
