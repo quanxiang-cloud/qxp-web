@@ -14,7 +14,7 @@ import AppInfo from './app-info';
 import AppAdmin from './app-admin';
 import appDetailsStore from '../store';
 
-const workflows = React.lazy(() => import('../../../work-flow/list'));
+// const workflows = React.lazy(() => import('../../../work-flow/list'));
 
 import './index.scss';
 
@@ -90,7 +90,7 @@ function AppSetting() {
           <Switch>
             <Route exact path="/apps/details/:appID/setting/info" component={AppInfo} />
             <Route exact path="/apps/details/:appID/setting/adminUsers" component={AppAdmin} />
-            <Route path="/apps/details/:appID/setting/workflows" component={workflows} />
+            {/* <Route path="/apps/details/:appID/setting/workflows" component={workflows} /> */}
             <Route
               exact
               path="/apps/details/:appID/setting/usersAndPermissions"

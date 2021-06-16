@@ -1,83 +1,93 @@
-import { isPassword } from '@lib/utils';
-
-import User, { IUser } from './user';
-import Password from './password-field';
-import Captcha from './captcha-field';
-import { IInputField, query, parseUserValidateResult } from './atom';
-
+import httpClient from '@lib/http-client';
+import { imgChange, removeError, validateCaptcha, validatePwd, validateUsername } from './login-common';
 import './style.scss';
 
-interface IRetrieveUser extends IUser {
-  newPassword: IInputField;
-  captcha: IInputField;
-}
+window.onload = function() {
+  const username = document.querySelector('#username') as HTMLInputElement;
+  const captcha = document.querySelector('#captcha') as HTMLInputElement;
+  const newPassword = document.querySelector('#newPassword') as HTMLInputElement;
+  const nameMessage = document.querySelector('#nameMessage') as HTMLElement;
+  const captchaMessage = document.querySelector('#captchaMessage') as HTMLElement;
+  const newMessage = document.querySelector('#newMessage') as HTMLElement;
+  const captchaBtn = document.querySelector('#captchaBtn') as HTMLButtonElement;
+  const newImg = document.querySelector('#newImg') as HTMLImageElement;
+  const findForm = document.querySelector('#findForm') as HTMLFormElement;
 
-class RetrieveUser extends User {
-  private newPassword: Password;
-  private captcha: Captcha;
+  let counter = 60;
+  let isSending = false;
+  let tid: NodeJS.Timeout;
 
-  constructor({ newPassword, username, captcha, action }: IRetrieveUser) {
-    super({ username, action });
-    this.captcha = new Captcha(captcha, action, this.onValidateAll.bind(this));
-    if (this.username) {
-      this.captcha.setUserName(this.username);
+  function resetVars(errorMessage?: string): void {
+    captchaBtn.classList.remove('disabled');
+    captchaBtn.innerText = '获取验证码';
+    captchaMessage.textContent = errorMessage as string;
+    clearInterval(tid);
+    counter = 59;
+    isSending = false;
+  }
+
+  function callSendApi(): any {
+    return httpClient('/api/v1/org/login/code', { userName: username?.value }, {
+      'X-Proxy': 'API-NO-AUTH',
+    });
+  }
+
+  function sendCode(): void {
+    isSending = true;
+    captchaBtn.classList.add('disabled');
+
+    callSendApi().then(() => {
+      captchaBtn.innerText = `${counter} 后重新获取`;
+      tid = global.setInterval(() => {
+        counter -= 1;
+        captchaBtn.innerText = `${counter} 后重新获取`;
+        if (counter <= 0) {
+          resetVars();
+        }
+      }, 1000);
+    }).catch(resetVars);
+  }
+
+  function onSendCode(e: Event): void {
+    if (isSending) {
+      return;
     }
-    this.newPassword = new Password(newPassword, action, this.onValidateAll.bind(this));
-  }
-
-  onValidateAll(context: Password, isValid: boolean): boolean | (boolean | Promise<boolean>)[] {
-    if (!this.newPassword || !this.username || !this.captcha || !isValid) {
-      return false;
+    e.preventDefault();
+    if (validateUsername(username, nameMessage)) {
+      sendCode();
     }
-    return (
-      [this.newPassword, this.username, this.captcha]
-        .filter((i) => i !== context)
-        .map((i) => i.validate())
-    );
+    return;
   }
 
-  validate(): boolean | Promise<boolean> {
-    if (this.username) {
-      return parseUserValidateResult(
-        this.username.validate(),
-        this.captcha.validate(),
-        this.newPassword.validate(),
-      );
+  captchaBtn.addEventListener('click', function(e: Event) {
+    onSendCode(e);
+  });
+
+  newImg.addEventListener('click', function() {
+    imgChange(newImg, newPassword);
+  });
+
+  username.addEventListener('input', function() {
+    removeError(username, nameMessage);
+  });
+
+  captcha.addEventListener('input', function() {
+    removeError(captcha, captchaMessage);
+  });
+
+  newPassword.addEventListener('input', function() {
+    removeError(newPassword, newMessage);
+  });
+
+  findForm.addEventListener('submit', function(event) {
+    if (!validateUsername(username, nameMessage)) {
+      event.preventDefault();
     }
-    return parseUserValidateResult(
-      this.captcha.validate(),
-      this.newPassword.validate(),
-    );
-  }
-}
-
-function customeValidator(value: string) {
-  if (value === '') {
-    return '新密码不能为空';
-  }
-  if (value && !isPassword(value)) {
-    return '密码必须包含数字、字母和符号，长度至少为 8 位';
-  }
-  return '';
-}
-
-new RetrieveUser({
-  username: {
-    name: 'login:captcha:username',
-    inputElement: query<HTMLInputElement>('input[name="username"]'),
-    errorElement: query<HTMLElement>('.username-hints'),
-  },
-  captcha: {
-    inputElement: query<HTMLInputElement>('input[name="captcha"]'),
-    errorElement: query<HTMLInputElement>('.captcha-hints'),
-    actionElement: query<HTMLButtonElement>('.send'),
-    url: '/api/v1/org/forget/code',
-  },
-  newPassword: {
-    name: 'reset:password:newPassword',
-    inputElement: query<HTMLInputElement>('input[name="newPassword"]'),
-    errorElement: query<HTMLElement>('.newPassword-hints'),
-    customeValidator,
-  },
-  action: query<HTMLButtonElement>('.btn-retrieve'),
-});
+    if (!validateCaptcha(captcha, captchaMessage)) {
+      event.preventDefault();
+    }
+    if (!validatePwd(newPassword, newMessage)) {
+      event.preventDefault();
+    }
+  });
+};
