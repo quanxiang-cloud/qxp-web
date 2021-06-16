@@ -112,11 +112,6 @@ declare namespace FormBuilder {
     ruleJoinOperator: 'every' | 'some';
     rules: Array<FormDataFilterRule>;
   }
-
-  interface UploadedFile {
-    url: string;
-    filename: string;
-  }
 }
 
 // a copy of formily Schema type definition for reference
