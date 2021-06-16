@@ -20,6 +20,10 @@ export function getTableCellData(
   initValue: string | string[] | Record<string, unknown> | Record<string, unknown>[] | undefined,
   field: ISchema,
 ): string | JSX.Element | Record<string, any>[] {
+  if (!initValue) {
+    return (<span className='text-gray-300'>——</span>);
+  }
+
   if (field.type === 'array') {
     return initValue as unknown as Record<string, any>[] || [];
   }
@@ -27,10 +31,6 @@ export function getTableCellData(
   if (field.type === 'label-value') {
     return (([] as Record<string, unknown>[]).concat(initValue as Record<string, unknown>[]))
       .map((itm) => itm.label).join(',');
-  }
-
-  if (!initValue) {
-    return (<span className='text-gray-300'>——</span>);
   }
 
   if (field.type === 'datetime') {
