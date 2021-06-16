@@ -37,7 +37,6 @@ function computeTableColumns(schema: ISchema, columns: string[]): Column<Record<
 function AssociatedRecords({
   associatedTable, columns, selected, appID, tableID, multiple, onChange, readonly,
 }: Props): JSX.Element {
-  // todo append operation column
   const [showSelectModal, setShowSelectModal] = useState(false);
   const { isLoading, data } = useQuery(['FIND_TABLE_RECORDS', selected], () => {
     return findTableRecords(appID, tableID, selected);

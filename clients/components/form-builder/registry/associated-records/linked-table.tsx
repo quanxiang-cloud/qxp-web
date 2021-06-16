@@ -15,7 +15,7 @@ type Option = {
   value: string;
 }
 
-function LinkedTable({ mutators, value }: ISchemaFieldComponentProps) {
+function LinkedTable({ mutators, value }: ISchemaFieldComponentProps): JSX.Element {
   const store = useContext(StoreContext);
   const [linkageTables, setLinkageTables] = useState<Array<Option>>([]);
   const [tableID, setTableID] = useState<string>(value.tableID);
