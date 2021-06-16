@@ -57,7 +57,7 @@ const DEFAULT_VALUE_LINKAGE: FormBuilder.DefaultValueLinkage = {
   }],
 };
 
-type LinkedTableFieldOptions = FormBuilder.Option & {
+export type LinkedTableFieldOptions = FormBuilder.Option & {
   fieldEnum: Array<FormBuilder.Option>;
   'x-component': string;
 }

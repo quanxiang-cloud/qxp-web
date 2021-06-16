@@ -2,6 +2,8 @@ import { INTERNAL_FIELD_NAMES } from '@c/form-builder/store';
 import httpClient, { getTableSchema } from '@lib/http-client';
 import logger from '@lib/logger';
 
+import { LinkedTableFieldOptions } from './index';
+
 const WHITE_LIST_FIELDS = [
   'Input',
   'DatePicker',
@@ -49,7 +51,9 @@ export function getLinkageTables(appID: string): Promise<Array<{ label: string; 
   });
 }
 
-export function fetchLinkedTableFields(appID: string, tableID: string) {
+export function fetchLinkedTableFields(
+  appID: string, tableID: string,
+): Promise<Array<LinkedTableFieldOptions>> {
   // todo find why this function called and tableID is empty on form submit
   if (!tableID) {
     return Promise.resolve([]);
