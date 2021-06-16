@@ -35,9 +35,9 @@ const CustomizeComponent = (props: Props) => {
   }));
 
   // @ts-ignore
-  return <Select options={Options} mode={multiple} value={Array.isArray(value) ? value.map(({ value }) => value) : value.value} onChange={(_, selects: Option|Option[])=>{
-    onChange(selects)
-  }} />;
+  return (<Select options={Options} mode={multiple} value={Array.isArray(value) ? value.map(({ value }) => value) : value.value} onChange={(_, selects: Option|Option[])=>{
+    onChange(selects);
+  }} />);
 };
 
 const AllUserComponent = (props: Props) => {

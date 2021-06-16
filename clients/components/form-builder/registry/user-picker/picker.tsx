@@ -28,7 +28,6 @@ const Picker = ({ value: defaultValue = [], onChange, isMy }: Props) => {
       id: itm.id,
     })) as EmployeeOrDepartmentOfRole[];
     onChange(isMy ? users : []);
-  
   }, [isMy, myDepUsers]);
 
   const { isLoading } = useQuery(['query_user_picker_', window.USER.dep.id, appID], () => searchUser(appID, { depID: window.USER.dep.id }), {
@@ -69,7 +68,7 @@ const Picker = ({ value: defaultValue = [], onChange, isMy }: Props) => {
 
   return (
     <div>
-      <div 
+      <div
         className={classNames({ disabled_test: isMy })} onClick={() => isMy || setVisible((v) => !v)}>
         {defaultValue.length <= 0 ?
           <Button> 选择成员范围</Button> :

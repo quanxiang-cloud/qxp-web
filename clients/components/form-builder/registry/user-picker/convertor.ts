@@ -59,8 +59,8 @@ export const toSchema = (config: DefaultConfig): ISchema => {
       },
 
       filterOption: (input: string, option: Option) =>{
-        return option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0
-      }
+        return option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+      },
     },
     ['x-internal']: {
       multiple: config.multiple,

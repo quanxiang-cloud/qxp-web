@@ -69,7 +69,6 @@ const AllUserPicker = (p: ISchemaFieldComponentProps): JSX.Element => {
     },
   });
 
-
   const xComponentsProps = Object.assign({}, p.props['x-component-props'], {
     loading: isLoading,
     onSearch: debounce(_setKeyword, 500),
