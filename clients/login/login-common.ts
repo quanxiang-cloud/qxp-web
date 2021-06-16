@@ -44,8 +44,7 @@ export function validatePwd(password: HTMLInputElement, massage: HTMLElement): b
     password.classList.add('error');
     return false;
   }
-
-  if (!/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&+.])[A-Za-z\d@$!%*#?&+.]{8,}$/.test(password.value)) {
+  if (!/^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?~])[A-Za-z\d!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?~]{8,}$/.test(password.value)) {
     massage.innerText = '密码必须包含数字、字母和符号，长度至少为 8 位且不包含空格';
     password.classList.add('error');
     return false;
