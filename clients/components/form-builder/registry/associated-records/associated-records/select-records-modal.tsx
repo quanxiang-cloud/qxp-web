@@ -18,7 +18,6 @@ export default function SelectRecordsModal({
   onClose, appID, tableID, multiple, onSubmit,
 }: Props): JSX.Element {
   const tableRef: React.Ref<any> = useRef<Ref>();
-
   const handleSubmit = (): void => {
     if (!tableRef.current) {
       return;
@@ -41,6 +40,16 @@ export default function SelectRecordsModal({
     },
   ];
 
+  const customColumns = [
+    {
+      id: 'action',
+      Headers: '操作',
+      accessor: (rowData: any) => {
+        return <div className='text-btn' onClick={() => onSubmit([rowData._id])}>选择</div>;
+      },
+    },
+  ];
+
   return (
     <Modal
       title="选择关联记录"
@@ -49,6 +58,8 @@ export default function SelectRecordsModal({
     >
       <FormDataTable
         allowRequestData
+        showCheckbox={multiple}
+        customColumns={multiple ? [] : customColumns}
         ref={tableRef}
         pageID={tableID}
         appID={appID}

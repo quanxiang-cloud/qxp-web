@@ -65,7 +65,7 @@ function PageDataTable(): JSX.Element {
       </div>
       <div className='flex flex-1 overflow-hidden'>
         <Table
-          showCheckbox
+          showCheckbox={store.showCheckbox}
           emptyTips='暂无数据'
           rowKey="_id"
           loading={store.listLoading}

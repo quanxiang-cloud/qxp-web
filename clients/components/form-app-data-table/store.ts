@@ -20,6 +20,7 @@ type InitData = {
   config?: Config;
   pageID?: string;
   appID?: string;
+  showCheckbox?: boolean;
   allowRequestData?: boolean;
   tableHeaderBtnList?: TableHeaderBtn[];
   customColumns?: UnionColumns<any>[];
@@ -32,6 +33,7 @@ class AppPageDataStore {
   @observable tableConfig: TableConfig = { pageSize: null, order: undefined };
   @observable noFiltersTips: React.ReactNode = '尚未配置筛选条件。';
   @observable listLoading = false;
+  @observable showCheckbox = true;
   @observable pageID = '';
   @observable appID = '';
   @observable allowRequestData = false;
@@ -60,9 +62,11 @@ class AppPageDataStore {
     allowRequestData,
     tableHeaderBtnList = [],
     customColumns = [],
+    showCheckbox = true,
   }: InitData) {
     const { tableColumns, pageTableShowRule } = getPageDataSchema(config || {}, schema, customColumns);
     this.setSchema(schema);
+    this.showCheckbox = showCheckbox;
     this.tableHeaderBtnList = tableHeaderBtnList;
     this.setTableColumns(tableColumns);
     this.setTableConfig(pageTableShowRule);

@@ -15,6 +15,7 @@ type Props = {
   tableHeaderBtnList?: TableHeaderBtn[];
   customColumns?: UnionColumns<any>[];
   allowRequestData?: boolean;
+  showCheckbox?: boolean;
   className?: string;
   style?: React.CSSProperties;
 }
@@ -24,6 +25,7 @@ function FormAppDataTableWrap({
   appID,
   tableHeaderBtnList,
   customColumns,
+  showCheckbox,
   allowRequestData = false,
   className = '',
   style,
@@ -57,6 +59,7 @@ function FormAppDataTableWrap({
             config: config,
             tableHeaderBtnList,
             customColumns,
+            showCheckbox,
             allowRequestData,
             appID,
             pageID,
