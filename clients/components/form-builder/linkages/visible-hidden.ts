@@ -6,11 +6,9 @@ const { onFormInit$, onFormValuesChange$ } = FormEffectHooks;
 
 function getComparator(linkage: FormBuilder.VisibleHiddenLinkage): FormBuilder.Comparator {
   return (values: Record<string, any>): boolean => {
-    const pairs: Array<[
-      any,
-      FormBuilder.CompareOperator,
-      any
-    ]> = linkage.rules.map(({ sourceKey, compareOperator, compareValue }) => {
+    const pairs: Array<[any, FormBuilder.CompareOperator, any]> = linkage.rules.map(({
+      sourceKey, compareOperator, compareValue,
+    }) => {
       return [values[sourceKey], compareOperator, compareValue];
     });
 
@@ -20,6 +18,7 @@ function getComparator(linkage: FormBuilder.VisibleHiddenLinkage): FormBuilder.C
         return executor(value, compareValue);
       }
 
+      // todo why? qimiao
       const not = ['!=', '∉', '⊋'];
       if (value === undefined) {
         return not.includes(compareOperator);
@@ -33,26 +32,24 @@ function getComparator(linkage: FormBuilder.VisibleHiddenLinkage): FormBuilder.C
 export default function visibleHiddenLinkageEffect(
   linkages: FormBuilder.VisibleHiddenLinkage[],
   { setFieldState }: ISchemaFormActions,
-) {
-  const comparatorsAndTargetKey: Array<[
-    FormBuilder.Comparator, string, boolean
-  ]> = linkages.map((linkages) => {
+): void {
+  const pairs: Array<[FormBuilder.Comparator, string, boolean]> = linkages.map((linkages) => {
     // *(abc,def,gij)
     const targetKeys = `*(${linkages.targetKeys.join(',')})`;
-    const isShow = linkages.isShow;
+    const isShow = !!linkages.isShow;
     return [getComparator(linkages), targetKeys, isShow];
   });
 
   onFormInit$().subscribe(({ values }) => {
-    comparatorsAndTargetKey.forEach(([comparator, targetKey, isShow]) => {
-      const isVisible = isShow === true ? comparator(values) : !comparator(values);
+    pairs.forEach(([comparator, targetKey, isShow]) => {
+      const isVisible = isShow ? comparator(values) : !comparator(values);
       setFieldState(targetKey, (state) => state.visible = isVisible);
     });
   });
 
   onFormValuesChange$().subscribe(({ values }) => {
-    comparatorsAndTargetKey.forEach(([comparator, targetKey, isShow]) => {
-      const isVisible = isShow === true ? comparator(values) : !comparator(values);
+    pairs.forEach(([comparator, targetKey, isShow]) => {
+      const isVisible = isShow ? comparator(values) : !comparator(values);
       setFieldState(targetKey, (state) => state.visible = isVisible);
     });
   });

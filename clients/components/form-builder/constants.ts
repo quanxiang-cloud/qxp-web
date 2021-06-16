@@ -130,13 +130,3 @@ export const compareOperatorMap: Record<FormBuilder.CompareOperator, OperatorCon
     },
   },
 };
-
-// type: 'string';
-// type: 'number';
-// type: 'date';
-// type: 'object'
-// type: 'label-value';
-// type: 'array:string';
-// type: 'array:label-value';
-// type: 'array:object'
-// type: 'array:date'
