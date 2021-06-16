@@ -35,7 +35,7 @@ export const OPERATORS_NUMBER = [
 export const OPERATORS_DATE = [
   {
     label: '范围',
-    value: 'range',
+    value: 'between',
   },
 ];
 

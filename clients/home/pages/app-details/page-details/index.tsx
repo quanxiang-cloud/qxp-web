@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import cs from 'classnames';
 import { observer } from 'mobx-react';
 
@@ -19,6 +19,10 @@ function PageDetails(): JSX.Element | null {
   const [modalType, setModalType] = useState('');
   const [curRowID, setCurRowID] = useState('');
   const formTableRef = useRef<Ref>(null);
+
+  useEffect(() => {
+    handleCancel();
+  }, [curPage]);
 
   const goEdit = (rowID: string): void => {
     setCurRowID(rowID);

@@ -33,7 +33,7 @@ function PageDataFilter() {
       case 'datetime': {
         const [start, end] = values[key];
         _condition.value = [moment(start).format(), moment(end).format()];
-        _condition.op = 'range';
+        _condition.op = 'between';
         break;
       }
       case 'number':
