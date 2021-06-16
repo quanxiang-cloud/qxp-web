@@ -82,7 +82,7 @@ export default function Detail() {
   }
 
   return (
-    <>
+    <div className="flex flex-col h-screen">
       <Header />
       {showDataNotSaveConfirm && (status !== 'ENABLE') && (
         <Modal
@@ -109,6 +109,6 @@ export default function Detail() {
         <AsideMenu onChange={setCurrentOperateType} currentOperateType={currentOperateType} />
         <Content currentOperateType={currentOperateType} />
       </section>
-    </>
+    </div>
   );
 }
