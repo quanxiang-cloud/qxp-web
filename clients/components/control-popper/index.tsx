@@ -2,10 +2,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { createPopper, Instance, Placement, Modifier } from '@popperjs/core';
 
-import './index.scss';
-
-export type TriggerMethod = 'click' | 'hover' | 'focus' | 'forever';
-
 type Theme = 'light' | 'dark';
 
 type Props = {
@@ -39,7 +35,7 @@ export default class ControlPopper extends React.Component<Props> {
     this.popperContainer.classList.add(
       'popper-container',
       `popper-container--${theme}`,
-      visible ? '' : 'qxp-popper-hidden',
+      visible ? '' : 'hidden',
     );
 
     if (props.enableArrow) {
@@ -53,15 +49,15 @@ export default class ControlPopper extends React.Component<Props> {
     this.createPopperInstance();
   }
 
-  componentDidUpdate(preProps: Props) {
+  componentDidUpdate(preProps: Props): void {
     if (preProps.visible === this.props.visible) {
       return;
     }
 
     if (this.props.visible) {
-      this.popperContainer.classList.remove('qxp-popper-hidden');
+      this.popperContainer.classList.remove('hidden');
     } else {
-      this.popperContainer.classList.add('qxp-popper-hidden');
+      this.popperContainer.classList.add('hidden');
     }
   }
 
