@@ -1,64 +1,32 @@
-import { IInputField, query, parseUserValidateResult } from './atom';
-
-import UserName from './username';
-import Password from './password-field';
-import User, { IUser } from './user';
-
+import { imgChange, removeError, validatePwd, validateUsername } from './login-common';
 import './style.scss';
 
-interface IPasswordUser extends IUser {
-  password: IInputField;
-}
+window.onload = function() {
+  const username = document.querySelector('#username') as HTMLInputElement;
+  const password = document.querySelector('#password') as HTMLInputElement;
+  const nameMessage = document.querySelector('#nameMessage') as HTMLElement;
+  const pwdMessage = document.querySelector('#pwdMessage') as HTMLElement;
+  const pwdImg = document.querySelector('#pwdImg') as HTMLImageElement;
+  const loginForm = document.querySelector('#loginForm') as HTMLFormElement;
 
-class PasswordUser extends User {
-  private password: Password;
+  username.addEventListener('input', function() {
+    removeError(username, nameMessage);
+  });
 
-  constructor({ action, username, password }: IPasswordUser) {
-    super({ username, action });
-    this.password = new Password(password, action, this.onValidateAll.bind(this));
-  }
+  password.addEventListener('input', function() {
+    removeError(password, pwdMessage);
+  });
 
-  onValidateAll(
-    context: UserName | Password,
-    isValid: boolean,
-  ): boolean | (boolean | Promise<boolean>)[] {
-    if (!this.username || !this.password || !isValid) {
-      return false;
+  pwdImg.addEventListener('click', function() {
+    imgChange(pwdImg, password);
+  });
+
+  loginForm.addEventListener('submit', function(event) {
+    if (!validateUsername(username, nameMessage)) {
+      event.preventDefault();
     }
-    return (
-      [this.username, this.password].filter((i) => i !== context).map((i) => i.validate())
-    );
-  }
-
-  validate(): boolean | Promise<boolean> {
-    if (this.username) {
-      return parseUserValidateResult(
-        this.username.validate(),
-        this.password.validate(),
-      );
+    if (!validatePwd(password, pwdMessage)) {
+      event.preventDefault();
     }
-    return this.password.validate();
-  }
-}
-function customeValidator(value: string ) {
-  if (value === '') {
-    return '密码不能为空';
-  }
-  return '';
-}
-
-new PasswordUser({
-  username: {
-    name: 'login:password:username',
-    inputElement: query<HTMLInputElement>('input[name="username"]'),
-    errorElement: query<HTMLElement>('.username-hints'),
-    asyncValidate: true,
-  },
-  password: {
-    name: 'login:password:password',
-    inputElement: query<HTMLInputElement>('input[name="password"]'),
-    errorElement: query<HTMLInputElement>('.password-hints'),
-    customeValidator,
-  },
-  action: query<HTMLButtonElement>('.btn-login'),
-});
+  });
+};

@@ -13,7 +13,7 @@ interface Props {
   onCancel: () => void;
 }
 
-export default function ResetPasswordModal({ visible, onCancel }: Props) {
+export default function ResetPasswordModal({ visible, onCancel }: Props): JSX.Element|null {
   const [values, setValues] = useState({
     old: '',
     new: '',
@@ -30,7 +30,7 @@ export default function ResetPasswordModal({ visible, onCancel }: Props) {
     },
   });
 
-  function onResetSubmit() {
+  function onResetSubmit(): void {
     formRef.current?.validateFields().then((isAllValid) => {
       if (values.new && values.old && isAllValid) {
         setLoading(true);
@@ -79,7 +79,7 @@ export default function ResetPasswordModal({ visible, onCancel }: Props) {
           rules={[
             (val: string) => val ? '' : '原密码不能为空',
             (val: string) => val.length < 8 ? '密码长度至少为8位' : '',
-            (val: string) => !isPassword(val) ? '密码必须包含数字、字母和符号' : '',
+            (val: string) => !isPassword(val) ? '密码必须包含数字、字母和符号，长度至少为 8 位且不包含空格' : '',
           ]}
         />
         <PassWordField
@@ -89,7 +89,7 @@ export default function ResetPasswordModal({ visible, onCancel }: Props) {
           rules={[
             (val: string) => val ? '' : '新密码不能为空',
             (val: string) => val.length < 8 ? '密码长度至少为8位' : '',
-            (val: string) => !isPassword(val) ? '密码必须包含数字、字母和符号' : '',
+            (val: string) => !isPassword(val) ? '密码必须包含数字、字母和符号，长度至少为 8 位且不包含空格' : '',
           ]}
         />
       </Form>

@@ -25,7 +25,7 @@ export default function ResetPasswordModal({
   userIds,
   closeModal,
   clearSelectRows,
-}: Props) {
+}: Props): JSX.Element {
   const formRef = createRef<Form>();
 
   const resetMutation = useMutation(resetUserPWD, {
@@ -41,7 +41,7 @@ export default function ResetPasswordModal({
     },
   });
 
-  const handleReset = () => {
+  const handleReset = (): void => {
     if (!formRef.current?.validateForm()) {
       return;
     }
