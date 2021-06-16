@@ -19,9 +19,10 @@ type Option = {
 export function getTableCellData(
   initValue: string | string[] | Record<string, unknown> | Record<string, unknown>[] | undefined,
   field: ISchema,
+  defaultValue?: any,
 ): string | JSX.Element | Record<string, any>[] {
   if (!initValue) {
-    return (<span className='text-gray-300'>——</span>);
+    return defaultValue || undefined;
   }
 
   if (field.type === 'array') {
@@ -131,7 +132,11 @@ export function getPageDataSchema(
     return {
       id: key,
       Header: fieldsMap[key].title || '',
-      accessor: (data: any) => getTableCellData(data[key], fieldsMap[key]),
+      accessor: (data: any) => getTableCellData(
+        data[key],
+        fieldsMap[key],
+        <span className='text-gray-300'>——</span>,
+      ),
     };
   });
 
