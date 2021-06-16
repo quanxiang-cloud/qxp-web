@@ -27,12 +27,6 @@ export function validateCaptcha(captcha: HTMLInputElement, massage: HTMLElement)
     return false;
   }
 
-  if (!/^\d{8}$/.test(captchaValue)) {
-    massage.innerText = '请输入 8 位数字验证码';
-    captcha.classList.add('error');
-    return false;
-  }
-
   massage.innerText = '';
   captcha.classList.remove('error');
   return true;
