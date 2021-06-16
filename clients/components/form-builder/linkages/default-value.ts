@@ -1,11 +1,10 @@
-import { ajax, AjaxResponse } from 'rxjs/ajax';
+import { ajax } from 'rxjs/ajax';
 import { get } from 'lodash';
 import { Observable, of } from 'rxjs';
-import { switchMap, debounceTime, filter, map } from 'rxjs/operators';
+import { switchMap, debounceTime, filter, map, catchError } from 'rxjs/operators';
 import { FormEffectHooks, ISchemaFormActions } from '@formily/antd';
 
 import logger from '@lib/logger';
-
 import { compareOperatorMap } from '@c/form-builder/constants';
 
 const { onFieldValueChange$ } = FormEffectHooks;
@@ -21,7 +20,7 @@ type FetchLinkedTableDataParams = {
 function fetchLinkedTableData$(
   getFieldValue: (path: string) => any,
   linkage: FormBuilder.DefaultValueLinkage,
-): Observable<AjaxResponse> {
+): Observable<Record<string, any>> {
   const conditions = linkage.rules.map((rule) => {
     if (rule.compareTo === 'fixedValue') {
       return {
@@ -47,22 +46,21 @@ function fetchLinkedTableData$(
     },
   };
 
-  // const side = window.SIDE === 'portal' ? 'm' : 'home';
-  const side = 'home';
   return ajax({
-    url: `/api/v1/structor/${linkage.linkedAppID}/${side}/form/${linkage.linkedTable.id}`,
+    url: `/api/v1/structor/${linkage.linkedAppID}/home/form/${linkage.linkedTable.id}`,
     method: 'POST',
-    headers: {
-      'X-Proxy': 'API',
-      'Content-Type': 'application/json',
-    },
+    headers: { 'X-Proxy': 'API', 'Content-Type': 'application/json' },
     body: {
       ...params,
       method: 'find',
       page: 1,
       size: 1,
     },
-  });
+  }).pipe(
+    catchError(() => of({ response: undefined })),
+    map(({ response }) => response?.data?.entities?.[0]),
+    filter((record) => !!record),
+  );
 }
 
 function shouldFetchLinkedTableData(
@@ -97,6 +95,7 @@ function shouldFireEffect({ linkage, linkedRow, getFieldValue }: ShouldFireEffec
   if (!linkedRow) {
     return false;
   }
+
   const pairs = linkage.rules.map((rule) => {
     return {
       operator: rule.compareOperator,
@@ -138,7 +137,7 @@ type ExecuteLinkage = {
   formActions: ISchemaFormActions,
 }
 
-function executeLinkage({ linkage, formActions }: ExecuteLinkage) {
+function executeLinkage({ linkage, formActions }: ExecuteLinkage): void {
   const { setFieldState, getFieldValue } = formActions;
   const listenedOnFields: string[] = [];
   linkage.rules.forEach((rule) => {
@@ -150,10 +149,7 @@ function executeLinkage({ linkage, formActions }: ExecuteLinkage) {
   if (listenedOnFields.length === 0) {
     of(true).pipe(
       switchMap(() => fetchLinkedTableData$(getFieldValue, linkage)),
-      map(({ response }) => response.data?.entities?.[0]),
-      filter<Record<string, any>>((linkedRow: Record<string, any> | undefined) => {
-        return shouldFireEffect({ linkedRow, linkage, getFieldValue });
-      }),
+      filter((linkedRow) => shouldFireEffect({ linkedRow, linkage, getFieldValue })),
     ).subscribe((linkedRow) => {
       logger.debug(`execute defaultValueLinkage on field: ${linkage.targetField}`);
       setFieldState(linkage.targetField, (state) => state.value = linkedRow[linkage.linkedField]);
@@ -166,17 +162,14 @@ function executeLinkage({ linkage, formActions }: ExecuteLinkage) {
     debounceTime(200),
     filter(() => shouldFetchLinkedTableData(getFieldValue, linkage)),
     switchMap(() => fetchLinkedTableData$(getFieldValue, linkage)),
-    map(({ response }) => response.data?.entities?.[0]),
-    filter<Record<string, any>>((linkedRow: Record<string, any> | undefined) => {
-      return shouldFireEffect({ linkedRow, linkage, getFieldValue });
-    }),
+    filter((linkedRow) => shouldFireEffect({ linkedRow, linkage, getFieldValue })),
   ).subscribe((linkedRow) => {
     logger.debug(`execute defaultValueLinkage on field: ${linkage.targetField}`);
     setFieldState(linkage.targetField, (state) => state.value = linkedRow[linkage.linkedField]);
   });
 }
 
-export default function DefaultValueLinkageEffect(schema: ISchema, formActions: ISchemaFormActions) {
+export default function DefaultValueLinkageEffect(schema: ISchema, formActions: ISchemaFormActions): void {
   findAllLinkages(schema).forEach((linkage) => {
     executeLinkage({ linkage, formActions });
   });
