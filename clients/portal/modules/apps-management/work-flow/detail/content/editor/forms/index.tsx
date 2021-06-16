@@ -1,5 +1,4 @@
 import React, { useState, MouseEvent, useEffect } from 'react';
-import { isEqual } from 'lodash';
 import { useParams } from 'react-router-dom';
 
 import Modal from '@c/modal';
@@ -7,7 +6,6 @@ import Drawer from '@c/drawer';
 import useObservable from '@lib/hooks/use-observable';
 import usePrevious from '@lib/hooks/use-previous';
 import { jsonValidator } from '@lib/utils';
-import FormSelector from '@c/form-table-selector';
 import type {
   StoreValue, BusinessData, NodeWorkForm, TriggerCondition, TriggerConditionValue,
   TimeRule, NodeType, TriggerWay,
@@ -21,20 +19,34 @@ import store, {
   buildBpmnText,
   resetElementsData,
 } from '@flow/detail/content/editor/store';
+import Form from './form';
 
-import FormDataForm from './form-data';
-import ApproveForm from './intermidiate/approve';
-import { getNodeInitialData, mergeDataAdapter } from '../utils';
+import { getNodeInitialData } from '../utils';
 import useSave from './hooks/use-save';
 
-export default function NodeFormWrapper() {
+const drawerTitleMap = {
+  formData: '工作表触发',
+  fillIn: '填写',
+  approve: '审批',
+  end: '结束',
+  process_branch: '分支',
+  process_variable_assignment: '变更流程参数',
+  table_data_create: '数据新增',
+  table_data_update: '数据更新',
+  cc: '抄送',
+  send_email: '发送邮件',
+  web_message: '站内信',
+};
+
+export default function NodeFormWrapper(): JSX.Element | null {
   const {
-    nodeIdForDrawerForm, validating, id, status, name, triggerMode, version,
+    nodeIdForDrawerForm, id, status, name, triggerMode, version,
     cancelable: canCancel, urgeable: canUrge, seeStatusAndMsg: canViewStatusMsg,
     nodeAdminMsg: canMsg, elements, needSaveFlow,
   } = useObservable<StoreValue>(store);
   const { appID } = useParams<{ appID: string }>();
   const currentNodeElement = getNodeElementById(nodeIdForDrawerForm);
+  const formDataElement = elements?.find(({ type }) => type === 'formData');
   const data = currentNodeElement?.data?.businessData;
   const [formData, setFormData] = useState<BusinessData>(data);
   const [formDataChanged, setFormDataChanged] = useState(false);
@@ -46,10 +58,8 @@ export default function NodeFormWrapper() {
 
   const { type: nodeType } = currentNodeElement ?? {};
   const isFormDataNode = nodeType === 'formData';
-  const isApproveNode = nodeType === 'approve';
-  const isFillInNode = nodeType === 'fillIn';
 
-  function onSubmitWorkFormChange() {
+  function onSubmitWorkFormChange(): void {
     if (!currentWorkTable) {
       return;
     }
@@ -59,7 +69,7 @@ export default function NodeFormWrapper() {
     setFormDataChanged(true);
   }
 
-  function onCancelSubmitWorkForm() {
+  function onCancelSubmitWorkForm(): void {
     setCurrentWorkTable(undefined);
   }
 
@@ -97,7 +107,7 @@ export default function NodeFormWrapper() {
     });
   }, [formDataChanged]);
 
-  function triggerConditionValidator(v: TriggerCondition) {
+  function triggerConditionValidator(v: TriggerCondition): boolean {
     let isValid = true;
     v?.expr?.forEach((exprItem) => {
       const valueItem = exprItem as TriggerConditionValue;
@@ -111,7 +121,7 @@ export default function NodeFormWrapper() {
     return isValid;
   }
 
-  function timeRuleValidator(timeRule: TimeRule) {
+  function timeRuleValidator(timeRule: TimeRule): boolean {
     const { deadLine, whenTimeout } = timeRule ?? {};
     if (timeRule?.enabled) {
       if (
@@ -125,7 +135,7 @@ export default function NodeFormWrapper() {
     return true;
   }
 
-  function triggerWayValidator([triggerWay, whenAlterFields]: [TriggerWay, string[]]) {
+  function triggerWayValidator([triggerWay, whenAlterFields]: [TriggerWay, string[]]): boolean {
     const isTriggerWayValid = !!triggerWay?.length && typeof triggerWay !== 'undefined';
     if (triggerWay?.length && triggerWay?.includes('whenAlter') && !whenAlterFields?.length) {
       return false;
@@ -133,7 +143,7 @@ export default function NodeFormWrapper() {
     return isTriggerWayValid;
   }
 
-  function multiplePersonWayValidator(way: string) {
+  function multiplePersonWayValidator(way: string): boolean {
     const { users, departments } = formData.basicConfig.approvePersons;
     if (users.length === 1 && !departments.length) {
       return true;
@@ -141,7 +151,7 @@ export default function NodeFormWrapper() {
     return !!way;
   }
 
-  function formDataIsValid() {
+  function formDataIsValid(): boolean {
     const jsonValidatorMap: Record<NodeType, Record<string, (v: any) => boolean>> = {
       formData: {
         'form.value': (v) => !!v && typeof v !== 'undefined',
@@ -157,12 +167,19 @@ export default function NodeFormWrapper() {
         'basicConfig.multiplePersonWay': multiplePersonWayValidator,
       },
       end: {},
+      process_branch: {},
+      process_variable_assignment: {},
+      table_data_create: {},
+      table_data_update: {},
+      cc: {},
+      send_email: {},
+      web_message: {},
     };
     return jsonValidator<BusinessData>(formData, jsonValidatorMap[nodeType]);
   }
 
   const previousName = usePrevious(name);
-  function saveWorkFlow() {
+  function saveWorkFlow(): void {
     if (!name || !previousName || !elements?.length) {
       return;
     }
@@ -187,7 +204,7 @@ export default function NodeFormWrapper() {
     });
   }
 
-  function onSubmit(e: MouseEvent<HTMLDivElement>) {
+  function onSubmit(e: MouseEvent<HTMLDivElement>): void {
     e.preventDefault();
     if (formDataIsValid()) {
       setFormDataChanged(false);
@@ -197,11 +214,7 @@ export default function NodeFormWrapper() {
     }
   }
 
-  function updateFormData<T>(path: string, updater: (v: T) => T) {
-    setFormData(mergeDataAdapter(formData, path, updater));
-  }
-
-  function closePanel() {
+  function closePanel(): void {
     updateStore((s) => ({
       ...s,
       nodeIdForDrawerForm: s.nodeIdForDrawerForm === 'components' ? s.nodeIdForDrawerForm : '',
@@ -213,7 +226,7 @@ export default function NodeFormWrapper() {
     }));
   }
 
-  function onCancel() {
+  function onCancel(): false | undefined {
     if (formDataChanged && (status !== 'ENABLE')) {
       updateStore((s) => ({
         ...s,
@@ -225,55 +238,13 @@ export default function NodeFormWrapper() {
     closePanel();
   }
 
-  function onWorkFormChange(formValue: NodeWorkForm) {
-    const isWorkFormChanged = formData.form.value && formData.form.value !== formValue.value;
-    if (isWorkFormChanged) {
-      return setCurrentWorkTable(formValue);
-    }
-    setFormDataChanged(true);
-    updateFormData('form', () => formValue);
-  }
-
-  function isTriggerConditionValueEmpty(condition: TriggerCondition) {
-    const { expr = [] } = condition;
-    const exprValue = expr[0] as TriggerConditionValue;
-    return !exprValue?.key && !exprValue?.op && !exprValue?.value;
-  }
-
-  function onFormChange(nodeForm: Partial<BusinessData>) {
-    const oldData = formData;
-    const newData = { ...formData, ...nodeForm };
-    const isChanged = !isEqual(oldData, newData);
-    setFormDataChanged(isChanged);
-    setFormData((f) => ({ ...f, ...nodeForm }));
-    if (nodeType !== 'formData' || !oldData.triggerCondition) {
-      return;
-    }
-    const { triggerCondition: { op: oldOp, expr: oldExpr } } = oldData;
-    const { triggerCondition: { op: newOp, expr: newExpr } } = newData;
-    if (oldOp === '' && newOp === '' && !newExpr.length && oldExpr.length === 1 &&
-      isTriggerConditionValueEmpty(oldExpr[0] as TriggerCondition)) {
-      setFormDataChanged(false);
-    }
-  }
-
-  function onResetFormData(form: NodeWorkForm) {
+  function onResetFormData(form: NodeWorkForm): void {
     const newInitialFormData = getNodeInitialData(currentNodeElement?.type);
     newInitialFormData && setFormData({
       ...newInitialFormData,
       form,
     });
   }
-
-  const drawerTitleMap = {
-    formData: '工作表触发',
-    fillIn: '填写',
-    approve: '审批',
-    end: '结束',
-  };
-
-  const approveFormVisible = (isApproveNode || isFillInNode) && formData.basicConfig;
-  const formDataFormVisible = isFormDataNode && formData.form && formData.triggerWay;
 
   if (!currentNodeElement || !formData) {
     return null;
@@ -291,30 +262,14 @@ export default function NodeFormWrapper() {
       <div
         className="flex-1 flex flex-col justify-between h-full"
       >
-        <div className="flex-1" style={{ height: 'calc(100% - 56px)' }}>
-          {formData.form && (
-            <FormSelector
-              value={formData.form}
-              onChange={onWorkFormChange}
-              changeable={isFormDataNode}
-              validating={validating}
-            />
-          )}
-          {formDataFormVisible && (
-            <FormDataForm
-              formID={formData.form.value}
-              value={formData}
-              onChange={onFormChange}
-            />
-          )}
-          {approveFormVisible && (
-            <ApproveForm
-              value={formData}
-              onChange={onFormChange}
-              nodeType={nodeType}
-            />
-          )}
-        </div>
+        <Form
+          nodeType={nodeType}
+          value={formData}
+          form={formDataElement?.data?.businessData.form}
+          onChange={setFormData}
+          onWorkTableChange={setCurrentWorkTable}
+          toggleFormDataChanged={setFormDataChanged}
+        />
         <SaveButtonGroup onSave={onSubmit} onCancel={onCancel} />
         {currentWorkTable && (
           <Modal

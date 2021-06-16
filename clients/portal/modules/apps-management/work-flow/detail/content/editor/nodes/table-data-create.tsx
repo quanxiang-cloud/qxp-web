@@ -1,16 +1,16 @@
 import React from 'react';
 import { Handle, Position } from 'react-flow-renderer';
 
-import FillInNodeComponent from '../components/fill-in';
+import TableDataCreateNodeComponent from '../components/table-data-create';
 
-export default function FormDataNode(props: any): JSX.Element {
+export default function TableDataCreateNode(props: any): JSX.Element {
   return (
     <>
       <Handle
         type="target"
         position={Position.Top}
       />
-      <FillInNodeComponent {...props} />
+      <TableDataCreateNodeComponent {...props} />
       <Handle
         type="source"
         position={Position.Bottom}

@@ -13,13 +13,14 @@ type Props = {
   className?: string;
 }
 
-function Drawer({ onCancel, title, children, className, distanceTop = 56 }: Props) {
+// todo fix unmount update error
+function Drawer({ onCancel, title, children, className, distanceTop = 56 }: Props): JSX.Element {
   const [beganClose, setBeganClose] = useState<boolean>(false);
   const [visible, setVisible] = useState<boolean>(false);
 
   let timeID = -1;
 
-  const handleCancel = () => {
+  const handleCancel = (): void => {
     onCancel();
     setBeganClose(true);
     timeID = window.setTimeout(() => {

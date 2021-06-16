@@ -1,4 +1,4 @@
-import { Position, ArrowHeadType, XYPosition } from 'react-flow-renderer';
+import { Position, ArrowHeadType, XYPosition, Edge, Node } from 'react-flow-renderer';
 import { update } from 'lodash';
 
 import { deepClone } from '@lib/utils';
@@ -87,7 +87,7 @@ const approveAndFillInCommonData = {
   },
   events: {},
 };
-export function getNodeInitialData(type: NodeType) {
+export function getNodeInitialData(type: NodeType): any {
   const dataMap = {
     formData: {
       form: { name: '', value: '' },
@@ -98,9 +98,16 @@ export function getNodeInitialData(type: NodeType) {
     },
     approve: deepClone(approveAndFillInCommonData),
     fillIn: deepClone(approveAndFillInCommonData),
+    process_branch: {},
+    process_variable_assignment: {},
+    table_data_create: {},
+    table_data_update: {},
+    cc: {},
+    send_email: {},
+    web_message: {},
     end: {},
   };
-  if (type !== 'formData' && type !== 'end') {
+  if (type === 'fillIn' || type === 'approve') {
     dataMap[type].operatorPermission.system = [{
       enabled: true,
       changeable: false,
@@ -127,7 +134,7 @@ export function getNodeInitialData(type: NodeType) {
   return dataMap[type];
 }
 
-export function edgeBuilder(startId: string, endId: string) {
+export function edgeBuilder(startId: string, endId: string): Edge {
   return {
     id: `e${startId}-${endId}`,
     type: 'plus',
@@ -146,7 +153,7 @@ export function nodeBuilder(
     position: { x: 0, y: 0 },
     width: 200,
     height: 72,
-  }) {
+  }): Node {
   return {
     id, type, data: {
       nodeData: { width: options.width as number, height: options.height as number, name },
@@ -160,7 +167,7 @@ export function mergeDataAdapter<T, S>(
   originalData: S,
   path: string,
   updater: (v: T) => T,
-) {
+): S {
   const newData = deepClone(originalData);
   update(newData, path, updater);
   return newData as S;

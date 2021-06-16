@@ -7,7 +7,7 @@ import moment from 'moment';
 import { edgeBuilder, getNodeInitialData, nodeBuilder } from './utils';
 import type { StoreValue, BusinessData, CurrentElement, Data, NodeType } from './type';
 
-export const getStoreInitialData = () => {
+export const getStoreInitialData = (): StoreValue => {
   const startId = 'formData' + uuid();
   const endId = 'end' + uuid();
   return {
@@ -44,7 +44,7 @@ export const getStoreInitialData = () => {
 
 const store = new BehaviorSubject<StoreValue>(getStoreInitialData());
 
-export function initStore() {
+export function initStore(): void {
   store.next(getStoreInitialData());
 }
 
@@ -52,7 +52,7 @@ type LinkedNodeType = FlowElement<Data> & {
   parents: LinkedNodeType[] | null;
   childrens: LinkedNodeType[] | null;
 };
-function parseNodeLinkedList(id: string) {
+function parseNodeLinkedList(id: string): LinkedNodeType[] | null {
   const elements = deepClone(store.value.elements);
   const elementNodeMap: Record<string, LinkedNodeType> = {};
   elements.forEach((element: Node & LinkedNodeType) => {
@@ -86,7 +86,7 @@ function parseNodeLinkedList(id: string) {
   return elementNodeMap[id].childrens;
 }
 
-function parseChildrensIDs(linkedElements: LinkedNodeType[]) {
+function parseChildrensIDs(linkedElements: LinkedNodeType[]): string[] {
   const ids: string[] = [];
   linkedElements.forEach((el) => {
     ids.push(el.id);
@@ -97,7 +97,7 @@ function parseChildrensIDs(linkedElements: LinkedNodeType[]) {
   return ids;
 }
 
-export function removeNodeById(id: string) {
+export function removeNodeById(id: string): void {
   let sourceId;
   let targetId;
   const newElements: FlowElement[] = [];
@@ -133,14 +133,14 @@ export function removeNodeById(id: string) {
   });
 }
 
-export function updateStore(updater: (st: StoreValue) => StoreValue) {
+export function updateStore(updater: (st: StoreValue) => StoreValue): void {
   return store.next({
     ...store.value,
     ...updater(store.value),
   });
 }
 
-export function updateStoreByKey<T>(key: keyof StoreValue, updater: (st: T) => T) {
+export function updateStoreByKey<T>(key: keyof StoreValue, updater: (st: T) => T): void {
   store.next({
     ...store.value,
     [key]: updater(store.value[key] as T),
@@ -151,7 +151,7 @@ export function updateBusinessDataByKey<T>(
   id: string,
   fieldName: keyof BusinessData,
   updater: (v: T) => T,
-) {
+): void {
   store.next({
     ...store.value,
     elements: store.value.elements.map((element): FlowElement => {
@@ -167,7 +167,7 @@ export function updateBusinessData(
   id: string,
   updater: (v: BusinessData) => BusinessData,
   storeValue?: Partial<StoreValue>,
-) {
+): void {
   store.next({
     ...store.value,
     ...(storeValue ?? {}),
@@ -180,7 +180,7 @@ export function updateBusinessData(
   });
 }
 
-export function updateNodeDataByKey<T>(elementId: string, fieldName: string, updater: (v: T) => T) {
+export function updateNodeDataByKey<T>(elementId: string, fieldName: string, updater: (v: T) => T): void {
   store.next({
     ...store.value,
     elements: store.value.elements.map((element): FlowElement => {
@@ -196,7 +196,7 @@ export function updateElementByKey<T>(
   elementId: string,
   fieldName: keyof FlowElement<Data> | 'position',
   updater: (v: T) => T,
-) {
+): void {
   store.next({
     ...store.value,
     elements: store.value.elements.map((element) => {
@@ -211,7 +211,7 @@ export function updateElementByKey<T>(
 export function resetElementsData(
   type: NodeType,
   value: Partial<BusinessData>,
-) {
+): void {
   store.next({
     ...store.value,
     saved: false,
@@ -237,7 +237,7 @@ export function getNodeElementById(id: string): CurrentElement {
   return store.value.elements.find((element) => element.id === id) as CurrentElement;
 }
 
-export function numberTransform(keys: string[], data: any) {
+export function numberTransform(keys: string[], data: any): any {
   keys.forEach((key) => update(data, key, (v) => +v));
   return data;
 }
@@ -246,7 +246,7 @@ export function buildBpmnText(
   version: string,
   nodeID: string,
   newBusinessData: Partial<BusinessData>,
-) {
+): string {
   return JSON.stringify({
     version,
     shapes: store.value.elements.map((el) => {

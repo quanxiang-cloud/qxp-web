@@ -1,16 +1,16 @@
 import React from 'react';
 import { Handle, Position } from 'react-flow-renderer';
 
-import FillInNodeComponent from '../components/fill-in';
+import WebMessageNodeComponent from '../components/web-message';
 
-export default function FormDataNode(props: any): JSX.Element {
+export default function WebMessageNode(props: any): JSX.Element {
   return (
     <>
       <Handle
         type="target"
         position={Position.Top}
       />
-      <FillInNodeComponent {...props} />
+      <WebMessageNodeComponent {...props} />
       <Handle
         type="source"
         position={Position.Bottom}

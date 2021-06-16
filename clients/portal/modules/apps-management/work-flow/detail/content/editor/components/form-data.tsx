@@ -14,14 +14,16 @@ interface Props {
   isDragging: boolean;
 }
 
-export default function FormDataNodeComponent({ data, id, xPos, yPos, isDragging }: Props) {
+export default function FormDataNodeComponent({
+  data, id, xPos, yPos, isDragging,
+}: Props): JSX.Element {
   const isNew = !data.businessData.form.name;
   const lastTime = useRef(+new Date());
 
   usePositionChange({ id, xPos, yPos }, isDragging);
   const switcher = useNodeSwitch();
 
-  function onMouseUp() {
+  function onMouseUp(): void {
     if (+new Date - lastTime.current < 200) {
       switcher(id);
     }

@@ -25,7 +25,7 @@ export default function CustomEdge({
   markerEndId,
   source,
   target,
-}: EdgeProps) {
+}: EdgeProps): JSX.Element {
   const [showTooltip, setShowTooltip] = useState(false);
   const edgePath = getSmoothStepPath({
     sourceX,
@@ -49,7 +49,7 @@ export default function CustomEdge({
   const switcher = useEdgeSwitch();
   const formDataElement = elements.find(({ type }) => type === 'formData');
 
-  function onDragOver(e: DragEvent) {
+  function onDragOver(e: DragEvent): void {
     e.preventDefault();
     updateStoreByKey('currentConnection', () => ({
       source,
@@ -58,7 +58,7 @@ export default function CustomEdge({
     }));
   }
 
-  function onShowComponentSelector(e: MouseEvent<SVGElement>) {
+  function onShowComponentSelector(e: MouseEvent<SVGElement>): void {
     e.stopPropagation();
     if (!hasForm) {
       return;

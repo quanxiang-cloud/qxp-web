@@ -198,7 +198,9 @@ export type Data = {
   nodeData: NodeData;
 }
 
-export type NodeType = 'formData' | 'fillIn' | 'approve' | 'end';
+export type NodeType = 'formData' | 'fillIn' | 'approve' | 'end' | 'process_branch' |
+  'process_variable_assignment' | 'table_data_create' | 'table_data_update' | 'send_email' |
+  'web_message' | 'cc';
 
 export interface CurrentElement {
   id: string;

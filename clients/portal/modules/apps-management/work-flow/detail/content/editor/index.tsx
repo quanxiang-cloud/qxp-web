@@ -10,9 +10,6 @@ import ReactFlow, {
   Connection,
   addEdge,
   removeElements,
-  Background,
-  BackgroundVariant,
-  MiniMap,
   FlowElement,
   Elements,
   ArrowHeadType,
@@ -22,18 +19,13 @@ import ReactFlow, {
 import { uuid } from '@lib/utils';
 import useObservable from '@lib/hooks/use-observable';
 
-import FormDataNode from './nodes/form-data';
-import End from './nodes/end';
-import FillIn from './nodes/fill-in';
-import Approve from './nodes/approve';
-import Plus from './edges/plus';
-import Control from './control';
 import Components from './components';
 import store, { updateStore } from './store';
 import type { StoreValue } from './type';
 import { getNodeInitialData } from './utils';
 import DrawerForm from './forms';
 import useFitView from './hooks/use-fit-view';
+import Config, { edgeTypes, nodeTypes } from './config';
 
 import 'react-flow-renderer/dist/style.css';
 import 'react-flow-renderer/dist/theme-default.css';
@@ -41,7 +33,7 @@ import 'react-flow-renderer/dist/theme-default.css';
 const dagreGraph = new dagre.graphlib.Graph();
 dagreGraph.setDefaultEdgeLabel(() => ({}));
 
-export default function Editor() {
+export default function Editor(): JSX.Element {
   const { currentConnection, elements } = useObservable<StoreValue>(store);
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
   const [fitViewFinished, setFitViewFinished] = useState(false);
@@ -53,11 +45,11 @@ export default function Editor() {
     updateStore((s) => ({ ...s, flowInstance: reactFlowInstance }));
   }, [reactFlowInstance]);
 
-  function setElements(elements: Elements) {
+  function setElements(elements: Elements): void {
     updateStore((s) => ({ ...s, elements }));
   }
 
-  function getLayoutedElements(elements: Elements) {
+  function getLayoutedElements(elements: Elements): FlowElement<any>[] {
     dagreGraph.setGraph({ rankdir: 'TB' });
     elements.forEach((el) => {
       if (isNode(el)) {
@@ -86,15 +78,15 @@ export default function Editor() {
     });
   }
 
-  function onConnect(connection: Edge | Connection) {
+  function onConnect(connection: Edge | Connection): void {
     setElements(addEdge({ ...connection, type: 'plus' }, store.value.elements));
   }
 
-  function onElementsRemove(elementsToRemove: Elements) {
+  function onElementsRemove(elementsToRemove: Elements): void {
     setElements(removeElements(elementsToRemove, store.value.elements));
   }
 
-  function onDragOver(e: DragEvent) {
+  function onDragOver(e: DragEvent): void {
     e.preventDefault();
     if (!e.dataTransfer) {
       return;
@@ -102,7 +94,7 @@ export default function Editor() {
     e.dataTransfer.dropEffect = 'move';
   }
 
-  function onDrop(e: DragEvent) {
+  function onDrop(e: DragEvent): void {
     e.preventDefault();
     if (!reactFlowWrapper?.current || !reactFlowInstance || !e.dataTransfer) {
       return;
@@ -124,7 +116,7 @@ export default function Editor() {
       element: FlowElement<any>,
       insertPosition: number,
       currentPosition: number,
-    ) {
+    ): FlowElement {
       if (!(element as any).position || element.id === id) {
         return element;
       }
@@ -167,7 +159,7 @@ export default function Editor() {
     updateStore((s) => ({ ...s, currentConnection: {} }));
   }
 
-  function onLoad(reactFlowInstance: OnLoadParams) {
+  function onLoad(reactFlowInstance: OnLoadParams): void {
     setReactFlowInstance(reactFlowInstance);
     !flowID && setElements(getLayoutedElements(elements));
     setTimeout(fitView);
@@ -187,37 +179,10 @@ export default function Editor() {
           onLoad={onLoad}
           onDrop={onDrop}
           onDragOver={onDragOver}
-          nodeTypes={{
-            formData: FormDataNode,
-            end: End,
-            fillIn: FillIn,
-            approve: Approve,
-          }}
-          edgeTypes={{
-            plus: Plus,
-          }}
+          nodeTypes={nodeTypes}
+          edgeTypes={edgeTypes}
         >
-          <Background
-            variant={BackgroundVariant.Dots}
-            gap={12}
-            size={0.5}
-          />
-          <MiniMap
-            nodeColor={(node) => {
-              switch (node.type) {
-              case 'input':
-                return 'red';
-              case 'default':
-                return '#00ff00';
-              case 'output':
-                return 'rgb(0,0,255)';
-              default:
-                return '#eee';
-              }
-            }}
-            nodeStrokeWidth={3}
-          />
-          <Control className="left-16 top-16 right-16 flex absolute z-10" />
+          <Config />
         </ReactFlow>
       </div>
       <Components />

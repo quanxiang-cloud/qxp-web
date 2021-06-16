@@ -3,10 +3,10 @@ import useObservable from '@lib/hooks/use-observable';
 import store, { updateStore } from '@flow/detail/content/editor/store';
 import type { StoreValue } from '@flow/detail/content/editor/type';
 
-export default function useNodeSwitch() {
+export default function useNodeSwitch(): (id: string) => void {
   const { errors } = useObservable<StoreValue>(store);
 
-  function activeNodeForm(id: string) {
+  function activeNodeForm(id: string): void {
     updateStore((s) => ({
       ...s,
       nodeIdForDrawerForm: id,

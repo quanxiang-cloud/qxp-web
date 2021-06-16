@@ -10,15 +10,17 @@ import NodeRemover from './_common/node-remover';
 import usePositionChange from './hooks/use-node-position-change';
 import useNodeSwitch from './hooks/use-node-switch';
 
-interface Props {
+export interface Props {
   data: Data;
   id: string;
   xPos: number;
   yPos: number;
   isDragging: boolean;
+  children: React.ReactNode;
 }
 
-export default function ApproveNodeComponent({ data, id, xPos, yPos, isDragging }: Props): JSX.Element {
+export default function NodeComponentWrapper(props: Props): JSX.Element {
+  const { data, id, xPos, yPos, isDragging, children } = props;
   const { errors } = useObservable<StoreValue>(store);
   const lastTime = useRef(+new Date());
   const [showRemover, setShowRemover] = useState(false);
@@ -26,23 +28,12 @@ export default function ApproveNodeComponent({ data, id, xPos, yPos, isDragging 
 
   usePositionChange({ xPos, yPos, id }, isDragging);
 
-  const { nodeData, businessData: { basicConfig } } = data;
+  const { nodeData } = data;
 
   function onMouseUp(): void {
     if (+new Date - lastTime.current < 200) {
       switcher(id);
     }
-  }
-
-  function getRule(): string {
-    return `常规审批; ${basicConfig.multiplePersonWay === 'or' ? '或签' : '会签'}`;
-  }
-
-  function getPerson(): string {
-    return [
-      ...basicConfig.approvePersons.users,
-      ...basicConfig.approvePersons.departments,
-    ].map((v) => v.ownerName || v.departmentName).join('; ');
   }
 
   function onMouseEnter(): void {
@@ -52,10 +43,6 @@ export default function ApproveNodeComponent({ data, id, xPos, yPos, isDragging 
   function onMouseLeave(): void {
     setShowRemover(false);
   }
-
-  const hasApproveRule = !!basicConfig.multiplePersonWay;
-  const hasApprovePerson = !!basicConfig.approvePersons.departments.length ||
-    !!basicConfig.approvePersons.users.length;
 
   const hasError = id === errors?.publish?.data?.id;
 
@@ -94,25 +81,7 @@ export default function ApproveNodeComponent({ data, id, xPos, yPos, isDragging 
         />
       </div>
       <footer className="p-8 flex flex-1 flex-col justify-center">
-        {(hasApproveRule || hasApprovePerson) && (
-          <div
-            className="bg-gray-100 py-4 px-8 rounded-4 flex flex-col justify-center"
-          >
-            {hasApproveRule && (
-              <div className="text-caption-no-color text-gray-400">
-                规则: <span className="text-gray-600">{getRule()}</span>
-              </div>
-            )}
-            {hasApprovePerson && (
-              <div className="text-caption-no-color text-gray-400">
-                审批人: <span className="text-gray-600">{getPerson()}</span>
-              </div>
-            )}
-          </div>
-        )}
-        {!hasApprovePerson && !hasApproveRule && (
-          <span className="text-caption text-gray-400 px-4">设置审批规则</span>
-        )}
+        {children}
       </footer>
     </div>
   );

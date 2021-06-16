@@ -3,7 +3,7 @@ import { Handle, Position } from 'react-flow-renderer';
 
 import EndNodeComponent from '../components/end';
 
-export default function EndNode(props: any) {
+export default function EndNode(props: any): JSX.Element {
   return (
     <>
       <Handle
