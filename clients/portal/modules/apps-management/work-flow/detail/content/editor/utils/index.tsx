@@ -98,13 +98,28 @@ export function getNodeInitialData(type: NodeType): any {
     },
     approve: deepClone(approveAndFillInCommonData),
     fillIn: deepClone(approveAndFillInCommonData),
-    process_branch: {},
-    process_variable_assignment: {},
-    table_data_create: {},
-    table_data_update: {},
+    processBranch: {
+      ignore: false,
+      rule: '',
+    },
+    processVariableAssignment: {
+      assignment_rules: [],
+    },
+    tableDataCreate: {
+      target_table_id: '',
+      silent: false,
+      create_rule: {},
+      ref: {},
+    },
+    tableDataUpdate: {
+      target_table_id: '',
+      silent: false,
+      filter_rule: {},
+      update_rule: [],
+    },
     cc: {},
-    send_email: {},
-    web_message: {},
+    sendEmail: {},
+    webMessage: {},
     end: {},
   };
   if (type === 'fillIn' || type === 'approve') {

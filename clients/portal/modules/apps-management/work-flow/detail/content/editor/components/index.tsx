@@ -19,32 +19,32 @@ const nodeLists = [{
   iconClassName: 'bg-indigo-500',
 }, {
   text: '分支',
-  type: 'process_branch',
+  type: 'processBranch',
   iconName: 'share',
   iconClassName: 'bg-teal-500',
 }, {
   text: '变更流程参数',
-  type: 'process_variable_assignment',
+  type: 'processVariableAssignment',
   iconName: 'assignment',
   iconClassName: 'bg-indigo-500',
 }, {
   text: '数据新增',
-  type: 'table_data_create',
+  type: 'tableDataCreate',
   iconName: 'create_new_folder',
   iconClassName: 'bg-teal-500',
 }, {
   text: '数据更新',
-  type: 'table_data_update',
+  type: 'tableDataUpdate',
   iconName: 'update',
   iconClassName: 'bg-indigo-500',
 }, {
   text: '发送邮件',
-  type: 'send_email',
+  type: 'sendEmail',
   iconName: 'email',
   iconClassName: 'bg-teal-500',
 }, {
   text: '站内信',
-  type: 'web_message',
+  type: 'webMessage',
   iconName: 'message',
   iconClassName: 'bg-indigo-500',
 }, {

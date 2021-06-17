@@ -29,13 +29,13 @@ const drawerTitleMap = {
   fillIn: '填写',
   approve: '审批',
   end: '结束',
-  process_branch: '分支',
-  process_variable_assignment: '变更流程参数',
-  table_data_create: '数据新增',
-  table_data_update: '数据更新',
+  processBranch: '分支',
+  processVariableAssignment: '变更流程参数',
+  tableDataCreate: '数据新增',
+  tableDataUpdate: '数据更新',
   cc: '抄送',
-  send_email: '发送邮件',
-  web_message: '站内信',
+  sendEmail: '发送邮件',
+  webMessage: '站内信',
 };
 
 export default function NodeFormWrapper(): JSX.Element | null {
@@ -167,13 +167,13 @@ export default function NodeFormWrapper(): JSX.Element | null {
         'basicConfig.multiplePersonWay': multiplePersonWayValidator,
       },
       end: {},
-      process_branch: {},
-      process_variable_assignment: {},
-      table_data_create: {},
-      table_data_update: {},
+      processBranch: {},
+      processVariableAssignment: {},
+      tableDataCreate: {},
+      tableDataUpdate: {},
       cc: {},
-      send_email: {},
-      web_message: {},
+      sendEmail: {},
+      webMessage: {},
     };
     return jsonValidator<BusinessData>(formData, jsonValidatorMap[nodeType]);
   }
