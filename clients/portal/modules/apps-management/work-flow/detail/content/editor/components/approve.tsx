@@ -2,7 +2,7 @@ import React, { useRef, useState } from 'react';
 import cs from 'classnames';
 
 import useObservable from '@lib/hooks/use-observable';
-import type { Data, StoreValue } from '@flow/detail/content/editor/type';
+import type { Data, FillInData, StoreValue } from '@flow/detail/content/editor/type';
 
 import store from '../store';
 import NodeHeader from './_common/node-header';
@@ -26,7 +26,9 @@ export default function ApproveNodeComponent({ data, id, xPos, yPos, isDragging 
 
   usePositionChange({ xPos, yPos, id }, isDragging);
 
-  const { nodeData, businessData: { basicConfig } } = data;
+  const { nodeData, businessData } = data;
+
+  const { basicConfig } = businessData as FillInData;
 
   function onMouseUp(): void {
     if (+new Date - lastTime.current < 200) {

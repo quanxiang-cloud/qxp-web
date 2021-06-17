@@ -241,8 +241,8 @@ export interface FieldPermission {
   system: SystemFieldPermission[];
 }
 
-export type BusinessData = FormDataData & FillInData & ProcessBranchData &
-  ProcessVariableAssignmentData & TableDataCreateData & TableDataUpdateData;
+export type BusinessData = FormDataData | FillInData | ProcessBranchData |
+  ProcessVariableAssignmentData | TableDataCreateData | TableDataUpdateData;
 export type NodeData = { width: number, height: number, name: string };
 export type Data = {
   businessData: BusinessData;

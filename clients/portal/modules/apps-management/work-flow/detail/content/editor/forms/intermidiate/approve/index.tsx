@@ -2,19 +2,19 @@ import React from 'react';
 
 import Tab from '@c/tab2';
 
-import type { BusinessData, NodeType } from '@flow/detail/content/editor/type';
+import type { FillInData, NodeType } from '@flow/detail/content/editor/type';
 
 import BasicConfig from '../components/basic-config';
 import FieldPermission from '../components/field-permission';
 import OperatorPermission from '../components/operator-permission';
 
 interface Props {
-  value: BusinessData;
-  onChange: (v: Partial<BusinessData>) => void;
+  value: FillInData;
+  onChange: (v: Partial<FillInData>) => void;
   nodeType: NodeType;
 }
 
-export default function ApproveForm({ value, onChange, nodeType }: Props) {
+export default function ApproveForm({ value, onChange, nodeType }: Props): JSX.Element {
   return (
     <Tab
       className="mt-10"

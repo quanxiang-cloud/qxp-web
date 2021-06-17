@@ -8,7 +8,7 @@ import usePrevious from '@lib/hooks/use-previous';
 import { jsonValidator } from '@lib/utils';
 import type {
   StoreValue, BusinessData, NodeWorkForm, TriggerCondition, TriggerConditionValue,
-  TimeRule, NodeType, TriggerWay,
+  TimeRule, NodeType, TriggerWay, FillInData, FormDataData,
 } from '@flow/detail/content/editor/type';
 import SaveButtonGroup
   from '@flow/detail/content/editor/components/_common/action-save-button-group';
@@ -76,7 +76,7 @@ export default function NodeFormWrapper(): JSX.Element | null {
   useEffect(() => {
     setFormData((f) => ({
       ...(data || {}),
-      form: data?.form || f?.form,
+      form: (data as FormDataData)?.form || (f as FormDataData)?.form,
     }));
   }, [data]);
 
@@ -144,7 +144,7 @@ export default function NodeFormWrapper(): JSX.Element | null {
   }
 
   function multiplePersonWayValidator(way: string): boolean {
-    const { users, departments } = formData.basicConfig.approvePersons;
+    const { users, departments } = (formData as FillInData).basicConfig.approvePersons;
     if (users.length === 1 && !departments.length) {
       return true;
     }
@@ -183,7 +183,7 @@ export default function NodeFormWrapper(): JSX.Element | null {
     if (!name || !previousName || !elements?.length) {
       return;
     }
-    const { form, ...saveData } = formData ?? {};
+    const { form, ...saveData } = formData as FormDataData || {};
     if (isFormDataNode) {
       Object.assign(saveData, { form });
     }
@@ -265,7 +265,7 @@ export default function NodeFormWrapper(): JSX.Element | null {
         <Form
           nodeType={nodeType}
           value={formData}
-          form={formDataElement?.data?.businessData.form}
+          form={(formDataElement?.data?.businessData as FormDataData).form}
           onChange={setFormData}
           onWorkTableChange={setCurrentWorkTable}
           toggleFormDataChanged={setFormDataChanged}

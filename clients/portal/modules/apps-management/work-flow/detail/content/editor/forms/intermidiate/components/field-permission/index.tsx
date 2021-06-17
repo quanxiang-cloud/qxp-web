@@ -9,7 +9,8 @@ import useObservable from '@lib/hooks/use-observable';
 import store from '@flow/detail/content/editor/store';
 import { getFormFieldOptions, getFormFieldSchema } from '@flow/detail/content/editor/forms/api';
 import type {
-  StoreValue, FieldPermission, CustomFieldPermission, SystemFieldPermission, CurrentElement, BusinessData,
+  StoreValue, FieldPermission, CustomFieldPermission, SystemFieldPermission, CurrentElement,
+  FillInData, FormDataData,
 } from '@flow/detail/content/editor/type';
 
 import CustomFieldTable from './custom-field-table';
@@ -19,7 +20,7 @@ import './style.scss';
 
 interface Props {
   value: FieldPermission;
-  onChange: (value: Partial<BusinessData>) => void;
+  onChange: (value: Partial<FillInData>) => void;
 }
 
 export default function FieldPermission({ value, onChange: _onChange }: Props): JSX.Element {
@@ -27,7 +28,7 @@ export default function FieldPermission({ value, onChange: _onChange }: Props): 
   const [editable, setEditable] = useState(false);
   const { elements = [] } = useObservable<StoreValue>(store);
   const formDataElement = elements?.find(({ type }) => type === 'formData') as CurrentElement;
-  const workFormValue = formDataElement?.data?.businessData?.form?.value;
+  const workFormValue = (formDataElement?.data?.businessData as FormDataData)?.form?.value;
   const [mergedFieldPermissions, setMergedFieldPermissions] = useState<FieldPermission>({
     custom: [],
     system: [],
