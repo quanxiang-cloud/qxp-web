@@ -24,12 +24,12 @@ export const nodeTypes = {
   end: EndNode,
   fillIn: FillInNode,
   approve: ApproveNode,
-  process_branch: ProcessBranchNode,
-  process_variable_assignment: ProcessVariableAssignmentNode,
-  table_data_create: TableDataCreateNode,
-  table_data_update: TableDataUpdateNode,
-  send_email: SendEmailNode,
-  web_message: WebMessage,
+  processBranch: ProcessBranchNode,
+  processVariableAssignment: ProcessVariableAssignmentNode,
+  tableDataCreate: TableDataCreateNode,
+  tableDataUpdate: TableDataUpdateNode,
+  sendEmail: SendEmailNode,
+  webMessage: WebMessage,
   cc: CCNode,
 };
 

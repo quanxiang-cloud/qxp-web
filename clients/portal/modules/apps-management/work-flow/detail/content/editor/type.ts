@@ -163,6 +163,56 @@ export interface FillInData {
   operatorPermission: OperationPermission;
   events: Record<any, any>;
 }
+export interface ProcessBranchData {
+  ignore: boolean;
+  rule: string;
+}
+export interface ProcessVariableAssignmentData {
+  assignmentRules: Array<{
+    variableName: string;
+    valueFrom: 'fixedValue' | 'formula' | 'currentFormValue';
+    valueOf: string | number;
+  }>;
+}
+export interface ValueRule {
+  valueFrom: 'fixedValue' | 'currentFormValue' | 'processVariable';
+  valueOf: string | number | Array<string | number>;
+}
+export interface TableDataCreateData {
+  targetTableId: string;
+  silent: boolean;
+  createRule: {
+    [key: string]: ValueRule;
+  };
+  ref: {
+    [key: string]: {
+      tableId: string;
+      createRules: Array<{
+        [key: string]: ValueRule;
+      }>;
+    }
+  }
+}
+export interface TableDataUpdateData {
+  targetTableId: string;
+  silent: boolean;
+  filterRule: {
+    tag: 'and' | 'or';
+    conditions: Array<{
+      fieldName: string;
+      operator: 'eq' | 'neq' | 'in';
+      value: Array<string | number>;
+    }>;
+  };
+  updateRule: Array<{
+    fieldName: string;
+    valueFrom: 'fixedValue' | 'currentFormValue' | 'processVariable' | 'formula';
+    valueOf: string | number | Array<string | number>;
+  }>;
+}
+// export interface SendEmail {}
+// export interface WebMessage {}
+// export interface CC {}
 export interface FieldValue {
   variable: string;
   staticValue: string;
@@ -191,16 +241,17 @@ export interface FieldPermission {
   system: SystemFieldPermission[];
 }
 
-export type BusinessData = FormDataData & FillInData;
+export type BusinessData = FormDataData & FillInData & ProcessBranchData &
+  ProcessVariableAssignmentData & TableDataCreateData & TableDataUpdateData;
 export type NodeData = { width: number, height: number, name: string };
 export type Data = {
   businessData: BusinessData;
   nodeData: NodeData;
 }
 
-export type NodeType = 'formData' | 'fillIn' | 'approve' | 'end' | 'process_branch' |
-  'process_variable_assignment' | 'table_data_create' | 'table_data_update' | 'send_email' |
-  'web_message' | 'cc';
+export type NodeType = 'formData' | 'fillIn' | 'approve' | 'end' | 'processBranch' |
+  'processVariableAssignment' | 'tableDataCreate' | 'tableDataUpdate' | 'sendEmail' |
+  'webMessage' | 'cc';
 
 export interface CurrentElement {
   id: string;
