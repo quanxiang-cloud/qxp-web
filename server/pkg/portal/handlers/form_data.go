@@ -19,7 +19,7 @@ const (
 	userSchema        = "/home/schema/"
 	subForm           = "/home/subForm/"
 	formSchema        = "/m/table/getByID"
-	querySubTable     = "/m/subTable/getByCondition"
+	querySubTable     = "/home/subTable/getByCondition"
 	createSubTable    = "/m/subTable/create"
 	foreignTable      = "foreign_table"
 	blankTable        = "sub_table"
