@@ -17,8 +17,8 @@ interface Props {
 function NavButton({
   to, isActive = false, text,
   className: cls, iconName, render,
-}: Props) {
-  function className(isActive: boolean) {
+}: Props): JSX.Element {
+  function className(isActive: boolean): { 'bg-blue-100': true; } | undefined {
     if (isActive) {
       return {
         'bg-blue-100': isActive,
@@ -26,7 +26,7 @@ function NavButton({
     }
   }
 
-  function style(isActive: boolean) {
+  function style(isActive: boolean): { color: string; } | { color?: undefined; } {
     if (isActive) {
       return {
         color: 'var(--blue-600)',

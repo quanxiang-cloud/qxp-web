@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React from 'react';
 import cs from 'classnames';
 
 import svgHash from './svg-hash';
@@ -49,4 +49,4 @@ function Icon(
   );
 }
 
-export default memo(React.forwardRef(Icon)) as typeof Icon;
+export default React.forwardRef(Icon);
