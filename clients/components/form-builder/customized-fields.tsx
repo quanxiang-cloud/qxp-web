@@ -15,7 +15,7 @@ import Select from '@c/select';
 import Icon from '@c/icon';
 import Button from '@c/button';
 
-const RowStyleLayout = styled((props) => <div {...props} />)`
+export const RowStyleLayout = styled((props) => <div {...props} />)`
   .ant-btn {
     margin-right: 16px;
   }

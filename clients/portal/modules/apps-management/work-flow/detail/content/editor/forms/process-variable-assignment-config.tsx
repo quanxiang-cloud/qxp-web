@@ -1,9 +1,220 @@
-import React from 'react';
+import React, { useMemo, useState, useEffect, useContext } from 'react';
+import { useQuery } from 'react-query';
+import { toArr, FormPath } from '@formily/shared';
+import { ArrayList } from '@formily/react-shared-components';
+import { Input, Select as AntdSelect } from '@formily/antd-components';
+import {
+  SchemaForm,
+  SchemaField,
+  SchemaMarkupField as Field,
+  FormEffectHooks,
+  createFormActions,
+} from '@formily/antd';
 
-export default function ProcessVariableAssignmentConfig(): JSX.Element {
+import MoreMenu from '@c/more-menu';
+import Icon from '@c/icon';
+import Button from '@c/button';
+import httpClient, { getTableSchema } from '@lib/http-client';
+import { RowStyleLayout } from '@c/form-builder/customized-fields';
+import SaveButtonGroup from '@flowEditor/components/_common/action-save-button-group';
+
+import FlowSourceTableContext from './flow-source-table';
+import FlowContext from '../../../flow-context';
+import { ProcessVariableAssignmentData } from '../type';
+
+type Option = {
+  value: string;
+  label: string;
+}
+
+type ProcessVariable = {
+  code: string;
+  name: string;
+}
+
+type Props = {
+  defaultValue: ProcessVariableAssignmentData;
+  onSubmit: (value: ProcessVariableAssignmentData) => void;
+  onCancel: () => void;
+}
+
+const { onFieldValueChange$ } = FormEffectHooks;
+
+function getFlowVariables(): Promise<Array<ProcessVariable>> {
+  return httpClient('/api/v1/flow/getVariableList');
+}
+
+const ASSIGNABLE_WHITELIST_COMPONENTS = [
+  'Input',
+  'Textarea',
+  'RadioGroup',
+  'CheckboxGroup',
+  'NumberPicker',
+  'DatePicker',
+  'Select',
+  'MultipleSelect',
+  'UserPicker',
+  'OrganizationPicker',
+  'CascadeSelector',
+];
+
+function getSourceTableFields(appID: string, tableID: string): Promise<Array<Option>> {
+  // todo move schema to context
+  return getTableSchema(appID, tableID).then(({ schema }) => {
+    if (!schema) {
+      return [];
+    }
+
+    return Object.entries(schema.properties || {}).filter(([, fieldSchema]) => {
+      return ASSIGNABLE_WHITELIST_COMPONENTS.includes(fieldSchema['x-component'] as string);
+    }).map(([key, fieldSchema]) => {
+      return { label: fieldSchema.title as string, value: key };
+    });
+  });
+}
+
+function useLeftOptions(used: string[], variables: ProcessVariable[]): Option[] {
+  const [options, setOptions] = useState<Option[]>([]);
+  useEffect(() => {
+    const _options = variables.filter(({ code }) => !used.includes(code)).map(({ code, name }) => {
+      return { label: name, value: code };
+    });
+
+    setOptions(_options);
+  }, [used, variables]);
+
+  return options;
+}
+
+function RulesList(props: any): JSX.Element {
+  const { value, path, mutators } = props;
+  const { variables } = props.props['x-component-props'];
+  const used = useMemo(() => {
+    // todo fix this type cast
+    return (value as Array<{ variableName: string }>).map(({ variableName }) => variableName);
+  }, [props.value]);
+  const leftVariableOptions = useLeftOptions(used, variables || []);
+  const onRemove = (index: number): void => mutators.remove(index);
+
+  function handAddRule(variableName: string): void {
+    mutators.push({
+      variableName,
+      valueFrom: 'fixedValue',
+      valueOf: undefined,
+    });
+  }
+
+  return (
+    <ArrayList value={value}>
+      {toArr(value).map((item, index) => (
+        <RowStyleLayout key={index}>
+          <SchemaField path={FormPath.parse(path).concat(index)} />
+          <Icon clickable changeable name="delete" onClick={() => onRemove(index)} size={32} />
+        </RowStyleLayout>
+      ))}
+      {
+        leftVariableOptions.length ? (
+          <MoreMenu
+            menus={leftVariableOptions.map(({ label, value }) => ({ label, key: value }))}
+            onMenuClick={handAddRule}
+          >
+            <Button>新增赋值规则</Button>
+          </MoreMenu>
+        ) : (
+          <span className="text-caption">所有流程参数已被使用在上方规则中</span>
+        )
+      }
+    </ArrayList>
+  );
+}
+
+RulesList.isFieldComponent = true;
+const actions = createFormActions();
+const COMPONENTS = { AntdSelect, Input, RulesList };
+
+export default function AssignmentConfig({ defaultValue, onSubmit, onCancel }: Props): JSX.Element {
+  const { tableID } = useContext(FlowSourceTableContext);
+  const { appID } = useContext(FlowContext);
+  const { data: variables, isLoading } = useQuery(['FETCH_PROCESS_VARIABLES'], getFlowVariables);
+  const tableFieldsResult = useQuery(['get_table_schema', appID, tableID], () => {
+    return getSourceTableFields(appID, tableID);
+  });
+
+  const { setFieldState, getFormState } = actions;
+
+  function formEffect(): void {
+    onFieldValueChange$('assignmentRules.*.valueFrom').subscribe((state) => {
+      const valueOfPath = FormPath.transform(state.name, /\d/, ($1) => `assignmentRules.${$1}.valueOf`);
+      if (state.value === 'currentFormValue') {
+        setFieldState(valueOfPath, (state) => {
+          state.props['x-component'] = 'AntdSelect';
+          state.props.enum = tableFieldsResult.data || [];
+        });
+        return;
+      }
+
+      setFieldState(valueOfPath, (state) => {
+        state.props['x-component'] = 'Input';
+        state.props.enum = undefined;
+      });
+    });
+  }
+
+  function onSave(): void {
+    // todo get data value
+    // todo validate data value
+    // todo call onSubmit when data is valid
+    const { values } = getFormState();
+    onSubmit(values);
+  }
+
+  // remove this conditional render will cause react maximum update depth exceeded
+  // it's a bug of formily?
+  if (isLoading || tableFieldsResult.isLoading) {
+    return (<div>loading...</div>);
+  }
+
   return (
     <div>
-      hello world
+      {/* {!assignmentRules.length && (<span className="text-caption">还没有配置任何赋值规则</span>)} */}
+      <SchemaForm
+        actions={actions}
+        components={COMPONENTS}
+        defaultValue={defaultValue}
+        effects={formEffect}
+      >
+        <Field
+          name="assignmentRules"
+          type="array"
+          x-component="RulesList"
+          x-component-props={{ variables }}
+        >
+          <Field type="object">
+            <Field
+              required
+              readOnly
+              name="variableName"
+              x-component="AntdSelect"
+              enum={variables?.map(({ code, name }) => ({ label: name, value: code }))}
+            />
+            <Field
+              required
+              name="valueFrom"
+              x-component="AntdSelect"
+              enum={[
+                { label: '表单值', value: 'currentFormValue' },
+                { label: '固定值', value: 'fixedValue' },
+              ]}
+            />
+            <Field
+              required
+              name="valueOf"
+              x-component="Input"
+            />
+          </Field>
+        </Field>
+      </SchemaForm>
+      <SaveButtonGroup onSave={onSave} onCancel={onCancel} />
     </div>
   );
 }
