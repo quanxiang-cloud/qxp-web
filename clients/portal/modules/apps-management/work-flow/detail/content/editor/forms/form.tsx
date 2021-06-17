@@ -101,7 +101,7 @@ export default function Form({
           nodeType={nodeType}
         />
       )}
-      {nodeType === 'process_variable_assignment' && (
+      {nodeType === 'processVariableAssignment' && (
         <ProcessVariableAssignmentConfig />
       )}
     </div>
