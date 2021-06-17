@@ -145,7 +145,7 @@
   dependencies:
     "@babel/types" "^7.14.5"
 
-"@babel/helper-validator-identifier@^7.14.5":
+"@babel/helper-validator-identifier@^7.12.11", "@babel/helper-validator-identifier@^7.14.5":
   version "7.14.5"
   resolved "http://r.npm.internal.yunify.com/@babel/helper-validator-identifier/download/@babel/helper-validator-identifier-7.14.5.tgz#d0f0e277c512e0c938277faa85a3968c9a44c0e8"
   integrity sha1-0PDid8US4Mk4J3+qhaOWjJpEwOg=
@@ -6330,10 +6330,10 @@ quick-lru@^5.1.1:
   resolved "http://r.npm.internal.yunify.com/quick-lru/download/quick-lru-5.1.1.tgz#366493e6b3e42a3a6885e2e99d18f80fb7a8c932"
   integrity sha1-NmST5rPkKjpoheLpnRj4D7eoyTI=
 
-qxp-formula@^0.3.10:
-  version "0.3.10"
-  resolved "http://r.npm.internal.yunify.com/qxp-formula/download/qxp-formula-0.3.10.tgz#5599ca0062177d2bececcbba40cce0862f97d150"
-  integrity sha1-VZnKAGIXfSvs7Mu6QMzghi+X0VA=
+qxp-formula@^0.3.11:
+  version "0.3.11"
+  resolved "http://r.npm.internal.yunify.com/qxp-formula/download/qxp-formula-0.3.11.tgz#66791b67f31eeaa223825860d5d502c7ed8d647f"
+  integrity sha1-ZnkbZ/Me6qIjglhg1dUCx+2NZH8=
   dependencies:
     nearley "^2.20.1"
 
