@@ -6,6 +6,7 @@ import useObservable from '@lib/hooks/use-observable';
 
 import FormDataForm from './form-data';
 import ApproveForm from './intermidiate/approve';
+import ProcessVariableAssignmentConfig from './process-variable-assignment-config';
 import { mergeDataAdapter } from '../utils';
 import store from '@flow/detail/content/editor/store';
 import type {
@@ -99,6 +100,9 @@ export default function Form({
           onChange={onFormChange}
           nodeType={nodeType}
         />
+      )}
+      {nodeType === 'process_variable_assignment' && (
+        <ProcessVariableAssignmentConfig />
       )}
     </div>
   );
