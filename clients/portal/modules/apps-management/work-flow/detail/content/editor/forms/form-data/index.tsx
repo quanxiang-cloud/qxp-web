@@ -18,7 +18,7 @@ interface Props {
   onChange: (value: Partial<BusinessData>) => void;
 }
 
-export default function FormDataForm({ formID, value, onChange }: Props) {
+export default function FormDataForm({ formID, value, onChange }: Props): JSX.Element {
   const { appID } = useParams<{ appID: string }>();
   const { data: formFieldOptions = [], isError, isLoading } = useQuery(
     ['GET_WORK_FORM_FIELD_LIST', formID, appID],

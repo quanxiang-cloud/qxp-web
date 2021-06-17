@@ -8,7 +8,7 @@ interface Props {
   onSave: MouseEventHandler;
 }
 
-export default function({ onCancel, onSave }: Props) {
+export default function({ onCancel, onSave }: Props): JSX.Element {
   return (
     <div className={cs(
       'flex justify-end flex-none z-10 bg-gray-100 absolute left-0',

@@ -1,16 +1,16 @@
 import React from 'react';
 import { Handle, Position } from 'react-flow-renderer';
 
-import FillInNodeComponent from '../components/fill-in';
+import ProcessVariableAssignmentNodeComponent from '../components/process-variable-assignment';
 
-export default function FormDataNode(props: any): JSX.Element {
+export default function ProcessVariableAssignmentNode(props: any): JSX.Element {
   return (
     <>
       <Handle
         type="target"
         position={Position.Top}
       />
-      <FillInNodeComponent {...props} />
+      <ProcessVariableAssignmentNodeComponent {...props} />
       <Handle
         type="source"
         position={Position.Bottom}

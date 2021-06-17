@@ -22,12 +22,12 @@ interface Props {
   onChange: (value: Partial<BusinessData>) => void;
 }
 
-export default function FieldPermission({ value, onChange: _onChange }: Props) {
+export default function FieldPermission({ value, onChange: _onChange }: Props): JSX.Element {
   const { appID } = useParams<{ appID: string; }>();
   const [editable, setEditable] = useState(false);
   const { elements = [] } = useObservable<StoreValue>(store);
-  const currentNodeElement = elements?.find(({ type }) => type === 'formData') as CurrentElement;
-  const workFormValue = currentNodeElement?.data?.businessData?.form?.value;
+  const formDataElement = elements?.find(({ type }) => type === 'formData') as CurrentElement;
+  const workFormValue = formDataElement?.data?.businessData?.form?.value;
   const [mergedFieldPermissions, setMergedFieldPermissions] = useState<FieldPermission>({
     custom: [],
     system: [],
@@ -64,7 +64,7 @@ export default function FieldPermission({ value, onChange: _onChange }: Props) {
     }
   }, [mergedFieldPermissions.custom]);
 
-  function onChange(fieldPermission: FieldPermission) {
+  function onChange(fieldPermission: FieldPermission): void {
     _onChange({ fieldPermission });
   }
 
@@ -77,7 +77,7 @@ export default function FieldPermission({ value, onChange: _onChange }: Props) {
     };
   }
 
-  function mergeField() {
+  function mergeField(): void {
     const { custom = [], system = [] } = value ?? {};
     const customIds = custom?.map(({ id }) => id);
     const dataIds = data?.map(({ value }) => value) ?? [];

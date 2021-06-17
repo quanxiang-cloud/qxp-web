@@ -64,6 +64,7 @@ export default function NodeRemover({
           'pointer-events-none': !shouldShow,
           'opacity-0': !shouldShow,
           'opacity-1': shouldShow,
+          'cursor-pointer': shouldShow,
         })}
         type={type}
         onClick={onShowRemovePopper}

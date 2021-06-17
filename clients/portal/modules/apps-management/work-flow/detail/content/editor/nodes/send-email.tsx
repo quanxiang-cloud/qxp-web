@@ -1,16 +1,16 @@
 import React from 'react';
 import { Handle, Position } from 'react-flow-renderer';
 
-import FillInNodeComponent from '../components/fill-in';
+import SendEmailNodeComponent from '../components/send-email';
 
-export default function FormDataNode(props: any): JSX.Element {
+export default function SendEmailNode(props: any): JSX.Element {
   return (
     <>
       <Handle
         type="target"
         position={Position.Top}
       />
-      <FillInNodeComponent {...props} />
+      <SendEmailNodeComponent {...props} />
       <Handle
         type="source"
         position={Position.Bottom}
