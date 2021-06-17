@@ -39,7 +39,7 @@ build_all:
     - qxp-web-runner
   stage: build
   only:
-    - testing
+    - /release\/.*/
   script:
     - node_modules/.bin/gulp buildAssets
     - NODE_ENV=production ./node_modules/.bin/webpack --config webpack.config.js
