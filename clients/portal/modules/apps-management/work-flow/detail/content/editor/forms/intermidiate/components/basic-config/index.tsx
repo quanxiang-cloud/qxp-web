@@ -12,35 +12,32 @@ import { toggleArray } from '@lib/utils';
 import { mergeDataAdapter } from '@flow/detail/content/editor/utils';
 import useObservable from '@lib/hooks/use-observable';
 import store from '@flow/detail/content/editor/store';
-import type { StoreValue, AutoApproveRule } from '@flow/detail/content/editor/type';
 
 import Urge from './urge';
 import TimerSelector from './timer-selector';
 import WhenTimeout from './when-timeout';
 
 import type {
-  BusinessData,
-  BasicNodeConfig,
-  NodeType,
+  BasicNodeConfig, NodeType, StoreValue, AutoApproveRule, FillInData,
 } from '@flow/detail/content/editor/type';
 
 interface Props {
   type: NodeType;
   value: BasicNodeConfig;
-  onChange: (value: Partial<BusinessData>) => void;
+  onChange: (value: Partial<FillInData>) => void;
 }
 
-export default function BasicConfig({ type, value, onChange: _onChange }: Props) {
+export default function BasicConfig({ type, value, onChange: _onChange }: Props): JSX.Element {
   const { validating } = useObservable<StoreValue>(store);
   const [showAddPersonModal, setShowAddPersonModal] = useState(false);
   const typeText = type === 'approve' ? '审批' : '填写';
   const { timeRule } = value;
 
-  function onChange(basicConfig: BasicNodeConfig) {
+  function onChange(basicConfig: BasicNodeConfig): void {
     _onChange({ basicConfig });
   }
 
-  function onAdd() {
+  function onAdd(): void {
     setShowAddPersonModal(true);
   }
 
@@ -48,7 +45,7 @@ export default function BasicConfig({ type, value, onChange: _onChange }: Props)
     onChange({ ...value, [key]: val });
   }
 
-  function onUpdateAutoRules(e: ChangeEvent<HTMLInputElement>) {
+  function onUpdateAutoRules(e: ChangeEvent<HTMLInputElement>): void {
     const { autoRules } = value;
     const { checked, value: val } = e.target;
     onUpdate('autoRules', toggleArray<string>(autoRules, val, !checked));
@@ -57,7 +54,7 @@ export default function BasicConfig({ type, value, onChange: _onChange }: Props)
   async function onSetPersons(
     departments: EmployeeOrDepartmentOfRole[],
     users: EmployeeOrDepartmentOfRole[],
-  ) {
+  ): Promise<boolean> {
     onUpdate('approvePersons', { users, departments });
     return true;
   }

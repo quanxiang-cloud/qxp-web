@@ -26,7 +26,7 @@ export type FieldOperatorOptions = {
   exclude?: string[];
 }[]
 
-export default function ConditionItem({ condition, options, onChange }: Props) {
+export default function ConditionItem({ condition, options, onChange }: Props): JSX.Element {
   const [value, setValue] = useState(condition.key);
   const operatorOptions: FieldOperatorOptions = [{
     label: '大于',
@@ -45,12 +45,14 @@ export default function ConditionItem({ condition, options, onChange }: Props) {
   }];
   const currentOption = options.find((option) => option.value === value);
 
-  function onFieldChange(value: string) {
+  function onFieldChange(value: string): void {
     setValue(value);
     onChange({ key: value });
   }
 
-  function fieldOperatorOptionsFilter(operatorOptions: FieldOperatorOptions, fieldType = '') {
+  function fieldOperatorOptionsFilter(operatorOptions: FieldOperatorOptions, fieldType = ''): {
+    label: string; value: Operator; exclude?: string[] | undefined;
+  }[] {
     return operatorOptions.filter(({ exclude }) => !exclude?.includes(fieldType));
   }
 

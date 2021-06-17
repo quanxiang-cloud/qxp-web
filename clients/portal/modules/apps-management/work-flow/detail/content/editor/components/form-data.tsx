@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import cs from 'classnames';
 
-import type { Data } from '../type';
+import type { Data, FormDataData } from '../type';
 import NodeHeader from './_common/node-header';
 import usePositionChange from './hooks/use-node-position-change';
 import useNodeSwitch from './hooks/use-node-switch';
@@ -17,7 +17,7 @@ interface Props {
 export default function FormDataNodeComponent({
   data, id, xPos, yPos, isDragging,
 }: Props): JSX.Element {
-  const isNew = !data.businessData.form.name;
+  const isNew = !(data.businessData as FormDataData).form.name;
   const lastTime = useRef(+new Date());
 
   usePositionChange({ id, xPos, yPos }, isDragging);
@@ -56,7 +56,7 @@ export default function FormDataNodeComponent({
         {!isNew && (
           <div className="text-caption-no-color px-4 bg-gray-100 rounded-4 w-full">
             <span className="text-gray-400">工作表: </span>
-            <span className="text-gray-600">{data.businessData.form.name}</span>
+            <span className="text-gray-600">{(data.businessData as FormDataData).form.name}</span>
           </div>
         )}
       </footer>

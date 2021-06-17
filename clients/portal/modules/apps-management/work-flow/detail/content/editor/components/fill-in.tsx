@@ -2,7 +2,7 @@ import React, { useRef, useState, useEffect } from 'react';
 import cs from 'classnames';
 
 import useObservable from '@lib/hooks/use-observable';
-import type { Data, StoreValue } from '@flow/detail/content/editor/type';
+import type { Data, FillInData, StoreValue } from '@flow/detail/content/editor/type';
 
 import store from '../store';
 import NodeHeader from './_common/node-header';
@@ -18,7 +18,7 @@ interface Props {
   isDragging: boolean;
 }
 
-export default function FillInNodeComponent({ data, id, xPos, yPos, isDragging }: Props) {
+export default function FillInNodeComponent({ data, id, xPos, yPos, isDragging }: Props): JSX.Element {
   const { errors, nodeIdForDrawerForm } = useObservable<StoreValue>(store);
   const lastTime = useRef(+new Date());
   const [showRemover, setShowRemover] = useState(false);
@@ -28,30 +28,32 @@ export default function FillInNodeComponent({ data, id, xPos, yPos, isDragging }
     nodeIdForDrawerForm && setShowRemover(false);
   }, [nodeIdForDrawerForm]);
 
-  const { nodeData, businessData: { basicConfig } } = data;
+  const { nodeData, businessData } = data;
 
-  function onMouseUp() {
+  const { basicConfig } = businessData as FillInData;
+
+  function onMouseUp(): void {
     if (+new Date - lastTime.current < 200) {
       switcher(id);
     }
   }
 
-  function getRule() {
+  function getRule(): string {
     return `常规填写; ${basicConfig.multiplePersonWay === 'or' ? '任填' : '全填'}`;
   }
 
-  function getPerson() {
+  function getPerson(): string {
     return [
       ...basicConfig.approvePersons.users,
       ...basicConfig.approvePersons.departments,
     ].map((v) => v.ownerName || v.departmentName).join('; ');
   }
 
-  function onMouseEnter() {
+  function onMouseEnter(): void {
     setShowRemover(true);
   }
 
-  function onMouseLeave() {
+  function onMouseLeave(): void {
     setShowRemover(false);
   }
 

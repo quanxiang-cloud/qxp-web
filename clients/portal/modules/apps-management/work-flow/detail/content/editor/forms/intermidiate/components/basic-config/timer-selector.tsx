@@ -25,11 +25,11 @@ export default function TimerSelector({
   defaultMinutes,
   style = {},
   validating: _validating,
-}: Props) {
+}: Props): JSX.Element {
   const { validating: __validating } = useObservable<StoreValue>(store);
   const validating = _validating != null ? _validating : __validating;
 
-  function onWheel(e: WheelEvent<HTMLInputElement>) {
+  function onWheel(e: WheelEvent<HTMLInputElement>): void {
     (e.target as HTMLInputElement).blur();
   }
 
@@ -41,7 +41,7 @@ export default function TimerSelector({
     onChange: (value: string) => void,
     text: string,
     config?: { min: number, max?: number },
-  ) {
+  ): JSX.Element {
     return (
       <>
         <input
