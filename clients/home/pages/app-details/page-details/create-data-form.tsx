@@ -123,6 +123,10 @@ function CreateDataForm({ appID, pageID, rowID, onCancel, title }: Props): JSX.E
     const schemaMap = schema?.properties as ISchema || {};
     const defaultValue = toJS(defaultValues);
     const diffResult = difference(defaultValue || {}, formData);
+    if (isEmpty(diffResult)) {
+      toast.success('数据未更改');
+      return;
+    }
     const subTableChangedKeys = Object.keys(diffResult).filter(
       (fieldKey) => schemaMap[fieldKey as keyof ISchema]?.[
         'x-component'

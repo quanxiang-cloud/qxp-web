@@ -51,7 +51,10 @@ function CascadeSelector(props: ISchemaFieldComponentProps): JSX.Element {
 
   useEffect(() => {
     // clear cascade when change value source
-    handleChange([], []);
+    // when initialValue not undefined, is edit mode
+    if (!props.initialValue) {
+      handleChange([], []);
+    }
   }, [defaultValueFrom]);
 
   function handleChange(_value: CascaderValueType, selected?: CascaderOptionType[]) {
