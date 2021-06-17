@@ -98,7 +98,7 @@ function TodoApprovals(): JSX.Element {
           />
         </Select>
       </div>
-      <TaskList tasks={store.approvals} store={store} taskType='todo' />
+      <TaskList tasks={store.approvals} store={store} taskType='todo' type='WAIT_HANDLE_PAGE' />
       <Pagination
         current={store.pageNumber}
         total={store.total}

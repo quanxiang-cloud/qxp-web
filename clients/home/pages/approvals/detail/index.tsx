@@ -31,14 +31,15 @@ function ApprovalDetail(): JSX.Element {
   const [search] = useURLSearch();
   const listType = search.get('list') || 'todo';
   const [formValues, setFormValues] = useState<Record<string, any>>({});
-  const { processInstanceID, taskID } = useParams<{ processInstanceID: string; taskID: string }>();
+  const { processInstanceID, taskID, type } = useParams<
+  { processInstanceID: string; taskID: string, type: string }>();
   const history = useHistory();
 
   const {
     isLoading, data, isError, error,
   } = useQuery<any, Error>(
-    [processInstanceID, taskID],
-    () => apis.getTaskFormById(processInstanceID, taskID),
+    [processInstanceID, taskID, type],
+    () => apis.getTaskFormById(processInstanceID, { type }),
   );
 
   useEffect(() => {
@@ -50,6 +51,8 @@ function ApprovalDetail(): JSX.Element {
   }, [data]);
 
   // console.log('detail form data:', formValues);
+
+  console.log(data);
 
   const renderSchemaForm = () => {
     if (isLoading) {
@@ -99,7 +102,7 @@ function ApprovalDetail(): JSX.Element {
             globalActions={pick(data || {}, globalActionKeys)}
             onClickAction={store.handleClickAction}
           />
-          {renderSchemaForm()}
+          {/* {renderSchemaForm()} */}
         </Panel>
         <Panel className="approval-detail-tab w-400">
           <Tab

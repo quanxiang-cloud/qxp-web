@@ -88,9 +88,15 @@ export const signTask = async (params: Record<string, any>) => {
   return await httpClient('/api/v1/flow/instance/addSign/{taskId}', params);
 };
 
+// // 获取任务的表单
+// export const getTaskFormById = async (processInstanceID: string, taskID: string): Promise<TaskForm> => {
+//   return await httpClient(`/api/v1/flow/instance/getTaskForm/${processInstanceID}/${taskID}`);
+// };
+
 // 获取任务的表单
-export const getTaskFormById = async (processInstanceID: string, taskID: string): Promise<TaskForm> => {
-  return await httpClient(`/api/v1/flow/instance/getTaskForm/${processInstanceID}/${taskID}`);
+export const getTaskFormById = async (processInstanceID: string,
+  params: {type: string}): Promise<TaskForm> => {
+  return await httpClient(`/api/v1/flow/instance/getFlowInstanceForm/${processInstanceID}`, params);
 };
 
 // 流程任务审核
