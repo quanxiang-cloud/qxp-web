@@ -56,7 +56,6 @@ function DetailsDrawer({ onCancel, rowID, goEdit, delData }: Props): JSX.Element
     }
 
     Object.entries(schema.properties || {}).forEach(([fieldKey, fieldSchema]) => {
-      // ts bug?
       if ((fieldSchema as ISchema)['x-internal']?.isSystem) {
         _systems.push({
           label: fieldSchema.title as string,
@@ -92,29 +91,37 @@ function DetailsDrawer({ onCancel, rowID, goEdit, delData }: Props): JSX.Element
     });
   };
 
+  const fieldValueRender = (fieldSchema: ISchema, value: any): JSX.Element => {
+    if (fieldSchema?.['x-component']?.toLowerCase() === 'subtable') {
+      return (
+        <SubTable
+          value={value as Record<string, unknown>[]}
+          schema={fieldSchema as Schema}
+          readonly
+        />
+      );
+    }
+
+    if (fieldSchema?.['x-component']?.toLowerCase() === 'associatedrecords') {
+      return (
+        <AssociatedRecords
+          readonly
+          props={fieldSchema as Schema}
+          value={value}
+        />
+      );
+    }
+
+    return <div className='text-body2 truncate'>{value}</div>;
+  };
+
   const cardRender = (list: FormDataProp[]): JSX.Element => {
     return (
       <div className='grid gap-20 grid-cols-2'>
         {list.map(({ label, value, key, fieldSchema }) => (
           <div className='page-data-info-view' key={key}>
             <div className='text-body2-no-color text-gray-600'>{label}</div>
-            {fieldSchema?.['x-component']?.toLowerCase() === 'subtable' && (
-              <SubTable
-                value={value as Record<string, unknown>[]}
-                schema={fieldSchema as Schema}
-                readonly
-              />
-            )}
-            {fieldSchema?.['x-component']?.toLowerCase() === 'associatedrecords' && (
-              <AssociatedRecords
-                readonly
-                props={fieldSchema as Schema}
-                value={value}
-              />
-            )}
-            {fieldSchema?.type !== 'array' && (
-              <div className='text-body2 truncate'>{value}</div>
-            )}
+            {fieldValueRender(fieldSchema, value)}
           </div>
         ))}
       </div>

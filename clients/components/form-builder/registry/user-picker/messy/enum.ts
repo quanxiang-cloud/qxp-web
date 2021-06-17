@@ -11,7 +11,7 @@ export const EnumOptionalRange = [
 ];
 
 export const EnumMultiple = [
-  { label: '单选', value: 'signle' },
+  { label: '单选', value: 'single' },
   { label: '多选', value: 'multiple' },
 ];
 

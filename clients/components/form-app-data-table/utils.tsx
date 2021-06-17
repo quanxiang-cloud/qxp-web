@@ -25,28 +25,26 @@ export function getTableCellData(
     return defaultValue || undefined;
   }
 
-  if (field.type === 'array') {
-    return initValue as unknown as Record<string, any>[] || [];
-  }
-
-  if (field.type === 'label-value') {
+  const format = field['x-component-props']?.format || 'YYYY-MM-DD HH:mm:ss';
+  switch (field.type) {
+  case 'label-value':
     return (([] as Record<string, unknown>[]).concat(initValue as Record<string, unknown>[]))
       .map((itm) => itm.label).join(',');
-  }
-
-  if (field.type === 'datetime') {
-    const format = field['x-component-props']?.format || 'YYYY-MM-DD HH:mm:ss';
+  case 'datetime':
     if (Array.isArray(initValue)) {
       return (initValue as string[]).map((value: string) => {
         return moment(value).format(format);
       }).join('-');
     }
-
     return moment(initValue).format(format);
-  }
+  case 'string':
+    if (field.enum && field.enum.length) {
+      return (field.enum.find(({ value }: any) => value === initValue) as Option)?.label || '';
+    }
 
-  if (field.enum && field.enum.length) {
-    if (Array.isArray(initValue)) {
+    return initValue as string;
+  case 'array':
+    if (field.enum && field.enum.length) {
       return (initValue as string[]).map((_value: string) => {
         if (!field.enum) {
           return '';
@@ -61,26 +59,18 @@ export function getTableCellData(
       }).join(',');
     }
 
-    if (typeof field.enum[0] === 'object') {
-      return (field.enum.find(({ value }: any) => value === initValue) as Option)?.label || '';
+    return (initValue as Option[]).map(({ label })=>label).join(',');
+  default:
+    if (Array.isArray(initValue)) {
+      return initValue.join(',');
+    }
+
+    if (typeof initValue === 'object' && initValue?.label) {
+      return initValue?.label as string;
     }
 
     return initValue as string;
   }
-
-  if (Array.isArray(initValue)) {
-    return initValue.join(',');
-  }
-
-  if (typeof initValue === 'string') {
-    return initValue;
-  }
-
-  if (initValue?.label) {
-    return initValue?.label as string;
-  }
-
-  return initValue.toString();
 }
 
 function addFixedParameters(
