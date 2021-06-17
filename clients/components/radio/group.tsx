@@ -1,11 +1,11 @@
-import React, { Children, isValidElement, useState, ReactElement, memo } from 'react';
+import React, { Children, isValidElement, useState, ReactElement } from 'react';
 
 interface Props {
   children: (boolean | ReactElement)[];
   onChange: (value: string | number | boolean) => void;
 }
 
-function RadioGroup({ children, onChange }: Props) {
+function RadioGroup({ children, onChange }: Props): JSX.Element {
   const [checkedIndex, setCheckedIndex] = useState(-1);
 
   return (
@@ -28,4 +28,4 @@ function RadioGroup({ children, onChange }: Props) {
   );
 }
 
-export default memo(RadioGroup) as typeof RadioGroup;
+export default RadioGroup;

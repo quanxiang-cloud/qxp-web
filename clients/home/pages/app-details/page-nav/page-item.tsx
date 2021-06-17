@@ -16,4 +16,4 @@ function PageItem({ node }: NodeRenderProps<any>): JSX.Element {
   );
 }
 
-export default React.memo(PageItem);
+export default PageItem;

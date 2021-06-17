@@ -9,7 +9,7 @@ type Props = NodeRenderProps<any> & {
   onMenuClick: (type: string, node: TreeNode<any>) => void;
 }
 
-function PageItem({ node, store, onMenuClick }: Props) {
+function PageItem({ node, store, onMenuClick }: Props): JSX.Element {
   const isActive = store.currentFocusedNode.id === node.id;
   const isPage = node.data.menuType === 0;
 
@@ -67,4 +67,4 @@ function PageItem({ node, store, onMenuClick }: Props) {
   );
 }
 
-export default React.memo(PageItem);
+export default PageItem;

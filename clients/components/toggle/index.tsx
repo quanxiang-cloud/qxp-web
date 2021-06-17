@@ -1,4 +1,4 @@
-import React, { useState, memo, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import cs from 'classnames';
 
 import './index.scss';
@@ -21,10 +21,10 @@ function Toggle({
   defaultChecked = false,
   className,
   style,
-}: Props) {
+}: Props): JSX.Element {
   const [checked, setChecked] = useState(defaultChecked);
 
-  const handleToggleSwitch = () => {
+  const handleToggleSwitch = (): void => {
     if (disabled) {
       return;
     }
@@ -53,4 +53,4 @@ function Toggle({
   );
 }
 
-export default memo(Toggle);
+export default Toggle;

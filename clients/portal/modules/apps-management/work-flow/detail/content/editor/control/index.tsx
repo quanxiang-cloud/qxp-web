@@ -1,4 +1,4 @@
-import React, { memo, useCallback, HTMLAttributes } from 'react';
+import React, { useCallback, HTMLAttributes } from 'react';
 import cs from 'classnames';
 import {
   useZoomPanHelper,
@@ -32,7 +32,7 @@ function Controls({
   onInteractiveChange,
   className,
   children,
-}: Props) {
+}: Props): JSX.Element {
   const setInteractive = useStoreActions((actions) => actions.setInteractive);
   const { zoomIn, zoomOut } = useZoomPanHelper();
   const isInteractive = useStoreState(
@@ -99,4 +99,4 @@ function Controls({
 
 Controls.displayName = 'Controls';
 
-export default memo(Controls);
+export default Controls;

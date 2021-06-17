@@ -1,4 +1,4 @@
-import React, { useState, useEffect, memo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { usePopper } from 'react-popper';
 
 import Icon from '@c/icon';
@@ -133,4 +133,4 @@ function FieldValueEditor({
   );
 }
 
-export default memo(FieldValueEditor) as typeof FieldValueEditor;
+export default FieldValueEditor;
