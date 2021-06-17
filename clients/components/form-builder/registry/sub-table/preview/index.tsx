@@ -1,10 +1,11 @@
-import React, { JSXElementConstructor, ChangeEvent } from 'react';
+import React, { JSXElementConstructor, ChangeEvent, useRef } from 'react';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 import moment, { Moment } from 'moment';
 import { Input, Radio, DatePicker, NumberPicker, Select } from '@formily/antd-components';
 import { Table } from 'antd';
 import { pick } from 'lodash';
 import cs from 'classnames';
+import usePrevious from 'react-use/lib/usePrevious';
 import {
   InternalFieldList as FieldList,
   FormItem,
@@ -55,6 +56,7 @@ function SubTable({
   readonly,
   value,
 }: Partial<Props>): JSX.Element | null {
+  const firstMountRef = useRef(true);
   const {
     subordination, columns: definedColumns,
   } = props?.['x-component-props'] || {};
@@ -115,6 +117,10 @@ function SubTable({
     return changedValue;
   }
 
+  const previousColumns = usePrevious(columns);
+  if (previousColumns?.length && !columns.length) {
+    firstMountRef.current = true;
+  }
   if (!columns.length) {
     return null;
   }
@@ -136,11 +142,17 @@ function SubTable({
       initialValue={initialValue.length ? initialValue : [emptyRow]}
     >
       {({ state, mutators }) => {
+        if (!state.value?.length && firstMountRef.current) {
+          state.value = initialValue.length ? initialValue : [emptyRow];
+        }
         const onAdd = (): any[] => mutators.push();
         return (
           <div className="flex flex-col">
             {state.value.map((item: any, index: number) => {
-              const onRemove = (index: number): void => mutators.remove(index);
+              const onRemove = (index: number): void => {
+                firstMountRef.current = false;
+                mutators.remove(index);
+              };
               const onItemChange = (
                 e: ChangeEvent<HTMLInputElement> | string,
                 dataIndex: string,

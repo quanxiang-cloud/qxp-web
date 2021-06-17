@@ -1,11 +1,14 @@
 import React, { useState, useEffect, useContext, useRef } from 'react';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 import { useFormEffects, FormEffectHooks, IFieldState } from '@formily/antd';
+import { pickBy } from 'lodash';
 
 import Toggle from '@c/toggle';
 
+import { INTERNAL_FIELD_NAMES } from '@c/form-builder/store';
+
 import { getFormTableSchema } from '../api';
-import { BLOCKED_FIELD_NAMES, SUPPORTED_COMPONENTS_NAMES } from '../constants';
+import { SUPPORTED_COMPONENTS_NAMES } from '../constants';
 import { ActionsContext } from '../context';
 
 const { onFieldValueChange$ } = FormEffectHooks;
@@ -13,10 +16,9 @@ const { onFieldValueChange$ } = FormEffectHooks;
 interface Option {
   label: string;
   value: string;
-  schema: ISchema;
 }
 
-function SubTableColumns({ value, mutators }: ISchemaFieldComponentProps) {
+function SubTableColumns({ value, mutators }: ISchemaFieldComponentProps): JSX.Element {
   const [currentSchema, setCurrentSchema] = useState<ISchema>();
   const { actions } = useContext(ActionsContext);
   const subRef = useRef<any>();
@@ -28,12 +30,12 @@ function SubTableColumns({ value, mutators }: ISchemaFieldComponentProps) {
     return () => subRef.current?.unsubscribe();
   }, []);
 
-  function handleLinkedTableChange(state: IFieldState) {
+  function handleLinkedTableChange(state: IFieldState): void {
     const { tableID, appID } = state.value || {};
     fetchSchema(tableID, appID);
   }
 
-  function fetchSchema(tableID: string, appID: string) {
+  function fetchSchema(tableID: string, appID: string): void {
     actions.getFieldState('Fields.subordination', async (st) => {
       if (tableID && appID && st.value === 'foreign_table') {
         const resp = await getFormTableSchema<{
@@ -54,25 +56,31 @@ function SubTableColumns({ value, mutators }: ISchemaFieldComponentProps) {
 
   const schemaOptions = Object.entries(currentSchema?.properties || {}).reduce((cur: Option[], next) => {
     const [key, sc] = next;
-    if (key !== '_id' && !BLOCKED_FIELD_NAMES.includes(key) &&
+    if (key !== '_id' && !INTERNAL_FIELD_NAMES.includes(key) &&
       SUPPORTED_COMPONENTS_NAMES.includes(sc['x-component']?.toLocaleLowerCase() || '')) {
       cur.push({
         label: sc.title as string,
         value: key,
-        schema: sc,
       });
     }
     return cur;
   }, []);
 
-  function onToggleColumn(key: string, checked: boolean) {
-    let newValue = [];
+  function onToggleColumn(key: string, checked: boolean): void {
+    let newValue: string[] = [];
     if (!checked) {
       newValue = value.filter((k: string) => k !== key);
     } else {
       newValue = [...value, key];
     }
-    mutators.change([...new Set(['_id', ...newValue])]);
+    newValue = [...new Set(['_id', ...newValue])];
+    actions.setFieldState('Fields.subTableSchema', (state) => {
+      state.value = {
+        type: 'object',
+        properties: pickBy(currentSchema?.properties || {}, (_, key) => newValue.includes(key)),
+      };
+    });
+    mutators.change(newValue);
   }
 
   return (
