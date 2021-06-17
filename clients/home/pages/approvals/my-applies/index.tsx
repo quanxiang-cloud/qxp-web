@@ -68,7 +68,7 @@ function TodoApprovals(): JSX.Element {
           />
         </Select>
       </div>
-      <TaskList tasks={store.approvals} store={store} taskType='todo' />
+      <TaskList tasks={store.approvals} store={store} taskType='my_applies' type="APPLY_PAGE" />
       <Pagination
         current={store.pageNumber}
         total={store.total}

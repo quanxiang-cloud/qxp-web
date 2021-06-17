@@ -19,11 +19,9 @@ import actionMap from './action-map';
 
 interface Props {
   className?: string;
-  flowName?: string;
-  getFormData: () => Record<string, any>;
 }
 
-function ActionModals({ flowName, getFormData }: Props) {
+function ActionModals({ className }: Props) {
   const { processInstanceID, taskID } = useParams<{ processInstanceID: string; taskID: string }>();
   const history = useHistory();
   const [showReceiverPicker, setShowPicker] = useState(false);
@@ -36,7 +34,7 @@ function ActionModals({ flowName, getFormData }: Props) {
       return apis.reviewTask(processInstanceID, taskID, {
         handleType: action,
         remark: modalInfo.payload.remark || '',
-        formData: getFormData(),
+        formData: store.taskItem || {},
       });
     }
 
@@ -322,7 +320,7 @@ function ActionModals({ flowName, getFormData }: Props) {
   return (
     <>
       <Modal
-        title={`${store.modalInfo.title} ${flowName || ''}`}
+        title={`${store.modalInfo.title} ${store.taskItem.taskName || ''}`}
         footerBtns={[
           {
             key: 'close',

@@ -3,11 +3,23 @@ type ApprovalTask = {
 
   name: string; // task name
 
+  appName?: string;
+
+  creatorName?: string;
+
+  creatorAvatar?: string;
+
+  status?: string;
+
   description?: string;
 
   createTime: string; // Task create time
 
   startTime?: string;
+
+  formSchema?: {properties: Record<string, any>};
+
+  formData?: Record<string, any>;
 
   endTime?: string; // Task end time
 

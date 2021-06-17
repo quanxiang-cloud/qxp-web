@@ -8,7 +8,7 @@ export default function ApprovalRoutes(): JSX.Element {
   return (
     <Switch>
       <Route exact path="/approvals" component={Approvals} />
-      <Route path="/approvals/:processInstanceID/:taskID" component={ApprovalDetail} />
+      <Route path="/approvals/:processInstanceID/:taskID/:type" component={ApprovalDetail} />
     </Switch>
   );
 }
