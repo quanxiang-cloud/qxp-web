@@ -31,7 +31,7 @@ export default function TaskCard({ task, type }: Props): JSX.Element {
     history.push(`/approvals/${task.processInstanceId}/${task.id}/${type}`);
   }
 
-  const { name, createTime, creatorName, creatorAvatar, appName, formData, formSchema } = task;
+  const { name, createTime, creatorName, creatorAvatar, appName, formData, formSchema, status } = task;
 
   return (
     <div className="corner-2-8-8-8 bg-white mb-16 approval-card">

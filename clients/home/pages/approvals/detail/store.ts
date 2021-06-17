@@ -8,7 +8,18 @@ type ModalInfo = {
   payload: Record<string, any>
 }
 
+type TaskItem = {
+  taskName: string;
+  taskType: string;
+}
+
+const initTaskItem = {
+  taskName: '',
+  taskType: '',
+};
+
 class TaskDetailStore {
+  @observable taskItem: TaskItem = initTaskItem;
   @observable action = '';
   @observable modalOpen = false;
   @observable showTips = false;
@@ -34,12 +45,18 @@ class TaskDetailStore {
   }
 
   @action
-  handleClickAction = (action: TaskHandleType | string): void => {
+  setTaskItem = (task: any): void => {
+    this.taskItem = task;
+  }
+
+  @action
+  handleClickAction = (action: TaskHandleType | string, task: any): void => {
     if (!Object.prototype.hasOwnProperty.call(actionMap, action)) {
       toast.error(`action=${action} 未定义的操作`);
       return;
     }
 
+    this.setTaskItem(task);
     this.setAction(action);
     this.openModal(true);
     this.setModalInfo({
@@ -53,6 +70,7 @@ class TaskDetailStore {
   }
 
   reset = () => {
+    this.taskItem = initTaskItem;
     this.action = '';
     this.modalOpen = false;
     this.modalInfo = { title: '', payload: {} };

@@ -55,14 +55,14 @@ export default function TaskCard({ task, type }: Props): JSX.Element {
             </div>
 
             <div className="flex mt-24 bottom-info">
-              <span>
+              <div className="flex">
                 <span className="info-label"><Icon name="trending_up" className="mr-6" />当前节点: </span>
-                <span>{name}</span>
-              </span>
-              <span>
+                <div>{name}</div>
+              </div>
+              <div className="flex">
                 <span className="info-label"><Icon name="layers" className="mr-6" />应用: </span>
-                <span>{flowInstanceEntity?.appName}</span>
-              </span>
+                <div>{flowInstanceEntity?.appName}</div>
+              </div>
             </div>
           </div>
         </div>
