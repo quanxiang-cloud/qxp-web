@@ -20,6 +20,7 @@ const (
 	subForm           = "/home/subForm/"
 	formSchema        = "/m/table/getByID"
 	querySubTable     = "/home/subTable/getByCondition"
+	querySubTableM     = "/m/subTable/getByCondition"
 	createSubTable    = "/m/subTable/create"
 	foreignTable      = "foreign_table"
 	blankTable        = "sub_table"
