@@ -1,5 +1,4 @@
 import React, { useState, MouseEvent, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
 
 import Modal from '@c/modal';
 import Drawer from '@c/drawer';
@@ -23,6 +22,8 @@ import Form from './form';
 
 import { getNodeInitialData } from '../utils';
 import useSave from './hooks/use-save';
+import FlowContext from '../../../context';
+import { useContext } from 'react';
 
 const drawerTitleMap = {
   formData: '工作表触发',
@@ -44,7 +45,7 @@ export default function NodeFormWrapper(): JSX.Element | null {
     cancelable: canCancel, urgeable: canUrge, seeStatusAndMsg: canViewStatusMsg,
     nodeAdminMsg: canMsg, elements, needSaveFlow,
   } = useObservable<StoreValue>(store);
-  const { appID } = useParams<{ appID: string }>();
+  const { appID } = useContext(FlowContext);
   const currentNodeElement = getNodeElementById(nodeIdForDrawerForm);
   const formDataElement = elements?.find(({ type }) => type === 'formData');
   const data = currentNodeElement?.data?.businessData;

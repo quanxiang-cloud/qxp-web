@@ -1,7 +1,6 @@
 import React, { useState, useRef, DragEvent, useEffect } from 'react';
 import dagre from 'dagre';
 import cs from 'classnames';
-import { useParams } from 'react-router-dom';
 import ReactFlow, {
   ConnectionLineType,
   isNode,
@@ -26,9 +25,11 @@ import { getNodeInitialData } from './utils';
 import DrawerForm from './forms';
 import useFitView from './hooks/use-fit-view';
 import Config, { edgeTypes, nodeTypes } from './config';
+import FlowContext from '../../context';
 
 import 'react-flow-renderer/dist/style.css';
 import 'react-flow-renderer/dist/theme-default.css';
+import { useContext } from 'react';
 
 const dagreGraph = new dagre.graphlib.Graph();
 dagreGraph.setDefaultEdgeLabel(() => ({}));
@@ -38,7 +39,7 @@ export default function Editor(): JSX.Element {
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
   const [fitViewFinished, setFitViewFinished] = useState(false);
   const [reactFlowInstance, setReactFlowInstance] = useState<OnLoadParams>();
-  const { flowID } = useParams<{ flowID: string; }>();
+  const { flowID } = useContext(FlowContext);
   const fitView = useFitView(() => setFitViewFinished(true));
 
   useEffect(() => {

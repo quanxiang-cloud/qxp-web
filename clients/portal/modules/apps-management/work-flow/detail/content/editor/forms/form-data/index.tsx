@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import { useQuery } from 'react-query';
-import { useParams } from 'react-router-dom';
 
 import toast from '@lib/toast';
 import Tab from '@c/tab2';
@@ -11,6 +10,8 @@ import type {
 import TriggerWay from './basic-config/trigger-way';
 import TriggerCondition from './basic-config/trigger-condition';
 import { getFormFieldOptions } from '../api';
+import FlowContext from '../../../../context';
+import { useContext } from 'react';
 
 interface Props {
   formID: string;
@@ -19,7 +20,7 @@ interface Props {
 }
 
 export default function FormDataForm({ formID, value, onChange }: Props): JSX.Element {
-  const { appID } = useParams<{ appID: string }>();
+  const { appID } = useContext(FlowContext);
   const { data: formFieldOptions = [], isError, isLoading } = useQuery(
     ['GET_WORK_FORM_FIELD_LIST', formID, appID],
     getFormFieldOptions, {

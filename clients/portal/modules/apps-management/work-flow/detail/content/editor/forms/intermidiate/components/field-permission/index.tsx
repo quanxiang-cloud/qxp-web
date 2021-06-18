@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery } from 'react-query';
-import { useParams } from 'react-router-dom';
 
 import Toggle from '@c/toggle';
 import Loading from '@c/loading';
@@ -15,8 +14,10 @@ import type {
 
 import CustomFieldTable from './custom-field-table';
 import SystemFieldTable from './system-field-table';
+import FlowContext from '../../../../../../context';
 
 import './style.scss';
+import { useContext } from 'react';
 
 interface Props {
   value: FieldPermission;
@@ -24,7 +25,7 @@ interface Props {
 }
 
 export default function FieldPermission({ value, onChange: _onChange }: Props): JSX.Element {
-  const { appID } = useParams<{ appID: string; }>();
+  const { appID } = useContext(FlowContext);
   const [editable, setEditable] = useState(false);
   const { elements = [] } = useObservable<StoreValue>(store);
   const formDataElement = elements?.find(({ type }) => type === 'formData') as CurrentElement;

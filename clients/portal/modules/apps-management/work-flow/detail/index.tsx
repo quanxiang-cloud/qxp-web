@@ -18,6 +18,7 @@ import store, {
   updateStoreByKey,
   initStore,
 } from './content/editor/store';
+import FlowContext from './context';
 
 import './style.scss';
 
@@ -29,7 +30,7 @@ export default function Detail(): JSX.Element {
     showDataNotSaveConfirm, currentDataNotSaveConfirmCallback, status,
   } = useObservable<StoreValue>(store);
 
-  const { flowID, type } = useParams<{ flowID: string; type: string; }>();
+  const { flowID, type, appID } = useParams<{ flowID: string; type: string; appID: string }>();
 
   const { data, isLoading, isError } = useQuery(['GET_WORK_FLOW_INFO', flowID], getWorkFlowInfo, {
     enabled: !!flowID,
@@ -82,33 +83,35 @@ export default function Detail(): JSX.Element {
   }
 
   return (
-    <div className="flex flex-col h-screen">
-      <Header />
-      {showDataNotSaveConfirm && (status !== 'ENABLE') && (
-        <Modal
-          title="工作流未保存"
-          onClose={onConfirmCancel}
-          footerBtns={[
-            {
-              text: '取消',
-              key: 'cancel',
-              onClick: onConfirmCancel,
-            },
-            {
-              text: '确定',
-              key: 'confirm',
-              modifier: 'primary',
-              onClick: onConfirmSubmit,
-            },
-          ]}
-        >
-          <p>您修改了工作流但未保存，离开后将丢失更改，确定要离开吗？</p>
-        </Modal>
-      )}
-      <section className="flex-1 flex">
-        <AsideMenu onChange={setCurrentOperateType} currentOperateType={currentOperateType} />
-        <Content currentOperateType={currentOperateType} />
-      </section>
-    </div>
+    <FlowContext.Provider value={{ appID, flowID }}>
+      <div className="flex flex-col h-screen">
+        <Header />
+        {showDataNotSaveConfirm && (status !== 'ENABLE') && (
+          <Modal
+            title="工作流未保存"
+            onClose={onConfirmCancel}
+            footerBtns={[
+              {
+                text: '取消',
+                key: 'cancel',
+                onClick: onConfirmCancel,
+              },
+              {
+                text: '确定',
+                key: 'confirm',
+                modifier: 'primary',
+                onClick: onConfirmSubmit,
+              },
+            ]}
+          >
+            <p>您修改了工作流但未保存，离开后将丢失更改，确定要离开吗？</p>
+          </Modal>
+        )}
+        <section className="flex-1 flex">
+          <AsideMenu onChange={setCurrentOperateType} currentOperateType={currentOperateType} />
+          <Content currentOperateType={currentOperateType} />
+        </section>
+      </div>
+    </FlowContext.Provider>
   );
 }

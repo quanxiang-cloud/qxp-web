@@ -1,5 +1,4 @@
 import React, { useEffect, useRef } from 'react';
-import { useParams } from 'react-router-dom';
 
 import Toggle from '@c/toggle';
 import Icon from '@c/icon';
@@ -11,13 +10,15 @@ import store, { updateStoreByKey, updateStore } from '../editor/store';
 import useSave from '../editor/forms/hooks/use-save';
 
 import type { StoreValue } from '../editor/type';
+import FlowContext from '../../context';
+import { useContext } from 'react';
 
 export default function GlobalConfig() {
   const {
     cancelable, urgeable, seeStatusAndMsg, nodeAdminMsg, id, name, version, elements,
     triggerMode, status,
   } = useObservable<StoreValue>(store);
-  const { appID } = useParams<{ appID: string }>();
+  const { appID } = useContext(FlowContext);
   const changedRef = useRef<{ key: keyof StoreValue, checked: boolean }>();
 
   const saver = useSave(appID, id);
