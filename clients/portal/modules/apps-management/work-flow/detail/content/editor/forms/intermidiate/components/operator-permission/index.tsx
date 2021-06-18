@@ -12,16 +12,16 @@ import type {
   CustomOperation,
   OperationPermission as OperationPermissionType,
   NodeType,
-  BusinessData,
+  FillInData,
 } from '@flow/detail/content/editor/type';
 
 interface Props {
   value: OperationPermissionType;
-  onChange: (value: Partial<BusinessData>) => void;
+  onChange: (value: Partial<FillInData>) => void;
   type?: NodeType;
 }
 
-export default function OperatorPermission({ value, onChange: _onChange, type }: Props) {
+export default function OperatorPermission({ value, onChange: _onChange, type }: Props): JSX.Element {
   const { data, isLoading, isError } = useQuery(['GET_OPERATION_LIST', type], getOperationList);
   const [mergedOperations, setMergedOperations] = useState<OperationPermissionType>({
     system: [], custom: [],
@@ -33,11 +33,11 @@ export default function OperatorPermission({ value, onChange: _onChange, type }:
     }
   }, [data, value]);
 
-  function onChange(operatorPermission: OperationPermissionType) {
+  function onChange(operatorPermission: OperationPermissionType): void {
     _onChange({ operatorPermission });
   }
 
-  function mergeOperation() {
+  function mergeOperation(): void {
     const { custom = [], system = [] } = value;
     const isCustomEmpty = !custom.length;
     const isSystemEmpty = !system.length;
@@ -65,7 +65,7 @@ export default function OperatorPermission({ value, onChange: _onChange, type }:
     type: 'system' | 'custom',
     operation: SystemOperation,
     value: Partial<SystemOperation>,
-  ) {
+  ): void {
     onChange({
       ...mergedOperations,
       [type]: mergedOperations[type].map((o: CustomOperation) => {
@@ -80,7 +80,11 @@ export default function OperatorPermission({ value, onChange: _onChange, type }:
     });
   }
 
-  function listRender(label: string, operation: SystemOperation[], type: 'system' | 'custom') {
+  function listRender(
+    label: string,
+    operation: SystemOperation[],
+    type: 'system' | 'custom',
+  ): JSX.Element | null {
     if (!operation?.length) {
       return null;
     }

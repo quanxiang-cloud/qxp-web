@@ -6,7 +6,6 @@ import React, {
   Ref,
   ChangeEvent,
   useEffect,
-  memo,
 } from 'react';
 import cs from 'classnames';
 
@@ -19,7 +18,7 @@ export type Props = DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTM
   error?: boolean;
 };
 
-function InternalRadio(props: Props, ref?: Ref<HTMLInputElement>) {
+function InternalRadio(props: Props, ref?: Ref<HTMLInputElement>): JSX.Element {
   const {
     defaultChecked, error, className, onChange, label, checked: isChecked, ...inputProps
   } = props;
@@ -34,7 +33,7 @@ function InternalRadio(props: Props, ref?: Ref<HTMLInputElement>) {
     setChecked(!!defaultChecked);
   }, [defaultChecked]);
 
-  function handleChange(checked: boolean) {
+  function handleChange(checked: boolean): void {
     setChecked(checked);
     onChange && onChange(props.value);
   }
@@ -79,5 +78,5 @@ function InternalRadio(props: Props, ref?: Ref<HTMLInputElement>) {
 
 const Radio = forwardRef(InternalRadio);
 
-export default memo(Radio) as typeof Radio;
+export default Radio;
 

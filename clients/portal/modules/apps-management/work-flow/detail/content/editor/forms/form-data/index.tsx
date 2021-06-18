@@ -5,7 +5,7 @@ import { useParams } from 'react-router-dom';
 import toast from '@lib/toast';
 import Tab from '@c/tab2';
 import type {
-  BusinessData,
+  FormDataData,
 } from '@flow/detail/content/editor/type';
 
 import TriggerWay from './basic-config/trigger-way';
@@ -14,8 +14,8 @@ import { getFormFieldOptions } from '../api';
 
 interface Props {
   formID: string;
-  value: BusinessData;
-  onChange: (value: Partial<BusinessData>) => void;
+  value: FormDataData;
+  onChange: (value: Partial<FormDataData>) => void;
 }
 
 export default function FormDataForm({ formID, value, onChange }: Props): JSX.Element {

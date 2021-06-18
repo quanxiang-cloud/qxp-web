@@ -11,6 +11,7 @@ import { mergeDataAdapter } from '../utils';
 import store from '@flow/detail/content/editor/store';
 import type {
   NodeType, StoreValue, TriggerCondition, TriggerConditionValue, BusinessData, NodeWorkForm,
+  FormDataData, FillInData,
 } from '@flow/detail/content/editor/type';
 
 interface Props {
@@ -42,7 +43,8 @@ export default function Form({
   }
 
   function onWorkFormChange(formValue: NodeWorkForm): void {
-    const isWorkFormChanged = value.form.value && value.form.value !== formValue.value;
+    const v = (value as FormDataData).form.value;
+    const isWorkFormChanged = v && v !== formValue.value;
     if (isWorkFormChanged) {
       return onWorkTableChange(formValue);
     }
@@ -57,8 +59,8 @@ export default function Form({
   }
 
   function onFormChange(nodeForm: Partial<BusinessData>): void {
-    const oldData = value;
-    const newData = { ...value, ...nodeForm };
+    const oldData = value as FormDataData;
+    const newData = { ...value, ...nodeForm } as FormDataData;
     const isChanged = !isEqual(oldData, newData);
     toggleFormDataChanged(isChanged);
     onChange((f) => ({ ...f, ...nodeForm }));
@@ -73,9 +75,10 @@ export default function Form({
     }
   }
 
-  const approveFormVisible = (isApproveNode || isFillInNode) && value.basicConfig;
+  const approveFormVisible = (isApproveNode || isFillInNode) && (value as FillInData).basicConfig;
   const isFormDataNode = nodeType === 'formData';
-  const formDataFormVisible = isFormDataNode && value.form && value.triggerWay;
+  const formDataValue = value as FormDataData;
+  const formDataFormVisible = isFormDataNode && formDataValue.form && formDataValue.triggerWay;
 
   return (
     <div className="flex-1" style={{ height: 'calc(100% - 56px)' }}>
@@ -89,14 +92,14 @@ export default function Form({
       )}
       {formDataFormVisible && (
         <FormDataForm
-          formID={value.form.value}
-          value={value}
+          formID={formDataValue.form.value}
+          value={formDataValue}
           onChange={onFormChange}
         />
       )}
       {approveFormVisible && (
         <ApproveForm
-          value={value}
+          value={value as FillInData}
           onChange={onFormChange}
           nodeType={nodeType}
         />

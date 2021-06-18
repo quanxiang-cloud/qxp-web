@@ -6,7 +6,7 @@ import ToolTip from '@c/tooltip/tip';
 import useObservable from '@lib/hooks/use-observable';
 
 import store, { updateStoreByKey } from '../store';
-import type { EdgeProps, StoreValue } from '../type';
+import type { EdgeProps, FormDataData, StoreValue } from '../type';
 import { getCenter } from '../utils';
 import EdgeText from './_components/edge-text';
 import useEdgeSwitch from './hooks/use-edge-switch';
@@ -70,7 +70,7 @@ export default function CustomEdge({
     });
   }
 
-  const hasForm = !!formDataElement?.data?.businessData.form.name;
+  const hasForm = !!(formDataElement?.data?.businessData as FormDataData)?.form.name;
   const cursorClassName = cs({ 'cursor-not-allowed': !hasForm });
 
   return (
