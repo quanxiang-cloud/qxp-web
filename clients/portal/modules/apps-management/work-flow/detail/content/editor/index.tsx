@@ -68,12 +68,10 @@ export default function Editor(): JSX.Element {
         const nodeWithPosition = dagreGraph.node(el.id);
         el.targetPosition = Position.Top;
         el.sourcePosition = Position.Bottom;
-        // if (el.position.x === 0 && el.position.y === 0) {
         el.position = {
           x: nodeWithPosition.x - (el.data.nodeData.width / 2),
           y: nodeWithPosition.y + (index * 80),
         };
-        // }
       }
       return el;
     });
@@ -100,7 +98,6 @@ export default function Editor(): JSX.Element {
     if (!reactFlowWrapper?.current || !reactFlowInstance || !e.dataTransfer) {
       return;
     }
-    // const reactFlowBounds = reactFlowWrapper.current.getBoundingClientRect();
     const { nodeType: type, width, height, nodeName } = JSON.parse(
       e.dataTransfer.getData('application/reactflow'),
     );
@@ -108,10 +105,6 @@ export default function Editor(): JSX.Element {
     if (!source || !target || !position) {
       return;
     }
-    // const position = (reactFlowInstance as any).project({
-    //   x: e.clientX - reactFlowBounds.left,
-    //   y: e.clientY - reactFlowBounds.top,
-    // });
     const id = type + uuid();
     function updateElementPosition(
       element: FlowElement<any>,

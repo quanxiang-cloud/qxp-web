@@ -4,8 +4,8 @@ import { uuid, deepClone } from '@lib/utils';
 import { update, omit } from 'lodash';
 import moment from 'moment';
 
-import { edgeBuilder, getNodeInitialData, nodeBuilder } from './utils';
-import type { StoreValue, BusinessData, CurrentElement, Data, NodeType, FormDataElement } from './type';
+import { edgeBuilder, nodeBuilder } from './utils';
+import type { StoreValue, BusinessData, CurrentElement, Data, FormDataElement } from './type';
 import { SaveWorkFlow } from '../../api';
 
 export const getStoreInitialData = (): StoreValue => {
@@ -204,31 +204,6 @@ export function updateElementByKey<T>(
       if (element.id === elementId) {
         update(element, fieldName, updater);
       }
-      return element;
-    }),
-  });
-}
-
-export function resetElementsData(
-  type: NodeType,
-  value: Partial<BusinessData>,
-): void {
-  store.next({
-    ...store.value,
-    saved: false,
-    elements: store.value.elements.map((element) => {
-      if (!isNode(element) || !element.data) {
-        return element;
-      }
-      update(element, 'data.businessData', () => {
-        if (element.type === type) {
-          return {
-            ...getNodeInitialData(type),
-            ...value,
-          };
-        }
-        return getNodeInitialData(element.type as NodeType);
-      });
       return element;
     }),
   });

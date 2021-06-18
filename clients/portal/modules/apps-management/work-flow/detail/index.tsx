@@ -31,8 +31,10 @@ type OperateType = 'edit' | 'settings' | 'variables';
 export default function Detail(): JSX.Element {
   const [currentOperateType, setCurrentOperateType] = useState<OperateType>('edit');
   const {
-    showDataNotSaveConfirm, currentDataNotSaveConfirmCallback, status, needSaveFlow, elements,
+    showDataNotSaveConfirm, currentDataNotSaveConfirmCallback, status, needSaveFlow, elements, id,
   } = useObservable<StoreValue>(store);
+
+  const isEmptyWorkFlow = !id;
 
   const { flowID, type, appID } = useParams<{ flowID: string; type: string; appID: string }>();
   const saver = useSaver(appID, flowID);
@@ -53,7 +55,7 @@ export default function Detail(): JSX.Element {
 
   const previousElementsLength = usePrevious(elements?.length);
   useEffect(() => {
-    previousElementsLength !== elements?.length && saveWorkFlow();
+    previousElementsLength !== elements?.length && !isEmptyWorkFlow && saveWorkFlow();
   }, [elements?.length]);
 
   useEffect(() => {
