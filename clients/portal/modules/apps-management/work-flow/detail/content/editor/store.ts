@@ -1,11 +1,11 @@
 import { BehaviorSubject } from 'rxjs';
 import { FlowElement, Edge, isNode, Node } from 'react-flow-renderer';
 import { uuid, deepClone } from '@lib/utils';
-import { update } from 'lodash';
+import { update, omit } from 'lodash';
 import moment from 'moment';
 
 import { edgeBuilder, getNodeInitialData, nodeBuilder } from './utils';
-import type { StoreValue, BusinessData, CurrentElement, Data, NodeType } from './type';
+import type { StoreValue, BusinessData, CurrentElement, Data, NodeType, FormDataElement } from './type';
 
 export const getStoreInitialData = (): StoreValue => {
   const startId = 'formData' + uuid();
@@ -234,7 +234,11 @@ export function resetElementsData(
 }
 
 export function getNodeElementById(id: string): CurrentElement {
-  return store.value.elements.find((element) => element.id === id) as CurrentElement;
+  return store.value.elements?.find((element) => element.id === id) as CurrentElement;
+}
+
+export function getFormDataElement(): FormDataElement {
+  return store.value.elements?.find(({ type }) => type === 'formData') as FormDataElement;
 }
 
 export function numberTransform(keys: string[], data: any): any {
@@ -254,7 +258,10 @@ export function buildBpmnText(
       if (el.id == nodeID) {
         data = {
           ...el,
-          data: { ...el.data, businessData: { ...el.data?.businessData, ...newBusinessData } },
+          data: {
+            ...omit(el.data, ['type']),
+            businessData: { ...el.data?.businessData, ...newBusinessData },
+          },
         };
       }
       if (!['approve', 'fillIn'].includes(data.type as string)) {

@@ -7,23 +7,19 @@ import useObservable from '@lib/hooks/use-observable';
 import FormDataForm from './form-data';
 import ApproveForm from './intermidiate/approve';
 import ProcessVariableAssignmentConfig from './process-variable-assignment-config';
-import { mergeDataAdapter } from '../utils';
 import store from '@flow/detail/content/editor/store';
 import type {
-  NodeType, StoreValue, TriggerCondition, TriggerConditionValue, BusinessData, NodeWorkForm,
-  FormDataData, FillInData,
+  NodeType, StoreValue, TriggerCondition, TriggerConditionValue, NodeWorkForm, Data, BusinessData,
+  FormDataData,
 } from '@flow/detail/content/editor/type';
 
 import FlowTableContext from './flow-source-table';
 
 interface Props {
   nodeType: NodeType;
-  value: BusinessData;
-  onChange: React.Dispatch<React.SetStateAction<BusinessData>>;
-  onWorkTableChange: React.Dispatch<React.SetStateAction<{
-    name?: string;
-    value: string;
-  } | undefined>>;
+  value: Data;
+  onChange: React.Dispatch<React.SetStateAction<Data>>;
+  onWorkTableChange: (workTable: NodeWorkForm) => void;
   toggleFormDataChanged: React.Dispatch<React.SetStateAction<boolean>>;
   // todo refactor this prop define
   form?: NodeWorkForm;
@@ -41,18 +37,9 @@ export default function Form({
   const isApproveNode = nodeType === 'approve';
   const isFillInNode = nodeType === 'fillIn';
 
-  function updateFormData<T>(path: string, updater: (v: T) => T): void {
-    onChange(mergeDataAdapter(value, path, updater));
-  }
-
   function onWorkFormChange(formValue: NodeWorkForm): void {
-    const v = (value as FormDataData).form.value;
-    const isWorkFormChanged = v && v !== formValue.value;
-    if (isWorkFormChanged) {
-      return onWorkTableChange(formValue);
-    }
-    toggleFormDataChanged(true);
-    updateFormData('form', () => formValue);
+    onWorkTableChange(formValue);
+    toggleFormDataChanged(!!form?.value && (form?.value !== formValue?.value));
   }
 
   function isTriggerConditionValueEmpty(condition: TriggerCondition): boolean {
@@ -62,26 +49,30 @@ export default function Form({
   }
 
   function onFormChange(nodeForm: Partial<BusinessData>): void {
-    const oldData = value as FormDataData;
-    const newData = { ...value, ...nodeForm } as FormDataData;
+    const oldData = value.businessData;
+    const newData = { ...oldData, ...nodeForm };
     const isChanged = !isEqual(oldData, newData);
     toggleFormDataChanged(isChanged);
-    onChange((f) => ({ ...f, ...nodeForm }));
-    if (nodeType !== 'formData' || !oldData.triggerCondition) {
+    onChange((f) => ({ ...f, businessData: { ...f.businessData, ...nodeForm } }) as Data);
+
+    if (nodeType !== 'formData' || !(oldData as FormDataData).triggerCondition) {
       return;
     }
-    const { triggerCondition: { op: oldOp, expr: oldExpr } } = oldData;
-    const { triggerCondition: { op: newOp, expr: newExpr } } = newData;
+    const { triggerCondition: { op: oldOp, expr: oldExpr } } = oldData as FormDataData;
+    const { triggerCondition: { op: newOp, expr: newExpr } } = newData as FormDataData;
     if (oldOp === '' && newOp === '' && !newExpr.length && oldExpr.length === 1 &&
       isTriggerConditionValueEmpty(oldExpr[0] as TriggerCondition)) {
       toggleFormDataChanged(false);
     }
   }
 
-  const approveFormVisible = (isApproveNode || isFillInNode) && (value as FillInData).basicConfig;
+  let approveFormVisible = false;
+  if (value.type === 'fillIn') {
+    approveFormVisible = !!((isApproveNode || isFillInNode) && value.businessData.basicConfig);
+  }
   const isFormDataNode = nodeType === 'formData';
-  const formDataValue = value as FormDataData;
-  const formDataFormVisible = isFormDataNode && formDataValue.form && formDataValue.triggerWay;
+  const formDataValue = value.type === 'formData' ? value.businessData : undefined;
+  const formDataFormVisible = isFormDataNode && form && formDataValue?.triggerWay;
 
   return (
     <FlowTableContext.Provider value={{ tableID: form?.value || '', tableName: form?.name || '' }}>
@@ -94,16 +85,16 @@ export default function Form({
             validating={validating}
           />
         )}
-        {formDataFormVisible && (
+        {formDataFormVisible && formDataValue && (
           <FormDataForm
-            formID={formDataValue.form.value}
+            formID={form?.value}
             value={formDataValue}
             onChange={onFormChange}
           />
         )}
-        {approveFormVisible && (
+        {approveFormVisible && value.type === 'fillIn' && (
           <ApproveForm
-            value={value as FillInData}
+            value={value.businessData}
             onChange={onFormChange}
             nodeType={nodeType}
           />

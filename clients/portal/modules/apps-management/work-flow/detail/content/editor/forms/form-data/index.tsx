@@ -14,7 +14,7 @@ import FlowContext from '../../../../flow-context';
 import { useContext } from 'react';
 
 interface Props {
-  formID: string;
+  formID?: string;
   value: FormDataData;
   onChange: (value: Partial<FormDataData>) => void;
 }
