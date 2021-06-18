@@ -3,9 +3,10 @@ import cs from 'classnames';
 import { usePopper } from 'react-popper';
 
 import Icon from '@c/icon';
-import store, { removeNodeById } from '@flow/detail/content/editor/store';
-import type { StoreValue } from '@flow/detail/content/editor/type';
+import store, { removeNodeById } from '@flowEditor/store';
+import type { StoreValue } from '@flowEditor/type';
 import useObservable from '@lib/hooks/use-observable';
+
 import ActionButtonGroup from './action-button-group';
 
 interface Props {

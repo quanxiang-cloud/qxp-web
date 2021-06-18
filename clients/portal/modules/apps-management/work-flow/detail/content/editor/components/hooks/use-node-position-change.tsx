@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-import { updateElementByKey, updateStore } from '@flow/detail/content/editor/store';
+import { updateElementByKey, updateStore } from '@flowEditor/store';
 import usePrevious from '@lib/hooks/use-previous';
 
 interface Props {

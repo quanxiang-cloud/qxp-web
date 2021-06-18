@@ -6,15 +6,15 @@ import Radio from '@c/radio';
 import Select from '@c/select';
 import usePrevious from '@lib/hooks/use-previous';
 import useObservable from '@lib/hooks/use-observable';
-import store from '@flow/detail/content/editor/store';
-import type { WhenTimeout, StoreValue } from '@flow/detail/content/editor/type';
+import store from '@flowEditor/store';
+import type { WhenTimeout, StoreValue } from '@flowEditor/type';
 
 interface Props {
   defaultValue?: WhenTimeout;
   onChange: (value: WhenTimeout) => void;
 }
 
-export default function WhenTimeout({ defaultValue, onChange }: Props) {
+export default function WhenTimeout({ defaultValue, onChange }: Props): JSX.Element {
   const [timeoutData, setTimeoutData] = useState<WhenTimeout>(defaultValue || {
     type: '',
     value: '',

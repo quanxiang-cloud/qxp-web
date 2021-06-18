@@ -9,17 +9,16 @@ import Tag from '@c/tag';
 import RadioGroup from '@c/radio/group';
 import EmployeeOrDepartmentPicker from '@c/employee-or-department-picker';
 import { toggleArray } from '@lib/utils';
-import { mergeDataAdapter } from '@flow/detail/content/editor/utils';
+import { mergeDataAdapter } from '@flowEditor/utils';
 import useObservable from '@lib/hooks/use-observable';
-import store from '@flow/detail/content/editor/store';
+import store from '@flowEditor/store';
+import type {
+  BasicNodeConfig, NodeType, StoreValue, AutoApproveRule, FillInData,
+} from '@flowEditor/type';
 
 import Urge from './urge';
 import TimerSelector from './timer-selector';
 import WhenTimeout from './when-timeout';
-
-import type {
-  BasicNodeConfig, NodeType, StoreValue, AutoApproveRule, FillInData,
-} from '@flow/detail/content/editor/type';
 
 interface Props {
   type: NodeType;

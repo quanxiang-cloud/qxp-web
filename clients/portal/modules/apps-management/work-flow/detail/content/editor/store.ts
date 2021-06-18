@@ -4,9 +4,10 @@ import { uuid, deepClone } from '@lib/utils';
 import { update, omit } from 'lodash';
 import moment from 'moment';
 
+import { SaveWorkFlow } from '@flow/detail/api';
+
 import { edgeBuilder, nodeBuilder } from './utils';
 import type { StoreValue, BusinessData, CurrentElement, Data, FormDataElement } from './type';
-import { SaveWorkFlow } from '../../api';
 
 export const getStoreInitialData = (): StoreValue => {
   const startId = 'formData' + uuid();

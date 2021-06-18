@@ -6,8 +6,8 @@ import RadioGroup from '@c/radio/group';
 import Radio from '@c/radio';
 import Select from '@c/select';
 import usePrevious from '@lib/hooks/use-previous';
-import ActionButtonGroup from '@flow/detail/content/editor/components/_common/action-button-group';
-import type { FieldValue } from '@flow/detail/content/editor/type';
+import ActionButtonGroup from '@flowEditor/components/_common/action-button-group';
+import type { FieldValue } from '@flowEditor/type';
 import FormRenderer from '@c/form-builder/form-renderer';
 
 interface Props {

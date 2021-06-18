@@ -2,7 +2,7 @@ import React from 'react';
 
 import Tab from '@c/tab2';
 
-import type { FillInData, NodeType } from '@flow/detail/content/editor/type';
+import type { FillInData, NodeType } from '@flowEditor/type';
 
 import BasicConfig from '../components/basic-config';
 import FieldPermission from '../components/field-permission';

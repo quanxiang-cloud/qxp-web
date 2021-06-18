@@ -3,16 +3,15 @@ import { isEqual } from 'lodash';
 
 import FormSelector from '@c/form-table-selector';
 import useObservable from '@lib/hooks/use-observable';
+import store, { getFormDataElement } from '@flowEditor/store';
+import type {
+  NodeType, StoreValue, TriggerCondition, TriggerConditionValue, NodeWorkForm, Data, BusinessData,
+  FormDataData,
+} from '@flowEditor/type';
 
 import FormDataForm from './form-data';
 import ApproveForm from './intermidiate/approve';
 import ProcessVariableAssignmentConfig from './process-variable-assignment-config';
-import store, { getFormDataElement } from '@flow/detail/content/editor/store';
-import type {
-  NodeType, StoreValue, TriggerCondition, TriggerConditionValue, NodeWorkForm, Data, BusinessData,
-  FormDataData,
-} from '@flow/detail/content/editor/type';
-
 import FlowTableContext from './flow-source-table';
 
 interface Props {

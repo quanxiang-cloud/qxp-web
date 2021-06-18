@@ -2,12 +2,8 @@ import React, { useState, useEffect } from 'react';
 
 import Select from '@c/select';
 
-import type {
-  Operator,
-  TriggerConditionExpressionItem,
-} from '@flow/detail/content/editor/type';
-
-import { Options } from '@flow/detail/content/editor/forms/api';
+import { Options } from '@flowEditor/forms/api';
+import type { Operator, TriggerConditionExpressionItem } from '@flowEditor/type';
 
 interface Props {
   condition: {
