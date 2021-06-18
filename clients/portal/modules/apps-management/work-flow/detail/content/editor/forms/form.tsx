@@ -14,6 +14,8 @@ import type {
   FormDataData, FillInData,
 } from '@flow/detail/content/editor/type';
 
+import FlowTableContext from './flow-source-table';
+
 interface Props {
   nodeType: NodeType;
   value: BusinessData;
@@ -23,6 +25,7 @@ interface Props {
     value: string;
   } | undefined>>;
   toggleFormDataChanged: React.Dispatch<React.SetStateAction<boolean>>;
+  // todo refactor this prop define
   form?: NodeWorkForm;
 }
 
@@ -81,32 +84,34 @@ export default function Form({
   const formDataFormVisible = isFormDataNode && formDataValue.form && formDataValue.triggerWay;
 
   return (
-    <div className="flex-1" style={{ height: 'calc(100% - 56px)' }}>
-      {form && (
-        <FormSelector
-          value={form}
-          onChange={onWorkFormChange}
-          changeable={isFormDataNode}
-          validating={validating}
-        />
-      )}
-      {formDataFormVisible && (
-        <FormDataForm
-          formID={formDataValue.form.value}
-          value={formDataValue}
-          onChange={onFormChange}
-        />
-      )}
-      {approveFormVisible && (
-        <ApproveForm
-          value={value as FillInData}
-          onChange={onFormChange}
-          nodeType={nodeType}
-        />
-      )}
-      {nodeType === 'processVariableAssignment' && (
-        <ProcessVariableAssignmentConfig />
-      )}
-    </div>
+    <FlowTableContext.Provider value={{ tableID: form?.value || '', tableName: form?.name || '' }}>
+      <div className="flex-1" style={{ height: 'calc(100% - 56px)' }}>
+        {form && (
+          <FormSelector
+            value={form}
+            onChange={onWorkFormChange}
+            changeable={isFormDataNode}
+            validating={validating}
+          />
+        )}
+        {formDataFormVisible && (
+          <FormDataForm
+            formID={formDataValue.form.value}
+            value={formDataValue}
+            onChange={onFormChange}
+          />
+        )}
+        {approveFormVisible && (
+          <ApproveForm
+            value={value as FillInData}
+            onChange={onFormChange}
+            nodeType={nodeType}
+          />
+        )}
+        {nodeType === 'processVariableAssignment' && (
+          <ProcessVariableAssignmentConfig />
+        )}
+      </div>
+    </FlowTableContext.Provider>
   );
 }
