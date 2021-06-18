@@ -26,7 +26,9 @@ export default function Index(): JSX.Element {
       <Route path={`${path}/message/send`} component={SendMessage} />
       <Route path={`${path}/message/details/:id`} component={MessageDetails} />
       <Route path={`${path}/dataset/:dataId?`} component={Dataset} />
-      <Route path={`${path}/unusual/detail/:id`} component={UnusualTaskDetail} />
+      <Route
+        path={`${path}/unusual/detail/:id/:status/:processInstanceId/:taskId`}
+        component={UnusualTaskDetail} />
       <Route path={`${path}/unusual`} component={UnusualTask} />
       <Redirect from={path} to={`${path}/message`} />
       <Route component={(): JSX.Element=> (<ErrorTips desc={'Menu page is not found'} />)} />

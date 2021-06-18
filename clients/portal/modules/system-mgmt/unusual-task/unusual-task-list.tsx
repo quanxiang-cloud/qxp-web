@@ -7,9 +7,34 @@ import Table from '@c/table';
 import Search from '@c/search';
 import EmptyTips from '@c/empty-tips';
 import Pagination from '@c/pagination';
-import Icon from '@c/icon';
 
 import { getAbnormalTask } from './api';
+
+const InstanceStatus: Record<FlowStatus, string> = {
+  SUBMIT: '提交',
+  RE_SUBMIT: '再次提交',
+  CANCEL: '撤回',
+  AGREE: '通过',
+  REFUSE: '拒绝',
+  FILL_IN: '完成填写',
+  DELIVER: '转交',
+  STEP_BACK: '回退',
+  SEND_BACK: '打回重填',
+  CC: '抄送',
+  ADD_SIGN: '加签',
+  READ: '邀请阅示',
+  REVIEW: '待处理',
+  IN_REVIEW: '审批中',
+  AUTO_REVIEW: '自动审批',
+  AUTO_SKIP: '跳过',
+  ABANDON: '已作废',
+};
+
+const HandleStatus: Record<0 | 1 | 2, {color: string, value: string}> = {
+  0: { color: 'red', value: '未处理' },
+  1: { color: 'blue', value: '已处理' },
+  2: { color: 'green', value: '已处系统自动处理理' },
+};
 
 const initSearch = { page: 1, limit: 10, total: 0, keyword: '' };
 
@@ -47,89 +72,99 @@ function UnusualTaskTable(): JSX.Element {
     setPageParams({ ...pageParams, page: current, limit: pageSize });
   }
 
-  function goUnusualTaskDetail(id: string): void {
-    history.push(`/system/unusual/detail/${id}`);
+  function goUnusualTaskDetail(data: UnusualTaskItem, status: 0 | 1): void {
+    const { id, processInstanceId, taskId } = data;
+    history.push(`/system/unusual/detail/${id}/${status}/${processInstanceId}/${taskId}`);
   }
 
   const cols = [
     {
       Header: '工作流程名称',
-      id: 'name',
+      id: 'instanceName',
       width: 'auto',
-      accessor: ({ taskName, id }: UnusualTaskItem) => (
-        <span onClick={() => goUnusualTaskDetail(id)}>{taskName ? taskName : '无'}</span>
+      accessor: ({ instanceName, id }: UnusualTaskItem) => (
+        <span>{instanceName ? instanceName : '-'}</span>
       ),
     },
     {
       Header: '所属应用',
-      id: 'app',
+      id: 'appName',
       width: 'auto',
-      accessor: ({ app }: any) => (
-        <span>{app ? app : '无'}</span>
+      accessor: ({ appName }: UnusualTaskItem) => (
+        <span>{appName ? appName : '-'}</span>
       ),
     },
     {
       Header: '发起人',
-      id: 'user',
+      id: 'applyUserName',
       width: 'auto',
-      accessor: ({ user }: any) => (
-        <span>{user ? user : '无'}</span>
+      accessor: ({ applyUserName }: UnusualTaskItem) => (
+        <span>{applyUserName ? applyUserName : '-'}</span>
       ),
     },
     {
       Header: '发起时间',
-      id: 'time',
+      id: 'instanceCreateTime',
       width: 'auto',
-      accessor: ({ modifyTime }: UnusualTaskItem) => (
-        <span>{modifyTime ? dayjs(modifyTime).format('YYYY-MM-DD HH:mm') : '-'}</span>
+      accessor: ({ instanceCreateTime }: UnusualTaskItem) => (
+        <span>{instanceCreateTime ? dayjs(instanceCreateTime).format('YYYY-MM-DD HH:mm') : '-'}</span>
       ),
     },
     {
       Header: '当前节点',
-      id: 'current',
+      id: 'taskName',
       width: 'auto',
-      accessor: ({ current }: any) => (
-        <span>{current ? current : '无'}</span>
+      accessor: ({ taskName }: UnusualTaskItem) => (
+        <span>{taskName ? taskName : '-'}</span>
       ),
     },
     {
       Header: '异常原因',
       id: 'reason',
       width: 'auto',
-      accessor: ({ reason }: any) => (
-        <span>{reason ? reason : '无'}</span>
+      accessor: ({ reason }: UnusualTaskItem) => (
+        <span>{reason ? reason : '-'}</span>
       ),
     },
     {
       Header: '流程状态',
-      id: 'status',
+      id: 'instanceStatus',
       width: 'auto',
-      accessor: ({ status }: any) => (
-        <span>{status ? status : '无'}</span>
+      accessor: ({ instanceStatus }: UnusualTaskItem) => (
+        <span>{InstanceStatus[instanceStatus]}</span>
       ),
     },
     {
       Header: '处理状态',
-      id: 'handle',
+      id: 'status',
       width: 'auto',
-      accessor: ({ handle }: any) => (
-        <span>{handle ? handle : '无'}</span>
-      ),
+      accessor: ({ status }: UnusualTaskItem) => {
+        const statusInfo = HandleStatus[status];
+        return (
+          <span style={{ color: statusInfo.color }}>{statusInfo.value}</span>
+        );
+      },
     },
     {
       Header: '操作',
       id: '',
       width: 'auto',
-      accessor: ({ app }: any) => {
+      accessor: (item: UnusualTaskItem) => {
         return (
           <div className="flex">
+            {
+              item.status === 0 && (<div className="flex items-center">
+                <span
+                  className="font-normal text-blue-600 cursor-pointer"
+                  onClick={() => goUnusualTaskDetail(item, 0)}
+                >处理&emsp;&emsp;</span>
+              </div>)
+            }
             <div className="flex items-center">
-              <Icon name="send" size={16} className="mr-8" />
-              <span className="font-normal">处理&emsp;&emsp;</span>
-            </div>
-            <div className="flex items-center">
-              <Icon name="send" size={16} className="mr-8" />
-              <span className="font-normal">查看&emsp;&emsp;</span>
+              <span
+                className="font-normal text-blue-900 cursor-pointer"
+                onClick={() => goUnusualTaskDetail(item, 1)}
+              >查看&emsp;&emsp;</span>
             </div>
           </div>
         );
