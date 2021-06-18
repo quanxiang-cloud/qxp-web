@@ -8,16 +8,19 @@ import ErrorTips from '@c/error-tips';
 import toast from '@lib/toast';
 import Modal from '@c/modal';
 import useObservable from '@lib/hooks/use-observable';
+import usePrevious from '@lib/hooks/use-previous';
 
 import Header from './flow-header';
 import AsideMenu from './aside-menu';
 import Content from './content';
 import { getWorkFlowInfo } from './api';
 import type { Data, StoreValue } from './content/editor/type';
+import useSaver from './content/editor/forms/hooks/use-save';
 import store, {
   updateStore,
   updateStoreByKey,
   initStore,
+  buildWorkFlowSaveData,
 } from './content/editor/store';
 import FlowContext from './flow-context';
 
@@ -28,14 +31,30 @@ type OperateType = 'edit' | 'settings' | 'variables';
 export default function Detail(): JSX.Element {
   const [currentOperateType, setCurrentOperateType] = useState<OperateType>('edit');
   const {
-    showDataNotSaveConfirm, currentDataNotSaveConfirmCallback, status,
+    showDataNotSaveConfirm, currentDataNotSaveConfirmCallback, status, needSaveFlow, elements,
   } = useObservable<StoreValue>(store);
 
   const { flowID, type, appID } = useParams<{ flowID: string; type: string; appID: string }>();
+  const saver = useSaver(appID, flowID);
 
   const { data, isLoading, isError } = useQuery(['GET_WORK_FLOW_INFO', flowID], getWorkFlowInfo, {
     enabled: !!flowID,
   });
+
+  function saveWorkFlow(): void {
+    saver(buildWorkFlowSaveData(appID), () => {
+      updateStore((s) => ({ ...s, saved: true, needSaveFlow: false }));
+    });
+  }
+
+  useEffect(() => {
+    needSaveFlow && saveWorkFlow();
+  }, [needSaveFlow]);
+
+  const previousElementsLength = usePrevious(elements?.length);
+  useEffect(() => {
+    previousElementsLength !== elements?.length && saveWorkFlow();
+  }, [elements?.length]);
 
   useEffect(() => {
     if (!data) {

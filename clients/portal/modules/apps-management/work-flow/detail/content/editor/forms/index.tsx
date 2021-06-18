@@ -15,9 +15,9 @@ import store, {
   getNodeElementById,
   updateStore,
   updateBusinessData,
-  buildBpmnText,
   resetElementsData,
   getFormDataElement,
+  buildWorkFlowSaveData,
 } from '@flow/detail/content/editor/store';
 
 import Form from './form';
@@ -42,9 +42,7 @@ const drawerTitleMap = {
 
 export default function NodeFormWrapper(): JSX.Element | null {
   const {
-    nodeIdForDrawerForm, id, status, name, triggerMode, version,
-    cancelable: canCancel, urgeable: canUrge, seeStatusAndMsg: canViewStatusMsg,
-    nodeAdminMsg: canMsg, elements,
+    nodeIdForDrawerForm, id, status, name, elements,
   } = useObservable<StoreValue>(store);
   const { appID } = useContext(FlowContext);
   const currentNodeElement = getNodeElementById(nodeIdForDrawerForm);
@@ -72,8 +70,6 @@ export default function NodeFormWrapper(): JSX.Element | null {
     updateStore((s) => ({ ...s, validating: false }));
     setFormDataChanged(false);
   }, [nodeIdForDrawerForm]);
-
-  useEffect(saveWorkFlow, [name, elements?.length]);
 
   const previousNodeID = usePrevious(currentNodeElement?.id) ?? '';
   useEffect(() => {
@@ -186,16 +182,7 @@ export default function NodeFormWrapper(): JSX.Element | null {
       return;
     }
     const saveData = formData.businessData || {};
-    saver({
-      bpmnText: buildBpmnText(version, nodeIdForDrawerForm, saveData),
-      name: name as string,
-      triggerMode: triggerMode as string,
-      canCancel: canCancel ? 1 : 0,
-      canUrge: canUrge ? 1 : 0,
-      canMsg: canMsg ? 1 : 0,
-      canViewStatusMsg: canViewStatusMsg ? 1 : 0,
-      appId: appID,
-    }, () => {
+    saver(buildWorkFlowSaveData(appID, saveData), () => {
       updateBusinessData(nodeIdForDrawerForm, (b) => ({ ...b, ...saveData }), { saved: true });
       closePanel();
     });

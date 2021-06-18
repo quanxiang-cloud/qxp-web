@@ -6,6 +6,7 @@ import moment from 'moment';
 
 import { edgeBuilder, getNodeInitialData, nodeBuilder } from './utils';
 import type { StoreValue, BusinessData, CurrentElement, Data, NodeType, FormDataElement } from './type';
+import { SaveWorkFlow } from '../../api';
 
 export const getStoreInitialData = (): StoreValue => {
   const startId = 'formData' + uuid();
@@ -246,6 +247,25 @@ export function numberTransform(keys: string[], data: any): any {
   return data;
 }
 
+export function buildWorkFlowSaveData(
+  appID: string, saveData: Partial<BusinessData> = {},
+): SaveWorkFlow {
+  const {
+    version, nodeIdForDrawerForm, name, triggerMode, cancelable, urgeable, nodeAdminMsg,
+    seeStatusAndMsg,
+  } = store.value;
+  return {
+    bpmnText: buildBpmnText(version, nodeIdForDrawerForm, saveData),
+    name: name as string,
+    triggerMode: triggerMode as string,
+    canCancel: cancelable ? 1 : 0,
+    canUrge: urgeable ? 1 : 0,
+    canMsg: nodeAdminMsg ? 1 : 0,
+    canViewStatusMsg: seeStatusAndMsg ? 1 : 0,
+    appId: appID,
+  };
+}
+
 export function buildBpmnText(
   version: string,
   nodeID: string,
@@ -277,7 +297,7 @@ export function buildBpmnText(
         'data.businessData.basicConfig.timeRule.deadLine.urge.repeat.day',
         'data.businessData.basicConfig.timeRule.deadLine.urge.repeat.hours',
         'data.businessData.basicConfig.timeRule.deadLine.urge.repeat.minutes',
-      ], data);
+      ], { ...data, data: omit(data.data, ['type']) });
     }),
   });
 }
