@@ -9,9 +9,9 @@ interface Props {
   id: string;
 }
 
-export default function usePositionChange({ xPos, yPos, id }: Props, isDragging: boolean) {
+export default function usePositionChange({ xPos, yPos, id }: Props, isDragging: boolean): void {
   const previousDragging = usePrevious(isDragging);
-  function saveWorkFlow() {
+  function saveWorkFlow(): void {
     updateStore((s) => ({ ...s, needSaveFlow: true }));
   }
 

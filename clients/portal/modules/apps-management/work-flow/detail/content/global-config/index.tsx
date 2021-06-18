@@ -13,7 +13,7 @@ import type { StoreValue } from '../editor/type';
 import FlowContext from '../../flow-context';
 import { useContext } from 'react';
 
-export default function GlobalConfig() {
+export default function GlobalConfig(): JSX.Element | null {
   const {
     cancelable, urgeable, seeStatusAndMsg, nodeAdminMsg, id, name, version, elements,
     triggerMode, status,
