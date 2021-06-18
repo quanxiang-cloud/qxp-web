@@ -1,13 +1,12 @@
 import React, { useState, MouseEvent, useEffect } from 'react';
 
-import Modal from '@c/modal';
 import Drawer from '@c/drawer';
 import useObservable from '@lib/hooks/use-observable';
 import usePrevious from '@lib/hooks/use-previous';
 import { jsonValidator } from '@lib/utils';
 import type {
   StoreValue, BusinessData, TriggerCondition, TriggerConditionValue,
-  TimeRule, NodeType, TriggerWay, Data, NodeWorkForm,
+  TimeRule, NodeType, TriggerWay, Data,
 } from '@flow/detail/content/editor/type';
 import SaveButtonGroup
   from '@flow/detail/content/editor/components/_common/action-save-button-group';
@@ -15,7 +14,6 @@ import store, {
   getNodeElementById,
   updateStore,
   updateBusinessData,
-  resetElementsData,
   getFormDataElement,
   buildWorkFlowSaveData,
 } from '@flow/detail/content/editor/store';
@@ -49,12 +47,7 @@ export default function NodeFormWrapper(): JSX.Element | null {
   const formDataElement = getFormDataElement();
   const [formData, setFormData] = useState<Data>(currentNodeElement?.data);
   const [formDataChanged, setFormDataChanged] = useState(false);
-  const [workTableChanged, setWorkTableChanged] = useState(false);
   const saver = useSave(appID, id);
-  const [currentWorkTable, setCurrentWorkTable] = useState<{
-    name?: string;
-    value: string;
-  }>();
 
   const { type: nodeType } = currentNodeElement ?? {};
 
@@ -83,25 +76,6 @@ export default function NodeFormWrapper(): JSX.Element | null {
       return { ...s, errors: s.errors };
     });
   }, [formDataChanged]);
-
-  useEffect(() => {
-    formDataElement?.data?.businessData?.form && setCurrentWorkTable(
-      formDataElement?.data?.businessData.form,
-    );
-  }, [formDataElement?.data?.businessData?.form]);
-
-  function onSubmitWorkFormChange(): void {
-    if (!currentWorkTable) {
-      return;
-    }
-    resetElementsData('formData', { form: currentWorkTable });
-    onCancelSubmitWorkForm();
-    setFormDataChanged(true);
-  }
-
-  function onCancelSubmitWorkForm(): void {
-    setWorkTableChanged(false);
-  }
 
   function triggerConditionValidator(v: TriggerCondition): boolean {
     let isValid = true;
@@ -188,21 +162,8 @@ export default function NodeFormWrapper(): JSX.Element | null {
     });
   }
 
-  function saveFormDataOnFirstSetWorkForm(): void {
-    if (formData.type === 'formData' && currentWorkTable) {
-      !formData.businessData.form.value && setFormData((fd) => ({
-        ...fd,
-        businessData: {
-          ...fd.businessData,
-          form: currentWorkTable,
-        },
-      }) as Data);
-    }
-  }
-
   function onSubmit(e: MouseEvent<HTMLDivElement>): void {
     e.preventDefault();
-    saveFormDataOnFirstSetWorkForm();
     if (formDataIsValid()) {
       setFormDataChanged(false);
       saveWorkFlow();
@@ -235,15 +196,12 @@ export default function NodeFormWrapper(): JSX.Element | null {
     closePanel();
   }
 
-  function handleWorkTableChange(workTable: NodeWorkForm): void {
-    const oldValue = formDataElement?.data?.businessData?.form?.value;
-    setCurrentWorkTable(workTable);
-    setWorkTableChanged(!!oldValue && (workTable.value !== oldValue));
-  }
-
   if (!currentNodeElement || !formData) {
     return null;
   }
+
+  const formValue = formData.type === 'formData' ? formData.businessData.form :
+    formDataElement.data.businessData.form;
 
   return (
     <Drawer
@@ -255,36 +213,12 @@ export default function NodeFormWrapper(): JSX.Element | null {
       <div className="flex-1 flex flex-col justify-between h-full">
         <Form
           nodeType={nodeType}
-          form={currentWorkTable}
+          form={formValue}
           value={formData}
           onChange={setFormData}
-          onWorkTableChange={handleWorkTableChange}
           toggleFormDataChanged={setFormDataChanged}
         />
         <SaveButtonGroup onSave={onSubmit} onCancel={onCancel} />
-        {workTableChanged && (
-          <Modal
-            title="更换触发工作表"
-            onClose={onCancelSubmitWorkForm}
-            footerBtns={[
-              {
-                text: '取消',
-                key: 'cancel',
-                onClick: onCancelSubmitWorkForm,
-              },
-              {
-                text: '确定',
-                key: 'confirm',
-                modifier: 'primary',
-                onClick: onSubmitWorkFormChange,
-              },
-            ]}
-          >
-            <p className="text-body2">
-              更换新的触发工作表后，该节点及其他关联节点配置将会被重置，确定要更换吗？
-            </p>
-          </Modal>
-        )}
       </div>
     </Drawer>
   );

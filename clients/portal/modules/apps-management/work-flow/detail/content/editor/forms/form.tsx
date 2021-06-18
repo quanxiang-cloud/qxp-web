@@ -7,7 +7,7 @@ import useObservable from '@lib/hooks/use-observable';
 import FormDataForm from './form-data';
 import ApproveForm from './intermidiate/approve';
 import ProcessVariableAssignmentConfig from './process-variable-assignment-config';
-import store from '@flow/detail/content/editor/store';
+import store, { getFormDataElement } from '@flow/detail/content/editor/store';
 import type {
   NodeType, StoreValue, TriggerCondition, TriggerConditionValue, NodeWorkForm, Data, BusinessData,
   FormDataData,
@@ -19,7 +19,6 @@ interface Props {
   nodeType: NodeType;
   value: Data;
   onChange: React.Dispatch<React.SetStateAction<Data>>;
-  onWorkTableChange: (workTable: NodeWorkForm) => void;
   toggleFormDataChanged: React.Dispatch<React.SetStateAction<boolean>>;
   // todo refactor this prop define
   form?: NodeWorkForm;
@@ -29,17 +28,17 @@ export default function Form({
   nodeType,
   value,
   onChange,
-  onWorkTableChange,
   toggleFormDataChanged,
   form,
 }: Props): JSX.Element {
   const { validating } = useObservable<StoreValue>(store);
+  const formDataElement = getFormDataElement();
   const isApproveNode = nodeType === 'approve';
   const isFillInNode = nodeType === 'fillIn';
 
   function onWorkFormChange(formValue: NodeWorkForm): void {
-    onWorkTableChange(formValue);
     toggleFormDataChanged(!!form?.value && (form?.value !== formValue?.value));
+    onFormChange({ form: formValue });
   }
 
   function isTriggerConditionValueEmpty(condition: TriggerCondition): boolean {
@@ -81,7 +80,7 @@ export default function Form({
           <FormSelector
             value={form}
             onChange={onWorkFormChange}
-            changeable={isFormDataNode}
+            changeable={isFormDataNode && !formDataElement?.data?.businessData?.form?.value}
             validating={validating}
           />
         )}
