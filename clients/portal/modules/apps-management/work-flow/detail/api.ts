@@ -55,7 +55,7 @@ export interface SaveWorkFlow {
   canViewStatusMsg: 0 | 1;
   appId: string;
 }
-export function saveWorkFlow(flowData: SaveWorkFlow) {
+export function saveWorkFlow(flowData: SaveWorkFlow): Promise<WorkFlow> {
   return httpClient<WorkFlow>(
     '/api/v1/flow/saveFlow',
     flowData,

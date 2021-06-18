@@ -44,7 +44,7 @@ export default function NodeFormWrapper(): JSX.Element | null {
   const {
     nodeIdForDrawerForm, id, status, name, triggerMode, version,
     cancelable: canCancel, urgeable: canUrge, seeStatusAndMsg: canViewStatusMsg,
-    nodeAdminMsg: canMsg, elements, needSaveFlow,
+    nodeAdminMsg: canMsg, elements,
   } = useObservable<StoreValue>(store);
   const { appID } = useContext(FlowContext);
   const currentNodeElement = getNodeElementById(nodeIdForDrawerForm);
@@ -74,9 +74,6 @@ export default function NodeFormWrapper(): JSX.Element | null {
   }, [nodeIdForDrawerForm]);
 
   useEffect(saveWorkFlow, [name, elements?.length]);
-  useEffect(() => {
-    needSaveFlow && saveWorkFlow();
-  }, [needSaveFlow]);
 
   const previousNodeID = usePrevious(currentNodeElement?.id) ?? '';
   useEffect(() => {
@@ -199,15 +196,26 @@ export default function NodeFormWrapper(): JSX.Element | null {
       canViewStatusMsg: canViewStatusMsg ? 1 : 0,
       appId: appID,
     }, () => {
-      updateBusinessData(nodeIdForDrawerForm, (b) => ({ ...b, ...saveData }), {
-        saved: true, needSaveFlow: false,
-      });
+      updateBusinessData(nodeIdForDrawerForm, (b) => ({ ...b, ...saveData }), { saved: true });
       closePanel();
     });
   }
 
+  function saveFormDataOnFirstSetWorkForm(): void {
+    if (formData.type === 'formData' && currentWorkTable) {
+      !formData.businessData.form.value && setFormData((fd) => ({
+        ...fd,
+        businessData: {
+          ...fd.businessData,
+          form: currentWorkTable,
+        },
+      }) as Data);
+    }
+  }
+
   function onSubmit(e: MouseEvent<HTMLDivElement>): void {
     e.preventDefault();
+    saveFormDataOnFirstSetWorkForm();
     if (formDataIsValid()) {
       setFormDataChanged(false);
       saveWorkFlow();
@@ -260,7 +268,7 @@ export default function NodeFormWrapper(): JSX.Element | null {
       <div className="flex-1 flex flex-col justify-between h-full">
         <Form
           nodeType={nodeType}
-          form={formData.type === 'formData' ? formData.businessData.form : currentWorkTable}
+          form={currentWorkTable}
           value={formData}
           onChange={setFormData}
           onWorkTableChange={handleWorkTableChange}

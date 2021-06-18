@@ -8,7 +8,11 @@ import toast from '@lib/toast';
 // todo fix this, assign to lishengma
 type FunctionToBeRefactor = () => void;
 
-export default function useSave(appID: string, id?: string) {
+export default function useSave(appID: string, id?: string): (
+  data: SaveWorkFlow,
+  onOk: FunctionToBeRefactor,
+  onError?: FunctionToBeRefactor | undefined
+) => void {
   const history = useHistory();
   const callback = useRef<{ onOk: FunctionToBeRefactor; onError?: FunctionToBeRefactor}>();
 
@@ -27,7 +31,11 @@ export default function useSave(appID: string, id?: string) {
     },
   });
 
-  function onSaveWorkFlow(data: SaveWorkFlow, onOk: FunctionToBeRefactor, onError?: FunctionToBeRefactor) {
+  function onSaveWorkFlow(
+    data: SaveWorkFlow,
+    onOk: FunctionToBeRefactor,
+    onError?: FunctionToBeRefactor,
+  ): void {
     callback.current = {
       onOk, onError,
     };
