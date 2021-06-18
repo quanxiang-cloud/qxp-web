@@ -24,7 +24,7 @@ import Button from '@c/button';
 import { StoreContext } from '@c/form-builder/context';
 import { JoinOperatorSelect, RulesList } from '@c/form-builder/customized-fields';
 import { INTERNAL_FIELD_NAMES } from '@c/form-builder/store';
-import { getCompareOperatorOptions, getSourceElementOperator } from '@c/form-builder/utils';
+import { getCompareOperatorOptions, getSourceElementOperator } from '@c/form-builder/utils/operator';
 
 import { getLinkageTables, fetchLinkedTableFields } from './get-tables';
 import SCHEMA from './schema';
