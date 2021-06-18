@@ -20,7 +20,7 @@ type Props = {
   selected: string[];
   associatedTable: ISchema;
   onChange: (selectedKeys: string[]) => void;
-  readonly: boolean;
+  readOnly: boolean;
 }
 
 function computeTableColumns(schema: ISchema, columns: string[]): Column<Record<string, any>>[] {
@@ -35,7 +35,7 @@ function computeTableColumns(schema: ISchema, columns: string[]): Column<Record<
 }
 
 function AssociatedRecords({
-  associatedTable, columns, selected, appID, tableID, multiple, onChange, readonly,
+  associatedTable, columns, selected, appID, tableID, multiple, onChange, readOnly,
 }: Props): JSX.Element {
   const [showSelectModal, setShowSelectModal] = useState(false);
   const { isLoading, data } = useQuery(['FIND_TABLE_RECORDS', selected], () => {
@@ -70,7 +70,9 @@ function AssociatedRecords({
   }
 
   function buildSubTableColumns(): ColumnType<Record<string, any>>[] {
-    return Object.entries(associatedTable?.properties || {}).reduce((
+    return Object.entries(associatedTable?.properties || {}).filter(([fieldKey]) => {
+      return columns.includes(fieldKey);
+    }).reduce((
       cur: ColumnType<Record<string, any>>[], next: [string, ISchema],
     ) => {
       const [key, sc] = next;
@@ -86,9 +88,11 @@ function AssociatedRecords({
 
   const readOnlyColumns = buildSubTableColumns();
 
-  if (readonly) {
+  if (readOnly) {
     return (
       <AntTable
+        // todo fixme
+        style={{ width: '100%' }}
         pagination={false}
         rowKey="_id"
         columns={readOnlyColumns}
@@ -131,7 +135,7 @@ function AssociatedRecordsFields(props: Partial<ISchemaFieldComponentProps>): JS
   // todo handle error case
   return (
     <AssociatedRecords
-      readonly={props.readonly}
+      readOnly={props.readOnly || props.props.readOnly}
       appID={componentProps.appID}
       tableID={componentProps.tableID}
       columns={componentProps.columns || []}
