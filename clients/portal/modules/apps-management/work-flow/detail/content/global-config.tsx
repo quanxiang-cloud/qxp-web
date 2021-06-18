@@ -6,11 +6,11 @@ import ToolTip from '@c/tooltip';
 import useObservable from '@lib/hooks/use-observable';
 import toast from '@lib/toast';
 
-import store, { updateStoreByKey, updateStore, buildWorkFlowSaveData } from '../editor/store';
-import useSave from '../editor/forms/hooks/use-save';
+import store, { updateStoreByKey, updateStore, buildWorkFlowSaveData } from './editor/store';
+import useSave from './editor/forms/hooks/use-save';
 
-import type { StoreValue } from '../editor/type';
-import FlowContext from '../../flow-context';
+import type { StoreValue } from './editor/type';
+import FlowContext from '../flow-context';
 
 export default function GlobalConfig(): JSX.Element | null {
   const {

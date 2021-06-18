@@ -6,7 +6,7 @@ import Checkbox from '@c/checkbox';
 import ToolTip from '@c/tooltip';
 import Icon from '@c/icon';
 import useRequest from '@lib/hooks/use-request';
-import type { CustomFieldPermission, FieldValue } from '@flow/detail/content/editor/type';
+import type { CustomFieldPermission, FieldValue } from '@flowEditor/type';
 
 import FieldValueEditor from './field-value-editor';
 

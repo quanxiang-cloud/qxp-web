@@ -9,8 +9,8 @@ import cs from 'classnames';
 
 import Select from '@c/select';
 import useObservable from '@lib/hooks/use-observable';
-import store from '@flow/detail/content/editor/store';
-import type { StoreValue, TriggerWayValue, TriggerValue } from '@flow/detail/content/editor/type';
+import store from '@flowEditor/store';
+import type { StoreValue, TriggerWayValue, TriggerValue } from '@flowEditor/type';
 
 import { ConditionItemOptions } from './condition-item';
 

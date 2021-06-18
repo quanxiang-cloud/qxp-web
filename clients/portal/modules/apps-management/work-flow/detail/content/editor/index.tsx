@@ -1,4 +1,4 @@
-import React, { useState, useRef, DragEvent, useEffect } from 'react';
+import React, { useState, useRef, DragEvent, useEffect, useContext } from 'react';
 import dagre from 'dagre';
 import cs from 'classnames';
 import ReactFlow, {
@@ -17,6 +17,7 @@ import ReactFlow, {
 
 import { uuid } from '@lib/utils';
 import useObservable from '@lib/hooks/use-observable';
+import FlowContext from '@flow/detail/flow-context';
 
 import Components from './components';
 import store, { updateStore } from './store';
@@ -25,11 +26,9 @@ import { getNodeInitialData } from './utils';
 import DrawerForm from './forms';
 import useFitView from './hooks/use-fit-view';
 import Config, { edgeTypes, nodeTypes } from './config';
-import FlowContext from '../../flow-context';
 
 import 'react-flow-renderer/dist/style.css';
 import 'react-flow-renderer/dist/theme-default.css';
-import { useContext } from 'react';
 
 const dagreGraph = new dagre.graphlib.Graph();
 dagreGraph.setDefaultEdgeLabel(() => ({}));

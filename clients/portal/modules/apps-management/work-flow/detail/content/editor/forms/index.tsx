@@ -1,28 +1,25 @@
-import React, { useState, MouseEvent, useEffect } from 'react';
+import React, { useState, MouseEvent, useEffect, useContext } from 'react';
 
-import Drawer from '@c/drawer';
 import useObservable from '@lib/hooks/use-observable';
 import usePrevious from '@lib/hooks/use-previous';
 import { jsonValidator } from '@lib/utils';
+import SaveButtonGroup from '@flowEditor/components/_common/action-save-button-group';
+import FlowContext from '@flow/detail/flow-context';
 import type {
   StoreValue, BusinessData, TriggerCondition, TriggerConditionValue,
   TimeRule, NodeType, TriggerWay, Data,
-} from '@flow/detail/content/editor/type';
-import SaveButtonGroup
-  from '@flow/detail/content/editor/components/_common/action-save-button-group';
+} from '@flowEditor/type';
 import store, {
   getNodeElementById,
   updateStore,
   updateBusinessData,
   getFormDataElement,
   buildWorkFlowSaveData,
-} from '@flow/detail/content/editor/store';
+} from '@flowEditor/store';
 
 import Form from './form';
-
 import useSave from './hooks/use-save';
-import FlowContext from '../../../flow-context';
-import { useContext } from 'react';
+import Drawer from './drawer';
 
 const drawerTitleMap = {
   formData: '工作表触发',

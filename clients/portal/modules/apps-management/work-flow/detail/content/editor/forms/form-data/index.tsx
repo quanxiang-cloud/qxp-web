@@ -1,17 +1,14 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useContext } from 'react';
 import { useQuery } from 'react-query';
 
 import toast from '@lib/toast';
 import Tab from '@c/tab2';
-import type {
-  FormDataData,
-} from '@flow/detail/content/editor/type';
+import type { FormDataData } from '@flowEditor/type';
+import FlowContext from '@flow/detail/flow-context';
 
 import TriggerWay from './basic-config/trigger-way';
 import TriggerCondition from './basic-config/trigger-condition';
 import { getFormFieldOptions } from '../api';
-import FlowContext from '../../../../flow-context';
-import { useContext } from 'react';
 
 interface Props {
   formID?: string;
