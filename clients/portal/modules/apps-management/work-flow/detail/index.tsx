@@ -21,10 +21,10 @@ import store, {
 
 import './style.scss';
 
-export default function Detail() {
-  const [currentOperateType, setCurrentOperateType] = useState<
-    'edit' | 'settings' | 'variables'
-  >('edit');
+type OperateType = 'edit' | 'settings' | 'variables';
+
+export default function Detail(): JSX.Element {
+  const [currentOperateType, setCurrentOperateType] = useState<OperateType>('edit');
   const {
     showDataNotSaveConfirm, currentDataNotSaveConfirmCallback, status,
   } = useObservable<StoreValue>(store);
