@@ -10,7 +10,7 @@ import store, { updateStoreByKey, updateStore } from '../editor/store';
 import useSave from '../editor/forms/hooks/use-save';
 
 import type { StoreValue } from '../editor/type';
-import FlowContext from '../../context';
+import FlowContext from '../../flow-context';
 import { useContext } from 'react';
 
 export default function GlobalConfig() {

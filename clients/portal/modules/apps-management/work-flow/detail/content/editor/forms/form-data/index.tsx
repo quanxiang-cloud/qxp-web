@@ -10,7 +10,7 @@ import type {
 import TriggerWay from './basic-config/trigger-way';
 import TriggerCondition from './basic-config/trigger-condition';
 import { getFormFieldOptions } from '../api';
-import FlowContext from '../../../../context';
+import FlowContext from '../../../../flow-context';
 import { useContext } from 'react';
 
 interface Props {

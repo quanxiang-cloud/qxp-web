@@ -18,7 +18,7 @@ import store, {
   updateStoreByKey,
   initStore,
 } from './content/editor/store';
-import FlowContext from './context';
+import FlowContext from './flow-context';
 
 import './style.scss';
 

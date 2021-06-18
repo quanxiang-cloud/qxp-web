@@ -25,7 +25,7 @@ import { getNodeInitialData } from './utils';
 import DrawerForm from './forms';
 import useFitView from './hooks/use-fit-view';
 import Config, { edgeTypes, nodeTypes } from './config';
-import FlowContext from '../../context';
+import FlowContext from '../../flow-context';
 
 import 'react-flow-renderer/dist/style.css';
 import 'react-flow-renderer/dist/theme-default.css';

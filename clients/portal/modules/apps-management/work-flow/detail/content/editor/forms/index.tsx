@@ -22,7 +22,7 @@ import Form from './form';
 
 import { getNodeInitialData } from '../utils';
 import useSave from './hooks/use-save';
-import FlowContext from '../../../context';
+import FlowContext from '../../../flow-context';
 import { useContext } from 'react';
 
 const drawerTitleMap = {
@@ -253,16 +253,12 @@ export default function NodeFormWrapper(): JSX.Element | null {
 
   return (
     <Drawer
-      title={(
-        <span className="text-h5 mr-8">{drawerTitleMap[nodeType]}</span>
-      )}
+      title={(<span className="text-h5 mr-8">{drawerTitleMap[nodeType]}</span>)}
       distanceTop={0}
       onCancel={closePanel}
       className="flow-editor-drawer"
     >
-      <div
-        className="flex-1 flex flex-col justify-between h-full"
-      >
+      <div className="flex-1 flex flex-col justify-between h-full">
         <Form
           nodeType={nodeType}
           value={formData}

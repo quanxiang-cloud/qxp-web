@@ -14,7 +14,7 @@ import type {
 
 import CustomFieldTable from './custom-field-table';
 import SystemFieldTable from './system-field-table';
-import FlowContext from '../../../../../../context';
+import FlowContext from '../../../../../../flow-context';
 
 import './style.scss';
 import { useContext } from 'react';
