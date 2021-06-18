@@ -45,7 +45,7 @@ function buildOptions(optionsData: Options, exclude: string[]): Options {
 function FormTableSelector(
   { value, changeable = true, onChange = noop, validating, errorMessage, exclude }: Props,
   ref?: Ref<Cascader>,
-) {
+): JSX.Element {
   const { appID } = useParams<{appID: string}>();
 
   const {
@@ -62,7 +62,7 @@ function FormTableSelector(
     isError && toast.error(error as string);
   }, [isError]);
 
-  function onWorkFormChange(_: unknown, selectedOptions?: CascaderOptionType[]) {
+  function onWorkFormChange(_: unknown, selectedOptions?: CascaderOptionType[]): void {
     const table = last(selectedOptions);
     onChange({
       value: table?.value as string,
@@ -75,7 +75,7 @@ function FormTableSelector(
     dataSource: Options,
     map?: Record<string, string[]>,
     id?: number,
-  ) {
+  ): string[] {
     const pathMap: Record<string, string[]> = map || {};
     for (let index = 0; index < dataSource.length; index += 1) {
       const { value, children } = dataSource[index];

@@ -6,8 +6,8 @@ import useObservable from '@lib/hooks/use-observable';
 import usePrevious from '@lib/hooks/use-previous';
 import { jsonValidator } from '@lib/utils';
 import type {
-  StoreValue, BusinessData, NodeWorkForm, TriggerCondition, TriggerConditionValue,
-  TimeRule, NodeType, TriggerWay, FillInData, FormDataData,
+  StoreValue, BusinessData, TriggerCondition, TriggerConditionValue,
+  TimeRule, NodeType, TriggerWay, Data, NodeWorkForm,
 } from '@flow/detail/content/editor/type';
 import SaveButtonGroup
   from '@flow/detail/content/editor/components/_common/action-save-button-group';
@@ -17,10 +17,11 @@ import store, {
   updateBusinessData,
   buildBpmnText,
   resetElementsData,
+  getFormDataElement,
 } from '@flow/detail/content/editor/store';
+
 import Form from './form';
 
-import { getNodeInitialData } from '../utils';
 import useSave from './hooks/use-save';
 import FlowContext from '../../../flow-context';
 import { useContext } from 'react';
@@ -47,10 +48,10 @@ export default function NodeFormWrapper(): JSX.Element | null {
   } = useObservable<StoreValue>(store);
   const { appID } = useContext(FlowContext);
   const currentNodeElement = getNodeElementById(nodeIdForDrawerForm);
-  const formDataElement = elements?.find(({ type }) => type === 'formData');
-  const data = currentNodeElement?.data?.businessData;
-  const [formData, setFormData] = useState<BusinessData>(data);
+  const formDataElement = getFormDataElement();
+  const [formData, setFormData] = useState<Data>(currentNodeElement?.data);
   const [formDataChanged, setFormDataChanged] = useState(false);
+  const [workTableChanged, setWorkTableChanged] = useState(false);
   const saver = useSave(appID, id);
   const [currentWorkTable, setCurrentWorkTable] = useState<{
     name?: string;
@@ -58,28 +59,10 @@ export default function NodeFormWrapper(): JSX.Element | null {
   }>();
 
   const { type: nodeType } = currentNodeElement ?? {};
-  const isFormDataNode = nodeType === 'formData';
-
-  function onSubmitWorkFormChange(): void {
-    if (!currentWorkTable) {
-      return;
-    }
-    resetElementsData('formData', { form: currentWorkTable });
-    onResetFormData(currentWorkTable);
-    onCancelSubmitWorkForm();
-    setFormDataChanged(true);
-  }
-
-  function onCancelSubmitWorkForm(): void {
-    setCurrentWorkTable(undefined);
-  }
 
   useEffect(() => {
-    setFormData((f) => ({
-      ...(data || {}),
-      form: (data as FormDataData)?.form || (f as FormDataData)?.form,
-    }));
-  }, [data]);
+    currentNodeElement?.data && setFormData(currentNodeElement.data);
+  }, [currentNodeElement?.data]);
 
   useEffect(() => {
     formDataChanged && updateStore((s) => ({ ...s, saved: false }));
@@ -107,6 +90,25 @@ export default function NodeFormWrapper(): JSX.Element | null {
       return { ...s, errors: s.errors };
     });
   }, [formDataChanged]);
+
+  useEffect(() => {
+    formDataElement?.data?.businessData?.form && setCurrentWorkTable(
+      formDataElement?.data?.businessData.form,
+    );
+  }, [formDataElement?.data?.businessData?.form]);
+
+  function onSubmitWorkFormChange(): void {
+    if (!currentWorkTable) {
+      return;
+    }
+    resetElementsData('formData', { form: currentWorkTable });
+    onCancelSubmitWorkForm();
+    setFormDataChanged(true);
+  }
+
+  function onCancelSubmitWorkForm(): void {
+    setWorkTableChanged(false);
+  }
 
   function triggerConditionValidator(v: TriggerCondition): boolean {
     let isValid = true;
@@ -145,9 +147,11 @@ export default function NodeFormWrapper(): JSX.Element | null {
   }
 
   function multiplePersonWayValidator(way: string): boolean {
-    const { users, departments } = (formData as FillInData).basicConfig.approvePersons;
-    if (users.length === 1 && !departments.length) {
-      return true;
+    if (formData.type === 'fillIn') {
+      const { users, departments } = formData.businessData.basicConfig.approvePersons;
+      if (users.length === 1 && !departments.length) {
+        return true;
+      }
     }
     return !!way;
   }
@@ -176,7 +180,7 @@ export default function NodeFormWrapper(): JSX.Element | null {
       sendEmail: {},
       webMessage: {},
     };
-    return jsonValidator<BusinessData>(formData, jsonValidatorMap[nodeType]);
+    return jsonValidator<BusinessData>(formData.businessData, jsonValidatorMap[nodeType]);
   }
 
   const previousName = usePrevious(name);
@@ -184,10 +188,7 @@ export default function NodeFormWrapper(): JSX.Element | null {
     if (!name || !previousName || !elements?.length) {
       return;
     }
-    const { form, ...saveData } = formData as FormDataData || {};
-    if (isFormDataNode) {
-      Object.assign(saveData, { form });
-    }
+    const saveData = formData.businessData || {};
     saver({
       bpmnText: buildBpmnText(version, nodeIdForDrawerForm, saveData),
       name: name as string,
@@ -239,12 +240,10 @@ export default function NodeFormWrapper(): JSX.Element | null {
     closePanel();
   }
 
-  function onResetFormData(form: NodeWorkForm): void {
-    const newInitialFormData = getNodeInitialData(currentNodeElement?.type);
-    newInitialFormData && setFormData({
-      ...newInitialFormData,
-      form,
-    });
+  function handleWorkTableChange(workTable: NodeWorkForm): void {
+    const oldValue = formDataElement?.data?.businessData?.form?.value;
+    setCurrentWorkTable(workTable);
+    setWorkTableChanged(!!oldValue && (workTable.value !== oldValue));
   }
 
   if (!currentNodeElement || !formData) {
@@ -261,14 +260,14 @@ export default function NodeFormWrapper(): JSX.Element | null {
       <div className="flex-1 flex flex-col justify-between h-full">
         <Form
           nodeType={nodeType}
+          form={formData.type === 'formData' ? formData.businessData.form : currentWorkTable}
           value={formData}
-          form={(formDataElement?.data?.businessData as FormDataData).form}
           onChange={setFormData}
-          onWorkTableChange={setCurrentWorkTable}
+          onWorkTableChange={handleWorkTableChange}
           toggleFormDataChanged={setFormDataChanged}
         />
         <SaveButtonGroup onSave={onSubmit} onCancel={onCancel} />
-        {currentWorkTable && (
+        {workTableChanged && (
           <Modal
             title="更换触发工作表"
             onClose={onCancelSubmitWorkForm}

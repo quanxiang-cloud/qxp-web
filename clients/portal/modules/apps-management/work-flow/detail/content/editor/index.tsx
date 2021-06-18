@@ -35,7 +35,7 @@ const dagreGraph = new dagre.graphlib.Graph();
 dagreGraph.setDefaultEdgeLabel(() => ({}));
 
 export default function Editor(): JSX.Element {
-  const { currentConnection, elements } = useObservable<StoreValue>(store);
+  const { currentConnection, elements, nodeIdForDrawerForm } = useObservable<StoreValue>(store);
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
   const [fitViewFinished, setFitViewFinished] = useState(false);
   const [reactFlowInstance, setReactFlowInstance] = useState<OnLoadParams>();
@@ -142,6 +142,7 @@ export default function Editor(): JSX.Element {
           type,
           position: { x: position.x - (width / 2), y: position.y - (height / 2) },
           data: {
+            type,
             nodeData: { width, height, name: nodeName },
             businessData: getNodeInitialData(type),
           },
@@ -187,7 +188,9 @@ export default function Editor(): JSX.Element {
         </ReactFlow>
       </div>
       <Components />
-      <DrawerForm />
+      {nodeIdForDrawerForm && (
+        <DrawerForm key={nodeIdForDrawerForm} />
+      )}
     </div>
   );
 }

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery } from 'react-query';
 import { useParams } from 'react-router-dom';
+import { FlowElement, isNode } from 'react-flow-renderer';
 
 import Loading from '@c/loading';
 import ErrorTips from '@c/error-tips';
@@ -12,7 +13,7 @@ import Header from './flow-header';
 import AsideMenu from './aside-menu';
 import Content from './content';
 import { getWorkFlowInfo } from './api';
-import type { StoreValue } from './content/editor/type';
+import type { Data, StoreValue } from './content/editor/type';
 import store, {
   updateStore,
   updateStoreByKey,
@@ -44,7 +45,12 @@ export default function Detail(): JSX.Element {
       const bpmn = JSON.parse(data.bpmnText);
       updateStore((s) => ({
         ...s,
-        elements: bpmn.shapes.filter(Boolean),
+        elements: bpmn.shapes.filter(Boolean).map((element: FlowElement<Data>) => {
+          if (isNode(element)) {
+            Object.assign(element.data, { type: element.type });
+          }
+          return element;
+        }),
         version: bpmn.version,
         name: data.name,
         cancelable: data.canCancel === 1,
