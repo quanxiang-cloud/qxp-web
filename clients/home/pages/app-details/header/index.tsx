@@ -78,36 +78,37 @@ function DetailsHeader(): JSX.Element {
           onChange={handleChange}
         />
       </div>
-      <MoreMenu
-        menus={[
-          { key: 'resetPassword', label: '重置密码' },
-          { key: 'logout', label: '登出' },
-        ]}
-        onMenuClick={(menuKey) => {
-          if (menuKey === 'logout') {
-            window.location.href = '/logout';
-            return;
-          }
-
-          setOpenResetPasswordModal(true);
-        }}
-      >
-        <div
-          className="cursor-pointer flex items-center h-36
-            hover:blue-100 transition group-hover:text-blue-600"
-        >
-          <Avatar
-            username={window.USER.userName}
-          />
-          <Icon name="arrow_drop_down" size={20} />
-        </div>
-      </MoreMenu>
       {options.length > 1 && (
         <div className='flex items-center'>
           切换角色：
           <Select value={curRole} onChange={handleRoleChange} className='w-144' options={options} />
+          <MoreMenu
+            menus={[
+              { key: 'resetPassword', label: '重置密码' },
+              { key: 'logout', label: '登出' },
+            ]}
+            onMenuClick={(menuKey) => {
+              if (menuKey === 'logout') {
+                window.location.href = '/logout';
+                return;
+              }
+
+              setOpenResetPasswordModal(true);
+            }}
+          >
+            <div
+              className="cursor-pointer flex items-center h-36
+            hover:blue-100 transition group-hover:text-blue-600 ml-20"
+            >
+              <Avatar
+                username={window.USER.userName}
+              />
+              <Icon name="arrow_drop_down" size={20} />
+            </div>
+          </MoreMenu>
         </div>
       )}
+
     </div>
   );
 }
