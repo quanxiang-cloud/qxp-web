@@ -6,7 +6,7 @@ import { pick } from 'lodash';
 
 import Breadcrumb from '@c/breadcrumb';
 import { useURLSearch } from '@lib/hooks';
-import Tab, { TabItem } from '@c/tab2';
+import Tab, { TabItem } from '@c/tab';
 import Icon from '@c/icon';
 import Loading from '@c/loading';
 import ErrorTips from '@c/error-tips';

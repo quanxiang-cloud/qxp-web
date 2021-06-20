@@ -4,7 +4,7 @@ import { observer } from 'mobx-react';
 import cs from 'classnames';
 import { Schema } from '@formily/react-schema-renderer';
 
-import Tab from '@c/tab2';
+import Tab from '@c/tab';
 import Icon from '@c/icon';
 import PopConfirm from '@c/pop-confirm';
 import PageLoading from '@c/page-loading';
