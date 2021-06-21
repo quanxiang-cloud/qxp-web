@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useQuery } from 'react-query';
 import { useParams } from 'react-router-dom';
 import { FlowElement, isNode } from 'react-flow-renderer';
@@ -30,8 +30,10 @@ type OperateType = 'edit' | 'settings' | 'variables';
 
 export default function Detail(): JSX.Element {
   const [currentOperateType, setCurrentOperateType] = useState<OperateType>('edit');
+  const isFirstLoad = useRef(true);
   const {
     showDataNotSaveConfirm, currentDataNotSaveConfirmCallback, status, needSaveFlow, elements, id,
+    apiFetched,
   } = useObservable<StoreValue>(store);
 
   const isEmptyWorkFlow = !id;
@@ -43,19 +45,22 @@ export default function Detail(): JSX.Element {
     enabled: !!flowID,
   });
 
-  function saveWorkFlow(): void {
-    saver(buildWorkFlowSaveData(appID), () => {
-      updateStore((s) => ({ ...s, saved: true, needSaveFlow: false }));
-    });
-  }
-
   useEffect(() => {
     needSaveFlow && saveWorkFlow();
   }, [needSaveFlow]);
 
   const previousElementsLength = usePrevious(elements?.length);
   useEffect(() => {
-    previousElementsLength !== elements?.length && !isEmptyWorkFlow && saveWorkFlow();
+    if (flowID && !apiFetched) {
+      return;
+    }
+    if (apiFetched && isFirstLoad.current) {
+      isFirstLoad.current = false;
+      return;
+    }
+    if (previousElementsLength !== elements?.length && !isEmptyWorkFlow) {
+      saveWorkFlow();
+    }
   }, [elements?.length]);
 
   useEffect(() => {
@@ -66,6 +71,7 @@ export default function Detail(): JSX.Element {
       const bpmn = JSON.parse(data.bpmnText);
       updateStore((s) => ({
         ...s,
+        apiFetched: true,
         elements: bpmn.shapes.filter(Boolean).map((element: FlowElement<Data>) => {
           if (isNode(element)) {
             Object.assign(element.data, { type: element.type });
@@ -92,12 +98,10 @@ export default function Detail(): JSX.Element {
     !flowID && initStore();
   }, [flowID]);
 
-  if (isLoading) {
-    return <Loading desc="加载中..." />;
-  }
-
-  if (isError) {
-    return <ErrorTips desc="出错了..." />;
+  function saveWorkFlow(): void {
+    saver(buildWorkFlowSaveData(appID), () => {
+      updateStore((s) => ({ ...s, saved: true, needSaveFlow: false }));
+    });
   }
 
   function onConfirmCancel(): void {
@@ -107,6 +111,14 @@ export default function Detail(): JSX.Element {
   function onConfirmSubmit(): void {
     onConfirmCancel();
     currentDataNotSaveConfirmCallback && currentDataNotSaveConfirmCallback();
+  }
+
+  if (isLoading) {
+    return <Loading desc="加载中..." />;
+  }
+
+  if (isError) {
+    return <ErrorTips desc="出错了..." />;
   }
 
   return (

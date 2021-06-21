@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useQuery } from 'react-query';
 import { observer } from 'mobx-react';
 
-import Tab from '@c/tab2';
+import Tab from '@c/tab';
 import TextHeader from '@c/text-header';
 import SearchInput from '@c/form/input/search-input';
 import Loading from '@c/loading';

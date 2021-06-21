@@ -2,7 +2,7 @@ import React from 'react';
 import { useQuery } from 'react-query';
 
 import ItemWithTitleDesc from '@c/item-with-title-desc';
-import Tab from '@c/tab2';
+import Tab from '@c/tab';
 import Loading from '@c/loading';
 
 import { getRoleFunctions } from '../api';

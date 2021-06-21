@@ -1,13 +1,10 @@
-import React, { useState, MouseEvent, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 
 import useObservable from '@lib/hooks/use-observable';
 import usePrevious from '@lib/hooks/use-previous';
-import { jsonValidator } from '@lib/utils';
-import SaveButtonGroup from '@flowEditor/components/_common/action-save-button-group';
 import FlowContext from '@flow/detail/flow-context';
 import type {
-  StoreValue, BusinessData, TriggerCondition, TriggerConditionValue,
-  TimeRule, NodeType, TriggerWay, Data,
+  StoreValue, BusinessData, Data, NodeWorkForm,
 } from '@flowEditor/type';
 import store, {
   getNodeElementById,
@@ -36,9 +33,7 @@ const drawerTitleMap = {
 };
 
 export default function NodeFormWrapper(): JSX.Element | null {
-  const {
-    nodeIdForDrawerForm, id, status, name, elements,
-  } = useObservable<StoreValue>(store);
+  const { nodeIdForDrawerForm, id, name, elements } = useObservable<StoreValue>(store);
   const { appID } = useContext(FlowContext);
   const currentNodeElement = getNodeElementById(nodeIdForDrawerForm);
   const formDataElement = getFormDataElement();
@@ -74,99 +69,20 @@ export default function NodeFormWrapper(): JSX.Element | null {
     });
   }, [formDataChanged]);
 
-  function triggerConditionValidator(v: TriggerCondition): boolean {
-    let isValid = true;
-    v?.expr?.forEach((exprItem) => {
-      const valueItem = exprItem as TriggerConditionValue;
-      const anotherCondition = exprItem as TriggerCondition;
-      if (typeof valueItem.value !== 'undefined') {
-        isValid = !!(valueItem.value && valueItem.key && valueItem.op);
-      } else {
-        isValid = triggerConditionValidator(anotherCondition);
-      }
-    });
-    return isValid;
-  }
-
-  function timeRuleValidator(timeRule: TimeRule): boolean {
-    const { deadLine, whenTimeout } = timeRule ?? {};
-    if (timeRule?.enabled) {
-      if (
-        ((whenTimeout?.type === 'jump' || whenTimeout?.type === 'autoDealWith') &&
-        !whenTimeout?.value) || !deadLine?.breakPoint.length) {
-        return false;
-      }
-
-      return !!(timeRule.deadLine.day || timeRule.deadLine.hours || timeRule.deadLine.minutes);
-    }
-    return true;
-  }
-
-  function triggerWayValidator([triggerWay, whenAlterFields]: [TriggerWay, string[]]): boolean {
-    const isTriggerWayValid = !!triggerWay?.length && typeof triggerWay !== 'undefined';
-    if (triggerWay?.length && triggerWay?.includes('whenAlter') && !whenAlterFields?.length) {
-      return false;
-    }
-    return isTriggerWayValid;
-  }
-
-  function multiplePersonWayValidator(way: string): boolean {
-    if (formData.type === 'fillIn') {
-      const { users, departments } = formData.businessData.basicConfig.approvePersons;
-      if (users.length === 1 && !departments.length) {
-        return true;
-      }
-    }
-    return !!way;
-  }
-
-  function formDataIsValid(): boolean {
-    const jsonValidatorMap: Record<NodeType, Record<string, (v: any) => boolean>> = {
-      formData: {
-        'form.value': (v) => !!v && typeof v !== 'undefined',
-        'triggerWay,whenAlterFields': triggerWayValidator,
-        triggerCondition: triggerConditionValidator,
-      },
-      fillIn: {
-        'basicConfig.timeRule': timeRuleValidator,
-        'basicConfig.multiplePersonWay': multiplePersonWayValidator,
-      },
-      approve: {
-        'basicConfig.timeRule': timeRuleValidator,
-        'basicConfig.multiplePersonWay': multiplePersonWayValidator,
-      },
-      end: {},
-      processBranch: {},
-      processVariableAssignment: {},
-      tableDataCreate: {},
-      tableDataUpdate: {},
-      cc: {},
-      sendEmail: {},
-      webMessage: {},
-    };
-    return jsonValidator<BusinessData>(formData.businessData, jsonValidatorMap[nodeType]);
-  }
-
   const previousName = usePrevious(name);
-  function saveWorkFlow(): void {
+
+  function saveWorkFlow(data: BusinessData): void {
     if (!name || !previousName || !elements?.length) {
       return;
     }
-    const saveData = formData.businessData || {};
-    saver(buildWorkFlowSaveData(appID, saveData), () => {
-      updateBusinessData(nodeIdForDrawerForm, (b) => ({ ...b, ...saveData }), { saved: true });
+    saver(buildWorkFlowSaveData(appID, data), () => {
+      updateBusinessData(nodeIdForDrawerForm, (b) => ({ ...b, ...data }), { saved: true });
       closePanel();
     });
   }
 
-  function onSubmit(e: MouseEvent<HTMLDivElement>): void {
-    e.preventDefault();
-    if (formDataIsValid()) {
-      setFormDataChanged(false);
-      saveWorkFlow();
-    } else {
-      updateStore((s) => ({ ...s, validating: true }));
-    }
+  function onSubmit(data: BusinessData): void {
+    saveWorkFlow(data);
   }
 
   function closePanel(): void {
@@ -181,24 +97,16 @@ export default function NodeFormWrapper(): JSX.Element | null {
     }));
   }
 
-  function onCancel(): false | undefined {
-    if (formDataChanged && (status !== 'ENABLE')) {
-      updateStore((s) => ({
-        ...s,
-        showDataNotSaveConfirm: true,
-        currentDataNotSaveConfirmCallback: () => closePanel(),
-      }));
-      return false;
-    }
-    closePanel();
-  }
-
   if (!currentNodeElement || !formData) {
     return null;
   }
 
-  const formValue = formData.type === 'formData' ? formData.businessData.form :
-    formDataElement.data.businessData.form;
+  function getWorkFormValue(): NodeWorkForm {
+    if (formData.type === 'formData') {
+      return formData.businessData.form;
+    }
+    return formDataElement.data.businessData.form;
+  }
 
   return (
     <Drawer
@@ -209,13 +117,11 @@ export default function NodeFormWrapper(): JSX.Element | null {
     >
       <div className="flex-1 flex flex-col justify-between h-full">
         <Form
-          nodeType={nodeType}
-          form={formValue}
-          value={formData}
-          onChange={setFormData}
-          toggleFormDataChanged={setFormDataChanged}
+          workForm={getWorkFormValue()}
+          defaultValue={formData}
+          onSubmit={onSubmit}
+          onCancel={closePanel}
         />
-        <SaveButtonGroup onSave={onSubmit} onCancel={onCancel} />
       </div>
     </Drawer>
   );

@@ -45,6 +45,10 @@ export default function Editor(): JSX.Element {
     updateStore((s) => ({ ...s, flowInstance: reactFlowInstance }));
   }, [reactFlowInstance]);
 
+  useEffect(() => {
+    fitView();
+  }, [elements?.length]);
+
   function setElements(elements: Elements): void {
     updateStore((s) => ({ ...s, elements }));
   }

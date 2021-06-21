@@ -1,6 +1,6 @@
 import React from 'react';
 
-import Tab from '@c/tab2';
+import Tab from '@c/tab';
 
 import BasicInfo from './basic-info';
 import PageFormTable from './page-form-table';

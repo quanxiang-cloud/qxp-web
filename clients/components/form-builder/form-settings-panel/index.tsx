@@ -1,5 +1,5 @@
 import React from 'react';
-import Tab from '@c/tab2';
+import Tab from '@c/tab';
 
 import FormConfig from './form-config';
 import FormFieldConfig from './form-field-config';
