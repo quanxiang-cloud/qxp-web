@@ -1,6 +1,7 @@
 import React from 'react';
-import moment from 'moment';
 import { UnionColumns } from 'react-table';
+
+import FormDataValueRenderer from '@c/form-data-value-renderer';
 
 import { TableConfig } from './type';
 
@@ -10,68 +11,6 @@ export type Config = {
   pageTableColumns?: string[];
   pageTableShowRule?: TableConfig;
 };
-
-type Option = {
-  value: string;
-  label: string;
-}
-
-export function getTableCellData(
-  initValue: string | string[] | Record<string, unknown> | Record<string, unknown>[] | undefined,
-  field: ISchema,
-  defaultValue?: any,
-): string | JSX.Element | Record<string, any>[] {
-  if (!initValue) {
-    return defaultValue || undefined;
-  }
-
-  const format = field['x-component-props']?.format || 'YYYY-MM-DD HH:mm:ss';
-  switch (field.type) {
-  case 'label-value':
-    return (([] as Record<string, unknown>[]).concat(initValue as Record<string, unknown>[]))
-      .map((itm) => itm.label).join(',');
-  case 'datetime':
-    if (Array.isArray(initValue)) {
-      return (initValue as string[]).map((value: string) => {
-        return moment(value).format(format);
-      }).join('-');
-    }
-    return moment(initValue).format(format);
-  case 'string':
-    if (field.enum && field.enum.length) {
-      return (field.enum.find(({ value }: any) => value === initValue) as Option)?.label || '';
-    }
-
-    return initValue as string;
-  case 'array':
-    if (field.enum && field.enum.length) {
-      return (initValue as string[]).map((_value: string) => {
-        if (!field.enum) {
-          return '';
-        }
-
-        const enumTmp = field.enum[0];
-        if (typeof enumTmp === 'object') {
-          return (field.enum.find(({ value }: any) => value === _value) as Option)?.label || '';
-        }
-
-        return _value;
-      }).join(',');
-    }
-
-    return (initValue as Option[]).map(({ label })=>label).join(',');
-  default:
-    if (Array.isArray(initValue)) {
-      return initValue.join(',');
-    }
-
-    if (typeof initValue === 'object' && initValue?.label) {
-      return initValue?.label as string;
-    }
-
-    return initValue as string;
-  }
-}
 
 function addFixedParameters(
   fixedList: number[],
@@ -122,11 +61,13 @@ export function getPageDataSchema(
     return {
       id: key,
       Header: fieldsMap[key].title || '',
-      accessor: (data: any) => getTableCellData(
-        data[key],
-        fieldsMap[key],
-        <span className='text-gray-300'>——</span>,
-      ),
+      accessor: (data: any) => {
+        if (!data[key]) {
+          return <span className='text-gray-300'>——</span>;
+        }
+
+        return <FormDataValueRenderer value={data[key]} schema={fieldsMap[key]} />;
+      },
     };
   });
 

@@ -2,15 +2,13 @@ import React, { useState, useMemo } from 'react';
 import { useQuery } from 'react-query';
 import { observer } from 'mobx-react';
 import cs from 'classnames';
-import { Schema } from '@formily/react-schema-renderer';
 
 import Tab from '@c/tab2';
 import Icon from '@c/icon';
 import PopConfirm from '@c/pop-confirm';
 import PageLoading from '@c/page-loading';
-import SubTable from '@c/form-builder/registry/sub-table/preview';
-import AssociatedRecords from '@c/form-builder/registry/associated-records/associated-records';
-import { getTableCellData } from '@c/form-app-data-table/utils';
+import FormDataValueRenderer from '@c/form-data-value-renderer';
+import { Schema } from '@formily/react-schema-renderer';
 
 import { getOperateButtonPer } from '../utils';
 import { getSchemaAndRecord } from '../api';
@@ -60,7 +58,9 @@ function DetailsDrawer({ onCancel, rowID, goEdit, delData }: Props): JSX.Element
         _systems.push({
           label: fieldSchema.title as string,
           key: fieldKey,
-          value: getTableCellData(record?.[fieldKey], fieldSchema),
+          value: record?.[fieldKey] ? (
+            <FormDataValueRenderer schema={fieldSchema as Schema} value={record?.[fieldKey]} />
+          ) : '无数据',
           fieldSchema,
         });
         return;
@@ -69,7 +69,9 @@ function DetailsDrawer({ onCancel, rowID, goEdit, delData }: Props): JSX.Element
       _details.push({
         label: fieldSchema.title as string,
         key: fieldKey,
-        value: getTableCellData(record?.[fieldKey], fieldSchema),
+        value: record?.[fieldKey] ? (
+          <FormDataValueRenderer schema={fieldSchema as Schema} value={record?.[fieldKey]} />
+        ) : '无数据',
         fieldSchema,
       });
     });
@@ -91,37 +93,13 @@ function DetailsDrawer({ onCancel, rowID, goEdit, delData }: Props): JSX.Element
     });
   };
 
-  const fieldValueRender = (fieldSchema: ISchema, value: any): JSX.Element => {
-    if (fieldSchema?.['x-component']?.toLowerCase() === 'subtable') {
-      return (
-        <SubTable
-          value={value as Record<string, unknown>[]}
-          schema={fieldSchema as Schema}
-          readonly
-        />
-      );
-    }
-
-    if (fieldSchema?.['x-component']?.toLowerCase() === 'associatedrecords') {
-      return (
-        <AssociatedRecords
-          readOnly
-          props={fieldSchema as Schema}
-          value={value}
-        />
-      );
-    }
-
-    return <div className='text-body2 truncate'>{value}</div>;
-  };
-
   const cardRender = (list: FormDataProp[]): JSX.Element => {
     return (
       <div className='grid gap-20 grid-cols-2'>
-        {list.map(({ label, value, key, fieldSchema }) => (
+        {list.map(({ label, value, key }) => (
           <div className='page-data-info-view' key={key}>
             <div className='text-body2-no-color text-gray-600'>{label}</div>
-            {fieldValueRender(fieldSchema, value)}
+            {value}
           </div>
         ))}
       </div>
