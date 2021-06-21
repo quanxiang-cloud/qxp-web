@@ -3,6 +3,7 @@ import { observer } from 'mobx-react';
 import { useMutation } from 'react-query';
 import { useHistory, useParams } from 'react-router-dom';
 import { TextArea } from '@QCFE/lego-ui';
+import { Radio } from 'antd';
 import { toJS } from 'mobx';
 import toast from '@lib/toast';
 import Modal from '@c/modal';
@@ -28,6 +29,8 @@ function ActionModals({ className }: Props) {
   const [chosenEmployees, setChosenEmployees] = useState([]);
   const [stepBackId, setStepBackId] = useState('');
   const { action, modalInfo } = store;
+  const [addSignType, setAddSignType] = useState('');
+  const [addSignValue, setAddSignValue] = useState('');
 
   const handleTaskMutation = useMutation((params: Record<string, any>) => {
     if ([TaskHandleType.agree, TaskHandleType.refuse, TaskHandleType.fill_in].includes(action as TaskHandleType)) {
@@ -100,9 +103,13 @@ function ActionModals({ className }: Props) {
       return apis.readAll([processInstanceID]);
     }
 
-    // if (action === TaskHandleType.add_sign) {
-
-    // }
+    // 加签
+    if (action === TaskHandleType.add_sign) {
+      return apis.signTask(taskID, {
+        assignee: chosenEmployees,
+        type: addSignType,
+      });
+    }
 
     // 邀请阅示
     if (action === TaskHandleType.read) {
@@ -268,10 +275,36 @@ function ActionModals({ className }: Props) {
       );
     }
 
-    // // 加签: todo: moved to v0.5
-    // if (action === TaskHandleType.add_sign) {
-
-    // }
+    // 加签: todo: moved to v0.5
+    if (action === TaskHandleType.add_sign) {
+      return (
+        <div>
+          <div className="mb-24">
+            <Button className={'mb-12'} iconName="add" onClick={() => setShowPicker(true)}>添加加签人</Button>
+            {store.showTips && !chosenEmployees.length && <p className="text-red-600">请选择加签人</p>}
+            {<Radio.Group className={'block'} onChange={(e)=>{
+              setAddSignType(e.target.value);
+            }
+            }>
+              <Radio value={'BEFORE'}>此节点前加签</Radio>
+              <Radio value={'AFTER'}>此节点后加签</Radio>
+            </Radio.Group>}
+            {chosenEmployees.length > 1 && (<Radio.Group onChange={(e)=>{
+              setAddSignValue(e.target.value);
+            }}>
+              <Radio value={1}>会签</Radio>
+              <Radio value={2}>或签</Radio>
+            </Radio.Group>)}
+          </div>
+          <ReceiverList
+            className="mb-24"
+            receivers={chosenEmployees}
+            onRemove={(id) => {
+              setChosenEmployees((current) => current.filter((item: { id: string }) => item.id != id));
+            }} />
+        </div>
+      );
+    }
 
     // 邀请阅示
     if (action === TaskHandleType.read) {

@@ -84,7 +84,7 @@ export const reviewTask = async (processInstanceId: string, taskId: string, para
 };
 
 // 加签
-export const signTask = async (params: Record<string, any>) => {
+export const signTask = async (taskID: string, params: Record<string, any>) => {
   return await httpClient('/api/v1/flow/instance/addSign/{taskId}', params);
 };
 
