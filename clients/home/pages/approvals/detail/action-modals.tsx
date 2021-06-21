@@ -42,7 +42,7 @@ function ActionModals({ className }: Props) {
     }
 
     // 撤回
-    if (action === TaskHandleType.hasCancelBtn) {
+    if (action === TaskHandleType.cancel) {
       return apis.cancelTask(processInstanceID);
     }
 
@@ -124,13 +124,13 @@ function ActionModals({ className }: Props) {
       });
     }
 
-    // // 处理阅示
-    // if (action === TaskHandleType.hasReadHandleBtn) {
-
-    // }
+    // 处理阅示
+    if (action === TaskHandleType.hasReadHandleBtn) {
+      return apis.handleRead(processInstanceID, taskID, {});
+    }
 
     // if (action === TaskHandleType.hasResubmitBtn) {
-
+    //
     // }
 
     // // 催办
@@ -330,10 +330,19 @@ function ActionModals({ className }: Props) {
       );
     }
 
-    // // 处理阅示
-    // if (action === TaskHandleType.hasReadHandleBtn) {
-
-    // }
+    // 处理阅示
+    if (action === TaskHandleType.hasReadHandleBtn) {
+      return (
+        <div>
+          <TextArea
+            rows={4}
+            name="comment"
+            placeholder={`输入${actionMap[action]?.text}原因 (选填)`}
+            onChange={(ev: unknown, value: string) => store.setModalInfo({ payload: { remark: value } })}
+          />
+        </div>
+      );
+    }
 
     // // 重新提交
     // if (action === TaskHandleType.hasResubmitBtn) {

@@ -67,6 +67,11 @@ export const handleRelatedFlow = async (params: Record<string, any>) => {
   return await httpClient('/api/v1/flow/instance/handleCorrelationFlow/{id}', params);
 };
 
+// 处理阅示
+export const handleRead = async (processInstanceId: string, taskId: string, params: Record<string, any>) => {
+  return await httpClient('/api/v1/flow/instance/handleRead/{processInstanceId}/{taskId}', params);
+};
+
 // 启动单个流程
 export const startFlowById = async (params: Record<string, any>) => {
   return await httpClient('/api/v1/flow/instance/startFlow/{flowId}', params);
