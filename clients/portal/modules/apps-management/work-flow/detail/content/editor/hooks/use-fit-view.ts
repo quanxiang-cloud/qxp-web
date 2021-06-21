@@ -6,11 +6,11 @@ import {
 // todo fix this, assign to lishengma
 type FunctionToBeRefactor = () => void;
 
-export default function useFitView(callback?: FunctionToBeRefactor) {
+export default function useFitView(callback?: FunctionToBeRefactor): () => void {
   const flowStore = useStore();
   const { setCenter, fitView } = useZoomPanHelper();
 
-  function focus() {
+  function focus(): void {
     const { nodes } = flowStore.getState();
     if (nodes.length) {
       const el = document.querySelector('.reactflow-wrapper') as HTMLElement;

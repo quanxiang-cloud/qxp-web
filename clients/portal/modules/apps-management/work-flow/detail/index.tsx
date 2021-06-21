@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useQuery } from 'react-query';
 import { useParams } from 'react-router-dom';
-import { FlowElement, isNode } from 'react-flow-renderer';
+import { FlowElement, isNode, ReactFlowProvider } from 'react-flow-renderer';
 
 import Loading from '@c/loading';
 import ErrorTips from '@c/error-tips';
@@ -124,32 +124,34 @@ export default function Detail(): JSX.Element {
   return (
     <FlowContext.Provider value={{ appID, flowID }}>
       <div className="flex flex-col h-screen">
-        <Header />
-        {showDataNotSaveConfirm && (status !== 'ENABLE') && (
-          <Modal
-            title="工作流未保存"
-            onClose={onConfirmCancel}
-            footerBtns={[
-              {
-                text: '取消',
-                key: 'cancel',
-                onClick: onConfirmCancel,
-              },
-              {
-                text: '确定',
-                key: 'confirm',
-                modifier: 'primary',
-                onClick: onConfirmSubmit,
-              },
-            ]}
-          >
-            <p>您修改了工作流但未保存，离开后将丢失更改，确定要离开吗？</p>
-          </Modal>
-        )}
-        <section className="flex-1 flex">
-          <AsideMenu onChange={setCurrentOperateType} currentOperateType={currentOperateType} />
-          <Content currentOperateType={currentOperateType} />
-        </section>
+        <ReactFlowProvider>
+          <Header />
+          {showDataNotSaveConfirm && (status !== 'ENABLE') && (
+            <Modal
+              title="工作流未保存"
+              onClose={onConfirmCancel}
+              footerBtns={[
+                {
+                  text: '取消',
+                  key: 'cancel',
+                  onClick: onConfirmCancel,
+                },
+                {
+                  text: '确定',
+                  key: 'confirm',
+                  modifier: 'primary',
+                  onClick: onConfirmSubmit,
+                },
+              ]}
+            >
+              <p>您修改了工作流但未保存，离开后将丢失更改，确定要离开吗？</p>
+            </Modal>
+          )}
+          <section className="flex-1 flex">
+            <AsideMenu onChange={setCurrentOperateType} currentOperateType={currentOperateType} />
+            <Content currentOperateType={currentOperateType} />
+          </section>
+        </ReactFlowProvider>
       </div>
     </FlowContext.Provider>
   );
