@@ -466,9 +466,11 @@ func doCreate(r *http.Request, e Entity, p map[string]string) (int, error) {
 
 					if subResp.Data != nil {
 						d := subResp.Data.(map[string]interface{})
-
-						if id, ok := d["_id"]; ok {
-							rp = append(rp, id.(string))
+						if et,ok := d["entity"];ok{
+							t := et.(map[string]interface{})
+							if id, ok := t["_id"]; ok {
+								rp = append(rp, id.(string))
+							}
 						}
 					}
 				}
