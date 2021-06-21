@@ -68,8 +68,7 @@ function ActionModals({ className }: Props) {
       return apis.stepBack(processInstanceID, taskID, {
         handleType: action,
         remark: modalInfo.payload.remark || '',
-        // todo
-        // step_back_id: stepBackId,
+        activityInstanceId: stepBackId,
       });
     }
 
@@ -199,13 +198,16 @@ function ActionModals({ className }: Props) {
     }
 
     if (action === TaskHandleType.step_back) {
+      const setStep = (id: string)=> {
+        setStepBackId(id);
+      };
       return (
         <div>
           <p className="text-yellow-600 flex items-center mb-24">
             <Icon name="info" className="text-yellow-600 mr-8" />
             将工作流任务回退至已流转过的节点（除开始节点），不中断任务
           </p>
-          <SelectStepBackNode onChange={setStepBackId} />
+          <SelectStepBackNode onChange={setStep} />
           <div style={{ width: '500px' }}>
             <TextArea
               rows={4}
