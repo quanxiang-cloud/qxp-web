@@ -1,107 +1,58 @@
-import React from 'react';
-import { isEqual } from 'lodash';
+import React, { JSXElementConstructor } from 'react';
 
-import FormSelector from '@c/form-table-selector';
-import useObservable from '@lib/hooks/use-observable';
+import type { NodeWorkForm, Data, BusinessData } from '@flowEditor/type';
 
 import FormDataForm from './form-data';
 import ApproveForm from './intermidiate/approve';
 import ProcessVariableAssignmentConfig from './process-variable-assignment-config';
-import store from '@flow/detail/content/editor/store';
-import type {
-  NodeType, StoreValue, TriggerCondition, TriggerConditionValue, NodeWorkForm, Data, BusinessData,
-  FormDataData,
-} from '@flow/detail/content/editor/type';
-
 import FlowTableContext from './flow-source-table';
 
 interface Props {
-  nodeType: NodeType;
-  value: Data;
-  onChange: React.Dispatch<React.SetStateAction<Data>>;
-  onWorkTableChange: (workTable: NodeWorkForm) => void;
-  toggleFormDataChanged: React.Dispatch<React.SetStateAction<boolean>>;
-  // todo refactor this prop define
-  form?: NodeWorkForm;
+  workForm: NodeWorkForm;
+  defaultValue: Data;
+  onSubmit: (data: BusinessData) => void;
+  onCancel: () => void;
 }
 
+function Placeholder(): JSX.Element | null {
+  return null;
+}
+
+const components: Record<string, JSXElementConstructor<any>> = {
+  formData: FormDataForm,
+  approve: ApproveForm,
+  fillIn: ApproveForm,
+  processBranch: Placeholder,
+  processVariableAssignment: ProcessVariableAssignmentConfig,
+  tableDataCreate: Placeholder,
+  tableDataUpdate: Placeholder,
+  sendEmail: Placeholder,
+  cc: Placeholder,
+  webMessage: Placeholder,
+};
+
 export default function Form({
-  nodeType,
-  value,
-  onChange,
-  onWorkTableChange,
-  toggleFormDataChanged,
-  form,
+  workForm,
+  defaultValue,
+  onSubmit,
+  onCancel,
 }: Props): JSX.Element {
-  const { validating } = useObservable<StoreValue>(store);
-  const isApproveNode = nodeType === 'approve';
-  const isFillInNode = nodeType === 'fillIn';
-
-  function onWorkFormChange(formValue: NodeWorkForm): void {
-    onWorkTableChange(formValue);
-    toggleFormDataChanged(!!form?.value && (form?.value !== formValue?.value));
+  function getConfigForm(): JSX.Element {
+    const component = components[defaultValue.type];
+    return React.createElement(component, {
+      defaultValue: defaultValue.businessData,
+      onSubmit,
+      onCancel,
+      nodeType: defaultValue.type,
+    });
   }
-
-  function isTriggerConditionValueEmpty(condition: TriggerCondition): boolean {
-    const { expr = [] } = condition;
-    const exprValue = expr[0] as TriggerConditionValue;
-    return !exprValue?.key && !exprValue?.op && !exprValue?.value;
-  }
-
-  function onFormChange(nodeForm: Partial<BusinessData>): void {
-    const oldData = value.businessData;
-    const newData = { ...oldData, ...nodeForm };
-    const isChanged = !isEqual(oldData, newData);
-    toggleFormDataChanged(isChanged);
-    onChange((f) => ({ ...f, businessData: { ...f.businessData, ...nodeForm } }) as Data);
-
-    if (nodeType !== 'formData' || !(oldData as FormDataData).triggerCondition) {
-      return;
-    }
-    const { triggerCondition: { op: oldOp, expr: oldExpr } } = oldData as FormDataData;
-    const { triggerCondition: { op: newOp, expr: newExpr } } = newData as FormDataData;
-    if (oldOp === '' && newOp === '' && !newExpr.length && oldExpr.length === 1 &&
-      isTriggerConditionValueEmpty(oldExpr[0] as TriggerCondition)) {
-      toggleFormDataChanged(false);
-    }
-  }
-
-  let approveFormVisible = false;
-  if (value.type === 'fillIn') {
-    approveFormVisible = !!((isApproveNode || isFillInNode) && value.businessData.basicConfig);
-  }
-  const isFormDataNode = nodeType === 'formData';
-  const formDataValue = value.type === 'formData' ? value.businessData : undefined;
-  const formDataFormVisible = isFormDataNode && form && formDataValue?.triggerWay;
 
   return (
-    <FlowTableContext.Provider value={{ tableID: form?.value || '', tableName: form?.name || '' }}>
+    <FlowTableContext.Provider
+      value={{ tableID: workForm?.value || '', tableName: workForm?.name || '' }}
+    >
       <div className="flex-1" style={{ height: 'calc(100% - 56px)' }}>
-        {form && (
-          <FormSelector
-            value={form}
-            onChange={onWorkFormChange}
-            changeable={isFormDataNode}
-            validating={validating}
-          />
-        )}
-        {formDataFormVisible && formDataValue && (
-          <FormDataForm
-            formID={form?.value}
-            value={formDataValue}
-            onChange={onFormChange}
-          />
-        )}
-        {approveFormVisible && value.type === 'fillIn' && (
-          <ApproveForm
-            value={value.businessData}
-            onChange={onFormChange}
-            nodeType={nodeType}
-          />
-        )}
-        {nodeType === 'processVariableAssignment' && (
-          <ProcessVariableAssignmentConfig />
-        )}
+        {getConfigForm()}
       </div>
     </FlowTableContext.Provider>
   );

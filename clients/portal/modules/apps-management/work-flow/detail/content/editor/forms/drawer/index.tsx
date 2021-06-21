@@ -26,7 +26,7 @@ function Drawer({ onCancel, title, children, className, distanceTop = 56 }: Prop
           {typeof title === 'string' && (
             <span className='text-h5'>{title}</span>
           )}
-          {isValidElement(title) && { title }}
+          {isValidElement(title) && <>{ title }</>}
           <Icon onClick={onCancel} clickable changeable name='close' size={24} />
         </div>
         <div className='drawer-main-content'>

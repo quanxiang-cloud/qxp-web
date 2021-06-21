@@ -4,8 +4,10 @@ import { uuid, deepClone } from '@lib/utils';
 import { update, omit } from 'lodash';
 import moment from 'moment';
 
-import { edgeBuilder, getNodeInitialData, nodeBuilder } from './utils';
-import type { StoreValue, BusinessData, CurrentElement, Data, NodeType, FormDataElement } from './type';
+import { SaveWorkFlow } from '@flow/detail/api';
+
+import { edgeBuilder, nodeBuilder } from './utils';
+import type { StoreValue, BusinessData, CurrentElement, Data, FormDataElement } from './type';
 
 export const getStoreInitialData = (): StoreValue => {
   const startId = 'formData' + uuid();
@@ -208,31 +210,6 @@ export function updateElementByKey<T>(
   });
 }
 
-export function resetElementsData(
-  type: NodeType,
-  value: Partial<BusinessData>,
-): void {
-  store.next({
-    ...store.value,
-    saved: false,
-    elements: store.value.elements.map((element) => {
-      if (!isNode(element) || !element.data) {
-        return element;
-      }
-      update(element, 'data.businessData', () => {
-        if (element.type === type) {
-          return {
-            ...getNodeInitialData(type),
-            ...value,
-          };
-        }
-        return getNodeInitialData(element.type as NodeType);
-      });
-      return element;
-    }),
-  });
-}
-
 export function getNodeElementById(id: string): CurrentElement {
   return store.value.elements?.find((element) => element.id === id) as CurrentElement;
 }
@@ -244,6 +221,25 @@ export function getFormDataElement(): FormDataElement {
 export function numberTransform(keys: string[], data: any): any {
   keys.forEach((key) => update(data, key, (v) => +v));
   return data;
+}
+
+export function buildWorkFlowSaveData(
+  appID: string, saveData: Partial<BusinessData> = {},
+): SaveWorkFlow {
+  const {
+    version, nodeIdForDrawerForm, name, triggerMode, cancelable, urgeable, nodeAdminMsg,
+    seeStatusAndMsg,
+  } = store.value;
+  return {
+    bpmnText: buildBpmnText(version, nodeIdForDrawerForm, saveData),
+    name: name as string,
+    triggerMode: triggerMode as string,
+    canCancel: cancelable ? 1 : 0,
+    canUrge: urgeable ? 1 : 0,
+    canMsg: nodeAdminMsg ? 1 : 0,
+    canViewStatusMsg: seeStatusAndMsg ? 1 : 0,
+    appId: appID,
+  };
 }
 
 export function buildBpmnText(
@@ -277,7 +273,7 @@ export function buildBpmnText(
         'data.businessData.basicConfig.timeRule.deadLine.urge.repeat.day',
         'data.businessData.basicConfig.timeRule.deadLine.urge.repeat.hours',
         'data.businessData.basicConfig.timeRule.deadLine.urge.repeat.minutes',
-      ], data);
+      ], { ...data, data: omit(data.data, ['type']) });
     }),
   });
 }

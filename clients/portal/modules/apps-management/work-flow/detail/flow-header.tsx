@@ -82,7 +82,7 @@ export default function FlowHeader(): JSX.Element {
   }
 
   function onSubmitWorkFlowName(): void {
-    updateStoreByKey('name', () => workFlowName);
+    updateStore((s) => ({ ...s, name: workFlowName, needSaveFlow: true }));
     setIsWorkFlowNameMenuOpen(false);
   }
 
@@ -229,18 +229,18 @@ export default function FlowHeader(): JSX.Element {
                 >
                   <Icon size={20} name="info" className="text-yellow-600 mr-10" />
                   <span className="text-h6-bold text-yellow-600 mr-152">
-                      确定要{status === 'DISABLE' ? '发布' : '下架'}该工作流吗?
+                    确定要{status === 'DISABLE' ? '发布' : '下架'}该工作流吗?
                   </span>
                 </div>
                 <div className="text-body2 pl-24 mb-16">
                   {status === 'DISABLE' && (
                     <>
-                        发布后，新触发的数据将按该工作流进行流转。
+                      发布后，新触发的数据将按该工作流进行流转。
                     </>
                   )}
                   {status === 'ENABLE' && (
                     <>
-                        下架后，该工作流将会失效，且无法被触发；已触发的数据不受影响。
+                      下架后，该工作流将会失效，且无法被触发；已触发的数据不受影响。
                     </>
                   )}
                 </div>

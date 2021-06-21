@@ -2,7 +2,7 @@ import React, { KeyboardEvent, MouseEvent } from 'react';
 import cs from 'classnames';
 
 import Icon from '@c/icon';
-import { updateNodeDataByKey } from '@flow/detail/content/editor/store';
+import { updateNodeDataByKey } from '@flowEditor/store';
 
 interface Props {
   title: string;
@@ -15,12 +15,12 @@ interface Props {
 
 export default function NodeHeader({
   id, title, className, iconClassName, titleClassName, iconName,
-}: Props) {
-  function onMouseDown(e: MouseEvent) {
+}: Props): JSX.Element {
+  function onMouseDown(e: MouseEvent): void {
     e.stopPropagation();
   }
 
-  function onMouseUp(e: MouseEvent) {
+  function onMouseUp(e: MouseEvent): void {
     e.stopPropagation();
   }
 

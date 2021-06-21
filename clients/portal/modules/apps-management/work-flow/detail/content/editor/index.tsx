@@ -1,4 +1,4 @@
-import React, { useState, useRef, DragEvent, useEffect } from 'react';
+import React, { useState, useRef, DragEvent, useEffect, useContext } from 'react';
 import dagre from 'dagre';
 import cs from 'classnames';
 import ReactFlow, {
@@ -12,11 +12,11 @@ import ReactFlow, {
   FlowElement,
   Elements,
   ArrowHeadType,
-  OnLoadParams,
 } from 'react-flow-renderer';
 
 import { uuid } from '@lib/utils';
 import useObservable from '@lib/hooks/use-observable';
+import FlowContext from '@flow/detail/flow-context';
 
 import Components from './components';
 import store, { updateStore } from './store';
@@ -25,11 +25,9 @@ import { getNodeInitialData } from './utils';
 import DrawerForm from './forms';
 import useFitView from './hooks/use-fit-view';
 import Config, { edgeTypes, nodeTypes } from './config';
-import FlowContext from '../../flow-context';
 
 import 'react-flow-renderer/dist/style.css';
 import 'react-flow-renderer/dist/theme-default.css';
-import { useContext } from 'react';
 
 const dagreGraph = new dagre.graphlib.Graph();
 dagreGraph.setDefaultEdgeLabel(() => ({}));
@@ -38,42 +36,39 @@ export default function Editor(): JSX.Element {
   const { currentConnection, elements, nodeIdForDrawerForm } = useObservable<StoreValue>(store);
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
   const [fitViewFinished, setFitViewFinished] = useState(false);
-  const [reactFlowInstance, setReactFlowInstance] = useState<OnLoadParams>();
   const { flowID } = useContext(FlowContext);
   const fitView = useFitView(() => setFitViewFinished(true));
 
   useEffect(() => {
-    updateStore((s) => ({ ...s, flowInstance: reactFlowInstance }));
-  }, [reactFlowInstance]);
+    fitView();
+  }, [elements?.length]);
 
   function setElements(elements: Elements): void {
     updateStore((s) => ({ ...s, elements }));
   }
 
-  function getLayoutedElements(elements: Elements): FlowElement<any>[] {
+  function getLayoutedElements(): FlowElement<any>[] {
     dagreGraph.setGraph({ rankdir: 'TB' });
-    elements.forEach((el) => {
+    elements?.forEach((el) => {
       if (isNode(el)) {
         dagreGraph.setNode(el.id, {
-          width: el.data.nodeData.width,
-          height: el.data.nodeData.height,
+          width: el.data?.nodeData.width,
+          height: el.data?.nodeData.height,
         });
       } else {
         dagreGraph.setEdge(el.source as string, el.target as string);
       }
     });
     dagre.layout(dagreGraph);
-    return elements.map((el, index) => {
+    return elements?.map((el, index) => {
       if (isNode(el)) {
         const nodeWithPosition = dagreGraph.node(el.id);
         el.targetPosition = Position.Top;
         el.sourcePosition = Position.Bottom;
-        // if (el.position.x === 0 && el.position.y === 0) {
         el.position = {
-          x: nodeWithPosition.x - (el.data.nodeData.width / 2),
+          x: nodeWithPosition.x - ((el.data?.nodeData.width || 0) / 2),
           y: nodeWithPosition.y + (index * 80),
         };
-        // }
       }
       return el;
     });
@@ -97,10 +92,9 @@ export default function Editor(): JSX.Element {
 
   function onDrop(e: DragEvent): void {
     e.preventDefault();
-    if (!reactFlowWrapper?.current || !reactFlowInstance || !e.dataTransfer) {
+    if (!reactFlowWrapper?.current || !e.dataTransfer) {
       return;
     }
-    // const reactFlowBounds = reactFlowWrapper.current.getBoundingClientRect();
     const { nodeType: type, width, height, nodeName } = JSON.parse(
       e.dataTransfer.getData('application/reactflow'),
     );
@@ -108,10 +102,6 @@ export default function Editor(): JSX.Element {
     if (!source || !target || !position) {
       return;
     }
-    // const position = (reactFlowInstance as any).project({
-    //   x: e.clientX - reactFlowBounds.left,
-    //   y: e.clientY - reactFlowBounds.top,
-    // });
     const id = type + uuid();
     function updateElementPosition(
       element: FlowElement<any>,
@@ -161,9 +151,8 @@ export default function Editor(): JSX.Element {
     updateStore((s) => ({ ...s, currentConnection: {} }));
   }
 
-  function onLoad(reactFlowInstance: OnLoadParams): void {
-    setReactFlowInstance(reactFlowInstance);
-    !flowID && setElements(getLayoutedElements(elements));
+  function onLoad(): void {
+    !flowID && elements?.length && setElements(getLayoutedElements());
     setTimeout(fitView);
   }
 

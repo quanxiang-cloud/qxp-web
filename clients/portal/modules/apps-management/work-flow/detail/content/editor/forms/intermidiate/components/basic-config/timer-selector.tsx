@@ -2,8 +2,8 @@ import React, { CSSProperties, WheelEvent } from 'react';
 import cs from 'classnames';
 
 import useObservable from '@lib/hooks/use-observable';
-import store from '@flow/detail/content/editor/store';
-import type { StoreValue } from '@flow/detail/content/editor/type';
+import store from '@flowEditor/store';
+import type { StoreValue } from '@flowEditor/type';
 
 interface Props {
   onDayChange: (value: string) => void;
