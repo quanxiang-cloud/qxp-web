@@ -25,11 +25,12 @@ function FormDesignHeader(): JSX.Element {
   const { pageName } = parse(window.location.search);
 
   const tabChange = (tabKey: string): void => {
-    if (store.formStore?.hasEdit) {
+    if (store.formStore?.hasEdit && tabKey === 'pageSetting') {
       setSwitchTab('switchTab');
       setShowNotSavedTips(true);
       return;
     }
+
     const query = pageName ? `?pageName=${pageName}` : '';
     history.replace(`/apps/formDesign/${tabKey}/${pageId}/${appID}${query}`);
   };

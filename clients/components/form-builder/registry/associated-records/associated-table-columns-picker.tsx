@@ -3,7 +3,6 @@ import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 import { useFormEffects, FormEffectHooks } from '@formily/antd';
 
 import Toggle from '@c/toggle';
-import { INTERNAL_FIELD_NAMES } from '@c/form-builder/store';
 import { FieldConfigContext } from '@c/form-builder/form-settings-panel/form-field-config/context';
 
 const { onFieldValueChange$ } = FormEffectHooks;
@@ -24,11 +23,16 @@ const WHITE_LIST_FIELDS = [
   'MultipleSelect',
   'CheckboxGroup',
   'Select',
+  'UserPicker',
+  'OrganizationPicker',
+  'FileUpload',
+  'ImageUpload',
+  'CascadeSelector',
 ];
 
-function getTableFields(linkedTableSchema: ISchema) {
+function getTableFields(linkedTableSchema: ISchema): Array<{ fieldKey: string, fieldName: string; }> {
   return Object.entries(linkedTableSchema?.properties || {}).filter(([key, fieldSchema]) => {
-    if (INTERNAL_FIELD_NAMES.includes(key)) {
+    if (key === '_id') {
       return false;
     }
 
@@ -44,7 +48,7 @@ function getTableFields(linkedTableSchema: ISchema) {
 function getColumnsMap(
   columns: Array<{ fieldKey: string; fieldName: string; }>,
   selected: string[],
-) {
+): ColumnsMap {
   return columns.reduce<ColumnsMap>((acc, { fieldKey, fieldName }, index) => {
     acc[fieldKey] = { index, fieldName, checked: selected.includes(fieldKey) };
 
@@ -76,7 +80,7 @@ function ColumnsPicker({ columns, selected, onChange }: ColumnsPickerProps): JSX
     onChange(convertColumns(columnsMap));
   }, [columnsMap]);
 
-  function toggleCheck(key: string, checked: boolean) {
+  function toggleCheck(key: string, checked: boolean): void {
     columnsMap[key].checked = checked;
     setColumnsMap({ ...columnsMap });
   }
@@ -98,7 +102,7 @@ function ColumnsPicker({ columns, selected, onChange }: ColumnsPickerProps): JSX
   );
 }
 
-function AssociatedTableColumnsPicker(props: ISchemaFieldComponentProps) {
+function AssociatedTableColumnsPicker(props: ISchemaFieldComponentProps): JSX.Element {
   const { actions } = useContext(FieldConfigContext);
   const [linkedTableFields, setTableFields] = useState<Array<{ fieldKey: string; fieldName: string; }>>([]);
   useEffect(() => {

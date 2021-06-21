@@ -15,9 +15,11 @@ type Props = {
 function NotSavedModal({ onCancel, onAbandon, onSaveAfter }: Props): JSX.Element {
   const history = useHistory();
   const handleSave = (): void => {
-    store.saveFormScheme(history).then(() => {
+    store.saveFormScheme(history).then((flag) => {
       onCancel();
-      onSaveAfter();
+      if (flag) {
+        onSaveAfter();
+      }
     });
   };
 

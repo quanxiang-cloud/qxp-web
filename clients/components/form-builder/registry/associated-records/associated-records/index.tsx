@@ -6,6 +6,7 @@ import { ColumnType } from 'antd/lib/table';
 import Table from '@c/table';
 import Button from '@c/button';
 import Icon from '@c/icon';
+import FormDataValueRenderer from '@c/form-data-value-renderer';
 import { Column } from 'react-table';
 import { get } from 'lodash';
 import { useQuery } from 'react-query';
@@ -29,7 +30,15 @@ function computeTableColumns(schema: ISchema, columns: string[]): Column<Record<
     return {
       id: fieldKey,
       Header: fieldSchema.title || fieldKey,
-      accessor: fieldKey,
+      accessor: (rowData: Record<string, any>) => {
+        if (rowData[fieldKey]) {
+          return (
+            <FormDataValueRenderer schema={fieldSchema} value={rowData[fieldKey]} />
+          );
+        }
+
+        return '无数据';
+      },
     };
   }).filter(({ id }) => id !== '_id');
 }
