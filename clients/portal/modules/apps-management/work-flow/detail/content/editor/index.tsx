@@ -12,7 +12,6 @@ import ReactFlow, {
   FlowElement,
   Elements,
   ArrowHeadType,
-  OnLoadParams,
 } from 'react-flow-renderer';
 
 import { uuid } from '@lib/utils';
@@ -37,13 +36,8 @@ export default function Editor(): JSX.Element {
   const { currentConnection, elements, nodeIdForDrawerForm } = useObservable<StoreValue>(store);
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
   const [fitViewFinished, setFitViewFinished] = useState(false);
-  const [reactFlowInstance, setReactFlowInstance] = useState<OnLoadParams>();
   const { flowID } = useContext(FlowContext);
   const fitView = useFitView(() => setFitViewFinished(true));
-
-  useEffect(() => {
-    updateStore((s) => ({ ...s, flowInstance: reactFlowInstance }));
-  }, [reactFlowInstance]);
 
   useEffect(() => {
     fitView();
@@ -53,26 +47,26 @@ export default function Editor(): JSX.Element {
     updateStore((s) => ({ ...s, elements }));
   }
 
-  function getLayoutedElements(elements: Elements): FlowElement<any>[] {
+  function getLayoutedElements(): FlowElement<any>[] {
     dagreGraph.setGraph({ rankdir: 'TB' });
-    elements.forEach((el) => {
+    elements?.forEach((el) => {
       if (isNode(el)) {
         dagreGraph.setNode(el.id, {
-          width: el.data.nodeData.width,
-          height: el.data.nodeData.height,
+          width: el.data?.nodeData.width,
+          height: el.data?.nodeData.height,
         });
       } else {
         dagreGraph.setEdge(el.source as string, el.target as string);
       }
     });
     dagre.layout(dagreGraph);
-    return elements.map((el, index) => {
+    return elements?.map((el, index) => {
       if (isNode(el)) {
         const nodeWithPosition = dagreGraph.node(el.id);
         el.targetPosition = Position.Top;
         el.sourcePosition = Position.Bottom;
         el.position = {
-          x: nodeWithPosition.x - (el.data.nodeData.width / 2),
+          x: nodeWithPosition.x - ((el.data?.nodeData.width || 0) / 2),
           y: nodeWithPosition.y + (index * 80),
         };
       }
@@ -98,7 +92,7 @@ export default function Editor(): JSX.Element {
 
   function onDrop(e: DragEvent): void {
     e.preventDefault();
-    if (!reactFlowWrapper?.current || !reactFlowInstance || !e.dataTransfer) {
+    if (!reactFlowWrapper?.current || !e.dataTransfer) {
       return;
     }
     const { nodeType: type, width, height, nodeName } = JSON.parse(
@@ -157,9 +151,8 @@ export default function Editor(): JSX.Element {
     updateStore((s) => ({ ...s, currentConnection: {} }));
   }
 
-  function onLoad(reactFlowInstance: OnLoadParams): void {
-    setReactFlowInstance(reactFlowInstance);
-    !flowID && setElements(getLayoutedElements(elements));
+  function onLoad(): void {
+    !flowID && elements?.length && setElements(getLayoutedElements());
     setTimeout(fitView);
   }
 

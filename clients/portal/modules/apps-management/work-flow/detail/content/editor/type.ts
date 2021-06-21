@@ -1,5 +1,5 @@
 import { CSSProperties, HTMLAttributes, ReactNode } from 'react';
-import { Position, ArrowHeadType, FlowElement, Elements, OnLoadParams } from 'react-flow-renderer';
+import { Position, ArrowHeadType, FlowElement, Elements } from 'react-flow-renderer';
 
 export interface NodeProps {
   id: string;
@@ -321,7 +321,6 @@ export type Errors = Record<string, unknown> & {
 };
 
 export interface StoreValue {
-  flowInstance?: OnLoadParams;
   creatorId?: string;
   needSaveFlow?: boolean;
   apiFetched: boolean;
