@@ -61,7 +61,7 @@ export default function Detail(): JSX.Element {
     if (previousElementsLength !== elements?.length && !isEmptyWorkFlow) {
       saveWorkFlow();
     }
-  }, [elements?.length]);
+  }, [elements?.length, apiFetched]);
 
   useEffect(() => {
     if (!data) {
