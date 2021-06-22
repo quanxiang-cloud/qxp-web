@@ -13,6 +13,20 @@ import {
   createPageScheme,
 } from './api';
 
+const FILTER_FIELD = [
+  'DatePicker',
+  'Input',
+  'MultipleSelect',
+  'NumberPicker',
+  'RadioGroup',
+  'textarea',
+  'Select',
+  'CheckboxGroup',
+  // 'OrganizationPicker',
+  // 'UserPicker',
+  // 'CascadeSelector',
+];
+
 class FormDesignStore {
   destroyFetchScheme: IReactionDisposer;
   destroySetTableColumn: IReactionDisposer;
@@ -27,6 +41,7 @@ class FormDesignStore {
   @observable pageLoading = true;
   @observable formStore: FormStore | null = null;
   @observable hasSchema = false;
+  @observable initScheme: ISchema = {};
   @observable pageTableColumns: string[] = [];
   @observable pageTableShowRule: TableConfig = {};
   @observable filters: Filters = [];
@@ -37,7 +52,7 @@ class FormDesignStore {
 
   @computed get fieldList(): PageField[] {
     return Object.entries(toJS(this.fieldsMap)).filter(([key, fieldSchema]) => {
-      if (key === '_id' || fieldSchema.type === 'array') {
+      if (key === '_id' || !FILTER_FIELD.includes(fieldSchema['x-component'] as string)) {
         return false;
       }
 
@@ -47,7 +62,6 @@ class FormDesignStore {
         id: key,
         label: (fieldSchema.title || '') as string,
         type: fieldSchema.type || '',
-        // todo fix this type cast
         enum: fieldSchema.enum as EnumItem[],
         isSystem: fieldSchema['x-internal']?.isSystem ? true : false,
         cProps: fieldSchema['x-component-props'],
@@ -65,7 +79,7 @@ class FormDesignStore {
         return;
       }
 
-      if (!this.pageTableColumns) {
+      if (!this.hasSchema && !this.pageTableColumns.length) {
         this.pageTableColumns = this.fieldList.map(({ id }) => id).sort((key1, key2) => {
           return this.fieldsMap[key1]['x-index'] || 0 - (this.fieldsMap[key2]['x-index'] || 0);
         });
@@ -141,6 +155,11 @@ class FormDesignStore {
   }
 
   @action
+  reSetFormScheme = (): void => {
+    this.formStore = new FormStore({ schema: this.initScheme, appID: this.appID, pageID: this.pageID });
+  }
+
+  @action
   fetchFormScheme = ({ pageID, appID }: { pageID: string, appID: string }): void => {
     if (!pageID || !appID) {
       return;
@@ -150,6 +169,7 @@ class FormDesignStore {
     getTableSchema(appID, pageID).then((res) => {
       const { schema = {}, config = {} } = res || {};
       this.hasSchema = !!res;
+      this.initScheme = schema;
       this.formStore = new FormStore({ schema, appID, pageID });
       this.pageTableColumns = config.pageTableColumns || [];
       this.filters = config.filters || [];
@@ -161,11 +181,11 @@ class FormDesignStore {
   }
 
   @action
-  saveFormScheme = (history: H.History): Promise<void> => {
+  saveFormScheme = (history: H.History): Promise<any> => {
     if (this.formStore?.fields.length && this.pageTableColumns && this.pageTableColumns.length === 0) {
       toast.error('请在页面配置-字段显示和排序至少选择一个字段显示');
       history.replace(`/apps/formDesign/pageSetting/${this.pageID}/${this.appID}`);
-      return Promise.resolve();
+      return Promise.resolve(false);
     }
 
     this.saveSchemeLoading = true;
@@ -179,7 +199,9 @@ class FormDesignStore {
       });
       toast.success(this.hasSchema ? '保存成功!' : '创建成功!');
       (this.formStore as FormStore).hasEdit = false;
+      this.initScheme = this.formStore?.schema as ISchema;
       this.saveSchemeLoading = false;
+      return true;
     }).catch(() => {
       this.saveSchemeLoading = false;
     });

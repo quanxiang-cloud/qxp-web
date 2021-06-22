@@ -9,7 +9,6 @@ import {
   DatePicker,
 } from '@formily/antd-components';
 
-import { INTERNAL_FIELD_NAMES } from '@c/form-builder/store';
 import SubTableSchema from './fields/sub-table-schema';
 import SubTableColumns from './fields/sub-table-columns';
 import subordination from './fields/subordination';
@@ -63,8 +62,6 @@ export const CONFIG_COMPONENTS: Record<
 export const SUPPORTED_COMPONENTS_NAMES = [
   'input', 'textarea', 'numberpicker', 'datepicker', 'select',
 ];
-
-export const BLOCKED_FIELD_NAMES = INTERNAL_FIELD_NAMES;
 
 export const LINKED_TABLE = { appID: '', tableID: '', tableName: '' };
 
