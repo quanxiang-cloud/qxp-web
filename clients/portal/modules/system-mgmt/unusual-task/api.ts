@@ -18,28 +18,29 @@ export const getAbnormalTaskForm = async (params: TaskParams)
 };
 
 export const abandonTask = async (params: TaskParams)
-  : Promise<{ dataList: UnusualTaskItem[], total: number }> => {
+  : Promise<any> => {
   return await httpClient(
     `/api/v1/flow/abnormalTask/adminAbandon/${params.processInstanceId}/${params.taskId}`,
   );
 };
 
-export const deliverTask = async (params: TaskParams)
-  : Promise<{ dataList: UnusualTaskItem[], total: number }> => {
+export const deliverTask = async (params: TaskParams, body: { handleType: string, handleUserIds: string[]})
+  : Promise<any> => {
   return await httpClient(
     `/api/v1/flow/abnormalTask/adminDeliverTask/${params.processInstanceId}/${params.taskId}`,
+    body,
   );
 };
 
-export const stepTask = async (params: TaskParams)
-  : Promise<{ dataList: UnusualTaskItem[], total: number }> => {
+export const stepTask = async (params: TaskParams, body: {activityInstanceId: string, remark: string})
+  : Promise<any> => {
   return await httpClient(
     `/api/v1/flow/abnormalTask/adminStepBack/${params.processInstanceId}/${params.taskId}`,
-    params);
+    body);
 };
 
 export const sendTask = async (params: TaskParams, body: { remark: string})
-  : Promise<{ dataList: UnusualTaskItem[], total: number }> => {
+  : Promise<any> => {
   return await httpClient(
     `/api/v1/flow/abnormalTask/adminSendBack/${params.processInstanceId}/${params.taskId}`,
     body);

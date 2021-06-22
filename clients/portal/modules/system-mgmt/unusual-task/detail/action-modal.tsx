@@ -1,17 +1,18 @@
 import React, { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useHistory } from 'react-router-dom';
 import { toJS } from 'mobx';
 import { TextArea } from '@QCFE/lego-ui';
 
 import Icon from '@c/icon';
 import Modal from '@c/modal';
 import Button from '@c/button';
+import Toast from '@lib/toast';
 import ReceiverPicker from '@c/employee-or-department-picker';
 import ReceiverList from '@c/employee-receiver-list';
 
 import SelectStepBackNode from './select-step-back-node';
 import { Actions } from './index';
-import { abandonTask, sendTask } from '../api';
+import { abandonTask, deliverTask, sendTask, stepTask } from '../api';
 
 interface Props {
   action: Actions;
@@ -32,6 +33,7 @@ function ActionModal({ closeModal, action }: Props): JSX.Element {
   const [textValue, setTextValue] = useState('');
   const [stepBackId, setStepBackId] = useState('');
 
+  const history = useHistory();
   const urlParams = useParams<{ processInstanceId: string, taskId: string }>();
   const { processInstanceId, taskId } = urlParams;
 
@@ -44,6 +46,7 @@ function ActionModal({ closeModal, action }: Props): JSX.Element {
             将工作流任务回退至已流转过的节点（除开始节点），不中断任务
           </p>
           <SelectStepBackNode onChange={setStepBackId} />
+          {(showTips && stepBackId === '') && <p className="text-red-600">请选择要回退的节点</p>}
           <div style={{ width: '500px' }}>
             <TextArea
               rows={4}
@@ -66,6 +69,7 @@ function ActionModal({ closeModal, action }: Props): JSX.Element {
           <div className="mb-24">
             <Button iconName="add" onClick={() => setShowPicker(true)}>添加处理人</Button>
             { (showTips && chosenEmployees.length === 0) && <p className="text-red-600">请选择处理人</p>}
+            { (showTips && chosenEmployees.length > 1) && <p className="text-red-600">处理人只能为1人</p>}
           </div>
           <ReceiverList
             className="mb-24"
@@ -109,17 +113,53 @@ function ActionModal({ closeModal, action }: Props): JSX.Element {
   }
 
   function onOkClick(): void {
+    if (action === 'STEP_BACK') {
+      console.log(stepBackId);
+      setShowTips(stepBackId === '' ? true : false);
+      if (!stepBackId) return;
+      stepTask({ processInstanceId, taskId }, { activityInstanceId: stepBackId, remark: textValue }).then(
+        (res) => {
+          if (res) {
+            closeModal();
+            Toast.success('操作成功！');
+            history.push('/system/unusual');
+          } else {
+            Toast.error(res.msg || '');
+          }
+        },
+      );
+    }
+
     if (action === 'DELETE') {
-      console.log('删除');
       abandonTask({ processInstanceId, taskId }).then((res) => {
-        console.log(res);
+        if (res) {
+          closeModal();
+          Toast.success('操作成功！');
+          history.push('/system/unusual');
+        } else {
+          Toast.error(res.msg || '');
+        }
       });
     }
 
     if (action === 'APPOINT') {
-      console.log(chosenEmployees);
-      setShowTips(chosenEmployees.length === 0 ? true : false);
-      // deliverTask();
+      const isPass = chosenEmployees.length === 0 || chosenEmployees.length > 1;
+      setShowTips(isPass ? true : false);
+      if (isPass) return;
+      const ids: string[] = [];
+      chosenEmployees.map((employ: Employee) => {
+        ids.push(employ.id);
+      });
+      deliverTask({ processInstanceId, taskId }, { handleType: 'DELIVER', handleUserIds: ids }).then(
+        (res) => {
+          if (res) {
+            closeModal();
+            Toast.success('操作成功！');
+            history.push('/system/unusual');
+          } else {
+            Toast.error(res.msg || '');
+          }
+        });
     }
 
     if (action === 'SEND_BACK') {
@@ -127,6 +167,13 @@ function ActionModal({ closeModal, action }: Props): JSX.Element {
       if (!textValue) return;
       sendTask({ processInstanceId, taskId }, { remark: textValue }).then((res) => {
         console.log(res);
+        if (res) {
+          closeModal();
+          Toast.success('操作成功！');
+          history.push('/system/unusual');
+        } else {
+          Toast.error(res.msg || '');
+        }
       });
     }
   }
