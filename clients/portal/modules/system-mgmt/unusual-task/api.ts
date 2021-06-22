@@ -5,13 +5,28 @@ type TaskParams = {
   taskId: string
 }
 
+type TaskDetailItem = {
+  formData: {
+    [key: string]: string;
+  };
+  formSchema: {
+    table: {
+      properties: {
+        [key: string]: ISchema;
+      },
+      title: string,
+      type: string
+    }
+  }
+}
+
 export const getAbnormalTask = async (params?: Record<string, unknown>)
   : Promise<{ dataList: UnusualTaskItem[], total: number }> => {
   return await httpClient('/api/v1/flow/abnormalTask/list', params);
 };
 
 export const getAbnormalTaskForm = async (params: TaskParams)
-  : Promise<any> => {
+  : Promise<{taskDetailModels: TaskDetailItem[]}> => {
   return await httpClient(
     `/api/v1/flow/abnormalTask/adminGetTaskForm/${params.processInstanceId}/${params.taskId}`,
     params);

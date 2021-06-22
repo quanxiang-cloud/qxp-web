@@ -4,16 +4,18 @@ import { useQuery } from 'react-query';
 
 import Button from '@c/button';
 import Icon from '@c/icon';
-import { getTableCellData } from '@c/form-app-data-table/utils';
+import FormDataValueRenderer from '@c/form-data-value-renderer';
+import { Schema } from '@formily/react-schema-renderer';
 
 import { getAbnormalTaskForm } from '../api';
 import ActionModal from './action-modal';
 
-type InfoData = {
+type FormDataProp = {
   label: string;
   key: string;
-  value: string | React.ReactNode;
-};
+  value: any;
+  fieldSchema: ISchema;
+}
 
 export type Actions = 'STEP_BACK' | 'SEND_BACK' | 'APPOINT' | 'DELETE';
 
@@ -21,7 +23,7 @@ function UnusualTaskDetail(): JSX.Element {
   const [currAction, setCurrAction] = useState<Actions | ''>('');
   const history = useHistory();
   const urlParams = useParams<{id: string, processInstanceId: string, taskId: string, status: string }>();
-  const { id, processInstanceId, taskId, status } = urlParams;
+  const { processInstanceId, taskId, status } = urlParams;
 
   const { data: formDataItem } = useQuery('GET_ABNORMAL_TASK_FORM', () => getAbnormalTaskForm({
     processInstanceId,
@@ -33,39 +35,37 @@ function UnusualTaskDetail(): JSX.Element {
       return [[], []];
     }
 
-    const _details: InfoData[] = [];
-    const _systems: InfoData[] = [];
+    const _details: FormDataProp[] = [];
+    const _systems: FormDataProp[] = [];
     const { formSchema, formData } = formDataItem.taskDetailModels[0];
 
-    const fields: Fields[] = Object.entries(
-      formSchema.table.properties || {},
-    ).map(([key, fieldSchema]: any)=>{
-      return {
-        id: key,
-        ...fieldSchema,
-      };
-    });
-
-    fields.forEach((field: any) => {
-      if (field['x-internal'].isSystem) {
+    Object.entries(formSchema.table.properties || {}).forEach(([fieldKey, fieldSchema]) => {
+      if ((fieldSchema as any)['x-internal']?.isSystem) {
         _systems.push({
-          label: field.title,
-          key: field.id,
-          value: getTableCellData((formData as any)[field.id], field),
+          label: fieldSchema.title as string,
+          key: fieldKey,
+          value: formData?.[fieldKey] ? (
+            <FormDataValueRenderer schema={fieldSchema as Schema} value={formData?.[fieldKey]} />
+          ) : '无数据',
+          fieldSchema,
         });
-      } else {
-        _details.push({
-          label: field.title,
-          key: field.id,
-          value: getTableCellData((formData as any)[field.id], field),
-        });
+        return;
       }
+
+      _details.push({
+        label: fieldSchema.title as string,
+        key: fieldKey,
+        value: formData?.[fieldKey] ? (
+          <FormDataValueRenderer schema={fieldSchema as Schema} value={formData?.[fieldKey]} />
+        ) : '无数据',
+        fieldSchema,
+      });
     });
 
     return [_details, _systems];
   }, [formDataItem]);
 
-  const cardRender = (list: InfoData[]): JSX.Element => {
+  const cardRender = (list: FormDataProp[]): JSX.Element => {
     return (
       <div className='grid gap-20 grid-cols-2'>
         {list.map(({ label, value, key }) => (
