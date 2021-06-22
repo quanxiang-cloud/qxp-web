@@ -91,9 +91,9 @@ function DetailsHeader() {
           </PopConfirm>
         )}
         <hr className='app-global-header-hr' />
-        <Button forbidden={!isPublish} onClick={goAppVisit} className='mr-16' iconName='login'>
+        {/* <Button forbidden={!isPublish} onClick={goAppVisit} className='mr-16' iconName='login'>
           进入应用访问
-        </Button>
+        </Button> */}
         <Button
           onClick={() => goAppSetting('info')}
           iconName='settings'
