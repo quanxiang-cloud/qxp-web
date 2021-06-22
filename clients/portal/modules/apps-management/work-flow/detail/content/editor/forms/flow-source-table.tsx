@@ -1,3 +1,9 @@
 import React from 'react';
 
-export default React.createContext<{ tableID: string; tableName: string }>({ tableID: '', tableName: '' });
+type ContextType = {
+  tableID: string;
+  tableName: string;
+  tableSchema: ISchema;
+}
+
+export default React.createContext<ContextType>({ tableID: '', tableName: '', tableSchema: {} });
