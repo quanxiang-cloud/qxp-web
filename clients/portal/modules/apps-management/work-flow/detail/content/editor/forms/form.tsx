@@ -73,9 +73,8 @@ export default function Form({
   const sourceTableSchema = useTableSchema(appID, workForm?.value || '');
 
   if (!sourceTableSchema) {
-    return (
-      <div>loading...</div>
-    );
+    // todo handle error case
+    return (<div>loading...</div>);
   }
 
   return (
