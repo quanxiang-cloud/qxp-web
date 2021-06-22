@@ -78,7 +78,7 @@ function ApprovalDetail(): JSX.Element {
               globalActions={pick(task || {}, globalActionKeys)}
               onClickAction={store.handleClickAction}
             />
-            {renderSchemaForm(task)}
+            {task.formData && renderSchemaForm(task.formData)}
           </>
         ),
       };
