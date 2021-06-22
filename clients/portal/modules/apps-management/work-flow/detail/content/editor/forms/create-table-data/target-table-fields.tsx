@@ -1,51 +1,65 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useQuery } from 'react-query';
-import { get, pick } from 'lodash';
-import { SchemaMarkupField as Field } from '@formily/antd';
+import { get, pick, pickBy, omitBy, each } from 'lodash';
 
 import { getFormFieldSchema } from '@flow/detail/content/editor/forms/api';
 import { FormRenderer } from '@c/form-builder';
+import { TableDataCreateData, ValueRule } from '@flowEditor/type';
 
 import CustomField from './custom-field';
+import Context from './context';
 
 interface Props {
   appId: string;
   tableId: string;
-  onChange: (fieldData: any) => void;
+  defaultValue: TableDataCreateData;
 }
 
-const transformSchema = (schema: ISchema): ISchema => {
-  const properties = get(schema, 'properties', {});
-  const mapProperties = Object.entries(properties)
-    .reduce((acc: Record<string, any>, [key, field]: [string, ISchema]) => {
-      const innerFieldProps = pick(field, ['display', 'title', 'readonly']);
-      Object.assign(acc, {
-        [key]: {
-          type: 'object',
-          'x-component': 'CustomField',
-          'x-component-props': innerFieldProps,
-          properties: {
-            [key]: { ...field, title: '' },
-          }
-        }
-      });
-      return acc;
-    }, {});
-
-  return {
-    ...schema,
-    properties: mapProperties,
-  };
-};
-
-function TargetTableFields({ appId, tableId, onChange }: Props) {
+function TargetTableFields({ appId, tableId, defaultValue }: Props) {
+  const { data, setData } = useContext(Context);
   const { data: tableSchema, isLoading, isError } = useQuery(['GET_TARGET_TABLE_SCHEMA', tableId, appId], getFormFieldSchema, {
     enabled: !!appId && !!tableId,
   });
 
-  const onFieldValuesChange = (values: any) => {
-    console.log('change fields value:', values);
-    onChange(values);
+  const transformSchema = (schema: ISchema): ISchema => {
+    const properties = get(schema, 'properties', {});
+    const { createRule = {} } = defaultValue;
+    const mapProperties = Object.entries(properties)
+      .reduce((acc: Record<string, any>, [key, field]: [string, ISchema]) => {
+        const innerFieldProps = pick(field, ['display', 'title', 'readonly']);
+        const defaultVal = createRule[key] && createRule[key].valueFrom === 'fixedValue' ? { default: createRule[key].valueOf } : {};
+        Object.assign(acc, {
+          [key]: {
+            type: 'object',
+            'x-component': 'CustomField',
+            'x-component-props': innerFieldProps,
+            properties: {
+              [key]: { ...field, title: '', ...defaultVal }, // merge default value
+            }
+          }
+        });
+        return acc;
+      }, {});
+
+    return {
+      ...schema,
+      properties: mapProperties,
+    };
+  };
+
+  const onChangeFixedValue = (values: any) => {
+    const fieldVals = pickBy(values, (v, k) => k.startsWith('field_'));
+    const commitVals = omitBy(values, (v, k) => k.startsWith('field_'));
+    each(commitVals.createRule, (v: ValueRule, k: string) => {
+      if (k in fieldVals) {
+        Object.assign(v, {
+          valueFrom: 'fixedValue',
+          valueOf: fieldVals[k],
+        });
+      }
+    });
+
+    setData(commitVals);
   };
 
   if (isLoading) {
@@ -60,14 +74,13 @@ function TargetTableFields({ appId, tableId, onChange }: Props) {
     );
   }
 
-  console.log('transform table schema: ', transformSchema(tableSchema as ISchema));
-
   return (
     <div className="flex flex-col mt-20">
       <FormRenderer
         schema={transformSchema(tableSchema as ISchema)}
-        onFormValueChange={onFieldValuesChange}
+        onFormValueChange={onChangeFixedValue}
         additionalComponents={{ CustomField }}
+        defaultValue={defaultValue}
       />
     </div>
   );

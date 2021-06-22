@@ -343,3 +343,8 @@ export interface StoreValue {
   currentDataNotSaveConfirmCallback?: () => void;
   showDataNotSaveConfirm?: boolean;
 }
+
+export type ProcessVariable = {
+  code: string;
+  name: string;
+}

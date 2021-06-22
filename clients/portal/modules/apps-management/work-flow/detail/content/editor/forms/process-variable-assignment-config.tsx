@@ -14,21 +14,16 @@ import {
 import MoreMenu from '@c/more-menu';
 import Icon from '@c/icon';
 import Button from '@c/button';
-import httpClient from '@lib/http-client';
 import { RowStyleLayout } from '@c/form-builder/customized-fields';
 import SaveButtonGroup from '@flowEditor/components/_common/action-save-button-group';
 
 import FlowSourceTableContext from './flow-source-table';
-import { ProcessVariableAssignmentData } from '../type';
+import { ProcessVariableAssignmentData, ProcessVariable } from '../type';
+import { getFlowVariables } from './api';
 
 type Option = {
   value: string;
   label: string;
-}
-
-type ProcessVariable = {
-  code: string;
-  name: string;
 }
 
 type Props = {
@@ -38,10 +33,6 @@ type Props = {
 }
 
 const { onFieldValueChange$ } = FormEffectHooks;
-
-function getFlowVariables(): Promise<Array<ProcessVariable>> {
-  return httpClient('/api/v1/flow/getVariableList');
-}
 
 const ASSIGNABLE_WHITELIST_COMPONENTS = [
   'Input',

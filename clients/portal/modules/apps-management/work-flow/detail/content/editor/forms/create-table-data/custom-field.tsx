@@ -1,39 +1,111 @@
-import React from 'react';
-import { useSchemaProps, SchemaMarkupField as Field } from '@formily/antd';
+import React, { useContext, useEffect, useState } from 'react';
+import { useQuery } from 'react-query';
+import { get } from 'lodash';
 
 import Select from '@c/select';
+import FlowSourceTableContext from '../flow-source-table';
+import Context from './context';
+import { getFlowVariables } from '../api';
 
 import './styles.scss';
 
-const ruleOptions = [
+interface Props {
+  value?: any;
+  onChange?: (val: any) => void;
+  name: string;
+  props?: any;
+  children?: React.ReactNode;
+}
+
+type Rule = 'currentFormValue' | 'fixedValue' | 'processVariable';
+
+const ruleOptions: Array<{ label: string, value: Rule }> = [
   { label: '字段值', value: 'currentFormValue' },
   { label: '自定义', value: 'fixedValue' },
   { label: '流程变量', value: 'processVariable' },
 ];
 
-interface Props {
-  value?: any;
-  onChange?: (val: any) => void;
-  props?: any;
-  name?: string;
-  children?: React.ReactNode;
-}
+export default function CustomField(props: Props): JSX.Element {
+  const { tableSchema } = useContext(FlowSourceTableContext);
+  const { data, setData } = useContext(Context);
+  const fieldName = props.name;
+  const [rule, setRule] = useState<Rule>(get(data, `createRule.${fieldName}.valueFrom`));
+  const { data: variables, isLoading: loadingVariables } = useQuery(['FETCH_PROCESS_VARIABLES'], getFlowVariables);
 
-export default function CustomField(props: Props) {
-  // const schemaProps = useSchemaProps();
+  const onChangeFieldValue = (val: any) => {
+    console.log('change create rule: ', rule, val);
+
+    setData({
+      createRule: {
+        ...(data.createRule || {}),
+        [fieldName]: {
+          valueFrom: rule,
+          valueOf: val,
+        },
+      },
+    });
+  }
+
+  const onChangeRule = (rule: Rule) => {
+    setRule(rule);
+    const { createRule = {} } = data;
+    const curRule = createRule[fieldName] || {};
+    setData({
+      createRule: {
+        ...createRule,
+        [fieldName]: {
+          ...curRule,
+          valueFrom: rule,
+        }
+      }
+    })
+  }
+
+  const getDefaultVal = () => get(data, `createRule.${fieldName}.valueOf`);
 
   const renderValueBox = () => {
-    // render field orig component
-    return props.children;
+    if (rule === 'currentFormValue') {
+      const tableFields = Object.entries(tableSchema.properties || {}).map(([key, fieldSchema]) => {
+        return { label: fieldSchema.title as string, value: key };
+      });
+
+      return (
+        <Select
+          options={tableFields}
+          value={getDefaultVal() as string}
+          onChange={onChangeFieldValue}
+        />
+      )
+    }
+
+    if (rule === 'fixedValue') {
+      return props.children;
+    }
+
+    if (rule === 'processVariable') {
+      if (loadingVariables) {
+        return (
+          <div>Loading variables...</div>
+        )
+      }
+
+      return (
+        <Select
+          options={variables?.map(({ code, name }) => ({ label: name, value: code })) || []}
+          value={getDefaultVal() as string}
+          onChange={onChangeFieldValue}
+        />
+      )
+    }
   }
 
   console.log('custom field: ', props);
 
   return (
     <div className="flex items-center mb-20">
-      <span className="w-80">{props.props['x-component-props'].title}</span>
+      <span className="w-64">{props.props['x-component-props'].title}</span>
       <span className="mx-10">=</span>
-      <Select options={ruleOptions} />
+      <Select options={ruleOptions} value={rule} onChange={onChangeRule} />
       <div className="inline-flex items-center ml-10 custom-field__value">
         {renderValueBox()}
       </div>
@@ -41,5 +113,4 @@ export default function CustomField(props: Props) {
   );
 }
 
-// CustomField.isFieldComponent = true;
 CustomField.isVirtualFieldComponent = true;

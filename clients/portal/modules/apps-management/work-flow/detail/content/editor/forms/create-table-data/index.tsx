@@ -13,6 +13,7 @@ import toast from '@lib/toast';
 
 import TargetTableFields from './target-table-fields';
 import { BusinessData, TableDataCreateData } from '@flowEditor/type';
+import Context from './context';
 
 interface Props {
   defaultValue: TableDataCreateData;
@@ -41,7 +42,7 @@ function FormCreateTableData({ defaultValue, onSubmit, onCancel }: Props): JSX.E
       toast.error('请选择目标数据表');
       return;
     }
-    // onSubmit(value);
+    onSubmit(value);
   }
 
   const onClose = () => {
@@ -65,35 +66,38 @@ function FormCreateTableData({ defaultValue, onSubmit, onCancel }: Props): JSX.E
   }
 
   return (
-    <div className="flex flex-col">
-      <div className="inline-flex items-center">
-        <span className="text-body mr-10">目标数据表:</span>
-        <Select
-          options={allTables.filter((tb) => tb.value !== tableID)}
-          placeholder="选择数据表"
-          value={value.targetTableId}
-          onChange={(table_id) => {
-            onChange({ targetTableId: table_id });
-          }}
-        />
-      </div>
-      {value.targetTableId && (
-        <div className="inline-flex items-center mt-10">
-          <span className="text-body mr-10">表单数据是否触发工作流执行:</span>
-          <Toggle
-            onChange={(silent) => {
-              onChange({ silent });
+    <Context.Provider value={{ data: value, setData: onChange }}>
+      <div className="flex flex-col">
+        <div className="inline-flex items-center">
+          <span className="text-body mr-10">目标数据表:</span>
+          <Select
+            options={allTables.filter((tb) => tb.value !== tableID)}
+            placeholder="选择数据表"
+            value={value.targetTableId}
+            onChange={(table_id) => {
+              onChange({ targetTableId: table_id });
             }}
-            defaultChecked={value.silent}
           />
-        </div>)}
-      <TargetTableFields
-        appId={appID}
-        tableId={value.targetTableId}
-        onChange={(fields_data: Partial<TableDataCreateData>) => onChange({ ...fields_data })}
-      />
-      <SaveButtonGroup onSave={onSave} onCancel={onClose} />
-    </div>
+        </div>
+        {value.targetTableId && (
+          <div className="inline-flex items-center mt-10">
+            <span className="text-body mr-10">表单数据是否触发工作流执行:</span>
+            <Toggle
+              onChange={(silent) => {
+                onChange({ silent });
+              }}
+              defaultChecked={value.silent}
+            />
+          </div>)}
+        <TargetTableFields
+          appId={appID}
+          tableId={value.targetTableId}
+          defaultValue={defaultValue}
+        />
+        <SaveButtonGroup onSave={onSave} onCancel={onClose} />
+      </div>
+    </Context.Provider>
+
   );
 }
 
