@@ -127,6 +127,7 @@ function CreateDataForm({ appID, pageID, rowID, onCancel, title }: Props): JSX.E
       toast.success('数据未更改');
       return;
     }
+
     const subTableChangedKeys = Object.keys(diffResult).filter(
       (fieldKey) => schemaMap[fieldKey as keyof ISchema]?.[
         'x-component'
