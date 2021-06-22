@@ -1,7 +1,6 @@
-import React, { useState, useRef, DragEvent, useEffect } from 'react';
+import React, { useState, useRef, DragEvent, useEffect, useContext } from 'react';
 import dagre from 'dagre';
 import cs from 'classnames';
-import { useParams } from 'react-router-dom';
 import ReactFlow, {
   ConnectionLineType,
   isNode,
@@ -13,11 +12,11 @@ import ReactFlow, {
   FlowElement,
   Elements,
   ArrowHeadType,
-  OnLoadParams,
 } from 'react-flow-renderer';
 
 import { uuid } from '@lib/utils';
 import useObservable from '@lib/hooks/use-observable';
+import FlowContext from '@flow/detail/flow-context';
 
 import Components from './components';
 import store, { updateStore } from './store';
@@ -34,45 +33,42 @@ const dagreGraph = new dagre.graphlib.Graph();
 dagreGraph.setDefaultEdgeLabel(() => ({}));
 
 export default function Editor(): JSX.Element {
-  const { currentConnection, elements } = useObservable<StoreValue>(store);
+  const { currentConnection, elements, nodeIdForDrawerForm } = useObservable<StoreValue>(store);
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
   const [fitViewFinished, setFitViewFinished] = useState(false);
-  const [reactFlowInstance, setReactFlowInstance] = useState<OnLoadParams>();
-  const { flowID } = useParams<{ flowID: string; }>();
+  const { flowID } = useContext(FlowContext);
   const fitView = useFitView(() => setFitViewFinished(true));
 
   useEffect(() => {
-    updateStore((s) => ({ ...s, flowInstance: reactFlowInstance }));
-  }, [reactFlowInstance]);
+    fitView();
+  }, [elements?.length]);
 
   function setElements(elements: Elements): void {
     updateStore((s) => ({ ...s, elements }));
   }
 
-  function getLayoutedElements(elements: Elements): FlowElement<any>[] {
+  function getLayoutedElements(): FlowElement<any>[] {
     dagreGraph.setGraph({ rankdir: 'TB' });
-    elements.forEach((el) => {
+    elements?.forEach((el) => {
       if (isNode(el)) {
         dagreGraph.setNode(el.id, {
-          width: el.data.nodeData.width,
-          height: el.data.nodeData.height,
+          width: el.data?.nodeData.width,
+          height: el.data?.nodeData.height,
         });
       } else {
         dagreGraph.setEdge(el.source as string, el.target as string);
       }
     });
     dagre.layout(dagreGraph);
-    return elements.map((el, index) => {
+    return elements?.map((el, index) => {
       if (isNode(el)) {
         const nodeWithPosition = dagreGraph.node(el.id);
         el.targetPosition = Position.Top;
         el.sourcePosition = Position.Bottom;
-        // if (el.position.x === 0 && el.position.y === 0) {
         el.position = {
-          x: nodeWithPosition.x - (el.data.nodeData.width / 2),
+          x: nodeWithPosition.x - ((el.data?.nodeData.width || 0) / 2),
           y: nodeWithPosition.y + (index * 80),
         };
-        // }
       }
       return el;
     });
@@ -96,10 +92,9 @@ export default function Editor(): JSX.Element {
 
   function onDrop(e: DragEvent): void {
     e.preventDefault();
-    if (!reactFlowWrapper?.current || !reactFlowInstance || !e.dataTransfer) {
+    if (!reactFlowWrapper?.current || !e.dataTransfer) {
       return;
     }
-    // const reactFlowBounds = reactFlowWrapper.current.getBoundingClientRect();
     const { nodeType: type, width, height, nodeName } = JSON.parse(
       e.dataTransfer.getData('application/reactflow'),
     );
@@ -107,10 +102,6 @@ export default function Editor(): JSX.Element {
     if (!source || !target || !position) {
       return;
     }
-    // const position = (reactFlowInstance as any).project({
-    //   x: e.clientX - reactFlowBounds.left,
-    //   y: e.clientY - reactFlowBounds.top,
-    // });
     const id = type + uuid();
     function updateElementPosition(
       element: FlowElement<any>,
@@ -141,6 +132,7 @@ export default function Editor(): JSX.Element {
           type,
           position: { x: position.x - (width / 2), y: position.y - (height / 2) },
           data: {
+            type,
             nodeData: { width, height, name: nodeName },
             businessData: getNodeInitialData(type),
           },
@@ -159,9 +151,8 @@ export default function Editor(): JSX.Element {
     updateStore((s) => ({ ...s, currentConnection: {} }));
   }
 
-  function onLoad(reactFlowInstance: OnLoadParams): void {
-    setReactFlowInstance(reactFlowInstance);
-    !flowID && setElements(getLayoutedElements(elements));
+  function onLoad(): void {
+    !flowID && elements?.length && setElements(getLayoutedElements());
     setTimeout(fitView);
   }
 
@@ -186,7 +177,9 @@ export default function Editor(): JSX.Element {
         </ReactFlow>
       </div>
       <Components />
-      <DrawerForm />
+      {nodeIdForDrawerForm && (
+        <DrawerForm key={nodeIdForDrawerForm} />
+      )}
     </div>
   );
 }

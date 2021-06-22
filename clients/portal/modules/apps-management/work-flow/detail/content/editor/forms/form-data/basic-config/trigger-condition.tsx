@@ -4,8 +4,7 @@ import cs from 'classnames';
 import Toggle from '@c/toggle';
 import Icon from '@c/icon';
 import useObservable from '@lib/hooks/use-observable';
-
-import store from '@flow/detail/content/editor/store';
+import store from '@flowEditor/store';
 import type {
   TriggerCondition as TriggerConditionType,
   TriggerConditionExpressionItem,
@@ -13,7 +12,7 @@ import type {
   StoreValue,
   TriggerConditionValue,
   FormDataData,
-} from '@flow/detail/content/editor/type';
+} from '@flowEditor/type';
 
 import ConditionItem, { ConditionItemOptions } from './condition-item';
 

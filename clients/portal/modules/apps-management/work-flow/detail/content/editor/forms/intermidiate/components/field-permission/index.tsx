@@ -1,17 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useQuery } from 'react-query';
-import { useParams } from 'react-router-dom';
 
 import Toggle from '@c/toggle';
 import Loading from '@c/loading';
 import ErrorTips from '@c/error-tips';
 import useObservable from '@lib/hooks/use-observable';
-import store from '@flow/detail/content/editor/store';
-import { getFormFieldOptions, getFormFieldSchema } from '@flow/detail/content/editor/forms/api';
+import store from '@flowEditor/store';
+import { getFormFieldOptions, getFormFieldSchema } from '@flowEditor/forms/api';
+import FlowContext from '@flow/detail/flow-context';
 import type {
   StoreValue, FieldPermission, CustomFieldPermission, SystemFieldPermission, CurrentElement,
   FillInData, FormDataData,
-} from '@flow/detail/content/editor/type';
+} from '@flowEditor/type';
 
 import CustomFieldTable from './custom-field-table';
 import SystemFieldTable from './system-field-table';
@@ -24,7 +24,7 @@ interface Props {
 }
 
 export default function FieldPermission({ value, onChange: _onChange }: Props): JSX.Element {
-  const { appID } = useParams<{ appID: string; }>();
+  const { appID } = useContext(FlowContext);
   const [editable, setEditable] = useState(false);
   const { elements = [] } = useObservable<StoreValue>(store);
   const formDataElement = elements?.find(({ type }) => type === 'formData') as CurrentElement;

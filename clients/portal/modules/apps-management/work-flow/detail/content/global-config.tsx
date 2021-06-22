@@ -1,5 +1,4 @@
-import React, { useEffect, useRef } from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useEffect, useRef, useContext } from 'react';
 
 import Toggle from '@c/toggle';
 import Icon from '@c/icon';
@@ -7,17 +6,17 @@ import ToolTip from '@c/tooltip';
 import useObservable from '@lib/hooks/use-observable';
 import toast from '@lib/toast';
 
-import store, { updateStoreByKey, updateStore } from '../editor/store';
-import useSave from '../editor/forms/hooks/use-save';
+import store, { updateStoreByKey, updateStore, buildWorkFlowSaveData } from './editor/store';
+import useSave from './editor/forms/hooks/use-save';
 
-import type { StoreValue } from '../editor/type';
+import type { StoreValue } from './editor/type';
+import FlowContext from '../flow-context';
 
-export default function GlobalConfig() {
+export default function GlobalConfig(): JSX.Element | null {
   const {
-    cancelable, urgeable, seeStatusAndMsg, nodeAdminMsg, id, name, version, elements,
-    triggerMode, status,
+    cancelable, urgeable, seeStatusAndMsg, nodeAdminMsg, id, name, triggerMode, status,
   } = useObservable<StoreValue>(store);
-  const { appID } = useParams<{ appID: string }>();
+  const { appID } = useContext(FlowContext);
   const changedRef = useRef<{ key: keyof StoreValue, checked: boolean }>();
 
   const saver = useSave(appID, id);
@@ -25,24 +24,12 @@ export default function GlobalConfig() {
     if (!changedRef.current?.key || !name || !triggerMode) {
       return;
     }
-    saver({
-      bpmnText: JSON.stringify({
-        version,
-        shapes: elements,
-      }),
-      name: name as string,
-      triggerMode: triggerMode as string,
-      canCancel: cancelable ? 1 : 0,
-      canUrge: urgeable ? 1 : 0,
-      canMsg: nodeAdminMsg ? 1 : 0,
-      canViewStatusMsg: seeStatusAndMsg ? 1 : 0,
-      appId: appID,
-    },
-    () => updateStore((s) => ({ ...s, saved: true })),
-    () => changedRef.current?.key && updateStoreByKey(
-      changedRef.current?.key,
-      () => !changedRef.current?.checked,
-    ));
+    saver(buildWorkFlowSaveData(appID),
+      () => updateStore((s) => ({ ...s, saved: true })),
+      () => changedRef.current?.key && updateStoreByKey(
+        changedRef.current?.key,
+        () => !changedRef.current?.checked,
+      ));
   }, [changedRef.current]);
 
   const options = [{

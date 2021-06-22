@@ -1,28 +1,22 @@
-import React, { useState, MouseEvent, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useState, useEffect, useContext } from 'react';
 
-import Modal from '@c/modal';
-import Drawer from '@c/drawer';
 import useObservable from '@lib/hooks/use-observable';
 import usePrevious from '@lib/hooks/use-previous';
-import { jsonValidator } from '@lib/utils';
+import FlowContext from '@flow/detail/flow-context';
 import type {
-  StoreValue, BusinessData, NodeWorkForm, TriggerCondition, TriggerConditionValue,
-  TimeRule, NodeType, TriggerWay, FillInData, FormDataData,
-} from '@flow/detail/content/editor/type';
-import SaveButtonGroup
-  from '@flow/detail/content/editor/components/_common/action-save-button-group';
+  StoreValue, BusinessData, Data, NodeWorkForm,
+} from '@flowEditor/type';
 import store, {
   getNodeElementById,
   updateStore,
   updateBusinessData,
-  buildBpmnText,
-  resetElementsData,
-} from '@flow/detail/content/editor/store';
-import Form from './form';
+  getFormDataElement,
+  buildWorkFlowSaveData,
+} from '@flowEditor/store';
 
-import { getNodeInitialData } from '../utils';
+import Form from './form';
 import useSave from './hooks/use-save';
+import Drawer from './drawer';
 
 const drawerTitleMap = {
   formData: '工作表触发',
@@ -39,46 +33,19 @@ const drawerTitleMap = {
 };
 
 export default function NodeFormWrapper(): JSX.Element | null {
-  const {
-    nodeIdForDrawerForm, id, status, name, triggerMode, version,
-    cancelable: canCancel, urgeable: canUrge, seeStatusAndMsg: canViewStatusMsg,
-    nodeAdminMsg: canMsg, elements, needSaveFlow,
-  } = useObservable<StoreValue>(store);
-  const { appID } = useParams<{ appID: string }>();
+  const { nodeIdForDrawerForm, id, name, elements } = useObservable<StoreValue>(store);
+  const { appID } = useContext(FlowContext);
   const currentNodeElement = getNodeElementById(nodeIdForDrawerForm);
-  const formDataElement = elements?.find(({ type }) => type === 'formData');
-  const data = currentNodeElement?.data?.businessData;
-  const [formData, setFormData] = useState<BusinessData>(data);
+  const formDataElement = getFormDataElement();
+  const [formData, setFormData] = useState<Data>(currentNodeElement?.data);
   const [formDataChanged, setFormDataChanged] = useState(false);
   const saver = useSave(appID, id);
-  const [currentWorkTable, setCurrentWorkTable] = useState<{
-    name?: string;
-    value: string;
-  }>();
 
   const { type: nodeType } = currentNodeElement ?? {};
-  const isFormDataNode = nodeType === 'formData';
-
-  function onSubmitWorkFormChange(): void {
-    if (!currentWorkTable) {
-      return;
-    }
-    resetElementsData('formData', { form: currentWorkTable });
-    onResetFormData(currentWorkTable);
-    onCancelSubmitWorkForm();
-    setFormDataChanged(true);
-  }
-
-  function onCancelSubmitWorkForm(): void {
-    setCurrentWorkTable(undefined);
-  }
 
   useEffect(() => {
-    setFormData((f) => ({
-      ...(data || {}),
-      form: (data as FormDataData)?.form || (f as FormDataData)?.form,
-    }));
-  }, [data]);
+    currentNodeElement?.data && setFormData(currentNodeElement.data);
+  }, [currentNodeElement?.data]);
 
   useEffect(() => {
     formDataChanged && updateStore((s) => ({ ...s, saved: false }));
@@ -88,11 +55,6 @@ export default function NodeFormWrapper(): JSX.Element | null {
     updateStore((s) => ({ ...s, validating: false }));
     setFormDataChanged(false);
   }, [nodeIdForDrawerForm]);
-
-  useEffect(saveWorkFlow, [name, elements?.length]);
-  useEffect(() => {
-    needSaveFlow && saveWorkFlow();
-  }, [needSaveFlow]);
 
   const previousNodeID = usePrevious(currentNodeElement?.id) ?? '';
   useEffect(() => {
@@ -107,111 +69,20 @@ export default function NodeFormWrapper(): JSX.Element | null {
     });
   }, [formDataChanged]);
 
-  function triggerConditionValidator(v: TriggerCondition): boolean {
-    let isValid = true;
-    v?.expr?.forEach((exprItem) => {
-      const valueItem = exprItem as TriggerConditionValue;
-      const anotherCondition = exprItem as TriggerCondition;
-      if (typeof valueItem.value !== 'undefined') {
-        isValid = !!(valueItem.value && valueItem.key && valueItem.op);
-      } else {
-        isValid = triggerConditionValidator(anotherCondition);
-      }
-    });
-    return isValid;
-  }
-
-  function timeRuleValidator(timeRule: TimeRule): boolean {
-    const { deadLine, whenTimeout } = timeRule ?? {};
-    if (timeRule?.enabled) {
-      if (
-        ((whenTimeout?.type === 'jump' || whenTimeout?.type === 'autoDealWith') &&
-        !whenTimeout?.value) || !deadLine?.breakPoint.length) {
-        return false;
-      }
-
-      return !!(timeRule.deadLine.day || timeRule.deadLine.hours || timeRule.deadLine.minutes);
-    }
-    return true;
-  }
-
-  function triggerWayValidator([triggerWay, whenAlterFields]: [TriggerWay, string[]]): boolean {
-    const isTriggerWayValid = !!triggerWay?.length && typeof triggerWay !== 'undefined';
-    if (triggerWay?.length && triggerWay?.includes('whenAlter') && !whenAlterFields?.length) {
-      return false;
-    }
-    return isTriggerWayValid;
-  }
-
-  function multiplePersonWayValidator(way: string): boolean {
-    const { users, departments } = (formData as FillInData).basicConfig.approvePersons;
-    if (users.length === 1 && !departments.length) {
-      return true;
-    }
-    return !!way;
-  }
-
-  function formDataIsValid(): boolean {
-    const jsonValidatorMap: Record<NodeType, Record<string, (v: any) => boolean>> = {
-      formData: {
-        'form.value': (v) => !!v && typeof v !== 'undefined',
-        'triggerWay,whenAlterFields': triggerWayValidator,
-        triggerCondition: triggerConditionValidator,
-      },
-      fillIn: {
-        'basicConfig.timeRule': timeRuleValidator,
-        'basicConfig.multiplePersonWay': multiplePersonWayValidator,
-      },
-      approve: {
-        'basicConfig.timeRule': timeRuleValidator,
-        'basicConfig.multiplePersonWay': multiplePersonWayValidator,
-      },
-      end: {},
-      processBranch: {},
-      processVariableAssignment: {},
-      tableDataCreate: {},
-      tableDataUpdate: {},
-      cc: {},
-      sendEmail: {},
-      webMessage: {},
-    };
-    return jsonValidator<BusinessData>(formData, jsonValidatorMap[nodeType]);
-  }
-
   const previousName = usePrevious(name);
-  function saveWorkFlow(): void {
+
+  function saveWorkFlow(data: BusinessData): void {
     if (!name || !previousName || !elements?.length) {
       return;
     }
-    const { form, ...saveData } = formData as FormDataData || {};
-    if (isFormDataNode) {
-      Object.assign(saveData, { form });
-    }
-    saver({
-      bpmnText: buildBpmnText(version, nodeIdForDrawerForm, saveData),
-      name: name as string,
-      triggerMode: triggerMode as string,
-      canCancel: canCancel ? 1 : 0,
-      canUrge: canUrge ? 1 : 0,
-      canMsg: canMsg ? 1 : 0,
-      canViewStatusMsg: canViewStatusMsg ? 1 : 0,
-      appId: appID,
-    }, () => {
-      updateBusinessData(nodeIdForDrawerForm, (b) => ({ ...b, ...saveData }), {
-        saved: true, needSaveFlow: false,
-      });
+    saver(buildWorkFlowSaveData(appID, data), () => {
+      updateBusinessData(nodeIdForDrawerForm, (b) => ({ ...b, ...data }), { saved: true });
       closePanel();
     });
   }
 
-  function onSubmit(e: MouseEvent<HTMLDivElement>): void {
-    e.preventDefault();
-    if (formDataIsValid()) {
-      setFormDataChanged(false);
-      saveWorkFlow();
-    } else {
-      updateStore((s) => ({ ...s, validating: true }));
-    }
+  function onSubmit(data: BusinessData): void {
+    saveWorkFlow(data);
   }
 
   function closePanel(): void {
@@ -226,74 +97,31 @@ export default function NodeFormWrapper(): JSX.Element | null {
     }));
   }
 
-  function onCancel(): false | undefined {
-    if (formDataChanged && (status !== 'ENABLE')) {
-      updateStore((s) => ({
-        ...s,
-        showDataNotSaveConfirm: true,
-        currentDataNotSaveConfirmCallback: () => closePanel(),
-      }));
-      return false;
-    }
-    closePanel();
-  }
-
-  function onResetFormData(form: NodeWorkForm): void {
-    const newInitialFormData = getNodeInitialData(currentNodeElement?.type);
-    newInitialFormData && setFormData({
-      ...newInitialFormData,
-      form,
-    });
-  }
-
   if (!currentNodeElement || !formData) {
     return null;
   }
 
+  function getWorkFormValue(): NodeWorkForm {
+    if (formData.type === 'formData') {
+      return formData.businessData.form;
+    }
+    return formDataElement.data.businessData.form;
+  }
+
   return (
     <Drawer
-      title={(
-        <span className="text-h5 mr-8">{drawerTitleMap[nodeType]}</span>
-      )}
+      title={(<span className="text-h5 mr-8">{drawerTitleMap[nodeType]}</span>)}
       distanceTop={0}
       onCancel={closePanel}
       className="flow-editor-drawer"
     >
-      <div
-        className="flex-1 flex flex-col justify-between h-full"
-      >
+      <div className="flex-1 flex flex-col justify-between h-full">
         <Form
-          nodeType={nodeType}
-          value={formData}
-          form={(formDataElement?.data?.businessData as FormDataData).form}
-          onChange={setFormData}
-          onWorkTableChange={setCurrentWorkTable}
-          toggleFormDataChanged={setFormDataChanged}
+          workForm={getWorkFormValue()}
+          defaultValue={formData}
+          onSubmit={onSubmit}
+          onCancel={closePanel}
         />
-        <SaveButtonGroup onSave={onSubmit} onCancel={onCancel} />
-        {currentWorkTable && (
-          <Modal
-            title="更换触发工作表"
-            onClose={onCancelSubmitWorkForm}
-            footerBtns={[
-              {
-                text: '取消',
-                key: 'cancel',
-                onClick: onCancelSubmitWorkForm,
-              },
-              {
-                text: '确定',
-                key: 'confirm',
-                modifier: 'primary',
-                onClick: onSubmitWorkFormChange,
-              },
-            ]}
-          >
-            <p className="text-body2">
-              更换新的触发工作表后，该节点及其他关联节点配置将会被重置，确定要更换吗？
-            </p>
-          </Modal>
-        )}
       </div>
     </Drawer>
   );

@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-import { updateElementByKey, updateStore } from '@flow/detail/content/editor/store';
+import { updateElementByKey, updateStore } from '@flowEditor/store';
 import usePrevious from '@lib/hooks/use-previous';
 
 interface Props {
@@ -9,9 +9,9 @@ interface Props {
   id: string;
 }
 
-export default function usePositionChange({ xPos, yPos, id }: Props, isDragging: boolean) {
+export default function usePositionChange({ xPos, yPos, id }: Props, isDragging: boolean): void {
   const previousDragging = usePrevious(isDragging);
-  function saveWorkFlow() {
+  function saveWorkFlow(): void {
     updateStore((s) => ({ ...s, needSaveFlow: true }));
   }
 

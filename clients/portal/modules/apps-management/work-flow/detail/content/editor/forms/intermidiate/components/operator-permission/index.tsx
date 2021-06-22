@@ -6,14 +6,14 @@ import Icon from '@c/icon';
 import Tooltip from '@c/tooltip';
 import Loading from '@c/loading';
 import ErrorTips from '@c/error-tips';
-import { getOperationList } from '@flow/detail/content/editor/forms/api';
+import { getOperationList } from '@flowEditor/forms/api';
 import type {
   SystemOperation,
   CustomOperation,
   OperationPermission as OperationPermissionType,
   NodeType,
   FillInData,
-} from '@flow/detail/content/editor/type';
+} from '@flowEditor/type';
 
 interface Props {
   value: OperationPermissionType;

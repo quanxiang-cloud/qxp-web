@@ -1,5 +1,5 @@
 import { CSSProperties, HTMLAttributes, ReactNode } from 'react';
-import { Position, ArrowHeadType, FlowElement, Elements, OnLoadParams } from 'react-flow-renderer';
+import { Position, ArrowHeadType, FlowElement, Elements } from 'react-flow-renderer';
 
 export interface NodeProps {
   id: string;
@@ -210,9 +210,15 @@ export interface TableDataUpdateData {
     valueOf: string | number | Array<string | number>;
   }>;
 }
-// export interface SendEmail {}
-// export interface WebMessage {}
-// export interface CC {}
+export interface SendEmailData {
+  [key: string]: unknown;
+}
+export interface WebMessageData {
+  [key: string]: unknown;
+}
+export interface CCData {
+  [key: string]: unknown;
+}
 export interface FieldValue {
   variable: string;
   staticValue: string;
@@ -242,22 +248,68 @@ export interface FieldPermission {
 }
 
 export type BusinessData = FormDataData | FillInData | ProcessBranchData |
-  ProcessVariableAssignmentData | TableDataCreateData | TableDataUpdateData;
+  ProcessVariableAssignmentData | TableDataCreateData | TableDataUpdateData | SendEmailData |
+  WebMessageData | CCData;
 export type NodeData = { width: number, height: number, name: string };
-export type Data = {
-  businessData: BusinessData;
+export interface BaseNodeData {
+  type: NodeType;
   nodeData: NodeData;
+  businessData: BusinessData;
 }
-
+export interface FillInNodeData extends BaseNodeData {
+  type: 'fillIn';
+  businessData: FillInData;
+}
+export interface ApproveNodeData extends BaseNodeData {
+  type: 'approve';
+  businessData: FillInData;
+}
+export interface FormDataNodeData extends BaseNodeData {
+  type: 'formData';
+  businessData: FormDataData;
+}
+export interface ProcessBranchNodeData extends BaseNodeData {
+  type: 'processBranch';
+  businessData: ProcessBranchData;
+}
+export interface ProcessVariableAssignmentNodeData extends BaseNodeData {
+  type: 'processVariableAssignment';
+  businessData: ProcessVariableAssignmentData;
+}
+export interface TableDataCreateNodeData extends BaseNodeData {
+  type: 'tableDataCreate';
+  businessData: TableDataCreateData;
+}
+export interface TableDataUpdateNodeData extends BaseNodeData {
+  type: 'tableDataUpdate';
+  businessData: TableDataUpdateData;
+}
+export interface SendEmailNodeData extends BaseNodeData {
+  type: 'sendEmail';
+  businessData: SendEmailData;
+}
+export interface WebMessageNodeData extends BaseNodeData {
+  type: 'webMessage';
+  businessData: WebMessageData;
+}
+export interface CCNodeData extends BaseNodeData {
+  type: 'cc';
+  businessData: CCData;
+}
+export type Data = CCNodeData | WebMessageNodeData | SendEmailNodeData | TableDataUpdateNodeData |
+  TableDataCreateNodeData | ProcessVariableAssignmentNodeData | ProcessBranchNodeData |
+  FormDataNodeData | ApproveNodeData | FillInNodeData;
 export type NodeType = 'formData' | 'fillIn' | 'approve' | 'end' | 'processBranch' |
   'processVariableAssignment' | 'tableDataCreate' | 'tableDataUpdate' | 'sendEmail' |
   'webMessage' | 'cc';
-
 export interface CurrentElement {
   id: string;
   type: NodeType;
   data: Data;
   position: XYPosition;
+}
+export interface FormDataElement extends CurrentElement {
+  data: FormDataNodeData;
 }
 
 export type Errors = Record<string, unknown> & {
@@ -269,7 +321,6 @@ export type Errors = Record<string, unknown> & {
 };
 
 export interface StoreValue {
-  flowInstance?: OnLoadParams;
   creatorId?: string;
   needSaveFlow?: boolean;
   apiFetched: boolean;

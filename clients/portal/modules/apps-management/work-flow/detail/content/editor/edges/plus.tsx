@@ -83,7 +83,7 @@ export default function CustomEdge({
         <path
           id={id}
           style={{ ...style, borderRadius: '50%' }}
-          className={cs('react-flow__edge-path cursor-pointer', cursorClassName)}
+          className={cs('react-flow__edge-path cursor-pointer pointer-events-none', cursorClassName)}
           d={edgePath}
           markerEnd={markerEnd}
           onDragOver={onDragOver}
@@ -92,6 +92,7 @@ export default function CustomEdge({
           className={cursorClassName}
           style={{
             filter: 'drop-shadow(0px 8px 24px rgba(55, 95, 243, 1))',
+            pointerEvents: 'all',
           }}
           rectClassName={cursorClassName}
           textClassName={cursorClassName}

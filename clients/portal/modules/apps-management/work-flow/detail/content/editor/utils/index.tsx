@@ -3,7 +3,7 @@ import { update } from 'lodash';
 
 import { deepClone } from '@lib/utils';
 
-import type { NodeType } from '../type';
+import type { NodeType, Data } from '../type';
 
 export interface GetCenterParams {
   sourceX: number;
@@ -103,7 +103,7 @@ export function getNodeInitialData(type: NodeType): any {
       rule: '',
     },
     processVariableAssignment: {
-      assignment_rules: [],
+      assignmentRules: [],
     },
     tableDataCreate: {
       target_table_id: '',
@@ -168,9 +168,10 @@ export function nodeBuilder(
     position: { x: 0, y: 0 },
     width: 200,
     height: 72,
-  }): Node {
+  }): Node<Data> {
   return {
     id, type, data: {
+      type: type as 'fillIn',
       nodeData: { width: options.width as number, height: options.height as number, name },
       businessData: getNodeInitialData(type),
     },

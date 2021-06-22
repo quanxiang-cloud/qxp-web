@@ -33,14 +33,14 @@ interface AddWorkFlow {
   processKey: string;
   triggerMode: 'FORM_DATA' | 'FORM_TIME';
 }
-export function addWorkFlow({ queryKey }: QueryFunctionContext) {
+export function addWorkFlow({ queryKey }: QueryFunctionContext): Promise<WorkFlow> {
   return httpClient<WorkFlow>(
     '/api/v1/flow/addFlow',
     queryKey[1] as AddWorkFlow,
   );
 }
 
-export function getWorkFlowInfo({ queryKey }: QueryFunctionContext) {
+export function getWorkFlowInfo({ queryKey }: QueryFunctionContext): Promise<WorkFlow> {
   return httpClient<WorkFlow>(`/api/v1/flow/flowInfo/${queryKey[1] as string}`);
 }
 
@@ -55,7 +55,7 @@ export interface SaveWorkFlow {
   canViewStatusMsg: 0 | 1;
   appId: string;
 }
-export function saveWorkFlow(flowData: SaveWorkFlow) {
+export function saveWorkFlow(flowData: SaveWorkFlow): Promise<WorkFlow> {
   return httpClient<WorkFlow>(
     '/api/v1/flow/saveFlow',
     flowData,
@@ -71,7 +71,7 @@ interface UpdateWorkFlow {
   name: string;
   modifierId: string;
 }
-export function updateWorkflow({ queryKey }: QueryFunctionContext) {
+export function updateWorkflow({ queryKey }: QueryFunctionContext): Promise<WorkFlow> {
   return httpClient<WorkFlow>(
     '/api/v1/flow/updateFlow',
     queryKey[1] as UpdateWorkFlow,
@@ -81,6 +81,6 @@ export function updateWorkflow({ queryKey }: QueryFunctionContext) {
 export function toggleWorkFlow(data: {
     id: string;
     status: 'ENABLE' | 'DISABLE';
-}) {
+}): Promise<unknown> {
   return httpClient('/api/v1/flow/updateFlowStatus', data);
 }

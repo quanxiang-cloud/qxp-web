@@ -1,10 +1,10 @@
 import React from 'react';
 
-import Drawer from '@c/drawer';
 import useObservable from '@lib/hooks/use-observable';
 
 import store, { updateStore } from '../store';
 import type { StoreValue } from '../type';
+import Drawer from '../forms/drawer';
 import DragNode from './drag-node';
 
 const nodeLists = [{
