@@ -1,5 +1,7 @@
-import React, { JSXElementConstructor } from 'react';
+import React, { JSXElementConstructor, useEffect, useState, useContext } from 'react';
+import { useQuery } from 'react-query';
 
+import { getTableSchema } from '@lib/http-client';
 import type { NodeWorkForm, Data, BusinessData } from '@flowEditor/type';
 
 import FormDataForm from './form-data';
@@ -7,6 +9,7 @@ import ApproveForm from './intermidiate/approve';
 import ProcessVariableAssignmentConfig from './process-variable-assignment-config';
 import FlowTableContext from './flow-source-table';
 import CreateTableData from './create-table-data';
+import FlowContext from '../../../flow-context';
 
 interface Props {
   workForm: NodeWorkForm;
@@ -17,6 +20,26 @@ interface Props {
 
 function Placeholder(): JSX.Element | null {
   return null;
+}
+
+function useTableSchema(appID: string, tableID: string): ISchema | null {
+  const [schema, setSchema] = useState<ISchema | null>(null);
+
+  const { data, isLoading, isError } = useQuery<ISchema>(['FETCH_TABLE_SCHEMA', appID, tableID], () => {
+    return getTableSchema(appID, tableID).then(({ schema }) => {
+      return schema || {};
+    });
+  });
+
+  useEffect(() => {
+    if (isLoading || isError || !data) {
+      return;
+    }
+
+    setSchema(data);
+  }, [data, isLoading, isError]);
+
+  return schema;
 }
 
 const components: Record<string, JSXElementConstructor<any>> = {
@@ -47,10 +70,22 @@ export default function Form({
       nodeType: defaultValue.type,
     });
   }
+  const { appID } = useContext(FlowContext);
+  const sourceTableSchema = useTableSchema(appID, workForm?.value || '');
+
+  if (!sourceTableSchema) {
+    return (
+      <div>loading...</div>
+    );
+  }
 
   return (
     <FlowTableContext.Provider
-      value={{ tableID: workForm?.value || '', tableName: workForm?.name || '' }}
+      value={{
+        tableID: workForm?.value || '',
+        tableName: workForm?.name || '',
+        tableSchema: sourceTableSchema,
+      }}
     >
       <div className="flex-1" style={{ height: 'calc(100% - 56px)' }}>
         {getConfigForm()}

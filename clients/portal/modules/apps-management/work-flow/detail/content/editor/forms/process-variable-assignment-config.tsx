@@ -14,12 +14,11 @@ import {
 import MoreMenu from '@c/more-menu';
 import Icon from '@c/icon';
 import Button from '@c/button';
-import httpClient, { getTableSchema } from '@lib/http-client';
+import httpClient from '@lib/http-client';
 import { RowStyleLayout } from '@c/form-builder/customized-fields';
 import SaveButtonGroup from '@flowEditor/components/_common/action-save-button-group';
 
 import FlowSourceTableContext from './flow-source-table';
-import FlowContext from '../../../flow-context';
 import { ProcessVariableAssignmentData } from '../type';
 
 type Option = {
@@ -57,21 +56,6 @@ const ASSIGNABLE_WHITELIST_COMPONENTS = [
   'OrganizationPicker',
   'CascadeSelector',
 ];
-
-function getSourceTableFields(appID: string, tableID: string): Promise<Array<Option>> {
-  // todo move schema to context
-  return getTableSchema(appID, tableID).then(({ schema }) => {
-    if (!schema) {
-      return [];
-    }
-
-    return Object.entries(schema.properties || {}).filter(([, fieldSchema]) => {
-      return ASSIGNABLE_WHITELIST_COMPONENTS.includes(fieldSchema['x-component'] as string);
-    }).map(([key, fieldSchema]) => {
-      return { label: fieldSchema.title as string, value: key };
-    });
-  });
-}
 
 function useLeftOptions(used: string[], variables: ProcessVariable[]): Option[] {
   const [options, setOptions] = useState<Option[]>([]);
@@ -133,12 +117,14 @@ const actions = createFormActions();
 const COMPONENTS = { AntdSelect, Input, RulesList };
 
 export default function AssignmentConfig({ defaultValue, onSubmit, onCancel }: Props): JSX.Element {
-  const { tableID } = useContext(FlowSourceTableContext);
-  const { appID } = useContext(FlowContext);
-  const { data: variables, isLoading } = useQuery(['FETCH_PROCESS_VARIABLES'], getFlowVariables);
-  const tableFieldsResult = useQuery(['get_table_schema', appID, tableID], () => {
-    return getSourceTableFields(appID, tableID);
+  const { tableSchema } = useContext(FlowSourceTableContext);
+  const tableFields = Object.entries(tableSchema.properties || {}).filter(([, fieldSchema]) => {
+    return ASSIGNABLE_WHITELIST_COMPONENTS.includes(fieldSchema['x-component'] as string);
+  }).map(([key, fieldSchema]) => {
+    return { label: fieldSchema.title as string, value: key };
   });
+
+  const { data: variables, isLoading } = useQuery(['FETCH_PROCESS_VARIABLES'], getFlowVariables);
 
   const { setFieldState, getFormState } = actions;
 
@@ -148,7 +134,7 @@ export default function AssignmentConfig({ defaultValue, onSubmit, onCancel }: P
       if (state.value === 'currentFormValue') {
         setFieldState(valueOfPath, (state) => {
           state.props['x-component'] = 'AntdSelect';
-          state.props.enum = tableFieldsResult.data || [];
+          state.props.enum = tableFields;
         });
         return;
       }
@@ -170,7 +156,7 @@ export default function AssignmentConfig({ defaultValue, onSubmit, onCancel }: P
 
   // remove this conditional render will cause react maximum update depth exceeded
   // it's a bug of formily?
-  if (isLoading || tableFieldsResult.isLoading) {
+  if (isLoading) {
     return (<div>loading...</div>);
   }
 
