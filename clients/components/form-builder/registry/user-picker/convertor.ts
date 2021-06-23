@@ -8,7 +8,7 @@ export interface DefaultConfig {
   required: boolean;
   defaultValue: string | string[];
   optionalRange?: 'all' | 'customize' | 'myDep';
-  multiple?: 'signle' | 'multiple';
+  multiple?: 'single' | 'multiple';
   rangeList: EmployeeOrDepartmentOfRole[];
   defaultValues: string | string[];
   enums?: Option[];
@@ -25,11 +25,11 @@ export const defaultConfig: DefaultConfig = {
   required: false,
   defaultValue: '',
   optionalRange: 'all',
-  multiple: 'signle',
+  multiple: 'single',
   rangeList: [],
   defaultValues: [],
   loading: false,
-  type: 'label-value',
+  type: 'array',
 };
 
 export const toSchema = (config: DefaultConfig): ISchema => {
@@ -42,7 +42,7 @@ export const toSchema = (config: DefaultConfig): ISchema => {
   const calcDefaultValues = isMultiple ? multipleDefValues : singleDefValues;
 
   return Object.assign(config, {
-    type: 'label-value',
+    type: 'array',
     title: config.title,
     description: config.description,
     required: config.required,
@@ -85,7 +85,7 @@ export const toConfig = (schema: ISchema): DefaultConfig => {
     displayModifier = 'hidden';
   }
   return {
-    type: 'label-value',
+    type: 'array',
     title: schema.title as string,
     description: schema.description as string,
     displayModifier: displayModifier,

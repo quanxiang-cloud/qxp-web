@@ -15,29 +15,43 @@ const TABS: TabProps[] = [
   { label: '页面配置', key: 'pageSetting' },
 ];
 
-function FormDesignHeader() {
+function FormDesignHeader(): JSX.Element {
   const [showNotSavedTips, setShowNotSavedTips] = useState(false);
+  const [switchTab, setSwitchTab] = useState('switchTab');
   const { pageType, pageId, appID } = useParams<FormDesignParams>();
 
   const history = useHistory();
 
   const { pageName } = parse(window.location.search);
 
-  const tabChange = (tabKey: string) => {
+  const tabChange = (tabKey: string): void => {
+    if (store.formStore?.hasEdit && tabKey === 'pageSetting') {
+      setSwitchTab('switchTab');
+      setShowNotSavedTips(true);
+      return;
+    }
+
     const query = pageName ? `?pageName=${pageName}` : '';
     history.replace(`/apps/formDesign/${tabKey}/${pageId}/${appID}${query}`);
   };
 
-  const goBack = () => {
+  const goBack = (): void => {
     if (store.formStore?.hasEdit) {
+      setSwitchTab('back');
       setShowNotSavedTips(true);
       return;
     }
+
     goPageDetails();
   };
 
-  const goPageDetails = () => {
+  const goPageDetails = (): void => {
     history.push(`/apps/details/${appID}?pageID=${pageId}`);
+  };
+
+  const reset = (): void => {
+    store.reSetFormScheme();
+    setShowNotSavedTips(false);
   };
 
   return (
@@ -60,7 +74,8 @@ function FormDesignHeader() {
       </div>
       {showNotSavedTips && (
         <NotSavedModal
-          onAbandon={goPageDetails}
+          onSaveAfter={switchTab === 'back' ? goPageDetails : () => tabChange('pageSetting')}
+          onAbandon={switchTab === 'back' ? goPageDetails : reset}
           onCancel={() => setShowNotSavedTips(false)}
         />
       )}

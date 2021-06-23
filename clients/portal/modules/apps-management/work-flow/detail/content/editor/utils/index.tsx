@@ -103,7 +103,7 @@ export function getNodeInitialData(type: NodeType): any {
       rule: '',
     },
     processVariableAssignment: {
-      assignment_rules: [],
+      assignmentRules: [],
     },
     tableDataCreate: {
       target_table_id: '',
