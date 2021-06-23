@@ -68,7 +68,7 @@ function ActionModals({ className }: Props) {
       return apis.stepBack(processInstanceID, taskID, {
         handleType: action,
         remark: modalInfo.payload.remark || '',
-        activityInstanceId: stepBackId,
+        taskDefKey: stepBackId,
       });
     }
 
