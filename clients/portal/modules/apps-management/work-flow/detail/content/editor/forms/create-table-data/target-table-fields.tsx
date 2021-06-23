@@ -23,11 +23,12 @@ function TargetTableFields({ appId, tableId, defaultValue }: Props) {
 
   const transformSchema = (schema: ISchema): ISchema => {
     const properties = get(schema, 'properties', {});
-    const { createRule = {} } = defaultValue;
+    const { createRule = {} } = data;
     const mapProperties = Object.entries(properties)
       .reduce((acc: Record<string, any>, [key, field]: [string, ISchema]) => {
         const innerFieldProps = pick(field, ['display', 'title', 'readonly']);
-        const defaultVal = createRule[key] && createRule[key].valueFrom === 'fixedValue' ? { default: createRule[key].valueOf } : {};
+        const defaultVal = createRule[key] && createRule[key].valueFrom === 'fixedValue' ?
+          { default: createRule[key].valueOf } : {};
         Object.assign(acc, {
           [key]: {
             type: 'object',
@@ -35,8 +36,8 @@ function TargetTableFields({ appId, tableId, defaultValue }: Props) {
             'x-component-props': innerFieldProps,
             properties: {
               [key]: { ...field, title: '', ...defaultVal }, // merge default value
-            }
-          }
+            },
+          },
         });
         return acc;
       }, {});
@@ -48,10 +49,11 @@ function TargetTableFields({ appId, tableId, defaultValue }: Props) {
   };
 
   const onChangeFixedValue = (values: any) => {
+    // todo: values passed from form-render sometimes with multiple fields undefined
     const fieldVals = pickBy(values, (v, k) => k.startsWith('field_'));
     const commitVals = omitBy(values, (v, k) => k.startsWith('field_'));
     each(commitVals.createRule, (v: ValueRule, k: string) => {
-      if (k in fieldVals) {
+      if (k in fieldVals && fieldVals[k] !== v.valueOf) {
         Object.assign(v, {
           valueFrom: 'fixedValue',
           valueOf: fieldVals[k],

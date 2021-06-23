@@ -34,7 +34,7 @@ type Props = {
 
 const { onFieldValueChange$ } = FormEffectHooks;
 
-const ASSIGNABLE_WHITELIST_COMPONENTS = [
+const ASSIGNABLE_COMPONENTS = [
   'Input',
   'Textarea',
   'RadioGroup',
@@ -50,10 +50,11 @@ const ASSIGNABLE_WHITELIST_COMPONENTS = [
 
 function useLeftOptions(used: string[], variables: ProcessVariable[]): Option[] {
   const [options, setOptions] = useState<Option[]>([]);
+
   useEffect(() => {
-    const _options = variables.filter(({ code }) => !used.includes(code)).map(({ code, name }) => {
-      return { label: name, value: code };
-    });
+    const _options = variables
+      .filter(({ code }) => !used.includes(code))
+      .map(({ code, name }) => ({ label: name, value: code }));
 
     setOptions(_options);
   }, [used, variables]);
@@ -104,20 +105,20 @@ function RulesList(props: any): JSX.Element {
 }
 
 RulesList.isFieldComponent = true;
-const actions = createFormActions();
+
+const ACTIONS = createFormActions();
 const COMPONENTS = { AntdSelect, Input, RulesList };
 
 export default function AssignmentConfig({ defaultValue, onSubmit, onCancel }: Props): JSX.Element {
   const { tableSchema } = useContext(FlowSourceTableContext);
   const tableFields = Object.entries(tableSchema.properties || {}).filter(([, fieldSchema]) => {
-    return ASSIGNABLE_WHITELIST_COMPONENTS.includes(fieldSchema['x-component'] as string);
+    return ASSIGNABLE_COMPONENTS.includes(fieldSchema['x-component'] as string);
   }).map(([key, fieldSchema]) => {
     return { label: fieldSchema.title as string, value: key };
   });
 
   const { data: variables, isLoading } = useQuery(['FETCH_PROCESS_VARIABLES'], getFlowVariables);
-
-  const { setFieldState, getFormState } = actions;
+  const { setFieldState, getFormState } = ACTIONS;
 
   function formEffect(): void {
     onFieldValueChange$('assignmentRules.*.valueFrom').subscribe((state) => {
@@ -138,7 +139,6 @@ export default function AssignmentConfig({ defaultValue, onSubmit, onCancel }: P
   }
 
   function onSave(): void {
-    // todo get data value
     // todo validate data value
     // todo call onSubmit when data is valid
     const { values } = getFormState();
@@ -155,7 +155,7 @@ export default function AssignmentConfig({ defaultValue, onSubmit, onCancel }: P
     <div>
       {/* {!assignmentRules.length && (<span className="text-caption">还没有配置任何赋值规则</span>)} */}
       <SchemaForm
-        actions={actions}
+        actions={ACTIONS}
         components={COMPONENTS}
         defaultValue={defaultValue}
         effects={formEffect}

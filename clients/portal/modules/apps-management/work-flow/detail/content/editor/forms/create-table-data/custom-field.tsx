@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { useQuery } from 'react-query';
 import { get } from 'lodash';
 
@@ -33,8 +33,6 @@ export default function CustomField(props: Props): JSX.Element {
   const { data: variables, isLoading: loadingVariables } = useQuery(['FETCH_PROCESS_VARIABLES'], getFlowVariables);
 
   const onChangeFieldValue = (val: any) => {
-    console.log('change create rule: ', rule, val);
-
     setData({
       createRule: {
         ...(data.createRule || {}),
@@ -44,7 +42,7 @@ export default function CustomField(props: Props): JSX.Element {
         },
       },
     });
-  }
+  };
 
   const onChangeRule = (rule: Rule) => {
     setRule(rule);
@@ -56,10 +54,10 @@ export default function CustomField(props: Props): JSX.Element {
         [fieldName]: {
           ...curRule,
           valueFrom: rule,
-        }
-      }
-    })
-  }
+        },
+      },
+    });
+  };
 
   const getDefaultVal = () => get(data, `createRule.${fieldName}.valueOf`);
 
@@ -75,7 +73,7 @@ export default function CustomField(props: Props): JSX.Element {
           value={getDefaultVal() as string}
           onChange={onChangeFieldValue}
         />
-      )
+      );
     }
 
     if (rule === 'fixedValue') {
@@ -86,7 +84,7 @@ export default function CustomField(props: Props): JSX.Element {
       if (loadingVariables) {
         return (
           <div>Loading variables...</div>
-        )
+        );
       }
 
       return (
@@ -95,11 +93,11 @@ export default function CustomField(props: Props): JSX.Element {
           value={getDefaultVal() as string}
           onChange={onChangeFieldValue}
         />
-      )
+      );
     }
-  }
+  };
 
-  console.log('custom field: ', props);
+  // console.log('custom field: ', props);
 
   return (
     <div className="flex items-center mb-20">

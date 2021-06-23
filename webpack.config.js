@@ -87,6 +87,7 @@ module.exports = function(env) {
       new WebpackBar(),
       new MiniCssExtractPlugin({
         filename: NODE_ENV === 'production' ? '[name].[contenthash].css' : '[name].css',
+        ignoreOrder: true,
       }),
       new HtmlWebpackPlugin({
         inject: false,

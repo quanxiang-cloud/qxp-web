@@ -11,7 +11,7 @@ interface Props {
   value: Option | Option[];
   onChange: (value: Option | Option[]) => void;
   rangeList: EmployeeOrDepartmentOfRole[];
-  multiple: 'signle' | 'multiple';
+  multiple: 'single' | 'multiple';
   optionalRange: 'all' | 'customize';
 }
 

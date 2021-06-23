@@ -1,5 +1,6 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { useQuery } from 'react-query';
+// import { values, every } from 'lodash';
 
 import Select from '@c/select';
 import Toggle from '@c/toggle';
@@ -8,7 +9,6 @@ import SaveButtonGroup from '@flowEditor/components/_common/action-save-button-g
 import { getFormDataOptions } from '@c/form-table-selector/api';
 import FlowContext from '@flow/detail/flow-context';
 import FlowTableContext from '../flow-source-table';
-import store from '@flow/detail/content/editor/store';
 import toast from '@lib/toast';
 
 import TargetTableFields from './target-table-fields';
@@ -35,19 +35,21 @@ function FormCreateTableData({ defaultValue, onSubmit, onCancel }: Props): JSX.E
   });
 
   const onSave = () => {
-    console.log('save form data: ', value);
-
     // todo: validate
     if (!value.targetTableId) {
       toast.error('请选择目标数据表');
       return;
     }
+    // if (!every(values(value), ({ valueOf }: { valueOf: any }) => !!valueOf)) {
+    //   toast.error('部分字段值未填写');
+    //   return;
+    // }
     onSubmit(value);
-  }
+  };
 
   const onClose = () => {
     onCancel();
-  }
+  };
 
   function onChange(val: Partial<TableDataCreateData>): void {
     setValue((v) => ({ ...v, ...val }));

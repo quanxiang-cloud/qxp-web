@@ -77,15 +77,15 @@ function DatasetNames(props: Props) {
                 <MoreMenu
                   className="action-more mr-10"
                   onMenuClick={(key) => {
-                    if (key === 'edit') {
-                      setEditModal(true);
-                    }
+                    // if (key === 'edit') {
+                    //   setEditModal(true);
+                    // }
                     if (key === 'delete') {
                       setDeleteModal(true);
                     }
                   }}
                   menus={[
-                    { label: '编辑', key: 'edit' },
+                    // { label: '编辑', key: 'edit' },
                     { label: '删除分组', key: 'delete' },
                   ]} />
               </div>

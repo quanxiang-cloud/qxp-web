@@ -305,7 +305,10 @@ func doFill(r *http.Request, vm map[string]interface{}, tableID, fieldNme, cate 
 				if err != nil {
 					return http.StatusInternalServerError, err
 				}
-				ph := fmt.Sprintf("%s%s%s", base, cp.AppID, querySubTable)
+				ph := fmt.Sprintf("%s%s%s", base, cp.AppID, querySubTableM)
+				if cate == "user" {
+					ph = fmt.Sprintf("%s%s%s", base, cp.AppID, querySubTable)
+				}
 				c1, b1, err := sendRequest2Struct(r, "POST", ph, sr)
 				if err != nil || c1 != http.StatusOK {
 					return c1, err
