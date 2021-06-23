@@ -8,6 +8,7 @@ import FormDataForm from './form-data';
 import ApproveForm from './intermidiate/approve';
 import ProcessVariableAssignmentConfig from './process-variable-assignment-config';
 import FlowTableContext from './flow-source-table';
+import CreateTableData from './create-table-data';
 import FlowContext from '../../../flow-context';
 
 interface Props {
@@ -47,7 +48,7 @@ const components: Record<string, JSXElementConstructor<any>> = {
   fillIn: ApproveForm,
   processBranch: Placeholder,
   processVariableAssignment: ProcessVariableAssignmentConfig,
-  tableDataCreate: Placeholder,
+  tableDataCreate: CreateTableData,
   tableDataUpdate: Placeholder,
   sendEmail: Placeholder,
   cc: Placeholder,
