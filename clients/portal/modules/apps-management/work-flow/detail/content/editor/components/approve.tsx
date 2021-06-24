@@ -65,7 +65,7 @@ export default function ApproveNodeComponent({ data, id, xPos, yPos, isDragging 
     <div
       className={cs(
         'shadow-title rounded-tl-8 rounded-tr-8 rounded-br-2',
-        'rounded-bl-8 bg-white flex flex-col border relative',
+        'rounded-bl-8 bg-white flex flex-col border relative cursor-pointer',
         {
           'border-red-600 border-dashed animate-node-error': hasError,
         },

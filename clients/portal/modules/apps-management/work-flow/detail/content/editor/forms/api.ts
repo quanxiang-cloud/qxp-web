@@ -3,6 +3,7 @@ import { QueryFunctionContext } from 'react-query';
 import httpClient from '@lib/http-client';
 
 import { WorkTableInternalFields } from '../utils/constants';
+import { ProcessVariable } from '../type';
 
 export type Option = {
   label: string;
@@ -143,4 +144,8 @@ export function getOperationList({ queryKey }: QueryFunctionContext): Promise<{
       custom: operationList.custom.filter(({ only }) => !only || only === type),
     });
   });
+}
+
+export function getFlowVariables(): Promise<Array<ProcessVariable>> {
+  return httpClient('/api/v1/flow/getVariableList');
 }

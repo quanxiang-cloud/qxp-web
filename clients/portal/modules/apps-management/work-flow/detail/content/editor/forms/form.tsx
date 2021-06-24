@@ -8,7 +8,10 @@ import FormDataForm from './form-data';
 import ApproveForm from './intermidiate/approve';
 import ProcessVariableAssignmentConfig from './process-variable-assignment-config';
 import FlowTableContext from './flow-source-table';
+import CreateTableData from './create-table-data';
 import FlowContext from '../../../flow-context';
+import ProcessBranch from './process-branch';
+import ProcessBranchTarget from './process-branch-target';
 
 interface Props {
   workForm: NodeWorkForm;
@@ -45,9 +48,10 @@ const components: Record<string, JSXElementConstructor<any>> = {
   formData: FormDataForm,
   approve: ApproveForm,
   fillIn: ApproveForm,
-  processBranch: Placeholder,
+  processBranch: ProcessBranch,
+  processBranchTarget: ProcessBranchTarget,
   processVariableAssignment: ProcessVariableAssignmentConfig,
-  tableDataCreate: Placeholder,
+  tableDataCreate: CreateTableData,
   tableDataUpdate: Placeholder,
   sendEmail: Placeholder,
   cc: Placeholder,

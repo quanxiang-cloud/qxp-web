@@ -167,6 +167,9 @@ export interface ProcessBranchData {
   ignore: boolean;
   rule: string;
 }
+export interface ProcessBranchTargetData {
+  processBranchEndStrategy: 'any' | 'all';
+}
 export interface ProcessVariableAssignmentData {
   assignmentRules: Array<{
     variableName: string;
@@ -249,8 +252,16 @@ export interface FieldPermission {
 
 export type BusinessData = FormDataData | FillInData | ProcessBranchData |
   ProcessVariableAssignmentData | TableDataCreateData | TableDataUpdateData | SendEmailData |
-  WebMessageData | CCData;
-export type NodeData = { width: number, height: number, name: string };
+  WebMessageData | CCData | ProcessBranchTargetData;
+export type NodeData = {
+  width: number;
+  height: number;
+  name: string;
+  parentID?: string[];
+  childrenID?: string[];
+  branchID?: string;
+  branchTargetElementID?: string;
+};
 export interface BaseNodeData {
   type: NodeType;
   nodeData: NodeData;
@@ -296,12 +307,16 @@ export interface CCNodeData extends BaseNodeData {
   type: 'cc';
   businessData: CCData;
 }
+export interface ProcessBranchTargetNodeData extends BaseNodeData {
+  type: 'processBranchTarget';
+  businessData: ProcessBranchTargetData;
+}
 export type Data = CCNodeData | WebMessageNodeData | SendEmailNodeData | TableDataUpdateNodeData |
   TableDataCreateNodeData | ProcessVariableAssignmentNodeData | ProcessBranchNodeData |
-  FormDataNodeData | ApproveNodeData | FillInNodeData;
+  FormDataNodeData | ApproveNodeData | FillInNodeData | ProcessBranchTargetNodeData;
 export type NodeType = 'formData' | 'fillIn' | 'approve' | 'end' | 'processBranch' |
   'processVariableAssignment' | 'tableDataCreate' | 'tableDataUpdate' | 'sendEmail' |
-  'webMessage' | 'cc';
+  'webMessage' | 'cc' | 'processBranchSource' | 'processBranchTarget';
 export interface CurrentElement {
   id: string;
   type: NodeType;
@@ -342,4 +357,9 @@ export interface StoreValue {
   errors: Errors;
   currentDataNotSaveConfirmCallback?: () => void;
   showDataNotSaveConfirm?: boolean;
+}
+
+export type ProcessVariable = {
+  code: string;
+  name: string;
 }

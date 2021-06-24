@@ -20,6 +20,7 @@ type Props = {
   onSubmit?: (value: any) => void;
   onFormValueChange?: (value: any) => void;
   children?: React.ReactElement | ((form: IForm) => React.ReactElement);
+  additionalComponents?: Record<string, React.JSXElementConstructor<any>>;
 }
 
 function FormRenderer(
@@ -30,6 +31,7 @@ function FormRenderer(
     onSubmit,
     onFormValueChange,
     children,
+    additionalComponents = {},
   }: Props): JSX.Element {
   const [errorMessage, setErrorMessage] = useState('');
   const actions = createFormActions();
@@ -86,7 +88,7 @@ function FormRenderer(
           onSubmit={handleSubmit}
           onChange={handleOnChange}
           defaultValue={defaultValue}
-          components={{ ...registry.components }}
+          components={{ ...registry.components, ...additionalComponents }}
           schema={wrapSchemaByMegaLayout(schema)}
           effects={() => {
             if (schema['x-internal']?.visibleHiddenLinkages) {
