@@ -142,6 +142,7 @@ export interface SystemOperation {
   name: string;
   text: string;
   value: string;
+  reasonRequired?: boolean;
 }
 
 export interface CustomOperation {
@@ -150,6 +151,7 @@ export interface CustomOperation {
   name: string;
   text?: string;
   value: string;
+  reasonRequired?: boolean;
 }
 
 export interface OperationPermission {
