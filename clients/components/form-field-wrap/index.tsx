@@ -1,10 +1,10 @@
-import React, { isValidElement } from 'react';
+import React, { isValidElement, forwardRef } from 'react';
 import cs from 'classnames';
 
 import './index.scss';
 
 interface Props extends React.InputHTMLAttributes<string> {
-  label?: string;
+  label?: string | React.ReactNode;
   help?: string;
   error?: Record<string, any>;
   onChange?: (value: any) => void;
@@ -18,7 +18,14 @@ type WrapProps = {
 }
 
 function formFieldWrap({ field, FieldFC }: WrapProps) {
-  function FormField({ label, help, className, register, error, ...inputProps }: Props) {
+  function FormField({
+    label,
+    help,
+    className,
+    register,
+    error,
+    ...inputProps
+  }: Props, ref:React.Ref<any>): JSX.Element {
     const props = {
       ...register,
       ...inputProps,
@@ -31,8 +38,9 @@ function formFieldWrap({ field, FieldFC }: WrapProps) {
           React.cloneElement(field, {
             ...props,
             className: cs(className, field.props.className, { 'form-input-error': error }),
+            ref,
           }) :
-          <FieldFC className={cs(className, { 'form-input-error': error })} {...props} />
+          <FieldFC className={cs(className, { 'form-input-error': error })} {...props} ref={ref} />
         }
         {help && !error ? (
           <div className='form-field-tips'>{help}</div>
@@ -43,7 +51,7 @@ function formFieldWrap({ field, FieldFC }: WrapProps) {
       </div>
     );
   }
-  return FormField;
+  return forwardRef(FormField);
 }
 
 export default formFieldWrap;
