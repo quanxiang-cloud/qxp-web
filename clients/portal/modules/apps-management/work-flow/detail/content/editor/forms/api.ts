@@ -22,7 +22,9 @@ interface SchemaResponse {
   }
 }
 
-export async function getFormFieldSchema({ queryKey }: QueryFunctionContext) {
+export async function getFormFieldSchema({ queryKey }: QueryFunctionContext): Promise<{
+  properties?: { [key: string]: ISchema; } | undefined;
+}> {
   const data = await httpClient<SchemaResponse | null>(
     `/api/v1/structor/${queryKey[2]}/m/table/getByID`, {
       tableID: queryKey[1],
@@ -36,7 +38,7 @@ export async function getFormFieldOptions({ queryKey }: QueryFunctionContext): P
     properties?: {
       [key: string]: ISchema;
     }
-  } = {}) {
+  } = {}): { label: string; value: string; type: string; }[] {
     return Object.entries(schema.properties ?? {}).reduce((prev: {
       label: string;
       value: string;
