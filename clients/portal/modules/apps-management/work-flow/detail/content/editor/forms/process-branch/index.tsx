@@ -47,7 +47,7 @@ const formSchema: ISchema = {
     rule: {
       type: 'string',
       ['x-component']: 'FilterRule',
-      default: '[]',
+      default: '',
     },
   },
 };
