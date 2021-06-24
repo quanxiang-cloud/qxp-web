@@ -262,7 +262,13 @@ export default function NodeRemover({
       {showRemoveModal && (
         <div
           {...popperRef.attributes.popper}
-          style={popperRef.styles.popper}
+          style={{
+            ...popperRef.styles.popper,
+            transform: 'none',
+            left: 'calc(100% - 20px)',
+            top: 25,
+            boxShadow: '0 0 30px rgba(200, 200, 200, .7)',
+          }}
           ref={setPopperElRef as any}
           className="bg-white z-50 rounded-8"
         >
