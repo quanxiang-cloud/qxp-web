@@ -107,6 +107,7 @@ function ActionModals({ className }: Props) {
       return apis.signTask(taskID, {
         assignee: chosenEmployees,
         type: addSignType,
+        // multiplePersonWay: addSignValue,
       });
     }
 
@@ -294,8 +295,8 @@ function ActionModals({ className }: Props) {
             {chosenEmployees.length > 1 && (<Radio.Group onChange={(e)=>{
               setAddSignValue(e.target.value);
             }}>
-              <Radio value={1}>会签</Radio>
-              <Radio value={2}>或签</Radio>
+              <Radio value={'and'}>会签</Radio>
+              <Radio value={'or'}>或签</Radio>
             </Radio.Group>)}
           </div>
           <ReceiverList
