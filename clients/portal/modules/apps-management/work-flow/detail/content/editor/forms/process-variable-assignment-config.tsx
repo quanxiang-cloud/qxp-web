@@ -18,6 +18,7 @@ import { RowStyleLayout } from '@c/form-builder/customized-fields';
 import SaveButtonGroup from '@flowEditor/components/_common/action-save-button-group';
 
 import FlowSourceTableContext from './flow-source-table';
+import FlowContext from '../../../flow-context';
 import { ProcessVariableAssignmentData, ProcessVariable } from '../type';
 import { getFlowVariables } from './api';
 
@@ -116,8 +117,10 @@ export default function AssignmentConfig({ defaultValue, onSubmit, onCancel }: P
   }).map(([key, fieldSchema]) => {
     return { label: fieldSchema.title as string, value: key };
   });
-
-  const { data: variables, isLoading } = useQuery(['FETCH_PROCESS_VARIABLES'], getFlowVariables);
+  const { flowID } = useContext(FlowContext);
+  const { data: variables, isLoading } = useQuery(['FETCH_PROCESS_VARIABLES'], () => {
+    return getFlowVariables(flowID);
+  });
   const { setFieldState, getFormState } = ACTIONS;
 
   function formEffect(): void {
