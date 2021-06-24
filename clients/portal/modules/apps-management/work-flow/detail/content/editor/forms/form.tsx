@@ -28,10 +28,12 @@ function useTableSchema(appID: string, tableID: string): ISchema | null {
   const [schema, setSchema] = useState<ISchema | null>(null);
 
   const { data, isLoading, isError } = useQuery<ISchema>(['FETCH_TABLE_SCHEMA', appID, tableID], () => {
-    return getTableSchema(appID, tableID).then(({ schema }) => {
-      return schema || {};
-    });
-  }, { enabled: !!tableID });
+    if (!tableID) {
+      return Promise.resolve({});
+    }
+
+    return getTableSchema(appID, tableID).then(({ schema }) => (schema || {}));
+  });
 
   useEffect(() => {
     if (isLoading || isError) {

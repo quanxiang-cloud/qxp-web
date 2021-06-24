@@ -22,7 +22,9 @@ interface SchemaResponse {
   }
 }
 
-export async function getFormFieldSchema({ queryKey }: QueryFunctionContext) {
+export async function getFormFieldSchema({ queryKey }: QueryFunctionContext): Promise<{
+  properties?: { [key: string]: ISchema; } | undefined;
+}> {
   const data = await httpClient<SchemaResponse | null>(
     `/api/v1/structor/${queryKey[2]}/m/table/getByID`, {
       tableID: queryKey[1],
@@ -36,7 +38,7 @@ export async function getFormFieldOptions({ queryKey }: QueryFunctionContext): P
     properties?: {
       [key: string]: ISchema;
     }
-  } = {}) {
+  } = {}): { label: string; value: string; type: string; }[] {
     return Object.entries(schema.properties ?? {}).reduce((prev: {
       label: string;
       value: string;
@@ -71,6 +73,7 @@ const operationList = {
     text: '通过',
     value: 'AGREE',
     only: 'approve',
+    reasonRequired: false,
   }, {
     enabled: true,
     changeable: false,
@@ -78,6 +81,7 @@ const operationList = {
     text: '拒绝',
     value: 'REFUSE',
     only: 'approve',
+    reasonRequired: true,
   }, {
     enabled: true,
     changeable: false,
@@ -146,6 +150,6 @@ export function getOperationList({ queryKey }: QueryFunctionContext): Promise<{
   });
 }
 
-export function getFlowVariables(): Promise<Array<ProcessVariable>> {
-  return httpClient('/api/v1/flow/getVariableList');
+export function getFlowVariables(flowID: string): Promise<Array<ProcessVariable>> {
+  return httpClient(`/api/v1/flow/getVariableList?id=${flowID}`);
 }
