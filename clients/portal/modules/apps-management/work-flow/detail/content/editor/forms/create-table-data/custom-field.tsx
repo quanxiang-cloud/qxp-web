@@ -4,6 +4,7 @@ import { get } from 'lodash';
 
 import Select from '@c/select';
 import FlowSourceTableContext from '../flow-source-table';
+import FlowContext from '../../../../flow-context';
 import Context from './context';
 import { getFlowVariables } from '../api';
 
@@ -30,7 +31,10 @@ export default function CustomField(props: Props): JSX.Element {
   const { data, setData } = useContext(Context);
   const fieldName = props.name;
   const [rule, setRule] = useState<Rule>(get(data, `createRule.${fieldName}.valueFrom`));
-  const { data: variables, isLoading: loadingVariables } = useQuery(['FETCH_PROCESS_VARIABLES'], getFlowVariables);
+  const { flowID } = useContext(FlowContext);
+  const { data: variables, isLoading: loadingVariables } = useQuery(['FETCH_PROCESS_VARIABLES'], () => {
+    return getFlowVariables(flowID);
+  });
 
   const onChangeFieldValue = (val: any) => {
     setData({
