@@ -31,11 +31,15 @@ function useTableSchema(appID: string, tableID: string): ISchema | null {
     return getTableSchema(appID, tableID).then(({ schema }) => {
       return schema || {};
     });
-  });
+  }, { enabled: !!tableID });
 
   useEffect(() => {
-    if (isLoading || isError || !data) {
+    if (isLoading || isError) {
       return;
+    }
+
+    if (!data) {
+      return setSchema({});
     }
 
     setSchema(data);
