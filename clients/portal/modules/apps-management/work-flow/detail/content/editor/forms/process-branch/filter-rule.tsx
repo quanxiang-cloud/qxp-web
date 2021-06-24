@@ -1,71 +1,74 @@
-import React, { ChangeEvent } from 'react';
+import React, { useContext, useRef } from 'react';
 import { ISchemaFieldComponentProps } from '@formily/antd';
-import { Input } from 'antd';
+import FormulaEditor, { CustomRule, RefProps } from '@c/formula-editor';
+import { WorkTableInternalFields } from '@flowEditor/utils/constants';
+import { useQuery } from 'react-query';
 
-import Icon from '@c/icon';
+import { getFlowVariables } from '../api';
+import FlowTableContext from '../flow-source-table';
 
 function FilterRule({ mutators, value }: ISchemaFieldComponentProps): JSX.Element {
-  const currentValue: string[] = value ? JSON.parse(value) : [];
+  const { tableSchema } = useContext(FlowTableContext);
+  const formulaRef = useRef<RefProps>(null);
 
-  function onValueChange(index: number) {
-    return function(e: ChangeEvent<HTMLTextAreaElement>): void {
-      const value = e.target.value;
-      const newValue = currentValue.map((val: string, idx: number) => {
-        if (index !== idx) {
-          return val || '';
-        }
-        return value;
-      });
-      mutators.change(JSON.stringify(newValue || []));
+  const { data: variables = [] } = useQuery(
+    ['FETCH_PROCESS_VARIABLES'],
+    getFlowVariables,
+  );
+
+  function onRuleInsert(rule: CustomRule): void {
+    formulaRef.current?.insertEntity({
+      key: rule.key,
+      name: rule.name,
+      entity_type: rule.type,
+    });
+  }
+
+  const variablesRules = variables?.map?.((item) => {
+    return {
+      name: item.name,
+      key: item.code,
+      type: item.fieldType?.toLowerCase(),
     };
-  }
+  }) || [];
 
-  function onAddRule(): void {
-    const newValue = [...currentValue];
-    newValue.push('');
-    mutators.change(JSON.stringify(newValue || []));
-  }
+  const tableSchemaRules = Object.entries(tableSchema?.properties || {}).reduce((
+    cur: CustomRule[], next,
+  ) => {
+    const [fieldName, fieldSchema] = next;
+    if (!WorkTableInternalFields.includes(fieldName) &&
+      fieldSchema?.['x-component']?.toLowerCase() !== 'subtable' &&
+      fieldSchema?.['x-component']?.toLowerCase() !== 'associatedrecords'
+    ) {
+      cur.push({ name: fieldSchema.title as string, key: fieldName, type: fieldSchema.type || '' });
+    }
+    return cur;
+  }, []) || [];
 
-  function onRemoveRule(val: string, index: number): void {
-    let newValue = [...currentValue];
-    newValue = newValue.filter((v: string, idx: number) => index !== idx || val !== v);
-    mutators.change(JSON.stringify(newValue || []));
-  }
+  const rules = [...variablesRules, ...tableSchemaRules];
 
   return (
     <>
-      <div className="border-b mb-20 flex justify-between items-center pb-10">
-        <Icon
-          name="add"
-          size={24}
-          className="mt-12 mb-3 font-bold cursor-pointer"
-          onClick={() => onAddRule()}
-        />
-        <span>新增条件</span>
-      </div>
-      <div className="flex flex-col">
-        {
-          currentValue.map((item: string, index: number) => {
-            return (
-              <div key={index} className="w-full flex justify-between mb-20">
-                <div className="flex">
-                  <span className="mr-20">表达式</span>
-                  <Input.TextArea
-                    value={item || ''}
-                    onChange={onValueChange(index)}
-                  />
-                </div>
-                <Icon
-                  className="mx-22 cursor-pointer"
-                  name="delete"
-                  size={20}
-                  onClick={() => onRemoveRule(item, index)}
-                />
-              </div>
-            );
-          })
-        }
-      </div>
+      <ul className="flex flex-row flex-wrap">
+        {rules.map((rule) => {
+          return (
+            <li
+              className="px-10 py-5 mr-10 mb-10 bg-green-50 border cursor-pointer rounded-8"
+              key={rule.key}
+              onClick={() => onRuleInsert(rule)}
+            >
+              {rule.name}
+            </li>
+          );
+        })}
+      </ul>
+      <FormulaEditor
+        ref={formulaRef}
+        className="border rounded-4"
+        customRules={rules}
+        defaultValue={value}
+        onChange={mutators.change}
+      />
     </>
   );
 }

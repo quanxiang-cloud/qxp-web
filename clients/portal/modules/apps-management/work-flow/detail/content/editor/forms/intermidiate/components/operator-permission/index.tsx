@@ -38,7 +38,7 @@ export default function OperatorPermission({ value, onChange: _onChange, type }:
   }
 
   function mergeOperation(): void {
-    const { custom = [], system = [] } = value;
+    let { custom = [], system = [] } = value;
     const isCustomEmpty = !custom.length;
     const isSystemEmpty = !system.length;
     const customValues = custom.map(({ name, value }) => `${value}.${name}`);
@@ -54,6 +54,16 @@ export default function OperatorPermission({ value, onChange: _onChange, type }:
       if (isSystemEmpty || !systemValues.includes(`${op.value}.${op.name}`)) {
         system.push(op as SystemOperation);
       }
+    });
+    custom = custom.map((item) => {
+      const val = `${item.value}${item.name}`;
+      const cItem = data?.custom?.find(({ name, value }) => `${value}${name}` === val) || {};
+      return { ...cItem, ...item };
+    });
+    system = system.map((item) => {
+      const val = `${item.value}${item.name}`;
+      const sItem = data?.system?.find(({ name, value }) => `${value}${name}` === val) || {};
+      return { ...sItem, ...item };
     });
     setMergedOperations({
       custom: custom.filter((op) => dataCustomValues.includes(`${op.value}.${op.name}`)),
@@ -91,25 +101,26 @@ export default function OperatorPermission({ value, onChange: _onChange, type }:
 
     return (
       <>
-        <div className="text-caption-no-color text-gray-400 pl-20 py-10 pr-20 shadow-header">
+        <div className="text-caption-no-color text-gray-400 py-10 px-10 shadow-header">
           {label}
         </div>
         {operation.map((op) => {
           return (
             <div
               key={op.value || op.name}
-              className="flex items-center justify-between pr-20 py-16 shadow-header"
+              className="flex items-center justify-between px-10 py-16 shadow-header"
             >
-              <Toggle
-                disabled={!op.changeable}
-                defaultChecked={op.enabled}
-                className="ml-20"
-                onChange={(checked) => onUpdateOperation(type, op, {
-                  enabled: !!checked,
-                })}
-              />
-              <div>{op.name}</div>
-              <div className="relative w-188">
+              <div className="flex flex-1 justify-center">
+                <Toggle
+                  disabled={!op.changeable}
+                  defaultChecked={op.enabled}
+                  onChange={(checked) => onUpdateOperation(type, op, {
+                    enabled: !!checked,
+                  })}
+                />
+              </div>
+              <div className="flex-1 text-left">{op.name}</div>
+              <div className="relative flex flex-2 justify-center">
                 {(op.text || op.name) && (
                   <>
                     <input
@@ -151,6 +162,16 @@ export default function OperatorPermission({ value, onChange: _onChange, type }:
                   </>
                 )}
               </div>
+              {typeof op.reasonRequired !== 'undefined' ? (
+                <div className="flex flex-1 justify-center">
+                  <Toggle
+                    defaultChecked={op.reasonRequired}
+                    onChange={(checked) => onUpdateOperation(type, op, {
+                      reasonRequired: !!checked,
+                    })}
+                  />
+                </div>
+              ) : <div className="flex-1 text-center">-</div>}
             </div>
           );
         })}
@@ -171,10 +192,11 @@ export default function OperatorPermission({ value, onChange: _onChange, type }:
       <div className="text-caption-no-color text-gray-400 mt-16 mb-12">
         在此设置该节点负责人在处理工作流时可进行的操作
       </div>
-      <header className="flex items-center pr-20 py-8 bg-gray-100 rounded-8">
-        <div className="mr-40 pl-20">是否开启</div>
-        <div className="mr-100">操作</div>
-        <div>按钮文案</div>
+      <header className="flex items-center px-10 py-8 bg-gray-100 rounded-8 justify-between">
+        <div className="text-center flex-1">是否开启</div>
+        <div className="text-center flex-1">操作</div>
+        <div className="text-center flex-2">按钮文案</div>
+        <div className="text-center flex-1">理由必填</div>
       </header>
       {listRender('默认操作', mergedOperations.system, 'system')}
       {listRender('自定义操作', mergedOperations.custom as SystemOperation[], 'custom')}

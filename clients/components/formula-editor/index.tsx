@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useImperativeHandle } from 'react';
+import React, { useState, useRef, useEffect, useImperativeHandle, useMemo } from 'react';
 import {
   Editor,
   EditorState,
@@ -8,16 +8,17 @@ import {
   convertToRaw,
   convertFromRaw,
 } from 'draft-js';
-import 'draft-js/dist/Draft.css';
 
 import {
-  handleFieldHighlight,
   handleOperatorHighlight,
   handleFuncHighlight,
   handleSymbolHighlight,
+  handleFieldHighlight,
 } from './decorator-func';
-import { FieldSpan, operatorSpan, funcSpan } from './decorator-span';
+import { operatorSpan, funcSpan, FieldSpan } from './decorator-span';
 import { toContentState } from './utils';
+
+import 'draft-js/dist/Draft.css';
 import './index.scss';
 
 export type CustomRule = {
@@ -26,39 +27,67 @@ export type CustomRule = {
   type: string;
 }
 
-type Props = {
-  customRules: CustomRule[];
-  className: string;
-  defaultValue?: string;
-}
-
 export type RefProps = {
   insertText: (text: string, hasSpacing?: boolean, backNumber?: number) => void;
   insertEntity: (data: any) => void;
   getFormulaValue: () => string;
 }
 
+type Props = {
+  onChange?: (value: string) => void;
+  customRules?: CustomRule[];
+  className?: string;
+  defaultValue?: string;
+}
+
 function FormulaEditor({
-  customRules,
+  customRules = [],
   className = '',
+  onChange,
   defaultValue = '',
 }: Props, ref: React.Ref<any>): JSX.Element {
-  const [editorState, setEditorState] = useState(
-    EditorState.createWithContent(convertFromRaw(toContentState(defaultValue, customRules))),
-  );
-  const editorDom = useRef<any>();
+  const decorator = useMemo(() => {
+    const _decorator = new CompositeDecorator(
+      [
+        {
+          strategy: handleOperatorHighlight,
+          component: operatorSpan,
+        },
+        {
+          strategy: handleFuncHighlight,
+          component: funcSpan,
+        },
+        {
+          strategy: handleSymbolHighlight,
+          component: funcSpan,
+        },
+      ],
+    );
+    return _decorator;
+  }, []);
 
+  const [editorState, setEditorState] = useState(
+    defaultValue ? EditorState.createWithContent(
+      convertFromRaw(toContentState(defaultValue, customRules)), decorator,
+    ) : EditorState.createEmpty(decorator),
+  );
+
+  const editorDom = useRef<any>();
   useImperativeHandle(ref, () => ({
     insertText: insertText,
     insertEntity: insertEntity,
     getFormulaValue: getFormulaValue,
   }));
 
-  const onChange = (_editorState: EditorState): void => {
+  const handleChange = (_editorState: EditorState): void => {
     setEditorState(_editorState);
+    onChange?.(getFormulaValue());
   };
 
   useEffect(() => {
+    if (customRules.length === 0) {
+      return;
+    }
     const compositeDecorator = new CompositeDecorator([
       {
         strategy: (contentBlock, callback, contentState) => {
@@ -66,27 +95,14 @@ function FormulaEditor({
         },
         component: FieldSpan,
       },
-      {
-        strategy: handleOperatorHighlight,
-        component: operatorSpan,
-      },
-      {
-        strategy: handleFuncHighlight,
-        component: funcSpan,
-      },
-      {
-        strategy: handleSymbolHighlight,
-        component: funcSpan,
-      },
     ]);
-    onChange(EditorState.set(editorState, { decorator: compositeDecorator }));
+    handleChange(EditorState.set(editorState, { decorator: compositeDecorator }));
   }, [customRules]);
 
   const insertEntity = (entityData: any): void => {
     let contentState = editorState.getCurrentContent();
     contentState = contentState.createEntity(entityData.entity_type, 'IMMUTABLE', entityData);
     const entityKey = contentState.getLastCreatedEntityKey();
-
     let selection = editorState.getSelection();
     if (selection.isCollapsed()) {
       contentState = Modifier.insertText(
@@ -97,26 +113,19 @@ function FormulaEditor({
         contentState, selection, entityData.name, undefined, entityKey,
       );
     }
-
     let end;
-
     contentState.getFirstBlock().findEntityRanges(
       (character) => character.getEntity() === entityKey,
       (_, _end) => {
         end = _end;
       });
-
     let newEditorState = EditorState.set(editorState, { currentContent: contentState });
-
     selection = selection.merge({
       anchorOffset: end,
       focusOffset: end,
     }) as SelectionState;
-
-    // move cursor after new inserted text
     newEditorState = EditorState.forceSelection(newEditorState, selection);
-
-    onChange(newEditorState);
+    handleChange(newEditorState);
   };
 
   const insertText = (text: string, hasSpacing = true, backNumber = 0): void => {
@@ -126,21 +135,18 @@ function FormulaEditor({
     if (hasSpacing) {
       textTmp += ' ';
     }
-
     if (selection.isCollapsed()) {
       contentState = Modifier.insertText(contentState, selection, textTmp);
     } else {
       contentState = Modifier.replaceText(contentState, selection, textTmp);
     }
-
     let newEditorState = EditorState.set(editorState, { currentContent: contentState });
     selection = selection.merge({
       anchorOffset: selection.getAnchorOffset() + textTmp.length - backNumber,
       focusOffset: selection.getFocusOffset() + textTmp.length - backNumber,
     }) as SelectionState;
-
     newEditorState = EditorState.forceSelection(newEditorState, selection);
-    onChange(newEditorState);
+    handleChange(newEditorState);
   };
 
   const getFormulaValue = (): string => {
@@ -151,16 +157,15 @@ function FormulaEditor({
       block.entityRanges.forEach(({ key }) => {
         text = text.replace(entityMap[key].data.name, entityMap[key].data.key);
       });
-
       return text;
     }).join(' ');
   };
 
   return (
-    <div className={className}>
+    <div className={`formula-editor-container ${className}`}>
       <Editor
         editorState={editorState}
-        onChange={onChange}
+        onChange={handleChange}
         placeholder="请输入...."
         ref={editorDom}
         spellCheck={true}
