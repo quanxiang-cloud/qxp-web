@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext } from 'react';
 import { useQuery } from 'react-query';
 import { get } from 'lodash';
 
@@ -29,15 +29,15 @@ export default function CustomField(props: Props): JSX.Element {
   const { tableSchema } = useContext(FlowSourceTableContext);
   const { data, setData } = useContext(Context);
   const fieldName = props.name;
-  const [rule, setRule] = useState<Rule>(get(data, `createRule.${fieldName}.valueFrom`));
   const { data: variables, isLoading: loadingVariables } = useQuery(['FETCH_PROCESS_VARIABLES'], getFlowVariables);
+  const getVal = (prop?: string) => get(data, `createRule.${fieldName}.${prop || 'valueOf'}`);
 
   const onChangeFieldValue = (val: any) => {
     setData({
       createRule: {
         ...(data.createRule || {}),
         [fieldName]: {
-          valueFrom: rule,
+          valueFrom: getVal('valueFrom'),
           valueOf: val,
         },
       },
@@ -45,7 +45,6 @@ export default function CustomField(props: Props): JSX.Element {
   };
 
   const onChangeRule = (rule: Rule) => {
-    setRule(rule);
     const { createRule = {} } = data;
     const curRule = createRule[fieldName] || {};
     setData({
@@ -59,9 +58,8 @@ export default function CustomField(props: Props): JSX.Element {
     });
   };
 
-  const getDefaultVal = () => get(data, `createRule.${fieldName}.valueOf`);
-
   const renderValueBox = () => {
+    const rule = getVal('valueFrom');
     if (rule === 'currentFormValue') {
       const tableFields = Object.entries(tableSchema.properties || {}).map(([key, fieldSchema]) => {
         return { label: fieldSchema.title as string, value: key };
@@ -70,7 +68,7 @@ export default function CustomField(props: Props): JSX.Element {
       return (
         <Select
           options={tableFields}
-          value={getDefaultVal() as string}
+          value={getVal() as string}
           onChange={onChangeFieldValue}
         />
       );
@@ -90,20 +88,18 @@ export default function CustomField(props: Props): JSX.Element {
       return (
         <Select
           options={variables?.map(({ code, name }) => ({ label: name, value: code })) || []}
-          value={getDefaultVal() as string}
+          value={getVal() as string}
           onChange={onChangeFieldValue}
         />
       );
     }
   };
 
-  // console.log('custom field: ', props);
-
   return (
     <div className="flex items-center mb-20">
       <span className="w-64">{props.props['x-component-props'].title}</span>
       <span className="mx-10">=</span>
-      <Select options={ruleOptions} value={rule} onChange={onChangeRule} />
+      <Select options={ruleOptions} value={getVal('valueFrom')} onChange={onChangeRule} />
       <div className="inline-flex items-center ml-10 custom-field__value">
         {renderValueBox()}
       </div>
