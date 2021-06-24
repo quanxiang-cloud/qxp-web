@@ -1,10 +1,10 @@
 import React, { useContext } from 'react';
 import { useQuery } from 'react-query';
-import { get, pick, pickBy, omitBy, each } from 'lodash';
+import { get, pick, pickBy, each } from 'lodash';
 
 import { getFormFieldSchema } from '@flow/detail/content/editor/forms/api';
 import { FormRenderer } from '@c/form-builder';
-import { TableDataCreateData, ValueRule } from '@flowEditor/type';
+import { ValueRule } from '@flowEditor/type';
 
 import CustomField from './custom-field';
 import Context from './context';
@@ -12,10 +12,9 @@ import Context from './context';
 interface Props {
   appId: string;
   tableId: string;
-  defaultValue: TableDataCreateData;
 }
 
-function TargetTableFields({ appId, tableId, defaultValue }: Props) {
+function TargetTableFields({ appId, tableId }: Props) {
   const { data, setData } = useContext(Context);
   const { data: tableSchema, isLoading, isError } = useQuery(['GET_TARGET_TABLE_SCHEMA', tableId, appId], getFormFieldSchema, {
     enabled: !!appId && !!tableId,
@@ -26,9 +25,16 @@ function TargetTableFields({ appId, tableId, defaultValue }: Props) {
     const { createRule = {} } = data;
     const mapProperties = Object.entries(properties)
       .reduce((acc: Record<string, any>, [key, field]: [string, ISchema]) => {
-        const innerFieldProps = pick(field, ['display', 'title', 'readonly']);
+        const innerFieldProps = pick(field, ['display', 'title', 'readonly', 'required']);
+        // fixme: valueOf is builtIn func
         const defaultVal = createRule[key] && createRule[key].valueFrom === 'fixedValue' ?
-          { default: createRule[key].valueOf } : {};
+          { default: typeof createRule[key].valueOf === 'function' ? '' : createRule[key].valueOf } : {};
+        // todo: check field type, reset default value
+        if (field['x-component'] === 'ImageUpload') {
+          if (!Array.isArray(defaultVal.default)) {
+            defaultVal.default = [];
+          }
+        }
         Object.assign(acc, {
           [key]: {
             type: 'object',
@@ -49,19 +55,17 @@ function TargetTableFields({ appId, tableId, defaultValue }: Props) {
   };
 
   const onChangeFixedValue = (values: any) => {
-    // todo: values passed from form-render sometimes with multiple fields undefined
     const fieldVals = pickBy(values, (v, k) => k.startsWith('field_'));
-    const commitVals = omitBy(values, (v, k) => k.startsWith('field_'));
-    each(commitVals.createRule, (v: ValueRule, k: string) => {
-      if (k in fieldVals && fieldVals[k] !== v.valueOf) {
+    // merge schema field value to data context
+    each(data.createRule, (v: ValueRule, k: string) => {
+      if (fieldVals[k] !== undefined) {
         Object.assign(v, {
           valueFrom: 'fixedValue',
           valueOf: fieldVals[k],
         });
       }
     });
-
-    setData(commitVals);
+    setData(pick(data, 'createRule', 'ref'));
   };
 
   if (isLoading) {
@@ -82,7 +86,7 @@ function TargetTableFields({ appId, tableId, defaultValue }: Props) {
         schema={transformSchema(tableSchema as ISchema)}
         onFormValueChange={onChangeFixedValue}
         additionalComponents={{ CustomField }}
-        defaultValue={defaultValue}
+        defaultValue={data}
       />
     </div>
   );

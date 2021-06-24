@@ -1,6 +1,5 @@
 import React, { useContext, useState } from 'react';
 import { useQuery } from 'react-query';
-// import { values, every } from 'lodash';
 
 import Select from '@c/select';
 import Toggle from '@c/toggle';
@@ -10,6 +9,7 @@ import { getFormDataOptions } from '@c/form-table-selector/api';
 import FlowContext from '@flow/detail/flow-context';
 import FlowTableContext from '../flow-source-table';
 import toast from '@lib/toast';
+import Modal from '@c/modal';
 
 import TargetTableFields from './target-table-fields';
 import { BusinessData, TableDataCreateData } from '@flowEditor/type';
@@ -21,10 +21,19 @@ interface Props {
   onCancel: () => void;
 }
 
+const initialValue = {
+  targetTableId: '',
+  silent: true,
+  createRule: {},
+  ref: {},
+};
+
 function FormCreateTableData({ defaultValue, onSubmit, onCancel }: Props): JSX.Element {
   const { appID } = useContext(FlowContext);
   const { tableID } = useContext(FlowTableContext);
   const [value, setValue] = useState<TableDataCreateData>(defaultValue || {});
+  const [nextTable, setNextTable] = useState<string>('');
+  const [switchTableModal, setSwitchTableModal] = useState(false);
 
   const {
     data: allTables = [],
@@ -40,10 +49,6 @@ function FormCreateTableData({ defaultValue, onSubmit, onCancel }: Props): JSX.E
       toast.error('请选择目标数据表');
       return;
     }
-    // if (!every(values(value), ({ valueOf }: { valueOf: any }) => !!valueOf)) {
-    //   toast.error('部分字段值未填写');
-    //   return;
-    // }
     onSubmit(value);
   };
 
@@ -51,9 +56,20 @@ function FormCreateTableData({ defaultValue, onSubmit, onCancel }: Props): JSX.E
     onCancel();
   };
 
-  function onChange(val: Partial<TableDataCreateData>): void {
+  const onChange = (val: Partial<TableDataCreateData>): void => {
     setValue((v) => ({ ...v, ...val }));
-  }
+  };
+
+  const onChangeTargetTable = (table_id: string) => {
+    if (!value.targetTableId) {
+      onChange({ targetTableId: table_id });
+      return;
+    }
+    if (value.targetTableId && table_id !== value.targetTableId) {
+      setNextTable(table_id);
+      setSwitchTableModal(true);
+    }
+  };
 
   if (isLoading) {
     return (
@@ -76,9 +92,7 @@ function FormCreateTableData({ defaultValue, onSubmit, onCancel }: Props): JSX.E
             options={allTables.filter((tb) => tb.value !== tableID)}
             placeholder="选择数据表"
             value={value.targetTableId}
-            onChange={(table_id) => {
-              onChange({ targetTableId: table_id });
-            }}
+            onChange={onChangeTargetTable}
           />
         </div>
         {value.targetTableId && (
@@ -90,16 +104,38 @@ function FormCreateTableData({ defaultValue, onSubmit, onCancel }: Props): JSX.E
               }}
               defaultChecked={value.silent}
             />
-          </div>)}
+          </div>
+        )}
         <TargetTableFields
           appId={appID}
           tableId={value.targetTableId}
-          defaultValue={defaultValue}
         />
         <SaveButtonGroup onSave={onSave} onCancel={onClose} />
+        {switchTableModal && (
+          <Modal
+            title='切换目标数据表'
+            footerBtns={[
+              {
+                key: 'cancel',
+                text: '取消',
+                onClick: () => setSwitchTableModal(false),
+              },
+              {
+                key: 'confirm',
+                text: '确认',
+                onClick: () => {
+                  setSwitchTableModal(false);
+                  setValue({ ...initialValue, targetTableId: nextTable }); // reset value
+                },
+                modifier: 'primary',
+              },
+            ]}
+          >
+            <p>切换数据表之后数据新增的配置将清空，是否继续？</p>
+          </Modal>
+        )}
       </div>
     </Context.Provider>
-
   );
 }
 
