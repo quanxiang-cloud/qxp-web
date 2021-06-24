@@ -154,3 +154,8 @@ export const getStepbackActivityList = async (processInstanceId: string): Promis
 export const handleReadTask = async (processInstanceId: string, taskId: string, remark?: string)=> {
   return await httpClient(`/api/v1/flow/instance/handleRead/${processInstanceId}/${taskId}`, remark);
 };
+
+// 重新提交
+export const resubmit = async (processInstanceId: string): Promise<any> => {
+  return await httpClient(`/api/v1/flow/instance/resubmit/${processInstanceId}`);
+};

@@ -107,7 +107,7 @@ function ActionModals({ className }: Props) {
       return apis.signTask(taskID, {
         assignee: chosenEmployees,
         type: addSignType,
-        // multiplePersonWay: addSignValue,
+        multiplePersonWay: addSignValue,
       });
     }
 
@@ -129,9 +129,10 @@ function ActionModals({ className }: Props) {
       return apis.handleRead(processInstanceID, taskID, {});
     }
 
-    // if (action === TaskHandleType.hasResubmitBtn) {
-    //
-    // }
+    // 重新提交
+    if (action === TaskHandleType.hasResubmitBtn) {
+      return apis.resubmit(processInstanceID);
+    }
 
     // // 催办
     // if (action === TaskHandleType.hasUrgeBtn) {
