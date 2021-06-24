@@ -150,6 +150,6 @@ export function getOperationList({ queryKey }: QueryFunctionContext): Promise<{
   });
 }
 
-export function getFlowVariables(): Promise<Array<ProcessVariable>> {
-  return httpClient('/api/v1/flow/getVariableList');
+export function getFlowVariables(flowID: string): Promise<Array<ProcessVariable>> {
+  return httpClient(`/api/v1/flow/getVariableList?id=${flowID}`);
 }

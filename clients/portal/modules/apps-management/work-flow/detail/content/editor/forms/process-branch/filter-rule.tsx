@@ -6,15 +6,15 @@ import { useQuery } from 'react-query';
 
 import { getFlowVariables } from '../api';
 import FlowTableContext from '../flow-source-table';
+import FlowContext from '../../../../flow-context';
 
 function FilterRule({ mutators, value }: ISchemaFieldComponentProps): JSX.Element {
   const { tableSchema } = useContext(FlowTableContext);
   const formulaRef = useRef<RefProps>(null);
-
-  const { data: variables = [] } = useQuery(
-    ['FETCH_PROCESS_VARIABLES'],
-    getFlowVariables,
-  );
+  const { flowID } = useContext(FlowContext);
+  const { data: variables = [] } = useQuery(['FETCH_PROCESS_VARIABLES'], () => {
+    return getFlowVariables(flowID);
+  });
 
   function onRuleInsert(rule: CustomRule): void {
     formulaRef.current?.insertEntity({
