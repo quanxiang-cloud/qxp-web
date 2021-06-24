@@ -73,6 +73,7 @@ const operationList = {
     text: '通过',
     value: 'AGREE',
     only: 'approve',
+    reasonRequired: false,
   }, {
     enabled: true,
     changeable: false,
@@ -80,6 +81,7 @@ const operationList = {
     text: '拒绝',
     value: 'REFUSE',
     only: 'approve',
+    reasonRequired: true,
   }, {
     enabled: true,
     changeable: false,
