@@ -1,27 +1,23 @@
-import React, { useState, useRef, DragEvent, useEffect, useContext } from 'react';
+import React, { useState, DragEvent, useEffect } from 'react';
 import dagre from 'dagre';
 import cs from 'classnames';
 import ReactFlow, {
   ConnectionLineType,
   isNode,
-  Position,
-  Edge,
-  Connection,
-  addEdge,
-  removeElements,
-  FlowElement,
   Elements,
-  ArrowHeadType,
+  XYPosition,
+  Position,
+  Node,
 } from 'react-flow-renderer';
 
 import { uuid } from '@lib/utils';
 import useObservable from '@lib/hooks/use-observable';
-import FlowContext from '@flow/detail/flow-context';
+import { deepClone } from '@lib/utils';
 
 import Components from './components';
 import store, { updateStore } from './store';
-import type { StoreValue } from './type';
-import { getNodeInitialData } from './utils';
+import type { StoreValue, NodeType, Data } from './type';
+import { nodeBuilder, buildBranchNodes, edgeBuilder, getCenterPosition, removeEdge } from './utils';
 import DrawerForm from './forms';
 import useFitView from './hooks/use-fit-view';
 import Config, { edgeTypes, nodeTypes } from './config';
@@ -29,57 +25,55 @@ import Config, { edgeTypes, nodeTypes } from './config';
 import 'react-flow-renderer/dist/style.css';
 import 'react-flow-renderer/dist/theme-default.css';
 
-const dagreGraph = new dagre.graphlib.Graph();
-dagreGraph.setDefaultEdgeLabel(() => ({}));
+interface NodeInfo {
+  nodeType: NodeType;
+  nodeName: string;
+  source: string;
+  target: string;
+  position: XYPosition;
+  width: number;
+  height: number;
+}
 
 export default function Editor(): JSX.Element {
   const { currentConnection, elements, nodeIdForDrawerForm } = useObservable<StoreValue>(store);
-  const reactFlowWrapper = useRef<HTMLDivElement>(null);
+  const [dagreGraph, setDagreGraph] = useState(() => new dagre.graphlib.Graph());
+  dagreGraph.setDefaultEdgeLabel(() => ({}));
+  dagreGraph.setGraph({ rankdir: 'TB', ranksep: 90 });
   const [fitViewFinished, setFitViewFinished] = useState(false);
-  const { flowID } = useContext(FlowContext);
   const fitView = useFitView(() => setFitViewFinished(true));
 
+  let layoutedElements = [];
+  elements?.forEach((el) => {
+    if (isNode(el)) {
+      return dagreGraph.setNode(el.id, {
+        width: el.data?.nodeData.width,
+        height: el.data?.nodeData.height,
+      });
+    }
+    dagreGraph.setEdge(el.source, el.target);
+  });
+  dagre.layout(dagreGraph);
+  layoutedElements = elements?.map((ele) => {
+    const el = deepClone(ele);
+    if (isNode(el)) {
+      const nodeWithPosition = dagreGraph.node(el.id);
+      el.targetPosition = Position.Top;
+      el.sourcePosition = Position.Bottom;
+      el.position = {
+        x: nodeWithPosition.x - ((el.data?.nodeData.width || 0) / 2),
+        y: nodeWithPosition.y,
+      };
+    }
+    return el;
+  });
+
   useEffect(() => {
-    fitView();
-  }, [elements?.length]);
+    layoutedElements?.length && onLoad();
+  }, [layoutedElements?.length]);
 
-  function setElements(elements: Elements): void {
-    updateStore((s) => ({ ...s, elements }));
-  }
-
-  function getLayoutedElements(): FlowElement<any>[] {
-    dagreGraph.setGraph({ rankdir: 'TB' });
-    elements?.forEach((el) => {
-      if (isNode(el)) {
-        dagreGraph.setNode(el.id, {
-          width: el.data?.nodeData.width,
-          height: el.data?.nodeData.height,
-        });
-      } else {
-        dagreGraph.setEdge(el.source as string, el.target as string);
-      }
-    });
-    dagre.layout(dagreGraph);
-    return elements?.map((el, index) => {
-      if (isNode(el)) {
-        const nodeWithPosition = dagreGraph.node(el.id);
-        el.targetPosition = Position.Top;
-        el.sourcePosition = Position.Bottom;
-        el.position = {
-          x: nodeWithPosition.x - ((el.data?.nodeData.width || 0) / 2),
-          y: nodeWithPosition.y + (index * 80),
-        };
-      }
-      return el;
-    });
-  }
-
-  function onConnect(connection: Edge | Connection): void {
-    setElements(addEdge({ ...connection, type: 'plus' }, store.value.elements));
-  }
-
-  function onElementsRemove(elementsToRemove: Elements): void {
-    setElements(removeElements(elementsToRemove, store.value.elements));
+  function setElements(eles: Elements): void {
+    updateStore((s) => ({ ...s, elements: eles }));
   }
 
   function onDragOver(e: DragEvent): void {
@@ -90,69 +84,75 @@ export default function Editor(): JSX.Element {
     e.dataTransfer.dropEffect = 'move';
   }
 
+  function getBranchID(sourceElement: Node<Data>, targetElement: Node<Data>): undefined | string {
+    if (sourceElement.type === 'processBranch') {
+      return sourceElement.id;
+    }
+    if (targetElement.type === 'processBranch') {
+      return targetElement.id;
+    }
+    return sourceElement.data?.nodeData.branchID || targetElement.data?.nodeData.branchID;
+  }
+
+  function addNewNode({ nodeType, source, target, position, width, height, nodeName }: NodeInfo): void {
+    const id = nodeType + uuid();
+    const newElements: Elements = [...elements];
+    const sourceElement = newElements.find(({ id }) => id === source) as Node<Data>;
+    const targetElement = newElements.find(({ id }) => id === target) as Node<Data>;
+    let sourceChildrenID = id;
+    let targetParentID = id;
+    if (nodeType === 'processBranch') {
+      const {
+        elements: nodes, sourceID, targetID,
+      } = buildBranchNodes(source, target, position, width, height);
+      sourceChildrenID = sourceID;
+      targetParentID = targetID;
+      newElements.push(...nodes);
+    } else {
+      newElements.push(nodeBuilder(id, nodeType, nodeName, {
+        width,
+        height,
+        parentID: [source],
+        childrenID: [target],
+        branchID: getBranchID(sourceElement, targetElement),
+        position: getCenterPosition(position, width, height),
+      }));
+      newElements.push(edgeBuilder(source, id));
+      newElements.push(edgeBuilder(id, target));
+    }
+    if (sourceElement.data?.nodeData.childrenID) {
+      sourceElement.data.nodeData.childrenID = [
+        ...sourceElement.data.nodeData.childrenID.filter((id) => id !== target),
+        sourceChildrenID,
+      ];
+    }
+    if (targetElement.data?.nodeData.parentID) {
+      targetElement.data.nodeData.parentID = [
+        ...targetElement.data.nodeData.parentID.filter((id) => id !== source),
+        targetParentID,
+      ];
+    }
+    setElements(removeEdge(newElements, source, target));
+  }
+
   function onDrop(e: DragEvent): void {
     e.preventDefault();
-    if (!reactFlowWrapper?.current || !e.dataTransfer) {
+    if (!e?.dataTransfer) {
       return;
     }
-    const { nodeType: type, width, height, nodeName } = JSON.parse(
+    const { nodeType, width, height, nodeName } = JSON.parse(
       e.dataTransfer.getData('application/reactflow'),
     );
     const { source, target, position } = currentConnection;
     if (!source || !target || !position) {
       return;
     }
-    const id = type + uuid();
-    function updateElementPosition(
-      element: FlowElement<any>,
-      insertPosition: number,
-      currentPosition: number,
-    ): FlowElement {
-      if (!(element as any).position || element.id === id) {
-        return element;
-      }
-      const position = { ...(element as any).position };
-      if (insertPosition > currentPosition) {
-        position.y = position.y - 72;
-      } else if (insertPosition < currentPosition) {
-        position.y = position.y + 72;
-      }
-      return { ...element, position };
-    }
-    const newElements: Elements = [];
-    let insertPosition = store.value.elements.length;
-    store.value.elements.forEach((element: FlowElement, index: number) => {
-      if (element.id !== `e${source}-${target}`) {
-        newElements.push(updateElementPosition(element, insertPosition, index));
-      }
-      if (element.id === source) {
-        insertPosition = index;
-        newElements.push({
-          id,
-          type,
-          position: { x: position.x - (width / 2), y: position.y - (height / 2) },
-          data: {
-            type,
-            nodeData: { width, height, name: nodeName },
-            businessData: getNodeInitialData(type),
-          },
-        });
-      }
-    });
-    setElements(newElements);
-    onConnect({
-      id: `e${source}-${id}`, source, target: id, label: '+',
-      arrowHeadType: ArrowHeadType.ArrowClosed,
-    });
-    onConnect({
-      id: `e${id}-${target}`, source: id, target, label: '+',
-      arrowHeadType: ArrowHeadType.ArrowClosed,
-    });
+    addNewNode({ nodeType, width, height, nodeName, source, target, position });
     updateStore((s) => ({ ...s, currentConnection: {} }));
   }
 
   function onLoad(): void {
-    !flowID && elements?.length && setElements(getLayoutedElements());
+    setDagreGraph(new dagre.graphlib.Graph());
     setTimeout(fitView);
   }
 
@@ -160,12 +160,10 @@ export default function Editor(): JSX.Element {
     <div className={cs('w-full h-full flex-1 relative transition', {
       'opacity-0': !fitViewFinished,
     })}>
-      <div className="reactflow-wrapper w-full h-full" ref={reactFlowWrapper}>
+      <div className="reactflow-wrapper w-full h-full">
         <ReactFlow
           className="cursor-move"
-          elements={elements}
-          onConnect={onConnect}
-          onElementsRemove={onElementsRemove}
+          elements={layoutedElements}
           connectionLineType={ConnectionLineType.Step}
           onLoad={onLoad}
           onDrop={onDrop}
