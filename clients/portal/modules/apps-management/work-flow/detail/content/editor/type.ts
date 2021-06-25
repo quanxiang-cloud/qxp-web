@@ -124,12 +124,16 @@ export type TimeRule = {
   deadLine: DeadLine;
   whenTimeout: WhenTimeout;
 }
-
+export type ApprovePersonType = 'person' | 'field' | 'position' | 'superior' | 'leadOfDepartment';
+export type ApprovePerson = {
+  type: ApprovePersonType;
+  users: EmployeeOrDepartmentOfRole[];
+  departments: EmployeeOrDepartmentOfRole[];
+  positions: string[];
+  fields: string[];
+}
 export interface BasicNodeConfig {
-  approvePersons: {
-    users: EmployeeOrDepartmentOfRole[];
-    departments: EmployeeOrDepartmentOfRole[];
-  };
+  approvePersons: ApprovePerson;
   multiplePersonWay: 'and' | 'or';
   whenNoPerson: 'skip' | 'transferAdmin';
   autoRules: AutoApproveRule[];
