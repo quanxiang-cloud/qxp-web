@@ -32,8 +32,8 @@ function EditFormulaModal({ onClose, onSubmit, rawFormula, variables }: Props): 
     formulaEditorRef.current?.insertText(text, hasSpacing, backNumber);
   }
 
-  function addField(entityData: any): void {
-    formulaEditorRef.current?.insertEntity({ entity_type: 'field', ...entityData });
+  function addField(entityData: { name: string, key: string }): void {
+    formulaEditorRef.current?.insertEntity(entityData);
   }
 
   if (!variables.length) {

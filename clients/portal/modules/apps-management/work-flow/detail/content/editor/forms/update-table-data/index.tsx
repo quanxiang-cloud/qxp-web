@@ -1,22 +1,26 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useRef, useState } from 'react';
 import { useQuery } from 'react-query';
+import { every } from 'lodash';
 
 import Select from '@c/select';
 import Toggle from '@c/toggle';
+import Modal from '@c/modal';
 
 import SaveButtonGroup from '@flowEditor/components/_common/action-save-button-group';
 import { getFormDataOptions } from '@c/form-table-selector/api';
 import FlowContext from '@flow/detail/flow-context';
 import FlowTableContext from '../flow-source-table';
 import toast from '@lib/toast';
-import Modal from '@c/modal';
 
-import TargetTableFields from './target-table-fields';
-import { BusinessData, TableDataCreateData } from '@flowEditor/type';
+import { BusinessData, TableDataUpdateData } from '@flowEditor/type';
 import Context from './context';
+import FilterRule, { RefType as FilterRuleRef } from './filter-rule';
+import UpdateRules, { RefType as UpdateRuleRef } from './update-rules';
+
+import './styles.scss';
 
 interface Props {
-  defaultValue: TableDataCreateData;
+  defaultValue: TableDataUpdateData;
   onSubmit: (data: BusinessData) => void;
   onCancel: () => void;
 }
@@ -24,14 +28,16 @@ interface Props {
 const initialValue = {
   targetTableId: '',
   silent: true,
-  createRule: {},
-  ref: {},
+  filterRule: '', // formula rule
+  updateRule: [],
 };
 
-function FormCreateTableData({ defaultValue, onSubmit, onCancel }: Props): JSX.Element {
+export default function UpdateTableData({ defaultValue, onSubmit, onCancel }: Props): JSX.Element {
   const { appID } = useContext(FlowContext);
   const { tableID } = useContext(FlowTableContext);
-  const [value, setValue] = useState<TableDataCreateData>(defaultValue || {});
+  const [value, setValue] = useState<TableDataUpdateData>(defaultValue || {});
+  const filterRef = useRef<FilterRuleRef>(null);
+  const updateRef = useRef<UpdateRuleRef>(null);
   const [nextTable, setNextTable] = useState<string>('');
   const [switchTableModal, setSwitchTableModal] = useState(false);
 
@@ -44,11 +50,17 @@ function FormCreateTableData({ defaultValue, onSubmit, onCancel }: Props): JSX.E
   });
 
   const onSave = () => {
-    // todo: validate
     if (!value.targetTableId) {
       toast.error('请选择目标数据表');
       return;
     }
+    const filterRule = filterRef.current?.getRule();
+    const updateRule = updateRef.current?.getValues();
+    if (!every(updateRule, (v) => !!v.fieldName)) {
+      toast.error('更新规则的目标表字段不能为空');
+      return;
+    }
+    Object.assign(value, { filterRule: filterRule || '', updateRule });
     onSubmit(value);
   };
 
@@ -56,7 +68,7 @@ function FormCreateTableData({ defaultValue, onSubmit, onCancel }: Props): JSX.E
     onCancel();
   };
 
-  const onChange = (val: Partial<TableDataCreateData>): void => {
+  const onChange = (val: Partial<TableDataUpdateData>): void => {
     setValue((v) => ({ ...v, ...val }));
   };
 
@@ -96,20 +108,28 @@ function FormCreateTableData({ defaultValue, onSubmit, onCancel }: Props): JSX.E
           />
         </div>
         {value.targetTableId && (
-          <div className="inline-flex items-center mt-10">
-            <span className="text-body mr-10">表单数据是否触发工作流执行:</span>
-            <Toggle
-              onChange={(silent) => {
-                onChange({ silent });
-              }}
-              defaultChecked={value.silent}
+          <>
+            <div className="inline-flex items-center mt-10">
+              <span className="text-body mr-10">表单数据是否触发工作流执行:</span>
+              <Toggle
+                onChange={(silent) => {
+                  onChange({ silent });
+                }}
+                defaultChecked={value.silent}
+              />
+            </div>
+            <FilterRule
+              defaultValue={value.filterRule}
+              ref={filterRef}
             />
-          </div>
+            <UpdateRules
+              appId={appID}
+              tableId={value.targetTableId}
+              defaultValue={value.updateRule}
+              ref={updateRef}
+            />
+          </>
         )}
-        <TargetTableFields
-          appId={appID}
-          tableId={value.targetTableId}
-        />
         <SaveButtonGroup onSave={onSave} onCancel={onClose} />
         {switchTableModal && (
           <Modal
@@ -131,12 +151,11 @@ function FormCreateTableData({ defaultValue, onSubmit, onCancel }: Props): JSX.E
               },
             ]}
           >
-            <p>切换数据表之后数据新增的配置将清空，是否继续？</p>
+            <p>切换数据表之后数据更新的配置将清空，是否继续？</p>
           </Modal>
         )}
       </div>
     </Context.Provider>
+
   );
 }
-
-export default FormCreateTableData;

@@ -35,7 +35,7 @@ export default function GlobalConfig(): JSX.Element | null {
     instanceName,
   } = useObservable<StoreValue>(store);
   const formulaEditorRef = useRef<RefProps>();
-  const { appID } = useContext(FlowContext);
+  const { appID, flowID } = useContext(FlowContext);
   const formDataElement = getFormDataElement();
   const changedRef = useRef<{ key: keyof StoreValue, checked: boolean }>();
   const { data: fieldList } = useQuery(
@@ -58,7 +58,7 @@ export default function GlobalConfig(): JSX.Element | null {
   const { data: variables } = useQuery(
     ['GET_VARIABLES'],
     () => {
-      return getFlowVariables().then((vars) => {
+      return getFlowVariables(flowID).then((vars) => {
         return vars.map(({ code, name }) => ({
           key: code,
           name,

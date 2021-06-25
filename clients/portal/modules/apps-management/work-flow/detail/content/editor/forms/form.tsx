@@ -12,6 +12,7 @@ import WebMessage from './web-message';
 import ProcessVariableAssignmentConfig from './process-variable-assignment-config';
 import FlowTableContext from './flow-source-table';
 import CreateTableData from './create-table-data';
+import UpdateTableData from './update-table-data';
 import FlowContext from '../../../flow-context';
 import ProcessBranch from './process-branch';
 import ProcessBranchTarget from './process-branch-target';
@@ -31,14 +32,20 @@ function useTableSchema(appID: string, tableID: string): ISchema | null {
   const [schema, setSchema] = useState<ISchema | null>(null);
 
   const { data, isLoading, isError } = useQuery<ISchema>(['FETCH_TABLE_SCHEMA', appID, tableID], () => {
-    return getTableSchema(appID, tableID).then(({ schema }) => {
-      return schema || {};
-    });
+    if (!tableID) {
+      return Promise.resolve({});
+    }
+
+    return getTableSchema(appID, tableID).then(({ schema }) => (schema || {}));
   });
 
   useEffect(() => {
-    if (isLoading || isError || !data) {
+    if (isLoading || isError) {
       return;
+    }
+
+    if (!data) {
+      return setSchema({});
     }
 
     setSchema(data);
@@ -55,10 +62,10 @@ const components: Record<string, JSXElementConstructor<any>> = {
   processBranchTarget: ProcessBranchTarget,
   processVariableAssignment: ProcessVariableAssignmentConfig,
   tableDataCreate: CreateTableData,
-  tableDataUpdate: Placeholder,
   sendEmail: SendEmailConfig,
   cc: CopyTo,
   webMessage: WebMessage,
+  tableDataUpdate: UpdateTableData,
 };
 
 export default function Form({

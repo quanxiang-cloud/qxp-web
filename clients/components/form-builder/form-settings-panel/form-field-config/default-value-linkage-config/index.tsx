@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { toJS } from 'mobx';
 import { from } from 'rxjs';
-import { takeWhile, switchMap } from 'rxjs/operators';
+import { switchMap, filter } from 'rxjs/operators';
 import {
   SchemaForm,
   FormButtonGroup,
@@ -114,17 +114,17 @@ function LinkageConfig({ onClose, onSubmit, linkage }: Props): JSX.Element {
 
   function formEffect(): void {
     onFieldValueChange$('linkedTableID').pipe(
-      takeWhile(({ value }) => !!value),
+      filter(({ value }) => !!value),
       switchMap(({ value }) => from(fetchLinkedTableFields(store.appID, value))),
     ).subscribe(syncLinkedTableFields);
 
     // todo why this observable emit value when un-mount?
     onFieldValueChange$('rules.*.fieldName').pipe(
-      takeWhile(({ value }) => !!value),
+      filter(({ value }) => !!value),
     ).subscribe(updateCompareOperatorFieldOnFieldNameChanged);
 
     onFieldValueChange$('rules.*.compareTo').pipe(
-      takeWhile(({ name, value }) => name && value),
+      filter(({ name, value }) => name && value),
     ).subscribe(updateCompareValueFieldOnCompareToChanged);
   }
 

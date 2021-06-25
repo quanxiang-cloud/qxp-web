@@ -8,7 +8,6 @@ import {
   convertToRaw,
   convertFromRaw,
 } from 'draft-js';
-import 'draft-js/dist/Draft.css';
 
 import {
   handleOperatorHighlight,
@@ -18,6 +17,8 @@ import {
 } from './decorator-func';
 import { operatorSpan, funcSpan, FieldSpan } from './decorator-span';
 import { toContentState } from './utils';
+
+import 'draft-js/dist/Draft.css';
 import './index.scss';
 
 export type CustomRule = {
@@ -72,8 +73,8 @@ function FormulaEditor({
       convertFromRaw(toContentState(defaultValue, customRules)), decorator,
     ) : EditorState.createEmpty(decorator),
   );
-  const editorDom = useRef<any>();
 
+  const editorDom = useRef<any>();
   useImperativeHandle(ref, () => ({
     insertText: insertText,
     insertEntity: insertEntity,
@@ -93,7 +94,6 @@ function FormulaEditor({
     if (customRules.length === 0) {
       return;
     }
-
     const compositeDecorator = new CompositeDecorator([
       {
         strategy: (contentBlock, callback, contentState) => {
@@ -109,7 +109,6 @@ function FormulaEditor({
     let contentState = editorState.getCurrentContent();
     contentState = contentState.createEntity('variable', 'IMMUTABLE', entityData);
     const entityKey = contentState.getLastCreatedEntityKey();
-
     let selection = editorState.getSelection();
     if (selection.isCollapsed()) {
       contentState = Modifier.insertText(
@@ -120,24 +119,18 @@ function FormulaEditor({
         contentState, selection, entityData.name, undefined, entityKey,
       );
     }
-
     let end;
-
     contentState.getFirstBlock().findEntityRanges(
       (character) => character.getEntity() === entityKey,
       (_, _end) => {
         end = _end;
       });
-
     let newEditorState = EditorState.set(editorState, { currentContent: contentState });
-
     selection = selection.merge({
       anchorOffset: end,
       focusOffset: end,
     }) as SelectionState;
-
     newEditorState = EditorState.forceSelection(newEditorState, selection);
-
     handleChange(newEditorState);
   };
 
@@ -148,19 +141,16 @@ function FormulaEditor({
     if (hasSpacing) {
       textTmp += ' ';
     }
-
     if (selection.isCollapsed()) {
       contentState = Modifier.insertText(contentState, selection, textTmp);
     } else {
       contentState = Modifier.replaceText(contentState, selection, textTmp);
     }
-
     let newEditorState = EditorState.set(editorState, { currentContent: contentState });
     selection = selection.merge({
       anchorOffset: selection.getAnchorOffset() + textTmp.length - backNumber,
       focusOffset: selection.getFocusOffset() + textTmp.length - backNumber,
     }) as SelectionState;
-
     newEditorState = EditorState.forceSelection(newEditorState, selection);
     handleChange(newEditorState);
   };
@@ -173,7 +163,6 @@ function FormulaEditor({
       block.entityRanges.forEach(({ key }) => {
         text = text.replace(entityMap[key].data.name, entityMap[key].data.key);
       });
-
       return text;
     }).join(' ');
   };

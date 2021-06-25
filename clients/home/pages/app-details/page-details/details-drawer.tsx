@@ -60,7 +60,7 @@ function DetailsDrawer({ onCancel, rowID, goEdit, delData }: Props): JSX.Element
           key: fieldKey,
           value: record?.[fieldKey] ? (
             <FormDataValueRenderer schema={fieldSchema as Schema} value={record?.[fieldKey]} />
-          ) : '无数据',
+          ) : <span className='text-gray-300'>——</span>,
           fieldSchema,
         });
         return;
@@ -71,7 +71,7 @@ function DetailsDrawer({ onCancel, rowID, goEdit, delData }: Props): JSX.Element
         key: fieldKey,
         value: record?.[fieldKey] ? (
           <FormDataValueRenderer schema={fieldSchema as Schema} value={record?.[fieldKey]} />
-        ) : '无数据',
+        ) : <span className='text-gray-300'>——</span>,
         fieldSchema,
       });
     });

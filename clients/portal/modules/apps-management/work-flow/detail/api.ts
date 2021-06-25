@@ -89,3 +89,14 @@ export function toggleWorkFlow(data: {
   return httpClient('/api/v1/flow/updateFlowStatus', data);
 }
 
+export function getVariableList(flowId: string): Promise<Array<ProcessVariable>> {
+  return httpClient<Array<ProcessVariable>>(`/api/v1/flow/getVariableList?id=${flowId}`);
+}
+
+export function saveFlowVariable(values: ProcessVariable): Promise<void> {
+  return httpClient('/api/v1/flow/saveFlowVariable', values);
+}
+
+export function deleteFlowVariable(id: string): Promise<void> {
+  return httpClient(`/api/v1/flow/deleteFlowVariable/${id}`);
+}

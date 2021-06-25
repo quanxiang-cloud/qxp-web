@@ -1,5 +1,6 @@
 export interface ImageUploadConfig {
   title: string;
+  type: string;
   description?: string;
   displayModifier?: FormBuilder.DisplayModifier;
   required?: boolean;
@@ -9,6 +10,7 @@ export interface ImageUploadConfig {
 
 export const defaultConfig: ImageUploadConfig = {
   title: '图片',
+  type: 'array',
   description: '',
   displayModifier: 'normal',
   required: false,
@@ -18,7 +20,7 @@ export const defaultConfig: ImageUploadConfig = {
 
 export function toSchema(value: ImageUploadConfig): ISchema {
   return {
-    type: 'string',
+    type: 'array',
     title: value.title,
     description: value.description,
     required: value.required,
@@ -45,6 +47,7 @@ export function toConfig(schema: ISchema): ImageUploadConfig {
 
   return {
     title: schema.title as string,
+    type: 'array',
     description: schema.description as string,
     displayModifier: displayModifier,
     required: !!schema.required,
