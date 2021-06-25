@@ -33,6 +33,7 @@ function AppSetting() {
       replace: true,
       name: '应用信息',
       url: `/apps/details/${appID}/setting/info`,
+      authority: 'application/read',
     },
     {
       id: 'adminUsers',
@@ -40,6 +41,7 @@ function AppSetting() {
       replace: true,
       name: '应用管理员',
       url: `/apps/details/${appID}/setting/adminUsers`,
+      authority: 'application/read',
     },
     {
       id: 'workflows',
@@ -47,6 +49,7 @@ function AppSetting() {
       replace: true,
       name: '工作流',
       url: `/apps/details/${appID}/setting/workflows`,
+      authority: 'application/read',
     },
     {
       id: 'usersAndPermissions',
@@ -54,6 +57,7 @@ function AppSetting() {
       replace: true,
       name: '用户及权限',
       url: `/apps/details/${appID}/setting/usersAndPermissions`,
+      authority: 'application/read',
     },
   ];
 
