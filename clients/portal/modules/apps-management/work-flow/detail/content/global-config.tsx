@@ -4,6 +4,7 @@ import { useQuery } from 'react-query';
 import Toggle from '@c/toggle';
 import Icon from '@c/icon';
 import ToolTip from '@c/tooltip';
+import Loading from '@c/loading';
 import useObservable from '@lib/hooks/use-observable';
 import toast from '@lib/toast';
 import CheckBoxGroup from '@c/checkbox/checkbox-group';
@@ -38,7 +39,7 @@ export default function GlobalConfig(): JSX.Element | null {
   const { appID, flowID } = useContext(FlowContext);
   const formDataElement = getFormDataElement();
   const changedRef = useRef<{ key: keyof StoreValue, checked: boolean }>();
-  const { data: fieldList } = useQuery(
+  const { data: fieldList, isLoading } = useQuery(
     ['GET_FIELD_LIST', formDataElement.data.businessData.form.value, appID],
     ({ queryKey }) => {
       return getFormFieldSchema({ queryKey }).then((schema) => {
@@ -55,7 +56,7 @@ export default function GlobalConfig(): JSX.Element | null {
     { refetchOnWindowFocus: false },
   );
 
-  const { data: variables } = useQuery(
+  const { data: variables, isLoading: varLoading } = useQuery(
     ['GET_VARIABLES'],
     () => {
       return getFlowVariables(flowID).then((vars) => {
@@ -132,6 +133,10 @@ export default function GlobalConfig(): JSX.Element | null {
 
   if (typeof cancelable === 'undefined') {
     return null;
+  }
+
+  if (isLoading || varLoading) {
+    return <Loading />;
   }
 
   return (

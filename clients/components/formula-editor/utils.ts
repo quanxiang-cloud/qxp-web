@@ -1,23 +1,23 @@
-import { RawDraftContentState } from 'draft-js';
+import { RawDraftContentState, RawDraftEntity, RawDraftEntityRange } from 'draft-js';
 
 import { CustomRule } from './index';
 
 export function toContentState(defaultValue: string, customRules: CustomRule[]): RawDraftContentState {
-  const entityMap: any = {};
-  const entityRanges: any = [];
+  const entityMap: { [key: string]: RawDraftEntity<{ [key: string]: any; }>; } = {};
+  const entityRanges: RawDraftEntityRange[] = [];
   let defaultValueTmp = defaultValue;
   customRules.forEach((rule) => {
     const index = defaultValueTmp.indexOf(rule.key);
     defaultValueTmp = defaultValueTmp.replace(rule.key, rule.name);
     if (index > -1) {
-      entityMap[rule.key] = {
+      entityMap[index] = {
         data: rule,
         mutability: 'IMMUTABLE',
-        type: 'field',
+        type: 'variable',
       };
 
       entityRanges.push({
-        key: rule.key,
+        key: index,
         length: rule.name.length,
         offset: index,
       });
