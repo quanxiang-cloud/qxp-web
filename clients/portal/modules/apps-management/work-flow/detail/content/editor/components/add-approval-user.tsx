@@ -6,13 +6,15 @@ import Icon from '@c/icon';
 import EmployeeOrDepartmentPicker from '@c/employee-or-department-picker';
 
 type Value = {
-  departments: EmployeeOrDepartmentOfRole[],
-  employees: EmployeeOrDepartmentOfRole[]
+  type: 1 | 2,
+  id: string,
+  name: string,
+  account: string,
 }
 
 type Props = {
-  value: Value;
-  onChange: (selected: Value) => void;
+  value: Value[];
+  onChange: (selected: Value[]) => void;
 }
 
 const tagBackgroundColorMap = {
@@ -24,34 +26,35 @@ const tagIconNameMap = {
   2: 'device_hub',
 };
 
-function UserSelect({ value, onChange }: Props, ref:React.Ref<HTMLInputElement>): JSX.Element {
+function UserSelect({ value = [], onChange }: Props, ref: React.Ref<HTMLInputElement>): JSX.Element {
   const [employeeVisible, setVisible] = useState(false);
 
   const handleSubmit = (
-    departments: EmployeeOrDepartmentOfRole[],
+    _: EmployeeOrDepartmentOfRole[],
     employees: EmployeeOrDepartmentOfRole[],
   ): Promise<boolean> => {
-    onChange({ departments, employees });
+    onChange(
+      employees.map((member) => {
+        return {
+          type: member.type,
+          id: member.id,
+          name: member.ownerName,
+          account: member.email,
+        };
+      }),
+    );
     return Promise.resolve(true);
   };
 
-  const handleRemove = (member: EmployeeOrDepartmentOfRole): void => {
-    const valueTmp = { ...value };
-    if (member.type === 1) {
-      valueTmp.employees = valueTmp.employees.filter(({ id })=>id !== member.id);
-    } else {
-      valueTmp.departments = valueTmp.departments.filter(({ id }) => id !== member.id);
-    }
-    onChange(valueTmp);
+  const handleRemove = (member: Value): void => {
+    onChange(value.filter(({ id }) => id !== member.id));
   };
-
-  const { departments = [], employees = [] } = value || {};
 
   return (
     <div>
-      {(departments.length !== 0 || employees.length !== 0) && (
+      {value.length !== 0 && (
         <div className="mt-8 mb-12 py-8 px-12 border border-gray-300 corner-2-8-8-8">
-          {[...departments, ...employees].map((member) => (
+          {value.map((member) => (
             <Tag<string>
               className="mr-8 rounded-tl-4 rounded-br-4 mb-8 overflow-hidden h-24"
               style={{
@@ -78,7 +81,7 @@ function UserSelect({ value, onChange }: Props, ref:React.Ref<HTMLInputElement>)
                       'text-yellow-600': member.type === 2,
                     })}
                   >
-                    {member.ownerName}
+                    {member.name}
                   </span>
                 </div>
               )}
@@ -104,8 +107,10 @@ function UserSelect({ value, onChange }: Props, ref:React.Ref<HTMLInputElement>)
           onSubmit={handleSubmit}
           submitText='保存'
           title='添加审批人'
-          employees={value?.employees || []}
-          departments={value?.departments || []}
+          employees={value.map((member: any) => {
+            return { ...member, ownerID: member.id, type: 1, ownerName: member.name };
+          })}
+          departments={[]}
           onCancel={() => setVisible(false)}
         />
       )}
