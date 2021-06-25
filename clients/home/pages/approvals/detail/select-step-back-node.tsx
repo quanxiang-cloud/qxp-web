@@ -11,8 +11,8 @@ interface Props {
 
 type StepBackNode = {
   id: string;
-  activityId: string;
-  activityName: string;
+  taskDefKey: string;
+  taskName: string;
   processInstanceId: string;
 }
 
@@ -29,9 +29,9 @@ function SelectStepBackNode({ onChange }: Props) {
   return (
     <Select
       className="mb-24"
-      options={stepBackNodes.map(({ activityId, activityName }) => ({
-        label: activityName,
-        value: activityId,
+      options={stepBackNodes.map(({ taskDefKey, taskName }) => ({
+        label: taskName,
+        value: taskDefKey,
       }))}
       onChange={onChange}
       placeholder={<span className="text-gray-400">选择要回退到的节点</span>}

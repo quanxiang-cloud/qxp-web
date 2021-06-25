@@ -1,5 +1,5 @@
 const actionMap: Record<TaskHandleType | string, any> = {
-  // CANCEL: { text: '撤回', icon: '' },
+  CANCEL: { text: '撤回', icon: '' },
   AGREE: { text: '通过', icon: 'done' },
   REFUSE: { text: '拒绝', icon: 'close' },
   FILL_IN: { text: '补充', icon: 'free_breakfast' },
