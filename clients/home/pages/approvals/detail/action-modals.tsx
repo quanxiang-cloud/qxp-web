@@ -279,14 +279,14 @@ function ActionModals({ className }: Props) {
       );
     }
 
-    // 加签: todo: moved to v0.5
+    // 加签
     if (action === TaskHandleType.add_sign) {
       return (
         <div>
           <div className="mb-24">
-            <Button className={'mb-12'} iconName="add" onClick={() => setShowPicker(true)}>添加加签人</Button>
+            <Button className="mb-12" iconName="add" onClick={() => setShowPicker(true)}>添加加签人</Button>
             {store.showTips && !chosenEmployees.length && <p className="text-red-600">请选择加签人</p>}
-            {<Radio.Group className={'block'} onChange={(e)=>{
+            {<Radio.Group className="block" onChange={(e)=>{
               setAddSignType(e.target.value);
             }
             }>
