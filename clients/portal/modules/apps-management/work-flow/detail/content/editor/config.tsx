@@ -12,6 +12,8 @@ import FillInNode from './nodes/fill-in';
 import ApproveNode from './nodes/approve';
 import Plus from './edges/plus';
 import ProcessBranchNode from './nodes/process-branch';
+import ProcessBranchSourceNode from './nodes/process-branch-source';
+import ProcessBranchTargetNode from './nodes/process-branch-target';
 import ProcessVariableAssignmentNode from './nodes/process-variable-assignment';
 import TableDataCreateNode from './nodes/table-data-create';
 import TableDataUpdateNode from './nodes/table-data-update';
@@ -31,6 +33,8 @@ export const nodeTypes = {
   sendEmail: SendEmailNode,
   webMessage: WebMessage,
   cc: CCNode,
+  processBranchSource: ProcessBranchSourceNode,
+  processBranchTarget: ProcessBranchTargetNode,
 };
 
 export const edgeTypes = {

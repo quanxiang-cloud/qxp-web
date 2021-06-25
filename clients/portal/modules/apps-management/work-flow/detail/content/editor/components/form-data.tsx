@@ -33,7 +33,7 @@ export default function FormDataNodeComponent({
     <div
       className={cs(
         'shadow-title rounded-tl-8 rounded-tr-8 rounded-br-2',
-        'rounded-bl-8 bg-white flex flex-col',
+        'rounded-bl-8 bg-white flex flex-col cursor-pointer',
       )}
       style={{
         width: data.nodeData.width,

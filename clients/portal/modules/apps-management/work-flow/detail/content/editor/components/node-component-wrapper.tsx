@@ -17,10 +17,11 @@ export interface Props {
   yPos: number;
   isDragging: boolean;
   children: React.ReactNode;
+  simple: boolean;
 }
 
 export default function NodeComponentWrapper(props: Props): JSX.Element {
-  const { data, id, xPos, yPos, isDragging, children } = props;
+  const { data, id, xPos, yPos, isDragging, children, simple } = props;
   const { errors } = useObservable<StoreValue>(store);
   const lastTime = useRef(+new Date());
   const [showRemover, setShowRemover] = useState(false);
@@ -50,7 +51,7 @@ export default function NodeComponentWrapper(props: Props): JSX.Element {
     <div
       className={cs(
         'shadow-title rounded-tl-8 rounded-tr-8 rounded-br-2',
-        'rounded-bl-8 bg-white flex flex-col border relative',
+        'rounded-bl-8 bg-white flex flex-col border relative cursor-pointer',
         {
           'border-red-600 border-dashed animate-node-error': hasError,
         },
@@ -64,25 +65,32 @@ export default function NodeComponentWrapper(props: Props): JSX.Element {
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
     >
-      <div className="relative">
-        <NodeHeader
-          title={nodeData.name}
-          id={id}
-          iconName="approves"
-          className="bg-indigo-500"
-          iconClassName="text-white"
-          titleClassName="text-white bg-indigo-500"
-        />
-        <NodeRemover
-          onVisibilityChange={setShowRemover}
-          visible={showRemover}
-          id={id}
-          type="light"
-        />
-      </div>
-      <footer className="p-8 flex flex-1 flex-col justify-center">
-        {children}
-      </footer>
+      {!simple && (
+        <>
+          <div className="relative">
+            <NodeHeader
+              title={nodeData.name}
+              id={id}
+              iconName="approves"
+              className="bg-indigo-500"
+              iconClassName="text-white"
+              titleClassName="text-white bg-indigo-500"
+            />
+            <NodeRemover
+              onVisibilityChange={setShowRemover}
+              visible={showRemover}
+              id={id}
+              type="light"
+            />
+          </div>
+          <footer className="p-8 flex flex-1 flex-col justify-center">
+            {children}
+          </footer>
+        </>
+      )}
+      {simple && (
+        <>{children}</>
+      )}
     </div>
   );
 }

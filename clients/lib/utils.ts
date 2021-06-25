@@ -273,7 +273,3 @@ export function compactObject(data: Record<string, any> | any[]): Record<string,
     return cur;
   }, isArray ? [] : {});
 }
-
-export function isObjectArray(src: unknown): boolean {
-  return Array.isArray(src) && src.every((item) => isObject(item));
-}

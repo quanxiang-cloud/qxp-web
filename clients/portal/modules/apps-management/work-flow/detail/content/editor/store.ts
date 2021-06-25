@@ -1,6 +1,6 @@
 import { BehaviorSubject } from 'rxjs';
-import { FlowElement, Edge, isNode, Node } from 'react-flow-renderer';
-import { uuid, deepClone } from '@lib/utils';
+import { FlowElement } from 'react-flow-renderer';
+import { uuid } from '@lib/utils';
 import { update, omit } from 'lodash';
 import moment from 'moment';
 
@@ -10,8 +10,8 @@ import { edgeBuilder, nodeBuilder } from './utils';
 import type { StoreValue, BusinessData, CurrentElement, Data, FormDataElement } from './type';
 
 export const getStoreInitialData = (): StoreValue => {
-  const startId = 'formData' + uuid();
-  const endId = 'end' + uuid();
+  const startID = 'formData' + uuid();
+  const endID = 'end' + uuid();
   return {
     saved: false,
     needSaveFlow: false,
@@ -25,6 +25,8 @@ export const getStoreInitialData = (): StoreValue => {
     validating: false,
     version: '0.1',
     status: 'DISABLE',
+    keyFields: '',
+    instanceName: '',
     processKey: '',
     triggerMode: 'FORM_DATA',
     nodeIdForDrawerForm: '',
@@ -34,12 +36,17 @@ export const getStoreInitialData = (): StoreValue => {
     seeStatusAndMsg: false,
     nodeAdminMsg: false,
     elements: [
-      nodeBuilder(startId, 'formData', '工作表触发'),
-      nodeBuilder(endId, 'end', '结束', {
+      nodeBuilder(startID, 'formData', '工作表触发', {
+        parentID: [],
+        childrenID: [endID],
+      }),
+      nodeBuilder(endID, 'end', '结束', {
         width: 100,
         height: 28,
+        parentID: [startID],
+        childrenID: [],
       }),
-      edgeBuilder(startId, endId),
+      edgeBuilder(startID, endID),
     ],
   };
 };
@@ -48,91 +55,6 @@ const store = new BehaviorSubject<StoreValue>(getStoreInitialData());
 
 export function initStore(): void {
   store.next(getStoreInitialData());
-}
-
-type LinkedNodeType = FlowElement<Data> & {
-  parents: LinkedNodeType[] | null;
-  childrens: LinkedNodeType[] | null;
-};
-function parseNodeLinkedList(id: string): LinkedNodeType[] | null {
-  const elements = deepClone(store.value.elements);
-  const elementNodeMap: Record<string, LinkedNodeType> = {};
-  elements.forEach((element: Node & LinkedNodeType) => {
-    if (!isNode(element)) {
-      return;
-    }
-    elementNodeMap[element.id] = element;
-  });
-  elements.forEach((element: Edge) => {
-    if (isNode(element)) {
-      return;
-    }
-    const { source, target } = element;
-    const sourceNode = elementNodeMap[source];
-    const targetNode = elementNodeMap[target];
-    if (!sourceNode.parents) {
-      sourceNode.parents = [];
-    }
-    if (!sourceNode.childrens) {
-      sourceNode.childrens = [];
-    }
-    if (!targetNode.parents) {
-      targetNode.parents = [];
-    }
-    if (!targetNode.childrens) {
-      targetNode.childrens = [];
-    }
-    sourceNode.childrens.push(targetNode);
-    targetNode.parents.push(sourceNode);
-  });
-  return elementNodeMap[id].childrens;
-}
-
-function parseChildrensIDs(linkedElements: LinkedNodeType[]): string[] {
-  const ids: string[] = [];
-  linkedElements.forEach((el) => {
-    ids.push(el.id);
-    if (el.childrens) {
-      ids.push(...parseChildrensIDs(el.childrens));
-    }
-  });
-  return ids;
-}
-
-export function removeNodeById(id: string): void {
-  let sourceId;
-  let targetId;
-  const newElements: FlowElement[] = [];
-  const { elements } = store.value;
-  const linkedElements = parseNodeLinkedList(id);
-  const linkedElementsIDs = parseChildrensIDs(linkedElements ?? []);
-  let removedNode: Node;
-  elements.forEach((el) => {
-    const element = el as Edge;
-    if (element.target === id) {
-      sourceId = element.source;
-    }
-    if (element.source === id) {
-      targetId = element.target;
-    }
-    if (id === element.id) {
-      removedNode = element as unknown as Node;
-    }
-    if (id !== element.id && element.source !== id && element.target !== id) {
-      let position = (element as unknown as Node).position;
-      if (linkedElementsIDs.includes(element.id)) {
-        position = { ...position, y: position.y - (removedNode.data.nodeData.height * 2) };
-      }
-      newElements.push({ ...element, position });
-    }
-  });
-  if (sourceId && targetId) {
-    newElements.push(edgeBuilder(sourceId, targetId));
-  }
-  store.next({
-    ...store.value,
-    elements: newElements,
-  });
 }
 
 export function updateStore(updater: (st: StoreValue) => StoreValue): void {

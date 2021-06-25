@@ -1,9 +1,13 @@
 import { Position, ArrowHeadType, XYPosition, Edge, Node } from 'react-flow-renderer';
 import { update } from 'lodash';
 
+import { isNode, Elements, isEdge } from 'react-flow-renderer';
+
 import { deepClone } from '@lib/utils';
 
 import type { NodeType, Data } from '../type';
+
+export * from './branch';
 
 export interface GetCenterParams {
   sourceX: number;
@@ -50,8 +54,11 @@ export const getCenter = ({
 const approveAndFillInCommonData = {
   basicConfig: {
     approvePersons: {
+      type: 'person',
       users: [],
       departments: [],
+      positions: [],
+      fields: [],
     },
     multiplePersonWay: '',
     whenNoPerson: '',
@@ -106,17 +113,21 @@ export function getNodeInitialData(type: NodeType): any {
       assignmentRules: [],
     },
     tableDataCreate: {
-      target_table_id: '',
-      silent: false,
-      create_rule: {},
+      targetTableId: '',
+      silent: true,
+      createRule: {},
       ref: {},
     },
     tableDataUpdate: {
-      target_table_id: '',
-      silent: false,
-      filter_rule: {},
-      update_rule: [],
+      targetTableId: '',
+      silent: true,
+      filterRule: '',
+      updateRule: [],
     },
+    processBranchSource: {
+      processBranchEndStrategy: '',
+    },
+    processBranchTarget: {},
     cc: {},
     sendEmail: {},
     webMessage: {},
@@ -149,13 +160,13 @@ export function getNodeInitialData(type: NodeType): any {
   return dataMap[type];
 }
 
-export function edgeBuilder(startId: string, endId: string): Edge {
+export function edgeBuilder(startId: string, endId: string, type = 'plus', label = '+'): Edge {
   return {
     id: `e${startId}-${endId}`,
-    type: 'plus',
+    type,
     source: startId,
     target: endId,
-    label: '+',
+    label,
     arrowHeadType: ArrowHeadType.ArrowClosed,
   };
 }
@@ -164,18 +175,32 @@ export function nodeBuilder(
   id: string,
   type: NodeType,
   name: string,
-  options: { position?: XYPosition; width?: number; height?: number; } = {
-    position: { x: 0, y: 0 },
-    width: 200,
-    height: 72,
+  options: {
+    position?: XYPosition;
+    width?: number;
+    height?: number;
+    parentID?: string[];
+    childrenID?: string[];
+    branchTargetElementID?: string;
+    branchID?: string;
   }): Node<Data> {
   return {
     id, type, data: {
       type: type as 'fillIn',
-      nodeData: { width: options.width as number, height: options.height as number, name },
+      nodeData: {
+        width: options.width as number || 200,
+        height: options.height as number || 72,
+        name,
+        ...(options.parentID ? { parentID: options.parentID } : {}),
+        ...(options.childrenID ? { childrenID: options.childrenID } : {}),
+        ...(options.branchID ? { branchID: options.branchID } : {}),
+        ...(options.branchTargetElementID ? {
+          branchTargetElementID: options.branchTargetElementID,
+        } : {}),
+      },
       businessData: getNodeInitialData(type),
     },
-    position: options.position as XYPosition,
+    position: options.position as XYPosition || { x: 0, y: 0 },
   };
 }
 
@@ -187,4 +212,14 @@ export function mergeDataAdapter<T, S>(
   const newData = deepClone(originalData);
   update(newData, path, updater);
   return newData as S;
+}
+
+export function getCenterPosition(position: XYPosition, width: number, height: number): XYPosition {
+  return { x: position.x - (width / 2), y: position.y - (height / 2) };
+}
+
+export function removeEdge(eles: Elements, source: string, target: string): Elements {
+  return eles.filter((el) => {
+    return isNode(el) || (isEdge(el) && (el.source != source || el.target != target));
+  });
 }

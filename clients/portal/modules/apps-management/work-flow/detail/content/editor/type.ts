@@ -124,12 +124,16 @@ export type TimeRule = {
   deadLine: DeadLine;
   whenTimeout: WhenTimeout;
 }
-
+export type ApprovePersonType = 'person' | 'field' | 'position' | 'superior' | 'leadOfDepartment';
+export type ApprovePerson = {
+  type: ApprovePersonType;
+  users: EmployeeOrDepartmentOfRole[];
+  departments: EmployeeOrDepartmentOfRole[];
+  positions: string[];
+  fields: string[];
+}
 export interface BasicNodeConfig {
-  approvePersons: {
-    users: EmployeeOrDepartmentOfRole[];
-    departments: EmployeeOrDepartmentOfRole[];
-  };
+  approvePersons: ApprovePerson;
   multiplePersonWay: 'and' | 'or';
   whenNoPerson: 'skip' | 'transferAdmin';
   autoRules: AutoApproveRule[];
@@ -142,6 +146,7 @@ export interface SystemOperation {
   name: string;
   text: string;
   value: string;
+  reasonRequired?: boolean;
 }
 
 export interface CustomOperation {
@@ -150,6 +155,7 @@ export interface CustomOperation {
   name: string;
   text?: string;
   value: string;
+  reasonRequired?: boolean;
 }
 
 export interface OperationPermission {
@@ -167,6 +173,9 @@ export interface ProcessBranchData {
   ignore: boolean;
   rule: string;
 }
+export interface ProcessBranchTargetData {
+  processBranchEndStrategy: 'any' | 'all';
+}
 export interface ProcessVariableAssignmentData {
   assignmentRules: Array<{
     variableName: string;
@@ -176,8 +185,9 @@ export interface ProcessVariableAssignmentData {
 }
 export interface ValueRule {
   valueFrom: 'fixedValue' | 'currentFormValue' | 'processVariable';
-  valueOf: string | number | Array<string | number>;
+  valueOf: ValueRuleVal;
 }
+export type ValueRuleVal = string | number | Array<string | number>;
 export interface TableDataCreateData {
   targetTableId: string;
   silent: boolean;
@@ -187,6 +197,7 @@ export interface TableDataCreateData {
   ref: {
     [key: string]: {
       tableId: string;
+      // todo: refactor structure
       createRules: Array<{
         [key: string]: ValueRule;
       }>;
@@ -196,18 +207,19 @@ export interface TableDataCreateData {
 export interface TableDataUpdateData {
   targetTableId: string;
   silent: boolean;
-  filterRule: {
-    tag: 'and' | 'or';
-    conditions: Array<{
-      fieldName: string;
-      operator: 'eq' | 'neq' | 'in';
-      value: Array<string | number>;
-    }>;
-  };
+  // filterRule: {
+  //   tag: 'and' | 'or';
+  //   conditions: Array<{
+  //     fieldName: string;
+  //     operator: 'eq' | 'neq' | 'in' | 'nin';
+  //     value: ValueRuleVal;
+  //   }>;
+  // };
+  filterRule: string;
   updateRule: Array<{
     fieldName: string;
     valueFrom: 'fixedValue' | 'currentFormValue' | 'processVariable' | 'formula';
-    valueOf: string | number | Array<string | number>;
+    valueOf: ValueRuleVal;
   }>;
 }
 export interface SendEmailData {
@@ -249,8 +261,16 @@ export interface FieldPermission {
 
 export type BusinessData = FormDataData | FillInData | ProcessBranchData |
   ProcessVariableAssignmentData | TableDataCreateData | TableDataUpdateData | SendEmailData |
-  WebMessageData | CCData;
-export type NodeData = { width: number, height: number, name: string };
+  WebMessageData | CCData | ProcessBranchTargetData;
+export type NodeData = {
+  width: number;
+  height: number;
+  name: string;
+  parentID?: string[];
+  childrenID?: string[];
+  branchID?: string;
+  branchTargetElementID?: string;
+};
 export interface BaseNodeData {
   type: NodeType;
   nodeData: NodeData;
@@ -296,12 +316,16 @@ export interface CCNodeData extends BaseNodeData {
   type: 'cc';
   businessData: CCData;
 }
+export interface ProcessBranchTargetNodeData extends BaseNodeData {
+  type: 'processBranchTarget';
+  businessData: ProcessBranchTargetData;
+}
 export type Data = CCNodeData | WebMessageNodeData | SendEmailNodeData | TableDataUpdateNodeData |
   TableDataCreateNodeData | ProcessVariableAssignmentNodeData | ProcessBranchNodeData |
-  FormDataNodeData | ApproveNodeData | FillInNodeData;
+  FormDataNodeData | ApproveNodeData | FillInNodeData | ProcessBranchTargetNodeData;
 export type NodeType = 'formData' | 'fillIn' | 'approve' | 'end' | 'processBranch' |
   'processVariableAssignment' | 'tableDataCreate' | 'tableDataUpdate' | 'sendEmail' |
-  'webMessage' | 'cc';
+  'webMessage' | 'cc' | 'processBranchSource' | 'processBranchTarget';
 export interface CurrentElement {
   id: string;
   type: NodeType;
@@ -342,4 +366,12 @@ export interface StoreValue {
   errors: Errors;
   currentDataNotSaveConfirmCallback?: () => void;
   showDataNotSaveConfirm?: boolean;
+  keyFields: string;
+  instanceName: string;
+}
+
+export type ProcessVariable = {
+  code: string;
+  name: string;
+  fieldType: 'TEXT' | 'DATE' | 'NUMBER' | 'BOOLEAN';
 }

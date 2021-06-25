@@ -2,7 +2,7 @@ import React, { useMemo, useState, useEffect, useContext } from 'react';
 import { useQuery } from 'react-query';
 import { toArr, FormPath } from '@formily/shared';
 import { ArrayList } from '@formily/react-shared-components';
-import { Input, Select as AntdSelect } from '@formily/antd-components';
+import { Input, Select as AntdSelect, Switch, DatePicker, NumberPicker } from '@formily/antd-components';
 import {
   SchemaForm,
   SchemaField,
@@ -14,22 +14,20 @@ import {
 import MoreMenu from '@c/more-menu';
 import Icon from '@c/icon';
 import Button from '@c/button';
-import httpClient, { getTableSchema } from '@lib/http-client';
-import { RowStyleLayout } from '@c/form-builder/customized-fields';
 import SaveButtonGroup from '@flowEditor/components/_common/action-save-button-group';
 
 import FlowSourceTableContext from './flow-source-table';
 import FlowContext from '../../../flow-context';
-import { ProcessVariableAssignmentData } from '../type';
+import { ProcessVariableAssignmentData, ProcessVariable } from '../type';
+import { getFlowVariables } from './api';
+import styled from 'styled-components';
+
+const ACTIONS = createFormActions();
+const COMPONENTS = { AntdSelect, Input, RulesList, Switch, DatePicker, NumberPicker };
 
 type Option = {
   value: string;
   label: string;
-}
-
-type ProcessVariable = {
-  code: string;
-  name: string;
 }
 
 type Props = {
@@ -40,11 +38,7 @@ type Props = {
 
 const { onFieldValueChange$ } = FormEffectHooks;
 
-function getFlowVariables(): Promise<Array<ProcessVariable>> {
-  return httpClient('/api/v1/flow/getVariableList');
-}
-
-const ASSIGNABLE_WHITELIST_COMPONENTS = [
+const ASSIGNABLE_COMPONENTS = [
   'Input',
   'Textarea',
   'RadioGroup',
@@ -58,33 +52,60 @@ const ASSIGNABLE_WHITELIST_COMPONENTS = [
   'CascadeSelector',
 ];
 
-function getSourceTableFields(appID: string, tableID: string): Promise<Array<Option>> {
-  // todo move schema to context
-  return getTableSchema(appID, tableID).then(({ schema }) => {
-    if (!schema) {
-      return [];
-    }
-
-    return Object.entries(schema.properties || {}).filter(([, fieldSchema]) => {
-      return ASSIGNABLE_WHITELIST_COMPONENTS.includes(fieldSchema['x-component'] as string);
-    }).map(([key, fieldSchema]) => {
-      return { label: fieldSchema.title as string, value: key };
-    });
-  });
-}
-
 function useLeftOptions(used: string[], variables: ProcessVariable[]): Option[] {
   const [options, setOptions] = useState<Option[]>([]);
+
   useEffect(() => {
-    const _options = variables.filter(({ code }) => !used.includes(code)).map(({ code, name }) => {
-      return { label: name, value: code };
-    });
+    const _options = variables
+      .filter(({ code }) => !used.includes(code))
+      .map(({ code, name }) => ({ label: name, value: code }));
 
     setOptions(_options);
   }, [used, variables]);
 
   return options;
 }
+
+function useTableFieldOptions(): Array<Option & { type: string; }> {
+  const { tableSchema } = useContext(FlowSourceTableContext);
+  const tableFields = Object.entries(tableSchema.properties || {}).filter(([, fieldSchema]) => {
+    return ASSIGNABLE_COMPONENTS.includes(fieldSchema['x-component'] as string);
+  }).map(([key, fieldSchema]) => {
+    return {
+      label: fieldSchema.title as string,
+      value: key,
+      type: fieldSchema.type || '',
+    };
+  });
+
+  const [options] = useState(tableFields);
+
+  return options;
+}
+
+const RowStyleLayout = styled((props) => <div {...props} />)`
+  display: flex;
+
+  .variable-name {
+    width: 70px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+
+  .ant-btn {
+    margin-right: 16px;
+  }
+  .ant-form-item {
+    display: inline-flex;
+    margin-right: 16px;
+    margin-bottom: 16px;
+  }
+  > .ant-form-item {
+    margin-bottom: 0;
+    margin-right: 0;
+  }
+`;
 
 function RulesList(props: any): JSX.Element {
   const { value, path, mutators } = props;
@@ -109,7 +130,14 @@ function RulesList(props: any): JSX.Element {
       {toArr(value).map((item, index) => (
         <RowStyleLayout key={index}>
           <SchemaField path={FormPath.parse(path).concat(index)} />
-          <Icon clickable changeable name="delete" onClick={() => onRemove(index)} size={32} />
+          <Icon
+            clickable
+            changeable
+            name="delete"
+            size={32}
+            className="ml-auto"
+            onClick={() => onRemove(index)}
+          />
         </RowStyleLayout>
       ))}
       {
@@ -129,39 +157,54 @@ function RulesList(props: any): JSX.Element {
 }
 
 RulesList.isFieldComponent = true;
-const actions = createFormActions();
-const COMPONENTS = { AntdSelect, Input, RulesList };
 
 export default function AssignmentConfig({ defaultValue, onSubmit, onCancel }: Props): JSX.Element {
-  const { tableID } = useContext(FlowSourceTableContext);
-  const { appID } = useContext(FlowContext);
-  const { data: variables, isLoading } = useQuery(['FETCH_PROCESS_VARIABLES'], getFlowVariables);
-  const tableFieldsResult = useQuery(['get_table_schema', appID, tableID], () => {
-    return getSourceTableFields(appID, tableID);
+  const tableFields = useTableFieldOptions();
+  const { flowID } = useContext(FlowContext);
+  const { data: variables, isLoading } = useQuery(['FETCH_PROCESS_VARIABLES'], () => {
+    return getFlowVariables(flowID);
   });
-
-  const { setFieldState, getFormState } = actions;
+  const { setFieldState, getFormState, getFieldValue } = ACTIONS;
 
   function formEffect(): void {
     onFieldValueChange$('assignmentRules.*.valueFrom').subscribe((state) => {
       const valueOfPath = FormPath.transform(state.name, /\d/, ($1) => `assignmentRules.${$1}.valueOf`);
+      const variableNamePath = FormPath.transform(state.name, /\d/, ($1) => `assignmentRules.${$1}.variableName`);
       if (state.value === 'currentFormValue') {
         setFieldState(valueOfPath, (state) => {
           state.props['x-component'] = 'AntdSelect';
-          state.props.enum = tableFieldsResult.data || [];
+          state.props.enum = tableFields;
         });
         return;
       }
 
+      const variableCode: string = getFieldValue(variableNamePath);
+      const variableType = variables?.find(({ code }) => code === variableCode)?.fieldType || 'TEXT';
       setFieldState(valueOfPath, (state) => {
-        state.props['x-component'] = 'Input';
         state.props.enum = undefined;
+        if (variableType === 'TEXT') {
+          state.props['x-component'] = 'Input';
+        }
+
+        if (variableType === 'BOOLEAN') {
+          state.props['x-component'] = 'Switch';
+        }
+
+        if (variableType === 'DATE') {
+          state.props['x-component'] = 'DatePicker';
+          state.props['x-component-props'] = {
+            format: 'YYYY-MM-DD HH:mm:ss',
+          };
+        }
+
+        if (variableType === 'NUMBER') {
+          state.props['x-component'] = 'NumberPicker';
+        }
       });
     });
   }
 
   function onSave(): void {
-    // todo get data value
     // todo validate data value
     // todo call onSubmit when data is valid
     const { values } = getFormState();
@@ -170,7 +213,7 @@ export default function AssignmentConfig({ defaultValue, onSubmit, onCancel }: P
 
   // remove this conditional render will cause react maximum update depth exceeded
   // it's a bug of formily?
-  if (isLoading || tableFieldsResult.isLoading) {
+  if (isLoading) {
     return (<div>loading...</div>);
   }
 
@@ -178,7 +221,7 @@ export default function AssignmentConfig({ defaultValue, onSubmit, onCancel }: P
     <div>
       {/* {!assignmentRules.length && (<span className="text-caption">还没有配置任何赋值规则</span>)} */}
       <SchemaForm
-        actions={actions}
+        actions={ACTIONS}
         components={COMPONENTS}
         defaultValue={defaultValue}
         effects={formEffect}
@@ -195,6 +238,7 @@ export default function AssignmentConfig({ defaultValue, onSubmit, onCancel }: P
               readOnly
               name="variableName"
               x-component="AntdSelect"
+              x-component-props={{ className: 'variable-name' }}
               enum={variables?.map(({ code, name }) => ({ label: name, value: code }))}
             />
             <Field

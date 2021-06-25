@@ -38,7 +38,6 @@ export function getSchemaAndRecord(
     if (!schema) {
       return Promise.reject(new Error('没有找到表单 schema，请联系管理员。'));
     }
-
     return { schema, record };
   });
 }

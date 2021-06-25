@@ -11,7 +11,7 @@ import Button from '@c/button';
 import Loading from '@c/loading';
 import toast from '@lib/toast';
 import { FormRenderer } from '@c/form-builder';
-import { compactObject, isObjectArray } from '@lib/utils';
+import { compactObject } from '@lib/utils';
 import { INTERNAL_FIELD_NAMES } from '@c/form-builder/store';
 import {
   formDataRequest, FormDataRequestCreateParams, FormDataRequestUpdateParams,
@@ -51,7 +51,7 @@ function CreateDataForm({ appID, pageID, rowID, onCancel, title }: Props): JSX.E
   });
 
   const defaultValues = rowID ? data?.record : undefined;
-  const { schema } = data || { properties: { } };
+  const { schema } = data || { properties: {} };
 
   if (isLoading) {
     return <Loading desc="加载中..." />;
@@ -127,6 +127,7 @@ function CreateDataForm({ appID, pageID, rowID, onCancel, title }: Props): JSX.E
       toast.success('数据未更改');
       return;
     }
+
     const subTableChangedKeys = Object.keys(diffResult).filter(
       (fieldKey) => schemaMap[fieldKey as keyof ISchema]?.[
         'x-component'
@@ -152,7 +153,9 @@ function CreateDataForm({ appID, pageID, rowID, onCancel, title }: Props): JSX.E
     setLoading(true);
     const initialMethod = defaultValues ? 'update' : 'create';
     const reqData: FormDataRequestCreateParams | FormDataRequestUpdateParams = buildRequestParams(
-      initialMethod === 'create' ? formData : omitBy(formData, isObjectArray),
+      initialMethod === 'create' ? formData : omitBy(formData, (_, key) => {
+        return schemaMap[key as keyof ISchema]?.['x-component'] === 'subtable' || !(key in schemaMap);
+      }),
       defaultValue?._id,
       initialMethod,
       ref,

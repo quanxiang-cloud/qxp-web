@@ -3,7 +3,7 @@ import { Handle, Position } from 'react-flow-renderer';
 
 import FillInNodeComponent from '../components/fill-in';
 
-export default function FormDataNode(props: any): JSX.Element {
+export default function FillInNode(props: any): JSX.Element {
   return (
     <>
       <Handle

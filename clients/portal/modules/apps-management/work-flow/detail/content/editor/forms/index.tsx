@@ -30,6 +30,8 @@ const drawerTitleMap = {
   cc: '抄送',
   sendEmail: '发送邮件',
   webMessage: '站内信',
+  processBranchSource: '分流',
+  processBranchTarget: '合流',
 };
 
 export default function NodeFormWrapper(): JSX.Element | null {
@@ -105,12 +107,17 @@ export default function NodeFormWrapper(): JSX.Element | null {
     if (formData.type === 'formData') {
       return formData.businessData.form;
     }
+
     return formDataElement.data.businessData.form;
   }
 
   return (
     <Drawer
-      title={(<span className="text-h5 mr-8">{drawerTitleMap[nodeType]}</span>)}
+      title={(
+        <span className="text-h5 mr-8">
+          {currentNodeElement.data.nodeData.name || drawerTitleMap[nodeType]}
+        </span>
+      )}
       distanceTop={0}
       onCancel={closePanel}
       className="flow-editor-drawer"
