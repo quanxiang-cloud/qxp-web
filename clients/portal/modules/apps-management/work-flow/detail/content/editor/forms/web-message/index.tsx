@@ -71,7 +71,7 @@ function WebMessage({ defaultValue, onSubmit, onCancel }: Props): JSX.Element {
               label={<><span className='text-red-600'>*</span>接收对象</>}
               register={field}
               error={errors.recivers}
-              value={field.value ? field.value : ''}
+              value={field.value ? field.value : []}
             />
           );
         }
