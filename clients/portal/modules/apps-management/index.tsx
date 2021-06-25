@@ -13,6 +13,7 @@ const MENU = [
     icon: 'dashboard_customize',
     name: '我的应用',
     url: '/apps',
+    authority: 'application/read',
   },
   // {
   //   id: 'PlatformSetting',

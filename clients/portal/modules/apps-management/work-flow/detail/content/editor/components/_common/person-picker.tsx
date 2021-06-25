@@ -61,9 +61,9 @@ export default function PersonPicker({ value, typeText, onChange } : Props): JSX
     cur: Option[], next,
   ) => {
     const [fieldName, fieldSchema] = next;
-    if (!WorkTableInternalFields.includes(fieldName)
-      && fieldSchema?.['x-component']?.toLowerCase() !== 'subtable'
-      && fieldSchema?.['x-component']?.toLowerCase() !== 'associatedrecords'
+    if (!WorkTableInternalFields.includes(fieldName) &&
+      fieldSchema?.['x-component']?.toLowerCase() !== 'subtable' &&
+      fieldSchema?.['x-component']?.toLowerCase() !== 'associatedrecords'
     ) {
       cur.push({ label: fieldSchema.title as string, value: fieldName });
     }
