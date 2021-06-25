@@ -54,8 +54,11 @@ export const getCenter = ({
 const approveAndFillInCommonData = {
   basicConfig: {
     approvePersons: {
+      type: 'person',
       users: [],
       departments: [],
+      positions: [],
+      fields: [],
     },
     multiplePersonWay: '',
     whenNoPerson: '',
@@ -118,7 +121,7 @@ export function getNodeInitialData(type: NodeType): any {
     tableDataUpdate: {
       targetTableId: '',
       silent: true,
-      filterRule: {},
+      filterRule: '',
       updateRule: [],
     },
     processBranchSource: {

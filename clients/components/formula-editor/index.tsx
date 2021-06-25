@@ -24,26 +24,28 @@ import './index.scss';
 export type CustomRule = {
   key: string;
   name: string;
-  type: string;
-}
-
-export type RefProps = {
-  insertText: (text: string, hasSpacing?: boolean, backNumber?: number) => void;
-  insertEntity: (data: any) => void;
-  getFormulaValue: () => string;
+  type?: string;
 }
 
 type Props = {
+  onBlur?: (value: string) => void;
   onChange?: (value: string) => void;
   customRules?: CustomRule[];
   className?: string;
   defaultValue?: string;
 }
 
+export type RefProps = {
+  insertText: (text: string, hasSpacing?: boolean, backNumber?: number) => void;
+  insertEntity: (data: CustomRule) => void;
+  getFormulaValue: () => string;
+}
+
 function FormulaEditor({
   customRules = [],
   className = '',
   onChange,
+  onBlur,
   defaultValue = '',
 }: Props, ref: React.Ref<any>): JSX.Element {
   const decorator = useMemo(() => {
@@ -84,6 +86,10 @@ function FormulaEditor({
     onChange?.(getFormulaValue());
   };
 
+  const handleBlur = () => {
+    onBlur?.(getFormulaValue());
+  };
+
   useEffect(() => {
     if (customRules.length === 0) {
       return;
@@ -99,9 +105,9 @@ function FormulaEditor({
     handleChange(EditorState.set(editorState, { decorator: compositeDecorator }));
   }, [customRules]);
 
-  const insertEntity = (entityData: any): void => {
+  const insertEntity = (entityData: CustomRule): void => {
     let contentState = editorState.getCurrentContent();
-    contentState = contentState.createEntity(entityData.entity_type, 'IMMUTABLE', entityData);
+    contentState = contentState.createEntity('variable', 'IMMUTABLE', entityData);
     const entityKey = contentState.getLastCreatedEntityKey();
     let selection = editorState.getSelection();
     if (selection.isCollapsed()) {
@@ -164,6 +170,7 @@ function FormulaEditor({
   return (
     <div className={`formula-editor-container ${className}`}>
       <Editor
+        onBlur={handleBlur}
         editorState={editorState}
         onChange={handleChange}
         placeholder="请输入...."

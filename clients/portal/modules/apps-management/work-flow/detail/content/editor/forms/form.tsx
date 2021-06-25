@@ -6,9 +6,13 @@ import type { NodeWorkForm, Data, BusinessData } from '@flowEditor/type';
 
 import FormDataForm from './form-data';
 import ApproveForm from './intermidiate/approve';
+import SendEmailConfig from './send-email-config';
+import CopyTo from './copy-to';
+import WebMessage from './web-message';
 import ProcessVariableAssignmentConfig from './process-variable-assignment-config';
 import FlowTableContext from './flow-source-table';
 import CreateTableData from './create-table-data';
+import UpdateTableData from './update-table-data';
 import FlowContext from '../../../flow-context';
 import ProcessBranch from './process-branch';
 import ProcessBranchTarget from './process-branch-target';
@@ -18,10 +22,6 @@ interface Props {
   defaultValue: Data;
   onSubmit: (data: BusinessData) => void;
   onCancel: () => void;
-}
-
-function Placeholder(): JSX.Element | null {
-  return null;
 }
 
 function useTableSchema(appID: string, tableID: string): ISchema | null {
@@ -58,10 +58,10 @@ const components: Record<string, JSXElementConstructor<any>> = {
   processBranchTarget: ProcessBranchTarget,
   processVariableAssignment: ProcessVariableAssignmentConfig,
   tableDataCreate: CreateTableData,
-  tableDataUpdate: Placeholder,
-  sendEmail: Placeholder,
-  cc: Placeholder,
-  webMessage: Placeholder,
+  sendEmail: SendEmailConfig,
+  cc: CopyTo,
+  webMessage: WebMessage,
+  tableDataUpdate: UpdateTableData,
 };
 
 export default function Form({
