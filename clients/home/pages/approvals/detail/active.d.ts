@@ -4,8 +4,8 @@ type StatusValues = 'FILL_IN' | 'AGREE' | 'REFUSE' | 'SEND_BACK' | 'READ' |
 type NoOperationStatus = 'CC' | 'REVIEW';
 type Colors = 'text-blue-600' | 'text-green-600' | 'text-red-600' | 'text-yellow-600';
 type BgColors = 'bg-blue-100' | 'bg-green-100' | 'bg-red-100' | 'bg-yellow-100';
-type FlowStatus = 'START' | 'END' | 'OR_APPROVAL' | 'AND_APPROVAL' | 'OR_FILLIN' | 'AND_FILLIN'; // 开始 结束 或签 会签 任填 全填
-type AllStatus = StatusValues & FlowStatus;
+type ActiveFlowStatus = 'START' | 'END' | 'OR_APPROVAL' | 'AND_APPROVAL' | 'OR_FILLIN' | 'AND_FILLIN'; // 开始 结束 或签 会签 任填 全填
+type AllStatus = StatusValues & ActiveFlowStatus;
 
 interface OperationRecord {
   handleType: StatusValues;
@@ -20,7 +20,7 @@ interface OperationRecord {
 
 interface FlowItem {
   id: string;
-  taskType: FlowStatus | StatusValues,
+  taskType: ActiveFlowStatus | StatusValues,
   flowName: string;
   creatorName: string;
   createTime: string;
