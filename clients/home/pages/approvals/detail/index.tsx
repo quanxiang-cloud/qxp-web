@@ -15,6 +15,8 @@ import { FormRenderer } from '@c/form-builder';
 
 import Panel from './panel';
 import Toolbar from './toolbar';
+import Dynamic from './dynamic';
+import Discuss from './discuss';
 import ActionModals from './action-modals';
 import * as apis from '../api';
 import { wrapSchemaWithFieldPermission } from './utils';
@@ -142,12 +144,12 @@ function ApprovalDetail(): JSX.Element {
               {
                 id: 'history',
                 name: '动态',
-                content: (<div>动态</div>),
+                content: (<Dynamic />),
               },
               {
                 id: 'discuss',
                 name: '讨论',
-                content: (<div>讨论</div>),
+                content: (<Discuss />),
               },
             ]}
           />
