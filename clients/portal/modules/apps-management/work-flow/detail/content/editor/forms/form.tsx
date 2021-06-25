@@ -58,9 +58,9 @@ const components: Record<string, JSXElementConstructor<any>> = {
   processBranchTarget: ProcessBranchTarget,
   processVariableAssignment: ProcessVariableAssignmentConfig,
   tableDataCreate: CreateTableData,
-  sendEmail: SendEmailConfig,
-  cc: CopyTo,
-  webMessage: WebMessage,
+  email: SendEmailConfig,
+  autocc: CopyTo,
+  letter: WebMessage,
   tableDataUpdate: UpdateTableData,
 };
 

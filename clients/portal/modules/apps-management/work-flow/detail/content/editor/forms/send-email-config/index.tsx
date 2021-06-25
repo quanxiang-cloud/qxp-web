@@ -180,7 +180,7 @@ function SendEmailConfig({ defaultValue, onSubmit, onCancel }: Props): JSX.Eleme
               label={<><span className='text-red-600'>*</span>接收对象</>}
               error={errors.recivers}
               register={field}
-              value={field.value ? field.value : ''}
+              value={field.value ? field.value : []}
             />
           );
         }

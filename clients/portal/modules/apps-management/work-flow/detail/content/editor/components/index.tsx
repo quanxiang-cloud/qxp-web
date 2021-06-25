@@ -39,17 +39,17 @@ const nodeLists = [{
   iconClassName: 'bg-indigo-500',
 }, {
   text: '发送邮件',
-  type: 'sendEmail',
+  type: 'email',
   iconName: 'email',
   iconClassName: 'bg-teal-500',
 }, {
   text: '站内信',
-  type: 'webMessage',
+  type: 'letter',
   iconName: 'message',
   iconClassName: 'bg-indigo-500',
 }, {
   text: '抄送',
-  type: 'cc',
+  type: 'autocc',
   iconName: 'info',
   iconClassName: 'bg-teal-500',
 }];

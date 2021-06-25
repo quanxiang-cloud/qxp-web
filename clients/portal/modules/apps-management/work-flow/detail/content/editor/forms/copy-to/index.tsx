@@ -49,7 +49,7 @@ function CopyTo({ defaultValue, onSubmit }: Props): JSX.Element {
               label={<><span className='text-red-600'>*</span>接收对象</>}
               error={errors.recivers}
               register={field}
-              value={field.value ? field.value : ''}
+              value={field.value ? field.value : []}
             />
           );
         }

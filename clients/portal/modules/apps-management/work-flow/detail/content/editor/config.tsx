@@ -30,9 +30,9 @@ export const nodeTypes = {
   processVariableAssignment: ProcessVariableAssignmentNode,
   tableDataCreate: TableDataCreateNode,
   tableDataUpdate: TableDataUpdateNode,
-  sendEmail: SendEmailNode,
-  webMessage: WebMessage,
-  cc: CCNode,
+  email: SendEmailNode,
+  letter: WebMessage,
+  autocc: CCNode,
   processBranchSource: ProcessBranchSourceNode,
   processBranchTarget: ProcessBranchTargetNode,
 };

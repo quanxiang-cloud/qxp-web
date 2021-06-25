@@ -27,9 +27,9 @@ const drawerTitleMap = {
   processVariableAssignment: '变更流程参数',
   tableDataCreate: '数据新增',
   tableDataUpdate: '数据更新',
-  cc: '抄送',
-  sendEmail: '发送邮件',
-  webMessage: '站内信',
+  autocc: '抄送',
+  email: '发送邮件',
+  letter: '站内信',
   processBranchSource: '分流',
   processBranchTarget: '合流',
 };
