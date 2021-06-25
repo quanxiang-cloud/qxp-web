@@ -5,7 +5,8 @@ import {
 
 import { uuid } from '@lib/utils';
 
-import { nodeBuilder, edgeBuilder } from './index';
+import { nodeBuilder } from './node';
+import { edgeBuilder } from './edge';
 
 export function buildBranchNodes(
   source: string,
@@ -26,7 +27,8 @@ export function buildBranchNodes(
       parentID: [source],
       childrenID: [branchLeftFilterElementID, branchRightFilterElementID],
       branchTargetElementID,
-    });
+    },
+  );
   const branchSourceElementEdge = edgeBuilder(source, branchSourceElementID);
   const branchLeftFilterElement = nodeBuilder(
     branchLeftFilterElementID, 'processBranch', '筛选条件设置', {

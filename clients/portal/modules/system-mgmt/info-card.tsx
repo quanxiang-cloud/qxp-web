@@ -48,7 +48,7 @@ const InfoCard = () => {
           />
         </div>
       )}
-      menuData={MENU}
+      menuData={MENU as any}
       defaultActiveLink={{ basePath: '/system', menuId: 'message' }}
       />
 
