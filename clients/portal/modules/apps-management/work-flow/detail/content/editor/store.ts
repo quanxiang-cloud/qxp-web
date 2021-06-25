@@ -169,6 +169,7 @@ export function buildBpmnText(
   nodeID: string,
   newBusinessData: Partial<BusinessData>,
 ): string {
+  console.log(store.value.elements, 55);
   return JSON.stringify({
     version,
     shapes: store.value.elements.map((el) => {
