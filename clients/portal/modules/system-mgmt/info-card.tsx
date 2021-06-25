@@ -26,6 +26,12 @@ const InfoCard = () => {
       url: '/system/dataset',
       authority: 'dataset/read',
     },
+    {
+      id: 'unusual',
+      icon: 'article',
+      name: '异常任务',
+      url: '/system/unusual',
+    },
   ];
   return (
     <div className="w-316 bg-white rounded-12 mr-20">

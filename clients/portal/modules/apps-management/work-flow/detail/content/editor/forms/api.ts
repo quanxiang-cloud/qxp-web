@@ -101,7 +101,7 @@ const operationList = {
     changeable: true,
     name: '转交',
     text: '转交',
-    value: 'ENTRUST',
+    value: 'DELIVER',
   }, {
     enabled: false,
     changeable: true,

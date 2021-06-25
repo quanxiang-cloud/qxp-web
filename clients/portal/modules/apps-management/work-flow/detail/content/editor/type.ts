@@ -305,15 +305,15 @@ export interface TableDataUpdateNodeData extends BaseNodeData {
   businessData: TableDataUpdateData;
 }
 export interface SendEmailNodeData extends BaseNodeData {
-  type: 'sendEmail';
+  type: 'email';
   businessData: SendEmailData;
 }
 export interface WebMessageNodeData extends BaseNodeData {
-  type: 'webMessage';
+  type: 'letter';
   businessData: WebMessageData;
 }
 export interface CCNodeData extends BaseNodeData {
-  type: 'cc';
+  type: 'autocc';
   businessData: CCData;
 }
 export interface ProcessBranchTargetNodeData extends BaseNodeData {
@@ -324,8 +324,8 @@ export type Data = CCNodeData | WebMessageNodeData | SendEmailNodeData | TableDa
   TableDataCreateNodeData | ProcessVariableAssignmentNodeData | ProcessBranchNodeData |
   FormDataNodeData | ApproveNodeData | FillInNodeData | ProcessBranchTargetNodeData;
 export type NodeType = 'formData' | 'fillIn' | 'approve' | 'end' | 'processBranch' |
-  'processVariableAssignment' | 'tableDataCreate' | 'tableDataUpdate' | 'sendEmail' |
-  'webMessage' | 'cc' | 'processBranchSource' | 'processBranchTarget';
+  'processVariableAssignment' | 'tableDataCreate' | 'tableDataUpdate' | 'email' |
+  'letter' | 'autocc' | 'processBranchSource' | 'processBranchTarget';
 export interface CurrentElement {
   id: string;
   type: NodeType;
