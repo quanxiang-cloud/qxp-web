@@ -24,10 +24,6 @@ interface Props {
   onCancel: () => void;
 }
 
-function Placeholder(): JSX.Element | null {
-  return null;
-}
-
 function useTableSchema(appID: string, tableID: string): ISchema | null {
   const [schema, setSchema] = useState<ISchema | null>(null);
 
