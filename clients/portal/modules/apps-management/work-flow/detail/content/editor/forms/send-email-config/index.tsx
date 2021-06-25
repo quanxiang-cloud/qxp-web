@@ -122,7 +122,6 @@ function SendEmailConfig({ defaultValue, onSubmit, onCancel }: Props): JSX.Eleme
   };
 
   const handleSave = (data: Record<string, any>): void => {
-    console.log('data: ', data);
     onSubmit({ ...data, templateId: 'quanliang' });
   };
   const handleChangeEditor = (editorCont: EditorState): void => {
@@ -208,7 +207,7 @@ function SendEmailConfig({ defaultValue, onSubmit, onCancel }: Props): JSX.Eleme
               editorState={editorCont}
               toolbarCustomButtons={[
                 <FieldOption
-                  key='a'
+                  key='fieldOption'
                   options={fieldOption}
                   onChange={handleChangeEditor}
                   editorState={editorCont}
