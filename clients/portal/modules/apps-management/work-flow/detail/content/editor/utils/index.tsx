@@ -128,9 +128,9 @@ export function getNodeInitialData(type: NodeType): any {
       processBranchEndStrategy: '',
     },
     processBranchTarget: {},
-    cc: {},
-    sendEmail: {},
-    webMessage: {},
+    autocc: {},
+    email: {},
+    letter: {},
     end: {},
   };
   if (type === 'fillIn' || type === 'approve') {

@@ -47,7 +47,7 @@ declare enum TaskHandleType {
   agree = 'AGREE',
   refuse = 'REFUSE',
   fill_in = 'FILL_IN',
-  // cancel = 'CANCEL',
+  cancel = 'CANCEL',
   deliver = 'DELIVER',
   step_back = 'STEP_BACK',
   send_back = 'SEND_BACK',

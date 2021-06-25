@@ -5,14 +5,8 @@ function getOTP(): Promise<string> {
 }
 
 function ensureConnectionReady(connection: WebSocket): Promise<WebSocket> {
-  return new Promise((resolve, reject) => {
-    connection.addEventListener('open', () => {
-      resolve(connection);
-    });
-
-    connection.addEventListener('error', (e) => {
-      reject(e);
-    });
+  return new Promise((resolve) => {
+    resolve(connection);
   });
 }
 
@@ -28,7 +22,12 @@ type SocketEventListener = (data: Record<string, any>) => any;
 type SocketData = { Type: string; [key: string]: any };
 
 class PushServer {
-  connection: WebSocket | null = null;
+  connection: any = null;
+  timeout = 10000;
+  timeoutOjb: any = 0;
+  serverTimeoutObj: any = null;
+  resTimeoutObj: any = null;
+  timeInterval = 1;
   listenersMap: Map<string, Set<SocketEventListener>> = new Map();
 
   constructor() {
@@ -37,33 +36,73 @@ class PushServer {
 
   initialConnect(): void {
     makeConnection().then((connection) => {
-      this.connection = connection;
-      this.connection.addEventListener('message', ({ data }) => {
-        if (typeof data === 'string') {
-          try {
-            // eslint-disable-next-line no-param-reassign
-            data = JSON.parse(data);
-          } catch (err) {
-            logger.error('invalid socket data: ', err);
-          }
-        }
-        this.dispatchEvent(data);
-      });
-      this.heartBeat(connection);
-    }).catch((err) => {
-      // todo retry
-      logger.error('make websocket connection failed', err);
+      this.connectWs(connection);
     });
   }
 
-  heartBeat(connection: WebSocket): void {
-    setInterval(() => {
-      connection.send('echo');
-    // }, 100 * 1000);
-    }, 10 * 1000);
+  disconnectNetHandle(): void {
+    clearTimeout(this.timeoutOjb);
+    clearTimeout(this.serverTimeoutObj);
   }
 
-  dispatchEvent = (data: SocketData) => {
+  connectNetHandle(): void {
+    clearTimeout(this.timeoutOjb);
+    clearTimeout(this.serverTimeoutObj);
+    this.initialConnect();
+  }
+
+  connectWs(connection: any): void {
+    window.addEventListener('offline', () => this.disconnectNetHandle());
+    window.addEventListener('online', () => this.connectNetHandle());
+    connection.onopen = () => {
+      this.resTimeoutObj = null;
+      this.heartStart();
+    };
+    connection.onmessage = ((data: any) => {
+      if (typeof data === 'string') {
+        try {
+          // eslint-disable-next-line no-param-reassign
+          data = JSON.parse(data);
+          this.dispatchEvent(data);
+        } catch (err) {
+          logger.error('invalid socket data: ', err);
+        }
+      }
+      this.heartReset();
+    });
+    connection.onclose = () => {
+      this.resConnect();
+    };
+    this.connection = connection;
+  }
+
+  heartReset(): void {
+    clearTimeout(this.timeoutOjb);
+    clearTimeout(this.serverTimeoutObj);
+    this.heartStart();
+  }
+
+  heartStart(): void {
+    this.timeoutOjb = setTimeout(() => {
+      this.connection.send('echo');
+      this.serverTimeoutObj = setTimeout(() => {
+        this.connection.close();
+      }, this.timeout);
+    }, this.timeout);
+  }
+
+  resConnect(): void {
+    if (this.timeInterval >= 300) {
+      this.timeInterval = 300;
+    }
+    this.resTimeoutObj = setTimeout(() => {
+      this.initialConnect();
+    }, this.timeInterval * 1000);
+
+    this.timeInterval = this.timeInterval * 2;
+  }
+
+  dispatchEvent = (data: SocketData): void => {
     const listeners = this.listenersMap.get(data.Type);
     listeners?.forEach((cb) => cb(data));
   }

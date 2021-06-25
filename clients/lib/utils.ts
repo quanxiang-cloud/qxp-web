@@ -3,6 +3,7 @@ import { TreeData, TreeItem } from '@atlaskit/tree';
 import { get, isObject } from 'lodash';
 import { TreeNode } from '@c/headless-tree/types';
 import { nanoid } from 'nanoid';
+import dayjs from 'dayjs';
 
 import toast from '@lib/toast';
 
@@ -272,4 +273,41 @@ export function compactObject(data: Record<string, any> | any[]): Record<string,
     }
     return cur;
   }, isArray ? [] : {});
+}
+
+export function handleTimeFormat(time: string): string {
+  const timeStamp = new Date(time).getTime();
+  const currTimeStamp = new Date().getTime();
+
+  const timeDiffer = Math.abs(currTimeStamp - timeStamp);
+
+  const _second = Math.floor(timeDiffer / 1000);
+  if (_second <= 180) {
+    return '刚刚';
+  }
+
+  const _minute = Math.floor(timeDiffer / (1000 * 60));
+  if (3 < _minute && _minute < 60) {
+    return `${_minute}分钟前`;
+  }
+
+  const currZeroPointStamp = new Date(new Date().toLocaleDateString()).getTime();
+  const oldZeroPointStamp = currZeroPointStamp - 86400000;
+
+  if (timeStamp >= currZeroPointStamp && timeStamp <= currTimeStamp) {
+    const _hour = Math.floor(timeDiffer / (1000 * 60 * 60));
+    return `${_hour}小时前`;
+  }
+
+  if (timeStamp >= oldZeroPointStamp && timeStamp < currZeroPointStamp) {
+    return '昨天 ' + dayjs(time).format('HH:mm');
+  }
+
+  const currYear = new Date().getFullYear();
+  const currYearZeroPointStamp = new Date(`${currYear}-01-01 00:00:00`).getTime();
+  if (currYearZeroPointStamp <= timeStamp) {
+    return dayjs(time).format('MM-DD HH:mm');
+  }
+
+  return dayjs(time).format('YYYY-MM-DD HH:mm');
 }
