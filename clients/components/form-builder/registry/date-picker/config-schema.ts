@@ -126,10 +126,10 @@ const schema: ISchema = {
               label: '关联已有数据',
               value: 'linkage',
             },
-            {
-              label: '通过公式计算',
-              value: 'formula',
-            },
+            // {
+            //   label: '通过公式计算',
+            //   value: 'formula',
+            // },
             {
               label: '填写当时',
               value: 'now',
@@ -148,7 +148,7 @@ const schema: ISchema = {
             },
           ],
         },
-        linkageConfig: {
+        defaultValueLinkage: {
           'x-component': 'DefaultValueLinkageConfigBtn',
           'x-component-props': {
             value: '设置数据联动',

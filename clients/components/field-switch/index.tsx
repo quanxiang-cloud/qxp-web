@@ -18,7 +18,7 @@ type Option = {
   value: string;
 }
 
-function numberVerify(e: any, precision: number | undefined) {
+function numberVerify(e: any, precision: number | undefined): void {
   if (precision === undefined) {
     return;
   }
@@ -37,20 +37,17 @@ function numberVerify(e: any, precision: number | undefined) {
 }
 
 function FieldSwitch({ field, className, ...otherProps }: Props<any>, ref: React.Ref<any>): JSX.Element {
-  if (field?.enum && field?.enum.length) {
+  switch (field?.type) {
+  case 'array':
     return (
       <Select
         multiple={true}
         className={`'w-full ${className}`}
         ref={ref}
         {...otherProps}
-        // todo enum other type
         options={field?.enum as unknown as Option[] || []}
       />
     );
-  }
-
-  switch (field?.type) {
   case 'number':
     return (
       <input
@@ -77,6 +74,18 @@ function FieldSwitch({ field, className, ...otherProps }: Props<any>, ref: React
       <div>未更新</div>
     );
   default:
+    if (field?.enum && field?.enum.length) {
+      return (
+        <Select
+          multiple={true}
+          className={`'w-full ${className}`}
+          ref={ref}
+          {...otherProps}
+          options={field?.enum as unknown as Option[] || []}
+        />
+      );
+    }
+
     return <input ref={ref} className={`input ${className}`} {...otherProps} />;
   }
 }
