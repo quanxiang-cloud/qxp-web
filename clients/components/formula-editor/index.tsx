@@ -41,6 +41,21 @@ export type RefProps = {
   getFormulaValue: () => string;
 }
 
+const defaultDecorators = [
+  {
+    strategy: handleOperatorHighlight,
+    component: operatorSpan,
+  },
+  {
+    strategy: handleFuncHighlight,
+    component: funcSpan,
+  },
+  {
+    strategy: handleSymbolHighlight,
+    component: funcSpan,
+  },
+];
+
 function FormulaEditor({
   customRules = [],
   className = '',
@@ -49,22 +64,7 @@ function FormulaEditor({
   defaultValue = '',
 }: Props, ref: React.Ref<any>): JSX.Element {
   const decorator = useMemo(() => {
-    const _decorator = new CompositeDecorator(
-      [
-        {
-          strategy: handleOperatorHighlight,
-          component: operatorSpan,
-        },
-        {
-          strategy: handleFuncHighlight,
-          component: funcSpan,
-        },
-        {
-          strategy: handleSymbolHighlight,
-          component: funcSpan,
-        },
-      ],
-    );
+    const _decorator = new CompositeDecorator(defaultDecorators);
     return _decorator;
   }, []);
 
@@ -86,7 +86,7 @@ function FormulaEditor({
     onChange?.(getFormulaValue());
   };
 
-  const handleBlur = () => {
+  const handleBlur = (): void => {
     onBlur?.(getFormulaValue());
   };
 
@@ -94,7 +94,9 @@ function FormulaEditor({
     if (customRules.length === 0) {
       return;
     }
+
     const compositeDecorator = new CompositeDecorator([
+      ...defaultDecorators,
       {
         strategy: (contentBlock, callback, contentState) => {
           handleFieldHighlight(contentBlock, callback, contentState, customRules.map(({ name }) => name));
@@ -112,19 +114,21 @@ function FormulaEditor({
     let selection = editorState.getSelection();
     if (selection.isCollapsed()) {
       contentState = Modifier.insertText(
-        contentState, selection, entityData.name, undefined, entityKey,
+        contentState, selection, entityData.name + ' ', undefined, entityKey,
       );
     } else {
       contentState = Modifier.replaceText(
-        contentState, selection, entityData.name, undefined, entityKey,
+        contentState, selection, entityData.name + ' ', undefined, entityKey,
       );
     }
+
     let end;
     contentState.getFirstBlock().findEntityRanges(
       (character) => character.getEntity() === entityKey,
       (_, _end) => {
         end = _end;
       });
+
     let newEditorState = EditorState.set(editorState, { currentContent: contentState });
     selection = selection.merge({
       anchorOffset: end,
