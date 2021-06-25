@@ -88,6 +88,8 @@ export default function Detail(): JSX.Element {
         triggerMode: type || data.triggerMode,
         id: data.id,
         processKey: data.processKey,
+        keyFields: data.keyFields,
+        instanceName: data.instanceName,
       }));
     } catch (error) {
       toast.error('bpmn 数据格式解析错误!');

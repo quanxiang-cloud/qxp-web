@@ -20,7 +20,6 @@ function FilterRule({ mutators, value }: ISchemaFieldComponentProps): JSX.Elemen
     formulaRef.current?.insertEntity({
       key: rule.key,
       name: rule.name,
-      entity_type: rule.type,
     });
   }
 

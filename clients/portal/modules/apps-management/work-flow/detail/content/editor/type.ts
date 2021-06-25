@@ -124,12 +124,16 @@ export type TimeRule = {
   deadLine: DeadLine;
   whenTimeout: WhenTimeout;
 }
-
+export type ApprovePersonType = 'person' | 'field' | 'position' | 'superior' | 'leadOfDepartment';
+export type ApprovePerson = {
+  type: ApprovePersonType;
+  users: EmployeeOrDepartmentOfRole[];
+  departments: EmployeeOrDepartmentOfRole[];
+  positions: string[];
+  fields: string[];
+}
 export interface BasicNodeConfig {
-  approvePersons: {
-    users: EmployeeOrDepartmentOfRole[];
-    departments: EmployeeOrDepartmentOfRole[];
-  };
+  approvePersons: ApprovePerson;
   multiplePersonWay: 'and' | 'or';
   whenNoPerson: 'skip' | 'transferAdmin';
   autoRules: AutoApproveRule[];
@@ -181,8 +185,9 @@ export interface ProcessVariableAssignmentData {
 }
 export interface ValueRule {
   valueFrom: 'fixedValue' | 'currentFormValue' | 'processVariable';
-  valueOf: string | number | Array<string | number>;
+  valueOf: ValueRuleVal;
 }
+export type ValueRuleVal = string | number | Array<string | number>;
 export interface TableDataCreateData {
   targetTableId: string;
   silent: boolean;
@@ -192,6 +197,7 @@ export interface TableDataCreateData {
   ref: {
     [key: string]: {
       tableId: string;
+      // todo: refactor structure
       createRules: Array<{
         [key: string]: ValueRule;
       }>;
@@ -201,18 +207,19 @@ export interface TableDataCreateData {
 export interface TableDataUpdateData {
   targetTableId: string;
   silent: boolean;
-  filterRule: {
-    tag: 'and' | 'or';
-    conditions: Array<{
-      fieldName: string;
-      operator: 'eq' | 'neq' | 'in';
-      value: Array<string | number>;
-    }>;
-  };
+  // filterRule: {
+  //   tag: 'and' | 'or';
+  //   conditions: Array<{
+  //     fieldName: string;
+  //     operator: 'eq' | 'neq' | 'in' | 'nin';
+  //     value: ValueRuleVal;
+  //   }>;
+  // };
+  filterRule: string;
   updateRule: Array<{
     fieldName: string;
     valueFrom: 'fixedValue' | 'currentFormValue' | 'processVariable' | 'formula';
-    valueOf: string | number | Array<string | number>;
+    valueOf: ValueRuleVal;
   }>;
 }
 export interface SendEmailData {
@@ -359,6 +366,8 @@ export interface StoreValue {
   errors: Errors;
   currentDataNotSaveConfirmCallback?: () => void;
   showDataNotSaveConfirm?: boolean;
+  keyFields: string;
+  instanceName: string;
 }
 
 export type ProcessVariable = {

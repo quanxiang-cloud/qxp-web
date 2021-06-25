@@ -107,6 +107,7 @@ export default function NodeFormWrapper(): JSX.Element | null {
     if (formData.type === 'formData') {
       return formData.businessData.form;
     }
+
     return formDataElement.data.businessData.form;
   }
 

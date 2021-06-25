@@ -7,6 +7,7 @@ import FlowSourceTableContext from '../flow-source-table';
 import FlowContext from '../../../../flow-context';
 import Context from './context';
 import { getFlowVariables } from '../api';
+import { getSchemaFields } from '../utils';
 
 import './styles.scss';
 
@@ -65,13 +66,9 @@ export default function CustomField(props: Props): JSX.Element {
   const renderValueBox = () => {
     const rule = getVal('valueFrom');
     if (rule === 'currentFormValue') {
-      const tableFields = Object.entries(tableSchema.properties || {}).map(([key, fieldSchema]) => {
-        return { label: fieldSchema.title as string, value: key };
-      });
-
       return (
         <Select
-          options={tableFields}
+          options={getSchemaFields(tableSchema)}
           value={getVal() as string}
           onChange={onChangeFieldValue}
         />

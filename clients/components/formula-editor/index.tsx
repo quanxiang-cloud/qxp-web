@@ -24,45 +24,47 @@ import './index.scss';
 export type CustomRule = {
   key: string;
   name: string;
-  type: string;
-}
-
-export type RefProps = {
-  insertText: (text: string, hasSpacing?: boolean, backNumber?: number) => void;
-  insertEntity: (data: any) => void;
-  getFormulaValue: () => string;
+  type?: string;
 }
 
 type Props = {
+  onBlur?: (value: string) => void;
   onChange?: (value: string) => void;
   customRules?: CustomRule[];
   className?: string;
   defaultValue?: string;
 }
 
+export type RefProps = {
+  insertText: (text: string, hasSpacing?: boolean, backNumber?: number) => void;
+  insertEntity: (data: CustomRule) => void;
+  getFormulaValue: () => string;
+}
+
+const defaultDecorators = [
+  {
+    strategy: handleOperatorHighlight,
+    component: operatorSpan,
+  },
+  {
+    strategy: handleFuncHighlight,
+    component: funcSpan,
+  },
+  {
+    strategy: handleSymbolHighlight,
+    component: funcSpan,
+  },
+];
+
 function FormulaEditor({
   customRules = [],
   className = '',
   onChange,
+  onBlur,
   defaultValue = '',
 }: Props, ref: React.Ref<any>): JSX.Element {
   const decorator = useMemo(() => {
-    const _decorator = new CompositeDecorator(
-      [
-        {
-          strategy: handleOperatorHighlight,
-          component: operatorSpan,
-        },
-        {
-          strategy: handleFuncHighlight,
-          component: funcSpan,
-        },
-        {
-          strategy: handleSymbolHighlight,
-          component: funcSpan,
-        },
-      ],
-    );
+    const _decorator = new CompositeDecorator(defaultDecorators);
     return _decorator;
   }, []);
 
@@ -84,11 +86,17 @@ function FormulaEditor({
     onChange?.(getFormulaValue());
   };
 
+  const handleBlur = (): void => {
+    onBlur?.(getFormulaValue());
+  };
+
   useEffect(() => {
     if (customRules.length === 0) {
       return;
     }
+
     const compositeDecorator = new CompositeDecorator([
+      ...defaultDecorators,
       {
         strategy: (contentBlock, callback, contentState) => {
           handleFieldHighlight(contentBlock, callback, contentState, customRules.map(({ name }) => name));
@@ -99,26 +107,28 @@ function FormulaEditor({
     handleChange(EditorState.set(editorState, { decorator: compositeDecorator }));
   }, [customRules]);
 
-  const insertEntity = (entityData: any): void => {
+  const insertEntity = (entityData: CustomRule): void => {
     let contentState = editorState.getCurrentContent();
-    contentState = contentState.createEntity(entityData.entity_type, 'IMMUTABLE', entityData);
+    contentState = contentState.createEntity('variable', 'IMMUTABLE', entityData);
     const entityKey = contentState.getLastCreatedEntityKey();
     let selection = editorState.getSelection();
     if (selection.isCollapsed()) {
       contentState = Modifier.insertText(
-        contentState, selection, entityData.name, undefined, entityKey,
+        contentState, selection, entityData.name + ' ', undefined, entityKey,
       );
     } else {
       contentState = Modifier.replaceText(
-        contentState, selection, entityData.name, undefined, entityKey,
+        contentState, selection, entityData.name + ' ', undefined, entityKey,
       );
     }
+
     let end;
     contentState.getFirstBlock().findEntityRanges(
       (character) => character.getEntity() === entityKey,
       (_, _end) => {
         end = _end;
       });
+
     let newEditorState = EditorState.set(editorState, { currentContent: contentState });
     selection = selection.merge({
       anchorOffset: end,
@@ -164,6 +174,7 @@ function FormulaEditor({
   return (
     <div className={`formula-editor-container ${className}`}>
       <Editor
+        onBlur={handleBlur}
         editorState={editorState}
         onChange={handleChange}
         placeholder="请输入...."

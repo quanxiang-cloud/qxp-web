@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { observer } from 'mobx-react';
 import { useHistory, useParams } from 'react-router-dom';
+import cs from 'classnames';
 
 import HeaderNav from '@c/header-nav';
 import toast from '@lib/toast';
@@ -78,37 +79,42 @@ function DetailsHeader(): JSX.Element {
           onChange={handleChange}
         />
       </div>
-      {options.length > 1 && (
-        <div className='flex items-center'>
-          切换角色：
-          <Select value={curRole} onChange={handleRoleChange} className='w-144' options={options} />
-          <MoreMenu
-            menus={[
-              { key: 'resetPassword', label: '重置密码' },
-              { key: 'logout', label: '登出' },
-            ]}
-            onMenuClick={(menuKey) => {
-              if (menuKey === 'logout') {
-                window.location.href = '/logout';
-                return;
-              }
+      <div className='flex items-center'>
+        {options.length > 1 && (
+          <div className='flex items-center'>
+            切换角色：
+            <Select value={curRole} onChange={handleRoleChange} className='w-144' options={options} />
+          </div>
+        )}
+        <MoreMenu
+          menus={[
+            { key: 'resetPassword', label: '重置密码' },
+            { key: 'logout', label: '登出' },
+          ]}
+          onMenuClick={(menuKey) => {
+            if (menuKey === 'logout') {
+              window.location.href = '/logout';
+              return;
+            }
 
-              setOpenResetPasswordModal(true);
-            }}
+            setOpenResetPasswordModal(true);
+          }}
+        >
+          <div
+            className={
+              cs(
+                'cursor-pointer flex items-center h-36 hover:blue-100',
+                'transition group-hover:text-blue-600 ml-20',
+              )
+            }
           >
-            <div
-              className="cursor-pointer flex items-center h-36
-            hover:blue-100 transition group-hover:text-blue-600 ml-20"
-            >
-              <Avatar
-                username={window.USER.userName}
-              />
-              <Icon name="arrow_drop_down" size={20} />
-            </div>
-          </MoreMenu>
-        </div>
-      )}
-
+            <Avatar
+              username={window.USER.userName}
+            />
+            <Icon name="arrow_drop_down" size={20} />
+          </div>
+        </MoreMenu>
+      </div>
     </div>
   );
 }
