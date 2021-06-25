@@ -362,6 +362,8 @@ export interface StoreValue {
   errors: Errors;
   currentDataNotSaveConfirmCallback?: () => void;
   showDataNotSaveConfirm?: boolean;
+  keyFields: string;
+  instanceName: string;
 }
 
 export type ProcessVariable = {

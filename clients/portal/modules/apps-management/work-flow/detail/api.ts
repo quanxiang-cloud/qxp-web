@@ -16,10 +16,12 @@ interface WorkFlow {
   modifierId: string;
   modifierName: string;
   modifyTime: string;
-  name:string;
-  processKey:string;
+  name: string;
+  processKey: string;
   status: string;
   triggerMode: 'FORM_DATA' | 'FORM_TIME';
+  keyFields: string;
+  instanceName: string;
 }
 
 interface AddWorkFlow {
@@ -54,6 +56,8 @@ export interface SaveWorkFlow {
   canUrge: 0 | 1;
   canViewStatusMsg: 0 | 1;
   appId: string;
+  keyFields?: string;
+  instanceName?: string;
 }
 export function saveWorkFlow(flowData: SaveWorkFlow): Promise<WorkFlow> {
   return httpClient<WorkFlow>(
@@ -79,8 +83,8 @@ export function updateWorkflow({ queryKey }: QueryFunctionContext): Promise<Work
 }
 
 export function toggleWorkFlow(data: {
-    id: string;
-    status: 'ENABLE' | 'DISABLE';
+  id: string;
+  status: 'ENABLE' | 'DISABLE';
 }): Promise<unknown> {
   return httpClient('/api/v1/flow/updateFlowStatus', data);
 }

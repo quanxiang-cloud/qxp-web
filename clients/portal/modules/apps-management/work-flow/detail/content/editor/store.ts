@@ -25,6 +25,8 @@ export const getStoreInitialData = (): StoreValue => {
     validating: false,
     version: '0.1',
     status: 'DISABLE',
+    keyFields: '',
+    instanceName: '',
     processKey: '',
     triggerMode: 'FORM_DATA',
     nodeIdForDrawerForm: '',

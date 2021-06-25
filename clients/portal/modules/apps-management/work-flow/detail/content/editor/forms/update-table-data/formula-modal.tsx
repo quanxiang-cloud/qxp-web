@@ -43,8 +43,8 @@ function FormulaModal(props: Props) {
     formulaRef.current?.insertText(text, hasSpacing, backNumber);
   }
 
-  function addField(entityData: any): void {
-    formulaRef.current?.insertEntity({ entity_type: 'field', ...entityData });
+  function addField(entityData: { name: string, key: string }): void {
+    formulaRef.current?.insertEntity(entityData);
   }
 
   return (
