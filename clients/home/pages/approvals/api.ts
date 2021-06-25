@@ -67,6 +67,11 @@ export const handleRelatedFlow = async (params: Record<string, any>) => {
   return await httpClient('/api/v1/flow/instance/handleCorrelationFlow/{id}', params);
 };
 
+// 处理阅示
+export const handleRead = async (processInstanceId: string, taskId: string, params: Record<string, any>) => {
+  return await httpClient(`/api/v1/flow/instance/handleRead/${processInstanceId}/${taskId}`, params);
+};
+
 // 启动单个流程
 export const startFlowById = async (params: Record<string, any>) => {
   return await httpClient('/api/v1/flow/instance/startFlow/{flowId}', params);
@@ -84,7 +89,7 @@ export const reviewTask = async (processInstanceId: string, taskId: string, para
 };
 
 // 加签
-export const signTask = async (params: Record<string, any>) => {
+export const signTask = async (taskID: string, params: Record<string, any>) => {
   return await httpClient('/api/v1/flow/instance/addSign/{taskId}', params);
 };
 
@@ -148,4 +153,9 @@ export const getStepbackActivityList = async (processInstanceId: string): Promis
 // 处理阅示
 export const handleReadTask = async (processInstanceId: string, taskId: string, remark?: string)=> {
   return await httpClient(`/api/v1/flow/instance/handleRead/${processInstanceId}/${taskId}`, remark);
+};
+
+// 重新提交
+export const resubmit = async (processInstanceId: string): Promise<any> => {
+  return await httpClient(`/api/v1/flow/instance/resubmit/${processInstanceId}`);
 };
