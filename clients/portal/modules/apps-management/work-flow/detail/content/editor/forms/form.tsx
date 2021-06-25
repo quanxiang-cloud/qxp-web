@@ -9,6 +9,7 @@ import ApproveForm from './intermidiate/approve';
 import ProcessVariableAssignmentConfig from './process-variable-assignment-config';
 import FlowTableContext from './flow-source-table';
 import CreateTableData from './create-table-data';
+import UpdateTableData from './update-table-data';
 import FlowContext from '../../../flow-context';
 import ProcessBranch from './process-branch';
 import ProcessBranchTarget from './process-branch-target';
@@ -58,7 +59,7 @@ const components: Record<string, JSXElementConstructor<any>> = {
   processBranchTarget: ProcessBranchTarget,
   processVariableAssignment: ProcessVariableAssignmentConfig,
   tableDataCreate: CreateTableData,
-  tableDataUpdate: Placeholder,
+  tableDataUpdate: UpdateTableData,
   sendEmail: Placeholder,
   cc: Placeholder,
   webMessage: Placeholder,
