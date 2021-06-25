@@ -2,7 +2,7 @@ import React, { useMemo, useState, useEffect, useContext } from 'react';
 import { useQuery } from 'react-query';
 import { toArr, FormPath } from '@formily/shared';
 import { ArrayList } from '@formily/react-shared-components';
-import { Input, Select as AntdSelect } from '@formily/antd-components';
+import { Input, Select as AntdSelect, Switch, DatePicker, NumberPicker } from '@formily/antd-components';
 import {
   SchemaForm,
   SchemaField,
@@ -14,13 +14,16 @@ import {
 import MoreMenu from '@c/more-menu';
 import Icon from '@c/icon';
 import Button from '@c/button';
-import { RowStyleLayout } from '@c/form-builder/customized-fields';
 import SaveButtonGroup from '@flowEditor/components/_common/action-save-button-group';
 
 import FlowSourceTableContext from './flow-source-table';
 import FlowContext from '../../../flow-context';
 import { ProcessVariableAssignmentData, ProcessVariable } from '../type';
 import { getFlowVariables } from './api';
+import styled from 'styled-components';
+
+const ACTIONS = createFormActions();
+const COMPONENTS = { AntdSelect, Input, RulesList, Switch, DatePicker, NumberPicker };
 
 type Option = {
   value: string;
@@ -63,6 +66,47 @@ function useLeftOptions(used: string[], variables: ProcessVariable[]): Option[] 
   return options;
 }
 
+function useTableFieldOptions(): Array<Option & { type: string; }> {
+  const { tableSchema } = useContext(FlowSourceTableContext);
+  const tableFields = Object.entries(tableSchema.properties || {}).filter(([, fieldSchema]) => {
+    return ASSIGNABLE_COMPONENTS.includes(fieldSchema['x-component'] as string);
+  }).map(([key, fieldSchema]) => {
+    return {
+      label: fieldSchema.title as string,
+      value: key,
+      type: fieldSchema.type || '',
+    };
+  });
+
+  const [options] = useState(tableFields);
+
+  return options;
+}
+
+const RowStyleLayout = styled((props) => <div {...props} />)`
+  display: flex;
+
+  .variable-name {
+    width: 70px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+
+  .ant-btn {
+    margin-right: 16px;
+  }
+  .ant-form-item {
+    display: inline-flex;
+    margin-right: 16px;
+    margin-bottom: 16px;
+  }
+  > .ant-form-item {
+    margin-bottom: 0;
+    margin-right: 0;
+  }
+`;
+
 function RulesList(props: any): JSX.Element {
   const { value, path, mutators } = props;
   const { variables } = props.props['x-component-props'];
@@ -86,7 +130,14 @@ function RulesList(props: any): JSX.Element {
       {toArr(value).map((item, index) => (
         <RowStyleLayout key={index}>
           <SchemaField path={FormPath.parse(path).concat(index)} />
-          <Icon clickable changeable name="delete" onClick={() => onRemove(index)} size={32} />
+          <Icon
+            clickable
+            changeable
+            name="delete"
+            size={32}
+            className="ml-auto"
+            onClick={() => onRemove(index)}
+          />
         </RowStyleLayout>
       ))}
       {
@@ -107,25 +158,18 @@ function RulesList(props: any): JSX.Element {
 
 RulesList.isFieldComponent = true;
 
-const ACTIONS = createFormActions();
-const COMPONENTS = { AntdSelect, Input, RulesList };
-
 export default function AssignmentConfig({ defaultValue, onSubmit, onCancel }: Props): JSX.Element {
-  const { tableSchema } = useContext(FlowSourceTableContext);
-  const tableFields = Object.entries(tableSchema.properties || {}).filter(([, fieldSchema]) => {
-    return ASSIGNABLE_COMPONENTS.includes(fieldSchema['x-component'] as string);
-  }).map(([key, fieldSchema]) => {
-    return { label: fieldSchema.title as string, value: key };
-  });
+  const tableFields = useTableFieldOptions();
   const { flowID } = useContext(FlowContext);
   const { data: variables, isLoading } = useQuery(['FETCH_PROCESS_VARIABLES'], () => {
     return getFlowVariables(flowID);
   });
-  const { setFieldState, getFormState } = ACTIONS;
+  const { setFieldState, getFormState, getFieldValue } = ACTIONS;
 
   function formEffect(): void {
     onFieldValueChange$('assignmentRules.*.valueFrom').subscribe((state) => {
       const valueOfPath = FormPath.transform(state.name, /\d/, ($1) => `assignmentRules.${$1}.valueOf`);
+      const variableNamePath = FormPath.transform(state.name, /\d/, ($1) => `assignmentRules.${$1}.variableName`);
       if (state.value === 'currentFormValue') {
         setFieldState(valueOfPath, (state) => {
           state.props['x-component'] = 'AntdSelect';
@@ -134,9 +178,28 @@ export default function AssignmentConfig({ defaultValue, onSubmit, onCancel }: P
         return;
       }
 
+      const variableCode: string = getFieldValue(variableNamePath);
+      const variableType = variables?.find(({ code }) => code === variableCode)?.fieldType || 'TEXT';
       setFieldState(valueOfPath, (state) => {
-        state.props['x-component'] = 'Input';
         state.props.enum = undefined;
+        if (variableType === 'TEXT') {
+          state.props['x-component'] = 'Input';
+        }
+
+        if (variableType === 'BOOLEAN') {
+          state.props['x-component'] = 'Switch';
+        }
+
+        if (variableType === 'DATE') {
+          state.props['x-component'] = 'DatePicker';
+          state.props['x-component-props'] = {
+            format: 'YYYY-MM-DD HH:mm:ss',
+          };
+        }
+
+        if (variableType === 'NUMBER') {
+          state.props['x-component'] = 'NumberPicker';
+        }
       });
     });
   }
@@ -175,6 +238,7 @@ export default function AssignmentConfig({ defaultValue, onSubmit, onCancel }: P
               readOnly
               name="variableName"
               x-component="AntdSelect"
+              x-component-props={{ className: 'variable-name' }}
               enum={variables?.map(({ code, name }) => ({ label: name, value: code }))}
             />
             <Field
