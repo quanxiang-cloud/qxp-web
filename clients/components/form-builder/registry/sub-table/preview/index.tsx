@@ -8,7 +8,7 @@ import cs from 'classnames';
 import usePrevious from 'react-use/lib/usePrevious';
 import {
   InternalFieldList as FieldList,
-  FormItem,
+  FormItem, ValidatePatternRules,
 } from '@formily/antd';
 
 import logger from '@lib/logger';
@@ -20,6 +20,8 @@ type Column = {
   component?: JSXElementConstructor<any>;
   props: Record<string, unknown>;
   dataSource?: any[];
+  required?: boolean;
+  rules?: ValidatePatternRules;
 }
 
 type Components = typeof components;
@@ -62,13 +64,7 @@ function SubTable({
   } = props?.['x-component-props'] || {};
   const isFromForeign = subordination === 'foreign_table';
 
-  function buildColumnFromSchema(dataIndex: string, sc: ISchema): {
-    title: string;
-    dataIndex: string;
-    component: JSXElementConstructor<any>;
-    props: Record<string, any>;
-    dataSource?: any[];
-  } | null {
+  function buildColumnFromSchema(dataIndex: string, sc: ISchema): Column | null {
     const componentName = sc['x-component']?.toLowerCase() as keyof Components;
     const componentProps = sc['x-component-props'] || {};
     const dataSource = sc?.enum;
@@ -82,6 +78,8 @@ function SubTable({
       component: components[componentName],
       props: componentProps,
       dataSource,
+      required: sc?.required as boolean,
+      rules: sc?.['x-rules'] || [],
     };
   }
 
@@ -174,10 +172,15 @@ function SubTable({
                   {index === 0 && (
                     <div className="flex items-start justify-between border border-gray-300">
                       <div className={`flex-1 grid grid-cols-${columns.length}`}>
-                        {columns.map(({ title }, idx) => (
+                        {columns.map(({ title, required }, idx) => (
                           <div key={idx} className={cs('text-center', {
                             'border-r-1 border-gray-300': idx < columns.length,
-                          })}>{title}</div>
+                          })}>
+                            {required ? (
+                              <span className="mr-5" style={{ color: '#a87366' }}>*</span>
+                            ) : ''}
+                            {title}
+                          </div>
                         ))}
                       </div>
                       <Icon
@@ -191,7 +194,9 @@ function SubTable({
                     className="flex items-center justify-between border border-gray-300 border-t-0"
                   >
                     <div className={`flex-1 grid grid-cols-${columns.length}`}>
-                      {columns.map(({ dataIndex, component, props, dataSource }, idx) => (
+                      {columns.map(({
+                        dataIndex, component, props, dataSource, required, rules,
+                      }, idx) => (
                         <div key={dataIndex} className={cs({
                           'border-r-1 border-gray-300': idx < columns.length,
                         })}>
@@ -201,7 +206,9 @@ function SubTable({
                               name={`${name}.${index}.${dataIndex}`}
                               component={component}
                               props={props}
+                              rules={rules as any}
                               dataSource={dataSource}
+                              required={required}
                               value={item?.[dataIndex] || undefined}
                               onChange={(e: ChangeEvent<HTMLInputElement>) => {
                                 onItemChange(e, dataIndex);
