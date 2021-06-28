@@ -35,7 +35,7 @@ function CopyTo({ defaultValue, onSubmit }: Props): JSX.Element {
       <Input
         label={<><span className='text-red-600'>*</span>步骤名称</>}
         placeholder='请输入'
-        defaultValue={defaultValue.name}
+        defaultValue={defaultValue?.name}
         error={errors.name}
         register={register('name', { required: '请输入步骤名称' })}
       />

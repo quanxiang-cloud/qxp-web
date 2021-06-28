@@ -56,7 +56,7 @@ function WebMessage({ defaultValue, onSubmit, onCancel }: Props): JSX.Element {
     <div>
       <Input
         label={<><span className='text-red-600'>*</span>步骤名称</>}
-        defaultValue={defaultValue.name || ''}
+        defaultValue={defaultValue?.name || ''}
         placeholder='请输入'
         error={errors.name}
         register={register('name', { required: '请输入步骤名称' })}
@@ -100,7 +100,7 @@ function WebMessage({ defaultValue, onSubmit, onCancel }: Props): JSX.Element {
       />
       <Input
         label={<><span className='text-red-600'>*</span>标题</>}
-        defaultValue={defaultValue.title || ''}
+        defaultValue={defaultValue?.title || ''}
         placeholder='请输入'
         error={errors.title}
         register={register('title', { required: '请输入标题' })}

@@ -149,7 +149,7 @@ function SendEmailConfig({ defaultValue, onSubmit, onCancel }: Props): JSX.Eleme
       <Input
         label={<><span className='text-red-600'>*</span>步骤名称</>}
         placeholder='请输入'
-        defaultValue={defaultValue.name || ''}
+        defaultValue={defaultValue?.name || ''}
         error={errors.name}
         register={register('name', { required: '请输入步骤名称' })}
       />
@@ -189,7 +189,7 @@ function SendEmailConfig({ defaultValue, onSubmit, onCancel }: Props): JSX.Eleme
       <Input
         label={<><span className='text-red-600'>*</span>主题</>}
         placeholder='请输入'
-        defaultValue={defaultValue.title || ''}
+        defaultValue={defaultValue?.title || ''}
         error={errors.title}
         register={register('title', { required: '请输入主题' })}
       />
