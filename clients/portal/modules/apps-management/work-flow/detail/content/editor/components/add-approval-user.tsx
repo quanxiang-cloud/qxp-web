@@ -5,7 +5,7 @@ import Tag from '@c/tag';
 import Icon from '@c/icon';
 import EmployeeOrDepartmentPicker from '@c/employee-or-department-picker';
 
-type Value = {
+export type Value = {
   type: 1 | 2,
   id: string,
   name: string,
