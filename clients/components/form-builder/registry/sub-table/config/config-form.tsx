@@ -18,7 +18,7 @@ interface Props {
 
 const { onFieldValueChange$ } = FormEffectHooks;
 
-export default function ConfigForm({ onChange, initialValue: _initValue }: Props) {
+export default function ConfigForm({ onChange, initialValue: _initValue }: Props): JSX.Element {
   const [currentFieldKey, setCurrenFieldKey] = useState('');
   const { actions } = useContext(ActionsContext);
   const { appID } = useContext(StoreContext);
@@ -36,7 +36,7 @@ export default function ConfigForm({ onChange, initialValue: _initValue }: Props
     },
   };
 
-  function effects() {
+  function effects(): void {
     subRef.current = onFieldValueChange$('Fields.curConfigSubTableKey').subscribe(({ value }) => {
       if (!isUndefined(value)) {
         setCurrenFieldKey(value);
@@ -44,13 +44,25 @@ export default function ConfigForm({ onChange, initialValue: _initValue }: Props
     });
   }
 
-  function onFieldConfigValueChange(value: any) {
+  function onFieldConfigValueChange(value: any): void {
     const { subTableSchema } = initialValue;
     update(subTableSchema, `properties.${currentFieldKey}`, (schema) => ({
       ...schema,
       ...CONFIG_COMPONENTS[currentSchemaType]?.toSchema(value),
     }));
     actions.setFieldState('Fields.subTableSchema', (state) => state.value = subTableSchema);
+  }
+
+  function handleChange(value: Record<string, any>): void {
+    for (const key in value) {
+      if (Object.prototype.hasOwnProperty.call(value, key)) {
+        const element = value[key];
+        if (typeof element === 'undefined' && initialValue[key as keyof typeof initialValue]) {
+          value[key] = initialValue[key as keyof typeof initialValue];
+        }
+      }
+    }
+    onChange(value);
   }
 
   const currentSubSchema = initialValue.subTableSchema?.properties?.[currentFieldKey];
@@ -61,7 +73,7 @@ export default function ConfigForm({ onChange, initialValue: _initValue }: Props
       <SchemaForm
         initialValues={initialValue}
         components={COMPONENTS}
-        onChange={onChange}
+        onChange={handleChange}
         schema={configSchema}
         actions={actions}
         hidden={!!currentSubSchema}

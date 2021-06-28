@@ -20,7 +20,7 @@ interface Field extends Option {
   sort: number;
 }
 
-function SubTableSchema(props: ISchemaFieldComponentProps) {
+function SubTableSchema(props: ISchemaFieldComponentProps): JSX.Element {
   const { actions } = useContext(ActionsContext);
 
   const subTableSchemas = props.value?.properties as SchemaProperties;
@@ -40,7 +40,7 @@ function SubTableSchema(props: ISchemaFieldComponentProps) {
     return cur;
   }, []).sort((a, b) => a.sort - b.sort);
 
-  function getIndex() {
+  function getIndex(): number {
     const indexes = schemaList.map(({ sort }) => sort);
     const index = Math.max(...indexes);
     return Math.abs(index) === Infinity ? 0 : index + 1;
@@ -61,7 +61,7 @@ function SubTableSchema(props: ISchemaFieldComponentProps) {
     value: generateRandomFormFieldID(),
   }));
 
-  function onUpdateFields(fields: Field[]) {
+  function onUpdateFields(fields: Field[]): void {
     const newValue = {
       type: 'object',
       properties: {
@@ -79,7 +79,7 @@ function SubTableSchema(props: ISchemaFieldComponentProps) {
     props.mutators.change(newValue);
   }
 
-  function onAddFields(val: string) {
+  function onAddFields(val: string): void {
     const opt = currentOptions.find(({ value }) => value === val);
     if (!opt) {
       return;
@@ -93,17 +93,17 @@ function SubTableSchema(props: ISchemaFieldComponentProps) {
     onUpdateFields([...schemaList, newField]);
   }
 
-  function onRemove(index: number) {
+  function onRemove(index: number): void {
     onUpdateFields(schemaList.filter((_, idx) => idx !== index));
   }
 
-  function onShowSubTableConfig(subTableKey: string) {
+  function onShowSubTableConfig(subTableKey: string): void {
     actions.setFieldState('Fields.curConfigSubTableKey', (state) => {
       state.value = subTableKey;
     });
   }
 
-  function handleOnDragEnd(result: DropResult) {
+  function handleOnDragEnd(result: DropResult): void {
     const items = [...schemaList];
     if (!result.destination) {
       return;

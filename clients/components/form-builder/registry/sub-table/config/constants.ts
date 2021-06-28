@@ -15,6 +15,8 @@ import subordination from './fields/subordination';
 import LinkedTable from './fields/linked-table';
 import sInput from './sub-table-schema-config/config-field/input';
 import sTextarea from './sub-table-schema-config/config-field/textarea';
+import sRadiogroup from './sub-table-schema-config/config-field/radio-group';
+import sCheckboxGroup from './sub-table-schema-config/config-field/checkbox-group';
 import sNumber from './sub-table-schema-config/config-field/number';
 import sDatePicker from './sub-table-schema-config/config-field/datetime';
 import sSelect from './sub-table-schema-config/config-field/select';
@@ -28,6 +30,8 @@ import * as textareaConverter from './sub-table-schema-config/config-field/texta
 import * as numberConverter from './sub-table-schema-config/config-field/number/convertor';
 import * as datetimeConverter from './sub-table-schema-config/config-field/datetime/convertor';
 import * as selectorConvertor from './sub-table-schema-config/config-field/select/convertor';
+import * as radioConvertor from './sub-table-schema-config/config-field/radio-group/convertor';
+import * as checkboxConvertor from './sub-table-schema-config/config-field/checkbox-group/convertor';
 import * as multipleSelectorConvertor
   from './sub-table-schema-config/config-field/multiple-select/convertor';
 
@@ -53,6 +57,8 @@ export const CONFIG_COMPONENTS: Record<
     ...COMPONENTS,
     input: sInput,
     textarea: sTextarea,
+    radiogroup: sRadiogroup,
+    checkboxgroup: sCheckboxGroup,
     numberpicker: sNumber,
     datepicker: sDatePicker,
     select: sSelect,
@@ -60,7 +66,10 @@ export const CONFIG_COMPONENTS: Record<
   };
 
 export const SUPPORTED_COMPONENTS_NAMES = [
-  'input', 'textarea', 'numberpicker', 'datepicker', 'select',
+  'input', 'textarea',
+  'radiogroup', 'checkboxgroup',
+  'numberpicker', 'datepicker',
+  'select', 'multipleselect',
 ];
 
 export const LINKED_TABLE = { appID: '', tableID: '', tableName: '' };
@@ -79,6 +88,8 @@ export const LABEL_TO_SCHEMA_MAP: Record<string, ISchema> = {
   },
   单行文本: inputConverter.toSchema(inputConverter.defaultConfig),
   多行文本: textareaConverter.toSchema(textareaConverter.defaultConfig),
+  单选框: radioConvertor.toSchema(radioConvertor.defaultConfig),
+  复选框: checkboxConvertor.toSchema(checkboxConvertor.defaultConfig),
   数字: numberConverter.toSchema(numberConverter.defaultConfig),
   日期时间: datetimeConverter.toSchema(datetimeConverter.defaultConfig),
   下拉单选框: selectorConvertor.toSchema(selectorConvertor.defaultConfig),
@@ -86,5 +97,5 @@ export const LABEL_TO_SCHEMA_MAP: Record<string, ISchema> = {
 };
 
 export const SUB_TABLE_LABELS = [
-  '单行文本', '多行文本', '数字', '日期时间', '下拉单选框', '下拉复选框',
+  '单行文本', '多行文本', '单选框', '复选框', '数字', '日期时间', '下拉单选框', '下拉复选框',
 ];

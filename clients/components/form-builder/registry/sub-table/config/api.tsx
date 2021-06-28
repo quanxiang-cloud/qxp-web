@@ -12,7 +12,9 @@ export async function createBlankFormTable({ appID }: { appID: string}): Promise
   }
 }
 
-export async function getFormTableSchema<T>({ appID, tableID }: { appID: string, tableID: string }) {
+export async function getFormTableSchema<T>({ appID, tableID }: {
+  appID: string, tableID: string
+}): Promise<T | null> {
   try {
     return await httpClient<T>(`/api/v1/structor/${appID}/m/table/getByID`, { tableID });
   } catch (err) {
