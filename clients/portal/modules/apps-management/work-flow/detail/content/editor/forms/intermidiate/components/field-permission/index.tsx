@@ -9,8 +9,13 @@ import store from '@flowEditor/store';
 import { getFormFieldOptions, getFormFieldSchema } from '@flowEditor/forms/api';
 import FlowContext from '@flow/detail/flow-context';
 import type {
-  StoreValue, FieldPermission, CustomFieldPermission, SystemFieldPermission, CurrentElement,
-  FillInData, FormDataData,
+  StoreValue,
+  FieldPermission as FieldPermissionType,
+  CustomFieldPermission,
+  SystemFieldPermission,
+  CurrentElement,
+  FillInData,
+  FormDataData,
 } from '@flowEditor/type';
 
 import CustomFieldTable from './custom-field-table';
@@ -19,7 +24,7 @@ import SystemFieldTable from './system-field-table';
 import './style.scss';
 
 interface Props {
-  value: FieldPermission;
+  value: FieldPermissionType;
   onChange: (value: Partial<FillInData>) => void;
 }
 
@@ -29,7 +34,7 @@ export default function FieldPermission({ value, onChange: _onChange }: Props): 
   const { elements = [] } = useObservable<StoreValue>(store);
   const formDataElement = elements?.find(({ type }) => type === 'formData') as CurrentElement;
   const workFormValue = (formDataElement?.data?.businessData as FormDataData)?.form?.value;
-  const [mergedFieldPermissions, setMergedFieldPermissions] = useState<FieldPermission>({
+  const [mergedFieldPermissions, setMergedFieldPermissions] = useState<FieldPermissionType>({
     custom: [],
     system: [],
   });
@@ -65,7 +70,7 @@ export default function FieldPermission({ value, onChange: _onChange }: Props): 
     }
   }, [mergedFieldPermissions.custom]);
 
-  function onChange(fieldPermission: FieldPermission): void {
+  function onChange(fieldPermission: FieldPermissionType): void {
     _onChange({ fieldPermission });
   }
 

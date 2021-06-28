@@ -21,7 +21,9 @@ export default function CustomFieldTable({
   editable, fields: originalFields, updateFields, schemaMap,
 }: Props): JSX.Element {
   const fields = originalFields.filter((field) => {
-    return schemaMap[field.id]?.type !== 'array';
+    return !['subtable', 'associatedrecords'].includes(
+      schemaMap[field.id]?.['x-component']?.toLowerCase() as string,
+    );
   });
   const [data] = useRequest<{
     code: number;
