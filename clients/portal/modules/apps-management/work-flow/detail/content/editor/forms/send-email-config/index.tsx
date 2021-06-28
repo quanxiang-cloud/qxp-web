@@ -25,13 +25,22 @@ import { RefProps } from '@c/formula-editor';
 import SaveButtonGroup from '@flowEditor/components/_common/action-save-button-group';
 import type { StoreValue, CurrentElement, FormDataData } from '@flowEditor/type';
 
-import UserSelect from '../../components/add-approval-user';
+import UserSelect, { Value } from '../../components/add-approval-user';
 import './index.scss';
 
+type FormValue = {
+  name: string;
+  recivers: Value;
+  content: string;
+  templateId: string;
+  title: string;
+  mes_attachment: File[];
+}
+
 type Props = {
-  defaultValue: Record<string, any>;
-  onSubmit: (v: any) => void;
+  onSubmit: (v: FormValue) => void;
   onCancel: () => void;
+  defaultValue: FormValue;
 }
 
 type File = {
@@ -60,7 +69,7 @@ const FieldEditor = formFieldWrap({ FieldFC: Editor });
 const FieldUserSelect = formFieldWrap({ FieldFC: UserSelect });
 
 function FieldOption({ onChange, editorState, options }: FieldOPType): JSX.Element {
-  const insertText = (text: string, hasSpacing = true, backNumber = 0): void => {
+  const insertText = (text: string, hasSpacing = true): void => {
     let contentState = editorState.getCurrentContent();
     let selection = editorState.getSelection();
     let textTmp = `${text}`;
@@ -121,7 +130,7 @@ function SendEmailConfig({ defaultValue, onSubmit, onCancel }: Props): JSX.Eleme
     return asRaw ? raw : draftToHtml(raw);
   };
 
-  const handleSave = (data: Record<string, any>): void => {
+  const handleSave = (data: FormValue): void => {
     onSubmit({ ...data, templateId: 'quanliang' });
   };
   const handleChangeEditor = (editorCont: EditorState): void => {

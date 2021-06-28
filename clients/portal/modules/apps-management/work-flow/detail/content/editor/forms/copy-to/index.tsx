@@ -4,15 +4,20 @@ import { useForm, Controller } from 'react-hook-form';
 import formFieldWrap from '@c/form-field-wrap';
 import SaveButtonGroup from '@flowEditor/components/_common/action-save-button-group';
 
-import UserSelect from '../../components/add-approval-user';
+import UserSelect, { Value } from '../../components/add-approval-user';
 
 const Input = formFieldWrap({ field: <input className='input' /> });
 const FieldUserSelect = formFieldWrap({ FieldFC: UserSelect });
 
+type FormValue = {
+  name: string;
+  recivers: Value;
+}
+
 type Props = {
-  defaultValue: Record<string, any>;
-  onSubmit: (v: any) => void;
+  onSubmit: (v: FormValue) => void;
   onCancel: () => void;
+  defaultValue: FormValue;
 }
 
 function CopyTo({ defaultValue, onSubmit }: Props): JSX.Element {
@@ -22,7 +27,7 @@ function CopyTo({ defaultValue, onSubmit }: Props): JSX.Element {
     reset(defaultValue);
   }, []);
 
-  const handleSave = (data: Record<string, any>): void => {
+  const handleSave = (data: FormValue): void => {
     onSubmit(data);
   };
 
