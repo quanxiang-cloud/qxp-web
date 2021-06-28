@@ -7,6 +7,7 @@ export default class BaseStore {
   @observable loading = false;
   @observable keyword = '';
   @observable orderType = 'DESC';
+  @observable agent = 0;
 
   @computed get query(): Record<string, any> {
     return {
