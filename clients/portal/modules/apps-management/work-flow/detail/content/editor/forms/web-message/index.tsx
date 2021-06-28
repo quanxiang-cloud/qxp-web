@@ -9,14 +9,22 @@ import htmlToDraft from 'html-to-draftjs';
 import formFieldWrap from '@c/form-field-wrap';
 import SaveButtonGroup from '@flowEditor/components/_common/action-save-button-group';
 
-import UserSelect from '../../components/add-approval-user';
+import UserSelect, { Value } from '../../components/add-approval-user';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import './index.css';
 
+type FormValue = {
+  name: string;
+  recivers: Value;
+  type: string;
+  content: string;
+  title: string;
+}
+
 type Props = {
-  defaultValue: Record<string, any>;
-  onSubmit: (v: any) => void;
+  onSubmit: (v: FormValue) => void;
   onCancel: () => void;
+  defaultValue: FormValue;
 }
 
 const Input = formFieldWrap({ field: <input className='input' /> });
@@ -36,7 +44,7 @@ function WebMessage({ defaultValue, onSubmit, onCancel }: Props): JSX.Element {
     return asRaw ? raw : draftToHtml(raw);
   };
 
-  const handleSave = (data: Record<string, any>): void => {
+  const handleSave = (data: FormValue): void => {
     onSubmit(data);
   };
 
@@ -56,7 +64,7 @@ function WebMessage({ defaultValue, onSubmit, onCancel }: Props): JSX.Element {
     <div>
       <Input
         label={<><span className='text-red-600'>*</span>步骤名称</>}
-        defaultValue={defaultValue.name || ''}
+        defaultValue={defaultValue?.name || ''}
         placeholder='请输入'
         error={errors.name}
         register={register('name', { required: '请输入步骤名称' })}
@@ -100,7 +108,7 @@ function WebMessage({ defaultValue, onSubmit, onCancel }: Props): JSX.Element {
       />
       <Input
         label={<><span className='text-red-600'>*</span>标题</>}
-        defaultValue={defaultValue.title || ''}
+        defaultValue={defaultValue?.title || ''}
         placeholder='请输入'
         error={errors.title}
         register={register('title', { required: '请输入标题' })}
