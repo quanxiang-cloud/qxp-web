@@ -25,27 +25,14 @@ import { RefProps } from '@c/formula-editor';
 import SaveButtonGroup from '@flowEditor/components/_common/action-save-button-group';
 import type { StoreValue, CurrentElement, FormDataData } from '@flowEditor/type';
 
-import UserSelect, { Value } from '../../components/add-approval-user';
+import UserSelect from '../../components/add-approval-user';
+import { SendEmailData, Attachment } from '../../type';
 import './index.scss';
 
-type FormValue = {
-  name: string;
-  recivers: Value;
-  content: string;
-  templateId: string;
-  title: string;
-  mes_attachment: File[];
-}
-
 type Props = {
-  onSubmit: (v: FormValue) => void;
+  onSubmit: (v: SendEmailData) => void;
   onCancel: () => void;
-  defaultValue: FormValue;
-}
-
-type File = {
-  file_name: string;
-  file_url: string;
+  defaultValue: SendEmailData;
 }
 
 type FieldOPType = {
@@ -130,7 +117,7 @@ function SendEmailConfig({ defaultValue, onSubmit, onCancel }: Props): JSX.Eleme
     return asRaw ? raw : draftToHtml(raw);
   };
 
-  const handleSave = (data: FormValue): void => {
+  const handleSave = (data: SendEmailData): void => {
     onSubmit({ ...data, templateId: 'quanliang' });
   };
   const handleChangeEditor = (editorCont: EditorState): void => {
@@ -155,13 +142,6 @@ function SendEmailConfig({ defaultValue, onSubmit, onCancel }: Props): JSX.Eleme
 
   return (
     <div>
-      <Input
-        label={<><span className='text-red-600'>*</span>步骤名称</>}
-        placeholder='请输入'
-        defaultValue={defaultValue?.name || ''}
-        error={errors.name}
-        register={register('name', { required: '请输入步骤名称' })}
-      />
       {/* <Controller
         name='qd'
         control={control}
@@ -245,7 +225,7 @@ function SendEmailConfig({ defaultValue, onSubmit, onCancel }: Props): JSX.Eleme
             <Upload
               {...props}
               defaultFileList={
-                (defaultValue?.mes_attachment || []).map(({ file_name, file_url }: File) => {
+                (defaultValue?.mes_attachment || []).map(({ file_name, file_url }: Attachment) => {
                   return {
                     uid: file_url,
                     name: file_name,
