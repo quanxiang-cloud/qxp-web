@@ -1,7 +1,7 @@
 import React, { JSXElementConstructor, ChangeEvent, useRef } from 'react';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 import moment, { Moment } from 'moment';
-import { Input, Radio, DatePicker, NumberPicker, Select } from '@formily/antd-components';
+import { Input, Radio, DatePicker, NumberPicker, Select, Checkbox } from '@formily/antd-components';
 import { Table } from 'antd';
 import { pick } from 'lodash';
 import cs from 'classnames';
@@ -29,6 +29,7 @@ type Components = typeof components;
 const components = {
   input: Input,
   radiogroup: Radio.Group,
+  checkboxgroup: Checkbox.Group,
   textarea: Input.TextArea,
   datepicker: DatePicker,
   numberpicker: NumberPicker,

@@ -13,7 +13,7 @@ interface Props {
 
 export default function SubTableSchemaConfig({
   currentSubSchema, onChange, currentSchemaType,
-}: Props) {
+}: Props): JSX.Element | null {
   const itemActions = useMemo(() => createFormActions(), []);
   const { actions } = useContext(ActionsContext);
 
@@ -24,7 +24,7 @@ export default function SubTableSchemaConfig({
   const currentSubSchemaDefault = CONFIG_COMPONENTS[currentSchemaType]?.configSchema;
   const currentSubSchemaConfig = CONFIG_COMPONENTS[currentSchemaType]?.defaultConfig;
 
-  function onGoBack() {
+  function onGoBack(): void {
     actions.setFieldState('Fields.curConfigSubTableKey', (state) => {
       state.value = '';
     });
