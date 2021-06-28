@@ -222,14 +222,33 @@ export interface TableDataUpdateData {
     valueOf: ValueRuleVal;
   }>;
 }
+
+export type Attachment = {
+  file_name: string;
+  file_url: string;
+}
+
+export type Receiver = {
+  type: 1 | 2,
+  id: string,
+  name: string,
+  account: string,
+}
 export interface SendEmailData {
-  [key: string]: unknown;
+  recivers: Receiver[];
+  content: string;
+  templateId: string;
+  title: string;
+  mes_attachment: Attachment[];
 }
 export interface WebMessageData {
-  [key: string]: unknown;
+  recivers: Receiver[];
+  type: string;
+  content: string;
+  title: string;
 }
 export interface CCData {
-  [key: string]: unknown;
+  recivers: Receiver[];
 }
 export interface FieldValue {
   variable: string;
