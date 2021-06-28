@@ -26,17 +26,13 @@ import SaveButtonGroup from '@flowEditor/components/_common/action-save-button-g
 import type { StoreValue, CurrentElement, FormDataData } from '@flowEditor/type';
 
 import UserSelect from '../../components/add-approval-user';
+import { SendEmailData, Attachment } from '../../type';
 import './index.scss';
 
 type Props = {
-  defaultValue: Record<string, any>;
-  onSubmit: (v: any) => void;
+  onSubmit: (v: SendEmailData) => void;
   onCancel: () => void;
-}
-
-type File = {
-  file_name: string;
-  file_url: string;
+  defaultValue: SendEmailData;
 }
 
 type FieldOPType = {
@@ -60,7 +56,7 @@ const FieldEditor = formFieldWrap({ FieldFC: Editor });
 const FieldUserSelect = formFieldWrap({ FieldFC: UserSelect });
 
 function FieldOption({ onChange, editorState, options }: FieldOPType): JSX.Element {
-  const insertText = (text: string, hasSpacing = true, backNumber = 0): void => {
+  const insertText = (text: string, hasSpacing = true): void => {
     let contentState = editorState.getCurrentContent();
     let selection = editorState.getSelection();
     let textTmp = `${text}`;
@@ -121,7 +117,7 @@ function SendEmailConfig({ defaultValue, onSubmit, onCancel }: Props): JSX.Eleme
     return asRaw ? raw : draftToHtml(raw);
   };
 
-  const handleSave = (data: Record<string, any>): void => {
+  const handleSave = (data: SendEmailData): void => {
     onSubmit({ ...data, templateId: 'quanliang' });
   };
   const handleChangeEditor = (editorCont: EditorState): void => {
@@ -146,13 +142,6 @@ function SendEmailConfig({ defaultValue, onSubmit, onCancel }: Props): JSX.Eleme
 
   return (
     <div>
-      <Input
-        label={<><span className='text-red-600'>*</span>步骤名称</>}
-        placeholder='请输入'
-        defaultValue={defaultValue.name || ''}
-        error={errors.name}
-        register={register('name', { required: '请输入步骤名称' })}
-      />
       {/* <Controller
         name='qd'
         control={control}
@@ -189,7 +178,7 @@ function SendEmailConfig({ defaultValue, onSubmit, onCancel }: Props): JSX.Eleme
       <Input
         label={<><span className='text-red-600'>*</span>主题</>}
         placeholder='请输入'
-        defaultValue={defaultValue.title || ''}
+        defaultValue={defaultValue?.title || ''}
         error={errors.title}
         register={register('title', { required: '请输入主题' })}
       />
@@ -236,7 +225,7 @@ function SendEmailConfig({ defaultValue, onSubmit, onCancel }: Props): JSX.Eleme
             <Upload
               {...props}
               defaultFileList={
-                (defaultValue?.mes_attachment || []).map(({ file_name, file_url }: File) => {
+                (defaultValue?.mes_attachment || []).map(({ file_name, file_url }: Attachment) => {
                   return {
                     uid: file_url,
                     name: file_name,

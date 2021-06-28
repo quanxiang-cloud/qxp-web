@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useContext } from 'react';
+import React, { useEffect, useRef, useContext, useState } from 'react';
 import { useQuery } from 'react-query';
 
 import Toggle from '@c/toggle';
@@ -35,6 +35,7 @@ export default function GlobalConfig(): JSX.Element | null {
     keyFields,
     instanceName,
   } = useObservable<StoreValue>(store);
+  const [instanceNameTmp, setInstanceName] = useState(instanceName || '');
   const formulaEditorRef = useRef<RefProps>();
   const { appID, flowID } = useContext(FlowContext);
   const formDataElement = getFormDataElement();
@@ -139,6 +140,8 @@ export default function GlobalConfig(): JSX.Element | null {
     return <Loading />;
   }
 
+  const spanClass = 'inline-block mb-8 p-2 bg-gray-100 mr-4 border border-gray-300';
+
   return (
     <div className="w-full flex-col flex items-center">
       <div
@@ -182,11 +185,20 @@ export default function GlobalConfig(): JSX.Element | null {
         <div className='mb-8'>流程实例标题</div>
         <div>
           {variables?.map((variable) => {
+            if (instanceNameTmp.includes(variable.key)) {
+              return (
+                <span
+                  className={`${spanClass} cursor-not-allowed text-gray-300`}
+                  key={variable.key}
+                >{variable.name}</span>
+              );
+            }
+
             return (
               <span
                 key={variable.key}
                 onClick={() => addVar(variable)}
-                className="inline-block mb-8 p-2 bg-gray-100 mr-4 border border-gray-300 cursor-pointer"
+                className={`${spanClass} cursor-pointer`}
               >
                 {variable.name}
               </span>
@@ -196,6 +208,7 @@ export default function GlobalConfig(): JSX.Element | null {
         <FormulaEditor
           ref={formulaEditorRef}
           customRules={variables}
+          onChange={setInstanceName}
           onBlur={handleBlur}
           className="block border border-gray-600 w-full mb-16"
           defaultValue={instanceName}

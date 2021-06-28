@@ -5,24 +5,23 @@ import formFieldWrap from '@c/form-field-wrap';
 import SaveButtonGroup from '@flowEditor/components/_common/action-save-button-group';
 
 import UserSelect from '../../components/add-approval-user';
-
-const Input = formFieldWrap({ field: <input className='input' /> });
+import { CCData } from '../../type';
 const FieldUserSelect = formFieldWrap({ FieldFC: UserSelect });
 
 type Props = {
-  defaultValue: Record<string, any>;
-  onSubmit: (v: any) => void;
+  onSubmit: (v: CCData) => void;
   onCancel: () => void;
+  defaultValue: CCData;
 }
 
 function CopyTo({ defaultValue, onSubmit }: Props): JSX.Element {
-  const { register, handleSubmit, control, reset, formState: { errors } } = useForm();
+  const { handleSubmit, control, reset, formState: { errors } } = useForm();
 
   useEffect(() => {
     reset(defaultValue);
   }, []);
 
-  const handleSave = (data: Record<string, any>): void => {
+  const handleSave = (data: CCData): void => {
     onSubmit(data);
   };
 
@@ -32,13 +31,6 @@ function CopyTo({ defaultValue, onSubmit }: Props): JSX.Element {
 
   return (
     <div>
-      <Input
-        label={<><span className='text-red-600'>*</span>步骤名称</>}
-        placeholder='请输入'
-        defaultValue={defaultValue.name}
-        error={errors.name}
-        register={register('name', { required: '请输入步骤名称' })}
-      />
       <Controller
         name='recivers'
         control={control}
