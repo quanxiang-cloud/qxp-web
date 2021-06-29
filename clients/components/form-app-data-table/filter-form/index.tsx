@@ -9,10 +9,11 @@ import { StoreContext } from '../context';
 import './index.scss';
 
 type Props = {
+  search: ()=> void;
   showMoreFilter: boolean;
 }
 
-function FilterForm({ showMoreFilter }: Props, ref?: React.Ref<any>): JSX.Element {
+function FilterForm({ search, showMoreFilter }: Props, ref?: React.Ref<any>): JSX.Element {
   const store = useContext(StoreContext);
   const { filters } = store;
   const fieldMaps = store.schema.properties || {};
@@ -42,7 +43,14 @@ function FilterForm({ showMoreFilter }: Props, ref?: React.Ref<any>): JSX.Elemen
   }
 
   return (
-    <form className='app-page-filter-form'>
+    <form
+      className='app-page-filter-form'
+      onSubmit={(e) => {
+        e.preventDefault();
+        search();
+      }}
+    >
+      <input className='hidden' type="submit"></input>
       {(showMoreFilter ? filters : filters.slice(0, 3)).map((key) => (
         <div className='flex items-center' key={key}>
           <label className='app-page-filter-label'>{fieldMaps[key]?.title}：</label>
