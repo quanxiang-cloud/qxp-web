@@ -22,17 +22,17 @@ export default function FormDataForm({ defaultValue, onSubmit, onCancel }: Props
   const { appID } = useContext(FlowContext);
   const [value, setValue] = useState<FormDataData>(defaultValue || {});
   const tableID = value?.form?.value || '';
-  const { data: formFieldOptions = [], isError, isLoading } = useQuery(
+  const { data: { options, schema } = { options: [], schema: {} }, isError, isLoading } = useQuery(
     ['GET_WORK_FORM_FIELD_LIST', tableID, appID],
     getFormFieldOptions, { enabled: !!tableID && !!appID },
   );
 
   useEffect(() => {
     isError && toast.error('获取工作表字段列表失败');
-    !!tableID && !isLoading && !formFieldOptions.length && toast.error(
+    !!tableID && !isLoading && !options.length && toast.error(
       '该工作表没有设置字段, 请更换工作表!',
     );
-  }, [isError, tableID, isLoading, formFieldOptions.length]);
+  }, [isError, tableID, isLoading, options.length]);
 
   function onWorkFormChange(form: NodeWorkForm): void {
     setValue((v) => ({ ...v, form }));
@@ -71,7 +71,7 @@ export default function FormDataForm({ defaultValue, onSubmit, onCancel }: Props
           content: (
             <div className="mt-24">
               <TriggerWay
-                formFieldOptions={formFieldOptions}
+                formFieldOptions={options}
                 onValueChange={onChange}
                 triggerWayValue={{
                   triggerWay: value.triggerWay,
@@ -79,7 +79,8 @@ export default function FormDataForm({ defaultValue, onSubmit, onCancel }: Props
                 }}
               />
               <TriggerCondition
-                formFieldOptions={formFieldOptions}
+                formFieldOptions={options}
+                schema={schema}
                 onChange={onChange}
                 value={value.triggerCondition}
               />

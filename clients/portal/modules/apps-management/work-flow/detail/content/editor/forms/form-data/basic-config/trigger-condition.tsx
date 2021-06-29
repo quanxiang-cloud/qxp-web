@@ -20,10 +20,12 @@ interface Props {
   value: TriggerConditionType;
   formFieldOptions: ConditionItemOptions;
   onChange: (v: Partial<FormDataData>) => void;
+  schema: ISchema;
 }
 
 export default function TriggerCondition({
   value,
+  schema,
   formFieldOptions,
   onChange: _onChange,
 }: Props): JSX.Element | null {
@@ -125,6 +127,7 @@ export default function TriggerCondition({
                 condition={condition as TriggerConditionValue}
                 options={formFieldOptions}
                 onChange={(v) => onTriggerConditionItemChange(condition, v)}
+                schemaMap={schema?.properties}
               />
             </div>
           );
@@ -202,7 +205,7 @@ export default function TriggerCondition({
                 >
                   <Icon name="add" className="text-blue-600 mr-3" />
                   <span className="text-blue-600">
-                添加且条件
+                    添加且条件
                   </span>
                 </footer>
               )}
