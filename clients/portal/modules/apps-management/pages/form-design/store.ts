@@ -69,6 +69,22 @@ class FormDesignStore {
     });
   }
 
+  @computed get showAllFields(): boolean {
+    return this.fieldList.length === this.pageTableColumns.length;
+  }
+
+  @computed get indeterminateOfSelectedAllColumns(): boolean {
+    if (!this.pageTableColumns.length) {
+      return false;
+    }
+
+    if (this.pageTableColumns.length === this.fieldList.length) {
+      return false;
+    }
+
+    return true;
+  }
+
   constructor() {
     this.destroyFetchScheme = reaction(() => {
       return { pageID: this.pageID, appID: this.appID };
@@ -127,6 +143,24 @@ class FormDesignStore {
     this.destroySetTableConfig = reaction(() => {
       return this.pageTableShowRule;
     }, this.appPageStore.setTableConfig);
+  }
+
+  toggleShowAllFields(isShowAll: boolean): void {
+    if (isShowAll) {
+      this.setPageTableColumns(this.fieldList.map(({ id }) => id));
+      return;
+    }
+
+    this.setPageTableColumns([]);
+  }
+
+  toggleTableColumn(fieldKey: string, isShow: boolean): void {
+    if (isShow) {
+      this.setPageTableColumns([...this.pageTableColumns, fieldKey]);
+      return;
+    }
+
+    this.setPageTableColumns(this.pageTableColumns.filter((id) => id !== fieldKey));
   }
 
   @action
