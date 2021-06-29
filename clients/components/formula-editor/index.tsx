@@ -62,7 +62,7 @@ function FormulaEditor({
   className = '',
   onChange,
   onBlur,
-  readOnly = false,
+  readOnly,
   defaultValue = '',
 }: Props, ref: React.Ref<any>): JSX.Element {
   const decorator = useMemo(() => {
