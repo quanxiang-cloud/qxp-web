@@ -156,6 +156,10 @@ function Toolbar({ currTask, permission, onClickAction, globalActions }: Props) 
                 )}
                 okText="提交"
                 onOk={()=> {
+                  if (commentRef?.current?.node.value.length && commentRef?.current?.node.value.length > 100) {
+                    toast.error('字数不能超过100字');
+                    return Promise.reject(new Error('字数不能超过100字'));
+                  }
                   handleReadTask(processInstanceID, taskID, commentRef?.current?.node.value || '').then((data) => {
                     if (data) {
                       toast.success('操作成功');
