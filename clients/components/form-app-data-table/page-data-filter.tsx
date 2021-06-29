@@ -8,14 +8,14 @@ import Icon from '@c/icon';
 import FilterForm from './filter-form';
 import { StoreContext } from './context';
 
-function PageDataFilter() {
+function PageDataFilter(): JSX.Element|null {
   const [showMoreFilter, setShowMoreFilter] = useState(false);
   const store = useContext(StoreContext);
   const filterKeys = Object.keys(store.filters);
 
   const filterDom = useRef<any>();
 
-  const search = () => {
+  const search = (): void => {
     if (!store.allowRequestData) {
       return;
     }
@@ -57,7 +57,7 @@ function PageDataFilter() {
     store.setParams({ condition });
   };
 
-  const reset = () => {
+  const reset = (): void => {
     const resObj: Record<string, ''> = {};
     filterKeys.map((id) => {
       resObj[id] = '';
@@ -73,7 +73,7 @@ function PageDataFilter() {
 
   return (
     <div className='form-app-data-table-container form-app-data-table-filter'>
-      <FilterForm ref={filterDom} showMoreFilter={showMoreFilter} />
+      <FilterForm search={search} ref={filterDom} showMoreFilter={showMoreFilter} />
       <div>
         {filterKeys.length > 3 ? (
           <span
