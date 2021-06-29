@@ -289,6 +289,7 @@ export type NodeData = {
   childrenID?: string[];
   branchID?: string;
   branchTargetElementID?: string;
+  parentBranchTargetElementID?: string;
 };
 export interface BaseNodeData {
   type: NodeType;

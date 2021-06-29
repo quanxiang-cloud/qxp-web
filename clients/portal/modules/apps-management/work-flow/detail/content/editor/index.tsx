@@ -15,9 +15,12 @@ import useObservable from '@lib/hooks/use-observable';
 import { deepClone } from '@lib/utils';
 
 import Components from './components';
-import store, { updateStore } from './store';
+import store, { getNodeElementById, updateStore } from './store';
 import type { StoreValue, NodeType, Data } from './type';
-import { nodeBuilder, buildBranchNodes, edgeBuilder, getCenterPosition, removeEdge } from './utils';
+import {
+  nodeBuilder, buildBranchNodes, edgeBuilder, getCenterPosition, removeEdge,
+  getBranchTargetElementID,
+} from './utils';
 import DrawerForm from './forms';
 import useFitView from './hooks/use-fit-view';
 import Config, { edgeTypes, nodeTypes } from './config';
@@ -109,6 +112,9 @@ export default function Editor(): JSX.Element {
       targetParentID = targetID;
       newElements.push(...nodes);
     } else {
+      const sourceElement = getNodeElementById(source);
+      const targetElement = getNodeElementById(target);
+      const branchTargetElementID = getBranchTargetElementID(sourceElement, targetElement);
       newElements.push(nodeBuilder(id, nodeType, nodeName, {
         width,
         height,
@@ -116,6 +122,7 @@ export default function Editor(): JSX.Element {
         childrenID: [target],
         branchID: getBranchID(sourceElement, targetElement),
         position: getCenterPosition(position, width, height),
+        branchTargetElementID,
       }));
       newElements.push(edgeBuilder(source, id));
       newElements.push(edgeBuilder(id, target));

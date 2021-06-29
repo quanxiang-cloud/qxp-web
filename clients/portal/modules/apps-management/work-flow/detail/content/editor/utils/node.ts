@@ -125,6 +125,7 @@ export function nodeBuilder(
     parentID?: string[];
     childrenID?: string[];
     branchTargetElementID?: string;
+    parentBranchTargetElementID?: string;
     branchID?: string;
   },
 ): Node<Data> {
@@ -140,6 +141,8 @@ export function nodeBuilder(
         ...(options.parentID ? { parentID: options.parentID } : {}),
         ...(options.childrenID ? { childrenID: options.childrenID } : {}),
         ...(options.branchID ? { branchID: options.branchID } : {}),
+        ...(options.parentBranchTargetElementID ? {
+          parentBranchTargetElementID: options.parentBranchTargetElementID } : {}),
         ...(options.branchTargetElementID ? {
           branchTargetElementID: options.branchTargetElementID,
         } : {}),

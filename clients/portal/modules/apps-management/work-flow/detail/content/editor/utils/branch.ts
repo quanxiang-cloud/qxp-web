@@ -5,8 +5,10 @@ import {
 
 import { uuid } from '@lib/utils';
 
+import { getNodeElementById } from '../store';
 import { nodeBuilder } from './node';
 import { edgeBuilder } from './edge';
+import { getBranchTargetElementID } from '../utils';
 
 export function buildBranchNodes(
   source: string,
@@ -15,6 +17,9 @@ export function buildBranchNodes(
   width: number,
   height: number,
 ): { elements: Elements, sourceID: string; targetID: string } {
+  const sourceElement = getNodeElementById(source);
+  const targetElement = getNodeElementById(target);
+  const targetElementID = getBranchTargetElementID(sourceElement, targetElement);
   const branchSourceElementID = `processBranchSource${uuid()}`;
   const branchLeftFilterElementID = `processBranch${uuid()}`;
   const branchRightFilterElementID = `processBranch${uuid()}`;
@@ -27,6 +32,7 @@ export function buildBranchNodes(
       parentID: [source],
       childrenID: [branchLeftFilterElementID, branchRightFilterElementID],
       branchTargetElementID,
+      parentBranchTargetElementID: targetElementID,
     },
   );
   const branchSourceElementEdge = edgeBuilder(source, branchSourceElementID);
@@ -37,6 +43,7 @@ export function buildBranchNodes(
       height,
       parentID: [branchSourceElementID],
       childrenID: [branchTargetElementID],
+      branchTargetElementID,
     },
   );
   const branchLeftFilterElementEdge = edgeBuilder(
@@ -49,6 +56,7 @@ export function buildBranchNodes(
       height,
       parentID: [branchSourceElementID],
       childrenID: [branchTargetElementID],
+      branchTargetElementID,
     },
   );
   const branchRightFilterElementEdge = edgeBuilder(
@@ -61,6 +69,7 @@ export function buildBranchNodes(
       height: 25,
       parentID: [branchRightFilterElementID, branchLeftFilterElementID],
       childrenID: [target],
+      branchTargetElementID: targetElementID,
     },
   );
   const branchTargetElementLeftEdge = edgeBuilder(

@@ -23,7 +23,7 @@ export const getStoreInitialData = (): StoreValue => {
     name: '未命名工作流' + moment().format('YYYY-MM-DD-HH-mm-ss'),
     apiFetched: false,
     validating: false,
-    version: '0.1',
+    version: '0.2',
     status: 'DISABLE',
     keyFields: '',
     instanceName: '',
