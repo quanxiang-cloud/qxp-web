@@ -23,12 +23,13 @@ export default function ProcessBranchSourceNodeComponent(props: Props): JSX.Elem
     const newBranchNode = nodeBuilder(newBranchNodeID, 'processBranch', '筛选条件设置', {
       parentID: [id],
       childrenID: [branchTargetElementID],
+      branchTargetElementID,
     });
     const sourceElement = elements.find((el) => el.id === id);
     const targetElement = elements.find((el) => el.id === branchTargetElementID);
     sourceElement?.data?.nodeData.childrenID?.push(newBranchNodeID);
     targetElement?.data?.nodeData.parentID?.push(newBranchNodeID);
-    const newBranchEdge = edgeBuilder(id, newBranchNodeID);
+    const newBranchEdge = edgeBuilder(id, newBranchNodeID, 'step', '');
     const newProcessTargetEdge = edgeBuilder(newBranchNodeID, branchTargetElementID);
     const newElements = [
       ...elements,
