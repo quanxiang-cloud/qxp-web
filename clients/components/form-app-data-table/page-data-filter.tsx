@@ -32,7 +32,16 @@ function PageDataFilter(): JSX.Element|null {
       switch (curFilter?.type) {
       case 'datetime': {
         const [start, end] = values[key];
-        _condition.value = [moment(start).format(), moment(end).format()];
+        const format = curFilter?.['x-component-props']?.format;
+        if (format) {
+          _condition.value = [moment(start).format(format), moment(end).format(format)];
+        } else {
+          _condition.value = [
+            moment(start).format('YYYY-MM-DDT00:00:00'),
+            moment(end).format('YYYY-MM-DDT24:00:00'),
+          ];
+        }
+
         _condition.op = 'between';
         break;
       }
