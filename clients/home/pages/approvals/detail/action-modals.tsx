@@ -33,6 +33,11 @@ function ActionModals({ className }: Props) {
   const [addSignValue, setAddSignValue] = useState('');
 
   const handleTaskMutation = useMutation((params: Record<string, any>) => {
+    if (modalInfo.payload.remark != undefined) {
+      if (modalInfo.payload.remark.length > 100) {
+        return Promise.reject(new Error('字数不能超过100字'));
+      }
+    }
     if ([TaskHandleType.agree, TaskHandleType.refuse, TaskHandleType.fill_in].includes(action as TaskHandleType)) {
       return apis.reviewTask(processInstanceID, taskID, {
         handleType: action,
@@ -99,7 +104,7 @@ function ActionModals({ className }: Props) {
 
     // 处理抄送/ 标为已读
     if (action === TaskHandleType.hasCcHandleBtn) {
-      return apis.readAll([processInstanceID]);
+      return apis.readAll([taskID]);
     }
 
     // 加签
