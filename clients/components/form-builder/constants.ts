@@ -7,20 +7,36 @@ export const OPERATORS = {
     { value: '⊇', label: '全部包含' },
     { value: '∩', label: '任一' },
   ],
+  Single: [
+    { value: '==', label: '等于' },
+    { value: '!=', label: '不等于' },
+    // { value: '∈', label: '属于' },
+    // { value: '∉', label: '不属于' },
+  ],
   Date: [
-    { value: '=', label: '等于' },
+    { value: '==', label: '等于' },
     { value: '!=', label: '不等于' },
     { value: '>', label: '早于' },
     { value: '<', label: '晚于' },
   ],
   Number: [
-    { value: '=', label: '等于' },
+    { value: '==', label: '等于' },
     { value: '!=', label: '不等于' },
     { value: '>', label: '大于' },
     { value: '<', label: '小于' },
     { value: '>=', label: '大于等于' },
     { value: '<=', label: '小于等于' },
   ],
+};
+
+export const OperatorOptions: Record<string, any> = {
+  MultipleSelect: OPERATORS.Multiple,
+  CheckboxGroup: OPERATORS.Multiple,
+  RadioGroup: OPERATORS.Single,
+  Select: OPERATORS.Single,
+  DatePicker: OPERATORS.Date,
+  NumberPicker: OPERATORS.Number,
+  Default: OPERATORS.Default,
 };
 
 type Comparator = (leftValue: any, rightValue: any) => boolean;
@@ -72,19 +88,15 @@ export const compareOperatorMap: Record<FormBuilder.CompareOperator, OperatorCon
   '∈': {
     title: '属于',
     op: 'in',
-    comparator: (leftValue: Array<string | number>, rightValue: Array<string | number>): boolean => {
-      return leftValue.every((value) => {
-        return rightValue.includes(value);
-      });
+    comparator: (leftValue: string | number, rightValue: Array<string | number>): boolean => {
+      return rightValue.includes(leftValue);
     },
   },
   '∉': {
     title: '不属于',
     op: 'not in',
-    comparator: (leftValue: Array<string | number>, rightValue: Array<string | number>): boolean => {
-      return leftValue.find((value) => {
-        return !rightValue.includes(value);
-      }) ? true : false;
+    comparator: (leftValue: string | number, rightValue: Array<string | number>): boolean => {
+      return !rightValue.includes(leftValue);
     },
   },
   '⊇': {
@@ -114,7 +126,6 @@ export const compareOperatorMap: Record<FormBuilder.CompareOperator, OperatorCon
       }) ? true : false;
     },
   },
-  // todo Add array equal realation map
   '~': {
     title: '相似',
     op: 'like',

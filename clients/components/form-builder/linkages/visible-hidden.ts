@@ -4,6 +4,12 @@ import { compareOperatorMap } from '@c/form-builder/constants';
 
 const { onFormInit$, onFormValuesChange$ } = FormEffectHooks;
 
+const INIT_VALUE: Record<string, string| number | Array<string | number>> = {
+  string: '',
+  number: 0,
+  object: [],
+};
+
 function getComparator(linkage: FormBuilder.VisibleHiddenLinkage): FormBuilder.Comparator {
   return (values: Record<string, any>): boolean => {
     const pairs: Array<[any, FormBuilder.CompareOperator, any]> = linkage.rules.map(({
@@ -13,18 +19,8 @@ function getComparator(linkage: FormBuilder.VisibleHiddenLinkage): FormBuilder.C
     });
 
     return pairs[linkage.ruleJoinOperator].call(pairs, ([value, compareOperator, compareValue]) => {
-      if (value !== undefined) {
-        const executor = compareOperatorMap[compareOperator].comparator;
-        return executor(value, compareValue);
-      }
-
-      // todo why? qimiao
-      const not = ['!=', '∉', '⊋'];
-      if (value === undefined) {
-        return not.includes(compareOperator);
-      }
-
-      return false;
+      const executor = compareOperatorMap[compareOperator].comparator;
+      return executor(value ?? INIT_VALUE[typeof compareValue], compareValue);
     });
   };
 }

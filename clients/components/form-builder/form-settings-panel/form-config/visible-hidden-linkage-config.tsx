@@ -22,8 +22,7 @@ import { INTERNAL_FIELD_NAMES } from '../../store';
 import { StoreContext } from '@c/form-builder/context';
 import { toJS } from 'mobx';
 
-import { OPERATORS } from '../../constants';
-import { operatorOption } from '../utils';
+import { OPERATORS, OperatorOptions } from '../../constants';
 
 const COMPONENTS = {
   ArrayCustom, Input, AntdSelect, DatePicker, NumberPicker, Switch, RadioGroup: Radio.Group,
@@ -156,7 +155,7 @@ function VisibleHiddenLinkageConfig({ mode, onClose, linkageKey, onSubmit }: Pro
       setFieldState(FormPath.transform(name, /\d/, ($1) => {
         return `rules.${$1}.compareOperator`;
       }), (state) => {
-        const operators = operatorOption(compareField);
+        const operators = OperatorOptions[compareField];
         state.props.enum = operators;
         state.value = operators[0].value;
       });
@@ -214,7 +213,7 @@ function VisibleHiddenLinkageConfig({ mode, onClose, linkageKey, onSubmit }: Pro
       setFieldState(FormPath.transform(name, /\d/, ($1) => {
         return `rules.${$1}.compareOperator`;
       }), (state) => {
-        const operators = operatorOption(compareField);
+        const operators = OperatorOptions[compareField];
         state.props.enum = operators;
         state.value = operators[0].value;
       });
@@ -285,7 +284,6 @@ function VisibleHiddenLinkageConfig({ mode, onClose, linkageKey, onSubmit }: Pro
             />
             <Field
               title=""
-              required
               name="compareValue"
               default=""
               x-component='AntdSelect'
