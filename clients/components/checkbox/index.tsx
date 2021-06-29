@@ -1,20 +1,16 @@
 import React from 'react';
 import cs from 'classnames';
-import { noop } from 'lodash';
 
 type Props = React.DetailedHTMLProps<
   React.InputHTMLAttributes<HTMLInputElement>,
   HTMLInputElement
 > & {
-  className?: string;
   label?: string | React.ReactElement;
   indeterminate?: boolean;
 }
 
 function Checkbox(
-  {
-    className = '', label, indeterminate, onChange = noop, ...inputProps
-  }: Props,
+  { className, label, indeterminate, ...inputProps }: Props,
   ref?: React.Ref<HTMLInputElement>,
 ): JSX.Element {
   const defaultRef = React.useRef();
@@ -30,7 +26,6 @@ function Checkbox(
         {...inputProps}
         ref={resolvedRef}
         type="checkbox"
-        onChange={onChange}
         className={cs('checkbox__input', {
           'checkbox__input--indeterminate': indeterminate,
         })}
