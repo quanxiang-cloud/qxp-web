@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from 'react';
+import { omit, noop } from 'lodash';
+import cs from 'classnames';
+import { useCss } from 'react-use';
 
 import Select from '@c/select';
 
 import { Options } from '@flowEditor/forms/api';
 import type { Operator, TriggerConditionExpressionItem } from '@flowEditor/type';
+import FormRender from '@c/form-builder/form-renderer';
 
 interface Props {
   condition: {
@@ -12,6 +16,7 @@ interface Props {
     value: string;
   };
   options: Options;
+  schemaMap?: SchemaProperties;
   onChange: (value: Partial<TriggerConditionExpressionItem>) => void;
 }
 
@@ -22,7 +27,7 @@ export type FieldOperatorOptions = {
   exclude?: string[];
 }[]
 
-export default function ConditionItem({ condition, options, onChange }: Props): JSX.Element {
+export default function ConditionItem({ condition, options, onChange, schemaMap }: Props): JSX.Element {
   const [value, setValue] = useState(condition.key);
   const operatorOptions: FieldOperatorOptions = [{
     label: '大于',
@@ -40,6 +45,15 @@ export default function ConditionItem({ condition, options, onChange }: Props): 
     value: 'neq',
   }];
   const currentOption = options.find((option) => option.value === value);
+  const currentSchema = schemaMap?.[value || ''] || {};
+  const schema = {
+    type: 'object',
+    title: '',
+    description: '',
+    properties: {
+      [value]: omit(currentSchema, 'title') as SchemaProperties,
+    },
+  };
 
   function onFieldChange(value: string): void {
     setValue(value);
@@ -60,6 +74,10 @@ export default function ConditionItem({ condition, options, onChange }: Props): 
     }
   }, [filteredOperatorOptions.length]);
 
+  function handleChange(value: Record<string, string>): void {
+    onChange({ value: Object.values(value)[0] });
+  }
+
   return (
     <>
       <Select
@@ -70,7 +88,16 @@ export default function ConditionItem({ condition, options, onChange }: Props): 
               px-12 text-12 flex items-center flex-1 mb-8"
         options={options}
       />
-      <div className="flex flex-row justify-between items-center mb-12">
+      <div
+        className={cs(
+          'flex flex-row justify-between items-center mb-12 condition-item',
+          useCss({
+            '.ant-form-item': {
+              marginBottom: 0,
+            },
+          }),
+        )}
+      >
         <Select
           placeholder="判断符"
           defaultValue={condition.op}
@@ -79,11 +106,19 @@ export default function ConditionItem({ condition, options, onChange }: Props): 
               px-12 text-12 flex items-center flex-1 mr-12"
           options={filteredOperatorOptions}
         />
-        <input
-          className="input"
-          defaultValue={condition.value}
-          onChange={(e) => onChange({ value: e.target.value })}
-        />
+        {!value ? (
+          <input
+            className="input"
+            defaultValue={condition.value}
+            onChange={noop}
+          />
+        ) : (
+          <FormRender
+            defaultValue={{ [value]: condition.value }}
+            onFormValueChange={handleChange}
+            schema={schema}
+          />
+        )}
       </div>
     </>
   );

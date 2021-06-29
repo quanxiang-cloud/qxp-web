@@ -1,4 +1,5 @@
 import { QueryFunctionContext } from 'react-query';
+import { omitBy } from 'lodash';
 
 import httpClient from '@lib/http-client';
 
@@ -32,19 +33,22 @@ export async function getFormFieldSchema({ queryKey }: QueryFunctionContext): Pr
   return data?.schema ?? {};
 }
 
-export async function getFormFieldOptions({ queryKey }: QueryFunctionContext): Promise<Options> {
+export async function getFormFieldOptions({ queryKey }: QueryFunctionContext): Promise<{
+  options: Options,
+  schema: ISchema,
+}> {
   const schema = await getFormFieldSchema({ queryKey });
-  function parseFormFieldOptions(schema: {
-    properties?: {
-      [key: string]: ISchema;
-    }
-  } = {}): { label: string; value: string; type: string; }[] {
+  const blackList = ['subtable', 'associatedrecords'];
+  function parseFormFieldOptions(schema: ISchema = {}): {
+    label: string; value: string; type: string;
+  }[] {
     return Object.entries(schema.properties ?? {}).reduce((prev: {
       label: string;
       value: string;
       type: string;
     }[], [id, value]) => {
-      if (!WorkTableInternalFields.includes(id)) {
+      const componentName = schema?.properties?.[id]?.['x-component']?.toLowerCase() || '';
+      if (!WorkTableInternalFields.includes(id) && !blackList.includes(componentName)) {
         prev.push({
           label: value.title as string,
           value: id,
@@ -54,7 +58,15 @@ export async function getFormFieldOptions({ queryKey }: QueryFunctionContext): P
       return prev;
     }, []);
   }
-  return parseFormFieldOptions(schema ?? {});
+  return {
+    options: parseFormFieldOptions(schema ?? {}),
+    schema: {
+      ...schema,
+      properties: omitBy(schema?.properties, (v) => {
+        return blackList.includes(v?.['x-component']?.toLowerCase() || '');
+      }),
+    },
+  };
 }
 
 export interface OperationItem {

@@ -95,7 +95,7 @@ export default function Form({
         tableSchema: sourceTableSchema,
       }}
     >
-      <div className="flex-1" style={{ height: 'calc(100% - 56px)' }}>
+      <div className="flex-1 flex flex-col overflow-hidden" style={{ height: 'calc(100% - 56px)' }}>
         {getConfigForm()}
       </div>
     </FlowTableContext.Provider>
