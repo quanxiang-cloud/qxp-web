@@ -185,7 +185,7 @@ export default function GlobalConfig(): JSX.Element | null {
         <div className='mb-8'>流程实例标题</div>
         <div>
           {variables?.map((variable) => {
-            if (instanceNameTmp.includes(variable.key)) {
+            if (instanceNameTmp.includes(variable.key) || status === 'ENABLE') {
               return (
                 <span
                   className={`${spanClass} cursor-not-allowed text-gray-300`}
@@ -210,7 +210,8 @@ export default function GlobalConfig(): JSX.Element | null {
           customRules={variables}
           onChange={setInstanceName}
           onBlur={handleBlur}
-          className="block border border-gray-600 w-full mb-16"
+          className="block border border-gray-300 w-full mb-16 corner-2-8-8-8 overflow-hidden"
+          readOnly={status === 'ENABLE'}
           defaultValue={instanceName}
         />
       </section>
@@ -220,6 +221,7 @@ export default function GlobalConfig(): JSX.Element | null {
           defaultValue={keyFields.split(',')}
           onChange={handleAbstractChange}
           options={fieldList}
+          disabled={status === 'ENABLE'}
         />
       </section>
     </div>

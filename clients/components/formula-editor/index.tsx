@@ -30,6 +30,7 @@ export type CustomRule = {
 type Props = {
   onBlur?: (value: string) => void;
   onChange?: (value: string) => void;
+  readOnly?: boolean;
   customRules?: CustomRule[];
   className?: string;
   defaultValue?: string;
@@ -61,6 +62,7 @@ function FormulaEditor({
   className = '',
   onChange,
   onBlur,
+  readOnly = false,
   defaultValue = '',
 }: Props, ref: React.Ref<any>): JSX.Element {
   const decorator = useMemo(() => {
@@ -175,6 +177,7 @@ function FormulaEditor({
     <div className={`formula-editor-container ${className}`}>
       <Editor
         onBlur={handleBlur}
+        readOnly={readOnly}
         editorState={editorState}
         onChange={handleChange}
         placeholder="请输入...."
