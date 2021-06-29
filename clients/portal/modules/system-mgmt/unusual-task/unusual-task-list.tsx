@@ -7,6 +7,7 @@ import Table from '@c/table';
 import Search from '@c/search';
 import EmptyTips from '@c/empty-tips';
 import Pagination from '@c/pagination';
+import Authorized from '@c/authorized';
 
 import { getAbnormalTask } from './api';
 
@@ -36,7 +37,7 @@ const HandleStatus: Record<0 | 1 | 2, {color: string, value: string}> = {
   2: { color: 'green', value: '已处系统自动处理理' },
 };
 
-const initSearch = { page: 1, limit: 10, total: 0, keyword: '' };
+const initSearch = { page: 1, size: 10, total: 0, keyword: '' };
 
 function UnusualTaskTable(): JSX.Element {
   const [taskList, setTaskList] = useState<UnusualTaskItem[]>([]);
@@ -69,7 +70,7 @@ function UnusualTaskTable(): JSX.Element {
   };
 
   function pageChange(current: number, pageSize: number): void {
-    setPageParams({ ...pageParams, page: current, limit: pageSize });
+    setPageParams({ ...pageParams, page: current, size: pageSize });
   }
 
   function goUnusualTaskDetail(data: UnusualTaskItem, status: 0 | 1): void {
@@ -152,20 +153,24 @@ function UnusualTaskTable(): JSX.Element {
       accessor: (item: UnusualTaskItem) => {
         return (
           <div className="flex">
-            {
-              item.status === 0 && (<div className="flex items-center">
+            <Authorized authority={['abnormalFlow/dispose']}>
+              {
+                item.status === 0 && (<div className="flex items-center">
+                  <span
+                    className="font-normal text-blue-600 cursor-pointer"
+                    onClick={() => goUnusualTaskDetail(item, 0)}
+                  >处理&emsp;&emsp;</span>
+                </div>)
+              }
+            </Authorized>
+            <Authorized authority={['abnormalFlow/read']}>
+              <div className="flex items-center">
                 <span
-                  className="font-normal text-blue-600 cursor-pointer"
-                  onClick={() => goUnusualTaskDetail(item, 0)}
-                >处理&emsp;&emsp;</span>
-              </div>)
-            }
-            <div className="flex items-center">
-              <span
-                className="font-normal text-blue-900 cursor-pointer"
-                onClick={() => goUnusualTaskDetail(item, 1)}
-              >查看&emsp;&emsp;</span>
-            </div>
+                  className="font-normal text-blue-900 cursor-pointer"
+                  onClick={() => goUnusualTaskDetail(item, 1)}
+                >查看&emsp;&emsp;</span>
+              </div>
+            </Authorized>
           </div>
         );
       },
@@ -201,7 +206,7 @@ function UnusualTaskTable(): JSX.Element {
       {taskList.length > 0 && (
         <Pagination
           current={pageParams.page}
-          pageSize={pageParams.limit}
+          pageSize={pageParams.size}
           total={pageParams.total}
           showSizeChanger
           onChange={pageChange}

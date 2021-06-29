@@ -31,8 +31,10 @@ const InfoCard = () => {
       icon: 'article',
       name: '异常任务',
       url: '/system/unusual',
+      authority: 'abnormalFlow',
     },
   ];
+
   return (
     <div className="w-316 bg-white rounded-12 mr-20">
       <SideNavCard cardTitle={(
