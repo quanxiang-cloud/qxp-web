@@ -52,6 +52,7 @@ export const toSchema = (config: DefaultConfig): ISchema => {
     ['x-component-props']: {
       placeholder: config.placeholder,
       mode: config.multiple,
+      allowClear: true,
       showSearch: true,
       loading: config.loading,
       onSearch(value: string) {
