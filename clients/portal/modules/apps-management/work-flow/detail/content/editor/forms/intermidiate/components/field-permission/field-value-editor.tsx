@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { usePopper } from 'react-popper';
+import { useCss } from 'react-use';
+import cs from 'classnames';
 
 import Icon from '@c/icon';
 import RadioGroup from '@c/radio/group';
@@ -26,7 +29,7 @@ function FieldValueEditor({
   const [type, setType] = useState(defaultValue.variable ? 'variable' : 'staticValue');
   const [referenceElRef, setReferenceElRef] = useState(null);
   const [popperElRef, setPopperElRef] = useState(null);
-  const editorPopper = usePopper(referenceElRef, popperElRef, {
+  const { attributes, styles } = usePopper(referenceElRef, popperElRef, {
     modifiers: [{ name: 'offset', options: { offset: [0, 4] } }],
     placement: 'bottom-start',
   });
@@ -57,14 +60,30 @@ function FieldValueEditor({
   }
 
   function onFormValueChange(value: Record<string, string>): void {
-    setValue((v) => ({ ...v, staticValue: Object.values(value)[0] }));
+    let val = Object.values(value)[0];
+    if (Array.isArray(val)) {
+      val = val[0];
+    }
+    if ((val as any).value) {
+      val = (val as any).value;
+    }
+    setValue((v) => ({ ...v, staticValue: val }));
   }
+
+  const valueSetterClassName = useCss({
+    'input+.uploader': {
+      minWidth: 'auto',
+      padding: '0 42px',
+    },
+  });
 
   return (
     <>
       <div onClick={() => setIsEditorOpen(true)}>
         {(defaultValue.staticValue || defaultValue.variable) && (
-          <span className="cursor-pointer">{defaultValue.staticValue || defaultValue.variable}</span>
+          <span className="cursor-pointer" ref={setReferenceElRef as any}>
+            {defaultValue.staticValue || defaultValue.variable}
+          </span>
         )}
         {(!defaultValue.staticValue && !defaultValue.variable) && (
           <Icon
@@ -74,12 +93,15 @@ function FieldValueEditor({
           />
         )}
       </div>
-      {isEditorOpen && (
+      {isEditorOpen && createPortal(
         <div
-          {...editorPopper.attributes.popper}
+          {...attributes.popper}
           ref={setPopperElRef as any}
-          style={editorPopper.styles.popper}
-          className="px-16 pt-16 w-316 z-50 bg-white border border-gray-300 rounded-8"
+          style={styles.popper}
+          className={cs(
+            'px-16 pt-16 w-316 z-10 bg-white border border-gray-300 rounded-8',
+            valueSetterClassName,
+          )}
           key="fieldValueEditor"
           onClick={(e) => e.stopPropagation()}
         >
@@ -119,7 +141,7 @@ function FieldValueEditor({
               <>
                 <FormRenderer
                   schema={schema}
-                  defaultValue={value.staticValue}
+                  defaultValue={{ [Object.keys(schema.properties || {})[0]]: value.staticValue }}
                   onFormValueChange={onFormValueChange}
                 >
                   <ActionButtonGroup className="mt-16" onCancel={onCancel} onSubmit={onSubmit} />
@@ -127,7 +149,8 @@ function FieldValueEditor({
               </>
             )
           }
-        </div>
+        </div>,
+        document.body,
       )}
     </>
   );

@@ -88,7 +88,8 @@ export function getTableSchema(appID: string, tableID: string): Promise<GetTable
     `/api/v1/structor/${appID}/home/schema/${tableID}` :
     `/api/v1/structor/${appID}/m/table/getByID`;
 
-  return httpClient(path, { tableID }, { 'X-Proxy': 'FORM_SCHEMA' });
+  return httpClient<GetTableSchemaResponse>(path, { tableID }, { 'X-Proxy': 'FORM_SCHEMA' })
+    .then((data) => data || {});
 }
 
 export function saveTableSchema(
