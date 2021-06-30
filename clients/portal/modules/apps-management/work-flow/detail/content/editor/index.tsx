@@ -1,28 +1,19 @@
-import React, { useState, DragEvent, useEffect } from 'react';
-import dagre from 'dagre';
+import React, { useState, DragEvent } from 'react';
 import cs from 'classnames';
-import ReactFlow, {
-  ConnectionLineType,
-  isNode,
-  Elements,
-  XYPosition,
-  Position,
-  Node,
-} from 'react-flow-renderer';
+import { Elements, XYPosition, Node } from 'react-flow-renderer';
 
-import { uuid, deepClone } from '@lib/utils';
 import useObservable from '@lib/hooks/use-observable';
+import { uuid } from '@lib/utils';
+import FlowRender from '@c/flow-render';
 
 import Components from './components';
 import store, { getNodeElementById, updateStore } from './store';
 import type { StoreValue, NodeType, Data } from './type';
+import DrawerForm from './forms';
 import {
   nodeBuilder, buildBranchNodes, edgeBuilder, getCenterPosition, removeEdge,
   getBranchTargetElementID,
 } from './utils';
-import DrawerForm from './forms';
-import useFitView from './hooks/use-fit-view';
-import Config, { edgeTypes, nodeTypes } from './config';
 
 import 'react-flow-renderer/dist/style.css';
 import 'react-flow-renderer/dist/theme-default.css';
@@ -39,51 +30,10 @@ interface NodeInfo {
 
 export default function Editor(): JSX.Element {
   const { currentConnection, elements, nodeIdForDrawerForm } = useObservable<StoreValue>(store);
-  const [dagreGraph, setDagreGraph] = useState(() => new dagre.graphlib.Graph());
-  dagreGraph.setDefaultEdgeLabel(() => ({}));
-  dagreGraph.setGraph({ rankdir: 'TB', ranksep: 90 });
   const [fitViewFinished, setFitViewFinished] = useState(false);
-  const fitView = useFitView(() => setFitViewFinished(true));
-
-  let layoutedElements = [];
-  elements?.forEach((el) => {
-    if (isNode(el)) {
-      return dagreGraph.setNode(el.id, {
-        width: el.data?.nodeData.width,
-        height: el.data?.nodeData.height,
-      });
-    }
-    dagreGraph.setEdge(el.source, el.target);
-  });
-  dagre.layout(dagreGraph);
-  layoutedElements = elements?.map((ele) => {
-    const el = deepClone(ele);
-    if (isNode(el)) {
-      const nodeWithPosition = dagreGraph.node(el.id);
-      el.targetPosition = Position.Top;
-      el.sourcePosition = Position.Bottom;
-      el.position = {
-        x: nodeWithPosition.x - ((el.data?.nodeData.width || 0) / 2),
-        y: nodeWithPosition.y,
-      };
-    }
-    return el;
-  });
-
-  useEffect(() => {
-    layoutedElements?.length && onLoad();
-  }, [layoutedElements?.length]);
 
   function setElements(eles: Elements): void {
     updateStore((s) => ({ ...s, elements: eles }));
-  }
-
-  function onDragOver(e: DragEvent): void {
-    e.preventDefault();
-    if (!e.dataTransfer) {
-      return;
-    }
-    e.dataTransfer.dropEffect = 'move';
   }
 
   function getBranchID(sourceElement: Node<Data>, targetElement: Node<Data>): undefined | string {
@@ -157,28 +107,16 @@ export default function Editor(): JSX.Element {
     updateStore((s) => ({ ...s, currentConnection: {} }));
   }
 
-  function onLoad(): void {
-    setDagreGraph(new dagre.graphlib.Graph());
-    setTimeout(fitView);
-  }
-
   return (
     <div className={cs('w-full h-full flex-1 relative transition', {
       'opacity-0': !fitViewFinished,
     })}>
       <div className="reactflow-wrapper w-full h-full">
-        <ReactFlow
-          className="cursor-move"
-          elements={layoutedElements}
-          connectionLineType={ConnectionLineType.Step}
-          onLoad={onLoad}
+        <FlowRender
+          elements={elements}
           onDrop={onDrop}
-          onDragOver={onDragOver}
-          nodeTypes={nodeTypes}
-          edgeTypes={edgeTypes}
-        >
-          <Config />
-        </ReactFlow>
+          setFitViewFinished={setFitViewFinished}
+        />
       </div>
       <Components />
       {nodeIdForDrawerForm && (
