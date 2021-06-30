@@ -1,4 +1,5 @@
 import React from 'react';
+import { noop } from 'lodash';
 
 import Table from '@c/table';
 import Checkbox from '@c/checkbox';
@@ -24,6 +25,7 @@ export default function({ fields, updateFields }: Props): JSX.Element {
         <Checkbox
           indeterminate={indeterminate}
           checked={isChecked}
+          onChange={noop}
           onClick={() => {
             if (indeterminate || checkedNumber === 0) {
               return updateFields(model.data.map((dt: SystemFieldPermission) => {
@@ -62,6 +64,7 @@ export default function({ fields, updateFields }: Props): JSX.Element {
     return (
       <Checkbox
         checked={isChecked}
+        onChange={noop}
         onClick={() => {
           updateFields(model.data.map((dt: SystemFieldPermission) => {
             if (dt.id === model.cell.row.id) {

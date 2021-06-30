@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useQuery } from 'react-query';
+import { groupBy } from 'lodash';
 
 import Toggle from '@c/toggle';
 import Loading from '@c/loading';
@@ -85,10 +86,14 @@ export default function FieldPermission({ value, onChange: _onChange }: Props): 
 
   function mergeField(): void {
     const { custom = [], system = [] } = value ?? {};
-    const customIds = custom?.map(({ id }) => id);
-    const dataIds = data?.map(({ value }) => value) ?? [];
+    const customIds = custom.map(({ id }) => id);
+    const systemIds = system.map(({ id }) => id);
+    const { true: systemData, false: customData } = groupBy(data, ({ isSystem }) => isSystem);
+    const systemDataIds = systemData?.map(({ value }) => value) ?? [];
+    const customDataIds = customData?.map(({ value }) => value) ?? [];
     const isCustomEmpty = !custom.length;
-    data?.forEach((field) => {
+    const isSystemEmpty = !system.length;
+    customData?.forEach((field) => {
       if (isCustomEmpty || !customIds.includes(field.value)) {
         custom.push({
           id: field.value,
@@ -108,7 +113,19 @@ export default function FieldPermission({ value, onChange: _onChange }: Props): 
         });
       }
     });
-    setMergedFieldPermissions({ system, custom: custom.filter(({ id }) => dataIds.includes(id)) });
+    systemData?.forEach((field) => {
+      if (isSystemEmpty || !systemIds.includes(field.value)) {
+        system.push({
+          id: field.value,
+          fieldName: field.label,
+          read: false,
+        });
+      }
+    });
+    setMergedFieldPermissions({
+      system: system.filter(({ id }) => systemDataIds.includes(id)),
+      custom: custom.filter(({ id }) => customDataIds.includes(id)),
+    });
   }
 
   if (isLoading) {
@@ -140,7 +157,7 @@ export default function FieldPermission({ value, onChange: _onChange }: Props): 
       )}
       {!!mergedFieldPermissions.system.length && (
         <section className="pb-56">
-          <header className="flex justify-between items-center mb-12 mt-16">
+          <header className="flex justify-between items-center mb-12 mt-32">
             <div className="text-caption-no-color text-gray-400">系统字段</div>
           </header>
           <SystemFieldTable
