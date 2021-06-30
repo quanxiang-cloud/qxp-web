@@ -9,12 +9,14 @@ import toast from '@lib/toast';
 import Modal from '@c/modal';
 import useObservable from '@lib/hooks/use-observable';
 import usePrevious from '@lib/hooks/use-previous';
+import dataTransfer from '@flowEditor/utils/data-transfer';
 
 import Header from './flow-header';
 import AsideMenu from './aside-menu';
 import Content from './content';
 import { getWorkFlowInfo } from './api';
-import type { Data, StoreValue } from './content/editor/type';
+import type { Data, StoreValue, WorkFlow } from './content/editor/type';
+import FlowContext from './flow-context';
 import useSaver from './content/editor/forms/hooks/use-save';
 import store, {
   updateStore,
@@ -22,9 +24,9 @@ import store, {
   initStore,
   buildWorkFlowSaveData,
 } from './content/editor/store';
-import FlowContext from './flow-context';
 
 import './style.scss';
+import { CURRENT_WORK_FLOW_VERSION } from './content/editor/utils/constants';
 
 type OperateType = 'edit' | 'settings' | 'variables';
 
@@ -63,22 +65,27 @@ export default function Detail(): JSX.Element {
     }
   }, [elements?.length, apiFetched]);
 
+  function parseElements(bpmn: WorkFlow): FlowElement<Data>[] {
+    const elements = bpmn.shapes.filter(Boolean).map((element: FlowElement<Data>) => {
+      if (isNode(element)) {
+        Object.assign(element.data, { type: element.type });
+      }
+      return element;
+    });
+    return dataTransfer({ version: bpmn.version, shapes: elements }).shapes;
+  }
+
   useEffect(() => {
     if (!data) {
       return;
     }
     try {
-      const bpmn = JSON.parse(data.bpmnText);
+      const bpmn = JSON.parse(data.bpmnText) as WorkFlow;
       updateStore((s) => ({
         ...s,
         apiFetched: true,
-        elements: bpmn.shapes.filter(Boolean).map((element: FlowElement<Data>) => {
-          if (isNode(element)) {
-            Object.assign(element.data, { type: element.type });
-          }
-          return element;
-        }),
-        version: bpmn.version,
+        elements: parseElements(bpmn),
+        version: CURRENT_WORK_FLOW_VERSION,
         name: data.name,
         cancelable: data.canCancel === 1,
         urgeable: data.canUrge === 1,

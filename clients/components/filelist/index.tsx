@@ -84,7 +84,7 @@ const Filelist = ({
     return (
       <>
         {files.map((itm, idx) => (
-          <div className={styles.file_itm} style={{background: '#F0F6FF'}} key={idx}>
+          <div className={styles.file_itm} style={{ background: '#F0F6FF' }} key={idx}>
             <span
               onClick={() => handleDownload(itm.url, itm.filename)}
               className={cs('inline-flex items-center', {

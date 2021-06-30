@@ -7,3 +7,5 @@ export const WorkTableInternalFields = [
   'modifier_id',
   'creator_id',
 ];
+
+export const CURRENT_WORK_FLOW_VERSION = '0.2';

@@ -59,7 +59,7 @@ function FieldOption({ onChange, editorState, options }: FieldOPType): JSX.Eleme
   const insertText = (text: string, hasSpacing = true): void => {
     let contentState = editorState.getCurrentContent();
     let selection = editorState.getSelection();
-    let textTmp = `${text}`;
+    let textTmp = '${' + text + '}';
     if (hasSpacing) {
       textTmp += ' ';
     }

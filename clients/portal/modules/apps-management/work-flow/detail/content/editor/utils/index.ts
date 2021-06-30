@@ -8,6 +8,7 @@ import { deepClone } from '@lib/utils';
 export * from './branch';
 export * from './node';
 export * from './edge';
+import { CurrentElement } from '../type';
 
 export interface GetCenterParams {
   sourceX: number;
@@ -69,4 +70,18 @@ export function removeEdge(eles: Elements, source: string, target: string): Elem
   return eles.filter((el) => {
     return isNode(el) || (isEdge(el) && (el.source !== source || el.target !== target));
   });
+}
+
+export function getBranchTargetElementID(
+  sourceElement: CurrentElement,
+  targetElement: CurrentElement,
+): string | undefined {
+  if (targetElement.type === 'processBranchTarget') {
+    return targetElement.id;
+  }
+  if (targetElement.type === 'processBranchSource') {
+    return targetElement.data.nodeData.parentBranchTargetElementID;
+  }
+  return sourceElement.data.nodeData.branchTargetElementID ||
+    targetElement.data.nodeData.branchTargetElementID;
 }

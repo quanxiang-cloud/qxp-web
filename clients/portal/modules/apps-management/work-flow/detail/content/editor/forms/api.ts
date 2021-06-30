@@ -3,7 +3,6 @@ import { omitBy } from 'lodash';
 
 import httpClient from '@lib/http-client';
 
-import { WorkTableInternalFields } from '../utils/constants';
 import { ProcessVariable } from '../type';
 
 export type Option = {
@@ -11,6 +10,7 @@ export type Option = {
   value: string;
   children?: Option[];
   type?: string;
+  isSystem?: boolean;
 };
 
 export type Options = Option[];
@@ -39,20 +39,15 @@ export async function getFormFieldOptions({ queryKey }: QueryFunctionContext): P
 }> {
   const schema = await getFormFieldSchema({ queryKey });
   const blackList = ['subtable', 'associatedrecords'];
-  function parseFormFieldOptions(schema: ISchema = {}): {
-    label: string; value: string; type: string;
-  }[] {
-    return Object.entries(schema.properties ?? {}).reduce((prev: {
-      label: string;
-      value: string;
-      type: string;
-    }[], [id, value]) => {
+  function parseFormFieldOptions(schema: ISchema = {}): Option[] {
+    return Object.entries(schema.properties ?? {}).reduce((prev: Option[], [id, value]) => {
       const componentName = schema?.properties?.[id]?.['x-component']?.toLowerCase() || '';
-      if (!WorkTableInternalFields.includes(id) && !blackList.includes(componentName)) {
+      if (!blackList.includes(componentName)) {
         prev.push({
           label: value.title as string,
           value: id,
           type: value.type as string,
+          isSystem: (value as ISchema)['x-internal']?.isSystem,
         });
       }
       return prev;

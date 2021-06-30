@@ -1,5 +1,6 @@
 import React from 'react';
 import cs from 'classnames';
+import { noop } from 'lodash';
 
 import Table from '@c/table';
 import Checkbox from '@c/checkbox';
@@ -49,6 +50,7 @@ export default function CustomFieldTable({
         <Checkbox
           indeterminate={indeterminate}
           checked={isChecked}
+          onChange={noop}
           onClick={() => {
             if (indeterminate || checkedNumber === 0) {
               return updateFields(model.data.map((dt: CustomFieldPermission) => {
@@ -105,6 +107,7 @@ export default function CustomFieldTable({
     return (
       <Checkbox
         checked={isChecked}
+        onChange={noop}
         onClick={() => {
           updateFields(model.data.map((dt: CustomFieldPermission) => {
             if (dt.id === model.cell.row.id) {

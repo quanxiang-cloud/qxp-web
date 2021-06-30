@@ -1,6 +1,34 @@
 import { CSSProperties, HTMLAttributes, ReactNode } from 'react';
 import { Position, ArrowHeadType, FlowElement, Elements } from 'react-flow-renderer';
 
+export interface WorkFlow {
+  version: string;
+  shapes: FlowElement<Data>[];
+}
+type CanOp = '0' | '1' | 1 | 0;
+export interface WorkFlowData {
+  bpmnText: string;
+  canCancel: CanOp;
+  canMsg: CanOp;
+  canUrge: CanOp;
+  canViewStatusMsg: CanOp;
+  createTime: string;
+  creatorAvatar: string;
+  creatorId: string;
+  creatorName: string;
+  id: string;
+  isDeleted: CanOp;
+  modifierId: string;
+  modifierName: string;
+  modifyTime: string;
+  name: string;
+  processKey: string;
+  status: string;
+  triggerMode: 'FORM_DATA' | 'FORM_TIME';
+  keyFields: string;
+  instanceName: string;
+}
+
 export interface NodeProps {
   id: string;
   data: Record<string, unknown>;
@@ -48,7 +76,7 @@ export interface EdgeTextProps extends HTMLAttributes<SVGElement> {
   textClassName?: string;
 }
 
-export interface Rect extends Dimensions, XYPosition {}
+export interface Rect extends Dimensions, XYPosition { }
 
 export interface Dimensions {
   width: number;
@@ -243,7 +271,7 @@ export interface SendEmailData {
 }
 export interface WebMessageData {
   recivers: Receiver[];
-  type: string;
+  sort: 1 | 2;
   content: string;
   title: string;
 }
@@ -289,6 +317,7 @@ export type NodeData = {
   childrenID?: string[];
   branchID?: string;
   branchTargetElementID?: string;
+  parentBranchTargetElementID?: string;
 };
 export interface BaseNodeData {
   type: NodeType;
@@ -356,11 +385,11 @@ export interface FormDataElement extends CurrentElement {
 }
 
 export type Errors = Record<string, unknown> & {
-    publish: {
-      data?: FlowElement;
-      msg?: string;
-    },
-    dataNotSaveMap: Map<string, boolean>;
+  publish: {
+    data?: FlowElement;
+    msg?: string;
+  },
+  dataNotSaveMap: Map<string, boolean>;
 };
 
 export interface StoreValue {

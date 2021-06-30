@@ -8,10 +8,12 @@ import TextHeader from '@c/text-header';
 import CreatedEditApp from '../../entry/app-list/app-edit/created-edit-app';
 import appDetailsStore from '../store';
 
-function AppInfo() {
+import dayjs from 'dayjs';
+
+function AppInfo() : JSX.Element {
   const formRef: any = useRef();
 
-  const handleSubmit = () => {
+  const handleSubmit = (): void => {
     const formDom = formRef.current;
     if (formDom.validateFields()) {
       const data = formDom.getFieldsValue();
@@ -33,6 +35,10 @@ function AppInfo() {
       <div className='px-20 py-24'>
         <CreatedEditApp appInfo={appDetailsStore.appDetails} ref={formRef} />
         <Button onClick={handleSubmit} modifier='primary' iconName='save'>保存修改</Button>
+        <div
+          className="mt-6 text-gray-600">
+          最近保存时间：{dayjs.unix(appDetailsStore.lastUpdateTime).format('YYYY-MM-DD HH:mm:ss')}
+        </div>
       </div>
     </>
   );

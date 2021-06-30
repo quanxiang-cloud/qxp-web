@@ -28,6 +28,7 @@ class AppDetailsStore {
     appIcon: '',
   };
   @observable loading = false;
+  @observable lastUpdateTime = 0
   @observable pageInitList: PageInfo[] = [];
   @observable apps: AppInfo[] = [];
   @observable appID = '';
@@ -85,6 +86,7 @@ class AppDetailsStore {
     this.appID = appID;
     return fetchAppDetails(appID).then((res: any) => {
       this.appDetails = res || {};
+      this.lastUpdateTime = res.updateTime;
       this.loading = false;
     }).catch(() => {
       this.loading = false;
@@ -101,7 +103,9 @@ class AppDetailsStore {
         }
         return _appInfo;
       });
-      toast.success('修改成功！');
+      this.fetchAppDetails(this.appID).then(() => {
+        toast.success('修改成功！');
+      });
     });
   }
 
