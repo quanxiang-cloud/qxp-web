@@ -45,6 +45,9 @@ const schema: ISchema = {
             type: 'string',
             required: true,
             'x-component': 'AntdSelect',
+            enum: [
+              { label: '等于', value: '==' },
+            ],
           },
           compareTo: {
             type: 'string',
