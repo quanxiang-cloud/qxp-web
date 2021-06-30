@@ -10,9 +10,8 @@ import ReactFlow, {
   Node,
 } from 'react-flow-renderer';
 
-import { uuid } from '@lib/utils';
+import { uuid, deepClone } from '@lib/utils';
 import useObservable from '@lib/hooks/use-observable';
-import { deepClone } from '@lib/utils';
 
 import Components from './components';
 import store, { getNodeElementById, updateStore } from './store';
