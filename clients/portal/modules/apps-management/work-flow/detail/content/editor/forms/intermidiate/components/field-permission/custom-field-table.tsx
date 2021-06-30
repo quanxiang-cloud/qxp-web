@@ -1,5 +1,4 @@
 import React from 'react';
-import cs from 'classnames';
 import { noop } from 'lodash';
 
 import Table from '@c/table';
@@ -165,7 +164,6 @@ export default function CustomFieldTable({
     return (
       <Table
         rowKey="id"
-        className={cs({ 'mb-200': editable })}
         columns={[{
           Header: '字段',
           accessor: 'fieldName',
