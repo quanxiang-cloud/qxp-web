@@ -58,7 +58,7 @@ function DetailsDrawer({ onCancel, rowID, goEdit, delData }: Props): JSX.Element
         _systems.push({
           label: fieldSchema.title as string,
           key: fieldKey,
-          value: record?.[fieldKey] ? (
+          value: record && Object.prototype.hasOwnProperty.call(record, fieldKey) ? (
             <FormDataValueRenderer schema={fieldSchema as Schema} value={record?.[fieldKey]} />
           ) : <span className='text-gray-300'>——</span>,
           fieldSchema,
@@ -69,7 +69,7 @@ function DetailsDrawer({ onCancel, rowID, goEdit, delData }: Props): JSX.Element
       _details.push({
         label: fieldSchema.title as string,
         key: fieldKey,
-        value: record?.[fieldKey] ? (
+        value: record && Object.prototype.hasOwnProperty.call(record, fieldKey) ? (
           <FormDataValueRenderer schema={fieldSchema as Schema} value={record?.[fieldKey]} />
         ) : <span className='text-gray-300'>——</span>,
         fieldSchema,

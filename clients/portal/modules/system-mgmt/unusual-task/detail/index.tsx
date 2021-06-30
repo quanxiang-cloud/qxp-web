@@ -22,7 +22,7 @@ export type Actions = 'STEP_BACK' | 'SEND_BACK' | 'APPOINT' | 'DELETE';
 function UnusualTaskDetail(): JSX.Element {
   const [currAction, setCurrAction] = useState<Actions | ''>('');
   const history = useHistory();
-  const urlParams = useParams<{id: string, processInstanceId: string, taskId: string, status: string }>();
+  const urlParams = useParams<{ id: string, processInstanceId: string, taskId: string, status: string }>();
   const { processInstanceId, taskId, status } = urlParams;
 
   const { data: formDataItem } = useQuery('GET_ABNORMAL_TASK_FORM', () => getAbnormalTaskForm({
@@ -44,7 +44,7 @@ function UnusualTaskDetail(): JSX.Element {
         _systems.push({
           label: fieldSchema.title as string,
           key: fieldKey,
-          value: formData?.[fieldKey] ? (
+          value: formData && Object.prototype.hasOwnProperty.call(formData, fieldKey) ? (
             <FormDataValueRenderer schema={fieldSchema as Schema} value={formData?.[fieldKey]} />
           ) : '无数据',
           fieldSchema,
@@ -55,7 +55,7 @@ function UnusualTaskDetail(): JSX.Element {
       _details.push({
         label: fieldSchema.title as string,
         key: fieldKey,
-        value: formData?.[fieldKey] ? (
+        value: formData && Object.prototype.hasOwnProperty.call(formData, fieldKey) ? (
           <FormDataValueRenderer schema={fieldSchema as Schema} value={formData?.[fieldKey]} />
         ) : '无数据',
         fieldSchema,
@@ -97,7 +97,7 @@ function UnusualTaskDetail(): JSX.Element {
         />
       )}
       <div className='flex items-center'>
-        <Icon name='reply' size={20} onClick={goBack}/>
+        <Icon name='reply' size={20} onClick={goBack} />
         <NavLink to='/system'>系统管理</NavLink>
         <span className="mx-8">/</span>
         <NavLink to='/system/unusual'>异常任务</NavLink>
@@ -124,7 +124,7 @@ function UnusualTaskDetail(): JSX.Element {
             </div>
             <div className="p-10 flex">
               <span>查看流程图</span>
-              <Icon name='reply' size={20} onClick={goBack}/>
+              <Icon name='reply' size={20} onClick={goBack} />
             </div>
           </div>
           <div className="h-1 border-b-2 border-gray-100">

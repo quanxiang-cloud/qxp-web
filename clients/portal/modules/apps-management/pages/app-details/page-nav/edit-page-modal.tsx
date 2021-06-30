@@ -41,26 +41,31 @@ function EditPageModal({ pageInfo, onCancel, onSubmit, appID }: Props) {
     });
   }, [appID]);
 
-  const validateRepeat = (value: string) => {
-    let repeated = true;
-    for (const pageInfo of store.pageInitList) {
-      if (pageInfo.menuType === 1) {
-        if (pageInfo.child?.length) {
-          for (const _pageInfo of pageInfo.child) {
+  const validateRepeat = (value: string): boolean => {
+    let noRepeated = true;
+    for (const pageInfoTmp of store.pageInitList) {
+      if (pageInfoTmp.id === pageInfo?.id) {
+        break;
+      }
+
+      if (pageInfoTmp.menuType === 1) {
+        if (pageInfoTmp.child?.length) {
+          for (const _pageInfo of pageInfoTmp.child) {
             if (_pageInfo.name === value) {
-              repeated = false;
-              return;
+              noRepeated = false;
+              break;
             }
           }
         }
       } else {
-        if (pageInfo.name === value) {
-          repeated = false;
-          return;
+        if (pageInfoTmp.name === value) {
+          noRepeated = false;
+          break;
         }
       }
     }
-    return repeated;
+
+    return noRepeated;
   };
 
   const handleSubmit = () => {
