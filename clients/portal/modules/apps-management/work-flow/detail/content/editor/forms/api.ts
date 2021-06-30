@@ -3,7 +3,6 @@ import { omitBy } from 'lodash';
 
 import httpClient from '@lib/http-client';
 
-import { WorkTableInternalFields } from '../utils/constants';
 import { ProcessVariable } from '../type';
 
 export type Option = {
@@ -48,7 +47,7 @@ export async function getFormFieldOptions({ queryKey }: QueryFunctionContext): P
       type: string;
     }[], [id, value]) => {
       const componentName = schema?.properties?.[id]?.['x-component']?.toLowerCase() || '';
-      if (!WorkTableInternalFields.includes(id) && !blackList.includes(componentName)) {
+      if (!blackList.includes(componentName)) {
         prev.push({
           label: value.title as string,
           value: id,
