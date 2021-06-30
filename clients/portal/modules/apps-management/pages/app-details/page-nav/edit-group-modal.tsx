@@ -12,9 +12,9 @@ type Props = {
   id?: string;
 };
 
-function EditGroupModal({ name, id, onCancel, onSubmit }: Props) {
+function EditGroupModal({ name, id, onCancel, onSubmit }: Props): JSX.Element {
   const ref: any = useRef();
-  const handleSubmit = () => {
+  const handleSubmit = (): void => {
     const formRef = ref.current;
     if (formRef.validateFields()) {
       onSubmit({ ...formRef.getFieldsValue(), id }).then(() => {
@@ -23,9 +23,9 @@ function EditGroupModal({ name, id, onCancel, onSubmit }: Props) {
     }
   };
 
-  const validateRepeat = (value: string) => {
+  const validateRepeat = (value: string): boolean => {
     return store.pageInitList.findIndex((pageInfo: PageInfo) => {
-      if (pageInfo.menuType === 1 ) {
+      if (pageInfo.menuType === 1 && pageInfo.id !== id) {
         return pageInfo.name === value;
       }
     }) === -1;

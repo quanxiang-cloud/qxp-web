@@ -66,7 +66,7 @@ const PAGE_SIZE_OPTION = [
 ];
 
 const FIXED_RULE_OPTION = [
-  { label: '无固定列', value: '' },
+  { label: '无固定列', value: 'none' },
   { label: '固定首列', value: 'one' },
   { label: '固定前两列', value: 'previous_two' },
   { label: '固定操作列', value: 'action' },
