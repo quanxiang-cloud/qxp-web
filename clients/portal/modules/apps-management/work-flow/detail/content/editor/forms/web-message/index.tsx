@@ -72,7 +72,7 @@ function WebMessage({ defaultValue, onSubmit, onCancel }: Props): JSX.Element {
         }
       />
       <Controller
-        name='type'
+        name='sort'
         control={control}
         rules={{ required: '请选择消息类型' }}
         render={({ field }) => {
@@ -80,11 +80,11 @@ function WebMessage({ defaultValue, onSubmit, onCancel }: Props): JSX.Element {
             <FieldRadio
               label={<><span className='text-red-600'>*</span>消息类型</>}
               className='block'
-              error={errors.type}
+              error={errors.sort}
               register={field}
               options={[
-                { label: '通知公告', value: 'notification' },
-                { label: '系统消息', value: 'system' },
+                { label: '通知公告', value: '2' },
+                { label: '系统消息', value: '1' },
               ]}
               value={field.value ? field.value : ''}
             />

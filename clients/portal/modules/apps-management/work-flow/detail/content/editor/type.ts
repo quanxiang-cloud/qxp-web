@@ -48,7 +48,7 @@ export interface EdgeTextProps extends HTMLAttributes<SVGElement> {
   textClassName?: string;
 }
 
-export interface Rect extends Dimensions, XYPosition {}
+export interface Rect extends Dimensions, XYPosition { }
 
 export interface Dimensions {
   width: number;
@@ -243,7 +243,7 @@ export interface SendEmailData {
 }
 export interface WebMessageData {
   recivers: Receiver[];
-  type: string;
+  sort: 1 | 2;
   content: string;
   title: string;
 }
@@ -357,11 +357,11 @@ export interface FormDataElement extends CurrentElement {
 }
 
 export type Errors = Record<string, unknown> & {
-    publish: {
-      data?: FlowElement;
-      msg?: string;
-    },
-    dataNotSaveMap: Map<string, boolean>;
+  publish: {
+    data?: FlowElement;
+    msg?: string;
+  },
+  dataNotSaveMap: Map<string, boolean>;
 };
 
 export interface StoreValue {
