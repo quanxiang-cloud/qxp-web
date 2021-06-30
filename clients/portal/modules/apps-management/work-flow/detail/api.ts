@@ -1,28 +1,7 @@
-import httpClient from '@lib/http-client';
 import { QueryFunctionContext } from 'react-query';
 
-interface WorkFlow {
-  bpmnText: string;
-  canCancel: '0' | '1' | 1 | 0;
-  canMsg: '0' | '1' | 1 | 0;
-  canUrge: '0' | '1' | 0 | 1;
-  canViewStatusMsg: '0' | '1' | 1 | 0;
-  createTime: string;
-  creatorAvatar: string;
-  creatorId: string;
-  creatorName: string;
-  id: string;
-  isDeleted: '0' | '1';
-  modifierId: string;
-  modifierName: string;
-  modifyTime: string;
-  name: string;
-  processKey: string;
-  status: string;
-  triggerMode: 'FORM_DATA' | 'FORM_TIME';
-  keyFields: string;
-  instanceName: string;
-}
+import httpClient from '@lib/http-client';
+import { WorkFlowData } from '@flowEditor/type';
 
 interface AddWorkFlow {
   bpmnText: string;
@@ -35,18 +14,18 @@ interface AddWorkFlow {
   processKey: string;
   triggerMode: 'FORM_DATA' | 'FORM_TIME';
 }
-export function addWorkFlow({ queryKey }: QueryFunctionContext): Promise<WorkFlow> {
-  return httpClient<WorkFlow>(
+export function addWorkFlow({ queryKey }: QueryFunctionContext): Promise<WorkFlowData> {
+  return httpClient<WorkFlowData>(
     '/api/v1/flow/addFlow',
     queryKey[1] as AddWorkFlow,
   );
 }
 
-export function getWorkFlowInfo({ queryKey }: QueryFunctionContext): Promise<WorkFlow> {
-  return httpClient<WorkFlow>(`/api/v1/flow/flowInfo/${queryKey[1] as string}`);
+export function getWorkFlowInfo({ queryKey }: QueryFunctionContext): Promise<WorkFlowData> {
+  return httpClient<WorkFlowData>(`/api/v1/flow/flowInfo/${queryKey[1] as string}`);
 }
 
-export interface SaveWorkFlow {
+export type SaveWorkFlowParamsType = {
   bpmnText: string;
   id?: string;
   name: string;
@@ -58,9 +37,9 @@ export interface SaveWorkFlow {
   appId: string;
   keyFields?: string;
   instanceName?: string;
-}
-export function saveWorkFlow(flowData: SaveWorkFlow): Promise<WorkFlow> {
-  return httpClient<WorkFlow>(
+};
+export function saveWorkFlow(flowData: SaveWorkFlowParamsType): Promise<WorkFlowData> {
+  return httpClient<WorkFlowData>(
     '/api/v1/flow/saveFlow',
     flowData,
   );
@@ -75,8 +54,8 @@ interface UpdateWorkFlow {
   name: string;
   modifierId: string;
 }
-export function updateWorkflow({ queryKey }: QueryFunctionContext): Promise<WorkFlow> {
-  return httpClient<WorkFlow>(
+export function updateWorkflow({ queryKey }: QueryFunctionContext): Promise<WorkFlowData> {
+  return httpClient<WorkFlowData>(
     '/api/v1/flow/updateFlow',
     queryKey[1] as UpdateWorkFlow,
   );

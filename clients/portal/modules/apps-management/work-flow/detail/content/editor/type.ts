@@ -1,6 +1,34 @@
 import { CSSProperties, HTMLAttributes, ReactNode } from 'react';
 import { Position, ArrowHeadType, FlowElement, Elements } from 'react-flow-renderer';
 
+export interface WorkFlow {
+  version: string;
+  shapes: FlowElement<Data>[];
+}
+type CanOp = '0' | '1' | 1 | 0;
+export interface WorkFlowData {
+  bpmnText: string;
+  canCancel: CanOp;
+  canMsg: CanOp;
+  canUrge: CanOp;
+  canViewStatusMsg: CanOp;
+  createTime: string;
+  creatorAvatar: string;
+  creatorId: string;
+  creatorName: string;
+  id: string;
+  isDeleted: CanOp;
+  modifierId: string;
+  modifierName: string;
+  modifyTime: string;
+  name: string;
+  processKey: string;
+  status: string;
+  triggerMode: 'FORM_DATA' | 'FORM_TIME';
+  keyFields: string;
+  instanceName: string;
+}
+
 export interface NodeProps {
   id: string;
   data: Record<string, unknown>;

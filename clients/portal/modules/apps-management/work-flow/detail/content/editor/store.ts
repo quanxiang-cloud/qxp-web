@@ -4,10 +4,11 @@ import { uuid } from '@lib/utils';
 import { update, omit } from 'lodash';
 import moment from 'moment';
 
-import { SaveWorkFlow } from '@flow/detail/api';
+import { SaveWorkFlowParamsType } from '@flow/detail/api';
 
 import { edgeBuilder, nodeBuilder } from './utils';
 import type { StoreValue, BusinessData, CurrentElement, Data, FormDataElement } from './type';
+import { CURRENT_WORK_FLOW_VERSION } from './utils/constants';
 
 export const getStoreInitialData = (): StoreValue => {
   const startID = 'formData' + uuid();
@@ -23,7 +24,7 @@ export const getStoreInitialData = (): StoreValue => {
     name: '未命名工作流' + moment().format('YYYY-MM-DD-HH-mm-ss'),
     apiFetched: false,
     validating: false,
-    version: '0.2',
+    version: CURRENT_WORK_FLOW_VERSION,
     status: 'DISABLE',
     keyFields: '',
     instanceName: '',
@@ -147,7 +148,7 @@ export function numberTransform(keys: string[], data: any): any {
 
 export function buildWorkFlowSaveData(
   appID: string, saveData: Partial<BusinessData> = {},
-): SaveWorkFlow {
+): SaveWorkFlowParamsType {
   const {
     version, nodeIdForDrawerForm, name, triggerMode, cancelable, urgeable, nodeAdminMsg,
     seeStatusAndMsg,
