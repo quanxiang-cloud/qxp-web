@@ -12,7 +12,7 @@ import type { StoreValue, NodeType, Data } from './type';
 import DrawerForm from './forms';
 import {
   nodeBuilder, buildBranchNodes, edgeBuilder, getCenterPosition, removeEdge,
-  getBranchTargetElementID,
+  getBranchTargetElementID, getBranchID,
 } from './utils';
 
 import 'react-flow-renderer/dist/style.css';
@@ -34,16 +34,6 @@ export default function Editor(): JSX.Element {
 
   function setElements(eles: Elements): void {
     updateStore((s) => ({ ...s, elements: eles }));
-  }
-
-  function getBranchID(sourceElement: Node<Data>, targetElement: Node<Data>): undefined | string {
-    if (sourceElement.type === 'processBranch') {
-      return sourceElement.id;
-    }
-    if (targetElement.type === 'processBranch') {
-      return targetElement.id;
-    }
-    return sourceElement.data?.nodeData.branchID || targetElement.data?.nodeData.branchID;
   }
 
   function addNewNode({ nodeType, source, target, position, width, height, nodeName }: NodeInfo): void {
