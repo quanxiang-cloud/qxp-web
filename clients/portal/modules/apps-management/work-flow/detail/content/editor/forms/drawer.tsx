@@ -3,7 +3,7 @@ import cs from 'classnames';
 
 import Icon from '@c/icon';
 
-import './drawer.scss';
+import '@c/drawer/index.scss';
 
 type Props = {
   onCancel: () => boolean | void;
