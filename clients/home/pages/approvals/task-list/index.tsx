@@ -22,7 +22,7 @@ const tipsMap = {
   cc_to_me: '暂无抄送给我的工作流',
 };
 
-function TaskList({ tasks, type, store, className, taskType }: Props) {
+function TaskList({ tasks, type, store, className, taskType }: Props): JSX.Element {
   if (store.loading) {
     return <Loading />;
   }

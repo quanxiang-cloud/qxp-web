@@ -1,27 +1,17 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
-import { isObject } from 'lodash';
 import dayjs from 'dayjs';
 
-import Avatar from '../avatar';
 import Status from '@c/process-node-status';
 import Icon from '@c/icon';
+import { getBasicValue } from '@c/form-data-value-renderer';
 
+import Avatar from '../avatar';
 import './index.scss';
 
 interface Props {
   task: ApprovalTask;
   type: 'APPLY_PAGE' | 'WAIT_HANDLE_PAGE' | 'HANDLED_PAGE' | 'CC_PAGE' | 'ALL_PAGE';
-}
-
-function getEnumLabelFromSchema(
-  schema: Record<string, any>, key: string, value: string | Record<'label' | 'value', unknown>,
-): any {
-  const enumData = schema?.[key]?.enum || [];
-  if (enumData.length) {
-    return (enumData.find((v: { value: any }) => v.value === value))?.label || value;
-  }
-  return isObject(value) ? value.label : value;
 }
 
 export default function TaskCard({ task, type }: Props): JSX.Element {
@@ -77,7 +67,7 @@ export default function TaskCard({ task, type }: Props): JSX.Element {
                 return (
                   <p key={keyName} className="mb-4 form-data-item">
                     <span>{properties[keyName]?.title || keyName}: </span>
-                    <span>{getEnumLabelFromSchema(properties, keyName, value)}</span>
+                    <span>{getBasicValue(properties[keyName], value)}</span>
                   </p>
                 );
               })
