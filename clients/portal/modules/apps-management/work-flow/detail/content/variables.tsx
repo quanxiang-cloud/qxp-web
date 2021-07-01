@@ -82,9 +82,9 @@ export default function Variables(): JSX.Element {
     });
   }, []);
 
-  function handleVariableInfo(variable: ProcessVariable, operat: string): void {
+  function handleVariableInfo(variable: ProcessVariable, operator: string): void {
     setCurrVariable(variable);
-    if (operat === 'edit') {
+    if (operator === 'edit') {
       setOpenVariable(true);
       return;
     }

@@ -2,7 +2,8 @@ import { XYPosition, Node } from 'react-flow-renderer';
 
 import { deepClone } from '@lib/utils';
 
-import type { NodeType, Data } from '../type';
+import type { NodeType, Data, Operation } from '../type';
+import { SYSTEM_OPERATOR_PERMISSION, CUSTOM_OPERATOR_PERMISSION } from './constants';
 
 const approveAndFillInCommonData = {
   basicConfig: {
@@ -84,33 +85,13 @@ export function getNodeInitialData(type: NodeType): any {
     letter: {},
     end: {},
   };
-  if (type === 'fillIn' || type === 'approve') {
-    dataMap[type].operatorPermission.system = [{
-      enabled: true,
-      changeable: false,
-      name: '通过',
-      text: '通过',
-      value: 'AGREE',
-      only: 'approve',
-    },
-    {
-      enabled: true,
-      changeable: false,
-      name: '拒绝',
-      text: '拒绝',
-      value: 'REFUSE',
-      only: 'approve',
-    },
-    {
-      enabled: true,
-      changeable: false,
-      name: '提交',
-      text: '提交',
-      value: 'FILL_IN',
-      only: 'fillIn',
-    }].filter(({ only }) => only === type);
+  function operatorFilter({ only }: Operation): boolean {
+    return only === type;
   }
-  // @ts-ignore
+  if (type === 'fillIn' || type === 'approve') {
+    dataMap[type].operatorPermission.system = SYSTEM_OPERATOR_PERMISSION.filter(operatorFilter);
+    dataMap[type].operatorPermission.custom = CUSTOM_OPERATOR_PERMISSION.filter(operatorFilter);
+  }
   return dataMap[type];
 }
 

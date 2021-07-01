@@ -168,27 +168,19 @@ export interface BasicNodeConfig {
   timeRule: TimeRule;
 }
 
-export interface SystemOperation {
-  enabled: boolean;
-  changeable: boolean;
-  name: string;
-  text: string;
-  value: string;
-  reasonRequired?: boolean;
-}
-
-export interface CustomOperation {
+export interface Operation {
   enabled: boolean;
   changeable: boolean;
   name: string;
   text?: string;
   value: string;
   reasonRequired?: boolean;
+  only?: string;
 }
 
 export interface OperationPermission {
-  system: SystemOperation[];
-  custom: CustomOperation[];
+  system: Operation[];
+  custom: Operation[];
 }
 
 export interface FillInData {

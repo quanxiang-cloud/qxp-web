@@ -8,8 +8,7 @@ import Loading from '@c/loading';
 import ErrorTips from '@c/error-tips';
 import { getOperationList } from '@flowEditor/forms/api';
 import type {
-  SystemOperation,
-  CustomOperation,
+  Operation,
   OperationPermission as OperationPermissionType,
   NodeType,
   FillInData,
@@ -52,7 +51,7 @@ export default function OperatorPermission({ value, onChange: _onChange, type }:
     });
     data?.system?.forEach((op) => {
       if (isSystemEmpty || !systemValues.includes(`${op.value}.${op.name}`)) {
-        system.push(op as SystemOperation);
+        system.push(op as Operation);
       }
     });
     custom = custom.map((item) => {
@@ -73,12 +72,12 @@ export default function OperatorPermission({ value, onChange: _onChange, type }:
 
   function onUpdateOperation(
     type: 'system' | 'custom',
-    operation: SystemOperation,
-    value: Partial<SystemOperation>,
+    operation: Operation,
+    value: Partial<Operation>,
   ): void {
     onChange({
       ...mergedOperations,
-      [type]: mergedOperations[type].map((o: CustomOperation) => {
+      [type]: mergedOperations[type].map((o: Operation) => {
         if (operation == o) {
           return {
             ...o,
@@ -92,7 +91,7 @@ export default function OperatorPermission({ value, onChange: _onChange, type }:
 
   function listRender(
     label: string,
-    operation: SystemOperation[],
+    operation: Operation[],
     type: 'system' | 'custom',
   ): JSX.Element | null {
     if (!operation?.length) {
@@ -199,7 +198,7 @@ export default function OperatorPermission({ value, onChange: _onChange, type }:
         <div className="text-center flex-1">理由必填</div>
       </header>
       {listRender('默认操作', mergedOperations.system, 'system')}
-      {listRender('自定义操作', mergedOperations.custom as SystemOperation[], 'custom')}
+      {listRender('自定义操作', mergedOperations.custom as Operation[], 'custom')}
     </>
   );
 }
