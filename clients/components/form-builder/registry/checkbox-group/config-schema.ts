@@ -104,10 +104,10 @@ const schema: ISchema = {
               label: '关联已有数据',
               value: 'linkage',
             },
-            {
-              label: '通过公式计算',
-              value: 'formula',
-            },
+            // {
+            //   label: '通过公式计算',
+            //   value: 'formula',
+            // },
           ],
           'x-component': 'select',
           'x-mega-props': {
