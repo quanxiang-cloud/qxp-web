@@ -37,6 +37,7 @@ export const OperatorOptions: Record<string, any> = {
   DatePicker: OPERATORS.Date,
   NumberPicker: OPERATORS.Number,
   Default: OPERATORS.Default,
+  Input: OPERATORS.Default,
 };
 
 type Comparator = (leftValue: any, rightValue: any) => boolean;
