@@ -73,7 +73,16 @@ const DEFAULT_VALUE: FormBuilder.VisibleHiddenLinkage = {
   isShow: true,
 };
 
-const DISABLE_FIELD: Array<string | undefined> = ['textarea', 'CascadeSelector'];
+const DISABLE_FIELD: Array<string | undefined> = [
+  'textarea',
+  'CascadeSelector',
+  'SubTable',
+  'AssociatedRecords',
+  'UserPicker',
+  'OrganizationPicker',
+  'FileUpload',
+  'ImageUpload',
+];
 
 type Props = {
   mode: string;
