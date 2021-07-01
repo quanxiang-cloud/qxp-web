@@ -1,7 +1,7 @@
 import React, { useContext, useRef } from 'react';
 import { ISchemaFieldComponentProps } from '@formily/antd';
 import FormulaEditor, { CustomRule, RefProps } from '@c/formula-editor';
-import { WorkTableInternalFields } from '@flowEditor/utils/constants';
+import { WORK_TABLE_INTERNAL_FIELDS } from '@flowEditor/utils/constants';
 import { useQuery } from 'react-query';
 
 import { getFlowVariables } from '../api';
@@ -35,7 +35,7 @@ function FilterRule({ mutators, value }: ISchemaFieldComponentProps): JSX.Elemen
     cur: CustomRule[], next,
   ) => {
     const [fieldName, fieldSchema] = next;
-    if (!WorkTableInternalFields.includes(fieldName) &&
+    if (!WORK_TABLE_INTERNAL_FIELDS.includes(fieldName) &&
       fieldSchema?.['x-component']?.toLowerCase() !== 'subtable' &&
       fieldSchema?.['x-component']?.toLowerCase() !== 'associatedrecords'
     ) {

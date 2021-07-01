@@ -3,7 +3,8 @@ import { omitBy } from 'lodash';
 
 import httpClient from '@lib/http-client';
 
-import { ProcessVariable } from '../type';
+import { ProcessVariable, Operation } from '../type';
+import { SYSTEM_OPERATOR_PERMISSION, CUSTOM_OPERATOR_PERMISSION } from '../utils/constants';
 
 export type Option = {
   label: string;
@@ -64,89 +65,10 @@ export async function getFormFieldOptions({ queryKey }: QueryFunctionContext): P
   };
 }
 
-export interface OperationItem {
-  enabled: boolean;
-  changeable: boolean;
-  name: string;
-  text?: string;
-  value: string;
-}
-
-const operationList = {
-  system: [{
-    enabled: true,
-    changeable: false,
-    name: '通过',
-    text: '通过',
-    value: 'AGREE',
-    only: 'approve',
-    reasonRequired: false,
-  }, {
-    enabled: true,
-    changeable: false,
-    name: '拒绝',
-    text: '拒绝',
-    value: 'REFUSE',
-    only: 'approve',
-    reasonRequired: true,
-  }, {
-    enabled: true,
-    changeable: false,
-    name: '提交',
-    text: '提交',
-    value: 'FILL_IN',
-    only: 'fillIn',
-  }],
-  custom: [{
-    enabled: false, // common
-    changeable: true,
-    name: '撤回',
-    text: '撤回',
-    value: 'CANCEL',
-  }, {
-    enabled: false, // common
-    changeable: true,
-    name: '转交',
-    text: '转交',
-    value: 'DELIVER',
-  }, {
-    enabled: false,
-    changeable: true,
-    name: '回退',
-    text: '回退',
-    value: 'STEP_BACK',
-    only: 'approve',
-  }, {
-    enabled: false,
-    changeable: true,
-    name: '打回重填',
-    text: '打回重填',
-    value: 'SEND_BACK',
-    only: 'approve',
-  }, {
-    enabled: false, // common
-    changeable: true,
-    name: '抄送',
-    text: '抄送',
-    value: 'CC',
-  }, {
-    enabled: false,
-    changeable: true,
-    name: '加签',
-    text: '加签',
-    value: 'ADD_SIGN',
-    only: 'approve',
-  }, {
-    enabled: false, // common
-    changeable: true,
-    name: '邀请阅示',
-    text: '邀请阅示',
-    value: 'READ',
-  }],
-};
+const operationList = { system: SYSTEM_OPERATOR_PERMISSION, custom: CUSTOM_OPERATOR_PERMISSION };
 export function getOperationList({ queryKey }: QueryFunctionContext): Promise<{
-  system?: OperationItem[];
-  custom: OperationItem[];
+  system?: Operation[];
+  custom: Operation[];
 }> {
   return new Promise((r) => {
     const type = queryKey[1];
