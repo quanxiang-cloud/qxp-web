@@ -109,7 +109,7 @@ function VisibleHiddenLinkageConfig({ mode, onClose, linkageKey, onSubmit }: Pro
   const sourceKeyOptions = Object.entries(sourceSchema.properties || {})
     .filter(([key]) => !INTERNAL_FIELD_NAMES.includes(key))
     .filter(([key, value]) => {
-      return !DISABLE_FIELD.includes(value['x-component'] ?? '');
+      return !DISABLE_FIELD.includes(value['x-component'] as string);
     })
     .map(([key, value]) => {
       return { value: key, label: value.title || key, availableCompareValues: value.enum || [],
