@@ -8,6 +8,7 @@ import { INTERNAL_FIELD_NAMES } from '../../store';
 import { StoreContext } from '../../context';
 import VisibleHiddenLinkageConfig from './visible-hidden-linkage-config';
 import ValidationRules from './validation-rules';
+import { toJS } from 'mobx';
 
 type RenderLayoutOptionProps = {
   labelAlign: 'right' | 'top';
@@ -82,6 +83,15 @@ function VisibleHiddenLinkageList({ onEdit }: VisibleHiddenLinkagesProps): JSX.E
 
             const { title, enum: options } = keyLabels[sourceKey];
             let compareValueText = compareValue;
+
+            if (compareValue === '') {
+              compareValueText = '\'\'';
+            }
+
+            if (typeof toJS(compareValue) === 'object') {
+              compareValueText = '[]';
+            }
+
             if (options.length) {
               options.find(({ label, value }) => {
                 if (value === compareValue) {
