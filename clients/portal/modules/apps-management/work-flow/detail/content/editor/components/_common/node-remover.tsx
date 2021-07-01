@@ -1,5 +1,6 @@
 import React, { useState, MouseEvent } from 'react';
 import cs from 'classnames';
+import { flatMap } from 'lodash';
 import { usePopper } from 'react-popper';
 import { removeElements, FlowElement, Edge, isNode } from 'react-flow-renderer';
 
@@ -51,9 +52,16 @@ export default function NodeRemover({
   }
 
   function getBranchNodes(branchID: string): FlowElement<Data>[] {
-    return elements.filter((ele) => {
+    const currentLevelElements = elements.filter((ele) => {
       return ele.data?.nodeData.branchID === branchID;
     });
+    const branchElements: FlowElement<Data>[] = currentLevelElements.filter((ele) => {
+      if (ele.type === 'processBranch' && ele.id !== branchID) {
+        return ele;
+      }
+    });
+    const nodes = flatMap(branchElements, (ele) => getBranchNodes(ele.id));
+    return currentLevelElements.concat(nodes);
   }
 
   function onRemoveBranchNodes(
