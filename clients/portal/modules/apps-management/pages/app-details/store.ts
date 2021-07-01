@@ -35,7 +35,7 @@ class AppDetailsStore {
   @observable pageID = '';
   @observable pageListLoading = true;
   @observable fetchSchemeLoading = false;
-  @observable formScheme = null;
+  @observable hasSchema = false;
   @observable curPage: PageInfo = { id: '' };
   @observable pagesTreeData: TreeData = {
     rootId: 'ROOT',
@@ -224,8 +224,8 @@ class AppDetailsStore {
 
     const pageInfo = this.pagesTreeData.items[pageID].data;
     this.fetchSchemeLoading = true;
-    getTableSchema(this.appID, pageInfo.id).then((res: any) => {
-      this.formScheme = res;
+    getTableSchema(this.appID, pageInfo.id).then(({ schema }) => {
+      this.hasSchema = !!schema;
       this.fetchSchemeLoading = false;
     }).catch(() => {
       this.fetchSchemeLoading = false;
