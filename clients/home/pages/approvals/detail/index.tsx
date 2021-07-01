@@ -6,7 +6,7 @@ import { pick } from 'lodash';
 
 import Breadcrumb from '@c/breadcrumb';
 import { useURLSearch } from '@lib/hooks';
-import Tab, { TabItem } from '@c/tab';
+import Tab from '@c/tab';
 import Icon from '@c/icon';
 import Loading from '@c/loading';
 import ErrorTips from '@c/error-tips';
@@ -52,40 +52,15 @@ function ApprovalDetail(): JSX.Element {
       <div className='task-form'>
         <FormRenderer
           defaultValue={task.formData}
-          schema={wrapSchemaWithFieldPermission(task.formSchema.table, task?.fieldPermission?.custom)}
+          schema={
+            wrapSchemaWithFieldPermission(
+              task.formSchema.table, task?.fieldPermission?.custom || task?.formData?.fieldPermission?.custom,
+            )
+          }
           onFormValueChange={task.formData}
         />
       </div>
     );
-  };
-
-  const renderTabItems = (): TabItem<React.Key>[] => {
-    if (isLoading) {
-      return [];
-    }
-
-    if (!data || isError) {
-      toast.error(error?.message);
-      return [];
-    }
-    const items = data.taskDetailModels.map((task: any) => {
-      return {
-        id: task.taskId,
-        name: task.taskName,
-        content: (
-          <>
-            <Toolbar
-              currTask={task}
-              permission={task?.operatorPermission || {}}
-              globalActions={pick(task || {}, globalActionKeys)}
-              onClickAction={store.handleClickAction}
-            />
-            {task.formData && renderSchemaForm(task.formData)}
-          </>
-        ),
-      };
-    });
-    return items || [];
   };
 
   if (isLoading) {
@@ -104,7 +79,7 @@ function ApprovalDetail(): JSX.Element {
       <Breadcrumb
         segments={[
           {
-            key: 'back', text: '返回', render: (seg) =>
+            key: 'back', text: '返回', render: () =>
               (
                 <span className="inline-flex items-center cursor-pointer" onClick={() => history.goBack()}>
                   <Icon name="keyboard_backspace" className="mr-6" />返回
@@ -120,23 +95,17 @@ function ApprovalDetail(): JSX.Element {
       <div className="approval-detail w-full h-full flex px-20">
         <Panel className="flex flex-col flex-1 mr-20 px-24 py-24">
           {
-            tasks.length === 1 && (
-              <>
-                <Toolbar
-                  currTask={tasks[0]}
-                  permission={tasks[0]?.operatorPermission || {}}
-                  globalActions={pick(tasks[0] || {}, globalActionKeys)}
-                  onClickAction={store.handleClickAction}
-                />
-                {renderSchemaForm(tasks[0])}
-              </>
-            )
+            <>
+              <Toolbar
+                currTask={tasks[0]}
+                permission={tasks[0]?.operatorPermission || {}}
+                globalActions={pick(tasks[0] || {}, globalActionKeys)}
+                onClickAction={store.handleClickAction}
+              />
+              {renderSchemaForm(tasks[0])}
+            </>
           }
-          {
-            tasks.length > 1 && (<Tab
-              items={renderTabItems()}
-            />)
-          }
+
         </Panel>
         <Panel className="approval-detail-tab w-400">
           <Tab
