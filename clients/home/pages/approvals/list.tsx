@@ -41,7 +41,7 @@ const typeIconMap = {
 };
 
 function ApprovalTypeList({ listType, countMap, onClick }: ApprovalTypeListProps): JSX.Element {
-  const renderCount = (type: ListType) => {
+  const renderCount = (type: ListType): JSX.Element | void => {
     let count = 0;
     if (type === 'todo') {
       count = countMap.waitHandleCount || 0;
@@ -95,13 +95,17 @@ function Approvals(): JSX.Element {
     return await getFlowInstanceCount({});
   });
 
-  function handleChangeList(toList: string) {
+  function handleChangeList(toList: string): void {
     setSearch({ list: toList });
   }
 
   return (
     <div className="main-content flex">
-      <ApprovalTypeList listType={listType as ListType} onClick={handleChangeList} countMap={flowInstCount || {}} />
+      <ApprovalTypeList
+        listType={listType as ListType}
+        onClick={handleChangeList}
+        countMap={flowInstCount || {}}
+      />
       <div className="px-20 pt-20 overflow-auto flex-grow">
         {listType === 'todo' && (<TodoApprovals />)}
         {listType === 'my_applies' && <MyApplyApprovals />}
