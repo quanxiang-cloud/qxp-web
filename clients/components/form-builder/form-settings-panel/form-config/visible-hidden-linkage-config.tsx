@@ -168,6 +168,7 @@ function VisibleHiddenLinkageConfig({ mode, onClose, linkageKey, onSubmit }: Pro
           state.props['x-component'] = 'AntdSelect';
           if (compareField === 'CheckboxGroup' || compareField === 'MultipleSelect') {
             state.props['x-component-props'] = { mode: 'multiple' };
+            state.value = defaultValue.rules[index].compareValue;
           }
         } else {
           state.props.enum = undefined;
