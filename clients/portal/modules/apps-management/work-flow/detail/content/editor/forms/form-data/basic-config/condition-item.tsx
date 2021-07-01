@@ -46,6 +46,10 @@ export default function ConditionItem({ condition, options, onChange, schemaMap 
   }];
   const currentOption = options.find((option) => option.value === value);
   const currentSchema = schemaMap?.[value || ''] || {};
+  if (value && currentSchema) {
+    currentSchema.display = true;
+  }
+
   const schema = {
     type: 'object',
     title: '',

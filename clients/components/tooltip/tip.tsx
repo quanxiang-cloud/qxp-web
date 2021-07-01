@@ -17,7 +17,7 @@ export default function({
   style,
   label,
   labelClassName,
-}: ToolTipProps) {
+}: ToolTipProps): JSX.Element {
   return (
     <div
       style={style}
