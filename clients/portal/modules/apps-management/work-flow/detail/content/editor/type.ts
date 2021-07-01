@@ -23,7 +23,7 @@ export interface WorkFlowData {
   modifyTime: string;
   name: string;
   processKey: string;
-  status: string;
+  status: 'ENABLE' | 'DISABLE';
   triggerMode: 'FORM_DATA' | 'FORM_TIME';
   keyFields: string;
   instanceName: string;
@@ -402,7 +402,7 @@ export interface StoreValue {
   urgeable: boolean;
   seeStatusAndMsg: boolean;
   nodeAdminMsg: boolean;
-  status: string;
+  status: 'DISABLE' | 'ENABLE';
   errors: Errors;
   currentDataNotSaveConfirmCallback?: () => void;
   showDataNotSaveConfirm?: boolean;
