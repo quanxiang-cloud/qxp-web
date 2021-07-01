@@ -170,7 +170,7 @@ function FormulaEditor({
         text = text.replace(entityMap[key].data.name, entityMap[key].data.key);
       });
       return text;
-    }).join(' ');
+    }).join(' ').replace('"', '\'').replace('"', '\'');
   };
 
   return (
