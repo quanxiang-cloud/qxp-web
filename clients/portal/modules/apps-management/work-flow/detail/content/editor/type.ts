@@ -27,6 +27,8 @@ export interface WorkFlowData {
   triggerMode: 'FORM_DATA' | 'FORM_TIME';
   keyFields: string;
   instanceName: string;
+  canCancelType: number,
+  canCancelNodes: string,
 }
 
 export interface NodeProps {
@@ -396,6 +398,8 @@ export interface StoreValue {
   elements: Elements<Data>;
   name: string;
   version: string;
+  canCancelType?: number;
+  canCancelNodes: string;
   processKey: string,
   triggerMode: string | 'FORM_DATA' | 'FORM_TIME',
   cancelable: boolean;

@@ -34,6 +34,8 @@ export const getStoreInitialData = (): StoreValue => {
     currentConnection: {},
     cancelable: false,
     urgeable: false,
+    canCancelType: 1,
+    canCancelNodes: '',
     seeStatusAndMsg: false,
     nodeAdminMsg: false,
     elements: [
