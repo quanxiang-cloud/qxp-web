@@ -9,9 +9,7 @@ export const fetchFormScheme = async (appID: string, tableID: string) => {
 };
 
 export const updateFormScheme = async (appID: string, data: any) => {
-  return await httpClient(`/api/v1/structor/${appID}/m/table/update`, data, {
-    'X-Proxy': 'FORM_SCHEMA',
-  });
+  return await httpClient(`/api/v1/form/${appID}/m/table/update`, data);
 };
 
 export const createPageScheme = async (appID: string, data: any) => {
