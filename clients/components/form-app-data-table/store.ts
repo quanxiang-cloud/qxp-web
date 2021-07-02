@@ -134,7 +134,7 @@ class AppPageDataStore {
 
     this.listLoading = true;
     const { condition, tag, ...other } = params;
-    httpClient(`/api/v1/structor/${this.appID}/home/form/${this.pageID}`, {
+    httpClient(`/api/v1/form/${this.appID}/home/form/${this.pageID}`, {
       method: 'find',
       page: 1,
       conditions: { tag: tag, condition },

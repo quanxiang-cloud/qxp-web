@@ -32,7 +32,7 @@ function useTableSchema(appID: string, tableID: string): ISchema | null {
       return Promise.resolve({});
     }
 
-    return getTableSchema(appID, tableID).then(({ schema }) => (schema || {}));
+    return getTableSchema(appID, tableID).then((pageSchema) => (pageSchema?.schema || {}));
   });
 
   useEffect(() => {

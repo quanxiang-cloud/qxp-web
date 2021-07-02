@@ -29,7 +29,7 @@ export function findTableRecords(
   };
 
   return httpClient<FormDataResponse>(
-    `/api/v1/structor/${appID}/home/form/${tableID}`,
+    `/api/v1/form/${appID}/home/form/${tableID}`,
     params,
   ).then(({ entities }) => entities).catch((err) => {
     logger.error(err);
@@ -45,7 +45,7 @@ export async function fetchTableData(
 ): Promise<FormDataResponse | null> {
   try {
     return httpClient<FormDataResponse>(
-      `/api/v1/structor/${appID}/home/form/${tableID}`,
+      `/api/v1/form/${appID}/home/form/${tableID}`,
       { method: 'find', page: pageNumber, size: pageSize },
     );
   } catch (err) {

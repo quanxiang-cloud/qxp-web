@@ -32,12 +32,12 @@ function LinkedTable({ mutators, value }: ISchemaFieldComponentProps): JSX.Eleme
       return;
     }
 
-    getTableSchema(store.appID, tableID).then(({ schema }) => {
+    getTableSchema(store.appID, tableID).then((pageSchema) => {
       mutators.change({
         tableID,
         appID: store.appID,
         tableName: linkageTables.find(({ value }) => value === tableID)?.label || tableID,
-        associatedTable: schema,
+        associatedTable: pageSchema?.schema || {},
       });
     });
   }, [tableID]);
