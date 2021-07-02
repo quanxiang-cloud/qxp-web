@@ -154,7 +154,8 @@ function CreateDataForm({ appID, pageID, rowID, onCancel, title }: Props): JSX.E
     const initialMethod = defaultValues ? 'update' : 'create';
     const reqData: FormDataRequestCreateParams | FormDataRequestUpdateParams = buildRequestParams(
       initialMethod === 'create' ? formData : omitBy(formData, (_, key) => {
-        return schemaMap[key as keyof ISchema]?.['x-component'] === 'subtable' || !(key in schemaMap);
+        return schemaMap[key as keyof ISchema]?.['x-component'].toLowerCase() === 'subtable' ||
+          !(key in schemaMap);
       }),
       defaultValue?._id,
       initialMethod,
