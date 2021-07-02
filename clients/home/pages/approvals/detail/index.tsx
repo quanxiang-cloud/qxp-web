@@ -48,15 +48,16 @@ function ApprovalDetail(): JSX.Element {
   }, []);
 
   const renderSchemaForm = (task: any): JSX.Element | null => {
+    const formSchema = task?.fieldPermission?.custom ?
+      wrapSchemaWithFieldPermission(
+        task.formSchema.table,
+        task?.fieldPermission?.custom || task?.formData?.fieldPermission?.custom,
+      ) : task.formSchema.table;
     return (
       <div className='task-form'>
         <FormRenderer
           defaultValue={task.formData}
-          schema={
-            wrapSchemaWithFieldPermission(
-              task.formSchema.table, task?.fieldPermission?.custom || task?.formData?.fieldPermission?.custom,
-            )
-          }
+          schema={formSchema}
           onFormValueChange={task.formData}
         />
       </div>
