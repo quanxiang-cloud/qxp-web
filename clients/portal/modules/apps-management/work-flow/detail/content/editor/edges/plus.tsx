@@ -45,7 +45,7 @@ export default function CustomEdge({
     sourcePosition,
     targetPosition,
   });
-  const { elements = [] } = useObservable<StoreValue>(store);
+  const { elements = [], status } = useObservable<StoreValue>(store);
   const switcher = useEdgeSwitch();
   const formDataElement = elements.find(({ type }) => type === 'formData');
 
@@ -88,23 +88,25 @@ export default function CustomEdge({
           markerEnd={markerEnd}
           onDragOver={onDragOver}
         />
-        <EdgeText
-          className={cursorClassName}
-          style={{
-            filter: 'drop-shadow(0px 8px 24px rgba(55, 95, 243, 1))',
-            pointerEvents: 'all',
-          }}
-          rectClassName={cursorClassName}
-          textClassName={cursorClassName}
-          x={centerX}
-          y={centerY}
-          onDragOver={onDragOver}
-          label={label}
-          onClick={onShowComponentSelector}
-          labelBgBorderRadius={14}
-          width="28"
-          height="28"
-        />
+        {status === 'DISABLE' && (
+          <EdgeText
+            className={cursorClassName}
+            style={{
+              filter: 'drop-shadow(0px 8px 24px rgba(55, 95, 243, 1))',
+              pointerEvents: 'all',
+            }}
+            rectClassName={cursorClassName}
+            textClassName={cursorClassName}
+            x={centerX}
+            y={centerY}
+            onDragOver={onDragOver}
+            label={label}
+            onClick={onShowComponentSelector}
+            labelBgBorderRadius={14}
+            width="28"
+            height="28"
+          />
+        )}
       </g>
       {!hasForm && showTooltip && (
         <foreignObject x={centerX + 20} y={centerY - 18} width="220" height="36">

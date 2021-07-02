@@ -18,7 +18,7 @@ type Option = {
   label: string;
 }
 
-function getBasicValue(schema: Schema, initValue: Value): string {
+export function getBasicValue(schema: Schema, initValue: Value): string {
   const format = schema['x-component-props']?.format || 'YYYY-MM-DD HH:mm:ss';
   switch (schema.type) {
   case 'label-value':

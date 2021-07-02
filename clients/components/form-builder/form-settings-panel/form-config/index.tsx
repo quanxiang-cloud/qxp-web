@@ -50,7 +50,7 @@ type KeyLabels = Record<string, { title: string, enum: Array<{ label: any, value
 type VisibleHiddenLinkagesProps = {
   onEdit: (key: string) => void;
 }
-function VisibleHiddenLinkageList({ onEdit }: VisibleHiddenLinkagesProps): JSX.Element {
+const VisibleHiddenLinkageList = observer(({ onEdit }: VisibleHiddenLinkagesProps): JSX.Element => {
   const store = useContext(StoreContext);
   const keyLabels: KeyLabels = Object.entries(store.schema.properties || {})
     .filter(([key]) => !INTERNAL_FIELD_NAMES.includes(key))
@@ -82,6 +82,7 @@ function VisibleHiddenLinkageList({ onEdit }: VisibleHiddenLinkagesProps): JSX.E
 
             const { title, enum: options } = keyLabels[sourceKey];
             let compareValueText = compareValue;
+
             if (options.length) {
               options.find(({ label, value }) => {
                 if (value === compareValue) {
@@ -132,7 +133,7 @@ function VisibleHiddenLinkageList({ onEdit }: VisibleHiddenLinkagesProps): JSX.E
       }
     </div>
   );
-}
+});
 
 function FormConfig(): JSX.Element {
   const store = useContext(StoreContext);
