@@ -8,7 +8,7 @@ import Icon from '@c/icon';
 import FilterForm from './filter-form';
 import { StoreContext } from './context';
 
-function PageDataFilter(): JSX.Element|null {
+function PageDataFilter(): JSX.Element | null {
   const [showMoreFilter, setShowMoreFilter] = useState(false);
   const store = useContext(StoreContext);
   const filterKeys = Object.keys(store.filters);
@@ -34,7 +34,10 @@ function PageDataFilter(): JSX.Element|null {
         const [start, end] = values[key];
         const format = curFilter?.['x-component-props']?.format;
         if (format) {
-          _condition.value = [moment(start).format(format), moment(end).format(format)];
+          _condition.value = [
+            moment(start.format(format)).toISOString(true),
+            moment(end.format(format)).toISOString(true),
+          ];
         } else {
           _condition.value = [
             moment(start).format('YYYY-MM-DDT00:00:00'),
@@ -49,10 +52,14 @@ function PageDataFilter(): JSX.Element|null {
         _condition.value = [Number(values[key])];
         _condition.op = 'eq';
         break;
+      case 'array':
+        _condition.value = values[key];
+        _condition.op = 'fullSubset';
+        break;
       default:
         if (Array.isArray(values[key])) {
           _condition.value = values[key];
-          _condition.op = 'in';
+          _condition.op = 'intersection';
         } else {
           _condition.value = [values[key]];
           _condition.op = 'like';

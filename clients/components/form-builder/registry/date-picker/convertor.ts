@@ -29,24 +29,7 @@ export const defaultConfig: DatePickerConfig = {
 };
 
 export function toSchema(value: typeof defaultConfig): ISchema {
-  let xComponent = 'DatePicker';
   const timeFormat = value.valueFormat?.split(' ')[1];
-  switch (value.valueFormat) {
-  case 'YYYY':
-    xComponent = 'YearPicker';
-    break;
-  case 'YYYY-MM':
-    xComponent = 'MonthPicker';
-    break;
-  case 'YYYY-MM-DD':
-    xComponent = 'DatePicker';
-    break;
-    // case 'YYYY-MM-DD HH:mm':
-    //   break;
-    // case 'YYYY-MM-DD HH:mm:ss':
-    //   break;
-  }
-
   return {
     type: 'datetime',
     title: value.title,
@@ -54,7 +37,7 @@ export function toSchema(value: typeof defaultConfig): ISchema {
     required: value.required,
     readOnly: value.displayModifier === 'readonly',
     display: value.displayModifier !== 'hidden',
-    'x-component': xComponent,
+    'x-component': 'DatePicker',
     ['x-component-props']: {
       placeholder: value.placeholder,
       format: value.valueFormat,

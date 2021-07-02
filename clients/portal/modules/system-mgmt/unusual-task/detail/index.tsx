@@ -30,7 +30,7 @@ function UnusualTaskDetail(): JSX.Element {
     taskId,
   }));
 
-  const [details, systems] = useMemo(() => {
+  const [details] = useMemo(() => {
     if (!formDataItem) {
       return [[], []];
     }
@@ -40,11 +40,16 @@ function UnusualTaskDetail(): JSX.Element {
     const { formSchema, formData } = formDataItem.taskDetailModels[0];
 
     Object.entries(formSchema.table.properties || {}).forEach(([fieldKey, fieldSchema]) => {
+      const hasValue = formData && (
+        formData[fieldKey] !== undefined &&
+        formData[fieldKey] !== null &&
+        formData[fieldKey] !== ''
+      );
       if ((fieldSchema as any)['x-internal']?.isSystem) {
         _systems.push({
           label: fieldSchema.title as string,
           key: fieldKey,
-          value: formData && Object.prototype.hasOwnProperty.call(formData, fieldKey) ? (
+          value: hasValue ? (
             <FormDataValueRenderer schema={fieldSchema as Schema} value={formData?.[fieldKey]} />
           ) : '无数据',
           fieldSchema,
@@ -55,7 +60,7 @@ function UnusualTaskDetail(): JSX.Element {
       _details.push({
         label: fieldSchema.title as string,
         key: fieldKey,
-        value: formData && Object.prototype.hasOwnProperty.call(formData, fieldKey) ? (
+        value: hasValue ? (
           <FormDataValueRenderer schema={fieldSchema as Schema} value={formData?.[fieldKey]} />
         ) : '无数据',
         fieldSchema,

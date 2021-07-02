@@ -2,6 +2,7 @@ import React from 'react';
 import zhCN from 'antd/lib/date-picker/locale/zh_CN';
 import { DatePicker } from 'antd';
 
+import { getPicker } from '@c/form-builder/registry/date-picker/date-picker';
 import Select from '@c/select';
 
 type Props<T> = {
@@ -63,6 +64,7 @@ function FieldSwitch({ field, className, ...otherProps }: Props<any>, ref: React
     return (
       <DatePicker.RangePicker
         locale={zhCN}
+        picker={getPicker(field['x-component-props']?.format)}
         ref={ref}
         className={`'w-full input ${className}`}
         {...field['x-component-props']}

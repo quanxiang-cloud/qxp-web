@@ -53,15 +53,11 @@ export const OPERATORS_BOOL = [
 export const OPERATORS_ARRAY_MULTIPLE = [
   {
     label: '同时包含',
-    value: 'eq',
+    value: 'fullSubset',
   },
   {
     label: '包含任一一个',
-    value: 'in',
-  },
-  {
-    label: '不包含',
-    value: 'not in',
+    value: 'intersection',
   },
 ];
 
@@ -92,11 +88,9 @@ export const CONDITION = [
 ];
 
 export function getOperators(type: string, enums: any[] | undefined) {
-  if (enums && enums.length) {
-    return OPERATORS_ARRAY_MULTIPLE;
-  }
-
   switch (type) {
+  case 'array':
+    return OPERATORS_ARRAY_MULTIPLE;
   case 'number':
     return OPERATORS_NUMBER;
   case 'datetime':
@@ -106,6 +100,24 @@ export function getOperators(type: string, enums: any[] | undefined) {
   case 'label-value':
     return OPERATORS_LABEL_VALUE;
   default:
+    if (enums && enums.length) {
+      return OPERATORS_ARRAY_MULTIPLE;
+    }
+
     return OPERATORS_STRING;
   }
 }
+
+export const FILTER_FIELD = [
+  'DatePicker',
+  'Input',
+  'MultipleSelect',
+  'NumberPicker',
+  'RadioGroup',
+  'textarea',
+  'Select',
+  'CheckboxGroup',
+  // 'OrganizationPicker',
+  // 'UserPicker',
+  // 'CascadeSelector',
+];
