@@ -10,14 +10,13 @@ export function findOneRecord(appID: string, tableID: string, id: string): Promi
     return Promise.resolve({});
   }
   return httpClient<{ entity?: Record<string, any>; }>(
-    `/api/v1/structor/${appID}/home/form/${tableID}`,
+    `/api/v1/form/${appID}/home/form/${tableID}`,
     {
       method: 'findOne',
       conditions: {
         condition: [{ key: '_id', op: 'eq', value: [id] }],
       },
     },
-    { 'X-Proxy': 'FORM_DATA' },
   ).then(({ entity }) => {
     if (!entity) {
       // 只查 schema 的时候不要 reject
@@ -34,11 +33,11 @@ export function getSchemaAndRecord(
   return Promise.all([
     getTableSchema(appID, tableID),
     findOneRecord(appID, tableID, recordID),
-  ]).then(([{ schema }, record]) => {
-    if (!schema) {
+  ]).then(([pageSchema, record]) => {
+    if (!pageSchema) {
       return Promise.reject(new Error('没有找到表单 schema，请联系管理员。'));
     }
-    return { schema, record };
+    return { schema: pageSchema.schema, record };
   });
 }
 

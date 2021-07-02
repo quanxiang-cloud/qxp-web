@@ -59,7 +59,8 @@ export function fetchLinkedTableFields(
     return Promise.resolve([]);
   }
 
-  return getTableSchema(appID, tableID).then(({ schema = {} }) => {
+  return getTableSchema(appID, tableID).then((pageSchema) => {
+    const schema = pageSchema?.schema || {};
     const fields = Object.entries(schema?.properties || {}).filter(([key, fieldSchema]) => {
       if (INTERNAL_FIELD_NAMES.includes(key)) {
         return false;

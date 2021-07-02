@@ -224,8 +224,8 @@ class AppDetailsStore {
 
     const pageInfo = this.pagesTreeData.items[pageID].data;
     this.fetchSchemeLoading = true;
-    getTableSchema(this.appID, pageInfo.id).then(({ schema }) => {
-      this.hasSchema = !!schema;
+    getTableSchema(this.appID, pageInfo.id).then((pageSchema) => {
+      this.hasSchema = !!pageSchema;
       this.fetchSchemeLoading = false;
     }).catch(() => {
       this.fetchSchemeLoading = false;

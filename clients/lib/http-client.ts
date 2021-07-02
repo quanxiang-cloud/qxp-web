@@ -75,30 +75,27 @@ export function formDataRequest(
   params: FormDataRequestParams,
 ): Promise<FormDataResponse> {
   return httpClient<FormDataResponse>(
-    `/api/v1/structor/${appID}/home/form/${tableID}`,
+    `/api/v1/form/${appID}/home/form/${tableID}`,
     params,
-    { 'X-Proxy': 'FORM_DATA' },
   );
 }
 
-type GetTableSchemaResponse = { config: any; id: string; schema?: ISchema; tableID: string; };
+type GetTableSchemaResponse = null | { config: any; schema: ISchema; };
 
 export function getTableSchema(appID: string, tableID: string): Promise<GetTableSchemaResponse> {
   const path = window.SIDE === 'home' ?
-    `/api/v1/structor/${appID}/home/schema/${tableID}` :
-    `/api/v1/structor/${appID}/m/table/getByID`;
+    `/api/v1/form/${appID}/home/schema/${tableID}` :
+    `/api/v1/form/${appID}/m/table/getByID`;
 
-  return httpClient<GetTableSchemaResponse>(path, { tableID }, { 'X-Proxy': 'FORM_SCHEMA' })
-    .then((data) => data || {});
+  return httpClient<GetTableSchemaResponse>(path, { tableID });
 }
 
 export function saveTableSchema(
   appID: string, tableID: string, schema: ISchema,
 ): Promise<{ tableID: string; }> {
   return httpClient(
-    `/api/v1/structor/${appID}/m/table/create`,
+    `/api/v1/form/${appID}/m/table/create`,
     { tableID, schema },
-    { 'X-Proxy': 'FORM_SCHEMA' },
   );
 }
 
