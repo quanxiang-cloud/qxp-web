@@ -78,7 +78,7 @@ function LinkageConfig({ onClose, onSubmit, linkage }: Props): JSX.Element {
 
   const fieldsSchema = toJS(store.schema.properties || {});
   const currentFormFields = Object.entries(fieldsSchema).filter(([key, fieldSchema]) => {
-    if (INTERNAL_FIELD_NAMES.includes(key)) {
+    if (INTERNAL_FIELD_NAMES.includes(key) || key === store.activeField?.fieldName) {
       return false;
     }
 
