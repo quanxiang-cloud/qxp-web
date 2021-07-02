@@ -92,8 +92,8 @@ function LinkageConfig({ onClose, onSubmit, linkage }: Props): JSX.Element {
 
     setFieldState('rules.*.fieldName', (state) => state.props.enum = options);
     setFieldState('linkedField', (state) => {
-      state.props.enum = fields.filter((value) => {
-        return value['x-component'].toLocaleLowerCase() === store.activeField?.componentName;
+      state.props.enum = fields.filter((field) => {
+        return field['x-component'].toLocaleLowerCase() === store.activeField?.componentName;
       }).map(({ label, value }) => ({ label, value }));
     });
     setFieldState('sortBy', (state) => state.props.enum = options);
