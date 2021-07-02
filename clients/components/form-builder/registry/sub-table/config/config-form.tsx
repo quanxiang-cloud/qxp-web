@@ -51,6 +51,7 @@ export default function ConfigForm({ onChange, initialValue: _initValue }: Props
       ...CONFIG_COMPONENTS[currentSchemaType]?.toSchema(value),
     }));
     actions.setFieldState('Fields.subTableSchema', (state) => state.value = subTableSchema);
+    onChange(initialValue);
   }
 
   function handleChange(value: Record<string, any>): void {

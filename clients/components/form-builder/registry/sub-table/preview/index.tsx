@@ -200,29 +200,32 @@ function SubTable({
                     <div className={`flex-1 grid grid-cols-${columns.length}`}>
                       {columns.map(({
                         dataIndex, component, props, dataSource, required, rules, readonly,
-                      }, idx) => (
-                        <div key={dataIndex} className={cs({
-                          'border-r-1 border-gray-300': idx < columns.length,
-                          'px-56 h-32': readonly,
-                        })}>
-                          {component && !readonly && (
-                            <FormItem
-                              className="mx-8 mb-8 w-full mt-24"
-                              name={`${name}.${index}.${dataIndex}`}
-                              component={component}
-                              props={props}
-                              rules={rules as any}
-                              dataSource={dataSource}
-                              required={required}
-                              value={item?.[dataIndex] || undefined}
-                              onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                                onItemChange(e, dataIndex);
-                              }}
-                            />
-                          )}
-                          {readonly && `${item?.[dataIndex] || ''}`}
-                        </div>
-                      ))}
+                      }, idx) => {
+                        return (
+                          <div key={dataIndex} className={cs({
+                            'border-r-1 border-gray-300': idx < columns.length,
+                            'px-56 h-32': readonly,
+                          })}>
+                            {component && !readonly && (
+                              <FormItem
+                                {...props}
+                                className="mx-8 mb-8 w-full mt-24"
+                                name={`${name}.${index}.${dataIndex}`}
+                                component={component}
+                                props={props}
+                                rules={rules as any}
+                                dataSource={dataSource}
+                                required={required}
+                                value={item?.[dataIndex]}
+                                onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                                  onItemChange(e, dataIndex);
+                                }}
+                              />
+                            )}
+                            {readonly && `${item?.[dataIndex] || ''}`}
+                          </div>
+                        );
+                      })}
                     </div>
                     <Icon
                       className="mx-22 cursor-pointer"

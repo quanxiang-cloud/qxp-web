@@ -22,7 +22,7 @@ export default function SubTableSchemaConfig({
   }
 
   const currentSubSchemaDefault = CONFIG_COMPONENTS[currentSchemaType]?.configSchema;
-  const currentSubSchemaConfig = CONFIG_COMPONENTS[currentSchemaType]?.defaultConfig;
+  const currentSubSchemaConfig = CONFIG_COMPONENTS[currentSchemaType]?.toConfig(currentSubSchema);
 
   function onGoBack(): void {
     actions.setFieldState('Fields.curConfigSubTableKey', (state) => {
@@ -34,7 +34,7 @@ export default function SubTableSchemaConfig({
     <ItemActionsContext.Provider value={itemActions}>
       <div className="flex flex-row items-center mb-10">
         <Button className="mr-10" onClick={onGoBack}>返回</Button>
-        <p>子表单</p>
+        <p>配置子表单字段</p>
       </div>
       <SchemaForm
         initialValues={currentSubSchemaConfig}
