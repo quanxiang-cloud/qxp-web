@@ -31,7 +31,7 @@ export default function NewFlow({ onChange, currentOperateType }: Props): JSX.El
     <aside
       className={cs(
         'h-full bg-white shadow-flow-aside flex flex-col justify-between',
-        `duration-${durationTime} overflow-hidden`, { 'w-214': !isCollapsed, 'w-72': isCollapsed },
+        `duration-${durationTime}`, { 'w-214': !isCollapsed, 'w-72': isCollapsed },
       )}
       style={{
         transitionProperty: 'width',
