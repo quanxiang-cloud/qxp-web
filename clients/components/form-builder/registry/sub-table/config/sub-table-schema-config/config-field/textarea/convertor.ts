@@ -28,6 +28,7 @@ export function toSchema(value: TextareaConfig): ISchema {
     readOnly: value.displayModifier === 'readonly',
     display: value.displayModifier !== 'hidden',
     'x-component': 'textarea',
+    default: value.defaultValue,
     ['x-component-props']: {
       placeholder: value.placeholder,
       defaultValue: value.defaultValue,

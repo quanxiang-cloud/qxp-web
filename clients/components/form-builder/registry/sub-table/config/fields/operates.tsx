@@ -5,7 +5,7 @@ import { ItemActionsContext } from '../context';
 import Icon from '@c/icon';
 import Button from '@c/button';
 
-export function deleteOperate(idx: number) {
+export function deleteOperate(idx: number): JSX.Element {
   const actions = useContext(ItemActionsContext);
 
   const mutator = actions.createMutators('availableOptions');
@@ -24,7 +24,7 @@ export function deleteOperate(idx: number) {
   );
 }
 
-export function extraOperations(idx: number) {
+export function extraOperations(idx: number): JSX.Element {
   const actions = useContext(ItemActionsContext);
 
   const mutator = actions.createMutators('availableOptions');
@@ -47,7 +47,7 @@ export function extraOperations(idx: number) {
   );
 }
 
-export function addOperate() {
+export function addOperate(): JSX.Element {
   const actions = useContext(ItemActionsContext);
 
   const mutator = actions.createMutators('availableOptions');

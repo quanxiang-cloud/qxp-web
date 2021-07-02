@@ -5,13 +5,13 @@ import FormTableSelector from '@c/form-table-selector';
 
 import { StoreContext } from '../context';
 
-function LinkedTable({ value, mutators }: ISchemaFieldComponentProps) {
+function LinkedTable({ value, mutators }: ISchemaFieldComponentProps): JSX.Element {
   const { pageID: pageId } = useContext(StoreContext);
 
   function onChange({ name: tableName, value: tableID }: {
     name?: string;
     value?: string;
-  }) {
+  }): void {
     if (!tableName || !value) {
       return;
     }
