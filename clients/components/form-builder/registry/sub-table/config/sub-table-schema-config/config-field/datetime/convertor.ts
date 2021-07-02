@@ -53,6 +53,7 @@ export function toSchema(value: typeof defaultConfig): ISchema {
     readOnly: value.displayModifier === 'readonly',
     display: value.displayModifier !== 'hidden',
     'x-component': xComponent,
+    default: value.defaultValue,
     ['x-component-props']: {
       placeholder: value.placeholder,
       format: value.valueFormat,

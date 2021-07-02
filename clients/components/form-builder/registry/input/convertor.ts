@@ -34,6 +34,7 @@ export function toSchema(value: InputConfig): ISchema {
     readOnly: value.displayModifier === 'readonly',
     display: value.displayModifier !== 'hidden',
     'x-component': 'Input',
+    default: value.defaultValue,
     ['x-component-props']: {
       placeholder: value.placeholder,
       defaultValue: value.defaultValue,

@@ -27,6 +27,7 @@ export function toSchema(value: InputConfig): ISchema {
     format: value.valueFormat,
     display: true,
     'x-component': 'Input',
+    default: value.defaultValue,
     ['x-component-props']: {
       placeholder: value.placeholder,
       defaultValue: value.defaultValue,
