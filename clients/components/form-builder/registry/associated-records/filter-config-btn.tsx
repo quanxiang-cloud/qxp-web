@@ -12,7 +12,7 @@ import FilterConfigModal from './filter-config-modal';
 
 function getTableSchema(appID: string, tableID: string) {
   return httpClient<{ schema?: ISchema }>(
-    `/api/v1/structor/${appID}/m/table/getByID`,
+    `/api/v1/form/${appID}/m/table/getByID`,
     { tableID },
   ).then(({ schema }) => schema || {}).catch((err) => {
     logger.error(err);

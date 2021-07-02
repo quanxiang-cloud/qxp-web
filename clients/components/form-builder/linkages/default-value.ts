@@ -47,7 +47,7 @@ function fetchLinkedTableData$(
   };
 
   return ajax({
-    url: `/api/v1/structor/${linkage.linkedAppID}/home/form/${linkage.linkedTable.id}`,
+    url: `/api/v1/form/${linkage.linkedAppID}/home/form/${linkage.linkedTable.id}`,
     method: 'POST',
     headers: { 'X-Proxy': 'API', 'Content-Type': 'application/json' },
     body: {

@@ -28,7 +28,7 @@ export async function getFormFieldSchema({ queryKey }: QueryFunctionContext): Pr
   properties?: { [key: string]: ISchema; } | undefined;
 }> {
   const data = await httpClient<SchemaResponse | null>(
-    `/api/v1/structor/${queryKey[2]}/m/table/getByID`, {
+    `/api/v1/form/${queryKey[2]}/m/table/getByID`, {
       tableID: queryKey[1],
     });
   return data?.schema ?? {};

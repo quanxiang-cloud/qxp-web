@@ -5,7 +5,7 @@ export const createFormScheme = async (appID: string, data: any) => {
 };
 
 export const fetchFormScheme = async (appID: string, tableID: string) => {
-  return await httpClient(`/api/v1/structor/${appID}/m/table/getByID`, { tableID });
+  return await httpClient(`/api/v1/form/${appID}/m/table/getByID`, { tableID });
 };
 
 export const updateFormScheme = async (appID: string, data: any) => {
