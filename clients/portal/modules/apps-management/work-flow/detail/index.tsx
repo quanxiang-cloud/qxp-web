@@ -96,6 +96,8 @@ export default function Detail(): JSX.Element {
         id: data.id,
         processKey: data.processKey,
         keyFields: data.keyFields,
+        canCancelType: data.canCancelType,
+        canCancelNodes: data.canCancelNodes,
         instanceName: data.instanceName,
       }));
     } catch (error) {
