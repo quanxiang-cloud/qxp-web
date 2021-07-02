@@ -18,6 +18,7 @@ type Column = {
   title: string;
   dataIndex: string;
   component?: JSXElementConstructor<any>;
+  readonly?: boolean;
   props: Record<string, unknown>;
   dataSource?: any[];
   required?: boolean;
@@ -79,6 +80,7 @@ function SubTable({
       component: components[componentName],
       props: componentProps,
       dataSource,
+      readonly: sc?.readOnly,
       required: sc?.required as boolean,
       rules: sc?.['x-rules'] || [],
     };
@@ -93,7 +95,8 @@ function SubTable({
     (cur: Column[], next) => {
       const [key, sc] = next;
       const componentProps = sc['x-component-props'] || {};
-      if ((isFromForeign && !definedColumns?.includes(key)) || key === '_id') {
+      const isHidden = !sc.display;
+      if ((isFromForeign && !definedColumns?.includes(key)) || key === '_id' || isHidden) {
         return cur;
       }
       const newColumn = buildColumnFromSchema(key, sc);
@@ -196,12 +199,13 @@ function SubTable({
                   >
                     <div className={`flex-1 grid grid-cols-${columns.length}`}>
                       {columns.map(({
-                        dataIndex, component, props, dataSource, required, rules,
+                        dataIndex, component, props, dataSource, required, rules, readonly,
                       }, idx) => (
                         <div key={dataIndex} className={cs({
                           'border-r-1 border-gray-300': idx < columns.length,
+                          'px-56 h-32': readonly,
                         })}>
-                          {component && (
+                          {component && !readonly && (
                             <FormItem
                               className="mx-8 mb-8 w-full mt-24"
                               name={`${name}.${index}.${dataIndex}`}
@@ -216,6 +220,7 @@ function SubTable({
                               }}
                             />
                           )}
+                          {readonly && `${item?.[dataIndex] || ''}`}
                         </div>
                       ))}
                     </div>
