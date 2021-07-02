@@ -69,7 +69,21 @@ deploy_testing:
     - /^release\/.*/
   script:
     - IMAGE_TAG="v$(date "+%Y%m%d")-$(git rev-parse --short HEAD)"
-    - bash -c "helm upgrade qxp-web-portal /root/deployment/qxp-web-portal --set image.tag=$IMAGE_TAG"
-    - bash -c "helm upgrade qxp-web-home /root/deployment/qxp-web-home --set image.tag=$IMAGE_TAG"
-    - bash -c "helm upgrade qxp-web-nginx /root/deployment/qxp-web-nginx --set image.tag=$IMAGE_TAG"
+    - bash -c "helm upgrade qxp-web-portal /root/deployment/qxp-web-portal --set image.tag=$IMAGE_TAG --set namespace=low-code"
+    - bash -c "helm upgrade qxp-web-home /root/deployment/qxp-web-home --set image.tag=$IMAGE_TAG --set namespace=low-code"
+    - bash -c "helm upgrade qxp-web-nginx /root/deployment/qxp-web-nginx --set image.tag=$IMAGE_TAG --set namespace=low-code"
     - echo "deploy testing done!"
+
+deploy_staging:
+  tags:
+    - qxp-web-runner
+  stage: release
+  only:
+    - tags
+    - master
+  script:
+    - IMAGE_TAG="v$(date "+%Y%m%d")-$(git rev-parse --short HEAD)"
+    - bash -c "helm --host=$HELM_STAGING upgrade qxp-web-portal /root/deployment/qxp-web-portal --set image.tag=$IMAGE_TAG --set namespace=lowcode"
+    - bash -c "helm --host=$HELM_STAGING upgrade qxp-web-home /root/deployment/qxp-web-home --set image.tag=$IMAGE_TAG --set namespace=lowcode"
+    - bash -c "helm --host=$HELM_STAGING upgrade qxp-web-nginx /root/deployment/qxp-web-nginx --set image.tag=$IMAGE_TAG --set namespace=lowcode"
+    - echo "deploy staging done!"
