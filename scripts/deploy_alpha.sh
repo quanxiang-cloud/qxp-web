@@ -2,7 +2,7 @@
 
 set -e
 
-yarn install
+yarn install --registry=http://r.npm.internal.yunify.com
 
 # build frontend assets
 rm -rf dist
