@@ -8,6 +8,7 @@ import { SYSTEM_OPERATOR_PERMISSION, CUSTOM_OPERATOR_PERMISSION } from './consta
 const approveAndFillInCommonData = {
   basicConfig: {
     approvePersons: {
+      type: 'person',
       users: [],
       departments: [],
     },
