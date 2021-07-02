@@ -1,6 +1,6 @@
 import qs from 'qs';
 import { TreeData, TreeItem } from '@atlaskit/tree';
-import { get, isObject } from 'lodash';
+import { get, isObject, isArray, pickBy, identity } from 'lodash';
 import { TreeNode } from '@c/headless-tree/types';
 import { nanoid } from 'nanoid';
 import dayjs from 'dayjs';
@@ -49,7 +49,6 @@ export const either = <S>(pred1: (...args: S[]) => boolean, pred2: (...args: S[]
   ...args: S[]
 ) => pred1(...args) || pred2(...args);
 export const isVoid = either<null | undefined>(isUndefined, isNull);
-export const identity = <T>(i: T): T => i;
 
 /**
  * @param {string} attr 需要被计数的属性
@@ -259,20 +258,25 @@ export function parseJSON<T>(str: string, fallback: T): T {
   }
 }
 
-export function compactObject(data: Record<string, any> | any[]): Record<string, any> {
-  if ((typeof data !== 'object' && !Array.isArray(data)) || data == null) {
-    return data;
-  }
-  const isArray = Array.isArray(data);
-  return Object.entries(data).reduce((cur: any[] | Record<string, any>, [key, value]) => {
-    const vIsObject = (typeof value === 'object' && value !== null) || !Array.isArray(value);
-    if (isArray) {
-      (value !== null) && cur.push(vIsObject ? compactObject(value) : value);
-    } else {
-      (value !== null) && Object.assign(cur, { [key]: vIsObject ? compactObject(value) : value });
+export function removeNullOrUndefinedFromObject(data: Record<string, any>): Record<string, any> {
+  const dataCollection: Record<string, any> = {};
+  Object.entries(pickBy(data, identity)).forEach(([key, value]) => {
+    if (isArray(value)) {
+      dataCollection[key] = value.map((valueItem) => {
+        if (isObject(valueItem)) {
+          return removeNullOrUndefinedFromObject(valueItem);
+        }
+        return valueItem;
+      }).filter(identity);
+      return;
     }
-    return cur;
-  }, isArray ? [] : {});
+    if (isObject(value)) {
+      dataCollection[key] = removeNullOrUndefinedFromObject(value);
+      return;
+    }
+    dataCollection[key] = value;
+  });
+  return dataCollection;
 }
 
 export function handleTimeFormat(time: string): string {
