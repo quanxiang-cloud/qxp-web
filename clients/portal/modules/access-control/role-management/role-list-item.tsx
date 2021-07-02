@@ -1,7 +1,7 @@
 import React from 'react';
 import cs from 'classnames';
 import useCss from 'react-use/lib/useCss';
-import { identity } from '@lib/utils';
+import { identity } from 'lodash';
 
 import ItemWithTitleDesc from '@c/item-with-title-desc';
 
@@ -13,7 +13,7 @@ export interface IRoleListItem {
   onClick?: (id: string) => void;
 }
 
-export default function RoleListItem({ name, active, id, onClick = identity }: IRoleListItem) {
+export default function RoleListItem({ name, active, id, onClick = identity }: IRoleListItem): JSX.Element {
   return (
     <ItemWithTitleDesc
       className={cs(
