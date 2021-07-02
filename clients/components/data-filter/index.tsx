@@ -8,7 +8,7 @@ import FieldSwitch from '@c/field-switch';
 import Icon from '@c/icon';
 import formFieldWrap from '@c/form-field-wrap';
 
-import { CONDITION, getOperators } from './utils';
+import { CONDITION, getOperators, FILTER_FIELD } from './utils';
 import './index.scss';
 
 type Props = {
@@ -114,7 +114,9 @@ function DataFilter({ fields, className = '', initConditions, initTag = 'and' }:
     setConditions(conditionsTmp);
   }, [initConditions]);
 
-  const fieldOption = fields.map((field) => ({
+  const fieldOption = fields.filter((field) => {
+    return FILTER_FIELD.includes(field['x-component'] as string) && field.id !== '_id';
+  }).map((field) => ({
     value: field.id,
     label: field.title,
   }));

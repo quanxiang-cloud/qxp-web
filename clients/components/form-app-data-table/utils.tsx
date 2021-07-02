@@ -62,7 +62,7 @@ export function getPageDataSchema(
       id: key,
       Header: fieldsMap[key].title || '',
       accessor: (data: any) => {
-        if (data[key] === undefined || data[key] === null) {
+        if (data[key] === undefined || data[key] === null || data[key] === '') {
           return <span className='text-gray-300'>——</span>;
         }
 

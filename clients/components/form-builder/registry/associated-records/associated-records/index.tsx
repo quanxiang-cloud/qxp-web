@@ -31,7 +31,7 @@ function computeTableColumns(schema: ISchema, columns: string[]): Column<Record<
       id: fieldKey,
       Header: fieldSchema.title || fieldKey,
       accessor: (rowData: Record<string, any>) => {
-        if (rowData[fieldKey] === undefined || rowData[fieldKey] === null) {
+        if (rowData[fieldKey] === undefined || rowData[fieldKey] === null || rowData[fieldKey] === '') {
           return '无数据';
         }
 

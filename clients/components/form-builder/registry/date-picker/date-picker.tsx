@@ -8,9 +8,20 @@ type DatePickerCProps = DatePickerProps & {
   readOnly?: boolean;
 }
 
+export function getPicker(format: string): 'year' | 'month' | undefined {
+  switch (format) {
+  case 'YYYY':
+    return 'year';
+  case 'YYYY-MM':
+    return 'month';
+  default:
+    return undefined;
+  }
+}
+
 function DatePicker(props: DatePickerCProps): JSX.Element {
   const handleChange = (_: Moment | null, dateString: string): void => {
-    props.onChange(moment(dateString).format());
+    props.onChange(dateString ? moment(dateString).toISOString(true) : '');
   };
 
   if (props.readOnly) {
@@ -21,7 +32,14 @@ function DatePicker(props: DatePickerCProps): JSX.Element {
     );
   }
 
-  return <DatePickerAnt {...props} onChange={handleChange} value={props.value && moment(props.value)} />;
+  return (
+    <DatePickerAnt
+      {...props}
+      picker={getPicker(props.format as string || '')}
+      onChange={handleChange}
+      value={props.value && moment(props.value)}
+    />
+  );
 }
 
 export default DatePicker;

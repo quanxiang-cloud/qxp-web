@@ -4,6 +4,7 @@ import { UnionColumns } from 'react-table';
 
 import FormStore from '@c/form-builder/store';
 import toast from '@lib/toast';
+import { FILTER_FIELD } from '@c/data-filter/utils';
 import AppPageDataStore from '@c/form-app-data-table/store';
 import { TableConfig } from '@c/form-app-data-table/type';
 import { setFixedParameters } from '@c/form-app-data-table/utils';
@@ -12,20 +13,6 @@ import { getTableSchema, saveTableSchema } from '@lib/http-client';
 import {
   createPageScheme,
 } from './api';
-
-const FILTER_FIELD = [
-  'DatePicker',
-  'Input',
-  'MultipleSelect',
-  'NumberPicker',
-  'RadioGroup',
-  'textarea',
-  'Select',
-  'CheckboxGroup',
-  // 'OrganizationPicker',
-  // 'UserPicker',
-  // 'CascadeSelector',
-];
 
 class FormDesignStore {
   destroyFetchScheme: IReactionDisposer;
