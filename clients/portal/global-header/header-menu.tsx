@@ -16,18 +16,19 @@ export default function HeaderMenu() {
         onCancel={() => setOpenResetPasswordModal(false)}
       />
       <NavMsgBar />
-      <div className="mr-56 header-nav-btn group">
-        <div className="header-nav-btn-icon-wrapper">
-          <Icon
-            name="book"
-            className="group-hover:text-blue-600 header-nav-btn-icon"
-            size={20}
-          />
-        </div>
-        <span className="header-nav-btn-text group-hover:text-blue-600">
-              帮助文档
-        </span>
-      </div>
+      <a
+        className="header-nav-btn group header-nav-btn-text hover:text-blue-500"
+        target="_blank"
+        rel="noreferrer"
+        href={`//${window.CONFIG.home_hostname}`}
+      >
+        <Icon
+          name="book"
+          className="group-hover:text-blue-600 header-nav-btn-icon"
+          size={20}
+        />
+        访问用户端
+      </a>
       <div className="header-nav-btn group">
         <div className="header-nav-btn-icon-wrapper">
           <Icon
