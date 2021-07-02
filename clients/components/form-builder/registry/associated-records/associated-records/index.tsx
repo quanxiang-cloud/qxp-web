@@ -129,8 +129,12 @@ function AssociatedRecords({
           associatedTable={associatedTable}
           columns={columns}
           onSubmit={(newSelectedRecords) => {
-            const selectedKeys = selected.concat(newSelectedRecords.filter((id) => !selected.includes(id)));
-            onChange(selectedKeys);
+            if (multiple) {
+              const selectedKeys = selected.concat(newSelectedRecords.filter((id) => !selected.includes(id)));
+              onChange(selectedKeys);
+            } else {
+              onChange(newSelectedRecords);
+            }
             setShowSelectModal(false);
           }}
         />
