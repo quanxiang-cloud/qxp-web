@@ -1,136 +1,49 @@
 import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import cs from 'classnames';
+import { NavLink, useLocation } from 'react-router-dom';
 
 import Icon from '@c/icon';
 
-export default function HeaderLeft() {
+export default function HeaderLeft(): JSX.Element {
   const location = useLocation();
 
-  function className(isActive: boolean) {
-    if (isActive) {
-      return {
-        'bg-blue-100': isActive,
-      };
-    }
-  }
-
-  function style(isActive: boolean) {
-    if (isActive) {
-      return {
-        color: 'var(--blue-600)',
-      };
-    }
-    return {};
-  }
-
-  const isHome = location.pathname === '/';
-  const isAppManagement = location.pathname.startsWith('/apps');
-  const isAccess = [
-    '/access-control',
-    '/access-control/',
-    '/access-control/departments-employees',
-    '/access-control/role-management',
-  ].includes(location.pathname);
-  const isSystemControl = [
-    '/system',
-    '/system/',
-    '/system/message',
-    '/system/message/',
-    '/system/message/send',
-    '/system/message/send/',
-  ].includes(location.pathname);
-  // const isSystemControl = location.pathname === '/system/message';
   return (
     <div className="flex items-center flex-2">
-      <Link
+      {/* <NavLink
         to="/"
-        className={cs(
-          'header-nav-btn group mr-12',
-          className(isHome),
-        )}
+        activeClassName="global-header-nav--active"
+        isActive={() => location.pathname === '/'}
+        className="global-header-nav"
       >
-        <div className="header-nav-btn-icon-wrapper">
-          <Icon
-            name="add_task"
-            className="group-hover:text-blue-600 header-nav-btn-icon"
-            size={20}
-            style={style(isHome)}
-          />
-        </div>
-        <span
-          className="header-nav-btn-text group-hover:text-blue-600"
-          style={style(isHome)}
-        >
-          工作台
-        </span>
-      </Link>
-      <Link
+        <Icon name="add_task" className="mr-4" size={20} />
+        工作台
+      </NavLink> */}
+      <NavLink
         to="/apps"
-        className={cs(
-          'header-nav-btn group mr-20',
-          className(isAppManagement),
-        )}
+        activeClassName="global-header-nav--active"
+        className="global-header-nav"
+        isActive={() => location.pathname.startsWith('/apps')}
       >
-        <div className="header-nav-btn-icon-wrapper">
-          <Icon
-            name="dashboard_customize"
-            className="group-hover:text-blue-600 header-nav-btn-icon"
-            style={style(isAppManagement)}
-            size={20}
-          />
-        </div>
-        <span
-          className="header-nav-btn-text group-hover:text-blue-600"
-          style={style(isAppManagement)}
-        >
-          应用管理
-        </span>
-      </Link>
-      <Link
+        <Icon name="dashboard_customize" className="mr-4" size={20} />
+        应用管理
+      </NavLink>
+      <NavLink
         to="/access-control"
-        className={cs(
-          'header-nav-btn group mr-20',
-          className(isAccess),
-        )}
+        activeClassName="global-header-nav--active"
+        className="global-header-nav"
+        isActive={() => location.pathname.startsWith('/access-control')}
       >
-        <div className="header-nav-btn-icon-wrapper">
-          <Icon
-            name="admin_panel_settings"
-            className="group-hover:text-blue-600 header-nav-btn-icon"
-            style={style(isAccess)}
-            size={20}
-          />
-        </div>
-        <span
-          className="header-nav-btn-text group-hover:text-blue-600"
-          style={style(isAccess)}
-        >
-          访问控制
-        </span>
-      </Link>
-      <Link
-        to="/system/message"
-        className={cs(
-          'header-nav-btn group mr-20',
-          className(isSystemControl),
-        )}
+        <Icon name="admin_panel_settings" className="mr-4" size={20} />
+        访问控制
+      </NavLink>
+      <NavLink
+        to="/system"
+        activeClassName="global-header-nav--active"
+        className="global-header-nav"
+        isActive={() => location.pathname.startsWith('/system')}
       >
-        <div className="header-nav-btn-icon-wrapper">
-          <Icon
-            name="system_management"
-            className="group-hover:text-blue-600 header-nav-btn-icon"
-            size={20}
-            style={style(isSystemControl)}
-          />
-        </div>
-        <span
-          className="header-nav-btn-text group-hover:text-blue-600"
-          style={style(isSystemControl)}
-        >
-          系统管理
-        </span>
-      </Link>
+        <Icon name="system_management" className="mr-4" size={20} />
+        系统管理
+      </NavLink>
     </div>
   );
 }
