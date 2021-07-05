@@ -31,13 +31,6 @@ export default function HeaderMenu() {
         访问用户端
       </a>
       <div className="header-nav-btn group">
-        <div className="header-nav-btn-icon-wrapper">
-          <Icon
-            name="settings"
-            className="group-hover:text-blue-600 header-nav-btn-icon"
-            size={20}
-          />
-        </div>
         <MoreMenu
           menus={[
             { key: 'resetPassword', label: '重置密码' },
