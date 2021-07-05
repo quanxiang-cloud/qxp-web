@@ -68,8 +68,7 @@ func SetupContext(configFile string, sessionCookieName string, appName string) (
 	}
 
 	SessionStore, err = initSession(Cache)
-
-	IDWorker, err = NewSnowFlake(1)
+	IDWorker, err = NewSnowFlake(getInstanceID())
 	if err != nil {
 		log.Fatal("failed to init id worker", err.Error())
 	}
