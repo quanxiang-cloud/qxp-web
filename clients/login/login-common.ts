@@ -32,22 +32,6 @@ export function validateCaptcha(captcha: HTMLInputElement, massage: HTMLElement)
   return true;
 }
 
-export function validatePwd(password: HTMLInputElement, massage: HTMLElement): boolean {
-  if (!password.value) {
-    massage.innerText = '请输入密码';
-    password.classList.add('error');
-    return false;
-  }
-  if (!/^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?~])[A-Za-z\d!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?~]{8,}$/.test(password.value)) {
-    massage.innerText = '密码必须包含数字、字母和符号，长度至少为 8 位且不包含空格';
-    password.classList.add('error');
-    return false;
-  }
-  massage.innerText = '';
-  password.classList.remove('error');
-  return true;
-}
-
 export function removeError(input: HTMLInputElement, massage: HTMLElement): void {
   massage.innerText = '';
   input.classList.remove('error');
