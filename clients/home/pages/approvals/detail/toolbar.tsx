@@ -71,7 +71,7 @@ function Toolbar({ currTask, permission, onClickAction, globalActions }: Props) 
           }
           return (
             <span key={`${value}-${idx}`} onClick={(ev) => onClickAction(value, currTask)}>
-              <Icon name={getIconByAction(value)} className="mr-8" />{name ?? text ?? defaultText}
+              <Icon name={getIconByAction(value)} className="mr-8" />{text ?? name ?? defaultText}
             </span>
           );
         })}
@@ -113,7 +113,7 @@ function Toolbar({ currTask, permission, onClickAction, globalActions }: Props) 
                 onClick={() => onClickAction(value, currTask)}
                 key={`${value}-${idx}`}
               >
-                {name ?? text ?? defaultText}
+                {text ?? name ?? defaultText}
               </Button>
             );
           })

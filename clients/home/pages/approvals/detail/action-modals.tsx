@@ -42,7 +42,7 @@ function ActionModals({ className }: Props) {
       return apis.reviewTask(processInstanceID, taskID, {
         handleType: action,
         remark: modalInfo.payload.remark || '',
-        formData: store.taskItem || {},
+        formData: store.taskItem.formData || {},
       });
     }
 
@@ -137,6 +137,11 @@ function ActionModals({ className }: Props) {
     // 重新提交
     if (action === TaskHandleType.hasResubmitBtn) {
       return apis.resubmit(processInstanceID);
+    }
+
+    // 撤回
+    if (action === TaskHandleType.hasCancelBtn) {
+      return apis.cancelTask(processInstanceID);
     }
 
     // // 催办
