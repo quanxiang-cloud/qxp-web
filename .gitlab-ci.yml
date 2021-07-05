@@ -40,6 +40,7 @@ build_all:
   stage: build
   only:
     - master
+    - tags
     - /^release\/.*/
   script:
     - node_modules/.bin/gulp buildAssets
