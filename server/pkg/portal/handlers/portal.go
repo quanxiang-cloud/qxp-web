@@ -8,10 +8,10 @@ import (
 // PortalHandler render portal page
 func PortalHandler(w http.ResponseWriter, r *http.Request) {
 	user := r.Context().Value(ctxUser).(*User)
-	if user.Status == 0 {
-		http.Redirect(w, r, "/resetPassword", http.StatusFound)
-		return
-	}
+	// if user.Status == 0 {
+	// 	http.Redirect(w, r, "/resetPassword", http.StatusFound)
+	// 	return
+	// }
 
 	adminUserFuncTags := getAdminUserFuncTags(r)
 	userAdminRoles := getUserAdminRoles(r)
