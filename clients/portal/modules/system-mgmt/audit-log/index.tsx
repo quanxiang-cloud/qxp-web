@@ -70,7 +70,6 @@ export const useLogInitData = () => {
 };
 
 const AuditLogPage = () => {
-  const { userInfo } = JSON.parse(localStorage.globalState);
   const {
     userName: inputValue,
     logPageInfo,
@@ -89,11 +88,11 @@ const AuditLogPage = () => {
     setLogPageInfo({ ...logPageInfo, current: 1 });
   });
 
-  const getUnixTimestamp = (string: string | number | Date) => {
+  const getUnixTimestamp = (string: string | number | Date) : number => {
     return Math.round(new Date(string).getTime() / 1000);
   };
 
-  const getFormatDay = (unixTimestamp: number) => {
+  const getFormatDay = (unixTimestamp: number): string => {
     return dayjs(unixTimestamp * 1000).format('YYYY-MM-DD');
   };
 
@@ -101,7 +100,7 @@ const AuditLogPage = () => {
     document.title = '系统管理 - 审计日志';
   }, []);
 
-  if (!userInfo.authority.includes('platform')) {
+  if (!window.ADMIN_USER_FUNC_TAGS.includes('platform')) {
     return (<ErrorTips desc="您没有权限, 请联系管理员..." />);
   }
 
