@@ -39,8 +39,8 @@ function FieldValueEditor({
   useEffect(() => {
     if (previousType !== type) {
       setValue({
-        variable: '',
-        staticValue: '',
+        variable: value.variable,
+        staticValue: value.staticValue,
       });
     }
   }, [type]);
