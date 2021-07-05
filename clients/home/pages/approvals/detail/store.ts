@@ -12,11 +12,13 @@ type ModalInfo = {
 type TaskItem = {
   taskName: string;
   taskType: string;
+  formData: Record<string, any>;
 }
 
 const initTaskItem = {
   taskName: '',
   taskType: '',
+  formData: {},
 };
 
 class TaskDetailStore {
