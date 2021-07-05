@@ -149,7 +149,7 @@ function SubTable({
         }
         const onAdd = (): any[] => mutators.push();
         return (
-          <div className="flex flex-col">
+          <div className="w-full flex flex-col border border-gray-300">
             {state.value.map((item: any, index: number) => {
               const onRemove = (index: number): void => {
                 firstMountRef.current = false;
@@ -172,10 +172,13 @@ function SubTable({
                 state.value = newValue;
               };
               return (
-                <div key={index}>
+                <div key={index} className="overflow-scroll">
                   {index === 0 && (
-                    <div className="flex items-start justify-between border border-gray-300">
-                      <div className={`flex-1 grid grid-cols-${columns.length}`}>
+                    <div className="flex items-start justify-between whitespace-nowrap">
+                      <div
+                        className="flex-1 grid"
+                        style={{ gridTemplateColumns: `repeat(${columns.length}, minmax(120px, 1fr))` }}
+                      >
                         {columns.map(({ title, required }, idx) => (
                           <div key={idx} className={cs('text-center', {
                             'border-r-1 border-gray-300': idx < columns.length,
@@ -187,17 +190,16 @@ function SubTable({
                           </div>
                         ))}
                       </div>
-                      <Icon
-                        className="mx-22 opacity-0"
-                        name="delete"
-                        size={20}
-                      />
+                      <div className="px-22 text-center">
+                        操作
+                      </div>
                     </div>
                   )}
-                  <div
-                    className="flex items-center justify-between border border-gray-300 border-t-0"
-                  >
-                    <div className={`flex-1 grid grid-cols-${columns.length}`}>
+                  <div className="flex items-center justify-between">
+                    <div
+                      className="flex-1 grid border-gray-300 border-t-1"
+                      style={{ gridTemplateColumns: `repeat(${columns.length}, minmax(120px, 1fr))` }}
+                    >
                       {columns.map(({
                         dataIndex, component, props, dataSource, required, rules, readonly,
                       }, idx) => {
@@ -227,22 +229,28 @@ function SubTable({
                         );
                       })}
                     </div>
-                    <Icon
-                      className="mx-22 cursor-pointer"
-                      name="delete"
-                      size={20}
-                      onClick={onRemove.bind(null, index)}
-                    />
+                    <div
+                      className="px-22 border-gray-300 border-t-1 self-stretch flex items-center"
+                    >
+                      <Icon
+                        className="cursor-pointer"
+                        name="delete"
+                        size={29}
+                        onClick={onRemove.bind(null, index)}
+                      />
+                    </div>
                   </div>
                 </div>
               );
             })}
-            <Icon
-              name="add"
-              size={24}
-              className="mt-12 mb-3 font-bold cursor-pointer"
-              onClick={onAdd}
-            />
+            <div className="border-t-1 border-gray-300 flex items-center">
+              <Icon
+                name="add"
+                size={24}
+                className="m-5 font-bold cursor-pointer"
+                onClick={onAdd}
+              />
+            </div>
           </div>
         );
       }}
