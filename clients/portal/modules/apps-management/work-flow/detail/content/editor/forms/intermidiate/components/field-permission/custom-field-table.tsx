@@ -129,7 +129,7 @@ export default function CustomFieldTable({
   ): JSX.Element | null {
     if (editable) {
       const schema = schemaMap[model.cell.row.id];
-      if (schema['x-mega-props']) {
+      if (schema?.['x-mega-props']) {
         schema['x-mega-props'].labelAlign = 'top';
       }
       return (
