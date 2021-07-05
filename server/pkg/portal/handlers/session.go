@@ -228,5 +228,5 @@ func RedirectToLoginPage(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// path: /login/password /login/captcha
-	http.Redirect(w, r, "/login/password", http.StatusFound)
+	http.Redirect(w, r, "/login/captcha", http.StatusFound)
 }
