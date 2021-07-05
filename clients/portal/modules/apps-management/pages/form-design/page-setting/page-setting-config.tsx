@@ -4,7 +4,6 @@ import { observer } from 'mobx-react';
 import Icon from '@c/icon';
 import Select from '@c/select';
 import Checkbox from '@c/checkbox';
-import Toggle from '@c/toggle';
 
 import FilterSetting from './filter-setting';
 import FieldSort from './field-sort';
@@ -98,24 +97,11 @@ function PageSettingConfig(): JSX.Element {
           options={SORT_OPTION}
         />
       </ConfigItemRender>
-      <ConfigItemRender
-        title={(
-          <div className='flex items-center justify-between'>
-            <span>分页</span>
-            <Toggle
-              onText='开启'
-              offText='关闭'
-              defaultChecked={!!store.pageTableShowRule.pageSize}
-              onChange={(flag: boolean) => store.setPageTableShowRule({ pageSize: flag ? 10 : null })}
-            />
-          </div>
-        )}
-      >
+      <ConfigItemRender title='分页'>
         <Select
-          value={store.pageTableShowRule.pageSize || 0}
+          value={store.pageTableShowRule.pageSize}
           onChange={(pageSize: number) => store.setPageTableShowRule({ pageSize })}
           options={PAGE_SIZE_OPTION}
-          disabled={!store.pageTableShowRule.pageSize}
         />
       </ConfigItemRender>
       <ConfigItemRender title="固定列">

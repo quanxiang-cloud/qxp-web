@@ -30,7 +30,7 @@ class FormDesignStore {
   @observable hasSchema = false;
   @observable initScheme: ISchema = {};
   @observable pageTableColumns: string[] = [];
-  @observable pageTableShowRule: TableConfig = {};
+  @observable pageTableShowRule: TableConfig = { pageSize: 10 };
   @observable filters: Filters = [];
 
   @computed get fieldsMap(): Record<string, ISchema> {
@@ -194,7 +194,9 @@ class FormDesignStore {
       this.formStore = new FormStore({ schema, appID, pageID });
       this.pageTableColumns = config.pageTableColumns || [];
       this.filters = config.filters || [];
-      this.pageTableShowRule = config.pageTableShowRule || {};
+      if (config.pageTableShowRule) {
+        this.pageTableShowRule = config.pageTableShowRule;
+      }
       this.pageLoading = false;
     }).catch(() => {
       this.pageLoading = false;

@@ -17,5 +17,5 @@ export type Ref = {
 export type TableConfig = {
   fixedRule?: string;
   order?: string;
-  pageSize?: number | null;
+  pageSize?: number;
 };
