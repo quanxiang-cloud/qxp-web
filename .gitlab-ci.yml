@@ -83,6 +83,8 @@ deploy_staging:
   only:
     - tags
     - master
+  except:
+    - branches
   script:
     - IMAGE_TAG="v$(date "+%Y%m%d")-$(git rev-parse --short HEAD)"
     - bash -c "helm --host=$HELM_STAGING upgrade qxp-web-portal /root/deployment/qxp-web-portal --set image.tag=$IMAGE_TAG --set namespace=lowcode"
