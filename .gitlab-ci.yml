@@ -39,6 +39,7 @@ build_all:
     - qxp-web-runner
   stage: build
   only:
+    - master
     - /^release\/.*/
   script:
     - node_modules/.bin/gulp buildAssets
@@ -56,7 +57,7 @@ build_all:
 deploy_alpha:
   tags:
     - qxp-web-runner
-  stage: build
+  stage: release
   only:
     - alpha
   script:
