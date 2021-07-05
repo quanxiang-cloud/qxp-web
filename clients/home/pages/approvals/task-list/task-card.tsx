@@ -21,7 +21,7 @@ export default function TaskCard({ task, type }: Props): JSX.Element {
     history.push(`/approvals/${task.flowInstanceEntity.processInstanceId}/${task.id}/${type}`);
   }
 
-  const { name, createTime, flowInstanceEntity } = task;
+  const { name, flowInstanceEntity, startTime } = task;
 
   return (
     <div className="corner-2-8-8-8 bg-white mb-16 approval-card">
@@ -74,7 +74,7 @@ export default function TaskCard({ task, type }: Props): JSX.Element {
             }
           </div>
           <div className="create-time">
-            接收于: {dayjs(createTime).format('YYYY-MM-DD HH:mm')}
+            接收于: {dayjs(startTime).format('YYYY-MM-DD HH:mm')}
           </div>
         </div>
       </div>
