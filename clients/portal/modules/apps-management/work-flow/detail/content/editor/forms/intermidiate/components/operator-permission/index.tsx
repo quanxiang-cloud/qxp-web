@@ -123,7 +123,8 @@ export default function OperatorPermission({ value, onChange: _onChange, type }:
                 {(op.text || op.name) && (
                   <>
                     <input
-                      className="input w-full pr-36"
+                      className="w-full pl-12 py-8 pr-36"
+                      maxLength={30}
                       value={op.text}
                       onChange={(v) => onUpdateOperation(type, op, {
                         text: v.target.value,

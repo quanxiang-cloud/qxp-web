@@ -355,6 +355,8 @@ button {
 }
 
 input {
+  outline: none;
+  @apply border rounded-tl-2 rounded-tr-8 rounded-br-8 rounded-bl-8;
   &:focus {
     box-shadow: 0px 0px 4px rgb(50 69 88 / 12%);
     border-color: var(--blue-600);
