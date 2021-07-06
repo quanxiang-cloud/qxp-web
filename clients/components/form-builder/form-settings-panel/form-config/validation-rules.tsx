@@ -7,6 +7,7 @@ import Button from '@c/button';
 import Modal from '@c/modal';
 import Icon from '@c/icon';
 import { INTERNAL_FIELD_NAMES } from '@c/form-builder/store';
+import logger from '@lib/logger';
 
 import { StoreContext } from '../../context';
 
@@ -62,7 +63,7 @@ function EditValidationModal({ onClose, ruleID }: EditValidationModalProps): JSX
     try {
       parse(formula);
     } catch (error) {
-      console.error(error);
+      logger.warn('formula-error:', error);
       setErrorMessage('公式格式错误！');
       return;
     }
