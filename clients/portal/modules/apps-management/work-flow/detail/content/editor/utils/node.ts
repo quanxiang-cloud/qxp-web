@@ -12,8 +12,8 @@ const approveAndFillInCommonData = {
       users: [],
       departments: [],
     },
-    multiplePersonWay: '',
-    whenNoPerson: '',
+    multiplePersonWay: 'or',
+    whenNoPerson: 'transferAdmin',
     autoRules: [],
     timeRule: {
       enabled: false,

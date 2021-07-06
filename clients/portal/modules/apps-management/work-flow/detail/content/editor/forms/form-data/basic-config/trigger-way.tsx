@@ -92,7 +92,7 @@ export default forwardRef(function TriggerWay(
                     'border-gray-300': !validating || whenAlterFields?.length,
                     'border-red-600': validating && !whenAlterFields?.length,
                   })}
-                options={formFieldOptions}
+                options={formFieldOptions.filter((item) => !item.isSystem )}
               />
               <span className={cs('ml-22', {
                 'text-caption': !validating || whenAlterFields?.length,
