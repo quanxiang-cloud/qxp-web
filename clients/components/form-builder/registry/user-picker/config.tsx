@@ -19,7 +19,7 @@ interface Props {
 }
 
 const UserPickerConfigForm = ({ initialValue, onChange }: Props): JSX.Element => {
-  
+
   const handleChange = useCallback((obj) => {
     const nextValue = Object.assign({}, initialValue, obj);
     onChange(nextValue);
@@ -43,5 +43,6 @@ const UserPickerConfigForm = ({ initialValue, onChange }: Props): JSX.Element =>
     </div>
   );
 };
+
 
 export default UserPickerConfigForm;
