@@ -42,13 +42,13 @@ export const SYSTEM_OPERATOR_PERMISSION = [
 ];
 
 export const CUSTOM_OPERATOR_PERMISSION = [
-  {
-    enabled: false, // common
-    changeable: true,
-    name: '撤回',
-    text: '撤回',
-    value: 'CANCEL',
-  },
+  // {
+  //   enabled: false, // common
+  //   changeable: true,
+  //   name: '撤回',
+  //   text: '撤回',
+  //   value: 'CANCEL',
+  // },
   {
     enabled: false, // common
     changeable: true,
