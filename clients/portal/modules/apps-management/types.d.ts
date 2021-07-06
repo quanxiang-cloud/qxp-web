@@ -65,6 +65,7 @@ type PageInfo = {
   describe?: string;
   groupID?: string;
   child?: PageInfo[];
+  childCount?: number;
   menuType?: number;
   sort?: number;
 
