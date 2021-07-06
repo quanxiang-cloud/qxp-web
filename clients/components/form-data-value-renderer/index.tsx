@@ -5,7 +5,8 @@ import SubTable from '@c/form-builder/registry/sub-table/preview';
 import AssociatedRecords from '@c/form-builder/registry/associated-records/associated-records';
 import { Schema } from '@formily/react-schema-renderer';
 
-type Value = string | string[] | Record<string, unknown> | Record<string, unknown>[] | undefined;
+type Value = string | string[] | Record<string, unknown>
+  | Record<string, unknown>[] | number | number[] | undefined;
 
 type Props = {
   value: Value;

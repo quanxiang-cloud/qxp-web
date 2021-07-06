@@ -11,9 +11,10 @@ import {
 import { ArrayList } from '@formily/react-shared-components';
 import { toArr, FormPath } from '@formily/shared';
 import {
-  Input, Select as AntdSelect, DatePicker, NumberPicker, Switch, Radio,
+  Input, Select as AntdSelect, NumberPicker, Switch, Radio,
 } from '@formily/antd-components';
 
+import DatePicker from '@c/form-builder/registry/date-picker/date-picker';
 import Modal from '@c/modal';
 import Icon from '@c/icon';
 import Button from '@c/button';
@@ -239,6 +240,10 @@ function VisibleHiddenLinkageConfig({ mode, onClose, linkageKey, onSubmit }: Pro
         } else {
           state.props.enum = undefined;
           state.props['x-component'] = compareField;
+        }
+
+        if (['DatePicker', 'NumberPicker'].includes(compareField)) {
+          state.props['x-component-props'] = sourceSchema?.properties?.[value]['x-component-props'];
         }
       });
     });
