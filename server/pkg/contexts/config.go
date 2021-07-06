@@ -40,6 +40,7 @@ type ClientConfig struct {
 	WebsocketHostname string `yaml:"websocket_hostname" default:"keeper" vaildate:"required" split_words:"true" json:"websocket_hostname"`
 	HomeHostname      string `yaml:"home_hostname" default:"home.qxp.com" split_words:"true" json:"home_hostname"`
 	PortalHostname    string `yaml:"portal_hostname" default:"portal.qxp.com" split_words:"true" json:"portal_hostname"`
+	DocsHostname      string `yaml:"docs_hostname" default:"docs.qxp.com" split_words:"true" json:"docs_hostname"`
 }
 
 // Configuration is the type of project config file
