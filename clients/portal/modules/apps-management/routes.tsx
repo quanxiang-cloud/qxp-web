@@ -9,6 +9,10 @@ const FormDesign = React.lazy(() => import('./pages/form-design'));
 const FlowDetail = React.lazy(() => import('./work-flow/detail'));
 
 export default function Routes(): JSX.Element {
+  React.useEffect(() => {
+    document.title = '应用管理';
+  }, []);
+
   // todo: 确定具体的authority?
   if (!window.ADMIN_USER_FUNC_TAGS.includes('application')) {
     return <ErrorTips desc="您没有权限, 请联系管理员..." />;
