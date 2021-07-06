@@ -21,6 +21,7 @@ const FormPage = () => {
   const handlePreviewClose = () => {
     setPreviewModalVisible(false);
   };
+
   return (
     <>
       <div className='form-design-tool'>
