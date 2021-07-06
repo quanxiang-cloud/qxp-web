@@ -12,11 +12,12 @@ import classNames from 'classnames';
 interface Props {
   // defaultValue: EmployeeOrDepartmentOfRole[];
   value: EmployeeOrDepartmentOfRole[];
+  rangeList: EmployeeOrDepartmentOfRole[];
   onChange: (list: EmployeeOrDepartmentOfRole[]) => void;
   isMy: boolean
 }
 
-const Picker = ({ value: defaultValue = [], onChange, isMy }: Props) => {
+const Picker = ({ value = [], onChange, isMy, rangeList: defaultValue, ...p }: Props) => {
   const store = React.useContext(StoreContext);
   const { appID } = store;
 
