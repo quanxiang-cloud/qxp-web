@@ -287,11 +287,12 @@ export default function GlobalConfig(): JSX.Element | null {
                 <FormulaEditor
                   ref={formulaEditorRef}
                   customRules={variables}
+                  help=""
                   onChange={(value) => {
                     field.onChange(value);
                     setInstanceName(value);
                   }}
-                  className="block border border-gray-300 w-full mb-16 corner-2-8-8-8 overflow-hidden"
+                  className="block mb-16"
                   readOnly={status === 'ENABLE'}
                   defaultValue={instanceName}
                 />

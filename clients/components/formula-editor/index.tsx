@@ -35,6 +35,7 @@ type Props = {
   customRules?: CustomRule[];
   className?: string;
   defaultValue?: string;
+  help?: string;
   maxLength?: number;
 }
 
@@ -63,6 +64,7 @@ function FormulaEditor({
   customRules = [],
   className = '',
   maxLength = 500,
+  help = '文本常量请用双引号括起来',
   onChange,
   onBlur,
   readOnly,
@@ -259,27 +261,30 @@ function FormulaEditor({
         text = text.replace(entityMap[key].data.name, entityMap[key].data.key);
       });
       return text;
-    }).join(' ').replace('"', '\'').replace('"', '\'');
+    }).join(' ').replace('\'', '"').replace('\'', '"');
   };
 
   return (
-    <div className={`formula-editor-container ${className}`}>
-      <Editor
-        onBlur={handleBlur}
-        readOnly={readOnly}
-        handleBeforeInput={handleBeforeInput}
-        handlePastedText={handlePastedText}
-        editorState={editorState}
-        onChange={handleChange}
-        placeholder="请输入...."
-        ref={editorDom}
-        spellCheck={true}
-      />
-      {typeof maxLength === 'number' && (
-        <div className='text-right px-8 py-2 text-gray-400'>
-          {contentLength}/{maxLength}
-        </div>
-      )}
+    <div className={className}>
+      <div className='formula-editor-container border border-gray-300 w-full corner-2-8-8-8 overflow-hidden'>
+        <Editor
+          onBlur={handleBlur}
+          readOnly={readOnly}
+          handleBeforeInput={handleBeforeInput}
+          handlePastedText={handlePastedText}
+          editorState={editorState}
+          onChange={handleChange}
+          placeholder="请输入...."
+          ref={editorDom}
+          spellCheck={true}
+        />
+        {typeof maxLength === 'number' && (
+          <div className='text-right px-8 py-2 text-gray-400'>
+            {contentLength}/{maxLength}
+          </div>
+        )}
+      </div>
+      {help ? <p className='text-gray-600 mt-8'>{help}</p> : null}
     </div>
   );
 }

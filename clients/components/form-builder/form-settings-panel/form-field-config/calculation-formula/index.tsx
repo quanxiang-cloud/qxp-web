@@ -5,6 +5,7 @@ import FormulaEditor, { RefProps } from '@c/formula-editor';
 import MATH_FUNCTIONS from '@c/formula-editor/function';
 import { collectionOperators } from '@c/formula-editor/operator';
 import Modal from '@c/modal';
+import logger from '@lib/logger';
 
 type Props = {
   rawFormula: string;
@@ -22,7 +23,8 @@ function EditFormulaModal({ onClose, onSubmit, rawFormula, variables }: Props): 
     try {
       parse(formula);
     } catch (error) {
-      setErrorMessage(error.toString());
+      setErrorMessage('公式格式错误!');
+      logger.warn('formula-error:', error);
       return;
     }
     onSubmit(formula);
@@ -109,7 +111,7 @@ function EditFormulaModal({ onClose, onSubmit, rawFormula, variables }: Props): 
         customRules={variables.map(({ title, fieldName }) => {
           return { key: fieldName, name: title, type: 'field' };
         })}
-        className="block border border-gray-600 w-full mb-16"
+        className="block mb-16"
         defaultValue={rawFormula}
       />
     </Modal>
