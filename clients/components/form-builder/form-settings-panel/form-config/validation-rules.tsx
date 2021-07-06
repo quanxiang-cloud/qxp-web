@@ -62,6 +62,7 @@ function EditValidationModal({ onClose, ruleID }: EditValidationModalProps): JSX
     try {
       parse(formula);
     } catch (error) {
+      console.error(error);
       setErrorMessage('公式格式错误！');
       return;
     }
@@ -151,7 +152,7 @@ function EditValidationModal({ onClose, ruleID }: EditValidationModalProps): JSX
         customRules={fields.map(({ title, fieldName }) => {
           return { key: fieldName, name: title, type: 'field' };
         })}
-        className="block border border-gray-300 w-full mb-16 corner-2-8-8-8 overflow-hidden"
+        className="block mb-16"
         defaultValue={validation.formula}
       />
       {errorMessage && (
