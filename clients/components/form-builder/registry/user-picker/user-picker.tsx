@@ -12,10 +12,11 @@ type OptionalRange = 'customize' | 'all'
 const PAGE_SIZE = 10;
 
 const UserPicker = (p: ISchemaFieldComponentProps): JSX.Element => {
+  
   const optionalRange = p.props.optionalRange as OptionalRange;
 
   React.useEffect(() => {
-    p.mutators.change(p.props.defaultValues);
+    p.mutators.change(p.initialValue || p.props.defaultValues);
   }, []);
   const value = Array.isArray(p.value || []) ? (p.value || []).map(({ value }: Option) => value) : p.value.value;
 
@@ -30,7 +31,7 @@ const UserPicker = (p: ISchemaFieldComponentProps): JSX.Element => {
     'x-component-props': xComponentsProps,
   });
 
-  return (optionalRange != 'all') ? <Select value={value} options={p.props.enum} {...xComponentsProps}/> : <AllUserPicker {...props} />;
+  return (optionalRange != 'all') ? <Select value={value} options={p.props.enum} {...xComponentsProps} /> : <AllUserPicker {...props} />;
 };
 
 const AllUserPicker = (p: ISchemaFieldComponentProps): JSX.Element => {
@@ -87,14 +88,8 @@ const AllUserPicker = (p: ISchemaFieldComponentProps): JSX.Element => {
     },
 
   });
-  const props = Object.assign({}, p.props, {
-    enum: options,
-    'x-component-props': xComponentsProps,
-  });
 
-  const calcParams = Object.assign({}, { props });
-
-  return <Select value={p.value} options={options} {...xComponentsProps}/>;
+  return <Select value={p.value} options={options} {...xComponentsProps} />;
 };
 
 UserPicker.isFieldComponent = true;

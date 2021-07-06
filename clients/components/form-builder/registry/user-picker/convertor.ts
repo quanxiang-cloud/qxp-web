@@ -29,7 +29,7 @@ export const defaultConfig: DefaultConfig = {
   rangeList: [],
   defaultValues: [],
   loading: false,
-  type: 'array',
+  type: 'label-value',
 };
 
 export const toSchema = (config: DefaultConfig): ISchema => {
@@ -42,7 +42,7 @@ export const toSchema = (config: DefaultConfig): ISchema => {
   const calcDefaultValues = isMultiple ? multipleDefValues : singleDefValues;
 
   return Object.assign(config, {
-    type: 'array',
+    type: 'label-value',
     title: config.title,
     description: config.description,
     required: config.required,
@@ -86,7 +86,7 @@ export const toConfig = (schema: ISchema): DefaultConfig => {
     displayModifier = 'hidden';
   }
   return {
-    type: 'array',
+    type: 'label-value',
     title: schema.title as string,
     description: schema.description as string,
     displayModifier: displayModifier,

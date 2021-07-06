@@ -19,13 +19,8 @@ interface Props {
 }
 
 const UserPickerConfigForm = ({ initialValue, onChange }: Props): JSX.Element => {
+  
   const handleChange = useCallback((obj) => {
-    if(obj.optionalRange!==initialValue.optionalRange){
-      const nextValue = Object.assign({}, initialValue, obj, {
-        defaultValues: []
-      });
-      return onChange(nextValue);
-    }
     const nextValue = Object.assign({}, initialValue, obj);
     onChange(nextValue);
   }, [onChange, initialValue]);

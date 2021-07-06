@@ -17,7 +17,8 @@ interface Props {
   isMy: boolean
 }
 
-const Picker = ({ value = [], onChange, isMy, rangeList: defaultValue, ...p }: Props) => {
+const Picker = ({ value = [], onChange, isMy, rangeList, ...p }: Props) => {
+  const defaultValue = rangeList || []
   const store = React.useContext(StoreContext);
   const { appID } = store;
 
@@ -61,11 +62,12 @@ const Picker = ({ value = [], onChange, isMy, rangeList: defaultValue, ...p }: P
     }
   }, [visible]);
 
-  const showName = useMemo(() => defaultValue
-    .map((itm) => itm.ownerName)
-    .join(',')
-    .substr(0, 20),
-  [defaultValue]);
+  const showName = useMemo(() => {
+    return defaultValue
+      .map((itm) => itm.ownerName)
+      .join(',')
+      .substr(0, 20)
+  }, [defaultValue]);
 
   return (
     <div>
