@@ -74,7 +74,7 @@ export function getNodeInitialData(type: NodeType): any {
     tableDataUpdate: {
       targetTableId: '',
       silent: true,
-      filterRule: '',
+      filterRule: {},
       updateRule: [],
     },
     processBranchSource: {

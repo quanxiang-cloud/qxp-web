@@ -58,7 +58,7 @@ function RuleItem(props: Props) {
         <>
           <span className="text-caption ml-5">当前表:</span>
           <Select
-            options={getSchemaFields(curTableSchema)}
+            options={getSchemaFields(curTableSchema, { noSystem: true })}
             value={item.valueOf as string}
             onChange={(val) => onChange({ valueOf: val })}
           />
@@ -117,7 +117,7 @@ function RuleItem(props: Props) {
     <div className="flex items-center mb-10">
       <span className="text-caption">目标表:</span>
       <Select
-        options={getSchemaFields(props.targetSchema)}
+        options={getSchemaFields(props.targetSchema, { noSystem: true })}
         value={item.fieldName}
         onChange={(fieldName: string) => onChange({ fieldName } as Rule)}
       />

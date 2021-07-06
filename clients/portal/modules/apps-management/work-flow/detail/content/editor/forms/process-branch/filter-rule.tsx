@@ -63,7 +63,6 @@ function FilterRule({ mutators, value }: ISchemaFieldComponentProps): JSX.Elemen
       </ul>
       <FormulaEditor
         ref={formulaRef}
-        className="border rounded-4"
         customRules={rules}
         defaultValue={value}
         onChange={mutators.change}

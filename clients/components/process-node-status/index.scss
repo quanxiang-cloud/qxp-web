@@ -32,6 +32,14 @@
     &-send_back {
       background: #D97706;
     }
+
+    &-abandon {
+      background: var(--gray-300);
+    }
+
+    &-abend {
+      background: #DC2626;
+    }
   }
 
   &-label {
