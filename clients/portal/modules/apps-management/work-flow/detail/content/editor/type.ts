@@ -229,15 +229,14 @@ export interface TableDataCreateData {
 export interface TableDataUpdateData {
   targetTableId: string;
   silent: boolean;
-  // filterRule: {
-  //   tag: 'and' | 'or';
-  //   conditions: Array<{
-  //     fieldName: string;
-  //     operator: 'eq' | 'neq' | 'in' | 'nin';
-  //     value: ValueRuleVal;
-  //   }>;
-  // };
-  filterRule: string;
+  filterRule?: {
+    tag: 'and' | 'or';
+    conditions: Array<{
+      fieldName: string;
+      operator: 'eq' | 'neq' | 'in' | 'nin';
+      value: ValueRuleVal;
+    }>;
+  };
   updateRule: Array<{
     fieldName: string;
     valueFrom: 'fixedValue' | 'currentFormValue' | 'processVariable' | 'formula';
