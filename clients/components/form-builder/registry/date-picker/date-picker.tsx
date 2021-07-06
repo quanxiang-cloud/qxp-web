@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import moment, { Moment } from 'moment';
 
 import { DatePicker as DatePickerAnt, DatePickerProps } from 'antd';
@@ -6,6 +6,7 @@ import { DatePicker as DatePickerAnt, DatePickerProps } from 'antd';
 type DatePickerCProps = DatePickerProps & {
   onChange: (value: string) => void;
   readOnly?: boolean;
+  isNow?: boolean;
 }
 
 export function getPicker(format: string): 'year' | 'month' | undefined {
@@ -20,6 +21,12 @@ export function getPicker(format: string): 'year' | 'month' | undefined {
 }
 
 function DatePicker(props: DatePickerCProps): JSX.Element {
+  useEffect(() => {
+    if (props.isNow) {
+      props.onChange(moment(moment().format(props.format as string)).toISOString());
+    }
+  }, []);
+
   const handleChange = (_: Moment | null, dateString: string): void => {
     props.onChange(dateString ? moment(dateString).toISOString() : '');
   };
