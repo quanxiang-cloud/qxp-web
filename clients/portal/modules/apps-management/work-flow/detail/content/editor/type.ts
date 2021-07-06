@@ -90,7 +90,8 @@ export interface XYPosition {
   y: number;
 }
 
-export type Operator = 'eq' | 'neq' | 'gt' | 'gte' | 'lt' | 'lte' | '';
+export type Operator = 'eq' | 'neq' | 'gt' | 'gte' | 'lt' | 'lte' | 'null' | 'not-null' | 'any'
+  | 'all' | 'range' | 'include' | 'not-include' | '';
 export type TriggerConditionValue = {
   key: string;
   op: Operator;
@@ -419,3 +420,8 @@ export type ProcessVariable = {
   name: string;
   fieldType: 'TEXT' | 'DATE' | 'NUMBER' | 'BOOLEAN';
 }
+
+export type FieldOperatorOptions = {
+  label: string;
+  value: Operator;
+}[]
