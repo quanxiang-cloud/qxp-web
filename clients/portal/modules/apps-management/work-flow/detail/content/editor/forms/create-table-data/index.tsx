@@ -49,6 +49,7 @@ function FormCreateTableData({ defaultValue, onSubmit, onCancel }: Props): JSX.E
       toast.error('请选择目标数据表');
       return;
     }
+    // console.log('save table: ', value);
     onSubmit(value);
   };
 
