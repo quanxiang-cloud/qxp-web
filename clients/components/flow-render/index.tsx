@@ -50,7 +50,10 @@ export default function FlowRender({ elements, onDrop, setFitViewFinished }: Pro
   });
 
   useEffect(() => {
-    layoutedElements?.length && onLoad();
+    if (!layoutedElements?.length) {
+      return;
+    }
+    setDagreGraph(new dagre.graphlib.Graph());
   }, [layoutedElements?.length]);
 
   function onLoad(): void {

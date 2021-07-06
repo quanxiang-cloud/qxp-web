@@ -1,3 +1,5 @@
+import type { FieldOperatorOptions } from '@flowEditor/type';
+
 export const WORK_TABLE_INTERNAL_FIELDS = [
   '_id',
   'created_at',
@@ -93,3 +95,59 @@ export const CUSTOM_OPERATOR_PERMISSION = [
     value: 'READ',
   },
 ];
+
+export const COMPONENT_OPERATORS_MAP = {
+  input: ['eq', 'neq', 'include', 'not-include', 'null', 'not-null'],
+  textarea: ['include', 'not-include', 'null', 'not-null'],
+  radiogroup: ['eq'],
+  select: ['eq', 'neq', 'null', 'not-null'],
+  multipleselect: ['any', 'all', 'null', 'not-null'],
+  datepicker: ['eq', 'neq', 'gt', 'lt', 'gte', 'lte', 'range'],
+  numberpicker: ['eq', 'neq', 'gt', 'lt', 'gte', 'lte'],
+  default: [
+    'eq', 'neq', 'gt', 'gte', 'lt', 'lte', 'null', 'not-null', 'any', 'all', 'include', 'not-include',
+  ],
+};
+
+export const OPERATOR_OPTIONS: FieldOperatorOptions = [{
+  label: '大于',
+  value: 'gt',
+}, {
+  label: '大于等于',
+  value: 'gte',
+}, {
+  label: '等于',
+  value: 'eq',
+}, {
+  label: '小于',
+  value: 'lt',
+}, {
+  label: '小于等于',
+  value: 'lte',
+}, {
+  label: '不等于',
+  value: 'neq',
+}, {
+  label: '为空',
+  value: 'null',
+}, {
+  label: '不为空',
+  value: 'not-null',
+}, {
+  label: '包含',
+  value: 'include',
+}, {
+  label: '不包含',
+  value: 'not-include',
+}, {
+  label: '包含任意一个',
+  value: 'any',
+}, {
+  label: '同时包含',
+  value: 'all',
+}, {
+  label: '选择范围',
+  value: 'range',
+}];
+
+export const TRIGGER_CONDITION_EXCLUDE_FIELD_NAMES = ['_id', 'creator_id', 'modifier_id'];

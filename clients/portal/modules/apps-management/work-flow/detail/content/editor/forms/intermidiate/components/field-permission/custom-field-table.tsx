@@ -123,11 +123,11 @@ export default function CustomFieldTable({
     model: any, key: 'initialValue' | 'submitValue', editable: boolean,
   ): JSX.Element | null {
     const schema = schemaMap[model.cell.row.id];
-    const componentName = schema['x-component']?.toLowerCase();
+    const componentName = schema?.['x-component']?.toLowerCase();
     const isSubTable = componentName === 'subtable';
     const isAssociatedRecords = componentName === 'associatedrecords';
-    if (editable && !isSubTable && !isAssociatedRecords) {
-      if (schema?.['x-mega-props']) {
+    if (editable && schema && !isSubTable && !isAssociatedRecords) {
+      if (schema['x-mega-props']) {
         schema['x-mega-props'].labelAlign = 'top';
       }
       return (
