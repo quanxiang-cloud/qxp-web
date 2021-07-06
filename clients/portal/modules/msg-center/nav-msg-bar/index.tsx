@@ -16,7 +16,11 @@ import { getQuery } from '@portal/utils';
 
 import styles from './index.module.scss';
 
-const NavMsgBar = (): JSX.Element => {
+type Props = {
+  className?: string;
+}
+
+const NavMsgBar = ({ className }: Props): JSX.Element => {
   const toggleRef = useRef(null);
   const msgBoxRef = useRef(null);
   const queryClient = useQueryClient();
@@ -75,7 +79,7 @@ const NavMsgBar = (): JSX.Element => {
 
   return (
     <>
-      <div className={styles.wrap}>
+      <div className={cs(className, styles.wrap)}>
         <div
           className={
             cs('relative flex justify-center items-center cursor-pointer group', styles.navItem)

@@ -4,7 +4,6 @@ import { parse } from 'qs';
 
 import Icon from '@c/icon';
 import Tab, { TabProps } from '@c/no-content-tab';
-import HeaderNav from '@c/header-nav';
 
 import NotSavedModal from './not-saved-modal';
 import store from './store';
@@ -70,7 +69,15 @@ function FormDesignHeader(): JSX.Element {
       </div>
       <Tab onChange={tabChange} activeTab={pageType} tabs={TABS} />
       <div className='flex justify-end'>
-        <HeaderNav name='帮助文档' icon='book' url='' />
+        <a
+          href={`//${window.CONFIG.docs_hostname}`}
+          target="_blank"
+          rel="noreferrer"
+          className="app-nav-button corner-8-8-8-2"
+        >
+          <Icon size={20} className='mr-4 app-icon-color-inherit' name="book" />
+          帮助文档
+        </a>
       </div>
       {showNotSavedTips && (
         <NotSavedModal
