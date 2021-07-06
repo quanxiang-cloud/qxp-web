@@ -64,9 +64,7 @@ window.onload = function() {
     removeError(captcha, captchaMessage);
   });
 
-  captchaBtn.addEventListener('click', function(e: Event) {
-    onSendCode(e);
-  });
+  captchaBtn.addEventListener('click', onSendCode);
 
   loginForm.addEventListener('submit', function(event) {
     if (!validateUsername(username, nameMessage)) {
