@@ -1,16 +1,23 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useQuery } from 'react-query';
-import { useParams } from 'react-router-dom';
+import { groupBy } from 'lodash';
 
 import Toggle from '@c/toggle';
 import Loading from '@c/loading';
 import ErrorTips from '@c/error-tips';
 import useObservable from '@lib/hooks/use-observable';
-import store from '@flow/detail/content/editor/store';
-import { getFormFieldOptions, getFormFieldSchema } from '@flow/detail/content/editor/forms/api';
+import store from '@flowEditor/store';
+import { getFormFieldOptions, getFormFieldSchema } from '@flowEditor/forms/api';
+import FlowContext from '@flow/detail/flow-context';
 import type {
-  StoreValue, FieldPermission, CustomFieldPermission, SystemFieldPermission, CurrentElement, BusinessData,
-} from '@flow/detail/content/editor/type';
+  StoreValue,
+  FieldPermission as FieldPermissionType,
+  CustomFieldPermission,
+  SystemFieldPermission,
+  CurrentElement,
+  FillInData,
+  FormDataData,
+} from '@flowEditor/type';
 
 import CustomFieldTable from './custom-field-table';
 import SystemFieldTable from './system-field-table';
@@ -18,22 +25,22 @@ import SystemFieldTable from './system-field-table';
 import './style.scss';
 
 interface Props {
-  value: FieldPermission;
-  onChange: (value: Partial<BusinessData>) => void;
+  value: FieldPermissionType;
+  onChange: (value: Partial<FillInData>) => void;
 }
 
-export default function FieldPermission({ value, onChange: _onChange }: Props) {
-  const { appID } = useParams<{ appID: string; }>();
+export default function FieldPermission({ value, onChange: _onChange }: Props): JSX.Element {
+  const { appID } = useContext(FlowContext);
   const [editable, setEditable] = useState(false);
   const { elements = [] } = useObservable<StoreValue>(store);
-  const currentNodeElement = elements?.find(({ type }) => type === 'formData') as CurrentElement;
-  const workFormValue = currentNodeElement?.data?.businessData?.form?.value;
-  const [mergedFieldPermissions, setMergedFieldPermissions] = useState<FieldPermission>({
+  const formDataElement = elements?.find(({ type }) => type === 'formData') as CurrentElement;
+  const workFormValue = (formDataElement?.data?.businessData as FormDataData)?.form?.value;
+  const [mergedFieldPermissions, setMergedFieldPermissions] = useState<FieldPermissionType>({
     custom: [],
     system: [],
   });
 
-  const { data = [], isLoading, isError } = useQuery(
+  const { data: { options: data } = { options: [] }, isLoading, isError } = useQuery(
     ['GET_WORK_FORM_FIELD_LIST', workFormValue, appID],
     getFormFieldOptions, {
       enabled: !!workFormValue && !!appID,
@@ -64,7 +71,7 @@ export default function FieldPermission({ value, onChange: _onChange }: Props) {
     }
   }, [mergedFieldPermissions.custom]);
 
-  function onChange(fieldPermission: FieldPermission) {
+  function onChange(fieldPermission: FieldPermissionType): void {
     _onChange({ fieldPermission });
   }
 
@@ -77,12 +84,16 @@ export default function FieldPermission({ value, onChange: _onChange }: Props) {
     };
   }
 
-  function mergeField() {
+  function mergeField(): void {
     const { custom = [], system = [] } = value ?? {};
-    const customIds = custom?.map(({ id }) => id);
-    const dataIds = data?.map(({ value }) => value) ?? [];
+    const customIds = custom.map(({ id }) => id);
+    const systemIds = system.map(({ id }) => id);
+    const { true: systemData, false: customData } = groupBy(data, ({ isSystem }) => isSystem);
+    const systemDataIds = systemData?.map(({ value }) => value) ?? [];
+    const customDataIds = customData?.map(({ value }) => value) ?? [];
     const isCustomEmpty = !custom.length;
-    data?.forEach((field) => {
+    const isSystemEmpty = !system.length;
+    customData?.forEach((field) => {
       if (isCustomEmpty || !customIds.includes(field.value)) {
         custom.push({
           id: field.value,
@@ -102,7 +113,19 @@ export default function FieldPermission({ value, onChange: _onChange }: Props) {
         });
       }
     });
-    setMergedFieldPermissions({ system, custom: custom.filter(({ id }) => dataIds.includes(id)) });
+    systemData?.forEach((field) => {
+      if (isSystemEmpty || !systemIds.includes(field.value)) {
+        system.push({
+          id: field.value,
+          fieldName: field.label,
+          read: false,
+        });
+      }
+    });
+    setMergedFieldPermissions({
+      system: system.filter(({ id }) => systemDataIds.includes(id)),
+      custom: custom.filter(({ id }) => customDataIds.includes(id)),
+    });
   }
 
   if (isLoading) {
@@ -134,7 +157,7 @@ export default function FieldPermission({ value, onChange: _onChange }: Props) {
       )}
       {!!mergedFieldPermissions.system.length && (
         <section className="pb-56">
-          <header className="flex justify-between items-center mb-12 mt-16">
+          <header className="flex justify-between items-center mb-12 mt-32">
             <div className="text-caption-no-color text-gray-400">系统字段</div>
           </header>
           <SystemFieldTable

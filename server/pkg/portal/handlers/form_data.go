@@ -20,7 +20,7 @@ const (
 	subForm           = "/home/subForm/"
 	formSchema        = "/m/table/getByID"
 	querySubTable     = "/home/subTable/getByCondition"
-	querySubTableM     = "/m/subTable/getByCondition"
+	querySubTableM    = "/m/subTable/getByCondition"
 	createSubTable    = "/m/subTable/create"
 	foreignTable      = "foreign_table"
 	blankTable        = "sub_table"
@@ -28,16 +28,16 @@ const (
 )
 
 type input struct {
-	Method    string
+	Method     string
 	Conditions *InputConditionVo `json:"conditions"`
-	Entity    Entity
-	Ref       interface{}
+	Entity     Entity
+	Ref        interface{}
 }
 
 // InputConditionVo InputConditionVo
 type InputConditionVo struct {
-	Condition []Condition      `json:"condition"`
-	Tag       string           `json:"tag"`
+	Condition []Condition `json:"condition"`
+	Tag       string      `json:"tag"`
 }
 
 // Condition Condition
@@ -114,19 +114,19 @@ func handler(r *http.Request, in *input, p map[string]string) (int, interface{},
 		return c, nil, err
 	case "update":
 		// update update#set
-		if in.Ref != nil{
+		if in.Ref != nil {
 			ref := in.Ref.(map[string]interface{})
-			if len(ref) > 0{
+			if len(ref) > 0 {
 				// diff 这里无法保证所有的请求都会成功，可能存在状态不一致的情况
 				return doUpdate(r, in, p)
 			}
 		} else {
-			c,r,err := directRequest(r, in)
-			return c,r.Data,err
+			c, r, err := directRequest(r, in)
+			return c, r.Data, err
 		}
 	case "delete":
-		c,r,err := directRequest(r, in)
-		return c,r.Data,err
+		c, r, err := directRequest(r, in)
+		return c, r.Data, err
 	}
 	return http.StatusOK, nil, nil
 }
@@ -146,7 +146,7 @@ func doUpdate(r *http.Request, in *input, p map[string]string) (int, interface{}
 	// 先更新子表单
 	ref := in.Ref.(map[string]interface{})
 	for i := 0; i < len(ref); i++ {
-		ids := make([]interface{},0)
+		ids := make([]interface{}, 0)
 		for key, value := range ref {
 			st, err := json.Marshal(value)
 			if err != nil {
@@ -167,35 +167,35 @@ func doUpdate(r *http.Request, in *input, p map[string]string) (int, interface{}
 			} else {
 				path = fmt.Sprintf("%s%s%s%s", base, subTable.AppID, form, subTable.SubTableID)
 			}
-			if subTable.SubTableType == associatedRecords{
-				doAssociatedRecordsUpdate(&df,updateData,dataOld,&ids,key)
-			}else {
-				doSubTableUpdate(r,&df,updateData,dataOld,&ids,path,key,subTable.TableID)
+			if subTable.SubTableType == associatedRecords {
+				doAssociatedRecordsUpdate(&df, updateData, dataOld, &ids, key)
+			} else {
+				doSubTableUpdate(r, &df, updateData, dataOld, &ids, path, key, subTable.TableID)
 			}
 		}
 	}
-	if in.Entity != nil{
+	if in.Entity != nil {
 		et := in.Entity.(map[string]interface{})
-		for ket,vet := range et{
+		for ket, vet := range et {
 			updateData[ket] = vet
 		}
 	}
 	ud := &input{
-		Method: "update",
-		Conditions:in.Conditions,
-		Entity: updateData,
+		Method:     "update",
+		Conditions: in.Conditions,
+		Entity:     updateData,
 	}
 	o, od, err := directRequest(r, ud)
 	if err != nil {
-		return o,od,err
+		return o, od, err
 	}
 	return http.StatusOK, nil, nil
 }
 
-func doAssociatedRecordsUpdate(df *diff,updateData,dataOld map[string]interface{},ids *[]interface{},key string)  {
-	var v1 = make([]interface{},0)
-	if v,ok := dataOld[key];ok{
-		v1 = append(v1,v.([]interface{}))
+func doAssociatedRecordsUpdate(df *diff, updateData, dataOld map[string]interface{}, ids *[]interface{}, key string) {
+	var v1 = make([]interface{}, 0)
+	if v, ok := dataOld[key]; ok {
+		v1 = append(v1, v.([]interface{}))
 	}
 	if df.New != nil {
 		for i := 0; i < len(df.New); i++ {
@@ -207,22 +207,22 @@ func doAssociatedRecordsUpdate(df *diff,updateData,dataOld map[string]interface{
 			if err := json.Unmarshal(sn, &ip); err != nil {
 				continue
 			}
-			if ss,ok := ip.Entity.(string);ok{
+			if ss, ok := ip.Entity.(string); ok {
 				v1 = append(v1, ss)
 			}
-			if sa,ok := ip.Entity.([]interface{});ok{
+			if sa, ok := ip.Entity.([]interface{}); ok {
 				v1 = append(v1, sa...)
 			}
 		}
 	}
 	ids = &v1
 	if df.Deleted != nil {
-		vi := make([]interface{},0)
+		vi := make([]interface{}, 0)
 		for i := 0; i < len(df.Deleted); i++ {
-			if len(*ids) > 0{
-				for _,value := range *ids {
-					if value.(string) != df.Deleted[i]{
-						vi = append(vi,value)
+			if len(*ids) > 0 {
+				for _, value := range *ids {
+					if value.(string) != df.Deleted[i] {
+						vi = append(vi, value)
 					}
 				}
 				ids = &vi
@@ -230,12 +230,12 @@ func doAssociatedRecordsUpdate(df *diff,updateData,dataOld map[string]interface{
 		}
 	}
 	ss := RemoveRepeatedElement(*ids)
-	if ss != nil && len(ss)>0{
+	if ss != nil && len(ss) > 0 {
 		updateData[key] = ss
 	}
 }
 
-func doSubTableUpdate(r *http.Request,df *diff,updateData,dataOld map[string]interface{},ids *[]interface{},path,key,tableID string)  {
+func doSubTableUpdate(r *http.Request, df *diff, updateData, dataOld map[string]interface{}, ids *[]interface{}, path, key, tableID string) {
 	if df.New != nil {
 		for i := 0; i < len(df.New); i++ {
 			sn, err := json.Marshal(df.New[i])
@@ -254,11 +254,11 @@ func doSubTableUpdate(r *http.Request,df *diff,updateData,dataOld map[string]int
 			if subResp != nil && subResp.Data != nil {
 				d := subResp.Data.(map[string]interface{})
 				if id, ok := d["_id"]; ok {
-					if v,ok := dataOld[key];ok{
+					if v, ok := dataOld[key]; ok {
 						v1 := v.([]interface{})
-						v1 = append(v1,id)
+						v1 = append(v1, id)
 						// dataOld[key] = v1
-						*ids = append(*ids,v1...)
+						*ids = append(*ids, v1...)
 					}
 				}
 			}
@@ -277,28 +277,28 @@ func doSubTableUpdate(r *http.Request,df *diff,updateData,dataOld map[string]int
 		}
 	}
 	if df.Deleted != nil {
-		vi := make([]interface{},0)
+		vi := make([]interface{}, 0)
 		for i := 0; i < len(df.Deleted); i++ {
-			if len(*ids) > 0{
-				for _,value := range *ids {
-					if value.(string) != df.Deleted[i]{
-						vi = append(vi,value)
+			if len(*ids) > 0 {
+				for _, value := range *ids {
+					if value.(string) != df.Deleted[i] {
+						vi = append(vi, value)
 					}
 				}
 				ids = &vi
-			}else if vo,ok := dataOld[key];ok{
+			} else if vo, ok := dataOld[key]; ok {
 				v1 := vo.([]interface{})
-				for _,value := range v1 {
-					if value.(string) != df.Deleted[i]{
-						vi = append(vi,value)
+				for _, value := range v1 {
+					if value.(string) != df.Deleted[i] {
+						vi = append(vi, value)
 					}
 				}
-				*ids = append(*ids,vi...)
+				*ids = append(*ids, vi...)
 			}
 		}
 	}
 	ss := RemoveRepeatedElement(*ids)
-	if ss != nil && len(ss)>0{
+	if ss != nil && len(ss) > 0 {
 		updateData[key] = ss
 	}
 }
@@ -313,7 +313,7 @@ func directRequest(r *http.Request, in *input) (int, *response, error) {
 	c, b, err := sendRequest2Struct(r, "POST", path, jsonStr)
 	if b != nil {
 		br, err := parseResp(b)
-		if br != nil && br.Code != 0{
+		if br != nil && br.Code != 0 {
 			err = errors.New(br.Msg)
 		}
 		return c, br, err
@@ -336,8 +336,8 @@ func doFindOne(r *http.Request, i *input, p map[string]string) (int, interface{}
 		return c, nil, err
 	}
 	if resp.Data != nil {
-		if rd,ok := resp.Data.(map[string]interface{});ok{
-			if et,ok := rd["entity"];ok{
+		if rd, ok := resp.Data.(map[string]interface{}); ok {
+			if et, ok := rd["entity"]; ok {
 				value := reflect.ValueOf(et)
 				switch _t := reflect.TypeOf(resp.Data); _t.Kind() {
 				case reflect.Map:
@@ -466,7 +466,7 @@ func doCreate(r *http.Request, e Entity, p map[string]string) (int, error) {
 
 					if subResp.Data != nil {
 						d := subResp.Data.(map[string]interface{})
-						if et,ok := d["entity"];ok{
+						if et, ok := d["entity"]; ok {
 							t := et.(map[string]interface{})
 							if id, ok := t["_id"]; ok {
 								rp = append(rp, id.(string))

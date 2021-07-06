@@ -13,10 +13,11 @@ import toast from '@lib/toast';
 import { handleReadTask } from '../api';
 
 interface Props {
+  currTask: any;
   className?: string;
   permission: { custom: PermissionItem[], system: PermissionItem[], default?: PermissionItem[] };
   globalActions: Record<string, boolean>;
-  onClickAction: (actionKey: TaskHandleType) => void;
+  onClickAction: (actionKey: TaskHandleType, task: any, reasonRequired?: boolean) => void;
 }
 
 const moreActions = [
@@ -29,7 +30,7 @@ const getIconByAction = (action: string) => {
   return actionMap[action]?.icon || 'arrow_circle_up';
 };
 
-function Toolbar({ permission, onClickAction, globalActions }: Props) {
+function Toolbar({ currTask, permission, onClickAction, globalActions }: Props): JSX.Element {
   const { processInstanceID, taskID } = useParams<{ processInstanceID: string; taskID: string }>();
   const [comment, setComment] = useState('');
   const commentRef = useRef<{node: HTMLTextAreaElement}>(null);
@@ -69,8 +70,8 @@ function Toolbar({ permission, onClickAction, globalActions }: Props) {
             return null;
           }
           return (
-            <span key={`${value}-${idx}`} onClick={(ev) => onClickAction(value)}>
-              <Icon name={getIconByAction(value)} className="mr-8" />{name ?? text ?? defaultText}
+            <span key={`${value}-${idx}`} onClick={(ev) => onClickAction(value, currTask)}>
+              <Icon name={getIconByAction(value)} className="mr-8" />{text ?? name ?? defaultText}
             </span>
           );
         })}
@@ -99,7 +100,7 @@ function Toolbar({ permission, onClickAction, globalActions }: Props) {
 
       <div className="right-btns task-default-actions">
         {
-          system.map(({ name, value, enabled, defaultText, text }: PermissionItem, idx) => {
+          system.map(({ name, value, enabled, defaultText, text, reasonRequired }: PermissionItem, idx) => {
             if (!enabled) {
               return null;
             }
@@ -109,10 +110,10 @@ function Toolbar({ permission, onClickAction, globalActions }: Props) {
                 iconName={getIconByAction(value)}
                 modifier={value === 'REFUSE' ? 'danger' : 'primary'}
                 className={cs(value === 'AGREE' && 'btn-item-done')}
-                onClick={() => onClickAction(value)}
+                onClick={() => onClickAction(value, currTask, reasonRequired)}
                 key={`${value}-${idx}`}
               >
-                {name ?? text ?? defaultText}
+                {text ?? name ?? defaultText}
               </Button>
             );
           })
@@ -155,6 +156,10 @@ function Toolbar({ permission, onClickAction, globalActions }: Props) {
                 )}
                 okText="提交"
                 onOk={()=> {
+                  if (commentRef?.current?.node.value.length && commentRef?.current?.node.value.length > 100) {
+                    toast.error('字数不能超过100字');
+                    return Promise.reject(new Error('字数不能超过100字'));
+                  }
                   handleReadTask(processInstanceID, taskID, commentRef?.current?.node.value || '').then((data) => {
                     if (data) {
                       toast.success('操作成功');
@@ -184,7 +189,7 @@ function Toolbar({ permission, onClickAction, globalActions }: Props) {
               <Button
                 iconName={getIconByAction(action)}
                 modifier="primary"
-                onClick={() => onClickAction(action as TaskHandleType)}
+                onClick={() => onClickAction(action as TaskHandleType, currTask)}
                 key={`${action}-${idx}`}
               >
                 {actionMap[action].text}

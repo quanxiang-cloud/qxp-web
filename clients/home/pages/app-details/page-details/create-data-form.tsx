@@ -11,7 +11,7 @@ import Button from '@c/button';
 import Loading from '@c/loading';
 import toast from '@lib/toast';
 import { FormRenderer } from '@c/form-builder';
-import { compactObject } from '@lib/utils';
+import { removeNullOrUndefinedFromObject } from '@lib/utils';
 import { INTERNAL_FIELD_NAMES } from '@c/form-builder/store';
 import {
   formDataRequest, FormDataRequestCreateParams, FormDataRequestUpdateParams,
@@ -119,7 +119,7 @@ function CreateDataForm({ appID, pageID, rowID, onCancel, title }: Props): JSX.E
   }
 
   const handleSubmit = (data: any): void => {
-    const formData = compactObject(data);
+    const formData = removeNullOrUndefinedFromObject(data);
     const schemaMap = schema?.properties as ISchema || {};
     const defaultValue = toJS(defaultValues);
     const diffResult = difference(defaultValue || {}, formData);
@@ -154,7 +154,8 @@ function CreateDataForm({ appID, pageID, rowID, onCancel, title }: Props): JSX.E
     const initialMethod = defaultValues ? 'update' : 'create';
     const reqData: FormDataRequestCreateParams | FormDataRequestUpdateParams = buildRequestParams(
       initialMethod === 'create' ? formData : omitBy(formData, (_, key) => {
-        return schemaMap[key as keyof ISchema]?.['x-component'] === 'subtable' || !(key in schemaMap);
+        return schemaMap[key as keyof ISchema]?.['x-component'].toLowerCase() === 'subtable' ||
+          !(key in schemaMap);
       }),
       defaultValue?._id,
       initialMethod,

@@ -1,14 +1,17 @@
 import { QueryFunctionContext } from 'react-query';
+import { omitBy } from 'lodash';
 
 import httpClient from '@lib/http-client';
 
-import { WorkTableInternalFields } from '../utils/constants';
+import { ProcessVariable, Operation } from '../type';
+import { SYSTEM_OPERATOR_PERMISSION, CUSTOM_OPERATOR_PERMISSION } from '../utils/constants';
 
 export type Option = {
   label: string;
   value: string;
   children?: Option[];
   type?: string;
+  isSystem?: boolean;
 };
 
 export type Options = Option[];
@@ -21,120 +24,51 @@ interface SchemaResponse {
   }
 }
 
-export async function getFormFieldSchema({ queryKey }: QueryFunctionContext) {
+export async function getFormFieldSchema({ queryKey }: QueryFunctionContext): Promise<{
+  properties?: { [key: string]: ISchema; } | undefined;
+}> {
   const data = await httpClient<SchemaResponse | null>(
-    `/api/v1/structor/${queryKey[2]}/m/table/getByID`, {
+    `/api/v1/form/${queryKey[2]}/m/table/getByID`, {
       tableID: queryKey[1],
     });
   return data?.schema ?? {};
 }
 
-export async function getFormFieldOptions({ queryKey }: QueryFunctionContext): Promise<Options> {
+export async function getFormFieldOptions({ queryKey }: QueryFunctionContext): Promise<{
+  options: Options,
+  schema: ISchema,
+}> {
   const schema = await getFormFieldSchema({ queryKey });
-  function parseFormFieldOptions(schema: {
-    properties?: {
-      [key: string]: ISchema;
-    }
-  } = {}) {
-    return Object.entries(schema.properties ?? {}).reduce((prev: {
-      label: string;
-      value: string;
-      type: string;
-    }[], [id, value]) => {
-      if (!WorkTableInternalFields.includes(id)) {
+  const blackList = ['subtable', 'associatedrecords'];
+  function parseFormFieldOptions(schema: ISchema = {}): Option[] {
+    return Object.entries(schema.properties ?? {}).reduce((prev: Option[], [id, value]) => {
+      const componentName = schema?.properties?.[id]?.['x-component']?.toLowerCase() || '';
+      if (!blackList.includes(componentName)) {
         prev.push({
           label: value.title as string,
           value: id,
           type: value.type as string,
+          isSystem: (value as ISchema)['x-internal']?.isSystem,
         });
       }
       return prev;
     }, []);
   }
-  return parseFormFieldOptions(schema ?? {});
+  return {
+    options: parseFormFieldOptions(schema ?? {}),
+    schema: {
+      ...schema,
+      properties: omitBy(schema?.properties, (v) => {
+        return blackList.includes(v?.['x-component']?.toLowerCase() || '');
+      }),
+    },
+  };
 }
 
-export interface OperationItem {
-  enabled: boolean;
-  changeable: boolean;
-  name: string;
-  text?: string;
-  value: string;
-}
-
-const operationList = {
-  system: [{
-    enabled: true,
-    changeable: false,
-    name: '通过',
-    text: '通过',
-    value: 'AGREE',
-    only: 'approve',
-  }, {
-    enabled: true,
-    changeable: false,
-    name: '拒绝',
-    text: '拒绝',
-    value: 'REFUSE',
-    only: 'approve',
-  }, {
-    enabled: true,
-    changeable: false,
-    name: '提交',
-    text: '提交',
-    value: 'FILL_IN',
-    only: 'fillIn',
-  }],
-  custom: [{
-    enabled: false, // common
-    changeable: true,
-    name: '撤回',
-    text: '撤回',
-    value: 'CANCEL',
-  }, {
-    enabled: false, // common
-    changeable: true,
-    name: '转交',
-    text: '转交',
-    value: 'ENTRUST',
-  }, {
-    enabled: false,
-    changeable: true,
-    name: '回退',
-    text: '回退',
-    value: 'STEP_BACK',
-    only: 'approve',
-  }, {
-    enabled: false,
-    changeable: true,
-    name: '打回重填',
-    text: '打回重填',
-    value: 'SEND_BACK',
-    only: 'approve',
-  }, {
-    enabled: false, // common
-    changeable: true,
-    name: '抄送',
-    text: '抄送',
-    value: 'CC',
-  }, {
-    enabled: false,
-    changeable: true,
-    name: '加签',
-    text: '加签',
-    value: 'ADD_SIGN',
-    only: 'approve',
-  }, {
-    enabled: false, // common
-    changeable: true,
-    name: '邀请阅示',
-    text: '邀请阅示',
-    value: 'READ',
-  }],
-};
+const operationList = { system: SYSTEM_OPERATOR_PERMISSION, custom: CUSTOM_OPERATOR_PERMISSION };
 export function getOperationList({ queryKey }: QueryFunctionContext): Promise<{
-  system?: OperationItem[];
-  custom: OperationItem[];
+  system?: Operation[];
+  custom: Operation[];
 }> {
   return new Promise((r) => {
     const type = queryKey[1];
@@ -143,4 +77,8 @@ export function getOperationList({ queryKey }: QueryFunctionContext): Promise<{
       custom: operationList.custom.filter(({ only }) => !only || only === type),
     });
   });
+}
+
+export function getFlowVariables(flowID: string): Promise<Array<ProcessVariable>> {
+  return httpClient(`/api/v1/flow/getVariableList?id=${flowID}`);
 }

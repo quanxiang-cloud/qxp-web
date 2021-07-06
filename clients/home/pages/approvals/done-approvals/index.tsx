@@ -1,9 +1,11 @@
 import React, { useEffect } from 'react';
 import { observer } from 'mobx-react';
+
 import Search from '@c/search';
 import Pagination from '@c/pagination';
 import Select from '@c/select';
 import IconBtn from '@c/icon-btn';
+import Checkbox from '@c/checkbox';
 
 import store from './store';
 import TaskList from '../task-list';
@@ -23,24 +25,35 @@ function TodoApprovals(): JSX.Element {
     };
   }, []);
 
+  function changeAgent(val: React.ChangeEvent<HTMLInputElement>): void {
+    store.agent = val.target.checked ? 1 : 0;
+  }
+
   return (
     <div>
       <div className="flex justify-between items-center mb-16">
-        <div className="flex flex-1" />
-        <Search className="w-259 mr-16" placeholder="搜索流程、发起人、应用" value={store.keyword}
-          onChange={store.changeKeyword} />
-        <Select multiple={false} options={sortOptions} onChange={store.changeOrderType} value={store.orderType}>
-          <IconBtn
-            iconName="import_export"
-            className="border-none hover:bg-gray-100"
-            style={{ border: 'none' }}
-            iconProps={{
-              type: 'primary',
-            }}
-          />
-        </Select>
+        <Checkbox
+          label="仅看我代理的1"
+          checked={store.agent === 1 ? true : false}
+          className="mr-auto"
+          onChange={changeAgent}
+        />
+        <div className="flex">
+          <Search className="w-259 mr-16" placeholder="搜索流程、发起人、应用" value={store.keyword}
+            onChange={store.changeKeyword} />
+          <Select multiple={false} options={sortOptions} onChange={store.changeOrderType} value={store.orderType}>
+            <IconBtn
+              iconName="import_export"
+              className="border-none hover:bg-gray-100"
+              style={{ border: 'none' }}
+              iconProps={{
+                type: 'primary',
+              }}
+            />
+          </Select>
+        </div>
       </div>
-      <TaskList tasks={store.approvals} store={store} taskType='todo' />
+      <TaskList tasks={store.approvals} store={store} taskType='done' type="HANDLED_PAGE" />
       <Pagination
         current={store.pageNumber}
         total={store.total}

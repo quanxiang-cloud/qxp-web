@@ -1,4 +1,4 @@
-import { imgChange, removeError, validatePwd } from './login-common';
+import { imgChange, removeError } from './login-common';
 import './style.scss';
 
 window.onload = function() {
@@ -8,7 +8,6 @@ window.onload = function() {
   const newMessage = document.querySelector('#newMessage') as HTMLElement;
   const oldImg = document.querySelector('#oldImg') as HTMLImageElement;
   const newImg = document.querySelector('#newImg') as HTMLImageElement;
-  const resetForm = document.querySelector('#resetForm') as HTMLFormElement;
 
   oldPassword.addEventListener('input', function() {
     removeError(oldPassword, oldMessage);
@@ -24,15 +23,6 @@ window.onload = function() {
 
   newImg.addEventListener('click', function() {
     imgChange(newImg, newPassword);
-  });
-
-  resetForm.addEventListener('submit', function(event) {
-    if (!validatePwd(oldPassword, oldMessage)) {
-      event.preventDefault();
-    }
-    if (!validatePwd(newPassword, newMessage)) {
-      event.preventDefault();
-    }
   });
 };
 

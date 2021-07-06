@@ -116,26 +116,26 @@ const schema: ISchema = {
           'x-component': 'Switch',
           'x-index': 7,
         },
-        dropdownStyle: {
-          type: 'string',
-          title: '下拉菜单样式',
-          default: 'cascade',
-          enum: [
-            {
-              label: '级联选择',
-              value: 'cascade',
-            },
-            {
-              label: '树形选择',
-              value: 'tree',
-            },
-          ],
-          'x-component': 'RadioGroup',
-          'x-mega-props': {
-            labelAlign: 'top',
-          },
-          'x-index': 8,
-        },
+        // dropdownStyle: {
+        //   type: 'string',
+        //   title: '下拉菜单样式',
+        //   default: 'cascade',
+        //   enum: [
+        //     {
+        //       label: '级联选择',
+        //       value: 'cascade',
+        //     },
+        //     {
+        //       label: '树形选择',
+        //       value: 'tree',
+        //     },
+        //   ],
+        //   'x-component': 'RadioGroup',
+        //   'x-mega-props': {
+        //     labelAlign: 'top',
+        //   },
+        //   'x-index': 8,
+        // },
         required: {
           title: '是否必填',
           default: false,

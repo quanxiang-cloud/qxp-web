@@ -75,7 +75,7 @@ func HandleLoginSubmit(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	respBody, errMsg := contexts.SendRequest(r.Context(), "POST", "/api/v1/oauth2c/login", jsonStr, map[string]string{
+	respBody, errMsg := contexts.SendRequest(r.Context(), "POST", "/api/v1/oauth2s/jwt/login", jsonStr, map[string]string{
 		"Content-Type": "application/json",
 	})
 

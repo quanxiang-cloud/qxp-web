@@ -1,4 +1,3 @@
-import { DatePicker } from '@formily/antd-components';
 import { Dictionary, groupBy, orderBy } from 'lodash';
 import elements, { Elements } from './elements';
 
@@ -35,10 +34,6 @@ class Registry {
       const { component } = this.elements[componentName];
       this.components[componentName] = component;
     });
-
-    // todo fix this
-    this.components.YearPicker = DatePicker.YearPicker;
-    this.components.MonthPicker = DatePicker.MonthPicker;
   }
 }
 

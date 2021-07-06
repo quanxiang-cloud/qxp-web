@@ -1,7 +1,7 @@
-import React, { memo, useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import cs from 'classnames';
 
-import type { EdgeTextProps, Rect } from '@flow/detail/content/editor/type';
+import type { EdgeTextProps, Rect } from '@flowEditor/type';
 
 function EdgeText({
   x,
@@ -18,7 +18,7 @@ function EdgeText({
   rectClassName,
   textClassName,
   ...rest
-}: EdgeTextProps) {
+}: EdgeTextProps): JSX.Element | null {
   const edgeRef = useRef<SVGTextElement>(null);
   const [edgeTextBbox, setEdgeTextBbox] = useState<Rect>({ x: 0, y: 0, width: 0, height: 0 });
 
@@ -72,4 +72,4 @@ function EdgeText({
   );
 }
 
-export default memo(EdgeText);
+export default EdgeText;

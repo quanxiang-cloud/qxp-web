@@ -1,6 +1,6 @@
 %text-overflow {
   white-space: nowrap;
-  max-width: 10rem;
+  max-width: 7rem;
   overflow: hidden;
   text-overflow: ellipsis;
 }
@@ -33,13 +33,13 @@
       font-size: 12px;
       line-height: 20px;
 
-      > span {
+      > div {
         margin-right: 18px;
       }
 
       .info-label {
         color: #94A3B8;
-        @extend %text-overflow;
+        max-width: 8rem;
 
         > svg {
           color: #94A3B8;
@@ -48,8 +48,13 @@
         & ~ span {
           display: inline-flex;
           color: #475569;
+          white-space: nowrap;
+        }
+
+        & ~ div {
+          display: block;
+          color: #475569;
           @extend %text-overflow;
-          overflow-x: scroll;
         }
       }
     }

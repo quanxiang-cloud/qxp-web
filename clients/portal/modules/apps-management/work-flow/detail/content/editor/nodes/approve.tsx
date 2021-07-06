@@ -3,7 +3,7 @@ import { Handle, Position } from 'react-flow-renderer';
 
 import ApproveNodeComponent from '../components/approve';
 
-export default function ApproveNode(props: any) {
+export default function ApproveNode(props: any): JSX.Element {
   return (
     <>
       <Handle

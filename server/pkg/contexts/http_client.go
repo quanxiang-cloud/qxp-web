@@ -97,7 +97,7 @@ func SendRequest(ctx context.Context, method string, fullPath string, body []byt
 
 	req.Header.Add("User-Agent", GetContextValue(ctx, CtxUA))
 
-	Logger.Debugf("sending request, method: %s, url: %s, headers: %s", req.Method, req.URL, req.Header)
+	Logger.Debugf("sending request, method: %s, url: %s, headers: %s, [request_id=%s]", req.Method, req.URL, req.Header, requestID)
 
 	resp, respBody, errMsg := RetrieveResponse(req)
 	if errMsg != "" {

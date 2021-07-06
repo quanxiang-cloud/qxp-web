@@ -1,12 +1,12 @@
 import useObservable from '@lib/hooks/use-observable';
 
-import store, { updateStore } from '@flow/detail/content/editor/store';
-import type { StoreValue, CurrentConnection } from '@flow/detail/content/editor/type';
+import store, { updateStore } from '@flowEditor/store';
+import type { StoreValue, CurrentConnection } from '@flowEditor/type';
 
-export default function useNodeSwitch() {
+export default function useNodeSwitch(): (id: string, currentConnection: CurrentConnection) => void {
   const { errors } = useObservable<StoreValue>(store);
 
-  function activeComponentSelectorForm(currentConnection: CurrentConnection) {
+  function activeComponentSelectorForm(currentConnection: CurrentConnection): void {
     updateStore((s) => ({
       ...s,
       currentConnection,

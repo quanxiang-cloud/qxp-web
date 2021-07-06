@@ -3,6 +3,7 @@ import cs from 'classnames';
 
 import List from '@c/list';
 import Icon from '@c/icon';
+import useFitView from '@flowEditor/hooks/use-fit-view';
 
 import AsideMenuItem from './menu-item';
 
@@ -11,16 +12,31 @@ interface Props {
   currentOperateType: string;
 }
 
-export default function NewFlow({ onChange, currentOperateType }: Props) {
-  const [isCollapsed, setIsCollapsed] = useState(false);
+const durationTime = 300;
 
-  function onCollapse() {
+export default function NewFlow({ onChange, currentOperateType }: Props): JSX.Element {
+  const [isCollapsed, setIsCollapsed] = useState(false);
+  const fitView = useFitView();
+  let tid = -1;
+
+  function onCollapse(): void {
     setIsCollapsed((i) => !i);
+    clearTimeout(tid);
+    tid = window.setTimeout(() => {
+      fitView();
+    }, durationTime);
   }
 
   return (
     <aside
-      className="h-full bg-white shadow-flow-aside flex flex-col justify-between transition-all"
+      className={cs(
+        'h-full bg-white shadow-flow-aside flex flex-col justify-between',
+        `duration-${durationTime}`, { 'w-214': !isCollapsed, 'w-72': isCollapsed },
+      )}
+      style={{
+        transitionProperty: 'width',
+        transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)',
+      }}
     >
       <List
         className="flex-col"
@@ -52,16 +68,16 @@ export default function NewFlow({ onChange, currentOperateType }: Props) {
           />,
         ]}
       />
-      <div className="flex justify-center items-center py-12" style={{
-        boxShadow: 'inset 0px 1px 0px var(--gray-200)',
-      }}>
+      <div
+        onClick={onCollapse}
+        className="flex justify-center items-center py-12 cursor-pointer"
+        style={{
+          boxShadow: 'inset 0px 1px 0px var(--gray-200)',
+        }}
+      >
         <Icon
           name="login"
-          className={cs(
-            'transform cursor-pointer transition',
-            { 'rotate-180': !isCollapsed },
-          )}
-          onClick={onCollapse}
+          className={cs('transform transition', { 'rotate-180': !isCollapsed })}
         />
       </div>
     </aside>

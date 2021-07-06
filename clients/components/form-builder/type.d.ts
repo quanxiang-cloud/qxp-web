@@ -80,6 +80,7 @@ declare namespace FormBuilder {
 
   type Comparator = (values: Record<string, any>) => boolean;
 
+  // todo move this to global.d.ts
   type Option = {
     label: string;
     value: string;

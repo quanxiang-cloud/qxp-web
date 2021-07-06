@@ -1,5 +1,4 @@
-import { DatePicker } from '@formily/antd-components';
-
+import DatePicker from './date-picker';
 import configSchema from './config-schema';
 import { defaultConfig, toSchema, toConfig, DatePickerConfig } from './convertor';
 

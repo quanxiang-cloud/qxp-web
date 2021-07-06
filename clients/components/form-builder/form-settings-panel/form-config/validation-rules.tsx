@@ -1,7 +1,8 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useRef } from 'react';
 import { observer } from 'mobx-react';
 import { parse } from 'qxp-formula';
 
+import FormulaEditor, { RefProps } from '@c/formula-editor';
 import Button from '@c/button';
 import Modal from '@c/modal';
 import Icon from '@c/icon';
@@ -38,63 +39,33 @@ function getVariables(schema: ISchema): Array<{ fieldName: string; title: string
   }).map(([fieldName, { title }]) => ({ fieldName, title: title as string }));
 }
 
-function parseRAWFormula(
-  rawFormula: string,
-  variables: Array<{ fieldName: string; title: string; }>,
-): string {
-  let formula = rawFormula;
-  variables.forEach(({ fieldName, title }) => {
-    const reg = new RegExp(fieldName, 'g');
-    formula = formula.replace(reg, `${fieldName}:${title}`);
-  });
-
-  return formula;
-}
-
-// return: [errorMessage, formula]
-function toRAWFormula(
-  readableFormula: string,
-  variables: Array<{ fieldName: string; title: string; }>,
-): [string, string] {
-  // convert readableFormula to formula
-  let formula = readableFormula;
-  variables.forEach(({ fieldName, title }) => {
-    const reg = new RegExp(`${fieldName}:${title}`, 'g');
-    formula = formula.replace(reg, fieldName);
-  });
-
-  try {
-    parse(formula.trim());
-    return ['', formula.trim()];
-  } catch (error) {
-    return [String(error), ''];
-  }
-}
-
 function EditValidationModal({ onClose, ruleID }: EditValidationModalProps): JSX.Element {
-  const [errorMessage, setErrorMessage] = useState('');
   const store = useContext(StoreContext);
   const fields = getVariables(store.schema);
   const validation = store.schema['x-internal']?.validations?.find(({ id }) => {
     return id === ruleID;
   }) || { formula: '', message: '', name: '' };
-  const [readableFormula, setFormula] = useState(parseRAWFormula(validation.formula, fields));
   const [message, setMessage] = useState(validation.message);
   const [ruleName, setRuleName] = useState(validation.name);
 
-  function onSave(): void {
-    const [err, formula] = toRAWFormula(readableFormula, fields);
-    if (err) {
-      setErrorMessage(err);
-      return;
-    }
+  const [errorMessage, setErrorMessage] = useState('');
+  const formulaEditorRef = useRef<RefProps>();
 
+  function onSave(): void {
+    const formula = formulaEditorRef.current?.getFormulaValue().trim() || '';
+    setErrorMessage('');
     if (!formula) {
       setErrorMessage('公式不能为空');
       return;
     }
 
-    // todo limit message and name length
+    try {
+      parse(formula);
+    } catch (error) {
+      setErrorMessage('公式格式错误！');
+      return;
+    }
+
     store.updateValidation({
       id: ruleID,
       type: 'formula',
@@ -103,6 +74,14 @@ function EditValidationModal({ onClose, ruleID }: EditValidationModalProps): JSX
       name: ruleName.trim(),
     });
     onClose();
+  }
+
+  function addText(text: string, hasSpacing = true, backNumber = 0): void {
+    formulaEditorRef.current?.insertText(text, hasSpacing, backNumber);
+  }
+
+  function addField(entityData: { name: string, key: string }): void {
+    formulaEditorRef.current?.insertEntity(entityData);
   }
 
   if (!fields.length) {
@@ -139,18 +118,16 @@ function EditValidationModal({ onClose, ruleID }: EditValidationModalProps): JSX
         />
       </div>
       <div className="form-validation-formula">
-        {errorMessage && (
-          <p className="text-red-600">{errorMessage}</p>
-        )}
         <div className="mb-8">表单字段:</div>
         <div className="mb-16">
           {fields.map(({ fieldName, title }) => {
             return (
               <span
                 key={fieldName}
-                className="inline-block mb-8 p-2 bg-gray-100 mr-4 border border-gray-300"
+                onClick={() => addField({ key: fieldName, name: title })}
+                className="inline-block mb-8 p-2 bg-gray-100 mr-4 border border-gray-300 cursor-pointer"
               >
-                {fieldName}:{title}
+                {title}
               </span>
             );
           })}
@@ -161,21 +138,25 @@ function EditValidationModal({ onClose, ruleID }: EditValidationModalProps): JSX
         {Operators.map((operator) => (
           <span
             key={operator}
-            className="inline-block mb-8 p-2 bg-gray-100 mr-4 border border-gray-300"
+            onClick={() => addText(operator)}
+            className="inline-block mb-8 p-2 bg-gray-100 mr-4 border border-gray-300 cursor-pointer"
           >
             {operator}
           </span>
         ))}
       </div>
       <div className="mb-8">验证公式:</div>
-      <textarea
-        className="block border border-gray-600 w-full mb-16"
-        value={readableFormula}
-        onChange={({ target }) => {
-          setErrorMessage('');
-          setFormula(target.value);
-        }}
+      <FormulaEditor
+        ref={formulaEditorRef}
+        customRules={fields.map(({ title, fieldName }) => {
+          return { key: fieldName, name: title, type: 'field' };
+        })}
+        className="block border border-gray-300 w-full mb-16 corner-2-8-8-8 overflow-hidden"
+        defaultValue={validation.formula}
       />
+      {errorMessage && (
+        <p className="text-red-600 mb-16">{errorMessage}</p>
+      )}
       <div className="mb-8">错误提示:</div>
       <input
         type="text"

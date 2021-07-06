@@ -1,4 +1,4 @@
-import React, { memo, useCallback, HTMLAttributes } from 'react';
+import React, { useCallback, HTMLAttributes, useEffect } from 'react';
 import cs from 'classnames';
 import {
   useZoomPanHelper,
@@ -14,32 +14,29 @@ import useFitView from '../hooks/use-fit-view';
 export interface Props extends HTMLAttributes<HTMLDivElement> {
   showZoom?: boolean;
   showFitView?: boolean;
-  showInteractive?: boolean;
   onZoomIn?: () => void;
   onZoomOut?: () => void;
   onFitView?: () => void;
-  onInteractiveChange?: (interactiveStatus: boolean) => void;
 }
 
 function Controls({
   style,
   showZoom = true,
   showFitView = true,
-  showInteractive = true,
   onZoomIn,
   onZoomOut,
   onFitView,
-  onInteractiveChange,
   className,
   children,
-}: Props) {
-  const setInteractive = useStoreActions((actions) => actions.setInteractive);
+}: Props): JSX.Element {
+  const setNodesDraggable = useStoreActions((actions) => actions.setNodesDraggable);
   const { zoomIn, zoomOut } = useZoomPanHelper();
-  const isInteractive = useStoreState(
-    (s) => s.nodesDraggable && s.nodesConnectable && s.elementsSelectable,
-  );
   const zoomLevel = useStoreState((state) => state.transform[2]);
   const fitView = useFitView();
+
+  useEffect(() => {
+    setNodesDraggable(false);
+  }, []);
 
   const onZoomInHandler = useCallback(() => {
     zoomIn?.();
@@ -55,11 +52,6 @@ function Controls({
     fitView?.();
     onFitView?.();
   }, [fitView, onFitView]);
-
-  const onInteractiveChangeHandler = useCallback(() => {
-    setInteractive?.(!isInteractive);
-    onInteractiveChange?.(!isInteractive);
-  }, [isInteractive, setInteractive, onInteractiveChange]);
 
   return (
     <div className={cs('flex flex-row items-center justify-end', className)} style={style}>
@@ -86,11 +78,6 @@ function Controls({
             <Icon name="my_location"/>
           </ControlButton>
         )}
-        {showInteractive && (
-          <ControlButton onClick={onInteractiveChangeHandler}>
-            {isInteractive ? <Icon name="lock_open" /> : <Icon name="lock" />}
-          </ControlButton>
-        )}
         {children}
       </div>
     </div>
@@ -99,4 +86,4 @@ function Controls({
 
 Controls.displayName = 'Controls';
 
-export default memo(Controls);
+export default Controls;

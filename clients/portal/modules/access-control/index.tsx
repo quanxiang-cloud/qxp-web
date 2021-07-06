@@ -15,12 +15,14 @@ const MENU = [
     icon: 'contacts',
     name: '企业通讯录',
     url: '/access-control/departments-employees',
+    authority: 'accessControl/mailList/read',
   },
   {
     id: 'role-management',
     icon: 'people',
     name: '角色管理',
     url: '/access-control/role-management',
+    authority: 'accessControl/role/read',
   },
 ];
 

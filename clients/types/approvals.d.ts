@@ -3,11 +3,23 @@ type ApprovalTask = {
 
   name: string; // task name
 
+  appName?: string;
+
+  creatorName?: string;
+
+  creatorAvatar?: string;
+
+  status?: string;
+
   description?: string;
 
   createTime: string; // Task create time
 
   startTime?: string;
+
+  formSchema?: {properties: Record<string, any>};
+
+  formData?: Record<string, any>;
 
   endTime?: string; // Task end time
 
@@ -35,7 +47,7 @@ declare enum TaskHandleType {
   agree = 'AGREE',
   refuse = 'REFUSE',
   fill_in = 'FILL_IN',
-  // cancel = 'CANCEL',
+  cancel = 'CANCEL',
   deliver = 'DELIVER',
   step_back = 'STEP_BACK',
   send_back = 'SEND_BACK',
@@ -60,4 +72,5 @@ type PermissionItem = {
   text?: string;
   defaultText?: string;
   changeable?: boolean;
+  reasonRequired?: boolean;
 }

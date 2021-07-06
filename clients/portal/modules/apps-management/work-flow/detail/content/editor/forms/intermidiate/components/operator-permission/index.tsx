@@ -6,22 +6,21 @@ import Icon from '@c/icon';
 import Tooltip from '@c/tooltip';
 import Loading from '@c/loading';
 import ErrorTips from '@c/error-tips';
-import { getOperationList } from '@flow/detail/content/editor/forms/api';
+import { getOperationList } from '@flowEditor/forms/api';
 import type {
-  SystemOperation,
-  CustomOperation,
+  Operation,
   OperationPermission as OperationPermissionType,
   NodeType,
-  BusinessData,
-} from '@flow/detail/content/editor/type';
+  FillInData,
+} from '@flowEditor/type';
 
 interface Props {
   value: OperationPermissionType;
-  onChange: (value: Partial<BusinessData>) => void;
+  onChange: (value: Partial<FillInData>) => void;
   type?: NodeType;
 }
 
-export default function OperatorPermission({ value, onChange: _onChange, type }: Props) {
+export default function OperatorPermission({ value, onChange: _onChange, type }: Props): JSX.Element {
   const { data, isLoading, isError } = useQuery(['GET_OPERATION_LIST', type], getOperationList);
   const [mergedOperations, setMergedOperations] = useState<OperationPermissionType>({
     system: [], custom: [],
@@ -33,12 +32,12 @@ export default function OperatorPermission({ value, onChange: _onChange, type }:
     }
   }, [data, value]);
 
-  function onChange(operatorPermission: OperationPermissionType) {
+  function onChange(operatorPermission: OperationPermissionType): void {
     _onChange({ operatorPermission });
   }
 
-  function mergeOperation() {
-    const { custom = [], system = [] } = value;
+  function mergeOperation(): void {
+    let { custom = [], system = [] } = value;
     const isCustomEmpty = !custom.length;
     const isSystemEmpty = !system.length;
     const customValues = custom.map(({ name, value }) => `${value}.${name}`);
@@ -52,8 +51,18 @@ export default function OperatorPermission({ value, onChange: _onChange, type }:
     });
     data?.system?.forEach((op) => {
       if (isSystemEmpty || !systemValues.includes(`${op.value}.${op.name}`)) {
-        system.push(op as SystemOperation);
+        system.push(op as Operation);
       }
+    });
+    custom = custom.map((item) => {
+      const val = `${item.value}${item.name}`;
+      const cItem = data?.custom?.find(({ name, value }) => `${value}${name}` === val) || {};
+      return { ...cItem, ...item };
+    });
+    system = system.map((item) => {
+      const val = `${item.value}${item.name}`;
+      const sItem = data?.system?.find(({ name, value }) => `${value}${name}` === val) || {};
+      return { ...sItem, ...item };
     });
     setMergedOperations({
       custom: custom.filter((op) => dataCustomValues.includes(`${op.value}.${op.name}`)),
@@ -63,12 +72,12 @@ export default function OperatorPermission({ value, onChange: _onChange, type }:
 
   function onUpdateOperation(
     type: 'system' | 'custom',
-    operation: SystemOperation,
-    value: Partial<SystemOperation>,
-  ) {
+    operation: Operation,
+    value: Partial<Operation>,
+  ): void {
     onChange({
       ...mergedOperations,
-      [type]: mergedOperations[type].map((o: CustomOperation) => {
+      [type]: mergedOperations[type].map((o: Operation) => {
         if (operation == o) {
           return {
             ...o,
@@ -80,36 +89,42 @@ export default function OperatorPermission({ value, onChange: _onChange, type }:
     });
   }
 
-  function listRender(label: string, operation: SystemOperation[], type: 'system' | 'custom') {
+  function listRender(
+    label: string,
+    operation: Operation[],
+    type: 'system' | 'custom',
+  ): JSX.Element | null {
     if (!operation?.length) {
       return null;
     }
 
     return (
       <>
-        <div className="text-caption-no-color text-gray-400 pl-20 py-10 pr-20 shadow-header">
+        <div className="text-caption-no-color text-gray-400 py-10 px-10 shadow-header">
           {label}
         </div>
         {operation.map((op) => {
           return (
             <div
               key={op.value || op.name}
-              className="flex items-center justify-between pr-20 py-16 shadow-header"
+              className="flex items-center justify-between px-10 py-16 shadow-header"
             >
-              <Toggle
-                disabled={!op.changeable}
-                defaultChecked={op.enabled}
-                className="ml-20"
-                onChange={(checked) => onUpdateOperation(type, op, {
-                  enabled: !!checked,
-                })}
-              />
-              <div>{op.name}</div>
-              <div className="relative w-188">
+              <div className="flex flex-1 justify-center">
+                <Toggle
+                  disabled={!op.changeable}
+                  defaultChecked={op.enabled}
+                  onChange={(checked) => onUpdateOperation(type, op, {
+                    enabled: !!checked,
+                  })}
+                />
+              </div>
+              <div className="flex-1 text-left">{op.name}</div>
+              <div className="relative flex flex-2 justify-center">
                 {(op.text || op.name) && (
                   <>
                     <input
-                      className="input w-full pr-36"
+                      className="w-full pl-12 py-8 pr-36"
+                      maxLength={30}
                       value={op.text}
                       onChange={(v) => onUpdateOperation(type, op, {
                         text: v.target.value,
@@ -147,6 +162,16 @@ export default function OperatorPermission({ value, onChange: _onChange, type }:
                   </>
                 )}
               </div>
+              {typeof op.reasonRequired !== 'undefined' ? (
+                <div className="flex flex-1 justify-center">
+                  <Toggle
+                    defaultChecked={op.reasonRequired}
+                    onChange={(checked) => onUpdateOperation(type, op, {
+                      reasonRequired: !!checked,
+                    })}
+                  />
+                </div>
+              ) : <div className="flex-1 text-center">-</div>}
             </div>
           );
         })}
@@ -167,13 +192,14 @@ export default function OperatorPermission({ value, onChange: _onChange, type }:
       <div className="text-caption-no-color text-gray-400 mt-16 mb-12">
         在此设置该节点负责人在处理工作流时可进行的操作
       </div>
-      <header className="flex items-center pr-20 py-8 bg-gray-100 rounded-8">
-        <div className="mr-40 pl-20">是否开启</div>
-        <div className="mr-100">操作</div>
-        <div>按钮文案</div>
+      <header className="flex items-center px-10 py-8 bg-gray-100 rounded-8 justify-between">
+        <div className="text-center flex-1">是否开启</div>
+        <div className="text-center flex-1">操作</div>
+        <div className="text-center flex-2">按钮文案</div>
+        <div className="text-center flex-1">理由必填</div>
       </header>
       {listRender('默认操作', mergedOperations.system, 'system')}
-      {listRender('自定义操作', mergedOperations.custom as SystemOperation[], 'custom')}
+      {listRender('自定义操作', mergedOperations.custom as Operation[], 'custom')}
     </>
   );
 }

@@ -110,6 +110,12 @@ const schema: ISchema = {
           'x-index': 6,
           visible: false,
         },
+        required: {
+          title: '是否必填',
+          default: false,
+          'x-component': 'Switch',
+          'x-index': 7,
+        },
       },
     },
   },

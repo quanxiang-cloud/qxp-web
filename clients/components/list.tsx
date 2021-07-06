@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React from 'react';
 import { isObject } from 'lodash';
 
 import { isFunction } from '@lib/utils';
@@ -23,7 +23,7 @@ export interface IList<T> {
   header?: JSX.Element;
 }
 
-function List<T extends unknown>({
+export default function List<T extends unknown>({
   className,
   itemClassName,
   items = [],
@@ -68,5 +68,3 @@ function List<T extends unknown>({
     </ul>
   );
 }
-
-export default memo(List) as typeof List;

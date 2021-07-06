@@ -1,12 +1,12 @@
 import React from 'react';
-import cs from 'classnames';
+import { noop } from 'lodash';
 
 import Table from '@c/table';
 import Checkbox from '@c/checkbox';
 import ToolTip from '@c/tooltip';
 import Icon from '@c/icon';
 import useRequest from '@lib/hooks/use-request';
-import type { CustomFieldPermission, FieldValue } from '@flow/detail/content/editor/type';
+import type { CustomFieldPermission, FieldValue } from '@flowEditor/type';
 
 import FieldValueEditor from './field-value-editor';
 
@@ -18,11 +18,8 @@ interface Props {
 }
 
 export default function CustomFieldTable({
-  editable, fields: originalFields, updateFields, schemaMap,
+  editable, fields, updateFields, schemaMap,
 }: Props): JSX.Element {
-  const fields = originalFields.filter((field) => {
-    return schemaMap[field.id]?.type !== 'array';
-  });
   const [data] = useRequest<{
     code: number;
     data: {name: string; code: string; desc: string;}[];
@@ -47,6 +44,7 @@ export default function CustomFieldTable({
         <Checkbox
           indeterminate={indeterminate}
           checked={isChecked}
+          onChange={noop}
           onClick={() => {
             if (indeterminate || checkedNumber === 0) {
               return updateFields(model.data.map((dt: CustomFieldPermission) => {
@@ -103,6 +101,7 @@ export default function CustomFieldTable({
     return (
       <Checkbox
         checked={isChecked}
+        onChange={noop}
         onClick={() => {
           updateFields(model.data.map((dt: CustomFieldPermission) => {
             if (dt.id === model.cell.row.id) {
@@ -123,9 +122,12 @@ export default function CustomFieldTable({
   function getValueCell(
     model: any, key: 'initialValue' | 'submitValue', editable: boolean,
   ): JSX.Element | null {
-    if (editable) {
-      const schema = schemaMap[model.cell.row.id];
-      if (schema['x-mega-props']) {
+    const schema = schemaMap[model.cell.row.id];
+    const componentName = schema['x-component']?.toLowerCase();
+    const isSubTable = componentName === 'subtable';
+    const isAssociatedRecords = componentName === 'associatedrecords';
+    if (editable && !isSubTable && !isAssociatedRecords) {
+      if (schema?.['x-mega-props']) {
         schema['x-mega-props'].labelAlign = 'top';
       }
       return (
@@ -160,7 +162,6 @@ export default function CustomFieldTable({
     return (
       <Table
         rowKey="id"
-        className={cs({ 'mb-200': editable })}
         columns={[{
           Header: '字段',
           accessor: 'fieldName',

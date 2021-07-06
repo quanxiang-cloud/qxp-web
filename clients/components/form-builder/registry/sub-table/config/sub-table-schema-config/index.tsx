@@ -13,7 +13,7 @@ interface Props {
 
 export default function SubTableSchemaConfig({
   currentSubSchema, onChange, currentSchemaType,
-}: Props) {
+}: Props): JSX.Element | null {
   const itemActions = useMemo(() => createFormActions(), []);
   const { actions } = useContext(ActionsContext);
 
@@ -22,9 +22,9 @@ export default function SubTableSchemaConfig({
   }
 
   const currentSubSchemaDefault = CONFIG_COMPONENTS[currentSchemaType]?.configSchema;
-  const currentSubSchemaConfig = CONFIG_COMPONENTS[currentSchemaType]?.defaultConfig;
+  const currentSubSchemaConfig = CONFIG_COMPONENTS[currentSchemaType]?.toConfig(currentSubSchema);
 
-  function onGoBack() {
+  function onGoBack(): void {
     actions.setFieldState('Fields.curConfigSubTableKey', (state) => {
       state.value = '';
     });
@@ -34,7 +34,7 @@ export default function SubTableSchemaConfig({
     <ItemActionsContext.Provider value={itemActions}>
       <div className="flex flex-row items-center mb-10">
         <Button className="mr-10" onClick={onGoBack}>返回</Button>
-        <p>子表单</p>
+        <p>配置子表单字段</p>
       </div>
       <SchemaForm
         initialValues={currentSubSchemaConfig}

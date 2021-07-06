@@ -6,7 +6,7 @@ import ToolTip from '@c/tooltip/tip';
 import useObservable from '@lib/hooks/use-observable';
 
 import store, { updateStoreByKey } from '../store';
-import type { EdgeProps, StoreValue } from '../type';
+import type { EdgeProps, FormDataData, StoreValue } from '../type';
 import { getCenter } from '../utils';
 import EdgeText from './_components/edge-text';
 import useEdgeSwitch from './hooks/use-edge-switch';
@@ -25,7 +25,7 @@ export default function CustomEdge({
   markerEndId,
   source,
   target,
-}: EdgeProps) {
+}: EdgeProps): JSX.Element {
   const [showTooltip, setShowTooltip] = useState(false);
   const edgePath = getSmoothStepPath({
     sourceX,
@@ -45,11 +45,11 @@ export default function CustomEdge({
     sourcePosition,
     targetPosition,
   });
-  const { elements = [] } = useObservable<StoreValue>(store);
+  const { elements = [], status } = useObservable<StoreValue>(store);
   const switcher = useEdgeSwitch();
   const formDataElement = elements.find(({ type }) => type === 'formData');
 
-  function onDragOver(e: DragEvent) {
+  function onDragOver(e: DragEvent): void {
     e.preventDefault();
     updateStoreByKey('currentConnection', () => ({
       source,
@@ -58,7 +58,7 @@ export default function CustomEdge({
     }));
   }
 
-  function onShowComponentSelector(e: MouseEvent<SVGElement>) {
+  function onShowComponentSelector(e: MouseEvent<SVGElement>): void {
     e.stopPropagation();
     if (!hasForm) {
       return;
@@ -70,7 +70,7 @@ export default function CustomEdge({
     });
   }
 
-  const hasForm = !!formDataElement?.data?.businessData.form.name;
+  const hasForm = !!(formDataElement?.data?.businessData as FormDataData)?.form.name;
   const cursorClassName = cs({ 'cursor-not-allowed': !hasForm });
 
   return (
@@ -83,27 +83,30 @@ export default function CustomEdge({
         <path
           id={id}
           style={{ ...style, borderRadius: '50%' }}
-          className={cs('react-flow__edge-path cursor-pointer', cursorClassName)}
+          className={cs('react-flow__edge-path cursor-pointer pointer-events-none', cursorClassName)}
           d={edgePath}
           markerEnd={markerEnd}
           onDragOver={onDragOver}
         />
-        <EdgeText
-          className={cursorClassName}
-          style={{
-            filter: 'drop-shadow(0px 8px 24px rgba(55, 95, 243, 1))',
-          }}
-          rectClassName={cursorClassName}
-          textClassName={cursorClassName}
-          x={centerX}
-          y={centerY}
-          onDragOver={onDragOver}
-          label={label}
-          onClick={onShowComponentSelector}
-          labelBgBorderRadius={14}
-          width="28"
-          height="28"
-        />
+        {status === 'DISABLE' && (
+          <EdgeText
+            className={cursorClassName}
+            style={{
+              filter: 'drop-shadow(0px 8px 24px rgba(55, 95, 243, 1))',
+              pointerEvents: 'all',
+            }}
+            rectClassName={cursorClassName}
+            textClassName={cursorClassName}
+            x={centerX}
+            y={centerY}
+            onDragOver={onDragOver}
+            label={label}
+            onClick={onShowComponentSelector}
+            labelBgBorderRadius={14}
+            width="28"
+            height="28"
+          />
+        )}
       </g>
       {!hasForm && showTooltip && (
         <foreignObject x={centerX + 20} y={centerY - 18} width="220" height="36">

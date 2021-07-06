@@ -22,8 +22,7 @@ import { INTERNAL_FIELD_NAMES } from '../../store';
 import { StoreContext } from '@c/form-builder/context';
 import { toJS } from 'mobx';
 
-import { OPERATORS } from '../../constants';
-import { operatorOption } from '../utils';
+import { OPERATORS, OperatorOptions } from '../../constants';
 
 const COMPONENTS = {
   ArrayCustom, Input, AntdSelect, DatePicker, NumberPicker, Switch, RadioGroup: Radio.Group,
@@ -73,7 +72,16 @@ const DEFAULT_VALUE: FormBuilder.VisibleHiddenLinkage = {
   isShow: true,
 };
 
-const DISABLE_FIELD: Array<string | undefined> = ['textarea', 'CascadeSelector'];
+const DISABLE_FIELD: Array<string> = [
+  'textarea',
+  'CascadeSelector',
+  'SubTable',
+  'AssociatedRecords',
+  'UserPicker',
+  'OrganizationPicker',
+  'FileUpload',
+  'ImageUpload',
+];
 
 type Props = {
   mode: string;
@@ -100,7 +108,7 @@ function VisibleHiddenLinkageConfig({ mode, onClose, linkageKey, onSubmit }: Pro
   const sourceKeyOptions = Object.entries(sourceSchema.properties || {})
     .filter(([key]) => !INTERNAL_FIELD_NAMES.includes(key))
     .filter(([key, value]) => {
-      return !DISABLE_FIELD.includes(value['x-component']);
+      return !DISABLE_FIELD.includes(value['x-component'] as string);
     })
     .map(([key, value]) => {
       return { value: key, label: value.title || key, availableCompareValues: value.enum || [],
@@ -156,7 +164,7 @@ function VisibleHiddenLinkageConfig({ mode, onClose, linkageKey, onSubmit }: Pro
       setFieldState(FormPath.transform(name, /\d/, ($1) => {
         return `rules.${$1}.compareOperator`;
       }), (state) => {
-        const operators = operatorOption(compareField);
+        const operators = OperatorOptions[compareField];
         state.props.enum = operators;
         state.value = operators[0].value;
       });
@@ -169,6 +177,7 @@ function VisibleHiddenLinkageConfig({ mode, onClose, linkageKey, onSubmit }: Pro
           state.props['x-component'] = 'AntdSelect';
           if (compareField === 'CheckboxGroup' || compareField === 'MultipleSelect') {
             state.props['x-component-props'] = { mode: 'multiple' };
+            state.value = defaultValue.rules[index].compareValue;
           }
         } else {
           state.props.enum = undefined;
@@ -214,7 +223,7 @@ function VisibleHiddenLinkageConfig({ mode, onClose, linkageKey, onSubmit }: Pro
       setFieldState(FormPath.transform(name, /\d/, ($1) => {
         return `rules.${$1}.compareOperator`;
       }), (state) => {
-        const operators = operatorOption(compareField);
+        const operators = OperatorOptions[compareField];
         state.props.enum = operators;
         state.value = operators[0].value;
       });
@@ -285,7 +294,6 @@ function VisibleHiddenLinkageConfig({ mode, onClose, linkageKey, onSubmit }: Pro
             />
             <Field
               title=""
-              required
               name="compareValue"
               default=""
               x-component='AntdSelect'

@@ -1,65 +1,46 @@
-import React, { ChangeEvent, useState } from 'react';
+import React, { ChangeEvent } from 'react';
 import cs from 'classnames';
 
-import Icon from '@c/icon';
 import Radio from '@c/radio';
 import Checkbox from '@c/checkbox';
 import Toggle from '@c/toggle';
-import Tag from '@c/tag';
 import RadioGroup from '@c/radio/group';
-import EmployeeOrDepartmentPicker from '@c/employee-or-department-picker';
 import { toggleArray } from '@lib/utils';
-import { mergeDataAdapter } from '@flow/detail/content/editor/utils';
+import { mergeDataAdapter } from '@flowEditor/utils';
+import PersonPicker from '@flowEditor/components/_common/person-picker';
 import useObservable from '@lib/hooks/use-observable';
-import store from '@flow/detail/content/editor/store';
-import type { StoreValue, AutoApproveRule } from '@flow/detail/content/editor/type';
+import store from '@flowEditor/store';
+import type {
+  BasicNodeConfig, NodeType, StoreValue, AutoApproveRule, FillInData,
+} from '@flowEditor/type';
 
 import Urge from './urge';
 import TimerSelector from './timer-selector';
 import WhenTimeout from './when-timeout';
 
-import type {
-  BusinessData,
-  BasicNodeConfig,
-  NodeType,
-} from '@flow/detail/content/editor/type';
-
 interface Props {
   type: NodeType;
   value: BasicNodeConfig;
-  onChange: (value: Partial<BusinessData>) => void;
+  onChange: (value: Partial<FillInData>) => void;
 }
 
-export default function BasicConfig({ type, value, onChange: _onChange }: Props) {
+export default function BasicConfig({ type, value, onChange: _onChange }: Props): JSX.Element {
   const { validating } = useObservable<StoreValue>(store);
-  const [showAddPersonModal, setShowAddPersonModal] = useState(false);
   const typeText = type === 'approve' ? '审批' : '填写';
   const { timeRule } = value;
 
-  function onChange(basicConfig: BasicNodeConfig) {
+  function onChange(basicConfig: BasicNodeConfig): void {
     _onChange({ basicConfig });
-  }
-
-  function onAdd() {
-    setShowAddPersonModal(true);
   }
 
   function onUpdate<T>(key: string, val: T): void {
     onChange({ ...value, [key]: val });
   }
 
-  function onUpdateAutoRules(e: ChangeEvent<HTMLInputElement>) {
+  function onUpdateAutoRules(e: ChangeEvent<HTMLInputElement>): void {
     const { autoRules } = value;
     const { checked, value: val } = e.target;
     onUpdate('autoRules', toggleArray<string>(autoRules, val, !checked));
-  }
-
-  async function onSetPersons(
-    departments: EmployeeOrDepartmentOfRole[],
-    users: EmployeeOrDepartmentOfRole[],
-  ) {
-    onUpdate('approvePersons', { users, departments });
-    return true;
   }
 
   function onTimeRuleUpdate<T>(path: string) {
@@ -117,84 +98,15 @@ export default function BasicConfig({ type, value, onChange: _onChange }: Props)
     );
   }
 
-  const {
-    approvePersons: { users: employees, departments },
-    timeRule: { deadLine, whenTimeout },
-  } = value;
-  const tagBackgroundColorMap = {
-    1: 'var(--blue-100)',
-    2: 'var(--yellow-100)',
-  };
-  const tagIconNameMap = {
-    1: 'person-filled',
-    2: 'device_hub',
-  };
+  const { timeRule: { deadLine, whenTimeout } } = value;
 
   return (
     <div>
-      {showAddPersonModal && (
-        <EmployeeOrDepartmentPicker
-          title={`选择${typeText}人`}
-          submitText="确认添加"
-          onSubmit={onSetPersons}
-          onCancel={() => setShowAddPersonModal(false)}
-          employees={employees}
-          departments={departments}
-        />
-      )}
-      <div className="text-body2-no-color text-gray-600">{typeText}人</div>
-      {(!!departments.length || !!employees.length) && (
-        <div className="mt-8 mb-12 py-8 px-12 border border-gray-300 corner-2-8-8-8">
-          {[...departments, ...employees].map((member) => (
-            <Tag<string>
-              className="mr-8 rounded-tl-4 rounded-br-4 mb-8 overflow-hidden h-24"
-              style={{
-                backgroundColor: tagBackgroundColorMap[member.type],
-                paddingLeft: 0,
-              }}
-              key={member.id}
-              id={member.id}
-              value={(
-                <div
-                  className="rounded-tl-4 flex items-center mr-4 h-full"
-                >
-                  <div
-                    className={cs('flex w-24 justify-center items-center mr-8 h-full', {
-                      'bg-blue-600': member.type === 1,
-                      'bg-yellow-600': member.type === 2,
-                    })}
-                  >
-                    <Icon name={tagIconNameMap[member.type]} className="text-white" />
-                  </div>
-                  <span
-                    className={cs({
-                      'text-blue-600': member.type === 1,
-                      'text-yellow-600': member.type === 2,
-                    })}
-                  >
-                    {member.ownerName}
-                  </span>
-                </div>
-              )}
-              deleteIconSize={16}
-              onDelete={() => onSetPersons(
-                departments.filter(({ id }) => id !== member.id),
-                employees.filter(({ id }) => id !== member.id),
-              )}
-            />
-          ))}
-        </div>
-      )}
-      <div
-        className={cs(
-          'flex items-center border border-dashed border-gray-300 corner-8-2-8-8',
-          'py-5 text-button mb-24 mt-8 justify-center cursor-pointer h-32',
-        )}
-        onClick={onAdd}
-      >
-        <Icon name="add" className="mr-8" size={20} />
-        <span>添加{typeText}人</span>
-      </div>
+      <PersonPicker
+        typeText={typeText}
+        value={value.approvePersons}
+        onChange={(value) => onUpdate('approvePersons', value)}
+      />
       <div className="text-body2-no-color text-gray-600 mb-8">多人{typeText}时</div>
       <div className={cs('flex items-center', {
         'mb-24': !validating || value.multiplePersonWay,

@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { observer } from 'mobx-react';
 import { useMutation } from 'react-query';
 import { useHistory, useParams } from 'react-router-dom';
-import { TextArea } from '@QCFE/lego-ui';
+import { TextArea, Form } from '@QCFE/lego-ui';
+import { Radio } from 'antd';
 import { toJS } from 'mobx';
 import toast from '@lib/toast';
 import Modal from '@c/modal';
@@ -19,29 +20,42 @@ import actionMap from './action-map';
 
 interface Props {
   className?: string;
-  flowName?: string;
-  getFormData: () => Record<string, any>;
 }
 
-function ActionModals({ flowName, getFormData }: Props) {
+function ActionModals({ className }: Props): JSX.Element | null {
   const { processInstanceID, taskID } = useParams<{ processInstanceID: string; taskID: string }>();
   const history = useHistory();
+  const ref: any = useRef();
   const [showReceiverPicker, setShowPicker] = useState(false);
   const [chosenEmployees, setChosenEmployees] = useState([]);
   const [stepBackId, setStepBackId] = useState('');
   const { action, modalInfo } = store;
+  const [addSignType, setAddSignType] = useState('');
+  const [addSignValue, setAddSignValue] = useState('');
+
+  const handleSubmit = (): void => {
+    const formRef = ref.current;
+    if (formRef.validateFields()) {
+      handleTaskMutation.mutate({});
+    }
+  };
 
   const handleTaskMutation = useMutation((params: Record<string, any>) => {
+    if (modalInfo.payload.remark != undefined) {
+      if (modalInfo.payload.remark.length > 100) {
+        return Promise.reject(new Error('字数不能超过100字'));
+      }
+    }
     if ([TaskHandleType.agree, TaskHandleType.refuse, TaskHandleType.fill_in].includes(action as TaskHandleType)) {
       return apis.reviewTask(processInstanceID, taskID, {
         handleType: action,
         remark: modalInfo.payload.remark || '',
-        formData: getFormData(),
+        formData: store.taskItem.formData || {},
       });
     }
 
     // 撤回
-    if (action === TaskHandleType.hasCancelBtn) {
+    if (action === TaskHandleType.cancel) {
       return apis.cancelTask(processInstanceID);
     }
 
@@ -67,8 +81,7 @@ function ActionModals({ flowName, getFormData }: Props) {
       return apis.stepBack(processInstanceID, taskID, {
         handleType: action,
         remark: modalInfo.payload.remark || '',
-        // todo
-        // step_back_id: stepBackId,
+        taskDefKey: stepBackId,
       });
     }
 
@@ -99,12 +112,17 @@ function ActionModals({ flowName, getFormData }: Props) {
 
     // 处理抄送/ 标为已读
     if (action === TaskHandleType.hasCcHandleBtn) {
-      return apis.readAll([processInstanceID]);
+      return apis.readAll([taskID]);
     }
 
-    // if (action === TaskHandleType.add_sign) {
-
-    // }
+    // 加签
+    if (action === TaskHandleType.add_sign) {
+      return apis.signTask(taskID, {
+        assignee: chosenEmployees,
+        type: addSignType,
+        multiplePersonWay: addSignValue,
+      });
+    }
 
     // 邀请阅示
     if (action === TaskHandleType.read) {
@@ -119,14 +137,20 @@ function ActionModals({ flowName, getFormData }: Props) {
       });
     }
 
-    // // 处理阅示
-    // if (action === TaskHandleType.hasReadHandleBtn) {
+    // 处理阅示
+    if (action === TaskHandleType.hasReadHandleBtn) {
+      return apis.handleRead(processInstanceID, taskID, {});
+    }
 
-    // }
+    // 重新提交
+    if (action === TaskHandleType.hasResubmitBtn) {
+      return apis.resubmit(processInstanceID);
+    }
 
-    // if (action === TaskHandleType.hasResubmitBtn) {
-
-    // }
+    // 撤回
+    if (action === TaskHandleType.hasCancelBtn) {
+      return apis.cancelTask(processInstanceID);
+    }
 
     // // 催办
     // if (action === TaskHandleType.hasUrgeBtn) {
@@ -151,19 +175,29 @@ function ActionModals({ flowName, getFormData }: Props) {
 
   const renderContent = () => {
     const { payload } = store.modalInfo;
-    if ([TaskHandleType.agree, TaskHandleType.refuse, TaskHandleType.fill_in].includes(action as TaskHandleType)) {
+    if ([
+      TaskHandleType.agree,
+      TaskHandleType.refuse,
+      TaskHandleType.fill_in].includes(action as TaskHandleType)
+    ) {
       return (
-        <TextArea
-          rows={4}
+        <Form.TextAreaField
+          schemas={[
+            {
+              rule: { required: store.modalInfo.require },
+              help: `输入${actionMap[action]?.text}意见`,
+              status: 'error',
+            }]}
+          className="w-full"
           name="comment"
-          placeholder={`输入${actionMap[action]?.text}意见 (选填)`}
+          placeholder={`输入${actionMap[action]?.text}意见`}
           onChange={(ev: unknown, value: string) => store.setModalInfo({ payload: { remark: value } })}
         />
       );
     }
 
     // 撤回
-    if (action === TaskHandleType.hasCancelBtn) {
+    if (action === TaskHandleType.cancel) {
       return (
         <p>确定要撤销该任务吗？撤销后，任务将立即结束。</p>
       );
@@ -194,13 +228,16 @@ function ActionModals({ flowName, getFormData }: Props) {
     }
 
     if (action === TaskHandleType.step_back) {
+      const setStep = (id: string): void => {
+        setStepBackId(id);
+      };
       return (
         <div>
           <p className="text-yellow-600 flex items-center mb-24">
             <Icon name="info" className="text-yellow-600 mr-8" />
             将工作流任务回退至已流转过的节点（除开始节点），不中断任务
           </p>
-          <SelectStepBackNode onChange={setStepBackId} />
+          <SelectStepBackNode onChange={setStep} />
           <div style={{ width: '500px' }}>
             <TextArea
               rows={4}
@@ -270,10 +307,36 @@ function ActionModals({ flowName, getFormData }: Props) {
       );
     }
 
-    // // 加签: todo: moved to v0.5
-    // if (action === TaskHandleType.add_sign) {
-
-    // }
+    // 加签
+    if (action === TaskHandleType.add_sign) {
+      return (
+        <div>
+          <div className="mb-24">
+            <Button className="mb-12" iconName="add" onClick={() => setShowPicker(true)}>添加加签人</Button>
+            {store.showTips && !chosenEmployees.length && <p className="text-red-600">请选择加签人</p>}
+            {<Radio.Group className="block" onChange={(e)=>{
+              setAddSignType(e.target.value);
+            }
+            }>
+              <Radio value={'BEFORE'}>此节点前加签</Radio>
+              <Radio value={'AFTER'}>此节点后加签</Radio>
+            </Radio.Group>}
+            {chosenEmployees.length > 1 && (<Radio.Group onChange={(e)=>{
+              setAddSignValue(e.target.value);
+            }}>
+              <Radio value={'and'}>会签</Radio>
+              <Radio value={'or'}>或签</Radio>
+            </Radio.Group>)}
+          </div>
+          <ReceiverList
+            className="mb-24"
+            receivers={chosenEmployees}
+            onRemove={(id) => {
+              setChosenEmployees((current) => current.filter((item: { id: string }) => item.id != id));
+            }} />
+        </div>
+      );
+    }
 
     // 邀请阅示
     if (action === TaskHandleType.read) {
@@ -299,10 +362,19 @@ function ActionModals({ flowName, getFormData }: Props) {
       );
     }
 
-    // // 处理阅示
-    // if (action === TaskHandleType.hasReadHandleBtn) {
-
-    // }
+    // 处理阅示
+    if (action === TaskHandleType.hasReadHandleBtn) {
+      return (
+        <div>
+          <TextArea
+            rows={4}
+            name="comment"
+            placeholder={`输入${actionMap[action]?.text}原因 (选填)`}
+            onChange={(ev: unknown, value: string) => store.setModalInfo({ payload: { remark: value } })}
+          />
+        </div>
+      );
+    }
 
     // // 重新提交
     // if (action === TaskHandleType.hasResubmitBtn) {
@@ -322,7 +394,7 @@ function ActionModals({ flowName, getFormData }: Props) {
   return (
     <>
       <Modal
-        title={`${store.modalInfo.title} ${flowName || ''}`}
+        title={`${store.modalInfo.title} ${store.taskItem.taskName || ''}`}
         footerBtns={[
           {
             key: 'close',
@@ -337,7 +409,7 @@ function ActionModals({ flowName, getFormData }: Props) {
             key: 'sure',
             modifier: 'primary',
             text: `确定${store.modalInfo.title}`,
-            onClick: () => handleTaskMutation.mutate({}),
+            onClick: handleSubmit,
           },
         ]}
         onClose={() => {
@@ -346,7 +418,9 @@ function ActionModals({ flowName, getFormData }: Props) {
           setStepBackId('');
         }}
       >
-        {renderContent()}
+        <Form ref={ref} layout="vertical">
+          {renderContent()}
+        </Form>
       </Modal>
 
       {showReceiverPicker && (

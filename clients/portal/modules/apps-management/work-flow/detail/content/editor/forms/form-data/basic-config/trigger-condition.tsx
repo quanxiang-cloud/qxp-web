@@ -4,26 +4,31 @@ import cs from 'classnames';
 import Toggle from '@c/toggle';
 import Icon from '@c/icon';
 import useObservable from '@lib/hooks/use-observable';
-
-import store from '@flow/detail/content/editor/store';
+import store from '@flowEditor/store';
 import type {
   TriggerCondition as TriggerConditionType,
   TriggerConditionExpressionItem,
   TriggerConditionExpression,
-  BusinessData,
   StoreValue,
   TriggerConditionValue,
-} from '@flow/detail/content/editor/type';
+  FormDataData,
+} from '@flowEditor/type';
 
 import ConditionItem, { ConditionItemOptions } from './condition-item';
 
 interface Props {
   value: TriggerConditionType;
   formFieldOptions: ConditionItemOptions;
-  onChange: (v: Partial<BusinessData>) => void;
+  onChange: (v: Partial<FormDataData>) => void;
+  schema: ISchema;
 }
 
-export default function TriggerCondition({ value, formFieldOptions, onChange: _onChange }: Props) {
+export default function TriggerCondition({
+  value,
+  schema,
+  formFieldOptions,
+  onChange: _onChange,
+}: Props): JSX.Element | null {
   const [openMore, setOpenMore] = useState(!!value?.expr?.length);
   const { validating } = useObservable<StoreValue>(store);
 
@@ -71,7 +76,7 @@ export default function TriggerCondition({ value, formFieldOptions, onChange: _o
     };
   }
 
-  function onValueChange(v?: boolean) {
+  function onValueChange(v?: boolean): void {
     setOpenMore(!!v);
     if (!v) {
       return onChange({ op: '', expr: [] });
@@ -81,24 +86,24 @@ export default function TriggerCondition({ value, formFieldOptions, onChange: _o
     }
   }
 
-  function onChange(triggerCondition: TriggerConditionType) {
+  function onChange(triggerCondition: TriggerConditionType): void {
     _onChange({ triggerCondition });
   }
 
-  function onDelete(curCondition: TriggerConditionType) {
+  function onDelete(curCondition: TriggerConditionType): void {
     onChange(updateTriggerConditionField(value, curCondition, null));
   }
 
   function onTriggerConditionItemChange(
     curCondition: TriggerConditionExpressionItem,
     val: Partial<TriggerConditionExpressionItem>,
-  ) {
+  ): void {
     onChange(updateTriggerConditionField(value, curCondition, val));
   }
 
   function andConditionRender(
     triggerCondition: TriggerConditionType,
-  ) {
+  ): JSX.Element {
     return (
       <div>
         {triggerCondition.expr.map((condition, index) => {
@@ -122,6 +127,7 @@ export default function TriggerCondition({ value, formFieldOptions, onChange: _o
                 condition={condition as TriggerConditionValue}
                 options={formFieldOptions}
                 onChange={(v) => onTriggerConditionItemChange(condition, v)}
+                schemaMap={schema?.properties}
               />
             </div>
           );
@@ -130,7 +136,7 @@ export default function TriggerCondition({ value, formFieldOptions, onChange: _o
     );
   }
 
-  function addOrCondition(isInit?: boolean) {
+  function addOrCondition(isInit?: boolean): void {
     if (!value) {
       onChange({
         op: isInit ? '' : 'or',
@@ -173,7 +179,7 @@ export default function TriggerCondition({ value, formFieldOptions, onChange: _o
     };
   }
 
-  function conditionRender(conditions: TriggerConditionType) {
+  function conditionRender(conditions: TriggerConditionType): JSX.Element[] | null {
     if (!conditions?.expr) {
       return null;
     }
@@ -199,7 +205,7 @@ export default function TriggerCondition({ value, formFieldOptions, onChange: _o
                 >
                   <Icon name="add" className="text-blue-600 mr-3" />
                   <span className="text-blue-600">
-                添加且条件
+                    添加且条件
                   </span>
                 </footer>
               )}

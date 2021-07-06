@@ -1,16 +1,17 @@
 import React from 'react';
+import { noop } from 'lodash';
 
 import Table from '@c/table';
 import Checkbox from '@c/checkbox';
-import type { SystemFieldPermission } from '@flow/detail/content/editor/type';
+import type { SystemFieldPermission } from '@flowEditor/type';
 
 interface Props {
   fields: SystemFieldPermission[];
   updateFields: (value: SystemFieldPermission[]) => void;
 }
 
-export default function({ fields, updateFields }: Props) {
-  function getHeader(model: any, key: 'read', label: string) {
+export default function({ fields, updateFields }: Props): JSX.Element {
+  function getHeader(model: any, key: 'read', label: string): JSX.Element {
     let checkedNumber = 0;
     model.data.forEach((dt: SystemFieldPermission) => {
       if (dt[key]) {
@@ -24,6 +25,7 @@ export default function({ fields, updateFields }: Props) {
         <Checkbox
           indeterminate={indeterminate}
           checked={isChecked}
+          onChange={noop}
           onClick={() => {
             if (indeterminate || checkedNumber === 0) {
               return updateFields(model.data.map((dt: SystemFieldPermission) => {
@@ -48,7 +50,7 @@ export default function({ fields, updateFields }: Props) {
     );
   }
 
-  function getCell(model: any, key?: 'read') {
+  function getCell(model: any, key?: 'read'): JSX.Element {
     const isChecked = model.cell.value;
     if (!key) {
       return (
@@ -62,6 +64,7 @@ export default function({ fields, updateFields }: Props) {
     return (
       <Checkbox
         checked={isChecked}
+        onChange={noop}
         onClick={() => {
           updateFields(model.data.map((dt: SystemFieldPermission) => {
             if (dt.id === model.cell.row.id) {

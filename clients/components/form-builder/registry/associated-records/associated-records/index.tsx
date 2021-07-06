@@ -31,13 +31,13 @@ function computeTableColumns(schema: ISchema, columns: string[]): Column<Record<
       id: fieldKey,
       Header: fieldSchema.title || fieldKey,
       accessor: (rowData: Record<string, any>) => {
-        if (rowData[fieldKey]) {
-          return (
-            <FormDataValueRenderer schema={fieldSchema} value={rowData[fieldKey]} />
-          );
+        if (rowData[fieldKey] === undefined || rowData[fieldKey] === null || rowData[fieldKey] === '') {
+          return '无数据';
         }
 
-        return '无数据';
+        return (
+          <FormDataValueRenderer schema={fieldSchema} value={rowData[fieldKey]} />
+        );
       },
     };
   }).filter(({ id }) => id !== '_id');
@@ -129,8 +129,12 @@ function AssociatedRecords({
           associatedTable={associatedTable}
           columns={columns}
           onSubmit={(newSelectedRecords) => {
-            const selectedKeys = selected.concat(newSelectedRecords.filter((id) => !selected.includes(id)));
-            onChange(selectedKeys);
+            if (multiple) {
+              const selectedKeys = selected.concat(newSelectedRecords.filter((id) => !selected.includes(id)));
+              onChange(selectedKeys);
+            } else {
+              onChange(newSelectedRecords);
+            }
             setShowSelectModal(false);
           }}
         />

@@ -1,34 +1,27 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
-import { isObject } from 'lodash';
 import dayjs from 'dayjs';
 
-import Avatar from '../avatar';
 import Status from '@c/process-node-status';
 import Icon from '@c/icon';
+import { getBasicValue } from '@c/form-data-value-renderer';
 
+import Avatar from '../avatar';
 import './index.scss';
 
 interface Props {
   task: ApprovalTask;
+  type: 'APPLY_PAGE' | 'WAIT_HANDLE_PAGE' | 'HANDLED_PAGE' | 'CC_PAGE' | 'ALL_PAGE';
 }
 
-function getEnumLabelFromSchema(schema: Record<string, any>, key: string, value: string | Record<'label' | 'value', unknown>) {
-  const enumData = schema?.[key]?.enum || [];
-  if (enumData.length) {
-    return (enumData.find((v: { value: any }) => v.value === value))?.label || value;
-  }
-  return isObject(value) ? value.label : value;
-}
-
-export default function TaskCard({ task }: Props): JSX.Element {
+export default function TaskCard({ task, type }: Props): JSX.Element {
   const history = useHistory();
 
-  function handleClick() {
-    history.push(`/approvals/${task.processInstanceId}/${task.id}`);
+  function handleClick(): void {
+    history.push(`/approvals/${task.flowInstanceEntity.processInstanceId}/${task.id}/${type}`);
   }
 
-  const { name, createTime, flowInstanceEntity } = task;
+  const { name, flowInstanceEntity, startTime } = task;
 
   return (
     <div className="corner-2-8-8-8 bg-white mb-16 approval-card">
@@ -37,7 +30,10 @@ export default function TaskCard({ task }: Props): JSX.Element {
           <div className="flex flex-col justify-between">
             <div className="flex justify-between">
               <div>
-                <Avatar name={flowInstanceEntity?.creatorName || ''} link={flowInstanceEntity?.creatorAvatar} />
+                <Avatar
+                  name={flowInstanceEntity?.creatorName || ''}
+                  link={flowInstanceEntity?.creatorAvatar}
+                />
                 <div className="inline-flex task-info">
                   <span className="mr-8">{flowInstanceEntity?.creatorName || ''}</span>
                   <span>·</span>
@@ -49,14 +45,14 @@ export default function TaskCard({ task }: Props): JSX.Element {
             </div>
 
             <div className="flex mt-24 bottom-info">
-              <span>
+              <div className="flex">
                 <span className="info-label"><Icon name="trending_up" className="mr-6" />当前节点: </span>
-                <span>{name}</span>
-              </span>
-              <span>
+                <div>{name}</div>
+              </div>
+              <div className="flex">
                 <span className="info-label"><Icon name="layers" className="mr-6" />应用: </span>
-                <span>{flowInstanceEntity?.appName}</span>
-              </span>
+                <div>{flowInstanceEntity?.appName}</div>
+              </div>
             </div>
           </div>
         </div>
@@ -71,14 +67,14 @@ export default function TaskCard({ task }: Props): JSX.Element {
                 return (
                   <p key={keyName} className="mb-4 form-data-item">
                     <span>{properties[keyName]?.title || keyName}: </span>
-                    <span>{getEnumLabelFromSchema(properties, keyName, value)}</span>
+                    <span>{getBasicValue(properties[keyName], value)}</span>
                   </p>
                 );
               })
             }
           </div>
           <div className="create-time">
-            接收于: {dayjs(createTime).format('YYYY-MM-DD HH:mm')}
+            接收于: {dayjs(startTime).format('YYYY-MM-DD HH:mm')}
           </div>
         </div>
       </div>

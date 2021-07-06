@@ -8,14 +8,14 @@ import Icon from '@c/icon';
 import FilterForm from './filter-form';
 import { StoreContext } from './context';
 
-function PageDataFilter() {
+function PageDataFilter(): JSX.Element | null {
   const [showMoreFilter, setShowMoreFilter] = useState(false);
   const store = useContext(StoreContext);
   const filterKeys = Object.keys(store.filters);
 
   const filterDom = useRef<any>();
 
-  const search = () => {
+  const search = (): void => {
     if (!store.allowRequestData) {
       return;
     }
@@ -32,7 +32,19 @@ function PageDataFilter() {
       switch (curFilter?.type) {
       case 'datetime': {
         const [start, end] = values[key];
-        _condition.value = [moment(start).format(), moment(end).format()];
+        const format = curFilter?.['x-component-props']?.format;
+        if (format) {
+          _condition.value = [
+            moment(start.format(format)).toISOString(true),
+            moment(end.format(format)).toISOString(true),
+          ];
+        } else {
+          _condition.value = [
+            moment(start).format('YYYY-MM-DDT00:00:00'),
+            moment(end).format('YYYY-MM-DDT24:00:00'),
+          ];
+        }
+
         _condition.op = 'between';
         break;
       }
@@ -40,10 +52,14 @@ function PageDataFilter() {
         _condition.value = [Number(values[key])];
         _condition.op = 'eq';
         break;
+      case 'array':
+        _condition.value = values[key];
+        _condition.op = 'fullSubset';
+        break;
       default:
         if (Array.isArray(values[key])) {
           _condition.value = values[key];
-          _condition.op = 'in';
+          _condition.op = 'intersection';
         } else {
           _condition.value = [values[key]];
           _condition.op = 'like';
@@ -57,7 +73,7 @@ function PageDataFilter() {
     store.setParams({ condition });
   };
 
-  const reset = () => {
+  const reset = (): void => {
     const resObj: Record<string, ''> = {};
     filterKeys.map((id) => {
       resObj[id] = '';
@@ -73,7 +89,7 @@ function PageDataFilter() {
 
   return (
     <div className='form-app-data-table-container form-app-data-table-filter'>
-      <FilterForm ref={filterDom} showMoreFilter={showMoreFilter} />
+      <FilterForm search={search} ref={filterDom} showMoreFilter={showMoreFilter} />
       <div>
         {filterKeys.length > 3 ? (
           <span

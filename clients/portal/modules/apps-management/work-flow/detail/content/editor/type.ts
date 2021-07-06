@@ -1,5 +1,35 @@
 import { CSSProperties, HTMLAttributes, ReactNode } from 'react';
-import { Position, ArrowHeadType, FlowElement, Elements, OnLoadParams } from 'react-flow-renderer';
+import { Position, ArrowHeadType, FlowElement, Elements } from 'react-flow-renderer';
+
+export interface WorkFlow {
+  version: string;
+  shapes: FlowElement<Data>[];
+}
+type CanOp = '0' | '1' | 1 | 0;
+export interface WorkFlowData {
+  bpmnText: string;
+  canCancel: CanOp;
+  canMsg: CanOp;
+  canUrge: CanOp;
+  canViewStatusMsg: CanOp;
+  createTime: string;
+  creatorAvatar: string;
+  creatorId: string;
+  creatorName: string;
+  id: string;
+  isDeleted: CanOp;
+  modifierId: string;
+  modifierName: string;
+  modifyTime: string;
+  name: string;
+  processKey: string;
+  status: 'ENABLE' | 'DISABLE';
+  triggerMode: 'FORM_DATA' | 'FORM_TIME';
+  keyFields: string;
+  instanceName: string;
+  canCancelType: number,
+  canCancelNodes: string,
+}
 
 export interface NodeProps {
   id: string;
@@ -48,7 +78,7 @@ export interface EdgeTextProps extends HTMLAttributes<SVGElement> {
   textClassName?: string;
 }
 
-export interface Rect extends Dimensions, XYPosition {}
+export interface Rect extends Dimensions, XYPosition { }
 
 export interface Dimensions {
   width: number;
@@ -124,37 +154,35 @@ export type TimeRule = {
   deadLine: DeadLine;
   whenTimeout: WhenTimeout;
 }
-
+export type ApprovePersonType = 'person' | 'field' | 'position' | 'superior' | 'leadOfDepartment';
+export type ApprovePerson = {
+  type: ApprovePersonType;
+  users: EmployeeOrDepartmentOfRole[];
+  departments: EmployeeOrDepartmentOfRole[];
+  positions: string[];
+  fields: string[];
+}
 export interface BasicNodeConfig {
-  approvePersons: {
-    users: EmployeeOrDepartmentOfRole[];
-    departments: EmployeeOrDepartmentOfRole[];
-  };
+  approvePersons: ApprovePerson;
   multiplePersonWay: 'and' | 'or';
   whenNoPerson: 'skip' | 'transferAdmin';
   autoRules: AutoApproveRule[];
   timeRule: TimeRule;
 }
 
-export interface SystemOperation {
-  enabled: boolean;
-  changeable: boolean;
-  name: string;
-  text: string;
-  value: string;
-}
-
-export interface CustomOperation {
+export interface Operation {
   enabled: boolean;
   changeable: boolean;
   name: string;
   text?: string;
   value: string;
+  reasonRequired?: boolean;
+  only?: string;
 }
 
 export interface OperationPermission {
-  system: SystemOperation[];
-  custom: CustomOperation[];
+  system: Operation[];
+  custom: Operation[];
 }
 
 export interface FillInData {
@@ -162,6 +190,87 @@ export interface FillInData {
   fieldPermission: FieldPermission;
   operatorPermission: OperationPermission;
   events: Record<any, any>;
+}
+export interface ProcessBranchData {
+  ignore: boolean;
+  rule: string;
+}
+export interface ProcessBranchTargetData {
+  processBranchEndStrategy: 'any' | 'all';
+}
+export interface ProcessVariableAssignmentData {
+  assignmentRules: Array<{
+    variableName: string;
+    valueFrom: 'fixedValue' | 'formula' | 'currentFormValue';
+    valueOf: string | number;
+  }>;
+}
+export interface ValueRule {
+  valueFrom: 'fixedValue' | 'currentFormValue' | 'processVariable';
+  valueOf: ValueRuleVal;
+}
+export type ValueRuleVal = string | number | Array<string | number>;
+export interface TableDataCreateData {
+  targetTableId: string;
+  silent: boolean;
+  createRule: {
+    [key: string]: ValueRule;
+  };
+  ref: {
+    [key: string]: {
+      tableId: string;
+      // todo: refactor structure
+      createRules: Array<{
+        [key: string]: ValueRule;
+      }>;
+    }
+  }
+}
+export interface TableDataUpdateData {
+  targetTableId: string;
+  silent: boolean;
+  // filterRule: {
+  //   tag: 'and' | 'or';
+  //   conditions: Array<{
+  //     fieldName: string;
+  //     operator: 'eq' | 'neq' | 'in' | 'nin';
+  //     value: ValueRuleVal;
+  //   }>;
+  // };
+  filterRule: string;
+  updateRule: Array<{
+    fieldName: string;
+    valueFrom: 'fixedValue' | 'currentFormValue' | 'processVariable' | 'formula';
+    valueOf: ValueRuleVal;
+  }>;
+}
+
+export type Attachment = {
+  file_name: string;
+  file_url: string;
+}
+
+export type Receiver = {
+  type: 1 | 2,
+  id: string,
+  name: string,
+  account: string,
+}
+export interface SendEmailData {
+  recivers: Receiver[];
+  content: string;
+  templateId: string;
+  title: string;
+  mes_attachment: Attachment[];
+}
+export interface WebMessageData {
+  recivers: Receiver[];
+  sort: 1 | 2;
+  content: string;
+  title: string;
+}
+export interface CCData {
+  recivers: Receiver[];
 }
 export interface FieldValue {
   variable: string;
@@ -191,32 +300,93 @@ export interface FieldPermission {
   system: SystemFieldPermission[];
 }
 
-export type BusinessData = FormDataData & FillInData;
-export type NodeData = { width: number, height: number, name: string };
-export type Data = {
-  businessData: BusinessData;
+export type BusinessData = FormDataData | FillInData | ProcessBranchData |
+  ProcessVariableAssignmentData | TableDataCreateData | TableDataUpdateData | SendEmailData |
+  WebMessageData | CCData | ProcessBranchTargetData;
+export type NodeData = {
+  width: number;
+  height: number;
+  name: string;
+  parentID?: string[];
+  childrenID?: string[];
+  branchID?: string;
+  branchTargetElementID?: string;
+  parentBranchTargetElementID?: string;
+};
+export interface BaseNodeData {
+  type: NodeType;
   nodeData: NodeData;
+  businessData: BusinessData;
 }
-
-export type NodeType = 'formData' | 'fillIn' | 'approve' | 'end';
-
+export interface FillInNodeData extends BaseNodeData {
+  type: 'fillIn';
+  businessData: FillInData;
+}
+export interface ApproveNodeData extends BaseNodeData {
+  type: 'approve';
+  businessData: FillInData;
+}
+export interface FormDataNodeData extends BaseNodeData {
+  type: 'formData';
+  businessData: FormDataData;
+}
+export interface ProcessBranchNodeData extends BaseNodeData {
+  type: 'processBranch';
+  businessData: ProcessBranchData;
+}
+export interface ProcessVariableAssignmentNodeData extends BaseNodeData {
+  type: 'processVariableAssignment';
+  businessData: ProcessVariableAssignmentData;
+}
+export interface TableDataCreateNodeData extends BaseNodeData {
+  type: 'tableDataCreate';
+  businessData: TableDataCreateData;
+}
+export interface TableDataUpdateNodeData extends BaseNodeData {
+  type: 'tableDataUpdate';
+  businessData: TableDataUpdateData;
+}
+export interface SendEmailNodeData extends BaseNodeData {
+  type: 'email';
+  businessData: SendEmailData;
+}
+export interface WebMessageNodeData extends BaseNodeData {
+  type: 'letter';
+  businessData: WebMessageData;
+}
+export interface CCNodeData extends BaseNodeData {
+  type: 'autocc';
+  businessData: CCData;
+}
+export interface ProcessBranchTargetNodeData extends BaseNodeData {
+  type: 'processBranchTarget';
+  businessData: ProcessBranchTargetData;
+}
+export type Data = CCNodeData | WebMessageNodeData | SendEmailNodeData | TableDataUpdateNodeData |
+  TableDataCreateNodeData | ProcessVariableAssignmentNodeData | ProcessBranchNodeData |
+  FormDataNodeData | ApproveNodeData | FillInNodeData | ProcessBranchTargetNodeData;
+export type NodeType = 'formData' | 'fillIn' | 'approve' | 'end' | 'processBranch' |
+  'processVariableAssignment' | 'tableDataCreate' | 'tableDataUpdate' | 'email' |
+  'letter' | 'autocc' | 'processBranchSource' | 'processBranchTarget';
 export interface CurrentElement {
   id: string;
   type: NodeType;
   data: Data;
   position: XYPosition;
 }
+export interface FormDataElement extends CurrentElement {
+  data: FormDataNodeData;
+}
 
 export type Errors = Record<string, unknown> & {
-    publish: {
-      data?: FlowElement;
-      msg?: string;
-    },
-    dataNotSaveMap: Map<string, boolean>;
+  publish: {
+    data?: FlowElement;
+    msg?: string;
+  },
+  dataNotSaveMap: Map<string, boolean>;
 };
 
 export interface StoreValue {
-  flowInstance?: OnLoadParams;
   creatorId?: string;
   needSaveFlow?: boolean;
   apiFetched: boolean;
@@ -228,14 +398,24 @@ export interface StoreValue {
   elements: Elements<Data>;
   name: string;
   version: string;
+  canCancelType?: number;
+  canCancelNodes: string;
   processKey: string,
   triggerMode: string | 'FORM_DATA' | 'FORM_TIME',
   cancelable: boolean;
   urgeable: boolean;
   seeStatusAndMsg: boolean;
   nodeAdminMsg: boolean;
-  status: string;
+  status: 'DISABLE' | 'ENABLE';
   errors: Errors;
   currentDataNotSaveConfirmCallback?: () => void;
   showDataNotSaveConfirm?: boolean;
+  keyFields: string;
+  instanceName: string;
+}
+
+export type ProcessVariable = {
+  code: string;
+  name: string;
+  fieldType: 'TEXT' | 'DATE' | 'NUMBER' | 'BOOLEAN';
 }

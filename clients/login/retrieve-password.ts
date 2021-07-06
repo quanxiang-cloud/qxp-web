@@ -1,5 +1,5 @@
 import httpClient from '@lib/http-client';
-import { imgChange, removeError, validateCaptcha, validatePwd, validateUsername } from './login-common';
+import { imgChange, removeError, validateCaptcha, validateUsername } from './login-common';
 import './style.scss';
 
 window.onload = function() {
@@ -84,9 +84,6 @@ window.onload = function() {
       event.preventDefault();
     }
     if (!validateCaptcha(captcha, captchaMessage)) {
-      event.preventDefault();
-    }
-    if (!validatePwd(newPassword, newMessage)) {
       event.preventDefault();
     }
   });

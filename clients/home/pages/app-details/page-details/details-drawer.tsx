@@ -3,7 +3,7 @@ import { useQuery } from 'react-query';
 import { observer } from 'mobx-react';
 import cs from 'classnames';
 
-import Tab from '@c/tab2';
+import Tab from '@c/tab';
 import Icon from '@c/icon';
 import PopConfirm from '@c/pop-confirm';
 import PageLoading from '@c/page-loading';
@@ -54,11 +54,16 @@ function DetailsDrawer({ onCancel, rowID, goEdit, delData }: Props): JSX.Element
     }
 
     Object.entries(schema.properties || {}).forEach(([fieldKey, fieldSchema]) => {
+      const hasValue = record && (
+        record[fieldKey] !== undefined &&
+        record[fieldKey] !== null &&
+        record[fieldKey] !== ''
+      );
       if ((fieldSchema as ISchema)['x-internal']?.isSystem) {
         _systems.push({
           label: fieldSchema.title as string,
           key: fieldKey,
-          value: record?.[fieldKey] ? (
+          value: hasValue ? (
             <FormDataValueRenderer schema={fieldSchema as Schema} value={record?.[fieldKey]} />
           ) : <span className='text-gray-300'>——</span>,
           fieldSchema,
@@ -69,7 +74,7 @@ function DetailsDrawer({ onCancel, rowID, goEdit, delData }: Props): JSX.Element
       _details.push({
         label: fieldSchema.title as string,
         key: fieldKey,
-        value: record?.[fieldKey] ? (
+        value: hasValue ? (
           <FormDataValueRenderer schema={fieldSchema as Schema} value={record?.[fieldKey]} />
         ) : <span className='text-gray-300'>——</span>,
         fieldSchema,

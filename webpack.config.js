@@ -18,7 +18,7 @@ module.exports = function(env) {
     mode: NODE_ENV ? NODE_ENV : 'production',
     watch: isDev,
     bail: NODE_ENV !== 'development',
-    devtool: isDev ? 'eval-cheap-source-map': false,
+    devtool: isDev ? 'eval-source-map': false,
 
     entry: {
       portal: './clients/portal/index.tsx',
@@ -87,6 +87,7 @@ module.exports = function(env) {
       new WebpackBar(),
       new MiniCssExtractPlugin({
         filename: NODE_ENV === 'production' ? '[name].[contenthash].css' : '[name].css',
+        ignoreOrder: true,
       }),
       new HtmlWebpackPlugin({
         inject: false,

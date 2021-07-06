@@ -78,7 +78,7 @@ function LinkageConfig({ onClose, onSubmit, linkage }: Props): JSX.Element {
 
   const fieldsSchema = toJS(store.schema.properties || {});
   const currentFormFields = Object.entries(fieldsSchema).filter(([key, fieldSchema]) => {
-    if (INTERNAL_FIELD_NAMES.includes(key)) {
+    if (INTERNAL_FIELD_NAMES.includes(key) || key === store.activeField?.fieldName) {
       return false;
     }
 
@@ -91,7 +91,11 @@ function LinkageConfig({ onClose, onSubmit, linkage }: Props): JSX.Element {
     const options = fields.map(({ label, value }) => ({ label, value }));
 
     setFieldState('rules.*.fieldName', (state) => state.props.enum = options);
-    setFieldState('linkedField', (state) => state.props.enum = options);
+    setFieldState('linkedField', (state) => {
+      state.props.enum = fields.filter((field) => {
+        return field['x-component'].toLocaleLowerCase() === store.activeField?.componentName;
+      }).map(({ label, value }) => ({ label, value }));
+    });
     setFieldState('sortBy', (state) => state.props.enum = options);
 
     linkedTableFieldsRef.current = fields;
@@ -123,6 +127,10 @@ function LinkageConfig({ onClose, onSubmit, linkage }: Props): JSX.Element {
       filter(({ value }) => !!value),
     ).subscribe(updateCompareOperatorFieldOnFieldNameChanged);
 
+    onFieldValueChange$('rules.*.compareOperator').pipe(
+      filter(({ value }) => !!value),
+    ).subscribe(updateCompareValueFieldOnCompareOperatorChanged);
+
     onFieldValueChange$('rules.*.compareTo').pipe(
       filter(({ name, value }) => name && value),
     ).subscribe(updateCompareValueFieldOnCompareToChanged);
@@ -153,6 +161,18 @@ function LinkageConfig({ onClose, onSubmit, linkage }: Props): JSX.Element {
     const compareToPath = FormPath.transform(name, /\d/, ($1) => `rules.${$1}.compareTo`);
     const compareToFieldState = getFieldState(compareToPath);
     updateCompareValueFieldOnCompareToChanged(compareToFieldState);
+
+    const compareValuePath = FormPath.transform(name, /\d/, ($1) => `rules.${$1}.compareValue`);
+    const compareValueState = getFieldState(compareValuePath);
+    updateCompareValueFieldOnFieldNameChanged(compareValueState, xComponent);
+  }
+
+  function updateCompareValueFieldOnCompareOperatorChanged({ name, value }: IFieldState): void {
+    if (value === '==' || value === '!=') {
+      updateCompareValueFieldConfig(name, false);
+      return;
+    }
+    updateCompareValueFieldConfig(name, true);
   }
 
   function updateCompareValueFieldOnCompareToChanged({ name, value }: IFieldState): void {
@@ -168,18 +188,43 @@ function LinkageConfig({ onClose, onSubmit, linkage }: Props): JSX.Element {
         if (value === 'fixedValue' && enumerable) {
           state.props['x-component'] = 'AntdSelect';
           state.props.enum = linkTableField?.fieldEnum || [];
+          state.value = undefined;
           return;
         }
 
         if (value === 'fixedValue') {
-          state.props['x-component'] = 'Input';
+          state.props['x-component'] = linkTableField?.['x-component'] ?? 'input';
           state.props.enum = undefined;
-          state.props.value = undefined;
+          state.value = undefined;
           return;
         }
 
         state.props['x-component'] = 'AntdSelect';
         state.props.enum = currentFormFields;
+        state.value = undefined;
+      },
+    );
+  }
+
+  function updateCompareValueFieldOnFieldNameChanged({ name }: IFieldState, linkTableFieldComponent: string): void {
+    // todo rename selectList and singleModeOperator
+    const selectList = ['RadioGroup', 'MultipleSelect', 'Select', 'CheckboxGroup'];
+    const singleModeOperator = ['==', '!='];
+    const compareOperatorPath = FormPath.transform(name, /\d/, ($1) => `rules.${$1}.compareOperator`);
+    const currentOperator = getFieldValue(compareOperatorPath);
+    const isMultiple = selectList.includes(linkTableFieldComponent) && !singleModeOperator.includes(currentOperator);
+
+    updateCompareValueFieldConfig(name, isMultiple);
+  }
+
+  function updateCompareValueFieldConfig(name: string, isMultiple: boolean): void {
+    setFieldState(
+      FormPath.transform(name, /\d/, ($1) => `rules.${$1}.compareValue`),
+      (state) => {
+        state.props['x-component-props'] = {
+          mode: isMultiple ? 'multiple' : null,
+        };
+        state.value = undefined;
       },
     );
   }

@@ -10,20 +10,31 @@ const InfoCard = () => {
       icon: 'notifications',
       name: '消息管理',
       url: '/system/message',
+      authority: 'system/read',
     },
     {
       id: 'log',
       icon: 'assignment',
       name: '系统日志',
       url: '/system/log',
+      authority: 'audit/read',
     },
     {
       id: 'dataset',
       icon: 'article',
       name: '数据集',
       url: '/system/dataset',
+      authority: 'dataset/read',
+    },
+    {
+      id: 'unusual',
+      icon: 'article',
+      name: '异常任务',
+      url: '/system/unusual',
+      authority: 'abnormalFlow',
     },
   ];
+
   return (
     <div className="w-316 bg-white rounded-12 mr-20">
       <SideNavCard cardTitle={(
@@ -39,7 +50,7 @@ const InfoCard = () => {
           />
         </div>
       )}
-      menuData={MENU}
+      menuData={MENU as any}
       defaultActiveLink={{ basePath: '/system', menuId: 'message' }}
       />
 

@@ -1,44 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { parse } from 'qxp-formula';
 
+import FormulaEditor, { RefProps } from '@c/formula-editor';
+import MATH_FUNCTIONS from '@c/formula-editor/function';
+import { collectionOperators } from '@c/formula-editor/operator';
 import Modal from '@c/modal';
-
-const MATH_FUNCTIONS = [
-  'sum', 'average', 'max', 'min', 'abs', 'ceil', 'floor',
-];
-
-function parseRAWFormula(
-  rawFormula: string,
-  variables: Array<{ fieldName: string; title: string; }>,
-): string {
-  let formula = rawFormula;
-  variables.forEach(({ fieldName, title }) => {
-    const reg = new RegExp(fieldName, 'g');
-    formula = formula.replace(reg, `${fieldName}:${title}`);
-  });
-
-  return formula;
-}
-
-// return: [errorMessage, formula]
-function toRAWFormula(
-  readableFormula: string,
-  variables: Array<{ fieldName: string; title: string; }>,
-): [string, string] {
-  // convert readableFormula to formula
-  let formula = readableFormula;
-  variables.forEach(({ fieldName, title }) => {
-    const reg = new RegExp(`${fieldName}:${title}`, 'g');
-    formula = formula.replace(reg, fieldName);
-  });
-
-  try {
-    parse(formula.trim());
-    return ['', formula.trim()];
-  } catch (error) {
-    return [String(error), ''];
-  }
-}
 
 type Props = {
   rawFormula: string;
@@ -48,17 +14,26 @@ type Props = {
 }
 
 function EditFormulaModal({ onClose, onSubmit, rawFormula, variables }: Props): JSX.Element {
-  const [readableFormula, setFormula] = useState(parseRAWFormula(rawFormula, variables));
   const [errorMessage, setErrorMessage] = useState('');
+  const formulaEditorRef = useRef<RefProps>();
 
   function onSave(): void {
-    const [err, formula] = toRAWFormula(readableFormula, variables);
-    if (err) {
-      setErrorMessage(err);
+    const formula = formulaEditorRef.current?.getFormulaValue().trim() || '';
+    try {
+      parse(formula);
+    } catch (error) {
+      setErrorMessage(error.toString());
       return;
     }
-
     onSubmit(formula);
+  }
+
+  function addText(text: string, hasSpacing = true, backNumber = 0): void {
+    formulaEditorRef.current?.insertText(text, hasSpacing, backNumber);
+  }
+
+  function addField(entityData: { name: string, key: string }): void {
+    formulaEditorRef.current?.insertEntity(entityData);
   }
 
   if (!variables.length) {
@@ -95,9 +70,10 @@ function EditFormulaModal({ onClose, onSubmit, rawFormula, variables }: Props): 
             return (
               <span
                 key={fieldName}
-                className="inline-block mb-8 p-2 bg-gray-100 mr-4 border border-gray-300"
+                onClick={() => addField({ key: fieldName, name: title })}
+                className="inline-block mb-8 p-2 bg-gray-100 mr-4 border border-gray-300 cursor-pointer"
               >
-                {fieldName}:{title}
+                {title}
               </span>
             );
           })}
@@ -105,23 +81,36 @@ function EditFormulaModal({ onClose, onSubmit, rawFormula, variables }: Props): 
       </div>
       <div className="mb-8">函数:</div>
       <div className="mb-16">
-        {MATH_FUNCTIONS.map((funcName) => (
+        {MATH_FUNCTIONS.map(({ name, content }) => (
           <span
-            key={funcName}
-            className="inline-block mb-8 p-2 bg-gray-100 mr-4 border border-gray-300"
+            key={name}
+            onClick={() => addText(content, false, 1)}
+            className="inline-block mb-8 p-2 bg-gray-100 mr-4 border border-gray-300 cursor-pointer"
           >
-            {funcName}
+            {name}
+          </span>
+        ))}
+      </div>
+      <div className="mb-8">集合操作符:</div>
+      <div className="mb-16">
+        {collectionOperators.map(({ content }) => (
+          <span
+            key={content}
+            onClick={() => addText(content)}
+            className="inline-block mb-8 p-2 bg-gray-100 mr-4 border border-gray-300 cursor-pointer"
+          >
+            {content}
           </span>
         ))}
       </div>
       <div className="mb-8">验证公式:</div>
-      <textarea
+      <FormulaEditor
+        ref={formulaEditorRef}
+        customRules={variables.map(({ title, fieldName }) => {
+          return { key: fieldName, name: title, type: 'field' };
+        })}
         className="block border border-gray-600 w-full mb-16"
-        value={readableFormula}
-        onChange={({ target }) => {
-          setErrorMessage('');
-          setFormula(target.value);
-        }}
+        defaultValue={rawFormula}
       />
     </Modal>
   );

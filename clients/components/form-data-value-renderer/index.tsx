@@ -18,28 +18,28 @@ type Option = {
   label: string;
 }
 
-function getBasicValue(schema: Schema, value: Value): string {
+export function getBasicValue(schema: Schema, initValue: Value): string {
   const format = schema['x-component-props']?.format || 'YYYY-MM-DD HH:mm:ss';
   switch (schema.type) {
   case 'label-value':
-    return (([] as Record<string, unknown>[]).concat(value as Record<string, unknown>[]))
+    return (([] as Record<string, unknown>[]).concat(initValue as Record<string, unknown>[]))
       .map((itm) => itm.label).join(',');
   case 'datetime':
-    if (Array.isArray(value)) {
-      return (value as string[]).map((value: string) => {
+    if (Array.isArray(initValue)) {
+      return (initValue as string[]).map((value: string) => {
         return moment(value).format(format);
       }).join('-');
     }
-    return moment(value).format(format);
+    return moment(initValue).format(format);
   case 'string':
     if (schema.enum && schema.enum.length) {
-      return (schema.enum.find(({ value }: any) => value === value) as Option)?.label || '';
+      return (schema.enum.find(({ value }: any) => value === initValue) as Option)?.label || '';
     }
 
-    return value as string;
+    return initValue as string;
   case 'array':
     if (schema.enum && schema.enum.length) {
-      return (value as string[]).map((_value: string) => {
+      return (initValue as string[]).map((_value: string) => {
         if (!schema.enum) {
           return '';
         }
@@ -53,17 +53,17 @@ function getBasicValue(schema: Schema, value: Value): string {
       }).join(',');
     }
 
-    return (value as Option[]).map(({ label }) => label).join(',');
+    return (initValue as Option[]).map(({ label }) => label).join(',');
   default:
-    if (Array.isArray(value)) {
-      return value.join(',');
+    if (Array.isArray(initValue)) {
+      return initValue.join(',');
     }
 
-    if (typeof value === 'object' && value?.label) {
-      return value?.label as string;
+    if (typeof initValue === 'object' && initValue?.label) {
+      return initValue?.label as string;
     }
 
-    return value as string;
+    return initValue as string;
   }
 }
 

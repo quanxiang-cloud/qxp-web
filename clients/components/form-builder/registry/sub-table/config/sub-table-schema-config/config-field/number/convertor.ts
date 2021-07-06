@@ -37,6 +37,7 @@ export function toSchema(value: NumberPickerConfig): ISchema {
     readOnly: value.displayModifier === 'readonly',
     display: value.displayModifier !== 'hidden',
     'x-component': 'NumberPicker',
+    default: value.defaultValue,
     ['x-component-props']: {
       placeholder: value.placeholder,
       precision: point,

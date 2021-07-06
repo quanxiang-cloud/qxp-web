@@ -21,7 +21,7 @@ const statusMap = {
   SEND_BACK: '待补充',
 };
 
-function Status({ label, value, className }: Props) {
+function Status({ label, value, className }: Props): JSX.Element {
   return (
     <div className={cs('status inline-flex items-center', className)}>
       <span className={cs('status-indicator mr-4', `status-indicator-${value?.toLowerCase()}`)} />

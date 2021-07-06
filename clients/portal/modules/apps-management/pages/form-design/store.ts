@@ -4,6 +4,7 @@ import { UnionColumns } from 'react-table';
 
 import FormStore from '@c/form-builder/store';
 import toast from '@lib/toast';
+import { FILTER_FIELD } from '@c/data-filter/utils';
 import AppPageDataStore from '@c/form-app-data-table/store';
 import { TableConfig } from '@c/form-app-data-table/type';
 import { setFixedParameters } from '@c/form-app-data-table/utils';
@@ -12,20 +13,6 @@ import { getTableSchema, saveTableSchema } from '@lib/http-client';
 import {
   createPageScheme,
 } from './api';
-
-const FILTER_FIELD = [
-  'DatePicker',
-  'Input',
-  'MultipleSelect',
-  'NumberPicker',
-  'RadioGroup',
-  'textarea',
-  'Select',
-  'CheckboxGroup',
-  // 'OrganizationPicker',
-  // 'UserPicker',
-  // 'CascadeSelector',
-];
 
 class FormDesignStore {
   destroyFetchScheme: IReactionDisposer;
@@ -43,7 +30,7 @@ class FormDesignStore {
   @observable hasSchema = false;
   @observable initScheme: ISchema = {};
   @observable pageTableColumns: string[] = [];
-  @observable pageTableShowRule: TableConfig = {};
+  @observable pageTableShowRule: TableConfig = { pageSize: 10 };
   @observable filters: Filters = [];
 
   @computed get fieldsMap(): Record<string, ISchema> {
@@ -67,6 +54,22 @@ class FormDesignStore {
         cProps: fieldSchema['x-component-props'],
       };
     });
+  }
+
+  @computed get showAllFields(): boolean {
+    return this.fieldList.length === this.pageTableColumns.length;
+  }
+
+  @computed get indeterminateOfSelectedAllColumns(): boolean {
+    if (!this.pageTableColumns.length) {
+      return false;
+    }
+
+    if (this.pageTableColumns.length === this.fieldList.length) {
+      return false;
+    }
+
+    return true;
   }
 
   constructor() {
@@ -129,6 +132,24 @@ class FormDesignStore {
     }, this.appPageStore.setTableConfig);
   }
 
+  toggleShowAllFields(isShowAll: boolean): void {
+    if (isShowAll) {
+      this.setPageTableColumns(this.fieldList.map(({ id }) => id));
+      return;
+    }
+
+    this.setPageTableColumns([]);
+  }
+
+  toggleTableColumn(fieldKey: string, isShow: boolean): void {
+    if (isShow) {
+      this.setPageTableColumns([...this.pageTableColumns, fieldKey]);
+      return;
+    }
+
+    this.setPageTableColumns(this.pageTableColumns.filter((id) => id !== fieldKey));
+  }
+
   @action
   setFilters = (filters: Filters): void => {
     this.filters = filters;
@@ -173,7 +194,9 @@ class FormDesignStore {
       this.formStore = new FormStore({ schema, appID, pageID });
       this.pageTableColumns = config.pageTableColumns || [];
       this.filters = config.filters || [];
-      this.pageTableShowRule = config.pageTableShowRule || {};
+      if (config.pageTableShowRule) {
+        this.pageTableShowRule = config.pageTableShowRule;
+      }
       this.pageLoading = false;
     }).catch(() => {
       this.pageLoading = false;

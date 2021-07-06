@@ -35,7 +35,7 @@ function Pagination({
   showLessItems,
   onChange,
   className,
-}: Props) {
+}: Props): JSX.Element | null {
   if (hideOnSinglePage && total <= pageSize) {
     return null;
   }
