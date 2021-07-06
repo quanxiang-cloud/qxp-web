@@ -23,7 +23,7 @@ export const defaultConfig: DatePickerConfig = {
   displayModifier: 'normal',
   placeholder: '',
   sortable: false,
-  valueFormat: '',
+  valueFormat: 'YYYY-MM-DD',
   required: false,
   defaultValueFrom: 'customized',
 };

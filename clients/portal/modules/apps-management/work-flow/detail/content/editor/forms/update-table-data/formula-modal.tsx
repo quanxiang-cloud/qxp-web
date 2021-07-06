@@ -134,7 +134,7 @@ function FormulaModal(props: Props) {
         <div>过滤公式</div>
         <FormulaEditor
           ref={formulaRef}
-          className="block border border-gray-600 w-full mb-16"
+          className="block mb-16"
           customRules={formulaCustomRules}
           defaultValue={props.defaultValue || ''}
         />

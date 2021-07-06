@@ -11,7 +11,7 @@ import AppsSwitcher from '@c/apps-switcher';
 import appDetailsStore from '../store';
 import './index.scss';
 
-function DetailsHeader() {
+function DetailsHeader(): JSX.Element {
   const history = useHistory();
   const { appID } = useParams<{appID: string}>();
   const { updateAppStatus, appDetails, apps } = appDetailsStore;
@@ -20,19 +20,19 @@ function DetailsHeader() {
     appDetailsStore.fetchAppList();
   }, []);
 
-  const goAppSetting = (navType:string) => {
+  const goAppSetting = (navType:string): void => {
     history.push(`/apps/details/${appDetails.id}/setting/${navType}`);
   };
 
-  const handleChange = (newAppId: string) => {
+  const handleChange = (newAppId: string): void => {
     history.replace(location.pathname.replace(appID, newAppId));
   };
 
-  const goAppVisit = () => {
-    window.open(`//${window.CONFIG.home_hostname}/apps/` + appID);
-  };
+  // const goAppVisit = (): void => {
+  //   window.open(`//${window.CONFIG.home_hostname}/apps/` + appID);
+  // };
 
-  const statusTipsContent = (isPublish: boolean) => {
+  const statusTipsContent = (isPublish: boolean): JSX.Element => {
     if (isPublish) {
       return (
         <div>
@@ -101,7 +101,15 @@ function DetailsHeader() {
           应用管理
         </Button>
         <hr className='app-global-header-hr' />
-        <HeaderNav {...{ name: '帮助文档', icon: 'book', url: '' }} />
+        <a
+          href={`//${window.CONFIG.docs_hostname}`}
+          target="_blank"
+          rel="noreferrer"
+          className="app-nav-button corner-8-8-8-2"
+        >
+          <Icon size={20} className='mr-4 app-icon-color-inherit' name="book" />
+          帮助文档
+        </a>
       </div>
     </div>
   );

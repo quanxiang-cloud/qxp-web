@@ -35,8 +35,8 @@ function PageDataFilter(): JSX.Element | null {
         const format = curFilter?.['x-component-props']?.format;
         if (format) {
           _condition.value = [
-            moment(start.format(format)).toISOString(true),
-            moment(end.format(format)).toISOString(true),
+            moment(start.format(format)).toISOString(),
+            moment(end.format(format)).toISOString(),
           ];
         } else {
           _condition.value = [

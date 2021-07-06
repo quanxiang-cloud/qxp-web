@@ -7,6 +7,7 @@ import type { FormDataData, NodeWorkForm } from '@flowEditor/type';
 import FlowContext from '@flow/detail/flow-context';
 import FormSelector from '@c/form-table-selector';
 import SaveButtonGroup from '@flowEditor/components/_common/action-save-button-group';
+import { TRIGGER_CONDITION_EXCLUDE_FIELD_NAMES } from '@flowEditor/utils/constants';
 
 import TriggerWay from './basic-config/trigger-way';
 import TriggerCondition from './basic-config/trigger-condition';
@@ -56,6 +57,10 @@ export default function FormDataForm({ defaultValue, onSubmit, onCancel }: Props
     setValue((v) => ({ ...v, ...val }));
   }
 
+  const filteredConditionOptions = options?.filter(({ value }) => {
+    return !TRIGGER_CONDITION_EXCLUDE_FIELD_NAMES.includes(value);
+  });
+
   return (
     <>
       <FormSelector
@@ -79,7 +84,7 @@ export default function FormDataForm({ defaultValue, onSubmit, onCancel }: Props
                 }}
               />
               <TriggerCondition
-                formFieldOptions={options}
+                formFieldOptions={filteredConditionOptions}
                 schema={schema}
                 onChange={onChange}
                 value={value.triggerCondition}
