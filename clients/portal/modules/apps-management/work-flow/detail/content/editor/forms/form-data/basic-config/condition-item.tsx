@@ -1,24 +1,25 @@
 import React, { useState, useEffect } from 'react';
-import { omit } from 'lodash';
+import { omit, isArray } from 'lodash';
 import cs from 'classnames';
 import { useCss } from 'react-use';
 import { DatePicker } from 'antd';
-import moment, { Moment } from 'moment';
 
 import Select from '@c/select';
 import { Options, Option } from '@flowEditor/forms/api';
-import type { Operator, TriggerConditionExpressionItem, FieldOperatorOptions } from '@flowEditor/type';
+import type {
+  Operator,
+  TriggerConditionExpressionItem,
+  FieldOperatorOptions,
+  TriggerConditionValue,
+} from '@flowEditor/type';
 import FormRender from '@c/form-builder/form-renderer';
 import { COMPONENT_OPERATORS_MAP, OPERATOR_OPTIONS } from '@flowEditor/utils/constants';
+import moment, { Moment } from 'moment';
 
 const { RangePicker } = DatePicker;
 
 interface Props {
-  condition: {
-    key: string;
-    op: Operator;
-    value: string;
-  };
+  condition: TriggerConditionValue;
   options: Options;
   schemaMap?: SchemaProperties;
   onChange: (value: Partial<TriggerConditionExpressionItem>) => void;
@@ -76,7 +77,12 @@ export default function ConditionItem({ condition, options, onChange, schemaMap 
   const showDateRange = condition.op === 'range';
   const hiddenInput = condition.op === 'null' || condition.op === 'not-null' || showDateRange;
   const dateFormat = currentSchema?.['x-component-props']?.format || 'YYYY-MM-DD';
-  const rangeValues = condition.value?.split(',').map((v) => moment(v, dateFormat)).filter(Boolean);
+  let rangePickerDefaultValue: [Moment, Moment] | undefined = undefined;
+  if (currentSchema?.['x-component']?.toLowerCase() === 'datepicker' && isArray(condition.value)) {
+    rangePickerDefaultValue = condition.value?.map?.((v) => {
+      return moment(v);
+    }) as unknown as typeof rangePickerDefaultValue;
+  }
 
   return (
     <>
@@ -129,8 +135,8 @@ export default function ConditionItem({ condition, options, onChange, schemaMap 
           <RangePicker
             {...(currentSchema?.['x-component-props'])}
             format={dateFormat}
-            defaultValue={rangeValues?.length === 2 ? rangeValues as [Moment, Moment] : undefined}
-            onChange={(_, values: string[]) => onChange({ value: values.join(',') })}
+            defaultValue={rangePickerDefaultValue}
+            onChange={(_, value: string[]) => onChange({ value })}
           />
         )}
       </div>
