@@ -82,7 +82,7 @@ export default function AlterRoleFunc({ funcs: functions }: IAlterRoleFunc): JSX
                 disabled
                 checked={func.has}
                 className="mr-72 flex flex-row items-center text-caption mb-16"
-                key={func.funcTag}
+                key={func.id}
                 value={func.funcTag}
                 onChange={updateFuncs(func.funcTag)}
                 label={func.name}
@@ -93,7 +93,7 @@ export default function AlterRoleFunc({ funcs: functions }: IAlterRoleFunc): JSX
           return (
             <Card
               style={{ backgroundColor: '#fff' }}
-              key={func.funcTag}
+              key={func.id}
               headerClassName="py-16 px-20 border-b border-gray-200"
               title={
                 (<Checkbox
