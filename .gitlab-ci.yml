@@ -31,6 +31,7 @@ integrate:
     - qxp-web-runner
   stage: test
   script:
+    - yarn run lint
     - NODE_ENV=production ./node_modules/.bin/webpack --config webpack.config.js
 
 build_all:
@@ -38,6 +39,8 @@ build_all:
     - qxp-web-runner
   stage: build
   only:
+    - master
+    - tags
     - /^release\/.*/
   script:
     - node_modules/.bin/gulp buildAssets
@@ -55,7 +58,7 @@ build_all:
 deploy_alpha:
   tags:
     - qxp-web-runner
-  stage: build
+  stage: release
   only:
     - alpha
   script:
@@ -81,6 +84,8 @@ deploy_staging:
   only:
     - tags
     - master
+  except:
+    - branches
   script:
     - IMAGE_TAG="v$(date "+%Y%m%d")-$(git rev-parse --short HEAD)"
     - bash -c "helm --host=$HELM_STAGING upgrade qxp-web-portal /root/deployment/qxp-web-portal --set image.tag=$IMAGE_TAG --set namespace=lowcode"
