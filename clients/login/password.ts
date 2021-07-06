@@ -1,4 +1,4 @@
-import { imgChange, removeError, validatePwd, validateUsername } from './login-common';
+import { imgChange, removeError, validateUsername } from './login-common';
 import './style.scss';
 
 window.onload = function() {
@@ -23,9 +23,6 @@ window.onload = function() {
 
   loginForm.addEventListener('submit', function(event) {
     if (!validateUsername(username, nameMessage)) {
-      event.preventDefault();
-    }
-    if (!validatePwd(password, pwdMessage)) {
       event.preventDefault();
     }
   });

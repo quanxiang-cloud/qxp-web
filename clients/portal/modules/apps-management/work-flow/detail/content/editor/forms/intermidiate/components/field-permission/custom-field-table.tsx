@@ -18,13 +18,8 @@ interface Props {
 }
 
 export default function CustomFieldTable({
-  editable, fields: originalFields, updateFields, schemaMap,
+  editable, fields, updateFields, schemaMap,
 }: Props): JSX.Element {
-  const fields = originalFields.filter((field) => {
-    return !['subtable', 'associatedrecords'].includes(
-      schemaMap[field.id]?.['x-component']?.toLowerCase() as string,
-    );
-  });
   const [data] = useRequest<{
     code: number;
     data: {name: string; code: string; desc: string;}[];
@@ -127,9 +122,12 @@ export default function CustomFieldTable({
   function getValueCell(
     model: any, key: 'initialValue' | 'submitValue', editable: boolean,
   ): JSX.Element | null {
-    if (editable) {
-      const schema = schemaMap[model.cell.row.id];
-      if (schema['x-mega-props']) {
+    const schema = schemaMap[model.cell.row.id];
+    const componentName = schema['x-component']?.toLowerCase();
+    const isSubTable = componentName === 'subtable';
+    const isAssociatedRecords = componentName === 'associatedrecords';
+    if (editable && !isSubTable && !isAssociatedRecords) {
+      if (schema?.['x-mega-props']) {
         schema['x-mega-props'].labelAlign = 'top';
       }
       return (

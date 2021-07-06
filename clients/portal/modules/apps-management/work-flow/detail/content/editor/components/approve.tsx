@@ -41,6 +41,16 @@ export default function ApproveNodeComponent({ data, id, xPos, yPos, isDragging 
   }
 
   function getPerson(): string {
+    const typePersonMap = {
+      field: '表单字段',
+      position: '部门负责人',
+      superior: '上级领导',
+      leadOfDepartment: '部门负责人',
+    };
+    const personTitle = typePersonMap[basicConfig.approvePersons.type as keyof typeof typePersonMap];
+    if (personTitle) {
+      return personTitle;
+    }
     return [
       ...basicConfig.approvePersons.users,
       ...basicConfig.approvePersons.departments,
@@ -57,7 +67,7 @@ export default function ApproveNodeComponent({ data, id, xPos, yPos, isDragging 
 
   const hasApproveRule = !!basicConfig.multiplePersonWay;
   const hasApprovePerson = !!basicConfig.approvePersons.departments.length ||
-    !!basicConfig.approvePersons.users.length;
+    !!basicConfig.approvePersons.users.length || basicConfig.approvePersons.type !== 'person';
 
   const hasError = id === errors?.publish?.data?.id;
 

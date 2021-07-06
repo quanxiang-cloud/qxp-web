@@ -72,4 +72,5 @@ type PermissionItem = {
   text?: string;
   defaultText?: string;
   changeable?: boolean;
+  reasonRequired?: boolean;
 }

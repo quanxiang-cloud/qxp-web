@@ -7,6 +7,7 @@ import {
   SelectionState,
   convertToRaw,
   convertFromRaw,
+  DraftHandleValue,
 } from 'draft-js';
 
 import {
@@ -34,6 +35,7 @@ type Props = {
   customRules?: CustomRule[];
   className?: string;
   defaultValue?: string;
+  maxLength?: number;
 }
 
 export type RefProps = {
@@ -60,11 +62,13 @@ const defaultDecorators = [
 function FormulaEditor({
   customRules = [],
   className = '',
+  maxLength = 500,
   onChange,
   onBlur,
   readOnly,
   defaultValue = '',
 }: Props, ref: React.Ref<any>): JSX.Element {
+  const [contentLength, setLength] = useState(0);
   const decorator = useMemo(() => {
     const _decorator = new CompositeDecorator(defaultDecorators);
     return _decorator;
@@ -84,8 +88,75 @@ function FormulaEditor({
   }));
 
   const handleChange = (_editorState: EditorState): void => {
+    const currentContent = _editorState.getCurrentContent();
+    const currentContentLength = currentContent.getPlainText('').length;
+    setLength(currentContentLength);
     setEditorState(_editorState);
     onChange?.(getFormulaValue());
+  };
+
+  const getLengthOfSelectedText = (): number => {
+    const currentSelection = editorState.getSelection();
+    const isCollapsed = currentSelection.isCollapsed();
+    let length = 0;
+    if (!isCollapsed) {
+      const currentContent = editorState.getCurrentContent();
+      const startKey = currentSelection.getStartKey();
+      const endKey = currentSelection.getEndKey();
+      const startBlockTextLength = currentContent.getBlockForKey(startKey).getLength();
+      const startSelectedTextLength = startBlockTextLength - currentSelection.getStartOffset();
+      const endSelectedTextLength = currentSelection.getEndOffset();
+      const keyAfterEnd = currentContent.getKeyAfter(endKey);
+      if (startKey === endKey) {
+        length += currentSelection.getEndOffset() - currentSelection.getStartOffset();
+      } else {
+        let currentKey = startKey;
+
+        while (currentKey && currentKey !== keyAfterEnd) {
+          if (currentKey === startKey) {
+            length += startSelectedTextLength + 1;
+          } else if (currentKey === endKey) {
+            length += endSelectedTextLength;
+          } else {
+            length += currentContent.getBlockForKey(currentKey).getLength() + 1;
+          }
+
+          currentKey = currentContent.getKeyAfter(currentKey);
+        }
+      }
+    }
+
+    return length;
+  };
+
+  const handleBeforeInput = (): DraftHandleValue => {
+    if (typeof maxLength !== 'number') {
+      return 'not-handled';
+    }
+
+    const currentContent = editorState.getCurrentContent();
+    const currentContentLength = currentContent.getPlainText('').length;
+    const selectedTextLength = getLengthOfSelectedText();
+    if (currentContentLength - selectedTextLength > maxLength - 1) {
+      return 'handled';
+    }
+
+    return 'not-handled';
+  };
+
+  const handlePastedText = (pastedText: string): DraftHandleValue => {
+    if (typeof maxLength !== 'number') {
+      return 'not-handled';
+    }
+
+    const currentContent = editorState.getCurrentContent();
+    const currentContentLength = currentContent.getPlainText('').length;
+    const selectedTextLength = getLengthOfSelectedText();
+    if (currentContentLength + pastedText.length - selectedTextLength > maxLength - 1) {
+      return 'handled';
+    }
+
+    return 'not-handled';
   };
 
   const handleBlur = (): void => {
@@ -109,7 +180,21 @@ function FormulaEditor({
     handleChange(EditorState.set(editorState, { decorator: compositeDecorator }));
   }, [customRules]);
 
+  const insertBefore = (insertLength: number): boolean => {
+    const currentContent = editorState.getCurrentContent();
+    const currentContentLength = currentContent.getPlainText('').length;
+    if (currentContentLength + insertLength > maxLength) {
+      return false;
+    }
+
+    return true;
+  };
+
   const insertEntity = (entityData: CustomRule): void => {
+    if (!insertBefore(entityData.name.length + 1)) {
+      return;
+    }
+
     let contentState = editorState.getCurrentContent();
     contentState = contentState.createEntity('variable', 'IMMUTABLE', entityData);
     const entityKey = contentState.getLastCreatedEntityKey();
@@ -141,6 +226,10 @@ function FormulaEditor({
   };
 
   const insertText = (text: string, hasSpacing = true, backNumber = 0): void => {
+    if (!insertBefore(text.length)) {
+      return;
+    }
+
     let contentState = editorState.getCurrentContent();
     let selection = editorState.getSelection();
     let textTmp = `${text}`;
@@ -178,12 +267,19 @@ function FormulaEditor({
       <Editor
         onBlur={handleBlur}
         readOnly={readOnly}
+        handleBeforeInput={handleBeforeInput}
+        handlePastedText={handlePastedText}
         editorState={editorState}
         onChange={handleChange}
         placeholder="请输入...."
         ref={editorDom}
         spellCheck={true}
       />
+      {typeof maxLength === 'number' && (
+        <div className='text-right px-8 py-2 text-gray-400'>
+          {contentLength}/{maxLength}
+        </div>
+      )}
     </div>
   );
 }

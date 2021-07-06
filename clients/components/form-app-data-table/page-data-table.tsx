@@ -74,16 +74,14 @@ function PageDataTable(): JSX.Element {
           data={store.formDataList}
         />
       </div>
-      {store.tableConfig.pageSize ? (
-        <Pagination
-          current={store.params.page as number}
-          total={store.total}
-          pageSize={store.params.size as number}
-          onChange={(page: number, size: number) => {
-            store.setParams({ page, size });
-          }}
-        />
-      ) : null}
+      <Pagination
+        current={store.params.page as number}
+        total={store.total}
+        pageSize={store.params.size as number}
+        onChange={(page: number, size: number) => {
+          store.setParams({ page, size });
+        }}
+      />
     </div>
   );
 }

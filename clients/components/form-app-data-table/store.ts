@@ -30,7 +30,7 @@ export type FormData = Record<string, any>;
 class AppPageDataStore {
   destroyFetchTableData: IReactionDisposer;
   destroySetTableConfig: IReactionDisposer;
-  @observable tableConfig: TableConfig = { pageSize: null, order: undefined };
+  @observable tableConfig: TableConfig = { pageSize: 10, order: undefined };
   @observable noFiltersTips: React.ReactNode = '尚未配置筛选条件。';
   @observable listLoading = false;
   @observable showCheckbox = true;
@@ -69,14 +69,14 @@ class AppPageDataStore {
     this.showCheckbox = showCheckbox;
     this.tableHeaderBtnList = tableHeaderBtnList;
     this.setTableColumns(tableColumns);
-    this.setTableConfig(pageTableShowRule);
     this.destroyFetchTableData = reaction(() => this.params, this.fetchFormDataList);
     this.destroySetTableConfig = reaction(() => {
       return {
-        size: this.tableConfig.pageSize || 9999,
+        size: this.tableConfig.pageSize || 10,
         sort: this.tableConfig.order ? [this.tableConfig.order] : [],
       };
     }, this.setParams);
+    this.setTableConfig(pageTableShowRule);
     this.appID = appID || '';
     this.pageID = pageID || '';
     this.allowRequestData = !!allowRequestData;
@@ -152,7 +152,7 @@ class AppPageDataStore {
   @action
   clear = (): void => {
     this.formDataList = [];
-    this.tableConfig = { pageSize: null, order: undefined };
+    this.tableConfig = { pageSize: 10, order: undefined };
     this.filters = [];
     this.tableColumns = [];
     this.pageID = '';

@@ -5,6 +5,7 @@ import NavMsgBar from '@portal/modules/msg-center/nav-msg-bar';
 import Icon from '@c/icon';
 
 import ResetPasswordModal from './reset-password-modal';
+import Avatar from '@c/avatar';
 
 export default function HeaderMenu() {
   const [openResetPasswordModal, setOpenResetPasswordModal] = useState<boolean>(false);
@@ -30,13 +31,6 @@ export default function HeaderMenu() {
         访问用户端
       </a>
       <div className="header-nav-btn group">
-        <div className="header-nav-btn-icon-wrapper">
-          <Icon
-            name="settings"
-            className="group-hover:text-blue-600 header-nav-btn-icon"
-            size={20}
-          />
-        </div>
         <MoreMenu
           menus={[
             { key: 'resetPassword', label: '重置密码' },
@@ -55,8 +49,10 @@ export default function HeaderMenu() {
             className="cursor-pointer flex items-center h-36
             hover:blue-100 transition group-hover:text-blue-600"
           >
-            个人中心
-            <Icon name="caret-down" style={{ marginLeft: '8px' }} />
+            <Avatar
+              username={window.USER.userName}
+            />
+            <Icon name="arrow_drop_down" size={20} />
           </div>
         </MoreMenu>
       </div>

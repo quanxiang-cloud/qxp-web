@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { observer } from 'mobx-react';
 import { useMutation } from 'react-query';
 import { useHistory, useParams } from 'react-router-dom';
-import { TextArea } from '@QCFE/lego-ui';
+import { TextArea, Form } from '@QCFE/lego-ui';
 import { Radio } from 'antd';
 import { toJS } from 'mobx';
 import toast from '@lib/toast';
@@ -22,15 +22,23 @@ interface Props {
   className?: string;
 }
 
-function ActionModals({ className }: Props) {
+function ActionModals({ className }: Props): JSX.Element | null {
   const { processInstanceID, taskID } = useParams<{ processInstanceID: string; taskID: string }>();
   const history = useHistory();
+  const ref: any = useRef();
   const [showReceiverPicker, setShowPicker] = useState(false);
   const [chosenEmployees, setChosenEmployees] = useState([]);
   const [stepBackId, setStepBackId] = useState('');
   const { action, modalInfo } = store;
   const [addSignType, setAddSignType] = useState('');
   const [addSignValue, setAddSignValue] = useState('');
+
+  const handleSubmit = (): void => {
+    const formRef = ref.current;
+    if (formRef.validateFields()) {
+      handleTaskMutation.mutate({});
+    }
+  };
 
   const handleTaskMutation = useMutation((params: Record<string, any>) => {
     if (modalInfo.payload.remark != undefined) {
@@ -167,19 +175,29 @@ function ActionModals({ className }: Props) {
 
   const renderContent = () => {
     const { payload } = store.modalInfo;
-    if ([TaskHandleType.agree, TaskHandleType.refuse, TaskHandleType.fill_in].includes(action as TaskHandleType)) {
+    if ([
+      TaskHandleType.agree,
+      TaskHandleType.refuse,
+      TaskHandleType.fill_in].includes(action as TaskHandleType)
+    ) {
       return (
-        <TextArea
-          rows={4}
+        <Form.TextAreaField
+          schemas={[
+            {
+              rule: { required: store.modalInfo.require },
+              help: `输入${actionMap[action]?.text}意见`,
+              status: 'error',
+            }]}
+          className="w-full"
           name="comment"
-          placeholder={`输入${actionMap[action]?.text}意见 (选填)`}
+          placeholder={`输入${actionMap[action]?.text}意见`}
           onChange={(ev: unknown, value: string) => store.setModalInfo({ payload: { remark: value } })}
         />
       );
     }
 
     // 撤回
-    if (action === TaskHandleType.hasCancelBtn) {
+    if (action === TaskHandleType.cancel) {
       return (
         <p>确定要撤销该任务吗？撤销后，任务将立即结束。</p>
       );
@@ -210,7 +228,7 @@ function ActionModals({ className }: Props) {
     }
 
     if (action === TaskHandleType.step_back) {
-      const setStep = (id: string)=> {
+      const setStep = (id: string): void => {
         setStepBackId(id);
       };
       return (
@@ -391,7 +409,7 @@ function ActionModals({ className }: Props) {
             key: 'sure',
             modifier: 'primary',
             text: `确定${store.modalInfo.title}`,
-            onClick: () => handleTaskMutation.mutate({}),
+            onClick: handleSubmit,
           },
         ]}
         onClose={() => {
@@ -400,7 +418,9 @@ function ActionModals({ className }: Props) {
           setStepBackId('');
         }}
       >
-        {renderContent()}
+        <Form ref={ref} layout="vertical">
+          {renderContent()}
+        </Form>
       </Modal>
 
       {showReceiverPicker && (

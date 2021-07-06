@@ -17,7 +17,7 @@ interface Props {
   className?: string;
   permission: { custom: PermissionItem[], system: PermissionItem[], default?: PermissionItem[] };
   globalActions: Record<string, boolean>;
-  onClickAction: (actionKey: TaskHandleType, task: any) => void;
+  onClickAction: (actionKey: TaskHandleType, task: any, reasonRequired?: boolean) => void;
 }
 
 const moreActions = [
@@ -30,7 +30,7 @@ const getIconByAction = (action: string) => {
   return actionMap[action]?.icon || 'arrow_circle_up';
 };
 
-function Toolbar({ currTask, permission, onClickAction, globalActions }: Props) {
+function Toolbar({ currTask, permission, onClickAction, globalActions }: Props): JSX.Element {
   const { processInstanceID, taskID } = useParams<{ processInstanceID: string; taskID: string }>();
   const [comment, setComment] = useState('');
   const commentRef = useRef<{node: HTMLTextAreaElement}>(null);
@@ -100,7 +100,7 @@ function Toolbar({ currTask, permission, onClickAction, globalActions }: Props) 
 
       <div className="right-btns task-default-actions">
         {
-          system.map(({ name, value, enabled, defaultText, text }: PermissionItem, idx) => {
+          system.map(({ name, value, enabled, defaultText, text, reasonRequired }: PermissionItem, idx) => {
             if (!enabled) {
               return null;
             }
@@ -110,7 +110,7 @@ function Toolbar({ currTask, permission, onClickAction, globalActions }: Props) 
                 iconName={getIconByAction(value)}
                 modifier={value === 'REFUSE' ? 'danger' : 'primary'}
                 className={cs(value === 'AGREE' && 'btn-item-done')}
-                onClick={() => onClickAction(value, currTask)}
+                onClick={() => onClickAction(value, currTask, reasonRequired)}
                 key={`${value}-${idx}`}
               >
                 {text ?? name ?? defaultText}

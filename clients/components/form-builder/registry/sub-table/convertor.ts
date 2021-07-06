@@ -39,7 +39,7 @@ export function toSchema(value: SubTableConfig): ISchema {
     items: value.subTableSchema,
     'x-component': 'SubTable',
     ['x-component-props']: {
-      columns: value.subTableColumns || [],
+      columns: value.subordination === 'foreign_table' ? value.subTableColumns || [] : [],
       subordination: value.subordination,
       appID: value.linkedTable?.appID,
       tableID: value.linkedTable?.tableID,

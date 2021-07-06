@@ -7,7 +7,6 @@ import EmployeeOrDepartmentPicker from '@c/employee-or-department-picker';
 import RadioGroup from '@c/radio/group';
 import Radio from '@c/radio';
 import Select from '@c/select';
-import { WORK_TABLE_INTERNAL_FIELDS } from '@flowEditor/utils/constants';
 import FlowTableContext from '@flowEditor/forms/flow-source-table';
 
 import { ApprovePersonType, ApprovePerson } from '@flowEditor/type';
@@ -61,10 +60,7 @@ export default function PersonPicker({ value, typeText, onChange } : Props): JSX
     cur: Option[], next,
   ) => {
     const [fieldName, fieldSchema] = next;
-    if (!WORK_TABLE_INTERNAL_FIELDS.includes(fieldName) &&
-      fieldSchema?.['x-component']?.toLowerCase() !== 'subtable' &&
-      fieldSchema?.['x-component']?.toLowerCase() !== 'associatedrecords'
-    ) {
+    if (fieldSchema?.['x-component']?.toLowerCase() === 'userpicker') {
       cur.push({ label: fieldSchema.title as string, value: fieldName });
     }
     return cur;
