@@ -21,7 +21,7 @@ export function getPicker(format: string): 'year' | 'month' | undefined {
 
 function DatePicker(props: DatePickerCProps): JSX.Element {
   const handleChange = (_: Moment | null, dateString: string): void => {
-    props.onChange(dateString ? moment(dateString).toISOString(true) : '');
+    props.onChange(dateString ? moment(dateString).toISOString() : '');
   };
 
   if (props.readOnly) {
