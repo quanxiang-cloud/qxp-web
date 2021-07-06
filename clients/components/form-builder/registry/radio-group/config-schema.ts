@@ -1,6 +1,6 @@
 import { ISchema } from '@formily/react-schema-renderer';
 
-import { deleteOperate, extraOperations } from '../operates';
+import { deleteOperate, extraOperations, addOperate } from '../operates';
 
 const schema: ISchema = {
   type: 'object',
@@ -123,7 +123,7 @@ const schema: ISchema = {
             },
             {
               type: 'value:visible',
-              target: 'defaultValueLinkage',
+              target: 'linkageConfig',
               condition: '{{ $value === "linkage" }}',
             },
           ],
@@ -141,7 +141,7 @@ const schema: ISchema = {
             renderMoveDown: () => null,
             renderMoveUp: () => null,
             renderExtraOperations: extraOperations,
-            renderAddition: () => null,
+            renderAddition: addOperate,
           },
           'x-index': 9,
           items: {
@@ -156,10 +156,6 @@ const schema: ISchema = {
               },
             },
           },
-        },
-        add: {
-          type: 'object',
-          'x-component': 'addOperate',
         },
       },
     },
