@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 
+import FeedbackBtn from '@c/feedback';
 import MoreMenu from '@c/more-menu';
 import NavMsgBar from '@portal/modules/msg-center/nav-msg-bar';
 import Icon from '@c/icon';
@@ -34,6 +35,7 @@ export default function HeaderMenu() {
       >
         访问用户端
       </a>
+      <FeedbackBtn />
       <div className="header-nav-btn group">
         <MoreMenu
           menus={[
