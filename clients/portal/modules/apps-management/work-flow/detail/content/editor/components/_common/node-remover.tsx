@@ -6,7 +6,7 @@ import { removeElements, FlowElement, Edge, isNode } from 'react-flow-renderer';
 
 import Icon from '@c/icon';
 import store, { updateStore } from '@flowEditor/store';
-import type { StoreValue, Data } from '@flowEditor/type';
+import type { StoreValue, Data, NodeType } from '@flowEditor/type';
 import useObservable from '@lib/hooks/use-observable';
 import { edgeBuilder } from '@flowEditor/utils';
 
@@ -72,7 +72,7 @@ export default function NodeRemover({
     elementsToRemove.push(...getBranchNodes(el.id));
     const sourceElement = elements.find(({ id }) => el.data?.nodeData?.parentID?.includes(id));
     const targetElement = elements.find(({ id }) => {
-      return sourceElement?.data?.nodeData?.branchTargetElementID === id;
+      return el?.data?.nodeData?.branchTargetElementID === id;
     });
     let sourceElementFilteredChildrenID: string[] | undefined;
     let targetElementFilteredParentID: string[] | undefined;
@@ -111,10 +111,8 @@ export default function NodeRemover({
     if (sourceElement?.data?.nodeData.childrenID?.length === 1 &&
       sourceElement.type !== 'processBranchSource') {
       const elementsToRemoveIDs = elementsToRemove.map(({ id }) => id);
-      const blockedTypes = ['processBranch', 'processBranchTarget'];
       const branchTargetElements = elements.filter((el) => {
-        return el.type && !el.data?.nodeData.branchID && !blockedTypes.includes(el.type) &&
-        el?.data?.nodeData.parentID?.some((id) => {
+        return el.type && !el.data?.nodeData.branchID && el?.data?.nodeData.parentID?.some((id) => {
           return elementsToRemoveIDs.includes(id);
         });
       });
@@ -154,9 +152,12 @@ export default function NodeRemover({
     edgesToAdd.push(edgeBuilder(sourceID, targetID));
   }
 
-  function idExistsOnElements(eles: FlowElement<Data>[]) {
+  function idExistsOnElements(eles: FlowElement<Data>[], condition: 'children' | 'parent', type?: NodeType) {
     return (id: string) => {
-      return eles.find((ele) => ele.id === id);
+      return eles.find((ele) => ele.id === id && !(
+        (type === 'processBranchSource' && ele.type === 'processBranchTarget' && condition === 'children') ||
+        (type === 'processBranchTarget' && ele.type === 'processBranchSource' && condition === 'parent')
+      ));
     };
   }
 
@@ -170,21 +171,24 @@ export default function NodeRemover({
       }
       const removedNodeParentID = node.data?.nodeData.parentID;
       const removedNodeChildID = node.data?.nodeData.childrenID;
-      const { nodeData } = el.data || {};
+      const { nodeData, type } = el.data || {};
+      if (nodeData?.branchTargetElementID === node.id) {
+        nodeData.branchTargetElementID = '';
+      }
       if (nodeData?.parentID?.includes(node.id || '')) {
         nodeData.parentID = nodeData.parentID.filter((id) => {
           return id !== node.id;
         });
-        if (removedNodeParentID && !(node.type === 'processBranch' && el.type === 'processBranchTarget')) {
-          nodeData.parentID.push(...removedNodeParentID.filter(idExistsOnElements(eles)));
+        if (removedNodeParentID) {
+          nodeData.parentID.push(...removedNodeParentID.filter(idExistsOnElements(eles, 'parent', type)));
         }
       }
       if (nodeData?.childrenID?.includes(node.id || '')) {
         nodeData.childrenID = nodeData.childrenID.filter((id) => {
           return id !== node.id;
         });
-        if (removedNodeChildID && !(node.type === 'processBranch' && el.type === 'processBranchSource')) {
-          nodeData.childrenID.push(...removedNodeChildID.filter(idExistsOnElements(eles)));
+        if (removedNodeChildID) {
+          nodeData.childrenID.push(...removedNodeChildID.filter(idExistsOnElements(eles, 'children', type)));
         }
       }
       return el;

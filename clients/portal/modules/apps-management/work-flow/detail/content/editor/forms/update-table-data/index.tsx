@@ -16,6 +16,7 @@ import { BusinessData, TableDataUpdateData } from '@flowEditor/type';
 import Context from './context';
 import FilterRules, { RefType as FilterRuleRef } from './filter-rules';
 import UpdateRules, { RefType as UpdateRuleRef } from './update-rules';
+import { filterTables } from '../utils';
 
 import './styles.scss';
 
@@ -109,7 +110,7 @@ export default function UpdateTableData({ defaultValue, onSubmit, onCancel }: Pr
         <div className="inline-flex items-center">
           <span className="text-body mr-10">目标数据表:</span>
           <Select
-            options={allTables.filter((tb) => tb.value !== tableID)}
+            options={filterTables(allTables).filter((tb) => tb.value !== tableID)}
             placeholder="选择数据表"
             value={value.targetTableId}
             onChange={onChangeTargetTable}

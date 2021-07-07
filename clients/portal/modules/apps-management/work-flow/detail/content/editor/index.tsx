@@ -97,6 +97,9 @@ export default function Editor(): JSX.Element {
     updateStore((s) => ({ ...s, currentConnection: {} }));
   }
 
+  // elements?.filter(isNode).map((s) => console.log(({ id: s.id, ...(s.data?.nodeData || {}) })));
+  // console.log('\n\n\n');
+
   return (
     <div className={cs('w-full h-full flex-1 relative transition', {
       'opacity-0': !fitViewFinished,

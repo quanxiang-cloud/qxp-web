@@ -144,6 +144,21 @@ class AppDetailsStore {
         rootId: this.pagesTreeData.rootId,
       };
 
+      if (groupID === 'ROOT') {
+        this.pageInitList = this.pageInitList.filter((page) => page.name !== treeItem.data.name);
+        toast.success('删除成功');
+        return;
+      }
+
+      this.pageInitList = this.pageInitList.map((page) => {
+        if (page.id === groupID) {
+          page.child = page.child?.filter((childPage) => {
+            return childPage.name !== treeItem.data.name;
+          });
+          page.childCount = page.child?.length;
+        }
+        return page;
+      });
       toast.success('删除成功');
     });
   }
@@ -200,7 +215,9 @@ class AppDetailsStore {
     }
 
     return createPage({ appID: this.appID, ...pageInfo }).then((res: any) => {
-      const newPage = { ...res, ...pageInfo, menuType: 0, appID: this.appID };
+      const newPage: PageInfo = {
+        ...res, ...pageInfo, menuType: 0, appID: this.appID, child: null, childCount: 0, sort: 0,
+      };
       const items = toJS(this.pagesTreeData.items);
       items[newPage.groupID || 'ROOT'].children.push(newPage.id);
       items[newPage.id] = {
@@ -211,6 +228,23 @@ class AppDetailsStore {
       };
 
       this.pagesTreeData = { items, rootId: 'ROOT' };
+
+      if (!newPage.groupID) {
+        this.pageInitList.push(newPage);
+        toast.success('创建成功');
+        return res.id;
+      }
+
+      this.pageInitList = this.pageInitList.map((page) => {
+        if (page.id === newPage.groupID) {
+          const lastChildPage = page.child?.slice(-1) || [];
+          const sort = lastChildPage[0]?.sort || 0;
+          newPage.sort = sort + 1;
+
+          page.childCount = page.child?.push(newPage);
+        }
+        return page;
+      });
       toast.success('创建成功');
       return res.id;
     });
