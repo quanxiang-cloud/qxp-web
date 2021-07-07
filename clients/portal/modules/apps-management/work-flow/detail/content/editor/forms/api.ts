@@ -1,5 +1,4 @@
 import { QueryFunctionContext } from 'react-query';
-import { omitBy } from 'lodash';
 
 import httpClient from '@lib/http-client';
 
@@ -39,29 +38,20 @@ export async function getFormFieldOptions({ queryKey }: QueryFunctionContext): P
   schema: ISchema,
 }> {
   const schema = await getFormFieldSchema({ queryKey });
-  const blackList = ['subtable', 'associatedrecords'];
   function parseFormFieldOptions(schema: ISchema = {}): Option[] {
     return Object.entries(schema.properties ?? {}).reduce((prev: Option[], [id, value]) => {
-      const componentName = schema?.properties?.[id]?.['x-component']?.toLowerCase() || '';
-      if (!blackList.includes(componentName)) {
-        prev.push({
-          label: value.title as string,
-          value: id,
-          type: value.type as string,
-          isSystem: (value as ISchema)['x-internal']?.isSystem,
-        });
-      }
+      prev.push({
+        label: value.title as string,
+        value: id,
+        type: value.type as string,
+        isSystem: (value as ISchema)['x-internal']?.isSystem,
+      });
       return prev;
     }, []);
   }
   return {
     options: parseFormFieldOptions(schema ?? {}),
-    schema: {
-      ...schema,
-      properties: omitBy(schema?.properties, (v) => {
-        return blackList.includes(v?.['x-component']?.toLowerCase() || '');
-      }),
-    },
+    schema,
   };
 }
 
