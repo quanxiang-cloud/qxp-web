@@ -24,7 +24,6 @@ export default function FlowRender({ elements, onDrop, setFitViewFinished }: Pro
   dagreGraph.setGraph({ rankdir: 'TB', ranksep: 90 });
   const fitView = useFitView(() => setFitViewFinished?.(true));
 
-  let layoutedElements = [];
   elements?.forEach((el) => {
     if (isNode(el)) {
       return dagreGraph.setNode(el.id, {
@@ -35,7 +34,7 @@ export default function FlowRender({ elements, onDrop, setFitViewFinished }: Pro
     dagreGraph.setEdge(el.source, el.target);
   });
   dagre.layout(dagreGraph);
-  layoutedElements = elements?.map((ele) => {
+  const layoutedElements = elements?.map((ele) => {
     const el = deepClone(ele);
     if (isNode(el)) {
       const nodeWithPosition = dagreGraph.node(el.id);

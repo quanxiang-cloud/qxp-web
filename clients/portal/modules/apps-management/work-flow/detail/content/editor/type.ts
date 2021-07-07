@@ -388,6 +388,7 @@ export type Errors = Record<string, unknown> & {
 
 export interface StoreValue {
   creatorId?: string;
+  readonly?: boolean;
   needSaveFlow?: boolean;
   apiFetched: boolean;
   validating: boolean;

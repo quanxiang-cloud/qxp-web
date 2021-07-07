@@ -9,6 +9,7 @@ export default function EndNode(props: any): JSX.Element {
       <Handle
         type="target"
         position={Position.Top}
+        isConnectable={false}
       />
       <EndNodeComponent {...props} />
     </>

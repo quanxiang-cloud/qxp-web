@@ -6,6 +6,7 @@ type UnusualTaskItem = {
   id: string;
   instanceName: string;
   appName: string;
+  flowInstanceId: string;
   applyUserName: string;
   createTime: string;
   modifyTime: string;

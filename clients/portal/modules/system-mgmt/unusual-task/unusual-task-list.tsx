@@ -31,7 +31,7 @@ const InstanceStatus: Record<FlowStatus, string> = {
   ABANDON: '已作废',
 };
 
-const HandleStatus: Record<0 | 1 | 2, {color: string, value: string}> = {
+const HandleStatus: Record<0 | 1 | 2, { color: string, value: string }> = {
   0: { color: 'red', value: '未处理' },
   1: { color: 'blue', value: '已处理' },
   2: { color: 'green', value: '已处系统自动处理理' },
@@ -74,8 +74,8 @@ function UnusualTaskTable(): JSX.Element {
   }
 
   function goUnusualTaskDetail(data: UnusualTaskItem, status: 0 | 1): void {
-    const { id, processInstanceId, taskId } = data;
-    history.push(`/system/unusual/detail/${id}/${status}/${processInstanceId}/${taskId}`);
+    const { id, processInstanceId, taskId, flowInstanceId } = data;
+    history.push(`/system/unusual/detail/${id}/${status}/${processInstanceId}/${taskId}/${flowInstanceId}`);
   }
 
   const cols = [

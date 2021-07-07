@@ -7,9 +7,9 @@ const Message = lazy(() => import('./message'));
 const SendMessage = lazy(() => import('./send-message'));
 const MessageDetails = lazy(() => import('./message-details'));
 const Dataset = lazy(() => import('./dataset'));
-const Log = lazy(()=> import('./audit-log'));
-const UnusualTask = lazy(()=> import('./unusual-task'));
-const UnusualTaskDetail = lazy(()=> import('./unusual-task/detail'));
+const Log = lazy(() => import('./audit-log'));
+const UnusualTask = lazy(() => import('./unusual-task'));
+const UnusualTaskDetail = lazy(() => import('./unusual-task/detail'));
 
 export default function Index(): JSX.Element {
   const { path } = useRouteMatch();
@@ -32,11 +32,11 @@ export default function Index(): JSX.Element {
       <Route path={`${path}/message/details/:id`} component={MessageDetails} />
       <Route path={`${path}/dataset/:dataId?`} component={Dataset} />
       <Route
-        path={`${path}/unusual/detail/:id/:status/:processInstanceId/:taskId`}
+        path={`${path}/unusual/detail/:id/:status/:processInstanceId/:taskId/:flowInstanceId`}
         component={UnusualTaskDetail} />
       <Route path={`${path}/unusual`} component={UnusualTask} />
       <Redirect from={path} to={`${path}/message`} />
-      <Route component={(): JSX.Element=> (<ErrorTips desc={'Menu page is not found'} />)} />
+      <Route component={(): JSX.Element => (<ErrorTips desc={'Menu page is not found'} />)} />
     </Switch>
   );
 }
