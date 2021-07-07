@@ -40,7 +40,7 @@ export function getBasicValue(schema: Schema, initValue: Value): string {
     return initValue as string;
   case 'array':
     if (schema.enum && schema.enum.length) {
-      const values = (typeof initValue === 'object') ? (initValue as Option[]).map((itm: Option) => itm.value) : initValue
+      const values = (typeof initValue === 'object') ? (initValue as Option[]).map((itm: Option) => itm.value) : initValue;
 
       return (values as string[]).map((_value: string) => {
         if (!schema.enum) {
