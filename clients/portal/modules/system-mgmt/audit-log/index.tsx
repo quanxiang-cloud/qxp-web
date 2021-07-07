@@ -101,7 +101,12 @@ const AuditLogPage = () => {
   }, []);
 
   if (!window.ADMIN_USER_FUNC_TAGS.includes('platform')) {
-    return (<ErrorTips desc="您没有权限, 请联系管理员..." />);
+    return (
+      <ErrorTips
+        style={{ marginTop: '200px' }}
+        desc="您没有权限, 请联系管理员..."
+      />
+    );
   }
 
   return (
