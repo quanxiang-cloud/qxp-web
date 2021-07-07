@@ -28,7 +28,12 @@ const MENU = [
 
 export default function Index(): JSX.Element {
   if (!window.ADMIN_USER_FUNC_TAGS.includes('accessControl')) {
-    return <ErrorTips desc="您没有权限, 请联系管理员..." />;
+    return (
+      <ErrorTips
+        style={{ marginTop: '200px' }}
+        desc="您没有权限, 请联系管理员..."
+      />
+    );
   }
   return (
     <div className="py-20 px-58 flex justify-center items-start flex-grow "

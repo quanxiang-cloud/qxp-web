@@ -1,105 +1,111 @@
 import logger from '@lib/logger';
 
-function getOTP(): Promise<string> {
-  return fetch('/_otp').then((response) => response.json()).then(({ token }) => token);
-}
-
-function ensureConnectionReady(connection: WebSocket): Promise<WebSocket> {
-  return new Promise((resolve) => {
-    resolve(connection);
-  });
-}
-
-function makeConnection(): Promise<WebSocket> {
-  return getOTP().then((token) => {
-    const protocol = window.location.protocol === 'http:' ? 'ws' : 'wss';
-    const connection = new WebSocket(`${protocol}://${window?.CONFIG?.websocket_hostname}/api/v1/message/ws?token=${token}`);
-    return ensureConnectionReady(connection);
-  });
-}
-
 type SocketEventListener = (data: Record<string, any>) => any;
 type SocketData = { Type: string; [key: string]: any };
 
+let retryCount = 0;
+
 class PushServer {
   connection: any = null;
-  timeout = 10000;
-  timeoutOjb: any = 0;
-  serverTimeoutObj: any = null;
-  resTimeoutObj: any = null;
-  timeInterval = 1;
+  token = '';
+  retryLimit = 5;
+  timerHeartbeat: any = null;
+  heartbeatInterval = 10000;
   listenersMap: Map<string, Set<SocketEventListener>> = new Map();
 
   constructor() {
-    this.initialConnect();
+    this.setUp();
+
+    window.addEventListener('offline', this.offlineHandler);
+    window.addEventListener('online', this.onlineHandler);
   }
 
-  initialConnect(): void {
-    makeConnection().then((connection) => {
-      this.connectWs(connection);
+  getToken(): Promise<string> {
+    if (this.token) {
+      return Promise.resolve(this.token);
+    }
+    return fetch('/_otp')
+      .then((response) => response.json())
+      .then(({ token }) => {
+        this.token = token;
+        return this.token;
+      });
+  }
+
+  initConnection(): Promise<WebSocket> {
+    return this.getToken().then((token) => {
+      if (!token) {
+        throw Error('invalid websocket token');
+      }
+      const protocol = window.location.protocol === 'http:' ? 'ws' : 'wss';
+      const endpoint = `${protocol}://${window?.CONFIG?.websocket_hostname}/api/v1/message/ws?token=${token}`;
+      if (!this.connection) {
+        this.connection = new WebSocket(endpoint);
+      }
+      if (this.connection && this.connection.readyState > 1) {
+        // close zombie connection
+        this.connection.close();
+        this.connection = new WebSocket(endpoint);
+      }
+      return this.connection;
     });
   }
 
-  disconnectNetHandle(): void {
-    clearTimeout(this.timeoutOjb);
-    clearTimeout(this.serverTimeoutObj);
-  }
-
-  connectNetHandle(): void {
-    clearTimeout(this.timeoutOjb);
-    clearTimeout(this.serverTimeoutObj);
-    this.initialConnect();
-  }
-
-  connectWs(connection: any): void {
-    window.addEventListener('offline', () => this.disconnectNetHandle());
-    window.addEventListener('online', () => this.connectNetHandle());
-    connection.onopen = () => {
-      this.resTimeoutObj = null;
-      this.heartStart();
+  attachEvents = () => {
+    this.connection.onopen = () => {
+      this.heartbeat();
     };
-    connection.onmessage = ((data: any) => {
+
+    this.connection.onmessage = ((data: any) => {
       if (typeof data === 'string') {
         try {
-          // eslint-disable-next-line no-param-reassign
-          data = JSON.parse(data);
-          this.dispatchEvent(data);
+          this.dispatchEvent(JSON.parse(data));
         } catch (err) {
           logger.error('invalid socket data: ', err);
         }
       }
-      this.heartReset();
     });
-    connection.onclose = () => {
-      this.resConnect();
+
+    this.connection.onclose = () => {
+      // if socket will close, try to keep alive
+      if (retryCount < this.retryLimit) {
+        setTimeout(this.setUp, 2000);
+        retryCount = retryCount + 1;
+      }
     };
-    this.connection = connection;
   }
 
-  heartReset(): void {
-    clearTimeout(this.timeoutOjb);
-    clearTimeout(this.serverTimeoutObj);
-    this.heartStart();
+  detachEvents() {
+    this.connection.onopen = null;
+    this.connection.onmessage = null;
+    this.connection.onclose = null;
   }
 
-  heartStart(): void {
-    this.timeoutOjb = setTimeout(() => {
+  onlineHandler = () => {
+    this.setUp();
+  }
+
+  offlineHandler = () => {
+    this.detachEvents();
+    this.stopHeartbeat();
+  }
+
+  heartbeat() {
+    this.stopHeartbeat();
+    this.timerHeartbeat = setInterval(() => {
       this.connection.send('echo');
-      this.serverTimeoutObj = setTimeout(() => {
-        this.connection.close();
-      }, this.timeout);
-    }, this.timeout);
+    }, this.heartbeatInterval);
   }
 
-  resConnect(): void {
-    if (this.timeInterval >= 300) {
-      this.timeInterval = 300;
+  stopHeartbeat() {
+    if (this.timerHeartbeat !== null) {
+      clearInterval(this.timerHeartbeat);
+      this.timerHeartbeat = null;
     }
-    this.resTimeoutObj = setTimeout(() => {
-      this.initialConnect();
-    }, this.timeInterval * 1000);
+  }
 
-    this.timeInterval = this.timeInterval * 2;
+  setUp = () => {
+    this.initConnection().then(this.attachEvents);
   }
 
   dispatchEvent = (data: SocketData): void => {

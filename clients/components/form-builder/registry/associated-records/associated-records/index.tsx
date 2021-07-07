@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
-import { Table as AntTable } from 'antd';
-import { ColumnType } from 'antd/lib/table';
 
 import Table from '@c/table';
 import Button from '@c/button';
@@ -52,6 +50,28 @@ function AssociatedRecords({
   });
 
   const tableColumns = computeTableColumns(associatedTable, columns);
+  if (isLoading) {
+    return (<div>loading...</div>);
+  }
+
+  if (!data) {
+    return (
+      <div>some error</div>
+    );
+  }
+
+  if (readOnly) {
+    return (
+      <Table
+        className="mb-16"
+        rowKey="_id"
+        columns={tableColumns}
+        data={data}
+        emptyTips="没有关联记录"
+      />
+    );
+  }
+
   tableColumns.push({
     id: 'remove',
     Header: '操作',
@@ -67,48 +87,6 @@ function AssociatedRecords({
       );
     },
   });
-
-  if (isLoading) {
-    return (<div>loading...</div>);
-  }
-
-  if (!data) {
-    return (
-      <div>some error</div>
-    );
-  }
-
-  function buildSubTableColumns(): ColumnType<Record<string, any>>[] {
-    return Object.entries(associatedTable?.properties || {}).filter(([fieldKey]) => {
-      return columns.includes(fieldKey);
-    }).reduce((
-      cur: ColumnType<Record<string, any>>[], next: [string, ISchema],
-    ) => {
-      const [key, sc] = next;
-      if (key !== '_id') {
-        cur.push({
-          title: sc.title as string,
-          dataIndex: key,
-        });
-      }
-      return cur;
-    }, []);
-  }
-
-  const readOnlyColumns = buildSubTableColumns();
-
-  if (readOnly) {
-    return (
-      <AntTable
-        // todo fixme
-        style={{ width: '100%' }}
-        pagination={false}
-        rowKey="_id"
-        columns={readOnlyColumns}
-        dataSource={readOnlyColumns.length ? data : []}
-      />
-    );
-  }
 
   return (
     <div className="w-full">

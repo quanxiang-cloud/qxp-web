@@ -100,8 +100,8 @@ function FormTableSelector(
 
   return (
     <>
-      <div className={cs('px-16 py-10 border flex items-center corner-2-8-8-8 h-40', {
-        'bg-gray-100 mb-22': !validating || value.value,
+      <div className={cs('px-16 py-10 border flex items-center corner-2-8-8-8 h-40 mt-24', {
+        'bg-gray-100 mb-18': !validating || value.value,
         'bg-red-50 border-red-600': validating && !value.value,
       })}>
         <div className="inline-flex items-center mr-8">
