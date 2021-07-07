@@ -107,15 +107,21 @@ func HandleLoginSubmit(w http.ResponseWriter, r *http.Request) {
 	saveToken(r, loginResponse.Data.AccessToken, loginResponse.Data.RefreshToken, expireTime)
 
 	redirectURL := contexts.GetSessionValue(r, "redirect_url")
-	if redirectURL == "" || redirectURL == "/favicon.ico" || strings.HasPrefix(redirectURL, "/_") {
-		redirectURL = "/"
-	}
+	redirectURL = regularizeLoginRedirectURL(redirectURL)
 
-	// redirectURLSpec := r.URL.Query().Get("redirectUrl")
-	// if redirectURLSpec != "" {
-	// 	redirectURL = redirectURLSpec
-	// }
 	contexts.Logger.Infof("user login success, redirect to %s, request_id: %s", redirectURL, requestID)
 
 	http.Redirect(w, r, redirectURL, http.StatusFound)
+}
+
+func regularizeLoginRedirectURL(redirectURL string) string {
+	if redirectURL == "" ||
+		redirectURL == "/favicon.ico" ||
+		strings.HasPrefix(redirectURL, "/_") ||
+		strings.HasPrefix(redirectURL, "/login") {
+
+		return "/"
+	}
+
+	return redirectURL
 }
