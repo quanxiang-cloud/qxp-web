@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 
+import FeedbackBtn from '@c/feedback';
 import MoreMenu from '@c/more-menu';
 import NavMsgBar from '@portal/modules/msg-center/nav-msg-bar';
 // import Button from '@c/button';
@@ -18,6 +19,7 @@ export default function HeaderMenu() {
         onCancel={() => setOpenResetPasswordModal(false)}
       />
       <NavMsgBar className="mr-8" />
+      <FeedbackBtn />
       {/* <Button className="mr-32">
           进入应用管理
       </Button>

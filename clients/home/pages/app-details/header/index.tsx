@@ -3,6 +3,7 @@ import { observer } from 'mobx-react';
 import { useHistory, useParams } from 'react-router-dom';
 import cs from 'classnames';
 
+import FeedbackBtn from '@c/feedback';
 import HeaderNav from '@c/header-nav';
 import toast from '@lib/toast';
 import Select from '@c/select';
@@ -80,6 +81,7 @@ function DetailsHeader(): JSX.Element {
         />
       </div>
       <div className='flex items-center'>
+        <FeedbackBtn />
         {options.length > 1 && (
           <div className='flex items-center'>
             切换角色：
