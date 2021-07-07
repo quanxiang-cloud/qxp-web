@@ -16,6 +16,7 @@ export const getStoreInitialData = (): StoreValue => {
   return {
     saved: false,
     needSaveFlow: false,
+    readonly: false,
     errors: {
       publish: {},
       dataNotSaveMap: new Map(),

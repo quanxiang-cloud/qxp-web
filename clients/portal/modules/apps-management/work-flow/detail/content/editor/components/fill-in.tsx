@@ -19,7 +19,7 @@ interface Props {
 }
 
 export default function FillInNodeComponent({ data, id, xPos, yPos, isDragging }: Props): JSX.Element {
-  const { errors, nodeIdForDrawerForm } = useObservable<StoreValue>(store);
+  const { errors, nodeIdForDrawerForm, readonly } = useObservable<StoreValue>(store);
   const lastTime = useRef(+new Date());
   const [showRemover, setShowRemover] = useState(false);
   const switcher = useNodeSwitch();
@@ -77,9 +77,11 @@ export default function FillInNodeComponent({ data, id, xPos, yPos, isDragging }
     <div
       className={cs(
         'shadow-title rounded-tl-8 rounded-tr-8 rounded-br-2',
-        'rounded-bl-8 bg-white flex flex-col cursor-pointer',
+        'rounded-bl-8 bg-white flex flex-col',
         {
           'border-red-600 border-dashed animate-node-error': hasError,
+          'cursor-pointer': !readonly,
+          'cursor-default': readonly,
         },
       )}
       style={{
@@ -99,13 +101,16 @@ export default function FillInNodeComponent({ data, id, xPos, yPos, isDragging }
           iconName="edit"
           iconClassName="text-white"
           titleClassName="text-white bg-teal-500"
+          readonly={readonly}
         />
-        <NodeRemover
-          onVisibilityChange={setShowRemover}
-          visible={showRemover}
-          id={id}
-          type="light"
-        />
+        {!readonly && (
+          <NodeRemover
+            onVisibilityChange={setShowRemover}
+            visible={showRemover}
+            id={id}
+            type="light"
+          />
+        )}
       </div>
       <footer className="p-8 flex items-center flex-1">
         {(hasFillInRule || hasFillInPerson) && (

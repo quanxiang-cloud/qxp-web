@@ -24,6 +24,8 @@ function CreatedAppModal({ onCancel }: Props) {
         toast.success('创建应用成功！');
         onCancel();
         history.push(`/apps/details/${res}`);
+      }).catch((e) => {
+        toast.error(e.message);
       });
     }
   };

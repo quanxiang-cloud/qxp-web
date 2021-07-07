@@ -19,8 +19,8 @@ function getComparator(linkage: FormBuilder.VisibleHiddenLinkage): FormBuilder.C
     });
 
     return pairs[linkage.ruleJoinOperator].call(pairs, ([value, compareOperator, compareValue]) => {
-      const executor = compareOperatorMap[compareOperator].comparator;
-      return executor(value ?? INIT_VALUE[typeof compareValue], compareValue);
+      const executor = compareOperatorMap[compareOperator]?.comparator;
+      return executor?.(value ?? INIT_VALUE[typeof compareValue], compareValue);
     });
   };
 }

@@ -88,6 +88,7 @@ export default function EditVariableModal({ variable, closeModal }: Props): JSX.
                   { value: 'True', label: 'true' }]);
               } else {
                 setRenderComponent(() =>Input);
+                setDefaultDataSource(null);
                 defaultValueState.props.type = type;
               }
               if (type === variable.fieldType.toLowerCase()) {
