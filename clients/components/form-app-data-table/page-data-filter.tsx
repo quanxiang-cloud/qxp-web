@@ -1,29 +1,12 @@
 import React, { useRef, useState, useContext } from 'react';
-import moment, { unitOfTime } from 'moment';
 import { observer } from 'mobx-react';
 
 import Button from '@c/button';
 import Icon from '@c/icon';
+import { getCondition } from '@c/data-filter/utils';
 
 import FilterForm from './filter-form';
 import { StoreContext } from './context';
-
-function getDateType(format: string): unitOfTime.StartOf {
-  switch (format) {
-  case 'YYYY':
-    return 'year';
-  case 'YYYY-MM':
-    return 'month';
-  case 'YYYY-MM-DD':
-    return 'day';
-  case 'YYYY-MM-DD HH:mm':
-    return 'minute';
-  case 'YYYY-MM-DD HH:mm:ss':
-    return 'second';
-  default:
-    return 'day';
-  }
-}
 
 function PageDataFilter(): JSX.Element | null {
   const [showMoreFilter, setShowMoreFilter] = useState(false);
@@ -43,46 +26,7 @@ function PageDataFilter(): JSX.Element | null {
         return;
       }
 
-      const _condition: Condition = { key };
-      switch (curFilter?.type) {
-      case 'datetime': {
-        const [start, end] = values[key];
-        const format = curFilter?.['x-component-props']?.format || 'YYYY-MM-DD HH:mm:ss';
-        if (start.format() !== end.format()) {
-          _condition.value = [
-            moment(start.format(format)).toISOString(),
-            moment(end.format(format)).toISOString(),
-          ];
-        } else {
-          _condition.value = [
-            moment(start.format(format)).startOf(getDateType(format)).toISOString(),
-            moment(start.format(format)).endOf(getDateType(format)).toISOString(),
-          ];
-        }
-
-        _condition.op = 'between';
-        break;
-      }
-      case 'number':
-        _condition.value = [Number(values[key])];
-        _condition.op = 'eq';
-        break;
-      case 'array':
-        _condition.value = values[key];
-        _condition.op = 'fullSubset';
-        break;
-      default:
-        if (Array.isArray(values[key])) {
-          _condition.value = values[key];
-          _condition.op = 'intersection';
-        } else {
-          _condition.value = [values[key]];
-          _condition.op = 'like';
-        }
-        break;
-      }
-
-      condition.push(_condition);
+      condition.push(getCondition(curFilter, values[key], key));
     });
     store.filterData = values;
     store.setParams({ condition });

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { noop } from 'lodash';
 
 import Table from '@c/table';
@@ -7,6 +7,7 @@ import ToolTip from '@c/tooltip';
 import Icon from '@c/icon';
 import useRequest from '@lib/hooks/use-request';
 import type { CustomFieldPermission, FieldValue } from '@flowEditor/type';
+import flowContext from '@portal/modules/apps-management/work-flow/detail/flow-context';
 
 import FieldValueEditor from './field-value-editor';
 
@@ -20,14 +21,16 @@ interface Props {
 export default function CustomFieldTable({
   editable, fields, updateFields, schemaMap,
 }: Props): JSX.Element {
+  const { flowID: flowId } = useContext(flowContext);
   const [data] = useRequest<{
     code: number;
     data: {name: string; code: string; desc: string;}[];
     msg: string;
-  }>('/api/v1/flow/getVariableList', {
+  }>(`/api/v1/flow/getVariableList?id=${flowId}`, {
     method: 'POST',
     credentials: 'same-origin',
   });
+
   const variableOptions = data?.data?.map(({ name, code }) => ({ label: name, value: code }));
 
   function getHeader(model: any, key: 'read' | 'write', label: string): JSX.Element {

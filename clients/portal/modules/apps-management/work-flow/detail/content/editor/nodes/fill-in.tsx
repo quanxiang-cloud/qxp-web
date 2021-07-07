@@ -9,11 +9,13 @@ export default function FillInNode(props: any): JSX.Element {
       <Handle
         type="target"
         position={Position.Top}
+        isConnectable={false}
       />
       <FillInNodeComponent {...props} />
       <Handle
         type="source"
         position={Position.Bottom}
+        isConnectable={false}
       />
     </>
   );

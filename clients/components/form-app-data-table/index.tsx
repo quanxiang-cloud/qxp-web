@@ -82,11 +82,7 @@ function FormAppDataTableWrap({
     return null;
   }
 
-  return (
-    <>
-      <FormAppDataContent className={className} style={style} store={store} />
-    </>
-  );
+  return (<FormAppDataContent className={className} style={style} store={store} />);
 }
 
 export default React.forwardRef(FormAppDataTableWrap);

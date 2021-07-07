@@ -18,6 +18,7 @@ import { getWorkFlowInfo } from './api';
 import type { Data, StoreValue, WorkFlow } from './content/editor/type';
 import FlowContext from './flow-context';
 import useSaver from './content/editor/forms/hooks/use-save';
+import { CURRENT_WORK_FLOW_VERSION } from './content/editor/utils/constants';
 import store, {
   updateStore,
   updateStoreByKey,
@@ -26,7 +27,6 @@ import store, {
 } from './content/editor/store';
 
 import './style.scss';
-import { CURRENT_WORK_FLOW_VERSION } from './content/editor/utils/constants';
 
 type OperateType = 'edit' | 'settings' | 'variables';
 
@@ -84,6 +84,7 @@ export default function Detail(): JSX.Element {
       updateStore((s) => ({
         ...s,
         apiFetched: true,
+        readonly: false,
         elements: parseElements(bpmn),
         version: CURRENT_WORK_FLOW_VERSION,
         name: data.name,

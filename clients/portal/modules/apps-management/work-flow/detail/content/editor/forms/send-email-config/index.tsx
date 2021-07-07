@@ -141,7 +141,7 @@ function SendEmailConfig({ defaultValue, onSubmit, onCancel }: Props): JSX.Eleme
   }, [schema]);
 
   return (
-    <div>
+    <div className="flex flex-col overflow-auto flex-1 py-24">
       {/* <Controller
         name='qd'
         control={control}

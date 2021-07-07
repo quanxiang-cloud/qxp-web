@@ -9,6 +9,7 @@ import { Schema } from '@formily/react-schema-renderer';
 
 import { getAbnormalTaskForm } from '../api';
 import ActionModal from './action-modal';
+import FlowModal from './flow-modal';
 
 type FormDataProp = {
   label: string;
@@ -21,9 +22,10 @@ export type Actions = 'STEP_BACK' | 'SEND_BACK' | 'APPOINT' | 'DELETE';
 
 function UnusualTaskDetail(): JSX.Element {
   const [currAction, setCurrAction] = useState<Actions | ''>('');
+  const [modalType, setModalType] = useState('');
   const history = useHistory();
-  const urlParams = useParams<{ id: string, processInstanceId: string, taskId: string, status: string }>();
-  const { processInstanceId, taskId, status } = urlParams;
+  const urlParams = useParams<{ flowInstanceId: string, processInstanceId: string, taskId: string, status: string }>();
+  const { processInstanceId, taskId, status, flowInstanceId } = urlParams;
 
   const { data: formDataItem } = useQuery('GET_ABNORMAL_TASK_FORM', () => getAbnormalTaskForm({
     processInstanceId,
@@ -87,6 +89,10 @@ function UnusualTaskDetail(): JSX.Element {
     history.goBack();
   }
 
+  function viewFlow(): void {
+    setModalType('flow_modal');
+  }
+
   return (
     <div
       className="py-20 px-58 flex justify-center items-start flex-grow overflow-hidden
@@ -101,6 +107,9 @@ function UnusualTaskDetail(): JSX.Element {
           closeModal={() => setCurrAction('')}
         />
       )}
+      {
+        modalType === 'flow_modal' && <FlowModal flowInstanceId={flowInstanceId} closeModal={() => setModalType('')} />
+      }
       <div className='flex items-center'>
         <Icon name='reply' size={20} onClick={goBack} />
         <NavLink to='/system'>系统管理</NavLink>
@@ -127,9 +136,9 @@ function UnusualTaskDetail(): JSX.Element {
                 )
               }
             </div>
-            <div className="p-10 flex">
+            <div className="p-10 flex" onClick={viewFlow}>
               <span>查看流程图</span>
-              <Icon name='reply' size={20} onClick={goBack} />
+              {/* <Icon name='reply' size={20} onClick={goBack} /> */}
             </div>
           </div>
           <div className="h-1 border-b-2 border-gray-100">

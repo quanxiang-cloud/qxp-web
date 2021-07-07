@@ -86,7 +86,7 @@ function FormCreateTableData({ defaultValue, onSubmit, onCancel }: Props): JSX.E
 
   return (
     <Context.Provider value={{ data: value, setData: onChange }}>
-      <div className="flex flex-col">
+      <div className="flex flex-col overflow-auto flex-1 py-24">
         <div className="inline-flex items-center">
           <span className="text-body mr-10">目标数据表:</span>
           <Select

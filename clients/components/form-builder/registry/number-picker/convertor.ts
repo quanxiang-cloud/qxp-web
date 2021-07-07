@@ -81,8 +81,8 @@ export function toConfig(schema: ISchema): NumberPickerConfig {
     required: !!schema.required,
     defaultValueFrom: schema['x-internal']?.defaultValueFrom || 'customized',
     defaultValueLinkage: schema['x-internal']?.defaultValueLinkage,
-    minimum: undefined,
-    maximum: undefined,
+    minimum: schema['minimum'],
+    maximum: schema['maximum'],
     calculationFormula: schema['x-internal']?.calculationFormula || '',
   };
 }

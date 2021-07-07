@@ -14,7 +14,7 @@ interface Props {
 
 const durationTime = 300;
 
-export default function NewFlow({ onChange, currentOperateType }: Props): JSX.Element {
+export default function WorkFlowAsideMenu({ onChange, currentOperateType }: Props): JSX.Element {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const fitView = useFitView();
   let tid = -1;

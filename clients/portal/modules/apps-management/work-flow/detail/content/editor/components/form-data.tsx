@@ -1,7 +1,10 @@
 import React, { useRef } from 'react';
 import cs from 'classnames';
 
-import type { Data, FormDataData } from '../type';
+import useObservable from '@lib/hooks/use-observable';
+
+import type { Data, FormDataData, StoreValue } from '../type';
+import store from '../store';
 import NodeHeader from './_common/node-header';
 import usePositionChange from './hooks/use-node-position-change';
 import useNodeSwitch from './hooks/use-node-switch';
@@ -17,6 +20,7 @@ interface Props {
 export default function FormDataNodeComponent({
   data, id, xPos, yPos, isDragging,
 }: Props): JSX.Element {
+  const { readonly } = useObservable<StoreValue>(store);
   const isNew = !(data.businessData as FormDataData).form.name;
   const lastTime = useRef(+new Date());
 
@@ -33,7 +37,11 @@ export default function FormDataNodeComponent({
     <div
       className={cs(
         'shadow-title rounded-tl-8 rounded-tr-8 rounded-br-2',
-        'rounded-bl-8 bg-white flex flex-col cursor-pointer',
+        'rounded-bl-8 bg-white flex flex-col',
+        {
+          'cursor-pointer': !readonly,
+          'cursor-default': readonly,
+        },
       )}
       style={{
         width: data.nodeData.width,
@@ -48,6 +56,7 @@ export default function FormDataNodeComponent({
         className="bg-gray-100"
         iconName="form-data"
         titleClassName="text-gray-600 bg-gray-100"
+        readonly={readonly}
       />
       <footer className="p-8 flex items-center flex-1">
         {isNew && (
