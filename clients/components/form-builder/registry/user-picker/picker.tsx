@@ -12,11 +12,13 @@ import classNames from 'classnames';
 interface Props {
   // defaultValue: EmployeeOrDepartmentOfRole[];
   value: EmployeeOrDepartmentOfRole[];
+  rangeList: EmployeeOrDepartmentOfRole[];
   onChange: (list: EmployeeOrDepartmentOfRole[]) => void;
   isMy: boolean
 }
 
-const Picker = ({ value: defaultValue = [], onChange, isMy }: Props) => {
+const Picker = ({ value = [], onChange, isMy, rangeList, ...p }: Props) => {
+  const defaultValue = rangeList || []
   const store = React.useContext(StoreContext);
   const { appID } = store;
 
@@ -60,11 +62,12 @@ const Picker = ({ value: defaultValue = [], onChange, isMy }: Props) => {
     }
   }, [visible]);
 
-  const showName = useMemo(() => defaultValue
-    .map((itm) => itm.ownerName)
-    .join(',')
-    .substr(0, 20),
-  [defaultValue]);
+  const showName = useMemo(() => {
+    return defaultValue
+      .map((itm) => itm.ownerName)
+      .join(',')
+      .substr(0, 20)
+  }, [defaultValue]);
 
   return (
     <div>

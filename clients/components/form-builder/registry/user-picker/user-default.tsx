@@ -21,6 +21,10 @@ const UserDefault = (props: Props) => {
   const { optionalRange } = props;
   const isAllRange = optionalRange == 'all';
 
+  React.useEffect(() => {
+    props.onChange([])
+  }, [optionalRange])
+
   if (isAllRange) return <AllUserComponent {...props} />;
 
   return <CustomizeComponent {...props} />;
@@ -35,7 +39,7 @@ const CustomizeComponent = (props: Props) => {
   }));
 
   // @ts-ignore
-  return (<Select options={Options} mode={multiple} value={Array.isArray(value) ? value.map(({ value }) => value) : value.value} onChange={(_, selects: Option|Option[])=>{
+  return (<Select options={Options} mode={multiple} value={Array.isArray(value) ? value.map(({ value }) => value) : value.value} onChange={(_, selects: Option | Option[]) => {
     onChange(selects);
   }} />);
 };
