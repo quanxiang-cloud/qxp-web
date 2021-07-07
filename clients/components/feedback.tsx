@@ -1,5 +1,4 @@
 import React from 'react';
-
 import Icon from '@c/icon';
 
 const feedbackPagePath = '/apps/07be4956-33d2-4bd2-b78b-3822a470f5cb?pageID=22194A14ABDA44E1B49531EECCFDB023';
