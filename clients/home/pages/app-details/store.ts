@@ -74,9 +74,16 @@ class UserAppDetailsStore {
       method: 'delete',
       conditions: { condition: [{ key: '_id', op: ids.length > 1 ? 'in' : 'eq', value: ids }] },
     }).then((data: any) => {
-      if (data?.errorCount) {
-        toast.success(`删除成功!, 失败记录数: ${data.errorCount}`);
+      if (data.errorCount && data.errorCount === ids.length) {
+        toast.error('删除失败！没有权限');
+        return;
       }
+
+      if (data.errorCount) {
+        toast.success(`删除成功!,成功${ids.length - data.errorCount}条,失败${data.errorCount}条`);
+        return;
+      }
+
       toast.success('删除成功!');
     });
   }
