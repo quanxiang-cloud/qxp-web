@@ -3,6 +3,6 @@ import { departmentToTreeNode } from '@lib/utils';
 
 export default class extends SelectableTreeStore<Department> {
   constructor(rootDep: Department) {
-    super({ rootNode: departmentToTreeNode(rootDep) });
+    super({ rootNode: departmentToTreeNode(rootDep), singleMode: true });
   }
 }
