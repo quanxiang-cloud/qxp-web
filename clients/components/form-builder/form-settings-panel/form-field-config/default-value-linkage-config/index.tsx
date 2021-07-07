@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { toJS } from 'mobx';
 import { from } from 'rxjs';
-import { switchMap, filter, skip } from 'rxjs/operators';
+import { switchMap, filter } from 'rxjs/operators';
 import {
   SchemaForm,
   FormButtonGroup,
@@ -128,7 +128,6 @@ function LinkageConfig({ onClose, onSubmit, linkage }: Props): JSX.Element {
     ).subscribe(updateCompareOperatorFieldOnFieldNameChanged);
 
     onFieldValueChange$('rules.*.compareOperator').pipe(
-      skip(1),
       filter(({ value }) => !!value),
     ).subscribe(updateCompareValueFieldOnCompareOperatorChanged);
 
@@ -165,18 +164,7 @@ function LinkageConfig({ onClose, onSubmit, linkage }: Props): JSX.Element {
   }
 
   function updateCompareValueFieldOnCompareOperatorChanged({ name, value }: IFieldState): void {
-    // todo rename selectList and singleModeOperator
-    const selectList = ['RadioGroup', 'MultipleSelect', 'Select', 'CheckboxGroup'];
-    const singleModeOperator = ['==', '!='];
-    const compareFieldKey = getFieldValue(FormPath.transform(name, /\d/, ($1) => {
-      return `rules.${$1}.fieldName`;
-    }));
-
-    const fieldNameComponent = linkedTableFieldsRef.current.find((field) => {
-      return field.value === compareFieldKey;
-    })?.['x-component'] as string;
-
-    const isMultiple = selectList.includes(fieldNameComponent) && !singleModeOperator.includes(value);
+    const isMultiple = ['⊇', '∩', '∈', '∉'].includes(value);
     updateCompareValueFieldMode(name, isMultiple);
   }
 
@@ -210,19 +198,18 @@ function LinkageConfig({ onClose, onSubmit, linkage }: Props): JSX.Element {
 
   function updateCompareValueFieldMode(name: string, isMultiple: boolean): void {
     const compareValuePath = FormPath.transform(name, /\d/, ($1) => `rules.${$1}.compareValue`);
-    const compareValue = getFieldValue(compareValuePath);
     setFieldState(compareValuePath, (state) => {
-      state.props['x-component-props'] = {
-        mode: isMultiple ? 'multiple' : null,
-      };
-      if (isMultiple && typeof compareValue !== 'object') {
+      const compareValue = getFieldValue(compareValuePath);
+      state.props['x-component-props'] = isMultiple ? { mode: 'multiple' } : {};
+
+      if (isMultiple && !Array.isArray(compareValue)) {
         const values = [];
         values.push(compareValue);
         state.value = values;
         return;
       }
 
-      if (!isMultiple && typeof compareValue === 'object') {
+      if (!isMultiple && Array.isArray(compareValue)) {
         state.value = compareValue[0];
         return;
       }
