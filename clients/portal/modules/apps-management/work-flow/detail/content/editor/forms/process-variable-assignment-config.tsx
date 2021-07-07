@@ -135,7 +135,7 @@ function RulesList(props: any): JSX.Element {
             changeable
             name="delete"
             size={32}
-            className="ml-auto"
+            className="mr-15"
             onClick={() => onRemove(index)}
           />
         </RowStyleLayout>
@@ -218,7 +218,7 @@ export default function AssignmentConfig({ defaultValue, onSubmit, onCancel }: P
   }
 
   return (
-    <div>
+    <div className="flex flex-col overflow-auto flex-1 py-24">
       {/* {!assignmentRules.length && (<span className="text-caption">还没有配置任何赋值规则</span>)} */}
       <SchemaForm
         actions={ACTIONS}

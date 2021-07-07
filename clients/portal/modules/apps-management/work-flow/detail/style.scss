@@ -11,7 +11,7 @@ rect {
     box-shadow: -8px 0px 24px 4px rgba(148, 163, 184, 0.25);
     animation: enter-from-right .3s ease-out;
     .drawer-main-content {
-      @apply p-24 flex flex-col items-stretch;
+      @apply px-24 flex flex-col items-stretch;
       height: calc(100% - 56px);
     }
   }

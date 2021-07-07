@@ -54,7 +54,7 @@ function WebMessage({ defaultValue, onSubmit, onCancel }: Props): JSX.Element {
   }, []);
 
   return (
-    <div>
+    <div className="flex flex-col overflow-auto flex-1 py-24">
       <Controller
         name='recivers'
         control={control}
