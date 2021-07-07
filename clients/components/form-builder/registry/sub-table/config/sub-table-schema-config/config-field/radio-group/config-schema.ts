@@ -123,6 +123,11 @@ const schema: ISchema = {
             },
             {
               type: 'value:visible',
+              target: 'add',
+              condition: '{{ $value === "customized" }}',
+            },
+            {
+              type: 'value:visible',
               target: 'linkageConfig',
               condition: '{{ $value === "linkage" }}',
             },
