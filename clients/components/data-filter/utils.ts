@@ -1,3 +1,5 @@
+import { unitOfTime, Moment } from 'moment';
+
 export const OPERATORS_STRING = [
   {
     label: '等于',
@@ -87,7 +89,7 @@ export const CONDITION = [
   },
 ];
 
-export function getOperators(type: string, enums: any[] | undefined) {
+export function getOperators(type: string, enums: any[] | undefined): { label: string, value: string }[] {
   switch (type) {
   case 'array':
     return OPERATORS_ARRAY_MULTIPLE;
@@ -121,3 +123,57 @@ export const FILTER_FIELD = [
   // 'UserPicker',
   // 'CascadeSelector',
 ];
+
+function getDateType(format: string): unitOfTime.StartOf {
+  switch (format) {
+  case 'YYYY':
+    return 'year';
+  case 'YYYY-MM':
+    return 'month';
+  case 'YYYY-MM-DD':
+    return 'day';
+  case 'YYYY-MM-DD HH:mm':
+    return 'minute';
+  case 'YYYY-MM-DD HH:mm:ss':
+    return 'second';
+  default:
+    return 'day';
+  }
+}
+
+type Value = string | string[] | Record<string, unknown> | Record<string, unknown>[] | number | number[];
+
+export function getCondition(schema: ISchema, value: Value & Moment[], key: string, op?: string): Condition {
+  const _condition: Condition = { key };
+  switch (schema?.type) {
+  case 'datetime': {
+    const [start, end] = value;
+    const format = schema?.['x-component-props']?.format || 'YYYY-MM-DD HH:mm:ss';
+    _condition.value = [
+      start.startOf(getDateType(format)).toISOString(),
+      end.endOf(getDateType(format)).toISOString(),
+    ];
+    _condition.op = op || 'between';
+    break;
+  }
+  case 'number':
+    _condition.value = [Number(value)];
+    _condition.op = op || 'eq';
+    break;
+  case 'array':
+    _condition.value = value as any[];
+    _condition.op = op || 'fullSubset';
+    break;
+  default:
+    if (Array.isArray(value)) {
+      _condition.value = value as any[];
+      _condition.op = op || 'intersection';
+    } else {
+      _condition.value = [value];
+      _condition.op = op || 'like';
+    }
+    break;
+  }
+
+  return _condition;
+}
