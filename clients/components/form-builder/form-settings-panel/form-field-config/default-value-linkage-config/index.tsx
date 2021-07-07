@@ -83,8 +83,8 @@ function LinkageConfig({ onClose, onSubmit, linkage }: Props): JSX.Element {
     }
 
     return fieldSchema.type === 'string' ||
-      fieldSchema === 'number' ||
-      fieldSchema === 'datetime';
+      fieldSchema.type === 'number' ||
+      fieldSchema.type === 'datetime';
   }).map(([key, fieldSchema]) => ({ label: fieldSchema.title as string, value: key }));
 
   function syncLinkedTableFields(fields: LinkedTableFieldOptions[]): void {
