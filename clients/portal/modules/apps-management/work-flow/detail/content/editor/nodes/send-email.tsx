@@ -9,11 +9,13 @@ export default function SendEmailNode(props: any): JSX.Element {
       <Handle
         type="target"
         position={Position.Top}
+        isConnectable={false}
       />
       <SendEmailNodeComponent {...props} />
       <Handle
         type="source"
         position={Position.Bottom}
+        isConnectable={false}
       />
     </>
   );

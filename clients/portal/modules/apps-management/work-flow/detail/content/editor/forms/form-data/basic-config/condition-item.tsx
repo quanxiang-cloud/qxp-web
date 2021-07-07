@@ -57,8 +57,8 @@ export default function ConditionItem({ condition, options, onChange, schemaMap 
   }[] {
     const operators = COMPONENT_OPERATORS_MAP[
       schemaMap?.[currentOption?.value || '']
-        ?.['x-component']?.toLowerCase() as keyof typeof COMPONENT_OPERATORS_MAP || 'default'
-    ];
+        ?.['x-component']?.toLowerCase() as keyof typeof COMPONENT_OPERATORS_MAP
+    ] || COMPONENT_OPERATORS_MAP.default;
     return operatorOptions.filter(({ value }) => operators.includes(value));
   }
 

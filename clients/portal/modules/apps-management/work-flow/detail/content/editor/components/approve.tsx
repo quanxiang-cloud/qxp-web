@@ -19,7 +19,7 @@ interface Props {
 }
 
 export default function ApproveNodeComponent({ data, id, xPos, yPos, isDragging }: Props): JSX.Element {
-  const { errors } = useObservable<StoreValue>(store);
+  const { errors, readonly } = useObservable<StoreValue>(store);
   const lastTime = useRef(+new Date());
   const [showRemover, setShowRemover] = useState(false);
   const switcher = useNodeSwitch();
@@ -75,9 +75,11 @@ export default function ApproveNodeComponent({ data, id, xPos, yPos, isDragging 
     <div
       className={cs(
         'shadow-title rounded-tl-8 rounded-tr-8 rounded-br-2',
-        'rounded-bl-8 bg-white flex flex-col border relative cursor-pointer',
+        'rounded-bl-8 bg-white flex flex-col border relative',
         {
           'border-red-600 border-dashed animate-node-error': hasError,
+          'cursor-pointer': !readonly,
+          'cursor-default': readonly,
         },
       )}
       style={{
@@ -97,13 +99,16 @@ export default function ApproveNodeComponent({ data, id, xPos, yPos, isDragging 
           className="bg-indigo-500"
           iconClassName="text-white"
           titleClassName="text-white bg-indigo-500"
+          readonly={readonly}
         />
-        <NodeRemover
-          onVisibilityChange={setShowRemover}
-          visible={showRemover}
-          id={id}
-          type="light"
-        />
+        {!readonly && (
+          <NodeRemover
+            onVisibilityChange={setShowRemover}
+            visible={showRemover}
+            id={id}
+            type="light"
+          />
+        )}
       </div>
       <footer className="p-8 flex flex-1 flex-col justify-center">
         {(hasApproveRule || hasApprovePerson) && (

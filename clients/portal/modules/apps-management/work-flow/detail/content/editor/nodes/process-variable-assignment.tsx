@@ -9,11 +9,13 @@ export default function ProcessVariableAssignmentNode(props: any): JSX.Element {
       <Handle
         type="target"
         position={Position.Top}
+        isConnectable={false}
       />
       <ProcessVariableAssignmentNodeComponent {...props} />
       <Handle
         type="source"
         position={Position.Bottom}
+        isConnectable={false}
       />
     </>
   );

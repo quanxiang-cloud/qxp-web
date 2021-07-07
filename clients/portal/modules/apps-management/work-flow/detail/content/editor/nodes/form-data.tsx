@@ -10,6 +10,7 @@ export default function FormDataNode(props: any): JSX.Element {
       <Handle
         type="source"
         position={Position.Bottom}
+        isConnectable={false}
       />
     </>
   );

@@ -12,7 +12,7 @@ interface Props {
   isActive: boolean;
 }
 
-export default function AsideMenuItem({ iconName, title, text, onClick, isActive }: Props) {
+export default function AsideMenuItem({ iconName, title, text, onClick, isActive }: Props): JSX.Element {
   return (
     <div className={cs('flex items-center py-16', {
       'bg-blue-100': isActive,

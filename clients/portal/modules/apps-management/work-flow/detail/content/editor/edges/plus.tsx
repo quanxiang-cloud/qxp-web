@@ -7,7 +7,7 @@ import useObservable from '@lib/hooks/use-observable';
 
 import store, { updateStoreByKey } from '../store';
 import type { EdgeProps, FormDataData, StoreValue } from '../type';
-import { getCenter } from '../utils';
+import { getCenter, getFixedSourcePosition } from '../utils';
 import EdgeText from './_components/edge-text';
 import useEdgeSwitch from './hooks/use-edge-switch';
 
@@ -26,26 +26,38 @@ export default function CustomEdge({
   source,
   target,
 }: EdgeProps): JSX.Element {
+  const { elements = [], status, readonly } = useObservable<StoreValue>(store);
+  let fixedSourceX = sourceX;
+  let fixedSourceY = sourceY;
+  let fixedTargetX = targetX;
+  let fixedTargetY = targetY;
+  if (readonly) {
+    const fixedSource = getFixedSourcePosition(source, sourcePosition);
+    fixedSourceX = fixedSource.x;
+    fixedSourceY = fixedSource.y;
+    const fixedTarget = getFixedSourcePosition(target, targetPosition);
+    fixedTargetX = fixedTarget.x;
+    fixedTargetY = fixedTarget.y;
+  }
   const [showTooltip, setShowTooltip] = useState(false);
   const edgePath = getSmoothStepPath({
-    sourceX,
-    sourceY,
+    sourceX: fixedSourceX,
+    sourceY: fixedSourceY,
     sourcePosition,
-    targetX,
-    targetY,
+    targetX: fixedTargetX,
+    targetY: fixedTargetY,
     targetPosition,
     borderRadius: 0,
   });
   const markerEnd = getMarkerEnd(arrowHeadType, markerEndId);
   const [centerX, centerY] = getCenter({
-    sourceX,
-    sourceY,
-    targetX,
-    targetY,
+    sourceX: fixedSourceX,
+    sourceY: fixedSourceY,
+    targetX: fixedTargetX,
+    targetY: fixedTargetY,
     sourcePosition,
     targetPosition,
   });
-  const { elements = [], status } = useObservable<StoreValue>(store);
   const switcher = useEdgeSwitch();
   const formDataElement = elements.find(({ type }) => type === 'formData');
 

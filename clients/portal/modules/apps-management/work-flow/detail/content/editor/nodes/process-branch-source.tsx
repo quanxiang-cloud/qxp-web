@@ -9,11 +9,13 @@ export default function ProcessBranchSourceNode(props: any): JSX.Element {
       <Handle
         type="target"
         position={Position.Top}
+        isConnectable={false}
       />
       <ProcessBranchSourceNodeComponent {...props} />
       <Handle
         type="source"
         position={Position.Bottom}
+        isConnectable={false}
       />
     </>
   );
