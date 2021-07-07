@@ -1,8 +1,10 @@
 import React, { useContext } from 'react';
 import cs from 'classnames';
 import { observer } from 'mobx-react';
+import { Schema } from '@formily/react-schema-renderer';
 
 import Icon from '@c/icon';
+import FormDataValueRenderer from '@c/form-data-value-renderer';
 
 import { INTERNAL_FIELD_NAMES } from '../../store';
 import { StoreContext } from '../../context';
@@ -13,7 +15,7 @@ type RenderLayoutOptionProps = {
   labelAlign: 'right' | 'top';
   onChange: (labelAlign: 'right' | 'top') => void;
 }
-function RenderLayoutOption({ labelAlign, onChange }: RenderLayoutOptionProps) {
+function RenderLayoutOption({ labelAlign, onChange }: RenderLayoutOptionProps): JSX.Element {
   return (
     <>
       <div
@@ -75,26 +77,6 @@ const VisibleHiddenLinkageList = observer(({ onEdit }: VisibleHiddenLinkagesProp
     <div>
       {
         store.visibleHiddenLinkages.map(({ key, rules, targetKeys }, index) => {
-          const readableRules = rules.map(({ sourceKey, compareValue, compareOperator }) => {
-            if (!keyLabels[sourceKey]) {
-              return;
-            }
-
-            const { title, enum: options } = keyLabels[sourceKey];
-            let compareValueText = compareValue;
-
-            if (options.length) {
-              options.find(({ label, value }) => {
-                if (value === compareValue) {
-                  compareValueText = label;
-                }
-                return value === compareValue;
-              });
-            }
-
-            return `${title} ${compareOperator} ${compareValueText}`;
-          }).filter((rule) => rule);
-
           const readableTargets = targetKeys.map((key) => {
             return keyLabels[key] ? keyLabels[key].title : key;
           }).join(', ');
@@ -121,9 +103,17 @@ const VisibleHiddenLinkageList = observer(({ onEdit }: VisibleHiddenLinkagesProp
                   />
                 </span>
               </div>
-              <div>当满足以下{store.visibleHiddenLinkages[index].ruleJoinOperator === 'every' ? '所有' : '任一'}条件时: </div>
-              {readableRules.map((rule) => (
-                <div key={rule} className="text-h6-bold pl-12 mb-8">- {rule}</div>
+              <div>
+                当满足以下{store.visibleHiddenLinkages[index].ruleJoinOperator === 'every' ? '所有' : '任一'}条件时:
+              </div>
+              {rules.map(({ sourceKey, compareValue, compareOperator }) => (
+                <div key={sourceKey} className="text-h6-bold pl-12 mb-8">
+                  - {`${keyLabels[sourceKey].title} ${compareOperator} `}
+                  <FormDataValueRenderer
+                    value={compareValue}
+                    schema={store.schema?.properties?.[sourceKey] as Schema}
+                  />
+                </div>
               ))}
               <div>{store.visibleHiddenLinkages[index].isShow === true ? '显示' : '隐藏'}以下字段: </div>
               <div className="text-h6-bold pl-12 mb-8">{readableTargets}</div>

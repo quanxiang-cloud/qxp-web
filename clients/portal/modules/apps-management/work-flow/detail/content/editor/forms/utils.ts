@@ -1,15 +1,43 @@
-import { get, pick } from 'lodash';
+import { get, pick, flatten } from 'lodash';
 
 const excludeComps = ['SubTable'];
 
-export const getSchemaFields = (schema: ISchema | undefined) => Object.entries(schema?.properties || {})
-  .filter(([, field]) => {
-    const compName = field['x-component'];
-    return compName && !excludeComps.includes(compName);
-  })
-  .map(([key, fieldSchema]) => {
-    return { label: fieldSchema.title as string, value: key };
+type TableListItem = {
+  label: string;
+  value: string;
+  isGroup: boolean;
+  children?: Array<TableListItem>
+}
+
+type Options = {
+  noSystem?: boolean;
+}
+
+export const getSchemaFields = (schema: ISchema | undefined, options: Options = {}) => {
+  return Object.entries(schema?.properties || {})
+    .filter(([, field]) => {
+      const compName = field['x-component'];
+      const isSystem = !!get(field, 'x-internal.isSystem');
+      if (options.noSystem && isSystem) {
+        return false;
+      }
+      return compName && !excludeComps.includes(compName);
+    })
+    .map(([key, fieldSchema]) => {
+      return { label: fieldSchema.title as string, value: key };
+    });
+};
+
+// filter target tables with group
+export const filterTables = (tables: Array<TableListItem> = []): Array<TableListItem> => {
+  const allTables = tables.map((tb) => {
+    if (tb.isGroup) {
+      return tb.children || [];
+    }
+    return tb;
   });
+  return flatten(allTables);
+}
 
 const mapSchemaProps = (props: { [k: string]: ISchema }, filterFn?: (v?: any) => boolean, mutateField?: (k: string, f: any, a: any) => void) => {
   return Object.entries(props)
@@ -40,7 +68,7 @@ export const transformSchema = (schema: ISchema, options: { filterSubTable?: boo
           type: 'object',
           'x-component': 'SubTableFields',
           'x-component-props': innerFieldProps,
-          properties: mapSchemaProps(subProps, (f)=> f['x-component'] !== 'SubTable', (key, field, acc)=> {
+          properties: mapSchemaProps(subProps, (f) => f['x-component'] !== 'SubTable', (key, field, acc) => {
             Object.assign(acc, {
               [key]: {
                 type: 'object',

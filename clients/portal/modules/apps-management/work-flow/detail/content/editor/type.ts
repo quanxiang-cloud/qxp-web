@@ -90,11 +90,12 @@ export interface XYPosition {
   y: number;
 }
 
-export type Operator = 'eq' | 'neq' | 'gt' | 'gte' | 'lt' | 'lte' | '';
+export type Operator = 'eq' | 'neq' | 'gt' | 'gte' | 'lt' | 'lte' | 'null' | 'not-null' | 'any'
+  | 'all' | 'range' | 'include' | 'not-include' | '';
 export type TriggerConditionValue = {
   key: string;
   op: Operator;
-  value: string;
+  value: string | string[];
 }
 export type TriggerConditionExpressionItem = TriggerCondition | TriggerConditionValue;
 export type TriggerConditionExpression = TriggerConditionExpressionItem[]
@@ -229,15 +230,14 @@ export interface TableDataCreateData {
 export interface TableDataUpdateData {
   targetTableId: string;
   silent: boolean;
-  // filterRule: {
-  //   tag: 'and' | 'or';
-  //   conditions: Array<{
-  //     fieldName: string;
-  //     operator: 'eq' | 'neq' | 'in' | 'nin';
-  //     value: ValueRuleVal;
-  //   }>;
-  // };
-  filterRule: string;
+  filterRule?: {
+    tag: 'and' | 'or';
+    conditions: Array<{
+      fieldName: string;
+      operator: 'eq' | 'neq' | 'in' | 'nin';
+      value: ValueRuleVal;
+    }>;
+  };
   updateRule: Array<{
     fieldName: string;
     valueFrom: 'fixedValue' | 'currentFormValue' | 'processVariable' | 'formula';
@@ -419,3 +419,8 @@ export type ProcessVariable = {
   name: string;
   fieldType: 'TEXT' | 'DATE' | 'NUMBER' | 'BOOLEAN';
 }
+
+export type FieldOperatorOptions = {
+  label: string;
+  value: Operator;
+}[]

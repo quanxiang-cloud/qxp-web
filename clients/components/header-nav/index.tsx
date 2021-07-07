@@ -4,7 +4,7 @@ import { useHistory } from 'react-router-dom';
 
 import Icon from '@c/icon';
 
-type Nav = {
+type Props = {
   name: string | JSX.Element;
   icon: string;
   url?: string;
@@ -12,10 +12,10 @@ type Nav = {
   active?: boolean;
 }
 
-function HeaderNav(nav: Nav) {
+function HeaderNav(nav: Props): JSX.Element {
   const history = useHistory();
 
-  const jump = (url: string | undefined, isInside: boolean | undefined) => {
+  const jump = (url: string | undefined, isInside: boolean | undefined): void => {
     if (!url) {
       return;
     }

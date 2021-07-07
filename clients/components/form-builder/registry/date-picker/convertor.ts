@@ -23,7 +23,7 @@ export const defaultConfig: DatePickerConfig = {
   displayModifier: 'normal',
   placeholder: '',
   sortable: false,
-  valueFormat: '',
+  valueFormat: 'YYYY-MM-DD',
   required: false,
   defaultValueFrom: 'customized',
 };
@@ -41,12 +41,13 @@ export function toSchema(value: typeof defaultConfig): ISchema {
     ['x-component-props']: {
       placeholder: value.placeholder,
       format: value.valueFormat,
+      isNow: value.defaultValueFrom === 'now',
       showTime: timeFormat !== undefined ? { format: timeFormat } : false,
     },
     ['x-internal']: {
       sortable: value.sortable,
       permission: 3,
-      defaultValueFrom: 'customized',
+      defaultValueFrom: value.defaultValueFrom || 'customized',
     },
   };
 }

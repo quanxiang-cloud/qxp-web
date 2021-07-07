@@ -14,6 +14,7 @@ import Modal from '@c/modal';
 import TargetTableFields from './target-table-fields';
 import { BusinessData, TableDataCreateData } from '@flowEditor/type';
 import Context from './context';
+import { filterTables } from '../utils';
 
 interface Props {
   defaultValue: TableDataCreateData;
@@ -90,7 +91,7 @@ function FormCreateTableData({ defaultValue, onSubmit, onCancel }: Props): JSX.E
         <div className="inline-flex items-center">
           <span className="text-body mr-10">目标数据表:</span>
           <Select
-            options={allTables.filter((tb) => tb.value !== tableID)}
+            options={filterTables(allTables).filter((tb) => tb.value !== tableID)}
             placeholder="选择数据表"
             value={value.targetTableId}
             onChange={onChangeTargetTable}

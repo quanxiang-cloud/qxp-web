@@ -14,8 +14,9 @@ import toast from '@lib/toast';
 
 import { BusinessData, TableDataUpdateData } from '@flowEditor/type';
 import Context from './context';
-import FilterRule, { RefType as FilterRuleRef } from './filter-rule';
+import FilterRules, { RefType as FilterRuleRef } from './filter-rules';
 import UpdateRules, { RefType as UpdateRuleRef } from './update-rules';
+import { filterTables } from '../utils';
 
 import './styles.scss';
 
@@ -28,7 +29,7 @@ interface Props {
 const initialValue = {
   targetTableId: '',
   silent: true,
-  filterRule: '', // formula rule
+  filterRule: undefined,
   updateRule: [],
 };
 
@@ -54,13 +55,21 @@ export default function UpdateTableData({ defaultValue, onSubmit, onCancel }: Pr
       toast.error('请选择目标数据表');
       return;
     }
-    const filterRule = filterRef.current?.getRule();
+    const filterRule = filterRef.current?.getValues();
     const updateRule = updateRef.current?.getValues();
+    if (!filterRule.tag) {
+      toast.error('请设置过滤条件的类型');
+      return;
+    }
+    if (!every(filterRule.conditions, (v) => !!v.fieldName)) {
+      toast.error('过滤条件的目标表字段不能为空');
+      return;
+    }
     if (!every(updateRule, (v) => !!v.fieldName)) {
       toast.error('更新规则的目标表字段不能为空');
       return;
     }
-    Object.assign(value, { filterRule: filterRule || '', updateRule });
+    Object.assign(value, { filterRule, updateRule });
     onSubmit(value);
   };
 
@@ -101,7 +110,7 @@ export default function UpdateTableData({ defaultValue, onSubmit, onCancel }: Pr
         <div className="inline-flex items-center">
           <span className="text-body mr-10">目标数据表:</span>
           <Select
-            options={allTables.filter((tb) => tb.value !== tableID)}
+            options={filterTables(allTables).filter((tb) => tb.value !== tableID)}
             placeholder="选择数据表"
             value={value.targetTableId}
             onChange={onChangeTargetTable}
@@ -118,7 +127,9 @@ export default function UpdateTableData({ defaultValue, onSubmit, onCancel }: Pr
                 defaultChecked={value.silent}
               />
             </div>
-            <FilterRule
+            <FilterRules
+              appId={appID}
+              tableId={value.targetTableId}
               defaultValue={value.filterRule}
               ref={filterRef}
             />

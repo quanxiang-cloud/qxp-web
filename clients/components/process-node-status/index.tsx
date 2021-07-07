@@ -3,7 +3,7 @@ import cs from 'classnames';
 
 import './index.scss';
 
-type StatusValue = 'REVIEW' | 'IN_REVIEW' | 'AGREE' | 'REFUSE' | 'CANCEL' | 'COMPLETE' | 'SEND_BACK';
+type StatusValue = 'REVIEW' | 'IN_REVIEW' | 'AGREE' | 'REFUSE' | 'CANCEL' | 'COMPLETE' | 'SEND_BACK' | 'ABANDON' | 'ABEND';
 
 interface Props {
   className?: string;
@@ -19,6 +19,8 @@ const statusMap = {
   CANCEL: '取消',
   COMPLETE: '完成',
   SEND_BACK: '待补充',
+  ABANDON: '作废',
+  ABEND: '异常结束',
 };
 
 function Status({ label, value, className }: Props): JSX.Element {

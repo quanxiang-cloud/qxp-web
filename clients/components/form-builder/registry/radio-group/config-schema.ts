@@ -95,16 +95,17 @@ const schema: ISchema = {
           'x-index': 6,
         },
         defaultValueFrom: {
-          title: '数值源',
+          // title: '数值源',
+          title: '选项',
           enum: [
             {
               label: '自定义',
               value: 'customized',
             },
-            {
-              label: '关联已有数据',
-              value: 'linkage',
-            },
+            // {
+            //   label: '关联已有数据',
+            //   value: 'linkage',
+            // },
             // {
             //   label: '通过公式计算',
             //   value: 'formula',
@@ -123,7 +124,12 @@ const schema: ISchema = {
             },
             {
               type: 'value:visible',
-              target: 'defaultValueLinkage',
+              target: 'add',
+              condition: '{{ $value === "customized" }}',
+            },
+            {
+              type: 'value:visible',
+              target: 'linkageConfig',
               condition: '{{ $value === "linkage" }}',
             },
           ],
@@ -158,7 +164,7 @@ const schema: ISchema = {
           },
         },
         add: {
-          type: 'object',
+          type: 'string',
           'x-component': 'addOperate',
         },
       },

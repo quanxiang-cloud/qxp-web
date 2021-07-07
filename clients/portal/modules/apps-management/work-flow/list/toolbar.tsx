@@ -34,14 +34,16 @@ export default function({ onTriggerTypeChange }: Props): JSX.Element {
         }, {
           label: '工作表触发',
           value: 'FORM_DATA',
-        }, {
-          label: '工作表时间触发',
-          value: 'FORM_TIME',
-        }]}
+        },
+        // {
+        //   label: '工作表时间触发',
+        //   value: 'FORM_TIME',
+        // }
+        ]}
         onChange={(value) => onTriggerTypeChange(value)}
       />
       <Button ref={reference} iconName="add" modifier="primary">
-          新建工作流
+        新建工作流
       </Button>
       <Popper
         reference={reference}
@@ -73,7 +75,7 @@ export default function({ onTriggerTypeChange }: Props): JSX.Element {
               size={24}
             />
           </div>
-          <div
+          {/* <div
             key="FORM_TIME"
             className="flex cursor-pointer items-center justify-between px-16 py-12 create-flow-menu-group"
             onClick={() => newWorkFlow('form-time')}
@@ -91,7 +93,7 @@ export default function({ onTriggerTypeChange }: Props): JSX.Element {
               className="ml-80 transition-all"
               size={24}
             />
-          </div>
+          </div> */}
         </div>
       </Popper>
     </div>

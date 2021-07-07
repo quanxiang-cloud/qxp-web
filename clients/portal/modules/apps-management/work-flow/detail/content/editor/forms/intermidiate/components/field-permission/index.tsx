@@ -86,15 +86,13 @@ export default function FieldPermission({ value, onChange: _onChange }: Props): 
 
   function mergeField(): void {
     const { custom = [], system = [] } = value ?? {};
-    const customIds = custom.map(({ id }) => id);
-    const systemIds = system.map(({ id }) => id);
     const { true: systemData, false: customData } = groupBy(data, ({ isSystem }) => isSystem);
     const systemDataIds = systemData?.map(({ value }) => value) ?? [];
     const customDataIds = customData?.map(({ value }) => value) ?? [];
     const isCustomEmpty = !custom.length;
     const isSystemEmpty = !system.length;
     customData?.forEach((field) => {
-      if (isCustomEmpty || !customIds.includes(field.value)) {
+      if (isCustomEmpty || !custom.find(({ id }) => id === field.value)) {
         custom.push({
           id: field.value,
           fieldName: field.label,
@@ -114,7 +112,7 @@ export default function FieldPermission({ value, onChange: _onChange }: Props): 
       }
     });
     systemData?.forEach((field) => {
-      if (isSystemEmpty || !systemIds.includes(field.value)) {
+      if (isSystemEmpty || !system.find(({ id }) => id === field.value)) {
         system.push({
           id: field.value,
           fieldName: field.label,

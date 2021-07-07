@@ -17,7 +17,7 @@ export default function HeaderMenu() {
         visible={openResetPasswordModal}
         onCancel={() => setOpenResetPasswordModal(false)}
       />
-      <NavMsgBar />
+      <NavMsgBar className="mr-8" />
       {/* <Button className="mr-32">
           进入应用管理
       </Button>

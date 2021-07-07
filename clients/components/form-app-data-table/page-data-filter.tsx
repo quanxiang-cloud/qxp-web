@@ -1,5 +1,5 @@
 import React, { useRef, useState, useContext } from 'react';
-import moment from 'moment';
+import moment, { unitOfTime } from 'moment';
 import { observer } from 'mobx-react';
 
 import Button from '@c/button';
@@ -8,13 +8,28 @@ import Icon from '@c/icon';
 import FilterForm from './filter-form';
 import { StoreContext } from './context';
 
+function getDateType(format: string): unitOfTime.StartOf {
+  switch (format) {
+  case 'YYYY':
+    return 'year';
+  case 'YYYY-MM':
+    return 'month';
+  case 'YYYY-MM-DD':
+    return 'day';
+  case 'YYYY-MM-DD HH:mm':
+    return 'minute';
+  case 'YYYY-MM-DD HH:mm:ss':
+    return 'second';
+  default:
+    return 'day';
+  }
+}
+
 function PageDataFilter(): JSX.Element | null {
   const [showMoreFilter, setShowMoreFilter] = useState(false);
   const store = useContext(StoreContext);
   const filterKeys = Object.keys(store.filters);
-
   const filterDom = useRef<any>();
-
   const search = (): void => {
     if (!store.allowRequestData) {
       return;
@@ -32,16 +47,16 @@ function PageDataFilter(): JSX.Element | null {
       switch (curFilter?.type) {
       case 'datetime': {
         const [start, end] = values[key];
-        const format = curFilter?.['x-component-props']?.format;
-        if (format) {
+        const format = curFilter?.['x-component-props']?.format || 'YYYY-MM-DD HH:mm:ss';
+        if (start.format() !== end.format()) {
           _condition.value = [
-            moment(start.format(format)).toISOString(true),
-            moment(end.format(format)).toISOString(true),
+            moment(start.format(format)).toISOString(),
+            moment(end.format(format)).toISOString(),
           ];
         } else {
           _condition.value = [
-            moment(start).format('YYYY-MM-DDT00:00:00'),
-            moment(end).format('YYYY-MM-DDT24:00:00'),
+            moment(start.format(format)).startOf(getDateType(format)).toISOString(),
+            moment(start.format(format)).endOf(getDateType(format)).toISOString(),
           ];
         }
 
