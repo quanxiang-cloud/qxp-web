@@ -101,6 +101,7 @@ function PageDetails(): JSX.Element | null {
     <div className='relative h-full flex-1 overflow-hidden'>
       <TextHeader
         title={curPage.name || ''}
+        desc={curPage.describe || ''}
         className="bg-white px-20 py-18 header-background-image"
         itemTitleClassName="text-h5" />
       {fetchSchemeLoading && <PageLoading />}
