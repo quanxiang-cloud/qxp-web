@@ -57,7 +57,7 @@ declare namespace FormBuilder {
 
   type DisplayModifier = 'normal' | 'readonly' | 'hidden';
 
-  type DefaultValueFrom = 'customized' | 'linkage' | 'formula';
+  type DefaultValueFrom = 'customized' | 'linkage' | 'formula' | 'now';
 
   type DragObject = SourceElement<any>;
 
