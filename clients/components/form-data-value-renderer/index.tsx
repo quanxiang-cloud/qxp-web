@@ -5,8 +5,10 @@ import SubTable from '@c/form-builder/registry/sub-table/preview';
 import AssociatedRecords from '@c/form-builder/registry/associated-records/associated-records';
 import { Schema } from '@formily/react-schema-renderer';
 
+import { getArrayValue, ArrayInitValue } from './utils';
+
 type Value = string | string[] | Record<string, unknown>
-  | Record<string, unknown>[] | number | number[] | undefined;
+  | Record<string, unknown>[] | number | number[];
 
 type Props = {
   value: Value;
@@ -21,6 +23,7 @@ type Option = {
 
 export function getBasicValue(schema: Schema, initValue: Value): string {
   const format = schema['x-component-props']?.format || 'YYYY-MM-DD HH:mm:ss';
+
   switch (schema.type) {
   case 'label-value':
     return (([] as Record<string, unknown>[]).concat(initValue as Record<string, unknown>[]))
@@ -39,22 +42,7 @@ export function getBasicValue(schema: Schema, initValue: Value): string {
 
     return initValue as string;
   case 'array':
-    if (schema.enum && schema.enum.length) {
-      return (initValue as string[]).map((_value: string) => {
-        if (!schema.enum) {
-          return '';
-        }
-
-        const enumTmp = schema.enum[0];
-        if (typeof enumTmp === 'object') {
-          return (schema.enum.find(({ value }: any) => value === _value) as Option)?.label || '';
-        }
-
-        return _value;
-      }).join(',');
-    }
-
-    return (initValue as Option[]).map(({ label }) => label).join(',');
+    return getArrayValue(initValue as ArrayInitValue, schema);
   default:
     if (Array.isArray(initValue)) {
       return initValue.join(',');
