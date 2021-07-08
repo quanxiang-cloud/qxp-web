@@ -1,13 +1,15 @@
 import React, { useContext } from 'react';
 import { useQuery } from 'react-query';
-import { get, pick, pickBy, each } from 'lodash';
+import { pick, pickBy, each, get, set } from 'lodash';
 
 import { getFormFieldSchema } from '@flow/detail/content/editor/forms/api';
 import { FormRenderer } from '@c/form-builder';
-import { ValueRule } from '@flowEditor/type';
+import { ValueRule, ValueRuleVal } from '@flowEditor/type';
 
 import CustomField from './custom-field';
+import SubTableFields from './sub-table-fields';
 import Context from './context';
+import { transformSchema } from '../utils';
 
 interface Props {
   appId: string;
@@ -20,51 +22,55 @@ function TargetTableFields({ appId, tableId }: Props) {
     enabled: !!appId && !!tableId,
   });
 
-  const transformSchema = (schema: ISchema): ISchema => {
-    const properties = get(schema, 'properties', {});
-    const { createRule = {} } = data;
-    const mapProperties = Object.entries(properties)
-      .reduce((acc: Record<string, any>, [key, field]: [string, ISchema]) => {
-        const innerFieldProps = pick(field, ['display', 'title', 'readonly', 'required']);
-        // fixme: valueOf is builtIn func
-        const defaultVal = createRule[key] && createRule[key].valueFrom === 'fixedValue' ?
-          { default: typeof createRule[key].valueOf === 'function' ? '' : createRule[key].valueOf } : {};
-        // todo: check field type, reset default value
-        if (field['x-component'] === 'ImageUpload') {
-          if (!Array.isArray(defaultVal.default)) {
-            defaultVal.default = [];
-          }
-        }
-        Object.assign(acc, {
-          [key]: {
-            type: 'object',
-            'x-component': 'CustomField',
-            'x-component-props': innerFieldProps,
-            properties: {
-              [key]: { ...field, title: '', ...defaultVal }, // merge default value
-            },
-          },
-        });
-        return acc;
-      }, {});
-
-    return {
-      ...schema,
-      properties: mapProperties,
-    };
+  const getTableIdByFieldKey = (key: string) => {
+    const field = get(tableSchema, `properties[${key}]`);
+    if (field && field['x-component'] === 'SubTable') {
+      return get(field, 'x-component-props.tableID', '');
+    }
+    return key;
   };
 
   const onChangeFixedValue = (values: any) => {
     const fieldVals = pickBy(values, (v, k) => k.startsWith('field_'));
-    // merge schema field value to data context
+
+    // merge schema field value to data.createRule
     each(data.createRule, (v: ValueRule, k: string) => {
-      if (fieldVals[k] !== undefined) {
+      if (fieldVals[k] !== undefined && k.indexOf('@') < 0) {
         Object.assign(v, {
           valueFrom: 'fixedValue',
           valueOf: fieldVals[k],
         });
       }
     });
+
+    // merge sub-table values
+    each(fieldVals, (v: ValueRuleVal, k: string) => {
+      if (v !== undefined && k.indexOf('@') > 0) {
+        const [parentKey, subKey] = k.split('@');
+        const tableId = getTableIdByFieldKey(parentKey);
+        const subVal = get(data.ref, parentKey);
+        if (subVal) {
+          if (subVal.tableId === tableId) {
+            // todo：子表单的createRules暂时支持单条数据
+            set(subVal, `createRules[0].${subKey}`, {
+              valueFrom: 'fixedValue',
+              valueOf: v,
+            });
+          }
+        } else {
+          set(data, `ref[${parentKey}]`, {
+            tableId,
+            createRules: [{
+              [subKey]: {
+                valueFrom: 'fixedValue',
+                valueOf: v,
+              },
+            }],
+          });
+        }
+      }
+    });
+
     setData(pick(data, 'createRule', 'ref'));
   };
 
@@ -80,14 +86,37 @@ function TargetTableFields({ appId, tableId }: Props) {
     );
   }
 
-  return (
-    <div className="flex flex-col mt-20">
+  const renderNormalFields = () => {
+    return (
       <FormRenderer
-        schema={transformSchema(tableSchema as ISchema)}
+        schema={transformSchema(tableSchema as ISchema, {}, data.createRule)}
         onFormValueChange={onChangeFixedValue}
         additionalComponents={{ CustomField }}
         defaultValue={data}
       />
+    );
+  };
+
+  const renderSubTableFields = () => {
+    const subTableFields = transformSchema(tableSchema as ISchema, { filterSubTable: true }, data.ref);
+    if (!Object.keys(subTableFields?.properties || {}).length) {
+      return null;
+    }
+
+    return (
+      <FormRenderer
+        schema={subTableFields}
+        onFormValueChange={onChangeFixedValue}
+        additionalComponents={{ CustomField, SubTableFields }}
+        defaultValue={data}
+      />
+    );
+  };
+
+  return (
+    <div className="flex flex-col mt-20">
+      {renderNormalFields()}
+      {renderSubTableFields()}
     </div>
   );
 }
