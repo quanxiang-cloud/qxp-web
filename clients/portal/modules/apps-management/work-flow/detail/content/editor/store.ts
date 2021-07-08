@@ -177,7 +177,7 @@ export function buildBpmnText(
     version,
     shapes: store.value.elements.map((el) => {
       let data: any = el;
-      if (el.id == nodeID) {
+      if (el.id === nodeID) {
         data = {
           ...el,
           data: {
@@ -202,6 +202,18 @@ export function buildBpmnText(
       ], { ...data, data: omit(data.data, ['type']) });
     }),
   });
+}
+
+export function toggleNodeForm(id: string): void {
+  updateStore((s) => ({
+    ...s,
+    nodeIdForDrawerForm: id,
+    showDataNotSaveConfirm: false,
+    errors: {
+      ...s.errors,
+      dataNotSaveMap: new Map(),
+    },
+  }));
 }
 
 export default store;

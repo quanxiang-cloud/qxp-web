@@ -2,7 +2,7 @@ import React from 'react';
 
 import useObservable from '@lib/hooks/use-observable';
 
-import store, { updateStore } from '../store';
+import store, { toggleNodeForm } from '../store';
 import type { StoreValue } from '../type';
 import Drawer from '../forms/drawer';
 import DragNode from './drag-node';
@@ -68,7 +68,7 @@ export default function ComponentsSelector(): JSX.Element {
             </div>
           )}
           distanceTop={0}
-          onCancel={() => updateStore((s) => ({ ...s, nodeIdForDrawerForm: '' }))}
+          onCancel={() => toggleNodeForm('')}
           className="flow-editor-drawer"
         >
           <div>

@@ -22,6 +22,7 @@ interface Props {
   defaultValue: Data;
   onSubmit: (data: BusinessData) => void;
   onCancel: () => void;
+  onChange: () => void;
 }
 
 function useTableSchema(appID: string, tableID: string): ISchema | null {
@@ -69,6 +70,7 @@ export default function Form({
   defaultValue,
   onSubmit,
   onCancel,
+  onChange,
 }: Props): JSX.Element {
   function getConfigForm(): JSX.Element {
     const component = components[defaultValue.type];
@@ -76,6 +78,7 @@ export default function Form({
       defaultValue: defaultValue.businessData,
       onSubmit,
       onCancel,
+      onChange,
       nodeType: defaultValue.type,
     });
   }
