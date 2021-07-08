@@ -12,6 +12,7 @@ import store, {
   updateBusinessData,
   getFormDataElement,
   buildWorkFlowSaveData,
+  toggleNodeForm,
 } from '@flowEditor/store';
 
 import Form from './form';
@@ -50,16 +51,13 @@ export default function NodeFormWrapper(): JSX.Element | null {
   }, [currentNodeElement?.data]);
 
   useEffect(() => {
-    formDataChanged && updateStore((s) => ({ ...s, saved: false }));
-  }, [formDataChanged]);
-
-  useEffect(() => {
     updateStore((s) => ({ ...s, validating: false }));
     setFormDataChanged(false);
   }, [nodeIdForDrawerForm]);
 
   const previousNodeID = usePrevious(currentNodeElement?.id) ?? '';
   useEffect(() => {
+    formDataChanged && updateStore((s) => ({ ...s, saved: false }));
     updateStore((s) => {
       const nodeID = currentNodeElement?.id || previousNodeID;
       if (formDataChanged) {
@@ -71,8 +69,12 @@ export default function NodeFormWrapper(): JSX.Element | null {
     });
   }, [formDataChanged]);
 
-  const previousName = usePrevious(name);
+  function handleChange(): void {
+    updateStore((s) => ({ ...s, validating: false }));
+    setFormDataChanged(true);
+  }
 
+  const previousName = usePrevious(name);
   function saveWorkFlow(data: BusinessData): void {
     if (!name || !previousName || !elements?.length) {
       return;
@@ -88,15 +90,14 @@ export default function NodeFormWrapper(): JSX.Element | null {
   }
 
   function closePanel(): void {
-    updateStore((s) => ({
-      ...s,
-      nodeIdForDrawerForm: s.nodeIdForDrawerForm === 'components' ? s.nodeIdForDrawerForm : '',
-      showDataNotSaveConfirm: false,
-      errors: {
-        ...s.errors,
-        dataNotSaveMap: new Map(),
-      },
-    }));
+    if (formDataChanged) {
+      return updateStore((s) => ({
+        ...s,
+        showDataNotSaveConfirm: true,
+        currentDataNotSaveConfirmCallback: () => toggleNodeForm(''),
+      }));
+    }
+    toggleNodeForm('');
   }
 
   if (!currentNodeElement || !formData) {
@@ -119,7 +120,7 @@ export default function NodeFormWrapper(): JSX.Element | null {
         </span>
       )}
       distanceTop={0}
-      onCancel={closePanel}
+      onCancel={() => toggleNodeForm('')}
       className="flow-editor-drawer"
     >
       <div className="flex-1 flex flex-col justify-between h-full">
@@ -128,6 +129,7 @@ export default function NodeFormWrapper(): JSX.Element | null {
           defaultValue={formData}
           onSubmit={onSubmit}
           onCancel={closePanel}
+          onChange={handleChange}
         />
       </div>
     </Drawer>
