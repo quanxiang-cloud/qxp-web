@@ -192,7 +192,7 @@ function ActionModals({ flowName, getFormData }: Props): JSX.Element | null {
           className="w-full"
           name="comment"
           placeholder={`输入${actionMap[action]?.text}意见`}
-          onChange={(ev: unknown, value: string) => store.setModalInfo({ payload: { remark: value } })}
+          onChange={(value: string) => store.setModalInfo({ payload: { remark: value } })}
         />
       );
     }
