@@ -25,10 +25,11 @@ function convertPagesToOptions(
   options: Array<{ label: string; value: string }>,
 ): Array<{ label: string; value: string }> {
   appPages.forEach(({ id, name, child }) => {
-    options.push({ label: name, value: id });
     if (Array.isArray(child)) {
       convertPagesToOptions(child, options);
+      return;
     }
+    options.push({ label: name, value: id });
   });
 
   return options;
