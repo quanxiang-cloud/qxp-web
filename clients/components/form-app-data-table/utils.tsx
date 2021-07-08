@@ -57,7 +57,7 @@ export function getPageDataSchema(
 } {
   const { pageTableShowRule = {}, pageTableColumns = [] } = config || {};
   const fieldsMap = schema?.properties || {};
-  const tableColumns: UnionColumns<any>[] = pageTableColumns.map((key) => {
+  const tableColumns: UnionColumns<any>[] = pageTableColumns.filter((key) => key in fieldsMap).map((key) => {
     return {
       id: key,
       Header: fieldsMap[key].title || '',
