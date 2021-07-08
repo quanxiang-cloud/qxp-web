@@ -244,6 +244,7 @@ function VisibleHiddenLinkageConfig({ mode, onClose, linkageKey, onSubmit }: Pro
 
         if (['DatePicker', 'NumberPicker'].includes(compareField)) {
           state.props['x-component-props'] = sourceSchema?.properties?.[value]['x-component-props'];
+          state.value = undefined;
         }
       });
     });
