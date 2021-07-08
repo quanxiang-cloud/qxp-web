@@ -54,9 +54,8 @@ function ApprovalDetail(): JSX.Element {
   }, [data]);
 
   const renderSchemaForm = (task: any): JSX.Element | null => {
-    const formSchema = task?.fieldPermission?.custom ?
-      wrapSchemaWithFieldPermission(task.formSchema.table, task?.fieldPermission?.custom) :
-      task.formSchema.table;
+    const extraPermissions = [...(task?.fieldPermission?.custom || []), ...(task?.fieldPermission?.system || [])];
+    const formSchema = wrapSchemaWithFieldPermission(task.formSchema.table, extraPermissions);
 
     return (
       <div className='task-form'>
