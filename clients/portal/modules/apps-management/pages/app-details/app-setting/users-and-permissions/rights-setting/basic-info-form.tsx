@@ -13,7 +13,7 @@ const Textarea = formFieldWrap({ field: <textarea className='input' /> });
 function BasicInfoForm(
   { defaultValue = { name: '', description: '' } }: Props,
   ref?: React.Ref<any>,
-) {
+): JSX.Element {
   const { register, handleSubmit, formState: { errors } } = useForm();
 
   useImperativeHandle(ref, () => ({

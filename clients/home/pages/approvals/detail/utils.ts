@@ -12,6 +12,8 @@ export const wrapSchemaWithFieldPermission = (
       Object.assign(acc, {
         [key]: {
           ...fieldSchema,
+          // if permission.read=true, always display this field
+          display: !!foundPermission.read,
           visible: !!foundPermission.read,
           editable: !!foundPermission.write,
         },

@@ -1,4 +1,4 @@
-import React, { isValidElement, forwardRef } from 'react';
+import React, { isValidElement } from 'react';
 import cs from 'classnames';
 
 import './index.scss';
@@ -25,7 +25,7 @@ function formFieldWrap({ field, FieldFC }: WrapProps) {
     register,
     error,
     ...inputProps
-  }: Props, ref:React.Ref<any>): JSX.Element {
+  }: Props): JSX.Element {
     const props = {
       ...register,
       ...inputProps,
@@ -38,9 +38,8 @@ function formFieldWrap({ field, FieldFC }: WrapProps) {
           React.cloneElement(field, {
             ...props,
             className: cs(className, field.props.className, { 'form-input-error': error }),
-            ref,
           }) :
-          <FieldFC className={cs(className, { 'form-input-error': error })} {...props} ref={ref} />
+          <FieldFC className={cs(className, { 'form-input-error': error })} {...props} />
         }
         {help && !error ? (
           <div className='form-field-tips'>{help}</div>
@@ -51,7 +50,7 @@ function formFieldWrap({ field, FieldFC }: WrapProps) {
       </div>
     );
   }
-  return forwardRef(FormField);
+  return FormField;
 }
 
 export default formFieldWrap;

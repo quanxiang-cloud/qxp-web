@@ -118,7 +118,7 @@ class AppPageDataStore {
 
   @action
   setFilters = (filters: Filters): void => {
-    this.filters = filters;
+    this.filters = filters.filter((key) => key in (this.schema.properties || {}));
   }
 
   @action

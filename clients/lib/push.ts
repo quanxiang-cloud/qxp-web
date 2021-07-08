@@ -8,16 +8,16 @@ let retryCount = 0;
 class PushServer {
   connection: any = null;
   token = '';
-  retryLimit = 5;
+  retryLimit = 10;
   timerHeartbeat: any = null;
-  heartbeatInterval = 10000;
+  heartbeatInterval = 30000;
   listenersMap: Map<string, Set<SocketEventListener>> = new Map();
 
   constructor() {
     this.setUp();
 
-    window.addEventListener('offline', this.offlineHandler);
-    window.addEventListener('online', this.onlineHandler);
+    // window.addEventListener('offline', this.offlineHandler);
+    // window.addEventListener('online', this.onlineHandler);
   }
 
   getToken(): Promise<string> {
@@ -92,6 +92,8 @@ class PushServer {
 
   heartbeat() {
     this.stopHeartbeat();
+    // trigger first heartbeat
+    this.connection.send('echo');
     this.timerHeartbeat = setInterval(() => {
       this.connection.send('echo');
     }, this.heartbeatInterval);
@@ -105,6 +107,8 @@ class PushServer {
   }
 
   setUp = () => {
+    // reset retry count
+    retryCount = 0;
     this.initConnection().then(this.attachEvents);
   }
 

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useHistory } from 'react-router';
 import { useQuery } from 'react-query';
 import { observer } from 'mobx-react';
-import { pick } from 'lodash';
+import { pick, get } from 'lodash';
 
 import Breadcrumb from '@c/breadcrumb';
 import { useURLSearch } from '@lib/hooks';
@@ -43,18 +43,20 @@ function ApprovalDetail(): JSX.Element {
     () => apis.getTaskFormById(processInstanceID, { type }),
   );
 
+  const getTask = () => get(data, 'taskDetailModels[0]', {});
+
   useEffect(() => {
     document.title = '流程详情';
   }, []);
 
   useEffect(() => {
-    setFormValues(data?.formData);
+    setFormValues(getTask().formData || {});
   }, [data]);
 
   const renderSchemaForm = (task: any): JSX.Element | null => {
-    const formSchema = task?.fieldPermission?.custom ?
-      wrapSchemaWithFieldPermission(task.formSchema.table, task?.fieldPermission?.custom) :
-      task.formSchema.table;
+    const extraPermissions = [...(task?.fieldPermission?.custom || []), ...(task?.fieldPermission?.system || [])];
+    const formSchema = wrapSchemaWithFieldPermission(task.formSchema.table, extraPermissions);
+
     return (
       <div className='task-form'>
         <FormRenderer
@@ -75,7 +77,7 @@ function ApprovalDetail(): JSX.Element {
     return <ErrorTips />;
   }
 
-  const tasks = data.taskDetailModels;
+  const task = getTask();
 
   return (
     <div>
@@ -99,12 +101,12 @@ function ApprovalDetail(): JSX.Element {
           {
             <>
               <Toolbar
-                currTask={tasks[0]}
-                permission={tasks[0]?.operatorPermission || {}}
-                globalActions={pick(tasks[0] || {}, globalActionKeys)}
+                currTask={task}
+                permission={task?.operatorPermission || {}}
+                globalActions={pick(task, globalActionKeys)}
                 onClickAction={store.handleClickAction}
               />
-              {renderSchemaForm(tasks[0])}
+              {renderSchemaForm(task)}
             </>
           }
 
