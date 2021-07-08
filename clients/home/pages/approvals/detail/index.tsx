@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useHistory } from 'react-router';
 import { useQuery } from 'react-query';
 import { observer } from 'mobx-react';
@@ -31,9 +31,9 @@ const globalActionKeys = [
 
 function ApprovalDetail(): JSX.Element {
   const [search] = useURLSearch();
+  const [formValues, setFormValues] = useState<Record<string, any>>({});
   const listType = search.get('list') || 'todo';
-  const { processInstanceID, taskID, type } = useParams<
-  { processInstanceID: string; taskID: string, type: string }>();
+  const { processInstanceID, taskID, type } = useParams<{ processInstanceID: string; taskID: string, type: string }>();
   const history = useHistory();
 
   const {
@@ -47,6 +47,10 @@ function ApprovalDetail(): JSX.Element {
     document.title = '流程详情';
   }, []);
 
+  useEffect(() => {
+    setFormValues(data?.formData);
+  }, [data]);
+
   const renderSchemaForm = (task: any): JSX.Element | null => {
     const formSchema = task?.fieldPermission?.custom ?
       wrapSchemaWithFieldPermission(task.formSchema.table, task?.fieldPermission?.custom) :
@@ -56,7 +60,7 @@ function ApprovalDetail(): JSX.Element {
         <FormRenderer
           defaultValue={task.formData}
           schema={formSchema}
-          onFormValueChange={task.formData}
+          onFormValueChange={setFormValues}
         />
       </div>
     );
@@ -78,12 +82,11 @@ function ApprovalDetail(): JSX.Element {
       <Breadcrumb
         segments={[
           {
-            key: 'back', text: '返回', render: () =>
-              (
-                <span className="inline-flex items-center cursor-pointer" onClick={() => history.goBack()}>
-                  <Icon name="keyboard_backspace" className="mr-6" />返回
-                </span>
-              ),
+            key: 'back', text: '返回', render: () => (
+              <span className="inline-flex items-center cursor-pointer" onClick={() => history.goBack()}>
+                <Icon name="keyboard_backspace" className="mr-6" />返回
+              </span>
+            ),
           },
           { key: 'list', text: '审批列表', path: `/approvals?list=${listType}` },
           { key: 'current', text: data?.flowName },
@@ -123,7 +126,7 @@ function ApprovalDetail(): JSX.Element {
           />
         </Panel>
       </div>
-      <ActionModals />
+      <ActionModals flowName={data?.flowName} getFormData={() => formValues} />
     </div>
   );
 }
