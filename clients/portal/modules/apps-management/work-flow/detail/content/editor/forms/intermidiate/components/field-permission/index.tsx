@@ -7,7 +7,7 @@ import Loading from '@c/loading';
 import ErrorTips from '@c/error-tips';
 import useObservable from '@lib/hooks/use-observable';
 import store from '@flowEditor/store';
-import { getFormFieldOptions, getFormFieldSchema } from '@flowEditor/forms/api';
+import { getFormFieldOptions } from '@flowEditor/forms/api';
 import FlowContext from '@flow/detail/flow-context';
 import type {
   StoreValue,
@@ -29,6 +29,17 @@ interface Props {
   onChange: (value: Partial<FillInData>) => void;
 }
 
+const INITIAL_VALUE = {
+  initialValue: {
+    variable: '',
+    staticValue: '',
+  },
+  submitValue: {
+    variable: '',
+    staticValue: '',
+  },
+};
+
 export default function FieldPermission({ value, onChange: _onChange }: Props): JSX.Element {
   const { appID } = useContext(FlowContext);
   const [editable, setEditable] = useState(false);
@@ -40,16 +51,9 @@ export default function FieldPermission({ value, onChange: _onChange }: Props): 
     system: [],
   });
 
-  const { data: { options: data } = { options: [] }, isLoading, isError } = useQuery(
+  const { data: { options: data, schema = {} } = { options: [] }, isLoading, isError } = useQuery(
     ['GET_WORK_FORM_FIELD_LIST', workFormValue, appID],
     getFormFieldOptions, {
-      enabled: !!workFormValue && !!appID,
-    },
-  );
-
-  const { data: schema = {} } = useQuery(
-    ['GET_WORK_FORM_FIELD_SCHEMA', workFormValue, appID],
-    getFormFieldSchema, {
       enabled: !!workFormValue && !!appID,
     },
   );
@@ -85,34 +89,23 @@ export default function FieldPermission({ value, onChange: _onChange }: Props): 
   }
 
   function mergeField(): void {
-    const { custom = [], system = [] } = value ?? {};
+    const { custom = [], system = [] } = value || {};
     const { true: systemData, false: customData } = groupBy(data, ({ isSystem }) => isSystem);
-    const systemDataIds = systemData?.map(({ value }) => value) ?? [];
-    const customDataIds = customData?.map(({ value }) => value) ?? [];
-    const isCustomEmpty = !custom.length;
-    const isSystemEmpty = !system.length;
+    const systemDataIds = systemData?.map(({ value }) => value) || [];
+    const customDataIds = customData?.map(({ value }) => value) || [];
     customData?.forEach((field) => {
-      if (isCustomEmpty || !custom.find(({ id }) => id === field.value)) {
+      if (!custom.length || !custom.find(({ id }) => id === field.value)) {
         custom.push({
           id: field.value,
           fieldName: field.label,
           read: false,
           write: false,
-          initialValue: {
-            variable: '',
-            staticValue: '',
-          },
-          submitValue: {
-            variable: '',
-            staticValue: '',
-          },
-          parent: undefined,
-          children: [],
+          ...INITIAL_VALUE,
         });
       }
     });
     systemData?.forEach((field) => {
-      if (isSystemEmpty || !system.find(({ id }) => id === field.value)) {
+      if (!system.length || !system.find(({ id }) => id === field.value)) {
         system.push({
           id: field.value,
           fieldName: field.label,
@@ -124,6 +117,16 @@ export default function FieldPermission({ value, onChange: _onChange }: Props): 
       system: system.filter(({ id }) => systemDataIds.includes(id)),
       custom: custom.filter(({ id }) => customDataIds.includes(id)),
     });
+  }
+
+  function handleEditableChange(): void {
+    if (editable) {
+      onChange({
+        ...mergedFieldPermissions,
+        custom: mergedFieldPermissions.custom.map((field) => ({ ...field, ...INITIAL_VALUE })),
+      });
+    }
+    setEditable((s) => !s);
   }
 
   if (isLoading) {
@@ -142,7 +145,7 @@ export default function FieldPermission({ value, onChange: _onChange }: Props): 
             <div className="text-caption-no-color text-gray-400">自定义字段</div>
             <div className="flex justify-between items-center">
               <span className="mr-8">为字段赋值</span>
-              <Toggle defaultChecked={editable} onChange={() => setEditable((s) => !s)} />
+              <Toggle defaultChecked={editable} onChange={handleEditableChange} />
             </div>
           </header>
           <CustomFieldTable
