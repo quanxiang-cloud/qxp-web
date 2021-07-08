@@ -16,8 +16,8 @@ class PushServer {
   constructor() {
     this.setUp();
 
-    window.addEventListener('offline', this.offlineHandler);
-    window.addEventListener('online', this.onlineHandler);
+    // window.addEventListener('offline', this.offlineHandler);
+    // window.addEventListener('online', this.onlineHandler);
   }
 
   getToken(): Promise<string> {
@@ -92,6 +92,8 @@ class PushServer {
 
   heartbeat() {
     this.stopHeartbeat();
+    // trigger first heartbeat
+    this.connection.send('echo');
     this.timerHeartbeat = setInterval(() => {
       this.connection.send('echo');
     }, this.heartbeatInterval);
