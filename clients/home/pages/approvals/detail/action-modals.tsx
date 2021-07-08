@@ -19,10 +19,11 @@ import { TaskHandleType } from '../constant';
 import actionMap from './action-map';
 
 interface Props {
-  className?: string;
+  flowName?: string;
+  getFormData: () => Record<string, any>;
 }
 
-function ActionModals({ className }: Props): JSX.Element | null {
+function ActionModals({ flowName, getFormData }: Props): JSX.Element | null {
   const { processInstanceID, taskID } = useParams<{ processInstanceID: string; taskID: string }>();
   const history = useHistory();
   const ref: any = useRef();
@@ -50,7 +51,7 @@ function ActionModals({ className }: Props): JSX.Element | null {
       return apis.reviewTask(processInstanceID, taskID, {
         handleType: action,
         remark: modalInfo.payload.remark || '',
-        formData: store.taskItem.formData || {},
+        formData: getFormData(),
       });
     }
 
@@ -314,14 +315,14 @@ function ActionModals({ className }: Props): JSX.Element | null {
           <div className="mb-24">
             <Button className="mb-12" iconName="add" onClick={() => setShowPicker(true)}>添加加签人</Button>
             {store.showTips && !chosenEmployees.length && <p className="text-red-600">请选择加签人</p>}
-            {<Radio.Group className="block" onChange={(e)=>{
+            {<Radio.Group className="block" onChange={(e) => {
               setAddSignType(e.target.value);
             }
             }>
               <Radio value={'BEFORE'}>此节点前加签</Radio>
               <Radio value={'AFTER'}>此节点后加签</Radio>
             </Radio.Group>}
-            {chosenEmployees.length > 1 && (<Radio.Group onChange={(e)=>{
+            {chosenEmployees.length > 1 && (<Radio.Group onChange={(e) => {
               setAddSignValue(e.target.value);
             }}>
               <Radio value={'and'}>会签</Radio>
@@ -394,7 +395,8 @@ function ActionModals({ className }: Props): JSX.Element | null {
   return (
     <>
       <Modal
-        title={`${store.modalInfo.title} ${store.taskItem.taskName || ''}`}
+        title={`${store.modalInfo.title} ${flowName || ''}`}
+        // title={`${store.modalInfo.title} ${store.taskItem.taskName || ''}`}
         footerBtns={[
           {
             key: 'close',
