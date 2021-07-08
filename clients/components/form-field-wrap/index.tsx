@@ -1,4 +1,4 @@
-import React, { isValidElement, forwardRef } from 'react';
+import React, { isValidElement } from 'react';
 import cs from 'classnames';
 
 import './index.scss';
@@ -50,7 +50,7 @@ function formFieldWrap({ field, FieldFC }: WrapProps) {
       </div>
     );
   }
-  return forwardRef(FormField);
+  return FormField;
 }
 
 export default formFieldWrap;

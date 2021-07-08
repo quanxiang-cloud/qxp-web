@@ -15,6 +15,7 @@ export type Value = {
 type Props = {
   value: Value[];
   onChange: (selected: Value[]) => void;
+  btnText: string;
 }
 
 const tagBackgroundColorMap = {
@@ -26,7 +27,11 @@ const tagIconNameMap = {
   2: 'device_hub',
 };
 
-function UserSelect({ value = [], onChange }: Props, ref: React.Ref<HTMLInputElement>): JSX.Element {
+function UserSelect({
+  value = [],
+  onChange,
+  btnText = '添加接收对象',
+}: Props, ref: React.Ref<HTMLInputElement>): JSX.Element {
   const [employeeVisible, setVisible] = useState(false);
 
   const handleSubmit = (
@@ -99,14 +104,14 @@ function UserSelect({ value = [], onChange }: Props, ref: React.Ref<HTMLInputEle
         )}
       >
         <Icon name="add" className="mr-8" size={20} />
-        添加审批人
+        {btnText}
       </div>
       <input ref={ref} type='hidden' />
       {employeeVisible && (
         <EmployeeOrDepartmentPicker
           onSubmit={handleSubmit}
           submitText='保存'
-          title='添加审批人'
+          title={btnText}
           employees={value.map((member: any) => {
             return { ...member, ownerID: member.id, type: 1, ownerName: member.name };
           })}

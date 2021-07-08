@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import draftToHtml from 'draftjs-to-html';
 import htmlToDraft from 'html-to-draftjs';
 import { useQuery } from 'react-query';
@@ -21,7 +21,6 @@ import store from '@flowEditor/store';
 import Button from '@c/button';
 import Select from '@c/select';
 import { Editor } from 'react-draft-wysiwyg';
-import { RefProps } from '@c/formula-editor';
 import SaveButtonGroup from '@flowEditor/components/_common/action-save-button-group';
 import type { StoreValue, CurrentElement, FormDataData } from '@flowEditor/type';
 
@@ -100,7 +99,6 @@ function SendEmailConfig({ defaultValue, onSubmit, onCancel }: Props): JSX.Eleme
       ContentState.createFromBlockArray(
         htmlToDraft(defaultValue.content).contentBlocks),
     ) : EditorState.createEmpty());
-  const formulaEditorRef = useRef<RefProps>();
   const { elements = [] } = useObservable<StoreValue>(store);
   const formDataElement = elements?.find(({ type }) => type === 'formData') as CurrentElement;
   const workFormValue = (formDataElement?.data?.businessData as FormDataData)?.form?.value;
@@ -205,12 +203,12 @@ function SendEmailConfig({ defaultValue, onSubmit, onCancel }: Props): JSX.Eleme
               localization={{
                 locale: 'zh',
               }}
+              register={{}}
               onEditorStateChange={(_editorCont: EditorState) => {
                 handleChangeEditor(_editorCont);
                 field.onChange(getEditorCont(_editorCont));
               }}
               error={errors.content}
-              ref={formulaEditorRef}
             />
           );
         }
