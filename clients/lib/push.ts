@@ -8,9 +8,9 @@ let retryCount = 0;
 class PushServer {
   connection: any = null;
   token = '';
-  retryLimit = 5;
+  retryLimit = 10;
   timerHeartbeat: any = null;
-  heartbeatInterval = 10000;
+  heartbeatInterval = 30000;
   listenersMap: Map<string, Set<SocketEventListener>> = new Map();
 
   constructor() {
@@ -105,6 +105,8 @@ class PushServer {
   }
 
   setUp = () => {
+    // reset retry count
+    retryCount = 0;
     this.initConnection().then(this.attachEvents);
   }
 
