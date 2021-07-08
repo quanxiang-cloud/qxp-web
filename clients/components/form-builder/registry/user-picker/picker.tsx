@@ -18,7 +18,7 @@ interface Props {
 }
 
 const Picker = ({ value = [], onChange, isMy, rangeList, ...p }: Props) => {
-  const defaultValue = rangeList || []
+  const defaultValue = rangeList || [];
   const store = React.useContext(StoreContext);
   const { appID } = store;
 
@@ -66,7 +66,7 @@ const Picker = ({ value = [], onChange, isMy, rangeList, ...p }: Props) => {
     return defaultValue
       .map((itm) => itm.ownerName)
       .join(',')
-      .substr(0, 20)
+      .substr(0, 20);
   }, [defaultValue]);
 
   return (

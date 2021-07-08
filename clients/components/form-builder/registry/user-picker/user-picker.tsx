@@ -12,7 +12,6 @@ type OptionalRange = 'customize' | 'all'
 const PAGE_SIZE = 10;
 
 const UserPicker = (p: ISchemaFieldComponentProps): JSX.Element => {
-  
   const optionalRange = p.props.optionalRange as OptionalRange;
 
   React.useEffect(() => {

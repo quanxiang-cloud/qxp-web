@@ -22,8 +22,8 @@ const UserDefault = (props: Props) => {
   const isAllRange = optionalRange == 'all';
 
   React.useEffect(() => {
-    props.onChange([])
-  }, [optionalRange])
+    props.onChange([]);
+  }, [optionalRange]);
 
   if (isAllRange) return <AllUserComponent {...props} />;
 
