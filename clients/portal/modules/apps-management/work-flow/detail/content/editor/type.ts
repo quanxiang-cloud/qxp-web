@@ -274,7 +274,7 @@ export interface CCData {
 }
 export interface FieldValue {
   variable: string;
-  staticValue: string;
+  staticValue: any;
 }
 export interface CustomFieldPermission {
   fieldName: string;
