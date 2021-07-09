@@ -50,7 +50,7 @@ export default observer(function EmployeeTable({
     store.setCurrentPage(1);
     store.setSelectedKeys([]);
     store.setTotal(0);
-  }, [depID]);
+  }, [depID, userName]);
   useEffect(() => {
     if (data?.total) {
       store.setTotal(data.total);
