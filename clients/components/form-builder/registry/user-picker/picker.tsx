@@ -17,8 +17,8 @@ interface Props {
   isMy: boolean
 }
 
-const Picker = ({ value = [], onChange, isMy, rangeList }: Props) => {
-  const defaultValue = rangeList || [];
+const Picker = ({ value = [], onChange, isMy, rangeList, ...p }: Props) => {
+  const [defaultValue, setDefaultValue] = useState<Array<EmployeeOrDepartmentOfRole>>(rangeList || []);
   const store = React.useContext(StoreContext);
   const { appID } = store;
 
@@ -33,16 +33,12 @@ const Picker = ({ value = [], onChange, isMy, rangeList }: Props) => {
     isMy && onChange(users);
   }, [isMy, myDepUsers]);
 
-  useQuery(
-    ['query_user_picker_', window.USER.dep.id, appID],
-    () => searchUser(appID, { depID: window.USER.dep.id }), {
-      onSuccess(data: Res) {
-        const users = (data.data || []);
-
-        setMyDepUsers(users);
-      },
-    });
-
+  const { isLoading } = useQuery(['query_user_picker_', window.USER.dep.id, appID], () => searchUser(appID, { depID: window.USER.dep.id }), {
+    onSuccess(data: Res) {
+      const users = (data.data || []);
+      setMyDepUsers(users);
+    },
+  });
   const [visible, setVisible] = useState(false);
 
   // use ref not state  avoid state change then refresh view
@@ -57,27 +53,26 @@ const Picker = ({ value = [], onChange, isMy, rangeList }: Props) => {
 
   const handleSubmit = useCallback(() => {
     onChange(valueListRef.current);
+    setDefaultValue(valueListRef.current);
     close();
   }, [onChange, close]);
 
   useEffect(() => {
-    if (visible) {
-      valueListRef.current = defaultValue;
-    }
+    valueListRef.current = defaultValue;
   }, [visible]);
 
   const showName = useMemo(() => {
-    return (rangeList || [])
+    return (defaultValue)
       .map((itm) => itm.ownerName)
       .join(',')
       .substr(0, 20);
-  }, [rangeList]);
+  }, [defaultValue]);
 
   return (
     <div>
       <div
         className={classNames({ disabled_test: isMy })} onClick={() => isMy || setVisible((v) => !v)}>
-        {defaultValue.length <= 0 ?
+        {defaultValue.length === 0 ?
           <Button> 选择成员范围</Button> :
           <div className={'text_flow '}>{showName}</div>}
       </div>
