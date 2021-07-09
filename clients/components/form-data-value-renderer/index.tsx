@@ -32,7 +32,7 @@ function EnumValueRenderer({ value, schema, className }: ValueRendererProps): JS
   if (Array.isArray(value)) {
     const options = (schema.enum || []) as FormBuilder.Option[];
     const labels = (value as string[]).map((v) => {
-      options.find((option) => option.value === v)?.label || v;
+      return options.find((option) => option.value === v)?.label || v;
     }).join(', ');
 
     return (<span className={className}>{labels}</span>);
