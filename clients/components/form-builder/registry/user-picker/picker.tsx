@@ -17,7 +17,7 @@ interface Props {
   isMy: boolean
 }
 
-const Picker = ({ value = [], onChange, isMy, rangeList, ...p }: Props) => {
+const Picker = ({ value = [], onChange, isMy, rangeList }: Props) => {
   const defaultValue = rangeList || [];
   const store = React.useContext(StoreContext);
   const { appID } = store;
@@ -29,16 +29,20 @@ const Picker = ({ value = [], onChange, isMy, rangeList, ...p }: Props) => {
       ownerName: itm.userName,
       id: itm.id,
     })) as EmployeeOrDepartmentOfRole[];
-    onChange(isMy ? users : []);
+
+    isMy && onChange(users);
   }, [isMy, myDepUsers]);
 
-  const { isLoading } = useQuery(['query_user_picker_', window.USER.dep.id, appID], () => searchUser(appID, { depID: window.USER.dep.id }), {
+  useQuery(
+    ['query_user_picker_', window.USER.dep.id, appID],
+    () => searchUser(appID, { depID: window.USER.dep.id }), {
     onSuccess(data: Res) {
       const users = (data.data || []);
-      // @ts-ignore
+      
       setMyDepUsers(users);
     },
   });
+
   const [visible, setVisible] = useState(false);
 
   // use ref not state  avoid state change then refresh view
@@ -63,11 +67,11 @@ const Picker = ({ value = [], onChange, isMy, rangeList, ...p }: Props) => {
   }, [visible]);
 
   const showName = useMemo(() => {
-    return defaultValue
+    return (rangeList || [])
       .map((itm) => itm.ownerName)
       .join(',')
       .substr(0, 20);
-  }, [defaultValue]);
+  }, [rangeList]);
 
   return (
     <div>
