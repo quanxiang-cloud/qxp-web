@@ -3,7 +3,7 @@ import { createPortal } from 'react-dom';
 import { usePopper } from 'react-popper';
 import { useCss } from 'react-use';
 import cs from 'classnames';
-import { isArray } from 'lodash';
+import { isArray, isObject } from 'lodash';
 
 import Icon from '@c/icon';
 import RadioGroup from '@c/radio/group';
@@ -12,6 +12,26 @@ import Select from '@c/select';
 import ActionButtonGroup from '@flowEditor/components/_common/action-button-group';
 import type { FieldValue } from '@flowEditor/type';
 import FormRenderer from '@c/form-builder/form-renderer';
+
+function parseDisplayValue(value: any): any {
+  let displayValue = value;
+  if (isArray(displayValue)) {
+    if (!displayValue.some(isArray) && !displayValue.some(isObject)) {
+      displayValue = displayValue.join(',');
+    } else {
+      displayValue = displayValue.map(parseDisplayValue);
+    }
+  } else if (displayValue?.label) {
+    displayValue = displayValue.label;
+  } else if (isObject(displayValue) && displayValue.toString() !== '[object Object]') {
+    displayValue = displayValue.toString();
+  } else if (displayValue?.value) {
+    displayValue = displayValue.value;
+  } else if (displayValue !== '') {
+    displayValue = JSON.stringify(displayValue);
+  }
+  return displayValue;
+}
 
 interface Props {
   defaultValue?: FieldValue;
@@ -54,11 +74,7 @@ function FieldValueEditor({
   }
 
   function onFormValueChange(value: Record<string, any>): void {
-    let val = Object.values(value)[0];
-    if ((val as any).value) {
-      val = (val as any).value;
-    }
-    setValue((v) => ({ ...v, staticValue: val }));
+    setValue((v) => ({ ...v, staticValue: Object.values(value)[0] }));
   }
 
   const valueSetterClassName = useCss({
@@ -79,8 +95,8 @@ function FieldValueEditor({
     });
   }
   variable = variableOptions?.find(({ value }) => value === variable)?.label || variable;
-  staticValue = isArray(staticValue) ? staticValue.join(',') : staticValue;
-  const displayValue = staticValue || variable;
+  let displayValue = staticValue || variable;
+  displayValue = parseDisplayValue(displayValue);
 
   return (
     <>

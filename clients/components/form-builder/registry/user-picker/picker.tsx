@@ -36,12 +36,12 @@ const Picker = ({ value = [], onChange, isMy, rangeList }: Props) => {
   useQuery(
     ['query_user_picker_', window.USER.dep.id, appID],
     () => searchUser(appID, { depID: window.USER.dep.id }), {
-    onSuccess(data: Res) {
-      const users = (data.data || []);
-      
-      setMyDepUsers(users);
-    },
-  });
+      onSuccess(data: Res) {
+        const users = (data.data || []);
+
+        setMyDepUsers(users);
+      },
+    });
 
   const [visible, setVisible] = useState(false);
 
