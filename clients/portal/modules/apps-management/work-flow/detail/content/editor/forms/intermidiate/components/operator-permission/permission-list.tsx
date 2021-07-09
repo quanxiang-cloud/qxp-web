@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, ChangeEvent, useEffect, createRef, Ref } from 'react';
 
 import Toggle from '@c/toggle';
 import Icon from '@c/icon';
@@ -18,6 +18,18 @@ interface Props {
 
 export default function PermissionList({ label, operationData, type, onChange }: Props): JSX.Element | null {
   const operation = operationData[type];
+  const [buttonTextRefs, setButtonTextRefs] = useState<Ref<HTMLInputElement>[]>([]);
+
+  useEffect(() => {
+    if (!operation?.length) {
+      return;
+    }
+    setButtonTextRefs((buttonTextRefs) => {
+      return Array(operation.length).fill(0).map((_, i) => {
+        return buttonTextRefs[i] || createRef();
+      });
+    });
+  }, [operation?.length]);
 
   function handleChange(operatorPermission: OperationPermissionType): void {
     onChange({ operatorPermission });
@@ -42,6 +54,29 @@ export default function PermissionList({ label, operationData, type, onChange }:
     });
   }
 
+  function handleButtonTextChange(type: 'system' | 'custom', op: Operation) {
+    return (v: ChangeEvent<HTMLInputElement>) => onUpdateOperation(type, op, {
+      text: v.target.value,
+    });
+  }
+
+  function handleResetButtonText(type: 'system' | 'custom', op: Operation, index: number): () => void {
+    return () => {
+      if (buttonTextRefs[index]) {
+        (buttonTextRefs[index] as any).current.value = op.name;
+      }
+      onUpdateOperation(type, op, {
+        text: op.name,
+      });
+    };
+  }
+
+  function handleCheckReasonRequired(type: 'system' | 'custom', op: Operation) {
+    return (checked: boolean) => onUpdateOperation(type, op, {
+      reasonRequired: !!checked,
+    });
+  }
+
   if (!operation?.length) {
     return null;
   }
@@ -51,7 +86,7 @@ export default function PermissionList({ label, operationData, type, onChange }:
       <div className="text-caption-no-color text-gray-400 py-10 px-10 shadow-header">
         {label}
       </div>
-      {operation.map((op) => {
+      {operation.map((op, index) => {
         return (
           <div
             key={op.value || op.name}
@@ -71,12 +106,11 @@ export default function PermissionList({ label, operationData, type, onChange }:
               {(op.text || op.name) && (
                 <>
                   <input
+                    ref={buttonTextRefs[index] as any}
                     className="w-full pl-12 py-8 pr-36"
                     maxLength={30}
-                    value={op.text}
-                    onChange={(v) => onUpdateOperation(type, op, {
-                      text: v.target.value,
-                    })}
+                    defaultValue={op.text}
+                    onChange={handleButtonTextChange(type, op)}
                   />
                   {op.text !== op.name && (
                     <Tooltip
@@ -90,9 +124,7 @@ export default function PermissionList({ label, operationData, type, onChange }:
                         name="refresh"
                         size={20}
                         className="cursor-pointer"
-                        onClick={() => onUpdateOperation(type, op, {
-                          text: op.name,
-                        })}
+                        onClick={handleResetButtonText(type, op, index)}
                       />
                     </Tooltip>
                   )}
@@ -114,9 +146,7 @@ export default function PermissionList({ label, operationData, type, onChange }:
               <div className="flex flex-1 justify-center">
                 <Toggle
                   defaultChecked={op.reasonRequired}
-                  onChange={(checked) => onUpdateOperation(type, op, {
-                    reasonRequired: !!checked,
-                  })}
+                  onChange={handleCheckReasonRequired(type, op)}
                 />
               </div>
             ) : <div className="flex-1 text-center">-</div>}
