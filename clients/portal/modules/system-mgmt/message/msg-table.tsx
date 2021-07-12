@@ -105,25 +105,24 @@ const MsgTable = ({ refresh }: Props) => {
   const [previewData, setPreviewData] = useState<any>(null);
   const [modifyModal, setModifyModal] = useState<any>({ visible: false, id: undefined });
   const [modifyData, setModifyData] = useState<any>(null);
-  const [modalInfo, setModalInfo] = useState({ visible: false, id: '' });
   const sendMessageRef = useRef<any>();
+  const delMsgIdRef = useRef<any>('');
 
   const openMsgDelModal = () => {
     const msgDelModal = Modal.open({
       title: '删除消息',
-      content: '确定要删除该条消息吗？删除后不可恢复。',
+      content: (<p className="p-20">确定要删除该条消息吗？删除后不可恢复。</p>),
       onConfirm: () => {
-        deleteMsgById(modalInfo.id)
-          .then((data) => {
-            if (data && data.code == 0) {
-              Message.success('操作成功');
-              refresh();
-              refreshMsg();
-              closeModal();
-              msgDelModal.close();
-            } else {
-              Message.error('操作失败');
-            }
+        deleteMsgById(delMsgIdRef.current)
+          .then(() => {
+            Message.success('操作成功');
+            refresh();
+            refreshMsg();
+            closeModal();
+            msgDelModal.close();
+          })
+          .catch(() => {
+            Message.error('操作失败');
           });
       },
       onCancel: closeModal,
@@ -131,7 +130,7 @@ const MsgTable = ({ refresh }: Props) => {
   };
 
   const closeModal = () => {
-    setModalInfo({ visible: false, id: '' });
+    delMsgIdRef.current = '';
   };
 
   const { isLoading, isError } = requestInfo;
@@ -170,6 +169,12 @@ const MsgTable = ({ refresh }: Props) => {
         Message.warning('异常查询');
       });
   }, [modifyModal]);
+
+  useEffect(() => {
+    return () => {
+      delMsgIdRef.current = null;
+    };
+  }, []);
 
   const confirmSend = () => {
     const params = {
@@ -333,8 +338,8 @@ const MsgTable = ({ refresh }: Props) => {
         };
 
         const confirmDelete = () => {
+          delMsgIdRef.current = itm.id;
           openMsgDelModal();
-          setModalInfo({ visible: true, id: itm.id });
         };
 
         const handleModifyModal = () => setModifyModal({ visible: true, id: itm.id });
@@ -473,7 +478,7 @@ const MsgTable = ({ refresh }: Props) => {
           {modifyData &&
             (<SendMessage
               donotShowHeader
-              className={styles.draftModal}
+              className={cs(styles.draftModal, 'p-20') }
               handleClose={handleModifyModalClose}
               modifyData={modifyData}
               ref={sendMessageRef}
