@@ -39,7 +39,7 @@ function AllApprovals(): JSX.Element {
           />
         </Select>
       </div>
-      <TaskList tasks={store.approvals} store={store} taskType='all' type="APPLY_PAGE" />
+      <TaskList tasks={store.approvals} store={store} taskType='all' type="ALL_PAGE" />
       <Pagination current={store.pageNumber} total={store.total} pageSize={store.pageSize} onChange={store.paginate} />
     </div>
   );
