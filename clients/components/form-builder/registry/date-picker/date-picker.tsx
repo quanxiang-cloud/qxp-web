@@ -34,7 +34,7 @@ function DatePicker(props: DatePickerCProps): JSX.Element {
   if (props.readOnly) {
     return (
       <p className='preview-text'>
-        {props.value ? moment(props.value).format(props.format as string) : 'N/A'}
+        {props.value ? moment(props.value).format(props.format as string || 'YYYY-MM-DD') : 'N/A'}
       </p>
     );
   }
@@ -42,7 +42,7 @@ function DatePicker(props: DatePickerCProps): JSX.Element {
   return (
     <DatePickerAnt
       {...props}
-      picker={getPicker(props.format as string || '')}
+      picker={getPicker(props.format as string || 'YYYY-MM-DD')}
       onChange={handleChange}
       value={props.value && moment(props.value)}
     />
