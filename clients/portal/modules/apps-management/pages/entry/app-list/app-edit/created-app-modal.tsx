@@ -51,7 +51,7 @@ function CreatedAppModal({ onCancel }: Props) {
         },
       ]}
     >
-      <CreatedEditApp ref={formRef} />
+      <CreatedEditApp className="p-20" ref={formRef} />
     </Modal>
   );
 }

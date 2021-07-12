@@ -57,6 +57,7 @@ export default function DirectLeaderChoose({
       ]}
     >
       <DirectLeaderPicker
+        className="p-20"
         currentLeader={leader}
         onChange={setLeader}
       />

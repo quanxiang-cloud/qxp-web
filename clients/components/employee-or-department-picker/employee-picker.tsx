@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery } from 'react-query';
 import { observer } from 'mobx-react';
+import cs from 'classnames';
 
 import TextHeader from '@c/text-header';
 import SearchInput from '@c/form/input/search-input';
@@ -16,12 +17,13 @@ import EmployeeSelectTree from './employee-select-tree';
 import OwnerStore from './store';
 
 interface Props {
-    employees?: EmployeeOrDepartmentOfRole[];
     onChange: (departmentsOrEmployees: EmployeeOrDepartmentOfRole[]) => void;
+    employees?: EmployeeOrDepartmentOfRole[];
+    className?: string;
 }
 
 function EmployeePicker({
-  employees = [], onChange,
+  employees = [], onChange, className,
 }: Props) {
   const [store, setStore] = useState<OwnerStore>();
 
@@ -51,7 +53,7 @@ function EmployeePicker({
   }
 
   return (
-    <div className="flex flex-row w-full h-full">
+    <div className={cs('flex flex-row w-full h-full', className)}>
       <div className="mr-8">
         <SearchInput
           className="mb-16"

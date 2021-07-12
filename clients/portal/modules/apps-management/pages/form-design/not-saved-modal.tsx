@@ -44,7 +44,7 @@ function NotSavedModal({ onCancel, onAbandon, onSaveAfter }: Props): JSX.Element
         },
       ]}
     >
-      当前有尚未保存的更改，离开当前页面前是否需要保存这些更改？
+      <p className="p-20">当前有尚未保存的更改，离开当前页面前是否需要保存这些更改？</p>
     </Modal>
   );
 }

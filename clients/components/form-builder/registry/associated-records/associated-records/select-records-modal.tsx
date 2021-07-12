@@ -57,6 +57,7 @@ export default function SelectRecordsModal({
       footerBtns={multiple ? btns : undefined}
     >
       <FormDataTable
+        className="p-20"
         allowRequestData
         showCheckbox={multiple}
         customColumns={multiple ? [] : customColumns}

@@ -100,6 +100,7 @@ const Picker = ({ value = [], onChange, isMy, rangeList, ...p }: Props) => {
 
         >
           <EmployeePicker
+            className="p-20"
             employees={defaultValue}
             onChange={handleChange}
           />

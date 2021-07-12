@@ -34,7 +34,7 @@ export const ModalContent = ({ status, handleClose, confirmSend, data }: any) =>
         },
       ]}
     >
-      <PreviewMsg prevData={data} isPreview />
+      <PreviewMsg className="p-20" prevData={data} isPreview />
     </Modal>
   );
 };

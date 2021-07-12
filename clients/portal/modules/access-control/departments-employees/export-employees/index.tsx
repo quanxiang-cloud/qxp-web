@@ -102,7 +102,7 @@ export default function index({ closeModal, onSubmit }: Props) {
         },
       ]}
     >
-      <div className="h-full overflow-hidden flex">
+      <div className="h-full p-20 overflow-hidden flex">
         <div className="flex-2 overflow-auto">
           <div className="text-gray-900 flex justify-between items-center text-h6">选择部门</div>
           <DepartmentSelectTree

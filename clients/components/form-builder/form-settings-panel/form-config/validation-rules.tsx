@@ -93,7 +93,7 @@ function EditValidationModal({ onClose, ruleID }: EditValidationModalProps): JSX
         onClose={onClose}
         footerBtns={[{ key: '取消', text: '确定', onClick: onClose, modifier: 'primary' }]}
       >
-        <div className="form-validation-formula">
+        <div className="form-validation-formula p-20">
           请先添加表单项
         </div>
       </Modal>
@@ -110,7 +110,7 @@ function EditValidationModal({ onClose, ruleID }: EditValidationModalProps): JSX
         { key: '保存', text: '保存', onClick: onSave, modifier: 'primary' },
       ]}
     >
-      <div>
+      <div className="p-20">
         <div className="mb-8">规则名称:</div>
         <input
           type="text"
@@ -118,54 +118,54 @@ function EditValidationModal({ onClose, ruleID }: EditValidationModalProps): JSX
           value={ruleName}
           onChange={(e) => setRuleName(e.target.value)}
         />
-      </div>
-      <div className="form-validation-formula">
-        <div className="mb-8">表单字段:</div>
-        <div className="mb-16">
-          {fields.map(({ fieldName, title }) => {
-            return (
-              <span
-                key={fieldName}
-                onClick={() => addField({ key: fieldName, name: title })}
-                className="inline-block mb-8 p-2 bg-gray-100 mr-4 border border-gray-300 cursor-pointer"
-              >
-                {title}
-              </span>
-            );
-          })}
+        <div className="form-validation-formula">
+          <div className="mb-8">表单字段:</div>
+          <div className="mb-16">
+            {fields.map(({ fieldName, title }) => {
+              return (
+                <span
+                  key={fieldName}
+                  onClick={() => addField({ key: fieldName, name: title })}
+                  className="inline-block mb-8 p-2 bg-gray-100 mr-4 border border-gray-300 cursor-pointer"
+                >
+                  {title}
+                </span>
+              );
+            })}
+          </div>
         </div>
+        <div className="mb-8">比较符号和函数:</div>
+        <div className="mb-16">
+          {Operators.map((operator) => (
+            <span
+              key={operator}
+              onClick={() => addText(operator)}
+              className="inline-block mb-8 p-2 bg-gray-100 mr-4 border border-gray-300 cursor-pointer"
+            >
+              {operator}
+            </span>
+          ))}
+        </div>
+        <div className="mb-8">验证公式:</div>
+        <FormulaEditor
+          ref={formulaEditorRef}
+          customRules={fields.map(({ title, fieldName }) => {
+            return { key: fieldName, name: title, type: 'field' };
+          })}
+          className="block mb-16"
+          defaultValue={validation.formula}
+        />
+        {errorMessage && (
+          <p className="text-red-600 mb-16">{errorMessage}</p>
+        )}
+        <div className="mb-8">错误提示:</div>
+        <input
+          type="text"
+          className="input mb-8"
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+        />
       </div>
-      <div className="mb-8">比较符号和函数:</div>
-      <div className="mb-16">
-        {Operators.map((operator) => (
-          <span
-            key={operator}
-            onClick={() => addText(operator)}
-            className="inline-block mb-8 p-2 bg-gray-100 mr-4 border border-gray-300 cursor-pointer"
-          >
-            {operator}
-          </span>
-        ))}
-      </div>
-      <div className="mb-8">验证公式:</div>
-      <FormulaEditor
-        ref={formulaEditorRef}
-        customRules={fields.map(({ title, fieldName }) => {
-          return { key: fieldName, name: title, type: 'field' };
-        })}
-        className="block mb-16"
-        defaultValue={validation.formula}
-      />
-      {errorMessage && (
-        <p className="text-red-600 mb-16">{errorMessage}</p>
-      )}
-      <div className="mb-8">错误提示:</div>
-      <input
-        type="text"
-        className="input mb-8"
-        value={message}
-        onChange={(e) => setMessage(e.target.value)}
-      />
     </Modal>
   );
 }

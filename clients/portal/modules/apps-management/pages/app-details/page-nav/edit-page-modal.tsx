@@ -94,7 +94,7 @@ function EditPageModal({ pageInfo, onCancel, onSubmit, appID }: Props) {
         text: '确定',
       }]}
     >
-      <Form layout='vertical' ref={ref}>
+      <Form className="p-20" layout='vertical' ref={ref}>
         <Form.TextField
           name='name'
           defaultValue={name}

@@ -115,7 +115,7 @@ export default function EditDepartment({ department, closeModal }: Props) {
         },
       ]}
     >
-      <Form layout="vertical" ref={formRef}>
+      <Form className="p-20" layout="vertical" ref={formRef}>
         <TextField
           name="departmentName"
           label="部门名称"

@@ -55,7 +55,7 @@ function AppSetStatusModal({ onCancel, appID, status = 'publish' }: Props) {
         },
       ]}
     >
-      <div className='flex-1'>
+      <div className='flex-1 p-20'>
         <p className='app-status-modal-title text-yellow-600'>
           <Icon size={20} className='mr-8 app-icon-color-inherit' name='error_outline' />
           {TEXT[status].title}

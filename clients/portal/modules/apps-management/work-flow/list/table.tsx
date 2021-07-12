@@ -236,7 +236,7 @@ export default function WorkFlowTable({ type }: Props): JSX.Element {
             },
           ]}
         >
-          <p className="text-h5">
+          <p className="text-h5 p-20">
             确定要删除工作流
             <span className="font-bold mx-8">
               {state.currentDeleteWorkFlow?.name}

@@ -143,7 +143,7 @@ export default function EditEmployeesModal(
           },
         ]}
       >
-        <Form layout="vertical" ref={formRef}>
+        <Form className="p-20" layout="vertical" ref={formRef}>
           <TextField
           // @ts-ignore
             validateOnBlur

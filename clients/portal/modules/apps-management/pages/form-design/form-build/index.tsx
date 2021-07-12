@@ -46,7 +46,7 @@ const FormPage = () => {
       {previewModalVisible && (
         <Modal title="预览表单" onClose={handlePreviewClose}>
           <FormRenderer
-            className="w-588"
+            className="w-588 p-20"
             schema={store.formStore.schema}
             onSubmit={(value) => toast.success('提交表单：' + JSON.stringify(value))}
           >

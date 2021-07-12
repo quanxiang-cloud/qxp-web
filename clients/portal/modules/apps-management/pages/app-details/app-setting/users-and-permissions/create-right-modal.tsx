@@ -47,7 +47,7 @@ function CreateRightModal({ onCancel }: Props) {
         },
       ]}
     >
-      <BasicInfoForm ref={formRef} />
+      <BasicInfoForm className="p-20" ref={formRef} />
     </Modal>
   );
 }
