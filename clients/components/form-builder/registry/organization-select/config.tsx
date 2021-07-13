@@ -9,7 +9,7 @@ import { useQuery } from 'react-query';
 
 import { EnumOptionalRange, EnumMultiple } from './messy/enum';
 import { DefaultConfig } from './convertor';
-import OrganizationDefault from './organization-default';
+import OrganizationDefault from './organization-select';
 import PickerCascader from './picker-cascader';
 import { StoreContext } from '../../context';
 import { searchOrganziation } from './messy/api';
@@ -44,8 +44,22 @@ const OrganizationPickerConfigForm = ({ initialValue, onChange }: Props): JSX.El
         <Field name="required" title="是否必填" component={Switch} />
         <Field name="multiple" title="部门选项" component={Radio.Group} dataSource={EnumMultiple} />
         <Field name="optionalRange" title="可选范围" component={Radio.Group} dataSource={EnumOptionalRange} />
-        <Field isMy={initialValue.optionalRange == 'myDep'} visible={initialValue.optionalRange != 'all'} name="rangeList" title="可选列表" mode={'multiSelect'} component={PickerCascader} />
-        <Field name="defaultValues" optionalRange={initialValue.optionalRange} multiple={initialValue.multiple} title="默认值" rangeList={initialValue.rangeList} component={OrganizationDefault} />
+        <Field
+          isMy={initialValue.optionalRange == 'myDep'}
+          visible={initialValue.optionalRange != 'all'}
+          name="rangeList"
+          title="可选列表"
+          mode={'multiSelect'}
+          component={PickerCascader}
+        />
+        <Field
+          name="defaultValues"
+          optionalRange={initialValue.optionalRange}
+          multiple={initialValue.multiple}
+          title="默认值"
+          rangeList={initialValue.rangeList}
+          component={OrganizationDefault}
+        />
       </Form>
     </div>
   );

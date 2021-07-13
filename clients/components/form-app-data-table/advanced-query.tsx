@@ -8,7 +8,6 @@ import ControlPopper from '@c/control-popper';
 type Props = {
   fields: Fields[];
   search: (params: { tag: 'or' | 'and', condition: Condition[] }) => void;
-  initConditions?: Condition[];
   tag?: 'or' | 'and';
 }
 
@@ -21,7 +20,8 @@ const modifiers = [
   },
 ];
 
-function AdvancedQuery({ fields, search, initConditions, tag }: Props): JSX.Element {
+function AdvancedQuery({ fields, search, tag }: Props): JSX.Element {
+  const [conditionCount, setConditionCount] = useState(0);
   const [visible, setVisible] = useState(false);
   const popperRef = useRef<any>();
   const reference = useRef<any>();
@@ -30,6 +30,7 @@ function AdvancedQuery({ fields, search, initConditions, tag }: Props): JSX.Elem
   const handleEmpty = () => {
     dataFilterRef.current?.empty();
     search({ tag: 'and', condition: [] });
+    setConditionCount(0);
     setVisible(false);
   };
 
@@ -39,10 +40,11 @@ function AdvancedQuery({ fields, search, initConditions, tag }: Props): JSX.Elem
     }
 
     const { arr, tag } = dataFilterRef.current.getDataValues();
-    if (arr.length) {
+    if (arr.length || conditionCount !== 0) {
       search({ tag, condition: arr });
       setVisible(false);
     }
+    setConditionCount(arr.length);
   };
 
   return (
@@ -50,7 +52,7 @@ function AdvancedQuery({ fields, search, initConditions, tag }: Props): JSX.Elem
       <Icon
         clickable
         onClick={() => setVisible(!visible)}
-        type={initConditions?.length ? 'primary' : 'dark'}
+        type={conditionCount ? 'primary' : 'dark'}
         ref={reference}
         size={30}
         name='filter_alt'
@@ -66,7 +68,6 @@ function AdvancedQuery({ fields, search, initConditions, tag }: Props): JSX.Elem
         <div className='advanced-query-container'>
           <DataFilter
             initTag={tag as string}
-            initConditions={initConditions as Condition[]}
             ref={dataFilterRef} fields={fields}
           />
           <div className='mt-20 flex justify-end gap-x-16'>

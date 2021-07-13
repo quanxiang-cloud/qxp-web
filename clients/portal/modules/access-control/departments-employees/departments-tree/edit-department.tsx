@@ -11,7 +11,7 @@ import { departmentToTreeNode } from '@lib/utils';
 import { createDepartment, editDepartment, getERPTree } from '../api';
 
 const { TextField } = Form;
-const HELP_TEXT_NORMAL = '名称不超过 30 个字符，请修改！';
+const HELP_TEXT_NORMAL = '部门名称不超过 30 个字符';
 const HELP_TEXT_REG_ERROR = '只能包含汉字、英文、横线("-")以及下划线("_")，请修改！';
 
 interface Props {
@@ -115,7 +115,7 @@ export default function EditDepartment({ department, closeModal }: Props) {
         },
       ]}
     >
-      <Form layout="vertical" ref={formRef}>
+      <Form className="p-20" layout="vertical" ref={formRef}>
         <TextField
           name="departmentName"
           label="部门名称"

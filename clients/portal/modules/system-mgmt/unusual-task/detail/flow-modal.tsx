@@ -88,7 +88,7 @@ function FlowModal({ flowInstanceId, closeModal }: Props): JSX.Element | null {
       height={600}
     >
       <ReactFlowProvider>
-        <div className="w-full h-full reactflow-wrapper" ref={setFlowParentElement}>
+        <div className="w-full h-full reactflow-wrapper p-20" ref={setFlowParentElement}>
           {flowParentElement && (
             <FlowRender elements={elements} />
           )}

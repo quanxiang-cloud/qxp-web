@@ -331,7 +331,7 @@ function ContentWithoutRef({
 
   return (
     <div
-      className="w-full overflow-hidden"
+      className={cs('w-full overflow-hidden', className)}
       style={{ height: 'calc(100% - 24px)' }}
     >
       <div className={styles.panel}>
@@ -527,7 +527,10 @@ function ContentWithoutRef({
           },
         ]}
       >
-        <PreviewMsg prevData={prevData} isPreview canMultiDownload={false} canDownload={false} />
+        <PreviewMsg
+          className="p-20"
+          prevData={prevData} isPreview canMultiDownload={false}
+          canDownload={false} />
       </Modal>)}
     </div>);
 }

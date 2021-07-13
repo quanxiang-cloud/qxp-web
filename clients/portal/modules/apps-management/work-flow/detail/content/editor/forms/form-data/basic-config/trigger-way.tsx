@@ -8,9 +8,7 @@ import React, {
 import cs from 'classnames';
 
 import Select from '@c/select';
-import useObservable from '@lib/hooks/use-observable';
-import store from '@flowEditor/store';
-import type { StoreValue, TriggerWayValue, TriggerValue } from '@flowEditor/type';
+import type { TriggerWayValue, TriggerValue } from '@flowEditor/type';
 
 import { ConditionItemOptions } from './condition-item';
 
@@ -19,11 +17,11 @@ export default forwardRef(function TriggerWay(
     triggerWayValue: TriggerValue;
     formFieldOptions: ConditionItemOptions;
     onValueChange: (arg: TriggerValue) => void;
+    validating: boolean;
   },
   ref?: Ref<HTMLInputElement>,
 ) {
-  const { validating } = useObservable<StoreValue>(store);
-  const { formFieldOptions, onValueChange, triggerWayValue, ...inputProps } = props;
+  const { formFieldOptions, onValueChange, triggerWayValue, validating, ...inputProps } = props;
   const { triggerWay, whenAlterFields } = triggerWayValue;
 
   function onTypeChange(name: TriggerWayValue) {

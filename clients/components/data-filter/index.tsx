@@ -1,14 +1,14 @@
 import React, { useState, useEffect, forwardRef, useImperativeHandle } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import moment from 'moment';
-import { isArray, uniqueId } from 'lodash';
+import { uniqueId } from 'lodash';
 
 import Select from '@c/select';
 import FieldSwitch from '@c/field-switch';
 import Icon from '@c/icon';
 import formFieldWrap from '@c/form-field-wrap';
 
-import { CONDITION, getOperators, FILTER_FIELD } from './utils';
+import { CONDITION, getOperators, FILTER_FIELD, getCondition } from './utils';
 import './index.scss';
 
 type Props = {
@@ -37,36 +37,13 @@ export type RefProps = {
   getDataValues: () => ConditionItemMap
 }
 
-function getCondition(formData: any, condition: FieldCondition) {
-  let value = formData[`condition-${condition.id}`];
-  switch (condition.filter?.type) {
-  case 'datetime':
-    value = isArray(value) ? value.map((date: string) => {
-      return moment(date).format();
-    }) : [moment(value).format()];
-    break;
-  case 'number':
-    value = isArray(value) ? value.map((_value) => Number(_value)) : [Number(value)];
-    break;
-  default:
-    value = isArray(value) ? value : [value];
-    break;
-  }
-
-  return {
-    key: formData[`field-${condition.id}`],
-    op: formData[`operators-${condition.id}`],
-    value,
-  };
-}
-
-function getValue(field: Fields, initValue: Array<string | number | Date> | undefined) {
+function getValue(field: Fields, initValue: Array<string | number | Date | LabelValue> | undefined) {
   if (!initValue || initValue.length === 0) {
     return '';
   }
 
   if (field.type === 'datetime') {
-    return Array.isArray(initValue) ? initValue.map((value) => moment(value)) : moment(initValue);
+    return Array.isArray(initValue) ? initValue.map((value) => moment(value as string)) : moment(initValue);
   }
 
   if (field.enum && field.enum.length) {
@@ -152,13 +129,20 @@ function DataFilter({ fields, className = '', initConditions, initTag = 'and' }:
       if (
         formData[`field-${condition.id}`] &&
         formData[`operators-${condition.id}`] &&
-        value
+        value && condition.filter
       ) {
         if (Array.isArray(value) && value.length === 0) {
           return;
         }
 
-        _conditions.push(getCondition(formData, condition));
+        _conditions.push(
+          getCondition(
+            condition.filter,
+            formData[`condition-${condition.id}`],
+            condition.filter.id,
+            formData[`operators-${condition.id}`],
+          ),
+        );
       }
     });
 
@@ -176,8 +160,15 @@ function DataFilter({ fields, className = '', initConditions, initTag = 'and' }:
     return trigger().then((flag) => {
       if (flag) {
         const formData = getValues();
-        const _conditions = conditions.map((condition) => {
-          return getCondition(formData, condition);
+        const _conditions = conditions.filter((condition)=>{
+          return !!condition.filter;
+        }).map((condition) => {
+          return getCondition(
+            condition.filter as Fields,
+            formData[`condition-${condition.id}`],
+            (condition.filter as Fields).id,
+            formData[`operators-${condition.id}`],
+          );
         });
 
         return {

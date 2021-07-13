@@ -75,6 +75,7 @@ const Picker = ({ value: defaultValue = [], onChange }: Props) => {
 
         >
           <DepartmentPicker
+            className="p-20"
             departments={valueListRef.current}
             onChange={handleChange}
           />

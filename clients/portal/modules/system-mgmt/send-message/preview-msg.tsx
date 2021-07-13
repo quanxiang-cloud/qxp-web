@@ -21,6 +21,7 @@ const PreviewMsg = ({
   isPreview,
   canDownload,
   canMultiDownload,
+  className,
 }: Props): JSX.Element => {
   if (!prevData) {
     return (
@@ -44,7 +45,7 @@ const PreviewMsg = ({
   ].join(' · ');
 
   return (
-    <div className={styles.previewMsg}>
+    <div className={cs(styles.previewMsg, className)}>
       <div className={styles.previewMsgContent}>
         <div className={styles.title}>{title}</div>
         <div className={styles.info}>{infoText}</div>

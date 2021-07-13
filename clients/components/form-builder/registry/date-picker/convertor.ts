@@ -15,6 +15,7 @@ export interface DatePickerConfig {
   valueFormat: ValueFormat;
   required: boolean;
   defaultValueFrom: FormBuilder.DefaultValueFrom;
+  defaultValueLinkage?: FormBuilder.DefaultValueLinkage;
 }
 
 export const defaultConfig: DatePickerConfig = {
@@ -26,6 +27,7 @@ export const defaultConfig: DatePickerConfig = {
   valueFormat: 'YYYY-MM-DD',
   required: false,
   defaultValueFrom: 'customized',
+  defaultValueLinkage: undefined,
 };
 
 export function toSchema(value: typeof defaultConfig): ISchema {
@@ -48,6 +50,7 @@ export function toSchema(value: typeof defaultConfig): ISchema {
       sortable: value.sortable,
       permission: 3,
       defaultValueFrom: value.defaultValueFrom || 'customized',
+      defaultValueLinkage: value.defaultValueLinkage,
     },
   };
 }
@@ -70,5 +73,6 @@ export function toConfig(schema: ISchema): DatePickerConfig {
     required: !!schema.required,
     // todo implement this
     defaultValueFrom: schema['x-internal']?.defaultValueFrom || 'customized',
+    defaultValueLinkage: schema['x-internal']?.defaultValueLinkage,
   };
 }

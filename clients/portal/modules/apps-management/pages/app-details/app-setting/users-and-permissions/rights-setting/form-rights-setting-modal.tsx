@@ -121,12 +121,12 @@ function RightsSettingModal({ onCancel, rightsGroupID, pageForm }: Props) {
       ]}
     >
       {loading && (
-        <div className='h-56'>
+        <div className='h-56 p-20'>
           <PageLoading />
         </div>
       )}
       {!loading && fields.length !== 0 && (
-        <div>
+        <div className="p-20">
           <Tab
             className='mb-16'
             activeTab={activeTab}
@@ -167,7 +167,7 @@ function RightsSettingModal({ onCancel, rightsGroupID, pageForm }: Props) {
         </div>
       )}
       {!loading && fields.length === 0 && (
-        <div className='h-56'>
+        <div className='h-56 p-20'>
           <AbsoluteCentered>
             未配置表单
           </AbsoluteCentered>

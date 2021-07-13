@@ -1,8 +1,8 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useHistory } from 'react-router';
 import { useQuery } from 'react-query';
 import { observer } from 'mobx-react';
-import { pick } from 'lodash';
+import { pick, get } from 'lodash';
 
 import Breadcrumb from '@c/breadcrumb';
 import { useURLSearch } from '@lib/hooks';
@@ -31,9 +31,13 @@ const globalActionKeys = [
 
 function ApprovalDetail(): JSX.Element {
   const [search] = useURLSearch();
+  const [formValues, setFormValues] = useState<Record<string, any>>({});
   const listType = search.get('list') || 'todo';
-  const { processInstanceID, taskID, type } = useParams<
-  { processInstanceID: string; taskID: string, type: string }>();
+  const { processInstanceID, taskID, type } = useParams<{
+    processInstanceID: string;
+    taskID: string,
+    type: string
+  }>();
   const history = useHistory();
 
   const {
@@ -43,20 +47,29 @@ function ApprovalDetail(): JSX.Element {
     () => apis.getTaskFormById(processInstanceID, { type }),
   );
 
+  const getTask = (): Record<string, any> => get(data, 'taskDetailModels[0]', {});
+
   useEffect(() => {
     document.title = '流程详情';
   }, []);
 
+  useEffect(() => {
+    setFormValues(getTask().formData || {});
+  }, [data]);
+
   const renderSchemaForm = (task: any): JSX.Element | null => {
-    const formSchema = task?.fieldPermission?.custom ?
-      wrapSchemaWithFieldPermission(task.formSchema.table, task?.fieldPermission?.custom) :
-      task.formSchema.table;
+    const extraPermissions = [
+      ...(task?.fieldPermission?.custom || []),
+      ...(task?.fieldPermission?.system || []),
+    ];
+    const formSchema = wrapSchemaWithFieldPermission(task.formSchema.table, extraPermissions);
+
     return (
       <div className='task-form'>
         <FormRenderer
           defaultValue={task.formData}
-          schema={formSchema}
-          onFormValueChange={task.formData}
+          schema={task?.fieldPermission ? formSchema : task.formSchema.table}
+          onFormValueChange={setFormValues}
         />
       </div>
     );
@@ -71,19 +84,18 @@ function ApprovalDetail(): JSX.Element {
     return <ErrorTips />;
   }
 
-  const tasks = data.taskDetailModels;
+  const task = getTask();
 
   return (
     <div>
       <Breadcrumb
         segments={[
           {
-            key: 'back', text: '返回', render: () =>
-              (
-                <span className="inline-flex items-center cursor-pointer" onClick={() => history.goBack()}>
-                  <Icon name="keyboard_backspace" className="mr-6" />返回
-                </span>
-              ),
+            key: 'back', text: '返回', render: () => (
+              <span className="inline-flex items-center cursor-pointer" onClick={() => history.goBack()}>
+                <Icon name="keyboard_backspace" className="mr-6" />返回
+              </span>
+            ),
           },
           { key: 'list', text: '审批列表', path: `/approvals?list=${listType}` },
           { key: 'current', text: data?.flowName },
@@ -96,12 +108,12 @@ function ApprovalDetail(): JSX.Element {
           {
             <>
               <Toolbar
-                currTask={tasks[0]}
-                permission={tasks[0]?.operatorPermission || {}}
-                globalActions={pick(tasks[0] || {}, globalActionKeys)}
+                currTask={task}
+                permission={task?.operatorPermission || {}}
+                globalActions={pick(task, globalActionKeys)}
                 onClickAction={store.handleClickAction}
               />
-              {renderSchemaForm(tasks[0])}
+              {renderSchemaForm(task)}
             </>
           }
 
@@ -123,7 +135,7 @@ function ApprovalDetail(): JSX.Element {
           />
         </Panel>
       </div>
-      <ActionModals />
+      <ActionModals flowName={data?.flowName} getFormData={() => formValues} />
     </div>
   );
 }

@@ -147,6 +147,7 @@ export default function FilterConfigModal(
   return (
     <Modal onClose={onClose}>
       <SchemaForm
+        className="p-20"
         actions={actions}
         components={COMPONENTS}
         defaultValue={filter}

@@ -1,19 +1,32 @@
 import React, { useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
-import { Cascader } from 'antd';
-import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
+import { Cascader, CascaderProps } from 'antd';
 import { CascaderOptionType, CascaderValueType } from 'antd/lib/cascader';
 import { omit, last } from 'lodash';
 
 import { getDatasetById } from '@portal/modules/system-mgmt/dataset/api';
 
-interface Props {
+export type DefaultValueFrom = 'customized' | 'predefined-dataset';
+
+interface FetchOptions extends CascaderProps {
   predefinedDataset?: string;
-  defaultValueFrom: 'customized' | 'predefined-dataset';
+  defaultValueFrom: DefaultValueFrom;
   options: CascaderOptionType[];
 }
 
-function useFetchOptions({ options, defaultValueFrom, predefinedDataset }: Props) {
+export type CascadeSelectorProps = CascaderProps & {
+  predefinedDataset?: string;
+  defaultValueFrom: DefaultValueFrom;
+  showFullPath?: boolean;
+  onChange: (value: CascaderOptionType) => void;
+  value: CascaderOptionType;
+}
+
+function useFetchOptions({
+  options,
+  defaultValueFrom,
+  predefinedDataset,
+}: FetchOptions): CascaderOptionType[] {
   const [preparedOptions, setOptions] = useState(options || []);
   useEffect(() => setOptions(options), [options, defaultValueFrom]);
 
@@ -44,39 +57,36 @@ function useFetchOptions({ options, defaultValueFrom, predefinedDataset }: Props
   return preparedOptions;
 }
 
-function CascadeSelector(props: ISchemaFieldComponentProps): JSX.Element {
-  const cascadeProps = props.props['x-component-props'];
-  const { predefinedDataset, defaultValueFrom, showFullPath } = props.props['x-internal'];
-  const options = useFetchOptions({ predefinedDataset, defaultValueFrom, options: cascadeProps.options });
+function CascadeSelector({
+  predefinedDataset,
+  defaultValueFrom,
+  showFullPath,
+  value,
+  ...cascadeProps
+}: CascadeSelectorProps): JSX.Element {
+  const options = useFetchOptions({
+    predefinedDataset,
+    defaultValueFrom,
+    options: cascadeProps.options || [],
+  });
 
-  useEffect(() => {
-    // clear cascade when change value source
-    // when initialValue not undefined, is edit mode
-    if (!props.initialValue) {
-      handleChange([], []);
-    }
-  }, [defaultValueFrom]);
-
-  function handleChange(_value: CascaderValueType, selected?: CascaderOptionType[]) {
+  function handleChange(_value: CascaderValueType, selected?: CascaderOptionType[]): void {
     const labelToSave = (selected || []).map(({ label }) => label).join('/');
     const valueToSave = _value.join('/');
-    props.mutators.change({ label: labelToSave, value: valueToSave });
+    cascadeProps && cascadeProps.onChange({ label: labelToSave, value: valueToSave });
   }
 
   return (
     <Cascader
-      {...omit(cascadeProps, 'options')}
-      value={(props.value?.value || '').split('/')}
-      displayRender={() => {
-        const labelParts = (props.value?.label || '').split('/');
-        return showFullPath ? labelParts.join(' / ') : last(labelParts);
+      {...omit(cascadeProps, ['options', 'onChange'])}
+      displayRender={(labels) => {
+        return showFullPath ? labels.join(' / ') : last(labels);
       }}
-      options={options}
+      value={(value?.value as string || '').split('/')}
       onChange={handleChange}
+      options={options}
     />
   );
 }
-
-CascadeSelector.isFieldComponent = true;
 
 export default CascadeSelector;

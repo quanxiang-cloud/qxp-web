@@ -61,7 +61,7 @@ export default function LeaderHandleModal({ user, closeModal }: Props) {
         },
       ]}
     >
-      <div>
+      <div className="p-20">
         <div className='flex items-center'>
           <Icon name="info" size={20} style={{ color: '#D97706' }} className='mr-8' />
           <div className="text-yellow-600 text-14">

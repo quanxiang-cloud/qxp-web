@@ -219,7 +219,7 @@ export default function ImportEmployeesModal({ currDepId, closeModal }: Props) {
             ] : []
         }
       >
-        <div className="w-full text-14">
+        <div className="w-full text-14 p-20">
           {uploadStatus.status === FileUploadStatus.fail && (
             <div className="text-red-600 mb-24 font-semibold flex items-center">
               <Icon

@@ -2,13 +2,22 @@ import React, { MouseEventHandler } from 'react';
 import cs from 'classnames';
 
 import Button from '@c/button';
+import useObservable from '@lib/hooks/use-observable';
+import store from '@flowEditor/store';
+import { StoreValue } from '@flowEditor/type';
 
 interface Props {
   onCancel: () => void;
   onSave: MouseEventHandler;
 }
 
-export default function({ onCancel, onSave }: Props): JSX.Element {
+export default function({ onCancel, onSave }: Props): JSX.Element | null {
+  const { status } = useObservable<StoreValue>(store);
+
+  if (status === 'ENABLE') {
+    return null;
+  }
+
   return (
     <div className={cs(
       'flex justify-end flex-none z-10 bg-gray-100 absolute left-0',

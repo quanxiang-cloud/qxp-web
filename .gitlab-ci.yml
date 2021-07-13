@@ -31,7 +31,6 @@ integrate:
     - qxp-web-runner
   stage: test
   script:
-    - yarn run lint
     - NODE_ENV=production ./node_modules/.bin/webpack --config webpack.config.js
 
 build_all:
@@ -39,7 +38,6 @@ build_all:
     - qxp-web-runner
   stage: build
   only:
-    - master
     - tags
     - /^release\/.*/
   script:
@@ -83,7 +81,7 @@ deploy_staging:
   stage: release
   only:
     - tags
-    - master
+    - /^v(\d+\.)+(\d+)/
   except:
     - branches
   script:

@@ -3,13 +3,10 @@ import cs from 'classnames';
 
 import Toggle from '@c/toggle';
 import Icon from '@c/icon';
-import useObservable from '@lib/hooks/use-observable';
-import store from '@flowEditor/store';
 import type {
   TriggerCondition as TriggerConditionType,
   TriggerConditionExpressionItem,
   TriggerConditionExpression,
-  StoreValue,
   TriggerConditionValue,
   FormDataData,
 } from '@flowEditor/type';
@@ -21,16 +18,17 @@ interface Props {
   formFieldOptions: ConditionItemOptions;
   onChange: (v: Partial<FormDataData>) => void;
   schema: ISchema;
+  validating: boolean;
 }
 
 export default function TriggerCondition({
   value,
   schema,
   formFieldOptions,
+  validating,
   onChange: _onChange,
 }: Props): JSX.Element | null {
   const [openMore, setOpenMore] = useState(!!value?.expr?.length);
-  const { validating } = useObservable<StoreValue>(store);
 
   useEffect(() => {
     setOpenMore(!!value?.expr?.length);

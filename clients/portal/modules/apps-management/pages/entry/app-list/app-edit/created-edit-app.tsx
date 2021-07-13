@@ -5,16 +5,17 @@ import AppIconPicker from '@c/app-icon-picker';
 import { parseJSON } from '@lib/utils';
 
 type Props = {
+  className?: string;
   appInfo?: AppInfo;
 }
 
 const AppIconPickerField = Form.getFormField(AppIconPicker);
 
-function CreatedEditApp({ appInfo }: Props, ref?: React.ForwardedRef<Form>): JSX.Element {
+function CreatedEditApp({ appInfo, className }: Props, ref?: React.ForwardedRef<Form>): JSX.Element {
   const { appName, appIcon = '{}' } = appInfo || {};
 
   return (
-    <Form ref={ref} layout='vertical'>
+    <Form className={className} ref={ref} layout='vertical'>
       <Form.TextField
         name='appName'
         label='应用名称:'

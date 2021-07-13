@@ -1,6 +1,6 @@
 
 import { DefaultConfig, defaultConfig, toSchema, toConfig } from './convertor';
-import Component from './organization-select';
+import Component from './organization-select-wrap';
 import OrganizationPickerConfigForm from './config';
 
 const UserPicker: Omit<FormBuilder.SourceElement<DefaultConfig>, 'displayOrder'> = {

@@ -139,7 +139,7 @@ function DatasetNames(props: Props) {
             },
           ]}
         >
-          <FormAddData ref={formAddRef} />
+          <FormAddData className="p-20" ref={formAddRef} />
         </Modal>
       )}
       {editModal && (
@@ -190,7 +190,11 @@ function DatasetNames(props: Props) {
             },
           ]}
         >
-          <FormAddData ref={formAddRef} editInfo={toJS(store.activeDataset) as DatasetName & { type: DatasetType }} />
+          <FormAddData
+            className="p-20"
+            ref={formAddRef}
+            editInfo={toJS(store.activeDataset) as DatasetName & { type: DatasetType }}
+          />
         </Modal>
       )}
       {deleteModal && (
@@ -225,7 +229,7 @@ function DatasetNames(props: Props) {
             },
           ]}
         >
-          确定删除该数据集吗?
+          <p className="p-20">确定删除该数据集吗?</p>
         </Modal>
       )}
     </div>

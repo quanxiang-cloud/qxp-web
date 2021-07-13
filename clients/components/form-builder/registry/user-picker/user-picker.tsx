@@ -1,40 +1,51 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useQuery } from 'react-query';
-import { Select } from 'antd';
-import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
-import debounce from 'lodash/debounce';
-import { searchUser, Res } from './messy/api';
+import { Select, SelectProps } from 'antd';
 
+import { debounce } from 'lodash';
+
+import { searchUser, Res } from './messy/api';
 import { Option } from './messy/enum';
 
-type OptionalRange = 'customize' | 'all'
+type OptionalRange = 'customize' | 'all';
+
+interface Props extends SelectProps<any> {
+  optionalRange?: OptionalRange;
+  appID?: string;
+}
+
+interface AllUserPickerProps extends SelectProps <any> {
+  appID: string;
+}
 
 const PAGE_SIZE = 10;
 
-const UserPicker = (p: ISchemaFieldComponentProps): JSX.Element => {
-  
-  const optionalRange = p.props.optionalRange as OptionalRange;
+const UserPicker = ({ optionalRange, appID, onChange, value, ...componentsProps }: Props): JSX.Element => {
+  useEffect(() => {
+    onChange && onChange([], []);
+  }, [componentsProps.mode, optionalRange]);
 
-  React.useEffect(() => {
-    p.mutators.change(p.initialValue || p.props.defaultValues);
-  }, []);
-  const value = Array.isArray(p.value || []) ? (p.value || []).map(({ value }: Option) => value) : p.value.value;
+  const handleChange = (_: any, _selected: any):void => {
+    onChange && onChange((Array.isArray(_selected) ? _selected : [_selected]) as Option[], _);
+  };
 
-  const xComponentsProps = Object.assign({}, p.props['x-component-props'], {
-    onChange: (_: any, selects: Option[]) => {
-      p.mutators.change(selects);
-    },
-  });
+  const selected = Array.isArray(value || []) ?
+    (value || []).map(({ value }: Option) => value) : value.value;
 
-  const props = Object.assign({}, p, {
-    value,
-    'x-component-props': xComponentsProps,
-  });
+  if (optionalRange === 'all') {
+    return (
+      <AllUserPicker
+        onChange={handleChange}
+        value={selected}
+        appID={appID as string}
+        {...componentsProps} />
+    );
+  }
 
-  return (optionalRange != 'all') ? <Select value={value} options={p.props.enum} {...xComponentsProps} /> : <AllUserPicker {...props} />;
+  return <Select value={selected} onChange={handleChange} {...componentsProps} />;
 };
 
-const AllUserPicker = (p: ISchemaFieldComponentProps): JSX.Element => {
+const AllUserPicker = ({ appID, ...otherProps }: AllUserPickerProps): JSX.Element => {
   const [options, setOptions] = React.useState<Option[]>([]);
   const [hasNext, setHasNext] = React.useState<boolean>(false);
   const [keyword, setKeyword] = React.useState<string>();
@@ -44,10 +55,7 @@ const AllUserPicker = (p: ISchemaFieldComponentProps): JSX.Element => {
     setKeyword(str);
     setOptions([]);
     setCurrent(1);
-    // setOptions(current => current.filter(({ value }) => Array.isArray(p.value) ? p.value.some(itm => itm == value) : value == p.value))
   }, [setKeyword, setOptions, setCurrent]);
-
-  const appID: string = p.props.appID;
 
   const params = React.useMemo(() => {
     return {
@@ -70,10 +78,11 @@ const AllUserPicker = (p: ISchemaFieldComponentProps): JSX.Element => {
     },
   });
 
-  const xComponentsProps = Object.assign({}, p.props['x-component-props'], {
+  const componentsProps = Object.assign({}, otherProps, {
     loading: isLoading,
     onSearch: debounce(_setKeyword, 500),
-    onPopupScroll(e: React.MouseEvent) {
+    showSearch: true,
+    onPopupScroll(e: any) {
       if (!hasNext) return;
       const dom = e.target;
       const { scrollTop, clientHeight, scrollHeight } = dom as any;
@@ -83,15 +92,9 @@ const AllUserPicker = (p: ISchemaFieldComponentProps): JSX.Element => {
         }
       }
     },
-    onChange: (_: any, selects: Option[]) => {
-      p.mutators.change(selects);
-    },
-
   });
 
-  return <Select value={p.value} options={options} {...xComponentsProps} />;
+  return <Select {...componentsProps} options={options} />;
 };
-
-UserPicker.isFieldComponent = true;
 
 export default UserPicker;

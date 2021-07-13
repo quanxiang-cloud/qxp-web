@@ -3,15 +3,35 @@ import { createPortal } from 'react-dom';
 import { usePopper } from 'react-popper';
 import { useCss } from 'react-use';
 import cs from 'classnames';
+import { isArray, isObject } from 'lodash';
 
 import Icon from '@c/icon';
 import RadioGroup from '@c/radio/group';
 import Radio from '@c/radio';
 import Select from '@c/select';
-import usePrevious from '@lib/hooks/use-previous';
 import ActionButtonGroup from '@flowEditor/components/_common/action-button-group';
 import type { FieldValue } from '@flowEditor/type';
 import FormRenderer from '@c/form-builder/form-renderer';
+
+function parseDisplayValue(value: any): any {
+  let displayValue = value;
+  if (isArray(displayValue)) {
+    if (!displayValue.some(isArray) && !displayValue.some(isObject)) {
+      displayValue = displayValue.join(',');
+    } else {
+      displayValue = displayValue.map(parseDisplayValue);
+    }
+  } else if (displayValue?.label) {
+    displayValue = displayValue.label;
+  } else if (isObject(displayValue) && displayValue.toString() !== '[object Object]') {
+    displayValue = displayValue.toString();
+  } else if (displayValue?.value) {
+    displayValue = displayValue.value;
+  } else if (displayValue !== '') {
+    displayValue = JSON.stringify(displayValue);
+  }
+  return displayValue;
+}
 
 interface Props {
   defaultValue?: FieldValue;
@@ -35,15 +55,6 @@ function FieldValueEditor({
   });
   const [isEditorOpen, setIsEditorOpen] = useState(false);
   const [value, setValue] = useState(defaultValue);
-  const previousType = usePrevious(type);
-  useEffect(() => {
-    if (previousType !== type) {
-      setValue({
-        variable: value.variable,
-        staticValue: value.staticValue,
-      });
-    }
-  }, [type]);
 
   useEffect(() => {
     setValue(defaultValue);
@@ -55,19 +66,15 @@ function FieldValueEditor({
   }
 
   function onSubmit(): void {
-    onSave(value);
+    onSave({
+      variable: type === 'variable' ? value.variable : '',
+      staticValue: type === 'staticValue' ? value.staticValue : '',
+    });
     setIsEditorOpen(false);
   }
 
-  function onFormValueChange(value: Record<string, string>): void {
-    let val = Object.values(value)[0];
-    if (Array.isArray(val)) {
-      val = val[0];
-    }
-    if ((val as any).value) {
-      val = (val as any).value;
-    }
-    setValue((v) => ({ ...v, staticValue: val }));
+  function onFormValueChange(value: Record<string, any>): void {
+    setValue((v) => ({ ...v, staticValue: Object.values(value)[0] }));
   }
 
   const valueSetterClassName = useCss({
@@ -77,15 +84,29 @@ function FieldValueEditor({
     },
   });
 
+  let { staticValue, variable } = defaultValue;
+  const staticValueOptions = Object.values(schema?.properties || {})[0]?.enum as {
+    label: string;
+    value: string;
+  }[];
+  if (isArray(staticValue) && staticValueOptions?.length) {
+    staticValue = staticValue.map((v) => {
+      return staticValueOptions.find((option) => option?.value === v)?.label || v;
+    });
+  }
+  variable = variableOptions?.find(({ value }) => value === variable)?.label || variable;
+  let displayValue = staticValue || variable;
+  displayValue = parseDisplayValue(displayValue);
+
   return (
     <>
       <div onClick={() => setIsEditorOpen(true)}>
-        {(defaultValue.staticValue || defaultValue.variable) && (
+        {displayValue && (
           <span className="cursor-pointer" ref={setReferenceElRef as any}>
-            {defaultValue.staticValue || defaultValue.variable}
+            {displayValue}
           </span>
         )}
-        {(!defaultValue.staticValue && !defaultValue.variable) && (
+        {!displayValue && (
           <Icon
             name="edit"
             className="ml-4 cursor-pointer"

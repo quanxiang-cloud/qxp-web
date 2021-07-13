@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form';
 import formFieldWrap from '@c/form-field-wrap';
 
 type Props = {
+  className?: string
   defaultValue?: RightsCreate
 }
 
@@ -11,9 +12,9 @@ const Input = formFieldWrap({ field: <input className='input' /> });
 const Textarea = formFieldWrap({ field: <textarea className='input' /> });
 
 function BasicInfoForm(
-  { defaultValue = { name: '', description: '' } }: Props,
+  { defaultValue = { name: '', description: '' }, className }: Props,
   ref?: React.Ref<any>,
-) {
+): JSX.Element {
   const { register, handleSubmit, formState: { errors } } = useForm();
 
   useImperativeHandle(ref, () => ({
@@ -21,7 +22,7 @@ function BasicInfoForm(
   }));
 
   return (
-    <div>
+    <div className={className}>
       <Input
         label='权限组名称'
         help='不超过 30 个字符，权限组名称不可重复。'

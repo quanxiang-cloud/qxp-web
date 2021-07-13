@@ -18,7 +18,7 @@ interface Props {
 
 export type RefType = {getValues: ()=> (DatasetTreeItem[] | false)};
 
-function TreeContent({ initialValue = [], onSave, hideSaveBtn }: Props, ref: React.Ref<RefType>) {
+function TreeContent({ initialValue = [], onSave, hideSaveBtn, className }: Props, ref: React.Ref<RefType>) {
   const [tree, setTree] = useState<DatasetTreeItem[]>(initialValue);
   const treeRef: React.MutableRefObject<any> = useRef<HTMLDivElement>(null);
 
@@ -180,7 +180,7 @@ function TreeContent({ initialValue = [], onSave, hideSaveBtn }: Props, ref: Rea
   };
 
   return (
-    <div ref={treeRef}>
+    <div className={className} ref={treeRef}>
       <div className="data-tree-items">
         {tree.length ?
           tree.map((item: DatasetTreeItem, idx) => renderTree(item, '', idx)) :
