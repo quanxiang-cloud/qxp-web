@@ -37,13 +37,13 @@ export type RefProps = {
   getDataValues: () => ConditionItemMap
 }
 
-function getValue(field: Fields, initValue: Array<string | number | Date> | undefined) {
+function getValue(field: Fields, initValue: Array<string | number | Date | LabelValue> | undefined) {
   if (!initValue || initValue.length === 0) {
     return '';
   }
 
   if (field.type === 'datetime') {
-    return Array.isArray(initValue) ? initValue.map((value) => moment(value)) : moment(initValue);
+    return Array.isArray(initValue) ? initValue.map((value) => moment(value as string)) : moment(initValue);
   }
 
   if (field.enum && field.enum.length) {

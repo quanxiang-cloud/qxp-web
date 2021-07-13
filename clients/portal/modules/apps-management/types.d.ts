@@ -54,7 +54,7 @@ type Filters = string[];
 type Condition = {
   key?: string;
   op?: string;
-  value?: Array<string | number | Date>;
+  value?: Array<string | number | Date | { label: string, value: string }>;
 }
 
 type PageInfo = {

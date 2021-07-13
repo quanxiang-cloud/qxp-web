@@ -1,8 +1,5 @@
 import React, { useState, useCallback, useRef, useEffect, useMemo } from 'react';
-import { useQuery } from 'react-query';
 
-import { StoreContext } from '../../context';
-import { searchUser, Res } from './messy/api';
 import Modal from '@c/modal';
 import EmployeePicker from '@c/employee-or-department-picker/employee-picker';
 import Button from '@c/button';
@@ -17,28 +14,30 @@ interface Props {
   isMy: boolean
 }
 
-const Picker = ({ value = [], onChange, isMy, rangeList, ...p }: Props) => {
+const Picker = ({ value = [], onChange, isMy, rangeList }: Props) => {
   const [defaultValue, setDefaultValue] = useState<Array<EmployeeOrDepartmentOfRole>>(rangeList || []);
-  const store = React.useContext(StoreContext);
-  const { appID } = store;
+  // const defaultValue = rangeList || [];
+  // const store = React.useContext(StoreContext);
+  // const { appID } = store;
 
-  const [myDepUsers, setMyDepUsers] = React.useState<any[]>([]);
+  // const [myDepUsers, setMyDepUsers] = React.useState<any[]>([]);
 
-  React.useEffect(() => {
-    const users = myDepUsers.map((itm) => ({
-      ownerName: itm.userName,
-      id: itm.id,
-    })) as EmployeeOrDepartmentOfRole[];
+  // React.useEffect(() => {
+  //   const users = myDepUsers.map((itm) => ({
+  //     ownerName: itm.userName,
+  //     id: itm.id,
+  //   })) as EmployeeOrDepartmentOfRole[];
+  //   console.log(users);
+  //   onChange(isMy ? users : []);
+  // }, [isMy, myDepUsers]);
 
-    isMy && onChange(users);
-  }, [isMy, myDepUsers]);
-
-  const { isLoading } = useQuery(['query_user_picker_', window.USER.dep.id, appID], () => searchUser(appID, { depID: window.USER.dep.id }), {
-    onSuccess(data: Res) {
-      const users = (data.data || []);
-      setMyDepUsers(users);
-    },
-  });
+  // const { isLoading } = useQuery(['query_user_picker_', window.USER.dep.id, appID], () => searchUser(appID, { depID: window.USER.dep.id }), {
+  //   onSuccess(data: Res) {
+  //     const users = (data.data || []);
+  //     // @ts-ignore
+  //     setMyDepUsers(users);
+  //   },
+  // });
   const [visible, setVisible] = useState(false);
 
   // use ref not state  avoid state change then refresh view

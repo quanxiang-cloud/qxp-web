@@ -65,10 +65,6 @@ export const OPERATORS_ARRAY_MULTIPLE = [
 
 export const OPERATORS_LABEL_VALUE = [
   {
-    label: '包含',
-    value: 'in',
-  },
-  {
     label: '等于',
     value: 'eq',
   },
@@ -89,7 +85,7 @@ export const CONDITION = [
   },
 ];
 
-export function getOperators(type: string, enums: any[] | undefined): { label: string, value: string }[] {
+export function getOperators(type: string, enums: any[] | undefined): LabelValue[] {
   switch (type) {
   case 'array':
     return OPERATORS_ARRAY_MULTIPLE;
@@ -119,9 +115,9 @@ export const FILTER_FIELD = [
   'textarea',
   'Select',
   'CheckboxGroup',
+  'UserPicker',
+  'CascadeSelector',
   // 'OrganizationPicker',
-  // 'UserPicker',
-  // 'CascadeSelector',
 ];
 
 function getDateType(format: string): unitOfTime.StartOf {
@@ -141,13 +137,25 @@ function getDateType(format: string): unitOfTime.StartOf {
   }
 }
 
-type Value = string | string[] | Record<string, unknown> | Record<string, unknown>[] | number | number[];
+type LabelValue = {
+  label: string;
+  value: string;
+}
 
-export function getCondition(schema: ISchema, value: Value & Moment[], key: string, op?: string): Condition {
+type Value = string
+  | string[]
+  | Record<string, unknown>
+  | Record<string, unknown>[]
+  | number
+  | number[]
+  | LabelValue[]
+  | Moment[];
+
+export function getCondition(schema: ISchema, value: Value, key: string, op?: string): Condition {
   const _condition: Condition = { key };
-  switch (schema?.type) {
-  case 'datetime': {
-    const [start, end] = value;
+  switch (schema['x-component']) {
+  case 'DatePicker': {
+    const [start, end] = value as Moment[];
     const format = schema?.['x-component-props']?.format || 'YYYY-MM-DD HH:mm:ss';
     _condition.value = [
       start.startOf(getDateType(format)).toISOString(),
@@ -156,20 +164,28 @@ export function getCondition(schema: ISchema, value: Value & Moment[], key: stri
     _condition.op = op || 'between';
     break;
   }
-  case 'number':
+  case 'NumberPicker':
     _condition.value = [Number(value)];
     _condition.op = op || 'eq';
     break;
-  case 'array':
+  case 'MultipleSelect':
+  case 'RadioGroup':
+  case 'CheckboxGroup':
+  case 'UserPicker':
+  case 'Select':
     _condition.value = value as any[];
-    _condition.op = op || 'fullSubset';
+    _condition.op = op || 'intersection';
+    break;
+  case 'CascadeSelector':
+    _condition.value = [value as LabelValue];
+    _condition.op = op || 'eq';
     break;
   default:
     if (Array.isArray(value)) {
       _condition.value = value as any[];
       _condition.op = op || 'intersection';
     } else {
-      _condition.value = [value];
+      _condition.value = [value as string | number];
       _condition.op = op || 'like';
     }
     break;
