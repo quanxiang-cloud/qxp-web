@@ -7,7 +7,6 @@ let retryCount = 0;
 
 class PushServer {
   connection: any = null;
-  token = '';
   retryLimit = 10;
   timerHeartbeat: any = null;
   heartbeatInterval = 30000;
@@ -21,21 +20,19 @@ class PushServer {
   }
 
   getToken(): Promise<string> {
-    if (this.token) {
-      return Promise.resolve(this.token);
-    }
     return fetch('/_otp')
       .then((response) => response.json())
-      .then(({ token }) => {
-        this.token = token;
-        return this.token;
+      .then(({ token }) => token)
+      .catch((err: Error) => {
+        // fetch token failed, close ws
+        this.closeConnection();
       });
   }
 
   initConnection(): Promise<WebSocket> {
     return this.getToken().then((token) => {
       if (!token) {
-        throw Error('invalid websocket token');
+        throw Error('Invalid websocket token');
       }
       const protocol = window.location.protocol === 'http:' ? 'ws' : 'wss';
       const endpoint = `${protocol}://${window?.CONFIG?.websocket_hostname}/api/v1/message/ws?token=${token}`;
@@ -43,13 +40,19 @@ class PushServer {
         this.connection = new WebSocket(endpoint);
       }
       if (this.connection && this.connection.readyState > WebSocket.OPEN) {
-        // close zombie connection
-        this.connection.close();
-        this.detachEvents();
+        this.closeConnection();
         this.connection = new WebSocket(endpoint);
       }
       return this.connection;
     });
+  }
+
+  closeConnection(): void {
+    if (this.connection) {
+      this.connection.close();
+      this.detachEvents();
+      this.stopHeartbeat();
+    }
   }
 
   attachEvents = () => {
@@ -90,8 +93,7 @@ class PushServer {
   }
 
   offlineHandler = () => {
-    this.detachEvents();
-    this.stopHeartbeat();
+    this.closeConnection();
   }
 
   heartbeat() {
