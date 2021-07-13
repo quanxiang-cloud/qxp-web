@@ -39,7 +39,7 @@ export default function Modal({
   children,
   onClose,
   footerBtns = [],
-}: Props) {
+}: Props): JSX.Element {
   const [element] = useState(document.createElement('div'));
 
   useEffect(() => {
@@ -49,7 +49,7 @@ export default function Modal({
     };
   }, []);
 
-  const renderFooter = () => {
+  const renderFooter = () : React.ReactNode => {
     if (!footerBtns.length) {
       return null;
     } else {
@@ -156,7 +156,6 @@ const Body = styled.div<{ fullscreen?: boolean }>`
   ${({ fullscreen }) => fullscreen ? css`
       height: calc(100vh - 56px);
     ` : css`
-      padding: 24px 40px;
       height: 100%;
     `}
 `;

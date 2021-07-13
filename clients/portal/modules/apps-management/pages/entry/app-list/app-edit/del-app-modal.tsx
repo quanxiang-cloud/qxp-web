@@ -41,7 +41,7 @@ function DeleteAppModal({ onCancel, appInfo }: Props) {
         text: '删除应用',
       }]}
     >
-      <div className='flex-1'>
+      <div className='flex-1 p-20'>
         <p className='app-del-title'>
           <Icon size={20} className='mr-8 app-icon-color-inherit' name='sms_failed' />
           确定要删除应用 {appInfo.appName} 吗？

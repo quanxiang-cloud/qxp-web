@@ -17,15 +17,17 @@ function FilterForm({ search, showMoreFilter }: Props, ref?: React.Ref<any>): JS
   const store = useContext(StoreContext);
   const { filters } = store;
   const fieldMaps = store.schema.properties || {};
-  const { getValues, reset, control } = useForm();
+  const { getValues, control, setValue } = useForm();
 
   useEffect(() => {
-    reset(store.filterData);
+    Object.entries(store.filterData || {}).forEach(([key, value])=>{
+      setValue(key, value);
+    });
   }, []);
 
   useImperativeHandle(ref, () => ({
     getValues: getValues,
-    reset: reset,
+    reset: () => store.filters.forEach((key) => setValue(key, '')),
   }));
 
   if (filters.length === 0) {

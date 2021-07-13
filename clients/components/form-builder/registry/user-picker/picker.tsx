@@ -1,8 +1,5 @@
 import React, { useState, useCallback, useRef, useEffect, useMemo } from 'react';
-import { useQuery } from 'react-query';
 
-import { StoreContext } from '../../context';
-import { searchUser, Res } from './messy/api';
 import Modal from '@c/modal';
 import EmployeePicker from '@c/employee-or-department-picker/employee-picker';
 import Button from '@c/button';
@@ -17,28 +14,30 @@ interface Props {
   isMy: boolean
 }
 
-const Picker = ({ value = [], onChange, isMy, rangeList, ...p }: Props) => {
-  const defaultValue = rangeList || [];
-  const store = React.useContext(StoreContext);
-  const { appID } = store;
+const Picker = ({ value = [], onChange, isMy, rangeList }: Props) => {
+  const [defaultValue, setDefaultValue] = useState<Array<EmployeeOrDepartmentOfRole>>(rangeList || []);
+  // const defaultValue = rangeList || [];
+  // const store = React.useContext(StoreContext);
+  // const { appID } = store;
 
-  const [myDepUsers, setMyDepUsers] = React.useState<any[]>([]);
+  // const [myDepUsers, setMyDepUsers] = React.useState<any[]>([]);
 
-  React.useEffect(() => {
-    const users = myDepUsers.map((itm) => ({
-      ownerName: itm.userName,
-      id: itm.id,
-    })) as EmployeeOrDepartmentOfRole[];
-    onChange(isMy ? users : []);
-  }, [isMy, myDepUsers]);
+  // React.useEffect(() => {
+  //   const users = myDepUsers.map((itm) => ({
+  //     ownerName: itm.userName,
+  //     id: itm.id,
+  //   })) as EmployeeOrDepartmentOfRole[];
+  //   console.log(users);
+  //   onChange(isMy ? users : []);
+  // }, [isMy, myDepUsers]);
 
-  const { isLoading } = useQuery(['query_user_picker_', window.USER.dep.id, appID], () => searchUser(appID, { depID: window.USER.dep.id }), {
-    onSuccess(data: Res) {
-      const users = (data.data || []);
-      // @ts-ignore
-      setMyDepUsers(users);
-    },
-  });
+  // const { isLoading } = useQuery(['query_user_picker_', window.USER.dep.id, appID], () => searchUser(appID, { depID: window.USER.dep.id }), {
+  //   onSuccess(data: Res) {
+  //     const users = (data.data || []);
+  //     // @ts-ignore
+  //     setMyDepUsers(users);
+  //   },
+  // });
   const [visible, setVisible] = useState(false);
 
   // use ref not state  avoid state change then refresh view
@@ -53,17 +52,16 @@ const Picker = ({ value = [], onChange, isMy, rangeList, ...p }: Props) => {
 
   const handleSubmit = useCallback(() => {
     onChange(valueListRef.current);
+    setDefaultValue(valueListRef.current);
     close();
   }, [onChange, close]);
 
   useEffect(() => {
-    if (visible) {
-      valueListRef.current = defaultValue;
-    }
+    valueListRef.current = defaultValue;
   }, [visible]);
 
   const showName = useMemo(() => {
-    return defaultValue
+    return (defaultValue)
       .map((itm) => itm.ownerName)
       .join(',')
       .substr(0, 20);
@@ -73,7 +71,7 @@ const Picker = ({ value = [], onChange, isMy, rangeList, ...p }: Props) => {
     <div>
       <div
         className={classNames({ disabled_test: isMy })} onClick={() => isMy || setVisible((v) => !v)}>
-        {defaultValue.length <= 0 ?
+        {defaultValue.length === 0 ?
           <Button> 选择成员范围</Button> :
           <div className={'text_flow '}>{showName}</div>}
       </div>
@@ -101,6 +99,7 @@ const Picker = ({ value = [], onChange, isMy, rangeList, ...p }: Props) => {
 
         >
           <EmployeePicker
+            className="p-20"
             employees={defaultValue}
             onChange={handleChange}
           />

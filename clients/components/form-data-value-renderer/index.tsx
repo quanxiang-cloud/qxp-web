@@ -3,81 +3,109 @@ import moment from 'moment';
 
 import SubTable from '@c/form-builder/registry/sub-table/preview';
 import AssociatedRecords from '@c/form-builder/registry/associated-records/associated-records';
-import { Schema } from '@formily/react-schema-renderer';
+import logger from '@lib/logger';
 
-import { getArrayValue, ArrayInitValue } from './utils';
+type ValueRendererProps = { value: FormDataValue; schema: ISchema; className?: string; };
+type ValueRenderer = React.FC<ValueRendererProps>;
+type SupportedComponent =
+  | 'Input'
+  | 'Textarea'
+  | 'RadioGroup'
+  | 'CheckboxGroup'
+  | 'NumberPicker'
+  | 'DatePicker'
+  | 'Select'
+  | 'MultipleSelect'
+  | 'SubTable'
+  | 'AssociatedRecords'
+  | 'UserPicker'
+  | 'OrganizationPicker'
+  | 'FileUpload'
+  | 'ImageUpload'
+  | 'CascadeSelector';
 
-type Value = string | string[] | Record<string, unknown>
-  | Record<string, unknown>[] | number | number[];
-
-type Props = {
-  value: Value;
-  className?: string;
-  schema: Schema;
+function InputValueRenderer({ value, className }: ValueRendererProps): JSX.Element {
+  return (<span className={className}>{value}</span>);
 }
 
-type Option = {
-  value: string;
-  label: string;
+function EnumValueRenderer({ value, schema, className }: ValueRendererProps): JSX.Element {
+  if (Array.isArray(value)) {
+    const options = (schema.enum || []) as FormBuilder.Option[];
+    const labels = (value as string[]).map((v) => {
+      return options.find((option) => option.value === v)?.label || v;
+    }).join(', ');
+
+    return (<span className={className}>{labels}</span>);
+  }
+
+  const options = (schema.enum || []) as FormBuilder.Option[];
+  const label = options.find((option) => option.value === value)?.label || value as string;
+
+  return (<span className={className}>{label}</span>);
 }
 
-export function getBasicValue(schema: Schema, initValue: Value): string {
+function DatetimeValueRenderer({ value, schema, className }: ValueRendererProps): JSX.Element {
   const format = schema['x-component-props']?.format || 'YYYY-MM-DD HH:mm:ss';
 
-  switch (schema.type) {
-  case 'label-value':
-    return (([] as Record<string, unknown>[]).concat(initValue as Record<string, unknown>[]))
-      .map((itm) => itm.label).join(',');
-  case 'datetime':
-    if (Array.isArray(initValue)) {
-      return (initValue as string[]).map((value: string) => {
-        return moment(value).format(format);
-      }).join('-');
-    }
-    return moment(initValue).format(format);
-  case 'string':
-    if (schema.enum && schema.enum.length) {
-      return (schema.enum.find(({ value }: any) => value === initValue) as Option)?.label || '';
-    }
-
-    return initValue as string;
-  case 'array':
-    return getArrayValue(initValue as ArrayInitValue, schema);
-  default:
-    if (Array.isArray(initValue)) {
-      return initValue.join(',');
-    }
-
-    if (typeof initValue === 'object' && initValue?.label) {
-      return initValue?.label as string;
-    }
-
-    return initValue as string;
-  }
+  return (<span className={className}>{moment(value as string).format(format)}</span>);
 }
 
-function FormDataValueRenderer({ value, schema, className }: Props): JSX.Element {
-  if (schema?.['x-component']?.toLowerCase() === 'subtable') {
-    return (
-      <SubTable
-        value={value as Record<string, unknown>[]}
-        schema={schema}
-        readonly
-      />
-    );
-  }
-
-  if (schema?.['x-component']?.toLowerCase() === 'associatedrecords') {
-    return (
-      <AssociatedRecords
-        readOnly
-        props={schema}
-        value={value}
-      />
-    );
-  }
-
-  return <span className={className}>{getBasicValue(schema, value)}</span>;
+function SubTableValueRenderer({ value, schema }: ValueRendererProps): JSX.Element {
+  return (
+    // todo support className props, assign to lishengma
+    // todo fix subTable Props definition
+    <SubTable readonly value={value as Record<string, unknown>[]} schema={schema as any} />
+  );
 }
 
-export default FormDataValueRenderer;
+function AssociatedRecordsValueRender({ value, schema }: ValueRendererProps): JSX.Element {
+  // todo support className props, assign to lishengma
+  return (<AssociatedRecords readOnly props={schema} value={value} />);
+}
+
+function LabelValueRenderer({ value, className }: ValueRendererProps): JSX.Element {
+  if (Array.isArray(value)) {
+    const labels = (value as FormBuilder.Option[]).map(({ label }) => label).join(', ');
+    return (<span className={className}>{labels}</span>);
+  }
+
+  return (<span className={className}>{(value as FormBuilder.Option).label}</span>);
+}
+
+const VALUE_RENDER: Record<SupportedComponent, ValueRenderer> = {
+  Input: InputValueRenderer,
+  Textarea: InputValueRenderer,
+  RadioGroup: EnumValueRenderer,
+  CheckboxGroup: EnumValueRenderer,
+  NumberPicker: InputValueRenderer,
+  DatePicker: DatetimeValueRenderer,
+  Select: EnumValueRenderer,
+  MultipleSelect: EnumValueRenderer,
+  SubTable: SubTableValueRenderer,
+  AssociatedRecords: AssociatedRecordsValueRender,
+  CascadeSelector: LabelValueRenderer,
+  // todo replace LabelValueRenderer by a more specific type renderer
+  UserPicker: LabelValueRenderer,
+  OrganizationPicker: LabelValueRenderer,
+  FileUpload: LabelValueRenderer,
+  ImageUpload: LabelValueRenderer,
+};
+
+type Props = {
+  value: FormDataValue;
+  className?: string;
+  schema: ISchema;
+}
+
+export default function FormDataValueRenderer({ value, schema, className }: Props): JSX.Element {
+  const xComponent = schema['x-component'];
+  if (!xComponent || !(xComponent in VALUE_RENDER)) {
+    logger.debug('encounter unsupported formDataValue:', value, 'schema:', schema);
+    return (<span className={className}>{value}</span>);
+  }
+
+  return React.createElement(
+    VALUE_RENDER[xComponent as SupportedComponent],
+    { value, schema, className },
+  );
+}

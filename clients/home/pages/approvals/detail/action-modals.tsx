@@ -420,7 +420,7 @@ function ActionModals({ flowName, getFormData }: Props): JSX.Element | null {
           setStepBackId('');
         }}
       >
-        <Form ref={ref} layout="vertical">
+        <Form className="p-20" ref={ref} layout="vertical">
           {renderContent()}
         </Form>
       </Modal>

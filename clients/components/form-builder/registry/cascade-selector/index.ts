@@ -1,7 +1,7 @@
 import configSchema from './config-schema';
 import { defaultConfig, toSchema, toConfig, CascadeConfig } from './convertor';
 import CustomizedDatasetBtn from './customized-dataset-btn';
-import CascadeSelector from './cascade-selector';
+import CascadeSelector from './cascade-selector-wrap';
 import DatasetSelector from './dataset-selector';
 
 const InputField: Omit<FormBuilder.SourceElement<CascadeConfig>, 'displayOrder'> = {

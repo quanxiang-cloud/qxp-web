@@ -13,7 +13,7 @@ import store, { updateStore } from '../content/editor/store';
 import { PARAMS_MAP, POPPER_PARAMS } from './constants';
 
 export default function FlowHeader(): JSX.Element {
-  const { name = '', triggerMode, saved } = useObservable<StoreValue>(store);
+  const { name = '', triggerMode, saved, status } = useObservable<StoreValue>(store);
   const history = useHistory();
   const [flowNameElRef, setFlowNameElRef] = useState(null);
   const [flowNamePopperElRef, setFlowNamePopperElRef] = useState(null);
@@ -64,13 +64,15 @@ export default function FlowHeader(): JSX.Element {
         </span>
         <div className="flex items-center">
           <span className="mr-8 text-h6 font-semibold">{name}</span>
-          <Icon
-            name="edit"
-            size={16}
-            className="cursor-pointer"
-            onClick={() => setIsWorkFlowNameMenuOpen(true)}
-            ref={setFlowNameElRef as any}
-          />
+          {status !== 'ENABLE' && (
+            <Icon
+              name="edit"
+              size={16}
+              className="cursor-pointer"
+              onClick={() => setIsWorkFlowNameMenuOpen(true)}
+              ref={setFlowNameElRef as any}
+            />
+          )}
           {isWorkFlowNameMenuOpen && (
             <div
               {...flowNamePopper.attributes.popper}

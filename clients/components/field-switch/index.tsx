@@ -3,6 +3,11 @@ import zhCN from 'antd/lib/date-picker/locale/zh_CN';
 import { DatePicker } from 'antd';
 
 import { getPicker } from '@c/form-builder/registry/date-picker/date-picker';
+import CascadeSelector, {
+  DefaultValueFrom, CascadeSelectorProps,
+} from '@c/form-builder/registry/cascade-selector/cascade-selector';
+// import OrganizationPicker from '@c/form-builder/registry/organization-select/organization-select';
+import UserPicker from '@c/form-builder/registry/user-picker/user-picker';
 import Select from '@c/select';
 
 type Props<T> = {
@@ -38,8 +43,11 @@ function numberVerify(e: any, precision: number | undefined): void {
 }
 
 function FieldSwitch({ field, className, ...otherProps }: Props<any>, ref: React.Ref<any>): JSX.Element {
-  switch (field?.type) {
-  case 'array':
+  switch (field['x-component']) {
+  case 'CheckboxGroup':
+  case 'Select':
+  case 'RadioGroup':
+  case 'MultipleSelect':
     return (
       <Select
         multiple={true}
@@ -49,7 +57,7 @@ function FieldSwitch({ field, className, ...otherProps }: Props<any>, ref: React
         options={field?.enum as unknown as Option[] || []}
       />
     );
-  case 'number':
+  case 'NumberPicker':
     return (
       <input
         className={`input ${className}`}
@@ -60,7 +68,7 @@ function FieldSwitch({ field, className, ...otherProps }: Props<any>, ref: React
         {...otherProps}
       />
     );
-  case 'datetime':
+  case 'DatePicker':
     return (
       <DatePicker.RangePicker
         locale={zhCN}
@@ -71,23 +79,39 @@ function FieldSwitch({ field, className, ...otherProps }: Props<any>, ref: React
         {...otherProps}
       />
     );
-  case 'label-value':
+  case 'CascadeSelector':
     return (
-      <div>未更新</div>
+      <CascadeSelector
+        predefinedDataset={field['x-internal']?.predefinedDataset || ''}
+        showFullPath={field['x-internal']?.showFullPath}
+        {...otherProps}
+        {...field['x-component-props'] as CascadeSelectorProps}
+        defaultValueFrom={field['x-internal']?.defaultValueFrom as DefaultValueFrom}
+      />
+    );
+    // case 'OrganizationPicker':
+    //   return (
+    //     <OrganizationPicker
+    //       appID=''
+    //       multiple={field['x-internal']?.multiple}
+    //       optionalRange={field['x-internal']?.optionalRange}
+    //       rangeList={field['x-internal']?.rangeList}
+    //       {...omit(otherProps, ['value'])}
+    //       value={otherProps.value}
+    //     />
+    //   );
+  case 'UserPicker':
+    return (
+      <UserPicker
+        className='flex-1'
+        options={field.enum as Option[]}
+        mode={field['x-internal']?.multiple}
+        optionalRange={field['x-internal']?.optionalRange}
+        {...field['x-component-props']}
+        {...otherProps}
+      />
     );
   default:
-    if (field?.enum && field?.enum.length) {
-      return (
-        <Select
-          multiple={true}
-          className={`'w-full ${className}`}
-          ref={ref}
-          {...otherProps}
-          options={field?.enum as unknown as Option[] || []}
-        />
-      );
-    }
-
     return <input ref={ref} className={`input ${className}`} {...otherProps} />;
   }
 }

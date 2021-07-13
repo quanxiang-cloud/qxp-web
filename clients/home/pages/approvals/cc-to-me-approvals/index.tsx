@@ -109,7 +109,7 @@ function TodoApprovals(): JSX.Element {
           ]}
           onClose={() => setOpenReadFlow(false)}
         >
-          确定要将所有未读抄送标记为已读吗？
+          <p className="p-20">确定要将所有未读抄送标记为已读吗？</p>
         </Modal>
       )}
     </div>

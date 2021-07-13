@@ -1,6 +1,6 @@
 
 import { DefaultConfig, defaultConfig, toSchema, toConfig } from './convertor';
-import Component from './user-picker';
+import Component from './user-picker-wrap';
 import UserPickerConfigForm from './config';
 
 const UserPicker: Omit<FormBuilder.SourceElement<DefaultConfig>, 'displayOrder'> = {

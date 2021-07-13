@@ -25,7 +25,7 @@ export async function getFormDataOptions({ queryKey }: QueryFunctionContext): Pr
   }>(`/api/v1/structor/${queryKey[1]}/${window.SIDE === 'portal' ? 'm' : 'home'}/menu/list`, {
     appID: queryKey[1],
   });
-  function parseMenuList(menuList: MenuListItem[]) {
+  function parseMenuList(menuList: MenuListItem[]): Options {
     if (!menuList) {
       return [];
     }

@@ -67,6 +67,7 @@ export default function EditVariableModal({ variable, closeModal }: Props): JSX.
       ]}
     >
       <Form
+        className="p-20"
         actions={actions}
         initialValues={variable}
         onSubmit={handleSubmit}

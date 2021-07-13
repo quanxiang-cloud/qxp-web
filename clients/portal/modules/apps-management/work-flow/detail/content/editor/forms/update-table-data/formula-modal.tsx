@@ -67,77 +67,79 @@ function FormulaModal(props: Props) {
         },
       ]}
     >
-      <div className="flex flex-col mb-20">
-        <div>目标表单字段</div>
-        <div className="target-table-fields">
-          {targetFields.map(({ label, value }) => {
-            return (
+      <div className="p-20">
+        <div className="flex flex-col mb-20">
+          <div>目标表单字段</div>
+          <div className="target-table-fields">
+            {targetFields.map(({ label, value }) => {
+              return (
+                <span
+                  key={value}
+                  onClick={() => addField({ key: value, name: label })}
+                  className="inline-block mb-8 p-2 bg-gray-100 mr-4 border border-gray-300 cursor-pointer"
+                >
+                  {label}
+                </span>
+              );
+            })}
+          </div>
+        </div>
+        <div className="flex flex-col mb-20">
+          <div>集合操作符</div>
+          <div className="mb-16">
+            {[
+              {
+                tips: '',
+                content: '==',
+              },
+              {
+                tips: '',
+                content: '!=',
+              },
+              {
+                tips: '',
+                content: '||',
+              },
+              {
+                tips: '',
+                content: '&&',
+              },
+            ].concat(collectionOperators).map(({ content }) => (
               <span
-                key={value}
-                onClick={() => addField({ key: value, name: label })}
+                key={content}
+                onClick={() => addText(content)}
                 className="inline-block mb-8 p-2 bg-gray-100 mr-4 border border-gray-300 cursor-pointer"
               >
-                {label}
+                {content}
               </span>
-            );
-          })}
+            ))}
+          </div>
         </div>
-      </div>
-      <div className="flex flex-col mb-20">
-        <div>集合操作符</div>
-        <div className="mb-16">
-          {[
-            {
-              tips: '',
-              content: '==',
-            },
-            {
-              tips: '',
-              content: '!=',
-            },
-            {
-              tips: '',
-              content: '||',
-            },
-            {
-              tips: '',
-              content: '&&',
-            },
-          ].concat(collectionOperators).map(({ content }) => (
-            <span
-              key={content}
-              onClick={() => addText(content)}
-              className="inline-block mb-8 p-2 bg-gray-100 mr-4 border border-gray-300 cursor-pointer"
-            >
-              {content}
-            </span>
-          ))}
+        <div className="flex flex-col mb-20">
+          <div>当前表单字段</div>
+          <div className="source-table-fields">
+            {sourceFields.map(({ label, value }) => {
+              return (
+                <span
+                  key={value}
+                  onClick={() => addField({ key: value, name: label })}
+                  className="inline-block mb-8 p-2 bg-gray-100 mr-4 border border-gray-300 cursor-pointer"
+                >
+                  {label}
+                </span>
+              );
+            })}
+          </div>
         </div>
-      </div>
-      <div className="flex flex-col mb-20">
-        <div>当前表单字段</div>
-        <div className="source-table-fields">
-          {sourceFields.map(({ label, value }) => {
-            return (
-              <span
-                key={value}
-                onClick={() => addField({ key: value, name: label })}
-                className="inline-block mb-8 p-2 bg-gray-100 mr-4 border border-gray-300 cursor-pointer"
-              >
-                {label}
-              </span>
-            );
-          })}
+        <div>
+          <div>过滤公式</div>
+          <FormulaEditor
+            ref={formulaRef}
+            className="block mb-16"
+            customRules={formulaCustomRules}
+            defaultValue={props.defaultValue || ''}
+          />
         </div>
-      </div>
-      <div>
-        <div>过滤公式</div>
-        <FormulaEditor
-          ref={formulaRef}
-          className="block mb-16"
-          customRules={formulaCustomRules}
-          defaultValue={props.defaultValue || ''}
-        />
       </div>
     </Modal>
   );

@@ -1,0 +1,26 @@
+import React from 'react';
+import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
+
+import UserPicker from './user-picker';
+
+type OptionalRange = 'customize' | 'all'
+
+const UserPickerWrap = (p: ISchemaFieldComponentProps): JSX.Element => {
+  const optionalRange = p.props.optionalRange as OptionalRange;
+
+  React.useEffect(() => {
+    p.mutators.change(p.initialValue || p.props.defaultValues);
+  }, []);
+
+  const xComponentsProps = Object.assign({}, p.props['x-component-props'], {
+    onChange: p.mutators.change,
+    options: p.props.enum,
+    value: p.value,
+  });
+
+  return <UserPicker optionalRange={optionalRange} {...xComponentsProps} />;
+};
+
+UserPickerWrap.isFieldComponent = true;
+
+export default UserPickerWrap;

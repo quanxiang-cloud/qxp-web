@@ -162,7 +162,7 @@ export default function UpdateTableData({ defaultValue, onSubmit, onCancel }: Pr
               },
             ]}
           >
-            <p>切换数据表之后数据更新的配置将清空，是否继续？</p>
+            <p className="p-20">切换数据表之后数据更新的配置将清空，是否继续？</p>
           </Modal>
         )}
       </div>

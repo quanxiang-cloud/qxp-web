@@ -1,21 +1,10 @@
 import useObservable from '@lib/hooks/use-observable';
 
-import store, { updateStore } from '@flowEditor/store';
+import store, { updateStore, toggleNodeForm } from '@flowEditor/store';
 import type { StoreValue } from '@flowEditor/type';
 
 export default function useNodeSwitch(): (id: string) => void {
   const { errors, readonly } = useObservable<StoreValue>(store);
-
-  function activeNodeForm(id: string): void {
-    updateStore((s) => ({
-      ...s,
-      nodeIdForDrawerForm: id,
-      errors: {
-        ...s.errors,
-        dataNotSaveMap: new Map(),
-      },
-    }));
-  }
 
   return (id: string) => {
     if (readonly) {
@@ -31,9 +20,9 @@ export default function useNodeSwitch(): (id: string) => void {
       return updateStore((s) => ({
         ...s,
         showDataNotSaveConfirm: true,
-        currentDataNotSaveConfirmCallback: () => activeNodeForm(id),
+        currentDataNotSaveConfirmCallback: () => toggleNodeForm(id),
       }));
     }
-    activeNodeForm(id);
+    toggleNodeForm(id);
   };
 }

@@ -48,7 +48,7 @@ function EditGroupModal({ name, id, onCancel, onSubmit }: Props): JSX.Element {
         text: '确定',
       }]}
     >
-      <Form layout='vertical' ref={ref}>
+      <Form className="p-20" layout='vertical' ref={ref}>
         <Form.TextField
           name='name'
           defaultValue={name}

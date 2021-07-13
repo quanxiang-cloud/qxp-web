@@ -90,7 +90,7 @@ export default function AdjustDepModal({ users: userList, closeModal }: Props) {
         },
       ]}
     >
-      <div className="w-full">
+      <div className="w-full p-20">
         <div className="w-full">
           <p className="text-gray-600 text-14">已选择员工</p>
           <ul className="flex items-center flex-wrap">

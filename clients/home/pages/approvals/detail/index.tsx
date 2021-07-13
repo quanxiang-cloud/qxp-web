@@ -33,7 +33,11 @@ function ApprovalDetail(): JSX.Element {
   const [search] = useURLSearch();
   const [formValues, setFormValues] = useState<Record<string, any>>({});
   const listType = search.get('list') || 'todo';
-  const { processInstanceID, taskID, type } = useParams<{ processInstanceID: string; taskID: string, type: string }>();
+  const { processInstanceID, taskID, type } = useParams<{
+    processInstanceID: string;
+    taskID: string,
+    type: string
+  }>();
   const history = useHistory();
 
   const {
@@ -43,7 +47,7 @@ function ApprovalDetail(): JSX.Element {
     () => apis.getTaskFormById(processInstanceID, { type }),
   );
 
-  const getTask = () => get(data, 'taskDetailModels[0]', {});
+  const getTask = (): Record<string, any> => get(data, 'taskDetailModels[0]', {});
 
   useEffect(() => {
     document.title = '流程详情';
@@ -54,14 +58,17 @@ function ApprovalDetail(): JSX.Element {
   }, [data]);
 
   const renderSchemaForm = (task: any): JSX.Element | null => {
-    const extraPermissions = [...(task?.fieldPermission?.custom || []), ...(task?.fieldPermission?.system || [])];
+    const extraPermissions = [
+      ...(task?.fieldPermission?.custom || []),
+      ...(task?.fieldPermission?.system || []),
+    ];
     const formSchema = wrapSchemaWithFieldPermission(task.formSchema.table, extraPermissions);
 
     return (
       <div className='task-form'>
         <FormRenderer
           defaultValue={task.formData}
-          schema={formSchema}
+          schema={task?.fieldPermission ? formSchema : task.formSchema.table}
           onFormValueChange={setFormValues}
         />
       </div>

@@ -8,10 +8,19 @@ export const wrapSchemaWithFieldPermission = (
     acc: Record<string, any>, [key, fieldSchema]: [string, ISchema],
   ) => {
     const foundPermission = find(permissions, { id: key });
+    const { initialValue } = foundPermission || {};
+    const defaultValue = initialValue?.staticValue || initialValue?.variable;
     if (foundPermission) {
       Object.assign(acc, {
         [key]: {
           ...fieldSchema,
+          ...(defaultValue ? {
+            default: defaultValue,
+            'x-component-props': {
+              ...(fieldSchema['x-component-props'] || {}),
+              defaultValue,
+            },
+          } : {}),
           // if permission.read=true, always display this field
           display: !!foundPermission.read,
           visible: !!foundPermission.read,

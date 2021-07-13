@@ -39,6 +39,7 @@ function EditDatasetModal({ onClose, onSave, options }: EditDatasetModalProps): 
       ]}
     >
       <EditableTree
+        className="p-20"
         initialValue={options}
         ref={treeRef}
         onSave={(tree)=> tree}

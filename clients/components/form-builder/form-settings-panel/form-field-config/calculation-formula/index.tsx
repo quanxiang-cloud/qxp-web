@@ -45,7 +45,7 @@ function EditFormulaModal({ onClose, onSubmit, rawFormula, variables }: Props): 
         onClose={onClose}
         footerBtns={[{ key: '取消', text: '确定', onClick: onClose, modifier: 'primary' }]}
       >
-        <div className="form-validation-formula">
+        <div className="form-validation-formula p-20">
           当前表单中没有可使用的数字类型字段
         </div>
       </Modal>
@@ -62,58 +62,60 @@ function EditFormulaModal({ onClose, onSubmit, rawFormula, variables }: Props): 
         { key: '保存', text: '保存', onClick: onSave, modifier: 'primary' },
       ]}
     >
-      <div className="form-validation-formula">
-        {errorMessage && (
-          <p className="text-red-600">{errorMessage}</p>
-        )}
-        <div className="mb-8">表单字段:</div>
-        <div className="mb-16">
-          {variables.map(({ fieldName, title }) => {
-            return (
-              <span
-                key={fieldName}
-                onClick={() => addField({ key: fieldName, name: title })}
-                className="inline-block mb-8 p-2 bg-gray-100 mr-4 border border-gray-300 cursor-pointer"
-              >
-                {title}
-              </span>
-            );
-          })}
+      <div className="p-20">
+        <div className="form-validation-formula">
+          {errorMessage && (
+            <p className="text-red-600">{errorMessage}</p>
+          )}
+          <div className="mb-8">表单字段:</div>
+          <div className="mb-16">
+            {variables.map(({ fieldName, title }) => {
+              return (
+                <span
+                  key={fieldName}
+                  onClick={() => addField({ key: fieldName, name: title })}
+                  className="inline-block mb-8 p-2 bg-gray-100 mr-4 border border-gray-300 cursor-pointer"
+                >
+                  {title}
+                </span>
+              );
+            })}
+          </div>
         </div>
+        <div className="mb-8">函数:</div>
+        <div className="mb-16">
+          {MATH_FUNCTIONS.map(({ name, content }) => (
+            <span
+              key={name}
+              onClick={() => addText(content, false, 1)}
+              className="inline-block mb-8 p-2 bg-gray-100 mr-4 border border-gray-300 cursor-pointer"
+            >
+              {name}
+            </span>
+          ))}
+        </div>
+        <div className="mb-8">集合操作符:</div>
+        <div className="mb-16">
+          {collectionOperators.map(({ content }) => (
+            <span
+              key={content}
+              onClick={() => addText(content)}
+              className="inline-block mb-8 p-2 bg-gray-100 mr-4 border border-gray-300 cursor-pointer"
+            >
+              {content}
+            </span>
+          ))}
+        </div>
+        <div className="mb-8">验证公式:</div>
+        <FormulaEditor
+          ref={formulaEditorRef}
+          customRules={variables.map(({ title, fieldName }) => {
+            return { key: fieldName, name: title, type: 'field' };
+          })}
+          className="block mb-16"
+          defaultValue={rawFormula}
+        />
       </div>
-      <div className="mb-8">函数:</div>
-      <div className="mb-16">
-        {MATH_FUNCTIONS.map(({ name, content }) => (
-          <span
-            key={name}
-            onClick={() => addText(content, false, 1)}
-            className="inline-block mb-8 p-2 bg-gray-100 mr-4 border border-gray-300 cursor-pointer"
-          >
-            {name}
-          </span>
-        ))}
-      </div>
-      <div className="mb-8">集合操作符:</div>
-      <div className="mb-16">
-        {collectionOperators.map(({ content }) => (
-          <span
-            key={content}
-            onClick={() => addText(content)}
-            className="inline-block mb-8 p-2 bg-gray-100 mr-4 border border-gray-300 cursor-pointer"
-          >
-            {content}
-          </span>
-        ))}
-      </div>
-      <div className="mb-8">验证公式:</div>
-      <FormulaEditor
-        ref={formulaEditorRef}
-        customRules={variables.map(({ title, fieldName }) => {
-          return { key: fieldName, name: title, type: 'field' };
-        })}
-        className="block mb-16"
-        defaultValue={rawFormula}
-      />
     </Modal>
   );
 }

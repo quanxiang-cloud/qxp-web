@@ -132,7 +132,7 @@ function FormCreateTableData({ defaultValue, onSubmit, onCancel }: Props): JSX.E
               },
             ]}
           >
-            <p>切换数据表之后数据新增的配置将清空，是否继续？</p>
+            <p className="p-20">切换数据表之后数据新增的配置将清空，是否继续？</p>
           </Modal>
         )}
       </div>

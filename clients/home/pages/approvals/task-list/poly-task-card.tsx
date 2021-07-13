@@ -4,7 +4,7 @@ import dayjs from 'dayjs';
 
 import Status from '@c/process-node-status';
 import Icon from '@c/icon';
-import { getBasicValue } from '@c/form-data-value-renderer';
+import FormDataValueRenderer from '@c/form-data-value-renderer';
 
 import Avatar from '../avatar';
 import './index.scss';
@@ -67,7 +67,7 @@ export default function TaskCard({ task, type }: Props): JSX.Element {
                 return (
                   <p key={keyName} className="mb-4 form-data-item">
                     <span>{properties[keyName]?.title || keyName}: </span>
-                    <span>{getBasicValue(properties[keyName], value)}</span>
+                    <FormDataValueRenderer value={value} schema={properties[keyName]} />
                   </p>
                 );
               })

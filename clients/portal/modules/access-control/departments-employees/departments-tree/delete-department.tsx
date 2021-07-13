@@ -42,7 +42,7 @@ export default function DeleteModal({ node, store, closeModal }: Props) {
         },
       ]}
     >
-      <div className="text-14">
+      <div className="text-14 p-20">
         确定要删除
         <span className="mx-4 font-semibold text-gray-900 text-h5">
           {node && node.data.departmentName}

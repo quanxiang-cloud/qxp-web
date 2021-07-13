@@ -40,7 +40,7 @@ function ActionModal({ closeModal, action }: Props): JSX.Element {
   function renderContent(): (JSX.Element | null) {
     if (action === 'STEP_BACK') {
       return (
-        <div>
+        <div className="p-20">
           <p className="text-yellow-600 flex items-center mb-24">
             <Icon name="info" className="text-yellow-600 mr-8" />
             将工作流任务回退至已流转过的节点（除开始节点），不中断任务

@@ -71,7 +71,7 @@ export default function ResetPasswordModal({ visible, onCancel }: Props): JSX.El
         },
       ]}
     >
-      <Form className="w-full" ref={formRef}>
+      <Form className="w-full p-20" ref={formRef}>
         <PassWordField
           label="原密码"
           name="oldPassword"

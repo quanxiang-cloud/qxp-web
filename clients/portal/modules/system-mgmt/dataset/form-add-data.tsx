@@ -1,5 +1,6 @@
 import React, { useRef, useState, forwardRef, useImperativeHandle } from 'react';
 import { Form, Field, Label, Control, Radio, RadioGroup } from '@QCFE/lego-ui';
+import cs from 'classnames';
 
 const { TextField } = Form;
 
@@ -9,7 +10,7 @@ interface Props {
 }
 
 // form add/edit dataset
-function FormAddData({ editInfo }: Props, ref: React.LegacyRef<Form>) {
+function FormAddData({ editInfo, className }: Props, ref: React.LegacyRef<Form>) {
   const formAddRef = useRef<Form>();
   const [datasetType, setDatasetType] = useState<DatasetType>(editInfo?.type || 1);
 
@@ -26,7 +27,7 @@ function FormAddData({ editInfo }: Props, ref: React.LegacyRef<Form>) {
 
   return (
     // @ts-ignore
-    <Form className="form-add-dataset" ref={formAddRef}>
+    <Form className={cs('form-add-dataset', className)} ref={formAddRef}>
       <Field>
         <Label>类型:</Label>
         <Control>

@@ -19,6 +19,21 @@ type ISchema = import('@formily/react-schema-renderer').ISchema & {
   };
 };
 
+type LabelValue = {
+  label: string;
+  value: string;
+}
+
+type FormDataValue =
+  | string
+  | string[]
+  | number
+  | number[]
+  | FormBuilder.Option
+  | FormBuilder.Option[]
+  | Record<string, unknown>
+  | Record < string, unknown > [];
+
 declare type SchemaProperties<T = ISchema> = {
   [key: string]: T;
 };

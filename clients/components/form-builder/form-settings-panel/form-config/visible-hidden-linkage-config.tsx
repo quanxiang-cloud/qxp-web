@@ -252,81 +252,83 @@ function VisibleHiddenLinkageConfig({ mode, onClose, linkageKey, onSubmit }: Pro
 
   return (
     <Modal title={`${mode}字段显隐条件`} onClose={onClose}>
-      <div className='flex items-center mb-16'>
+      <div className="p-20">
+        <div className='flex items-center mb-16'>
         满足以下
-        <Select
-          className='mx-4'
-          value={defaultValue.ruleJoinOperator}
-          onChange={(tag: string) => {
-            setTag(tag);
-            defaultValue.ruleJoinOperator = tag as 'every' | 'some';
-          }}
-          options={[
-            { label: '所有', value: 'every' },
-            { label: '任一', value: 'some' },
-          ]}
-        />
+          <Select
+            className='mx-4'
+            value={defaultValue.ruleJoinOperator}
+            onChange={(tag: string) => {
+              setTag(tag);
+              defaultValue.ruleJoinOperator = tag as 'every' | 'some';
+            }}
+            options={[
+              { label: '所有', value: 'every' },
+              { label: '任一', value: 'some' },
+            ]}
+          />
         条件时
-      </div>
-      <SchemaForm
-        components={COMPONENTS}
-        defaultValue={defaultValue}
-        effects={() => setCompareValueOptions()}
-        onSubmit={(values) => {
-          values.ruleJoinOperator = tag;
-          onSubmit(values);
-        }}
-      >
-        <Field
-          title="条件列表"
-          name="rules"
-          type="array"
-          x-component="ArrayCustom"
+        </div>
+        <SchemaForm
+          components={COMPONENTS}
+          defaultValue={defaultValue}
+          effects={() => setCompareValueOptions()}
+          onSubmit={(values) => {
+            values.ruleJoinOperator = tag;
+            onSubmit(values);
+          }}
         >
-          <Field type="object">
-            <Field
-              required
-              name="sourceKey"
-              x-component="AntdSelect"
-              title=""
-              enum={sourceKeyOptions.map(({ label, value }) => ({ label, value }))}
-            />
-            <Field
-              required
-              name="compareOperator"
-              x-component="AntdSelect"
-              title=""
-              enum={OPERATORS.Default}
-            />
-            <Field
-              title=""
-              name="compareValue"
-              default=""
-              x-component='AntdSelect'
-            />
+          <Field
+            title="条件列表"
+            name="rules"
+            type="array"
+            x-component="ArrayCustom"
+          >
+            <Field type="object">
+              <Field
+                required
+                name="sourceKey"
+                x-component="AntdSelect"
+                title=""
+                enum={sourceKeyOptions.map(({ label, value }) => ({ label, value }))}
+              />
+              <Field
+                required
+                name="compareOperator"
+                x-component="AntdSelect"
+                title=""
+                enum={OPERATORS.Default}
+              />
+              <Field
+                title=""
+                name="compareValue"
+                default=""
+                x-component='AntdSelect'
+              />
+            </Field>
           </Field>
-        </Field>
-        <Field
-          name="isShow"
-          title="以下字段"
-          x-component="RadioGroup"
-          enum={[
-            { label: '显示', value: true },
-            { label: '隐藏', value: false },
-          ]}
-        />
-        <Field
-          required
-          name="targetKeys"
-          x-component="AntdSelect"
-          enum={availableFields.map(({ label, value }) => ({ label, value }))}
-          x-component-props={{ mode: 'multiple' }}
-        />
-        <FormButtonGroup offset={4}>
-          <Button type="submit" modifier="primary">保存</Button>
-          <Button type="submit" onClick={onClose}>关闭</Button>
-        </FormButtonGroup>
-      </SchemaForm>
+          <Field
+            name="isShow"
+            title="以下字段"
+            x-component="RadioGroup"
+            enum={[
+              { label: '显示', value: true },
+              { label: '隐藏', value: false },
+            ]}
+          />
+          <Field
+            required
+            name="targetKeys"
+            x-component="AntdSelect"
+            enum={availableFields.map(({ label, value }) => ({ label, value }))}
+            x-component-props={{ mode: 'multiple' }}
+          />
+          <FormButtonGroup offset={4}>
+            <Button type="submit" modifier="primary">保存</Button>
+            <Button type="submit" onClick={onClose}>关闭</Button>
+          </FormButtonGroup>
+        </SchemaForm>
+      </div>
     </Modal>
   );
 }
