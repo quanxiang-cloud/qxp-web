@@ -57,7 +57,6 @@ function PageDataTable(): JSX.Element {
 
         </div>
         <AdvancedQuery
-          initConditions={store.params.condition as Condition[]}
           tag={store.params.tag as 'or' | 'and'}
           fields={store.fields}
           search={store.setParams}

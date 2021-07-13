@@ -1,56 +1,51 @@
-import * as React from 'react';
+import React from 'react';
 import { useQuery } from 'react-query';
-import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 
-import { TreeData, Mode, TreeNode } from 'react-dropdown-tree-select';
+import { TreeNode } from 'react-dropdown-tree-select';
 import { searchOrganziation } from './messy/api';
 import Cascader, { parseTree, searchTree } from './cascader';
 
 interface Props {
-  data: TreeData
-  placeholder?: string
-  mode?: Mode
-  onChange?: (currentNode: TreeNode, selectedNodes: TreeNode[]) => void
-  disabled?: boolean
-  className?: string;
-  value?: string | string[]
+  appID: string;
+  value: string[];
+  onChange: (value: TreeNode | TreeNode[]) => void;
+  multiple: 'signle' | 'multiple';
+  optionalRange: 'all' | 'customize';
+  placeholder?: string;
+  rangeList?: string[];
 }
 
-const OrganizationPicker = (p: ISchemaFieldComponentProps) => {
-  const appID: string = p.props.appID;
-
+const OrganizationPicker = ({
+  multiple,
+  rangeList,
+  appID,
+  onChange,
+  optionalRange,
+  ...otherProps
+}: Props): JSX.Element => {
   const { data } = useQuery(['query_user_picker', appID], () => searchOrganziation(appID));
 
-  React.useEffect(() => {
-    p.mutators.change(p.initialValue || p.props.defaultValues);
-  }, []);
-
-  const { optionalRange, rangeList } = p.props;
+  const CustomizeTreeData = React.useMemo(() => {
+    const Tree = parseTree(data);
+    return rangeList ? rangeList.map((itm) => searchTree(Tree as TreeNode, itm)).filter(Boolean) : [];
+  }, [data, rangeList]);
 
   const TreeData = React.useMemo(() => {
-    if (optionalRange != 'all') {
-      const Tree = parseTree(data);
-      return rangeList ? rangeList.map((itm: string) => searchTree(Tree as TreeNode, itm)).filter(Boolean) : [];
-    } else {
-      return parseTree(data);
-    }
-  }, [data, optionalRange, rangeList]);
+    return parseTree(data);
+  }, [data]);
 
-  const cascaderParams = {
-    mode: p.props.multiple == 'signle' ? 'radioSelect' : 'multiSelect',
-    placeholder: p.props.placeholder,
-  } as Props;
+  React.useEffect(() => {
+    onChange([]);
+  }, [optionalRange, multiple]);
 
   return (
     <Cascader
-      {...cascaderParams}
-      data={TreeData}
-      value={(p.value || []).map((itm: TreeNode) => itm.value)}
-      onChange={(selects) => p.mutators.change(selects)}
+      mode={multiple === 'signle' ? 'radioSelect' : 'multiSelect'}
+      data={optionalRange === 'customize' ? CustomizeTreeData : TreeData}
+      onChange={onChange}
+      {...otherProps}
     />
   );
 };
-
-OrganizationPicker.isFieldComponent = true;
 
 export default OrganizationPicker;

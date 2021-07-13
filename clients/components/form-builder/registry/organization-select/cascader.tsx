@@ -81,22 +81,21 @@ const Cascader = (props: Props) => {
     noMatches = '未找到匹配关键字...',
     inlineSearchPlaceholder = '搜索',
   } = props;
-
   const selectsRef = React.useRef<TreeNode[]>();
 
   return (
     <div className="cascader_bg">
       <DropdownTreeSelect
         className={classNames(className, {
-          no_rm_cascader: 'radioSelect' != mode,
+          no_rm_cascader: 'radioSelect' !== mode,
         })}
         mode={mode}
         keepChildrenOnSearch
-        keepOpenOnSelect={mode != 'radioSelect'}
+        keepOpenOnSelect={mode !== 'radioSelect'}
         keepTreeOnSearch
         clearSearchOnChange
         onChange={(_, selects) => {
-          if (mode == 'radioSelect') {
+          if (mode === 'radioSelect') {
             onChange && onChange(selects);
           }
           selectsRef.current = selects;
