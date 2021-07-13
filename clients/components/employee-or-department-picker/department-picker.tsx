@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery } from 'react-query';
 import { observer } from 'mobx-react';
+import cs from 'classnames';
 
 import TextHeader from '@c/text-header';
 import Loading from '@c/loading';
@@ -15,12 +16,13 @@ import DepartmentSelectTree from './department-select-tree';
 import OwnerStore from './store';
 
 interface Props {
-    departments?: EmployeeOrDepartmentOfRole[]
     onChange: (departmentsOrEmployees: EmployeeOrDepartmentOfRole[]) => void;
+    departments?: EmployeeOrDepartmentOfRole[];
+    className?: string;
 }
 
 function EmployeeOrDepartmentPicker({
-  departments = [], onChange,
+  departments = [], onChange, className,
 }: Props) {
   const [store, setStore] = useState<OwnerStore>();
 
@@ -77,7 +79,7 @@ function EmployeeOrDepartmentPicker({
   }
 
   return (
-    <div className="flex flex-row w-full h-full">
+    <div className={cs('flex flex-row w-full h-full pl-20', className)}>
       <div
         className="h-full flex flex-col overflow-hidden"
         style={{ height: 'calc(100% - 48px)' }}

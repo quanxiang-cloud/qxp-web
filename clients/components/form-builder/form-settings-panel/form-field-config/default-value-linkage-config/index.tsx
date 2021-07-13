@@ -224,6 +224,7 @@ function LinkageConfig({ onClose, onSubmit, linkage }: Props): JSX.Element {
       onClose={onClose}
     >
       <SchemaForm
+        className="p-20"
         actions={actions}
         schema={SCHEMA}
         components={COMPONENTS}

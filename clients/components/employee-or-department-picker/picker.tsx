@@ -174,7 +174,7 @@ export default observer(function EmployeeOrDepartmentPicker({
   }
 
   return (
-    <div className="flex flex-row w-full h-full">
+    <div className="flex flex-row w-full h-full p-20">
       <Tab
         className="mr-20 flex-2"
         contentClassName="rounded-12 rounded-tl-none"

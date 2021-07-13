@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery } from 'react-query';
 import { observer } from 'mobx-react';
+import cs from 'classnames';
 
 import TextHeader from '@c/text-header';
 import SearchInput from '@c/form/input/search-input';
@@ -16,17 +17,19 @@ import EmployeeSelectTree from '@c/employee-or-department-picker/employee-select
 import OwnerStore from '@c/employee-or-department-picker/store';
 
 interface Props {
+  onChange: (leader: Leader) => void;
   currentLeader?: Leader;
   employee?: Employee;
-  onChange: (leader: Leader) => void;
   labelKey?: string;
   defaultValue?: string;
+  className?: string;
 }
 
 export default observer(function DirectLeaderPicker<T extends { id: string; }>({
   currentLeader,
   employee,
   onChange,
+  className,
 }: Props) {
   const [store, setStore] = useState<OwnerStore>();
   const { data: department, isLoading, isError } = useQuery(
@@ -51,7 +54,7 @@ export default observer(function DirectLeaderPicker<T extends { id: string; }>({
   }
 
   return (
-    <div className="flex flex-row w-full h-full">
+    <div className={cs('flex flex-row w-full h-full', className)}>
       <div className="w-full">
         <SearchInput
           className="mb-16"

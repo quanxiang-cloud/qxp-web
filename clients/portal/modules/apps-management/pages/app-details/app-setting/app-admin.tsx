@@ -171,7 +171,7 @@ function AppAdmin() {
             },
           ]}
         >
-          确定要批量移除应用的管理员吗？
+          <p className="p-20">确定要批量移除应用的管理员吗？</p>
         </Modal>)
       }
       {modalType === 'addAdmin' && (

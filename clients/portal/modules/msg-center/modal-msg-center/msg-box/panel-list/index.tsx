@@ -115,7 +115,7 @@ const PanelList = () => {
   const handleAllReaded = () => {
     const allReadedModal = Modal.open({
       title: '全部已读',
-      content: '确定要将全部类型的消息标记为已读吗?',
+      content: (<p className="p-20">确定要将全部类型的消息标记为已读吗?</p>),
       onConfirm: () => {
         setAllMsgAdRead()
           .then(() => {
@@ -132,7 +132,11 @@ const PanelList = () => {
   const handleCheckedReaded = (title?:string, id?:string) => {
     const checkedReadedModal = Modal.open({
       title: '标记已读',
-      content: id ? `确定要将${title}信息标记为已读?` : `确定要将已选中的${selectedRows.length}条消息标记为已读吗?`,
+      content: (
+        <p
+          className="p-20">
+          { id ? `确定要将${title}信息标记为已读?` : `确定要将已选中的${selectedRows.length}条消息标记为已读吗?`}
+        </p>),
       onConfirm: () => {
         setMsgAsReadByIds(id ? [id] : selectedRows)
           .then(() => {
@@ -150,7 +154,11 @@ const PanelList = () => {
   const handleDeleteMessage = (title?:string, id?:string) => {
     const deleteMessageModal = Modal.open({
       title: '删除消息',
-      content: id ? `确定要将${title}信息删除?` : `确定要将已选中的${selectedRows.length}条消息删除吗?`,
+      content: (
+        <p className="p-20">
+          {id ? `确定要将${title}信息删除?` : `确定要将已选中的${selectedRows.length}条消息删除吗?`}
+        </p>
+      ),
       onConfirm: () => {
         deleteMsgMutation.mutate(id ? [id] : selectedRows);
         deleteMessageModal.close();

@@ -156,7 +156,7 @@ export default function Detail(): JSX.Element {
                 },
               ]}
             >
-              <p>您修改了工作流但未保存，离开后将丢失更改，确定要离开吗？</p>
+              <p className="p-20">您修改了工作流但未保存，离开后将丢失更改，确定要离开吗？</p>
             </Modal>
           )}
           <section className="flex-1 flex">
