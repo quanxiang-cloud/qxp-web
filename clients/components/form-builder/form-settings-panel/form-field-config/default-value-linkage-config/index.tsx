@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { toJS } from 'mobx';
 import { from } from 'rxjs';
-import { switchMap, filter } from 'rxjs/operators';
+import { switchMap, filter, tap, skip } from 'rxjs/operators';
 import {
   SchemaForm,
   FormButtonGroup,
@@ -87,7 +87,15 @@ function LinkageConfig({ onClose, onSubmit, linkage }: Props): JSX.Element {
       fieldSchema.type === 'datetime';
   }).map(([key, fieldSchema]) => ({ label: fieldSchema.title as string, value: key }));
 
-  function syncLinkedTableFields(fields: LinkedTableFieldOptions[]): void {
+  function resetFormDefaultValueOnLinkTableChanged(fields: LinkedTableFieldOptions[]): void {
+    setFieldValue('sortBy', fields[0].value);
+    setFieldValue('sortOrder', '+');
+    setFieldValue('ruleJoinOperator', DEFAULT_VALUE_LINKAGE.ruleJoinOperator);
+    setFieldValue('rules', DEFAULT_VALUE_LINKAGE.rules);
+    setFieldValue('linkedField', DEFAULT_VALUE_LINKAGE.linkedField);
+  }
+
+  function updateFieldsEnumOnLinkedTableChanged(fields: LinkedTableFieldOptions[]): void {
     const options = fields.map(({ label, value }) => ({ label, value }));
 
     setFieldState('rules.*.fieldName', (state) => state.props.enum = options);
@@ -120,7 +128,9 @@ function LinkageConfig({ onClose, onSubmit, linkage }: Props): JSX.Element {
     onFieldValueChange$('linkedTableID').pipe(
       filter(({ value }) => !!value),
       switchMap(({ value }) => from(fetchLinkedTableFields(store.appID, value))),
-    ).subscribe(syncLinkedTableFields);
+      tap(updateFieldsEnumOnLinkedTableChanged),
+      skip(1),
+    ).subscribe(resetFormDefaultValueOnLinkTableChanged);
 
     // todo why this observable emit value when un-mount?
     onFieldValueChange$('rules.*.fieldName').pipe(

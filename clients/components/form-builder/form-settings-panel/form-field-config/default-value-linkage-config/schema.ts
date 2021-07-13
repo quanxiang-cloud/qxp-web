@@ -20,8 +20,8 @@ const schema: ISchema = {
           'x-component': 'RadioGroup',
           default: false,
           enum: [
-            { label: '升序', value: '-' },
-            { label: '降序', value: '+' },
+            { label: '升序', value: '+' },
+            { label: '降序', value: '-' },
           ],
         },
       },
