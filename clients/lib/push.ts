@@ -16,8 +16,8 @@ class PushServer {
   constructor() {
     this.setUp();
 
-    // window.addEventListener('offline', this.offlineHandler);
-    // window.addEventListener('online', this.onlineHandler);
+    window.addEventListener('offline', this.offlineHandler);
+    window.addEventListener('online', this.onlineHandler);
   }
 
   getToken(): Promise<string> {
@@ -42,9 +42,10 @@ class PushServer {
       if (!this.connection) {
         this.connection = new WebSocket(endpoint);
       }
-      if (this.connection && this.connection.readyState > 1) {
+      if (this.connection && this.connection.readyState > WebSocket.OPEN) {
         // close zombie connection
         this.connection.close();
+        this.detachEvents();
         this.connection = new WebSocket(endpoint);
       }
       return this.connection;
@@ -82,7 +83,10 @@ class PushServer {
   }
 
   onlineHandler = () => {
-    this.setUp();
+    this.setUp(() => {
+      this.attachEvents();
+      this.heartbeat();
+    });
   }
 
   offlineHandler = () => {
@@ -91,11 +95,13 @@ class PushServer {
   }
 
   heartbeat() {
+    const echo = () => this.connection.readyState === WebSocket.OPEN && this.connection.send('echo');
+
     this.stopHeartbeat();
     // trigger first heartbeat
-    this.connection.send('echo');
+    echo();
     this.timerHeartbeat = setInterval(() => {
-      this.connection.send('echo');
+      echo();
     }, this.heartbeatInterval);
   }
 
@@ -106,10 +112,10 @@ class PushServer {
     }
   }
 
-  setUp = () => {
+  setUp = (cb?: any) => {
     // reset retry count
     retryCount = 0;
-    this.initConnection().then(this.attachEvents);
+    this.initConnection().then(cb || this.attachEvents);
   }
 
   dispatchEvent = (data: SocketData): void => {
