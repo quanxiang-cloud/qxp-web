@@ -1,6 +1,7 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useQuery } from 'react-query';
 import { Select, SelectProps } from 'antd';
+import { useUpdateEffect } from 'react-use';
 
 import { debounce } from 'lodash';
 
@@ -12,6 +13,7 @@ type OptionalRange = 'customize' | 'all';
 interface Props extends SelectProps<any> {
   optionalRange?: OptionalRange;
   appID?: string;
+  dataSource?: any[];
 }
 
 interface AllUserPickerProps extends SelectProps <any> {
@@ -21,7 +23,7 @@ interface AllUserPickerProps extends SelectProps <any> {
 const PAGE_SIZE = 10;
 
 const UserPicker = ({ optionalRange, appID, onChange, value, ...componentsProps }: Props): JSX.Element => {
-  useEffect(() => {
+  useUpdateEffect(() => {
     onChange && onChange([], []);
   }, [componentsProps.mode, optionalRange]);
 
@@ -31,6 +33,10 @@ const UserPicker = ({ optionalRange, appID, onChange, value, ...componentsProps 
 
   const selected = Array.isArray(value || []) ?
     (value || []).map(({ value }: Option) => value) : value.value;
+
+  if (!componentsProps.options?.length && componentsProps.dataSource?.length) {
+    componentsProps.options = componentsProps.dataSource;
+  }
 
   if (optionalRange === 'all') {
     return (
@@ -45,7 +51,7 @@ const UserPicker = ({ optionalRange, appID, onChange, value, ...componentsProps 
   return <Select value={selected} onChange={handleChange} {...componentsProps} />;
 };
 
-const AllUserPicker = ({ appID, ...otherProps }: AllUserPickerProps): JSX.Element => {
+const AllUserPicker = ({ appID, ...otherProps }: AllUserPickerProps): JSX.Element | null => {
   const [options, setOptions] = React.useState<Option[]>([]);
   const [hasNext, setHasNext] = React.useState<boolean>(false);
   const [keyword, setKeyword] = React.useState<string>();
@@ -65,18 +71,21 @@ const AllUserPicker = ({ appID, ...otherProps }: AllUserPickerProps): JSX.Elemen
     };
   }, [keyword, page]);
 
-  const { isLoading } = useQuery(['query_user_picker', params, appID], () => searchUser(appID, params), {
-    onSuccess(data: Res) {
-      if (data) {
-        const newOptions = (data.data || []).map((itm) => ({
-          label: itm.userName,
-          value: itm.id,
-        }));
-        setOptions((current) => [...current, ...newOptions]);
-        setHasNext(data.total_count > page * PAGE_SIZE);
-      }
-    },
-  });
+  const { isLoading } = useQuery(
+    ['query_user_picker', params, appID],
+    () => searchUser(appID, params),
+    {
+      onSuccess(data: Res) {
+        if (data) {
+          const newOptions = (data.data || []).map((itm) => ({
+            label: itm.userName,
+            value: itm.id,
+          }));
+          setOptions((current) => [...current, ...newOptions]);
+          setHasNext(data.total_count > page * PAGE_SIZE);
+        }
+      },
+    });
 
   const componentsProps = Object.assign({}, otherProps, {
     loading: isLoading,
@@ -93,6 +102,10 @@ const AllUserPicker = ({ appID, ...otherProps }: AllUserPickerProps): JSX.Elemen
       }
     },
   });
+
+  if (isLoading) {
+    return null;
+  }
 
   return <Select {...componentsProps} options={options} />;
 };

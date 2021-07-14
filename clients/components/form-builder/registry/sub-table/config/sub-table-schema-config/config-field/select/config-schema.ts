@@ -1,5 +1,5 @@
 import { ISchema } from '@formily/react-schema-renderer';
-import { deleteOperate, extraOperations } from '../../../fields/operates';
+import { DeleteOperate, ExtraOperations } from '../../../fields/operates';
 
 const schema: ISchema = {
   type: 'object',
@@ -125,10 +125,10 @@ const schema: ISchema = {
           'x-component': 'ArrayTable',
           'x-component-props': {
             operationsWidth: 80,
-            renderRemove: deleteOperate,
+            renderRemove: DeleteOperate,
             renderMoveDown: () => null,
             renderMoveUp: () => null,
-            renderExtraOperations: extraOperations,
+            renderExtraOperations: ExtraOperations,
             renderAddition: () => null,
           },
           'x-index': 9,

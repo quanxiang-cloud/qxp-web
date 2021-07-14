@@ -6,11 +6,18 @@ import { pick } from 'lodash';
 import cs from 'classnames';
 import {
   InternalFieldList as FieldList,
-  FormItem, ValidatePatternRules,
+  FormItem, ValidatePatternRules, IForm,
 } from '@formily/antd';
 
+import OrganizationPicker from '@c/form-builder/registry/organization-select/organization-select';
+import FileUpload from '@c/form-builder/registry/file-upload/uploader';
+import ImageUpload from '@c/form-builder/registry/image-upload/uploader';
+import UserPicker from '@c/form-builder/registry/user-picker/user-picker';
 import logger from '@lib/logger';
 import Icon from '@c/icon';
+import CascadeSelector from '@c/form-builder/registry/cascade-selector/cascade-selector';
+
+import { getDefaultValue } from './utils';
 
 type Column = {
   title: string;
@@ -34,6 +41,11 @@ const components = {
   numberpicker: NumberPicker,
   select: Select,
   multipleselect: Select,
+  userpicker: UserPicker,
+  organizationpicker: OrganizationPicker,
+  fileupload: FileUpload,
+  imageupload: ImageUpload,
+  cascadeselector: CascadeSelector,
 };
 
 interface Props extends ISchemaFieldComponentProps {
@@ -64,6 +76,7 @@ function SubTable({
   function buildColumnFromSchema(dataIndex: string, sc: ISchema): Column | null {
     const componentName = sc['x-component']?.toLowerCase() as keyof Components;
     const componentProps = sc['x-component-props'] || {};
+    const componentPropsInternal = sc['x-internal'] || {};
     const dataSource = sc?.enum;
     if (!components[componentName]) {
       logger.error('component %s is missing in subTable', componentName);
@@ -73,7 +86,12 @@ function SubTable({
       title: sc.title as string,
       dataIndex,
       component: components[componentName],
-      props: componentProps,
+      props: {
+        ...componentProps,
+        ...componentPropsInternal,
+        'x-component-props': componentProps,
+        'x-internal': componentPropsInternal,
+      },
       dataSource,
       readonly: sc?.readOnly,
       required: sc?.required as boolean,
@@ -89,14 +107,13 @@ function SubTable({
   }).reduce(
     (cur: Column[], next) => {
       const [key, sc] = next;
-      const componentProps = sc['x-component-props'] || {};
       const isHidden = !sc.display;
       if ((isFromForeign && !definedColumns?.includes(key)) || key === '_id' || isHidden) {
         return cur;
       }
       const newColumn = buildColumnFromSchema(key, sc);
       if (newColumn) {
-        Object.assign(emptyRow, { [key]: sc.default || componentProps?.defaultValue });
+        Object.assign(emptyRow, { [key]: getDefaultValue(schema) });
         cur.push(newColumn);
       }
       return cur;
@@ -125,9 +142,15 @@ function SubTable({
     mutators.remove(index);
   }
 
+  function onChange(path: string, form: IForm) {
+    return (value: unknown): void => {
+      form.setFieldValue(path, value);
+    };
+  }
+
   return (
-    <FieldList name={name}>
-      {({ state, mutators }) => {
+    <FieldList name={name} initialValue={[emptyRow]}>
+      {({ state, mutators, form }) => {
         return (
           <div className="w-full flex flex-col border border-gray-300">
             {state.value.map((item: any, index: number) => {
@@ -163,6 +186,7 @@ function SubTable({
                       {columns.map(({
                         dataIndex, component, props, dataSource, required, rules, readonly,
                       }, idx) => {
+                        const path = `${name}.${index}.${dataIndex}`;
                         return (
                           <div key={dataIndex} className={cs({
                             'border-r-1 border-gray-300': idx < columns.length,
@@ -171,10 +195,11 @@ function SubTable({
                             {component && !readonly && (
                               <FormItem
                                 {...props}
-                                className="mx-8 mb-8 w-full mt-24"
-                                name={`${name}.${index}.${dataIndex}`}
+                                className="mx-8 my-8 w-full"
+                                name={path}
                                 component={component}
-                                props={props}
+                                props={{ ...props, props }}
+                                mutators={{ change: onChange(path, form) }}
                                 rules={rules as any}
                                 dataSource={dataSource}
                                 required={required}

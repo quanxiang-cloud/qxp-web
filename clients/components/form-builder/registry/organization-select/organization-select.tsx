@@ -9,7 +9,7 @@ interface Props {
   appID: string;
   value: string[];
   onChange: (value: TreeNode | TreeNode[]) => void;
-  multiple: 'signle' | 'multiple';
+  multiple: 'single' | 'multiple';
   optionalRange: 'all' | 'customize';
   placeholder?: string;
   rangeList?: string[];
@@ -40,7 +40,7 @@ const OrganizationPicker = ({
 
   return (
     <Cascader
-      mode={multiple === 'signle' ? 'radioSelect' : 'multiSelect'}
+      mode={multiple === 'single' ? 'radioSelect' : 'multiSelect'}
       data={optionalRange === 'customize' ? CustomizeTreeData : TreeData}
       onChange={onChange}
       {...otherProps}
