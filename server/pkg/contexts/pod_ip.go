@@ -1,30 +1,22 @@
 package contexts
 
 import (
-	"net"
+	"log"
 	"strconv"
-	"strings"
 )
 
-func getInstanceID() int64 {
-	addrs, err := net.InterfaceAddrs()
+const webInstanceNumberKey string = "web_instance_number"
 
+func getInstanceID() int64 {
+	_, err := Cache.Incr(webInstanceNumberKey).Result()
+	if err != nil {
+		log.Fatal("failed to perform redis cmd incr", err.Error())
+	}
+
+	instanceID, err := strconv.ParseInt(Cache.Get(webInstanceNumberKey).Val(), 10, 10)
 	if err != nil {
 		return 1
 	}
 
-	for _, address := range addrs {
-		if ipnet, ok := address.(*net.IPNet); ok && !ipnet.IP.IsLoopback() {
-			if ipnet.IP.To4() != nil {
-				segments := strings.Split(ipnet.IP.String(), ".")
-				instanceID, err := strconv.ParseInt(segments[len(segments)-1], 10, 10)
-				if err != nil {
-					return 1
-				}
-				return instanceID
-			}
-		}
-	}
-
-	return 1
+	return instanceID
 }
