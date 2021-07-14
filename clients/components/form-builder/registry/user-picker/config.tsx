@@ -11,7 +11,9 @@ import { EnumReadOnly, EnumOptionalRange, EnumMultiple } from './messy/enum';
 import Picker from './picker';
 import UserPicker from './user-picker';
 
-const Field = (props: IAntdFormItemProps): JSX.Element => <MegaLayout labelAlign="top"><FormItem {...props} /></MegaLayout>;
+const Field = (props: IAntdFormItemProps): JSX.Element => (
+  <MegaLayout labelAlign="top"><FormItem {...props} /></MegaLayout>
+);
 
 interface Props {
   initialValue: DefaultConfig

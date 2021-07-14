@@ -5,7 +5,7 @@ export interface DefaultConfig {
   displayModifier: FormBuilder.DisplayModifier;
   placeholder?: string;
   required: boolean;
-  multiple?: 'signle' | 'multiple';
+  multiple?: 'single' | 'multiple';
   rangeList: TreeNode[];
   optionalRange?: 'all' | 'customize' | 'myDep';
   defaultValues?: string[];
@@ -19,7 +19,7 @@ export const defaultConfig: DefaultConfig = {
   displayModifier: 'normal',
   placeholder: '',
   required: false,
-  multiple: 'signle',
+  multiple: 'single',
   rangeList: [],
   optionalRange: 'all',
   defaultValues: [],
