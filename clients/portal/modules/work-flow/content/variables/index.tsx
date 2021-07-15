@@ -1,4 +1,5 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useState } from 'react';
+import { useQuery } from 'react-query';
 
 import TextHeader from '@c/text-header';
 import Card from '@c/card';
@@ -23,10 +24,12 @@ export default function Variables(): JSX.Element {
     type: 'CUSTOM',
     desc: '',
   };
-  const [currVariable, setCurrVariable] = useState<ProcessVariable>(initVariableInfo);
-  const [openVariable, setOpenVariable] = useState(false);
-  const [deleteVariable, setDeleteVariable] = useState(false);
-  const [data, setData] = useState<any>();
+  const [currentVariable, setCurrentVariable] = useState<ProcessVariable>(initVariableInfo);
+  const [currentAction, setCurrentAction] = useState<'edit' | 'remove' | 'add' | ''>('');
+  const { data, isLoading, refetch } = useQuery('GET_VARIABLE_LIST', () => getVariableList(flowId), {
+    cacheTime: -1,
+    refetchOnWindowFocus: false,
+  });
 
   const columns = [
     {
@@ -52,8 +55,8 @@ export default function Variables(): JSX.Element {
     }, {
       Header: () => getHeader(''),
       id: 'tool',
-      accessor: (Variable: any) => {
-        if (Variable.type === 'SYSTEM') {
+      accessor: (variable: ProcessVariable) => {
+        if (variable.type === 'SYSTEM') {
           return (
             <span>- -</span>
           );
@@ -62,13 +65,13 @@ export default function Variables(): JSX.Element {
           <>
             <span
               className="mr-16 cursor-pointer hover:text-blue-600"
-              onClick={() => handleVariableInfo(Variable, 'edit')}
+              onClick={() => updateCurrentAction(variable, 'edit')}
             >
               编辑
             </span>
             <span
               className="mr-16 cursor-pointer hover:text-blue-600"
-              onClick={() => handleVariableInfo(Variable, 'delete')}
+              onClick={() => updateCurrentAction(variable, 'remove')}
             >
               删除
             </span>
@@ -78,21 +81,6 @@ export default function Variables(): JSX.Element {
     },
   ];
 
-  useEffect(() => {
-    getVariableList(flowId).then((data: any) => {
-      setData(data);
-    });
-  }, []);
-
-  function handleVariableInfo(variable: ProcessVariable, operator: string): void {
-    setCurrVariable(variable);
-    if (operator === 'edit') {
-      setOpenVariable(true);
-      return;
-    }
-    setDeleteVariable(true);
-  }
-
   function getHeader(name: string): JSX.Element {
     return (
       <span className="text-body-no-color text-gray-400">{name}</span>
@@ -100,36 +88,43 @@ export default function Variables(): JSX.Element {
   }
 
   function handleDeleteSubmit(): void {
-    deleteFlowVariable(currVariable.id).then(() => {
+    deleteFlowVariable(currentVariable.id).then(() => {
       toast.success('删除成功');
-      setCurrVariable(initVariableInfo);
-      setDeleteVariable(false);
-      getVariableList(flowId).then((data: any) => {
-        setData(data);
-      });
+      refetch();
+      handleCloseModal();
     }).catch((error: string) => {
       toast.error(error || '');
     });
   }
 
+  function updateCurrentAction(variable: ProcessVariable, action: 'add' | 'remove' | 'edit' | ''): void {
+    setCurrentVariable(variable);
+    setCurrentAction(action);
+  }
+
+  function handleCloseModal(): void {
+    setCurrentVariable(initVariableInfo);
+    setCurrentAction('');
+  }
+
+  function handleAddSubmit(): void {
+    refetch();
+    handleCloseModal();
+  }
+
   return (
     <>
-      {deleteVariable && (
+      {currentAction === 'remove' && (
         <Modal
           title={'删除变量'}
           className="static-modal"
-          onClose={()=>{
-            setDeleteVariable(false);
-          }}
+          onClose={handleCloseModal}
           footerBtns={[
             {
               text: '取消',
               key: 'cancel',
               iconName: 'close',
-              onClick: ()=>{
-                setCurrVariable(initVariableInfo);
-                setDeleteVariable(false);
-              },
+              onClick: handleCloseModal,
             },
             {
               text: '删除变量',
@@ -143,23 +138,17 @@ export default function Variables(): JSX.Element {
           <div className="text-14 p-20">
             确定要删除
             <span className="mx-4 font-semibold text-gray-900 text-h5">
-              {currVariable.name}
+              {currentVariable.name}
             </span>
             吗？
           </div>
         </Modal>
       )}
-
-      {openVariable && (
+      {(currentAction === 'edit' || currentAction === 'add') && (
         <EditVariableModal
-          variable={currVariable}
-          closeModal={()=>{
-            setOpenVariable(false);
-            setCurrVariable(initVariableInfo);
-            getVariableList(flowId).then((data: any) => {
-              setData(data);
-            });
-          }}
+          variable={currentVariable}
+          closeModal={handleCloseModal}
+          onAdded={handleAddSubmit}
         />
       )}
       <div className="w-full flex flex-col">
@@ -177,15 +166,15 @@ export default function Variables(): JSX.Element {
           <div className="w-full">
             <Button
               iconName="add"
-              onClick={(): void => handleVariableInfo(currVariable, 'edit')}
+              onClick={() => updateCurrentAction(currentVariable, 'add')}
               className="mr-16"
             >
               新增变量
             </Button>
-            <Table
+            <Table<any>
               rowKey="code"
               data={data || []}
-              loading={!data}
+              loading={isLoading}
               columns={columns}
             />
           </div>

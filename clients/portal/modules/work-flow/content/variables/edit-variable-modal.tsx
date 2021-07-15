@@ -1,6 +1,10 @@
 import React, { JSXElementConstructor, useState } from 'react';
 import { useMutation } from 'react-query';
-import { Form, FormItem, createFormActions, LifeCycleTypes, IFieldState } from '@formily/antd';
+import {
+  Form, FormItem, createFormActions, LifeCycleTypes, IFieldState,
+  IFormEffectSelector, IFormActions,
+} from '@formily/antd';
+import { skip } from 'rxjs/operators';
 import { Select, Radio, Input, DatePicker } from '@formily/antd-components';
 
 import Modal from '@c/modal';
@@ -12,11 +16,12 @@ import { FLOW_VARIABLE_FIELD_TYPES } from '../editor/utils/constants';
 interface Props {
   variable: ProcessVariable;
   closeModal(): void;
+  onAdded(): void;
 }
 
 const actions = createFormActions();
 
-export default function EditVariableModal({ variable, closeModal }: Props): JSX.Element {
+export default function EditVariableModal({ variable, closeModal, onAdded }: Props): JSX.Element {
   const [renderComponent, setRenderComponent] = useState<JSXElementConstructor<any>>(() => Input);
   const [defaultDataSource, setDefaultDataSource] = useState<any>();
 
@@ -27,7 +32,7 @@ export default function EditVariableModal({ variable, closeModal }: Props): JSX.
     {
       onSuccess: () => {
         toast.success('操作成功');
-        closeModal();
+        onAdded();
       },
       onError: (error: string) => {
         toast.error(error);
@@ -46,6 +51,37 @@ export default function EditVariableModal({ variable, closeModal }: Props): JSX.
       };
       staffMutation.mutate(params);
     });
+  }
+
+  function effects($: IFormEffectSelector, { setFieldState }: IFormActions): void {
+    $(LifeCycleTypes.ON_FIELD_VALUE_CHANGE, 'fieldType').pipe(skip(1))
+      .subscribe((fieldTypeState: IFieldState) => {
+        setFieldState('defaultValue', (defaultValueState: IFieldState) => {
+          const type = fieldTypeState?.value?.toLowerCase();
+          if (!type) {
+            return;
+          }
+          const componentMap: Record<string, JSXElementConstructor<any>> = {
+            date: DatePicker,
+            boolean: Radio.Group,
+          };
+          if (componentMap[type]) {
+            setRenderComponent(() => componentMap[type]);
+            setDefaultDataSource([
+              { value: 'False', label: 'false' },
+              { value: 'True', label: 'true' }]);
+          } else {
+            setRenderComponent(() =>Input);
+            setDefaultDataSource(null);
+            defaultValueState.props.type = type;
+          }
+          if (type === variable.fieldType.toLowerCase()) {
+            defaultValueState.value = variable.defaultValue;
+            return;
+          }
+          defaultValueState.value = '';
+        });
+      });
   }
 
   return (
@@ -76,35 +112,7 @@ export default function EditVariableModal({ variable, closeModal }: Props): JSX.
         actions={actions}
         initialValues={variable}
         onSubmit={handleSubmit}
-        effects={($, { setFieldState }) => {
-          $(LifeCycleTypes.ON_FIELD_VALUE_CHANGE, 'fieldType').subscribe((fieldTypeState: IFieldState) => {
-            setFieldState('defaultValue', (defaultValueState: IFieldState) => {
-              const type = fieldTypeState?.value?.toLowerCase();
-              if (!type) {
-                return;
-              }
-              const componentMap: Record<string, JSXElementConstructor<any>> = {
-                date: DatePicker,
-                boolean: Radio.Group,
-              };
-              if (componentMap[type]) {
-                setRenderComponent(() => componentMap[type]);
-                setDefaultDataSource([
-                  { value: 'False', label: 'false' },
-                  { value: 'True', label: 'true' }]);
-              } else {
-                setRenderComponent(() =>Input);
-                setDefaultDataSource(null);
-                defaultValueState.props.type = type;
-              }
-              if (type === variable.fieldType.toLowerCase()) {
-                defaultValueState.value = variable.defaultValue;
-                return;
-              }
-              defaultValueState.value = '';
-            });
-          });
-        }}
+        effects={effects}
       >
         <FormItem label="变量名称" name="name" component={Input} rules={[{ required: true, message: '请输入流程变量名称!' }]}/>
         <FormItem
