@@ -1,4 +1,4 @@
-import React, { JSXElementConstructor, FC } from 'react';
+import React, { JSXElementConstructor } from 'react';
 import { ISchemaFieldComponentProps, IMutators } from '@formily/react-schema-renderer';
 import { Input, Radio, DatePicker, NumberPicker, Select, Checkbox } from '@formily/antd-components';
 import { Table } from 'antd';
@@ -13,6 +13,7 @@ import FileUpload from '@c/form-builder/registry/file-upload/uploader';
 import ImageUpload from '@c/form-builder/registry/image-upload/uploader';
 import UserPicker from '@c/form-builder/registry/user-picker/user-picker';
 import logger from '@lib/logger';
+import FormDataValueRenderer from '@c/form-data-value-renderer';
 import Icon from '@c/icon';
 import CascadeSelector from '@c/form-builder/registry/cascade-selector/cascade-selector';
 
@@ -81,35 +82,22 @@ function SubTable({
       logger.error('component %s is missing in subTable', componentName);
       return null;
     }
-    const Component: FC<any> = components[componentName];
-    const props = {
-      ...componentProps,
-      ...componentPropsInternal,
-      'x-component-props': componentProps,
-      'x-internal': componentPropsInternal,
-    };
     return {
       title: sc.title as string,
       dataIndex,
-      component: Component,
-      props,
+      component: components[componentName],
+      props: {
+        ...componentProps,
+        ...componentPropsInternal,
+        'x-component-props': componentProps,
+        'x-internal': componentPropsInternal,
+      },
       dataSource,
       readonly: sc?.readOnly,
       required: sc?.required as boolean,
       rules: sc?.['x-rules'] || [],
-      render: (value: unknown) => {
-        Object.assign(props, { readonly: true });
-        return (
-          <Component
-            {...props}
-            props={props}
-            className="mx-8 my-8 w-full"
-            value={value}
-            dataSource={dataSource}
-            options={dataSource}
-            schema={sc}
-          />
-        );
+      render: (value: any) => {
+        return <FormDataValueRenderer value={value} schema={sc} />;
       },
     };
   }
