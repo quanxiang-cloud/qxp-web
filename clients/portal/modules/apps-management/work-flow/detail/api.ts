@@ -74,7 +74,7 @@ export function getVariableList(flowId: string): Promise<Array<ProcessVariable>>
   return httpClient<Array<ProcessVariable>>(`/api/v1/flow/getVariableList?id=${flowId}`);
 }
 
-export function saveFlowVariable(values: ProcessVariable): Promise<void> {
+export function saveFlowVariable(values: Omit<ProcessVariable, 'desc' | 'code'>): Promise<void> {
   return httpClient('/api/v1/flow/saveFlowVariable', values);
 }
 

@@ -33,9 +33,7 @@ export default function CustomFieldTable({
   });
 
   const variableOptions = data?.data?.map(({ name, code, fieldType }) => ({
-    label: name,
-    value: code || '',
-    type: fieldType,
+    label: name, value: code, type: fieldType,
   }));
 
   function getHeader(model: any, key: 'read' | 'write', label: string): JSX.Element {

@@ -18,7 +18,7 @@ import SaveButtonGroup from '@flowEditor/components/_common/action-save-button-g
 
 import FlowSourceTableContext from './flow-source-table';
 import FlowContext from '../../../flow-context';
-import { ProcessVariableAssignmentData, ProcessVariable } from '../type';
+import { ProcessVariableAssignmentData } from '../type';
 import { getFlowVariables } from './api';
 import styled from 'styled-components';
 

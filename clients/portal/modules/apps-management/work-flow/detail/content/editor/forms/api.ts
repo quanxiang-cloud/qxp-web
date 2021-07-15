@@ -2,7 +2,7 @@ import { QueryFunctionContext } from 'react-query';
 
 import httpClient from '@lib/http-client';
 
-import { ProcessVariable, Operation } from '../type';
+import { Operation } from '../type';
 import { SYSTEM_OPERATOR_PERMISSION, CUSTOM_OPERATOR_PERMISSION } from '../utils/constants';
 
 export type Option = {
