@@ -1,28 +1,27 @@
 import { useRef } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useMutation } from 'react-query';
+import { noop } from 'lodash';
 
 import toast from '@lib/toast';
 import { SaveWorkFlowParamsType, saveWorkFlow } from '@flow/detail/api';
 
-// todo fix this, assign to lishengma
-type FunctionToBeRefactor = () => void;
+type Noop = typeof noop;
 
 export default function useSave(appID: string, id?: string): (
   data: SaveWorkFlowParamsType,
-  onOk?: FunctionToBeRefactor,
-  onError?: FunctionToBeRefactor | undefined
+  onOk?: Noop,
+  onError?: Noop
 ) => void {
   const history = useHistory();
-  const callback = useRef<{ onOk?: FunctionToBeRefactor; onError?: FunctionToBeRefactor}>();
+  const callback = useRef<{ onOk?: Noop; onError?: Noop }>();
 
   const saveMutation = useMutation(saveWorkFlow, {
     onSuccess: (respData) => {
       toast.success('保存成功');
+      callback.current?.onOk?.();
       if (appID && respData?.id && !id) {
         history.replace(`/apps/flow/${appID}/${respData?.id}`);
-      } else {
-        callback.current?.onOk?.();
       }
     },
     onError: (err: Error) => {
@@ -31,11 +30,7 @@ export default function useSave(appID: string, id?: string): (
     },
   });
 
-  function onSaveWorkFlow(
-    data: SaveWorkFlowParamsType,
-    onOk?: FunctionToBeRefactor,
-    onError?: FunctionToBeRefactor,
-  ): void {
+  function onSaveWorkFlow(data: SaveWorkFlowParamsType, onOk?: Noop, onError?: Noop): void {
     callback.current = {
       onOk, onError,
     };

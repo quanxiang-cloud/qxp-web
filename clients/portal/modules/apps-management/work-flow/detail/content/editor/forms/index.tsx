@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useRef } from 'react';
 
 import useObservable from '@lib/hooks/use-observable';
 import usePrevious from '@lib/hooks/use-previous';
@@ -41,7 +41,8 @@ export default function NodeFormWrapper(): JSX.Element | null {
   const currentNodeElement = getNodeElementById(nodeIdForDrawerForm);
   const formDataElement = getFormDataElement();
   const [formData, setFormData] = useState<Data>(currentNodeElement?.data);
-  const [formDataChanged, setFormDataChanged] = useState(false);
+  const formDataChangedRef = useRef<boolean>(false);
+
   const saver = useSave(appID, id);
 
   const { type: nodeType } = currentNodeElement ?? {};
@@ -56,7 +57,8 @@ export default function NodeFormWrapper(): JSX.Element | null {
   }, [nodeIdForDrawerForm]);
 
   const previousNodeID = usePrevious(currentNodeElement?.id) ?? '';
-  useEffect(() => {
+  function setFormDataChanged(formDataChanged: boolean): void {
+    formDataChangedRef.current = formDataChanged;
     formDataChanged && updateStore((s) => ({ ...s, saved: false }));
     updateStore((s) => {
       const nodeID = currentNodeElement?.id || previousNodeID;
@@ -67,7 +69,7 @@ export default function NodeFormWrapper(): JSX.Element | null {
       }
       return { ...s, errors: s.errors };
     });
-  }, [formDataChanged]);
+  }
 
   function handleChange(): void {
     updateStore((s) => ({ ...s, validating: false }));
@@ -80,6 +82,7 @@ export default function NodeFormWrapper(): JSX.Element | null {
       return;
     }
     saver(buildWorkFlowSaveData(appID, data), () => {
+      setFormDataChanged(false);
       updateBusinessData(nodeIdForDrawerForm, (b) => ({ ...b, ...data }), { saved: true });
       closePanel();
     });
@@ -90,7 +93,7 @@ export default function NodeFormWrapper(): JSX.Element | null {
   }
 
   function closePanel(): void {
-    if (formDataChanged) {
+    if (formDataChangedRef.current) {
       return updateStore((s) => ({
         ...s,
         showDataNotSaveConfirm: true,
