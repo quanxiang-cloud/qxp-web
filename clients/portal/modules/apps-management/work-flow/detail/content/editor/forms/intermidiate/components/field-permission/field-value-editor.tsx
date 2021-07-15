@@ -36,7 +36,7 @@ function parseDisplayValue(value: any): any {
 interface Props {
   defaultValue?: FieldValue;
   onSave: (value: FieldValue) => void;
-  variableOptions?: {label: string; value: string;}[];
+  variableOptions?: FlowVariableOption[];
   schema: ISchema;
 }
 
@@ -143,7 +143,7 @@ function FieldValueEditor({
             </RadioGroup>
           </div>
           {
-            type === 'variable' && (
+            type === 'variable' && !!variableOptions?.length && (
               <>
                 <Select<string>
                   options={variableOptions || []}
@@ -155,6 +155,11 @@ function FieldValueEditor({
                 />
                 <ActionButtonGroup className="mt-16" onCancel={onCancel} onSubmit={onSubmit} />
               </>
+            )
+          }
+          {
+            type === 'variable' && !variableOptions?.length && (
+              <p className="my-12 text-gray-500">无可用的工作流变量</p>
             )
           }
           {

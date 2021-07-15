@@ -165,3 +165,18 @@ export const OPERATOR_OPTIONS: FieldOperatorOptions = [
 ];
 
 export const TRIGGER_CONDITION_EXCLUDE_FIELD_NAMES = ['_id', 'creator_id', 'modifier_id'];
+
+export const FORM_COMPONENT_VARIABLE_MAP: Record<string, FlowVariableFieldType[]> = {
+  input: ['TEXT', 'BOOLEAN'],
+  textarea: ['TEXT', 'BOOLEAN'],
+  radiogroup: [],
+  checkboxgroup: [],
+  numberpicker: ['NUMBER'],
+  datepicker: ['DATE'],
+  select: [],
+  multipleselect: [],
+  organizationpicker: [],
+  imageupload: [],
+  cascadeselector: [],
+  userpicker: [],
+};

@@ -8,6 +8,7 @@ import Icon from '@c/icon';
 import useRequest from '@lib/hooks/use-request';
 import type { CustomFieldPermission, FieldValue } from '@flowEditor/type';
 import flowContext from '@portal/modules/apps-management/work-flow/detail/flow-context';
+import { FORM_COMPONENT_VARIABLE_MAP } from '@flowEditor/utils/constants';
 
 import FieldValueEditor from './field-value-editor';
 
@@ -24,14 +25,18 @@ export default function CustomFieldTable({
   const { flowID: flowId } = useContext(flowContext);
   const [data] = useRequest<{
     code: number;
-    data: {name: string; code: string; desc: string;}[];
+    data: ProcessVariable[];
     msg: string;
   }>(`/api/v1/flow/getVariableList?id=${flowId}`, {
     method: 'POST',
     credentials: 'same-origin',
   });
 
-  const variableOptions = data?.data?.map(({ name, code }) => ({ label: name, value: code }));
+  const variableOptions = data?.data?.map(({ name, code, fieldType }) => ({
+    label: name,
+    value: code || '',
+    type: fieldType,
+  }));
 
   function getHeader(model: any, key: 'read' | 'write', label: string): JSX.Element {
     let checkedNumber = 0;
@@ -122,6 +127,14 @@ export default function CustomFieldTable({
     );
   }
 
+  function variableOptionsFilterByType(schema: ISchema) {
+    return ({ type }: Partial<FlowVariableOption>): boolean => {
+      const componentName = schema?.['x-component']?.toLowerCase() || '';
+      const types = FORM_COMPONENT_VARIABLE_MAP[componentName as keyof typeof FORM_COMPONENT_VARIABLE_MAP];
+      return type ? types?.includes(type) : false;
+    };
+  }
+
   function getValueCell(
     model: any, key: 'initialValue' | 'submitValue', editable: boolean,
   ): JSX.Element | null {
@@ -135,7 +148,7 @@ export default function CustomFieldTable({
       }
       return (
         <FieldValueEditor
-          variableOptions={variableOptions}
+          variableOptions={variableOptions?.filter(variableOptionsFilterByType(schema))}
           defaultValue={model.cell.value}
           schema={{
             title: '',
