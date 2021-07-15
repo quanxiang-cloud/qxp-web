@@ -29,6 +29,7 @@ type Column = {
   required?: boolean;
   rules?: ValidatePatternRules;
   render?: (value: unknown) => JSX.Element;
+  schema: ISchema;
 }
 
 type Components = typeof components;
@@ -92,6 +93,7 @@ function SubTable({
         'x-component-props': componentProps,
         'x-internal': componentPropsInternal,
       },
+      schema: sc,
       dataSource,
       readonly: sc?.readOnly,
       required: sc?.required as boolean,
@@ -150,7 +152,7 @@ function SubTable({
   }
 
   return (
-    <FieldList name={name} initialValue={[emptyRow]}>
+    <FieldList name={name} initialValue={value?.length ? value : [emptyRow]}>
       {({ state, mutators, form }) => {
         return (
           <div className="w-full flex flex-col border border-gray-300">
@@ -185,7 +187,7 @@ function SubTable({
                       style={{ gridTemplateColumns: `repeat(${columns.length}, minmax(120px, 1fr))` }}
                     >
                       {columns.map(({
-                        dataIndex, component, props, dataSource, required, rules, readonly,
+                        dataIndex, component, props, dataSource, required, rules, readonly, schema,
                       }, idx) => {
                         const path = `${name}.${index}.${dataIndex}`;
                         return (
@@ -207,7 +209,9 @@ function SubTable({
                                 value={item?.[dataIndex]}
                               />
                             )}
-                            {readonly && `${item?.[dataIndex] || ''}`}
+                            {readonly && (
+                              <FormDataValueRenderer value={value} schema={schema} />
+                            )}
                           </div>
                         );
                       })}
