@@ -90,6 +90,7 @@ function NodeRender(
       disabled: !isPage && item.children.length > 0,
     },
   ];
+
   function handleClick(): void {
     if (isPage) {
       onSelectPage(item.data);
@@ -98,6 +99,7 @@ function NodeRender(
 
     item.isExpanded ? onCollapse(item.id) : onExpand(item.id);
   }
+  provided.draggableProps.style.paddingLeft = item.data.groupID ? '28px' : '0px';
 
   return (
     <div
@@ -106,7 +108,7 @@ function NodeRender(
       ref={provided.innerRef}
     >
       <div
-        className={cs('h-56', 'flex', 'items-center', 'px-18', 'group', 'hover:bg-gray-100', {
+        className={cs('h-40', 'flex', 'items-center', 'px-18', 'group', 'hover:bg-gray-100', {
           'app-page-tree-node-tail': isActive,
           'text-blue-600': isActive,
         })}
