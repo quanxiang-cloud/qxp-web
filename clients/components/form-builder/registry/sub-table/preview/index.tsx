@@ -1,8 +1,7 @@
-import React, { JSXElementConstructor } from 'react';
+import React, { JSXElementConstructor, FC } from 'react';
 import { ISchemaFieldComponentProps, IMutators } from '@formily/react-schema-renderer';
 import { Input, Radio, DatePicker, NumberPicker, Select, Checkbox } from '@formily/antd-components';
 import { Table } from 'antd';
-import { pick } from 'lodash';
 import cs from 'classnames';
 import {
   InternalFieldList as FieldList,
@@ -28,6 +27,7 @@ type Column = {
   dataSource?: any[];
   required?: boolean;
   rules?: ValidatePatternRules;
+  render?: (value: unknown) => JSX.Element;
 }
 
 type Components = typeof components;
@@ -68,9 +68,8 @@ function SubTable({
   props,
   readonly,
 }: Partial<Props>): JSX.Element | null {
-  const {
-    subordination, columns: definedColumns,
-  } = props?.['x-component-props'] || {};
+  const schema = definedSchema?.items as ISchema;
+  const { subordination, columns: definedColumns } = props?.['x-component-props'] || {};
   const isFromForeign = subordination === 'foreign_table';
 
   function buildColumnFromSchema(dataIndex: string, sc: ISchema): Column | null {
@@ -82,24 +81,38 @@ function SubTable({
       logger.error('component %s is missing in subTable', componentName);
       return null;
     }
+    const Component: FC<any> = components[componentName];
+    const props = {
+      ...componentProps,
+      ...componentPropsInternal,
+      'x-component-props': componentProps,
+      'x-internal': componentPropsInternal,
+    };
     return {
       title: sc.title as string,
       dataIndex,
-      component: components[componentName],
-      props: {
-        ...componentProps,
-        ...componentPropsInternal,
-        'x-component-props': componentProps,
-        'x-internal': componentPropsInternal,
-      },
+      component: Component,
+      props,
       dataSource,
       readonly: sc?.readOnly,
       required: sc?.required as boolean,
       rules: sc?.['x-rules'] || [],
+      render: (value: unknown) => {
+        Object.assign(props, { readonly: true });
+        return (
+          <Component
+            {...props}
+            props={props}
+            className="mx-8 my-8 w-full"
+            value={value}
+            dataSource={dataSource}
+            options={dataSource}
+            schema={sc}
+          />
+        );
+      },
     };
   }
-
-  const schema = definedSchema?.items as ISchema;
 
   const emptyRow: Record<string, string> = {};
   const columns: Column[] = Object.entries(schema?.properties || {}).sort((a, b) => {
@@ -128,7 +141,7 @@ function SubTable({
       <Table
         pagination={false}
         rowKey="_id"
-        columns={columns.map((column) => pick(column, ['dataIndex', 'title']))}
+        columns={columns}
         dataSource={columns.length ? value : []}
       />
     );
