@@ -75,14 +75,6 @@ function PageNav() {
     <div className='app-details-nav'>
       <div className='flex flex-end px-16 py-20 justify-center'>
         <span className='text-h6-bold text-gray-400 mr-auto'>导航</span>
-        <Tooltip content='添加页面'>
-          <Icon
-            onClick={() => setModalType('editPage')}
-            className='app-page-add-group mr-16'
-            size={20}
-            name='post_add'
-          />
-        </Tooltip>
         <Tooltip content='添加分组'>
           <AddGroupPoper
             id={curEditNode?.id as string}
@@ -98,6 +90,13 @@ function PageNav() {
           onSelectPage={handleSelectPage}
           onChange={appPagesStore.updatePagesTree}
         />
+        <div
+          className="cursor-pointer h-40 flex items-center px-18 group hover:bg-gray-100"
+          onClick={() => setModalType('editPage')}
+        >
+          <Icon className='app-page-add-group mr-16' size={20} name='add'/>
+          新建页面
+        </div>
       </div>
       <DelModal
         type={modalType === 'delGroup' ? 'group' : 'page'}
