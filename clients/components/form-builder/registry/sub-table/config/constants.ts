@@ -98,7 +98,7 @@ export const SUPPORTED_COMPONENTS_NAMES = [
 
 export const LINKED_TABLE = { appID: '', tableID: '', tableName: '' };
 
-export const LABEL_TO_SCHEMA_MAP: Record<string, ISchema> = {
+export const SUB_TABLE_TYPES_SCHEMA_MAP: Record<string, ISchema> = {
   id: {
     display: false,
     readOnly: false,
@@ -110,22 +110,33 @@ export const LABEL_TO_SCHEMA_MAP: Record<string, ISchema> = {
     'x-internal': { isSystem: true, permission: 3 },
     'x-mega-props': { labelCol: 4 },
   },
-  单行文本: inputConverter.toSchema(inputConverter.defaultConfig),
-  多行文本: textareaConverter.toSchema(textareaConverter.defaultConfig),
-  单选框: radioConvertor.toSchema(radioConvertor.defaultConfig),
-  复选框: checkboxConvertor.toSchema(checkboxConvertor.defaultConfig),
-  数字: numberConverter.toSchema(numberConverter.defaultConfig),
-  日期时间: datetimeConverter.toSchema(datetimeConverter.defaultConfig),
-  下拉单选框: selectorConvertor.toSchema(selectorConvertor.defaultConfig),
-  下拉复选框: multipleSelectorConvertor.toSchema(multipleSelectorConvertor.defaultConfig),
-  人员选择: userPickerConverter.toSchema(userPickerConverter.defaultConfig),
-  部门选择: organizationPickerConverter.toSchema(organizationPickerConverter.defaultConfig),
-  附件: fileUploadConverter.toSchema(fileUploadConverter.defaultConfig),
-  图片: imageUploadConverter.toSchema(imageUploadConverter.defaultConfig),
-  级联选择: cascadeSelectorConverter.toSchema(cascadeSelectorConverter.defaultConfig),
+  input: inputConverter.toSchema(inputConverter.defaultConfig),
+  textarea: textareaConverter.toSchema(textareaConverter.defaultConfig),
+  radiogroup: radioConvertor.toSchema(radioConvertor.defaultConfig),
+  checkboxgroup: checkboxConvertor.toSchema(checkboxConvertor.defaultConfig),
+  numberpicker: numberConverter.toSchema(numberConverter.defaultConfig),
+  datepicker: datetimeConverter.toSchema(datetimeConverter.defaultConfig),
+  select: selectorConvertor.toSchema(selectorConvertor.defaultConfig),
+  multipleselect: multipleSelectorConvertor.toSchema(multipleSelectorConvertor.defaultConfig),
+  userpicker: userPickerConverter.toSchema(userPickerConverter.defaultConfig),
+  organizationpicker: organizationPickerConverter.toSchema(organizationPickerConverter.defaultConfig),
+  fileupload: fileUploadConverter.toSchema(fileUploadConverter.defaultConfig),
+  imageupload: imageUploadConverter.toSchema(imageUploadConverter.defaultConfig),
+  cascadeselector: cascadeSelectorConverter.toSchema(cascadeSelectorConverter.defaultConfig),
 };
 
-export const SUB_TABLE_LABELS = [
-  '单行文本', '多行文本', '单选框', '复选框', '数字', '日期时间', '下拉单选框', '下拉复选框', '人员选择',
-  '部门选择', '附件', '图片', '级联选择',
+export const SUB_TABLE_TYPES = [
+  { label: '单行文本', value: 'input' },
+  { label: '多行文本', value: 'textarea' },
+  { label: '单选框', value: 'radiogroup' },
+  { label: '复选框', value: 'checkboxgroup' },
+  { label: '数字', value: 'numberpicker' },
+  { label: '日期时间', value: 'datepicker' },
+  { label: '下拉单选框', value: 'select' },
+  { label: '下拉复选框', value: 'multipleselect' },
+  { label: '人员选择', value: 'userpicker' },
+  { label: '部门选择', value: 'organizationpicker' },
+  { label: '附件', value: 'fileupload' },
+  { label: '图片', value: 'imageupload' },
+  { label: '级联选择', value: 'cascadeselector' },
 ];
