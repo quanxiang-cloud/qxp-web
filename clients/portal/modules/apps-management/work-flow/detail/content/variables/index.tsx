@@ -6,9 +6,9 @@ import Table from '@c/table';
 import Button from '@c/button';
 import Modal from '@c/modal';
 import toast from '@lib/toast';
+import flowContext from '@flow/detail/flow-context';
+import { deleteFlowVariable, getVariableList } from '@flow/detail/api';
 
-import flowContext from '../flow-context';
-import { deleteFlowVariable, getVariableList } from '../api';
 import EditVariableModal from './edit-variable-modal';
 
 export default function Variables(): JSX.Element {
@@ -20,6 +20,8 @@ export default function Variables(): JSX.Element {
     fieldType: 'TEXT',
     code: '',
     defaultValue: '',
+    type: 'CUSTOM',
+    desc: '',
   };
   const [currVariable, setCurrVariable] = useState<ProcessVariable>(initVariableInfo);
   const [openVariable, setOpenVariable] = useState(false);
@@ -98,7 +100,7 @@ export default function Variables(): JSX.Element {
   }
 
   function handleDeleteSubmit(): void {
-    deleteFlowVariable(currVariable.id as string ).then(() => {
+    deleteFlowVariable(currVariable.id).then(() => {
       toast.success('删除成功');
       setCurrVariable(initVariableInfo);
       setDeleteVariable(false);

@@ -180,3 +180,10 @@ export const FORM_COMPONENT_VARIABLE_MAP: Record<string, FlowVariableFieldType[]
   cascadeselector: [],
   userpicker: [],
 };
+
+export const FLOW_VARIABLE_FIELD_TYPES: { value: FlowVariableFieldType; label: string }[] = [
+  { value: 'TEXT', label: '文本型' },
+  { value: 'NUMBER', label: '数值型' },
+  { value: 'BOOLEAN', label: '布尔型' },
+  { value: 'DATE', label: '日期型' },
+];

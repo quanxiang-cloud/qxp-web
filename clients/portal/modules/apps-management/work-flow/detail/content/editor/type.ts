@@ -415,12 +415,6 @@ export interface StoreValue {
   instanceName: string;
 }
 
-export type ProcessVariable = {
-  code: string;
-  name: string;
-  fieldType: 'TEXT' | 'DATE' | 'NUMBER' | 'BOOLEAN';
-}
-
 export type FieldOperatorOptions = {
   label: string;
   value: Operator;

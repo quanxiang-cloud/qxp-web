@@ -5,8 +5,9 @@ import { Select, Radio, Input, DatePicker } from '@formily/antd-components';
 
 import Modal from '@c/modal';
 import toast from '@lib/toast';
+import { saveFlowVariable } from '@flow/detail/api';
 
-import { saveFlowVariable } from '../api';
+import { FLOW_VARIABLE_FIELD_TYPES } from '../editor/utils/constants';
 
 interface Props {
   variable: ProcessVariable;
@@ -21,19 +22,21 @@ export default function EditVariableModal({ variable, closeModal }: Props): JSX.
 
   const titleText = `${variable.id ? '修改' : '添加'}`;
 
-  const staffMutation = useMutation((values: ProcessVariable) => saveFlowVariable(values), {
-    onSuccess: () => {
-      toast.success('操作成功');
-      closeModal();
-    },
-    onError: (error: string) => {
-      toast.error(error);
-    },
-  });
+  const staffMutation = useMutation(
+    (values: Omit<ProcessVariable, 'desc' | 'code'>) => saveFlowVariable(values),
+    {
+      onSuccess: () => {
+        toast.success('操作成功');
+        closeModal();
+      },
+      onError: (error: string) => {
+        toast.error(error);
+      },
+    });
 
   function handleSubmit(): void {
     actions.getFormState((state) => {
-      const params: ProcessVariable = {
+      const params: Omit<ProcessVariable, 'desc' | 'code'> = {
         flowId: variable.flowId,
         id: variable.id,
         name: state.values.name,
@@ -67,6 +70,8 @@ export default function EditVariableModal({ variable, closeModal }: Props): JSX.
       ]}
     >
       <Form
+        labelCol={{ span: 4 }}
+        wrapperCol={{ span: 20 }}
         className="p-20"
         actions={actions}
         initialValues={variable}
@@ -107,15 +112,10 @@ export default function EditVariableModal({ variable, closeModal }: Props): JSX.
           title="变量类型"
           component={Select}
           rules={[{ required: true, message: '请输入流程变量名称!' }]}
-          dataSource={[
-            { value: 'TEXT', label: '文本型' },
-            { value: 'NUMBER', label: '数值型' },
-            { value: 'BOOLEAN', label: '布尔型' },
-            { value: 'DATE', label: '日期型' },
-          ]}
+          dataSource={FLOW_VARIABLE_FIELD_TYPES}
         />
         <FormItem
-          label="&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;默认值"
+          label="默认值"
           name="defaultValue"
           component={renderComponent}
           dataSource={defaultDataSource}
