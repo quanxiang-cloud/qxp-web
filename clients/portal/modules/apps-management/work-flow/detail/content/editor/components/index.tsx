@@ -72,7 +72,7 @@ export default function ComponentsSelector(): JSX.Element {
           className="flow-editor-drawer"
         >
           <div>
-            <div className="text-caption-no-color text-gray-400 mb-12">人工处理</div>
+            <div className="text-caption-no-color text-gray-400 my-12">人工处理</div>
             <div className="grid grid-cols-2 gap-16">
               {nodeLists.map((node) => (
                 <DragNode
