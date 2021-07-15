@@ -135,7 +135,8 @@ function LinkageConfig({ onClose, onSubmit, linkage }: Props): JSX.Element {
     // todo why this observable emit value when un-mount?
     onFieldValueChange$('rules.*.fieldName').pipe(
       filter(({ value }) => !!value),
-    ).subscribe(updateCompareOperatorFieldOnFieldNameChanged);
+      tap(updateCompareOperatorFieldOnFieldNameChanged),
+    ).subscribe(updateCompareValueFieldOnCompareToChanged);
 
     onFieldValueChange$('rules.*.compareOperator').pipe(
       filter(({ value }) => !!value),
@@ -167,10 +168,6 @@ function LinkageConfig({ onClose, onSubmit, linkage }: Props): JSX.Element {
         state.value = operatorOptions[0].value;
       }
     });
-
-    const compareToPath = FormPath.transform(name, /\d/, ($1) => `rules.${$1}.compareTo`);
-    const compareToFieldState = getFieldState(compareToPath);
-    updateCompareValueFieldOnCompareToChanged(compareToFieldState);
   }
 
   function updateCompareValueFieldOnCompareOperatorChanged({ name, value }: IFieldState): void {
