@@ -17,7 +17,7 @@ import store, {
 
 import { getFlowInfo } from '../api';
 
-import '@flow/detail/style.scss';
+import '@flow/style.scss';
 
 interface Props {
   flowInstanceId: string;

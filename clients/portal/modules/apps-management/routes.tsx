@@ -6,7 +6,7 @@ import ErrorTips from '@c/error-tips';
 const AppsIndex = React.lazy( () => import('./index'));
 const AppDetails = React.lazy(() => import('./pages/app-details'));
 const FormDesign = React.lazy(() => import('./pages/form-design'));
-const FlowDetail = React.lazy(() => import('./work-flow/detail'));
+const FlowDetail = React.lazy(() => import('../work-flow'));
 
 export default function Routes(): JSX.Element {
   React.useEffect(() => {
