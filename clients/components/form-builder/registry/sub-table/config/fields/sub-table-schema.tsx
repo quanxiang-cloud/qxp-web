@@ -6,9 +6,8 @@ import Select from '@c/select';
 import Icon from '@c/icon';
 import { INTERNAL_FIELD_NAMES } from '@c/form-builder/store';
 
-import { generateRandomFormFieldID } from '../../../../utils';
 import { ActionsContext } from '../context';
-import { LABEL_TO_SCHEMA_MAP, SUB_TABLE_LABELS } from '../constants';
+import { SUB_TABLE_TYPES_SCHEMA_MAP, SUB_TABLE_TYPES } from '../constants';
 
 interface Option {
   label: string;
@@ -46,26 +45,23 @@ function SubTableSchema(props: ISchemaFieldComponentProps): JSX.Element {
     return Math.abs(index) === Infinity ? 0 : index + 1;
   }
 
-  function getSchemaFromLabel(label: string, currentIndex?: number): ISchema {
+  function getSchemaFromOptionType(type: string, currentIndex?: number): ISchema {
     if (!currentIndex) {
-      return LABEL_TO_SCHEMA_MAP[label];
+      return SUB_TABLE_TYPES_SCHEMA_MAP[type];
     }
     return {
-      ...LABEL_TO_SCHEMA_MAP[label],
+      ...SUB_TABLE_TYPES_SCHEMA_MAP[type],
       'x-index': currentIndex,
     };
   }
 
-  const currentOptions = SUB_TABLE_LABELS.map((label) => ({
-    label,
-    value: generateRandomFormFieldID(),
-  }));
+  const currentOptions = SUB_TABLE_TYPES;
 
   function onUpdateFields(fields: Field[]): void {
     const newValue = {
       type: 'object',
       properties: {
-        _id: getSchemaFromLabel('id'),
+        _id: getSchemaFromOptionType('id'),
         ...fields.reduce((cur: ISchema, next: Field) => {
           const { value, schema, sort } = next;
           cur[value as keyof ISchema] = {
@@ -88,7 +84,7 @@ function SubTableSchema(props: ISchemaFieldComponentProps): JSX.Element {
     const newField = {
       ...opt,
       sort: currentIndex,
-      schema: getSchemaFromLabel(opt.label, currentIndex),
+      schema: getSchemaFromOptionType(opt.value, currentIndex),
     };
     onUpdateFields([...schemaList, newField]);
   }
