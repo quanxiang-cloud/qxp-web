@@ -16,8 +16,8 @@ export const OPERATORS = {
   Date: [
     { value: '==', label: '等于' },
     { value: '!=', label: '不等于' },
-    { value: '>', label: '早于' },
-    { value: '<', label: '晚于' },
+    { value: '<', label: '早于' },
+    { value: '>', label: '晚于' },
   ],
   Number: [
     { value: '==', label: '等于' },
