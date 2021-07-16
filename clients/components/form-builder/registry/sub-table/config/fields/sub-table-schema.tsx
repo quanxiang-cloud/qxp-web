@@ -118,6 +118,7 @@ function SubTableSchema(props: ISchemaFieldComponentProps): JSX.Element {
         <div className="mr-10">子表字段</div>
         <Select
           className="flex-1"
+          optionClassName="max-h-200 overflow-scroll"
           placeholder="添加"
           options={currentOptions.filter(({ value }) => !INTERNAL_FIELD_NAMES.includes(value))}
           onChange={onAddFields}
