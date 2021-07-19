@@ -6,6 +6,7 @@ import Button from '@c/button';
 import Icon from '@c/icon';
 import FormDataValueRenderer from '@c/form-data-value-renderer';
 import { Schema } from '@formily/react-schema-renderer';
+import { isEmpty } from '@lib/utils';
 
 import { getAbnormalTaskForm } from '../api';
 import ActionModal from './action-modal';
@@ -42,11 +43,7 @@ function UnusualTaskDetail(): JSX.Element {
     const { formSchema, formData } = formDataItem.taskDetailModels[0];
 
     Object.entries(formSchema.table.properties || {}).forEach(([fieldKey, fieldSchema]) => {
-      const hasValue = formData && (
-        formData[fieldKey] !== undefined &&
-        formData[fieldKey] !== null &&
-        formData[fieldKey] !== ''
-      );
+      const hasValue = formData && !isEmpty(formData[fieldKey]);
       if ((fieldSchema as any)['x-internal']?.isSystem) {
         _systems.push({
           label: fieldSchema.title as string,

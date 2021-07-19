@@ -16,6 +16,7 @@ import logger from '@lib/logger';
 import FormDataValueRenderer from '@c/form-data-value-renderer';
 import Icon from '@c/icon';
 import CascadeSelector from '@c/form-builder/registry/cascade-selector/cascade-selector-wrap';
+import { isEmpty } from '@lib/utils';
 
 import { getDefaultValue } from './utils';
 
@@ -99,6 +100,10 @@ function SubTable({
       required: sc?.required as boolean,
       rules: sc?.['x-rules'] || [],
       render: (value: any) => {
+        if (isEmpty(value)) {
+          return <span className='text-gray-300'>——</span>;
+        }
+
         return <FormDataValueRenderer value={value} schema={sc} />;
       },
     };
