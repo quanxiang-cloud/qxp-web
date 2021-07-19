@@ -3,10 +3,10 @@ import { useQuery } from 'react-query';
 import { get } from 'lodash';
 
 import { FormRenderer } from '@c/form-builder';
-import Select from '@c/select';
+import Select, { SelectOption } from '@c/select';
 import IconBtn from '@c/icon-btn';
 import Button from '@c/button';
-import { getSchemaFields } from '../../utils';
+import { getSchemaFields, getValidProcessVariables } from '../../utils';
 import { Rule } from './index';
 import FlowSourceTableContext from '@flowEditor/forms/flow-source-table';
 import FlowContext from '@flow/flow-context';
@@ -103,9 +103,11 @@ function RuleItem(props: Props) {
         );
       }
 
+      const fieldCompName = (get(props.targetSchema, `properties.${item.fieldName}.x-component`) as string).toLowerCase();
+
       return (
         <Select
-          options={variables?.map(({ code, name }) => ({ label: name, value: code })) || []}
+          options={getValidProcessVariables(variables || [], fieldCompName) as SelectOption<string>[]}
           value={item.valueOf as string}
           onChange={(val) => onChange({ valueOf: val })}
         />

@@ -75,7 +75,7 @@ export const transformSchema = (schema: ISchema, options: { filterSubTable?: boo
     }
     return field['x-component'] !== 'SubTable';
   }, (key, field, acc) => {
-    const innerFieldProps = pick(field, ['display', 'title', 'readonly', 'required', 'x-component-props']);
+    const innerFieldProps = pick(field, ['display', 'title', 'readonly', 'required', 'x-component', 'x-component-props']);
     const compName = field['x-component'];
 
     if (compName === 'SubTable') {
@@ -122,4 +122,22 @@ export const transformSchema = (schema: ISchema, options: { filterSubTable?: boo
     ...schema,
     properties: mappedProps,
   };
+};
+
+export const getValidProcessVariables = (variables: Array<ProcessVariable>, compareType: string) => {
+  return variables?.map(({ code, name, fieldType }) => {
+    if (fieldType === 'DATE' && compareType !== 'datepicker') {
+      return;
+    }
+    if (fieldType === 'TEXT' && !['input', 'textarea'].includes(compareType)) {
+      return;
+    }
+    if (fieldType === 'NUMBER' && compareType !== 'numberpicker') {
+      return;
+    }
+    if (fieldType === 'BOOLEAN' && compareType !== 'radiogroup') {
+      return;
+    }
+    return { label: name, value: code };
+  }).filter(Boolean) || [];
 };
