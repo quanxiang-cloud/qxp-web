@@ -6,7 +6,7 @@ import { getPicker } from '@c/form-builder/registry/date-picker/date-picker';
 import CascadeSelector, {
   DefaultValueFrom, CascadeSelectorProps,
 } from '@c/form-builder/registry/cascade-selector/cascade-selector';
-// import OrganizationPicker from '@c/form-builder/registry/organization-select/organization-select';
+import OrganizationPicker from '@c/form-builder/registry/organization-select/organization-select';
 import UserPicker from '@c/form-builder/registry/user-picker/user-picker';
 import Select from '@c/select';
 
@@ -84,22 +84,22 @@ function FieldSwitch({ field, className, ...otherProps }: Props<any>, ref: React
       <CascadeSelector
         predefinedDataset={field['x-internal']?.predefinedDataset || ''}
         showFullPath={field['x-internal']?.showFullPath}
+        className={`'w-full ${className}`}
         {...otherProps}
         {...field['x-component-props'] as CascadeSelectorProps}
         defaultValueFrom={field['x-internal']?.defaultValueFrom as DefaultValueFrom}
       />
     );
-    // case 'OrganizationPicker':
-    //   return (
-    //     <OrganizationPicker
-    //       appID=''
-    //       multiple={field['x-internal']?.multiple}
-    //       optionalRange={field['x-internal']?.optionalRange}
-    //       rangeList={field['x-internal']?.rangeList}
-    //       {...omit(otherProps, ['value'])}
-    //       value={otherProps.value}
-    //     />
-    //   );
+  case 'OrganizationPicker':
+    return (
+      <OrganizationPicker
+        multiple={field['x-internal']?.multiple}
+        optionalRange={field['x-internal']?.optionalRange}
+        rangeList={field['x-internal']?.rangeList}
+        {...field['x-component-props'] as { appID: string, placeholder?: string }}
+        {...otherProps}
+      />
+    );
   case 'UserPicker':
     return (
       <UserPicker
