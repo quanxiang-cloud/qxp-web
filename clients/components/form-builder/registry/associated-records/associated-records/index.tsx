@@ -5,6 +5,7 @@ import Table from '@c/table';
 import Button from '@c/button';
 import Icon from '@c/icon';
 import FormDataValueRenderer from '@c/form-data-value-renderer';
+import { isEmpty } from '@lib/utils';
 import { Column } from 'react-table';
 import { get } from 'lodash';
 import { useQuery } from 'react-query';
@@ -29,7 +30,7 @@ function computeTableColumns(schema: ISchema, columns: string[]): Column<Record<
       id: fieldKey,
       Header: fieldSchema.title || fieldKey,
       accessor: (rowData: Record<string, any>) => {
-        if (rowData[fieldKey] === undefined || rowData[fieldKey] === null || rowData[fieldKey] === '') {
+        if (isEmpty(rowData[fieldKey])) {
           return '无数据';
         }
 

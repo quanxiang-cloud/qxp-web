@@ -98,7 +98,7 @@ const AllUserPicker = ({ appID, ...otherProps }: AllUserPickerProps): JSX.Elemen
     },
   });
 
-  if (isLoading) {
+  if (isLoading && options.length === 0) {
     return null;
   }
 
