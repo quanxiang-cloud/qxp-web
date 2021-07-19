@@ -2,12 +2,12 @@ import React, { useContext } from 'react';
 import { useQuery } from 'react-query';
 import { get, set } from 'lodash';
 
-import Select from '@c/select';
+import Select, { SelectOption } from '@c/select';
 import FlowSourceTableContext from '../flow-source-table';
 import FlowContext from '../../../../flow-context';
 import Context from './context';
 import { getFlowVariables } from '../api';
-import { getSchemaFields } from '../utils';
+import { getSchemaFields, getValidProcessVariables } from '../utils';
 
 import './styles.scss';
 
@@ -36,6 +36,7 @@ export default function CustomField(props: Props): JSX.Element {
   });
   const fieldName = props.name;
   const isSubTableKey = fieldName.indexOf('@') > 0;
+  const innerFieldType = (get(props, 'props.x-component-props.x-component') as string).toLowerCase();
 
   const getVal = (prop?: string) => {
     if (!isSubTableKey) {
@@ -98,7 +99,7 @@ export default function CustomField(props: Props): JSX.Element {
 
       return (
         <Select
-          options={variables?.map(({ code, name }) => ({ label: name, value: code })) || []}
+          options={getValidProcessVariables(variables || [], innerFieldType) as SelectOption<string>[]}
           value={getVal() as string}
           onChange={onChangeFieldValue}
         />
