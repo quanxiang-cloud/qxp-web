@@ -1,7 +1,6 @@
 import React from 'react';
 import { useQuery } from 'react-query';
 import { Select, SelectProps } from 'antd';
-import { useUpdateEffect } from 'react-use';
 
 import { debounce } from 'lodash';
 
@@ -23,12 +22,8 @@ interface AllUserPickerProps extends SelectProps <any> {
 const PAGE_SIZE = 10;
 
 const UserPicker = ({ optionalRange, appID, onChange, value, ...componentsProps }: Props): JSX.Element => {
-  useUpdateEffect(() => {
-    onChange && onChange([], []);
-  }, [componentsProps.mode, optionalRange]);
-
   const handleChange = (_: any, _selected: any):void => {
-    onChange && onChange((Array.isArray(_selected) ? _selected : [_selected]) as Option[], _);
+    onChange && onChange(_selected ? [].concat(_selected) : [], _);
   };
 
   const selected = Array.isArray(value || []) ?

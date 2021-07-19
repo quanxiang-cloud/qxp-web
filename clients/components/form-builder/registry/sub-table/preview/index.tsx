@@ -8,14 +8,14 @@ import {
   FormItem, ValidatePatternRules, IForm,
 } from '@formily/antd';
 
-import OrganizationPicker from '@c/form-builder/registry/organization-select/organization-select';
+import OrganizationPicker from '@c/form-builder/registry/organization-select/organization-select-wrap';
 import FileUpload from '@c/form-builder/registry/file-upload/uploader';
 import ImageUpload from '@c/form-builder/registry/image-upload/uploader';
-import UserPicker from '@c/form-builder/registry/user-picker/user-picker';
+import UserPicker from '@c/form-builder/registry/user-picker/user-picker-wrap';
 import logger from '@lib/logger';
 import FormDataValueRenderer from '@c/form-data-value-renderer';
 import Icon from '@c/icon';
-import CascadeSelector from '@c/form-builder/registry/cascade-selector/cascade-selector';
+import CascadeSelector from '@c/form-builder/registry/cascade-selector/cascade-selector-wrap';
 
 import { getDefaultValue } from './utils';
 

@@ -5,6 +5,12 @@
   flex: 1;
 }
 
+@media screen and (max-width: 1400px) {
+  .app-page-filter-form {
+    grid-template-columns: repeat(2, minmax(100px, 1fr));
+  }
+}
+
 .app-page-filter-label {
   white-space: nowrap;
   min-width: 96px;
