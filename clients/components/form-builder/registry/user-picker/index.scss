@@ -9,3 +9,9 @@
 .disabled_test{
   opacity: .5;
 }
+
+.user-selector {
+  input:focus {
+    box-shadow: none;
+  }
+}

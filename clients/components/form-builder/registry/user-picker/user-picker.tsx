@@ -1,11 +1,12 @@
 import React from 'react';
+import cs from 'classnames';
 import { useQuery } from 'react-query';
 import { Select, SelectProps } from 'antd';
-
 import { debounce } from 'lodash';
 
 import { searchUser, Res } from './messy/api';
 import { Option } from './messy/enum';
+import './index.scss';
 
 type OptionalRange = 'customize' | 'all';
 
@@ -15,14 +16,14 @@ interface Props extends SelectProps<any> {
   dataSource?: any[];
 }
 
-interface AllUserPickerProps extends SelectProps <any> {
+interface AllUserPickerProps extends SelectProps<any> {
   appID: string;
 }
 
 const PAGE_SIZE = 10;
 
 const UserPicker = ({ optionalRange, appID, onChange, value, ...componentsProps }: Props): JSX.Element => {
-  const handleChange = (_: any, _selected: any):void => {
+  const handleChange = (_: any, _selected: any): void => {
     onChange && onChange(_selected ? [].concat(_selected) : [], _);
   };
 
@@ -36,14 +37,22 @@ const UserPicker = ({ optionalRange, appID, onChange, value, ...componentsProps 
   if (optionalRange === 'all') {
     return (
       <AllUserPicker
+        {...componentsProps}
         onChange={handleChange}
         value={selected}
         appID={appID as string}
-        {...componentsProps} />
+      />
     );
   }
 
-  return <Select value={selected} onChange={handleChange} {...componentsProps} />;
+  return (
+    <Select
+      {...componentsProps}
+      value={selected}
+      onChange={handleChange}
+      className={cs('user-selector', componentsProps.className || '')}
+    />
+  );
 };
 
 const AllUserPicker = ({ appID, ...otherProps }: AllUserPickerProps): JSX.Element | null => {
@@ -102,7 +111,13 @@ const AllUserPicker = ({ appID, ...otherProps }: AllUserPickerProps): JSX.Elemen
     return null;
   }
 
-  return <Select {...componentsProps} options={options} />;
+  return (
+    <Select
+      {...componentsProps}
+      options={options}
+      className={cs('user-selector', componentsProps.className || '')}
+    />
+  );
 };
 
 export default UserPicker;
