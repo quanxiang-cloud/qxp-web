@@ -3,7 +3,9 @@ import { useQuery } from 'react-query';
 import { TreeSelect } from 'antd';
 import { TreeSelectProps } from 'antd/lib/tree-select';
 import { DataNode } from 'rc-tree-select/lib/interface';
+
 import { searchOrganization, Organization } from './messy/api';
+import './index.scss';
 
 type Props = TreeSelectProps<any> & {
   appID: string;
@@ -102,7 +104,7 @@ const OrganizationPicker = ({
   return (
     <TreeSelect
       {...otherProps}
-      className='flex-1'
+      className='flex-1 dep-selector'
       allowClear
       showSearch
       dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
