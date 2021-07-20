@@ -1,15 +1,15 @@
-import { TreeNode } from 'react-dropdown-tree-select';
 export interface DefaultConfig {
   title: string;
   description?: string;
   displayModifier: FormBuilder.DisplayModifier;
   placeholder?: string;
   required: boolean;
-  multiple?: 'signle' | 'multiple';
-  rangeList: TreeNode[];
+  multiple?: boolean;
+  rangeList: LabelValue[];
   optionalRange?: 'all' | 'customize' | 'myDep';
   defaultValues?: string[];
   type: string;
+  appID?: string;
 }
 
 export const defaultConfig: DefaultConfig = {
@@ -19,14 +19,14 @@ export const defaultConfig: DefaultConfig = {
   displayModifier: 'normal',
   placeholder: '',
   required: false,
-  multiple: 'signle',
+  multiple: false,
   rangeList: [],
   optionalRange: 'all',
   defaultValues: [],
 };
 
 export const toSchema = (config: DefaultConfig): ISchema => {
-  return Object.assign(config, {
+  return Object.assign({}, config, {
     type: 'label-value',
     title: config.title,
     description: config.description,
@@ -37,6 +37,7 @@ export const toSchema = (config: DefaultConfig): ISchema => {
     'x-component': 'OrganizationPicker',
     ['x-component-props']: {
       placeholder: config.placeholder,
+      appID: config.appID || '',
     },
     ['x-internal']: {
       multiple: config.multiple,
@@ -66,5 +67,6 @@ export const toConfig = (schema: ISchema): DefaultConfig => {
     rangeList: schema['x-internal']?.rangeList || [],
     multiple: schema['x-internal']?.multiple,
     optionalRange: schema['x-internal']?.optionalRange,
+    appID: schema['x-component-props']?.appID,
   };
 };

@@ -1,5 +1,4 @@
 import { ajax } from 'rxjs/ajax';
-import { get } from 'lodash';
 import { Observable, of } from 'rxjs';
 import { switchMap, debounceTime, filter, map, catchError } from 'rxjs/operators';
 import { FormEffectHooks, ISchemaFormActions } from '@formily/antd';
@@ -121,9 +120,9 @@ function shouldFireEffect({ linkage, linkedRow, getFieldValue }: ShouldFireEffec
 
 // todo support nested properties
 function findAllLinkages(schema: ISchema): FormBuilder.DefaultValueLinkage[] {
-  return Object.keys(schema.properties || {}).map<FormBuilder.DefaultValueLinkage>((fieldName) => {
-    const defaultValueFrom = get(schema, `properties.${fieldName}.x-internal.defaultValueFrom`);
-    const linkage = get(schema, `properties.${fieldName}.x-internal.defaultValueLinkage`);
+  return Object.keys(schema.properties || {}).map<FormBuilder.DefaultValueLinkage>((fieldName): any => {
+    const defaultValueFrom = (schema?.properties?.[fieldName] as ISchema)?.['x-internal']?.defaultValueFrom;
+    const linkage = (schema?.properties?.[fieldName] as ISchema)?.['x-internal']?.defaultValueLinkage;
 
     if (!linkage || defaultValueFrom !== 'linkage') {
       return false;

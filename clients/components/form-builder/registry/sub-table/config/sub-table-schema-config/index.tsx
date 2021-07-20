@@ -22,6 +22,7 @@ export default function SubTableSchemaConfig({
   }
 
   const currentSubSchemaDefault = CONFIG_COMPONENTS[currentSchemaType]?.configSchema;
+  const CurrentSubSchemaForm = CONFIG_COMPONENTS[currentSchemaType]?.configForm;
   const currentSubSchemaConfig = CONFIG_COMPONENTS[currentSchemaType]?.toConfig(currentSubSchema);
 
   function onGoBack(): void {
@@ -36,13 +37,20 @@ export default function SubTableSchemaConfig({
         <Button className="mr-10" onClick={onGoBack}>返回</Button>
         <p>配置子表单字段</p>
       </div>
-      <SchemaForm
-        initialValues={currentSubSchemaConfig}
-        components={COMPONENTS}
-        onChange={onChange}
-        schema={currentSubSchemaDefault}
-        actions={itemActions}
-      />
+      {CurrentSubSchemaForm ? (
+        <CurrentSubSchemaForm
+          initialValue={currentSubSchemaConfig}
+          onChange={onChange}
+        />
+      ) : (
+        <SchemaForm
+          initialValues={currentSubSchemaConfig}
+          components={COMPONENTS}
+          onChange={onChange}
+          schema={currentSubSchemaDefault}
+          actions={itemActions}
+        />
+      )}
     </ItemActionsContext.Provider>
   );
 }

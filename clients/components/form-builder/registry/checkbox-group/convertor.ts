@@ -44,7 +44,9 @@ export function toSchema(value: CheckboxGroupConfig): ISchema {
     }),
     'x-component': 'CheckboxGroup',
     // todo support optionsLayout
-    ['x-component-props']: { },
+    ['x-component-props']: {
+      mode: 'multiple',
+    },
     ['x-internal']: {
       sortable: value.sortable,
       permission: 3,

@@ -1,16 +1,26 @@
-import React, { JSXElementConstructor } from 'react';
+import React, { JSXElementConstructor, useEffect, useState, useRef } from 'react';
 import { ISchemaFieldComponentProps, IMutators } from '@formily/react-schema-renderer';
 import { Input, Radio, DatePicker, NumberPicker, Select, Checkbox } from '@formily/antd-components';
 import { Table } from 'antd';
-import { pick } from 'lodash';
 import cs from 'classnames';
+import { omit } from 'lodash';
 import {
   InternalFieldList as FieldList,
-  FormItem, ValidatePatternRules,
+  FormItem, ValidatePatternRules, IForm, ISchemaFormActions, IFieldState,
 } from '@formily/antd';
 
+import OrganizationPicker from '@c/form-builder/registry/organization-select/organization-select-wrap';
+import FileUpload from '@c/form-builder/registry/file-upload/uploader';
+import ImageUpload from '@c/form-builder/registry/image-upload/uploader';
+import UserPicker from '@c/form-builder/registry/user-picker/user-picker-wrap';
 import logger from '@lib/logger';
+import FormDataValueRenderer from '@c/form-data-value-renderer';
 import Icon from '@c/icon';
+import CascadeSelector from '@c/form-builder/registry/cascade-selector/cascade-selector-wrap';
+import { isEmpty } from '@lib/utils';
+import defaultValueLinkageEffect from '@c/form-builder/linkages/default-value';
+
+import { getDefaultValue } from './utils';
 
 type Column = {
   title: string;
@@ -21,6 +31,8 @@ type Column = {
   dataSource?: any[];
   required?: boolean;
   rules?: ValidatePatternRules;
+  render?: (value: unknown) => JSX.Element;
+  schema: ISchema;
 }
 
 type Components = typeof components;
@@ -34,6 +46,11 @@ const components = {
   numberpicker: NumberPicker,
   select: Select,
   multipleselect: Select,
+  userpicker: UserPicker,
+  organizationpicker: OrganizationPicker,
+  fileupload: FileUpload,
+  imageupload: ImageUpload,
+  cascadeselector: CascadeSelector,
 };
 
 interface Props extends ISchemaFieldComponentProps {
@@ -49,6 +66,8 @@ interface Props extends ISchemaFieldComponentProps {
   },
 }
 
+const getDefaultSchema = (): ISchema => ({ type: 'object', properties: {} });
+
 function SubTable({
   schema: definedSchema,
   value,
@@ -56,14 +75,55 @@ function SubTable({
   props,
   readonly,
 }: Partial<Props>): JSX.Element | null {
-  const {
-    subordination, columns: definedColumns,
-  } = props?.['x-component-props'] || {};
+  const formRef = useRef<IForm>();
+  const [subSchema, setSubSchema] = useState<ISchema>(getDefaultSchema());
+  const [subSchemaPlaceholder, setSubSchemaPlaceHolder] = useState<ISchema>(getDefaultSchema());
+  const [columns, setColumns] = useState<Column[]>([]);
+  const emptyRow: Record<string, string> = {};
+  const schema = definedSchema?.items as ISchema;
+  const { subordination, columns: definedColumns } = props?.['x-component-props'] || {};
   const isFromForeign = subordination === 'foreign_table';
+
+  useEffect(() => {
+    const formActions = formRef.current;
+    formActions && defaultValueLinkageEffect(subSchema, formActions as unknown as ISchemaFormActions);
+  }, [formRef, subSchema]);
+
+  useEffect(() => {
+    const schemas: ISchema = getDefaultSchema();
+    const schemaPlaceholder: ISchema = getDefaultSchema();
+    const columns: Column[] = Object.entries(schema?.properties || {}).sort((a, b) => {
+      return (a[1]['x-index'] || 0) - (b[1]['x-index'] || 0);
+    }).reduce(
+      (cur: Column[], next) => {
+        const [key, sc] = next;
+        const isHidden = !sc.display;
+        if ((isFromForeign && !definedColumns?.includes(key)) || key === '_id' || isHidden) {
+          return cur;
+        }
+        const newColumn = buildColumnFromSchema(key, sc);
+        if (newColumn) {
+          Object.assign(emptyRow, { [key]: getDefaultValue(schema) });
+          if (schemaPlaceholder.properties) {
+            schemaPlaceholder.properties[`${name}.{{index}}.${key}`] = sc;
+          }
+          if (schemas.properties) {
+            schemas.properties[`${name}.0.${key}`] = sc;
+          }
+          cur.push(newColumn);
+        }
+        return cur;
+      }, [],
+    ) as Column[];
+    setColumns(columns);
+    setSubSchemaPlaceHolder(schemaPlaceholder);
+    setSubSchema(schemas);
+  }, [schema]);
 
   function buildColumnFromSchema(dataIndex: string, sc: ISchema): Column | null {
     const componentName = sc['x-component']?.toLowerCase() as keyof Components;
     const componentProps = sc['x-component-props'] || {};
+    const componentPropsInternal = sc['x-internal'] || {};
     const dataSource = sc?.enum;
     if (!components[componentName]) {
       logger.error('component %s is missing in subTable', componentName);
@@ -73,34 +133,61 @@ function SubTable({
       title: sc.title as string,
       dataIndex,
       component: components[componentName],
-      props: componentProps,
+      props: {
+        ...componentProps,
+        ...componentPropsInternal,
+        'x-component-props': componentProps,
+        'x-internal': componentPropsInternal,
+      },
+      schema: sc,
       dataSource,
       readonly: sc?.readOnly,
       required: sc?.required as boolean,
       rules: sc?.['x-rules'] || [],
+      render: (value: any) => {
+        if (isEmpty(value)) {
+          return <span className='text-gray-300'>——</span>;
+        }
+
+        return <FormDataValueRenderer value={value} schema={sc} />;
+      },
     };
   }
 
-  const schema = definedSchema?.items as ISchema;
+  function onAddRow(mutators: IMutators, state: IFieldState): void {
+    mutators.push(emptyRow);
+    setSubSchema((schema) => {
+      Object.assign(
+        schema.properties,
+        Object.entries(subSchemaPlaceholder.properties || {}).reduce((cur: any, next) => {
+          const [key, sc] = next;
+          cur[key.replace('{{index}}', state.value.length)] = sc;
+          return cur;
+        }, {}),
+      );
+      return { ...schema };
+    });
+  }
 
-  const emptyRow: Record<string, string> = {};
-  const columns: Column[] = Object.entries(schema?.properties || {}).sort((a, b) => {
-    return (a[1]['x-index'] || 0) - (b[1]['x-index'] || 0);
-  }).reduce(
-    (cur: Column[], next) => {
-      const [key, sc] = next;
-      const componentProps = sc['x-component-props'] || {};
-      const isHidden = !sc.display;
-      if ((isFromForeign && !definedColumns?.includes(key)) || key === '_id' || isHidden) {
-        return cur;
-      }
-      const newColumn = buildColumnFromSchema(key, sc);
-      if (newColumn) {
-        Object.assign(emptyRow, { [key]: sc.default || componentProps?.defaultValue });
-        cur.push(newColumn);
-      }
-      return cur;
-    }, []) as Column[];
+  function onRemoveRow(mutators: IMutators, index: number): void {
+    mutators.remove(index);
+    setSubSchema((schema) => {
+      schema.properties = omit(
+        schema.properties,
+        Object.entries(subSchemaPlaceholder.properties || {}).reduce((cur: string[], next) => {
+          const [key] = next;
+          cur.push(key.replace('{{index}}', `${index}`));
+          return cur;
+        }, []));
+      return { ...schema };
+    });
+  }
+
+  function onChange(path: string, form: IForm) {
+    return (value: unknown): void => {
+      form.setFieldValue(path, value);
+    };
+  }
 
   if (!columns.length) {
     return null;
@@ -111,23 +198,18 @@ function SubTable({
       <Table
         pagination={false}
         rowKey="_id"
-        columns={columns.map((column) => pick(column, ['dataIndex', 'title']))}
+        columns={columns}
         dataSource={columns.length ? value : []}
       />
     );
   }
 
-  function onAddRow(mutators: IMutators): void {
-    mutators.push(emptyRow);
-  }
-
-  function onRemoveRow(mutators: IMutators, index: number): void {
-    mutators.remove(index);
-  }
-
   return (
-    <FieldList name={name}>
-      {({ state, mutators }) => {
+    <FieldList name={name} initialValue={value?.length ? value : [emptyRow]}>
+      {({ state, mutators, form }) => {
+        if (!formRef.current) {
+          formRef.current = form;
+        }
         return (
           <div className="w-full flex flex-col border border-gray-300">
             {state.value.map((item: any, index: number) => {
@@ -161,8 +243,9 @@ function SubTable({
                       style={{ gridTemplateColumns: `repeat(${columns.length}, minmax(120px, 1fr))` }}
                     >
                       {columns.map(({
-                        dataIndex, component, props, dataSource, required, rules, readonly,
+                        dataIndex, component, props, dataSource, required, rules, readonly, schema,
                       }, idx) => {
+                        const path = `${name}.${index}.${dataIndex}`;
                         return (
                           <div key={dataIndex} className={cs({
                             'border-r-1 border-gray-300': idx < columns.length,
@@ -171,17 +254,20 @@ function SubTable({
                             {component && !readonly && (
                               <FormItem
                                 {...props}
-                                className="mx-8 mb-8 w-full mt-24"
-                                name={`${name}.${index}.${dataIndex}`}
+                                className="mx-8 my-8 w-full"
+                                name={path}
                                 component={component}
-                                props={props}
+                                props={{ ...props, props }}
+                                mutators={{ change: onChange(path, form) }}
                                 rules={rules as any}
                                 dataSource={dataSource}
                                 required={required}
                                 value={item?.[dataIndex]}
                               />
                             )}
-                            {readonly && `${item?.[dataIndex] || ''}`}
+                            {readonly && (
+                              <FormDataValueRenderer value={value} schema={schema} />
+                            )}
                           </div>
                         );
                       })}
@@ -205,7 +291,7 @@ function SubTable({
                 name="add"
                 size={24}
                 className="m-5 font-bold cursor-pointer"
-                onClick={() => onAddRow(mutators)}
+                onClick={() => onAddRow(mutators, state)}
               />
             </div>
           </div>

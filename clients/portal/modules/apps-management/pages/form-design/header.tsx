@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
-import { parse } from 'qs';
 
 import Icon from '@c/icon';
 import Tab, { TabProps } from '@c/no-content-tab';
+import { getQuery } from '@lib/utils';
 
 import NotSavedModal from './not-saved-modal';
 import store from './store';
@@ -21,7 +21,7 @@ function FormDesignHeader(): JSX.Element {
 
   const history = useHistory();
 
-  const { pageName } = parse(window.location.search);
+  const { pageName } = getQuery<{ pageName: string}>();
 
   const tabChange = (tabKey: string): void => {
     if (store.formStore?.hasEdit && tabKey === 'pageSetting') {
@@ -64,8 +64,7 @@ function FormDesignHeader(): JSX.Element {
           size={20}
           name='keyboard_backspace'
         />
-        <span className="text-h6-bold mr-4">正在设计表单{pageName ? ':' : ''}</span>
-        <span className="text-body2">{pageName ? pageName : ''}</span>
+        <span className="text-h6-bold mr-4">正在设计表单：{pageName}</span>
       </div>
       <Tab onChange={tabChange} activeTab={pageType} tabs={TABS} />
       <div className='flex justify-end'>

@@ -17,7 +17,7 @@ type ApprovalTask = {
 
   startTime?: string;
 
-  formSchema?: {properties: Record<string, any>};
+  formSchema?: { properties: Record<string, any> };
 
   formData?: Record<string, any>;
 
@@ -34,6 +34,8 @@ type ApprovalTask = {
   dueDate?: string; // Task due date
 
   durationInMillis?: number; // Task duration time
+
+  nodes?: Array<{ taskDefKey: string, taskName: string }>;
 };
 
 type TaskFormData = Record<string, any>;

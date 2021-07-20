@@ -1,49 +1,121 @@
 import React from 'react';
 import { useQuery } from 'react-query';
+import { TreeSelect } from 'antd';
+import { TreeSelectProps } from 'antd/lib/tree-select';
+import { DataNode } from 'rc-tree-select/lib/interface';
 
-import { TreeNode } from 'react-dropdown-tree-select';
-import { searchOrganziation } from './messy/api';
-import Cascader, { parseTree, searchTree } from './cascader';
+import { searchOrganization, Organization } from './messy/api';
+import './index.scss';
 
-interface Props {
+type Props = TreeSelectProps<any> & {
   appID: string;
-  value: string[];
-  onChange: (value: TreeNode | TreeNode[]) => void;
-  multiple: 'signle' | 'multiple';
+  onChange: (value: LabelValue[]) => void;
   optionalRange: 'all' | 'customize';
-  placeholder?: string;
-  rangeList?: string[];
+  rangeList?: LabelValue[];
+  value?: LabelValue[];
+}
+
+type ParseTreeProps = {
+  depTreeData?: Organization | undefined;
+  initData?: DataNode[];
+  rootPId?: string | number;
+  fullPath?: string;
+}
+
+function parseTree({
+  depTreeData,
+  initData = [],
+  rootPId,
+  fullPath,
+}: ParseTreeProps): DataNode[] {
+  if (!depTreeData) {
+    return initData;
+  }
+
+  const _fullPath = fullPath ? `${fullPath}/${depTreeData?.id}` : depTreeData?.id;
+  initData.push({
+    id: depTreeData?.id,
+    title: depTreeData?.departmentName,
+    pId: depTreeData?.pid || rootPId,
+    value: depTreeData?.id,
+    fullPath: _fullPath,
+  });
+  if (depTreeData?.child) {
+    depTreeData.child.map((dep) => parseTree({ depTreeData: dep, initData, fullPath: _fullPath }));
+  }
+
+  return initData;
 }
 
 const OrganizationPicker = ({
-  multiple,
   rangeList,
   appID,
   onChange,
   optionalRange,
+  value = [],
   ...otherProps
 }: Props): JSX.Element => {
-  const { data } = useQuery(['query_user_picker', appID], () => searchOrganziation(appID));
+  const { data } = useQuery(['query_user_picker', appID], () => searchOrganization(appID));
+  const treeData = React.useMemo(() => {
+    const treeDataTmp = parseTree({ depTreeData: data, rootPId: 0 });
+    if (optionalRange === 'customize') {
+      if (!rangeList || !rangeList.length) {
+        return [];
+      }
 
-  const CustomizeTreeData = React.useMemo(() => {
-    const Tree = parseTree(data);
-    return rangeList ? rangeList.map((itm) => searchTree(Tree as TreeNode, itm)).filter(Boolean) : [];
-  }, [data, rangeList]);
+      const fullPaths: string[] = [];
+      const visibleParentNodes: string[] = rangeList.reduce((acc, { value }) => {
+        const nodeTmp = treeDataTmp?.find(({ id }) => id === value);
+        if (nodeTmp) {
+          fullPaths.push(nodeTmp.fullPath);
+          return acc.concat(nodeTmp.fullPath.split('/'));
+        }
 
-  const TreeData = React.useMemo(() => {
-    return parseTree(data);
-  }, [data]);
+        return acc;
+      }, rangeList.map(({ value }) => value)).filter((id, index, self) => {
+        return self.indexOf(id) === index;
+      });
 
-  React.useEffect(() => {
-    onChange([]);
-  }, [optionalRange, multiple]);
+      return treeDataTmp.filter(({ id, fullPath }) => {
+        if (visibleParentNodes.includes(id) || fullPaths.some((path) => fullPath.startsWith(path))) {
+          return true;
+        }
+
+        return false;
+      });
+    }
+
+    return treeDataTmp;
+  }, [data, optionalRange, rangeList]);
+
+  const handleChange = (value: string | string[], labels: React.ReactNode[]): void => {
+    const valueTmp = Array.isArray(value) ? value : [value];
+    onChange(
+      valueTmp.map((v, index) => ({
+        value: v,
+        label: labels[index] as string,
+      })),
+    );
+  };
+
+  const valList = (value || []).map(({ value }: LabelValue) => value) || [];
+  const selected = otherProps.multiple ? valList : valList.toString();
 
   return (
-    <Cascader
-      mode={multiple === 'signle' ? 'radioSelect' : 'multiSelect'}
-      data={optionalRange === 'customize' ? CustomizeTreeData : TreeData}
-      onChange={onChange}
+    <TreeSelect
       {...otherProps}
+      className='flex-1 dep-selector'
+      allowClear
+      showSearch
+      dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+      treeNodeFilterProp="title"
+      treeDataSimpleMode={{
+        id: 'id',
+        rootPId: 0,
+      }}
+      onChange={handleChange}
+      value={selected ? selected : undefined}
+      treeData={treeData}
     />
   );
 };
