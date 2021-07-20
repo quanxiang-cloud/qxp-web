@@ -70,7 +70,7 @@ type Props = {
 
 function LinkageConfig({ onClose, onSubmit, linkage }: Props): JSX.Element {
   const actions = createFormActions();
-  const { setFieldState, getFieldValue, setFieldValue, getFieldState } = actions;
+  const { setFieldState, getFieldValue, setFieldValue } = actions;
   const [linkageTables, setLinkageTables] = useState<Array<FormBuilder.Option>>([]);
   const linkedTableFieldsRef = useRef<LinkedTableFieldOptions[]>([]);
   const store = useContext(StoreContext);
@@ -88,7 +88,7 @@ function LinkageConfig({ onClose, onSubmit, linkage }: Props): JSX.Element {
   }).map(([key, fieldSchema]) => ({ label: fieldSchema.title as string, value: key }));
 
   function resetFormDefaultValueOnLinkTableChanged(fields: LinkedTableFieldOptions[]): void {
-    setFieldValue('sortBy', fields[0].value);
+    setFieldValue('sortBy', fields[0]?.value);
     setFieldValue('sortOrder', '+');
     setFieldValue('ruleJoinOperator', DEFAULT_VALUE_LINKAGE.ruleJoinOperator);
     setFieldValue('rules', DEFAULT_VALUE_LINKAGE.rules);
