@@ -1,12 +1,11 @@
-import React, { JSXElementConstructor, useEffect, useState, useRef } from 'react';
+import React, { JSXElementConstructor, useEffect, useState } from 'react';
 import { ISchemaFieldComponentProps, IMutators } from '@formily/react-schema-renderer';
 import { Input, Radio, DatePicker, NumberPicker, Select, Checkbox } from '@formily/antd-components';
 import { Table } from 'antd';
 import cs from 'classnames';
-import { omit } from 'lodash';
 import {
   InternalFieldList as FieldList,
-  FormItem, ValidatePatternRules, IForm, ISchemaFormActions, IFieldState,
+  FormItem, ValidatePatternRules, IForm,
 } from '@formily/antd';
 
 import OrganizationPicker from '@c/form-builder/registry/organization-select/organization-select-wrap';
@@ -18,7 +17,6 @@ import FormDataValueRenderer from '@c/form-data-value-renderer';
 import Icon from '@c/icon';
 import CascadeSelector from '@c/form-builder/registry/cascade-selector/cascade-selector-wrap';
 import { isEmpty } from '@lib/utils';
-import defaultValueLinkageEffect from '@c/form-builder/linkages/default-value';
 
 import { getDefaultValue } from './utils';
 
@@ -66,8 +64,6 @@ interface Props extends ISchemaFieldComponentProps {
   },
 }
 
-const getDefaultSchema = (): ISchema => ({ type: 'object', properties: {} });
-
 function SubTable({
   schema: definedSchema,
   value,
@@ -75,9 +71,6 @@ function SubTable({
   props,
   readonly,
 }: Partial<Props>): JSX.Element | null {
-  const formRef = useRef<IForm>();
-  const [subSchema, setSubSchema] = useState<ISchema>(getDefaultSchema());
-  const [subSchemaPlaceholder, setSubSchemaPlaceHolder] = useState<ISchema>(getDefaultSchema());
   const [columns, setColumns] = useState<Column[]>([]);
   const emptyRow: Record<string, string> = {};
   const schema = definedSchema?.items as ISchema;
@@ -85,13 +78,6 @@ function SubTable({
   const isFromForeign = subordination === 'foreign_table';
 
   useEffect(() => {
-    const formActions = formRef.current;
-    formActions && defaultValueLinkageEffect(subSchema, formActions as unknown as ISchemaFormActions);
-  }, [formRef, subSchema]);
-
-  useEffect(() => {
-    const schemas: ISchema = getDefaultSchema();
-    const schemaPlaceholder: ISchema = getDefaultSchema();
     const columns: Column[] = Object.entries(schema?.properties || {}).sort((a, b) => {
       return (a[1]['x-index'] || 0) - (b[1]['x-index'] || 0);
     }).reduce(
@@ -104,21 +90,13 @@ function SubTable({
         const newColumn = buildColumnFromSchema(key, sc);
         if (newColumn) {
           Object.assign(emptyRow, { [key]: getDefaultValue(schema) });
-          if (schemaPlaceholder.properties) {
-            schemaPlaceholder.properties[`${name}.{{index}}.${key}`] = sc;
-          }
-          if (schemas.properties) {
-            schemas.properties[`${name}.0.${key}`] = sc;
-          }
           cur.push(newColumn);
         }
         return cur;
       }, [],
     ) as Column[];
     setColumns(columns);
-    setSubSchemaPlaceHolder(schemaPlaceholder);
-    setSubSchema(schemas);
-  }, [schema]);
+  }, [schema, definedColumns]);
 
   function buildColumnFromSchema(dataIndex: string, sc: ISchema): Column | null {
     const componentName = sc['x-component']?.toLowerCase() as keyof Components;
@@ -154,33 +132,12 @@ function SubTable({
     };
   }
 
-  function onAddRow(mutators: IMutators, state: IFieldState): void {
+  function onAddRow(mutators: IMutators): void {
     mutators.push(emptyRow);
-    setSubSchema((schema) => {
-      Object.assign(
-        schema.properties,
-        Object.entries(subSchemaPlaceholder.properties || {}).reduce((cur: any, next) => {
-          const [key, sc] = next;
-          cur[key.replace('{{index}}', state.value.length)] = sc;
-          return cur;
-        }, {}),
-      );
-      return { ...schema };
-    });
   }
 
   function onRemoveRow(mutators: IMutators, index: number): void {
     mutators.remove(index);
-    setSubSchema((schema) => {
-      schema.properties = omit(
-        schema.properties,
-        Object.entries(subSchemaPlaceholder.properties || {}).reduce((cur: string[], next) => {
-          const [key] = next;
-          cur.push(key.replace('{{index}}', `${index}`));
-          return cur;
-        }, []));
-      return { ...schema };
-    });
   }
 
   function onChange(path: string, form: IForm) {
@@ -207,9 +164,6 @@ function SubTable({
   return (
     <FieldList name={name} initialValue={value?.length ? value : [emptyRow]}>
       {({ state, mutators, form }) => {
-        if (!formRef.current) {
-          formRef.current = form;
-        }
         return (
           <div className="w-full flex flex-col border border-gray-300">
             {state.value.map((item: any, index: number) => {
@@ -291,7 +245,7 @@ function SubTable({
                 name="add"
                 size={24}
                 className="m-5 font-bold cursor-pointer"
-                onClick={() => onAddRow(mutators, state)}
+                onClick={() => onAddRow(mutators)}
               />
             </div>
           </div>
