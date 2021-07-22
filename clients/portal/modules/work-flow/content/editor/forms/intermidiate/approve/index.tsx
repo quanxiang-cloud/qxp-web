@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
+import { pipe, some, every, get, map, values, pick } from 'lodash/fp';
 
 import Tab from '@c/tab';
 
 import type { FillInData, NodeType } from '@flowEditor/type';
 import SaveButtonGroup from '@flowEditor/components/_common/action-save-button-group';
+import { updateStore } from '@flowEditor/store';
+import { DeadLine, WhenTimeout } from '@flowEditor/type';
 
 import BasicConfig from '../components/basic-config';
 import FieldPermission from '../components/field-permission';
@@ -14,27 +17,38 @@ interface Props {
   onSubmit: (v: FillInData) => void;
   onCancel: () => void;
   nodeType: NodeType;
+  onChange: () => void;
 }
 
-export default function ApproveForm({ defaultValue, onSubmit, onCancel, nodeType }: Props): JSX.Element {
+export default function ApproveForm({
+  defaultValue, onSubmit, onCancel, nodeType, onChange,
+}: Props): JSX.Element {
   const [value, setValue] = useState<FillInData>(defaultValue || {});
 
-  function onChange(val: Partial<FillInData>): void {
+  function handleChange(val: Partial<FillInData>): void {
+    onChange();
     setValue((v) => ({ ...v, ...val }));
   }
 
   function onSave(): void {
-    // todo get data value
-    // todo validate data value
-    // todo call onSubmit when data is valid
+    const { timeRule } = value.basicConfig;
+    const someValueIsInvalid = pipe(
+      map(({ path, validator }) => ({ value: get(path, timeRule), validator })),
+      some(({ value, validator }) => validator ? validator(value) : !value),
+    );
+    const someKeyIsInvalid = pipe(
+      pick(['day', 'hours', 'minutes']),
+      values,
+      every((v) => +v <= 0),
+    );
+    if (timeRule.enabled && someValueIsInvalid([
+      { path: 'deadLine.breakPoint' },
+      { path: 'deadLine', validator: (val: DeadLine) => someKeyIsInvalid(val) },
+      { path: 'whenTimeout', validator: (val: WhenTimeout) => val.type === 'autoDealWith' && !val.value },
+    ])) {
+      return updateStore((s) => ({ ...s, validating: true }));
+    }
     onSubmit(value);
-  }
-
-  function onClose(): void {
-    // todo check if the data is changed
-    // todo pop close confirm when data is changed and is not saved
-    // todo call onCancel when data is not changed or is saved
-    onCancel();
   }
 
   return (
@@ -47,7 +61,7 @@ export default function ApproveForm({ defaultValue, onSubmit, onCancel, nodeType
           content: (
             <BasicConfig
               value={value.basicConfig}
-              onChange={onChange}
+              onChange={handleChange}
               type={nodeType}
             />
           ),
@@ -57,7 +71,7 @@ export default function ApproveForm({ defaultValue, onSubmit, onCancel, nodeType
           content: (
             <FieldPermission
               value={value.fieldPermission}
-              onChange={onChange}
+              onChange={handleChange}
             />
           ),
         }, {
@@ -66,13 +80,13 @@ export default function ApproveForm({ defaultValue, onSubmit, onCancel, nodeType
           content: (
             <OperatorPermission
               value={value.operatorPermission}
-              onChange={onChange}
+              onChange={handleChange}
               type={nodeType}
             />
           ),
         }]}
       />
-      <SaveButtonGroup onSave={onSave} onCancel={onClose} />
+      <SaveButtonGroup onSave={onSave} onCancel={onCancel} />
     </>
   );
 }

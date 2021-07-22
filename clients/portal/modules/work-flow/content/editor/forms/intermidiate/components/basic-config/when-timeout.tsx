@@ -75,7 +75,7 @@ export default function WhenTimeout({ defaultValue, onChange }: Props): JSX.Elem
                   })}
             />
             {validating && !timeoutData.value && (
-              <div className="text-red-600 mt-4">请选择自动处理的方式</div>
+              <div className="text-red-600 mt-4 mb-8">请选择自动处理的方式</div>
             )}
           </>
         )}

@@ -57,7 +57,7 @@ function TodoApprovals(): JSX.Element {
             optionRenderer={({ value, label }) => {
               let count = 0;
               if (value === '') {
-                count = store.total;
+                count = flowInstCount?.waitHandleCount || 0;
               }
               if (value === 'OVERTIME') {
                 count = flowInstCount?.overTimeCount || 0;
