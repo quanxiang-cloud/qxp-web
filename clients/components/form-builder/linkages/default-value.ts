@@ -1,5 +1,5 @@
 import { ajax } from 'rxjs/ajax';
-import { Observable, of } from 'rxjs';
+import { Observable, of, combineLatest } from 'rxjs';
 import { switchMap, debounceTime, filter, map, catchError } from 'rxjs/operators';
 import { FormEffectHooks, ISchemaFormActions } from '@formily/antd';
 
@@ -16,6 +16,11 @@ type FetchLinkedTableDataParams = {
   sort: string[];
 }
 
+function getFieldPath(linkageRulePath: string, fieldRealPath: string): string {
+  const [match] = /\.\d+\./.exec(fieldRealPath) || [];
+  return linkageRulePath.replace('.*.', match);
+}
+
 function fetchLinkedTableData$(
   getFieldValue: (path: string) => any,
   linkage: FormBuilder.DefaultValueLinkage,
@@ -28,7 +33,6 @@ function fetchLinkedTableData$(
         value: Array.isArray(rule.compareValue) ? rule.compareValue : [rule.compareValue],
       };
     }
-
     const currentValue = getFieldValue(rule.compareValue);
     return {
       key: rule.fieldName,
@@ -65,6 +69,7 @@ function fetchLinkedTableData$(
 function shouldFetchLinkedTableData(
   getFieldValue: (path: string) => any,
   linkage: FormBuilder.DefaultValueLinkage,
+  fieldRealPath: string,
 ): boolean {
   const compareToValues = linkage.rules.map((rule) => {
     if (rule.compareTo === 'fixedValue') {
@@ -73,7 +78,7 @@ function shouldFetchLinkedTableData(
       }
       return rule.compareValue;
     }
-
+    rule.compareValue = getFieldPath(rule.compareValue, fieldRealPath);
     return getFieldValue(rule.compareValue);
   });
 
@@ -118,17 +123,41 @@ function shouldFireEffect({ linkage, linkedRow, getFieldValue }: ShouldFireEffec
   });
 }
 
-// todo support nested properties
-function findAllLinkages(schema: ISchema): FormBuilder.DefaultValueLinkage[] {
-  return Object.keys(schema.properties || {}).map<FormBuilder.DefaultValueLinkage>((fieldName): any => {
-    const defaultValueFrom = (schema?.properties?.[fieldName] as ISchema)?.['x-internal']?.defaultValueFrom;
-    const linkage = (schema?.properties?.[fieldName] as ISchema)?.['x-internal']?.defaultValueLinkage;
-
-    if (!linkage || defaultValueFrom !== 'linkage') {
-      return false;
+function transformSubTableLinkage(
+  linkage: FormBuilder.DefaultValueLinkage,
+  subTableFieldName: string,
+): FormBuilder.DefaultValueLinkage {
+  linkage.rules = linkage.rules.map((rule) => {
+    if (rule.compareTo === 'currentFormValue' && !rule.compareValue.includes('.')) {
+      rule.compareValue = `${subTableFieldName}.*.${rule.compareValue}`;
     }
-    return { ...linkage, targetField: fieldName };
-  }).filter((linkage) => !!linkage);
+    return rule;
+  });
+
+  linkage.targetField = `${subTableFieldName}.*.${linkage.targetField}`;
+
+  return linkage;
+}
+
+function findAllLinkages(schema: ISchema, subTableFieldName?: string): FormBuilder.DefaultValueLinkage[] {
+  return Object.entries(schema.properties || {}).reduce<FormBuilder.DefaultValueLinkage[]>((
+    linkages,
+    [fieldName, fieldSchema]: [string, ISchema],
+  ) => {
+    if (fieldSchema.items && fieldSchema['x-component']?.toLowerCase() === 'subtable') {
+      linkages.push(...findAllLinkages(fieldSchema.items as ISchema, fieldName));
+    }
+
+    const defaultValueFrom = fieldSchema['x-internal']?.defaultValueFrom;
+    const linkage = fieldSchema['x-internal']?.defaultValueLinkage;
+    if (defaultValueFrom === 'linkage' && linkage) {
+      linkage.targetField = fieldName;
+      const _linkage = subTableFieldName ? transformSubTableLinkage(linkage, subTableFieldName) : linkage;
+      linkages.push(_linkage);
+    }
+
+    return linkages;
+  }, []);
 }
 
 type ExecuteLinkage = {
@@ -145,7 +174,7 @@ function executeLinkage({ linkage, formActions }: ExecuteLinkage): void {
     }
   });
 
-  if (listenedOnFields.length === 0) {
+  if (!listenedOnFields.length) {
     of(true).pipe(
       switchMap(() => fetchLinkedTableData$(getFieldValue, linkage)),
       filter((linkedRow) => shouldFireEffect({ linkedRow, linkage, getFieldValue })),
@@ -156,15 +185,16 @@ function executeLinkage({ linkage, formActions }: ExecuteLinkage): void {
     return;
   }
 
-  // *(abc,def,gij)
   onFieldValueChange$(`*(${listenedOnFields.join(',')})`).pipe(
     debounceTime(200),
-    filter(() => shouldFetchLinkedTableData(getFieldValue, linkage)),
-    switchMap(() => fetchLinkedTableData$(getFieldValue, linkage)),
-    filter((linkedRow) => shouldFireEffect({ linkedRow, linkage, getFieldValue })),
-  ).subscribe((linkedRow) => {
+    filter((state) => shouldFetchLinkedTableData(getFieldValue, linkage, state.path)),
+    switchMap((state) => combineLatest([fetchLinkedTableData$(getFieldValue, linkage), of(state.path)])),
+    filter(([linkedRow]) => shouldFireEffect({ linkedRow, linkage, getFieldValue })),
+  ).subscribe(([linkedRow, fieldRealPath]) => {
     logger.debug(`execute defaultValueLinkage on field: ${linkage.targetField}`);
-    setFieldState(linkage.targetField, (state) => state.value = linkedRow[linkage.linkedField]);
+    setFieldState(getFieldPath(linkage.targetField, fieldRealPath), (state) => {
+      state.value = linkedRow[linkage.linkedField];
+    });
   });
 }
 
