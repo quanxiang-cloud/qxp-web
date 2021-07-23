@@ -16,6 +16,7 @@ export interface AssociatedRecordsConfig {
   };
   columns: string[];
   required: boolean;
+  defaultValueLinkage?: FormBuilder.DefaultValueLinkage;
 }
 
 export const defaultConfig: AssociatedRecordsConfig = {
@@ -33,6 +34,7 @@ export const defaultConfig: AssociatedRecordsConfig = {
   filter: undefined,
   columns: [],
   required: false,
+  defaultValueLinkage: undefined,
 };
 
 export function toSchema(value: AssociatedRecordsConfig): ISchema {
@@ -55,7 +57,8 @@ export function toSchema(value: AssociatedRecordsConfig): ISchema {
     },
     ['x-internal']: {
       permission: 3,
-      defaultValueFrom: 'customized',
+      defaultValueLinkage: value.defaultValueLinkage,
+      defaultValueFrom: 'linkage',
     },
   };
 }
@@ -83,5 +86,6 @@ export function toConfig(schema: ISchema): AssociatedRecordsConfig {
     filter: schema['x-component-props']?.filter,
     columns: schema['x-component-props']?.columns || [],
     required: !!schema.required,
+    defaultValueLinkage: schema['x-component-props']?.defaultValueLinkage,
   };
 }

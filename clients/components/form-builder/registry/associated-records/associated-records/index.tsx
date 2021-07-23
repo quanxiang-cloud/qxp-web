@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
+import _, { every, isObject, map, pipe, filter } from 'lodash/fp';
 
 import Table from '@c/table';
 import Button from '@c/button';
@@ -122,8 +123,22 @@ function AssociatedRecords({
   );
 }
 
+function transformValue(value: string[] | Record<string, string> | Record<string, string>[] = []): string[] {
+  const getID = _.get('_id');
+  const mapToIDArray = pipe(map(getID), filter((id) => !!id));
+  const isObjectArray = every(isObject);
+  if (isObjectArray(value)) {
+    return mapToIDArray(value as Record<string, string>[]);
+  }
+  if (isObject(value) && getID(value)) {
+    return [(value as Record<string, string>)._id];
+  }
+  return value as string[];
+}
+
 function AssociatedRecordsFields(props: Partial<ISchemaFieldComponentProps>): JSX.Element {
   const componentProps = props.props['x-component-props'];
+  const selected = transformValue(props.value);
   // todo handle error case
   return (
     <AssociatedRecords
@@ -132,7 +147,7 @@ function AssociatedRecordsFields(props: Partial<ISchemaFieldComponentProps>): JS
       tableID={componentProps.tableID}
       columns={componentProps.columns || []}
       multiple={componentProps.multiple || false}
-      selected={props.value || []}
+      selected={selected}
       associatedTable={componentProps.associatedTable}
       onChange={(selectedKeys) => props?.mutators?.change(selectedKeys)}
     />

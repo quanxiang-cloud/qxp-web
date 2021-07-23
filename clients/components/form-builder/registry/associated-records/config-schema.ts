@@ -52,6 +52,11 @@ const schema: ISchema = {
             // },
           ],
           'x-component': 'RadioGroup',
+          'x-linkages': [{
+            type: 'value:visible',
+            target: 'defaultValueLinkage',
+            condition: '{{ $value === "readonly" }}',
+          }],
           'x-mega-props': {
             labelAlign: 'top',
           },
@@ -116,6 +121,15 @@ const schema: ISchema = {
           default: false,
           'x-component': 'Switch',
           'x-index': 8,
+        },
+        defaultValueLinkage: {
+          title: '数据源',
+          'x-component': 'DefaultValueLinkageConfigBtn',
+          'x-index': 10,
+          'x-component-props': {
+            isLinkedFieldShow: false,
+            isLinkedTableReadonly: true,
+          },
         },
       },
     },

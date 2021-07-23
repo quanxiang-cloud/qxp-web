@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { toJS } from 'mobx';
+import { omit } from 'lodash';
 import { from } from 'rxjs';
 import { switchMap, filter, tap, skip } from 'rxjs/operators';
 import {
@@ -25,6 +26,7 @@ import { StoreContext } from '@c/form-builder/context';
 import { JoinOperatorSelect, RulesList } from '@c/form-builder/customized-fields';
 import { INTERNAL_FIELD_NAMES } from '@c/form-builder/store';
 import { getCompareOperatorOptions, getSourceElementOperator } from '@c/form-builder/utils/operator';
+import { FieldConfigContext } from '@c/form-builder/form-settings-panel/form-field-config/context';
 
 import { getLinkageTables, fetchLinkedTableFields } from './get-tables';
 import SCHEMA from './schema';
@@ -64,16 +66,21 @@ export type LinkedTableFieldOptions = FormBuilder.Option & {
 
 type Props = {
   onClose: () => void;
-  linkage?: FormBuilder.DefaultValueLinkage;
   onSubmit: (linkage: FormBuilder.DefaultValueLinkage) => void;
+  linkage?: FormBuilder.DefaultValueLinkage;
+  isLinkedFieldShow?: boolean;
+  isLinkedTableReadonly?: boolean;
 }
 
-function LinkageConfig({ onClose, onSubmit, linkage }: Props): JSX.Element {
+function LinkageConfig({
+  onClose, onSubmit, linkage, isLinkedFieldShow, isLinkedTableReadonly,
+}: Props): JSX.Element {
   const actions = createFormActions();
   const { setFieldState, getFieldValue, setFieldValue } = actions;
   const [linkageTables, setLinkageTables] = useState<Array<FormBuilder.Option>>([]);
   const linkedTableFieldsRef = useRef<LinkedTableFieldOptions[]>([]);
   const store = useContext(StoreContext);
+  const { actions: configActions } = useContext(FieldConfigContext);
   const defaultValue = linkage || DEFAULT_VALUE_LINKAGE;
 
   const fieldsSchema = toJS(store.schema.properties || {});
@@ -117,7 +124,12 @@ function LinkageConfig({ onClose, onSubmit, linkage }: Props): JSX.Element {
       const filteredOptions = options.filter(({ value }) => value !== store.pageID);
       setLinkageTables(filteredOptions);
       setFieldState('linkedTableID', (state) => state.props.enum = filteredOptions);
-
+      if (isLinkedTableReadonly) {
+        configActions.getFieldState('Fields.linkedTable', (state) => {
+          setFieldValue('linkedTableID', state.value.tableID);
+        });
+        return;
+      }
       if (!defaultValue.linkedTable.id) {
         setFieldValue('linkedTableID', filteredOptions[0]?.value);
       }
@@ -222,6 +234,13 @@ function LinkageConfig({ onClose, onSubmit, linkage }: Props): JSX.Element {
       }
     },
     );
+  }
+
+  if (!isLinkedFieldShow) {
+    SCHEMA.properties = omit(SCHEMA.properties, 'linkedField');
+  }
+  if (isLinkedTableReadonly && SCHEMA.properties) {
+    SCHEMA.properties['linkedTableID'].readOnly = true;
   }
 
   return (

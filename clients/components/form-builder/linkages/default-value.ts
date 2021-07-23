@@ -180,7 +180,9 @@ function executeLinkage({ linkage, formActions }: ExecuteLinkage): void {
       filter((linkedRow) => shouldFireEffect({ linkedRow, linkage, getFieldValue })),
     ).subscribe((linkedRow) => {
       logger.debug(`execute defaultValueLinkage on field: ${linkage.targetField}`);
-      setFieldState(linkage.targetField, (state) => state.value = linkedRow[linkage.linkedField]);
+      setFieldState(linkage.targetField, (state) => {
+        state.value = linkage.linkedField ? linkedRow[linkage.linkedField] : linkedRow;
+      });
     });
     return;
   }
@@ -193,7 +195,7 @@ function executeLinkage({ linkage, formActions }: ExecuteLinkage): void {
   ).subscribe(([linkedRow, fieldRealPath]) => {
     logger.debug(`execute defaultValueLinkage on field: ${linkage.targetField}`);
     setFieldState(getFieldPath(linkage.targetField, fieldRealPath), (state) => {
-      state.value = linkedRow[linkage.linkedField];
+      state.value = linkage.linkedField ? linkedRow[linkage.linkedField] : linkedRow;
     });
   });
 }
