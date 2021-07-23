@@ -24,6 +24,8 @@ type LabelValue = {
   value: string;
 }
 
+type ObjectAny = Record<string, any>;
+
 type FormDataValue =
   | string
   | string[]
@@ -32,7 +34,7 @@ type FormDataValue =
   | FormBuilder.Option
   | FormBuilder.Option[]
   | Record<string, unknown>
-  | Record < string, unknown > [];
+  | Record<string, unknown>[];
 
 declare type SchemaProperties<T = ISchema> = {
   [key: string]: T;

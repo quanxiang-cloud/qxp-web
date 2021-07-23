@@ -1,4 +1,5 @@
 import React, { useEffect, useContext } from 'react';
+import { toJS } from 'mobx';
 import { observer } from 'mobx-react';
 
 import Button from '@c/button';
@@ -70,7 +71,7 @@ function PageDataTable(): JSX.Element {
           loading={store.listLoading}
           onSelectChange={handleSelectChange}
           columns={store.tableColumns}
-          data={store.formDataList}
+          data={toJS(store.formDataList)}
         />
       </div>
       <Pagination
