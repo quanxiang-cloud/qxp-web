@@ -1,11 +1,11 @@
 import React, { JSXElementConstructor, useEffect, useState } from 'react';
 import { ISchemaFieldComponentProps, IMutators } from '@formily/react-schema-renderer';
+import { usePrevious } from 'react-use';
 import { Input, Radio, DatePicker, NumberPicker, Select, Checkbox } from '@formily/antd-components';
 import { Table } from 'antd';
 import cs from 'classnames';
 import {
-  InternalFieldList as FieldList,
-  FormItem, ValidatePatternRules, IForm,
+  InternalFieldList as FieldList, FormItem, ValidatePatternRules, IForm, Schema,
 } from '@formily/antd';
 
 import OrganizationPicker from '@c/form-builder/registry/organization-select/organization-select-wrap';
@@ -64,39 +64,58 @@ interface Props extends ISchemaFieldComponentProps {
   },
 }
 
+interface SubTableState {
+  componentColumns: Column[];
+  rowPlaceHolder: Record<string, unknown>;
+}
+
 function SubTable({
   schema: definedSchema,
   value,
   name,
-  props,
   readonly,
+  mutators,
 }: Partial<Props>): JSX.Element | null {
-  const [columns, setColumns] = useState<Column[]>([]);
-  const emptyRow: Record<string, string> = {};
+  const [{ componentColumns, rowPlaceHolder }, setSubTableState] = useState<SubTableState>({
+    componentColumns: [], rowPlaceHolder: {},
+  });
   const schema = definedSchema?.items as ISchema;
-  const { subordination, columns: definedColumns } = props?.['x-component-props'] || {};
+  const props = (schema as Schema)?.parent;
+  const { subordination, columns } = props?.['x-component-props'] || {};
+  const previousColumns = usePrevious(columns);
   const isFromForeign = subordination === 'foreign_table';
+  const initialValue = value?.length ? value : [rowPlaceHolder];
 
   useEffect(() => {
-    const columns: Column[] = Object.entries(schema?.properties || {}).sort((a, b) => {
+    const rowPlaceHolder = {};
+    const componentColumns: Column[] = Object.entries(schema?.properties || {}).sort((a, b) => {
       return (a[1]['x-index'] || 0) - (b[1]['x-index'] || 0);
     }).reduce(
       (cur: Column[], next) => {
         const [key, sc] = next;
         const isHidden = !sc.display;
-        if ((isFromForeign && !definedColumns?.includes(key)) || key === '_id' || isHidden) {
+        if ((isFromForeign && !columns?.includes(key)) || key === '_id' || isHidden) {
           return cur;
         }
         const newColumn = buildColumnFromSchema(key, sc);
         if (newColumn) {
-          Object.assign(emptyRow, { [key]: getDefaultValue(schema) });
+          Object.assign(rowPlaceHolder, { [key]: getDefaultValue(schema) || '' });
           cur.push(newColumn);
         }
         return cur;
       }, [],
     ) as Column[];
-    setColumns(columns);
-  }, [schema, definedColumns]);
+    setSubTableState({ componentColumns, rowPlaceHolder });
+  }, [schema, columns]);
+
+  useEffect(() => {
+    if (!previousColumns?.filter((key: string) => key !== '_id')?.length &&
+      columns?.filter((key: string) => key !== '_id')?.length &&
+      initialValue?.every((v: Record<string, unknown>) => !isEmpty(v))
+    ) {
+      mutators?.change(initialValue);
+    }
+  });
 
   function buildColumnFromSchema(dataIndex: string, sc: ISchema): Column | null {
     const componentName = sc['x-component']?.toLowerCase() as keyof Components;
@@ -133,7 +152,7 @@ function SubTable({
   }
 
   function onAddRow(mutators: IMutators): void {
-    mutators.push(emptyRow);
+    mutators.push(rowPlaceHolder);
   }
 
   function onRemoveRow(mutators: IMutators, index: number): void {
@@ -146,7 +165,7 @@ function SubTable({
     };
   }
 
-  if (!columns.length) {
+  if (!componentColumns.length) {
     return null;
   }
 
@@ -155,14 +174,14 @@ function SubTable({
       <Table
         pagination={false}
         rowKey="_id"
-        columns={columns}
-        dataSource={columns.length ? value : []}
+        columns={componentColumns}
+        dataSource={componentColumns.length ? value : []}
       />
     );
   }
 
   return (
-    <FieldList name={name} initialValue={value?.length ? value : [emptyRow]}>
+    <FieldList name={name} initialValue={initialValue}>
       {({ state, mutators, form }) => {
         return (
           <div className="w-full flex flex-col border border-gray-300">
@@ -173,11 +192,13 @@ function SubTable({
                     <div className="flex items-start justify-between whitespace-nowrap">
                       <div
                         className="flex-1 grid"
-                        style={{ gridTemplateColumns: `repeat(${columns.length}, minmax(120px, 1fr))` }}
+                        style={{
+                          gridTemplateColumns: `repeat(${componentColumns.length}, minmax(120px, 1fr))`,
+                        }}
                       >
-                        {columns.map(({ title, required }, idx) => (
+                        {componentColumns.map(({ title, required }, idx) => (
                           <div key={idx} className={cs('text-center', {
-                            'border-r-1 border-gray-300': idx < columns.length,
+                            'border-r-1 border-gray-300': idx < componentColumns.length,
                           })}>
                             {required ? (
                               <span className="mr-5" style={{ color: '#a87366' }}>*</span>
@@ -194,15 +215,17 @@ function SubTable({
                   <div className="flex items-center justify-between">
                     <div
                       className="flex-1 grid border-gray-300 border-t-1"
-                      style={{ gridTemplateColumns: `repeat(${columns.length}, minmax(120px, 1fr))` }}
+                      style={{
+                        gridTemplateColumns: `repeat(${componentColumns.length}, minmax(120px, 1fr))`,
+                      }}
                     >
-                      {columns.map(({
+                      {componentColumns.map(({
                         dataIndex, component, props, dataSource, required, rules, readonly, schema,
                       }, idx) => {
                         const path = `${name}.${index}.${dataIndex}`;
                         return (
                           <div key={dataIndex} className={cs({
-                            'border-r-1 border-gray-300': idx < columns.length,
+                            'border-r-1 border-gray-300': idx < componentColumns.length,
                             'px-56 h-32': readonly,
                           })}>
                             {component && !readonly && (
