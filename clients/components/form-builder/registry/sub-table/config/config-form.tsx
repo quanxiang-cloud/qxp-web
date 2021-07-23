@@ -55,14 +55,6 @@ export default function ConfigForm({ onChange, initialValue: _initValue }: Props
   }
 
   function handleChange(value: Record<string, any>): void {
-    for (const key in value) {
-      if (Object.prototype.hasOwnProperty.call(value, key)) {
-        const element = value[key];
-        if (typeof element === 'undefined' && initialValue[key as keyof typeof initialValue]) {
-          value[key] = initialValue[key as keyof typeof initialValue];
-        }
-      }
-    }
     onChange(value);
   }
 
