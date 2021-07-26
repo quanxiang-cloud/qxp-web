@@ -4,6 +4,7 @@ import { deepClone } from '@lib/utils';
 
 import type { NodeType, Data, Operation } from '../type';
 import { SYSTEM_OPERATOR_PERMISSION, CUSTOM_OPERATOR_PERMISSION } from './constants';
+import store, { getNodeElementById } from '../store';
 
 const approveAndFillInCommonData = {
   basicConfig: {
@@ -135,3 +136,9 @@ export function nodeBuilder(
   };
 }
 
+export function isCurrentNodeFirstLogicNode(): boolean {
+  const { nodeIdForDrawerForm } = store.value;
+  const currentNode = getNodeElementById(nodeIdForDrawerForm);
+  const parents = currentNode?.data?.nodeData?.parentID?.map(getNodeElementById);
+  return !!parents?.find((parent) => parent.type === 'formData');
+}
