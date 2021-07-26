@@ -84,7 +84,7 @@ export default function Approval({ workData, clickHandle }: Props): JSX.Element 
           )
         }
         {
-          (!isSingle || (isSingle && isHandle)) && (
+          (!isSingle || (isSingle && isHandle) || (status === 'AUTO_REVIEW')) && (
             <UserList userList={operationRecords} clickHandle={goLeaderHandle} />
           )
         }
