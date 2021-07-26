@@ -19,12 +19,12 @@ export default function HandleInfo({ operation }: Props): JSX.Element {
     const detailInfo = { username: '', detail: '', backOffInfo: '', sendBack: '' };
     detailInfo.detail = operation.remark || '';
     switch (status) {
-    case 'STEP_BACK': // 回退
-      detailInfo.backOffInfo = operation.handleDesc || '';
-      break;
-    case 'SEND_BACK':
-      detailInfo.sendBack = operation.handleDesc || '';
-      break;
+      case 'STEP_BACK': // 回退
+        detailInfo.backOffInfo = operation.handleDesc || '';
+        break;
+      case 'SEND_BACK':
+        detailInfo.sendBack = operation.handleDesc || '';
+        break;
     }
 
     return detailInfo;
@@ -32,7 +32,7 @@ export default function HandleInfo({ operation }: Props): JSX.Element {
 
   return (
     <div className="mb-16 flex w-full">
-      <Avatar username={creatorName.substring(0, 1)} />
+      <Avatar username={creatorName && creatorName.substring(0, 1)} />
       <div className="ml-8 flex-1">
         <div className="h-24 flex justify-between">
           <div className="flex items-center">
