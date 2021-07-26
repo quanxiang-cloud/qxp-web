@@ -41,9 +41,11 @@ const RuleList = ({ onEdit }: VisibleHiddenLinkagesProps): JSX.Element => {
           }).join(', ');
 
           return (
-            <div key={key} className="rounded-2 border-gray-200 border-t pt-8 mt-16">
-              <div className="flex justify-between items-center">
-                序号：#{index + 1}
+            <div key={key} className="rounded-8 border-gray-200 border mt-16">
+              <div className="flex justify-between items-center p-10 border-b border-gray-200">
+                <div className="mr-8 text-h6-bold">
+                  <Icon name="grading" size={20} className="mr-8"/>{index + 1}
+                </div>
                 <span>
                   <Icon
                     clickable
@@ -62,11 +64,15 @@ const RuleList = ({ onEdit }: VisibleHiddenLinkagesProps): JSX.Element => {
                   />
                 </span>
               </div>
-              <div>
-                当满足以下{store.visibleHiddenLinkages[index].ruleJoinOperator === 'every' ? '所有' : '任一'}条件时:
+              <div className="mt-8 pl-12">
+                当满足以下
+                <span className="text-h6-bold">
+                  &nbsp;{store.visibleHiddenLinkages[index].ruleJoinOperator === 'every' ? '所有' : '任一'}&nbsp;
+                </span>
+                条件时:
               </div>
               {rules.map(({ sourceKey, compareValue, compareOperator }, index) => (
-                <div key={index} className="text-h6-bold pl-12 mb-8">
+                <div key={index} className="text-h6-bold pl-24 mb-8">
                   - {`${keyLabels[sourceKey].title} ${compareOperator} `}
                   <FormDataValueRenderer
                     value={compareValue}
@@ -74,8 +80,13 @@ const RuleList = ({ onEdit }: VisibleHiddenLinkagesProps): JSX.Element => {
                   />
                 </div>
               ))}
-              <div>{store.visibleHiddenLinkages[index].isShow === true ? '显示' : '隐藏'}以下字段: </div>
-              <div className="text-h6-bold pl-12 mb-8">{readableTargets}</div>
+              <div className="pl-12">
+                <span className="text-h6-bold">
+                  &nbsp;{store.visibleHiddenLinkages[index].isShow === true ? '显示' : '隐藏'}&nbsp;
+                </span>
+                以下字段:
+              </div>
+              <div className="text-h6-bold pl-24 mb-8">{readableTargets}</div>
             </div>
           );
         })

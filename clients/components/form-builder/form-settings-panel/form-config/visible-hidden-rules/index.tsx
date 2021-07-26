@@ -14,12 +14,6 @@ export default function(): JSX.Element {
     <>
       <div className="pb-24">
         <div className="item-title">字段显隐规则</div>
-        <RuleList
-          onEdit={(key) => {
-            setEditingLinkage(key);
-            setLinkageConfigVisible(true);
-          }}
-        />
         <div className='page-setting-filter' onClick={() => {
           setEditingLinkage('');
           setLinkageConfigVisible(true);
@@ -27,6 +21,12 @@ export default function(): JSX.Element {
           <Icon className='mr-8' name='add' size={20} />
             显隐规则
         </div>
+        <RuleList
+          onEdit={(key) => {
+            setEditingLinkage(key);
+            setLinkageConfigVisible(true);
+          }}
+        />
       </div>
       {isLinkageConfigVisible && (
         <RulesConfig
