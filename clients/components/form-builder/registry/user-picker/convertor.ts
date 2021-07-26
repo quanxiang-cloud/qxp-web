@@ -15,6 +15,7 @@ export interface DefaultConfig {
   loading?: boolean;
   onSearch?: (value: string) => string | void;
   type: string;
+  appID?: string;
 }
 
 export const defaultConfig: DefaultConfig = {
@@ -33,14 +34,6 @@ export const defaultConfig: DefaultConfig = {
 };
 
 export const toSchema = (config: DefaultConfig): ISchema => {
-  const { defaultValues } = config;
-  const isMultiple = config.multiple === 'multiple';
-  const isArr = Array.isArray(defaultValues);
-
-  const multipleDefValues = isArr ? defaultValues : [defaultValues];
-  const singleDefValues = isArr ? defaultValues[0] : defaultValues;
-  const calcDefaultValues = isMultiple ? multipleDefValues : singleDefValues;
-
   return Object.assign(config, {
     type: 'array',
     title: config.title,
@@ -53,13 +46,14 @@ export const toSchema = (config: DefaultConfig): ISchema => {
       placeholder: config.placeholder,
       mode: config.multiple,
       allowClear: true,
+      appID: config.appID,
       showSearch: true,
       loading: config.loading,
       onSearch(value: string) {
         config.onSearch && config.onSearch(value);
       },
 
-      filterOption: (input: string, option: Option) =>{
+      filterOption: (input: string, option: Option) => {
         return option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0;
       },
     },
@@ -67,14 +61,14 @@ export const toSchema = (config: DefaultConfig): ISchema => {
       multiple: config.multiple,
       optionalRange: config.optionalRange,
       rangeList: config.rangeList,
-      defaultValues: calcDefaultValues,
+      defaultValues: config.defaultValues,
       defaultValue: config.defaultValue,
     },
     enum: config.optionalRange === 'all' ? [] : (config.rangeList || []).map((itm) => ({
       label: itm.ownerName,
       value: itm.id,
     })),
-    defaultValues: calcDefaultValues,
+    defaultValues: config.defaultValues,
   });
 };
 
@@ -97,5 +91,6 @@ export const toConfig = (schema: ISchema): DefaultConfig => {
     rangeList: schema['x-internal']?.rangeList || [],
     multiple: schema['x-internal']?.multiple,
     optionalRange: schema['x-internal']?.optionalRange,
+    appID: schema['x-component-props']?.appID,
   };
 };

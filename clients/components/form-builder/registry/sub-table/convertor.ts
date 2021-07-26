@@ -9,7 +9,7 @@ export type SubTableConfig = {
     tableID: string;
     tableName: string;
   }
-  subTableColumns: string[];
+  subTableColumns?: string[];
 }
 
 export const defaultConfig: SubTableConfig = {
@@ -26,7 +26,7 @@ export const defaultConfig: SubTableConfig = {
     tableID: '',
     tableName: '',
   },
-  subTableColumns: [],
+  subTableColumns: undefined,
 };
 
 export function toSchema(value: SubTableConfig): ISchema {

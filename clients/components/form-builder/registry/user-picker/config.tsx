@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext, useEffect } from 'react';
 import {
   Form,
   FormItem,
@@ -6,12 +6,15 @@ import {
 } from '@formily/antd';
 import { Input, Radio, MegaLayout, Switch } from '@formily/antd-components';
 
-import { DefaultConfig } from './convertor';
-import { EnumReadOnly, EnumOptionalRange, EnumMultiple } from './messy/enum';
 import Picker from './picker';
 import UserPicker from './user-picker';
+import { StoreContext } from '../../context';
+import { DefaultConfig } from './convertor';
+import { EnumReadOnly, EnumOptionalRange, EnumMultiple } from './messy/enum';
 
-const Field = (props: IAntdFormItemProps): JSX.Element => <MegaLayout labelAlign="top"><FormItem {...props} /></MegaLayout>;
+const Field = (props: IAntdFormItemProps): JSX.Element => (
+  <MegaLayout labelAlign="top"><FormItem {...props} /></MegaLayout>
+);
 
 interface Props {
   initialValue: DefaultConfig
@@ -19,13 +22,15 @@ interface Props {
 }
 
 const UserPickerConfigForm = ({ initialValue, onChange }: Props): JSX.Element => {
-  const handleChange = (formData: any): void => {
-    onChange({ ...initialValue, ...formData });
-  };
+  const { appID } = useContext(StoreContext);
+
+  useEffect(() => {
+    onChange({ ...initialValue, appID });
+  }, [appID]);
 
   return (
     <div>
-      <Form initialValues={initialValue} onChange={handleChange}>
+      <Form initialValues={initialValue} onChange={(formData) => onChange({ ...initialValue, ...formData })}>
         <Field name="title" title="标题" component={Input} />
         <Field name="placeholder" title="占位提示" component={Input} />
         <Field name="description" title="描述内容" component={Input.TextArea} />
@@ -45,6 +50,7 @@ const UserPickerConfigForm = ({ initialValue, onChange }: Props): JSX.Element =>
         <Field
           name="defaultValues"
           title="默认值"
+          appID={appID}
           optionalRange={initialValue.optionalRange}
           mode={initialValue.multiple}
           options={(initialValue.rangeList || []).map(({ ownerID, ownerName }) => {

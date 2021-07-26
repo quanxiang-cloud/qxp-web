@@ -9,6 +9,7 @@ import PopConfirm from '@c/pop-confirm';
 import PageLoading from '@c/page-loading';
 import FormDataValueRenderer from '@c/form-data-value-renderer';
 import { Schema } from '@formily/react-schema-renderer';
+import { isEmpty } from '@lib/utils';
 
 import { getOperateButtonPer } from '../utils';
 import { getSchemaAndRecord } from '../api';
@@ -26,6 +27,27 @@ type FormDataProp = {
   key: string;
   value: any;
   fieldSchema: ISchema;
+}
+
+const FULL_COMP = ['AssociatedRecords', 'SubTable'];
+
+function InfoCard({ list }: { list: FormDataProp[] }): JSX.Element {
+  return (
+    <div className='grid gap-20 grid-cols-2 grid-flow-row-dense'>
+      {list.map(({ label, value, key, fieldSchema }) => (
+        <div
+          className={cs(
+            'page-data-info-view',
+            { 'col-span-2': FULL_COMP.includes(fieldSchema['x-component'] as string) },
+          )}
+          key={key}
+        >
+          <div className='text-body2-no-color text-gray-600'>{label}</div>
+          {value}
+        </div>),
+      )}
+    </div>
+  );
 }
 
 function DetailsDrawer({ onCancel, rowID, goEdit, delData }: Props): JSX.Element {
@@ -54,11 +76,7 @@ function DetailsDrawer({ onCancel, rowID, goEdit, delData }: Props): JSX.Element
     }
 
     Object.entries(schema.properties || {}).forEach(([fieldKey, fieldSchema]) => {
-      const hasValue = record && (
-        record[fieldKey] !== undefined &&
-        record[fieldKey] !== null &&
-        record[fieldKey] !== ''
-      );
+      const hasValue = record && !isEmpty(record[fieldKey]);
       if ((fieldSchema as ISchema)['x-internal']?.isSystem) {
         _systems.push({
           label: fieldSchema.title as string,
@@ -98,19 +116,6 @@ function DetailsDrawer({ onCancel, rowID, goEdit, delData }: Props): JSX.Element
     });
   };
 
-  const cardRender = (list: FormDataProp[]): JSX.Element => {
-    return (
-      <div className='grid gap-20 grid-cols-2'>
-        {list.map(({ label, value, key }) => (
-          <div className='page-data-info-view' key={key}>
-            <div className='text-body2-no-color text-gray-600'>{label}</div>
-            {value}
-          </div>
-        ))}
-      </div>
-    );
-  };
-
   return (
     <div
       className={cs('page-data-drawer-modal-mask', {
@@ -146,12 +151,12 @@ function DetailsDrawer({ onCancel, rowID, goEdit, delData }: Props): JSX.Element
                 {
                   id: 'details',
                   name: '详细信息',
-                  content: cardRender(details),
+                  content: <InfoCard list={details} />,
                 },
                 {
                   id: 'system',
                   name: '系统信息',
-                  content: cardRender(systems),
+                  content: <InfoCard list={systems} />,
                 },
               ]}
             />

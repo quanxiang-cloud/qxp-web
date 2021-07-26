@@ -1,14 +1,15 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState, Ref } from 'react';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd';
+import { usePopper } from 'react-popper';
+import { nanoid } from 'nanoid';
+import { useClickAway } from 'react-use';
 
-import Select from '@c/select';
 import Icon from '@c/icon';
 import { INTERNAL_FIELD_NAMES } from '@c/form-builder/store';
 
-import { generateRandomFormFieldID } from '../../../../utils';
 import { ActionsContext } from '../context';
-import { LABEL_TO_SCHEMA_MAP, SUB_TABLE_LABELS } from '../constants';
+import { SUB_TABLE_TYPES_SCHEMA_MAP, SUB_TABLE_TYPES } from '../constants';
 
 interface Option {
   label: string;
@@ -22,6 +23,18 @@ interface Field extends Option {
 
 function SubTableSchema(props: ISchemaFieldComponentProps): JSX.Element {
   const { actions } = useContext(ActionsContext);
+  const [currentFieldLabel, setCurrentFieldLabel] = useState('添加');
+  const [referenceElRef, setReferenceElRef] = useState<HTMLDivElement>();
+  const [popperElRef, setPopperElRef] = useState(null);
+  const [fieldSelectorShow, setFieldSelectorShow] = useState(false);
+  const popperRef = usePopper(referenceElRef, popperElRef, {
+    modifiers: [{ name: 'offset', options: { offset: [0, 4] } }],
+    placement: 'bottom-start',
+  });
+
+  useClickAway({ current: popperElRef }, () => {
+    setFieldSelectorShow(false);
+  });
 
   const subTableSchemas = props.value?.properties as SchemaProperties;
   const entries = Object.entries(subTableSchemas || {});
@@ -46,29 +59,26 @@ function SubTableSchema(props: ISchemaFieldComponentProps): JSX.Element {
     return Math.abs(index) === Infinity ? 0 : index + 1;
   }
 
-  function getSchemaFromLabel(label: string, currentIndex?: number): ISchema {
+  function getSchemaFromOptionType(type: string, currentIndex?: number): ISchema {
     if (!currentIndex) {
-      return LABEL_TO_SCHEMA_MAP[label];
+      return SUB_TABLE_TYPES_SCHEMA_MAP[type];
     }
     return {
-      ...LABEL_TO_SCHEMA_MAP[label],
+      ...SUB_TABLE_TYPES_SCHEMA_MAP[type],
       'x-index': currentIndex,
     };
   }
 
-  const currentOptions = SUB_TABLE_LABELS.map((label) => ({
-    label,
-    value: generateRandomFormFieldID(),
-  }));
+  const currentOptions = SUB_TABLE_TYPES;
 
   function onUpdateFields(fields: Field[]): void {
     const newValue = {
       type: 'object',
       properties: {
-        _id: getSchemaFromLabel('id'),
+        _id: getSchemaFromOptionType('id'),
         ...fields.reduce((cur: ISchema, next: Field) => {
-          const { value, schema, sort } = next;
-          cur[value as keyof ISchema] = {
+          const { schema, sort } = next;
+          cur[nanoid() as keyof ISchema] = {
             ...schema,
             'x-index': sort,
           };
@@ -79,7 +89,7 @@ function SubTableSchema(props: ISchemaFieldComponentProps): JSX.Element {
     props.mutators.change(newValue);
   }
 
-  function onAddFields(val: string): void {
+  function onAddFields(label: string, val: string): void {
     const opt = currentOptions.find(({ value }) => value === val);
     if (!opt) {
       return;
@@ -88,8 +98,10 @@ function SubTableSchema(props: ISchemaFieldComponentProps): JSX.Element {
     const newField = {
       ...opt,
       sort: currentIndex,
-      schema: getSchemaFromLabel(opt.label, currentIndex),
+      schema: getSchemaFromOptionType(opt.value, currentIndex),
     };
+    setCurrentFieldLabel(label);
+    setFieldSelectorShow(false);
     onUpdateFields([...schemaList, newField]);
   }
 
@@ -120,12 +132,42 @@ function SubTableSchema(props: ISchemaFieldComponentProps): JSX.Element {
     <div>
       <header className="flex justify-between items-center bg-gray-50 mb-16">
         <div className="mr-10">子表字段</div>
-        <Select
-          className="flex-1"
-          placeholder="添加"
-          options={currentOptions.filter(({ value }) => !INTERNAL_FIELD_NAMES.includes(value))}
-          onChange={onAddFields}
-        />
+        <div
+          className="flex-1 flex justify-between items-center px-16 border rounded cursor-pointer"
+          ref={setReferenceElRef as Ref<HTMLDivElement>}
+          onClick={() => setFieldSelectorShow((show) => !show)}
+        >
+          <span>{currentFieldLabel}</span>
+          <Icon name="expand_more"/>
+        </div>
+        {fieldSelectorShow && (
+          <ul
+            {...popperRef.attributes.popper}
+            style={{
+              ...popperRef.styles.popper,
+              boxShadow: '0 0 30px rgba(200, 200, 200, .7)',
+              backgroundColor: '#fff',
+              zIndex: 1,
+              width: referenceElRef ? getComputedStyle(referenceElRef).width : 'auto',
+            }}
+            className="max-h-200 overflow-auto"
+            ref={setPopperElRef as Ref<HTMLUListElement>}
+          >
+            {currentOptions.filter(({ value }) => !INTERNAL_FIELD_NAMES.includes(value)).map(
+              ({ label, value }) => {
+                return (
+                  <li
+                    className="px-16 cursor-pointer hover:bg-gray-1000"
+                    key={value}
+                    onClick={() => onAddFields(label, value)}
+                  >
+                    {label}
+                  </li>
+                );
+              })
+            }
+          </ul>
+        )}
       </header>
       <DragDropContext onDragEnd={handleOnDragEnd}>
         <Droppable droppableId="sub-table-sub-fields">

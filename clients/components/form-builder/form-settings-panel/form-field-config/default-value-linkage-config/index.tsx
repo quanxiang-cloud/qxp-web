@@ -70,7 +70,7 @@ type Props = {
 
 function LinkageConfig({ onClose, onSubmit, linkage }: Props): JSX.Element {
   const actions = createFormActions();
-  const { setFieldState, getFieldValue, setFieldValue, getFieldState } = actions;
+  const { setFieldState, getFieldValue, setFieldValue } = actions;
   const [linkageTables, setLinkageTables] = useState<Array<FormBuilder.Option>>([]);
   const linkedTableFieldsRef = useRef<LinkedTableFieldOptions[]>([]);
   const store = useContext(StoreContext);
@@ -88,7 +88,7 @@ function LinkageConfig({ onClose, onSubmit, linkage }: Props): JSX.Element {
   }).map(([key, fieldSchema]) => ({ label: fieldSchema.title as string, value: key }));
 
   function resetFormDefaultValueOnLinkTableChanged(fields: LinkedTableFieldOptions[]): void {
-    setFieldValue('sortBy', fields[0].value);
+    setFieldValue('sortBy', fields[0]?.value);
     setFieldValue('sortOrder', '+');
     setFieldValue('ruleJoinOperator', DEFAULT_VALUE_LINKAGE.ruleJoinOperator);
     setFieldValue('rules', DEFAULT_VALUE_LINKAGE.rules);
@@ -101,7 +101,7 @@ function LinkageConfig({ onClose, onSubmit, linkage }: Props): JSX.Element {
     setFieldState('rules.*.fieldName', (state) => state.props.enum = options);
     setFieldState('linkedField', (state) => {
       state.props.enum = fields.filter((field) => {
-        return field['x-component'].toLocaleLowerCase() === store.activeField?.componentName;
+        return field['x-component'].toLowerCase() === store.activeField?.componentName.toLowerCase();
       }).map(({ label, value }) => ({ label, value }));
     });
     setFieldState('sortBy', (state) => state.props.enum = options);
@@ -135,7 +135,8 @@ function LinkageConfig({ onClose, onSubmit, linkage }: Props): JSX.Element {
     // todo why this observable emit value when un-mount?
     onFieldValueChange$('rules.*.fieldName').pipe(
       filter(({ value }) => !!value),
-    ).subscribe(updateCompareOperatorFieldOnFieldNameChanged);
+      tap(updateCompareOperatorFieldOnFieldNameChanged),
+    ).subscribe(updateCompareValueFieldOnCompareToChanged);
 
     onFieldValueChange$('rules.*.compareOperator').pipe(
       filter(({ value }) => !!value),
@@ -167,10 +168,6 @@ function LinkageConfig({ onClose, onSubmit, linkage }: Props): JSX.Element {
         state.value = operatorOptions[0].value;
       }
     });
-
-    const compareToPath = FormPath.transform(name, /\d/, ($1) => `rules.${$1}.compareTo`);
-    const compareToFieldState = getFieldState(compareToPath);
-    updateCompareValueFieldOnCompareToChanged(compareToFieldState);
   }
 
   function updateCompareValueFieldOnCompareOperatorChanged({ name, value }: IFieldState): void {

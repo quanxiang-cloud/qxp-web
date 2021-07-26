@@ -1,36 +1,37 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useContext, useEffect } from 'react';
 import {
   Form,
   FormItem,
   IAntdFormItemProps,
 } from '@formily/antd';
 import { Input, Radio, MegaLayout, Switch } from '@formily/antd-components';
-import { useQuery } from 'react-query';
 
+import OrganizationSelect from './organization-select';
 import { EnumOptionalRange, EnumMultiple } from './messy/enum';
 import { DefaultConfig } from './convertor';
-import OrganizationDefault from './organization-select';
-import PickerCascader from './picker-cascader';
 import { StoreContext } from '../../context';
-import { searchOrganziation } from './messy/api';
 
-const Field = (props: IAntdFormItemProps): JSX.Element => <MegaLayout labelAlign="top"><FormItem {...props} /></MegaLayout>;
+const Field = (props: IAntdFormItemProps): JSX.Element => {
+  return <MegaLayout labelAlign="top"><FormItem {...props} /></MegaLayout>;
+};
 interface Props {
   initialValue: DefaultConfig
   onChange: (params: DefaultConfig) => void
 }
 
 const OrganizationPickerConfigForm = ({ initialValue, onChange }: Props): JSX.Element => {
-  const ref = React.useRef();
-  const store = React.useContext(StoreContext);
-  const { appID } = store;
-  const { data } = useQuery(['query_user_picker', appID], () => searchOrganziation(appID));
+  const { appID } = useContext(StoreContext);
+
+  useEffect(() => {
+    onChange({ ...initialValue, appID });
+  }, [appID]);
 
   const handleChange = useCallback((obj) => {
     const extParams: any = {};
-    if (obj.optionalRange == 'myDep') {
+    if (obj.optionalRange === 'myDep') {
       extParams.rangeList = [window.USER.dep.id];
     }
+
     const nextValue = Object.assign({}, initialValue, obj, extParams);
     onChange(nextValue);
   }, [onChange, initialValue]);
@@ -45,20 +46,21 @@ const OrganizationPickerConfigForm = ({ initialValue, onChange }: Props): JSX.El
         <Field name="multiple" title="部门选项" component={Radio.Group} dataSource={EnumMultiple} />
         <Field name="optionalRange" title="可选范围" component={Radio.Group} dataSource={EnumOptionalRange} />
         <Field
-          isMy={initialValue.optionalRange == 'myDep'}
-          visible={initialValue.optionalRange != 'all'}
+          multiple
+          appID={appID}
+          visible={initialValue.optionalRange !== 'all'}
           name="rangeList"
           title="可选列表"
-          mode={'multiSelect'}
-          component={PickerCascader}
+          component={OrganizationSelect}
         />
         <Field
           name="defaultValues"
+          appID={appID}
           optionalRange={initialValue.optionalRange}
           multiple={initialValue.multiple}
           title="默认值"
           rangeList={initialValue.rangeList}
-          component={OrganizationDefault}
+          component={OrganizationSelect}
         />
       </Form>
     </div>

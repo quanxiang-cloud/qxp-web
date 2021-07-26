@@ -14,7 +14,7 @@ import AppInfo from './app-info';
 import AppAdmin from './app-admin';
 import appDetailsStore from '../store';
 
-const workflows = React.lazy(() => import('../../../work-flow/list'));
+const workflows = React.lazy(() => import('../../../work-flow-list'));
 
 import './index.scss';
 

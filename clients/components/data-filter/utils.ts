@@ -117,7 +117,7 @@ export const FILTER_FIELD = [
   'CheckboxGroup',
   'UserPicker',
   'CascadeSelector',
-  // 'OrganizationPicker',
+  'OrganizationPicker',
 ];
 
 function getDateType(format: string): unitOfTime.StartOf {
