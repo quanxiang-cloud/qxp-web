@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { FormButtonGroup, setValidationLanguage } from '@formily/antd';
 import { toJS } from 'mobx';
-import { omit, omitBy, isEmpty, isObject } from 'lodash';
+import { omit, omitBy, isEmpty, isObject, isArray } from 'lodash';
 import { useQuery } from 'react-query';
 import { observer } from 'mobx-react';
 
@@ -118,8 +118,15 @@ function CreateDataForm({ appID, pageID, rowID, onCancel, title }: Props): JSX.E
     return newData.filter(({ _id }) => !_id).map((data) => buildSubData(data, 'create'));
   }
 
+  function removeEmptySubTableOrAssociatedRecords<T extends Record<string, any>>(data: T): T {
+    return omitBy(
+      data,
+      (v) => (isObject(v) && isEmpty(v)) || (isArray(v) && v.every(isEmpty)),
+    ) as unknown as T;
+  }
+
   const handleSubmit = (data: any): void => {
-    const formData = removeNullOrUndefinedFromObject(data);
+    const formData = removeEmptySubTableOrAssociatedRecords(removeNullOrUndefinedFromObject(data));
     const schemaMap = schema?.properties as ISchema || {};
     const defaultValue = toJS(defaultValues);
     const diffResult = difference(defaultValue || {}, formData);
