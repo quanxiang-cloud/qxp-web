@@ -4,7 +4,7 @@ import ReactDOM from 'react-dom';
 
 interface Params {
   title: string;
-  content: React.ReactNode;
+  content: React.ReactNode | string;
   confirmText?: string;
   cancelText?: string;
   confirmModifier?: 'primary' | 'danger';
@@ -50,7 +50,7 @@ export default function creatModal({
         },
       ]}
     >
-      {content}
+      {typeof content === 'string' ? <p className="p-20">{content}</p> : content}
     </Modal>
   ), modalDom);
   return { close };
