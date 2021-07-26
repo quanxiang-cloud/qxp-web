@@ -38,7 +38,10 @@ export default function HandleInfo({ operation }: Props): JSX.Element {
           <div className="flex items-center">
             <span className="text-h6-bold mr-4">{creatorName}</span>
           </div>
-          <ApprovalStatus status={handleType} />
+          <div className="flex items-center">
+            {handleType === 'AUTO_REVIEW' && <div className="mr-4 text-12">自动处理</div>}
+            <ApprovalStatus status={handleType} />
+          </div>
         </div>
         <Describe
           describeInfo={showDetailText(handleType)}
