@@ -2,7 +2,7 @@ import React, { useRef, useState } from 'react';
 import Icon from '@c/icon';
 import Button from '@c/button';
 import cs from 'classnames';
-import { useParams } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import { TextArea } from '@QCFE/lego-ui';
 
 import actionMap from './action-map';
@@ -34,6 +34,7 @@ function Toolbar({ currTask, permission, onClickAction, globalActions }: Props):
   const { processInstanceID, taskID } = useParams<{ processInstanceID: string; taskID: string }>();
   const [comment, setComment] = useState('');
   const commentRef = useRef<{node: HTMLTextAreaElement}>(null);
+  const history = useHistory();
 
   const { custom = [], system = [] } = permission;
 
@@ -163,6 +164,7 @@ function Toolbar({ currTask, permission, onClickAction, globalActions }: Props):
                   handleReadTask(processInstanceID, taskID, commentRef?.current?.node.value || '').then((data) => {
                     if (data) {
                       toast.success('操作成功');
+                      history.push('/approvals?list=todo');
                     } else {
                       toast.error('操作失败');
                     }
