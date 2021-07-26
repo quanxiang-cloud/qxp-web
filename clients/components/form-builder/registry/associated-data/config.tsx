@@ -55,7 +55,7 @@ function getTableFieldsToOptions(
 }
 
 function AssociatedDataConfig({ initialValue, onChange }: Props): JSX.Element {
-  const { appID } = useContext(StoreContext);
+  const { appID, pageID } = useContext(StoreContext);
   const actions = createAsyncFormActions();
   const { setFieldState } = actions;
 
@@ -63,7 +63,7 @@ function AssociatedDataConfig({ initialValue, onChange }: Props): JSX.Element {
     onChange({ ...initialValue, appID });
     getLinkageTables(appID).then((pages) => {
       setFieldState('associationTableID', (state) => {
-        state.props.enum = pages;
+        state.props.enum = pages.filter(({ value }) => value !== pageID);
       });
     });
 
