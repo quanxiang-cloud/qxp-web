@@ -84,7 +84,7 @@ const schema: ISchema = {
             labelAlign: 'top',
           },
         },
-        displayField: {
+        fieldName: {
           title: '显示字段',
           default: false,
           enum: [],

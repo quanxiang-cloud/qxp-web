@@ -4,7 +4,7 @@ export interface AssociatedDataConfig {
   displayModifier: FormBuilder.DisplayModifier;
   appID: string;
   associationTableID: string;
-  displayField: string;
+  fieldName: string;
   required: boolean;
   placeholder: string;
 }
@@ -16,7 +16,7 @@ export const defaultConfig: AssociatedDataConfig = {
   displayModifier: 'normal',
   associationTableID: '',
   appID: '',
-  displayField: '',
+  fieldName: '',
   required: false,
 };
 
@@ -28,16 +28,12 @@ export function toSchema(config: AssociatedDataConfig): ISchema {
     required: config.required,
     readOnly: config.displayModifier === 'readonly',
     display: config.displayModifier !== 'hidden',
-    items: { type: 'string' },
     'x-component': 'AssociatedData',
     ['x-component-props']: {
       appID: config?.appID,
-      displayField: config.displayField,
+      fieldName: config.fieldName,
       associationTableID: config?.associationTableID,
       placeholder: config.placeholder,
-    },
-    ['x-internal']: {
-      permission: 3,
     },
   };
 }
@@ -55,7 +51,7 @@ export function toConfig(schema: ISchema): AssociatedDataConfig {
     description: schema.description as string,
     displayModifier: displayModifier,
     associationTableID: schema['x-component-props']?.associationTableID,
-    displayField: schema['x-component-props']?.displayField,
+    fieldName: schema['x-component-props']?.fieldName,
     appID: schema['x-component-props']?.appID,
     placeholder: schema['x-component-props']?.placeholder || '选择关联数据',
     required: !!schema.required,

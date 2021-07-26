@@ -24,8 +24,6 @@ type LabelValue = {
   value: string;
 }
 
-type ObjectAny = Record<string, any>;
-
 type FormDataValue =
   | string
   | string[]

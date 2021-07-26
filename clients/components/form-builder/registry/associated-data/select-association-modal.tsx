@@ -9,17 +9,18 @@ type Props = {
   onClose: () => void;
   onSubmit: (value: LabelValue) => void;
   appID: string;
-  displayField: string;
+  fieldName: string;
   tableID: string;
 }
 
 export default function SelectAssociationModal({
-  onClose, appID, tableID, onSubmit, displayField,
+  onClose, appID, tableID, onSubmit, fieldName,
 }: Props): JSX.Element {
   const tableRef: React.MutableRefObject<Ref | undefined> = useRef<Ref>();
-  const handleSelect = (rowData: ObjectAny): void => {
-    const schema = tableRef?.current?.getSchema()?.properties?.[displayField] as ISchema;
-    const value = rowData[displayField];
+  const handleSelect = (rowData: Record<string, any>): void => {
+    // todo Layout
+    const schema = tableRef?.current?.getSchema()?.properties?.[fieldName] as ISchema;
+    const value = rowData[fieldName];
     const label = value ? getBasicValue(schema, value) : '--';
     onSubmit({ label, value: rowData._id });
   };

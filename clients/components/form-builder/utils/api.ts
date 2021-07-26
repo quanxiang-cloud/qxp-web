@@ -39,24 +39,4 @@ export function getLinkageTables(appID: string): Promise<Array<{ label: string; 
   });
 }
 
-export function getTableFieldsToOptions(
-  appID: string,
-  tableID: string,
-  filterArr?: string[],
-): Promise<LabelValue[]> {
-  return getTableSchema(appID, tableID).then((res) => {
-    if (res?.schema.properties) {
-      return Object.entries(res?.schema.properties).reduce((acc, [key, fieldSchema]) => {
-        if ((filterArr && !filterArr.includes(fieldSchema['x-component'] as string)) || key === '_id') {
-          return acc;
-        }
-
-        return acc.concat([{ label: fieldSchema.title as string, value: key }]);
-      }, [] as LabelValue[]);
-    }
-
-    return [];
-  });
-}
-
 export { getTableSchema };

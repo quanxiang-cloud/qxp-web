@@ -1,9 +1,9 @@
-import configForm from './config';
-import { AssociatedDataWrap } from './associated-data';
+import config from './config';
+import AssociatedDataWrap from './associated-data';
 import { defaultConfig, toSchema, toConfig, AssociatedDataConfig } from './convertor';
 
 const AssociatedRecordsField: Omit<FormBuilder.SourceElement<AssociatedDataConfig>, 'displayOrder'> = {
-  configForm,
+  configForm: config,
   toSchema,
   toConfig,
   displayName: '关联数据',

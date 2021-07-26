@@ -3,8 +3,6 @@ import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 import { useUpdateEffect } from 'react-use';
 
 import Icon from '@c/icon';
-import Button from '@c/button';
-import ToolTip from '@c/tooltip';
 
 import SelectAssociationModal from './select-association-modal';
 import './index.scss';
@@ -12,19 +10,19 @@ import './index.scss';
 type Props = {
   appID: string;
   associationTableID: string;
-  displayField: string;
+  fieldName: string;
   value?: LabelValue;
   placeholder?: string;
   readOnly?: boolean;
   onChange?: (value: LabelValue | null) => void;
 }
 
-export default function AssociatedData({
+export function AssociatedData({
   appID,
   associationTableID,
   placeholder,
   readOnly,
-  displayField,
+  fieldName,
   value,
   onChange,
 }: Props): JSX.Element {
@@ -36,38 +34,36 @@ export default function AssociatedData({
 
   useUpdateEffect(() => {
     onChange?.(null);
-  }, [displayField, associationTableID]);
+  }, [fieldName, associationTableID]);
 
   if (readOnly) {
-    return <p className='preview-text'>{value ? value.label : 'N/A'}</p>;
+    return (<p className='preview-text'>{value ? value.label : '—'}</p>);
+  }
+
+  if (!associationTableID) {
+    return (
+      <div className='ant-input flex justify-between items-center h-32'>未设置关联记录表</div>
+    );
   }
 
   return (
-    <div>
-      {associationTableID ? (
-        <div className='items-center inline-flex gap-5'>
+    <div className='w-full h-32'>
+      <div className='ant-input h-full flex justify-between py-2 items-center'>
+        <div className='flex-1'>
           {value ? (
             <span className='associated-span'>
               {value.label}
               <Icon onClick={() => onChange?.(null)} clickable size={16} name='close' />
             </span>
-          ) : null}
-          <Button onClick={() => setVisible(true)}>{placeholder}</Button>
+          ) : <span className='text-gray-300'>{placeholder}</span>}
         </div>
-      ) : (
-        <ToolTip
-          position="top"
-          label="请选择关联数据源表"
-          labelClassName="whitespace-nowrap"
-        >
-          <Button forbidden={true}>{placeholder}</Button>
-        </ToolTip>
-      )}
+        <span className='cursor-pointer text-blue-500' onClick={() => setVisible(true)}>选择关联数据</span>
+      </div>
       {modalVisible && (
         <SelectAssociationModal
           onSubmit={handleConfirm}
           appID={appID}
-          displayField={displayField}
+          fieldName={fieldName}
           tableID={associationTableID}
           onClose={() => setVisible(false)}
         />
@@ -76,12 +72,12 @@ export default function AssociatedData({
   );
 }
 
-export function AssociatedDataWrap(p: ISchemaFieldComponentProps): JSX.Element {
+export default function AssociatedDataWrap(p: ISchemaFieldComponentProps): JSX.Element {
   return (
     <AssociatedData
+      {...p.props['x-component-props']}
       value={p.value}
       onChange={p.mutators.change}
-      {...p.props['x-component-props']}
       readOnly={!!p.props.readOnly}
     />
   );
