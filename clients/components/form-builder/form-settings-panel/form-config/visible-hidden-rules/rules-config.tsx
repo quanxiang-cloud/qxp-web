@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext } from 'react';
 import {
   SchemaForm,
   SchemaMarkupField as Field,
@@ -15,18 +15,17 @@ import { FormPath } from '@formily/shared';
 import DatePicker from '@c/form-builder/registry/date-picker/date-picker';
 import Modal from '@c/modal';
 import Button from '@c/button';
-import Select from '@c/select';
-import ArrayCustom from './rules-array-custom';
 import { INTERNAL_FIELD_NAMES } from '@c/form-builder/store';
 import { StoreContext } from '@c/form-builder/context';
 import { toJS } from 'mobx';
 import { filter, tap, skip } from 'rxjs/operators';
 
+import { JoinOperatorSelect, RulesList } from '@c/form-builder/customized-fields';
 import { OperatorOptions, OPERATORS } from '@c/form-builder/constants';
 import { compareValueValidateMap } from './constants';
 
 const COMPONENTS = {
-  ArrayCustom, Input, AntdSelect, DatePicker, NumberPicker, Switch, RadioGroup: Radio.Group,
+  Input, AntdSelect, DatePicker, NumberPicker, Switch, RadioGroup: Radio.Group, RulesList, JoinOperatorSelect,
 };
 
 const { onFieldValueChange$ } = FormEffectHooks;
@@ -62,7 +61,6 @@ function RulesConfig({ mode, onClose, linkageKey, onSubmit }: Props): JSX.Elemen
   const sourceSchema = toJS(store.schema);
   const actions = createFormActions();
   const { setFieldState, getFieldValue, setFieldValue } = actions;
-  const [tag, setTag] = useState('every');
   const linkages = (
     sourceSchema['x-internal']?.visibleHiddenLinkages || []
   ) as FormBuilder.VisibleHiddenLinkage[];
@@ -159,37 +157,19 @@ function RulesConfig({ mode, onClose, linkageKey, onSubmit }: Props): JSX.Elemen
   return (
     <Modal title={`${mode}字段显隐条件`} onClose={onClose}>
       <div className="p-20">
-        <div className='flex items-center mb-16'>
-        满足以下
-          <Select
-            className='mx-4'
-            value={defaultValue.ruleJoinOperator}
-            onChange={(tag: string) => {
-              setTag(tag);
-              defaultValue.ruleJoinOperator = tag as 'every' | 'some';
-            }}
-            options={[
-              { label: '所有', value: 'every' },
-              { label: '任一', value: 'some' },
-            ]}
-          />
-        条件时
-        </div>
         <SchemaForm
           components={COMPONENTS}
           defaultValue={defaultValue}
           actions={actions}
           effects={formEffect}
-          onSubmit={(values) => {
-            values.ruleJoinOperator = tag;
-            onSubmit(values);
-          }}
+          onSubmit={onSubmit}
         >
+          <Field name="ruleJoinOperator" x-component="JoinOperatorSelect" />
           <Field
             title="条件列表"
             name="rules"
             type="array"
-            x-component="ArrayCustom"
+            x-component="RulesList"
           >
             <Field type="object">
               <Field

@@ -4,7 +4,6 @@ import { UnionColumns } from 'react-table';
 
 import FormStore from '@c/form-builder/store';
 import toast from '@lib/toast';
-import { FILTER_FIELD } from '@c/data-filter/utils';
 import AppPageDataStore from '@c/form-app-data-table/store';
 import { TableConfig } from '@c/form-app-data-table/type';
 import { setFixedParameters } from '@c/form-app-data-table/utils';
@@ -13,6 +12,21 @@ import { getTableSchema, saveTableSchema } from '@lib/http-client';
 import {
   createPageScheme,
 } from './api';
+
+export const SHOW_FIELD = [
+  'DatePicker',
+  'Input',
+  'MultipleSelect',
+  'NumberPicker',
+  'RadioGroup',
+  'textarea',
+  'Select',
+  'CheckboxGroup',
+  'UserPicker',
+  'CascadeSelector',
+  'OrganizationPicker',
+  'AssociatedData',
+];
 
 class FormDesignStore {
   destroyFetchScheme: IReactionDisposer;
@@ -39,7 +53,7 @@ class FormDesignStore {
 
   @computed get fieldList(): PageField[] {
     return Object.entries(toJS(this.fieldsMap)).filter(([key, fieldSchema]) => {
-      if (key === '_id' || !FILTER_FIELD.includes(fieldSchema['x-component'] as string)) {
+      if (key === '_id' || !SHOW_FIELD.includes(fieldSchema['x-component'] as string)) {
         return false;
       }
 
@@ -52,6 +66,7 @@ class FormDesignStore {
         enum: fieldSchema.enum as EnumItem[],
         isSystem: fieldSchema['x-internal']?.isSystem ? true : false,
         cProps: fieldSchema['x-component-props'],
+        xComponent: fieldSchema['x-component'] as string,
       };
     });
   }

@@ -35,6 +35,7 @@ type PageField = {
   id: string;
   label: string;
   type: string,
+  xComponent: string;
   cProps?: ComponentProps;
   isSystem: boolean;
   expand?: boolean;

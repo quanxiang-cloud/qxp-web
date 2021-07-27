@@ -3,6 +3,7 @@ import React, { useState, ChangeEvent, useEffect, createRef, Ref } from 'react';
 import Toggle from '@c/toggle';
 import Icon from '@c/icon';
 import Tooltip from '@c/tooltip';
+import { isCurrentNodeFirstLogicNode } from '@flowEditor/utils/node';
 import type {
   Operation,
   OperationPermission as OperationPermissionType,
@@ -19,6 +20,7 @@ interface Props {
 export default function PermissionList({ label, operationData, type, onChange }: Props): JSX.Element | null {
   const operation = operationData[type];
   const [buttonTextRefs, setButtonTextRefs] = useState<Ref<HTMLInputElement>[]>([]);
+  const isFirstLogicNode = isCurrentNodeFirstLogicNode();
 
   useEffect(() => {
     if (!operation?.length) {
@@ -87,6 +89,9 @@ export default function PermissionList({ label, operationData, type, onChange }:
         {label}
       </div>
       {operation.map((op, index) => {
+        if (op.value === 'STEP_BACK' && isFirstLogicNode) {
+          return null;
+        }
         return (
           <div
             key={op.value || op.name}

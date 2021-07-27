@@ -12,6 +12,7 @@ export type TableHeaderBtn = {
 export type Ref = {
   refresh: () => void;
   getSelected: () => string[];
+  getSchema: () => ISchema | undefined;
 }
 
 export type TableConfig = {

@@ -4,10 +4,7 @@ import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 import { StoreContext } from '@c/form-builder/context';
 
 import Select from '@c/select';
-// todo remove this
-import {
-  getLinkageTables,
-} from '@c/form-builder/form-settings-panel/form-field-config/default-value-linkage-config/get-tables';
+import { getLinkageTables } from '@c/form-builder/utils/api';
 import { getTableSchema } from '@lib/http-client';
 
 type Option = {

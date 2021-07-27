@@ -13,6 +13,7 @@ import UserPicker from './user-picker';
 import OrganizationPicker from './organization-select';
 import FileUpload from './file-upload';
 import ImageUpload from './image-upload';
+import AssociatedData from './associated-data';
 
 const availableElements = [
   Input,
@@ -30,6 +31,7 @@ const availableElements = [
   FileUpload,
   ImageUpload,
   CascadeSelector,
+  AssociatedData,
 ];
 
 export type Elements = { [key: string]: FormBuilder.SourceElement<any> };

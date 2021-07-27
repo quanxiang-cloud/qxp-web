@@ -1,12 +1,13 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { observer } from 'mobx-react';
 import { useQuery } from 'react-query';
-import dayjs from 'dayjs';
 
 import TextHeader from '@c/text-header';
 import ErrorTips from '@c/error-tips';
 import Search from '@c/search';
-import DatePicker from '@c/date-picker';
+import { DatePicker } from 'antd';
+import zhCN from 'antd/lib/date-picker/locale/zh_CN';
+
 import LogTable from './log-table';
 import Container from '../container';
 import { getLogList } from '../api';
@@ -74,8 +75,6 @@ const AuditLogPage = () => {
     userName: inputValue,
     logPageInfo,
     setUserName: setInputValue,
-    operationTimeBegin,
-    operationTimeEnd,
     setOperationTimeBegin,
     setOperationTimeEnd,
     setLogPageInfo,
@@ -90,10 +89,6 @@ const AuditLogPage = () => {
 
   const getUnixTimestamp = (string: string | number | Date) : number => {
     return Math.round(new Date(string).getTime() / 1000);
-  };
-
-  const getFormatDay = (unixTimestamp: number): string => {
-    return dayjs(unixTimestamp * 1000).format('YYYY-MM-DD');
   };
 
   useEffect(() => {
@@ -125,16 +120,16 @@ const AuditLogPage = () => {
             <div className="log-date-picker">
               <span>操作时段：</span>
               <DatePicker
-                selectedDate={getFormatDay(operationTimeBegin)}
-                onChange={(string) => {
-                  setOperationTimeBegin(getUnixTimestamp(string));
+                locale={zhCN}
+                onChange={(date, dateString) => {
+                  setOperationTimeBegin(getUnixTimestamp(dateString));
                 }}
               />
               <span className="mx-10">-</span>
               <DatePicker
-                selectedDate={getFormatDay(operationTimeEnd)}
-                onChange={(string) => {
-                  setOperationTimeEnd(getUnixTimestamp(string));
+                locale={zhCN}
+                onChange={(date, dateString) => {
+                  setOperationTimeEnd(getUnixTimestamp(dateString));
                 }}
               />
             </div>

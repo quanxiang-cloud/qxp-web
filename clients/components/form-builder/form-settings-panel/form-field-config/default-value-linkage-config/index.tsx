@@ -27,8 +27,9 @@ import { JoinOperatorSelect, RulesList } from '@c/form-builder/customized-fields
 import { INTERNAL_FIELD_NAMES } from '@c/form-builder/store';
 import { getCompareOperatorOptions, getSourceElementOperator } from '@c/form-builder/utils/operator';
 import { FieldConfigContext } from '@c/form-builder/form-settings-panel/form-field-config/context';
+import { getLinkageTables } from '@c/form-builder/utils/api';
 
-import { getLinkageTables, fetchLinkedTableFields } from './get-tables';
+import { fetchLinkedTableFields } from './get-tables';
 import SCHEMA from './schema';
 import { convertFormValues, convertLinkage } from './convertor';
 
