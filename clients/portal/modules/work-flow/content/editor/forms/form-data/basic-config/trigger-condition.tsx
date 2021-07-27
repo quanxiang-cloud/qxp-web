@@ -88,7 +88,7 @@ export default function TriggerCondition({
     _onChange({ triggerCondition });
   }
 
-  function onDelete(curCondition: TriggerConditionType): void {
+  function onDelete(curCondition: TriggerConditionExpressionItem): void {
     onChange(updateTriggerConditionField(value, curCondition, null));
   }
 
@@ -113,13 +113,11 @@ export default function TriggerCondition({
             <div key={index}>
               <header className="flex justify-between mb-8">
                 <span>{index === 0 ? '当' : '且'}</span>
-                {index === 0 && (
-                  <span
-                    onClick={() => onDelete(triggerCondition)}
-                  >
-                    <Icon name="delete" className="cursor-pointer" />
-                  </span>
-                )}
+                <span
+                  onClick={() => onDelete(condition)}
+                >
+                  <Icon name="delete" className="cursor-pointer" />
+                </span>
               </header>
               <ConditionItem
                 condition={condition as TriggerConditionValue}
