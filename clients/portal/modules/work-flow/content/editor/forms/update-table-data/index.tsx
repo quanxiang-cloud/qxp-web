@@ -1,6 +1,7 @@
 import React, { useContext, useRef, useState } from 'react';
 import { useQuery } from 'react-query';
 import { every } from 'lodash';
+import { useUpdateEffect } from 'react-use';
 
 import Select from '@c/select';
 import Toggle from '@c/toggle';
@@ -23,6 +24,7 @@ import './styles.scss';
 interface Props {
   defaultValue: TableDataUpdateData;
   onSubmit: (data: BusinessData) => void;
+  onChange: (data: BusinessData) => void;
   onCancel: () => void;
 }
 
@@ -33,7 +35,9 @@ const initialValue = {
   updateRule: [],
 };
 
-export default function UpdateTableData({ defaultValue, onSubmit, onCancel }: Props): JSX.Element {
+export default function UpdateTableData({
+  defaultValue, onSubmit, onCancel, onChange: _onChange,
+}: Props): JSX.Element {
   const { appID } = useContext(FlowContext);
   const { tableID } = useContext(FlowTableContext);
   const [value, setValue] = useState<TableDataUpdateData>(defaultValue || {});
@@ -41,6 +45,10 @@ export default function UpdateTableData({ defaultValue, onSubmit, onCancel }: Pr
   const updateRef = useRef<UpdateRuleRef>(null);
   const [nextTable, setNextTable] = useState<string>('');
   const [switchTableModal, setSwitchTableModal] = useState(false);
+
+  useUpdateEffect(() => {
+    _onChange(value);
+  }, [value]);
 
   const {
     data: allTables = [],

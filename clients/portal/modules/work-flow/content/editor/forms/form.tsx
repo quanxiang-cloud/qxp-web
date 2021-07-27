@@ -22,7 +22,7 @@ interface Props {
   defaultValue: Data;
   onSubmit: (data: BusinessData) => void;
   onCancel: () => void;
-  onChange: () => void;
+  onChange: (data: BusinessData) => void;
 }
 
 function useTableSchema(appID: string, tableID: string): ISchema | null {

@@ -33,6 +33,7 @@ type Option = {
 type Props = {
   defaultValue: ProcessVariableAssignmentData;
   onSubmit: (value: ProcessVariableAssignmentData) => void;
+  onChange: (values: ProcessVariableAssignmentData) => void;
   onCancel: () => void;
 }
 
@@ -158,7 +159,7 @@ function RulesList(props: any): JSX.Element {
 
 RulesList.isFieldComponent = true;
 
-export default function AssignmentConfig({ defaultValue, onSubmit, onCancel }: Props): JSX.Element {
+export default function AssignmentConfig({ defaultValue, onSubmit, onCancel, onChange }: Props): JSX.Element {
   const tableFields = useTableFieldOptions();
   const { flowID } = useContext(FlowContext);
   const { data: variables, isLoading } = useQuery(['FETCH_PROCESS_VARIABLES'], () => {
@@ -205,8 +206,6 @@ export default function AssignmentConfig({ defaultValue, onSubmit, onCancel }: P
   }
 
   function onSave(): void {
-    // todo validate data value
-    // todo call onSubmit when data is valid
     const { values } = getFormState();
     onSubmit(values);
   }
@@ -224,6 +223,7 @@ export default function AssignmentConfig({ defaultValue, onSubmit, onCancel }: P
         actions={ACTIONS}
         components={COMPONENTS}
         defaultValue={defaultValue}
+        onChange={(values) => onChange(values)}
         effects={formEffect}
       >
         <Field
