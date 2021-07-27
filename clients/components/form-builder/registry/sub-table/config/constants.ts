@@ -23,6 +23,7 @@ import organizationpicker from '../../../registry/organization-select';
 import fileupload from '../../../registry/file-upload';
 import imageupload from '../../../registry/image-upload';
 import cascadeselector from '../../../registry/cascade-selector';
+import associatedData from '../../../registry/associated-data';
 import SubTableSchema from './fields/sub-table-schema';
 import SubTableColumns from './fields/sub-table-columns';
 import Subordination from './fields/subordination';
@@ -45,6 +46,7 @@ import * as organizationPickerConverter from '../../../registry/organization-sel
 import * as fileUploadConverter from '../../../registry/file-upload/convertor';
 import * as imageUploadConverter from '../../../registry/image-upload/convertor';
 import * as cascadeSelectorConverter from '../../../registry/cascade-selector/convertor';
+import * as associatedDataConverter from '../../../registry/associated-data/convertor';
 import * as multipleSelectorConvertor
   from './sub-table-schema-config/config-field/multiple-select/convertor';
 
@@ -84,6 +86,7 @@ export const CONFIG_COMPONENTS: Record<
     fileupload,
     imageupload,
     cascadeselector,
+    associatedData,
   };
 
 export const SUPPORTED_COMPONENTS_NAMES = [
@@ -93,7 +96,7 @@ export const SUPPORTED_COMPONENTS_NAMES = [
   'select', 'multipleselect',
   'userpicker', 'organizationpicker',
   'fileupload', 'imageupload',
-  'cascadeselector',
+  'cascadeselector', 'associateddata',
 ];
 
 export const LINKED_TABLE = { appID: '', tableID: '', tableName: '' };
@@ -123,6 +126,7 @@ export const SUB_TABLE_TYPES_SCHEMA_MAP: Record<string, ISchema> = {
   fileupload: fileUploadConverter.toSchema(fileUploadConverter.defaultConfig),
   imageupload: imageUploadConverter.toSchema(imageUploadConverter.defaultConfig),
   cascadeselector: cascadeSelectorConverter.toSchema(cascadeSelectorConverter.defaultConfig),
+  associatedData: associatedDataConverter.toSchema(associatedDataConverter.defaultConfig),
 };
 
 export const SUB_TABLE_TYPES = [
@@ -139,4 +143,5 @@ export const SUB_TABLE_TYPES = [
   { label: '附件', value: 'fileupload' },
   { label: '图片', value: 'imageupload' },
   { label: '级联选择', value: 'cascadeselector' },
+  { label: '关联数据', value: 'associatedData' },
 ];

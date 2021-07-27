@@ -16,6 +16,7 @@ import logger from '@lib/logger';
 import FormDataValueRenderer from '@c/form-data-value-renderer';
 import Icon from '@c/icon';
 import CascadeSelector from '@c/form-builder/registry/cascade-selector/cascade-selector-wrap';
+import AssociatedData from '@c/form-builder/registry/associated-data/associated-data';
 import { isEmpty } from '@lib/utils';
 
 import { getDefaultValue } from './utils';
@@ -49,6 +50,7 @@ const components = {
   fileupload: FileUpload,
   imageupload: ImageUpload,
   cascadeselector: CascadeSelector,
+  associateddata: AssociatedData,
 };
 
 interface Props extends ISchemaFieldComponentProps {
@@ -179,6 +181,8 @@ function SubTable({
       />
     );
   }
+
+  console.log(componentColumns);
 
   return (
     <FieldList name={name} initialValue={initialValue}>
