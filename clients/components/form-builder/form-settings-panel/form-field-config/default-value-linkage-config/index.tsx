@@ -29,6 +29,7 @@ import { getCompareOperatorOptions, getSourceElementOperator } from '@c/form-bui
 import { getLinkageTables, fetchLinkedTableFields } from './get-tables';
 import SCHEMA from './schema';
 import { convertFormValues, convertLinkage } from './convertor';
+import { compareValueValidateMap } from '../../form-config/visible-hidden-rules/constants';
 
 const { onFieldValueChange$ } = FormEffectHooks;
 const COMPONENTS = {
@@ -60,6 +61,11 @@ const DEFAULT_VALUE_LINKAGE: FormBuilder.DefaultValueLinkage = {
 export type LinkedTableFieldOptions = FormBuilder.Option & {
   fieldEnum: Array<FormBuilder.Option>;
   'x-component': string;
+}
+
+type Option = {
+  label: string,
+  value: string,
 }
 
 type Props = {
@@ -109,6 +115,9 @@ function LinkageConfig({ onClose, onSubmit, linkage }: Props): JSX.Element {
     linkedTableFieldsRef.current = fields;
 
     setFieldState('rules.*.fieldName', updateCompareOperatorFieldOnFieldNameChanged);
+    setFieldState('rules.*.fieldName', updateCompareValueFieldEnumAndComponent);
+    setFieldState('rules.*.compareOperator', updateCompareValueFieldOnCompareOperatorChanged);
+    setFieldState('rules.*.compareTo', updateCompareValueFieldEnumAndComponent);
   }
 
   useEffect(() => {
@@ -136,7 +145,7 @@ function LinkageConfig({ onClose, onSubmit, linkage }: Props): JSX.Element {
     onFieldValueChange$('rules.*.fieldName').pipe(
       filter(({ value }) => !!value),
       tap(updateCompareOperatorFieldOnFieldNameChanged),
-    ).subscribe(updateCompareValueFieldOnCompareToChanged);
+    ).subscribe(updateCompareValueFieldEnumAndComponent);
 
     onFieldValueChange$('rules.*.compareOperator').pipe(
       filter(({ value }) => !!value),
@@ -144,7 +153,7 @@ function LinkageConfig({ onClose, onSubmit, linkage }: Props): JSX.Element {
 
     onFieldValueChange$('rules.*.compareTo').pipe(
       filter(({ name, value }) => name && value),
-    ).subscribe(updateCompareValueFieldOnCompareToChanged);
+    ).subscribe(updateCompareValueFieldEnumAndComponent);
   }
 
   function updateCompareOperatorFieldOnFieldNameChanged({ name, value }: IFieldState): void {
@@ -172,53 +181,106 @@ function LinkageConfig({ onClose, onSubmit, linkage }: Props): JSX.Element {
 
   function updateCompareValueFieldOnCompareOperatorChanged({ name, value }: IFieldState): void {
     const isMultiple = ['⊇', '∩', '∈', '∉'].includes(value);
-    updateCompareValueFieldMode(name, isMultiple);
+    const fieldNamePath = FormPath.transform(name, /\d/, ($1) => `rules.${$1}.fieldName`);
+    const compareToPath = FormPath.transform(name, /\d/, ($1) => `rules.${$1}.compareTo`);
+    const currentFieldNameValue = getFieldValue(fieldNamePath);
+    const currentCompareToValue = getFieldValue(compareToPath);
+    let compareValueOptions: Option[] | undefined = [];
+    if (currentCompareToValue === 'fixedValue') {
+      compareValueOptions = linkedTableFieldsRef.current.find(
+        (field) => field.value === currentFieldNameValue,
+      )?.fieldEnum.map(({ label, value })=> ({ label, value }));
+    }
+    if (currentCompareToValue === 'currentFormValue') {
+      compareValueOptions = currentFormFields;
+    }
+
+    updateCompareValueFieldMode(name, isMultiple, compareValueOptions);
   }
 
-  function updateCompareValueFieldOnCompareToChanged({ name, value }: IFieldState): void {
-    setFieldState(
-      FormPath.transform(name, /\d/, ($1) => `rules.${$1}.compareValue`),
-      (state) => {
-        const linkedFieldKey = getFieldValue(FormPath.transform(name, /\d/, ($1) => {
-          return `rules.${$1}.fieldName`;
-        }));
-        const linkTableField = linkedTableFieldsRef.current.find((field) => field.value === linkedFieldKey);
-        const enumerable = !!(linkTableField?.fieldEnum || []).length;
+  function updateCompareValueFieldEnumAndComponent({ name }: IFieldState): void {
+    const fieldNamePath = FormPath.transform(name, /\d/, ($1) => `rules.${$1}.fieldName`);
+    const compareToPath = FormPath.transform(name, /\d/, ($1) => `rules.${$1}.compareTo`);
+    const compareValuePath = FormPath.transform(name, /\d/, ($1) => `rules.${$1}.compareValue`);
+    const currentFieldNameValue = getFieldValue(fieldNamePath);
+    const currentCompareToValue = getFieldValue(compareToPath);
+    const currentCompareValue = getFieldValue(compareValuePath);
+    const linkTableField = linkedTableFieldsRef.current.find(
+      (field) => field.value === currentFieldNameValue,
+    );
+    const linkTableFieldComponent = linkTableField?.['x-component'] as string || '';
+    const enumerable = !!(linkTableField?.fieldEnum || []).length;
+    let shouldReset = false;
+    if (linkTableFieldComponent) {
+      shouldReset = compareValueValidateMap[linkTableFieldComponent](currentCompareValue);
+    }
 
-        if (value === 'fixedValue' && enumerable) {
+    setFieldState(
+      compareValuePath,
+      (state) => {
+        if (currentCompareToValue === 'fixedValue' && enumerable) {
           state.props['x-component'] = 'AntdSelect';
-          state.props.enum = linkTableField?.fieldEnum || [];
-          return;
+          state.props.enum = linkTableField?.fieldEnum;
+          if (linkTableField?.fieldEnum && !!linkTableField?.fieldEnum?.length) {
+            const optionValues = linkTableField?.fieldEnum.map(({ value }) => value);
+            if (Array.isArray(currentCompareValue)) {
+              state.value = currentCompareValue.filter((value: any) => optionValues.includes(value));
+              return;
+            }
+
+            state.value = optionValues.includes(currentCompareValue);
+            return;
+          }
         }
 
-        if (value === 'fixedValue') {
+        if (currentCompareToValue === 'fixedValue') {
           state.props['x-component'] = linkTableField?.['x-component'] ?? 'input';
           state.props.enum = undefined;
+
+          if (shouldReset) {
+            state.value = undefined;
+          }
           return;
         }
 
         state.props['x-component'] = 'AntdSelect';
         state.props.enum = currentFormFields;
+        if (currentFormFields && !!currentFormFields.length) {
+          const optionValues = currentFormFields.map(({ value }) => value);
+          if (Array.isArray(currentCompareValue)) {
+            state.value = currentCompareValue.filter((value: any) => optionValues.includes(value));
+          }
+        }
       },
     );
   }
 
-  function updateCompareValueFieldMode(name: string, isMultiple: boolean): void {
+  function updateCompareValueFieldMode(
+    name: string, isMultiple: boolean, options: Option[] | undefined,
+  ): void {
     const compareValuePath = FormPath.transform(name, /\d/, ($1) => `rules.${$1}.compareValue`);
     setFieldState(compareValuePath, (state) => {
       const compareValue = getFieldValue(compareValuePath);
       state.props['x-component-props'] = isMultiple ? { mode: 'multiple' } : {};
 
-      if (isMultiple && !Array.isArray(compareValue)) {
-        const values = [];
-        values.push(compareValue);
-        state.value = values;
-        return;
-      }
+      if (options && !!options?.length) {
+        if (isMultiple && !Array.isArray(compareValue)) {
+          const shouldResetToValue = options.find(({ value }) => {
+            return value === compareValue;
+          })?.value;
 
-      if (!isMultiple && Array.isArray(compareValue)) {
-        state.value = compareValue[0];
-        return;
+          state.value = [shouldResetToValue];
+          return;
+        }
+
+        if (!isMultiple && Array.isArray(compareValue)) {
+          const shouldResetToValue = options.find(({ value }) => {
+            return compareValue.includes(value);
+          })?.value;
+
+          state.value = shouldResetToValue;
+          return;
+        }
       }
     },
     );
@@ -239,7 +301,7 @@ function LinkageConfig({ onClose, onSubmit, linkage }: Props): JSX.Element {
         effects={formEffect}
         onSubmit={(values) => onSubmit(convertFormValues(values, store.appID, linkageTables))}
       >
-        <FormButtonGroup offset={4}>
+        <FormButtonGroup offset={8}>
           <Button type="submit" modifier="primary">保存</Button>
           <Button type="submit" onClick={onClose}>关闭</Button>
         </FormButtonGroup>

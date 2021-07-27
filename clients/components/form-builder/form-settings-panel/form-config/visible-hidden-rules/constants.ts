@@ -1,12 +1,12 @@
 import moment from 'moment';
 
-type Validator = (currentCompareValue: string, format: string) => boolean;
+type Validator = (currentCompareValue: string, format?: string) => boolean;
 
 export const compareValueValidateMap: Record<string, Validator> = {
   Input: (currentCompareValue: string) => {
     return typeof currentCompareValue !== 'string' ? true : false;
   },
-  DatePicker: (currentCompareValue: string, format: string) => {
+  DatePicker: (currentCompareValue: string, format?: string) => {
     return moment(currentCompareValue).format(format) === 'Invalid date' ? true : false;
   },
   NumberPicker: (currentCompareValue: string) => {
