@@ -5,6 +5,7 @@ import { observer } from 'mobx-react';
 import Icon from '@c/icon';
 import Button from '@c/button';
 import Checkbox from '@c/checkbox';
+import { FILTER_FIELD } from '@c/data-filter/utils';
 
 import './index.scss';
 import store from '../store';
@@ -29,7 +30,7 @@ function infoRender(title: string, desc: string) {
 function FilterSetting() {
   const [filterModalVisible, setFilterModalVisible] = useState(false);
   const [filters, setFilters] = useState<Filters>(store.filters);
-  const { fieldList } = store;
+  const fieldList = store.fieldList.filter(({ xComponent }) => FILTER_FIELD.includes(xComponent));
   const handleCancel = () => {
     setFilterModalVisible(false);
   };
