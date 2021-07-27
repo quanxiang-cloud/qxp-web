@@ -182,8 +182,6 @@ function SubTable({
     );
   }
 
-  console.log(componentColumns);
-
   return (
     <FieldList name={name} initialValue={initialValue}>
       {({ state, mutators, form }) => {
