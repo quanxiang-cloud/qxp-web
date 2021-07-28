@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { omit, isArray } from 'lodash';
 import cs from 'classnames';
 import { useCss } from 'react-use';
@@ -28,8 +28,7 @@ interface Props {
 export type ConditionItemOptions = Options;
 
 export default function ConditionItem({ condition, options, onChange, schemaMap }: Props): JSX.Element {
-  const [value, setValue] = useState(condition.key);
-
+  const value = condition.key;
   const currentOption = options.find((option) => option.value === value);
 
   const currentSchema = schemaMap?.[value || ''] || {};
@@ -48,7 +47,6 @@ export default function ConditionItem({ condition, options, onChange, schemaMap 
   };
 
   function onFieldChange(value: string): void {
-    setValue(value);
     onChange({ key: value });
   }
 
@@ -106,7 +104,7 @@ export default function ConditionItem({ condition, options, onChange, schemaMap 
       >
         <Select
           placeholder="判断符"
-          defaultValue={condition.op}
+          value={condition.op}
           onChange={(v : Operator) => onChange({ op: v })}
           className={cs(
             'h-32 border border-gray-300 corner-2-8-8-8 px-12 text-12 flex items-center flex-1', {
@@ -119,11 +117,12 @@ export default function ConditionItem({ condition, options, onChange, schemaMap 
             {!value ? (
               <input
                 className="input"
-                defaultValue={condition.value}
+                value={condition.value}
                 onChange={(e) => onChange({ value: e.target.value })}
               />
             ) : (
               <FormRender
+                key={condition.key}
                 defaultValue={{ [value]: condition.value }}
                 onFormValueChange={handleChange}
                 schema={schema}
@@ -135,7 +134,7 @@ export default function ConditionItem({ condition, options, onChange, schemaMap 
           <RangePicker
             {...(currentSchema?.['x-component-props'])}
             format={dateFormat}
-            defaultValue={rangePickerDefaultValue}
+            value={rangePickerDefaultValue}
             onChange={(_, value: string[]) => onChange({ value })}
           />
         )}
