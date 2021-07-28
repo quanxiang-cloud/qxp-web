@@ -53,7 +53,7 @@ function labelValueRenderer(value: FormDataValue): string {
     return labels;
   }
 
-  return (value as FormBuilder.Option).label;
+  return (value as FormBuilder.Option)?.label;
 }
 
 export default function FormDataValueRenderer({ value, schema, className }: Props): JSX.Element {
@@ -69,27 +69,27 @@ export default function FormDataValueRenderer({ value, schema, className }: Prop
 }
 
 export function getBasicValue(schema: ISchema, value: FormDataValue): string {
-  switch (schema['x-component']) {
-  case 'Input':
-  case 'NumberPicker':
-  case 'Textarea':
+  switch (schema['x-component']?.toLowerCase()) {
+  case 'input':
+  case 'numberpicker':
+  case 'textarea':
     return value as string;
-  case 'RadioGroup':
-  case 'CheckboxGroup':
-  case 'Select':
-  case 'MultipleSelect':
+  case 'aadiogroup':
+  case 'checkboxgroup':
+  case 'select':
+  case 'multipleselect':
     return enumValueRenderer({ schema, value });
-  case 'DatePicker':
+  case 'datepicker':
     return datetimeValueRenderer({ schema, value });
-  case 'AssociatedData':
-  case 'ImageUpload':
-  case 'CascadeSelector':
-  case 'FileUpload':
-  case 'UserPicker':
-  case 'OrganizationPicker':
+  case 'associateddata':
+  case 'imageupload':
+  case 'cascadeselector':
+  case 'fileupload':
+  case 'userpicker':
+  case 'organizationpicker':
     return labelValueRenderer(value);
   default:
     logger.debug('encounter unsupported formDataValue:', value, 'schema:', schema);
-    return value.toString();
+    return value?.toString();
   }
 }

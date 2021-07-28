@@ -23,7 +23,7 @@ import organizationpicker from '../../../registry/organization-select';
 import fileupload from '../../../registry/file-upload';
 import imageupload from '../../../registry/image-upload';
 import cascadeselector from '../../../registry/cascade-selector';
-import associatedData from '../../../registry/associated-data';
+import associateddata from '../../../registry/associated-data';
 import SubTableSchema from './fields/sub-table-schema';
 import SubTableColumns from './fields/sub-table-columns';
 import Subordination from './fields/subordination';
@@ -86,7 +86,7 @@ export const CONFIG_COMPONENTS: Record<
     fileupload,
     imageupload,
     cascadeselector,
-    associatedData,
+    associateddata,
   };
 
 export const SUPPORTED_COMPONENTS_NAMES = [
@@ -126,7 +126,7 @@ export const SUB_TABLE_TYPES_SCHEMA_MAP: Record<string, ISchema> = {
   fileupload: fileUploadConverter.toSchema(fileUploadConverter.defaultConfig),
   imageupload: imageUploadConverter.toSchema(imageUploadConverter.defaultConfig),
   cascadeselector: cascadeSelectorConverter.toSchema(cascadeSelectorConverter.defaultConfig),
-  associatedData: associatedDataConverter.toSchema(associatedDataConverter.defaultConfig),
+  associateddata: associatedDataConverter.toSchema(associatedDataConverter.defaultConfig),
 };
 
 export const SUB_TABLE_TYPES = [
@@ -143,5 +143,5 @@ export const SUB_TABLE_TYPES = [
   { label: '附件', value: 'fileupload' },
   { label: '图片', value: 'imageupload' },
   { label: '级联选择', value: 'cascadeselector' },
-  { label: '关联数据', value: 'associatedData' },
+  { label: '关联数据', value: 'associateddata' },
 ];

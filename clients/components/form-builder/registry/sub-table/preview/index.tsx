@@ -226,10 +226,14 @@ function SubTable({
                       }, idx) => {
                         const path = `${name}.${index}.${dataIndex}`;
                         return (
-                          <div key={dataIndex} className={cs({
-                            'border-r-1 border-gray-300': idx < componentColumns.length,
-                            'px-56 h-32': readonly,
-                          })}>
+                          <div
+                            key={dataIndex}
+                            style={{ minHeight: 32 }}
+                            className={cs({
+                              'border-r-1 border-gray-300': idx < componentColumns.length,
+                              'px-56': readonly,
+                            })}
+                          >
                             {component && !readonly && (
                               <FormItem
                                 {...props}
@@ -245,7 +249,7 @@ function SubTable({
                               />
                             )}
                             {readonly && (
-                              <FormDataValueRenderer value={value} schema={schema} />
+                              <FormDataValueRenderer value={item?.[dataIndex]} schema={schema} />
                             )}
                           </div>
                         );
