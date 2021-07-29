@@ -79,7 +79,7 @@ export default function FilterConfigModal(
   const [currentFormFields] = useState(getTableFieldOptions(currentTableSchema));
   const [associatedTableFields] = useState(getTableFieldOptions(associatedTableSchema));
 
-  function formModelEffect() {
+  function formModelEffect(): void {
     onFieldInputChange$('rules.*.fieldName').subscribe(({ name, value }) => {
       if (!value || !name) {
         return;
