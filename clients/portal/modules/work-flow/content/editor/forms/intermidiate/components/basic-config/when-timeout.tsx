@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import cs from 'classnames';
+import { useUpdateEffect } from 'react-use';
 
 import RadioGroup from '@c/radio/group';
 import Radio from '@c/radio';
@@ -21,7 +22,7 @@ export default function WhenTimeout({ defaultValue, onChange }: Props): JSX.Elem
   });
   const { elements = [], validating, nodeIdForDrawerForm } = useObservable<StoreValue>(store);
   const previousType = usePrevious(timeoutData.type);
-  useEffect(() => {
+  useUpdateEffect(() => {
     onChange(timeoutData);
     if (
       (previousType === 'autoDealWith' && timeoutData.type !== 'autoDealWith') ||
@@ -75,7 +76,7 @@ export default function WhenTimeout({ defaultValue, onChange }: Props): JSX.Elem
                   })}
             />
             {validating && !timeoutData.value && (
-              <div className="text-red-600 mt-4">请选择自动处理的方式</div>
+              <div className="text-red-600 mt-4 mb-8">请选择自动处理的方式</div>
             )}
           </>
         )}

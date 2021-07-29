@@ -43,6 +43,7 @@ export function imgChange(img: HTMLImageElement, input: HTMLInputElement): void 
     img.alt = '隐藏密码';
     input.type = 'password';
     img.dataset.passwordVisible = 'false';
+    return;
   }
 
   img.src = img.dataset.eyeOpenSrc as string;

@@ -38,6 +38,7 @@ function FormAppDataTableWrap({
     () => ({
       refresh: () => store?.setParams({}),
       getSelected: () => toJS(store?.selected || []),
+      getSchema: () => store?.schema,
     }),
   );
 
