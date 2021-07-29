@@ -35,7 +35,7 @@ interface FileInfo {
   percentage?: number;
 }
 
-const SendMessage = () => {
+const SendMessage = (): JSX.Element => {
   useEffect(() => {
     document.title = '消息管理 - 发送消息';
   }, []);
@@ -59,7 +59,7 @@ interface data {
   id?: string
   sort?: MsgType
   title?: string
-  content?: any
+  content?: string
   recivers?: Array<Record<string, any>>, // fixme: typo
   mes_attachment?: Array<FileInfo> | null
 }
@@ -79,7 +79,7 @@ function ContentWithoutRef({
   footer,
   modifyData,
   handleClose,
-}: ContentProps, ref: React.Ref<unknown> | undefined) {
+}: ContentProps, ref: React.Ref<unknown> | undefined): JSX.Element {
   const [msgType, setMsgType] = useState(modifyData?.sort || MsgType.notify);
   const [title, setTitle] = useState(modifyData?.title || '');
   const [prevData, setPrevData] = useState<Qxp.DraftData | null>(null);
@@ -102,14 +102,13 @@ function ContentWithoutRef({
     status: 'success',
   })));
   const chosenDepOrPerson = useMemo(() => {
-    // @ts-ignore
     return _chosenDepOrPerson.map(({ id, type, name, ownerName, departmentName }) => (
       { id, type, name: name || ownerName || departmentName }
     ));
   }, [_chosenDepOrPerson]);
   const [dom, setDom] = useState<Element | null>(null);
 
-  const deleteFiles = (name: string) => {
+  const deleteFiles = (name: string): void => {
     setFiles((curFiles) => curFiles.filter((file) => file.filename !== name));
   };
 
@@ -117,8 +116,8 @@ function ContentWithoutRef({
     setDom(document.getElementById('rdw-wrapper-8888'));
   }, []);
 
-  const addFile = (file: FileInfo) => setFiles((currentFiles) => ([...currentFiles, file]));
-  const updateFile = (name: string, data: Partial<FileInfo>) => {
+  const addFile = (file: FileInfo): void => setFiles((currentFiles) => ([...currentFiles, file]));
+  const updateFile = (name: string, data: Partial<FileInfo>): void => {
     setFiles((currentFiles) => {
       const curFile = currentFiles.find((f) => f.filename === name);
       Object.assign(curFile, data);
@@ -152,14 +151,12 @@ function ContentWithoutRef({
     },
   });
 
-  const handleChangeEditor = (editorState: EditorState) => {
+  const handleChangeEditor = (editorState: EditorState): void => {
     setEditorCont(editorState);
   };
 
   const getEditorCont = (cont: EditorState, asRaw?: boolean) => {
     const raw = convertToRaw(cont.getCurrentContent());
-    // console.log('raw: ', raw);
-    // console.log('html: ', draftToHtml(raw))
     return asRaw ? raw : draftToHtml(raw);
   };
 

@@ -2,7 +2,7 @@ import { XYPosition, Node } from 'react-flow-renderer';
 
 import { deepClone } from '@lib/utils';
 
-import type { NodeType, Data, Operation } from '../type';
+import type { NodeType, Data, Operation, FillInData } from '../type';
 import { SYSTEM_OPERATOR_PERMISSION, CUSTOM_OPERATOR_PERMISSION } from './constants';
 import store, { getNodeElementById } from '../store';
 
@@ -48,7 +48,7 @@ const approveAndFillInCommonData = {
   events: {},
 };
 
-export function getNodeInitialData(type: NodeType): any {
+export function getNodeInitialData(type: NodeType): FillInData {
   const dataMap = {
     formData: {
       form: { name: '', value: '' },
