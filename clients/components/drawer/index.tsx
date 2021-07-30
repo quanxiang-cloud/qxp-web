@@ -1,4 +1,5 @@
-import React, { useState, isValidElement, useEffect } from 'react';
+import React, { useState, isValidElement } from 'react';
+import { useUpdateEffect } from 'react-use';
 import cs from 'classnames';
 
 import Icon from '@c/icon';
@@ -11,34 +12,48 @@ type Props = {
   children: React.ReactNode;
   distanceTop?: number;
   className?: string;
+  visible: boolean;
+  position?: 'top' | 'right' | 'bottom' | 'left';
 }
 
-// todo fix unmount update error
-function Drawer({ onCancel, title, children, className, distanceTop = 56 }: Props): JSX.Element {
+function Drawer({
+  onCancel,
+  title,
+  children,
+  className,
+  position = 'bottom',
+  visible,
+  distanceTop = 56,
+}: Props): JSX.Element | null {
   const [beganClose, setBeganClose] = useState<boolean>(false);
-  const [visible, setVisible] = useState<boolean>(false);
+  const [contentShow, setContentShow] = useState(visible);
 
   let timeID = -1;
 
-  const handleCancel = (): void => {
-    onCancel();
-    setBeganClose(true);
-    timeID = window.setTimeout(() => {
-      setVisible(true);
-    }, 300);
-  };
-
-  useEffect(() => {
+  useUpdateEffect(() => {
+    if (visible === false) {
+      setBeganClose(true);
+      timeID = window.setTimeout(() => {
+        setContentShow(false);
+      }, 300);
+    } else {
+      setBeganClose(false);
+      setContentShow(true);
+    }
     return () => {
       clearTimeout(timeID);
     };
-  }, []);
+  }, [visible]);
+
+  if (!contentShow) {
+    return null;
+  }
 
   return (
     <div
-      className={cs('drawer-modal-mask', {
+      className={cs(`drawer-modal-mask drawer-position-${position}`, {
         'drawer-began-close': beganClose,
-        'drawer-close': visible,
+        'drawer-close': !contentShow,
       }, className)}
     >
       <div
@@ -49,8 +64,8 @@ function Drawer({ onCancel, title, children, className, distanceTop = 56 }: Prop
           {typeof title === 'string' && (
             <span className='text-h5'>{title}</span>
           )}
-          {isValidElement(title) && title }
-          <Icon onClick={handleCancel} clickable changeable name='close' size={24} />
+          {isValidElement(title) && title}
+          <Icon onClick={onCancel} clickable changeable name='close' size={24} />
         </div>
         <div className='drawer-main-content'>
           {children}
