@@ -7,7 +7,7 @@ export interface DefaultConfig {
   placeholder?: string;
   required: boolean;
   defaultValue: string | string[];
-  optionalRange?: 'all' | 'customize' | 'myDep';
+  optionalRange?: 'all' | 'customize' | 'currentUser';
   multiple?: 'single' | 'multiple';
   rangeList: EmployeeOrDepartmentOfRole[];
   defaultValues: string | string[];

@@ -3,13 +3,17 @@ import {
   Form,
   FormItem,
   IAntdFormItemProps,
+  FormEffectHooks,
+  createAsyncFormActions,
 } from '@formily/antd';
-import { Input, Radio, MegaLayout, Switch } from '@formily/antd-components';
+import { Input, Radio, MegaLayout, Switch, Select } from '@formily/antd-components';
 
 import OrganizationSelect from './organization-select';
 import { EnumOptionalRange, EnumMultiple } from './messy/enum';
 import { DefaultConfig } from './convertor';
 import { StoreContext } from '../../context';
+
+const { onFieldInputChange$ } = FormEffectHooks;
 
 const Field = (props: IAntdFormItemProps): JSX.Element => {
   return <MegaLayout labelAlign="top"><FormItem {...props} /></MegaLayout>;
@@ -21,6 +25,8 @@ interface Props {
 
 const OrganizationPickerConfigForm = ({ initialValue, onChange }: Props): JSX.Element => {
   const { appID } = useContext(StoreContext);
+  const actions = createAsyncFormActions();
+  const { setFieldState } = actions;
 
   useEffect(() => {
     onChange({ ...initialValue, appID });
@@ -36,19 +42,47 @@ const OrganizationPickerConfigForm = ({ initialValue, onChange }: Props): JSX.El
     onChange(nextValue);
   }, [onChange, initialValue]);
 
+  function formEffects(): void {
+    onFieldInputChange$('optionalRange').subscribe(({ value }) => {
+      if (['all', 'customize'].includes(value)) {
+        setFieldState('defaultValues', (state) => {
+          state.value = [];
+        });
+        setFieldState('rangeList', (state) => {
+          state.value = [];
+        });
+      }
+      if (value === 'myDep') {
+        setFieldState('defaultValues', (state) => {
+          const userInfo = window.USER;
+          const { id, departmentName } = userInfo.dep;
+          state.value = [{
+            value: id,
+            label: departmentName,
+          }];
+        });
+      }
+    });
+  }
+
   return (
     <div>
-      <Form defaultValue={initialValue} onChange={handleChange}>
+      <Form
+        defaultValue={initialValue}
+        actions={actions}
+        effects={formEffects}
+        onChange={handleChange}
+      >
         <Field name="title" title="标题" component={Input} />
         <Field name="placeholder" title="占位提示" component={Input} />
         <Field name="description" title="描述内容" component={Input.TextArea} />
         <Field name="required" title="是否必填" component={Switch} />
         <Field name="multiple" title="部门选项" component={Radio.Group} dataSource={EnumMultiple} />
-        <Field name="optionalRange" title="可选范围" component={Radio.Group} dataSource={EnumOptionalRange} />
+        <Field name="optionalRange" title="可选范围" component={Select} dataSource={EnumOptionalRange} />
         <Field
           multiple
           appID={appID}
-          visible={initialValue.optionalRange !== 'all'}
+          visible={initialValue.optionalRange === 'customize'}
           name="rangeList"
           title="可选列表"
           component={OrganizationSelect}
