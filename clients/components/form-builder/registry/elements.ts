@@ -13,6 +13,7 @@ import UserPicker from './user-picker';
 import OrganizationPicker from './organization-select';
 import FileUpload from './file-upload';
 import ImageUpload from './image-upload';
+import Serial from './serial-number';
 import LayoutGrid from './layout-grid';
 import LayoutCard from './layout-card';
 import LayoutTabs from './layout-tabs';
@@ -34,6 +35,7 @@ const availableElements = [
   FileUpload,
   ImageUpload,
   CascadeSelector,
+  Serial,
   LayoutGrid,
   LayoutCard,
   LayoutTabs,

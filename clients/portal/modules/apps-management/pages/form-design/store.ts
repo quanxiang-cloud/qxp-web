@@ -241,7 +241,8 @@ class FormDesignStore {
       this.initScheme = this.formStore?.schema as ISchema;
       this.saveSchemeLoading = false;
       return true;
-    }).catch(() => {
+    }).catch((error) => {
+      toast.error(error.message);
       this.saveSchemeLoading = false;
     });
   }
