@@ -7,6 +7,7 @@ type ValidationFormula = {
 }
 
 type ISchema = import('@formily/react-schema-renderer').ISchema & {
+  isLayoutComponent?: boolean;
   'x-internal'?: {
     version?: string;
     sortable?: boolean;
@@ -18,6 +19,8 @@ type ISchema = import('@formily/react-schema-renderer').ISchema & {
     [key: string]: any;
   };
 };
+
+type IteratISchema = ISchema & { id: string; }
 
 type LabelValue = {
   label: string;
@@ -39,6 +42,8 @@ declare type SchemaProperties<T = ISchema> = {
 };
 
 declare namespace FormBuilder {
+  type LayoutComponent = 'LayoutCard' | 'LayoutGrid' | 'LayoutTabs'
+
   type ElementCategory = 'basic' | 'advance' | 'layout';
 
   type Subordination = 'foreign_table' | 'sub_table';
@@ -59,6 +64,8 @@ declare namespace FormBuilder {
     toConfig: (schema: ISchema) => T;
     configDependencies?: Record<string, React.JSXElementConstructor<any>>;
     compareOperators?: CompareOperator[];
+    isLayoutComponent?: boolean;
+    editComponent?: React.JSXElementConstructor<any>;
   };
 
   type DropPosition = 'upper' | 'below';

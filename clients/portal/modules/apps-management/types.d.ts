@@ -103,4 +103,4 @@ type DeptAndUser = {
   name: string;
 }
 
-type Fields = ISchema & { id: string };
+type Fields = ISchema & { id: string, parentField?: string };

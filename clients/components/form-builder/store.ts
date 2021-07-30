@@ -9,6 +9,10 @@ export type FormItem = {
   componentName: string;
   fieldName: string;
   configValue: any;
+  'x-index'?: number;
+  parentField?: string;
+  tabIndex?: string;
+  isLayoutComponent?: boolean
 };
 
 type Props = {
@@ -64,30 +68,47 @@ function schemaToFields({ properties }: ISchema): [Array<FormItem>, Array<FormIt
     return [INTERNAL_FIELDS, []];
   }
 
-  const sortedKeys = Object.keys(properties).sort((keyA, keyB) => {
-    const keyAIndex = properties[keyA]['x-index'] || 0;
-    const keyBIndex = properties[keyB]['x-index'] || 0;
-    return keyAIndex - keyBIndex;
-  }).filter((key) => !INTERNAL_FIELD_NAMES.includes(key));
+  const _fiels: FormItem[] = [];
 
-  const fields = sortedKeys.map((key) => {
-    const componentName = properties[key]['x-component']?.toLowerCase();
-    if (!componentName || !registry.elements[componentName]) {
-      // todo refactor this message
-      logger.error('fatal! there is no x-component in schema:', properties[key]);
-      return null;
-    }
+  const recursionProperties = (properties: Record<string, any>): void => {
+    Object.keys(properties)
+      .filter((key) => !INTERNAL_FIELD_NAMES.includes(key))
+      .forEach((key) => {
+        const componentName = properties[key]['x-component']?.toLowerCase();
 
-    const configValue = registry.elements[componentName].toConfig(properties[key]);
+        if (!componentName || !registry.elements[componentName]) {
+          // todo refactor this message
+          logger.error('fatal! there is no x-component in schema:', properties[key]);
+          return null;
+        }
 
-    return {
-      fieldName: key,
-      componentName: componentName,
-      configValue: configValue,
-    };
-  }).filter((formItem): formItem is FormItem => !!formItem);
+        const configValue = registry.elements[componentName].toConfig(properties[key]);
+        const isLayoutComponent = properties[key]?.isLayoutComponent;
+        const parentField = properties[key]?.['x-internal']?.parentField;
+        const tabIndex = properties[key]?.['x-internal']?.tabIndex;
+        const xIndex = properties[key]?.['x-index'];
 
-  return [INTERNAL_FIELDS, fields];
+        const field = {
+          fieldName: key,
+          componentName: componentName,
+          configValue: configValue,
+          isLayoutComponent,
+          parentField,
+          tabIndex,
+          'x-index': xIndex,
+        };
+
+        if (properties[key].properties) {
+          recursionProperties(properties[key].properties);
+        }
+
+        _fiels.push(field);
+      });
+  };
+
+  recursionProperties(properties);
+
+  return [INTERNAL_FIELDS, _fiels];
 }
 
 export default class FormBuilderStore {
@@ -96,12 +117,13 @@ export default class FormBuilderStore {
   internalFields: Array<FormItem>;
   @observable fields: Array<FormItem>;
   @observable activeFieldName = '';
-  @observable labelAlign: 'right' | 'top' = 'right';
+  @observable labelAlign: 'right' | 'top' = 'top';
   @observable columnsCount: 1 | 2 = 1;
   @observable isLinkageConfigVisible = false;
   @observable visibleHiddenLinkages: FormBuilder.VisibleHiddenLinkage[] = [];
   @observable hasEdit = false;
   @observable validations: Array<ValidationFormula>;
+  @observable isDragging = false;
 
   constructor({ schema, appID, pageID }: Props) {
     const [internalFields, fields] = schemaToFields(schema);
@@ -139,10 +161,12 @@ export default class FormBuilderStore {
   }
 
   @computed get schema(): ISchema {
-    const properties = this.fields
+    const properties: Record<string, ISchema> = {};
+
+    const schemas = this.fields
       .concat(this.internalFields)
-      .reduce<Record<string, any>>((acc, field, index) => {
-        const { fieldName, componentName, configValue } = field;
+      .map((field) => {
+        const { fieldName, componentName, configValue, parentField, isLayoutComponent, tabIndex } = field;
 
         const { toSchema } = registry.elements[componentName.toLowerCase()] || {};
         if (!toSchema) {
@@ -153,18 +177,40 @@ export default class FormBuilderStore {
         // ensure 'x-internal' exist
         parsedSchema['x-internal'] = parsedSchema['x-internal'] || { defaultValueFrom: 'customized' };
         parsedSchema['x-internal'].isSystem = !!configValue.isSystem;
+        parsedSchema['x-internal'].parentField = parentField;
+        parsedSchema['x-internal'].tabIndex = tabIndex;
 
-        acc[fieldName] = {
-          // convert observable value to pure js object for debugging
+        const node = {
           ...parsedSchema,
-          'x-index': index,
+          id: fieldName,
+          isLayoutComponent,
+          // 'x-index': index,
+          'x-index': field['x-index'],
           'x-mega-props': {
             labelCol: this.labelAlign === 'right' ? 4 : undefined,
           },
         };
 
-        return acc;
-      }, {});
+        return node;
+      });
+
+    schemas.forEach((itm) => {
+      if (itm?.['x-internal']?.parentField) return;
+
+      const { id } = itm;
+      properties[id] = itm;
+    });
+
+    schemas.forEach((itm) => {
+      if (!itm?.['x-internal']?.parentField) return;
+
+      const { id } = itm;
+      const parentProperties = properties[itm?.['x-internal']?.parentField].properties;
+
+      properties[itm?.['x-internal']?.parentField].properties = Object.assign({}, parentProperties, {
+        [id]: itm,
+      });
+    });
 
     return {
       title: '',
@@ -186,26 +232,196 @@ export default class FormBuilderStore {
     return wrapSchemaByMegaLayout(toJS(this.schema));
   }
 
+  @computed get fieldsForLayout(): Record<string, Array<IteratISchema & { tabIndex?: string }>> {
+    const layoutComponent: Record<string, Array<IteratISchema & { tabIndex?: string }>> = {};
+
+    const fields = this.fields
+      .concat(this.internalFields)
+      .filter(({ fieldName }) => !INTERNAL_FIELD_NAMES.includes(fieldName));
+
+    fields.forEach((field) => {
+      if (field.isLayoutComponent) layoutComponent[field.fieldName] = [];
+    });
+
+    fields.forEach((field) => {
+      if (!field.parentField) return;
+
+      const { fieldName, componentName, configValue, tabIndex } = field;
+      const { toSchema } = registry.elements[componentName.toLowerCase()] || {};
+      if (!toSchema) {
+        logger.error(`failed to find component: [${componentName}] in registry`);
+      }
+
+      const parsedSchema = toSchema(toJS(configValue));
+
+      parsedSchema['x-internal'] = parsedSchema['x-internal'] || { defaultValueFrom: 'customized' };
+      parsedSchema['x-internal'].isSystem = !!configValue.isSystem;
+
+      const node = {
+        fieldName,
+        ...parsedSchema,
+        'x-index': field['x-index'],
+        'x-mega-props': {
+          labelCol: this.labelAlign === 'right' ? 4 : undefined,
+        },
+      };
+
+      const schema = {
+        display: parsedSchema.display,
+        tabIndex,
+        id: fieldName,
+        type: 'object',
+        isLayoutComponent: parsedSchema?.isLayoutComponent,
+        componentName: parsedSchema['x-component'],
+        properties: {
+          FIELDs: {
+            type: 'object',
+            'x-component': 'mega-layout',
+            'x-component-props': {
+              labelAlign: this.labelAlign,
+              grid: true,
+              columns: this.columnsCount,
+              autoRow: true,
+            },
+            properties: {
+              [fieldName]: node,
+            },
+          },
+        },
+      };
+
+      layoutComponent[field.parentField].push(schema);
+    });
+
+    Object.keys(layoutComponent).forEach((key) => {
+      layoutComponent[key].sort((a, b) => {
+        return (a?.properties?.FIELDs?.properties?.[a.id]?.['x-index'] || 0) -
+          (b?.properties?.FIELDs?.properties?.[b.id]?.['x-index'] || 0);
+      });
+    });
+
+    return layoutComponent;
+  }
+
+  @computed get fieldsForCanvas(): Array<IteratISchema> {
+    return this.fields
+      .concat(this.internalFields)
+      .filter(({ fieldName }) => !INTERNAL_FIELD_NAMES.includes(fieldName))
+      .filter(({ parentField }) => !parentField)
+      .sort((a, b) => (a['x-index'] || 0) - (b['x-index'] || 0))
+      .map((field) => {
+        const { fieldName, componentName, configValue } = field;
+        const { toSchema } = registry.elements[componentName.toLowerCase()] || {};
+        if (!toSchema) {
+          logger.error(`failed to find component: [${componentName}] in registry`);
+        }
+
+        const parsedSchema = toSchema(toJS(configValue));
+
+        parsedSchema['x-internal'] = parsedSchema['x-internal'] || { defaultValueFrom: 'customized' };
+        parsedSchema['x-internal'].isSystem = !!configValue.isSystem;
+
+        const node = {
+          // convert observable value to pure js object for debugging
+          fieldName,
+          ...parsedSchema,
+          'x-index': field['x-index'],
+          'x-mega-props': {
+            labelCol: this.labelAlign === 'right' ? 4 : undefined,
+          },
+        };
+
+        return {
+          display: parsedSchema.display,
+          id: fieldName,
+          type: 'object',
+          isLayoutComponent: parsedSchema?.isLayoutComponent,
+          componentName: parsedSchema['x-component'],
+          properties: {
+            FIELDs: {
+              type: 'object',
+              'x-component': 'mega-layout',
+              'x-component-props': {
+                labelAlign: this.labelAlign,
+                grid: true,
+                columns: this.columnsCount,
+                autoRow: true,
+              },
+              properties: {
+                [fieldName]: node,
+              },
+            },
+          },
+        };
+      }, {});
+  }
+
+  @computed get hiddenFieldsForCanvas(): Array<IteratISchema> {
+    return this.fields
+      .concat(this.internalFields)
+      .filter(({ fieldName }) => !INTERNAL_FIELD_NAMES.includes(fieldName))
+      .sort((a, b) => (a['x-index'] || 0) - (b['x-index'] || 0))
+      .map((field) => {
+        const { fieldName, componentName, configValue } = field;
+        const { toSchema } = registry.elements[componentName.toLowerCase()] || {};
+        if (!toSchema) {
+          logger.error(`failed to find component: [${componentName}] in registry`);
+        }
+
+        const parsedSchema = toSchema(toJS(configValue));
+
+        parsedSchema['x-internal'] = parsedSchema['x-internal'] || { defaultValueFrom: 'customized' };
+        parsedSchema['x-internal'].isSystem = !!configValue.isSystem;
+
+        const node = {
+          // convert observable value to pure js object for debugging
+          fieldName,
+          ...parsedSchema,
+          'x-index': field['x-index'],
+          'x-mega-props': {
+            labelCol: this.labelAlign === 'right' ? 4 : undefined,
+          },
+          display: true,
+        };
+
+        return {
+          display: parsedSchema.display,
+          id: fieldName,
+          type: 'object',
+          isLayoutComponent: parsedSchema?.isLayoutComponent,
+          componentName: parsedSchema['x-component'],
+          properties: {
+            FIELDs: {
+              type: 'object',
+              'x-component': 'mega-layout',
+              'x-component-props': {
+                labelAlign: this.labelAlign,
+                grid: true,
+                columns: this.columnsCount,
+                autoRow: true,
+              },
+              properties: {
+                [fieldName]: node,
+              },
+            },
+          },
+        };
+      })
+      .filter((field) => !field.display);
+  }
+
   @computed get schemaForCanvas(): ISchema {
     const properties = Object.keys(toJS(this.schema.properties) || {})
       .filter((key) => !INTERNAL_FIELD_NAMES.includes(key))
-      .reduce<Record<string, any>>((acc, key, index) => {
+      .reduce<Record<string, any>>((acc, key) => {
         const childrenInvisible = !this.schema.properties?.[key].display;
-        const wrapperNode: ISchema = {
-          type: 'object',
-          'x-component': 'FormFieldWrapper',
-          'x-index': index,
-          properties: {
-            [key]: {
-              ...this.schema.properties?.[key],
-              display: true,
-              title: childrenInvisible ? '******' : this.schema.properties?.[key].title,
-            },
-          } as { [key: string]: ISchema; },
+        const node = {
+          ...this.schema.properties?.[key],
+          display: true,
+          title: childrenInvisible ? '******' : this.schema.properties?.[key].title,
         };
 
-        const newKey = `wrap-${key}`;
-        acc[newKey] = wrapperNode;
+        acc[key] = node;
 
         return acc;
       }, {});
@@ -228,15 +444,25 @@ export default class FormBuilderStore {
     };
   }
 
-  @action updateLabelAlign(labelAlign: 'right' | 'top') {
+  @action deleteField(fieldName: string): void {
+    this.fields = this.fields.filter((field) => {
+      return field.fieldName !== fieldName && field.parentField !== fieldName;
+    });
+  }
+
+  @action setDragging(isD: boolean): void {
+    this.isDragging = isD;
+  }
+
+  @action updateLabelAlign(labelAlign: 'right' | 'top'): void {
     this.labelAlign = labelAlign;
   }
 
-  @action updateLinkageConfigVisible(visible: boolean) {
+  @action updateLinkageConfigVisible(visible: boolean): void {
     this.isLinkageConfigVisible = visible;
   }
 
-  @action deleteLinkage(key: string) {
+  @action deleteLinkage(key: string): void {
     this.visibleHiddenLinkages = this.visibleHiddenLinkages.filter((linkage) => {
       return linkage.key !== key;
     });
@@ -257,18 +483,24 @@ export default class FormBuilderStore {
   }
 
   @action
-  setActiveFieldKey(fieldName: string) {
+  setActiveFieldKey(fieldName: string): void {
     this.activeFieldName = fieldName;
   }
 
-  @action
-  append(field: FormBuilder.SourceElement<any>, { index, dropPosition }: FormBuilder.DropResult) {
+  @action appendComponentToLayout(
+    layoutcomponentKey: string, fieldName: string, position: number, tabIndex?: string,
+  ): void {
     this.hasEdit = true;
 
+    const field = registry.elements[fieldName.toLocaleLowerCase()];
+
     const newField = {
+      tabIndex,
       ...field,
       configValue: { ...field.defaultConfig, appID: this.appID },
       fieldName: generateRandomFormFieldID(),
+      'x-index': position,
+      parentField: layoutcomponentKey,
     };
 
     if (!this.fields.length) {
@@ -277,21 +509,168 @@ export default class FormBuilderStore {
       return;
     }
 
-    const insertAt = dropPosition === 'below' ? index + 1 : index;
-    this.fields.splice(insertAt, 0, newField);
+    this.fields = this.fields.map((field) => {
+      const currentIndex = field['x-index'] as number;
 
-    // focus new added filed
+      const shouldIncreaseKey = field.parentField == layoutcomponentKey && (currentIndex >= position);
+
+      return Object.assign({}, field, {
+        'x-index': shouldIncreaseKey ? currentIndex + 1 : currentIndex,
+      });
+    }).concat(newField);
+
+    this.setActiveFieldKey(newField.fieldName);
+  }
+
+  @action modComponentPosition(
+    componentKey: string, position: number, layoutcomponentKey?: string, tabIndex?: string,
+  ): void {
+    this.hasEdit = true;
+
+    this.fields = this.fields.map((field) => {
+      if (field.fieldName === componentKey) {
+        const newField = Object.assign(
+          {},
+          this.fields.find((itm) => itm.fieldName === componentKey) as FormItem,
+          {
+            tabIndex,
+            'x-index': position,
+            parentField: layoutcomponentKey,
+          },
+        );
+
+        this.setActiveFieldKey(newField.fieldName);
+
+        return newField;
+      } else {
+        const currentIndex = field['x-index'] as number;
+
+        const shouldIncreaseKey = field.parentField === layoutcomponentKey && (currentIndex >= position);
+
+        return Object.assign({}, field, {
+          'x-index': shouldIncreaseKey ? currentIndex + 1 : currentIndex,
+        });
+      }
+    });
+  }
+
+  @action
+  updateFieldIndex(newIndex: number, oldIndex: number, updateFieldId: string): void {
+    const upper = Math.max(newIndex, oldIndex);
+    const lower = Math.min(newIndex, oldIndex);
+    const increaseValue = newIndex > oldIndex ? -1 : 1;
+
+    this.fields = this.fields.map((field) => {
+      if (field.fieldName === updateFieldId) {
+        return Object.assign({}, field, {
+          'x-index': newIndex,
+        });
+      }
+
+      const currentIndex = field['x-index'] as number;
+
+      const shouldIncrease = !field.parentField && (currentIndex >= lower) && (currentIndex <= upper);
+
+      return Object.assign({}, field, {
+        'x-index': shouldIncrease ? currentIndex + increaseValue : currentIndex,
+      });
+    });
+  }
+
+  @action
+  updateFieldInLayoutIndex(
+    newIndex: number, oldIndex: number, updateFieldId: string, parentFieldId: string,
+  ): void {
+    const upper = Math.max(newIndex, oldIndex);
+    const lower = Math.min(newIndex, oldIndex);
+    const increaseValue = newIndex > oldIndex ? -1 : 1;
+
+    this.fields = this.fields.map((field) => {
+      if (field.fieldName === updateFieldId) {
+        return Object.assign({}, field, {
+          'x-index': newIndex,
+        });
+      }
+
+      const currentIndex = field['x-index'] || 0;
+
+      const shouldIncrease = (field.parentField === parentFieldId) &&
+        (currentIndex >= lower) &&
+        (currentIndex <= upper);
+
+      return Object.assign({}, field, {
+        'x-index': shouldIncrease ? currentIndex + increaseValue : currentIndex,
+      });
+    });
+  }
+
+  @action
+  updateFieldInTabsIndex(
+    newIndex: number, oldIndex: number, updateFieldId: string, parentFieldId: string, tabIndex: string,
+  ): void {
+    const upper = Math.max(newIndex, oldIndex);
+    const lower = Math.min(newIndex, oldIndex);
+    const increaseValue = newIndex > oldIndex ? -1 : 1;
+
+    this.fields = this.fields.map((field) => {
+      if (field.fieldName === updateFieldId) {
+        return Object.assign({}, field, {
+          'x-index': newIndex,
+        });
+      }
+
+      const currentIndex = field['x-index'] || 0;
+      const shouldIncrease = (field.parentField === parentFieldId) &&
+        (field.tabIndex === tabIndex) &&
+        (currentIndex >= lower) && (currentIndex <= upper);
+
+      return Object.assign({}, field, {
+        'x-index': shouldIncrease ? currentIndex + increaseValue : currentIndex,
+      });
+    });
+  }
+
+  @action
+  appendComponent(fieldName: string, position: number): void {
+    this.hasEdit = true;
+
+    const field = registry.elements[fieldName.toLocaleLowerCase()];
+
+    const newField = {
+      ...field,
+      configValue: { ...field.defaultConfig, appID: this.appID },
+      fieldName: generateRandomFormFieldID(),
+      'x-index': position,
+    };
+
+    if (!this.fields.length) {
+      this.fields.push(newField);
+      this.setActiveFieldKey(newField.fieldName);
+      return;
+    }
+
+    // this.fields.splice(position, 0, newField);
+    this.fields = this.fields.map((field) => {
+      const currentIndex = field['x-index'] as number;
+
+      const shouldIncreaseKey = (!field.parentField) && (currentIndex >= position);
+
+      return Object.assign({}, field, {
+        'x-index': shouldIncreaseKey ? currentIndex + 1 : currentIndex,
+      });
+    }).concat(newField);
+
     this.setActiveFieldKey(newField.fieldName);
   }
 
   @action
-  delete(fieldName: string) {
+  delete(fieldName: string): void {
     this.hasEdit = true;
     this.fields = this.fields.filter((field) => field.fieldName !== fieldName);
   }
 
   @action
-  duplicate(fieldName: string) {
+  duplicate(fieldName: string): void {
     let index = -1;
     const field = this.fields.find((field, i) => {
       index = i;
@@ -308,7 +687,7 @@ export default class FormBuilderStore {
   }
 
   @action
-  moveUp(fieldName: string) {
+  moveUp(fieldName: string): void {
     let index = -1;
     const field = this.fields.find((field, i) => {
       index = i;
@@ -325,7 +704,7 @@ export default class FormBuilderStore {
   }
 
   @action
-  moveDown(fieldName: string) {
+  moveDown(fieldName: string): void {
     let index = -1;
     const field = this.fields.find((field, i) => {
       index = i;
@@ -343,7 +722,7 @@ export default class FormBuilderStore {
 
   // updateFieldConfig should be next method name
   @action
-  updateFieldConfig(value: any) {
+  updateFieldConfig(value: any): void {
     this.hasEdit = true;
     this.fields = this.fields.map((f) => {
       if (f.fieldName !== this.activeFieldName) {
@@ -356,9 +735,9 @@ export default class FormBuilderStore {
   }
 
   @action
-  updateFieldConfigValue(targetName: string, value: any) {
-    this.fields = this.fields.map((field)=>{
-      if (field.fieldName == targetName) {
+  updateFieldConfigValue(targetName: string, value: any): void {
+    this.fields = this.fields.map((field) => {
+      if (field.fieldName === targetName) {
         field.configValue = toJS(value);
       }
       return field;
