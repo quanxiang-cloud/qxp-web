@@ -11,23 +11,50 @@
 
 .drawer-container {
   position: absolute;
-  bottom: 0;
-  width: 100%;
-  height: calc(100vh - var(--distanceTop));
   display: flex;
   flex-direction: column;
-  border-top-left-radius: 12px;
-  border-top-right-radius: 12px;
   background-color: #fff;
-  animation: enter .3s ease;
   transition: transform .3s;
+}
+
+@mixin closeAnimation($animation) {
+  .drawer-container {
+    animation: $animation .3s ease forwards;
+  }
+}
+
+.drawer-position-right {
+  .drawer-container {
+    height: 100%;
+    width: 40%;
+    border-top-left-radius: 12px;
+    border-bottom-left-radius: 12px;
+    right: 0;
+    animation: enter-from-right .3s ease;
+  }
+
+  &.drawer-began-close {
+    @include closeAnimation(quitRight);
+  }
+}
+
+.drawer-position-bottom {
+  .drawer-container {
+    height: calc(100vh - var(--distanceTop));
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+    bottom: 0;
+    animation: enterBottom .3s ease;
+    width: 100%;
+  }
+
+  &.drawer-began-close {
+    @include closeAnimation(quitBottom);
+  }
 }
 
 .drawer-began-close {
   animation: fadeOut .3s forwards;
-  .drawer-container {
-    animation: quit .3s ease forwards;
-  }
 }
 
 .drawer-header {

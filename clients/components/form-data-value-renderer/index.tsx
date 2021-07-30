@@ -3,6 +3,7 @@ import moment from 'moment';
 
 import SubTable from '@c/form-builder/registry/sub-table/preview';
 import AssociatedRecords from '@c/form-builder/registry/associated-records/associated-records';
+import AssociatedDataValueRender from '@c/form-builder/registry/associated-data/associated-data-view';
 import logger from '@lib/logger';
 
 type ValueRendererProps = { value: FormDataValue; schema: ISchema; className?: string; };
@@ -63,6 +64,10 @@ export default function FormDataValueRenderer({ value, schema, className }: Prop
 
   if (schema['x-component'] === 'AssociatedRecords') {
     return <AssociatedRecordsValueRender schema={schema} value={value} />;
+  }
+
+  if (schema['x-component'] === 'AssociatedData') {
+    return <AssociatedDataValueRender schema={schema} value={value as LabelValue} />;
   }
 
   return <span className={className}>{getBasicValue(schema, value)}</span>;

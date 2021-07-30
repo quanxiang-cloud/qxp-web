@@ -34,6 +34,7 @@ type FormDataValue =
   | number[]
   | FormBuilder.Option
   | FormBuilder.Option[]
+  | LabelValue
   | Record<string, unknown>
   | Record<string, unknown>[];
 

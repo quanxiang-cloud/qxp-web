@@ -16,7 +16,7 @@
   }
 }
 
-@keyframes enter {
+@keyframes enterBottom {
   from {
     transform: translateY(100%);
   }
@@ -34,7 +34,7 @@
   }
 }
 
-@keyframes quit {
+@keyframes quitBottom {
   from {
     transform: translateY(0);
   }

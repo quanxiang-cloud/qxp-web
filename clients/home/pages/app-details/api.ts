@@ -1,30 +1,8 @@
-import httpClient, { getTableSchema } from '@lib/http-client';
+import httpClient, { getTableSchema, findOneRecord } from '@lib/http-client';
 
 export type SchemaAndRecord = {
   schema: ISchema;
   record?: Record<string, any>;
-}
-
-export function findOneRecord(appID: string, tableID: string, id: string): Promise<Record<string, any>> {
-  if (!id) {
-    return Promise.resolve({});
-  }
-  return httpClient<{ entity?: Record<string, any>; }>(
-    `/api/v1/form/${appID}/home/form/${tableID}`,
-    {
-      method: 'findOne',
-      conditions: {
-        condition: [{ key: '_id', op: 'eq', value: [id] }],
-      },
-    },
-  ).then(({ entity }) => {
-    if (!entity) {
-      // 只查 schema 的时候不要 reject
-      return {};
-    }
-
-    return entity;
-  });
 }
 
 export function getSchemaAndRecord(
