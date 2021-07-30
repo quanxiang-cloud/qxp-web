@@ -63,7 +63,7 @@ const INTERNAL_FIELDS: Array<FormItem> = [
 export const INTERNAL_FIELD_NAMES = INTERNAL_FIELDS.map(({ fieldName }) => fieldName);
 
 // todo support tree structure
-function schemaToFields({ properties }: ISchema): [Array<FormItem>, Array<FormItem>] {
+export function schemaToFields({ properties }: ISchema): [Array<FormItem>, Array<FormItem>] {
   if (!properties) {
     return [INTERNAL_FIELDS, []];
   }
@@ -636,10 +636,12 @@ export default class FormBuilderStore {
 
     const field = registry.elements[fieldName.toLocaleLowerCase()];
 
+    const fieldNames = generateRandomFormFieldID();
+
     const newField = {
       ...field,
-      configValue: { ...field.defaultConfig, appID: this.appID },
-      fieldName: generateRandomFormFieldID(),
+      configValue: { ...field.defaultConfig, appID: this.appID, id: fieldNames },
+      fieldName: fieldNames,
       'x-index': position,
     };
 
