@@ -8,7 +8,7 @@ import FieldSwitch from '@c/field-switch';
 import Icon from '@c/icon';
 import formFieldWrap from '@c/form-field-wrap';
 
-import { CONDITION, getOperators, FILTER_FIELD, getCondition } from './utils';
+import { CONDITION, getOperators, FILTER_FIELD, getCondition, VALUE_FROM } from './utils';
 import './index.scss';
 
 type Props = {
@@ -16,6 +16,7 @@ type Props = {
   initConditions?: Condition[];
   initTag?: string;
   className?: string;
+  associationFields?: Fields[];
 }
 
 type FieldCondition = {
@@ -24,17 +25,14 @@ type FieldCondition = {
   value?: any;
   op?: string;
   filter?: Fields;
-}
-
-export type ConditionItemMap = {
-  arr: Condition[];
-  tag: 'or' | 'and';
+  valueFrom?: 'fixedValue' | 'form';
+  associationFieldsOptions?: LabelValue[];
 }
 
 export type RefProps = {
-  getDataPer: () => Promise<ConditionItemMap | string>;
+  getDataPer: () => Promise<FilterConfig | string>;
   empty: () => void;
-  getDataValues: () => ConditionItemMap
+  getDataValues: () => FilterConfig
 }
 
 function getValue(field: Fields, initValue: Array<string | number | Date | LabelValue> | undefined) {
@@ -56,7 +54,13 @@ function getValue(field: Fields, initValue: Array<string | number | Date | Label
 const FormFieldSwitch = formFieldWrap({ FieldFC: FieldSwitch });
 const FormFieldSelect = formFieldWrap({ FieldFC: Select });
 
-function DataFilter({ fields, className = '', initConditions, initTag = 'and' }: Props, ref: React.Ref<any>) {
+function DataFilter({
+  fields,
+  associationFields = [],
+  className = '',
+  initConditions,
+  initTag = 'and',
+}: Props, ref: React.Ref<any>): JSX.Element {
   const [conditions, setConditions] = useState<FieldCondition[]>([]);
   const [tag, setTag] = useState(initTag);
   const { trigger, control, setValue, getValues, formState: { errors } } = useForm();
@@ -82,7 +86,9 @@ function DataFilter({ fields, className = '', initConditions, initTag = 'and' }:
         conditionsTmp.push({
           id: uniqueId(),
           op: condition.op as string,
+          valueFrom: condition.valueFrom,
           value: getValue(filter, condition.value),
+          associationFieldsOptions: condition.valueFrom === 'form' ? getAssociationOptions(filter) : [],
           key: condition.key as string,
           filter,
         });
@@ -98,14 +104,44 @@ function DataFilter({ fields, className = '', initConditions, initTag = 'and' }:
     label: field.title,
   }));
 
+  const getAssociationOptions = (curField: ISchema | undefined): LabelValue[] => {
+    if (!curField) {
+      return [];
+    }
+
+    return associationFields.reduce((acc, fields) => {
+      if (fields['x-component'] === curField?.['x-component']) {
+        return acc.concat({ label: fields.title as string, value: fields.id });
+      }
+      return acc;
+    }, [] as LabelValue[]);
+  };
+
   const handleFieldChange = (rowID: string, field: string) => {
     setConditions(conditions.map((condition) => {
       if (condition.id === rowID) {
-        return { ...condition, filter: fields.find(({ id }) => id === field) } as FieldCondition;
+        return {
+          ...condition,
+          filter: fields.find(({ id }) => id === field),
+          associationFieldsOptions: [],
+        } as FieldCondition;
       }
       return condition;
     }));
     setValue('operators-' + rowID, '');
+    setValue('condition-' + rowID, '');
+    setValue('valueFrom-' + rowID, 'fixedValue');
+  };
+
+  const handleValueFromChange = (rowID: string, valueFrom: string) => {
+    setConditions(conditions.map((condition) => {
+      if (condition.id === rowID) {
+        return {
+          ...condition, valueFrom, associationFieldsOptions: getAssociationOptions(condition.filter),
+        } as FieldCondition;
+      }
+      return condition;
+    }));
     setValue('condition-' + rowID, '');
   };
 
@@ -119,7 +155,7 @@ function DataFilter({ fields, className = '', initConditions, initTag = 'and' }:
 
   const getDataValues = () => {
     if (conditions.length === 0) {
-      return { arr: [], tag };
+      return { condition: [], tag };
     }
 
     const formData = getValues();
@@ -135,32 +171,33 @@ function DataFilter({ fields, className = '', initConditions, initTag = 'and' }:
           return;
         }
 
-        _conditions.push(
-          getCondition(
+        _conditions.push({
+          ...getCondition(
             condition.filter,
             formData[`condition-${condition.id}`],
             condition.filter.id,
             formData[`operators-${condition.id}`],
           ),
-        );
+          valueFrom: formData[`valueFrom-${condition.id}`] || 'fixedValue',
+        });
       }
     });
 
     return {
-      arr: _conditions,
+      condition: _conditions,
       tag,
     };
   };
 
   const getDataPer = () => {
     if (conditions.length === 0) {
-      return Promise.resolve({ arr: [], tag });
+      return Promise.resolve({ condition: [], tag });
     }
 
     return trigger().then((flag) => {
       if (flag) {
         const formData = getValues();
-        const _conditions = conditions.filter((condition)=>{
+        const _conditions = conditions.filter((condition) => {
           return !!condition.filter;
         }).map((condition) => {
           return getCondition(
@@ -172,7 +209,7 @@ function DataFilter({ fields, className = '', initConditions, initTag = 'and' }:
         });
 
         return {
-          arr: _conditions,
+          condition: _conditions,
           tag,
         };
       }
@@ -234,12 +271,34 @@ function DataFilter({ fields, className = '', initConditions, initTag = 'and' }:
                         error={errors['operators-' + condition.id]}
                         register={field}
                         options={getOperators(condition.filter?.type || '', condition.filter?.enum)}
-
                       />
                     )
                     }
                   />
                 </div>
+                {associationFields.length !== 0 && (
+                  <div>
+                    <Controller
+                      name={'valueFrom-' + condition.id}
+                      control={control}
+                      defaultValue={condition.valueFrom || 'fixedValue'}
+                      rules={{ required: true }}
+                      render={({ field }) => (
+                        <FormFieldSelect
+                          style={{ width: '100px' }}
+                          error={errors['valueFrom-' + condition.id]}
+                          register={field}
+                          options={VALUE_FROM}
+                          onChange={(valueFrom: string) => {
+                            handleValueFromChange(condition.id, valueFrom);
+                            field.onChange(valueFrom);
+                          }}
+                        />
+                      )
+                      }
+                    />
+                  </div>
+                )}
                 <div>
                   <Controller
                     name={'condition-' + condition.id}
@@ -247,12 +306,21 @@ function DataFilter({ fields, className = '', initConditions, initTag = 'and' }:
                     defaultValue={condition.value}
                     rules={{ required: true }}
                     render={({ field }) => (
-                      <FormFieldSwitch
-                        error={errors['condition-' + condition.id]}
-                        register={{ ...field, value: field.value ? field.value : '' }}
-                        field={condition.filter}
-                        style={{ width: '300px' }}
-                      />
+                      condition.valueFrom === 'form' ? (
+                        <FormFieldSelect
+                          style={{ width: '300px' }}
+                          error={errors['condition-' + condition.id]}
+                          register={field}
+                          options={condition.associationFieldsOptions || []}
+                        />
+                      ) : (
+                        <FormFieldSwitch
+                          error={errors['condition-' + condition.id]}
+                          register={{ ...field, value: field.value ? field.value : '' }}
+                          field={condition.filter}
+                          style={{ width: '300px' }}
+                        />
+                      )
                     )
                     }
                   />

@@ -39,12 +39,12 @@ function AdvancedQuery({ fields, search, tag }: Props): JSX.Element {
       return;
     }
 
-    const { arr, tag } = dataFilterRef.current.getDataValues();
-    if (arr.length || conditionCount !== 0) {
-      search({ tag, condition: arr });
+    const { condition, tag } = dataFilterRef.current.getDataValues();
+    if (condition.length || conditionCount !== 0) {
+      search({ tag, condition });
       setVisible(false);
     }
-    setConditionCount(arr.length);
+    setConditionCount(condition.length);
   };
 
   return (
