@@ -16,6 +16,7 @@ import logger from '@lib/logger';
 import FormDataValueRenderer from '@c/form-data-value-renderer';
 import Icon from '@c/icon';
 import CascadeSelector from '@c/form-builder/registry/cascade-selector/cascade-selector-wrap';
+import AssociatedData from '@c/form-builder/registry/associated-data/associated-data';
 import { isEmpty } from '@lib/utils';
 
 import { getDefaultValue } from './utils';
@@ -49,6 +50,7 @@ const components = {
   fileupload: FileUpload,
   imageupload: ImageUpload,
   cascadeselector: CascadeSelector,
+  associateddata: AssociatedData,
 };
 
 interface Props extends ISchemaFieldComponentProps {
@@ -224,10 +226,14 @@ function SubTable({
                       }, idx) => {
                         const path = `${name}.${index}.${dataIndex}`;
                         return (
-                          <div key={dataIndex} className={cs({
-                            'border-r-1 border-gray-300': idx < componentColumns.length,
-                            'px-56 h-32': readonly,
-                          })}>
+                          <div
+                            key={dataIndex}
+                            style={{ minHeight: 32 }}
+                            className={cs({
+                              'border-r-1 border-gray-300': idx < componentColumns.length,
+                              'px-56': readonly,
+                            })}
+                          >
                             {component && !readonly && (
                               <FormItem
                                 {...props}
@@ -243,7 +249,7 @@ function SubTable({
                               />
                             )}
                             {readonly && (
-                              <FormDataValueRenderer value={value} schema={schema} />
+                              <FormDataValueRenderer value={item?.[dataIndex]} schema={schema} />
                             )}
                           </div>
                         );

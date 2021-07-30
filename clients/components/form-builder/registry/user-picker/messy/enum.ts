@@ -5,9 +5,9 @@ export const EnumReadOnly = [
 ];
 
 export const EnumOptionalRange = [
-  { label: '全部部门', value: 'all' },
+  { label: '全部人员', value: 'all' },
   { label: '自定义', value: 'customize' },
-  // { label: '我的部门', value: 'myDep' },
+  { label: '当前用户', value: 'currentUser' },
 ];
 
 export const EnumMultiple = [
@@ -16,6 +16,6 @@ export const EnumMultiple = [
 ];
 
 export interface Option {
-    label: string,
-    value: string
+  label: string,
+  value: string
 }

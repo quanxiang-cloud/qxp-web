@@ -1,5 +1,6 @@
 import React, { useEffect, useContext, useState } from 'react';
 import { useQuery } from 'react-query';
+import { useUpdateEffect } from 'react-use';
 
 import toast from '@lib/toast';
 import Tab from '@c/tab';
@@ -22,7 +23,7 @@ interface Props {
   defaultValue: FormDataData;
   onSubmit: (value: FormDataData) => void;
   onCancel: () => void;
-  onChange: () => void;
+  onChange: (value: FormDataData) => void;
 }
 
 export default function FormDataForm({ defaultValue, onSubmit, onCancel, onChange }: Props): JSX.Element {
@@ -46,8 +47,11 @@ export default function FormDataForm({ defaultValue, onSubmit, onCancel, onChang
     isEmptyTable && emptyTableNotify();
   }, [isError, tableID, isLoading, options.length]);
 
+  useUpdateEffect(() => {
+    onChange(value);
+  }, [value]);
+
   function onWorkFormChange(form: NodeWorkForm): void {
-    onChange();
     setValue((v) => ({ ...v, form }));
   }
 
@@ -81,7 +85,6 @@ export default function FormDataForm({ defaultValue, onSubmit, onCancel, onChang
   }
 
   function handleChange(val: Partial<FormDataData>): void {
-    onChange();
     setValue((v) => ({ ...v, ...val }));
   }
 

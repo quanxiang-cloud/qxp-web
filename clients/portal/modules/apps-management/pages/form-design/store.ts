@@ -131,7 +131,7 @@ class FormDesignStore {
       const column: UnionColumns<any>[] = this.pageTableColumns.map((key) => {
         return {
           id: key,
-          Header: this.fieldsMap[key].title as string,
+          Header: this.fieldsMap[key]?.title || '',
           accessor: key,
         };
       });
@@ -227,6 +227,7 @@ class FormDesignStore {
     }
 
     this.saveSchemeLoading = true;
+    // return saveTableSchema(this.appID, this.pageID, this.formStore?.schema || {}).then(() => {
     return saveTableSchema(this.appID, this.pageID, this.formStore?.schema || {}).then(() => {
       createPageScheme(this.appID, {
         tableID: this.pageID, config: {
@@ -240,7 +241,8 @@ class FormDesignStore {
       this.initScheme = this.formStore?.schema as ISchema;
       this.saveSchemeLoading = false;
       return true;
-    }).catch(() => {
+    }).catch((error) => {
+      toast.error(error.message);
       this.saveSchemeLoading = false;
     });
   }

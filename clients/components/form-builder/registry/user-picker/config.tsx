@@ -4,7 +4,7 @@ import {
   FormItem,
   IAntdFormItemProps,
 } from '@formily/antd';
-import { Input, Radio, MegaLayout, Switch } from '@formily/antd-components';
+import { Input, Radio, MegaLayout, Switch, Select } from '@formily/antd-components';
 
 import Picker from './picker';
 import UserPicker from './user-picker';
@@ -37,10 +37,10 @@ const UserPickerConfigForm = ({ initialValue, onChange }: Props): JSX.Element =>
         <Field name="displayModifier" title="字段属性" component={Radio.Group} dataSource={EnumReadOnly} />
         <Field name="required" title="是否必填" component={Switch} />
         <Field name="multiple" title="人员选项" component={Radio.Group} dataSource={EnumMultiple} />
-        <Field name="optionalRange" title="可选范围" component={Radio.Group} dataSource={EnumOptionalRange} />
+        <Field name="optionalRange" title="可选范围" component={Select} dataSource={EnumOptionalRange} />
         <Field
-          isMy={initialValue.optionalRange === 'myDep'}
-          visible={initialValue.optionalRange !== 'all'}
+          isMy={initialValue.optionalRange === 'currentUser'}
+          visible={initialValue.optionalRange === 'customize'}
           rangeList={initialValue.rangeList}
           value={initialValue.rangeList}
           name="rangeList"

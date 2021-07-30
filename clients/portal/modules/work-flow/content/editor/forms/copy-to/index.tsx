@@ -1,5 +1,7 @@
 import React, { useEffect } from 'react';
 import { useForm, Controller } from 'react-hook-form';
+import { useUpdateEffect, usePrevious } from 'react-use';
+import { isEqual } from 'lodash';
 
 import formFieldWrap from '@c/form-field-wrap';
 import SaveButtonGroup from '@flowEditor/components/_common/action-save-button-group';
@@ -10,12 +12,22 @@ const FieldUserSelect = formFieldWrap({ FieldFC: UserSelect });
 
 type Props = {
   onSubmit: (v: CCData) => void;
+  onChange: (v: CCData) => void;
   onCancel: () => void;
   defaultValue: CCData;
 }
 
-function CopyTo({ defaultValue, onSubmit }: Props): JSX.Element {
-  const { handleSubmit, control, reset, formState: { errors } } = useForm();
+function CopyTo({ defaultValue, onSubmit, onCancel, onChange }: Props): JSX.Element {
+  const { handleSubmit, control, reset, formState: { errors }, watch } = useForm();
+
+  const allFields = watch(['recivers']);
+  const previousFields = usePrevious(allFields);
+  useUpdateEffect(() => {
+    const value = { recivers: allFields[0] };
+    if (!isEqual(allFields, previousFields)) {
+      onChange(value);
+    }
+  }, [allFields]);
 
   useEffect(() => {
     reset(defaultValue);
@@ -23,10 +35,6 @@ function CopyTo({ defaultValue, onSubmit }: Props): JSX.Element {
 
   const handleSave = (data: CCData): void => {
     onSubmit(data);
-  };
-
-  const handleCancel = (): void => {
-    return;
   };
 
   return (
@@ -47,7 +55,7 @@ function CopyTo({ defaultValue, onSubmit }: Props): JSX.Element {
         }
         }
       />
-      <SaveButtonGroup onCancel={handleCancel} onSave={handleSubmit(handleSave)} />
+      <SaveButtonGroup onCancel={onCancel} onSave={handleSubmit(handleSave)} />
     </div>
   );
 }

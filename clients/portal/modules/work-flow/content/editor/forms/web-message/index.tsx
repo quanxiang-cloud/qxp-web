@@ -5,6 +5,8 @@ import { Radio } from 'antd';
 import { EditorState, convertToRaw, ContentState } from 'draft-js';
 import draftToHtml from 'draftjs-to-html';
 import htmlToDraft from 'html-to-draftjs';
+import { isEqual } from 'lodash';
+import { usePrevious, useUpdateEffect } from 'react-use';
 
 import formFieldWrap from '@c/form-field-wrap';
 import SaveButtonGroup from '@flowEditor/components/_common/action-save-button-group';
@@ -16,6 +18,7 @@ import './index.css';
 
 type Props = {
   onSubmit: (v: WebMessageData) => void;
+  onChange: (v: WebMessageData) => void;
   onCancel: () => void;
   defaultValue: WebMessageData;
 }
@@ -24,15 +27,29 @@ const Input = formFieldWrap({ field: <input className='input' /> });
 const FieldUserSelect = formFieldWrap({ FieldFC: UserSelect });
 const FieldRadio = formFieldWrap({ FieldFC: Radio.Group });
 
-function WebMessage({ defaultValue, onSubmit, onCancel }: Props): JSX.Element {
-  const { register, handleSubmit, control, reset, formState: { errors } } = useForm();
+function WebMessage({ defaultValue, onSubmit, onCancel, onChange }: Props): JSX.Element {
+  const { register, handleSubmit, control, reset, formState: { errors }, watch } = useForm();
   const [editorCont, setEditorCont] = useState(defaultValue?.content ?
     EditorState.createWithContent(
       ContentState.createFromBlockArray(
         htmlToDraft(defaultValue.content).contentBlocks),
     ) : EditorState.createEmpty());
 
-  const getEditorCont = (cont: EditorState, asRaw?: boolean) => {
+  const allFields = watch(['content', 'recivers', 'sort', 'title']);
+  const previousFields = usePrevious(allFields);
+  useUpdateEffect(() => {
+    const value = {
+      content: allFields[0],
+      recivers: allFields[1],
+      sort: allFields[2],
+      title: allFields[3],
+    };
+    if (!isEqual(allFields, previousFields)) {
+      onChange(value);
+    }
+  }, [allFields]);
+
+  const getEditorCont = (cont: EditorState, asRaw?: boolean): unknown => {
     const raw = convertToRaw(cont.getCurrentContent());
     return asRaw ? raw : draftToHtml(raw);
   };

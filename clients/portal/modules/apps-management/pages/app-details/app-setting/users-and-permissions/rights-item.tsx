@@ -106,11 +106,9 @@ function RightsItem({ rights, actions }: Props) {
           </div>
         </div>
       ) : <div className='p-20'>该权限组无有效权限</div>}
-      {modalType === 'setting' && (
-        <Drawer title='编辑权限组' onCancel={() => setModalType('')}>
-          <RightSetting rights={rights} />
-        </Drawer>
-      )}
+      <Drawer visible={modalType === 'setting'} title='编辑权限组' onCancel={() => setModalType('')}>
+        <RightSetting rights={rights} />
+      </Drawer>
       {modalType === 'addUser' && (
         <EmployeeOrDepartmentPickerModal
           title='添加部门与员工'

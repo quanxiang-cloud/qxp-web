@@ -3,6 +3,9 @@ import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 import { useUpdateEffect } from 'react-use';
 
 import Icon from '@c/icon';
+import {
+  useGetLinkageFilterConfig,
+} from '@c/form-builder/form-settings-panel/form-field-config/filter-config/utils';
 
 import SelectAssociationModal from './select-association-modal';
 import './index.scss';
@@ -14,6 +17,8 @@ type Props = {
   value?: LabelValue;
   placeholder?: string;
   readOnly?: boolean;
+  filterConfig?: FilterConfig;
+  getFieldValue: (path: string) => any;
   onChange?: (value: LabelValue | null) => void;
 }
 
@@ -21,12 +26,15 @@ export function AssociatedData({
   appID,
   associationTableID,
   placeholder,
+  filterConfig,
   readOnly,
   fieldName,
   value,
+  getFieldValue,
   onChange,
 }: Props): JSX.Element {
   const [modalVisible, setVisible] = useState(false);
+  const filterConfigProps = useGetLinkageFilterConfig(filterConfig, getFieldValue);
   const handleConfirm = (value: LabelValue): void => {
     onChange?.(value);
     setVisible(false);
@@ -63,6 +71,7 @@ export function AssociatedData({
         <SelectAssociationModal
           onSubmit={handleConfirm}
           appID={appID}
+          filterConfig={filterConfigProps}
           fieldName={fieldName}
           tableID={associationTableID}
           onClose={() => setVisible(false)}
@@ -79,6 +88,7 @@ export default function AssociatedDataWrap(p: ISchemaFieldComponentProps): JSX.E
       value={p.value}
       onChange={p.mutators.change}
       readOnly={!!p.props.readOnly}
+      getFieldValue={p.form.getFieldValue}
     />
   );
 }

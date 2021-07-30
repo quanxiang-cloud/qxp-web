@@ -11,10 +11,11 @@ type Props = {
   appID: string;
   fieldName: string;
   tableID: string;
+  filterConfig?: FilterConfig;
 }
 
 export default function SelectAssociationModal({
-  onClose, appID, tableID, onSubmit, fieldName,
+  onClose, appID, tableID, onSubmit, fieldName, filterConfig,
 }: Props): JSX.Element {
   const tableRef: React.MutableRefObject<Ref | undefined> = useRef<Ref>();
   const handleSelect = (rowData: Record<string, any>): void => {
@@ -42,15 +43,17 @@ export default function SelectAssociationModal({
       title="选择关联数据"
       onClose={onClose}
     >
-      <FormDataTable
-        showCheckbox={false}
-        className="p-20"
-        allowRequestData
-        customColumns={customColumns}
-        ref={tableRef as React.Ref<Ref>}
-        pageID={tableID}
-        appID={appID}
-      />
+      <div className="p-20" style={{ minHeight: '200px' }}>
+        <FormDataTable
+          allowRequestData
+          showCheckbox={false}
+          filterConfig={filterConfig}
+          customColumns={customColumns}
+          ref={tableRef as React.Ref<Ref>}
+          pageID={tableID}
+          appID={appID}
+        />
+      </div>
     </Modal>
   );
 }
