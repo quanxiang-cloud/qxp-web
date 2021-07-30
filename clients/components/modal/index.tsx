@@ -80,8 +80,12 @@ export default function Modal({
     }
   };
 
+  const stopPropagation = (e: React.MouseEvent) => {
+    e.stopPropagation();
+  };
+
   return createPortal(
-    <Wrap className={className}>
+    <Wrap onClick={stopPropagation} className={className}>
       <GlobalStyle />
       <Mask />
       <InnerWrap width={width} height={height} fullscreen={fullscreen}>

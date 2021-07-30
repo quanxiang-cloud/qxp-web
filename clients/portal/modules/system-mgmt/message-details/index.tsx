@@ -108,7 +108,8 @@ function ContentWithoutRef() {
           </div>
         </div>
       </div>
-    </div>);
+    </div>
+  );
 }
 const Header = styled.div`
   display: flex;

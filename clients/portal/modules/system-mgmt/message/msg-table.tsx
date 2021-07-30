@@ -289,17 +289,19 @@ const MsgTable = ({ refresh }: Props): JSX.Element => {
         const handleClick = (): void=> {
           history.push(`/system/message/details/${id}`);
         };
-        return (<PreviewModal handleClick={handleClick} title={(<div>
-          {(sort !== MsgType.all) && (<span
-            className={
-              cs(
-                styles.msg_type_tip,
-                {
-                  [styles.msg_type_tip_notice]: sort === MsgType.notify,
-                })
-            }>{(EnumMessage.find((itm) => itm.value === sort) || {}).label}</span>)}
-          <span className={cs('message_name', styles.msg_title)} title={title}>{title}</span>
-        </div>)} />);
+        return (
+          <PreviewModal handleClick={handleClick} title={(<div>
+            {(sort != MsgType.all) && (<span
+              className={
+                cs(
+                  styles.msg_type_tip,
+                  {
+                    [styles.msg_type_tip_notice]: sort == MsgType.notify,
+                  })
+              }>{(EnumMessage.find((itm) => itm.value == sort) || {}).label}</span>)}
+            <span className={cs('message_name', styles.msg_title)} title={title}>{title}</span>
+          </div>)} />
+        );
       },
     },
     {
