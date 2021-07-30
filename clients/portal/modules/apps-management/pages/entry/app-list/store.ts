@@ -21,7 +21,11 @@ class AppListStore {
   @observable params: Params = { useStatus: 0, appName: '' };
   @observable isListLoading = false;
 
-  @computed get countMaps() {
+  @computed get countMaps(): {
+    all: number;
+    published:number;
+    unPublished:number;
+    } {
     let published = 0;
     let unPublished = 0;
     this.allAppList.forEach((app: AppInfo) => {
@@ -40,7 +44,7 @@ class AppListStore {
   }
 
   @action
-  delApp = (_id: string) => {
+  delApp = (_id: string): Promise<void> => {
     return delApp(_id).then(() => {
       this.appList = this.appList.filter(({ id }) => id !== _id);
       this.allAppList = this.allAppList.filter(({ id }) => id !== _id);
@@ -49,7 +53,7 @@ class AppListStore {
   }
 
   @action
-  updateAppStatus = (id: string, useStatus: number) => {
+  updateAppStatus = (id: string, useStatus: number): Promise<void | AppInfo> => {
     return updateAppStatus({ id, useStatus }).then(() => {
       this.appList = this.appList.map((appInfo: AppInfo) => {
         if (appInfo.id === id) {
@@ -68,7 +72,7 @@ class AppListStore {
   }
 
   @action
-  fetchAppList = (params: Params) => {
+  fetchAppList = (params: Params): Promise<void> => {
     this.isListLoading = true;
     return fetchAppList(params).then((res: any) => {
       this.appList = res?.data || [];
@@ -82,12 +86,12 @@ class AppListStore {
   }
 
   @action
-  changeParams = (newParams: Params) => {
+  changeParams = (newParams: Params): void => {
     this.params = { ...this.params, ...newParams };
   }
 
   @action
-  createdApp = (appInfo: AppInfo) => {
+  createdApp = (appInfo: AppInfo): Promise<string> => {
     return createdApp(appInfo).then((res: any) => {
       const newApp = { ...appInfo, ...res };
       this.appList = [newApp, ...this.appList];
@@ -103,7 +107,7 @@ class AppListStore {
   }
 
   @action
-  updateApp = (appInfo: AppInfo) => {
+  updateApp = (appInfo: AppInfo): void => {
     this.allAppList = this.allAppList.map((appItem: AppInfo) => {
       if (appItem.id === appInfo.id) {
         return appInfo;
