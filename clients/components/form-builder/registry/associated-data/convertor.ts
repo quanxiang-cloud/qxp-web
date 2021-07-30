@@ -7,6 +7,7 @@ export interface AssociatedDataConfig {
   fieldName: string;
   required: boolean;
   placeholder: string;
+  filterConfig?: FilterConfig;
 }
 
 export const defaultConfig: AssociatedDataConfig = {
@@ -34,6 +35,7 @@ export function toSchema(config: AssociatedDataConfig): ISchema {
       fieldName: config.fieldName,
       associationTableID: config?.associationTableID,
       placeholder: config.placeholder,
+      filterConfig: config.filterConfig || null,
     },
   };
 }
@@ -55,5 +57,6 @@ export function toConfig(schema: ISchema): AssociatedDataConfig {
     appID: schema['x-component-props']?.appID,
     placeholder: schema['x-component-props']?.placeholder || '选择关联数据',
     required: !!schema.required,
+    filterConfig: schema['x-component-props']?.filterConfig || null,
   };
 }

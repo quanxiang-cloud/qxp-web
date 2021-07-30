@@ -1,9 +1,8 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 import { useFormEffects, FormEffectHooks } from '@formily/antd';
 
 import Toggle from '@c/toggle';
-import { FieldConfigContext } from '@c/form-builder/form-settings-panel/form-field-config/context';
 
 const { onFieldValueChange$ } = FormEffectHooks;
 
@@ -103,10 +102,9 @@ function ColumnsPicker({ columns, selected, onChange }: ColumnsPickerProps): JSX
 }
 
 function AssociatedTableColumnsPicker(props: ISchemaFieldComponentProps): JSX.Element {
-  const { actions } = useContext(FieldConfigContext);
   const [linkedTableFields, setTableFields] = useState<Array<{ fieldKey: string; fieldName: string; }>>([]);
   useEffect(() => {
-    const { associatedTable } = actions.getFieldValue('linkedTable') || {};
+    const { associatedTable } = props.form.getFieldValue('linkedTable') || {};
     if (associatedTable) {
       setTableFields(getTableFields(associatedTable));
     }

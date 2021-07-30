@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
-import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
+import { Column } from 'react-table';
+import { get } from 'lodash';
+import { useQuery } from 'react-query';
 import _, { every, isObject, map, pipe, filter } from 'lodash/fp';
 
 import Table from '@c/table';
@@ -7,9 +9,10 @@ import Button from '@c/button';
 import Icon from '@c/icon';
 import FormDataValueRenderer from '@c/form-data-value-renderer';
 import { isEmpty } from '@lib/utils';
-import { Column } from 'react-table';
-import { get } from 'lodash';
-import { useQuery } from 'react-query';
+import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
+import {
+  useGetLinkageFilterConfig,
+} from '@c/form-builder/form-settings-panel/form-field-config/filter-config/utils';
 import { findTableRecords } from './api';
 import SelectRecordsModal from './select-records-modal';
 
@@ -21,7 +24,9 @@ type Props = {
   selected: string[];
   associatedTable: ISchema;
   onChange: (selectedKeys: string[]) => void;
+  getFieldValue: (path: string) => any;
   readOnly: boolean;
+  filterConfig?: FilterConfig;
 }
 
 function computeTableColumns(schema: ISchema, columns: string[]): Column<Record<string, any>>[] {
@@ -44,9 +49,19 @@ function computeTableColumns(schema: ISchema, columns: string[]): Column<Record<
 }
 
 function AssociatedRecords({
-  associatedTable, columns, selected, appID, tableID, multiple, onChange, readOnly,
+  associatedTable,
+  columns,
+  selected,
+  appID,
+  tableID,
+  multiple,
+  onChange,
+  readOnly,
+  filterConfig,
+  getFieldValue,
 }: Props): JSX.Element {
   const [showSelectModal, setShowSelectModal] = useState(false);
+  const filterConfigProps = useGetLinkageFilterConfig(filterConfig, getFieldValue);
   const { isLoading, data } = useQuery(['FIND_TABLE_RECORDS', selected], () => {
     return findTableRecords(appID, tableID, selected);
   });
@@ -95,6 +110,7 @@ function AssociatedRecords({
               onClose={() => setShowSelectModal(false)}
               appID={appID}
               tableID={tableID}
+              filterConfig={filterConfigProps}
               multiple={multiple}
               associatedTable={associatedTable}
               columns={columns}
@@ -141,6 +157,8 @@ function AssociatedRecordsFields(props: Partial<ISchemaFieldComponentProps>): JS
       tableID={componentProps.tableID}
       columns={componentProps.columns || []}
       multiple={componentProps.multiple || false}
+      getFieldValue={props.form?.getFieldValue as (path: string) => any}
+      filterConfig={componentProps.filterConfig}
       selected={selected}
       associatedTable={componentProps.associatedTable}
       onChange={(selectedKeys) => props?.mutators?.change(selectedKeys)}
