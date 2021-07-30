@@ -29,13 +29,13 @@ export default function ProcessBranchSourceNodeComponent(props: Props): JSX.Elem
     const targetElement = elements.find((el) => el.id === branchTargetElementID);
     sourceElement?.data?.nodeData.childrenID?.push(newBranchNodeID);
     targetElement?.data?.nodeData.parentID?.push(newBranchNodeID);
-    const newBranchEdge = edgeBuilder(id, newBranchNodeID, 'step', '');
-    const newProcessTargetEdge = edgeBuilder(newBranchNodeID, branchTargetElementID);
+    const newBranchEdges = edgeBuilder(id, newBranchNodeID, 'step', '');
+    const newProcessTargetEdges = edgeBuilder(newBranchNodeID, branchTargetElementID);
     const newElements = [
       ...elements,
       newBranchNode,
-      newBranchEdge,
-      newProcessTargetEdge,
+      ...newBranchEdges,
+      ...newProcessTargetEdges,
     ];
     updateStore((s) => ({ ...s, elements: newElements }));
   }

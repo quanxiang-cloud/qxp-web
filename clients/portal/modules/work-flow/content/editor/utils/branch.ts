@@ -52,7 +52,7 @@ export function buildBranchNodes(
       parentBranchTargetElementID: targetElementID,
     },
   );
-  const branchSourceElementEdge = edgeBuilder(source, branchSourceElementID);
+  const branchSourceElementEdges = edgeBuilder(source, branchSourceElementID);
   const branchLeftFilterElement = nodeBuilder(
     branchLeftFilterElementID, 'processBranch', '筛选条件设置', {
       position: { x: position.x - (width / 2) - 72, y: position.y - (height / 2) },
@@ -64,7 +64,7 @@ export function buildBranchNodes(
       branchID,
     },
   );
-  const branchLeftFilterElementEdge = edgeBuilder(
+  const branchLeftFilterElementEdges = edgeBuilder(
     branchSourceElementID, branchLeftFilterElementID, 'step', '',
   );
   const branchRightFilterElement = nodeBuilder(
@@ -78,7 +78,7 @@ export function buildBranchNodes(
       branchID,
     },
   );
-  const branchRightFilterElementEdge = edgeBuilder(
+  const branchRightFilterElementEdges = edgeBuilder(
     branchSourceElementID, branchRightFilterElementID, 'step', '',
   );
   const branchTargetElement = nodeBuilder(
@@ -92,13 +92,13 @@ export function buildBranchNodes(
       branchID,
     },
   );
-  const branchTargetElementLeftEdge = edgeBuilder(
+  const branchTargetElementLeftEdges = edgeBuilder(
     branchLeftFilterElementID, branchTargetElementID,
   );
-  const branchTargetElementRightEdge = edgeBuilder(
+  const branchTargetElementRightEdges = edgeBuilder(
     branchRightFilterElementID, branchTargetElementID,
   );
-  const branchEndEdge = edgeBuilder(branchTargetElementID, target);
+  const branchEndEdges = edgeBuilder(branchTargetElementID, target);
 
   return {
     elements: [
@@ -106,12 +106,12 @@ export function buildBranchNodes(
       branchLeftFilterElement,
       branchRightFilterElement,
       branchTargetElement,
-      branchEndEdge,
-      branchSourceElementEdge,
-      branchLeftFilterElementEdge,
-      branchRightFilterElementEdge,
-      branchTargetElementLeftEdge,
-      branchTargetElementRightEdge,
+      ...branchEndEdges,
+      ...branchSourceElementEdges,
+      ...branchLeftFilterElementEdges,
+      ...branchRightFilterElementEdges,
+      ...branchTargetElementLeftEdges,
+      ...branchTargetElementRightEdges,
     ],
     sourceID: branchSourceElementID,
     targetID: branchTargetElementID,
