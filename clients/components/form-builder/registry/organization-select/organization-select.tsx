@@ -10,7 +10,7 @@ import './index.scss';
 type Props = TreeSelectProps<any> & {
   appID: string;
   onChange: (value: LabelValue[]) => void;
-  optionalRange: 'all' | 'customize';
+  optionalRange: 'all' | 'customize' | 'myDep';
   rangeList?: LabelValue[];
   value?: LabelValue[];
 }
@@ -83,6 +83,19 @@ const OrganizationPicker = ({
 
         return false;
       });
+    }
+
+    if (optionalRange === 'myDep') {
+      const userInfo = window.USER;
+      const { id, departmentName } = userInfo.dep;
+      const myDep = {
+        id,
+        fullPath: id,
+        pId: 0,
+        title: departmentName,
+        value: id,
+      };
+      return [myDep] || [];
     }
 
     return treeDataTmp;
