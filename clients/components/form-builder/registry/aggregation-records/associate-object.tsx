@@ -82,7 +82,7 @@ function AssociateObject(props: ISchemaFieldComponentProps): JSX.Element {
         appID,
         tableID: options?.tableID || '',
         sourceFieldId: fieldName,
-        fields: options?.fields || '',
+        fields: options?.fields || [],
       });
     });
   };
