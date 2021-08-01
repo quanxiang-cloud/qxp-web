@@ -61,45 +61,11 @@ const schema: ISchema = {
           },
           'x-index': 2,
         },
-        // associatedObjects: {
-        //   type: 'string',
-        //   title: '关联对象',
-        //   default: '',
-        //   enum: [
-        //     {
-        //       label: 'COUNT(计数)',
-        //       value: 'count',
-        //     },
-        //     {
-        //       label: 'SUM(求总和)',
-        //       value: 'sum',
-        //     },
-        //     {
-        //       label: 'MAX(最大值)',
-        //       value: 'max',
-        //     },
-        //     {
-        //       label: 'MIN(最小值)',
-        //       value: 'min',
-        //     },
-        //     {
-        //       label: 'AVG(平均值)',
-        //       value: 'avg',
-        //     },
-        //   ],
-        //   'x-rules': {
-        //     required: true,
-        //     message: '请选择关联对象',
-        //   },
-        //   'x-component': 'select',
-        //   'x-mega-props': {
-        //     labelAlign: 'top',
-        //   },
-        //   'x-index': 3,
-        // },
-        linkedTable: {
+        associateObject: {
           title: '关联对象',
-          type: 'object',
+          type: 'string',
+          default: '',
+          required: true,
           'x-mega-props': {
             labelAlign: 'top',
           },
@@ -107,7 +73,7 @@ const schema: ISchema = {
             required: true,
             message: '请选择关联对象',
           },
-          'x-component': 'LinkedTable',
+          'x-component': 'AssociateObject',
           'x-index': 3,
         },
         aggType: {
@@ -116,23 +82,23 @@ const schema: ISchema = {
           default: '',
           enum: [
             {
-              label: 'COUNT(计数)',
+              label: 'COUNT (计数)',
               value: 'count',
             },
             {
-              label: 'SUM(求总和)',
+              label: 'SUM (求总和)',
               value: 'sum',
             },
             {
-              label: 'MAX(最大值)',
+              label: 'MAX (最大值)',
               value: 'max',
             },
             {
-              label: 'MIN(最小值)',
+              label: 'MIN (最小值)',
               value: 'min',
             },
             {
-              label: 'AVG(平均值)',
+              label: 'AVG (平均值)',
               value: 'avg',
             },
           ],
@@ -140,37 +106,50 @@ const schema: ISchema = {
             required: true,
             message: '请选择统计类型',
           },
-          'x-component': 'select',
+          'x-component': 'Select',
           'x-mega-props': {
             labelAlign: 'top',
           },
           'x-index': 4,
+        },
+        fieldName: {
+          type: 'string',
+          title: '统计字段',
+          default: '',
+          required: true,
+          enum: [],
+          'x-component': 'Select',
+          'x-mega-props': {
+            labelAlign: 'top',
+          },
+          'x-index': 5,
         },
         decimalPlaces: {
           type: 'number',
           title: '小数点',
           default: 2,
           required: true,
+          readOnly: false,
           maximum: 8,
           minimum: 0,
           'x-rules': {
             required: true,
             message: '请输入保留的小数点位数',
           },
-          'x-component': 'Input',
+          'x-component': 'NumberPicker',
           'x-mega-props': {
             labelAlign: 'top',
           },
-          'x-index': 5,
+          'x-index': 6,
         },
         roundDecimal: {
           type: 'string',
-          title: '小数点',
-          default: 'rounding',
+          title: '取整方式',
+          default: 'round',
           enum: [
             {
               label: '四舍五入',
-              value: 'rounding',
+              value: 'round',
             },
             {
               label: '向上取整',
@@ -189,31 +168,31 @@ const schema: ISchema = {
           'x-mega-props': {
             labelAlign: 'top',
           },
-          'x-index': 6,
+          'x-index': 7,
         },
         displayFieldNull: {
           type: 'string',
           title: '字段计算为空值时显示',
-          default: '',
+          default: '0',
           enum: [
             {
-              label: '显示为0',
+              label: '显示为 0',
               value: '0',
             },
             {
               label: '显示为 —',
-              value: 'null',
+              value: '-',
             },
           ],
           'x-rules': {
             required: true,
             message: '请选择字段计算为空值时的显示',
           },
-          'x-component': 'select',
+          'x-component': 'Select',
           'x-mega-props': {
             labelAlign: 'top',
           },
-          'x-index': 7,
+          'x-index': 8,
         },
         dataRange: {
           type: 'string',
@@ -237,7 +216,7 @@ const schema: ISchema = {
           'x-mega-props': {
             labelAlign: 'top',
           },
-          'x-index': 8,
+          'x-index': 9,
         },
       },
     },

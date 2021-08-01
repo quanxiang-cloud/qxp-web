@@ -72,6 +72,7 @@ declare namespace FormBuilder {
     compareOperators?: CompareOperator[];
     isLayoutComponent?: boolean;
     editComponent?: React.JSXElementConstructor<any>;
+    effects?: () => void;
   };
 
   type DropPosition = 'upper' | 'below';

@@ -1,43 +1,36 @@
+export type AggType = 'count' | 'sum' | 'max' | 'min' | 'avg';
+export type RoundMethod = 'round' | 'round-up' | 'round-down';
+
 export interface AggregationRecordsConfig {
   title: string;
   description: string;
   displayModifier: FormBuilder.DisplayModifier;
-  linkedTable: {
-    appID?: string;
+  associateObject: {
+    appID: string;
     tableID: string;
-    tableName: string;
-    associatedTable?: ISchema;
   };
-  aggType: 'count' | 'sum' | 'max' | 'min' | 'avg';
-  linkedField: {
-    fieldName: string;
-  };
+  aggType: AggType;
+  fieldName: string;
   decimalPlaces: number;
-  roundDecimal: 'rounding' | 'round-up' | 'round-down';
-  displayFieldNull: '0' | 'null';
+  roundDecimal: RoundMethod;
+  displayFieldNull: '0' | '-';
   dataRange: 'all' | 'part';
-  required: boolean,
 }
 
 export const defaultConfig: AggregationRecordsConfig = {
   title: '统计',
   description: '',
   displayModifier: 'readonly',
-  linkedTable: {
+  associateObject: {
     appID: '',
     tableID: '',
-    tableName: '',
-    associatedTable: undefined,
   },
   aggType: 'count',
-  linkedField: {
-    fieldName: '',
-  },
+  fieldName: '',
   decimalPlaces: 0,
-  roundDecimal: 'rounding',
+  roundDecimal: 'round',
   displayFieldNull: '0',
   dataRange: 'all',
-  required: true,
 };
 
 export function toSchema(value: AggregationRecordsConfig): ISchema {
@@ -45,16 +38,13 @@ export function toSchema(value: AggregationRecordsConfig): ISchema {
     type: 'number',
     title: value.title,
     description: value.description,
-    required: value.required,
     readOnly: value.displayModifier === 'readonly',
     display: value.displayModifier !== 'hidden',
     'x-component': 'AggregationRecords',
     ['x-component-props']: {
-      appID: value?.linkedTable?.appID,
-      tableID: value?.linkedTable?.tableID,
-      tableName: value?.linkedTable?.tableName,
-      fieldName: value?.linkedField?.fieldName,
-      associatedTable: value.linkedTable.associatedTable,
+      appID: value?.associateObject?.appID,
+      tableID: value?.associateObject?.tableID,
+      fieldName: value?.fieldName,
       aggType: value.aggType,
       decimalPlaces: value.decimalPlaces,
       roundDecimal: value.roundDecimal,
@@ -63,7 +53,6 @@ export function toSchema(value: AggregationRecordsConfig): ISchema {
     },
     ['x-internal']: {
       permission: 3,
-      defaultValueFrom: 'customized',
     },
   };
 }
@@ -72,7 +61,7 @@ export function toConfig(schema: ISchema): AggregationRecordsConfig {
   let displayModifier: FormBuilder.DisplayModifier = 'normal';
   if (schema.readOnly) {
     displayModifier = 'readonly';
-  } else {
+  } else if (!schema.display) {
     displayModifier = 'hidden';
   }
 
@@ -80,20 +69,15 @@ export function toConfig(schema: ISchema): AggregationRecordsConfig {
     title: schema.title as string,
     description: schema.description as string,
     displayModifier: displayModifier,
-    linkedTable: {
+    associateObject: {
       appID: schema['x-component-props']?.appID,
       tableID: schema['x-component-props']?.tableID,
-      tableName: schema['x-component-props']?.tableName,
-      associatedTable: schema['x-component-props']?.associatedTable,
     },
     aggType: schema['x-component-props']?.aggType,
-    linkedField: {
-      fieldName: schema['x-component-props']?.fieldName,
-    },
+    fieldName: schema['x-component-props']?.fieldName,
     decimalPlaces: schema['x-component-props']?.decimalPlaces,
     roundDecimal: schema['x-component-props']?.roundDecimal,
     displayFieldNull: schema['x-component-props']?.displayFieldNull,
     dataRange: schema['x-component-props']?.dataRange,
-    required: !!schema.required,
   };
 }

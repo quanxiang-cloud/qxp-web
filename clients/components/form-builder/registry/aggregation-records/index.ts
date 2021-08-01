@@ -1,7 +1,8 @@
 import configSchema from './config-schema';
 import { defaultConfig, toSchema, toConfig, AggregationRecordsConfig } from './convertor';
-import LinkedTable from './linked-table';
-import AggregationRecords from './aggregation-records';
+import SummaryField from './summary-field';
+import AssociateObject from './associate-object';
+import effects from './effects';
 
 const AggregationRecordsField: Omit<FormBuilder.SourceElement<AggregationRecordsConfig>, 'displayOrder'> = {
   configSchema,
@@ -10,10 +11,11 @@ const AggregationRecordsField: Omit<FormBuilder.SourceElement<AggregationRecords
   defaultConfig: defaultConfig,
   toSchema,
   toConfig,
-  component: AggregationRecords,
+  component: SummaryField,
   category: 'advance',
   componentName: 'AggregationRecords',
-  configDependencies: { LinkedTable },
+  configDependencies: { AssociateObject },
+  effects,
 };
 
 export default AggregationRecordsField;
