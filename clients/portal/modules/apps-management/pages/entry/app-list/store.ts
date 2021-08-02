@@ -3,14 +3,14 @@ import { observable, action, reaction, IReactionDisposer, computed } from 'mobx'
 import toast from '@lib/toast';
 
 import { updateAppStatus, createPage } from '../../app-details/api';
-import { fetchAppList, delApp, createdApp, createdAppRes } from './api';
+import { fetchAppList, delApp, createdApp, CreatedAppRes } from './api';
 
 export type Params = {
   useStatus?: number;
   appName?: string;
 }
 
-type countMapsParams = {
+type CountMapsParams = {
   all: number;
   published: number;
   unPublished: number;
@@ -27,7 +27,7 @@ class AppListStore {
   @observable params: Params = { useStatus: 0, appName: '' };
   @observable isListLoading = false;
 
-  @computed get countMaps(): countMapsParams {
+  @computed get countMaps(): CountMapsParams {
     let published = 0;
     let unPublished = 0;
     this.allAppList.forEach((app: AppInfo) => {
@@ -94,7 +94,7 @@ class AppListStore {
 
   @action
   createdApp = (appInfo: AppInfo): Promise<string> => {
-    return createdApp(appInfo).then((res: createdAppRes) => {
+    return createdApp(appInfo).then((res: CreatedAppRes) => {
       const newApp = { ...appInfo, ...res };
       this.appList = [newApp, ...this.appList];
       this.allAppList = [newApp, ...this.allAppList];
