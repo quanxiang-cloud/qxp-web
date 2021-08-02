@@ -240,6 +240,7 @@ function SubTable({
                                 className="mx-8 my-8 w-full"
                                 name={path}
                                 component={component}
+                                form={form}
                                 props={{ ...props, props }}
                                 mutators={{ change: onChange(path, form) }}
                                 rules={rules as any}
