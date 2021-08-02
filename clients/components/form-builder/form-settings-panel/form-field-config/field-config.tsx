@@ -63,14 +63,14 @@ function FormFieldConfig(): JSX.Element {
     const { setFieldState, getFieldState } = createFormActions();
     const { onFieldInputChange$, onFieldInit$, onFieldValueChange$ } = FormEffectHooks;
 
-    onFieldValueChange$('prefix').subscribe(({ value })=>{
+    onFieldValueChange$('prefix').subscribe(({ value }) => {
       if (!value) return;
       setFieldState('numberPreview', (state) => {
         const suffix = getFieldState('suffix', (state) => state.value);
         state.value = suffix === undefined ? value : value + suffix;
       });
     });
-    onFieldValueChange$('suffix').subscribe(({ value })=>{
+    onFieldValueChange$('suffix').subscribe(({ value }) => {
       if (!value) return;
       setFieldState('numberPreview', (state) => {
         const prefix = getFieldState('prefix', (state) => state.value);
@@ -122,7 +122,12 @@ function FormFieldConfig(): JSX.Element {
       <div ref={formFieldConfigWrap}>
         <SchemaFieldConfig
           // assign key to FormFieldConfigTrue to force re-render when activeFieldName changed
-          effects={schemaFieldConfigEffects}
+          effects={() => {
+            schemaFieldConfigEffects();
+            if (typeof store.activeFieldSourceElement?.effects === 'function') {
+              store.activeFieldSourceElement.effects();
+            }
+          }}
           key={toJS(store.activeFieldName)}
           onChange={(value) => store.updateFieldConfig(value)}
           initialValue={toJS(store.activeField.configValue)}
