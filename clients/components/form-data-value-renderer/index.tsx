@@ -4,6 +4,7 @@ import moment from 'moment';
 import SubTable from '@c/form-builder/registry/sub-table/preview';
 import AssociatedRecords from '@c/form-builder/registry/associated-records/associated-records';
 import AssociatedDataValueRender from '@c/form-builder/registry/associated-data/associated-data-view';
+import { RoundMethod } from '@c/form-builder/registry/aggregation-records/convertor';
 import logger from '@lib/logger';
 
 type ValueRendererProps = { value: FormDataValue; schema: ISchema; className?: string; };
@@ -57,6 +58,17 @@ function labelValueRenderer(value: FormDataValue): string {
   return (value as FormBuilder.Option)?.label;
 }
 
+function statisticValueRender({ schema, value }: ValueRendererProps): string {
+  const { decimalPlaces, roundDecimal, displayFieldNull } = schema['x-component-props'] as { decimalPlaces: number, roundDecimal: RoundMethod, displayFieldNull: string };
+  let method = Math.round;
+  if (roundDecimal === 'round-up') {
+    method = Math.ceil;
+  } else if (roundDecimal === 'round-down') {
+    method = Math.floor;
+  }
+  return method(parseFloat(value as string)).toFixed(decimalPlaces) + '' || displayFieldNull;
+}
+
 export default function FormDataValueRenderer({ value, schema, className }: Props): JSX.Element {
   if (schema['x-component'] === 'SubTable') {
     return <SubTableValueRenderer schema={schema} value={value} />;
@@ -93,6 +105,8 @@ export function getBasicValue(schema: ISchema, value: FormDataValue): string {
   case 'userpicker':
   case 'organizationpicker':
     return labelValueRenderer(value);
+  case 'aggregationrecords':
+    return statisticValueRender({ schema, value });
   default:
     logger.debug('encounter unsupported formDataValue:', value, 'schema:', schema);
     return value?.toString();

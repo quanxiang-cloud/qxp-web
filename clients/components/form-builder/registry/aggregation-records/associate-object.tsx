@@ -35,7 +35,7 @@ function AssociateObject(props: ISchemaFieldComponentProps): JSX.Element {
 
   useEffect(() => {
     // trigger first linkage effect
-    handleChange(props.value?.sourceFieldId, {initial: true});
+    handleChange(props.value?.sourceFieldId, { initial: true });
   }, [appID]);
 
   const getTargetTableOptions = (fieldName: string): Promise<AssociateTableOptions | null> => {
