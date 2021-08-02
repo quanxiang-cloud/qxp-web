@@ -8,6 +8,7 @@ export interface AggregationRecordsConfig {
   associateObject: {
     appID: string;
     tableID: string;
+    sourceFieldId: string;
   };
   aggType: AggType;
   fieldName: string;
@@ -24,6 +25,7 @@ export const defaultConfig: AggregationRecordsConfig = {
   associateObject: {
     appID: '',
     tableID: '',
+    sourceFieldId: '',
   },
   aggType: 'count',
   fieldName: '',
@@ -42,9 +44,10 @@ export function toSchema(value: AggregationRecordsConfig): ISchema {
     display: value.displayModifier !== 'hidden',
     'x-component': 'AggregationRecords',
     ['x-component-props']: {
-      appID: value?.associateObject?.appID,
-      tableID: value?.associateObject?.tableID,
-      fieldName: value?.fieldName,
+      appID: value.associateObject?.appID,
+      tableID: value.associateObject?.tableID,
+      sourceFieldId: value.associateObject?.sourceFieldId,
+      fieldName: value.fieldName,
       aggType: value.aggType,
       decimalPlaces: value.decimalPlaces,
       roundDecimal: value.roundDecimal,
@@ -72,6 +75,7 @@ export function toConfig(schema: ISchema): AggregationRecordsConfig {
     associateObject: {
       appID: schema['x-component-props']?.appID,
       tableID: schema['x-component-props']?.tableID,
+      sourceFieldId: schema['x-component-props']?.sourceFieldId,
     },
     aggType: schema['x-component-props']?.aggType,
     fieldName: schema['x-component-props']?.fieldName,

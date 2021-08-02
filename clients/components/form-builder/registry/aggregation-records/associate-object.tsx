@@ -1,15 +1,13 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 import { get } from 'lodash';
 
 import Select from '@c/select';
 import { StoreContext } from '@c/form-builder/context';
-import { getTableSchema } from '@c/form-builder/utils/api';
 
 const acceptFieldTypes = [
   'SubTable',
   'AssociatedRecords',
-  'AssociatedData',
 ];
 
 export type AssociateTableOptions = {
@@ -34,6 +32,11 @@ function AssociateObject(props: ISchemaFieldComponentProps): JSX.Element {
     }
     return acc;
   }, [] as LabelValue[]);
+
+  useEffect(() => {
+    // trigger first linkage effect
+    handleChange(props.value?.sourceFieldId, {initial: true});
+  }, [appID]);
 
   const getTargetTableOptions = (fieldName: string): Promise<AssociateTableOptions | null> => {
     const fieldSchema = get(schema.properties, fieldName, {});
@@ -61,28 +64,17 @@ function AssociateObject(props: ISchemaFieldComponentProps): JSX.Element {
         });
       }
     }
-
-    if (compName === 'AssociatedData') {
-      const targetTableId = get(compProps, 'associationTableID', '');
-      if (targetTableId) {
-        return getTableSchema(appID, targetTableId).then((schema) => {
-          return {
-            tableID: targetTableId,
-            fields: getNumericFields(get(schema, 'schema.properties', {})),
-          };
-        });
-      }
-    }
     return Promise.resolve(null);
   };
 
-  const handleChange = (fieldName: string) => {
+  const handleChange = (fieldName: string, extra?: Record<string, any>) => {
     getTargetTableOptions(fieldName).then((options) => {
       props.mutators.change({
         appID,
         tableID: options?.tableID || '',
         sourceFieldId: fieldName,
         fields: options?.fields || [],
+        ...extra,
       });
     });
   };

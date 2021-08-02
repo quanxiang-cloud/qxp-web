@@ -6,7 +6,9 @@ export default function effects() {
 
   onFieldValueChange$('associateObject').subscribe(({ value }) => {
     setFieldState('fieldName', (state) => {
-      state.value = ''; // reset value
+      if (!value?.initial && value?.fields) {
+        state.value = ''; // reset value
+      }
       state.props.enum = value?.fields || [];
     });
   });
