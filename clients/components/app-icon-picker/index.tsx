@@ -7,8 +7,8 @@ import ColorPicker, { COLORS } from './color-picker';
 import { BgColor } from '@c/app-icon';
 
 type AppIconInfo = {
-  bgColor: BgColor;
-  iconName: string;
+  bgColor?: BgColor;
+  iconName?: string;
 }
 
 type Props = {
@@ -34,7 +34,7 @@ export default class AppIconPicker extends React.Component<Props> {
     onBlur && onBlur(this.state);
   }
 
-  handleFormChange = (newFormData: any) => {
+  handleFormChange = (newFormData: AppIconInfo): void => {
     const { onChange, onBlur } = this.props;
     this.setState(newFormData, () => {
       onChange && onChange(this.state);
@@ -42,19 +42,19 @@ export default class AppIconPicker extends React.Component<Props> {
     });
   };
 
-  render() {
+  render(): JSX.Element {
     const { bgColor, iconName } = this.state;
     return (
       <Control name={this.props.name}>
         <IconSelect
           onChange={(_iconName: string) => this.handleFormChange({ iconName: _iconName })}
-          value={iconName}
+          value={iconName as string}
         />
         <ColorPicker
           className='mt-8'
           defaultColor={bgColor}
           onChange={(bgColor: BgColor) => this.handleFormChange({ bgColor })}
-          iconName={iconName}
+          iconName={iconName as string}
         />
       </Control>
     );

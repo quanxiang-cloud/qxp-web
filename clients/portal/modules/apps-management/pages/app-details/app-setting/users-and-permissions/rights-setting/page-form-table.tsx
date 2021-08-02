@@ -8,16 +8,16 @@ import Table from '@c/table';
 import FormRightsSettingModal from './form-rights-setting-modal';
 import store from '../store';
 
-function PageFormTable({ rightsGroupID }: { rightsGroupID: string }) {
+function PageFormTable({ rightsGroupID }: { rightsGroupID: string }): JSX.Element {
   const [showSettingModal, setShowModal] = useState(false);
   const [curForm, setCurForm] = useState<null | PageInfo>(null);
 
-  const handleSetting = (pageForm: PageInfo) => {
+  const handleSetting = (pageForm: PageInfo): void => {
     setCurForm(pageForm);
     setShowModal(true);
   };
 
-  const delPer = (formID: string) => {
+  const delPer = (formID: string): void => {
     store.deleteFormPer(formID, rightsGroupID);
   };
 

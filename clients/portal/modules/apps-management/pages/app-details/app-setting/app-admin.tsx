@@ -19,7 +19,7 @@ type Admin = {
   userName: string;
 }
 
-function AppAdmin() {
+function AppAdmin(): JSX.Element {
   const [modalType, setModalType] = useState('');
   const [selectedIdArr, setSelectedArr] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
@@ -28,7 +28,7 @@ function AppAdmin() {
   const [params] = useState({ page: 1, limit: 9999, id: appID });
   const [appAdminList, setAppAdminList] = useState([]);
 
-  const fetchAdmins = () => {
+  const fetchAdmins = (): void => {
     setLoading(true);
     fetchAppAdminUsers(params).then((res: any) => {
       setLoading(false);
@@ -38,7 +38,7 @@ function AppAdmin() {
     });
   };
 
-  const removeAdmin = (idArr: string[]) => {
+  const removeAdmin = (idArr: string[]): Promise<void> => {
     setDelLoading(true);
     return delAppAdminUsers({ appID: appID, userIDs: idArr }).then(() => {
       setDelLoading(false);
@@ -55,19 +55,19 @@ function AppAdmin() {
     });
   };
 
-  const batchRemove = () => {
+  const batchRemove = (): void => {
     removeAdmin(selectedIdArr).then(() => {
       setModalType('');
     });
   };
 
-  const handleSelectChange = (selectedArr: string[]) => {
+  const handleSelectChange = (selectedArr: string[]): void => {
     setSelectedArr(selectedArr);
   };
 
   const addAdmin = (
     _: EmployeeOrDepartmentOfRole[],
-    employees: EmployeeOrDepartmentOfRole[]) => {
+    employees: EmployeeOrDepartmentOfRole[]): Promise<void>=> {
     if (employees.length === 0 && appAdminList.length === 0) {
       toast.error('请选择添加为管理员的员工');
       return Promise.reject(new Error('请选择添加为管理员的员工'));
