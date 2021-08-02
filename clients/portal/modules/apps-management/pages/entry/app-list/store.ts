@@ -3,11 +3,17 @@ import { observable, action, reaction, IReactionDisposer, computed } from 'mobx'
 import toast from '@lib/toast';
 
 import { updateAppStatus, createPage } from '../../app-details/api';
-import { fetchAppList, delApp, createdApp } from './api';
+import { fetchAppList, delApp, createdApp, createdAppRes } from './api';
 
 export type Params = {
   useStatus?: number;
   appName?: string;
+}
+
+type countMapsParams = {
+  all: number;
+  published: number;
+  unPublished: number;
 }
 
 class AppListStore {
@@ -21,11 +27,7 @@ class AppListStore {
   @observable params: Params = { useStatus: 0, appName: '' };
   @observable isListLoading = false;
 
-  @computed get countMaps(): {
-    all: number;
-    published:number;
-    unPublished:number;
-    } {
+  @computed get countMaps(): countMapsParams {
     let published = 0;
     let unPublished = 0;
     this.allAppList.forEach((app: AppInfo) => {
@@ -92,7 +94,7 @@ class AppListStore {
 
   @action
   createdApp = (appInfo: AppInfo): Promise<string> => {
-    return createdApp(appInfo).then((res: any) => {
+    return createdApp(appInfo).then((res: createdAppRes) => {
       const newApp = { ...appInfo, ...res };
       this.appList = [newApp, ...this.appList];
       this.allAppList = [newApp, ...this.allAppList];
