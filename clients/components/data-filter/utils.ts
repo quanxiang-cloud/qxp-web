@@ -156,7 +156,7 @@ export function getCondition(schema: ISchema, value: Value, key: string, op?: st
   switch (schema['x-component']) {
   case 'DatePicker': {
     const [start, end] = value as Moment[];
-    const format = schema?.['x-component-props']?.format || 'YYYY-MM-DD HH:mm:ss';
+    const format = schema?.['x-component-props']?.format || 'YYYY-MM-DD';
     _condition.value = [
       start.startOf(getDateType(format)).toISOString(),
       end.endOf(getDateType(format)).toISOString(),
