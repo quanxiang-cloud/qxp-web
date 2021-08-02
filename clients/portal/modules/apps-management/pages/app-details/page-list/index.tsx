@@ -17,7 +17,7 @@ import DelModal from './del-modal';
 import appPagesStore from '../store';
 import './index.scss';
 
-function PageNav() {
+function PageList() {
   const [modalType, setModalType] = useState('');
   const history = useHistory();
   const [curEditNode, setCurEditNode] = useState<null | TreeItem>(null);
@@ -34,7 +34,7 @@ function PageNav() {
   }, [pageID]);
 
   const handleSelectPage = (pageInfo: PageInfo) => {
-    history.push(`/apps/details/${appID}?pageID=${pageInfo.id}`);
+    history.push(`/apps/details/${appID}/page_setting?pageID=${pageInfo.id}`);
   };
 
   function delPageOrGroup() {
@@ -124,4 +124,4 @@ function PageNav() {
   );
 }
 
-export default observer(PageNav);
+export default observer(PageList);
