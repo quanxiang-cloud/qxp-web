@@ -123,7 +123,7 @@ export const FILTER_FIELD = [
   'MultipleSelect',
   'NumberPicker',
   'RadioGroup',
-  'textarea',
+  'Textarea',
   'Select',
   'CheckboxGroup',
   'UserPicker',
