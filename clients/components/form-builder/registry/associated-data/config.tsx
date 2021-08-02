@@ -99,7 +99,7 @@ function AssociatedDataConfig({ initialValue, onChange }: Props): JSX.Element {
       initialValues={initialValue}
       actions={actions}
       effects={formModelEffect}
-      onChange={(values) => onChange({ ...initialValue, ...values })}
+      onChange={(values) => onChange({ ...initialValue, ...values, appID })}
       components={COMPONENTS}
       schema={configSchema}
     />
