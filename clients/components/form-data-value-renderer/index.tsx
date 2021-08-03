@@ -91,7 +91,7 @@ export function getBasicValue(schema: ISchema, value: FormDataValue): string {
   case 'numberpicker':
   case 'textarea':
     return value as string;
-  case 'aadiogroup':
+  case 'radiogroup':
   case 'checkboxgroup':
   case 'select':
   case 'multipleselect':
