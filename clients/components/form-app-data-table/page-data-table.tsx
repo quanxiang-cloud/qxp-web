@@ -74,7 +74,6 @@ function PageDataTable(): JSX.Element {
           onSelectChange={handleSelectChange}
           columns={store.tableColumns}
           data={toJS(store.formDataList)}
-          initialSelectedRowKeys={selected}
         />
       </div>
       <Pagination
