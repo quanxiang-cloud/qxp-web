@@ -67,7 +67,7 @@ export default function Table<T extends Record<string, any>>({
     // todo fix this
   }, [Object.keys(selectedRowIds).length]);
 
-  const tableFooterRender = () => {
+  const tableFooterRender = (): JSX.Element | undefined => {
     if (loading) {
       return <TableLoading />;
     }
