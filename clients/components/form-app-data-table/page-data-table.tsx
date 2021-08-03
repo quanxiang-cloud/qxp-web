@@ -18,6 +18,7 @@ function PageDataTable(): JSX.Element {
     if (!store.allowRequestData) {
       return;
     }
+
     store.setParams({});
   }, [store.pageID]);
 
@@ -69,6 +70,7 @@ function PageDataTable(): JSX.Element {
           emptyTips='暂无数据'
           rowKey="_id"
           loading={store.listLoading}
+          initialSelectedRowKeys={selected || []}
           onSelectChange={handleSelectChange}
           columns={store.tableColumns}
           data={toJS(store.formDataList)}
