@@ -4,6 +4,7 @@ import { TreeSelect } from 'antd';
 import { TreeSelectProps } from 'antd/lib/tree-select';
 import { DataNode } from 'rc-tree-select/lib/interface';
 
+import { getUserDepartment } from '@lib/utils';
 import { searchOrganization, Organization } from './messy/api';
 import './index.scss';
 
@@ -86,8 +87,9 @@ const OrganizationPicker = ({
     }
 
     if (optionalRange === 'myDep') {
-      const userInfo = window.USER;
-      const { id, departmentName } = userInfo.dep;
+      const userinfo = window.USER;
+      const currentUserDep = getUserDepartment(userinfo);
+      const { id, departmentName } = currentUserDep;
       const myDep = {
         id,
         fullPath: id,

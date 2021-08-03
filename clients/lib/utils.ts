@@ -323,3 +323,11 @@ export function isEmpty(value: any): boolean {
 
   return false;
 }
+
+export function getUserDepartment(user: CurrentUser): UserDepartment {
+  let dep = user.dep;
+  while (dep.child) {
+    dep = dep.child;
+  }
+  return dep;
+}
