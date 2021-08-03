@@ -8,6 +8,7 @@ import {
 } from '@formily/antd';
 import { Input, Radio, MegaLayout, Switch, Select } from '@formily/antd-components';
 
+import { getUserDepartment } from '@lib/utils';
 import OrganizationSelect from './organization-select';
 import { EnumOptionalRange, EnumMultiple } from './messy/enum';
 import { DefaultConfig } from './convertor';
@@ -54,8 +55,9 @@ const OrganizationPickerConfigForm = ({ initialValue, onChange }: Props): JSX.El
       }
       if (value === 'myDep') {
         setFieldState('defaultValues', (state) => {
-          const userInfo = window.USER;
-          const { id, departmentName } = userInfo.dep;
+          const userinfo = window.USER;
+          const currentUserDep = getUserDepartment(userinfo);
+          const { id, departmentName } = currentUserDep;
           state.value = [{
             value: id,
             label: departmentName,

@@ -16,6 +16,15 @@ declare module '*.module.sass' {
 declare module 'draftjs-to-html';
 declare module 'html-to-draftjs';
 
+type UserDepartment = {
+  id: string;
+  departmentName: string;
+  departmentLeaderID: string;
+  pid: string;
+  superID: string;
+  grade: number;
+  child: UserDepartment;
+}
 type CurrentUser = {
   id: string;
   userName: string;
@@ -23,7 +32,7 @@ type CurrentUser = {
   email: string;
   phone: string;
   depIds: string[]
-  dep: Department;
+  dep: Dep;
 }
 
 interface Window {
