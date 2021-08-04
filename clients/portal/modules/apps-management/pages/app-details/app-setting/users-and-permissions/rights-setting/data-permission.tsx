@@ -1,7 +1,7 @@
 import React, { useState, forwardRef, useImperativeHandle, useRef } from 'react';
 import { Radio } from 'antd';
 
-import DataFilter, { ConditionItemMap, RefProps } from '@c/data-filter';
+import DataFilter, { RefProps } from '@c/data-filter';
 
 type Props = {
   fields: Fields[];
@@ -10,9 +10,9 @@ type Props = {
 }
 
 type ConditionMap = {
-  find?: ConditionItemMap;
-  delete?: ConditionItemMap;
-  update?: ConditionItemMap;
+  find?: FilterConfig;
+  delete?: FilterConfig;
+  update?: FilterConfig;
 }
 
 const OPTIONS = [
@@ -22,19 +22,19 @@ const OPTIONS = [
 
 function DataPermission({ fields, className = '', dataPer }: Props, ref: React.Ref<any>) {
   const [view, setViewPer] = useState({
-    key: dataPer.find?.arr ? 'custom' : 'all',
+    key: dataPer.find?.condition ? 'custom' : 'all',
     tag: dataPer.find?.tag,
-    conditions: dataPer.find?.arr || [],
+    conditions: dataPer.find?.condition || [],
   });
   const [edit, setEditPer] = useState({
-    key: dataPer.update?.arr ? 'custom' : 'all',
+    key: dataPer.update?.condition ? 'custom' : 'all',
     tag: dataPer.update?.tag,
-    conditions: dataPer.update?.arr || [],
+    conditions: dataPer.update?.condition || [],
   });
   const [del, setDelPer] = useState({
-    key: dataPer.delete?.arr ? 'custom' : 'all',
+    key: dataPer.delete?.condition ? 'custom' : 'all',
     tag: dataPer.delete?.tag,
-    conditions: dataPer.delete?.arr || [],
+    conditions: dataPer.delete?.condition || [],
   });
   const viewRef = useRef<RefProps>(null);
   const editRef = useRef<RefProps>(null);

@@ -82,9 +82,22 @@ export function getNodeInitialData(type: NodeType): FillInData {
       processBranchEndStrategy: '',
     },
     processBranchTarget: {},
-    autocc: {},
-    email: {},
-    letter: {},
+    autocc: {
+      recivers: undefined,
+    },
+    email: {
+      content: undefined,
+      mes_attachment: undefined,
+      recivers: '',
+      templateId: 'quanliang',
+      title: '',
+    },
+    letter: {
+      content: undefined,
+      recivers: undefined,
+      sort: undefined,
+      title: '',
+    },
     end: {},
   };
   function operatorFilter({ only }: Operation): boolean {

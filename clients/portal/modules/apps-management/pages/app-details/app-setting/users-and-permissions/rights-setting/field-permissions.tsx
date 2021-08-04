@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useImperativeHandle, forwardRef } from 'react';
 import { union } from 'lodash';
+import { fieldsToSchema } from '@lib/schema-convert';
 
 import Checkbox from '@c/checkbox';
 
@@ -38,19 +39,31 @@ function FieldPermissions({ fields, className = '', fieldPer }: Props, ref: Reac
       'x-internal': { permission: visibleField.length ? 1 : 0 },
     };
 
-    fields.forEach((field) => {
-      const visible = visibleField.includes(field.id);
-      const revisable = revisableField.includes(field.id);
+    const getPerMission = (key: string) => {
+      const visible = visibleField.includes(key);
+      const revisable = revisableField.includes(key);
       const permissions = (visible ? 1 : 0) | (revisable ? 10 : 0);
-      schema.properties[field.id] = {
-        title: field.title,
+
+      return parseInt(permissions.toString(), 2);
+    };
+
+    const _fields = fields.map((field) => {
+      if (field.parentField) {
+        return Object.assign({}, field, {
+          'x-internal': {
+            permission: getPerMission(field.parentField),
+          },
+        });
+      }
+
+      return Object.assign({}, field, {
         'x-internal': {
-          permission: parseInt(permissions.toString(), 2),
+          permission: getPerMission(field.id),
         },
-      };
+      });
     });
 
-    return schema;
+    return fieldsToSchema(_fields);
   };
 
   useEffect(() => {
@@ -154,6 +167,29 @@ function FieldPermissions({ fields, className = '', fieldPer }: Props, ref: Reac
     }
   };
 
+  const getTitle = (title: any) => {
+    switch (title) {
+    case 'LayoutTabs':
+      return '选项卡';
+    case 'LayoutCard':
+      return '分组';
+    case 'LayoutGrid':
+      return '栅格';
+    }
+
+    return title;
+  };
+
+  const getSuffix = (field: Fields, fields: Fields[]) => {
+    const currentFieldName = field.id;
+
+    const sf = fields.filter((itm) => itm.parentField === currentFieldName)
+      .map((itm) => itm.title)
+      .join(',');
+
+    return sf ? `(${sf})` : null;
+  };
+
   return (
     <div className={className}>
       <div className='flex items-center justify-between mb-12'>
@@ -175,9 +211,12 @@ function FieldPermissions({ fields, className = '', fieldPer }: Props, ref: Reac
       </div>
       <div className='pb-field-box'>
         <div className='pb-field-item-title'><span>字段</span><span>可见</span><span>可修改</span></div>
-        {fields.map((field) => (
+        {fields.filter((field) => !field.parentField).map((field) => (
           <div key={field.id} className='pb-field-item'>
-            <span>{field.title}</span>
+            <span>
+              <span>{getTitle(field.title || field['x-component'])}</span>
+              <span className="suffix-text">{getSuffix(field, fields)}</span>
+            </span>
             <Checkbox
               checked={visibleField.includes(field.id)}
               value={field.id}

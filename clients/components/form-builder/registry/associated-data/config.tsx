@@ -6,7 +6,9 @@ import {
 } from '@formily/antd';
 import { Input, Switch, Select, Radio } from '@formily/antd-components';
 
+import FilterConfig from '@c/form-builder/form-settings-panel/form-field-config/filter-config';
 import { StoreContext } from '@c/form-builder/context';
+
 import { getLinkageTables, getTableSchema } from '@c/form-builder/utils/api';
 
 import { AssociatedDataConfig } from './convertor';
@@ -15,9 +17,10 @@ import configSchema from './config-schema';
 interface Props {
   initialValue: AssociatedDataConfig;
   onChange: (params: AssociatedDataConfig) => void;
+  subTableSchema: ISchema;
 }
 
-const COMPONENTS = { Input, Select, Switch, RadioGroup: Radio.Group };
+const COMPONENTS = { Input, Select, Switch, RadioGroup: Radio.Group, FilterConfig };
 const { onFieldInputChange$ } = FormEffectHooks;
 const SUPPORT_COMPONENT = [
   'Input',
@@ -54,8 +57,9 @@ function getTableFieldsToOptions(
   });
 }
 
-function AssociatedDataConfig({ initialValue, onChange }: Props): JSX.Element {
-  const { appID, pageID } = useContext(StoreContext);
+function AssociatedDataConfig({ initialValue, onChange, subTableSchema }: Props): JSX.Element {
+  const { appID, pageID, schema: _schema } = useContext(StoreContext);
+  const schema = subTableSchema || _schema;
   const actions = createAsyncFormActions();
   const { setFieldState } = actions;
 
@@ -70,9 +74,12 @@ function AssociatedDataConfig({ initialValue, onChange }: Props): JSX.Element {
     if (initialValue.associationTableID) {
       setTableFieldOptions(initialValue.associationTableID);
     }
-  }, [appID]);
+  }, [appID, initialValue.associationTableID]);
 
   const setTableFieldOptions = (tableID: string, clearValue?: boolean): void => {
+    setFieldState('filterConfig', (state) => {
+      state.props['x-component-props'] = { appID, tableID, currentFormSchema: schema };
+    });
     getTableFieldsToOptions(appID, tableID, SUPPORT_COMPONENT).then((fields) => {
       setFieldState('fieldName', (state) => {
         state.props.enum = fields;

@@ -46,11 +46,11 @@ const FormPage = () => {
       {previewModalVisible && (
         <Modal title="预览表单" onClose={handlePreviewClose}>
           <FormRenderer
-            className="w-588 p-20"
+            className="w-800 p-20"
             schema={store.formStore.schema}
             onSubmit={(value) => toast.success('提交表单：' + JSON.stringify(value))}
           >
-            <FormButtonGroup offset={4}>
+            <FormButtonGroup offset={8}>
               <Button type="submit" modifier="primary">模拟提交</Button>
               <Button type="submit" onClick={handlePreviewClose}>关闭</Button>
             </FormButtonGroup>

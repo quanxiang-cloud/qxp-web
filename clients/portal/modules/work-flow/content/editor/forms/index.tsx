@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext, useRef } from 'react';
+import { isEqual } from 'lodash';
 
 import useObservable from '@lib/hooks/use-observable';
 import usePrevious from '@lib/hooks/use-previous';
@@ -71,9 +72,9 @@ export default function NodeFormWrapper(): JSX.Element | null {
     });
   }
 
-  function handleChange(): void {
+  function handleChange(newFormData: BusinessData): void {
     updateStore((s) => ({ ...s, validating: false }));
-    setFormDataChanged(true);
+    setFormDataChanged(!isEqual(newFormData, formData.businessData));
   }
 
   const previousName = usePrevious(name);

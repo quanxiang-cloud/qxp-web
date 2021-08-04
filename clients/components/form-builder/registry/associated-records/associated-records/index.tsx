@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
-import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
+import { Column } from 'react-table';
+import { get } from 'lodash';
+import { useQuery } from 'react-query';
 import _, { every, isObject, map, pipe, filter } from 'lodash/fp';
 
 import Table from '@c/table';
@@ -7,9 +9,8 @@ import Button from '@c/button';
 import Icon from '@c/icon';
 import FormDataValueRenderer from '@c/form-data-value-renderer';
 import { isEmpty } from '@lib/utils';
-import { Column } from 'react-table';
-import { get } from 'lodash';
-import { useQuery } from 'react-query';
+import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
+
 import { findTableRecords } from './api';
 import SelectRecordsModal from './select-records-modal';
 
@@ -22,6 +23,7 @@ type Props = {
   associatedTable: ISchema;
   onChange: (selectedKeys: string[]) => void;
   readOnly: boolean;
+  filterConfig?: FilterConfig;
 }
 
 function computeTableColumns(schema: ISchema, columns: string[]): Column<Record<string, any>>[] {
@@ -44,7 +46,15 @@ function computeTableColumns(schema: ISchema, columns: string[]): Column<Record<
 }
 
 function AssociatedRecords({
-  associatedTable, columns, selected, appID, tableID, multiple, onChange, readOnly,
+  associatedTable,
+  columns,
+  selected,
+  appID,
+  tableID,
+  multiple,
+  onChange,
+  readOnly,
+  filterConfig,
 }: Props): JSX.Element {
   const [showSelectModal, setShowSelectModal] = useState(false);
   const { isLoading, data } = useQuery(['FIND_TABLE_RECORDS', selected], () => {
@@ -95,6 +105,7 @@ function AssociatedRecords({
               onClose={() => setShowSelectModal(false)}
               appID={appID}
               tableID={tableID}
+              filterConfig={filterConfig}
               multiple={multiple}
               associatedTable={associatedTable}
               columns={columns}
@@ -141,6 +152,7 @@ function AssociatedRecordsFields(props: Partial<ISchemaFieldComponentProps>): JS
       tableID={componentProps.tableID}
       columns={componentProps.columns || []}
       multiple={componentProps.multiple || false}
+      filterConfig={componentProps.filterConfig}
       selected={selected}
       associatedTable={componentProps.associatedTable}
       onChange={(selectedKeys) => props?.mutators?.change(selectedKeys)}

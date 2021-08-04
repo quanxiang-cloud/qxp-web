@@ -34,8 +34,6 @@ type Props = {
   effects?: () => void
 }
 
-const { onFieldInputChange$, onFieldInit$ } = FormEffectHooks;
-
 function SchemaFieldConfig({ onChange, initialValue, schema, components, effects }: Props): JSX.Element {
   const { actions } = useContext(FieldConfigContext);
   return (
@@ -62,7 +60,23 @@ function FormFieldConfig(): JSX.Element {
   }, [store.activeFieldName]);
 
   const schemaFieldConfigEffects = () => {
-    const { setFieldState } = createFormActions();
+    const { setFieldState, getFieldState } = createFormActions();
+    const { onFieldInputChange$, onFieldInit$, onFieldValueChange$ } = FormEffectHooks;
+
+    onFieldValueChange$('prefix').subscribe(({ value }) => {
+      if (!value) return;
+      setFieldState('numberPreview', (state) => {
+        const suffix = getFieldState('suffix', (state) => state.value);
+        state.value = suffix === undefined ? value : value + suffix;
+      });
+    });
+    onFieldValueChange$('suffix').subscribe(({ value }) => {
+      if (!value) return;
+      setFieldState('numberPreview', (state) => {
+        const prefix = getFieldState('prefix', (state) => state.value);
+        state.value = prefix + value;
+      });
+    });
 
     onFieldInit$('minSet').subscribe((field) => {
       let visible = false;
@@ -108,7 +122,12 @@ function FormFieldConfig(): JSX.Element {
       <div ref={formFieldConfigWrap}>
         <SchemaFieldConfig
           // assign key to FormFieldConfigTrue to force re-render when activeFieldName changed
-          effects={schemaFieldConfigEffects}
+          effects={() => {
+            schemaFieldConfigEffects();
+            if (typeof store.activeFieldSourceElement?.effects === 'function') {
+              store.activeFieldSourceElement.effects();
+            }
+          }}
           key={toJS(store.activeFieldName)}
           onChange={(value) => store.updateFieldConfig(value)}
           initialValue={toJS(store.activeField.configValue)}

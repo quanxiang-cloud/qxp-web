@@ -12,10 +12,11 @@ type Props = {
   multiple: boolean;
   associatedTable: ISchema;
   columns: string[];
+  filterConfig?: FilterConfig;
 }
 
 export default function SelectRecordsModal({
-  onClose, appID, tableID, multiple, onSubmit,
+  onClose, appID, tableID, multiple, onSubmit, filterConfig,
 }: Props): JSX.Element {
   const tableRef: React.Ref<any> = useRef<Ref>();
   const handleSubmit = (): void => {
@@ -59,6 +60,7 @@ export default function SelectRecordsModal({
       <FormDataTable
         className="p-20"
         allowRequestData
+        filterConfig={filterConfig}
         showCheckbox={multiple}
         customColumns={multiple ? [] : customColumns}
         ref={tableRef}

@@ -63,11 +63,13 @@ export default function Switch<Value extends React.Key>(props: ISwitch<Value>) {
       >
         {
           props.options.map((option) => {
-            return (<LegoRadioButton
-              key={option['value']}
-              value={option['value']}>
-              {props.optionRenderer ? props.optionRenderer(option) : option['label']}
-            </LegoRadioButton>);
+            return (
+              <LegoRadioButton
+                key={option['value']}
+                value={option['value']}>
+                {props.optionRenderer ? props.optionRenderer(option) : option['label']}
+              </LegoRadioButton>
+            );
           })
         }
       </LegoRadioGroup>

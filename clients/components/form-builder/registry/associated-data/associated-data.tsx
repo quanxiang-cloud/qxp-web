@@ -14,6 +14,7 @@ type Props = {
   value?: LabelValue;
   placeholder?: string;
   readOnly?: boolean;
+  filterConfig?: FilterConfig;
   onChange?: (value: LabelValue | null) => void;
 }
 
@@ -21,6 +22,7 @@ export function AssociatedData({
   appID,
   associationTableID,
   placeholder,
+  filterConfig,
   readOnly,
   fieldName,
   value,
@@ -63,6 +65,7 @@ export function AssociatedData({
         <SelectAssociationModal
           onSubmit={handleConfirm}
           appID={appID}
+          filterConfig={filterConfig}
           fieldName={fieldName}
           tableID={associationTableID}
           onClose={() => setVisible(false)}
@@ -76,6 +79,7 @@ export default function AssociatedDataWrap(p: ISchemaFieldComponentProps): JSX.E
   return (
     <AssociatedData
       {...p.props['x-component-props']}
+      filterConfig={p['x-component-props']?.filterConfig || p.props['x-component-props'].filterConfig}
       value={p.value}
       onChange={p.mutators.change}
       readOnly={!!p.props.readOnly}

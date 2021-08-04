@@ -99,6 +99,13 @@ const schema: ISchema = {
             labelAlign: 'top',
           },
         },
+        filterConfig: {
+          title: '',
+          'x-component': 'FilterConfig',
+          'x-mega-props': {
+            labelAlign: 'top',
+          },
+        },
       },
     },
   },

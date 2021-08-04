@@ -8,7 +8,7 @@ import { searchUser, Res } from './messy/api';
 import { Option } from './messy/enum';
 import './index.scss';
 
-type OptionalRange = 'customize' | 'all';
+type OptionalRange = 'customize' | 'all' | 'currentUser';
 
 interface Props extends SelectProps<any> {
   optionalRange?: OptionalRange;
@@ -27,7 +27,7 @@ const UserPicker = ({ optionalRange, appID, onChange, value, ...componentsProps 
     onChange && onChange(_selected ? [].concat(_selected) : [], _);
   };
 
-  const selected = Array.isArray(value || []) ?
+  let selected = Array.isArray(value || []) ?
     (value || []).map(({ value }: Option) => value) : value.value;
 
   if (!componentsProps.options?.length && componentsProps.dataSource?.length) {
@@ -43,6 +43,17 @@ const UserPicker = ({ optionalRange, appID, onChange, value, ...componentsProps 
         appID={appID as string}
       />
     );
+  }
+
+  if (optionalRange === 'currentUser') {
+    const userInfo = window.USER;
+    const { id, userName } = userInfo;
+    const options = [{
+      label: userName,
+      value: id,
+    }];
+    componentsProps.options = options;
+    selected = id;
   }
 
   return (

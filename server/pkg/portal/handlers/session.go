@@ -63,6 +63,7 @@ type Department struct {
 	SuperID            string `json:"superID"`
 	DepartmentLeaderID string `json:"departmentLeaderID"`
 	DepartmentName     string `json:"departmentName"`
+	Child *Department `json:"child"`
 }
 
 // User represents user fields

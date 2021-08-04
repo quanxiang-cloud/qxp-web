@@ -85,6 +85,17 @@ export const CONDITION = [
   },
 ];
 
+export const VALUE_FROM = [
+  {
+    label: '固定值',
+    value: 'fixedValue',
+  },
+  {
+    label: '表单值',
+    value: 'form',
+  },
+];
+
 export function getOperators(type: string, enums: any[] | undefined): LabelValue[] {
   switch (type) {
   case 'array':
@@ -112,7 +123,7 @@ export const FILTER_FIELD = [
   'MultipleSelect',
   'NumberPicker',
   'RadioGroup',
-  'textarea',
+  'Textarea',
   'Select',
   'CheckboxGroup',
   'UserPicker',

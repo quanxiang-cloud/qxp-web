@@ -1,5 +1,3 @@
-import { ISchema } from '@formily/react-schema-renderer';
-
 const schema: ISchema = {
   type: 'object',
   properties: {
@@ -87,24 +85,6 @@ const schema: ISchema = {
           'x-component': 'RadioGroup',
           'x-index': 4,
         },
-        // enableFilter: {
-        //   title: '限制可选记录范围',
-        //   default: false,
-        //   'x-component': 'Switch',
-        //   'x-index': 5,
-        //   'x-linkages': [
-        //     {
-        //       type: 'value:visible',
-        //       target: 'filter',
-        //       condition: '{{ $value }}',
-        //     },
-        //   ],
-        // },
-        // filter: {
-        //   type: 'object',
-        //   'x-component': 'FilterConfigBtn',
-        //   'x-index': 6,
-        // },
         columns: {
           title: '显示字段',
           default: false,
@@ -129,6 +109,13 @@ const schema: ISchema = {
           'x-component-props': {
             isLinkedFieldShow: false,
             isLinkedTableReadonly: true,
+          },
+        },
+        filterConfig: {
+          title: '',
+          'x-component': 'FilterConfig',
+          'x-mega-props': {
+            labelAlign: 'top',
           },
         },
       },

@@ -1,5 +1,6 @@
 import React, { useContext, useState } from 'react';
 import { useQuery } from 'react-query';
+import { useUpdateEffect } from 'react-use';
 
 import Select from '@c/select';
 import Toggle from '@c/toggle';
@@ -19,6 +20,7 @@ import { filterTables } from '../utils';
 interface Props {
   defaultValue: TableDataCreateData;
   onSubmit: (data: BusinessData) => void;
+  onChange: (data: BusinessData) => void;
   onCancel: () => void;
 }
 
@@ -29,12 +31,16 @@ const initialValue = {
   ref: {},
 };
 
-function FormCreateTableData({ defaultValue, onSubmit, onCancel }: Props): JSX.Element {
+function FormCreateTableData({ defaultValue, onSubmit, onCancel, onChange: _onChange }: Props): JSX.Element {
   const { appID } = useContext(FlowContext);
   const { tableID } = useContext(FlowTableContext);
   const [value, setValue] = useState<TableDataCreateData>(defaultValue || {});
   const [nextTable, setNextTable] = useState<string>('');
   const [switchTableModal, setSwitchTableModal] = useState(false);
+
+  useUpdateEffect(() => {
+    _onChange(value);
+  }, [value]);
 
   const {
     data: allTables = [],

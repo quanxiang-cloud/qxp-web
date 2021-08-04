@@ -19,12 +19,12 @@ export default function HandleInfo({ operation }: Props): JSX.Element {
     const detailInfo = { username: '', detail: '', backOffInfo: '', sendBack: '' };
     detailInfo.detail = operation.remark || '';
     switch (status) {
-      case 'STEP_BACK': // 回退
-        detailInfo.backOffInfo = operation.handleDesc || '';
-        break;
-      case 'SEND_BACK':
-        detailInfo.sendBack = operation.handleDesc || '';
-        break;
+    case 'STEP_BACK': // 回退
+      detailInfo.backOffInfo = operation.handleDesc || '';
+      break;
+    case 'SEND_BACK':
+      detailInfo.sendBack = operation.handleDesc || '';
+      break;
     }
 
     return detailInfo;

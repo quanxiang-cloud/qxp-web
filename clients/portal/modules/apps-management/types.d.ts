@@ -56,6 +56,8 @@ type Condition = {
   key?: string;
   op?: string;
   value?: Array<string | number | Date | { label: string, value: string }>;
+  valueFrom?: 'form' | 'fixedValue';
+  path?: string;
 }
 
 type PageInfo = {
@@ -103,4 +105,4 @@ type DeptAndUser = {
   name: string;
 }
 
-type Fields = ISchema & { id: string };
+type Fields = ISchema & { id: string, parentField?: string };

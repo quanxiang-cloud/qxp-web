@@ -23,6 +23,7 @@ import organizationpicker from '../../../registry/organization-select';
 import fileupload from '../../../registry/file-upload';
 import imageupload from '../../../registry/image-upload';
 import cascadeselector from '../../../registry/cascade-selector';
+import associateddata from '../../../registry/associated-data';
 import SubTableSchema from './fields/sub-table-schema';
 import SubTableColumns from './fields/sub-table-columns';
 import Subordination from './fields/subordination';
@@ -45,6 +46,7 @@ import * as organizationPickerConverter from '../../../registry/organization-sel
 import * as fileUploadConverter from '../../../registry/file-upload/convertor';
 import * as imageUploadConverter from '../../../registry/image-upload/convertor';
 import * as cascadeSelectorConverter from '../../../registry/cascade-selector/convertor';
+import * as associatedDataConverter from '../../../registry/associated-data/convertor';
 import * as multipleSelectorConvertor
   from './sub-table-schema-config/config-field/multiple-select/convertor';
 
@@ -67,24 +69,25 @@ export const COMPONENTS: Record<string, JSXElementConstructor<ISchemaFieldCompon
   datasetselector: DataSetSelector,
 };
 
-export const CONFIG_COMPONENTS: Record<
-    string, Omit<FormBuilder.SourceElement<any>, 'displayOrder'>
-  > = {
-    ...COMPONENTS,
-    input,
-    textarea,
-    radiogroup,
-    checkboxgroup,
-    numberpicker,
-    datepicker,
-    select,
-    multipleselect,
-    userpicker,
-    organizationpicker,
-    fileupload,
-    imageupload,
-    cascadeselector,
-  };
+export type KeyOfConfigComponent = keyof typeof CONFIG_COMPONENTS;
+
+export const CONFIG_COMPONENTS = {
+  ...COMPONENTS,
+  input,
+  textarea,
+  radiogroup,
+  checkboxgroup,
+  numberpicker,
+  datepicker,
+  select,
+  multipleselect,
+  userpicker,
+  organizationpicker,
+  fileupload,
+  imageupload,
+  cascadeselector,
+  associateddata,
+};
 
 export const SUPPORTED_COMPONENTS_NAMES = [
   'input', 'textarea',
@@ -93,7 +96,7 @@ export const SUPPORTED_COMPONENTS_NAMES = [
   'select', 'multipleselect',
   'userpicker', 'organizationpicker',
   'fileupload', 'imageupload',
-  'cascadeselector',
+  'cascadeselector', 'associateddata',
 ];
 
 export const LINKED_TABLE = { appID: '', tableID: '', tableName: '' };
@@ -123,6 +126,7 @@ export const SUB_TABLE_TYPES_SCHEMA_MAP: Record<string, ISchema> = {
   fileupload: fileUploadConverter.toSchema(fileUploadConverter.defaultConfig),
   imageupload: imageUploadConverter.toSchema(imageUploadConverter.defaultConfig),
   cascadeselector: cascadeSelectorConverter.toSchema(cascadeSelectorConverter.defaultConfig),
+  associateddata: associatedDataConverter.toSchema(associatedDataConverter.defaultConfig),
 };
 
 export const SUB_TABLE_TYPES = [
@@ -139,4 +143,5 @@ export const SUB_TABLE_TYPES = [
   { label: '附件', value: 'fileupload' },
   { label: '图片', value: 'imageupload' },
   { label: '级联选择', value: 'cascadeselector' },
+  { label: '关联数据', value: 'associateddata' },
 ];

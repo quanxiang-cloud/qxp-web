@@ -18,6 +18,7 @@ type Props = {
   showCheckbox?: boolean;
   className?: string;
   style?: React.CSSProperties;
+  filterConfig?: FilterConfig;
 }
 
 function FormAppDataTableWrap({
@@ -26,6 +27,7 @@ function FormAppDataTableWrap({
   tableHeaderBtnList,
   customColumns,
   showCheckbox,
+  filterConfig,
   allowRequestData = false,
   className = '',
   style,
@@ -58,6 +60,7 @@ function FormAppDataTableWrap({
           new Store({
             schema: schema,
             config: config,
+            filterConfig,
             tableHeaderBtnList,
             customColumns,
             showCheckbox,
