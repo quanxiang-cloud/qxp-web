@@ -105,4 +105,12 @@ type DeptAndUser = {
   name: string;
 }
 
-type Fields = ISchema & { id: string, parentField?: string };
+type SchemaField = ISchema & {
+  id: string;
+  fieldName: string;
+  componentName: string;
+  isLayoutComponent?: boolean;
+  parentField?: string;
+  tabIndex?: number;
+  'x-index'?: number;
+}

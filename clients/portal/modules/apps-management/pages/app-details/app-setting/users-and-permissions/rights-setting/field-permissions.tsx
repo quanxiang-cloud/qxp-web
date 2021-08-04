@@ -5,12 +5,12 @@ import { fieldsToSchema } from '@lib/schema-convert';
 import Checkbox from '@c/checkbox';
 
 type Props = {
-  fields: Fields[];
+  fields: SchemaField[];
   fieldPer: Record<string, any>;
   className?: string;
 }
 
-function FieldPermissions({ fields, className = '', fieldPer }: Props, ref: React.Ref<any>) {
+function FieldPermissions({ fields, className = '', fieldPer }: Props, ref: React.Ref<any>): JSX.Element {
   const [visibleField, setVisibleField] = useState<string[]>([]);
   const [revisableField, setRevisableField] = useState<string[]>([]);
   const [vIndeterminate, setVIndeterminate] = useState(false);
@@ -180,7 +180,7 @@ function FieldPermissions({ fields, className = '', fieldPer }: Props, ref: Reac
     return title;
   };
 
-  const getSuffix = (field: Fields, fields: Fields[]) => {
+  const getSuffix = (field: SchemaField, fields: SchemaField[]) => {
     const currentFieldName = field.id;
 
     const sf = fields.filter((itm) => itm.parentField === currentFieldName)

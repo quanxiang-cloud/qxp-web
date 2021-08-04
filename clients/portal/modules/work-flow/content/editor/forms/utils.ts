@@ -13,19 +13,19 @@ type Options = {
   noSystem?: boolean;
 }
 
-export const getSchemaFields = (schema: ISchema | undefined, options: Options = {}) => {
-  return Object.entries(schema?.properties || {})
-    .filter(([, field]) => {
-      const compName = field['x-component'];
-      const isSystem = !!get(field, 'x-internal.isSystem');
-      if (options.noSystem && isSystem) {
-        return false;
-      }
-      return compName && !excludeComps.includes(compName);
-    })
-    .map(([key, fieldSchema]) => {
-      return { label: fieldSchema.title as string, value: key };
-    });
+export const getSchemaFields = (schemaFields: SchemaField[] = [], options: Options = {}): {
+  label: string; value: any;
+}[] => {
+  return schemaFields.filter((schema) => {
+    const compName = schema.componentName;
+    const isSystem = !!get(schema, 'x-internal.isSystem');
+    if (options.noSystem && isSystem) {
+      return false;
+    }
+    return compName && !excludeComps.includes(compName);
+  }).map((schema) => {
+    return { label: schema.title as string, value: schema.id };
+  });
 };
 
 // filter target tables with group
@@ -67,7 +67,9 @@ const getCompDefaultValFromData = (compName: string, mergeData: Record<string, a
   return defaultVal;
 };
 
-export const transformSchema = (schema: ISchema, options: { filterSubTable?: boolean } = {}, mergeData: Record<string, any> = {}): ISchema => {
+export const transformSchema = (
+  schema: ISchema, options: { filterSubTable?: boolean } = {}, mergeData: Record<string, any> = {},
+): ISchema => {
   const properties = get(schema, 'properties', {});
   const mappedProps = mapSchemaProps(properties, (field) => {
     if (options.filterSubTable) {
@@ -86,20 +88,22 @@ export const transformSchema = (schema: ISchema, options: { filterSubTable?: boo
           type: 'object',
           'x-component': 'SubTableFields',
           'x-component-props': innerFieldProps,
-          properties: mapSchemaProps(subProps, (f) => f['x-component'] !== 'SubTable', (subKey, field, acc) => {
-            const curRules = get(mergeData, `${key}.createRules[0]`, {});
-            const defaultVal = getCompDefaultValFromData(compName, curRules, subKey);
-            Object.assign(acc, {
-              [[key, subKey].join('@')]: {
-                type: 'object',
-                'x-component': 'CustomField',
-                'x-component-props': { ...field, parentTableId },
-                properties: {
-                  [[key, subKey].join('@')]: { ...field, title: '', ...defaultVal },
+          properties: mapSchemaProps(subProps,
+            (f) => f['x-component'] !== 'SubTable',
+            (subKey, field, acc) => {
+              const curRules = get(mergeData, `${key}.createRules[0]`, {});
+              const defaultVal = getCompDefaultValFromData(compName, curRules, subKey);
+              Object.assign(acc, {
+                [[key, subKey].join('@')]: {
+                  type: 'object',
+                  'x-component': 'CustomField',
+                  'x-component-props': { ...field, parentTableId },
+                  properties: {
+                    [[key, subKey].join('@')]: { ...field, title: '', ...defaultVal },
+                  },
                 },
-              },
-            });
-          }),
+              });
+            }),
         },
       });
     } else {

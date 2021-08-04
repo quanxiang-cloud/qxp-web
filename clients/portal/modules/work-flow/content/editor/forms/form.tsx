@@ -3,6 +3,7 @@ import { useQuery } from 'react-query';
 
 import { getTableSchema } from '@lib/http-client';
 import type { NodeWorkForm, Data, BusinessData } from '@flowEditor/type';
+import schemaToFields, { notIsLayoutComponent } from '@lib/schema-convert';
 
 import FormDataForm from './form-data';
 import ApproveForm from './intermidiate/approve';
@@ -25,8 +26,8 @@ interface Props {
   onChange: (data: BusinessData) => void;
 }
 
-function useTableSchema(appID: string, tableID: string): ISchema | null {
-  const [schema, setSchema] = useState<ISchema | null>(null);
+function useTableSchema(appID: string, tableID: string): ReturnType<typeof schemaToFields> {
+  const [schema, setSchema] = useState<ISchema>();
 
   const { data, isLoading, isError } = useQuery<ISchema>(['FETCH_TABLE_SCHEMA', appID, tableID], () => {
     if (!tableID) {
@@ -48,7 +49,7 @@ function useTableSchema(appID: string, tableID: string): ISchema | null {
     setSchema(data);
   }, [data, isLoading, isError]);
 
-  return schema;
+  return schemaToFields(schema, notIsLayoutComponent);
 }
 
 const components: Record<string, JSXElementConstructor<any>> = {

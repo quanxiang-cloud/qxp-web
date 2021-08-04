@@ -56,15 +56,11 @@ export default function PersonPicker({ value, typeText, onChange } : Props): JSX
   const [showAddPersonModal, setShowAddPersonModal] = useState(false);
   const { tableSchema } = useContext(FlowTableContext);
 
-  const fieldOptions = Object.entries(tableSchema?.properties || {}).reduce((
-    cur: Option[], next,
-  ) => {
-    const [fieldName, fieldSchema] = next;
-    if (fieldSchema?.['x-component']?.toLowerCase() === 'userpicker') {
-      cur.push({ label: fieldSchema.title as string, value: fieldName });
-    }
-    return cur;
-  }, []) || [];
+  const fieldOptions = tableSchema.filter((schema) => {
+    return schema['x-component-props']?.toLowerCase() === 'userpicker';
+  }).map((schema) => {
+    return { label: schema.title as string, value: schema.fieldName };
+  });
 
   function onUpdate<T>(key: string, val: T): void {
     onChange?.({ ...value, [key]: val });

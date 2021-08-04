@@ -43,7 +43,7 @@ class AppPageDataStore {
   @observable selected: string[] = [];
   @observable formDataList: any[] = [];
   @observable total = 0;
-  @observable fields: Fields[] = [];
+  @observable fields: SchemaField[] = [];
   @observable schema: ISchema = {};
   @observable filterData: FormData = {};
   @observable tableColumns: UnionColumns<FormData>[] = [];
@@ -110,6 +110,8 @@ class AppPageDataStore {
     this.fields = Object.entries(schema.properties || {}).map(([key, fieldSchema]) => {
       return {
         id: key,
+        componentName: fieldSchema['x-component']?.toLowerCase() || '',
+        fieldName: key,
         ...fieldSchema,
       };
     });

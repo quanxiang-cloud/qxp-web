@@ -76,18 +76,13 @@ function FilterRule({ mutators, value }: ISchemaFieldComponentProps): JSX.Elemen
     };
   }) || [];
 
-  const tableSchemaRules = Object.entries(tableSchema?.properties || {}).reduce((
-    cur: CustomRule[], next,
-  ) => {
-    const [fieldName, fieldSchema] = next;
-    if (!WORK_TABLE_INTERNAL_FIELDS.includes(fieldName) &&
-      fieldSchema?.['x-component']?.toLowerCase() !== 'subtable' &&
-      fieldSchema?.['x-component']?.toLowerCase() !== 'associatedrecords'
-    ) {
-      cur.push({ name: fieldSchema.title as string, key: fieldName, type: fieldSchema.type || '' });
-    }
-    return cur;
-  }, []) || [];
+  const tableSchemaRules = tableSchema.filter((schema) => {
+    return !WORK_TABLE_INTERNAL_FIELDS.includes(schema.fieldName) &&
+      schema.componentName.toLowerCase() !== 'subtable' &&
+      schema.componentName.toLowerCase() !== 'associatedrecords';
+  }).map((schema) => ({
+    name: schema.title as string, key: schema.id, type: schema.type || '',
+  }));
 
   return (
     <>

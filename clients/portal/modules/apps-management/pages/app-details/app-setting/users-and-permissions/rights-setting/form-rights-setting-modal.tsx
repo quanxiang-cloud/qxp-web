@@ -27,9 +27,9 @@ type PerData = {
   authority: number,
 }
 
-function RightsSettingModal({ onCancel, rightsGroupID, pageForm }: Props) {
+function RightsSettingModal({ onCancel, rightsGroupID, pageForm }: Props): JSX.Element {
   const [submitLoading, setSubLoading] = useState(false);
-  const [fields, setFields] = useState<Fields[]>([]);
+  const [fields, setFields] = useState<SchemaField[]>([]);
   const [activeTab, setActiveTab] = useState('authorized');
   const [perData, setPerData] = useState<PerData>({
     conditions: {},
@@ -81,7 +81,7 @@ function RightsSettingModal({ onCancel, rightsGroupID, pageForm }: Props) {
     ]).then(([schemaRes, perDataRes]: any) => {
       const { schema } = schemaRes || {};
       if (schema) {
-        const fields = schemaToFields(schema) as Fields[];
+        const fields = schemaToFields(schema);
         setFields(fields.sort((a, b) => (a as any)['x-index'] - (b as any)['x-index']));
         const { dataAccess, filter, opt } = perDataRes as any;
         setPerData({
