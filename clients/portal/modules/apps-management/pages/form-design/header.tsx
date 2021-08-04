@@ -45,7 +45,7 @@ function FormDesignHeader(): JSX.Element {
   };
 
   const goPageDetails = (): void => {
-    history.push(`/apps/details/${appID}?pageID=${pageId}`);
+    history.push(`/apps/details/${appID}/page_setting?pageID=${pageId}`);
   };
 
   const reset = (): void => {
