@@ -18,7 +18,7 @@ export function handleFieldHighlight(
 ): void {
   const text = contentBlock.getText();
   let matchArr; let start;
-  const regex = new RegExp(nameStr.join('|'), 'g');
+  const regex = new RegExp(nameStr.filter((str) => !!str).join('|'), 'g');
   while ((matchArr = regex.exec(text)) !== null) {
     start = matchArr.index;
     callback(start, start + matchArr[0].length);
