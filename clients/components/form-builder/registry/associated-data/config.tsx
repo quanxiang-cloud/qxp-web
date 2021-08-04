@@ -17,6 +17,7 @@ import configSchema from './config-schema';
 interface Props {
   initialValue: AssociatedDataConfig;
   onChange: (params: AssociatedDataConfig) => void;
+  subTableSchema: ISchema;
 }
 
 const COMPONENTS = { Input, Select, Switch, RadioGroup: Radio.Group, FilterConfig };
@@ -56,8 +57,9 @@ function getTableFieldsToOptions(
   });
 }
 
-function AssociatedDataConfig({ initialValue, onChange }: Props): JSX.Element {
-  const { appID, pageID, schema } = useContext(StoreContext);
+function AssociatedDataConfig({ initialValue, onChange, subTableSchema }: Props): JSX.Element {
+  const { appID, pageID, schema: _schema } = useContext(StoreContext);
+  const schema = subTableSchema || _schema;
   const actions = createAsyncFormActions();
   const { setFieldState } = actions;
 

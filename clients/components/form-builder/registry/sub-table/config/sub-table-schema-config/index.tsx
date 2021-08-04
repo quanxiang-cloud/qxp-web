@@ -3,16 +3,17 @@ import { Button } from 'antd';
 import { createFormActions, SchemaForm } from '@formily/antd';
 
 import { ItemActionsContext, ActionsContext } from '../context';
-import { CONFIG_COMPONENTS, COMPONENTS } from '../constants';
+import { CONFIG_COMPONENTS, COMPONENTS, KeyOfConfigComponent } from '../constants';
 
 interface Props {
   currentSubSchema?: ISchema;
-  currentSchemaType?: string;
+  currentSchemaType?: KeyOfConfigComponent;
   onChange: (value: any) => void;
+  subTableSchema: ISchema;
 }
 
 export default function SubTableSchemaConfig({
-  currentSubSchema, onChange, currentSchemaType,
+  currentSubSchema, onChange, currentSchemaType, subTableSchema,
 }: Props): JSX.Element | null {
   const itemActions = useMemo(() => createFormActions(), []);
   const { actions } = useContext(ActionsContext);
@@ -41,6 +42,7 @@ export default function SubTableSchemaConfig({
         <CurrentSubSchemaForm
           initialValue={currentSubSchemaConfig}
           onChange={onChange}
+          subTableSchema={subTableSchema}
         />
       ) : (
         <SchemaForm

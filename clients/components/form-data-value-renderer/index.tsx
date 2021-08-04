@@ -59,7 +59,9 @@ function labelValueRenderer(value: FormDataValue): string {
 }
 
 function statisticValueRender({ schema, value }: ValueRendererProps): string {
-  const { decimalPlaces, roundDecimal, displayFieldNull } = schema['x-component-props'] as { decimalPlaces: number, roundDecimal: RoundMethod, displayFieldNull: string };
+  const { decimalPlaces, roundDecimal, displayFieldNull } = schema['x-component-props'] as {
+    decimalPlaces: number, roundDecimal: RoundMethod, displayFieldNull: string
+  };
   let method = Math.round;
   if (roundDecimal === 'round-up') {
     method = Math.ceil;

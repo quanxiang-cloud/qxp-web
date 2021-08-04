@@ -1,5 +1,6 @@
 import React, { useState, useContext, useEffect, useRef } from 'react';
 import { update, isUndefined } from 'lodash';
+import type { Subscription } from 'rxjs';
 import {
   SchemaForm, FormEffectHooks,
 } from '@formily/antd';
@@ -7,12 +8,12 @@ import {
 import configSchema from './config-schema';
 import { SubTableConfig } from '../convertor';
 import SubTableSchemaConfig from './sub-table-schema-config';
-import { COMPONENTS, CONFIG_COMPONENTS } from './constants';
+import { COMPONENTS, CONFIG_COMPONENTS, KeyOfConfigComponent } from './constants';
 
 import { StoreContext, ActionsContext } from './context';
 
 interface Props {
-  onChange: (value: any) => void;
+  onChange: (value: unknown) => void;
   initialValue: SubTableConfig;
 }
 
@@ -22,7 +23,7 @@ export default function ConfigForm({ onChange, initialValue: _initValue }: Props
   const [currentFieldKey, setCurrenFieldKey] = useState('');
   const { actions } = useContext(ActionsContext);
   const { appID } = useContext(StoreContext);
-  const subRef = useRef<any>();
+  const subRef = useRef<Subscription>();
 
   useEffect(() => {
     return () => subRef.current?.unsubscribe();
@@ -46,27 +47,29 @@ export default function ConfigForm({ onChange, initialValue: _initValue }: Props
 
   function onFieldConfigValueChange(value: any): void {
     const { subTableSchema } = initialValue;
-    update(subTableSchema, `properties.${currentFieldKey}`, (schema) => ({
-      ...schema,
-      ...CONFIG_COMPONENTS[currentSchemaType]?.toSchema(value),
-    }));
+    update(subTableSchema, `properties.${currentFieldKey}`, (schema) => {
+      return {
+        ...schema,
+        ...CONFIG_COMPONENTS[currentSchemaType as KeyOfConfigComponent]?.toSchema(value),
+      };
+    });
     actions.setFieldState('Fields.subTableSchema', (state) => state.value = subTableSchema);
     onChange(initialValue);
   }
 
-  function handleChange(value: Record<string, any>): void {
+  function handleChange(value: Record<string, unknown>): void {
     onChange(value);
   }
 
   const currentSubSchema = initialValue.subTableSchema?.properties?.[currentFieldKey];
-  const currentSchemaType = currentSubSchema?.['x-component']?.toLowerCase() as string;
+  const currentSchemaType = currentSubSchema?.['x-component']?.toLowerCase() as KeyOfConfigComponent;
 
   return (
     <ActionsContext.Provider value={{ actions }}>
       <SchemaForm
         initialValues={initialValue}
         components={COMPONENTS}
-        onChange={handleChange}
+        onChange={(value) => handleChange(value)}
         schema={configSchema}
         actions={actions}
         hidden={!!currentSubSchema}
@@ -76,6 +79,7 @@ export default function ConfigForm({ onChange, initialValue: _initValue }: Props
         currentSubSchema={currentSubSchema}
         currentSchemaType={currentSchemaType}
         onChange={onFieldConfigValueChange}
+        subTableSchema={initialValue.subTableSchema}
       />
     </ActionsContext.Provider>
   );
