@@ -8,6 +8,7 @@ import logger from '@lib/logger';
 import registry from './registry';
 import visibleHiddenLinkageEffect from './linkages/visible-hidden';
 import defaultValueLinkageEffect from './linkages/default-value';
+import formValueToFilter from './linkages/form-value-to-filter';
 import calculationFormulaEffect from './linkages/calculation-formula';
 import { wrapSchemaByMegaLayout } from './utils';
 
@@ -100,6 +101,7 @@ function FormRenderer(
             // find all defaultValueLinkages and run defaultValueLinkageEffect
             defaultValueLinkageEffect(schema, actions);
             calculationFormulaEffect(schema, actions);
+            formValueToFilter(schema, actions);
           }}
         >
           {children as JSX.Element}

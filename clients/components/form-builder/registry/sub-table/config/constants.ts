@@ -69,25 +69,25 @@ export const COMPONENTS: Record<string, JSXElementConstructor<ISchemaFieldCompon
   datasetselector: DataSetSelector,
 };
 
-export const CONFIG_COMPONENTS: Record<
-    string, Omit<FormBuilder.SourceElement<any>, 'displayOrder'>
-  > = {
-    ...COMPONENTS,
-    input,
-    textarea,
-    radiogroup,
-    checkboxgroup,
-    numberpicker,
-    datepicker,
-    select,
-    multipleselect,
-    userpicker,
-    organizationpicker,
-    fileupload,
-    imageupload,
-    cascadeselector,
-    associateddata,
-  };
+export type KeyOfConfigComponent = keyof typeof CONFIG_COMPONENTS;
+
+export const CONFIG_COMPONENTS = {
+  ...COMPONENTS,
+  input,
+  textarea,
+  radiogroup,
+  checkboxgroup,
+  numberpicker,
+  datepicker,
+  select,
+  multipleselect,
+  userpicker,
+  organizationpicker,
+  fileupload,
+  imageupload,
+  cascadeselector,
+  associateddata,
+};
 
 export const SUPPORTED_COMPONENTS_NAMES = [
   'input', 'textarea',

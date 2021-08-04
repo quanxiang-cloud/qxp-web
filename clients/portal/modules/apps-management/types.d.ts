@@ -57,6 +57,7 @@ type Condition = {
   op?: string;
   value?: Array<string | number | Date | { label: string, value: string }>;
   valueFrom?: 'form' | 'fixedValue';
+  path?: string;
 }
 
 type PageInfo = {
