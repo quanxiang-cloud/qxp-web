@@ -26,7 +26,7 @@ interface Props {
   onChange: (data: BusinessData) => void;
 }
 
-function useTableSchema(appID: string, tableID: string): ReturnType<typeof schemaToFields> {
+function useTableSchema(appID: string, tableID: string): [ReturnType<typeof schemaToFields>, boolean] {
   const [schema, setSchema] = useState<ISchema>();
 
   const { data, isLoading, isError } = useQuery<ISchema>(['FETCH_TABLE_SCHEMA', appID, tableID], () => {
@@ -49,7 +49,7 @@ function useTableSchema(appID: string, tableID: string): ReturnType<typeof schem
     setSchema(data);
   }, [data, isLoading, isError]);
 
-  return schemaToFields(schema, notIsLayoutComponent);
+  return [schemaToFields(schema, notIsLayoutComponent), isLoading];
 }
 
 const components: Record<string, JSXElementConstructor<any>> = {
@@ -84,9 +84,9 @@ export default function Form({
     });
   }
   const { appID } = useContext(FlowContext);
-  const sourceTableSchema = useTableSchema(appID, workForm?.value || '');
+  const [sourceTableSchema, isLoading] = useTableSchema(appID, workForm?.value || '');
 
-  if (!sourceTableSchema.length) {
+  if (isLoading) {
     // todo handle error case
     return (<div>loading...</div>);
   }
