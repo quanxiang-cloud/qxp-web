@@ -53,11 +53,11 @@ const COLLECTION_OPERATORS = [
   },
 ];
 
-function FilterRule({ mutators, value }: ISchemaFieldComponentProps): JSX.Element {
+function FilterRule({ mutators, value }: ISchemaFieldComponentProps): JSX.Element | null {
   const { tableSchema } = useContext(FlowTableContext);
   const formulaRef = useRef<RefProps>(null);
   const { flowID } = useContext(FlowContext);
-  const { data: variables = [] } = useQuery(['FETCH_PROCESS_VARIABLES'], () => {
+  const { data: variables = [], isLoading } = useQuery(['FETCH_PROCESS_VARIABLES'], () => {
     return getFlowVariables(flowID);
   });
 
@@ -83,6 +83,10 @@ function FilterRule({ mutators, value }: ISchemaFieldComponentProps): JSX.Elemen
   }).map((schema) => ({
     name: schema.title as string, key: schema.id, type: schema.type || '',
   }));
+
+  if (isLoading) {
+    return null;
+  }
 
   return (
     <>
