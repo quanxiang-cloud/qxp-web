@@ -1,55 +1,91 @@
+import { isEmpty } from 'lodash';
+
+import { not } from '@lib/utils';
+
 type Field = {
   [key: string]: any;
 }
 
-type Properties = {
+export type Properties = {
   [key: string]: ISchema;
 }
 
+export type Option = {
+  label: string;
+  value: string;
+  children?: Option[];
+  type?: string;
+  isSystem?: boolean;
+};
+
+export type Options = Option[];
+
 type FilterFunc = (field: ISchema) => boolean
 
-const schemaToFields = ({ properties }: ISchema, filterFunc?: FilterFunc): Array<Field> => {
-  if (!properties) return [];
+export function schemaToOptions(schema: ISchema, filterFunc?: FilterFunc): Options {
+  return schemaToFields(schema, filterFunc).map((field: Field)=> ({
+    label: field.title as string,
+    value: field.id,
+    type: field.type as string,
+    isSystem: field['x-internal']?.isSystem,
+  }));
+}
 
-  const _field: Field[] = [];
+export function isLayoutComponent(field: Field): boolean {
+  return field.isLayoutComponent;
+}
 
-  const recursionProperties = (properties: Record<string, any>): void => {
-    Object.keys(properties)
-      .forEach((key) => {
-        const currentSchema = properties[key];
-        const componentName = currentSchema['x-component']?.toLowerCase();
+export const notIsLayoutComponent = not(isLayoutComponent);
 
-        if (!componentName) return;
+export function schemaToMap(schema: ISchema, filterFunc?: FilterFunc): Record<string, Field> {
+  const fields = schemaToFields(schema, filterFunc);
+  return fields.reduce((fieldsMap: Record<string, Field>, field: Field) => {
+    fieldsMap[field.fieldName] = field;
+    return fieldsMap;
+  }, {});
+}
 
-        const isLayoutComponent = currentSchema?.isLayoutComponent;
-        const parentField = currentSchema?.['x-internal']?.parentField;
-        const tabIndex = currentSchema?.['x-internal']?.tabIndex;
-        const xIndex = currentSchema?.['x-index'];
+const schemaToFields = (
+  { properties }: ISchema, filterFunc?: FilterFunc, fields: Field[] = [],
+): Array<Field> => {
+  if (!properties || isEmpty(properties)) return fields;
 
-        const field = {
-          ...currentSchema,
-          fieldName: key,
-          componentName: componentName,
-          isLayoutComponent,
-          parentField,
-          tabIndex,
-          'x-index': xIndex,
-          id: key,
-        };
-
-        if (currentSchema.properties) {
-          recursionProperties(currentSchema.properties);
-        }
-
-        if (filterFunc && !filterFunc(currentSchema)) return;
-
-        _field.push(field);
-      });
+  const newProperties: ISchema = {
+    properties: {},
   };
 
-  recursionProperties(properties);
+  Object.keys(properties).forEach((key) => {
+    const currentSchema: ISchema = properties[key];
+    const componentName = currentSchema['x-component']?.toLowerCase();
 
-  return _field;
+    if (!componentName) return;
+
+    const isLayoutComponent = currentSchema?.isLayoutComponent;
+    const parentField = currentSchema?.['x-internal']?.parentField;
+    const tabIndex = currentSchema?.['x-internal']?.tabIndex;
+    const xIndex = currentSchema?.['x-index'];
+
+    const field = {
+      ...currentSchema,
+      fieldName: key,
+      componentName: componentName,
+      isLayoutComponent,
+      parentField,
+      tabIndex,
+      'x-index': xIndex,
+      id: key,
+    };
+
+    if (currentSchema.properties && newProperties.properties) {
+      newProperties.properties = Object.assign(newProperties.properties, currentSchema.properties);
+    }
+
+    if (filterFunc && !filterFunc(currentSchema)) return;
+
+    fields.push(field);
+  });
+
+  return schemaToFields(newProperties, filterFunc, fields);
 };
 
 export const fieldsToSchema = (fields: Array<Field>): ISchema => {

@@ -331,3 +331,9 @@ export function getUserDepartment(user: CurrentUser): UserDepartment {
   }
   return dep;
 }
+
+export function not<A extends any[]>(fn: (...args: [...A]) => boolean) {
+  return (...args: [...A]): boolean => {
+    return !fn(...args);
+  };
+}
