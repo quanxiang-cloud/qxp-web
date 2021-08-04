@@ -41,6 +41,7 @@ class AppDetailsStore {
     rootId: 'ROOT',
     items: {},
   };
+  @observable modalType = '';
 
   constructor() {
     this.destroySetCurPage = reaction(() => {
@@ -55,6 +56,11 @@ class AppDetailsStore {
   @action
   setPageID = (pageID: string) => {
     this.pageID = pageID;
+  }
+
+  @action
+  setModalType = (modalType : string): void => {
+    this.modalType = modalType;
   }
 
   @action

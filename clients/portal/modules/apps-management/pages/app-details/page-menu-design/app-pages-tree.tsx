@@ -20,16 +20,16 @@ import { movePage } from '../api';
 
 const PADDING_PER_LEVEL = 16;
 
-function getFirstPage(menus: ItemId[], source: Record<string, TreeItem>): PageInfo | undefined {
+function getFirstPageItem(menus: ItemId[], source: Record<string, TreeItem>): TreeItem | undefined {
   for (const menuKey of menus) {
     const menu = source[menuKey];
     if (menu.data.menuType === 0) {
-      return menu.data;
+      return menu;
     } else {
       if (menu.hasChildren) {
-        const firstPage: PageInfo | undefined = getFirstPage(menu.children, source);
-        if (firstPage) {
-          return firstPage;
+        const firstPageItem: TreeItem | undefined = getFirstPageItem(menu.children, source);
+        if (firstPageItem) {
+          return firstPageItem;
         }
       }
     }
@@ -52,7 +52,7 @@ const getIcon = (item: TreeItem) => {
 type NodeRenderProps = RenderItemParams & {
   onMenuClick: (key: string, treeItem: TreeItem) => void;
   isActive: boolean;
-  onSelectPage: (pageInfo: PageInfo) => void;
+  onSelectPage: (treeItem: TreeItem) => void;
 }
 
 function NodeRender(
@@ -67,7 +67,7 @@ function NodeRender(
         label: (
           <div className="flex items-center">
             <Icon name="create" size={16} className="mr-8" />
-            <span className="font-normal">修改名称与图标</span>
+            <span className="font-normal">编辑名称与图标</span>
           </div>
         ),
       } : {
@@ -93,7 +93,7 @@ function NodeRender(
 
   function handleClick(): void {
     if (isPage) {
-      onSelectPage(item.data);
+      onSelectPage(item);
       return;
     }
 
@@ -141,7 +141,7 @@ function NodeRender(
 
 type Props = {
   onMenuClick: (key: string, treeItem: TreeItem) => void;
-  onSelectPage: (pageInfo: PageInfo) => void;
+  onSelectPage: (treeItem: TreeItem) => void;
   selectedPage?: PageInfo;
   tree: TreeData;
   onChange: (treeData: TreeData) => void;
@@ -151,15 +151,16 @@ export default class PureTree extends Component<Props> {
   componentDidMount() {
     const { tree } = this.props;
     if (!this.props.selectedPage?.id) {
-      const firstPage = getFirstPage(tree.items.ROOT.children, tree.items);
-      if (!firstPage) {
+      const firstPageItem = getFirstPageItem(tree.items.ROOT.children, tree.items);
+      if (!firstPageItem) {
         return;
       }
-      this.props.onSelectPage(firstPage);
-      if (firstPage.groupID) {
-        this.props.onChange(mutateTree(tree, firstPage.groupID, { isExpanded: true }));
+      this.props.onSelectPage(firstPageItem);
+      if (firstPageItem.data.groupID) {
+        this.props.onChange(mutateTree(tree, firstPageItem.data.groupID, { isExpanded: true }));
       }
     } else {
+      this.props.onSelectPage(tree.items[this.props.selectedPage?.id]);
       if (this.props.selectedPage.groupID) {
         this.props.onChange(mutateTree(tree, this.props.selectedPage.groupID, { isExpanded: true }));
       }
