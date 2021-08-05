@@ -50,7 +50,7 @@ export const getStoreInitialData = (): StoreValue => {
         parentID: [startID],
         childrenID: [],
       }),
-      edgeBuilder(startID, endID),
+      ...edgeBuilder(startID, endID),
     ],
   };
 };
