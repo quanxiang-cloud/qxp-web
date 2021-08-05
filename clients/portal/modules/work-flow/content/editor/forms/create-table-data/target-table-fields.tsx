@@ -27,7 +27,7 @@ function TargetTableFields({ appId, tableId }: Props): JSX.Element {
 
   const getTableIdByFieldKey = (key: string): string => {
     const field = tableSchemaMap[key];
-    if (field && field.componentName === 'SubTable') {
+    if (field && field.componentName === 'subtable') {
       return get(field, 'x-component-props.tableID', '');
     }
     return key;
@@ -89,10 +89,12 @@ function TargetTableFields({ appId, tableId }: Props): JSX.Element {
     );
   }
 
+  const schemaToTransform = { ...schema, properties: tableSchemaMap };
+
   const renderNormalFields = (): JSX.Element => {
     return (
       <FormRenderer
-        schema={transformSchema(tableSchemaMap, {}, data.createRule)}
+        schema={transformSchema(schemaToTransform, {}, data.createRule)}
         onFormValueChange={onChangeFixedValue}
         additionalComponents={{ CustomField }}
         defaultValue={data}
@@ -101,7 +103,7 @@ function TargetTableFields({ appId, tableId }: Props): JSX.Element {
   };
 
   const renderSubTableFields = (): JSX.Element | null => {
-    const subTableFields = transformSchema(tableSchemaMap, { filterSubTable: true }, data.ref);
+    const subTableFields = transformSchema(schemaToTransform, { filterSubTable: true }, data.ref);
     if (!Object.keys(subTableFields?.properties || {}).length) {
       return null;
     }

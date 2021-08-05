@@ -15,6 +15,7 @@ import Button from '@c/button';
 import Radio from '@c/radio';
 import FormulaEditor, { RefProps } from '@c/formula-editor';
 import { getFormFieldSchema } from '@flowEditor/forms/api';
+import schemaToFields, { notIsLayoutComponent } from '@lib/schema-convert';
 
 import store, {
   updateStore,
@@ -61,19 +62,16 @@ export default function GlobalConfig(): JSX.Element | null {
   const formDataElement = getFormDataElement();
   const { data: fieldList, isLoading } = useQuery(
     ['GET_FIELD_LIST', formDataElement.data.businessData.form.value, appID],
-    ({ queryKey }) => {
-      return getFormFieldSchema({ queryKey }).then((schema) => {
-        return Object.entries(schema.properties || {}).filter(([key, fieldSchema]) => {
-          return key !== '_id' &&
-            fieldSchema['x-component'] !== 'SubTable' &&
-            fieldSchema['x-component'] !== 'AssociatedRecords';
-        }).map(([key, field]) => {
-          return {
-            label: field.title,
-            value: key,
-          };
-        });
-      });
+    async ({ queryKey }) => {
+      const schema = await getFormFieldSchema({ queryKey });
+      const schemaFields = schemaToFields(schema, notIsLayoutComponent);
+      return schemaFields.filter((fieldSchema) => {
+        return fieldSchema.id !== '_id' && !['subtable', 'associatedrecords'].includes(
+          fieldSchema.componentName);
+      }).map((fieldSchema) => ({
+        label: fieldSchema.title,
+        value: fieldSchema.id,
+      }));
     },
     { refetchOnWindowFocus: false },
   );

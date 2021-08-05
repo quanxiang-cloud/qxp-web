@@ -57,7 +57,7 @@ export default function PersonPicker({ value, typeText, onChange } : Props): JSX
   const { tableSchema } = useContext(FlowTableContext);
 
   const fieldOptions = tableSchema.filter((schema) => {
-    return schema.componentName?.toLowerCase() === 'userpicker';
+    return schema.componentName === 'userpicker';
   }).map((schema) => {
     return { label: schema.title as string, value: schema.fieldName };
   });

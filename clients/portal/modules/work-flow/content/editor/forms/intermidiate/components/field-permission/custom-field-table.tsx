@@ -16,7 +16,7 @@ interface Props {
   fields: CustomFieldPermission[];
   updateFields: (value: CustomFieldPermission[]) => void;
   editable: boolean;
-  schemaMap: Record<string, ISchema>;
+  schemaMap: Record<string, SchemaField>;
 }
 
 export default function CustomFieldTable({
@@ -125,9 +125,9 @@ export default function CustomFieldTable({
     );
   }
 
-  function variableOptionsFilterByType(schema: ISchema) {
+  function variableOptionsFilterByType(schema: SchemaField) {
     return ({ type }: Partial<FlowVariableOption>): boolean => {
-      const componentName = schema?.['x-component']?.toLowerCase() || '';
+      const componentName = schema.componentName || '';
       const types = FORM_COMPONENT_VARIABLE_MAP[componentName as keyof typeof FORM_COMPONENT_VARIABLE_MAP];
       return type ? types?.includes(type) : false;
     };
@@ -137,7 +137,7 @@ export default function CustomFieldTable({
     model: any, key: 'initialValue' | 'submitValue', editable: boolean,
   ): JSX.Element | null {
     const schema = schemaMap[model.cell.row.id];
-    const componentName = schema?.['x-component']?.toLowerCase();
+    const componentName = schema.componentName;
     const isSubTable = componentName === 'subtable';
     const isAssociatedRecords = componentName === 'associatedrecords';
     if (editable && schema && !isSubTable && !isAssociatedRecords) {

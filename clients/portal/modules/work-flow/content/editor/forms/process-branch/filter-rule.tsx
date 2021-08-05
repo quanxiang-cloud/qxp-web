@@ -78,8 +78,8 @@ function FilterRule({ mutators, value }: ISchemaFieldComponentProps): JSX.Elemen
 
   const tableSchemaRules = tableSchema.filter((schema) => {
     return !WORK_TABLE_INTERNAL_FIELDS.includes(schema.fieldName) &&
-      schema.componentName.toLowerCase() !== 'subtable' &&
-      schema.componentName.toLowerCase() !== 'associatedrecords';
+      schema.componentName !== 'subtable' &&
+      schema.componentName !== 'associatedrecords';
   }).map((schema) => ({
     name: schema.title as string, key: schema.id, type: schema.type || '',
   }));

@@ -1,4 +1,4 @@
-import { isEmpty } from 'lodash';
+import { isEmpty, cloneDeep } from 'lodash';
 
 import { not } from '@lib/utils';
 
@@ -44,7 +44,7 @@ export function schemaToMap(schema?: ISchema, filterFunc?: FilterFunc): Record<s
 const schemaToFields = (
   schema?: ISchema, filterFunc?: FilterFunc, fields: SchemaField[] = [],
 ): Array<SchemaField> => {
-  const { properties } = schema || {};
+  const { properties } = cloneDeep(schema || {});
   if (!properties || isEmpty(properties)) return fields;
 
   const newProperties: ISchema = {
@@ -61,6 +61,11 @@ const schemaToFields = (
     const parentField = currentSchema?.['x-internal']?.parentField;
     const tabIndex = currentSchema?.['x-internal']?.tabIndex;
     const xIndex = currentSchema?.['x-index'];
+
+    if (componentName === 'subtable') {
+      const items = currentSchema.items as ISchema;
+      items.properties = schemaToMap(items, filterFunc);
+    }
 
     const field = {
       ...currentSchema,
