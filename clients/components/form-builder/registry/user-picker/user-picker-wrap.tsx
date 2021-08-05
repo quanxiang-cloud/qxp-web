@@ -19,13 +19,14 @@ const UserPickerWrap = (p: ISchemaFieldComponentProps): JSX.Element => {
       p.form.setFieldState(p.name, (state) => {
         state.props.enum = options;
       });
-    } else {
-      p.mutators.change(
-        (p.initialValue.length && p.initialValue) ||
-        (p.props.defaultValues.length && p.props.defaultValues) ||
-        [],
-      );
+      return;
     }
+
+    p.mutators.change(
+      (p.initialValue.length && p.initialValue) ||
+      (p.props.defaultValues.length && p.props.defaultValues) ||
+      [],
+    );
   }, [optionalRange, p.props['x-component-props'].mode]);
 
   const xComponentsProps = Object.assign({}, p.props['x-component-props'], {

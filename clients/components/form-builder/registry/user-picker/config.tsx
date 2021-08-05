@@ -15,6 +15,8 @@ import { DefaultConfig } from './convertor';
 import { EnumReadOnly, EnumOptionalRange, EnumMultiple } from './messy/enum';
 
 const { onFieldInputChange$ } = FormEffectHooks;
+const actions = createFormActions();
+const { setFieldState } = actions;
 
 const Field = (props: IAntdFormItemProps): JSX.Element => (
   <MegaLayout labelAlign="top"><FormItem {...props} /></MegaLayout>
@@ -27,8 +29,6 @@ interface Props {
 
 const UserPickerConfigForm = ({ initialValue, onChange }: Props): JSX.Element => {
   const { appID } = useContext(StoreContext);
-  const actions = createFormActions();
-  const { setFieldState } = actions;
 
   useEffect(() => {
     onChange({ ...initialValue, appID });
