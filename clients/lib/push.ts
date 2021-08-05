@@ -7,7 +7,7 @@ let retryCount = 0;
 
 class PushServer {
   connection: any = null;
-  retryLimit = 10;
+  retryLimit = 5;
   timerHeartbeat: any = null;
   heartbeatInterval = 30000;
   listenersMap: Map<string, Set<SocketEventListener>> = new Map();
@@ -49,9 +49,9 @@ class PushServer {
 
   closeConnection(): void {
     if (this.connection) {
-      this.connection.close();
       this.detachEvents();
       this.stopHeartbeat();
+      this.connection.close();
     }
   }
 
@@ -60,7 +60,7 @@ class PushServer {
       this.heartbeat();
     };
 
-    this.connection.onmessage = ((data: any) => {
+    this.connection.onmessage = (({data}: MessageEvent) => {
       if (typeof data === 'string') {
         try {
           this.dispatchEvent(JSON.parse(data));
@@ -86,6 +86,7 @@ class PushServer {
   }
 
   onlineHandler = () => {
+    retryCount = 0; // reset retry count
     this.setUp(() => {
       this.attachEvents();
       this.heartbeat();
@@ -97,7 +98,11 @@ class PushServer {
   }
 
   heartbeat() {
-    const echo = () => this.connection.readyState === WebSocket.OPEN && this.connection.send('echo');
+    const echo = () => {
+      if (this.connection.readyState === WebSocket.OPEN) {
+        this.connection.send('echo');
+      }
+    }
 
     this.stopHeartbeat();
     // trigger first heartbeat
@@ -115,8 +120,6 @@ class PushServer {
   }
 
   setUp = (cb?: any) => {
-    // reset retry count
-    retryCount = 0;
     this.initConnection().then(cb || this.attachEvents);
   }
 
