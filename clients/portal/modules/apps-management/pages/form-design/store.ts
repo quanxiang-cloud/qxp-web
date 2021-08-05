@@ -4,6 +4,7 @@ import { UnionColumns } from 'react-table';
 
 import FormStore from '@c/form-builder/store';
 import toast from '@lib/toast';
+import { propertiesFlat } from '@lib/schema-convert';
 import AppPageDataStore from '@c/form-app-data-table/store';
 import { TableConfig } from '@c/form-app-data-table/type';
 import { setFixedParameters } from '@c/form-app-data-table/utils';
@@ -48,12 +49,16 @@ class FormDesignStore {
   @observable filters: Filters = [];
 
   @computed get fieldsMap(): Record<string, ISchema> {
-    return this.formStore?.schema?.properties || {};
+    return propertiesFlat(this.formStore?.schema?.properties) || {};
   }
 
   @computed get fieldList(): PageField[] {
-    return Object.entries(toJS(this.fieldsMap)).filter(([key, fieldSchema]) => {
-      if (key === '_id' || !SHOW_FIELD.includes(fieldSchema['x-component'] as string)) {
+    const _properties = toJS(this.fieldsMap);
+
+    return Object.entries(propertiesFlat(_properties)).filter(([key, fieldSchema]) => {
+      if (key === '_id' ||
+        !SHOW_FIELD.includes(fieldSchema['x-component'] as string) ||
+        fieldSchema.isLayoutComponent) {
         return false;
       }
 
@@ -127,7 +132,6 @@ class FormDesignStore {
       if (!this.pageTableColumns) {
         return [];
       }
-
       const column: UnionColumns<any>[] = this.pageTableColumns.map((key) => {
         return {
           id: key,

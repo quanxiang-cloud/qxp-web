@@ -4,6 +4,7 @@ import { UnionColumns } from 'react-table';
 
 import PageLoading from '@c/page-loading';
 import { getTableSchema } from '@lib/http-client';
+import { propertiesFlat } from '@lib/schema-convert';
 
 import FormAppDataContent from './form-app-data-content';
 import Store from './store';
@@ -58,7 +59,7 @@ function FormAppDataTableWrap({
 
         setStore(
           new Store({
-            schema: schema,
+            schema: { ...schema, properties: propertiesFlat(schema?.properties) },
             config: config,
             filterConfig,
             tableHeaderBtnList,

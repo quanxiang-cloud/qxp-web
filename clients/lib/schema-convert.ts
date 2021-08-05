@@ -1,4 +1,5 @@
-import { isEmpty } from 'lodash';
+import isEmpty from 'lodash/isEmpty';
+import groupBy from 'lodash/groupBy';
 
 import { not } from '@lib/utils';
 
@@ -23,7 +24,7 @@ export type Options = Option[];
 type FilterFunc = (field: ISchema) => boolean
 
 export function schemaToOptions(schema: ISchema, filterFunc?: FilterFunc): Options {
-  return schemaToFields(schema, filterFunc).map((field: Field)=> ({
+  return schemaToFields(schema, filterFunc).map((field: Field) => ({
     label: field.title as string,
     value: field.id,
     type: field.type as string,
@@ -122,3 +123,22 @@ export const fieldsToSchema = (fields: Array<Field>): ISchema => {
 };
 
 export default schemaToFields;
+
+/**
+ * expand the internal properties of the layout component
+ * @param {ISchema} properties:ISchema schema结构
+ * @return {ISchema} flatProperties 展开的是properties结构
+ */
+export function propertiesFlat(properties: ISchema | undefined): Field {
+  if (typeof properties === 'undefined') return {};
+  const formatSchema = (schemaObj: { [key: string]: ISchema[] }): { [key: string]: ISchema } => {
+    const tmpObj: { [key: string]: ISchema } = {};
+    Object.entries(schemaObj).map(([key, schema]) => {
+      tmpObj[key] = Array.isArray(schema) ? schema[0] : schema;
+    });
+
+    return tmpObj || {};
+  };
+
+  return formatSchema(groupBy(schemaToFields({ properties } as ISchema), 'id'));
+}
