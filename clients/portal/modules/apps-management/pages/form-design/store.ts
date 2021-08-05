@@ -54,7 +54,6 @@ class FormDesignStore {
 
   @computed get fieldList(): PageField[] {
     const _properties = toJS(this.fieldsMap);
-
     return Object.entries(propertiesFlat(_properties)).filter(([key, fieldSchema]) => {
       if (key === '_id' ||
         !SHOW_FIELD.includes(fieldSchema['x-component'] as string) ||

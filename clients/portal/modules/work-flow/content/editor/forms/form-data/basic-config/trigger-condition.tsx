@@ -17,13 +17,13 @@ interface Props {
   value: TriggerConditionType;
   formFieldOptions: ConditionItemOptions;
   onChange: (v: Partial<FormDataData>) => void;
-  schema: ISchema;
+  schemaMap: Record<string, SchemaField>;
   validating: boolean;
 }
 
 export default function TriggerCondition({
   value,
-  schema,
+  schemaMap,
   formFieldOptions,
   validating,
   onChange: _onChange,
@@ -123,7 +123,7 @@ export default function TriggerCondition({
                 condition={condition as TriggerConditionValue}
                 options={formFieldOptions}
                 onChange={(v) => onTriggerConditionItemChange(condition, v)}
-                schemaMap={schema?.properties}
+                schemaMap={schemaMap}
               />
             </div>
           );

@@ -4,6 +4,8 @@ import { useQuery } from 'react-query';
 import Button from '@c/button';
 import { getFormFieldSchema } from '@flowEditor/forms/api';
 import { ValueRuleVal } from '@flowEditor/type';
+import { notIsLayoutComponent, schemaToMap } from '@lib/schema-convert';
+
 import RuleItem from './rule-item';
 
 interface Props {
@@ -20,9 +22,9 @@ export type Rule = {
 }
 export type RefType={getValues: ()=> any}
 
-function UpdateRules({ appId, tableId, defaultValue }: Props, ref: React.Ref<RefType>) {
+function UpdateRules({ appId, tableId, defaultValue }: Props, ref: React.Ref<RefType>): JSX.Element {
   const [rules, setRules] = useState<Array<Rule>>(defaultValue || []);
-  const { data: targetSchema, isLoading, isError } = useQuery(['GET_TARGET_TABLE_SCHEMA', tableId, appId], getFormFieldSchema, {
+  const { data: targetSchema } = useQuery(['GET_TARGET_TABLE_SCHEMA', tableId, appId], getFormFieldSchema, {
     enabled: !!appId && !!tableId,
   });
 
@@ -32,13 +34,13 @@ function UpdateRules({ appId, tableId, defaultValue }: Props, ref: React.Ref<Ref
     };
   });
 
-  const onAdd = () => {
+  const onAdd = (): void => {
     setRules((items) => [...items, { fieldName: '', valueFrom: 'currentFormValue', valueOf: '' }]);
   };
-  const onRemove = (index: number) => {
+  const onRemove = (index: number): void => {
     setRules((items) => items.filter((v, idx) => idx !== index));
   };
-  const onChange = (rule: any, index: number) => {
+  const onChange = (rule: any, index: number): void => {
     setRules((items) => items.map((item, idx) => {
       if (idx === index) {
         return { ...item, ...rule };
@@ -58,7 +60,7 @@ function UpdateRules({ appId, tableId, defaultValue }: Props, ref: React.Ref<Ref
           {rules.map((rule, idx) =>
             (<RuleItem
               key={[rule.fieldName, idx].join('-')}
-              targetSchema={targetSchema as ISchema}
+              targetSchema={schemaToMap(targetSchema, notIsLayoutComponent)}
               onRemove={() => onRemove(idx)}
               onChange={(data) => onChange(data, idx)}
               rule={rule}

@@ -12,11 +12,11 @@ import { CONDITION, getOperators, FILTER_FIELD, getCondition, VALUE_FROM } from 
 import './index.scss';
 
 type Props = {
-  fields: Fields[];
+  fields: SchemaField[];
   initConditions?: Condition[];
   initTag?: string;
   className?: string;
-  associationFields?: Fields[];
+  associationFields?: SchemaField[];
 }
 
 type FieldCondition = {
@@ -24,7 +24,7 @@ type FieldCondition = {
   key?: string;
   value?: any;
   op?: string;
-  filter?: Fields;
+  filter?: SchemaField;
   valueFrom?: 'fixedValue' | 'form';
   associationFieldsOptions?: LabelValue[];
 }
@@ -35,7 +35,10 @@ export type RefProps = {
   getDataValues: () => FilterConfig
 }
 
-function getValue(field: Fields, initValue: Array<string | number | Date | LabelValue> | undefined) {
+function getValue(
+  field: SchemaField, initValue: Array<string | number | Date | LabelValue> | undefined,
+): string | number | LabelValue | Date | (string | number | LabelValue | Date)[] | moment.Moment |
+  moment.Moment[] {
   if (!initValue || initValue.length === 0) {
     return '';
   }
@@ -201,9 +204,9 @@ function DataFilter({
           return !!condition.filter;
         }).map((condition) => {
           return getCondition(
-            condition.filter as Fields,
+            condition.filter as SchemaField,
             formData[`condition-${condition.id}`],
-            (condition.filter as Fields).id,
+            (condition.filter as SchemaField).id,
             formData[`operators-${condition.id}`],
           );
         });

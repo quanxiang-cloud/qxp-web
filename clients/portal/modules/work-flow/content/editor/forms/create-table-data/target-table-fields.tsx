@@ -5,6 +5,7 @@ import { pick, pickBy, each, get, set } from 'lodash';
 import { getFormFieldSchema } from '@flowEditor/forms/api';
 import { FormRenderer } from '@c/form-builder';
 import { ValueRule, ValueRuleVal } from '@flowEditor/type';
+import { notIsLayoutComponent, schemaToMap } from '@lib/schema-convert';
 
 import CustomField from './custom-field';
 import SubTableFields from './sub-table-fields';
@@ -16,21 +17,23 @@ interface Props {
   tableId: string;
 }
 
-function TargetTableFields({ appId, tableId }: Props) {
+function TargetTableFields({ appId, tableId }: Props): JSX.Element {
   const { data, setData } = useContext(Context);
-  const { data: tableSchema, isLoading, isError } = useQuery(['GET_TARGET_TABLE_SCHEMA', tableId, appId], getFormFieldSchema, {
-    enabled: !!appId && !!tableId,
-  });
+  const { data: schema, isLoading, isError } = useQuery(['GET_TARGET_TABLE_SCHEMA', tableId, appId],
+    getFormFieldSchema, {
+      enabled: !!appId && !!tableId,
+    });
+  const tableSchemaMap = schemaToMap(schema, notIsLayoutComponent);
 
-  const getTableIdByFieldKey = (key: string) => {
-    const field = get(tableSchema, `properties[${key}]`);
-    if (field && field['x-component'] === 'SubTable') {
+  const getTableIdByFieldKey = (key: string): string => {
+    const field = tableSchemaMap[key];
+    if (field && field.componentName === 'subtable') {
       return get(field, 'x-component-props.tableID', '');
     }
     return key;
   };
 
-  const onChangeFixedValue = (values: any) => {
+  const onChangeFixedValue = (values: any): void => {
     const fieldVals = pickBy(values, (v, k) => k.startsWith('field_'));
 
     // merge schema field value to data.createRule
@@ -86,10 +89,12 @@ function TargetTableFields({ appId, tableId }: Props) {
     );
   }
 
-  const renderNormalFields = () => {
+  const schemaToTransform = { ...schema, properties: tableSchemaMap };
+
+  const renderNormalFields = (): JSX.Element => {
     return (
       <FormRenderer
-        schema={transformSchema(tableSchema as ISchema, {}, data.createRule)}
+        schema={transformSchema(schemaToTransform, {}, data.createRule)}
         onFormValueChange={onChangeFixedValue}
         additionalComponents={{ CustomField }}
         defaultValue={data}
@@ -97,8 +102,8 @@ function TargetTableFields({ appId, tableId }: Props) {
     );
   };
 
-  const renderSubTableFields = () => {
-    const subTableFields = transformSchema(tableSchema as ISchema, { filterSubTable: true }, data.ref);
+  const renderSubTableFields = (): JSX.Element | null => {
+    const subTableFields = transformSchema(schemaToTransform, { filterSubTable: true }, data.ref);
     if (!Object.keys(subTableFields?.properties || {}).length) {
       return null;
     }

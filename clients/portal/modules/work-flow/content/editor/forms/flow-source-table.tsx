@@ -3,7 +3,7 @@ import React from 'react';
 type ContextType = {
   tableID: string;
   tableName: string;
-  tableSchema: ISchema;
+  tableSchema: SchemaField[];
 }
 
-export default React.createContext<ContextType>({ tableID: '', tableName: '', tableSchema: {} });
+export default React.createContext<ContextType>({ tableID: '', tableName: '', tableSchema: [] });

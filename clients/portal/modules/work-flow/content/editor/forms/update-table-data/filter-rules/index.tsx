@@ -5,6 +5,8 @@ import Button from '@c/button';
 import Select from '@c/select';
 import { getFormFieldSchema } from '@flowEditor/forms/api';
 import { ValueRuleVal } from '@flowEditor/type';
+import { notIsLayoutComponent, schemaToMap } from '@lib/schema-convert';
+
 import ConditionItem from './condition-item';
 
 export type Condition = {
@@ -91,7 +93,7 @@ function FilterRules({ appId, tableId, defaultValue }: Props, ref: React.Ref<Ref
           {conditions.map((cond, idx) =>
             (<ConditionItem
               key={[cond.fieldName, idx].join('-')}
-              targetSchema={targetSchema as ISchema}
+              targetSchema={schemaToMap(targetSchema, notIsLayoutComponent)}
               onRemove={() => onRemove(idx)}
               onChange={(data) => onChange(data, idx)}
               condition={cond}

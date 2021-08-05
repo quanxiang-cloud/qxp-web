@@ -9,6 +9,7 @@ import useObservable from '@lib/hooks/use-observable';
 import store from '@flowEditor/store';
 import { getFormFieldOptions } from '@flowEditor/forms/api';
 import FlowContext from '@flow/flow-context';
+import { schemaToMap, notIsLayoutComponent } from '@lib/schema-convert';
 import type {
   StoreValue,
   FieldPermission as FieldPermissionType,
@@ -151,7 +152,7 @@ export default function FieldPermission({ value, onChange: _onChange }: Props): 
           <CustomFieldTable
             editable={editable}
             fields={mergedFieldPermissions.custom}
-            schemaMap={schema.properties ?? {}}
+            schemaMap={schemaToMap(schema, notIsLayoutComponent)}
             updateFields={onUpdateFields('custom')}
           />
         </section>

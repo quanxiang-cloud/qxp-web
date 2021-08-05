@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { omit, isArray } from 'lodash';
+import { omit, isArray, isEmpty } from 'lodash';
 import cs from 'classnames';
 import { useCss } from 'react-use';
 import { DatePicker } from 'antd';
@@ -21,7 +21,7 @@ const { RangePicker } = DatePicker;
 interface Props {
   condition: TriggerConditionValue;
   options: Options;
-  schemaMap?: SchemaProperties;
+  schemaMap?: Record<string, SchemaField>;
   onChange: (value: Partial<TriggerConditionExpressionItem>) => void;
 }
 
@@ -31,18 +31,18 @@ export default function ConditionItem({ condition, options, onChange, schemaMap 
   const value = condition.key;
   const currentOption = options.find((option) => option.value === value);
 
-  const currentSchema = schemaMap?.[value || ''] || {};
-  if (value && currentSchema) {
+  const currentSchema: SchemaField | Record<string, any> = schemaMap?.[value || ''] || {};
+  if (value && !isEmpty(currentSchema)) {
     currentSchema.display = true;
     currentSchema.readOnly = false;
   }
 
-  const schema = {
+  const schema: ISchema = {
     type: 'object',
     title: '',
     description: '',
     properties: {
-      [value]: omit(currentSchema, 'title') as SchemaProperties,
+      [value]: omit(currentSchema, 'title') as ISchema,
     },
   };
 
@@ -76,7 +76,7 @@ export default function ConditionItem({ condition, options, onChange, schemaMap 
   const hiddenInput = condition.op === 'null' || condition.op === 'not-null' || showDateRange;
   const dateFormat = currentSchema?.['x-component-props']?.format || 'YYYY-MM-DD';
   let rangePickerDefaultValue: [Moment, Moment] | undefined = undefined;
-  if (currentSchema?.['x-component']?.toLowerCase() === 'datepicker' && isArray(condition.value)) {
+  if (currentSchema.componentName === 'datepicker' && isArray(condition.value)) {
     rangePickerDefaultValue = condition.value?.map?.((v) => {
       return moment(v);
     }) as unknown as typeof rangePickerDefaultValue;

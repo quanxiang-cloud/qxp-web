@@ -5,6 +5,7 @@ import Button from '@c/button';
 import DataFilter, { RefProps } from '@c/data-filter';
 import { FILTER_FIELD } from '@c/data-filter/utils';
 import { getTableSchema } from '@c/form-builder/utils/api';
+import schemaToFields, { notIsLayoutComponent } from '@lib/schema-convert';
 
 import './index.scss';
 
@@ -16,19 +17,16 @@ type Props = {
   currentFormSchema: ISchema;
 }
 
-function getFields(schema: ISchema): Fields[] {
-  return Object.entries(schema.properties || {}).reduce((acc, [key, fieldSchema]) => {
-    if (key !== '_id' && FILTER_FIELD.includes(fieldSchema['x-component'] as string)) {
-      return acc.concat({ ...fieldSchema, id: key });
-    }
-    return acc;
-  }, [] as Fields[]);
+function getFields(schema: ISchema): SchemaField[] {
+  return schemaToFields(schema, notIsLayoutComponent).filter((schema) => {
+    return schema.fieldName !== '_id' && FILTER_FIELD.includes(schema.componentName);
+  });
 }
 
 function FilterConfig({ tableID, appID, onChange, value, currentFormSchema }: Props): JSX.Element {
   const [visible, setVisible] = useState(false);
-  const [fields, setFields] = useState<Fields[]>([]);
-  const [currentFields, setCurrentFields] = useState<Fields[]>([]);
+  const [schemaFields, setSchemaFields] = useState<SchemaField[]>([]);
+  const [currentFields, setCurrentFields] = useState<SchemaField[]>([]);
   const dataFilterRef = useRef<RefProps>(null);
 
   const handleSave = (): void => {
@@ -45,7 +43,7 @@ function FilterConfig({ tableID, appID, onChange, value, currentFormSchema }: Pr
   useEffect(() => {
     if (appID && tableID) {
       getTableSchema(appID, tableID).then((res) => {
-        setFields(res?.schema ? getFields(res.schema) : []);
+        setSchemaFields(res?.schema ? getFields(res.schema) : []);
       });
     }
   }, [appID, tableID]);
@@ -63,7 +61,7 @@ function FilterConfig({ tableID, appID, onChange, value, currentFormSchema }: Pr
                   initTag={value?.tag}
                   associationFields={currentFields}
                   ref={dataFilterRef}
-                  fields={fields}
+                  fields={schemaFields}
                 />
                 <div className='mt-10'>
                   <Button className='mr-10' onClick={() => setVisible(false)}>

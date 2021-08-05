@@ -15,9 +15,9 @@ import MoreMenu from '@c/more-menu';
 import Icon from '@c/icon';
 import Button from '@c/button';
 import SaveButtonGroup from '@flowEditor/components/_common/action-save-button-group';
+import FlowContext from '@flow/flow-context';
 
 import FlowSourceTableContext from './flow-source-table';
-import FlowContext from '../../../flow-context';
 import { ProcessVariableAssignmentData } from '../type';
 import { getFlowVariables } from './api';
 import styled from 'styled-components';
@@ -69,13 +69,13 @@ function useLeftOptions(used: string[], variables: ProcessVariable[]): Option[] 
 
 function useTableFieldOptions(): Array<Option & { type: string; }> {
   const { tableSchema } = useContext(FlowSourceTableContext);
-  const tableFields = Object.entries(tableSchema.properties || {}).filter(([, fieldSchema]) => {
-    return ASSIGNABLE_COMPONENTS.includes(fieldSchema['x-component'] as string);
-  }).map(([key, fieldSchema]) => {
+  const tableFields = tableSchema.filter((schema) => {
+    return ASSIGNABLE_COMPONENTS.includes(schema.componentName);
+  }).map((schema) => {
     return {
-      label: fieldSchema.title as string,
-      value: key,
-      type: fieldSchema.type || '',
+      label: schema.title as string,
+      value: schema.id,
+      type: schema.type || '',
     };
   });
 
