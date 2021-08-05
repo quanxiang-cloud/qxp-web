@@ -69,12 +69,12 @@ type Props = {
   onClose: () => void;
   onSubmit: (linkage: FormBuilder.DefaultValueLinkage) => void;
   linkage?: FormBuilder.DefaultValueLinkage;
-  isLinkedFieldShow?: boolean;
+  isLinkedFieldHide?: boolean;
   isLinkedTableReadonly?: boolean;
 }
 
 function LinkageConfig({
-  onClose, onSubmit, linkage, isLinkedFieldShow, isLinkedTableReadonly,
+  onClose, onSubmit, linkage, isLinkedFieldHide, isLinkedTableReadonly,
 }: Props): JSX.Element {
   const actions = createFormActions();
   const { setFieldState, getFieldValue, setFieldValue } = actions;
@@ -237,7 +237,7 @@ function LinkageConfig({
     );
   }
 
-  if (!isLinkedFieldShow) {
+  if (isLinkedFieldHide) {
     SCHEMA.properties = omit(SCHEMA.properties, 'linkedField');
   }
   if (isLinkedTableReadonly && SCHEMA.properties) {
