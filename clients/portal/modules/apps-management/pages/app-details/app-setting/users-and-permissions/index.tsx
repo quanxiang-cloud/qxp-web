@@ -19,24 +19,26 @@ function UsersAndPermissions() {
 
   return (
     <>
-      <TextHeader
-        title='用户及权限'
-        desc='设置应用内页面的字段权限、数据权限、以及操作权限'
-        className="app-list-header header-background-image"
-        itemClassName='items-center'
-      />
-      <Button
-        onClick={() => setModalType('creatRight')}
-        modifier='primary'
-        iconName='add'
-        className='mx-20 my-24'
-      >
+      <div className="flex-1">
+        <TextHeader
+          title='用户及权限'
+          desc='设置应用内页面的字段权限、数据权限、以及操作权限'
+          className="app-list-header header-background-image"
+          itemClassName='items-center'
+        />
+        <Button
+          onClick={() => setModalType('creatRight')}
+          modifier='primary'
+          iconName='add'
+          className='mx-20 my-24'
+        >
         新建权限组
-      </Button>
-      <RightsGroups />
-      {modalType === 'creatRight' && (
-        <CreateRightModal onCancel={() => setModalType('')} />
-      )}
+        </Button>
+        <RightsGroups />
+        {modalType === 'creatRight' && (
+          <CreateRightModal onCancel={() => setModalType('')} />
+        )}
+      </div>
     </>
   );
 }

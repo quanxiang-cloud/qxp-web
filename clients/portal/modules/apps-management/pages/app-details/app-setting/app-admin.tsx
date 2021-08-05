@@ -119,38 +119,40 @@ function AppAdmin(): JSX.Element {
 
   return (
     <>
-      <TextHeader
-        title="应用管理员"
-        className="app-list-header header-background-image mb-24"
-      />
-      <Button
-        onClick={() => setModalType('addAdmin')}
-        className='mr-16 ml-20'
-        modifier='primary'
-        iconName='add'
-      >
-        添加管理员
-      </Button>
-      {selectedIdArr.length > 0 && (
+      <div className="flex-1">
+        <TextHeader
+          title="应用管理员"
+          className="app-list-header header-background-image mb-24"
+        />
         <Button
-          onClick={() => setModalType('batchRemove')}
+          onClick={() => setModalType('addAdmin')}
+          className='mr-16 ml-20'
           modifier='primary'
-          iconName='restore_from_trash'
+          iconName='add'
         >
-          批量移除
+          添加管理员
         </Button>
-      )}
-      <Table
-        showCheckbox
-        rowKey="id"
-        className='m-20'
-        style={{ maxHeight: 'calc(100vh - 300px)' }}
-        columns={columns}
-        data={appAdminList}
-        loading={loading}
-        onSelectChange={handleSelectChange}
-      />
-      {(modalType === 'batchRemove') &&
+        {!!selectedIdArr && (
+          <Button
+            onClick={() => setModalType('batchRemove')}
+            modifier='primary'
+            iconName='restore_from_trash'
+          >
+            批量移除
+          </Button>
+        )}
+        <div className="m-20">
+          <Table
+            showCheckbox
+            rowKey="id"
+            style={{ maxHeight: 'calc(100vh - 300px)' }}
+            columns={columns}
+            data={appAdminList}
+            loading={loading}
+            onSelectChange={handleSelectChange}
+          />
+        </div>
+        {(modalType === 'batchRemove') &&
         (<Modal
           title='批量移除'
           onClose={() => setModalType('')}
@@ -173,17 +175,18 @@ function AppAdmin(): JSX.Element {
         >
           <p className="p-20">确定要批量移除应用的管理员吗？</p>
         </Modal>)
-      }
-      {modalType === 'addAdmin' && (
-        <EmployeeOrDepartmentPickerModal
-          title='添加管理员'
-          submitText='保存'
-          employees={appAdminList}
-          departments={[]}
-          onSubmit={addAdmin}
-          onCancel={() => setModalType('')}
-        />
-      )}
+        }
+        {modalType === 'addAdmin' && (
+          <EmployeeOrDepartmentPickerModal
+            title='添加管理员'
+            submitText='保存'
+            employees={appAdminList}
+            departments={[]}
+            onSubmit={addAdmin}
+            onCancel={() => setModalType('')}
+          />
+        )}
+      </div>
     </>
   );
 }
