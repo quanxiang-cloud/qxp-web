@@ -16,20 +16,20 @@ export default function RevokeWork({ workData }: Props): JSX.Element {
   return (
     <div className="flex w-full">
       <div className="w-24">
-        {(('START' === taskType && status !== '') || 'CANCEL' === taskType) &&
+        {(('START' === taskType && status === 'SUBMIT') || 'CANCEL' === taskType) &&
         <Avatar username={creatorName.substring(0, 1)} />}
-        {(taskType === 'START' && status === '') && <CustomAvatar name='hourglass_empty' />}
+        {(taskType === 'START' && status === 'RE_SUBMIT') && <CustomAvatar name='hourglass_empty' />}
         {taskType === 'END' && <CustomAvatar name='stop_circle' />}
       </div>
       <div className="ml-8 flex-1">
         <div>
-          {(taskType === 'START' && status !== '') && (<>
+          {(taskType === 'START' && status === 'SUBMIT') && (<>
             <span className="text-h6-bold mr-4">{creatorName}</span> 发起了 {flowName}
           </>)}
           {taskType === 'CANCEL' && (<>
             <span className="text-h6-bold mr-4">{creatorName}</span> 撤销了 {flowName}
           </>)}
-          {(taskType === 'START' && status === '') && (<>
+          {(taskType === 'START' && status === 'RE_SUBMIT') && (<>
             待 <span className="text-h6-bold mr-4">{creatorName}</span> 补充信息并重新提交
           </>)}
           {taskType === 'END' && (<>
