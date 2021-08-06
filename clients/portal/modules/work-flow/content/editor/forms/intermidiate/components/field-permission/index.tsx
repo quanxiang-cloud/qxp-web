@@ -55,8 +55,8 @@ export default function FieldPermission({ value, onChange: _onChange }: Props): 
   const { data: { options: data, schema = {} } = { options: [] }, isLoading, isError } = useQuery(
     ['GET_WORK_FORM_FIELD_LIST', workFormValue, appID],
     getFormFieldOptions, {
-    enabled: !!workFormValue && !!appID,
-  },
+      enabled: !!workFormValue && !!appID,
+    },
   );
 
   useEffect(() => {

@@ -91,13 +91,13 @@ function FilterRules({ appId, tableId, defaultValue }: Props, ref: React.Ref<Ref
         </div>
         <div className="flex flex-col update-conditions">
           {conditions.map((cond, idx) =>
-          (<ConditionItem
-            key={[cond.fieldName, idx].join('-')}
-            targetSchema={schemaToMap(targetSchema)}
-            onRemove={() => onRemove(idx)}
-            onChange={(data) => onChange(data, idx)}
-            condition={cond}
-          />),
+            (<ConditionItem
+              key={[cond.fieldName, idx].join('-')}
+              targetSchema={schemaToMap(targetSchema)}
+              onRemove={() => onRemove(idx)}
+              onChange={(data) => onChange(data, idx)}
+              condition={cond}
+            />),
           )}
         </div>
       </fieldset>

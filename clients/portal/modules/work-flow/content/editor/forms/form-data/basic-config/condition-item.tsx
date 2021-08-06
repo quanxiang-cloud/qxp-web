@@ -108,8 +108,8 @@ export default function ConditionItem({ condition, options, onChange, schemaMap 
           onChange={(v: Operator) => onChange({ op: v })}
           className={cs(
             'h-32 border border-gray-300 corner-2-8-8-8 px-12 text-12 flex items-center flex-1', {
-            'mr-12': !hiddenInput || showDateRange,
-          })}
+              'mr-12': !hiddenInput || showDateRange,
+            })}
           options={filteredOperatorOptions}
         />
         {!hiddenInput && (

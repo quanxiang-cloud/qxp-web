@@ -58,13 +58,13 @@ function UpdateRules({ appId, tableId, defaultValue }: Props, ref: React.Ref<Ref
         </div>
         <div className="flex flex-col update-conditions">
           {rules.map((rule, idx) =>
-          (<RuleItem
-            key={[rule.fieldName, idx].join('-')}
-            targetSchema={schemaToMap(targetSchema)}
-            onRemove={() => onRemove(idx)}
-            onChange={(data) => onChange(data, idx)}
-            rule={rule}
-          />),
+            (<RuleItem
+              key={[rule.fieldName, idx].join('-')}
+              targetSchema={schemaToMap(targetSchema)}
+              onRemove={() => onRemove(idx)}
+              onChange={(data) => onChange(data, idx)}
+              rule={rule}
+            />),
           )}
         </div>
       </fieldset>

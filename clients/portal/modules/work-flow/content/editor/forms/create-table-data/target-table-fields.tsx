@@ -21,8 +21,8 @@ function TargetTableFields({ appId, tableId }: Props): JSX.Element {
   const { data, setData } = useContext(Context);
   const { data: schema, isLoading, isError } = useQuery(['GET_TARGET_TABLE_SCHEMA', tableId, appId],
     getFormFieldSchema, {
-    enabled: !!appId && !!tableId,
-  });
+      enabled: !!appId && !!tableId,
+    });
   const tableSchemaMap = schemaToMap(schema);
 
   const getTableIdByFieldKey = (key: string): string => {
