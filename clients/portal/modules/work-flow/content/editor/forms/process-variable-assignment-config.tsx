@@ -159,6 +159,13 @@ function RulesList(props: any): JSX.Element {
 
 RulesList.isFieldComponent = true;
 
+const fieldTypeToVariableMap: Record<string, string> = {
+  datetime: 'DATE',
+  string: 'TEXT',
+  number: 'NUMBER',
+  boolean: 'BOOLEAN',
+};
+
 export default function AssignmentConfig({ defaultValue, onSubmit, onCancel, onChange }: Props): JSX.Element {
   const tableFields = useTableFieldOptions();
   const { flowID } = useContext(FlowContext);
@@ -171,17 +178,21 @@ export default function AssignmentConfig({ defaultValue, onSubmit, onCancel, onC
     onFieldValueChange$('assignmentRules.*.valueFrom').subscribe((state) => {
       const valueOfPath = FormPath.transform(state.name, /\d/, ($1) => `assignmentRules.${$1}.valueOf`);
       const variableNamePath = FormPath.transform(state.name, /\d/, ($1) => `assignmentRules.${$1}.variableName`);
+      const variableCode: string = getFieldValue(variableNamePath);
+      const variableType = variables?.find(({ code }) => code === variableCode)?.fieldType || 'TEXT';
       if (state.value === 'currentFormValue') {
         setFieldState(valueOfPath, (state) => {
+          state.value = undefined;
           state.props['x-component'] = 'AntdSelect';
-          state.props.enum = tableFields;
+          state.props.enum = tableFields.filter((field) => {
+            return fieldTypeToVariableMap[field.type] === variableType;
+          });
         });
         return;
       }
 
-      const variableCode: string = getFieldValue(variableNamePath);
-      const variableType = variables?.find(({ code }) => code === variableCode)?.fieldType || 'TEXT';
       setFieldState(valueOfPath, (state) => {
+        state.value = undefined;
         state.props.enum = undefined;
         if (variableType === 'TEXT') {
           state.props['x-component'] = 'Input';
