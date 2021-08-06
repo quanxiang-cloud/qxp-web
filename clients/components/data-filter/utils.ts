@@ -1,4 +1,4 @@
-import { unitOfTime, Moment } from 'moment';
+import moment, { unitOfTime, Moment } from 'moment';
 
 export const OPERATORS_STRING = [
   {
@@ -148,11 +148,6 @@ function getDateType(format: string): unitOfTime.StartOf {
   }
 }
 
-type LabelValue = {
-  label: string;
-  value: string;
-}
-
 type Value = string
   | string[]
   | Record<string, unknown>
@@ -161,6 +156,8 @@ type Value = string
   | number[]
   | LabelValue[]
   | Moment[];
+
+type ComponentValue = number | string | Moment | LabelValue | Date;
 
 export function getCondition(schema: ISchema, value: Value, key: string, op?: string): Condition {
   const _condition: Condition = { key };
@@ -203,4 +200,60 @@ export function getCondition(schema: ISchema, value: Value, key: string, op?: st
   }
 
   return _condition;
+}
+
+type ValueFromProps = {
+  schema: ISchema;
+  key: string;
+  valueFrom: ValueFrom;
+  op: string;
+  value: Value
+}
+
+export function setValueFormCondition({ valueFrom, key, op, value, schema }: ValueFromProps): Condition {
+  if (valueFrom === 'form') {
+    return {
+      key,
+      op,
+      value: [value as string],
+      valueFrom,
+    };
+  }
+
+  return {
+    ...getCondition(
+      schema,
+      value,
+      key,
+      op,
+    ),
+    valueFrom,
+  };
+}
+
+export function getValue(
+  field: Fields,
+  initValue: Array<string | number | Date | LabelValue> | undefined,
+  valueFrom: ValueFrom | undefined,
+): ComponentValue | ComponentValue[] {
+  if (!initValue || initValue.length === 0) {
+    return '';
+  }
+
+  if (valueFrom === 'form') {
+    return initValue.toString();
+  }
+
+  switch (field['x-component']) {
+  case 'DatePicker':
+    return Array.isArray(initValue) ? initValue.map((value) => moment(value as string)) : moment(initValue);
+  case 'MultipleSelect':
+  case 'RadioGroup':
+  case 'CheckboxGroup':
+  case 'UserPicker':
+  case 'Select':
+    return initValue;
+  default:
+    return initValue[0];
+  }
 }

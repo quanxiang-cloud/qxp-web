@@ -1,5 +1,6 @@
 .custom-field__value {
-  .ant-form-item {
+  > div {
+    min-width: 120px;
     margin-bottom: 0;
   }
 }

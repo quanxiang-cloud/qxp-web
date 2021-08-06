@@ -63,8 +63,8 @@ export default function Editor(): JSX.Element {
         position: getCenterPosition(position, width, height),
         branchTargetElementID,
       }));
-      newElements.push(edgeBuilder(source, id));
-      newElements.push(edgeBuilder(id, target));
+      newElements.push(...edgeBuilder(source, id));
+      newElements.push(...edgeBuilder(id, target));
     }
     if (sourceElement.data?.nodeData.childrenID) {
       sourceElement.data.nodeData.childrenID = [
@@ -96,9 +96,6 @@ export default function Editor(): JSX.Element {
     addNewNode({ nodeType, width, height, nodeName, source, target, position });
     updateStore((s) => ({ ...s, currentConnection: {} }));
   }
-
-  // elements?.filter(isNode).map((s) => console.log(({ id: s.id, ...(s.data?.nodeData || {}) })));
-  // console.log('\n\n\n');
 
   return (
     <div className={cs('w-full h-full flex-1 relative transition', {
