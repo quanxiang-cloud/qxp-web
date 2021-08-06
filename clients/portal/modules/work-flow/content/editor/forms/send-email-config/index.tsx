@@ -24,7 +24,7 @@ import Button from '@c/button';
 import { Editor } from 'react-draft-wysiwyg';
 import SaveButtonGroup from '@flowEditor/components/_common/action-save-button-group';
 import type { StoreValue, CurrentElement, FormDataData, SendEmailData, Attachment } from '@flowEditor/type';
-import schemaToFields, { notIsLayoutComponent } from '@lib/schema-convert';
+import schemaToFields from '@lib/schema-convert';
 
 import UserSelect from '../../components/add-approval-user';
 import './index.scss';
@@ -147,7 +147,7 @@ function SendEmailConfig({ defaultValue, onSubmit, onCancel, onChange }: Props):
   }, []);
 
   const fieldOption = React.useMemo(() => {
-    return schemaToFields(schema, notIsLayoutComponent).filter((field) => field.id !== '_id').map((field) => {
+    return schemaToFields(schema).filter((field) => field.id !== '_id').map((field) => {
       return { label: field.title, key: field.id };
     });
   }, [schema]);

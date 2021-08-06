@@ -1,6 +1,6 @@
 import { QueryFunctionContext } from 'react-query';
 import httpClient from '@lib/http-client';
-import { notIsLayoutComponent, schemaToOptions } from '@lib/schema-convert';
+import { schemaToOptions } from '@lib/schema-convert';
 
 import { Operation } from '../type';
 import { SYSTEM_OPERATOR_PERMISSION, CUSTOM_OPERATOR_PERMISSION } from '../utils/constants';
@@ -35,7 +35,7 @@ export async function getFormFieldOptions({ queryKey }: QueryFunctionContext): P
 }> {
   const schema = await getFormFieldSchema({ queryKey });
   return {
-    options: schemaToOptions(schema, notIsLayoutComponent),
+    options: schemaToOptions(schema),
     schema,
   };
 }

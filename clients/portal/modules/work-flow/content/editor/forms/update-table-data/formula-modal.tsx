@@ -8,7 +8,7 @@ import FormulaEditor, { CustomRule, RefProps } from '@c/formula-editor';
 import FlowTableContext from '@flowEditor/forms/flow-source-table';
 import FlowContext from '@flow/flow-context';
 import { getFormFieldSchema } from '@flowEditor/forms/api';
-import schemaToFields, { notIsLayoutComponent } from '@lib/schema-convert';
+import schemaToFields from '@lib/schema-convert';
 
 interface Props {
   onClose: () => void;
@@ -34,7 +34,7 @@ function FormulaModal(props: Props): JSX.Element | null {
     return (<div>Load target table schema failed</div>);
   }
 
-  const targetFields = getSchemaFields(schemaToFields(targetSchema, notIsLayoutComponent));
+  const targetFields = getSchemaFields(schemaToFields(targetSchema));
   const sourceFields = getSchemaFields(sourceSchema);
   const formulaCustomRules: CustomRule[] = targetFields.concat(sourceFields).map(({ label, value }) => ({
     key: value,

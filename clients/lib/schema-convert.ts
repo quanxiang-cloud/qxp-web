@@ -8,7 +8,7 @@ import { not, quickSortObjectArray } from '@lib/utils';
 
 type FilterFunc = (currentSchema: ISchema) => boolean;
 
-export function schemaToOptions(schema?: ISchema, filterFunc?: FilterFunc): Option[] {
+export function schemaToOptions(schema?: ISchema, filterFunc: FilterFunc = notIsLayoutComponent): Option[] {
   return schemaToFields(schema, filterFunc).map((field: SchemaFieldItem) => ({
     label: field.title as string,
     value: field.id,
@@ -23,8 +23,10 @@ export function isLayoutComponent(currentSchema: ISchema): boolean {
 
 export const notIsLayoutComponent = not(isLayoutComponent);
 
-export function schemaToMap(schema?: ISchema, filterFunc?: FilterFunc): Record<string, SchemaFieldItem> {
-  const fields = schemaToFields(schema, filterFunc ? filterFunc : notIsLayoutComponent);
+export function schemaToMap(
+  schema?: ISchema, filterFunc: FilterFunc = notIsLayoutComponent,
+): Record<string, SchemaFieldItem> {
+  const fields = schemaToFields(schema, filterFunc);
   return fields.reduce((fieldsMap: Record<string, SchemaFieldItem>, field: SchemaFieldItem) => {
     fieldsMap[field.fieldName] = field;
     return fieldsMap;
@@ -40,7 +42,7 @@ function sortFields(fields: SchemaFieldItem[]): SchemaFieldItem[] {
 }
 
 const schemaToFields = (
-  schema?: ISchema, filterFunc?: FilterFunc, fields: SchemaFieldItem[] = [],
+  schema?: ISchema, filterFunc: FilterFunc = notIsLayoutComponent, fields: SchemaFieldItem[] = [],
 ): Array<SchemaFieldItem> => {
   const { properties } = cloneDeep(schema || {});
   if (!properties || isEmpty(properties)) {

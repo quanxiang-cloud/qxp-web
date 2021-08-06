@@ -5,7 +5,7 @@ import Button from '@c/button';
 import DataFilter, { RefProps } from '@c/data-filter';
 import { FILTER_FIELD } from '@c/data-filter/utils';
 import { getTableSchema } from '@c/form-builder/utils/api';
-import schemaToFields, { notIsLayoutComponent } from '@lib/schema-convert';
+import schemaToFields from '@lib/schema-convert';
 
 import './index.scss';
 
@@ -18,7 +18,7 @@ type Props = {
 }
 
 function getFields(schema: ISchema): SchemaFieldItem[] {
-  return schemaToFields(schema, notIsLayoutComponent).filter((schema) => {
+  return schemaToFields(schema).filter((schema) => {
     return schema.fieldName !== '_id' && FILTER_FIELD.includes(schema.componentName);
   });
 }

@@ -15,7 +15,7 @@ import Button from '@c/button';
 import Radio from '@c/radio';
 import FormulaEditor, { RefProps } from '@c/formula-editor';
 import { getFormFieldSchema } from '@flowEditor/forms/api';
-import schemaToFields, { notIsLayoutComponent } from '@lib/schema-convert';
+import schemaToFields from '@lib/schema-convert';
 
 import store, {
   updateStore,
@@ -64,7 +64,7 @@ export default function GlobalConfig(): JSX.Element | null {
     ['GET_FIELD_LIST', formDataElement.data.businessData.form.value, appID],
     async ({ queryKey }) => {
       const schema = await getFormFieldSchema({ queryKey });
-      const schemaFields = schemaToFields(schema, notIsLayoutComponent);
+      const schemaFields = schemaToFields(schema);
       return schemaFields.filter((fieldSchema) => {
         return fieldSchema.id !== '_id' && !['subtable', 'associatedrecords'].includes(
           fieldSchema.componentName);

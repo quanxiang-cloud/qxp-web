@@ -3,7 +3,7 @@ import { useQuery } from 'react-query';
 
 import { getTableSchema } from '@lib/http-client';
 import type { NodeWorkForm, Data, BusinessData } from '@flowEditor/type';
-import schemaToFields, { notIsLayoutComponent } from '@lib/schema-convert';
+import schemaToFields from '@lib/schema-convert';
 
 import FormDataForm from './form-data';
 import ApproveForm from './intermidiate/approve';
@@ -49,7 +49,7 @@ function useTableSchema(appID: string, tableID: string): [ReturnType<typeof sche
     setSchema(data);
   }, [data, isLoading, isError]);
 
-  return [schemaToFields(schema, notIsLayoutComponent), isLoading];
+  return [schemaToFields(schema), isLoading];
 }
 
 const components: Record<string, JSXElementConstructor<any>> = {
