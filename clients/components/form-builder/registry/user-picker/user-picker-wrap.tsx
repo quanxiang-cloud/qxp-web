@@ -5,34 +5,33 @@ import UserPicker from './user-picker';
 
 type OptionalRange = 'customize' | 'all' | 'currentUser';
 
-const UserPickerWrap = (p: ISchemaFieldComponentProps): JSX.Element => {
-  const optionalRange = p.props.optionalRange as OptionalRange;
+const UserPickerWrap = (formField: ISchemaFieldComponentProps): JSX.Element => {
+  const optionalRange = formField.props.optionalRange as OptionalRange;
   React.useEffect(() => {
     if (optionalRange === 'currentUser') {
       const userInfo = window.USER;
-      const { id, userName } = userInfo;
       const options = [{
-        label: userName,
-        value: id,
+        label: userInfo.userName,
+        value: userInfo.id,
       }];
-      p.mutators.change(options);
-      p.form.setFieldState(p.name, (state) => {
+      formField.mutators.change(options);
+      formField.form.setFieldState(formField.name, (state) => {
         state.props.enum = options;
       });
       return;
     }
 
-    p.mutators.change(
-      (p.initialValue.length && p.initialValue) ||
-      (p.props.defaultValues.length && p.props.defaultValues) ||
+    formField.mutators.change(
+      (formField.initialValue.length && formField.initialValue) ||
+      (formField.props.defaultValues.length && formField.props.defaultValues) ||
       [],
     );
-  }, [optionalRange, p.props['x-component-props'].mode]);
+  }, [optionalRange, formField.props['x-component-props'].mode]);
 
-  const xComponentsProps = Object.assign({}, p.props['x-component-props'], {
-    onChange: p.mutators.change,
-    options: p.props.enum,
-    value: p.value,
+  const xComponentsProps = Object.assign({}, formField.props['x-component-props'], {
+    onChange: formField.mutators.change,
+    options: formField.props.enum,
+    value: formField.value,
   });
 
   return <UserPicker optionalRange={optionalRange} {...xComponentsProps} />;

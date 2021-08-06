@@ -50,7 +50,7 @@ const UserPickerConfigForm = ({ initialValue, onChange }: Props): JSX.Element =>
       <Form
         actions={actions}
         initialValues={initialValue}
-        onChange={(formData) => onChange({ ...initialValue, ...formData })}
+        onChange={(formData) => onChange(formData)}
         effects={formEffects}
       >
         <Field name="title" title="标题" component={Input} />
