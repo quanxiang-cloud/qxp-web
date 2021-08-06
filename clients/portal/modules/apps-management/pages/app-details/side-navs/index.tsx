@@ -52,7 +52,7 @@ const SIDE_NAVS = [
   },
   {
     id: 'application',
-    name: '应用管理',
+    title: '应用管理',
     nav_items: [
       {
         id: 'base_info',

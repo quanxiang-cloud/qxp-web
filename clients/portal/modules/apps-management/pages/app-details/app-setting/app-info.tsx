@@ -27,7 +27,7 @@ function AppInfo() : JSX.Element {
   }
 
   return (
-    <>
+    <div className="flex-1">
       <TextHeader
         title="基础设置"
         className="app-list-header header-background-image "
@@ -40,7 +40,7 @@ function AppInfo() : JSX.Element {
           最近保存时间：{dayjs.unix(appDetailsStore.lastUpdateTime).format('YYYY-MM-DD HH:mm:ss')}
         </div>
       </div>
-    </>
+    </div>
   );
 }
 

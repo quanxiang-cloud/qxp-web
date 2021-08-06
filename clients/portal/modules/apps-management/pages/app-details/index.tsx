@@ -19,7 +19,7 @@ function AppDetails() {
   return (
     <div>
       <Header />
-      <Route exact path='/apps/details/:appID/setting' component={AppSetting} />
+      <Route path='/apps/details/:appID/setting' component={AppSetting} />
       <Route exact path='/apps/details/:appID/:menuType' component={AppDetailsContent} />
     </div>
   );
