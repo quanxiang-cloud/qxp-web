@@ -1,6 +1,6 @@
 import qs from 'qs';
 import { TreeData, TreeItem } from '@atlaskit/tree';
-import { get, isObject, isArray, pickBy, identity } from 'lodash';
+import { get, isObject } from 'lodash';
 import { TreeNode } from '@c/headless-tree/types';
 import { nanoid } from 'nanoid';
 import dayjs from 'dayjs';
@@ -256,27 +256,6 @@ export function parseJSON<T>(str: string, fallback: T): T {
   } catch (e) {
     return fallback;
   }
-}
-
-export function removeNullOrUndefinedFromObject(data: Record<string, any>): Record<string, any> {
-  const dataCollection: Record<string, any> = {};
-  Object.entries(pickBy(data, identity)).forEach(([key, value]) => {
-    if (isArray(value)) {
-      dataCollection[key] = value.map((valueItem) => {
-        if (isObject(valueItem)) {
-          return removeNullOrUndefinedFromObject(valueItem);
-        }
-        return valueItem;
-      }).filter(identity);
-      return;
-    }
-    if (isObject(value)) {
-      dataCollection[key] = removeNullOrUndefinedFromObject(value);
-      return;
-    }
-    dataCollection[key] = value;
-  });
-  return dataCollection;
 }
 
 export function handleTimeFormat(time: string): string {
