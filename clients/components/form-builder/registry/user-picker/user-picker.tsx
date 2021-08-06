@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import cs from 'classnames';
 import { useQuery } from 'react-query';
 import { Select, SelectProps } from 'antd';
@@ -27,8 +27,7 @@ const UserPicker = ({ optionalRange, appID, onChange, value, ...componentsProps 
     onChange && onChange(_selected ? [].concat(_selected) : [], _);
   };
 
-  let selected = Array.isArray(value || []) ?
-    (value || []).map(({ value }: Option) => value) : value.value;
+  const selected = Array.isArray(value) ? (value).map(({ value }: Option) => value) : value.value;
 
   if (!componentsProps.options?.length && componentsProps.dataSource?.length) {
     componentsProps.options = componentsProps.dataSource;
@@ -45,19 +44,9 @@ const UserPicker = ({ optionalRange, appID, onChange, value, ...componentsProps 
     );
   }
 
-  if (optionalRange === 'currentUser') {
-    const userInfo = window.USER;
-    const { id, userName } = userInfo;
-    const options = [{
-      label: userName,
-      value: id,
-    }];
-    componentsProps.options = options;
-    selected = id;
-  }
-
   return (
     <Select
+      allowClear
       {...componentsProps}
       value={selected}
       onChange={handleChange}
@@ -67,36 +56,39 @@ const UserPicker = ({ optionalRange, appID, onChange, value, ...componentsProps 
 };
 
 const AllUserPicker = ({ appID, ...otherProps }: AllUserPickerProps): JSX.Element | null => {
-  const [options, setOptions] = React.useState<Option[]>([]);
-  const [hasNext, setHasNext] = React.useState<boolean>(false);
-  const [keyword, setKeyword] = React.useState<string>();
-  const [page, setCurrent] = React.useState(1);
+  const [options, setOptions] = useState<Option[]>([]);
+  const [hasNext, setHasNext] = useState<boolean>(false);
+  const [keyword, setKeyword] = useState<string>();
+  const [isAppend, setIsAppend] = useState(false);
+  const [page, setCurrent] = useState(1);
 
-  const _setKeyword = React.useCallback((str) => {
+  const _setKeyword = useCallback((str) => {
     setKeyword(str);
-    setOptions([]);
+    setIsAppend(false);
     setCurrent(1);
-  }, [setKeyword, setOptions, setCurrent]);
+  }, [setKeyword, setIsAppend, setCurrent]);
 
-  const params = React.useMemo(() => {
-    return {
-      userName: keyword,
-      page,
-      limit: PAGE_SIZE,
-    };
-  }, [keyword, page]);
+  const params = useMemo(() => ({
+    userName: keyword,
+    page,
+    limit: PAGE_SIZE,
+  }), [keyword, page]);
 
   const { isLoading } = useQuery(
     ['query_user_picker', params, appID],
     () => searchUser(appID, params),
     {
-      onSuccess(data: Res) {
+      onSuccess(data: Res): void {
         if (data) {
           const newOptions = (data.data || []).map((itm) => ({
             label: itm.userName,
             value: itm.id,
           }));
-          setOptions((current) => [...current, ...newOptions]);
+          let totalOptions = [...newOptions];
+          if (isAppend) {
+            totalOptions = [...options, ...newOptions];
+          }
+          setOptions(totalOptions);
           setHasNext(data.total_count > page * PAGE_SIZE);
         }
       },
@@ -106,14 +98,14 @@ const AllUserPicker = ({ appID, ...otherProps }: AllUserPickerProps): JSX.Elemen
     loading: isLoading,
     onSearch: debounce(_setKeyword, 500),
     showSearch: true,
-    onPopupScroll(e: any) {
+    filterOption: false,
+    onPopupScroll: (e: React.UIEvent<HTMLDivElement, globalThis.UIEvent>): void => {
       if (!hasNext) return;
       const dom = e.target;
-      const { scrollTop, clientHeight, scrollHeight } = dom as any;
-      if (scrollTop + clientHeight == scrollHeight) {
-        if (!isLoading) {
-          setCurrent((current) => 1 + current);
-        }
+      const { scrollTop, clientHeight, scrollHeight } = dom as Element;
+      if ((scrollTop + clientHeight == scrollHeight) && !isLoading) {
+        setIsAppend(true);
+        setCurrent((current) => 1 + current);
       }
     },
   });
@@ -124,9 +116,10 @@ const AllUserPicker = ({ appID, ...otherProps }: AllUserPickerProps): JSX.Elemen
 
   return (
     <Select
+      allowClear
       {...componentsProps}
       options={options}
-      className={cs('user-selector', componentsProps.className || '')}
+      className={cs('user-selector', componentsProps.className)}
     />
   );
 };

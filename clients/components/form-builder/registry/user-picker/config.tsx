@@ -2,7 +2,9 @@ import React, { useContext, useEffect } from 'react';
 import {
   Form,
   FormItem,
+  FormEffectHooks,
   IAntdFormItemProps,
+  createFormActions,
 } from '@formily/antd';
 import { Input, Radio, MegaLayout, Switch, Select } from '@formily/antd-components';
 
@@ -11,6 +13,10 @@ import UserPicker from './user-picker';
 import { StoreContext } from '../../context';
 import { DefaultConfig } from './convertor';
 import { EnumReadOnly, EnumOptionalRange, EnumMultiple } from './messy/enum';
+
+const { onFieldInputChange$ } = FormEffectHooks;
+const actions = createFormActions();
+const { setFieldState } = actions;
 
 const Field = (props: IAntdFormItemProps): JSX.Element => (
   <MegaLayout labelAlign="top"><FormItem {...props} /></MegaLayout>
@@ -28,9 +34,25 @@ const UserPickerConfigForm = ({ initialValue, onChange }: Props): JSX.Element =>
     onChange({ ...initialValue, appID });
   }, [appID]);
 
+  function formEffects(): void {
+    onFieldInputChange$('optionalRange').subscribe(() => {
+      setFieldState('defaultValues', (state) => {
+        state.value = [];
+      });
+      setFieldState('rangeList', (state) => {
+        state.value = [];
+      });
+    });
+  }
+
   return (
     <div>
-      <Form initialValues={initialValue} onChange={(formData) => onChange({ ...initialValue, ...formData })}>
+      <Form
+        actions={actions}
+        initialValues={initialValue}
+        onChange={(formData) => onChange(formData)}
+        effects={formEffects}
+      >
         <Field name="title" title="标题" component={Input} />
         <Field name="placeholder" title="占位提示" component={Input} />
         <Field name="description" title="描述内容" component={Input.TextArea} />
@@ -50,6 +72,7 @@ const UserPickerConfigForm = ({ initialValue, onChange }: Props): JSX.Element =>
         <Field
           name="defaultValues"
           title="默认值"
+          visible={initialValue.optionalRange !== 'currentUser'}
           appID={appID}
           optionalRange={initialValue.optionalRange}
           mode={initialValue.multiple}
