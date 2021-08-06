@@ -5,8 +5,8 @@ import Button from '@c/button';
 import PageLoading from '@c/page-loading';
 import TextHeader from '@c/text-header';
 
-import CreatedEditApp from '../../entry/app-list/app-edit/created-edit-app';
-import appDetailsStore from '../store';
+import CreatedEditApp from '../entry/app-list/app-edit/created-edit-app';
+import appDetailsStore from './store';
 
 import dayjs from 'dayjs';
 
