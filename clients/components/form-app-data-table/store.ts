@@ -6,6 +6,7 @@ import httpClient from '@lib/http-client';
 
 import { TableHeaderBtn, TableConfig } from './type';
 import { Config, getPageDataSchema } from './utils';
+import schemaToFields from '@lib/schema-convert';
 
 type Params = {
   condition?: Condition[] | [],
@@ -107,14 +108,7 @@ class AppPageDataStore {
     }
 
     this.schema = schema;
-    this.fields = Object.entries(schema.properties || {}).map(([key, fieldSchema]) => {
-      return {
-        id: key,
-        componentName: fieldSchema['x-component']?.toLowerCase() || '',
-        fieldName: key,
-        ...fieldSchema,
-      };
-    });
+    this.fields = schemaToFields(schema);
   }
 
   @action

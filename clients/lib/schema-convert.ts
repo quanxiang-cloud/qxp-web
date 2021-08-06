@@ -1,5 +1,4 @@
 import isEmpty from 'lodash/isEmpty';
-import groupBy from 'lodash/groupBy';
 import cloneDeep from 'lodash/cloneDeep';
 
 import { not } from '@lib/utils';
@@ -125,21 +124,3 @@ export const fieldsToSchema = (fields: Array<SchemaFieldItem>): ISchema => {
 };
 
 export default schemaToFields;
-
-/**
- * expand the internal properties of the layout component
- * @param {ISchema} properties:ISchema schema结构
- * @return {ISchema} flatProperties 展开的是properties结构
- */
-export function propertiesFlat(properties: ISchema | undefined): Properties {
-  const formatSchema = (schemaObj: { [key: string]: ISchema[] }): { [key: string]: ISchema } => {
-    const tmpObj: { [key: string]: ISchema } = {};
-    Object.entries(schemaObj).map(([key, schema]) => {
-      tmpObj[key] = Array.isArray(schema) ? schema[0] : schema;
-    });
-
-    return tmpObj || {};
-  };
-
-  return formatSchema(groupBy(schemaToFields({ properties } as ISchema), 'id'));
-}

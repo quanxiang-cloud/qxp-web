@@ -1,10 +1,9 @@
 import * as H from 'history';
-import { action, observable, reaction, IReactionDisposer, computed, toJS } from 'mobx';
+import { action, observable, reaction, IReactionDisposer, computed } from 'mobx';
 import { UnionColumns } from 'react-table';
 
 import FormStore from '@c/form-builder/store';
 import toast from '@lib/toast';
-import { propertiesFlat } from '@lib/schema-convert';
 import AppPageDataStore from '@c/form-app-data-table/store';
 import { TableConfig } from '@c/form-app-data-table/type';
 import { setFixedParameters } from '@c/form-app-data-table/utils';
@@ -13,6 +12,7 @@ import { getTableSchema, saveTableSchema } from '@lib/http-client';
 import {
   createPageScheme,
 } from './api';
+import { notIsLayoutComponent, schemaToMap } from '@lib/schema-convert';
 
 export const SHOW_FIELD = [
   'DatePicker',
@@ -49,12 +49,11 @@ class FormDesignStore {
   @observable filters: Filters = [];
 
   @computed get fieldsMap(): Record<string, ISchema> {
-    return propertiesFlat(this.formStore?.schema?.properties) || {};
+    return schemaToMap(this.formStore?.schema, notIsLayoutComponent) || {};
   }
 
   @computed get fieldList(): PageField[] {
-    const _properties = toJS(this.fieldsMap);
-    return Object.entries(propertiesFlat(_properties)).filter(([key, fieldSchema]) => {
+    return Object.entries(this.fieldsMap).filter(([key, fieldSchema]) => {
       if (key === '_id' ||
         !SHOW_FIELD.includes(fieldSchema['x-component'] as string) ||
         fieldSchema.isLayoutComponent) {

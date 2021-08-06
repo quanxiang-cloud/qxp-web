@@ -4,11 +4,11 @@ import { UnionColumns } from 'react-table';
 
 import PageLoading from '@c/page-loading';
 import { getTableSchema } from '@lib/http-client';
-import { propertiesFlat } from '@lib/schema-convert';
 
 import FormAppDataContent from './form-app-data-content';
 import Store from './store';
 import { TableHeaderBtn, Ref } from './type';
+import { schemaToMap } from '@lib/schema-convert';
 
 type Props = {
   pageID: string;
@@ -59,7 +59,7 @@ function FormAppDataTableWrap({
 
         setStore(
           new Store({
-            schema: { ...schema, properties: propertiesFlat(schema?.properties) },
+            schema: { ...schema, properties: schemaToMap(schema) },
             config: config,
             filterConfig,
             tableHeaderBtnList,

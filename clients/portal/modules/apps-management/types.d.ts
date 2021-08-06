@@ -112,5 +112,4 @@ type SchemaFieldItem = ISchema & {
   isLayoutComponent?: boolean;
   parentField?: string;
   tabIndex?: number;
-  'x-index'?: number;
 }
