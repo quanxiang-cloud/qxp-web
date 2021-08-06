@@ -7,6 +7,7 @@ export interface RadioGroupConfig {
   optionsLayout: 'horizontal' | 'vertical';
   sortable: boolean;
   required: boolean;
+  allowCustom: boolean;
   defaultValueFrom: FormBuilder.DefaultValueFrom;
   availableOptions: Array<{ label: string; value: any; title: string }>,
 }
@@ -18,6 +19,7 @@ export const defaultConfig: RadioGroupConfig = {
   displayModifier: 'normal',
   sortable: false,
   required: false,
+  allowCustom: false,
   defaultValueFrom: 'customized',
   availableOptions: [
     { label: '选项一', value: 'option_1', title: '选项一' },
@@ -46,6 +48,8 @@ export function toSchema(value: typeof defaultConfig): ISchema {
     // todo support optionsLayout
     ['x-component-props']: {
       name: value.title,
+      allowCustom: value.allowCustom,
+      optionsLayout: value.optionsLayout,
     },
     ['x-internal']: {
       sortable: value.sortable,
@@ -68,9 +72,10 @@ export function toConfig(schema: ISchema): RadioGroupConfig {
     description: schema.description as string,
     displayModifier: displayModifier,
     // todo implement this
-    optionsLayout: schema['x-component-props']?.layout as any,
+    optionsLayout: schema['x-component-props']?.optionsLayout as any,
     sortable: !!schema['x-internal']?.sortable,
     required: !!schema.required,
+    allowCustom: schema['x-component-props']?.allowCustom,
     // todo implement this
     defaultValueFrom: schema['x-internal']?.defaultValueFrom || 'customized',
     // todo refactor this

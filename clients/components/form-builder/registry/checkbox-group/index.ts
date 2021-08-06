@@ -1,4 +1,4 @@
-import { Checkbox } from '@formily/antd-components';
+import CheckboxGroup from './checkboxGroup';
 
 import configSchema from './config-schema';
 import { defaultConfig, toSchema, toConfig } from './convertor';
@@ -10,7 +10,7 @@ const CheckboxGroupField: Omit<FormBuilder.SourceElement<typeof defaultConfig>, 
   icon: 'check_box',
   defaultConfig,
   toSchema,
-  component: Checkbox.Group,
+  component: CheckboxGroup,
   category: 'basic',
   componentName: 'CheckboxGroup',
   compareOperators: ['⊇', '⊋'],
