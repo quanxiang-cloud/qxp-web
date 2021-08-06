@@ -128,7 +128,7 @@ function PageDetails(): JSX.Element {
                             onClick={handleClick}
                           >
                             <Icon name="add_task" size={20} className="mr-6 text-green-600" />
-                            {context}
+                            <span className="truncate">{context}</span>
                           </div>
                         );
                       })}

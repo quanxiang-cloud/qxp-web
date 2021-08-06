@@ -12,7 +12,7 @@ import Modal from '@c/modal';
 
 import {
   appAddAdmin, fetchAppAdminUsers, delAppAdminUsers,
-} from '../api';
+} from './api';
 
 type Admin = {
   id: string;

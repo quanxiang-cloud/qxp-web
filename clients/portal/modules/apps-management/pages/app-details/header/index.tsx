@@ -20,14 +20,6 @@ function DetailsHeader(): JSX.Element {
     appDetailsStore.fetchAppList();
   }, []);
 
-  const goAppSetting = (navType:string): void => {
-    history.push(`/apps/details/${appDetails.id}/setting/${navType}`);
-  };
-
-  const goFlowPage = (navType:string): void => {
-    history.push(`/apps/details/${appID}/setting/workflows`);
-  };
-
   const handleChange = (newAppId: string): void => {
     history.replace(location.pathname.replace(appID, newAppId));
   };
@@ -74,20 +66,6 @@ function DetailsHeader(): JSX.Element {
         <AppsSwitcher apps={apps} currentAppID={appID} onChange={handleChange} />
       </div>
       <div className='flex'>
-        <Button
-          onClick={() => goFlowPage('usersAndPermissions')}
-          className='mr-16'
-          iconName='linear_scale'
-        >
-          工作流
-        </Button>
-        <Button
-          onClick={() => goAppSetting('usersAndPermissions')}
-          className='mr-16'
-          iconName='group'
-        >
-          用户及权限
-        </Button>
         {isPublish ? (
           <PopConfirm content={statusTipsContent(false)} onOk={updateAppStatus}>
             <Button iconName='toggle_on' modifier='primary'>
@@ -105,13 +83,6 @@ function DetailsHeader(): JSX.Element {
         {/* <Button forbidden={!isPublish} onClick={goAppVisit} className='mr-16' iconName='login'>
           进入应用访问
         </Button> */}
-        <Button
-          onClick={() => goAppSetting('info')}
-          iconName='settings'
-        >
-          应用管理
-        </Button>
-        <hr className='app-global-header-hr' />
         <a
           href={`//${window.CONFIG.docs_hostname}`}
           target="_blank"

@@ -3,7 +3,6 @@ import { Route, useParams } from 'react-router-dom';
 
 import Header from './header';
 import AppDetailsContent from './app-details-content';
-import AppSetting from './app-setting';
 import appDetailsStore from './store';
 
 function AppDetails() {
@@ -19,8 +18,7 @@ function AppDetails() {
   return (
     <div>
       <Header />
-      <Route path='/apps/details/:appID/setting' component={AppSetting} />
-      <Route exact path='/apps/details/:appID/:menuType' component={AppDetailsContent} />
+      <Route path='/apps/details/:appID/:menuType' component={AppDetailsContent} />
     </div>
   );
 }

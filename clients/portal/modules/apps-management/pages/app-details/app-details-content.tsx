@@ -3,10 +3,10 @@ import { Route } from 'react-router-dom';
 
 import './index.scss';
 import SideNavs from './side-navs';
-import AppAdmin from './app-setting/app-admin';
-import AppInfo from './app-setting/app-info';
+import AppAdmin from './app-admin';
+import AppInfo from './app-info';
 import PageMenuDesign from './page-menu-design';
-import UsersAndPermissions from './app-setting/users-and-permissions';
+import UsersAndPermissions from './users-and-permissions';
 
 const WorkFlows = React.lazy(() => import('../../work-flow-list'));
 
