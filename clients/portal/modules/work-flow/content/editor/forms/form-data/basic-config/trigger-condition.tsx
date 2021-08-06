@@ -17,7 +17,7 @@ interface Props {
   value: TriggerConditionType;
   formFieldOptions: ConditionItemOptions;
   onChange: (v: Partial<FormDataData>) => void;
-  schemaMap: Record<string, SchemaField>;
+  schemaMap: Record<string, SchemaFieldItem>;
   validating: boolean;
 }
 

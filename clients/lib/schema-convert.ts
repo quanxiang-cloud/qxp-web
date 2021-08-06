@@ -21,7 +21,7 @@ export type Options = Option[];
 type FilterFunc = (currentSchema: ISchema) => boolean
 
 export function schemaToOptions(schema?: ISchema, filterFunc?: FilterFunc): Options {
-  return schemaToFields(schema, filterFunc).map((field: SchemaField) => ({
+  return schemaToFields(schema, filterFunc).map((field: SchemaFieldItem) => ({
     label: field.title as string,
     value: field.id,
     type: field.type as string,
@@ -35,17 +35,17 @@ export function isLayoutComponent(currentSchema: ISchema): boolean {
 
 export const notIsLayoutComponent = not(isLayoutComponent);
 
-export function schemaToMap(schema?: ISchema, filterFunc?: FilterFunc): Record<string, SchemaField> {
+export function schemaToMap(schema?: ISchema, filterFunc?: FilterFunc): Record<string, SchemaFieldItem> {
   const fields = schemaToFields(schema, filterFunc);
-  return fields.reduce((fieldsMap: Record<string, SchemaField>, field: SchemaField) => {
+  return fields.reduce((fieldsMap: Record<string, SchemaFieldItem>, field: SchemaFieldItem) => {
     fieldsMap[field.fieldName] = field;
     return fieldsMap;
   }, {});
 }
 
 const schemaToFields = (
-  schema?: ISchema, filterFunc?: FilterFunc, fields: SchemaField[] = [],
-): Array<SchemaField> => {
+  schema?: ISchema, filterFunc?: FilterFunc, fields: SchemaFieldItem[] = [],
+): Array<SchemaFieldItem> => {
   const { properties } = cloneDeep(schema || {});
   if (!properties || isEmpty(properties)) return fields;
 
@@ -91,7 +91,7 @@ const schemaToFields = (
   return schemaToFields(newProperties, filterFunc, fields);
 };
 
-export const fieldsToSchema = (fields: Array<SchemaField>): ISchema => {
+export const fieldsToSchema = (fields: Array<SchemaFieldItem>): ISchema => {
   const properties: Properties = {};
 
   fields.forEach((field) => {

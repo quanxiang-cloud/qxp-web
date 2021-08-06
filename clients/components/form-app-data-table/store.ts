@@ -43,7 +43,7 @@ class AppPageDataStore {
   @observable selected: string[] = [];
   @observable formDataList: any[] = [];
   @observable total = 0;
-  @observable fields: SchemaField[] = [];
+  @observable fields: SchemaFieldItem[] = [];
   @observable schema: ISchema = {};
   @observable filterData: FormData = {};
   @observable tableColumns: UnionColumns<FormData>[] = [];

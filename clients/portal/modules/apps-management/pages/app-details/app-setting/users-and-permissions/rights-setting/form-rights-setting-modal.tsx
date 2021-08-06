@@ -29,7 +29,7 @@ type PerData = {
 
 function RightsSettingModal({ onCancel, rightsGroupID, pageForm }: Props): JSX.Element {
   const [submitLoading, setSubLoading] = useState(false);
-  const [fields, setFields] = useState<SchemaField[]>([]);
+  const [fields, setFields] = useState<SchemaFieldItem[]>([]);
   const [activeTab, setActiveTab] = useState('authorized');
   const [perData, setPerData] = useState<PerData>({
     conditions: {},

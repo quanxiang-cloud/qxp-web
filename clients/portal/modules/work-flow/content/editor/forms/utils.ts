@@ -14,7 +14,7 @@ type Options = {
   noSystem?: boolean;
 }
 
-export const getSchemaFields = (schemaFields: SchemaField[] = [], options: Options = {}): LabelValue[] => {
+export const getSchemaFields = (schemaFields: SchemaFieldItem[] = [], options: Options = {}): LabelValue[] => {
   return schemaFields.filter((schema) => {
     const compName = schema.componentName;
     const isSystem = !!get(schema, 'x-internal.isSystem');
@@ -38,7 +38,7 @@ export const filterTables = (tables: Array<TableListItem> = []): Array<TableList
   return flatten(allTables);
 };
 
-const mapSchemaProps = <T extends SchemaField>(
+const mapSchemaProps = <T extends SchemaFieldItem>(
   props: Record<string, T>,
   filterFn?: (v?: T) => boolean,
   mutateField?: (k: string, f: T, a: Record<string, T>) => void,
@@ -72,7 +72,7 @@ const getCompDefaultValFromData = (
   return defaultVal;
 };
 
-type TransformSchemaSchema = { properties: Record<string, SchemaField> } & Omit<ISchema, 'properties'>
+type TransformSchemaSchema = { properties: Record<string, SchemaFieldItem> } & Omit<ISchema, 'properties'>
 
 export const transformSchema = (
   schema: TransformSchemaSchema,

@@ -29,20 +29,20 @@ export function setFixedParameters(
 ): UnionColumns<any>[] {
   const actionIndex = tableColumns.findIndex(({ id }) => id === 'action');
   switch (fixedRule) {
-    case 'one':
-      addFixedParameters([0], tableColumns);
-      break;
-    case 'previous_two':
-      addFixedParameters([0, 1], tableColumns);
-      break;
-    case 'action':
-      if (actionIndex > -1) {
-        addFixedParameters([actionIndex], tableColumns);
-      }
-      break;
-    case 'one_action':
-      addFixedParameters(actionIndex > -1 ? [0, actionIndex] : [0], tableColumns);
-      break;
+  case 'one':
+    addFixedParameters([0], tableColumns);
+    break;
+  case 'previous_two':
+    addFixedParameters([0, 1], tableColumns);
+    break;
+  case 'action':
+    if (actionIndex > -1) {
+      addFixedParameters([actionIndex], tableColumns);
+    }
+    break;
+  case 'one_action':
+    addFixedParameters(actionIndex > -1 ? [0, actionIndex] : [0], tableColumns);
+    break;
   }
   return tableColumns;
 }

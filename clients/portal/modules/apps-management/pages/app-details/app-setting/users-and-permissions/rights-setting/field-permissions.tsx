@@ -5,7 +5,7 @@ import { fieldsToSchema } from '@lib/schema-convert';
 import Checkbox from '@c/checkbox';
 
 type Props = {
-  fields: SchemaField[];
+  fields: SchemaFieldItem[];
   fieldPer: Record<string, any>;
   className?: string;
 }
@@ -180,7 +180,7 @@ function FieldPermissions({ fields, className = '', fieldPer }: Props, ref: Reac
     return title;
   };
 
-  const getSuffix = (field: SchemaField, fields: SchemaField[]) => {
+  const getSuffix = (field: SchemaFieldItem, fields: SchemaFieldItem[]) => {
     const currentFieldName = field.id;
 
     const sf = fields.filter((itm) => itm.parentField === currentFieldName)

@@ -105,7 +105,7 @@ type DeptAndUser = {
   name: string;
 }
 
-type SchemaField = ISchema & {
+type SchemaFieldItem = ISchema & {
   id: string;
   fieldName: string;
   componentName: string;

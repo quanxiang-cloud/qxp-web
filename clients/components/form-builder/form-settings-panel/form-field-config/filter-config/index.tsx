@@ -17,7 +17,7 @@ type Props = {
   currentFormSchema: ISchema;
 }
 
-function getFields(schema: ISchema): SchemaField[] {
+function getFields(schema: ISchema): SchemaFieldItem[] {
   return schemaToFields(schema, notIsLayoutComponent).filter((schema) => {
     return schema.fieldName !== '_id' && FILTER_FIELD.includes(schema.componentName);
   });
@@ -25,8 +25,8 @@ function getFields(schema: ISchema): SchemaField[] {
 
 function FilterConfig({ tableID, appID, onChange, value, currentFormSchema }: Props): JSX.Element {
   const [visible, setVisible] = useState(false);
-  const [schemaFields, setSchemaFields] = useState<SchemaField[]>([]);
-  const [currentFields, setCurrentFields] = useState<SchemaField[]>([]);
+  const [schemaFields, setSchemaFields] = useState<SchemaFieldItem[]>([]);
+  const [currentFields, setCurrentFields] = useState<SchemaFieldItem[]>([]);
   const dataFilterRef = useRef<RefProps>(null);
 
   const handleSave = (): void => {

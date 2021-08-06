@@ -21,7 +21,7 @@ const { RangePicker } = DatePicker;
 interface Props {
   condition: TriggerConditionValue;
   options: Options;
-  schemaMap?: Record<string, SchemaField>;
+  schemaMap?: Record<string, SchemaFieldItem>;
   onChange: (value: Partial<TriggerConditionExpressionItem>) => void;
 }
 
@@ -31,7 +31,7 @@ export default function ConditionItem({ condition, options, onChange, schemaMap 
   const value = condition.key;
   const currentOption = options.find((option) => option.value === value);
 
-  const currentSchema: SchemaField | Record<string, any> = schemaMap?.[value || ''] || {};
+  const currentSchema: SchemaFieldItem | Record<string, any> = schemaMap?.[value || ''] || {};
   if (value && !isEmpty(currentSchema)) {
     currentSchema.display = true;
     currentSchema.readOnly = false;

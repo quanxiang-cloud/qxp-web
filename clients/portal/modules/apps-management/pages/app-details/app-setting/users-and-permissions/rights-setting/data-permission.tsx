@@ -4,7 +4,7 @@ import { Radio } from 'antd';
 import DataFilter, { RefProps } from '@c/data-filter';
 
 type Props = {
-  fields: SchemaField[];
+  fields: SchemaFieldItem[];
   dataPer: ConditionMap;
   className?: string;
 }

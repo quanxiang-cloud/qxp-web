@@ -7,7 +7,7 @@ import { Condition } from './index';
 import FlowSourceTableContext from '@flowEditor/forms/flow-source-table';
 
 interface Props {
-  targetSchema: Record<string, SchemaField>;
+  targetSchema: Record<string, SchemaFieldItem>;
   condition: Condition;
   onRemove: () => void;
   onChange: (data: Partial<Condition>) => void;

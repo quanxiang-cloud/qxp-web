@@ -15,7 +15,7 @@ import Context from '../context';
 import FormulaModal from '../formula-modal';
 
 interface Props {
-  targetSchema: Record<string, SchemaField>;
+  targetSchema: Record<string, SchemaFieldItem>;
   rule: Rule;
   onRemove: () => void;
   onChange: (data: Partial<Rule>) => void;

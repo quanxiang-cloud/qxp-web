@@ -16,7 +16,7 @@ interface Props {
   fields: CustomFieldPermission[];
   updateFields: (value: CustomFieldPermission[]) => void;
   editable: boolean;
-  schemaMap: Record<string, SchemaField>;
+  schemaMap: Record<string, SchemaFieldItem>;
 }
 
 export default function CustomFieldTable({
@@ -125,7 +125,7 @@ export default function CustomFieldTable({
     );
   }
 
-  function variableOptionsFilterByType(schema: SchemaField) {
+  function variableOptionsFilterByType(schema: SchemaFieldItem) {
     return ({ type }: Partial<FlowVariableOption>): boolean => {
       const componentName = schema.componentName || '';
       const types = FORM_COMPONENT_VARIABLE_MAP[componentName as keyof typeof FORM_COMPONENT_VARIABLE_MAP];
