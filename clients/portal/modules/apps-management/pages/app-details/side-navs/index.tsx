@@ -94,7 +94,7 @@ function SideNavs(): JSX.Element {
                       'text-blue-600': id === menuType,
                     })}
                   >
-                    <Icon name={icon} className="mr-8 text-current flex-shrink-0" size={24} />
+                    <Icon name={icon} className="mx-10 text-current flex-shrink-0" size={24} />
                     <span>{name}</span>
                   </div>
                 );
