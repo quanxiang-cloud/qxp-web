@@ -3,6 +3,7 @@ import zhCN from 'antd/lib/date-picker/locale/zh_CN';
 import { DatePicker } from 'antd';
 
 import { getPicker } from '@c/form-builder/registry/date-picker/date-picker';
+import { omit } from 'lodash';
 import CascadeSelector, {
   DefaultValueFrom, CascadeSelectorProps,
 } from '@c/form-builder/registry/cascade-selector/cascade-selector';
@@ -75,7 +76,7 @@ function FieldSwitch({ field, className, ...otherProps }: Props<any>, ref: React
         picker={getPicker(field['x-component-props']?.format)}
         ref={ref}
         className={`'w-full input ${className}`}
-        {...field['x-component-props']}
+        {...omit(field['x-component-props'], ['placeholder'])}
         {...otherProps}
       />
     );
