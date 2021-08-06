@@ -29,6 +29,17 @@ type FieldCondition = {
   associationFieldsOptions?: LabelValue[];
 }
 
+type InitValue = Array<string | number | Date | LabelValue> | undefined;
+
+type FormData =
+  string |
+  number |
+  LabelValue |
+  Date |
+  (string | number | LabelValue | Date)[] |
+  moment.Moment |
+  moment.Moment[];
+
 export type RefProps = {
   getDataPer: () => Promise<FilterConfig | string>;
   empty: () => void;
@@ -36,9 +47,9 @@ export type RefProps = {
 }
 
 function getValue(
-  field: SchemaFieldItem, initValue: Array<string | number | Date | LabelValue> | undefined,
-): string | number | LabelValue | Date | (string | number | LabelValue | Date)[] | moment.Moment |
-  moment.Moment[] {
+  field: SchemaFieldItem,
+  initValue: InitValue,
+): FormData {
   if (!initValue || initValue.length === 0) {
     return '';
   }

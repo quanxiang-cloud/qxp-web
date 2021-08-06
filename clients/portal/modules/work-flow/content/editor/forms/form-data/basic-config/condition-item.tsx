@@ -5,7 +5,7 @@ import { useCss } from 'react-use';
 import { DatePicker } from 'antd';
 
 import Select from '@c/select';
-import { Options, Option } from '@flowEditor/forms/api';
+import { Option } from '@flowEditor/forms/api';
 import type {
   Operator,
   TriggerConditionExpressionItem,
@@ -20,12 +20,12 @@ const { RangePicker } = DatePicker;
 
 interface Props {
   condition: TriggerConditionValue;
-  options: Options;
+  options: Option[];
   schemaMap?: Record<string, SchemaFieldItem>;
   onChange: (value: Partial<TriggerConditionExpressionItem>) => void;
 }
 
-export type ConditionItemOptions = Options;
+export type ConditionItemOptions = Option[];
 
 export default function ConditionItem({ condition, options, onChange, schemaMap }: Props): JSX.Element {
   const value = condition.key;
@@ -105,11 +105,11 @@ export default function ConditionItem({ condition, options, onChange, schemaMap 
         <Select
           placeholder="判断符"
           value={condition.op}
-          onChange={(v : Operator) => onChange({ op: v })}
+          onChange={(v: Operator) => onChange({ op: v })}
           className={cs(
             'h-32 border border-gray-300 corner-2-8-8-8 px-12 text-12 flex items-center flex-1', {
-              'mr-12': !hiddenInput || showDateRange,
-            })}
+            'mr-12': !hiddenInput || showDateRange,
+          })}
           options={filteredOperatorOptions}
         />
         {!hiddenInput && (

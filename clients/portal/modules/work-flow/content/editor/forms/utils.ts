@@ -1,5 +1,4 @@
 import { get, pick, flatten, cloneDeep } from 'lodash';
-import type { Properties } from '@lib/schema-convert';
 
 const excludeComps = ['subtable'];
 
@@ -14,18 +13,19 @@ type Options = {
   noSystem?: boolean;
 }
 
-export const getSchemaFields = (schemaFields: SchemaFieldItem[] = [], options: Options = {}): LabelValue[] => {
-  return schemaFields.filter((schema) => {
-    const compName = schema.componentName;
-    const isSystem = !!get(schema, 'x-internal.isSystem');
-    if (options.noSystem && isSystem) {
-      return false;
-    }
-    return compName && !excludeComps.includes(compName);
-  }).map((schema) => {
-    return { label: schema.title as string, value: schema.id };
-  });
-};
+export const getSchemaFields =
+  (schemaFields: SchemaFieldItem[] = [], options: Options = {}): LabelValue[] => {
+    return schemaFields.filter((schema) => {
+      const compName = schema.componentName;
+      const isSystem = !!get(schema, 'x-internal.isSystem');
+      if (options.noSystem && isSystem) {
+        return false;
+      }
+      return compName && !excludeComps.includes(compName);
+    }).map((schema) => {
+      return { label: schema.title as string, value: schema.id };
+    });
+  };
 
 // filter target tables with group
 export const filterTables = (tables: Array<TableListItem> = []): Array<TableListItem> => {
@@ -42,7 +42,7 @@ const mapSchemaProps = <T extends SchemaFieldItem>(
   props: Record<string, T>,
   filterFn?: (v?: T) => boolean,
   mutateField?: (k: string, f: T, a: Record<string, T>) => void,
-): Properties => {
+): Record<string, ISchema> => {
   return Object.entries(props)
     .filter(([, field]) => {
       return filterFn ? filterFn(field) : true;

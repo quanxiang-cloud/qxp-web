@@ -1,11 +1,9 @@
 import { QueryFunctionContext } from 'react-query';
 import httpClient from '@lib/http-client';
-import { notIsLayoutComponent, schemaToOptions, Options } from '@lib/schema-convert';
+import { notIsLayoutComponent, schemaToOptions } from '@lib/schema-convert';
 
 import { Operation } from '../type';
 import { SYSTEM_OPERATOR_PERMISSION, CUSTOM_OPERATOR_PERMISSION } from '../utils/constants';
-
-export type { Options, Option } from '@lib/schema-convert';
 
 interface SchemaResponse {
   schema?: {
@@ -15,18 +13,24 @@ interface SchemaResponse {
   }
 }
 
+export type Option = {
+  label: string;
+  value: string;
+  children?: Option[];
+  type?: string;
+  isSystem?: boolean;
+};
+
 export async function getFormFieldSchema({ queryKey }: QueryFunctionContext): Promise<{
   properties?: { [key: string]: ISchema; } | undefined;
 }> {
   const data = await httpClient<SchemaResponse | null>(
-    `/api/v1/form/${queryKey[2]}/m/table/getByID`, {
-      tableID: queryKey[1],
-    });
+    `/api/v1/form/${queryKey[2]}/m/table/getByID`, { tableID: queryKey[1] });
   return data?.schema ?? {};
 }
 
 export async function getFormFieldOptions({ queryKey }: QueryFunctionContext): Promise<{
-  options: Options,
+  options: Option[],
   schema: ISchema,
 }> {
   const schema = await getFormFieldSchema({ queryKey });

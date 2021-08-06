@@ -12,7 +12,7 @@ import { getTableSchema, saveTableSchema } from '@lib/http-client';
 import {
   createPageScheme,
 } from './api';
-import { notIsLayoutComponent, schemaToMap } from '@lib/schema-convert';
+import { schemaToMap } from '@lib/schema-convert';
 
 export const SHOW_FIELD = [
   'DatePicker',
@@ -49,7 +49,7 @@ class FormDesignStore {
   @observable filters: Filters = [];
 
   @computed get fieldsMap(): Record<string, ISchema> {
-    return schemaToMap(this.formStore?.schema, notIsLayoutComponent) || {};
+    return schemaToMap(this.formStore?.schema) || {};
   }
 
   @computed get fieldList(): PageField[] {

@@ -2,24 +2,11 @@ import isEmpty from 'lodash/isEmpty';
 import cloneDeep from 'lodash/cloneDeep';
 
 import { not } from '@lib/utils';
+import { Option } from '@portal/modules/work-flow/content/editor/forms/api';
 
-export type Properties = {
-  [key: string]: ISchema;
-}
+type FilterFunc = (currentSchema: ISchema) => boolean;
 
-export type Option = {
-  label: string;
-  value: string;
-  children?: Option[];
-  type?: string;
-  isSystem?: boolean;
-};
-
-export type Options = Option[];
-
-type FilterFunc = (currentSchema: ISchema) => boolean
-
-export function schemaToOptions(schema?: ISchema, filterFunc?: FilterFunc): Options {
+export function schemaToOptions(schema?: ISchema, filterFunc?: FilterFunc): Option[] {
   return schemaToFields(schema, filterFunc).map((field: SchemaFieldItem) => ({
     label: field.title as string,
     value: field.id,
@@ -35,7 +22,7 @@ export function isLayoutComponent(currentSchema: ISchema): boolean {
 export const notIsLayoutComponent = not(isLayoutComponent);
 
 export function schemaToMap(schema?: ISchema, filterFunc?: FilterFunc): Record<string, SchemaFieldItem> {
-  const fields = schemaToFields(schema, filterFunc);
+  const fields = schemaToFields(schema, filterFunc ? filterFunc : notIsLayoutComponent);
   return fields.reduce((fieldsMap: Record<string, SchemaFieldItem>, field: SchemaFieldItem) => {
     fieldsMap[field.fieldName] = field;
     return fieldsMap;
@@ -91,7 +78,7 @@ const schemaToFields = (
 };
 
 export const fieldsToSchema = (fields: Array<SchemaFieldItem>): ISchema => {
-  const properties: Properties = {};
+  const properties: Record<string, ISchema> = {};
 
   fields.forEach((field) => {
     const fileName = field.fieldName;

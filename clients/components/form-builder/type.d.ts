@@ -144,6 +144,15 @@ declare namespace FormBuilder {
   }
 }
 
+type SchemaFieldItem = ISchema & {
+  id: string;
+  fieldName: string;
+  componentName: string;
+  isLayoutComponent?: boolean;
+  parentField?: string;
+  tabIndex?: number;
+}
+
 // a copy of formily Schema type definition for reference
 // interface Schema {
 //   title: string;

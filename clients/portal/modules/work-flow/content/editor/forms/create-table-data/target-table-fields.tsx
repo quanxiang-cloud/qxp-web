@@ -5,7 +5,7 @@ import { pick, pickBy, each, get, set } from 'lodash';
 import { getFormFieldSchema } from '@flowEditor/forms/api';
 import { FormRenderer } from '@c/form-builder';
 import { ValueRule, ValueRuleVal } from '@flowEditor/type';
-import { notIsLayoutComponent, schemaToMap } from '@lib/schema-convert';
+import { schemaToMap } from '@lib/schema-convert';
 
 import CustomField from './custom-field';
 import SubTableFields from './sub-table-fields';
@@ -21,9 +21,9 @@ function TargetTableFields({ appId, tableId }: Props): JSX.Element {
   const { data, setData } = useContext(Context);
   const { data: schema, isLoading, isError } = useQuery(['GET_TARGET_TABLE_SCHEMA', tableId, appId],
     getFormFieldSchema, {
-      enabled: !!appId && !!tableId,
-    });
-  const tableSchemaMap = schemaToMap(schema, notIsLayoutComponent);
+    enabled: !!appId && !!tableId,
+  });
+  const tableSchemaMap = schemaToMap(schema);
 
   const getTableIdByFieldKey = (key: string): string => {
     const field = tableSchemaMap[key];

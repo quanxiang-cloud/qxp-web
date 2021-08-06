@@ -9,7 +9,7 @@ import useObservable from '@lib/hooks/use-observable';
 import store from '@flowEditor/store';
 import { getFormFieldOptions } from '@flowEditor/forms/api';
 import FlowContext from '@flow/flow-context';
-import { schemaToMap, notIsLayoutComponent } from '@lib/schema-convert';
+import { schemaToMap } from '@lib/schema-convert';
 import type {
   StoreValue,
   FieldPermission as FieldPermissionType,
@@ -55,8 +55,8 @@ export default function FieldPermission({ value, onChange: _onChange }: Props): 
   const { data: { options: data, schema = {} } = { options: [] }, isLoading, isError } = useQuery(
     ['GET_WORK_FORM_FIELD_LIST', workFormValue, appID],
     getFormFieldOptions, {
-      enabled: !!workFormValue && !!appID,
-    },
+    enabled: !!workFormValue && !!appID,
+  },
   );
 
   useEffect(() => {
@@ -152,7 +152,7 @@ export default function FieldPermission({ value, onChange: _onChange }: Props): 
           <CustomFieldTable
             editable={editable}
             fields={mergedFieldPermissions.custom}
-            schemaMap={schemaToMap(schema, notIsLayoutComponent)}
+            schemaMap={schemaToMap(schema)}
             updateFields={onUpdateFields('custom')}
           />
         </section>

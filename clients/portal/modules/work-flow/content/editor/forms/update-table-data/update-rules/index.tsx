@@ -4,7 +4,7 @@ import { useQuery } from 'react-query';
 import Button from '@c/button';
 import { getFormFieldSchema } from '@flowEditor/forms/api';
 import { ValueRuleVal } from '@flowEditor/type';
-import { notIsLayoutComponent, schemaToMap } from '@lib/schema-convert';
+import { schemaToMap } from '@lib/schema-convert';
 
 import RuleItem from './rule-item';
 
@@ -20,7 +20,7 @@ export type Rule = {
   valueFrom: 'fixedValue' | 'currentFormValue' | 'processVariable' | 'formula';
   valueOf: ValueRuleVal;
 }
-export type RefType={getValues: ()=> any}
+export type RefType = { getValues: () => any }
 
 function UpdateRules({ appId, tableId, defaultValue }: Props, ref: React.Ref<RefType>): JSX.Element {
   const [rules, setRules] = useState<Array<Rule>>(defaultValue || []);
@@ -58,13 +58,13 @@ function UpdateRules({ appId, tableId, defaultValue }: Props, ref: React.Ref<Ref
         </div>
         <div className="flex flex-col update-conditions">
           {rules.map((rule, idx) =>
-            (<RuleItem
-              key={[rule.fieldName, idx].join('-')}
-              targetSchema={schemaToMap(targetSchema, notIsLayoutComponent)}
-              onRemove={() => onRemove(idx)}
-              onChange={(data) => onChange(data, idx)}
-              rule={rule}
-            />),
+          (<RuleItem
+            key={[rule.fieldName, idx].join('-')}
+            targetSchema={schemaToMap(targetSchema)}
+            onRemove={() => onRemove(idx)}
+            onChange={(data) => onChange(data, idx)}
+            rule={rule}
+          />),
           )}
         </div>
       </fieldset>
