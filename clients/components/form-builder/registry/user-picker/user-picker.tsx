@@ -20,9 +20,6 @@ interface AllUserPickerProps extends SelectProps<any> {
   appID: string;
 }
 
-type SyntheticEvent<T = Element, E = Event> = React.BaseSyntheticEvent<E, EventTarget & T, EventTarget>
-type UIEvent<T = Element, E = Event> = SyntheticEvent<T, E>
-
 const PAGE_SIZE = 10;
 
 const UserPicker = ({ optionalRange, appID, onChange, value, ...componentsProps }: Props): JSX.Element => {
