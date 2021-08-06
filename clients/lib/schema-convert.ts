@@ -1,8 +1,10 @@
 import isEmpty from 'lodash/isEmpty';
 import cloneDeep from 'lodash/cloneDeep';
+import groupBy from 'lodash/groupBy';
+import isUndefined from 'lodash/isUndefined';
 
-import { not } from '@lib/utils';
-import { Option } from '@portal/modules/work-flow/content/editor/forms/api';
+import { Option } from '@flowEditor/forms/api';
+import { not, quickSortObjectArray } from '@lib/utils';
 
 type FilterFunc = (currentSchema: ISchema) => boolean;
 
@@ -29,11 +31,21 @@ export function schemaToMap(schema?: ISchema, filterFunc?: FilterFunc): Record<s
   }, {});
 }
 
+function sortFields(fields: SchemaFieldItem[]): SchemaFieldItem[] {
+  const {
+    true: systemFields, false: normalFields,
+  } = groupBy(fields, (field) => !!field['x-internal']?.isSystem);
+  const sorter = (arr: SchemaFieldItem[]): SchemaFieldItem[] => quickSortObjectArray('x-index', arr);
+  return [...sorter(normalFields), ...sorter(systemFields)];
+}
+
 const schemaToFields = (
   schema?: ISchema, filterFunc?: FilterFunc, fields: SchemaFieldItem[] = [],
 ): Array<SchemaFieldItem> => {
   const { properties } = cloneDeep(schema || {});
-  if (!properties || isEmpty(properties)) return fields;
+  if (!properties || isEmpty(properties)) {
+    return sortFields(fields);
+  }
 
   const newProperties: ISchema = {
     properties: {},
@@ -56,12 +68,12 @@ const schemaToFields = (
 
     const field = {
       ...currentSchema,
+      'x-index': isUndefined(xIndex) ? 0 : xIndex,
       fieldName: key,
       componentName: componentName,
       isLayoutComponent,
       parentField,
       tabIndex,
-      'x-index': xIndex,
       id: key,
     };
 
@@ -80,26 +92,20 @@ const schemaToFields = (
 export const fieldsToSchema = (fields: Array<SchemaFieldItem>): ISchema => {
   const properties: Record<string, ISchema> = {};
 
-  fields.forEach((field) => {
+  const { false: fieldsNoParent, true: fieldsWithParent } = groupBy(fields, (field) => !!field.parentField);
+
+  fieldsNoParent?.forEach((field) => {
     const fileName = field.fieldName;
-
-    if (field.parentField) return;
-
     properties[fileName] = {
       ...field,
       properties: {},
     };
   });
 
-  fields.forEach((field) => {
+  fieldsWithParent?.forEach((field) => {
     const fileName = field.fieldName;
-
-    if (!field.parentField) return;
-
-    const parentProperties = properties[field.parentField].properties;
-
-    if (parentProperties === undefined) return;
-
+    const parentProperties = properties[field.parentField || '']?.properties;
+    if (isUndefined(parentProperties)) return;
     parentProperties[fileName] = field;
   });
 
