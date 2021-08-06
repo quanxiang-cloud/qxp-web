@@ -1,22 +1,38 @@
 import React from 'react';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
-import { useUpdateEffect } from 'react-use';
 
 import UserPicker from './user-picker';
 
-type OptionalRange = 'customize' | 'all'
+type OptionalRange = 'customize' | 'all' | 'currentUser';
 
-const UserPickerWrap = (p: ISchemaFieldComponentProps): JSX.Element => {
-  const optionalRange = p.props.optionalRange as OptionalRange;
-  useUpdateEffect(() => {
-    p.mutators.change(p.props.defaultValues || []);
-  }, [optionalRange, p.props['x-component-props'].mode]);
+const UserPickerWrap = (formField: ISchemaFieldComponentProps): JSX.Element => {
+  const optionalRange = formField.props.optionalRange as OptionalRange;
+  React.useEffect(() => {
+    if (optionalRange === 'currentUser') {
+      const userInfo = window.USER;
+      const options = [{
+        label: userInfo.userName,
+        value: userInfo.id,
+      }];
+      formField.mutators.change(options);
+      formField.form.setFieldState(formField.name, (state) => {
+        state.props.enum = options;
+      });
+      return;
+    }
 
-  const xComponentsProps = Object.assign({}, p.props['x-component-props'], {
-    onChange: p.mutators.change,
-    options: p.props.enum,
-    value: p.value,
-    disabled: !p.props['editable'],
+    formField.mutators.change(
+      (formField.initialValue.length && formField.initialValue) ||
+      (formField.props.defaultValues.length && formField.props.defaultValues) ||
+      [],
+    );
+  }, [optionalRange, formField.props['x-component-props'].mode]);
+
+  const xComponentsProps = Object.assign({}, formField.props['x-component-props'], {
+    onChange: formField.mutators.change,
+    options: formField.props.enum,
+    value: formField.value,
+    disabled: !formField.props['editable'],
   });
 
   return <UserPicker optionalRange={optionalRange} {...xComponentsProps} />;
