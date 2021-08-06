@@ -118,6 +118,10 @@ function ActionModals({ flowName, getFormData }: Props): JSX.Element | null {
 
     // 加签
     if (action === TaskHandleType.add_sign) {
+      if (!chosenEmployees.length) {
+        store.setShowTips(true);
+        return Promise.reject(new Error());
+      }
       return apis.signTask(taskID, {
         assignee: chosenEmployees,
         type: addSignType,
