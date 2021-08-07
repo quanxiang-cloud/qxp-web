@@ -50,6 +50,7 @@ function FormulaModal(props: Props) {
   return (
     <Modal
       title="设置过滤条件"
+      onClose={props.onClose}
       footerBtns={[
         {
           key: 'cancel',
