@@ -75,6 +75,13 @@ function DetailsHeader(): JSX.Element {
       </div>
       <div className='flex'>
         <Button
+          onClick={() => history.push(`/apps/details/${appID}/dataModels`)}
+          className='mr-16'
+          iconName='linear_scale'
+        >
+          数据模型
+        </Button>
+        <Button
           onClick={() => goFlowPage('usersAndPermissions')}
           className='mr-16'
           iconName='linear_scale'
