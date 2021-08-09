@@ -55,8 +55,7 @@ class FormDesignStore {
   @computed get fieldList(): PageField[] {
     return Object.entries(this.fieldsMap).filter(([key, fieldSchema]) => {
       if (key === '_id' ||
-        !SHOW_FIELD.includes(fieldSchema['x-component'] as string) ||
-        fieldSchema.isLayoutComponent) {
+        !SHOW_FIELD.includes(fieldSchema['x-component'] as string)) {
         return false;
       }
 

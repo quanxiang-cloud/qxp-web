@@ -8,7 +8,13 @@ import { not, quickSortObjectArray } from '@lib/utils';
 
 type FilterFunc = (currentSchema: ISchema) => boolean;
 
-export function schemaToOptions(schema?: ISchema, filterFunc: FilterFunc = notIsLayoutComponent): Option[] {
+export const isNonLayoutComponent = not(isLayoutComponent);
+
+export function isLayoutComponent(currentSchema: ISchema): boolean {
+  return !!currentSchema?.isLayoutComponent;
+}
+
+export function schemaToOptions(schema?: ISchema, filterFunc?: FilterFunc): Option[] {
   return schemaToFields(schema, filterFunc).map((field: SchemaFieldItem) => ({
     label: field.title as string,
     value: field.id,
@@ -17,14 +23,8 @@ export function schemaToOptions(schema?: ISchema, filterFunc: FilterFunc = notIs
   }));
 }
 
-export function isLayoutComponent(currentSchema: ISchema): boolean {
-  return !!currentSchema?.isLayoutComponent;
-}
-
-export const notIsLayoutComponent = not(isLayoutComponent);
-
 export function schemaToMap(
-  schema?: ISchema, filterFunc: FilterFunc = notIsLayoutComponent,
+  schema?: ISchema, filterFunc?: FilterFunc,
 ): Record<string, SchemaFieldItem> {
   const fields = schemaToFields(schema, filterFunc);
   return fields.reduce((fieldsMap: Record<string, SchemaFieldItem>, field: SchemaFieldItem) => {
@@ -41,9 +41,11 @@ function sortFields(fields: SchemaFieldItem[]): SchemaFieldItem[] {
   return [...sorter(normalFields), ...sorter(systemFields)];
 }
 
-const schemaToFields = (
-  schema?: ISchema, filterFunc: FilterFunc = notIsLayoutComponent, fields: SchemaFieldItem[] = [],
-): Array<SchemaFieldItem> => {
+function schemaToFields(
+  schema?: ISchema,
+  filterFunc?: FilterFunc,
+  fields: SchemaFieldItem[] = [],
+): Array<SchemaFieldItem> {
   const { properties } = cloneDeep(schema || {});
   if (!properties || isEmpty(properties)) {
     return sortFields(fields);
@@ -52,6 +54,7 @@ const schemaToFields = (
   const newProperties: ISchema = {
     properties: {},
   };
+
   Object.keys(properties).forEach((key) => {
     const currentSchema: ISchema = properties[key];
     const componentName = currentSchema['x-component']?.toLowerCase();
@@ -83,15 +86,16 @@ const schemaToFields = (
       newProperties.properties = Object.assign(newProperties.properties, currentSchema.properties);
     }
 
+    if (!isNonLayoutComponent(currentSchema)) return;
     if (filterFunc && !filterFunc(currentSchema)) return;
 
     fields.push(field);
   });
 
   return schemaToFields(newProperties, filterFunc, fields);
-};
+}
 
-export const fieldsToSchema = (fields: Array<SchemaFieldItem>): ISchema => {
+export function fieldsToSchema(fields: Array<SchemaFieldItem>): ISchema {
   const properties: Record<string, ISchema> = {};
 
   const { false: fieldsNoParent, true: fieldsWithParent } = groupBy(fields, (field) => !!field.parentField);
@@ -116,6 +120,6 @@ export const fieldsToSchema = (fields: Array<SchemaFieldItem>): ISchema => {
     title: '',
     properties,
   };
-};
+}
 
 export default schemaToFields;

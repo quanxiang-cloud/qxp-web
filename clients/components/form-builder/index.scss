@@ -222,10 +222,12 @@
 .field-item {
   border: 1px dashed transparent;
   margin: 8px 0;
-  padding: 4px;
+  padding: 16px 20px;
   position: relative;
   background-color: #fff;
-  position: relative;
+  .ant-form-item{
+    margin-bottom: 0;
+  }
 }
 
 .delete-field-icon {
@@ -247,11 +249,12 @@
 }
 
 .field-item-active {
-  border: 1px solid var(--red-700);
+  border: 1px solid var(--blue-500);
+  background-color: var(--lightBlue-50);
 }
 
 .field-item-active:hover {
-  border: 1px solid var(--red-700);
+  border: 1px solid var(--blue-500);
 }
 
 .layout-grid-form {
