@@ -62,6 +62,17 @@ type Condition = {
   path?: string;
 }
 
+ type ConditionItemMap = {
+  arr: Condition[];
+  tag: 'or' | 'and';
+}
+
+type ConditionMap = {
+  find?: ConditionItemMap;
+  delete?: ConditionItemMap;
+  update?: ConditionItemMap;
+}
+
 type PageInfo = {
   id: string;
   appID?: string;
@@ -73,8 +84,9 @@ type PageInfo = {
   childCount?: number;
   menuType?: number;
   sort?: number;
-
 }
+
+type PerPageInfo = PageInfo & { authority: number };
 
 type AppParams = {
   appID: string

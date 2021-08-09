@@ -9,6 +9,13 @@ export type CustomPageInfo = {
   updatedAt: string,
 }
 
+export type fetchCustomListRes = {
+  count: number;
+  currentPage: number;
+  pageSize: number;
+  list: CustomPageInfo[]
+}
+
 export type MovePageParams = {
   id: string;
   appID: string;

@@ -2,18 +2,18 @@ import React, { useEffect, useState, useRef } from 'react';
 import cs from 'classnames';
 
 import Modal from '@c/modal';
+import toast from '@lib/toast';
 import Tab from '@c/no-content-tab';
 import PageLoading from '@c/page-loading';
-import AbsoluteCentered from '@c/absolute-centered';
-import toast from '@lib/toast';
 import { getTableSchema } from '@lib/http-client';
 import schemaToFields from '@lib/schema-convert';
+import AbsoluteCentered from '@c/absolute-centered';
 
+import store from '../store';
 import Authorized from './authorized';
 import DataPermission from './data-permission';
-import FieldPermissions from './field-permissions';
 import { fetchPerData, savePer } from '../api';
-import store from '../store';
+import FieldPermissions from './field-permissions';
 
 type Props = {
   onCancel: () => void;
@@ -39,9 +39,9 @@ function RightsSettingModal({ onCancel, rightsGroupID, pageForm }: Props): JSX.E
   const [loading, setLoading] = useState(true);
   const fieldRef = useRef<{ getFieldPer:() => any }>(null);
   const authorizedRef = useRef<{ getAuthorizedPer:() => number }>(null);
-  const dataPerRef = useRef<{ getDataPer:() => Promise<Condition[]> }>(null);
+  const dataPerRef = useRef<{ getDataPer:() => Promise< ConditionMap > }>(null);
 
-  const handleSave = () => {
+  const handleSave = (): void => {
     setSubLoading(true);
     dataPerRef.current?.getDataPer().then((conditions) => {
       const authority = authorizedRef.current?.getAuthorizedPer() || 0;
