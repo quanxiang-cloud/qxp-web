@@ -1,5 +1,5 @@
 import * as H from 'history';
-import { action, observable, reaction, IReactionDisposer, computed, toJS } from 'mobx';
+import { action, observable, reaction, IReactionDisposer, computed } from 'mobx';
 import { UnionColumns } from 'react-table';
 
 import FormStore from '@c/form-builder/store';
@@ -12,6 +12,7 @@ import { getTableSchema, saveTableSchema } from '@lib/http-client';
 import {
   createPageScheme,
 } from './api';
+import { schemaToMap } from '@lib/schema-convert';
 
 export const SHOW_FIELD = [
   'DatePicker',
@@ -48,12 +49,14 @@ class FormDesignStore {
   @observable filters: Filters = [];
 
   @computed get fieldsMap(): Record<string, ISchema> {
-    return this.formStore?.schema?.properties || {};
+    return schemaToMap(this.formStore?.schema) || {};
   }
 
   @computed get fieldList(): PageField[] {
-    return Object.entries(toJS(this.fieldsMap)).filter(([key, fieldSchema]) => {
-      if (key === '_id' || !SHOW_FIELD.includes(fieldSchema['x-component'] as string)) {
+    return Object.entries(this.fieldsMap).filter(([key, fieldSchema]) => {
+      if (key === '_id' ||
+        !SHOW_FIELD.includes(fieldSchema['x-component'] as string) ||
+        fieldSchema.isLayoutComponent) {
         return false;
       }
 
@@ -127,7 +130,6 @@ class FormDesignStore {
       if (!this.pageTableColumns) {
         return [];
       }
-
       const column: UnionColumns<any>[] = this.pageTableColumns.map((key) => {
         return {
           id: key,

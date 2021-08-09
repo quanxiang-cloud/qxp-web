@@ -20,8 +20,8 @@ function FieldSort({ showOnChange, fieldList, sortChange, selectKeys }: Props) {
     const noSelectFieldsTmp: PageField[] = fieldList.filter((field) => {
       return !selectKeys.includes(field.id);
     });
-    selectKeys.forEach((key)=>{
-      const field = fieldList.find(({ id })=>id === key);
+    selectKeys.forEach((key) => {
+      const field = fieldList.find(({ id }) => id === key);
       if (field) {
         selectFieldsTmp.push(field);
       }
@@ -30,7 +30,7 @@ function FieldSort({ showOnChange, fieldList, sortChange, selectKeys }: Props) {
     return [selectFieldsTmp, noSelectFieldsTmp];
   }, [fieldList, selectKeys]);
 
-  const renderList = (lists: PageField[], selected:boolean) => lists.map((field: PageField) => {
+  const renderList = (lists: PageField[], selected: boolean) => lists.map((field: PageField) => {
     return (
       <div
         className={cs('page-field-sort-item bg-white', { 'field-sort': selected })}

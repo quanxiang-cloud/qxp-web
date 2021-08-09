@@ -232,7 +232,7 @@ export function setValueFormCondition({ valueFrom, key, op, value, schema }: Val
 }
 
 export function getValue(
-  field: Fields,
+  field: SchemaFieldItem,
   initValue: Array<string | number | Date | LabelValue> | undefined,
   valueFrom: ValueFrom | undefined,
 ): ComponentValue | ComponentValue[] {

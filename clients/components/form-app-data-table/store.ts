@@ -6,6 +6,7 @@ import httpClient from '@lib/http-client';
 
 import { TableHeaderBtn, TableConfig } from './type';
 import { Config, getPageDataSchema } from './utils';
+import schemaToFields from '@lib/schema-convert';
 
 type Params = {
   condition?: Condition[] | [],
@@ -43,7 +44,7 @@ class AppPageDataStore {
   @observable selected: string[] = [];
   @observable formDataList: any[] = [];
   @observable total = 0;
-  @observable fields: Fields[] = [];
+  @observable fields: SchemaFieldItem[] = [];
   @observable schema: ISchema = {};
   @observable filterData: FormData = {};
   @observable tableColumns: UnionColumns<FormData>[] = [];
@@ -107,12 +108,7 @@ class AppPageDataStore {
     }
 
     this.schema = schema;
-    this.fields = Object.entries(schema.properties || {}).map(([key, fieldSchema]) => {
-      return {
-        id: key,
-        ...fieldSchema,
-      };
-    });
+    this.fields = schemaToFields(schema);
   }
 
   @action

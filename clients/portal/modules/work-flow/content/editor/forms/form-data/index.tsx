@@ -10,6 +10,7 @@ import FormSelector from '@c/form-table-selector';
 import SaveButtonGroup from '@flowEditor/components/_common/action-save-button-group';
 import { TRIGGER_CONDITION_EXCLUDE_FIELD_NAMES } from '@flowEditor/utils/constants';
 import store, { updateStore } from '@flowEditor/store';
+import { schemaToMap } from '@lib/schema-convert';
 import type {
   FormDataData, NodeWorkForm, StoreValue, TriggerConditionExpression,
   TriggerCondition as TriggerConditionType, TriggerConditionValue,
@@ -119,7 +120,7 @@ export default function FormDataForm({ defaultValue, onSubmit, onCancel, onChang
               <TriggerCondition
                 validating={validating}
                 formFieldOptions={filteredConditionOptions}
-                schema={schema}
+                schemaMap={schemaToMap(schema)}
                 onChange={handleChange}
                 value={value.triggerCondition}
               />

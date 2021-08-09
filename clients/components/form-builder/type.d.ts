@@ -16,6 +16,7 @@ type ISchema = import('@formily/react-schema-renderer').ISchema & {
     defaultValueFrom?: FormBuilder.DefaultValueFrom;
     defaultValueLinkage?: FormBuilder.DefaultValueLinkage;
     calculationFormula?: string;
+    isSystem?: boolean;
     [key: string]: any;
   };
 };
@@ -142,6 +143,15 @@ declare namespace FormBuilder {
     ruleJoinOperator: 'every' | 'some';
     rules: Array<FormDataFilterRule>;
   }
+}
+
+type SchemaFieldItem = ISchema & {
+  id: string;
+  fieldName: string;
+  componentName: string;
+  isLayoutComponent?: boolean;
+  parentField?: string;
+  tabIndex?: number;
 }
 
 // a copy of formily Schema type definition for reference

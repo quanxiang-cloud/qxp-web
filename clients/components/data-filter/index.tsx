@@ -19,11 +19,11 @@ import {
 import './index.scss';
 
 type Props = {
-  fields: Fields[];
+  fields: SchemaFieldItem[];
   initConditions?: Condition[];
   initTag?: string;
   className?: string;
-  associationFields?: Fields[];
+  associationFields?: SchemaFieldItem[];
 }
 
 type FieldCondition = {
@@ -31,7 +31,7 @@ type FieldCondition = {
   key?: string;
   value?: any;
   op?: string;
-  filter?: Fields;
+  filter?: SchemaFieldItem;
   valueFrom?: 'fixedValue' | 'form';
   associationFieldsOptions?: LabelValue[];
 }
@@ -202,9 +202,9 @@ function DataFilter({
           return !!condition.filter;
         }).map((condition) => {
           return getCondition(
-            condition.filter as Fields,
+            condition.filter as SchemaFieldItem,
             formData[`condition-${condition.id}`],
-            (condition.filter as Fields).id,
+            (condition.filter as SchemaFieldItem).id,
             formData[`operators-${condition.id}`],
           );
         });

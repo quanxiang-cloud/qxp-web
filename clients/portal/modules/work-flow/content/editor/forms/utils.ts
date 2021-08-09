@@ -1,6 +1,6 @@
-import { get, pick, flatten } from 'lodash';
+import { get, pick, flatten, cloneDeep } from 'lodash';
 
-const excludeComps = ['SubTable'];
+const excludeComps = ['subtable'];
 
 type TableListItem = {
   label: string;
@@ -13,20 +13,19 @@ type Options = {
   noSystem?: boolean;
 }
 
-export const getSchemaFields = (schema: ISchema | undefined, options: Options = {}) => {
-  return Object.entries(schema?.properties || {})
-    .filter(([, field]) => {
-      const compName = field['x-component'];
-      const isSystem = !!get(field, 'x-internal.isSystem');
+export const getSchemaFields =
+  (schemaFields: SchemaFieldItem[] = [], options: Options = {}): LabelValue[] => {
+    return schemaFields.filter((schema) => {
+      const compName = schema.componentName;
+      const isSystem = !!get(schema, 'x-internal.isSystem');
       if (options.noSystem && isSystem) {
         return false;
       }
       return compName && !excludeComps.includes(compName);
-    })
-    .map(([key, fieldSchema]) => {
-      return { label: fieldSchema.title as string, value: key };
+    }).map((schema) => {
+      return { label: schema.title as string, value: schema.id };
     });
-};
+  };
 
 // filter target tables with group
 export const filterTables = (tables: Array<TableListItem> = []): Array<TableListItem> => {
@@ -39,18 +38,24 @@ export const filterTables = (tables: Array<TableListItem> = []): Array<TableList
   return flatten(allTables);
 };
 
-const mapSchemaProps = (props: { [k: string]: ISchema }, filterFn?: (v?: any) => boolean, mutateField?: (k: string, f: any, a: any) => void) => {
+const mapSchemaProps = <T extends SchemaFieldItem>(
+  props: Record<string, T>,
+  filterFn?: (v?: T) => boolean,
+  mutateField?: (k: string, f: T, a: Record<string, T>) => void,
+): Record<string, ISchema> => {
   return Object.entries(props)
     .filter(([, field]) => {
       return filterFn ? filterFn(field) : true;
     })
-    .reduce((acc: Record<string, any>, [key, field]: [string, ISchema]) => {
+    .reduce((acc: Record<string, any>, [key, field]: [string, T]) => {
       mutateField && mutateField(key, field, acc);
       return acc;
     }, {});
 };
 
-const getCompDefaultValFromData = (compName: string, mergeData: Record<string, any> = {}, valuePath: string) => {
+const getCompDefaultValFromData = (
+  compName: string, mergeData: Record<string, any> = {}, valuePath: string,
+): { default?: any; } => {
   const defaultVal: { default?: any } = {};
   if (mergeData[valuePath]?.valueFrom === 'fixedValue') {
     // fixme: valueOf is builtIn func
@@ -59,7 +64,7 @@ const getCompDefaultValFromData = (compName: string, mergeData: Record<string, a
   }
 
   // todo: check field type, reset default value
-  if (compName === 'ImageUpload') {
+  if (compName === 'imageupload') {
     if (!Array.isArray(defaultVal.default)) {
       defaultVal.default = [];
     }
@@ -67,42 +72,49 @@ const getCompDefaultValFromData = (compName: string, mergeData: Record<string, a
   return defaultVal;
 };
 
-export const transformSchema = (schema: ISchema, options: { filterSubTable?: boolean } = {}, mergeData: Record<string, any> = {}): ISchema => {
-  const properties = get(schema, 'properties', {});
-  const mappedProps = mapSchemaProps(properties, (field) => {
+type TransformSchemaSchema = { properties: Record<string, SchemaFieldItem> } & Omit<ISchema, 'properties'>
+
+export const transformSchema = (
+  schema: TransformSchemaSchema,
+  options: { filterSubTable?: boolean } = {},
+  mergeData: Record<string, any> = {},
+): ISchema => {
+  const mappedProps = mapSchemaProps(cloneDeep(schema).properties, (field) => {
     if (options.filterSubTable) {
-      return field['x-component'] === 'SubTable';
+      return field?.componentName === 'subtable';
     }
-    return field['x-component'] !== 'SubTable';
+    return field?.componentName !== 'subtable';
   }, (key, field, acc) => {
     const innerFieldProps = pick(field, ['display', 'title', 'readonly', 'required', 'x-component', 'x-component-props']);
-    const compName = field['x-component'];
+    const compName = field.componentName;
 
-    if (compName === 'SubTable') {
+    if (compName === 'subtable') {
       const subProps = get(field, 'items.properties', {});
-      const parentTableId = innerFieldProps['x-component-props'].tableID;
+      const parentTableId = innerFieldProps?.['x-component-props']?.tableID;
       Object.assign(acc, {
         [key]: {
           type: 'object',
           'x-component': 'SubTableFields',
           'x-component-props': innerFieldProps,
-          properties: mapSchemaProps(subProps, (f) => f['x-component'] !== 'SubTable', (subKey, field, acc) => {
-            const curRules = get(mergeData, `${key}.createRules[0]`, {});
-            const defaultVal = getCompDefaultValFromData(compName, curRules, subKey);
-            Object.assign(acc, {
-              [[key, subKey].join('@')]: {
-                type: 'object',
-                'x-component': 'CustomField',
-                'x-component-props': { ...field, parentTableId },
-                properties: {
-                  [[key, subKey].join('@')]: { ...field, title: '', ...defaultVal },
+          properties: mapSchemaProps(subProps,
+            (f) => f?.componentName !== 'subtable',
+            (subKey, field, acc) => {
+              const curRules = get(mergeData, `${key}.createRules[0]`, {});
+              const defaultVal = getCompDefaultValFromData(compName, curRules, subKey);
+              Object.assign(acc, {
+                [[key, subKey].join('@')]: {
+                  type: 'object',
+                  'x-component': 'CustomField',
+                  'x-component-props': { ...field, parentTableId },
+                  properties: {
+                    [[key, subKey].join('@')]: { ...field, title: '', ...defaultVal },
+                  },
                 },
-              },
-            });
-          }),
+              });
+            }),
         },
       });
-    } else {
+    } else if (compName) {
       const defaultVal = getCompDefaultValFromData(compName, mergeData, key);
       Object.assign(acc, {
         [key]: {
@@ -124,7 +136,9 @@ export const transformSchema = (schema: ISchema, options: { filterSubTable?: boo
   };
 };
 
-export const getValidProcessVariables = (variables: Array<ProcessVariable>, compareType: string) => {
+export const getValidProcessVariables = (
+  variables: Array<ProcessVariable>, compareType: string,
+): (LabelValue | undefined)[] => {
   return variables?.map(({ code, name, fieldType }) => {
     if (fieldType === 'DATE' && compareType !== 'datepicker') {
       return;

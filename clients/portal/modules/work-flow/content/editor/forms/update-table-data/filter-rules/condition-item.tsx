@@ -7,7 +7,7 @@ import { Condition } from './index';
 import FlowSourceTableContext from '@flowEditor/forms/flow-source-table';
 
 interface Props {
-  targetSchema: ISchema;
+  targetSchema: Record<string, SchemaFieldItem>;
   condition: Condition;
   onRemove: () => void;
   onChange: (data: Partial<Condition>) => void;
@@ -20,11 +20,11 @@ const operators = [
   { label: '不包含', value: 'nin' },
 ];
 
-function ConditionItem(props: Props) {
+function ConditionItem(props: Props): JSX.Element {
   const [item, setItem] = useState<Condition>(props.condition);
   const { tableSchema: curTableSchema } = useContext(FlowSourceTableContext);
 
-  const onChange = (val: Partial<Condition> = {}) => {
+  const onChange = (val: Partial<Condition> = {}): void => {
     setItem((v) => ({ ...v, ...val }));
     props.onChange(val);
   };
@@ -33,7 +33,7 @@ function ConditionItem(props: Props) {
     <div className="flex items-center mb-10">
       <span className="text-caption">目标表:</span>
       <Select
-        options={getSchemaFields(props.targetSchema)}
+        options={getSchemaFields(Object.values(props.targetSchema))}
         value={item.fieldName}
         onChange={(fieldName: string) => onChange({ fieldName } as Condition)}
       />
