@@ -100,11 +100,17 @@ const schema: ISchema = {
         },
         defaultValueFrom: {
           // title: '数值源',
+          type: 'string',
           title: '选项',
+          default: 'customized',
           enum: [
             {
               label: '自定义',
               value: 'customized',
+            },
+            {
+              label: '关联数据集',
+              value: 'linkDataset',
             },
             // {
             //   label: '关联已有数据',
@@ -136,6 +142,12 @@ const schema: ISchema = {
               target: 'linkageConfig',
               condition: '{{ $value === "linkage" }}',
             },
+            {
+              type: 'value:visible',
+              target: 'datasetId',
+              condition: '{{ $value === "linkDataset" }}',
+            },
+
           ],
         },
         linkageConfig: {
@@ -166,6 +178,14 @@ const schema: ISchema = {
               },
             },
           },
+        },
+        datasetId: {
+          title: '数据源',
+          'x-component': 'DatasetConfig',
+          'x-mega-props': {
+            labelAlign: 'top',
+          },
+          'x-index': 11,
         },
         add: {
           type: 'string',

@@ -2,21 +2,48 @@ import React, { ChangeEvent, useState, useEffect } from 'react';
 import { Radio, Input, RadioChangeEvent, Space } from 'antd';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 
+import { getDatasetById } from '@portal/modules/system-mgmt/dataset/api';
+
 function RadioGroup(fieldProps: ISchemaFieldComponentProps): JSX.Element {
+  const [options, setOptions] = useState<LabelValue[]>([]);
   const [customValue, setCustomValue] = useState('');
 
-  const options: LabelValue[] = fieldProps.props.enum || [];
   const isAllowCustom = !!fieldProps.props['x-component-props'].allowCustom;
   const optionsLayout = fieldProps.props['x-component-props'].optionsLayout;
+  const datasetId = fieldProps.props['x-component-props'].datasetId;
+  const defaultValueFrom = fieldProps.props['x-internal'].defaultValueFrom;
+
+  useEffect(() => {
+    if (fieldProps.props.enum && defaultValueFrom === 'customized') {
+      setOptions(fieldProps.props.enum || []);
+    }
+  }, [fieldProps.props.enum]);
 
   useEffect(() => {
     if (fieldProps.value) {
       const isHave = options.some((option): boolean => option.value === fieldProps.value);
       if (!isHave) {
         setCustomValue(fieldProps.value);
+        return;
       }
+      setCustomValue('');
     }
-  }, [fieldProps.value]);
+  }, [fieldProps.value, options]);
+
+  useEffect(() => {
+    if (datasetId && defaultValueFrom === 'linkDataset') {
+      getDatasetById(datasetId).then((dataset) => {
+        let _options = [];
+        try {
+          _options = JSON.parse(dataset.content || '[]');
+        } catch {
+          _options = [];
+        }
+        setOptions(_options);
+        fieldProps.props.enum = _options;
+      });
+    }
+  }, [datasetId]);
 
   function handleCustomValueChange(e: ChangeEvent<HTMLInputElement>): void {
     setCustomValue(e.target.value);
@@ -31,8 +58,8 @@ function RadioGroup(fieldProps: ISchemaFieldComponentProps): JSX.Element {
       <Radio.Group onChange={handleRadioChange} value={fieldProps.value}>
         <Space direction={optionsLayout}>
           {
-            options.map((item): JSX.Element => {
-              return (<Radio key={item.value} value={item.value}>{item.label}</Radio>);
+            options.map((option): JSX.Element => {
+              return (<Radio key={option.value} value={option.value}>{option.label}</Radio>);
             })
           }
           {

@@ -1,7 +1,9 @@
 import RadioGroup from './radioGroup';
+import DatasetConfig from '../../form-settings-panel/form-field-config/dataset-config';
 
 import configSchema from './config-schema';
 import { defaultConfig, toSchema, toConfig, RadioGroupConfig } from './convertor';
+import schemaEffect from './schema-effects';
 
 const RadioField: Omit<FormBuilder.SourceElement<RadioGroupConfig>, 'displayOrder'> = {
   displayName: '单选框',
@@ -14,6 +16,8 @@ const RadioField: Omit<FormBuilder.SourceElement<RadioGroupConfig>, 'displayOrde
   toConfig,
   toSchema,
   compareOperators: ['==', '!=', '∈', '∉'],
+  configDependencies: { DatasetConfig },
+  effects: schemaEffect,
 };
 
 export default RadioField;
