@@ -212,6 +212,8 @@ export default class FormBuilderStore {
       });
     });
 
+    console.log(JSON.stringify(properties), 'properties');
+
     return {
       title: '',
       type: 'object',

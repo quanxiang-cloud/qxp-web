@@ -5,7 +5,7 @@ export const BASIC_INFO_SCHEMA: ISchema = {
       type: 'object',
       'x-component': 'mega-layout',
       properties: {
-        name: {
+        title: {
           type: 'string',
           title: '模型名称',
           required: true,
@@ -20,7 +20,7 @@ export const BASIC_INFO_SCHEMA: ISchema = {
             labelAlign: 'top',
           },
         },
-        code: {
+        table_id: {
           type: 'string',
           title: '模型编码',
           required: true,
@@ -34,7 +34,7 @@ export const BASIC_INFO_SCHEMA: ISchema = {
             labelAlign: 'top',
           },
         },
-        description: {
+        descpition: {
           type: 'string',
           title: '模型简介',
           maxLength: 100,
@@ -71,7 +71,7 @@ export const FIELD_SCHEMA: ISchema = {
             labelAlign: 'top',
           },
         },
-        key: {
+        id: {
           type: 'string',
           title: '编码',
           required: true,

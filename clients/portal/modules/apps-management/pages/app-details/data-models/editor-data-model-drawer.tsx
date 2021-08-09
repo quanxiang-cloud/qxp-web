@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { observer } from 'mobx-react';
 import { Steps } from 'antd';
 import { SchemaForm, useForm } from '@formily/antd';
 import { Input } from '@formily/antd-components';
@@ -6,26 +7,29 @@ import { Input } from '@formily/antd-components';
 import { FooterBtnProps } from '@c/modal';
 import Drawer from '@c/drawer';
 import Button from '@c/button';
+import PageLoading from '@c/page-loading';
 
 import FieldsDesign from './fields-design';
+import store from './store';
 import { BASIC_INFO_SCHEMA } from './form-schema';
 
 type Props = {
   isEditor: boolean;
   onCancel: () => void;
-  onSubmit: () => void;
+  onSubmit: (basic: DataModelBasicInfo) => void;
 }
 
 function EditorDataModel({ isEditor = false, onCancel, onSubmit }: Props): JSX.Element {
   const [curStep, setStep] = useState(0);
-  const [basicInfo, setBasicInfo] = useState({});
+  const [basicInfo, setBasicInfo] = useState<DataModelBasicInfo>(store.basicInfo);
   const form = useForm({
-    onSubmit: console.log,
+    onSubmit: setBasicInfo,
+    initialValues: basicInfo,
   });
 
   const handleNext = () => {
-    form.submit().then((res) => {
-      console.log('res: ', res);
+    form.submit().then(() => {
+      setStep(1);
     });
   };
 
@@ -41,7 +45,7 @@ function EditorDataModel({ isEditor = false, onCancel, onSubmit }: Props): JSX.E
       key: 'next',
       iconName: 'arrow_forward',
       modifier: 'primary',
-      onClick: () => setStep(1),
+      onClick: handleNext,
     },
   ] : [
     {
@@ -56,12 +60,12 @@ function EditorDataModel({ isEditor = false, onCancel, onSubmit }: Props): JSX.E
       iconName: 'check',
       modifier: 'primary',
       loading: false,
-      onClick: onSubmit,
+      onClick: () => onSubmit(basicInfo),
     },
   ];
 
   return (
-    <div className='p-20'>
+    <div className='p-24'>
       <div style={{ maxWidth: '400px' }} className='mx-auto mb-32'>
         <Steps current={curStep}>
           <Steps.Step title="基本信息" />
@@ -72,14 +76,12 @@ function EditorDataModel({ isEditor = false, onCancel, onSubmit }: Props): JSX.E
         <SchemaForm
           className='max-w-6xl mx-auto'
           form={form as any}
-          initialValues={basicInfo}
-          onChange={setBasicInfo}
           components={{ Input, TextArea: Input.TextArea }}
           schema={BASIC_INFO_SCHEMA}
         />
       )}
       {curStep === 1 && <FieldsDesign />}
-      <div className='flex justify-center gap-x-10'>
+      <div className='flex justify-center gap-x-10 mt-40'>
         {btnList.map(({
           className = '',
           text,
@@ -113,9 +115,11 @@ function EditorDataModelDrawer({
       title={`${isEditor ? '编辑' : '新建'}数据模型`}
       onCancel={onCancel}
     >
-      <EditorDataModel onSubmit={onSubmit} isEditor={isEditor} onCancel={onCancel} />
+      {store.modelDetailsLoading ? (<PageLoading />) : (
+        <EditorDataModel onSubmit={onSubmit} isEditor={isEditor} onCancel={onCancel} />
+      )}
     </Drawer>
   );
 }
 
-export default EditorDataModelDrawer;
+export default observer(EditorDataModelDrawer);

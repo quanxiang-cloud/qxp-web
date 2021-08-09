@@ -11,7 +11,8 @@ const { onFieldValueChange$ } = FormEffectHooks;
 type Props = {
   isEditor: boolean;
   onCancel: () => void;
-  onSubmit: () => void;
+  onSubmit: (value: ModelField) => void;
+  field?: ModelField;
 }
 
 const PATH: Record<string, string> = {
@@ -21,9 +22,10 @@ const PATH: Record<string, string> = {
   array: 'subtype',
 };
 
-function EditorDataModelModal({ isEditor = false, onCancel, onSubmit }: Props): JSX.Element {
+function EditorDataModelModal({ isEditor = false, onCancel, onSubmit, field }: Props): JSX.Element {
   const form = useForm({
-    onSubmit: console.log,
+    onSubmit,
+    initialValues: field,
     effects: () => {
       const { setFieldState } = createFormActions();
       onFieldValueChange$('type').subscribe(({ value }) => {
@@ -71,7 +73,6 @@ function EditorDataModelModal({ isEditor = false, onCancel, onSubmit }: Props): 
       <div className='p-20'>
         <SchemaForm
           form={form as any}
-          // initialValues={basicInfo}
           components={{ Input, Select, Switch, NumberPicker }}
           schema={FIELD_SCHEMA}
         />
