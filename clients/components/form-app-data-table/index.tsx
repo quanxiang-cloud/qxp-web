@@ -8,6 +8,7 @@ import { getTableSchema } from '@lib/http-client';
 import FormAppDataContent from './form-app-data-content';
 import Store from './store';
 import { TableHeaderBtn, Ref } from './type';
+import { schemaToMap } from '@lib/schema-convert';
 
 type Props = {
   pageID: string;
@@ -58,7 +59,7 @@ function FormAppDataTableWrap({
 
         setStore(
           new Store({
-            schema: schema,
+            schema: { ...schema, properties: schemaToMap(schema) },
             config: config,
             filterConfig,
             tableHeaderBtnList,

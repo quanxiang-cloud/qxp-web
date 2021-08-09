@@ -13,7 +13,7 @@ type Props = {
   store: Store;
 }
 
-function FormAppDataContent({ className = '', style, store }: Props) :JSX.Element {
+function FormAppDataContent({ className = '', style, store }: Props): JSX.Element {
   return (
     <StoreContext.Provider value={store}>
       <div style={style} className={`flex flex-col ${className}`}>

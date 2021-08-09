@@ -6,7 +6,7 @@ import Button from '@c/button';
 import ControlPopper from '@c/control-popper';
 
 type Props = {
-  fields: Fields[];
+  fields: SchemaFieldItem[];
   search: (params: { tag: 'or' | 'and', condition: Condition[] }) => void;
   tag?: 'or' | 'and';
 }
