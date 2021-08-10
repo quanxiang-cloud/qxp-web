@@ -31,14 +31,10 @@ function RadioGroup(fieldProps: ISchemaFieldComponentProps): JSX.Element {
   }, [fieldProps.value, options]);
 
   useEffect(() => {
-    if (datasetId && defaultValueFrom === 'linkDataset') {
-      getDatasetById(datasetId).then((dataset) => {
+    if (datasetId && defaultValueFrom === 'dataset') {
+      getDatasetById(datasetId).then(({ content }) => {
         let _options = [];
-        try {
-          _options = JSON.parse(dataset.content || '[]');
-        } catch {
-          _options = [];
-        }
+        _options = JSON.parse(content || '[]');
         setOptions(_options);
       });
     }
@@ -51,6 +47,10 @@ function RadioGroup(fieldProps: ISchemaFieldComponentProps): JSX.Element {
 
   function handleRadioChange(e: RadioChangeEvent): void {
     fieldProps.mutators.change(e.target.value);
+  }
+
+  if (options.length === 0) {
+    return <span>当前选项集无数据。</span>;
   }
 
   return (
