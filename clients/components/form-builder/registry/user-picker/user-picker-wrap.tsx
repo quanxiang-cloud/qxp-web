@@ -32,6 +32,7 @@ const UserPickerWrap = (formField: ISchemaFieldComponentProps): JSX.Element => {
     onChange: formField.mutators.change,
     options: formField.props.enum,
     value: formField.value,
+    disabled: !formField.props['editable'],
   });
 
   return <UserPicker optionalRange={optionalRange} {...xComponentsProps} />;

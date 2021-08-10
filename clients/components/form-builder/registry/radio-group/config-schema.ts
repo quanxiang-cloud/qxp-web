@@ -60,26 +60,26 @@ const schema: ISchema = {
           },
           'x-index': 3,
         },
-        // optionsLayout: {
-        //   type: 'string',
-        //   title: '排列方式',
-        //   default: 'horizontal',
-        //   enum: [
-        //     {
-        //       label: '横向排列',
-        //       value: 'horizontal',
-        //     },
-        //     {
-        //       label: '纵向排列',
-        //       value: 'vertical',
-        //     },
-        //   ],
-        //   'x-component': 'RadioGroup',
-        //   'x-mega-props': {
-        //     labelAlign: 'top',
-        //   },
-        //   'x-index': 4,
-        // },
+        optionsLayout: {
+          type: 'string',
+          title: '排列方式',
+          default: 'horizontal',
+          enum: [
+            {
+              label: '横向排列',
+              value: 'horizontal',
+            },
+            {
+              label: '纵向排列',
+              value: 'vertical',
+            },
+          ],
+          'x-component': 'RadioGroup',
+          'x-mega-props': {
+            labelAlign: 'top',
+          },
+          'x-index': 4,
+        },
         sortable: {
           title: '列表排序',
           default: false,
@@ -91,6 +91,12 @@ const schema: ISchema = {
           default: false,
           'x-component': 'Switch',
           'x-index': 6,
+        },
+        allowCustom: {
+          title: '是否允许自定义',
+          default: false,
+          'x-component': 'Switch',
+          'x-index': 7,
         },
         defaultValueFrom: {
           // title: '数值源',
@@ -113,7 +119,7 @@ const schema: ISchema = {
           'x-mega-props': {
             labelAlign: 'top',
           },
-          'x-index': 7,
+          'x-index': 8,
           'x-linkages': [
             {
               type: 'value:visible',
@@ -134,7 +140,7 @@ const schema: ISchema = {
         },
         linkageConfig: {
           'x-component': 'DefaultValueLinkageConfigBtn',
-          'x-index': 8,
+          'x-index': 9,
         },
         availableOptions: {
           type: 'array',
@@ -147,7 +153,7 @@ const schema: ISchema = {
             renderExtraOperations: extraOperations,
             renderAddition: () => null,
           },
-          'x-index': 9,
+          'x-index': 10,
           items: {
             type: 'object',
             properties: {

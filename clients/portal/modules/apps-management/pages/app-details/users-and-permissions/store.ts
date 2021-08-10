@@ -2,7 +2,7 @@ import { action, observable } from 'mobx';
 
 import toast from '@lib/toast';
 
-import { fetchPageList } from '../../api';
+import { fetchPageList } from '../api';
 import {
   fetchRights,
   movePerGroup,

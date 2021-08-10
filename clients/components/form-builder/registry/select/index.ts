@@ -1,4 +1,4 @@
-import { Select } from '@formily/antd-components';
+import CustomSelect from './custom-select';
 
 import configSchema from './config-schema';
 import { defaultConfig, toSchema, toConfig, SelectConfig } from './convertor';
@@ -10,7 +10,7 @@ const SelectField: Omit<FormBuilder.SourceElement<SelectConfig>, 'displayOrder'>
   icon: 'arrow_drop_down_circle',
   defaultConfig: defaultConfig,
   toSchema,
-  component: Select,
+  component: CustomSelect,
   category: 'basic',
   componentName: 'Select',
   compareOperators: ['==', '!=', '∈', '∉'],

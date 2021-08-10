@@ -24,7 +24,7 @@ function CheckboxGroup({
   disabled,
   options = [],
   onChange,
-}: Props) {
+}: Props): JSX.Element {
   const _options = options.map((option: CheckboxOptionType | string) => {
     if (typeof option === 'string') {
       return {
@@ -45,7 +45,7 @@ function CheckboxGroup({
     }
   }, [value]);
 
-  const toggleOption = (option: CheckboxOptionType) => {
+  const toggleOption = (option: CheckboxOptionType): void => {
     const newValue = new Set(checkedValue);
     const isExist = newValue.has(option.value);
     if (!isExist) {
@@ -62,14 +62,14 @@ function CheckboxGroup({
 
   let children;
   if (options && options.length > 0) {
-    children = _options.map((option: any) => {
+    children = _options.map((option: CheckboxOptionType) => {
       return (
         <Checkbox
           key={option.value}
           disabled={option.disabled || disabled}
           value={option.value}
           checked={checkedValue.indexOf(option.value) !== -1}
-          label={option.label}
+          label={option.label as string}
           onChange={() => toggleOption(option)}
           className="mr-20"
         />

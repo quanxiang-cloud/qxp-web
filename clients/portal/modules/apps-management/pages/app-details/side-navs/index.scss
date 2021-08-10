@@ -1,0 +1,15 @@
+.app-side-nav {
+  position: relative;
+  background-color: #fff;
+  min-width: 256px;
+  max-width: 256px;
+  border-right: 1px solid var(--gray-300);
+  overflow: auto;
+}
+
+.side-nav-focus {
+  &:hover {
+    color: var(--blue-600);
+    background-color: var(--gray-100);
+  }
+}

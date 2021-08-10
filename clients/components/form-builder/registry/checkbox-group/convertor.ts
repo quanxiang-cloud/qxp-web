@@ -8,7 +8,7 @@ export interface CheckboxGroupConfig {
   sortable: boolean;
   required: boolean;
   defaultValueFrom: FormBuilder.DefaultValueFrom;
-  availableOptions: Array<{ label: string; value: any; title: string }>,
+  availableOptions: Array<{ label: string; value: unknown; title: string }>,
 }
 
 export const defaultConfig: CheckboxGroupConfig = {
@@ -46,6 +46,7 @@ export function toSchema(value: CheckboxGroupConfig): ISchema {
     // todo support optionsLayout
     ['x-component-props']: {
       mode: 'multiple',
+      optionsLayout: value.optionsLayout,
     },
     ['x-internal']: {
       sortable: value.sortable,

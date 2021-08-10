@@ -24,7 +24,7 @@ function AppList({ isLoading, appList, openCreatedModal }: Props) {
   };
 
   const goDetails = (id: string) => {
-    history.push(`/apps/details/${id}`);
+    history.push(`/apps/details/${id}/page_setting`);
   };
 
   if (isLoading) {
