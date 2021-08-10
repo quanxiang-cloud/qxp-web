@@ -12,9 +12,7 @@ export default function schemaEffect(): void {
       setFieldState('availableOptions', (state) => {
         state.value = defaultConfig.availableOptions;
       });
-    }
 
-    if (value === 'linkDataset') {
       setFieldState('datasetId', (state) => {
         state.value = '';
       });
