@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { FormButtonGroup, setValidationLanguage } from '@formily/antd';
 import { toJS } from 'mobx';
-import { omit, omitBy, isEmpty, isObject, isArray, Dictionary } from 'lodash';
+import { omit, omitBy, isEmpty, isObject, isArray, Dictionary, isUndefined } from 'lodash';
 import { useQuery } from 'react-query';
 import { observer } from 'mobx-react';
+import { pipe, entries, map, filter, fromPairs } from 'lodash/fp';
 
 import Breadcrumb from '@c/breadcrumb';
 import Icon from '@c/icon';
@@ -12,6 +13,7 @@ import Loading from '@c/loading';
 import toast from '@lib/toast';
 import { FormRenderer } from '@c/form-builder';
 import { INTERNAL_FIELD_NAMES } from '@c/form-builder/store';
+import { isEmptyArray, isEmptyObject } from '@lib/utils';
 import {
   formDataRequest, FormDataRequestCreateParams, FormDataRequestUpdateParams,
 } from '@lib/http-client';
@@ -120,16 +122,26 @@ function CreateDataForm({ appID, pageID, rowID, onCancel, title }: Props): JSX.E
   function removeEmptySubTableOrAssociatedRecords<T extends Record<string, T[keyof T]>>(
     data: T, schemaMap: ISchema,
   ): Dictionary<T[keyof T]> {
-    return omitBy(data, (value, fieldKey): boolean => {
-      const fieldSchema = schemaMap[fieldKey as keyof ISchema];
+    const valueMapper = map(([key, value]) => {
+      const fieldSchema = schemaMap[key as keyof ISchema];
       const fieldComponentName = fieldSchema?.['x-component']?.toLowerCase() || '';
       if (!['subtable', 'associatedrecords'].includes(fieldComponentName)) {
-        return false;
+        return [key, value];
       }
-      return (isObject(value) && isEmpty(value)) || (isArray(value) && !!value?.every((val) => {
-        return isEmpty(val) || Object.values(val)?.every(isEmpty);
-      }));
+      const isEmptyValue = (value: unknown): boolean => {
+        return isEmptyArray(value) || isEmptyObject(value) || isUndefined(value) || value === '';
+      };
+      const isInvalidAssociatedRecord = (value: unknown): boolean => {
+        return isEmptyObject(value) && !isArray(value);
+      };
+      const isInvalidSubtable = (value: unknown): boolean => {
+        return isEmptyArray(value) || (isArray(value) && !!value?.every((val) => isEmptyValue(val)));
+      };
+      const isInvalidValue = isInvalidAssociatedRecord(value) || isInvalidSubtable(value);
+      return isInvalidValue ? false : [key, value];
     });
+    const transform = pipe(entries, valueMapper, filter(Boolean), fromPairs);
+    return transform(data);
   }
 
   function isSubTable(schemaMap: ISchema) {
