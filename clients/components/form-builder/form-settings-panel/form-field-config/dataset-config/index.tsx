@@ -10,7 +10,7 @@ function DatasetConfig(fieldProps: ISchemaFieldComponentProps): JSX.Element {
   const [selectOptions, setSelectOptions] = useState<LabelValue[]>([]);
 
   useEffect(() => {
-    getDatasetNames({ type: 1 }).then(({ list }) => {
+    getDatasetNames({ type: 1 }).then(({ list = [] }) => {
       const newOptions = list.map(({ id, name }) => ({
         label: name,
         value: id,

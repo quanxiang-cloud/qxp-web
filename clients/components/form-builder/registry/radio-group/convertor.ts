@@ -38,7 +38,7 @@ export function toSchema(value: typeof defaultConfig): ISchema {
     required: value.required,
     readOnly: value.displayModifier === 'readonly',
     display: value.displayModifier !== 'hidden',
-    enum: value.availableOptions.map((option) => {
+    enum: value.availableOptions && value.availableOptions.map((option) => {
       return {
         ...option,
         value: option.value || generateRandomFormFieldID(),

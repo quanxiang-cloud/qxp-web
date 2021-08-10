@@ -13,5 +13,11 @@ export default function schemaEffect(): void {
         state.value = defaultConfig.availableOptions;
       });
     }
+
+    if (value === 'linkDataset') {
+      setFieldState('datasetId', (state) => {
+        state.value = '';
+      });
+    }
   });
 }

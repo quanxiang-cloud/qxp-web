@@ -40,7 +40,6 @@ function RadioGroup(fieldProps: ISchemaFieldComponentProps): JSX.Element {
           _options = [];
         }
         setOptions(_options);
-        fieldProps.props.enum = _options;
       });
     }
   }, [datasetId]);
@@ -53,6 +52,7 @@ function RadioGroup(fieldProps: ISchemaFieldComponentProps): JSX.Element {
   function handleRadioChange(e: RadioChangeEvent): void {
     fieldProps.mutators.change(e.target.value);
   }
+
   return (
     <div className="flex items-center">
       <Radio.Group onChange={handleRadioChange} value={fieldProps.value}>
