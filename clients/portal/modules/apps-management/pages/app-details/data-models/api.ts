@@ -16,7 +16,7 @@ export const fetchDataModels = (
 
 export const deleteSchema = (
   appID: string,
-  id:string,
+  tableID: string,
 ): Promise<void> => {
-  return httpClient(`/api/v1/structor/${appID}/m/table/delete`, { id });
+  return httpClient(`/api/v1/structor/${appID}/m/table/delete`, { tableID });
 };

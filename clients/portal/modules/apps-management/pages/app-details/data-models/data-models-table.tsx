@@ -6,9 +6,11 @@ import { UnionColumns } from 'react-table';
 import Table from '@c/table';
 import Pagination from '@c/pagination';
 import Button from '@c/button';
+import Drawer from '@c/drawer';
 import PopConfirm from '@c/pop-confirm';
 
 import EditorDataModelDrawer from './editor-data-model-drawer';
+import ModelDetails from './model-details';
 import store from './store';
 
 function DataModelsTable(): JSX.Element {
@@ -54,11 +56,15 @@ function DataModelsTable(): JSX.Element {
       accessor: (rowData) => {
         return (
           <div className='flex gap-6'>
-            <span className='text-btn'>查看</span>
+            <span
+              onClick={() => store.dataModelModalControl('details', rowData.tableID)}
+              className='text-btn'>
+              查看
+            </span>
             {rowData.source === 1 && (
               <>
                 <span
-                  onClick={() => store.dataModelModalControl(true, rowData.tableID)}
+                  onClick={() => store.dataModelModalControl('edit', rowData.tableID)}
                   className='text-btn'
                 >
                   编辑
@@ -77,7 +83,7 @@ function DataModelsTable(): JSX.Element {
   return (
     <div>
       <Button
-        onClick={() => store.dataModelModalControl(true)}
+        onClick={() => store.dataModelModalControl('edit')}
         className='mb-16'
         modifier='primary'
       >
@@ -97,14 +103,22 @@ function DataModelsTable(): JSX.Element {
         onChange={(page: number, size: number) => store.setParams({ page, size })}
       />
       <EditorDataModelDrawer
-        visible={store.editorDataModalVisible}
+        visible={store.modelModalType === 'edit'}
         isEditor={!!store.curDataModel}
         onSubmit={async (value) => {
           await store.saveDataModel(value);
-          store.dataModelModalControl(false);
+          store.dataModelModalControl('');
         }}
-        onCancel={() => store.dataModelModalControl(false)}
+        onCancel={() => store.dataModelModalControl('')}
       />
+      <Drawer
+        position='right'
+        visible={store.modelModalType === 'details'}
+        title={store.basicInfo && store.basicInfo.title as string}
+        onCancel={() => store.dataModelModalControl('')}
+      >
+        <ModelDetails />
+      </Drawer>
     </div>
   );
 }

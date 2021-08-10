@@ -26,7 +26,7 @@ class AppModelStore {
 
   @observable appID = '';
   @observable dataModels: DataModel[] = [];
-  @observable editorDataModalVisible = false;
+  @observable modelModalType = '';
   @observable curDataModel = '';
   @observable dataModelsLoading = true;
   @observable modelDetailsLoading = false;
@@ -91,7 +91,7 @@ class AppModelStore {
       basicInfo.table_id,
       { ...this.dataModelSchema.schema, ...omit(basicInfo, 'table_id') },
       2,
-    ).then((res) => {
+    ).then(() => {
       this.setParams({});
       toast.success('添加成功！');
       return true;
@@ -105,7 +105,7 @@ class AppModelStore {
   delDataModel = (modelID: string): void => {
     deleteSchema(this.appID, modelID).then(() => {
       toast.success('删除成功');
-      this.dataModels = this.dataModels.filter(({ id }) => id !== modelID);
+      this.dataModels = this.dataModels.filter(({ tableID }) => tableID !== modelID);
     }).catch((err) => {
       toast.error(err);
     });
@@ -128,10 +128,10 @@ class AppModelStore {
   }
 
   @action
-  dataModelModalControl = (visible: boolean, modelID = ''): void => {
-    this.curDataModel = visible ? modelID : '';
-    this.editorDataModalVisible = visible;
-    if (!visible) {
+  dataModelModalControl = (modalType: 'details' | 'edit' | '', modelID = ''): void => {
+    this.curDataModel = modalType ? modelID : '';
+    this.modelModalType = modalType;
+    if (!modalType) {
       this.dataModelSchema = INIT_MODEL_SCHEMA;
     }
   }

@@ -9,32 +9,15 @@ import Button from '@c/button';
 
 import EditorFieldModal from './editor-field-modal';
 import store from './store';
+import { FIELD_COLUMNS } from './utils';
 
 function FieldsDesign(): JSX.Element {
   const [editorVisible, setEditorVisible] = useState(false);
   const [curModelField, setCurModelField] = useState<ModelField | null>(null);
+  const [fields, setFields] = useState<ModelField[]>(store.fields);
 
   const COLUMNS: UnionColumns<ModelField>[] = [
-    {
-      Header: '字段编码',
-      id: 'id',
-      accessor: 'id',
-    },
-    {
-      Header: '字段名称',
-      id: 'title',
-      accessor: 'title',
-    },
-    {
-      Header: '数据格式',
-      id: 'type',
-      accessor: 'type',
-    },
-    {
-      Header: '是否允许为空',
-      id: 'not_null',
-      accessor: (rowData) => rowData.not_null ? '允许' : '不允许',
-    },
+    ...FIELD_COLUMNS,
     {
       Header: '操作',
       id: 'action',
@@ -58,9 +41,30 @@ function FieldsDesign(): JSX.Element {
     },
   ];
 
+  const filterField = (params: { title?: string, id?: string }): void => {
+    const { title, id } = params;
+    if (!title && !id) {
+      return;
+    }
+
+    const newFields = store.fields.filter((field) => {
+      let count = 0;
+      if (title) {
+        (field.title as string).includes(title) ? (count += 1) : (count -= 1);
+      }
+
+      if (id) {
+        (field.id as string).includes(id) ? (count += 1) : (count -= 1);
+      }
+
+      return count > 0;
+    });
+    setFields(newFields);
+  };
+
   return (
     <div>
-      <SchemaForm onSubmit={console.log} components={{ Input }}>
+      <SchemaForm onSubmit={filterField} components={{ Input }}>
         <FormMegaLayout grid full autoRow>
           <Field x-component='Input' type="string" title="字段名称" name="title" />
           <Field x-component='Input' type="string" title="字段编码" name="id" />
@@ -74,8 +78,9 @@ function FieldsDesign(): JSX.Element {
       <Button onClick={() => setEditorVisible(true)} className='mb-16' modifier='primary'>新建</Button>
       <Table
         rowKey='id'
+        emptyTips='暂无模型字段'
         columns={COLUMNS}
-        data={store.fields}
+        data={fields}
       />
       {editorVisible && (
         <EditorFieldModal
@@ -86,7 +91,7 @@ function FieldsDesign(): JSX.Element {
             setEditorVisible(false);
             setCurModelField(null);
           }}
-          onCancel={() =>{
+          onCancel={() => {
             setEditorVisible(false);
             setCurModelField(null);
           }}
