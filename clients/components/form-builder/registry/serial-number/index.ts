@@ -1,7 +1,8 @@
 import SerialNumber from './serial';
-import PrefixSuffix from './prefix-suffix';
+import Prefix from './prefix';
 import configSchema from './config-schema';
 import { defaultConfig, toSchema, toConfig } from './convertor';
+import effects from './effects';
 
 const SerialField: Omit<FormBuilder.SourceElement<typeof defaultConfig>, 'displayOrder'> = {
   configSchema,
@@ -13,7 +14,8 @@ const SerialField: Omit<FormBuilder.SourceElement<typeof defaultConfig>, 'displa
   component: SerialNumber,
   category: 'advance',
   componentName: 'Serial',
-  configDependencies: { PrefixSuffix },
+  configDependencies: { Prefix },
+  effects,
 };
 
 export default SerialField;

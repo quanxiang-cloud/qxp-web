@@ -60,23 +60,8 @@ function FormFieldConfig(): JSX.Element {
   }, [store.activeFieldName]);
 
   const schemaFieldConfigEffects = () => {
-    const { setFieldState, getFieldState } = createFormActions();
-    const { onFieldInputChange$, onFieldInit$, onFieldValueChange$ } = FormEffectHooks;
-
-    onFieldValueChange$('prefix').subscribe(({ value }) => {
-      if (!value) return;
-      setFieldState('numberPreview', (state) => {
-        const suffix = getFieldState('suffix', (state) => state.value);
-        state.value = suffix === undefined ? value : value + suffix;
-      });
-    });
-    onFieldValueChange$('suffix').subscribe(({ value }) => {
-      if (!value) return;
-      setFieldState('numberPreview', (state) => {
-        const prefix = getFieldState('prefix', (state) => state.value);
-        state.value = prefix + value;
-      });
-    });
+    const { onFieldInputChange$, onFieldInit$ } = FormEffectHooks;
+    const { setFieldState } = createFormActions();
 
     onFieldInit$('minSet').subscribe((field) => {
       let visible = false;
