@@ -51,7 +51,7 @@ function LayoutGrid({ schema }: Props): JSX.Element {
   };
 
   const properties = schema?.properties?.FIELDs?.properties?.[id] as ISchema;
-  const columns = properties?.['x-internal']?.columns || 2;
+  const columns = properties?.['x-component-props']?.columns || 2;
 
   return (
     <ReactSortable

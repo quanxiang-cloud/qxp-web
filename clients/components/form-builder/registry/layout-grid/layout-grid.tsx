@@ -2,7 +2,7 @@ import React from 'react';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 
 function LayoutGrid(p: ISchemaFieldComponentProps): JSX.Element {
-  const columns = p.props.columns;
+  const columns = p.props?.['x-component-props'].columns || 2;
 
   return (
     <div className="layout-grid-form" style={{
