@@ -3,6 +3,7 @@ import { ISchemaFieldComponentProps, IMutators } from '@formily/react-schema-ren
 import { usePrevious } from 'react-use';
 import { Input, Radio, DatePicker, NumberPicker, Select, Checkbox } from '@formily/antd-components';
 import { Table } from 'antd';
+import { isObject } from 'lodash';
 import cs from 'classnames';
 import {
   InternalFieldList as FieldList, FormItem, ValidatePatternRules, IForm, Schema,
@@ -123,7 +124,7 @@ function SubTable({
     const componentName = sc['x-component']?.toLowerCase() as keyof Components;
     const componentProps = sc['x-component-props'] || {};
     const componentPropsInternal = sc['x-internal'] || {};
-    const dataSource = sc?.enum;
+    const dataSource = sc?.enum?.filter((option) => !isObject(option) || option?.label !== '');
     if (!components[componentName]) {
       logger.error('component %s is missing in subTable', componentName);
       return null;
