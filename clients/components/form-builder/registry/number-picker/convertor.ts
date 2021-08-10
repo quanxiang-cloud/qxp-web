@@ -50,6 +50,9 @@ export function toSchema(value: NumberPickerConfig): ISchema {
       placeholder: value.placeholder,
       precision: point,
       step: 1 / Math.pow(10, point),
+      style: {
+        width: '100%',
+      },
     },
     ['x-internal']: {
       sortable: value.sortable,
