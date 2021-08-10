@@ -107,7 +107,7 @@ const schema: ISchema = {
           'x-component': 'DefaultValueLinkageConfigBtn',
           'x-index': 10,
           'x-component-props': {
-            isLinkedFieldShow: false,
+            isLinkedFieldHide: true,
             isLinkedTableReadonly: true,
           },
         },

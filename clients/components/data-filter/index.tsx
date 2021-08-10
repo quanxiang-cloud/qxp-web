@@ -1,6 +1,5 @@
 import React, { useState, useEffect, forwardRef, useImperativeHandle } from 'react';
 import { useForm, Controller } from 'react-hook-form';
-import moment from 'moment';
 import { uniqueId } from 'lodash';
 
 import Select from '@c/select';
@@ -8,15 +7,23 @@ import FieldSwitch from '@c/field-switch';
 import Icon from '@c/icon';
 import formFieldWrap from '@c/form-field-wrap';
 
-import { CONDITION, getOperators, FILTER_FIELD, getCondition, VALUE_FROM } from './utils';
+import {
+  CONDITION,
+  getOperators,
+  FILTER_FIELD,
+  getCondition,
+  VALUE_FROM,
+  setValueFormCondition,
+  getValue,
+} from './utils';
 import './index.scss';
 
 type Props = {
-  fields: Fields[];
+  fields: SchemaFieldItem[];
   initConditions?: Condition[];
   initTag?: string;
   className?: string;
-  associationFields?: Fields[];
+  associationFields?: SchemaFieldItem[];
 }
 
 type FieldCondition = {
@@ -24,7 +31,7 @@ type FieldCondition = {
   key?: string;
   value?: any;
   op?: string;
-  filter?: Fields;
+  filter?: SchemaFieldItem;
   valueFrom?: 'fixedValue' | 'form';
   associationFieldsOptions?: LabelValue[];
 }
@@ -33,22 +40,6 @@ export type RefProps = {
   getDataPer: () => Promise<FilterConfig | string>;
   empty: () => void;
   getDataValues: () => FilterConfig
-}
-
-function getValue(field: Fields, initValue: Array<string | number | Date | LabelValue> | undefined) {
-  if (!initValue || initValue.length === 0) {
-    return '';
-  }
-
-  if (field.type === 'datetime') {
-    return Array.isArray(initValue) ? initValue.map((value) => moment(value as string)) : moment(initValue);
-  }
-
-  if (field.enum && field.enum.length) {
-    return initValue;
-  }
-
-  return initValue[0];
 }
 
 const FormFieldSwitch = formFieldWrap({ FieldFC: FieldSwitch });
@@ -87,7 +78,7 @@ function DataFilter({
           id: uniqueId(),
           op: condition.op as string,
           valueFrom: condition.valueFrom,
-          value: getValue(filter, condition.value),
+          value: getValue(filter, condition.value, condition.valueFrom),
           associationFieldsOptions: condition.valueFrom === 'form' ? getAssociationOptions(filter) : [],
           key: condition.key as string,
           filter,
@@ -135,12 +126,22 @@ function DataFilter({
 
   const handleValueFromChange = (rowID: string, valueFrom: string) => {
     setConditions(conditions.map((condition) => {
-      if (condition.id === rowID) {
-        return {
-          ...condition, valueFrom, associationFieldsOptions: getAssociationOptions(condition.filter),
-        } as FieldCondition;
+      if (condition.id !== rowID) {
+        return condition;
       }
-      return condition;
+
+      if (condition.filter?.['x-component'] === 'DatePicker') {
+        condition.filter = {
+          ...condition.filter,
+          type: valueFrom === 'form' ? 'number' : 'datetime',
+        };
+      }
+
+      return {
+        ...condition,
+        valueFrom,
+        associationFieldsOptions: getAssociationOptions(condition.filter),
+      } as FieldCondition;
     }));
     setValue('condition-' + rowID, '');
   };
@@ -171,15 +172,15 @@ function DataFilter({
           return;
         }
 
-        _conditions.push({
-          ...getCondition(
-            condition.filter,
-            formData[`condition-${condition.id}`],
-            condition.filter.id,
-            formData[`operators-${condition.id}`],
-          ),
-          valueFrom: formData[`valueFrom-${condition.id}`] || 'fixedValue',
-        });
+        _conditions.push(
+          setValueFormCondition({
+            valueFrom: formData[`valueFrom-${condition.id}`] || 'fixedValue',
+            key: condition.filter.id,
+            op: formData[`operators-${condition.id}`],
+            value: formData[`condition-${condition.id}`],
+            schema: condition.filter,
+          }),
+        );
       }
     });
 
@@ -201,9 +202,9 @@ function DataFilter({
           return !!condition.filter;
         }).map((condition) => {
           return getCondition(
-            condition.filter as Fields,
+            condition.filter as SchemaFieldItem,
             formData[`condition-${condition.id}`],
-            (condition.filter as Fields).id,
+            (condition.filter as SchemaFieldItem).id,
             formData[`operators-${condition.id}`],
           );
         });

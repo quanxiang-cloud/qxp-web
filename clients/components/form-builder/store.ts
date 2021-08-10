@@ -117,7 +117,7 @@ export default class FormBuilderStore {
   internalFields: Array<FormItem>;
   @observable fields: Array<FormItem>;
   @observable activeFieldName = '';
-  @observable labelAlign: 'right' | 'top' = 'top';
+  @observable labelAlign: 'right' | 'top' = 'right';
   @observable columnsCount: 1 | 2 = 1;
   @observable isLinkageConfigVisible = false;
   @observable visibleHiddenLinkages: FormBuilder.VisibleHiddenLinkage[] = [];
