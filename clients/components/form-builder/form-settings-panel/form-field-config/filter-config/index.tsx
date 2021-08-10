@@ -19,7 +19,7 @@ type Props = {
 
 function getFields(schema: ISchema): SchemaFieldItem[] {
   return schemaToFields(schema).filter((schema) => {
-    return schema.fieldName !== '_id' && FILTER_FIELD.includes(schema.componentName);
+    return schema.fieldName !== '_id' && FILTER_FIELD.includes(schema?.['x-component'] || '');
   });
 }
 
@@ -41,12 +41,12 @@ function FilterConfig({ tableID, appID, onChange, value, currentFormSchema }: Pr
   }, [currentFormSchema]);
 
   useEffect(() => {
-    if (appID && tableID) {
+    if (appID && tableID && visible) {
       getTableSchema(appID, tableID).then((res) => {
         setSchemaFields(res?.schema ? getFields(res.schema) : []);
       });
     }
-  }, [appID, tableID]);
+  }, [appID, tableID, visible]);
 
   return (
     <>
