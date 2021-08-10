@@ -19,14 +19,14 @@ type DataModelParams = {
 
 type DataModelBasicInfo = {
   title: string;
-  table_id: string;
-  descpition?: string;
+  tableID: string;
+  description?: string;
 }
 
 type DataModelSchema = {
-  table_id: string;
+  tableID: string;
   schema: ISchema & {
-    descpition: string;
+    description: string;
     properties: Record<string, ModelFieldSchema>
   }
 }

@@ -8,12 +8,12 @@ import { fetchDataModels, deleteSchema } from './api';
 import { SYSTEM_FIELDS } from './utils';
 
 const INIT_MODEL_SCHEMA = {
-  table_id: '',
+  tableID: '',
   schema: {
     properties: SYSTEM_FIELDS,
     title: '',
     type: 'object',
-    descpition: '',
+    description: '',
   },
 };
 
@@ -52,8 +52,8 @@ class AppModelStore {
   @computed get basicInfo(): DataModelBasicInfo {
     return {
       title: this.dataModelSchema.schema.title as string,
-      table_id: this.dataModelSchema.table_id,
-      descpition: this.dataModelSchema.schema.descpition,
+      tableID: this.dataModelSchema.tableID,
+      description: this.dataModelSchema.schema.description,
     };
   }
 
@@ -88,8 +88,8 @@ class AppModelStore {
 
     return saveTableSchema(
       this.appID,
-      basicInfo.table_id,
-      { ...this.dataModelSchema.schema, ...omit(basicInfo, 'table_id') },
+      basicInfo.tableID,
+      { ...this.dataModelSchema.schema, ...omit(basicInfo, 'tableID') },
       2,
     ).then(() => {
       this.setParams({});
@@ -119,7 +119,7 @@ class AppModelStore {
 
     this.modelDetailsLoading = true;
     getTableSchema(this.appID, modelID).then((res: any) => {
-      this.dataModelSchema = { ...res, table_id: res.tableID };
+      this.dataModelSchema = { ...res, tableID: res.tableID };
       this.modelDetailsLoading = false;
     }).catch((err) => {
       this.modelDetailsLoading = false;

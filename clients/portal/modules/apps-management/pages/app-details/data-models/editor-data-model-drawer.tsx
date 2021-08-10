@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { observer } from 'mobx-react';
 import { Steps } from 'antd';
-import { SchemaForm, useForm } from '@formily/antd';
+import { SchemaForm, useForm, createAsyncFormActions } from '@formily/antd';
 import { Input } from '@formily/antd-components';
 
 import { FooterBtnProps } from '@c/modal';
@@ -22,12 +22,22 @@ type Props = {
 function EditorDataModel({ isEditor = false, onCancel, onSubmit }: Props): JSX.Element {
   const [curStep, setStep] = useState(0);
   const [basicInfo, setBasicInfo] = useState<DataModelBasicInfo>(store.basicInfo);
+  const actions = createAsyncFormActions();
   const form = useForm({
     onSubmit: setBasicInfo,
+    actions,
     initialValues: basicInfo,
   });
 
-  const handleNext = () => {
+  useEffect(() => {
+    if (isEditor) {
+      actions.setFieldState('tableID', (state) => {
+        state.props.readOnly = true;
+      });
+    }
+  }, []);
+
+  const handleNext = (): void => {
     form.submit().then(() => {
       setStep(1);
     });

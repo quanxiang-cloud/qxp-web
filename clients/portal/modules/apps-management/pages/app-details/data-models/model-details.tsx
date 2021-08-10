@@ -15,8 +15,8 @@ function ModelDetails(): JSX.Element {
   return (
     <div className='p-20'>
       <div className='mb-16'>模型名称：{store.basicInfo.title}</div>
-      <div className='mb-16'>模型编码：{store.basicInfo.table_id}</div>
-      <div className='mb-16'>模型简介：{store.basicInfo.descpition || '—'}</div>
+      <div className='mb-16'>模型编码：{store.basicInfo.tableID}</div>
+      <div className='mb-16'>模型简介：{store.basicInfo.description || '—'}</div>
       <div className='mb-16'>模型字段：</div>
       <Table emptyTips='暂无模型字段' rowKey='id' columns={FIELD_COLUMNS} data={store.fields} />
     </div>

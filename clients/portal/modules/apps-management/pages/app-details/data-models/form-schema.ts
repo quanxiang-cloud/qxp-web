@@ -20,10 +20,11 @@ export const BASIC_INFO_SCHEMA: ISchema = {
             labelAlign: 'top',
           },
         },
-        table_id: {
+        tableID: {
           type: 'string',
           title: '模型编码',
           required: true,
+          readOnly: false,
           'x-rules': {
             required: true,
             message: '请输入模型编码',
@@ -34,7 +35,7 @@ export const BASIC_INFO_SCHEMA: ISchema = {
             labelAlign: 'top',
           },
         },
-        descpition: {
+        description: {
           type: 'string',
           title: '模型简介',
           maxLength: 100,
