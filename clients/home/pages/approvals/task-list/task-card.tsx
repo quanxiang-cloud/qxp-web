@@ -19,12 +19,12 @@ export default function TaskCard({ task, type }: Props): JSX.Element {
   const history = useHistory();
   const multiTask = ['ALL_PAGE', 'APPLY_PAGE', 'HANDLED_PAGE'].includes(type);
 
-  const handleClick = () => {
+  const handleClick = (): void => {
     const procInstId = multiTask ? task.processInstanceId : task.flowInstanceEntity.processInstanceId;
     history.push(`/approvals/${procInstId}/${task.id}/${type}`);
   };
 
-  const getCurTaskName = () => {
+  const getCurTaskName = (): string => {
     if (['WAIT_HANDLE_PAGE', 'CC_PAGE'].includes(type)) {
       // 任务维度，节点名取第一层级的name
       return task.name;
@@ -42,7 +42,7 @@ export default function TaskCard({ task, type }: Props): JSX.Element {
         <div className="left-info p-20 cursor-pointer" onClick={handleClick}>
           <div className="flex flex-col justify-between">
             <div className="flex justify-between">
-              <div>
+              <div className="flex items-center">
                 <Avatar
                   name={multiTask ? creatorName : flowInstanceEntity?.creatorName || ''}
                   link={multiTask ? creatorAvatar : flowInstanceEntity?.creatorAvatar}
@@ -69,7 +69,7 @@ export default function TaskCard({ task, type }: Props): JSX.Element {
             </div>
           </div>
         </div>
-        <div className="right-info px-20 py-12 flex flex-1 justify-between pl-40">
+        <div className="right-info px-20 py-12 flex flex-1 justify-between pl-40 overflow-hidden">
           <div className="flex flex-col">
             {
               Object.entries((multiTask ? formData : flowInstanceEntity?.formData) || {}).map(([keyName, value]) => {
@@ -86,7 +86,7 @@ export default function TaskCard({ task, type }: Props): JSX.Element {
               })
             }
           </div>
-          <div className="create-time">
+          <div className="create-time whitespace-nowrap">
             接收于: {dayjs(multiTask ? createTime : startTime).format('YYYY-MM-DD HH:mm')}
           </div>
         </div>
