@@ -6,6 +6,7 @@ export interface SelectConfig {
   displayModifier: FormBuilder.DisplayModifier;
   sortable: boolean;
   required: boolean;
+  allowCustom: boolean;
   defaultValueFrom: FormBuilder.DefaultValueFrom;
   availableOptions: Array<{ label: string; value: any; title: string }>,
 }
@@ -16,6 +17,7 @@ export const defaultConfig: SelectConfig = {
   displayModifier: 'normal',
   sortable: false,
   required: false,
+  allowCustom: false,
   defaultValueFrom: 'customized',
   availableOptions: [
     { label: '选项一', value: 'option_1', title: '选项一' },
@@ -42,7 +44,9 @@ export function toSchema(value: SelectConfig): ISchema {
     }),
     'x-component': 'Select',
     // todo support optionsLayout
-    ['x-component-props']: { },
+    ['x-component-props']: {
+      allowCustom: value.allowCustom,
+    },
     ['x-internal']: {
       sortable: value.sortable,
       permission: 3,
@@ -65,6 +69,7 @@ export function toConfig(schema: ISchema): SelectConfig {
     displayModifier: displayModifier,
     sortable: !!schema['x-internal']?.sortable,
     required: !!schema.required,
+    allowCustom: schema['x-component-props']?.allowCustom,
     // todo implement this
     defaultValueFrom: schema['x-internal']?.defaultValueFrom || 'customized',
     // todo refactor this
