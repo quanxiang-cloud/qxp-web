@@ -72,6 +72,12 @@ const schema: ISchema = {
           'x-component': 'Switch',
           'x-index': 6,
         },
+        allowCustom: {
+          title: '允许自定义',
+          default: false,
+          'x-component': 'Switch',
+          'x-index': 7,
+        },
         defaultValueFrom: {
           // title: '数值源',
           title: '选项',
@@ -93,7 +99,7 @@ const schema: ISchema = {
           'x-mega-props': {
             labelAlign: 'top',
           },
-          'x-index': 7,
+          'x-index': 8,
           'x-linkages': [
             {
               type: 'value:visible',
@@ -117,7 +123,7 @@ const schema: ISchema = {
           'x-component-props': {
             value: '设置数据联动',
           },
-          'x-index': 8,
+          'x-index': 9,
         },
         availableOptions: {
           type: 'array',
@@ -130,7 +136,7 @@ const schema: ISchema = {
             renderExtraOperations: extraOperations,
             renderAddition: () => null,
           },
-          'x-index': 9,
+          'x-index': 10,
           items: {
             type: 'object',
             properties: {
