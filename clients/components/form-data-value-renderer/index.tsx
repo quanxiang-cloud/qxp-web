@@ -109,6 +109,8 @@ export function getBasicValue(schema: ISchema, value: FormDataValue): string {
     return labelValueRenderer(value);
   case 'aggregationrecords':
     return statisticValueRender({ schema, value });
+  case 'serial':
+    return value as string;
   default:
     logger.debug('encounter unsupported formDataValue:', value, 'schema:', schema);
     return value?.toString();

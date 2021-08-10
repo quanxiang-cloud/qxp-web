@@ -27,6 +27,7 @@ export const SHOW_FIELD = [
   'CascadeSelector',
   'OrganizationPicker',
   'AssociatedData',
+  'Serial',
 ];
 
 class FormDesignStore {
