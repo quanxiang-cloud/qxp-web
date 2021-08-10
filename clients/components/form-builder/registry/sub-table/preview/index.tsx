@@ -243,7 +243,7 @@ function SubTable({
                               />
                             )}
                             {readonly && (
-                              <FormDataValueRenderer value={value} schema={schema} />
+                              <FormDataValueRenderer value={item?.[dataIndex]} schema={schema} />
                             )}
                           </div>
                         );
