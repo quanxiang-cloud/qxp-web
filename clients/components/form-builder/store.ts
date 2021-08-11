@@ -1,9 +1,17 @@
 import { action, computed, observable, toJS } from 'mobx';
 import { nanoid } from 'nanoid';
 
+import Modal from '@c/modal';
 import logger from '@lib/logger';
 import registry from './registry';
-import { generateRandomFormFieldID, wrapSchemaByMegaLayout } from './utils';
+import {
+  filterLinkageRules,
+  shouldFilterLinkages,
+  wrapSchemaByMegaLayout,
+  filterLinkageTargetKeys,
+  filterLinkagesOnDeleteField,
+  generateRandomFormFieldID,
+} from './utils';
 
 export type FormItem = {
   componentName: string;
@@ -444,12 +452,6 @@ export default class FormBuilderStore {
     };
   }
 
-  @action deleteField(fieldName: string): void {
-    this.fields = this.fields.filter((field) => {
-      return field.fieldName !== fieldName && field.parentField !== fieldName;
-    });
-  }
-
   @action setDragging(isD: boolean): void {
     this.isDragging = isD;
   }
@@ -474,6 +476,7 @@ export default class FormBuilderStore {
         ...linkage,
         key: generateRandomFormFieldID(),
       });
+
       return;
     }
 
@@ -666,9 +669,34 @@ export default class FormBuilderStore {
   }
 
   @action
-  delete(fieldName: string): void {
+  deleteField(fieldName: string): void {
     this.hasEdit = true;
-    this.fields = this.fields.filter((field) => field.fieldName !== fieldName);
+
+    if (shouldFilterLinkages(fieldName, this.visibleHiddenLinkages)) {
+      const deleteConfirmModal = Modal.open({
+        title: '提示',
+        content: '有显隐规则引用到此字段，直接删除会清除对应的引用，是否确认删除？',
+        onConfirm: () => {
+          this.visibleHiddenLinkages = filterLinkagesOnDeleteField(
+            fieldName,
+            this.visibleHiddenLinkages,
+            filterLinkageRules,
+            filterLinkageTargetKeys,
+          );
+
+          this.fields = this.fields.filter((field) => {
+            return field.fieldName !== fieldName && field.parentField !== fieldName;
+          });
+          deleteConfirmModal.close();
+        },
+      });
+
+      return;
+    }
+
+    this.fields = this.fields.filter((field) => {
+      return field.fieldName !== fieldName && field.parentField !== fieldName;
+    });
   }
 
   @action
@@ -699,10 +727,6 @@ export default class FormBuilderStore {
     if (!field || index < 1) {
       return;
     }
-
-    const [previous, current] = this.fields.slice(index - 1, index + 1);
-    this.fields.splice(index - 1, 2, current, previous);
-    this.hasEdit = true;
   }
 
   @action

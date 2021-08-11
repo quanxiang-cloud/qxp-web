@@ -39,7 +39,7 @@ const DEFAULT_VALUE: FormBuilder.VisibleHiddenLinkage = {
 };
 
 const DISABLE_FIELD: Array<string> = [
-  'textarea',
+  'Textarea',
   'CascadeSelector',
   'SubTable',
   'AssociatedRecords',
@@ -94,6 +94,7 @@ function RulesConfig({ mode, onClose, linkageKey, onSubmit }: Props): JSX.Elemen
     const currentSourceKeyFieldComponent = sourceSchema?.properties?.[value]['x-component'];
     const currentSourceKeyFieldProps = sourceSchema?.properties?.[value]['x-component-props'];
     const compareValuePath = FormPath.transform(name, /\d/, ($1) => `rules.${$1}.compareValue`);
+    const currentCompareValue = getFieldValue(compareValuePath);
     setFieldState(compareValuePath, (state) => {
       const selectTypeComponent = ['CheckboxGroup', 'MultipleSelect', 'Select', 'RadioGroup'];
       if (selectTypeComponent.includes(currentSourceKeyFieldComponent as string)) {
@@ -104,6 +105,10 @@ function RulesConfig({ mode, onClose, linkageKey, onSubmit }: Props): JSX.Elemen
         state.props.enum = undefined;
       }
       state.props['x-component-props'] = currentSourceKeyFieldProps;
+
+      if (currentSourceKeyFieldProps?.mode === 'multiple' && currentCompareValue === '') {
+        state.value = undefined;
+      }
     });
   }
 
@@ -112,10 +117,10 @@ function RulesConfig({ mode, onClose, linkageKey, onSubmit }: Props): JSX.Elemen
     const currentCompareValue = getFieldValue(compareValuePath);
     const currentSourceKeyFieldComponent = sourceSchema?.properties?.[value]['x-component'] as string;
     const currentSourceKeyFieldProps = sourceSchema?.properties?.[value]['x-component-props'];
-
     const shouldInitValue = compareValueValidateMap[currentSourceKeyFieldComponent](
       currentCompareValue, currentSourceKeyFieldProps?.format,
     );
+
     if (shouldInitValue) {
       setFieldValue(compareValuePath, undefined);
     }
