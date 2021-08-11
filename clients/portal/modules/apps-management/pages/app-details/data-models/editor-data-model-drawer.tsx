@@ -75,7 +75,7 @@ function EditorDataModel({ isEditor = false, onCancel, onSubmit }: Props): JSX.E
   ];
 
   return (
-    <div className='p-24'>
+    <div className='p-24 h-full'>
       <div style={{ maxWidth: '400px' }} className='mx-auto mb-32'>
         <Steps current={curStep}>
           <Steps.Step title="基本信息" />

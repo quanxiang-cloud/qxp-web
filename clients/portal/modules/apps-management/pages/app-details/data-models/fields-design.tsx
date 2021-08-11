@@ -63,7 +63,7 @@ function FieldsDesign(): JSX.Element {
   };
 
   return (
-    <div>
+    <>
       <SchemaForm onSubmit={filterField} components={{ Input }}>
         <FormMegaLayout grid full autoRow>
           <Field x-component='Input' type="string" title="字段名称" name="title" />
@@ -76,12 +76,14 @@ function FieldsDesign(): JSX.Element {
         </FormMegaLayout>
       </SchemaForm>
       <Button onClick={() => setEditorVisible(true)} className='mb-16' modifier='primary'>新建</Button>
-      <Table
-        rowKey='id'
-        emptyTips='暂无模型字段'
-        columns={COLUMNS}
-        data={fields}
-      />
+      <div style={{ maxHeight: 'calc(100% - 296px)' }} className='flex'>
+        <Table
+          rowKey='id'
+          emptyTips='暂无模型字段'
+          columns={COLUMNS}
+          data={fields}
+        />
+      </div>
       {editorVisible && (
         <EditorFieldModal
           isEditor={!!curModelField}
@@ -97,7 +99,7 @@ function FieldsDesign(): JSX.Element {
           }}
         />
       )}
-    </div>
+    </>
   );
 }
 

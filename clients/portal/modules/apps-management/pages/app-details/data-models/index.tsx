@@ -46,7 +46,7 @@ function DataModels(): JSX.Element {
             </FormMegaLayout>
           </SchemaForm>
         </div>
-        <div className={CONTAINER_CLASS}>
+        <div style={{ height: 'calc(100% - 92px)' }} className={`${CONTAINER_CLASS}`}>
           <DataModelsTable />
         </div>
       </div>

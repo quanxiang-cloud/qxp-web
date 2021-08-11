@@ -81,7 +81,7 @@ function DataModelsTable(): JSX.Element {
   ];
 
   return (
-    <div>
+    <>
       <Button
         onClick={() => store.dataModelModalControl('edit')}
         className='mb-16'
@@ -89,13 +89,15 @@ function DataModelsTable(): JSX.Element {
       >
         新建
       </Button>
-      <Table
-        emptyTips='暂无数据模型'
-        loading={store.dataModelsLoading}
-        rowKey='id'
-        columns={COLUMNS}
-        data={store.dataModels}
-      />
+      <div className='flex' style={{ maxHeight: 'calc(100% - 100px)' }}>
+        <Table
+          emptyTips='暂无数据模型'
+          loading={store.dataModelsLoading}
+          rowKey='id'
+          columns={COLUMNS}
+          data={store.dataModels}
+        />
+      </div>
       <Pagination
         current={store.params.page}
         total={store.dataModelTotal}
@@ -119,7 +121,7 @@ function DataModelsTable(): JSX.Element {
       >
         <ModelDetails />
       </Drawer>
-    </div>
+    </>
   );
 }
 
