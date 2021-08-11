@@ -5,8 +5,8 @@ import Header from './header';
 import AppDetailsContent from './app-details-content';
 import appDetailsStore from './store';
 
-function AppDetails() {
-  const { appID } = useParams<{appID: string}>();
+function AppDetails(): JSX.Element {
+  const { appID } = useParams<{ appID: string }>();
 
   useEffect(() => {
     appDetailsStore.fetchAppDetails(appID);
