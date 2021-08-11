@@ -2,9 +2,9 @@ import { action, observable, reaction, IReactionDisposer, computed } from 'mobx'
 import { omit, set, unset } from 'lodash';
 
 import toast from '@lib/toast';
-import { getTableSchema, saveTableSchema } from '@lib/http-client';
+import { getTableSchema } from '@lib/http-client';
 
-import { fetchDataModels, deleteSchema } from './api';
+import { fetchDataModels, deleteSchema, saveTableSchema } from './api';
 import { SYSTEM_FIELDS } from './utils';
 
 const INIT_MODEL_SCHEMA = {

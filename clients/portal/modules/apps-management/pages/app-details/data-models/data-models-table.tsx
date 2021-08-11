@@ -38,7 +38,7 @@ function DataModelsTable(): JSX.Element {
     {
       Header: '来源',
       id: 'source',
-      accessor: ({ source }) => source === 1 ? '手动创建' : '表单创建',
+      accessor: ({ source }) => source === 2 ? '手动创建' : '表单创建',
     },
     {
       Header: '创建人',
@@ -61,7 +61,7 @@ function DataModelsTable(): JSX.Element {
               className='text-btn'>
               查看
             </span>
-            {rowData.source === 1 && (
+            {rowData.source === 2 && (
               <>
                 <span
                   onClick={() => store.dataModelModalControl('edit', rowData.tableID)}

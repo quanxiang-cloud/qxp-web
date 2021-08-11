@@ -20,3 +20,12 @@ export const deleteSchema = (
 ): Promise<void> => {
   return httpClient(`/api/v1/structor/${appID}/m/table/delete`, { tableID });
 };
+
+export function saveTableSchema(
+  appID: string, tableID: string, schema: ISchema, source?: 1 | 2,
+): Promise<{ tableID: string; }> {
+  return httpClient(
+    `/api/v1/structor/${appID}/m/table/create`,
+    { tableID, schema, source },
+  );
+}
