@@ -29,7 +29,7 @@ const PreviewMsg = ({
     );
   }
 
-  const { title, content, receivers, sort, type, handle_name } = prevData;
+  const { title, content, receivers, sort, type, handle_name, update_at } = prevData;
   const msgType = typeof sort !== 'undefined' ? sort : type; // todo
 
   let txt = '';
@@ -41,7 +41,7 @@ const PreviewMsg = ({
     txt = '未知消息类型';
   }
   const infoText = [
-    dayjs().format('YYYY-MM-DD HH:mm:ss'), txt, handle_name || window.USER.userName,
+    dayjs(update_at * 1000).format('YYYY-MM-DD HH:mm:ss'), txt, handle_name || window.USER.userName,
   ].join(' · ');
 
   return (

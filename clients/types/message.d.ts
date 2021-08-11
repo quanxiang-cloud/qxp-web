@@ -113,6 +113,8 @@ declare namespace Qxp {
     sort?: number | MsgType; // real msg type
     mes_attachment?: Array<File>;
     handle_name?: string;
+    create_at: number;
+    update_at: number;
   }
 }
 
