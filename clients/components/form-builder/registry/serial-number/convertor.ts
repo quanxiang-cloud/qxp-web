@@ -2,7 +2,7 @@ import { Format } from './prefix';
 
 export type PrefixType = {
   frontward: string,
-  backward: Format,
+  backward: Format | '',
 }
 
 export interface SerialConfig {
@@ -25,11 +25,11 @@ export const defaultConfig: SerialConfig = {
   numberPreview: '',
   prefix: {
     frontward: 'ER',
-    backward: 'yyyyMMdd',
+    backward: 'YYYYMMDD',
   },
   initialPosition: 5,
   initialValue: 1,
-  suffix: 'yyyyMMdd',
+  suffix: 'YYYYMMDD',
 };
 
 export function toSchema(value: SerialConfig): ISchema {

@@ -98,23 +98,23 @@ const schema: ISchema = {
           enum: [
             {
               label: '年',
-              value: 'yyyy',
+              value: 'YYYY',
             },
             {
               label: '年月',
-              value: 'yyyyMM',
+              value: 'YYYYMM',
             },
             {
               label: '年月日',
-              value: 'yyyyMMdd',
+              value: 'YYYYMMDD',
             },
             {
               label: '年月日时分',
-              value: 'yyyyMMddHHmm',
+              value: 'YYYYMMDDhhmm',
             },
             {
               label: '年月日时分秒',
-              value: 'yyyyMMddHHmmss',
+              value: 'YYYYMMDDhhmmss',
             },
           ],
           'x-component': 'select',

@@ -16,36 +16,12 @@ const addZeroFromValue = (position: number, value:number): string => {
   return (Array(position).join('0') + value?.toString()).slice(-position);
 };
 
-const getCurrentTime = (types: Format): string => {
-  let preview = '';
-  switch (types) {
-  case 'yyyy':
-    preview = moment().format('YYYY');
-    break;
-  case 'yyyyMM':
-    preview = moment().format('YYYYMM');
-    break;
-  case 'yyyyMMdd':
-    preview = moment().format('YYYYMMDD');
-    break;
-  case 'yyyyMMddHHmm':
-    preview = moment().format('YYYYMMDDhhmm');
-    break;
-  case 'yyyyMMddHHmmss':
-    preview = moment().format('YYYYMMDDhhmmss');
-    break;
-  default:
-    break;
-  }
-  return preview;
-};
-
 const getPreview = ({ prefix, initialPosition, initialValue, suffix }: PreviewProps): string => {
-  return prefix.frontward + getCurrentTime(prefix.backward) +
-    addZeroFromValue(initialPosition, initialValue) + getCurrentTime(suffix);
+  return prefix.frontward + (prefix.backward === '' ? '' : moment().format(prefix.backward)) +
+    addZeroFromValue(initialPosition, initialValue) + moment().format(suffix);
 };
 
-export default function effects() {
+export default function effects(): void {
   const { setFieldState, getFieldValue } = createFormActions();
 
   onFieldValueChange$('*(prefix, initialPosition, initialValue, suffix)').subscribe(({ value }) => {
