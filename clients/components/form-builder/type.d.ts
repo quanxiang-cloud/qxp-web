@@ -6,27 +6,27 @@ type ValidationFormula = {
   message: string;
 }
 
-type ISchema = import('@formily/react-schema-renderer').ISchema & {
+type XInternal = {
+  version?: string;
+  sortable?: boolean;
+  permission?: number;
+  validations?: Array<ValidationFormula>;
+  defaultValueFrom?: FormBuilder.DefaultValueFrom;
+  defaultValueLinkage?: FormBuilder.DefaultValueLinkage;
+  calculationFormula?: string;
   isLayoutComponent?: boolean;
-  'x-internal'?: {
-    version?: string;
-    sortable?: boolean;
-    permission?: number;
-    validations?: Array<ValidationFormula>;
-    defaultValueFrom?: FormBuilder.DefaultValueFrom;
-    defaultValueLinkage?: FormBuilder.DefaultValueLinkage;
-    calculationFormula?: string;
-    isSystem?: boolean;
-    [key: string]: any;
-  };
-};
+  isSystem?: boolean;
+  [key: string]: any;
+}
+
+type ISchema = import('@formily/react-schema-renderer').ISchema & { 'x-internal'?: XInternal };
 
 type FilterConfig = {
   condition: Condition[];
   tag: 'or' | 'and';
 }
 
-type IteratISchema = ISchema & { id: string; }
+type IteratISchema = ISchema & { id: string; componentName?: string; }
 
 type LabelValue = {
   label: string;
@@ -149,7 +149,6 @@ type SchemaFieldItem = ISchema & {
   id: string;
   fieldName: string;
   componentName: string;
-  isLayoutComponent?: boolean;
   parentField?: string;
   tabIndex?: number;
 }

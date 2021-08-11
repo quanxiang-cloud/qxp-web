@@ -1,4 +1,5 @@
 import { Dictionary, groupBy, orderBy } from 'lodash';
+
 import elements, { Elements } from './elements';
 
 const AVAILABLE_CATEGORIES: Array<{ title: string; key: FormBuilder.ElementCategory }> = [
@@ -26,11 +27,11 @@ class Registry {
   }
 
   // register external forms
-  merge(formData: typeof elements) {
+  merge(formData: typeof elements): void {
     Object.assign(this.elements, formData);
   }
 
-  getComponents() {
+  getComponents(): void {
     Object.keys(this.elements).forEach((componentName: string) => {
       const { component, isLayoutComponent, editComponent } = this.elements[componentName];
       this.components[componentName] = component;

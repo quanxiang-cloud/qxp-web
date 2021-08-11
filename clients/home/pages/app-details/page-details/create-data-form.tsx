@@ -14,6 +14,7 @@ import toast from '@lib/toast';
 import { FormRenderer } from '@c/form-builder';
 import { INTERNAL_FIELD_NAMES } from '@c/form-builder/store';
 import { isEmptyArray, isEmptyObject } from '@lib/utils';
+import { schemaToMap } from '@lib/schema-convert';
 import {
   formDataRequest, FormDataRequestCreateParams, FormDataRequestUpdateParams,
 } from '@lib/http-client';
@@ -151,7 +152,7 @@ function CreateDataForm({ appID, pageID, rowID, onCancel, title }: Props): JSX.E
   }
 
   const handleSubmit = (data: Record<string, unknown>): void => {
-    const schemaMap = schema?.properties as ISchema || {};
+    const schemaMap = schemaToMap(schema);
     const defaultValue = toJS(defaultValues);
     const formData = removeEmptySubTableOrAssociatedRecords(data, schemaMap);
     const diffResult = difference(defaultValue || {}, formData);
@@ -182,8 +183,7 @@ function CreateDataForm({ appID, pageID, rowID, onCancel, title }: Props): JSX.E
     const initialMethod = defaultValues ? 'update' : 'create';
     const reqData: FormDataRequestCreateParams | FormDataRequestUpdateParams = buildRequestParams(
       initialMethod === 'create' ? formData : omitBy(formData, (_, key) => {
-        return schemaMap[key as keyof ISchema]?.['x-component'].toLowerCase() === 'subtable' ||
-          !(key in schemaMap);
+        return schemaMap[key]?.componentName === 'subtable' || !(key in schemaMap);
       }),
       defaultValue?._id,
       initialMethod,

@@ -6,7 +6,7 @@ import httpClient from '@lib/http-client';
 
 import { TableHeaderBtn, TableConfig } from './type';
 import { Config, getPageDataSchema } from './utils';
-import schemaToFields from '@lib/schema-convert';
+import schemaToFields, { schemaToMap } from '@lib/schema-convert';
 
 type Params = {
   condition?: Condition[] | [],
@@ -15,6 +15,10 @@ type Params = {
   page?: number,
   size?: number,
 }
+
+export type FormAppDataTableStoreSchema = Omit<ISchema, 'properties'> & {
+  properties?: Record<string, SchemaFieldItem>
+};
 
 type InitData = {
   schema: ISchema;
@@ -102,7 +106,7 @@ class AppPageDataStore {
   }
 
   @action
-  setSchema = (schema: ISchema | undefined): void => {
+  setSchema = (schema?: ISchema): void => {
     if (!schema) {
       return;
     }
@@ -118,7 +122,7 @@ class AppPageDataStore {
 
   @action
   setFilters = (filters: Filters): void => {
-    this.filters = filters.filter((key) => key in (this.schema.properties || {}));
+    this.filters = filters.filter((key) => key in (schemaToMap(this.schema) || {}));
   }
 
   @action

@@ -3,6 +3,7 @@ import { observer } from 'mobx-react';
 import { useForm, Controller } from 'react-hook-form';
 
 import FieldSwitch from '@c/field-switch';
+import { schemaToMap } from '@lib/schema-convert';
 
 import { StoreContext } from '../context';
 
@@ -16,13 +17,11 @@ type Props = {
 function FilterForm({ search, showMoreFilter }: Props, ref?: React.Ref<any>): JSX.Element {
   const store = useContext(StoreContext);
   const { filters } = store;
-  const fieldMaps = store.schema.properties || {};
+  const fieldMaps = schemaToMap(store.schema) || {};
   const { getValues, control, setValue } = useForm();
 
   useEffect(() => {
-    Object.entries(store.filterData || {}).forEach(([key, value])=>{
-      setValue(key, value);
-    });
+    Object.entries(store.filterData).forEach(([key, value]) => setValue(key, value));
   }, []);
 
   useImperativeHandle(ref, () => ({

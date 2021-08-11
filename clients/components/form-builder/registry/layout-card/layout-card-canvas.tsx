@@ -1,6 +1,7 @@
 import React from 'react';
 import { ReactSortable, Sortable } from 'react-sortablejs';
 import { observer } from 'mobx-react';
+import { noop } from 'lodash';
 import { Card } from 'antd';
 import { SchemaForm } from '@formily/antd';
 import cs from 'classnames';
@@ -117,14 +118,14 @@ function LayoutCard({ schema }: Props): JSX.Element {
           }}
           animation={600}
           list={fields}
-          setList={() => { }}
+          setList={noop}
           onAdd={handleAddField}
           onUpdate={handleUpdateField}
           onStart={() => store.setDragging(true)}
           onEnd={() => store.setDragging(false)}
         >
-          {fields.map((itm) => {
-            const id = itm.id;
+          {fields.map((field) => {
+            const id = field.id;
 
             return (
               <div
@@ -139,7 +140,7 @@ function LayoutCard({ schema }: Props): JSX.Element {
                   store.setActiveFieldKey(id);
                 }}
               >
-                <SchemaForm components={registry.components} schema={itm} />
+                <SchemaForm components={registry.components} schema={field} />
                 <DeleteButton filedName={id} />
               </div>
             );

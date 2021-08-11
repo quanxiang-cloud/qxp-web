@@ -11,17 +11,18 @@ import {
   Input, Select as AntdSelect, NumberPicker, Switch, Radio,
 } from '@formily/antd-components';
 import { FormPath } from '@formily/shared';
+import { toJS } from 'mobx';
+import { filter, tap, skip } from 'rxjs/operators';
 
 import DatePicker from '@c/form-builder/registry/date-picker/date-picker';
 import Modal from '@c/modal';
 import Button from '@c/button';
 import { INTERNAL_FIELD_NAMES } from '@c/form-builder/store';
 import { StoreContext } from '@c/form-builder/context';
-import { toJS } from 'mobx';
-import { filter, tap, skip } from 'rxjs/operators';
-
 import { JoinOperatorSelect, RulesList } from '@c/form-builder/customized-fields';
 import { OperatorOptions, OPERATORS } from '@c/form-builder/constants';
+import schemaToFields, { schemaToMap } from '@lib/schema-convert';
+
 import { compareValueValidateMap } from './constants';
 
 const COMPONENTS = {
@@ -59,19 +60,23 @@ type Props = {
 function RulesConfig({ mode, onClose, linkageKey, onSubmit }: Props): JSX.Element {
   const store = useContext(StoreContext);
   const sourceSchema = toJS(store.schema);
+  const sourceSchemaMap = schemaToMap(sourceSchema);
   const actions = createFormActions();
   const { setFieldState, getFieldValue, setFieldValue } = actions;
   const linkages = (
     sourceSchema['x-internal']?.visibleHiddenLinkages || []
   ) as FormBuilder.VisibleHiddenLinkage[];
   const defaultValue = linkages.find((linkage) => linkage.key === linkageKey) || DEFAULT_VALUE;
-  const availableFormFields = Object.entries(sourceSchema.properties || {})
-    .filter(([key]) => !INTERNAL_FIELD_NAMES.includes(key))
-    .map(([key, value]) => {
-      return { value: key, label: value.title || key, availableCompareValues: value.enum || [],
-        xComponent: value['x-component'] || 'AntdSelect',
-      };
-    });
+  const availableFormFields = schemaToFields(sourceSchema).filter((field) => {
+    return !INTERNAL_FIELD_NAMES.includes(field.id);
+  }).map((field) => {
+    return {
+      value: field.id,
+      label: field.title || field.id,
+      availableCompareValues: field.enum || [],
+      xComponent: field['x-component'] || 'AntdSelect',
+    };
+  });
 
   const targetKeyFieldsEnum = availableFormFields;
   const sourceKeyEnum = availableFormFields.filter(({ xComponent }) => !DISABLE_FIELD.includes(xComponent));
@@ -91,15 +96,16 @@ function RulesConfig({ mode, onClose, linkageKey, onSubmit }: Props): JSX.Elemen
   }
 
   function updateCompareValueOnSourceKeyChanged({ name, value }: IFieldState): void {
-    const currentSourceKeyFieldComponent = sourceSchema?.properties?.[value]['x-component'];
-    const currentSourceKeyFieldProps = sourceSchema?.properties?.[value]['x-component-props'];
+    const sourceKeySchema = sourceSchemaMap[value];
+    const currentSourceKeyFieldComponent = sourceKeySchema?.['x-component'];
+    const currentSourceKeyFieldProps = sourceKeySchema?.['x-component-props'];
     const compareValuePath = FormPath.transform(name, /\d/, ($1) => `rules.${$1}.compareValue`);
     const currentCompareValue = getFieldValue(compareValuePath);
     setFieldState(compareValuePath, (state) => {
       const selectTypeComponent = ['CheckboxGroup', 'MultipleSelect', 'Select', 'RadioGroup'];
-      if (selectTypeComponent.includes(currentSourceKeyFieldComponent as string)) {
+      if (selectTypeComponent.includes(currentSourceKeyFieldComponent || '')) {
         state.props['x-component'] = 'AntdSelect';
-        state.props.enum = sourceSchema?.properties?.[value].enum;
+        state.props.enum = sourceKeySchema.enum;
       } else {
         state.props['x-component'] = currentSourceKeyFieldComponent;
         state.props.enum = undefined;
@@ -115,8 +121,10 @@ function RulesConfig({ mode, onClose, linkageKey, onSubmit }: Props): JSX.Elemen
   function resetValueOfCompareValue({ name, value }: IFieldState): void {
     const compareValuePath = FormPath.transform(name, /\d/, ($1) => `rules.${$1}.compareValue`);
     const currentCompareValue = getFieldValue(compareValuePath);
-    const currentSourceKeyFieldComponent = sourceSchema?.properties?.[value]['x-component'] as string;
-    const currentSourceKeyFieldProps = sourceSchema?.properties?.[value]['x-component-props'];
+    const sourceKeySchema = sourceSchemaMap[value];
+    const currentSourceKeyFieldComponent = sourceKeySchema?.componentName;
+    const currentSourceKeyFieldProps = sourceKeySchema?.['x-component-props'];
+
     const shouldInitValue = compareValueValidateMap[currentSourceKeyFieldComponent](
       currentCompareValue, currentSourceKeyFieldProps?.format,
     );

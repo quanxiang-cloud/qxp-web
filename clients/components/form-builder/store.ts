@@ -3,6 +3,7 @@ import { nanoid } from 'nanoid';
 
 import Modal from '@c/modal';
 import logger from '@lib/logger';
+
 import registry from './registry';
 import {
   filterLinkageRules,
@@ -20,7 +21,7 @@ export type FormItem = {
   'x-index'?: number;
   parentField?: string;
   tabIndex?: string;
-  isLayoutComponent?: boolean
+  'x-internal'?: XInternal;
 };
 
 type Props = {
@@ -91,19 +92,18 @@ export function schemaToFields({ properties }: ISchema): [Array<FormItem>, Array
         }
 
         const configValue = registry.elements[componentName].toConfig(properties[key]);
-        const isLayoutComponent = properties[key]?.isLayoutComponent;
         const parentField = properties[key]?.['x-internal']?.parentField;
         const tabIndex = properties[key]?.['x-internal']?.tabIndex;
         const xIndex = properties[key]?.['x-index'];
 
-        const field = {
+        const field: FormItem = {
           fieldName: key,
           componentName: componentName,
           configValue: configValue,
-          isLayoutComponent,
           parentField,
           tabIndex,
           'x-index': xIndex,
+          'x-internal': properties[key]?.['x-internal'],
         };
 
         if (properties[key].properties) {
@@ -171,11 +171,11 @@ export default class FormBuilderStore {
   @computed get schema(): ISchema {
     const properties: Record<string, ISchema> = {};
 
-    const schemas = this.fields
+    const schemas: IteratISchema[] = this.fields
       .concat(this.internalFields)
       .map((field) => {
-        const { fieldName, componentName, configValue, parentField, isLayoutComponent, tabIndex } = field;
-
+        const { fieldName, componentName, configValue, parentField, tabIndex } = field;
+        const isLayoutComponent = field?.['x-internal']?.isLayoutComponent;
         const { toSchema } = registry.elements[componentName.toLowerCase()] || {};
         if (!toSchema) {
           logger.error(`failed to find component: [${componentName}] in registry`);
@@ -183,16 +183,17 @@ export default class FormBuilderStore {
 
         const parsedSchema = toSchema(toJS(configValue));
         // ensure 'x-internal' exist
-        parsedSchema['x-internal'] = parsedSchema['x-internal'] || { defaultValueFrom: 'customized' };
-        parsedSchema['x-internal'].isSystem = !!configValue.isSystem;
-        parsedSchema['x-internal'].parentField = parentField;
-        parsedSchema['x-internal'].tabIndex = tabIndex;
 
-        const node = {
+        const node: IteratISchema = {
           ...parsedSchema,
           id: fieldName,
-          isLayoutComponent,
-          // 'x-index': index,
+          'x-internal': {
+            ...(parsedSchema['x-internal'] || { defaultValueFrom: 'customized' }),
+            isSystem: !!configValue.isSystem,
+            parentField: parentField,
+            tabIndex: tabIndex,
+            isLayoutComponent,
+          },
           'x-index': field['x-index'],
           'x-mega-props': {
             labelCol: this.labelAlign === 'right' ? 4 : undefined,
@@ -202,21 +203,22 @@ export default class FormBuilderStore {
         return node;
       });
 
-    schemas.forEach((itm) => {
-      if (itm?.['x-internal']?.parentField) return;
+    schemas.forEach((schema) => {
+      if (schema?.['x-internal']?.parentField) return;
 
-      const { id } = itm;
-      properties[id] = itm;
+      const { id } = schema;
+      properties[id] = schema;
     });
 
-    schemas.forEach((itm) => {
-      if (!itm?.['x-internal']?.parentField) return;
+    schemas.forEach((schema) => {
+      const parentField = schema?.['x-internal']?.parentField;
+      if (!parentField) return;
 
-      const { id } = itm;
-      const parentProperties = properties[itm?.['x-internal']?.parentField].properties;
+      const { id } = schema;
+      const parentProperties = properties[parentField].properties;
 
-      properties[itm?.['x-internal']?.parentField].properties = Object.assign({}, parentProperties, {
-        [id]: itm,
+      properties[parentField].properties = Object.assign({}, parentProperties, {
+        [id]: schema,
       });
     });
 
@@ -248,7 +250,9 @@ export default class FormBuilderStore {
       .filter(({ fieldName }) => !INTERNAL_FIELD_NAMES.includes(fieldName));
 
     fields.forEach((field) => {
-      if (field.isLayoutComponent) layoutComponent[field.fieldName] = [];
+      if (field?.['x-internal']?.isLayoutComponent) {
+        layoutComponent[field.fieldName] = [];
+      }
     });
 
     fields.forEach((field) => {
@@ -274,13 +278,12 @@ export default class FormBuilderStore {
         },
       };
 
-      const schema = {
+      const schema: IteratISchema & { tabIndex?: string } = {
         display: parsedSchema.display,
         tabIndex,
         id: fieldName,
         type: 'object',
-        isLayoutComponent: parsedSchema?.isLayoutComponent,
-        componentName: parsedSchema['x-component'],
+        'x-internal': parsedSchema?.['x-internal'],
         properties: {
           FIELDs: {
             type: 'object',
@@ -317,7 +320,7 @@ export default class FormBuilderStore {
       .filter(({ fieldName }) => !INTERNAL_FIELD_NAMES.includes(fieldName))
       .filter(({ parentField }) => !parentField)
       .sort((a, b) => (a['x-index'] || 0) - (b['x-index'] || 0))
-      .map((field) => {
+      .map((field): IteratISchema => {
         const { fieldName, componentName, configValue } = field;
         const { toSchema } = registry.elements[componentName.toLowerCase()] || {};
         if (!toSchema) {
@@ -343,7 +346,6 @@ export default class FormBuilderStore {
           display: parsedSchema.display,
           id: fieldName,
           type: 'object',
-          isLayoutComponent: parsedSchema?.isLayoutComponent,
           componentName: parsedSchema['x-component'],
           properties: {
             FIELDs: {
@@ -360,6 +362,7 @@ export default class FormBuilderStore {
               },
             },
           },
+          'x-internal': parsedSchema?.['x-internal'],
         };
       }, {});
   }
@@ -369,7 +372,7 @@ export default class FormBuilderStore {
       .concat(this.internalFields)
       .filter(({ fieldName }) => !INTERNAL_FIELD_NAMES.includes(fieldName))
       .sort((a, b) => (a['x-index'] || 0) - (b['x-index'] || 0))
-      .map((field) => {
+      .map((field): IteratISchema => {
         const { fieldName, componentName, configValue } = field;
         const { toSchema } = registry.elements[componentName.toLowerCase()] || {};
         if (!toSchema) {
@@ -396,8 +399,8 @@ export default class FormBuilderStore {
           display: parsedSchema.display,
           id: fieldName,
           type: 'object',
-          isLayoutComponent: parsedSchema?.isLayoutComponent,
           componentName: parsedSchema['x-component'],
+          'x-internal': parsedSchema['x-internal'],
           properties: {
             FIELDs: {
               type: 'object',
@@ -515,7 +518,7 @@ export default class FormBuilderStore {
     this.fields = this.fields.map((field) => {
       const currentIndex = field['x-index'] as number;
 
-      const shouldIncreaseKey = field.parentField == layoutcomponentKey && (currentIndex >= position);
+      const shouldIncreaseKey = field.parentField === layoutcomponentKey && (currentIndex >= position);
 
       return Object.assign({}, field, {
         'x-index': shouldIncreaseKey ? currentIndex + 1 : currentIndex,
@@ -637,13 +640,17 @@ export default class FormBuilderStore {
   appendComponent(fieldName: string, position: number): void {
     this.hasEdit = true;
 
-    const field = registry.elements[fieldName.toLocaleLowerCase()];
+    const fieldSourceElement = registry.elements[fieldName.toLocaleLowerCase()];
+    const fieldSchema = fieldSourceElement.toSchema(fieldSourceElement.defaultConfig);
 
     const fieldNames = generateRandomFormFieldID();
 
-    const newField = {
-      ...field,
-      configValue: { ...field.defaultConfig, appID: this.appID, id: fieldNames },
+    const newField: FormItem = {
+      ...fieldSchema,
+      componentName: fieldSourceElement.componentName,
+      configValue: {
+        ...fieldSourceElement.defaultConfig, appID: this.appID, id: fieldNames,
+      },
       fieldName: fieldNames,
       'x-index': position,
     };
@@ -663,7 +670,8 @@ export default class FormBuilderStore {
       return Object.assign({}, field, {
         'x-index': shouldIncreaseKey ? currentIndex + 1 : currentIndex,
       });
-    }).concat(newField);
+    });
+    this.fields.push(newField);
 
     this.setActiveFieldKey(newField.fieldName);
   }
