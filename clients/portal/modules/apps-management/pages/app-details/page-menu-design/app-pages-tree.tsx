@@ -20,7 +20,7 @@ import { movePage } from '../api';
 
 const PADDING_PER_LEVEL = 16;
 
-function getFirstPageItem(menus: ItemId[], source: Record<string, TreeItem>): TreeItem | undefined {
+export function getFirstPageItem(menus: ItemId[], source: Record<string, TreeItem>): TreeItem | undefined {
   for (const menuKey of menus) {
     const menu = source[menuKey];
     if (menu.data.menuType === 0) {
@@ -34,6 +34,43 @@ function getFirstPageItem(menus: ItemId[], source: Record<string, TreeItem>): Tr
       }
     }
   }
+}
+
+export function getNextTreeItem(
+  treeItem: TreeItem, source: Record<string, TreeItem>,
+): TreeItem | undefined {
+  const rootItemKeys = source.ROOT.children;
+
+  if (rootItemKeys.includes(treeItem.id)) {
+    if (!treeItem.hasChildren) {
+      return getNextItem(treeItem, rootItemKeys, source);
+    }
+
+    return;
+  }
+
+  const fatherChildKeys = source[treeItem.data.groupID].children;
+  return getNextItem(treeItem, fatherChildKeys, source);
+}
+
+function getNextItem(
+  treeItem: TreeItem, itemKeys: ItemId[], source: Record<string, TreeItem>,
+): TreeItem | undefined {
+  const deleteItemIndex = itemKeys.indexOf(treeItem.id as string);
+  const lastItemIndex = itemKeys.length - 1;
+  let nextRootItem: TreeItem | undefined;
+
+  if (deleteItemIndex === lastItemIndex) {
+    nextRootItem = getFirstPageItem(itemKeys, source);
+    if (nextRootItem && treeItem.data.groupID) {
+      const fatherItem = source[treeItem.data.groupID];
+      return getNextItem(fatherItem, source.ROOT.children, source);
+    }
+    return nextRootItem;
+  }
+
+  nextRootItem = getFirstPageItem(itemKeys.slice(deleteItemIndex + 1), source);
+  return nextRootItem;
 }
 
 const getIcon = (item: TreeItem) => {
@@ -163,6 +200,21 @@ export default class PureTree extends Component<Props> {
       this.props.onSelectPage(tree.items[this.props.selectedPage?.id]);
       if (this.props.selectedPage.groupID) {
         this.props.onChange(mutateTree(tree, this.props.selectedPage.groupID, { isExpanded: true }));
+      }
+    }
+  }
+
+  componentDidUpdate(prevProps: any): void {
+    const { selectedPage, tree } = this.props;
+
+    if (prevProps.selectedPage !== selectedPage) {
+      if (selectedPage?.id) {
+        if (selectedPage?.groupID) {
+          this.props.onChange(
+            mutateTree(tree, selectedPage.groupID as string, { isExpanded: true }),
+          );
+        }
+        this.props.onSelectPage(tree.items[selectedPage.id]);
       }
     }
   }

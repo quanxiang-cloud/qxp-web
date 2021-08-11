@@ -36,7 +36,7 @@ function PageList(): JSX.Element {
   }, [pageID]);
 
   const handleSelectPage = (treeItem: TreeItem) => {
-    if (treeItem.data) {
+    if (treeItem?.data) {
       history.push(`/apps/details/${appID}/page_setting?pageID=${treeItem.data.id}`);
       setCurEditNode(treeItem);
     }
