@@ -4,6 +4,7 @@ import { ReactSortable, Sortable } from 'react-sortablejs';
 import { noop } from 'lodash';
 import cs from 'classnames';
 import { observer } from 'mobx-react';
+import { useCss } from 'react-use';
 
 import { StoreContext } from './context';
 import registry from './registry';
@@ -22,6 +23,11 @@ function FormFields(): JSX.Element {
   const store = useContext(StoreContext);
   const [fields, setFields] = React.useState<IteratISchema[]>([]);
   const [hiddenFields, setHiddenFields] = React.useState<IteratISchema[]>([]);
+  const fieldItemClassName = useCss({
+    '.ant-col-4+.ant-form-item-control': {
+      maxWidth: '83%',
+    },
+  });
 
   const handleAddField = (e: Sortable.SortableEvent): void => {
     let fieldName: string;
@@ -88,20 +94,20 @@ function FormFields(): JSX.Element {
       >
         {fields.map((schema: IteratISchema) => {
           const { isLayoutComponent } = schema['x-internal'] || {};
-
-          const componentName = schema.properties?.FIELDs?.properties?.[schema.id]?.['x-component'];
+          const { componentName } = schema;
+          const isSubTableComponent = schema.componentName === 'subtable';
 
           if (componentName === undefined) return null;
 
-          const Component = registry.layoutComponents[componentName.toLocaleLowerCase()];
+          const Component = registry.layoutComponents[componentName];
 
           return (
             <div
               onClick={() => store.setActiveFieldKey(schema.id)}
               key={schema.id}
               data-layout={isLayoutComponent ? 'layout' : 'simple'}
-              className={cs('field-item', {
-                'field-mask': !isLayoutComponent,
+              className={cs('field-item', fieldItemClassName, {
+                'field-mask': !isLayoutComponent && !isSubTableComponent,
                 'field-item-active': store.activeFieldName === schema.id,
               })}
             >

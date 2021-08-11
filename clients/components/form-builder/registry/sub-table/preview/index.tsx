@@ -3,7 +3,8 @@ import { ISchemaFieldComponentProps, IMutators } from '@formily/react-schema-ren
 import { usePrevious } from 'react-use';
 import { Input, Radio, DatePicker, NumberPicker, Select, Checkbox } from '@formily/antd-components';
 import { Table } from 'antd';
-import { isObject } from 'lodash';
+import cs from 'classnames';
+import { isObject, isUndefined } from 'lodash';
 import {
   InternalFieldList as FieldList, ValidatePatternRules, Schema,
 } from '@formily/antd';
@@ -29,6 +30,7 @@ export type Column = {
   dataIndex: string;
   component?: JSXElementConstructor<any>;
   readonly?: boolean;
+  editable?: boolean;
   props: Record<string, unknown>;
   dataSource?: any[];
   required?: boolean;
@@ -57,6 +59,7 @@ const components = {
 };
 
 interface Props extends ISchemaFieldComponentProps {
+  readonly?: boolean;
   props: {
     [key: string]: any;
     ['x-component-props']: {
@@ -79,6 +82,7 @@ function SubTable({
   value,
   name,
   readonly,
+  editable,
   mutators,
 }: Partial<Props>): JSX.Element | null {
   const [{ componentColumns, rowPlaceHolder }, setSubTableState] = useState<SubTableState>({
@@ -90,6 +94,8 @@ function SubTable({
   const previousColumns = usePrevious(columns);
   const isFromForeign = subordination === 'foreign_table';
   const initialValue = value?.length ? value : [rowPlaceHolder];
+  const isPortal = window.SIDE === 'portal';
+  const portalReadOnlyClassName = cs({ 'pointer-events-none': isPortal });
 
   useEffect(() => {
     const rowPlaceHolder = {};
@@ -128,6 +134,9 @@ function SubTable({
       logger.error('component %s is missing in subTable', componentName);
       return null;
     }
+    const isEditable = !!(isUndefined(editable) ? sc?.editable : editable);
+    const isReadOnly = !!(isUndefined(readonly) ? sc?.readOnly : readonly);
+    Object.assign(componentProps, { readOnly: isReadOnly, disabled: !isEditable });
     return {
       title: sc.title as string,
       dataIndex,
@@ -140,8 +149,9 @@ function SubTable({
       },
       schema: sc,
       dataSource,
-      readonly: sc?.readOnly,
-      required: sc?.required as boolean,
+      editable: isEditable,
+      readonly: isReadOnly,
+      required: !!sc?.required,
       rules: sc?.['x-rules'] || [],
       render: (value: any) => {
         if (isEmpty(value)) {
@@ -177,24 +187,29 @@ function SubTable({
       {({ state, mutators, form }) => {
         return (
           <div className="w-full flex flex-col border border-gray-300">
-            {state.value.map((item: Record<string, FormDataValue>, index: number) => {
-              return (
-                <SubTableRow
-                  name={name}
-                  componentColumns={componentColumns}
-                  key={index}
-                  index={index}
-                  item={item}
-                  form={form}
-                  mutators={mutators}
-                />
-              );
-            })}
+            <div className="overflow-scroll">
+              {state.value.map((item: Record<string, FormDataValue>, index: number) => {
+                return (
+                  <SubTableRow
+                    name={name}
+                    componentColumns={componentColumns}
+                    key={index}
+                    index={index}
+                    item={item}
+                    form={form}
+                    mutators={mutators}
+                    portalReadOnlyClassName={portalReadOnlyClassName}
+                  />
+                );
+              })}
+            </div>
             <div className="border-t-1 border-gray-300 flex items-center">
               <Icon
                 name="add"
                 size={24}
-                className="m-5 font-bold cursor-pointer"
+                className={
+                  cs('m-5 font-bold cursor-pointer', { [portalReadOnlyClassName]: state.value.length })
+                }
                 onClick={() => onAddRow(mutators)}
               />
             </div>

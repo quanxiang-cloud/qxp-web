@@ -14,12 +14,19 @@ interface Props {
   item: Record<string, FormDataValue>;
   form: IForm;
   mutators: IMutators;
+  portalReadOnlyClassName: string;
   name?: string;
 }
 
 export default function SubTableRow({
-  index, item, componentColumns, name, form, mutators,
+  index, item, componentColumns, name, form, mutators, portalReadOnlyClassName,
 }: Props): JSX.Element {
+  const formItemClassName = useCss({
+    '.ant-form-item': {
+      marginBottom: 0,
+    },
+  });
+
   function onRemoveRow(mutators: IMutators, index: number): void {
     mutators.remove(index);
   }
@@ -31,7 +38,7 @@ export default function SubTableRow({
   }
 
   return (
-    <div className="overflow-scroll">
+    <div>
       {index === 0 && (
         <div className="flex items-start justify-between whitespace-nowrap">
           <div
@@ -64,21 +71,17 @@ export default function SubTableRow({
           }}
         >
           {componentColumns.map(({
-            dataIndex, component, props, dataSource, required, rules, readonly, schema,
+            dataIndex, component, props, dataSource, required, rules, readonly, schema, editable,
           }, idx) => {
             const path = `${name}.${index}.${dataIndex}`;
             return (
               <div
                 key={dataIndex}
                 style={{ minHeight: 32 }}
-                className={cs({
+                className={cs(formItemClassName, portalReadOnlyClassName, {
                   'border-r-1 border-gray-300': idx < componentColumns.length,
                   'px-56': readonly,
-                }, useCss({
-                  '.ant-form-item': {
-                    marginBottom: 0,
-                  },
-                }))}
+                })}
               >
                 {component && !readonly && (
                   <FormItem
@@ -93,6 +96,7 @@ export default function SubTableRow({
                     dataSource={dataSource}
                     required={required}
                     value={item?.[dataIndex]}
+                    editable={editable}
                   />
                 )}
                 {readonly && (
@@ -106,7 +110,7 @@ export default function SubTableRow({
           className="px-22 border-gray-300 border-t-1 self-stretch flex items-center"
         >
           <Icon
-            className="cursor-pointer"
+            className={cs('cursor-pointer', portalReadOnlyClassName)}
             name="delete"
             size={29}
             onClick={() => onRemoveRow(mutators, index)}
