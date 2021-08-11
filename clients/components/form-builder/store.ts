@@ -346,7 +346,7 @@ export default class FormBuilderStore {
           display: parsedSchema.display,
           id: fieldName,
           type: 'object',
-          componentName: parsedSchema['x-component'],
+          componentName: parsedSchema['x-component']?.toLowerCase(),
           properties: {
             FIELDs: {
               type: 'object',
