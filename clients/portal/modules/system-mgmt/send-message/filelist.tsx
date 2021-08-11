@@ -1,12 +1,15 @@
 import React from 'react';
-import styles from './index.module.scss';
-import Icon from '@c/icon';
 import { Progress, Message } from '@QCFE/lego-ui';
-import cs from 'classnames';
-import { saveAs } from 'file-saver';
-import jsZip from 'jszip';
 
-interface FileInfo {
+import Icon from '@c/icon';
+import cs from 'classnames';
+import jsZip from 'jszip';
+import { saveAs } from 'file-saver';
+
+import styles from './index.module.scss';
+
+export type FileInfo = {
+  file_uid?: string;
   file_url: string;
   file_name: string;
   percent?: number;
@@ -15,7 +18,7 @@ interface FileInfo {
 }
 
 export interface FileListProps {
-  deleteFiles?: (name: string) => void;
+  deleteFiles?: (file: FileInfo) => void;
   files: Array<FileInfo>;
   candownload?: boolean;
   hideProgress?: boolean;
@@ -104,7 +107,7 @@ const Filelist = ({
               />
             )}
             {deleteFiles && (
-              <Icon onClick={(): void => deleteFiles(itm.file_name)} name="delete" clickable/>
+              <Icon onClick={(): void => deleteFiles(itm)} name="delete" clickable/>
             )}
           </div>
         ))}

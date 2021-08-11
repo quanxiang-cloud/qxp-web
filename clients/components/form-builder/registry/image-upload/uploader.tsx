@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
-import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
+import React, { useState, useRef } from 'react';
+import { useUpdateEffect } from 'react-use';
 import { Upload } from '@QCFE/lego-ui';
 
 import toast from '@lib/toast';
-
 import FileList from '@portal/modules/system-mgmt/send-message/filelist';
+import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
+import type { FileInfo as FileListItemInfo } from '@portal/modules/system-mgmt/send-message/filelist';
 
 import './index.scss';
 
@@ -13,7 +14,8 @@ interface Props {
   fileList: FileInfo[];
 }
 
-interface FileInfo {
+type FileInfo = {
+  uid: string;
   url: string;
   filename: string;
   status?: 'success' | 'active' | 'exception';
@@ -32,36 +34,45 @@ const acceptMimeTypes = [
 ];
 
 function Uploader(props: Props & ISchemaFieldComponentProps): JSX.Element {
+  const uploaderRef = useRef<Upload>(null);
   const { multiple } = props.props['x-component-props'];
-  const initialValue = (props.value || []).map(({ label, value }: { label: string, value: string }) => ({
+  const initialValue = props.value?.map(({ label, value }: LabelValue) => ({
     filename: label,
     url: value,
   }));
   const [files, setFiles] = useState<FileInfo[]>(initialValue);
 
-  const handleChangeFiles = (files: FileInfo[]) => {
-    const curFiles = files.map(({ url, filename }) => ({ label: filename, value: url }));
+  useUpdateEffect(() => {
+    handleFilesChange(files);
+  }, [files]);
+
+  const handleFilesChange = (files: FileInfo[]): void => {
+    const curFiles = files.filter((file) => file.url)
+      .map(({ url, filename }) => ({ label: filename, value: url }));
     props.mutators.change(curFiles);
   };
 
-  const addFile = (file: FileInfo) => setFiles((currentFiles) => ([...currentFiles, file]));
-  const updateFile = (name: string, data: Partial<FileInfo>) => {
+  const addFile = (file: FileInfo): void => setFiles((currentFiles) => ([...currentFiles, file]));
+  const updateFile = (name: string, data: Partial<FileInfo>): void => {
     setFiles((currentFiles) => {
       const curFile = currentFiles.find((f) => f.filename === name);
       Object.assign(curFile, data);
       return [...currentFiles];
     });
   };
-  const deleteFile = (name: string) => {
+  const deleteFile = (currentFile: FileListItemInfo): void=> {
+    uploaderRef?.current?.abort(currentFile.file_uid);
     setFiles((prevFiles) => {
-      const curFiles = prevFiles.filter((file) => file.filename !== name);
-      setTimeout(() => handleChangeFiles(curFiles));
-      return curFiles;
+      if (currentFile.file_uid) {
+        return prevFiles.filter((file) => file.uid !== currentFile.file_uid);
+      }
+      return prevFiles.filter((file) => file.filename !== currentFile.file_name);
     });
   };
 
   // @ts-ignore
-  const handleSuccess = (res) => {
+  const handleSuccess = (res, file) => {
+    const { uid } = file;
     if (res.code == 200) {
       updateFile(res.data.filename, {
         filename: res.data.filename,
@@ -70,7 +81,7 @@ function Uploader(props: Props & ISchemaFieldComponentProps): JSX.Element {
         status: 'success',
         showProgress: false,
       });
-      handleChangeFiles([...files, { filename: res.data.filename, url: res.data.url }]);
+      handleFilesChange([...files, { uid, filename: res.data.filename, url: res.data.url }]);
     } else {
       toast.error('上传失败');
     }
@@ -79,6 +90,7 @@ function Uploader(props: Props & ISchemaFieldComponentProps): JSX.Element {
   return (
     <div className="file-upload">
       <Upload
+        ref={uploaderRef}
         headers={{ 'X-Proxy': 'API' }}
         multiple={Boolean(multiple)}
         action="/api/v1/fileserver/uploadFile"
@@ -96,13 +108,14 @@ function Uploader(props: Props & ISchemaFieldComponentProps): JSX.Element {
             return false;
           }
           if (files.find((f) => f.filename === file.name)) {
-            toast.error('文件已存在，请勿重复上传');
+            toast.error(`文件 '${file.name}' 已存在，请勿重复上传`);
             return false;
           }
           return true;
         }}
         onStart={(file) => {
           addFile({
+            uid: file.uid,
             filename: file.name,
             url: '',
             percentage: 0,
@@ -129,9 +142,10 @@ function Uploader(props: Props & ISchemaFieldComponentProps): JSX.Element {
       <div className="uploaded-files">
         <FileList
           files={files.map((itm) => ({
+            file_uid: itm.uid,
             file_url: itm.url,
             file_name: itm.filename,
-            percent: itm.percentage || 100,
+            percent: itm.percentage || 0,
             showProgress: itm.showProgress,
             status: itm.status || 'success',
           }))}
