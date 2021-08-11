@@ -45,6 +45,9 @@ export function toSchema(value: typeof defaultConfig): ISchema {
       format: value.valueFormat,
       isNow: value.defaultValueFrom === 'now',
       showTime: timeFormat !== undefined ? { format: timeFormat } : false,
+      style: {
+        width: '100%',
+      },
     },
     ['x-internal']: {
       sortable: value.sortable,

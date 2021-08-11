@@ -50,6 +50,10 @@ export function toSchema(value: NumberPickerConfig): ISchema {
       placeholder: value.placeholder,
       precision: point,
       step: 1 / Math.pow(10, point),
+      defaultValue: value.defaultValue,
+      style: {
+        width: '100%',
+      },
     },
     ['x-internal']: {
       sortable: value.sortable,
@@ -84,6 +88,7 @@ export function toConfig(schema: ISchema): NumberPickerConfig {
     minimum: schema['minimum'],
     maximum: schema['maximum'],
     calculationFormula: schema['x-internal']?.calculationFormula || '',
+    defaultValue: schema['x-component-props']?.defaultValue,
   };
 }
 

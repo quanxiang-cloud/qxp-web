@@ -1,18 +1,13 @@
 import React from 'react';
 
+import Avatar from '@c/avatar';
+
 interface Props {
   name?: string;
   link?: string;
 }
 
-const bgColors: string[] = ['#6366F1', '#10B981', '#F59E0B', '#EF4444'];
-
-const getBgColorByName = (name: string) => {
-  const idx = name.charCodeAt(0) % 3;
-  return bgColors[idx];
-};
-
-function Avatar({ name, link }: Props) {
+function AvatarComp({ name, link }: Props): JSX.Element {
   if (link) {
     return (
       <div className="inline-flex justify-center items-center rounded-4 rounded-tr-none w-24 h-24">
@@ -21,15 +16,11 @@ function Avatar({ name, link }: Props) {
     );
   }
 
-  const firstLetter = (name || '').substring(0, 1);
   return (
-    <div
-      className="inline-flex justify-center items-center rounded-4 rounded-tr-none w-24 h-24 text-white text-lg"
-      style={{ backgroundColor: getBgColorByName(firstLetter) }}
-    >
-      {firstLetter}
-    </div>
+    <Avatar
+      username={name}
+    />
   );
 }
 
-export default Avatar;
+export default AvatarComp;

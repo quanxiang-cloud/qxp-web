@@ -143,7 +143,7 @@ function CreateDataForm({ appID, pageID, rowID, onCancel, title }: Props): JSX.E
     const defaultValue = toJS(defaultValues);
     const formData = removeEmptySubTableOrAssociatedRecords(data, schemaMap);
     const diffResult = difference(defaultValue || {}, formData);
-    if (isEmpty(diffResult)) {
+    if (isEmpty(diffResult) && defaultValue) {
       toast.error('数据未更改, 此次未保存');
       return;
     }

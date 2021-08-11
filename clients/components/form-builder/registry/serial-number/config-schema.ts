@@ -26,14 +26,12 @@ const schema: ISchema = {
         description: {
           type: 'string',
           title: '描述内容',
-          default: '请输入',
-          required: true,
+          default: '',
           maxLength: 50,
-          'x-rules': {
-            required: true,
-            message: '请输入描述内容',
-          },
           'x-component': 'Input',
+          'x-component-props': {
+            placeholder: '请输入',
+          },
           'x-mega-props': {
             labelAlign: 'top',
           },
@@ -53,12 +51,7 @@ const schema: ISchema = {
         prefix: {
           type: 'string',
           title: '前缀',
-          default: 'ER',
-          maxLength: 50,
-          'x-component': 'PrefixSuffix',
-          'x-component-props': {
-            type: 'prefix',
-          },
+          'x-component': 'Prefix',
           'x-mega-props': {
             labelAlign: 'top',
           },
@@ -70,11 +63,12 @@ const schema: ISchema = {
           default: 5,
           required: true,
           maxLength: 50,
-          'x-rules': {
-            required: true,
-            message: '请输入编号初始位数',
+          'x-component': 'NumberPicker',
+          'x-component-props': {
+            min: 2,
+            max: 9999999,
+            precision: 0,
           },
-          'x-component': 'Input',
           'x-mega-props': {
             labelAlign: 'top',
           },
@@ -86,11 +80,12 @@ const schema: ISchema = {
           default: 1,
           required: true,
           maxLength: 50,
-          'x-rules': {
-            required: true,
-            message: '请输入编号起始值',
+          'x-component': 'NumberPicker',
+          'x-component-props': {
+            min: 1,
+            max: 9999999,
+            precision: 0,
           },
-          'x-component': 'Input',
           'x-mega-props': {
             labelAlign: 'top',
           },
@@ -99,10 +94,32 @@ const schema: ISchema = {
         suffix: {
           type: 'string',
           title: '后缀',
-          maxLength: 50,
-          'x-component': 'PrefixSuffix',
+          default: 'yyyyMMdd',
+          enum: [
+            {
+              label: '年',
+              value: 'yyyy',
+            },
+            {
+              label: '年月',
+              value: 'yyyyMM',
+            },
+            {
+              label: '年月日',
+              value: 'yyyyMMdd',
+            },
+            {
+              label: '年月日时分',
+              value: 'yyyyMMddHHmm',
+            },
+            {
+              label: '年月日时分秒',
+              value: 'yyyyMMddHHmmss',
+            },
+          ],
+          'x-component': 'select',
           'x-component-props': {
-            type: 'suffix',
+            placeholder: 'select',
           },
           'x-mega-props': {
             labelAlign: 'top',

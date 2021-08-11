@@ -15,9 +15,9 @@ import MoreMenu from '@c/more-menu';
 import Icon from '@c/icon';
 import Button from '@c/button';
 import SaveButtonGroup from '@flowEditor/components/_common/action-save-button-group';
+import FlowContext from '@flow/flow-context';
 
 import FlowSourceTableContext from './flow-source-table';
-import FlowContext from '../../../flow-context';
 import { ProcessVariableAssignmentData } from '../type';
 import { getFlowVariables } from './api';
 import styled from 'styled-components';
@@ -69,13 +69,13 @@ function useLeftOptions(used: string[], variables: ProcessVariable[]): Option[] 
 
 function useTableFieldOptions(): Array<Option & { type: string; }> {
   const { tableSchema } = useContext(FlowSourceTableContext);
-  const tableFields = Object.entries(tableSchema.properties || {}).filter(([, fieldSchema]) => {
-    return ASSIGNABLE_COMPONENTS.includes(fieldSchema['x-component'] as string);
-  }).map(([key, fieldSchema]) => {
+  const tableFields = tableSchema.filter((schema) => {
+    return ASSIGNABLE_COMPONENTS.includes(schema.componentName);
+  }).map((schema) => {
     return {
-      label: fieldSchema.title as string,
-      value: key,
-      type: fieldSchema.type || '',
+      label: schema.title as string,
+      value: schema.id,
+      type: schema.type || '',
     };
   });
 
@@ -159,6 +159,13 @@ function RulesList(props: any): JSX.Element {
 
 RulesList.isFieldComponent = true;
 
+const fieldTypeToVariableMap: Record<string, string> = {
+  datetime: 'DATE',
+  string: 'TEXT',
+  number: 'NUMBER',
+  boolean: 'BOOLEAN',
+};
+
 export default function AssignmentConfig({ defaultValue, onSubmit, onCancel, onChange }: Props): JSX.Element {
   const tableFields = useTableFieldOptions();
   const { flowID } = useContext(FlowContext);
@@ -171,17 +178,21 @@ export default function AssignmentConfig({ defaultValue, onSubmit, onCancel, onC
     onFieldValueChange$('assignmentRules.*.valueFrom').subscribe((state) => {
       const valueOfPath = FormPath.transform(state.name, /\d/, ($1) => `assignmentRules.${$1}.valueOf`);
       const variableNamePath = FormPath.transform(state.name, /\d/, ($1) => `assignmentRules.${$1}.variableName`);
+      const variableCode: string = getFieldValue(variableNamePath);
+      const variableType = variables?.find(({ code }) => code === variableCode)?.fieldType || 'TEXT';
       if (state.value === 'currentFormValue') {
         setFieldState(valueOfPath, (state) => {
+          state.value = undefined;
           state.props['x-component'] = 'AntdSelect';
-          state.props.enum = tableFields;
+          state.props.enum = tableFields.filter((field) => {
+            return fieldTypeToVariableMap[field.type] === variableType;
+          });
         });
         return;
       }
 
-      const variableCode: string = getFieldValue(variableNamePath);
-      const variableType = variables?.find(({ code }) => code === variableCode)?.fieldType || 'TEXT';
       setFieldState(valueOfPath, (state) => {
+        state.value = undefined;
         state.props.enum = undefined;
         if (variableType === 'TEXT') {
           state.props['x-component'] = 'Input';

@@ -131,6 +131,11 @@ const schema: ISchema = {
             },
             {
               type: 'value:visible',
+              target: 'defaultValue',
+              condition: '{{ $value === "customized" }}',
+            },
+            {
+              type: 'value:visible',
               target: 'calculationFormula',
               condition: '{{ $value === "formula" }}',
             },
@@ -140,10 +145,16 @@ const schema: ISchema = {
           'x-component': 'DefaultValueLinkageConfigBtn',
           'x-index': 9,
         },
+        defaultValue: {
+          type: 'string',
+          title: '默认值',
+          'x-component': 'NumberPicker',
+          'x-index': 10,
+        },
         min: {
           type: 'object',
           'x-component': 'mega-layout',
-          'x-index': 10,
+          'x-index': 11,
           'x-component-props': {
             grid: true,
             columns: 2,
@@ -165,7 +176,7 @@ const schema: ISchema = {
         max: {
           type: 'object',
           'x-component': 'mega-layout',
-          'x-index': 11,
+          'x-index': 12,
           'x-component-props': {
             grid: true,
             columns: 2,
@@ -186,7 +197,7 @@ const schema: ISchema = {
         },
         calculationFormula: {
           'x-component': 'CalculationFormulaBtn',
-          'x-index': 12,
+          'x-index': 13,
         },
       },
     },
