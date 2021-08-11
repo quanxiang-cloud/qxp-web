@@ -43,6 +43,12 @@ type ClientConfig struct {
 	DocsHostname      string `yaml:"docs_hostname" default:"docs.qxp.com" split_words:"true" json:"docs_hostname"`
 }
 
+type MinIOHttpConfig struct {
+	Protocol  string `yaml:"protocol" default:"http"`
+	HostName  string `yaml:"hostname"`
+	UrlPrefix string `yaml:"url_prefix" default:"/blob"`
+}
+
 // Configuration is the type of project config file
 type Configuration struct {
 	DevMode           bool `yaml:"dev_mode" split_words:"true"`
@@ -56,6 +62,8 @@ type Configuration struct {
 	HomeServer   *ServerConfig `yaml:"home_server" vaildate:"required" split_words:"true"`
 
 	ClientConfig *ClientConfig `yaml:"client_config" vaildate:"required" split_words:"true"`
+
+	MinIOHttpConfig *MinIOHttpConfig `yaml:"minio_config"`
 }
 
 func initConfig(configFile string) Configuration {
