@@ -19,10 +19,11 @@ type Props = {
   onSubmit: (basic: DataModelBasicInfo) => void;
 }
 
+const actions = createAsyncFormActions();
+
 function EditorDataModel({ isEditor = false, onCancel, onSubmit }: Props): JSX.Element {
   const [curStep, setStep] = useState(0);
   const [basicInfo, setBasicInfo] = useState<DataModelBasicInfo>(store.basicInfo);
-  const actions = createAsyncFormActions();
   const form = useForm({
     onSubmit: setBasicInfo,
     actions,
@@ -102,7 +103,7 @@ function EditorDataModel({ isEditor = false, onCancel, onSubmit }: Props): JSX.E
           <Button
             {...restProps}
             key={key}
-            className={`${className}`}
+            className={className}
             onClick={(e) => onClick(key, e)}
           >
             {text}
