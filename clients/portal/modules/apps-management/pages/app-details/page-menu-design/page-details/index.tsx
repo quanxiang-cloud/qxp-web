@@ -8,6 +8,7 @@ import Card from '@c/card';
 import PageLoading from '@c/page-loading';
 import PageBuildNav from './page-build-nav';
 import appPagesStore from '../../store';
+
 import './index.scss';
 
 const pageInfoList: Array<LabelValue> = [

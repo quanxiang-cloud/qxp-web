@@ -1,5 +1,7 @@
 import httpClient from '@lib/http-client';
 
+import { MovePageParams, CustomPageParams } from './type';
+
 export const fetchAppDetails = async (id: string)=> {
   return await httpClient('/api/v1/app-center/one', { id });
 };
@@ -48,20 +50,26 @@ export const delAppAdminUsers = async (data: any)=> {
   return await httpClient('/api/v1/app-center/delAdmin', data);
 };
 
-export type MovePageParams = {
-  id: string;
-  appID: string;
-  fromSort: number;
-  Name: string;
-  toSort: number;
-  fromGroupID: string;
-  toGroupID: string;
-}
-
 export const movePage = async (data: MovePageParams)=> {
   return await httpClient(`/api/v1/structor/${data.appID}/m/menu/transfer`, data);
 };
 
 export const fetchGroupList = async (appID: string)=> {
   return await httpClient(`/api/v1/structor/${appID}/m/group/list`, { appID });
+};
+
+export const fetchCustomPageList = async (appID: string, params: CustomPageParams)=> {
+  return await httpClient(`/api/v1/structor/${appID}/m/page/condition`, params);
+};
+
+export const createCustomPage = async (appID: string, params: CustomPageParams)=> {
+  return await httpClient(`/api/v1/structor/${appID}/m/page/create`, params);
+};
+
+export const removeCustomPage = async (appID: string, pageId: string)=> {
+  return await httpClient(`/api/v1/structor/${appID}/m/page/delete`, { id: pageId });
+};
+
+export const editeCustomPage = async (appID: string, params: CustomPageParams)=> {
+  return await httpClient(`/api/v1/structor/${appID}/m/page/update`, params);
 };
