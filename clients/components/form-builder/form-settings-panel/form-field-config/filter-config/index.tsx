@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 
 import Modal from '@c/modal';
 import Button from '@c/button';
+import PageLoading from '@c/page-loading';
 import DataFilter, { RefProps } from '@c/data-filter';
 import { FILTER_FIELD } from '@c/data-filter/utils';
 import { getTableSchema } from '@c/form-builder/utils/api';
@@ -25,9 +26,12 @@ function getFields(schema: ISchema): SchemaFieldItem[] {
 
 function FilterConfig({ tableID, appID, onChange, value, currentFormSchema }: Props): JSX.Element {
   const [visible, setVisible] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [schemaFields, setSchemaFields] = useState<SchemaFieldItem[]>([]);
   const [currentFields, setCurrentFields] = useState<SchemaFieldItem[]>([]);
   const dataFilterRef = useRef<RefProps>(null);
+
+  const allowSelect = !!tableID && !!appID;
 
   const handleSave = (): void => {
     onChange(dataFilterRef.current?.getDataValues() as FilterConfig);
@@ -41,37 +45,51 @@ function FilterConfig({ tableID, appID, onChange, value, currentFormSchema }: Pr
   }, [currentFormSchema]);
 
   useEffect(() => {
-    if (appID && tableID && visible) {
+    if (allowSelect && visible) {
+      setLoading(true);
       getTableSchema(appID, tableID).then((res) => {
         setSchemaFields(res?.schema ? getFields(res.schema) : []);
+      }).finally(() => {
+        setLoading(false);
       });
     }
-  }, [appID, tableID, visible]);
+  }, [allowSelect, visible]);
 
   return (
     <>
       <Button onClick={() => setVisible(true)}>数据过滤规则</Button>
       {visible && (
-        <Modal title='设置数据过滤规则' onClose={() => setVisible(false)}>
+        <Modal
+          footerBtns={[
+            {
+              text: '取消',
+              key: 'cancel',
+              iconName: 'close',
+              onClick: () => setVisible(false),
+            },
+            {
+              text: '保存',
+              key: 'confirm',
+              iconName: 'check',
+              modifier: 'primary',
+              forbidden: !allowSelect,
+              onClick: handleSave,
+            },
+          ]}
+          title='设置数据过滤规则'
+          onClose={() => setVisible(false)}
+        >
           <div className='p-20'>
-            {(!appID || !tableID) ? (<div>请选择关联记录表</div>) : (
-              <>
-                <DataFilter
-                  initConditions={value?.condition}
-                  initTag={value?.tag}
-                  associationFields={currentFields}
-                  ref={dataFilterRef}
-                  fields={schemaFields}
-                />
-                <div className='mt-10'>
-                  <Button className='mr-10' onClick={() => setVisible(false)}>
-                    取消
-                  </Button>
-                  <Button modifier='primary' className='mt-10' onClick={handleSave}>
-                    保存
-                  </Button>
-                </div>
-              </>
+            {!allowSelect && (<div>请选择关联记录表</div>)}
+            {loading && allowSelect && (<PageLoading />)}
+            {!loading && allowSelect && (
+              <DataFilter
+                initConditions={value?.condition}
+                initTag={value?.tag}
+                associationFields={currentFields}
+                ref={dataFilterRef}
+                fields={schemaFields}
+              />
             )}
           </div>
         </Modal>
