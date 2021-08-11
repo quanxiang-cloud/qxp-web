@@ -1,8 +1,8 @@
 import React, { useState, useEffect, forwardRef, useImperativeHandle } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { uniqueId } from 'lodash';
+import { Select } from 'antd';
 
-import Select from '@c/select';
 import FieldSwitch from '@c/field-switch';
 import Icon from '@c/icon';
 import formFieldWrap from '@c/form-field-wrap';
@@ -113,6 +113,7 @@ function DataFilter({
       if (condition.id === rowID) {
         return {
           ...condition,
+          valueFrom: 'fixedValue',
           filter: fields.find(({ id }) => id === field),
           associationFieldsOptions: [],
         } as FieldCondition;
@@ -244,7 +245,6 @@ function DataFilter({
                   return (
                     <FormFieldSelect
                       style={{ width: '250px' }}
-                      optionClassName='qxp-data-filter-options'
                       error={errors['field-' + condition.id]}
                       register={{ name: field.name, ref: field.ref, value: field.value }}
                       options={fieldOption}
