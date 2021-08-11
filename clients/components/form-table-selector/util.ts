@@ -17,5 +17,6 @@ export function getCascaderValuePathFromValue(
     return getCascaderValuePathFromValue(value, option.children, [...parentPath, option.value]);
   });
   const matched = valuePaths?.find((valuePath) => last(valuePath) === value);
-  return matched || [value];
+  const optionsResult = matched || [value];
+  return optionsResult.filter((val) => !!val);
 }

@@ -68,7 +68,9 @@ function schemaToFields(
 
     if (componentName === 'subtable') {
       const items = currentSchema.items as ISchema;
-      items.properties = schemaToMap(items, filterFunc);
+      if (items) {
+        items.properties = schemaToMap(items, filterFunc);
+      }
     }
 
     const field = {
