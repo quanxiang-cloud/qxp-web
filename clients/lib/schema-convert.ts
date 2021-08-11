@@ -1,18 +1,10 @@
-import isEmpty from 'lodash/isEmpty';
-import cloneDeep from 'lodash/cloneDeep';
-import groupBy from 'lodash/groupBy';
-import isUndefined from 'lodash/isUndefined';
+import { isEmpty, cloneDeep, groupBy, isUndefined } from 'lodash';
 
 import { Option } from '@flowEditor/forms/api';
-import { not, quickSortObjectArray } from '@lib/utils';
+import { quickSortObjectArray } from '@lib/utils';
+import { numberTransform } from '@c/form-builder/utils';
 
 type FilterFunc = (currentSchema: ISchema) => boolean;
-
-export const isNonLayoutComponent = not(isLayoutComponent);
-
-export function isLayoutComponent(currentSchema: ISchema): boolean {
-  return !!currentSchema?.isLayoutComponent;
-}
 
 export function schemaToOptions(schema?: ISchema, filterFunc?: FilterFunc): Option[] {
   return schemaToFields(schema, filterFunc).map((field: SchemaFieldItem) => ({
@@ -61,10 +53,8 @@ function schemaToFields(
 
     if (!componentName) return;
 
-    const isLayoutComponent = !!currentSchema?.isLayoutComponent;
     const parentField = currentSchema?.['x-internal']?.parentField;
     const tabIndex = currentSchema?.['x-internal']?.tabIndex;
-    const xIndex = currentSchema?.['x-index'];
 
     if (componentName === 'subtable') {
       const items = currentSchema.items as ISchema;
@@ -73,12 +63,11 @@ function schemaToFields(
       }
     }
 
-    const field = {
+    const field: SchemaFieldItem = {
       ...currentSchema,
-      'x-index': isUndefined(xIndex) ? 0 : xIndex,
+      'x-index': numberTransform(currentSchema),
       fieldName: key,
-      componentName: componentName,
-      isLayoutComponent,
+      componentName: componentName || '',
       parentField,
       tabIndex,
       id: key,
@@ -88,8 +77,9 @@ function schemaToFields(
       newProperties.properties = Object.assign(newProperties.properties, currentSchema.properties);
     }
 
-    if (!isNonLayoutComponent(currentSchema)) return;
-    if (filterFunc && !filterFunc(currentSchema)) return;
+    if ((filterFunc && !filterFunc(currentSchema)) || currentSchema?.['x-internal']?.isLayoutComponent) {
+      return;
+    }
 
     fields.push(field);
   });

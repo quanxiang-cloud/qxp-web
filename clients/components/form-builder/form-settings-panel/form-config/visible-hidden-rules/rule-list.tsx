@@ -3,9 +3,9 @@ import React, { useContext } from 'react';
 import Icon from '@c/icon';
 import FormDataValueRenderer from '@c/form-data-value-renderer';
 import { observer } from 'mobx-react';
-import { Schema } from '@formily/react-schema-renderer';
 import { StoreContext } from '@c/form-builder/context';
 import { INTERNAL_FIELD_NAMES } from '@c/form-builder/store';
+import schemaToFields, { schemaToMap } from '@lib/schema-convert';
 
 type KeyLabels = Record<string, { title: string, enum: Array<{ label: any, value: any }> }>;
 type VisibleHiddenLinkagesProps = {
@@ -13,18 +13,18 @@ type VisibleHiddenLinkagesProps = {
 }
 const RuleList = ({ onEdit }: VisibleHiddenLinkagesProps): JSX.Element => {
   const store = useContext(StoreContext);
-  const keyLabels: KeyLabels = Object.entries(store.schema.properties || {})
-    .filter(([key]) => !INTERNAL_FIELD_NAMES.includes(key))
-    .map(([key, value]) => {
+  const keyLabels: KeyLabels = schemaToFields(store.schema)
+    .filter((field) => !INTERNAL_FIELD_NAMES.includes(field.id))
+    .map((field) => {
       return {
-        key,
-        title: (value.title || key) as string,
-        enum: (value.enum || []) as Array<{ label: string, value: string }>,
+        key: field.id,
+        title: (field.title || field.id) as string,
+        enum: (field.enum || []) as Array<LabelValue>,
       };
-    }).reduce((acc, current) => {
+    }).reduce((acc: KeyLabels, current) => {
       acc[current.key] = current;
       return acc;
-    }, {} as KeyLabels);
+    }, {});
 
   if (!store.visibleHiddenLinkages.length) {
     return (
@@ -76,7 +76,7 @@ const RuleList = ({ onEdit }: VisibleHiddenLinkagesProps): JSX.Element => {
                   - {`${keyLabels[sourceKey].title} ${compareOperator} `}
                   <FormDataValueRenderer
                     value={compareValue}
-                    schema={store.schema?.properties?.[sourceKey] as Schema}
+                    schema={schemaToMap(store.schema)?.[sourceKey]}
                   />
                 </div>
               ))}

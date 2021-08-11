@@ -10,12 +10,14 @@ export const defaultConfig: LayoutGridConfig = {
 
 export function toSchema(value: LayoutGridConfig): ISchema {
   return {
-    isLayoutComponent: value.isLayoutComponent,
     type: 'string',
     display: true,
     'x-component': 'LayoutGrid',
     'x-component-props': {
       columns: value.columns,
+    },
+    'x-internal': {
+      isLayoutComponent: value.isLayoutComponent,
     },
   };
 }

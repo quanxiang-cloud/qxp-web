@@ -49,7 +49,7 @@ class FormDesignStore {
   @observable pageTableShowRule: TableConfig = { pageSize: 10 };
   @observable filters: Filters = [];
 
-  @computed get fieldsMap(): Record<string, ISchema> {
+  @computed get fieldsMap(): Record<string, SchemaFieldItem> {
     return schemaToMap(this.formStore?.schema) || {};
   }
 

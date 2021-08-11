@@ -4,9 +4,8 @@ import { usePrevious } from 'react-use';
 import { Input, Radio, DatePicker, NumberPicker, Select, Checkbox } from '@formily/antd-components';
 import { Table } from 'antd';
 import { isObject } from 'lodash';
-import cs from 'classnames';
 import {
-  InternalFieldList as FieldList, FormItem, ValidatePatternRules, IForm, Schema,
+  InternalFieldList as FieldList, ValidatePatternRules, Schema,
 } from '@formily/antd';
 
 import OrganizationPicker from '@c/form-builder/registry/organization-select/organization-select-wrap';
@@ -19,10 +18,13 @@ import Icon from '@c/icon';
 import CascadeSelector from '@c/form-builder/registry/cascade-selector/cascade-selector-wrap';
 import AssociatedData from '@c/form-builder/registry/associated-data/associated-data';
 import { isEmpty } from '@lib/utils';
+import schemaToFields from '@lib/schema-convert';
+import { numberTransform } from '@c/form-builder/utils';
 
 import { getDefaultValue } from './utils';
+import SubTableRow from './row';
 
-type Column = {
+export type Column = {
   title: string;
   dataIndex: string;
   component?: JSXElementConstructor<any>;
@@ -91,23 +93,20 @@ function SubTable({
 
   useEffect(() => {
     const rowPlaceHolder = {};
-    const componentColumns: Column[] = Object.entries(schema?.properties || {}).sort((a, b) => {
-      return (a[1]['x-index'] || 0) - (b[1]['x-index'] || 0);
-    }).reduce(
-      (cur: Column[], next) => {
-        const [key, sc] = next;
-        const isHidden = !sc.display;
-        if ((isFromForeign && !columns?.includes(key)) || key === '_id' || isHidden) {
-          return cur;
-        }
-        const newColumn = buildColumnFromSchema(key, sc);
-        if (newColumn) {
-          Object.assign(rowPlaceHolder, { [key]: getDefaultValue(schema) || '' });
-          cur.push(newColumn);
-        }
-        return cur;
-      }, [],
-    ) as Column[];
+    const componentColumns: Column[] = schemaToFields(schema).sort((a, b) => {
+      return numberTransform(a) - numberTransform(b);
+    }).reduce((acc: Column[], field) => {
+      const isHidden = !field.display;
+      if ((isFromForeign && !columns?.includes(field.id)) || field.id === '_id' || isHidden) {
+        return acc;
+      }
+      const newColumn = buildColumnFromSchema(field.id, field);
+      if (newColumn) {
+        Object.assign(rowPlaceHolder, { [field.id]: getDefaultValue(schema) });
+        acc.push(newColumn);
+      }
+      return acc;
+    }, []);
     setSubTableState({ componentColumns, rowPlaceHolder });
   }, [schema, columns]);
 
@@ -158,16 +157,6 @@ function SubTable({
     mutators.push(rowPlaceHolder);
   }
 
-  function onRemoveRow(mutators: IMutators, index: number): void {
-    mutators.remove(index);
-  }
-
-  function onChange(path: string, form: IForm) {
-    return (value: unknown): void => {
-      form.setFieldValue(path, value);
-    };
-  }
-
   if (!componentColumns.length) {
     return null;
   }
@@ -188,87 +177,17 @@ function SubTable({
       {({ state, mutators, form }) => {
         return (
           <div className="w-full flex flex-col border border-gray-300">
-            {state.value.map((item: any, index: number) => {
+            {state.value.map((item: Record<string, FormDataValue>, index: number) => {
               return (
-                <div key={index} className="overflow-scroll">
-                  {index === 0 && (
-                    <div className="flex items-start justify-between whitespace-nowrap">
-                      <div
-                        className="flex-1 grid"
-                        style={{
-                          gridTemplateColumns: `repeat(${componentColumns.length}, minmax(120px, 1fr))`,
-                        }}
-                      >
-                        {componentColumns.map(({ title, required }, idx) => (
-                          <div key={idx} className={cs('text-center', {
-                            'border-r-1 border-gray-300': idx < componentColumns.length,
-                          })}>
-                            {required ? (
-                              <span className="mr-5" style={{ color: '#a87366' }}>*</span>
-                            ) : ''}
-                            {title}
-                          </div>
-                        ))}
-                      </div>
-                      <div className="px-22 text-center">
-                        操作
-                      </div>
-                    </div>
-                  )}
-                  <div className="flex items-center justify-between">
-                    <div
-                      className="flex-1 grid border-gray-300 border-t-1"
-                      style={{
-                        gridTemplateColumns: `repeat(${componentColumns.length}, minmax(120px, 1fr))`,
-                      }}
-                    >
-                      {componentColumns.map(({
-                        dataIndex, component, props, dataSource, required, rules, readonly, schema,
-                      }, idx) => {
-                        const path = `${name}.${index}.${dataIndex}`;
-                        return (
-                          <div
-                            key={dataIndex}
-                            style={{ minHeight: 32 }}
-                            className={cs({
-                              'border-r-1 border-gray-300': idx < componentColumns.length,
-                              'px-56': readonly,
-                            })}
-                          >
-                            {component && !readonly && (
-                              <FormItem
-                                {...props}
-                                className="mx-8 my-8 w-full"
-                                name={path}
-                                component={component}
-                                form={form}
-                                props={{ ...props, props }}
-                                mutators={{ change: onChange(path, form) }}
-                                rules={rules as any}
-                                dataSource={dataSource}
-                                required={required}
-                                value={item?.[dataIndex]}
-                              />
-                            )}
-                            {readonly && (
-                              <FormDataValueRenderer value={item?.[dataIndex]} schema={schema} />
-                            )}
-                          </div>
-                        );
-                      })}
-                    </div>
-                    <div
-                      className="px-22 border-gray-300 border-t-1 self-stretch flex items-center"
-                    >
-                      <Icon
-                        className="cursor-pointer"
-                        name="delete"
-                        size={29}
-                        onClick={() => onRemoveRow(mutators, index)}
-                      />
-                    </div>
-                  </div>
-                </div>
+                <SubTableRow
+                  name={name}
+                  componentColumns={componentColumns}
+                  key={index}
+                  index={index}
+                  item={item}
+                  form={form}
+                  mutators={mutators}
+                />
               );
             })}
             <div className="border-t-1 border-gray-300 flex items-center">

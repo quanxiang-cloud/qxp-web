@@ -3,10 +3,10 @@ import { observer } from 'mobx-react';
 
 import Button from '@c/button';
 import Icon from '@c/icon';
-import { getCondition } from '@c/data-filter/utils';
 
 import FilterForm from './filter-form';
 import { StoreContext } from './context';
+import { conditionBuilder } from './utils';
 
 function PageDataFilter(): JSX.Element | null {
   const [showMoreFilter, setShowMoreFilter] = useState(false);
@@ -18,16 +18,8 @@ function PageDataFilter(): JSX.Element | null {
       return;
     }
 
-    const condition: Condition[] = [];
     const values = filterDom.current.getValues();
-    Object.keys(values).forEach((key) => {
-      const curFilter = store.fields.find(({ id }) => id === key);
-      if (!values[key] || (Array.isArray(values[key]) && values[key].length === 0) || !curFilter) {
-        return;
-      }
-
-      condition.push(getCondition(curFilter, values[key], key));
-    });
+    const condition = conditionBuilder(store, values);
     store.filterData = values;
     store.setParams({ condition });
   };

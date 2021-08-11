@@ -1,11 +1,19 @@
 import { get } from 'lodash';
 import { customAlphabet } from 'nanoid';
-import { pipe, equals, property } from 'lodash/fp';
+import fp, { pipe, equals, property } from 'lodash/fp';
 
 const nanoid = customAlphabet('1234567890qwertyuioplkjhgfdsazxcvbnmQWERTYUIOPLKJHGFDSAZXCVBNM', 8);
 
 export function generateRandomFormFieldID(): string {
   return `field_${nanoid()}`;
+}
+
+export function numberTransform(schema: ISchema): number {
+  const { pipe, get, toNumber, isFinite } = fp;
+  const _numberTransform = pipe(get('x-index'), toNumber, (value) => {
+    return (isNaN(value) || !isFinite(value)) ? 0 : value;
+  });
+  return _numberTransform(schema);
 }
 
 export function wrapSchemaByMegaLayout(schema: ISchema): ISchema {

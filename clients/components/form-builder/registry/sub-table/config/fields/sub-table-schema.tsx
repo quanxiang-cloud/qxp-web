@@ -37,9 +37,8 @@ function SubTableSchema(props: ISchemaFieldComponentProps): JSX.Element {
   });
 
   const subTableSchemas = props.value?.properties as SchemaProperties;
-  const entries = Object.entries(subTableSchemas || {});
 
-  const schemaList = entries.reduce((cur: Field[], next) => {
+  const schemaList = Object.entries(subTableSchemas || {}).reduce((cur: Field[], next) => {
     const [key, schema] = next;
     if (key === '_id') {
       return cur;

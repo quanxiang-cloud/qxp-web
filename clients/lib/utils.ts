@@ -1,6 +1,6 @@
 import qs from 'qs';
 import { TreeData, TreeItem } from '@atlaskit/tree';
-import _, { get, isObject } from 'lodash';
+import _, { isObject } from 'lodash';
 import { TreeNode } from '@c/headless-tree/types';
 import { nanoid } from 'nanoid';
 import dayjs from 'dayjs';
@@ -238,16 +238,6 @@ export function toggleArray<T>(arr1: T[], value: T, condition = true): T[] {
     return arr1.filter((v) => v !== value);
   }
   return [...arr1, value];
-}
-
-export function jsonValidator<T>(data: T, schema: Record<string, (v: any) => boolean>): boolean {
-  return Object.entries(schema).every(([path, validator]) => {
-    const values = path.split(',').reduce((cur: any[], next) => {
-      cur.push(get(data, next));
-      return cur;
-    }, []);
-    return validator(values.length === 1 ? values[0] : values);
-  });
 }
 
 export function parseJSON<T>(str: string, fallback: T): T {

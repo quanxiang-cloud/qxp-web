@@ -10,6 +10,7 @@ import FilterConfig from '@c/form-builder/form-settings-panel/form-field-config/
 import { StoreContext } from '@c/form-builder/context';
 
 import { getLinkageTables, getTableSchema } from '@c/form-builder/utils/api';
+import schemaToFields from '@lib/schema-convert';
 
 import { AssociatedDataConfig } from './convertor';
 import configSchema from './config-schema';
@@ -37,24 +38,22 @@ const SUPPORT_COMPONENT = [
   'OrganizationPicker',
 ];
 
-function getTableFieldsToOptions(
+async function getTableFieldsToOptions(
   appID: string,
   tableID: string,
   filterArr?: string[],
 ): Promise<LabelValue[]> {
-  return getTableSchema(appID, tableID).then((res) => {
-    if (res?.schema.properties) {
-      return Object.entries(res?.schema.properties).reduce((acc, [key, fieldSchema]) => {
-        if ((filterArr && !filterArr.includes(fieldSchema['x-component'] as string)) || key === '_id') {
-          return acc;
-        }
+  const res = await getTableSchema(appID, tableID);
+  if (res?.schema.properties) {
+    return schemaToFields(res.schema).reduce((acc: LabelValue[], field) => {
+      if (!filterArr?.includes(field.componentName) || field.id === '_id') {
+        return acc;
+      }
 
-        return acc.concat([{ label: fieldSchema.title as string, value: key }]);
-      }, [] as LabelValue[]);
-    }
-
-    return [];
-  });
+      return acc.concat([{ label: field.title as string, value: field.id }]);
+    }, []);
+  }
+  return [];
 }
 
 function AssociatedDataConfig({ initialValue, onChange, subTableSchema }: Props): JSX.Element {

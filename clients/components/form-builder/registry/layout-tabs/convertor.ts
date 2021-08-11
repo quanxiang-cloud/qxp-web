@@ -15,13 +15,15 @@ export const defaultConfig: LayoutTabsConfig = {
 
 export function toSchema(value: LayoutTabsConfig): ISchema {
   return {
-    isLayoutComponent: value.isLayoutComponent,
     display: true,
     'x-component': 'LayoutTabs',
     'x-component-props': {
       tabs: value.tabs,
       currentEdit: value.currentEdit,
       position: value.position,
+    },
+    'x-internal': {
+      isLayoutComponent: value.isLayoutComponent,
     },
   };
 }

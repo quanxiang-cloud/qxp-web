@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import { createAsyncFormActions, SchemaForm, setValidationLanguage } from '@formily/antd';
 import { ReactSortable, Sortable } from 'react-sortablejs';
+import { noop } from 'lodash';
 import cs from 'classnames';
 import { observer } from 'mobx-react';
 
@@ -65,7 +66,7 @@ function FormFields(): JSX.Element {
           group={GroupOptions}
           animation={400}
           list={fields}
-          setList={() => { }}
+          setList={noop}
           onAdd={handleAddField}
           className="empty-form-builder-canvas"
         />
@@ -79,14 +80,14 @@ function FormFields(): JSX.Element {
         group={GroupOptions}
         animation={600}
         list={fields}
-        setList={() => { }}
+        setList={noop}
         onUpdate={handleUpdateField}
         onAdd={handleAddField}
         onStart={() => store.setDragging(true)}
         onEnd={() => store.setDragging(false)}
       >
         {fields.map((schema: IteratISchema) => {
-          const { isLayoutComponent } = schema;
+          const { isLayoutComponent } = schema['x-internal'] || {};
 
           const componentName = schema.properties?.FIELDs?.properties?.[schema.id]?.['x-component'];
 

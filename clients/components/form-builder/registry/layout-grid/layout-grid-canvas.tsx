@@ -2,6 +2,7 @@ import React from 'react';
 import { ReactSortable, Sortable } from 'react-sortablejs';
 import { observer } from 'mobx-react';
 import { SchemaForm } from '@formily/antd';
+import { noop } from 'lodash';
 import cs from 'classnames';
 
 import registry from '../index';
@@ -81,7 +82,7 @@ function LayoutGrid({ schema }: Props): JSX.Element {
       direction="vertical"
       animation={600}
       list={fields}
-      setList={() => { }}
+      setList={noop}
       onAdd={handleAddField}
       onUpdate={handleUpdateField}
       onStart={() => store.setDragging(true)}

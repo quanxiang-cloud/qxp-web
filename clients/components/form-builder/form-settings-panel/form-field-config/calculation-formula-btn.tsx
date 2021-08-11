@@ -2,25 +2,26 @@ import React, { useContext, useState } from 'react';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 
 import Button from '@c/button';
-
 import { StoreContext } from '@c/form-builder/context';
+import { INTERNAL_FIELD_NAMES } from '@c/form-builder/store';
+import schemaToFields from '@lib/schema-convert';
+import { numberTransform } from '@c/form-builder/utils';
 
 import CalculationFormulaModal from './calculation-formula';
-import { INTERNAL_FIELD_NAMES } from '@c/form-builder/store';
 
 function getVariables(schema: ISchema): Array<{ fieldName: string; title: string; }> {
-  return Object.entries(schema.properties || {}).filter(([fieldName, schema]) => {
-    if (INTERNAL_FIELD_NAMES.includes(fieldName)) {
+  return schemaToFields(schema).filter((field) => {
+    if (INTERNAL_FIELD_NAMES.includes(field.id)) {
       return false;
     }
 
     return schema.type === 'number';
-  }).sort((fieldA, fieldB) => {
-    return Number(fieldA[1]['x-index']) - Number(fieldB[1]['x-index']);
-  }).map(([fieldName, { title }]) => ({ fieldName, title: title as string }));
+  }).sort((currentField, nextField) => {
+    return numberTransform(currentField) - numberTransform(nextField);
+  }).map((field) => ({ fieldName: field.id, title: field.title as string }));
 }
 
-function CalculationFormulaBtn(props: ISchemaFieldComponentProps) {
+function CalculationFormulaBtn(props: ISchemaFieldComponentProps): JSX.Element {
   const store = useContext(StoreContext);
   const [showModal, setShowModal] = useState(false);
   const variables = getVariables(store.schema).filter(({ fieldName }) => {

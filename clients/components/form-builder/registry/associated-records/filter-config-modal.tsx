@@ -12,12 +12,13 @@ import {
 
 import Modal from '@c/modal';
 import Button from '@c/button';
-
-import { INTERNAL_FIELD_NAMES } from '../../store';
 import { operatorOption } from '@c/form-builder/form-settings-panel/utils';
+import schemaToFields from '@lib/schema-convert';
 import {
   JoinOperatorSelect, RulesList, FormDataFilterRuleFieldFragments,
 } from '@c/form-builder/customized-fields';
+
+import { INTERNAL_FIELD_NAMES } from '../../store';
 
 type RuleConfig = {
   rules: Array<FormBuilder.FormDataFilterRule>;
@@ -27,7 +28,7 @@ type RuleConfig = {
 type Option = {
   value: string;
   label: string;
-  availableCompareValues: Array<{ value: string; label: string; }>;
+  availableCompareValues: Array<LabelValue>;
   'x-component': string;
 };
 
@@ -49,18 +50,17 @@ const COMPONENTS = {
 const { onFieldInputChange$ } = FormEffectHooks;
 
 function getTableFieldOptions(schema: ISchema): Array<Option> {
-  return Object.entries(schema.properties || {})
-    .filter(([key, fieldSchema]) => {
-      return !INTERNAL_FIELD_NAMES.includes(key) ||
-        !SUPPORT_COMPARED_COMPONENTS.includes(fieldSchema['x-component'] || '');
-    }).map(([key, fieldSchema]) => {
-      return {
-        value: key,
-        label: (fieldSchema.title || key) as string,
-        availableCompareValues: (fieldSchema.enum || []) as Array<{ value: string; label: string; }>,
-        'x-component': fieldSchema['x-component'] || 'AntdSelect',
-      };
-    });
+  return schemaToFields(schema).filter((field) => {
+    return !INTERNAL_FIELD_NAMES.includes(field.id) ||
+        !SUPPORT_COMPARED_COMPONENTS.includes(field.componentName);
+  }).map((field) => {
+    return {
+      value: field.id,
+      label: (field.title || field.id) as string,
+      availableCompareValues: (field.enum || []) as Array<LabelValue>,
+      'x-component': field.componentName || 'AntdSelect',
+    };
+  });
 }
 
 type Props = {

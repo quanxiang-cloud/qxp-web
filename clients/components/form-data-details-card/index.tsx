@@ -6,7 +6,7 @@ import FormDataValueRenderer from '@c/form-data-value-renderer';
 import Loading from '@c/page-loading';
 import { findOneRecord, getTableSchema } from '@lib/http-client';
 import { isEmpty } from '@lib/utils';
-import { schemaToMap } from '@lib/schema-convert';
+import schemaToFields from '@lib/schema-convert';
 
 type FormDataProp = {
   label: string;
@@ -75,7 +75,9 @@ function FormDataDetailsCard({ appID, tableID, rowID, className = '' }: Props): 
       return [[], []];
     }
 
-    Object.entries(schemaToMap(schema) || {}).forEach(([fieldKey, fieldSchema]) => {
+    schemaToFields(schema).forEach((field) => {
+      const fieldKey = field.id;
+      const fieldSchema = field;
       const hasValue = record && !isEmpty(record[fieldKey]);
       if ((fieldSchema as ISchema)['x-internal']?.isSystem) {
         _systems.push({
