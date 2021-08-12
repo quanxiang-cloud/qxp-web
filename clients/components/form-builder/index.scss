@@ -137,6 +137,14 @@
 .form-builder .canvas-wrapper {
   padding: 56px 20px;
   overflow: auto;
+
+  .ant-form-item-label {
+    white-space: pre-wrap;
+    label{
+      height: auto!important;
+      text-align: left;
+    }
+  }
 }
 
 .form-builder .form-builder-canvas {
