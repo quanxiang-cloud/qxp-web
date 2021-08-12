@@ -71,10 +71,7 @@ function FormulaEditor({
   defaultValue = '',
 }: Props, ref: React.Ref<any>): JSX.Element {
   const [contentLength, setLength] = useState(0);
-  const decorator = useMemo(() => {
-    const _decorator = new CompositeDecorator(defaultDecorators);
-    return _decorator;
-  }, []);
+  const decorator = useMemo(() => new CompositeDecorator(defaultDecorators), []);
 
   const [editorState, setEditorState] = useState(
     defaultValue ? EditorState.createWithContent(
@@ -193,7 +190,7 @@ function FormulaEditor({
   };
 
   const insertEntity = (entityData: CustomRule): void => {
-    if (!insertBefore(entityData.name.length + 1)) {
+    if (!insertBefore(entityData.name.length + 2)) {
       return;
     }
 
@@ -203,11 +200,11 @@ function FormulaEditor({
     let selection = editorState.getSelection();
     if (selection.isCollapsed()) {
       contentState = Modifier.insertText(
-        contentState, selection, entityData.name + ' ', undefined, entityKey,
+        contentState, selection, entityData.name, undefined, entityKey,
       );
     } else {
       contentState = Modifier.replaceText(
-        contentState, selection, entityData.name + ' ', undefined, entityKey,
+        contentState, selection, entityData.name, undefined, entityKey,
       );
     }
 
@@ -215,14 +212,15 @@ function FormulaEditor({
     contentState.getFirstBlock().findEntityRanges(
       (character) => character.getEntity() === entityKey,
       (_, _end) => {
-        end = _end;
+        end = _end + 1;
       });
 
-    let newEditorState = EditorState.set(editorState, { currentContent: contentState });
     selection = selection.merge({
       anchorOffset: end,
       focusOffset: end,
     }) as SelectionState;
+    contentState = Modifier.insertText(contentState, selection, ' ');
+    let newEditorState = EditorState.set(editorState, { currentContent: contentState });
     newEditorState = EditorState.forceSelection(newEditorState, selection);
     handleChange(newEditorState);
   };
@@ -248,6 +246,7 @@ function FormulaEditor({
       anchorOffset: selection.getAnchorOffset() + textTmp.length - backNumber,
       focusOffset: selection.getFocusOffset() + textTmp.length - backNumber,
     }) as SelectionState;
+
     newEditorState = EditorState.forceSelection(newEditorState, selection);
     handleChange(newEditorState);
   };
