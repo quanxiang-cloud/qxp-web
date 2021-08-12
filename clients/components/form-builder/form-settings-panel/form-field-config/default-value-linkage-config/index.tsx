@@ -95,7 +95,7 @@ function LinkageConfig({
     if (INTERNAL_FIELD_NAMES.includes(field.id) || field.id === store.activeField?.fieldName) {
       return false;
     }
-
+    // todo match type
     return ['string', 'number', 'datetime'].includes(field.type || '');
   }).map((field) => ({ label: field.title as string, value: field.id }));
 
@@ -113,6 +113,7 @@ function LinkageConfig({
     setFieldState('rules.*.fieldName', (state) => state.props.enum = options);
     setFieldState('linkedField', (state) => {
       state.props.enum = fields.filter((field) => {
+        // todo match type
         return field.componentName === store.activeField?.componentName.toLowerCase();
       }).map(({ label, value }) => ({ label, value }));
     });

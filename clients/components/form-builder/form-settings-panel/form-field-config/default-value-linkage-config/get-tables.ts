@@ -12,6 +12,8 @@ const WHITE_LIST_FIELDS = [
   'multipleselect',
   'checkboxgroup',
   'select',
+  'textarea',
+  'datepicker',
 ];
 
 export async function fetchLinkedTableFields(
