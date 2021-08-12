@@ -3,7 +3,7 @@ import { useQuery } from 'react-query';
 
 import Modal from '@c/modal';
 import { getSchemaFields } from '@flowEditor/forms/utils';
-import { collectionOperators } from '@c/formula-editor/operator';
+import { COLLECTION_OPERATORS } from '@c/formula-editor/constants';
 import FormulaEditor, { CustomRule, RefProps } from '@c/formula-editor';
 import FlowTableContext from '@flowEditor/forms/flow-source-table';
 import FlowContext from '@flow/flow-context';
@@ -108,7 +108,7 @@ function FormulaModal(props: Props): JSX.Element | null {
                 tips: '',
                 content: '&&',
               },
-            ].concat(collectionOperators).map(({ content }) => (
+            ].concat(COLLECTION_OPERATORS).map(({ content }) => (
               <span
                 key={content}
                 onClick={() => addText(content)}
