@@ -39,7 +39,7 @@ const SIDE_NAVS = [
     title: '模型及API',
     nav_items: [
       {
-        id: 'data_modal',
+        id: 'data_models',
         name: '数据模型管理',
         icon: 'insights',
       },
