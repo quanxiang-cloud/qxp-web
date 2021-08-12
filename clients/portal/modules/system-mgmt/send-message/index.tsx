@@ -1,6 +1,8 @@
-import React, { useState, useEffect, forwardRef, useImperativeHandle } from 'react';
+import React, { useState, useEffect, useRef, useMemo, forwardRef, useImperativeHandle } from 'react';
 import ReactDom from 'react-dom';
 import cs from 'classnames';
+import draftToHtml from 'draftjs-to-html';
+import htmlToDraft from 'html-to-draftjs';
 import { debounce } from 'lodash';
 import { toJS } from 'mobx';
 import { useMutation, useQueryClient } from 'react-query';
@@ -8,26 +10,26 @@ import { useHistory } from 'react-router-dom';
 import { Form, Field, Label, Control, Radio, RadioGroup, Message, Upload } from '@QCFE/lego-ui';
 import { Editor } from 'react-draft-wysiwyg';
 import { EditorState, convertToRaw, ContentState } from 'draft-js';
-import draftToHtml from 'draftjs-to-html';
-import htmlToDraft from 'html-to-draftjs';
-import { MsgType } from '@portal/modules/system-mgmt/constants';
+
 import Button from '@c/button';
 import Icon from '@c/icon';
 import Modal from '@c/modal';
 import Container from '../container';
+import Filelist from './filelist';
 import editorToolbarOptions from './editor-toolbar';
 import PreviewMsg from './preview-msg';
-import { createMsg } from '@portal/modules/system-mgmt/api';
-import Filelist from './filelist';
 import ModalSelectReceiver from '@c/employee-or-department-picker';
+import { createMsg } from '@portal/modules/system-mgmt/api';
+import { MsgType } from '@portal/modules/system-mgmt/constants';
+import { FileInfo as FileListItemInfo } from '@portal/modules/system-mgmt/send-message/filelist';
 
 import styles from './index.module.scss';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
-import { useMemo } from 'react';
 
 const { TextField } = Form;
 
-interface FileInfo {
+type FileInfo = {
+  uid: string;
   url: string;
   filename: string;
   status?: 'success' | 'active' | 'exception';
@@ -35,7 +37,7 @@ interface FileInfo {
   percentage?: number;
 }
 
-const SendMessage = (): JSX.Element => {
+const SendMessage = () => {
   useEffect(() => {
     document.title = '消息管理 - 发送消息';
   }, []);
@@ -59,7 +61,7 @@ interface data {
   id?: string
   sort?: MsgType
   title?: string
-  content?: string
+  content?: any
   recivers?: Array<Record<string, any>>, // fixme: typo
   mes_attachment?: Array<FileInfo> | null
 }
@@ -79,7 +81,8 @@ function ContentWithoutRef({
   footer,
   modifyData,
   handleClose,
-}: ContentProps, ref: React.Ref<unknown> | undefined): JSX.Element {
+}: ContentProps, ref: React.Ref<unknown> | undefined) {
+  const uploaderRef = useRef<Upload>(null);
   const [msgType, setMsgType] = useState(modifyData?.sort || MsgType.notify);
   const [title, setTitle] = useState(modifyData?.title || '');
   const [prevData, setPrevData] = useState<Qxp.DraftData | null>(null);
@@ -102,22 +105,34 @@ function ContentWithoutRef({
     status: 'success',
   })));
   const chosenDepOrPerson = useMemo(() => {
+    // @ts-ignore
     return _chosenDepOrPerson.map(({ id, type, name, ownerName, departmentName }) => (
       { id, type, name: name || ownerName || departmentName }
     ));
   }, [_chosenDepOrPerson]);
   const [dom, setDom] = useState<Element | null>(null);
 
-  const deleteFiles = (name: string): void => {
-    setFiles((curFiles) => curFiles.filter((file) => file.filename !== name));
+  const deleteFiles = (currentFile: FileListItemInfo) => {
+    if (currentFile.file_uid) {
+      uploaderRef?.current?.abort(currentFile.file_uid);
+    }
+    setFiles((prevFiles) => {
+      let curFiles:FileInfo[];
+      if (currentFile.file_uid) {
+        curFiles = prevFiles.filter((file) => file.uid !== currentFile.file_uid);
+      } else {
+        curFiles = prevFiles.filter((file) => file.filename !== currentFile.file_name);
+      }
+      return curFiles;
+    });
   };
 
   useEffect(() => {
     setDom(document.getElementById('rdw-wrapper-8888'));
   }, []);
 
-  const addFile = (file: FileInfo): void => setFiles((currentFiles) => ([...currentFiles, file]));
-  const updateFile = (name: string, data: Partial<FileInfo>): void => {
+  const addFile = (file: FileInfo) => setFiles((currentFiles) => ([...currentFiles, file]));
+  const updateFile = (name: string, data: Partial<FileInfo>) => {
     setFiles((currentFiles) => {
       const curFile = currentFiles.find((f) => f.filename === name);
       Object.assign(curFile, data);
@@ -151,12 +166,14 @@ function ContentWithoutRef({
     },
   });
 
-  const handleChangeEditor = (editorState: EditorState): void => {
+  const handleChangeEditor = (editorState: EditorState) => {
     setEditorCont(editorState);
   };
 
   const getEditorCont = (cont: EditorState, asRaw?: boolean) => {
     const raw = convertToRaw(cont.getCurrentContent());
+    // console.log('raw: ', raw);
+    // console.log('html: ', draftToHtml(raw))
     return asRaw ? raw : draftToHtml(raw);
   };
 
@@ -304,9 +321,11 @@ function ContentWithoutRef({
   };
 
   // @ts-ignore
-  const handleFileSuccessUpload = (res) => {
+  const handleFileSuccessUpload = (res, file) => {
+    const { uid } = file;
     if (res.code == 200) {
       updateFile(res.data.filename, {
+        uid,
         filename: res.data.filename,
         url: res.data.url,
         percentage: 100,
@@ -405,6 +424,7 @@ function ContentWithoutRef({
                   candownload
                   deleteFiles={deleteFiles}
                   files={files.map((itm) => ({
+                    file_uid: itm.uid,
                     file_url: itm.url,
                     file_name: itm.filename,
                     percent: itm.percentage,
@@ -413,6 +433,7 @@ function ContentWithoutRef({
                   }))}
                 />
                 <Upload
+                  ref={uploaderRef}
                   headers={{ 'X-Proxy': 'API' }}
                   multiple
                   action="/api/v1/fileserver/uploadFile"
@@ -429,6 +450,7 @@ function ContentWithoutRef({
                   }}
                   onStart={(file) => {
                     addFile({
+                      uid: file.uid,
                       filename: file.name,
                       url: '',
                       percentage: 0,
@@ -529,8 +551,7 @@ function ContentWithoutRef({
           prevData={prevData} isPreview canMultiDownload={false}
           canDownload={false} />
       </Modal>)}
-    </div>
-  );
+    </div>);
 }
 export const Content = forwardRef(ContentWithoutRef);
 
