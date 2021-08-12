@@ -2,8 +2,7 @@ import React, { useState, useRef } from 'react';
 import { parse } from 'qxp-formula';
 
 import FormulaEditor, { RefProps } from '@c/formula-editor';
-import MATH_FUNCTIONS from '@c/formula-editor/function';
-import { collectionOperators } from '@c/formula-editor/operator';
+import { FUNCS, COLLECTION_OPERATORS } from '@c/formula-editor/constants';
 import Modal from '@c/modal';
 import logger from '@lib/logger';
 
@@ -84,7 +83,7 @@ function EditFormulaModal({ onClose, onSubmit, rawFormula, variables }: Props): 
         </div>
         <div className="mb-8">函数:</div>
         <div className="mb-16">
-          {MATH_FUNCTIONS.map(({ name, content }) => (
+          {FUNCS.map(({ name, content }) => (
             <span
               key={name}
               onClick={() => addText(content, false, 1)}
@@ -96,13 +95,13 @@ function EditFormulaModal({ onClose, onSubmit, rawFormula, variables }: Props): 
         </div>
         <div className="mb-8">集合操作符:</div>
         <div className="mb-16">
-          {collectionOperators.map(({ content }) => (
+          {COLLECTION_OPERATORS.map(({ name, content }) => (
             <span
-              key={content}
-              onClick={() => addText(content)}
+              key={name}
+              onClick={() => addText(content, false, 1)}
               className="inline-block mb-8 p-2 bg-gray-100 mr-4 border border-gray-300 cursor-pointer"
             >
-              {content}
+              {name}
             </span>
           ))}
         </div>
@@ -112,7 +111,7 @@ function EditFormulaModal({ onClose, onSubmit, rawFormula, variables }: Props): 
           customRules={variables.map(({ title, fieldName }) => {
             return { key: fieldName, name: title, type: 'field' };
           })}
-          className="block mb-16"
+          className="block border border-gray-600 w-full mb-16"
           defaultValue={rawFormula}
         />
       </div>
