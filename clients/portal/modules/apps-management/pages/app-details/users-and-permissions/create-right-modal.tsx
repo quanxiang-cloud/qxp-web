@@ -4,6 +4,7 @@ import Modal from '@c/modal';
 import BasicInfoForm from './rights-setting/basic-info-form';
 
 import store from './store';
+import toast from '@lib/toast';
 
 type Props = {
   onCancel: () => void;
@@ -13,13 +14,14 @@ function CreateRightModal({ onCancel }: Props) {
   const [loading, setLoading] = useState(false);
   const formRef = useRef<any>();
 
-  const handleSubmit = () => {
+  const handleSubmit = (): void => {
     formRef.current?.handleSubmit((rights: RightsCreate) => {
       setLoading(true);
       store.addRightsGroup(rights).then(() => {
         setLoading(false);
         onCancel();
-      }).catch(() => {
+      }).catch((err) => {
+        toast.error(err);
         setLoading(false);
       });
     })();
