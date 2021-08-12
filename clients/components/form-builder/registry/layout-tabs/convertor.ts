@@ -9,8 +9,8 @@ export interface LayoutTabsConfig {
 export const defaultConfig: LayoutTabsConfig = {
   isLayoutComponent: true,
   position: 'top',
-  tabs: ['选项卡一'],
-  currentEdit: '选项卡一',
+  tabs: ['选项卡1'],
+  currentEdit: '选项卡1',
 };
 
 export function toSchema(value: LayoutTabsConfig): ISchema {

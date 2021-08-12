@@ -5,7 +5,7 @@ type DataModel = {
   description: string
   fieldLen: number
   id: string
-  source: 1 | 2
+  source: SchemaSource
   tableID: string
   title: string
   updatedAt: number
@@ -45,4 +45,14 @@ type ModelFieldSchema = ISchema & {
 
 type ModelField = ModelFieldSchema & {
   id: string
+}
+
+declare enum EditorModelFieldStep {
+  basic, // 基础信息
+  fieldDesign, // 字段设计
+}
+
+declare enum SchemaSource {
+  Form, // 表单创建
+  Model, // 模型创建
 }

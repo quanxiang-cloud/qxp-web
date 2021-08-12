@@ -53,7 +53,14 @@ const UserPickerConfigForm = ({ initialValue, onChange }: Props): JSX.Element =>
         onChange={(formData) => onChange(formData)}
         effects={formEffects}
       >
-        <Field name="title" title="标题" component={Input} />
+        <Field
+          name="title"
+          title="标题名称"
+          component={Input}
+          required
+          x-rules={{ required: true, message: '请输入标题名称' }}
+          maxLength={50}
+        />
         <Field name="placeholder" title="占位提示" component={Input} />
         <Field name="description" title="描述内容" component={Input.TextArea} />
         <Field name="displayModifier" title="字段属性" component={Radio.Group} dataSource={EnumReadOnly} />

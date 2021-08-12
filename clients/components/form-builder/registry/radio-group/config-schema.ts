@@ -99,9 +99,8 @@ const schema: ISchema = {
           'x-index': 7,
         },
         defaultValueFrom: {
-          // title: '数值源',
           type: 'string',
-          title: '选项来源',
+          title: '选项集',
           default: 'customized',
           enum: [
             {
