@@ -115,7 +115,7 @@ export function findOneRecord(appID: string, tableID: string, id: string): Promi
 }
 
 export function saveTableSchema(
-  appID: string, tableID: string, schema: ISchema, source?: 1 | 2,
+  appID: string, tableID: string, schema: ISchema, source?: SchemaSource,
 ): Promise<{ tableID: string; }> {
   return httpClient(
     `/api/v1/form/${appID}/m/table/create`,

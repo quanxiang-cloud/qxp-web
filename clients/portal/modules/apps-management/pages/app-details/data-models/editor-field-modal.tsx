@@ -22,7 +22,7 @@ const PATH: Record<string, string> = {
   array: 'subtype',
 };
 
-function EditorDataModelModal({ isEditor = false, onCancel, onSubmit, field }: Props): JSX.Element {
+function EditorDataModelModal({ isEditor, onCancel, onSubmit, field }: Props): JSX.Element {
   const form = useForm({
     onSubmit,
     initialValues: field,
