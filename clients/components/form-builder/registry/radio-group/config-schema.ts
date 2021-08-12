@@ -93,14 +93,13 @@ const schema: ISchema = {
           'x-index': 6,
         },
         allowCustom: {
-          title: '是否允许自定义',
+          title: '允许自定义',
           default: false,
           'x-component': 'Switch',
           'x-index': 7,
         },
         defaultValueFrom: {
-          // title: '数值源',
-          title: '选项',
+          title: '选项集',
           enum: [
             {
               label: '自定义',

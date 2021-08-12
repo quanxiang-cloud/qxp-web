@@ -75,7 +75,14 @@ const OrganizationPickerConfigForm = ({ initialValue, onChange }: Props): JSX.El
         effects={formEffects}
         onChange={handleChange}
       >
-        <Field name="title" title="标题" component={Input} />
+        <Field
+          name="title"
+          title="标题名称"
+          component={Input}
+          required
+          x-rules={{ required: true, message: '请输入标题名称' }}
+          maxLength={50}
+        />
         <Field name="placeholder" title="占位提示" component={Input} />
         <Field name="description" title="描述内容" component={Input.TextArea} />
         <Field name="required" title="是否必填" component={Switch} />
