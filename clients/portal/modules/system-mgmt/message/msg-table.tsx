@@ -454,9 +454,7 @@ const MsgTable = ({ refresh }: Props): JSX.Element => {
               text: '存草稿',
               key: 'save',
               iconName: 'book',
-              onClick: () => {
-                debounce(saveDraft, 1000, { leading: true });
-              },
+              onClick: debounce(saveDraft, 1000, { leading: true }),
             },
             {
               text: '预览并发送',
