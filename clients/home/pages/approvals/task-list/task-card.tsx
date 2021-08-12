@@ -1,11 +1,12 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 import dayjs from 'dayjs';
-import { map } from 'lodash';
+import { map, omitBy } from 'lodash';
 
 import Status from '@c/process-node-status';
 import Icon from '@c/icon';
 import FormDataValueRenderer from '@c/form-data-value-renderer';
+import { schemaToMap } from '@lib/schema-convert';
 
 import Avatar from '../avatar';
 import './index.scss';
@@ -80,9 +81,10 @@ export default function TaskCard({ task, type }: Props): JSX.Element {
               Object.entries(
                 (multiTask ? formData : flowInstanceEntity?.formData) || {},
               ).map(([keyName, value]) => {
-                const properties = (
-                  multiTask ? formSchema?.properties : flowInstanceEntity?.formSchema?.properties
-                ) as Record<string, any>;
+                const schema = multiTask ? formSchema : flowInstanceEntity?.formSchema;
+                const properties = omitBy(schemaToMap(schema), (schema) => {
+                  return ['subtable', 'associatedrecords'].includes(schema.componentName);
+                });
                 if (!properties || !properties[keyName] || properties[keyName]?.display === false) {
                   return null;
                 }
