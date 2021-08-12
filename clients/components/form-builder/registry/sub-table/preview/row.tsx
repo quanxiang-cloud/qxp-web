@@ -1,5 +1,6 @@
 import React from 'react';
 import cs from 'classnames';
+import { isArray } from 'lodash';
 import { FormItem, IForm, IMutators } from '@formily/antd';
 import { useCss } from 'react-use';
 
@@ -24,6 +25,10 @@ export default function SubTableRow({
   const formItemClassName = useCss({
     '.ant-form-item': {
       marginBottom: 0,
+    },
+    '&>*': {
+      width: 'calc(100% - 20px)',
+      overflow: 'auto',
     },
   });
 
@@ -74,14 +79,23 @@ export default function SubTableRow({
             dataIndex, component, props, dataSource, required, rules, readonly, schema, editable,
           }, idx) => {
             const path = `${name}.${index}.${dataIndex}`;
+            let value = item?.[dataIndex];
+            if (schema.type === 'array') {
+              value = isArray(value) ? value : [value].filter(Boolean) as FormDataValue;
+            }
             return (
               <div
                 key={dataIndex}
                 style={{ minHeight: 32 }}
-                className={cs(formItemClassName, portalReadOnlyClassName, {
-                  'border-r-1 border-gray-300': idx < componentColumns.length,
-                  'px-56': readonly,
-                })}
+                className={cs(
+                  'flex items-center justify-center',
+                  formItemClassName,
+                  portalReadOnlyClassName,
+                  {
+                    'border-r-1 border-gray-300': idx < componentColumns.length,
+                    'px-56': readonly,
+                  },
+                )}
               >
                 {component && !readonly && (
                   <FormItem
@@ -95,7 +109,7 @@ export default function SubTableRow({
                     rules={rules as any}
                     dataSource={dataSource}
                     required={required}
-                    value={item?.[dataIndex]}
+                    value={value}
                     editable={editable}
                   />
                 )}

@@ -1,7 +1,9 @@
-import { isObject, isEmpty } from 'lodash';
+import { isObject, isEmpty, isArray } from 'lodash';
 
 export function getDefaultValue(sc: ISchema): any {
   const componentProps = sc['x-component-props'] || {};
+  const componentType = sc.type;
+  const isArrayType = componentType === 'array';
   const internalProps = (sc as ISchema)?.['x-internal'] || {};
 
   let defaultValue = sc.default || componentProps?.defaultValue;
@@ -15,5 +17,10 @@ export function getDefaultValue(sc: ISchema): any {
       defaultValue = internalProps.defaultValue;
     }
   }
+
+  if (isArrayType) {
+    return isArray(defaultValue) ? defaultValue : [defaultValue].filter(Boolean);
+  }
+
   return defaultValue;
 }
