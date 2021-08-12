@@ -21,8 +21,8 @@ type Props = {
 
 const actions = createAsyncFormActions();
 
-function EditorDataModel({ isEditor = false, onCancel, onSubmit }: Props): JSX.Element {
-  const [curStep, setStep] = useState(0);
+function EditorDataModel({ isEditor, onCancel, onSubmit }: Props): JSX.Element {
+  const [curStep, setStep] = useState<EditorModelFieldStep>(0);
   const [basicInfo, setBasicInfo] = useState<DataModelBasicInfo>(store.basicInfo);
   const form = useForm({
     onSubmit: setBasicInfo,
@@ -79,8 +79,8 @@ function EditorDataModel({ isEditor = false, onCancel, onSubmit }: Props): JSX.E
     <div className='p-24 h-full'>
       <div style={{ maxWidth: '400px' }} className='mx-auto mb-32'>
         <Steps current={curStep}>
-          <Steps.Step title="基本信息" />
-          <Steps.Step title="字段设计" />
+          <Steps.Step title="基本信息" key='basic' />
+          <Steps.Step title="字段设计" key='fieldDesign' />
         </Steps>
       </div>
       {curStep === 0 && (
