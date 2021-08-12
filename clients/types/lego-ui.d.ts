@@ -72,6 +72,9 @@ declare module '@QCFE/lego-ui' {
     };
   }
 
+  interface QxpFile extends File {
+    uid: string;
+  }
   interface UploadProps {
     name?: string;
     disabled?: boolean;
@@ -84,14 +87,16 @@ declare module '@QCFE/lego-ui' {
     withCredentials?: boolean;
     className?: string;
     style?: Record<string, any>;
-    onStart?: (file: File) => void;
-    onProgress?: (res: Response, file: File) => void;
-    onSuccess?: (res: Response, file: File) => void;
-    onError?: (err: Error, res: Response, file: File) => void;
-    beforeUpload?: (file: File) => void;
+    onStart?: (file: QxpFile) => void;
+    onProgress?: (res: Response, file: QxpFile) => void;
+    onSuccess?: (res: Response, file: QxpFile) => void;
+    onError?: (err: Error, res: Response, file: QxpFile) => void;
+    beforeUpload?: (file: QxpFile) => void;
   }
 
-  class Upload extends React.Component<UploadProps, {}> {}
+  class Upload extends React.Component<UploadProps, {}> {
+    abort:(id?:string) => void
+  }
 
   interface ControlProps {
     className?: string;
