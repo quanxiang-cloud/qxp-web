@@ -455,6 +455,18 @@ export default class FormBuilderStore {
     };
   }
 
+  validate(): boolean {
+    return this.fields.map(({ componentName, configValue }) => ({
+      elem: registry.elements[componentName.toLowerCase()],
+      configValue,
+    })).every(({ elem, configValue }) => {
+      if (elem && typeof elem.validate === 'function') {
+        return elem.validate(toJS(configValue), elem?.configSchema);
+      }
+      return true;
+    });
+  }
+
   @action setDragging(isD: boolean): void {
     this.isDragging = isD;
   }

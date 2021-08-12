@@ -27,10 +27,6 @@ const schema: ISchema = {
           type: 'string',
           title: '描述内容',
           maxLength: 50,
-          'x-rules': {
-            required: true,
-            message: '请输入描述内容',
-          },
           'x-component': 'Input',
           'x-mega-props': {
             labelAlign: 'top',

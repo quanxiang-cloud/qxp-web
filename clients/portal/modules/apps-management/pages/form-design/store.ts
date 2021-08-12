@@ -228,6 +228,11 @@ class FormDesignStore {
       return Promise.resolve(false);
     }
 
+    // validate table schema on each field
+    if (!this.formStore?.validate()) {
+      return Promise.resolve(false);
+    }
+
     this.saveSchemeLoading = true;
     // return saveTableSchema(this.appID, this.pageID, this.formStore?.schema || {}).then(() => {
     return saveTableSchema(this.appID, this.pageID, this.formStore?.schema || {}).then(() => {

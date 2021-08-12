@@ -1,3 +1,6 @@
+import { get, has } from 'lodash';
+import toast from '@lib/toast';
+
 export type AggType = 'count' | 'sum' | 'max' | 'min' | 'avg';
 export type RoundMethod = 'round' | 'round-up' | 'round-down';
 
@@ -84,4 +87,29 @@ export function toConfig(schema: ISchema): AggregationRecordsConfig {
     displayFieldNull: schema['x-component-props']?.displayFieldNull,
     dataRange: schema['x-component-props']?.dataRange,
   };
+}
+
+export function validate(value: AggregationRecordsConfig, schema?: ISchema): boolean {
+  const props = get(schema, 'properties.Fields.properties', {});
+  return Object.entries(props).every(([key, conf]: [string, any]) => {
+    const rules = get(conf, 'x-rules', {}) as { required?: boolean, message?: string };
+    if (has(conf, 'required')) {
+      Object.assign(rules, { required: conf?.required, message: `${conf?.title}不能为空` });
+    }
+    if (rules) {
+      // check field required
+      if (rules?.required && !get(value, key)) {
+        toast.error(rules?.message);
+        return false;
+      }
+      if (key === 'associateObject') {
+        if (rules?.required && !get(value, 'associateObject.tableID')) {
+          toast.error(rules?.message);
+          return false;
+        }
+      }
+      // todo: other rules
+    }
+    return true;
+  });
 }

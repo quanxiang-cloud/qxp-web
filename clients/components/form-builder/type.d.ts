@@ -74,6 +74,7 @@ declare namespace FormBuilder {
     isLayoutComponent?: boolean;
     editComponent?: React.JSXElementConstructor<any>;
     effects?: () => void;
+    validate?: (value: T, tableSchema?: ISchema) => boolean;
   };
 
   type DropPosition = 'upper' | 'below';
