@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Checkbox, Space } from 'antd';
+import { Select } from 'antd';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 
 import { getDatasetById } from '@portal/modules/system-mgmt/dataset/api';
 
-type CheckboxValueType = string | number | boolean;
+const { Option } = Select;
 
-function CheckBoxGroup(fieldProps: ISchemaFieldComponentProps): JSX.Element {
+function MultipleSelect(fieldProps: ISchemaFieldComponentProps): JSX.Element {
   const [options, setOptions] = useState<LabelValue[]>([]);
-  const optionsLayout = fieldProps.props['x-component-props'].optionsLayout;
   const datasetId = fieldProps.props['x-component-props'].datasetId;
   const defaultValueFrom = fieldProps.props['x-internal'].defaultValueFrom;
 
@@ -28,29 +27,25 @@ function CheckBoxGroup(fieldProps: ISchemaFieldComponentProps): JSX.Element {
     }
   }, [datasetId]);
 
-  function handleCheckBoxChange(value: Array<CheckboxValueType>): void {
+  function handleSelectChange(value: string[]): void {
     fieldProps.mutators.change(value);
   }
 
-  if (options.length === 0) {
-    return <span>当前选项集无数据。</span>;
-  }
-
   return (
-    <div className="flex items-center">
-      <Checkbox.Group onChange={handleCheckBoxChange} value={fieldProps.value}>
-        <Space direction={optionsLayout}>
-          {
-            options.map((option): JSX.Element => {
-              return (<Checkbox key={option.value} value={option.value}>{option.label}</Checkbox>);
-            })
-          }
-        </Space>
-      </Checkbox.Group>
-    </div>
+    <Select
+      mode="multiple"
+      value={fieldProps.value}
+      onChange={handleSelectChange}
+    >
+      {
+        options.map((option): JSX.Element => {
+          return (<Option key={option.value} value={option.value}>{option.label}</Option>);
+        })
+      }
+    </Select>
   );
 }
 
-CheckBoxGroup.isFieldComponent = true;
+MultipleSelect.isFieldComponent = true;
 
-export default CheckBoxGroup;
+export default MultipleSelect;
