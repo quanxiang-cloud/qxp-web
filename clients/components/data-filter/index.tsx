@@ -11,7 +11,6 @@ import {
   CONDITION,
   getOperators,
   FILTER_FIELD,
-  getCondition,
   VALUE_FROM,
   setValueFormCondition,
   getValue,
@@ -21,7 +20,7 @@ import './index.scss';
 type Props = {
   fields: SchemaFieldItem[];
   initConditions?: Condition[];
-  initTag?: string;
+  initTag?: 'and' | 'or';
   className?: string;
   associationFields?: SchemaFieldItem[];
 }
@@ -37,9 +36,9 @@ type FieldCondition = {
 }
 
 export type RefProps = {
-  getDataPer: () => Promise<FilterConfig | string>;
   empty: () => void;
-  getDataValues: () => FilterConfig
+  getDataValues: () => FilterConfig;
+  validate: () => Promise<boolean>;
 }
 
 const FormFieldSwitch = formFieldWrap({ FieldFC: FieldSwitch });
@@ -51,15 +50,15 @@ function DataFilter({
   className = '',
   initConditions,
   initTag = 'and',
-}: Props, ref: React.Ref<any>): JSX.Element {
+}: Props, ref: React.Ref<RefProps>): JSX.Element {
   const [conditions, setConditions] = useState<FieldCondition[]>([]);
-  const [tag, setTag] = useState(initTag);
-  const { trigger, control, setValue, getValues, formState: { errors } } = useForm();
+  const [tag, setTag] = useState<'and' | 'or'>(initTag);
+  const { trigger, control, setValue, getValues, unregister, formState: { errors } } = useForm();
 
   useImperativeHandle(ref, () => ({
-    getDataPer: getDataPer,
     getDataValues: getDataValues,
     empty: () => setConditions([]),
+    validate: validate,
   }));
 
   useEffect(() => {
@@ -152,10 +151,11 @@ function DataFilter({
   };
 
   const handleRemove = (_id: string) => {
+    unregister([`condition-${_id}`, `field-${_id}`, `operators-${_id}`, `valueFrom-${_id}`]);
     setConditions(conditions.filter(({ id }) => _id !== id));
   };
 
-  const getDataValues = () => {
+  const getDataValues = (): FilterConfig => {
     if (conditions.length === 0) {
       return { condition: [], tag };
     }
@@ -191,33 +191,9 @@ function DataFilter({
     };
   };
 
-  const getDataPer = () => {
-    if (conditions.length === 0) {
-      return Promise.resolve({ condition: [], tag });
-    }
-
-    return trigger().then((flag) => {
-      if (flag) {
-        const formData = getValues();
-        const _conditions = conditions.filter((condition) => {
-          return !!condition.filter;
-        }).map((condition) => {
-          return getCondition(
-            condition.filter as SchemaFieldItem,
-            formData[`condition-${condition.id}`],
-            (condition.filter as SchemaFieldItem).id,
-            formData[`operators-${condition.id}`],
-          );
-        });
-
-        return {
-          condition: _conditions,
-          tag,
-        };
-      }
-
-      return 'notPass';
-    });
+  const validate = async (): Promise<boolean> => {
+    await trigger();
+    return Object.keys(errors).length === 0;
   };
 
   return (
@@ -227,7 +203,7 @@ function DataFilter({
         <Select
           className='mx-4'
           value={tag}
-          onChange={(tag: string) => setTag(tag)}
+          onChange={(tag) => setTag(tag)}
           options={CONDITION}
         />
         条件的数据
@@ -246,7 +222,7 @@ function DataFilter({
                     <FormFieldSelect
                       style={{ width: '250px' }}
                       error={errors['field-' + condition.id]}
-                      register={{ name: field.name, ref: field.ref, value: field.value }}
+                      register={{ name: field.name, value: field.value }}
                       options={fieldOption}
                       onChange={(_field: string) => {
                         handleFieldChange(condition.id, _field);
