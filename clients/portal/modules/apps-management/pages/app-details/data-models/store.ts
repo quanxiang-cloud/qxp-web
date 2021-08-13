@@ -5,7 +5,6 @@ import toast from '@lib/toast';
 import { getTableSchema } from '@lib/http-client';
 
 import { deleteSchema, saveTableSchema } from './api';
-import { SYSTEM_FIELDS } from './utils';
 import { fetchDataModels } from '../api';
 import { INIT_MODEL_SCHEMA } from '../utils';
 

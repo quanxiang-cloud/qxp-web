@@ -44,6 +44,7 @@ function FieldsDesign(): JSX.Element {
   const filterField = (params: { title?: string, id?: string }): void => {
     const { title, id } = params;
     if (!title && !id) {
+      setFields(store.fields);
       return;
     }
 
