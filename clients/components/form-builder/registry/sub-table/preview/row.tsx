@@ -106,7 +106,7 @@ export default function SubTableRow({
                     form={form}
                     props={{ ...props, props }}
                     mutators={{ change: onChange(path, form) }}
-                    rules={rules as any}
+                    rules={rules}
                     dataSource={dataSource}
                     required={required}
                     value={value}

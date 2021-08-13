@@ -2,6 +2,7 @@ import React, { JSXElementConstructor, useEffect, useState, useContext } from 'r
 import { ISchemaFieldComponentProps, IMutators } from '@formily/react-schema-renderer';
 import { usePrevious } from 'react-use';
 import { Input, Radio, DatePicker, NumberPicker, Select, Checkbox } from '@formily/antd-components';
+import { Rule } from 'rc-field-form/lib/interface';
 import { Table } from 'antd';
 import cs from 'classnames';
 import { isObject, isUndefined } from 'lodash';
@@ -23,9 +24,10 @@ import { isEmpty } from '@lib/utils';
 import schemaToFields from '@lib/schema-convert';
 import { numberTransform } from '@c/form-builder/utils';
 
-import { getDefaultValue } from './utils';
+import { getDefaultValue, schemaRulesTransform } from './utils';
 import SubTableRow from './row';
 
+export type Rules = (ValidatePatternRules | ValidatePatternRules[]) & Rule[];
 export type Column = {
   title: string;
   dataIndex: string;
@@ -35,7 +37,7 @@ export type Column = {
   props: Record<string, unknown>;
   dataSource?: any[];
   required?: boolean;
-  rules?: ValidatePatternRules;
+  rules: Rules;
   render?: (value: unknown) => JSX.Element;
   schema: ISchema;
 }
@@ -154,7 +156,7 @@ function SubTable({
       editable: isEditable,
       readonly: isReadOnly,
       required: !!sc?.required,
-      rules: sc?.['x-rules'] || [],
+      rules: schemaRulesTransform(sc),
       render: (value: any) => {
         if (isEmpty(value)) {
           return <span className='text-gray-300'>——</span>;
