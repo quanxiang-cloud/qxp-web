@@ -5,7 +5,7 @@ import PageLoading from '@c/page-loading';
 import Table from '@c/table';
 
 import store from './store';
-import { FIELD_COLUMNS } from './utils';
+import { FIELD_COLUMNS } from '../utils';
 
 function ModelDetails(): JSX.Element {
   if (store.modelDetailsLoading) {
