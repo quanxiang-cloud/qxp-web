@@ -551,7 +551,8 @@ function ContentWithoutRef({
           prevData={prevData} isPreview canMultiDownload={false}
           canDownload={false} />
       </Modal>)}
-    </div>);
+    </div>
+  );
 }
 export const Content = forwardRef(ContentWithoutRef);
 
