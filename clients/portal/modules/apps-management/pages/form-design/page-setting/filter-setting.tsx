@@ -10,7 +10,7 @@ import { FILTER_FIELD } from '@c/data-filter/utils';
 import './index.scss';
 import store from '../store';
 
-function getFieldType(field: PageField) {
+function getFieldType(field: PageField): string {
   if (field.isSystem) {
     return '系统字段';
   }
@@ -18,7 +18,7 @@ function getFieldType(field: PageField) {
   return `控件：${field.label}`;
 }
 
-function infoRender(title: string, desc: string) {
+function infoRender(title: string, desc: string): JSX.Element {
   return (
     <div className='ml-8'>
       <p className='text-body2'>{title}</p>
@@ -27,19 +27,18 @@ function infoRender(title: string, desc: string) {
   );
 }
 
-function FilterSetting() {
-  const [filterModalVisible, setFilterModalVisible] = useState(false);
+function FilterSetting(): JSX.Element {
   const [filters, setFilters] = useState<Filters>(store.filters);
   const fieldList = store.fieldList.filter(({ xComponent }) => FILTER_FIELD.includes(xComponent));
-  const handleCancel = () => {
-    setFilterModalVisible(false);
+  const handleCancel = (): void => {
+    store.filterModalVisible = false;
   };
 
-  const handleRemove = (fieldID: string) => {
+  const handleRemove = (fieldID: string): void => {
     setFilters(filters.filter((id)=>id !== fieldID));
   };
 
-  const handleCheckChange = (e: React.ChangeEvent<HTMLInputElement>, field: PageField) => {
+  const handleCheckChange = (e: React.ChangeEvent<HTMLInputElement>, field: PageField): void => {
     if (e.target.checked) {
       setFilters([...filters, field.id]);
     } else {
@@ -47,7 +46,7 @@ function FilterSetting() {
     }
   };
 
-  const fieldFilterRender = (field: PageField) => {
+  const fieldFilterRender = (field: PageField): JSX.Element => {
     return (
       <div key={field.id} className='page-setting-field-filter'>
         <div className='flex items-center justify-between py-8 px-16'>
@@ -65,18 +64,18 @@ function FilterSetting() {
     );
   };
 
-  const onSave = () => {
+  const onSave = (): void => {
     store.setFilters(filters);
-    setFilterModalVisible(false);
+    store.filterModalVisible = false;
   };
 
   return (
     <>
-      <div onClick={() => setFilterModalVisible(true)} className='page-setting-filter'>
+      <div onClick={() => store.filterModalVisible = true} className='page-setting-filter'>
         <Icon className='mr-8' name='settings' size={20} />
         筛选条件配置
       </div>
-      {filterModalVisible && (
+      {store.filterModalVisible && (
         <Modal
           visible
           title='筛选条件配置'
