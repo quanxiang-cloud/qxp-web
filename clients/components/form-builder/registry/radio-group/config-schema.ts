@@ -99,11 +99,17 @@ const schema: ISchema = {
           'x-index': 7,
         },
         defaultValueFrom: {
+          type: 'string',
           title: '选项集',
+          default: 'customized',
           enum: [
             {
               label: '自定义',
               value: 'customized',
+            },
+            {
+              label: '关联数据集',
+              value: 'dataset',
             },
             // {
             //   label: '关联已有数据',
@@ -121,9 +127,11 @@ const schema: ISchema = {
           'x-index': 8,
           'x-linkages': [
             {
-              type: 'value:visible',
+              type: 'value:state',
               target: 'availableOptions',
-              condition: '{{ $self.value === "customized" }}',
+              state: {
+                display: '{{ $value ==="customized" }}',
+              },
             },
             {
               type: 'value:visible',
@@ -134,6 +142,11 @@ const schema: ISchema = {
               type: 'value:visible',
               target: 'linkageConfig',
               condition: '{{ $value === "linkage" }}',
+            },
+            {
+              type: 'value:visible',
+              target: 'datasetId',
+              condition: '{{ $value === "dataset" }}',
             },
           ],
         },
@@ -158,13 +171,21 @@ const schema: ISchema = {
             properties: {
               label: {
                 type: 'string',
-                title: '选项',
+                title: '选项集',
                 required: true,
                 'x-component': 'Input',
                 'x-index': 1,
               },
             },
           },
+        },
+        datasetId: {
+          title: '数据集',
+          'x-component': 'DatasetConfig',
+          'x-mega-props': {
+            labelAlign: 'top',
+          },
+          'x-index': 11,
         },
         add: {
           type: 'string',

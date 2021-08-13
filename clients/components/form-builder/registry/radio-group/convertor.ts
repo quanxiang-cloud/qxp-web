@@ -1,5 +1,6 @@
 import { generateRandomFormFieldID } from '../../utils';
 
+type AvailableOption = { label: string; value: any; title: string };
 export interface RadioGroupConfig {
   title: string;
   description?: string;
@@ -9,7 +10,8 @@ export interface RadioGroupConfig {
   required: boolean;
   allowCustom: boolean;
   defaultValueFrom: FormBuilder.DefaultValueFrom;
-  availableOptions: Array<{ label: string; value: any; title: string }>,
+  datasetId: string;
+  availableOptions: AvailableOption[],
 }
 
 export const defaultConfig: RadioGroupConfig = {
@@ -21,6 +23,7 @@ export const defaultConfig: RadioGroupConfig = {
   required: false,
   allowCustom: false,
   defaultValueFrom: 'customized',
+  datasetId: '',
   availableOptions: [
     { label: '选项一', value: 'option_1', title: '选项一' },
     { label: '选项二', value: 'option_2', title: '选项二' },
@@ -36,7 +39,7 @@ export function toSchema(value: typeof defaultConfig): ISchema {
     required: value.required,
     readOnly: value.displayModifier === 'readonly',
     display: value.displayModifier !== 'hidden',
-    enum: value.availableOptions.map((option) => {
+    enum: value.availableOptions && value.availableOptions.map((option) => {
       return {
         ...option,
         value: option.value || generateRandomFormFieldID(),
@@ -50,11 +53,12 @@ export function toSchema(value: typeof defaultConfig): ISchema {
       name: value.title,
       allowCustom: value.allowCustom,
       optionsLayout: value.optionsLayout,
+      datasetId: value.datasetId,
     },
     ['x-internal']: {
       sortable: value.sortable,
       permission: 3,
-      defaultValueFrom: 'customized',
+      defaultValueFrom: value.defaultValueFrom,
     },
   };
 }
@@ -78,7 +82,8 @@ export function toConfig(schema: ISchema): RadioGroupConfig {
     allowCustom: schema['x-component-props']?.allowCustom,
     // todo implement this
     defaultValueFrom: schema['x-internal']?.defaultValueFrom || 'customized',
+    datasetId: schema['x-component-props']?.datasetId,
     // todo refactor this
-    availableOptions: schema.enum as Array<{ label: string; value: any; title: string }> || [],
+    availableOptions: schema.enum as AvailableOption[] || [],
   };
 }
