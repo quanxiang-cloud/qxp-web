@@ -127,9 +127,11 @@ const schema: ISchema = {
           'x-index': 8,
           'x-linkages': [
             {
-              type: 'value:visible',
+              type: 'value:state',
               target: 'availableOptions',
-              condition: '{{ $self.value === "customized" }}',
+              state: {
+                display: '{{ $value ==="customized" }}',
+              },
             },
             {
               type: 'value:visible',
@@ -146,7 +148,6 @@ const schema: ISchema = {
               target: 'datasetId',
               condition: '{{ $value === "dataset" }}',
             },
-
           ],
         },
         linkageConfig: {

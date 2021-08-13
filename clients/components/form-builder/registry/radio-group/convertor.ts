@@ -1,5 +1,6 @@
 import { generateRandomFormFieldID } from '../../utils';
 
+type AvailableOption = { label: string; value: any; title: string };
 export interface RadioGroupConfig {
   title: string;
   description?: string;
@@ -10,7 +11,7 @@ export interface RadioGroupConfig {
   allowCustom: boolean;
   defaultValueFrom: FormBuilder.DefaultValueFrom;
   datasetId: string;
-  availableOptions: Array<{ label: string; value: any; title: string }>,
+  availableOptions: AvailableOption[],
 }
 
 export const defaultConfig: RadioGroupConfig = {
@@ -83,6 +84,6 @@ export function toConfig(schema: ISchema): RadioGroupConfig {
     defaultValueFrom: schema['x-internal']?.defaultValueFrom || 'customized',
     datasetId: schema['x-component-props']?.datasetId,
     // todo refactor this
-    availableOptions: schema.enum as Array<{ label: string; value: any; title: string }> || [],
+    availableOptions: schema.enum as AvailableOption[] || [],
   };
 }
