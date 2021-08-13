@@ -1,4 +1,5 @@
 import React, { useImperativeHandle, useContext, useEffect } from 'react';
+import { toJS } from 'mobx';
 import { observer } from 'mobx-react';
 import { useForm, Controller } from 'react-hook-form';
 
@@ -17,7 +18,7 @@ type Props = {
 function FilterForm({ search, showMoreFilter }: Props, ref?: React.Ref<any>): JSX.Element {
   const store = useContext(StoreContext);
   const { filters } = store;
-  const fieldMaps = schemaToMap(store.schema) || {};
+  const fieldMaps = schemaToMap(toJS(store.schema)) || {};
   const { getValues, control, setValue } = useForm();
 
   useEffect(() => {
