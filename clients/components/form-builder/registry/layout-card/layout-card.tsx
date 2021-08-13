@@ -46,7 +46,7 @@ function LayoutCard(p: ISchemaFieldComponentProps): JSX.Element {
           <span>{p.props.title}</span>
           <Icon
             style={{ transform: `rotate(${closed ? '180deg' : '0'})`, transition: '0.3s' }}
-            name="keyboard-arrow-down"
+            name="arrow_drop_down"
           />
         </div>
       )}>
