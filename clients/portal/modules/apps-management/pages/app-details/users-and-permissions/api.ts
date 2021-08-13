@@ -54,6 +54,21 @@ export const fetchPerGroupForm = (appID: string, perGroupID: string) => {
   return httpClient(`/api/v1/structor/${appID}/m/permission/perGroup/getForm`, { perGroupID });
 };
 
+export const fetchPerCustom = <T>(appID: string, groupId: string): Promise<T> => {
+  return httpClient<T>(`/api/v1/structor/${appID}/m/permission/perGroup/pageList`, { groupId });
+};
+
+type CheckboxValueType = string | number;
+
+type UpdatePerCustomParam = {
+  pageIds:CheckboxValueType[];
+  groupId: string
+}
+
+export const updatePerCustom = <T>(appID: string, data: UpdatePerCustomParam): Promise<T> => {
+  return httpClient<T>(`/api/v1/structor/${appID}/m/permission/perGroup/updatePage`, data);
+};
+
 type PerDataReq = {
   formID: string;
   perGroupID: string;
@@ -63,12 +78,12 @@ export const fetchPerData = (appID: string, data: PerDataReq) => {
   return httpClient(`/api/v1/structor/${appID}/m/permission/perGroup/getPerData`, data);
 };
 
-type PerData = {
+export type PerData = {
   formID: string;
   perGroupID: string;
   authority: number;
   schema: any;
-  conditions: Condition[];
+  conditions: ConditionMap;
 }
 
 export const savePer = (appID: string, data: PerData) => {

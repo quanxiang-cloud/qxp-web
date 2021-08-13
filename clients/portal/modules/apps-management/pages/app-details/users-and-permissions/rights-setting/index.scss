@@ -9,6 +9,19 @@
   margin-bottom: 20px;
 }
 
+.page-item {
+  align-items: center;
+  background: #F1F5F9;
+  border-radius: 4px 0px;
+  padding: 2px 8px;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 22px;
+  color: #475569;
+  margin-right: 8px;
+  margin-bottom: 8px;
+}
+
 .pb-authorized-checkbox-box {
   display: grid;
   grid-template-columns: repeat(auto-fill, 150px);

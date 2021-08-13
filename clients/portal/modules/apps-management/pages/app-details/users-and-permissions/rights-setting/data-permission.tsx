@@ -20,7 +20,7 @@ const OPTIONS = [
   { label: '自定义条件', value: 'custom' },
 ];
 
-function DataPermission({ fields, className = '', dataPer }: Props, ref: React.Ref<any>) {
+function DataPermission({ fields, className = '', dataPer }: Props, ref: React.Ref<any>): JSX.Element {
   const [view, setViewPer] = useState({
     key: dataPer.find?.condition ? 'custom' : 'all',
     tag: dataPer.find?.tag,
@@ -40,7 +40,7 @@ function DataPermission({ fields, className = '', dataPer }: Props, ref: React.R
   const editRef = useRef<RefProps>(null);
   const delRef = useRef<RefProps>(null);
 
-  const getDataPer = () => {
+  const getDataPer = (): Promise<false | ConditionMap> => {
     return Promise.all([
       view.key === 'custom' ? viewRef.current?.getDataPer() : '',
       edit.key === 'custom' ? editRef.current?.getDataPer() : '',
