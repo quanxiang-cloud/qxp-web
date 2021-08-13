@@ -34,8 +34,12 @@ function FilterConfig({ tableID, appID, onChange, value, currentFormSchema }: Pr
   const allowSelect = !!tableID && !!appID;
 
   const handleSave = (): void => {
-    onChange(dataFilterRef.current?.getDataValues() as FilterConfig);
-    setVisible(false);
+    dataFilterRef.current?.validate().then((flag) => {
+      if (flag) {
+        onChange(dataFilterRef.current?.getDataValues() as FilterConfig);
+        setVisible(false);
+      }
+    });
   };
 
   useEffect(() => {

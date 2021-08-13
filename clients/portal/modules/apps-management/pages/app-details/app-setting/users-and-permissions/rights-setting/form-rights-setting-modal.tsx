@@ -39,11 +39,11 @@ function RightsSettingModal({ onCancel, rightsGroupID, pageForm }: Props): JSX.E
   const [loading, setLoading] = useState(true);
   const fieldRef = useRef<{ getFieldPer:() => any }>(null);
   const authorizedRef = useRef<{ getAuthorizedPer:() => number }>(null);
-  const dataPerRef = useRef<{ getDataPer:() => Promise<Condition[]> }>(null);
+  const dataPerRef = useRef<{ getDataValues:() => Promise<Condition[] | undefined> }>(null);
 
   const handleSave = () => {
     setSubLoading(true);
-    dataPerRef.current?.getDataPer().then((conditions) => {
+    dataPerRef.current?.getDataValues().then((conditions) => {
       const authority = authorizedRef.current?.getAuthorizedPer() || 0;
       if (authority === 0) {
         store.deleteFormPer(pageForm.id, rightsGroupID).then(() => {
