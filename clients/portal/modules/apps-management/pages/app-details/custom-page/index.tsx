@@ -4,6 +4,7 @@ import { UnionColumns } from 'react-table';
 import { Input, Radio } from '@formily/antd-components';
 import { SchemaForm, FormButtonGroup } from '@formily/antd';
 
+import toast from '@lib/toast';
 import Button from '@c/button';
 import Table from '@c/table';
 import Search from '@c/search';
@@ -50,7 +51,9 @@ function CustomPage(): JSX.Element {
 
   const deletePage = async (rowInfo: CustomPageInfo): Promise<void> => {
     if (rowInfo.status !== 1) {
-      await removeCustomPage(appID, rowInfo.id);
+      await removeCustomPage(appID, rowInfo.id).catch((err) => {
+        return toast.error(err.message);
+      });
       fetchPages();
     }
   };
@@ -83,13 +86,17 @@ function CustomPage(): JSX.Element {
     };
 
     if (modalType === 'createPage') {
-      await createCustomPage(appID, params);
+      await createCustomPage(appID, { name: values.name }).catch((err) => {
+        return toast.error(err.message);
+      });
       fetchPages();
       onClose();
       return;
     }
 
-    await editeCustomPage(appID, { id: selectedRowInfo.id, ...params });
+    await editeCustomPage(appID, { id: selectedRowInfo.id, ...params }).catch((err) => {
+      return toast.error(err.message);
+    });
     fetchPages();
     onClose();
   };
