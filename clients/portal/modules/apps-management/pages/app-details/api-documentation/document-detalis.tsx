@@ -92,7 +92,11 @@ function ApiDocumentDetails(): JSX.Element {
     },
   ];
 
-  if (store.isAPITabLoading) {
+  if (!store.tableID) {
+    return <EmptyTips text='暂无数据模型' className="pt-40 m-auto" />;
+  }
+
+  if (store.isAPITabLoading && store.tableID) {
     return <Loading />;
   }
 
@@ -103,7 +107,7 @@ function ApiDocumentDetails(): JSX.Element {
     >
       <div className='py-20 px-40'>
         <div className='mb-16 flex justify-between'>
-          <div className='text-gray-900 text-h5'>请假申请</div>
+          <div className='text-gray-900 text-h5'>{store.currentDataModel.title || '------'}</div>
           <div>
             使用Fields ID:
             <Toggle

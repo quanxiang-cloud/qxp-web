@@ -49,7 +49,7 @@ class ApiDocStore {
     fetchDataModels(this.appID, this.params).then((res) => {
       const { list = [] } = res || {};
       this.dataModels = list;
-      this.tableID = list[0].tableID;
+      this.tableID = list[0]?.tableID;
     }).catch((err) => {
       toast.error(err);
     });
