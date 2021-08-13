@@ -72,6 +72,43 @@ const schema: ISchema = {
           'x-component': 'Switch',
           'x-index': 6,
         },
+        defaultValueFrom: {
+          title: '选项来源',
+          enum: [
+            {
+              label: '自定义',
+              value: 'customized',
+            },
+            {
+              label: '数据集',
+              value: 'dataset',
+            },
+          ],
+          'x-component': 'select',
+          'x-mega-props': {
+            labelAlign: 'top',
+          },
+          'x-index': 7,
+          'x-linkages': [
+            {
+              type: 'value:state',
+              target: 'availableOptions',
+              state: {
+                display: '{{ $value === "customized" }}',
+              },
+            },
+            {
+              type: 'value:visible',
+              target: 'add',
+              condition: '{{ $value === "customized" }}',
+            },
+            {
+              type: 'value:visible',
+              target: 'datasetId',
+              condition: '{{ $value === "dataset" }}',
+            },
+          ],
+        },
         availableOptions: {
           type: 'array',
           'x-component': 'ArrayTable',
@@ -86,7 +123,7 @@ const schema: ISchema = {
             renderExtraOperations: extraOperations,
             renderAddition: () => null,
           },
-          'x-index': 7,
+          'x-index': 8,
           items: {
             type: 'object',
             properties: {
@@ -97,6 +134,14 @@ const schema: ISchema = {
               },
             },
           },
+        },
+        datasetId: {
+          title: '选项集',
+          'x-component': 'DatasetConfig',
+          'x-mega-props': {
+            labelAlign: 'top',
+          },
+          'x-index': 9,
         },
         add: {
           type: 'string',

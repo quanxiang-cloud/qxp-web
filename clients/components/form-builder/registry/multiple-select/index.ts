@@ -1,4 +1,5 @@
-import { Select } from '@formily/antd-components';
+import Select from './multiple-select';
+import DatasetConfig from '../../form-settings-panel/form-field-config/dataset-config';
 
 import configSchema from './config-schema';
 import { defaultConfig, toSchema, toConfig, MultipleSelectConfig } from './convertor';
@@ -14,6 +15,7 @@ const MultipleSelectField: Omit<FormBuilder.SourceElement<MultipleSelectConfig>,
   category: 'basic',
   componentName: 'MultipleSelect',
   compareOperators: ['⊇', '⊋'],
+  configDependencies: { DatasetConfig },
 };
 
 export default MultipleSelectField;

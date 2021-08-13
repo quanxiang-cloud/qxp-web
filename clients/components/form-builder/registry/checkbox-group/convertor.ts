@@ -8,6 +8,7 @@ export interface CheckboxGroupConfig {
   sortable: boolean;
   required: boolean;
   defaultValueFrom: FormBuilder.DefaultValueFrom;
+  datasetId: string;
   availableOptions: Array<{ label: string; value: unknown; title: string }>,
 }
 
@@ -19,6 +20,7 @@ export const defaultConfig: CheckboxGroupConfig = {
   sortable: false,
   required: false,
   defaultValueFrom: 'customized',
+  datasetId: '',
   availableOptions: [
     { label: '选项一', value: 'option_1', title: '选项一' },
     { label: '选项二', value: 'option_2', title: '选项二' },
@@ -47,11 +49,12 @@ export function toSchema(value: CheckboxGroupConfig): ISchema {
     ['x-component-props']: {
       mode: 'multiple',
       optionsLayout: value.optionsLayout,
+      datasetId: value.datasetId,
     },
     ['x-internal']: {
       sortable: value.sortable,
       permission: 3,
-      defaultValueFrom: 'customized',
+      defaultValueFrom: value.defaultValueFrom,
     },
   };
 }
@@ -74,6 +77,7 @@ export function toConfig(schema: ISchema): CheckboxGroupConfig {
     required: !!schema.required,
     // todo implement this
     defaultValueFrom: schema['x-internal']?.defaultValueFrom || 'customized',
+    datasetId: schema['x-component-props']?.datasetId,
     // todo refactor this
     availableOptions: schema.enum as Array<{ label: string; value: any; title: string }> || [],
   };
