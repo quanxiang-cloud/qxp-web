@@ -4,18 +4,10 @@ import { omit, set, unset } from 'lodash';
 import toast from '@lib/toast';
 import { getTableSchema } from '@lib/http-client';
 
-import { fetchDataModels, deleteSchema, saveTableSchema } from './api';
+import { deleteSchema, saveTableSchema } from './api';
 import { SYSTEM_FIELDS } from './utils';
-
-const INIT_MODEL_SCHEMA = {
-  tableID: '',
-  schema: {
-    properties: SYSTEM_FIELDS,
-    title: '',
-    type: 'object',
-    description: '',
-  },
-};
+import { fetchDataModels } from '../api';
+import { INIT_MODEL_SCHEMA } from '../utils';
 
 class AppModelStore {
   fetchDataModelDisposer: IReactionDisposer

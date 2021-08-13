@@ -73,3 +73,10 @@ export const removeCustomPage = async (appID: string, pageId: string)=> {
 export const editeCustomPage = async (appID: string, params: CustomPageParams)=> {
   return await httpClient(`/api/v1/structor/${appID}/m/page/update`, params);
 };
+
+export const fetchDataModels = (
+  appID: string,
+  data: DataModelsParameter,
+): Promise<DataModelListRes | null> => {
+  return httpClient(`/api/v1/structor/${appID}/m/table/search`, data);
+};

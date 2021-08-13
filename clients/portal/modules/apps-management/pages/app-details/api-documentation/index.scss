@@ -1,0 +1,40 @@
+.api-doc-details-nav {
+  position: relative;
+  background-color: #fff;
+  min-width: 236px;
+  max-width: 236px;
+  border-right: 1px solid var(--gray-300);
+  overflow: auto;
+}
+
+@keyframes slide-down{
+  0% {
+    transform:scale(1,0)
+  }
+  100% {
+    transform:scale(1,1);
+  }
+}
+
+.nav-item {
+  cursor: pointer;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  padding-left: 50px;
+  &:hover {
+    background-color: var(--gray-100);
+  };
+}
+
+.show {
+  max-height: 999px;
+  transform-origin: 50% 0;
+  animation: slide-down 0.3s ease-in;
+}
+
+.hidden {
+  max-height: 0px;
+  overflow: auto;
+  transition: max-height .3s ease-out;
+}

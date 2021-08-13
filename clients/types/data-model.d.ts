@@ -2,6 +2,7 @@ type DataModel = {
   createdAt: number
   creatorID: string
   creatorName: string
+  editor: string
   description: string
   fieldLen: number
   id: string
@@ -45,6 +46,13 @@ type ModelFieldSchema = ISchema & {
 
 type ModelField = ModelFieldSchema & {
   id: string
+}
+
+type DataModelsParameter = { source?: number, title?: string, page?: number, size?: number };
+
+type DataModelListRes = {
+  list: DataModel[];
+  total: number;
 }
 
 declare enum EditorModelFieldStep {

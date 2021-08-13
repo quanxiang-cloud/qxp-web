@@ -9,7 +9,7 @@ import Button from '@c/button';
 
 import EditorFieldModal from './editor-field-modal';
 import store from './store';
-import { FIELD_COLUMNS } from './utils';
+import { FIELD_COLUMNS } from '../utils';
 
 function FieldsDesign(): JSX.Element {
   const [editorVisible, setEditorVisible] = useState(false);
