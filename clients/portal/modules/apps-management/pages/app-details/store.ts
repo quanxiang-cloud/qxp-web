@@ -7,6 +7,7 @@ import { buildAppPagesTreeData } from '@lib/utils';
 import { getTableSchema } from '@lib/http-client';
 
 import { fetchAppList } from '../entry/app-list/api';
+import { getNextTreeItem } from './page-menu-design/app-pages-tree';
 import {
   fetchAppDetails,
   updateAppStatus,
@@ -132,7 +133,9 @@ class AppDetailsStore {
     const method = type === 'delGroup' ? deleteGroup : deletePage;
 
     return method(data).then(() => {
-      const items = omit(toJS(this.pagesTreeData.items), treeItem.id as string);
+      const treeItems = toJS(this.pagesTreeData.items);
+      const items = omit(treeItems, treeItem.id as string);
+
       const groupID = data.groupID || 'ROOT';
       items[groupID] = {
         ...items[groupID],
@@ -149,6 +152,10 @@ class AppDetailsStore {
         items,
         rootId: this.pagesTreeData.rootId,
       };
+
+      if (getNextTreeItem(treeItem, treeItems)?.data) {
+        this.curPage = getNextTreeItem(treeItem, treeItems)?.data;
+      }
 
       if (groupID === 'ROOT') {
         this.pageInitList = this.pageInitList.filter((page) => page.name !== treeItem.data.name);
@@ -237,6 +244,7 @@ class AppDetailsStore {
 
       if (!newPage.groupID) {
         this.pageInitList.push(newPage);
+        this.curPage = newPage;
         toast.success('创建成功');
         return res.id;
       }
@@ -248,6 +256,7 @@ class AppDetailsStore {
           newPage.sort = sort + 1;
 
           page.childCount = page.child?.push(newPage);
+          this.curPage = newPage;
         }
         return page;
       });
