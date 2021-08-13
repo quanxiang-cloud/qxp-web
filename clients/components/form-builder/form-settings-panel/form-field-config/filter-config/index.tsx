@@ -18,9 +18,14 @@ type Props = {
   currentFormSchema: ISchema;
 }
 
-function getFields(schema: ISchema): SchemaFieldItem[] {
+function getFields(schema: ISchema, excludedSystemField?: boolean): SchemaFieldItem[] {
   return schemaToFields(schema).filter((schema) => {
-    return schema.fieldName !== '_id' && FILTER_FIELD.includes(schema?.['x-component'] || '');
+    const isAllowField = schema.fieldName !== '_id' && FILTER_FIELD.includes(schema?.['x-component'] || '');
+    if (excludedSystemField) {
+      return isAllowField && schema['x-internal']?.isSystem;
+    }
+
+    return isAllowField;
   });
 }
 
@@ -44,7 +49,7 @@ function FilterConfig({ tableID, appID, onChange, value, currentFormSchema }: Pr
 
   useEffect(() => {
     if (currentFormSchema) {
-      setCurrentFields(getFields(currentFormSchema));
+      setCurrentFields(getFields(currentFormSchema, true));
     }
   }, [currentFormSchema]);
 
