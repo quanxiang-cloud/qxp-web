@@ -46,7 +46,7 @@ async function getTableFieldsToOptions(
   const res = await getTableSchema(appID, tableID);
   if (res?.schema.properties) {
     return schemaToFields(res.schema).reduce((acc: LabelValue[], field) => {
-      if (!filterArr?.includes(field.componentName) || field.id === '_id') {
+      if (!filterArr?.includes(field['x-component'] || '') || field.id === '_id') {
         return acc;
       }
 
