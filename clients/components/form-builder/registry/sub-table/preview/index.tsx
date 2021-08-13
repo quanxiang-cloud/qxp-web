@@ -1,4 +1,4 @@
-import React, { JSXElementConstructor, useEffect, useState } from 'react';
+import React, { JSXElementConstructor, useEffect, useState, useContext } from 'react';
 import { ISchemaFieldComponentProps, IMutators } from '@formily/react-schema-renderer';
 import { usePrevious } from 'react-use';
 import { Input, Radio, DatePicker, NumberPicker, Select, Checkbox } from '@formily/antd-components';
@@ -9,6 +9,7 @@ import {
   InternalFieldList as FieldList, ValidatePatternRules, Schema,
 } from '@formily/antd';
 
+import CanvasContext from '@c/form-builder/canvas-context';
 import OrganizationPicker from '@c/form-builder/registry/organization-select/organization-select-wrap';
 import FileUpload from '@c/form-builder/registry/file-upload/uploader';
 import ImageUpload from '@c/form-builder/registry/image-upload/uploader';
@@ -94,8 +95,9 @@ function SubTable({
   const previousColumns = usePrevious(columns);
   const isFromForeign = subordination === 'foreign_table';
   const initialValue = value?.length ? value : [rowPlaceHolder];
+  const { isInCanvas } = useContext(CanvasContext);
   const isPortal = window.SIDE === 'portal';
-  const portalReadOnlyClassName = cs({ 'pointer-events-none': isPortal });
+  const portalReadOnlyClassName = cs({ 'pointer-events-none': isPortal && isInCanvas });
 
   useEffect(() => {
     const rowPlaceHolder = {};
@@ -108,7 +110,7 @@ function SubTable({
       }
       const newColumn = buildColumnFromSchema(field.id, field);
       if (newColumn) {
-        Object.assign(rowPlaceHolder, { [field.id]: getDefaultValue(schema) });
+        Object.assign(rowPlaceHolder, { [field.id]: getDefaultValue(field) });
         acc.push(newColumn);
       }
       return acc;
