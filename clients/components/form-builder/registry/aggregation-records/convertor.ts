@@ -98,9 +98,13 @@ export function validate(value: AggregationRecordsConfig, schema?: ISchema): boo
     }
     if (rules) {
       // check field required
-      if (rules?.required && !get(value, key)) {
-        toast.error(rules?.message);
-        return false;
+      if (rules?.required) {
+        const val = get(value, key);
+        const valType = conf.type;
+        if (valType !== 'number' && !val) {
+          toast.error(rules?.message);
+          return false;
+        }
       }
       if (key === 'associateObject') {
         if (rules?.required && !get(value, 'associateObject.tableID')) {

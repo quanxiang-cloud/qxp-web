@@ -77,15 +77,22 @@ class PushServer {
         retryCount = retryCount + 1;
       }
     };
+
+    this.connection.onerror = () => {
+      this.closeConnection();
+    };
   }
 
   detachEvents() {
     this.connection.onopen = null;
     this.connection.onmessage = null;
     this.connection.onclose = null;
+    this.connection.onerror = null;
   }
 
   onlineHandler = () => {
+    // reset retry count
+    retryCount = 0;
     this.setUp(() => {
       this.attachEvents();
       this.heartbeat();
@@ -115,8 +122,6 @@ class PushServer {
   }
 
   setUp = (cb?: any) => {
-    // reset retry count
-    retryCount = 0;
     this.initConnection().then(cb || this.attachEvents);
   }
 
