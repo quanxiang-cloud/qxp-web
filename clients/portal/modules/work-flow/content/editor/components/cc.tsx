@@ -7,7 +7,7 @@ import { CCData } from '../type';
 export default function CCNodeComponent(props: Props): JSX.Element {
   const { recivers } = props.data.businessData as CCData;
   return (
-    <NodeComponentWrapper {...props}>
+    <NodeComponentWrapper {...props} iconName="info">
       {recivers && recivers.length ? (
         <div className="text-caption-no-color bg-gray-100 py-4 px-8 rounded-4">
           接收对象: <span className="text-gray-600">

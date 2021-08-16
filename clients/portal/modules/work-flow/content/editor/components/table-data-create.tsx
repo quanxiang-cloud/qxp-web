@@ -17,7 +17,7 @@ export default function TableDataCreateNodeComponent(props: Props): JSX.Element 
   const tableName = filterTables(allTables).find((v) => v.value === targetTableId)?.label || '';
 
   return (
-    <NodeComponentWrapper {...props}>
+    <NodeComponentWrapper {...props} iconName="create_new_folder">
       <div className="bg-gray-100 py-4 px-8 rounded-4 flex flex-col justify-center w-full">
         目标表: {tableName}
       </div>
