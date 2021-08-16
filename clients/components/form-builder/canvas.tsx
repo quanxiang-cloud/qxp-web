@@ -102,7 +102,8 @@ function FormFields(): JSX.Element {
             const componentName = schema['x-component'] || '';
             const isSubTableComponent = componentName.toLocaleLowerCase() === 'subtable';
             if (componentName === undefined) return null;
-            const Component = registry.layoutComponents[componentName.toLocaleLowerCase()];
+            const Component = registry.layoutComponents[componentName.toLocaleLowerCase()] ||
+              registry.editComponents[componentName.toLocaleLowerCase()];
 
             return (
               <div
@@ -114,11 +115,21 @@ function FormFields(): JSX.Element {
                   'field-item-active': store.activeFieldName === _schema.id,
                 })}
               >
-                {
-                  isLayoutComponent ?
-                    React.createElement(Component, { schema: _schema }) :
-                    <SchemaForm schema={_schema} actions={actions} components={{ ...registry.components }} />
-                }
+                {isLayoutComponent && React.createElement(Component, { schema: _schema })}
+                {componentName === 'AssociatedRecords' ?
+                  (
+                    <SchemaForm
+                      schema={_schema}
+                      actions={actions}
+                      components={{ AssociatedRecords: Component }} />
+                  ) :
+                  (
+                    <SchemaForm
+                      schema={_schema}
+                      actions={actions}
+                      components={{ ...registry.components }}
+                    />
+                  )}
                 <DeleteButton filedName={_schema.id} />
               </div>
             );

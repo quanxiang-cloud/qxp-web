@@ -11,6 +11,7 @@ const AVAILABLE_CATEGORIES: Array<{ title: string; key: FormBuilder.ElementCateg
 class Registry {
   elements: Elements;
   components: { [key: string]: React.JSXElementConstructor<any>; } = {};
+  editComponents: { [key: string]: React.JSXElementConstructor<any>; } = {};
   layoutComponents: { [key: string]: React.JSXElementConstructor<any>; } = {};
   categories: Array<{ title: string; key: FormBuilder.ElementCategory }>;
   categorizedElements: Dictionary<FormBuilder.SourceElement<any>[]>;
@@ -35,7 +36,9 @@ class Registry {
     Object.keys(this.elements).forEach((componentName: string) => {
       const { component, isLayoutComponent, editComponent } = this.elements[componentName];
       this.components[componentName] = component;
-
+      if (editComponent) {
+        this.editComponents[componentName] = editComponent as React.JSXElementConstructor<any>
+      }
       if (isLayoutComponent) {
         this.layoutComponents[componentName] = editComponent as React.JSXElementConstructor<any>;
       }
