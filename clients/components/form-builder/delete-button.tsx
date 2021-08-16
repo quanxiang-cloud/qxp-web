@@ -11,17 +11,9 @@ type Props = {
 function DeleteButton({ filedName }: Props): JSX.Element {
   const store = React.useContext(StoreContext);
 
-  const handleClick = (): void => {
-    if (!store.activeField) {
-      return;
-    }
-
-    store.deleteField(filedName);
-  };
-
   return (
     <div
-      onClick={handleClick}
+      onClick={() => store.deleteField(filedName)}
       className="delete-field-icon"
     >
       <Icon type="light" name="delete_outline" size={16} />

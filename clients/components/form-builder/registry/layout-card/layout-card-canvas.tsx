@@ -59,9 +59,8 @@ function LayoutCard({ schema }: Props): JSX.Element {
   }, []);
 
   React.useEffect(() => {
-    const _fields = store.fieldsForLayout[id] || [];
-    setFields(_fields.filter((field) => field.display));
-  }, [store.fieldsForLayout]);
+    setFields(store.getFieldsInLayout(id));
+  }, [store.fields]);
 
   const handleAddField = (e: Sortable.SortableEvent): void => {
     let fieldName: string;
@@ -73,11 +72,11 @@ function LayoutCard({ schema }: Props): JSX.Element {
     if (dataId.startsWith('form_builder_')) {
       fieldName = dataId.split('form_builder_')[1];
 
-      store.appendComponentToLayout(schema.id, fieldName, index);
+      store.appendComponent(fieldName, index, id);
     } else {
       fieldName = dataId;
 
-      store.modComponentPosition(fieldName, index, schema.id);
+      store.updateFieldIndex(fieldName, index, id);
     }
   };
 
@@ -87,7 +86,7 @@ function LayoutCard({ schema }: Props): JSX.Element {
 
     if (newIndex === undefined || oldIndex === undefined || fieldName === null) return;
 
-    store.updateFieldInLayoutIndex(newIndex, oldIndex, fieldName, id);
+    store.updateFieldIndex(fieldName, newIndex, id);
   };
 
   return (

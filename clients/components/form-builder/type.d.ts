@@ -154,6 +154,18 @@ type SchemaFieldItem = ISchema & {
   tabIndex?: number;
 }
 
+type FormItem = {
+  componentName: string;
+  fieldName: string;
+  configValue: any;
+  'x-index'?: number;
+  parentField?: string;
+  tabIndex?: string;
+  'x-internal'?: XInternal;
+  isLayoutComponent?: boolean,
+  children?: FormItem[];
+};
+
 // a copy of formily Schema type definition for reference
 // interface Schema {
 //   title: string;

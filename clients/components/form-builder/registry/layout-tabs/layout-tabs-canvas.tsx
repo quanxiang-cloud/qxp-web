@@ -4,6 +4,7 @@ import { SchemaForm } from '@formily/antd';
 import { observer } from 'mobx-react';
 import { ReactSortable, Sortable } from 'react-sortablejs';
 import cs from 'classnames';
+import { noop } from 'lodash';
 
 import registry from '../index';
 import { StoreContext } from '@c/form-builder/context';
@@ -20,11 +21,9 @@ function LayoutTabs({ schema }: Props): JSX.Element | null {
   const store = React.useContext(StoreContext);
 
   const [fields, setFields] = React.useState<Array<IteratISchema & { tabIndex?: string }>>([]);
-
   React.useEffect(() => {
-    const _fields = store.fieldsForLayout[id] || [];
-    setFields(_fields.filter((field) => field.display));
-  }, [store.fieldsForLayout]);
+    setFields(store.getFieldsInLayout(id));
+  }, [store.fields]);
 
   const properties: ISchema | undefined = schema?.properties?.FIELDs?.properties?.[id];
 
@@ -44,11 +43,11 @@ function LayoutTabs({ schema }: Props): JSX.Element | null {
     if (dataId.startsWith('form_builder_')) {
       fieldName = dataId.split('form_builder_')[1];
 
-      store.appendComponentToLayout(schema.id, fieldName, index, activeKey);
+      store.appendComponent(fieldName, index, id, activeKey);
     } else {
       fieldName = dataId;
 
-      store.modComponentPosition(fieldName, index, schema.id, activeKey);
+      store.updateFieldIndex(fieldName, index, schema.id, activeKey);
     }
   };
 
@@ -58,9 +57,8 @@ function LayoutTabs({ schema }: Props): JSX.Element | null {
 
     if (newIndex === undefined || oldIndex === undefined || fieldName === null) return;
 
-    store.updateFieldInTabsIndex(newIndex, oldIndex, fieldName, id, activeKey);
+    store.updateFieldIndex(fieldName, newIndex, id);
   };
-
   return (
     <Tabs activeKey={activeKey} tabPosition={position} onChange={setActiveKey}>
       {Array.from(new Set(tabs.filter((itm) => !!itm))).map((label) => (
@@ -86,14 +84,17 @@ function LayoutTabs({ schema }: Props): JSX.Element | null {
             }}
             animation={600}
             list={fields}
-            setList={() => { }}
+            setList={noop}
             onAdd={handleAddField}
             onUpdate={handleUpdateField}
             onStart={() => store.setDragging(true)}
             onEnd={() => store.setDragging(false)}
           >
             {fields
-              .filter((itm) => itm.tabIndex === label)
+              .filter((itm) => {
+                const schema: ISchema = itm?.properties?.FIELDs?.properties?.[itm.id] || {}
+                return schema?.['x-internal']?.tabIndex === label;
+              })
               .map((itm) => {
                 const id = itm.id;
 
