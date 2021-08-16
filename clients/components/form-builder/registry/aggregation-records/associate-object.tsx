@@ -28,7 +28,7 @@ const getNumericFields = (properties: Record<string, ISchema>): LabelValue[] => 
 function AssociateObject(props: ISchemaFieldComponentProps): JSX.Element {
   const { schema, appID } = useContext(StoreContext);
   const selectTables = schemaToFields(schema).reduce((acc: LabelValue[], field) => {
-    if (acceptFieldTypes.includes(field.componentName)) {
+    if (acceptFieldTypes.map((v) => v.toLowerCase()).includes(field.componentName.toLowerCase())) {
       acc.push({ label: field.title as string, value: field.id });
     }
     return acc;
