@@ -143,8 +143,10 @@ function ApiDocumentDetails(): JSX.Element {
           separator
           strechNavs
           items={tabItems}
-          onChange={(v) => store.fetchXName(v as ApiType)}
           className='w-full h-full'
+          onChange={(v) => {
+            if (v !== 'fields') store.fetchXName(v as ApiType);
+          }}
         />
       </div>
     </div>
