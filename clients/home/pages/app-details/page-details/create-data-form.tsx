@@ -54,7 +54,6 @@ function CreateDataForm({ appID, pageID, rowID, onCancel, title }: Props): JSX.E
 
   const defaultValues = rowID ? data?.record : undefined;
   const { schema } = data || { properties: {} };
-
   if (isLoading) {
     return <Loading desc="加载中..." />;
   }

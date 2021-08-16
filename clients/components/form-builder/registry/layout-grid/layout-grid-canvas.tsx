@@ -5,17 +5,19 @@ import { SchemaForm } from '@formily/antd';
 import { noop } from 'lodash';
 import cs from 'classnames';
 
-import registry from '../index';
 import { StoreContext } from '@c/form-builder/context';
 import DeleteButton from '@c/form-builder/delete-button';
 import { findField } from '@c/form-builder/utils/fields-operator';
+
+import { blockStyle } from './utils';
+import registry from '../index';
+
 interface Props {
   schema: IteratISchema;
 }
 
 function LayoutGrid({ schema }: Props): JSX.Element {
   const { id } = schema;
-
   const store = React.useContext(StoreContext);
 
   const [fields, setFields] = React.useState<Array<IteratISchema>>([]);
@@ -56,12 +58,8 @@ function LayoutGrid({ schema }: Props): JSX.Element {
 
   return (
     <ReactSortable
-      className="min-h-32 border_b6 layout-grid"
-      style={{
-        display: 'grid',
-        gridTemplateColumns: `repeat(${columns}, 1fr)`,
-        gridColumnGap: '4px',
-      }}
+      className="min-h-32 border_b6 grid layout-grid gap-4"
+      style={{ gridTemplateColumns: `repeat(${columns}, 1fr)` }}
       group={{
         name: 'form_builder_canvas_layout',
         pull: true,
@@ -95,6 +93,7 @@ function LayoutGrid({ schema }: Props): JSX.Element {
         const components = isAssociatedRecords ? {
           AssociatedRecords: registry.editComponents['associatedrecords'.toLocaleLowerCase()],
         } : registry.components;
+        const curComponent: string = itm?.properties?.FIELDs?.properties?.[id]?.['x-component'] || '';
 
         return (
           <div
@@ -104,6 +103,7 @@ function LayoutGrid({ schema }: Props): JSX.Element {
               'field-mask',
               { 'field-item-active': id === store.activeFieldName },
             )}
+            style={blockStyle(curComponent, columns)}
             onClick={(e) => {
               e.stopPropagation();
               store.setActiveFieldKey(id);
