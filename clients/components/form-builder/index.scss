@@ -355,3 +355,19 @@
 .hidden {
   display: none;
 }
+
+.fake-component{
+  min-height: 140px;
+  background-color: #fff;
+}
+
+.fake-component-header{
+  line-height: 45px;
+  justify-content: space-around;
+  border-bottom: 1px solid var(--gray-200);
+  
+}
+
+.fake-component-item{
+  line-height: 45px;
+}

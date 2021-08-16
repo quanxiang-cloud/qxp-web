@@ -1,18 +1,13 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Column } from 'react-table';
 import { get } from 'lodash';
-import { useQuery } from 'react-query';
 import _, { every, isObject, map, pipe, filter } from 'lodash/fp';
 
-import Table from '@c/table';
 import Button from '@c/button';
 import Icon from '@c/icon';
 import FormDataValueRenderer from '@c/form-data-value-renderer';
 import { isEmpty } from '@lib/utils';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
-
-import { findTableRecords } from './api';
-import SelectRecordsModal from './select-records-modal';
 
 type Props = {
   appID: string;
@@ -49,28 +44,10 @@ function AssociatedRecords({
   associatedTable,
   columns,
   selected,
-  appID,
-  tableID,
-  multiple,
   onChange,
   readOnly,
-  filterConfig,
 }: Props): JSX.Element {
-  const [showSelectModal, setShowSelectModal] = useState(false);
-  const { isLoading, data } = useQuery(['FIND_TABLE_RECORDS', selected], () => {
-    return findTableRecords(appID, tableID, selected);
-  });
-
   const tableColumns = computeTableColumns(associatedTable, columns);
-  if (isLoading) {
-    return (<div>loading...</div>);
-  }
-
-  if (!data) {
-    return (
-      <div>some error</div>
-    );
-  }
 
   tableColumns.push({
     id: 'remove',
@@ -90,41 +67,16 @@ function AssociatedRecords({
 
   return (
     <div className="w-full">
-      <Table
-        className="mb-16"
-        rowKey="_id"
-        columns={tableColumns}
-        data={data}
-        emptyTips="没有关联记录"
-      />
-      {!readOnly && (
-        <>
-          <Button type="button" onClick={() => setShowSelectModal(true)}>选择关联记录</Button>
-          {showSelectModal && (
-            <SelectRecordsModal
-              onClose={() => setShowSelectModal(false)}
-              appID={appID}
-              tableID={tableID}
-              filterConfig={filterConfig}
-              multiple={multiple}
-              associatedTable={associatedTable}
-              columns={columns}
-              onSubmit={(newSelectedRecords) => {
-                if (multiple) {
-                  const selectedKeys = selected.concat(
-                    newSelectedRecords.filter((id) => !selected.includes(id)),
-                  );
-                  onChange(selectedKeys);
-                } else {
-                  onChange(newSelectedRecords);
-                }
-                setShowSelectModal(false);
-              }}
-            />
-          )}
-        </>
-      )}
+      <div className="fake-component">
+        <div className="flex space-around fake-component-header">
+          {
+            tableColumns.map((itm) => <div className="fake-component-item" key={itm.id}>{itm.Header}</div>)
+          }
+        </div>
+      </div>
+      {!readOnly && <Button type="button">选择关联记录</Button>}
     </div>
+
   );
 }
 
