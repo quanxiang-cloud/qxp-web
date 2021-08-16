@@ -23,7 +23,7 @@ function CreatedAppModal({ onCancel }: Props) {
       store.createdApp({ ...data, useStatus: -1 }).then((res: string) => {
         toast.success('创建应用成功！');
         onCancel();
-        history.push(`/apps/details/${res}`);
+        history.push(`/apps/details/${res}/page_setting`);
       }).catch((e) => {
         toast.error(e.message);
       });

@@ -23,12 +23,6 @@ function AppActions({ openModal, appInfo }: Props) {
       ),
     },
     {
-      key: 'setting',
-      label: (
-        <div className="flex items-center"><Icon name="settings" className="mr-4" />应用设置</div>
-      ),
-    },
-    {
       key: 'visit',
       disabled: appInfo.useStatus < 0,
       label: (
