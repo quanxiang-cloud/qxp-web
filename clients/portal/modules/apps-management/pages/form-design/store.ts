@@ -46,7 +46,7 @@ class FormDesignStore {
   @observable hasSchema = false;
   @observable initScheme: ISchema = {};
   @observable pageTableColumns: string[] = [];
-  @observable pageTableShowRule: TableConfig = { pageSize: 10 };
+  @observable pageTableShowRule: TableConfig = { order: '-created_at', pageSize: 10 };
   @observable filters: Filters = [];
   @observable filterModalVisible = false;
 
@@ -214,6 +214,7 @@ class FormDesignStore {
       this.filters = config.filters || [];
       if (config.pageTableShowRule) {
         this.pageTableShowRule = config.pageTableShowRule;
+        if (!this.pageTableShowRule.order) this.pageTableShowRule.order = '-created_at';
       }
       this.pageLoading = false;
     }).catch(() => {
@@ -255,7 +256,7 @@ class FormDesignStore {
     this.pageID = '';
     this.formStore = null;
     this.pageTableColumns = [];
-    this.pageTableShowRule = {};
+    this.pageTableShowRule = { order: '-created_at', pageSize: 10 };
     this.filters = [];
     this.appPageStore.clear();
   }
