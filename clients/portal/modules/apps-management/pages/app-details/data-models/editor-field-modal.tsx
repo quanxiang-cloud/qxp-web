@@ -1,12 +1,11 @@
-import React from 'react';
-import { SchemaForm, useForm, FormEffectHooks, createFormActions } from '@formily/antd';
+import React, { useState } from 'react';
+import { SchemaForm, useForm, FormEffectHooks, createFormActions, LifeCycleTypes } from '@formily/antd';
 import { Input, Select, Switch, NumberPicker } from '@formily/antd-components';
 
-import Modal from '@c/modal';
+import Modal, { FooterBtnProps } from '@c/modal';
 
-import { FIELD_SCHEMA } from './form-schema';
-
-const { onFieldValueChange$ } = FormEffectHooks;
+import store from './store';
+import { getFieldSchema } from './form-schema';
 
 type Props = {
   isEditor: boolean;
@@ -19,17 +18,29 @@ const PATH: Record<string, string> = {
   string: '*(length, validationRules)',
   datetime: 'format',
   number: '*(length, digits)',
-  array: 'subtype',
+  array: 'subType',
 };
 
+const { onFieldValueChange$ } = FormEffectHooks;
+
 function EditorDataModelModal({ isEditor, onCancel, onSubmit, field }: Props): JSX.Element {
+  const [formSchema] = useState(getFieldSchema(isEditor ? [] : store.existingFields));
   const form = useForm({
-    onSubmit,
+    onSubmit: (formData) => {
+      if (formData.subType) {
+        formData.items = {
+          title: '',
+          type: formData.subType,
+        };
+      }
+
+      onSubmit(formData);
+    },
     initialValues: field,
-    effects: () => {
+    effects: ($) => {
       const { setFieldState } = createFormActions();
       onFieldValueChange$('type').subscribe(({ value }) => {
-        setFieldState('*(length, validationRules, digits, format, subtype, regular)', (state) => {
+        setFieldState('*(length, validationRules, digits, format, subType, regular)', (state) => {
           state.visible = false;
         });
 
@@ -43,38 +54,59 @@ function EditorDataModelModal({ isEditor, onCancel, onSubmit, field }: Props): J
           state.visible = value === 'custom';
         });
       });
+
+      $(LifeCycleTypes.ON_FORM_INIT).subscribe(() => {
+        setFieldState('id', (state) => {
+          state.props.readOnly = isEditor;
+        });
+      });
     },
   });
 
   const handleSubmit = () => {
-    form.submit();
+    form.submit().then(() => {
+      onCancel();
+    });
   };
+
+  const btnList: FooterBtnProps[] = [
+    {
+      text: '取消',
+      key: 'cancel',
+      onClick: onCancel,
+    },
+    {
+      text: '保存',
+      key: 'next',
+      modifier: 'primary',
+      onClick: handleSubmit,
+    },
+  ];
+
+  if (!isEditor) {
+    btnList.push({
+      text: '保存且继续新建',
+      key: 'save_creat',
+      modifier: 'primary',
+      onClick: async () => {
+        await form.submit();
+        await form.reset();
+        form.clearErrors();
+      },
+    });
+  }
 
   return (
     <Modal
       title={`${isEditor ? '编辑' : '新建'}数据字段`}
       onClose={onCancel}
-      footerBtns={[
-        {
-          text: '取消',
-          key: 'cancel',
-          iconName: 'close',
-          onClick: onCancel,
-        },
-        {
-          text: '保存',
-          key: 'next',
-          iconName: 'check',
-          modifier: 'primary',
-          onClick: handleSubmit,
-        },
-      ]}
+      footerBtns={btnList}
     >
       <div className='p-20'>
         <SchemaForm
           form={form as any}
           components={{ Input, Select, Switch, NumberPicker }}
-          schema={FIELD_SCHEMA}
+          schema={formSchema}
         />
       </div>
     </Modal>

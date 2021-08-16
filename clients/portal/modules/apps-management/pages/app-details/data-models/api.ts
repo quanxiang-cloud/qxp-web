@@ -15,3 +15,12 @@ export function saveTableSchema(
     { tableID, schema, source },
   );
 }
+
+export function modelCodeCheckRepeat(
+  appID: string, tableID: string,
+): Promise<{ exist: boolean; }> {
+  return httpClient(
+    `/api/v1/structor/${appID}/m/table/checkRepeat`,
+    { tableID },
+  );
+}

@@ -75,8 +75,6 @@ export const SYSTEM_FIELDS: Record<string, ModelFieldSchema> = {
   },
 };
 
-
-
 export const FIELD_COLUMNS: UnionColumns<ModelField>[] = [
   {
     Header: '字段编码',
