@@ -1,9 +1,13 @@
-import React, { MouseEvent, useState } from 'react';
+import React, { MouseEvent, useEffect, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 
 import Icon from '@c/icon';
 import Modal from '@c/modal';
+import toast from '@lib/toast';
 import Select from '@c/select';
+
+import { fetchCustomPageList } from '../../api';
+import { CustomPageInfo } from '../../type';
 
 type Props = {
   pageId: string | undefined;
@@ -13,6 +17,7 @@ type Props = {
 
 function PageBuildNav({ pageId, pageName, appID }: Props): JSX.Element {
   const [openModal, setOpenModal] = useState(false);
+  const [customPageList, setCustomPageList] = useState<LabelValue[]>([]);
   const history = useHistory();
   const BUILD_NAV = [
     {
@@ -44,6 +49,21 @@ function PageBuildNav({ pageId, pageName, appID }: Props): JSX.Element {
   function onClose(): void {
     setOpenModal(false);
   }
+
+  useEffect(() => {
+    if (!openModal) {
+      return;
+    }
+    fetchCustomPageList(appID as string, {})
+      .then(({ list = [] }) => {
+        setCustomPageList(list.map(({ name, id }: CustomPageInfo) => {
+          return { label: name, value: id };
+        }));
+      })
+      .catch((err) => {
+        toast.error(err.message);
+      });
+  }, [openModal]);
 
   return (
     <>
@@ -90,10 +110,8 @@ function PageBuildNav({ pageId, pageName, appID }: Props): JSX.Element {
               defaultValue="one"
               placeholder="请选择"
               className="flex-1 ml-10"
-              options={[
-                { label: '页面1', value: 'one' },
-                { label: '页面2', value: 'two' },
-              ]}
+              options={customPageList}
+              optionClassName="max-h-200 overflow-auto"
             />
           </div>
           <div className="mb-28">
