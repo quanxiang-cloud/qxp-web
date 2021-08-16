@@ -15,7 +15,7 @@ type Props = {
   appID: string | undefined;
 }
 
-function PageBuildNav({ pageId, pageName, appID }: Props): JSX.Element {
+function PageBuildNav({ pageId, pageName, appID = '' }: Props): JSX.Element {
   const [openModal, setOpenModal] = useState(false);
   const [customPageList, setCustomPageList] = useState<LabelValue[]>([]);
   const history = useHistory();
@@ -54,15 +54,14 @@ function PageBuildNav({ pageId, pageName, appID }: Props): JSX.Element {
     if (!openModal) {
       return;
     }
-    fetchCustomPageList(appID as string, {})
-      .then(({ list = [] }) => {
-        setCustomPageList(list.map(({ name, id }: CustomPageInfo) => {
-          return { label: name, value: id };
-        }));
-      })
-      .catch((err) => {
-        toast.error(err.message);
-      });
+
+    fetchCustomPageList(appID).then(({ list = [] }) => {
+      setCustomPageList(list.map(({ name, id }: CustomPageInfo) => {
+        return { label: name, value: id };
+      }));
+    }).catch((err) => {
+      toast.error(err.message);
+    });
   }, [openModal]);
 
   return (
