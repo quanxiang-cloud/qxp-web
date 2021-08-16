@@ -116,21 +116,20 @@ function FormFields(): JSX.Element {
                 })}
               >
                 {isLayoutComponent && React.createElement(Component, { schema: _schema })}
-                {componentName === 'AssociatedRecords' ?
-                  (
-                    <SchemaForm
-                      schema={_schema}
-                      actions={actions}
-                      components={{ AssociatedRecords: Component }} />
-                  ) :
-                  (
-                    <SchemaForm
-                      schema={_schema}
-                      actions={actions}
-                      components={{ ...registry.components }}
-                    />
-                  )}
-                <DeleteButton filedName={_schema.id} />
+                {(!isLayoutComponent && componentName === 'AssociatedRecords') && (
+                  <SchemaForm
+                    schema={_schema}
+                    actions={actions}
+                    components={{ AssociatedRecords: Component }} />
+                )}
+                {(!isLayoutComponent && componentName !== 'AssociatedRecords') && (
+                  <SchemaForm
+                    schema={_schema}
+                    actions={actions}
+                    components={{ ...registry.components }}
+                  />
+                )}
+                < DeleteButton filedName={_schema.id} />
               </div>
             );
           })}

@@ -8,6 +8,7 @@ import cs from 'classnames';
 import registry from '../index';
 import { StoreContext } from '@c/form-builder/context';
 import DeleteButton from '@c/form-builder/delete-button';
+import { findField } from '@c/form-builder/utils/fields-operator';
 interface Props {
   schema: IteratISchema;
 }
@@ -90,6 +91,11 @@ function LayoutGrid({ schema }: Props): JSX.Element {
       {fields.map((itm) => {
         const id = itm.id;
 
+        const isAssociatedRecords = findField(id, store.fields)?.componentName === 'AssociatedRecords';
+        const components = isAssociatedRecords ? {
+          AssociatedRecords: registry.editComponents['associatedrecords'.toLocaleLowerCase()],
+        } : registry.components;
+
         return (
           <div
             key={id}
@@ -103,7 +109,7 @@ function LayoutGrid({ schema }: Props): JSX.Element {
               store.setActiveFieldKey(id);
             }}
           >
-            <SchemaForm components={registry.components} schema={itm} />
+            <SchemaForm components={components} schema={itm} />
             <DeleteButton filedName={id} />
           </div>
         );
