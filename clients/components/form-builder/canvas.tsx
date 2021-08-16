@@ -46,7 +46,7 @@ function FormFields(): JSX.Element {
     } else {
       fieldName = dataId;
 
-      store.modComponentPosition(fieldName, index);
+      store.updateFieldIndex(fieldName, index);
     }
   };
 
@@ -56,7 +56,7 @@ function FormFields(): JSX.Element {
 
     if (newIndex === undefined || oldIndex === undefined || fieldName === null) return;
 
-    store.updateFieldIndex(newIndex, oldIndex, fieldName);
+    store.updateFieldIndex(fieldName, newIndex);
   };
 
   React.useEffect(() => {
@@ -85,6 +85,7 @@ function FormFields(): JSX.Element {
   return (
     <CanvasContext.Provider value={{ isInCanvas: true }}>
       <div className="form-builder-canvas">
+
         <ReactSortable
           group={GroupOptions}
           animation={600}
@@ -95,31 +96,30 @@ function FormFields(): JSX.Element {
           onStart={() => store.setDragging(true)}
           onEnd={() => store.setDragging(false)}
         >
-          {fields.map((schema: IteratISchema) => {
-            const { isLayoutComponent } = schema['x-internal'] || {};
-            const { componentName } = schema;
-            const isSubTableComponent = componentName === 'subtable';
-
+          {fields.map((_schema: IteratISchema) => {
+            const schema: ISchema = _schema?.properties?.FIELDs?.properties?.[_schema.id] || {};
+            const { isLayoutComponent } = schema?.['x-internal'] || {};
+            const componentName = schema['x-component'] || '';
+            const isSubTableComponent = componentName.toLocaleLowerCase() === 'subtable';
             if (componentName === undefined) return null;
-
-            const Component = registry.layoutComponents[componentName];
+            const Component = registry.layoutComponents[componentName.toLocaleLowerCase()];
 
             return (
               <div
-                onClick={() => store.setActiveFieldKey(schema.id)}
-                key={schema.id}
+                onClick={() => store.setActiveFieldKey(_schema.id)}
+                key={_schema.id}
                 data-layout={isLayoutComponent ? 'layout' : 'simple'}
                 className={cs('field-item', fieldItemClassName, {
                   'field-mask': !isLayoutComponent && !isSubTableComponent,
-                  'field-item-active': store.activeFieldName === schema.id,
+                  'field-item-active': store.activeFieldName === _schema.id,
                 })}
               >
                 {
                   isLayoutComponent ?
-                    React.createElement(Component, { schema }) :
-                    <SchemaForm schema={schema} actions={actions} components={{ ...registry.components }} />
+                    React.createElement(Component, { schema: _schema }) :
+                    <SchemaForm schema={_schema} actions={actions} components={{ ...registry.components }} />
                 }
-                <DeleteButton filedName={schema.id} />
+                <DeleteButton filedName={_schema.id} />
               </div>
             );
           })}
