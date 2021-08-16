@@ -1,12 +1,16 @@
-import React, { useContext, useState, Ref } from 'react';
+import React, { useContext, useState, Ref, CSSProperties } from 'react';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
-import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd';
 import { usePopper } from 'react-popper';
 import { nanoid } from 'nanoid';
 import { useClickAway } from 'react-use';
+import fp from 'lodash/fp';
+import {
+  DragDropContext, Droppable, Draggable, DropResult, DraggingStyle, NotDraggingStyle,
+} from 'react-beautiful-dnd';
 
 import Icon from '@c/icon';
 import { INTERNAL_FIELD_NAMES } from '@c/form-builder/store';
+import { numberTransform } from '@c/form-builder/utils';
 
 import { ActionsContext } from '../context';
 import { SUB_TABLE_TYPES_SCHEMA_MAP, SUB_TABLE_TYPES } from '../constants';
@@ -19,6 +23,14 @@ interface Option {
 
 interface Field extends Option {
   sort: number;
+}
+
+function getItemStyle(draggableStyle?: DraggingStyle | NotDraggingStyle): CSSProperties {
+  return {
+    userSelect: 'none',
+    cursor: 'default',
+    ...draggableStyle,
+  };
 }
 
 function SubTableSchema(props: ISchemaFieldComponentProps): JSX.Element {
@@ -46,7 +58,7 @@ function SubTableSchema(props: ISchemaFieldComponentProps): JSX.Element {
     cur.push({
       label: schema?.title as string || '',
       value: key,
-      sort: schema['x-index'] || 0,
+      sort: numberTransform(schema),
       schema: schema,
     });
     return cur;
@@ -54,8 +66,7 @@ function SubTableSchema(props: ISchemaFieldComponentProps): JSX.Element {
 
   function getIndex(): number {
     const indexes = schemaList.map(({ sort }) => sort);
-    const index = Math.max(...indexes);
-    return Math.abs(index) === Infinity ? 0 : index + 1;
+    return Math.max(...indexes) + 1;
   }
 
   function getSchemaFromOptionType(type: string, currentIndex?: number): ISchema {
@@ -76,8 +87,8 @@ function SubTableSchema(props: ISchemaFieldComponentProps): JSX.Element {
       properties: {
         _id: getSchemaFromOptionType('id'),
         ...fields.reduce((cur: ISchema, next: Field) => {
-          const { schema, sort } = next;
-          cur[nanoid() as keyof ISchema] = {
+          const { schema, sort, value } = next;
+          cur[(value || nanoid()) as keyof ISchema] = {
             ...schema,
             'x-index': sort,
           };
@@ -115,16 +126,32 @@ function SubTableSchema(props: ISchemaFieldComponentProps): JSX.Element {
   }
 
   function handleOnDragEnd(result: DropResult): void {
-    const items = [...schemaList];
     if (!result.destination) {
       return;
     }
-    const sourceEl = items[result.source.index];
-    const targetEl = items[result.destination.index];
-    [sourceEl.sort, targetEl.sort] = [targetEl.sort, sourceEl.sort];
-    const [reorderedItem] = items.splice(result.source.index, 1);
-    items.splice(result.destination.index, 0, reorderedItem);
-    onUpdateFields(items);
+    const { cloneDeep, get, pipe, curry, placeholder } = fp;
+    const items = cloneDeep(schemaList);
+    const getPosition = (path: string): number => get(`${path}.index`, result);
+    const startPosition = getPosition('source');
+    const endPosition = getPosition('destination');
+
+    const removeItem = (items: Field[], startPosition: number): (Field | Field[])[] => {
+      const [removed] = items.splice(startPosition, 1);
+      return [items, removed];
+    };
+
+    const insertItem = curry(([items, removed]: [Field[], Field], endPosition: number) => {
+      items.splice(endPosition, 0, removed);
+      return items;
+    });
+
+    const reSort = (items: Field[]): Field[] => {
+      items.forEach((item, index) => item.sort = index);
+      return items;
+    };
+
+    const updater = pipe(removeItem, insertItem(placeholder, endPosition), reSort);
+    onUpdateFields(updater(items, startPosition));
   }
 
   return (
@@ -170,11 +197,11 @@ function SubTableSchema(props: ISchemaFieldComponentProps): JSX.Element {
       </header>
       <DragDropContext onDragEnd={handleOnDragEnd}>
         <Droppable droppableId="sub-table-sub-fields">
-          {(provided) => (
+          {(dropProvided) => (
             <section
-              {...provided.droppableProps}
+              {...dropProvided.droppableProps}
               className="border-l border-t border-r"
-              ref={provided.innerRef}
+              ref={dropProvided.innerRef}
             >
               {schemaList.map((field, index) => (
                 <Draggable draggableId={field.value} key={field.value} index={index}>
@@ -184,6 +211,7 @@ function SubTableSchema(props: ISchemaFieldComponentProps): JSX.Element {
                       {...dragProvided.dragHandleProps}
                       className="grid grid-cols-3 content-center items-center grid-flow-col"
                       ref={dragProvided.innerRef}
+                      style={getItemStyle(dragProvided.draggableProps.style)}
                     >
                       <div className="border-b border-r flex justify-center items-center h-full">
                         <Icon name="drag_indicator" size={20} className="cursor-move justify-self-start" />
@@ -208,6 +236,7 @@ function SubTableSchema(props: ISchemaFieldComponentProps): JSX.Element {
                   )}
                 </Draggable>
               ))}
+              {dropProvided.placeholder}
             </section>
           )}
         </Droppable>
