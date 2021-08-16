@@ -145,7 +145,6 @@ class AppDetailsStore {
       if (this.curPage.id === treeItem.id && type !== 'delGroup') {
         window.history.replaceState('', '', window.location.pathname);
         this.pageID = '';
-        this.curPage = { id: '' };
       }
 
       this.pagesTreeData = {
@@ -159,6 +158,11 @@ class AppDetailsStore {
 
       if (groupID === 'ROOT') {
         this.pageInitList = this.pageInitList.filter((page) => page.name !== treeItem.data.name);
+
+        if (this.pageInitList.length === 0) {
+          this.curPage = { id: '' };
+        }
+
         toast.success('删除成功');
         return;
       }
@@ -172,6 +176,11 @@ class AppDetailsStore {
         }
         return page;
       });
+
+      if (this.pageInitList.length === 0) {
+        this.curPage = { id: '' };
+      }
+
       toast.success('删除成功');
     });
   }

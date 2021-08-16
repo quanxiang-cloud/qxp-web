@@ -5,6 +5,7 @@ import { useHistory } from 'react-router-dom';
 import Icon from '@c/icon';
 import Button from '@c/button';
 import Card from '@c/card';
+import EmptyTips from '@c/empty-tips';
 import PageLoading from '@c/page-loading';
 import PageBuildNav from './page-build-nav';
 import appPagesStore from '../../store';
@@ -69,7 +70,7 @@ function PageDetails(): JSX.Element {
   ];
 
   if (!curPage.id) {
-    return <></>;
+    return <EmptyTips className="py-32 m-auto" text='暂无页面数据,请先新建页面'/>;
   }
 
   return (
