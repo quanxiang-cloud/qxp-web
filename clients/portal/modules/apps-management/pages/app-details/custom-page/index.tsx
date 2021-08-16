@@ -86,7 +86,7 @@ function CustomPage(): JSX.Element {
     };
 
     if (modalType === 'createPage') {
-      await createCustomPage(appID, { name: values.name }).catch((err) => {
+      await createCustomPage(appID, params).catch((err) => {
         return toast.error(err.message);
       });
       fetchPages();
