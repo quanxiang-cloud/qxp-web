@@ -87,6 +87,7 @@ function FormRenderer(
           <p className="text-red-600">{errorMessage}</p>
         )}
         <SchemaForm
+          previewPlaceholder='-'
           actions={actions}
           onSubmit={handleSubmit}
           onChange={handleOnChange}
