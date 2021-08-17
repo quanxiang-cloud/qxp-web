@@ -24,22 +24,8 @@ function FieldPermissions({ fields, className = '', fieldPer }: Props, ref: Reac
     getFieldPer: getFieldPer,
   }));
 
-  const getFieldPer = () => {
-    const schema: Record<string, any> = {
-      properties: {
-        _id: {
-          title: '_id',
-          'x-internal': {
-            permission: 1,
-          },
-        },
-      },
-      title: '',
-      type: 'object',
-      'x-internal': { permission: visibleField.length ? 1 : 0 },
-    };
-
-    const getPerMission = (key: string) => {
+  const getFieldPer = (): ISchema => {
+    const getPerMission = (key: string): number => {
       const visible = visibleField.includes(key);
       const revisable = revisableField.includes(key);
       const permissions = (visible ? 1 : 0) | (revisable ? 10 : 0);
@@ -115,7 +101,7 @@ function FieldPermissions({ fields, className = '', fieldPer }: Props, ref: Reac
     }
   }, [revisableField]);
 
-  const handleVisibleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleVisibleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const { value, checked } = e.target;
     if (checked) {
       setVisibleField([...visibleField, value]);
@@ -132,7 +118,7 @@ function FieldPermissions({ fields, className = '', fieldPer }: Props, ref: Reac
     }
   };
 
-  const handleRevisableChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleRevisableChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const { value, checked } = e.target;
     if (checked) {
       setRevisableField([...revisableField, value]);
@@ -146,7 +132,7 @@ function FieldPermissions({ fields, className = '', fieldPer }: Props, ref: Reac
     }
   };
 
-  const handleVCheckAll = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleVCheckAll = (e: React.ChangeEvent<HTMLInputElement>): void => {
     if (e.target.checked) {
       setVisibleField(
         fields.map(({ id }) => id),
@@ -157,7 +143,7 @@ function FieldPermissions({ fields, className = '', fieldPer }: Props, ref: Reac
     }
   };
 
-  const handleRCheckAll = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleRCheckAll = (e: React.ChangeEvent<HTMLInputElement>): void => {
     if (e.target.checked) {
       const ids = fieldRevisable.map(({ id }) => id);
       setVisibleField(union(visibleField, ids));
@@ -167,7 +153,7 @@ function FieldPermissions({ fields, className = '', fieldPer }: Props, ref: Reac
     }
   };
 
-  const getTitle = (title: any) => {
+  const getTitle = (title: any): any => {
     switch (title) {
     case 'LayoutTabs':
       return '选项卡';
@@ -180,7 +166,7 @@ function FieldPermissions({ fields, className = '', fieldPer }: Props, ref: Reac
     return title;
   };
 
-  const getSuffix = (field: SchemaFieldItem, fields: SchemaFieldItem[]) => {
+  const getSuffix = (field: SchemaFieldItem, fields: SchemaFieldItem[]): string | null => {
     const currentFieldName = field.id;
 
     const sf = fields.filter((itm) => itm.parentField === currentFieldName)
@@ -211,7 +197,7 @@ function FieldPermissions({ fields, className = '', fieldPer }: Props, ref: Reac
       </div>
       <div className='pb-field-box'>
         <div className='pb-field-item-title'><span>字段</span><span>可见</span><span>可修改</span></div>
-        {fields.filter((field) => !field.parentField).map((field) => (
+        {fields.map((field) => (
           <div key={field.id} className='pb-field-item'>
             <span>
               <span>{getTitle(field.title || field['x-component'])}</span>

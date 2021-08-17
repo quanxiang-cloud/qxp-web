@@ -19,7 +19,7 @@ type UserOrDept = {
   ownerName: string,
 }
 
-function RightsItem({ rights, actions }: Props) {
+function RightsItem({ rights, actions }: Props): JSX.Element {
   const [modalType, setModalType] = useState('');
   const userAndDept = useMemo(() => {
     if (rights.scopes && rights.scopes.length) {
@@ -48,7 +48,9 @@ function RightsItem({ rights, actions }: Props) {
     return { users: [], deptList: [] };
   }, [rights.scopes]);
 
-  const handleAdd = (deptList: EmployeeOrDepartmentOfRole[], employees: EmployeeOrDepartmentOfRole[]) => {
+  const handleAdd = (
+    deptList: EmployeeOrDepartmentOfRole[], employees: EmployeeOrDepartmentOfRole[],
+  ): Promise<boolean | void> => {
     const scopes: DeptAndUser[] = [];
     deptList.forEach((dept) => {
       scopes.push({

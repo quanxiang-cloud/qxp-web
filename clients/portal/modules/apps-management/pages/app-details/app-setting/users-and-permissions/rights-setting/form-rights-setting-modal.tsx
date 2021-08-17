@@ -41,7 +41,7 @@ function RightsSettingModal({ onCancel, rightsGroupID, pageForm }: Props): JSX.E
   const authorizedRef = useRef<{ getAuthorizedPer:() => number }>(null);
   const dataPerRef = useRef<{ getDataValues:() => Promise<Condition[] | undefined> }>(null);
 
-  const handleSave = () => {
+  const handleSave = (): void => {
     setSubLoading(true);
     dataPerRef.current?.getDataValues().then((conditions) => {
       const authority = authorizedRef.current?.getAuthorizedPer() || 0;
@@ -81,8 +81,7 @@ function RightsSettingModal({ onCancel, rightsGroupID, pageForm }: Props): JSX.E
     ]).then(([schemaRes, perDataRes]: any) => {
       const { schema } = schemaRes || {};
       if (schema) {
-        const fields = schemaToFields(schema);
-        setFields(fields.sort((a, b) => (a as any)['x-index'] - (b as any)['x-index']));
+        setFields(schemaToFields(schema));
         const { dataAccess, filter, opt } = perDataRes as any;
         setPerData({
           conditions: dataAccess ? dataAccess.conditions : {},
