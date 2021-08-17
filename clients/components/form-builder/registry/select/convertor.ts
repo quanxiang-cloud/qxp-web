@@ -8,6 +8,7 @@ export interface SelectConfig {
   required: boolean;
   allowCustom: boolean;
   defaultValueFrom: FormBuilder.DefaultValueFrom;
+  datasetId: string;
   availableOptions: Array<{ label: string; value: any; title: string }>,
 }
 
@@ -19,6 +20,7 @@ export const defaultConfig: SelectConfig = {
   required: false,
   allowCustom: false,
   defaultValueFrom: 'customized',
+  datasetId: '',
   availableOptions: [
     { label: '选项一', value: 'option_1', title: '选项一' },
     { label: '选项二', value: 'option_2', title: '选项二' },
@@ -46,11 +48,12 @@ export function toSchema(value: SelectConfig): ISchema {
     // todo support optionsLayout
     ['x-component-props']: {
       allowCustom: value.allowCustom,
+      datasetId: value.datasetId,
     },
     ['x-internal']: {
       sortable: value.sortable,
       permission: 3,
-      defaultValueFrom: 'customized',
+      defaultValueFrom: value.defaultValueFrom,
     },
   };
 }
@@ -72,6 +75,7 @@ export function toConfig(schema: ISchema): SelectConfig {
     allowCustom: schema['x-component-props']?.allowCustom,
     // todo implement this
     defaultValueFrom: schema['x-internal']?.defaultValueFrom || 'customized',
+    datasetId: schema['x-component-props']?.datasetId,
     // todo refactor this
     availableOptions: schema.enum as Array<{ label: string; value: any; title: string }> || [],
   };

@@ -2,12 +2,12 @@ import React from 'react';
 import { Checkbox, Space } from 'antd';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 
-import useHandleOptions from '@lib/hooks/use-handle-options';
+import useEnumOptions from '@lib/hooks/use-enum-options';
 
 type CheckboxValueType = string | number | boolean;
 
 function CheckBoxGroup(fieldProps: ISchemaFieldComponentProps): JSX.Element {
-  const options = useHandleOptions(fieldProps);
+  const options = useEnumOptions(fieldProps);
   const { optionsLayout } = fieldProps.props['x-component-props'];
 
   function handleCheckBoxChange(value: Array<CheckboxValueType>): void {
