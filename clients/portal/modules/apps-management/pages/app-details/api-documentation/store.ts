@@ -12,8 +12,7 @@ class ApiDocStore {
   fetchDataModelDisposer: IReactionDisposer
 
   constructor() {
-    this.fetchDataModelDisposer = reaction(() => this.params, this.fetchDataModels);
-    reaction(() => this.tableID, this.fetchSchema);
+    this.fetchDataModelDisposer = reaction(() => this.tableID, this.fetchSchema);
   }
 
   @observable appID = '';
@@ -49,6 +48,7 @@ class ApiDocStore {
     fetchDataModels(this.appID, this.params).then((res) => {
       const { list = [] } = res || {};
       this.dataModels = list;
+      this.currentDataModel = this.dataModels[0] || INIT_CURRENT_MODEL;
       this.tableID = list[0]?.tableID;
     }).catch((err) => {
       toast.error(err);
@@ -56,12 +56,10 @@ class ApiDocStore {
   }
 
   @action
-  fetchSchema = (modelID: string): void => {
-    if (!modelID) {
-      return;
-    }
+  fetchSchema = (tableID: string): void => {
+    if (!tableID) return;
     this.isAPITabLoading = true;
-    getTableSchema(this.appID, modelID).then((res: any) => {
+    getTableSchema(this.appID, tableID).then((res: any) => {
       this.isAPITabLoading = false;
       this.dataModelSchema = { ...res, table_id: res.tableID };
     }).catch((err) => {

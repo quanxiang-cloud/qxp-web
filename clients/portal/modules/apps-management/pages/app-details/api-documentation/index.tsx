@@ -16,6 +16,9 @@ function ApiDocument(): JSX.Element {
 
   useEffect(() => {
     store.fetchDataModels();
+    return () => {
+      store.tableID = '';
+    };
   }, []);
 
   return (
