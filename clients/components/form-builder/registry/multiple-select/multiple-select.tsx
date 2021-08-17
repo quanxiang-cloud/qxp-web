@@ -1,32 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Select } from 'antd';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 
-import { getDatasetById } from '@portal/modules/system-mgmt/dataset/api';
-import { parseJSON } from '@lib/utils';
+import useHandleOptions from '@lib/hooks/use-handle-options';
 
 const { Option } = Select;
 
 function MultipleSelect(fieldProps: ISchemaFieldComponentProps): JSX.Element {
-  const [options, setOptions] = useState<LabelValue[]>([]);
-  const datasetId = fieldProps.props['x-component-props'].datasetId;
-  const defaultValueFrom = fieldProps.props['x-internal'].defaultValueFrom;
-
-  useEffect(() => {
-    if (fieldProps.props.enum && defaultValueFrom === 'customized') {
-      setOptions(fieldProps.props.enum || []);
-    }
-  }, [fieldProps.props.enum]);
-
-  useEffect(() => {
-    if (datasetId && defaultValueFrom === 'dataset') {
-      getDatasetById(datasetId).then(({ content = '' }) => {
-        let _options = [];
-        _options = parseJSON(content, []);
-        setOptions(_options);
-      });
-    }
-  }, [datasetId]);
+  const options = useHandleOptions(fieldProps);
 
   function handleSelectChange(value: string[]): void {
     fieldProps.mutators.change(value);

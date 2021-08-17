@@ -1,32 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Checkbox, Space } from 'antd';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 
-import { getDatasetById } from '@portal/modules/system-mgmt/dataset/api';
-import { parseJSON } from '@lib/utils';
+import useHandleOptions from '@lib/hooks/use-handle-options';
 
 type CheckboxValueType = string | number | boolean;
 
 function CheckBoxGroup(fieldProps: ISchemaFieldComponentProps): JSX.Element {
-  const [options, setOptions] = useState<LabelValue[]>([]);
-  const { optionsLayout, datasetId } = fieldProps.props['x-component-props'];
-  const defaultValueFrom = fieldProps.props['x-internal'].defaultValueFrom;
-
-  useEffect(() => {
-    if (fieldProps.props.enum && defaultValueFrom === 'customized') {
-      setOptions(fieldProps.props.enum || []);
-    }
-  }, [fieldProps.props.enum]);
-
-  useEffect(() => {
-    if (datasetId && defaultValueFrom === 'dataset') {
-      getDatasetById(datasetId).then(({ content = '' }) => {
-        let _options = [];
-        _options = parseJSON(content, []);
-        setOptions(_options);
-      });
-    }
-  }, [datasetId]);
+  const options = useHandleOptions(fieldProps);
+  const { optionsLayout } = fieldProps.props['x-component-props'];
 
   function handleCheckBoxChange(value: Array<CheckboxValueType>): void {
     fieldProps.mutators.change(value);

@@ -80,7 +80,7 @@ const schema: ISchema = {
               value: 'customized',
             },
             {
-              label: '数据集',
+              label: '选项集',
               value: 'dataset',
             },
           ],
