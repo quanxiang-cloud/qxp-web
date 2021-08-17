@@ -12,6 +12,7 @@ import PageLoading from '@c/page-loading';
 import FieldsDesign from './fields-design';
 import store from './store';
 import { BASIC_INFO_SCHEMA } from './form-schema';
+import { modelCodeCheckRepeat } from './api';
 
 type Props = {
   isEditor: boolean;
@@ -38,10 +39,24 @@ function EditorDataModel({ isEditor, onCancel, onSubmit }: Props): JSX.Element {
     }
   }, []);
 
-  const handleNext = (): void => {
-    form.submit().then(() => {
-      setStep(1);
-    });
+  const handleNext = async (): Promise<void> => {
+    const { values } = await form.submit();
+    if (!isEditor) {
+      await new Promise<void>((resolve, reject) => {
+        modelCodeCheckRepeat(store.appID, values.tableID).then((res) => {
+          if (res?.exist) {
+            actions.setFieldState('tableID', (state) => {
+              state.ruleErrors = ['模型编码重复'];
+            });
+            reject(new Error('模型编码重复'));
+          } else {
+            resolve();
+          }
+        });
+      });
+    }
+
+    setStep(1);
   };
 
   const btnList: FooterBtnProps[] = curStep === 0 ? [

@@ -48,6 +48,10 @@ class AppModelStore {
     };
   }
 
+  @computed get existingFields(): string[] {
+    return this.fields.map(({ id }) => id);
+  }
+
   @action
   setParams = (newParams: Partial<DataModelParams>): void => {
     this.params = { ...this.params, ...newParams };
