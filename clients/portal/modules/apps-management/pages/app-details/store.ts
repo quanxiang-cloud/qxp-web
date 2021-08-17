@@ -122,6 +122,8 @@ class AppDetailsStore {
       this.fetchAppDetails(this.appID).then(() => {
         toast.success('修改成功！');
       });
+    }).catch((err) => {
+      toast.error(err);
     });
   }
 
