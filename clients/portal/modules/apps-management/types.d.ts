@@ -86,6 +86,13 @@ type PageInfo = {
   sort?: number;
 }
 
+type fetchPageListRes = {
+  count: number;
+  menu: PageInfo[];
+}
+
+type fetchPerGroupFormRes = { formArr: { id: string, authority: number }[] }
+
 type PerPageInfo = PageInfo & { authority: number };
 
 type AppParams = {
