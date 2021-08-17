@@ -69,7 +69,7 @@ function PageDetails(): JSX.Element {
     },
   ];
 
-  if (!curPage.id) {
+  if (!curPage?.id) {
     return <EmptyTips className="py-32 m-auto" text='暂无页面数据,请先新建页面'/>;
   }
 

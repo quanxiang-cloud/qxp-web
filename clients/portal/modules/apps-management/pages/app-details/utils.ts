@@ -75,8 +75,6 @@ export const SYSTEM_FIELDS: Record<string, ModelFieldSchema> = {
   },
 };
 
-
-
 export const FIELD_COLUMNS: UnionColumns<ModelField>[] = [
   {
     Header: '字段编码',
@@ -109,3 +107,21 @@ export const INIT_MODEL_SCHEMA = {
     description: '',
   },
 };
+
+export function filterDeletedPage(
+  groupID: string, pageID: string, pageList: PageInfo[],
+): PageInfo[] {
+  if (groupID === 'ROOT') {
+    return pageList.filter((page) => page.id !== pageID);
+  }
+
+  return pageList.map((page) => {
+    if (page.id === groupID) {
+      page.child = page.child?.filter((childPage) => {
+        return childPage.id !== pageID;
+      });
+      page.childCount = page.child?.length;
+    }
+    return page;
+  });
+}

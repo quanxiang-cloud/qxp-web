@@ -1,11 +1,13 @@
 import { observable, action, toJS, reaction, IReactionDisposer } from 'mobx';
 import { omit } from 'lodash';
 import { mutateTree, TreeData, TreeItem } from '@atlaskit/tree';
+import { History } from 'history';
 
 import toast from '@lib/toast';
 import { buildAppPagesTreeData } from '@lib/utils';
 import { getTableSchema } from '@lib/http-client';
 
+import { filterDeletedPage } from './utils';
 import { fetchAppList } from '../entry/app-list/api';
 import { getNextTreeItem } from './page-menu-design/app-pages-tree';
 import {
@@ -19,6 +21,13 @@ import {
   deleteGroup,
   deletePage,
 } from './api';
+
+type DeletePageOrGroupParams = {
+  treeItem: TreeItem;
+  type: string;
+  history?: History;
+  pathname: string
+}
 
 class AppDetailsStore {
   destroySetCurPage: IReactionDisposer;
@@ -122,7 +131,9 @@ class AppDetailsStore {
   }
 
   @action
-  deletePageOrGroup = (treeItem: TreeItem, type: string) => {
+  deletePageOrGroup = async ({
+    treeItem, type, history, pathname,
+  }: DeletePageOrGroupParams): Promise<void> => {
     const data = {
       id: treeItem.data.id,
       appID: treeItem.data.appID,
@@ -132,57 +143,35 @@ class AppDetailsStore {
 
     const method = type === 'delGroup' ? deleteGroup : deletePage;
 
-    return method(data).then(() => {
-      const treeItems = toJS(this.pagesTreeData.items);
-      const items = omit(treeItems, treeItem.id as string);
+    await method(data);
+    const treeItems = toJS(this.pagesTreeData.items);
+    const items = omit(treeItems, treeItem.id as string);
+    const nextTreeItem = getNextTreeItem(treeItem, treeItems);
 
-      const groupID = data.groupID || 'ROOT';
-      items[groupID] = {
-        ...items[groupID],
-        children: items[groupID].children?.filter((childID) => childID !== treeItem.id),
-      };
-      // todo refactor this
-      if (this.curPage.id === treeItem.id && type !== 'delGroup') {
-        window.history.replaceState('', '', window.location.pathname);
-        this.pageID = '';
-      }
+    const groupID = data.groupID || 'ROOT';
+    items[groupID] = {
+      ...items[groupID],
+      children: items[groupID].children?.filter((childID) => childID !== treeItem.id),
+    };
+    // todo refactor this
+    if (this.curPage.id === treeItem.id && type !== 'delGroup') {
+      history?.replace(pathname);
+      this.pageID = '';
+      this.curPage = { id: '' };
+    }
 
-      this.pagesTreeData = {
-        items,
-        rootId: this.pagesTreeData.rootId,
-      };
+    this.pagesTreeData = {
+      items,
+      rootId: this.pagesTreeData.rootId,
+    };
 
-      if (getNextTreeItem(treeItem, treeItems)?.data) {
-        this.curPage = getNextTreeItem(treeItem, treeItems)?.data;
-      }
+    this.pageInitList = filterDeletedPage(groupID, treeItem.data.id, toJS(this.pageInitList));
+    toast.success('删除成功');
 
-      if (groupID === 'ROOT') {
-        this.pageInitList = this.pageInitList.filter((page) => page.name !== treeItem.data.name);
-
-        if (this.pageInitList.length === 0) {
-          this.curPage = { id: '' };
-        }
-
-        toast.success('删除成功');
-        return;
-      }
-
-      this.pageInitList = this.pageInitList.map((page) => {
-        if (page.id === groupID) {
-          page.child = page.child?.filter((childPage) => {
-            return childPage.name !== treeItem.data.name;
-          });
-          page.childCount = page.child?.length;
-        }
-        return page;
-      });
-
-      if (this.pageInitList.length === 0) {
-        this.curPage = { id: '' };
-      }
-
-      toast.success('删除成功');
-    });
+    if (nextTreeItem && nextTreeItem.id !== treeItem.data.id) {
+      this.curPage = nextTreeItem?.data;
+      return;
+    }
   }
 
   @action

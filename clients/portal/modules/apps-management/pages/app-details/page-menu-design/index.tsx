@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { toJS } from 'mobx';
 import { TreeItem } from '@atlaskit/tree';
-import { useParams, useHistory } from 'react-router-dom';
+import { useParams, useHistory, useLocation } from 'react-router-dom';
 import { observer } from 'mobx-react';
 import { Tooltip } from '@QCFE/lego-ui';
 
@@ -20,6 +20,7 @@ import './index.scss';
 
 function PageList(): JSX.Element {
   const history = useHistory();
+  const { pathname } = useLocation();
   const [curEditNode, setCurEditNode] = useState<null | TreeItem>(null);
   const { appID } = useParams<{ appID: string }>();
   const { pageID } = getQuery<{ pageID: string }>();
@@ -35,39 +36,38 @@ function PageList(): JSX.Element {
     setPageID(pageID);
   }, [pageID]);
 
-  const handleSelectPage = (treeItem: TreeItem) => {
+  const handleSelectPage = (treeItem: TreeItem): void => {
     if (treeItem?.data) {
       history.push(`/apps/details/${appID}/page_setting?pageID=${treeItem.data.id}`);
       setCurEditNode(treeItem);
     }
   };
 
-  function delPageOrGroup() {
+  async function delPageOrGroup(): Promise<void> {
     if (!curEditNode) {
       return;
     }
 
-    deletePageOrGroup(curEditNode, modalType).then(() => {
-      closeModal();
-    });
+    await deletePageOrGroup({ treeItem: curEditNode, type: modalType, history, pathname });
+    closeModal();
   }
 
-  function handleEditPage(pageInfo: PageInfo) {
+  function handleEditPage(pageInfo: PageInfo): void {
     appPagesStore.editPage(pageInfo).then(() => {
       closeModal();
     });
   }
 
-  const handleEditGroup = (groupInfo: PageInfo) => {
+  const handleEditGroup = (groupInfo: PageInfo): Promise<void> => {
     return editGroup(groupInfo);
   };
 
-  const closeModal = () => {
+  const closeModal = (): void => {
     setModalType('');
     setCurEditNode(null);
   };
 
-  const handleMenuClick = (key: string, treeItem: TreeItem) => {
+  const handleMenuClick = (key: string, treeItem: TreeItem): void => {
     setCurEditNode(treeItem);
     setModalType(key);
   };
