@@ -7,7 +7,7 @@ export default function ProcessBranchNodeComponent(props: Props): JSX.Element {
   const { rule, ignore } = props.data.businessData as ProcessBranchData;
 
   return (
-    <NodeComponentWrapper {...props}>
+    <NodeComponentWrapper {...props} iconName="share">
       {rule && (
         <div className="text-caption-no-color px-4 bg-gray-100 rounded-4 w-full">
           <span className="text-gray-400">公式: </span>
