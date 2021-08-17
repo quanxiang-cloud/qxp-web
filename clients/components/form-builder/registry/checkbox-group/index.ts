@@ -1,4 +1,5 @@
 import CheckboxGroup from './checkboxGroup';
+import DatasetConfig from '../../form-settings-panel/form-field-config/dataset-config';
 
 import configSchema from './config-schema';
 import { defaultConfig, toSchema, toConfig } from './convertor';
@@ -14,6 +15,7 @@ const CheckboxGroupField: Omit<FormBuilder.SourceElement<typeof defaultConfig>, 
   category: 'basic',
   componentName: 'CheckboxGroup',
   compareOperators: ['⊇', '⊋'],
+  configDependencies: { DatasetConfig },
 };
 
 export default CheckboxGroupField;
