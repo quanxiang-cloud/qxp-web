@@ -1,6 +1,6 @@
 import qs from 'qs';
 import { TreeData, TreeItem } from '@atlaskit/tree';
-import { get, isObject } from 'lodash';
+import _, { isObject } from 'lodash';
 import { TreeNode } from '@c/headless-tree/types';
 import { nanoid } from 'nanoid';
 import dayjs from 'dayjs';
@@ -240,16 +240,6 @@ export function toggleArray<T>(arr1: T[], value: T, condition = true): T[] {
   return [...arr1, value];
 }
 
-export function jsonValidator<T>(data: T, schema: Record<string, (v: any) => boolean>): boolean {
-  return Object.entries(schema).every(([path, validator]) => {
-    const values = path.split(',').reduce((cur: any[], next) => {
-      cur.push(get(data, next));
-      return cur;
-    }, []);
-    return validator(values.length === 1 ? values[0] : values);
-  });
-}
-
 export function parseJSON<T>(str: string, fallback: T): T {
   try {
     return JSON.parse(str);
@@ -323,4 +313,12 @@ export function quickSortObjectArray<T extends Record<string, T[keyof T]>>(key: 
   const left = tail.filter((e) => e[key] < head[key]);
   const right = tail.filter((e) => e[key] >= head[key]);
   return quickSortObjectArray<T>(key, left).concat(head, quickSortObjectArray(key, right));
+}
+
+export function isEmptyObject(value: unknown): boolean {
+  return _.isObject(value) && _.isEmpty(value);
+}
+
+export function isEmptyArray(value: unknown): boolean {
+  return _.isArray(value) && _.isEmpty(value);
 }

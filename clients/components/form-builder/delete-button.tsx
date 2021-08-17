@@ -1,7 +1,8 @@
 import React from 'react';
+import { observer } from 'mobx-react';
 
-import { StoreContext } from '@c/form-builder/context';
 import Icon from '@c/icon';
+import { StoreContext } from '@c/form-builder/context';
 
 type Props = {
   filedName: string;
@@ -12,12 +13,12 @@ function DeleteButton({ filedName }: Props): JSX.Element {
 
   return (
     <div
-      className="delete-field-icon"
       onClick={() => store.deleteField(filedName)}
+      className="delete-field-icon"
     >
       <Icon type="light" name="delete_outline" size={16} />
     </div>
   );
 }
 
-export default DeleteButton;
+export default observer(DeleteButton);

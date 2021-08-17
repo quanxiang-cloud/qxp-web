@@ -92,7 +92,7 @@
 
 .user-app-schema-form {
   display: grid;
-  grid-template-columns: 60%;
+  grid-template-columns: 70%;
   justify-content: center;
   overflow-y: auto;
   flex: 1;
@@ -100,6 +100,11 @@
   border-radius: 12px;
 
   .ant-form-item-label {
-    width: 100px;
+    white-space: pre-wrap;
+    label{
+      height: auto!important;
+      text-align: left;
+    }
   }
+  
 }

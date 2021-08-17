@@ -1,4 +1,7 @@
-import { FormEffectHooks, ISchemaFormActions } from '@formily/antd';
+import {
+  FormEffectHooks,
+  ISchemaFormActions,
+} from '@formily/antd';
 import { debounceTime } from 'rxjs/operators';
 import { get, set } from 'lodash';
 
@@ -14,7 +17,7 @@ type LinkedFilterConfig = {
 function getNewCondition(
   initConditions: Condition[],
   getFieldValue: (path: string) => any,
-  rowNum:number,
+  rowNum: number,
 ): Condition[] {
   return initConditions.reduce((acc, conditionItem) => {
     const value = getFieldValue(conditionItem.path?.replace('*', rowNum.toString()) || '');
@@ -22,6 +25,10 @@ function getNewCondition(
       conditionItem.valueFrom === 'form' && value
     ) {
       return acc.concat({ ...conditionItem, value: [].concat(value) });
+    }
+
+    if (conditionItem.valueFrom !== 'form') {
+      return acc.concat(conditionItem);
     }
 
     return acc;
@@ -62,7 +69,10 @@ function getXComp(field: string, schema: ISchema): Record<string, any> | undefin
   return get(schema.properties, path);
 }
 
-export default function formValueToFilter(schema: ISchema, formActions: ISchemaFormActions): void {
+export default function formValueToFilter(
+  schema: ISchema,
+  formActions: ISchemaFormActions,
+): void {
   const { setFieldState, getFieldValue } = formActions;
   findLinkagesFilterComp(schema).forEach(({ field, targetFields }) => {
     onFieldValueChange$(`*(${targetFields.join(',')})`).pipe(

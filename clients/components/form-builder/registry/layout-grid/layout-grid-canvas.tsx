@@ -2,26 +2,29 @@ import React from 'react';
 import { ReactSortable, Sortable } from 'react-sortablejs';
 import { observer } from 'mobx-react';
 import { SchemaForm } from '@formily/antd';
+import { noop } from 'lodash';
 import cs from 'classnames';
 
-import registry from '../index';
 import { StoreContext } from '@c/form-builder/context';
 import DeleteButton from '@c/form-builder/delete-button';
+import { findField } from '@c/form-builder/utils/fields-operator';
+
+import { blockStyle } from './utils';
+import registry from '../index';
+
 interface Props {
   schema: IteratISchema;
 }
 
 function LayoutGrid({ schema }: Props): JSX.Element {
   const { id } = schema;
-
   const store = React.useContext(StoreContext);
 
   const [fields, setFields] = React.useState<Array<IteratISchema>>([]);
 
   React.useEffect(() => {
-    const _fields = store.fieldsForLayout[id] || [];
-    setFields(_fields.filter((field) => field.display));
-  }, [store.fieldsForLayout]);
+    setFields(store.getFieldsInLayout(id));
+  }, [store.fields]);
 
   const handleAddField = (e: Sortable.SortableEvent): void => {
     let fieldName: string;
@@ -33,11 +36,11 @@ function LayoutGrid({ schema }: Props): JSX.Element {
     if (dataId.startsWith('form_builder_')) {
       fieldName = dataId.split('form_builder_')[1];
 
-      store.appendComponentToLayout(schema.id, fieldName, index);
+      store.appendComponent(fieldName, index, id);
     } else {
       fieldName = dataId;
 
-      store.modComponentPosition(fieldName, index, schema.id);
+      store.updateFieldIndex(fieldName, index, schema.id);
     }
   };
 
@@ -47,20 +50,16 @@ function LayoutGrid({ schema }: Props): JSX.Element {
 
     if (newIndex === undefined || oldIndex === undefined || fieldName === null) return;
 
-    store.updateFieldInLayoutIndex(newIndex, oldIndex, fieldName, id);
+    store.updateFieldIndex(fieldName, newIndex, id);
   };
 
   const properties = schema?.properties?.FIELDs?.properties?.[id] as ISchema;
-  const columns = properties?.['x-internal']?.columns || 2;
+  const columns = properties?.['x-component-props']?.columns || 2;
 
   return (
     <ReactSortable
-      className="min-h-32 border_b6 layout-grid"
-      style={{
-        display: 'grid',
-        gridTemplateColumns: `repeat(${columns}, 1fr)`,
-        gridColumnGap: '4px',
-      }}
+      className="min-h-32 border_b6 grid layout-grid gap-4"
+      style={{ gridTemplateColumns: `repeat(${columns}, 1fr)` }}
       group={{
         name: 'form_builder_canvas_layout',
         pull: true,
@@ -81,7 +80,7 @@ function LayoutGrid({ schema }: Props): JSX.Element {
       direction="vertical"
       animation={600}
       list={fields}
-      setList={() => { }}
+      setList={noop}
       onAdd={handleAddField}
       onUpdate={handleUpdateField}
       onStart={() => store.setDragging(true)}
@@ -89,6 +88,12 @@ function LayoutGrid({ schema }: Props): JSX.Element {
     >
       {fields.map((itm) => {
         const id = itm.id;
+
+        const isAssociatedRecords = findField(id, store.fields)?.componentName === 'AssociatedRecords';
+        const components = isAssociatedRecords ? {
+          AssociatedRecords: registry.editComponents['associatedrecords'.toLocaleLowerCase()],
+        } : registry.components;
+        const curComponent: string = itm?.properties?.FIELDs?.properties?.[id]?.['x-component'] || '';
 
         return (
           <div
@@ -98,12 +103,13 @@ function LayoutGrid({ schema }: Props): JSX.Element {
               'field-mask',
               { 'field-item-active': id === store.activeFieldName },
             )}
+            style={blockStyle(curComponent, columns)}
             onClick={(e) => {
               e.stopPropagation();
               store.setActiveFieldKey(id);
             }}
           >
-            <SchemaForm components={registry.components} schema={itm} />
+            <SchemaForm components={components} schema={itm} />
             <DeleteButton filedName={id} />
           </div>
         );

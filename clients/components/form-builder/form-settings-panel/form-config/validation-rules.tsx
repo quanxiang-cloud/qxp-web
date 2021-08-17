@@ -8,6 +8,8 @@ import Modal from '@c/modal';
 import Icon from '@c/icon';
 import { INTERNAL_FIELD_NAMES } from '@c/form-builder/store';
 import logger from '@lib/logger';
+import schemaToFields from '@lib/schema-convert';
+import { numberTransform } from '@c/form-builder/utils';
 
 import { StoreContext } from '../../context';
 
@@ -28,16 +30,16 @@ type EditValidationModalProps = {
 }
 
 function getVariables(schema: ISchema): Array<{ fieldName: string; title: string; }> {
-  return Object.entries(schema.properties || {}).filter(([fieldName, schema]) => {
-    if (INTERNAL_FIELD_NAMES.includes(fieldName)) {
+  return schemaToFields(schema).filter((field) => {
+    if (INTERNAL_FIELD_NAMES.includes(field.id)) {
       return false;
     }
+    const { componentName } = field;
 
-    const componentName = schema['x-component']?.toLowerCase();
     return componentName === 'input' || componentName === 'numberpicker';
-  }).sort((fieldA, fieldB) => {
-    return Number(fieldA[1]['x-index']) - Number(fieldB[1]['x-index']);
-  }).map(([fieldName, { title }]) => ({ fieldName, title: title as string }));
+  }).sort((currentField, nextField) => {
+    return numberTransform(currentField) - numberTransform(nextField);
+  }).map((field) => ({ fieldName: field.id, title: field.title as string }));
 }
 
 function EditValidationModal({ onClose, ruleID }: EditValidationModalProps): JSX.Element {

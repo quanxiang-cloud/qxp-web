@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { observer } from 'mobx-react';
 import { FormButtonGroup } from '@formily/antd';
+import cs from 'classnames';
+import { useCss } from 'react-use';
 
 import Modal from '@c/modal';
 import Button from '@c/button';
@@ -10,15 +12,19 @@ import { FormBuilder, FormRenderer } from '@c/form-builder';
 
 import store from '../store';
 
-const FormPage = () => {
+const FormPage = (): JSX.Element | null => {
   const [previewModalVisible, setPreviewModalVisible] = useState(false);
   const history = useHistory();
+  const formClassName = useCss({
+    '.mega-layout-container-content': { width: '100%' },
+    '.ant-col-4+.ant-form-item-control': { width: '83%' },
+  });
 
   if (!store.formStore) {
     return null;
   }
 
-  const handlePreviewClose = () => {
+  const handlePreviewClose = (): void => {
     setPreviewModalVisible(false);
   };
 
@@ -46,7 +52,7 @@ const FormPage = () => {
       {previewModalVisible && (
         <Modal title="预览表单" onClose={handlePreviewClose}>
           <FormRenderer
-            className="w-800 p-20"
+            className={cs('w-800 p-20', formClassName)}
             schema={store.formStore.schema}
             onSubmit={(value) => toast.success('提交表单：' + JSON.stringify(value))}
           >

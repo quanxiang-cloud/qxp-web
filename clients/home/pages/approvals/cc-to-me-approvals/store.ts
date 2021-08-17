@@ -32,7 +32,7 @@ class TodoApprovalStore extends Store {
   }
 
   @action
-  fetchAll = async () => {
+  fetchAll = async (): Promise<void> => {
     this.loading = true;
     try {
       const { dataList = [], total } = await getCCToMeList(this.query);
@@ -45,7 +45,7 @@ class TodoApprovalStore extends Store {
   }
 
   @action
-  reset = () => {
+  reset = (): void => {
     this.total = 0;
     this.pageNumber = 1;
     this.pageSize = 10;

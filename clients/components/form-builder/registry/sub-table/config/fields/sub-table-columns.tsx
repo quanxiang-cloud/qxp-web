@@ -6,6 +6,7 @@ import { pickBy } from 'lodash';
 import Toggle from '@c/toggle';
 
 import { INTERNAL_FIELD_NAMES } from '@c/form-builder/store';
+import schemaToFields from '@lib/schema-convert';
 
 import { getFormTableSchema } from '../api';
 import { SUPPORTED_COMPONENTS_NAMES } from '../constants';
@@ -54,13 +55,12 @@ function SubTableColumns({ value, mutators }: ISchemaFieldComponentProps): JSX.E
     subRef.current = onFieldValueChange$('Fields.linkedTable').subscribe(handleLinkedTableChange);
   });
 
-  const schemaOptions = Object.entries(currentSchema?.properties || {}).reduce((cur: Option[], next) => {
-    const [key, sc] = next;
-    if (key !== '_id' && !INTERNAL_FIELD_NAMES.includes(key) &&
-      SUPPORTED_COMPONENTS_NAMES.includes(sc['x-component']?.toLocaleLowerCase() || '')) {
+  const schemaOptions = schemaToFields(currentSchema).reduce((cur: Option[], field) => {
+    if (field.id !== '_id' && !INTERNAL_FIELD_NAMES.includes(field.id) &&
+      SUPPORTED_COMPONENTS_NAMES.includes(field.componentName)) {
       cur.push({
-        label: sc.title as string,
-        value: key,
+        label: field.title as string,
+        value: field.id,
       });
     }
     return cur;

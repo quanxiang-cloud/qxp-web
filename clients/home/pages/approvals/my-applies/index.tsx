@@ -57,7 +57,12 @@ function TodoApprovals(): JSX.Element {
         </div>
         <Search className="w-25 mr-16" placeholder="搜索流程、发起人、应用" value={store.keyword}
           onChange={store.changeKeyword} />
-        <Select multiple={false} options={sortOptions} onChange={store.changeOrderType} value={store.orderType}>
+        <Select
+          multiple={false}
+          options={sortOptions}
+          onChange={store.changeOrderType}
+          value={store.orderType}
+        >
           <IconBtn
             iconName="import_export"
             className="border-none hover:bg-gray-100"
@@ -74,7 +79,7 @@ function TodoApprovals(): JSX.Element {
         total={store.total}
         pageSize={store.pageSize}
         onChange={store.paginate}
-        renderTotalTip={(total) => (
+        renderTotalTip={() => (
           <div className="text-12 text-gray-600">
             共<span className="mx-4">{store.total || 0}</span>条数据
           </div>

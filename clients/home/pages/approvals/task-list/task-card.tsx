@@ -1,11 +1,12 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 import dayjs from 'dayjs';
-import { map } from 'lodash';
+import { map, omitBy } from 'lodash';
 
 import Status from '@c/process-node-status';
 import Icon from '@c/icon';
 import FormDataValueRenderer from '@c/form-data-value-renderer';
+import { schemaToMap } from '@lib/schema-convert';
 
 import Avatar from '../avatar';
 import './index.scss';
@@ -34,7 +35,10 @@ export default function TaskCard({ task, type }: Props): JSX.Element {
     }
   };
 
-  const { name, flowInstanceEntity, startTime, createTime, creatorName, creatorAvatar, appName, formData, formSchema, status } = task;
+  const {
+    name, flowInstanceEntity, startTime, createTime, creatorName, creatorAvatar, appName, formData,
+    formSchema, status,
+  } = task;
 
   return (
     <div className="corner-2-8-8-8 bg-white mb-16 approval-card">
@@ -48,7 +52,9 @@ export default function TaskCard({ task, type }: Props): JSX.Element {
                   link={multiTask ? creatorAvatar : flowInstanceEntity?.creatorAvatar}
                 />
                 <div className="inline-flex task-info">
-                  <span className="mr-8">{multiTask ? creatorName : flowInstanceEntity?.creatorName || ''}</span>
+                  <span className="mr-8">
+                    {multiTask ? creatorName : flowInstanceEntity?.creatorName || ''}
+                  </span>
                   <span>·</span>
                   <span className="ml-8">{multiTask ? name : flowInstanceEntity.name}</span>
                 </div>
@@ -72,8 +78,13 @@ export default function TaskCard({ task, type }: Props): JSX.Element {
         <div className="right-info px-20 py-12 flex flex-1 justify-between pl-40 overflow-hidden">
           <div className="flex flex-col">
             {
-              Object.entries((multiTask ? formData : flowInstanceEntity?.formData) || {}).map(([keyName, value]) => {
-                const properties = (multiTask ? formSchema?.properties : flowInstanceEntity?.formSchema?.properties) as Record<string, any>;
+              Object.entries(
+                (multiTask ? formData : flowInstanceEntity?.formData) || {},
+              ).map(([keyName, value]) => {
+                const schema = multiTask ? formSchema : flowInstanceEntity?.formSchema;
+                const properties = omitBy(schemaToMap(schema), (schema) => {
+                  return ['subtable', 'associatedrecords'].includes(schema.componentName);
+                });
                 if (!properties || !properties[keyName] || properties[keyName]?.display === false) {
                   return null;
                 }

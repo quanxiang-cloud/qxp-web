@@ -1,12 +1,16 @@
 import React, { useContext } from 'react';
 import { createAsyncFormActions, SchemaForm, setValidationLanguage } from '@formily/antd';
 import { ReactSortable, Sortable } from 'react-sortablejs';
+import { noop } from 'lodash';
 import cs from 'classnames';
 import { observer } from 'mobx-react';
+import { useCss } from 'react-use';
+
+import DeleteButton from '@c/form-builder/delete-button';
 
 import { StoreContext } from './context';
 import registry from './registry';
-import DeleteButton from '@c/form-builder/delete-button';
+import CanvasContext from './canvas-context';
 
 const actions = createAsyncFormActions();
 setValidationLanguage('zh');
@@ -21,6 +25,11 @@ function FormFields(): JSX.Element {
   const store = useContext(StoreContext);
   const [fields, setFields] = React.useState<IteratISchema[]>([]);
   const [hiddenFields, setHiddenFields] = React.useState<IteratISchema[]>([]);
+  const fieldItemClassName = useCss({
+    '.ant-col-4+.ant-form-item-control': {
+      maxWidth: '83%',
+    },
+  });
 
   const handleAddField = (e: Sortable.SortableEvent): void => {
     let fieldName: string;
@@ -37,7 +46,7 @@ function FormFields(): JSX.Element {
     } else {
       fieldName = dataId;
 
-      store.modComponentPosition(fieldName, index);
+      store.updateFieldIndex(fieldName, index);
     }
   };
 
@@ -47,7 +56,7 @@ function FormFields(): JSX.Element {
 
     if (newIndex === undefined || oldIndex === undefined || fieldName === null) return;
 
-    store.updateFieldIndex(newIndex, oldIndex, fieldName);
+    store.updateFieldIndex(fieldName, newIndex);
   };
 
   React.useEffect(() => {
@@ -65,7 +74,7 @@ function FormFields(): JSX.Element {
           group={GroupOptions}
           animation={400}
           list={fields}
-          setList={() => { }}
+          setList={noop}
           onAdd={handleAddField}
           className="empty-form-builder-canvas"
         />
@@ -74,64 +83,76 @@ function FormFields(): JSX.Element {
   }
 
   return (
-    <div className="form-builder-canvas">
-      <ReactSortable
-        group={GroupOptions}
-        animation={600}
-        list={fields}
-        setList={() => { }}
-        onUpdate={handleUpdateField}
-        onAdd={handleAddField}
-        onStart={() => store.setDragging(true)}
-        onEnd={() => store.setDragging(false)}
-      >
-        {fields.map((schema: IteratISchema) => {
-          const { isLayoutComponent } = schema;
+    <CanvasContext.Provider value={{ isInCanvas: true }}>
+      <div className="form-builder-canvas">
 
-          const componentName = schema.properties?.FIELDs?.properties?.[schema.id]?.['x-component'];
+        <ReactSortable
+          group={GroupOptions}
+          animation={600}
+          list={fields}
+          setList={noop}
+          onUpdate={handleUpdateField}
+          onAdd={handleAddField}
+          onStart={() => store.setDragging(true)}
+          onEnd={() => store.setDragging(false)}
+        >
+          {fields.map((_schema: IteratISchema) => {
+            const schema: ISchema = _schema?.properties?.FIELDs?.properties?.[_schema.id] || {};
+            const { isLayoutComponent } = schema?.['x-internal'] || {};
+            const componentName = schema['x-component'] || '';
+            const isSubTableComponent = componentName.toLocaleLowerCase() === 'subtable';
+            if (componentName === undefined) return null;
+            const Component = registry.layoutComponents[componentName.toLocaleLowerCase()] ||
+              registry.editComponents[componentName.toLocaleLowerCase()];
 
-          if (componentName === undefined) return null;
-
-          const Component = registry.layoutComponents[componentName.toLocaleLowerCase()];
-
-          return (
-            <div
-              onClick={() => store.setActiveFieldKey(schema.id)}
-              key={schema.id}
-              data-layout={isLayoutComponent ? 'layout' : 'simple'}
-              className={cs('field-item', {
-                'field-mask': !isLayoutComponent,
-                'field-item-active': store.activeFieldName === schema.id,
-              })}
-            >
-              {
-                isLayoutComponent ?
-                  React.createElement(Component, { schema }) :
-                  <SchemaForm schema={schema} actions={actions} components={{ ...registry.components }} />
-              }
-              <DeleteButton filedName={schema.id} />
-            </div>
-          );
-        })}
-      </ReactSortable>
-      <div className={cs('form-build-hidden-fields', { hidden: !hiddenFields.length })}>
-        {hiddenFields.map((schema: IteratISchema) => {
-          return (
-            <div
-              onClick={() => store.setActiveFieldKey(schema.id)}
-              key={schema.id}
-              className={cs(
-                'field-item field-mask',
-                { 'field-item-active': store.activeFieldName === schema.id },
-              )}
-            >
-              <SchemaForm schema={schema} actions={actions} components={{ ...registry.components }} />
-              <DeleteButton filedName={schema.id} />
-            </div>
-          );
-        })}
+            return (
+              <div
+                onClick={() => store.setActiveFieldKey(_schema.id)}
+                key={_schema.id}
+                data-layout={isLayoutComponent ? 'layout' : 'simple'}
+                className={cs('field-item', fieldItemClassName, {
+                  'field-mask': !isLayoutComponent && !isSubTableComponent,
+                  'field-item-active': store.activeFieldName === _schema.id,
+                })}
+              >
+                {isLayoutComponent && React.createElement(Component, { schema: _schema })}
+                {(!isLayoutComponent && componentName === 'AssociatedRecords') && (
+                  <SchemaForm
+                    schema={_schema}
+                    actions={actions}
+                    components={{ AssociatedRecords: Component }} />
+                )}
+                {(!isLayoutComponent && componentName !== 'AssociatedRecords') && (
+                  <SchemaForm
+                    schema={_schema}
+                    actions={actions}
+                    components={{ ...registry.components }}
+                  />
+                )}
+                < DeleteButton filedName={_schema.id} />
+              </div>
+            );
+          })}
+        </ReactSortable>
+        <div className={cs('form-build-hidden-fields', { hidden: !hiddenFields.length })}>
+          {hiddenFields.map((schema: IteratISchema) => {
+            return (
+              <div
+                onClick={() => store.setActiveFieldKey(schema.id)}
+                key={schema.id}
+                className={cs(
+                  'field-item field-mask',
+                  { 'field-item-active': store.activeFieldName === schema.id },
+                )}
+              >
+                <SchemaForm schema={schema} actions={actions} components={{ ...registry.components }} />
+                <DeleteButton filedName={schema.id} />
+              </div>
+            );
+          })}
+        </div>
       </div>
-    </div>
+    </CanvasContext.Provider>
   );
 }
 

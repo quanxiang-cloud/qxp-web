@@ -3,6 +3,7 @@ import { omit, isArray, isEmpty } from 'lodash';
 import cs from 'classnames';
 import { useCss } from 'react-use';
 import { DatePicker } from 'antd';
+import moment, { Moment } from 'moment';
 
 import Select from '@c/select';
 import { Option } from '@flowEditor/forms/api';
@@ -14,7 +15,6 @@ import type {
 } from '@flowEditor/type';
 import FormRender from '@c/form-builder/form-renderer';
 import { COMPONENT_OPERATORS_MAP, OPERATOR_OPTIONS } from '@flowEditor/utils/constants';
-import moment, { Moment } from 'moment';
 
 const { RangePicker } = DatePicker;
 

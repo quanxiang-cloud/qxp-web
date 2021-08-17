@@ -4,6 +4,7 @@ import { get } from 'lodash';
 
 import Select from '@c/select';
 import { StoreContext } from '@c/form-builder/context';
+import schemaToFields, { schemaToMap } from '@lib/schema-convert';
 
 const acceptFieldTypes = [
   'SubTable',
@@ -15,7 +16,7 @@ export type AssociateTableOptions = {
   fields: LabelValue[];
 }
 
-const getNumericFields = (properties: { [key: string]: ISchema }) => {
+const getNumericFields = (properties: Record<string, ISchema>): LabelValue[] => {
   return Object.entries(properties).map(([key, fieldSchema]) => {
     if (fieldSchema.type === 'number') {
       return { label: fieldSchema.title, value: key };
@@ -26,12 +27,12 @@ const getNumericFields = (properties: { [key: string]: ISchema }) => {
 
 function AssociateObject(props: ISchemaFieldComponentProps): JSX.Element {
   const { schema, appID } = useContext(StoreContext);
-  const selectTables = Object.entries(schema?.properties || {}).reduce((acc, [fieldName, fieldSchema]) => {
-    if (acceptFieldTypes.includes(fieldSchema['x-component'] as string)) {
-      acc.push({ label: fieldSchema.title as string, value: fieldName });
+  const selectTables = schemaToFields(schema).reduce((acc: LabelValue[], field) => {
+    if (acceptFieldTypes.map((v) => v.toLowerCase()).includes(field.componentName.toLowerCase())) {
+      acc.push({ label: field.title as string, value: field.id });
     }
     return acc;
-  }, [] as LabelValue[]);
+  }, []);
 
   useEffect(() => {
     // trigger first linkage effect
@@ -39,7 +40,7 @@ function AssociateObject(props: ISchemaFieldComponentProps): JSX.Element {
   }, [appID]);
 
   const getTargetTableOptions = (fieldName: string): Promise<AssociateTableOptions | null> => {
-    const fieldSchema = get(schema.properties, fieldName, {});
+    const fieldSchema = get(schemaToMap(schema), fieldName, {});
     const compName = get(fieldSchema, 'x-component');
     const compProps = get(fieldSchema, 'x-component-props');
 
@@ -67,7 +68,7 @@ function AssociateObject(props: ISchemaFieldComponentProps): JSX.Element {
     return Promise.resolve(null);
   };
 
-  const handleChange = (fieldName: string, extra?: Record<string, any>) => {
+  const handleChange = (fieldName: string, extra?: Record<string, any>): void => {
     getTargetTableOptions(fieldName).then((options) => {
       props.mutators.change({
         appID,

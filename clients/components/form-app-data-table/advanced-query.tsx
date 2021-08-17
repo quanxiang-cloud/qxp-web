@@ -25,7 +25,7 @@ function AdvancedQuery({ fields, search, tag }: Props): JSX.Element {
   const [visible, setVisible] = useState(false);
   const popperRef = useRef<any>();
   const reference = useRef<any>();
-  const dataFilterRef = useRef<RefProps>();
+  const dataFilterRef = useRef<RefProps>(null);
 
   const handleEmpty = () => {
     dataFilterRef.current?.empty();
@@ -67,8 +67,9 @@ function AdvancedQuery({ fields, search, tag }: Props): JSX.Element {
       >
         <div className='advanced-query-container'>
           <DataFilter
-            initTag={tag as string}
-            ref={dataFilterRef} fields={fields}
+            initTag={tag}
+            ref={dataFilterRef}
+            fields={fields}
           />
           <div className='mt-20 flex justify-end gap-x-16'>
             <Button onClick={handleEmpty} iconName='clear'>清空</Button>

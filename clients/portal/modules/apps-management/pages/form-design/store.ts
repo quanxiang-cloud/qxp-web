@@ -50,7 +50,7 @@ class FormDesignStore {
   @observable filters: Filters = [];
   @observable filterModalVisible = false;
 
-  @computed get fieldsMap(): Record<string, ISchema> {
+  @computed get fieldsMap(): Record<string, SchemaFieldItem> {
     return schemaToMap(this.formStore?.schema) || {};
   }
 
@@ -227,6 +227,11 @@ class FormDesignStore {
     if (this.formStore?.fields.length && this.pageTableColumns && this.pageTableColumns.length === 0) {
       toast.error('请在页面配置-字段显示和排序至少选择一个字段显示');
       history.replace(`/apps/formDesign/pageSetting/${this.pageID}/${this.appID}`);
+      return Promise.resolve(false);
+    }
+
+    // validate table schema on each field
+    if (!this.formStore?.validate()) {
       return Promise.resolve(false);
     }
 

@@ -1,6 +1,7 @@
 import React from 'react';
 import { ReactSortable, Sortable } from 'react-sortablejs';
 import { observer } from 'mobx-react';
+import { noop } from 'lodash';
 import { Card } from 'antd';
 import { SchemaForm } from '@formily/antd';
 import cs from 'classnames';
@@ -8,6 +9,8 @@ import cs from 'classnames';
 import registry from '../index';
 import { StoreContext } from '@c/form-builder/context';
 import DeleteButton from '@c/form-builder/delete-button';
+import { findField } from '@c/form-builder/utils/fields-operator';
+
 interface Props {
   schema: IteratISchema;
 }
@@ -58,9 +61,8 @@ function LayoutCard({ schema }: Props): JSX.Element {
   }, []);
 
   React.useEffect(() => {
-    const _fields = store.fieldsForLayout[id] || [];
-    setFields(_fields.filter((field) => field.display));
-  }, [store.fieldsForLayout]);
+    setFields(store.getFieldsInLayout(id));
+  }, [store.fields]);
 
   const handleAddField = (e: Sortable.SortableEvent): void => {
     let fieldName: string;
@@ -72,11 +74,11 @@ function LayoutCard({ schema }: Props): JSX.Element {
     if (dataId.startsWith('form_builder_')) {
       fieldName = dataId.split('form_builder_')[1];
 
-      store.appendComponentToLayout(schema.id, fieldName, index);
+      store.appendComponent(fieldName, index, id);
     } else {
       fieldName = dataId;
 
-      store.modComponentPosition(fieldName, index, schema.id);
+      store.updateFieldIndex(fieldName, index, id);
     }
   };
 
@@ -86,7 +88,7 @@ function LayoutCard({ schema }: Props): JSX.Element {
 
     if (newIndex === undefined || oldIndex === undefined || fieldName === null) return;
 
-    store.updateFieldInLayoutIndex(newIndex, oldIndex, fieldName, id);
+    store.updateFieldIndex(fieldName, newIndex, id);
   };
 
   return (
@@ -117,14 +119,19 @@ function LayoutCard({ schema }: Props): JSX.Element {
           }}
           animation={600}
           list={fields}
-          setList={() => { }}
+          setList={noop}
           onAdd={handleAddField}
           onUpdate={handleUpdateField}
           onStart={() => store.setDragging(true)}
           onEnd={() => store.setDragging(false)}
         >
-          {fields.map((itm) => {
-            const id = itm.id;
+          {fields.map((field) => {
+            const id = field.id;
+
+            const isAssociatedRecords = findField(id, store.fields)?.componentName === 'AssociatedRecords';
+            const components = isAssociatedRecords ? {
+              AssociatedRecords: registry.editComponents['associatedrecords'.toLocaleLowerCase()],
+            } : registry.components;
 
             return (
               <div
@@ -139,7 +146,7 @@ function LayoutCard({ schema }: Props): JSX.Element {
                   store.setActiveFieldKey(id);
                 }}
               >
-                <SchemaForm components={registry.components} schema={itm} />
+                <SchemaForm components={components} schema={field} />
                 <DeleteButton filedName={id} />
               </div>
             );

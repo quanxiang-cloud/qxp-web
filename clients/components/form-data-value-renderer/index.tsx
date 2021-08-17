@@ -112,7 +112,7 @@ export function getBasicValue(schema: ISchema, value: FormDataValue): string {
   case 'serial':
     return value as string;
   default:
-    logger.debug('encounter unsupported formDataValue:', value, 'schema:', schema);
+    logger.warn('encounter unsupported formDataValue:', value, 'schema:', schema);
     return value?.toString();
   }
 }

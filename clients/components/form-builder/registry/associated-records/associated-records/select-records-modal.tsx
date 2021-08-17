@@ -5,6 +5,7 @@ import FormDataTable from '@c/form-app-data-table';
 import { Ref } from '@c/form-app-data-table/type';
 
 type Props = {
+  defaultValues: string[];
   onClose: () => void;
   onSubmit: (selected: string[]) => void;
   appID: string;
@@ -16,7 +17,7 @@ type Props = {
 }
 
 export default function SelectRecordsModal({
-  onClose, appID, tableID, multiple, onSubmit, filterConfig,
+  onClose, appID, tableID, multiple, onSubmit, filterConfig, defaultValues,
 }: Props): JSX.Element {
   const tableRef: React.Ref<any> = useRef<Ref>();
   const handleSubmit = (): void => {
@@ -46,7 +47,11 @@ export default function SelectRecordsModal({
       id: 'action',
       Headers: '操作',
       accessor: (rowData: any) => {
-        return <div className='text-btn' onClick={() => onSubmit([rowData._id])}>选择</div>;
+        if (defaultValues.includes(rowData._id)) {
+          return (<div>已选择</div>);
+        }
+
+        return (<div className='text-btn' onClick={() => onSubmit([rowData._id])}>选择</div>);
       },
     },
   ];

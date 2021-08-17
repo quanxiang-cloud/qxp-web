@@ -28,6 +28,7 @@ import { INTERNAL_FIELD_NAMES } from '@c/form-builder/store';
 import { getCompareOperatorOptions, getSourceElementOperator } from '@c/form-builder/utils/operator';
 import { FieldConfigContext } from '@c/form-builder/form-settings-panel/form-field-config/context';
 import { getLinkageTables } from '@c/form-builder/utils/api';
+import schemaToFields from '@lib/schema-convert';
 
 import { fetchLinkedTableFields } from './get-tables';
 import SCHEMA from './schema';
@@ -63,7 +64,7 @@ const DEFAULT_VALUE_LINKAGE: FormBuilder.DefaultValueLinkage = {
 
 export type LinkedTableFieldOptions = FormBuilder.Option & {
   fieldEnum: Array<FormBuilder.Option>;
-  'x-component': string;
+  componentName: string;
 }
 
 type Option = {
@@ -90,16 +91,13 @@ function LinkageConfig({
   const { actions: configActions } = useContext(FieldConfigContext);
   const defaultValue = linkage || DEFAULT_VALUE_LINKAGE;
 
-  const fieldsSchema = toJS(store.schema.properties || {});
-  const currentFormFields = Object.entries(fieldsSchema).filter(([key, fieldSchema]) => {
-    if (INTERNAL_FIELD_NAMES.includes(key) || key === store.activeField?.fieldName) {
+  const currentFormFields = schemaToFields(toJS(store.schema)).filter((field) => {
+    if (INTERNAL_FIELD_NAMES.includes(field.id) || field.id === store.activeField?.fieldName) {
       return false;
     }
-
-    return fieldSchema.type === 'string' ||
-      fieldSchema.type === 'number' ||
-      fieldSchema.type === 'datetime';
-  }).map(([key, fieldSchema]) => ({ label: fieldSchema.title as string, value: key }));
+    // todo match type
+    return ['string', 'number', 'datetime'].includes(field.type || '');
+  }).map((field) => ({ label: field.title as string, value: field.id }));
 
   function resetFormDefaultValueOnLinkTableChanged(fields: LinkedTableFieldOptions[]): void {
     setFieldValue('sortBy', fields[0]?.value);
@@ -115,7 +113,8 @@ function LinkageConfig({
     setFieldState('rules.*.fieldName', (state) => state.props.enum = options);
     setFieldState('linkedField', (state) => {
       state.props.enum = fields.filter((field) => {
-        return field['x-component'].toLowerCase() === store.activeField?.componentName.toLowerCase();
+        // todo match type
+        return field.componentName === store.activeField?.componentName.toLowerCase();
       }).map(({ label, value }) => ({ label, value }));
     });
     setFieldState('sortBy', (state) => state.props.enum = options);
@@ -172,7 +171,7 @@ function LinkageConfig({
   function updateCompareOperatorFieldOnFieldNameChanged({ name, value }: IFieldState): void {
     const xComponent = linkedTableFieldsRef.current.find((field) => {
       return field.value === value;
-    })?.['x-component'];
+    })?.componentName;
 
     if (!xComponent) {
       return;
@@ -221,11 +220,10 @@ function LinkageConfig({
     const linkTableField = linkedTableFieldsRef.current.find(
       (field) => field.value === currentFieldNameValue,
     );
-    const linkTableFieldComponent = linkTableField?.['x-component'] as string || '';
     const enumerable = !!(linkTableField?.fieldEnum || []).length;
     let shouldReset = false;
-    if (linkTableFieldComponent) {
-      shouldReset = compareValueValidateMap[linkTableFieldComponent](currentCompareValue);
+    if (linkTableField) {
+      shouldReset = compareValueValidateMap[linkTableField.componentName](currentCompareValue);
     }
 
     setFieldState(
@@ -247,7 +245,7 @@ function LinkageConfig({
         }
 
         if (currentCompareToValue === 'fixedValue') {
-          state.props['x-component'] = linkTableField?.['x-component'] ?? 'input';
+          state.props['x-component'] = linkTableField?.componentName || 'input';
           state.props.enum = undefined;
 
           if (shouldReset) {

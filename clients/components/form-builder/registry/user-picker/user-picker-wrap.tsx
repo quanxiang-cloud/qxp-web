@@ -21,11 +21,7 @@ const UserPickerWrap = (formField: ISchemaFieldComponentProps): JSX.Element => {
       return;
     }
 
-    formField.mutators.change(
-      (formField.initialValue.length && formField.initialValue) ||
-      (formField.props.defaultValues.length && formField.props.defaultValues) ||
-      [],
-    );
+    formField.mutators.change(handleInitValue(formField));
   }, [optionalRange, formField.props['x-component-props'].mode]);
 
   const xComponentsProps = Object.assign({}, formField.props['x-component-props'], {
@@ -34,6 +30,21 @@ const UserPickerWrap = (formField: ISchemaFieldComponentProps): JSX.Element => {
     value: formField.value,
     disabled: !formField.props['editable'],
   });
+
+  function handleInitValue(formField: ISchemaFieldComponentProps): LabelValue[] {
+    let initialValue: LabelValue[] = [];
+    if (formField.initialValue && formField.initialValue.length) {
+      initialValue = formField.initialValue;
+      return initialValue;
+    }
+
+    if (formField.props.defaultValues && formField.props.defaultValues.length) {
+      initialValue = formField.props.defaultValues;
+      return initialValue;
+    }
+
+    return initialValue;
+  }
 
   return <UserPicker optionalRange={optionalRange} {...xComponentsProps} />;
 };

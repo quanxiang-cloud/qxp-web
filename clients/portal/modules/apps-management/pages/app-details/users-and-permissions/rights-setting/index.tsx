@@ -11,7 +11,7 @@ type Props = {
   rights: Rights
 }
 
-function RightSetting({ rights }: Props) {
+function RightSetting({ rights }: Props): JSX.Element {
   return (
     <div className='p-20 h-full'>
       <Tab

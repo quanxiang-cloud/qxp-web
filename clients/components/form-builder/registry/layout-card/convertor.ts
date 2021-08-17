@@ -12,12 +12,14 @@ export const defaultConfig: LayoutCardConfig = {
 
 export function toSchema(value: LayoutCardConfig): ISchema {
   return {
-    isLayoutComponent: value.isLayoutComponent,
     display: true,
     title: value.title,
     'x-component': 'LayoutCard',
     'x-component-props': {
       collapsible: value.collapsible,
+    },
+    'x-internal': {
+      isLayoutComponent: value.isLayoutComponent,
     },
   };
 }
