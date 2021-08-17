@@ -4,7 +4,7 @@ import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 import { parseJSON } from '@lib/utils';
 import { getDatasetById } from '@portal/modules/system-mgmt/dataset/api';
 
-export default function useHandleOptions(fieldProps: ISchemaFieldComponentProps): LabelValue[] {
+export default function useEnumOptions(fieldProps: ISchemaFieldComponentProps): LabelValue[] {
   const [options, setOptions] = useState<LabelValue[]>([]);
   const { datasetId } = fieldProps.props['x-component-props'];
   const defaultValueFrom = fieldProps.props['x-internal'].defaultValueFrom;

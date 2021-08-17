@@ -3,6 +3,7 @@ import { Select, Input, Divider } from 'antd';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 
 import Toast from '@lib/toast';
+import useEnumOptions from '@lib/hooks/use-enum-options';
 
 const { Option } = Select;
 
@@ -57,27 +58,26 @@ function DropdownRender({ menu, onChange }: DropdownRenderProps): JSX.Element {
 }
 
 function CustomSelect(fieldProps: ISchemaFieldComponentProps): JSX.Element {
+  const options = useEnumOptions(fieldProps);
   const [customOption, setCustomOption] = useState<LabelValue | null >(null);
-  const options: LabelValue[] = fieldProps.props.enum || [];
-  const isAllowCustom = fieldProps.props['x-component-props'].allowCustom || false;
+  const { allowCustom } = fieldProps.props['x-component-props'];
 
   useEffect(() => {
+    if (!allowCustom) {
+      setCustomOption(null);
+      return;
+    }
+
     if (fieldProps.value) {
-      const isHave = options.some((option): boolean => option.value === fieldProps.value);
-      if (!isHave) {
+      const isValueInRange = options.some((option): boolean => option.value === fieldProps.value);
+      if (!isValueInRange) {
         setCustomOption({
           label: fieldProps.value,
           value: fieldProps.value,
         });
       }
     }
-  }, [fieldProps.value]);
-
-  useEffect(() => {
-    if (!isAllowCustom) {
-      setCustomOption(null);
-    }
-  }, [isAllowCustom]);
+  }, [fieldProps.value, options, allowCustom]);
 
   function handleSelectChange(optionValue: string): void {
     fieldProps.mutators.change(optionValue);
@@ -100,7 +100,7 @@ function CustomSelect(fieldProps: ISchemaFieldComponentProps): JSX.Element {
         onSelect={handleSelectChange}
         value={fieldProps.value}
         dropdownRender={
-          isAllowCustom ? (menu) => (
+          allowCustom ? (menu) => (
             <DropdownRender
               menu={menu}
               onChange={handleAddOption}
