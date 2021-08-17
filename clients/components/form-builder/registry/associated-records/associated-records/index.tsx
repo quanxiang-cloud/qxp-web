@@ -15,6 +15,7 @@ import { findTableRecords } from './api';
 import SelectRecordsModal from './select-records-modal';
 
 type Props = {
+  defaultValues: string[];
   appID: string;
   tableID: string;
   columns: string[];
@@ -46,6 +47,7 @@ function computeTableColumns(schema: ISchema, columns: string[]): Column<Record<
 }
 
 function AssociatedRecords({
+  defaultValues,
   associatedTable,
   columns,
   selected,
@@ -102,6 +104,7 @@ function AssociatedRecords({
           <Button type="button" onClick={() => setShowSelectModal(true)}>选择关联记录</Button>
           {showSelectModal && (
             <SelectRecordsModal
+              defaultValues={defaultValues}
               onClose={() => setShowSelectModal(false)}
               appID={appID}
               tableID={tableID}
@@ -148,6 +151,7 @@ function AssociatedRecordsFields(props: Partial<ISchemaFieldComponentProps>): JS
 
   return (
     <AssociatedRecords
+      defaultValues={props.value || []}
       readOnly={props.readOnly || props.props.readOnly}
       appID={componentProps.appID}
       tableID={componentProps.tableID}
