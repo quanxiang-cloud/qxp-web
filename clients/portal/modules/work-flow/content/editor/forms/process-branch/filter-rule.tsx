@@ -12,44 +12,60 @@ import RuleItem from './rule-item';
 
 const COLLECTION_OPERATORS = [
   {
-    name: '等于',
+    name: '==',
     key: '==',
   },
   {
-    name: '不等于',
+    name: '!==',
     key: '!=',
   },
   {
-    name: '或',
+    name: '||',
     key: '||',
   },
   {
-    name: '且',
+    name: '&&',
     key: '&&',
   },
   {
-    name: '属于',
+    name: '∈',
     key: '∈',
   },
   {
-    name: '不属于',
+    name: '∉',
     key: '∉',
   },
   {
-    name: '大于',
+    name: '>',
     key: '>',
   },
   {
-    name: '小于',
+    name: '<',
     key: '<',
   },
   {
-    name: '小于等于',
+    name: '<=',
     key: '<=',
   },
   {
-    name: '大于等于',
+    name: '>=',
     key: '>=',
+  },
+  {
+    name: '+',
+    key: '+',
+  },
+  {
+    name: '-',
+    key: '-',
+  },
+  {
+    name: '*',
+    key: '*',
+  },
+  {
+    name: '/',
+    key: '/',
   },
 ];
 
@@ -84,7 +100,7 @@ function FilterRule({ mutators, value }: ISchemaFieldComponentProps): JSX.Elemen
     name: schema.title as string, key: schema.id, type: schema.type || '',
   }));
 
-  if (isLoading) {
+  if (isLoading || !tableSchema.length) {
     return null;
   }
 
@@ -96,7 +112,7 @@ function FilterRule({ mutators, value }: ISchemaFieldComponentProps): JSX.Elemen
       <h1 className="mb-8">条件公式</h1>
       <FormulaEditor
         ref={formulaRef}
-        customRules={[...variablesRules, ...COLLECTION_OPERATORS, ...tableSchemaRules]}
+        customRules={[...variablesRules, ...tableSchemaRules]}
         defaultValue={value}
         onChange={mutators.change}
       />
