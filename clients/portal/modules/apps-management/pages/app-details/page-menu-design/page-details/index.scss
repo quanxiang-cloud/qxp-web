@@ -51,6 +51,7 @@
 }
 
 .link-focus {
+  cursor: pointer;
   &:hover {
     color: var(--blue-600);
     background-color: var(--gray-100);
@@ -59,4 +60,8 @@
       @apply text-blue-600 fill-current;
     }
   }
+}
+
+.card-action {
+  @apply transition ease-linear text-black-50 cursor-pointer
 }

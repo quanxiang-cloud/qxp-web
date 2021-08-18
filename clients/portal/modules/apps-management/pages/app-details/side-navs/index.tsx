@@ -79,30 +79,27 @@ function SideNavs(): JSX.Element {
 
   return (
     <div className='app-side-nav p-20'>
-      {
-        SIDE_NAVS.map(({ id, title, nav_items }) => {
-          return (
-            <div key={id}>
-              <div className="text-h5 py-10">{title}</div>
-              {nav_items.map(({ id, name, icon }) => {
-                return (
-                  <div
-                    key={id}
-                    onClick={() => history.push(`/apps/details/${appID}/${id}`)}
-                    className={cs('px-20 py-10 flex items-center side-nav-focus', {
-                      'bg-gray-100': id === menuType,
-                      'text-blue-600': id === menuType,
-                    })}
-                  >
-                    <Icon name={icon} className="mx-10 text-current flex-shrink-0" size={24} />
-                    <span>{name}</span>
-                  </div>
-                );
-              })}
-            </div>
-          );
-        })
-      }
+      {SIDE_NAVS.map(({ id, title, nav_items }) => {
+        return (
+          <div key={id}>
+            <div className="text-h5 py-10">{title}</div>
+            {nav_items.map(({ id: subMenuId, name, icon }) => {
+              return (
+                <div
+                  key={subMenuId}
+                  onClick={() => history.push(`/apps/details/${appID}/${subMenuId}`)}
+                  className={cs('px-20 py-10 flex items-center side-nav-focus cursor-pointer', {
+                    'bg-gray-100 text-blue-600': subMenuId === menuType,
+                  })}
+                >
+                  <Icon name={icon} className="mx-10 text-current flex-shrink-0" size={24} />
+                  <span>{name}</span>
+                </div>
+              );
+            })}
+          </div>
+        );
+      })}
     </div>
   );
 }
