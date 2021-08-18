@@ -1,6 +1,7 @@
 import React from 'react';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 import { Card } from 'antd';
+
 import Icon from '@c/icon';
 
 function LayoutCard(p: ISchemaFieldComponentProps): JSX.Element {
@@ -44,10 +45,11 @@ function LayoutCard(p: ISchemaFieldComponentProps): JSX.Element {
       <Card title={p.props.title && (
         <div onClick={handleClick} className="layout-card-title" >
           <span>{p.props.title}</span>
-          <Icon
-            style={{ transform: `rotate(${closed ? '180deg' : '0'})`, transition: '0.3s' }}
-            name="arrow_drop_down"
-          />
+          {collapsible &&
+            (<Icon
+              style={{ transform: `rotate(${closed ? '180deg' : '0'})`, transition: '0.3s' }}
+              name="arrow_drop_down"
+            />)}
         </div>
       )}>
         <div className="layout-card-content" ref={contentRef}>{p.children}</div>

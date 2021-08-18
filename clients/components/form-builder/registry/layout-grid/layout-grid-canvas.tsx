@@ -86,14 +86,14 @@ function LayoutGrid({ schema }: Props): JSX.Element {
       onStart={() => store.setDragging(true)}
       onEnd={() => store.setDragging(false)}
     >
-      {fields.map((itm) => {
-        const id = itm.id;
+      {fields.map((field) => {
+        const id = field.id;
 
         const isAssociatedRecords = findField(id, store.fields)?.componentName === 'AssociatedRecords';
         const components = isAssociatedRecords ? {
           AssociatedRecords: registry.editComponents['associatedrecords'.toLocaleLowerCase()],
         } : registry.components;
-        const curComponent: string = itm?.properties?.FIELDs?.properties?.[id]?.['x-component'] || '';
+        const curComponent: string = field?.properties?.FIELDs?.properties?.[id]?.['x-component'] || '';
 
         return (
           <div
@@ -109,7 +109,7 @@ function LayoutGrid({ schema }: Props): JSX.Element {
               store.setActiveFieldKey(id);
             }}
           >
-            <SchemaForm components={components} schema={itm} />
+            <SchemaForm components={components} schema={field} />
             <DeleteButton filedName={id} />
           </div>
         );
