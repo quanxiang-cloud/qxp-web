@@ -56,7 +56,7 @@ export default function Index(): JSX.Element {
         defaultActiveLink={{ basePath: '/access-control', menuId: 'departments-employees' }}
         />
       </div>
-      <div className="h-full transition-opacity flex flex-col flex-1">
+      <div className="h-full transition-opacity flex flex-col flex-1 overflow-auto">
         <Switch>
           <Route exact path="/access-control" component={DepartmentsEmployees} />
           <Route path="/access-control/departments-employees" component={DepartmentsEmployees} />
