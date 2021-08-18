@@ -15,7 +15,7 @@ import {
   updatePerCustom,
 } from './api';
 import { CustomPageInfo } from '../type';
-import { fetchCustomPageList, fetchPageList } from '../api';
+import { getUsingList, fetchPageList } from '../api';
 
 type CheckboxValueType = string | number;
 
@@ -139,10 +139,10 @@ class UserAndPerStore {
     Promise.all([
       fetchPageList(this.appID),
       fetchPerGroupForm(this.appID, perGroupID),
-      fetchCustomPageList(this.appID),
+      getUsingList(this.appID),
       fetchPerCustom(this.appID, perGroupID),
-    ]).then(([allPageRes, perPage, CustomList, PerCustom]: any) => {
-      const { formArr = [] } = perPage as { formArr: { id: string, authority: number }[] };
+    ]).then(([allPageRes, perPage, CustomList, PerCustom]) => {
+      const { formArr = [] } = perPage;
       let allPages: PageInfo[] = [];
       allPageRes.menu.forEach((menu: PageInfo) => {
         if (menu.menuType === 1 && menu.child?.length) {
@@ -154,7 +154,7 @@ class UserAndPerStore {
 
         allPages.push(menu);
       });
-      this.perFormList = allPages.map((page) => {
+      this.perFormList = allPages.filter((formPage) => formPage.menuType === 0).map((page) => {
         const curFormPer = formArr.find(({ id }) => id === page.id);
         return { ...page, authority: curFormPer ? curFormPer.authority : 0 };
       });
