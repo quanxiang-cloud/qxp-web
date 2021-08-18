@@ -2,14 +2,12 @@ type ApiType = 'create' | 'update' | 'delete' | 'search';
 
 type DocType = 'raw' | 'swag' | 'curl' | 'javascript' | 'python'
 
-type getTableSchemaParam = {
+type TableSchemaParam = {
   tableID: string;
   action: ApiType
 }
 
-type getApiDocParam = {
-  name?: string;
-  id?: string;
+type ApiDocParam = {
   titleFirst?: boolean
   docType: DocType;
 }

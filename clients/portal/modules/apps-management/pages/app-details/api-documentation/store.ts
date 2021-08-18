@@ -24,7 +24,7 @@ class ApiDocStore {
   @observable isAPILoading = true;
   @observable isAPITabLoading = true;
   @observable useFieldsID = false;
-  @observable XName = '';
+  @observable ApiPath = '';
   @observable docType: DocType = 'curl';
   @observable params: DataModelsParameter = { source: 2 }
 
@@ -75,17 +75,17 @@ class ApiDocStore {
       tableID: this.tableID,
       action: apiType,
     }).then((res: {name: string}) => {
-      this.XName = res.name;
+      this.ApiPath = res.name;
       this.fetchApiDoc();
     });
   }
 
   @action
   fetchApiDoc = (): void => {
-    getApiDoc({
-      name: this.XName,
+    getApiDoc(this.ApiPath, {
       docType: this.docType,
-      titleFirst: this.useFieldsID }).then((res: QueryDocRes)=>{
+      titleFirst: this.useFieldsID,
+    }).then((res: QueryDocRes) => {
       const { doc } = res || {};
       this.APiContent = doc;
       this.isAPILoading = false;
