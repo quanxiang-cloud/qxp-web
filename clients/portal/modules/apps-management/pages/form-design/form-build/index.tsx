@@ -40,7 +40,7 @@ const FormPage = (): JSX.Element | null => {
         <Button
           iconName='save'
           modifier="primary"
-          onClick={() => store.saveFormScheme(history)}
+          onClick={() => store.saveFormSchema(history)}
         >
           保存表单
         </Button>
