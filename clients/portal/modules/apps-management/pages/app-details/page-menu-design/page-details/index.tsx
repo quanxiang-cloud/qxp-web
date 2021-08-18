@@ -111,7 +111,7 @@ function PageDetails(): JSX.Element {
                     action={action ? (
                       <div
                         onClick={action}
-                        className="transition ease-linear text-black-50 text-underline-no-color"
+                        className="text-underline-no-color card-action"
                       >
                       去创建》
                       </div>) : <></>
