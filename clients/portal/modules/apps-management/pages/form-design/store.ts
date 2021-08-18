@@ -1,6 +1,7 @@
 import * as H from 'history';
 import { action, observable, reaction, IReactionDisposer, computed, toJS } from 'mobx';
 import { UnionColumns } from 'react-table';
+import { set } from 'lodash';
 
 import logger from '@lib/logger';
 import toast from '@lib/toast';
@@ -78,7 +79,9 @@ class FormDesignStore {
       if (!toSchema) {
         logger.error(`failed to find component: [${componentName}] in registry`);
       }
-      acc[fieldName] = toSchema(toJS(configValue));
+
+      const currentSchema = toSchema(toJS(configValue));
+      acc[fieldName] = set(currentSchema, 'x-internal.isSystem', true);
 
       return acc;
     }, {});
@@ -145,7 +148,7 @@ class FormDesignStore {
       const column: UnionColumns<any>[] = this.pageTableColumns.map((key) => {
         return {
           id: key,
-          Header: this.fieldsMap[key]?.title || '',
+          Header: { ...this.fieldsMap, ...this.internalFields }[key]?.title || '',
           accessor: key,
         };
       });
