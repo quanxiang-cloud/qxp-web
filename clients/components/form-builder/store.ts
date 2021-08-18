@@ -63,11 +63,8 @@ const INTERNAL_FIELDS: Array<FormItem> = [
 export const INTERNAL_FIELD_NAMES = INTERNAL_FIELDS.map(({ fieldName }) => fieldName);
 
 // todo support tree structure
-export function schemaToFields({ properties }: ISchema): [Array<FormItem>, Array<FormItem>] {
-  if (!properties) {
-    return [INTERNAL_FIELDS, []];
-  }
-
+function schemaToFormBuilderFields({ properties }: ISchema): Array<FormItem> {
+  if (!properties) return [];
   const _fields: FormItem[] = [];
 
   const recursionProperties = (properties: Record<string, any>): void => {
@@ -75,7 +72,6 @@ export function schemaToFields({ properties }: ISchema): [Array<FormItem>, Array
       .filter((key) => !INTERNAL_FIELD_NAMES.includes(key))
       .forEach((key) => {
         const componentName = properties[key]['x-component']?.toLowerCase();
-
         if (!componentName || !registry.elements[componentName]) {
           // todo refactor this message
           logger.error('fatal! there is no x-component in schema:', properties[key]);
@@ -117,7 +113,7 @@ export function schemaToFields({ properties }: ISchema): [Array<FormItem>, Array
       };
     });
 
-  return [INTERNAL_FIELDS, fields];
+  return fields;
 }
 
 export default class FormBuilderStore {
@@ -135,9 +131,8 @@ export default class FormBuilderStore {
   @observable isDragging = false;
 
   constructor({ schema, appID, pageID }: Props) {
-    const [internalFields, fields] = schemaToFields(schema);
-    this.internalFields = internalFields;
-    this.fields = fields;
+    this.internalFields = INTERNAL_FIELDS;
+    this.fields = schemaToFormBuilderFields(schema);
 
     this.appID = appID;
     this.pageID = pageID;
@@ -201,10 +196,6 @@ export default class FormBuilderStore {
   }
 
   @computed get getAllFields(): Array<FormItem> {
-    const _fields = this.fields
-      .concat(this.internalFields)
-      .filter(({ fieldName }) => !INTERNAL_FIELD_NAMES.includes(fieldName));
-
     const _flatten = (arr?: FormItem[]): FormItem[] => {
       if (!arr) return [];
 
@@ -218,13 +209,11 @@ export default class FormBuilderStore {
       return flatten(fields);
     };
 
-    return _flatten(_fields);
+    return _flatten([...this.fields]);
   }
 
   @computed get fieldsForCanvas(): Array<IteratISchema> {
     const _fields = this.fields
-      .concat(this.internalFields)
-      .filter(({ fieldName }) => !INTERNAL_FIELD_NAMES.includes(fieldName))
       .map((field, idx) => this.getFieldSchema(field, idx))
       .map((field, idx) => ({
         ...field,
@@ -293,7 +282,6 @@ export default class FormBuilderStore {
 
   @computed get hiddenFieldsForCanvas(): Array<IteratISchema> {
     return this.getAllFields
-      .filter(({ fieldName }) => !INTERNAL_FIELD_NAMES.includes(fieldName))
       .map((field, idx) => this.getFieldSchema(field, idx))
       .filter((field) => !field.display)
       .map((field) => {
@@ -307,7 +295,7 @@ export default class FormBuilderStore {
 
   @computed get schemaForCanvas(): ISchema {
     const properties = Object.keys(toJS(this.schema.properties) || {})
-      .filter((key) => !INTERNAL_FIELD_NAMES.includes(key))
+      .filter(Boolean)
       .reduce<Record<string, any>>((acc, key) => {
         const childrenInvisible = !this.schema.properties?.[key].display;
         const node = {
@@ -336,7 +324,7 @@ export default class FormBuilderStore {
           properties: properties,
         },
       },
-    }
+    };
   }
 
   @action validate(): boolean {
