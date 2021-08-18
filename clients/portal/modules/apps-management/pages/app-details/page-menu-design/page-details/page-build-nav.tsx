@@ -6,19 +6,22 @@ import Modal from '@c/modal';
 import toast from '@lib/toast';
 import Select from '@c/select';
 
-import { fetchCustomPageList } from '../../api';
+import { fetchCustomPageList, relateCustomPage } from '../../api';
 import { CustomPageInfo } from '../../type';
 
 type Props = {
   pageId: string | undefined;
   pageName: string | undefined;
   appID: string | undefined;
+  handleRelatePage: (menuType: number, data: CustomPageInfo) => void
 }
 
-function PageBuildNav({ pageId, pageName, appID = '' }: Props): JSX.Element {
+function PageBuildNav({ pageId = '', pageName, appID = '', handleRelatePage }: Props): JSX.Element {
   const [openModal, setOpenModal] = useState(false);
+  const [selectedValue, setSelectedValue] = useState('');
   const [customPageList, setCustomPageList] = useState<LabelValue[]>([]);
   const history = useHistory();
+
   const BUILD_NAV = [
     {
       title: '创建表单页面',
@@ -43,6 +46,12 @@ function PageBuildNav({ pageId, pageName, appID = '' }: Props): JSX.Element {
   }
 
   function onSubmit(): void {
+    relateCustomPage(appID, { menuId: pageId, pageID: selectedValue }).then((res) => {
+      handleRelatePage(2, res);
+      toast.success('关联成功');
+    }).catch((err) => {
+      toast.error(err.message);
+    });
     onClose();
   }
 
@@ -85,7 +94,7 @@ function PageBuildNav({ pageId, pageName, appID = '' }: Props): JSX.Element {
       </div>
       {openModal && (
         <Modal
-          title='新建自定义表单'
+          title='新建自定义页面'
           onClose={onClose}
           className="text-center"
           footerBtns={[
@@ -110,6 +119,7 @@ function PageBuildNav({ pageId, pageName, appID = '' }: Props): JSX.Element {
               placeholder="请选择"
               className="flex-1 ml-10"
               options={customPageList}
+              onChange={(value) => setSelectedValue(value)}
               optionClassName="max-h-200 overflow-auto"
             />
           </div>

@@ -1,6 +1,6 @@
 import httpClient from '@lib/http-client';
 
-import { MovePageParams, CustomPageParams, fetchCustomListRes } from './type';
+import { MovePageParams, CustomPageParams, fetchCustomListRes, CustomPageInfo } from './type';
 
 export const fetchAppDetails = async (id: string)=> {
   return await httpClient('/api/v1/app-center/one', { id });
@@ -76,6 +76,12 @@ export const removeCustomPage = async (appID: string, pageId: string)=> {
 
 export const editeCustomPage = async (appID: string, params: CustomPageParams)=> {
   return await httpClient(`/api/v1/structor/${appID}/m/page/update`, params);
+};
+
+export const relateCustomPage = async (
+  appID: string, params: {menuId: string, pageID: string},
+): Promise<CustomPageInfo> => {
+  return await httpClient(`/api/v1/structor/${appID}/m/page/relate`, params);
 };
 
 export const fetchDataModels = (

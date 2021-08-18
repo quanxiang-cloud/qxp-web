@@ -1,14 +1,16 @@
-import { observable, action, toJS, reaction, IReactionDisposer } from 'mobx';
 import { omit } from 'lodash';
-import { mutateTree, TreeData, TreeItem } from '@atlaskit/tree';
 import { History } from 'history';
+import { observable, action, toJS, reaction, IReactionDisposer } from 'mobx';
+import { mutateTree, TreeData, TreeItem } from '@atlaskit/tree';
 
 import toast from '@lib/toast';
 import { buildAppPagesTreeData } from '@lib/utils';
-import { getTableSchema } from '@lib/http-client';
+import { getTableInfo, getTableSchema } from '@lib/http-client';
 
-import { filterDeletedPage } from './utils';
+import { CustomPageInfo } from './type';
 import { fetchAppList } from '../entry/app-list/api';
+import { DefaultPageDescriptions } from './constants';
+import { filterDeletedPage, getValueOfPageDescription } from './utils';
 import { getNextTreeItem } from './page-menu-design/app-pages-tree';
 import {
   fetchAppDetails,
@@ -52,6 +54,7 @@ class AppDetailsStore {
     items: {},
   };
   @observable modalType = '';
+  @observable pageDescription = DefaultPageDescriptions;
 
   constructor() {
     this.destroySetCurPage = reaction(() => {
@@ -273,14 +276,48 @@ class AppDetailsStore {
 
     const pageInfo = this.pagesTreeData.items[pageID].data;
     this.fetchSchemeLoading = true;
-    getTableSchema(this.appID, pageInfo.id).then((pageSchema) => {
-      this.hasSchema = !!pageSchema;
-      this.fetchSchemeLoading = false;
-    }).catch(() => {
-      this.fetchSchemeLoading = false;
-    });
+    if (pageInfo.menuType === 0) {
+      getTableSchema(this.appID, pageInfo.id).then((pageSchema) => {
+        this.hasSchema = !!pageSchema;
+        this.pageDescription = DefaultPageDescriptions;
+      }).catch(() => {
+        toast.error('获取页面schema失败');
+      }).finally(() => {
+        this.fetchSchemeLoading = false;
+      });
+    }
+
+    if (pageInfo.menuType === 2) {
+      getTableInfo(this.appID, pageInfo.id).then((res) => {
+        const descriptions = this.pageDescription.map(({ id, title, value }) => {
+          const test = getValueOfPageDescription(id, res);
+          return { id, title, value: test ? test : value };
+        });
+        this.pageDescription = descriptions;
+      }).catch(() => {
+        toast.error('获取关联自定义页面失败');
+      }).finally(() => {
+        this.fetchSchemeLoading = false;
+      });
+    }
 
     this.curPage = pageInfo;
+  }
+
+  @action
+  setCurPageMenuType = (menuType: number, data: CustomPageInfo): void => {
+    const curPageInfo = { ...this.curPage, menuType: menuType };
+    const descriptions = this.pageDescription.map(({ id, title, value }) => {
+      const test = getValueOfPageDescription(id, data);
+      return { id, title, value: test ? test : value };
+    });
+
+    this.pagesTreeData = mutateTree(toJS(this.pagesTreeData), curPageInfo.id, {
+      id: curPageInfo.id,
+      data: curPageInfo,
+    });
+    this.curPage = curPageInfo;
+    this.pageDescription = descriptions;
   }
 
   @action

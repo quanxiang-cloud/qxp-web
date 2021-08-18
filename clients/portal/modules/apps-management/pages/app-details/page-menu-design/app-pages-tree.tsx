@@ -17,13 +17,14 @@ import MoreMenu from '@c/more-menu';
 import toast from '@lib/toast';
 
 import { movePage } from '../api';
+import { MenuType } from '../type';
 
 const PADDING_PER_LEVEL = 16;
 
 export function getFirstPageItem(menus: ItemId[], source: Record<string, TreeItem>): TreeItem | undefined {
   for (const menuKey of menus) {
     const menu = source[menuKey];
-    if (menu.data.menuType === 0) {
+    if (menu.data.menuType !== MenuType.group) {
       return menu;
     } else {
       if (menu.hasChildren) {
@@ -74,7 +75,7 @@ function getNextItem(
 }
 
 const getIcon = (item: TreeItem) => {
-  if (item.data.menuType === 0) {
+  if (item.data.menuType !== MenuType.group) {
     // todo should has an default icon name
     return (<Icon className='mr-8 text-current flex-shrink-0' name={item.data.icon} size={24} />);
   }
@@ -95,7 +96,7 @@ type NodeRenderProps = RenderItemParams & {
 function NodeRender(
   { item, provided, onCollapse, onExpand, onMenuClick, isActive, onSelectPage }: NodeRenderProps,
 ): JSX.Element {
-  const isPage = item.data.menuType === 0;
+  const isPage = item.data.menuType !== MenuType.group;
 
   const MENUS = [
     isPage ?
@@ -242,7 +243,11 @@ export default class PureTree extends Component<Props> {
     const treeItem = tree.items[treeItemID];
     const targetItem = tree.items[destination.parentId];
 
-    if (destination.parentId !== 'ROOT' && (treeItem.data.menuType === 1 || targetItem.data.menuType === 0)) {
+    if (destination.parentId !== 'ROOT' && (
+      treeItem.data.menuType === MenuType.group ||
+      targetItem.data.menuType === MenuType.schemaForm ||
+      targetItem.data.menuType === MenuType.customPage
+    )) {
       return;
     }
 
