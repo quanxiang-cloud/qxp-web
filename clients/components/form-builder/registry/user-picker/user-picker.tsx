@@ -2,7 +2,7 @@ import React, { useState, useCallback, useMemo } from 'react';
 import cs from 'classnames';
 import { useQuery } from 'react-query';
 import { Select, SelectProps } from 'antd';
-import { debounce } from 'lodash';
+import { debounce, isUndefined } from 'lodash';
 
 import { searchUser, Res } from './messy/api';
 import { Option } from './messy/enum';
@@ -14,6 +14,7 @@ interface Props extends SelectProps<any> {
   optionalRange?: OptionalRange;
   appID?: string;
   dataSource?: any[];
+  editable?: boolean;
 }
 
 interface AllUserPickerProps extends SelectProps<any> {
@@ -22,7 +23,7 @@ interface AllUserPickerProps extends SelectProps<any> {
 
 const PAGE_SIZE = 10;
 
-const UserPicker = ({ optionalRange, appID, onChange, value, ...componentsProps }: Props): JSX.Element => {
+const UserPicker = ({ optionalRange, appID, onChange, value, editable, ...componentsProps }: Props): JSX.Element => {
   const handleChange = (_: any, _selected: any): void => {
     onChange && onChange(_selected ? [].concat(_selected) : [], _);
   };
@@ -37,6 +38,7 @@ const UserPicker = ({ optionalRange, appID, onChange, value, ...componentsProps 
     return (
       <AllUserPicker
         {...componentsProps}
+        disabled={!editable}
         onChange={handleChange}
         value={selected}
         appID={appID as string}
@@ -49,6 +51,7 @@ const UserPicker = ({ optionalRange, appID, onChange, value, ...componentsProps 
       allowClear
       {...componentsProps}
       value={selected}
+      disabled={!editable}
       onChange={handleChange}
       className={cs('user-selector', componentsProps.className || '')}
     />
