@@ -1,5 +1,5 @@
 import React from 'react';
-import classnames from 'classnames';
+import cs from 'classnames';
 import { ConfigProvider } from 'antd';
 import zhCN from 'antd/lib/locale/zh_CN';
 
@@ -18,7 +18,7 @@ function FormBuilder({ className, store }: Props): JSX.Element {
   return (
     <ConfigProvider locale={zhCN}>
       <StoreContext.Provider value={store}>
-        <div className={classnames('form-builder', className)}>
+        <div className={cs('form-builder', className)}>
           <SourceElementPanel />
           <div className="canvas-wrapper">
             <Canvas />
