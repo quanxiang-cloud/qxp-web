@@ -96,3 +96,9 @@ export function shouldFilterLinkages(
 
   return keys.includes(filedName);
 }
+
+export function getDefinedOne(
+  firstOne?: boolean, secondOne?: boolean,
+): boolean {
+  return !!(firstOne ?? secondOne);
+}
