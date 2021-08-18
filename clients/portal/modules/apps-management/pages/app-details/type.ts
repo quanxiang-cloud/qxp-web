@@ -30,3 +30,9 @@ export type CustomPageParams = Partial<CustomPageInfo> & {
   currentPage?: number;
   pageSize?: number;
 }
+
+export enum MenuType {
+  schemaForm = 0,
+  group = 1,
+  customPage = 2,
+}

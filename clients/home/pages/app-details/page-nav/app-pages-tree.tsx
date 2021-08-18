@@ -16,7 +16,7 @@ const PADDING_PER_LEVEL = 16;
 function getFirstPage(menus: ItemId[], source: Record<string, TreeItem>): PageInfo | undefined {
   for (const menuKey of menus) {
     const menu = source[menuKey];
-    if (menu.data.menuType === 0) {
+    if (menu.data.menuType !== 1) {
       return menu.data;
     } else {
       if (menu.hasChildren) {
@@ -30,7 +30,7 @@ function getFirstPage(menus: ItemId[], source: Record<string, TreeItem>): PageIn
 }
 
 const getIcon = (item: TreeItem) => {
-  if (item.data.menuType === 0) {
+  if (item.data.menuType !== 1) {
     // todo should has an default icon name
     return (<Icon className='mr-8 text-current flex-shrink-0' name={item.data.icon} size={24} />);
   }
@@ -50,7 +50,7 @@ type NodeRenderProps = RenderItemParams & {
 function NodeRender(
   { item, provided, onCollapse, onExpand, isActive, onSelectPage }: NodeRenderProps,
 ): JSX.Element {
-  const isPage = item.data.menuType === 0;
+  const isPage = item.data.menuType !== 1;
 
   function handleClick(): void {
     if (isPage) {

@@ -1,4 +1,7 @@
+import moment from 'moment';
 import { UnionColumns } from 'react-table';
+
+import { CustomPageInfo } from './type';
 
 export const SYSTEM_FIELDS: Record<string, ModelFieldSchema> = {
   _id: {
@@ -124,4 +127,17 @@ export function filterDeletedPage(
     }
     return page;
   });
+}
+
+export function getValueOfPageDescription(key: string, data: CustomPageInfo): string | undefined {
+  switch (key) {
+  case 'createdBy':
+    return data.createdBy;
+  case 'updatedAt':
+    return moment(data.updatedAt, 'X').format('YYYY-MM-DD HH:mm:ss');
+  case 'type':
+    return data.type === 1 ? 'HTML自定义页面' : '基于空白创建';
+  default:
+    return undefined;
+  }
 }

@@ -20,6 +20,7 @@ import { useParams } from 'react-router-dom';
 import { createCustomPage, removeCustomPage, editeCustomPage, fetchCustomPageList } from '../api';
 
 import './index.scss';
+import moment from 'moment';
 
 const COMPONENTS = {
   Input,
@@ -159,7 +160,7 @@ function CustomPage(): JSX.Element {
     {
       id: 'updatedAt',
       Header: '更新时间',
-      accessor: 'updatedAt',
+      accessor: (rowInfo) => moment(rowInfo.updatedAt, 'X').format('YYYY-MM-DD HH:mm:ss'),
     },
     {
       id: 'operators',

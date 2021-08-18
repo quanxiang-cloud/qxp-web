@@ -1,3 +1,5 @@
+import { CustomPageInfo } from '@portal/modules/apps-management/pages/app-details/type';
+
 function httpClient<TData>(path: string, body?: unknown, additionalHeaders?: HeadersInit): Promise<TData> {
   const headers = {
     'X-Proxy': 'API',
@@ -88,6 +90,10 @@ export function getTableSchema(appID: string, tableID: string): Promise<GetTable
     `/api/v1/form/${appID}/m/table/getByID`;
 
   return httpClient<GetTableSchemaResponse>(path, { tableID });
+}
+
+export function getTableInfo(appID: string, menuId: string): Promise<CustomPageInfo> {
+  return httpClient(`/api/v1/structor/${appID}/m/page/getByMenu`, { menuId });
 }
 
 export function findOneRecord(appID: string, tableID: string, id: string): Promise<Record<string, any>> {
