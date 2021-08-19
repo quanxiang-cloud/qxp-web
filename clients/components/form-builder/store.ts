@@ -2,10 +2,10 @@ import { action, computed, observable, toJS } from 'mobx';
 import { nanoid } from 'nanoid';
 import { flatten, set } from 'lodash';
 
-import Modal from '@c/modal';
 import logger from '@lib/logger';
-import { insertField, omitField, findField, updateField } from './utils/fields-operator';
+import Modal from '@c/modal';
 
+import { insertField, omitField, findField, updateField } from './utils/fields-operator';
 import registry from './registry';
 import {
   filterLinkageRules,
@@ -63,11 +63,8 @@ const INTERNAL_FIELDS: Array<FormItem> = [
 export const INTERNAL_FIELD_NAMES = INTERNAL_FIELDS.map(({ fieldName }) => fieldName);
 
 // todo support tree structure
-export function schemaToFields({ properties }: ISchema): [Array<FormItem>, Array<FormItem>] {
-  if (!properties) {
-    return [INTERNAL_FIELDS, []];
-  }
-
+function schemaToFormBuilderFields({ properties }: ISchema): Array<FormItem> {
+  if (!properties) return [];
   const _fields: FormItem[] = [];
 
   const recursionProperties = (properties: Record<string, any>): void => {
@@ -75,7 +72,6 @@ export function schemaToFields({ properties }: ISchema): [Array<FormItem>, Array
       .filter((key) => !INTERNAL_FIELD_NAMES.includes(key))
       .forEach((key) => {
         const componentName = properties[key]['x-component']?.toLowerCase();
-
         if (!componentName || !registry.elements[componentName]) {
           // todo refactor this message
           logger.error('fatal! there is no x-component in schema:', properties[key]);
@@ -117,7 +113,7 @@ export function schemaToFields({ properties }: ISchema): [Array<FormItem>, Array
       };
     });
 
-  return [INTERNAL_FIELDS, fields];
+  return fields;
 }
 
 export default class FormBuilderStore {
@@ -135,9 +131,8 @@ export default class FormBuilderStore {
   @observable isDragging = false;
 
   constructor({ schema, appID, pageID }: Props) {
-    const [internalFields, fields] = schemaToFields(schema);
-    this.internalFields = internalFields;
-    this.fields = fields;
+    this.internalFields = INTERNAL_FIELDS;
+    this.fields = schemaToFormBuilderFields(schema);
 
     this.appID = appID;
     this.pageID = pageID;
@@ -165,6 +160,7 @@ export default class FormBuilderStore {
     const properties: Record<string, ISchema> = {};
     const schemas = this.getAllFields.map((field, idx) => this.fieldToSchema(field, idx));
 
+    /** 找出布局组件，并将其add到properties对象 */
     schemas.forEach((schema) => {
       if (schema?.['x-internal']?.parentField) return;
 
@@ -172,6 +168,7 @@ export default class FormBuilderStore {
       properties[fieldName] = schema;
     });
 
+    /** 1.找到有布局组件的其他组件 2. 将其他组件add对应布局组件的properties上 */
     schemas.forEach((schema) => {
       const parentField = schema?.['x-internal']?.parentField;
       if (!parentField) return;
@@ -201,10 +198,6 @@ export default class FormBuilderStore {
   }
 
   @computed get getAllFields(): Array<FormItem> {
-    const _fields = this.fields
-      .concat(this.internalFields)
-      .filter(({ fieldName }) => !INTERNAL_FIELD_NAMES.includes(fieldName));
-
     const _flatten = (arr?: FormItem[]): FormItem[] => {
       if (!arr) return [];
 
@@ -218,13 +211,11 @@ export default class FormBuilderStore {
       return flatten(fields);
     };
 
-    return _flatten(_fields);
+    return _flatten([...this.fields]);
   }
 
   @computed get fieldsForCanvas(): Array<IteratISchema> {
     const _fields = this.fields
-      .concat(this.internalFields)
-      .filter(({ fieldName }) => !INTERNAL_FIELD_NAMES.includes(fieldName))
       .map((field, idx) => this.getFieldSchema(field, idx))
       .map((field, idx) => ({
         ...field,
@@ -247,13 +238,17 @@ export default class FormBuilderStore {
     parsedSchema['x-internal'].parentField = field.parentField;
     parsedSchema['x-internal'].tabIndex = field.tabIndex;
 
+    const parentFieldKey = field?.parentField || '';
+    const curCols = this.fields.find(({ fieldName }) => fieldName === parentFieldKey)?.configValue?.columns;
+    const cols = curCols ? curCols * 4 : 4;
+
     const node = {
       // convert observable value to pure js object for debugging
       fieldName,
       ...parsedSchema,
       'x-index': index,
       'x-mega-props': {
-        labelCol: this.labelAlign === 'right' ? 4 : undefined,
+        labelCol: this.labelAlign === 'right' ? cols : undefined,
       },
     };
 
@@ -293,7 +288,6 @@ export default class FormBuilderStore {
 
   @computed get hiddenFieldsForCanvas(): Array<IteratISchema> {
     return this.getAllFields
-      .filter(({ fieldName }) => !INTERNAL_FIELD_NAMES.includes(fieldName))
       .map((field, idx) => this.getFieldSchema(field, idx))
       .filter((field) => !field.display)
       .map((field) => {
@@ -307,7 +301,7 @@ export default class FormBuilderStore {
 
   @computed get schemaForCanvas(): ISchema {
     const properties = Object.keys(toJS(this.schema.properties) || {})
-      .filter((key) => !INTERNAL_FIELD_NAMES.includes(key))
+      .filter(Boolean)
       .reduce<Record<string, any>>((acc, key) => {
         const childrenInvisible = !this.schema.properties?.[key].display;
         const node = {
@@ -336,7 +330,7 @@ export default class FormBuilderStore {
           properties: properties,
         },
       },
-    }
+    };
   }
 
   @action validate(): boolean {
@@ -489,7 +483,6 @@ export default class FormBuilderStore {
       id: nanoid(10),
     });
   }
-
   @action
   deleteValidation(id: string): void {
     this.validations = this.validations.filter((rule) => {

@@ -14,13 +14,14 @@ interface Props {
   componentColumns: Column[];
   item: Record<string, FormDataValue>;
   form: IForm;
+  editable?: boolean;
   mutators: IMutators;
   portalReadOnlyClassName: string;
   name?: string;
 }
 
 export default function SubTableRow({
-  index, item, componentColumns, name, form, mutators, portalReadOnlyClassName,
+  index, item, componentColumns, name, form, editable, mutators, portalReadOnlyClassName,
 }: Props): JSX.Element {
   const formItemClassName = useCss({
     '.ant-form-item': {
@@ -33,6 +34,8 @@ export default function SubTableRow({
   });
 
   function onRemoveRow(mutators: IMutators, index: number): void {
+    if (!editable) return;
+
     mutators.remove(index);
   }
 
@@ -124,9 +127,11 @@ export default function SubTableRow({
           className="px-22 border-gray-300 border-t-1 self-stretch flex items-center"
         >
           <Icon
-            className={cs('cursor-pointer', portalReadOnlyClassName)}
+            className={cs(portalReadOnlyClassName)}
             name="delete"
             size={29}
+            clickable={editable}
+            disabled={!editable}
             onClick={() => onRemoveRow(mutators, index)}
           />
         </div>

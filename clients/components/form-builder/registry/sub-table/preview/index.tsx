@@ -5,7 +5,7 @@ import { Input, Radio, DatePicker, NumberPicker, Select, Checkbox } from '@formi
 import { Rule } from 'rc-field-form/lib/interface';
 import { Table } from 'antd';
 import cs from 'classnames';
-import { isObject, isUndefined } from 'lodash';
+import { isObject } from 'lodash';
 import {
   InternalFieldList as FieldList, ValidatePatternRules, Schema,
 } from '@formily/antd';
@@ -22,7 +22,7 @@ import CascadeSelector from '@c/form-builder/registry/cascade-selector/cascade-s
 import AssociatedData from '@c/form-builder/registry/associated-data/associated-data';
 import { isEmpty } from '@lib/utils';
 import schemaToFields from '@lib/schema-convert';
-import { numberTransform } from '@c/form-builder/utils';
+import { numberTransform, getDefinedOne } from '@c/form-builder/utils';
 
 import { getDefaultValue, schemaRulesTransform } from './utils';
 import SubTableRow from './row';
@@ -138,9 +138,9 @@ function SubTable({
       logger.error('component %s is missing in subTable', componentName);
       return null;
     }
-    const isEditable = !!(isUndefined(editable) ? sc?.editable : editable);
-    const isReadOnly = !!(isUndefined(readonly) ? sc?.readOnly : readonly);
-    Object.assign(componentProps, { readOnly: isReadOnly, disabled: !isEditable });
+    const isEditable = getDefinedOne(editable, sc?.editable);
+    const isReadOnly = getDefinedOne(readonly, sc?.readOnly);
+    Object.assign(componentProps, { readOnly: isReadOnly, disabled: !isEditable, editable: isEditable });
     return {
       title: sc.title as string,
       dataIndex,
@@ -201,6 +201,7 @@ function SubTable({
                     index={index}
                     item={item}
                     form={form}
+                    editable={editable}
                     mutators={mutators}
                     portalReadOnlyClassName={portalReadOnlyClassName}
                   />
@@ -208,14 +209,16 @@ function SubTable({
               })}
             </div>
             <div className="border-t-1 border-gray-300 flex items-center">
-              <Icon
-                name="add"
-                size={24}
-                className={
-                  cs('m-5 font-bold cursor-pointer', { [portalReadOnlyClassName]: state.value.length })
-                }
-                onClick={() => onAddRow(mutators)}
-              />
+              {editable && (
+                <Icon
+                  name="add"
+                  size={24}
+                  className={
+                    cs('m-5 font-bold cursor-pointer', { [portalReadOnlyClassName]: state.value.length })
+                  }
+                  onClick={() => onAddRow(mutators)}
+                />
+              )}
             </div>
           </div>
         );

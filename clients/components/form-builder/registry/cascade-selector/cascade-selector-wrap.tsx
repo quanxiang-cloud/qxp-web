@@ -1,9 +1,12 @@
 import React, { useEffect } from 'react';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 
+import { getDefinedOne } from '@c/form-builder/utils';
+
 import CascadeSelector from './cascade-selector';
 
 function CascadeSelectorWarp(props: ISchemaFieldComponentProps): JSX.Element {
+  const isEditable = getDefinedOne(props?.editable, props?.props.editable);
   const { predefinedDataset, defaultValueFrom, showFullPath } = props.props['x-internal'];
 
   useEffect(() => {
@@ -21,6 +24,7 @@ function CascadeSelectorWarp(props: ISchemaFieldComponentProps): JSX.Element {
       showFullPath={showFullPath}
       onChange={props.mutators.change}
       value={props.value}
+      disabled={!isEditable}
       {...props.props['x-component-props']}
     />
   );

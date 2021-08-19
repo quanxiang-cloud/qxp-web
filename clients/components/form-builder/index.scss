@@ -287,7 +287,7 @@
 .layout-grid {
   flex-wrap: wrap;
   border: 1px solid var(--gray-200);
-  padding: 4px;
+  padding: 4px 0;
 }
 
 .layout-card {
@@ -297,7 +297,7 @@
 .layout-card-content {
   overflow: hidden;
   margin: -24px; // cover .ant-card-body padding
-  padding: 0 4px;
+  padding: 16px 4px;
 }
 
 .layout-tabs {
@@ -321,6 +321,7 @@
 
 .panel {
   min-width: 296px;
+  overflow: auto;
   background-color: #fff;
 }
 

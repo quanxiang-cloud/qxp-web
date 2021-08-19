@@ -1,18 +1,20 @@
 import * as H from 'history';
-import { action, observable, reaction, IReactionDisposer, computed } from 'mobx';
+import { action, observable, reaction, IReactionDisposer, computed, toJS } from 'mobx';
 import { UnionColumns } from 'react-table';
+import { set } from 'lodash';
+
+import logger from '@lib/logger';
+import toast from '@lib/toast';
+import { getTableSchema, saveTableSchema } from '@lib/http-client';
+import { schemaToMap } from '@lib/schema-convert';
 
 import FormStore from '@c/form-builder/store';
-import toast from '@lib/toast';
 import AppPageDataStore from '@c/form-app-data-table/store';
 import { TableConfig } from '@c/form-app-data-table/type';
 import { setFixedParameters } from '@c/form-app-data-table/utils';
+import registry from '@c/form-builder/registry';
 
-import { getTableSchema, saveTableSchema } from '@lib/http-client';
-import {
-  createPageScheme,
-} from './api';
-import { schemaToMap } from '@lib/schema-convert';
+import { createPageScheme } from './api';
 
 export const SHOW_FIELD = [
   'DatePicker',
@@ -20,7 +22,6 @@ export const SHOW_FIELD = [
   'MultipleSelect',
   'NumberPicker',
   'RadioGroup',
-  'textarea',
   'Select',
   'CheckboxGroup',
   'UserPicker',
@@ -55,13 +56,10 @@ class FormDesignStore {
   }
 
   @computed get fieldList(): PageField[] {
-    return Object.entries(this.fieldsMap).filter(([key, fieldSchema]) => {
-      if (key === '_id' ||
-        !SHOW_FIELD.includes(fieldSchema['x-component'] as string)) {
-        return false;
-      }
+    const whitInternalFields = Object.assign({}, this.fieldsMap, this.internalFields);
 
-      return true;
+    return Object.entries(whitInternalFields).filter(([key, fieldSchema]) => {
+      return (key !== '_id' && SHOW_FIELD.includes(fieldSchema['x-component'] as string));
     }).map(([key, fieldSchema]) => {
       return {
         id: key,
@@ -73,6 +71,23 @@ class FormDesignStore {
         xComponent: fieldSchema['x-component'] as string,
       };
     });
+  }
+
+  @computed get internalFields(): Record<string, ISchema> {
+    const _internalFields = this.formStore?.internalFields.reduce<Record<string, ISchema>>((acc, field) => {
+      const { fieldName, componentName, configValue } = field;
+      const { toSchema } = registry.elements[componentName.toLowerCase()] || {};
+      if (!toSchema) {
+        logger.error(`failed to find component: [${componentName}] in registry`);
+      }
+
+      const currentSchema = toSchema(toJS(configValue));
+      acc[fieldName] = set(currentSchema, 'x-internal.isSystem', true);
+
+      return acc;
+    }, {});
+
+    return _internalFields || {};
   }
 
   @computed get showAllFields(): boolean {
@@ -103,7 +118,7 @@ class FormDesignStore {
 
       if (!this.hasSchema && !this.pageTableColumns.length) {
         this.pageTableColumns = this.fieldList.map(({ id }) => id).sort((key1, key2) => {
-          return this.fieldsMap[key1]['x-index'] || 0 - (this.fieldsMap[key2]['x-index'] || 0);
+          return this.fieldsMap?.[key1]?.['x-index'] || 0 - (this.fieldsMap?.[key2]?.['x-index'] || 0);
         });
       } else {
         this.pageTableColumns = this.pageTableColumns.filter((id) => {
@@ -134,7 +149,7 @@ class FormDesignStore {
       const column: UnionColumns<any>[] = this.pageTableColumns.map((key) => {
         return {
           id: key,
-          Header: this.fieldsMap[key]?.title || '',
+          Header: { ...this.fieldsMap, ...this.internalFields }[key]?.title || '',
           accessor: key,
         };
       });
@@ -223,7 +238,7 @@ class FormDesignStore {
   }
 
   @action
-  saveFormScheme = (history: H.History): Promise<any> => {
+  saveFormSchema = (history: H.History): Promise<any> => {
     if (this.formStore?.fields.length && this.pageTableColumns && this.pageTableColumns.length === 0) {
       toast.error('请在页面配置-字段显示和排序至少选择一个字段显示');
       history.replace(`/apps/formDesign/pageSetting/${this.pageID}/${this.appID}`);
@@ -236,8 +251,16 @@ class FormDesignStore {
     }
 
     this.saveSchemeLoading = true;
-    // return saveTableSchema(this.appID, this.pageID, this.formStore?.schema || {}).then(() => {
-    return saveTableSchema(this.appID, this.pageID, this.formStore?.schema || {}).then(() => {
+
+    const allSchema = {
+      ...this.formStore.schema,
+      properties: {
+        ...this.formStore?.schema?.properties,
+        ...this.internalFields,
+      },
+    };
+
+    return saveTableSchema(this.appID, this.pageID, allSchema || {}).then(() => {
       createPageScheme(this.appID, {
         tableID: this.pageID, config: {
           pageTableColumns: this.pageTableColumns,
