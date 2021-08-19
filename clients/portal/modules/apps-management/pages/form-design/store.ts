@@ -1,4 +1,4 @@
-import * as H from 'history';
+import { History } from 'history';
 import { action, observable, reaction, IReactionDisposer, computed, toJS } from 'mobx';
 import { UnionColumns } from 'react-table';
 import { set } from 'lodash';
@@ -236,15 +236,15 @@ class FormDesignStore {
   }
 
   @action
-  saveFormSchema = (history: H.History): Promise<any> => {
-    if (this.formStore?.fields.length && this.pageTableColumns && this.pageTableColumns.length === 0) {
-      toast.error('请在页面配置-字段显示和排序至少选择一个字段显示');
-      history.replace(`/apps/formDesign/pageSetting/${this.pageID}/${this.appID}`);
+  saveFormSchema = async (history: History): Promise<any> => {
+    // validate table schema on each field
+    if (!this.formStore?.validate()) {
       return Promise.resolve(false);
     }
 
-    // validate table schema on each field
-    if (!this.formStore?.validate()) {
+    if (this.formStore?.fields.length && this.pageTableColumns && this.pageTableColumns.length === 0) {
+      toast.error('请在页面配置-字段显示和排序至少选择一个字段显示');
+      history.replace(`/apps/formDesign/pageSetting/${this.pageID}/${this.appID}`);
       return Promise.resolve(false);
     }
 
@@ -258,7 +258,8 @@ class FormDesignStore {
       },
     };
 
-    return saveTableSchema(this.appID, this.pageID, allSchema || {}).then(() => {
+    try {
+      await saveTableSchema(this.appID, this.pageID, allSchema || {});
       createPageScheme(this.appID, {
         tableID: this.pageID, config: {
           pageTableColumns: this.pageTableColumns,
@@ -271,10 +272,10 @@ class FormDesignStore {
       this.initScheme = this.formStore?.schema as ISchema;
       this.saveSchemeLoading = false;
       return true;
-    }).catch((error) => {
+    } catch (error) {
       toast.error(error.message);
       this.saveSchemeLoading = false;
-    });
+    }
   }
 
   @action
