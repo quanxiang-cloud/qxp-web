@@ -12,6 +12,7 @@ export const defaultConfig: LayoutCardConfig = {
 
 export function toSchema(value: LayoutCardConfig): ISchema {
   return {
+    type: 'object',
     display: true,
     title: value.title,
     'x-component': 'LayoutCard',

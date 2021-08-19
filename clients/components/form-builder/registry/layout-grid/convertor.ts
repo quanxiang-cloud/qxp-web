@@ -10,7 +10,7 @@ export const defaultConfig: LayoutGridConfig = {
 
 export function toSchema(value: LayoutGridConfig): ISchema {
   return {
-    type: 'string',
+    type: 'object',
     display: true,
     'x-component': 'LayoutGrid',
     'x-component-props': {
