@@ -90,4 +90,4 @@ export const updateField = (fieldName: string, newField: FormItem, fields: FormI
   };
 
   return recurse(fields);
-}
+};

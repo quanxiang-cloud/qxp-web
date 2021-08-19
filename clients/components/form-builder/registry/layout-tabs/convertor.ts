@@ -15,6 +15,7 @@ export const defaultConfig: LayoutTabsConfig = {
 
 export function toSchema(value: LayoutTabsConfig): ISchema {
   return {
+    type: 'object',
     display: true,
     'x-component': 'LayoutTabs',
     'x-component-props': {

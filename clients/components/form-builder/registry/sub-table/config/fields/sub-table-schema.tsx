@@ -110,6 +110,7 @@ function SubTableSchema(props: ISchemaFieldComponentProps): JSX.Element {
       sort: currentIndex,
       schema: getSchemaFromOptionType(opt.value, currentIndex),
     };
+    newField.value = '';
     setCurrentFieldLabel(label);
     setFieldSelectorShow(false);
     onUpdateFields([...schemaList, newField]);
