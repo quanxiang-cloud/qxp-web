@@ -4,7 +4,7 @@ import toast from '@lib/toast';
 import { getTableSchema } from '@lib/http-client';
 
 import { fetchDataModels } from '../api';
-import { INIT_MODEL_SCHEMA } from '../utils';
+import { INIT_MODEL_SCHEMA } from './constants';
 import { getTableXName, getApiDoc } from './api';
 import { INIT_API_CONTENT, INIT_CURRENT_MODEL } from './constants';
 

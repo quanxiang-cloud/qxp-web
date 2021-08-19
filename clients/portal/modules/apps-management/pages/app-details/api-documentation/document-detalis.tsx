@@ -31,7 +31,7 @@ function renderApiDetails(title: string): JSX.Element {
   return (
     <>
       <div className='flex justify-between center'>
-        <div className='text-gray-900 text-18'>{title}</div>
+        <div className='api-content-title'>{title}</div>
         <div>
           {DOC_TYPE_LIST.map(({ label, value }) => {
             return (
@@ -48,9 +48,9 @@ function renderApiDetails(title: string): JSX.Element {
           })}
         </div>
       </div>
-      <pre className='bg-blue-50 my-12 py-12'>{store.APiContent.input}</pre>
-      <div className='text-gray-900 text-18 h-400'>示例返回值</div>
-      <pre className='bg-blue-50 my-12 py-12'>{store.APiContent.output}</pre>
+      <pre className='api-content'>{store.APiContent.input}</pre>
+      <div className='api-content-title'>示例返回值</div>
+      <pre className='api-content'>{store.APiContent.output}</pre>
     </>
   );
 }

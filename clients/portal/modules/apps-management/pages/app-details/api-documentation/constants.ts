@@ -18,3 +18,13 @@ export const INIT_CURRENT_MODEL = {
   title: '',
   updatedAt: 0,
 };
+
+export const INIT_MODEL_SCHEMA = {
+  tableID: '',
+  schema: {
+    properties: {},
+    title: '',
+    type: 'object',
+    description: '',
+  },
+};
