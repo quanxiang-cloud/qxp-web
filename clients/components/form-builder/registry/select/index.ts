@@ -1,5 +1,7 @@
 import { Select } from '@formily/antd-components';
 
+import { validateRegistryElement } from '@c/form-builder/utils';
+
 import configSchema from './config-schema';
 import { defaultConfig, toSchema, toConfig, SelectConfig } from './convertor';
 
@@ -14,6 +16,7 @@ const SelectField: Omit<FormBuilder.SourceElement<SelectConfig>, 'displayOrder'>
   category: 'basic',
   componentName: 'Select',
   compareOperators: ['==', '!=', '∈', '∉'],
+  validate: validateRegistryElement(configSchema),
 };
 
 export default SelectField;

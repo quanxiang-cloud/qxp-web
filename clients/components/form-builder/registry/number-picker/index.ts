@@ -1,5 +1,7 @@
 import { NumberPicker } from '@formily/antd-components';
 
+import { validateRegistryElement } from '@c/form-builder/utils';
+
 import configSchema from './config-schema';
 import { defaultConfig, toSchema, toConfig, NumberPickerConfig } from './convertor';
 
@@ -14,6 +16,7 @@ const NumberPickerField: Omit<FormBuilder.SourceElement<NumberPickerConfig>, 'di
   category: 'basic',
   componentName: 'NumberPicker',
   compareOperators: ['==', '!=', '>', '>=', '<=', '<'],
+  validate: validateRegistryElement(configSchema),
 };
 
 export default NumberPickerField;

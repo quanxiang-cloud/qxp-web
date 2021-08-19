@@ -1,3 +1,5 @@
+import { validateRegistryElement } from '@c/form-builder/utils';
+
 import configSchema from './config-schema';
 import { defaultConfig, toSchema, toConfig, CascadeConfig } from './convertor';
 import CustomizedDatasetBtn from './customized-dataset-btn';
@@ -16,6 +18,7 @@ const InputField: Omit<FormBuilder.SourceElement<CascadeConfig>, 'displayOrder'>
   componentName: 'CascadeSelector',
   configDependencies: { CustomizedDatasetBtn, DatasetSelector },
   compareOperators: ['==', '!='],
+  validate: validateRegistryElement(configSchema),
 };
 
 export default InputField;

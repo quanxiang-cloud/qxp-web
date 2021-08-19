@@ -1,5 +1,7 @@
 import { Input } from '@formily/antd-components';
 
+import { validateRegistryElement } from '@c/form-builder/utils';
+
 import configSchema from './config-schema';
 import { defaultConfig, toSchema, toConfig, InputConfig } from './convertor';
 
@@ -14,6 +16,7 @@ const InputField: Omit<FormBuilder.SourceElement<InputConfig>, 'displayOrder'> =
   category: 'basic',
   componentName: 'Input',
   compareOperators: ['==', '!='],
+  validate: validateRegistryElement(configSchema),
 };
 
 export default InputField;

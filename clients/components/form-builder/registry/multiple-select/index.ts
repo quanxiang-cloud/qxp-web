@@ -1,5 +1,7 @@
 import { Select } from '@formily/antd-components';
 
+import { validateRegistryElement } from '@c/form-builder/utils';
+
 import configSchema from './config-schema';
 import { defaultConfig, toSchema, toConfig, MultipleSelectConfig } from './convertor';
 
@@ -14,6 +16,7 @@ const MultipleSelectField: Omit<FormBuilder.SourceElement<MultipleSelectConfig>,
   category: 'basic',
   componentName: 'MultipleSelect',
   compareOperators: ['⊇', '⊋'],
+  validate: validateRegistryElement(configSchema),
 };
 
 export default MultipleSelectField;
