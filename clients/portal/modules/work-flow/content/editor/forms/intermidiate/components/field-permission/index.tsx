@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useQuery } from 'react-query';
 import { groupBy } from 'lodash';
+import { pipe, pickBy, entries, map } from 'lodash/fp';
 
 import Toggle from '@c/toggle';
 import Loading from '@c/loading';
@@ -89,6 +90,17 @@ export default function FieldPermission({ value, onChange: _onChange }: Props): 
     };
   }
 
+  const getLayoutOptions = pipe(
+    pickBy((schema: ISchema) => schema?.['x-internal']?.isLayoutComponent),
+    entries,
+    map(([fieldName, fieldSchema]: [string, ISchema]) => {
+      return {
+        id: fieldName, fieldName: fieldSchema.title || fieldSchema?.['x-component'], read: true,
+        write: false, hidden: true, ...INITIAL_VALUE,
+      };
+    }),
+  );
+
   function mergeField(): void {
     const { custom = [], system = [] } = value || {};
     const { true: systemData, false: customData } = groupBy(data, ({ isSystem }) => isSystem);
@@ -116,7 +128,10 @@ export default function FieldPermission({ value, onChange: _onChange }: Props): 
     });
     setMergedFieldPermissions({
       system: system.filter(({ id }) => systemDataIds.includes(id)),
-      custom: custom.filter(({ id }) => customDataIds.includes(id)),
+      custom: [
+        ...custom.filter(({ id }) => customDataIds.includes(id)),
+        ...getLayoutOptions(schema.properties),
+      ],
     });
   }
 
