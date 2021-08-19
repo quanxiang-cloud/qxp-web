@@ -1,6 +1,8 @@
 import Select from './multiple-select';
 import DatasetConfig from '../../form-settings-panel/form-field-config/dataset-config';
 
+import { validateRegistryElement } from '@c/form-builder/utils';
+
 import configSchema from './config-schema';
 import { defaultConfig, toSchema, toConfig, MultipleSelectConfig } from './convertor';
 
@@ -16,6 +18,7 @@ const MultipleSelectField: Omit<FormBuilder.SourceElement<MultipleSelectConfig>,
   componentName: 'MultipleSelect',
   compareOperators: ['⊇', '⊋'],
   configDependencies: { DatasetConfig },
+  validate: validateRegistryElement(configSchema),
 };
 
 export default MultipleSelectField;

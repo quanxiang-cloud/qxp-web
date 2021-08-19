@@ -285,6 +285,7 @@ export interface CustomFieldPermission {
   id: string;
   children?: string[];
   parent?: string;
+  hidden?: boolean;
 }
 
 export interface SystemFieldPermission {

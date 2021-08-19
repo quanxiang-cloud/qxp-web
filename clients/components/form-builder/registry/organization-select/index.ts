@@ -1,4 +1,3 @@
-
 import { DefaultConfig, defaultConfig, toSchema, toConfig } from './convertor';
 import Component from './organization-select-wrap';
 import OrganizationPickerConfigForm from './config';

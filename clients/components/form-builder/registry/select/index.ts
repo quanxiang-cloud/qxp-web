@@ -1,5 +1,8 @@
 import CustomSelect from './custom-select';
 import DatasetConfig from '../../form-settings-panel/form-field-config/dataset-config';
+
+import { validateRegistryElement } from '@c/form-builder/utils';
+
 import configSchema from './config-schema';
 import { defaultConfig, toSchema, toConfig, SelectConfig } from './convertor';
 
@@ -15,6 +18,7 @@ const SelectField: Omit<FormBuilder.SourceElement<SelectConfig>, 'displayOrder'>
   componentName: 'Select',
   compareOperators: ['==', '!=', '∈', '∉'],
   configDependencies: { DatasetConfig },
+  validate: validateRegistryElement(configSchema),
 };
 
 export default SelectField;

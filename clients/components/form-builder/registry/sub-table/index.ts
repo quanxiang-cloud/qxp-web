@@ -1,19 +1,23 @@
 import { omit, isEmpty } from 'lodash';
 
 import toast from '@lib/toast';
+import { validateRegistryElement } from '@c/form-builder/utils';
 
 import { defaultConfig, toSchema, toConfig, SubTableConfig } from './convertor';
 import SubTable from './preview';
 import configForm from './config/config-form';
+import configSchema from './config/config-schema';
 
-function validate({ subTableSchema, subTableColumns, required }: SubTableConfig): boolean {
+function validate(configValue: SubTableConfig): boolean {
+  const { subTableSchema, subTableColumns, required } = configValue;
   const columns = subTableColumns?.filter((column)=> column !== '_id');
   const schema = omit(subTableSchema?.properties, '_id') || {};
+  let isColumnValid = true;
   if (required && !columns?.length && isEmpty(schema)) {
     toast.error('请添加子表单字段项');
-    return false;
+    isColumnValid = false;
   }
-  return true;
+  return isColumnValid && validateRegistryElement(configSchema, configValue);
 }
 
 const SubTableField: Omit<FormBuilder.SourceElement<SubTableConfig>, 'displayOrder'> = {

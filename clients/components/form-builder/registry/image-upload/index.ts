@@ -1,7 +1,9 @@
+import { validateRegistryElement } from '@c/form-builder/utils';
+import FileList from '@portal/modules/system-mgmt/send-message/filelist';
+
 import configSchema from './config-schema';
 import { defaultConfig, toSchema, toConfig, ImageUploadConfig } from './convertor';
 import Uploader from './uploader';
-import FileList from '@portal/modules/system-mgmt/send-message/filelist';
 
 const Field: Omit<FormBuilder.SourceElement<ImageUploadConfig>, 'displayOrder'> = {
   configSchema,
@@ -14,6 +16,7 @@ const Field: Omit<FormBuilder.SourceElement<ImageUploadConfig>, 'displayOrder'> 
   category: 'advance',
   componentName: 'ImageUpload',
   configDependencies: { FileList },
+  validate: validateRegistryElement(configSchema),
 };
 
 export default Field;

@@ -20,7 +20,7 @@ interface Props {
 }
 
 export default function CustomFieldTable({
-  editable, fields, updateFields, schemaMap,
+  editable, fields, updateFields: _updateFields, schemaMap,
 }: Props): JSX.Element {
   const { flowID: flowId } = useContext(flowContext);
   const [data] = useRequest<{
@@ -35,6 +35,10 @@ export default function CustomFieldTable({
   const variableOptions = data?.data?.map(({ name, code, fieldType }) => ({
     label: name, value: code, type: fieldType,
   }));
+
+  function updateFields(_fields: CustomFieldPermission[]): void {
+    _updateFields([..._fields, ...fields.filter((field) => field.hidden)]);
+  }
 
   function getHeader(model: any, key: 'read' | 'write', label: string): JSX.Element {
     let checkedNumber = 0;
@@ -198,7 +202,7 @@ export default function CustomFieldTable({
         Cell: (model: any) => !model.cell.row.original.write &&
               getValueCell(model, 'submitValue', editable),
       }]}
-      data={fields}
+      data={fields.filter((field) => !field.hidden)}
     />
   );
 }
