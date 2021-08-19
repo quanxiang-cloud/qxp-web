@@ -47,9 +47,21 @@ function FieldPermissions({ fields, className = '', fieldPer }: Props, ref: Reac
   };
 
   const getFieldPer = (): ISchema => {
-    const properties: Record<string, ISchema> = {
-    };
+    const properties: Record<string, ISchema> = {};
     hasPathFields.forEach((field) => {
+      if (field.parentField) {
+        set(
+          properties,
+          `${field.parentField}`,
+          {
+            type: 'object',
+            'x-internal': {
+              permission: 1,
+            },
+          },
+        );
+      }
+
       set(
         properties,
         `${field.path}.x-internal.permission`,
