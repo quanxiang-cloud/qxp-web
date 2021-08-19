@@ -93,7 +93,7 @@ function LayoutTabs({ schema }: Props): JSX.Element | null {
           >
             {fields
               .filter((itm) => {
-                const schema: ISchema = itm?.properties?.FIELDs?.properties?.[itm.id] || {}
+                const schema: ISchema = itm?.properties?.FIELDs?.properties?.[itm.id] || {};
                 return schema?.['x-internal']?.tabIndex === label;
               })
               .map((itm) => {

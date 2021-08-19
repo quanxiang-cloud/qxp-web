@@ -37,7 +37,7 @@ class Registry {
       const { component, isLayoutComponent, editComponent } = this.elements[componentName];
       this.components[componentName] = component;
       if (editComponent) {
-        this.editComponents[componentName] = editComponent as React.JSXElementConstructor<any>
+        this.editComponents[componentName] = editComponent as React.JSXElementConstructor<any>;
       }
       if (isLayoutComponent) {
         this.layoutComponents[componentName] = editComponent as React.JSXElementConstructor<any>;
