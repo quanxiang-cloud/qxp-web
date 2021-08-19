@@ -45,7 +45,7 @@ export interface Avatar {
 export default function Avatar({
   username = '',
   size = 24,
-}: Avatar) {
+}: Avatar): JSX.Element {
   const avatarStyle = AvatarStyle[size];
   let head = '';
   let imgInfo: { name: string, color: string } = { name: '', color: '' };
@@ -60,6 +60,7 @@ export default function Avatar({
       style={{
         width: size,
         height: size,
+        minWidth: size,
         lineHeight: `${size}px`,
         fontSize: avatarStyle.fontSize,
         backgroundColor: imgInfo.color,
