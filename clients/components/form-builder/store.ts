@@ -2,10 +2,10 @@ import { action, computed, observable, toJS } from 'mobx';
 import { nanoid } from 'nanoid';
 import { flatten, set } from 'lodash';
 
-import Modal from '@c/modal';
 import logger from '@lib/logger';
-import { insertField, omitField, findField, updateField } from './utils/fields-operator';
+import Modal from '@c/modal';
 
+import { insertField, omitField, findField, updateField } from './utils/fields-operator';
 import registry from './registry';
 import {
   filterLinkageRules,
@@ -160,6 +160,7 @@ export default class FormBuilderStore {
     const properties: Record<string, ISchema> = {};
     const schemas = this.getAllFields.map((field, idx) => this.fieldToSchema(field, idx));
 
+    /** 找出布局组件，并将其add到properties对象 */
     schemas.forEach((schema) => {
       if (schema?.['x-internal']?.parentField) return;
 
@@ -167,6 +168,7 @@ export default class FormBuilderStore {
       properties[fieldName] = schema;
     });
 
+    /** 1.找到有布局组件的其他组件 2. 将其他组件add对应布局组件的properties上 */
     schemas.forEach((schema) => {
       const parentField = schema?.['x-internal']?.parentField;
       if (!parentField) return;
@@ -236,13 +238,17 @@ export default class FormBuilderStore {
     parsedSchema['x-internal'].parentField = field.parentField;
     parsedSchema['x-internal'].tabIndex = field.tabIndex;
 
+    const parentFieldKey = field?.parentField || '';
+    const curCols = this.fields.find(({ fieldName }) => fieldName === parentFieldKey)?.configValue?.columns;
+    const cols = curCols ? curCols * 4 : 4;
+
     const node = {
       // convert observable value to pure js object for debugging
       fieldName,
       ...parsedSchema,
       'x-index': index,
       'x-mega-props': {
-        labelCol: this.labelAlign === 'right' ? 4 : undefined,
+        labelCol: this.labelAlign === 'right' ? cols : undefined,
       },
     };
 
@@ -477,7 +483,6 @@ export default class FormBuilderStore {
       id: nanoid(10),
     });
   }
-
   @action
   deleteValidation(id: string): void {
     this.validations = this.validations.filter((rule) => {

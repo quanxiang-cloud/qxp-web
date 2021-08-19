@@ -7,7 +7,7 @@ function LayoutGrid(p: ISchemaFieldComponentProps): JSX.Element {
   const columns = p.props?.['x-component-props'].columns || 2;
   return (
     <div
-      className="layout-grid-form grid gap-4"
+      className="grid grid-layout gap-4"
       style={{ gridTemplateColumns: `repeat(${columns}, 1fr)` }}
     >
       {React.Children.toArray(p.children).map((itm: any, idx: number) => {
