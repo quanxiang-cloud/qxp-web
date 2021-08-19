@@ -1,3 +1,5 @@
+import { validateRegistryElement } from '@c/form-builder/utils';
+
 import DatePicker from './date-picker';
 import configSchema from './config-schema';
 import { defaultConfig, toSchema, toConfig, DatePickerConfig } from './convertor';
@@ -13,6 +15,7 @@ const DatePickerField: Omit<FormBuilder.SourceElement<DatePickerConfig>, 'displa
   category: 'basic',
   componentName: 'DatePicker',
   compareOperators: ['==', '!=', '>', '>=', '<=', '<'],
+  validate: validateRegistryElement(configSchema),
 };
 
 export default DatePickerField;

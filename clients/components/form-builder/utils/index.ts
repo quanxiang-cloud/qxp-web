@@ -1,6 +1,8 @@
 import { get } from 'lodash';
 import { customAlphabet } from 'nanoid';
-import fp, { pipe, equals, property } from 'lodash/fp';
+import fp, { pipe, entries, filter, fromPairs, every, equals, property, curry, map } from 'lodash/fp';
+
+import toast from '@lib/toast';
 
 const nanoid = customAlphabet('1234567890qwertyuioplkjhgfdsazxcvbnmQWERTYUIOPLKJHGFDSAZXCVBNM', 8);
 
@@ -102,3 +104,37 @@ export function getDefinedOne(
 ): boolean {
   return !!(firstOne ?? secondOne);
 }
+
+export const getValidateMessageMap: (schema: ISchema) => Record<string, string> = pipe(
+  fp.get('properties.Fields.properties'),
+  entries,
+  map(([fieldName, fieldSchema]: [string, ISchema]) => {
+    const getMessage = pipe(
+      fp.get('x-rules'),
+      (rules) => rules || {},
+      ({ required, message }) => required ? message : null,
+    );
+    const message = getMessage(fieldSchema);
+    return message ? [fieldName, message] : null;
+  }),
+  filter(Boolean),
+  fromPairs,
+);
+
+type ValidateRegistryElement<T> = (configSchema: ISchema, configValue: T) => boolean
+export const validateRegistryElement: Curried<ValidateRegistryElement<unknown>> = curry(
+ <T>(configSchema: ISchema, configValue: T) => {
+   const messageMap = getValidateMessageMap(configSchema);
+   const validator = pipe(
+     entries,
+     map(([fieldName, message]: [string, string]) => {
+       const isValid = configValue[fieldName as keyof typeof configValue];
+       !isValid && toast.error(message);
+       return isValid;
+     }),
+     every(Boolean),
+   );
+
+   return validator(messageMap);
+ },
+);

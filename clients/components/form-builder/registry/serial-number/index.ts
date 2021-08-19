@@ -1,3 +1,5 @@
+import { validateRegistryElement } from '@c/form-builder/utils';
+
 import SerialNumber from './serial';
 import Prefix from './prefix';
 import configSchema from './config-schema';
@@ -16,6 +18,7 @@ const SerialField: Omit<FormBuilder.SourceElement<typeof defaultConfig>, 'displa
   componentName: 'Serial',
   configDependencies: { Prefix },
   effects,
+  validate: validateRegistryElement(configSchema),
 };
 
 export default SerialField;
