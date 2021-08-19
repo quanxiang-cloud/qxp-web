@@ -77,16 +77,22 @@ class PushServer {
         retryCount = retryCount + 1;
       }
     };
+
+    this.connection.onerror = () => {
+      this.closeConnection();
+    };
   }
 
   detachEvents() {
     this.connection.onopen = null;
     this.connection.onmessage = null;
     this.connection.onclose = null;
+    this.connection.onerror = null;
   }
 
   onlineHandler = () => {
-    retryCount = 0; // reset retry count
+    // reset retry count
+    retryCount = 0;
     this.setUp(() => {
       this.attachEvents();
       this.heartbeat();
@@ -102,7 +108,7 @@ class PushServer {
       if (this.connection.readyState === WebSocket.OPEN) {
         this.connection.send('echo');
       }
-    }
+    };
 
     this.stopHeartbeat();
     // trigger first heartbeat

@@ -16,7 +16,7 @@ type Props = {
 function Drawer({ onCancel, title, children, className, distanceTop = 56 }: Props): JSX.Element {
   return (
     <div
-      className={cs('drawer-modal-mask', className)}
+      className={cs('drawer-modal-mask drawer-position-right', className)}
     >
       <div
         style={{ '--distanceTop': distanceTop + 'px' } as React.CSSProperties}

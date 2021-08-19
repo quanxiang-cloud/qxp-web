@@ -35,6 +35,7 @@ type PageField = {
   id: string;
   label: string;
   type: string,
+  xComponent: string;
   cProps?: ComponentProps;
   isSystem: boolean;
   expand?: boolean;
@@ -51,10 +52,14 @@ type FilterMaps = Record<string, FilterField>;
 
 type Filters = string[];
 
+type ValueFrom = 'form' | 'fixedValue';
+
 type Condition = {
   key?: string;
   op?: string;
-  value?: Array<string | number | Date | { label: string, value: string }>;
+  value?: Array<string | number | Date | LabelValue>;
+  valueFrom?: ValueFrom;
+  path?: string;
 }
 
 type PageInfo = {
@@ -101,5 +106,3 @@ type DeptAndUser = {
   id: string;
   name: string;
 }
-
-type Fields = ISchema & { id: string };

@@ -1,4 +1,5 @@
 import React, { useEffect, useContext } from 'react';
+import { toJS } from 'mobx';
 import { observer } from 'mobx-react';
 
 import Button from '@c/button';
@@ -17,6 +18,7 @@ function PageDataTable(): JSX.Element {
     if (!store.allowRequestData) {
       return;
     }
+
     store.setParams({});
   }, [store.pageID]);
 
@@ -68,9 +70,10 @@ function PageDataTable(): JSX.Element {
           emptyTips='暂无数据'
           rowKey="_id"
           loading={store.listLoading}
+          initialSelectedRowKeys={selected || []}
           onSelectChange={handleSelectChange}
           columns={store.tableColumns}
-          data={store.formDataList}
+          data={toJS(store.formDataList)}
         />
       </div>
       <Pagination

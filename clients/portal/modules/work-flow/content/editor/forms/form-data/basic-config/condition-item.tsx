@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import { omit, isArray } from 'lodash';
+import React, { useEffect } from 'react';
+import { omit, isArray, isEmpty } from 'lodash';
 import cs from 'classnames';
 import { useCss } from 'react-use';
 import { DatePicker } from 'antd';
+import moment, { Moment } from 'moment';
 
 import Select from '@c/select';
-import { Options, Option } from '@flowEditor/forms/api';
+import { Option } from '@flowEditor/forms/api';
 import type {
   Operator,
   TriggerConditionExpressionItem,
@@ -14,41 +15,38 @@ import type {
 } from '@flowEditor/type';
 import FormRender from '@c/form-builder/form-renderer';
 import { COMPONENT_OPERATORS_MAP, OPERATOR_OPTIONS } from '@flowEditor/utils/constants';
-import moment, { Moment } from 'moment';
 
 const { RangePicker } = DatePicker;
 
 interface Props {
   condition: TriggerConditionValue;
-  options: Options;
-  schemaMap?: SchemaProperties;
+  options: Option[];
+  schemaMap?: Record<string, SchemaFieldItem>;
   onChange: (value: Partial<TriggerConditionExpressionItem>) => void;
 }
 
-export type ConditionItemOptions = Options;
+export type ConditionItemOptions = Option[];
 
 export default function ConditionItem({ condition, options, onChange, schemaMap }: Props): JSX.Element {
-  const [value, setValue] = useState(condition.key);
-
+  const value = condition.key;
   const currentOption = options.find((option) => option.value === value);
 
-  const currentSchema = schemaMap?.[value || ''] || {};
-  if (value && currentSchema) {
+  const currentSchema: SchemaFieldItem | Record<string, any> = schemaMap?.[value || ''] || {};
+  if (value && !isEmpty(currentSchema)) {
     currentSchema.display = true;
     currentSchema.readOnly = false;
   }
 
-  const schema = {
+  const schema: ISchema = {
     type: 'object',
     title: '',
     description: '',
     properties: {
-      [value]: omit(currentSchema, 'title') as SchemaProperties,
+      [value]: omit(currentSchema, 'title') as ISchema,
     },
   };
 
   function onFieldChange(value: string): void {
-    setValue(value);
     onChange({ key: value });
   }
 
@@ -78,7 +76,7 @@ export default function ConditionItem({ condition, options, onChange, schemaMap 
   const hiddenInput = condition.op === 'null' || condition.op === 'not-null' || showDateRange;
   const dateFormat = currentSchema?.['x-component-props']?.format || 'YYYY-MM-DD';
   let rangePickerDefaultValue: [Moment, Moment] | undefined = undefined;
-  if (currentSchema?.['x-component']?.toLowerCase() === 'datepicker' && isArray(condition.value)) {
+  if (currentSchema.componentName === 'datepicker' && isArray(condition.value)) {
     rangePickerDefaultValue = condition.value?.map?.((v) => {
       return moment(v);
     }) as unknown as typeof rangePickerDefaultValue;
@@ -106,8 +104,8 @@ export default function ConditionItem({ condition, options, onChange, schemaMap 
       >
         <Select
           placeholder="判断符"
-          defaultValue={condition.op}
-          onChange={(v : Operator) => onChange({ op: v })}
+          value={condition.op}
+          onChange={(v: Operator) => onChange({ op: v })}
           className={cs(
             'h-32 border border-gray-300 corner-2-8-8-8 px-12 text-12 flex items-center flex-1', {
               'mr-12': !hiddenInput || showDateRange,
@@ -119,11 +117,12 @@ export default function ConditionItem({ condition, options, onChange, schemaMap 
             {!value ? (
               <input
                 className="input"
-                defaultValue={condition.value}
+                value={condition.value}
                 onChange={(e) => onChange({ value: e.target.value })}
               />
             ) : (
               <FormRender
+                key={condition.key}
                 defaultValue={{ [value]: condition.value }}
                 onFormValueChange={handleChange}
                 schema={schema}
@@ -135,7 +134,7 @@ export default function ConditionItem({ condition, options, onChange, schemaMap 
           <RangePicker
             {...(currentSchema?.['x-component-props'])}
             format={dateFormat}
-            defaultValue={rangePickerDefaultValue}
+            value={rangePickerDefaultValue}
             onChange={(_, value: string[]) => onChange({ value })}
           />
         )}

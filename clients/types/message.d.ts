@@ -24,6 +24,13 @@ declare namespace Qxp {
     sort: MsgType;
   }
 
+  type Receiver = {
+    type: number;
+    id: string;
+    name: string;
+    account: string;
+  }
+
   interface MsgDetail {
     id?: string;
     content?: string;
@@ -33,8 +40,8 @@ declare namespace Qxp {
     sort?: MsgType;
     created_at?: number;
     update_at?: number;
-    mes_attachment?: any;
-    receivers?: any;
+    mes_attachment?: string[];
+    receivers?: Receiver[];
   }
 
   type MsgReceiver = {
@@ -106,6 +113,8 @@ declare namespace Qxp {
     sort?: number | MsgType; // real msg type
     mes_attachment?: Array<File>;
     handle_name?: string;
+    create_at: number;
+    update_at: number;
   }
 }
 

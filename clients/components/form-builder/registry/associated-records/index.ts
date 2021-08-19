@@ -1,13 +1,12 @@
 import AssociatedRecords from './associated-records';
-import configSchema from './config-schema';
+import AssociatedRecordsForCanvas from './associated-records/canvas';
+import config from './config';
 import { defaultConfig, toSchema, toConfig, AssociatedRecordsConfig } from './convertor';
-import LinkedTable from './linked-table';
-import AssociatedTableColumnsPicker from './associated-table-columns-picker';
-import FilterConfigBtn from './filter-config-btn';
 
 const AssociatedRecordsField: Omit<FormBuilder.SourceElement<AssociatedRecordsConfig>, 'displayOrder'> = {
-  configSchema,
+  configForm: config,
   displayName: '关联记录',
+  editComponent: AssociatedRecordsForCanvas,
   icon: 'file_present',
   defaultConfig,
   toSchema,
@@ -15,7 +14,6 @@ const AssociatedRecordsField: Omit<FormBuilder.SourceElement<AssociatedRecordsCo
   component: AssociatedRecords,
   category: 'advance',
   componentName: 'AssociatedRecords',
-  configDependencies: { LinkedTable, AssociatedTableColumnsPicker, FilterConfigBtn },
 };
 
 export default AssociatedRecordsField;

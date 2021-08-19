@@ -1,9 +1,17 @@
 import React from 'react';
 import { UnionColumns } from 'react-table';
+import {
+  pipe, entries, map, get, fromPairs, set, placeholder, isArray, filter, isUndefined,
+} from 'lodash/fp';
 
 import FormDataValueRenderer from '@c/form-data-value-renderer';
+import { getCondition } from '@c/data-filter/utils';
+import { not } from '@lib/utils';
+import { schemaToMap } from '@lib/schema-convert';
 
+import { PERMISSION } from './constants';
 import { TableConfig } from './type';
+import AppPageDataStore, { FormAppDataTableStoreSchema } from './store';
 
 export type Scheme = Record<string, any>;
 export type Config = {
@@ -29,34 +37,34 @@ export function setFixedParameters(
 ): UnionColumns<any>[] {
   const actionIndex = tableColumns.findIndex(({ id }) => id === 'action');
   switch (fixedRule) {
-  case 'one':
-    addFixedParameters([0], tableColumns);
-    break;
-  case 'previous_two':
-    addFixedParameters([0, 1], tableColumns);
-    break;
-  case 'action':
-    if (actionIndex > -1) {
-      addFixedParameters([actionIndex], tableColumns);
-    }
-    break;
-  case 'one_action':
-    addFixedParameters(actionIndex > -1 ? [0, actionIndex] : [0], tableColumns);
-    break;
+    case 'one':
+      addFixedParameters([0], tableColumns);
+      break;
+    case 'previous_two':
+      addFixedParameters([0, 1], tableColumns);
+      break;
+    case 'action':
+      if (actionIndex > -1) {
+        addFixedParameters([actionIndex], tableColumns);
+      }
+      break;
+    case 'one_action':
+      addFixedParameters(actionIndex > -1 ? [0, actionIndex] : [0], tableColumns);
+      break;
   }
   return tableColumns;
 }
 
 export function getPageDataSchema(
   config: Config,
-  schema: Scheme,
+  schema: ISchema,
   customColumns: UnionColumns<any>[],
 ): {
   tableColumns: UnionColumns<any>[];
   pageTableShowRule: TableConfig;
 } {
   const { pageTableShowRule = {}, pageTableColumns = [] } = config || {};
-  const fieldsMap = schema?.properties || {};
+  const fieldsMap = schemaToMap(schema);
   const tableColumns: UnionColumns<any>[] = pageTableColumns.filter((key) => key in fieldsMap).map((key) => {
     return {
       id: key,
@@ -75,4 +83,37 @@ export function getPageDataSchema(
     tableColumns: setFixedParameters(pageTableShowRule.fixedRule, [...tableColumns, ...customColumns]),
     pageTableShowRule,
   };
+}
+
+export function readOnlyTransform(schema: FormAppDataTableStoreSchema): FormAppDataTableStoreSchema {
+  const _readOnlyTransform = pipe(
+    get('properties'),
+    entries,
+    map(([_, field]: [string, SchemaFieldItem]) => {
+      if (field['x-internal']?.permission === PERMISSION.READONLY) {
+        field.readOnly = true;
+      }
+      return [_, field];
+    }),
+    fromPairs,
+    set('properties', placeholder, schema),
+  );
+
+  return _readOnlyTransform(schema);
+}
+
+export function conditionBuilder(store: AppPageDataStore, values: Record<string, unknown>): Condition[] {
+  const _conditionBuilder = pipe(
+    entries,
+    map(([key, value]) => {
+      const curFilter = store.fields.find(({ id }) => id === key);
+      if (!value || (isArray(value) && value.length === 0) || !curFilter) {
+        return;
+      }
+      return getCondition(curFilter, value, key);
+    }),
+    filter(not(isUndefined)),
+  );
+
+  return _conditionBuilder(values);
 }

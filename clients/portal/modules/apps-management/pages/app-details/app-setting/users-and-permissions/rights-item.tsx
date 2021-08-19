@@ -19,7 +19,7 @@ type UserOrDept = {
   ownerName: string,
 }
 
-function RightsItem({ rights, actions }: Props) {
+function RightsItem({ rights, actions }: Props): JSX.Element {
   const [modalType, setModalType] = useState('');
   const userAndDept = useMemo(() => {
     if (rights.scopes && rights.scopes.length) {
@@ -48,7 +48,9 @@ function RightsItem({ rights, actions }: Props) {
     return { users: [], deptList: [] };
   }, [rights.scopes]);
 
-  const handleAdd = (deptList: EmployeeOrDepartmentOfRole[], employees: EmployeeOrDepartmentOfRole[]) => {
+  const handleAdd = (
+    deptList: EmployeeOrDepartmentOfRole[], employees: EmployeeOrDepartmentOfRole[],
+  ): Promise<boolean | void> => {
     const scopes: DeptAndUser[] = [];
     deptList.forEach((dept) => {
       scopes.push({
@@ -106,11 +108,9 @@ function RightsItem({ rights, actions }: Props) {
           </div>
         </div>
       ) : <div className='p-20'>该权限组无有效权限</div>}
-      {modalType === 'setting' && (
-        <Drawer title='编辑权限组' onCancel={() => setModalType('')}>
-          <RightSetting rights={rights} />
-        </Drawer>
-      )}
+      <Drawer visible={modalType === 'setting'} title='编辑权限组' onCancel={() => setModalType('')}>
+        <RightSetting rights={rights} />
+      </Drawer>
       {modalType === 'addUser' && (
         <EmployeeOrDepartmentPickerModal
           title='添加部门与员工'

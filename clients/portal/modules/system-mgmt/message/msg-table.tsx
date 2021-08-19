@@ -40,7 +40,7 @@ interface Props {
   refresh: () => void;
 }
 
-const EnumStatusLabel: any = {
+const EnumStatusLabel = {
   [MsgSendStatus.all]: '全部状态',
   [MsgSendStatus.success]: '已发送',
   [MsgSendStatus.sending]: '发送中',
@@ -85,7 +85,7 @@ const EnumMessage = [
   },
 ];
 
-const MsgTable = ({ refresh }: Props) => {
+const MsgTable = ({ refresh }: Props): JSX.Element => {
   const {
     data,
     pageInfo,
@@ -108,7 +108,7 @@ const MsgTable = ({ refresh }: Props) => {
   const sendMessageRef = useRef<any>();
   const delMsgIdRef = useRef<any>('');
 
-  const openMsgDelModal = () => {
+  const openMsgDelModal = (): void => {
     const msgDelModal = Modal.open({
       title: '删除消息',
       content: (<p className="p-20">确定要删除该条消息吗？删除后不可恢复。</p>),
@@ -129,13 +129,13 @@ const MsgTable = ({ refresh }: Props) => {
     });
   };
 
-  const closeModal = () => {
+  const closeModal = (): void => {
     delMsgIdRef.current = '';
   };
 
   const { isLoading, isError } = requestInfo;
 
-  const refreshMsg = () => {
+  const refreshMsg = (): void => {
     queryClient.invalidateQueries('msg-mgmt-msg-list');
     queryClient.invalidateQueries('count-unread-msg');
   };
@@ -176,27 +176,19 @@ const MsgTable = ({ refresh }: Props) => {
     };
   }, []);
 
-  const confirmSend = () => {
+  const confirmSend = (): void => {
     const params = {
       template_id: 'quanliang',
-      // @ts-ignore
       title: previewData.title || '',
       args: [{
         key: 'code',
-        // @ts-ignore
         value: previewData.content || '',
       }],
-      // @ts-ignore
       channel: previewData.channel || previewData.chanel, // letter: 站内信，email: 邮件
-      // @ts-ignore
       type: previewData.type, // 1. verifycode 2、not verifycode
-      // @ts-ignore
       sort: previewData.type,
-      // @ts-ignore
       is_send: true, // false: 保存为草稿
-      // @ts-ignore
       recivers: previewData.receivers,
-      // @ts-ignore
       mes_attachment: previewData.mes_attachment || [],
       //     url: string
       // filename:
@@ -216,12 +208,12 @@ const MsgTable = ({ refresh }: Props) => {
       });
   };
 
-  const handleClose = () => setPreviewInfo(
+  const handleClose = (): void => setPreviewInfo(
     {
       visible: false, id: '', title: '', status: MsgSendStatus.all,
     });
 
-  const pageChange = (page: number, pageSize: number) => setPageInfo(
+  const pageChange = (page: number, pageSize: number): void => setPageInfo(
     { ...pageInfo, current: page, pageSize },
   );
 
@@ -235,7 +227,7 @@ const MsgTable = ({ refresh }: Props) => {
 
   const msgList = data?.messages || [];
 
-  const handleModifyModalClose = () => {
+  const handleModifyModalClose = (): void => {
     setModifyModal({ visible: false, id: undefined });
     setModifyData(null);
     refresh();
@@ -291,23 +283,25 @@ const MsgTable = ({ refresh }: Props) => {
       ),
       id: 'title',
       width: 'auto',
-      accessor: ({ id, title, sort, status }: {
+      accessor: ({ id, title, sort }: {
         status: MsgSendStatus, id: string, title: string, sort: MsgType
       }) => {
-        const handleClick = () => {
+        const handleClick = (): void=> {
           history.push(`/system/message/details/${id}`);
         };
-        return (<PreviewModal handleClick={handleClick} title={(<div>
-          {(sort != MsgType.all) && (<span
-            className={
-              cs(
-                styles.msg_type_tip,
-                {
-                  [styles.msg_type_tip_notice]: sort == MsgType.notify,
-                })
-            }>{(EnumMessage.find((itm) => itm.value == sort) || {}).label}</span>)}
-          <span className={cs('message_name', styles.msg_title)} title={title}>{title}</span>
-        </div>)} />);
+        return (
+          <PreviewModal handleClick={handleClick} title={(<div>
+            {(sort != MsgType.all) && (<span
+              className={
+                cs(
+                  styles.msg_type_tip,
+                  {
+                    [styles.msg_type_tip_notice]: sort == MsgType.notify,
+                  })
+              }>{(EnumMessage.find((itm) => itm.value == sort) || {}).label}</span>)}
+            <span className={cs('message_name', styles.msg_title)} title={title}>{title}</span>
+          </div>)} />
+        );
       },
     },
     {
@@ -333,16 +327,16 @@ const MsgTable = ({ refresh }: Props) => {
       id: 'updated_ats',
       accessor: (itm: Qxp.QueryMsgResult) => {
         const { status, id } = itm;
-        const confirmSend = () => {
+        const confirmSend = (): void => {
           setPreviewInfo({ id, visible: true, title: itm.title, status });
         };
 
-        const confirmDelete = () => {
+        const confirmDelete = (): void => {
           delMsgIdRef.current = itm.id;
           openMsgDelModal();
         };
 
-        const handleModifyModal = () => setModifyModal({ visible: true, id: itm.id });
+        const handleModifyModal = (): void => setModifyModal({ visible: true, id: itm.id });
 
         if (status !== 1) return null;
 
@@ -403,7 +397,7 @@ const MsgTable = ({ refresh }: Props) => {
     },
   ];
 
-  const saveDraft = () => {
+  const saveDraft = (): void => {
     const params = sendMessageRef?.current?.saveDraft({ toParams: true });
     params && createMsg(params)
       .then((data) => {
@@ -460,9 +454,7 @@ const MsgTable = ({ refresh }: Props) => {
               text: '存草稿',
               key: 'save',
               iconName: 'book',
-              onClick: () => {
-                debounce(saveDraft, 1000, { leading: true });
-              },
+              onClick: debounce(saveDraft, 1000, { leading: true }),
             },
             {
               text: '预览并发送',

@@ -27,8 +27,12 @@ interface Props {
   status: StatusValues
 }
 
-export default function ApprovalStatus({ status }: Props) {
-  const value = approvalStatus[status] || { style: { color: '', bgColor: '', text: '' } };
+export default function ApprovalStatus({ status }: Props): JSX.Element {
+  let value = approvalStatus[status] || { style: { color: '', bgColor: '', text: '' } };
+  if (status === 'AUTO_REVIEW') {
+    value = approvalStatus.AGREE;
+  }
+
   return (
     <div className={classNames('text-center leading-24 cursor-pointer text-12 px-6 corner-4-0-4-0',
       value.style.bgColor, value.style.color)}>

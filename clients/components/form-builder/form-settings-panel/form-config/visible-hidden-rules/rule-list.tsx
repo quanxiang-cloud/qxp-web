@@ -3,9 +3,9 @@ import React, { useContext } from 'react';
 import Icon from '@c/icon';
 import FormDataValueRenderer from '@c/form-data-value-renderer';
 import { observer } from 'mobx-react';
-import { Schema } from '@formily/react-schema-renderer';
 import { StoreContext } from '@c/form-builder/context';
 import { INTERNAL_FIELD_NAMES } from '@c/form-builder/store';
+import schemaToFields, { schemaToMap } from '@lib/schema-convert';
 
 type KeyLabels = Record<string, { title: string, enum: Array<{ label: any, value: any }> }>;
 type VisibleHiddenLinkagesProps = {
@@ -13,18 +13,18 @@ type VisibleHiddenLinkagesProps = {
 }
 const RuleList = ({ onEdit }: VisibleHiddenLinkagesProps): JSX.Element => {
   const store = useContext(StoreContext);
-  const keyLabels: KeyLabels = Object.entries(store.schema.properties || {})
-    .filter(([key]) => !INTERNAL_FIELD_NAMES.includes(key))
-    .map(([key, value]) => {
+  const keyLabels: KeyLabels = schemaToFields(store.schema)
+    .filter((field) => !INTERNAL_FIELD_NAMES.includes(field.id))
+    .map((field) => {
       return {
-        key,
-        title: (value.title || key) as string,
-        enum: (value.enum || []) as Array<{ label: string, value: string }>,
+        key: field.id,
+        title: (field.title || field.id) as string,
+        enum: (field.enum || []) as Array<LabelValue>,
       };
-    }).reduce((acc, current) => {
+    }).reduce((acc: KeyLabels, current) => {
       acc[current.key] = current;
       return acc;
-    }, {} as KeyLabels);
+    }, {});
 
   if (!store.visibleHiddenLinkages.length) {
     return (
@@ -41,9 +41,11 @@ const RuleList = ({ onEdit }: VisibleHiddenLinkagesProps): JSX.Element => {
           }).join(', ');
 
           return (
-            <div key={key} className="rounded-2 border-gray-200 border-t pt-8 mt-16">
-              <div className="flex justify-between items-center">
-                序号：#{index + 1}
+            <div key={key} className="rounded-8 border-gray-200 border mt-16">
+              <div className="flex justify-between items-center p-10 border-b border-gray-200">
+                <div className="mr-8 text-h6-bold">
+                  <Icon name="grading" size={20} className="mr-8"/>{index + 1}
+                </div>
                 <span>
                   <Icon
                     clickable
@@ -62,20 +64,29 @@ const RuleList = ({ onEdit }: VisibleHiddenLinkagesProps): JSX.Element => {
                   />
                 </span>
               </div>
-              <div>
-                当满足以下{store.visibleHiddenLinkages[index].ruleJoinOperator === 'every' ? '所有' : '任一'}条件时:
+              <div className="mt-8 pl-12">
+                当满足以下
+                <span className="text-h6-bold">
+                  &nbsp;{store.visibleHiddenLinkages[index].ruleJoinOperator === 'every' ? '所有' : '任一'}&nbsp;
+                </span>
+                条件时:
               </div>
               {rules.map(({ sourceKey, compareValue, compareOperator }, index) => (
-                <div key={index} className="text-h6-bold pl-12 mb-8">
+                <div key={index} className="text-h6-bold pl-24 mb-8">
                   - {`${keyLabels[sourceKey].title} ${compareOperator} `}
                   <FormDataValueRenderer
                     value={compareValue}
-                    schema={store.schema?.properties?.[sourceKey] as Schema}
+                    schema={schemaToMap(store.schema)?.[sourceKey]}
                   />
                 </div>
               ))}
-              <div>{store.visibleHiddenLinkages[index].isShow === true ? '显示' : '隐藏'}以下字段: </div>
-              <div className="text-h6-bold pl-12 mb-8">{readableTargets}</div>
+              <div className="pl-12">
+                <span className="text-h6-bold">
+                  &nbsp;{store.visibleHiddenLinkages[index].isShow === true ? '显示' : '隐藏'}&nbsp;
+                </span>
+                以下字段:
+              </div>
+              <div className="text-h6-bold pl-24 mb-8">{readableTargets}</div>
             </div>
           );
         })

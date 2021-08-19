@@ -7,6 +7,7 @@ import LinkageConfig from './default-value-linkage-config';
 
 function DefaultValueLinkageConfigBtn(props: ISchemaFieldComponentProps): JSX.Element {
   const [showModal, setShowModal] = useState(false);
+  const { isLinkedFieldHide, isLinkedTableReadonly } = props.props?.['x-component-props'] || {};
 
   return (
     <>
@@ -14,6 +15,8 @@ function DefaultValueLinkageConfigBtn(props: ISchemaFieldComponentProps): JSX.El
       {
         showModal && (
           <LinkageConfig
+            isLinkedFieldHide={isLinkedFieldHide}
+            isLinkedTableReadonly={isLinkedTableReadonly}
             linkage={props.value}
             onClose={() => setShowModal(false)}
             onSubmit={(config) => {

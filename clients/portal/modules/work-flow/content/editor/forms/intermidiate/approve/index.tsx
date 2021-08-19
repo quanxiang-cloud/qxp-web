@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useUpdateEffect } from 'react-use';
 import { pipe, some, every, get, map, values, pick } from 'lodash/fp';
 
 import Tab from '@c/tab';
@@ -17,7 +18,7 @@ interface Props {
   onSubmit: (v: FillInData) => void;
   onCancel: () => void;
   nodeType: NodeType;
-  onChange: () => void;
+  onChange: (v: FillInData) => void;
 }
 
 export default function ApproveForm({
@@ -25,8 +26,11 @@ export default function ApproveForm({
 }: Props): JSX.Element {
   const [value, setValue] = useState<FillInData>(defaultValue || {});
 
+  useUpdateEffect(() => {
+    onChange(value);
+  }, [value]);
+
   function handleChange(val: Partial<FillInData>): void {
-    onChange();
     setValue((v) => ({ ...v, ...val }));
   }
 

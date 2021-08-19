@@ -24,6 +24,13 @@ interface State {
   currentDeleteWorkFlow: Flow | null,
 }
 
+type Model = {
+  cell: {
+    row: { original: Flow & {creatorName: string} };
+    value: React.ReactNode
+  }
+}
+
 const statusMap = {
   ENABLE: '已发布',
   DISABLE: '草稿',
@@ -86,7 +93,7 @@ export default function WorkFlowTable({ type }: Props): JSX.Element {
     {
       Header: '名称',
       accessor: 'name',
-      Cell: (model: any) => {
+      Cell: (model: Model) => {
         return (
           <span
             className="cursor-pointer"
@@ -117,7 +124,7 @@ export default function WorkFlowTable({ type }: Props): JSX.Element {
           </TableMoreFilterMenu>
         );
       },
-      Cell: (model: any) => {
+      Cell: (model: Model) => {
         return (
           <div className="flex items-center">
             <Icon
@@ -131,16 +138,17 @@ export default function WorkFlowTable({ type }: Props): JSX.Element {
     }, {
       Header: '操作人',
       accessor: 'modifierName',
-      Cell: (model: any) => {
+      Cell: (model: Model) => {
         return model.cell.value ?? model.cell.row.original.creatorName;
       },
     }, {
       Header: '更新时间',
       accessor: 'modifyTime',
-      Cell: (model: any) => moment(model.cell.value).format('YYYY-MM-DD HH:mm:ss'),
+      Cell: (model: {
+        cell: { value: moment.MomentInput; }; }) => moment(model.cell.value).format('YYYY-MM-DD HH:mm:ss'),
     }, {
       accessor: 'id',
-      Cell: (model: any) => {
+      Cell: (model: Model) => {
         return (
           <MoreMenu
             menus={[

@@ -1,27 +1,27 @@
 import moment from 'moment';
 
-type Validator = (currentCompareValue: string, format: string) => boolean;
+type Validator = (currentCompareValue: string, format?: string) => boolean;
 
 export const compareValueValidateMap: Record<string, Validator> = {
-  Input: (currentCompareValue: string) => {
+  input: (currentCompareValue: string) => {
     return typeof currentCompareValue !== 'string' ? true : false;
   },
-  DatePicker: (currentCompareValue: string, format: string) => {
+  datepicker: (currentCompareValue: string, format?: string) => {
     return moment(currentCompareValue).format(format) === 'Invalid date' ? true : false;
   },
-  NumberPicker: (currentCompareValue: string) => {
+  numberpicker: (currentCompareValue: string) => {
     return typeof currentCompareValue !== 'number' ? true : false;
   },
-  MultipleSelect: (currentCompareValue: string) => {
+  multipleselect: (currentCompareValue: string) => {
     return typeof currentCompareValue !== 'object' ? true : false;
   },
-  CheckboxGroup: (currentCompareValue: string) => {
+  checkboxgroup: (currentCompareValue: string) => {
     return typeof currentCompareValue !== 'object' ? true : false;
   },
-  RadioGroup: (currentCompareValue: string) => {
+  radiogroup: (currentCompareValue: string) => {
     return typeof currentCompareValue !== 'object' ? true : false;
   },
-  Select: (currentCompareValue: string) => {
+  select: (currentCompareValue: string) => {
     return typeof currentCompareValue !== 'object' ? true : false;
   },
 };

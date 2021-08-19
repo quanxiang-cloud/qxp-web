@@ -1,7 +1,9 @@
 import React, { useEffect, useState, useContext } from 'react';
 import draftToHtml from 'draftjs-to-html';
 import htmlToDraft from 'html-to-draftjs';
+import { useUpdateEffect, usePrevious } from 'react-use';
 import { useQuery } from 'react-query';
+import { isEqual } from 'lodash';
 import { Upload } from 'antd';
 import { useForm, Controller } from 'react-hook-form';
 import {
@@ -19,17 +21,17 @@ import formFieldWrap from '@c/form-field-wrap';
 import useObservable from '@lib/hooks/use-observable';
 import store from '@flowEditor/store';
 import Button from '@c/button';
-import Select from '@c/select';
 import { Editor } from 'react-draft-wysiwyg';
 import SaveButtonGroup from '@flowEditor/components/_common/action-save-button-group';
-import type { StoreValue, CurrentElement, FormDataData } from '@flowEditor/type';
+import type { StoreValue, CurrentElement, FormDataData, SendEmailData, Attachment } from '@flowEditor/type';
+import schemaToFields from '@lib/schema-convert';
 
 import UserSelect from '../../components/add-approval-user';
-import { SendEmailData, Attachment } from '../../type';
 import './index.scss';
 
 type Props = {
   onSubmit: (v: SendEmailData) => void;
+  onChange: (v: SendEmailData) => void;
   onCancel: () => void;
   defaultValue: SendEmailData;
 }
@@ -49,7 +51,6 @@ const props = {
 };
 
 const Input = formFieldWrap({ field: <input className='input' /> });
-const FieldSelect = formFieldWrap({ FieldFC: Select });
 const FieldEditor = formFieldWrap({ FieldFC: Editor });
 
 const FieldUserSelect = formFieldWrap({ FieldFC: UserSelect });
@@ -91,8 +92,8 @@ function FieldOption({ onChange, editorState, options }: FieldOPType): JSX.Eleme
   );
 }
 
-function SendEmailConfig({ defaultValue, onSubmit, onCancel }: Props): JSX.Element {
-  const { register, handleSubmit, control, reset, formState: { errors } } = useForm();
+function SendEmailConfig({ defaultValue, onSubmit, onCancel, onChange }: Props): JSX.Element {
+  const { register, handleSubmit, control, reset, formState: { errors }, watch } = useForm();
   const { appID } = useContext(FlowContext);
   const [editorCont, setEditorCont] = useState(defaultValue?.content ?
     EditorState.createWithContent(
@@ -103,6 +104,21 @@ function SendEmailConfig({ defaultValue, onSubmit, onCancel }: Props): JSX.Eleme
   const formDataElement = elements?.find(({ type }) => type === 'formData') as CurrentElement;
   const workFormValue = (formDataElement?.data?.businessData as FormDataData)?.form?.value;
 
+  const allFields = watch(['content', 'recivers', 'title', 'mes_attachment']);
+  const previousFields = usePrevious(allFields);
+  useUpdateEffect(() => {
+    const value = {
+      content: allFields[0],
+      recivers: allFields[1],
+      title: allFields[2],
+      mes_attachment: allFields[3],
+      templateId: 'quanliang',
+    } as SendEmailData;
+    if (!isEqual(allFields, previousFields)) {
+      onChange(value);
+    }
+  }, [allFields]);
+
   const { data: schema = {} } = useQuery(
     ['GET_WORK_FORM_FIELD_SCHEMA', workFormValue, appID],
     getFormFieldSchema, {
@@ -110,7 +126,7 @@ function SendEmailConfig({ defaultValue, onSubmit, onCancel }: Props): JSX.Eleme
     },
   );
 
-  const getEditorCont = (cont: EditorState, asRaw?: boolean) => {
+  const getEditorCont = (cont: EditorState, asRaw?: boolean): any => {
     const raw = convertToRaw(cont.getCurrentContent());
     return asRaw ? raw : draftToHtml(raw);
   };
@@ -131,10 +147,8 @@ function SendEmailConfig({ defaultValue, onSubmit, onCancel }: Props): JSX.Eleme
   }, []);
 
   const fieldOption = React.useMemo(() => {
-    return Object.entries(schema?.properties || {}).filter(([key]) => {
-      return key !== '_id';
-    }).map(([key, filedSchema]) => {
-      return { label: filedSchema.title, key };
+    return schemaToFields(schema).filter((field) => field.id !== '_id').map((field) => {
+      return { label: field.title, key: field.id };
     });
   }, [schema]);
 

@@ -3,12 +3,8 @@ import {
   ContentState,
 } from 'draft-js';
 
-import operators from './operator';
-import functions from './function';
-
-export function escapeRegExp(str: string): string {
-  return str.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&');
-}
+import { FUNCS, LOGICAL_OPERATORS, ARITHMETIC_OPERATORS, COLLECTION_OPERATORS } from './constants';
+import { escapeRegExp } from './utils';
 
 export function handleFieldHighlight(
   contentBlock: ContentBlock,
@@ -18,7 +14,7 @@ export function handleFieldHighlight(
 ): void {
   const text = contentBlock.getText();
   let matchArr; let start;
-  const regex = new RegExp(nameStr.join('|'), 'g');
+  const regex = new RegExp(nameStr.filter((name) => !!name).map((name) => escapeRegExp(name)).join('|'), 'g');
   while ((matchArr = regex.exec(text)) !== null) {
     start = matchArr.index;
     callback(start, start + matchArr[0].length);
@@ -30,18 +26,21 @@ export function handleOperatorHighlight(
   callback: any,
 ): void {
   const text = contentBlock.getText();
-  let start; let matchArr;
-  const regex = new RegExp(operators.map(({ content }) => escapeRegExp(content)).join('|'), 'g');
+  let matchArr; let start = 0; let end = 0;
+  const regex = new RegExp(LOGICAL_OPERATORS.map((operator) => escapeRegExp(operator)).join('|'), 'g');
   while ((matchArr = regex.exec(text)) !== null) {
     start = matchArr.index;
-    callback(start, start + matchArr[0].length);
+    end = start + matchArr[0].length;
+    if (!contentBlock.getEntityAt(start)) {
+      callback(start, end);
+    }
   }
 }
 
 export function handleFuncHighlight(contentBlock: ContentBlock, callback: any): void {
   const text = contentBlock.getText();
   let start; let matchArr;
-  const regex = new RegExp(functions.map(({ name }) => `${name}\\(`).join('|'), 'g');
+  const regex = new RegExp([...FUNCS, ...COLLECTION_OPERATORS].map(({ name }) => `${name}`).join('|'), 'g');
   while ((matchArr = regex.exec(text)) !== null) {
     start = matchArr.index;
     callback(start, start + matchArr[0].length);
@@ -51,9 +50,11 @@ export function handleFuncHighlight(contentBlock: ContentBlock, callback: any): 
 export function handleSymbolHighlight(contentBlock: ContentBlock, callback: any): void {
   const text = contentBlock.getText();
   let start; let matchArr;
-  const regex = new RegExp(['\\(', '\\)'].join('|'), 'g');
+  const regex = new RegExp(ARITHMETIC_OPERATORS.map((symbol) => escapeRegExp(symbol)).join('|'), 'g');
   while ((matchArr = regex.exec(text)) !== null) {
     start = matchArr.index;
-    callback(start, start + matchArr[0].length);
+    if (!contentBlock.getEntityAt(start)) {
+      callback(start, start + matchArr[0].length);
+    }
   }
 }

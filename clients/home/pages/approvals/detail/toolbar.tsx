@@ -2,15 +2,15 @@ import React, { useRef, useState } from 'react';
 import Icon from '@c/icon';
 import Button from '@c/button';
 import cs from 'classnames';
-import { useParams } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import { TextArea } from '@QCFE/lego-ui';
 
-import actionMap from './action-map';
 import MoreMenu from '@c/more-menu';
 import PopConfirm from '@c/pop-confirm';
 import toast from '@lib/toast';
 
 import { handleReadTask } from '../api';
+import actionMap from './action-map';
 
 interface Props {
   currTask: any;
@@ -26,7 +26,7 @@ const moreActions = [
   // { label: <span><Icon name="trending_up" className="mr-12" />流转图</span>, key: 'chart' },
 ];
 
-const getIconByAction = (action: string) => {
+const getIconByAction = (action: string): string => {
   return actionMap[action]?.icon || 'arrow_circle_up';
 };
 
@@ -34,6 +34,7 @@ function Toolbar({ currTask, permission, onClickAction, globalActions }: Props):
   const { processInstanceID, taskID } = useParams<{ processInstanceID: string; taskID: string }>();
   const [comment, setComment] = useState('');
   const commentRef = useRef<{node: HTMLTextAreaElement}>(null);
+  const history = useHistory();
 
   const { custom = [], system = [] } = permission;
 
@@ -61,6 +62,21 @@ function Toolbar({ currTask, permission, onClickAction, globalActions }: Props):
   //   hasResubmitBtn: true,
   //   hasUrgeBtn: true,
   // });
+
+  function handleReadOk(): Promise<never> | undefined {
+    if (commentRef?.current?.node.value.length && commentRef?.current?.node.value.length > 100) {
+      toast.error('字数不能超过100字');
+      return Promise.reject(new Error('字数不能超过100字'));
+    }
+    handleReadTask(processInstanceID, taskID, commentRef?.current?.node.value || '').then((data) => {
+      if (data) {
+        toast.success('操作成功');
+        history.push('/approvals?list=todo');
+      } else {
+        toast.error('操作失败');
+      }
+    }).catch((err)=> toast.error(err.message || '操作失败'));
+  }
 
   return (
     <div className="approval-detail-toolbar flex justify-between items-center px-10 pb-20 mb-24">
@@ -155,19 +171,7 @@ function Toolbar({ currTask, permission, onClickAction, globalActions }: Props):
                   </div>
                 )}
                 okText="提交"
-                onOk={()=> {
-                  if (commentRef?.current?.node.value.length && commentRef?.current?.node.value.length > 100) {
-                    toast.error('字数不能超过100字');
-                    return Promise.reject(new Error('字数不能超过100字'));
-                  }
-                  handleReadTask(processInstanceID, taskID, commentRef?.current?.node.value || '').then((data) => {
-                    if (data) {
-                      toast.success('操作成功');
-                    } else {
-                      toast.error('操作失败');
-                    }
-                  }).catch((err)=> toast.error(err.message || '操作失败'));
-                }}
+                onOk={handleReadOk}
                 key={`${action}-${idx}`}
                 >
                   <Button

@@ -4,13 +4,14 @@ import { TreeSelect } from 'antd';
 import { TreeSelectProps } from 'antd/lib/tree-select';
 import { DataNode } from 'rc-tree-select/lib/interface';
 
+import { getUserDepartment } from '@lib/utils';
 import { searchOrganization, Organization } from './messy/api';
 import './index.scss';
 
 type Props = TreeSelectProps<any> & {
   appID: string;
   onChange: (value: LabelValue[]) => void;
-  optionalRange: 'all' | 'customize';
+  optionalRange: 'all' | 'customize' | 'myDep';
   rangeList?: LabelValue[];
   value?: LabelValue[];
 }
@@ -83,6 +84,20 @@ const OrganizationPicker = ({
 
         return false;
       });
+    }
+
+    if (optionalRange === 'myDep') {
+      const userinfo = window.USER;
+      const currentUserDep = getUserDepartment(userinfo);
+      const { id, departmentName } = currentUserDep;
+      const myDep = {
+        id,
+        fullPath: id,
+        pId: 0,
+        title: departmentName,
+        value: id,
+      };
+      return [myDep] || [];
     }
 
     return treeDataTmp;

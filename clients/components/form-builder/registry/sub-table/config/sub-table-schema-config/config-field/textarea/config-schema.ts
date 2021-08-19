@@ -1,5 +1,3 @@
-import { ISchema } from '@formily/react-schema-renderer';
-
 const schema: ISchema = {
   type: 'object',
   properties: {
@@ -57,7 +55,7 @@ const schema: ISchema = {
             },
             {
               label: '固定电话',
-              value: 'phone',
+              value: 'telephone',
             },
             {
               label: '邮编号码',
@@ -65,11 +63,11 @@ const schema: ISchema = {
             },
             {
               label: '手机号码',
-              value: 'mobile_phone',
+              value: 'phone',
             },
             {
               label: '身份证号',
-              value: 'id_number',
+              value: 'idcard',
             },
             {
               label: '邮箱',

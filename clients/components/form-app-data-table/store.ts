@@ -6,6 +6,7 @@ import httpClient from '@lib/http-client';
 
 import { TableHeaderBtn, TableConfig } from './type';
 import { Config, getPageDataSchema } from './utils';
+import schemaToFields, { schemaToMap } from '@lib/schema-convert';
 
 type Params = {
   condition?: Condition[] | [],
@@ -14,6 +15,10 @@ type Params = {
   page?: number,
   size?: number,
 }
+
+export type FormAppDataTableStoreSchema = Omit<ISchema, 'properties'> & {
+  properties?: Record<string, SchemaFieldItem>
+};
 
 type InitData = {
   schema: ISchema;
@@ -24,6 +29,7 @@ type InitData = {
   allowRequestData?: boolean;
   tableHeaderBtnList?: TableHeaderBtn[];
   customColumns?: UnionColumns<any>[];
+  filterConfig?: FilterConfig;
 }
 
 export type FormData = Record<string, any>;
@@ -37,11 +43,12 @@ class AppPageDataStore {
   @observable pageID = '';
   @observable appID = '';
   @observable allowRequestData = false;
+  @observable filterConfig: FilterConfig | null = null;
   @observable filters: Filters = [];
   @observable selected: string[] = [];
   @observable formDataList: any[] = [];
   @observable total = 0;
-  @observable fields: Fields[] = [];
+  @observable fields: SchemaFieldItem[] = [];
   @observable schema: ISchema = {};
   @observable filterData: FormData = {};
   @observable tableColumns: UnionColumns<FormData>[] = [];
@@ -63,9 +70,11 @@ class AppPageDataStore {
     tableHeaderBtnList = [],
     customColumns = [],
     showCheckbox = true,
+    filterConfig,
   }: InitData) {
     const { tableColumns, pageTableShowRule } = getPageDataSchema(config || {}, schema, customColumns);
     this.setSchema(schema);
+    this.filterConfig = filterConfig || null;
     this.showCheckbox = showCheckbox;
     this.tableHeaderBtnList = tableHeaderBtnList;
     this.setTableColumns(tableColumns);
@@ -97,18 +106,13 @@ class AppPageDataStore {
   }
 
   @action
-  setSchema = (schema: ISchema | undefined): void => {
+  setSchema = (schema?: ISchema): void => {
     if (!schema) {
       return;
     }
 
     this.schema = schema;
-    this.fields = Object.entries(schema.properties || {}).map(([key, fieldSchema]) => {
-      return {
-        id: key,
-        ...fieldSchema,
-      };
-    });
+    this.fields = schemaToFields(schema);
   }
 
   @action
@@ -118,7 +122,7 @@ class AppPageDataStore {
 
   @action
   setFilters = (filters: Filters): void => {
-    this.filters = filters.filter((key) => key in (this.schema.properties || {}));
+    this.filters = filters.filter((key) => key in (schemaToMap(this.schema) || {}));
   }
 
   @action
@@ -133,11 +137,12 @@ class AppPageDataStore {
     }
 
     this.listLoading = true;
-    const { condition, tag, ...other } = params;
+    const { condition = [], tag, ...other } = params;
+    const { condition: frontCondition = [], tag: frontTag } = this.filterConfig || {};
     httpClient(`/api/v1/form/${this.appID}/home/form/${this.pageID}`, {
       method: 'find',
       page: 1,
-      conditions: { tag: tag, condition },
+      conditions: { tag: frontTag || tag, condition: [...condition, ...frontCondition] },
       sort: [],
       ...other,
     }).then((res: any) => {

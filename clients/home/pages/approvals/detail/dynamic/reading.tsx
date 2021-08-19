@@ -19,7 +19,7 @@ export default function Reading({ workData, clickHandle }: Props): JSX.Element {
   }
 
   function filterRead(data: OperationRecord[]): number {
-    const readData = data.filter((operation) => operation.handleType === 'READ');
+    const readData = data.filter((operation) => operation.status === 1);
     return readData.length;
   }
 

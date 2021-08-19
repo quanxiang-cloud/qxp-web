@@ -15,6 +15,7 @@ export interface Props {
   nodeType: NodeType;
   defaultValue: ProcessBranchData;
   onSubmit: (data: ProcessBranchData) => void;
+  onChange: (data: ProcessBranchData) => void;
   onCancel: () => void;
 }
 
@@ -60,9 +61,7 @@ const components = {
   Input,
 };
 
-export default function ProcessBranch(props: Props): JSX.Element {
-  const { defaultValue, onSubmit, onCancel } = props;
-
+export default function ProcessBranch({ defaultValue, onSubmit, onCancel, onChange }: Props): JSX.Element {
   function onSave(): void {
     actions.getFormState((formState) => {
       onSubmit(formState.values);
@@ -87,6 +86,7 @@ export default function ProcessBranch(props: Props): JSX.Element {
                 initialValues={defaultValue}
                 schema={formSchema}
                 components={components}
+                onChange={(values) => onChange(values)}
               />
             </div>
           ),

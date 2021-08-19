@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import { observer } from 'mobx-react';
 
 import Switch from '@c/switch';
@@ -26,9 +27,10 @@ const sortOptions = [
 
 function TodoApprovals(): JSX.Element {
   const [openReadFlow, setOpenReadFlow] = useState(false);
+  const history = useHistory();
 
   useEffect(() => {
-    document.title = '我的流程 - 抄送给我的';
+    document.title = '我的流程 - 抄送给我';
     store.fetchAll();
 
     return () => {
@@ -43,7 +45,9 @@ function TodoApprovals(): JSX.Element {
         toast.success('操作成功');
         setOpenReadFlow(false);
         await store.fetchAll();
+        history.go(0);
       }
+      setOpenReadFlow(false);
     } catch (err) {
       toast.error(`操作失败: ${err.message}`);
     }

@@ -19,6 +19,7 @@ const tipsMap = {
   todo: '暂无需要处理的工作流',
   done: '未处理过工作流',
   cc_to_me: '暂无抄送给我的工作流',
+  all: '',
 };
 
 function TaskList({ tasks, type, store, className, taskType }: Props): JSX.Element {
@@ -27,7 +28,6 @@ function TaskList({ tasks, type, store, className, taskType }: Props): JSX.Eleme
   }
 
   if (!tasks.length) {
-    // @ts-ignore
     return <NoData tips={tipsMap[taskType] || '暂无工作流'} />;
   }
 

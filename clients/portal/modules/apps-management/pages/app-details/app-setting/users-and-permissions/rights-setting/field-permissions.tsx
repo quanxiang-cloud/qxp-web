@@ -1,15 +1,30 @@
-import React, { useState, useEffect, useImperativeHandle, forwardRef } from 'react';
-import { union } from 'lodash';
+import React, { useState, useEffect, useImperativeHandle, forwardRef, useMemo } from 'react';
+import { union, set, get } from 'lodash';
 
 import Checkbox from '@c/checkbox';
 
 type Props = {
-  fields: Fields[];
-  fieldPer: Record<string, any>;
+  fields: SchemaFieldItem[];
+  fieldPer: ISchema;
   className?: string;
 }
 
-function FieldPermissions({ fields, className = '', fieldPer }: Props, ref: React.Ref<any>) {
+function getFullPath(fields: SchemaFieldItem[], fieldKey: string, initPath = ''): string {
+  const curFields = fields.find(({ id }) => id === fieldKey);
+  if (curFields?.parentField) {
+    return getFullPath(fields, curFields?.parentField, '.properties.' + fieldKey + initPath);
+  }
+
+  return fieldKey + initPath;
+}
+
+function FieldPermissions({ fields, className = '', fieldPer }: Props, ref: React.Ref<any>): JSX.Element {
+  const hasPathFields = useMemo(() => {
+    return fields.map((field) => {
+      return { ...field, path: getFullPath(fields, field.id) };
+    });
+  }, [fields]);
+
   const [visibleField, setVisibleField] = useState<string[]>([]);
   const [revisableField, setRevisableField] = useState<string[]>([]);
   const [vIndeterminate, setVIndeterminate] = useState(false);
@@ -17,51 +32,52 @@ function FieldPermissions({ fields, className = '', fieldPer }: Props, ref: Reac
   const [vCheckAll, setVCheckAll] = useState(false);
   const [rCheckAll, setRCheckAll] = useState(false);
 
-  const fieldRevisable = fields.filter((field) => !field['x-internal']?.isSystem);
+  const fieldRevisable = hasPathFields.filter((field) => !field['x-internal']?.isSystem);
 
   useImperativeHandle(ref, () => ({
     getFieldPer: getFieldPer,
   }));
 
-  const getFieldPer = () => {
-    const schema: Record<string, any> = {
-      properties: {
-        _id: {
-          title: '_id',
-          'x-internal': {
-            permission: 1,
-          },
-        },
+  const getPerMission = (key: string): number => {
+    const visible = visibleField.includes(key);
+    const revisable = revisableField.includes(key);
+    const permissions = (visible ? 1 : 0) | (revisable ? 10 : 0);
+
+    return parseInt(permissions.toString(), 2);
+  };
+
+  const getFieldPer = (): ISchema => {
+    const properties: Record<string, ISchema> = {
+    };
+    hasPathFields.forEach((field) => {
+      set(
+        properties,
+        `${field.path}.x-internal.permission`,
+        getPerMission(field.id),
+      );
+    });
+
+    properties._id = {
+      title: '_id',
+      'x-internal': {
+        permission: 1,
       },
+    };
+
+    return {
+      properties,
       title: '',
       type: 'object',
       'x-internal': { permission: visibleField.length ? 1 : 0 },
     };
-
-    fields.forEach((field) => {
-      const visible = visibleField.includes(field.id);
-      const revisable = revisableField.includes(field.id);
-      const permissions = (visible ? 1 : 0) | (revisable ? 10 : 0);
-      schema.properties[field.id] = {
-        title: field.title,
-        'x-internal': {
-          permission: parseInt(permissions.toString(), 2),
-        },
-      };
-    });
-
-    return schema;
   };
 
   useEffect(() => {
     if (fieldPer) {
       const visibleList: string[] = [];
       const revisableList: string[] = [];
-      fields.forEach((field) => {
-        if (!fieldPer.properties[field.id]) {
-          return;
-        }
-        switch (fieldPer.properties[field.id]['x-internal'].permission) {
+      hasPathFields.forEach((field) => {
+        switch (get(fieldPer, `properties.${field.path}.x-internal.permission`)) {
         case 3:
           visibleList.push(field.id);
           revisableList.push(field.id);
@@ -85,8 +101,8 @@ function FieldPermissions({ fields, className = '', fieldPer }: Props, ref: Reac
   }, []);
 
   useEffect(() => {
-    setVIndeterminate(visibleField.length > 0 && visibleField.length !== fields.length);
-    if (visibleField.length === fields.length) {
+    setVIndeterminate(visibleField.length > 0 && visibleField.length !== hasPathFields.length);
+    if (visibleField.length === hasPathFields.length) {
       setVCheckAll(true);
     } else {
       setVCheckAll(false);
@@ -102,7 +118,7 @@ function FieldPermissions({ fields, className = '', fieldPer }: Props, ref: Reac
     }
   }, [revisableField]);
 
-  const handleVisibleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleVisibleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const { value, checked } = e.target;
     if (checked) {
       setVisibleField([...visibleField, value]);
@@ -119,7 +135,7 @@ function FieldPermissions({ fields, className = '', fieldPer }: Props, ref: Reac
     }
   };
 
-  const handleRevisableChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleRevisableChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const { value, checked } = e.target;
     if (checked) {
       setRevisableField([...revisableField, value]);
@@ -133,10 +149,10 @@ function FieldPermissions({ fields, className = '', fieldPer }: Props, ref: Reac
     }
   };
 
-  const handleVCheckAll = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleVCheckAll = (e: React.ChangeEvent<HTMLInputElement>): void => {
     if (e.target.checked) {
       setVisibleField(
-        fields.map(({ id }) => id),
+        hasPathFields.map(({ id }) => id),
       );
     } else {
       setRevisableField([]);
@@ -144,7 +160,7 @@ function FieldPermissions({ fields, className = '', fieldPer }: Props, ref: Reac
     }
   };
 
-  const handleRCheckAll = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleRCheckAll = (e: React.ChangeEvent<HTMLInputElement>): void => {
     if (e.target.checked) {
       const ids = fieldRevisable.map(({ id }) => id);
       setVisibleField(union(visibleField, ids));
@@ -152,6 +168,19 @@ function FieldPermissions({ fields, className = '', fieldPer }: Props, ref: Reac
     } else {
       setRevisableField([]);
     }
+  };
+
+  const getTitle = (title: any): any => {
+    switch (title) {
+    case 'LayoutTabs':
+      return '选项卡';
+    case 'LayoutCard':
+      return '分组';
+    case 'LayoutGrid':
+      return '栅格';
+    }
+
+    return title;
   };
 
   return (
@@ -175,9 +204,11 @@ function FieldPermissions({ fields, className = '', fieldPer }: Props, ref: Reac
       </div>
       <div className='pb-field-box'>
         <div className='pb-field-item-title'><span>字段</span><span>可见</span><span>可修改</span></div>
-        {fields.map((field) => (
+        {hasPathFields.map((field) => (
           <div key={field.id} className='pb-field-item'>
-            <span>{field.title}</span>
+            <span>
+              <span>{getTitle(field.title || field['x-component'])}</span>
+            </span>
             <Checkbox
               checked={visibleField.includes(field.id)}
               value={field.id}

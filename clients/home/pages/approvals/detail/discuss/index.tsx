@@ -116,11 +116,13 @@ export default function Discuss(): JSX.Element {
       <div className="flex-1 overflow-auto mb-16 pr-5">
         {
           commentsData.map((msg: CommentItem) => {
-            return (<MessageItem
-              key={msg.id}
-              isOwn={msg.commentUserId === userinfo.id}
-              messageData={msg}
-            />);
+            return (
+              <MessageItem
+                key={msg.id}
+                isOwn={msg.commentUserId === userinfo.id}
+                messageData={msg}
+              />
+            );
           })
         }
       </div>

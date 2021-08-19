@@ -3,51 +3,37 @@ import moment from 'moment';
 
 import SubTable from '@c/form-builder/registry/sub-table/preview';
 import AssociatedRecords from '@c/form-builder/registry/associated-records/associated-records';
+import AssociatedDataValueRender from '@c/form-builder/registry/associated-data/associated-data-view';
+import { RoundMethod } from '@c/form-builder/registry/aggregation-records/convertor';
 import logger from '@lib/logger';
 
 type ValueRendererProps = { value: FormDataValue; schema: ISchema; className?: string; };
-type ValueRenderer = React.FC<ValueRendererProps>;
-type SupportedComponent =
-  | 'Input'
-  | 'Textarea'
-  | 'RadioGroup'
-  | 'CheckboxGroup'
-  | 'NumberPicker'
-  | 'DatePicker'
-  | 'Select'
-  | 'MultipleSelect'
-  | 'SubTable'
-  | 'AssociatedRecords'
-  | 'UserPicker'
-  | 'OrganizationPicker'
-  | 'FileUpload'
-  | 'ImageUpload'
-  | 'CascadeSelector';
-
-function InputValueRenderer({ value, className }: ValueRendererProps): JSX.Element {
-  return (<span className={className}>{value}</span>);
+type Props = {
+  value: FormDataValue;
+  className?: string;
+  schema: ISchema;
 }
 
-function EnumValueRenderer({ value, schema, className }: ValueRendererProps): JSX.Element {
+function enumValueRenderer({ value, schema }: ValueRendererProps): string {
   if (Array.isArray(value)) {
     const options = (schema.enum || []) as FormBuilder.Option[];
     const labels = (value as string[]).map((v) => {
       return options.find((option) => option.value === v)?.label || v;
     }).join(', ');
 
-    return (<span className={className}>{labels}</span>);
+    return labels;
   }
 
   const options = (schema.enum || []) as FormBuilder.Option[];
   const label = options.find((option) => option.value === value)?.label || value as string;
 
-  return (<span className={className}>{label}</span>);
+  return label;
 }
 
-function DatetimeValueRenderer({ value, schema, className }: ValueRendererProps): JSX.Element {
+function datetimeValueRenderer({ value, schema }: ValueRendererProps): string {
   const format = schema['x-component-props']?.format || 'YYYY-MM-DD HH:mm:ss';
 
-  return (<span className={className}>{moment(value as string).format(format)}</span>);
+  return moment(value as string).format(format);
 }
 
 function SubTableValueRenderer({ value, schema }: ValueRendererProps): JSX.Element {
@@ -63,49 +49,70 @@ function AssociatedRecordsValueRender({ value, schema }: ValueRendererProps): JS
   return (<AssociatedRecords readOnly props={schema} value={value} />);
 }
 
-function LabelValueRenderer({ value, className }: ValueRendererProps): JSX.Element {
+function labelValueRenderer(value: FormDataValue): string {
   if (Array.isArray(value)) {
     const labels = (value as FormBuilder.Option[]).map(({ label }) => label).join(', ');
-    return (<span className={className}>{labels}</span>);
+    return labels;
   }
 
-  return (<span className={className}>{(value as FormBuilder.Option).label}</span>);
+  return (value as FormBuilder.Option)?.label;
 }
 
-const VALUE_RENDER: Record<SupportedComponent, ValueRenderer> = {
-  Input: InputValueRenderer,
-  Textarea: InputValueRenderer,
-  RadioGroup: EnumValueRenderer,
-  CheckboxGroup: EnumValueRenderer,
-  NumberPicker: InputValueRenderer,
-  DatePicker: DatetimeValueRenderer,
-  Select: EnumValueRenderer,
-  MultipleSelect: EnumValueRenderer,
-  SubTable: SubTableValueRenderer,
-  AssociatedRecords: AssociatedRecordsValueRender,
-  CascadeSelector: LabelValueRenderer,
-  // todo replace LabelValueRenderer by a more specific type renderer
-  UserPicker: LabelValueRenderer,
-  OrganizationPicker: LabelValueRenderer,
-  FileUpload: LabelValueRenderer,
-  ImageUpload: LabelValueRenderer,
-};
-
-type Props = {
-  value: FormDataValue;
-  className?: string;
-  schema: ISchema;
+function statisticValueRender({ schema, value }: ValueRendererProps): string {
+  const { decimalPlaces, roundDecimal, displayFieldNull } = schema['x-component-props'] as {
+    decimalPlaces: number, roundDecimal: RoundMethod, displayFieldNull: string
+  };
+  let method = Math.round;
+  if (roundDecimal === 'round-up') {
+    method = Math.ceil;
+  } else if (roundDecimal === 'round-down') {
+    method = Math.floor;
+  }
+  return method(parseFloat(value as string)).toFixed(decimalPlaces) + '' || displayFieldNull;
 }
 
 export default function FormDataValueRenderer({ value, schema, className }: Props): JSX.Element {
-  const xComponent = schema['x-component'];
-  if (!xComponent || !(xComponent in VALUE_RENDER)) {
-    logger.debug('encounter unsupported formDataValue:', value, 'schema:', schema);
-    return (<span className={className}>{value}</span>);
+  if (schema['x-component'] === 'SubTable') {
+    return <SubTableValueRenderer schema={schema} value={value} />;
   }
 
-  return React.createElement(
-    VALUE_RENDER[xComponent as SupportedComponent],
-    { value, schema, className },
-  );
+  if (schema['x-component'] === 'AssociatedRecords') {
+    return <AssociatedRecordsValueRender schema={schema} value={value} />;
+  }
+
+  if (schema['x-component'] === 'AssociatedData') {
+    return <AssociatedDataValueRender schema={schema} value={value as LabelValue} />;
+  }
+
+  return <span className={className}>{getBasicValue(schema, value)}</span>;
+}
+
+export function getBasicValue(schema: ISchema, value: FormDataValue): string {
+  switch (schema['x-component']?.toLowerCase()) {
+  case 'input':
+  case 'numberpicker':
+  case 'textarea':
+    return value as string;
+  case 'radiogroup':
+  case 'checkboxgroup':
+  case 'select':
+  case 'multipleselect':
+    return enumValueRenderer({ schema, value });
+  case 'datepicker':
+    return datetimeValueRenderer({ schema, value });
+  case 'associateddata':
+  case 'imageupload':
+  case 'cascadeselector':
+  case 'fileupload':
+  case 'userpicker':
+  case 'organizationpicker':
+    return labelValueRenderer(value);
+  case 'aggregationrecords':
+    return statisticValueRender({ schema, value });
+  case 'serial':
+    return value as string;
+  default:
+    logger.warn('encounter unsupported formDataValue:', value, 'schema:', schema);
+    return value?.toString();
+  }
 }

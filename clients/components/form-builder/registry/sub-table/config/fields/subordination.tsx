@@ -57,6 +57,9 @@ function Subordination({ value, mutators, props }: ISchemaFieldComponentProps): 
     actions.setFieldState('Fields.subTableColumns', (state) => {
       state.value = [];
     });
+    actions.setFieldState('Fields.linkedTable', (state) => {
+      state.value.tableID = '';
+    });
   }
 
   function onChange(value: SubordinationType): void {

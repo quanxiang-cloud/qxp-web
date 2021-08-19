@@ -1,21 +1,28 @@
 import React, { useState, useEffect, forwardRef, useImperativeHandle } from 'react';
 import { useForm, Controller } from 'react-hook-form';
-import moment from 'moment';
 import { uniqueId } from 'lodash';
+import { Select } from 'antd';
 
-import Select from '@c/select';
 import FieldSwitch from '@c/field-switch';
 import Icon from '@c/icon';
 import formFieldWrap from '@c/form-field-wrap';
 
-import { CONDITION, getOperators, FILTER_FIELD, getCondition } from './utils';
+import {
+  CONDITION,
+  getOperators,
+  FILTER_FIELD,
+  VALUE_FROM,
+  setValueFormCondition,
+  getValue,
+} from './utils';
 import './index.scss';
 
 type Props = {
-  fields: Fields[];
+  fields: SchemaFieldItem[];
   initConditions?: Condition[];
-  initTag?: string;
+  initTag?: 'and' | 'or';
   className?: string;
+  associationFields?: SchemaFieldItem[];
 }
 
 type FieldCondition = {
@@ -23,48 +30,35 @@ type FieldCondition = {
   key?: string;
   value?: any;
   op?: string;
-  filter?: Fields;
-}
-
-export type ConditionItemMap = {
-  arr: Condition[];
-  tag: 'or' | 'and';
+  filter?: SchemaFieldItem;
+  valueFrom?: 'fixedValue' | 'form';
+  associationFieldsOptions?: LabelValue[];
 }
 
 export type RefProps = {
-  getDataPer: () => Promise<ConditionItemMap | string>;
   empty: () => void;
-  getDataValues: () => ConditionItemMap
-}
-
-function getValue(field: Fields, initValue: Array<string | number | Date | LabelValue> | undefined) {
-  if (!initValue || initValue.length === 0) {
-    return '';
-  }
-
-  if (field.type === 'datetime') {
-    return Array.isArray(initValue) ? initValue.map((value) => moment(value as string)) : moment(initValue);
-  }
-
-  if (field.enum && field.enum.length) {
-    return initValue;
-  }
-
-  return initValue[0];
+  getDataValues: () => FilterConfig;
+  validate: () => Promise<boolean>;
 }
 
 const FormFieldSwitch = formFieldWrap({ FieldFC: FieldSwitch });
 const FormFieldSelect = formFieldWrap({ FieldFC: Select });
 
-function DataFilter({ fields, className = '', initConditions, initTag = 'and' }: Props, ref: React.Ref<any>) {
+function DataFilter({
+  fields,
+  associationFields = [],
+  className = '',
+  initConditions,
+  initTag = 'and',
+}: Props, ref: React.Ref<RefProps>): JSX.Element {
   const [conditions, setConditions] = useState<FieldCondition[]>([]);
-  const [tag, setTag] = useState(initTag);
-  const { trigger, control, setValue, getValues, formState: { errors } } = useForm();
+  const [tag, setTag] = useState<'and' | 'or'>(initTag);
+  const { trigger, control, setValue, getValues, unregister, formState: { errors } } = useForm();
 
   useImperativeHandle(ref, () => ({
-    getDataPer: getDataPer,
     getDataValues: getDataValues,
     empty: () => setConditions([]),
+    validate: validate,
   }));
 
   useEffect(() => {
@@ -82,7 +76,9 @@ function DataFilter({ fields, className = '', initConditions, initTag = 'and' }:
         conditionsTmp.push({
           id: uniqueId(),
           op: condition.op as string,
-          value: getValue(filter, condition.value),
+          valueFrom: condition.valueFrom,
+          value: getValue(filter, condition.value, condition.valueFrom),
+          associationFieldsOptions: condition.valueFrom === 'form' ? getAssociationOptions(filter) : [],
           key: condition.key as string,
           filter,
         });
@@ -98,14 +94,55 @@ function DataFilter({ fields, className = '', initConditions, initTag = 'and' }:
     label: field.title,
   }));
 
+  const getAssociationOptions = (curField: ISchema | undefined): LabelValue[] => {
+    if (!curField) {
+      return [];
+    }
+
+    return associationFields.reduce((acc, fields) => {
+      if (fields['x-component'] === curField?.['x-component']) {
+        return acc.concat({ label: fields.title as string, value: fields.id });
+      }
+      return acc;
+    }, [] as LabelValue[]);
+  };
+
   const handleFieldChange = (rowID: string, field: string) => {
     setConditions(conditions.map((condition) => {
       if (condition.id === rowID) {
-        return { ...condition, filter: fields.find(({ id }) => id === field) } as FieldCondition;
+        return {
+          ...condition,
+          valueFrom: 'fixedValue',
+          filter: fields.find(({ id }) => id === field),
+          associationFieldsOptions: [],
+        } as FieldCondition;
       }
       return condition;
     }));
     setValue('operators-' + rowID, '');
+    setValue('condition-' + rowID, '');
+    setValue('valueFrom-' + rowID, 'fixedValue');
+  };
+
+  const handleValueFromChange = (rowID: string, valueFrom: string) => {
+    setConditions(conditions.map((condition) => {
+      if (condition.id !== rowID) {
+        return condition;
+      }
+
+      if (condition.filter?.['x-component'] === 'DatePicker') {
+        condition.filter = {
+          ...condition.filter,
+          type: valueFrom === 'form' ? 'number' : 'datetime',
+        };
+      }
+
+      return {
+        ...condition,
+        valueFrom,
+        associationFieldsOptions: getAssociationOptions(condition.filter),
+      } as FieldCondition;
+    }));
     setValue('condition-' + rowID, '');
   };
 
@@ -114,12 +151,13 @@ function DataFilter({ fields, className = '', initConditions, initTag = 'and' }:
   };
 
   const handleRemove = (_id: string) => {
+    unregister([`condition-${_id}`, `field-${_id}`, `operators-${_id}`, `valueFrom-${_id}`]);
     setConditions(conditions.filter(({ id }) => _id !== id));
   };
 
-  const getDataValues = () => {
+  const getDataValues = (): FilterConfig => {
     if (conditions.length === 0) {
-      return { arr: [], tag };
+      return { condition: [], tag };
     }
 
     const formData = getValues();
@@ -136,49 +174,26 @@ function DataFilter({ fields, className = '', initConditions, initTag = 'and' }:
         }
 
         _conditions.push(
-          getCondition(
-            condition.filter,
-            formData[`condition-${condition.id}`],
-            condition.filter.id,
-            formData[`operators-${condition.id}`],
-          ),
+          setValueFormCondition({
+            valueFrom: formData[`valueFrom-${condition.id}`] || 'fixedValue',
+            key: condition.filter.id,
+            op: formData[`operators-${condition.id}`],
+            value: formData[`condition-${condition.id}`],
+            schema: condition.filter,
+          }),
         );
       }
     });
 
     return {
-      arr: _conditions,
+      condition: _conditions,
       tag,
     };
   };
 
-  const getDataPer = () => {
-    if (conditions.length === 0) {
-      return Promise.resolve({ arr: [], tag });
-    }
-
-    return trigger().then((flag) => {
-      if (flag) {
-        const formData = getValues();
-        const _conditions = conditions.filter((condition)=>{
-          return !!condition.filter;
-        }).map((condition) => {
-          return getCondition(
-            condition.filter as Fields,
-            formData[`condition-${condition.id}`],
-            (condition.filter as Fields).id,
-            formData[`operators-${condition.id}`],
-          );
-        });
-
-        return {
-          arr: _conditions,
-          tag,
-        };
-      }
-
-      return 'notPass';
-    });
+  const validate = async (): Promise<boolean> => {
+    await trigger();
+    return Object.keys(errors).length === 0;
   };
 
   return (
@@ -188,7 +203,7 @@ function DataFilter({ fields, className = '', initConditions, initTag = 'and' }:
         <Select
           className='mx-4'
           value={tag}
-          onChange={(tag: string) => setTag(tag)}
+          onChange={(tag) => setTag(tag)}
           options={CONDITION}
         />
         条件的数据
@@ -206,9 +221,8 @@ function DataFilter({ fields, className = '', initConditions, initTag = 'and' }:
                   return (
                     <FormFieldSelect
                       style={{ width: '250px' }}
-                      optionClassName='qxp-data-filter-options'
                       error={errors['field-' + condition.id]}
-                      register={{ name: field.name, ref: field.ref, value: field.value }}
+                      register={{ name: field.name, value: field.value }}
                       options={fieldOption}
                       onChange={(_field: string) => {
                         handleFieldChange(condition.id, _field);
@@ -234,12 +248,34 @@ function DataFilter({ fields, className = '', initConditions, initTag = 'and' }:
                         error={errors['operators-' + condition.id]}
                         register={field}
                         options={getOperators(condition.filter?.type || '', condition.filter?.enum)}
-
                       />
                     )
                     }
                   />
                 </div>
+                {associationFields.length !== 0 && (
+                  <div>
+                    <Controller
+                      name={'valueFrom-' + condition.id}
+                      control={control}
+                      defaultValue={condition.valueFrom || 'fixedValue'}
+                      rules={{ required: true }}
+                      render={({ field }) => (
+                        <FormFieldSelect
+                          style={{ width: '100px' }}
+                          error={errors['valueFrom-' + condition.id]}
+                          register={field}
+                          options={VALUE_FROM}
+                          onChange={(valueFrom: string) => {
+                            handleValueFromChange(condition.id, valueFrom);
+                            field.onChange(valueFrom);
+                          }}
+                        />
+                      )
+                      }
+                    />
+                  </div>
+                )}
                 <div>
                   <Controller
                     name={'condition-' + condition.id}
@@ -247,12 +283,21 @@ function DataFilter({ fields, className = '', initConditions, initTag = 'and' }:
                     defaultValue={condition.value}
                     rules={{ required: true }}
                     render={({ field }) => (
-                      <FormFieldSwitch
-                        error={errors['condition-' + condition.id]}
-                        register={{ ...field, value: field.value ? field.value : '' }}
-                        field={condition.filter}
-                        style={{ width: '300px' }}
-                      />
+                      condition.valueFrom === 'form' ? (
+                        <FormFieldSelect
+                          style={{ width: '300px' }}
+                          error={errors['condition-' + condition.id]}
+                          register={field}
+                          options={condition.associationFieldsOptions || []}
+                        />
+                      ) : (
+                        <FormFieldSwitch
+                          error={errors['condition-' + condition.id]}
+                          register={{ ...field, value: field.value ? field.value : '' }}
+                          field={condition.filter}
+                          style={{ width: '300px' }}
+                        />
+                      )
                     )
                     }
                   />

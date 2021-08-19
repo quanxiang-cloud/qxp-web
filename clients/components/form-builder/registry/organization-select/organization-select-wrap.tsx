@@ -1,9 +1,12 @@
 import React from 'react';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 
+import { getDefinedOne } from '@c/form-builder/utils';
+
 import OrganizationPicker from './organization-select';
 
 const OrganizationPickerWrap = (p: ISchemaFieldComponentProps): JSX.Element => {
+  const isEditable = getDefinedOne(p?.editable, p?.props.editable);
   const { optionalRange, rangeList, multiple } = p.props;
   React.useEffect(() => {
     p.mutators.change(p.initialValue || p.props.defaultValues);
@@ -15,6 +18,7 @@ const OrganizationPickerWrap = (p: ISchemaFieldComponentProps): JSX.Element => {
       multiple={multiple}
       rangeList={rangeList}
       optionalRange={optionalRange}
+      disabled={!isEditable}
       value={p.value}
       onChange={p.mutators.change}
     />

@@ -6,7 +6,7 @@ import Button from '@c/button';
 import ControlPopper from '@c/control-popper';
 
 type Props = {
-  fields: Fields[];
+  fields: SchemaFieldItem[];
   search: (params: { tag: 'or' | 'and', condition: Condition[] }) => void;
   tag?: 'or' | 'and';
 }
@@ -25,7 +25,7 @@ function AdvancedQuery({ fields, search, tag }: Props): JSX.Element {
   const [visible, setVisible] = useState(false);
   const popperRef = useRef<any>();
   const reference = useRef<any>();
-  const dataFilterRef = useRef<RefProps>();
+  const dataFilterRef = useRef<RefProps>(null);
 
   const handleEmpty = () => {
     dataFilterRef.current?.empty();
@@ -39,12 +39,12 @@ function AdvancedQuery({ fields, search, tag }: Props): JSX.Element {
       return;
     }
 
-    const { arr, tag } = dataFilterRef.current.getDataValues();
-    if (arr.length || conditionCount !== 0) {
-      search({ tag, condition: arr });
+    const { condition, tag } = dataFilterRef.current.getDataValues();
+    if (condition.length || conditionCount !== 0) {
+      search({ tag, condition });
       setVisible(false);
     }
-    setConditionCount(arr.length);
+    setConditionCount(condition.length);
   };
 
   return (
@@ -67,8 +67,9 @@ function AdvancedQuery({ fields, search, tag }: Props): JSX.Element {
       >
         <div className='advanced-query-container'>
           <DataFilter
-            initTag={tag as string}
-            ref={dataFilterRef} fields={fields}
+            initTag={tag}
+            ref={dataFilterRef}
+            fields={fields}
           />
           <div className='mt-20 flex justify-end gap-x-16'>
             <Button onClick={handleEmpty} iconName='clear'>清空</Button>

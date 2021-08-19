@@ -1,18 +1,23 @@
 import React, { useState, forwardRef, useImperativeHandle, useRef } from 'react';
 import { Radio } from 'antd';
 
-import DataFilter, { ConditionItemMap, RefProps } from '@c/data-filter';
+import DataFilter, { RefProps } from '@c/data-filter';
 
 type Props = {
-  fields: Fields[];
+  fields: SchemaFieldItem[];
   dataPer: ConditionMap;
   className?: string;
 }
 
+type Permission = {
+  arr: Condition[];
+  tag: 'or' | 'and';
+}
+
 type ConditionMap = {
-  find?: ConditionItemMap;
-  delete?: ConditionItemMap;
-  update?: ConditionItemMap;
+  find?: Permission;
+  delete?: Permission;
+  update?: Permission;
 }
 
 const OPTIONS = [
@@ -40,32 +45,43 @@ function DataPermission({ fields, className = '', dataPer }: Props, ref: React.R
   const editRef = useRef<RefProps>(null);
   const delRef = useRef<RefProps>(null);
 
-  const getDataPer = () => {
-    return Promise.all([
-      view.key === 'custom' ? viewRef.current?.getDataPer() : '',
-      edit.key === 'custom' ? editRef.current?.getDataPer() : '',
-      del.key === 'custom' ? delRef.current?.getDataPer() : '',
-    ]).then(([dataView, dataEdit, dataDel]) => {
-      if (dataView !== 'notPass' && dataEdit !== 'notPass' && dataDel !== 'notPass') {
-        const conditions: ConditionMap = {};
-        if (view.key === 'custom' && typeof dataView !== 'string') {
-          conditions.find = dataView;
-        }
-        if (edit.key === 'custom' && typeof dataEdit !== 'string') {
-          conditions.update = dataEdit;
-        }
-        if (del.key === 'custom' && typeof dataDel !== 'string') {
-          conditions.delete = dataDel;
-        }
-        return conditions;
-      }
+  const getDataValues = async () => {
+    const viewFlag = await (view.key === 'custom' ? viewRef.current?.validate() : undefined);
+    const editFlag = await (edit.key === 'custom' ? editRef.current?.validate() : undefined);
+    const delFlag = await (del.key === 'custom' ? delRef.current?.validate() : undefined);
 
-      return false;
-    });
+    if (viewFlag === false || editFlag === false || delFlag === false) {
+      return;
+    }
+
+    const conditions: ConditionMap = {};
+
+    if (viewFlag) {
+      conditions.find = {
+        arr: viewRef.current?.getDataValues().condition || [],
+        tag: viewRef.current?.getDataValues().tag || 'and',
+      };
+    }
+
+    if (editFlag) {
+      conditions.update = {
+        arr: editRef.current?.getDataValues().condition || [],
+        tag: editRef.current?.getDataValues().tag || 'and',
+      };
+    }
+
+    if (delFlag) {
+      conditions.delete = {
+        arr: delRef.current?.getDataValues().condition || [],
+        tag: delRef.current?.getDataValues().tag || 'and',
+      };
+    }
+
+    return conditions;
   };
 
   useImperativeHandle(ref, () => ({
-    getDataPer: getDataPer,
+    getDataValues: getDataValues,
   }));
 
   return (

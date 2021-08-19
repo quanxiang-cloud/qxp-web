@@ -1,18 +1,37 @@
+import { flattenDeep, isString, isArray, isEmpty } from 'lodash';
 import {
   ArrowHeadType, Edge, XYPosition, Position,
 } from 'react-flow-renderer';
 
 import { getNodeElementById } from '../store';
+import { Data } from '../type';
 
-export function edgeBuilder(startId: string, endId: string, type = 'plus', label = '+'): Edge {
-  return {
-    id: `e${startId}-${endId}`,
-    type,
-    source: startId,
-    target: endId,
-    label,
-    arrowHeadType: ArrowHeadType.ArrowClosed,
-  };
+export function edgeBuilder<T extends string | string[]>(
+  startID?: T,
+  endID?: T,
+  type = 'plus',
+  label = '+',
+): Edge<Data>[] {
+  const idIsStringWithValue = (): boolean => !![startID, endID].every((id) => isString(id) && !isEmpty(id));
+  if (idIsStringWithValue()) {
+    return [{
+      id: `e${startID}-${endID}`,
+      type,
+      source: startID as string,
+      target: endID as string,
+      label,
+      arrowHeadType: ArrowHeadType.ArrowClosed,
+    }];
+  }
+
+  if (isArray(startID) && isArray(endID)) {
+    const edges = startID.map((sID) => {
+      return endID.map((eID) => edgeBuilder(sID, eID, type, label));
+    });
+    return flattenDeep(edges);
+  }
+
+  return [];
 }
 
 export function getFixedSourcePosition(nodeID: string, position: Position): XYPosition {

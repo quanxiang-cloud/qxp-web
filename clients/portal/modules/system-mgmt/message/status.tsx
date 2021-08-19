@@ -42,9 +42,11 @@ const MsgStatus = ({ className, status, fail, success }: Props): JSX.Element => 
   const msg = fail == 0 ? `共${success}人, 已全部发送` :
     `共 ${fail + success} 人, 发送失败${fail}人, 发送成功${success}人`;
 
-  return (<Tooltip content={<span>{msg}</span>} trigger="hover">
-    <div>{baseInfo}</div>
-  </Tooltip>);
+  return (
+    <Tooltip content={<span>{msg}</span>} trigger="hover">
+      <div>{baseInfo}</div>
+    </Tooltip>
+  );
 };
 
 export default MsgStatus;

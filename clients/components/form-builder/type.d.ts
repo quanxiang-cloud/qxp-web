@@ -6,18 +6,27 @@ type ValidationFormula = {
   message: string;
 }
 
-type ISchema = import('@formily/react-schema-renderer').ISchema & {
-  'x-internal'?: {
-    version?: string;
-    sortable?: boolean;
-    permission?: number;
-    validations?: Array<ValidationFormula>;
-    defaultValueFrom?: FormBuilder.DefaultValueFrom;
-    defaultValueLinkage?: FormBuilder.DefaultValueLinkage;
-    calculationFormula?: string;
-    [key: string]: any;
-  };
-};
+type XInternal = {
+  version?: string;
+  sortable?: boolean;
+  permission?: number;
+  validations?: Array<ValidationFormula>;
+  defaultValueFrom?: FormBuilder.DefaultValueFrom;
+  defaultValueLinkage?: FormBuilder.DefaultValueLinkage;
+  calculationFormula?: string;
+  isLayoutComponent?: boolean;
+  isSystem?: boolean;
+  [key: string]: any;
+}
+
+type ISchema = import('@formily/react-schema-renderer').ISchema & { 'x-internal'?: XInternal };
+
+type FilterConfig = {
+  condition: Condition[];
+  tag: 'or' | 'and';
+}
+
+type IteratISchema = ISchema & { id: string; componentName?: string; }
 
 type LabelValue = {
   label: string;
@@ -31,14 +40,17 @@ type FormDataValue =
   | number[]
   | FormBuilder.Option
   | FormBuilder.Option[]
+  | LabelValue
   | Record<string, unknown>
-  | Record < string, unknown > [];
+  | Record<string, unknown>[];
 
 declare type SchemaProperties<T = ISchema> = {
   [key: string]: T;
 };
 
 declare namespace FormBuilder {
+  type LayoutComponent = 'LayoutCard' | 'LayoutGrid' | 'LayoutTabs'
+
   type ElementCategory = 'basic' | 'advance' | 'layout';
 
   type Subordination = 'foreign_table' | 'sub_table';
@@ -59,6 +71,10 @@ declare namespace FormBuilder {
     toConfig: (schema: ISchema) => T;
     configDependencies?: Record<string, React.JSXElementConstructor<any>>;
     compareOperators?: CompareOperator[];
+    isLayoutComponent?: boolean;
+    editComponent?: React.JSXElementConstructor<any>;
+    effects?: () => void;
+    validate?: (value: T, tableSchema?: ISchema) => boolean;
   };
 
   type DropPosition = 'upper' | 'below';
@@ -129,6 +145,26 @@ declare namespace FormBuilder {
     rules: Array<FormDataFilterRule>;
   }
 }
+
+type SchemaFieldItem = ISchema & {
+  id: string;
+  fieldName: string;
+  componentName: string;
+  parentField?: string;
+  tabIndex?: number;
+}
+
+type FormItem = {
+  componentName: string;
+  fieldName: string;
+  configValue: any;
+  'x-index'?: number;
+  parentField?: string;
+  tabIndex?: string;
+  'x-internal'?: XInternal;
+  isLayoutComponent?: boolean,
+  children?: FormItem[];
+};
 
 // a copy of formily Schema type definition for reference
 // interface Schema {

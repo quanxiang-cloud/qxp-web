@@ -1,4 +1,4 @@
-import { unitOfTime, Moment } from 'moment';
+import moment, { unitOfTime, Moment } from 'moment';
 
 export const OPERATORS_STRING = [
   {
@@ -85,6 +85,17 @@ export const CONDITION = [
   },
 ];
 
+export const VALUE_FROM = [
+  {
+    label: '固定值',
+    value: 'fixedValue',
+  },
+  {
+    label: '表单值',
+    value: 'form',
+  },
+];
+
 export function getOperators(type: string, enums: any[] | undefined): LabelValue[] {
   switch (type) {
   case 'array':
@@ -112,7 +123,7 @@ export const FILTER_FIELD = [
   'MultipleSelect',
   'NumberPicker',
   'RadioGroup',
-  'textarea',
+  'Textarea',
   'Select',
   'CheckboxGroup',
   'UserPicker',
@@ -137,11 +148,6 @@ function getDateType(format: string): unitOfTime.StartOf {
   }
 }
 
-type LabelValue = {
-  label: string;
-  value: string;
-}
-
 type Value = string
   | string[]
   | Record<string, unknown>
@@ -151,12 +157,14 @@ type Value = string
   | LabelValue[]
   | Moment[];
 
+type ComponentValue = number | string | Moment | LabelValue | Date;
+
 export function getCondition(schema: ISchema, value: Value, key: string, op?: string): Condition {
   const _condition: Condition = { key };
   switch (schema['x-component']) {
   case 'DatePicker': {
     const [start, end] = value as Moment[];
-    const format = schema?.['x-component-props']?.format || 'YYYY-MM-DD HH:mm:ss';
+    const format = schema?.['x-component-props']?.format || 'YYYY-MM-DD';
     _condition.value = [
       start.startOf(getDateType(format)).toISOString(),
       end.endOf(getDateType(format)).toISOString(),
@@ -192,4 +200,60 @@ export function getCondition(schema: ISchema, value: Value, key: string, op?: st
   }
 
   return _condition;
+}
+
+type ValueFromProps = {
+  schema: ISchema;
+  key: string;
+  valueFrom: ValueFrom;
+  op: string;
+  value: Value
+}
+
+export function setValueFormCondition({ valueFrom, key, op, value, schema }: ValueFromProps): Condition {
+  if (valueFrom === 'form') {
+    return {
+      key,
+      op,
+      value: [value as string],
+      valueFrom,
+    };
+  }
+
+  return {
+    ...getCondition(
+      schema,
+      value,
+      key,
+      op,
+    ),
+    valueFrom,
+  };
+}
+
+export function getValue(
+  field: SchemaFieldItem,
+  initValue: Array<string | number | Date | LabelValue> | undefined,
+  valueFrom: ValueFrom | undefined,
+): ComponentValue | ComponentValue[] {
+  if (!initValue || initValue.length === 0) {
+    return '';
+  }
+
+  if (valueFrom === 'form') {
+    return initValue.toString();
+  }
+
+  switch (field['x-component']) {
+  case 'DatePicker':
+    return Array.isArray(initValue) ? initValue.map((value) => moment(value as string)) : moment(initValue);
+  case 'MultipleSelect':
+  case 'RadioGroup':
+  case 'CheckboxGroup':
+  case 'UserPicker':
+  case 'Select':
+    return initValue;
+  default:
+    return initValue[0];
+  }
 }

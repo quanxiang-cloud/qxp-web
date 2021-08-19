@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { FormButtonGroup, setValidationLanguage } from '@formily/antd';
 import { toJS } from 'mobx';
-import { omit, omitBy, isEmpty, isObject, isArray } from 'lodash';
+import { omit, omitBy, isEmpty, isObject, isArray, Dictionary, isUndefined } from 'lodash';
 import { useQuery } from 'react-query';
 import { observer } from 'mobx-react';
+import { pipe, entries, map, filter, fromPairs } from 'lodash/fp';
 
 import Breadcrumb from '@c/breadcrumb';
 import Icon from '@c/icon';
@@ -11,8 +12,9 @@ import Button from '@c/button';
 import Loading from '@c/loading';
 import toast from '@lib/toast';
 import { FormRenderer } from '@c/form-builder';
-import { removeNullOrUndefinedFromObject } from '@lib/utils';
 import { INTERNAL_FIELD_NAMES } from '@c/form-builder/store';
+import { isEmptyArray, isEmptyObject } from '@lib/utils';
+import { schemaToMap } from '@lib/schema-convert';
 import {
   formDataRequest, FormDataRequestCreateParams, FormDataRequestUpdateParams,
 } from '@lib/http-client';
@@ -52,7 +54,6 @@ function CreateDataForm({ appID, pageID, rowID, onCancel, title }: Props): JSX.E
 
   const defaultValues = rowID ? data?.record : undefined;
   const { schema } = data || { properties: {} };
-
   if (isLoading) {
     return <Loading desc="加载中..." />;
   }
@@ -118,28 +119,48 @@ function CreateDataForm({ appID, pageID, rowID, onCancel, title }: Props): JSX.E
     return newData.filter(({ _id }) => !_id).map((data) => buildSubData(data, 'create'));
   }
 
-  function removeEmptySubTableOrAssociatedRecords<T extends Record<string, any>>(data: T): T {
-    return omitBy(
-      data,
-      (v) => (isObject(v) && isEmpty(v)) || (isArray(v) && v.every(isEmpty)),
-    ) as unknown as T;
+  function removeEmptySubTableOrAssociatedRecords<T extends Record<string, T[keyof T]>>(
+    data: T, schemaMap: ISchema,
+  ): Dictionary<T[keyof T]> {
+    const valueMapper = map(([key, value]) => {
+      const fieldSchema = schemaMap[key as keyof ISchema];
+      const fieldComponentName = fieldSchema?.['x-component']?.toLowerCase() || '';
+      if (!['subtable', 'associatedrecords'].includes(fieldComponentName)) {
+        return [key, value];
+      }
+      const isEmptyValue = (value: unknown): boolean => {
+        return isEmptyArray(value) || isEmptyObject(value) || isUndefined(value) || value === '';
+      };
+      const isInvalidAssociatedRecord = (value: unknown): boolean => {
+        return isEmptyObject(value) && !isArray(value);
+      };
+      const isInvalidSubtable = (value: unknown): boolean => {
+        return isEmptyArray(value) || (isArray(value) && !!value?.every((val) => isEmptyValue(val)));
+      };
+      const isInvalidValue = isInvalidAssociatedRecord(value) || isInvalidSubtable(value);
+      return isInvalidValue ? false : [key, value];
+    });
+    const transform = pipe(entries, valueMapper, filter(Boolean), fromPairs);
+    return transform(data);
   }
 
-  const handleSubmit = (data: any): void => {
-    const formData = removeEmptySubTableOrAssociatedRecords(removeNullOrUndefinedFromObject(data));
-    const schemaMap = schema?.properties as ISchema || {};
+  function isSubTable(schemaMap: ISchema) {
+    return (fieldKey: string): boolean => {
+      return schemaMap[fieldKey as keyof ISchema]?.['x-component']?.toLowerCase() === 'subtable';
+    };
+  }
+
+  const handleSubmit = (data: Record<string, unknown>): void => {
+    const schemaMap = schemaToMap(schema);
     const defaultValue = toJS(defaultValues);
+    const formData = removeEmptySubTableOrAssociatedRecords(data, schemaMap);
     const diffResult = difference(defaultValue || {}, formData);
     if (isEmpty(diffResult)) {
-      toast.success('数据未更改');
+      toast.error('数据未更改, 此次未保存');
       return;
     }
 
-    const subTableChangedKeys = Object.keys(diffResult).filter(
-      (fieldKey) => schemaMap[fieldKey as keyof ISchema]?.[
-        'x-component'
-      ]?.toLowerCase() === 'subtable',
-    );
+    const subTableChangedKeys = Object.keys(diffResult).filter(isSubTable(schemaMap));
     const hasSubTableChanged = !!(subTableChangedKeys.length && defaultValues);
 
     const ref: RefType = {};
@@ -161,8 +182,7 @@ function CreateDataForm({ appID, pageID, rowID, onCancel, title }: Props): JSX.E
     const initialMethod = defaultValues ? 'update' : 'create';
     const reqData: FormDataRequestCreateParams | FormDataRequestUpdateParams = buildRequestParams(
       initialMethod === 'create' ? formData : omitBy(formData, (_, key) => {
-        return schemaMap[key as keyof ISchema]?.['x-component'].toLowerCase() === 'subtable' ||
-          !(key in schemaMap);
+        return schemaMap[key]?.componentName === 'subtable' || !(key in schemaMap);
       }),
       defaultValue?._id,
       initialMethod,

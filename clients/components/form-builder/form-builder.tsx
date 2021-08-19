@@ -1,8 +1,6 @@
 import React from 'react';
-import classnames from 'classnames';
+import cs from 'classnames';
 import { ConfigProvider } from 'antd';
-import { DndProvider } from 'react-dnd';
-import { HTML5Backend } from 'react-dnd-html5-backend';
 import zhCN from 'antd/lib/locale/zh_CN';
 
 import { StoreContext } from './context';
@@ -20,13 +18,11 @@ function FormBuilder({ className, store }: Props): JSX.Element {
   return (
     <ConfigProvider locale={zhCN}>
       <StoreContext.Provider value={store}>
-        <div className={classnames('form-builder', className)}>
-          <DndProvider backend={HTML5Backend} context={window}>
-            <SourceElementPanel />
-            <div className="canvas-wrapper">
-              <Canvas />
-            </div>
-          </DndProvider>
+        <div className={cs('form-builder', className)}>
+          <SourceElementPanel />
+          <div className="canvas-wrapper">
+            <Canvas />
+          </div>
           <FormSettingPanel />
         </div>
       </StoreContext.Provider>

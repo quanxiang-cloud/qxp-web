@@ -23,6 +23,7 @@ export interface FileListProps {
   candownload?: boolean;
   hideProgress?: boolean;
   isPreview?: boolean;
+  editable?:boolean;
   canMultiDownload?: boolean;
   messageTitle?: string;
 }
@@ -42,6 +43,7 @@ const Filelist = ({
   deleteFiles,
   hideProgress,
   isPreview,
+  editable,
   messageTitle,
 }: FileListProps): JSX.Element | null => {
   const handleDownload = (link: string, filename: string): void => {
@@ -106,7 +108,7 @@ const Filelist = ({
                 key={itm.file_url}
               />
             )}
-            {deleteFiles && (
+            {editable && deleteFiles && (
               <Icon onClick={(): void => deleteFiles(itm)} name="delete" clickable/>
             )}
           </div>

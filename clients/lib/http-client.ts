@@ -90,6 +90,30 @@ export function getTableSchema(appID: string, tableID: string): Promise<GetTable
   return httpClient<GetTableSchemaResponse>(path, { tableID });
 }
 
+export function findOneRecord(appID: string, tableID: string, id: string): Promise<Record<string, any>> {
+  if (!id) {
+    return Promise.resolve({});
+  }
+
+  return formDataRequest(
+    appID,
+    tableID,
+    {
+      method: 'findOne',
+      conditions: {
+        condition: [{ key: '_id', op: 'eq', value: [id] }],
+      },
+    },
+  ).then(({ entity }) => {
+    if (!entity) {
+      // 只查 schema 的时候不要 reject
+      return {};
+    }
+
+    return entity;
+  });
+}
+
 export function saveTableSchema(
   appID: string, tableID: string, schema: ISchema,
 ): Promise<{ tableID: string; }> {

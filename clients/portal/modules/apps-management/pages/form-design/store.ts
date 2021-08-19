@@ -1,18 +1,35 @@
 import * as H from 'history';
 import { action, observable, reaction, IReactionDisposer, computed, toJS } from 'mobx';
 import { UnionColumns } from 'react-table';
+import { set } from 'lodash';
+
+import logger from '@lib/logger';
+import toast from '@lib/toast';
+import { getTableSchema, saveTableSchema } from '@lib/http-client';
+import { schemaToMap } from '@lib/schema-convert';
 
 import FormStore from '@c/form-builder/store';
-import toast from '@lib/toast';
-import { FILTER_FIELD } from '@c/data-filter/utils';
 import AppPageDataStore from '@c/form-app-data-table/store';
 import { TableConfig } from '@c/form-app-data-table/type';
 import { setFixedParameters } from '@c/form-app-data-table/utils';
+import registry from '@c/form-builder/registry';
 
-import { getTableSchema, saveTableSchema } from '@lib/http-client';
-import {
-  createPageScheme,
-} from './api';
+import { createPageScheme } from './api';
+
+export const SHOW_FIELD = [
+  'DatePicker',
+  'Input',
+  'MultipleSelect',
+  'NumberPicker',
+  'RadioGroup',
+  'Select',
+  'CheckboxGroup',
+  'UserPicker',
+  'CascadeSelector',
+  'OrganizationPicker',
+  'AssociatedData',
+  'Serial',
+];
 
 class FormDesignStore {
   destroyFetchScheme: IReactionDisposer;
@@ -33,17 +50,15 @@ class FormDesignStore {
   @observable pageTableShowRule: TableConfig = { pageSize: 10 };
   @observable filters: Filters = [];
 
-  @computed get fieldsMap(): Record<string, ISchema> {
-    return this.formStore?.schema?.properties || {};
+  @computed get fieldsMap(): Record<string, SchemaFieldItem> {
+    return schemaToMap(this.formStore?.schema) || {};
   }
 
   @computed get fieldList(): PageField[] {
-    return Object.entries(toJS(this.fieldsMap)).filter(([key, fieldSchema]) => {
-      if (key === '_id' || !FILTER_FIELD.includes(fieldSchema['x-component'] as string)) {
-        return false;
-      }
+    const whitInternalFields = Object.assign({}, this.fieldsMap, this.internalFields);
 
-      return true;
+    return Object.entries(whitInternalFields).filter(([key, fieldSchema]) => {
+      return (key !== '_id' && SHOW_FIELD.includes(fieldSchema['x-component'] as string));
     }).map(([key, fieldSchema]) => {
       return {
         id: key,
@@ -52,8 +67,26 @@ class FormDesignStore {
         enum: fieldSchema.enum as EnumItem[],
         isSystem: fieldSchema['x-internal']?.isSystem ? true : false,
         cProps: fieldSchema['x-component-props'],
+        xComponent: fieldSchema['x-component'] as string,
       };
     });
+  }
+
+  @computed get internalFields(): Record<string, ISchema> {
+    const _internalFields = this.formStore?.internalFields.reduce<Record<string, ISchema>>((acc, field) => {
+      const { fieldName, componentName, configValue } = field;
+      const { toSchema } = registry.elements[componentName.toLowerCase()] || {};
+      if (!toSchema) {
+        logger.error(`failed to find component: [${componentName}] in registry`);
+      }
+
+      const currentSchema = toSchema(toJS(configValue));
+      acc[fieldName] = set(currentSchema, 'x-internal.isSystem', true);
+
+      return acc;
+    }, {});
+
+    return _internalFields || {};
   }
 
   @computed get showAllFields(): boolean {
@@ -84,7 +117,7 @@ class FormDesignStore {
 
       if (!this.hasSchema && !this.pageTableColumns.length) {
         this.pageTableColumns = this.fieldList.map(({ id }) => id).sort((key1, key2) => {
-          return this.fieldsMap[key1]['x-index'] || 0 - (this.fieldsMap[key2]['x-index'] || 0);
+          return this.fieldsMap?.[key1]?.['x-index'] || 0 - (this.fieldsMap?.[key2]?.['x-index'] || 0);
         });
       } else {
         this.pageTableColumns = this.pageTableColumns.filter((id) => {
@@ -112,11 +145,10 @@ class FormDesignStore {
       if (!this.pageTableColumns) {
         return [];
       }
-
       const column: UnionColumns<any>[] = this.pageTableColumns.map((key) => {
         return {
           id: key,
-          Header: this.fieldsMap[key].title as string,
+          Header: { ...this.fieldsMap, ...this.internalFields }[key]?.title || '',
           accessor: key,
         };
       });
@@ -204,15 +236,29 @@ class FormDesignStore {
   }
 
   @action
-  saveFormScheme = (history: H.History): Promise<any> => {
+  saveFormSchema = (history: H.History): Promise<any> => {
     if (this.formStore?.fields.length && this.pageTableColumns && this.pageTableColumns.length === 0) {
       toast.error('请在页面配置-字段显示和排序至少选择一个字段显示');
       history.replace(`/apps/formDesign/pageSetting/${this.pageID}/${this.appID}`);
       return Promise.resolve(false);
     }
 
+    // validate table schema on each field
+    if (!this.formStore?.validate()) {
+      return Promise.resolve(false);
+    }
+
     this.saveSchemeLoading = true;
-    return saveTableSchema(this.appID, this.pageID, this.formStore?.schema || {}).then(() => {
+
+    const allSchema = {
+      ...this.formStore.schema,
+      properties: {
+        ...this.formStore?.schema?.properties,
+        ...this.internalFields,
+      },
+    };
+
+    return saveTableSchema(this.appID, this.pageID, allSchema || {}).then(() => {
       createPageScheme(this.appID, {
         tableID: this.pageID, config: {
           pageTableColumns: this.pageTableColumns,
@@ -225,7 +271,8 @@ class FormDesignStore {
       this.initScheme = this.formStore?.schema as ISchema;
       this.saveSchemeLoading = false;
       return true;
-    }).catch(() => {
+    }).catch((error) => {
+      toast.error(error.message);
       this.saveSchemeLoading = false;
     });
   }

@@ -1,6 +1,6 @@
 import qs from 'qs';
 import { TreeData, TreeItem } from '@atlaskit/tree';
-import { get, isObject, isArray, pickBy, identity } from 'lodash';
+import _, { isObject } from 'lodash';
 import { TreeNode } from '@c/headless-tree/types';
 import { nanoid } from 'nanoid';
 import dayjs from 'dayjs';
@@ -240,43 +240,12 @@ export function toggleArray<T>(arr1: T[], value: T, condition = true): T[] {
   return [...arr1, value];
 }
 
-export function jsonValidator<T>(data: T, schema: Record<string, (v: any) => boolean>): boolean {
-  return Object.entries(schema).every(([path, validator]) => {
-    const values = path.split(',').reduce((cur: any[], next) => {
-      cur.push(get(data, next));
-      return cur;
-    }, []);
-    return validator(values.length === 1 ? values[0] : values);
-  });
-}
-
 export function parseJSON<T>(str: string, fallback: T): T {
   try {
     return JSON.parse(str);
   } catch (e) {
     return fallback;
   }
-}
-
-export function removeNullOrUndefinedFromObject(data: Record<string, any>): Record<string, any> {
-  const dataCollection: Record<string, any> = {};
-  Object.entries(pickBy(data, identity)).forEach(([key, value]) => {
-    if (isArray(value)) {
-      dataCollection[key] = value.map((valueItem) => {
-        if (isObject(valueItem)) {
-          return removeNullOrUndefinedFromObject(valueItem);
-        }
-        return valueItem;
-      }).filter(identity);
-      return;
-    }
-    if (isObject(value)) {
-      dataCollection[key] = removeNullOrUndefinedFromObject(value);
-      return;
-    }
-    dataCollection[key] = value;
-  });
-  return dataCollection;
 }
 
 export function handleTimeFormat(time: string): string {
@@ -322,4 +291,34 @@ export function isEmpty(value: any): boolean {
   }
 
   return false;
+}
+
+export function getUserDepartment(user: CurrentUser): UserDepartment {
+  let dep = user.dep;
+  while (dep.child) {
+    dep = dep.child;
+  }
+  return dep;
+}
+
+export function not<A extends any[]>(fn: (...args: [...A]) => boolean) {
+  return (...args: [...A]): boolean => {
+    return !fn(...args);
+  };
+}
+
+export function quickSortObjectArray<T extends Record<string, T[keyof T]>>(key: string, arr: T[]): T[] {
+  if (!arr?.length || !key) return [];
+  const [head, ...tail] = arr;
+  const left = tail.filter((e) => e[key] < head[key]);
+  const right = tail.filter((e) => e[key] >= head[key]);
+  return quickSortObjectArray<T>(key, left).concat(head, quickSortObjectArray(key, right));
+}
+
+export function isEmptyObject(value: unknown): boolean {
+  return _.isObject(value) && _.isEmpty(value);
+}
+
+export function isEmptyArray(value: unknown): boolean {
+  return _.isArray(value) && _.isEmpty(value);
 }

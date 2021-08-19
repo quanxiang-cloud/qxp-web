@@ -29,7 +29,7 @@ type ExecuteFormulaProps = {
   formActions: ISchemaFormActions,
 }
 
-function executeFormula({ rawFormula, formActions, targetField }: ExecuteFormulaProps) {
+function executeFormula({ rawFormula, formActions, targetField }: ExecuteFormulaProps): void {
   const { setFieldState, getFieldValue } = formActions;
   const ast = parse(rawFormula);
   const dependentFields = [...findVariables(ast)];
@@ -71,7 +71,9 @@ function executeFormula({ rawFormula, formActions, targetField }: ExecuteFormula
   });
 }
 
-export default function CalculationFormulaEffect(schema: ISchema, formActions: ISchemaFormActions) {
+export default function CalculationFormulaEffect(
+  schema: ISchema, formActions: ISchemaFormActions,
+): void {
   findAllFormula(schema).forEach(({ rawFormula, targetField }) => {
     executeFormula({ rawFormula, targetField, formActions });
   });

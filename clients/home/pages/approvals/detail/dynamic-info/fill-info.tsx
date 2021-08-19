@@ -10,7 +10,7 @@ type StatusDescribe = Record<string, {text: string, describe: string}>;
 type DataClassify = Record<'handledData' | 'noHandleData', OperationRecord[]>;
 
 const statusDescribe: StatusDescribe = {
-  OR_FILLIN: { text: '或填', describe: '任意一位负责人填写即可通过' },
+  OR_FILLIN: { text: '任填', describe: '任意一位负责人填写即可通过' },
   AND_FILLIN: { text: '会填', describe: '需全部负责人填写方可通过' },
 };
 

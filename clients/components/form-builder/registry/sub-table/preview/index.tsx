@@ -1,13 +1,16 @@
-import React, { JSXElementConstructor, useEffect, useState } from 'react';
+import React, { JSXElementConstructor, useEffect, useState, useContext } from 'react';
 import { ISchemaFieldComponentProps, IMutators } from '@formily/react-schema-renderer';
 import { usePrevious } from 'react-use';
 import { Input, Radio, DatePicker, NumberPicker, Select, Checkbox } from '@formily/antd-components';
+import { Rule } from 'rc-field-form/lib/interface';
 import { Table } from 'antd';
 import cs from 'classnames';
+import { isObject } from 'lodash';
 import {
-  InternalFieldList as FieldList, FormItem, ValidatePatternRules, IForm, Schema,
+  InternalFieldList as FieldList, ValidatePatternRules, Schema,
 } from '@formily/antd';
 
+import CanvasContext from '@c/form-builder/canvas-context';
 import OrganizationPicker from '@c/form-builder/registry/organization-select/organization-select-wrap';
 import FileUpload from '@c/form-builder/registry/file-upload/uploader';
 import ImageUpload from '@c/form-builder/registry/image-upload/uploader';
@@ -16,19 +19,25 @@ import logger from '@lib/logger';
 import FormDataValueRenderer from '@c/form-data-value-renderer';
 import Icon from '@c/icon';
 import CascadeSelector from '@c/form-builder/registry/cascade-selector/cascade-selector-wrap';
+import AssociatedData from '@c/form-builder/registry/associated-data/associated-data';
 import { isEmpty } from '@lib/utils';
+import schemaToFields from '@lib/schema-convert';
+import { numberTransform, getDefinedOne } from '@c/form-builder/utils';
 
-import { getDefaultValue } from './utils';
+import { getDefaultValue, schemaRulesTransform } from './utils';
+import SubTableRow from './row';
 
-type Column = {
+export type Rules = (ValidatePatternRules | ValidatePatternRules[]) & Rule[];
+export type Column = {
   title: string;
   dataIndex: string;
   component?: JSXElementConstructor<any>;
   readonly?: boolean;
+  editable?: boolean;
   props: Record<string, unknown>;
   dataSource?: any[];
   required?: boolean;
-  rules?: ValidatePatternRules;
+  rules: Rules;
   render?: (value: unknown) => JSX.Element;
   schema: ISchema;
 }
@@ -49,9 +58,11 @@ const components = {
   fileupload: FileUpload,
   imageupload: ImageUpload,
   cascadeselector: CascadeSelector,
+  associateddata: AssociatedData,
 };
 
 interface Props extends ISchemaFieldComponentProps {
+  readonly?: boolean;
   props: {
     [key: string]: any;
     ['x-component-props']: {
@@ -74,6 +85,7 @@ function SubTable({
   value,
   name,
   readonly,
+  editable,
   mutators,
 }: Partial<Props>): JSX.Element | null {
   const [{ componentColumns, rowPlaceHolder }, setSubTableState] = useState<SubTableState>({
@@ -85,26 +97,26 @@ function SubTable({
   const previousColumns = usePrevious(columns);
   const isFromForeign = subordination === 'foreign_table';
   const initialValue = value?.length ? value : [rowPlaceHolder];
+  const { isInCanvas } = useContext(CanvasContext);
+  const isPortal = window.SIDE === 'portal';
+  const portalReadOnlyClassName = cs({ 'pointer-events-none': isPortal && isInCanvas });
 
   useEffect(() => {
     const rowPlaceHolder = {};
-    const componentColumns: Column[] = Object.entries(schema?.properties || {}).sort((a, b) => {
-      return (a[1]['x-index'] || 0) - (b[1]['x-index'] || 0);
-    }).reduce(
-      (cur: Column[], next) => {
-        const [key, sc] = next;
-        const isHidden = !sc.display;
-        if ((isFromForeign && !columns?.includes(key)) || key === '_id' || isHidden) {
-          return cur;
-        }
-        const newColumn = buildColumnFromSchema(key, sc);
-        if (newColumn) {
-          Object.assign(rowPlaceHolder, { [key]: getDefaultValue(schema) || '' });
-          cur.push(newColumn);
-        }
-        return cur;
-      }, [],
-    ) as Column[];
+    const componentColumns: Column[] = schemaToFields(schema).sort((a, b) => {
+      return numberTransform(a) - numberTransform(b);
+    }).reduce((acc: Column[], field) => {
+      const isHidden = !field.display;
+      if ((isFromForeign && !columns?.includes(field.id)) || field.id === '_id' || isHidden) {
+        return acc;
+      }
+      const newColumn = buildColumnFromSchema(field.id, field);
+      if (newColumn) {
+        Object.assign(rowPlaceHolder, { [field.id]: getDefaultValue(field) });
+        acc.push(newColumn);
+      }
+      return acc;
+    }, []);
     setSubTableState({ componentColumns, rowPlaceHolder });
   }, [schema, columns]);
 
@@ -121,11 +133,14 @@ function SubTable({
     const componentName = sc['x-component']?.toLowerCase() as keyof Components;
     const componentProps = sc['x-component-props'] || {};
     const componentPropsInternal = sc['x-internal'] || {};
-    const dataSource = sc?.enum;
+    const dataSource = sc?.enum?.filter((option) => !isObject(option) || option?.label !== '');
     if (!components[componentName]) {
       logger.error('component %s is missing in subTable', componentName);
       return null;
     }
+    const isEditable = getDefinedOne(editable, sc?.editable);
+    const isReadOnly = getDefinedOne(readonly, sc?.readOnly);
+    Object.assign(componentProps, { readOnly: isReadOnly, disabled: !isEditable, editable: isEditable });
     return {
       title: sc.title as string,
       dataIndex,
@@ -138,9 +153,10 @@ function SubTable({
       },
       schema: sc,
       dataSource,
-      readonly: sc?.readOnly,
-      required: sc?.required as boolean,
-      rules: sc?.['x-rules'] || [],
+      editable: isEditable,
+      readonly: isReadOnly,
+      required: !!sc?.required,
+      rules: schemaRulesTransform(sc),
       render: (value: any) => {
         if (isEmpty(value)) {
           return <span className='text-gray-300'>——</span>;
@@ -153,16 +169,6 @@ function SubTable({
 
   function onAddRow(mutators: IMutators): void {
     mutators.push(rowPlaceHolder);
-  }
-
-  function onRemoveRow(mutators: IMutators, index: number): void {
-    mutators.remove(index);
-  }
-
-  function onChange(path: string, form: IForm) {
-    return (value: unknown): void => {
-      form.setFieldValue(path, value);
-    };
   }
 
   if (!componentColumns.length) {
@@ -185,91 +191,34 @@ function SubTable({
       {({ state, mutators, form }) => {
         return (
           <div className="w-full flex flex-col border border-gray-300">
-            {state.value.map((item: any, index: number) => {
-              return (
-                <div key={index} className="overflow-scroll">
-                  {index === 0 && (
-                    <div className="flex items-start justify-between whitespace-nowrap">
-                      <div
-                        className="flex-1 grid"
-                        style={{
-                          gridTemplateColumns: `repeat(${componentColumns.length}, minmax(120px, 1fr))`,
-                        }}
-                      >
-                        {componentColumns.map(({ title, required }, idx) => (
-                          <div key={idx} className={cs('text-center', {
-                            'border-r-1 border-gray-300': idx < componentColumns.length,
-                          })}>
-                            {required ? (
-                              <span className="mr-5" style={{ color: '#a87366' }}>*</span>
-                            ) : ''}
-                            {title}
-                          </div>
-                        ))}
-                      </div>
-                      <div className="px-22 text-center">
-                        操作
-                      </div>
-                    </div>
-                  )}
-                  <div className="flex items-center justify-between">
-                    <div
-                      className="flex-1 grid border-gray-300 border-t-1"
-                      style={{
-                        gridTemplateColumns: `repeat(${componentColumns.length}, minmax(120px, 1fr))`,
-                      }}
-                    >
-                      {componentColumns.map(({
-                        dataIndex, component, props, dataSource, required, rules, readonly, schema,
-                      }, idx) => {
-                        const path = `${name}.${index}.${dataIndex}`;
-                        return (
-                          <div key={dataIndex} className={cs({
-                            'border-r-1 border-gray-300': idx < componentColumns.length,
-                            'px-56 h-32': readonly,
-                          })}>
-                            {component && !readonly && (
-                              <FormItem
-                                {...props}
-                                className="mx-8 my-8 w-full"
-                                name={path}
-                                component={component}
-                                props={{ ...props, props }}
-                                mutators={{ change: onChange(path, form) }}
-                                rules={rules as any}
-                                dataSource={dataSource}
-                                required={required}
-                                value={item?.[dataIndex]}
-                              />
-                            )}
-                            {readonly && (
-                              <FormDataValueRenderer value={item?.[dataIndex]} schema={schema} />
-                            )}
-                          </div>
-                        );
-                      })}
-                    </div>
-                    <div
-                      className="px-22 border-gray-300 border-t-1 self-stretch flex items-center"
-                    >
-                      <Icon
-                        className="cursor-pointer"
-                        name="delete"
-                        size={29}
-                        onClick={() => onRemoveRow(mutators, index)}
-                      />
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
+            <div className="overflow-scroll">
+              {state.value.map((item: Record<string, FormDataValue>, index: number) => {
+                return (
+                  <SubTableRow
+                    name={name}
+                    componentColumns={componentColumns}
+                    key={index}
+                    index={index}
+                    item={item}
+                    form={form}
+                    editable={editable}
+                    mutators={mutators}
+                    portalReadOnlyClassName={portalReadOnlyClassName}
+                  />
+                );
+              })}
+            </div>
             <div className="border-t-1 border-gray-300 flex items-center">
-              <Icon
-                name="add"
-                size={24}
-                className="m-5 font-bold cursor-pointer"
-                onClick={() => onAddRow(mutators)}
-              />
+              {editable && (
+                <Icon
+                  name="add"
+                  size={24}
+                  className={
+                    cs('m-5 font-bold cursor-pointer', { [portalReadOnlyClassName]: state.value.length })
+                  }
+                  onClick={() => onAddRow(mutators)}
+                />
+              )}
             </div>
           </div>
         );

@@ -3,6 +3,7 @@ import { useQuery } from 'react-query';
 
 import { getTableSchema } from '@lib/http-client';
 import type { NodeWorkForm, Data, BusinessData } from '@flowEditor/type';
+import schemaToFields from '@lib/schema-convert';
 
 import FormDataForm from './form-data';
 import ApproveForm from './intermidiate/approve';
@@ -22,11 +23,11 @@ interface Props {
   defaultValue: Data;
   onSubmit: (data: BusinessData) => void;
   onCancel: () => void;
-  onChange: () => void;
+  onChange: (data: BusinessData) => void;
 }
 
-function useTableSchema(appID: string, tableID: string): ISchema | null {
-  const [schema, setSchema] = useState<ISchema | null>(null);
+function useTableSchema(appID: string, tableID: string): [ReturnType<typeof schemaToFields>, boolean] {
+  const [schema, setSchema] = useState<ISchema>();
 
   const { data, isLoading, isError } = useQuery<ISchema>(['FETCH_TABLE_SCHEMA', appID, tableID], () => {
     if (!tableID) {
@@ -48,7 +49,7 @@ function useTableSchema(appID: string, tableID: string): ISchema | null {
     setSchema(data);
   }, [data, isLoading, isError]);
 
-  return schema;
+  return [schemaToFields(schema), isLoading];
 }
 
 const components: Record<string, JSXElementConstructor<any>> = {
@@ -83,9 +84,9 @@ export default function Form({
     });
   }
   const { appID } = useContext(FlowContext);
-  const sourceTableSchema = useTableSchema(appID, workForm?.value || '');
+  const [sourceTableSchema, isLoading] = useTableSchema(appID, workForm?.value || '');
 
-  if (!sourceTableSchema) {
+  if (isLoading) {
     // todo handle error case
     return (<div>loading...</div>);
   }

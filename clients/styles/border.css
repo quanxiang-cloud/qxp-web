@@ -25,3 +25,7 @@
 .corner-4-0-4-4 {
   @apply rounded-tl-4 rounded-br-4 rounded-bl-4;
 }
+
+.corner-4-0-4-0 {
+  @apply rounded-tl-4 rounded-br-4;
+}

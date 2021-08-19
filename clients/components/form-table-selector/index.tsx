@@ -4,13 +4,15 @@ import { useParams } from 'react-router-dom';
 import { useQuery } from 'react-query';
 import { Cascader } from 'antd';
 import { CascaderOptionType } from 'antd/lib/cascader';
-import { last, noop } from 'lodash';
+import noop from 'lodash/noop';
+import last from 'lodash/last';
 
 import Icon from '@c/icon';
 import ToolTip from '@c/tooltip';
 import toast from '@lib/toast';
 
 import { getFormDataOptions, Options } from './api';
+import { getCascaderValuePathFromValue } from './util';
 
 export type Value = { name?: string; value: string }
 
@@ -70,28 +72,7 @@ function FormTableSelector(
     });
   }
 
-  function getPathWhenMatch(
-    val: string,
-    dataSource: Options,
-    map?: Record<string, string[]>,
-    id?: number,
-  ): string[] {
-    const pathMap: Record<string, string[]> = map || {};
-    for (let index = 0; index < dataSource.length; index += 1) {
-      const { value, children } = dataSource[index];
-      const currentIndex = id || index;
-      if (!pathMap[currentIndex]) {
-        pathMap[currentIndex] = [];
-      }
-      pathMap[currentIndex].push(value);
-      if (children) {
-        getPathWhenMatch(val, children, pathMap, currentIndex) as string[];
-      }
-    }
-    return Object.entries(pathMap).find(([, value]) => value.includes(val))?.[1] || [];
-  }
-
-  const currentValuePath = getPathWhenMatch(value.value, options);
+  const currentValuePath = getCascaderValuePathFromValue(value.value, options);
 
   const extra = {};
   if (ref) {

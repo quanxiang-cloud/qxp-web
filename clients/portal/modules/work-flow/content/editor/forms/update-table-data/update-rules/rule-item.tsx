@@ -15,7 +15,7 @@ import Context from '../context';
 import FormulaModal from '../formula-modal';
 
 interface Props {
-  targetSchema: ISchema;
+  targetSchema: Record<string, SchemaFieldItem>;
   rule: Rule;
   onRemove: () => void;
   onChange: (data: Partial<Rule>) => void;
@@ -28,30 +28,30 @@ const valueFromOptions: Array<{ label: string, value: string }> = [
   { label: '流程变量', value: 'processVariable' },
 ];
 
-function RuleItem(props: Props) {
+function RuleItem(props: Props): JSX.Element {
   const [item, setItem] = useState<Rule>(props.rule);
   const { tableSchema: curTableSchema } = useContext(FlowSourceTableContext);
-  const { data, setData } = useContext(Context);
+  const { data } = useContext(Context);
   const { flowID } = useContext(FlowContext);
   const [formulaModalOpen, setFormulaModalOpen] = useState(false);
   const { data: variables, isLoading: loadingVariables } = useQuery(['FETCH_PROCESS_VARIABLES'], () => {
     return getFlowVariables(flowID);
   });
 
-  const onChange = (val: Partial<Rule> = {}) => {
+  const onChange = (val: Partial<Rule> = {}): void => {
     setItem((v) => ({ ...v, ...val }));
     props.onChange(val);
   };
-  const onChangeFixedValue = (values: any) => {
+  const onChangeFixedValue = (values: any): void => {
     onChange({ valueOf: values[item.fieldName] });
   };
 
-  const saveFormula = (rule: string) => {
+  const saveFormula = (rule: string): void => {
     setFormulaModalOpen(false);
     onChange({ valueOf: rule });
   };
 
-  const renderValueBox = () => {
+  const renderValueBox = (): JSX.Element | null | undefined => {
     const rule = item.valueFrom;
     if (rule === 'currentFormValue') {
       return (
@@ -68,8 +68,10 @@ function RuleItem(props: Props) {
 
     if (rule === 'fixedValue') {
       const { fieldName } = item;
-      const fieldProps = get(props.targetSchema, `properties.${fieldName}`) || {};
-      const defaultVal = (data.updateRule || []).find(({ fieldName }) => fieldName === item.fieldName)?.valueOf;
+      const fieldProps = get(props.targetSchema, fieldName) || {};
+      const defaultVal = (data.updateRule || []).find(
+        ({ fieldName }) => fieldName === item.fieldName,
+      )?.valueOf;
       if (!fieldProps['x-component']) {
         return null;
       }
@@ -103,7 +105,8 @@ function RuleItem(props: Props) {
         );
       }
 
-      const fieldCompName = (get(props.targetSchema, `properties.${item.fieldName}.x-component`) as string).toLowerCase();
+      const fieldCompName = (get(props.targetSchema, `${item.fieldName}.x-component`) as string)
+        .toLowerCase();
 
       return (
         <Select
@@ -119,7 +122,7 @@ function RuleItem(props: Props) {
     <div className="flex items-center mb-10">
       <span className="text-caption">目标表:</span>
       <Select
-        options={getSchemaFields(props.targetSchema, { noSystem: true })}
+        options={getSchemaFields(Object.values(props.targetSchema), { noSystem: true })}
         value={item.fieldName}
         onChange={(fieldName: string) => onChange({ fieldName } as Rule)}
       />

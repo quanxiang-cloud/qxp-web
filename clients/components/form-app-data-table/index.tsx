@@ -4,10 +4,12 @@ import { UnionColumns } from 'react-table';
 
 import PageLoading from '@c/page-loading';
 import { getTableSchema } from '@lib/http-client';
+import { schemaToMap } from '@lib/schema-convert';
 
 import FormAppDataContent from './form-app-data-content';
 import Store from './store';
 import { TableHeaderBtn, Ref } from './type';
+import { readOnlyTransform } from './utils';
 
 type Props = {
   pageID: string;
@@ -18,6 +20,7 @@ type Props = {
   showCheckbox?: boolean;
   className?: string;
   style?: React.CSSProperties;
+  filterConfig?: FilterConfig;
 }
 
 function FormAppDataTableWrap({
@@ -26,6 +29,7 @@ function FormAppDataTableWrap({
   tableHeaderBtnList,
   customColumns,
   showCheckbox,
+  filterConfig,
   allowRequestData = false,
   className = '',
   style,
@@ -38,25 +42,21 @@ function FormAppDataTableWrap({
     () => ({
       refresh: () => store?.setParams({}),
       getSelected: () => toJS(store?.selected || []),
+      getSchema: () => ({ ...store?.schema, properties: schemaToMap(store?.schema) }),
     }),
   );
 
   useEffect(() => {
     setLoading(true);
     getTableSchema(appID, pageID).then((res) => {
-      const { config, schema } = res || {};
+      const { config, schema: _schema } = res || {};
+      const schema = { ..._schema, properties: schemaToMap(_schema) };
       if (schema) {
-        const fieldMaps: Record<string, ISchema> = schema.properties || {};
-        Object.keys(fieldMaps).forEach((key) => {
-          if (fieldMaps[key]['x-internal']?.permission === 1) {
-            fieldMaps[key].readOnly = true;
-          }
-        });
-
         setStore(
           new Store({
-            schema: schema,
+            schema: readOnlyTransform(schema),
             config: config,
+            filterConfig,
             tableHeaderBtnList,
             customColumns,
             showCheckbox,

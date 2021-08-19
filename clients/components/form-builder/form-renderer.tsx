@@ -5,9 +5,12 @@ import zhCN from 'antd/lib/locale/zh_CN';
 import { parse, resolve, findVariables } from 'qxp-formula';
 
 import logger from '@lib/logger';
+import { schemaToMap } from '@lib/schema-convert';
+
 import registry from './registry';
 import visibleHiddenLinkageEffect from './linkages/visible-hidden';
 import defaultValueLinkageEffect from './linkages/default-value';
+import formValueToFilter from './linkages/form-value-to-filter';
 import calculationFormulaEffect from './linkages/calculation-formula';
 import { wrapSchemaByMegaLayout } from './utils';
 
@@ -84,6 +87,7 @@ function FormRenderer(
           <p className="text-red-600">{errorMessage}</p>
         )}
         <SchemaForm
+          previewPlaceholder='-'
           actions={actions}
           onSubmit={handleSubmit}
           onChange={handleOnChange}
@@ -98,8 +102,10 @@ function FormRenderer(
               );
             }
             // find all defaultValueLinkages and run defaultValueLinkageEffect
-            defaultValueLinkageEffect(schema, actions);
-            calculationFormulaEffect(schema, actions);
+            const _schema = { ...schema, properties: schemaToMap(schema) };
+            defaultValueLinkageEffect(_schema, actions);
+            calculationFormulaEffect(_schema, actions);
+            formValueToFilter(_schema, actions);
           }}
         >
           {children as JSX.Element}

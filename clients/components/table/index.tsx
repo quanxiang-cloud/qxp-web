@@ -41,6 +41,7 @@ export default function Table<T extends Record<string, any>>({
   style,
 }: Props<T>): JSX.Element {
   const extendsColumns = useExtendColumns(columns, showCheckbox);
+
   const {
     getTableProps,
     getTableBodyProps,
@@ -67,7 +68,7 @@ export default function Table<T extends Record<string, any>>({
     // todo fix this
   }, [Object.keys(selectedRowIds).length]);
 
-  const tableFooterRender = () => {
+  const tableFooterRender = (): JSX.Element | undefined => {
     if (loading) {
       return <TableLoading />;
     }
@@ -90,7 +91,7 @@ export default function Table<T extends Record<string, any>>({
             {headerGroups[0].headers.map((header) => {
               return (
                 <col
-                  { ...header.getHeaderProps() }
+                  {...header.getHeaderProps()}
                   key={header.id}
                 />
               );

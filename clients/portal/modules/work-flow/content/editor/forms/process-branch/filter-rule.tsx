@@ -12,52 +12,68 @@ import RuleItem from './rule-item';
 
 const COLLECTION_OPERATORS = [
   {
-    name: '等于',
+    name: '==',
     key: '==',
   },
   {
-    name: '不等于',
+    name: '!==',
     key: '!=',
   },
   {
-    name: '或',
+    name: '||',
     key: '||',
   },
   {
-    name: '且',
+    name: '&&',
     key: '&&',
   },
   {
-    name: '属于',
+    name: '∈',
     key: '∈',
   },
   {
-    name: '不属于',
+    name: '∉',
     key: '∉',
   },
   {
-    name: '大于',
+    name: '>',
     key: '>',
   },
   {
-    name: '小于',
+    name: '<',
     key: '<',
   },
   {
-    name: '小于等于',
+    name: '<=',
     key: '<=',
   },
   {
-    name: '大于等于',
+    name: '>=',
     key: '>=',
+  },
+  {
+    name: '+',
+    key: '+',
+  },
+  {
+    name: '-',
+    key: '-',
+  },
+  {
+    name: '*',
+    key: '*',
+  },
+  {
+    name: '/',
+    key: '/',
   },
 ];
 
-function FilterRule({ mutators, value }: ISchemaFieldComponentProps): JSX.Element {
+function FilterRule({ mutators, value }: ISchemaFieldComponentProps): JSX.Element | null {
   const { tableSchema } = useContext(FlowTableContext);
   const formulaRef = useRef<RefProps>(null);
   const { flowID } = useContext(FlowContext);
-  const { data: variables = [] } = useQuery(['FETCH_PROCESS_VARIABLES'], () => {
+  const { data: variables = [], isLoading } = useQuery(['FETCH_PROCESS_VARIABLES'], () => {
     return getFlowVariables(flowID);
   });
 
@@ -76,18 +92,17 @@ function FilterRule({ mutators, value }: ISchemaFieldComponentProps): JSX.Elemen
     };
   }) || [];
 
-  const tableSchemaRules = Object.entries(tableSchema?.properties || {}).reduce((
-    cur: CustomRule[], next,
-  ) => {
-    const [fieldName, fieldSchema] = next;
-    if (!WORK_TABLE_INTERNAL_FIELDS.includes(fieldName) &&
-      fieldSchema?.['x-component']?.toLowerCase() !== 'subtable' &&
-      fieldSchema?.['x-component']?.toLowerCase() !== 'associatedrecords'
-    ) {
-      cur.push({ name: fieldSchema.title as string, key: fieldName, type: fieldSchema.type || '' });
-    }
-    return cur;
-  }, []) || [];
+  const tableSchemaRules = tableSchema.filter((schema) => {
+    return !WORK_TABLE_INTERNAL_FIELDS.includes(schema.fieldName) &&
+      schema.componentName !== 'subtable' &&
+      schema.componentName !== 'associatedrecords';
+  }).map((schema) => ({
+    name: schema.title as string, key: schema.id, type: schema.type || '',
+  }));
+
+  if (isLoading || !tableSchema.length) {
+    return null;
+  }
 
   return (
     <>
@@ -97,7 +112,7 @@ function FilterRule({ mutators, value }: ISchemaFieldComponentProps): JSX.Elemen
       <h1 className="mb-8">条件公式</h1>
       <FormulaEditor
         ref={formulaRef}
-        customRules={[...variablesRules, ...COLLECTION_OPERATORS, ...tableSchemaRules]}
+        customRules={[...variablesRules, ...tableSchemaRules]}
         defaultValue={value}
         onChange={mutators.change}
       />

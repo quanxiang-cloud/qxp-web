@@ -7,6 +7,7 @@ import PageLoading from '@c/page-loading';
 import AbsoluteCentered from '@c/absolute-centered';
 import toast from '@lib/toast';
 import { getTableSchema } from '@lib/http-client';
+import schemaToFields from '@lib/schema-convert';
 
 import Authorized from './authorized';
 import DataPermission from './data-permission';
@@ -26,9 +27,9 @@ type PerData = {
   authority: number,
 }
 
-function RightsSettingModal({ onCancel, rightsGroupID, pageForm }: Props) {
+function RightsSettingModal({ onCancel, rightsGroupID, pageForm }: Props): JSX.Element {
   const [submitLoading, setSubLoading] = useState(false);
-  const [fields, setFields] = useState<Fields[]>([]);
+  const [fields, setFields] = useState<SchemaFieldItem[]>([]);
   const [activeTab, setActiveTab] = useState('authorized');
   const [perData, setPerData] = useState<PerData>({
     conditions: {},
@@ -38,11 +39,11 @@ function RightsSettingModal({ onCancel, rightsGroupID, pageForm }: Props) {
   const [loading, setLoading] = useState(true);
   const fieldRef = useRef<{ getFieldPer:() => any }>(null);
   const authorizedRef = useRef<{ getAuthorizedPer:() => number }>(null);
-  const dataPerRef = useRef<{ getDataPer:() => Promise<Condition[]> }>(null);
+  const dataPerRef = useRef<{ getDataValues:() => Promise<Condition[] | undefined> }>(null);
 
-  const handleSave = () => {
+  const handleSave = (): void => {
     setSubLoading(true);
-    dataPerRef.current?.getDataPer().then((conditions) => {
+    dataPerRef.current?.getDataValues().then((conditions) => {
       const authority = authorizedRef.current?.getAuthorizedPer() || 0;
       if (authority === 0) {
         store.deleteFormPer(pageForm.id, rightsGroupID).then(() => {
@@ -80,14 +81,7 @@ function RightsSettingModal({ onCancel, rightsGroupID, pageForm }: Props) {
     ]).then(([schemaRes, perDataRes]: any) => {
       const { schema } = schemaRes || {};
       if (schema) {
-        const fieldsMap = schema.properties;
-        const fieldsTmp: Fields[] = [];
-        Object.keys(fieldsMap).forEach((key) => {
-          if (key !== '_id') {
-            fieldsTmp.push({ ...fieldsMap[key], id: key });
-          }
-        });
-        setFields(fieldsTmp.sort((a, b) => (a as any)['x-index'] - (b as any)['x-index']));
+        setFields(schemaToFields(schema));
         const { dataAccess, filter, opt } = perDataRes as any;
         setPerData({
           conditions: dataAccess ? dataAccess.conditions : {},

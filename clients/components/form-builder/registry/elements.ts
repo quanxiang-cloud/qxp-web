@@ -13,6 +13,12 @@ import UserPicker from './user-picker';
 import OrganizationPicker from './organization-select';
 import FileUpload from './file-upload';
 import ImageUpload from './image-upload';
+import AggregationRecords from './aggregation-records';
+import Serial from './serial-number';
+import LayoutGrid from './layout-grid';
+import LayoutCard from './layout-card';
+import LayoutTabs from './layout-tabs';
+import AssociatedData from './associated-data';
 
 const availableElements = [
   Input,
@@ -30,6 +36,12 @@ const availableElements = [
   FileUpload,
   ImageUpload,
   CascadeSelector,
+  AggregationRecords,
+  Serial,
+  LayoutGrid,
+  LayoutCard,
+  LayoutTabs,
+  AssociatedData,
 ];
 
 export type Elements = { [key: string]: FormBuilder.SourceElement<any> };

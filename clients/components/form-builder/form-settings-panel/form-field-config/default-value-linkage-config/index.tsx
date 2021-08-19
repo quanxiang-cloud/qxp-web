@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { toJS } from 'mobx';
+import { omit } from 'lodash';
 import { from } from 'rxjs';
 import { switchMap, filter, tap, skip } from 'rxjs/operators';
 import {
@@ -25,10 +26,14 @@ import { StoreContext } from '@c/form-builder/context';
 import { JoinOperatorSelect, RulesList } from '@c/form-builder/customized-fields';
 import { INTERNAL_FIELD_NAMES } from '@c/form-builder/store';
 import { getCompareOperatorOptions, getSourceElementOperator } from '@c/form-builder/utils/operator';
+import { FieldConfigContext } from '@c/form-builder/form-settings-panel/form-field-config/context';
+import { getLinkageTables } from '@c/form-builder/utils/api';
+import schemaToFields from '@lib/schema-convert';
 
-import { getLinkageTables, fetchLinkedTableFields } from './get-tables';
+import { fetchLinkedTableFields } from './get-tables';
 import SCHEMA from './schema';
 import { convertFormValues, convertLinkage } from './convertor';
+import { compareValueValidateMap } from '../../form-config/visible-hidden-rules/constants';
 
 const { onFieldValueChange$ } = FormEffectHooks;
 const COMPONENTS = {
@@ -59,33 +64,40 @@ const DEFAULT_VALUE_LINKAGE: FormBuilder.DefaultValueLinkage = {
 
 export type LinkedTableFieldOptions = FormBuilder.Option & {
   fieldEnum: Array<FormBuilder.Option>;
-  'x-component': string;
+  componentName: string;
+}
+
+type Option = {
+  label: string,
+  value: string,
 }
 
 type Props = {
   onClose: () => void;
-  linkage?: FormBuilder.DefaultValueLinkage;
   onSubmit: (linkage: FormBuilder.DefaultValueLinkage) => void;
+  linkage?: FormBuilder.DefaultValueLinkage;
+  isLinkedFieldHide?: boolean;
+  isLinkedTableReadonly?: boolean;
 }
 
-function LinkageConfig({ onClose, onSubmit, linkage }: Props): JSX.Element {
+function LinkageConfig({
+  onClose, onSubmit, linkage, isLinkedFieldHide, isLinkedTableReadonly,
+}: Props): JSX.Element {
   const actions = createFormActions();
   const { setFieldState, getFieldValue, setFieldValue } = actions;
   const [linkageTables, setLinkageTables] = useState<Array<FormBuilder.Option>>([]);
   const linkedTableFieldsRef = useRef<LinkedTableFieldOptions[]>([]);
   const store = useContext(StoreContext);
+  const { actions: configActions } = useContext(FieldConfigContext);
   const defaultValue = linkage || DEFAULT_VALUE_LINKAGE;
 
-  const fieldsSchema = toJS(store.schema.properties || {});
-  const currentFormFields = Object.entries(fieldsSchema).filter(([key, fieldSchema]) => {
-    if (INTERNAL_FIELD_NAMES.includes(key) || key === store.activeField?.fieldName) {
+  const currentFormFields = schemaToFields(toJS(store.schema)).filter((field) => {
+    if (INTERNAL_FIELD_NAMES.includes(field.id) || field.id === store.activeField?.fieldName) {
       return false;
     }
-
-    return fieldSchema.type === 'string' ||
-      fieldSchema.type === 'number' ||
-      fieldSchema.type === 'datetime';
-  }).map(([key, fieldSchema]) => ({ label: fieldSchema.title as string, value: key }));
+    // todo match type
+    return ['string', 'number', 'datetime'].includes(field.type || '');
+  }).map((field) => ({ label: field.title as string, value: field.id }));
 
   function resetFormDefaultValueOnLinkTableChanged(fields: LinkedTableFieldOptions[]): void {
     setFieldValue('sortBy', fields[0]?.value);
@@ -101,7 +113,8 @@ function LinkageConfig({ onClose, onSubmit, linkage }: Props): JSX.Element {
     setFieldState('rules.*.fieldName', (state) => state.props.enum = options);
     setFieldState('linkedField', (state) => {
       state.props.enum = fields.filter((field) => {
-        return field['x-component'].toLowerCase() === store.activeField?.componentName.toLowerCase();
+        // todo match type
+        return field.componentName === store.activeField?.componentName.toLowerCase();
       }).map(({ label, value }) => ({ label, value }));
     });
     setFieldState('sortBy', (state) => state.props.enum = options);
@@ -109,6 +122,9 @@ function LinkageConfig({ onClose, onSubmit, linkage }: Props): JSX.Element {
     linkedTableFieldsRef.current = fields;
 
     setFieldState('rules.*.fieldName', updateCompareOperatorFieldOnFieldNameChanged);
+    setFieldState('rules.*.fieldName', updateCompareValueFieldEnumAndComponent);
+    setFieldState('rules.*.compareOperator', updateCompareValueFieldOnCompareOperatorChanged);
+    setFieldState('rules.*.compareTo', updateCompareValueFieldEnumAndComponent);
   }
 
   useEffect(() => {
@@ -117,7 +133,12 @@ function LinkageConfig({ onClose, onSubmit, linkage }: Props): JSX.Element {
       const filteredOptions = options.filter(({ value }) => value !== store.pageID);
       setLinkageTables(filteredOptions);
       setFieldState('linkedTableID', (state) => state.props.enum = filteredOptions);
-
+      if (isLinkedTableReadonly) {
+        configActions.getFieldState('Fields.linkedTable', (state) => {
+          setFieldValue('linkedTableID', state.value.tableID);
+        });
+        return;
+      }
       if (!defaultValue.linkedTable.id) {
         setFieldValue('linkedTableID', filteredOptions[0]?.value);
       }
@@ -136,7 +157,7 @@ function LinkageConfig({ onClose, onSubmit, linkage }: Props): JSX.Element {
     onFieldValueChange$('rules.*.fieldName').pipe(
       filter(({ value }) => !!value),
       tap(updateCompareOperatorFieldOnFieldNameChanged),
-    ).subscribe(updateCompareValueFieldOnCompareToChanged);
+    ).subscribe(updateCompareValueFieldEnumAndComponent);
 
     onFieldValueChange$('rules.*.compareOperator').pipe(
       filter(({ value }) => !!value),
@@ -144,13 +165,13 @@ function LinkageConfig({ onClose, onSubmit, linkage }: Props): JSX.Element {
 
     onFieldValueChange$('rules.*.compareTo').pipe(
       filter(({ name, value }) => name && value),
-    ).subscribe(updateCompareValueFieldOnCompareToChanged);
+    ).subscribe(updateCompareValueFieldEnumAndComponent);
   }
 
   function updateCompareOperatorFieldOnFieldNameChanged({ name, value }: IFieldState): void {
     const xComponent = linkedTableFieldsRef.current.find((field) => {
       return field.value === value;
-    })?.['x-component'];
+    })?.componentName;
 
     if (!xComponent) {
       return;
@@ -172,56 +193,115 @@ function LinkageConfig({ onClose, onSubmit, linkage }: Props): JSX.Element {
 
   function updateCompareValueFieldOnCompareOperatorChanged({ name, value }: IFieldState): void {
     const isMultiple = ['⊇', '∩', '∈', '∉'].includes(value);
-    updateCompareValueFieldMode(name, isMultiple);
+    const fieldNamePath = FormPath.transform(name, /\d/, ($1) => `rules.${$1}.fieldName`);
+    const compareToPath = FormPath.transform(name, /\d/, ($1) => `rules.${$1}.compareTo`);
+    const currentFieldNameValue = getFieldValue(fieldNamePath);
+    const currentCompareToValue = getFieldValue(compareToPath);
+    let compareValueOptions: Option[] | undefined = [];
+    if (currentCompareToValue === 'fixedValue') {
+      compareValueOptions = linkedTableFieldsRef.current.find(
+        (field) => field.value === currentFieldNameValue,
+      )?.fieldEnum.map(({ label, value })=> ({ label, value }));
+    }
+    if (currentCompareToValue === 'currentFormValue') {
+      compareValueOptions = currentFormFields;
+    }
+
+    updateCompareValueFieldMode(name, isMultiple, compareValueOptions);
   }
 
-  function updateCompareValueFieldOnCompareToChanged({ name, value }: IFieldState): void {
-    setFieldState(
-      FormPath.transform(name, /\d/, ($1) => `rules.${$1}.compareValue`),
-      (state) => {
-        const linkedFieldKey = getFieldValue(FormPath.transform(name, /\d/, ($1) => {
-          return `rules.${$1}.fieldName`;
-        }));
-        const linkTableField = linkedTableFieldsRef.current.find((field) => field.value === linkedFieldKey);
-        const enumerable = !!(linkTableField?.fieldEnum || []).length;
+  function updateCompareValueFieldEnumAndComponent({ name }: IFieldState): void {
+    const fieldNamePath = FormPath.transform(name, /\d/, ($1) => `rules.${$1}.fieldName`);
+    const compareToPath = FormPath.transform(name, /\d/, ($1) => `rules.${$1}.compareTo`);
+    const compareValuePath = FormPath.transform(name, /\d/, ($1) => `rules.${$1}.compareValue`);
+    const currentFieldNameValue = getFieldValue(fieldNamePath);
+    const currentCompareToValue = getFieldValue(compareToPath);
+    const currentCompareValue = getFieldValue(compareValuePath);
+    const linkTableField = linkedTableFieldsRef.current.find(
+      (field) => field.value === currentFieldNameValue,
+    );
+    const enumerable = !!(linkTableField?.fieldEnum || []).length;
+    let shouldReset = false;
+    if (linkTableField) {
+      shouldReset = compareValueValidateMap[linkTableField.componentName](currentCompareValue);
+    }
 
-        if (value === 'fixedValue' && enumerable) {
+    setFieldState(
+      compareValuePath,
+      (state) => {
+        if (currentCompareToValue === 'fixedValue' && enumerable) {
           state.props['x-component'] = 'AntdSelect';
-          state.props.enum = linkTableField?.fieldEnum || [];
-          return;
+          state.props.enum = linkTableField?.fieldEnum;
+          if (linkTableField?.fieldEnum && !!linkTableField?.fieldEnum?.length) {
+            const optionValues = linkTableField?.fieldEnum.map(({ value }) => value);
+            if (Array.isArray(currentCompareValue)) {
+              state.value = currentCompareValue.filter((value: any) => optionValues.includes(value));
+              return;
+            }
+
+            state.value = optionValues.includes(currentCompareValue);
+            return;
+          }
         }
 
-        if (value === 'fixedValue') {
-          state.props['x-component'] = linkTableField?.['x-component'] ?? 'input';
+        if (currentCompareToValue === 'fixedValue') {
+          state.props['x-component'] = linkTableField?.componentName || 'input';
           state.props.enum = undefined;
+
+          if (shouldReset) {
+            state.value = undefined;
+          }
           return;
         }
 
         state.props['x-component'] = 'AntdSelect';
         state.props.enum = currentFormFields;
+        if (currentFormFields && !!currentFormFields.length) {
+          const optionValues = currentFormFields.map(({ value }) => value);
+          if (Array.isArray(currentCompareValue)) {
+            state.value = currentCompareValue.filter((value: any) => optionValues.includes(value));
+          }
+        }
       },
     );
   }
 
-  function updateCompareValueFieldMode(name: string, isMultiple: boolean): void {
+  function updateCompareValueFieldMode(
+    name: string, isMultiple: boolean, options: Option[] | undefined,
+  ): void {
     const compareValuePath = FormPath.transform(name, /\d/, ($1) => `rules.${$1}.compareValue`);
     setFieldState(compareValuePath, (state) => {
       const compareValue = getFieldValue(compareValuePath);
       state.props['x-component-props'] = isMultiple ? { mode: 'multiple' } : {};
 
-      if (isMultiple && !Array.isArray(compareValue)) {
-        const values = [];
-        values.push(compareValue);
-        state.value = values;
-        return;
-      }
+      if (options && !!options?.length) {
+        if (isMultiple && !Array.isArray(compareValue)) {
+          const shouldResetToValue = options.find(({ value }) => {
+            return value === compareValue;
+          })?.value;
 
-      if (!isMultiple && Array.isArray(compareValue)) {
-        state.value = compareValue[0];
-        return;
+          state.value = [shouldResetToValue];
+          return;
+        }
+
+        if (!isMultiple && Array.isArray(compareValue)) {
+          const shouldResetToValue = options.find(({ value }) => {
+            return compareValue.includes(value);
+          })?.value;
+
+          state.value = shouldResetToValue;
+          return;
+        }
       }
     },
     );
+  }
+
+  if (isLinkedFieldHide) {
+    SCHEMA.properties = omit(SCHEMA.properties, 'linkedField');
+  }
+  if (isLinkedTableReadonly && SCHEMA.properties) {
+    SCHEMA.properties['linkedTableID'].readOnly = true;
   }
 
   return (
@@ -239,7 +319,7 @@ function LinkageConfig({ onClose, onSubmit, linkage }: Props): JSX.Element {
         effects={formEffect}
         onSubmit={(values) => onSubmit(convertFormValues(values, store.appID, linkageTables))}
       >
-        <FormButtonGroup offset={4}>
+        <FormButtonGroup offset={8}>
           <Button type="submit" modifier="primary">保存</Button>
           <Button type="submit" onClick={onClose}>关闭</Button>
         </FormButtonGroup>
