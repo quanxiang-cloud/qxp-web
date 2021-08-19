@@ -38,3 +38,16 @@
   overflow: auto;
   transition: max-height .3s ease-out;
 }
+
+.api-content-title {
+  font-size: 18px;
+  line-height: 28px;
+  color: var(--gray-900);
+}
+
+.api-content {
+  margin: 12px 0;
+  padding: 12px 0;
+  background-color: var(--blue-50);
+}
+
