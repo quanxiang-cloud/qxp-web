@@ -88,7 +88,7 @@ export function filterLinkageTargetKeys(fieldName: string, targetKeys: string[])
 }
 
 export function shouldFilterLinkages(
-  filedName: string, linkages: FormBuilder.VisibleHiddenLinkage[],
+  fieldName: string, linkages: FormBuilder.VisibleHiddenLinkage[],
 ): boolean {
   const keys: Array<string> = [];
   linkages.forEach((linkage) => {
@@ -96,7 +96,7 @@ export function shouldFilterLinkages(
     linkage.targetKeys.forEach((targetKey) => keys.push(targetKey));
   });
 
-  return keys.includes(filedName);
+  return keys.includes(fieldName);
 }
 
 export function getDefinedOne(
