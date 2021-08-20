@@ -19,7 +19,7 @@ function Subordination({ value, mutators, props }: ISchemaFieldComponentProps): 
   };
 
   useEffect(() => {
-    onSubTable();
+    onSubTable(true);
   }, []);
 
   const createTableMutation = useMutation(createBlankFormTable, {
@@ -27,32 +27,30 @@ function Subordination({ value, mutators, props }: ISchemaFieldComponentProps): 
       if (!data?.tableID) {
         return;
       }
-      actions.getFieldState('Fields.linkedTable', (state) => {
-        actions.setFieldState('Fields.linkedTable', (st) => {
-          st.value = Object.assign(state.value || LINKED_TABLE, { tableID: data.tableID });
-          if (!st.value?.appID) {
-            st.value = Object.assign(st.value, { appID });
-          }
-        });
+      actions.setFieldState('Fields.linkedTable', (state) => {
+        state.value = {
+          ...LINKED_TABLE,
+          ...state.value,
+          tableID: state.value?.tableID || data.tableID,
+          appID: state.value?.appID || appID,
+        };
       });
     },
   });
 
-  function onSubTable(): void {
-    actions.getFieldState('Fields.linkedTable', (state) => {
-      if (state.tableID) {
+  function onSubTable(isMount?: boolean): void {
+    actions.getFieldState('Fields.tableID', (state) => {
+      const tableID = state.value;
+      if (tableID && isMount) {
         return;
       }
       createTableMutation.mutate({ appID });
-      actions.getFieldState('Fields.subTableSchema', (state) => {
-        if (!state.value) {
-          actions.setFieldState('Fields.subTableSchema', (state) => {
-            state.value = {
-              type: 'object',
-              properties: {},
-            };
-          });
-        }
+      actions.setFieldState('Fields.subTableSchema', (state) => {
+        state.value = {
+          ...state.value,
+          type: 'object',
+          properties: {},
+        };
       });
     });
   }
@@ -62,7 +60,10 @@ function Subordination({ value, mutators, props }: ISchemaFieldComponentProps): 
       state.value = [];
     });
     actions.setFieldState('Fields.linkedTable', (state) => {
-      state.value.tableID = '';
+      state.value = {
+        ...state.value,
+        tableID: '',
+      };
     });
   }
 
