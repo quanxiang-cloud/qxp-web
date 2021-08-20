@@ -10,7 +10,7 @@ import { Input, Radio, MegaLayout, Switch, Select } from '@formily/antd-componen
 
 import { getUserDepartment } from '@lib/utils';
 import OrganizationSelect from './organization-select';
-import { EnumOptionalRange, EnumMultiple } from './messy/enum';
+import { EnumReadOnly, EnumOptionalRange, EnumMultiple } from './messy/enum';
 import { DefaultConfig } from './convertor';
 import { StoreContext } from '../../context';
 
@@ -85,6 +85,7 @@ const OrganizationPickerConfigForm = ({ initialValue, onChange }: Props): JSX.El
         />
         <Field name="placeholder" title="占位提示" component={Input} />
         <Field name="description" title="描述内容" component={Input.TextArea} />
+        <Field name="displayModifier" title="字段属性" component={Radio.Group} dataSource={EnumReadOnly} />
         <Field name="required" title="是否必填" component={Switch} />
         <Field name="multiple" title="部门选项" component={Radio.Group} dataSource={EnumMultiple} />
         <Field name="optionalRange" title="可选范围" component={Select} dataSource={EnumOptionalRange} />
