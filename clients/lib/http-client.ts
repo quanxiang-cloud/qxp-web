@@ -48,6 +48,14 @@ export type FormDataRequestCreateParams = {
   entity: any;
 }
 
+export type FormDataRequestUpdateParamsRef = Record<string, {
+  appID: string;
+  tableID: string;
+  updated: Record<string, any>[];
+  new: Record<string, any>[];
+  deleted: string[];
+}>;
+
 export type FormDataRequestUpdateParams = {
   method: 'update';
   conditions?: {
@@ -55,16 +63,10 @@ export type FormDataRequestUpdateParams = {
     tag?: 'and' | 'or';
   };
   entity: any;
-  ref?: Record<string, {
-    appID: string;
-    table: string;
-    updated: Array<any>;
-    new: Array<any>;
-    deleted: string[];
-  }>;
+  ref?: FormDataRequestUpdateParamsRef;
 }
 
-type FormDataRequestParams =
+export type FormDataRequestParams =
   FormDataRequestQueryDeleteParams |
   FormDataRequestCreateParams |
   FormDataRequestUpdateParams;
