@@ -10,6 +10,7 @@ export type SubTableConfig = {
     tableName: string;
   }
   subTableColumns?: string[];
+  tableID?: string;
 }
 
 export const defaultConfig: SubTableConfig = {
@@ -27,6 +28,7 @@ export const defaultConfig: SubTableConfig = {
     tableName: '',
   },
   subTableColumns: undefined,
+  tableID: '',
 };
 
 export function toSchema(value: SubTableConfig): ISchema {
@@ -42,7 +44,7 @@ export function toSchema(value: SubTableConfig): ISchema {
       columns: value.subordination === 'foreign_table' ? value.subTableColumns || [] : [],
       subordination: value.subordination,
       appID: value.linkedTable?.appID,
-      tableID: value.linkedTable?.tableID,
+      tableID: value.linkedTable?.tableID || value.tableID,
       tableName: value.linkedTable?.tableName,
     },
     ['x-internal']: {
@@ -65,5 +67,6 @@ export function toConfig(schema: ISchema): SubTableConfig {
       tableName: schema['x-component-props']?.tableName,
     },
     subTableColumns: schema['x-component-props']?.columns,
+    tableID: schema['x-component-props']?.tableID,
   };
 }
