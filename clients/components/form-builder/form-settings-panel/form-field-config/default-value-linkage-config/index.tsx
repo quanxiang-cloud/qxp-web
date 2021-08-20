@@ -226,44 +226,47 @@ function LinkageConfig({
       shouldReset = compareValueValidateMap[linkTableField.componentName](currentCompareValue);
     }
 
-    setFieldState(
-      compareValuePath,
-      (state) => {
-        if (currentCompareToValue === 'fixedValue' && enumerable) {
-          state.props['x-component'] = 'AntdSelect';
-          state.props.enum = linkTableField?.fieldEnum;
-          if (linkTableField?.fieldEnum && !!linkTableField?.fieldEnum?.length) {
-            const optionValues = linkTableField?.fieldEnum.map(({ value }) => value);
-            if (Array.isArray(currentCompareValue)) {
-              state.value = currentCompareValue.filter((value: any) => optionValues.includes(value));
-              return;
-            }
-
-            state.value = optionValues.includes(currentCompareValue);
+    setFieldState(compareValuePath, (state) => {
+      if (currentCompareToValue === 'fixedValue' && enumerable) {
+        state.props['x-component'] = 'AntdSelect';
+        state.props.enum = linkTableField?.fieldEnum;
+        if (linkTableField?.fieldEnum && !!linkTableField?.fieldEnum?.length) {
+          const optionValues = linkTableField?.fieldEnum.map(({ value }) => value);
+          if (Array.isArray(currentCompareValue)) {
+            state.value = currentCompareValue.filter((value: any) => optionValues.includes(value));
             return;
           }
+
+          state.value = optionValues.includes(currentCompareValue);
+          return;
         }
+      }
 
-        if (currentCompareToValue === 'fixedValue') {
-          state.props['x-component'] = linkTableField?.componentName || 'input';
-          state.props.enum = undefined;
+      if (currentCompareToValue === 'fixedValue') {
+        state.props['x-component'] = linkTableField?.componentName || 'input';
+        state.props.enum = undefined;
 
-          if (shouldReset) {
-            state.value = undefined;
-          }
+        if (shouldReset) {
+          state.value = undefined;
+        }
+        return;
+      }
+
+      state.props['x-component'] = 'AntdSelect';
+      state.props.enum = currentFormFields;
+      if (currentFormFields && !!currentFormFields.length) {
+        const optionValues = currentFormFields.map(({ value }) => value);
+        if (Array.isArray(currentCompareValue)) {
+          state.value = currentCompareValue.filter((value: any) => optionValues.includes(value));
           return;
         }
 
-        state.props['x-component'] = 'AntdSelect';
-        state.props.enum = currentFormFields;
-        if (currentFormFields && !!currentFormFields.length) {
-          const optionValues = currentFormFields.map(({ value }) => value);
-          if (Array.isArray(currentCompareValue)) {
-            state.value = currentCompareValue.filter((value: any) => optionValues.includes(value));
-          }
+        if (currentCompareValue && !optionValues.includes(currentCompareValue)) {
+          state.value = undefined;
+          return;
         }
-      },
-    );
+      }
+    });
   }
 
   function updateCompareValueFieldMode(
@@ -293,8 +296,7 @@ function LinkageConfig({
           return;
         }
       }
-    },
-    );
+    });
   }
 
   if (isLinkedFieldHide) {
