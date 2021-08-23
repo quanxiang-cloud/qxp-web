@@ -51,6 +51,10 @@ function EditPageModal({ pageInfo, onCancel, onSubmit, appID }: Props) {
       if (pageInfoTmp.menuType === 1) {
         if (pageInfoTmp.child?.length) {
           for (const _pageInfo of pageInfoTmp.child) {
+            if (_pageInfo.id === pageInfo?.id) {
+              continue;
+            }
+
             if (_pageInfo.name === value) {
               noRepeated = false;
               break;
