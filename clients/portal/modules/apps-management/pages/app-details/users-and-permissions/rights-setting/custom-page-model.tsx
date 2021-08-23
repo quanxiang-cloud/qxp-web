@@ -12,6 +12,7 @@ type Props = {
 function CustomPageModal({ onCancel }: Props): JSX.Element {
   const submit = async (): Promise<void> => {
     await store.updatePerCustom();
+    await store.fetchRights();
     onCancel();
   };
 
