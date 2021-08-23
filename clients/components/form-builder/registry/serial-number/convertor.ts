@@ -25,7 +25,7 @@ export const defaultConfig: SerialConfig = {
   numberPreview: '',
   prefix: {
     frontward: 'ER',
-    backward: 'YYYYMMDD',
+    backward: 'yyyyMMdd',
   },
   initialPosition: 5,
   initialValue: 1,
