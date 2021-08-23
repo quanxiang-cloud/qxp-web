@@ -2,7 +2,7 @@ import React from 'react';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 import { Select, Input } from 'antd';
 
-export type Format = 'YYYY' | 'YYYYMM' | 'YYYYMMDD' | 'YYYYMMDDhhmm' | 'YYYYMMDDhhmmss';
+export type Format = 'yyyy' | 'yyyyMM' | 'yyyyMMdd' | 'yyyyMMddHHmm' | 'yyyyMMddHHmmss';
 
 const selectOption: Array<{ label: string, value: Format | '' }> = [
   {
@@ -11,23 +11,23 @@ const selectOption: Array<{ label: string, value: Format | '' }> = [
   },
   {
     label: '年',
-    value: 'YYYY',
+    value: 'yyyy',
   },
   {
     label: '年月',
-    value: 'YYYYMM',
+    value: 'yyyyMM',
   },
   {
     label: '年月日',
-    value: 'YYYYMMDD',
+    value: 'yyyyMMdd',
   },
   {
     label: '年月日时分',
-    value: 'YYYYMMDDhhmm',
+    value: 'yyyyMMddHHmm',
   },
   {
     label: '年月日时分秒',
-    value: 'YYYYMMDDhhmmss',
+    value: 'yyyyMMddHHmmss',
   },
 ];
 
