@@ -129,7 +129,7 @@ function FormFields(): JSX.Element {
                     components={{ ...registry.components }}
                   />
                 )}
-                < DeleteButton filedName={_schema.id} />
+                <DeleteButton filedName={_schema.id} />
               </div>
             );
           })}
