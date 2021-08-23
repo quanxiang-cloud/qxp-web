@@ -5,6 +5,7 @@ import { observer } from 'mobx-react';
 import { pick, get } from 'lodash';
 
 import Breadcrumb from '@c/breadcrumb';
+import Switch from '@c/switch';
 import { useURLSearch } from '@lib/hooks';
 import Tab from '@c/tab';
 import Icon from '@c/icon';
@@ -24,6 +25,11 @@ import store from './store';
 
 import './index.scss';
 
+type Option = {
+  label: string;
+  value: string;
+}
+
 const globalActionKeys = [
   'canMsg', 'canViewStatusAndMsg', 'hasCancelBtn',
   'hasCcHandleBtn', 'hasReadHandleBtn', 'hasResubmitBtn', 'hasUrgeBtn',
@@ -32,19 +38,21 @@ const globalActionKeys = [
 function ApprovalDetail(): JSX.Element {
   const [search] = useURLSearch();
   const [formValues, setFormValues] = useState<Record<string, any>>({});
+  const [status, setStatus] = useState<Option[]>([{ label: '', value: '' }]);
+  const [diaplay, setDisPlay] = useState<boolean>(false);
   const listType = search.get('list') || 'todo';
-  const { processInstanceID, taskID, type } = useParams<{
+  const { processInstanceID, type } = useParams<{
     processInstanceID: string;
-    taskID: string,
     type: string
   }>();
+  const [currentTaskId, setcurrentTaskId] = useState<string>('');
   const history = useHistory();
 
   const {
     isLoading, data, isError, error,
   } = useQuery<any, Error>(
-    [processInstanceID, taskID, type],
-    () => apis.getTaskFormById(processInstanceID, { type }),
+    [processInstanceID, currentTaskId, type],
+    () => apis.getTaskFormById(processInstanceID, { taskId: currentTaskId, type }),
   );
 
   const getTask = (): Record<string, any> => get(data, 'taskDetailModels[0]', {});
@@ -56,6 +64,24 @@ function ApprovalDetail(): JSX.Element {
   useEffect(() => {
     setFormValues(getTask().formData || {});
   }, [data]);
+
+  useEffect(() => {
+    if (type === 'HANDLED_PAGE') {
+      apis.getTaskFormById(processInstanceID, { taskId: '', type }).then((data) => {
+        const taskDetailModels = get(data, 'taskDetailModels', []);
+        if (taskDetailModels.length > 1) {
+          setDisPlay(true);
+          const status = taskDetailModels.map((taskItem: Record<string, any>) => {
+            return {
+              label: taskItem.taskName,
+              value: taskItem.taskId,
+            };
+          });
+          setStatus(status);
+        }
+      });
+    }
+  }, []);
 
   const renderSchemaForm = (task: any): JSX.Element | null => {
     const extraPermissions = [
@@ -107,6 +133,16 @@ function ApprovalDetail(): JSX.Element {
         <Panel className="flex flex-col flex-1 mr-20 px-24 py-24">
           {
             <>
+              {diaplay && (<Switch
+                className="pb-24"
+                onChange={
+                  (value: string) => {
+                    setcurrentTaskId(value);
+                  }
+                }
+                value=''
+                options={status}
+              />)}
               <Toolbar
                 currTask={task}
                 permission={task?.operatorPermission || {}}
