@@ -333,15 +333,23 @@ export default class FormBuilderStore {
     };
   }
 
-  @action validate(): boolean {
-    return this.fields.map(({ componentName, configValue }) => ({
+  @action validate(fields: FormItem[] = this.fields): boolean {
+    if (!fields.length) {
+      return true;
+    }
+    return fields.map(({ componentName, configValue, children }) => ({
       elem: registry.elements[componentName.toLowerCase()],
       configValue,
-    })).every(({ elem, configValue }) => {
+      children,
+    })).every(({ elem, configValue, children = [] }) => {
+      let isFieldValid = true;
       if (elem && typeof elem.validate === 'function') {
-        return elem.validate(toJS(configValue), elem?.configSchema);
+        isFieldValid = elem.validate(toJS(configValue), elem?.configSchema);
       }
-      return true;
+      if (!isFieldValid) {
+        return false;
+      }
+      return this.validate(children);
     });
   }
 
