@@ -3,6 +3,7 @@ import { observer } from 'mobx-react';
 import { useParams } from 'react-router-dom';
 
 import PageLoad from '@c/page-loading';
+import { getQuery } from '@lib/utils';
 
 import FormBuild from './form-build';
 import PageSetting from './page-setting';
@@ -14,10 +15,12 @@ import './index.scss';
 
 function FormDesign() {
   const { pageType, pageId, appID } = useParams<FormDesignParams>();
+  const { pageName } = getQuery<{ pageName: string }>();
 
   useEffect(() => {
     store.setAppID(appID);
     store.setPageID(pageId);
+    store.pageName = pageName;
     return () => {
       store.clear();
     };
