@@ -7,17 +7,12 @@ import (
 	"mime/multipart"
 	"net/http"
 	"qxp-web/server/pkg/contexts"
-	"strings"
 )
 
 func getFileTarget(r *http.Request) string {
-	// targetURL := url.URL{
-	// 	Scheme: contexts.Config.MinIOHttpConfig.Protocol,
-	// 	Host:   contexts.Config.MinIOHttpConfig.HostName,
-	// 	Path:   strings.TrimPrefix(r.URL.Path, contexts.Config.MinIOHttpConfig.UrlPrefix),
-	// }
-	// return targetURL.String()
-	return strings.TrimPrefix(r.URL.Path, "/blob")
+	targetUrl := contexts.APIEndpoint + "/api/v1/fileserver"
+
+	return targetUrl + r.URL.Path
 }
 
 func jsonResponse(w http.ResponseWriter, payload interface{}) {
@@ -28,9 +23,11 @@ func jsonResponse(w http.ResponseWriter, payload interface{}) {
 
 // FileProxyHandler Handler used to broker file requests
 func FileProxyHandler(w http.ResponseWriter, r *http.Request) {
+	requestID := contexts.GetRequestID(r)
 	target := getFileTarget(r)
+
 	method := r.Method
-	req, err := http.NewRequestWithContext(r.Context(), http.MethodGet, target, nil)
+	req, err := http.NewRequestWithContext(r.Context(), http.MethodPost, target, nil)
 	if err != nil {
 		contexts.Logger.Error("failed to build request: %s", err.Error())
 		renderErrorPage(w, r, http.StatusInternalServerError, http.StatusText(http.StatusInternalServerError))
@@ -38,6 +35,11 @@ func FileProxyHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	contexts.Logger.Debugf(
 		"proxy api request, method: %s, url: %s, header: %s request_id: %s", method, target, req.Header, contexts.GetRequestID(r))
+
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	req.Header.Set("Access-Token", getToken(r))
+	req.Header.Set("User-Agent", r.Header.Get("User-Agent"))
+	req.Header.Set("X-Request-ID", requestID)
 
 	resp, body, errMsg := contexts.RetrieveResponse(req)
 	if errMsg != "" {
@@ -118,16 +120,8 @@ func FileUploadHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// replace api data.url with proxy's prefix
 	var result map[string]interface{}
 	json.Unmarshal(respBody, &result)
 
-	data := result["data"].(map[string]interface{})
-	fileUrl := data["url"].(string)
-	truncUrl := strings.Split(fileUrl, contexts.Config.FileServerConfig.Prefix)[1]
-
-	jsonResponse(w, map[string]interface{}{
-		"code": 0,
-		"url":  truncUrl,
-	})
+	jsonResponse(w, result)
 }

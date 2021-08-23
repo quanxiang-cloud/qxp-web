@@ -18,11 +18,6 @@ type APIEndpointConfig struct {
 	Port     int    `yaml:"port"`
 }
 
-// file server used as proxy to minio storage
-type FileServerConfig struct {
-	Prefix string `yaml:"prefix" default:"/api/v1/fileserver"`
-}
-
 // HTTPClientConfig stores a configuration of HTTP client.
 type HTTPClientConfig struct {
 	Timeout         int `yaml:"timeout" default:"60"`
@@ -61,8 +56,6 @@ type Configuration struct {
 	HomeServer   *ServerConfig `yaml:"home_server" vaildate:"required" split_words:"true"`
 
 	ClientConfig *ClientConfig `yaml:"client_config" vaildate:"required" split_words:"true"`
-
-	FileServerConfig *FileServerConfig `yaml:"file_server_config"`
 }
 
 func initConfig(configFile string) Configuration {
