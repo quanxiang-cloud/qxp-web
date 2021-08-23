@@ -13,7 +13,7 @@ export interface SerialConfig {
   prefix?: PrefixType;
   initialPosition: number;
   initialValue: number;
-  suffix?: Format;
+  suffix?: string;
   appID?: string;
   id?: string;
 }
@@ -29,7 +29,7 @@ export const defaultConfig: SerialConfig = {
   },
   initialPosition: 5,
   initialValue: 1,
-  suffix: 'YYYYMMDD',
+  suffix: '',
 };
 
 export function toSchema(value: SerialConfig): ISchema {
