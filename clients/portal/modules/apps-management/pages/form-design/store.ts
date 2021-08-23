@@ -39,6 +39,7 @@ class FormDesignStore {
   destroySetAllFilter: IReactionDisposer;
   destroySetSchema: IReactionDisposer;
   @observable pageID = '';
+  @observable pageName = '';
   @observable appID = '';
   @observable saveSchemeLoading = false;
   @observable appPageStore = new AppPageDataStore({ schema: {} });
@@ -254,6 +255,7 @@ class FormDesignStore {
 
     const allSchema = {
       ...this.formStore.schema,
+      title: this.pageName,
       properties: {
         ...this.formStore?.schema?.properties,
         ...this.internalFields,
