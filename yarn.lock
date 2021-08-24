@@ -3851,6 +3851,11 @@ hex-color-regex@^1.1.0:
   resolved "http://r.npm.internal.yunify.com/hex-color-regex/download/hex-color-regex-1.1.0.tgz#4c06fccb4602fe2602b3c93df82d7e7dbf1a8a8e"
   integrity sha1-TAb8y0YC/iYCs8k9+C1+fb8aio4=
 
+highlight.js@^10.5.0:
+  version "10.7.3"
+  resolved "http://r.npm.internal.yunify.com/highlight.js/download/highlight.js-10.7.3.tgz#697272e3991356e40c3cac566a74eef681756531"
+  integrity sha1-aXJy45kTVuQMPKxWanTu9oF1ZTE=
+
 history@^4.9.0:
   version "4.10.1"
   resolved "http://r.npm.internal.yunify.com/history/download/history-4.10.1.tgz#33371a65e3a83b267434e2b3f3b1b4c58aad4cf3"
@@ -6801,6 +6806,13 @@ react-flow-renderer@^9.6.3:
     react-draggable "^4.4.3"
     react-redux "^7.2.4"
     redux "^4.1.0"
+
+react-highlight@^0.14.0:
+  version "0.14.0"
+  resolved "http://r.npm.internal.yunify.com/react-highlight/download/react-highlight-0.14.0.tgz#5aefa5518baa580f96b68d48129d7a5d2dc0c9ef"
+  integrity sha1-Wu+lUYuqWA+Wto1IEp16XS3Aye8=
+  dependencies:
+    highlight.js "^10.5.0"
 
 react-hook-form@^7.4.2:
   version "7.8.3"
