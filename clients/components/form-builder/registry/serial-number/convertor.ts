@@ -42,7 +42,7 @@ export function toSchema(value: SerialConfig): ISchema {
     display: true,
     'x-component': 'Serial',
     ['x-component-props']: {
-      template: `${value.prefix?.frontward}.date{${value.prefix?.backward}}.incr[name]{${value.initialPosition},${value.initialValue}}.step[name]{1}.date{${value.suffix}}`,
+      template: `${value.prefix?.frontward}.date{${value.prefix?.backward}}.incr[name]{${value.initialPosition},${value.initialValue}}.step[name]{1}.${value.suffix}`,
       appID: value.appID || '',
       id: value.id,
       prefix: value.prefix,
