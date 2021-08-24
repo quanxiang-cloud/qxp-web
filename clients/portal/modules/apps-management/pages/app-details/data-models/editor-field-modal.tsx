@@ -1,11 +1,13 @@
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
+import { observer } from 'mobx-react';
+import { ValidateDescription } from '@formily/validator';
 import { SchemaForm, useForm, FormEffectHooks, createFormActions, LifeCycleTypes } from '@formily/antd';
 import { Input, Select, Switch, NumberPicker } from '@formily/antd-components';
 
 import Modal, { FooterBtnProps } from '@c/modal';
 
 import store from './store';
-import { getFieldSchema } from './form-schema';
+import { FIELD_FORM_SCHEMA } from './form-schema';
 
 type Props = {
   isEditor: boolean;
@@ -22,10 +24,40 @@ const PATH: Record<string, string> = {
 };
 
 const { onFieldValueChange$ } = FormEffectHooks;
+const actions = createFormActions();
 
 function EditorDataModelModal({ isEditor, onCancel, onSubmit, field }: Props): JSX.Element {
-  const [formSchema] = useState(getFieldSchema(isEditor ? [] : store.existingFields));
+  useEffect(() => {
+    const rule: ValidateDescription = {
+      id: 'repeat',
+      validator: (value: string) => {
+        if (store.existingFields.includes(value)) {
+          return {
+            type: 'error',
+            message: '字段编码重复',
+          };
+        }
+
+        return null;
+      },
+    };
+
+    actions.setFieldState('id', (state) => {
+      const index = state.rules.findIndex((rule) => {
+        return typeof rule === 'object' && (rule as any).id === 'repeat';
+      });
+
+      if (index > -1) {
+        state.rules.splice(index, 1, rule);
+        return;
+      }
+
+      state.rules.push(rule);
+    });
+  }, [store.existingFields]);
+
   const form = useForm({
+    actions,
     onSubmit: (formData) => {
       if (formData.subType) {
         formData.items = {
@@ -38,7 +70,8 @@ function EditorDataModelModal({ isEditor, onCancel, onSubmit, field }: Props): J
     },
     initialValues: field,
     effects: ($) => {
-      const { setFieldState } = createFormActions();
+      const { setFieldState } = actions;
+
       onFieldValueChange$('type').subscribe(({ value }) => {
         setFieldState('*(length, validationRules, digits, format, subType, regular)', (state) => {
           state.visible = false;
@@ -106,11 +139,11 @@ function EditorDataModelModal({ isEditor, onCancel, onSubmit, field }: Props): J
         <SchemaForm
           form={form as any}
           components={{ Input, Select, Switch, NumberPicker }}
-          schema={formSchema}
+          schema={FIELD_FORM_SCHEMA}
         />
       </div>
     </Modal>
   );
 }
 
-export default EditorDataModelModal;
+export default observer(EditorDataModelModal);

@@ -57,7 +57,7 @@ function DataModelsTable(): JSX.Element {
         return (
           <div className='flex gap-6'>
             <span
-              onClick={() => store.dataModelModalControl('details', rowData.tableID)}
+              onClick={() => store.dataModelModalControl('details', rowData)}
               className='text-btn'
             >
               查看
@@ -65,7 +65,7 @@ function DataModelsTable(): JSX.Element {
             {rowData.source === 2 && (
               <>
                 <span
-                  onClick={() => store.dataModelModalControl('edit', rowData.tableID)}
+                  onClick={() => store.dataModelModalControl('edit', rowData)}
                   className='text-btn'
                 >
                   编辑
