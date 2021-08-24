@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useImperativeHandle, forwardRef, useMemo } from 'react';
+import React, { useState, useEffect, useImperativeHandle, forwardRef } from 'react';
 import { union, set, get } from 'lodash';
 
 import Checkbox from '@c/checkbox';
@@ -9,22 +9,7 @@ type Props = {
   className?: string;
 }
 
-function getFullPath(fields: SchemaFieldItem[], fieldKey: string, initPath = ''): string {
-  const curFields = fields.find(({ id }) => id === fieldKey);
-  if (curFields?.parentField) {
-    return getFullPath(fields, curFields?.parentField, '.properties.' + fieldKey + initPath);
-  }
-
-  return fieldKey + initPath;
-}
-
 function FieldPermissions({ fields, className = '', fieldPer }: Props, ref: React.Ref<any>): JSX.Element {
-  const hasPathFields = useMemo(() => {
-    return fields.map((field) => {
-      return { ...field, path: getFullPath(fields, field.id) };
-    });
-  }, [fields]);
-
   const [visibleField, setVisibleField] = useState<string[]>([]);
   const [revisableField, setRevisableField] = useState<string[]>([]);
   const [vIndeterminate, setVIndeterminate] = useState(false);
@@ -32,7 +17,7 @@ function FieldPermissions({ fields, className = '', fieldPer }: Props, ref: Reac
   const [vCheckAll, setVCheckAll] = useState(false);
   const [rCheckAll, setRCheckAll] = useState(false);
 
-  const fieldRevisable = hasPathFields.filter((field) => !field['x-internal']?.isSystem);
+  const fieldRevisable = fields.filter((field) => !field['x-internal']?.isSystem);
 
   useImperativeHandle(ref, () => ({
     getFieldPer: getFieldPer,
@@ -48,23 +33,10 @@ function FieldPermissions({ fields, className = '', fieldPer }: Props, ref: Reac
 
   const getFieldPer = (): ISchema => {
     const properties: Record<string, ISchema> = {};
-    hasPathFields.forEach((field) => {
-      if (field.parentField) {
-        set(
-          properties,
-          `${field.parentField}`,
-          {
-            type: 'object',
-            'x-internal': {
-              permission: 1,
-            },
-          },
-        );
-      }
-
+    fields.forEach((field) => {
       set(
         properties,
-        `${field.path}.x-internal.permission`,
+        `${field.fieldName}.x-internal.permission`,
         getPerMission(field.id),
       );
     });
@@ -88,8 +60,8 @@ function FieldPermissions({ fields, className = '', fieldPer }: Props, ref: Reac
     if (fieldPer) {
       const visibleList: string[] = [];
       const revisableList: string[] = [];
-      hasPathFields.forEach((field) => {
-        switch (get(fieldPer, `properties.${field.path}.x-internal.permission`)) {
+      fields.forEach((field) => {
+        switch (get(fieldPer, `properties.${field.fieldName}.x-internal.permission`)) {
         case 3:
           visibleList.push(field.id);
           revisableList.push(field.id);
@@ -113,8 +85,8 @@ function FieldPermissions({ fields, className = '', fieldPer }: Props, ref: Reac
   }, []);
 
   useEffect(() => {
-    setVIndeterminate(visibleField.length > 0 && visibleField.length !== hasPathFields.length);
-    if (visibleField.length === hasPathFields.length) {
+    setVIndeterminate(visibleField.length > 0 && visibleField.length !== fields.length);
+    if (visibleField.length === fields.length) {
       setVCheckAll(true);
     } else {
       setVCheckAll(false);
@@ -164,7 +136,7 @@ function FieldPermissions({ fields, className = '', fieldPer }: Props, ref: Reac
   const handleVCheckAll = (e: React.ChangeEvent<HTMLInputElement>): void => {
     if (e.target.checked) {
       setVisibleField(
-        hasPathFields.map(({ id }) => id),
+        fields.map(({ id }) => id),
       );
     } else {
       setRevisableField([]);
@@ -216,7 +188,7 @@ function FieldPermissions({ fields, className = '', fieldPer }: Props, ref: Reac
       </div>
       <div className='pb-field-box'>
         <div className='pb-field-item-title'><span>字段</span><span>可见</span><span>可修改</span></div>
-        {hasPathFields.map((field) => (
+        {fields.map((field) => (
           <div key={field.id} className='pb-field-item'>
             <span>
               <span>{getTitle(field.title || field['x-component'])}</span>
