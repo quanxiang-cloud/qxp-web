@@ -3,6 +3,7 @@ import { omit, set, unset } from 'lodash';
 
 import toast from '@lib/toast';
 import { getTableSchema } from '@lib/http-client';
+import schemaToFields from '@lib/schema-convert';
 
 import { deleteSchema, saveTableSchema } from './api';
 import { fetchDataModels } from '../api';
@@ -30,14 +31,9 @@ class AppModelStore {
   }
 
   @computed get fields(): ModelField[] {
-    return Object.entries(this.dataModelSchema.schema.properties || {}).map(([key, fieldSchema]) => {
-      return {
-        id: key,
-        ...fieldSchema,
-      };
-    }).sort((a, b) => {
+    return schemaToFields(this.dataModelSchema.schema).sort((a, b) => {
       return (b['x-index'] || 0) - (a['x-index'] || 0);
-    });
+    }) as ModelField[];
   }
 
   @computed get basicInfo(): DataModelBasicInfo {
