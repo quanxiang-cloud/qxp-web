@@ -1,7 +1,6 @@
 import React, { useRef } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 
-import Switch from '@c/switch';
 import Button from '@c/button';
 import TextHeader from '@c/text-header';
 import ItemWithTitleDesc from '@c/item-with-title-desc';
@@ -25,7 +24,7 @@ export default function({ onTriggerTypeChange }: Props): JSX.Element {
 
   return (
     <div className="flex flex-row self-start">
-      <Switch
+      {/* <Switch
         className="mr-20"
         value=""
         options={[{
@@ -41,7 +40,7 @@ export default function({ onTriggerTypeChange }: Props): JSX.Element {
         // }
         ]}
         onChange={(value) => onTriggerTypeChange(value)}
-      />
+      /> */}
       <Button ref={reference} iconName="add" modifier="primary">
         新建工作流
       </Button>
