@@ -11,10 +11,16 @@ export const BASIC_INFO_SCHEMA: ISchema = {
           title: '模型名称',
           required: true,
           maxLength: 20,
-          'x-rules': {
-            required: true,
-            message: '请输入模型名称',
-          },
+          'x-rules': [
+            {
+              required: true,
+              message: '请输入模型名称',
+            },
+            {
+              message: '不能以空白字符开头',
+              pattern: /^\S/,
+            },
+          ],
           'x-component': 'Input',
           'x-index': 0,
           'x-mega-props': {
@@ -70,10 +76,16 @@ export function getFieldSchema(existingFields: string[]): ISchema {
             title: '名称',
             required: true,
             maxLength: 20,
-            'x-rules': {
-              required: true,
-              message: '请输入名称',
-            },
+            'x-rules': [
+              {
+                required: true,
+                message: '请输入名称',
+              },
+              {
+                message: '不能以空白字符开头',
+                pattern: /^\S/,
+              },
+            ],
             'x-component': 'Input',
             'x-index': 0,
             'x-mega-props': {
@@ -111,10 +123,26 @@ export function getFieldSchema(existingFields: string[]): ISchema {
           isForeignKeys: {
             type: 'boolean',
             title: '是否作为外键',
+            required: true,
             default: false,
             'x-component': 'Switch',
             'x-index': 2,
           },
+          // a: {
+          //   type: 'string',
+          //   title: '外键数据模型',
+          //   required: true,
+          //   default: false,
+          //   'x-component': 'Select',
+          //   'x-index': 11,
+          // },
+          // b: {
+          //   type: 'string',
+          //   title: '外键字段',
+          //   default: false,
+          //   'x-component': 'Select',
+          //   'x-index': 12,
+          // },
           not_null: {
             type: 'boolean',
             title: '不允许为空',
