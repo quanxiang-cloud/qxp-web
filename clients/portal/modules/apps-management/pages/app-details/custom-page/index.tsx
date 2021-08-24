@@ -17,11 +17,14 @@ import Pagination from '@c/pagination';
 
 import SCHEMA from './modal-schema';
 import FileUpload from './file-upload';
+import FilePreview from './file-preview';
 import { CustomPageInfo } from '../type';
 import { createCustomPage, removeCustomPage, editeCustomPage, fetchCustomPageList } from '../api';
 
 import './index.scss';
 import moment from 'moment';
+
+type ModalType = 'create' | 'edit' | 'preview';
 
 const COMPONENTS = {
   Input,
@@ -43,7 +46,7 @@ const DefaultCustomPage: CustomPageInfo = {
 
 function CustomPage(): JSX.Element {
   const [loading, setLoading] = useState(false);
-  const [modalType, setModalType] = useState('');
+  const [modalType, setModalType] = useState<ModalType | string>('');
   const [customPageList, setCustomPageList] = useState([]);
   const [customPageCount, setCustomPageCount] = useState(0);
   const [inputValue, setInputValue] = useState('');
@@ -88,7 +91,13 @@ function CustomPage(): JSX.Element {
       type: values.type,
     };
 
-    if (modalType === 'createPage') {
+    // validate
+    if (!params.fileUrl) {
+      toast.error('请上传文件或等待文件上传完成');
+      return;
+    }
+
+    if (modalType === 'create') {
       await createCustomPage(appID, params).catch((err) => {
         return toast.error(err.message);
       });
@@ -112,14 +121,15 @@ function CustomPage(): JSX.Element {
         <span
           onClick={() => {
             setSelectedRowInfo(rowInfo);
-            setModalType('editePage');
+            setModalType('edit');
           }}
           className={cs('text-btn', { 'text-red-500': rowInfo.status === 1 })}
         >
           编辑
         </span>
         <span className="text-gray-500 text-btn px-10" onClick={() => {
-          // todo
+          setSelectedRowInfo(rowInfo);
+          setModalType('preview');
         }}>预览</span>
         <PopConfirm
           content={deleteContent}
@@ -186,6 +196,42 @@ function CustomPage(): JSX.Element {
     fetchPages();
   }, [params]);
 
+  const renderModals = () => {
+    if (['create', 'edit'].includes(modalType)) {
+      return (
+        <Modal
+          title={modalType === 'create' ? '新建自定义页面' : '编辑自定义页面'}
+          onClose={onClose}
+        >
+          <SchemaForm
+            className="p-20"
+            schema={SCHEMA}
+            onSubmit={handleSubmit}
+            components={COMPONENTS}
+            defaultValue={selectedRowInfo}
+          >
+            <FormButtonGroup offset={8}>
+              <Button type="submit" onClick={onClose}>取消</Button>
+              <Button type="submit" modifier="primary">确定</Button>
+            </FormButtonGroup>
+          </SchemaForm>
+        </Modal>
+      );
+    }
+    if (modalType === 'preview') {
+      return (
+        <Modal
+          title={`预览页面 ${selectedRowInfo.name}`}
+          onClose={onClose}
+          fullscreen
+        >
+          <FilePreview indexUrl={selectedRowInfo.fileUrl} />
+        </Modal>
+      );
+    }
+    return null;
+  };
+
   return (
     <div className="flex-1">
       <TextHeader
@@ -206,7 +252,7 @@ function CustomPage(): JSX.Element {
             className="mx-20"
             onClick={() => {
               setSelectedRowInfo(DefaultCustomPage);
-              setModalType('createPage');
+              setModalType('create');
             }}
           >
             新增
@@ -238,24 +284,7 @@ function CustomPage(): JSX.Element {
           />
         </div>
       </div>
-      {modalType && (
-        <Modal
-          title={modalType === 'createPage' ? '新建自定义页面' : '编辑自定义页面'}
-          onClose={onClose}
-        >
-          <SchemaForm
-            className="p-20"
-            schema={SCHEMA}
-            onSubmit={handleSubmit}
-            components={COMPONENTS}
-            defaultValue={selectedRowInfo}
-          >
-            <FormButtonGroup offset={8}>
-              <Button type="submit" onClick={onClose}>取消</Button>
-              <Button type="submit" modifier="primary">确定</Button>
-            </FormButtonGroup>
-          </SchemaForm>
-        </Modal>)}
+      {renderModals()}
     </div>
   );
 }

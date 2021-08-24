@@ -42,8 +42,9 @@ function FileUpload({ mutators, value }: ISchemaFieldComponentProps): JSX.Elemen
         data={{ appID }}
         action="/upload"
         beforeUpload={(file) => {
-          if (file.size > 1024 * 1024 * 500) {
-            toast.error('文件大小不能超过500M');
+          if (file.size > 1024 * 1024 * 30) {
+            // follow backend config
+            toast.error('文件大小不能超过30M');
             return false;
           }
           return true;
@@ -84,7 +85,7 @@ function FileUpload({ mutators, value }: ISchemaFieldComponentProps): JSX.Elemen
               <p className="ml-10">{file?.filename || file?.url}</p>
             )}
           </div>
-          <p className="text-gray-400">单个文件不能超过500M</p>
+          <p className="text-gray-400">单个文件不能超过30M</p>
         </div>
       </Upload>
     </div>
