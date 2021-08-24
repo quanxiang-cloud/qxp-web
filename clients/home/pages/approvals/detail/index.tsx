@@ -39,13 +39,13 @@ function ApprovalDetail(): JSX.Element {
   const [search] = useURLSearch();
   const [formValues, setFormValues] = useState<Record<string, any>>({});
   const [status, setStatus] = useState<Option[]>([{ label: '', value: '' }]);
-  const [diaplay, setDisPlay] = useState<boolean>(false);
+  const [showSomething, setShowSomething] = useState<boolean>(false);
   const listType = search.get('list') || 'todo';
   const { processInstanceID, type } = useParams<{
     processInstanceID: string;
     type: string
   }>();
-  const [currentTaskId, setcurrentTaskId] = useState<string>('');
+  const [currentTaskId, setCurrentTaskId] = useState<string>('');
   const history = useHistory();
 
   const {
@@ -67,10 +67,10 @@ function ApprovalDetail(): JSX.Element {
 
   useEffect(() => {
     if (type === 'HANDLED_PAGE') {
-      apis.getTaskFormById(processInstanceID, { taskId: '', type }).then((data) => {
+      apis.getTaskFormById(processInstanceID, { type }).then((data) => {
         const taskDetailModels = get(data, 'taskDetailModels', []);
         if (taskDetailModels.length > 1) {
-          setDisPlay(true);
+          setShowSomething(true);
           const status = taskDetailModels.map((taskItem: Record<string, any>) => {
             return {
               label: taskItem.taskName,
@@ -133,14 +133,14 @@ function ApprovalDetail(): JSX.Element {
         <Panel className="flex flex-col flex-1 mr-20 px-24 py-24">
           {
             <>
-              {diaplay && (<Switch
+              {showSomething && (<Switch
                 className="pb-24"
                 onChange={
                   (value: string) => {
-                    setcurrentTaskId(value);
+                    setCurrentTaskId(value);
                   }
                 }
-                value=''
+                value={currentTaskId}
                 options={status}
               />)}
               <Toolbar
