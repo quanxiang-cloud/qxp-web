@@ -9,31 +9,33 @@ export function escapeRegExp(str: string): string {
 export function toContentState(defaultValue: string, customRules: CustomRule[]): RawDraftContentState {
   const entityMap: { [key: string]: RawDraftEntity<{ [key: string]: any }>; } = {};
   const entityRanges: RawDraftEntityRange[] = [];
-  const regex = new RegExp(customRules.filter(({ key }) => !!key).map(({ key }) => {
-    return escapeRegExp(key);
-  }).join('|'));
   let defaultValueTmp = defaultValue;
-  let matchArr;
-  while ((matchArr = regex.exec(defaultValueTmp)) !== null) {
-    const [key] = matchArr;
-    const { index } = matchArr;
-    const rule = customRules.find((rule) => rule.key === key);
-    if (rule) {
-      entityMap[index] = {
-        data: rule,
-        mutability: 'IMMUTABLE',
-        type: 'variable',
-      };
+  if (customRules.length) {
+    const regex = new RegExp(customRules.filter(({ key }) => !!key).map(({ key }) => {
+      return escapeRegExp(key);
+    }).join('|'));
+    let matchArr;
+    while ((matchArr = regex.exec(defaultValueTmp)) !== null) {
+      const [key] = matchArr;
+      const { index } = matchArr;
+      const rule = customRules.find((rule) => rule.key === key);
+      if (rule) {
+        entityMap[index] = {
+          data: rule,
+          mutability: 'IMMUTABLE',
+          type: 'variable',
+        };
 
-      entityRanges.push({
-        key: index,
-        length: rule.name.length,
-        offset: index,
-      });
+        entityRanges.push({
+          key: index,
+          length: rule.name.length,
+          offset: index,
+        });
 
-      const valueArr = defaultValueTmp.split('');
-      valueArr.splice(matchArr.index, key.length, rule.name);
-      defaultValueTmp = valueArr.join('');
+        const valueArr = defaultValueTmp.split('');
+        valueArr.splice(matchArr.index, key.length, rule.name);
+        defaultValueTmp = valueArr.join('');
+      }
     }
   }
 
