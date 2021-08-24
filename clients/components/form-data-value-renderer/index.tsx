@@ -6,28 +6,13 @@ import AssociatedRecords from '@c/form-builder/registry/associated-records/assoc
 import AssociatedDataValueRender from '@c/form-builder/registry/associated-data/associated-data-view';
 import { RoundMethod } from '@c/form-builder/registry/aggregation-records/convertor';
 import logger from '@lib/logger';
+import { splitValue } from '@c/form-builder/utils';
 
 type ValueRendererProps = { value: FormDataValue; schema: ISchema; className?: string; };
 type Props = {
   value: FormDataValue;
   className?: string;
   schema: ISchema;
-}
-
-function enumValueRenderer({ value, schema }: ValueRendererProps): string {
-  if (Array.isArray(value)) {
-    const options = (schema.enum || []) as FormBuilder.Option[];
-    const labels = (value as string[]).map((v) => {
-      return options.find((option) => option.value === v)?.label || v;
-    }).join(', ');
-
-    return labels;
-  }
-
-  const options = (schema.enum || []) as FormBuilder.Option[];
-  const label = options.find((option) => option.value === value)?.label || value as string;
-
-  return label;
 }
 
 function datetimeValueRenderer({ value, schema }: ValueRendererProps): string {
@@ -71,6 +56,51 @@ function statisticValueRender({ schema, value }: ValueRendererProps): string {
   return method(parseFloat(value as string)).toFixed(decimalPlaces) + '' || displayFieldNull;
 }
 
+function objectLabelValueRenderer({ value, schema }: ValueRendererProps): string {
+  if (!value) return '';
+  const _value = value as string;
+  const newValue: string = (_value.indexOf(':') !== -1) ? splitValue(_value).value : _value;
+  const datasetId = schema['x-component-props']?.datasetId;
+  if (datasetId) {
+    if (_value.indexOf(':') !== -1) {
+      const { label } = splitValue(_value);
+      return label;
+    }
+    return newValue;
+  }
+
+  if (_value.indexOf(':') !== -1) {
+    const { label } = splitValue(_value);
+    return label;
+  }
+
+  const options = (schema.enum || []) as FormBuilder.Option[];
+  const label = options.find((option) => option.value === _value)?.label ||
+    ((_value.indexOf(':') !== -1 ? splitValue(_value).label : newValue));
+  return label;
+}
+
+function arrayLabelValueRenderer({ value, schema }: ValueRendererProps): string {
+  const newValue: string[] | LabelValue[] = (value as string[] | LabelValue[]) || [];
+  const datasetId = schema['x-component-props'] && schema['x-component-props'].datasetId;
+  if (datasetId) {
+    const labels = newValue.map((v) => {
+      const _value: string = typeof v === 'object' ? v.label : v;
+      return _value;
+    }).join(', ');
+    return labels;
+  }
+
+  const options = (schema.enum || []) as FormBuilder.Option[];
+  const labels = newValue.map((itemValue) => {
+    const _value: string = typeof itemValue === 'object' ? itemValue.value : itemValue;
+    return options.find((option) => option.value === _value)?.label ||
+      (typeof itemValue === 'object' ? itemValue.label : itemValue);
+  }).join(', ');
+
+  return labels;
+}
+
 export default function FormDataValueRenderer({ value, schema, className }: Props): JSX.Element {
   if (schema['x-component'] === 'SubTable') {
     return <SubTableValueRenderer schema={schema} value={value} />;
@@ -94,10 +124,11 @@ export function getBasicValue(schema: ISchema, value: FormDataValue): string {
   case 'textarea':
     return value as string;
   case 'radiogroup':
-  case 'checkboxgroup':
   case 'select':
+    return objectLabelValueRenderer({ schema, value });
+  case 'checkboxgroup':
   case 'multipleselect':
-    return enumValueRenderer({ schema, value });
+    return arrayLabelValueRenderer({ schema, value });
   case 'datepicker':
     return datetimeValueRenderer({ schema, value });
   case 'associateddata':

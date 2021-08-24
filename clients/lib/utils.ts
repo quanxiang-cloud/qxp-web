@@ -350,3 +350,17 @@ export async function copyContent(content: string): Promise<void> {
   }
   document.body.removeChild(el);
 }
+
+export function stringToLabelValue(values: CheckboxValueType[], options: LabelValue[]): LabelValue[] {
+  let newOptions: LabelValue[] = [];
+
+  newOptions = values.reduce((allOptions, currentValue)=> {
+    const option = options.find(({ value }) => value === currentValue);
+    if (option) {
+      return [...allOptions, option];
+    }
+    return allOptions;
+  }, [] as LabelValue[]);
+
+  return newOptions;
+}

@@ -2,60 +2,67 @@ import React, { ChangeEvent, useState, useEffect } from 'react';
 import { Radio, Input, RadioChangeEvent, Space } from 'antd';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 
-import { getDatasetById } from '@portal/modules/system-mgmt/dataset/api';
+import useEnumOptions from '@lib/hooks/use-enum-options';
+import { generateRandomFormFieldID, splitValue } from '@c/form-builder/utils';
+
+const InitialOption = { label: '', value: generateRandomFormFieldID() };
 
 function RadioGroup(fieldProps: ISchemaFieldComponentProps): JSX.Element {
-  const [options, setOptions] = useState<LabelValue[]>([]);
-  const [customValue, setCustomValue] = useState('');
-
-  const isAllowCustom = !!fieldProps.props['x-component-props'].allowCustom;
-  const optionsLayout = fieldProps.props['x-component-props'].optionsLayout;
-  const datasetId = fieldProps.props['x-component-props'].datasetId;
-  const defaultValueFrom = fieldProps.props['x-internal'].defaultValueFrom;
+  const options = useEnumOptions(fieldProps);
+  const [customOption, setCustomOption] = useState(InitialOption);
+  const { allowCustom, optionsLayout } = fieldProps.props['x-component-props'];
+  const allOptions = allowCustom ? [...options, customOption] : options;
 
   useEffect(() => {
-    if (fieldProps.props.enum && defaultValueFrom === 'customized') {
-      setOptions(fieldProps.props.enum || []);
-    }
-  }, [fieldProps.props.enum]);
-
-  useEffect(() => {
-    if (fieldProps.value) {
-      const isHave = options.some((option): boolean => option.value === fieldProps.value);
-      if (!isHave) {
-        setCustomValue(fieldProps.value);
+    if (fieldProps.value && allowCustom) {
+      const _value = fieldProps.value.indexOf(':') !== -1 ?
+        splitValue(fieldProps.value).value : fieldProps.value;
+      const isValueInRange = options.find((option): boolean => option.value === _value);
+      if (!isValueInRange) {
+        setCustomOption({
+          ...customOption,
+          label: splitValue(fieldProps.value).label,
+        });
         return;
       }
-      setCustomValue('');
-    }
-  }, [fieldProps.value, options]);
 
-  useEffect(() => {
-    if (datasetId && defaultValueFrom === 'dataset') {
-      getDatasetById(datasetId).then(({ content }) => {
-        let _options = [];
-        _options = JSON.parse(content || '[]');
-        setOptions(_options);
-      });
+      setCustomOption(InitialOption);
     }
-  }, [datasetId]);
+  }, [options, allowCustom]);
 
   function handleCustomValueChange(e: ChangeEvent<HTMLInputElement>): void {
-    setCustomValue(e.target.value);
-    fieldProps.mutators.change(e.target.value);
+    const addedOption = {
+      ...customOption,
+      label: e.target.value,
+    };
+    setCustomOption(addedOption);
+    fieldProps.mutators.change(`${addedOption.label}:${addedOption.value}`);
   }
 
   function handleRadioChange(e: RadioChangeEvent): void {
-    fieldProps.mutators.change(e.target.value);
+    const checkedOption = allOptions.filter((option) => option.value === e.target.value);
+    const { label, value } = checkedOption[0];
+    fieldProps.mutators.change(`${label}:${value}`);
   }
 
-  if (options.length === 0) {
-    return <span>当前选项集无数据。</span>;
+  let radioValue: null | string = null;
+  if (fieldProps && fieldProps.value) {
+    radioValue = fieldProps.value.indexOf(':') !== -1 ?
+      splitValue(fieldProps.value).value : fieldProps.value;
+    // Judge whether to put the deleted option into the custom option
+    if (allowCustom) {
+      const isValueInRange = allOptions.find((option) => option.value === radioValue);
+      radioValue = !isValueInRange ? customOption.value : radioValue;
+    }
+  }
+
+  if (allOptions.length === 0) {
+    return <span>暂无选项可供选择。</span>;
   }
 
   return (
-    <div className="flex items-center">
-      <Radio.Group onChange={handleRadioChange} value={fieldProps.value}>
+    <div className="flex flex-col">
+      <Radio.Group onChange={handleRadioChange} value={radioValue}>
         <Space direction={optionsLayout}>
           {
             options.map((option): JSX.Element => {
@@ -63,9 +70,9 @@ function RadioGroup(fieldProps: ISchemaFieldComponentProps): JSX.Element {
             })
           }
           {
-            isAllowCustom && (
-              <Radio value={customValue}>
-                <Input value={customValue} onChange={handleCustomValueChange} placeholder="请输入" />
+            allowCustom && (
+              <Radio value={customOption.value}>
+                <Input value={customOption.label} onChange={handleCustomValueChange} placeholder="请输入" />
               </Radio>
             )
           }

@@ -208,3 +208,15 @@ export function validateDatasetElement<T>(value: T, schema?: ISchema): boolean {
     return true;
   });
 }
+
+export function splitValue(val: string): LabelValue {
+  let handedOption = { label: '', value: '' };
+  if (val.indexOf(':') === -1) return handedOption;
+
+  const index = val.lastIndexOf(':');
+  const label = val.substring(0, index);
+  const value = val.substring(index + 1);
+  handedOption = { label, value };
+  return handedOption;
+}
+

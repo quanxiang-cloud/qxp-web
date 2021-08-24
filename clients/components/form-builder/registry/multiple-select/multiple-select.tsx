@@ -3,20 +3,36 @@ import { Select } from 'antd';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 
 import useEnumOptions from '@lib/hooks/use-enum-options';
+import { stringToLabelValue } from '@lib/utils';
 
 const { Option } = Select;
 
 function MultipleSelect(fieldProps: ISchemaFieldComponentProps): JSX.Element {
   const options = useEnumOptions(fieldProps);
+  const newValues: string[] | LabelValue[] = fieldProps.value || [];
 
   function handleSelectChange(value: string[]): void {
-    fieldProps.mutators.change(value);
+    const values = stringToLabelValue(value, options);
+    fieldProps.mutators.change(values);
+  }
+
+  const selectValue: string[] = [];
+  if (fieldProps && newValues.length > 0) {
+    newValues.map((itemValue) => {
+      if (itemValue && (typeof itemValue === 'object')) {
+        selectValue.push(itemValue.value);
+        return itemValue;
+      }
+
+      selectValue.push(itemValue);
+      return itemValue;
+    });
   }
 
   return (
     <Select
       mode="multiple"
-      value={fieldProps.value}
+      value={selectValue}
       onChange={handleSelectChange}
     >
       {

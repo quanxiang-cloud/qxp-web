@@ -4,6 +4,7 @@ import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 
 import Toast from '@lib/toast';
 import useEnumOptions from '@lib/hooks/use-enum-options';
+import { generateRandomFormFieldID, splitValue } from '@c/form-builder/utils';
 
 const { Option } = Select;
 
@@ -60,8 +61,9 @@ function DropdownRender({ menu, onChange }: DropdownRenderProps): JSX.Element {
 
 function CustomSelect(fieldProps: ISchemaFieldComponentProps): JSX.Element {
   const options = useEnumOptions(fieldProps);
-  const [customOption, setCustomOption] = useState<LabelValue | null >(null);
+  const [customOption, setCustomOption] = useState<LabelValue | null>(null);
   const { allowCustom } = fieldProps.props['x-component-props'];
+  const allOptions = (allowCustom && customOption) ? [...options, customOption] : options;
 
   useEffect(() => {
     if (!allowCustom) {
@@ -69,37 +71,52 @@ function CustomSelect(fieldProps: ISchemaFieldComponentProps): JSX.Element {
       return;
     }
 
-    if (fieldProps.value) {
-      const isValueInRange = options.some((option): boolean => option.value === fieldProps.value);
+    if (fieldProps.value && (options.length > 0)) {
+      const _value = (fieldProps.value.indexOf(':') !== -1) ?
+        splitValue(fieldProps.value).value : fieldProps.value;
+      const isValueInRange = options.find((option): boolean => option.value === _value);
       if (!isValueInRange) {
+        const _label = (fieldProps.value.indexOf(':') !== -1) ?
+          splitValue(fieldProps.value).label : '';
         setCustomOption({
-          label: fieldProps.value,
-          value: fieldProps.value,
+          label: _label,
+          value: generateRandomFormFieldID(),
         });
       }
     }
-  }, [fieldProps.value, options, allowCustom]);
+  }, [options, allowCustom]);
 
   function handleSelectChange(optionValue: string): void {
-    fieldProps.mutators.change(optionValue);
+    const checkedOption = allOptions.filter((option) => option.value === optionValue);
+    const { label, value } = checkedOption[0];
+    fieldProps.mutators.change(`${label}:${value}`);
   }
 
   function handleAddOption(value: string): void {
-    setCustomOption({
+    const addedOption = {
       label: value,
-      value: value,
-    });
-    handleSelectChange(value);
+      value: generateRandomFormFieldID(),
+    };
+    setCustomOption(addedOption);
+    fieldProps.mutators.change(`${addedOption.label}:${addedOption.value}`);
   }
 
-  const newOptions: LabelValue[] = customOption ? [...options, customOption] : options;
+  let selectValue = '';
+  if (fieldProps && fieldProps.value) {
+    selectValue = (fieldProps.value.indexOf(':') !== -1) ?
+      splitValue(fieldProps.value).value : fieldProps.value;
+    if (allowCustom) {
+      const isValueInRange = allOptions.find((option) => option.value === selectValue);
+      selectValue = !isValueInRange ? (customOption?.value || '') : selectValue;
+    }
+  }
 
   return (
-    <div className="flex items-center w-full">
+    <div className="flex flex-col w-full">
       <Select
         placeholder="请选择选项"
         onSelect={handleSelectChange}
-        value={fieldProps.value}
+        value={selectValue}
         dropdownRender={
           allowCustom ? (menu) => (
             <DropdownRender
@@ -110,7 +127,7 @@ function CustomSelect(fieldProps: ISchemaFieldComponentProps): JSX.Element {
         }
       >
         {
-          newOptions.map((option): JSX.Element => {
+          allOptions.map((option): JSX.Element => {
             return (<Option key={option.value} value={option.value}>{option.label}</Option>);
           })
         }
