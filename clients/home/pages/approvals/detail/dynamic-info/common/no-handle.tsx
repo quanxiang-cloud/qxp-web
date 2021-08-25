@@ -15,7 +15,7 @@ export default function NoHandle({ operation }: Props): JSX.Element {
         <Avatar username={creatorName.substring(0, 1)} />
         <div className="text-h6-bold ml-8">{creatorName}</div>
       </div>
-      <div className="flex items-center">
+      <div className="flex items-center whitespace-nowrap">
         <div className="w-8 h-8 bg-yellow-600 rounded-full"></div>
         <div className="ml-8 text-12 text-gray-600">待处理</div>
       </div>
