@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import cs from 'classnames';
 import { UnionColumns } from 'react-table';
+import { useParams } from 'react-router-dom';
 import { Input, Radio } from '@formily/antd-components';
 import { SchemaForm, FormButtonGroup } from '@formily/antd';
 
@@ -15,17 +16,20 @@ import TextHeader from '@c/text-header';
 import Pagination from '@c/pagination';
 
 import SCHEMA from './modal-schema';
+import FileUpload from './file-upload';
 import { CustomPageInfo } from '../type';
-import { useParams } from 'react-router-dom';
 import { createCustomPage, removeCustomPage, editeCustomPage, fetchCustomPageList } from '../api';
 
 import './index.scss';
 import moment from 'moment';
 
+type ModalType = 'create' | 'edit' | 'preview';
+
 const COMPONENTS = {
   Input,
   TextArea: Input.TextArea,
   RadioGroup: Radio.Group,
+  FileUpload,
 };
 
 const DefaultCustomPage: CustomPageInfo = {
@@ -33,7 +37,7 @@ const DefaultCustomPage: CustomPageInfo = {
   name: '',
   type: 1,
   description: '',
-  fileUrl: 'http://www.localtest1.com',
+  fileUrl: '',
   createdBy: '',
   status: 0,
   updatedAt: '',
@@ -41,9 +45,9 @@ const DefaultCustomPage: CustomPageInfo = {
 
 function CustomPage(): JSX.Element {
   const [loading, setLoading] = useState(false);
-  const [modalType, setModalType] = useState('');
-  const [cutomPageList, setCustomPageList] = useState([]);
-  const [cutomPageCount, setCustomPageCount] = useState(0);
+  const [modalType, setModalType] = useState<ModalType | string>('');
+  const [customPageList, setCustomPageList] = useState([]);
+  const [customPageCount, setCustomPageCount] = useState(0);
   const [inputValue, setInputValue] = useState('');
   const [selectedRowInfo, setSelectedRowInfo] = useState<CustomPageInfo>(DefaultCustomPage);
   const [pagination, setPagination] = useState({ current: 1, pageSize: 10 });
@@ -59,7 +63,7 @@ function CustomPage(): JSX.Element {
     }
   };
 
-  const handleChange = (val:string): void => {
+  const handleChange = (val: string): void => {
     setInputValue(val);
     if (val === '') {
       searchPageName(val);
@@ -86,11 +90,17 @@ function CustomPage(): JSX.Element {
       type: values.type,
     };
 
-    if (modalType === 'createPage') {
+    // validate
+    if (!params.fileUrl) {
+      toast.error('请上传文件');
+      return;
+    }
+
+    if (modalType === 'create') {
       await createCustomPage(appID, params).catch((err) => {
         return toast.error(err.message);
       });
-      fetchPages();
+      await fetchPages();
       onClose();
       return;
     }
@@ -98,7 +108,7 @@ function CustomPage(): JSX.Element {
     await editeCustomPage(appID, { id: selectedRowInfo.id, ...params }).catch((err) => {
       return toast.error(err.message);
     });
-    fetchPages();
+    await fetchPages();
     onClose();
   };
 
@@ -110,13 +120,16 @@ function CustomPage(): JSX.Element {
         <span
           onClick={() => {
             setSelectedRowInfo(rowInfo);
-            setModalType('editePage');
+            setModalType('edit');
           }}
           className={cs('text-btn', { 'text-red-500': rowInfo.status === 1 })}
         >
           编辑
         </span>
-        <span className="text-gray-500 px-10">预览</span>
+        <span className="text-gray-500 text-btn px-10" onClick={() => {
+          setSelectedRowInfo(rowInfo);
+          setModalType('preview');
+        }}>预览</span>
         <PopConfirm
           content={deleteContent}
           onOk={() => deletePage(rowInfo)}
@@ -182,6 +195,46 @@ function CustomPage(): JSX.Element {
     fetchPages();
   }, [params]);
 
+  const renderModals = () => {
+    if (['create', 'edit'].includes(modalType)) {
+      return (
+        <Modal
+          title={modalType === 'create' ? '新建自定义页面' : '编辑自定义页面'}
+          onClose={onClose}
+        >
+          <SchemaForm
+            className="p-20"
+            schema={SCHEMA}
+            onSubmit={handleSubmit}
+            components={COMPONENTS}
+            defaultValue={selectedRowInfo}
+          >
+            <FormButtonGroup offset={8}>
+              <Button type="submit" onClick={onClose}>取消</Button>
+              <Button type="submit" modifier="primary">确定</Button>
+            </FormButtonGroup>
+          </SchemaForm>
+        </Modal>
+      );
+    }
+    if (modalType === 'preview') {
+      return (
+        <Modal
+          title={`预览页面 ${selectedRowInfo.name}`}
+          onClose={onClose}
+          fullscreen
+        >
+          <iframe
+            className="w-full h-full"
+            src={selectedRowInfo.fileUrl}
+            style={{ border: 'none' }}
+          />
+        </Modal>
+      );
+    }
+    return null;
+  };
+
   return (
     <div className="flex-1">
       <TextHeader
@@ -202,7 +255,7 @@ function CustomPage(): JSX.Element {
             className="mx-20"
             onClick={() => {
               setSelectedRowInfo(DefaultCustomPage);
-              setModalType('createPage');
+              setModalType('create');
             }}
           >
             新增
@@ -213,7 +266,7 @@ function CustomPage(): JSX.Element {
             rowKey="id"
             className="mt-20"
             columns={columns}
-            data={cutomPageList || []}
+            data={customPageList || []}
             emptyTips={(
               <EmptyTips
                 className="py-32"
@@ -225,8 +278,8 @@ function CustomPage(): JSX.Element {
           />
           <Pagination
             {...pagination}
-            total={cutomPageCount}
-            renderTotalTip={() => `共 ${cutomPageCount || 0} 条数据`}
+            total={customPageCount}
+            renderTotalTip={() => `共 ${customPageCount || 0} 条数据`}
             onChange={(current, pageSize) => {
               setPagination({ current, pageSize });
               setParams({ name: inputValue, currentPage: current, pageSize: pageSize });
@@ -234,23 +287,7 @@ function CustomPage(): JSX.Element {
           />
         </div>
       </div>
-      {!!modalType && (<Modal
-        title={modalType === 'createPage' ? '新建自定义页面' : '编辑自定义页面'}
-        onClose={onClose}
-      >
-        <SchemaForm
-          className="p-20"
-          schema={SCHEMA}
-          onSubmit={handleSubmit}
-          components={COMPONENTS}
-          defaultValue={selectedRowInfo}
-        >
-          <FormButtonGroup offset={8}>
-            <Button type="submit" onClick={onClose}>取消</Button>
-            <Button type="submit" modifier="primary">确定</Button>
-          </FormButtonGroup>
-        </SchemaForm>
-      </Modal>)}
+      {renderModals()}
     </div>
   );
 }
