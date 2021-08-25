@@ -17,7 +17,6 @@ import Pagination from '@c/pagination';
 
 import SCHEMA from './modal-schema';
 import FileUpload from './file-upload';
-import FilePreview from './file-preview';
 import { CustomPageInfo } from '../type';
 import { createCustomPage, removeCustomPage, editeCustomPage, fetchCustomPageList } from '../api';
 
@@ -93,7 +92,7 @@ function CustomPage(): JSX.Element {
 
     // validate
     if (!params.fileUrl) {
-      toast.error('请上传文件或等待文件上传完成');
+      toast.error('请上传文件');
       return;
     }
 
@@ -225,7 +224,11 @@ function CustomPage(): JSX.Element {
           onClose={onClose}
           fullscreen
         >
-          <FilePreview indexUrl={selectedRowInfo.fileUrl} />
+          <iframe
+            className="w-full h-full"
+            src={selectedRowInfo.fileUrl}
+            style={{ border: 'none' }}
+          />
         </Modal>
       );
     }

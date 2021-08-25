@@ -775,13 +775,6 @@
     "@types/draft-js" "*"
     "@types/react" "*"
 
-"@types/react-frame-component@^4.1.2":
-  version "4.1.2"
-  resolved "https://registry.nlark.com/@types/react-frame-component/download/@types/react-frame-component-4.1.2.tgz#c1054d51097e926fcc01c08690b71b8935a7c765"
-  integrity sha1-wQVNUQl+km/MAcCGkLcbiTWnx2U=
-  dependencies:
-    "@types/react" "*"
-
 "@types/react-redux@^7.1.16":
   version "7.1.16"
   resolved "http://r.npm.internal.yunify.com/@types/react-redux/download/@types/react-redux-7.1.16.tgz#0fbd04c2500c12105494c83d4a3e45c084e3cb21"
@@ -6808,11 +6801,6 @@ react-flow-renderer@^9.6.3:
     react-draggable "^4.4.3"
     react-redux "^7.2.4"
     redux "^4.1.0"
-
-react-frame-component@^5.1.0:
-  version "5.1.0"
-  resolved "https://registry.nlark.com/react-frame-component/download/react-frame-component-5.1.0.tgz#a4bd4c598a19103050ea7a1a562e6e03164f724d"
-  integrity sha1-pL1MWYoZEDBQ6noaVi5uAxZPck0=
 
 react-hook-form@^7.4.2:
   version "7.8.3"

@@ -8,7 +8,8 @@ import toast from '@lib/toast';
 
 type Resp = {
   code: number;
-  data: { url: string };
+  data: { url: string } | null;
+  msg?: string;
 }
 
 type FileInfo = {
@@ -19,13 +20,14 @@ type FileInfo = {
 }
 
 const acceptFileTypes = ['application/zip'];
+const maxSize = 1024 * 1024 * 30;
 
 function FileUpload({ mutators, value }: ISchemaFieldComponentProps): JSX.Element {
   const { appID } = useParams<{ appID: string }>();
   const defaultVal = value ? { url: value } : null;
   const [file, setFile] = useState<FileInfo | null>(defaultVal);
-  const onSuccess = ({ code, data }: Resp, file: { name: string }) => {
-    if (code === 0 && data.url) {
+  const onSuccess = ({ code, data, msg }: Resp, file: { name: string }): void => {
+    if (code === 0 && data?.url) {
       setFile({
         filename: file.name,
         url: data.url,
@@ -34,6 +36,9 @@ function FileUpload({ mutators, value }: ISchemaFieldComponentProps): JSX.Elemen
       });
 
       mutators.change(data.url);
+    } else {
+      setFile(null);
+      toast.error(msg || '上传失败');
     }
   };
 
@@ -45,10 +50,10 @@ function FileUpload({ mutators, value }: ISchemaFieldComponentProps): JSX.Elemen
         data={{ appID }}
         beforeUpload={(file) => {
           if (!acceptFileTypes.includes(file.type)) {
-            toast.error('当前仅支持zip格式的文件包');
+            toast.error('当前仅支持 zip 格式的文件包');
             return false;
           }
-          if (file.size > 1024 * 1024 * 30) {
+          if (file.size > maxSize) {
             // follow backend config
             toast.error('文件大小不能超过30M');
             return false;
