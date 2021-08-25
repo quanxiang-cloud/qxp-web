@@ -3,6 +3,7 @@ export type SubTableConfig = {
   description: string;
   subordination: string;
   subTableSchema: ISchema;
+  displayModifier: FormBuilder.DisplayModifier;
   required: boolean;
   linkedTable: {
     appID: string;
@@ -17,6 +18,7 @@ export const defaultConfig: SubTableConfig = {
   title: '子表单',
   description: '子表单的描述内容',
   subordination: 'sub_table',
+  displayModifier: 'normal',
   subTableSchema: {
     type: 'object',
     properties: {},
@@ -37,7 +39,7 @@ export function toSchema(value: SubTableConfig): ISchema {
     title: value.title,
     description: value.description,
     required: value.required,
-    display: true,
+    display: value.displayModifier !== 'hidden',
     items: value.subTableSchema,
     'x-component': 'SubTable',
     ['x-component-props']: {
@@ -59,6 +61,7 @@ export function toConfig(schema: ISchema): SubTableConfig {
     title: schema.title as string,
     description: schema.description as string,
     subordination: schema['x-component-props']?.subordination,
+    displayModifier: schema.display ? 'normal' : 'hidden',
     subTableSchema: schema.items as ISchema,
     required: !!schema.required,
     linkedTable: {
