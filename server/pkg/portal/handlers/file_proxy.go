@@ -49,6 +49,11 @@ func FileProxyHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.Header().Add("Content-Type", resp.Header.Get("Content-Type"))
+	cacheControl := resp.Header.Get("Cache-Control")
+	if len(cacheControl) == 0 {
+		cacheControl = "public, max-age=31536000"
+	}
+	w.Header().Add("Cache-Control", cacheControl)
 	w.WriteHeader(resp.StatusCode)
 	w.Write(body)
 }

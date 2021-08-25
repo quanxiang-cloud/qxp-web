@@ -22,8 +22,6 @@ function AppDetailsContent(): JSX.Element {
         <Route exact path='/apps/details/:appID/custom_page' component={CustomPage} />
         <Route exact path='/apps/details/:appID/setting_flow' component={WorkFlows} />
         <Route exact path='/apps/details/:appID/data_models' component={DataModels} />
-        <Route exact path='/apps/details/:appID/file_api' component={() => null} />
-        <Route exact path='/apps/details/:appID/data_modal' component={() => null} />
         <Route exact path='/apps/details/:appID/file_api' component={ApiDocument} />
         <Route exact path='/apps/details/:appID/base_info' component={AppInfo} />
         <Route exact path='/apps/details/:appID/app_permission' component={UsersAndPermissions} />

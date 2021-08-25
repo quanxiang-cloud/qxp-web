@@ -60,7 +60,7 @@ class PushServer {
       this.heartbeat();
     };
 
-    this.connection.onmessage = (({data}: MessageEvent) => {
+    this.connection.onmessage = (({ data }: MessageEvent) => {
       if (typeof data === 'string') {
         try {
           this.dispatchEvent(JSON.parse(data));
@@ -108,7 +108,7 @@ class PushServer {
       if (this.connection.readyState === WebSocket.OPEN) {
         this.connection.send('echo');
       }
-    }
+    };
 
     this.stopHeartbeat();
     // trigger first heartbeat

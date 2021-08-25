@@ -3,6 +3,8 @@ import { TreeData } from '@atlaskit/tree';
 
 import toast from '@lib/toast';
 import { buildAppPagesTreeData } from '@lib/utils';
+import { getTableInfo } from '@lib/http-client';
+import { CustomPageInfo, MenuType } from '@portal/modules/apps-management/pages/app-details/type';
 
 import { fetchPageList, fetchFormScheme, formDataCurd, getOperate } from './api';
 
@@ -20,6 +22,7 @@ class UserAppDetailsStore {
     rootId: 'ROOT',
     items: {},
   };
+  @observable customPageInfo: CustomPageInfo | null = null;
 
   constructor() {
     this.destroySetCurPage = reaction(() => {
@@ -52,20 +55,27 @@ class UserAppDetailsStore {
       return;
     }
 
-    this.formScheme = null;
-    this.fetchSchemeLoading = true;
-    Promise.all([
-      getOperate<{ authority: number | null }>(this.appID, this.pageID),
-      fetchFormScheme(this.appID, pageInfo.id),
-    ]).then(([authorityRef, schemeRef]) => {
-      this.authority = authorityRef?.authority || 0;
-      this.pageName = pageInfo.name || '';
-      this.formScheme = schemeRef.schema || null;
-      this.fetchSchemeLoading = false;
-    }).catch(() => {
-      this.fetchSchemeLoading = false;
-    });
     this.curPage = pageInfo;
+
+    if (pageInfo.menuType === MenuType.customPage) {
+      getTableInfo(pageInfo.appID as string, pageInfo.id).then((pageRes: CustomPageInfo) => {
+        this.customPageInfo = pageRes;
+      });
+    } else {
+      this.formScheme = null;
+      this.fetchSchemeLoading = true;
+      Promise.all([
+        getOperate<{ authority: number | null }>(this.appID, this.pageID),
+        fetchFormScheme(this.appID, pageInfo.id),
+      ]).then(([authorityRef, schemeRef]) => {
+        this.authority = authorityRef?.authority || 0;
+        this.pageName = pageInfo.name || '';
+        this.formScheme = schemeRef.schema || null;
+        this.fetchSchemeLoading = false;
+      }).catch(() => {
+        this.fetchSchemeLoading = false;
+      });
+    }
   }
 
   @action
@@ -97,6 +107,7 @@ class UserAppDetailsStore {
       items: {},
     };
     this.curPage = { id: '' };
+    this.customPageInfo = null;
   }
 }
 
