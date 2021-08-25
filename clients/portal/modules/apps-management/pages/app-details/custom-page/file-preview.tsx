@@ -7,6 +7,8 @@ interface Props {
   indexUrl: string;
 }
 
+const framePlaceholder = (body?: string) => `<!DOCTYPE html><html><head></head><body><div>${body || ''}</div></body></html>`;
+
 function FilePreview({ indexUrl }: Props, ref: React.Ref<any>): JSX.Element {
   const [indexCont, setIndexCont] = useState<string>('');
   const [contentLoaded, setContentLoaded] = useState(false);
@@ -15,7 +17,12 @@ function FilePreview({ indexUrl }: Props, ref: React.Ref<any>): JSX.Element {
     fetch(indexUrl)
       .then((resp) => resp.text())
       .then((cont) => {
-        setIndexCont(cont);
+        if (cont && cont.indexOf('{') !== 0) {
+          // exclude json str
+          setIndexCont(cont);
+        } else {
+          setIndexCont(framePlaceholder(cont));
+        }
       });
   }, []);
 
@@ -26,10 +33,10 @@ function FilePreview({ indexUrl }: Props, ref: React.Ref<any>): JSX.Element {
   };
 
   return (
-    <div>
+    <div className="w-full h-full">
       {renderLoading()}
       <Frame
-        initialContent={indexCont || '<!DOCTYPE html><html><head></head><body><div></div></body></html>'}
+        initialContent={indexCont || framePlaceholder()}
         style={{ width: '100%', height: '100%', border: 'none' }}
         contentDidMount={() => setContentLoaded(true)}
       >
