@@ -132,7 +132,7 @@ function AppAdmin(): JSX.Element {
         >
           添加管理员
         </Button>
-        {!!selectedIdArr && (
+        {!!selectedIdArr.length && (
           <Button
             onClick={() => setModalType('batchRemove')}
             modifier='primary'
