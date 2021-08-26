@@ -1,8 +1,11 @@
 import { get } from 'lodash';
 import { customAlphabet } from 'nanoid';
-import fp, { pipe, entries, filter, fromPairs, every, equals, property, curry, map } from 'lodash/fp';
+import fp, {
+  pipe, entries, filter, fromPairs, every, equals, property, curry, map, cond,
+} from 'lodash/fp';
 
 import toast from '@lib/toast';
+import { PERMISSION } from '@c/form-builder/constants';
 
 const nanoid = customAlphabet('1234567890qwertyuioplkjhgfdsazxcvbnmQWERTYUIOPLKJHGFDSAZXCVBNM', 8);
 
@@ -143,3 +146,32 @@ export const validateRegistryElement: Curried<ValidateRegistryElement<unknown>> 
    return validator(messageMap);
  },
 );
+
+export function schemaReadOnlyVisibleTransform<T extends ISchema>(schema: T): T {
+  const propertiesTransform = pipe(
+    fp.get('properties'),
+    entries,
+    map(([_, field]: [string, SchemaFieldItem]) => {
+      if (field.properties) {
+        field.properties = propertiesTransform(field);
+      }
+      const fieldTransform = pipe(
+        fp.get('x-internal.permission'),
+        cond([
+          [(permission) => permission === PERMISSION.READONLY, () => {
+            field.readOnly = true;
+          }],
+          [(permission) => permission === PERMISSION.INVISIBLE, () => {
+            field.visible = false;
+          }],
+        ]),
+      );
+      fieldTransform(field);
+      return [_, field];
+    }),
+    fromPairs,
+  );
+
+  schema.properties = propertiesTransform(schema);
+  return schema;
+}

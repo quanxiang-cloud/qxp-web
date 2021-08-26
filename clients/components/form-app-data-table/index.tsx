@@ -9,7 +9,7 @@ import { schemaToMap } from '@lib/schema-convert';
 import FormAppDataContent from './form-app-data-content';
 import Store from './store';
 import { TableHeaderBtn, Ref } from './type';
-import { readOnlyTransform } from './utils';
+import { schemaReadOnlyVisibleTransform } from '@c/form-builder/utils';
 
 type Props = {
   pageID: string;
@@ -54,7 +54,7 @@ function FormAppDataTableWrap({
       if (schema) {
         setStore(
           new Store({
-            schema: readOnlyTransform(schema),
+            schema: schemaReadOnlyVisibleTransform(schema),
             config: config,
             filterConfig,
             tableHeaderBtnList,
