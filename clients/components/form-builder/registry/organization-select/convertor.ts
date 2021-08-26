@@ -13,7 +13,7 @@ export interface DefaultConfig {
 }
 
 export const defaultConfig: DefaultConfig = {
-  type: 'label-value',
+  type: 'array',
   title: '部门选择器',
   description: '',
   displayModifier: 'normal',
@@ -27,7 +27,7 @@ export const defaultConfig: DefaultConfig = {
 
 export const toSchema = (config: DefaultConfig): ISchema => {
   return Object.assign({}, config, {
-    type: 'label-value',
+    type: 'array',
     title: config.title,
     description: config.description,
     required: config.required,
@@ -57,7 +57,7 @@ export const toConfig = (schema: ISchema): DefaultConfig => {
   }
 
   return {
-    type: 'label-value',
+    type: 'array',
     title: schema.title as string,
     description: schema.description as string,
     displayModifier: displayModifier,

@@ -20,7 +20,7 @@ import './index.scss';
 type Props = {
   fields: SchemaFieldItem[];
   initConditions?: Condition[];
-  initTag?: 'and' | 'or';
+  initTag?: FilterTag;
   className?: string;
   associationFields?: SchemaFieldItem[];
 }
@@ -49,10 +49,10 @@ function DataFilter({
   associationFields = [],
   className = '',
   initConditions,
-  initTag = 'and',
+  initTag = 'must',
 }: Props, ref: React.Ref<RefProps>): JSX.Element {
   const [conditions, setConditions] = useState<FieldCondition[]>([]);
-  const [tag, setTag] = useState<'and' | 'or'>(initTag);
+  const [tag, setTag] = useState<FilterTag>(initTag);
   const { trigger, control, setValue, getValues, unregister, formState: { errors } } = useForm();
 
   useImperativeHandle(ref, () => ({
