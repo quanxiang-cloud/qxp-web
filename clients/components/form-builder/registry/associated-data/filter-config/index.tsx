@@ -11,8 +11,8 @@ import schemaToFields from '@lib/schema-convert';
 import './index.scss';
 
 type Props = {
-  tableID: string;
-  appID: string;
+  tableID?: string;
+  appID?: string;
   onChange: (val: FilterConfig) => void;
   value: FilterConfig;
   currentFormSchema?: ISchema;
@@ -42,14 +42,22 @@ function getFields({ schema, excludedSystemField, filterFunc }: FieldsProps): Sc
   });
 }
 
-function FilterConfig({ tableID, appID, onChange, value, currentFormSchema }: Props): JSX.Element {
+function FilterConfig({
+  tableID,
+  appID,
+  onChange,
+  value,
+  currentFormSchema,
+  customSchemaFields,
+  filterFunc,
+}: Props): JSX.Element {
   const [visible, setVisible] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [schemaFields, setSchemaFields] = useState<SchemaFieldItem[]>([]);
   const [currentFields, setCurrentFields] = useState<SchemaFieldItem[]>([]);
   const dataFilterRef = useRef<RefProps>(null);
 
-  const allowSelect = !!tableID && !!appID;
+  const allowSelect = (!!tableID && !!appID) || (customSchemaFields && customSchemaFields.length);
 
   const handleSave = (): void => {
     dataFilterRef.current?.validate().then((flag) => {
@@ -62,20 +70,27 @@ function FilterConfig({ tableID, appID, onChange, value, currentFormSchema }: Pr
 
   useEffect(() => {
     if (currentFormSchema) {
-      setCurrentFields(getFields({ schema: currentFormSchema, excludedSystemField: true }));
+      setCurrentFields(
+        getFields({ schema: currentFormSchema, excludedSystemField: true }),
+      );
     }
   }, [currentFormSchema]);
 
   useEffect(() => {
-    if (allowSelect && visible) {
+    if (customSchemaFields) {
+      setSchemaFields(customSchemaFields);
+      return;
+    }
+
+    if (appID && tableID && visible) {
       setLoading(true);
       getTableSchema(appID, tableID).then((res) => {
-        setSchemaFields(res?.schema ? getFields({ schema: res.schema }) : []);
+        setSchemaFields(res?.schema ? getFields({ schema: res.schema, filterFunc }) : []);
       }).finally(() => {
         setLoading(false);
       });
     }
-  }, [allowSelect, visible]);
+  }, [allowSelect, visible, customSchemaFields]);
 
   return (
     <>
@@ -102,7 +117,7 @@ function FilterConfig({ tableID, appID, onChange, value, currentFormSchema }: Pr
           onClose={() => setVisible(false)}
         >
           <div className='p-20'>
-            {!allowSelect && (<div>请选择关联记录表</div>)}
+            {!allowSelect && (<div>请选择关联表</div>)}
             {loading && allowSelect && (<PageLoading />)}
             {!loading && allowSelect && (
               <DataFilter

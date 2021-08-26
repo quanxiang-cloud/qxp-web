@@ -30,8 +30,10 @@ type ISchema = import('@formily/react-schema-renderer').ISchema & {
 
 type FilterConfig = {
   condition: Condition[];
-  tag: 'or' | 'and';
+  tag: FilterTag;
 }
+
+type FilterTag = 'should' | 'must';
 
 type IteratISchema = ISchema & { id: string; componentName?: string; }
 
