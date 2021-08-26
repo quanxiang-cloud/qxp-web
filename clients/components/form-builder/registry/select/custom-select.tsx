@@ -42,6 +42,7 @@ function DropdownRender({ menu, onChange }: DropdownRenderProps): JSX.Element {
           style={{ height: 32 }}
           size="small"
           className="flex-auto"
+          maxLength={50}
           value={inputValue}
           onChange={handleInputValueChange}
           onPressEnter={handlePressEnter}

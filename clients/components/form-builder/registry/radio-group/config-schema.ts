@@ -174,6 +174,9 @@ const schema: ISchema = {
                 title: '选项集',
                 required: true,
                 'x-component': 'Input',
+                'x-component-props': {
+                  maxLength: 50,
+                },
                 'x-index': 1,
               },
             },

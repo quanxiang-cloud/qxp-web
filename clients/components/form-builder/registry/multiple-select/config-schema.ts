@@ -131,6 +131,9 @@ const schema: ISchema = {
                 title: '选项',
                 type: 'string',
                 'x-component': 'Input',
+                'x-component-props': {
+                  maxLength: 50,
+                },
               },
             },
           },
