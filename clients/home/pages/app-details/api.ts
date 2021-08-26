@@ -20,7 +20,7 @@ export function getSchemaAndRecord(
 }
 
 export const fetchPageList = (appID: string) => {
-  return httpClient(`/api/v1/structor/${appID}/home/menu/user/list`, { appID });
+  return httpClient(`/api/v1/structor/${appID}/home/menu/list`, { appID });
 };
 
 // todo refactor
