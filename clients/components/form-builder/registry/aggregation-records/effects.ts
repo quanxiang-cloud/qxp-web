@@ -11,6 +11,12 @@ export default function effects() {
       }
       state.props.enum = value?.fields || [];
     });
+
+    setFieldState('condition', (state)=> {
+      state.props['x-component-props'] = {
+        associateObject: value,
+      };
+    });
   });
 
   onFieldValueChange$('aggType').subscribe(({ value }) => {

@@ -213,6 +213,18 @@ const schema: ISchema = {
             labelAlign: 'top',
           },
           'x-index': 9,
+          'x-linkages': [{
+            type: 'value:visible',
+            target: 'condition',
+            condition: '{{ $value === "part" }}',
+          }],
+        },
+        condition: {
+          title: '',
+          'x-component': 'StatisticalRangeConfig',
+          'x-mega-props': {
+            labelAlign: 'top',
+          },
         },
       },
     },

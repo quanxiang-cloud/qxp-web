@@ -59,7 +59,7 @@ function PageDataTable(): JSX.Element {
 
         </div>
         <AdvancedQuery
-          tag={store.params.tag as 'or' | 'and'}
+          tag={store.params.tag as FilterTag}
           fields={store.fields}
           search={store.setParams}
         />

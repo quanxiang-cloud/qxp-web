@@ -11,7 +11,7 @@ type Props = {
 
 type Permission = {
   arr: Condition[];
-  tag: 'or' | 'and';
+  tag: FilterTag;
 }
 
 type ConditionMap = {
@@ -59,21 +59,21 @@ function DataPermission({ fields, className = '', dataPer }: Props, ref: React.R
     if (viewFlag) {
       conditions.find = {
         arr: viewRef.current?.getDataValues().condition || [],
-        tag: viewRef.current?.getDataValues().tag || 'and',
+        tag: viewRef.current?.getDataValues().tag || 'must',
       };
     }
 
     if (editFlag) {
       conditions.update = {
         arr: editRef.current?.getDataValues().condition || [],
-        tag: editRef.current?.getDataValues().tag || 'and',
+        tag: editRef.current?.getDataValues().tag || 'must',
       };
     }
 
     if (delFlag) {
       conditions.delete = {
         arr: delRef.current?.getDataValues().condition || [],
-        tag: delRef.current?.getDataValues().tag || 'and',
+        tag: delRef.current?.getDataValues().tag || 'must',
       };
     }
 
