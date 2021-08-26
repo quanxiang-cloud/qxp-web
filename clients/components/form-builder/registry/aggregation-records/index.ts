@@ -2,6 +2,7 @@ import configSchema from './config-schema';
 import { defaultConfig, toSchema, toConfig, validate, AggregationRecordsConfig } from './convertor';
 import SummaryField from './summary-field';
 import AssociateObject from './associate-object';
+import StatisticalRangeConfig from './statistical-range-config';
 import effects from './effects';
 
 const AggregationRecordsField: Omit<FormBuilder.SourceElement<AggregationRecordsConfig>, 'displayOrder'> = {
@@ -14,7 +15,7 @@ const AggregationRecordsField: Omit<FormBuilder.SourceElement<AggregationRecords
   component: SummaryField,
   category: 'advance',
   componentName: 'AggregationRecords',
-  configDependencies: { AssociateObject },
+  configDependencies: { AssociateObject, StatisticalRangeConfig },
   effects,
   validate,
 };
