@@ -13,7 +13,7 @@ export interface SerialConfig {
   prefix?: PrefixType;
   initialPosition: number;
   initialValue: number;
-  suffix?: Format;
+  suffix?: string;
   appID?: string;
   id?: string;
 }
@@ -25,11 +25,11 @@ export const defaultConfig: SerialConfig = {
   numberPreview: '',
   prefix: {
     frontward: 'ER',
-    backward: 'YYYYMMDD',
+    backward: 'yyyyMMdd',
   },
   initialPosition: 5,
   initialValue: 1,
-  suffix: 'YYYYMMDD',
+  suffix: '',
 };
 
 export function toSchema(value: SerialConfig): ISchema {
@@ -42,7 +42,7 @@ export function toSchema(value: SerialConfig): ISchema {
     display: true,
     'x-component': 'Serial',
     ['x-component-props']: {
-      template: `${value.prefix?.frontward}.date{${value.prefix?.backward}}.incr[name]{${value.initialPosition},${value.initialValue}}.step[name]{1}.date{${value.suffix}}`,
+      template: `${value.prefix?.frontward}.date{${value.prefix?.backward}}.incr[name]{${value.initialPosition},${value.initialValue}}.step[name]{1}.${value.suffix}`,
       appID: value.appID || '',
       id: value.id,
       prefix: value.prefix,

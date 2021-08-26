@@ -40,7 +40,7 @@ function DataModels(): JSX.Element {
               <Field x-component='Input' type="string" title="模型名称" name="title" />
               <FormSlot>
                 <FormButtonGroup align="right">
-                  <Button type='submit'>提交</Button>
+                  <Button type='submit'>查询</Button>
                 </FormButtonGroup>
               </FormSlot>
             </FormMegaLayout>

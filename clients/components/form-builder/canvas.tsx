@@ -33,13 +33,13 @@ function FormFields(): JSX.Element {
 
   const handleAddField = (e: Sortable.SortableEvent): void => {
     let fieldName: string;
-
     const dataId = e.clone.getAttribute('data-id');
     const index = e.newIndex;
 
     if (dataId === null || index === undefined) return;
 
     if (dataId.startsWith('form_builder_')) {
+      /** drag from left sider */
       fieldName = dataId.split('form_builder_')[1];
 
       store.appendComponent(fieldName, index);
@@ -129,7 +129,7 @@ function FormFields(): JSX.Element {
                     components={{ ...registry.components }}
                   />
                 )}
-                < DeleteButton filedName={_schema.id} />
+                <DeleteButton filedName={_schema.id} />
               </div>
             );
           })}

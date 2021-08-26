@@ -105,26 +105,31 @@ export function getDefinedOne(
   return !!(firstOne ?? secondOne);
 }
 
-export const getValidateMessageMap: (schema: ISchema) => Record<string, string> = pipe(
-  fp.get('properties.Fields.properties'),
-  entries,
-  map(([fieldName, fieldSchema]: [string, ISchema]) => {
-    const getMessage = pipe(
-      fp.get('x-rules'),
-      (rules) => rules || {},
-      ({ required, message }) => required ? message : null,
-    );
-    const message = getMessage(fieldSchema);
-    return message ? [fieldName, message] : null;
-  }),
-  filter(Boolean),
-  fromPairs,
-);
+export const getValidateMessageMap = <T>(schema: ISchema, configValue: T): Record<string, string> => {
+  const getMessageMap = pipe(
+    fp.get('properties.Fields.properties'),
+    entries,
+    map(([fieldName, fieldSchema]: [string, ISchema]) => {
+      const getMessage = pipe(
+        fp.get('x-rules'),
+        (rules) => rules || {},
+        ({ required, message }) => required ? message : null,
+      );
+      const message = getMessage(fieldSchema);
+      const { title } = configValue as unknown as { title: string };
+      return message ? [fieldName, title ? `${title}: ${message}` : message] : null;
+    }),
+    filter(Boolean),
+    fromPairs,
+  );
+
+  return getMessageMap(schema);
+};
 
 type ValidateRegistryElement<T> = (configSchema: ISchema, configValue: T) => boolean
 export const validateRegistryElement: Curried<ValidateRegistryElement<unknown>> = curry(
  <T>(configSchema: ISchema, configValue: T) => {
-   const messageMap = getValidateMessageMap(configSchema);
+   const messageMap = getValidateMessageMap<T>(configSchema, configValue);
    const validator = pipe(
      entries,
      map(([fieldName, message]: [string, string]) => {

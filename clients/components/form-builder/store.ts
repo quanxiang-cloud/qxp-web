@@ -144,7 +144,7 @@ export default class FormBuilderStore {
   }
 
   @computed get activeField(): FormItem | null {
-    return findField(this.activeFieldName, this.getAllFields);
+    return findField(this.activeFieldName, this.allFields);
   }
 
   @computed get activeFieldSourceElement(): FormBuilder.SourceElement<any> | null {
@@ -156,11 +156,26 @@ export default class FormBuilderStore {
     return registry.elements[componentName.toLocaleLowerCase()] || null;
   }
 
+  @computed get allFields(): Array<FormItem> {
+    const _flatten = (arr?: FormItem[]): FormItem[] => {
+      if (!arr) return [];
+      const fields = arr.map((field, idx) => {
+        return [{
+          ...field,
+          'x-index': idx,
+        } as FormItem].concat(_flatten(field?.children));
+      });
+
+      return flatten(fields);
+    };
+    return _flatten(this.fields);
+  }
+
   @computed get schema(): ISchema {
     const properties: Record<string, ISchema> = {};
-    const schemas = this.getAllFields.map((field, idx) => this.fieldToSchema(field, idx));
+    const schemas = this.allFields.map((field, idx) => this.fieldToSchema(field, idx));
 
-    /** 找出布局组件，并将其add到properties对象 */
+    /** Find layout components and add to field 'properties' */
     schemas.forEach((schema) => {
       if (schema?.['x-internal']?.parentField) return;
 
@@ -168,7 +183,7 @@ export default class FormBuilderStore {
       properties[fieldName] = schema;
     });
 
-    /** 1.找到有布局组件的其他组件 2. 将其他组件add对应布局组件的properties上 */
+    /** Find other components which in layout component and append to 'properties' field at layout component */
     schemas.forEach((schema) => {
       const parentField = schema?.['x-internal']?.parentField;
       if (!parentField) return;
@@ -197,23 +212,6 @@ export default class FormBuilderStore {
     };
   }
 
-  @computed get getAllFields(): Array<FormItem> {
-    const _flatten = (arr?: FormItem[]): FormItem[] => {
-      if (!arr) return [];
-
-      const fields = arr.map((field, idx) => {
-        return [{
-          ...field,
-          'x-index': idx,
-        } as FormItem].concat(_flatten(field?.children));
-      });
-
-      return flatten(fields);
-    };
-
-    return _flatten([...this.fields]);
-  }
-
   @computed get fieldsForCanvas(): Array<IteratISchema> {
     const _fields = this.fields
       .map((field, idx) => this.getFieldSchema(field, idx))
@@ -226,6 +224,8 @@ export default class FormBuilderStore {
   }
 
   @action fieldToSchema(field: FormItem, index: number): ISchema & { fieldName: string } {
+    const parentFieldKey = field?.parentField || toJS(field['x-internal'])?.parentField;
+
     const { fieldName, componentName, configValue } = field;
     const { toSchema } = registry.elements[componentName.toLowerCase()] || {};
     if (!toSchema) {
@@ -235,10 +235,9 @@ export default class FormBuilderStore {
     const parsedSchema = toSchema(toJS(configValue));
     parsedSchema['x-internal'] = parsedSchema['x-internal'] || { defaultValueFrom: 'customized' };
     parsedSchema['x-internal'].isSystem = !!configValue.isSystem;
-    parsedSchema['x-internal'].parentField = field.parentField;
+    parsedSchema['x-internal'].parentField = parentFieldKey;
     parsedSchema['x-internal'].tabIndex = field.tabIndex;
 
-    const parentFieldKey = field?.parentField || '';
     const curCols = this.fields.find(({ fieldName }) => fieldName === parentFieldKey)?.configValue?.columns;
     const cols = curCols ? curCols * 4 : 4;
 
@@ -287,7 +286,7 @@ export default class FormBuilderStore {
   }
 
   @computed get hiddenFieldsForCanvas(): Array<IteratISchema> {
-    return this.getAllFields
+    return this.allFields
       .map((field, idx) => this.getFieldSchema(field, idx))
       .filter((field) => !field.display)
       .map((field) => {
@@ -333,15 +332,23 @@ export default class FormBuilderStore {
     };
   }
 
-  @action validate(): boolean {
-    return this.fields.map(({ componentName, configValue }) => ({
+  @action validate(fields: FormItem[] = this.fields): boolean {
+    if (!fields.length) {
+      return true;
+    }
+    return fields.map(({ componentName, configValue, children }) => ({
       elem: registry.elements[componentName.toLowerCase()],
       configValue,
-    })).every(({ elem, configValue }) => {
+      children,
+    })).every(({ elem, configValue, children = [] }) => {
+      let isFieldValid = true;
       if (elem && typeof elem.validate === 'function') {
-        return elem.validate(toJS(configValue), elem?.configSchema);
+        isFieldValid = elem.validate(toJS(configValue), elem?.configSchema);
       }
-      return true;
+      if (!isFieldValid) {
+        return false;
+      }
+      return this.validate(children);
     });
   }
 
@@ -385,6 +392,7 @@ export default class FormBuilderStore {
 
   @action updateFieldIndex(fieldName: string, index: number, parentField?: string, tabIndex?: string): void {
     const targetField = findField(fieldName, this.fields);
+    if (targetField) set(targetField, 'x-internal.parentField', parentField);
     if (tabIndex && targetField) targetField.tabIndex = tabIndex;
     const omitedFields = omitField(targetField, this.fields);
     const newFields = insertField(targetField, index, omitedFields, parentField);
@@ -407,14 +415,15 @@ export default class FormBuilderStore {
       fieldName: generateRandomFormFieldID(),
       tabIndex,
       parentField,
+      ['x-internal']: { parentField },
     };
-
     return newField;
   }
 
   @action appendComponent(fieldName: string, index: number, parentField?: string, tabIndex?: string): void {
     const newField = this.getNewField(fieldName, tabIndex, parentField);
     const newFields = insertField(newField, index, this.fields, parentField);
+
     this.fields = newFields;
     this.setActiveFieldKey(newField.fieldName);
   }

@@ -44,10 +44,10 @@ const schema: ISchema = {
               label: '只读',
               value: 'readonly',
             },
-            // {
-            //   label: '隐藏',
-            //   value: 'hidden',
-            // },
+            {
+              label: '隐藏',
+              value: 'hidden',
+            },
           ],
           'x-component': 'RadioGroup',
           'x-linkages': [{

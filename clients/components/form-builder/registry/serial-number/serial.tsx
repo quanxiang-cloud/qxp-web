@@ -4,8 +4,8 @@ import { useQuery } from 'react-query';
 import { getSerial } from './api';
 
 function SerialNumber(p: ISchemaFieldComponentProps): JSX.Element {
-  const { appID, id } = p.props['x-component-props'];
-  const fieldID = id;
+  const { appID } = p.props['x-component-props'];
+  const fieldID = p.name;
   const { isLoading, data } = useQuery<any, Error>(
     [appID, fieldID],
     () => getSerial(appID, fieldID),
@@ -15,7 +15,7 @@ function SerialNumber(p: ISchemaFieldComponentProps): JSX.Element {
   }, [data]);
 
   return (
-    <p>{p.value}</p>
+    <p className='overflow-x-auto'>{p.value}</p>
   );
 }
 

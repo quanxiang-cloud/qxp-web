@@ -66,7 +66,7 @@ const schema: ISchema = {
           'x-component': 'NumberPicker',
           'x-component-props': {
             min: 2,
-            max: 9999999,
+            max: 10,
             precision: 0,
           },
           'x-mega-props': {
@@ -83,7 +83,7 @@ const schema: ISchema = {
           'x-component': 'NumberPicker',
           'x-component-props': {
             min: 1,
-            max: 9999999,
+            max: 9999999999,
             precision: 0,
           },
           'x-mega-props': {
@@ -94,32 +94,11 @@ const schema: ISchema = {
         suffix: {
           type: 'string',
           title: '后缀',
-          default: 'yyyyMMdd',
-          enum: [
-            {
-              label: '年',
-              value: 'YYYY',
-            },
-            {
-              label: '年月',
-              value: 'YYYYMM',
-            },
-            {
-              label: '年月日',
-              value: 'YYYYMMDD',
-            },
-            {
-              label: '年月日时分',
-              value: 'YYYYMMDDhhmm',
-            },
-            {
-              label: '年月日时分秒',
-              value: 'YYYYMMDDhhmmss',
-            },
-          ],
-          'x-component': 'select',
+          default: '',
+          maxLength: 50,
+          'x-component': 'Input',
           'x-component-props': {
-            placeholder: 'select',
+            placeholder: '请输入后缀',
           },
           'x-mega-props': {
             labelAlign: 'top',
