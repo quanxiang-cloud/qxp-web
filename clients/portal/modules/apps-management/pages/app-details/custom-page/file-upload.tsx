@@ -19,7 +19,6 @@ type FileInfo = {
   showProgress?: boolean;
 }
 
-const acceptFileTypes = ['application/zip'];
 const maxSize = 1024 * 1024 * 30;
 
 function FileUpload({ mutators, value }: ISchemaFieldComponentProps): JSX.Element {
@@ -49,10 +48,6 @@ function FileUpload({ mutators, value }: ISchemaFieldComponentProps): JSX.Elemen
         action="/upload"
         data={{ appID }}
         beforeUpload={(file) => {
-          if (!acceptFileTypes.includes(file.type)) {
-            toast.error('当前仅支持 zip 格式的文件包');
-            return false;
-          }
           if (file.size > maxSize) {
             // follow backend config
             toast.error('文件大小不能超过30M');
