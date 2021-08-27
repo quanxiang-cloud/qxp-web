@@ -15,6 +15,7 @@ import { FormRenderer } from '@c/form-builder';
 import { INTERNAL_FIELD_NAMES } from '@c/form-builder/store';
 import { isEmptyArray, isEmptyObject } from '@lib/utils';
 import { schemaToMap } from '@lib/schema-convert';
+import { schemaReadOnlyVisibleTransform } from '@c/form-builder/utils';
 import {
   formDataRequest, FormDataRequestCreateParams, FormDataRequestUpdateParams,
 } from '@lib/http-client';
@@ -53,7 +54,9 @@ function CreateDataForm({ appID, pageID, rowID, onCancel, title }: Props): JSX.E
   });
 
   const defaultValues = rowID ? data?.record : undefined;
-  const { schema } = data || { properties: {} };
+  const schema = data?.schema ? schemaReadOnlyVisibleTransform(data.schema) : {
+    type: 'object', properties: {},
+  };
   if (isLoading) {
     return <Loading desc="加载中..." />;
   }
