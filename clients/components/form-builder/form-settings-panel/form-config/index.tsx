@@ -49,7 +49,7 @@ function FormConfig(): JSX.Element {
   const store = useContext(StoreContext);
 
   function handleClick(value: 'right' | 'top'): void {
-    store.labelAlign = value;
+    store.updateLabelAlign(value);
   }
 
   return (
