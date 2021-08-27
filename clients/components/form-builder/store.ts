@@ -239,7 +239,10 @@ export default class FormBuilderStore {
     parsedSchema['x-internal'].tabIndex = field.tabIndex;
 
     const curCols = this.fields.find(({ fieldName }) => fieldName === parentFieldKey)?.configValue?.columns;
-    const cols = curCols ? curCols * 4 : 4;
+
+    const currentCompName = parsedSchema?.['x-component']?.toLocaleLowerCase() || '';
+    const excludeLabelCol = ['associatedrecords', 'subtable'];
+    const cols = (curCols && !excludeLabelCol.includes(currentCompName)) ? curCols * 4 : 4;
 
     const node = {
       // convert observable value to pure js object for debugging
