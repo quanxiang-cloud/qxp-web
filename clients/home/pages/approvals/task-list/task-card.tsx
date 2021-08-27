@@ -56,7 +56,7 @@ export default function TaskCard({ task, type }: Props): JSX.Element {
                     {multiTask ? creatorName : flowInstanceEntity?.creatorName || ''}
                   </span>
                   <span>·</span>
-                  <span className="ml-8">{multiTask ? name : flowInstanceEntity.name}</span>
+                  <span className="ml-8">{multiTask ? name : flowInstanceEntity?.name}</span>
                 </div>
               </div>
               {/* @ts-ignore */}
