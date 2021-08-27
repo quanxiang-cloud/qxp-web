@@ -142,3 +142,8 @@ export const compareOperatorMap: Record<FormBuilder.CompareOperator, OperatorCon
     },
   },
 };
+
+export enum PERMISSION {
+  READONLY = 1,
+  INVISIBLE = 0
+}

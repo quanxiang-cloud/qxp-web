@@ -5,6 +5,7 @@ import cs from 'classnames';
 
 import Icon from '@c/icon';
 import Button from '@c/button';
+
 import creatModal from './dialog-modal';
 
 export interface FooterBtnProps {
@@ -80,7 +81,7 @@ export default function Modal({
     }
   };
 
-  const stopPropagation = (e: React.MouseEvent) => {
+  const stopPropagation = (e: React.MouseEvent): void => {
     e.stopPropagation();
   };
 
