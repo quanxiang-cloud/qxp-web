@@ -163,6 +163,12 @@ const schema: ISchema = {
         },
         datasetId: {
           title: '选项集',
+          required: true,
+          triggerType: 'onBlur',
+          'x-rules': {
+            required: true,
+            message: '请选择选项集',
+          },
           'x-component': 'DatasetConfig',
           'x-mega-props': {
             labelAlign: 'top',

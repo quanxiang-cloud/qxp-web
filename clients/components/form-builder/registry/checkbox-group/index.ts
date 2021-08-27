@@ -1,8 +1,7 @@
+import { validateDatasetElement } from '@c/form-builder/utils';
+
 import CheckboxGroup from './checkboxGroup';
 import DatasetConfig from '../../form-settings-panel/form-field-config/dataset-config';
-
-import { validateRegistryElement } from '@c/form-builder/utils';
-
 import configSchema from './config-schema';
 import { defaultConfig, toSchema, toConfig } from './convertor';
 
@@ -18,7 +17,7 @@ const CheckboxGroupField: Omit<FormBuilder.SourceElement<typeof defaultConfig>, 
   componentName: 'CheckboxGroup',
   compareOperators: ['⊇', '⊋'],
   configDependencies: { DatasetConfig },
-  validate: validateRegistryElement(configSchema),
+  validate: validateDatasetElement,
 };
 
 export default CheckboxGroupField;

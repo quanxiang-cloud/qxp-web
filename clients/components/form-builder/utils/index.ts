@@ -1,4 +1,4 @@
-import { get } from 'lodash';
+import { get, has } from 'lodash';
 import { customAlphabet } from 'nanoid';
 import fp, {
   pipe, entries, filter, fromPairs, every, equals, property, curry, map, cond,
@@ -175,4 +175,36 @@ export function schemaReadOnlyVisibleTransform<T extends ISchema>(schema: T): T 
 
   schema.properties = propertiesTransform(schema);
   return schema;
+}
+
+export function validateDatasetElement<T>(value: T, schema?: ISchema): boolean {
+  const props = get(schema, 'properties.Fields.properties', {});
+  return Object.entries(props).every(([key, conf]: [string, any]) => {
+    const rules = get(conf, 'x-rules', {}) as { required?: boolean, message?: string };
+    if (has(conf, 'required')) {
+      Object.assign(rules, { required: conf?.required, message: `${conf?.title}不能为空` });
+    }
+
+    if (!rules || (rules && !rules?.required)) {
+      return true;
+    }
+
+    const val = get(value, key);
+    const checkedValueFrom = get(value, 'defaultValueFrom');
+    if (checkedValueFrom === 'customized') {
+      if (key !== 'datasetId' && !val) {
+        toast.error(rules?.message);
+        return false;
+      }
+    }
+
+    if (checkedValueFrom === 'dataset') {
+      if (!val) {
+        toast.error(rules?.message);
+        return false;
+      }
+    }
+
+    return true;
+  });
 }

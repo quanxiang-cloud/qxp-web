@@ -100,7 +100,7 @@ const schema: ISchema = {
         },
         defaultValueFrom: {
           type: 'string',
-          title: '选项集',
+          title: '选项来源',
           default: 'customized',
           enum: [
             {
@@ -108,7 +108,7 @@ const schema: ISchema = {
               value: 'customized',
             },
             {
-              label: '关联数据集',
+              label: '选项集',
               value: 'dataset',
             },
             // {
@@ -171,8 +171,7 @@ const schema: ISchema = {
             properties: {
               label: {
                 type: 'string',
-                title: '选项集',
-                required: true,
+                title: '选项',
                 'x-component': 'Input',
                 'x-component-props': {
                   maxLength: 50,
@@ -183,7 +182,13 @@ const schema: ISchema = {
           },
         },
         datasetId: {
-          title: '数据集',
+          title: '选项集',
+          required: true,
+          triggerType: 'onBlur',
+          'x-rules': {
+            required: true,
+            message: '请选择选项集',
+          },
           'x-component': 'DatasetConfig',
           'x-mega-props': {
             labelAlign: 'top',
