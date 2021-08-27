@@ -5,14 +5,17 @@ import { useHistory, useParams } from 'react-router-dom';
 import { TextArea, Form } from '@QCFE/lego-ui';
 import { Radio } from 'antd';
 import { toJS } from 'mobx';
+import { isString } from 'lodash';
+
 import toast from '@lib/toast';
 import Modal from '@c/modal';
 import Button from '@c/button';
 import Icon from '@c/icon';
 import ReceiverPicker from '@c/employee-or-department-picker';
 import ReceiverList from '@c/employee-receiver-list';
-import SelectStepBackNode from './select-step-back-node';
+import { getRequestDiffFormData } from '@home/pages/app-details/utils';
 
+import SelectStepBackNode from './select-step-back-node';
 import store from './store';
 import * as apis from '../api';
 import { TaskHandleType } from '../constant';
@@ -20,38 +23,51 @@ import actionMap from './action-map';
 
 interface Props {
   flowName?: string;
-  getFormData: () => Record<string, any>;
+  schemaMap: Record<string, SchemaFieldItem>;
+  formData: Record<string, unknown>;
+  defaultValue: Record<string, unknown>;
+  appID: string;
+  tableID: string;
 }
 
-function ActionModals({ flowName, getFormData }: Props): JSX.Element | null {
-  const { processInstanceID, taskID } = useParams<{ processInstanceID: string; taskID: string }>();
+function ActionModals({
+  flowName, formData, defaultValue, appID, tableID, schemaMap,
+}: Props): JSX.Element | null {
+  const { processInstanceID, taskID } = useParams<{ processInstanceID: string; taskID: string; }>();
   const history = useHistory();
-  const ref: any = useRef();
+  const ref = useRef<any>();
   const [showReceiverPicker, setShowPicker] = useState(false);
-  const [chosenEmployees, setChosenEmployees] = useState([]);
+  const [chosenEmployees, setChosenEmployees] = useState<EmployeeOrDepartmentOfRole[]>([]);
   const [stepBackId, setStepBackId] = useState('');
   const { action, modalInfo } = store;
   const [addSignType, setAddSignType] = useState('');
   const [addSignValue, setAddSignValue] = useState('');
 
   const handleSubmit = (): void => {
-    const formRef = ref.current;
-    if (formRef.validateFields()) {
-      handleTaskMutation.mutate({});
-    }
+    ref.current.validateFields() && handleTaskMutation.mutate();
   };
 
-  const handleTaskMutation = useMutation((params: Record<string, any>) => {
-    if (modalInfo.payload.remark != undefined) {
+  const handleTaskMutation = useMutation((): Promise<any> => {
+    if (modalInfo.payload.remark !== undefined) {
       if (modalInfo.payload.remark.length > 100) {
         return Promise.reject(new Error('字数不能超过100字'));
       }
     }
-    if ([TaskHandleType.agree, TaskHandleType.refuse, TaskHandleType.fill_in].includes(action as TaskHandleType)) {
+    if ([
+      TaskHandleType.agree,
+      TaskHandleType.refuse,
+      TaskHandleType.fill_in,
+    ].includes(action as TaskHandleType)) {
+      const _formData = getRequestDiffFormData({
+        defaultValue, currentValue: formData, appID, pageID: tableID, schemaMap,
+      });
+      if (!_formData) {
+        return Promise.resolve();
+      }
       return apis.reviewTask(processInstanceID, taskID, {
         handleType: action,
         remark: modalInfo.payload.remark || '',
-        formData: getFormData(),
+        formData: isString(_formData) ? {} : _formData,
       });
     }
 
@@ -69,7 +85,7 @@ function ActionModals({ flowName, getFormData }: Props): JSX.Element | null {
       return apis.deliverTask(processInstanceID, taskID, {
         handleType: action,
         remark: modalInfo.payload.remark || '',
-        handleUserIds: chosenEmployees.map((v: { id: string }) => v.id),
+        handleUserIds: chosenEmployees.map((v) => v.id),
       });
     }
 
@@ -107,7 +123,7 @@ function ActionModals({ flowName, getFormData }: Props): JSX.Element | null {
       return apis.ccFLow(processInstanceID, taskID, {
         handleType: action,
         remark: modalInfo.payload.remark || '',
-        handleUserIds: chosenEmployees.map((v: { id: string }) => v.id),
+        handleUserIds: chosenEmployees.map((v) => v.id),
       });
     }
 
@@ -138,7 +154,7 @@ function ActionModals({ flowName, getFormData }: Props): JSX.Element | null {
       return apis.readFlow(processInstanceID, taskID, {
         handleType: action,
         remark: modalInfo.payload.remark || '',
-        handleUserIds: chosenEmployees.map((v: { id: string }) => v.id),
+        handleUserIds: chosenEmployees.map((v) => v.id),
       });
     }
 
@@ -164,7 +180,7 @@ function ActionModals({ flowName, getFormData }: Props): JSX.Element | null {
 
     return Promise.reject(new Error(`未知操作: ${action}`));
   }, {
-    onSuccess: (data) => {
+    onSuccess: () => {
       toast.success('操作成功');
       store.reset();
       setChosenEmployees([]);
@@ -178,7 +194,7 @@ function ActionModals({ flowName, getFormData }: Props): JSX.Element | null {
     },
   });
 
-  const renderContent = () => {
+  const renderContent = (): JSX.Element | undefined => {
     const { payload } = store.modalInfo;
     if ([
       TaskHandleType.agree,
@@ -220,7 +236,9 @@ function ActionModals({ flowName, getFormData }: Props): JSX.Element | null {
             className="mb-24"
             receivers={chosenEmployees}
             onRemove={(id) => {
-              setChosenEmployees((current) => current.filter((item: { id: string }) => item.id != id));
+              setChosenEmployees((current) => current.filter(
+                (item) => item.id !== id),
+              );
             }} />
           <TextArea
             rows={4}
@@ -293,7 +311,9 @@ function ActionModals({ flowName, getFormData }: Props): JSX.Element | null {
             className="mb-24"
             receivers={chosenEmployees}
             onRemove={(id) => {
-              setChosenEmployees((current) => current.filter((item: { id: string }) => item.id != id));
+              setChosenEmployees((current) => current.filter(
+                (item) => item.id !== id),
+              );
             }} />
           <TextArea
             rows={4}
@@ -337,7 +357,9 @@ function ActionModals({ flowName, getFormData }: Props): JSX.Element | null {
             className="mb-24"
             receivers={chosenEmployees}
             onRemove={(id) => {
-              setChosenEmployees((current) => current.filter((item: { id: string }) => item.id != id));
+              setChosenEmployees((current) => current.filter(
+                (item) => item.id !== id),
+              );
             }} />
         </div>
       );
@@ -355,7 +377,9 @@ function ActionModals({ flowName, getFormData }: Props): JSX.Element | null {
             className="mb-24"
             receivers={chosenEmployees}
             onRemove={(id) => {
-              setChosenEmployees((current) => current.filter((item: { id: string }) => item.id != id));
+              setChosenEmployees((current) => current.filter(
+                (item) => item.id !== id),
+              );
             }} />
           <TextArea
             rows={4}
@@ -432,10 +456,9 @@ function ActionModals({ flowName, getFormData }: Props): JSX.Element | null {
       {showReceiverPicker && (
         <ReceiverPicker
           onlyEmployees
-          onSubmit={(departments, employees) => {
+          onSubmit={(_, employees) => {
             const receivers = employees.map((v) => toJS(v));
             setShowPicker(false);
-            // @ts-ignore
             setChosenEmployees(receivers);
             return Promise.resolve(true);
           }}
