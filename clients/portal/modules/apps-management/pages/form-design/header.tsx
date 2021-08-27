@@ -1,7 +1,15 @@
 import React, { useState } from 'react';
+import { observer } from 'mobx-react';
+import cs from 'classnames';
 import { useHistory, useParams } from 'react-router-dom';
+import { FormButtonGroup } from '@formily/antd';
+import { useCss } from 'react-use';
 
+import Modal from '@c/modal';
+import toast from '@lib/toast';
+import { FormRenderer } from '@c/form-builder';
 import Icon from '@c/icon';
+import Button from '@c/button';
 import Tab, { TabProps } from '@c/no-content-tab';
 
 import NotSavedModal from './not-saved-modal';
@@ -14,26 +22,23 @@ const TABS: TabProps[] = [
 ];
 
 function FormDesignHeader(): JSX.Element {
+  const [previewModalVisible, setPreviewModalVisible] = useState(false);
   const [showNotSavedTips, setShowNotSavedTips] = useState(false);
-  const [switchTab, setSwitchTab] = useState('switchTab');
   const { pageType, pageId, appID } = useParams<FormDesignParams>();
-
   const history = useHistory();
 
-  const tabChange = (tabKey: string): void => {
-    if (store.formStore?.hasEdit && tabKey === 'pageSetting') {
-      setSwitchTab('switchTab');
-      setShowNotSavedTips(true);
-      return;
-    }
+  const formClassName = useCss({
+    '.mega-layout-container-content': { width: '100%' },
+    '.ant-col-4+.ant-form-item-control': { width: '83%' },
+  });
 
+  const tabChange = (tabKey: string): void => {
     const query = store.pageName ? `?pageName=${store.pageName}` : '';
     history.replace(`/apps/formDesign/${tabKey}/${pageId}/${appID}${query}`);
   };
 
   const goBack = (): void => {
     if (store.formStore?.hasEdit) {
-      setSwitchTab('back');
       setShowNotSavedTips(true);
       return;
     }
@@ -45,45 +50,71 @@ function FormDesignHeader(): JSX.Element {
     history.push(`/apps/details/${appID}/page_setting?pageID=${pageId}`);
   };
 
-  const reset = (): void => {
-    store.reSetFormScheme();
-    setShowNotSavedTips(false);
-  };
-
   return (
-    <div className='form-design-header header-background-image h-56'>
-      <div className='flex items-center'>
-        <Icon
-          clickable
-          changeable
-          onClick={goBack}
-          className='mr-16'
-          size={20}
-          name='keyboard_backspace'
-        />
-        <span className="text-h6-bold mr-4">正在设计表单：{store.pageName}</span>
+    <>
+      <div className='form-design-header header-background-image h-56'>
+        <div className='flex items-center'>
+          <Icon
+            clickable
+            changeable
+            onClick={goBack}
+            className='mr-16'
+            size={20}
+            name='keyboard_backspace'
+          />
+          <span className="text-h6-bold mr-4">正在设计表单：{store.pageName}</span>
+        </div>
+        <Tab onChange={tabChange} activeTab={pageType} tabs={TABS} />
+        <div className='flex justify-end'>
+          <a
+            href={`//${window.CONFIG.docs_hostname}`}
+            target="_blank"
+            rel="noreferrer"
+            className="app-nav-button corner-8-8-8-2"
+          >
+            <Icon size={20} className='mr-4 app-icon-color-inherit' name="book" />
+            帮助文档
+          </a>
+        </div>
+        {showNotSavedTips && (
+          <NotSavedModal
+            onSaveAfter={goPageDetails}
+            onAbandon={goPageDetails}
+            onCancel={() => setShowNotSavedTips(false)}
+          />
+        )}
       </div>
-      <Tab onChange={tabChange} activeTab={pageType} tabs={TABS} />
-      <div className='flex justify-end'>
-        <a
-          href={`//${window.CONFIG.docs_hostname}`}
-          target="_blank"
-          rel="noreferrer"
-          className="app-nav-button corner-8-8-8-2"
+      <div className='form-design-tool'>
+        <Button
+          iconName='preview'
+          forbidden={!(store.formStore && store.formStore.fields.length !== 0)}
+          onClick={() => setPreviewModalVisible(true)}
         >
-          <Icon size={20} className='mr-4 app-icon-color-inherit' name="book" />
-          帮助文档
-        </a>
+          预览表单
+        </Button>
+        <Button onClick={store.saveFormSchema} iconName='save' modifier="primary">
+          保存
+        </Button>
+        {/* <span className='text-underline-no-color cursor-pointer'>
+          🎬 查看新手指引
+        </span> */}
       </div>
-      {showNotSavedTips && (
-        <NotSavedModal
-          onSaveAfter={switchTab === 'back' ? goPageDetails : () => tabChange('pageSetting')}
-          onAbandon={switchTab === 'back' ? goPageDetails : reset}
-          onCancel={() => setShowNotSavedTips(false)}
-        />
+      {previewModalVisible && (
+        <Modal title="预览表单" onClose={() => setPreviewModalVisible(false)}>
+          <FormRenderer
+            className={cs('w-800 p-20', formClassName)}
+            schema={store.formStore?.schema as ISchema}
+            onSubmit={(value) => toast.success('提交表单：' + JSON.stringify(value))}
+          >
+            <FormButtonGroup offset={8}>
+              <Button type="submit" modifier="primary">模拟提交</Button>
+              <Button type="submit" onClick={() => setPreviewModalVisible(false)}>关闭</Button>
+            </FormButtonGroup>
+          </FormRenderer>
+        </Modal>
       )}
-    </div>
+    </>
   );
 }
 
-export default FormDesignHeader;
+export default observer(FormDesignHeader);
