@@ -37,6 +37,7 @@ export function wrapSchemaByMegaLayout(schema: ISchema): ISchema {
         'x-component': 'mega-layout',
         'x-component-props': {
           labelAlign,
+          wrapperCol: 20,
           // grid: true,
           // columns: columnsCount,
           // autoRow: true,
