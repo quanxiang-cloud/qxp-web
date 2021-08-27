@@ -1,4 +1,3 @@
-import { History } from 'history';
 import { action, observable, reaction, IReactionDisposer, computed, toJS } from 'mobx';
 import { UnionColumns } from 'react-table';
 import { set } from 'lodash';
@@ -11,8 +10,9 @@ import { schemaToMap } from '@lib/schema-convert';
 import FormStore from '@c/form-builder/store';
 import AppPageDataStore from '@c/form-app-data-table/store';
 import { TableConfig } from '@c/form-app-data-table/type';
-import { setFixedParameters } from '@c/form-app-data-table/utils';
 import registry from '@c/form-builder/registry';
+import { setFixedParameters } from '@c/form-app-data-table/utils';
+import { SYSTEM_FIELDS } from '@c/form-builder/constants';
 
 import { createPageScheme } from './api';
 
@@ -117,26 +117,12 @@ class FormDesignStore {
         return;
       }
 
-      if (!this.hasSchema && !this.pageTableColumns.length) {
-        this.pageTableColumns = this.fieldList.map(({ id }) => id).sort((key1, key2) => {
-          return this.fieldsMap?.[key1]?.['x-index'] || 0 - (this.fieldsMap?.[key2]?.['x-index'] || 0);
-        });
-      } else {
-        this.pageTableColumns = this.pageTableColumns.filter((id) => {
-          if (!this.formStore?.schema?.properties) {
-            return false;
-          }
-
-          return id in this.formStore?.schema?.properties;
-        });
-      }
+      this.pageTableColumns = this.pageTableColumns.filter((id) => {
+        return this.judgeInSchema(id);
+      });
 
       this.filters = this.filters.filter((id) => {
-        if (!this.formStore?.schema?.properties) {
-          return false;
-        }
-
-        return id in this.formStore?.schema?.properties;
+        return this.judgeInSchema(id);
       });
     });
 
@@ -164,6 +150,11 @@ class FormDesignStore {
     this.destroySetTableConfig = reaction(() => {
       return this.pageTableShowRule;
     }, this.appPageStore.setTableConfig);
+  }
+
+  @action
+  judgeInSchema = (key: string): boolean => {
+    return SYSTEM_FIELDS.includes(key) || key in this.fieldsMap;
   }
 
   toggleShowAllFields(isShowAll: boolean): void {
@@ -226,7 +217,7 @@ class FormDesignStore {
       this.hasSchema = !!res;
       this.initScheme = schema;
       this.formStore = new FormStore({ schema, appID, pageID });
-      this.pageTableColumns = config.pageTableColumns || [];
+      this.pageTableColumns = config.pageTableColumns || SYSTEM_FIELDS.filter((key) => key !== '_id');
       this.filters = config.filters || [];
       if (config.pageTableShowRule) {
         this.pageTableShowRule = config.pageTableShowRule;
@@ -239,7 +230,7 @@ class FormDesignStore {
   }
 
   @action
-  saveFormSchema = async (history: History): Promise<any> => {
+  saveFormSchema = async (): Promise<any> => {
     // validate table schema on each field
     if (!this.formStore?.validate()) {
       return Promise.resolve(false);
@@ -247,7 +238,6 @@ class FormDesignStore {
 
     if (this.formStore?.fields.length && this.pageTableColumns && this.pageTableColumns.length === 0) {
       toast.error('请在页面配置-字段显示和排序至少选择一个字段显示');
-      history.replace(`/apps/formDesign/pageSetting/${this.pageID}/${this.appID}`);
       return Promise.resolve(false);
     }
 
@@ -290,24 +280,6 @@ class FormDesignStore {
     this.pageTableShowRule = { order: '-created_at', pageSize: 10 };
     this.filters = [];
     this.appPageStore.clear();
-  }
-
-  @action
-  savePageConfig = (): void => {
-    if (this.pageTableColumns && this.pageTableColumns.length === 0) {
-      toast.error('请在页面配置-字段显示和排序至少选择一个字段显示');
-      return;
-    }
-
-    createPageScheme(this.appID, {
-      tableID: this.pageID, config: {
-        pageTableColumns: this.pageTableColumns,
-        filters: this.filters,
-        pageTableShowRule: this.pageTableShowRule,
-      },
-    }).then(() => {
-      toast.success('保存成功!');
-    });
   }
 }
 
