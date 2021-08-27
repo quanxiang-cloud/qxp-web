@@ -55,12 +55,12 @@ class PushServer {
     }
   }
 
-  attachEvents = () => {
+  attachEvents = (): void => {
     this.connection.onopen = () => {
       this.heartbeat();
     };
 
-    this.connection.onmessage = (({data}: MessageEvent) => {
+    this.connection.onmessage = (({ data }: MessageEvent) => {
       if (typeof data === 'string') {
         try {
           this.dispatchEvent(JSON.parse(data));
