@@ -66,7 +66,7 @@ const schema: ISchema = {
           'x-component': 'NumberPicker',
           'x-component-props': {
             min: 2,
-            max: 9999999,
+            max: 10,
             precision: 0,
           },
           'x-mega-props': {
@@ -83,7 +83,7 @@ const schema: ISchema = {
           'x-component': 'NumberPicker',
           'x-component-props': {
             min: 1,
-            max: 9999999,
+            max: 9999999999,
             precision: 0,
           },
           'x-mega-props': {

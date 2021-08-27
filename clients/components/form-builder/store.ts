@@ -224,7 +224,7 @@ export default class FormBuilderStore {
   }
 
   @action fieldToSchema(field: FormItem, index: number): ISchema & { fieldName: string } {
-    const currentParentField = toJS(field['x-internal'])?.parentField;
+    const parentFieldKey = field?.parentField || toJS(field['x-internal'])?.parentField;
 
     const { fieldName, componentName, configValue } = field;
     const { toSchema } = registry.elements[componentName.toLowerCase()] || {};
@@ -235,12 +235,14 @@ export default class FormBuilderStore {
     const parsedSchema = toSchema(toJS(configValue));
     parsedSchema['x-internal'] = parsedSchema['x-internal'] || { defaultValueFrom: 'customized' };
     parsedSchema['x-internal'].isSystem = !!configValue.isSystem;
-    parsedSchema['x-internal'].parentField = currentParentField;
+    parsedSchema['x-internal'].parentField = parentFieldKey;
     parsedSchema['x-internal'].tabIndex = field.tabIndex;
 
-    const parentFieldKey = field?.parentField || '';
     const curCols = this.fields.find(({ fieldName }) => fieldName === parentFieldKey)?.configValue?.columns;
-    const cols = curCols ? curCols * 4 : 4;
+
+    const currentCompName = parsedSchema?.['x-component']?.toLocaleLowerCase() || '';
+    const excludeLabelCol = ['associatedrecords', 'subtable'];
+    const cols = (curCols && !excludeLabelCol.includes(currentCompName)) ? curCols * 4 : 4;
 
     const node = {
       // convert observable value to pure js object for debugging
@@ -416,14 +418,15 @@ export default class FormBuilderStore {
       fieldName: generateRandomFormFieldID(),
       tabIndex,
       parentField,
+      ['x-internal']: { parentField },
     };
-
     return newField;
   }
 
   @action appendComponent(fieldName: string, index: number, parentField?: string, tabIndex?: string): void {
     const newField = this.getNewField(fieldName, tabIndex, parentField);
     const newFields = insertField(newField, index, this.fields, parentField);
+
     this.fields = newFields;
     this.setActiveFieldKey(newField.fieldName);
   }

@@ -15,7 +15,7 @@ function SerialNumber(p: ISchemaFieldComponentProps): JSX.Element {
   }, [data]);
 
   return (
-    <p>{p.value}</p>
+    <p className='overflow-x-auto'>{p.value}</p>
   );
 }
 

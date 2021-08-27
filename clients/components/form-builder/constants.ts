@@ -142,3 +142,18 @@ export const compareOperatorMap: Record<FormBuilder.CompareOperator, OperatorCon
     },
   },
 };
+
+export const SYSTEM_FIELDS = [
+  '_id',
+  'created_at',
+  'updated_at',
+  'creator_name',
+  'modifier_name',
+  'modifier_id',
+  'creator_id',
+];
+
+export enum PERMISSION {
+  READONLY = 1,
+  INVISIBLE = 0
+}

@@ -3,6 +3,7 @@ import { omit, set, unset } from 'lodash';
 
 import toast from '@lib/toast';
 import { getTableSchema } from '@lib/http-client';
+import schemaToFields from '@lib/schema-convert';
 
 import { deleteSchema, saveTableSchema } from './api';
 import { fetchDataModels } from '../api';
@@ -12,13 +13,13 @@ class AppModelStore {
   fetchDataModelDisposer: IReactionDisposer
   constructor() {
     this.fetchDataModelDisposer = reaction(() => this.params, this.fetchDataModels);
-    reaction(() => this.curDataModel, this.fetchSchema);
+    reaction(() => this.curDataModel?.tableID, this.fetchSchema);
   }
 
   @observable appID = '';
   @observable dataModels: DataModel[] = [];
   @observable modelModalType = '';
-  @observable curDataModel = '';
+  @observable curDataModel: DataModel | null = null;
   @observable dataModelsLoading = true;
   @observable modelDetailsLoading = false;
   @observable dataModelTotal = 0;
@@ -30,6 +31,10 @@ class AppModelStore {
   }
 
   @computed get fields(): ModelField[] {
+    if (this.curDataModel?.source === 1) {
+      return schemaToFields(this.dataModelSchema.schema) as ModelField[];
+    }
+
     return Object.entries(this.dataModelSchema.schema.properties || {}).map(([key, fieldSchema]) => {
       return {
         id: key,
@@ -107,7 +112,7 @@ class AppModelStore {
   }
 
   @action
-  fetchSchema = (modelID: string): void => {
+  fetchSchema = (modelID?: string): void => {
     if (!modelID) {
       return;
     }
@@ -123,8 +128,8 @@ class AppModelStore {
   }
 
   @action
-  dataModelModalControl = (modalType: 'details' | 'edit' | '', modelID = ''): void => {
-    this.curDataModel = modalType ? modelID : '';
+  dataModelModalControl = (modalType: 'details' | 'edit' | '', model?: DataModel): void => {
+    this.curDataModel = model && modalType ? model : null;
     this.modelModalType = modalType;
     if (!modalType) {
       this.dataModelSchema = INIT_MODEL_SCHEMA;

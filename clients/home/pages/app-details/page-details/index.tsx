@@ -7,6 +7,7 @@ import FormAppDataTable from '@c/form-app-data-table';
 import { Ref, TableHeaderBtn } from '@c/form-app-data-table/type';
 import PopConfirm from '@c/pop-confirm';
 import PageLoading from '@c/page-loading';
+import { MenuType } from '@portal/modules/apps-management/pages/app-details/type';
 
 import { getOperateButtonPer } from '../utils';
 import CreateDataForm from './create-data-form';
@@ -75,7 +76,7 @@ function PageDetails(): JSX.Element | null {
             </span>
           )}
           {getOperateButtonPer(4, store.authority) && (
-            <PopConfirm content='确认删除该数据？' onOk={() => delFormData([rowData._id])} >
+            <PopConfirm content='确认删除该数据？' onOk={() => delFormData([rowData._id])}>
               <span className='text-red-600 cursor-pointer'>删除</span>
             </PopConfirm>
           )}
@@ -93,6 +94,37 @@ function PageDetails(): JSX.Element | null {
     }
   };
 
+  const renderPageBody = () => {
+    const { menuType } = curPage;
+    if (menuType === MenuType.customPage) {
+      return (
+        <iframe
+          className="w-full h-full"
+          src={store.customPageInfo?.fileUrl}
+          style={{ border: 'none' }}
+        />
+      );
+    } else {
+      if (fetchSchemeLoading) {
+        return <PageLoading />;
+      }
+      if (formScheme) {
+        return (
+          <FormAppDataTable
+            ref={formTableRef}
+            tableHeaderBtnList={tableHeaderBtnList}
+            customColumns={customColumns}
+            appID={store.appID}
+            pageID={store.pageID}
+            allowRequestData={true}
+            style={{ height: 'calc(100% - 62px)' }}
+            className={cs('p-20', { 'form-table-hidden': modalType === 'dataForm' })}
+          />
+        );
+      }
+    }
+  };
+
   if (!curPage.id) {
     return null;
   }
@@ -104,19 +136,7 @@ function PageDetails(): JSX.Element | null {
         desc={curPage.describe || ''}
         className="bg-white px-20 py-18 header-background-image"
         itemTitleClassName="text-h5" />
-      {fetchSchemeLoading && <PageLoading />}
-      {formScheme && !fetchSchemeLoading ? (
-        <FormAppDataTable
-          ref={formTableRef}
-          tableHeaderBtnList={tableHeaderBtnList}
-          customColumns={customColumns}
-          appID={store.appID}
-          pageID={store.pageID}
-          allowRequestData={true}
-          style={{ height: 'calc(100% - 62px)' }}
-          className={cs('p-20', { 'form-table-hidden': modalType === 'dataForm' })}
-        />
-      ) : null}
+      {renderPageBody()}
       {modalType === 'dataForm' && (
         <CreateDataForm
           appID={store.appID}

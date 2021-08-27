@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { lazy, Suspense } from 'react';
 import cs from 'classnames';
 import moment from 'moment';
 import { observer } from 'mobx-react';
@@ -12,11 +12,15 @@ import EmptyTips from '@c/empty-tips';
 import store from './store';
 import { FIELD_COLUMNS } from '../utils';
 
+import 'highlight.js/styles/stackoverflow-light.css';
+
 const DOC_TYPE_LIST = [
   { label: 'cURL', value: 'curl' },
   { label: 'javaScript', value: 'javascript' },
   { label: 'python', value: 'python' },
 ];
+
+const Highlight = lazy(() => import('react-highlight'));
 
 function renderApiDetails(title: string): JSX.Element {
   if (store.isAPILoading) {
@@ -30,27 +34,29 @@ function renderApiDetails(title: string): JSX.Element {
 
   return (
     <>
-      <div className='flex justify-between center'>
-        <div className='api-content-title'>{title}</div>
-        <div>
-          {DOC_TYPE_LIST.map(({ label, value }) => {
-            return (
-              <span
-                key={value}
-                className={cs('px-18 cursor-pointer hover:text-blue-600', {
-                  'text-blue-600': value === store.docType,
-                })}
-                onClick={() => handleDocTypeChange(value as DocType)}
-              >
-                {label}
-              </span>
-            );
-          })}
+      <Suspense fallback={<Loading />}>
+        <div className='flex justify-between center'>
+          <div className='api-content-title'>{title}</div>
+          <div>
+            {DOC_TYPE_LIST.map(({ label, value }) => {
+              return (
+                <span
+                  key={value}
+                  className={cs('px-18 cursor-pointer hover:text-blue-600', {
+                    'text-blue-600': value === store.docType,
+                  })}
+                  onClick={() => handleDocTypeChange(value as DocType)}
+                >
+                  {label}
+                </span>
+              );
+            })}
+          </div>
         </div>
-      </div>
-      <pre className='api-content'>{store.APiContent.input}</pre>
-      <div className='api-content-title'>示例返回值</div>
-      <pre className='api-content'>{store.APiContent.output}</pre>
+        <Highlight language={store.docType}>{store.APiContent.input}</Highlight>
+        <div className='api-content-title'>示例返回值</div>
+        <Highlight language={store.docType}>{store.APiContent.output}</Highlight>
+      </Suspense>
     </>
   );
 }

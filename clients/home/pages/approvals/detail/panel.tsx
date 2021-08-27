@@ -8,7 +8,7 @@ interface Props {
   children: React.ReactNode;
 }
 
-function Panel({ className, children }: Props) {
+function Panel({ className, children }: Props): JSX.Element {
   return (
     <div className={cs('approval-panel', className)}>
       {children}

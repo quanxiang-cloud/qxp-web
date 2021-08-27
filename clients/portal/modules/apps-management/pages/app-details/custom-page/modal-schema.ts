@@ -31,8 +31,7 @@ const schema: ISchema = {
         },
         fileUrl: {
           title: 'HTML文件',
-          'x-component': 'Input',
-          display: false,
+          'x-component': 'FileUpload',
         },
       },
     },

@@ -131,12 +131,21 @@ const schema: ISchema = {
                 title: '选项',
                 type: 'string',
                 'x-component': 'Input',
+                'x-component-props': {
+                  maxLength: 50,
+                },
               },
             },
           },
         },
         datasetId: {
           title: '选项集',
+          required: true,
+          triggerType: 'onBlur',
+          'x-rules': {
+            required: true,
+            message: '请选择选项集',
+          },
           'x-component': 'DatasetConfig',
           'x-mega-props': {
             labelAlign: 'top',
