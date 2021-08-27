@@ -12,6 +12,7 @@ import Loading from '@c/loading';
 import ErrorTips from '@c/error-tips';
 import toast from '@lib/toast';
 import { FormRenderer } from '@c/form-builder';
+import { schemaToMap } from '@lib/schema-convert';
 
 import Panel from './panel';
 import Toolbar from './toolbar';
@@ -63,7 +64,6 @@ function ApprovalDetail(): JSX.Element {
       ...(task?.fieldPermission?.system || []),
     ];
     const formSchema = wrapSchemaWithFieldPermission(task.formSchema.table, extraPermissions);
-
     return (
       <div className='task-form'>
         <FormRenderer
@@ -85,6 +85,8 @@ function ApprovalDetail(): JSX.Element {
   }
 
   const task = getTask();
+  const appID = get(data, 'appId');
+  const tableID = get(data, 'tableId');
 
   return (
     <div>
@@ -135,7 +137,16 @@ function ApprovalDetail(): JSX.Element {
           />
         </Panel>
       </div>
-      <ActionModals flowName={data?.flowName} getFormData={() => formValues} />
+      {appID && tableID && (
+        <ActionModals
+          flowName={data?.flowName}
+          formData={formValues}
+          defaultValue={task.formData}
+          appID={appID}
+          tableID={tableID}
+          schemaMap={schemaToMap(task?.formSchema?.table)}
+        />
+      )}
     </div>
   );
 }

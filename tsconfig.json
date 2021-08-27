@@ -45,6 +45,7 @@
     "baseUrl": "." /* Base directory to resolve non-absolute module names. */,
     "paths": {
       "@portal/*": ["./clients/portal/*"],
+      "@home/*": ["./clients/home/*"],
       "@c/*": ["./clients/components/*"],
       "@lib/*": ["./clients/lib/*"],
       "@flow/*": ["./clients/portal/modules/work-flow/*"],
