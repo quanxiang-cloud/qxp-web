@@ -102,7 +102,7 @@ function FormDesignHeader(): JSX.Element {
       {previewModalVisible && (
         <Modal title="预览表单" onClose={() => setPreviewModalVisible(false)}>
           <FormRenderer
-            className={cs('w-800 p-20', formClassName)}
+            className={cs('w-800 p-20 previewTable', formClassName)}
             schema={store.formStore?.schema as ISchema}
             onSubmit={(value) => toast.success('提交表单：' + JSON.stringify(value))}
           >
