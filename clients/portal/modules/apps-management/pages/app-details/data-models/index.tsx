@@ -21,10 +21,6 @@ function DataModels(): JSX.Element {
     store.appID = appID;
   }, [appID]);
 
-  useEffect(() => {
-    store.fetchDataModels();
-  }, []);
-
   return (
     <div className='flex-1 overflow-hidden'>
       <TextHeader

@@ -8,6 +8,7 @@ import { FooterBtnProps } from '@c/modal';
 import Drawer from '@c/drawer';
 import Button from '@c/button';
 import PageLoading from '@c/page-loading';
+import toast from '@lib/toast';
 
 import FieldsDesign from './fields-design';
 import store from './store';
@@ -41,20 +42,19 @@ function EditorDataModel({ isEditor, onCancel, onSubmit }: Props): JSX.Element {
 
   const handleNext = async (): Promise<void> => {
     const { values } = await form.submit();
-    if (!isEditor) {
-      await new Promise<void>((resolve, reject) => {
-        modelCodeCheckRepeat(store.appID, values.tableID).then((res) => {
-          if (res?.exist) {
-            actions.setFieldState('tableID', (state) => {
-              state.ruleErrors = ['模型编码重复'];
-            });
-            reject(new Error('模型编码重复'));
-          } else {
-            resolve();
-          }
-        });
+    await new Promise<void>((resolve) => {
+      modelCodeCheckRepeat(
+        store.appID,
+        {
+          tableID: values.tableID,
+          title: values.title,
+          isModify: isEditor,
+        }).then(() => {
+        resolve();
+      }).catch((err) => {
+        toast.error(err);
       });
-    }
+    });
 
     setStep(1);
   };
