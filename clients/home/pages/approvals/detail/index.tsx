@@ -26,11 +26,6 @@ import store from './store';
 
 import './index.scss';
 
-type Option = {
-  label: string;
-  value: string;
-}
-
 const globalActionKeys = [
   'canMsg', 'canViewStatusAndMsg', 'hasCancelBtn',
   'hasCcHandleBtn', 'hasReadHandleBtn', 'hasResubmitBtn', 'hasUrgeBtn',
@@ -39,8 +34,8 @@ const globalActionKeys = [
 function ApprovalDetail(): JSX.Element {
   const [search] = useURLSearch();
   const [formValues, setFormValues] = useState<Record<string, any>>({});
-  const [status, setStatus] = useState<Option[]>([{ label: '', value: '' }]);
-  const [showSomething, setShowSomething] = useState<boolean>(false);
+  const [status, setStatus] = useState<FormBuilder.Option[]>([{ label: '', value: '' }]);
+  const [showSwitch, setShowSwitch] = useState<boolean>(false);
   const listType = search.get('list') || 'todo';
   const { processInstanceID, type } = useParams<{
     processInstanceID: string;
@@ -56,14 +51,16 @@ function ApprovalDetail(): JSX.Element {
     () => apis.getTaskFormById(processInstanceID, { taskId: currentTaskId, type }),
   );
 
-  const getTask = (): Record<string, any> => get(data, 'taskDetailModels[0]', {});
+  const getTask = (): Record<string, any> => {
+    return get(data, 'taskDetailModels', []).find((taskItem: Record<string, any>) => taskItem?.formData !== null);
+  };
 
   useEffect(() => {
     document.title = '流程详情';
   }, []);
 
   useEffect(() => {
-    setFormValues(getTask().formData || {});
+    setFormValues(getTask()?.formData || {});
   }, [data]);
 
   useEffect(() => {
@@ -71,11 +68,11 @@ function ApprovalDetail(): JSX.Element {
       apis.getTaskFormById(processInstanceID, { type }).then((data) => {
         const taskDetailModels = get(data, 'taskDetailModels', []);
         if (taskDetailModels.length > 1) {
-          setShowSomething(true);
-          const status = taskDetailModels.map((taskItem: Record<string, any>) => {
+          setShowSwitch(true);
+          const status = taskDetailModels.map(({ taskName, taskId }: Record<string, string>) => {
             return {
-              label: taskItem.taskName,
-              value: taskItem.taskId,
+              label: taskName,
+              value: taskId,
             };
           });
           setStatus(status);
@@ -135,7 +132,7 @@ function ApprovalDetail(): JSX.Element {
         <Panel className="flex flex-col flex-1 mr-20 px-24 py-24">
           {
             <>
-              {showSomething && (<Switch
+              {showSwitch && (<Switch
                 className="pb-24"
                 onChange={
                   (value: string) => {

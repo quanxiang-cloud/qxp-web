@@ -100,7 +100,7 @@ export const signTask = async (taskID: string, params: Record<string, any>) => {
 
 // 获取任务的表单
 export const getTaskFormById = async (processInstanceID: string,
-  params: {taskId?: string, type: string}): Promise<TaskForm> => {
+  params: {type: string, taskId?: string}): Promise<TaskForm> => {
   return await httpClient(`/api/v1/flow/instance/getFlowInstanceForm/${processInstanceID}`, params);
 };
 
