@@ -322,3 +322,31 @@ export function isEmptyObject(value: unknown): boolean {
 export function isEmptyArray(value: unknown): boolean {
   return _.isArray(value) && _.isEmpty(value);
 }
+
+export async function copyContent(content: string): Promise<void> {
+  if (navigator.clipboard) {
+    try {
+      await navigator.clipboard.writeText(content);
+      toast.success('复制成功！');
+    } catch (err) {
+      toast.error('复制失败，请手动复制！');
+    }
+    return;
+  }
+
+  const el = document.createElement('textarea');
+  el.value = content;
+  el.setAttribute('readonly', '');
+  el.style.position = 'absolute';
+  el.style.left = '-9999px';
+  document.body.appendChild(el);
+  el.select();
+  document.execCommand('copy');
+  const successful = document.execCommand('copy');
+  if (successful) {
+    toast.success('复制成功！');
+  } else {
+    toast.error('复制失败，请手动复制！');
+  }
+  document.body.removeChild(el);
+}
