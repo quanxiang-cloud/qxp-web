@@ -8,6 +8,8 @@ import Table from '@c/table';
 import Toggle from '@c/toggle';
 import Loading from '@c/loading';
 import EmptyTips from '@c/empty-tips';
+import Button from '@c/button';
+import { copyContent } from '@lib/utils';
 
 import store from './store';
 import { FIELD_COLUMNS } from '../utils';
@@ -53,7 +55,17 @@ function renderApiDetails(title: string): JSX.Element {
             })}
           </div>
         </div>
-        <Highlight language={store.docType}>{store.APiContent.input}</Highlight>
+        <div className='api-content'>
+          <Button
+            className='copy-button'
+            onClick={() => copyContent(store.APiContent.input)}
+            modifier='primary'
+            iconName="content_copy"
+          >
+            复&nbsp;制
+          </Button>
+          <Highlight language={store.docType}>{store.APiContent.input}</Highlight>
+        </div>
         <div className='api-content-title'>示例返回值</div>
         <Highlight language={store.docType}>{store.APiContent.output}</Highlight>
       </Suspense>
