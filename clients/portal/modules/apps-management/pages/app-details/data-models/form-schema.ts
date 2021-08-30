@@ -256,6 +256,10 @@ export const FIELD_FORM_SCHEMA = {
           'x-component': 'Select',
           enum: [
             {
+              label: '不校验',
+              value: '',
+            },
+            {
               label: '唯一校验',
               value: 'only',
             },
@@ -282,6 +286,9 @@ export const FIELD_FORM_SCHEMA = {
           ],
           'x-index': 8,
           visible: false,
+          'x-component-props': {
+            allowClear: true,
+          },
           'x-mega-props': {
             labelAlign: 'top',
           },
