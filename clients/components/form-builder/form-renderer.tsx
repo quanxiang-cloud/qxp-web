@@ -38,6 +38,7 @@ function FormRenderer(
   }: Props): JSX.Element {
   const [errorMessage, setErrorMessage] = useState('');
   const actions = createFormActions();
+
   function handleSubmit(values: any): void {
     const validations = schema['x-internal']?.validations || [];
     const valid = validations.every(({ formula, message }) => {

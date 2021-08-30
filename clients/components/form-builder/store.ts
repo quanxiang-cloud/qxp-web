@@ -156,6 +156,7 @@ export default class FormBuilderStore {
     return registry.elements[componentName.toLocaleLowerCase()] || null;
   }
 
+  // flat to all fields
   @computed get allFields(): Array<FormItem> {
     const _flatten = (arr?: FormItem[]): FormItem[] => {
       if (!arr) return [];
@@ -239,7 +240,10 @@ export default class FormBuilderStore {
     parsedSchema['x-internal'].tabIndex = field.tabIndex;
 
     const curCols = this.fields.find(({ fieldName }) => fieldName === parentFieldKey)?.configValue?.columns;
-    const cols = curCols ? curCols * 4 : 4;
+
+    const currentCompName = parsedSchema?.['x-component']?.toLocaleLowerCase() || '';
+    const excludeLabelCol = ['associatedrecords', 'subtable'];
+    const cols = (curCols && !excludeLabelCol.includes(currentCompName)) ? curCols * 4 : 4;
 
     const node = {
       // convert observable value to pure js object for debugging
@@ -263,6 +267,7 @@ export default class FormBuilderStore {
     }
 
     const parsedSchema = toSchema(toJS(configValue));
+
     return {
       display: parsedSchema.display,
       id: fieldName,
@@ -308,12 +313,10 @@ export default class FormBuilderStore {
           display: true,
           title: childrenInvisible ? '******' : this.schema.properties?.[key].title,
         };
-
         acc[key] = node;
 
         return acc;
       }, {});
-
     return {
       type: 'object',
       properties: {
@@ -358,6 +361,7 @@ export default class FormBuilderStore {
 
   @action updateLabelAlign(labelAlign: 'right' | 'top'): void {
     this.labelAlign = labelAlign;
+    this.fields = schemaToFormBuilderFields(this.schema);
   }
 
   @action updateLinkageConfigVisible(visible: boolean): void {

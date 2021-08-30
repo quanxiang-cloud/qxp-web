@@ -115,7 +115,7 @@ class Toast {
     `;
   }
 
-  @throttle()
+  @throttle(300)
   private toast(type: string, message: string | Error | unknown, options?: Options) {
     let msg = message;
     if (msg instanceof Error) {

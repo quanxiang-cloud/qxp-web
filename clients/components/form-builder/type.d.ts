@@ -90,7 +90,7 @@ declare namespace FormBuilder {
 
   type DisplayModifier = 'normal' | 'readonly' | 'hidden';
 
-  type DefaultValueFrom = 'customized' | 'linkage' | 'formula' | 'now';
+  type DefaultValueFrom = 'customized' | 'linkage' | 'formula' | 'now' | 'dataset';
 
   type DragObject = SourceElement<any>;
 

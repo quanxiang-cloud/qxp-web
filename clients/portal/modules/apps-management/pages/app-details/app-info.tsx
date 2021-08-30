@@ -32,7 +32,7 @@ function AppInfo() : JSX.Element {
         title="基础设置"
         className="app-list-header header-background-image "
       />
-      <div className='px-20 py-24'>
+      <div className='m-20 bg-white p-20 rounded-12'>
         <CreatedEditApp appInfo={appDetailsStore.appDetails} ref={formRef} />
         <Button onClick={handleSubmit} modifier='primary' iconName='save'>保存修改</Button>
         <div

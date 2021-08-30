@@ -193,7 +193,7 @@ function CustomPage(): JSX.Element {
 
   useEffect(() => {
     fetchPages();
-  }, [params]);
+  }, [params, appID]);
 
   const renderModals = () => {
     if (['create', 'edit'].includes(modalType)) {
