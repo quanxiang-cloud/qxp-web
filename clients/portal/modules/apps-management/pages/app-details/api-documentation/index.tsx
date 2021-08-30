@@ -12,14 +12,11 @@ function ApiDocument(): JSX.Element {
 
   useEffect(() => {
     store.appID = appID;
-  }, [appID]);
-
-  useEffect(() => {
     store.fetchDataModels();
     return () => {
       store.tableID = '';
     };
-  }, []);
+  }, [appID]);
 
   return (
     <>
