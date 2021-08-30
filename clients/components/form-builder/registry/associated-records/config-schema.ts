@@ -91,25 +91,25 @@ const schema: ISchema = {
           type: 'array',
           items: { type: 'string' },
           'x-component': 'AssociatedTableColumnsPicker',
-          'x-index': 7,
           'x-mega-props': {
             labelAlign: 'top',
           },
+          'x-index': 5,
         },
         required: {
           title: '是否必填',
           default: false,
           'x-component': 'Switch',
-          'x-index': 8,
+          'x-index': 6,
         },
         defaultValueLinkage: {
           title: '数据源',
           'x-component': 'DefaultValueLinkageConfigBtn',
-          'x-index': 10,
           'x-component-props': {
             isLinkedFieldHide: true,
             isLinkedTableReadonly: true,
           },
+          'x-index': 7,
         },
         filterConfig: {
           title: '',
@@ -117,6 +117,7 @@ const schema: ISchema = {
           'x-mega-props': {
             labelAlign: 'top',
           },
+          'x-index': 8,
         },
       },
     },
