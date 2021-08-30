@@ -93,7 +93,7 @@ function EditorDataModel({ isEditor, onCancel, onSubmit }: Props): JSX.Element {
   return (
     <div className='p-24 h-full'>
       <div style={{ maxWidth: '400px' }} className='mx-auto mb-32'>
-        <Steps current={curStep}>
+        <Steps className='data-model-steps' current={curStep}>
           <Steps.Step title="基本信息" key='basic' />
           <Steps.Step title="字段设计" key='fieldDesign' />
         </Steps>
