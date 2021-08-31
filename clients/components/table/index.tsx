@@ -92,6 +92,7 @@ export default function Table<T extends Record<string, any>>({
               return (
                 <col
                   {...header.getHeaderProps()}
+                  width={header.width}
                   key={header.id}
                 />
               );

@@ -6,7 +6,7 @@ import Select from '@c/select';
 import Checkbox from '@c/checkbox';
 
 import FilterSetting from './filter-setting';
-import FieldSort from './field-sort';
+import TableColumnConfig from './table-column-config';
 import store from '../store';
 
 const SORT_OPTION = [
@@ -126,11 +126,11 @@ function PageSettingConfig(): JSX.Element {
           </div>
         )}
       >
-        <FieldSort
-          sortChange={store.setPageTableColumns}
-          selectKeys={store.pageTableColumns}
+        <TableColumnConfig
+          sortChange={store.pageTableColumnsSort}
+          selectFields={store.pageTableColumns}
           fieldList={store.fieldList}
-          showOnChange={({ target }) => store.toggleTableColumn(target.value, target.checked)}
+          onChange={store.tableColumnController}
         />
       </ConfigItemRender>
     </div>

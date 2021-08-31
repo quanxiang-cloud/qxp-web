@@ -8,14 +8,13 @@ import FormDataValueRenderer from '@c/form-data-value-renderer';
 import { getCondition } from '@c/data-filter/utils';
 import { not } from '@lib/utils';
 import { schemaToMap } from '@lib/schema-convert';
-
-import { TableConfig } from './type';
+import { TableConfig, TableColumnConfig } from './type';
 import AppPageDataStore from './store';
 
 export type Scheme = Record<string, any>;
 export type Config = {
   filters?: Filters;
-  pageTableColumns?: string[];
+  pageTableColumns?: TableColumnConfig[];
   pageTableShowRule?: TableConfig;
 };
 
@@ -69,6 +68,18 @@ export function setFixedParameters(
   return tableColumns;
 }
 
+// 默认列宽
+export const DEFAULT_COLUMN_WIDTH = 100;
+
+// 旧数据兼容方法
+export function columnStringToObject(pageTableColumns: string[] | TableColumnConfig[]): TableColumnConfig[] {
+  if (pageTableColumns.length && typeof pageTableColumns[0] === 'string') {
+    return (pageTableColumns as string[]).map((id) => ({ id }));
+  }
+
+  return pageTableColumns as TableColumnConfig[];
+}
+
 export function getPageDataSchema(
   config: Config,
   schema: ISchema,
@@ -79,16 +90,20 @@ export function getPageDataSchema(
 } {
   const { pageTableShowRule = {}, pageTableColumns = [] } = config || {};
   const fieldsMap = schemaToMap(schema);
-  const tableColumns: UnionColumns<any>[] = pageTableColumns.filter((key) => key in fieldsMap).map((key) => {
+  const _pageTableColumns = columnStringToObject(pageTableColumns);
+  const tableColumns: UnionColumns<any>[] = _pageTableColumns.filter(({ id }) => {
+    return id in fieldsMap;
+  }).map(({ id, width }) => {
     return {
-      id: key,
-      Header: fieldsMap[key].title || '',
+      id,
+      width: width || '',
+      Header: fieldsMap[id].title || '',
       accessor: (data: any) => {
-        if (data[key] === undefined || data[key] === null || data[key] === '') {
+        if (data[id] === undefined || data[id] === null || data[id] === '') {
           return <span className='text-gray-300'>——</span>;
         }
 
-        return <FormDataValueRenderer value={data[key]} schema={fieldsMap[key]} />;
+        return <FormDataValueRenderer value={data[id]} schema={fieldsMap[id]} />;
       },
     };
   });

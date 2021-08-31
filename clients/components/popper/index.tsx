@@ -29,7 +29,7 @@ type State = {
   popVisible: boolean;
 }
 
-export default class Popper2 extends React.Component<Props, State> {
+export default class Popper2 extends React.PureComponent<Props, State> {
   popperContainer: HTMLElement = document.createElement('div');
   instance: Instance | null = null;
   delayTimer: number | null = null;
@@ -65,6 +65,10 @@ export default class Popper2 extends React.Component<Props, State> {
   componentDidUpdate(prevProps: Props, prevState: State): void {
     const { popVisible } = this.state;
     const { popVisible: prevPopVisible } = prevState;
+    if (prevProps.reference !== this.props.reference) {
+      this.bindEventsOnReference();
+      this.setPopVisible(true);
+    }
 
     if (popVisible) {
       this.bindEventsOnPopper();
