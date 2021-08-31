@@ -9,7 +9,7 @@ const { Option } = Select;
 
 function MultipleSelect(fieldProps: ISchemaFieldComponentProps): JSX.Element {
   const options = useEnumOptions(fieldProps);
-  const newValues: string[] | LabelValue[] = fieldProps.value || [];
+  const defaultValues: string[] | LabelValue[] = fieldProps.value || [];
 
   function handleSelectChange(value: string[]): void {
     const values = stringToLabelValue(value, options);
@@ -17,15 +17,14 @@ function MultipleSelect(fieldProps: ISchemaFieldComponentProps): JSX.Element {
   }
 
   const selectValue: string[] = [];
-  if (fieldProps && newValues.length > 0) {
-    newValues.map((itemValue) => {
-      if (itemValue && (typeof itemValue === 'object')) {
-        selectValue.push(itemValue.value);
-        return itemValue;
+  if (fieldProps && defaultValues.length > 0) {
+    defaultValues.forEach((option) => {
+      if (option && (typeof option === 'object')) {
+        selectValue.push(option.value);
+        return;
       }
 
-      selectValue.push(itemValue);
-      return itemValue;
+      selectValue.push(option);
     });
   }
 

@@ -59,14 +59,13 @@ function statisticValueRender({ schema, value }: ValueRendererProps): string {
 function objectLabelValueRenderer({ value, schema }: ValueRendererProps): string {
   if (!value) return '';
   const _value = value as string;
-  const newValue: string = (_value.indexOf(':') !== -1) ? splitValue(_value).value : _value;
   const datasetId = schema['x-component-props']?.datasetId;
   if (datasetId) {
     if (_value.indexOf(':') !== -1) {
       const { label } = splitValue(_value);
       return label;
     }
-    return newValue;
+    return _value;
   }
 
   if (_value.indexOf(':') !== -1) {
@@ -76,26 +75,24 @@ function objectLabelValueRenderer({ value, schema }: ValueRendererProps): string
 
   const options = (schema.enum || []) as FormBuilder.Option[];
   const label = options.find((option) => option.value === _value)?.label ||
-    ((_value.indexOf(':') !== -1 ? splitValue(_value).label : newValue));
+    ((_value.indexOf(':') !== -1 ? splitValue(_value).label : _value));
   return label;
 }
 
 function arrayLabelValueRenderer({ value, schema }: ValueRendererProps): string {
-  const newValue: string[] | LabelValue[] = (value as string[] | LabelValue[]) || [];
+  const values: string[] | LabelValue[] = (value as string[] | LabelValue[]) || [];
   const datasetId = schema['x-component-props'] && schema['x-component-props'].datasetId;
   if (datasetId) {
-    const labels = newValue.map((v) => {
-      const _value: string = typeof v === 'object' ? v.label : v;
-      return _value;
+    return values.map((option) => {
+      return (typeof option === 'object') ? option.label : option;
     }).join(', ');
-    return labels;
   }
 
   const options = (schema.enum || []) as FormBuilder.Option[];
-  const labels = newValue.map((itemValue) => {
-    const _value: string = typeof itemValue === 'object' ? itemValue.value : itemValue;
+  const labels = values.map((option) => {
+    const _value: string = typeof option === 'object' ? option.value : option;
     return options.find((option) => option.value === _value)?.label ||
-      (typeof itemValue === 'object' ? itemValue.label : itemValue);
+      (typeof option === 'object' ? option.label : option);
   }).join(', ');
 
   return labels;

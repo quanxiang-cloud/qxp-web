@@ -8,7 +8,7 @@ import { stringToLabelValue } from '@lib/utils';
 function CheckBoxGroup(fieldProps: ISchemaFieldComponentProps): JSX.Element {
   const options = useEnumOptions(fieldProps);
   const { optionsLayout } = fieldProps.props['x-component-props'];
-  const handledValue: string[] | LabelValue[] = fieldProps.value || [];
+  const defaultValues: string[] | LabelValue[] = fieldProps.value || [];
 
   function handleCheckBoxChange(value: Array<CheckboxValueType>): void {
     const values = stringToLabelValue(value, options);
@@ -16,14 +16,14 @@ function CheckBoxGroup(fieldProps: ISchemaFieldComponentProps): JSX.Element {
   }
 
   const checkboxValue: string[] = [];
-  if (fieldProps && handledValue.length > 0) {
-    handledValue.forEach((itemValue) => {
-      if (itemValue && typeof itemValue === 'object') {
-        checkboxValue.push(itemValue.value);
+  if (fieldProps && defaultValues.length > 0) {
+    defaultValues.forEach((option) => {
+      if (option && typeof option === 'object') {
+        checkboxValue.push(option.value);
         return;
       }
 
-      checkboxValue.push(itemValue);
+      checkboxValue.push(option);
     });
   }
 
