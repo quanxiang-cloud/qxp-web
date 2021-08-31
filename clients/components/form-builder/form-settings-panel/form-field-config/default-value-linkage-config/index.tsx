@@ -237,8 +237,6 @@ function LinkageConfig({
             return;
           }
 
-          console.log(currentCompareValue);
-          console.log(optionValues);
           state.value = optionValues.includes(currentCompareValue) ? currentCompareValue : undefined;
           return;
         }
