@@ -81,7 +81,7 @@ function AppAdmin(): JSX.Element {
 
   useEffect(() => {
     fetchAdmins();
-  }, [params]);
+  }, [params, appID]);
 
   const columns: UnionColumns<Employee>[] = React.useMemo(() => [
     {
@@ -141,7 +141,7 @@ function AppAdmin(): JSX.Element {
             批量移除
           </Button>
         )}
-        <div className="m-20">
+        <div className="m-20 bg-white p-20 rounded-12">
           <Table
             showCheckbox
             rowKey="id"

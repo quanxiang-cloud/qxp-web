@@ -16,11 +16,17 @@ export function saveTableSchema(
   );
 }
 
+type CheckRepeatRes = {
+  tableID?: string;
+  title: string;
+  isModify: boolean;
+}
+
 export function modelCodeCheckRepeat(
-  appID: string, tableID: string,
+  appID: string, data: CheckRepeatRes,
 ): Promise<{ exist: boolean; }> {
   return httpClient(
     `/api/v1/structor/${appID}/m/table/checkRepeat`,
-    { tableID },
+    data,
   );
 }

@@ -1,9 +1,11 @@
-import httpClient, { getTableSchema } from '@lib/http-client';
 import logger from '@lib/logger';
+import httpClient, { getTableSchema } from '@lib/http-client';
+import { MenuType } from '@portal/modules/apps-management/pages/app-details/type';
 
 type AppPage = {
   id: string;
   name: string;
+  menuType?: number;
   child?: AppPage[];
 }
 
@@ -31,7 +33,7 @@ export function getLinkageTables(appID: string): Promise<Array<{ label: string; 
       return [];
     }
 
-    const appPages = res.menu;
+    const appPages = res.menu.filter(({ menuType }) => menuType === MenuType.schemaForm);
     return convertPagesToOptions(appPages, []);
   }).catch((err) => {
     logger.error(err);
