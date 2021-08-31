@@ -73,7 +73,13 @@ function FormAddGroup({ className, isEdit, onSubmit, onCancel }: Props): JSX.Ele
 
     return (
       <div className='flex justify-center mt-40 gap-x-20'>
-        {btns.map(({ className = '', text, key, onClick, ...rest }) => (
+        {btns.map(({
+          className = '',
+          text,
+          key,
+          onClick,
+          ...rest
+        }) => (
           <Button
             key={key}
             className={className}
