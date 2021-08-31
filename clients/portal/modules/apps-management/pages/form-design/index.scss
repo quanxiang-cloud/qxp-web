@@ -26,3 +26,11 @@
     height: calc(100vh - 112px);
   }
 }
+
+.previewTable {
+  label {
+    white-space: pre-wrap;
+    text-align: left;
+    height: auto !important;
+  }
+}

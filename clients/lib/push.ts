@@ -55,7 +55,7 @@ class PushServer {
     }
   }
 
-  attachEvents = () => {
+  attachEvents = (): void => {
     this.connection.onopen = () => {
       this.heartbeat();
     };

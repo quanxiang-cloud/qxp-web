@@ -38,8 +38,8 @@ export const BASIC_INFO_SCHEMA: ISchema = {
               message: '请输入模型编码',
             },
             {
-              message: '必须以字母开头,由字母、数字、下划线组成',
-              pattern: /^[a-zA-Z][a-zA-Z0-9_]*$/,
+              message: '必须以字母开头,由字母、数字组成',
+              pattern: /^[a-zA-Z][a-zA-Z0-9]*$/,
             },
           ],
           'x-component': 'Input',
@@ -256,6 +256,10 @@ export const FIELD_FORM_SCHEMA = {
           'x-component': 'Select',
           enum: [
             {
+              label: '不校验',
+              value: '',
+            },
+            {
               label: '唯一校验',
               value: 'only',
             },
@@ -282,6 +286,9 @@ export const FIELD_FORM_SCHEMA = {
           ],
           'x-index': 8,
           visible: false,
+          'x-component-props': {
+            allowClear: true,
+          },
           'x-mega-props': {
             labelAlign: 'top',
           },

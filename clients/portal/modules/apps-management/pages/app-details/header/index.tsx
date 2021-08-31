@@ -24,10 +24,6 @@ function DetailsHeader(): JSX.Element {
     history.replace(location.pathname.replace(appID, newAppId));
   };
 
-  // const goAppVisit = (): void => {
-  //   window.open(`//${window.CONFIG.home_hostname}/apps/` + appID);
-  // };
-
   const statusTipsContent = (isPublish: boolean): JSX.Element => {
     if (isPublish) {
       return (
@@ -80,9 +76,6 @@ function DetailsHeader(): JSX.Element {
           </PopConfirm>
         )}
         <hr className='app-global-header-hr' />
-        {/* <Button forbidden={!isPublish} onClick={goAppVisit} className='mr-16' iconName='login'>
-          进入应用访问
-        </Button> */}
         <a
           href={`//${window.CONFIG.docs_hostname}`}
           target="_blank"

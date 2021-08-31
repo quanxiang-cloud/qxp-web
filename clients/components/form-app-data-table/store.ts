@@ -3,10 +3,11 @@ import { UnionColumns } from 'react-table';
 import { action, observable, reaction, IReactionDisposer } from 'mobx';
 
 import httpClient from '@lib/http-client';
+import schemaToFields, { schemaToMap } from '@lib/schema-convert';
+import { SYSTEM_FIELDS } from '@c/form-builder/constants';
 
 import { TableHeaderBtn, TableConfig } from './type';
 import { Config, getPageDataSchema } from './utils';
-import schemaToFields, { schemaToMap } from '@lib/schema-convert';
 
 type Params = {
   condition?: Condition[] | [],
@@ -122,7 +123,9 @@ class AppPageDataStore {
 
   @action
   setFilters = (filters: Filters): void => {
-    this.filters = filters.filter((key) => key in (schemaToMap(this.schema) || {}));
+    this.filters = filters.filter((key) => {
+      return SYSTEM_FIELDS.includes(key) || key in (schemaToMap(this.schema) || {});
+    });
   }
 
   @action

@@ -12,7 +12,9 @@ import { INIT_MODEL_SCHEMA } from '../utils';
 class AppModelStore {
   fetchDataModelDisposer: IReactionDisposer
   constructor() {
-    this.fetchDataModelDisposer = reaction(() => this.params, this.fetchDataModels);
+    this.fetchDataModelDisposer = reaction(() => {
+      return { params: this.params, appID: this.appID };
+    }, this.fetchDataModels);
     reaction(() => this.curDataModel?.tableID, this.fetchSchema);
   }
 

@@ -46,7 +46,6 @@ class FormDesignStore {
   @observable pageLoading = true;
   @observable formStore: FormStore | null = null;
   @observable hasSchema = false;
-  @observable initScheme: ISchema = {};
   @observable pageTableColumns: string[] = [];
   @observable pageTableShowRule: TableConfig = { order: '-created_at', pageSize: 10 };
   @observable filters: Filters = [];
@@ -74,6 +73,17 @@ class FormDesignStore {
     });
   }
 
+  @computed get allSchema(): ISchema {
+    return {
+      ...this.formStore?.schema,
+      title: this.pageName,
+      properties: {
+        ...this.formStore?.schema?.properties,
+        ...this.internalFields,
+      },
+    };
+  }
+
   @computed get internalFields(): Record<string, ISchema> {
     const _internalFields = this.formStore?.internalFields.reduce<Record<string, ISchema>>((acc, field) => {
       const { fieldName, componentName, configValue } = field;
@@ -87,7 +97,6 @@ class FormDesignStore {
 
       return acc;
     }, {});
-
     return _internalFields || {};
   }
 
@@ -126,7 +135,7 @@ class FormDesignStore {
       });
     });
 
-    this.destroySetSchema = reaction(() => this.formStore?.schema, this.appPageStore.setSchema);
+    this.destroySetSchema = reaction(() => this.allSchema, this.appPageStore.setSchema);
     this.destroySetFilters = reaction(() => this.filters, this.appPageStore.setFilters);
 
     this.destroySetTableColumn = reaction((): UnionColumns<any>[] => {
@@ -201,11 +210,6 @@ class FormDesignStore {
   }
 
   @action
-  reSetFormScheme = (): void => {
-    this.formStore = new FormStore({ schema: this.initScheme, appID: this.appID, pageID: this.pageID });
-  }
-
-  @action
   fetchFormScheme = ({ pageID, appID }: { pageID: string, appID: string }): void => {
     if (!pageID || !appID) {
       return;
@@ -215,7 +219,6 @@ class FormDesignStore {
     getTableSchema(appID, pageID).then((res) => {
       const { schema = {}, config = {} } = res || {};
       this.hasSchema = !!res;
-      this.initScheme = schema;
       this.formStore = new FormStore({ schema, appID, pageID });
       this.pageTableColumns = config.pageTableColumns || SYSTEM_FIELDS.filter((key) => key !== '_id');
       this.filters = config.filters || [];
@@ -243,17 +246,8 @@ class FormDesignStore {
 
     this.saveSchemeLoading = true;
 
-    const allSchema = {
-      ...this.formStore.schema,
-      title: this.pageName,
-      properties: {
-        ...this.formStore?.schema?.properties,
-        ...this.internalFields,
-      },
-    };
-
     try {
-      await saveTableSchema(this.appID, this.pageID, allSchema || {});
+      await saveTableSchema(this.appID, this.pageID, this.allSchema || {});
       createPageScheme(this.appID, {
         tableID: this.pageID, config: {
           pageTableColumns: this.pageTableColumns,
@@ -263,7 +257,6 @@ class FormDesignStore {
       });
       toast.success(this.hasSchema ? '保存成功!' : '创建成功!');
       (this.formStore as FormStore).hasEdit = false;
-      this.initScheme = this.formStore?.schema as ISchema;
       this.saveSchemeLoading = false;
       return true;
     } catch (error) {

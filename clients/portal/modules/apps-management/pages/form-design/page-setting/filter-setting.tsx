@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Modal } from '@QCFE/lego-ui';
 import { observer } from 'mobx-react';
 
@@ -30,12 +30,19 @@ function infoRender(title: string, desc: string): JSX.Element {
 function FilterSetting(): JSX.Element {
   const [filters, setFilters] = useState<Filters>(store.filters);
   const fieldList = store.fieldList.filter(({ xComponent }) => FILTER_FIELD.includes(xComponent));
+
+  useEffect(() => {
+    if (store.filterModalVisible) {
+      setFilters(store.filters);
+    }
+  }, [store.filterModalVisible]);
+
   const handleCancel = (): void => {
     store.filterModalVisible = false;
   };
 
   const handleRemove = (fieldID: string): void => {
-    setFilters(filters.filter((id)=>id !== fieldID));
+    setFilters(filters.filter((id) => id !== fieldID));
   };
 
   const handleCheckChange = (e: React.ChangeEvent<HTMLInputElement>, field: PageField): void => {
@@ -81,8 +88,8 @@ function FilterSetting(): JSX.Element {
           title='筛选条件配置'
           onCancel={handleCancel}
           className="static-modal"
-          footer={
-            (<div className="flex items-center">
+          footer={(
+            <div className="flex items-center">
               <Button iconName='close' onClick={handleCancel}>
                 取消
               </Button>
@@ -94,8 +101,8 @@ function FilterSetting(): JSX.Element {
               >
                 保存筛选配置
               </Button>
-            </div>)
-          }
+            </div>
+          )}
         >
           <div className='w-full'>
             {fieldList.map((field: PageField) => fieldFilterRender(field))}

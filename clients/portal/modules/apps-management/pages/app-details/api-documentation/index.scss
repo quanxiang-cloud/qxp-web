@@ -39,6 +39,17 @@
   transition: max-height .3s ease-out;
 }
 
+.api-content {
+  position: relative;
+  & > .copy-button{
+    position: absolute;
+    top: 30px;
+    right: 30px;
+    padding: 6px 16px;
+    border-radius: 4px;
+  }
+}
+
 .api-content-title {
   font-size: 18px;
   line-height: 28px;
