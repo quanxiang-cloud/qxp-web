@@ -52,7 +52,9 @@ function ApprovalDetail(): JSX.Element {
   );
 
   const getTask = (): Record<string, any> => {
-    return get(data, 'taskDetailModels', []).find((taskItem: Record<string, any>) => taskItem?.formData !== null);
+    return get(data, 'taskDetailModels', []).find(
+      (taskItem: Record<string, any>) => taskItem?.formData !== null,
+    );
   };
 
   useEffect(() => {
@@ -76,6 +78,7 @@ function ApprovalDetail(): JSX.Element {
             };
           });
           setStatus(status);
+          setCurrentTaskId(taskDetailModels[0]?.taskId);
         }
       });
     }
@@ -132,16 +135,18 @@ function ApprovalDetail(): JSX.Element {
         <Panel className="flex flex-col flex-1 mr-20 px-24 py-24">
           {
             <>
-              {showSwitch && (<Switch
-                className="pb-24"
-                onChange={
-                  (value: string) => {
-                    setCurrentTaskId(value);
+              {showSwitch && (
+                <Switch
+                  className="pb-24"
+                  onChange={
+                    (value: string) => {
+                      setCurrentTaskId(value);
+                    }
                   }
-                }
-                value={currentTaskId}
-                options={status}
-              />)}
+                  value={currentTaskId}
+                  options={status}
+                />
+              )}
               <Toolbar
                 currTask={task}
                 permission={task?.operatorPermission || {}}
