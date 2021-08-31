@@ -130,7 +130,7 @@ export default class Tree<T> extends React.Component<Props<T>> {
       return (<div className="tree" />);
     }
 
-    const upwardFocusedStyleToParent = currentFocusedNode.id != actualFocusedNodeID;
+    const upwardFocusedStyleToParent = currentFocusedNode.id !== actualFocusedNodeID;
 
     const rootNode = nodeList[0];
 

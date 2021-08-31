@@ -12,6 +12,7 @@ import UsersAndPermissions from './users-and-permissions';
 import ApiDocument from './api-documentation';
 
 const WorkFlows = React.lazy(() => import('../../work-flow-list'));
+const ApiProxy = React.lazy(() => import('./api-proxy'));
 
 function AppDetailsContent(): JSX.Element {
   return (
@@ -26,6 +27,7 @@ function AppDetailsContent(): JSX.Element {
         <Route exact path='/apps/details/:appID/base_info' component={AppInfo} />
         <Route exact path='/apps/details/:appID/app_permission' component={UsersAndPermissions} />
         <Route exact path='/apps/details/:appID/app_manager' component={AppAdmin} />
+        <Route exact path='/apps/details/:appID/api_proxy' component={ApiProxy} />
       </div>
     </>
   );

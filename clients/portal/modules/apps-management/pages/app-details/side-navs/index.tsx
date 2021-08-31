@@ -44,6 +44,11 @@ const SIDE_NAVS = [
         icon: 'insights',
       },
       {
+        id: 'api_proxy',
+        name: '第三方API代理',
+        icon: 'link',
+      },
+      {
         id: 'file_api',
         name: 'API文档',
         icon: 'link',
