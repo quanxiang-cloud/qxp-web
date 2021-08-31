@@ -237,7 +237,9 @@ function LinkageConfig({
             return;
           }
 
-          state.value = optionValues.includes(currentCompareValue);
+          console.log(currentCompareValue);
+          console.log(optionValues);
+          state.value = optionValues.includes(currentCompareValue) ? currentCompareValue : undefined;
           return;
         }
       }
