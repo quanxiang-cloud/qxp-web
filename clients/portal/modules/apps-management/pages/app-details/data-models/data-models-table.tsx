@@ -23,7 +23,7 @@ function DataModelsTable(): JSX.Element {
     {
       Header: '模型编码',
       id: 'tableID',
-      accessor: 'tableID',
+      accessor: ({ tableID }) => tableID.split('_').pop(),
     },
     {
       Header: '字段数',
