@@ -38,8 +38,8 @@ export const BASIC_INFO_SCHEMA: ISchema = {
               message: '请输入模型编码',
             },
             {
-              message: '必须以字母开头,由字母、数字、下划线组成',
-              pattern: /^[a-zA-Z][a-zA-Z0-9_]*$/,
+              message: '必须以字母开头,由字母、数字组成',
+              pattern: /^[a-zA-Z][a-zA-Z0-9]*$/,
             },
           ],
           'x-component': 'Input',

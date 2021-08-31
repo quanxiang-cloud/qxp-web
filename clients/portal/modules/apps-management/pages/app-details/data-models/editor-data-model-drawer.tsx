@@ -35,6 +35,7 @@ function EditorDataModel({ isEditor, onCancel, onSubmit }: Props): JSX.Element {
   useEffect(() => {
     if (isEditor) {
       actions.setFieldState('tableID', (state) => {
+        state.value = state.value.split('_').pop();
         state.props.readOnly = true;
       });
     }

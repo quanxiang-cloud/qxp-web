@@ -15,7 +15,7 @@ function ModelDetails(): JSX.Element {
   return (
     <div style={{ height: 'calc(100vh - 56px)' }} className='p-20 flex flex-col'>
       <div className='mb-16'>模型名称：{store.basicInfo.title}</div>
-      <div className='mb-16'>模型编码：{store.basicInfo.tableID}</div>
+      <div className='mb-16'>模型编码：{store.basicInfo.tableID.split('_').pop()}</div>
       <div className='mb-16'>模型简介：{store.basicInfo.description || '—'}</div>
       <div className='mb-16'>模型字段：</div>
       <div className='flex overflow-hidden'>

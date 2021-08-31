@@ -9,6 +9,7 @@ import {
   FormEffectHooks,
   createFormActions,
   IFieldState,
+  IForm,
 } from '@formily/antd';
 import {
   Input,
@@ -26,7 +27,6 @@ import { StoreContext } from '@c/form-builder/context';
 import { JoinOperatorSelect, RulesList } from '@c/form-builder/customized-fields';
 import { INTERNAL_FIELD_NAMES } from '@c/form-builder/store';
 import { getCompareOperatorOptions, getSourceElementOperator } from '@c/form-builder/utils/operator';
-import { FieldConfigContext } from '@c/form-builder/form-settings-panel/form-field-config/context';
 import { getLinkageTables } from '@c/form-builder/utils/api';
 import schemaToFields from '@lib/schema-convert';
 
@@ -73,6 +73,7 @@ type Option = {
 }
 
 type Props = {
+  form: IForm;
   onClose: () => void;
   onSubmit: (linkage: FormBuilder.DefaultValueLinkage) => void;
   linkage?: FormBuilder.DefaultValueLinkage;
@@ -81,14 +82,13 @@ type Props = {
 }
 
 function LinkageConfig({
-  onClose, onSubmit, linkage, isLinkedFieldHide, isLinkedTableReadonly,
+  onClose, onSubmit, linkage, isLinkedFieldHide, isLinkedTableReadonly, form,
 }: Props): JSX.Element {
   const actions = createFormActions();
   const { setFieldState, getFieldValue, setFieldValue } = actions;
   const [linkageTables, setLinkageTables] = useState<Array<FormBuilder.Option>>([]);
   const linkedTableFieldsRef = useRef<LinkedTableFieldOptions[]>([]);
   const store = useContext(StoreContext);
-  const { actions: configActions } = useContext(FieldConfigContext);
   const defaultValue = linkage || DEFAULT_VALUE_LINKAGE;
 
   const currentFormFields = schemaToFields(toJS(store.schema)).filter((field) => {
@@ -134,7 +134,7 @@ function LinkageConfig({
       setLinkageTables(filteredOptions);
       setFieldState('linkedTableID', (state) => state.props.enum = filteredOptions);
       if (isLinkedTableReadonly) {
-        configActions.getFieldState('Fields.linkedTable', (state) => {
+        form.getFieldState('Fields.linkedTable', (state) => {
           setFieldValue('linkedTableID', state.value.tableID);
         });
         return;
@@ -237,7 +237,7 @@ function LinkageConfig({
             return;
           }
 
-          state.value = optionValues.includes(currentCompareValue);
+          state.value = optionValues.includes(currentCompareValue) ? currentCompareValue : undefined;
           return;
         }
       }

@@ -2,12 +2,13 @@ import React, { useContext, useEffect } from 'react';
 import {
   SchemaForm,
   FormEffectHooks,
-  createAsyncFormActions,
+  createFormActions,
 } from '@formily/antd';
 import { Input, Switch, Radio } from '@formily/antd-components';
 
 import FilterConfig from '@c/form-builder/form-settings-panel/form-field-config/filter-config';
-import DefaultValueLinkageConfigBtn from '@c/form-builder/form-settings-panel/form-field-config/default-value-linkage-config-btn';
+import DefaultValueLinkageConfigBtn from
+  '@c/form-builder/form-settings-panel/form-field-config/default-value-linkage-config-btn';
 import { StoreContext } from '@c/form-builder/context';
 
 import LinkedTable from './linked-table';
@@ -31,15 +32,15 @@ const COMPONENTS = {
   FilterConfigBtn,
   FilterConfig,
 };
+
 const { onFieldInputChange$ } = FormEffectHooks;
+const actions = createFormActions();
 
 function AssociatedRecordsConfig({ initialValue, onChange }: Props): JSX.Element {
   const { appID, schema } = useContext(StoreContext);
-  const actions = createAsyncFormActions();
-  const { setFieldState } = actions;
 
   useEffect(() => {
-    setFieldState('filterConfig', (state) => {
+    actions.setFieldState('filterConfig', (state) => {
       state.props['x-component-props'] = {
         appID, tableID: initialValue.linkedTable.tableID, currentFormSchema: schema,
       };
@@ -48,7 +49,7 @@ function AssociatedRecordsConfig({ initialValue, onChange }: Props): JSX.Element
 
   const formModelEffect = (): void => {
     onFieldInputChange$('linkedTable').subscribe(({ value }) => {
-      setFieldState('filterConfig', (state) => {
+      actions.setFieldState('filterConfig', (state) => {
         state.props['x-component-props'] = { appID, tableID: value.tableID, currentFormSchema: schema };
       });
     });
