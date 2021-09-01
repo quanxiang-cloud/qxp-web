@@ -111,7 +111,7 @@ const schema: ISchema = {
           'x-index': 6,
         },
         defaultValueFrom: {
-          title: '选项集',
+          title: '数值源',
           enum: [
             {
               label: '自定义',

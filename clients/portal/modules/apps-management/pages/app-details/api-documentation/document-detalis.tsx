@@ -126,7 +126,7 @@ function ApiDocumentDetails(): JSX.Element {
       <div className='py-20 px-40'>
         <div className='mb-16 flex justify-between'>
           <div className='text-gray-900 text-h5'>{store.currentDataModel.title || '------'}</div>
-          <div>
+          <div className='flex items-center'>
             使用Fields ID:
             <Toggle
               className='ml-8'
