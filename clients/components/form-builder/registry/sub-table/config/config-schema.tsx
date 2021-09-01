@@ -114,15 +114,6 @@ const schema: ISchema = {
           'x-component': 'Switch',
           'x-index': 7,
         },
-        tableID: {
-          type: 'string',
-          'x-component': 'Input',
-          'x-component-props': {
-            className: 'hidden',
-          },
-          default: '',
-          'x-index': 8,
-        },
       },
     },
   },
