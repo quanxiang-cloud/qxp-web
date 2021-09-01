@@ -83,7 +83,6 @@ function PageList(): JSX.Element {
           <span className='text-h6-bold text-gray-400 mr-auto'>页面目录</span>
           <Tooltip content='添加分组'>
             <AddGroupPoper
-              id={curEditNode?.id as string}
               onSubmit={handleEditGroup}
             />
           </Tooltip>
@@ -114,8 +113,7 @@ function PageList(): JSX.Element {
       />
       {modalType === 'editGroup' && (
         <EditGroupModal
-          id={curEditNode?.id as string}
-          name={curEditNode?.data.name}
+          groupInfo={curEditNode?.data as PageInfo}
           onCancel={closeModal}
           onSubmit={handleEditGroup}
         />
