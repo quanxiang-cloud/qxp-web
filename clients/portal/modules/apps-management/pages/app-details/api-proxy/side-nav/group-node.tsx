@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { NodeRenderProps } from '@c/headless-tree/types';
+import { useHistory, useParams } from 'react-router-dom';
+import { observer } from 'mobx-react';
 
 import MoreMenu from '@c/more-menu';
 import Icon from '@c/icon';
@@ -42,6 +44,8 @@ const menus = [
 function GroupNodeRender({ node, store }: NodeRenderProps<APIGroup>): JSX.Element {
   const [modalType, setModalType] = useState<ModalType>('');
   const [modalOpen, setModalOpen] = useState<boolean>(false);
+  const history = useHistory();
+  const { appID } = useParams<{appID: string}>();
 
   const handleClickMenu = (key: string) => {
     setModalType(key);
@@ -50,6 +54,11 @@ function GroupNodeRender({ node, store }: NodeRenderProps<APIGroup>): JSX.Elemen
 
   const saveGroup = (data: FormDataCreateApiGroup) => {
 
+  };
+
+  const toGroup = (id: string)=> {
+    const prefix = `/apps/details/${appID}/api_proxy`;
+    history.push(`${prefix}/${id}`);
   };
 
   const renderModals = (): React.ReactNode => {
@@ -97,7 +106,11 @@ function GroupNodeRender({ node, store }: NodeRenderProps<APIGroup>): JSX.Elemen
 
   return (
     <div className="flex items-center flex-grow max-w-full">
-      <span className="truncate mr-auto" title={node.name}>
+      <span
+        className='truncate mr-auto inline-flex flex-1'
+        title={node.name}
+        onClick={()=> toGroup(node.id)}
+      >
         {node.name}
       </span>
       <MoreMenu onMenuClick={handleClickMenu} menus={menus} />
@@ -106,4 +119,4 @@ function GroupNodeRender({ node, store }: NodeRenderProps<APIGroup>): JSX.Elemen
   );
 }
 
-export default GroupNodeRender;
+export default observer(GroupNodeRender);

@@ -143,6 +143,7 @@ export default class Tree<T> extends React.Component<Props<T>> {
             'tree-node--focused': rootNode.id === currentFocusedNode.id,
             'tree-node--fade': renamingNodeID,
             'tree-node--accept-drop': this.isRootAcceptDrop,
+            hidden: !rootNode.visible,
           }, itemClassName)}
           onDragLeave={(): void => this.setAcceptDrop(false)}
           onDragOver={(e): void => {

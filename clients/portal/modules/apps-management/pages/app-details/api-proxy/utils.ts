@@ -10,10 +10,11 @@ export const apiGroupToTreeNode = (group: APIGroup): TreeNode<APIGroup> | any =>
     parentId: group.pid,
     path: '',
     isLeaf: !group.child?.length,
-    visible: true,
+    visible: group.visible ?? true,
     childrenStatus: 'resolved',
     expanded: true,
     order: 0,
+    level: group.level,
     children: children,
   };
 };

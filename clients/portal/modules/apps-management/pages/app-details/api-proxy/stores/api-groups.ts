@@ -3,6 +3,10 @@ import { apiGroupToTreeNode } from '../utils';
 
 export default class Store extends TreeStore<APIGroup> {
   constructor(groups: APIGroup) {
-    super({ rootNode: apiGroupToTreeNode(groups) });
+    // hide root node
+    groups.visible = false;
+    const rootNode = apiGroupToTreeNode(groups);
+
+    super({ rootNode }, false);
   }
 }

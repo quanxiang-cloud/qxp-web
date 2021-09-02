@@ -73,7 +73,7 @@ export default class TreeStore<T> {
     let invisibleNodeCount = 0;
 
     return nodeList.map((node, index) => {
-      if (node.level > expandLevel) {
+      if (node.level > expandLevel || !node.visible) {
         invisibleNodeCount = invisibleNodeCount + 1;
 
         return {

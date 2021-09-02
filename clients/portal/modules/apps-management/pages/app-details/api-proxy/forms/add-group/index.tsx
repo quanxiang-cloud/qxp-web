@@ -40,7 +40,7 @@ function FormAddGroup({ className, isEdit, defaultValues, onSubmit, onCancel }: 
   const handleNext = ()=> {
     actions.validate('*').then(()=>{
       setStep(step + 1);
-    }).catch();
+    }).catch(()=> {});
   };
 
   return (
@@ -59,7 +59,6 @@ function FormAddGroup({ className, isEdit, defaultValues, onSubmit, onCancel }: 
           components={components}
           actions={actions}
           onChange={(values)=> {
-            console.log('form data: ', formData);
             setFormData((vals)=> set(vals || {}, 'basic', values));
           }}
           onSubmit={onSubmit}
@@ -74,7 +73,6 @@ function FormAddGroup({ className, isEdit, defaultValues, onSubmit, onCancel }: 
           components={components}
           actions={actions}
           onChange={(values)=> {
-            console.log('form data: ', formData);
             setFormData((vals)=> set(vals || {}, 'others', values));
           }}
           onSubmit={onSubmit}

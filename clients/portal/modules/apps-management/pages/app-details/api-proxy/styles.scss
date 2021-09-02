@@ -1,3 +1,6 @@
 .tree-node-item {
   height: 32px;
+  &.tree-node--focused {
+    background-color: #F1F5F9;
+  }
 }

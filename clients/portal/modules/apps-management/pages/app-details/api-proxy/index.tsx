@@ -1,16 +1,21 @@
 import React from 'react';
-import SideNav from './side-nav';
+import { Switch, Route, useRouteMatch } from 'react-router-dom';
 
-interface Props {
-  className?: string;
-}
+import List from './api-list';
+import Add from './add-api';
+import Detail from './api-detail';
 
-function ApiProxy(props: Props) {
+function ApiProxy() {
+  const { path } = useRouteMatch();
+
   return (
-    <div className='flex flex-grow'>
-      <SideNav/>
-
-    </div>
+    <Switch>
+      <Route exact path={path} component={List} />
+      <Route exact path={`${path}/:groupId`} component={List} />
+      <Route exact path={`${path}/:groupId/add`} component={Add} />
+      <Route exact path={`${path}/:groupId/:apiId`} component={Detail} />
+      <Route exact path={`${path}/:groupId/:apiId/edit`} component={Add} />
+    </Switch>
   );
 }
 

@@ -9,7 +9,7 @@ const sleep = (ms = 300) => {
  */
 export const mockAPI = async (apiName: string, data: any, timeout?: number) => {
   await sleep(timeout);
-  // console.log('--mock api-- ', apiName, data);
+  console.log('--mock api-- ', apiName, data);
   return {
     apiName,
     data,

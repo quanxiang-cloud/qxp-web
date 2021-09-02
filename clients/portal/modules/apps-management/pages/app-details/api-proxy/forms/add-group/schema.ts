@@ -46,7 +46,12 @@ export const othersSchema:ISchema = {
       type: 'string',
       title: '协议',
       required: true,
-      'x-component': 'Input',
+      'x-component': 'RadioGroup',
+      default: 'http',
+      enum: [
+        { label: 'HTTP', value: 'http' },
+        { label: 'HTTPS', value: 'https' },
+      ],
     },
     host: {
       type: 'string',

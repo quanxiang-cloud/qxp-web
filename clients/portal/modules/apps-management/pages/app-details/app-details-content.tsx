@@ -27,7 +27,7 @@ function AppDetailsContent(): JSX.Element {
         <Route exact path='/apps/details/:appID/base_info' component={AppInfo} />
         <Route exact path='/apps/details/:appID/app_permission' component={UsersAndPermissions} />
         <Route exact path='/apps/details/:appID/app_manager' component={AppAdmin} />
-        <Route exact path='/apps/details/:appID/api_proxy' component={ApiProxy} />
+        <Route path='/apps/details/:appID/api_proxy' component={ApiProxy} />
       </div>
     </>
   );
