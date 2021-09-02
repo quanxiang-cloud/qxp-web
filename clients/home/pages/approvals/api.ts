@@ -89,8 +89,8 @@ export const reviewTask = async (processInstanceId: string, taskId: string, para
 };
 
 // 加签
-export const signTask = async (taskID: string, params: Record<string, any>) => {
-  return await httpClient('/api/v1/flow/instance/addSign/{taskId}', params);
+export const signTask = async (processInstanceId: string, taskID: string, params: Record<string, any>) => {
+  return await httpClient(`/api/v1/flow/instance/addSign/${processInstanceId}/${taskID}`, params);
 };
 
 // // 获取任务的表单
