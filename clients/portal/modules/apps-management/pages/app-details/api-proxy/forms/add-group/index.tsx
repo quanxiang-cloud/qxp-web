@@ -1,19 +1,22 @@
 import React, { useState } from 'react';
 import cs from 'classnames';
 import { SchemaForm, createFormActions } from '@formily/antd';
-import { Input, Select } from '@formily/antd-components';
+import { Input, Select, Radio } from '@formily/antd-components';
 import { Steps } from 'antd';
+import { get, set } from 'lodash';
 
-import { FooterBtnProps } from '@c/modal';
-import Button from '@c/button';
+import StepBtns from './step-btns';
+import { basicSchema, othersSchema } from './schema';
 
-import schema from './schema';
+type Params=Record<string, any>;
+type FormValues={basic?: Params, others?: Params} | undefined;
 
 interface Props {
   className?: string;
   isEdit?: boolean;
   onSubmit: (data: FormDataCreateApiGroup) => void;
   onCancel: () => void;
+  defaultValues?: FormValues;
 }
 
 enum stepKey {
@@ -25,73 +28,19 @@ const components = {
   Input,
   TextArea: Input.TextArea,
   Select,
+  RadioGroup: Radio.Group,
 };
 
 const actions = createFormActions();
 
-function FormAddGroup({ className, isEdit, onSubmit, onCancel }: Props): JSX.Element {
+function FormAddGroup({ className, isEdit, defaultValues, onSubmit, onCancel }: Props): JSX.Element {
   const [step, setStep] = useState(stepKey.basic);
-  const [formData, setFormData] = useState({}); // todo: move to mobx
+  const [formData, setFormData] = useState<FormValues>(defaultValues);
 
-  const handleNext = () => {
-    // todo: validate form
-    setStep(step + 1);
-  };
-
-  const renderBtns = () => {
-    const btns: FooterBtnProps[] = step === stepKey.basic ? [
-      {
-        text: '取消',
-        key: 'cancel',
-        iconName: 'close',
-        onClick: onCancel,
-      },
-      {
-        text: '下一步',
-        key: 'next',
-        iconName: 'arrow_forward',
-        modifier: 'primary',
-        onClick: handleNext,
-      },
-    ] : [
-      {
-        text: '上一步',
-        key: 'back',
-        iconName: 'arrow_back',
-        onClick: () => setStep(step - 1),
-      },
-      {
-        text: '完成',
-        key: 'confirm',
-        iconName: 'check',
-        modifier: 'primary',
-        loading: false,
-        // todo
-        onClick: () => onSubmit(null),
-      },
-    ];
-
-    return (
-      <div className='flex justify-center mt-40 gap-x-20'>
-        {btns.map(({
-          className = '',
-          text,
-          key,
-          onClick,
-          ...rest
-        }) => (
-          <Button
-            key={key}
-            className={className}
-            onClick={(e) => onClick(key, e)}
-            {...rest}
-          >
-            {text}
-          </Button>
-        ))
-        }
-      </div>
-    );
+  const handleNext = ()=> {
+    actions.validate('*').then(()=>{
+      setStep(step + 1);
+    }).catch();
   };
 
   return (
@@ -99,25 +48,46 @@ function FormAddGroup({ className, isEdit, onSubmit, onCancel }: Props): JSX.Ele
       <div className='flex items-center mb-20 w-259 mx-auto'>
         <Steps current={step}>
           <Steps.Step title="基本信息" key='basic' />
-          <Steps.Step title="其它属性" key='others' />
+          <Steps.Step title="分组配置" key='others' />
         </Steps>
       </div>
-
       {step === stepKey.basic && (
         <SchemaForm
           className='max-w-%90'
           labelCol={6}
-          schema={schema}
+          schema={basicSchema}
           components={components}
           actions={actions}
+          onChange={(values)=> {
+            console.log('form data: ', formData);
+            setFormData((vals)=> set(vals || {}, 'basic', values));
+          }}
           onSubmit={onSubmit}
-          initialValues={formData}
+          initialValues={get(formData, 'basic', {})}
         />
       )}
       {step === stepKey.others && (
-        <div></div>
+        <SchemaForm
+          className='max-w-%90'
+          labelCol={6}
+          schema={othersSchema}
+          components={components}
+          actions={actions}
+          onChange={(values)=> {
+            console.log('form data: ', formData);
+            setFormData((vals)=> set(vals || {}, 'others', values));
+          }}
+          onSubmit={onSubmit}
+          initialValues={get(formData, 'others', {})}
+        />
       )}
-      {renderBtns()}
+      <StepBtns
+        step={step}
+        onCancel={onCancel}
+        onPrev={()=> setStep(step - 1)}
+        onNext={handleNext}
+        onSubmit={()=> {}}
+      />
     </div>
   );
 }
