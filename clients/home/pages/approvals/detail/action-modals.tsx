@@ -138,10 +138,10 @@ function ActionModals({
         store.setShowTips(true);
         return Promise.reject(new Error());
       }
-      return apis.signTask(taskID, {
+      return apis.signTask(processInstanceID, taskID, {
         assignee: chosenEmployees,
-        type: addSignType,
         multiplePersonWay: addSignValue,
+        type: addSignType,
       });
     }
 
