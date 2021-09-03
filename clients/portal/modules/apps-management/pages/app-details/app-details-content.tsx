@@ -10,8 +10,7 @@ import DataModels from './data-models';
 import PageMenuDesign from './page-menu-design';
 import UsersAndPermissions from './users-and-permissions';
 import ApiDocument from './api-documentation';
-
-const WorkFlows = React.lazy(() => import('../../work-flow-list'));
+import WorkFlows from '../../work-flow-list';
 
 function AppDetailsContent(): JSX.Element {
   return (
