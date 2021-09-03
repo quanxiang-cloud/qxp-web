@@ -6,7 +6,8 @@ export interface DefaultConfig {
   required: boolean;
   multiple?: boolean;
   rangeList: LabelValue[];
-  optionalRange?: 'all' | 'customize' | 'myDep';
+  optionalRange?: 'all' | 'customize';
+  defaultRange?: 'customize' | 'myDep',
   defaultValues?: string[];
   type: string;
   appID?: string;
@@ -22,6 +23,7 @@ export const defaultConfig: DefaultConfig = {
   multiple: false,
   rangeList: [],
   optionalRange: 'all',
+  defaultRange: 'customize',
   defaultValues: [],
 };
 
@@ -43,6 +45,7 @@ export const toSchema = (config: DefaultConfig): ISchema => {
       multiple: config.multiple,
       optionalRange: config.optionalRange,
       rangeList: config.rangeList,
+      defaultRange: config.defaultRange,
       defaultValues: config.defaultValues,
     },
   });
@@ -67,6 +70,7 @@ export const toConfig = (schema: ISchema): DefaultConfig => {
     rangeList: schema['x-internal']?.rangeList || [],
     multiple: schema['x-internal']?.multiple,
     optionalRange: schema['x-internal']?.optionalRange,
+    defaultRange: schema['x-internal']?.defaultRange,
     appID: schema['x-component-props']?.appID,
   };
 };

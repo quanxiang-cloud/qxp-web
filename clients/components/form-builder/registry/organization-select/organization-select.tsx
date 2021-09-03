@@ -11,7 +11,8 @@ import './index.scss';
 type Props = TreeSelectProps<any> & {
   appID: string;
   onChange: (value: LabelValue[]) => void;
-  optionalRange: 'all' | 'customize' | 'myDep';
+  optionalRange: 'all' | 'customize';
+  defaultRange: 'customize' | 'myDep',
   rangeList?: LabelValue[];
   value?: LabelValue[];
 }
@@ -53,6 +54,7 @@ const OrganizationPicker = ({
   appID,
   onChange,
   optionalRange,
+  defaultRange,
   value = [],
   ...otherProps
 }: Props): JSX.Element => {
@@ -86,10 +88,9 @@ const OrganizationPicker = ({
       });
     }
 
-    if (optionalRange === 'myDep') {
+    if (defaultRange === 'myDep') {
       const userinfo = window.USER;
-      const currentUserDep = getUserDepartment(userinfo);
-      const { id, departmentName } = currentUserDep;
+      const { id, departmentName } = getUserDepartment(userinfo);
       const myDep = {
         id,
         fullPath: id,
@@ -101,7 +102,7 @@ const OrganizationPicker = ({
     }
 
     return treeDataTmp;
-  }, [data, optionalRange, rangeList]);
+  }, [data, optionalRange, rangeList, defaultRange]);
 
   const handleChange = (value: string | string[], labels: React.ReactNode[]): void => {
     const valueTmp = Array.isArray(value) ? value : [value];

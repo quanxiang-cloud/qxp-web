@@ -7,6 +7,10 @@ export const EnumReadOnly = [
 export const EnumOptionalRange = [
   { label: '全部人员', value: 'all' },
   { label: '自定义', value: 'customize' },
+];
+
+export const EnumDefaultRange = [
+  { label: '自定义', value: 'customize' },
   { label: '当前用户', value: 'currentUser' },
 ];
 

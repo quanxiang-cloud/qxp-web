@@ -7,7 +7,8 @@ export interface DefaultConfig {
   placeholder?: string;
   required: boolean;
   defaultValue: string | string[];
-  optionalRange?: 'all' | 'customize' | 'currentUser';
+  optionalRange?: 'all' | 'customize';
+  defaultRange?: 'customize' | 'currentUser';
   multiple?: 'single' | 'multiple';
   rangeList: EmployeeOrDepartmentOfRole[];
   defaultValues: string | string[];
@@ -26,6 +27,7 @@ export const defaultConfig: DefaultConfig = {
   required: false,
   defaultValue: '',
   optionalRange: 'all',
+  defaultRange: 'customize',
   multiple: 'single',
   rangeList: [],
   defaultValues: [],
@@ -60,6 +62,7 @@ export const toSchema = (config: DefaultConfig): ISchema => {
     ['x-internal']: {
       multiple: config.multiple,
       optionalRange: config.optionalRange,
+      defaultRange: config.defaultRange,
       rangeList: config.rangeList,
       defaultValues: config.defaultValues,
       defaultValue: config.defaultValue,
@@ -91,6 +94,7 @@ export const toConfig = (schema: ISchema): DefaultConfig => {
     rangeList: schema['x-internal']?.rangeList || [],
     multiple: schema['x-internal']?.multiple,
     optionalRange: schema['x-internal']?.optionalRange,
+    defaultRange: schema['x-internal']?.defaultRange,
     appID: schema['x-component-props']?.appID,
   };
 };
