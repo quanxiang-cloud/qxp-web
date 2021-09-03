@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 
 import PopConfirm from '@c/pop-confirm';
 import Icon from '@c/icon';
@@ -8,17 +8,16 @@ import toast from '@lib/toast';
 interface Props {
   onCancel?: () => void;
   onSubmit: (groupInfo: PageInfo) => Promise<unknown>;
-  id: string;
 }
 
-function AddGroupPoper({ id, onCancel, onSubmit }: Props, ref: React.Ref<HTMLDivElement>) {
+function AddGroupPoper({ onCancel, onSubmit }: Props, ref: React.Ref<HTMLDivElement>) {
   const inputRef: any = useRef(null);
 
   const handleSubmit = async () => {
     if (!validateRepeat(inputRef.current.value)) {
       toast.error('分组名重复');
     } else if (inputRef.current.value) {
-      onSubmit({ name: inputRef.current.value, id });
+      onSubmit({ name: inputRef.current.value, id: '' });
     } else {
       toast.error('分组名不能为空');
     }
@@ -39,7 +38,8 @@ function AddGroupPoper({ id, onCancel, onSubmit }: Props, ref: React.Ref<HTMLDiv
     if (inputRef) {
       inputRef.current.focus();
     }
-  }, [id]);
+  }, []);
+
   return (
     <div
       ref={ref}
