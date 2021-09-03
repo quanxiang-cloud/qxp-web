@@ -6,12 +6,15 @@ import { debounce } from 'lodash';
 
 import { searchUser, Res } from './messy/api';
 import { Option } from './messy/enum';
+
 import './index.scss';
 
-type OptionalRange = 'customize' | 'all' | 'currentUser';
+type OptionalRange = 'customize' | 'all';
+type DefaultRange = 'customize' | 'currentUser';
 
 interface Props extends SelectProps<any> {
   optionalRange?: OptionalRange;
+  defaultRange?: DefaultRange;
   appID?: string;
   dataSource?: any[];
   editable?: boolean;
@@ -25,6 +28,7 @@ const PAGE_SIZE = 10;
 
 const UserPicker = ({
   optionalRange,
+  defaultRange = 'customize',
   appID,
   onChange,
   value,
@@ -41,7 +45,16 @@ const UserPicker = ({
     componentsProps.options = componentsProps.dataSource;
   }
 
-  if (optionalRange === 'all') {
+  if (defaultRange === 'currentUser') {
+    const userinfo = window.USER;
+    const options = [{
+      label: userinfo.userName,
+      value: userinfo.id,
+    }];
+    componentsProps.options = options;
+  }
+
+  if (optionalRange === 'all' && defaultRange === 'customize') {
     return (
       <AllUserPicker
         {...componentsProps}
