@@ -1,6 +1,7 @@
+import { Input } from '@formily/antd-components';
+
 import { validateRegistryElement } from '@c/form-builder/utils';
 
-import SerialNumber from './serial';
 import Prefix from './prefix';
 import configSchema from './config-schema';
 import { defaultConfig, toSchema, toConfig } from './convertor';
@@ -13,7 +14,7 @@ const SerialField: Omit<FormBuilder.SourceElement<typeof defaultConfig>, 'displa
   icon: 'check_box',
   defaultConfig,
   toSchema,
-  component: SerialNumber,
+  component: Input,
   category: 'advance',
   componentName: 'Serial',
   configDependencies: { Prefix },
