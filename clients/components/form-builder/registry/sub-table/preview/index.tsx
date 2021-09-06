@@ -1,58 +1,62 @@
 import React, { JSXElementConstructor, useEffect, useState, useContext } from 'react';
 import { ISchemaFieldComponentProps, IMutators } from '@formily/react-schema-renderer';
-import { usePrevious } from 'react-use';
-import { Input, Radio, DatePicker, NumberPicker, Select, Checkbox } from '@formily/antd-components';
 import { Rule } from 'rc-field-form/lib/interface';
 import { Table } from 'antd';
+import { Input, NumberPicker } from '@formily/antd-components';
 import cs from 'classnames';
 import { isObject } from 'lodash';
+import { useQuery } from 'react-query';
 import {
-  InternalFieldList as FieldList, ValidatePatternRules, Schema,
+  InternalFieldList as FieldList, ValidatePatternRules,
 } from '@formily/antd';
 
 import CanvasContext from '@c/form-builder/canvas-context';
+import logger from '@lib/logger';
+import FormDataValueRenderer from '@c/form-data-value-renderer';
+import Icon from '@c/icon';
+import { isEmpty } from '@lib/utils';
+import schemaToFields from '@lib/schema-convert';
 import OrganizationPicker from '@c/form-builder/registry/organization-select/organization-select-wrap';
 import FileUpload from '@c/form-builder/registry/file-upload/uploader';
 import ImageUpload from '@c/form-builder/registry/image-upload/uploader';
 import UserPicker from '@c/form-builder/registry/user-picker/user-picker-wrap';
-import logger from '@lib/logger';
-import FormDataValueRenderer from '@c/form-data-value-renderer';
-import Icon from '@c/icon';
 import CascadeSelector from '@c/form-builder/registry/cascade-selector/cascade-selector-wrap';
 import AssociatedData from '@c/form-builder/registry/associated-data/associated-data';
-import { isEmpty } from '@lib/utils';
-import schemaToFields from '@lib/schema-convert';
-import { numberTransform, getDefinedOne } from '@c/form-builder/utils';
+import RadioGroup from '@c/form-builder/registry/radio-group/radioGroup';
+import CheckBoxGroup from '@c/form-builder/registry/checkbox-group/checkboxGroup';
+import DatePicker from '@c/form-builder/registry/date-picker/date-picker';
+import Select from '@c/form-builder/registry/select/custom-select';
+import MultipleSelect from '@c/form-builder/registry/multiple-select/multiple-select';
 
 import { getDefaultValue, schemaRulesTransform } from './utils';
 import SubTableRow from './row';
+import { getTableSchema } from '@lib/http-client';
 
 export type Rules = (ValidatePatternRules | ValidatePatternRules[]) & Rule[];
 export type Column = {
   title: string;
   dataIndex: string;
   component?: JSXElementConstructor<any>;
-  readonly?: boolean;
-  editable?: boolean;
   props: Record<string, unknown>;
   dataSource?: any[];
   required?: boolean;
   rules: Rules;
   render?: (value: unknown) => JSX.Element;
   schema: ISchema;
+  editable: boolean;
 }
 
 type Components = typeof components;
 
 const components = {
   input: Input,
-  radiogroup: Radio.Group,
-  checkboxgroup: Checkbox.Group,
+  radiogroup: RadioGroup,
+  checkboxgroup: CheckBoxGroup,
   textarea: Input.TextArea,
   datepicker: DatePicker,
   numberpicker: NumberPicker,
   select: Select,
-  multipleselect: Select,
+  multipleselect: MultipleSelect,
   userpicker: UserPicker,
   organizationpicker: OrganizationPicker,
   fileupload: FileUpload,
@@ -62,7 +66,6 @@ const components = {
 };
 
 interface Props extends ISchemaFieldComponentProps {
-  readonly?: boolean;
   props: {
     [key: string]: any;
     ['x-component-props']: {
@@ -84,28 +87,30 @@ function SubTable({
   schema: definedSchema,
   value,
   name,
-  readonly,
   editable,
   mutators,
 }: Partial<Props>): JSX.Element | null {
   const [{ componentColumns, rowPlaceHolder }, setSubTableState] = useState<SubTableState>({
     componentColumns: [], rowPlaceHolder: {},
   });
-  const schema = definedSchema?.items as ISchema;
-  const props = (schema as Schema)?.parent;
-  const { subordination, columns } = props?.['x-component-props'] || {};
-  const previousColumns = usePrevious(columns);
+  let schema = definedSchema?.items as ISchema | undefined;
+  const { subordination, columns, appID, tableID } = definedSchema?.['x-component-props'] || {};
   const isFromForeign = subordination === 'foreign_table';
-  const initialValue = value?.length ? value : [rowPlaceHolder];
   const { isInCanvas } = useContext(CanvasContext);
   const isPortal = window.SIDE === 'portal';
   const portalReadOnlyClassName = cs({ 'pointer-events-none': isPortal && isInCanvas });
+  const { data } = useQuery('GET_SUB_TABLE_CONFIG_SCHEMA', () => getTableSchema(appID, tableID), {
+    enabled: !!(isFromForeign && tableID && appID),
+  });
+  const isInitialValueEmpty = value?.every((v: Record<string, unknown>) => !isEmpty(v));
+  schema = isFromForeign ? data?.schema : schema;
 
   useEffect(() => {
+    if (!schema) {
+      return;
+    }
     const rowPlaceHolder = {};
-    const componentColumns: Column[] = schemaToFields(schema).sort((a, b) => {
-      return numberTransform(a) - numberTransform(b);
-    }).reduce((acc: Column[], field) => {
+    const componentColumns: Column[] = schemaToFields(schema).reduce((acc: Column[], field) => {
       const isHidden = !field.display;
       if ((isFromForeign && !columns?.includes(field.id)) || field.id === '_id' || isHidden) {
         return acc;
@@ -121,13 +126,12 @@ function SubTable({
   }, [schema, columns]);
 
   useEffect(() => {
-    if (!previousColumns?.filter((key: string) => key !== '_id')?.length &&
-      columns?.filter((key: string) => key !== '_id')?.length &&
-      initialValue?.every((v: Record<string, unknown>) => !isEmpty(v))
-    ) {
-      mutators?.change(initialValue);
-    }
-  });
+    isPortal && isInCanvas && isInitialValueEmpty && mutators?.change([rowPlaceHolder]);
+  }, [isPortal, isInCanvas, value]);
+
+  useEffect(() => {
+    isInitialValueEmpty && mutators?.change([rowPlaceHolder]);
+  }, []);
 
   function buildColumnFromSchema(dataIndex: string, sc: ISchema): Column | null {
     const componentName = sc['x-component']?.toLowerCase() as keyof Components;
@@ -138,9 +142,7 @@ function SubTable({
       logger.error('component %s is missing in subTable', componentName);
       return null;
     }
-    const isEditable = getDefinedOne(editable, sc?.editable);
-    const isReadOnly = getDefinedOne(readonly, sc?.readOnly);
-    Object.assign(componentProps, { readOnly: isReadOnly, disabled: !isEditable, editable: isEditable });
+
     return {
       title: sc.title as string,
       dataIndex,
@@ -153,9 +155,8 @@ function SubTable({
       },
       schema: sc,
       dataSource,
-      editable: isEditable,
-      readonly: isReadOnly,
       required: !!sc?.required,
+      editable: !sc.readOnly,
       rules: schemaRulesTransform(sc),
       render: (value: any) => {
         if (isEmpty(value)) {
@@ -175,7 +176,7 @@ function SubTable({
     return null;
   }
 
-  if (readonly) {
+  if (!editable) {
     return (
       <Table
         pagination={false}
@@ -187,7 +188,7 @@ function SubTable({
   }
 
   return (
-    <FieldList name={name} initialValue={initialValue}>
+    <FieldList name={name} initialValue={value}>
       {({ state, mutators, form }) => {
         return (
           <div className="w-full flex flex-col border border-gray-300">
@@ -201,7 +202,6 @@ function SubTable({
                     index={index}
                     item={item}
                     form={form}
-                    editable={editable}
                     mutators={mutators}
                     portalReadOnlyClassName={portalReadOnlyClassName}
                   />
@@ -209,16 +209,14 @@ function SubTable({
               })}
             </div>
             <div className="border-t-1 border-gray-300 flex items-center">
-              {editable && (
-                <Icon
-                  name="add"
-                  size={24}
-                  className={
-                    cs('m-5 font-bold cursor-pointer', { [portalReadOnlyClassName]: state.value.length })
-                  }
-                  onClick={() => onAddRow(mutators)}
-                />
-              )}
+              <Icon
+                name="add"
+                size={24}
+                className={
+                  cs('m-5 font-bold cursor-pointer', portalReadOnlyClassName)
+                }
+                onClick={() => onAddRow(mutators)}
+              />
             </div>
           </div>
         );

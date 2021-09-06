@@ -3,13 +3,13 @@ import { useQuery } from 'react-query';
 
 import Loading from '@c/loading';
 import ErrorTips from '@c/error-tips';
-import { getOperationList } from '@flowEditor/forms/api';
+import { getOperationList } from '@flow/content/editor/forms/api';
 import type {
   Operation,
   OperationPermission as OperationPermissionType,
   NodeType,
   FillInData,
-} from '@flowEditor/type';
+} from '@flow/content/editor/type';
 
 import PermissionList from './permission-list';
 

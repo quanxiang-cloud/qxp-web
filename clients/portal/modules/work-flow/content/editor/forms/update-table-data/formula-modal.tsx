@@ -2,12 +2,12 @@ import React, { useContext, useRef } from 'react';
 import { useQuery } from 'react-query';
 
 import Modal from '@c/modal';
-import { getSchemaFields } from '@flowEditor/forms/utils';
+import { getSchemaFields } from '@flow/content/editor/forms/utils';
 import { COLLECTION_OPERATORS } from '@c/formula-editor/constants';
 import FormulaEditor, { CustomRule, RefProps } from '@c/formula-editor';
-import FlowTableContext from '@flowEditor/forms/flow-source-table';
+import FlowTableContext from '@flow/content/editor/forms/flow-source-table';
 import FlowContext from '@flow/flow-context';
-import { getFormFieldSchema } from '@flowEditor/forms/api';
+import { getFormFieldSchema } from '@flow/content/editor/forms/api';
 import schemaToFields from '@lib/schema-convert';
 
 interface Props {

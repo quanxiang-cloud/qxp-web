@@ -7,8 +7,8 @@ import Radio from '@c/radio';
 import Select from '@c/select';
 import usePrevious from '@lib/hooks/use-previous';
 import useObservable from '@lib/hooks/use-observable';
-import store from '@flowEditor/store';
-import type { WhenTimeout, StoreValue } from '@flowEditor/type';
+import store from '@flow/content/editor/store';
+import type { WhenTimeout, StoreValue } from '@flow/content/editor/type';
 
 interface Props {
   defaultValue?: WhenTimeout;

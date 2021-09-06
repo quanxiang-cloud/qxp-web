@@ -3,10 +3,10 @@ import cs from 'classnames';
 import { usePopper } from 'react-popper';
 
 import Icon from '@c/icon';
-import store, { updateStore } from '@flowEditor/store';
-import type { StoreValue } from '@flowEditor/type';
+import store, { updateStore } from '@flow/content/editor/store';
+import type { StoreValue } from '@flow/content/editor/type';
 import useObservable from '@lib/hooks/use-observable';
-import { onRemoveNode } from '@flowEditor/utils';
+import { onRemoveNode } from '@flow/content/editor/utils';
 
 import ActionButtonGroup from './action-button-group';
 

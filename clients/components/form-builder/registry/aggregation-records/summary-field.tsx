@@ -23,6 +23,8 @@ function SummaryField(props: Props) {
 function SummaryFieldWrap(props: ISchemaFieldComponentProps): JSX.Element {
   const comProps = props.props['x-component-props'];
 
+  // todo handle props.editable
+
   return (
     <SummaryField {...comProps} />
   );

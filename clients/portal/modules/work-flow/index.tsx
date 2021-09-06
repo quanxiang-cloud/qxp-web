@@ -9,7 +9,7 @@ import toast from '@lib/toast';
 import Modal from '@c/modal';
 import useObservable from '@lib/hooks/use-observable';
 import usePrevious from '@lib/hooks/use-previous';
-import dataTransfer from '@flowEditor/utils/data-transfer';
+import dataTransfer from '@flow/content/editor/utils/data-transfer';
 
 import Header from './flow-header';
 import AsideMenu from './aside-menu';

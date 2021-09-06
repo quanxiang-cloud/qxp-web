@@ -15,15 +15,15 @@ import {
 } from 'draft-js';
 
 import MoreMenu from '@c/more-menu';
-import { getFormFieldSchema } from '@flowEditor/forms/api';
+import { getFormFieldSchema } from '@flow/content/editor/forms/api';
 import FlowContext from '@flow/flow-context';
 import formFieldWrap from '@c/form-field-wrap';
 import useObservable from '@lib/hooks/use-observable';
-import store from '@flowEditor/store';
+import store from '@flow/content/editor/store';
 import Button from '@c/button';
 import { Editor } from 'react-draft-wysiwyg';
-import SaveButtonGroup from '@flowEditor/components/_common/action-save-button-group';
-import type { StoreValue, CurrentElement, FormDataData, SendEmailData, Attachment } from '@flowEditor/type';
+import SaveButtonGroup from '@flow/content/editor/components/_common/action-save-button-group';
+import type { StoreValue, CurrentElement, FormDataData, SendEmailData, Attachment } from '@flow/content/editor/type';
 import schemaToFields from '@lib/schema-convert';
 
 import UserSelect from '../../components/add-approval-user';
