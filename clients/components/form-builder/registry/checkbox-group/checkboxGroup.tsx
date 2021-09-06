@@ -1,30 +1,35 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Checkbox, Space } from 'antd';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 
 import useEnumOptions from '@lib/hooks/use-enum-options';
-import { stringToLabelValue } from '@lib/utils';
+import { optionsFormat } from '@lib/utils';
+import { splitValue } from '@c/form-builder/utils';
 
 function CheckBoxGroup(fieldProps: ISchemaFieldComponentProps): JSX.Element {
+  const [checkboxValue, setCheckboxValue] = useState<string[]>(fieldProps.value || []);
   const options = useEnumOptions(fieldProps);
   const { optionsLayout } = fieldProps.props['x-component-props'];
-  const defaultValues: string[] | LabelValue[] = fieldProps.value || [];
+
+  useEffect(() => {
+    if (fieldProps.value && fieldProps.value.length > 0) {
+      const values: string[] = [];
+      fieldProps.value.forEach((option: string) => {
+        if (option && option.indexOf(':') !== -1) {
+          const { value } = splitValue(option);
+          values.push(value);
+          return;
+        }
+
+        values.push(option);
+      });
+      setCheckboxValue(values);
+    }
+  }, [fieldProps.value]);
 
   function handleCheckBoxChange(value: Array<CheckboxValueType>): void {
-    const values = stringToLabelValue(value, options);
+    const values = optionsFormat(value, options);
     fieldProps.mutators.change(values);
-  }
-
-  const checkboxValue: string[] = [];
-  if (fieldProps && defaultValues.length > 0) {
-    defaultValues.forEach((option) => {
-      if (option && typeof option === 'object') {
-        checkboxValue.push(option.value);
-        return;
-      }
-
-      checkboxValue.push(option);
-    });
   }
 
   if (options.length === 0) {

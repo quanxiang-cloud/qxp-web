@@ -74,28 +74,25 @@ function objectLabelValueRenderer({ value, schema }: ValueRendererProps): string
   }
 
   const options = (schema.enum || []) as FormBuilder.Option[];
-  const label = options.find((option) => option.value === _value)?.label ||
+  return options.find((option) => option.value === _value)?.label ||
     ((_value.indexOf(':') !== -1 ? splitValue(_value).label : _value));
-  return label;
 }
 
 function arrayLabelValueRenderer({ value, schema }: ValueRendererProps): string {
-  const values: string[] | LabelValue[] = (value as string[] | LabelValue[]) || [];
+  const values: string[] = (value as string[]) || [];
   const datasetId = schema['x-component-props'] && schema['x-component-props'].datasetId;
   if (datasetId) {
     return values.map((option) => {
-      return (typeof option === 'object') ? option.label : option;
+      return (option.indexOf(':') !== -1) ? splitValue(option).label : option;
     }).join(', ');
   }
 
   const options = (schema.enum || []) as FormBuilder.Option[];
-  const labels = values.map((option) => {
-    const _value: string = typeof option === 'object' ? option.value : option;
+  return values.map((option) => {
+    const _value: string = (option.indexOf(':') !== -1) ? splitValue(option).value : option;
     return options.find((option) => option.value === _value)?.label ||
-      (typeof option === 'object' ? option.label : option);
+      (option.indexOf(':') !== -1 ? splitValue(option).label : option);
   }).join(', ');
-
-  return labels;
 }
 
 export default function FormDataValueRenderer({ value, schema, className }: Props): JSX.Element {

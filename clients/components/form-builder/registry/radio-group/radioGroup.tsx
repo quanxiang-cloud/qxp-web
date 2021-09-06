@@ -5,11 +5,11 @@ import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 import useEnumOptions from '@lib/hooks/use-enum-options';
 import { generateRandomFormFieldID, splitValue } from '@c/form-builder/utils';
 
-const InitialOption = { label: '', value: generateRandomFormFieldID() };
+const INITIAL_OPTION = { label: '', value: generateRandomFormFieldID() };
 
 function RadioGroup(fieldProps: ISchemaFieldComponentProps): JSX.Element {
   const options = useEnumOptions(fieldProps);
-  const [customOption, setCustomOption] = useState(InitialOption);
+  const [customOption, setCustomOption] = useState(INITIAL_OPTION);
   const { allowCustom, optionsLayout } = fieldProps.props['x-component-props'];
   const allOptions = allowCustom ? [...options, customOption] : options;
 
@@ -26,7 +26,7 @@ function RadioGroup(fieldProps: ISchemaFieldComponentProps): JSX.Element {
         return;
       }
 
-      setCustomOption(InitialOption);
+      setCustomOption(INITIAL_OPTION);
     }
   }, [options, allowCustom]);
 

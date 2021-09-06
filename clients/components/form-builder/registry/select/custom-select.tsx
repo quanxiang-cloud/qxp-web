@@ -71,7 +71,7 @@ function CustomSelect(fieldProps: ISchemaFieldComponentProps): JSX.Element {
       return;
     }
 
-    if (fieldProps.value && (options.length > 0)) {
+    if (fieldProps.value && options.length > 0) {
       const _value = (fieldProps.value.indexOf(':') !== -1) ?
         splitValue(fieldProps.value).value : fieldProps.value;
       const isValueInRange = options.find((option): boolean => option.value === _value);

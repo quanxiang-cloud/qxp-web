@@ -1,31 +1,37 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Select } from 'antd';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 
 import useEnumOptions from '@lib/hooks/use-enum-options';
-import { stringToLabelValue } from '@lib/utils';
+import { optionsFormat } from '@lib/utils';
+import { splitValue } from '@c/form-builder/utils';
 
 const { Option } = Select;
 
 function MultipleSelect(fieldProps: ISchemaFieldComponentProps): JSX.Element {
+  const [selectValue, setSelectValue] = useState(fieldProps.value || []);
   const options = useEnumOptions(fieldProps);
-  const defaultValues: string[] | LabelValue[] = fieldProps.value || [];
+
+  useEffect(() => {
+    if (fieldProps.value && fieldProps.value.length > 0) {
+      const values: string[] = [];
+      fieldProps.value.forEach((option: string) => {
+        if (option && option.indexOf(':') !== -1) {
+          const { value } = splitValue(option);
+          values.push(value);
+          return;
+        }
+
+        values.push(option);
+      });
+
+      setSelectValue(values);
+    }
+  }, [fieldProps.value]);
 
   function handleSelectChange(value: string[]): void {
-    const values = stringToLabelValue(value, options);
+    const values = optionsFormat(value, options);
     fieldProps.mutators.change(values);
-  }
-
-  const selectValue: string[] = [];
-  if (fieldProps && defaultValues.length > 0) {
-    defaultValues.forEach((option) => {
-      if (option && (typeof option === 'object')) {
-        selectValue.push(option.value);
-        return;
-      }
-
-      selectValue.push(option);
-    });
   }
 
   return (
