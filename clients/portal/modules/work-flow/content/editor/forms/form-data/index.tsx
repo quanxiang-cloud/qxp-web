@@ -7,14 +7,14 @@ import Tab from '@c/tab';
 import useObservable from '@lib/hooks/use-observable';
 import FlowContext from '@flow/flow-context';
 import FormSelector from '@c/form-table-selector';
-import SaveButtonGroup from '@flowEditor/components/_common/action-save-button-group';
-import { TRIGGER_CONDITION_EXCLUDE_FIELD_NAMES } from '@flowEditor/utils/constants';
-import store, { updateStore } from '@flowEditor/store';
+import SaveButtonGroup from '@flow/content/editor/components/_common/action-save-button-group';
+import { TRIGGER_CONDITION_EXCLUDE_FIELD_NAMES } from '@flow/content/editor/utils/constants';
+import store, { updateStore } from '@flow/content/editor/store';
 import { schemaToMap } from '@lib/schema-convert';
 import type {
   FormDataData, NodeWorkForm, StoreValue, TriggerConditionExpression,
   TriggerCondition as TriggerConditionType, TriggerConditionValue,
-} from '@flowEditor/type';
+} from '@flow/content/editor/type';
 
 import TriggerWay from './basic-config/trigger-way';
 import TriggerCondition from './basic-config/trigger-condition';

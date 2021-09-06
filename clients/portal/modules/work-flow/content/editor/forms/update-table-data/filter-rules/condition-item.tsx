@@ -4,7 +4,7 @@ import Select from '@c/select';
 import IconBtn from '@c/icon-btn';
 import { getSchemaFields } from '../../utils';
 import { Condition } from './index';
-import FlowSourceTableContext from '@flowEditor/forms/flow-source-table';
+import FlowSourceTableContext from '@flow/content/editor/forms/flow-source-table';
 
 interface Props {
   targetSchema: Record<string, SchemaFieldItem>;

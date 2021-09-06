@@ -6,15 +6,15 @@ import { DatePicker } from 'antd';
 import moment, { Moment } from 'moment';
 
 import Select from '@c/select';
-import { Option } from '@flowEditor/forms/api';
+import { Option } from '@flow/content/editor/forms/api';
 import type {
   Operator,
   TriggerConditionExpressionItem,
   FieldOperatorOptions,
   TriggerConditionValue,
-} from '@flowEditor/type';
+} from '@flow/content/editor/type';
 import FormRender from '@c/form-builder/form-renderer';
-import { COMPONENT_OPERATORS_MAP, OPERATOR_OPTIONS } from '@flowEditor/utils/constants';
+import { COMPONENT_OPERATORS_MAP, OPERATOR_OPTIONS } from '@flow/content/editor/utils/constants';
 
 const { RangePicker } = DatePicker;
 

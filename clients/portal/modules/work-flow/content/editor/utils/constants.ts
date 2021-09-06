@@ -1,4 +1,4 @@
-import type { FieldOperatorOptions } from '@flowEditor/type';
+import type { FieldOperatorOptions } from '@flow/content/editor/type';
 
 export const CURRENT_WORK_FLOW_VERSION = '0.2';
 

@@ -18,18 +18,25 @@ function CheckBoxGroup(fieldProps: ISchemaFieldComponentProps): JSX.Element {
     return <span>当前选项集无数据。</span>;
   }
 
+  const editable = fieldProps.editable ?? !fieldProps.readOnly;
+
   return (
     <div className="flex items-center">
-      <Checkbox.Group onChange={handleCheckBoxChange} value={fieldProps.value}>
-        <Space direction={optionsLayout}>
-          {
-            options.map((option): JSX.Element => {
-              return (
-                <Checkbox key={option.value} value={option.value}>{option.label}</Checkbox>);
-            })
-          }
-        </Space>
-      </Checkbox.Group>
+      {editable && (
+        <Checkbox.Group onChange={handleCheckBoxChange} value={fieldProps.value}>
+          <Space direction={optionsLayout}>
+            {
+              options.map((option): JSX.Element => {
+                return (
+                  <Checkbox key={option.value} value={option.value}>{option.label}</Checkbox>);
+              })
+            }
+          </Space>
+        </Checkbox.Group>
+      )}
+      {!editable && (
+        <>{options.find(({ value }) => value === fieldProps.value)?.label || '-'}</>
+      )}
     </div>
   );
 }

@@ -39,7 +39,7 @@ const UserPicker = ({
     onChange && onChange(_selected ? [].concat(_selected) : [], _);
   };
 
-  const selected = Array.isArray(value) ? (value).map(({ value }: Option) => value) : value.value;
+  const selected = Array.isArray(value) ? (value).map(({ value }: Option) => value) : value?.value;
 
   if (!componentsProps.options?.length && componentsProps.dataSource?.length) {
     componentsProps.options = componentsProps.dataSource;

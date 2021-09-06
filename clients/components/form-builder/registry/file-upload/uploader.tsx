@@ -6,7 +6,6 @@ import toast from '@lib/toast';
 import FileList from '@portal/modules/system-mgmt/send-message/filelist';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 import type { FileInfo as FileListItemInfo } from '@portal/modules/system-mgmt/send-message/filelist';
-import { getDefinedOne } from '@c/form-builder/utils';
 
 import './index.scss';
 
@@ -27,7 +26,6 @@ type FileInfo = {
 function Uploader(props: Props & ISchemaFieldComponentProps): JSX.Element {
   const uploaderRef = useRef<Upload>(null);
   const { multiple } = props.props['x-component-props'];
-  const isEditable = getDefinedOne(props?.editable, props?.props.editable);
   const initialValue = props.value?.map(({ label, value }: LabelValue) => ({
     filename: label,
     url: value,
@@ -80,13 +78,15 @@ function Uploader(props: Props & ISchemaFieldComponentProps): JSX.Element {
     }
   };
 
+  const editable = props.editable ?? !props.readOnly;
+
   return (
     <div className="file-upload">
       <Upload
         ref={uploaderRef}
         headers={{ 'X-Proxy': 'API' }}
         multiple={Boolean(multiple)}
-        disabled={!isEditable}
+        disabled={!editable}
         action="/api/v1/fileserver/uploadFile"
         beforeUpload={(file) => {
           if (!multiple && files.length > 0) {
@@ -139,7 +139,7 @@ function Uploader(props: Props & ISchemaFieldComponentProps): JSX.Element {
             status: itm.status || 'success',
           }))}
           deleteFiles={deleteFile}
-          editable={isEditable}
+          editable={editable}
           candownload
         />
       </div>

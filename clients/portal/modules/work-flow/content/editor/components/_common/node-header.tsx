@@ -2,7 +2,7 @@ import React, { KeyboardEvent, MouseEvent } from 'react';
 import cs from 'classnames';
 
 import Icon from '@c/icon';
-import { updateNodeDataByKey } from '@flowEditor/store';
+import { updateNodeDataByKey } from '@flow/content/editor/store';
 
 interface Props {
   title: string;

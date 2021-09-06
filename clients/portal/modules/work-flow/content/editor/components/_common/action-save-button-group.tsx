@@ -3,8 +3,8 @@ import cs from 'classnames';
 
 import Button from '@c/button';
 import useObservable from '@lib/hooks/use-observable';
-import store from '@flowEditor/store';
-import { StoreValue } from '@flowEditor/type';
+import store from '@flow/content/editor/store';
+import { StoreValue } from '@flow/content/editor/type';
 
 interface Props {
   onCancel: () => void;

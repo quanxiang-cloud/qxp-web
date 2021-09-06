@@ -2,8 +2,8 @@ import React, { useContext, useMemo } from 'react';
 import { Button } from 'antd';
 import { createFormActions, SchemaForm } from '@formily/antd';
 
-import { ItemActionsContext, ActionsContext } from '../context';
-import { CONFIG_COMPONENTS, COMPONENTS, KeyOfConfigComponent } from '../constants';
+import { ItemActionsContext, ActionsContext } from './context';
+import { CONFIG_COMPONENTS, COMPONENTS, KeyOfConfigComponent } from './constants';
 
 interface Props {
   currentSubSchema?: ISchema;

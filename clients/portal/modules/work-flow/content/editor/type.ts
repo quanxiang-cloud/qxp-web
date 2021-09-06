@@ -188,7 +188,7 @@ export interface OperationPermission {
 
 export interface FillInData {
   basicConfig: BasicNodeConfig;
-  fieldPermission: FieldPermission;
+  fieldPermission: FieldPermission | NewFieldPermission;
   operatorPermission: OperationPermission;
   events: Record<any, any>;
 }
@@ -283,22 +283,30 @@ export interface CustomFieldPermission {
   initialValue: FieldValue;
   submitValue: FieldValue;
   id: string;
-  children?: string[];
-  parent?: string;
-  hidden?: boolean;
+  path: string;
+  hidden: boolean;
 }
 
 export interface SystemFieldPermission {
   fieldName: string;
   read: boolean;
   id: string;
-  children?: string[];
-  parent?: string;
 }
 
 export interface FieldPermission {
   custom: CustomFieldPermission[];
   system: SystemFieldPermission[];
+}
+export interface NewFieldPermissionValue {
+  fieldName: string;
+  'x-internal': {
+    permission: number;
+  },
+  initialValue?: FieldValue;
+  submitValue?: FieldValue;
+}
+export interface NewFieldPermission {
+  [key: string]: NewFieldPermissionValue;
 }
 
 export type BusinessData = FormDataData | FillInData | ProcessBranchData |

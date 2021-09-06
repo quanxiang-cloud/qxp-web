@@ -23,7 +23,7 @@ type Props = {
   selected: string[];
   associatedTable: ISchema;
   onChange: (selectedKeys: string[]) => void;
-  readOnly: boolean;
+  editable?: boolean;
   filterConfig?: FilterConfig;
 }
 
@@ -55,7 +55,7 @@ function AssociatedRecords({
   tableID,
   multiple,
   onChange,
-  readOnly,
+  editable,
   filterConfig,
 }: Props): JSX.Element {
   const [showSelectModal, setShowSelectModal] = useState(false);
@@ -99,7 +99,7 @@ function AssociatedRecords({
         data={data}
         emptyTips="没有关联记录"
       />
-      {!readOnly && (
+      {editable && (
         <>
           <Button type="button" onClick={() => setShowSelectModal(true)}>选择关联记录</Button>
           {showSelectModal && (
@@ -152,7 +152,7 @@ function AssociatedRecordsFields(props: Partial<ISchemaFieldComponentProps>): JS
   return (
     <AssociatedRecords
       defaultValues={props.value || []}
-      readOnly={props.readOnly || props.props.readOnly}
+      editable={props.editable ?? !props.readOnly}
       appID={componentProps.appID}
       tableID={componentProps.tableID}
       columns={componentProps.columns || []}

@@ -7,9 +7,9 @@ import EmployeeOrDepartmentPicker from '@c/employee-or-department-picker';
 import RadioGroup from '@c/radio/group';
 import Radio from '@c/radio';
 import Select from '@c/select';
-import FlowTableContext from '@flowEditor/forms/flow-source-table';
+import FlowTableContext from '@flow/content/editor/forms/flow-source-table';
 
-import { ApprovePersonType, ApprovePerson } from '@flowEditor/type';
+import { ApprovePersonType, ApprovePerson } from '@flow/content/editor/type';
 
 interface Option {
   label: string;

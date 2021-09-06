@@ -9,7 +9,7 @@ import { isEqual } from 'lodash';
 import { usePrevious, useUpdateEffect } from 'react-use';
 
 import formFieldWrap from '@c/form-field-wrap';
-import SaveButtonGroup from '@flowEditor/components/_common/action-save-button-group';
+import SaveButtonGroup from '@flow/content/editor/components/_common/action-save-button-group';
 
 import UserSelect from '../../components/add-approval-user';
 import { WebMessageData } from '../../type';

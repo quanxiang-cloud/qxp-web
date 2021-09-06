@@ -14,7 +14,7 @@ import RadioGroup from '@c/radio/group';
 import Button from '@c/button';
 import Radio from '@c/radio';
 import FormulaEditor, { RefProps } from '@c/formula-editor';
-import { getFormFieldSchema } from '@flowEditor/forms/api';
+import { getFormFieldSchema } from '@flow/content/editor/forms/api';
 import schemaToFields from '@lib/schema-convert';
 
 import store, {

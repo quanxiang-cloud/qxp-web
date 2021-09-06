@@ -3,7 +3,6 @@ import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 import { useUpdateEffect } from 'react-use';
 
 import Icon from '@c/icon';
-import { getDefinedOne } from '@c/form-builder/utils';
 
 import SelectAssociationModal from './select-association-modal';
 
@@ -15,7 +14,6 @@ type Props = {
   fieldName: string;
   value?: LabelValue;
   placeholder?: string;
-  readOnly?: boolean;
   editable?: boolean;
   filterConfig?: FilterConfig;
   onChange?: (value: LabelValue | null) => void;
@@ -26,7 +24,6 @@ export function AssociatedData({
   associationTableID,
   placeholder,
   filterConfig,
-  readOnly,
   editable,
   fieldName,
   value,
@@ -42,7 +39,7 @@ export function AssociatedData({
     onChange?.(null);
   }, [fieldName, associationTableID]);
 
-  if (readOnly) {
+  if (!editable) {
     return (<p className='preview-text'>{value ? value.label : '—'}</p>);
   }
 
@@ -53,8 +50,6 @@ export function AssociatedData({
   }
 
   const handleClose = (): void => {
-    if (!editable) return;
-
     onChange?.(null);
   };
 
@@ -65,12 +60,12 @@ export function AssociatedData({
           {value ? (
             <span className='associated-span'>
               {value.label}
-              <Icon onClick={handleClose} clickable={editable} disabled={!editable} size={16} name='close' />
+              <Icon onClick={handleClose} clickable size={16} name='close' />
             </span>
           ) : <span className='text-gray-300'>{placeholder}</span>}
         </div>
         <span className='cursor-pointer text-blue-500' onClick={() => setVisible(true)}>
-          {editable ? '选择关联数据' : ''}
+          选择关联数据
         </span>
       </div>
       {modalVisible && (
@@ -88,16 +83,13 @@ export function AssociatedData({
 }
 
 export default function AssociatedDataWrap(p: ISchemaFieldComponentProps): JSX.Element {
-  const isEditable = getDefinedOne(p?.editable, p?.props.editable);
-
   return (
     <AssociatedData
       {...p.props['x-component-props']}
       filterConfig={p['x-component-props']?.filterConfig || p.props['x-component-props'].filterConfig}
       value={p.value}
-      editable={isEditable}
+      editable={p.editable ?? !p.readOnly}
       onChange={p.mutators.change}
-      readOnly={!!p.props.readOnly}
     />
   );
 }

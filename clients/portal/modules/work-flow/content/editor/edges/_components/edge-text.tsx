@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect } from 'react';
 import cs from 'classnames';
 
-import type { EdgeTextProps, Rect } from '@flowEditor/type';
+import type { EdgeTextProps, Rect } from '@flow/content/editor/type';
 
 function EdgeText({
   x,

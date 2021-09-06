@@ -2,7 +2,7 @@ import React, { useRef, useState, useEffect } from 'react';
 import cs from 'classnames';
 
 import useObservable from '@lib/hooks/use-observable';
-import type { Data, FillInData, StoreValue } from '@flowEditor/type';
+import type { Data, FillInData, StoreValue } from '@flow/content/editor/type';
 
 import store from '../store';
 import NodeHeader from './_common/node-header';
