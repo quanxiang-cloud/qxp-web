@@ -1,7 +1,8 @@
-import React, { useRef, cloneElement, isValidElement } from 'react';
+import React, { useState } from 'react';
 import { Placement } from '@popperjs/core';
-import Button from '../button';
-import Popper from '../popper';
+
+import Button from '@c/button';
+import Popover from '@c/popover';
 
 type Props = {
   children: React.ReactElement;
@@ -14,15 +15,6 @@ type Props = {
   onVisibilityChange?: (visible: boolean) => void;
 }
 
-const modifiers = [
-  {
-    name: 'offset',
-    options: {
-      offset: [0, 4],
-    },
-  },
-];
-
 function PopConfirm({
   placement,
   onVisibilityChange,
@@ -32,55 +24,54 @@ function PopConfirm({
   onOk,
   cancelText = '取消',
   okText = '确定',
-}: Props ) {
-  const popperRef = useRef<Popper>(null);
-  const reference = useRef<any>(null);
+}: Props): JSX.Element {
+  const [visible, setVisible] = useState(false);
 
-  const handleCancel = () => {
+  const handleCancel = (): void => {
     onCancel && onCancel();
-    popperRef.current?.close();
+    setVisible(false);
   };
 
-  const handleOk = () => {
+  const handleOk = (): void => {
     if (onOk instanceof Promise) {
       (onOk() as Promise<any>).then(() => {
-        popperRef.current?.close();
+        setVisible(false);
       });
       return;
     }
 
     onOk && onOk();
-    popperRef.current?.close();
+    setVisible(false);
   };
 
-  const isElement = isValidElement(children);
+  const handleVisibilityChange = (flag: boolean): void => {
+    setVisible(flag);
+    onVisibilityChange?.(flag);
+  };
 
   return (
     <>
-      {isElement ?
-        cloneElement(children, { ref: reference }) :
-        <span ref={reference}>{children}</span>
-      }
-      <Popper
-        ref={popperRef}
-        reference={reference}
-        onVisibilityChange={onVisibilityChange}
+      <Popover
+        onVisibilityChange={handleVisibilityChange}
+        open={visible}
         placement={placement || 'bottom-start'}
-        modifiers={modifiers}
-      >
-        <div className="pop-confirm-content">
-          {content}
-          <div className='pop-confirm-content-btn-box'>
-            <Button
-              onClick={handleCancel}
-              className='pop-confirm-content-btn-cancel'
-            >
-              {cancelText}
-            </Button>
-            <Button onClick={handleOk} className='pop-confirm-content-btn-ok'>{okText}</Button>
+        content={(
+          <div className="pop-confirm-content">
+            {content}
+            <div className='pop-confirm-content-btn-box'>
+              <Button
+                onClick={handleCancel}
+                className='pop-confirm-content-btn-cancel'
+              >
+                {cancelText}
+              </Button>
+              <Button onClick={handleOk} className='pop-confirm-content-btn-ok'>{okText}</Button>
+            </div>
           </div>
-        </div>
-      </Popper>
+        )}
+      >
+        {children}
+      </Popover>
     </>
   );
 }

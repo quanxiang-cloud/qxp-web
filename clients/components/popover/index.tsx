@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect, isValidElement } from 'react';
 import useClickAway from 'react-use/lib/useClickAway';
 import cs from 'classnames';
 import { usePopper } from 'react-popper';
@@ -10,6 +10,7 @@ export interface Props {
   tooltipClassName?: string;
   children?: React.ReactElement;
   dynamicTriggerRef?: React.MutableRefObject<any>;
+  onVisibilityChange?: (visible: boolean) => void
   placement?:
   | 'top'
   | 'right'
@@ -30,8 +31,6 @@ export interface Props {
   offsetY?: number;
   onMouseOver?: () => void;
   onMouseOut?: () => void;
-  onOpen?: () => void;
-  onClose?: () => void;
   open?: boolean;
 }
 
@@ -42,8 +41,7 @@ export default function Popover({
   placement = 'bottom-start',
   offsetX = 0,
   offsetY = 4,
-  onOpen,
-  onClose,
+  onVisibilityChange,
   open = false,
 }: Props): JSX.Element {
   const [isOpen, setIsOpen] = useState(false);
@@ -64,11 +62,13 @@ export default function Popover({
     });
 
   useEffect(() => {
-    isOpen ? onOpen?.() : onClose?.();
+    onVisibilityChange?.(isOpen);
   }, [isOpen]);
 
   useEffect(() => {
-    setIsOpen(open);
+    if (open !== isOpen) {
+      setIsOpen(open);
+    }
   }, [open]);
 
   useClickAway(tooltipRef, () => {
@@ -77,9 +77,11 @@ export default function Popover({
 
   return (
     <>
-      {children && React.cloneElement(
+      {isValidElement(children) ? React.cloneElement(
         children,
         { ref: triggerRef, onClick: () => setIsOpen((isOpen) => !isOpen) },
+      ) : (
+        <span ref={triggerRef} onClick={() => setIsOpen((isOpen) => !isOpen)}>{children}</span>
       )}
       <div
         ref={tooltipRef}
