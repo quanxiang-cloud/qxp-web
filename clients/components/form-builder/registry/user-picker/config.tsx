@@ -12,7 +12,7 @@ import Picker from './picker';
 import UserPicker from './user-picker';
 import { StoreContext } from '../../context';
 import { DefaultConfig } from './convertor';
-import { EnumReadOnly, EnumOptionalRange, EnumMultiple } from './messy/enum';
+import { EnumReadOnly, EnumOptionalRange, EnumMultiple, EnumDefaultRange } from './messy/enum';
 
 const { onFieldInputChange$ } = FormEffectHooks;
 const actions = createFormActions();
@@ -35,11 +35,17 @@ const UserPickerConfigForm = ({ initialValue, onChange }: Props): JSX.Element =>
   }, [appID]);
 
   function formEffects(): void {
-    onFieldInputChange$('optionalRange').subscribe(() => {
-      setFieldState('defaultValues', (state) => {
+    onFieldInputChange$('optionalRange').subscribe(({ value }) => {
+      setFieldState('rangeList', (state) => {
         state.value = [];
       });
-      setFieldState('rangeList', (state) => {
+
+      setFieldState('defaultRange', (state) => {
+        state.value = 'customize';
+        state.props.dataSource = value === 'all' ? EnumDefaultRange : [EnumDefaultRange[0]];
+      });
+
+      setFieldState('defaultValues', (state) => {
         state.value = [];
       });
     });
@@ -66,9 +72,8 @@ const UserPickerConfigForm = ({ initialValue, onChange }: Props): JSX.Element =>
         <Field name="displayModifier" title="字段属性" component={Radio.Group} dataSource={EnumReadOnly} />
         <Field name="required" title="是否必填" component={Switch} />
         <Field name="multiple" title="人员选项" component={Radio.Group} dataSource={EnumMultiple} />
-        <Field name="optionalRange" title="可选范围" component={Select} dataSource={EnumOptionalRange} />
+        <Field name="optionalRange" title="可选范围" component={Radio.Group} dataSource={EnumOptionalRange} />
         <Field
-          isMy={initialValue.optionalRange === 'currentUser'}
           visible={initialValue.optionalRange === 'customize'}
           rangeList={initialValue.rangeList}
           value={initialValue.rangeList}
@@ -77,10 +82,15 @@ const UserPickerConfigForm = ({ initialValue, onChange }: Props): JSX.Element =>
           component={Picker}
         />
         <Field
-          name="defaultValues"
+          name="defaultRange"
           title="默认值"
-          visible={initialValue.optionalRange !== 'currentUser'}
+          component={Select}
+          dataSource={EnumDefaultRange}
+        />
+        <Field
+          name="defaultValues"
           appID={appID}
+          visible={initialValue.defaultRange === 'customize'}
           optionalRange={initialValue.optionalRange}
           mode={initialValue.multiple}
           options={(initialValue.rangeList || []).map(({ ownerID, ownerName }) => {

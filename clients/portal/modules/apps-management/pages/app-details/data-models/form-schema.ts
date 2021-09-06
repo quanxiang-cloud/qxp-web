@@ -223,6 +223,9 @@ export const FIELD_FORM_SCHEMA = {
           type: 'number',
           title: '长度',
           default: 50,
+          maximum: 255,
+          description: '范围0-255',
+          minimum: 0,
           required: true,
           'x-rules': {
             required: true,
@@ -243,6 +246,9 @@ export const FIELD_FORM_SCHEMA = {
             required: true,
             message: '请输入小数点位数',
           },
+          description: '最多支持到小数点后30位',
+          maximum: 30,
+          minimum: 0,
           'x-component': 'NumberPicker',
           'x-index': 7,
           visible: false,
@@ -444,6 +450,10 @@ export const FIELD_CONFIG_SCHEMA: ISchema = {
             target: 'type',
             condition: '{{ $value === "string" || $value === "number" }}',
           }],
+          'x-component-props': {
+            max: 255,
+            min: 0,
+          },
         },
         digits: {
           type: 'number',
@@ -463,6 +473,10 @@ export const FIELD_CONFIG_SCHEMA: ISchema = {
             target: 'type',
             condition: '{{ $value === "number" }}',
           }],
+          'x-component-props': {
+            max: 30,
+            min: 0,
+          },
         },
         validationRules: {
           type: 'string',

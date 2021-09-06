@@ -4,27 +4,24 @@ import { isUndefined } from 'lodash';
 
 import UserPicker from './user-picker';
 
-type OptionalRange = 'customize' | 'all' | 'currentUser';
-
 const UserPickerWrap = (formField: ISchemaFieldComponentProps): JSX.Element => {
-  const optionalRange = formField.props.optionalRange as OptionalRange;
+  const { optionalRange, defaultRange, defaultValues, multiple } = formField.props;
   const isEditable = !!(isUndefined(formField?.editable) ? formField?.props.editable : formField?.editable);
+
   React.useEffect(() => {
-    if (optionalRange === 'currentUser') {
-      const userInfo = window.USER;
+    if (defaultRange === 'currentUser') {
+      const userinfo = window.USER;
       const options = [{
-        label: userInfo.userName,
-        value: userInfo.id,
+        label: userinfo.userName,
+        value: userinfo.id,
       }];
+
       formField.mutators.change(options);
-      formField.form.setFieldState(formField.name, (state) => {
-        state.props.enum = options;
-      });
       return;
     }
 
-    formField.mutators.change(handleInitValue(formField));
-  }, [optionalRange, formField.props['x-component-props'].mode]);
+    formField.mutators.change(formField.initialValue || defaultValues);
+  }, [optionalRange, multiple, defaultRange]);
 
   const xComponentsProps = Object.assign({}, formField.props['x-component-props'], {
     onChange: formField.mutators.change,
@@ -33,22 +30,13 @@ const UserPickerWrap = (formField: ISchemaFieldComponentProps): JSX.Element => {
     editable: isEditable,
   });
 
-  function handleInitValue(formField: ISchemaFieldComponentProps): LabelValue[] {
-    let initialValue: LabelValue[] = [];
-    if (formField.initialValue && formField.initialValue.length) {
-      initialValue = formField.initialValue;
-      return initialValue;
-    }
-
-    if (formField.props.defaultValues && formField.props.defaultValues.length) {
-      initialValue = formField.props.defaultValues;
-      return initialValue;
-    }
-
-    return initialValue;
-  }
-
-  return <UserPicker optionalRange={optionalRange} {...xComponentsProps} />;
+  return (
+    <UserPicker
+      {...xComponentsProps}
+      optionalRange={optionalRange}
+      defaultRange={defaultRange}
+    />
+  );
 };
 
 UserPickerWrap.isFieldComponent = true;

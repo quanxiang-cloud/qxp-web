@@ -47,7 +47,7 @@ function EditorDataModel({ isEditor, onCancel, onSubmit }: Props): JSX.Element {
       modelCodeCheckRepeat(
         store.appID,
         {
-          tableID: values.tableID,
+          tableID: `${store.appID}_${values.tableID}`,
           title: values.title,
           isModify: isEditor,
         }).then(() => {

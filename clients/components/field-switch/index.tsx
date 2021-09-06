@@ -81,6 +81,7 @@ function FieldSwitch({ field, className, ...otherProps }: Props<any>, ref: React
         {...otherProps}
         multiple={field['x-internal']?.multiple}
         optionalRange={field['x-internal']?.optionalRange}
+        defaultRange={field['x-internal']?.defaultRange}
         rangeList={field['x-internal']?.rangeList}
       />
     );
