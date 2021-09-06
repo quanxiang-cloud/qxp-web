@@ -52,9 +52,10 @@ function ApprovalDetail(): JSX.Element {
   );
 
   const getTask = (): Record<string, any> => {
-    return get(data, 'taskDetailModels', []).find(
+    const taskDetailData = get(data, 'taskDetailModels', []).find(
       (taskItem: Record<string, any>) => taskItem?.formData !== null,
     );
+    return taskDetailData ? taskDetailData : get(data, 'taskDetailModels[0]', {});
   };
 
   useEffect(() => {
