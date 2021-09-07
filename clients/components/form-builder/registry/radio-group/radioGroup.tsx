@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect, SetStateAction } from 'react';
 import { Radio, Input, RadioChangeEvent, Space } from 'antd';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 
@@ -22,9 +22,29 @@ function useRealValue(currentValue?: string): string | undefined {
   }, [currentValue]);
 }
 
+function useOtherValue(currentValue?: string): [string, React.Dispatch<SetStateAction<string>>] {
+  const [otherValue, setOtherValue] = useState('');
+  useEffect(() => {
+    if (!currentValue) {
+      return;
+    }
+
+    const labelValuePair = currentValue.split(':');
+    if (labelValuePair.length < 2) {
+      return;
+    }
+
+    if (labelValuePair.pop() === CUSTOM_RADIO_VALUE) {
+      setOtherValue(labelValuePair.join(''));
+    }
+  }, []);
+
+  return [otherValue, setOtherValue];
+}
+
 function RadioGroup(fieldProps: ISchemaFieldComponentProps): JSX.Element {
   const options = useEnumOptions(fieldProps);
-  const [otherValue, setOtherValue] = useState('');
+  const [otherValue, setOtherValue] = useOtherValue(fieldProps.value);
   const realValue = useRealValue(fieldProps.value);
   const isAllowCustom = !!fieldProps.props['x-component-props'].allowCustom;
   const optionsLayout = fieldProps.props['x-component-props'].optionsLayout;
