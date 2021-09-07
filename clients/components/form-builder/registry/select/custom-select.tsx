@@ -8,6 +8,7 @@ import useEnumOptions from '@lib/hooks/use-enum-options';
 import {
   CUSTOM_OTHER_VALUE,
   usePairValue,
+  usePairLabel,
   useCustomOtherValue,
 } from '@c/form-builder/utils/label-value-pairs';
 
@@ -72,6 +73,7 @@ function CustomSelect(fieldProps: ISchemaFieldComponentProps): JSX.Element {
   const options = useEnumOptions(fieldProps);
   const [otherCustomValue, setOtherCustomValue] = useCustomOtherValue(fieldProps.value);
   const realValue = usePairValue(fieldProps.value);
+  const readableValue = usePairLabel(fieldProps.props.enum || [], fieldProps.value);
   const selectRef = useRef<RefSelectProps>(null);
 
   const isAllowCustom = !!fieldProps.props['x-component-props']?.allowCustom;
@@ -85,7 +87,7 @@ function CustomSelect(fieldProps: ISchemaFieldComponentProps): JSX.Element {
 
   if (!(fieldProps.editable ?? !fieldProps.readOnly)) {
     return (
-      <>{options.find((option) => option.value === fieldProps.value)?.label || ''}</>
+      <>{readableValue || '-'}</>
     );
   }
 
