@@ -8,9 +8,9 @@ import IconBtn from '@c/icon-btn';
 import Button from '@c/button';
 import { getSchemaFields, getValidProcessVariables } from '../../utils';
 import { Rule } from './index';
-import FlowSourceTableContext from '@flowEditor/forms/flow-source-table';
+import FlowSourceTableContext from '@flow/content/editor/forms/flow-source-table';
 import FlowContext from '@flow/flow-context';
-import { getFlowVariables } from '@flowEditor/forms/api';
+import { getFlowVariables } from '@flow/content/editor/forms/api';
 import Context from '../context';
 import FormulaModal from '../formula-modal';
 

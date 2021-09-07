@@ -5,6 +5,7 @@ import { DatePicker as DatePickerAnt, DatePickerProps } from 'antd';
 
 type DatePickerCProps = DatePickerProps & {
   onChange: (value: string) => void;
+  editable?: boolean;
   readOnly?: boolean;
   isNow?: boolean;
 }
@@ -31,7 +32,7 @@ function DatePicker(props: DatePickerCProps): JSX.Element {
     props.onChange(dateString ? moment(dateString).toISOString() : '');
   };
 
-  if (props.readOnly) {
+  if (!(props.editable ?? !props.readOnly)) {
     return (
       <p className='preview-text'>
         {props.value ? moment(props.value).format(props.format as string || 'YYYY-MM-DD HH:mm:ss') : '-'}

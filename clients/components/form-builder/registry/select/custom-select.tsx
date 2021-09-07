@@ -111,6 +111,12 @@ function CustomSelect(fieldProps: ISchemaFieldComponentProps): JSX.Element {
     }
   }
 
+  if (!(fieldProps.editable ?? !fieldProps.readOnly)) {
+    return (
+      <>{newOptions.find((option) => option.value === fieldProps.value)?.label || ''}</>
+    );
+  }
+
   return (
     <div className="flex flex-col w-full">
       <Select

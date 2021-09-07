@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Checkbox, Space } from 'antd';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
+import { CheckboxValueType } from 'antd/lib/checkbox/Group';
 
 import useEnumOptions from '@lib/hooks/use-enum-options';
 import { optionsFormat } from '@lib/utils';
@@ -36,18 +37,25 @@ function CheckBoxGroup(fieldProps: ISchemaFieldComponentProps): JSX.Element {
     return <span>暂无选项可供选择。</span>;
   }
 
+  const editable = fieldProps.editable ?? !fieldProps.readOnly;
+
   return (
     <div className="flex items-center">
-      <Checkbox.Group onChange={handleCheckBoxChange} value={checkboxValue}>
-        <Space direction={optionsLayout}>
-          {
-            options.map((option): JSX.Element => {
-              return (
-                <Checkbox key={option.value} value={option.value}>{option.label}</Checkbox>);
-            })
-          }
-        </Space>
-      </Checkbox.Group>
+      {editable && (
+        <Checkbox.Group onChange={handleCheckBoxChange} value={checkboxValue}>
+          <Space direction={optionsLayout}>
+            {
+              options.map((option): JSX.Element => {
+                return (
+                  <Checkbox key={option.value} value={option.value}>{option.label}</Checkbox>);
+              })
+            }
+          </Space>
+        </Checkbox.Group>
+      )}
+      {!editable && (
+        <>{options.find(({ value }) => value === fieldProps.value)?.label || '-'}</>
+      )}
     </div>
   );
 }

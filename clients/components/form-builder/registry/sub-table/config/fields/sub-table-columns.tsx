@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useContext, useRef } from 'react';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 import { useFormEffects, FormEffectHooks, IFieldState } from '@formily/antd';
-import { pickBy } from 'lodash';
 
 import Toggle from '@c/toggle';
 
@@ -67,19 +66,8 @@ function SubTableColumns({ value, mutators }: ISchemaFieldComponentProps): JSX.E
   }, []);
 
   function onToggleColumn(key: string, checked: boolean): void {
-    let newValue: string[] = [];
-    if (!checked) {
-      newValue = value.filter((k: string) => k !== key);
-    } else {
-      newValue = [...value, key];
-    }
+    let newValue = checked ? [...value, key] : value.filter((k: string) => k !== key);
     newValue = [...new Set(['_id', ...newValue])];
-    actions.setFieldState('Fields.subTableSchema', (state) => {
-      state.value = {
-        type: 'object',
-        properties: pickBy(currentSchema?.properties || {}, (_, key) => newValue.includes(key)),
-      };
-    });
     mutators.change(newValue);
   }
 

@@ -1,7 +1,7 @@
-import { get, has } from 'lodash';
+import { get, has, stubTrue, merge } from 'lodash';
 import { customAlphabet } from 'nanoid';
 import fp, {
-  pipe, entries, filter, fromPairs, every, equals, property, curry, map, cond,
+  pipe, entries, filter, fromPairs, every, equals, property, curry, map, cond, values,
 } from 'lodash/fp';
 
 import toast from '@lib/toast';
@@ -23,11 +23,12 @@ export function numberTransform(schema: ISchema): number {
 
 export function wrapSchemaByMegaLayout(schema: ISchema): ISchema {
   const properties = get(schema, 'properties', {});
-  const xInternal = get(schema, 'x-internal', { });
+  const xInternal = get(schema, 'x-internal', {});
   const labelAlign = get(xInternal, 'labelAlign', 'right');
   // const columnsCount = get(xInternal, 'columns', 1);
 
   return {
+    ...schema,
     type: 'object',
     'x-internal': {
       ...xInternal,
@@ -103,12 +104,6 @@ export function shouldFilterLinkages(
   return keys.includes(fieldName);
 }
 
-export function getDefinedOne(
-  firstOne?: boolean, secondOne?: boolean,
-): boolean {
-  return !!(firstOne ?? secondOne);
-}
-
 export const getValidateMessageMap = <T>(schema: ISchema, configValue: T): Record<string, string> => {
   const getMessageMap = pipe(
     fp.get('properties.Fields.properties'),
@@ -148,32 +143,65 @@ export const validateRegistryElement: Curried<ValidateRegistryElement<unknown>> 
  },
 );
 
-export function schemaReadOnlyVisibleTransform<T extends ISchema>(schema: T): T {
-  const propertiesTransform = pipe(
-    fp.get('properties'),
+type PermissionToOverwrite = { display?: boolean; readOnly?: boolean };
+export function schemaPermissionTransformer<T extends ISchema>(schema: T, hiddenInReadOnly?: boolean): T {
+  function isLayoutSchema(field: ISchema): boolean {
+    return !!get(field, 'x-internal.isLayoutComponent');
+  }
+  function permissionTransformer(permissionToOverwrite: PermissionToOverwrite, field: ISchema): () => void {
+    return () => merge(field, permissionToOverwrite);
+  }
+
+  const fieldTransform = pipe(
+    (field: ISchema) => [fp.get('x-internal.permission', field), field],
+    ([permission, field]: [PERMISSION, ISchema]) => cond([
+      [(permission) => permission === PERMISSION.READONLY, permissionTransformer({
+        display: !hiddenInReadOnly, readOnly: true,
+      }, field)],
+      [(permission) => permission === PERMISSION.INVISIBLE, permissionTransformer({
+        display: false, readOnly: true,
+      }, field)],
+      [stubTrue, permissionTransformer({
+        display: true, readOnly: false,
+      }, field)],
+    ])(permission),
+  );
+
+  const schemaPermissionTransform = pipe(
+    (property: 'properties' | 'items', field: T) => fp.get(property, field),
     entries,
-    map(([_, field]: [string, SchemaFieldItem]) => {
-      if (field.properties) {
-        field.properties = propertiesTransform(field);
-      }
-      const fieldTransform = pipe(
-        fp.get('x-internal.permission'),
-        cond([
-          [(permission) => permission === PERMISSION.READONLY, () => {
-            field.readOnly = true;
-          }],
-          [(permission) => permission === PERMISSION.INVISIBLE, () => {
-            field.visible = false;
-          }],
-        ]),
-      );
-      fieldTransform(field);
+    map(([_, inputField]: [string, ISchema]) => {
+      const field: ISchema = inputField.properties || inputField.items ?
+        schemaPermissionTransformer(inputField, hiddenInReadOnly) :
+        inputField;
+      !isLayoutSchema(field) && fieldTransform(field);
       return [_, field];
     }),
     fromPairs,
   );
 
-  schema.properties = propertiesTransform(schema);
+  if (schema.properties) {
+    schema.properties = schemaPermissionTransform('properties', schema);
+  }
+  if (schema.items) {
+    schema.items = schemaPermissionTransform('items', schema);
+  }
+
+  const layoutPermissionTransform = pipe(
+    (field: ISchema) => [values(field.properties), field],
+    ([fieldSchemas, field]: [ISchema[], ISchema]) => {
+      const isInvisible = fieldSchemas.every(
+        (schema: ISchema) => !schema.display || (schema.readOnly && hiddenInReadOnly),
+      );
+      return [isInvisible, field];
+    },
+    ([isLayoutComponentInvisible, field]) => {
+      const permissionToOverwrite = { display: false, readOnly: true };
+      isLayoutComponentInvisible && merge(field, permissionToOverwrite);
+    },
+  );
+  isLayoutSchema(schema) && layoutPermissionTransform(schema);
+
   return schema;
 }
 

@@ -14,7 +14,7 @@ import {
 import MoreMenu from '@c/more-menu';
 import Icon from '@c/icon';
 import Button from '@c/button';
-import SaveButtonGroup from '@flowEditor/components/_common/action-save-button-group';
+import SaveButtonGroup from '@flow/content/editor/components/_common/action-save-button-group';
 import FlowContext from '@flow/flow-context';
 
 import FlowSourceTableContext from './flow-source-table';

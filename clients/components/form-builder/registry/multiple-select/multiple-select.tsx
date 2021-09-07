@@ -34,6 +34,10 @@ function MultipleSelect(fieldProps: ISchemaFieldComponentProps): JSX.Element {
     fieldProps.mutators.change(values);
   }
 
+  if (!(fieldProps.editable ?? !fieldProps.readOnly)) {
+    return <>{options.find((option) => option.value === fieldProps.value)?.label || ''}</>;
+  }
+
   return (
     <Select
       mode="multiple"

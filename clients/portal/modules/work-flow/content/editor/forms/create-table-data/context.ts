@@ -1,5 +1,5 @@
 import React from 'react';
-import { TableDataCreateData } from '@flowEditor/type';
+import { TableDataCreateData } from '@flow/content/editor/type';
 
 type ContextType = {
   data: Partial<TableDataCreateData>,

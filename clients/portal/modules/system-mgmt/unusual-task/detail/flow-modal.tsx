@@ -7,13 +7,13 @@ import toast from '@lib/toast';
 import Loading from '@c/loading';
 import useObservable from '@lib/hooks/use-observable';
 import ErrorTips from '@c/error-tips';
-import dataTransfer from '@flowEditor/utils/data-transfer';
+import dataTransfer from '@flow/content/editor/utils/data-transfer';
 import FlowRender from '@c/flow-render';
-import type { Data, WorkFlow, StoreValue } from '@flowEditor/type';
-import { CURRENT_WORK_FLOW_VERSION } from '@flowEditor/utils/constants';
+import type { Data, WorkFlow, StoreValue } from '@flow/content/editor/type';
+import { CURRENT_WORK_FLOW_VERSION } from '@flow/content/editor/utils/constants';
 import store, {
   updateStore,
-} from '@flowEditor/store';
+} from '@flow/content/editor/store';
 
 import { getFlowInfo } from '../api';
 

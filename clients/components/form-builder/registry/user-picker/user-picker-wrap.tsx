@@ -1,12 +1,10 @@
 import React from 'react';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
-import { isUndefined } from 'lodash';
 
 import UserPicker from './user-picker';
 
 const UserPickerWrap = (formField: ISchemaFieldComponentProps): JSX.Element => {
   const { optionalRange, defaultRange, defaultValues, multiple } = formField.props;
-  const isEditable = !!(isUndefined(formField?.editable) ? formField?.props.editable : formField?.editable);
 
   React.useEffect(() => {
     if (defaultRange === 'currentUser') {
@@ -27,7 +25,7 @@ const UserPickerWrap = (formField: ISchemaFieldComponentProps): JSX.Element => {
     onChange: formField.mutators.change,
     options: formField.props.enum,
     value: formField.value,
-    editable: isEditable,
+    editable: formField.editable ?? !formField.readOnly,
   });
 
   return (

@@ -3,7 +3,7 @@ import { noop } from 'lodash';
 
 import Table from '@c/table';
 import Checkbox from '@c/checkbox';
-import type { SystemFieldPermission } from '@flowEditor/type';
+import type { SystemFieldPermission } from '@flow/content/editor/type';
 
 interface Props {
   fields: SystemFieldPermission[];
@@ -52,14 +52,9 @@ export default function({ fields, updateFields }: Props): JSX.Element {
 
   function getCell(model: any, key?: 'read'): JSX.Element {
     const isChecked = model.cell.value;
+    const level = model.cell.row.original.path?.split('.').length - 1;
     if (!key) {
-      return (
-        <div
-          className={`${model.cell.row.original.parent ? 'ml-20' : ''}`}
-        >
-          {model.cell.value}
-        </div>
-      );
+      return <div style={{ marginLeft: isNaN(level) ? 0 : level * 20 }}>{model.cell.value}</div>;
     }
     return (
       <Checkbox

@@ -2,7 +2,7 @@ import React, { JSXElementConstructor, useEffect, useState, useContext } from 'r
 import { useQuery } from 'react-query';
 
 import { getTableSchema } from '@lib/http-client';
-import type { NodeWorkForm, Data, BusinessData } from '@flowEditor/type';
+import type { NodeWorkForm, Data, BusinessData } from '@flow/content/editor/type';
 import schemaToFields from '@lib/schema-convert';
 
 import FormDataForm from './form-data';

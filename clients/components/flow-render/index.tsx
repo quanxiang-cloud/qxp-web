@@ -7,10 +7,10 @@ import ReactFlow, {
   Position,
 } from 'react-flow-renderer';
 
-import useFitView from '@flowEditor/hooks/use-fit-view';
+import useFitView from '@flow/content/editor/hooks/use-fit-view';
 import { deepClone } from '@lib/utils';
-import type { Data } from '@flowEditor/type';
-import Config, { edgeTypes, nodeTypes } from '@flowEditor/config';
+import type { Data } from '@flow/content/editor/type';
+import Config, { edgeTypes, nodeTypes } from '@flow/content/editor/config';
 
 interface Props {
   elements: Elements<Data>;

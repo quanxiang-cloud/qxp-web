@@ -41,6 +41,7 @@ export function toSchema(value: SerialConfig): ISchema {
     readOnly: true,
     display: true,
     'x-component': 'Serial',
+    default: '',
     ['x-component-props']: {
       template: `${value.prefix?.frontward}.date{${value.prefix?.backward}}.incr[name]{${value.initialPosition},${value.initialValue}}.step[name]{1}.${value.suffix}`,
       appID: value.appID || '',

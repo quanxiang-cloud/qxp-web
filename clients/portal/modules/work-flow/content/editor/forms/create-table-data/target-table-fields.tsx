@@ -2,9 +2,9 @@ import React, { useContext } from 'react';
 import { useQuery } from 'react-query';
 import { pick, pickBy, each, get, set } from 'lodash';
 
-import { getFormFieldSchema } from '@flowEditor/forms/api';
+import { getFormFieldSchema } from '@flow/content/editor/forms/api';
 import { FormRenderer } from '@c/form-builder';
-import { ValueRule, ValueRuleVal } from '@flowEditor/type';
+import { ValueRule, ValueRuleVal } from '@flow/content/editor/type';
 import { schemaToMap } from '@lib/schema-convert';
 
 import CustomField from './custom-field';

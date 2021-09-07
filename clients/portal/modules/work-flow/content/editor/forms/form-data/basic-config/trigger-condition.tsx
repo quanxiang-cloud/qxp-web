@@ -9,7 +9,7 @@ import type {
   TriggerConditionExpression,
   TriggerConditionValue,
   FormDataData,
-} from '@flowEditor/type';
+} from '@flow/content/editor/type';
 
 import ConditionItem, { ConditionItemOptions } from './condition-item';
 

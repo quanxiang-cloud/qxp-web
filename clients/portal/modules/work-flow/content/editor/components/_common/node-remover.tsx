@@ -1,12 +1,13 @@
 import React, { useState, MouseEvent } from 'react';
 import cs from 'classnames';
 import { usePopper } from 'react-popper';
+import { useClickAway } from 'react-use';
 
 import Icon from '@c/icon';
-import store, { updateStore } from '@flowEditor/store';
-import type { StoreValue } from '@flowEditor/type';
+import store, { updateStore } from '@flow/content/editor/store';
+import type { StoreValue } from '@flow/content/editor/type';
 import useObservable from '@lib/hooks/use-observable';
-import { onRemoveNode } from '@flowEditor/utils';
+import { onRemoveNode } from '@flow/content/editor/utils';
 
 import ActionButtonGroup from './action-button-group';
 
@@ -28,6 +29,9 @@ export default function NodeRemover({
     modifiers: [{ name: 'offset', options: { offset: [-18, 0] } }],
     placement: 'bottom-start',
   });
+  useClickAway({ current: popperElRef }, () => {
+    setShowRemoveModal(false);
+  }, ['mousedown', 'touchstart', 'click']);
 
   function handleOnSubmitRemoveNode(): void {
     const newElements = onRemoveNode(id, elements);
@@ -44,6 +48,7 @@ export default function NodeRemover({
 
   function onShowRemovePopper(e: MouseEvent<SVGSVGElement>): void {
     e.stopPropagation();
+    document.body.click();
     setShowRemoveModal(true);
   }
 

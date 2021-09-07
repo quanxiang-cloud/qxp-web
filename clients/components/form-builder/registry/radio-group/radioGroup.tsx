@@ -1,83 +1,72 @@
-import React, { ChangeEvent, useState, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Radio, Input, RadioChangeEvent, Space } from 'antd';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 
 import useEnumOptions from '@lib/hooks/use-enum-options';
-import { generateRandomFormFieldID, splitValue } from '@c/form-builder/utils';
 
-const INITIAL_OPTION = { label: '', value: generateRandomFormFieldID() };
+const CUSTOM_RADIO_VALUE = 'CUSTOM_RADIO_VALUE';
+
+function useRealValue(currentValue?: string): string | undefined {
+  return useMemo(() => {
+    if (!currentValue) {
+      return;
+    }
+
+    const labelValuePair: string[] = currentValue.split(':');
+    // compatible with old version radio component
+    if (labelValuePair.length === 1) {
+      return labelValuePair[0];
+    }
+
+    return labelValuePair.pop();
+  }, [currentValue]);
+}
 
 function RadioGroup(fieldProps: ISchemaFieldComponentProps): JSX.Element {
   const options = useEnumOptions(fieldProps);
-  const [customOption, setCustomOption] = useState(INITIAL_OPTION);
-  const { allowCustom, optionsLayout } = fieldProps.props['x-component-props'];
-  const allOptions = allowCustom ? [...options, customOption] : options;
-
-  useEffect(() => {
-    if (fieldProps.value && allowCustom) {
-      const _value = fieldProps.value.indexOf(':') !== -1 ?
-        splitValue(fieldProps.value).value : fieldProps.value;
-      const isValueInRange = options.find((option): boolean => option.value === _value);
-      if (!isValueInRange) {
-        setCustomOption({
-          ...customOption,
-          label: splitValue(fieldProps.value).label,
-        });
-        return;
-      }
-
-      setCustomOption(INITIAL_OPTION);
-    }
-  }, [options, allowCustom]);
-
-  function handleCustomValueChange(e: ChangeEvent<HTMLInputElement>): void {
-    const addedOption = {
-      ...customOption,
-      label: e.target.value,
-    };
-    setCustomOption(addedOption);
-    fieldProps.mutators.change(`${addedOption.label}:${addedOption.value}`);
-  }
+  const [otherValue, setOtherValue] = useState('');
+  const realValue = useRealValue(fieldProps.value);
+  const isAllowCustom = !!fieldProps.props['x-component-props'].allowCustom;
+  const optionsLayout = fieldProps.props['x-component-props'].optionsLayout;
 
   function handleRadioChange(e: RadioChangeEvent): void {
-    const checkedOption = allOptions.filter((option) => option.value === e.target.value);
-    const { label, value } = checkedOption[0];
-    fieldProps.mutators.change(`${label}:${value}`);
-  }
-
-  let radioValue: null | string = null;
-  if (fieldProps && fieldProps.value) {
-    radioValue = fieldProps.value.indexOf(':') !== -1 ?
-      splitValue(fieldProps.value).value : fieldProps.value;
-    // Judge whether to put the deleted option into the custom option
-    if (allowCustom) {
-      const isValueInRange = allOptions.find((option) => option.value === radioValue);
-      radioValue = !isValueInRange ? customOption.value : radioValue;
+    const selectedOption = options.find(({ value }) => value === e.target.value);
+    if (selectedOption) {
+      fieldProps.mutators.change(`${selectedOption.label}:${selectedOption.value}`);
+      return;
     }
+
+    fieldProps.mutators.change(`${otherValue}:${CUSTOM_RADIO_VALUE}`);
   }
 
-  if (allOptions.length === 0) {
-    return <span>暂无选项可供选择。</span>;
+  if (options.length === 0) {
+    return <span>暂无可选项</span>;
+  }
+
+  const editable = fieldProps.editable ?? !fieldProps.readOnly;
+
+  if (!editable) {
+    const label = options.find(({ value }) => value === fieldProps.value)?.label;
+    return (
+      <div className="flex items-center">
+        {label || fieldProps.value || '-'}
+      </div>
+    );
   }
 
   return (
-    <div className="flex flex-col">
-      <Radio.Group onChange={handleRadioChange} value={radioValue}>
+    <div className="flex items-center">
+      <Radio.Group onChange={handleRadioChange} value={realValue}>
         <Space direction={optionsLayout}>
           {
-            options.map((option): JSX.Element => {
+            options.map((option) => {
               return (<Radio key={option.value} value={option.value}>{option.label}</Radio>);
             })
           }
           {
-            allowCustom && (
-              <Radio value={customOption.value}>
-                <Input
-                  placeholder="请输入"
-                  maxLength={50}
-                  value={customOption.label}
-                  onChange={handleCustomValueChange}
-                />
+            isAllowCustom && (
+              <Radio value={CUSTOM_RADIO_VALUE}>
+                <Input value={otherValue} onChange={(e) => setOtherValue(e.target.value)} placeholder="请输入" />
               </Radio>
             )
           }
