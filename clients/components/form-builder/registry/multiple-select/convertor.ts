@@ -32,6 +32,7 @@ export function toSchema(value: MultipleSelectConfig): ISchema {
     description: value.description,
     required: value.required,
     readOnly: value.displayModifier === 'readonly',
+    editable: value.displayModifier !== 'readonly',
     display: value.displayModifier !== 'hidden',
     enum: (value.availableOptions || []).map((option) => {
       return {
@@ -48,7 +49,7 @@ export function toSchema(value: MultipleSelectConfig): ISchema {
     },
     ['x-internal']: {
       sortable: value.sortable,
-      permission: 3,
+      permission: value.displayModifier === 'readonly' ? 1 : 3,
       defaultValueFrom: value.defaultValueFrom,
     },
   };

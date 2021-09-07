@@ -3,24 +3,32 @@ import { Select } from 'antd';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 
 import useEnumOptions from '@lib/hooks/use-enum-options';
+import {
+  usePairListValue,
+  usePairListLabel,
+  toLabelValuePairList,
+} from '@c/form-builder/utils/label-value-pairs';
 
 const { Option } = Select;
 
 function MultipleSelect(fieldProps: ISchemaFieldComponentProps): JSX.Element {
   const options = useEnumOptions(fieldProps);
+  const selectValue = usePairListValue(fieldProps.value);
+  const readableValue = usePairListLabel(fieldProps.props.enum || [], fieldProps.value);
 
   function handleSelectChange(value: string[]): void {
-    fieldProps.mutators.change(value);
+    const values = toLabelValuePairList(value, options);
+    fieldProps.mutators.change(values);
   }
 
-  if (!(fieldProps.editable ?? !fieldProps.readOnly)) {
-    return <>{options.find((option) => option.value === fieldProps.value)?.label || ''}</>;
+  if (fieldProps.props.readOnly) {
+    return <>{readableValue.join(', ') || '-'}</>;
   }
 
   return (
     <Select
       mode="multiple"
-      value={fieldProps.value}
+      value={selectValue}
       onChange={handleSelectChange}
     >
       {

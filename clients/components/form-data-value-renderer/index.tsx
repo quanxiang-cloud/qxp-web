@@ -14,22 +14,6 @@ type Props = {
   schema: ISchema;
 }
 
-function enumValueRenderer({ value, schema }: ValueRendererProps): string {
-  if (Array.isArray(value)) {
-    const options = (schema.enum || []) as FormBuilder.Option[];
-    const labels = (value as string[]).map((v) => {
-      return options.find((option) => option.value === v)?.label || v;
-    }).join(', ');
-
-    return labels;
-  }
-
-  const options = (schema.enum || []) as FormBuilder.Option[];
-  const label = options.find((option) => option.value === value)?.label || value as string;
-
-  return label;
-}
-
 function datetimeValueRenderer({ value, schema }: ValueRendererProps): string {
   const format = schema['x-component-props']?.format || 'YYYY-MM-DD HH:mm:ss';
 
@@ -71,6 +55,40 @@ function statisticValueRender({ schema, value }: ValueRendererProps): string {
   return method(parseFloat(value as string)).toFixed(decimalPlaces) + '' || displayFieldNull;
 }
 
+function readableLabelValuePair({ value, schema }: ValueRendererProps): string {
+  if (!value || typeof value !== 'string') {
+    return '';
+  }
+
+  const labelValuePair: string[] = value.split(':');
+
+  // compatible with old version component
+  if (labelValuePair.length === 1) {
+    const enums = (schema.enum || []) as LabelValue[];
+    return enums.find(({ value }: LabelValue) => {
+      return value === labelValuePair[0];
+    })?.label || '';
+  }
+
+  return labelValuePair.slice(0, -1).join('');
+}
+
+function readableLabelValuePairList({ value, schema }: ValueRendererProps): string {
+  if (!Array.isArray(value)) {
+    return '';
+  }
+
+  const enums = (schema.enum || []) as LabelValue[];
+  return (value as string[]).map((pair) => pair.split(':')).map((pair) => {
+    // compatible with old version radio component
+    if (pair.length < 2) {
+      return enums.find(({ value }) => value === pair[0])?.label || pair[0];
+    }
+
+    return pair.slice(0, -1).join('');
+  }).join(', ');
+}
+
 export default function FormDataValueRenderer({ value, schema, className }: Props): JSX.Element {
   if (schema['x-component'] === 'SubTable') {
     return <SubTableValueRenderer schema={schema} value={value} />;
@@ -94,10 +112,11 @@ export function getBasicValue(schema: ISchema, value: FormDataValue): string {
   case 'textarea':
     return value as string;
   case 'radiogroup':
-  case 'checkboxgroup':
   case 'select':
+    return readableLabelValuePair({ schema, value });
+  case 'checkboxgroup':
   case 'multipleselect':
-    return enumValueRenderer({ schema, value });
+    return readableLabelValuePairList({ schema, value });
   case 'datepicker':
     return datetimeValueRenderer({ schema, value });
   case 'associateddata':
