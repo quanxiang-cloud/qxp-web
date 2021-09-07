@@ -113,7 +113,7 @@ function CustomSelect(fieldProps: ISchemaFieldComponentProps): JSX.Element {
 
   if (!(fieldProps.editable ?? !fieldProps.readOnly)) {
     return (
-      <>{newOptions.find((option) => option.value === fieldProps.value)?.label || ''}</>
+      <>{options.find((option) => option.value === fieldProps.value)?.label || ''}</>
     );
   }
 

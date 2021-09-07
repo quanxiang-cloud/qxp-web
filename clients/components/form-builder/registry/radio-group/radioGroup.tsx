@@ -39,6 +39,13 @@ function RadioGroup(fieldProps: ISchemaFieldComponentProps): JSX.Element {
     fieldProps.mutators.change(`${otherValue}:${CUSTOM_RADIO_VALUE}`);
   }
 
+  function handleOtherValueChange(e: React.ChangeEvent<HTMLInputElement>): void {
+    setOtherValue(e.target.value);
+    if (realValue === CUSTOM_RADIO_VALUE) {
+      fieldProps.mutators.change(`${e.target.value}:${CUSTOM_RADIO_VALUE}`);
+    }
+  }
+
   if (options.length === 0) {
     return <span>暂无可选项</span>;
   }
@@ -46,12 +53,24 @@ function RadioGroup(fieldProps: ISchemaFieldComponentProps): JSX.Element {
   const editable = fieldProps.editable ?? !fieldProps.readOnly;
 
   if (!editable) {
-    const label = options.find(({ value }) => value === fieldProps.value)?.label;
-    return (
-      <div className="flex items-center">
-        {label || fieldProps.value || '-'}
-      </div>
-    );
+    if (!fieldProps.value) {
+      return (
+        <div className="flex items-center text-gray-600">-</div>
+      );
+    }
+
+    const labelValuePair: string[] = fieldProps.value.split(':');
+
+    // compatible with old version radio component
+    if (labelValuePair.length === 1) {
+      const label = (fieldProps.props.enum || []).find(({ value }: LabelValue) => {
+        return value === labelValuePair[0];
+      })?.label || '-';
+
+      return (<div className="flex items-center">{label}</div>);
+    }
+
+    return (<div className="flex items-center">{labelValuePair.slice(0, -1).join('')}</div>);
   }
 
   return (
@@ -66,7 +85,7 @@ function RadioGroup(fieldProps: ISchemaFieldComponentProps): JSX.Element {
           {
             isAllowCustom && (
               <Radio value={CUSTOM_RADIO_VALUE}>
-                <Input value={otherValue} onChange={(e) => setOtherValue(e.target.value)} placeholder="请输入" />
+                <Input value={otherValue} onChange={handleOtherValueChange} placeholder="请输入" />
               </Radio>
             )
           }
