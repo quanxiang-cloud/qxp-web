@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useMemo, useRef } from 'react';
 import cs from 'classnames';
 import { Sortable } from '@QCFE/lego-ui';
 import { Slider } from 'antd';
@@ -28,7 +28,6 @@ type FieldItemProps = {
 
 function FieldItem({ field, selected, onChange }: FieldItemProps): JSX.Element {
   const ref = useRef(null);
-  const [adaptive, setAdaptive] = useState(!field.width);
   return (
     <div
       className={cs('page-field-sort-item bg-white', { 'field-sort': selected })}

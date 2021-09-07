@@ -39,7 +39,7 @@ function addFixedParameters(
 ): void {
   fixedList.forEach((index) => {
     if (tableColumns[index]) {
-      tableColumns[index] = { ...tableColumns[index], fixed: true, width: 150 };
+      tableColumns[index] = { ...tableColumns[index], fixed: true, width: tableColumns[index].width || 150 };
     }
   });
 }
@@ -49,20 +49,16 @@ export function setFixedParameters(
   tableColumns: UnionColumns<Record<string, any>>[],
 ): UnionColumns<any>[] {
   const actionIndex = tableColumns.findIndex(({ id }) => id === 'action');
+  if (actionIndex > -1) {
+    addFixedParameters([actionIndex], tableColumns);
+  }
+
   switch (fixedRule) {
   case 'one':
     addFixedParameters([0], tableColumns);
     break;
   case 'previous_two':
     addFixedParameters([0, 1], tableColumns);
-    break;
-  case 'action':
-    if (actionIndex > -1) {
-      addFixedParameters([actionIndex], tableColumns);
-    }
-    break;
-  case 'one_action':
-    addFixedParameters(actionIndex > -1 ? [0, actionIndex] : [0], tableColumns);
     break;
   }
   return tableColumns;

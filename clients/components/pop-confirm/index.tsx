@@ -54,7 +54,7 @@ function PopConfirm({
       <Popover
         onVisibilityChange={handleVisibilityChange}
         open={visible}
-        placement={placement || 'bottom-start'}
+        placement={placement || 'auto'}
         content={(
           <div className="pop-confirm-content">
             {content}

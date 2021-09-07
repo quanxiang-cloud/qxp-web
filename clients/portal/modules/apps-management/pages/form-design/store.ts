@@ -162,7 +162,7 @@ class FormDesignStore {
 
       return setFixedParameters(
         this.pageTableShowRule.fixedRule,
-        [...column, { id: 'action', Header: '操作', accessor: 'action' }],
+        [...column, { id: 'action', Header: '操作', accessor: 'action', fixed: true, width: 100 }],
       );
     }, this.appPageStore.setTableColumns);
 

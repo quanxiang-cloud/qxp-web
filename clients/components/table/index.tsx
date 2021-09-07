@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import cs from 'classnames';
 import {
   useTable,
@@ -41,7 +41,7 @@ export default function Table<T extends Record<string, any>>({
   style,
 }: Props<T>): JSX.Element {
   const extendsColumns = useExtendColumns(columns, showCheckbox);
-
+  const tableRef = useRef<HTMLDivElement>(null);
   const {
     getTableProps,
     getTableBodyProps,
@@ -83,9 +83,11 @@ export default function Table<T extends Record<string, any>>({
     return <TableLoading />;
   }
 
+  const ColumnMaxWidth = tableRef.current ? tableRef.current.getBoundingClientRect().width / 3 : undefined;
+
   return (
     <div className="qxp-table-wrapper">
-      <div className={cs('qxp-table', className)} style={style}>
+      <div ref={tableRef} className={cs('qxp-table', className)} style={style}>
         <table {...getTableProps()}>
           <colgroup id="colgroup">
             {headerGroups[0].headers.map((header) => {
@@ -130,6 +132,7 @@ export default function Table<T extends Record<string, any>>({
                     return (
                       <td
                         {...cell.getCellProps()}
+                        style={{ maxWidth: ColumnMaxWidth }}
                         key={cell.column.id}
                       >
                         {cell.render('Cell')}
