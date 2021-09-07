@@ -3,8 +3,11 @@ import { Select } from 'antd';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 
 import useEnumOptions from '@lib/hooks/use-enum-options';
-import { toLabelValuePairList } from '@lib/utils';
-import { usePairListValue, usePairListLabel } from '@c/form-builder/utils/label-value-pairs';
+import {
+  usePairListValue,
+  usePairListLabel,
+  toLabelValuePairList,
+} from '@c/form-builder/utils/label-value-pairs';
 
 const { Option } = Select;
 

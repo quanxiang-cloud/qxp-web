@@ -4,8 +4,11 @@ import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 import { CheckboxValueType } from 'antd/lib/checkbox/Group';
 
 import useEnumOptions from '@lib/hooks/use-enum-options';
-import { toLabelValuePairList } from '@lib/utils';
-import { usePairListValue, usePairListLabel } from '@c/form-builder/utils/label-value-pairs';
+import {
+  usePairListValue,
+  usePairListLabel,
+  toLabelValuePairList,
+} from '@c/form-builder/utils/label-value-pairs';
 
 function CheckBoxGroup(fieldProps: ISchemaFieldComponentProps): JSX.Element {
   const options = useEnumOptions(fieldProps);

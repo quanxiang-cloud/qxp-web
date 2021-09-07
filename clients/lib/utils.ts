@@ -350,12 +350,3 @@ export async function copyContent(content: string): Promise<void> {
   }
   document.body.removeChild(el);
 }
-
-export function toLabelValuePairList(values: string[], options: LabelValue[]): string[] {
-  const valueLabelMap = options.reduce<Record<string, string>>((acc, option) => {
-    acc[option.value] = option.label;
-    return acc;
-  }, {});
-
-  return values.map((value) => valueLabelMap[value] ? `${valueLabelMap[value]}:${value}` : value);
-}
