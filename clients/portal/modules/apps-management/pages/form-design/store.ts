@@ -179,7 +179,13 @@ class FormDesignStore {
   @action
   toggleShowAllFields(isShowAll: boolean): void {
     if (isShowAll) {
-      this.pageTableColumns = this.fieldList.map(({ id }) => ({ id }));
+      this.pageTableColumns = this.fieldList.reduce((acc, col) => {
+        if (this.pageTableColumns.findIndex(({ id }) => id === col.id) === -1) {
+          return [...acc, { id: col.id }];
+        }
+
+        return acc;
+      }, this.pageTableColumns);
       return;
     }
 
@@ -191,7 +197,7 @@ class FormDesignStore {
     switch (type) {
     case 'edit': {
       this.pageTableColumns = this.pageTableColumns.map((_column) => {
-        if (column.id === _column.id ) {
+        if (column.id === _column.id) {
           return column;
         }
 
