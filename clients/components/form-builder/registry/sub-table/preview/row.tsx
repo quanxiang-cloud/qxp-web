@@ -110,6 +110,7 @@ export default function SubTableRow({
                     required={required}
                     value={value}
                     editable={editable}
+                    path={path}
                   />
                 )}
                 {!editable && (
