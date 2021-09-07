@@ -6,7 +6,6 @@ import AssociatedRecords from '@c/form-builder/registry/associated-records/assoc
 import AssociatedDataValueRender from '@c/form-builder/registry/associated-data/associated-data-view';
 import { RoundMethod } from '@c/form-builder/registry/aggregation-records/convertor';
 import logger from '@lib/logger';
-import { splitValue } from '@c/form-builder/utils';
 
 type ValueRendererProps = { value: FormDataValue; schema: ISchema; className?: string; };
 type Props = {
@@ -56,42 +55,37 @@ function statisticValueRender({ schema, value }: ValueRendererProps): string {
   return method(parseFloat(value as string)).toFixed(decimalPlaces) + '' || displayFieldNull;
 }
 
-function objectLabelValueRenderer({ value, schema }: ValueRendererProps): string {
-  if (!value) return '';
-  const _value = value as string;
-  const datasetId = schema['x-component-props']?.datasetId;
-  if (datasetId) {
-    if (_value.indexOf(':') !== -1) {
-      const { label } = splitValue(_value);
-      return label;
-    }
-    return _value;
+function readableLabelValuePair({ value, schema }: ValueRendererProps): string {
+  if (!value || typeof value !== 'string') {
+    return '';
   }
 
-  if (_value.indexOf(':') !== -1) {
-    const { label } = splitValue(_value);
-    return label;
+  const labelValuePair: string[] = value.split(':');
+
+  // compatible with old version component
+  if (labelValuePair.length === 1) {
+    const enums = (schema.enum || []) as LabelValue[];
+    return enums.find(({ value }: LabelValue) => {
+      return value === labelValuePair[0];
+    })?.label || '';
   }
 
-  const options = (schema.enum || []) as FormBuilder.Option[];
-  return options.find((option) => option.value === _value)?.label ||
-    ((_value.indexOf(':') !== -1 ? splitValue(_value).label : _value));
+  return labelValuePair.slice(0, -1).join('');
 }
 
-function arrayLabelValueRenderer({ value, schema }: ValueRendererProps): string {
-  const values: string[] = (value as string[]) || [];
-  const datasetId = schema['x-component-props'] && schema['x-component-props'].datasetId;
-  if (datasetId) {
-    return values.map((option) => {
-      return (option.indexOf(':') !== -1) ? splitValue(option).label : option;
-    }).join(', ');
+function readableLabelValuePairList({ value, schema }: ValueRendererProps): string {
+  if (!Array.isArray(value)) {
+    return '';
   }
 
-  const options = (schema.enum || []) as FormBuilder.Option[];
-  return values.map((option) => {
-    const _value: string = (option.indexOf(':') !== -1) ? splitValue(option).value : option;
-    return options.find((option) => option.value === _value)?.label ||
-      (option.indexOf(':') !== -1 ? splitValue(option).label : option);
+  const enums = (schema.enum || []) as LabelValue[];
+  return (value as string[]).map((pair) => pair.split(':')).map((pair) => {
+    // compatible with old version radio component
+    if (pair.length < 2) {
+      return enums.find(({ value }) => value === pair[0])?.label || pair[0];
+    }
+
+    return pair.slice(0, -1).join('');
   }).join(', ');
 }
 
@@ -119,10 +113,10 @@ export function getBasicValue(schema: ISchema, value: FormDataValue): string {
     return value as string;
   case 'radiogroup':
   case 'select':
-    return objectLabelValueRenderer({ schema, value });
+    return readableLabelValuePair({ schema, value });
   case 'checkboxgroup':
   case 'multipleselect':
-    return arrayLabelValueRenderer({ schema, value });
+    return readableLabelValuePairList({ schema, value });
   case 'datepicker':
     return datetimeValueRenderer({ schema, value });
   case 'associateddata':
