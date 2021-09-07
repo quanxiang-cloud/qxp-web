@@ -21,7 +21,6 @@ import Dynamic from './dynamic';
 import Discuss from './discuss';
 import ActionModals from './action-modals';
 import * as apis from '../api';
-import { wrapSchemaWithFieldPermission } from './utils';
 import store from './store';
 
 import './index.scss';
@@ -52,9 +51,10 @@ function ApprovalDetail(): JSX.Element {
   );
 
   const getTask = (): Record<string, any> => {
-    return get(data, 'taskDetailModels', []).find(
+    const taskDetailData = get(data, 'taskDetailModels', []).find(
       (taskItem: Record<string, any>) => taskItem?.formData !== null,
     );
+    return taskDetailData ? taskDetailData : get(data, 'taskDetailModels[0]', {});
   };
 
   useEffect(() => {
@@ -85,17 +85,13 @@ function ApprovalDetail(): JSX.Element {
   }, []);
 
   const renderSchemaForm = (task: any): JSX.Element | null => {
-    const extraPermissions = [
-      ...(task?.fieldPermission?.custom || []),
-      ...(task?.fieldPermission?.system || []),
-    ];
-    const formSchema = wrapSchemaWithFieldPermission(task.formSchema.table, extraPermissions);
     return (
       <div className='task-form'>
         <FormRenderer
           defaultValue={task.formData}
-          schema={task?.fieldPermission ? formSchema : task.formSchema.table}
+          schema={task.formSchema.table}
           onFormValueChange={setFormValues}
+          usePermission
         />
       </div>
     );

@@ -3,12 +3,12 @@ import React, { useState, ChangeEvent, useEffect, createRef, Ref } from 'react';
 import Toggle from '@c/toggle';
 import Icon from '@c/icon';
 import Tooltip from '@c/tooltip';
-import { isCurrentNodeFirstLogicNode } from '@flowEditor/utils/node';
+import { isCurrentNodeFirstLogicNode } from '@flow/content/editor/utils/node';
 import type {
   Operation,
   OperationPermission as OperationPermissionType,
   FillInData,
-} from '@flowEditor/type';
+} from '@flow/content/editor/type';
 
 interface Props {
   label: string,

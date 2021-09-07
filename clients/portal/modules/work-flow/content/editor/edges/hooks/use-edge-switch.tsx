@@ -1,7 +1,7 @@
 import useObservable from '@lib/hooks/use-observable';
 
-import store, { updateStore } from '@flowEditor/store';
-import type { StoreValue, CurrentConnection } from '@flowEditor/type';
+import store, { updateStore } from '@flow/content/editor/store';
+import type { StoreValue, CurrentConnection } from '@flow/content/editor/type';
 
 export default function useNodeSwitch(): (id: string, currentConnection: CurrentConnection) => void {
   const { errors } = useObservable<StoreValue>(store);

@@ -152,6 +152,7 @@ type SchemaFieldItem = ISchema & {
   id: string;
   fieldName: string;
   componentName: string;
+  originPathInSchema: string;
   parentField?: string;
   tabIndex?: number;
 }

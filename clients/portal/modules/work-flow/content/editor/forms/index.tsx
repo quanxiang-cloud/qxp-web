@@ -6,7 +6,7 @@ import usePrevious from '@lib/hooks/use-previous';
 import FlowContext from '@flow/flow-context';
 import type {
   StoreValue, BusinessData, Data, NodeWorkForm,
-} from '@flowEditor/type';
+} from '@flow/content/editor/type';
 import store, {
   getNodeElementById,
   updateStore,
@@ -14,7 +14,7 @@ import store, {
   getFormDataElement,
   buildWorkFlowSaveData,
   toggleNodeForm,
-} from '@flowEditor/store';
+} from '@flow/content/editor/store';
 
 import Form from './form';
 import useSave from './hooks/use-save';

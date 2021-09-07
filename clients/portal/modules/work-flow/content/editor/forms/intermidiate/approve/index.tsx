@@ -4,10 +4,10 @@ import { pipe, some, every, get, map, values, pick } from 'lodash/fp';
 
 import Tab from '@c/tab';
 
-import type { FillInData, NodeType } from '@flowEditor/type';
-import SaveButtonGroup from '@flowEditor/components/_common/action-save-button-group';
-import { updateStore } from '@flowEditor/store';
-import { DeadLine, WhenTimeout } from '@flowEditor/type';
+import type { FillInData, NodeType } from '@flow/content/editor/type';
+import SaveButtonGroup from '@flow/content/editor/components/_common/action-save-button-group';
+import { updateStore } from '@flow/content/editor/store';
+import { DeadLine, WhenTimeout } from '@flow/content/editor/type';
 
 import BasicConfig from '../components/basic-config';
 import FieldPermission from '../components/field-permission';

@@ -6,6 +6,7 @@ import { parse, resolve, findVariables } from 'qxp-formula';
 
 import logger from '@lib/logger';
 import { schemaToMap } from '@lib/schema-convert';
+import { schemaPermissionTransformer } from './utils';
 
 import registry from './registry';
 import visibleHiddenLinkageEffect from './linkages/visible-hidden';
@@ -24,20 +25,24 @@ type Props = {
   onFormValueChange?: (value: any) => void;
   children?: React.ReactElement | ((form: IForm) => React.ReactElement);
   additionalComponents?: Record<string, React.JSXElementConstructor<any>>;
+  usePermission?: boolean;
+  hiddenInReadOnly?: boolean;
 }
 
-function FormRenderer(
-  {
-    schema,
-    defaultValue,
-    className,
-    onSubmit,
-    onFormValueChange,
-    children,
-    additionalComponents = {},
-  }: Props): JSX.Element {
+function FormRenderer({
+  schema: inputSchema,
+  defaultValue,
+  className,
+  onSubmit,
+  onFormValueChange,
+  children,
+  additionalComponents = {},
+  usePermission,
+  hiddenInReadOnly,
+}: Props): JSX.Element {
   const [errorMessage, setErrorMessage] = useState('');
   const actions = createFormActions();
+  const schema = usePermission ? schemaPermissionTransformer(inputSchema, hiddenInReadOnly) : inputSchema;
 
   function handleSubmit(values: any): void {
     const validations = schema['x-internal']?.validations || [];

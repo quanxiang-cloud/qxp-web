@@ -6,13 +6,13 @@ import Checkbox from '@c/checkbox';
 import Toggle from '@c/toggle';
 import RadioGroup from '@c/radio/group';
 import { toggleArray } from '@lib/utils';
-import { mergeDataAdapter } from '@flowEditor/utils';
-import PersonPicker from '@flowEditor/components/_common/person-picker';
+import { mergeDataAdapter } from '@flow/content/editor/utils';
+import PersonPicker from '@flow/content/editor/components/_common/person-picker';
 import useObservable from '@lib/hooks/use-observable';
-import store from '@flowEditor/store';
+import store from '@flow/content/editor/store';
 import type {
   BasicNodeConfig, NodeType, StoreValue, AutoApproveRule, FillInData,
-} from '@flowEditor/type';
+} from '@flow/content/editor/type';
 
 import Urge from './urge';
 import TimerSelector from './timer-selector';

@@ -4,7 +4,7 @@ import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 
 import { getDatasetById } from '@portal/modules/system-mgmt/dataset/api';
 
-function RadioGroup(fieldProps: ISchemaFieldComponentProps): JSX.Element {
+function RadioGroup(fieldProps: ISchemaFieldComponentProps): JSX.Element | null {
   const [options, setOptions] = useState<LabelValue[]>([]);
   const [customValue, setCustomValue] = useState('');
 
@@ -53,24 +53,35 @@ function RadioGroup(fieldProps: ISchemaFieldComponentProps): JSX.Element {
     return <span>当前选项集无数据。</span>;
   }
 
+  const editable = fieldProps.editable ?? !fieldProps.readOnly;
+
   return (
     <div className="flex items-center">
-      <Radio.Group onChange={handleRadioChange} value={fieldProps.value}>
-        <Space direction={optionsLayout}>
-          {
-            options.map((option): JSX.Element => {
-              return (<Radio key={option.value} value={option.value}>{option.label}</Radio>);
-            })
-          }
-          {
-            isAllowCustom && (
-              <Radio value={customValue}>
-                <Input value={customValue} onChange={handleCustomValueChange} placeholder="请输入" />
-              </Radio>
-            )
-          }
-        </Space>
-      </Radio.Group>
+      {editable && (
+        <Radio.Group onChange={handleRadioChange} value={fieldProps.value}>
+          <Space direction={optionsLayout}>
+            {
+              options.map((option): JSX.Element => {
+                return (<Radio key={option.value} value={option.value}>{option.label}</Radio>);
+              })
+            }
+            {
+              isAllowCustom && (
+                <Radio value={customValue}>
+                  <Input value={customValue} onChange={handleCustomValueChange} placeholder="请输入" />
+                </Radio>
+              )
+            }
+          </Space>
+        </Radio.Group>
+      )}
+      {!editable && (
+        <>
+          {options.find(({
+            value,
+          }) => value === fieldProps.value || customValue)?.label || customValue || '-'}
+        </>
+      )}
     </div>
   );
 }

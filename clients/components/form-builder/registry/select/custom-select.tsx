@@ -94,6 +94,12 @@ function CustomSelect(fieldProps: ISchemaFieldComponentProps): JSX.Element {
 
   const newOptions: LabelValue[] = customOption ? [...options, customOption] : options;
 
+  if (!(fieldProps.editable ?? !fieldProps.readOnly)) {
+    return (
+      <>{newOptions.find((option) => option.value === fieldProps.value)?.label || ''}</>
+    );
+  }
+
   return (
     <div className="flex items-center w-full">
       <Select
