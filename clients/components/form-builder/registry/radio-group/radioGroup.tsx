@@ -1,53 +1,23 @@
-import React, { useState, useMemo, useEffect, SetStateAction } from 'react';
+import React from 'react';
 import { Radio, Input, RadioChangeEvent, Space } from 'antd';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 
 import useEnumOptions from '@lib/hooks/use-enum-options';
 
-const CUSTOM_RADIO_VALUE = 'CUSTOM_RADIO_VALUE';
-
-function useRealValue(currentValue?: string): string | undefined {
-  return useMemo(() => {
-    if (!currentValue) {
-      return;
-    }
-
-    const labelValuePair: string[] = currentValue.split(':');
-    // compatible with old version radio component
-    if (labelValuePair.length === 1) {
-      return labelValuePair[0];
-    }
-
-    return labelValuePair.pop();
-  }, [currentValue]);
-}
-
-function useOtherValue(currentValue?: string): [string, React.Dispatch<SetStateAction<string>>] {
-  const [otherValue, setOtherValue] = useState('');
-  useEffect(() => {
-    if (!currentValue) {
-      return;
-    }
-
-    const labelValuePair = currentValue.split(':');
-    if (labelValuePair.length < 2) {
-      return;
-    }
-
-    if (labelValuePair.pop() === CUSTOM_RADIO_VALUE) {
-      setOtherValue(labelValuePair.join(''));
-    }
-  }, []);
-
-  return [otherValue, setOtherValue];
-}
+import {
+  CUSTOM_OTHER_VALUE,
+  usePairValue,
+  usePairLabel,
+  useCustomOtherValue,
+} from '@c/form-builder/utils/label-value-pairs';
 
 function RadioGroup(fieldProps: ISchemaFieldComponentProps): JSX.Element {
   const options = useEnumOptions(fieldProps);
-  const [otherValue, setOtherValue] = useOtherValue(fieldProps.value);
-  const realValue = useRealValue(fieldProps.value);
+  const [otherValue, setOtherValue] = useCustomOtherValue(fieldProps.value);
+  const realValue = usePairValue(fieldProps.value);
   const isAllowCustom = !!fieldProps.props['x-component-props'].allowCustom;
   const optionsLayout = fieldProps.props['x-component-props'].optionsLayout;
+  const readableValue = usePairLabel(fieldProps.props.enum || [], fieldProps.value);
 
   function handleRadioChange(e: RadioChangeEvent): void {
     const selectedOption = options.find(({ value }) => value === e.target.value);
@@ -56,13 +26,13 @@ function RadioGroup(fieldProps: ISchemaFieldComponentProps): JSX.Element {
       return;
     }
 
-    fieldProps.mutators.change(`${otherValue}:${CUSTOM_RADIO_VALUE}`);
+    fieldProps.mutators.change(`${otherValue}:${CUSTOM_OTHER_VALUE}`);
   }
 
   function handleOtherValueChange(e: React.ChangeEvent<HTMLInputElement>): void {
     setOtherValue(e.target.value);
-    if (realValue === CUSTOM_RADIO_VALUE) {
-      fieldProps.mutators.change(`${e.target.value}:${CUSTOM_RADIO_VALUE}`);
+    if (realValue === CUSTOM_OTHER_VALUE) {
+      fieldProps.mutators.change(`${e.target.value}:${CUSTOM_OTHER_VALUE}`);
     }
   }
 
@@ -73,24 +43,7 @@ function RadioGroup(fieldProps: ISchemaFieldComponentProps): JSX.Element {
   const editable = fieldProps.editable ?? !fieldProps.readOnly;
 
   if (!editable) {
-    if (!fieldProps.value) {
-      return (
-        <div className="flex items-center text-gray-600">-</div>
-      );
-    }
-
-    const labelValuePair: string[] = fieldProps.value.split(':');
-
-    // compatible with old version radio component
-    if (labelValuePair.length === 1) {
-      const label = (fieldProps.props.enum || []).find(({ value }: LabelValue) => {
-        return value === labelValuePair[0];
-      })?.label || '-';
-
-      return (<div className="flex items-center">{label}</div>);
-    }
-
-    return (<div className="flex items-center">{labelValuePair.slice(0, -1).join('')}</div>);
+    return (<div className="flex items-center">{readableValue}</div>);
   }
 
   return (
@@ -104,7 +57,7 @@ function RadioGroup(fieldProps: ISchemaFieldComponentProps): JSX.Element {
           }
           {
             isAllowCustom && (
-              <Radio value={CUSTOM_RADIO_VALUE}>
+              <Radio value={CUSTOM_OTHER_VALUE}>
                 <Input value={otherValue} onChange={handleOtherValueChange} placeholder="请输入" />
               </Radio>
             )

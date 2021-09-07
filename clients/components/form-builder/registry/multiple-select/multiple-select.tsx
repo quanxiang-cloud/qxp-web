@@ -3,7 +3,7 @@ import { Select } from 'antd';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 
 import useEnumOptions from '@lib/hooks/use-enum-options';
-import { optionsFormat } from '@lib/utils';
+import { toLabelValuePairList } from '@lib/utils';
 import { splitValue } from '@c/form-builder/utils';
 
 const { Option } = Select;
@@ -30,7 +30,7 @@ function MultipleSelect(fieldProps: ISchemaFieldComponentProps): JSX.Element {
   }, [fieldProps.value]);
 
   function handleSelectChange(value: string[]): void {
-    const values = optionsFormat(value, options);
+    const values = toLabelValuePairList(value, options);
     fieldProps.mutators.change(values);
   }
 

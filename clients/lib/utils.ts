@@ -351,16 +351,11 @@ export async function copyContent(content: string): Promise<void> {
   document.body.removeChild(el);
 }
 
-export function optionsFormat(values: CheckboxValueType[], options: LabelValue[]): string[] {
-  let optionValues: string[] = [];
+export function toLabelValuePairList(values: string[], options: LabelValue[]): string[] {
+  const valueLabelMap = options.reduce<Record<string, string>>((acc, option) => {
+    acc[option.value] = option.label;
+    return acc;
+  }, {});
 
-  optionValues = values.reduce((allOptions, currentValue) => {
-    const option = options.find(({ value }) => value === currentValue);
-    if (option) {
-      return [...allOptions, `${option.label}:${option.value}`];
-    }
-    return allOptions;
-  }, [] as string[]);
-
-  return optionValues;
+  return values.map((value) => valueLabelMap[value] ? `${valueLabelMap[value]}:${value}` : value);
 }
