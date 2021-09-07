@@ -1,5 +1,6 @@
 import React, { useState, ChangeEvent, useMemo, useRef } from 'react';
 import { Select, Input, Divider } from 'antd';
+import { RefSelectProps } from 'antd/lib/select';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 
 import toast from '@lib/toast';
@@ -9,7 +10,6 @@ import {
   usePairValue,
   useCustomOtherValue,
 } from '@c/form-builder/utils/label-value-pairs';
-import { RefSelectProps } from 'antd/lib/select';
 
 interface DropdownRenderProps {
   menu: React.ReactElement;
