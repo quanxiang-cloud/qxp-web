@@ -1,17 +1,21 @@
 import { omit } from 'lodash';
 import { History } from 'history';
-import { observable, action, toJS, reaction, IReactionDisposer } from 'mobx';
 import { mutateTree, TreeData, TreeItem } from '@atlaskit/tree';
+import { observable, action, toJS, reaction, IReactionDisposer } from 'mobx';
 
 import toast from '@lib/toast';
 import { buildAppPagesTreeData } from '@lib/utils';
-import { getTableInfo, getTableSchema } from '@lib/http-client';
+import { getCustomPageInfo, getSchemaPageInfo, getTableSchema } from '@lib/http-client';
 
-import { CustomPageInfo } from './type';
+import { CustomPageInfo, MenuType } from './type';
 import { fetchAppList } from '../entry/app-list/api';
 import { DefaultPageDescriptions } from './constants';
-import { filterDeletedPage, getValueOfPageDescription } from './utils';
 import { getNextTreeItem } from './page-menu-design/app-pages-tree';
+import {
+  filterDeletedPage,
+  mapToSchemaPageDescription,
+  mapToCustomPageDescription,
+} from './utils';
 import {
   fetchAppDetails,
   updateAppStatus,
@@ -54,7 +58,8 @@ class AppDetailsStore {
     items: {},
   };
   @observable modalType = '';
-  @observable pageDescription = DefaultPageDescriptions;
+  @observable curPreviewUrl = '';
+  @observable pageDescriptions = DefaultPageDescriptions;
 
   constructor() {
     this.destroySetCurPage = reaction(() => {
@@ -276,10 +281,22 @@ class AppDetailsStore {
 
     const pageInfo = this.pagesTreeData.items[pageID].data;
     this.fetchSchemeLoading = true;
-    if (pageInfo.menuType === 0) {
+    if (pageInfo.menuType === MenuType.schemaForm) {
       getTableSchema(this.appID, pageInfo.id).then((pageSchema) => {
         this.hasSchema = !!pageSchema;
-        this.pageDescription = DefaultPageDescriptions;
+        if (this.hasSchema) {
+          getSchemaPageInfo(this.appID, pageID).then((res) => {
+            const descriptions = this.pageDescriptions.map((description) => {
+              return mapToSchemaPageDescription(description, res);
+            });
+            this.pageDescriptions = [...descriptions];
+            this.curPreviewUrl = '';
+          }).catch((err) => {
+            toast.error(err.message);
+          });
+        }
+        this.pageDescriptions = DefaultPageDescriptions;
+        this.curPage = { ...pageInfo };
       }).catch(() => {
         toast.error('获取页面schema失败');
       }).finally(() => {
@@ -287,13 +304,13 @@ class AppDetailsStore {
       });
     }
 
-    if (pageInfo.menuType === 2) {
-      getTableInfo(this.appID, pageInfo.id).then((res) => {
-        const descriptions = this.pageDescription.map(({ id, title, value }) => {
-          const test = getValueOfPageDescription(id, res);
-          return { id, title, value: test ? test : value };
+    if (pageInfo.menuType === MenuType.customPage) {
+      getCustomPageInfo(this.appID, pageInfo.id).then((res) => {
+        const descriptions = this.pageDescriptions.map((description) => {
+          return mapToCustomPageDescription(description, res);
         });
-        this.pageDescription = descriptions;
+        this.pageDescriptions = [...descriptions];
+        this.curPreviewUrl = res.fileUrl || '';
       }).catch(() => {
         toast.error('获取关联自定义页面失败');
       }).finally(() => {
@@ -306,10 +323,9 @@ class AppDetailsStore {
 
   @action
   setCurPageMenuType = (menuType: number, data: CustomPageInfo): void => {
-    const curPageInfo = { ...this.curPage, menuType: menuType };
-    const descriptions = this.pageDescription.map(({ id, title, value }) => {
-      const test = getValueOfPageDescription(id, data);
-      return { id, title, value: test ? test : value };
+    const curPageInfo = { ...this.curPage, menuType: menuType, fileUrl: data.fileUrl };
+    const descriptions = this.pageDescriptions.map((description) => {
+      return mapToCustomPageDescription(description, data);
     });
 
     this.pagesTreeData = mutateTree(toJS(this.pagesTreeData), curPageInfo.id, {
@@ -317,7 +333,8 @@ class AppDetailsStore {
       data: curPageInfo,
     });
     this.curPage = curPageInfo;
-    this.pageDescription = descriptions;
+    this.pageDescriptions = descriptions;
+    this.curPreviewUrl = data.fileUrl || '';
   }
 
   @action
