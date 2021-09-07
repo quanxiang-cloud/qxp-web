@@ -50,8 +50,6 @@ interface Pagination {
   pageSize: number;
 }
 
-type CheckboxValueType = string | number | boolean;
-
 type ErrorWithData<T> = Error & T;
 
 type PartialTuple<
