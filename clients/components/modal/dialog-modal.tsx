@@ -3,7 +3,7 @@ import Modal from '@c/modal';
 import ReactDOM from 'react-dom';
 
 interface Params {
-  title: string;
+  title: string | React.ReactNode;
   content: React.ReactNode | string;
   confirmText?: string;
   cancelText?: string;

@@ -10,7 +10,7 @@ function DocumentNav(): JSX.Element {
   const [openApi, setOpenApi] = useState(true);
 
   return (
-    <div className='api-doc-details-nav pt-20'>
+    <div className='api-doc-details-nav pt-20 rounded-tl-12'>
       <div
         className='h-40 flex items-center px-18 hover:bg-gray-100'
         onClick={() => setOpenApi(!openApi)}

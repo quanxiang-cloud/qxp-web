@@ -1,0 +1,10 @@
+.header-text {
+  line-height: 22px;
+}
+
+.go-back {
+  &:hover {
+    color: var(--blue-600);
+    fill: currentColor;
+  }
+}
