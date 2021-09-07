@@ -1,7 +1,7 @@
 import moment from 'moment';
 import { UnionColumns } from 'react-table';
 
-import { CustomPageInfo, Description, SchemaPageInfo } from './type';
+import { CustomPageInfo } from './type';
 
 export const SYSTEM_FIELDS: Record<string, ModelFieldSchema> = {
   _id: {
@@ -129,45 +129,15 @@ export function filterDeletedPage(
   });
 }
 
-export function getValueOfPageDescription(key: string, data: CustomPageInfo & SchemaPageInfo): string | undefined {
+export function getValueOfPageDescription(key: string, data: CustomPageInfo): string | undefined {
   switch (key) {
   case 'createdBy':
     return data.createdBy;
-  case 'updatedBy':
-    return data.updatedBy;
   case 'updatedAt':
-    return moment(data.updatedAt, 'X').format('YYYY-MM-DD');
-  case 'createdAt':
-    return moment(data.createdAt, 'X').format('YYYY-MM-DD');
+    return moment(data.updatedAt, 'X').format('YYYY-MM-DD HH:mm:ss');
   case 'type':
-    return '自定义页面';
-  case 'fileSize':
-    return data.fileSize;
-  case 'fieldLen':
-    return data.fieldLen;
+    return data.type === 1 ? 'HTML自定义页面' : '基于空白创建';
   default:
     return undefined;
   }
-}
-
-export function mapToSchemaPageDescription(
-  { id, title, value }: Description, data: SchemaPageInfo,
-): Description {
-  const test = getValueOfPageDescription(id, { ...data, id: data.tableID || '' });
-  if (id === 'type') {
-    return { id, title, value: '表单' };
-  }
-  return { id, title, value: test ? test : value };
-}
-
-export function mapToCustomPageDescription(
-  { id, title, value }: Description, data: CustomPageInfo,
-): Description {
-  const test = getValueOfPageDescription(id, data);
-
-  if (id === 'fieldLen') {
-    return { id: 'fileSize', title: '文件大小', value: data.fileSize || '' };
-  }
-
-  return { id, title, value: test ? test : value };
 }

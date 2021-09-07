@@ -19,10 +19,10 @@ function ApiDocument(): JSX.Element {
   }, [appID]);
 
   return (
-    <div className="flex h-full">
+    <>
       <DocumentNav/>
       <ApiDocumentDetails />
-    </div>
+    </>
   );
 }
 

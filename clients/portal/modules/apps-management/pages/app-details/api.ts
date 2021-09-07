@@ -1,14 +1,6 @@
 import httpClient from '@lib/http-client';
 
-import {
-  PageFlowInfo,
-  CustomPageInfo,
-  MovePageParams,
-  CustomPageParams,
-  fetchCustomListRes,
-  UpdateCustomPageParams,
-  CreateCustomPageParams,
-} from './type';
+import { MovePageParams, CustomPageParams, fetchCustomListRes, CustomPageInfo } from './type';
 
 export const fetchAppDetails = async (id: string)=> {
   return await httpClient('/api/v1/app-center/one', { id });
@@ -74,16 +66,8 @@ export const fetchGroupList = async (appID: string)=> {
   return await httpClient(`/api/v1/structor/${appID}/m/group/list`, { appID });
 };
 
-export const createCustomPage = async (
-  appID: string, params: CreateCustomPageParams,
-): Promise<CustomPageInfo> => {
+export const createCustomPage = async (appID: string, params: CustomPageParams)=> {
   return await httpClient(`/api/v1/structor/${appID}/m/page/create`, params);
-};
-
-export const updateCustomPage = async (
-  appID: string, params: UpdateCustomPageParams,
-): Promise<CustomPageInfo> => {
-  return await httpClient(`/api/v1/structor/${appID}/m/page/update`, params);
 };
 
 export const removeCustomPage = async (appID: string, pageId: string)=> {
@@ -98,12 +82,6 @@ export const relateCustomPage = async (
   appID: string, params: {menuId: string, pageID: string},
 ): Promise<CustomPageInfo> => {
   return await httpClient(`/api/v1/structor/${appID}/m/page/relate`, params);
-};
-
-export const fetchCorrelationFlows = async (
-  params: {appID: string, formID: string},
-): Promise<PageFlowInfo[]> => {
-  return await httpClient('/api/v1/flow/correlationFlowList', params);
 };
 
 export const fetchDataModels = (

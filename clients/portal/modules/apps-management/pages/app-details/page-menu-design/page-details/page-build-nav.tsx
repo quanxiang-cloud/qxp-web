@@ -1,26 +1,37 @@
-import React, { MouseEvent } from 'react';
-import { Link } from 'react-router-dom';
+import React, { MouseEvent, useEffect, useState } from 'react';
+import { Link, useHistory } from 'react-router-dom';
 
 import Icon from '@c/icon';
+import Modal from '@c/modal';
+import toast from '@lib/toast';
+import Select from '@c/select';
+
+import { fetchCustomPageList, relateCustomPage } from '../../api';
+import { CustomPageInfo } from '../../type';
 
 type Props = {
   pageId: string | undefined;
   pageName: string | undefined;
   appID: string | undefined;
-  setOpenModal: (modalType: string) => void;
+  handleRelatePage: (menuType: number, data: CustomPageInfo) => void
 }
 
-function PageBuildNav({ pageId = '', pageName, appID = '', setOpenModal }: Props): JSX.Element {
+function PageBuildNav({ pageId = '', pageName, appID = '', handleRelatePage }: Props): JSX.Element {
+  const [openModal, setOpenModal] = useState(false);
+  const [selectedValue, setSelectedValue] = useState('');
+  const [customPageList, setCustomPageList] = useState<LabelValue[]>([]);
+  const history = useHistory();
+
   const BUILD_NAV = [
     {
-      title: '新建表单',
+      title: '创建表单页面',
       desc: '表单页通常用来做数据的收集或是单据填制。',
       type: 'form',
       url: '/apps/formDesign/formBuild',
     },
     {
-      title: '新建自定义页面',
-      desc: '可以上传静态的页面代码，包含 html、javascript、css、图片等。',
+      title: '自定义页面',
+      desc: '自定义页面通常用来做...',
       type: 'customize',
       url: '/apps/formDesign/formBuild',
       onClick: onShowAddCustomPage,
@@ -31,32 +42,99 @@ function PageBuildNav({ pageId = '', pageName, appID = '', setOpenModal }: Props
 
   function onShowAddCustomPage(e: MouseEvent<HTMLAnchorElement>): void {
     e.preventDefault();
-    setOpenModal('create');
+    setOpenModal(true);
   }
 
+  function onSubmit(): void {
+    relateCustomPage(appID, { menuId: pageId, pageID: selectedValue }).then((res) => {
+      handleRelatePage(2, res);
+      toast.success('关联成功');
+    }).catch((err) => {
+      toast.error(err.message);
+    });
+    onClose();
+  }
+
+  function onClose(): void {
+    setOpenModal(false);
+  }
+
+  useEffect(() => {
+    if (!openModal) {
+      return;
+    }
+
+    fetchCustomPageList(appID).then(({ list = [] }) => {
+      setCustomPageList(list.map(({ name, id }: CustomPageInfo) => {
+        return { label: name, value: id };
+      }));
+    }).catch((err) => {
+      toast.error(err.message);
+    });
+  }, [openModal]);
+
   return (
-    <div className='app-page-build-nav'>
-      {BUILD_NAV.map(({ title, desc, type, url, onClick }) => (
-        <Link
-          key={type}
-          onClick={onClick}
-          to={`${url}/${pageId}/${appID}?pageName=${pageName}`}
-          className={`app-page-build-nav-bg-${type} app-page-build-nav-item`}
+    <>
+      <div className='app-page-build-nav rounded-tl-12 rounded-tr-12'>
+        {BUILD_NAV.map(({ title, desc, type, url, onClick }) => (
+          <Link
+            key={type}
+            onClick={onClick}
+            to={`${url}/${pageId}/${appID}?pageName=${pageName}`}
+            className={`app-page-build-nav-bg-${type} app-page-build-nav-item`}
+          >
+            <Icon className='mr-8' name='list_alt' type='light' size={44} />
+            <div className='flex-1 text-white'>
+              <p className='text-h5-blod'>{title}</p>
+              <p className='text-caption-no-color'>{desc}</p>
+            </div>
+            <Icon name='arrow_right_alt' type='light' size={24} />
+          </Link>
+        ))}
+      </div>
+      {openModal && (
+        <Modal
+          title='新建自定义页面'
+          onClose={onClose}
+          className="text-center"
+          footerBtns={[
+            {
+              key: 'close',
+              text: '取消',
+              onClick: onClose,
+            },
+            {
+              key: 'sure',
+              text: '确定',
+              modifier: 'primary',
+              onClick: onSubmit,
+            },
+          ]}
         >
-          <Icon
-            size={45}
-            type="light"
-            className='mr-8'
-            name={type === 'form' ? 'schema-form' : 'custom-page'}
-          />
-          <div className='flex-1 text-white'>
-            <p className='text-h5-blod'>{title}</p>
-            <p className='text-caption-no-color'>{desc}</p>
+          <div className="flex items-center p-36">
+            <span className="text-red-500 mr-4">*</span>
+            选择自定义页面:
+            <Select
+              defaultValue="one"
+              placeholder="请选择"
+              className="flex-1 ml-10"
+              options={customPageList}
+              onChange={(value) => setSelectedValue(value)}
+              optionClassName="max-h-200 overflow-auto"
+            />
           </div>
-          <Icon name='arrow_right_alt' type='light' size={24} />
-        </Link>
-      ))}
-    </div>
+          <div className="mb-28">
+            没找到?
+            <span
+              className='text-btn ml-8'
+              onClick={() => history.push(`/apps/details/${appID}/custom_page`)}
+            >
+              去创建
+            </span>
+          </div>
+        </Modal>
+      )}
+    </>
   );
 }
 

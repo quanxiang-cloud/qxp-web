@@ -3,7 +3,7 @@ import { TreeData } from '@atlaskit/tree';
 
 import toast from '@lib/toast';
 import { buildAppPagesTreeData } from '@lib/utils';
-import { getCustomPageInfo } from '@lib/http-client';
+import { getTableInfo } from '@lib/http-client';
 import { CustomPageInfo, MenuType } from '@portal/modules/apps-management/pages/app-details/type';
 
 import { fetchPageList, fetchFormScheme, formDataCurd, getOperate } from './api';
@@ -58,7 +58,7 @@ class UserAppDetailsStore {
     this.curPage = pageInfo;
 
     if (pageInfo.menuType === MenuType.customPage) {
-      getCustomPageInfo(pageInfo.appID as string, pageInfo.id).then((pageRes: CustomPageInfo) => {
+      getTableInfo(pageInfo.appID as string, pageInfo.id).then((pageRes: CustomPageInfo) => {
         this.customPageInfo = pageRes;
       });
     } else {

@@ -1,8 +1,6 @@
 .custom-page-search {
-  width: 253px;
-  margin-right: 16px;
-}
-
-.page-applying {
-  @apply text-green-600 bg-green-50;
+  background-color: var(--gray-100);
+  input {
+    width: 324px !important;
+  }
 }

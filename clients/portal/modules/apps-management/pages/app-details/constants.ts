@@ -1,8 +1,7 @@
 export const DefaultPageDescriptions = [
-  { id: 'type', title: '页面类型', value: '表单' },
-  { id: 'fieldLen', title: '已配置字段总数', value: '' },
-  { id: 'createdBy', title: '创建人', value: '' },
-  { id: 'createdAt', title: '创建时间', value: '' },
-  { id: 'updatedBy', title: '修改人', value: '' },
-  { id: 'updatedAt', title: '修改时间', value: '' },
+  { id: 'createdBy', title: '创建人', value: '数据Mock' },
+  { id: 'updatedBy', title: '最后更新人', value: '数据Mock' },
+  { id: 'type', title: '创建方式', value: '基于空白创建' },
+  { id: 'createAt', title: '创建时间', value: '2018-06-20 12:41:50' },
+  { id: 'updatedAt', title: '最后更新时间', value: '2018-06-20 12:41:50' },
 ];
