@@ -1,41 +1,25 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Select } from 'antd';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 
 import useEnumOptions from '@lib/hooks/use-enum-options';
 import { toLabelValuePairList } from '@lib/utils';
-import { splitValue } from '@c/form-builder/utils';
+import { usePairListValue, usePairListLabel } from '@c/form-builder/utils/label-value-pairs';
 
 const { Option } = Select;
 
 function MultipleSelect(fieldProps: ISchemaFieldComponentProps): JSX.Element {
-  const [selectValue, setSelectValue] = useState(fieldProps.value || []);
   const options = useEnumOptions(fieldProps);
-
-  useEffect(() => {
-    if (fieldProps.value && fieldProps.value.length > 0) {
-      const values: string[] = [];
-      fieldProps.value.forEach((option: string) => {
-        if (option && option.indexOf(':') !== -1) {
-          const { value } = splitValue(option);
-          values.push(value);
-          return;
-        }
-
-        values.push(option);
-      });
-
-      setSelectValue(values);
-    }
-  }, [fieldProps.value]);
+  const selectValue = usePairListValue(fieldProps.value);
+  const readableValue = usePairListLabel(fieldProps.props.enum || [], fieldProps.value);
 
   function handleSelectChange(value: string[]): void {
     const values = toLabelValuePairList(value, options);
     fieldProps.mutators.change(values);
   }
 
-  if (!(fieldProps.editable ?? !fieldProps.readOnly)) {
-    return <>{options.find((option) => option.value === fieldProps.value)?.label || ''}</>;
+  if (fieldProps.props.readOnly) {
+    return <>{readableValue.join(', ') || '-'}</>;
   }
 
   return (
