@@ -100,7 +100,7 @@ function AssociatedRecordsFields(props: Partial<ISchemaFieldComponentProps>): JS
 
   return (
     <AssociatedRecords
-      readOnly={props.readOnly || props.props.readOnly}
+      readOnly={props.props.readOnly}
       appID={componentProps.appID}
       tableID={componentProps.tableID}
       columns={componentProps.columns || []}

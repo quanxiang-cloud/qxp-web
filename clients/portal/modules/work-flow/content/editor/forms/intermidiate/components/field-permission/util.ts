@@ -38,7 +38,7 @@ export function fieldPermissionEncoder(value: FieldPermission): NewFieldPermissi
       [cur.id]: {
         fieldName: cur.fieldName,
         'x-internal': {
-          permission: 2,
+          permission: cur.read ? PERMISSION.READONLY : PERMISSION.INVISIBLE,
         },
       },
     };

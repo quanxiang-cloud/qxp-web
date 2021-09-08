@@ -5,7 +5,6 @@ import { FormItem, IForm, IMutators } from '@formily/antd';
 import { useCss } from 'react-use';
 
 import Icon from '@c/icon';
-import FormDataValueRenderer from '@c/form-data-value-renderer';
 
 import type { Column } from './index';
 
@@ -76,7 +75,7 @@ export default function SubTableRow({
           }}
         >
           {componentColumns.map(({
-            dataIndex, component, props, dataSource, required, rules, schema, editable,
+            dataIndex, component, props, dataSource, required, rules, schema, readOnly, render,
           }, idx) => {
             const path = `${name}.${index}.${dataIndex}`;
             let value = item?.[dataIndex];
@@ -88,15 +87,12 @@ export default function SubTableRow({
                 key={dataIndex}
                 style={{ minHeight: 32 }}
                 className={cs(
-                  'flex items-center justify-center',
-                  formItemClassName,
-                  portalReadOnlyClassName,
                   {
                     'border-r-1 border-gray-300': idx < componentColumns.length,
-                  },
+                  }, 'flex items-center justify-center', formItemClassName, portalReadOnlyClassName,
                 )}
               >
-                {component && editable && (
+                {!readOnly && component && (
                   <FormItem
                     {...props}
                     className="mx-8 my-8 w-full"
@@ -109,13 +105,10 @@ export default function SubTableRow({
                     dataSource={dataSource}
                     required={required}
                     value={value}
-                    editable={editable}
                     path={path}
                   />
                 )}
-                {!editable && (
-                  <FormDataValueRenderer value={value} schema={schema} />
-                )}
+                {readOnly && render?.(value)}
               </div>
             );
           })}

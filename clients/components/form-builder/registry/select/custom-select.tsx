@@ -5,10 +5,10 @@ import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 
 import toast from '@lib/toast';
 import useEnumOptions from '@lib/hooks/use-enum-options';
+import FormDataValueRenderer from '@c/form-data-value-renderer';
 import {
   CUSTOM_OTHER_VALUE,
   usePairValue,
-  usePairLabel,
   useCustomOtherValue,
 } from '@c/form-builder/utils/label-value-pairs';
 
@@ -73,7 +73,6 @@ function CustomSelect(fieldProps: ISchemaFieldComponentProps): JSX.Element {
   const options = useEnumOptions(fieldProps);
   const [otherCustomValue, setOtherCustomValue] = useCustomOtherValue(fieldProps.value);
   const realValue = usePairValue(fieldProps.value);
-  const readableValue = usePairLabel(fieldProps.props.enum || [], fieldProps.value);
   const selectRef = useRef<RefSelectProps>(null);
 
   const isAllowCustom = !!fieldProps.props['x-component-props']?.allowCustom;
@@ -85,10 +84,8 @@ function CustomSelect(fieldProps: ISchemaFieldComponentProps): JSX.Element {
     return options.concat({ label: otherCustomValue, value: CUSTOM_OTHER_VALUE });
   }, [isAllowCustom, options, otherCustomValue]);
 
-  if (!(fieldProps.editable ?? !fieldProps.readOnly)) {
-    return (
-      <>{readableValue || '-'}</>
-    );
+  if (fieldProps.props.readOnly) {
+    return <FormDataValueRenderer schema={fieldProps.schema} value={fieldProps.value} />;
   }
 
   return (

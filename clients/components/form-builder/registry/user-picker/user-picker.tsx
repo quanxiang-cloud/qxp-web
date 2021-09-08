@@ -17,7 +17,6 @@ interface Props extends SelectProps<any> {
   defaultRange?: DefaultRange;
   appID?: string;
   dataSource?: any[];
-  editable?: boolean;
 }
 
 interface AllUserPickerProps extends SelectProps<any> {
@@ -32,7 +31,6 @@ const UserPicker = ({
   appID,
   onChange,
   value,
-  editable = true,
   ...componentsProps
 }: Props): JSX.Element => {
   const handleChange = (_: any, _selected: any): void => {
@@ -58,7 +56,6 @@ const UserPicker = ({
     return (
       <AllUserPicker
         {...componentsProps}
-        disabled={!editable}
         onChange={handleChange}
         value={selected}
         appID={appID as string}
@@ -71,7 +68,6 @@ const UserPicker = ({
       allowClear
       {...componentsProps}
       value={selected}
-      disabled={!editable}
       onChange={handleChange}
       className={cs('user-selector', componentsProps.className || '')}
     />

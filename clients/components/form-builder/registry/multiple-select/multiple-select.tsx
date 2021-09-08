@@ -5,16 +5,15 @@ import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 import useEnumOptions from '@lib/hooks/use-enum-options';
 import {
   usePairListValue,
-  usePairListLabel,
   toLabelValuePairList,
 } from '@c/form-builder/utils/label-value-pairs';
+import FormDataValueRenderer from '@c/form-data-value-renderer';
 
 const { Option } = Select;
 
 function MultipleSelect(fieldProps: ISchemaFieldComponentProps): JSX.Element {
   const options = useEnumOptions(fieldProps);
   const selectValue = usePairListValue(fieldProps.value);
-  const readableValue = usePairListLabel(fieldProps.props.enum || [], fieldProps.value);
 
   function handleSelectChange(value: string[]): void {
     const values = toLabelValuePairList(value, options);
@@ -22,7 +21,7 @@ function MultipleSelect(fieldProps: ISchemaFieldComponentProps): JSX.Element {
   }
 
   if (fieldProps.props.readOnly) {
-    return <>{readableValue.join(', ') || '-'}</>;
+    return <FormDataValueRenderer value={fieldProps.value} schema={fieldProps.schema} />;
   }
 
   return (

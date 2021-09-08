@@ -1,6 +1,8 @@
 import React from 'react';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 
+import FormDataValueRenderer from '@c/form-data-value-renderer';
+
 import UserPicker from './user-picker';
 
 const UserPickerWrap = (formField: ISchemaFieldComponentProps): JSX.Element => {
@@ -25,8 +27,11 @@ const UserPickerWrap = (formField: ISchemaFieldComponentProps): JSX.Element => {
     onChange: formField.mutators.change,
     options: formField.props.enum,
     value: formField.value,
-    editable: formField.editable ?? !formField.readOnly,
   });
+
+  if (formField.props.readOnly) {
+    return <FormDataValueRenderer schema={formField.schema} value={formField.value} />;
+  }
 
   return (
     <UserPicker

@@ -1,3 +1,5 @@
+import { getSchemaPermissionFromSchemaConfig } from '@c/form-builder/utils';
+
 import { generateRandomFormFieldID } from '../../utils';
 
 export interface CheckboxGroupConfig {
@@ -53,7 +55,7 @@ export function toSchema(value: CheckboxGroupConfig): ISchema {
     },
     ['x-internal']: {
       sortable: value.sortable,
-      permission: 3,
+      permission: getSchemaPermissionFromSchemaConfig(value),
       defaultValueFrom: value.defaultValueFrom,
     },
   };

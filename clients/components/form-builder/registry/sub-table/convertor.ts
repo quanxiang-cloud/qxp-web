@@ -1,3 +1,5 @@
+import { getSchemaPermissionFromSchemaConfig } from '@c/form-builder/utils';
+
 export type SubTableConfig = {
   title: string;
   description: string;
@@ -52,7 +54,7 @@ export function toSchema(value: SubTableConfig): ISchema {
       tableName: value.linkedTable?.tableName,
     },
     ['x-internal']: {
-      permission: 3,
+      permission: getSchemaPermissionFromSchemaConfig(value),
       sortable: false,
     },
   };
