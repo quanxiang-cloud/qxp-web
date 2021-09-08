@@ -6,7 +6,7 @@ import {
   IAntdFormItemProps,
   createFormActions,
 } from '@formily/antd';
-import { Input, Radio, MegaLayout, Switch, Select } from '@formily/antd-components';
+import { Input, Radio, MegaLayout, Switch } from '@formily/antd-components';
 
 import Picker from './picker';
 import UserPicker from './user-picker';
@@ -41,8 +41,8 @@ const UserPickerConfigForm = ({ initialValue, onChange }: Props): JSX.Element =>
       });
 
       setFieldState('defaultRange', (state) => {
-        state.value = 'customize';
         state.props.dataSource = value === 'all' ? EnumDefaultRange : [EnumDefaultRange[0]];
+        state.value = 'customize';
       });
 
       setFieldState('defaultValues', (state) => {
@@ -83,14 +83,15 @@ const UserPickerConfigForm = ({ initialValue, onChange }: Props): JSX.Element =>
         />
         <Field
           name="defaultRange"
+          visible={initialValue.optionalRange !== 'currentUser'}
           title="默认值"
-          component={Select}
+          component={Radio.Group}
           dataSource={EnumDefaultRange}
         />
         <Field
           name="defaultValues"
           appID={appID}
-          visible={initialValue.defaultRange === 'customize'}
+          visible={initialValue.defaultRange === 'customize' && initialValue.optionalRange !== 'currentUser'}
           optionalRange={initialValue.optionalRange}
           mode={initialValue.multiple}
           options={(initialValue.rangeList || []).map(({ ownerID, ownerName }) => {
@@ -98,7 +99,6 @@ const UserPickerConfigForm = ({ initialValue, onChange }: Props): JSX.Element =>
           })}
           component={UserPicker}
         />
-        {/* <Picker value={initialValue.rangeList} onChange={handleDefaultUserChange} /> */}
       </Form>
     </div>
   );
