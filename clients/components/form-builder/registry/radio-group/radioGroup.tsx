@@ -3,11 +3,11 @@ import { Radio, Input, RadioChangeEvent, Space } from 'antd';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 
 import useEnumOptions from '@lib/hooks/use-enum-options';
+import FormDataValueRenderer from '@c/form-data-value-renderer';
 
 import {
   CUSTOM_OTHER_VALUE,
   usePairValue,
-  usePairLabel,
   useCustomOtherValue,
 } from '@c/form-builder/utils/label-value-pairs';
 
@@ -17,7 +17,6 @@ function RadioGroup(fieldProps: ISchemaFieldComponentProps): JSX.Element {
   const realValue = usePairValue(fieldProps.value);
   const isAllowCustom = !!fieldProps.props['x-component-props'].allowCustom;
   const optionsLayout = fieldProps.props['x-component-props'].optionsLayout;
-  const readableValue = usePairLabel(fieldProps.props.enum || [], fieldProps.value);
 
   function handleRadioChange(e: RadioChangeEvent): void {
     const selectedOption = options.find(({ value }) => value === e.target.value);
@@ -40,10 +39,8 @@ function RadioGroup(fieldProps: ISchemaFieldComponentProps): JSX.Element {
     return <span>暂无可选项</span>;
   }
 
-  const editable = fieldProps.editable ?? !fieldProps.readOnly;
-
-  if (!editable) {
-    return (<div className="flex items-center">{readableValue}</div>);
+  if (fieldProps.props.readOnly) {
+    return <FormDataValueRenderer schema={fieldProps.schema} value={fieldProps.value} />;
   }
 
   return (

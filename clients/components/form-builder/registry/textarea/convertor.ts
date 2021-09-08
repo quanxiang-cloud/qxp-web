@@ -1,3 +1,5 @@
+import { getSchemaPermissionFromSchemaConfig } from '@c/form-builder/utils';
+
 export interface TextareaConfig {
   title: string;
   description?: string;
@@ -40,7 +42,7 @@ export function toSchema(value: TextareaConfig): ISchema {
     ['x-internal']: {
       sortable: value.sortable,
       defaultValueFrom: value.defaultValueFrom,
-      permission: 3,
+      permission: getSchemaPermissionFromSchemaConfig(value),
     },
   };
 }

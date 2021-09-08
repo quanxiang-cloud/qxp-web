@@ -1,9 +1,13 @@
 import React from 'react';
 import moment from 'moment';
 
-import SubTable from '@c/form-builder/registry/sub-table/preview';
-import AssociatedRecords from '@c/form-builder/registry/associated-records/associated-records';
-import AssociatedDataValueRender from '@c/form-builder/registry/associated-data/associated-data-view';
+const SubTable = React.lazy(() => import('@c/form-builder/registry/sub-table/preview'));
+const AssociatedRecords = React.lazy(
+  () => import('@c/form-builder/registry/associated-records/associated-records'),
+);
+const AssociatedDataValueRender = React.lazy(
+  () => import('@c/form-builder/registry/associated-data/associated-data-view'),
+);
 import { RoundMethod } from '@c/form-builder/registry/aggregation-records/convertor';
 import logger from '@lib/logger';
 
@@ -20,17 +24,23 @@ function datetimeValueRenderer({ value, schema }: ValueRendererProps): string {
   return moment(value as string).format(format);
 }
 
-function SubTableValueRenderer({ value, schema }: ValueRendererProps): JSX.Element {
+function SubTableValueRenderer({ value, schema, className }: ValueRendererProps): JSX.Element {
   return (
-    // todo support className props, assign to lishengma
-    // todo fix subTable Props definition
-    <SubTable readonly value={value as Record<string, unknown>[]} schema={schema as any} />
+    <SubTable
+      props={{ readOnly: true, className }}
+      value={value as Record<string, unknown>[]}
+      schema={schema as any}
+    />
   );
 }
 
-function AssociatedRecordsValueRender({ value, schema }: ValueRendererProps): JSX.Element {
-  // todo support className props, assign to lishengma
-  return (<AssociatedRecords readOnly props={schema} value={value} />);
+function AssociatedRecordsValueRender({ value, schema, className }: ValueRendererProps): JSX.Element {
+  return (
+    <AssociatedRecords
+      props={{ readOnly: true, ['x-component-props']: schema?.['x-component-props'], className }}
+      value={value}
+    />
+  );
 }
 
 function labelValueRenderer(value: FormDataValue): string {

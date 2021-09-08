@@ -1,7 +1,9 @@
+import { getSchemaPermissionFromSchemaConfig } from '@c/form-builder/utils';
+
 export interface FileUploadConfig {
   title: string;
   description?: string;
-  displayModifier?: FormBuilder.DisplayModifier;
+  displayModifier: FormBuilder.DisplayModifier;
   required?: boolean;
   multiple?: boolean;
 }
@@ -27,7 +29,7 @@ export function toSchema(value: FileUploadConfig): ISchema {
       multiple: value.multiple,
     },
     ['x-internal']: {
-      permission: 3,
+      permission: getSchemaPermissionFromSchemaConfig(value),
     },
   };
 }

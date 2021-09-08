@@ -1,6 +1,8 @@
 import React, { useEffect } from 'react';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 
+import FormDataValueRenderer from '@c/form-data-value-renderer';
+
 import CascadeSelector from './cascade-selector';
 
 function CascadeSelectorWarp(props: ISchemaFieldComponentProps): JSX.Element {
@@ -14,15 +16,18 @@ function CascadeSelectorWarp(props: ISchemaFieldComponentProps): JSX.Element {
     }
   }, [defaultValueFrom]);
 
+  if (props.props.readOnly) {
+    return <FormDataValueRenderer value={props.value} schema={props.schema} />;
+  }
+
   return (
     <CascadeSelector
+      {...props.props['x-component-props']}
       predefinedDataset={predefinedDataset}
       defaultValueFrom={defaultValueFrom}
       showFullPath={showFullPath}
       onChange={props.mutators.change}
       value={props.value}
-      disabled={!(props.editable ?? !props.readOnly)}
-      {...props.props['x-component-props']}
     />
   );
 }

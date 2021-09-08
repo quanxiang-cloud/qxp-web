@@ -1,8 +1,10 @@
+import { getSchemaPermissionFromSchemaConfig } from '@c/form-builder/utils';
+
 export interface ImageUploadConfig {
   title: string;
   type: string;
   description?: string;
-  displayModifier?: FormBuilder.DisplayModifier;
+  displayModifier: FormBuilder.DisplayModifier;
   required?: boolean;
   multiple?: boolean;
   autoCompress?: boolean; // todo
@@ -32,7 +34,7 @@ export function toSchema(value: ImageUploadConfig): ISchema {
       autoCompress: value.autoCompress || false,
     },
     ['x-internal']: {
-      permission: 3,
+      permission: getSchemaPermissionFromSchemaConfig(value),
     },
   };
 }

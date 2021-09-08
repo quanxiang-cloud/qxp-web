@@ -36,14 +36,14 @@ export type Rules = (ValidatePatternRules | ValidatePatternRules[]) & Rule[];
 export type Column = {
   title: string;
   dataIndex: string;
+  props: Record<string, any>;
+  readOnly: boolean;
+  rules: Rules;
+  schema: ISchema;
   component?: JSXElementConstructor<any>;
-  props: Record<string, unknown>;
   dataSource?: any[];
   required?: boolean;
-  rules: Rules;
   render?: (value: unknown) => JSX.Element;
-  schema: ISchema;
-  editable: boolean;
 }
 
 type Components = typeof components;
@@ -65,19 +65,6 @@ const components = {
   associateddata: AssociatedData,
 };
 
-interface Props extends ISchemaFieldComponentProps {
-  props: {
-    [key: string]: any;
-    ['x-component-props']: {
-      columns: string[];
-      appID: string;
-      tableID: string;
-      subordination: 'foreign_table' | 'sub_table';
-      tableName: string;
-    }
-  },
-}
-
 interface SubTableState {
   componentColumns: Column[];
   rowPlaceHolder: Record<string, unknown>;
@@ -87,9 +74,9 @@ function SubTable({
   schema: definedSchema,
   value,
   name,
-  editable,
   mutators,
-}: Partial<Props>): JSX.Element | null {
+  props,
+}: Partial<ISchemaFieldComponentProps>): JSX.Element | null {
   const [{ componentColumns, rowPlaceHolder }, setSubTableState] = useState<SubTableState>({
     componentColumns: [], rowPlaceHolder: {},
   });
@@ -102,7 +89,7 @@ function SubTable({
   const { data } = useQuery('GET_SUB_TABLE_CONFIG_SCHEMA', () => getTableSchema(appID, tableID), {
     enabled: !!(isFromForeign && tableID && appID),
   });
-  const isInitialValueEmpty = value?.every((v: Record<string, unknown>) => !isEmpty(v));
+  const isInitialValueEmpty = value?.every((v: Record<string, unknown>) => isEmpty(v));
   schema = isFromForeign ? data?.schema : schema;
 
   useEffect(() => {
@@ -156,7 +143,7 @@ function SubTable({
       schema: sc,
       dataSource,
       required: !!sc?.required,
-      editable: !sc.readOnly,
+      readOnly: !!sc.readOnly,
       rules: schemaRulesTransform(sc),
       render: (value: any) => {
         if (isEmpty(value)) {
@@ -176,7 +163,7 @@ function SubTable({
     return null;
   }
 
-  if (!editable) {
+  if (props.readOnly) {
     return (
       <Table
         pagination={false}
@@ -191,7 +178,7 @@ function SubTable({
     <FieldList name={name} initialValue={value}>
       {({ state, mutators, form }) => {
         return (
-          <div className="w-full flex flex-col border border-gray-300">
+          <div className={cs('w-full flex flex-col border border-gray-300', props?.className)}>
             <div className="overflow-scroll">
               {state.value.map((item: Record<string, FormDataValue>, index: number) => {
                 return (

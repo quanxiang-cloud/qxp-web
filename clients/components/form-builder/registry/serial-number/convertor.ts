@@ -1,3 +1,5 @@
+import { PERMISSION } from '@c/form-builder/constants';
+
 import { Format } from './prefix';
 
 export type PrefixType = {
@@ -43,7 +45,9 @@ export function toSchema(value: SerialConfig): ISchema {
     'x-component': 'Serial',
     default: '',
     ['x-component-props']: {
-      template: `${value.prefix?.frontward}.date{${value.prefix?.backward}}.incr[name]{${value.initialPosition},${value.initialValue}}.step[name]{1}.${value.suffix}`,
+      template: `${value.prefix?.frontward}.date{${value.prefix?.backward}}.incr[name]{${
+        value.initialPosition
+      },${value.initialValue}}.step[name]{1}.${value.suffix}`,
       appID: value.appID || '',
       id: value.id,
       prefix: value.prefix,
@@ -53,7 +57,7 @@ export function toSchema(value: SerialConfig): ISchema {
       numberPreview: value.numberPreview,
     },
     ['x-internal']: {
-      permission: 3,
+      permission: PERMISSION.READONLY,
     },
   };
 }
