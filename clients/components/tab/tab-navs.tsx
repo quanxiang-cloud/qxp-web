@@ -26,7 +26,7 @@ function TabNavs<T extends React.Key>({
 }: Props<T>,
 ref?: React.Ref<HTMLDivElement>) {
   return (
-    <div> {/* This layer of div is used to solve the overflow-x auto */}
+    <div className='z-10'> {/* This layer of div is used to solve the overflow-x auto */}
       <div
         ref={ref}
         className={cs('tab-navs', navsClassName)}>

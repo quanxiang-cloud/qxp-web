@@ -108,16 +108,19 @@ type FormDesignParams = {
 
 type Rights = {
   id: string;
+  appID?: string;
   types?: number;
   add?: boolean;
   formID?: string;
   sequence?: number;
+  createdBy?: string,
   scopes?: DeptAndUser[];
 } & RightsCreate
 
 type RightsCreate = {
   name?: string;
   description?: string;
+  types?: number;
 }
 
 type DeptAndUser = {
