@@ -43,6 +43,7 @@ export function toSchema(value: SubTableConfig): ISchema {
     title: value.title,
     description: value.description,
     required: value.required,
+    readOnly: value.displayModifier === 'readonly',
     display: value.displayModifier !== 'hidden',
     items: isFromLinkedTable ? undefined : value.subTableSchema,
     'x-component': 'SubTable',
@@ -63,12 +64,18 @@ export function toSchema(value: SubTableConfig): ISchema {
 export function toConfig(schema: ISchema): SubTableConfig {
   const isFromLinkedTable = schema?.['x-component-props']?.subordination === 'foreign_table';
   const tableID = schema['x-component-props']?.tableID;
+  let displayModifier: FormBuilder.DisplayModifier = 'normal';
+  if (schema.readOnly) {
+    displayModifier = 'readonly';
+  } else if (!schema.display) {
+    displayModifier = 'hidden';
+  }
 
   return {
     title: schema.title as string,
     description: schema.description as string,
     subordination: schema['x-component-props']?.subordination,
-    displayModifier: schema.display ? 'normal' : 'hidden',
+    displayModifier,
     subTableSchema: schema.items as ISchema,
     required: !!schema.required,
     linkedTable: {
