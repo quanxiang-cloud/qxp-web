@@ -5,7 +5,6 @@ import Search from '@c/search';
 import Pagination from '@c/pagination';
 import Select from '@c/select';
 import IconBtn from '@c/icon-btn';
-import Checkbox from '@c/checkbox';
 
 import store from './store';
 import TaskList from '../task-list';
@@ -25,19 +24,9 @@ function TodoApprovals(): JSX.Element {
     };
   }, []);
 
-  function changeAgent(val: React.ChangeEvent<HTMLInputElement>): void {
-    store.agent = val.target.checked ? 1 : 0;
-  }
-
   return (
     <div>
-      <div className="flex justify-between items-center mb-16">
-        <Checkbox
-          label="仅看我代理的1"
-          checked={store.agent === 1 ? true : false}
-          className="mr-auto"
-          onChange={changeAgent}
-        />
+      <div className="flex justify-end items-center mb-16">
         <div className="flex">
           <Search className="w-259 mr-16" placeholder="搜索流程、发起人、应用" value={store.keyword}
             onChange={store.changeKeyword} />
