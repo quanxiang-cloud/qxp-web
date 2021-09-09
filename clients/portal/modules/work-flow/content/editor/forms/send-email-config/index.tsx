@@ -4,7 +4,7 @@ import htmlToDraft from 'html-to-draftjs';
 import { useUpdateEffect, usePrevious } from 'react-use';
 import { useQuery } from 'react-query';
 import { isEqual } from 'lodash';
-import { Upload } from 'antd';
+import { Upload, Radio } from 'antd';
 import { useForm, Controller } from 'react-hook-form';
 import {
   EditorState,
@@ -13,6 +13,7 @@ import {
   Modifier,
   SelectionState,
 } from 'draft-js';
+import { Editor } from 'react-draft-wysiwyg';
 
 import MoreMenu from '@c/more-menu';
 import { getFormFieldSchema } from '@flow/content/editor/forms/api';
@@ -21,7 +22,6 @@ import formFieldWrap from '@c/form-field-wrap';
 import useObservable from '@lib/hooks/use-observable';
 import store from '@flow/content/editor/store';
 import Button from '@c/button';
-import { Editor } from 'react-draft-wysiwyg';
 import SaveButtonGroup from '@flow/content/editor/components/_common/action-save-button-group';
 import type { StoreValue, CurrentElement, FormDataData, SendEmailData, Attachment } from '@flow/content/editor/type';
 import schemaToFields from '@lib/schema-convert';
@@ -54,6 +54,7 @@ const Input = formFieldWrap({ field: <input className='input' /> });
 const FieldEditor = formFieldWrap({ FieldFC: Editor });
 
 const FieldUserSelect = formFieldWrap({ FieldFC: UserSelect });
+const FieldRadio = formFieldWrap({ FieldFC: Radio.Group });
 
 function FieldOption({ onChange, editorState, options }: FieldOPType): JSX.Element {
   const insertText = (text: string, hasSpacing = true): void => {
@@ -93,7 +94,7 @@ function FieldOption({ onChange, editorState, options }: FieldOPType): JSX.Eleme
 }
 
 function SendEmailConfig({ defaultValue, onSubmit, onCancel, onChange }: Props): JSX.Element {
-  const { register, handleSubmit, control, reset, formState: { errors }, watch } = useForm();
+  const { register, handleSubmit, control, reset, formState: { errors }, watch, unregister } = useForm();
   const { appID } = useContext(FlowContext);
   const [editorCont, setEditorCont] = useState(defaultValue?.content ?
     EditorState.createWithContent(
@@ -104,7 +105,7 @@ function SendEmailConfig({ defaultValue, onSubmit, onCancel, onChange }: Props):
   const formDataElement = elements?.find(({ type }) => type === 'formData') as CurrentElement;
   const workFormValue = (formDataElement?.data?.businessData as FormDataData)?.form?.value;
 
-  const allFields = watch(['content', 'recivers', 'title', 'mes_attachment']);
+  const allFields = watch(['content', 'recivers', 'title', 'mes_attachment', 'type']);
   const previousFields = usePrevious(allFields);
   useUpdateEffect(() => {
     const value = {
@@ -112,6 +113,7 @@ function SendEmailConfig({ defaultValue, onSubmit, onCancel, onChange }: Props):
       recivers: allFields[1],
       title: allFields[2],
       mes_attachment: allFields[3],
+      type: allFields[4],
       templateId: 'quanliang',
     } as SendEmailData;
     if (!isEqual(allFields, previousFields)) {
@@ -172,21 +174,46 @@ function SendEmailConfig({ defaultValue, onSubmit, onCancel, onChange }: Props):
         }
       /> */}
       <Controller
-        name='recivers'
+        name='type'
         control={control}
         rules={{ required: '请选择接收对象' }}
         render={({ field }) => {
           return (
-            <FieldUserSelect
+            <FieldRadio
               label={<><span className='text-red-600'>*</span>接收对象</>}
-              error={errors.recivers}
+              className='block'
+              error={errors.sort}
               register={field}
-              value={field.value ? field.value : []}
+              value={field.value || ''}
+              options={[
+                { label: '指定人员', value: 'person' },
+                { label: '流程发起人', value: 'processInitiator' },
+              ]}
+              onChange={(e) => {
+                if (e.target.value === 'processInitiator')unregister('recivers');
+                field.onChange(e.target.value);
+              }}
             />
           );
-        }
-        }
+        }}
       />
+      { allFields[4] === 'person' && (
+        <Controller
+          name='recivers'
+          control={control}
+          rules={{ required: '请选择接收对象' }}
+          render={({ field }) => {
+            return (
+              <FieldUserSelect
+                error={errors.recivers}
+                register={field}
+                value={field.value || []}
+              />
+            );
+          }
+          }
+        />
+      )}
       <Input
         label={<><span className='text-red-600'>*</span>主题</>}
         placeholder='请输入'
