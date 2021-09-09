@@ -19,6 +19,21 @@ export type Config = {
   pageTableShowRule?: TableConfig;
 };
 
+export const SHOW_FIELD = [
+  'DatePicker',
+  'Input',
+  'MultipleSelect',
+  'NumberPicker',
+  'RadioGroup',
+  'Select',
+  'CheckboxGroup',
+  'UserPicker',
+  'CascadeSelector',
+  'OrganizationPicker',
+  'AssociatedData',
+  'Serial',
+];
+
 function addFixedParameters(
   fixedList: number[],
   tableColumns: UnionColumns<Record<string, any>>[],
