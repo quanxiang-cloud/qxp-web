@@ -1,6 +1,8 @@
 import { QueryFunctionContext } from 'react-query';
+
 import httpClient from '@lib/http-client';
 import { schemaToOptions, SchemaConvertOptions } from '@lib/schema-convert';
+import logger from '@lib/logger';
 
 import { Operation } from '../type';
 import { SYSTEM_OPERATOR_PERMISSION, CUSTOM_OPERATOR_PERMISSION } from '../utils/constants';
@@ -55,5 +57,8 @@ export function getOperationList({ queryKey }: QueryFunctionContext): Promise<{
 }
 
 export function getFlowVariables(flowID: string): Promise<Array<ProcessVariable>> {
-  return httpClient(`/api/v1/flow/getVariableList?id=${flowID}`);
+  return httpClient<Array<ProcessVariable>>(`/api/v1/flow/getVariableList?id=${flowID}`).catch((e) => {
+    logger.error(e);
+    return [];
+  });
 }
