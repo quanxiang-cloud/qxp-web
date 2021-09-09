@@ -18,7 +18,7 @@ import Pagination from '@c/pagination';
 import SCHEMA from './modal-schema';
 import FileUpload from './file-upload';
 import { CustomPageInfo } from '../type';
-import { createCustomPage, removeCustomPage, editeCustomPage, fetchCustomPageList } from '../api';
+import { removeCustomPage, editeCustomPage, fetchCustomPageList } from '../api';
 
 import './index.scss';
 import moment from 'moment';
@@ -97,12 +97,12 @@ function CustomPage(): JSX.Element {
     }
 
     if (modalType === 'create') {
-      await createCustomPage(appID, params).catch((err) => {
-        return toast.error(err.message);
-      });
-      await fetchPages();
-      onClose();
-      return;
+      // await createCustomPage(appID, params).catch((err) => {
+      //   return toast.error(err.message);
+      // });
+      // await fetchPages();
+      // onClose();
+      // return;
     }
 
     await editeCustomPage(appID, { id: selectedRowInfo.id, ...params }).catch((err) => {
