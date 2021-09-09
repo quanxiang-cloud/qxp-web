@@ -3,6 +3,8 @@ import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 import { useFormEffects, FormEffectHooks } from '@formily/antd';
 
 import Toggle from '@c/toggle';
+import schemaToFields from '@lib/schema-convert';
+import { SHOW_FIELD } from '@c/form-app-data-table/utils';
 
 const { onFieldValueChange$ } = FormEffectHooks;
 
@@ -14,32 +16,17 @@ type ColumnsPickerProps = {
 
 type ColumnsMap = Record<string, { index: number; fieldName: string; checked: boolean; }>;
 
-const WHITE_LIST_FIELDS = [
-  'Input',
-  'DatePicker',
-  'NumberPicker',
-  'RadioGroup',
-  'MultipleSelect',
-  'CheckboxGroup',
-  'Select',
-  'UserPicker',
-  'OrganizationPicker',
-  'FileUpload',
-  'ImageUpload',
-  'CascadeSelector',
-];
-
 function getTableFields(linkedTableSchema: ISchema): Array<{ fieldKey: string, fieldName: string; }> {
-  return Object.entries(linkedTableSchema?.properties || {}).filter(([key, fieldSchema]) => {
-    if (key === '_id') {
+  return schemaToFields(linkedTableSchema, (schema) => {
+    if (schema.id === '_id') {
       return false;
     }
 
-    return WHITE_LIST_FIELDS.includes(fieldSchema['x-component'] || '');
-  }).map(([key, fieldSchema]) => {
+    return SHOW_FIELD.includes(schema['x-component'] || '');
+  }).map(({ id, title }) => {
     return {
-      fieldKey: key,
-      fieldName: (fieldSchema.title || key) as string,
+      fieldKey: id,
+      fieldName: (title || id) as string,
     };
   });
 }
