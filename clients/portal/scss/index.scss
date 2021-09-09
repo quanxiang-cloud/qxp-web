@@ -247,6 +247,9 @@ body {
 
 .input {
   border-radius: 2px 8px 8px 8px !important;
+  &.error, &.error:focus {
+    border-color: var(--red-500) !important;
+  }
 }
 
 button {

@@ -4,12 +4,12 @@ interface Props {
   className?: string;
 }
 
-function ApiKeys(props: Props) {
+function ConfigForm(props: Props) {
   return (
     <div>
-      api keys
+      config form
     </div>
   );
 }
 
-export default ApiKeys;
+export default ConfigForm;

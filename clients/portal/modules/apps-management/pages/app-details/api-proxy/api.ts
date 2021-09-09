@@ -8,7 +8,7 @@ type Paging={
 /*
  namespace crud apis
  */
-export const createNamespace = async (namespace: string, params: {name: string; title: string; desc: string}): Promise<PolyAPI.NamespaceInfo> => {
+export const createNamespace = async (namespace: string, params: PolyAPI.CreateNamespaceParams): Promise<PolyAPI.NamespaceInfo> => {
   return await httpClient(`/api/v1/polyapi/namespace/create/${namespace}`, params);
 };
 

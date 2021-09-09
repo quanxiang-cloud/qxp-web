@@ -4,9 +4,11 @@ import { observer } from 'mobx-react';
 import Tab from '@c/tab';
 
 import SideNav from '../side-nav';
+import Content from '../comps/content';
 import ApiList from './list';
 import GroupSetting from './group-setting';
-import ApiKeys from './api-keys';
+import Header from '../comps/header';
+
 import store from '../stores';
 
 interface Props {
@@ -14,22 +16,11 @@ interface Props {
 }
 
 function ListPage(props: Props) {
-  const { activeGroup } = store;
-
-  const renderContent = ()=> {
-    if (!activeGroup) {
-      return (
-        <p className='text-gray-500 ml-20 mt-20'>
-          No api data
-        </p>
-      );
-    }
-
-    return (
-      <>
-        <div className='py-10 px-10 flex items-center bg-gray-100 h-52 border-b-1'>
-          <span className='text-gray-900 font-medium'>{activeGroup?.name}</span>
-        </div>
+  return (
+    <>
+      <SideNav />
+      <Content>
+        <Header name={store.activeGroup?.name} />
         <Tab
           items={[
             {
@@ -42,24 +33,10 @@ function ListPage(props: Props) {
               name: '分组配置',
               content: <GroupSetting/>,
             },
-            {
-              id: 'api-keys',
-              name: 'API 密钥',
-              content: <ApiKeys />,
-            },
           ]}
         />
-      </>
-    );
-  };
-
-  return (
-    <div className='flex flex-grow'>
-      <SideNav />
-      <div className='w-full h-full overflow-auto'>
-        {renderContent()}
-      </div>
-    </div>
+      </Content>
+    </>
   );
 }
 

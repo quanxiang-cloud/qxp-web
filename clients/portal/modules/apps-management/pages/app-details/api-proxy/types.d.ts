@@ -8,20 +8,11 @@ interface APIGroup {
   child?: Array<APIGroup>;
 }
 
-type FormDataCreateApiGroup = {
-  id?: string;
-  pid?: string;
-  name: string;
-  remark: string; // 标识
-  description?: string;
-  protocol: string;
-  host: string;
-} | null;
-
 declare namespace PolyAPI {
   interface NamespaceInfo {
     id: string;
     owner: string;
+    name: string;
     title: string;
     desc: string;
     active: number; // 是否激活
@@ -104,6 +95,12 @@ declare namespace PolyAPI {
     host: string;
     authType: string;
     authorize: string;
+  }
+
+  type CreateNamespaceParams={
+    name: string;
+    title: string;
+    desc: string;
   }
 
   type CreateServiceResult = Omit<ServiceInfo, 'owner'>

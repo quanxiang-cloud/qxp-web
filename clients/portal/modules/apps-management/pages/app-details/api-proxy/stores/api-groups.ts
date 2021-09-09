@@ -1,3 +1,4 @@
+import { computed } from 'mobx';
 import TreeStore from '@c/headless-tree/store';
 import { apiGroupToTreeNode } from '../utils';
 
@@ -8,5 +9,9 @@ export default class Store extends TreeStore<APIGroup> {
     const rootNode = apiGroupToTreeNode(groups);
 
     super({ rootNode }, false);
+  }
+
+  @computed get noLeafNodes(): boolean {
+    return this.rootNode.children?.length === 0;
   }
 }

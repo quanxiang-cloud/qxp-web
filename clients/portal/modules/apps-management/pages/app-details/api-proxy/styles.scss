@@ -4,3 +4,15 @@
     background-color: #F1F5F9;
   }
 }
+
+.api-proxy {
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+
+  &--sider {
+    border-top-left-radius: 12px;
+  }
+  &--main-cont {
+    border-top-right-radius: 12px;
+  }
+}

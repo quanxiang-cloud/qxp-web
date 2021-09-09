@@ -56,12 +56,13 @@ type Props<T extends React.Key> = {
   menus: MenuItem<T>[];
   placement?: Placement;
   children?: React.ReactElement;
+  innerRef?: React.Ref<any>;
 }
 
 export default function MoreMenu<T extends React.Key>({
-  iconName, className, menus, children, onVisibilityChange, onMenuClick, placement,
+  iconName, className, menus, children, onVisibilityChange, onMenuClick, placement, innerRef,
 }: Props<T>): JSX.Element {
-  const reference = React.useRef<Element>(null);
+  const reference = innerRef || React.useRef<Element>(null);
   const popperRef = React.useRef<Popper>(null);
 
   function handleMenuClick(key: T): void {
@@ -85,7 +86,7 @@ export default function MoreMenu<T extends React.Key>({
       }
       <Popper
         ref={popperRef}
-        reference={reference}
+        reference={reference as any}
         onVisibilityChange={onVisibilityChange}
         placement={placement || 'bottom-start'}
         modifiers={modifiers}

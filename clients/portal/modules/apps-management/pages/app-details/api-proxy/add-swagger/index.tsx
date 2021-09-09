@@ -7,15 +7,15 @@ interface Props {
   className?: string;
 }
 
-function Detail(props: Props) {
+function AddSwagger(props: Props) {
   return (
     <>
       <SideNav/>
       <Content>
-        api detail
+        add swagger
       </Content>
     </>
   );
 }
 
-export default Detail;
+export default AddSwagger;
