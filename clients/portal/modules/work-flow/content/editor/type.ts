@@ -281,6 +281,7 @@ export interface FieldValue {
 }
 export interface CustomFieldPermission {
   fieldName: string;
+  invisible: boolean;
   read: boolean;
   write: boolean;
   initialValue: FieldValue;
@@ -293,6 +294,7 @@ export interface CustomFieldPermission {
 export interface SystemFieldPermission {
   fieldName: string;
   read: boolean;
+  invisible: boolean;
   id: string;
 }
 

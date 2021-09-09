@@ -15,12 +15,15 @@ interface SchemaResponse {
   }
 }
 
-export type Option = {
+export type FormFieldOption = {
   label: string;
   value: string;
   isSystem: boolean;
   isLayout: boolean;
   path: string;
+  read: boolean;
+  write: boolean;
+  invisible: boolean;
 };
 
 export async function getFormFieldSchema({ queryKey }: QueryFunctionContext): Promise<{
@@ -32,7 +35,7 @@ export async function getFormFieldSchema({ queryKey }: QueryFunctionContext): Pr
 }
 
 export async function getFormFieldOptions({ queryKey }: QueryFunctionContext): Promise<{
-  options: Option[],
+  options: FormFieldOption[],
   schema: ISchema,
 }> {
   const schema = await getFormFieldSchema({ queryKey });
