@@ -6,6 +6,7 @@ import toast from '@lib/toast';
 import FileList from '@portal/modules/system-mgmt/send-message/filelist';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 import type { FileInfo as FileListItemInfo } from '@portal/modules/system-mgmt/send-message/filelist';
+import FormDataValueRenderer from '@c/form-data-value-renderer';
 
 import './index.scss';
 
@@ -78,7 +79,9 @@ function Uploader(props: Props & ISchemaFieldComponentProps): JSX.Element {
     }
   };
 
-  const editable = props.editable ?? !props.readOnly;
+  if (props.props.readOnly) {
+    return <FormDataValueRenderer value={props.value} schema={props.schema} />;
+  }
 
   return (
     <div className="file-upload">
@@ -86,7 +89,6 @@ function Uploader(props: Props & ISchemaFieldComponentProps): JSX.Element {
         ref={uploaderRef}
         headers={{ 'X-Proxy': 'API' }}
         multiple={Boolean(multiple)}
-        disabled={!editable}
         action="/api/v1/fileserver/uploadFile"
         beforeUpload={(file) => {
           if (!multiple && files.length > 0) {
@@ -139,7 +141,6 @@ function Uploader(props: Props & ISchemaFieldComponentProps): JSX.Element {
             status: itm.status || 'success',
           }))}
           deleteFiles={deleteFile}
-          editable={editable}
           candownload
         />
       </div>

@@ -1,3 +1,4 @@
+import { getSchemaPermissionFromSchemaConfig } from '@c/form-builder/utils';
 
 export interface NumberPickerConfig {
   title: string;
@@ -57,7 +58,7 @@ export function toSchema(value: NumberPickerConfig): ISchema {
     },
     ['x-internal']: {
       sortable: value.sortable,
-      permission: 3,
+      permission: getSchemaPermissionFromSchemaConfig(value),
       defaultValueFrom: value.defaultValueFrom,
       defaultValueLinkage: value.defaultValueLinkage,
       calculationFormula: value.calculationFormula,

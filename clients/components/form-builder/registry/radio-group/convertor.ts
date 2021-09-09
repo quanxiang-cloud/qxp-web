@@ -1,3 +1,5 @@
+import { getSchemaPermissionFromSchemaConfig } from '@c/form-builder/utils';
+
 import { generateRandomFormFieldID } from '../../utils';
 
 type AvailableOption = { label: string; value: any; title: string };
@@ -57,7 +59,7 @@ export function toSchema(value: typeof defaultConfig): ISchema {
     },
     ['x-internal']: {
       sortable: value.sortable,
-      permission: 3,
+      permission: getSchemaPermissionFromSchemaConfig(value),
       defaultValueFrom: value.defaultValueFrom,
     },
   };

@@ -2,6 +2,7 @@ import { get, has } from 'lodash';
 
 import toast from '@lib/toast';
 import { ESParameter } from '@c/data-filter/utils';
+import { getSchemaPermissionFromSchemaConfig } from '@c/form-builder/utils';
 
 export type AggType = 'count' | 'sum' | 'max' | 'min' | 'avg';
 export type RoundMethod = 'round' | 'round-up' | 'round-down';
@@ -67,7 +68,7 @@ export function toSchema(value: AggregationRecordsConfig): ISchema {
       condition: value.condition,
     },
     ['x-internal']: {
-      permission: 3,
+      permission: getSchemaPermissionFromSchemaConfig(value),
     },
   };
 }

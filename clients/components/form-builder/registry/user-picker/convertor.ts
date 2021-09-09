@@ -1,3 +1,5 @@
+import { getSchemaPermissionFromSchemaConfig } from '@c/form-builder/utils';
+
 import { Option } from './messy/enum';
 
 export interface DefaultConfig {
@@ -66,6 +68,7 @@ export const toSchema = (config: DefaultConfig): ISchema => {
       rangeList: config.rangeList,
       defaultValues: config.defaultValues,
       defaultValue: config.defaultValue,
+      permission: getSchemaPermissionFromSchemaConfig(config),
     },
     enum: config.optionalRange === 'all' ? [] : (config.rangeList || []).map((itm) => ({
       label: itm.ownerName,

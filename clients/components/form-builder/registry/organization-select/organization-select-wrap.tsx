@@ -2,6 +2,7 @@ import React from 'react';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 
 import { getUserDepartment } from '@lib/utils';
+import FormDataValueRenderer from '@c/form-data-value-renderer';
 
 import OrganizationPicker from './organization-select';
 
@@ -19,6 +20,10 @@ const OrganizationPickerWrap = (formField: ISchemaFieldComponentProps): JSX.Elem
     formField.mutators.change(formField.initialValue || defaultValues);
   }, [optionalRange, multiple, defaultRange]);
 
+  if (formField.props.readOnly) {
+    return <FormDataValueRenderer schema={formField.schema} value={formField.value} />;
+  }
+
   return (
     <OrganizationPicker
       {...formField.props['x-component-props']}
@@ -26,7 +31,6 @@ const OrganizationPickerWrap = (formField: ISchemaFieldComponentProps): JSX.Elem
       rangeList={rangeList}
       optionalRange={optionalRange}
       defaultRange={defaultRange}
-      disabled={!(formField.editable ?? !formField.readOnly)}
       value={formField.value}
       onChange={formField.mutators.change}
     />

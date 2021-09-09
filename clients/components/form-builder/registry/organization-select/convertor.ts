@@ -1,3 +1,5 @@
+import { getSchemaPermissionFromSchemaConfig } from '@c/form-builder/utils';
+
 export interface DefaultConfig {
   title: string;
   description?: string;
@@ -47,6 +49,7 @@ export const toSchema = (config: DefaultConfig): ISchema => {
       rangeList: config.rangeList,
       defaultRange: config.defaultRange,
       defaultValues: config.defaultValues,
+      permission: getSchemaPermissionFromSchemaConfig(config),
     },
   });
 };

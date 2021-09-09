@@ -1,42 +1,45 @@
 import React from 'react';
 import { Checkbox, Space } from 'antd';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
+import { CheckboxValueType } from 'antd/lib/checkbox/Group';
 
 import useEnumOptions from '@lib/hooks/use-enum-options';
-
-type CheckboxValueType = string | number | boolean;
+import FormDataValueRenderer from '@c/form-data-value-renderer';
+import {
+  usePairListValue,
+  toLabelValuePairList,
+} from '@c/form-builder/utils/label-value-pairs';
 
 function CheckBoxGroup(fieldProps: ISchemaFieldComponentProps): JSX.Element {
   const options = useEnumOptions(fieldProps);
+  const checkboxValue = usePairListValue(fieldProps.value);
   const { optionsLayout } = fieldProps.props['x-component-props'];
 
   function handleCheckBoxChange(value: Array<CheckboxValueType>): void {
-    fieldProps.mutators.change(value);
+    const values = toLabelValuePairList(value as string[], options);
+    fieldProps.mutators.change(values);
   }
 
-  if (options.length === 0) {
-    return <span>当前选项集无数据。</span>;
+  if (!options.length) {
+    return <span>暂无可选项</span>;
   }
 
-  const editable = fieldProps.editable ?? !fieldProps.readOnly;
+  if (fieldProps.props.readOnly) {
+    return <FormDataValueRenderer value={fieldProps.value} schema={fieldProps.schema} />;
+  }
 
   return (
     <div className="flex items-center">
-      {editable && (
-        <Checkbox.Group onChange={handleCheckBoxChange} value={fieldProps.value}>
-          <Space direction={optionsLayout}>
-            {
-              options.map((option): JSX.Element => {
-                return (
-                  <Checkbox key={option.value} value={option.value}>{option.label}</Checkbox>);
-              })
-            }
-          </Space>
-        </Checkbox.Group>
-      )}
-      {!editable && (
-        <>{options.find(({ value }) => value === fieldProps.value)?.label || '-'}</>
-      )}
+      <Checkbox.Group onChange={handleCheckBoxChange} value={checkboxValue}>
+        <Space direction={optionsLayout}>
+          {
+            options.map((option): JSX.Element => {
+              return (
+                <Checkbox key={option.value} value={option.value}>{option.label}</Checkbox>);
+            })
+          }
+        </Space>
+      </Checkbox.Group>
     </div>
   );
 }

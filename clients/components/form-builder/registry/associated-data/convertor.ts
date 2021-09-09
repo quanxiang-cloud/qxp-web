@@ -1,3 +1,5 @@
+import { getSchemaPermissionFromSchemaConfig } from '@c/form-builder/utils';
+
 export interface AssociatedDataConfig {
   title: string;
   description?: string;
@@ -36,6 +38,9 @@ export function toSchema(config: AssociatedDataConfig): ISchema {
       associationTableID: config?.associationTableID,
       placeholder: config.placeholder,
       filterConfig: config.filterConfig || null,
+    },
+    ['x-internal']: {
+      permission: getSchemaPermissionFromSchemaConfig(config),
     },
   };
 }

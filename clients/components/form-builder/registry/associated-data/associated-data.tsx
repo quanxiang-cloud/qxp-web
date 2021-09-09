@@ -3,6 +3,7 @@ import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 import { useUpdateEffect } from 'react-use';
 
 import Icon from '@c/icon';
+import FormDataValueRenderer from '@c/form-data-value-renderer';
 
 import SelectAssociationModal from './select-association-modal';
 
@@ -14,7 +15,6 @@ type Props = {
   fieldName: string;
   value?: LabelValue;
   placeholder?: string;
-  editable?: boolean;
   filterConfig?: FilterConfig;
   onChange?: (value: LabelValue | null) => void;
 }
@@ -24,7 +24,6 @@ export function AssociatedData({
   associationTableID,
   placeholder,
   filterConfig,
-  editable,
   fieldName,
   value,
   onChange,
@@ -39,19 +38,15 @@ export function AssociatedData({
     onChange?.(null);
   }, [fieldName, associationTableID]);
 
-  if (!editable) {
-    return (<p className='preview-text'>{value ? value.label : '—'}</p>);
-  }
+  const handleClose = (): void => {
+    onChange?.(null);
+  };
 
   if (!associationTableID) {
     return (
       <div className='ant-input flex justify-between items-center h-32'>未设置关联记录表</div>
     );
   }
-
-  const handleClose = (): void => {
-    onChange?.(null);
-  };
 
   return (
     <div className='w-full h-32'>
@@ -83,12 +78,15 @@ export function AssociatedData({
 }
 
 export default function AssociatedDataWrap(p: ISchemaFieldComponentProps): JSX.Element {
+  if (p.props.readOnly) {
+    return <FormDataValueRenderer value={p.value} schema={p.schema} />;
+  }
+
   return (
     <AssociatedData
       {...p.props['x-component-props']}
       filterConfig={p['x-component-props']?.filterConfig || p.props['x-component-props'].filterConfig}
       value={p.value}
-      editable={p.editable ?? !p.readOnly}
       onChange={p.mutators.change}
     />
   );

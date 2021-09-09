@@ -1,10 +1,11 @@
 import { pipe, entries, map, reduce, cond } from 'lodash/fp';
 
+import { INTERNAL_FIELD_NAMES } from '@home/pages/app-details/constants';
+import schemaToFields from '@lib/schema-convert';
+import { PERMISSION } from '@c/form-builder/constants';
 import {
   FieldPermission, NewFieldPermission, CustomFieldPermission, SystemFieldPermission, NewFieldPermissionValue,
 } from '@flow/content/editor/type';
-import { INTERNAL_FIELD_NAMES } from '@home/pages/app-details/constants';
-import schemaToFields from '@lib/schema-convert';
 
 import { EDIT_VALUE } from './constants';
 
@@ -17,8 +18,8 @@ type FieldPermissionMergeType = CustomFieldPermission & SystemFieldPermission & 
 export function fieldPermissionEncoder(value: FieldPermission): NewFieldPermission {
   const { custom, system } = value;
   const customEncoded = custom.reduce((acc, cur) => {
-    const leftValue = cur.read ? 0b10 : 0b00;
-    const rightValue = cur.write ? 0b01 : 0b00;
+    const leftValue = cur.read ? 0b01 : 0b00;
+    const rightValue = cur.write ? 0b10 : 0b00;
     return {
       ...acc,
       [cur.id]: {
@@ -37,7 +38,7 @@ export function fieldPermissionEncoder(value: FieldPermission): NewFieldPermissi
       [cur.id]: {
         fieldName: cur.fieldName,
         'x-internal': {
-          permission: 2,
+          permission: cur.read ? PERMISSION.READONLY : PERMISSION.INVISIBLE,
         },
       },
     };
@@ -63,8 +64,8 @@ export function fieldPermissionDecoder(
         isSystem: INTERNAL_FIELD_NAMES.includes(fieldID),
         fieldName: fieldValue.fieldName,
         id: fieldID,
-        read: permission > 1,
-        write: permission === 1 || permission === 3,
+        read: permission === PERMISSION.READONLY || permission === PERMISSION.NORMAL,
+        write: permission === PERMISSION.EDITABLE || permission === PERMISSION.NORMAL,
         initialValue: fieldValue.initialValue || EDIT_VALUE,
         submitValue: fieldValue.submitValue || EDIT_VALUE,
         path: schemaIDToSchemaMap[fieldID].originPathInSchema,

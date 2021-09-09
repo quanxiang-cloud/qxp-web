@@ -236,3 +236,17 @@ export function validateDatasetElement<T>(value: T, schema?: ISchema): boolean {
     return true;
   });
 }
+
+export function getSchemaPermissionFromSchemaConfig(
+  value: { displayModifier: FormBuilder.DisplayModifier },
+): PERMISSION {
+  const isReadonly = value.displayModifier === 'readonly';
+  const isHidden = value.displayModifier === 'hidden';
+  if (isReadonly) {
+    return PERMISSION.READONLY;
+  }
+  if (isHidden) {
+    return PERMISSION.INVISIBLE;
+  }
+  return PERMISSION.NORMAL;
+}
