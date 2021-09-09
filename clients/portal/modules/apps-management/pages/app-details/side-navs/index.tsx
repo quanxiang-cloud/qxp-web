@@ -75,7 +75,7 @@ function SideNavs(): JSX.Element {
   const { appID, menuType } = useParams<{ appID: string, menuType: string }>();
 
   function renderNavItem(
-    id: string, title:string, icon: string, nav_items: Array<Record<string, string>>,
+    id: string, title:string, icon: string, nav_items: Array<Record<string, string | undefined>>,
   ): JSX.Element {
     return (
       <div key={id} className="select-none text-gray-600 text-16">
