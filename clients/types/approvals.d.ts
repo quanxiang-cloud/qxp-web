@@ -21,6 +21,8 @@ type ApprovalTask = {
 
   formData?: Record<string, any>;
 
+  keyFields?: Array<string>; // Fields need to show on the task
+
   endTime?: string; // Task end time
 
   flowInstanceEntity: FlowInstance;

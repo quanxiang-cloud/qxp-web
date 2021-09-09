@@ -16,28 +16,6 @@ interface Props {
 
 const Picker = ({ value = [], onChange, isMy, rangeList }: Props) => {
   const [defaultValue, setDefaultValue] = useState<Array<EmployeeOrDepartmentOfRole>>(rangeList || []);
-  // const defaultValue = rangeList || [];
-  // const store = React.useContext(StoreContext);
-  // const { appID } = store;
-
-  // const [myDepUsers, setMyDepUsers] = React.useState<any[]>([]);
-
-  // React.useEffect(() => {
-  //   const users = myDepUsers.map((itm) => ({
-  //     ownerName: itm.userName,
-  //     id: itm.id,
-  //   })) as EmployeeOrDepartmentOfRole[];
-  //   console.log(users);
-  //   onChange(isMy ? users : []);
-  // }, [isMy, myDepUsers]);
-
-  // const { isLoading } = useQuery(['query_user_picker_', window.USER.dep.id, appID], () => searchUser(appID, { depID: window.USER.dep.id }), {
-  //   onSuccess(data: Res) {
-  //     const users = (data.data || []);
-  //     // @ts-ignore
-  //     setMyDepUsers(users);
-  //   },
-  // });
   const [visible, setVisible] = useState(false);
 
   // use ref not state  avoid state change then refresh view

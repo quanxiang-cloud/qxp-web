@@ -306,7 +306,12 @@ export default function GlobalConfig(): JSX.Element | null {
               render={({ field }) => (
                 <CheckBoxGroup
                   defaultValue={keyFields ? keyFields.split(',') : []}
-                  onChange={(fields) => field.onChange(fields.length ? fields.join(',') : '')}
+                  onChange={(fields) => {
+                    const newFields = fieldList?.map(
+                      (listItem)=> fields.find((item)=> item === listItem.value),
+                    ).filter(Boolean) || [];
+                    field.onChange(newFields.length ? newFields.join(',') : '');
+                  }}
                   options={fieldList}
                   disabled={status === 'ENABLE'}
                 />
