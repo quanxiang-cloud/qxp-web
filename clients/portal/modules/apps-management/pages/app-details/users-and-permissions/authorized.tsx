@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useImperativeHandle, forwardRef } from 'react';
-
 import CheckBox from '@c/checkbox';
+import { observer } from 'mobx-react';
+import store from './store';
+import Loading from '@c/loading';
 
 type CardProps = {
   rightsCardData: {
@@ -11,6 +13,7 @@ type CardProps = {
       value: string;
     }>
   };
+  abled?: boolean
   onChange: (selectNumber: number, key: string) => void;
   selectNumber: number;
 }
@@ -18,6 +21,7 @@ type CardProps = {
 type Props = {
   className?: string;
   authorized: number;
+  abled?: boolean
 }
 
 const RIGHTS = [
@@ -42,12 +46,24 @@ const RIGHTS = [
   //   ],
   // },
 ];
+const CUSTOM_RIGHTS =
+  {
+    key: 'action',
+    title: '操作按钮',
+    options: [
+      { label: '查看', value: 'view' },
+    ],
+  };
 
-function RightsCard({ rightsCardData, onChange, selectNumber }: CardProps) {
-  const { title, options, key } = rightsCardData;
+function RightsCard({ rightsCardData, onChange, selectNumber, abled }: CardProps): JSX.Element {
+  const { options, key } = rightsCardData;
   const [indeterminate, setIndeterminate] = useState(false);
   const [checkAll, setCheckAll] = useState(true);
   const [selected, setSelected] = useState<number[]>(options.map(() => 0));
+
+  useEffect(() => {
+    setSelected(options.map(() => 0));
+  }, [rightsCardData]);
 
   useEffect(() => {
     setIndeterminate(selected.includes(0) && selected.includes(1));
@@ -69,9 +85,9 @@ function RightsCard({ rightsCardData, onChange, selectNumber }: CardProps) {
 
       );
     }
-  }, []);
+  }, [selectNumber]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const newSelected = [...selected];
     if (e.target.checked) {
       if (Number(e.target.value) !== 0) {
@@ -89,7 +105,7 @@ function RightsCard({ rightsCardData, onChange, selectNumber }: CardProps) {
     }
   };
 
-  const handleCheckAllChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleCheckAllChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     if (e.target.checked) {
       setSelected(options.map(() => 1));
     } else {
@@ -98,41 +114,43 @@ function RightsCard({ rightsCardData, onChange, selectNumber }: CardProps) {
   };
 
   return (
-    <div className='pb-authorized-box'>
-      <div className='flex justify-between h-56 px-20 items-center'>
-        <CheckBox
-          indeterminate={indeterminate}
-          checked={checkAll}
-          onChange={handleCheckAllChange}
-          label={<span className='text-h5'>{title}</span>}
-          className='mr-8' />
+    <>
+      <div className='flex justify-between items-center mb-8'>
         <span className='text-caption-no-color text-gray-600'>
           已选{selected.filter((value) => value === 1).length} ，共 {options.length} 项
         </span>
       </div>
       <div className='pb-authorized-checkbox-box'>
         {options.map(({ label }, index: number) => (
-          <CheckBox
-            checked={selected[index] === 1}
-            onChange={handleChange}
-            value={index}
-            label={label}
-            key={index}
-          />
+          <div key={index} className='border rounded-8 py-8 pl-16'>
+            <CheckBox
+              disabled = {store.currentRights.types === 1 || !abled}
+              checked={selected[index] === 1}
+              onChange={handleChange}
+              value={index}
+              label={label}
+            />
+          </div>
         ))}
       </div>
-    </div>
+    </>
   );
 }
 
-function Authorized({ className = '', authorized = 0 }: Props, ref: React.Ref<any>) {
-  const [actionNumber, setActionNumber] = useState<number>(authorized);
+function Authorized({ className = '', authorized = 0, abled }: Props, ref: React.Ref<any>): JSX.Element {
+  const typeNum = store.currentPage.menuType === 2 ? 1 : 15;
+  const initialState = store.currentRights.types === 1 ? typeNum : authorized;
+  const [actionNumber, setActionNumber] = useState<number>(initialState);
+
+  useEffect(() => {
+    setActionNumber(initialState);
+  }, [store.currentRights, store.currentPage.id, authorized]);
 
   useImperativeHandle(ref, () => ({
     getAuthorizedPer: () => actionNumber,
   }));
 
-  const handleChange = (selected: number, key: string) => {
+  const handleChange = (selected: number, key: string): void => {
     switch (key) {
     case 'action':
       setActionNumber(selected);
@@ -140,11 +158,23 @@ function Authorized({ className = '', authorized = 0 }: Props, ref: React.Ref<an
     }
   };
 
+  if (store.rightsLoading) {
+    return <Loading/>;
+  }
+
   return (
     <div className={className}>
-      {RIGHTS.map((rightsCardData) => {
+      {store.currentPage.menuType === 2 ? (
+        <RightsCard
+          abled={abled}
+          key={CUSTOM_RIGHTS.key}
+          rightsCardData={CUSTOM_RIGHTS}
+          onChange={handleChange}
+          selectNumber={actionNumber}
+        />) : RIGHTS.map((rightsCardData) => {
         return (
           <RightsCard
+            abled={abled}
             key={rightsCardData.key}
             rightsCardData={rightsCardData}
             onChange={handleChange}
@@ -152,8 +182,9 @@ function Authorized({ className = '', authorized = 0 }: Props, ref: React.Ref<an
           />
         );
       })}
+
     </div>
   );
 }
 
-export default forwardRef(Authorized);
+export default observer(forwardRef(Authorized));

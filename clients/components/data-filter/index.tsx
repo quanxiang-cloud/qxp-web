@@ -199,9 +199,13 @@ function DataFilter({
   return (
     <div className={className}>
       <div className='flex items-center'>
-        满足以下
+        删选出符合以下
         <Select
           className='mx-4'
+          style = {{
+            width: '134px',
+            borderRadius: '2px 8px 8px 8px',
+          }}
           value={tag}
           onChange={(tag) => setTag(tag)}
           options={CONDITION}
@@ -210,7 +214,7 @@ function DataFilter({
       </div>
       <div className='qxp-data-filter-box beauty-scroll'>
         {conditions.map((condition) => (
-          <div key={condition.id} className='flex gap-x-8 mt-24 items-center'>
+          <div key={condition.id} className='flex gap-x-8 py-16 px-8 mt-8 items-center bg-gray-100 rounded-8'>
             <div>
               <Controller
                 name={'field-' + condition.id}
@@ -220,7 +224,7 @@ function DataFilter({
                 render={({ field }) => {
                   return (
                     <FormFieldSelect
-                      style={{ width: '250px' }}
+                      style={{ width: '180px' }}
                       error={errors['field-' + condition.id]}
                       register={{ name: field.name, value: field.value }}
                       options={fieldOption}
@@ -285,7 +289,7 @@ function DataFilter({
                     render={({ field }) => (
                       condition.valueFrom === 'form' ? (
                         <FormFieldSelect
-                          style={{ width: '300px' }}
+                          style={{ width: '280px' }}
                           error={errors['condition-' + condition.id]}
                           register={field}
                           options={condition.associationFieldsOptions || []}
@@ -295,7 +299,7 @@ function DataFilter({
                           error={errors['condition-' + condition.id]}
                           register={{ ...field, value: field.value ? field.value : '' }}
                           field={condition.filter}
-                          style={{ width: '300px' }}
+                          style={{ width: '280px' }}
                         />
                       )
                     )
@@ -315,7 +319,9 @@ function DataFilter({
         ))}
       </div>
       <div className='mt-24'>
-        <span onClick={addCondition} className='text-icon-btn'><Icon name='add' /> 添加筛选条件</span>
+        <span onClick={addCondition} className='text-btn'><Icon name='add' className='text-btn'/>
+          添加筛选条件
+        </span>
       </div>
     </div>
   );

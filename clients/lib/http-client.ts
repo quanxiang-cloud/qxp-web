@@ -146,6 +146,7 @@ export function httpClientGraphQL<TData>(
     'Content-Type': 'application/json',
     ...additionalHeaders,
   };
+
   const _path = params ? `${path}?${qs.stringify(params)}` : path;
 
   return fetch(_path, {

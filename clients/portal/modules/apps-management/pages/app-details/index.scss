@@ -5,3 +5,23 @@
   margin: 0 auto;
   height: calc(100vh - 64px);
 }
+
+.app-nav {
+  position: relative;
+  background-color: #fff;
+  min-width: 236px;
+  max-width: 236px;
+  border-right: 1px solid var(--gray-300);
+  overflow: auto;
+}
+
+.nav-item {
+  cursor: pointer;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  &:hover {
+    color: var(--blue-600);
+    background-color: var(--gray-100);
+  };
+}
