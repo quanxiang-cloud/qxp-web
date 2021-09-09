@@ -33,6 +33,10 @@ const typeOptions: Option[] = [
     label: '部门负责人',
     value: 'leadOfDepartment',
   },
+  {
+    label: '流程发起人',
+    value: 'processInitiator',
+  },
 ];
 
 const positionOptions = [
