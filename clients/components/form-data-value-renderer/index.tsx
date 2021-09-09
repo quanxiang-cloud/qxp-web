@@ -43,7 +43,7 @@ function AssociatedRecordsValueRender({ value, schema, className }: ValueRendere
   );
 }
 
-function labelValueRenderer(value: FormDataValue): string {
+export function labelValueRenderer(value: FormDataValue): string {
   if (Array.isArray(value)) {
     const labels = (value as FormBuilder.Option[]).map(({ label }) => label).join(', ');
     return labels;
