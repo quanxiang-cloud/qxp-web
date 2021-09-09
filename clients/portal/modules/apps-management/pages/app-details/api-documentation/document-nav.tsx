@@ -10,7 +10,7 @@ function DocumentNav(): JSX.Element {
   const [openApi, setOpenApi] = useState(true);
 
   return (
-    <div className='api-doc-details-nav pt-20'>
+    <div className='api-doc-details-nav pt-20 rounded-tl-12'>
       <div
         className='h-40 flex items-center px-18 hover:bg-gray-100'
         onClick={() => setOpenApi(!openApi)}
@@ -26,7 +26,7 @@ function DocumentNav(): JSX.Element {
         {(store.dataModels).map((item: DataModel) => (
           <li
             key={item.id}
-            className={cs('nav-item', {
+            className={cs('nav-item pl-50', {
               'bg-gray-100 text-blue-600': item.tableID === store.tableID,
             })}
             onClick={() => {
