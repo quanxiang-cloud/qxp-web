@@ -153,9 +153,14 @@ export const SYSTEM_FIELDS = [
   'creator_id',
 ];
 
-export enum PERMISSION {
-  INVISIBLE = 0,
-  READONLY = 1,
-  EDITABLE = 2,
-  NORMAL = 3,
-}
+// hidden write read
+//  0    0     0    0    invisible = true
+//  0    1     0    2  x invisible = true
+//  1    0     0    4  x invisible = true
+//  1    1     0    6  x invisible = true
+//  1    0     1    5    invisible = true
+//  1    1     1    7  x invisible = true
+//  0    0     1    1    readOnly = true
+//  0    1     1    3    normal = true
+export type PERMISSION = 0 | 1 | 3 | 5;
+export const READONLY = 1;
