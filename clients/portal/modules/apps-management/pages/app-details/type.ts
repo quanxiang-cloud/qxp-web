@@ -1,12 +1,34 @@
 export type CustomPageInfo = {
   id: string,
+  name?: string,
+  type?: number,
+  fileSize?: string
+  description?: string,
+  fileUrl?: string,
+  createdBy?: string,
+  status?: number,
+  updatedAt?: string,
+}
+
+export type SchemaPageInfo = {
+  tableID?: string,
+  fieldLen?: string
+  createdBy?: string,
+  createdAt?: string,
+  updatedBy?: string,
+  updatedAt?: string,
+}
+
+export type CardListInfo = {
+  id: string,
   name: string,
-  type: number,
-  description: string,
-  fileUrl: string,
-  createdBy: string,
-  status: number,
-  updatedAt: string,
+  status?: string
+}
+
+export type CardList = {
+  id: string,
+  title: string,
+  list: CardListInfo[],
 }
 
 export type fetchCustomListRes = {
@@ -31,8 +53,45 @@ export type CustomPageParams = Partial<CustomPageInfo> & {
   pageSize?: number;
 }
 
+export type CreateCustomPageParams = {
+  menuId: string;
+  fileSize: string;
+  fileUrl: string;
+}
+
+export type UpdateCustomPageParams = {
+  id: string;
+  fileSize: string;
+  fileUrl: string;
+}
+
+export type Resp = {
+  code: number;
+  data: { url: string } | null;
+  msg?: string;
+}
+
+export type FileInfo = {
+  url: string;
+  size?: number
+  filename?: string;
+  percentage?: number;
+  showProgress?: boolean;
+}
+
+export type Description = {
+  id: string,
+  title: string,
+  value: string,
+}
+
 export enum MenuType {
   schemaForm = 0,
   group = 1,
   customPage = 2,
+}
+
+export enum Status {
+  inuse = 1,
+  unused = 0,
 }

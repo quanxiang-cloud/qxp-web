@@ -97,7 +97,7 @@ function UsersAndPermissions(): JSX.Element {
 
   return (
     <>
-      <div className="flex flex-col h-full flex-1 ">
+      <div className="flex flex-col h-full flex-1 bg-white rounded-t-12">
         <TextHeader
           title='业务功能授权'
           desc='控制该应用允许哪些员工使用，可以查看哪些模块，查看哪些数据，允许使用什么操作。'

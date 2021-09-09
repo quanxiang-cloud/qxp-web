@@ -1,5 +1,5 @@
 import qs from 'qs';
-import { CustomPageInfo } from '@portal/modules/apps-management/pages/app-details/type';
+import { CustomPageInfo, SchemaPageInfo } from '@portal/modules/apps-management/pages/app-details/type';
 
 function httpClient<TData>(path: string, body?: unknown, additionalHeaders?: HeadersInit): Promise<TData> {
   const headers = {
@@ -95,8 +95,12 @@ export function getTableSchema(appID: string, tableID: string): Promise<GetTable
   return httpClient<GetTableSchemaResponse>(path, { tableID });
 }
 
-export function getTableInfo(appID: string, menuId: string): Promise<CustomPageInfo> {
+export function getCustomPageInfo(appID: string, menuId: string): Promise<CustomPageInfo> {
   return httpClient(`/api/v1/structor/${appID}/m/page/getByMenu`, { menuId });
+}
+
+export function getSchemaPageInfo(appID: string, menuId: string): Promise<SchemaPageInfo> {
+  return httpClient(`/api/v1/structor/${appID}/m/table/getInfo`, { menuId });
 }
 
 export function findOneRecord(appID: string, tableID: string, id: string): Promise<Record<string, any>> {

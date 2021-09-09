@@ -7,6 +7,7 @@ const AppsIndex = React.lazy( () => import('./index'));
 const AppDetails = React.lazy(() => import('./pages/app-details'));
 const FormDesign = React.lazy(() => import('./pages/form-design'));
 const FlowDetail = React.lazy(() => import('../work-flow'));
+const PreviewCustomPage = React.lazy(() => import('./pages/preview-custom-page'));
 
 export default function Routes(): JSX.Element {
   React.useEffect(() => {
@@ -27,6 +28,7 @@ export default function Routes(): JSX.Element {
     <Switch>
       <Route exact path="/apps" component={AppsIndex} />
       <Route path="/apps/details/:appID" component={AppDetails} />
+      <Route exact path="/apps/preview/customPage/:appID/:pageID" component={PreviewCustomPage} />
       <Route
         exact
         path="/apps/formDesign/:pageType/:pageId/:appID/:navType?"
