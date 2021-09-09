@@ -75,7 +75,7 @@ export function filterLinkagesOnDeleteField(
     const isLinkageRulesEqualsFieldName = elementEqualsFieldName('rules.0.sourceKey');
 
     if ((isOneElement(linkage.targetKeys) && isLinkageTargetKeysEqualsFieldName(linkage)) ||
-        (isOneElement(linkage.rules) && isLinkageRulesEqualsFieldName(linkage))
+      (isOneElement(linkage.rules) && isLinkageRulesEqualsFieldName(linkage))
     ) {
       return false;
     }
@@ -133,23 +133,22 @@ export const getValidateMessageMap = <T>(schema: ISchema, configValue: T): Recor
 
   return getMessageMap(schema);
 };
-
 type ValidateRegistryElement<T> = (configSchema: ISchema, configValue: T) => boolean
 export const validateRegistryElement: Curried<ValidateRegistryElement<unknown>> = curry(
- <T>(configSchema: ISchema, configValue: T) => {
-   const messageMap = getValidateMessageMap<T>(configSchema, configValue);
-   const validator = pipe(
-     entries,
-     map(([fieldName, message]: [string, string]) => {
-       const isValid = configValue[fieldName as keyof typeof configValue];
-       !isValid && toast.error(message);
-       return isValid;
-     }),
-     every(Boolean),
-   );
+  <T>(configSchema: ISchema, configValue: T) => {
+    const messageMap = getValidateMessageMap<T>(configSchema, configValue);
+    const validator = pipe(
+      entries,
+      map(([fieldName, message]: [string, string]) => {
+        const isValid = configValue[fieldName as keyof typeof configValue];
+        !isValid && toast.error(message);
+        return isValid;
+      }),
+      every(Boolean),
+    );
 
-   return validator(messageMap);
- },
+    return validator(messageMap);
+  },
 );
 
 type PermissionToOverwrite = { display?: boolean; readOnly?: boolean };
@@ -336,4 +335,20 @@ export function convertEnumsToLabels(labelValues: Array<string | LabelValue>): s
 
     return option.label;
   });
+}
+
+export const placeholderSchema = {
+  id: '',
+  type: 'object',
+  properties: {},
+  'x-internal': {},
+};
+
+// tips, sort Obj
+export function sortProperties(properties: ISchema[] = []): Record<string, ISchema> {
+  return values(properties).reduce((acc, item) => {
+    const xIndex = item['x-index'] || 0;
+    acc[xIndex] = item;
+    return acc;
+  }, {} as Record<string, ISchema>);
 }

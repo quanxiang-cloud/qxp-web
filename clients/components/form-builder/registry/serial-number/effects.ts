@@ -12,24 +12,24 @@ type PreviewProps = {
 
 const { onFieldValueChange$ } = FormEffectHooks;
 
-const addZeroFromValue = (position: number, value:number): string => {
+const addZeroFromValue = (position: number, value: number): string => {
   return (Array(position).join('0') + value?.toString()).slice(-position);
 };
 
 const getMoment = (value: Format | ''): string => {
   switch (value) {
-  case '':
-    return '';
-  case 'yyyy':
-    return moment().format('YYYY');
-  case 'yyyyMM':
-    return moment().format('YYYYMM');
-  case 'yyyyMMdd':
-    return moment().format('YYYYMMDD');
-  case 'yyyyMMddHHmm':
-    return moment().format('YYYYMMDDhhmm');
-  case 'yyyyMMddHHmmss':
-    return moment().format('YYYYMMDDhhmmss');
+    case '':
+      return '';
+    case 'yyyy':
+      return moment().format('YYYY');
+    case 'yyyyMM':
+      return moment().format('YYYYMM');
+    case 'yyyyMMdd':
+      return moment().format('YYYYMMDD');
+    case 'yyyyMMddHHmm':
+      return moment().format('YYYYMMDDhhmm');
+    case 'yyyyMMddHHmmss':
+      return moment().format('YYYYMMDDhhmmss');
   }
 };
 

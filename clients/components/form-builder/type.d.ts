@@ -7,6 +7,8 @@ type ValidationFormula = {
 }
 
 type XInternal = {
+  fieldId?: string;
+  parentFieldId?: string;
   version?: string;
   sortable?: boolean;
   permission?: import('./constants').PERMISSION;
@@ -16,7 +18,6 @@ type XInternal = {
   calculationFormula?: string;
   isLayoutComponent?: boolean;
   isSystem?: boolean;
-  _key?: string;
   fieldPath?: string;
   [key: string]: any;
 }
@@ -78,6 +79,7 @@ declare namespace FormBuilder {
     toConfig: (schema: ISchema) => T;
     configDependencies?: Record<string, React.JSXElementConstructor<any>>;
     compareOperators?: CompareOperator[];
+    placeholderComponent?: React.JSXElementConstructor<any>;
     isLayoutComponent?: boolean;
     editComponent?: React.JSXElementConstructor<any>;
     effects?: () => void;
@@ -163,101 +165,16 @@ type SchemaFieldItem = ISchema & {
   id: string;
   fieldName: string;
   componentName: string;
-  parentField?: string;
   tabIndex?: number;
 }
 
 type FormItem = {
   componentName: string;
-  fieldName: string;
   configValue: any;
+  fieldName?: string;
   'x-index'?: number;
-  parentField?: string;
   tabIndex?: string;
   'x-internal'?: XInternal;
   isLayoutComponent?: boolean,
   children?: FormItem[];
 };
-
-// a copy of formily Schema type definition for reference
-// interface Schema {
-//   title: string;
-//   type: 'string' | 'object' | 'array' | 'number' | 'datetime';
-//   properties?: {
-//     [key: string]: Schema
-//   },
-//   item?: Schema;
-// }
-
-// export interface ISchema {
-//   title?: SchemaMessage;
-//   description?: SchemaMessage;
-//   default?: any;
-//   readOnly?: boolean;
-//   writeOnly?: boolean;
-//   type?: 'string' | 'object' | 'array' | 'number' | 'boolean' | string;
-//   enum?: Array<string | number | {
-//     label: SchemaMessage;
-//     value: any;
-//     [key: string]: any;
-//   } | {
-//     key: any;
-//     title: SchemaMessage;
-//     [key: string]: any;
-//   }>;
-//   const?: any;
-//   multipleOf?: number;
-//   maximum?: number;
-//   exclusiveMaximum?: number;
-//   minimum?: number;
-//   exclusiveMinimum?: number;
-//   maxLength?: number;
-//   minLength?: number;
-//   pattern?: string | RegExp;
-//   maxItems?: number;
-//   minItems?: number;
-//   uniqueItems?: boolean;
-//   maxProperties?: number;
-//   minProperties?: number;
-//   required?: string[] | boolean | string;
-//   format?: string;
-//   properties?: {
-//     [key: string]: ISchema;
-//   };
-//   items?: ISchema | ISchema[];
-//   additionalItems?: ISchema;
-//   patternProperties?: {
-//     [key: string]: ISchema;
-//   };
-//   additionalProperties?: ISchema;
-//   editable?: boolean;
-//   visible?: boolean | string;
-//   display?: boolean | string;
-//   triggerType?: 'onBlur' | 'onChange';
-//   ['x-props']?: {
-//     [name: string]: any;
-//   };
-//   ['x-index']?: number;
-//   ['x-rules']?: ValidatePatternRules;
-//   ['x-linkages']?: Array<{
-//     target: FormPathPattern;
-//     type: string;
-//     [key: string]: any;
-//   }>;
-//   ['x-mega-props']?: {
-//     [name: string]: any;
-//   };
-//   ['x-item-props']?: {
-//     [name: string]: any;
-//   };
-//   ['x-component']?: string;
-//   ['x-component-props']?: {
-//     [name: string]: any;
-//   };
-//   ['x-render']?: <T = ISchemaFieldComponentProps>(props: T & {
-//     renderComponent: () => React.ReactElement;
-//   }) => React.ReactElement;
-//   ['x-effect']?: (dispatch: (type: string, payload: any) => void, option?: object) => {
-//     [key: string]: any;
-//   };
-// }

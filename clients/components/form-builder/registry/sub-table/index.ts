@@ -7,10 +7,11 @@ import { defaultConfig, toSchema, toConfig, SubTableConfig } from './convertor';
 import SubTable from './preview';
 import configForm from './config/config-form';
 import configSchema from './config/config-schema';
+import Placeholder from './placeholder';
 
 function validate(configValue: SubTableConfig): boolean {
   const { subTableSchema, subTableColumns, required } = configValue;
-  const columns = subTableColumns?.filter((column)=> column !== '_id');
+  const columns = subTableColumns?.filter((column) => column !== '_id');
   const schema = omit(subTableSchema?.properties, '_id') || {};
   let isColumnValid = true;
   if (required && !columns?.length && isEmpty(schema)) {
@@ -28,6 +29,7 @@ const SubTableField: Omit<FormBuilder.SourceElement<SubTableConfig>, 'displayOrd
   toSchema,
   toConfig,
   component: SubTable,
+  placeholderComponent: Placeholder,
   category: 'advance',
   componentName: 'SubTable',
   validate,

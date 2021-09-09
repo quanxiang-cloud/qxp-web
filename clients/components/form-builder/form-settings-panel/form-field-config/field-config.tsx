@@ -59,7 +59,7 @@ function FormFieldConfig(): JSX.Element {
     if (formFieldConfigWrap.current) {
       (formFieldConfigWrap.current.parentNode as HTMLDivElement).scrollTop = 0;
     }
-  }, [store.activeFieldName]);
+  }, [store.activeFieldId]);
 
   if (!store.activeField) {
     return (
@@ -71,13 +71,13 @@ function FormFieldConfig(): JSX.Element {
     return (
       <div ref={formFieldConfigWrap}>
         <SchemaFieldConfig
-          // assign key to FormFieldConfigTrue to force re-render when activeFieldName changed
+          // assign key to FormFieldConfigTrue to force re-render when activeFieldId changed
           effects={() => {
             if (typeof store.activeFieldSourceElement?.effects === 'function') {
               store.activeFieldSourceElement.effects();
             }
           }}
-          key={toJS(store.activeFieldName)}
+          key={toJS(store.activeFieldId)}
           onChange={(value) => store.updateFieldConfig(value)}
           initialValue={toJS(store.activeField.configValue)}
           schema={store.activeFieldSourceElement?.configSchema}
@@ -92,7 +92,7 @@ function FormFieldConfig(): JSX.Element {
 
   if (store.activeFieldSourceElement?.configForm) {
     return React.createElement(store.activeFieldSourceElement.configForm, {
-      key: toJS(store.activeFieldName),
+      key: toJS(store.activeFieldId),
       onChange: (value: any) => store.updateFieldConfig(value),
       initialValue: toJS(store.activeField.configValue),
     });

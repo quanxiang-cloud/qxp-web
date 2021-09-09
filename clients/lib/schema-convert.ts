@@ -1,4 +1,4 @@
-import { groupBy, isUndefined, merge } from 'lodash';
+import { groupBy, merge } from 'lodash';
 
 import { FormFieldOption } from '@flow/content/editor/forms/api';
 import { quickSortObjectArray } from '@lib/utils';
@@ -24,13 +24,13 @@ function isSchemaValid(schema: ISchema): boolean {
 
 function schemaItemToSchemaFieldItem(schema: ISchema): SchemaFieldItem {
   const internal = schema?.['x-internal'];
-  const fieldId = internal?._key;
+  const fieldId = internal?.fieldId;
+
   return {
     ...schema,
     id: fieldId || '',
     fieldName: fieldId || '',
     componentName: schema['x-component']?.toLowerCase() || '',
-    parentField: internal?.parentField,
     tabIndex: internal?.tabIndex,
     'x-index': numberTransform(schema),
   };
@@ -57,18 +57,18 @@ export function schemaToArray(schema?: ISchema, options?: SchemaToArrayOptions):
   }).map(({
     fieldIndex, fieldPath, ...schema
   }: ISchema & { fieldPath?: string; fieldIndex?: string | number }) => {
-    return merge(schema, { 'x-internal': { _key: fieldIndex, fieldPath } });
+    return merge(schema, { 'x-internal': { fieldId: fieldIndex, fieldPath } });
   });
   schemas = options?.filter ? schemas.filter((schema) => options?.filter?.(schema)) : schemas;
   return sortSchemaArray(schemas);
 }
 
-export function schemaToOptions(schema?: ISchema, options?: SchemaToOptionsOptions): FormFieldOption [] {
+export function schemaToOptions(schema?: ISchema, options?: SchemaToOptionsOptions): FormFieldOption[] {
   return schemaToArray(schema, options).map((field: ISchema) => {
     const permission = field?.['x-internal']?.permission as PERMISSION;
     return {
       label: field.title as string,
-      value: field['x-internal']?._key || '',
+      value: field['x-internal']?.fieldId || '',
       isSystem: !!field['x-internal']?.isSystem,
       isLayout: !!field['x-internal']?.isLayoutComponent,
       path: field['x-internal']?.fieldPath || '',
@@ -89,37 +89,11 @@ export function schemaToFields(schema?: ISchema, filter?: FieldsFilterFunc): Arr
 export function schemaToMap(schema?: ISchema, filter?: FieldsFilterFunc): Record<string, SchemaFieldItem> {
   return schemaToFields(schema, filter).reduce(
     (fieldsMap: Record<string, SchemaFieldItem>, field: SchemaFieldItem) => {
-      fieldsMap[field.fieldName] = field;
+      const fieldId = field?.['x-internal']?.fieldId;
+      if (fieldId) fieldsMap[fieldId] = field;
       return fieldsMap;
     }, {},
   );
-}
-
-export function fieldsToSchema(fields: Array<SchemaFieldItem>): ISchema {
-  const properties: Record<string, ISchema> = {};
-
-  const { false: fieldsNoParent, true: fieldsWithParent } = groupBy(fields, (field) => !!field.parentField);
-
-  fieldsNoParent?.forEach((field) => {
-    const fileName = field.fieldName;
-    properties[fileName] = {
-      ...field,
-      properties: {},
-    };
-  });
-
-  fieldsWithParent?.forEach((field) => {
-    const fileName = field.fieldName;
-    const parentProperties = properties[field.parentField || '']?.properties;
-    if (isUndefined(parentProperties)) return;
-    parentProperties[fileName] = field;
-  });
-
-  return {
-    type: 'object',
-    title: '',
-    properties,
-  };
 }
 
 export default schemaToFields;
