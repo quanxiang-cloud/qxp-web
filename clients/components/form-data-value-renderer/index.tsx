@@ -21,7 +21,7 @@ type Props = {
 function datetimeValueRenderer({ value, schema }: ValueRendererProps): string {
   const format = schema['x-component-props']?.format || 'YYYY-MM-DD HH:mm:ss';
 
-  return moment(value as string).format(format);
+  return value ? moment(value as string).format(format) : '';
 }
 
 function SubTableValueRenderer({ value, schema, className }: ValueRendererProps): JSX.Element {
