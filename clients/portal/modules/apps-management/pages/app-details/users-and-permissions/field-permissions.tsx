@@ -2,31 +2,42 @@ import React, { useState, useEffect, useImperativeHandle, forwardRef } from 'rea
 import { union, set, get } from 'lodash';
 
 import Checkbox from '@c/checkbox';
+import Icon from '@c/icon';
+
+import store from './store';
 
 type Props = {
   fields: SchemaFieldItem[];
   fieldPer: ISchema;
   className?: string;
+  abled?: boolean
 }
 
-function FieldPermissions({ fields, className = '', fieldPer }: Props, ref: React.Ref<any>): JSX.Element {
+function FieldPermissions({
+  fields, className = '', fieldPer, abled,
+}: Props, ref: React.Ref<any>): JSX.Element {
   const [visibleField, setVisibleField] = useState<string[]>([]);
   const [revisableField, setRevisableField] = useState<string[]>([]);
+  const [hideableField, setHideableField] = useState<string[]>([]);
   const [vIndeterminate, setVIndeterminate] = useState(false);
   const [rIndeterminate, setRIndeterminate] = useState(false);
+  const [hIndeterminate, setHIndeterminate] = useState(false);
   const [vCheckAll, setVCheckAll] = useState(false);
   const [rCheckAll, setRCheckAll] = useState(false);
+  const [hCheckAll, setHCheckAll] = useState(false);
 
   const fieldRevisable = fields.filter((field) => !field['x-internal']?.isSystem);
 
   useImperativeHandle(ref, () => ({
     getFieldPer: getFieldPer,
+    reset: () => getFields(),
   }));
 
   const getPerMission = (key: string): number => {
     const visible = visibleField.includes(key);
     const revisable = revisableField.includes(key);
-    const permissions = (visible ? 1 : 0) | (revisable ? 10 : 0);
+    const hideable = hideableField.includes(key);
+    const permissions = (visible ? 1 : 0) | (revisable ? 10 : 0) | (hideable ? 100 : 0);
 
     return parseInt(permissions.toString(), 2);
   };
@@ -56,23 +67,29 @@ function FieldPermissions({ fields, className = '', fieldPer }: Props, ref: Reac
     };
   };
 
-  useEffect(() => {
+  const getFields = (): void => {
     if (fieldPer) {
       const visibleList: string[] = [];
       const revisableList: string[] = [];
+      const hideableList: string[] = [];
       fields.forEach((field) => {
         switch (get(fieldPer, `properties.${field.fieldName}.x-internal.permission`)) {
+        case 1:
+          visibleList.push(field.id);
+          break;
+        case 5:
+          visibleList.push(field.id);
+          hideableList.push(field.id);
+          break;
         case 3:
           visibleList.push(field.id);
           revisableList.push(field.id);
-          break;
-        case 1:
-          visibleList.push(field.id);
           break;
         }
       });
       setVisibleField(visibleList);
       setRevisableField(revisableList);
+      setHideableField(hideableList);
     } else {
       const event: any = {
         target: {
@@ -82,6 +99,10 @@ function FieldPermissions({ fields, className = '', fieldPer }: Props, ref: Reac
       handleRCheckAll(event);
       handleVCheckAll(event);
     }
+  };
+
+  useEffect(() => {
+    getFields();
   }, []);
 
   useEffect(() => {
@@ -102,6 +123,15 @@ function FieldPermissions({ fields, className = '', fieldPer }: Props, ref: Reac
     }
   }, [revisableField]);
 
+  useEffect(() => {
+    setHIndeterminate(hideableField.length > 0 && hideableField.length !== fieldRevisable.length);
+    if (hideableField.length === fieldRevisable.length) {
+      setHCheckAll(true);
+    } else {
+      setHCheckAll(false);
+    }
+  }, [hideableField]);
+
   const handleVisibleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const { value, checked } = e.target;
     if (checked) {
@@ -110,6 +140,11 @@ function FieldPermissions({ fields, className = '', fieldPer }: Props, ref: Reac
       if (revisableField.includes(value)) {
         setRevisableField(
           revisableField.filter((id) => id !== value),
+        );
+      }
+      if (hideableField.includes(value)) {
+        setHideableField(
+          hideableField.filter((id) => id !== value),
         );
       }
 
@@ -126,9 +161,33 @@ function FieldPermissions({ fields, className = '', fieldPer }: Props, ref: Reac
       if (!visibleField.includes(value)) {
         setVisibleField([...visibleField, value]);
       }
+      if (hideableField.includes(value)) {
+        setHideableField(
+          hideableField.filter((id) => id !== value),
+        );
+      }
     } else {
       setRevisableField(
         revisableField.filter((id) => id !== value),
+      );
+    }
+  };
+
+  const handleHideableChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    const { value, checked } = e.target;
+    if (checked) {
+      setHideableField([...hideableField, value]);
+      if (!visibleField.includes(value)) {
+        setVisibleField([...visibleField, value]);
+      }
+      if (revisableField.includes(value)) {
+        setRevisableField(
+          revisableField.filter((id) => id !== value),
+        );
+      }
+    } else {
+      setHideableField(
+        hideableField.filter((id) => id !== value),
       );
     }
   };
@@ -149,8 +208,20 @@ function FieldPermissions({ fields, className = '', fieldPer }: Props, ref: Reac
       const ids = fieldRevisable.map(({ id }) => id);
       setVisibleField(union(visibleField, ids));
       setRevisableField(ids);
+      setHideableField([]);
     } else {
       setRevisableField([]);
+    }
+  };
+
+  const handleHCheckAll = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    if (e.target.checked) {
+      const ids = fieldRevisable.map(({ id }) => id);
+      setVisibleField(union(visibleField, ids));
+      setHideableField(ids);
+      setRevisableField([]);
+    } else {
+      setHideableField([]);
     }
   };
 
@@ -169,25 +240,45 @@ function FieldPermissions({ fields, className = '', fieldPer }: Props, ref: Reac
 
   return (
     <div className={className}>
-      <div className='flex items-center justify-between mb-12'>
-        <span className='text-caption-no-color text-gray-400'>系统字段不可修改。例如：提交时间、更新时间</span>
-        <p className='flex gap-x-16'>
-          <Checkbox
-            onChange={handleVCheckAll}
-            checked={vCheckAll}
-            indeterminate={vIndeterminate}
-            label='全选可见'
-          />
-          <Checkbox
-            onChange={handleRCheckAll}
-            checked={rCheckAll}
-            indeterminate={rIndeterminate}
-            label='全选可修改'
-          />
-        </p>
+      <div className='fields-tip text-14'>
+        <Icon
+          name='info'
+          className='text-inherit mx-18'
+          size={20}
+        />
+        系统字段不可修改。例如：创建时间、修改时间
       </div>
       <div className='pb-field-box'>
-        <div className='pb-field-item-title'><span>字段</span><span>可见</span><span>可修改</span></div>
+        <div className='pb-field-item-title'>
+          <span>字段</span>
+          <span>
+            <Checkbox
+              onChange={handleVCheckAll}
+              checked={vCheckAll}
+              indeterminate={vIndeterminate}
+              disabled = {store.currentRights.types === 1 || !abled}
+              label='全部可查看'
+            />
+          </span>
+          <span>
+            <Checkbox
+              onChange={handleRCheckAll}
+              checked={rCheckAll}
+              indeterminate={rIndeterminate}
+              disabled = {store.currentRights.types === 1 || !abled}
+              label='全部可修改'
+            />
+          </span>
+          <span>
+            <Checkbox
+              onChange={handleHCheckAll}
+              checked={hCheckAll}
+              indeterminate={hIndeterminate}
+              disabled = {store.currentRights.types === 1 || !abled}
+              label='全部可隐藏'
+            />
+          </span>
+        </div>
         {fields.map((field) => (
           <div key={field.id} className='pb-field-item'>
             <span>
@@ -196,13 +287,23 @@ function FieldPermissions({ fields, className = '', fieldPer }: Props, ref: Reac
             <Checkbox
               checked={visibleField.includes(field.id)}
               value={field.id}
+              disabled = {store.currentRights.types === 1 || !abled}
               onChange={handleVisibleChange}
             />
             {!field['x-internal']?.isSystem && (
               <Checkbox
                 checked={revisableField.includes(field.id)}
                 value={field.id}
+                disabled = {store.currentRights.types === 1 || !abled}
                 onChange={handleRevisableChange}
+              />
+            )}
+            {!field['x-internal']?.isSystem && (
+              <Checkbox
+                checked={hideableField.includes(field.id)}
+                value={field.id}
+                disabled = {store.currentRights.types === 1 || !abled}
+                onChange={handleHideableChange}
               />
             )}
           </div>

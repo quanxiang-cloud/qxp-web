@@ -10,6 +10,7 @@ interface ISwitchOption<Value> {
 
 interface ISwitch<Value extends React.Key> {
   className?: string;
+  disabled?: boolean
   options: ISwitchOption<Value>[];
   onChange?: (value: Value) => void;
   value?: Value;
@@ -60,6 +61,7 @@ export default function Switch<Value extends React.Key>(props: ISwitch<Value>) {
         defaultValue={props.options[0]['value']}
         onChange={onChange}
         value={value}
+        disabled={props.disabled}
       >
         {
           props.options.map((option) => {
