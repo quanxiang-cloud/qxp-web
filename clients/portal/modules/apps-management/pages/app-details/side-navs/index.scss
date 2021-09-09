@@ -7,9 +7,42 @@
   overflow: auto;
 }
 
+.side-nav-title {
+  @apply p-16 flex justify-between text-16 text-gray-600;
+}
+
 .side-nav-focus {
   &:hover {
-    color: var(--blue-600);
-    background-color: var(--gray-100);
+    @apply bg-gray-100 text-gray-900 font-semibold;
+  }
+}
+
+.side-nav-show {
+  transform: scaleY(1);
+  transition: transform 0.2s;
+  transform-origin: top center; 
+}
+
+.side-nav-hide {
+  transform: scaleY(0);
+  transition: transform 0.2s;
+  transform-origin: top center; 
+  height: 0;
+}
+
+.side-nav-active {
+  @apply relative bg-gray-100 text-gray-900 font-semibold;
+
+  &::after {
+    content: '';
+    width: 4px;
+    height: 40px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-image: url(/dist/images/side-nav-bg.svg);
+    background-position: top right;
+    background-size: contain;
+    background-repeat: no-repeat;
   }
 }

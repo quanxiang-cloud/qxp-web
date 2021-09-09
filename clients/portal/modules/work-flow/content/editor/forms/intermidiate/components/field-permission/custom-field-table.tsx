@@ -6,9 +6,9 @@ import Checkbox from '@c/checkbox';
 import ToolTip from '@c/tooltip';
 import Icon from '@c/icon';
 import useRequest from '@lib/hooks/use-request';
-import type { CustomFieldPermission, FieldValue } from '@flowEditor/type';
+import type { CustomFieldPermission, FieldValue } from '@flow/content/editor/type';
 import flowContext from '@flow/flow-context';
-import { FORM_COMPONENT_VARIABLE_MAP } from '@flowEditor/utils/constants';
+import { FORM_COMPONENT_VARIABLE_MAP } from '@flow/content/editor/utils/constants';
 
 import FieldValueEditor from './field-value-editor';
 
@@ -99,14 +99,9 @@ export default function CustomFieldTable({
 
   function getCell(model: any, key?: 'read' | 'write'): JSX.Element {
     const isChecked = model.cell.value;
+    const level = model.cell.row.original.path?.split('.').length - 1;
     if (!key) {
-      return (
-        <div
-          className={`${model.cell.row.original.parent ? 'ml-20' : ''}`}
-        >
-          {model.cell.value}
-        </div>
-      );
+      return <div style={{ marginLeft: isNaN(level) ? 0 : level * 20 }}> {model.cell.value} </div>;
     }
     return (
       <Checkbox
@@ -141,7 +136,7 @@ export default function CustomFieldTable({
     model: any, key: 'initialValue' | 'submitValue', editable: boolean,
   ): JSX.Element | null {
     const schema = schemaMap[model.cell.row.id];
-    const componentName = schema.componentName;
+    const componentName = schema?.componentName;
     const isSubTable = componentName === 'subtable';
     const isAssociatedRecords = componentName === 'associatedrecords';
     if (editable && schema && !isSubTable && !isAssociatedRecords) {

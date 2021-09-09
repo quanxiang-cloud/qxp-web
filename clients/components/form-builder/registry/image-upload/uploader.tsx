@@ -6,7 +6,7 @@ import toast from '@lib/toast';
 import FileList from '@portal/modules/system-mgmt/send-message/filelist';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 import type { FileInfo as FileListItemInfo } from '@portal/modules/system-mgmt/send-message/filelist';
-import { getDefinedOne } from '@c/form-builder/utils';
+import FormDataValueRenderer from '@c/form-data-value-renderer';
 
 import './index.scss';
 
@@ -37,7 +37,6 @@ const acceptMimeTypes = [
 function Uploader(props: Props & ISchemaFieldComponentProps): JSX.Element {
   const uploaderRef = useRef<Upload>(null);
   const { multiple } = props.props['x-component-props'];
-  const isEditable = getDefinedOne(props?.editable, props?.props.editable);
   const initialValue = props.value?.map(({ label, value }: LabelValue) => ({
     filename: label,
     url: value,
@@ -89,12 +88,15 @@ function Uploader(props: Props & ISchemaFieldComponentProps): JSX.Element {
     }
   };
 
+  if (props.props.readOnly) {
+    return <FormDataValueRenderer value={props.value} schema={props.schema} />;
+  }
+
   return (
     <div className="file-upload">
       <Upload
         ref={uploaderRef}
         headers={{ 'X-Proxy': 'API' }}
-        disabled={!isEditable}
         multiple={Boolean(multiple)}
         action="/api/v1/fileserver/uploadFile"
         beforeUpload={(file) => {
@@ -153,7 +155,6 @@ function Uploader(props: Props & ISchemaFieldComponentProps): JSX.Element {
             status: itm.status || 'success',
           }))}
           deleteFiles={deleteFile}
-          editable={isEditable}
           candownload
         />
       </div>

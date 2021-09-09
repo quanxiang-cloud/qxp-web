@@ -3,8 +3,8 @@ import cs from 'classnames';
 import { FlowElement } from 'react-flow-renderer';
 
 import { uuid, deepClone } from '@lib/utils';
-import store, { updateStore } from '@flowEditor/store';
-import type { Data } from '@flowEditor/type';
+import store, { updateStore } from '@flow/content/editor/store';
+import type { Data } from '@flow/content/editor/type';
 
 import { Props } from './node-component-wrapper';
 import { edgeBuilder, nodeBuilder } from '../utils';

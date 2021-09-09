@@ -1,3 +1,4 @@
+import qs from 'qs';
 import { CustomPageInfo } from '@portal/modules/apps-management/pages/app-details/type';
 
 function httpClient<TData>(path: string, body?: unknown, additionalHeaders?: HeadersInit): Promise<TData> {
@@ -129,6 +130,45 @@ export function saveTableSchema(
     `/api/v1/form/${appID}/m/table/create`,
     { tableID, schema, source },
   );
+}
+
+export function httpClientGraphQL<TData>(
+  path: string,
+  params?: unknown,
+  additionalHeaders?: HeadersInit,
+): Promise<TData> {
+  const headers = {
+    'X-Proxy': 'API',
+    'Content-Type': 'application/json',
+    ...additionalHeaders,
+  };
+  const _path = params ? `${path}?${qs.stringify(params)}` : path;
+
+  return fetch(_path, {
+    method: 'GET',
+    headers: headers,
+  }).then((response) => {
+    if (response.status === 401) {
+      alert('当前会话已失效，请重新登录!');
+      window.location.reload();
+      return Promise.reject(new Error('当前会话已失效，请重新登录!'));
+    }
+    if (response.status === 500) {
+      return Promise.reject(new Error('请求失败!'));
+    }
+    return response.json();
+  }).then((resp) => {
+    const { code, msg, data } = resp;
+    if (code !== 0) {
+      const e = new Error(msg);
+      if (data) {
+        Object.assign(e, { data });
+      }
+      return Promise.reject(e);
+    }
+
+    return data as TData;
+  });
 }
 
 export default httpClient;

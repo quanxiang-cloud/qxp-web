@@ -1,6 +1,6 @@
 import { QueryFunctionContext } from 'react-query';
 import httpClient from '@lib/http-client';
-import { schemaToOptions } from '@lib/schema-convert';
+import { schemaToOptions, SchemaConvertOptions } from '@lib/schema-convert';
 
 import { Operation } from '../type';
 import { SYSTEM_OPERATOR_PERMISSION, CUSTOM_OPERATOR_PERMISSION } from '../utils/constants';
@@ -16,9 +16,9 @@ interface SchemaResponse {
 export type Option = {
   label: string;
   value: string;
-  children?: Option[];
-  type?: string;
-  isSystem?: boolean;
+  isSystem: boolean;
+  isLayout: boolean;
+  path: string;
 };
 
 export async function getFormFieldSchema({ queryKey }: QueryFunctionContext): Promise<{
@@ -35,7 +35,7 @@ export async function getFormFieldOptions({ queryKey }: QueryFunctionContext): P
 }> {
   const schema = await getFormFieldSchema({ queryKey });
   return {
-    options: schemaToOptions(schema),
+    options: schemaToOptions(schema, undefined, queryKey[3] as SchemaConvertOptions),
     schema,
   };
 }

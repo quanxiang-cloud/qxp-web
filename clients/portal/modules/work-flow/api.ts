@@ -1,7 +1,7 @@
 import { QueryFunctionContext } from 'react-query';
 
 import httpClient from '@lib/http-client';
-import { WorkFlowData } from '@flowEditor/type';
+import { WorkFlowData } from '@flow/content/editor/type';
 
 interface AddWorkFlow {
   bpmnText: string;

@@ -3,20 +3,31 @@ import { Select } from 'antd';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 
 import useEnumOptions from '@lib/hooks/use-enum-options';
+import {
+  usePairListValue,
+  toLabelValuePairList,
+} from '@c/form-builder/utils/label-value-pairs';
+import FormDataValueRenderer from '@c/form-data-value-renderer';
 
 const { Option } = Select;
 
 function MultipleSelect(fieldProps: ISchemaFieldComponentProps): JSX.Element {
   const options = useEnumOptions(fieldProps);
+  const selectValue = usePairListValue(fieldProps.value);
 
   function handleSelectChange(value: string[]): void {
-    fieldProps.mutators.change(value);
+    const values = toLabelValuePairList(value, options);
+    fieldProps.mutators.change(values);
+  }
+
+  if (fieldProps.props.readOnly) {
+    return <FormDataValueRenderer value={fieldProps.value} schema={fieldProps.schema} />;
   }
 
   return (
     <Select
       mode="multiple"
-      value={fieldProps.value}
+      value={selectValue}
       onChange={handleSelectChange}
     >
       {

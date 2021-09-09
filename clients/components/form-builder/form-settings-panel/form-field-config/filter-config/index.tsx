@@ -17,20 +17,25 @@ type Props = {
   value: FilterConfig;
   currentFormSchema?: ISchema;
   customSchemaFields?: SchemaFieldItem[];
-  filterFunc?: (field: ISchema) => boolean;
+  filterFunc?: (field: SchemaFieldItem) => boolean;
 }
 
 type FieldsProps = {
   schema: ISchema;
   excludedSystemField?: boolean;
-  filterFunc?: (field: ISchema) => boolean;
+  filterFunc?: (field: SchemaFieldItem) => boolean;
 }
 
 function getFields({ schema, excludedSystemField, filterFunc }: FieldsProps): SchemaFieldItem[] {
-  return schemaToFields(schema, filterFunc).filter((schema) => {
-    const isAllowField = schema.fieldName !== '_id' && FILTER_FIELD.includes(schema?.['x-component'] || '');
+  return schemaToFields(schema, (schemaFieldItem) => {
+    if (filterFunc?.(schemaFieldItem) === false) {
+      return false;
+    }
+
+    const isAllowField = schemaFieldItem.fieldName !== '_id' &&
+      FILTER_FIELD.includes(schemaFieldItem?.['x-component'] || '');
     if (excludedSystemField) {
-      return isAllowField && !schema['x-internal']?.isSystem;
+      return isAllowField && !schemaFieldItem['x-internal']?.isSystem;
     }
 
     return isAllowField;

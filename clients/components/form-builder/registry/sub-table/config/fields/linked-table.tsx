@@ -19,9 +19,6 @@ function LinkedTable({ value, mutators }: ISchemaFieldComponentProps): JSX.Eleme
     actions.setFieldState('Fields.subTableColumns', (state) => {
       state.value = [];
     });
-    actions.setFieldState('Fields.subTableSchema', (state) => {
-      state.value = { type: 'object', properties: {} };
-    });
     mutators.change({ ...value, tableID, tableName });
   }
 

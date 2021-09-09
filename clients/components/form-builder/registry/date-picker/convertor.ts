@@ -1,3 +1,5 @@
+import { getSchemaPermissionFromSchemaConfig } from '@c/form-builder/utils';
+
 type ValueFormat =
   'YYYY' |
   'YYYY-MM' |
@@ -51,7 +53,7 @@ export function toSchema(value: typeof defaultConfig): ISchema {
     },
     ['x-internal']: {
       sortable: value.sortable,
-      permission: 3,
+      permission: getSchemaPermissionFromSchemaConfig(value),
       defaultValueFrom: value.defaultValueFrom || 'customized',
       defaultValueLinkage: value.defaultValueLinkage,
     },

@@ -1,3 +1,5 @@
+import { getSchemaPermissionFromSchemaConfig } from '@c/form-builder/utils';
+
 import { generateRandomFormFieldID } from '../../utils';
 
 export interface MultipleSelectConfig {
@@ -48,7 +50,7 @@ export function toSchema(value: MultipleSelectConfig): ISchema {
     },
     ['x-internal']: {
       sortable: value.sortable,
-      permission: 3,
+      permission: getSchemaPermissionFromSchemaConfig(value),
       defaultValueFrom: value.defaultValueFrom,
     },
   };

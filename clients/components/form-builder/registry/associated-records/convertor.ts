@@ -1,3 +1,5 @@
+import { getSchemaPermissionFromSchemaConfig } from '@c/form-builder/utils';
+
 export interface AssociatedRecordsConfig {
   title: string;
   description?: string;
@@ -58,7 +60,7 @@ export function toSchema(value: AssociatedRecordsConfig): ISchema {
       filterConfig: value.filterConfig || null,
     },
     ['x-internal']: {
-      permission: 3,
+      permission: getSchemaPermissionFromSchemaConfig(value),
       defaultValueLinkage: value.defaultValueLinkage,
       defaultValueFrom: 'linkage',
     },

@@ -4,7 +4,7 @@ import { useUpdateEffect, usePrevious } from 'react-use';
 import { isEqual } from 'lodash';
 
 import formFieldWrap from '@c/form-field-wrap';
-import SaveButtonGroup from '@flowEditor/components/_common/action-save-button-group';
+import SaveButtonGroup from '@flow/content/editor/components/_common/action-save-button-group';
 
 import UserSelect from '../../components/add-approval-user';
 import { CCData } from '../../type';

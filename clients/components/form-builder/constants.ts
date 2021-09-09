@@ -154,6 +154,8 @@ export const SYSTEM_FIELDS = [
 ];
 
 export enum PERMISSION {
+  INVISIBLE = 0,
   READONLY = 1,
-  INVISIBLE = 0
+  EDITABLE = 2,
+  NORMAL = 3,
 }

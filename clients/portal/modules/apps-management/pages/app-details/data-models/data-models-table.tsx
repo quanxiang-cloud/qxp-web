@@ -48,7 +48,9 @@ function DataModelsTable(): JSX.Element {
     {
       Header: '创建时间',
       id: 'createdAt',
-      accessor: ({ createdAt }) => moment(createdAt, 'X').format('YYYY-MM-DD HH:mm:ss'),
+      accessor: ({ createdAt }) => {
+        return createdAt ? moment(createdAt, 'X').format('YYYY-MM-DD HH:mm:ss') : '—';
+      },
     },
     {
       Header: '操作',

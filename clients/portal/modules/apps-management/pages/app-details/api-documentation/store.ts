@@ -26,7 +26,7 @@ class ApiDocStore {
   @observable useFieldsID = false;
   @observable ApiPath = '';
   @observable docType: DocType = 'curl';
-  @observable params: DataModelsParameter = { source: 2 }
+  @observable params: DataModelsParameter = {}
 
   @computed get fields(): ModelField[] {
     return Object.entries(this.dataModelSchema.schema.properties || {}).map(([key, fieldSchema]) => {

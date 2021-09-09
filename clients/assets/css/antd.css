@@ -8785,7 +8785,7 @@ a.ant-btn-sm {
   position: absolute;
   top: 3px;
   left: 3px;
-  display: table;
+  display: block;
   width: 8px;
   height: 8px;
   background-color: #1890ff;

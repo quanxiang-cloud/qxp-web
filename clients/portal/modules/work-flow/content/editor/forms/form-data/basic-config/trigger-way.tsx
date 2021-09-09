@@ -8,7 +8,7 @@ import React, {
 import cs from 'classnames';
 
 import Select from '@c/select';
-import type { TriggerWayValue, TriggerValue } from '@flowEditor/type';
+import type { TriggerWayValue, TriggerValue } from '@flow/content/editor/type';
 
 import { ConditionItemOptions } from './condition-item';
 

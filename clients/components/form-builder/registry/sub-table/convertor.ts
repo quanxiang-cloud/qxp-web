@@ -1,3 +1,5 @@
+import { getSchemaPermissionFromSchemaConfig } from '@c/form-builder/utils';
+
 export type SubTableConfig = {
   title: string;
   description: string;
@@ -34,29 +36,34 @@ export const defaultConfig: SubTableConfig = {
 };
 
 export function toSchema(value: SubTableConfig): ISchema {
+  const isFromLinkedTable = value.subordination === 'foreign_table';
+
   return {
     type: 'array',
     title: value.title,
     description: value.description,
     required: value.required,
     display: value.displayModifier !== 'hidden',
-    items: value.subTableSchema,
+    items: isFromLinkedTable ? undefined : value.subTableSchema,
     'x-component': 'SubTable',
     ['x-component-props']: {
-      columns: value.subordination === 'foreign_table' ? value.subTableColumns || [] : [],
+      columns: value.subTableColumns,
       subordination: value.subordination,
       appID: value.linkedTable?.appID,
-      tableID: value.linkedTable?.tableID || value.tableID,
+      tableID: isFromLinkedTable ? value.linkedTable?.tableID : value.tableID,
       tableName: value.linkedTable?.tableName,
     },
     ['x-internal']: {
-      permission: 3,
+      permission: getSchemaPermissionFromSchemaConfig(value),
       sortable: false,
     },
   };
 }
 
 export function toConfig(schema: ISchema): SubTableConfig {
+  const isFromLinkedTable = schema?.['x-component-props']?.subordination === 'foreign_table';
+  const tableID = schema['x-component-props']?.tableID;
+
   return {
     title: schema.title as string,
     description: schema.description as string,
@@ -66,10 +73,10 @@ export function toConfig(schema: ISchema): SubTableConfig {
     required: !!schema.required,
     linkedTable: {
       appID: schema['x-component-props']?.appID,
-      tableID: schema['x-component-props']?.tableID,
+      tableID: isFromLinkedTable ? tableID : '',
       tableName: schema['x-component-props']?.tableName,
     },
     subTableColumns: schema['x-component-props']?.columns,
-    tableID: schema['x-component-props']?.tableID,
+    tableID: !isFromLinkedTable ? tableID : '',
   };
 }

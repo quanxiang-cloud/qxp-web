@@ -219,7 +219,7 @@ function SubTableSchema(props: ISchemaFieldComponentProps): JSX.Element {
                       </div>
                       <div
                         key={field.value}
-                        className="truncate border-b border-r px-6"
+                        className="truncate border-b border-r px-6 cursor-pointer"
                         title={field.label}
                         onClick={() => onShowSubTableConfig(field.value)}
                       >

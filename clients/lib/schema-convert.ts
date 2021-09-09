@@ -1,24 +1,29 @@
 import { isEmpty, cloneDeep, groupBy, isUndefined } from 'lodash';
+import fp from 'lodash/fp';
 
-import { Option } from '@flowEditor/forms/api';
+import { Option } from '@flow/content/editor/forms/api';
 import { quickSortObjectArray } from '@lib/utils';
 import { numberTransform } from '@c/form-builder/utils';
 
-type FilterFunc = (currentSchema: ISchema) => boolean;
+export type SchemaConvertOptions = { keepLayout?: boolean; parseSubTable?: boolean; };
+export type FilterFunc = (currentSchema: SchemaFieldItem) => boolean;
 
-export function schemaToOptions(schema?: ISchema, filterFunc?: FilterFunc): Option[] {
-  return schemaToFields(schema, filterFunc).map((field: SchemaFieldItem) => ({
+export function schemaToOptions(
+  schema?: ISchema, filterFunc?: FilterFunc, options?: SchemaConvertOptions,
+): Option[] {
+  return schemaToFields(schema, filterFunc, options).map((field: SchemaFieldItem) => ({
     label: field.title as string,
     value: field.id,
-    type: field.type as string,
-    isSystem: field['x-internal']?.isSystem,
+    isSystem: !!field['x-internal']?.isSystem,
+    isLayout: !!field['x-internal']?.isLayoutComponent,
+    path: field.originPathInSchema,
   }));
 }
 
 export function schemaToMap(
-  schema?: ISchema, filterFunc?: FilterFunc,
+  schema?: ISchema, filterFunc?: FilterFunc, options?: SchemaConvertOptions,
 ): Record<string, SchemaFieldItem> {
-  const fields = schemaToFields(schema, filterFunc);
+  const fields = schemaToFields(schema, filterFunc, options);
   return fields.reduce((fieldsMap: Record<string, SchemaFieldItem>, field: SchemaFieldItem) => {
     fieldsMap[field.fieldName] = field;
     return fieldsMap;
@@ -33,9 +38,26 @@ function sortFields(fields: SchemaFieldItem[]): SchemaFieldItem[] {
   return [...sorter(normalFields), ...sorter(systemFields)];
 }
 
+type SchemaWithParentPath = ISchema & { parentPathInSchema?: string };
+function wrapParentPath(
+  properties: Record<string, ISchema>, parentPath: string,
+): Record<string, SchemaWithParentPath> {
+  const { pipe, entries, fromPairs, map } = fp;
+  const transformer = pipe(
+    entries,
+    map(([fieldKey, fieldSchema]) => {
+      fieldSchema.parentPathInSchema = parentPath;
+      return [fieldKey, fieldSchema];
+    }),
+    fromPairs,
+  );
+  return transformer(properties);
+}
+
 function schemaToFields(
   schema?: ISchema,
   filterFunc?: FilterFunc,
+  options?: SchemaConvertOptions,
   fields: SchemaFieldItem[] = [],
 ): Array<SchemaFieldItem> {
   const { properties } = cloneDeep(schema || {});
@@ -48,21 +70,22 @@ function schemaToFields(
   };
 
   Object.keys(properties).forEach((key) => {
-    const currentSchema: ISchema = properties[key];
+    const currentSchema: SchemaWithParentPath = properties[key];
     const componentName = currentSchema['x-component']?.toLowerCase();
 
     if (!componentName) return;
 
     const parentField = currentSchema?.['x-internal']?.parentField;
     const tabIndex = currentSchema?.['x-internal']?.tabIndex;
+    const subTableSchema = currentSchema.items as ISchema | undefined;
+    const isLayoutComponent = currentSchema?.['x-internal']?.isLayoutComponent;
 
-    if (componentName === 'subtable') {
-      const items = currentSchema.items as ISchema;
-      if (items) {
-        items.properties = schemaToMap(items, filterFunc);
-      }
+    if (componentName === 'subtable' && subTableSchema) {
+      subTableSchema.properties = schemaToMap(subTableSchema, filterFunc, options);
     }
 
+    const originPathInSchema = currentSchema.parentPathInSchema ?
+      `${currentSchema.parentPathInSchema}.${key}` : key;
     const field: SchemaFieldItem = {
       ...currentSchema,
       'x-index': numberTransform(currentSchema),
@@ -71,20 +94,34 @@ function schemaToFields(
       parentField,
       tabIndex,
       id: key,
+      originPathInSchema,
     };
 
     if (currentSchema.properties && newProperties.properties) {
-      newProperties.properties = Object.assign(newProperties.properties, currentSchema.properties);
+      newProperties.properties = {
+        ...newProperties.properties,
+        ...wrapParentPath(currentSchema.properties, isLayoutComponent ? '' : originPathInSchema),
+      };
     }
 
-    if ((filterFunc && !filterFunc(currentSchema)) || currentSchema?.['x-internal']?.isLayoutComponent) {
+    if (subTableSchema?.properties && newProperties.properties && options?.parseSubTable) {
+      newProperties.properties = {
+        ...newProperties.properties,
+        ...wrapParentPath(subTableSchema.properties, isLayoutComponent ? '' : originPathInSchema),
+      };
+    }
+
+    if (
+      (filterFunc && !filterFunc(field)) ||
+      (!options?.keepLayout && isLayoutComponent)
+    ) {
       return;
     }
 
     fields.push(field);
   });
 
-  return schemaToFields(newProperties, filterFunc, fields);
+  return schemaToFields(newProperties, filterFunc, options, fields);
 }
 
 export function fieldsToSchema(fields: Array<SchemaFieldItem>): ISchema {

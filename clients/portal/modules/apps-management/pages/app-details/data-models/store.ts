@@ -90,7 +90,7 @@ class AppModelStore {
 
     return saveTableSchema(
       this.appID,
-      basicInfo.tableID,
+      `${this.appID}_${basicInfo.tableID}`,
       { ...this.dataModelSchema.schema, ...omit(basicInfo, 'tableID') },
       2,
     ).then(() => {

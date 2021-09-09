@@ -1,18 +1,24 @@
-import React, { useState, useEffect, ChangeEvent } from 'react';
+import React, { useState, ChangeEvent, useMemo, useRef } from 'react';
 import { Select, Input, Divider } from 'antd';
+import { RefSelectProps } from 'antd/lib/select';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 
-import Toast from '@lib/toast';
+import toast from '@lib/toast';
 import useEnumOptions from '@lib/hooks/use-enum-options';
-
-const { Option } = Select;
+import FormDataValueRenderer from '@c/form-data-value-renderer';
+import {
+  CUSTOM_OTHER_VALUE,
+  usePairValue,
+  useCustomOtherValue,
+} from '@c/form-builder/utils/label-value-pairs';
 
 interface DropdownRenderProps {
   menu: React.ReactElement;
-  onChange: (value: string) => void;
+  isAllowCustom: boolean;
+  onOtherCustomValueChange: (customValue: string) => void;
 }
 
-function DropdownRender({ menu, onChange }: DropdownRenderProps): JSX.Element {
+function DropdownRender({ menu, isAllowCustom, onOtherCustomValueChange }: DropdownRenderProps): JSX.Element {
   const [inputValue, setInputValue] = useState('');
 
   function handleInputValueChange(e: ChangeEvent<HTMLInputElement>): void {
@@ -21,16 +27,21 @@ function DropdownRender({ menu, onChange }: DropdownRenderProps): JSX.Element {
 
   function handleAddOption(): void {
     if (!inputValue) {
-      Toast.error('内容不能为空');
+      toast.error('内容不能为空');
       return;
     }
-    onChange(inputValue);
+
+    onOtherCustomValueChange(inputValue);
     setInputValue('');
   }
 
   function handlePressEnter(e: React.KeyboardEvent<HTMLInputElement>): void {
     e.stopPropagation();
     handleAddOption();
+  }
+
+  if (!isAllowCustom) {
+    return (<div>{menu}</div>);
   }
 
   return (
@@ -60,61 +71,50 @@ function DropdownRender({ menu, onChange }: DropdownRenderProps): JSX.Element {
 
 function CustomSelect(fieldProps: ISchemaFieldComponentProps): JSX.Element {
   const options = useEnumOptions(fieldProps);
-  const [customOption, setCustomOption] = useState<LabelValue | null >(null);
-  const { allowCustom } = fieldProps.props['x-component-props'];
+  const [otherCustomValue, setOtherCustomValue] = useCustomOtherValue(fieldProps.value);
+  const realValue = usePairValue(fieldProps.value);
+  const selectRef = useRef<RefSelectProps>(null);
 
-  useEffect(() => {
-    if (!allowCustom) {
-      setCustomOption(null);
-      return;
+  const isAllowCustom = !!fieldProps.props['x-component-props']?.allowCustom;
+  const allOptions = useMemo(() => {
+    if (!isAllowCustom || !otherCustomValue) {
+      return options;
     }
 
-    if (fieldProps.value) {
-      const isValueInRange = options.some((option): boolean => option.value === fieldProps.value);
-      if (!isValueInRange) {
-        setCustomOption({
-          label: fieldProps.value,
-          value: fieldProps.value,
-        });
-      }
-    }
-  }, [fieldProps.value, options, allowCustom]);
+    return options.concat({ label: otherCustomValue, value: CUSTOM_OTHER_VALUE });
+  }, [isAllowCustom, options, otherCustomValue]);
 
-  function handleSelectChange(optionValue: string): void {
-    fieldProps.mutators.change(optionValue);
+  if (fieldProps.props.readOnly) {
+    return <FormDataValueRenderer schema={fieldProps.schema} value={fieldProps.value} />;
   }
-
-  function handleAddOption(value: string): void {
-    setCustomOption({
-      label: value,
-      value: value,
-    });
-    handleSelectChange(value);
-  }
-
-  const newOptions: LabelValue[] = customOption ? [...options, customOption] : options;
 
   return (
-    <div className="flex items-center w-full">
+    <div className="flex flex-col w-full">
       <Select
+        ref={selectRef}
+        options={allOptions}
         placeholder="请选择选项"
-        onSelect={handleSelectChange}
-        value={fieldProps.value}
-        dropdownRender={
-          allowCustom ? (menu) => (
-            <DropdownRender
-              menu={menu}
-              onChange={handleAddOption}
-            />
-          ) : undefined
-        }
-      >
-        {
-          newOptions.map((option): JSX.Element => {
-            return (<Option key={option.value} value={option.value}>{option.label}</Option>);
-          })
-        }
-      </Select>
+        value={realValue}
+        onSelect={(v, option) => {
+          // This shouldn't happen
+          if (Array.isArray(option)) {
+            return;
+          }
+
+          fieldProps.mutators.change(`${option.label}:${option.value}`);
+        }}
+        dropdownRender={(menu) => (
+          <DropdownRender
+            menu={menu}
+            isAllowCustom={isAllowCustom}
+            onOtherCustomValueChange={(customValue) => {
+              // todo close options after customValue changed
+              setOtherCustomValue(customValue);
+              fieldProps.mutators.change(`${customValue}:${CUSTOM_OTHER_VALUE}`);
+            }}
+          />
+        )}
+      />
     </div>
   );
 }

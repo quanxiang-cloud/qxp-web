@@ -4,20 +4,20 @@ import { Form } from '@QCFE/lego-ui';
 import Modal from '@c/modal';
 
 import store from '../store';
+import { MenuType } from '../type';
 
 type Props = {
   onCancel: () => void;
   onSubmit: (groupInfo: PageInfo) => Promise<unknown>;
-  name?: string;
-  id?: string;
+  groupInfo: PageInfo;
 };
 
-function EditGroupModal({ name, id, onCancel, onSubmit }: Props): JSX.Element {
+function EditGroupModal({ groupInfo, onCancel, onSubmit }: Props): JSX.Element {
   const ref: any = useRef();
   const handleSubmit = (): void => {
     const formRef = ref.current;
     if (formRef.validateFields()) {
-      onSubmit({ ...formRef.getFieldsValue(), id }).then(() => {
+      onSubmit({ ...(groupInfo || {}), ...formRef.getFieldsValue() }).then(() => {
         onCancel();
       });
     }
@@ -25,7 +25,7 @@ function EditGroupModal({ name, id, onCancel, onSubmit }: Props): JSX.Element {
 
   const validateRepeat = (value: string): boolean => {
     return store.pageInitList.findIndex((pageInfo: PageInfo) => {
-      if (pageInfo.menuType === 1 && pageInfo.id !== id) {
+      if (pageInfo.menuType === MenuType.group && pageInfo.id !== groupInfo.id) {
         return pageInfo.name === value;
       }
     }) === -1;
@@ -33,7 +33,7 @@ function EditGroupModal({ name, id, onCancel, onSubmit }: Props): JSX.Element {
 
   return (
     <Modal
-      title={id ? '修改分组名称' : '新建分组'}
+      title={groupInfo.id ? '修改分组名称' : '新建分组'}
       onClose={onCancel}
       footerBtns={[{
         key: 'close',
@@ -51,7 +51,7 @@ function EditGroupModal({ name, id, onCancel, onSubmit }: Props): JSX.Element {
       <Form className="p-20" layout='vertical' ref={ref}>
         <Form.TextField
           name='name'
-          defaultValue={name}
+          defaultValue={groupInfo.name}
           placeholder='请输入分组名称'
           help='不超过 30 个字符，分组名称不可重复。'
           schemas={[
