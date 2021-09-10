@@ -7,6 +7,7 @@ import Modal from '@c/modal';
 
 import { insertField, omitField, findField, updateField } from './utils/fields-operator';
 import registry from './registry';
+import { INTERNAL_FIELDS } from './constants';
 import {
   filterLinkageRules,
   shouldFilterLinkages,
@@ -20,86 +21,6 @@ type Props = {
   appID: string;
   pageID: string;
 }
-
-const INTERNAL_FIELDS: Array<FormItem> = [
-  {
-    fieldName: '_id',
-    componentName: 'Input',
-    configValue: {
-      displayModifier: 'hidden',
-      title: 'id',
-      isSystem: true,
-      type: 'string',
-      'x-component-props': {},
-    },
-  },
-  {
-    fieldName: 'created_at',
-    componentName: 'DatePicker',
-    configValue: {
-      displayModifier: 'hidden',
-      title: '创建时间',
-      isSystem: true,
-      type: 'datetime',
-      'x-component-props': { isNow: false, showTime: false, style: { width: '100%' } },
-    },
-  },
-  {
-    fieldName: 'updated_at',
-    componentName: 'DatePicker',
-    configValue: {
-      displayModifier: 'hidden',
-      title: '修改时间',
-      isSystem: true,
-      type: 'datetime',
-      'x-component-props': { isNow: false, showTime: false, style: { width: '100%' } },
-    },
-  },
-  {
-    fieldName: 'creator_name',
-    componentName: 'Input',
-    configValue: {
-      displayModifier: 'hidden',
-      title: '创建者',
-      isSystem: true,
-      type: 'string',
-      'x-component-props': {},
-    },
-  },
-  {
-    fieldName: 'creator_id',
-    componentName: 'Input',
-    configValue: {
-      displayModifier: 'hidden',
-      title: '创建者 ID',
-      isSystem: true,
-      type: 'string',
-      'x-component-props': {},
-    },
-  },
-  {
-    fieldName: 'modifier_name',
-    componentName: 'Input',
-    configValue: {
-      displayModifier: 'hidden',
-      title: '修改者',
-      isSystem: true,
-      type: 'string',
-      'x-component-props': {},
-    },
-  },
-  {
-    fieldName: 'modifier_id',
-    componentName: 'Input',
-    configValue: {
-      displayModifier: 'hidden',
-      title: '修改者 ID',
-      isSystem: true,
-      type: 'string',
-      'x-component-props': {},
-    },
-  },
-];
 
 // todo refactor this
 export const INTERNAL_FIELD_NAMES = INTERNAL_FIELDS.map(({ fieldName }) => fieldName);
