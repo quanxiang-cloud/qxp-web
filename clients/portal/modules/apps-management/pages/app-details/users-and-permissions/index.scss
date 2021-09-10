@@ -75,35 +75,52 @@
 }
 
 .authority-detail {
+  height: 100%;
+  overflow: hidden;
+  .qxp-tab-container {
+    height: auto ;
+  }
   position: relative;
   & > .rights-mes {
     position: absolute;
     top: 4px;
     left: 40px;
     height: 50px;
-  }
-  .tab-navs{
-    width: 96%;
-    height: 52px;
-    margin: 0 auto;
-    border-radius: 8px;
-    justify-content: center;
-    background: url(/dist/images/authority-bg.svg);
-    box-shadow: 0px 8px 24px 8px rgb(99 102 241 / 25%);
-    background-size: cover;
-    .tab-nav-item {
-      color: #fff;
-      &:hover {
-        color: #fff;
-      }
-      &::after {
-        background: #fff;
-      }
+    display: flex;
+    align-items: center;
+    z-index: 20;
+    .rights-des {
+      max-width: 160px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
   }
-  .tab-content {
-    padding: 0;
-    border-radius: 12px 12px 0px 0px;
+  .rights-tab { 
+    .tab-navs{
+      width: 96%;
+      height: 52px;
+      margin: 0 auto;
+      border-radius: 8px;
+      justify-content: center;
+      background: url(/dist/images/authority-bg.svg);
+      box-shadow: 0px 8px 24px 8px rgb(99 102 241 / 25%);
+      background-size: cover;
+      .tab-nav-item {
+        color: #fff;
+        &:hover {
+          color: #fff;
+        }
+        &::after {
+          background: #fff;
+        }
+      }
+    }
+
+    .tab-content {
+      padding: 0;
+      border-radius: 12px 12px 0px 0px;
+    }
   }
 }
 
@@ -248,9 +265,7 @@
   color: var(--teal-500);
 }
 
-.right-setting .qxp-tab-container {
-  height: auto ;
-}
+
 
 .fields-tip {
   display: flex;

@@ -116,7 +116,7 @@ function RightsGroups(): JSX.Element {
             value={store.MenuKeyword}
             onChange={store.changeMenuKeyword}
           />
-          {store.currentPage.id && (
+          {store.currentPage.id && !!store.menuList.length && (
             <Menu
               onClick={handleClickMenu}
               className = 'text-16'
@@ -155,87 +155,97 @@ function RightsGroups(): JSX.Element {
             </Menu>
           )}
         </div>
-        <div className='h-full flex-1 overflow-hidden flex flex-col'>
-          <div className='conf-title text-14'>
-            <div className='text-gray-400 font-semibold'>
+        { !store.menuList.length && (
+          <div className='app-no-data mt-58'>
+            <img src='/dist/images/new_tips.svg' />
+            <span>无{store.MenuKeyword}菜单。
+            </span>
+          </div>
+        )}
+        { !!store.menuList.length && (
+          <div className='h-full flex-1 overflow-hidden flex flex-col'>
+            <div className='conf-title text-14'>
+              <div className='text-gray-400 font-semibold'>
               配置权限：<span className='text-gray-900'>{store.currentPage.name}</span>
-            </div>
-            {store.currentRights.types !== 1 && (
-              <div>
-                { openset ? (
-                  <>
-                    <Button onClick={handleCancel} iconName="close" className='mr-16'>取消</Button>
-                    <Button onClick={handleSave} modifier='primary' iconName="check">保存配置</Button>
-                  </>) : (
-                  <Button
-                    onClick={() => setOpenSet(true)}
-                    modifier='primary'
-                    iconName="settings"
-                    className='mr-16'>
+              </div>
+              {store.currentRights.types !== 1 && (
+                <div>
+                  { openset ? (
+                    <>
+                      <Button onClick={handleCancel} iconName="close" className='mr-16'>取消</Button>
+                      <Button onClick={handleSave} modifier='primary' iconName="check">保存配置</Button>
+                    </>) : (
+                    <Button
+                      onClick={() => setOpenSet(true)}
+                      modifier='primary'
+                      iconName="settings"
+                      className='mr-16'>
                       配置权限
-                  </Button>)
-                }
-              </div>
-            )
-            }
-          </div>
-          <div className="p-16 flex-1 overflow-auto">
-            {store.rightsLoading && (
-              <div className='h-56 p-20'>
-                <PageLoading />
-              </div>
-            )}
-            {store.noSchema && (
-              <div className='h-56 p-20'>
-                <AbsoluteCentered>
+                    </Button>)
+                  }
+                </div>
+              )
+              }
+            </div>
+            <div className="p-16 flex-1 overflow-auto">
+              {store.rightsLoading && (
+                <div className='h-56 p-20'>
+                  <PageLoading />
+                </div>
+              )}
+              {store.noSchema && (
+                <div className='h-56 p-20'>
+                  <AbsoluteCentered>
                 未配置页面，请点击
-                  <span
-                    className='text-btn'
-                    onClick={() =>
-                      history.push(`/apps/details/${store.appID}/page_setting?pageID=${store.currentPage.id}`)}
-                  >
+                    <span
+                      className='text-btn'
+                      onClick={() =>
+                        history.push(`/apps/details/${store.appID}/page_setting?pageID=${store.currentPage.id}`)}
+                    >
                     前往配置
-                  </span>
-                </AbsoluteCentered>
-              </div>
-            )}
-            {!store.rightsLoading && !store.noSchema && (
-              <>
-                <Tab
-                  className='mb-16'
-                  activeTab={activeTab}
-                  size='small'
-                  onChange={(key: string) => setActiveTab(key)}
-                  tabs={tabItem}
-                />
-                <Authorized
-                  abled={openset}
-                  authorized={store.PerData.authority}
-                  ref={authorizedRef}
-                  className={cs({ ['rights-hidden']: activeTab !== 'authorized' })}
-                />
-                {store.currentPage.menuType !== 2 && (
-                  <>
-                    <FieldPermissions
-                      abled={openset}
-                      fieldPer={store.PerData.schema}
-                      ref={fieldRef}
-                      className={cs({ ['rights-hidden']: activeTab !== 'fieldPermissions' })}
-                      fields={store.Fields}
-                    />
-                    <DataPermission
-                      abled={openset}
-                      dataPer={store.PerData.conditions}
-                      ref={dataPerRef}
-                      className={cs({ ['rights-hidden']: activeTab !== 'dataPermission' })}
-                      fields={store.Fields}
-                    />
-                  </>
-                )}
-              </>
-            )}
+                    </span>
+                  </AbsoluteCentered>
+                </div>
+              )}
+              {!store.rightsLoading && !store.noSchema && (
+                <>
+                  <Tab
+                    className='mb-16'
+                    activeTab={activeTab}
+                    size='small'
+                    onChange={(key: string) => setActiveTab(key)}
+                    tabs={tabItem}
+                  />
+                  <Authorized
+                    abled={openset}
+                    authorized={store.PerData.authority}
+                    ref={authorizedRef}
+                    className={cs({ ['rights-hidden']: activeTab !== 'authorized' })}
+                  />
+                  {store.currentPage.menuType !== 2 && (
+                    <>
+                      <FieldPermissions
+                        abled={openset}
+                        fieldPer={store.PerData.schema}
+                        ref={fieldRef}
+                        className={cs({ ['rights-hidden']: activeTab !== 'fieldPermissions' })}
+                        fields={store.Fields}
+                      />
+                      <DataPermission
+                        abled={openset}
+                        dataPer={store.PerData.conditions}
+                        ref={dataPerRef}
+                        className={cs({ ['rights-hidden']: activeTab !== 'dataPermission' })}
+                        fields={store.Fields}
+                      />
+                    </>
+                  )}
+                </>
+              )}
+            </div>
           </div>
-        </div>
+        )
+        }
       </div>
     );
   }
