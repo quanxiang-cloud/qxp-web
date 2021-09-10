@@ -1,6 +1,8 @@
 import { action, observable } from 'mobx';
 
 import toast from '@lib/toast';
+import { getTableSchema } from '@lib/http-client';
+import schemaToFields from '@lib/schema-convert';
 
 import {
   fetchRights,
@@ -8,26 +10,49 @@ import {
   updatePerGroup,
   createPerGroup,
   deleteRights,
-  fetchPerGroupForm,
   deleteFormPer,
   updatePerGroupUser,
-  fetchPerCustom,
   updatePerCustom,
+  fetchPerData,
+  getUserDetail,
+  fetchPerGroupForm,
+  fetchPerCustom,
 } from './api';
 import { CustomPageInfo } from '../type';
-import { getUsingList, fetchPageList } from '../api';
+import { fetchPageList } from '../api';
+import { INIT_CURRENT_RIGHTS } from './constants';
 
 type CheckboxValueType = string | number;
+type PerData = {
+  conditions: any,
+  schema: any,
+  authority: number,
+}
 
 class UserAndPerStore {
   @observable rightsLoading = true;
   @observable perFormLoading = true;
+  @observable noSchema = false
   @observable perFormList: PerPageInfo[] = [];
   @observable perCustomList: CustomPageInfo[] = [];
   @observable perCustomPage: CheckboxValueType[] = [];
+  @observable menuList: PageInfo[] = [];
   @observable rightsList: Rights[] = [];
   @observable appID = '';
   @observable rightsGroupID = '';
+  @observable rightsKeyword = '';
+  @observable MenuKeyword = '';
+  @observable currentRights: Rights = { id: '' };
+  @observable Fields: SchemaFieldItem[] = [];
+  @observable UserDetailList: [] =[]
+  @observable PerData: PerData = {
+    conditions: {},
+    schema: null,
+    authority: 0,
+  };
+
+  @observable currentPage: PerPageInfo = { id: '', authority: 0 }
+  @observable currentPageGroup: PageInfo | undefined = undefined
 
   @action
   addRightsGroup = (rights: RightsCreate): Promise<void> => {
@@ -47,6 +72,18 @@ class UserAndPerStore {
   }
 
   @action
+  changeKeyword = (keyword: string): void => {
+    this.rightsKeyword = keyword;
+    this.fetchRights();
+  }
+
+  @action
+  changeMenuKeyword = (keyword: string): void => {
+    this.MenuKeyword = keyword;
+    this.fetchPerGroupForm(this.rightsGroupID);
+  }
+
+  @action
   deleteRight = (id: string): void => {
     const delAfter = this.rightsList.filter((rights) => id !== rights.id);
     deleteRights(this.appID, {
@@ -54,19 +91,26 @@ class UserAndPerStore {
         return { id: AFrights.id, sequence };
       }),
     }).then(() => {
-      toast.success('删除成功!');
+      toast.success(
+        `${this.currentRights.name}  权限组删除成功`,
+      );
       this.rightsList = delAfter;
     });
   }
 
   @action
   fetchRights = (): void => {
-    this.rightsLoading = true;
+    if (!this.appID) {
+      return;
+    }
+
     fetchRights(this.appID).then((res: any) => {
-      this.rightsList = res.list;
-      this.rightsLoading = false;
-    }).catch(() => {
-      this.rightsLoading = false;
+      const { list = [] } = res || {};
+      this.rightsList = list.filter((rights: Rights) => rights.name?.match(this.rightsKeyword));
+      this.currentRights = this.rightsList[0] || INIT_CURRENT_RIGHTS;
+      this.rightsGroupID = list[0]?.id;
+    }).catch((err) => {
+      toast.error(err);
     });
   }
 
@@ -75,6 +119,7 @@ class UserAndPerStore {
     return updatePerGroupUser(this.appID, rights).then(() => {
       this.rightsList = this.rightsList.map((_rights) => {
         if (rights.id === _rights.id) {
+          this.currentRights = { ..._rights, ...rights };
           return { ..._rights, ...rights };
         }
         return _rights;
@@ -89,8 +134,10 @@ class UserAndPerStore {
     return updatePerGroup(this.appID, rights).then(() => {
       this.rightsList = this.rightsList.map((_rights) => {
         if (rights.id === _rights.id) {
+          this.currentRights = { ..._rights, ...rights };
           return { ..._rights, ...rights };
         }
+
         return _rights;
       });
       toast.success('修改成功！');
@@ -99,10 +146,11 @@ class UserAndPerStore {
   }
 
   @action
-  updatePerCustom = (): Promise<boolean> => {
+  updatePerCustom = (status: number): Promise<boolean> => {
     return updatePerCustom(this.appID, {
       groupId: this.rightsGroupID,
-      pageIds: this.perCustomPage,
+      pageId: this.currentPage.id,
+      status,
     }).then(() => {
       toast.success('修改成功！');
       return true;
@@ -139,27 +187,43 @@ class UserAndPerStore {
     Promise.all([
       fetchPageList(this.appID),
       fetchPerGroupForm(this.appID, perGroupID),
-      getUsingList(this.appID),
       fetchPerCustom(this.appID, perGroupID),
-    ]).then(([allPageRes, perPage, CustomList, PerCustom]) => {
+    ]).then(([allPageRes, perPage, PerCustom]) => {
       const { formArr = [] } = perPage;
+      const { menu = [] } = allPageRes;
+      const { pages = [] } = PerCustom;
+      this.menuList = menu.filter((menu) =>
+        menu.name?.match(this.MenuKeyword) ||
+        menu.child?.filter((page) => page.name?.match(this.MenuKeyword)).length);
+
       let allPages: PageInfo[] = [];
-      allPageRes.menu.forEach((menu: PageInfo) => {
+      this.menuList.forEach((menu: PageInfo) => {
         if (menu.menuType === 1 && menu.child?.length) {
           allPages = allPages.concat(menu.child.map((cMenu) => {
-            return { ...cMenu, name: `${menu.name}/${cMenu.name}` };
+            return cMenu;
           }));
           return;
         }
 
         allPages.push(menu);
       });
-      this.perFormList = allPages.filter((formPage) => formPage.menuType === 0).map((page) => {
-        const curFormPer = formArr.find(({ id }) => id === page.id);
-        return { ...page, authority: curFormPer ? curFormPer.authority : 0 };
+
+      this.perFormList = allPages.filter((formPage) =>
+        formPage.menuType === 0 || formPage.menuType === 2).map((page) => {
+        if (page.menuType === 0) {
+          const curFormPer = formArr.find(({ id }) => id === page.id);
+          return { ...page, authority: curFormPer ? curFormPer.authority : 0 };
+        }
+
+        const perCustomPage = pages.find((perCustomID) => perCustomID === page.id);
+        return { ...page, authority: perCustomPage ? 1 : 0 };
       });
-      this.perCustomList = CustomList.list || [];
-      this.perCustomPage = PerCustom.pages || [];
+      this.currentPage = this.perFormList[0];
+      this.currentPageGroup = this.menuList.find((menu) =>
+        menu.child && menu.child.some((page) => page.id === this.currentPage.id),
+      );
+
+      this.getPageSchema();
       this.perFormLoading = false;
     }).catch(() => {
       this.perFormLoading = false;
@@ -167,17 +231,59 @@ class UserAndPerStore {
   }
 
   @action
+  getPageSchema = (): void=> {
+    this.rightsLoading = true;
+    this.noSchema = false;
+    if (this.currentPage.menuType === 0) {
+      Promise.all([
+        getTableSchema(this.appID, this.currentPage.id),
+        fetchPerData(this.appID, { formID: this.currentPage.id, perGroupID: this.currentRights.id }),
+      ]).then(([schemaRes, perDataRes]: any) => {
+        const { schema } = schemaRes || {};
+        if (schema) {
+          this.Fields = (schemaToFields(schema));
+          const { dataAccess, filter, opt } = perDataRes as any;
+
+          this.PerData = ({
+            conditions: dataAccess ? dataAccess.conditions : {},
+            schema: filter ? filter.schema : null,
+            authority: opt ? opt.authority : 0,
+          });
+          this.rightsLoading = false;
+          return;
+        }
+        this.noSchema = true;
+        this.rightsLoading = false;
+      }).catch((err) => {
+        toast.error(err);
+        this.rightsLoading = false;
+      });
+      return;
+    }
+
+    this.PerData = ({
+      conditions: {},
+      schema: null,
+      authority: this.currentRights.types === 1 ? 1 : this.currentPage.authority,
+    });
+    this.rightsLoading = false;
+  }
+
+  @action
   updatePerFormList = (newPerForm: PerPageInfo, perGroupID: string): void => {
     this.perFormList = this.perFormList.map((perForm) => {
       if (perForm.id === newPerForm.id) {
+        this.currentPage = { ...perForm, ...newPerForm };
         return { ...perForm, ...newPerForm };
       }
 
       return perForm;
     });
+
     const allPerSum = this.perFormList.reduce((accumulator, { authority }) => accumulator + authority, 0);
     this.rightsList = this.rightsList.map((rights) => {
       if (rights.id === perGroupID) {
+        this.currentRights = { ...rights, add: allPerSum !== 0 };
         return {
           ...rights,
           add: allPerSum !== 0,
@@ -192,6 +298,19 @@ class UserAndPerStore {
     return deleteFormPer(this.appID, { formID, perGroupID }).then(() => {
       this.updatePerFormList({ id: formID, authority: 0 }, perGroupID);
       toast.success('清除成功');
+    });
+  }
+
+  @action
+  fetchUserDetailList = (usersIDList: string[]): void => {
+    getUserDetail<{user: []}>({
+      query: `
+      {user(ids:${JSON.stringify(usersIDList)}) {id , email ,userName ,phone ,dep{id,departmentName}}}
+      `,
+    }).then((res) => {
+      this.UserDetailList = res?.user;
+    }).catch((err) => {
+      toast.error(err);
     });
   }
 }

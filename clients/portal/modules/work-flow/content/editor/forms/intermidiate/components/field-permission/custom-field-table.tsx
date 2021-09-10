@@ -40,7 +40,7 @@ export default function CustomFieldTable({
     _updateFields([..._fields, ...fields.filter((field) => field.hidden)]);
   }
 
-  function getHeader(model: any, key: 'read' | 'write', label: string): JSX.Element {
+  function getHeader(model: any, key: 'read' | 'write' | 'invisible', label: string): JSX.Element {
     let checkedNumber = 0;
     model.data.forEach((dt: CustomFieldPermission) => {
       if (dt[key]) {
@@ -61,7 +61,8 @@ export default function CustomFieldTable({
                 return {
                   ...dt,
                   [key]: true,
-                  ...(key === 'write' ? { read: true } : {}),
+                  ...(key === 'write' ? { read: true, invisible: false } : {}),
+                  ...(key === 'invisible' ? { read: true, write: false } : {}),
                 };
               }));
             }
@@ -70,7 +71,7 @@ export default function CustomFieldTable({
                 return {
                   ...dt,
                   [key]: false,
-                  ...(key === 'read' ? { write: false } : {}),
+                  ...(key === 'read' ? { write: false, invisible: false } : {}),
                 };
               }));
             }
@@ -97,12 +98,13 @@ export default function CustomFieldTable({
     );
   }
 
-  function getCell(model: any, key?: 'read' | 'write'): JSX.Element {
+  function getCell(model: any, key?: 'read' | 'write' | 'invisible'): JSX.Element {
     const isChecked = model.cell.value;
     const level = model.cell.row.original.path?.split('.').length - 1;
     if (!key) {
       return <div style={{ marginLeft: isNaN(level) ? 0 : level * 20 }}> {model.cell.value} </div>;
     }
+
     return (
       <Checkbox
         checked={isChecked}
@@ -113,8 +115,9 @@ export default function CustomFieldTable({
               return {
                 ...dt,
                 [key]: !isChecked,
-                ...(key === 'write' && !isChecked ? { read: true } : {}),
-                ...(key === 'read' && isChecked ? { write: false } : {}),
+                ...(key === 'write' && !isChecked ? { read: true, invisible: false } : {}),
+                ...(key === 'read' && isChecked ? { write: false, invisible: false } : {}),
+                ...(key === 'invisible' && !isChecked ? { read: true, write: false } : {}),
               };
             }
             return dt;
@@ -183,6 +186,10 @@ export default function CustomFieldTable({
         Header: (model: any) => getHeader(model, 'read', '查看'),
         accessor: 'read',
         Cell: (model: any) => getCell(model, 'read'),
+      }, {
+        Header: (model: any) => getHeader(model, 'invisible', '隐藏'),
+        accessor: 'invisible',
+        Cell: (model: any) => getCell(model, 'invisible'),
       }, {
         Header: (model: any) => getHeader(model, 'write', '编辑'),
         accessor: 'write',

@@ -155,10 +155,10 @@ export function schemaPermissionTransformer<T extends ISchema>(schema: T, hidden
   const fieldTransform = pipe(
     (field: ISchema) => [fp.get('x-internal.permission', field), field],
     ([permission, field]: [PERMISSION, ISchema]) => cond([
-      [(permission) => permission === PERMISSION.READONLY, permissionTransformer({
+      [(permission: PERMISSION) => isPermissionReadOnly(permission), permissionTransformer({
         display: !hiddenInReadOnly, readOnly: true,
       }, field)],
-      [(permission) => permission === PERMISSION.INVISIBLE, permissionTransformer({
+      [(permission: PERMISSION) => isPermissionInvisible(permission), permissionTransformer({
         display: false, readOnly: true,
       }, field)],
       [stubTrue, permissionTransformer({
@@ -168,13 +168,13 @@ export function schemaPermissionTransformer<T extends ISchema>(schema: T, hidden
   );
 
   const schemaPermissionTransform = pipe(
-    (property: 'properties' | 'items', field: T) => fp.get(property, field),
+    (property: 'properties' | 'items.properties', field: T) => fp.get(property, field) || {},
     entries,
     map(([_, inputField]: [string, ISchema]) => {
       const field: ISchema = inputField.properties || inputField.items ?
         schemaPermissionTransformer(inputField, hiddenInReadOnly) :
         inputField;
-      !isLayoutSchema(field) && fieldTransform(field);
+      !isLayoutSchema(field) && field?.['x-component'] && fieldTransform(field);
       return [_, field];
     }),
     fromPairs,
@@ -183,8 +183,9 @@ export function schemaPermissionTransformer<T extends ISchema>(schema: T, hidden
   if (schema.properties) {
     schema.properties = schemaPermissionTransform('properties', schema);
   }
-  if (schema.items) {
-    schema.items = schemaPermissionTransform('items', schema);
+  if ((schema.items as ISchema)?.properties) {
+    (schema.items as ISchema).properties = schemaPermissionTransform('items.properties', schema);
+    fieldTransform(schema);
   }
 
   const layoutPermissionTransform = pipe(
@@ -243,10 +244,30 @@ export function getSchemaPermissionFromSchemaConfig(
   const isReadonly = value.displayModifier === 'readonly';
   const isHidden = value.displayModifier === 'hidden';
   if (isReadonly) {
-    return PERMISSION.READONLY;
+    return 1;
   }
   if (isHidden) {
-    return PERMISSION.INVISIBLE;
+    return 5;
   }
-  return PERMISSION.NORMAL;
+  return 3;
+}
+
+export function isPermissionInvisible(permission: PERMISSION): boolean {
+  return [0, 5].includes(permission);
+}
+
+export function isPermissionReadOnly(permission: PERMISSION): boolean {
+  return permission === 1;
+}
+
+export function isPermissionReadable(permission?: number): boolean {
+  return [1, 3, 5].includes(permission || 0);
+}
+
+export function isPermissionWritable(permission?: number): boolean {
+  return permission === 3;
+}
+
+export function isPermissionHiddenAble(permission?: number): boolean {
+  return [0, 5].includes(permission || -1);
 }

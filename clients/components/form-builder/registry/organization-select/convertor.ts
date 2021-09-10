@@ -8,8 +8,8 @@ export interface DefaultConfig {
   required: boolean;
   multiple?: boolean;
   rangeList: LabelValue[];
-  optionalRange?: 'all' | 'customize';
-  defaultRange?: 'customize' | 'myDep',
+  optionalRange?: 'all' | 'customize' | 'currentUserDep';
+  defaultRange?: 'customize' | 'currentUserDep',
   defaultValues?: string[];
   type: string;
   appID?: string;

@@ -41,6 +41,10 @@ const schema: ISchema = {
               value: 'normal',
             },
             {
+              label: '只读',
+              value: 'readonly',
+            },
+            {
               label: '隐藏',
               value: 'hidden',
             },

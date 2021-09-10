@@ -1,6 +1,14 @@
 import httpClient from '@lib/http-client';
 
-import { MovePageParams, CustomPageParams, fetchCustomListRes, CustomPageInfo } from './type';
+import {
+  CardListInfo,
+  CustomPageInfo,
+  MovePageParams,
+  CustomPageParams,
+  fetchCustomListRes,
+  UpdateCustomPageParams,
+  CreateCustomPageParams,
+} from './type';
 
 export const fetchAppDetails = async (id: string)=> {
   return await httpClient('/api/v1/app-center/one', { id });
@@ -66,8 +74,16 @@ export const fetchGroupList = async (appID: string)=> {
   return await httpClient(`/api/v1/structor/${appID}/m/group/list`, { appID });
 };
 
-export const createCustomPage = async (appID: string, params: CustomPageParams)=> {
+export const createCustomPage = async (
+  appID: string, params: CreateCustomPageParams,
+): Promise<CustomPageInfo> => {
   return await httpClient(`/api/v1/structor/${appID}/m/page/create`, params);
+};
+
+export const updateCustomPage = async (
+  appID: string, params: UpdateCustomPageParams,
+): Promise<CustomPageInfo> => {
+  return await httpClient(`/api/v1/structor/${appID}/m/page/update`, params);
 };
 
 export const removeCustomPage = async (appID: string, pageId: string)=> {
@@ -82,6 +98,19 @@ export const relateCustomPage = async (
   appID: string, params: {menuId: string, pageID: string},
 ): Promise<CustomPageInfo> => {
   return await httpClient(`/api/v1/structor/${appID}/m/page/relate`, params);
+};
+
+export const fetchCorrelationFlows = async (
+  params: {appID: string, formID: string},
+): Promise<CardListInfo[]> => {
+  return await httpClient('/api/v1/flow/correlationFlowList', params);
+};
+
+export const fetchCorrelationRoles = async (
+  appID: string,
+  menuID: string,
+): Promise<Record<string, CardListInfo[]>> => {
+  return await httpClient(`/api/v1/structor/${appID}/m/permission/perGroup/getPerGroupByMenu`, { menuID });
 };
 
 export const fetchDataModels = (

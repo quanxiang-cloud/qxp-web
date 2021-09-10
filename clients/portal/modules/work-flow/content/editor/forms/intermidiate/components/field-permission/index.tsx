@@ -1,13 +1,14 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useQuery } from 'react-query';
-import { groupBy, merge } from 'lodash';
+import { groupBy, merge, first } from 'lodash';
+import fp from 'lodash/fp';
 
 import Toggle from '@c/toggle';
 import Loading from '@c/loading';
 import ErrorTips from '@c/error-tips';
 import useObservable from '@lib/hooks/use-observable';
 import store from '@flow/content/editor/store';
-import { getFormFieldOptions } from '@flow/content/editor/forms/api';
+import { getFormFieldOptions, FormFieldOption } from '@flow/content/editor/forms/api';
 import FlowContext from '@flow/flow-context';
 import { schemaToMap } from '@lib/schema-convert';
 import type {
@@ -52,10 +53,8 @@ export default function FieldPermission({ value, onChange: _onChange }: Props): 
   );
 
   useEffect(() => {
-    if (data.length) {
-      mergeField();
-    }
-  }, [value, data]);
+    data.length && mergeField();
+  }, [data, value]);
 
   useEffect(() => {
     if (mergedFieldPermissions.custom.some(({
@@ -83,15 +82,24 @@ export default function FieldPermission({ value, onChange: _onChange }: Props): 
 
   function mergeField(): void {
     const { custom = [], system = [] } = fieldPermissionDecoder(value, schema) || {};
-    const { true: systemData, false: customData } = groupBy(data, ({ isSystem }) => isSystem);
+    const { true: systemData, false: _customData } = groupBy(data, ({ isSystem }) => isSystem);
+    const sorter = fp.pipe(
+      fp.groupBy((opt: FormFieldOption) => first(opt.path.split('.'))),
+      fp.map((customDataOptions: FormFieldOption[]) => {
+        return fp.sortBy((opt) => opt.path.length, customDataOptions);
+      }),
+      fp.flattenDeep,
+    );
+    const customData: FormFieldOption[] = sorter(_customData);
     customData?.forEach((field) => {
       const oldCustomField = custom.find(({ id }) => id === field.value);
       const newCustomField = {
         id: field.value,
         fieldName: field.label,
-        read: field.isLayout,
-        write: false,
+        read: field.isLayout ? true : field.read,
+        write: field.write,
         hidden: field.isLayout,
+        invisible: field.invisible,
         path: field.path,
         ...INITIAL_VALUE,
       };
@@ -102,7 +110,8 @@ export default function FieldPermission({ value, onChange: _onChange }: Props): 
       !system.find(({ id }) => id === field.value) && system.push({
         id: field.value,
         fieldName: field.label,
-        read: false,
+        read: field.read,
+        invisible: field.invisible,
       });
     });
     setMergedFieldPermissions({ system, custom });

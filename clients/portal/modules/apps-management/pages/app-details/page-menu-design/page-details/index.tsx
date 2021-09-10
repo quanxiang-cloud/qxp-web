@@ -1,67 +1,117 @@
-import React from 'react';
+import React, { useState } from 'react';
+import cs from 'classnames';
 import { observer } from 'mobx-react';
 import { useHistory } from 'react-router-dom';
+import { Progress, QxpFile } from '@QCFE/lego-ui';
 
 import Icon from '@c/icon';
-import Button from '@c/button';
 import Card from '@c/card';
+import Modal from '@c/modal';
+import Button from '@c/button';
+import toast from '@lib/toast';
 import EmptyTips from '@c/empty-tips';
 import PageLoading from '@c/page-loading';
 
-import { MenuType } from '../../type';
+import FileUpload from './file-upload';
 import appPagesStore from '../../store';
 import PageBuildNav from './page-build-nav';
+import { FileInfo, MenuType, Resp } from '../../type';
+import { createCustomPage, updateCustomPage } from '../../api';
 
 import './index.scss';
 
-function PageDetails(): JSX.Element {
-  const {
-    curPage, appID, fetchSchemeLoading, setModalType, setCurPageMenuType, pageDescription,
-  } = appPagesStore;
+type Props = {
+  pageID: string
+}
+
+function PageDetails({ pageID }: Props): JSX.Element {
   const history = useHistory();
-  const goFormBuild = (): void => {
+  const [modalType, setModalType] = useState('');
+  const [file, setFile] = useState<FileInfo | null>(null);
+  const {
+    curPage, curPageCardList, appID, fetchSchemeLoading, setCurPageMenuType, pageDescriptions,
+  } = appPagesStore;
+
+  function goFormBuild(): void {
     if (appPagesStore.hasSchema) {
       history.push(`/apps/formDesign/formBuild/${curPage.id}/${appID}?pageName=${curPage.name}`);
+    }
+  }
+
+  function handleCreateCustomPage(): void {
+    const fileSizeStr = Math.round(Number(file?.size) / 1024) + 'M';
+
+    if (modalType === 'create') {
+      createCustomPage(appID, {
+        menuId: pageID, fileSize: fileSizeStr, fileUrl: file?.url || '',
+      }).then((res) => {
+        setCurPageMenuType(2, res);
+        toast.success('新建成功');
+        setModalType('');
+        setFile(null);
+      }).catch((err) => {
+        toast.error(err.message);
+      });
       return;
     }
-  };
-  const editPage = (): void => {
-    setModalType('editPage');
-  };
-  const delPage = (): void => {
-    setModalType('delPage');
-  };
 
-  const linkList = [
-    {
-      title: '关联工作流',
-      action: () => console.log('创建工作流'),
-      list: [
-        { text: '请假申请工作流', handleClick: () => console.log('跳转请假申请工作流') },
-        { text: '申请请假天数自动更新逻辑', handleClick: () => console.log('跳转申请请假天数自动更新逻辑') },
-      ],
-    },
-    {
-      title: '已授权角色',
-      action: () => console.log('创建角色'),
-      list: [
-        { text: '超级管理员', handleClick: () => console.log('跳转超级管理员') },
-        { text: '公司在职员工通用权限', handleClick: ()=> console.log('跳转公司在职员工通用权限') },
-      ],
-    },
-    {
-      title: '关联数据模型',
-      list: [
-        { text: 'XXXXXXXXX数据模型', handleClick: () => console.log('跳转关联数据模型') },
-      ],
-    },
-    {
-      title: '页面设计',
-      list: [
-        { text: '页面设计', handleClick: goFormBuild },
-      ],
-    },
-  ];
+    updateCustomPage(appID, {
+      id: pageID, fileSize: fileSizeStr, fileUrl: file?.url || '' },
+    ).then((res) => {
+      setCurPageMenuType(MenuType.customPage, res);
+      toast.success('修改成功');
+      setModalType('');
+      setFile(null);
+    }).catch((err) => {
+      toast.error(err.message);
+    });
+  }
+
+  function onSuccess({ code, data, msg }: Resp, file: { name: string, size: number }): void {
+    if (code === 0 && data?.url) {
+      setFile({
+        filename: file.name,
+        size: file.size,
+        url: data.url,
+        percentage: 100,
+        showProgress: false,
+      });
+    } else {
+      setFile(null);
+      toast.error(msg || '上传失败');
+    }
+  }
+
+  function onProgress(step: any, file: QxpFile): void {
+    // @ts-ignore
+    const percent = typeof step?.percent === 'number' ? Math.round(step.percent) : 0;
+    // @ts-ignore
+    setFile({
+      ...file,
+      filename: file.name,
+      percentage: percent,
+      showProgress: true,
+    });
+  }
+
+  function onStart(file: QxpFile): void {
+    setFile({
+      filename: file.name,
+      size: file.size,
+      url: '',
+      percentage: 0,
+      showProgress: true,
+    });
+  }
+
+  function goLink(cardID: string): void {
+    if (cardID === 'linkedFlows') {
+      history.push(`/apps/flow/new/form-data/${appID}`);
+      return;
+    }
+
+    history.push(`/apps/details/${appID}/app_permission`);
+  }
 
   function RenderPageDetails(): JSX.Element {
     if ((curPage.menuType === MenuType.schemaForm && !appPagesStore.hasSchema)) {
@@ -70,77 +120,160 @@ function PageDetails(): JSX.Element {
           appID={appID}
           pageId={curPage.id}
           pageName={curPage.name}
-          handleRelatePage={setCurPageMenuType}
+          setOpenModal={setModalType}
         />
       );
     }
 
     return (
       <>
-        <div className='relative flex-1 overflow-hidden'>
-          <div className='m-20 p-40 bg-white rounded-12'>
-            <div className="flex items-center">
-              <Icon className='mr-16' name='menu_book' size={24}/>
-              <span className='mr-20 text-h5'>{curPage.name}</span>
-              {(curPage.menuType === MenuType.schemaForm && appPagesStore.hasSchema) && (
-                <Button className='mr-16' modifier='primary' onClick={goFormBuild}>设计页面</Button>
-              )}
-              <Button className='mr-16' onClick={editPage}>编辑名称和图标</Button>
-              <Button onClick={delPage}>删除</Button>
+        <div className='relative flex-1 overflow-hidden p-16'>
+          <div className='px-16 py-8 rounded-8 border-1 flex items-center'>
+            <div className="page-details-icon">
+              <Icon
+                size={25}
+                type="dark"
+                name={curPage.menuType === MenuType.schemaForm ? 'schema-form' : 'custom-page'}
+              />
             </div>
-            <p className='pt-20 text-gray-500'>描述列表用于定义术语和相应的描述，使用元件可以快速创建规范的描述列表。</p>
-            <div className='pt-20 grid grid-cols-2 gap-16'>
-              {pageDescription.map(({ title, value }) => {
+            <div className='flex-1 grid grid-cols-6 mr-48'>
+              {pageDescriptions.map(({ title, value }) => {
                 return (
                   <div key={title}>
-                    {title} :
-                    <span className='ml-8 text-gray-500'>{value}</span>
+                    <p className={!value ? 'text-gray-400' : ''}>{value ? value : '-'}</p>
+                    <p className='page-details-text'>{title}</p>
                   </div>
                 );
               })}
             </div>
+            {curPage.menuType === MenuType.customPage ? (<>
+              <Button
+                iconName='edit'
+                className="mr-18"
+                modifier='primary'
+                onClick={() => setModalType('edit')}
+              >
+                修改页面
+              </Button>
+              <Button
+                iconName="preview"
+                onClick={() => history.push(`/apps/preview/customPage/${appID}/${pageID}`)}
+              >
+                预览
+              </Button>
+            </>
+            ) : (
+              <Button
+                iconName="edit"
+                modifier="primary"
+                onClick={goFormBuild}
+              >
+                设计表单
+              </Button>
+            )}
           </div>
-          {(curPage.menuType === MenuType.schemaForm && appPagesStore.hasSchema) && (
-            <div className='m-20 rounded-12 grid grid-cols-4 gap-16'>
-              {linkList.map(({ title, action, list }) => {
-                return (
-                  <Card
-                    key={title}
-                    className="px-20"
-                    title={title}
-                    action={action ? (
-                      <div
-                        onClick={action}
-                        className="text-underline-no-color card-action"
-                      >
-                      去创建》
-                      </div>) : <></>
-                    }
-                    itemTitleClassName="text-h5"
-                    contentClassName="pb-20 flex-col"
-                    content={(
-                      <>
-                        {list.map(({ text, handleClick }) => {
-                          return (
-                            <div
-                              key={text}
-                              className="p-10 flex items-center link-focus"
-                              onClick={handleClick}
-                            >
-                              <Icon name="add_task" size={20} className="mr-6 text-green-600" />
-                              <span className="truncate">{text}</span>
+          <div className='rounded-12 flex select-none py-16'>
+            {curPageCardList.map(({ title, list, id: cardID }) => {
+              if (curPage.menuType === MenuType.customPage && cardID === 'linkedFlows') {
+                return;
+              }
+              return (
+                <Card
+                  key={title}
+                  className="border-1 card-box mr-16"
+                  headerClassName="p-16"
+                  title={(
+                    <div className="flex items-center text-h6">
+                      <Icon name="link" size={21}/>
+                      <span className="mx-8">{title}</span>
+                      <span className="text-gray-400">{`(${list.length})`}</span>
+                    </div>
+                  )}
+                  action={(<Icon
+                    name="arrow_forward"
+                    size={21}
+                    className="anchor-focus"
+                    onClick={() => goLink(cardID)}
+                  />)}
+                  itemTitleClassName="text-h5"
+                  contentClassName="p-0 flex-col"
+                  content={(
+                    <div className="mb-24 h-80 overflow-auto">
+                      {list.length ? list.map(({ name, id, status }) => {
+                        return (
+                          <div
+                            key={name}
+                            className={cs('px-4 py-8 link-focus truncate flex items-center', {
+                              'px-44': !status,
+                            })}
+                            onClick={() => {
+                              if (cardID === 'linkedFlows') {
+                                history.push(`/apps/flow/${appID}/${id}`);
+                                return;
+                              }
+
+                              history.push(`/apps/details/${appID}/app_permission?id=${id}`);
+                            }}
+                          >
+                            {status && (<Icon
+                              size={9}
+                              className="ml-40"
+                              name={status === 'ENABLE' ? 'status-success' : 'status-default'}
+                            />)}
+                            <div className="truncate flex-1">
+                              <span className={status && 'ml-10'}>{name}</span>
+                              <span className="ml-4 text-gray-400">
+                                {status && (status === 'ENABLE' ? '(已发布)' : '(草稿)')}
+                              </span>
                             </div>
-                          );
-                        })}
-                      </>
-                    )}
-                  />
-                );
-              })}
-            </div>
-          )}
+                          </div>
+                        );
+                      }) : <div className="px-44 py-8 text-gray-400">！暂无数据</div>}
+                    </div>
+                  )}
+                />
+              );
+            })}
+          </div>
         </div>
       </>
+    );
+  }
+
+  function renderModal(modalType: string) {
+    return (
+      <Modal
+        title={modalType === 'create' ? '新建自定义页面' : '修改自定义页面'}
+        onClose={() => setModalType('')}
+        footerBtns={[
+          {
+            key: 'close',
+            text: '取消',
+            onClick: () => setModalType(''),
+          },
+          {
+            key: 'sure',
+            text: '确定',
+            modifier: 'primary',
+            onClick: handleCreateCustomPage,
+          },
+        ]}
+      >
+        <div className="p-40">
+          <FileUpload onSuccess={onSuccess} onProgress={onProgress} onStart={onStart} />
+          {file?.showProgress && (
+            <Progress
+              className='mx-20'
+              percent={file?.percentage}
+              key={file?.url}
+            />
+          )}
+          {file && (
+            <p className="my-10">{file?.filename || file?.url}</p>
+          )}
+          <p className="mt-8 select-none">1. 支持上传静态的页面代码，包含 html、javascript、css、图片等。</p>
+        </div>
+      </Modal>
     );
   }
 
@@ -149,15 +282,19 @@ function PageDetails(): JSX.Element {
   }
 
   return (
-    <div className='relative flex-1 overflow-hidden'>
-      <div className='page-details-nav bg-white'>
-        <div className='px-16 py-20'>
-          <span className='text-h6-bold text-gray-400 mr-auto'>页面详情</span>
+    <>
+      <div className='relative flex-1 overflow-hidden bg-white rounded-tr-12'>
+        <div className='page-details-nav header-background-image border-b-1'>
+          <div className='px-16 py-20'>
+            <span className='text-h5 text-gray-400 mr-12'>{curPage.name}</span>
+            <span className='text-caption align-top'>{curPage.describe}</span>
+          </div>
         </div>
+        {fetchSchemeLoading && <PageLoading />}
+        {!fetchSchemeLoading && <RenderPageDetails />}
       </div>
-      {fetchSchemeLoading && <PageLoading />}
-      {!fetchSchemeLoading && <RenderPageDetails />}
-    </div>
+      {modalType && renderModal(modalType)}
+    </>
   );
 }
 
