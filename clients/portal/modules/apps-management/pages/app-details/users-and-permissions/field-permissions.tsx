@@ -30,7 +30,6 @@ function FieldPermissions({
 
   useImperativeHandle(ref, () => ({
     getFieldPer: getFieldPer,
-    reset: () => getFields(),
   }));
 
   const getPerMission = (key: string): number => {
@@ -52,12 +51,12 @@ function FieldPermissions({
       );
     });
 
-    properties._id = {
-      title: '_id',
-      'x-internal': {
-        permission: 1,
-      },
-    };
+    // properties._id = {
+    //   title: '_id',
+    //   'x-internal': {
+    //     permission: 5,
+    //   },
+    // };
 
     return {
       properties,
@@ -68,37 +67,42 @@ function FieldPermissions({
   };
 
   const getFields = (): void => {
+    const visibleList: string[] = [];
+    const revisableList: string[] = [];
+    const hideableList: string[] = [];
     if (fieldPer) {
-      const visibleList: string[] = [];
-      const revisableList: string[] = [];
-      const hideableList: string[] = [];
       fields.forEach((field) => {
         switch (get(fieldPer, `properties.${field.fieldName}.x-internal.permission`)) {
         case 1:
           visibleList.push(field.id);
           break;
-        case 5:
-          visibleList.push(field.id);
-          hideableList.push(field.id);
-          break;
         case 3:
           visibleList.push(field.id);
           revisableList.push(field.id);
+          break;
+        case 5:
+          visibleList.push(field.id);
+          hideableList.push(field.id);
           break;
         }
       });
       setVisibleField(visibleList);
       setRevisableField(revisableList);
       setHideableField(hideableList);
-    } else {
-      const event: any = {
-        target: {
-          checked: true,
-        },
-      };
-      handleRCheckAll(event);
-      handleVCheckAll(event);
+      return;
     }
+    fields.forEach((field) => {
+      if (!field['x-internal']?.isSystem ) {
+        visibleList.push(field.id);
+        revisableList.push(field.id);
+      } else {
+        visibleList.push(field.id);
+        hideableList.push(field.id);
+      }
+    });
+    setVisibleField(visibleList);
+    setRevisableField(revisableList);
+    setHideableField(hideableList);
   };
 
   useEffect(() => {
@@ -124,8 +128,8 @@ function FieldPermissions({
   }, [revisableField]);
 
   useEffect(() => {
-    setHIndeterminate(hideableField.length > 0 && hideableField.length !== fieldRevisable.length);
-    if (hideableField.length === fieldRevisable.length) {
+    setHIndeterminate(hideableField.length > 0 && hideableField.length !== fields.length);
+    if (hideableField.length === fields.length) {
       setHCheckAll(true);
     } else {
       setHCheckAll(false);
@@ -200,6 +204,7 @@ function FieldPermissions({
     } else {
       setRevisableField([]);
       setVisibleField([]);
+      setHideableField([]);
     }
   };
 
@@ -279,7 +284,7 @@ function FieldPermissions({
             />
           </span>
         </div>
-        {fields.map((field) => (
+        {fields.filter((field) => field.fieldName !== '_id').map((field) => (
           <div key={field.id} className='pb-field-item'>
             <span>
               <span>{getTitle(field.title || field['x-component'])}</span>
@@ -287,10 +292,10 @@ function FieldPermissions({
             <Checkbox
               checked={visibleField.includes(field.id)}
               value={field.id}
-              disabled = {store.currentRights.types === 1 || !abled}
+              disabled = {store.currentRights.types === 1 || !abled }
               onChange={handleVisibleChange}
             />
-            {!field['x-internal']?.isSystem && (
+            {field['x-internal']?.isSystem ? <div></div> : (
               <Checkbox
                 checked={revisableField.includes(field.id)}
                 value={field.id}
@@ -298,14 +303,12 @@ function FieldPermissions({
                 onChange={handleRevisableChange}
               />
             )}
-            {!field['x-internal']?.isSystem && (
-              <Checkbox
-                checked={hideableField.includes(field.id)}
-                value={field.id}
-                disabled = {store.currentRights.types === 1 || !abled}
-                onChange={handleHideableChange}
-              />
-            )}
+            <Checkbox
+              checked={hideableField.includes(field.id)}
+              value={field.id}
+              disabled = {store.currentRights.types === 1 || !abled}
+              onChange={handleHideableChange}
+            />
           </div>
         ))}
       </div>
