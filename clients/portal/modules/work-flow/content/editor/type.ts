@@ -155,7 +155,7 @@ export type TimeRule = {
   deadLine: DeadLine;
   whenTimeout: WhenTimeout;
 }
-export type ApprovePersonType = 'person' | 'field' | 'position' | 'superior' | 'leadOfDepartment';
+export type ApprovePersonType = 'person' | 'field' | 'position' | 'superior' | 'leadOfDepartment' | 'processInitiator';
 export type ApprovePerson = {
   type: ApprovePersonType;
   users: EmployeeOrDepartmentOfRole[];
@@ -257,6 +257,7 @@ export type Receiver = {
   account: string,
 }
 export interface SendEmailData {
+  type: ApprovePersonType;
   recivers: Receiver[];
   content: string;
   templateId: string;
@@ -264,12 +265,14 @@ export interface SendEmailData {
   mes_attachment: Attachment[];
 }
 export interface WebMessageData {
+  type: ApprovePersonType;
   recivers: Receiver[];
   sort: 1 | 2;
   content: string;
   title: string;
 }
 export interface CCData {
+  type: ApprovePersonType;
   recivers: Receiver[];
 }
 export interface FieldValue {
@@ -278,6 +281,7 @@ export interface FieldValue {
 }
 export interface CustomFieldPermission {
   fieldName: string;
+  invisible: boolean;
   read: boolean;
   write: boolean;
   initialValue: FieldValue;
@@ -290,6 +294,7 @@ export interface CustomFieldPermission {
 export interface SystemFieldPermission {
   fieldName: string;
   read: boolean;
+  invisible: boolean;
   id: string;
 }
 

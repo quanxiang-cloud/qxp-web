@@ -11,7 +11,7 @@ interface Props {
 }
 
 export default function({ fields, updateFields }: Props): JSX.Element {
-  function getHeader(model: any, key: 'read', label: string): JSX.Element {
+  function getHeader(model: any, key: 'read' | 'invisible', label: string): JSX.Element {
     let checkedNumber = 0;
     model.data.forEach((dt: SystemFieldPermission) => {
       if (dt[key]) {
@@ -32,6 +32,7 @@ export default function({ fields, updateFields }: Props): JSX.Element {
                 return {
                   ...dt,
                   [key]: true,
+                  ...(key === 'invisible' ? { read: true } : {}),
                 };
               }));
             }
@@ -40,6 +41,7 @@ export default function({ fields, updateFields }: Props): JSX.Element {
                 return {
                   ...dt,
                   [key]: false,
+                  ...(key === 'read' ? { invisible: false } : {}),
                 };
               }));
             }
@@ -50,7 +52,7 @@ export default function({ fields, updateFields }: Props): JSX.Element {
     );
   }
 
-  function getCell(model: any, key?: 'read'): JSX.Element {
+  function getCell(model: any, key?: 'read' | 'invisible'): JSX.Element {
     const isChecked = model.cell.value;
     const level = model.cell.row.original.path?.split('.').length - 1;
     if (!key) {
@@ -66,6 +68,8 @@ export default function({ fields, updateFields }: Props): JSX.Element {
               return {
                 ...dt,
                 [key]: !isChecked,
+                ...(key === 'read' && isChecked ? { invisible: false } : {}),
+                ...(key === 'invisible' && !isChecked ? { read: true } : {}),
               };
             }
             return dt;
@@ -85,6 +89,10 @@ export default function({ fields, updateFields }: Props): JSX.Element {
         Header: (model: any) => getHeader(model, 'read', '查看'),
         accessor: 'read',
         Cell: (model: any) => getCell(model, 'read'),
+      }, {
+        Header: (model: any) => getHeader(model, 'invisible', '隐藏'),
+        accessor: 'invisible',
+        Cell: (model: any) => getCell(model, 'invisible'),
       }]}
       data={fields}
     />

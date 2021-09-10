@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect } from 'react';
+import React, { useContext, useEffect } from 'react';
 import {
   Form,
   FormItem,
@@ -6,7 +6,7 @@ import {
   FormEffectHooks,
   createAsyncFormActions,
 } from '@formily/antd';
-import { Input, Radio, MegaLayout, Switch, Select } from '@formily/antd-components';
+import { Input, Radio, MegaLayout, Switch } from '@formily/antd-components';
 
 import OrganizationSelect from './organization-select';
 import { EnumReadOnly, EnumOptionalRange, EnumMultiple, EnumDefaultRange } from './messy/enum';
@@ -32,16 +32,6 @@ const OrganizationPickerConfigForm = ({ initialValue, onChange }: Props): JSX.El
     onChange({ ...initialValue, appID });
   }, [appID]);
 
-  const handleChange = useCallback((obj) => {
-    const extParams: any = {};
-    if (obj.optionalRange === 'myDep') {
-      extParams.rangeList = [window.USER.dep.id];
-    }
-
-    const nextValue = Object.assign({}, initialValue, obj, extParams);
-    onChange(nextValue);
-  }, [onChange, initialValue]);
-
   function formEffects(): void {
     onFieldInputChange$('optionalRange').subscribe(({ value }) => {
       setFieldState('rangeList', (state) => {
@@ -65,7 +55,7 @@ const OrganizationPickerConfigForm = ({ initialValue, onChange }: Props): JSX.El
         defaultValue={initialValue}
         actions={actions}
         effects={formEffects}
-        onChange={handleChange}
+        onChange={(formData) => onChange({ ...initialValue, ...formData })}
       >
         <Field
           name="title"
@@ -92,7 +82,8 @@ const OrganizationPickerConfigForm = ({ initialValue, onChange }: Props): JSX.El
         <Field
           name="defaultRange"
           title="默认值"
-          component={Select}
+          visible={initialValue.optionalRange !== 'currentUserDep'}
+          component={Radio.Group}
           dataSource={EnumDefaultRange}
         />
         <Field

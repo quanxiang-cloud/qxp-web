@@ -1,4 +1,4 @@
-import { PERMISSION } from '@c/form-builder/constants';
+import { READONLY } from '@c/form-builder/constants';
 
 import { Format } from './prefix';
 
@@ -57,7 +57,7 @@ export function toSchema(value: SerialConfig): ISchema {
       numberPreview: value.numberPreview,
     },
     ['x-internal']: {
-      permission: PERMISSION.READONLY,
+      permission: READONLY,
     },
   };
 }

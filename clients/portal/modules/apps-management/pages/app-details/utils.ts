@@ -1,7 +1,10 @@
 import moment from 'moment';
 import { UnionColumns } from 'react-table';
 
-import { CustomPageInfo } from './type';
+import toast from '@lib/toast';
+
+import { fetchCorrelationFlows, fetchCorrelationRoles } from './api';
+import { CardListInfo, CardList, CustomPageInfo, Description, MenuType, SchemaPageInfo } from './type';
 
 export const SYSTEM_FIELDS: Record<string, ModelFieldSchema> = {
   _id: {
@@ -129,15 +132,92 @@ export function filterDeletedPage(
   });
 }
 
-export function getValueOfPageDescription(key: string, data: CustomPageInfo): string | undefined {
+export function getValueOfPageDescription(key: string, data: CustomPageInfo & SchemaPageInfo): string | undefined {
   switch (key) {
   case 'createdBy':
     return data.createdBy;
+  case 'updatedBy':
+    return data.updatedBy;
   case 'updatedAt':
-    return moment(data.updatedAt, 'X').format('YYYY-MM-DD HH:mm:ss');
+    return moment(data.updatedAt, 'X').format('YYYY-MM-DD');
+  case 'createdAt':
+    return moment(data.createdAt, 'X').format('YYYY-MM-DD');
   case 'type':
-    return data.type === 1 ? 'HTML自定义页面' : '基于空白创建';
+    return '自定义页面';
+  case 'fileSize':
+    return data.fileSize;
+  case 'fieldLen':
+    return data.fieldLen;
   default:
     return undefined;
   }
+}
+
+export function mapToSchemaPageDescription(
+  { id, title, value }: Description, data: SchemaPageInfo,
+): Description {
+  const test = getValueOfPageDescription(id, { ...data, id: data.tableID || '' });
+  if (id === 'type') {
+    return { id, title, value: '表单' };
+  }
+  return { id, title, value: test ? test : value };
+}
+
+export function mapToCustomPageDescription(
+  { id, title, value }: Description, data: CustomPageInfo,
+): Description {
+  const test = getValueOfPageDescription(id, data);
+
+  if (id === 'fieldLen') {
+    return { id: 'fileSize', title: '文件大小', value: data.fileSize || '' };
+  }
+
+  return { id, title, value: test ? test : value };
+}
+
+export async function getPageCardList(
+  appID: string,
+  pageID: string,
+  cardList: CardList[],
+  menuType: number | undefined,
+): Promise<CardList[]> {
+  let flowList: CardListInfo[] = [];
+  let roleList: CardListInfo[] = [];
+  await fetchCorrelationRoles(appID, pageID).then((res) => {
+    roleList = res.perGroups;
+  }).catch((err) => {
+    toast.error(err.message);
+  });
+
+  if (menuType === MenuType.schemaForm) {
+    await fetchCorrelationFlows({ appID, formID: pageID }).then((res: CardListInfo[]) => {
+      flowList = res;
+    }).catch((err) => {
+      toast.error(err.message);
+    });
+  }
+
+  return cardList.map(({ id, title }) => {
+    if (id === 'linkedFlows') {
+      return {
+        id,
+        title,
+        list: flowList.map(({ name, id, status }) => {
+          return { name, id, status };
+        }),
+      };
+    }
+
+    if (id === 'AuthorizedRoles') {
+      return {
+        id,
+        title,
+        list: roleList.map(({ name, id, status }) => {
+          return { name, id, status };
+        }),
+      };
+    }
+
+    return { id, title, list: [] };
+  });
 }

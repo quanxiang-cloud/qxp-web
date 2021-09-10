@@ -1,22 +1,27 @@
 import { isEmpty, cloneDeep, groupBy, isUndefined } from 'lodash';
 import fp from 'lodash/fp';
 
-import { Option } from '@flow/content/editor/forms/api';
+import { FormFieldOption } from '@flow/content/editor/forms/api';
 import { quickSortObjectArray } from '@lib/utils';
-import { numberTransform } from '@c/form-builder/utils';
+import {
+  numberTransform, isPermissionReadable, isPermissionHiddenAble, isPermissionWritable,
+} from '@c/form-builder/utils';
 
 export type SchemaConvertOptions = { keepLayout?: boolean; parseSubTable?: boolean; };
 export type FilterFunc = (currentSchema: SchemaFieldItem) => boolean;
 
 export function schemaToOptions(
   schema?: ISchema, filterFunc?: FilterFunc, options?: SchemaConvertOptions,
-): Option[] {
+): FormFieldOption [] {
   return schemaToFields(schema, filterFunc, options).map((field: SchemaFieldItem) => ({
     label: field.title as string,
     value: field.id,
     isSystem: !!field['x-internal']?.isSystem,
     isLayout: !!field['x-internal']?.isLayoutComponent,
     path: field.originPathInSchema,
+    read: isPermissionReadable(field?.['x-internal']?.permission),
+    write: isPermissionWritable(field?.['x-internal']?.permission),
+    invisible: isPermissionHiddenAble(field?.['x-internal']?.permission),
   }));
 }
 

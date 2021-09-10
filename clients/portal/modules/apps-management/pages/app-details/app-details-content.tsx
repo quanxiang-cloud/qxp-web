@@ -14,9 +14,9 @@ import WorkFlows from '../../work-flow-list';
 
 function AppDetailsContent(): JSX.Element {
   return (
-    <>
-      <div className='apps-management-height flex'>
-        <SideNavs />
+    <div className='apps-management-height flex'>
+      <SideNavs />
+      <div className="m-16 flex-1 mb-0">
         <Route exact path='/apps/details/:appID/page_setting' component={PageMenuDesign} />
         <Route exact path='/apps/details/:appID/custom_page' component={CustomPage} />
         <Route exact path='/apps/details/:appID/setting_flow' component={WorkFlows} />
@@ -26,7 +26,7 @@ function AppDetailsContent(): JSX.Element {
         <Route exact path='/apps/details/:appID/app_permission' component={UsersAndPermissions} />
         <Route exact path='/apps/details/:appID/app_manager' component={AppAdmin} />
       </div>
-    </>
+    </div>
   );
 }
 

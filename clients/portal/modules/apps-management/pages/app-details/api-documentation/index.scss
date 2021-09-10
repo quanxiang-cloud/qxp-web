@@ -16,17 +16,6 @@
   }
 }
 
-.nav-item {
-  cursor: pointer;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  padding-left: 50px;
-  &:hover {
-    background-color: var(--gray-100);
-  };
-}
-
 .show {
   max-height: 999px;
   transform-origin: 50% 0;

@@ -169,8 +169,9 @@ const fieldTypeToVariableMap: Record<string, string> = {
 export default function AssignmentConfig({ defaultValue, onSubmit, onCancel, onChange }: Props): JSX.Element {
   const tableFields = useTableFieldOptions();
   const { flowID } = useContext(FlowContext);
-  const { data: variables, isLoading } = useQuery(['FETCH_PROCESS_VARIABLES'], () => {
-    return getFlowVariables(flowID);
+  const { data: variables, isLoading } = useQuery<ProcessVariable[]>(['FETCH_PROCESS_VARIABLES'], () => {
+    // system variable can not be assigned
+    return getFlowVariables(flowID).then((variables) => variables.filter(({ type }) => type !== 'SYSTEM'));
   });
   const { setFieldState, getFormState, getFieldValue } = ACTIONS;
 
@@ -225,6 +226,10 @@ export default function AssignmentConfig({ defaultValue, onSubmit, onCancel, onC
   // it's a bug of formily?
   if (isLoading) {
     return (<div>loading...</div>);
+  }
+
+  if (!variables || !variables.length) {
+    return (<span className="text-caption py-24">没有可被赋值的流程参数，请先在工作流变量页面添加。</span>);
   }
 
   return (
