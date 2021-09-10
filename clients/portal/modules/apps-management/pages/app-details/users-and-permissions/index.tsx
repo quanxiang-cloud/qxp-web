@@ -21,6 +21,7 @@ import './index.scss';
 function UsersAndPermissions(): JSX.Element {
   const [modalType, setModalType] = useState('');
   const [showEditRightModal, setShowEditRightModal] = useState(false);
+  const [tabCurrentKey, setTabCurrentKey] = useState('associate');
   const [showDeleteRightModal, setShowDeleteRightModal] = useState(false);
   const { appID } = useParams<AppParams>();
 
@@ -31,6 +32,10 @@ function UsersAndPermissions(): JSX.Element {
       store.appID = '';
     };
   }, [appID]);
+
+  useEffect(() => {
+    setTabCurrentKey('associate');
+  }, [store.rightsGroupID]);
 
   const menus = [
     {
@@ -109,7 +114,6 @@ function UsersAndPermissions(): JSX.Element {
             <Search
               className="m-10"
               placeholder="搜索应用角色名称..."
-              value={store.rightsKeyword}
               onChange={store.changeKeyword}
             />
             <div className='ml-10'>共{store.rightsList.length}条数据</div>
@@ -167,6 +171,7 @@ function UsersAndPermissions(): JSX.Element {
           </div>
           <div className='authority-detail flex-1 pt-5 overflow-hidden'>
             <Tab
+              currentKey={tabCurrentKey}
               separator
               strechNavs={false}
               items={tabItems}
