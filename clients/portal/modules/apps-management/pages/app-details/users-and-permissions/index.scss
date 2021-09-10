@@ -75,35 +75,52 @@
 }
 
 .authority-detail {
+  height: 100%;
+  overflow: hidden;
+  .qxp-tab-container {
+    height: auto ;
+  }
   position: relative;
   & > .rights-mes {
     position: absolute;
     top: 4px;
     left: 40px;
     height: 50px;
-  }
-  .tab-navs{
-    width: 96%;
-    height: 52px;
-    margin: 0 auto;
-    border-radius: 8px;
-    justify-content: center;
-    background: url(/dist/images/authority-bg.svg);
-    box-shadow: 0px 8px 24px 8px rgb(99 102 241 / 25%);
-    background-size: cover;
-    .tab-nav-item {
-      color: #fff;
-      &:hover {
-        color: #fff;
-      }
-      &::after {
-        background: #fff;
-      }
+    display: flex;
+    align-items: center;
+    z-index: 20;
+    .rights-des {
+      max-width: 160px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
   }
-  .tab-content {
-    padding: 0;
-    border-radius: 12px 12px 0px 0px;
+  .rights-tab {
+    .tab-navs{
+      width: 96%;
+      height: 52px;
+      margin: 0 auto;
+      border-radius: 8px;
+      justify-content: center;
+      background: url(/dist/images/authority-bg.svg);
+      box-shadow: 0px 8px 24px 8px rgb(99 102 241 / 25%);
+      background-size: cover;
+      .tab-nav-item {
+        color: #fff;
+        &:hover {
+          color: #fff;
+        }
+        &::after {
+          background: #fff;
+        }
+      }
+    }
+
+    .tab-content {
+      padding: 0;
+      border-radius: 12px 12px 0px 0px;
+    }
   }
 }
 
@@ -117,11 +134,11 @@
   }
 
   .ant-menu-submenu:hover>.ant-menu-submenu-title>.ant-menu-submenu-expand-icon, .ant-menu-submenu:hover>.ant-menu-submenu-title>.ant-menu-submenu-arrow {
-     color: inherit; 
+     color: inherit;
   }
 
   .ant-menu-submenu-selected {
-    color: inherit; 
+    color: inherit;
   }
 
   .ant-menu {
@@ -138,7 +155,7 @@
       padding-left: 48px !important;
     }
 
-    [role="menuitem"]:hover, 
+    [role="menuitem"]:hover,
     .ant-menu-item-selected {
       color: var(--gray-900);
       font-size: 16px;
@@ -158,7 +175,7 @@
     }
 
     .ant-menu-submenu-title {
-      padding-left: 50px !important; 
+      padding-left: 50px !important;
       .ant-menu-submenu-arrow {
         left: 21px
       }
@@ -248,10 +265,6 @@
   color: var(--teal-500);
 }
 
-.right-setting .qxp-tab-container {
-  height: auto ;
-}
-
 .fields-tip {
   display: flex;
   height: 46px;
@@ -269,7 +282,7 @@
   border: 1px solid var(--gray-200);
   overflow-x: auto;
   .data-permission-item{
-    display: flex;  
+    display: flex;
     justify-content: space-between;
     padding-left: 16px;
     align-items:  center;

@@ -196,34 +196,34 @@ class UserAndPerStore {
         menu.name?.match(this.MenuKeyword) ||
         menu.child?.filter((page) => page.name?.match(this.MenuKeyword)).length);
 
-      let allPages: PageInfo[] = [];
-      this.menuList.forEach((menu: PageInfo) => {
-        if (menu.menuType === 1 && menu.child?.length) {
-          allPages = allPages.concat(menu.child.map((cMenu) => {
-            return cMenu;
-          }));
-          return;
-        }
+      if ( this.menuList.length) {
+        let allPages: PageInfo[] = [];
+        this.menuList.forEach((menu: PageInfo) => {
+          if (menu.menuType === 1 && menu.child?.length) {
+            allPages = allPages.concat(menu.child.map((cMenu) => {
+              return cMenu;
+            }));
+            return;
+          }
 
-        allPages.push(menu);
-      });
+          allPages.push(menu);
+        });
+        this.perFormList = allPages.filter((formPage) =>
+          formPage.menuType === 0 || formPage.menuType === 2).map((page) => {
+          if (page.menuType === 0) {
+            const curFormPer = formArr.find(({ id }) => id === page.id);
+            return { ...page, authority: curFormPer ? curFormPer.authority : 0 };
+          }
 
-      this.perFormList = allPages.filter((formPage) =>
-        formPage.menuType === 0 || formPage.menuType === 2).map((page) => {
-        if (page.menuType === 0) {
-          const curFormPer = formArr.find(({ id }) => id === page.id);
-          return { ...page, authority: curFormPer ? curFormPer.authority : 0 };
-        }
-
-        const perCustomPage = pages.find((perCustomID) => perCustomID === page.id);
-        return { ...page, authority: perCustomPage ? 1 : 0 };
-      });
-      this.currentPage = this.perFormList[0];
-      this.currentPageGroup = this.menuList.find((menu) =>
-        menu.child && menu.child.some((page) => page.id === this.currentPage.id),
-      );
-
-      this.getPageSchema();
+          const perCustomPage = pages.find((perCustomID) => perCustomID === page.id);
+          return { ...page, authority: perCustomPage ? 1 : 0 };
+        });
+        this.currentPage = this.perFormList[0];
+        this.currentPageGroup = this.menuList.find((menu) =>
+          menu.child && menu.child.some((page) => page.id === this.currentPage.id),
+        );
+        this.getPageSchema();
+      }
       this.perFormLoading = false;
     }).catch(() => {
       this.perFormLoading = false;

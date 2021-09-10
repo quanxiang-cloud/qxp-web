@@ -26,14 +26,11 @@ function UsersAndPermissions(): JSX.Element {
 
   useEffect(() => {
     store.appID = appID;
-  }, [appID]);
-
-  useEffect(() => {
     store.fetchRights();
     return () => {
       store.appID = '';
     };
-  }, []);
+  }, [appID]);
 
   const menus = [
     {
@@ -97,7 +94,7 @@ function UsersAndPermissions(): JSX.Element {
 
   return (
     <>
-      <div className="flex flex-col h-full flex-1 bg-white rounded-t-12">
+      <div className="flex flex-col h-full flex-1 bg-white rounded-t-12 overflow-hidden">
         <TextHeader
           title='业务功能授权'
           desc='控制该应用允许哪些员工使用，可以查看哪些模块，查看哪些数据，允许使用什么操作。'
@@ -105,8 +102,8 @@ function UsersAndPermissions(): JSX.Element {
           itemClassName='items-center'
           itemTitleClassName="text-h5"
         />
-        <div className='flex flex-1 overflow-auto'>
-          <div className='app-nav text-gray-600 flex h-full flex-col'
+        <div className='flex flex-1 w-full overflow-hidden'>
+          <div className='app-nav text-gray-600 flex h-full flex-col overflow-auto'
             style={{ width: '220px' }}
           >
             <Search
@@ -138,7 +135,7 @@ function UsersAndPermissions(): JSX.Element {
                     store.rightsGroupID = rights.id;
                   }}
                 >
-                  <Icon className='text-inherit' size={20} name='people_alt'/>{rights.name}
+                  <Icon className='text-inherit mr-4' size={20} name='people_alt'/>{rights.name}
                   <div
                     className={cs('ml-auto opacity-0 group-hover:opacity-100 flex-shrink-0', {
                       'opacity-100': rights.id === store.rightsGroupID,
@@ -168,20 +165,27 @@ function UsersAndPermissions(): JSX.Element {
               ))}
             </ul>
           </div>
-          <div className='authority-detail flex-1 pt-5 right-setting'>
+          <div className='authority-detail flex-1 pt-5 overflow-hidden'>
             <Tab
               separator
               strechNavs={false}
               items={tabItems}
-              className='w-full h-full'
+              className='w-full h-full rights-tab'
               navsClassName='tab-title'
               contentClassName='m-16 mb-0'
             />
-            <div className='rights-mes flex items-center text-white z-20'>
+            <div
+              className='rights-mes text-white '
+            >
               <Icon name="people_alt" className='text-white mr-8' size={32}/>
               <div className=''>
                 <div className='text-14 font-semibold'>{store.currentRights.name}</div>
-                <div className='text-12 '>{store.currentRights.description}</div>
+                <div
+                  className='rights-des text-12'
+                  title={store.currentRights.description}
+                >
+                  {store.currentRights.description}
+                </div>
               </div>
             </div>
           </div>

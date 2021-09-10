@@ -21,6 +21,7 @@ type UserOrDept = {
 function AssociatedPerson(): JSX.Element {
   const [showBindType, setShowBindType] = useState<number>(1);
   const [showBindModal, setShowBindModal] = useState<boolean>(false);
+  const [selectUser, setSelectUser] = useState<string[]>([]);
 
   const userAndDept = useMemo(() => {
     if (store.currentRights.scopes && store.currentRights.scopes.length) {
@@ -73,7 +74,7 @@ function AssociatedPerson(): JSX.Element {
     return store.updatePerGroupUser({ id: store.currentRights.id, scopes });
   };
 
-  const deletePerGroupUser = (id: string) => {
+  const deletePerGroupUser = (id: string): void=>{
     const newScopes = store.currentRights.scopes?.filter((scope) => scope.id !== id);
     store.updatePerGroupUser({ id: store.currentRights.id, scopes: newScopes });
   };
@@ -139,6 +140,11 @@ function AssociatedPerson(): JSX.Element {
     setShowBindModal(true);
   };
 
+  const handleBatchRemov = (idList: string[]): void => {
+    const newScopes = store.currentRights.scopes?.filter((scope) => !idList.includes(scope.id));
+    store.updatePerGroupUser({ id: store.currentRights.id, scopes: newScopes });
+  };
+
   return (
     <>
       <div className='h-full flex flex-col'>
@@ -163,9 +169,20 @@ function AssociatedPerson(): JSX.Element {
           >
               关联员工与部门
           </Button>
+          { !!selectUser.length && (
+            <Button
+              modifier="primary"
+              className="ml-16"
+              iconName="delete"
+              onClick={() => handleBatchRemov(selectUser)}
+            >
+              批量移除
+            </Button>
+          )}
         </div>
         <div className='flex-1'>
           <Table
+            onSelectChange={(selectedKeys: string[]) => setSelectUser(selectedKeys)}
             showCheckbox
             rowKey="id"
             data={showBindType === 1 ? store.UserDetailList : userAndDept.deptList}

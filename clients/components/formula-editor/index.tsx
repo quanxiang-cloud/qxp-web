@@ -194,22 +194,22 @@ function FormulaEditor({
       return;
     }
 
-    let contentState = editorState.getCurrentContent();
-    contentState = contentState.createEntity('variable', 'IMMUTABLE', entityData);
-    const entityKey = contentState.getLastCreatedEntityKey();
+    const contentState = editorState.getCurrentContent();
+    let contentStateWithEntity = contentState.createEntity('variable', 'IMMUTABLE', entityData);
+    const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
     let selection = editorState.getSelection();
     if (selection.isCollapsed()) {
-      contentState = Modifier.insertText(
-        contentState, selection, entityData.name, undefined, entityKey,
+      contentStateWithEntity = Modifier.insertText(
+        contentStateWithEntity, selection, entityData.name, undefined, entityKey,
       );
     } else {
-      contentState = Modifier.replaceText(
-        contentState, selection, entityData.name, undefined, entityKey,
+      contentStateWithEntity = Modifier.replaceText(
+        contentStateWithEntity, selection, entityData.name, undefined, entityKey,
       );
     }
 
-    let end;
-    contentState.getFirstBlock().findEntityRanges(
+    let end = 0;
+    contentStateWithEntity.getBlockForKey(selection.getFocusKey()).findEntityRanges(
       (character) => character.getEntity() === entityKey,
       (_, _end) => {
         end = _end + 1;
@@ -219,8 +219,8 @@ function FormulaEditor({
       anchorOffset: end,
       focusOffset: end,
     }) as SelectionState;
-    contentState = Modifier.insertText(contentState, selection, ' ');
-    let newEditorState = EditorState.set(editorState, { currentContent: contentState });
+    contentStateWithEntity = Modifier.insertText(contentStateWithEntity, selection, ' ');
+    let newEditorState = EditorState.set(editorState, { currentContent: contentStateWithEntity });
     newEditorState = EditorState.forceSelection(newEditorState, selection);
     handleChange(newEditorState);
   };

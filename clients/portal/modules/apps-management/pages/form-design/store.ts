@@ -1,8 +1,6 @@
-import { action, observable, reaction, IReactionDisposer, computed, toJS } from 'mobx';
+import { action, observable, reaction, IReactionDisposer, computed } from 'mobx';
 import { UnionColumns } from 'react-table';
-import { set } from 'lodash';
 
-import logger from '@lib/logger';
 import toast from '@lib/toast';
 import { getTableSchema, saveTableSchema } from '@lib/http-client';
 import { schemaToMap } from '@lib/schema-convert';
@@ -10,7 +8,6 @@ import { schemaToMap } from '@lib/schema-convert';
 import FormStore from '@c/form-builder/store';
 import AppPageDataStore from '@c/form-app-data-table/store';
 import { TableConfig } from '@c/form-app-data-table/type';
-import registry from '@c/form-builder/registry';
 import { setFixedParameters, SHOW_FIELD } from '@c/form-app-data-table/utils';
 import { SYSTEM_FIELDS } from '@c/form-builder/constants';
 
@@ -72,14 +69,18 @@ class FormDesignStore {
   @computed get internalFields(): Record<string, ISchema> {
     const _internalFields = this.formStore?.internalFields.reduce<Record<string, ISchema>>((acc, field) => {
       const { fieldName, componentName, configValue } = field;
-      const { toSchema } = registry.elements[componentName.toLowerCase()] || {};
-      if (!toSchema) {
-        logger.error(`failed to find component: [${componentName}] in registry`);
-      }
-
-      const currentSchema = toSchema(toJS(configValue));
-      acc[fieldName] = set(currentSchema, 'x-internal.isSystem', true);
-
+      acc[fieldName] = {
+        display: false,
+        readOnly: false,
+        title: configValue.title,
+        type: configValue.type,
+        'x-component': componentName,
+        'x-component-props': configValue['x-component-props'],
+        'x-internal': {
+          permission: configValue.displayModifier === 'hidden' ? 5 : 1,
+          isSystem: configValue.isSystem,
+        },
+      };
       return acc;
     }, {});
     return _internalFields || {};

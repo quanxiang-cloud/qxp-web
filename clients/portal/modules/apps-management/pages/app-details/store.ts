@@ -310,8 +310,8 @@ class AppDetailsStore {
             getPageCardList(this.appID, this.pageID, this.curPageCardList, pageInfo.menuType).then((res) => {
               this.curPageCardList = res;
             });
-          }).catch((err) => {
-            toast.error(err.message);
+          }).catch(() => {
+            toast.error('获取表单信息失败');
           });
         }
         this.pageDescriptions = DefaultPageDescriptions;

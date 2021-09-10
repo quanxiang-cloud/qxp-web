@@ -224,7 +224,7 @@ function DataFilter({
                 render={({ field }) => {
                   return (
                     <FormFieldSelect
-                      style={{ width: '180px' }}
+                      style={{ width: '170px' }}
                       error={errors['field-' + condition.id]}
                       register={{ name: field.name, value: field.value }}
                       options={fieldOption}
@@ -248,7 +248,7 @@ function DataFilter({
                     rules={{ required: true }}
                     render={({ field }) => (
                       <FormFieldSelect
-                        style={{ width: '100px' }}
+                        style={{ width: '95px' }}
                         error={errors['operators-' + condition.id]}
                         register={field}
                         options={getOperators(condition.filter?.type || '', condition.filter?.enum)}
@@ -266,7 +266,7 @@ function DataFilter({
                       rules={{ required: true }}
                       render={({ field }) => (
                         <FormFieldSelect
-                          style={{ width: '100px' }}
+                          style={{ width: '95px' }}
                           error={errors['valueFrom-' + condition.id]}
                           register={field}
                           options={VALUE_FROM}
@@ -289,7 +289,7 @@ function DataFilter({
                     render={({ field }) => (
                       condition.valueFrom === 'form' ? (
                         <FormFieldSelect
-                          style={{ width: '280px' }}
+                          style={{ width: '270px' }}
                           error={errors['condition-' + condition.id]}
                           register={field}
                           options={condition.associationFieldsOptions || []}
@@ -299,7 +299,7 @@ function DataFilter({
                           error={errors['condition-' + condition.id]}
                           register={{ ...field, value: field.value ? field.value : '' }}
                           field={condition.filter}
-                          style={{ width: '280px' }}
+                          style={{ width: '270px' }}
                         />
                       )
                     )
@@ -309,6 +309,7 @@ function DataFilter({
               </>
             ) : null}
             <Icon
+              style={{ minWidth: '19px' }}
               clickable
               changeable
               onClick={() => handleRemove(condition.id)}
