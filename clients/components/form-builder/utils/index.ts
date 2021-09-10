@@ -158,9 +158,11 @@ export function schemaPermissionTransformer<T extends ISchema>(schema: T, hidden
       [(permission: PERMISSION) => isPermissionReadOnly(permission), permissionTransformer({
         display: !hiddenInReadOnly, readOnly: true,
       }, field)],
-      [(permission: PERMISSION) => isPermissionInvisible(permission), permissionTransformer({
-        display: false, readOnly: true,
-      }, field)],
+      [(permission: PERMISSION) => isPermissionInvisible(permission) || !!field?.['x-internal']?.isSystem,
+        permissionTransformer({
+          display: false, readOnly: true,
+        }, field),
+      ],
       [stubTrue, permissionTransformer({
         display: true, readOnly: false,
       }, field)],

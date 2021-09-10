@@ -18,7 +18,7 @@ function httpClient<TData>(path: string, body?: unknown, additionalHeaders?: Hea
       window.location.reload();
       return Promise.reject(new Error('当前会话已失效，请重新登录!'));
     }
-    if (response.status === 500) {
+    if ([404, 500].includes(response.status)) {
       return Promise.reject(new Error('请求失败!'));
     }
     return response.json();
