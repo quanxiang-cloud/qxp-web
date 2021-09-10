@@ -18,11 +18,10 @@ import {
   fetchPerGroupForm,
   fetchPerCustom,
 } from './api';
-import { CustomPageInfo } from '../type';
 import { fetchPageList } from '../api';
 import { INIT_CURRENT_RIGHTS } from './constants';
+import { deepClone } from '@lib/utils';
 
-type CheckboxValueType = string | number;
 type PerData = {
   conditions: any,
   schema: any,
@@ -34,13 +33,12 @@ class UserAndPerStore {
   @observable perFormLoading = true;
   @observable noSchema = false
   @observable perFormList: PerPageInfo[] = [];
-  @observable perCustomList: CustomPageInfo[] = [];
-  @observable perCustomPage: CheckboxValueType[] = [];
   @observable menuList: PageInfo[] = [];
+  @observable tempMenuList: PageInfo[] = [];
   @observable rightsList: Rights[] = [];
+  @observable tempRightList: Rights[] = [];
   @observable appID = '';
   @observable rightsGroupID = '';
-  @observable rightsKeyword = '';
   @observable MenuKeyword = '';
   @observable currentRights: Rights = { id: '' };
   @observable Fields: SchemaFieldItem[] = [];
@@ -58,29 +56,13 @@ class UserAndPerStore {
   addRightsGroup = (rights: RightsCreate): Promise<void> => {
     return createPerGroup(this.appID, rights).then((res: any) => {
       this.rightsList = [...this.rightsList, { ...rights, ...res }];
+      this.tempRightList = [...this.rightsList, { ...rights, ...res }];
     });
   }
 
   @action
   setRightsGroupID = (groupID: string): void => {
     this.rightsGroupID = groupID;
-  }
-
-  @action
-  setPerCustomPage = (params: CheckboxValueType[]): void => {
-    this.perCustomPage = params;
-  }
-
-  @action
-  changeKeyword = (keyword: string): void => {
-    this.rightsKeyword = keyword;
-    this.fetchRights();
-  }
-
-  @action
-  changeMenuKeyword = (keyword: string): void => {
-    this.MenuKeyword = keyword;
-    this.fetchPerGroupForm(this.rightsGroupID);
   }
 
   @action
@@ -95,7 +77,19 @@ class UserAndPerStore {
         `${this.currentRights.name}  权限组删除成功`,
       );
       this.rightsList = delAfter;
+      this.tempRightList = deepClone(this.rightsList);
     });
+  }
+
+  @action
+  changeKeyword = (keyword: string): void => {
+    if (keyword) {
+      this.rightsList = this.tempRightList.filter((rights: Rights) => rights.name?.match(keyword));
+    } else {
+      this.rightsList = deepClone(this.tempRightList);
+    }
+    this.currentRights = this.rightsList[0] || INIT_CURRENT_RIGHTS;
+    this.rightsGroupID = this.rightsList[0]?.id;
   }
 
   @action
@@ -106,7 +100,8 @@ class UserAndPerStore {
 
     fetchRights(this.appID).then((res: any) => {
       const { list = [] } = res || {};
-      this.rightsList = list.filter((rights: Rights) => rights.name?.match(this.rightsKeyword));
+      this.rightsList = list;
+      this.tempRightList = deepClone(this.rightsList);
       this.currentRights = this.rightsList[0] || INIT_CURRENT_RIGHTS;
       this.rightsGroupID = list[0]?.id;
     }).catch((err) => {
@@ -124,6 +119,7 @@ class UserAndPerStore {
         }
         return _rights;
       });
+      this.tempRightList = deepClone(this.rightsList);
       toast.success('修改成功！');
       return true;
     });
@@ -140,6 +136,7 @@ class UserAndPerStore {
 
         return _rights;
       });
+      this.tempRightList = deepClone(this.rightsList);
       toast.success('修改成功！');
       return true;
     });
@@ -179,6 +176,43 @@ class UserAndPerStore {
       }),
     });
     this.rightsList = newRightsList;
+    this.tempRightList = deepClone(this.rightsList );
+  }
+
+  @action
+  changeMenuKeyword = (keyword: string): void => {
+    this.MenuKeyword = keyword;
+    if (keyword) {
+      this.menuList = this.tempMenuList.filter((menu) =>
+        menu.name?.match(this.MenuKeyword) ||
+        menu.child?.filter((page) => page.name?.match(this.MenuKeyword)).length,
+      );
+    } else {
+      this.menuList = deepClone(this.tempMenuList);
+    }
+    this.findIniPage();
+  }
+
+  @action
+  findIniPage = (): void => {
+    if (this.menuList.length) {
+      let iniPageID = '';
+      for (const menu of this.menuList) {
+        if (menu.menuType !== 1) {
+          iniPageID = menu.id;
+          break;
+        }
+        if (menu.child && menu.child.length) {
+          iniPageID = menu.child[0].id;
+          break;
+        }
+      }
+      this.currentPage = this.perFormList.find((perForm) => perForm.id === iniPageID) as PerPageInfo;
+      this.currentPageGroup = this.menuList.find((menu) =>
+        menu.child && menu.child.some((page) => page.id === this.currentPage.id),
+      );
+      this.getPageSchema();
+    }
   }
 
   @action
@@ -189,12 +223,11 @@ class UserAndPerStore {
       fetchPerGroupForm(this.appID, perGroupID),
       fetchPerCustom(this.appID, perGroupID),
     ]).then(([allPageRes, perPage, PerCustom]) => {
-      const { formArr = [] } = perPage;
       const { menu = [] } = allPageRes;
+      const { formArr = [] } = perPage;
       const { pages = [] } = PerCustom;
-      this.menuList = menu.filter((menu) =>
-        menu.name?.match(this.MenuKeyword) ||
-        menu.child?.filter((page) => page.name?.match(this.MenuKeyword)).length);
+      this.menuList = menu;
+      this.tempMenuList = deepClone(this.menuList);
 
       if ( this.menuList.length) {
         let allPages: PageInfo[] = [];
@@ -218,11 +251,7 @@ class UserAndPerStore {
           const perCustomPage = pages.find((perCustomID) => perCustomID === page.id);
           return { ...page, authority: perCustomPage ? 1 : 0 };
         });
-        this.currentPage = this.perFormList[0];
-        this.currentPageGroup = this.menuList.find((menu) =>
-          menu.child && menu.child.some((page) => page.id === this.currentPage.id),
-        );
-        this.getPageSchema();
+        this.findIniPage();
       }
       this.perFormLoading = false;
     }).catch(() => {
@@ -291,6 +320,7 @@ class UserAndPerStore {
       }
       return rights;
     });
+    this.tempRightList = deepClone(this.rightsList);
   }
 
   @action

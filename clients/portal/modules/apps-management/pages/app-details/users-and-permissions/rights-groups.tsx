@@ -39,6 +39,8 @@ function RightsGroups(): JSX.Element {
   const handleClickMenu = (item: any): void => {
     store.currentPage = store.perFormList.find((page) => page.id === item.key) as PerPageInfo;
     store.getPageSchema();
+    setOpenSet(false);
+    setActiveTab('authorized');
   };
 
   const tabItem = [{
@@ -113,7 +115,6 @@ function RightsGroups(): JSX.Element {
           <Search
             className="search-menu mx-16 ml-18"
             placeholder="搜索菜单名称..."
-            value={store.MenuKeyword}
             onChange={store.changeMenuKeyword}
           />
           {store.currentPage.id && !!store.menuList.length && (
@@ -168,7 +169,7 @@ function RightsGroups(): JSX.Element {
               <div className='text-gray-400 font-semibold'>
               配置权限：<span className='text-gray-900'>{store.currentPage.name}</span>
               </div>
-              {store.currentRights.types !== 1 && (
+              {store.currentRights.types !== 1 && !store.noSchema && (
                 <div>
                   { openset ? (
                     <>

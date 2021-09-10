@@ -199,7 +199,7 @@ function DataFilter({
   return (
     <div className={className}>
       <div className='flex items-center'>
-        删选出符合以下
+        筛选出符合以下
         <Select
           className='mx-4'
           style = {{
