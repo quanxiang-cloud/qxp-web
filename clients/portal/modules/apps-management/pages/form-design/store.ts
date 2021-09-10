@@ -8,25 +8,10 @@ import { schemaToMap } from '@lib/schema-convert';
 import FormStore from '@c/form-builder/store';
 import AppPageDataStore from '@c/form-app-data-table/store';
 import { TableConfig } from '@c/form-app-data-table/type';
-import { setFixedParameters } from '@c/form-app-data-table/utils';
+import { setFixedParameters, SHOW_FIELD } from '@c/form-app-data-table/utils';
 import { SYSTEM_FIELDS } from '@c/form-builder/constants';
 
 import { createPageScheme } from './api';
-
-export const SHOW_FIELD = [
-  'DatePicker',
-  'Input',
-  'MultipleSelect',
-  'NumberPicker',
-  'RadioGroup',
-  'Select',
-  'CheckboxGroup',
-  'UserPicker',
-  'CascadeSelector',
-  'OrganizationPicker',
-  'AssociatedData',
-  'Serial',
-];
 
 class FormDesignStore {
   destroyFetchScheme: IReactionDisposer;

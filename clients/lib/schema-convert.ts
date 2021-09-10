@@ -8,7 +8,7 @@ import {
 } from '@c/form-builder/utils';
 
 export type SchemaConvertOptions = { keepLayout?: boolean; parseSubTable?: boolean; };
-export type FilterFunc = (currentSchema: ISchema) => boolean;
+export type FilterFunc = (currentSchema: SchemaFieldItem) => boolean;
 
 export function schemaToOptions(
   schema?: ISchema, filterFunc?: FilterFunc, options?: SchemaConvertOptions,
@@ -117,7 +117,7 @@ function schemaToFields(
     }
 
     if (
-      (filterFunc && !filterFunc(currentSchema)) ||
+      (filterFunc && !filterFunc(field)) ||
       (!options?.keepLayout && isLayoutComponent)
     ) {
       return;

@@ -15,14 +15,27 @@ type Props = {
   appID: string;
   onChange: (val: FilterConfig) => void;
   value: FilterConfig;
-  currentFormSchema: ISchema;
+  currentFormSchema?: ISchema;
+  customSchemaFields?: SchemaFieldItem[];
+  filterFunc?: (field: SchemaFieldItem) => boolean;
 }
 
-function getFields(schema: ISchema, excludedSystemField?: boolean): SchemaFieldItem[] {
-  return schemaToFields(schema).filter((schema) => {
-    const isAllowField = schema.fieldName !== '_id' && FILTER_FIELD.includes(schema?.['x-component'] || '');
+type FieldsProps = {
+  schema: ISchema;
+  excludedSystemField?: boolean;
+  filterFunc?: (field: SchemaFieldItem) => boolean;
+}
+
+function getFields({ schema, excludedSystemField, filterFunc }: FieldsProps): SchemaFieldItem[] {
+  return schemaToFields(schema, (schemaFieldItem) => {
+    if (filterFunc?.(schemaFieldItem) === false) {
+      return false;
+    }
+
+    const isAllowField = schemaFieldItem.fieldName !== '_id' &&
+      FILTER_FIELD.includes(schemaFieldItem?.['x-component'] || '');
     if (excludedSystemField) {
-      return isAllowField && schema['x-internal']?.isSystem;
+      return isAllowField && !schemaFieldItem['x-internal']?.isSystem;
     }
 
     return isAllowField;
@@ -49,7 +62,7 @@ function FilterConfig({ tableID, appID, onChange, value, currentFormSchema }: Pr
 
   useEffect(() => {
     if (currentFormSchema) {
-      setCurrentFields(getFields(currentFormSchema, true));
+      setCurrentFields(getFields({ schema: currentFormSchema, excludedSystemField: true }));
     }
   }, [currentFormSchema]);
 
@@ -57,7 +70,7 @@ function FilterConfig({ tableID, appID, onChange, value, currentFormSchema }: Pr
     if (allowSelect && visible) {
       setLoading(true);
       getTableSchema(appID, tableID).then((res) => {
-        setSchemaFields(res?.schema ? getFields(res.schema) : []);
+        setSchemaFields(res?.schema ? getFields({ schema: res.schema }) : []);
       }).finally(() => {
         setLoading(false);
       });
