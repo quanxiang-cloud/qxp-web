@@ -78,7 +78,7 @@ function FilterRule({ mutators, value }: ISchemaFieldComponentProps): JSX.Elemen
   });
 
   function onRuleInsert(rule: CustomRule): void {
-    formulaRef.current?.insertText(rule.name);
+    formulaRef.current?.insertEntity(rule);
   }
 
   const variablesRules = variables?.map?.((item) => {
