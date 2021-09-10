@@ -16,7 +16,7 @@ const COLLECTION_OPERATORS = [
     key: '==',
   },
   {
-    name: '!==',
+    name: '!=',
     key: '!=',
   },
   {
