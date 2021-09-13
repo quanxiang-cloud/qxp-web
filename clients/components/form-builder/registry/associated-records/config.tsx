@@ -6,7 +6,7 @@ import {
 } from '@formily/antd';
 import { Input, Switch, Radio } from '@formily/antd-components';
 
-import FilterConfig from '@c/form-builder/form-settings-panel/form-field-config/filter-config';
+import FilterConfig from '@c/form-builder/registry/associated-data/filter-config';
 import DefaultValueLinkageConfigBtn from
   '@c/form-builder/form-settings-panel/form-field-config/default-value-linkage-config-btn';
 import { StoreContext } from '@c/form-builder/context';
