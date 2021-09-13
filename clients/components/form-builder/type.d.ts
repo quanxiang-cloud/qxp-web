@@ -144,6 +144,12 @@ declare namespace FormBuilder {
     ruleJoinOperator: 'every' | 'some';
     rules: Array<FormDataFilterRule>;
   }
+
+  type DataAssignment = {
+    dataSource: string,
+    match: string,
+    dataTarget: string,
+  }
 }
 
 type SchemaFieldItem = ISchema & {
