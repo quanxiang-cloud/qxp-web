@@ -10,8 +10,8 @@ export default function useEnumOptions(fieldProps: ISchemaFieldComponentProps): 
   const defaultValueFrom = fieldProps.props['x-internal'].defaultValueFrom;
 
   useEffect(() => {
-    if (fieldProps.props.enum && defaultValueFrom === 'customized') {
-      setOptions(fieldProps.props.enum || []);
+    if (defaultValueFrom === 'customized') {
+      setOptions(fieldProps.dataSource || fieldProps.props.enum || []);
       return;
     }
 

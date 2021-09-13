@@ -164,3 +164,83 @@ export const SYSTEM_FIELDS = [
 //  0    1     1    3    normal = true
 export type PERMISSION = 0 | 1 | 3 | 5;
 export const READONLY = 1;
+
+export const INTERNAL_FIELDS: Array<FormItem> = [
+  {
+    fieldName: '_id',
+    componentName: 'Input',
+    configValue: {
+      displayModifier: 'hidden',
+      title: 'id',
+      isSystem: true,
+      type: 'string',
+      'x-component-props': {},
+    },
+  },
+  {
+    fieldName: 'created_at',
+    componentName: 'DatePicker',
+    configValue: {
+      displayModifier: 'hidden',
+      title: '创建时间',
+      isSystem: true,
+      type: 'datetime',
+      'x-component-props': { isNow: false, showTime: false, style: { width: '100%' } },
+    },
+  },
+  {
+    fieldName: 'updated_at',
+    componentName: 'DatePicker',
+    configValue: {
+      displayModifier: 'hidden',
+      title: '修改时间',
+      isSystem: true,
+      type: 'datetime',
+      'x-component-props': { isNow: false, showTime: false, style: { width: '100%' } },
+    },
+  },
+  {
+    fieldName: 'creator_name',
+    componentName: 'Input',
+    configValue: {
+      displayModifier: 'hidden',
+      title: '创建者',
+      isSystem: true,
+      type: 'string',
+      'x-component-props': {},
+    },
+  },
+  {
+    fieldName: 'creator_id',
+    componentName: 'Input',
+    configValue: {
+      displayModifier: 'hidden',
+      title: '创建者 ID',
+      isSystem: true,
+      type: 'string',
+      'x-component-props': {},
+    },
+  },
+  {
+    fieldName: 'modifier_name',
+    componentName: 'Input',
+    configValue: {
+      displayModifier: 'hidden',
+      title: '修改者',
+      isSystem: true,
+      type: 'string',
+      'x-component-props': {},
+    },
+  },
+  {
+    fieldName: 'modifier_id',
+    componentName: 'Input',
+    configValue: {
+      displayModifier: 'hidden',
+      title: '修改者 ID',
+      isSystem: true,
+      type: 'string',
+      'x-component-props': {},
+    },
+  },
+];

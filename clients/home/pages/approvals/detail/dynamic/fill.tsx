@@ -52,7 +52,7 @@ export default function Fill({ workData, clickHandle }: Props): JSX.Element {
     return detailInfo;
   }
 
-  const username = operationRecords ? operationRecords[0].creatorName : '';
+  const username = operationRecords.length ? operationRecords[0].creatorName : '';
   const isHandle = ['REVIEW', 'IN_REVIEW'].includes(status);
   const isSingle = operationRecords.length === 1;
   const confirmBack = ['REFUSE', 'SEND_BACK', 'READ', 'DELIVER', 'STEP_BACK'].includes(status);

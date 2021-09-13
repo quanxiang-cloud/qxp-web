@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 
 import TabNavs from './tab-navs';
 
@@ -39,6 +39,10 @@ export default function Tab<T extends React.Key>({
 }: Props<T>) {
   const navsRef = useRef(null);
   const [key, setKey] = useState<string | number>(currentKey || items[0].id);
+
+  useEffect(()=> {
+    setKey(currentKey || items[0].id);
+  }, [currentKey]);
 
   const tabContentRender = (items: TabItem<T>[], key: string | number) => {
     return items.find((item) => item.id === key)?.content;
