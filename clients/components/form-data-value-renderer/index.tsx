@@ -1,13 +1,12 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import moment from 'moment';
 
 const SubTable = React.lazy(() => import('@c/form-builder/registry/sub-table/preview'));
 const AssociatedRecords = React.lazy(
   () => import('@c/form-builder/registry/associated-records/associated-records'),
 );
-const AssociatedDataValueRender = React.lazy(
-  () => import('@c/form-builder/registry/associated-data/associated-data-view'),
-);
+
+import AssociatedDataValueRender from '@c/form-builder/registry/associated-data/associated-data-view';
 import { RoundMethod } from '@c/form-builder/registry/aggregation-records/convertor';
 import logger from '@lib/logger';
 
@@ -26,20 +25,24 @@ function datetimeValueRenderer({ value, schema }: ValueRendererProps): string {
 
 function SubTableValueRenderer({ value, schema, className }: ValueRendererProps): JSX.Element {
   return (
-    <SubTable
-      props={{ readOnly: true, className }}
-      value={value as Record<string, unknown>[]}
-      schema={schema as any}
-    />
+    <Suspense fallback={<div>loading...</div>} >
+      <SubTable
+        props={{ readOnly: true, className }}
+        value={value as Record<string, unknown>[]}
+        schema={schema as any}
+      />
+    </Suspense>
   );
 }
 
 function AssociatedRecordsValueRender({ value, schema, className }: ValueRendererProps): JSX.Element {
   return (
-    <AssociatedRecords
-      props={{ readOnly: true, ['x-component-props']: schema?.['x-component-props'], className }}
-      value={value}
-    />
+    <Suspense fallback={<div>loading...</div>} >
+      <AssociatedRecords
+        props={{ readOnly: true, ['x-component-props']: schema?.['x-component-props'], className }}
+        value={value}
+      />
+    </Suspense>
   );
 }
 
