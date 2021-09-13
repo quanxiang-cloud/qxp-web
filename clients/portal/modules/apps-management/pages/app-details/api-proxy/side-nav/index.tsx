@@ -3,7 +3,6 @@ import { useQuery } from 'react-query';
 import { Tooltip } from '@QCFE/lego-ui';
 import { observer } from 'mobx-react';
 import { toJS } from 'mobx';
-import { useParams, useHistory } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 
 import Tree from '@c/headless-tree';
@@ -18,6 +17,7 @@ import FormAddGroup from './form-add-group';
 import TreeStore from '../stores/api-groups';
 import { mockGetApiGroups } from '../mock';
 import store from '../stores';
+import { useNamespace } from '../hooks';
 
 import '../styles.scss';
 
@@ -31,19 +31,11 @@ function SideNav(props: Props): JSX.Element {
   const { data: groups, isLoading } = useQuery(['api-proxy-groups'], () => {
     return mockGetApiGroups().then((res) => res.data);
   });
-  const { groupId, appID } = useParams<{groupId: string, appID: string}>();
-  const history = useHistory();
+  const ns = useNamespace();
   const formInst = useForm();
 
   const handleSelect = (data: APIGroup): void => {
     store.setActiveGroup(data);
-    store.treeStore?.onSelectNode(data?.id);
-
-    // default check, sync with url
-    if (data?.id && !groupId) {
-      const prefix = `/apps/details/${appID}/api_proxy`;
-      history.push(`${prefix}/${data.id}`);
-    }
   };
 
   const handleSearch = (ev: any) => {
@@ -66,17 +58,16 @@ function SideNav(props: Props): JSX.Element {
   useEffect(()=> {
     if (store.treeStore) {
       const flattenGroups = flatTree(toJS(store.treeStore.rootNode));
-      if (groupId) {
-        const checked = flattenGroups.find((v)=> v.id === groupId);
+      if (ns) {
+        const checked = flattenGroups.find((v)=> v.id === ns);
         checked && handleSelect(checked);
       } else {
         // auto select first none-root node
         const firstNode = flattenGroups.find((v)=> v.visible && v.id);
         firstNode && handleSelect(firstNode);
-        // todo change url
       }
     }
-  }, [groupId, store.treeStore]);
+  }, [ns, store.treeStore]);
 
   if (!store.treeStore) {
     return <Loading />;

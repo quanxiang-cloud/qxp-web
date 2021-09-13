@@ -1,28 +1,70 @@
 import React from 'react';
-import { Switch, Route, useRouteMatch } from 'react-router-dom';
+import { observer } from 'mobx-react';
 
+import Loading from '@c/loading';
+
+import SideNav from './side-nav';
 import List from './api-list';
 import Add from './add-api';
 import Detail from './api-detail';
 import AddSwagger from './add-swagger';
+import NoData from './no-data';
+
+import store from './stores';
+import { useQueryString } from './hooks';
 
 import './styles.scss';
 
+interface SubPageProps {
+  namespace?: string | null;
+  apiId?: string | null;
+  action?: string | null;
+}
+
+function SubPage({ namespace, apiId, action }: SubPageProps) {
+  if (namespace) {
+    if (['add', 'edit'].includes(action || '')) {
+      return <Add />;
+    }
+    if (action === 'add-swagger') {
+      return <AddSwagger />;
+    }
+    if (apiId) {
+      return <Detail />;
+    }
+  }
+  return <List />;
+}
+
 function ApiProxy() {
-  const { path } = useRouteMatch();
+  const qs = useQueryString();
+
+  const renderMain = (): JSX.Element=> {
+    if (!store.treeStore) {
+      return <Loading />;
+    }
+
+    if (!store.activeGroup || store.treeStore.noLeafNodes) {
+      return <NoData/>;
+    }
+
+    return (
+      <div className='w-full h-full overflow-auto api-proxy--main-cont'>
+        <SubPage
+          namespace={qs.get('ns')}
+          apiId={qs.get('api')}
+          action={qs.get('action')}
+        />
+      </div>
+    );
+  };
 
   return (
     <div className='flex flex-grow bg-white mt-20 mx-20 api-proxy'>
-      <Switch>
-        <Route exact path={path} component={List} />
-        <Route exact path={`${path}/:groupId`} component={List} />
-        <Route exact path={`${path}/:groupId/add`} component={Add} />
-        <Route exact path={`${path}/:groupId/:apiId/edit`} component={Add} />
-        <Route exact path={`${path}/:groupId/add-swagger`} component={AddSwagger} />
-        <Route path={`${path}/:groupId/:apiId`} component={Detail} />
-      </Switch>
+      <SideNav />
+      {renderMain()}
     </div>
   );
 }
 
-export default ApiProxy;
+export default observer(ApiProxy);

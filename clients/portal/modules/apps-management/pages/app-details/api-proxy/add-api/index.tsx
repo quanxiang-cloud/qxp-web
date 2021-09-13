@@ -2,14 +2,17 @@ import React, { useState } from 'react';
 import { observer } from 'mobx-react';
 import { useRouteMatch, useHistory } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
+import cs from 'classnames';
 
 import Select from '@c/select';
 import Button from '@c/button';
 
-import Header from '../comps/header';
-import Content from '../comps/content';
-import SideNav from '../side-nav';
-import ConfigForm from './config-form';
+import Header from '../header';
+import ParamSection from './param-section';
+import ParamForm from './param-form';
+import { ErrorMsg } from '../form';
+
+import './styles.scss';
 
 interface Props {
   className?: string;
@@ -28,7 +31,7 @@ function Add(props: Props) {
   const { path } = useRouteMatch();
   const isEdit = path.endsWith(':apiId/edit');
   const formInst = useForm();
-  const { register, handleSubmit, formState } = formInst;
+  const { register, handleSubmit, formState: { errors } } = formInst;
   const [method, setMethod] = useState('get');
   const history = useHistory();
 
@@ -40,42 +43,52 @@ function Add(props: Props) {
 
   return (
     <>
-      <SideNav />
-      <Content>
-        <Header name={isEdit ? 'API 详情' : '新建 API'} />
-        <form onSubmit={onSubmit} className='flex flex-col px-20 py-16 w-full h-full'>
-          <div className='mb-16'>
-            <p>API 名称</p>
-            <input className='input' {...register('name')} />
-          </div>
-          <div className='mb-16'>
-            <p>描述</p>
-            <textarea className='textarea' {...register('description')} />
-          </div>
-
-          <div className='flex'>
-            <Select options={methodOptions} value={method} onChange={setMethod}/>
-            <input placeholder='http://' className='input ml-12' {...register('url')} />
-          </div>
-
-          <div className='config-sec'>
-            <div className='sec-title'>请求参数</div>
-            <div className='sec-body'>
-              <div className='sec'>
-                <p>Query</p>
-                <ConfigForm />
-              </div>
-            </div>
-          </div>
-        </form>
-
-        <div className='flex items-center justify-end w-full h-64 bg-gray-100 px-20'>
-          <Button onClick={()=> history.goBack()} className='mr-20'>取消</Button>
-          <Button modifier='primary' onClick={onSubmit}>
-            确认新建
-          </Button>
+      <Header name={isEdit ? 'API 详情' : '新建 API'} />
+      <form onSubmit={onSubmit} className='flex flex-col px-20 py-16 w-full'>
+        <div className='mb-16'>
+          <p>API 名称</p>
+          <input
+            className={cs('input', { error: errors.title })}
+            {...register('title', { required: '请填写 API 名称' })}
+          />
+          <ErrorMsg errors={errors} name='title'/>
+          <p className='text-caption'>最多32个字符，支持中文、英文、下划线、数字。例如: 用户登录</p>
         </div>
-      </Content>
+        <div className='mb-16'>
+          <p>描述</p>
+          <textarea className='textarea' rows={3} {...register('description')} />
+          <p className='text-caption'>API 的详细描述，选填。200字符以内</p>
+        </div>
+
+        <div className='flex items-center'>
+          <Select options={methodOptions} value={method} onChange={setMethod}/>
+          <input
+            placeholder='API Name 最多32个字符，支持英文、下划线、数字。例如: loginUser'
+            className={cs('input ml-12', { error: errors.url })}
+            {...register('url', { required: true })}
+          />
+          <ErrorMsg errors={errors} name='url' />
+        </div>
+
+        <ParamSection title='请求参数'>
+          <ParamForm title='Query' />
+          <ParamForm title='Header' />
+          <ParamForm title='Body' />
+          <ParamForm title='Path' />
+        </ParamSection>
+
+        <ParamSection title='返回参数'>
+          <ParamForm />
+        </ParamSection>
+
+      </form>
+
+      <div className='flex items-center justify-end w-full h-64 bg-gray-100 px-20'>
+        <Button onClick={()=> history.goBack()} className='mr-20'>取消</Button>
+        <Button modifier='primary' onClick={onSubmit}>
+          确认新建
+        </Button>
+      </div>
     </>
   );
 }

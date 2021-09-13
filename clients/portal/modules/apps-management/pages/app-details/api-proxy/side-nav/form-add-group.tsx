@@ -1,29 +1,13 @@
 import React, { useEffect } from 'react';
 import cs from 'classnames';
-import { UseFormReturn, FieldErrors } from 'react-hook-form';
+import { UseFormReturn } from 'react-hook-form';
+
+import { FormItem, ErrorMsg } from '../form';
 
 interface Props {
   form: UseFormReturn,
   className?: string;
   onSubmit?: (formData: any)=> void;
-}
-
-function FormItem({
-  label,
-  children,
-}: {label: string; children?: React.ReactNode}) {
-  return (
-    <div className='form-item mb-24'>
-      <div className='form-item-label mb-8'>{label}</div>
-      <div className='form-item-ctrl'>
-        {children}
-      </div>
-    </div>
-  );
-}
-
-function ErrorMsg({ errors, name }: {errors: FieldErrors, name: string}) {
-  return errors[name] ? <p className='text-red-400 text-12 mb-5'>{errors[name].message}</p> : null;
 }
 
 function FormAddGroup({

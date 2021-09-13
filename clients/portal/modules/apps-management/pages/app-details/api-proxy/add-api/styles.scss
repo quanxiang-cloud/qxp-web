@@ -1,0 +1,30 @@
+.params-sec {
+  .sec-body {
+    transition: all 0.5s ease;
+
+    &.hide-body {
+      transform: translateY(-100%);
+      visibility: hidden;
+      opacity: 0;
+      height: 0;
+    }
+
+    .params-table {
+      > thead > tr > th {
+        border-right: 1px solid var(--gray-200);
+        border-bottom: 1px solid var(--gray-200);
+        &:last-child{
+          border-right: none;
+        }
+      }
+
+      > tbody > tr > td {
+        border-right: 1px solid var(--gray-200);
+        border-bottom: none;
+        &:last-child{
+          border-right: none;
+        }
+      }
+    }
+  }
+}

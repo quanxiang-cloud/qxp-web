@@ -9,6 +9,7 @@ class Store {
   @action
   setActiveGroup=(group: APIGroup)=> {
     this.activeGroup = group;
+    this.treeStore?.onSelectNode(group?.id);
   }
 
   @action

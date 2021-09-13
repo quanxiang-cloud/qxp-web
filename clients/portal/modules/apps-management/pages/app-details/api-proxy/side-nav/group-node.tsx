@@ -73,7 +73,7 @@ function GroupNodeRender({ node, store }: NodeRenderProps<APIGroup>): JSX.Elemen
 
   const toGroup = (id: string)=> {
     const prefix = `/apps/details/${appID}/api_proxy`;
-    history.push(`${prefix}/${id}`);
+    history.push(`${prefix}?ns=${id}`);
   };
 
   const renderModals = (): React.ReactNode => {
