@@ -6,14 +6,13 @@ import { parse, resolve, findVariables } from 'qxp-formula';
 
 import logger from '@lib/logger';
 import { schemaToMap } from '@lib/schema-convert';
-import { schemaPermissionTransformer } from './utils';
 
 import registry from './registry';
 import visibleHiddenLinkageEffect from './linkages/visible-hidden';
 import defaultValueLinkageEffect from './linkages/default-value';
 import formValueToFilter from './linkages/form-value-to-filter';
 import calculationFormulaEffect from './linkages/calculation-formula';
-import { wrapSchemaByMegaLayout } from './utils';
+import { wrapSchemaByMegaLayout, schemaPermissionTransformer } from './utils';
 
 setValidationLanguage('zh');
 

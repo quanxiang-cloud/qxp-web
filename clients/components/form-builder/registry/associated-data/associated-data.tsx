@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 import { useUpdateEffect } from 'react-use';
+import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 
 import Icon from '@c/icon';
-import FormDataValueRenderer from '@c/form-data-value-renderer';
+import FormDataValueRenderer, { getBasicValue } from '@c/form-data-value-renderer';
 
 import SelectAssociationModal from './select-association-modal';
 
@@ -16,7 +16,7 @@ type Props = {
   value?: LabelValue;
   placeholder?: string;
   filterConfig?: FilterConfig;
-  onChange?: (value: LabelValue | null) => void;
+  onChange?: (dataRow: Record<string, any> | null, schema: ISchema | null) => void;
 }
 
 export function AssociatedData({
@@ -29,18 +29,19 @@ export function AssociatedData({
   onChange,
 }: Props): JSX.Element {
   const [modalVisible, setVisible] = useState(false);
-  const handleConfirm = (value: LabelValue): void => {
-    onChange?.(value);
+
+  function handleConfirm(dataRow: Record<string, string>, schema: ISchema): void {
+    onChange?.(dataRow, schema);
     setVisible(false);
-  };
+  }
 
   useUpdateEffect(() => {
-    onChange?.(null);
+    onChange?.(null, null);
   }, [fieldName, associationTableID]);
 
-  const handleClose = (): void => {
-    onChange?.(null);
-  };
+  function handleClose(): void {
+    onChange?.(null, null);
+  }
 
   if (!associationTableID) {
     return (
@@ -82,15 +83,39 @@ export default function AssociatedDataWrap(p: ISchemaFieldComponentProps): JSX.E
     return <FormDataValueRenderer value={p.value} schema={p.schema} />;
   }
 
+  function executeAssignMent(dataRow: Record<string, any>): void {
+    const { setFieldState } = p?.form;
+    const associativeConfig = p['x-component-props']?.associativeConfig ||
+    p.props['x-component-props'].associativeConfig;
+
+    associativeConfig && associativeConfig.rules.forEach((
+      { dataSource, dataTarget }: FormBuilder.DataAssignment,
+    ) => {
+      const fullPath = p?.path.split('.');
+      const relativePath = fullPath.slice(0, fullPath.length - 1).join('.');
+
+      setFieldState(`${relativePath}.${dataTarget}`, (state) => {
+        state.value = dataRow[dataSource];
+      });
+    });
+  }
+
   return (
     <AssociatedData
       {...p.props['x-component-props']}
-      filterConfig={p['x-component-props']?.filterConfig || p.props['x-component-props'].filterConfig}
       value={p.value}
-      onChange={p.mutators.change}
+      readOnly={!!p.props.readOnly}
+      onChange={(dataRow, schema) => {
+        if (dataRow) {
+          const value = dataRow[p.props['x-component-props'].fieldName];
+          const label = value ? getBasicValue(schema as ISchema, value) : '--';
+          executeAssignMent(dataRow);
+          p.mutators.change({ label, value: dataRow.id });
+        }
+      }}
+      filterConfig={p['x-component-props']?.filterConfig || p.props['x-component-props'].filterConfig}
     />
   );
 }
 
 AssociatedDataWrap.isFieldComponent = true;
-

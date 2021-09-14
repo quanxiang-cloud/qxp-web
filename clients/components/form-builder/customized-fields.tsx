@@ -30,8 +30,7 @@ export const RowStyleLayout = styled((props) => <div {...props} />)`
   }
 `;
 
-function RulesList(props: any): JSX.Element {
-  const { value, path, mutators, schema } = props;
+function RulesList({ props, value, mutators, path, schema }: ISchemaFieldComponentProps): JSX.Element {
   const onAdd = (): void => {
     if (!schema.items) {
       return;
@@ -49,7 +48,7 @@ function RulesList(props: any): JSX.Element {
         </RowStyleLayout>
       ))}
       <div>
-        <Button onClick={onAdd}>新增条件</Button>
+        <Button onClick={onAdd}>{props?.['x-component-props'].btnText || '新增条件'}</Button>
       </div>
     </ArrayList>
   );

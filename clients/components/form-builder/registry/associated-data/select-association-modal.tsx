@@ -3,11 +3,10 @@ import React, { useRef } from 'react';
 import Modal from '@c/modal';
 import FormDataTable from '@c/form-app-data-table';
 import { Ref } from '@c/form-app-data-table/type';
-import { getBasicValue } from '@c/form-data-value-renderer';
 
 type Props = {
   onClose: () => void;
-  onSubmit: (value: LabelValue) => void;
+  onSubmit: (dataRow: Record<string, any>, schema: ISchema) => void;
   appID: string;
   fieldName: string;
   tableID: string;
@@ -21,9 +20,7 @@ export default function SelectAssociationModal({
   const handleSelect = (rowData: Record<string, any>): void => {
     // todo Layout
     const schema = tableRef?.current?.getSchema()?.properties?.[fieldName] as ISchema;
-    const value = rowData[fieldName];
-    const label = value ? getBasicValue(schema, value) : '--';
-    onSubmit({ label, value: rowData._id });
+    onSubmit(rowData, schema);
   };
 
   const customColumns = [

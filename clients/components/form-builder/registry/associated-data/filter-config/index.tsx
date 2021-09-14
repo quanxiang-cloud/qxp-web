@@ -92,7 +92,7 @@ function FilterConfig({
 
   return (
     <>
-      <Button onClick={() => setVisible(true)}>数据过滤规则</Button>
+      <Button onClick={() => setVisible(true)}>设置过滤规则</Button>
       {visible && (
         <Modal
           footerBtns={[
