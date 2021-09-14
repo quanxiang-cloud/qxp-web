@@ -39,6 +39,11 @@ function PageDetails({ pageID }: Props): JSX.Element {
   }
 
   function handleCreateCustomPage(): void {
+    if (!file?.url) {
+      toast.error('请上传文件');
+      return;
+    }
+
     const fileSizeStr = Math.round(Number(file?.size) / 1024) + 'M';
 
     if (modalType === 'create') {
