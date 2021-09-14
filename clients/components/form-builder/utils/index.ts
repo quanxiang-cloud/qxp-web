@@ -273,3 +273,14 @@ export function isPermissionWritable(permission?: number): boolean {
 export function isPermissionHiddenAble(permission?: number): boolean {
   return [0, 5].includes(permission || -1);
 }
+
+// in order to be compatible with previous version enums
+export function convertEnumsToLabels(labelValues: Array<string | LabelValue>): string[] {
+  return labelValues.map((option) => {
+    if (typeof option === 'string') {
+      return option;
+    }
+
+    return option.label;
+  });
+}

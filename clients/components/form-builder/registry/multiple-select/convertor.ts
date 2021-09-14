@@ -1,6 +1,4 @@
-import { getSchemaPermissionFromSchemaConfig } from '@c/form-builder/utils';
-
-import { generateRandomFormFieldID } from '../../utils';
+import { convertEnumsToLabels, getSchemaPermissionFromSchemaConfig } from '@c/form-builder/utils';
 
 export interface MultipleSelectConfig {
   title: string;
@@ -10,7 +8,7 @@ export interface MultipleSelectConfig {
   required: boolean;
   defaultValueFrom: FormBuilder.DefaultValueFrom;
   datasetId: string;
-  availableOptions: Array<{ label: string; value: any; title: string }>,
+  availableOptions: string[],
 }
 export const defaultConfig: MultipleSelectConfig = {
   title: '下拉复选框',
@@ -20,11 +18,7 @@ export const defaultConfig: MultipleSelectConfig = {
   required: false,
   defaultValueFrom: 'customized',
   datasetId: '',
-  availableOptions: [
-    { label: '选项一', value: 'option_1', title: '选项一' },
-    { label: '选项二', value: 'option_2', title: '选项二' },
-    { label: '选项三', value: 'option_3', title: '选项三' },
-  ],
+  availableOptions: ['选项一', '选项二', '选项三'],
 };
 
 export function toSchema(value: MultipleSelectConfig): ISchema {
@@ -35,14 +29,7 @@ export function toSchema(value: MultipleSelectConfig): ISchema {
     required: value.required,
     readOnly: value.displayModifier === 'readonly',
     display: value.displayModifier !== 'hidden',
-    enum: (value.availableOptions || []).map((option) => {
-      return {
-        ...option,
-        value: option.value || generateRandomFormFieldID(),
-        title: option.label,
-        name: option.label,
-      };
-    }),
+    enum: value.availableOptions || [],
     'x-component': 'MultipleSelect',
     // todo support optionsLayout
     ['x-component-props']: {
@@ -70,10 +57,8 @@ export function toConfig(schema: ISchema): MultipleSelectConfig {
     displayModifier: displayModifier,
     sortable: !!schema['x-internal']?.sortable,
     required: !!schema.required,
-    // todo implement this
     defaultValueFrom: schema['x-internal']?.defaultValueFrom || 'customized',
     datasetId: schema['x-component-props']?.datasetId,
-    // todo refactor this
-    availableOptions: schema.enum as Array<{ label: string; value: any; title: string }> || [],
+    availableOptions: convertEnumsToLabels(schema.enum as Array<string | LabelValue>),
   };
 }

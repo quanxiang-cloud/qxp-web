@@ -1,28 +1,31 @@
 import { useState, useEffect } from 'react';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
+import { uniq } from 'lodash';
 
 import { parseJSON } from '@lib/utils';
 import { getDatasetById } from '@portal/modules/system-mgmt/dataset/api';
+import { convertEnumsToLabels } from '@c/form-builder/utils';
 
-export default function useEnumOptions(fieldProps: ISchemaFieldComponentProps): LabelValue[] {
-  const [options, setOptions] = useState<LabelValue[]>([]);
+export default function useEnumOptions(fieldProps: ISchemaFieldComponentProps): string[] {
+  const [options, setOptions] = useState<string[]>([]);
   const { datasetId } = fieldProps.props['x-component-props'];
   const defaultValueFrom = fieldProps.props['x-internal'].defaultValueFrom;
 
   useEffect(() => {
     if (defaultValueFrom === 'customized') {
-      setOptions(fieldProps.dataSource || fieldProps.props.enum || []);
+      // compatible with old version
+      const labels: string[] = convertEnumsToLabels(fieldProps.dataSource || fieldProps.props.enum || []);
+      setOptions(uniq(labels));
       return;
     }
 
     if (datasetId && defaultValueFrom === 'dataset') {
       getDatasetById(datasetId).then(({ content = '' }) => {
-        let _options = [];
-        _options = parseJSON(content, []);
-        setOptions(_options);
+        const labels = parseJSON<LabelValue[]>(content, []).map(({ label }) => label);
+        setOptions(uniq(labels));
       });
     }
-  }, [fieldProps.props.enum, datasetId]);
+  }, [datasetId, fieldProps.props.enum, fieldProps.dataSource]);
 
   return options;
 }

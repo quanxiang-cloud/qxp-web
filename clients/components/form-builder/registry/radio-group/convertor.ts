@@ -1,8 +1,5 @@
-import { getSchemaPermissionFromSchemaConfig } from '@c/form-builder/utils';
+import { convertEnumsToLabels, getSchemaPermissionFromSchemaConfig } from '@c/form-builder/utils';
 
-import { generateRandomFormFieldID } from '../../utils';
-
-type AvailableOption = { label: string; value: any; title: string };
 export interface RadioGroupConfig {
   title: string;
   description?: string;
@@ -13,7 +10,7 @@ export interface RadioGroupConfig {
   allowCustom: boolean;
   defaultValueFrom: FormBuilder.DefaultValueFrom;
   datasetId: string;
-  availableOptions: AvailableOption[],
+  availableOptions: string[],
 }
 
 export const defaultConfig: RadioGroupConfig = {
@@ -26,11 +23,7 @@ export const defaultConfig: RadioGroupConfig = {
   allowCustom: false,
   defaultValueFrom: 'customized',
   datasetId: '',
-  availableOptions: [
-    { label: '选项一', value: 'option_1', title: '选项一' },
-    { label: '选项二', value: 'option_2', title: '选项二' },
-    { label: '选项三', value: 'option_3', title: '选项三' },
-  ],
+  availableOptions: ['选项一', '选项二', '选项三'],
 };
 
 export function toSchema(value: typeof defaultConfig): ISchema {
@@ -41,14 +34,7 @@ export function toSchema(value: typeof defaultConfig): ISchema {
     required: value.required,
     readOnly: value.displayModifier === 'readonly',
     display: value.displayModifier !== 'hidden',
-    enum: value.availableOptions && value.availableOptions.map((option) => {
-      return {
-        ...option,
-        value: option.value || generateRandomFormFieldID(),
-        title: option.label,
-        name: option.label,
-      };
-    }),
+    enum: value.availableOptions || [],
     'x-component': 'RadioGroup',
     // todo support optionsLayout
     ['x-component-props']: {
@@ -77,15 +63,12 @@ export function toConfig(schema: ISchema): RadioGroupConfig {
     title: schema.title as string,
     description: schema.description as string,
     displayModifier: displayModifier,
-    // todo implement this
     optionsLayout: schema['x-component-props']?.optionsLayout as any,
     sortable: !!schema['x-internal']?.sortable,
     required: !!schema.required,
     allowCustom: schema['x-component-props']?.allowCustom,
-    // todo implement this
     defaultValueFrom: schema['x-internal']?.defaultValueFrom || 'customized',
     datasetId: schema['x-component-props']?.datasetId,
-    // todo refactor this
-    availableOptions: schema.enum as AvailableOption[] || [],
+    availableOptions: convertEnumsToLabels(schema.enum as Array<string | LabelValue>),
   };
 }

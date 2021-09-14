@@ -1,5 +1,3 @@
-import { deleteOperate, extraOperations } from '../operates';
-
 const schema: ISchema = {
   type: 'object',
   properties: {
@@ -99,11 +97,6 @@ const schema: ISchema = {
             },
             {
               type: 'value:visible',
-              target: 'add',
-              condition: '{{ $value === "customized" }}',
-            },
-            {
-              type: 'value:visible',
               target: 'datasetId',
               condition: '{{ $value === "dataset" }}',
             },
@@ -111,32 +104,14 @@ const schema: ISchema = {
         },
         availableOptions: {
           type: 'array',
-          'x-component': 'ArrayTable',
+          title: '选项列表',
+          description: '每行为一个选项，且选项不能超过 15 个字符',
+          'x-component': 'InputForLabels',
           'x-mega-props': {
             labelAlign: 'top',
           },
-          'x-component-props': {
-            operationsWidth: 80,
-            renderRemove: deleteOperate,
-            renderMoveDown: () => null,
-            renderMoveUp: () => null,
-            renderExtraOperations: extraOperations,
-            renderAddition: () => null,
-          },
-          'x-index': 8,
-          items: {
-            type: 'object',
-            properties: {
-              label: {
-                title: '选项',
-                type: 'string',
-                'x-component': 'Input',
-                'x-component-props': {
-                  maxLength: 50,
-                },
-              },
-            },
-          },
+          'x-index': 10,
+          items: { type: 'string' },
         },
         datasetId: {
           title: '选项集',
@@ -151,10 +126,6 @@ const schema: ISchema = {
             labelAlign: 'top',
           },
           'x-index': 9,
-        },
-        add: {
-          type: 'string',
-          'x-component': 'addOperate',
         },
       },
     },
