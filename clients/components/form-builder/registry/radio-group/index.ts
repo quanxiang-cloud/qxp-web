@@ -1,7 +1,7 @@
 import { validateDatasetElement } from '@c/form-builder/utils';
+import DatasetConfig from '@c/form-builder/form-settings-panel/form-field-config/dataset-config';
 
 import RadioGroup from './radioGroup';
-import DatasetConfig from '../../form-settings-panel/form-field-config/dataset-config';
 import configSchema from './config-schema';
 import { defaultConfig, toSchema, toConfig, RadioGroupConfig } from './convertor';
 

@@ -10,6 +10,7 @@ import { FieldConfigContext } from './context';
 import { addOperate } from '../../registry/operates';
 import DefaultValueLinkageConfigBtn from './default-value-linkage-config-btn';
 import CalculationFormulaBtn from './calculation-formula-btn';
+import InputForLabels from './input-for-labels';
 
 const COMMON_CONFIG_COMPONENTS = {
   ArrayTable,
@@ -24,6 +25,7 @@ const COMMON_CONFIG_COMPONENTS = {
   addOperate,
   DefaultValueLinkageConfigBtn,
   CalculationFormulaBtn,
+  InputForLabels,
 };
 
 type Props = {
