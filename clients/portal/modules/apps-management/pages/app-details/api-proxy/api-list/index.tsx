@@ -3,9 +3,10 @@ import { observer } from 'mobx-react';
 
 import Tab from '@c/tab';
 
+import Header from '../header';
 import ApiList from './list';
 import GroupSetting from './group-setting';
-import Header from '../header';
+import ApiKeys from './api-keys';
 
 import store from '../stores';
 
@@ -24,6 +25,11 @@ function ListPage() {
             id: 'group-setting',
             name: '分组配置',
             content: <GroupSetting/>,
+          },
+          {
+            id: 'api-keys',
+            name: 'API 密钥',
+            content: <ApiKeys />,
           },
         ]}
       />

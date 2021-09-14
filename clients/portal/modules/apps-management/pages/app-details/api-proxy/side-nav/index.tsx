@@ -18,6 +18,7 @@ import TreeStore from '../stores/api-groups';
 import { mockGetApiGroups } from '../mock';
 import store from '../stores';
 import { useNamespace } from '../hooks';
+// import {getServiceList} from '../api'
 
 import '../styles.scss';
 
@@ -28,8 +29,11 @@ interface Props {
 function SideNav(props: Props): JSX.Element {
   const [search, setSearch] = useState('');
   const [modalOpen, setModalOpen] = useState(false);
-  const { data: groups, isLoading } = useQuery(['api-proxy-groups'], () => {
+  const { data: groups, isLoading } = useQuery(['api-proxy-get-svc-list'], () => {
     return mockGetApiGroups().then((res) => res.data);
+    // getServiceList().then((list)=> {
+    //   console.log('svc list: ', list)
+    // });
   });
   const ns = useNamespace();
   const formInst = useForm();

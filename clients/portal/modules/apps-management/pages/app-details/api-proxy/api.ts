@@ -56,12 +56,12 @@ export const activateService = async (servicePath: string, params: {active: numb
   return await httpClient(`/api/v1/polyapi/service/active/${servicePath}`, params);
 };
 
-export const getServiceList = async (namespacePath: string, params: Paging): Promise<{
+export const getServiceList = async (namespacePath?: string, params?: Paging): Promise<{
   total: number;
   page: number;
   list: Array<PolyAPI.ServiceInfo>
 }> => {
-  return await httpClient(`/api/v1/polyapi/service/list/${namespacePath}`, params);
+  return await httpClient(['/api/v1/polyapi/service/list', namespacePath || ''].join('/'), params || {});
 };
 
 export const getService = async (servicePath: string): Promise<PolyAPI.ServiceInfo> => {

@@ -43,7 +43,7 @@ function ParamForm({ title, children }: Props) {
                 <Toggle onChange={()=> {}} />
               </td>
               <td>
-                <textarea className='textarea' rows={2}/>
+                <input type="text" className='input' />
               </td>
             </tr>
           </tbody>

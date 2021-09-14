@@ -49,6 +49,7 @@ function Add(props: Props) {
           <p>API 名称</p>
           <input
             className={cs('input', { error: errors.title })}
+            placeholder='请输入'
             {...register('title', { required: '请填写 API 名称' })}
           />
           <ErrorMsg errors={errors} name='title'/>
@@ -56,28 +57,32 @@ function Add(props: Props) {
         </div>
         <div className='mb-16'>
           <p>描述</p>
-          <textarea className='textarea' rows={3} {...register('description')} />
-          <p className='text-caption'>API 的详细描述，选填。200字符以内</p>
+          <textarea
+            className='textarea' rows={3}
+            placeholder='选填 (不超过 100 字符)'
+            {...register('description', { maxLength: 100 })}
+          />
         </div>
 
         <div className='flex items-center'>
           <Select options={methodOptions} value={method} onChange={setMethod}/>
           <input
-            placeholder='API Name 最多32个字符，支持英文、下划线、数字。例如: loginUser'
+            placeholder='请补全 API 标识 (最多32个字符，支持英文、下划线、数字)。例如: loginUser'
             className={cs('input ml-12', { error: errors.url })}
             {...register('url', { required: true })}
           />
           <ErrorMsg errors={errors} name='url' />
         </div>
 
-        <ParamSection title='请求参数'>
+        <ParamSection title='请求参数' toggleable>
           <ParamForm title='Query' />
           <ParamForm title='Header' />
           <ParamForm title='Body' />
           <ParamForm title='Path' />
+          <ParamForm title='常量参数' />
         </ParamSection>
 
-        <ParamSection title='返回参数'>
+        <ParamSection title='返回参数' toggleable>
           <ParamForm />
         </ParamSection>
 

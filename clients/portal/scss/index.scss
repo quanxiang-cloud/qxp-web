@@ -252,6 +252,12 @@ body {
   }
 }
 
+.textarea {
+  &.error, &.error:focus {
+    border-color: var(--red-500) !important;
+  }
+}
+
 button {
   outline: none !important;
 }

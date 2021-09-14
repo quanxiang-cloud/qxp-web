@@ -3,7 +3,8 @@
     transition: all 0.5s ease;
 
     &.hide-body {
-      transform: translateY(-100%);
+      transform:scale(1,0);
+      //transform: translateY(-100%);
       visibility: hidden;
       opacity: 0;
       height: 0;
