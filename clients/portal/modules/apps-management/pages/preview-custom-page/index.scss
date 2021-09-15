@@ -3,9 +3,13 @@
 }
 
 .go-back {
+  cursor: pointer;
   &:hover {
     color: var(--blue-600);
-    fill: currentColor;
+
+    svg {
+      @apply text-current;
+    }
   }
 }
 
