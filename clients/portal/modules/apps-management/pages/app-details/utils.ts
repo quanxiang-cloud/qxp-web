@@ -139,9 +139,9 @@ export function getValueOfPageDescription(key: string, data: CustomPageInfo & Sc
   case 'updatedBy':
     return data.updatedBy;
   case 'updatedAt':
-    return moment(data.updatedAt, 'X').format('YYYY-MM-DD');
+    return !data.updatedAt ? '-' : moment(data.updatedAt, 'X').format('YYYY-MM-DD');
   case 'createdAt':
-    return moment(data.createdAt, 'X').format('YYYY-MM-DD');
+    return !data.createdAt ? '-' : moment(data.createdAt, 'X').format('YYYY-MM-DD');
   case 'type':
     return '自定义页面';
   case 'fileSize':
