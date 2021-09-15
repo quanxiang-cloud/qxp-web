@@ -86,7 +86,7 @@ export default function Form({
   const { appID } = useContext(FlowContext);
   const [sourceTableSchema, isLoading] = useTableSchema(appID, workForm?.value || '');
 
-  if (isLoading) {
+  if (isLoading || !sourceTableSchema.length) {
     // todo handle error case
     return (<div>loading...</div>);
   }
