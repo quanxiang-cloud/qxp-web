@@ -5,7 +5,16 @@ import fp, {
 } from 'lodash/fp';
 
 import toast from '@lib/toast';
-import { PERMISSION } from '@c/form-builder/constants';
+
+import {
+  INVISIBLE_NO_READ,
+  INVISIBLE_NO_WRITE,
+  INVISIBLE_WITH_WRITE,
+  NORMAL,
+  PERMISSION,
+  READONLY_NO_WRITE,
+  READONLY_WITH_WRITE,
+} from '../constants';
 
 const nanoid = customAlphabet('1234567890qwertyuioplkjhgfdsazxcvbnmQWERTYUIOPLKJHGFDSAZXCVBNM', 8);
 
@@ -144,7 +153,7 @@ export const validateRegistryElement: Curried<ValidateRegistryElement<unknown>> 
 );
 
 type PermissionToOverwrite = { display?: boolean; readOnly?: boolean };
-export function schemaPermissionTransformer<T extends ISchema>(schema: T, hiddenInReadOnly?: boolean): T {
+export function schemaPermissionTransformer<T extends ISchema>(schema: T): T {
   function isLayoutSchema(field: ISchema): boolean {
     return !!get(field, 'x-internal.isLayoutComponent');
   }
@@ -156,12 +165,10 @@ export function schemaPermissionTransformer<T extends ISchema>(schema: T, hidden
     (field: ISchema) => [fp.get('x-internal.permission', field), field],
     ([permission, field]: [PERMISSION, ISchema]) => cond([
       [(permission: PERMISSION) => isPermissionReadOnly(permission), permissionTransformer({
-        display: !hiddenInReadOnly, readOnly: true,
+        display: true, readOnly: true,
       }, field)],
       [(permission: PERMISSION) => isPermissionInvisible(permission) || !!field?.['x-internal']?.isSystem,
-        permissionTransformer({
-          display: false, readOnly: true,
-        }, field),
+        permissionTransformer({ display: false }, field),
       ],
       [stubTrue, permissionTransformer({
         display: true, readOnly: false,
@@ -174,7 +181,7 @@ export function schemaPermissionTransformer<T extends ISchema>(schema: T, hidden
     entries,
     map(([_, inputField]: [string, ISchema]) => {
       const field: ISchema = inputField.properties || inputField.items ?
-        schemaPermissionTransformer(inputField, hiddenInReadOnly) :
+        schemaPermissionTransformer(inputField) :
         inputField;
       !isLayoutSchema(field) && field?.['x-component'] && fieldTransform(field);
       return [_, field];
@@ -193,9 +200,7 @@ export function schemaPermissionTransformer<T extends ISchema>(schema: T, hidden
   const layoutPermissionTransform = pipe(
     (field: ISchema) => [values(field.properties), field],
     ([fieldSchemas, field]: [ISchema[], ISchema]) => {
-      const isInvisible = fieldSchemas.every(
-        (schema: ISchema) => !schema.display || (schema.readOnly && hiddenInReadOnly),
-      );
+      const isInvisible = fieldSchemas.every((schema: ISchema) => !schema.display);
       return [isInvisible, field];
     },
     ([isLayoutComponentInvisible, field]) => {
@@ -246,32 +251,56 @@ export function getSchemaPermissionFromSchemaConfig(
   const isReadonly = value.displayModifier === 'readonly';
   const isHidden = value.displayModifier === 'hidden';
   if (isReadonly) {
-    return 1;
+    return READONLY_WITH_WRITE;
   }
   if (isHidden) {
-    return 5;
+    return INVISIBLE_NO_WRITE;
   }
-  return 3;
+  return NORMAL;
 }
 
 export function isPermissionInvisible(permission: PERMISSION): boolean {
-  return [0, 5].includes(permission);
+  return [INVISIBLE_NO_READ, INVISIBLE_NO_WRITE, INVISIBLE_WITH_WRITE].includes(permission);
 }
 
 export function isPermissionReadOnly(permission: PERMISSION): boolean {
-  return permission === 1;
+  return [READONLY_NO_WRITE, READONLY_WITH_WRITE].includes(permission);
 }
 
-export function isPermissionReadable(permission?: number): boolean {
-  return [1, 3, 5].includes(permission || 0);
+export function isPermissionReadable(permission: PERMISSION): boolean {
+  return [
+    READONLY_NO_WRITE, READONLY_WITH_WRITE, INVISIBLE_NO_WRITE, INVISIBLE_WITH_WRITE, NORMAL,
+  ].includes(permission);
 }
 
-export function isPermissionWritable(permission?: number): boolean {
-  return permission === 3;
+export function isPermissionWriteable(permission: PERMISSION): boolean {
+  return [READONLY_WITH_WRITE, INVISIBLE_WITH_WRITE, NORMAL].includes(permission);
 }
 
-export function isPermissionHiddenAble(permission?: number): boolean {
-  return [0, 5].includes(permission || -1);
+export function isPermissionHiddenAble(permission: PERMISSION): boolean {
+  return [INVISIBLE_NO_WRITE, INVISIBLE_WITH_WRITE].includes(permission);
+}
+
+export function isPermissionEditable(permission?: PERMISSION): boolean {
+  return NORMAL === permission;
+}
+
+export function calculateFieldPermission(
+  editable: boolean,
+  invisible: boolean,
+  writeable: boolean,
+  readable: boolean,
+): PERMISSION {
+  const permissions = [0b1000, 0b0100, 0b0010, 0b0001];
+  const options = [editable, invisible, writeable, readable];
+  const permission = permissions.reduce((acc, permission, index) => {
+    return acc + (options[index] ? permission : 0b0000);
+  }, 0b0000) as PERMISSION;
+  if (![0, 1, 3, 5, 7, 11].includes(permission)) {
+    toast.error(`权限配置错误 ${permission}`);
+    throw new Error(`${permission}`);
+  }
+  return permission;
 }
 
 // in order to be compatible with previous version enums

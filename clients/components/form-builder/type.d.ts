@@ -9,7 +9,7 @@ type ValidationFormula = {
 type XInternal = {
   version?: string;
   sortable?: boolean;
-  permission?: number;
+  permission?: import('./constants').PERMISSION;
   validations?: Array<ValidationFormula>;
   defaultValueFrom?: FormBuilder.DefaultValueFrom;
   defaultValueLinkage?: FormBuilder.DefaultValueLinkage;
@@ -19,7 +19,12 @@ type XInternal = {
   [key: string]: any;
 }
 
-type ISchema = import('@formily/react-schema-renderer').ISchema & { 'x-internal'?: XInternal };
+type ISchema = import('@formily/react-schema-renderer').ISchema & {
+  'x-internal'?: XInternal;
+  properties?: {
+    [key: string]: ISchema;
+  };
+};
 
 type FilterConfig = {
   condition: Condition[];
@@ -156,7 +161,8 @@ type SchemaFieldItem = ISchema & {
   id: string;
   fieldName: string;
   componentName: string;
-  originPathInSchema: string;
+  fieldIndex: string;
+  fieldPath: string;
   parentField?: string;
   tabIndex?: number;
 }

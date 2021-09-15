@@ -10,7 +10,6 @@ import useObservable from '@lib/hooks/use-observable';
 import store from '@flow/content/editor/store';
 import { getFormFieldOptions, FormFieldOption } from '@flow/content/editor/forms/api';
 import FlowContext from '@flow/flow-context';
-import { schemaToMap } from '@lib/schema-convert';
 import type {
   StoreValue,
   FieldPermission as FieldPermissionType,
@@ -82,15 +81,7 @@ export default function FieldPermission({ value, onChange: _onChange }: Props): 
 
   function mergeField(): void {
     const { custom = [], system = [] } = fieldPermissionDecoder(value, schema) || {};
-    const { true: systemData, false: _customData } = groupBy(data, ({ isSystem }) => isSystem);
-    const sorter = fp.pipe(
-      fp.groupBy((opt: FormFieldOption) => first(opt.path.split('.'))),
-      fp.map((customDataOptions: FormFieldOption[]) => {
-        return fp.sortBy((opt) => opt.path.length, customDataOptions);
-      }),
-      fp.flattenDeep,
-    );
-    const customData: FormFieldOption[] = sorter(_customData);
+    const { true: systemData, false: customData } = groupBy(data, ({ isSystem }) => isSystem);
     customData?.forEach((field) => {
       const oldCustomField = custom.find(({ id }) => id === field.value);
       const newCustomField = {
@@ -100,11 +91,15 @@ export default function FieldPermission({ value, onChange: _onChange }: Props): 
         write: field.write,
         hidden: field.isLayout,
         invisible: field.invisible,
+        editable: field.editable,
         path: field.path,
         ...INITIAL_VALUE,
       };
       !oldCustomField && custom.push(newCustomField);
-      oldCustomField && merge(oldCustomField, { fieldName: newCustomField.fieldName });
+      oldCustomField && merge(oldCustomField, {
+        fieldName: newCustomField.fieldName,
+        path: newCustomField.path,
+      });
     });
     systemData?.forEach((field) => {
       !system.find(({ id }) => id === field.value) && system.push({
@@ -114,7 +109,14 @@ export default function FieldPermission({ value, onChange: _onChange }: Props): 
         invisible: field.invisible,
       });
     });
-    setMergedFieldPermissions({ system, custom });
+    const sorter = fp.pipe(
+      fp.groupBy((opt: FormFieldOption) => first(opt.path?.split('.'))),
+      fp.map((customDataOptions: FormFieldOption[]) => {
+        return fp.sortBy((opt) => opt.path?.length, customDataOptions);
+      }),
+      fp.flattenDeep,
+    );
+    setMergedFieldPermissions({ system, custom: sorter(custom) });
   }
 
   function handleEditableChange(): void {
@@ -149,7 +151,7 @@ export default function FieldPermission({ value, onChange: _onChange }: Props): 
           <CustomFieldTable
             editable={editable}
             fields={mergedFieldPermissions.custom}
-            schemaMap={schemaToMap(schema)}
+            schema={schema}
             updateFields={onUpdateFields('custom')}
           />
         </section>
