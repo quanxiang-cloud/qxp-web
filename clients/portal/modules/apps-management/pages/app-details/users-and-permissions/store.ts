@@ -95,7 +95,7 @@ class UserAndPerStore {
   }
 
   @action
-  fetchRights = (): void => {
+  fetchRights = (rightId: string): void => {
     if (!this.appID) {
       return;
     }
@@ -104,6 +104,11 @@ class UserAndPerStore {
       const { list = [] } = res || {};
       this.rightsList = list;
       this.tempRightList = deepClone(this.rightsList);
+      if (rightId) {
+        this.currentRights = this.rightsList.find((rights) => rights.id === rightId) || INIT_CURRENT_RIGHTS;
+        this.rightsGroupID = rightId;
+        return;
+      }
       this.currentRights = this.rightsList[0] || INIT_CURRENT_RIGHTS;
       this.rightsGroupID = list[0]?.id;
     }).catch((err) => {
