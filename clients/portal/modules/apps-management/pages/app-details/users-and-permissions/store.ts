@@ -56,6 +56,8 @@ class UserAndPerStore {
   addRightsGroup = (rights: RightsCreate): Promise<void> => {
     return createPerGroup(this.appID, rights).then((res: any) => {
       this.rightsList = [...this.rightsList, { ...rights, ...res }];
+      this.currentRights = { ...rights, ...res };
+      this.rightsGroupID = this.currentRights.id;
       this.tempRightList = [...this.rightsList, { ...rights, ...res }];
     });
   }

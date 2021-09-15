@@ -172,7 +172,6 @@ function UsersAndPermissions(): JSX.Element {
           <div className='authority-detail flex-1 pt-5 overflow-hidden'>
             <Tab
               currentKey={tabCurrentKey}
-              separator
               strechNavs={false}
               items={tabItems}
               className='w-full h-full rights-tab'
