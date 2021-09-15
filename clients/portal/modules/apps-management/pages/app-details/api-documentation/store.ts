@@ -60,11 +60,9 @@ class ApiDocStore {
 
   @action
   changeKeyword = (keyword: string): void => {
-    if (keyword) {
-      this.dataModels = this.tempDataModels.filter((dataModel: DataModel) => dataModel.title?.match(keyword));
-    } else {
-      this.dataModels = deepClone(this.tempDataModels);
-    }
+    this.dataModels = !keyword ? deepClone(this.tempDataModels) :
+      this.tempDataModels.filter(({ title }: DataModel) =>
+        title?.match(keyword));
     this.currentDataModel = this.dataModels[0] || INIT_CURRENT_MODEL;
     this.tableID = this.dataModels[0]?.tableID;
     this.defaultActiveKey = this.currentDataModel.source === 1 ? 'pageForm' : 'dataModel';

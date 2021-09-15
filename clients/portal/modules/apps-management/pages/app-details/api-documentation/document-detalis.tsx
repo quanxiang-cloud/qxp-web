@@ -32,7 +32,7 @@ export const FIELD_COLUMNS: UnionColumns<ModelField>[] = [
     id: 'id',
     accessor: (rowData) => (
       <div className='flex relative items-center field-id'>
-        <span className='mr-10'>{rowData.id}</span>
+        <span>{rowData.id}</span>
         <Tooltip
           position="top"
           label="复制"
@@ -43,7 +43,7 @@ export const FIELD_COLUMNS: UnionColumns<ModelField>[] = [
           <Icon
             name="content_copy"
             size={16}
-            className='text-inherit'
+            className='text-inherit m-10'
             onClick={() => copyContent(rowData.id)}
           />
         </Tooltip>
@@ -111,7 +111,7 @@ function renderApiDetails(): JSX.Element {
             <Icon
               name="content_copy"
               size={20}
-              className='text-inherit'
+              className='text-inherit m-10'
               onClick={() => copyContent(store.APiContent.input)}
             />
           </Tooltip>
