@@ -15,7 +15,7 @@ import DirectLeaderChoose from './direct-leader-modal';
 
 const { TextField, CheckboxGroupField } = Form;
 
-const EMAIL_HELP = '企业成员的真实邮箱，设置后可以通过邮箱接收到全象云平台发送的各类消息提醒（手机号/邮箱，两者中至少必填一项）。';
+const EMAIL_HELP = '企业成员的真实邮箱，设置后可以通过邮箱接收到中国恩菲平台发送的各类消息提醒（手机号/邮箱，两者中至少必填一项）。';
 
 export type FormValues = {
   position: string;

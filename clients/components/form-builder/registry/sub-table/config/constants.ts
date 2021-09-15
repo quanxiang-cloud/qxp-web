@@ -31,8 +31,10 @@ import LinkedTable from './fields/linked-table';
 import { AddOperate } from './fields/operates';
 import CustomizedDatasetBtn from '../../cascade-selector/customized-dataset-btn';
 import DataSetSelector from '../../cascade-selector/dataset-selector';
-import DefaultValueLinkageConfigBtn
-  from '../../../form-settings-panel/form-field-config/default-value-linkage-config-btn';
+import DefaultValueLinkageConfigBtn from
+  '@c/form-builder/form-settings-panel/form-field-config/default-value-linkage-config-btn';
+import InputForLabels from '@c/form-builder/form-settings-panel/form-field-config/input-for-labels';
+import DatasetConfig from '@c/form-builder/form-settings-panel/form-field-config/dataset-config';
 
 import * as inputConverter from '../../../registry/input/convertor';
 import * as textareaConverter from '../../../registry/textarea/convertor';
@@ -59,7 +61,9 @@ export const COMPONENTS: Record<string, JSXElementConstructor<ISchemaFieldCompon
   subtablecolumns: SubTableColumns,
   linkedtable: LinkedTable,
   switch: Switch,
+  // todo delete this
   arraytable: ArrayTable,
+  inputforlabels: InputForLabels,
   addoperate: AddOperate,
   numberpicker: NumberPicker,
   datepicker: DatePicker,
@@ -67,6 +71,7 @@ export const COMPONENTS: Record<string, JSXElementConstructor<ISchemaFieldCompon
   radiogroup: Radio.Group,
   customizeddatasetbtn: CustomizedDatasetBtn,
   datasetselector: DataSetSelector,
+  datasetconfig: DatasetConfig,
 };
 
 export type KeyOfConfigComponent = keyof typeof CONFIG_COMPONENTS;
