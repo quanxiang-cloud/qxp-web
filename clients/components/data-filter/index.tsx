@@ -212,9 +212,12 @@ function DataFilter({
         />
         条件的数据
       </div>
-      <div className='qxp-data-filter-box beauty-scroll'>
+      <div className='qxp-data-filter-box overflow-hidden'>
         {conditions.map((condition) => (
-          <div key={condition.id} className='flex gap-x-8 py-16 px-8 mt-8 items-center bg-gray-100 rounded-8'>
+          <div
+            key={condition.id}
+            className='flex gap-x-8 mt-8 items-center px-8 h-64 w-full rounded-8 bg-gray-100 overflow-auto'
+          >
             <div>
               <Controller
                 name={'field-' + condition.id}
@@ -234,8 +237,7 @@ function DataFilter({
                       }}
                     />
                   );
-                }
-                }
+                }}
               />
             </div>
             {condition.filter ? (
@@ -289,7 +291,7 @@ function DataFilter({
                     render={({ field }) => (
                       condition.valueFrom === 'form' ? (
                         <FormFieldSelect
-                          style={{ width: '270px' }}
+                          style={{ width: '280px' }}
                           error={errors['condition-' + condition.id]}
                           register={field}
                           options={condition.associationFieldsOptions || []}
@@ -299,7 +301,7 @@ function DataFilter({
                           error={errors['condition-' + condition.id]}
                           register={{ ...field, value: field.value ? field.value : '' }}
                           field={condition.filter}
-                          style={{ width: '270px' }}
+                          style={{ width: '280px' }}
                         />
                       )
                     )

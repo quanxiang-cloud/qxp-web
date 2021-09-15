@@ -1,6 +1,7 @@
 import { action, computed, IReactionDisposer, observable, reaction } from 'mobx';
 
 import toast from '@lib/toast';
+import { deepClone } from '@lib/utils';
 import { getTableSchema } from '@lib/http-client';
 
 import { fetchDataModels } from '../api';
@@ -18,6 +19,7 @@ class ApiDocStore {
   @observable appID = '';
   @observable tableID = '';
   @observable dataModels: DataModel[] = [];
+  @observable tempDataModels: DataModel[] = [];
   @observable currentDataModel: DataModel = INIT_CURRENT_MODEL;
   @observable APiContent: APiContent = INIT_API_CONTENT;
   @observable dataModelSchema: DataModelSchema = INIT_MODEL_SCHEMA;
@@ -25,6 +27,7 @@ class ApiDocStore {
   @observable isAPITabLoading = true;
   @observable useFieldsID = false;
   @observable ApiPath = '';
+  @observable defaultActiveKey = 'pageForm'
   @observable docType: DocType = 'curl';
   @observable params: DataModelsParameter = {}
 
@@ -48,11 +51,23 @@ class ApiDocStore {
     fetchDataModels(this.appID, this.params).then((res) => {
       const { list = [] } = res || {};
       this.dataModels = list;
-      this.currentDataModel = this.dataModels[0] || INIT_CURRENT_MODEL;
-      this.tableID = list[0]?.tableID;
+      this.tempDataModels = deepClone(this.dataModels);
+      this.changeKeyword('');
     }).catch((err) => {
       toast.error(err);
     });
+  }
+
+  @action
+  changeKeyword = (keyword: string): void => {
+    if (keyword) {
+      this.dataModels = this.tempDataModels.filter((dataModel: DataModel) => dataModel.title?.match(keyword));
+    } else {
+      this.dataModels = deepClone(this.tempDataModels);
+    }
+    this.currentDataModel = this.dataModels[0] || INIT_CURRENT_MODEL;
+    this.tableID = this.dataModels[0]?.tableID;
+    this.defaultActiveKey = this.currentDataModel.source === 1 ? 'pageForm' : 'dataModel';
   }
 
   @action
