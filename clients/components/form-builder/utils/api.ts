@@ -13,12 +13,15 @@ function convertPagesToOptions(
   appPages: AppPage[],
   options: Array<{ label: string; value: string }>,
 ): Array<{ label: string; value: string }> {
-  appPages.forEach(({ id, name, child }) => {
+  appPages.forEach(({ id, name, child, menuType }) => {
     if (Array.isArray(child)) {
       convertPagesToOptions(child, options);
       return;
     }
-    options.push({ label: name, value: id });
+
+    if (menuType === MenuType.schemaForm) {
+      options.push({ label: name, value: id });
+    }
   });
 
   return options;
@@ -33,8 +36,7 @@ export function getLinkageTables(appID: string): Promise<Array<{ label: string; 
       return [];
     }
 
-    const appPages = res.menu.filter(({ menuType }) => menuType === MenuType.schemaForm);
-    return convertPagesToOptions(appPages, []);
+    return convertPagesToOptions(res.menu, []);
   }).catch((err) => {
     logger.error(err);
     return [];
