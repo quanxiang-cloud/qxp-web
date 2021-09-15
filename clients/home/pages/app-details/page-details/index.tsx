@@ -16,7 +16,7 @@ import store from '../store';
 import './index.scss';
 
 function PageDetails(): JSX.Element | null {
-  const { curPage, fetchSchemeLoading, formScheme } = store;
+  const { curPage, fetchSchemeLoading } = store;
   const [modalType, setModalType] = useState('');
   const [curRowID, setCurRowID] = useState('');
   const formTableRef = useRef<Ref>(null);
@@ -108,20 +108,19 @@ function PageDetails(): JSX.Element | null {
       if (fetchSchemeLoading) {
         return <PageLoading />;
       }
-      if (formScheme) {
-        return (
-          <FormAppDataTable
-            ref={formTableRef}
-            tableHeaderBtnList={tableHeaderBtnList}
-            customColumns={customColumns}
-            appID={store.appID}
-            pageID={store.pageID}
-            allowRequestData={true}
-            style={{ height: 'calc(100% - 62px)' }}
-            className={cs('p-20', { 'form-table-hidden': modalType === 'dataForm' })}
-          />
-        );
-      }
+
+      return (
+        <FormAppDataTable
+          ref={formTableRef}
+          tableHeaderBtnList={tableHeaderBtnList}
+          customColumns={customColumns}
+          appID={store.appID}
+          pageID={store.pageID}
+          allowRequestData={true}
+          style={{ height: 'calc(100% - 62px)' }}
+          className={cs('p-20', { 'form-table-hidden': modalType === 'dataForm' })}
+        />
+      );
     }
   };
 
