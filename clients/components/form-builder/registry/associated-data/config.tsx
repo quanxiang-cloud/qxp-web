@@ -39,6 +39,7 @@ const SUPPORT_COMPONENT = [
   'CascadeSelector',
   'UserPicker',
   'OrganizationPicker',
+  'Serial',
 ];
 const WHITE_LIST = ['input', 'numberpicker', 'userpicker', 'datepicker'];
 
