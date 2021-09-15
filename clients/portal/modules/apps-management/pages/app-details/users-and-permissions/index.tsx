@@ -10,6 +10,7 @@ import toast from '@lib/toast';
 import Search from '@c/search';
 import MoreMenu from '@c/more-menu';
 import TextHeader from '@c/text-header';
+import { getQuery } from '@lib/utils';
 
 import EditRightModal from './edit-right-modal';
 import AssociatedPerson from './associated-personnel';
@@ -24,10 +25,11 @@ function UsersAndPermissions(): JSX.Element {
   const [tabCurrentKey, setTabCurrentKey] = useState('associate');
   const [showDeleteRightModal, setShowDeleteRightModal] = useState(false);
   const { appID } = useParams<AppParams>();
+  const { id } = getQuery<{ id: string }>();
 
   useEffect(() => {
     store.appID = appID;
-    store.fetchRights();
+    store.fetchRights(id);
     return () => {
       store.appID = '';
     };
@@ -177,6 +179,7 @@ function UsersAndPermissions(): JSX.Element {
               className='w-full h-full rights-tab'
               navsClassName='tab-title'
               contentClassName='m-16 mb-0'
+              onChange={setTabCurrentKey}
             />
             <div
               className='rights-mes text-white '
