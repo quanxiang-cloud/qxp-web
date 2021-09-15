@@ -96,7 +96,7 @@
       white-space: nowrap;
     }
   }
-  .rights-tab { 
+  .rights-tab {
     .tab-navs{
       width: 96%;
       height: 52px;
@@ -134,11 +134,11 @@
   }
 
   .ant-menu-submenu:hover>.ant-menu-submenu-title>.ant-menu-submenu-expand-icon, .ant-menu-submenu:hover>.ant-menu-submenu-title>.ant-menu-submenu-arrow {
-     color: inherit; 
+     color: inherit;
   }
 
   .ant-menu-submenu-selected {
-    color: inherit; 
+    color: inherit;
   }
 
   .ant-menu {
@@ -155,7 +155,7 @@
       padding-left: 48px !important;
     }
 
-    [role="menuitem"]:hover, 
+    [role="menuitem"]:hover,
     .ant-menu-item-selected {
       color: var(--gray-900);
       font-size: 16px;
@@ -175,7 +175,7 @@
     }
 
     .ant-menu-submenu-title {
-      padding-left: 50px !important; 
+      padding-left: 50px !important;
       .ant-menu-submenu-arrow {
         left: 21px
       }
@@ -242,7 +242,7 @@
   padding: 0 24px;
   align-items: center;
   justify-items: left;
-  grid-template-columns: auto 100px 100px 100px;
+  grid-template-columns: minmax(0, 1fr) 100px 100px;
   grid-column-gap: 16px;
   border-bottom: 1px solid var(--gray-200);
   font-size: 14px;
@@ -284,7 +284,7 @@
   border: 1px solid var(--gray-200);
   overflow-x: auto;
   .data-permission-item{
-    display: flex;  
+    display: flex;
     justify-content: space-between;
     padding-left: 16px;
     align-items:  center;

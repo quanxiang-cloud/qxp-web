@@ -92,7 +92,6 @@ function CreateDataForm({ appID, pageID, rowID, onCancel, title }: Props): JSX.E
           defaultValue={toJS(defaultValues)}
           schema={schema as ISchema}
           usePermission
-          hiddenInReadOnly
         >
           <FormButtonGroup className='pl-96'>
             <Button
