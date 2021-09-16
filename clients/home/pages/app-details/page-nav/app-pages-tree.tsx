@@ -148,7 +148,7 @@ export default class PureTree extends Component<Props, { tree: TreeData }> {
 
     return (
       <Tree
-        isDragEnabled={false}
+        isDragEnabled
         tree={tree}
         onExpand={this.onExpand}
         onCollapse={this.onCollapse}
