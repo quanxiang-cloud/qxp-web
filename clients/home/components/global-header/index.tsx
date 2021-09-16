@@ -16,7 +16,7 @@ export default function GlobalHeader() {
         <HeaderNav />
         <img
           className="flex-1 h-48"
-          src="/dist/images/enfei/enfei-china.png"
+          src="/dist/images/quanxiangyun.svg"
           alt="quanxiangyun"
         />
         <HeaderMenu />
