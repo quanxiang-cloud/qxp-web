@@ -86,8 +86,31 @@ export default function Form({
   const { appID } = useContext(FlowContext);
   const [sourceTableSchema, isLoading] = useTableSchema(appID, workForm?.value || '');
 
-  if (isLoading || !sourceTableSchema.length) {
+  if (isLoading) {
     // todo handle error case
+    return (<div>loading...</div>);
+  }
+
+  // this a patch.
+  // when creating work flow, selecting working-table should be the first step, nothing else
+  // all nodes in flow requires working-table, expect the start node
+  if (defaultValue.type === 'formData') {
+    return (
+      <FlowTableContext.Provider
+        value={{
+          tableID: workForm?.value || '',
+          tableName: workForm?.name || '',
+          tableSchema: sourceTableSchema,
+        }}
+      >
+        <div className="flex-1 flex flex-col" style={{ height: 'calc(100% - 56px)' }}>
+          {getConfigForm()}
+        </div>
+      </FlowTableContext.Provider>
+    );
+  }
+
+  if (!sourceTableSchema.length) {
     return (<div>loading...</div>);
   }
 
