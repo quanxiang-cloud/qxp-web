@@ -74,6 +74,7 @@ class FormDesignStore {
         readOnly: false,
         title: configValue.title,
         type: configValue.type,
+        'x-index': 0,
         'x-component': componentName,
         'x-component-props': configValue['x-component-props'],
         'x-internal': {
