@@ -57,8 +57,6 @@ const CUSTOM_RIGHTS =
 
 function RightsCard({ rightsCardData, onChange, selectNumber, abled }: CardProps): JSX.Element {
   const { options, key } = rightsCardData;
-  const [indeterminate, setIndeterminate] = useState(false);
-  const [checkAll, setCheckAll] = useState(true);
   const [selected, setSelected] = useState<number[]>(options.map(() => 0));
 
   useEffect(() => {
@@ -66,12 +64,6 @@ function RightsCard({ rightsCardData, onChange, selectNumber, abled }: CardProps
   }, [rightsCardData]);
 
   useEffect(() => {
-    setIndeterminate(selected.includes(0) && selected.includes(1));
-    if (!selected.includes(0)) {
-      setCheckAll(true);
-    } else {
-      setCheckAll(false);
-    }
     onChange(parseInt([...selected].reverse().join(''), 2), key);
   }, [selected]);
 
@@ -102,14 +94,6 @@ function RightsCard({ rightsCardData, onChange, selectNumber, abled }: CardProps
         newSelected[Number(e.target.value)] = 0;
         setSelected(newSelected);
       }
-    }
-  };
-
-  const handleCheckAllChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    if (e.target.checked) {
-      setSelected(options.map(() => 1));
-    } else {
-      setSelected(options.map(() => 0));
     }
   };
 
