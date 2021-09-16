@@ -92,8 +92,8 @@ export default function Form({
   }
 
   // this a patch.
-  // when creating work flow, selecting working-table should be the first step, nothing else
-  // all nodes in flow requires working-table, expect the start node
+  // When creating work flow, selecting working-table should be the first step, nothing else.
+  // All nodes in flow requires working-table, except the start node.
   if (defaultValue.type === 'formData') {
     return (
       <FlowTableContext.Provider
