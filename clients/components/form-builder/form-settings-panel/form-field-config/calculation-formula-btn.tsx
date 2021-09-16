@@ -15,7 +15,7 @@ function getVariables(schema: ISchema): Array<{ fieldName: string; title: string
       return false;
     }
 
-    return schema.type === 'number';
+    return field.type === 'number';
   }).sort((currentField, nextField) => {
     return numberTransform(currentField) - numberTransform(nextField);
   }).map((field) => ({ fieldName: field.id, title: field.title as string }));
