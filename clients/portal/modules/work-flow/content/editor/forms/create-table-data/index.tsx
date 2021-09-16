@@ -121,6 +121,7 @@ function FormCreateTableData({ defaultValue, onSubmit, onCancel, onChange: _onCh
         {switchTableModal && (
           <Modal
             title='切换目标数据表'
+            onClose={()=> setSwitchTableModal(false)}
             footerBtns={[
               {
                 key: 'cancel',
