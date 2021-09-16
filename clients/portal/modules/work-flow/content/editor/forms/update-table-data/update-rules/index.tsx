@@ -4,7 +4,6 @@ import { useQuery } from 'react-query';
 import Button from '@c/button';
 import { getFormFieldSchema } from '@flow/content/editor/forms/api';
 import { ValueRuleVal } from '@flow/content/editor/type';
-import { schemaToMap } from '@lib/schema-convert';
 
 import RuleItem from './rule-item';
 
@@ -60,7 +59,7 @@ function UpdateRules({ appId, tableId, defaultValue }: Props, ref: React.Ref<Ref
           {rules.map((rule, idx) =>
             (<RuleItem
               key={[rule.fieldName, idx].join('-')}
-              targetSchema={schemaToMap(targetSchema)}
+              targetSchema={targetSchema}
               onRemove={() => onRemove(idx)}
               onChange={(data) => onChange(data, idx)}
               rule={rule}
