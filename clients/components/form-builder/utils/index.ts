@@ -1,4 +1,4 @@
-import { get, has, stubTrue, merge } from 'lodash';
+import { get, has, merge } from 'lodash';
 import { customAlphabet } from 'nanoid';
 import fp, {
   pipe, entries, filter, fromPairs, every, equals, property, curry, map, cond, values,
@@ -158,22 +158,22 @@ export function schemaPermissionTransformer<T extends ISchema>(schema: T): T {
     return !!get(field, 'x-internal.isLayoutComponent');
   }
   function permissionTransformer(permissionToOverwrite: PermissionToOverwrite, field: ISchema): () => void {
+    field?.['x-internal']?.isSystem && Object.assign(permissionToOverwrite, { display: false });
     return () => merge(field, permissionToOverwrite);
   }
 
+  const permissionToSchemaProperties = (field: ISchema, permission: PERMISSION): void => {
+    const transformer = cond([
+      [isPermissionReadOnly, permissionTransformer({ display: true, readOnly: true }, field)],
+      [isPermissionInvisible, permissionTransformer({ display: false }, field)],
+      [isPermissionNormal, permissionTransformer({ display: true, readOnly: false }, field)],
+    ]);
+    transformer(permission);
+  };
+
   const fieldTransform = pipe(
     (field: ISchema) => [fp.get('x-internal.permission', field), field],
-    ([permission, field]: [PERMISSION, ISchema]) => cond([
-      [(permission: PERMISSION) => isPermissionReadOnly(permission), permissionTransformer({
-        display: true, readOnly: true,
-      }, field)],
-      [(permission: PERMISSION) => isPermissionInvisible(permission) || !!field?.['x-internal']?.isSystem,
-        permissionTransformer({ display: false }, field),
-      ],
-      [stubTrue, permissionTransformer({
-        display: true, readOnly: false,
-      }, field)],
-    ])(permission),
+    ([permission, field]: [PERMISSION, ISchema]) => permissionToSchemaProperties(field, permission),
   );
 
   const schemaPermissionTransform = pipe(
@@ -265,6 +265,10 @@ export function isPermissionInvisible(permission: PERMISSION): boolean {
 
 export function isPermissionReadOnly(permission: PERMISSION): boolean {
   return [READONLY_NO_WRITE, READONLY_WITH_WRITE].includes(permission);
+}
+
+export function isPermissionNormal(permission: PERMISSION): boolean {
+  return permission === NORMAL;
 }
 
 export function isPermissionReadable(permission: PERMISSION): boolean {

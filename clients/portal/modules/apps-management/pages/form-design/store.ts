@@ -9,7 +9,7 @@ import FormStore from '@c/form-builder/store';
 import AppPageDataStore from '@c/form-app-data-table/store';
 import { TableConfig } from '@c/form-app-data-table/type';
 import { setFixedParameters, SHOW_FIELD } from '@c/form-app-data-table/utils';
-import { SYSTEM_FIELDS } from '@c/form-builder/constants';
+import { INVISIBLE_NO_WRITE, READONLY_NO_WRITE, SYSTEM_FIELDS } from '@c/form-builder/constants';
 
 import { createPageScheme } from './api';
 
@@ -77,7 +77,7 @@ class FormDesignStore {
         'x-component': componentName,
         'x-component-props': configValue['x-component-props'],
         'x-internal': {
-          permission: configValue.displayModifier === 'hidden' ? 5 : 1,
+          permission: configValue.displayModifier === 'hidden' ? INVISIBLE_NO_WRITE : READONLY_NO_WRITE,
           isSystem: configValue.isSystem,
         },
       };
