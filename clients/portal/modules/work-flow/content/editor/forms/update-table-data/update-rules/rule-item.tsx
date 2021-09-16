@@ -126,12 +126,16 @@ function RuleItem(props: Props): JSX.Element {
         value={item.fieldName}
         onChange={(fieldName: string) => onChange({ fieldName } as Rule)}
       />
-      <div className="mx-5">=</div>
-      <Select
-        options={valueFromOptions}
-        value={item.valueFrom}
-        onChange={(valueFrom) => onChange({ valueFrom } as Rule)}
-      />
+      {item.fieldName && (
+        <>
+          <div className="mx-5">=</div>
+          <Select
+            options={valueFromOptions}
+            value={item.valueFrom}
+            onChange={(valueFrom) => onChange({ valueFrom } as Rule)}
+          />
+        </>
+      )}
       <div className="inline-flex items-center custom-field__value ml-8">
         {renderValueBox()}
       </div>
