@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useQuery } from 'react-query';
-import { groupBy, merge, first } from 'lodash';
+import { groupBy, merge, first, isEqual } from 'lodash';
+import { useUpdateEffect } from 'react-use';
 import fp from 'lodash/fp';
 
 import Toggle from '@c/toggle';
@@ -65,6 +66,10 @@ export default function FieldPermission({ value, onChange: _onChange }: Props): 
       setEditable(true);
     }
   }, [mergedFieldPermissions.custom]);
+
+  useUpdateEffect(() => {
+    !isEqual(value, mergedFieldPermissions) && _onChange({ fieldPermission: mergedFieldPermissions });
+  }, [mergedFieldPermissions]);
 
   function onChange(fieldPermission: FieldPermissionType): void {
     _onChange({ fieldPermission: fieldPermissionEncoder(fieldPermission) });
