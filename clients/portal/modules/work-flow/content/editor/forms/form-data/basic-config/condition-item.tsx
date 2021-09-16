@@ -83,6 +83,13 @@ export default function ConditionItem({ condition, options, onChange, schemaMap 
       return moment(v);
     }) as unknown as typeof rangePickerDefaultValue;
   }
+  // always render radio group as select
+  if (currentSchema.componentName === 'radiogroup') {
+    Object.assign(schema.properties?.[value], {
+      componentName: 'select',
+      'x-component': 'Select',
+    });
+  }
 
   return (
     <>
