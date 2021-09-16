@@ -1,6 +1,8 @@
 import qs from 'qs';
 import { CustomPageInfo, SchemaPageInfo } from '@portal/modules/apps-management/pages/app-details/type';
 
+let alreadyAlertUnauthorizedError = false;
+
 function httpClient<TData>(path: string, body?: unknown, additionalHeaders?: HeadersInit): Promise<TData> {
   const headers = {
     'X-Proxy': 'API',
@@ -14,7 +16,11 @@ function httpClient<TData>(path: string, body?: unknown, additionalHeaders?: Hea
     headers: headers,
   }).then((response) => {
     if (response.status === 401) {
-      alert('当前会话已失效，请重新登录!');
+      if (!alreadyAlertUnauthorizedError) {
+        alreadyAlertUnauthorizedError = true;
+        alert('当前会话已失效，请重新登录!');
+      }
+
       window.location.reload();
       return Promise.reject(new Error('当前会话已失效，请重新登录!'));
     }
