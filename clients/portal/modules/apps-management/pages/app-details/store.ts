@@ -7,12 +7,12 @@ import toast from '@lib/toast';
 import { buildAppPagesTreeData } from '@lib/utils';
 import { getCustomPageInfo, getSchemaPageInfo, getTableSchema } from '@lib/http-client';
 
-import { getPageCardList } from './utils';
 import { CardList, CustomPageInfo, MenuType } from './type';
 import { fetchAppList } from '../entry/app-list/api';
 import { DefaultPageDescriptions } from './constants';
 import { getNextTreeItem } from './page-menu-design/app-pages-tree';
 import {
+  getPageCardList,
   filterDeletedPage,
   mapToSchemaPageDescription,
   mapToCustomPageDescription,
@@ -290,12 +290,11 @@ class AppDetailsStore {
 
   @action
   setCurPage = (pageID: string) => {
-    const pageInfo = this.pagesTreeData.items[pageID].data;
-
     if (!pageID) {
       return;
     }
 
+    const pageInfo = this.pagesTreeData.items[pageID].data;
     this.fetchSchemeLoading = true;
     this.curPageCardList = DEFAULT_CARD_LIST;
 
@@ -303,23 +302,26 @@ class AppDetailsStore {
       getTableSchema(this.appID, pageInfo.id).then((pageSchema) => {
         this.hasSchema = !!pageSchema;
         if (this.hasSchema) {
-          getSchemaPageInfo(this.appID, pageID).then((res) => {
-            const descriptions = this.pageDescriptions.map((description) => {
-              return mapToSchemaPageDescription(description, res);
-            });
-            this.pageDescriptions = [...descriptions];
-            this.curPreviewUrl = '';
-            return getPageCardList(this.appID, this.pageID, this.curPageCardList, pageInfo.menuType);
-          }).then((res) => {
-            this.curPageCardList = res;
-          }).catch(() => {
-            toast.error('获取表单信息失败');
+          return getSchemaPageInfo(this.appID, pageID);
+        }
+      }).then((res) => {
+        if (res) {
+          const descriptions = this.pageDescriptions.map((description) => {
+            return mapToSchemaPageDescription(description, res);
           });
+          this.pageDescriptions = [...descriptions];
+          this.curPreviewUrl = '';
+          return getPageCardList(this.appID, this.pageID, this.curPageCardList, pageInfo.menuType);
         }
         this.pageDescriptions = DefaultPageDescriptions;
+      }).then((res) => {
+        if (res) {
+          this.curPageCardList = res;
+          return;
+        }
         this.curPageCardList = DEFAULT_CARD_LIST;
       }).catch(() => {
-        toast.error('获取页面schema失败');
+        toast.error('获取表单信息失败');
       }).finally(() => {
         this.fetchSchemeLoading = false;
       });
@@ -336,7 +338,7 @@ class AppDetailsStore {
       }).then((res) => {
         this.curPageCardList = res;
       }).catch(() => {
-        toast.error('获取关联自定义页面失败');
+        toast.error('获取自定义页面信息失败');
       }).finally(() => {
         this.fetchSchemeLoading = false;
       });

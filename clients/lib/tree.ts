@@ -16,7 +16,7 @@ function treeReduce<T, S extends Record<string, any>>(
   if (!node) {
     return init;
   }
-  Object.assign(node, { fieldPath });
+  !isInChildKeys(_childKey, currentIndex) && Object.assign(node, { fieldPath });
   const acc = reducer(init, node, currentIndex);
   const childKey = getChildKey(_childKey, node);
   const currentChild: S[] | Record<string, S> & S | undefined = node?.[childKey];
@@ -61,9 +61,14 @@ function treeMap<T extends Record<string, any> >(
   };
 }
 
+function isInChildKeys(childKey: string | string[], key?: string | number): boolean {
+  const childKeys = isArray(childKey) ? childKey : [childKey];
+  return childKeys.includes(`${key}`);
+}
+
 function toArray<T extends Record<string, any>>(childKey: string | string[], tree: T): T[] {
   function flattenToArray(arr: T[], node: T, nodeIndex?: string | number): T[] {
-    Object.assign(node, { fieldIndex: nodeIndex });
+    !isInChildKeys(childKey, nodeIndex) && Object.assign(node, { fieldIndex: nodeIndex });
     return arr.concat(node);
   }
   return treeReduce(flattenToArray, childKey, [], tree);

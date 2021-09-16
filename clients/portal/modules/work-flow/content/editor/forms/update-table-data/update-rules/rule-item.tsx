@@ -13,9 +13,10 @@ import FlowContext from '@flow/flow-context';
 import { getFlowVariables } from '@flow/content/editor/forms/api';
 import Context from '../context';
 import FormulaModal from '../formula-modal';
+import { schemaToMap } from '@lib/schema-convert';
 
 interface Props {
-  targetSchema: Record<string, SchemaFieldItem>;
+  targetSchema?: ISchema;
   rule: Rule;
   onRemove: () => void;
   onChange: (data: Partial<Rule>) => void;
@@ -37,6 +38,7 @@ function RuleItem(props: Props): JSX.Element {
   const { data: variables, isLoading: loadingVariables } = useQuery(['FETCH_PROCESS_VARIABLES'], () => {
     return getFlowVariables(flowID);
   });
+  const targetSchemaMap = schemaToMap(props.targetSchema);
 
   const onChange = (val: Partial<Rule> = {}): void => {
     setItem((v) => ({ ...v, ...val }));
@@ -68,7 +70,7 @@ function RuleItem(props: Props): JSX.Element {
 
     if (rule === 'fixedValue') {
       const { fieldName } = item;
-      const fieldProps = get(props.targetSchema, fieldName) || {};
+      const fieldProps = get(targetSchemaMap, fieldName) || {};
       const defaultVal = (data.updateRule || []).find(
         ({ fieldName }) => fieldName === item.fieldName,
       )?.valueOf;
@@ -92,7 +94,6 @@ function RuleItem(props: Props): JSX.Element {
     if (rule === 'formula') {
       return (
         <div className="inline-flex flex-col items-center">
-          <span className="mr-5">{item.valueOf as string}</span>
           <Button onClick={() => setFormulaModalOpen(true)}>编辑公式</Button>
         </div>
       );
@@ -105,7 +106,7 @@ function RuleItem(props: Props): JSX.Element {
         );
       }
 
-      const fieldCompName = (get(props.targetSchema, `${item.fieldName}.x-component`) as string)
+      const fieldCompName = (get(targetSchemaMap, `${item.fieldName}.x-component`) as string)
         .toLowerCase();
 
       return (
@@ -122,16 +123,20 @@ function RuleItem(props: Props): JSX.Element {
     <div className="flex items-center mb-10">
       <span className="text-caption">目标表:</span>
       <Select
-        options={getSchemaFields(Object.values(props.targetSchema), { noSystem: true })}
+        options={getSchemaFields(Object.values(targetSchemaMap), { noSystem: true })}
         value={item.fieldName}
         onChange={(fieldName: string) => onChange({ fieldName } as Rule)}
       />
-      <div className="mx-5">=</div>
-      <Select
-        options={valueFromOptions}
-        value={item.valueFrom}
-        onChange={(valueFrom) => onChange({ valueFrom } as Rule)}
-      />
+      {item.fieldName && (
+        <>
+          <div className="mx-5">=</div>
+          <Select
+            options={valueFromOptions}
+            value={item.valueFrom}
+            onChange={(valueFrom) => onChange({ valueFrom } as Rule)}
+          />
+        </>
+      )}
       <div className="inline-flex items-center custom-field__value ml-8">
         {renderValueBox()}
       </div>
@@ -141,6 +146,7 @@ function RuleItem(props: Props): JSX.Element {
           onClose={() => setFormulaModalOpen(false)}
           onSave={saveFormula}
           defaultValue={item.valueOf as string}
+          targetSchema={props.targetSchema}
         />
       )}
     </div>

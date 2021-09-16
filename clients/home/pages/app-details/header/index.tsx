@@ -50,7 +50,7 @@ function DetailsHeader(): JSX.Element {
       }
       setAppList(res.data);
     });
-  }, []);
+  }, [appID]);
 
   const handleChange = (newAppId: string): void => {
     history.replace(location.pathname.replace(appID, newAppId));

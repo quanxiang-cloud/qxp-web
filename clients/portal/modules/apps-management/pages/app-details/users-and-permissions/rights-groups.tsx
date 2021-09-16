@@ -84,6 +84,11 @@ function RightsGroups(): JSX.Element {
           authority,
         }).then(() => {
           toast.success('保存成功!');
+          store.PerData = {
+            authority,
+            conditions,
+            schema: fieldRef.current?.getFieldPer(),
+          };
           store.updatePerFormList({ ...store.currentPage, authority }, store.rightsGroupID);
           setOpenSet(false);
         }).catch((err) => {

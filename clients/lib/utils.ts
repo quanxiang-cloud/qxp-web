@@ -310,8 +310,8 @@ export function not<A extends any[]>(fn: (...args: [...A]) => boolean) {
 export function quickSortObjectArray<T extends Record<string, T[keyof T]>>(key: string, arr: T[]): T[] {
   if (!arr?.length || !key) return [];
   const [head, ...tail] = arr;
-  const left = tail.filter((e) => e[key] < head[key]);
-  const right = tail.filter((e) => e[key] >= head[key]);
+  const left = tail.filter((e) => (e[key] ?? 0) < (head[key] ?? 0));
+  const right = tail.filter((e) => (e[key] ?? 0) >= (head[key] ?? 0));
   return quickSortObjectArray<T>(key, left).concat(head, quickSortObjectArray(key, right));
 }
 
