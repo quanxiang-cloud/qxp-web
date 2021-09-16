@@ -55,15 +55,15 @@ const SIDE_NAVS = [
     nav_items: [
       {
         id: 'base_info',
-        name: '应用基本信息',
+        name: '基本信息',
       },
       {
         id: 'app_permission',
-        name: '应用授权',
+        name: '业务功能授权',
       },
       {
         id: 'app_manager',
-        name: '应用管理员',
+        name: '管理功能授权',
       },
     ],
   },

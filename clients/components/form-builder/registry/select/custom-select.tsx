@@ -27,7 +27,7 @@ function DropdownRender({ menu, isAllowCustom, onOtherCustomValueChange }: Dropd
       return;
     }
 
-    onOtherCustomValueChange(inputValue);
+    onOtherCustomValueChange(inputValue.slice(0, 15));
     setInputValue('');
   }
 

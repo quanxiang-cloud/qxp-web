@@ -1,10 +1,20 @@
-import React, { useState, useEffect, useImperativeHandle, forwardRef } from 'react';
-import { union, set, get } from 'lodash';
+import React, { useState, useEffect, useImperativeHandle, forwardRef, useRef } from 'react';
+import { get, isNumber, transform } from 'lodash';
 
 import Checkbox from '@c/checkbox';
 import Icon from '@c/icon';
+import { NORMAL, PERMISSION } from '@c/form-builder/constants';
+import { binaryStringToNumber, numberToBinaryString } from '@lib/binary';
+import {
+  calculateFieldPermission,
+  isPermissionEditable,
+  isPermissionInvisible,
+  isPermissionReadable,
+  isPermissionWriteable,
+} from '@c/form-builder/utils';
 
 import store from './store';
+import { COMPONENT_NAME_TITLE_MAP } from './constants';
 
 type Props = {
   fields: SchemaFieldItem[];
@@ -13,235 +23,161 @@ type Props = {
   abled?: boolean
 }
 
+type ConfigValue = {
+  editable: boolean;
+  invisible: boolean;
+  writeable: boolean;
+  readable: boolean;
+  fieldTitle?: string;
+  fieldComponentName?: string;
+  isSystem?: boolean;
+}
+
+type Config = Record<string, ConfigValue>;
+
 function FieldPermissions({
   fields, className = '', fieldPer, abled,
 }: Props, ref: React.Ref<any>): JSX.Element {
-  const [visibleField, setVisibleField] = useState<string[]>([]);
-  const [revisableField, setRevisableField] = useState<string[]>([]);
-  const [hideableField, setHideableField] = useState<string[]>([]);
-  const [vIndeterminate, setVIndeterminate] = useState(false);
-  const [rIndeterminate, setRIndeterminate] = useState(false);
-  const [hIndeterminate, setHIndeterminate] = useState(false);
-  const [vCheckAll, setVCheckAll] = useState(false);
-  const [rCheckAll, setRCheckAll] = useState(false);
-  const [hCheckAll, setHCheckAll] = useState(false);
+  const [permission, setPermission] = useState<ISchema>();
+  const [config, setConfig] = useState<Config>();
+  const fieldNameRefs = useRef(new Map<string, boolean>());
+  const isPermissionDisabled = store.currentRights.types === 1 || !abled;
 
-  const fieldRevisable = fields.filter((field) => !field['x-internal']?.isSystem);
-
-  useImperativeHandle(ref, () => ({
-    getFieldPer: getFieldPer,
-    reset: () => getFields(),
-  }));
-
-  const getPerMission = (key: string): number => {
-    const visible = visibleField.includes(key);
-    const revisable = revisableField.includes(key);
-    const hideable = hideableField.includes(key);
-    const permissions = (visible ? 1 : 0) | (revisable ? 10 : 0) | (hideable ? 100 : 0);
-
-    return parseInt(permissions.toString(), 2);
-  };
-
-  const getFieldPer = (): ISchema => {
-    const properties: Record<string, ISchema> = {};
-    fields.forEach((field) => {
-      set(
-        properties,
-        `${field.fieldName}.x-internal.permission`,
-        getPerMission(field.id),
+  useEffect(() => {
+    const config: Config = {};
+    const permission = fields.reduce((permissionAcc: ISchema, fieldSchema: SchemaFieldItem) => {
+      const defaultPermission = fieldSchema?.['x-internal']?.permission as PERMISSION | undefined;
+      const permission: PERMISSION | undefined = get(
+        fieldPer, `properties.${fieldSchema.id}.x-internal.permission`,
       );
-    });
-
-    // properties._id = {
-    //   title: '_id',
-    //   'x-internal': {
-    //     permission: 5,
-    //   },
-    // };
-
-    return {
-      properties,
-      title: '',
-      type: 'object',
-      'x-internal': { permission: visibleField.length ? 1 : 0 },
-    };
-  };
-
-  const getFields = (): void => {
-    const visibleList: string[] = [];
-    const revisableList: string[] = [];
-    const hideableList: string[] = [];
-    if (fieldPer) {
-      fields.forEach((field) => {
-        switch (get(fieldPer, `properties.${field.fieldName}.x-internal.permission`)) {
-        case 1:
-          visibleList.push(field.id);
-          break;
-        case 3:
-          visibleList.push(field.id);
-          break;
-        case 5:
-          visibleList.push(field.id);
-          hideableList.push(field.id);
-          break;
-        }
+      const targetPermission = (
+        fieldPer && isNumber(permission) ?
+          updatePermissionWithDefault(permission, defaultPermission) :
+          defaultPermission
+      ) as PERMISSION;
+      Object.assign(permissionAcc.properties, {
+        [fieldSchema.id]: {
+          'x-internal': {
+            permission: targetPermission,
+          },
+        },
       });
-      setVisibleField(visibleList);
-      setRevisableField(revisableList);
-      setHideableField(hideableList);
+      const readable = isPermissionReadable(targetPermission);
+      Object.assign(config, {
+        [fieldSchema.id]: {
+          editable: readable ? isPermissionEditable(targetPermission) : false,
+          invisible: readable ? isPermissionInvisible(targetPermission) : false,
+          writeable: readable ? isPermissionWriteable(targetPermission) : false,
+          readable,
+          fieldTitle: fieldSchema.title,
+          fieldComponentName: fieldSchema?.['x-component'],
+          isSystem: fieldSchema?.['x-internal']?.isSystem,
+        },
+      });
+      return permissionAcc;
+    }, { type: 'object', title: '', properties: {}, 'x-internal': { permission: NORMAL } });
+    setPermission(permission);
+    setConfig(config);
+  }, [fieldPer, fields]);
+
+  useEffect(() => {
+    const permissionProperties = get(permission, 'properties');
+    if (!permissionProperties || !permission) {
       return;
     }
-    fields.forEach((field) => {
-      if (!field['x-internal']?.isSystem ) {
-        visibleList.push(field.id);
-        revisableList.push(field.id);
-      } else {
-        visibleList.push(field.id);
-        hideableList.push(field.id);
+    const properties = transform(
+      permissionProperties,
+      (acc: Record<string, ISchema>, fieldSchema: ISchema, fieldKey: string) => {
+        const configPermission = config?.[fieldKey];
+        const newPermissionSchema: ISchema = configPermission ? {
+          'x-internal': {
+            permission: calculateFieldPermission(
+              configPermission.editable,
+              configPermission.invisible,
+              configPermission.writeable,
+              configPermission.readable,
+            ),
+          },
+        } : fieldSchema;
+        acc[fieldKey] = newPermissionSchema;
+      },
+      {},
+    );
+    setPermission((permission) => ({ ...permission, properties }));
+  }, [config]);
+
+  useImperativeHandle(ref, () => ({
+    getFieldPer: () => permission,
+  }));
+
+  function updatePermissionWithDefault(permission: PERMISSION, defaultPermission?: PERMISSION): PERMISSION {
+    if (!defaultPermission) {
+      return permission;
+    }
+    const permissionStr = numberToBinaryString(permission).slice(-2);
+    const readPermission = permissionStr[1];
+    if (readPermission === '0') {
+      return 0;
+    }
+    const defaultPermissionStr = numberToBinaryString(defaultPermission).slice(0, 2);
+    return binaryStringToNumber(`${defaultPermissionStr}${permissionStr}`) as PERMISSION;
+  }
+
+  function setFieldNameRefs(fieldKey: string) {
+    return (el: HTMLElement) => {
+      fieldNameRefs.current.set(fieldKey, el?.offsetWidth < el?.scrollWidth);
+    };
+  }
+
+  function getPartialPermission(
+    type: 'read' | 'write', checked: boolean, configPermission: ConfigValue,
+  ): Partial<ConfigValue> {
+    const valueMapper = {
+      read: { readable: checked, writeable: !checked ? false : configPermission.writeable },
+      write: { writeable: checked, readable: checked ? true : configPermission.readable },
+    };
+    return valueMapper[type];
+  }
+
+  function handleChange(type: 'read' | 'write') {
+    return (e: React.ChangeEvent<HTMLInputElement>) => {
+      const { value, checked } = e.target;
+      const previousConfig = config?.[value];
+      if (!previousConfig) {
+        return;
       }
-    });
-    setVisibleField(visibleList);
-    setRevisableField(revisableList);
-    setHideableField(hideableList);
-  };
+      const partialPermission = getPartialPermission(type, checked, previousConfig);
+      Object.assign(previousConfig, {
+        ...partialPermission,
+        editable: partialPermission.writeable ? !!previousConfig?.editable : false,
+        invisible: partialPermission.readable ? !!previousConfig?.invisible : false,
+      });
+      setConfig((config) => ({ ...config, [value]: previousConfig }));
+    };
+  }
 
-  useEffect(() => {
-    getFields();
-  }, []);
+  function handleAllChange(type: 'read' | 'write') {
+    return (e: React.ChangeEvent<HTMLInputElement>) => {
+      setConfig((config) => transform(config || {}, (accConfig: Config, configValue, fieldId) => {
+        const partialPermission = getPartialPermission(type, e.target.checked, configValue);
+        accConfig[fieldId] = {
+          ...configValue,
+          ...partialPermission,
+          editable: partialPermission.writeable ? configValue.editable : false,
+          invisible: partialPermission.readable ? configValue.invisible : false,
+        };
+        return accConfig;
+      }, {}));
+    };
+  }
 
-  useEffect(() => {
-    setVIndeterminate(visibleField.length > 0 && visibleField.length !== fields.length);
-    if (visibleField.length === fields.length) {
-      setVCheckAll(true);
-    } else {
-      setVCheckAll(false);
-    }
-  }, [visibleField]);
-
-  useEffect(() => {
-    setRIndeterminate(revisableField.length > 0 && revisableField.length !== fieldRevisable.length);
-    if (revisableField.length === fieldRevisable.length) {
-      setRCheckAll(true);
-    } else {
-      setRCheckAll(false);
-    }
-  }, [revisableField]);
-
-  useEffect(() => {
-    setHIndeterminate(hideableField.length > 0 && hideableField.length !== fields.length);
-    if (hideableField.length === fields.length) {
-      setHCheckAll(true);
-    } else {
-      setHCheckAll(false);
-    }
-  }, [hideableField]);
-
-  const handleVisibleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    const { value, checked } = e.target;
-    if (checked) {
-      setVisibleField([...visibleField, value]);
-    } else {
-      if (revisableField.includes(value)) {
-        setRevisableField(
-          revisableField.filter((id) => id !== value),
-        );
-      }
-      if (hideableField.includes(value)) {
-        setHideableField(
-          hideableField.filter((id) => id !== value),
-        );
-      }
-
-      setVisibleField(
-        visibleField.filter((id) => id !== value),
-      );
-    }
-  };
-
-  const handleRevisableChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    const { value, checked } = e.target;
-    if (checked) {
-      setRevisableField([...revisableField, value]);
-      if (!visibleField.includes(value)) {
-        setVisibleField([...visibleField, value]);
-      }
-      if (hideableField.includes(value)) {
-        setHideableField(
-          hideableField.filter((id) => id !== value),
-        );
-      }
-    } else {
-      setRevisableField(
-        revisableField.filter((id) => id !== value),
-      );
-    }
-  };
-
-  const handleHideableChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    const { value, checked } = e.target;
-    if (checked) {
-      setHideableField([...hideableField, value]);
-      if (!visibleField.includes(value)) {
-        setVisibleField([...visibleField, value]);
-      }
-      if (revisableField.includes(value)) {
-        setRevisableField(
-          revisableField.filter((id) => id !== value),
-        );
-      }
-    } else {
-      setHideableField(
-        hideableField.filter((id) => id !== value),
-      );
-    }
-  };
-
-  const handleVCheckAll = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    if (e.target.checked) {
-      setVisibleField(
-        fields.map(({ id }) => id),
-      );
-    } else {
-      setRevisableField([]);
-      setVisibleField([]);
-      setHideableField([]);
-    }
-  };
-
-  const handleRCheckAll = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    if (e.target.checked) {
-      const ids = fieldRevisable.map(({ id }) => id);
-      setVisibleField(union(visibleField, ids));
-      setRevisableField(ids);
-      setHideableField([]);
-    } else {
-      setRevisableField([]);
-    }
-  };
-
-  const handleHCheckAll = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    if (e.target.checked) {
-      const ids = fieldRevisable.map(({ id }) => id);
-      setVisibleField(union(visibleField, ids));
-      setHideableField(ids);
-      setRevisableField([]);
-    } else {
-      setHideableField([]);
-    }
-  };
-
-  const getTitle = (title: any): any => {
-    switch (title) {
-    case 'LayoutTabs':
-      return '选项卡';
-    case 'LayoutCard':
-      return '分组';
-    case 'LayoutGrid':
-      return '栅格';
-    }
-
-    return title;
-  };
+  const configValues = Object.values(config || {});
+  const isAllReadable = configValues.every((configValue) => configValue.readable);
+  const isNotAllReadable = !isAllReadable && configValues.some((configValue) => configValue.readable);
+  const isAllWriteable = configValues.filter((configValue) => !configValue.isSystem).every(
+    (configValue) => configValue.writeable,
+  );
+  const isNotAllWriteable = !isAllWriteable && configValues.some((configValue) => configValue.writeable);
 
   return (
     <div className={className}>
@@ -258,59 +194,55 @@ function FieldPermissions({
           <span>字段</span>
           <span>
             <Checkbox
-              onChange={handleVCheckAll}
-              checked={vCheckAll}
-              indeterminate={vIndeterminate}
+              onChange={handleAllChange('read')}
+              checked={isAllReadable}
+              indeterminate={isNotAllReadable}
               disabled = {store.currentRights.types === 1 || !abled}
               label='全部可查看'
             />
           </span>
           <span>
             <Checkbox
-              onChange={handleRCheckAll}
-              checked={rCheckAll}
-              indeterminate={rIndeterminate}
-              disabled = {store.currentRights.types === 1 || !abled}
+              onChange={handleAllChange('write')}
+              checked={isAllWriteable}
+              indeterminate={isNotAllWriteable}
+              disabled={isPermissionDisabled}
               label='全部可修改'
             />
           </span>
-          <span>
-            <Checkbox
-              onChange={handleHCheckAll}
-              checked={hCheckAll}
-              indeterminate={hIndeterminate}
-              disabled = {store.currentRights.types === 1 || !abled}
-              label='全部可隐藏'
-            />
-          </span>
         </div>
-        {fields.filter((field) => field.fieldName !== '_id').map((field) => (
-          <div key={field.id} className='pb-field-item'>
-            <span>
-              <span>{getTitle(field.title || field['x-component'])}</span>
-            </span>
-            <Checkbox
-              checked={visibleField.includes(field.id)}
-              value={field.id}
-              disabled={store.currentRights.types === 1 || !abled}
-              onChange={handleVisibleChange}
-            />
-            {field['x-internal']?.isSystem ? <div></div> : (
-              <Checkbox
-                checked={revisableField.includes(field.id)}
-                value={field.id}
-                disabled = {store.currentRights.types === 1 || !abled}
-                onChange={handleRevisableChange}
-              />
-            )}
-            <Checkbox
-              checked={hideableField.includes(field.id)}
-              value={field.id}
-              disabled = {store.currentRights.types === 1 || !abled}
-              onChange={handleHideableChange}
-            />
-          </div>
-        ))}
+        {Object.entries(config || {})?.filter(([fieldID]) => fieldID !== '_id').map(
+          ([fieldId, configPermission]) => {
+            const { fieldTitle, fieldComponentName, isSystem } = configPermission;
+            const title = fieldTitle || COMPONENT_NAME_TITLE_MAP[fieldComponentName || ''];
+            return (
+              <div key={fieldId} className='pb-field-item'>
+                <span className="grid">
+                  <span
+                    ref={setFieldNameRefs(fieldId)}
+                    title={fieldNameRefs.current.get(fieldId) ? title : ''}
+                    className="truncate"
+                  >
+                    {title}
+                  </span>
+                </span>
+                <Checkbox
+                  checked={configPermission.readable}
+                  value={fieldId}
+                  disabled={isPermissionDisabled}
+                  onChange={handleChange('read')}
+                />
+                {!isSystem && (
+                  <Checkbox
+                    checked={configPermission.writeable}
+                    value={fieldId}
+                    disabled={isPermissionDisabled}
+                    onChange={handleChange('write')}
+                  />
+                )}
+              </div>
+            );
+          })}
       </div>
     </div>
   );

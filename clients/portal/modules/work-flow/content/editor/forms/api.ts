@@ -1,7 +1,7 @@
 import { QueryFunctionContext } from 'react-query';
 
 import httpClient from '@lib/http-client';
-import { schemaToOptions, SchemaConvertOptions } from '@lib/schema-convert';
+import { schemaToOptions, SchemaToOptionsOptions } from '@lib/schema-convert';
 import logger from '@lib/logger';
 
 import { Operation } from '../type';
@@ -24,6 +24,7 @@ export type FormFieldOption = {
   read: boolean;
   write: boolean;
   invisible: boolean;
+  editable: boolean;
 };
 
 export async function getFormFieldSchema({ queryKey }: QueryFunctionContext): Promise<{
@@ -40,7 +41,7 @@ export async function getFormFieldOptions({ queryKey }: QueryFunctionContext): P
 }> {
   const schema = await getFormFieldSchema({ queryKey });
   return {
-    options: schemaToOptions(schema, undefined, queryKey[3] as SchemaConvertOptions),
+    options: schemaToOptions(schema, queryKey[3] as SchemaToOptionsOptions),
     schema,
   };
 }

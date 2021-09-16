@@ -1,5 +1,6 @@
 import React, { useContext } from 'react';
 import { noop } from 'lodash';
+import { without } from 'ramda';
 
 import Table from '@c/table';
 import Checkbox from '@c/checkbox';
@@ -9,20 +10,29 @@ import useRequest from '@lib/hooks/use-request';
 import type { CustomFieldPermission, FieldValue } from '@flow/content/editor/type';
 import flowContext from '@flow/flow-context';
 import { FORM_COMPONENT_VARIABLE_MAP } from '@flow/content/editor/utils/constants';
+import type { PERMISSION_KEY } from '@c/form-builder/constants';
 
 import FieldValueEditor from './field-value-editor';
+import { schemaToArray, schemaToMap } from '@lib/schema-convert';
 
 interface Props {
   fields: CustomFieldPermission[];
   updateFields: (value: CustomFieldPermission[]) => void;
   editable: boolean;
-  schemaMap: Record<string, SchemaFieldItem>;
+  schema: ISchema;
 }
 
 export default function CustomFieldTable({
-  editable, fields, updateFields: _updateFields, schemaMap,
+  editable, fields, updateFields: _updateFields, schema,
 }: Props): JSX.Element {
   const { flowID: flowId } = useContext(flowContext);
+  const schemaMap = schemaToMap(schema);
+  const layoutFields = schemaToArray(schema, { parseSubTable: true, keepLayout: true })
+    .reduce((layoutFields: string[], schema) => {
+      schema['x-internal']?.isLayoutComponent && layoutFields.push(schema.fieldIndex);
+      return layoutFields;
+    }, []);
+
   const [data] = useRequest<{
     code: number;
     data: ProcessVariable[];
@@ -40,7 +50,7 @@ export default function CustomFieldTable({
     _updateFields([..._fields, ...fields.filter((field) => field.hidden)]);
   }
 
-  function getHeader(model: any, key: 'read' | 'write' | 'invisible', label: string): JSX.Element {
+  function getHeader(model: any, key: PERMISSION_KEY, label: string): JSX.Element {
     let checkedNumber = 0;
     model.data.forEach((dt: CustomFieldPermission) => {
       if (dt[key]) {
@@ -61,8 +71,9 @@ export default function CustomFieldTable({
                 return {
                   ...dt,
                   [key]: true,
-                  ...(key === 'write' ? { read: true, invisible: false } : {}),
-                  ...(key === 'invisible' ? { read: true, write: false } : {}),
+                  ...(key === 'write' ? { read: true } : {}),
+                  ...(key === 'invisible' ? { read: true, editable: false } : {}),
+                  ...(key === 'editable' ? { read: true, invisible: false, write: true } : {}),
                 };
               }));
             }
@@ -71,7 +82,8 @@ export default function CustomFieldTable({
                 return {
                   ...dt,
                   [key]: false,
-                  ...(key === 'read' ? { write: false, invisible: false } : {}),
+                  ...(key === 'write' ? { editable: false } : {}),
+                  ...(key === 'read' ? { write: false, invisible: false, editable: false } : {}),
                 };
               }));
             }
@@ -98,10 +110,11 @@ export default function CustomFieldTable({
     );
   }
 
-  function getCell(model: any, key?: 'read' | 'write' | 'invisible'): JSX.Element {
+  function getCell(model: any, key?: PERMISSION_KEY): JSX.Element {
     const isChecked = model.cell.value;
-    const level = model.cell.row.original.path?.split('.').length - 1;
     if (!key) {
+      const path = without(layoutFields, model.cell.row.original.path?.split('.') || []);
+      const level = path.length - 1 > 0 ? path.length - 1 : 0;
       return <div style={{ marginLeft: isNaN(level) ? 0 : level * 20 }}> {model.cell.value} </div>;
     }
 
@@ -115,9 +128,11 @@ export default function CustomFieldTable({
               return {
                 ...dt,
                 [key]: !isChecked,
-                ...(key === 'write' && !isChecked ? { read: true, invisible: false } : {}),
-                ...(key === 'read' && isChecked ? { write: false, invisible: false } : {}),
-                ...(key === 'invisible' && !isChecked ? { read: true, write: false } : {}),
+                ...(key === 'write' && !isChecked ? { read: true } : {}),
+                ...(key === 'write' && isChecked ? { editable: false } : {}),
+                ...(key === 'read' && isChecked ? { write: false, invisible: false, editable: false } : {}),
+                ...(key === 'invisible' && !isChecked ? { read: true, editable: false } : {}),
+                ...(key === 'editable' && !isChecked ? { read: true, invisible: false, write: true } : {}),
               };
             }
             return dt;
@@ -187,13 +202,17 @@ export default function CustomFieldTable({
         accessor: 'read',
         Cell: (model: any) => getCell(model, 'read'),
       }, {
+        Header: (model: any) => getHeader(model, 'write', '写入'),
+        accessor: 'write',
+        Cell: (model: any) => getCell(model, 'write'),
+      }, {
+        Header: (model: any) => getHeader(model, 'editable', '编辑'),
+        accessor: 'editable',
+        Cell: (model: any) => getCell(model, 'editable'),
+      }, {
         Header: (model: any) => getHeader(model, 'invisible', '隐藏'),
         accessor: 'invisible',
         Cell: (model: any) => getCell(model, 'invisible'),
-      }, {
-        Header: (model: any) => getHeader(model, 'write', '编辑'),
-        accessor: 'write',
-        Cell: (model: any) => getCell(model, 'write'),
       }, {
         Header: () => getValueHeader('初始值', '该节点初次打开工作表时对应字段呈现初始值'),
         accessor: 'initialValue',

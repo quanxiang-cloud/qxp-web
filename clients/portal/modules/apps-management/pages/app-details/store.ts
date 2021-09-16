@@ -36,7 +36,7 @@ type DeletePageOrGroupParams = {
   pathname: string
 }
 
-const DEAULT_CARD_LIST = [
+const DEFAULT_CARD_LIST = [
   {
     id: 'linkedFlows',
     title: '关联工作流',
@@ -73,7 +73,7 @@ class AppDetailsStore {
   };
   @observable modalType = '';
   @observable curPreviewUrl = '';
-  @observable curPageCardList: CardList[] = DEAULT_CARD_LIST;
+  @observable curPageCardList: CardList[] = DEFAULT_CARD_LIST;
   @observable pageDescriptions = DefaultPageDescriptions;
 
   constructor() {
@@ -290,13 +290,15 @@ class AppDetailsStore {
 
   @action
   setCurPage = (pageID: string) => {
+    const pageInfo = this.pagesTreeData.items[pageID].data;
+
     if (!pageID) {
       return;
     }
 
-    const pageInfo = this.pagesTreeData.items[pageID].data;
     this.fetchSchemeLoading = true;
-    this.curPageCardList = DEAULT_CARD_LIST;
+    this.curPageCardList = DEFAULT_CARD_LIST;
+
     if (pageInfo.menuType === MenuType.schemaForm) {
       getTableSchema(this.appID, pageInfo.id).then((pageSchema) => {
         this.hasSchema = !!pageSchema;
@@ -307,15 +309,15 @@ class AppDetailsStore {
             });
             this.pageDescriptions = [...descriptions];
             this.curPreviewUrl = '';
-            getPageCardList(this.appID, this.pageID, this.curPageCardList, pageInfo.menuType).then((res) => {
-              this.curPageCardList = res;
-            });
+            return getPageCardList(this.appID, this.pageID, this.curPageCardList, pageInfo.menuType);
+          }).then((res) => {
+            this.curPageCardList = res;
           }).catch(() => {
             toast.error('获取表单信息失败');
           });
         }
         this.pageDescriptions = DefaultPageDescriptions;
-        this.curPageCardList = DEAULT_CARD_LIST;
+        this.curPageCardList = DEFAULT_CARD_LIST;
       }).catch(() => {
         toast.error('获取页面schema失败');
       }).finally(() => {
@@ -330,9 +332,9 @@ class AppDetailsStore {
         });
         this.pageDescriptions = [...descriptions];
         this.curPreviewUrl = res.fileUrl || '';
-        getPageCardList(this.appID, this.pageID, this.curPageCardList, pageInfo.menuType).then((res) => {
-          this.curPageCardList = res;
-        });
+        return getPageCardList(this.appID, this.pageID, this.curPageCardList, pageInfo.menuType);
+      }).then((res) => {
+        this.curPageCardList = res;
       }).catch(() => {
         toast.error('获取关联自定义页面失败');
       }).finally(() => {

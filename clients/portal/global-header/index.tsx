@@ -26,8 +26,8 @@ export default function GlobalHeader() {
       <div className="flex justify-between items-center py-8 px-24 bg-white">
         <HeaderNav />
         <img
-          className="h-46"
-          src="/dist/images/enfei/chain-enfi.png"
+          className="flex-1 h-46"
+          src="/dist/images/quanxiangyun.svg"
           alt="quanxiangyun"
         />
         <HeaderMenu />
