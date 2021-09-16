@@ -106,12 +106,15 @@ export default function AssociatedDataWrap(p: ISchemaFieldComponentProps): JSX.E
       value={p.value}
       readOnly={!!p.props.readOnly}
       onChange={(dataRow, schema) => {
-        if (dataRow) {
-          const value = dataRow[p.props['x-component-props'].fieldName];
-          const label = value ? getBasicValue(schema as ISchema, value) : '--';
-          executeAssignMent(dataRow);
-          p.mutators.change({ label, value: dataRow.id });
+        if (!dataRow) {
+          p.mutators.change(undefined);
+          return;
         }
+
+        const value = dataRow[p.props['x-component-props'].fieldName];
+        const label = value ? getBasicValue(schema as ISchema, value) : '--';
+        executeAssignMent(dataRow);
+        p.mutators.change({ label, value: dataRow._id });
       }}
       filterConfig={p['x-component-props']?.filterConfig || p.props['x-component-props'].filterConfig}
     />
