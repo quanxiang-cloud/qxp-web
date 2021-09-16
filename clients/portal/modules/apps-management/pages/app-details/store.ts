@@ -290,12 +290,11 @@ class AppDetailsStore {
 
   @action
   setCurPage = (pageID: string) => {
-    const pageInfo = this.pagesTreeData.items[pageID].data;
-
     if (!pageID) {
       return;
     }
 
+    const pageInfo = this.pagesTreeData.items[pageID].data;
     this.fetchSchemeLoading = true;
     this.curPageCardList = DEFAULT_CARD_LIST;
 
