@@ -128,6 +128,7 @@ export default function ConditionItem({ condition, options, onChange, schemaMap 
                 defaultValue={{ [value]: condition.value }}
                 onFormValueChange={handleChange}
                 schema={schema}
+                className='min-w-120'
               />
             )}
           </>
