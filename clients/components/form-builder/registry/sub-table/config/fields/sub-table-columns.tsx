@@ -6,10 +6,10 @@ import Toggle from '@c/toggle';
 
 import { INTERNAL_FIELD_NAMES } from '@c/form-builder/store';
 import schemaToFields from '@lib/schema-convert';
+import { FieldConfigContext } from '@c/form-builder/form-settings-panel/form-field-config/context';
 
 import { getFormTableSchema } from '../api';
 import { SUPPORTED_COMPONENTS_NAMES } from '../constants';
-import { ActionsContext } from '../context';
 
 const { onFieldValueChange$ } = FormEffectHooks;
 
@@ -20,7 +20,7 @@ interface Option {
 
 function SubTableColumns({ value, mutators }: ISchemaFieldComponentProps): JSX.Element {
   const [currentSchema, setCurrentSchema] = useState<ISchema>();
-  const { actions } = useContext(ActionsContext);
+  const { actions } = useContext(FieldConfigContext);
   const subRef = useRef<any>();
 
   useEffect(() => {

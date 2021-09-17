@@ -5,12 +5,13 @@ import {
   SchemaForm, FormEffectHooks,
 } from '@formily/antd';
 
+import { StoreContext } from '@c/form-builder/context';
+import { FieldConfigContext } from '@c/form-builder/form-settings-panel/form-field-config/context';
+
 import configSchema from './config-schema';
 import { SubTableConfig } from '../convertor';
 import SubTableSchemaConfig from './sub-table-schema-config';
 import { COMPONENTS, CONFIG_COMPONENTS, KeyOfConfigComponent } from './constants';
-
-import { StoreContext, ActionsContext } from './context';
 
 interface Props {
   onChange: (value: unknown) => void;
@@ -21,7 +22,7 @@ const { onFieldValueChange$ } = FormEffectHooks;
 
 export default function ConfigForm({ onChange, initialValue: _initValue }: Props): JSX.Element {
   const [currentFieldKey, setCurrenFieldKey] = useState('');
-  const { actions } = useContext(ActionsContext);
+  const { actions } = useContext(FieldConfigContext);
   const { appID } = useContext(StoreContext);
   const subRef = useRef<Subscription>();
 
@@ -65,7 +66,7 @@ export default function ConfigForm({ onChange, initialValue: _initValue }: Props
   const currentSchemaType = currentSubSchema?.['x-component']?.toLowerCase() as KeyOfConfigComponent;
 
   return (
-    <ActionsContext.Provider value={{ actions }}>
+    <FieldConfigContext.Provider value={{ actions }}>
       <SchemaForm
         initialValues={initialValue}
         components={COMPONENTS}
@@ -81,6 +82,6 @@ export default function ConfigForm({ onChange, initialValue: _initValue }: Props
         onChange={onFieldConfigValueChange}
         subTableSchema={initialValue.subTableSchema}
       />
-    </ActionsContext.Provider>
+    </FieldConfigContext.Provider>
   );
 }
