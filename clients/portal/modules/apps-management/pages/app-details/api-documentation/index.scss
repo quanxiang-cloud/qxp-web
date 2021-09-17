@@ -4,45 +4,74 @@
   min-width: 236px;
   max-width: 236px;
   border-right: 1px solid var(--gray-300);
+  overflow: hidden;
+}
+
+.model-menu {
   overflow: auto;
-}
-
-@keyframes slide-down{
-  0% {
-    transform:scale(1,0)
+  .ant-collapse-header[aria-expanded*="false"] .ant-collapse-arrow svg {
+    transform: rotate(-90deg);
   }
-  100% {
-    transform:scale(1,1);
-  }
-}
-
-.show {
-  max-height: 999px;
-  transform-origin: 50% 0;
-  animation: slide-down 0.3s ease-in;
-}
-
-.hidden {
-  max-height: 0px;
-  overflow: auto;
-  transition: max-height .3s ease-out;
-}
-
-.api-content {
-  position: relative;
-  & > .copy-button{
-    position: absolute;
-    top: 30px;
-    right: 30px;
-    padding: 6px 16px;
-    border-radius: 4px;
+  .ant-collapse-item {   
+    .ant-collapse-header {
+      height: 40px;
+      display: flex;
+      align-items: center;
+      font-size: 16px;
+      line-height: 24px;
+      color: var(--gray-900);
+      .ant-collapse-arrow {
+        top: 3.0005px ;
+      }
+    }
+    .ant-collapse-content{
+      .ant-collapse-content-box{
+        padding: 0;
+      }
+    }
+    
   }
 }
 
-.api-content-title {
-  font-size: 18px;
-  line-height: 28px;
-  color: var(--gray-900);
-  margin: 12px 0;
+.api-tab {
+  .tab-navs {
+    padding-left: 16px;
+    .tab-nav-item {
+      padding: 14px 16px;
+    }
+  }
+  .tab-content {
+    padding: 0px 20px;
+    .qxp-ui-tooltip.top {
+      bottom: calc(100% + 0px);
+      left: 40%;
+      transform: translateX(-50%);
+  }
+    .qxp-table-wrapper {
+      margin-top: 16px;
+      .massage_table tr:hover .field-id .copy-tooltip{
+        visibility: visible;
+      }
+    }
+    .api-content {
+      position: relative;
+      & > .copy-button{
+        position: absolute;
+        top: 30px;
+        right: 30px;
+        cursor: pointer;
+      }
+    }   
+    .api-details {
+      border: 1px solid #F1F5F9;
+      border-radius: 4px;
+    }
+    .api-content-title {
+      font-weight: 600;
+      font-size: 14px;
+      line-height: 22px;
+      color: var(--gray-600);
+      margin: 16px 0 8px;
+    }
+  }
 }
-

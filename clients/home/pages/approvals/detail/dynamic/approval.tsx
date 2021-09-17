@@ -55,7 +55,7 @@ export default function Approval({ workData, clickHandle }: Props): JSX.Element 
 
   const username = operationRecords ? get(operationRecords, '[0].creatorName', '') : '';
   const isHandle = ['REVIEW', 'IN_REVIEW'].includes(status);
-  const isSingle = operationRecords.length === 1;
+  const isSingle = operationRecords?.length === 1;
   const confirmBack = ['REFUSE', 'SEND_BACK', 'READ', 'DELIVER', 'STEP_BACK'].includes(status);
 
   return (
@@ -84,7 +84,7 @@ export default function Approval({ workData, clickHandle }: Props): JSX.Element 
           )
         }
         {
-          (!isSingle || (isSingle && isHandle) || (status === 'AUTO_REVIEW')) && (
+          (!isSingle || (isSingle && isHandle) || (status === 'AUTO_REVIEW')) && operationRecords && (
             <UserList userList={operationRecords} clickHandle={goLeaderHandle} />
           )
         }

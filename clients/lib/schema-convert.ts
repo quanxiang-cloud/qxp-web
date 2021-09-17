@@ -1,4 +1,4 @@
-import { groupBy, isUndefined } from 'lodash';
+import { groupBy, isUndefined, merge } from 'lodash';
 
 import { FormFieldOption } from '@flow/content/editor/forms/api';
 import { quickSortObjectArray } from '@lib/utils';
@@ -8,17 +8,10 @@ import {
   numberTransform, isPermissionReadable, isPermissionHiddenAble, isPermissionWriteable, isPermissionEditable,
 } from '@c/form-builder/utils';
 
-export type FilterFunc = (currentSchema: SchemaWithPathAndIndex) => boolean;
+export type FilterFunc = (currentSchema: ISchema) => boolean;
 export type FieldsFilterFunc = (currentSchema: SchemaFieldItem) => boolean;
 export type SchemaToOptionsOptions = SchemaToArrayOptions;
 export type SchemaToMapOptions = SchemaToArrayOptions;
-export type SchemaWithPathAndIndex = ISchema & {
-  fieldPath: string;
-  fieldIndex: string,
-  properties?: {
-    [key: string]: SchemaWithPathAndIndex;
-  };
-};
 export interface SchemaToArrayOptions {
   keepLayout?: boolean;
   parseSubTable?: boolean;
@@ -29,15 +22,16 @@ function isSchemaValid(schema: ISchema): boolean {
   return !!schema?.['x-component'];
 }
 
-function schemaItemToSchemaFieldItem(schema: SchemaWithPathAndIndex): SchemaFieldItem {
+function schemaItemToSchemaFieldItem(schema: ISchema): SchemaFieldItem {
+  const internal = schema?.['x-internal'];
+  const fieldId = internal?._key;
   return {
     ...schema,
-    id: schema.fieldIndex,
-    fieldName: schema.fieldIndex,
+    id: fieldId || '',
+    fieldName: fieldId || '',
     componentName: schema['x-component']?.toLowerCase() || '',
-    fieldPath: schema.fieldIndex,
-    parentField: schema?.['x-internal']?.parentField,
-    tabIndex: schema?.['x-internal']?.tabIndex,
+    parentField: internal?.parentField,
+    tabIndex: internal?.tabIndex,
     'x-index': numberTransform(schema),
   };
 }
@@ -50,30 +44,34 @@ function sortSchemaArray<T extends ISchema>(fields: T[]): T[] {
   return [...sorter(normalFields), ...sorter(systemFields)];
 }
 
-export function schemaToArray(schema?: ISchema, options?: SchemaToArrayOptions): SchemaWithPathAndIndex[] {
+export function schemaToArray(schema?: ISchema, options?: SchemaToArrayOptions): ISchema[] {
   const childPropertiesToParse = ['properties'];
   options?.parseSubTable && childPropertiesToParse.push('items');
-  let schemas = treeUtil.toArray<SchemaWithPathAndIndex>(
-    childPropertiesToParse, schema as SchemaWithPathAndIndex,
-  ).filter((schema: ISchema) => {
+  let schemas = treeUtil.toArray<ISchema>(
+    childPropertiesToParse, schema as ISchema,
+  ).filter((schema) => {
     if (!options?.keepLayout) {
       return isSchemaValid(schema) && !schema?.['x-internal']?.isLayoutComponent;
     }
     return isSchemaValid(schema);
+  }).map(({
+    fieldIndex, fieldPath, ...schema
+  }: ISchema & { fieldPath?: string; fieldIndex?: string | number }) => {
+    return merge(schema, { 'x-internal': { _key: fieldIndex, fieldPath } });
   });
   schemas = options?.filter ? schemas.filter((schema) => options?.filter?.(schema)) : schemas;
   return sortSchemaArray(schemas);
 }
 
 export function schemaToOptions(schema?: ISchema, options?: SchemaToOptionsOptions): FormFieldOption [] {
-  return schemaToArray(schema, options).map((field: SchemaWithPathAndIndex) => {
+  return schemaToArray(schema, options).map((field: ISchema) => {
     const permission = field?.['x-internal']?.permission as PERMISSION;
     return {
       label: field.title as string,
-      value: field.fieldIndex,
+      value: field['x-internal']?._key || '',
       isSystem: !!field['x-internal']?.isSystem,
       isLayout: !!field['x-internal']?.isLayoutComponent,
-      path: field.fieldPath,
+      path: field['x-internal']?.fieldPath || '',
       read: isPermissionReadable(permission),
       write: isPermissionWriteable(permission),
       invisible: isPermissionHiddenAble(permission),

@@ -1,8 +1,10 @@
 import React, { useEffect } from 'react';
 import {
   SchemaForm,
+  FormEffectHooks,
   FormButtonGroup,
   createFormActions,
+  FormPath,
 } from '@formily/antd';
 import { Input, Switch, Select, Radio } from '@formily/antd-components';
 
@@ -21,6 +23,7 @@ type Props = {
 }
 
 const COMPONENTS = { Input, Select, Switch, RadioGroup: Radio.Group, RulesList };
+const { onFieldValueChange$ } = FormEffectHooks;
 
 function Rules({
   onClose, onSubmit, defaultValue, currentFormFields, sourceTableFields,
@@ -29,10 +32,9 @@ function Rules({
   const { setFieldState } = actions;
 
   useEffect(() => {
-    setFieldState('rules.*.dataTarget', (state) => {
-      state.props.enum = currentFormFields.map(({ fieldName, title }: SchemaFieldItem) => {
-        return { label: title, value: fieldName };
-      });
+    setFieldState('rules.*.dataTarget', ({ value, props }) => {
+      const sourceType = currentFormFields.find(({ fieldName }) => fieldName === value)?.type;
+      props.enum = formatFieldInputAndOption(sourceType || '');
     });
 
     setFieldState('rules.*.dataSource', (state) => {
@@ -41,6 +43,24 @@ function Rules({
       });
     });
   }, []);
+
+  function formatFieldInputAndOption(filterType: string): LabelValue[] {
+    return currentFormFields.filter(({ type }) =>{
+      return type === filterType;
+    }).map(({ fieldName, title }: SchemaFieldItem) => {
+      return { label: title as string, value: fieldName };
+    });
+  }
+
+  function formEffect(): void {
+    onFieldValueChange$('rules.*.dataSource').subscribe(({ value, name }) => {
+      const sourceType = sourceTableFields.find(({ fieldName }) => fieldName === value)?.type;
+      const targetPath = FormPath.transform(name, /\d/, ($1) => `rules.${$1}.dataTarget`);
+      setFieldState(targetPath, (state) => {
+        state.props.enum = formatFieldInputAndOption(sourceType || '');
+      });
+    });
+  }
 
   return (
     <Modal
@@ -58,6 +78,7 @@ function Rules({
           schema={SCHEMA}
           defaultValue={defaultValue}
           components={COMPONENTS}
+          effects={formEffect}
           onSubmit={onSubmit}
         >
           <FormButtonGroup offset={8}>

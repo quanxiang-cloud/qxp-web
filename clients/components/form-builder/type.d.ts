@@ -16,6 +16,8 @@ type XInternal = {
   calculationFormula?: string;
   isLayoutComponent?: boolean;
   isSystem?: boolean;
+  _key?: string;
+  fieldPath?: string;
   [key: string]: any;
 }
 
@@ -163,8 +165,6 @@ type SchemaFieldItem = ISchema & {
   id: string;
   fieldName: string;
   componentName: string;
-  fieldIndex: string;
-  fieldPath: string;
   parentField?: string;
   tabIndex?: number;
 }
