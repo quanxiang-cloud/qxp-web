@@ -71,7 +71,12 @@ function RadioGroup(fieldProps: ISchemaFieldComponentProps): JSX.Element {
           {
             isAllowCustom && (
               <Radio value={CUSTOM_OTHER_VALUE}>
-                <Input value={otherValue} onChange={handleOtherValueChange} placeholder="请输入" />
+                <Input
+                  value={otherValue}
+                  onChange={handleOtherValueChange}
+                  placeholder="请输入"
+                  maxLength={15}
+                />
               </Radio>
             )
           }
