@@ -2,7 +2,7 @@ import React from 'react';
 import { UnionColumns } from 'react-table';
 import { action, observable, reaction, IReactionDisposer } from 'mobx';
 
-import httpClient from '@lib/http-client';
+import { fetchFormDataList } from '@lib/http-client';
 import schemaToFields, { schemaToMap } from '@lib/schema-convert';
 import { SYSTEM_FIELDS } from '@c/form-builder/constants';
 import { toEs } from '@c/data-filter/utils';
@@ -143,13 +143,11 @@ class AppPageDataStore {
     this.listLoading = true;
     const { condition = [], tag = 'must', ...other } = params;
     const { condition: frontCondition = [], tag: frontTag } = this.filterConfig || {};
-    httpClient(`/api/v1/structor/${this.appID}/home/form/${this.pageID}/search`, {
-      method: 'find',
-      page: 1,
+    fetchFormDataList(this.appID, this.pageID, {
       query: toEs({ tag: frontTag || tag, condition: [...condition, ...frontCondition] }),
       sort: [],
       ...other,
-    }).then((res: any) => {
+    }).then((res) => {
       this.formDataList = res.entities;
       this.total = res.total || 0;
       this.listLoading = false;
