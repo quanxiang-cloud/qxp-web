@@ -1,13 +1,13 @@
 import React, { useContext } from 'react';
 import { ISchemaFieldComponentProps } from '@formily/antd';
 
+import { StoreContext } from '@c/form-builder/context';
 import FormTableSelector from '@c/form-table-selector';
-
-import { StoreContext, ActionsContext } from '../context';
+import { FieldConfigContext } from '@c/form-builder/form-settings-panel/form-field-config/context';
 
 function LinkedTable({ value, mutators }: ISchemaFieldComponentProps): JSX.Element {
   const { pageID: pageId } = useContext(StoreContext);
-  const { actions } = useContext(ActionsContext);
+  const { actions } = useContext(FieldConfigContext);
 
   function onChange({ name: tableName, value: tableID }: {
     name?: string;
