@@ -18,7 +18,7 @@ export default function Variables(): JSX.Element {
     flowId,
     id: '',
     name: '',
-    fieldType: 'TEXT',
+    fieldType: 'string',
     code: '',
     defaultValue: '',
     type: 'CUSTOM',
