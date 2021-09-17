@@ -7,6 +7,7 @@ import Modal from '@c/modal';
 
 import { insertField, omitField, findField, updateField } from './utils/fields-operator';
 import registry from './registry';
+import { INTERNAL_FIELDS } from './constants';
 import {
   filterLinkageRules,
   shouldFilterLinkages,
@@ -20,44 +21,6 @@ type Props = {
   appID: string;
   pageID: string;
 }
-
-const INTERNAL_FIELDS: Array<FormItem> = [
-  {
-    fieldName: '_id',
-    componentName: 'Input',
-    configValue: { displayModifier: 'hidden', title: 'id', isSystem: true },
-  },
-  {
-    fieldName: 'created_at',
-    componentName: 'DatePicker',
-    configValue: { displayModifier: 'hidden', title: '创建时间', isSystem: true },
-  },
-  {
-    fieldName: 'updated_at',
-    componentName: 'DatePicker',
-    configValue: { displayModifier: 'hidden', title: '修改时间', isSystem: true },
-  },
-  {
-    fieldName: 'creator_name',
-    componentName: 'Input',
-    configValue: { displayModifier: 'hidden', title: '创建者', isSystem: true },
-  },
-  {
-    fieldName: 'creator_id',
-    componentName: 'Input',
-    configValue: { displayModifier: 'hidden', title: '创建者 ID', isSystem: true },
-  },
-  {
-    fieldName: 'modifier_name',
-    componentName: 'Input',
-    configValue: { displayModifier: 'hidden', title: '修改者', isSystem: true },
-  },
-  {
-    fieldName: 'modifier_id',
-    componentName: 'Input',
-    configValue: { displayModifier: 'hidden', title: '修改者 ID', isSystem: true },
-  },
-];
 
 // todo refactor this
 export const INTERNAL_FIELD_NAMES = INTERNAL_FIELDS.map(({ fieldName }) => fieldName);
@@ -156,6 +119,7 @@ export default class FormBuilderStore {
     return registry.elements[componentName.toLocaleLowerCase()] || null;
   }
 
+  // flat to all fields
   @computed get allFields(): Array<FormItem> {
     const _flatten = (arr?: FormItem[]): FormItem[] => {
       if (!arr) return [];
@@ -266,6 +230,7 @@ export default class FormBuilderStore {
     }
 
     const parsedSchema = toSchema(toJS(configValue));
+
     return {
       display: parsedSchema.display,
       id: fieldName,
@@ -311,12 +276,10 @@ export default class FormBuilderStore {
           display: true,
           title: childrenInvisible ? '******' : this.schema.properties?.[key].title,
         };
-
         acc[key] = node;
 
         return acc;
       }, {});
-
     return {
       type: 'object',
       properties: {
@@ -335,15 +298,23 @@ export default class FormBuilderStore {
     };
   }
 
-  @action validate(): boolean {
-    return this.fields.map(({ componentName, configValue }) => ({
+  @action validate(fields: FormItem[] = this.fields): boolean {
+    if (!fields.length) {
+      return true;
+    }
+    return fields.map(({ componentName, configValue, children }) => ({
       elem: registry.elements[componentName.toLowerCase()],
       configValue,
-    })).every(({ elem, configValue }) => {
+      children,
+    })).every(({ elem, configValue, children = [] }) => {
+      let isFieldValid = true;
       if (elem && typeof elem.validate === 'function') {
-        return elem.validate(toJS(configValue), elem?.configSchema);
+        isFieldValid = elem.validate(toJS(configValue), elem?.configSchema);
       }
-      return true;
+      if (!isFieldValid) {
+        return false;
+      }
+      return this.validate(children);
     });
   }
 
@@ -353,6 +324,7 @@ export default class FormBuilderStore {
 
   @action updateLabelAlign(labelAlign: 'right' | 'top'): void {
     this.labelAlign = labelAlign;
+    this.fields = schemaToFormBuilderFields(this.schema);
   }
 
   @action updateLinkageConfigVisible(visible: boolean): void {

@@ -2,7 +2,7 @@ import React, { JSXElementConstructor, useEffect, useState, useContext } from 'r
 import { useQuery } from 'react-query';
 
 import { getTableSchema } from '@lib/http-client';
-import type { NodeWorkForm, Data, BusinessData } from '@flowEditor/type';
+import type { NodeWorkForm, Data, BusinessData } from '@flow/content/editor/type';
 import schemaToFields from '@lib/schema-convert';
 
 import FormDataForm from './form-data';
@@ -88,6 +88,29 @@ export default function Form({
 
   if (isLoading) {
     // todo handle error case
+    return (<div>loading...</div>);
+  }
+
+  // this a patch.
+  // When creating work flow, selecting working-table should be the first step, nothing else.
+  // All nodes in flow requires working-table, except the start node.
+  if (defaultValue.type === 'formData') {
+    return (
+      <FlowTableContext.Provider
+        value={{
+          tableID: workForm?.value || '',
+          tableName: workForm?.name || '',
+          tableSchema: sourceTableSchema,
+        }}
+      >
+        <div className="flex-1 flex flex-col" style={{ height: 'calc(100% - 56px)' }}>
+          {getConfigForm()}
+        </div>
+      </FlowTableContext.Provider>
+    );
+  }
+
+  if (!sourceTableSchema.length) {
     return (<div>loading...</div>);
   }
 

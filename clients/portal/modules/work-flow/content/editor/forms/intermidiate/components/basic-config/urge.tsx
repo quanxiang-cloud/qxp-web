@@ -5,8 +5,8 @@ import { usePopper } from 'react-popper';
 import Icon from '@c/icon';
 import Checkbox from '@c/checkbox';
 import ToolTip from '@c/tooltip';
-import type { Urge as UrgeType, UrgeItem } from '@flowEditor/type';
-import ActionButtonGroup from '@flowEditor/components/_common/action-button-group';
+import type { Urge as UrgeType, UrgeItem } from '@flow/content/editor/type';
+import ActionButtonGroup from '@flow/content/editor/components/_common/action-button-group';
 
 import TimerSelector from './timer-selector';
 

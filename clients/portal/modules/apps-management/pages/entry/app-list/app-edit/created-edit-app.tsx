@@ -4,6 +4,8 @@ import { Form } from '@QCFE/lego-ui';
 import AppIconPicker from '@c/app-icon-picker';
 import { parseJSON } from '@lib/utils';
 
+const DISABLE_SPECIAL_SYMBOL_REG = /[#$@^&=`'":;,.~¥-。、（）「」·“”；：？，《》【】+/\\()<>{}[\] ]/gi;
+
 type Props = {
   className?: string;
   appInfo?: AppInfo;
@@ -30,6 +32,11 @@ function CreatedEditApp({ appInfo, className }: Props, ref?: React.ForwardedRef<
           {
             help: '不超过 30 个字符',
             rule: { maxLength: 30 },
+          },
+          {
+            help: '不能包含特殊字符',
+            rule: (value: string) => !DISABLE_SPECIAL_SYMBOL_REG.test(value),
+            status: 'error',
           },
         ]}
       />

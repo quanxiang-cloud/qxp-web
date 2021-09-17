@@ -3,8 +3,8 @@ import { useQuery } from 'react-query';
 
 import Button from '@c/button';
 import Select from '@c/select';
-import { getFormFieldSchema } from '@flowEditor/forms/api';
-import { ValueRuleVal } from '@flowEditor/type';
+import { getFormFieldSchema } from '@flow/content/editor/forms/api';
+import { ValueRuleVal } from '@flow/content/editor/type';
 import { schemaToMap } from '@lib/schema-convert';
 
 import ConditionItem from './condition-item';

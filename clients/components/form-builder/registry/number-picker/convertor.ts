@@ -1,3 +1,4 @@
+import { getSchemaPermissionFromSchemaConfig } from '@c/form-builder/utils';
 
 export interface NumberPickerConfig {
   title: string;
@@ -50,10 +51,14 @@ export function toSchema(value: NumberPickerConfig): ISchema {
       placeholder: value.placeholder,
       precision: point,
       step: 1 / Math.pow(10, point),
+      defaultValue: value.defaultValue,
+      style: {
+        width: '100%',
+      },
     },
     ['x-internal']: {
       sortable: value.sortable,
-      permission: 3,
+      permission: getSchemaPermissionFromSchemaConfig(value),
       defaultValueFrom: value.defaultValueFrom,
       defaultValueLinkage: value.defaultValueLinkage,
       calculationFormula: value.calculationFormula,
@@ -84,6 +89,7 @@ export function toConfig(schema: ISchema): NumberPickerConfig {
     minimum: schema['minimum'],
     maximum: schema['maximum'],
     calculationFormula: schema['x-internal']?.calculationFormula || '',
+    defaultValue: schema['x-component-props']?.defaultValue,
   };
 }
 

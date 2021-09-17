@@ -13,7 +13,7 @@ export default function WorkFlowCard(): JSX.Element {
   const [triggerType, setTriggerType] = useState<'' | 'FORM_TIME' | 'FORM_DATA'>('');
 
   return (
-    <div className="h-full flex-grow bg-white rounded-12">
+    <div className="h-full flex-1 bg-white rounded-12">
       <Card
         title="工作流"
         className="h-full transition-opacity flex flex-col flex-1 mt-0"

@@ -9,7 +9,7 @@ import { schemaToMap } from '@lib/schema-convert';
 import FormAppDataContent from './form-app-data-content';
 import Store from './store';
 import { TableHeaderBtn, Ref } from './type';
-import { readOnlyTransform } from './utils';
+import { schemaPermissionTransformer } from '@c/form-builder/utils';
 
 type Props = {
   pageID: string;
@@ -51,23 +51,17 @@ function FormAppDataTableWrap({
     getTableSchema(appID, pageID).then((res) => {
       const { config, schema: _schema } = res || {};
       const schema = { ..._schema, properties: schemaToMap(_schema) };
-      if (schema) {
-        setStore(
-          new Store({
-            schema: readOnlyTransform(schema),
-            config: config,
-            filterConfig,
-            tableHeaderBtnList,
-            customColumns,
-            showCheckbox,
-            allowRequestData,
-            appID,
-            pageID,
-          }),
-        );
-      } else {
-        setStore(null);
-      }
+      setStore(schema ? new Store({
+        schema: schemaPermissionTransformer(schema),
+        config: config,
+        filterConfig,
+        tableHeaderBtnList,
+        customColumns,
+        showCheckbox,
+        allowRequestData,
+        appID,
+        pageID,
+      }) : null);
       setLoading(false);
     }).catch(() => {
       setLoading(false);

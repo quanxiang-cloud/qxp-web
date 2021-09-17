@@ -10,14 +10,14 @@ import {
   Radio,
 } from '@formily/antd-components';
 
-import input from './sub-table-schema-config/config-field/input';
-import textarea from './sub-table-schema-config/config-field/textarea';
-import radiogroup from './sub-table-schema-config/config-field/radio-group';
-import checkboxgroup from './sub-table-schema-config/config-field/checkbox-group';
-import numberpicker from './sub-table-schema-config/config-field/number';
-import datepicker from './sub-table-schema-config/config-field/datetime';
-import select from './sub-table-schema-config/config-field/select';
-import multipleselect from './sub-table-schema-config/config-field/multiple-select';
+import input from '../../../registry/input';
+import textarea from '../../../registry/textarea';
+import radiogroup from '../../../registry/radio-group';
+import checkboxgroup from '../../../registry/checkbox-group';
+import numberpicker from '../../../registry/number-picker';
+import datepicker from '../../../registry/date-picker';
+import select from '../../../registry/select';
+import multipleselect from '../../../registry/multiple-select';
 import userpicker from '../../../registry/user-picker';
 import organizationpicker from '../../../registry/organization-select';
 import fileupload from '../../../registry/file-upload';
@@ -31,16 +31,18 @@ import LinkedTable from './fields/linked-table';
 import { AddOperate } from './fields/operates';
 import CustomizedDatasetBtn from '../../cascade-selector/customized-dataset-btn';
 import DataSetSelector from '../../cascade-selector/dataset-selector';
-import DefaultValueLinkageConfigBtn
-  from '../../../form-settings-panel/form-field-config/default-value-linkage-config-btn';
+import DefaultValueLinkageConfigBtn from
+  '@c/form-builder/form-settings-panel/form-field-config/default-value-linkage-config-btn';
+import InputForLabels from '@c/form-builder/form-settings-panel/form-field-config/input-for-labels';
+import DatasetConfig from '@c/form-builder/form-settings-panel/form-field-config/dataset-config';
 
-import * as inputConverter from './sub-table-schema-config/config-field/input/convertor';
-import * as textareaConverter from './sub-table-schema-config/config-field/textarea/convertor';
-import * as numberConverter from './sub-table-schema-config/config-field/number/convertor';
-import * as datetimeConverter from './sub-table-schema-config/config-field/datetime/convertor';
-import * as selectorConvertor from './sub-table-schema-config/config-field/select/convertor';
-import * as radioConvertor from './sub-table-schema-config/config-field/radio-group/convertor';
-import * as checkboxConvertor from './sub-table-schema-config/config-field/checkbox-group/convertor';
+import * as inputConverter from '../../../registry/input/convertor';
+import * as textareaConverter from '../../../registry/textarea/convertor';
+import * as numberConverter from '../../../registry/number-picker/convertor';
+import * as datetimeConverter from '../../../registry/date-picker/convertor';
+import * as selectorConvertor from '../../../registry/select/convertor';
+import * as radioConvertor from '../../../registry/radio-group/convertor';
+import * as checkboxConvertor from '../../../registry/checkbox-group/convertor';
 import * as userPickerConverter from '../../../registry/user-picker/convertor';
 import * as organizationPickerConverter from '../../../registry/organization-select/convertor';
 import * as fileUploadConverter from '../../../registry/file-upload/convertor';
@@ -48,7 +50,7 @@ import * as imageUploadConverter from '../../../registry/image-upload/convertor'
 import * as cascadeSelectorConverter from '../../../registry/cascade-selector/convertor';
 import * as associatedDataConverter from '../../../registry/associated-data/convertor';
 import * as multipleSelectorConvertor
-  from './sub-table-schema-config/config-field/multiple-select/convertor';
+  from '../../../registry/multiple-select/convertor';
 
 export const COMPONENTS: Record<string, JSXElementConstructor<ISchemaFieldComponentProps>> = {
   textarea: Input.TextArea,
@@ -59,7 +61,9 @@ export const COMPONENTS: Record<string, JSXElementConstructor<ISchemaFieldCompon
   subtablecolumns: SubTableColumns,
   linkedtable: LinkedTable,
   switch: Switch,
+  // todo delete this
   arraytable: ArrayTable,
+  inputforlabels: InputForLabels,
   addoperate: AddOperate,
   numberpicker: NumberPicker,
   datepicker: DatePicker,
@@ -67,6 +71,7 @@ export const COMPONENTS: Record<string, JSXElementConstructor<ISchemaFieldCompon
   radiogroup: Radio.Group,
   customizeddatasetbtn: CustomizedDatasetBtn,
   datasetselector: DataSetSelector,
+  datasetconfig: DatasetConfig,
 };
 
 export type KeyOfConfigComponent = keyof typeof CONFIG_COMPONENTS;

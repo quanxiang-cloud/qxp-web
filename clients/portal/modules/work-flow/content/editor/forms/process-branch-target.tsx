@@ -5,9 +5,9 @@ import {
 } from '@formily/antd';
 
 import { Radio } from '@formily/antd-components';
-import type { ProcessBranchTargetData, NodeType } from '@flowEditor/type';
+import type { ProcessBranchTargetData, NodeType } from '@flow/content/editor/type';
 import Tab from '@c/tab';
-import SaveButtonGroup from '@flowEditor/components/_common/action-save-button-group';
+import SaveButtonGroup from '@flow/content/editor/components/_common/action-save-button-group';
 
 export interface Props {
   nodeType: NodeType;

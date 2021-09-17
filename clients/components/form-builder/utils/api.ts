@@ -1,38 +1,21 @@
-import httpClient, { getTableSchema } from '@lib/http-client';
 import logger from '@lib/logger';
+import httpClient, { getTableSchema } from '@lib/http-client';
 
-type AppPage = {
+type PageItem = {
   id: string;
   name: string;
-  child?: AppPage[];
 }
 
-function convertPagesToOptions(
-  appPages: AppPage[],
-  options: Array<{ label: string; value: string }>,
-): Array<{ label: string; value: string }> {
-  appPages.forEach(({ id, name, child }) => {
-    if (Array.isArray(child)) {
-      convertPagesToOptions(child, options);
-      return;
-    }
-    options.push({ label: name, value: id });
-  });
-
-  return options;
-}
-
-export function getLinkageTables(appID: string): Promise<Array<{ label: string; value: string }>> {
-  return httpClient<{ menu: AppPage[] }>(
-    `/api/v1/structor/${appID}/m/menu/list`,
+export function getLinkageTables(appID: string): Promise<Array<LabelValue>> {
+  return httpClient<{ pages: PageItem[] }>(
+    `/api/v1/structor/${appID}/m/menu/listPage`,
     { appID },
   ).then((res) => {
-    if (!res.menu || !res.menu.length) {
+    if (!res.pages || !res.pages.length) {
       return [];
     }
 
-    const appPages = res.menu;
-    return convertPagesToOptions(appPages, []);
+    return res.pages.map(({ id, name }) => ({ label: name, value: id }));
   }).catch((err) => {
     logger.error(err);
     return [];

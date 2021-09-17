@@ -10,6 +10,11 @@ export const EnumOptionalRange = [
   { label: '当前用户', value: 'currentUser' },
 ];
 
+export const EnumDefaultRange = [
+  { label: '自定义', value: 'customize' },
+  { label: '当前用户', value: 'currentUser' },
+];
+
 export const EnumMultiple = [
   { label: '单选', value: 'single' },
   { label: '多选', value: 'multiple' },

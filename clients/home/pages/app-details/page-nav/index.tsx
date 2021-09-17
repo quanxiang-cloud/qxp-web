@@ -19,7 +19,7 @@ function PageNav() {
   }, [pageID]);
 
   const onSelect = (pageNode: PageInfo) => {
-    history.replace(`/apps/${appID}?pageID=${pageNode.id}`);
+    history.replace(`/apps/${appID}?/page_setting?pageID=${pageNode.id}`);
   };
 
   if (store.pageListLoading) {

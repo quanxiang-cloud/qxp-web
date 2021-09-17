@@ -5,9 +5,9 @@ import {
 } from '@formily/antd';
 
 import { Select, Input } from '@formily/antd-components';
-import type { ProcessBranchData, NodeType } from '@flowEditor/type';
+import type { ProcessBranchData, NodeType } from '@flow/content/editor/type';
 import Tab from '@c/tab';
-import SaveButtonGroup from '@flowEditor/components/_common/action-save-button-group';
+import SaveButtonGroup from '@flow/content/editor/components/_common/action-save-button-group';
 
 import FilterRule from './filter-rule';
 

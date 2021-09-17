@@ -13,7 +13,7 @@ interface Props {
   roundDecimal: RoundMethod,
 }
 
-function SummaryField(props: Props) {
+function SummaryField(props: Props): JSX.Element {
   // todo: compute statistic value by props
   return (
     <div>{props.displayFieldNull}</div>
@@ -22,6 +22,8 @@ function SummaryField(props: Props) {
 
 function SummaryFieldWrap(props: ISchemaFieldComponentProps): JSX.Element {
   const comProps = props.props['x-component-props'];
+
+  // todo handle props.readOnly
 
   return (
     <SummaryField {...comProps} />

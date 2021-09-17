@@ -1,40 +1,24 @@
 import React, { useContext, useRef } from 'react';
-import { useQuery } from 'react-query';
 
 import Modal from '@c/modal';
-import { getSchemaFields } from '@flowEditor/forms/utils';
+import { getSchemaFields } from '@flow/content/editor/forms/utils';
 import { COLLECTION_OPERATORS } from '@c/formula-editor/constants';
 import FormulaEditor, { CustomRule, RefProps } from '@c/formula-editor';
-import FlowTableContext from '@flowEditor/forms/flow-source-table';
-import FlowContext from '@flow/flow-context';
-import { getFormFieldSchema } from '@flowEditor/forms/api';
+import FlowTableContext from '@flow/content/editor/forms/flow-source-table';
 import schemaToFields from '@lib/schema-convert';
 
 interface Props {
   onClose: () => void;
   onSave: (rule: string) => void;
   defaultValue?: string;
+  targetSchema?: ISchema;
 }
 
 function FormulaModal(props: Props): JSX.Element | null {
   const formulaRef = useRef<RefProps>();
-  const { appID } = useContext(FlowContext);
-  const { tableID, tableSchema: sourceSchema } = useContext(FlowTableContext);
-  const {
-    data: targetSchema, isLoading, isError,
-  } = useQuery(['GET_TARGET_TABLE_SCHEMA', tableID, appID], getFormFieldSchema, {
-    enabled: !!appID && !!tableID,
-  });
+  const { tableSchema: sourceSchema } = useContext(FlowTableContext);
 
-  if (isLoading) {
-    return null;
-  }
-
-  if (isError) {
-    return (<div>Load target table schema failed</div>);
-  }
-
-  const targetFields = getSchemaFields(schemaToFields(targetSchema));
+  const targetFields = getSchemaFields(schemaToFields(props.targetSchema));
   const sourceFields = getSchemaFields(sourceSchema);
   const formulaCustomRules: CustomRule[] = targetFields.concat(sourceFields).map(({ label, value }) => ({
     key: value,

@@ -2,7 +2,7 @@ import React, { useRef, useState } from 'react';
 import cs from 'classnames';
 
 import useObservable from '@lib/hooks/use-observable';
-import type { Data, StoreValue } from '@flowEditor/type';
+import type { Data, StoreValue } from '@flow/content/editor/type';
 
 import store from '../store';
 import NodeHeader from './_common/node-header';
@@ -18,10 +18,11 @@ export interface Props {
   isDragging: boolean;
   children: React.ReactNode;
   simple: boolean;
+  iconName: string;
 }
 
 export default function NodeComponentWrapper(props: Props): JSX.Element {
-  const { data, id, xPos, yPos, isDragging, children, simple } = props;
+  const { data, id, xPos, yPos, isDragging, children, simple, iconName } = props;
   const { errors, readonly } = useObservable<StoreValue>(store);
   const lastTime = useRef(+new Date());
   const [showRemover, setShowRemover] = useState(false);
@@ -73,7 +74,7 @@ export default function NodeComponentWrapper(props: Props): JSX.Element {
             <NodeHeader
               title={nodeData.name}
               id={id}
-              iconName="approves"
+              iconName={iconName}
               className="bg-indigo-500"
               iconClassName="text-white"
               titleClassName="text-white bg-indigo-500"

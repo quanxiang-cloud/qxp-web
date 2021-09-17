@@ -17,7 +17,6 @@ class DoneApprovalStore extends Store {
       page: this.pageNumber,
       size: this.pageSize,
       orderType: this.orderType,
-      agent: this.agent,
     };
   }
 

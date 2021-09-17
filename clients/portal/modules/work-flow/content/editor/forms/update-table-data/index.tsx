@@ -7,13 +7,13 @@ import Select from '@c/select';
 import Toggle from '@c/toggle';
 import Modal from '@c/modal';
 
-import SaveButtonGroup from '@flowEditor/components/_common/action-save-button-group';
+import SaveButtonGroup from '@flow/content/editor/components/_common/action-save-button-group';
 import { getFormDataOptions } from '@c/form-table-selector/api';
 import FlowContext from '@flow/flow-context';
 import FlowTableContext from '../flow-source-table';
 import toast from '@lib/toast';
 
-import { BusinessData, TableDataUpdateData } from '@flowEditor/type';
+import { BusinessData, TableDataUpdateData } from '@flow/content/editor/type';
 import Context from './context';
 import FilterRules, { RefType as FilterRuleRef } from './filter-rules';
 import UpdateRules, { RefType as UpdateRuleRef } from './update-rules';
@@ -153,6 +153,7 @@ export default function UpdateTableData({
         {switchTableModal && (
           <Modal
             title='切换目标数据表'
+            onClose={()=> setSwitchTableModal(false)}
             footerBtns={[
               {
                 key: 'cancel',

@@ -5,7 +5,6 @@ import { useMutation } from 'react-query';
 
 import { ActionsContext, StoreContext } from '../context';
 import { createBlankFormTable } from '../api';
-import { LINKED_TABLE } from '../constants';
 
 export type SubordinationType = 'sub_table' | 'foreign_table';
 
@@ -27,13 +26,8 @@ function Subordination({ value, mutators, props }: ISchemaFieldComponentProps): 
       if (!data?.tableID) {
         return;
       }
-      actions.setFieldState('Fields.linkedTable', (state) => {
-        state.value = {
-          ...LINKED_TABLE,
-          ...state.value,
-          tableID: state.value?.tableID || data.tableID,
-          appID: state.value?.appID || appID,
-        };
+      actions.setFieldState('Fields.tableID', (state) => {
+        state.value = data.tableID;
       });
     },
   });

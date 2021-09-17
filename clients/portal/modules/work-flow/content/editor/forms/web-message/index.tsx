@@ -9,7 +9,7 @@ import { isEqual } from 'lodash';
 import { usePrevious, useUpdateEffect } from 'react-use';
 
 import formFieldWrap from '@c/form-field-wrap';
-import SaveButtonGroup from '@flowEditor/components/_common/action-save-button-group';
+import SaveButtonGroup from '@flow/content/editor/components/_common/action-save-button-group';
 
 import UserSelect from '../../components/add-approval-user';
 import { WebMessageData } from '../../type';
@@ -28,14 +28,14 @@ const FieldUserSelect = formFieldWrap({ FieldFC: UserSelect });
 const FieldRadio = formFieldWrap({ FieldFC: Radio.Group });
 
 function WebMessage({ defaultValue, onSubmit, onCancel, onChange }: Props): JSX.Element {
-  const { register, handleSubmit, control, reset, formState: { errors }, watch } = useForm();
+  const { register, handleSubmit, control, reset, formState: { errors }, watch, unregister } = useForm();
   const [editorCont, setEditorCont] = useState(defaultValue?.content ?
     EditorState.createWithContent(
       ContentState.createFromBlockArray(
         htmlToDraft(defaultValue.content).contentBlocks),
     ) : EditorState.createEmpty());
 
-  const allFields = watch(['content', 'recivers', 'sort', 'title']);
+  const allFields = watch(['content', 'recivers', 'sort', 'title', 'type']);
   const previousFields = usePrevious(allFields);
   useUpdateEffect(() => {
     const value = {
@@ -43,6 +43,7 @@ function WebMessage({ defaultValue, onSubmit, onCancel, onChange }: Props): JSX.
       recivers: allFields[1],
       sort: allFields[2],
       title: allFields[3],
+      type: allFields[4],
     };
     if (!isEqual(allFields, previousFields)) {
       onChange(value);
@@ -73,21 +74,46 @@ function WebMessage({ defaultValue, onSubmit, onCancel, onChange }: Props): JSX.
   return (
     <div className="flex flex-col overflow-auto flex-1 py-24">
       <Controller
-        name='recivers'
+        name='type'
         control={control}
         rules={{ required: '请选择接收对象' }}
         render={({ field }) => {
           return (
-            <FieldUserSelect
+            <FieldRadio
               label={<><span className='text-red-600'>*</span>接收对象</>}
+              className='block'
+              error={errors.sort}
               register={field}
-              error={errors.recivers}
-              value={field.value ? field.value : []}
+              value={field.value || ''}
+              onChange={(e) => {
+                if (e.target.value === 'processInitiator')unregister('recivers');
+                field.onChange(e.target.value);
+              }}
+              options={[
+                { label: '指定人员', value: 'person' },
+                { label: '流程发起人', value: 'processInitiator' },
+              ]}
             />
           );
-        }
-        }
+        }}
       />
+      { allFields[4] === 'person' && (
+        <Controller
+          name='recivers'
+          control={control}
+          rules={{ required: '请选择接收对象' }}
+          render={({ field }) => {
+            return (
+              <FieldUserSelect
+                register={field}
+                error={errors.recivers}
+                value={field.value || []}
+              />
+            );
+          }
+          }
+        />
+      )}
       <Controller
         name='sort'
         control={control}

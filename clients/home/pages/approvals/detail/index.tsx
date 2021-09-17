@@ -5,6 +5,7 @@ import { observer } from 'mobx-react';
 import { pick, get } from 'lodash';
 
 import Breadcrumb from '@c/breadcrumb';
+import Switch from '@c/switch';
 import { useURLSearch } from '@lib/hooks';
 import Tab from '@c/tab';
 import Icon from '@c/icon';
@@ -20,7 +21,6 @@ import Dynamic from './dynamic';
 import Discuss from './discuss';
 import ActionModals from './action-modals';
 import * as apis from '../api';
-import { wrapSchemaWithFieldPermission } from './utils';
 import store from './store';
 
 import './index.scss';
@@ -33,43 +33,65 @@ const globalActionKeys = [
 function ApprovalDetail(): JSX.Element {
   const [search] = useURLSearch();
   const [formValues, setFormValues] = useState<Record<string, any>>({});
+  const [status, setStatus] = useState<FormBuilder.Option[]>([{ label: '', value: '' }]);
+  const [showSwitch, setShowSwitch] = useState<boolean>(false);
   const listType = search.get('list') || 'todo';
-  const { processInstanceID, taskID, type } = useParams<{
+  const { processInstanceID, type } = useParams<{
     processInstanceID: string;
-    taskID: string,
     type: string
   }>();
+  const [currentTaskId, setCurrentTaskId] = useState<string>('');
   const history = useHistory();
 
   const {
     isLoading, data, isError, error,
   } = useQuery<any, Error>(
-    [processInstanceID, taskID, type],
-    () => apis.getTaskFormById(processInstanceID, { type }),
+    [processInstanceID, currentTaskId, type],
+    () => apis.getTaskFormById(processInstanceID, { taskId: currentTaskId, type }),
   );
 
-  const getTask = (): Record<string, any> => get(data, 'taskDetailModels[0]', {});
+  const getTask = (): Record<string, any> => {
+    const taskDetailData = get(data, 'taskDetailModels', []).find(
+      (taskItem: Record<string, any>) => taskItem?.formData !== null,
+    );
+    return taskDetailData ? taskDetailData : get(data, 'taskDetailModels[0]', {});
+  };
 
   useEffect(() => {
     document.title = '流程详情';
   }, []);
 
   useEffect(() => {
-    setFormValues(getTask().formData || {});
+    setFormValues(getTask()?.formData || {});
   }, [data]);
 
+  useEffect(() => {
+    if (type === 'HANDLED_PAGE') {
+      apis.getTaskFormById(processInstanceID, { type }).then((data) => {
+        const taskDetailModels = get(data, 'taskDetailModels', []);
+        if (taskDetailModels.length > 1) {
+          setShowSwitch(true);
+          const status = taskDetailModels.map(({ taskName, taskId }: Record<string, string>) => {
+            return {
+              label: taskName,
+              value: taskId,
+            };
+          });
+          setStatus(status);
+          setCurrentTaskId(taskDetailModels[0]?.taskId);
+        }
+      });
+    }
+  }, []);
+
   const renderSchemaForm = (task: any): JSX.Element | null => {
-    const extraPermissions = [
-      ...(task?.fieldPermission?.custom || []),
-      ...(task?.fieldPermission?.system || []),
-    ];
-    const formSchema = wrapSchemaWithFieldPermission(task.formSchema.table, extraPermissions);
     return (
       <div className='task-form'>
         <FormRenderer
           defaultValue={task.formData}
-          schema={task?.fieldPermission ? formSchema : task.formSchema.table}
+          schema={task.formSchema.table}
           onFormValueChange={setFormValues}
+          usePermission
         />
       </div>
     );
@@ -109,6 +131,18 @@ function ApprovalDetail(): JSX.Element {
         <Panel className="flex flex-col flex-1 mr-20 px-24 py-24">
           {
             <>
+              {showSwitch && (
+                <Switch
+                  className="pb-24"
+                  onChange={
+                    (value: string) => {
+                      setCurrentTaskId(value);
+                    }
+                  }
+                  value={currentTaskId}
+                  options={status}
+                />
+              )}
               <Toolbar
                 currTask={task}
                 permission={task?.operatorPermission || {}}

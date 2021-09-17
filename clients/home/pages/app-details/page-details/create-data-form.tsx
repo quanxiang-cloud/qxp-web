@@ -39,7 +39,7 @@ function CreateDataForm({ appID, pageID, rowID, onCancel, title }: Props): JSX.E
   });
 
   const defaultValues = rowID ? data?.record : undefined;
-  const { schema } = data || { properties: {} };
+  const schema = data?.schema || { type: 'object', properties: {} };
   if (isLoading) {
     return <Loading desc="加载中..." />;
   }
@@ -91,6 +91,7 @@ function CreateDataForm({ appID, pageID, rowID, onCancel, title }: Props): JSX.E
           onSubmit={handleSubmit}
           defaultValue={toJS(defaultValues)}
           schema={schema as ISchema}
+          usePermission
         >
           <FormButtonGroup className='pl-96'>
             <Button

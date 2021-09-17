@@ -1,14 +1,17 @@
 import React, { useState } from 'react';
 import { Column } from 'react-table';
 import { get } from 'lodash';
+import cs from 'classnames';
 import { useQuery } from 'react-query';
 import _, { every, isObject, map, pipe, filter } from 'lodash/fp';
 
 import Table from '@c/table';
 import Button from '@c/button';
 import Icon from '@c/icon';
+
 import FormDataValueRenderer from '@c/form-data-value-renderer';
 import { isEmpty } from '@lib/utils';
+import { schemaToMap } from '@lib/schema-convert';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 
 import { findTableRecords } from './api';
@@ -23,13 +26,14 @@ type Props = {
   selected: string[];
   associatedTable: ISchema;
   onChange: (selectedKeys: string[]) => void;
-  readOnly: boolean;
   filterConfig?: FilterConfig;
+  readOnly?: boolean;
+  className?: string;
 }
 
 function computeTableColumns(schema: ISchema, columns: string[]): Column<Record<string, any>>[] {
   return columns.map((fieldKey) => {
-    const fieldSchema = get(schema, `properties.${fieldKey}`, {});
+    const fieldSchema = get(schemaToMap(schema), fieldKey, { title: '' });
     return {
       id: fieldKey,
       Header: fieldSchema.title || fieldKey,
@@ -55,8 +59,9 @@ function AssociatedRecords({
   tableID,
   multiple,
   onChange,
-  readOnly,
   filterConfig,
+  readOnly,
+  className,
 }: Props): JSX.Element {
   const [showSelectModal, setShowSelectModal] = useState(false);
   const { isLoading, data } = useQuery(['FIND_TABLE_RECORDS', selected], () => {
@@ -74,7 +79,7 @@ function AssociatedRecords({
     );
   }
 
-  tableColumns.push({
+  !readOnly && tableColumns.push({
     id: 'remove',
     Header: '操作',
     accessor: (row) => {
@@ -91,7 +96,7 @@ function AssociatedRecords({
   });
 
   return (
-    <div className="w-full">
+    <div className={cs('w-full', className)}>
       <Table
         className="mb-16"
         rowKey="_id"
@@ -100,32 +105,30 @@ function AssociatedRecords({
         emptyTips="没有关联记录"
       />
       {!readOnly && (
-        <>
-          <Button type="button" onClick={() => setShowSelectModal(true)}>选择关联记录</Button>
-          {showSelectModal && (
-            <SelectRecordsModal
-              defaultValues={defaultValues}
-              onClose={() => setShowSelectModal(false)}
-              appID={appID}
-              tableID={tableID}
-              filterConfig={filterConfig}
-              multiple={multiple}
-              associatedTable={associatedTable}
-              columns={columns}
-              onSubmit={(newSelectedRecords) => {
-                if (multiple) {
-                  const selectedKeys = selected.concat(
-                    newSelectedRecords.filter((id) => !selected.includes(id)),
-                  );
-                  onChange(selectedKeys);
-                } else {
-                  onChange(newSelectedRecords);
-                }
-                setShowSelectModal(false);
-              }}
-            />
-          )}
-        </>
+        <Button type="button" onClick={() => setShowSelectModal(true)}>选择关联记录</Button>
+      )}
+      {showSelectModal && (
+        <SelectRecordsModal
+          defaultValues={defaultValues}
+          onClose={() => setShowSelectModal(false)}
+          appID={appID}
+          tableID={tableID}
+          filterConfig={filterConfig}
+          multiple={multiple}
+          associatedTable={associatedTable}
+          columns={columns}
+          onSubmit={(newSelectedRecords) => {
+            if (multiple) {
+              const selectedKeys = selected.concat(
+                newSelectedRecords.filter((id) => !selected.includes(id)),
+              );
+              onChange(selectedKeys);
+            } else {
+              onChange(newSelectedRecords);
+            }
+            setShowSelectModal(false);
+          }}
+        />
       )}
     </div>
   );
@@ -151,8 +154,9 @@ function AssociatedRecordsFields(props: Partial<ISchemaFieldComponentProps>): JS
 
   return (
     <AssociatedRecords
+      className={props.props.className}
       defaultValues={props.value || []}
-      readOnly={props.readOnly || props.props.readOnly}
+      readOnly={props.props.readOnly}
       appID={componentProps.appID}
       tableID={componentProps.tableID}
       columns={componentProps.columns || []}

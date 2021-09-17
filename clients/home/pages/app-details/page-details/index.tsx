@@ -7,6 +7,7 @@ import FormAppDataTable from '@c/form-app-data-table';
 import { Ref, TableHeaderBtn } from '@c/form-app-data-table/type';
 import PopConfirm from '@c/pop-confirm';
 import PageLoading from '@c/page-loading';
+import { MenuType } from '@portal/modules/apps-management/pages/app-details/type';
 
 import { getOperateButtonPer } from '../utils';
 import CreateDataForm from './create-data-form';
@@ -15,7 +16,7 @@ import store from '../store';
 import './index.scss';
 
 function PageDetails(): JSX.Element | null {
-  const { curPage, fetchSchemeLoading, formScheme } = store;
+  const { curPage, fetchSchemeLoading } = store;
   const [modalType, setModalType] = useState('');
   const [curRowID, setCurRowID] = useState('');
   const formTableRef = useRef<Ref>(null);
@@ -39,9 +40,14 @@ function PageDetails(): JSX.Element | null {
     formTableRef.current?.refresh();
   };
 
-  const tableHeaderBtnList: TableHeaderBtn[] = [
-    { key: 'add', action: () => goEdit(''), text: '新建', iconName: 'add' },
-    {
+  const tableHeaderBtnList: TableHeaderBtn[] = [];
+
+  if (getOperateButtonPer(2, store.authority)) {
+    tableHeaderBtnList.push({ key: 'add', action: () => goEdit(''), text: '新建', iconName: 'add' });
+  }
+
+  if (getOperateButtonPer(4, store.authority)) {
+    tableHeaderBtnList.push({
       key: 'batchRemove',
       action: delFormData,
       text: '批量删除',
@@ -49,8 +55,8 @@ function PageDetails(): JSX.Element | null {
       type: 'popConfirm',
       isBatch: true,
       popText: '确认删除选择数据？',
-    },
-  ];
+    });
+  }
 
   const customColumns = [{
     id: 'action',
@@ -75,7 +81,7 @@ function PageDetails(): JSX.Element | null {
             </span>
           )}
           {getOperateButtonPer(4, store.authority) && (
-            <PopConfirm content='确认删除该数据？' onOk={() => delFormData([rowData._id])} >
+            <PopConfirm content='确认删除该数据？' onOk={() => delFormData([rowData._id])}>
               <span className='text-red-600 cursor-pointer'>删除</span>
             </PopConfirm>
           )}
@@ -93,6 +99,37 @@ function PageDetails(): JSX.Element | null {
     }
   };
 
+  const renderPageBody = () => {
+    const { menuType } = curPage;
+    if (menuType === MenuType.customPage) {
+      return (
+        <iframe
+          className="w-full h-full"
+          src={store.customPageInfo?.fileUrl}
+          style={{ border: 'none' }}
+        />
+      );
+    } else {
+      if (fetchSchemeLoading) {
+        return <PageLoading />;
+      }
+
+      return (
+        <FormAppDataTable
+          showCheckbox={getOperateButtonPer(4, store.authority)}
+          ref={formTableRef}
+          tableHeaderBtnList={tableHeaderBtnList}
+          customColumns={customColumns}
+          appID={store.appID}
+          pageID={store.pageID}
+          allowRequestData={true}
+          style={{ height: 'calc(100% - 62px)' }}
+          className={cs('p-20', { 'form-table-hidden': modalType === 'dataForm' })}
+        />
+      );
+    }
+  };
+
   if (!curPage.id) {
     return null;
   }
@@ -104,19 +141,7 @@ function PageDetails(): JSX.Element | null {
         desc={curPage.describe || ''}
         className="bg-white px-20 py-18 header-background-image"
         itemTitleClassName="text-h5" />
-      {fetchSchemeLoading && <PageLoading />}
-      {formScheme && !fetchSchemeLoading ? (
-        <FormAppDataTable
-          ref={formTableRef}
-          tableHeaderBtnList={tableHeaderBtnList}
-          customColumns={customColumns}
-          appID={store.appID}
-          pageID={store.pageID}
-          allowRequestData={true}
-          style={{ height: 'calc(100% - 62px)' }}
-          className={cs('p-20', { 'form-table-hidden': modalType === 'dataForm' })}
-        />
-      ) : null}
+      {renderPageBody()}
       {modalType === 'dataForm' && (
         <CreateDataForm
           appID={store.appID}

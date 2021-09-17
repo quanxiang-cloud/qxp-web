@@ -3,7 +3,7 @@ import { ISchemaFieldComponentProps } from '@formily/antd';
 import { useQuery } from 'react-query';
 
 import FlowContext from '@flow/flow-context';
-import { WORK_TABLE_INTERNAL_FIELDS } from '@flowEditor/utils/constants';
+import { SYSTEM_FIELDS } from '@c/form-builder/constants';
 import FormulaEditor, { CustomRule, RefProps } from '@c/formula-editor';
 
 import { getFlowVariables } from '../api';
@@ -16,7 +16,7 @@ const COLLECTION_OPERATORS = [
     key: '==',
   },
   {
-    name: '!==',
+    name: '!=',
     key: '!=',
   },
   {
@@ -90,7 +90,7 @@ function FilterRule({ mutators, value }: ISchemaFieldComponentProps): JSX.Elemen
   }) || [];
 
   const tableSchemaRules = tableSchema.filter((schema) => {
-    return !WORK_TABLE_INTERNAL_FIELDS.includes(schema.fieldName) &&
+    return !SYSTEM_FIELDS.includes(schema.fieldName) &&
       schema.componentName !== 'subtable' &&
       schema.componentName !== 'associatedrecords';
   }).map((schema) => ({

@@ -42,7 +42,7 @@ function Breadcrumb({
   // else return link with a tag,
   // as segments come in , the children inside <Breadcrumb>  won't be rendered
   // without segments , must need the BreadCrumbItem inside the Breadcrumb ,follow the lego-ui
-  const breadcrumbChildrenRender = (): any[] | null | undefined => {
+  const breadcrumbChildrenRender = (): JSX.Element[] | null | undefined | Record<string, unknown>[]=> {
     if (segments) {
       if (segmentRender) {
         return segments.map((link) => (

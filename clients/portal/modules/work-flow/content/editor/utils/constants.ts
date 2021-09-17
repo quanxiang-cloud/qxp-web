@@ -1,14 +1,4 @@
-import type { FieldOperatorOptions } from '@flowEditor/type';
-
-export const WORK_TABLE_INTERNAL_FIELDS = [
-  '_id',
-  'created_at',
-  'updated_at',
-  'creator_name',
-  'modifier_name',
-  'modifier_id',
-  'creator_id',
-];
+import type { FieldOperatorOptions } from '@flow/content/editor/type';
 
 export const CURRENT_WORK_FLOW_VERSION = '0.2';
 

@@ -3,8 +3,10 @@ import { TreeData } from '@atlaskit/tree';
 
 import toast from '@lib/toast';
 import { buildAppPagesTreeData } from '@lib/utils';
+import { getCustomPageInfo } from '@lib/http-client';
+import { CustomPageInfo, MenuType } from '@portal/modules/apps-management/pages/app-details/type';
 
-import { fetchPageList, fetchFormScheme, formDataCurd, getOperate } from './api';
+import { fetchPageList, formDataCurd, getOperate } from './api';
 
 class UserAppDetailsStore {
   destroySetCurPage: IReactionDisposer;
@@ -14,12 +16,12 @@ class UserAppDetailsStore {
   @observable curPage: PageInfo = { id: '' };
   @observable fetchSchemeLoading = true;
   @observable pageName = '';
-  @observable formScheme: ISchema | null = null;
   @observable authority = 0;
   @observable pagesTreeData: TreeData = {
     rootId: 'ROOT',
     items: {},
   };
+  @observable customPageInfo: CustomPageInfo | null = null;
 
   constructor() {
     this.destroySetCurPage = reaction(() => {
@@ -52,20 +54,22 @@ class UserAppDetailsStore {
       return;
     }
 
-    this.formScheme = null;
-    this.fetchSchemeLoading = true;
-    Promise.all([
-      getOperate<{ authority: number | null }>(this.appID, this.pageID),
-      fetchFormScheme(this.appID, pageInfo.id),
-    ]).then(([authorityRef, schemeRef]) => {
-      this.authority = authorityRef?.authority || 0;
-      this.pageName = pageInfo.name || '';
-      this.formScheme = schemeRef.schema || null;
-      this.fetchSchemeLoading = false;
-    }).catch(() => {
-      this.fetchSchemeLoading = false;
-    });
     this.curPage = pageInfo;
+
+    if (pageInfo.menuType === MenuType.customPage) {
+      getCustomPageInfo(pageInfo.appID as string, pageInfo.id).then((pageRes: CustomPageInfo) => {
+        this.customPageInfo = pageRes;
+      });
+    } else {
+      this.fetchSchemeLoading = true;
+      getOperate<{ authority: number | null }>(this.appID, this.pageID).then((authorityRef) => {
+        this.authority = authorityRef?.authority || 0;
+        this.pageName = pageInfo.name || '';
+        this.fetchSchemeLoading = false;
+      }).catch(() => {
+        this.fetchSchemeLoading = false;
+      });
+    }
   }
 
   @action
@@ -90,13 +94,13 @@ class UserAppDetailsStore {
 
   @action
   clear = (): void => {
-    this.formScheme = null;
     this.pageListLoading = true;
     this.pagesTreeData = {
       rootId: 'ROOT',
       items: {},
     };
     this.curPage = { id: '' };
+    this.customPageInfo = null;
   }
 }
 

@@ -5,7 +5,7 @@ import { useUpdateEffect } from 'react-use';
 import Select from '@c/select';
 import Toggle from '@c/toggle';
 
-import SaveButtonGroup from '@flowEditor/components/_common/action-save-button-group';
+import SaveButtonGroup from '@flow/content/editor/components/_common/action-save-button-group';
 import { getFormDataOptions } from '@c/form-table-selector/api';
 import FlowContext from '@flow/flow-context';
 import FlowTableContext from '../flow-source-table';
@@ -13,7 +13,7 @@ import toast from '@lib/toast';
 import Modal from '@c/modal';
 
 import TargetTableFields from './target-table-fields';
-import { BusinessData, TableDataCreateData } from '@flowEditor/type';
+import { BusinessData, TableDataCreateData } from '@flow/content/editor/type';
 import Context from './context';
 import { filterTables } from '../utils';
 
@@ -121,6 +121,7 @@ function FormCreateTableData({ defaultValue, onSubmit, onCancel, onChange: _onCh
         {switchTableModal && (
           <Modal
             title='切换目标数据表'
+            onClose={()=> setSwitchTableModal(false)}
             footerBtns={[
               {
                 key: 'cancel',

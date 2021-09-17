@@ -1,90 +1,98 @@
-import { isEmpty, cloneDeep, groupBy, isUndefined } from 'lodash';
+import { groupBy, isUndefined, merge } from 'lodash';
 
-import { Option } from '@flowEditor/forms/api';
+import { FormFieldOption } from '@flow/content/editor/forms/api';
 import { quickSortObjectArray } from '@lib/utils';
-import { numberTransform } from '@c/form-builder/utils';
+import { PERMISSION } from '@c/form-builder/constants';
+import treeUtil from '@lib/tree';
+import {
+  numberTransform, isPermissionReadable, isPermissionHiddenAble, isPermissionWriteable, isPermissionEditable,
+} from '@c/form-builder/utils';
 
-type FilterFunc = (currentSchema: ISchema) => boolean;
-
-export function schemaToOptions(schema?: ISchema, filterFunc?: FilterFunc): Option[] {
-  return schemaToFields(schema, filterFunc).map((field: SchemaFieldItem) => ({
-    label: field.title as string,
-    value: field.id,
-    type: field.type as string,
-    isSystem: field['x-internal']?.isSystem,
-  }));
+export type FilterFunc = (currentSchema: ISchema) => boolean;
+export type FieldsFilterFunc = (currentSchema: SchemaFieldItem) => boolean;
+export type SchemaToOptionsOptions = SchemaToArrayOptions;
+export type SchemaToMapOptions = SchemaToArrayOptions;
+export interface SchemaToArrayOptions {
+  keepLayout?: boolean;
+  parseSubTable?: boolean;
+  filter?: FilterFunc;
 }
 
-export function schemaToMap(
-  schema?: ISchema, filterFunc?: FilterFunc,
-): Record<string, SchemaFieldItem> {
-  const fields = schemaToFields(schema, filterFunc);
-  return fields.reduce((fieldsMap: Record<string, SchemaFieldItem>, field: SchemaFieldItem) => {
-    fieldsMap[field.fieldName] = field;
-    return fieldsMap;
-  }, {});
+function isSchemaValid(schema: ISchema): boolean {
+  return !!schema?.['x-component'];
 }
 
-function sortFields(fields: SchemaFieldItem[]): SchemaFieldItem[] {
+function schemaItemToSchemaFieldItem(schema: ISchema): SchemaFieldItem {
+  const internal = schema?.['x-internal'];
+  const fieldId = internal?._key;
+  return {
+    ...schema,
+    id: fieldId || '',
+    fieldName: fieldId || '',
+    componentName: schema['x-component']?.toLowerCase() || '',
+    parentField: internal?.parentField,
+    tabIndex: internal?.tabIndex,
+    'x-index': numberTransform(schema),
+  };
+}
+
+function sortSchemaArray<T extends ISchema>(fields: T[]): T[] {
   const {
     true: systemFields, false: normalFields,
   } = groupBy(fields, (field) => !!field['x-internal']?.isSystem);
-  const sorter = (arr: SchemaFieldItem[]): SchemaFieldItem[] => quickSortObjectArray('x-index', arr);
+  const sorter = (arr: T[]): T[] => quickSortObjectArray<any>('x-index', arr);
   return [...sorter(normalFields), ...sorter(systemFields)];
 }
 
-function schemaToFields(
-  schema?: ISchema,
-  filterFunc?: FilterFunc,
-  fields: SchemaFieldItem[] = [],
-): Array<SchemaFieldItem> {
-  const { properties } = cloneDeep(schema || {});
-  if (!properties || isEmpty(properties)) {
-    return sortFields(fields);
-  }
-
-  const newProperties: ISchema = {
-    properties: {},
-  };
-
-  Object.keys(properties).forEach((key) => {
-    const currentSchema: ISchema = properties[key];
-    const componentName = currentSchema['x-component']?.toLowerCase();
-
-    if (!componentName) return;
-
-    const parentField = currentSchema?.['x-internal']?.parentField;
-    const tabIndex = currentSchema?.['x-internal']?.tabIndex;
-
-    if (componentName === 'subtable') {
-      const items = currentSchema.items as ISchema;
-      if (items) {
-        items.properties = schemaToMap(items, filterFunc);
-      }
+export function schemaToArray(schema?: ISchema, options?: SchemaToArrayOptions): ISchema[] {
+  const childPropertiesToParse = ['properties'];
+  options?.parseSubTable && childPropertiesToParse.push('items');
+  let schemas = treeUtil.toArray<ISchema>(
+    childPropertiesToParse, schema as ISchema,
+  ).filter((schema) => {
+    if (!options?.keepLayout) {
+      return isSchemaValid(schema) && !schema?.['x-internal']?.isLayoutComponent;
     }
-
-    const field: SchemaFieldItem = {
-      ...currentSchema,
-      'x-index': numberTransform(currentSchema),
-      fieldName: key,
-      componentName: componentName || '',
-      parentField,
-      tabIndex,
-      id: key,
-    };
-
-    if (currentSchema.properties && newProperties.properties) {
-      newProperties.properties = Object.assign(newProperties.properties, currentSchema.properties);
-    }
-
-    if ((filterFunc && !filterFunc(currentSchema)) || currentSchema?.['x-internal']?.isLayoutComponent) {
-      return;
-    }
-
-    fields.push(field);
+    return isSchemaValid(schema);
+  }).map(({
+    fieldIndex, fieldPath, ...schema
+  }: ISchema & { fieldPath?: string; fieldIndex?: string | number }) => {
+    return merge(schema, { 'x-internal': { _key: fieldIndex, fieldPath } });
   });
+  schemas = options?.filter ? schemas.filter((schema) => options?.filter?.(schema)) : schemas;
+  return sortSchemaArray(schemas);
+}
 
-  return schemaToFields(newProperties, filterFunc, fields);
+export function schemaToOptions(schema?: ISchema, options?: SchemaToOptionsOptions): FormFieldOption [] {
+  return schemaToArray(schema, options).map((field: ISchema) => {
+    const permission = field?.['x-internal']?.permission as PERMISSION;
+    return {
+      label: field.title as string,
+      value: field['x-internal']?._key || '',
+      isSystem: !!field['x-internal']?.isSystem,
+      isLayout: !!field['x-internal']?.isLayoutComponent,
+      path: field['x-internal']?.fieldPath || '',
+      read: isPermissionReadable(permission),
+      write: isPermissionWriteable(permission),
+      invisible: isPermissionHiddenAble(permission),
+      editable: isPermissionEditable(permission),
+    };
+  });
+}
+
+export function schemaToFields(schema?: ISchema, filter?: FieldsFilterFunc): Array<SchemaFieldItem> {
+  let fields = schemaToArray(schema).map((schema) => schemaItemToSchemaFieldItem(schema));
+  fields = filter ? fields.filter((field) => filter(field)) : fields;
+  return sortSchemaArray(fields);
+}
+
+export function schemaToMap(schema?: ISchema, filter?: FieldsFilterFunc): Record<string, SchemaFieldItem> {
+  return schemaToFields(schema, filter).reduce(
+    (fieldsMap: Record<string, SchemaFieldItem>, field: SchemaFieldItem) => {
+      fieldsMap[field.fieldName] = field;
+      return fieldsMap;
+    }, {},
+  );
 }
 
 export function fieldsToSchema(fields: Array<SchemaFieldItem>): ISchema {

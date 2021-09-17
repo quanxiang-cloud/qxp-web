@@ -35,6 +35,7 @@ interface FlowInstance {
   formId?: string;
   formInstanceId?: string;
   id?: string;
+  keyFields?: Array<string>;
   isDeleted?: number;
   modifierId?: string;
   modifierName?: string;

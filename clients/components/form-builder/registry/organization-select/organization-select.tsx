@@ -1,17 +1,20 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useQuery } from 'react-query';
 import { TreeSelect } from 'antd';
 import { TreeSelectProps } from 'antd/lib/tree-select';
 import { DataNode } from 'rc-tree-select/lib/interface';
 
 import { getUserDepartment } from '@lib/utils';
+
 import { searchOrganization, Organization } from './messy/api';
 import './index.scss';
 
 type Props = TreeSelectProps<any> & {
   appID: string;
   onChange: (value: LabelValue[]) => void;
-  optionalRange: 'all' | 'customize' | 'myDep';
+  optionalRange: 'all' | 'customize' |'currentUserDep';
+  defaultRange: 'customize' | 'currentUserDep',
+  defaultValues?: LabelValue[];
   rangeList?: LabelValue[];
   value?: LabelValue[];
 }
@@ -53,9 +56,24 @@ const OrganizationPicker = ({
   appID,
   onChange,
   optionalRange,
+  defaultRange,
+  defaultValues,
   value = [],
   ...otherProps
 }: Props): JSX.Element => {
+  useEffect(() => {
+    const { id, departmentName } = getUserDepartment(window.USER);
+    if (value.length) {
+      return;
+    }
+
+    if (defaultRange === 'currentUserDep' || optionalRange === 'currentUserDep') {
+      onChange?.([{ label: departmentName, value: id }]);
+    } else {
+      onChange?.(defaultValues || []);
+    }
+  }, []);
+
   const { data } = useQuery(['query_user_picker', appID], () => searchOrganization(appID));
   const treeData = React.useMemo(() => {
     const treeDataTmp = parseTree({ depTreeData: data, rootPId: 0 });
@@ -86,10 +104,8 @@ const OrganizationPicker = ({
       });
     }
 
-    if (optionalRange === 'myDep') {
-      const userinfo = window.USER;
-      const currentUserDep = getUserDepartment(userinfo);
-      const { id, departmentName } = currentUserDep;
+    if (optionalRange === 'currentUserDep') {
+      const { id, departmentName } = getUserDepartment(window.USER);
       const myDep = {
         id,
         fullPath: id,
@@ -101,27 +117,22 @@ const OrganizationPicker = ({
     }
 
     return treeDataTmp;
-  }, [data, optionalRange, rangeList]);
+  }, [data, optionalRange, rangeList, defaultRange]);
 
-  const handleChange = (value: string | string[], labels: React.ReactNode[]): void => {
-    const valueTmp = Array.isArray(value) ? value : [value];
-    onChange(
-      valueTmp.map((v, index) => ({
-        value: v,
-        label: labels[index] as string,
-      })),
-    );
+  const handleChange = (selected: LabelValue | LabelValue[]): void => {
+    onChange(([] as LabelValue[]).concat(selected));
   };
 
-  const valList = (value || []).map(({ value }: LabelValue) => value) || [];
-  const selected = otherProps.multiple ? valList : valList.toString();
+  const selected = otherProps.multiple ? value : [...value].shift();
 
   return (
     <TreeSelect
       {...otherProps}
-      className='flex-1 dep-selector'
       allowClear
+      labelInValue
       showSearch
+      value={selected}
+      className='flex-1 dep-selector'
       dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
       treeNodeFilterProp="title"
       treeDataSimpleMode={{
@@ -129,7 +140,6 @@ const OrganizationPicker = ({
         rootPId: 0,
       }}
       onChange={handleChange}
-      value={selected ? selected : undefined}
       treeData={treeData}
     />
   );

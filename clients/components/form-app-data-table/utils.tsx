@@ -1,7 +1,7 @@
 import React from 'react';
 import { UnionColumns } from 'react-table';
 import {
-  pipe, entries, map, get, fromPairs, set, placeholder, isArray, filter, isUndefined,
+  pipe, entries, map, isArray, filter, isUndefined,
 } from 'lodash/fp';
 
 import FormDataValueRenderer from '@c/form-data-value-renderer';
@@ -9,9 +9,8 @@ import { getCondition } from '@c/data-filter/utils';
 import { not } from '@lib/utils';
 import { schemaToMap } from '@lib/schema-convert';
 
-import { PERMISSION } from './constants';
 import { TableConfig } from './type';
-import AppPageDataStore, { FormAppDataTableStoreSchema } from './store';
+import AppPageDataStore from './store';
 
 export type Scheme = Record<string, any>;
 export type Config = {
@@ -19,6 +18,21 @@ export type Config = {
   pageTableColumns?: string[];
   pageTableShowRule?: TableConfig;
 };
+
+export const SHOW_FIELD = [
+  'DatePicker',
+  'Input',
+  'MultipleSelect',
+  'NumberPicker',
+  'RadioGroup',
+  'Select',
+  'CheckboxGroup',
+  'UserPicker',
+  'CascadeSelector',
+  'OrganizationPicker',
+  'AssociatedData',
+  'Serial',
+];
 
 function addFixedParameters(
   fixedList: number[],
@@ -83,23 +97,6 @@ export function getPageDataSchema(
     tableColumns: setFixedParameters(pageTableShowRule.fixedRule, [...tableColumns, ...customColumns]),
     pageTableShowRule,
   };
-}
-
-export function readOnlyTransform(schema: FormAppDataTableStoreSchema): FormAppDataTableStoreSchema {
-  const _readOnlyTransform = pipe(
-    get('properties'),
-    entries,
-    map(([_, field]: [string, SchemaFieldItem]) => {
-      if (field['x-internal']?.permission === PERMISSION.READONLY) {
-        field.readOnly = true;
-      }
-      return [_, field];
-    }),
-    fromPairs,
-    set('properties', placeholder, schema),
-  );
-
-  return _readOnlyTransform(schema);
 }
 
 export function conditionBuilder(store: AppPageDataStore, values: Record<string, unknown>): Condition[] {

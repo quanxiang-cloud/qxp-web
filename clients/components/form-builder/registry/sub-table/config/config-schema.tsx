@@ -31,6 +31,30 @@ const schema: ISchema = {
           },
           'x-index': 1,
         },
+        displayModifier: {
+          type: 'string',
+          title: '字段属性',
+          default: 'normal',
+          enum: [
+            {
+              label: '普通',
+              value: 'normal',
+            },
+            {
+              label: '只读',
+              value: 'readonly',
+            },
+            {
+              label: '隐藏',
+              value: 'hidden',
+            },
+          ],
+          'x-component': 'RadioGroup',
+          'x-mega-props': {
+            labelAlign: 'top',
+          },
+          'x-index': 2,
+        },
         subordination: {
           title: '子表来源',
           type: 'string',
@@ -49,7 +73,7 @@ const schema: ISchema = {
           'x-mega-props': {
             labelAlign: 'top',
           },
-          'x-index': 2,
+          'x-index': 3,
           'x-linkages': [
             {
               type: 'value:visible',
@@ -79,7 +103,7 @@ const schema: ISchema = {
           'x-mega-props': {
             labelAlign: 'top',
           },
-          'x-index': 3,
+          'x-index': 4,
         },
         subTableSchema: {
           type: 'object',
@@ -87,7 +111,7 @@ const schema: ISchema = {
           'x-mega-props': {
             labelAlign: 'top',
           },
-          'x-index': 4,
+          'x-index': 5,
         },
         subTableColumns: {
           type: 'array',
@@ -96,7 +120,7 @@ const schema: ISchema = {
           'x-mega-props': {
             labelAlign: 'top',
           },
-          'x-index': 5,
+          'x-index': 6,
         },
         curConfigSubTableKey: {
           type: 'string',
@@ -105,14 +129,23 @@ const schema: ISchema = {
           'x-mega-props': {
             labelAlign: 'top',
           },
-          'x-index': 6,
+          'x-index': 7,
           visible: false,
         },
         required: {
           title: '是否必填',
           default: false,
           'x-component': 'Switch',
-          'x-index': 7,
+          'x-index': 8,
+        },
+        tableID: {
+          type: 'string',
+          'x-component': 'Input',
+          'x-component-props': {
+            className: 'hidden',
+          },
+          default: '',
+          'x-index': 9,
         },
       },
     },

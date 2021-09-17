@@ -1,24 +1,11 @@
-import React, { useEffect } from 'react';
-import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
-import { useQuery } from 'react-query';
-import { getSerial } from './api';
+import React from 'react';
 
-function SerialNumber(p: ISchemaFieldComponentProps): JSX.Element {
-  const { appID } = p.props['x-component-props'];
-  const fieldID = p.name;
-  const { isLoading, data } = useQuery<any, Error>(
-    [appID, fieldID],
-    () => getSerial(appID, fieldID),
-  );
-  useEffect(()=>{
-    p.mutators.change(data?.value);
-  }, [data]);
-
-  return (
-    <p>{p.value}</p>
-  );
+interface Props {
+  value?: string;
 }
 
-SerialNumber.isFieldComponent = true;
-
-export default SerialNumber;
+export default function Serial({ value }: Props): JSX.Element {
+  return (
+    <span>{value || '未配置流水号'}</span>
+  );
+}

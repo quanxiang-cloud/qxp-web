@@ -14,7 +14,7 @@ import RadioGroup from '@c/radio/group';
 import Button from '@c/button';
 import Radio from '@c/radio';
 import FormulaEditor, { RefProps } from '@c/formula-editor';
-import { getFormFieldSchema } from '@flowEditor/forms/api';
+import { getFormFieldSchema } from '@flow/content/editor/forms/api';
 import schemaToFields from '@lib/schema-convert';
 
 import store, {
@@ -306,7 +306,12 @@ export default function GlobalConfig(): JSX.Element | null {
               render={({ field }) => (
                 <CheckBoxGroup
                   defaultValue={keyFields ? keyFields.split(',') : []}
-                  onChange={(fields) => field.onChange(fields.length ? fields.join(',') : '')}
+                  onChange={(fields) => {
+                    const newFields = fieldList?.map(
+                      (listItem)=> fields.find((item)=> item === listItem.value),
+                    ).filter(Boolean) || [];
+                    field.onChange(newFields.length ? newFields.join(',') : '');
+                  }}
                   options={fieldList}
                   disabled={status === 'ENABLE'}
                 />

@@ -1,3 +1,5 @@
+import { getSchemaPermissionFromSchemaConfig } from '@c/form-builder/utils';
+
 export interface CascadeConfig {
   title: string;
   description?: string;
@@ -25,7 +27,7 @@ export const defaultConfig: CascadeConfig = {
 };
 
 export function toSchema(value: CascadeConfig): ISchema {
-  const { defaultValueFrom, customizedDataset, predefinedDataset } = value;
+  const { defaultValueFrom, customizedDataset } = value;
 
   return {
     type: 'label-value',
@@ -45,7 +47,7 @@ export function toSchema(value: CascadeConfig): ISchema {
       defaultValueFrom: value.defaultValueFrom,
       showFullPath: value.showFullPath,
       sortable: false,
-      permission: 3,
+      permission: getSchemaPermissionFromSchemaConfig(value),
       dropdownStyle: value.dropdownStyle,
       required: value.required,
     },

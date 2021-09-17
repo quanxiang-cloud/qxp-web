@@ -1,3 +1,5 @@
+import { getSchemaPermissionFromSchemaConfig } from '@c/form-builder/utils';
+
 export interface InputConfig {
   title: string;
   description?: string;
@@ -41,7 +43,7 @@ export function toSchema(value: InputConfig): ISchema {
     },
     ['x-internal']: {
       sortable: value.sortable,
-      permission: 3,
+      permission: getSchemaPermissionFromSchemaConfig(value),
       defaultValueFrom: value.defaultValueFrom,
       defaultValueLinkage: value.defaultValueLinkage,
     },

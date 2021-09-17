@@ -6,13 +6,13 @@ import {
   IAntdFormItemProps,
   createFormActions,
 } from '@formily/antd';
-import { Input, Radio, MegaLayout, Switch, Select } from '@formily/antd-components';
+import { Input, Radio, MegaLayout, Switch } from '@formily/antd-components';
 
 import Picker from './picker';
 import UserPicker from './user-picker';
 import { StoreContext } from '../../context';
 import { DefaultConfig } from './convertor';
-import { EnumReadOnly, EnumOptionalRange, EnumMultiple } from './messy/enum';
+import { EnumReadOnly, EnumOptionalRange, EnumMultiple, EnumDefaultRange } from './messy/enum';
 
 const { onFieldInputChange$ } = FormEffectHooks;
 const actions = createFormActions();
@@ -35,11 +35,17 @@ const UserPickerConfigForm = ({ initialValue, onChange }: Props): JSX.Element =>
   }, [appID]);
 
   function formEffects(): void {
-    onFieldInputChange$('optionalRange').subscribe(() => {
-      setFieldState('defaultValues', (state) => {
+    onFieldInputChange$('optionalRange').subscribe(({ value }) => {
+      setFieldState('rangeList', (state) => {
         state.value = [];
       });
-      setFieldState('rangeList', (state) => {
+
+      setFieldState('defaultRange', (state) => {
+        state.props.dataSource = value === 'all' ? EnumDefaultRange : [EnumDefaultRange[0]];
+        state.value = 'customize';
+      });
+
+      setFieldState('defaultValues', (state) => {
         state.value = [];
       });
     });
@@ -53,15 +59,21 @@ const UserPickerConfigForm = ({ initialValue, onChange }: Props): JSX.Element =>
         onChange={(formData) => onChange(formData)}
         effects={formEffects}
       >
-        <Field name="title" title="标题" component={Input} />
+        <Field
+          name="title"
+          title="标题名称"
+          component={Input}
+          required
+          x-rules={{ required: true, message: '请输入标题名称' }}
+          maxLength={50}
+        />
         <Field name="placeholder" title="占位提示" component={Input} />
         <Field name="description" title="描述内容" component={Input.TextArea} />
         <Field name="displayModifier" title="字段属性" component={Radio.Group} dataSource={EnumReadOnly} />
         <Field name="required" title="是否必填" component={Switch} />
         <Field name="multiple" title="人员选项" component={Radio.Group} dataSource={EnumMultiple} />
-        <Field name="optionalRange" title="可选范围" component={Select} dataSource={EnumOptionalRange} />
+        <Field name="optionalRange" title="可选范围" component={Radio.Group} dataSource={EnumOptionalRange} />
         <Field
-          isMy={initialValue.optionalRange === 'currentUser'}
           visible={initialValue.optionalRange === 'customize'}
           rangeList={initialValue.rangeList}
           value={initialValue.rangeList}
@@ -70,10 +82,16 @@ const UserPickerConfigForm = ({ initialValue, onChange }: Props): JSX.Element =>
           component={Picker}
         />
         <Field
-          name="defaultValues"
-          title="默认值"
+          name="defaultRange"
           visible={initialValue.optionalRange !== 'currentUser'}
+          title="默认值"
+          component={Radio.Group}
+          dataSource={EnumDefaultRange}
+        />
+        <Field
+          name="defaultValues"
           appID={appID}
+          visible={initialValue.defaultRange === 'customize' && initialValue.optionalRange !== 'currentUser'}
           optionalRange={initialValue.optionalRange}
           mode={initialValue.multiple}
           options={(initialValue.rangeList || []).map(({ ownerID, ownerName }) => {
@@ -81,7 +99,6 @@ const UserPickerConfigForm = ({ initialValue, onChange }: Props): JSX.Element =>
           })}
           component={UserPicker}
         />
-        {/* <Picker value={initialValue.rangeList} onChange={handleDefaultUserChange} /> */}
       </Form>
     </div>
   );

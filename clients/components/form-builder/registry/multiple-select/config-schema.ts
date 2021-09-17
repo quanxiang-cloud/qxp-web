@@ -1,5 +1,3 @@
-import { deleteOperate, extraOperations } from '../operates';
-
 const schema: ISchema = {
   type: 'object',
   properties: {
@@ -72,35 +70,62 @@ const schema: ISchema = {
           'x-component': 'Switch',
           'x-index': 6,
         },
-        availableOptions: {
-          type: 'array',
-          'x-component': 'ArrayTable',
+        defaultValueFrom: {
+          title: '选项来源',
+          enum: [
+            {
+              label: '自定义',
+              value: 'customized',
+            },
+            {
+              label: '选项集',
+              value: 'dataset',
+            },
+          ],
+          'x-component': 'select',
           'x-mega-props': {
             labelAlign: 'top',
           },
-          'x-component-props': {
-            operationsWidth: 80,
-            renderRemove: deleteOperate,
-            renderMoveDown: () => null,
-            renderMoveUp: () => null,
-            renderExtraOperations: extraOperations,
-            renderAddition: () => null,
-          },
           'x-index': 7,
-          items: {
-            type: 'object',
-            properties: {
-              label: {
-                title: '选项',
-                type: 'string',
-                'x-component': 'Input',
+          'x-linkages': [
+            {
+              type: 'value:state',
+              target: 'availableOptions',
+              state: {
+                display: '{{ $value === "customized" }}',
               },
             },
-          },
+            {
+              type: 'value:visible',
+              target: 'datasetId',
+              condition: '{{ $value === "dataset" }}',
+            },
+          ],
         },
-        add: {
-          type: 'string',
-          'x-component': 'addOperate',
+        availableOptions: {
+          type: 'array',
+          title: '选项列表',
+          description: '每行为一个选项，且选项不能超过 15 个字符',
+          'x-component': 'InputForLabels',
+          'x-mega-props': {
+            labelAlign: 'top',
+          },
+          'x-index': 10,
+          items: { type: 'string' },
+        },
+        datasetId: {
+          title: '选项集',
+          required: true,
+          triggerType: 'onBlur',
+          'x-rules': {
+            required: true,
+            message: '请选择选项集',
+          },
+          'x-component': 'DatasetConfig',
+          'x-mega-props': {
+            labelAlign: 'top',
+          },
+          'x-index': 9,
         },
       },
     },

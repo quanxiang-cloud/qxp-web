@@ -1,10 +1,15 @@
 import { XYPosition, Node, FlowElement, removeElements, isNode } from 'react-flow-renderer';
-import { cloneDeep } from 'lodash';
+import { cloneDeep, set } from 'lodash';
+
+import { getFormFieldSchema } from '@flow/content/editor/forms/api';
 
 import type { NodeType, Data, Operation, BusinessData } from '../type';
 import { SYSTEM_OPERATOR_PERMISSION, CUSTOM_OPERATOR_PERMISSION } from './constants';
 import store, { getNodeElementById } from '../store';
 import { edgeBuilder } from './edge';
+import {
+  getInitFieldPermissionFromSchema,
+} from '@flow/content/editor/forms/intermidiate/components/field-permission/util';
 
 const approveAndFillInCommonData = {
   basicConfig: {
@@ -83,18 +88,21 @@ export function getNodeInitialData(type: NodeType): BusinessData {
     },
     processBranchTarget: {},
     autocc: {
-      recivers: undefined,
+      type: 'person',
+      recivers: [],
     },
     email: {
+      type: 'person',
       content: undefined,
       mes_attachment: undefined,
-      recivers: '',
+      recivers: [],
       templateId: 'quanliang',
       title: '',
     },
     letter: {
+      type: 'person',
       content: undefined,
-      recivers: undefined,
+      recivers: [],
       sort: undefined,
       title: '',
     },
@@ -269,4 +277,17 @@ export function updateParentAndChildNodeElementRelationship(
       childrenID?.filter((id) => !removedElementsID.includes(id)),
     ),
   );
+}
+
+export async function prepareNodeData(
+  newNode: Node<Data>, options: { appID: string, tableID: string },
+): Promise<void> {
+  const { tableID, appID } = options;
+  if (!tableID || !appID) {
+    return;
+  }
+  const schema = await getFormFieldSchema({ queryKey: [undefined, tableID, appID] });
+  if (schema && ['approve', 'fillIn'].includes(newNode.type || '')) {
+    set(newNode, 'data.businessData.fieldPermission', getInitFieldPermissionFromSchema(schema));
+  }
 }

@@ -40,7 +40,7 @@ module.exports = {
       144: '144px',
       152: '152px',
       200: '200px',
-    }, 
+    },
     lineHeight: {
       24: '24px',
       28: '28px',
@@ -106,6 +106,7 @@ module.exports = {
       },
       minWidth: {
         90: '90px',
+        120: '120px',
       },
       maxWidth: {
         '%90': '90%',

@@ -1,12 +1,11 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 import dayjs from 'dayjs';
-import { map, omitBy } from 'lodash';
+import { map, get } from 'lodash';
 
 import Status from '@c/process-node-status';
 import Icon from '@c/icon';
-import FormDataValueRenderer from '@c/form-data-value-renderer';
-import { schemaToMap } from '@lib/schema-convert';
+import { getBasicValue } from '@c/form-data-value-renderer';
 
 import Avatar from '../avatar';
 import './index.scss';
@@ -37,8 +36,11 @@ export default function TaskCard({ task, type }: Props): JSX.Element {
 
   const {
     name, flowInstanceEntity, startTime, createTime, creatorName, creatorAvatar, appName, formData,
-    formSchema, status,
+    formSchema, status, keyFields,
   } = task;
+  const taskCardData = (multiTask ? formData : flowInstanceEntity?.formData) || {};
+  const properties = multiTask ? formSchema?.properties : flowInstanceEntity?.formSchema?.properties;
+  const taskKeyFields = (multiTask ? keyFields : flowInstanceEntity?.keyFields) || [];
 
   return (
     <div className="corner-2-8-8-8 bg-white mb-16 approval-card">
@@ -46,7 +48,7 @@ export default function TaskCard({ task, type }: Props): JSX.Element {
         <div className="left-info p-20 cursor-pointer" onClick={handleClick}>
           <div className="flex flex-col justify-between">
             <div className="flex justify-between">
-              <div>
+              <div className="flex items-center">
                 <Avatar
                   name={multiTask ? creatorName : flowInstanceEntity?.creatorName || ''}
                   link={multiTask ? creatorAvatar : flowInstanceEntity?.creatorAvatar}
@@ -75,29 +77,21 @@ export default function TaskCard({ task, type }: Props): JSX.Element {
             </div>
           </div>
         </div>
-        <div className="right-info px-20 py-12 flex flex-1 justify-between pl-40">
+        <div className="right-info px-20 py-12 flex flex-1 justify-between pl-40 overflow-hidden">
           <div className="flex flex-col">
             {
-              Object.entries(
-                (multiTask ? formData : flowInstanceEntity?.formData) || {},
-              ).map(([keyName, value]) => {
-                const schema = multiTask ? formSchema : flowInstanceEntity?.formSchema;
-                const properties = omitBy(schemaToMap(schema), (schema) => {
-                  return ['subtable', 'associatedrecords'].includes(schema.componentName);
-                });
-                if (!properties || !properties[keyName] || properties[keyName]?.display === false) {
-                  return null;
-                }
+              taskKeyFields.slice(0, 6).map((taskCardName) => {
+                const taskCardField = get(properties, taskCardName, {});
                 return (
-                  <p key={keyName} className="mb-4 form-data-item">
-                    <span>{properties[keyName]?.title || keyName}: </span>
-                    <FormDataValueRenderer value={value} schema={properties[keyName]} />
+                  <p key={taskCardName} className="mb-4 form-data-item">
+                    <span>{taskCardField?.title || taskCardName}: </span>
+                    <span>{getBasicValue(taskCardField, taskCardData[taskCardName])}</span>
                   </p>
                 );
               })
             }
           </div>
-          <div className="create-time">
+          <div className="create-time whitespace-nowrap">
             接收于: {dayjs(multiTask ? createTime : startTime).format('YYYY-MM-DD HH:mm')}
           </div>
         </div>

@@ -1,7 +1,7 @@
-import { Checkbox } from '@formily/antd-components';
+import { validateDatasetElement } from '@c/form-builder/utils';
 
-import { validateRegistryElement } from '@c/form-builder/utils';
-
+import CheckboxGroup from './checkboxGroup';
+import DatasetConfig from '../../form-settings-panel/form-field-config/dataset-config';
 import configSchema from './config-schema';
 import { defaultConfig, toSchema, toConfig } from './convertor';
 
@@ -12,11 +12,12 @@ const CheckboxGroupField: Omit<FormBuilder.SourceElement<typeof defaultConfig>, 
   icon: 'check_box',
   defaultConfig,
   toSchema,
-  component: Checkbox.Group,
+  component: CheckboxGroup,
   category: 'basic',
   componentName: 'CheckboxGroup',
   compareOperators: ['⊇', '⊋'],
-  validate: validateRegistryElement(configSchema),
+  configDependencies: { DatasetConfig },
+  validate: validateDatasetElement,
 };
 
 export default CheckboxGroupField;

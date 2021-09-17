@@ -9,8 +9,8 @@ import Icon from '@c/icon';
 import RadioGroup from '@c/radio/group';
 import Radio from '@c/radio';
 import Select from '@c/select';
-import ActionButtonGroup from '@flowEditor/components/_common/action-button-group';
-import type { FieldValue } from '@flowEditor/type';
+import ActionButtonGroup from '@flow/content/editor/components/_common/action-button-group';
+import type { FieldValue } from '@flow/content/editor/type';
 import FormRenderer from '@c/form-builder/form-renderer';
 
 function parseDisplayValue(value: any): any {

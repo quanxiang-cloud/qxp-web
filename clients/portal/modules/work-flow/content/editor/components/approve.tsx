@@ -2,7 +2,7 @@ import React, { useRef, useState } from 'react';
 import cs from 'classnames';
 
 import useObservable from '@lib/hooks/use-observable';
-import type { Data, FillInData, StoreValue } from '@flowEditor/type';
+import type { Data, FillInData, StoreValue } from '@flow/content/editor/type';
 
 import store from '../store';
 import NodeHeader from './_common/node-header';
@@ -46,6 +46,7 @@ export default function ApproveNodeComponent({ data, id, xPos, yPos, isDragging 
       position: '部门负责人',
       superior: '上级领导',
       leadOfDepartment: '部门负责人',
+      processInitiator: '流程发起人',
     };
     const personTitle = typePersonMap[basicConfig.approvePersons.type as keyof typeof typePersonMap];
     if (personTitle) {

@@ -52,6 +52,9 @@ build_all:
     - docker push "$IMAGE_PREFIX/qxp-web-nginx:$IMAGE_TAG"
     - docker push "$IMAGE_PREFIX/qxp-web-portal:$IMAGE_TAG"
     - docker push "$IMAGE_PREFIX/qxp-web-home:$IMAGE_TAG"
+    - docker rmi "$IMAGE_PREFIX/qxp-web-nginx:$IMAGE_TAG"
+    - docker rmi "$IMAGE_PREFIX/qxp-web-portal:$IMAGE_TAG"
+    - docker rmi "$IMAGE_PREFIX/qxp-web-home:$IMAGE_TAG"
 
 deploy_alpha:
   tags:

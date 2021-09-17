@@ -1,12 +1,22 @@
-import { observable, action, toJS, reaction, IReactionDisposer } from 'mobx';
 import { omit } from 'lodash';
+import { History } from 'history';
 import { mutateTree, TreeData, TreeItem } from '@atlaskit/tree';
+import { observable, action, toJS, reaction, IReactionDisposer } from 'mobx';
 
 import toast from '@lib/toast';
 import { buildAppPagesTreeData } from '@lib/utils';
-import { getTableSchema } from '@lib/http-client';
+import { getCustomPageInfo, getSchemaPageInfo, getTableSchema } from '@lib/http-client';
 
+import { CardList, CustomPageInfo, MenuType } from './type';
 import { fetchAppList } from '../entry/app-list/api';
+import { DefaultPageDescriptions } from './constants';
+import { getNextTreeItem } from './page-menu-design/app-pages-tree';
+import {
+  getPageCardList,
+  filterDeletedPage,
+  mapToSchemaPageDescription,
+  mapToCustomPageDescription,
+} from './utils';
 import {
   fetchAppDetails,
   updateAppStatus,
@@ -18,6 +28,26 @@ import {
   deleteGroup,
   deletePage,
 } from './api';
+
+type DeletePageOrGroupParams = {
+  treeItem: TreeItem;
+  type: string;
+  history?: History;
+  pathname: string
+}
+
+const DEFAULT_CARD_LIST = [
+  {
+    id: 'linkedFlows',
+    title: '关联工作流',
+    list: [],
+  },
+  {
+    id: 'AuthorizedRoles',
+    title: '已授权角色',
+    list: [],
+  },
+];
 
 class AppDetailsStore {
   destroySetCurPage: IReactionDisposer;
@@ -41,6 +71,10 @@ class AppDetailsStore {
     rootId: 'ROOT',
     items: {},
   };
+  @observable modalType = '';
+  @observable curPreviewUrl = '';
+  @observable curPageCardList: CardList[] = DEFAULT_CARD_LIST;
+  @observable pageDescriptions = DefaultPageDescriptions;
 
   constructor() {
     this.destroySetCurPage = reaction(() => {
@@ -55,6 +89,11 @@ class AppDetailsStore {
   @action
   setPageID = (pageID: string) => {
     this.pageID = pageID;
+  }
+
+  @action
+  setModalType = (modalType : string): void => {
+    this.modalType = modalType;
   }
 
   @action
@@ -106,6 +145,8 @@ class AppDetailsStore {
       this.fetchAppDetails(this.appID).then(() => {
         toast.success('修改成功！');
       });
+    }).catch((err) => {
+      toast.error(err);
     });
   }
 
@@ -115,7 +156,9 @@ class AppDetailsStore {
   }
 
   @action
-  deletePageOrGroup = (treeItem: TreeItem, type: string) => {
+  deletePageOrGroup = async ({
+    treeItem, type, history, pathname,
+  }: DeletePageOrGroupParams): Promise<void> => {
     const data = {
       id: treeItem.data.id,
       appID: treeItem.data.appID,
@@ -125,42 +168,35 @@ class AppDetailsStore {
 
     const method = type === 'delGroup' ? deleteGroup : deletePage;
 
-    return method(data).then(() => {
-      const items = omit(toJS(this.pagesTreeData.items), treeItem.id as string);
-      const groupID = data.groupID || 'ROOT';
-      items[groupID] = {
-        ...items[groupID],
-        children: items[groupID].children?.filter((childID) => childID !== treeItem.id),
-      };
-      // todo refactor this
-      if (this.curPage.id === treeItem.id && type !== 'delGroup') {
-        window.history.replaceState('', '', window.location.pathname);
-        this.pageID = '';
-        this.curPage = { id: '' };
-      }
+    await method(data);
+    const treeItems = toJS(this.pagesTreeData.items);
+    const items = omit(treeItems, treeItem.id as string);
+    const nextTreeItem = getNextTreeItem(treeItem, treeItems);
 
-      this.pagesTreeData = {
-        items,
-        rootId: this.pagesTreeData.rootId,
-      };
+    const groupID = data.groupID || 'ROOT';
+    items[groupID] = {
+      ...items[groupID],
+      children: items[groupID].children?.filter((childID) => childID !== treeItem.id),
+    };
+    // todo refactor this
+    if (this.curPage.id === treeItem.id && type !== 'delGroup') {
+      history?.replace(pathname);
+      this.pageID = '';
+      this.curPage = { id: '' };
+    }
 
-      if (groupID === 'ROOT') {
-        this.pageInitList = this.pageInitList.filter((page) => page.name !== treeItem.data.name);
-        toast.success('删除成功');
-        return;
-      }
+    this.pagesTreeData = {
+      items,
+      rootId: this.pagesTreeData.rootId,
+    };
 
-      this.pageInitList = this.pageInitList.map((page) => {
-        if (page.id === groupID) {
-          page.child = page.child?.filter((childPage) => {
-            return childPage.name !== treeItem.data.name;
-          });
-          page.childCount = page.child?.length;
-        }
-        return page;
-      });
-      toast.success('删除成功');
-    });
+    this.pageInitList = filterDeletedPage(groupID, treeItem.data.id, toJS(this.pageInitList));
+    toast.success('删除成功');
+
+    if (nextTreeItem && nextTreeItem.id !== treeItem.data.id) {
+      this.curPage = nextTreeItem?.data;
+      return;
+    }
   }
 
   @action
@@ -231,6 +267,7 @@ class AppDetailsStore {
 
       if (!newPage.groupID) {
         this.pageInitList.push(newPage);
+        this.curPage = newPage;
         toast.success('创建成功');
         return res.id;
       }
@@ -242,6 +279,7 @@ class AppDetailsStore {
           newPage.sort = sort + 1;
 
           page.childCount = page.child?.push(newPage);
+          this.curPage = newPage;
         }
         return page;
       });
@@ -258,14 +296,74 @@ class AppDetailsStore {
 
     const pageInfo = this.pagesTreeData.items[pageID].data;
     this.fetchSchemeLoading = true;
-    getTableSchema(this.appID, pageInfo.id).then((pageSchema) => {
-      this.hasSchema = !!pageSchema;
-      this.fetchSchemeLoading = false;
-    }).catch(() => {
-      this.fetchSchemeLoading = false;
-    });
+    this.curPageCardList = DEFAULT_CARD_LIST;
+
+    if (pageInfo.menuType === MenuType.schemaForm) {
+      getTableSchema(this.appID, pageInfo.id).then((pageSchema) => {
+        this.hasSchema = !!pageSchema;
+        if (this.hasSchema) {
+          return getSchemaPageInfo(this.appID, pageID);
+        }
+      }).then((res) => {
+        if (res) {
+          const descriptions = this.pageDescriptions.map((description) => {
+            return mapToSchemaPageDescription(description, res);
+          });
+          this.pageDescriptions = [...descriptions];
+          this.curPreviewUrl = '';
+          return getPageCardList(this.appID, this.pageID, this.curPageCardList, pageInfo.menuType);
+        }
+        this.pageDescriptions = DefaultPageDescriptions;
+      }).then((res) => {
+        if (res) {
+          this.curPageCardList = res;
+          return;
+        }
+        this.curPageCardList = DEFAULT_CARD_LIST;
+      }).catch(() => {
+        toast.error('获取表单信息失败');
+      }).finally(() => {
+        this.fetchSchemeLoading = false;
+      });
+    }
+
+    if (pageInfo.menuType === MenuType.customPage) {
+      getCustomPageInfo(this.appID, pageInfo.id).then((res) => {
+        const descriptions = this.pageDescriptions.map((description) => {
+          return mapToCustomPageDescription(description, res);
+        });
+        this.pageDescriptions = [...descriptions];
+        this.curPreviewUrl = res.fileUrl || '';
+        return getPageCardList(this.appID, this.pageID, this.curPageCardList, pageInfo.menuType);
+      }).then((res) => {
+        this.curPageCardList = res;
+      }).catch(() => {
+        toast.error('获取自定义页面信息失败');
+      }).finally(() => {
+        this.fetchSchemeLoading = false;
+      });
+    }
 
     this.curPage = pageInfo;
+  }
+
+  @action
+  setCurPageMenuType = (menuType: number, data: CustomPageInfo): void => {
+    const curPageInfo = { ...this.curPage, menuType: menuType, fileUrl: data.fileUrl };
+    const descriptions = this.pageDescriptions.map((description) => {
+      return mapToCustomPageDescription(description, data);
+    });
+
+    this.pagesTreeData = mutateTree(toJS(this.pagesTreeData), curPageInfo.id, {
+      id: curPageInfo.id,
+      data: curPageInfo,
+    });
+    this.curPage = curPageInfo;
+    this.pageDescriptions = descriptions;
+    this.curPreviewUrl = data.fileUrl || '';
+    getPageCardList(this.appID, this.pageID, this.curPageCardList, curPageInfo.menuType).then((res) => {
+      this.curPageCardList = res;
+    });
   }
 
   @action

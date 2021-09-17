@@ -2,12 +2,13 @@ import React from 'react';
 import { Column } from 'react-table';
 import { get } from 'lodash';
 import _, { every, isObject, map, pipe, filter } from 'lodash/fp';
+import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 
 import Button from '@c/button';
 import Icon from '@c/icon';
 import FormDataValueRenderer from '@c/form-data-value-renderer';
 import { isEmpty } from '@lib/utils';
-import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
+import { schemaToMap } from '@lib/schema-convert';
 
 type Props = {
   appID: string;
@@ -23,7 +24,7 @@ type Props = {
 
 function computeTableColumns(schema: ISchema, columns: string[]): Column<Record<string, any>>[] {
   return columns.map((fieldKey) => {
-    const fieldSchema = get(schema, `properties.${fieldKey}`, {});
+    const fieldSchema = get(schemaToMap(schema), fieldKey, { title: '' });
     return {
       id: fieldKey,
       Header: fieldSchema.title || fieldKey,
@@ -100,7 +101,7 @@ function AssociatedRecordsFields(props: Partial<ISchemaFieldComponentProps>): JS
 
   return (
     <AssociatedRecords
-      readOnly={props.readOnly || props.props.readOnly}
+      readOnly={props.props.readOnly}
       appID={componentProps.appID}
       tableID={componentProps.tableID}
       columns={componentProps.columns || []}

@@ -9,17 +9,24 @@ type ValidationFormula = {
 type XInternal = {
   version?: string;
   sortable?: boolean;
-  permission?: number;
+  permission?: import('./constants').PERMISSION;
   validations?: Array<ValidationFormula>;
   defaultValueFrom?: FormBuilder.DefaultValueFrom;
   defaultValueLinkage?: FormBuilder.DefaultValueLinkage;
   calculationFormula?: string;
   isLayoutComponent?: boolean;
   isSystem?: boolean;
+  _key?: string;
+  fieldPath?: string;
   [key: string]: any;
 }
 
-type ISchema = import('@formily/react-schema-renderer').ISchema & { 'x-internal'?: XInternal };
+type ISchema = import('@formily/react-schema-renderer').ISchema & {
+  'x-internal'?: XInternal;
+  properties?: {
+    [key: string]: ISchema;
+  };
+};
 
 type FilterConfig = {
   condition: Condition[];
@@ -88,7 +95,7 @@ declare namespace FormBuilder {
 
   type DisplayModifier = 'normal' | 'readonly' | 'hidden';
 
-  type DefaultValueFrom = 'customized' | 'linkage' | 'formula' | 'now';
+  type DefaultValueFrom = 'customized' | 'linkage' | 'formula' | 'now' | 'dataset';
 
   type DragObject = SourceElement<any>;
 
@@ -143,6 +150,12 @@ declare namespace FormBuilder {
     targetField: string;
     ruleJoinOperator: 'every' | 'some';
     rules: Array<FormDataFilterRule>;
+  }
+
+  type DataAssignment = {
+    dataSource: string,
+    match: string,
+    dataTarget: string,
   }
 }
 

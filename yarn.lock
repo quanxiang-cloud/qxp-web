@@ -753,6 +753,13 @@
   resolved "http://r.npm.internal.yunify.com/@types/qs/download/@types/qs-6.9.6.tgz#df9c3c8b31a247ec315e6996566be3171df4b3b1"
   integrity sha1-35w8izGiR+wxXmmWVmvjFx30s7E=
 
+"@types/ramda@^0.27.44":
+  version "0.27.44"
+  resolved "http://r.npm.internal.yunify.com/@types/ramda/download/@types/ramda-0.27.44.tgz#ba2283d67fcff366f7e68bd5124a0466e467967f"
+  integrity sha1-uiKD1n/P82b35ovVEkoEZuRnln8=
+  dependencies:
+    ts-toolbelt "^6.15.1"
+
 "@types/react-beautiful-dnd@^13.0.0":
   version "13.0.0"
   resolved "http://r.npm.internal.yunify.com/@types/react-beautiful-dnd/download/@types/react-beautiful-dnd-13.0.0.tgz#e60d3d965312fcf1516894af92dc3e9249587db4"
@@ -3851,6 +3858,11 @@ hex-color-regex@^1.1.0:
   resolved "http://r.npm.internal.yunify.com/hex-color-regex/download/hex-color-regex-1.1.0.tgz#4c06fccb4602fe2602b3c93df82d7e7dbf1a8a8e"
   integrity sha1-TAb8y0YC/iYCs8k9+C1+fb8aio4=
 
+highlight.js@^10.5.0:
+  version "10.7.3"
+  resolved "http://r.npm.internal.yunify.com/highlight.js/download/highlight.js-10.7.3.tgz#697272e3991356e40c3cac566a74eef681756531"
+  integrity sha1-aXJy45kTVuQMPKxWanTu9oF1ZTE=
+
 history@^4.9.0:
   version "4.10.1"
   resolved "http://r.npm.internal.yunify.com/history/download/history-4.10.1.tgz#33371a65e3a83b267434e2b3f3b1b4c58aad4cf3"
@@ -6330,6 +6342,11 @@ railroad-diagrams@^1.0.0:
   resolved "http://r.npm.internal.yunify.com/railroad-diagrams/download/railroad-diagrams-1.0.0.tgz#eb7e6267548ddedfb899c1b90e57374559cddb7e"
   integrity sha1-635iZ1SN3t+4mcG5Dlc3RVnN234=
 
+ramda@^0.27.1:
+  version "0.27.1"
+  resolved "http://r.npm.internal.yunify.com/ramda/download/ramda-0.27.1.tgz#66fc2df3ef873874ffc2da6aa8984658abacf5c9"
+  integrity sha1-Zvwt8++HOHT/wtpqqJhGWKus9ck=
+
 randexp@0.4.6:
   version "0.4.6"
   resolved "http://r.npm.internal.yunify.com/randexp/download/randexp-0.4.6.tgz#e986ad5e5e31dae13ddd6f7b3019aa7c87f60ca3"
@@ -6801,6 +6818,13 @@ react-flow-renderer@^9.6.3:
     react-draggable "^4.4.3"
     react-redux "^7.2.4"
     redux "^4.1.0"
+
+react-highlight@^0.14.0:
+  version "0.14.0"
+  resolved "http://r.npm.internal.yunify.com/react-highlight/download/react-highlight-0.14.0.tgz#5aefa5518baa580f96b68d48129d7a5d2dc0c9ef"
+  integrity sha1-Wu+lUYuqWA+Wto1IEp16XS3Aye8=
+  dependencies:
+    highlight.js "^10.5.0"
 
 react-hook-form@^7.4.2:
   version "7.8.3"
@@ -8157,6 +8181,11 @@ ts-loader@^8.0.18:
     loader-utils "^2.0.0"
     micromatch "^4.0.0"
     semver "^7.3.4"
+
+ts-toolbelt@^6.15.1:
+  version "6.15.5"
+  resolved "http://r.npm.internal.yunify.com/ts-toolbelt/download/ts-toolbelt-6.15.5.tgz#cb3b43ed725cb63644782c64fbcad7d8f28c0a83"
+  integrity sha1-yztD7XJctjZEeCxk+8rX2PKMCoM=
 
 tsconfig-paths-webpack-plugin@^3.5.1:
   version "3.5.1"

@@ -1,4 +1,4 @@
-import { generateRandomFormFieldID } from '../../utils';
+import { convertEnumsToLabels, getSchemaPermissionFromSchemaConfig } from '@c/form-builder/utils';
 
 export interface CheckboxGroupConfig {
   title: string;
@@ -8,7 +8,8 @@ export interface CheckboxGroupConfig {
   sortable: boolean;
   required: boolean;
   defaultValueFrom: FormBuilder.DefaultValueFrom;
-  availableOptions: Array<{ label: string; value: any; title: string }>,
+  datasetId: string;
+  availableOptions: string[],
 }
 
 export const defaultConfig: CheckboxGroupConfig = {
@@ -19,11 +20,8 @@ export const defaultConfig: CheckboxGroupConfig = {
   sortable: false,
   required: false,
   defaultValueFrom: 'customized',
-  availableOptions: [
-    { label: '选项一', value: 'option_1', title: '选项一' },
-    { label: '选项二', value: 'option_2', title: '选项二' },
-    { label: '选项三', value: 'option_3', title: '选项三' },
-  ],
+  datasetId: '',
+  availableOptions: ['选项一', '选项二', '选项三'],
 };
 
 export function toSchema(value: CheckboxGroupConfig): ISchema {
@@ -34,23 +32,18 @@ export function toSchema(value: CheckboxGroupConfig): ISchema {
     required: value.required,
     readOnly: value.displayModifier === 'readonly',
     display: value.displayModifier !== 'hidden',
-    enum: (value.availableOptions || []).map((option) => {
-      return {
-        ...option,
-        value: option.value || generateRandomFormFieldID(),
-        title: option.label,
-        name: option.label,
-      };
-    }),
+    enum: value.availableOptions || [],
     'x-component': 'CheckboxGroup',
     // todo support optionsLayout
     ['x-component-props']: {
       mode: 'multiple',
+      optionsLayout: value.optionsLayout,
+      datasetId: value.datasetId,
     },
     ['x-internal']: {
       sortable: value.sortable,
-      permission: 3,
-      defaultValueFrom: 'customized',
+      permission: getSchemaPermissionFromSchemaConfig(value),
+      defaultValueFrom: value.defaultValueFrom,
     },
   };
 }
@@ -67,13 +60,11 @@ export function toConfig(schema: ISchema): CheckboxGroupConfig {
     title: schema.title as string,
     description: schema.description as string,
     displayModifier: displayModifier,
-    // todo implement this
     optionsLayout: schema['x-component-props']?.layout as any,
     sortable: !!schema['x-internal']?.sortable,
     required: !!schema.required,
-    // todo implement this
     defaultValueFrom: schema['x-internal']?.defaultValueFrom || 'customized',
-    // todo refactor this
-    availableOptions: schema.enum as Array<{ label: string; value: any; title: string }> || [],
+    datasetId: schema['x-component-props']?.datasetId,
+    availableOptions: convertEnumsToLabels(schema.enum as Array<string | LabelValue>),
   };
 }

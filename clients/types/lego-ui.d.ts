@@ -88,8 +88,8 @@ declare module '@QCFE/lego-ui' {
     className?: string;
     style?: Record<string, any>;
     onStart?: (file: QxpFile) => void;
-    onProgress?: (res: Response, file: QxpFile) => void;
-    onSuccess?: (res: Response, file: QxpFile) => void;
+    onProgress?: (res: any, file: QxpFile) => void;
+    onSuccess?: (res: any, file: QxpFile) => void;
     onError?: (err: Error, res: Response, file: QxpFile) => void;
     beforeUpload?: (file: QxpFile) => void;
   }

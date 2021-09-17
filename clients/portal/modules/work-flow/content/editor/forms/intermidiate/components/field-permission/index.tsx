@@ -1,16 +1,16 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useQuery } from 'react-query';
-import { groupBy } from 'lodash';
-import { pipe, pickBy, entries, map } from 'lodash/fp';
+import { groupBy, merge, first, isEqual } from 'lodash';
+import { useUpdateEffect } from 'react-use';
+import fp from 'lodash/fp';
 
 import Toggle from '@c/toggle';
 import Loading from '@c/loading';
 import ErrorTips from '@c/error-tips';
 import useObservable from '@lib/hooks/use-observable';
-import store from '@flowEditor/store';
-import { getFormFieldOptions } from '@flowEditor/forms/api';
+import store from '@flow/content/editor/store';
+import { getFormFieldOptions, FormFieldOption } from '@flow/content/editor/forms/api';
 import FlowContext from '@flow/flow-context';
-import { schemaToMap } from '@lib/schema-convert';
 import type {
   StoreValue,
   FieldPermission as FieldPermissionType,
@@ -19,28 +19,20 @@ import type {
   CurrentElement,
   FillInData,
   FormDataData,
-} from '@flowEditor/type';
+  NewFieldPermission,
+} from '@flow/content/editor/type';
 
 import CustomFieldTable from './custom-field-table';
 import SystemFieldTable from './system-field-table';
+import { fieldPermissionDecoder, fieldPermissionEncoder } from './util';
+import { INITIAL_VALUE } from './constants';
 
 import './style.scss';
 
 interface Props {
-  value: FieldPermissionType;
+  value: FieldPermissionType | NewFieldPermission;
   onChange: (value: Partial<FillInData>) => void;
 }
-
-const INITIAL_VALUE = {
-  initialValue: {
-    variable: '',
-    staticValue: '',
-  },
-  submitValue: {
-    variable: '',
-    staticValue: '',
-  },
-};
 
 export default function FieldPermission({ value, onChange: _onChange }: Props): JSX.Element {
   const { appID } = useContext(FlowContext);
@@ -54,17 +46,15 @@ export default function FieldPermission({ value, onChange: _onChange }: Props): 
   });
 
   const { data: { options: data, schema = {} } = { options: [] }, isLoading, isError } = useQuery(
-    ['GET_WORK_FORM_FIELD_LIST', workFormValue, appID],
+    ['GET_WORK_FORM_FIELD_LIST', workFormValue, appID, { keepLayout: true, parseSubTable: true }],
     getFormFieldOptions, {
       enabled: !!workFormValue && !!appID,
     },
   );
 
   useEffect(() => {
-    if (data.length) {
-      mergeField();
-    }
-  }, [value, data]);
+    data.length && mergeField();
+  }, [data, value]);
 
   useEffect(() => {
     if (mergedFieldPermissions.custom.some(({
@@ -77,8 +67,12 @@ export default function FieldPermission({ value, onChange: _onChange }: Props): 
     }
   }, [mergedFieldPermissions.custom]);
 
+  useUpdateEffect(() => {
+    !isEqual(value, mergedFieldPermissions) && _onChange({ fieldPermission: mergedFieldPermissions });
+  }, [mergedFieldPermissions]);
+
   function onChange(fieldPermission: FieldPermissionType): void {
-    _onChange({ fieldPermission });
+    _onChange({ fieldPermission: fieldPermissionEncoder(fieldPermission) });
   }
 
   function onUpdateFields(type: 'custom' | 'system') {
@@ -90,49 +84,44 @@ export default function FieldPermission({ value, onChange: _onChange }: Props): 
     };
   }
 
-  const getLayoutOptions = pipe(
-    pickBy((schema: ISchema) => schema?.['x-internal']?.isLayoutComponent),
-    entries,
-    map(([fieldName, fieldSchema]: [string, ISchema]) => {
-      return {
-        id: fieldName, fieldName: fieldSchema.title || fieldSchema?.['x-component'], read: true,
-        write: false, hidden: true, ...INITIAL_VALUE,
-      };
-    }),
-  );
-
   function mergeField(): void {
-    const { custom = [], system = [] } = value || {};
+    const { custom = [], system = [] } = fieldPermissionDecoder(value, schema) || {};
     const { true: systemData, false: customData } = groupBy(data, ({ isSystem }) => isSystem);
-    const systemDataIds = systemData?.map(({ value }) => value) || [];
-    const customDataIds = customData?.map(({ value }) => value) || [];
     customData?.forEach((field) => {
-      if (!custom.length || !custom.find(({ id }) => id === field.value)) {
-        custom.push({
-          id: field.value,
-          fieldName: field.label,
-          read: false,
-          write: false,
-          ...INITIAL_VALUE,
-        });
-      }
+      const oldCustomField = custom.find(({ id }) => id === field.value);
+      const newCustomField = {
+        id: field.value,
+        fieldName: field.label,
+        read: field.isLayout ? true : field.read,
+        write: field.write,
+        hidden: field.isLayout,
+        invisible: field.invisible,
+        editable: field.editable,
+        path: field.path,
+        ...INITIAL_VALUE,
+      };
+      !oldCustomField && custom.push(newCustomField);
+      oldCustomField && merge(oldCustomField, {
+        fieldName: newCustomField.fieldName,
+        path: newCustomField.path,
+      });
     });
     systemData?.forEach((field) => {
-      if (!system.length || !system.find(({ id }) => id === field.value)) {
-        system.push({
-          id: field.value,
-          fieldName: field.label,
-          read: false,
-        });
-      }
+      !system.find(({ id }) => id === field.value) && system.push({
+        id: field.value,
+        fieldName: field.label,
+        read: field.read,
+        invisible: field.invisible,
+      });
     });
-    setMergedFieldPermissions({
-      system: system.filter(({ id }) => systemDataIds.includes(id)),
-      custom: [
-        ...custom.filter(({ id }) => customDataIds.includes(id)),
-        ...getLayoutOptions(schema.properties),
-      ],
-    });
+    const sorter = fp.pipe(
+      fp.groupBy((opt: FormFieldOption) => first(opt.path?.split('.'))),
+      fp.map((customDataOptions: FormFieldOption[]) => {
+        return fp.sortBy((opt) => opt.path?.length, customDataOptions);
+      }),
+      fp.flattenDeep,
+    );
+    setMergedFieldPermissions({ system, custom: sorter(custom) });
   }
 
   function handleEditableChange(): void {
@@ -167,7 +156,7 @@ export default function FieldPermission({ value, onChange: _onChange }: Props): 
           <CustomFieldTable
             editable={editable}
             fields={mergedFieldPermissions.custom}
-            schemaMap={schemaToMap(schema)}
+            schema={schema}
             updateFields={onUpdateFields('custom')}
           />
         </section>

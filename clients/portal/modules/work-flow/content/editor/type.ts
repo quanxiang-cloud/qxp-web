@@ -155,7 +155,7 @@ export type TimeRule = {
   deadLine: DeadLine;
   whenTimeout: WhenTimeout;
 }
-export type ApprovePersonType = 'person' | 'field' | 'position' | 'superior' | 'leadOfDepartment';
+export type ApprovePersonType = 'person' | 'field' | 'position' | 'superior' | 'leadOfDepartment' | 'processInitiator';
 export type ApprovePerson = {
   type: ApprovePersonType;
   users: EmployeeOrDepartmentOfRole[];
@@ -188,7 +188,7 @@ export interface OperationPermission {
 
 export interface FillInData {
   basicConfig: BasicNodeConfig;
-  fieldPermission: FieldPermission;
+  fieldPermission: FieldPermission | NewFieldPermission;
   operatorPermission: OperationPermission;
   events: Record<any, any>;
 }
@@ -257,6 +257,7 @@ export type Receiver = {
   account: string,
 }
 export interface SendEmailData {
+  type: ApprovePersonType;
   recivers: Receiver[];
   content: string;
   templateId: string;
@@ -264,12 +265,14 @@ export interface SendEmailData {
   mes_attachment: Attachment[];
 }
 export interface WebMessageData {
+  type: ApprovePersonType;
   recivers: Receiver[];
   sort: 1 | 2;
   content: string;
   title: string;
 }
 export interface CCData {
+  type: ApprovePersonType;
   recivers: Receiver[];
 }
 export interface FieldValue {
@@ -278,27 +281,38 @@ export interface FieldValue {
 }
 export interface CustomFieldPermission {
   fieldName: string;
-  read: boolean;
+  editable: boolean;
+  invisible: boolean;
   write: boolean;
+  read: boolean;
   initialValue: FieldValue;
   submitValue: FieldValue;
   id: string;
-  children?: string[];
-  parent?: string;
-  hidden?: boolean;
+  path: string;
+  hidden: boolean;
 }
 
 export interface SystemFieldPermission {
   fieldName: string;
   read: boolean;
+  invisible: boolean;
   id: string;
-  children?: string[];
-  parent?: string;
 }
 
 export interface FieldPermission {
   custom: CustomFieldPermission[];
   system: SystemFieldPermission[];
+}
+export interface NewFieldPermissionValue {
+  fieldName: string;
+  'x-internal': {
+    permission: number;
+  },
+  initialValue?: FieldValue;
+  submitValue?: FieldValue;
+}
+export interface NewFieldPermission {
+  [key: string]: NewFieldPermissionValue;
 }
 
 export type BusinessData = FormDataData | FillInData | ProcessBranchData |

@@ -1,54 +1,29 @@
 import React from 'react';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
-import { isUndefined } from 'lodash';
+
+import FormDataValueRenderer from '@c/form-data-value-renderer';
 
 import UserPicker from './user-picker';
 
-type OptionalRange = 'customize' | 'all' | 'currentUser';
-
 const UserPickerWrap = (formField: ISchemaFieldComponentProps): JSX.Element => {
-  const optionalRange = formField.props.optionalRange as OptionalRange;
-  const isEditable = !!(isUndefined(formField?.editable) ? formField?.props.editable : formField?.editable);
-  React.useEffect(() => {
-    if (optionalRange === 'currentUser') {
-      const userInfo = window.USER;
-      const options = [{
-        label: userInfo.userName,
-        value: userInfo.id,
-      }];
-      formField.mutators.change(options);
-      formField.form.setFieldState(formField.name, (state) => {
-        state.props.enum = options;
-      });
-      return;
-    }
+  const { optionalRange, defaultValues, defaultRange } = formField.props;
 
-    formField.mutators.change(handleInitValue(formField));
-  }, [optionalRange, formField.props['x-component-props'].mode]);
-
-  const xComponentsProps = Object.assign({}, formField.props['x-component-props'], {
-    onChange: formField.mutators.change,
-    options: formField.props.enum,
-    value: formField.value,
-    editable: isEditable,
-  });
-
-  function handleInitValue(formField: ISchemaFieldComponentProps): LabelValue[] {
-    let initialValue: LabelValue[] = [];
-    if (formField.initialValue && formField.initialValue.length) {
-      initialValue = formField.initialValue;
-      return initialValue;
-    }
-
-    if (formField.props.defaultValues && formField.props.defaultValues.length) {
-      initialValue = formField.props.defaultValues;
-      return initialValue;
-    }
-
-    return initialValue;
+  if (formField.props.readOnly) {
+    return <FormDataValueRenderer schema={formField.schema} value={formField.value} />;
   }
 
-  return <UserPicker optionalRange={optionalRange} {...xComponentsProps} />;
+  return (
+    <UserPicker
+      {...formField.props['x-component-props']}
+      onChange={formField.mutators.change}
+      options={formField.props.enum}
+      value={formField.value}
+      editable={formField.editable ?? !formField.readOnly}
+      optionalRange={optionalRange}
+      defaultRange={defaultRange}
+      defaultValues={defaultValues}
+    />
+  );
 };
 
 UserPickerWrap.isFieldComponent = true;

@@ -67,7 +67,7 @@ const schema: ISchema = {
           title: '是否必填',
           default: false,
           'x-component': 'Switch',
-          'x-index': 9,
+          'x-index': 4,
         },
         associationTableID: {
           title: '关联记录表',
@@ -83,6 +83,7 @@ const schema: ISchema = {
           'x-mega-props': {
             labelAlign: 'top',
           },
+          'x-index': 5,
         },
         fieldName: {
           title: '显示字段',
@@ -98,13 +99,23 @@ const schema: ISchema = {
           'x-mega-props': {
             labelAlign: 'top',
           },
+          'x-index': 6,
+        },
+        associativeConfig: {
+          title: '关联赋值',
+          'x-component': 'AssociativeConfig',
+          'x-mega-props': {
+            labelAlign: 'top',
+          },
+          'x-index': 7,
         },
         filterConfig: {
-          title: '',
+          title: '数据过滤',
           'x-component': 'FilterConfig',
           'x-mega-props': {
             labelAlign: 'top',
           },
+          'x-index': 8,
         },
       },
     },

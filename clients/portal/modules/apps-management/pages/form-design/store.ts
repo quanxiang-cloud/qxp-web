@@ -1,35 +1,18 @@
-import { History } from 'history';
-import { action, observable, reaction, IReactionDisposer, computed, toJS } from 'mobx';
+import { action, observable, reaction, IReactionDisposer, computed } from 'mobx';
 import { UnionColumns } from 'react-table';
-import { set } from 'lodash';
+import { values, map } from 'ramda';
 
-import logger from '@lib/logger';
 import toast from '@lib/toast';
 import { getTableSchema, saveTableSchema } from '@lib/http-client';
 import { schemaToMap } from '@lib/schema-convert';
-
 import FormStore from '@c/form-builder/store';
 import AppPageDataStore from '@c/form-app-data-table/store';
 import { TableConfig } from '@c/form-app-data-table/type';
-import { setFixedParameters } from '@c/form-app-data-table/utils';
-import registry from '@c/form-builder/registry';
+import { setFixedParameters, SHOW_FIELD } from '@c/form-app-data-table/utils';
+import { INVISIBLE_NO_WRITE, READONLY_NO_WRITE, SYSTEM_FIELDS } from '@c/form-builder/constants';
+import { numberTransform } from '@c/form-builder/utils';
 
 import { createPageScheme } from './api';
-
-export const SHOW_FIELD = [
-  'DatePicker',
-  'Input',
-  'MultipleSelect',
-  'NumberPicker',
-  'RadioGroup',
-  'Select',
-  'CheckboxGroup',
-  'UserPicker',
-  'CascadeSelector',
-  'OrganizationPicker',
-  'AssociatedData',
-  'Serial',
-];
 
 class FormDesignStore {
   destroyFetchScheme: IReactionDisposer;
@@ -39,16 +22,17 @@ class FormDesignStore {
   destroySetAllFilter: IReactionDisposer;
   destroySetSchema: IReactionDisposer;
   @observable pageID = '';
+  @observable pageName = '';
   @observable appID = '';
   @observable saveSchemeLoading = false;
   @observable appPageStore = new AppPageDataStore({ schema: {} });
   @observable pageLoading = true;
   @observable formStore: FormStore | null = null;
   @observable hasSchema = false;
-  @observable initScheme: ISchema = {};
   @observable pageTableColumns: string[] = [];
-  @observable pageTableShowRule: TableConfig = { pageSize: 10 };
+  @observable pageTableShowRule: TableConfig = { order: '-created_at', pageSize: 10 };
   @observable filters: Filters = [];
+  @observable filterModalVisible = false;
 
   @computed get fieldsMap(): Record<string, SchemaFieldItem> {
     return schemaToMap(this.formStore?.schema) || {};
@@ -72,20 +56,41 @@ class FormDesignStore {
     });
   }
 
+  @computed get allSchema(): ISchema {
+    const indexes = values(this.formStore?.schema?.properties || {}).map(numberTransform);
+    let maxIndex = Math.max(...indexes) + 1;
+    const internalFieldMapper = (field: ISchema): ISchema => {
+      maxIndex += 1;
+      return { ...field, 'x-index': maxIndex - 1 };
+    };
+    return {
+      ...this.formStore?.schema,
+      title: this.pageName,
+      properties: {
+        ...this.formStore?.schema?.properties,
+        ...map<Record<string, ISchema>, Record<string, ISchema>>(internalFieldMapper, this.internalFields),
+      },
+    };
+  }
+
   @computed get internalFields(): Record<string, ISchema> {
     const _internalFields = this.formStore?.internalFields.reduce<Record<string, ISchema>>((acc, field) => {
       const { fieldName, componentName, configValue } = field;
-      const { toSchema } = registry.elements[componentName.toLowerCase()] || {};
-      if (!toSchema) {
-        logger.error(`failed to find component: [${componentName}] in registry`);
-      }
-
-      const currentSchema = toSchema(toJS(configValue));
-      acc[fieldName] = set(currentSchema, 'x-internal.isSystem', true);
-
+      acc[fieldName] = {
+        display: false,
+        readOnly: false,
+        title: configValue.title,
+        type: configValue.type,
+        'x-index': 0,
+        'x-component': componentName,
+        'x-component-props': configValue['x-component-props'],
+        'x-internal': {
+          permission: configValue.displayModifier === 'hidden' ? INVISIBLE_NO_WRITE : READONLY_NO_WRITE,
+          isSystem: configValue.isSystem,
+        },
+      };
       return acc;
     }, {});
-
     return _internalFields || {};
   }
 
@@ -115,30 +120,16 @@ class FormDesignStore {
         return;
       }
 
-      if (!this.hasSchema && !this.pageTableColumns.length) {
-        this.pageTableColumns = this.fieldList.map(({ id }) => id).sort((key1, key2) => {
-          return this.fieldsMap?.[key1]?.['x-index'] || 0 - (this.fieldsMap?.[key2]?.['x-index'] || 0);
-        });
-      } else {
-        this.pageTableColumns = this.pageTableColumns.filter((id) => {
-          if (!this.formStore?.schema?.properties) {
-            return false;
-          }
-
-          return id in this.formStore?.schema?.properties;
-        });
-      }
+      this.pageTableColumns = this.pageTableColumns.filter((id) => {
+        return this.judgeInSchema(id);
+      });
 
       this.filters = this.filters.filter((id) => {
-        if (!this.formStore?.schema?.properties) {
-          return false;
-        }
-
-        return id in this.formStore?.schema?.properties;
+        return this.judgeInSchema(id);
       });
     });
 
-    this.destroySetSchema = reaction(() => this.formStore?.schema, this.appPageStore.setSchema);
+    this.destroySetSchema = reaction(() => this.allSchema, this.appPageStore.setSchema);
     this.destroySetFilters = reaction(() => this.filters, this.appPageStore.setFilters);
 
     this.destroySetTableColumn = reaction((): UnionColumns<any>[] => {
@@ -162,6 +153,11 @@ class FormDesignStore {
     this.destroySetTableConfig = reaction(() => {
       return this.pageTableShowRule;
     }, this.appPageStore.setTableConfig);
+  }
+
+  @action
+  judgeInSchema = (key: string): boolean => {
+    return SYSTEM_FIELDS.includes(key) || key in this.fieldsMap;
   }
 
   toggleShowAllFields(isShowAll: boolean): void {
@@ -208,11 +204,6 @@ class FormDesignStore {
   }
 
   @action
-  reSetFormScheme = (): void => {
-    this.formStore = new FormStore({ schema: this.initScheme, appID: this.appID, pageID: this.pageID });
-  }
-
-  @action
   fetchFormScheme = ({ pageID, appID }: { pageID: string, appID: string }): void => {
     if (!pageID || !appID) {
       return;
@@ -222,12 +213,12 @@ class FormDesignStore {
     getTableSchema(appID, pageID).then((res) => {
       const { schema = {}, config = {} } = res || {};
       this.hasSchema = !!res;
-      this.initScheme = schema;
       this.formStore = new FormStore({ schema, appID, pageID });
-      this.pageTableColumns = config.pageTableColumns || [];
+      this.pageTableColumns = config.pageTableColumns || SYSTEM_FIELDS.filter((key) => key !== '_id');
       this.filters = config.filters || [];
       if (config.pageTableShowRule) {
         this.pageTableShowRule = config.pageTableShowRule;
+        if (!this.pageTableShowRule.order) this.pageTableShowRule.order = '-created_at';
       }
       this.pageLoading = false;
     }).catch(() => {
@@ -236,7 +227,7 @@ class FormDesignStore {
   }
 
   @action
-  saveFormSchema = async (history: History): Promise<any> => {
+  saveFormSchema = async (): Promise<any> => {
     // validate table schema on each field
     if (!this.formStore?.validate()) {
       return Promise.resolve(false);
@@ -244,22 +235,13 @@ class FormDesignStore {
 
     if (this.formStore?.fields.length && this.pageTableColumns && this.pageTableColumns.length === 0) {
       toast.error('请在页面配置-字段显示和排序至少选择一个字段显示');
-      history.replace(`/apps/formDesign/pageSetting/${this.pageID}/${this.appID}`);
       return Promise.resolve(false);
     }
 
     this.saveSchemeLoading = true;
 
-    const allSchema = {
-      ...this.formStore.schema,
-      properties: {
-        ...this.formStore?.schema?.properties,
-        ...this.internalFields,
-      },
-    };
-
     try {
-      await saveTableSchema(this.appID, this.pageID, allSchema || {});
+      await saveTableSchema(this.appID, this.pageID, this.allSchema || {});
       createPageScheme(this.appID, {
         tableID: this.pageID, config: {
           pageTableColumns: this.pageTableColumns,
@@ -269,7 +251,6 @@ class FormDesignStore {
       });
       toast.success(this.hasSchema ? '保存成功!' : '创建成功!');
       (this.formStore as FormStore).hasEdit = false;
-      this.initScheme = this.formStore?.schema as ISchema;
       this.saveSchemeLoading = false;
       return true;
     } catch (error) {
@@ -283,27 +264,9 @@ class FormDesignStore {
     this.pageID = '';
     this.formStore = null;
     this.pageTableColumns = [];
-    this.pageTableShowRule = {};
+    this.pageTableShowRule = { order: '-created_at', pageSize: 10 };
     this.filters = [];
     this.appPageStore.clear();
-  }
-
-  @action
-  savePageConfig = (): void => {
-    if (this.pageTableColumns && this.pageTableColumns.length === 0) {
-      toast.error('请在页面配置-字段显示和排序至少选择一个字段显示');
-      return;
-    }
-
-    createPageScheme(this.appID, {
-      tableID: this.pageID, config: {
-        pageTableColumns: this.pageTableColumns,
-        filters: this.filters,
-        pageTableShowRule: this.pageTableShowRule,
-      },
-    }).then(() => {
-      toast.success('保存成功!');
-    });
   }
 }
 
