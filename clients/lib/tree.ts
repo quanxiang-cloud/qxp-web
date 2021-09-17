@@ -17,13 +17,7 @@ function treeReduce<T, S extends Record<string, any>>(
     return init;
   }
   const node = clone(_node);
-  Object.assign(node, { fieldPath });
-  const acc = reducer(init, node, currentIndex);
-  const childKey = getChildKey(_childKey, node);
-  const currentChild: S[] | Record<string, S> & S | undefined = node?.[childKey];
-  if (!hasChildren(childKey, node) || !currentChild) {
-    return acc;
-  }
+  !isArray(node) && Object.assign(node, { fieldPath });
 
   const currentReducer = (
     accumulator: T, child: S, currentIndex: number | string | undefined, _?: any, _fieldPath?: string,
@@ -31,6 +25,17 @@ function treeReduce<T, S extends Record<string, any>>(
     const currentPath = `${fieldPath ? `${fieldPath}.` : ''}${_fieldPath || currentIndex}`;
     return treeReduce(reducer, _childKey, accumulator, child, currentIndex, currentPath);
   };
+
+  const acc = reducer(init, node, currentIndex);
+  if (isArray(node)) {
+    return node.reduce<T>(currentReducer, acc);
+  }
+
+  const childKey = getChildKey(_childKey, node);
+  const currentChild: S[] | Record<string, S> & S | undefined = node?.[childKey];
+  if (!hasChildren(childKey, node) || !currentChild) {
+    return acc;
+  }
 
   if (isArray(currentChild)) {
     return currentChild.reduce<T>(currentReducer, acc);

@@ -74,18 +74,18 @@ export default function AssignmentConfig({ defaultValue, onSubmit, onCancel }: P
         // formily will render every field like Select component,
         // if it's props has enum
         valueOfFieldState.props.enum = undefined;
-        if (variableType === 'TEXT') {
+        if (variableType === 'string') {
           valueOfFieldState.props['x-component'] = 'Input';
         }
 
-        if (variableType === 'BOOLEAN') {
+        if (variableType === 'boolean') {
           if (typeof valueOfFieldState.value !== 'boolean') {
             valueOfFieldState.value = false;
           }
           valueOfFieldState.props['x-component'] = 'Switch';
         }
 
-        if (variableType === 'DATE') {
+        if (variableType === 'string') {
           if (!dayjs(valueOfFieldState.value).isValid()) {
             valueOfFieldState.value = '';
           }
@@ -96,7 +96,7 @@ export default function AssignmentConfig({ defaultValue, onSubmit, onCancel }: P
           };
         }
 
-        if (variableType === 'NUMBER') {
+        if (variableType === 'number') {
           if (typeof valueOfFieldState.value !== 'number') {
             valueOfFieldState.value = '';
           }

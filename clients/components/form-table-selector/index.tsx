@@ -4,17 +4,18 @@ import { useParams } from 'react-router-dom';
 import { useQuery } from 'react-query';
 import { Cascader } from 'antd';
 import { CascaderOptionType } from 'antd/lib/cascader';
-import noop from 'lodash/noop';
-import last from 'lodash/last';
+import { merge, noop, last } from 'lodash';
+import { pipe, split, reduce, map } from 'ramda';
 
 import Icon from '@c/icon';
 import ToolTip from '@c/tooltip';
 import toast from '@lib/toast';
+import treeUtil from '@lib/tree';
 
-import { getFormDataOptions, Options } from './api';
-import { getCascaderValuePathFromValue } from './util';
+import { getFormDataOptions, Options, Option } from './api';
 
 export type Value = { name?: string; value: string }
+type SelectorOption = Option & { fieldPath: string; };
 
 interface Props {
   value: Value;
@@ -72,7 +73,28 @@ function FormTableSelector(
     });
   }
 
-  const currentValuePath = getCascaderValuePathFromValue(value.value, options);
+  const pathToOptionMap: Record<string, SelectorOption> = {};
+  const valueToOptionMap = treeUtil.reduce<Record<string, SelectorOption>, Options | Option>(
+    (acc, _form) => {
+      const form = _form as SelectorOption;
+      form.value && merge(acc, { [form.value]: form });
+      merge(pathToOptionMap, { [form.fieldPath]: form });
+      return acc;
+    }, 'children', {}, options,
+  );
+
+  const getCurrentValuePath = pipe<string, string[], string[], string[]>(
+    () => valueToOptionMap[value.value]?.fieldPath || '',
+    split('.'),
+    reduce((pathArr: string[], pathSegment: string) => {
+      const lastSegment = last(pathArr);
+      pathArr.push(lastSegment ? `${lastSegment}.${pathSegment}` : pathSegment);
+      return pathArr;
+    }, []),
+    map((path) => pathToOptionMap[path]?.value || ''),
+  );
+
+  const currentValuePath = getCurrentValuePath();
 
   const extra = {};
   if (ref) {

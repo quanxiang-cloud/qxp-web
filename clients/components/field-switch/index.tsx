@@ -67,14 +67,12 @@ function FieldSwitch({ field, className, ...otherProps }: Props<any>, ref: React
   case 'DatePicker':
     return (
       <DatePicker.RangePicker
-        {...field['x-component-props']}
+        {...omit(field['x-component-props'], ['placeholder'])}
         {...otherProps}
         locale={zhCN}
         picker={getPicker(field['x-component-props']?.format)}
         ref={ref}
         className={`'w-full input ${className}`}
-        {...omit(field['x-component-props'], ['placeholder'])}
-        {...otherProps}
       />
     );
   case 'CascadeSelector':

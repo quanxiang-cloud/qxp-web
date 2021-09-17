@@ -3,6 +3,7 @@ import { toJS } from 'mobx';
 import { UnionColumns } from 'react-table';
 
 import PageLoading from '@c/page-loading';
+import AbsoluteCentered from '@c/absolute-centered';
 import { getTableSchema } from '@lib/http-client';
 import { schemaToMap } from '@lib/schema-convert';
 
@@ -10,6 +11,7 @@ import FormAppDataContent from './form-app-data-content';
 import Store from './store';
 import { TableHeaderBtn, Ref } from './type';
 import { schemaPermissionTransformer } from '@c/form-builder/utils';
+import { SYSTEM_FIELDS } from '@c/form-builder/constants';
 
 type Props = {
   pageID: string;
@@ -49,10 +51,14 @@ function FormAppDataTableWrap({
   useEffect(() => {
     setLoading(true);
     getTableSchema(appID, pageID).then((res) => {
-      const { config, schema: _schema } = res || {};
-      const schema = { ..._schema, properties: schemaToMap(_schema) };
-      setStore(schema ? new Store({
-        schema: schemaPermissionTransformer(schema),
+      const { config, schema } = res || {};
+      const _schema = schemaPermissionTransformer({ ...schema, properties: schemaToMap(schema) });
+      const effectiveFields = schema ? Object.entries(_schema.properties).filter(([key, fieldSchema]) => {
+        return !SYSTEM_FIELDS.includes(key) && fieldSchema.display;
+      }) : [];
+
+      setStore(effectiveFields.length ? new Store({
+        schema: _schema,
         config: config,
         filterConfig,
         tableHeaderBtnList,
@@ -73,7 +79,14 @@ function FormAppDataTableWrap({
   }
 
   if (!store) {
-    return null;
+    return (
+      <AbsoluteCentered>
+        <div className='app-no-data'>
+          <img src='/dist/images/empty-tips.svg' />
+          <span>暂无有效表单，请联系管理员！</span>
+        </div>
+      </AbsoluteCentered>
+    );
   }
 
   return (<FormAppDataContent className={className} style={style} store={store} />);
