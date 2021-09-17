@@ -3,13 +3,14 @@ import { Radio, RadioChangeEvent } from 'antd';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 import { useMutation } from 'react-query';
 
-import { ActionsContext, StoreContext } from '../context';
+import { StoreContext } from '@c/form-builder/context';
+import { FieldConfigContext } from '@c/form-builder/form-settings-panel/form-field-config/context';
 import { createBlankFormTable } from '../api';
 
 export type SubordinationType = 'sub_table' | 'foreign_table';
 
 function Subordination({ value, mutators, props }: ISchemaFieldComponentProps): JSX.Element {
-  const { actions } = useContext(ActionsContext);
+  const { actions } = useContext(FieldConfigContext);
   const { appID } = useContext(StoreContext);
 
   const runnerMap: Record<SubordinationType, (reset?: boolean) => void> = {
