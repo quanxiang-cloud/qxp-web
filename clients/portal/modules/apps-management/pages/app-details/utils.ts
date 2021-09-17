@@ -3,8 +3,8 @@ import { UnionColumns } from 'react-table';
 
 import toast from '@lib/toast';
 
-import { fetchCorrelationFlows, fetchCorrelationRoles } from './api';
-import { CardListInfo, CardList, CustomPageInfo, Description, MenuType, SchemaPageInfo } from './type';
+import { fetchCorrelationRoles } from './api';
+import { CardListInfo, CardList, CustomPageInfo, Description, SchemaPageInfo } from './type';
 
 export const SYSTEM_FIELDS: Record<string, ModelFieldSchema> = {
   _id: {
@@ -181,7 +181,7 @@ export async function getPageCardList(
   cardList: CardList[],
   menuType: number | undefined,
 ): Promise<CardList[]> {
-  let flowList: CardListInfo[] = [];
+  const flowList: CardListInfo[] = [];
   let roleList: CardListInfo[] = [];
   await fetchCorrelationRoles(appID, pageID).then((res) => {
     roleList = res.perGroups;
@@ -189,13 +189,13 @@ export async function getPageCardList(
     toast.error(err.message);
   });
 
-  if (menuType === MenuType.schemaForm) {
-    await fetchCorrelationFlows({ appID, formID: pageID }).then((res: CardListInfo[]) => {
-      flowList = res;
-    }).catch((err) => {
-      toast.error(err.message);
-    });
-  }
+  // if (menuType === MenuType.schemaForm) {
+  //   await fetchCorrelationFlows({ appID, formID: pageID }).then((res: CardListInfo[]) => {
+  //     flowList = res;
+  //   }).catch((err) => {
+  //     toast.error(err.message);
+  //   });
+  // }
 
   return cardList.map(({ id, title }) => {
     if (id === 'linkedFlows') {

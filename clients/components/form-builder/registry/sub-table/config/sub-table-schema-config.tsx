@@ -2,7 +2,8 @@ import React, { useContext, useMemo } from 'react';
 import { Button } from 'antd';
 import { createFormActions, SchemaForm } from '@formily/antd';
 
-import { ItemActionsContext, ActionsContext } from './context';
+import { FieldConfigContext } from '@c/form-builder/form-settings-panel/form-field-config/context';
+import { ItemActionsContext } from './context';
 import { CONFIG_COMPONENTS, COMPONENTS, KeyOfConfigComponent } from './constants';
 
 interface Props {
@@ -16,7 +17,7 @@ export default function SubTableSchemaConfig({
   currentSubSchema, onChange, currentSchemaType, subTableSchema,
 }: Props): JSX.Element | null {
   const itemActions = useMemo(() => createFormActions(), []);
-  const { actions } = useContext(ActionsContext);
+  const { actions } = useContext(FieldConfigContext);
 
   if (!currentSubSchema || !currentSchemaType) {
     return null;

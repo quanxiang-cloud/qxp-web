@@ -136,6 +136,7 @@ export const FILTER_FIELD = [
   'UserPicker',
   'CascadeSelector',
   'OrganizationPicker',
+  'Serial',
 ];
 
 function getDateType(format: string): unitOfTime.StartOf {
