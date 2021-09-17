@@ -1,4 +1,4 @@
-import { curry, map } from 'ramda';
+import { curry, map, clone } from 'ramda';
 
 const { isArray } = Array;
 
@@ -9,14 +9,15 @@ function treeReduce<T, S extends Record<string, any>>(
   reducer: Reducer<T, S>,
   _childKey: string | string[],
   init: T,
-  node: S,
+  _node: S,
   currentIndex?: string | number,
   fieldPath = `${currentIndex || ''}`,
 ): T {
-  if (!node) {
+  if (!_node) {
     return init;
   }
-  !isInChildKeys(_childKey, currentIndex) && Object.assign(node, { fieldPath });
+  const node = clone(_node);
+  Object.assign(node, { fieldPath });
   const acc = reducer(init, node, currentIndex);
   const childKey = getChildKey(_childKey, node);
   const currentChild: S[] | Record<string, S> & S | undefined = node?.[childKey];
@@ -25,9 +26,9 @@ function treeReduce<T, S extends Record<string, any>>(
   }
 
   const currentReducer = (
-    accumulator: T, child: S, currentIndex: number | string | undefined, _?: any, _path?: string,
+    accumulator: T, child: S, currentIndex: number | string | undefined, _?: any, _fieldPath?: string,
   ): T => {
-    const currentPath = `${fieldPath ? `${fieldPath}.` : ''}${_path || currentIndex}`;
+    const currentPath = `${fieldPath ? `${fieldPath}.` : ''}${_fieldPath || currentIndex}`;
     return treeReduce(reducer, _childKey, accumulator, child, currentIndex, currentPath);
   };
 
@@ -61,14 +62,9 @@ function treeMap<T extends Record<string, any> >(
   };
 }
 
-function isInChildKeys(childKey: string | string[], key?: string | number): boolean {
-  const childKeys = isArray(childKey) ? childKey : [childKey];
-  return childKeys.includes(`${key}`);
-}
-
 function toArray<T extends Record<string, any>>(childKey: string | string[], tree: T): T[] {
   function flattenToArray(arr: T[], node: T, nodeIndex?: string | number): T[] {
-    !isInChildKeys(childKey, nodeIndex) && Object.assign(node, { fieldIndex: nodeIndex });
+    Object.assign(node, { fieldIndex: nodeIndex });
     return arr.concat(node);
   }
   return treeReduce(flattenToArray, childKey, [], tree);

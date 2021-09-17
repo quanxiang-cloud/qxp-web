@@ -1,15 +1,16 @@
 import { action, observable, reaction, IReactionDisposer, computed } from 'mobx';
 import { UnionColumns } from 'react-table';
+import { values, map } from 'ramda';
 
 import toast from '@lib/toast';
 import { getTableSchema, saveTableSchema } from '@lib/http-client';
 import { schemaToMap } from '@lib/schema-convert';
-
 import FormStore from '@c/form-builder/store';
 import AppPageDataStore from '@c/form-app-data-table/store';
 import { TableConfig } from '@c/form-app-data-table/type';
 import { setFixedParameters, SHOW_FIELD } from '@c/form-app-data-table/utils';
 import { INVISIBLE_NO_WRITE, READONLY_NO_WRITE, SYSTEM_FIELDS } from '@c/form-builder/constants';
+import { numberTransform } from '@c/form-builder/utils';
 
 import { createPageScheme } from './api';
 
@@ -56,12 +57,18 @@ class FormDesignStore {
   }
 
   @computed get allSchema(): ISchema {
+    const indexes = values(this.formStore?.schema?.properties || {}).map(numberTransform);
+    let maxIndex = Math.max(...indexes) + 1;
+    const internalFieldMapper = (field: ISchema): ISchema => {
+      maxIndex += 1;
+      return { ...field, 'x-index': maxIndex - 1 };
+    };
     return {
       ...this.formStore?.schema,
       title: this.pageName,
       properties: {
         ...this.formStore?.schema?.properties,
-        ...this.internalFields,
+        ...map<Record<string, ISchema>, Record<string, ISchema>>(internalFieldMapper, this.internalFields),
       },
     };
   }
