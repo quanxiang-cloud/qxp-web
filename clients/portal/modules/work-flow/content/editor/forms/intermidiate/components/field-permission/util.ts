@@ -1,7 +1,7 @@
 import { pipe, entries, map } from 'lodash/fp';
 
 import { INTERNAL_FIELD_NAMES } from '@home/pages/app-details/constants';
-import { schemaToArray, SchemaWithPathAndIndex } from '@lib/schema-convert';
+import { schemaToArray } from '@lib/schema-convert';
 import { PERMISSION, PERMISSION_TYPE } from '@c/form-builder/constants';
 import {
   isPermissionReadable,
@@ -49,9 +49,11 @@ export function fieldPermissionEncoder(value: FieldPermission): NewFieldPermissi
   return { ...customEncoded, ...systemEncoded };
 }
 
-function getSchemaIDToSchemaMap(schema: ISchema): Record<string, SchemaWithPathAndIndex> {
+function getSchemaIDToSchemaMap(schema: ISchema): Record<string, ISchema> {
   return schemaToArray(schema, { parseSubTable: true, keepLayout: true })
-    .map((schema) => ({ [schema.fieldIndex]: schema })).reduce((acc, cur) => ({ ...acc, ...cur }), {});
+    .map((schema) => ({
+      [schema['x-internal']?._key || '']: schema,
+    })).reduce((acc, cur) => ({ ...acc, ...cur }), {});
 }
 
 function fieldPermissionReducer(acc: FieldPermission, cur: FieldPermissionMergeType): FieldPermission {
@@ -105,32 +107,30 @@ export function fieldPermissionDecoder(
         id: fieldID,
         initialValue: fieldValue.initialValue || EDIT_VALUE,
         submitValue: fieldValue.submitValue || EDIT_VALUE,
-        path: schemaIDToSchemaMap[fieldID]?.fieldPath,
+        path: schemaIDToSchemaMap[fieldID]['x-internal']?.fieldPath || '',
         hidden: !!schemaIDToSchemaMap[fieldID]?.['x-internal']?.isLayoutComponent,
       };
     }),
   );
-
   const fields = convertor(value as NewFieldPermission) || [];
+
   return fields.reduce(fieldPermissionReducer, { system: [], custom: [] });
 }
 
 export function getInitFieldPermissionFromSchema(schema: ISchema): NewFieldPermission {
-  const schemaIDToSchemaMap = getSchemaIDToSchemaMap(schema);
-
   const fields = schemaToArray(schema, { parseSubTable: true, keepLayout: true })
     .map((schema): FieldPermissionMergeType => {
       const permission = schema['x-internal']?.permission || 0;
-      const fieldId = schema.fieldIndex;
+      const fieldId = schema['x-internal']?._key;
       return {
         ...getPermission(permission),
-        isSystem: INTERNAL_FIELD_NAMES.includes(fieldId),
+        isSystem: INTERNAL_FIELD_NAMES.includes(fieldId || ''),
         fieldName: schema.title as string,
-        id: fieldId,
+        id: fieldId || '',
         initialValue: EDIT_VALUE,
         submitValue: EDIT_VALUE,
-        path: schemaIDToSchemaMap[fieldId].fieldPath,
-        hidden: !!schemaIDToSchemaMap[fieldId]['x-internal']?.isLayoutComponent,
+        path: schema['x-internal']?.fieldPath || '',
+        hidden: !!schema['x-internal']?.isLayoutComponent,
       };
     });
 

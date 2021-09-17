@@ -29,7 +29,10 @@ export default function CustomFieldTable({
   const schemaMap = schemaToMap(schema);
   const layoutFields = schemaToArray(schema, { parseSubTable: true, keepLayout: true })
     .reduce((layoutFields: string[], schema) => {
-      schema['x-internal']?.isLayoutComponent && layoutFields.push(schema.fieldIndex);
+      const internal = schema['x-internal'];
+      if (internal?.isLayoutComponent && internal._key) {
+        layoutFields.push(internal._key);
+      }
       return layoutFields;
     }, []);
 
