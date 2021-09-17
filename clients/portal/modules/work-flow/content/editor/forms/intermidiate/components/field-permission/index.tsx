@@ -68,7 +68,10 @@ export default function FieldPermission({ value, onChange: _onChange }: Props): 
   }, [mergedFieldPermissions.custom]);
 
   useUpdateEffect(() => {
-    !isEqual(value, mergedFieldPermissions) && _onChange({ fieldPermission: mergedFieldPermissions });
+    !isEqual(
+      fieldPermissionDecoder(value, schema),
+      mergedFieldPermissions,
+    ) && onChange(mergedFieldPermissions);
   }, [mergedFieldPermissions]);
 
   function onChange(fieldPermission: FieldPermissionType): void {
