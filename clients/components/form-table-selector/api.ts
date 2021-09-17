@@ -10,7 +10,7 @@ interface MenuListItem {
   child: MenuListItem[];
 }
 
-type Option = {
+export type Option = {
   label: string;
   value: string;
   isGroup: boolean;

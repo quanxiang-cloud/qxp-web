@@ -140,16 +140,16 @@ export const getValidProcessVariables = (
   variables: Array<ProcessVariable>, compareType: string,
 ): (LabelValue | undefined)[] => {
   return variables?.map(({ code, name, fieldType }) => {
-    if (fieldType === 'DATE' && compareType !== 'datepicker') {
+    if (fieldType === 'string' && compareType !== 'datepicker') {
       return;
     }
-    if (fieldType === 'TEXT' && !['input', 'textarea'].includes(compareType)) {
+    if (fieldType === 'string' && !['input', 'textarea'].includes(compareType)) {
       return;
     }
-    if (fieldType === 'NUMBER' && compareType !== 'numberpicker') {
+    if (fieldType === 'number' && compareType !== 'numberpicker') {
       return;
     }
-    if (fieldType === 'BOOLEAN' && compareType !== 'radiogroup') {
+    if (fieldType === 'boolean' && compareType !== 'radiogroup') {
       return;
     }
     return { label: name, value: code };

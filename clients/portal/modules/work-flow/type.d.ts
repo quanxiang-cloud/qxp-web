@@ -1,4 +1,4 @@
-type FlowVariableFieldType = 'TEXT' | 'NUMBER' | 'BOOLEAN' | 'DATE';
+type FlowVariableFieldType = 'string' | 'number' | 'boolean' | 'datetime';
 
 type FlowVariableOption = {
   label: string;

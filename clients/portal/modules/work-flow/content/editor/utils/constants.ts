@@ -157,12 +157,12 @@ export const OPERATOR_OPTIONS: FieldOperatorOptions = [
 export const TRIGGER_CONDITION_EXCLUDE_FIELD_NAMES = ['_id', 'creator_id', 'modifier_id'];
 
 export const FORM_COMPONENT_VARIABLE_MAP: Record<string, FlowVariableFieldType[]> = {
-  input: ['TEXT', 'BOOLEAN'],
-  textarea: ['TEXT', 'BOOLEAN'],
+  input: ['string', 'boolean'],
+  textarea: ['string', 'boolean'],
   radiogroup: [],
   checkboxgroup: [],
-  numberpicker: ['NUMBER'],
-  datepicker: ['DATE'],
+  numberpicker: ['number'],
+  datepicker: ['datetime'],
   select: [],
   multipleselect: [],
   organizationpicker: [],
@@ -172,8 +172,8 @@ export const FORM_COMPONENT_VARIABLE_MAP: Record<string, FlowVariableFieldType[]
 };
 
 export const FLOW_VARIABLE_FIELD_TYPES: { value: FlowVariableFieldType; label: string }[] = [
-  { value: 'TEXT', label: '文本型' },
-  { value: 'NUMBER', label: '数值型' },
-  { value: 'BOOLEAN', label: '布尔型' },
-  { value: 'DATE', label: '日期型' },
+  { value: 'string', label: '文本型' },
+  { value: 'number', label: '数值型' },
+  { value: 'boolean', label: '布尔型' },
+  { value: 'datetime', label: '日期型' },
 ];
