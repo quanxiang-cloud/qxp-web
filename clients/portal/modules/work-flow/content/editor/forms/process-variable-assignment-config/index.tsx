@@ -29,12 +29,6 @@ const { onFieldValueChange$ } = FormEffectHooks;
 const ACTIONS = createFormActions();
 const { setFieldState, getFormState, getFieldValue } = ACTIONS;
 const COMPONENTS = { AntdSelect, Input, RulesList, Switch, DatePicker, NumberPicker };
-const fieldTypeToVariableMap: Record<string, string> = {
-  datetime: 'DATE',
-  string: 'TEXT',
-  number: 'NUMBER',
-  boolean: 'BOOLEAN',
-};
 
 export default function AssignmentConfig({ defaultValue, onSubmit, onCancel }: Props): JSX.Element {
   const tableFields = useTableFieldOptions();
@@ -59,11 +53,11 @@ export default function AssignmentConfig({ defaultValue, onSubmit, onCancel }: P
       const valueOfPath = FormPath.transform(state.name, /\d/, ($1) => `assignmentRules.${$1}.valueOf`);
       const variableNamePath = FormPath.transform(state.name, /\d/, ($1) => `assignmentRules.${$1}.variableName`);
       const variableCode: string = getFieldValue(variableNamePath);
-      const variableType = variables?.find(({ code }) => code === variableCode)?.fieldType || 'TEXT';
+      const variableType = variables?.find(({ code }) => code === variableCode)?.fieldType;
       if (state.value === 'currentFormValue') {
         setFieldState(valueOfPath, (valueOfFieldState) => {
           valueOfFieldState.props.enum = tableFields.filter((field) => {
-            return fieldTypeToVariableMap[field.type] === variableType;
+            return field.type === variableType;
           });
           valueOfFieldState.props['x-component'] = 'AntdSelect';
         });
@@ -85,7 +79,7 @@ export default function AssignmentConfig({ defaultValue, onSubmit, onCancel }: P
           valueOfFieldState.props['x-component'] = 'Switch';
         }
 
-        if (variableType === 'string') {
+        if (variableType === 'datetime') {
           if (!dayjs(valueOfFieldState.value).isValid()) {
             valueOfFieldState.value = '';
           }
