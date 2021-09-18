@@ -1,10 +1,9 @@
 import React, { useState, useEffect, useImperativeHandle, forwardRef, useRef } from 'react';
-import { get, isNumber, transform } from 'lodash';
+import { get, transform } from 'lodash';
 
 import Checkbox from '@c/checkbox';
 import Icon from '@c/icon';
 import { NORMAL, PERMISSION } from '@c/form-builder/constants';
-import { binaryStringToNumber, numberToBinaryString } from '@lib/binary';
 import {
   calculateFieldPermission,
   isPermissionEditable,
@@ -39,6 +38,7 @@ function FieldPermissions({
   fields, className = '', fieldPer, abled,
 }: Props, ref: React.Ref<any>): JSX.Element {
   const [permission, setPermission] = useState<ISchema>();
+
   const [config, setConfig] = useState<Config>();
   const fieldNameRefs = useRef(new Map<string, boolean>());
   const isPermissionDisabled = store.currentRights.types === 1 || !abled;
@@ -50,11 +50,7 @@ function FieldPermissions({
       const permission: PERMISSION | undefined = get(
         fieldPer, `properties.${fieldSchema.id}.x-internal.permission`,
       );
-      const targetPermission = (
-        fieldPer && isNumber(permission) ?
-          updatePermissionWithDefault(permission, defaultPermission) :
-          defaultPermission
-      ) as PERMISSION;
+      const targetPermission = permission || defaultPermission || 0;
       Object.assign(permissionAcc.properties, {
         [fieldSchema.id]: {
           'x-internal': {
@@ -109,19 +105,6 @@ function FieldPermissions({
   useImperativeHandle(ref, () => ({
     getFieldPer: () => permission,
   }));
-
-  function updatePermissionWithDefault(permission: PERMISSION, defaultPermission?: PERMISSION): PERMISSION {
-    if (!defaultPermission) {
-      return permission;
-    }
-    const permissionStr = numberToBinaryString(permission).slice(-2);
-    const readPermission = permissionStr[1];
-    if (readPermission === '0') {
-      return 0;
-    }
-    const defaultPermissionStr = numberToBinaryString(defaultPermission).slice(0, 2);
-    return binaryStringToNumber(`${defaultPermissionStr}${permissionStr}`) as PERMISSION;
-  }
 
   function setFieldNameRefs(fieldKey: string) {
     return (el: HTMLElement) => {
