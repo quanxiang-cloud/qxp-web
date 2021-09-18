@@ -19,6 +19,7 @@ import { FileInfo, MenuType, Resp } from '../../type';
 import { createCustomPage, updateCustomPage } from '../../api';
 
 import './index.scss';
+import { formatFileSize } from '../../utils';
 
 type Props = {
   pageID: string
@@ -44,7 +45,7 @@ function PageDetails({ pageID }: Props): JSX.Element {
       return;
     }
 
-    const fileSizeStr = Math.round(Number(file?.size) / 1024) + 'M';
+    const fileSizeStr = formatFileSize(Number(file.size));
 
     if (modalType === 'create') {
       createCustomPage(appID, {
