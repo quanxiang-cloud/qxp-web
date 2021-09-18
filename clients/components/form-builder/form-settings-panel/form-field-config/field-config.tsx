@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useRef } from 'react';
 import { Radio, Input, Select, Switch, NumberPicker, ArrayTable, Checkbox } from '@formily/antd-components';
-import { SchemaForm, ISchema, FormEffectHooks, createFormActions } from '@formily/antd';
+import { SchemaForm, ISchema } from '@formily/antd';
 
 import { StoreContext } from '../../context';
 import { observer } from 'mobx-react';
@@ -61,43 +61,6 @@ function FormFieldConfig(): JSX.Element {
     }
   }, [store.activeFieldName]);
 
-  const schemaFieldConfigEffects = () => {
-    const { onFieldInputChange$, onFieldInit$ } = FormEffectHooks;
-    const { setFieldState } = createFormActions();
-
-    onFieldInit$('minSet').subscribe((field) => {
-      let visible = false;
-      if (field.value !== undefined) {
-        visible = field.value.length === 0 ? false : true;
-      }
-      setFieldState('minimum', (state) => {
-        state.visible = visible;
-      });
-    });
-
-    onFieldInit$('maxSet').subscribe((field) => {
-      let visible = false;
-      if (field.value !== undefined) {
-        visible = field.value.length === 0 ? false : true;
-      }
-      setFieldState('maximum', (state) => {
-        state.visible = visible;
-      });
-    });
-
-    onFieldInputChange$('minSet').subscribe(({ value }) => {
-      setFieldState('minimum', (state) => {
-        state.visible = value.length === 0 ? false : true;
-      });
-    });
-
-    onFieldInputChange$('maxSet').subscribe(({ value }) => {
-      setFieldState('maximum', (state) => {
-        state.visible = value.length === 0 ? false : true;
-      });
-    });
-  };
-
   if (!store.activeField) {
     return (
       <span>请选择表单字段</span>
@@ -110,7 +73,6 @@ function FormFieldConfig(): JSX.Element {
         <SchemaFieldConfig
           // assign key to FormFieldConfigTrue to force re-render when activeFieldName changed
           effects={() => {
-            schemaFieldConfigEffects();
             if (typeof store.activeFieldSourceElement?.effects === 'function') {
               store.activeFieldSourceElement.effects();
             }

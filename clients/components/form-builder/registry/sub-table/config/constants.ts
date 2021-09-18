@@ -10,6 +10,12 @@ import {
   Radio,
 } from '@formily/antd-components';
 
+import DefaultValueLinkageConfigBtn from
+  '@c/form-builder/form-settings-panel/form-field-config/default-value-linkage-config-btn';
+import InputForLabels from '@c/form-builder/form-settings-panel/form-field-config/input-for-labels';
+import DatasetConfig from '@c/form-builder/form-settings-panel/form-field-config/dataset-config';
+import CalculationFormulaBtn from '@c/form-builder/form-settings-panel/form-field-config/calculation-formula-btn';
+
 import input from '../../../registry/input';
 import textarea from '../../../registry/textarea';
 import radiogroup from '../../../registry/radio-group';
@@ -31,10 +37,7 @@ import LinkedTable from './fields/linked-table';
 import { AddOperate } from './fields/operates';
 import CustomizedDatasetBtn from '../../cascade-selector/customized-dataset-btn';
 import DataSetSelector from '../../cascade-selector/dataset-selector';
-import DefaultValueLinkageConfigBtn from
-  '@c/form-builder/form-settings-panel/form-field-config/default-value-linkage-config-btn';
-import InputForLabels from '@c/form-builder/form-settings-panel/form-field-config/input-for-labels';
-import DatasetConfig from '@c/form-builder/form-settings-panel/form-field-config/dataset-config';
+import CheckboxGroup from '../../checkbox-group/checkboxGroup';
 
 import * as inputConverter from '../../../registry/input/convertor';
 import * as textareaConverter from '../../../registry/textarea/convertor';
@@ -72,6 +75,8 @@ export const COMPONENTS: Record<string, JSXElementConstructor<ISchemaFieldCompon
   customizeddatasetbtn: CustomizedDatasetBtn,
   datasetselector: DataSetSelector,
   datasetconfig: DatasetConfig,
+  checkboxgroup: CheckboxGroup,
+  calculationformulabtn: CalculationFormulaBtn,
 };
 
 export type KeyOfConfigComponent = keyof typeof CONFIG_COMPONENTS;

@@ -23,9 +23,10 @@ export default function SubTableSchemaConfig({
     return null;
   }
 
-  const currentSubSchemaDefault = CONFIG_COMPONENTS[currentSchemaType]?.configSchema;
-  const CurrentSubSchemaForm = CONFIG_COMPONENTS[currentSchemaType]?.configForm;
-  const currentSubSchemaConfig = CONFIG_COMPONENTS[currentSchemaType]?.toConfig(currentSubSchema);
+  const currentConfigComponent = CONFIG_COMPONENTS[currentSchemaType];
+  const currentSubSchemaDefault = currentConfigComponent?.configSchema;
+  const CurrentSubSchemaForm = currentConfigComponent?.configForm;
+  const currentSubSchemaConfig = currentConfigComponent?.toConfig(currentSubSchema);
 
   function onGoBack(): void {
     actions.setFieldState('Fields.curConfigSubTableKey', (state) => {
@@ -52,6 +53,9 @@ export default function SubTableSchemaConfig({
           onChange={onChange}
           schema={currentSubSchemaDefault}
           actions={itemActions}
+          effects={() => {
+            currentConfigComponent?.effects?.();
+          }}
         />
       )}
     </ItemActionsContext.Provider>
