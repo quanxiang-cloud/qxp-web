@@ -1,6 +1,17 @@
-import { get, pick, flatten, cloneDeep } from 'lodash';
+import { get, flatten, cloneDeep } from 'lodash';
 
 const excludeComps = ['subtable'];
+const primitiveTypes = ['string', 'number', 'boolean', 'datetime'];
+const advancedCompTypes = [
+  'SubTable',
+  'AssociatedRecords',
+  'UserPicker',
+  'OrganizationPicker',
+  'FileUpload',
+  'ImageUpload',
+  'CascadeSelector',
+  'AssociatedData',
+];
 
 type TableListItem = {
   label: string;
@@ -11,6 +22,7 @@ type TableListItem = {
 
 type Options = {
   noSystem?: boolean;
+  matchTypeFn?: (...args: any[])=> boolean;
 }
 
 export const getSchemaFields =
@@ -21,11 +33,33 @@ export const getSchemaFields =
       if (options.noSystem && isSystem) {
         return false;
       }
-      return compName && !excludeComps.includes(compName);
+      if (excludeComps.includes(compName)) {
+        return false;
+      }
+      if (options.matchTypeFn) {
+        return options.matchTypeFn.call(null, schema);
+      }
+      return !!compName;
     }).map((schema) => {
       return { label: schema.title as string, value: schema.id };
     });
   };
+
+export function isAdvancedField(type: string, xCompName?: string): boolean {
+  if (xCompName && advancedCompTypes.map((t)=> t.toLowerCase()).includes(xCompName.toLowerCase())) {
+    return true;
+  }
+  return !primitiveTypes.includes(type);
+}
+
+export function isFieldTypeMatch(srcFieldType: string, srcFieldCompName: string, targetFieldSchema: ISchema): boolean {
+  if (isAdvancedField(srcFieldType, srcFieldCompName)) {
+    // advanced field should be the same component type
+    return targetFieldSchema['x-component']?.toLowerCase() === srcFieldCompName.toLowerCase();
+  }
+  // primitive type should be equal
+  return targetFieldSchema.type === srcFieldType;
+}
 
 // filter target tables with group
 export const filterTables = (tables: Array<TableListItem> = []): Array<TableListItem> => {
@@ -85,7 +119,7 @@ export const transformSchema = (
     }
     return field?.componentName !== 'subtable';
   }, (key, field, acc) => {
-    const innerFieldProps = pick(field, ['display', 'title', 'readonly', 'required', 'x-component', 'x-component-props']);
+    const innerFieldProps = cloneDeep(field);
     const compName = field.componentName;
 
     if (compName === 'subtable') {
@@ -138,20 +172,10 @@ export const transformSchema = (
 
 export const getValidProcessVariables = (
   variables: Array<ProcessVariable>, compareType: string,
-): (LabelValue | undefined)[] => {
+): LabelValue[] => {
   return variables?.map(({ code, name, fieldType }) => {
-    if (fieldType === 'string' && compareType !== 'datepicker') {
-      return;
+    if (primitiveTypes.includes(fieldType) && fieldType === compareType) {
+      return { label: name, value: code };
     }
-    if (fieldType === 'string' && !['input', 'textarea'].includes(compareType)) {
-      return;
-    }
-    if (fieldType === 'number' && compareType !== 'numberpicker') {
-      return;
-    }
-    if (fieldType === 'boolean' && compareType !== 'radiogroup') {
-      return;
-    }
-    return { label: name, value: code };
-  }).filter(Boolean) || [];
+  }).filter((v): v is LabelValue => !!v) || [];
 };
