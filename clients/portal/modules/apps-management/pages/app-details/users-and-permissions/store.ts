@@ -58,7 +58,7 @@ class UserAndPerStore {
       this.rightsList = [...this.rightsList, { ...rights, ...res }];
       this.currentRights = { ...rights, ...res };
       this.rightsGroupID = this.currentRights.id;
-      this.tempRightList = [...this.rightsList, { ...rights, ...res }];
+      this.tempRightList = [...this.rightsList];
     });
   }
 
