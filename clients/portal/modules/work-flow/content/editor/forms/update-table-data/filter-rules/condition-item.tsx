@@ -2,7 +2,7 @@ import React, { useContext, useState } from 'react';
 
 import Select from '@c/select';
 import IconBtn from '@c/icon-btn';
-import { getSchemaFields } from '../../utils';
+import { getSchemaFields, isFieldTypeMatch } from '../../utils';
 import { Condition } from './index';
 import FlowSourceTableContext from '@flow/content/editor/forms/flow-source-table';
 
@@ -44,7 +44,13 @@ function ConditionItem(props: Props): JSX.Element {
         className="mx-10"
       />
       <Select
-        options={getSchemaFields(curTableSchema)}
+        options={getSchemaFields(curTableSchema, { matchTypeFn: (schema: ISchema)=> {
+          const field = props.targetSchema[item.fieldName];
+          if (!field) {
+            return false;
+          }
+          return isFieldTypeMatch(field.type || 'string', field.componentName, schema);
+        } })}
         value={item.value as any}
         onChange={(value: string) => onChange({ value } as Condition)}
       />
