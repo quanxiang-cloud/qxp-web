@@ -35,6 +35,8 @@ type ApprovalTask = {
 
   dueDate?: string; // Task due date
 
+  urgeNum?: number;
+
   durationInMillis?: number; // Task duration time
 
   nodes?: Array<{ taskDefKey: string, taskName: string }>;
