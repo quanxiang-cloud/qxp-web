@@ -3,6 +3,7 @@ import cs from 'classnames';
 import { Select, SelectProps } from 'antd';
 import { debounce } from 'lodash';
 
+import { labelValueRenderer } from '@c/form-data-value-renderer';
 import { searchUser } from './messy/api';
 import { Option } from './messy/enum';
 
@@ -15,6 +16,7 @@ type Props = SelectProps<any> & {
   optionalRange?: OptionalRange;
   defaultRange?: DefaultRange;
   appID?: string;
+  value?: LabelValue[];
   editable?: boolean;
   onChange?: (value: LabelValue[]) => void;
   defaultValues?: LabelValue[];
@@ -58,6 +60,17 @@ const UserPicker = ({
 
   if (optionalRange === 'currentUser') {
     componentsProps.options = currentUser;
+  }
+
+  if (!editable) {
+    return (
+      <span>
+        {
+          componentsProps.value && componentsProps.value.length ?
+            labelValueRenderer(componentsProps.value) : '—'
+        }
+      </span>
+    );
   }
 
   if (optionalRange === 'all') {
