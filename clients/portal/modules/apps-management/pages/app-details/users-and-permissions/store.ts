@@ -157,6 +157,7 @@ class UserAndPerStore {
       status,
     }).then(() => {
       toast.success('修改成功！');
+      this.updatePerFormList({ ...this.currentPage, authority: status }, this.rightsGroupID);
       return true;
     }).catch((err) => {
       toast.success(err);
@@ -296,12 +297,11 @@ class UserAndPerStore {
       });
       return;
     }
-
-    this.PerData = ({
+    this.PerData = {
       conditions: {},
       schema: null,
       authority: this.currentRights.types === 1 ? 1 : this.currentPage.authority,
-    });
+    };
     this.rightsLoading = false;
   }
 

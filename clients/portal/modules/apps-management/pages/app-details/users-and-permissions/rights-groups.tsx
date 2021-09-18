@@ -36,7 +36,7 @@ function RightsGroups(): JSX.Element {
     setActiveTab('authorized');
   }, [store.rightsGroupID]);
 
-  const handleClickMenu = (item: any): void => {
+  const handleClickMenu = async (item: any): Promise<void> => {
     store.currentPage = store.perFormList.find((page) => page.id === item.key) as PerPageInfo;
     store.getPageSchema();
     setOpenSet(false);
@@ -61,7 +61,7 @@ function RightsGroups(): JSX.Element {
     ]);
   }
 
-  const handleSave = (): void => {
+  const handleSave = (): void=> {
     const authority = authorizedRef.current?.getAuthorizedPer() || 0;
     if (store.currentPage.menuType === 2) {
       store.updatePerCustom(authority);
@@ -84,11 +84,6 @@ function RightsGroups(): JSX.Element {
           authority,
         }).then(() => {
           toast.success('保存成功!');
-          store.PerData = {
-            authority,
-            conditions,
-            schema: fieldRef.current?.getFieldPer(),
-          };
           store.updatePerFormList({ ...store.currentPage, authority }, store.rightsGroupID);
           setOpenSet(false);
         }).catch((err) => {
@@ -250,8 +245,7 @@ function RightsGroups(): JSX.Element {
               )}
             </div>
           </div>
-        )
-        }
+        )}
       </div>
     );
   }
