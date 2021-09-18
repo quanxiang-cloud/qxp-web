@@ -52,6 +52,11 @@ export const readFlow = async (processInstanceId: string, taskId: string, params
   return await httpClient(`/api/v1/flow/instance/readFlow/${processInstanceId}/${taskId}`, params);
 };
 
+// 催办
+export const taskUrge = async (processInstanceID: string): Promise<void> => {
+  return await httpClient('/api/v1/flow/urge/taskUrge', { processInstanceID });
+};
+
 // 抄送
 export const ccFLow = async (processInstanceId: string, taskId: string, params: Record<string, any>) => {
   return await httpClient(`/api/v1/flow/instance/ccFlow/${processInstanceId}/${taskId}`, params);
