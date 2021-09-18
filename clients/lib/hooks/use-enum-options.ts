@@ -9,7 +9,7 @@ import { convertEnumsToLabels } from '@c/form-builder/utils';
 export default function useEnumOptions(fieldProps: ISchemaFieldComponentProps): string[] {
   const [options, setOptions] = useState<string[]>([]);
   const { datasetId } = fieldProps.props['x-component-props'];
-  const defaultValueFrom = fieldProps.props['x-internal'].defaultValueFrom;
+  const defaultValueFrom = fieldProps.props['x-internal']?.defaultValueFrom;
 
   useEffect(() => {
     if (defaultValueFrom === 'customized') {
