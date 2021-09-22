@@ -1,6 +1,7 @@
 import React, { lazy, Suspense } from 'react';
 import { observer } from 'mobx-react';
 import { UnionColumns } from 'react-table';
+import cs from 'classnames';
 
 import Tab from '@c/tab';
 import Icon from '@c/icon';
@@ -37,14 +38,14 @@ export const FIELD_COLUMNS: UnionColumns<ModelField>[] = [
           position="top"
           label="复制"
           relative={false}
-          wrapperClassName="flex-grow-0 relative z-10 text-btn invisible copy-tooltip"
+          wrapperClassName="flex-grow-0 relative z-10 invisible copy-tooltip icon-text-btn"
           labelClassName="whitespace-nowrap text-12"
         >
           <Icon
             name="content_copy"
             size={16}
             className='text-inherit m-10'
-            onClick={() => copyContent(rowData.id)}
+            onClick={() => copyContent(rowData.id, '标志已复制')}
           />
         </Tooltip>
       </div>
@@ -56,14 +57,18 @@ export const FIELD_COLUMNS: UnionColumns<ModelField>[] = [
     accessor: 'type',
   },
   {
-    Header: '数据长度',
-    id: 'length',
-    accessor: (rowData) => rowData.length ? rowData.length : '-',
-  },
-  {
     Header: '是否允许为空',
     id: 'not_null',
     accessor: (rowData) => rowData.not_null ? '允许' : '不允许',
+  },
+  {
+    Header: '是否作为外键',
+    id: 'isForeignKeys',
+    accessor: (rowData) => (
+      <span className={cs('foreign-key-col', {
+        'text-blue-600 bg-blue-100': rowData.isForeignKeys,
+      })}>{rowData.isForeignKeys ? '是' : '否'}</span>
+    ),
   },
 ];
 
@@ -89,7 +94,7 @@ function renderApiDetails(): JSX.Element {
             onChange={(v) => handleDocTypeChange(v as DocType)}
           />
           <div className='flex items-center'>
-            使用Fields ID:
+            使用字段名称:
             <Toggle
               className='ml-8'
               defaultChecked={store.useFieldsID}
@@ -105,7 +110,7 @@ function renderApiDetails(): JSX.Element {
             position="top"
             label="复制"
             relative={false}
-            wrapperClassName="copy-button text-btn"
+            wrapperClassName="copy-button icon-text-btn"
             labelClassName="whitespace-nowrap"
           >
             <Icon
@@ -118,7 +123,9 @@ function renderApiDetails(): JSX.Element {
           <Highlight language={store.docType} className='api-details'>{store.APiContent.input}</Highlight>
         </div>
         <div className='api-content-title'>返回示例</div>
-        <Highlight language={store.docType} className='api-details'>{store.APiContent.output}</Highlight>
+        <Highlight language={store.docType} className='api-details mb-20'>
+          {store.APiContent.output}
+        </Highlight>
       </Suspense>
     </>
   );
@@ -128,16 +135,18 @@ function ApiDocumentDetails(): JSX.Element {
   const tabItems = [
     {
       id: 'fields',
-      name: 'Fields字段',
+      name: '全部字段',
       content: (
         <>
-          <Table
-            className='massage_table text-14 table-full'
-            rowKey="id"
-            columns={FIELD_COLUMNS}
-            data={store.fields}
-            emptyTips={<EmptyTips text='暂无消息数据' className="pt-40" />}
-          />
+          <div style={{ maxHeight: 'calc(100% - 45px)' }} className='flex w-full'>
+            <Table
+              className='massage_table text-14'
+              rowKey="id"
+              columns={FIELD_COLUMNS}
+              data={store.fields}
+              emptyTips={<EmptyTips text='暂无消息数据' className="pt-40" />}
+            />
+          </div>
           <div className='px-16 py-12 border-t-1 text-12'>共{store.fields.length}条数据</div>
         </>
       ),
@@ -176,7 +185,7 @@ function ApiDocumentDetails(): JSX.Element {
     <div
       className='relative flex-1 overflow-hidden bg-white rounded-tr-12 w-1 flex flex-col'
     >
-      <div className='header-background-image border-b-1'>
+      <div className='header-background-image border-b-1 h-62'>
         <div className='px-16 py-20 text-gray-900 font-semibold text-16'>
           {store.currentDataModel.title || '------'}
         </div>

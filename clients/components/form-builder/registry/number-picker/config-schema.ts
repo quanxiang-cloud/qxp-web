@@ -166,6 +166,9 @@ const schema: ISchema = {
               enum: [
                 { label: '最小值', value: true },
               ],
+              'x-internal': {
+                defaultValueFrom: 'customized',
+              },
             },
             minimum: {
               type: 'string',
@@ -188,6 +191,9 @@ const schema: ISchema = {
               enum: [
                 { label: '最大值', value: true },
               ],
+              'x-internal': {
+                defaultValueFrom: 'customized',
+              },
             },
             maximum: {
               type: 'string',

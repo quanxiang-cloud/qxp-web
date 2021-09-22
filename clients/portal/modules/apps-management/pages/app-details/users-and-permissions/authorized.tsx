@@ -2,7 +2,6 @@ import React, { useState, useEffect, useImperativeHandle, forwardRef } from 'rea
 import CheckBox from '@c/checkbox';
 import { observer } from 'mobx-react';
 import store from './store';
-import Loading from '@c/loading';
 
 type CardProps = {
   rightsCardData: {
@@ -58,14 +57,11 @@ const CUSTOM_RIGHTS =
 function RightsCard({ rightsCardData, onChange, selectNumber, abled }: CardProps): JSX.Element {
   const { options, key } = rightsCardData;
   const [selected, setSelected] = useState<number[]>(options.map(() => 0));
+  const selectedValue = parseInt([...selected].reverse().join(''), 2);
 
   useEffect(() => {
-    setSelected(options.map(() => 0));
-  }, [rightsCardData]);
-
-  useEffect(() => {
-    onChange(parseInt([...selected].reverse().join(''), 2), key);
-  }, [selected]);
+    onChange(selectedValue, key);
+  }, [selectedValue]);
 
   useEffect(() => {
     if (selectNumber) {
@@ -74,8 +70,9 @@ function RightsCard({ rightsCardData, onChange, selectNumber, abled }: CardProps
         options.map((_, index: number) => {
           return selectArr[index] ? Number(selectArr[index]) : 0;
         }),
-
       );
+    } else {
+      setSelected(options.map(() => 0));
     }
   }, [selectNumber]);
 
@@ -97,15 +94,17 @@ function RightsCard({ rightsCardData, onChange, selectNumber, abled }: CardProps
     }
   };
 
+  const tempOptions = store.currentPage.menuType !== 2 ? options : options.slice(0, 1);
+
   return (
     <>
       <div className='flex justify-between items-center mb-8'>
         <span className='text-caption-no-color text-gray-600'>
-          已选{selected.filter((value) => value === 1).length} ，共 {options.length} 项
+          已选{selected.filter((value) => value === 1).length} ，共 {tempOptions.length} 项
         </span>
       </div>
       <div className='pb-authorized-checkbox-box'>
-        {options.map(({ label }, index: number) => (
+        {tempOptions.map(({ label }, index: number) => (
           <div key={index} className='border rounded-8 py-8 pl-16'>
             <CheckBox
               disabled = {store.currentRights.types === 1 || !abled}
@@ -122,13 +121,13 @@ function RightsCard({ rightsCardData, onChange, selectNumber, abled }: CardProps
 }
 
 function Authorized({ className = '', authorized = 0, abled }: Props, ref: React.Ref<any>): JSX.Element {
+  const [actionNumber, setActionNumber] = useState<number>(0);
   const typeNum = store.currentPage.menuType === 2 ? 1 : 15;
   const initialState = store.currentRights.types === 1 ? typeNum : authorized;
-  const [actionNumber, setActionNumber] = useState<number>(initialState);
 
   useEffect(() => {
     setActionNumber(initialState);
-  }, [store.currentRights, store.currentPage.id, authorized]);
+  }, [initialState]);
 
   useImperativeHandle(ref, () => ({
     getAuthorizedPer: () => actionNumber,
@@ -142,20 +141,9 @@ function Authorized({ className = '', authorized = 0, abled }: Props, ref: React
     }
   };
 
-  if (store.rightsLoading) {
-    return <Loading/>;
-  }
-
   return (
     <div className={className}>
-      {store.currentPage.menuType === 2 ? (
-        <RightsCard
-          abled={abled}
-          key={CUSTOM_RIGHTS.key}
-          rightsCardData={CUSTOM_RIGHTS}
-          onChange={handleChange}
-          selectNumber={actionNumber}
-        />) : RIGHTS.map((rightsCardData) => {
+      {RIGHTS.map((rightsCardData) => {
         return (
           <RightsCard
             abled={abled}

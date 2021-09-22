@@ -50,7 +50,10 @@
     .qxp-table-wrapper {
       margin-top: 16px;
       .massage_table tr:hover .field-id .copy-tooltip{
-        visibility: visible;
+        visibility: visible;   
+      }
+      .foreign-key-col {
+        @apply w-32 h-24 bg-gray-100 rounded-tl-4 rounded-br-4 px-8 py-4;
       }
     }
     .api-content {
