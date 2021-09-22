@@ -38,7 +38,10 @@ function FieldItem({ field, selected, onChange }: FieldItemProps): JSX.Element {
         <Checkbox
           value={field.id}
           checked={selected}
-          onChange={({ target }) => onChange({ id: target.value }, target.checked ? 'add' : 'del')}
+          onChange={({ target }) => onChange({
+            id: target.value,
+            width: 150,
+          }, target.checked ? 'add' : 'del')}
         />
         {selected && (
           <>
@@ -48,24 +51,14 @@ function FieldItem({ field, selected, onChange }: FieldItemProps): JSX.Element {
                 <div
                   className='bg-white p-5 w-172 h-44 border-black-50 border rounded-4 flex gap-x-5'
                 >
-                  <Checkbox
-                    label='自适应'
-                    checked={!field.width}
-                    onChange={({ target }) => onChange(
-                      { id: field.id, width: target.checked ? undefined : 60 },
-                      'edit',
-                    )}
+                  <Slider
+                    tooltipVisible
+                    className='flex-1'
+                    onChange={(width) => onChange({ id: field.id, width: width * 3 }, 'edit')}
+                    tipFormatter={(value) => (value as number) * 3}
+                    min={20}
+                    defaultValue={field.width ? (field.width / 3) : 50}
                   />
-                  {!!field.width && (
-                    <Slider
-                      tooltipVisible
-                      className='flex-1'
-                      onChange={(width) => onChange({ id: field.id, width: width * 3 }, 'edit')}
-                      tipFormatter={(value) => (value as number) * 3}
-                      min={20}
-                      defaultValue={field.width ? (field.width / 3) : 20}
-                    />
-                  )}
                 </div>
               )}
             >
