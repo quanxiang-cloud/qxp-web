@@ -16,7 +16,7 @@ export function columnIsLastLeftSticky(columnId: Column['id'], columns: any): bo
   const column = columns[index];
   const nextColumn = columns[index + 1];
   // todo fixed property must be continuously, do you have a better way?
-  return !nextColumn?.fixed && column.fixed;
+  return nextColumn && !nextColumn?.fixed && column.fixed;
 }
 
 export function columnIsFirstRightSticky(columnId: Column['id'], columns: any): boolean {
@@ -27,16 +27,23 @@ export function columnIsFirstRightSticky(columnId: Column['id'], columns: any): 
   return !prevColumn?.fixed && column.fixed;
 }
 
-export function getMarginRight(columnId: Column['id'], columns: any) {
+export function getMargin(columnId: Column['id'], columns: any) {
   const currentIndex = columns.findIndex(({ id }: any) => id === columnId);
+  let leftMargin = 0;
   let rightMargin = 0;
+  for (let i = 0; i < currentIndex; i += 1) {
+    if (columns[i].fixed) {
+      leftMargin += columns[i].width;
+    }
+  }
+
   for (let i = currentIndex + 1; i < columns.length; i += 1) {
-    if (columns[i].isVisible !== false) {
+    if (columns[i].fixed) {
       rightMargin += columns[i].width;
     }
   }
 
-  return rightMargin;
+  return { leftMargin, rightMargin };
 }
 
 const cellStylesSticky = {
@@ -69,8 +76,7 @@ function getStickyProps(header: any, instance: any): { style: React.CSSPropertie
   dataAttrs['data-sticky-td'] = true;
 
   const headers = findHeadersSameLevel(header, instance.flatHeaders);
-  const leftMargin = header.totalLeft;
-  const rightMargin = getMarginRight(header.id, headers);
+  const { leftMargin, rightMargin } = getMargin(header.id, headers);
   // todo explain this
   const index = headers.findIndex(({ id }: any) => id === header.id);
   const zIndex = headers.length - index + 1;
