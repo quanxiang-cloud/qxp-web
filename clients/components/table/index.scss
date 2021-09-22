@@ -8,12 +8,32 @@
   // create a new stacking context for preventing z-index out bound of sticky element
   opacity: 0.999;
 
+  .adjust-handle {
+    display: inline-block;
+    background-color: var(--gray-200);
+    width: 1px;
+    height: 100%;
+    position: absolute;
+    right: 0;
+    top: 0;
+    transform: translateX(50%);
+    z-index: 1;
+    touch-action:none;
+    cursor: col-resize;
+
+    &.isResizing {
+      width: 8px;
+      background-color: var(--blue-800);
+    }
+  }
+  
   .qxp-table {
     max-height: 100%;
     overflow: auto;
 
     table {
       width: 100%;
+      table-layout: fixed;
       min-width: max-content;
       border-collapse: separate;
       text-align: left;
@@ -34,8 +54,16 @@
       top: 0;
       line-height: 44px;
       font-weight: 400;
+      user-select: none;
       color: var(--gray-600);
       z-index: 2;
+
+      &:hover {
+        .adjust-handle {
+          width: 8px;
+          background-color: var(--blue-500);
+        }
+      }
     }
 
     [data-sticky-td] {

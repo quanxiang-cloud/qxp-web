@@ -39,7 +39,7 @@ function addFixedParameters(
 ): void {
   fixedList.forEach((index) => {
     if (tableColumns[index]) {
-      tableColumns[index] = { ...tableColumns[index], fixed: true, width: tableColumns[index].width || 150 };
+      tableColumns[index] = { ...tableColumns[index], fixed: true };
     }
   });
 }

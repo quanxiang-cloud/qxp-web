@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import cs from 'classnames';
 import {
   useTable,
@@ -8,10 +8,13 @@ import {
 } from 'react-table';
 
 import TableLoading from './table-loading';
-import { getDefaultSelectMap, useExtendColumns } from './utils';
+import { getDefaultSelectMap, useExtendColumns, DEFAULT_WIDTH, MINIMUM_WIDTH } from './utils';
 import useSticky from './use-sticky';
+import AdjustHandle from './adjust-handle';
 
 import './index.scss';
+
+type WidthMap = Record<any, number | string>;
 
 interface Props<T extends Record<string, any>> {
   className?: string;
@@ -40,8 +43,12 @@ export default function Table<T extends Record<string, any>>({
   showCheckbox,
   style,
 }: Props<T>): JSX.Element {
-  const extendsColumns = useExtendColumns(columns, showCheckbox);
-  const tableRef = useRef<HTMLDivElement>(null);
+  const _columns = useExtendColumns(columns, showCheckbox);
+  const tableRef = useRef<HTMLTableElement>(null);
+  const widthMapRef = useRef<WidthMap>({});
+  const [widthMap, setWidthMap] = useState<WidthMap>({});
+  widthMapRef.current = widthMap;
+
   const {
     getTableProps,
     getTableBodyProps,
@@ -52,10 +59,30 @@ export default function Table<T extends Record<string, any>>({
     state: { selectedRowIds },
   } = useTable(({
     data,
-    columns: extendsColumns,
+    columns: _columns,
     getRowId: (row) => row[rowKey],
     initialState: { selectedRowIds: getDefaultSelectMap(initialSelectedRowKeys) },
   }) as TableOptions<T>, useRowSelect, useSticky);
+
+  const handleWidthChange = (x: number, columnID: string): void => {
+    if (x < MINIMUM_WIDTH) {
+      return;
+    }
+
+    setWidthMap({
+      ...widthMapRef.current,
+      [columnID]: x,
+    });
+  };
+
+  useEffect(() => {
+    const _widthMap: WidthMap = {};
+    _columns.forEach((col) => {
+      _widthMap[col.id] = col.width || DEFAULT_WIDTH;
+    });
+
+    setWidthMap(_widthMap);
+  }, [_columns]);
 
   useEffect(() => {
     if (!onSelectChange) {
@@ -83,18 +110,17 @@ export default function Table<T extends Record<string, any>>({
     return <TableLoading />;
   }
 
-  const ColumnMaxWidth = tableRef.current ? tableRef.current.getBoundingClientRect().width / 3 : undefined;
-
   return (
     <div className="qxp-table-wrapper">
-      <div ref={tableRef} className={cs('qxp-table', className)} style={style}>
-        <table {...getTableProps()}>
+      <div className={cs('qxp-table', className)} style={style}>
+        <table ref={tableRef} {...getTableProps()}>
           <colgroup id="colgroup">
             {headerGroups[0].headers.map((header) => {
               return (
                 <col
                   {...header.getHeaderProps()}
-                  width={header.width}
+                  id={`th-${header.id}`}
+                  width={widthMap[header.id]}
                   key={header.id}
                 />
               );
@@ -102,13 +128,19 @@ export default function Table<T extends Record<string, any>>({
           </colgroup>
           <thead>
             <tr>
-              {headerGroups[0].headers.map((header) => {
+              {headerGroups[0].headers.map((header, index) => {
                 return (
                   <th
                     {...header.getHeaderProps()}
                     key={header.id}
                   >
                     {header.render('Header')}
+                    {header.id !== '_selector' && index !== _columns.length - 1 && (
+                      <AdjustHandle
+                        thID={`th-${header.id}`}
+                        onChange={(x) => handleWidthChange(x, header.id)}
+                      />
+                    )}
                   </th>
                 );
               })}
@@ -132,7 +164,6 @@ export default function Table<T extends Record<string, any>>({
                     return (
                       <td
                         {...cell.getCellProps()}
-                        style={{ maxWidth: ColumnMaxWidth }}
                         key={cell.column.id}
                       >
                         {cell.render('Cell')}

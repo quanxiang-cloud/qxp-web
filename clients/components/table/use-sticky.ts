@@ -77,7 +77,6 @@ function getStickyProps(header: any, instance: any): { style: React.CSSPropertie
   style = {
     ...style,
     zIndex,
-    width: header.width,
     minWidth: header.minWidth,
     maxWidth: header.maxWidth,
     left: `${leftMargin}px`,
