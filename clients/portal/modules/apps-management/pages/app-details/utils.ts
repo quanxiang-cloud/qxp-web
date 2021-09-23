@@ -100,7 +100,7 @@ export const FIELD_COLUMNS: UnionColumns<ModelField>[] = [
   {
     Header: '是否允许为空',
     id: 'not_null',
-    accessor: (rowData) => rowData.not_null ? '允许' : '不允许',
+    accessor: (rowData) => rowData.not_null ? '不允许' : '允许',
   },
 ];
 
