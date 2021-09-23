@@ -25,7 +25,7 @@ interface Props {
 }
 
 const COMPONENTS = { Input, Select, Switch, RadioGroup: Radio.Group, FilterConfig, AssociativeConfig };
-const { onFieldValueChange$ } = FormEffectHooks;
+const { onFieldValueChange$, onFieldInit$ } = FormEffectHooks;
 const SUPPORT_COMPONENT = [
   'Input',
   'NumberPicker',
@@ -118,11 +118,22 @@ function AssociatedDataConfig({ initialValue, onChange, subTableSchema }: Props)
   };
 
   const formModelEffect = (): void => {
+    onFieldInit$('associativeConfig').subscribe(() => {
+      setFieldState('associativeConfig', (state) => {
+        state.visible = !!toJS(initialValue).associationTableID;
+      });
+    });
+
     onFieldValueChange$('associationTableID').pipe(
       skip(1),
     ).subscribe(({ value }) => {
+      setFieldState('associativeConfig', (state) => {
+        state.visible = true;
+      });
+
       if (initialValue.associationTableID === value) {
         setTableFieldOptions(value, initialValue.associativeConfig?.rules, true);
+        return;
       }
 
       setTableFieldOptions(value, [], true);
