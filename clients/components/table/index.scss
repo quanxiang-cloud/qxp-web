@@ -24,6 +24,25 @@
       background-color: var(--blue-600) !important;
     }
   }
+
+  .table-selector {
+    min-width: 16px;
+  }
+
+  .qxp-table-small {
+    th, td {
+      padding: 8px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+  }
+
+  .qxp-table-middle {
+    th, td {
+      padding: 16px;
+    }
+  }
   
   .qxp-table {
     max-height: 100%;
@@ -39,18 +58,17 @@
     }
 
     th, td {
-      padding: 0 12px;
       word-break: break-all;
       background-color: white;
       vertical-align: middle;
       border-bottom: 1px solid var(--gray-200);
+      transition: padding .3s;
     }
 
     th {
       position: sticky;
       // todo support group header
       top: 0;
-      line-height: 44px;
       font-weight: 400;
       user-select: none;
       color: var(--gray-600);
@@ -75,11 +93,10 @@
         right: 0;
         bottom: -1px;
         width: 30px;
-        transform: translate(100%);
         transition: box-shadow .3s;
         content: "";
         pointer-events: none;
-        box-shadow: inset 10px 0 8px -8px #00000026;
+        box-shadow: inset -10px 0 8px -8px #00000026;
       }
     }
 
@@ -90,11 +107,10 @@
         left: 0;
         bottom: -1px;
         width: 30px;
-        transform: translate(-100%);
         transition: box-shadow .3s;
         content: "";
         pointer-events: none;
-        box-shadow: inset -10px 0 8px -8px #00000026;
+        box-shadow: inset 10px 0 8px -8px #00000026;
       }
     }
 
@@ -106,7 +122,6 @@
         }
 
         td {
-          height: 56px;
           &.table__cell-fixed {
             position: sticky;
           }

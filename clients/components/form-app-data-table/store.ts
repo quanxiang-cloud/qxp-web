@@ -1,6 +1,6 @@
 import React from 'react';
 import { UnionColumns } from 'react-table';
-import { action, observable, reaction, IReactionDisposer } from 'mobx';
+import { action, observable, reaction, computed, IReactionDisposer } from 'mobx';
 
 import httpClient from '@lib/http-client';
 import schemaToFields, { schemaToMap } from '@lib/schema-convert';
@@ -15,6 +15,11 @@ type Params = {
   sort?: string[] | [],
   page?: number,
   size?: number,
+}
+
+type ColumnConfig = {
+  id: string;
+  fixed?: boolean
 }
 
 export type FormAppDataTableStoreSchema = Omit<ISchema, 'properties'> & {
@@ -54,6 +59,7 @@ class AppPageDataStore {
   @observable filterData: FormData = {};
   @observable tableColumns: UnionColumns<FormData>[] = [];
   @observable tableHeaderBtnList: TableHeaderBtn[] = [];
+  @observable columnConfig: ColumnConfig[] = [];
   @observable params: Params = {
     condition: [],
     sort: [],
@@ -96,6 +102,16 @@ class AppPageDataStore {
     }
   }
 
+  @computed get tableShowColumns(): UnionColumns<FormData>[] {
+    const action = this.tableColumns.find(({ id }) => id === 'action') as UnionColumns<FormData>;
+    const _col = this.columnConfig.map(({ id, fixed }) => {
+      const column = this.tableColumns.find((col) => col.id === id) as UnionColumns<FormData>;
+      return { ...column, fixed };
+    });
+
+    return [..._col, action];
+  }
+
   @action
   setSelected = (selected: string[]): void => {
     this.selected = selected;
@@ -129,7 +145,37 @@ class AppPageDataStore {
   }
 
   @action
+  resetColumnConfig = (): void => {
+    this.columnConfig = this.tableColumns.map(({ id = '', fixed }: any) => {
+      return { id, fixed };
+    }).filter(({ id }) => id !== 'action');
+  }
+
+  @action
+  selectAllColumn = (type: boolean, noSelect: UnionColumns<any>[]): void => {
+    if (type) {
+      this.columnConfig = [...this.columnConfig, ...noSelect.map(({ id = '' }) => ({ id, fixed: false }))];
+    } else {
+      this.columnConfig = [];
+    }
+  }
+
+  @action
+  setColumnConfig = (add: boolean, id?: string): void => {
+    if (add && id) {
+      this.columnConfig = [...this.columnConfig, { id, fixed: false }];
+    }
+
+    if (!add) {
+      this.columnConfig = this.columnConfig.filter(({ id: _id }) => _id !== id);
+    }
+  }
+
+  @action
   setTableColumns = (tableColumns: UnionColumns<any>[]): void => {
+    this.columnConfig = tableColumns.map(({ id = '', fixed }: any) => {
+      return { id, fixed };
+    }).filter(({ id }) => id !== 'action');
     this.tableColumns = tableColumns;
   }
 

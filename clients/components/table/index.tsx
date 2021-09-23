@@ -15,11 +15,13 @@ import AdjustHandle from './adjust-handle';
 import './index.scss';
 
 type WidthMap = Record<any, number | string>;
+export type SizeType = 'middle' | 'small';
 
 interface Props<T extends Record<string, any>> {
   className?: string;
   columns: UnionColumns<T>[];
   data: Array<T>;
+  size?: SizeType;
   emptyTips?: React.ReactNode;
   initialSelectedRowKeys?: string[];
   loading?: boolean;
@@ -38,6 +40,7 @@ export default function Table<T extends Record<string, any>>({
   initialSelectedRowKeys,
   loading,
   onRowClick,
+  size = 'middle',
   onSelectChange,
   rowKey,
   showCheckbox,
@@ -112,7 +115,7 @@ export default function Table<T extends Record<string, any>>({
 
   return (
     <div className="qxp-table-wrapper">
-      <div className={cs('qxp-table', className)} style={style}>
+      <div className={cs('qxp-table', className, `qxp-table-${size}`)} style={style}>
         <table ref={tableRef} {...getTableProps()}>
           <colgroup id="colgroup">
             {headerGroups[0].headers.map((header) => {

@@ -24,7 +24,7 @@ export function columnIsFirstRightSticky(columnId: Column['id'], columns: any): 
   const column = columns[index];
   const prevColumn = columns[index - 1];
   // todo fixed property must be continuously, do you have a better way?
-  return !prevColumn?.fixed && column.fixed;
+  return prevColumn && !prevColumn?.fixed && column.fixed;
 }
 
 export function getMargin(columnId: Column['id'], columns: any) {
