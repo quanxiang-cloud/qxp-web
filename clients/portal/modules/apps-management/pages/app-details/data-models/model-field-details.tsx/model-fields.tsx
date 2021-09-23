@@ -43,22 +43,9 @@ function ModelFields(): JSX.Element {
         }
 
         return (
-          <div
-            onClick={() => setCurModelField(rowData)}
-            className='flex gap-6'
-          >
-            <span
-              className='text-btn'
-              onClick={() => setFieldModalType('edit')}
-            >
-              编辑
-            </span>
-            <span
-              className='text-btn'
-              onClick={() => setFieldModalType('delete')}
-            >
-              删除
-            </span>
+          <div className='flex gap-6' onClick={() => setCurModelField(rowData)}>
+            <span className='text-btn' onClick={() => setFieldModalType('edit')}>编辑</span>
+            <span className='text-btn' onClick={() => setFieldModalType('delete')}>删除</span>
           </div>
         );
       },
@@ -106,20 +93,22 @@ function ModelFields(): JSX.Element {
             emptyTips={(
               <EmptyTips
                 className="pt-40 m-auto"
-                text={(<>
-                  暂无数据，开始
-                  <span
-                    onClick={() => {
-                      if (curDataModel?.source === 2) {
-                        setCurModelField(undefined);
-                        setFieldModalType('create');
-                      }
-                    }}
-                    className="text-blue-600 cursor-pointer ml-4"
-                  >
-                  添加字段
-                  </span>
-                </>)}
+                text={(
+                  <>
+                    暂无数据，开始
+                    <span
+                      onClick={() => {
+                        if (curDataModel?.source === 2) {
+                          setCurModelField(undefined);
+                          setFieldModalType('create');
+                        }
+                      }}
+                      className="text-blue-600 cursor-pointer ml-4"
+                    >
+                      添加字段
+                    </span>
+                  </>
+                )}
               />
             )}
             loading={false}
