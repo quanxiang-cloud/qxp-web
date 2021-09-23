@@ -102,7 +102,7 @@ export const compareOperatorMap: Record<FormBuilder.CompareOperator, OperatorCon
   },
   '⊇': {
     title: '全部包含',
-    op: 'include',
+    op: 'fullSubset',
     comparator: (leftValue: Array<string | number>, rightValue: Array<string | number>): boolean => {
       return rightValue.every((value) => {
         return leftValue.includes(value);
