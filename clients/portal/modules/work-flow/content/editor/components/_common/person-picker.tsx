@@ -8,8 +8,12 @@ import RadioGroup from '@c/radio/group';
 import Radio from '@c/radio';
 import Select from '@c/select';
 import FlowTableContext from '@flow/content/editor/forms/flow-source-table';
+import useObservable from '@lib/hooks/use-observable';
+import store from '@flow/content/editor/store';
+import type { StoreValue } from '@flow/content/editor/type';
 
 import { ApprovePersonType, ApprovePerson } from '@flow/content/editor/type';
+import ValidatingTips from './validating-tips';
 
 interface Option {
   label: string;
@@ -57,6 +61,7 @@ interface Props {
 }
 
 export default function PersonPicker({ value, typeText, onChange } : Props): JSX.Element {
+  const { validating } = useObservable<StoreValue>(store);
   const [showAddPersonModal, setShowAddPersonModal] = useState(false);
   const { tableSchema } = useContext(FlowTableContext);
 
@@ -187,8 +192,11 @@ export default function PersonPicker({ value, typeText, onChange } : Props): JSX
           )}
           <div
             className={cs(
-              'flex items-center border border-dashed border-gray-300 corner-8-2-8-8',
-              'py-5 text-button mt-8 justify-center cursor-pointer h-32',
+              'flex items-center border border-dashed corner-8-2-8-8',
+              'py-5 text-button mt-8 justify-center cursor-pointer h-32', {
+                'border-gray-300': !validating || value.users?.length,
+                'border-red-300': validating && !value.users?.length,
+              },
             )}
             role="button"
             tabIndex={0}
@@ -201,15 +209,31 @@ export default function PersonPicker({ value, typeText, onChange } : Props): JSX
               人
             </span>
           </div>
+          <ValidatingTips
+            validating={validating && !value.users?.length}
+            tips={`请添加${typeText}人`}
+          />
         </>
       )}
       {type === 'field' && (
-        <Select<string>
-          multiple
-          options={fieldOptions}
-          value={fields}
-          onChange={handleFieldChange}
-        />
+        <>
+          <Select<string>
+            multiple
+            options={fieldOptions}
+            value={fields}
+            onChange={handleFieldChange}
+            className={cs(
+              {
+                'border-gray-300': !validating || value.fields?.length,
+                'border-red-300': validating && !value.fields?.length,
+              },
+            )}
+          />
+          <ValidatingTips
+            validating={validating && !value.fields?.length}
+            tips={`请选择${typeText}人`}
+          />
+        </>
       )}
       {type === 'position' && (
         <Select<string>
