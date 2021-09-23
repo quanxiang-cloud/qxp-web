@@ -6,14 +6,13 @@ import { Input, Select, Switch, NumberPicker } from '@formily/antd-components';
 
 import Modal, { FooterBtnProps } from '@c/modal';
 
-import store from './store';
-import { FIELD_FORM_SCHEMA } from './form-schema';
+import store from '../../store';
+import { FIELD_FORM_SCHEMA } from '../form-schema';
 
 type Props = {
-  isEditor: boolean;
   onCancel: () => void;
   onSubmit: (value: ModelField) => void;
-  field?: ModelField;
+  field: ModelField | undefined;
 }
 
 const PATH: Record<string, string> = {
@@ -26,7 +25,7 @@ const PATH: Record<string, string> = {
 const { onFieldValueChange$ } = FormEffectHooks;
 const actions = createFormActions();
 
-function EditorDataModelModal({ isEditor, onCancel, onSubmit, field }: Props): JSX.Element {
+function EditModal({ onCancel, onSubmit, field }: Props): JSX.Element {
   useEffect(() => {
     const rule: ValidateDescription = {
       id: 'repeat',
@@ -90,17 +89,25 @@ function EditorDataModelModal({ isEditor, onCancel, onSubmit, field }: Props): J
 
       $(LifeCycleTypes.ON_FORM_INIT).subscribe(() => {
         setFieldState('id', (state) => {
-          state.props.readOnly = isEditor;
+          state.props.readOnly = !!field;
         });
       });
     },
   });
 
-  const handleSubmit = () => {
+  function handleSubmit(): void {
     form.submit().then(() => {
       onCancel();
-    });
-  };
+    }).catch(() => null);
+  }
+
+  async function handleCreateNext(): Promise<void> {
+    form.submit().then(() => {
+      return form.reset();
+    }).then(() => {
+      return form.clearErrors();
+    }).catch(() => null);
+  }
 
   const btnList: FooterBtnProps[] = [
     {
@@ -116,22 +123,18 @@ function EditorDataModelModal({ isEditor, onCancel, onSubmit, field }: Props): J
     },
   ];
 
-  if (!isEditor) {
+  if (!field) {
     btnList.push({
       text: '保存且继续新建',
       key: 'save_creat',
       modifier: 'primary',
-      onClick: async () => {
-        await form.submit();
-        await form.reset();
-        form.clearErrors();
-      },
+      onClick: handleCreateNext,
     });
   }
 
   return (
     <Modal
-      title={`${isEditor ? '编辑' : '新建'}数据字段`}
+      title={`${field ? '编辑' : '添加'}字段`}
       onClose={onCancel}
       footerBtns={btnList}
     >
@@ -146,4 +149,4 @@ function EditorDataModelModal({ isEditor, onCancel, onSubmit, field }: Props): J
   );
 }
 
-export default observer(EditorDataModelModal);
+export default observer(EditModal);
