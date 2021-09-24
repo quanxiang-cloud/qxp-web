@@ -1,6 +1,8 @@
 import React from 'react';
 import { UnionColumns } from 'react-table';
 import { action, observable, reaction, computed, IReactionDisposer } from 'mobx';
+import { toPairs, fromPairs, set } from 'lodash';
+import { pipe, map } from 'lodash/fp';
 
 import httpClient from '@lib/http-client';
 import schemaToFields, { schemaToMap } from '@lib/schema-convert';
@@ -17,10 +19,12 @@ type Params = {
   size?: number,
 }
 
-type ColumnConfig = {
-  id: string;
+type FormTableConfig = {
+  hidden: boolean;
   fixed?: boolean
 }
+
+type ColumnConfig = Record<string, FormTableConfig>
 
 export type FormAppDataTableStoreSchema = Omit<ISchema, 'properties'> & {
   properties?: Record<string, SchemaFieldItem>
@@ -59,7 +63,7 @@ class AppPageDataStore {
   @observable filterData: FormData = {};
   @observable tableColumns: UnionColumns<FormData>[] = [];
   @observable tableHeaderBtnList: TableHeaderBtn[] = [];
-  @observable columnConfig: ColumnConfig[] = [];
+  @observable columnConfig: ColumnConfig = {};
   @observable params: Params = {
     condition: [],
     sort: [],
@@ -103,13 +107,18 @@ class AppPageDataStore {
   }
 
   @computed get tableShowColumns(): UnionColumns<FormData>[] {
-    const action = this.tableColumns.find(({ id }) => id === 'action') as UnionColumns<FormData>;
-    const _col = this.columnConfig.map(({ id, fixed }) => {
-      const column = this.tableColumns.find((col) => col.id === id) as UnionColumns<FormData>;
-      return { ...column, fixed };
-    });
+    return this.tableColumns.reduce<UnionColumns<FormData>[]>((acc, col) => {
+      const curConfig = this.columnConfig[col.id || ''] || {};
+      if (col.id === 'action') {
+        return [...acc, col];
+      }
 
-    return [..._col, action];
+      if (!curConfig.hidden) {
+        return [...acc, { ...col, fixed: 'fixed' in curConfig ? curConfig.fixed : col.fixed }];
+      }
+
+      return acc;
+    }, []);
   }
 
   @action
@@ -146,47 +155,49 @@ class AppPageDataStore {
 
   @action
   resetColumnConfig = (): void => {
-    this.columnConfig = this.tableColumns.map(({ id = '', fixed }: any) => {
-      return { id, fixed };
-    }).filter(({ id }) => id !== 'action');
+    this.columnConfig = {};
   }
 
   @action
-  selectAllColumn = (type: boolean, noSelect: UnionColumns<any>[]): void => {
+  selectAllColumn = (type: boolean): void => {
     if (type) {
-      this.columnConfig = [...this.columnConfig, ...noSelect.map(({ id = '' }) => ({ id, fixed: false }))];
+      const process = pipe(
+        toPairs,
+        map(([key, config]) => {
+          return [key, { ...config, hidden: false }];
+        }),
+        fromPairs,
+      );
+      this.columnConfig = process(this.columnConfig);
     } else {
-      this.columnConfig = [];
+      const newColumnConfig: ColumnConfig = {};
+      this.tableColumns.forEach(({ id = '' }) => {
+        newColumnConfig[id].hidden = true;
+      });
+
+      this.columnConfig = newColumnConfig;
     }
   }
 
   @action
-  setColFixed = (id: string, fixed: boolean): void => {
-    this.columnConfig = this.columnConfig.map((col) => {
-      if (col.id === id) {
-        return { ...col, fixed };
-      }
+  setColumnConfig = (newConfig: Partial<FormTableConfig>, id: string): void => {
+    this.columnConfig = set(this.columnConfig, id, { ...this.columnConfig[id], ...newConfig });
+    // if (add && id) {
+    //   this.columnConfig = [...this.columnConfig, { id, fixed: false }];
+    // }
 
-      return col;
-    });
-  }
-
-  @action
-  setColumnConfig = (add: boolean, id?: string): void => {
-    if (add && id) {
-      this.columnConfig = [...this.columnConfig, { id, fixed: false }];
-    }
-
-    if (!add) {
-      this.columnConfig = this.columnConfig.filter(({ id: _id }) => _id !== id);
-    }
+    // if (!add) {
+    //   this.columnConfig = this.columnConfig.filter(({ id: _id }) => _id !== id);
+    // }
   }
 
   @action
   setTableColumns = (tableColumns: UnionColumns<any>[]): void => {
-    this.columnConfig = tableColumns.map(({ id = '', fixed }: any) => {
-      return { id, fixed };
-    }).filter(({ id }) => id !== 'action');
+    // const _columnConfig: ColumnConfig = {};
+    // this.tableColumns.forEach((col) => {
+    //   set(_columnConfig, col.id || '', { fixed: col.fixed, hidden: false });
+    // });
+    this.columnConfig = {};
     this.tableColumns = tableColumns;
   }
 
