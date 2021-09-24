@@ -1,4 +1,5 @@
 import React, { useContext, useMemo } from 'react';
+import cs from 'classnames';
 import { observer } from 'mobx-react';
 import { UnionColumns } from 'react-table';
 
@@ -10,28 +11,38 @@ import { StoreContext } from './context';
 
 function TableConfig(): JSX.Element {
   const store = useContext(StoreContext);
-  const { tableColumns, columnConfig } = store;
+  const { tableColumns } = store;
 
   const [selected, noSelected] = useMemo(() => {
-    const _selected = columnConfig.map(({ id }) => {
-      return tableColumns.find((col) => col.id === id) as UnionColumns<FormData>;
+    const _selected = store.columnConfig.map(({ id, fixed }) => {
+      return { ...store.tableColumns.find((col) => col.id === id), fixed } as UnionColumns<FormData>;
     });
 
-    const _noSelected = tableColumns.filter((col) => {
-      return columnConfig.findIndex((_col) => col.id === _col.id) === -1 && col.id !== 'action';
+    const _noSelected = store.tableColumns.filter((col) => {
+      return store.columnConfig.findIndex((_col) => col.id === _col.id) === -1 && col.id !== 'action';
     }) as UnionColumns<FormData>[];
 
     return [_selected, _noSelected];
-  }, [columnConfig, tableColumns]);
+  }, [store.columnConfig, store.tableColumns]);
 
   const columnsItemRenderer = (column: UnionColumns<FormData>, checked: boolean): JSX.Element => {
     return (
-      <div key={column.id} className='px-18 py-8 hover:bg-blue-100'>
+      <div key={column.id} className='px-18 py-8 hover:bg-blue-100 flex justify-between items-center'>
         <Checkbox
           checked={checked}
           onChange={(e) => store.setColumnConfig(e.target.checked, column.id)}
           label={column.Header?.toString()}
         />
+        {checked && (
+          <Icon
+            clickable
+            changeable
+            className={cs({ 'form-table-fixed-active': column.fixed })}
+            onClick={() => store.setColFixed(column.id || '', !column.fixed)}
+            name='push_pin'
+            size={20}
+          />
+        )}
       </div>
     );
   };

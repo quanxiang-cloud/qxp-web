@@ -87,31 +87,11 @@
     }
 
     [data-sticky-last-left-td] {
-      &::after {
-        position: absolute;
-        top: 0;
-        right: 0;
-        bottom: -1px;
-        width: 30px;
-        transition: box-shadow .3s;
-        content: "";
-        pointer-events: none;
-        box-shadow: inset -10px 0 8px -8px #00000026;
-      }
+      box-shadow: 2px 0 3px var(--gray-200);
     }
 
     [data-sticky-first-right-td] {
-      &::after {
-        position: absolute;
-        top: 0;
-        left: 0;
-        bottom: -1px;
-        width: 30px;
-        transition: box-shadow .3s;
-        content: "";
-        pointer-events: none;
-        box-shadow: inset 10px 0 8px -8px #00000026;
-      }
+      box-shadow: -2px 0 3px var(--gray-200);
     }
 
     tbody {

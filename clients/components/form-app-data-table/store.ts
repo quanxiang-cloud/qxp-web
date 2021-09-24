@@ -161,6 +161,17 @@ class AppPageDataStore {
   }
 
   @action
+  setColFixed = (id: string, fixed: boolean): void => {
+    this.columnConfig = this.columnConfig.map((col) => {
+      if (col.id === id) {
+        return { ...col, fixed };
+      }
+
+      return col;
+    });
+  }
+
+  @action
   setColumnConfig = (add: boolean, id?: string): void => {
     if (add && id) {
       this.columnConfig = [...this.columnConfig, { id, fixed: false }];
