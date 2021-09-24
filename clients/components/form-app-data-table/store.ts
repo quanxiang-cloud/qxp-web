@@ -172,7 +172,7 @@ class AppPageDataStore {
     } else {
       const newColumnConfig: ColumnConfig = {};
       this.tableColumns.forEach(({ id = '' }) => {
-        newColumnConfig[id].hidden = true;
+        set(newColumnConfig, `${id}.hidden`, true);
       });
 
       this.columnConfig = newColumnConfig;
@@ -181,22 +181,11 @@ class AppPageDataStore {
 
   @action
   setColumnConfig = (newConfig: Partial<FormTableConfig>, id: string): void => {
-    this.columnConfig = set(this.columnConfig, id, { ...this.columnConfig[id], ...newConfig });
-    // if (add && id) {
-    //   this.columnConfig = [...this.columnConfig, { id, fixed: false }];
-    // }
-
-    // if (!add) {
-    //   this.columnConfig = this.columnConfig.filter(({ id: _id }) => _id !== id);
-    // }
+    this.columnConfig = { ...set(this.columnConfig, id, { ...this.columnConfig[id], ...newConfig })};
   }
 
   @action
   setTableColumns = (tableColumns: UnionColumns<any>[]): void => {
-    // const _columnConfig: ColumnConfig = {};
-    // this.tableColumns.forEach((col) => {
-    //   set(_columnConfig, col.id || '', { fixed: col.fixed, hidden: false });
-    // });
     this.columnConfig = {};
     this.tableColumns = tableColumns;
   }

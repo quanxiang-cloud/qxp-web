@@ -24,6 +24,7 @@ function TableConfig(): JSX.Element {
         hiddenCounter += 1;
       }
     });
+
     _allShow = hiddenCounter === 0;
     _allHidden = hiddenCounter === configurableColumns.length;
     return [_allShow, _allHidden];
