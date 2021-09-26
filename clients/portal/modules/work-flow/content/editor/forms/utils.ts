@@ -1,6 +1,6 @@
 import { get, flatten, cloneDeep } from 'lodash';
 
-const excludeComps = ['subtable'];
+const excludeComps = ['subtable', 'associatedrecords'];
 const primitiveTypes = ['string', 'number', 'boolean', 'datetime'];
 const advancedCompTypes = [
   'SubTable',
