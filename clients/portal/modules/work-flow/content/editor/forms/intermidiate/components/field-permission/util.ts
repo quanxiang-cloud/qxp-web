@@ -1,4 +1,4 @@
-import { pipe, entries, map } from 'lodash/fp';
+import { pipe, entries, map, filter } from 'lodash/fp';
 
 import { INTERNAL_FIELD_NAMES } from '@home/pages/app-details/constants';
 import { schemaToArray } from '@lib/schema-convert';
@@ -98,8 +98,12 @@ export function fieldPermissionDecoder(
 
   const convertor: (value: NewFieldPermission) => FieldPermissionMergeType[] | void = pipe(
     entries,
-    map(([fieldID, fieldValue]: [string, NewFieldPermissionValue]): FieldPermissionMergeType => {
+    map(([fieldID, fieldValue]: [string, NewFieldPermissionValue]): FieldPermissionMergeType | null => {
       const permission = fieldValue?.['x-internal'].permission;
+      const targetSchema = schemaIDToSchemaMap[fieldID];
+      if (!targetSchema) {
+        return null;
+      }
       return {
         ...getPermission(permission as PERMISSION),
         isSystem: INTERNAL_FIELD_NAMES.includes(fieldID),
@@ -107,10 +111,11 @@ export function fieldPermissionDecoder(
         id: fieldID,
         initialValue: fieldValue.initialValue || EDIT_VALUE,
         submitValue: fieldValue.submitValue || EDIT_VALUE,
-        path: schemaIDToSchemaMap[fieldID]['x-internal']?.fieldPath || '',
-        hidden: !!schemaIDToSchemaMap[fieldID]?.['x-internal']?.isLayoutComponent,
+        path: targetSchema?.['x-internal']?.fieldPath || '',
+        hidden: !!targetSchema?.['x-internal']?.isLayoutComponent,
       };
     }),
+    filter(Boolean),
   );
   const fields = convertor(value as NewFieldPermission) || [];
 
