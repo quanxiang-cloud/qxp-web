@@ -1,4 +1,4 @@
-import { omit, isEmpty } from 'lodash';
+import { omit, isEmpty, isEqual } from 'lodash';
 
 import schemaToFields, { schemaToMap } from '@lib/schema-convert';
 import {
@@ -35,6 +35,14 @@ export function formDataDiff(
     }
 
     const oldValue = defaultValues[fieldKey];
+    if (!schemaMap[fieldKey]) {
+      if (!isEqual(oldValue, cValue)) {
+        resultValue[fieldKey] = cValue;
+      }
+
+      return;
+    }
+
     switch (schemaMap[fieldKey]['x-component']) {
     case 'OrganizationPicker':
     case 'UserPicker':
