@@ -3,6 +3,7 @@ import { getDisplayModifierFromSchema, getSchemaPermissionFromSchemaConfig } fro
 export type SubTableConfig = {
   title: string;
   description: string;
+  rowLimit: string;
   subordination: string;
   subTableSchema: ISchema;
   displayModifier: FormBuilder.DisplayModifier;
@@ -19,6 +20,7 @@ export type SubTableConfig = {
 export const defaultConfig: SubTableConfig = {
   title: '子表单',
   description: '子表单的描述内容',
+  rowLimit: 'multiple',
   subordination: 'sub_table',
   displayModifier: 'normal',
   subTableSchema: {
@@ -53,6 +55,7 @@ export function toSchema(value: SubTableConfig): ISchema {
       appID: value.linkedTable?.appID,
       tableID: isFromLinkedTable ? value.linkedTable?.tableID : value.tableID,
       tableName: value.linkedTable?.tableName,
+      rowLimit: value.rowLimit,
     },
     ['x-internal']: {
       permission: getSchemaPermissionFromSchemaConfig(value),
@@ -67,6 +70,7 @@ export function toConfig(schema: ISchema): SubTableConfig {
   return {
     title: schema.title as string,
     description: schema.description as string,
+    rowLimit: schema['x-component-props']?.rowLimit,
     subordination: schema['x-component-props']?.subordination,
     displayModifier: getDisplayModifierFromSchema(schema),
     subTableSchema: schema.items as ISchema,
