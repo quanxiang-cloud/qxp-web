@@ -1,4 +1,4 @@
-import { getSchemaPermissionFromSchemaConfig } from '@c/form-builder/utils';
+import { getSchemaPermissionFromSchemaConfig, getDisplayModifierFromSchema } from '@c/form-builder/utils';
 
 export interface CascadeConfig {
   title: string;
@@ -55,17 +55,10 @@ export function toSchema(value: CascadeConfig): ISchema {
 }
 
 export function toConfig(schema: ISchema): CascadeConfig {
-  let displayModifier: FormBuilder.DisplayModifier = 'normal';
-  if (schema.readOnly) {
-    displayModifier = 'readonly';
-  } else if (!schema.display) {
-    displayModifier = 'hidden';
-  }
-
   return {
     title: schema.title as string,
     description: schema.description as string,
-    displayModifier: displayModifier,
+    displayModifier: getDisplayModifierFromSchema(schema),
     placeholder: schema['x-component-props']?.placeholder || '',
     defaultValueFrom: schema['x-internal']?.defaultValueFrom || 'customized',
     customizedDataset: schema['x-component-props']?.options || [],

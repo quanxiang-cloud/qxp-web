@@ -1,4 +1,4 @@
-import { getSchemaPermissionFromSchemaConfig } from '@c/form-builder/utils';
+import { getSchemaPermissionFromSchemaConfig, getDisplayModifierFromSchema } from '@c/form-builder/utils';
 
 export interface NumberPickerConfig {
   title: string;
@@ -69,17 +69,10 @@ export function toSchema(value: NumberPickerConfig): ISchema {
 }
 
 export function toConfig(schema: ISchema): NumberPickerConfig {
-  let displayModifier: FormBuilder.DisplayModifier = 'normal';
-  if (schema.readOnly) {
-    displayModifier = 'readonly';
-  } else if (!schema.display) {
-    displayModifier = 'hidden';
-  }
-
   return {
     title: schema.title as string,
     description: schema.description as string,
-    displayModifier: displayModifier,
+    displayModifier: getDisplayModifierFromSchema(schema),
     placeholder: schema['x-component-props']?.placeholder || '',
     sortable: !!schema['x-internal']?.sortable,
     precision: schema['x-component-props']?.precision,

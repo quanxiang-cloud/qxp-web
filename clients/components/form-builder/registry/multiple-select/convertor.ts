@@ -1,4 +1,4 @@
-import { convertEnumsToLabels, getSchemaPermissionFromSchemaConfig } from '@c/form-builder/utils';
+import { convertEnumsToLabels, getDisplayModifierFromSchema, getSchemaPermissionFromSchemaConfig } from '@c/form-builder/utils';
 
 export interface MultipleSelectConfig {
   title: string;
@@ -44,17 +44,10 @@ export function toSchema(value: MultipleSelectConfig): ISchema {
 }
 
 export function toConfig(schema: ISchema): MultipleSelectConfig {
-  let displayModifier: FormBuilder.DisplayModifier = 'normal';
-  if (schema.readOnly) {
-    displayModifier = 'readonly';
-  } else if (!schema.display) {
-    displayModifier = 'hidden';
-  }
-
   return {
     title: schema.title as string,
     description: schema.description as string,
-    displayModifier: displayModifier,
+    displayModifier: getDisplayModifierFromSchema(schema),
     sortable: !!schema['x-internal']?.sortable,
     required: !!schema.required,
     defaultValueFrom: schema['x-internal']?.defaultValueFrom || 'customized',

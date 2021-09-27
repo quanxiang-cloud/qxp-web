@@ -259,6 +259,26 @@ export function getSchemaPermissionFromSchemaConfig(
   return NORMAL;
 }
 
+export function getDisplayModifierFromSchema(schema: ISchema): FormBuilder.DisplayModifier {
+  const permission = get(schema, 'x-internal.permission');
+  if (isPermissionReadOnly(permission)) {
+    return 'readonly';
+  }
+  if (isPermissionInvisible(permission)) {
+    return 'hidden';
+  }
+  if (isPermissionNormal(permission)) {
+    return 'normal';
+  }
+  if (schema.readOnly === true) {
+    return 'readonly';
+  }
+  if (schema.display === false) {
+    return 'hidden';
+  }
+  return 'normal';
+}
+
 export function isPermissionInvisible(permission: PERMISSION): boolean {
   return [INVISIBLE_NO_READ, INVISIBLE_NO_WRITE, INVISIBLE_WITH_WRITE].includes(permission);
 }
