@@ -13,7 +13,6 @@ import Loading from '@c/loading';
 import ErrorTips from '@c/error-tips';
 import toast from '@lib/toast';
 import { FormRenderer } from '@c/form-builder';
-import { schemaToMap } from '@lib/schema-convert';
 
 import Panel from './panel';
 import Toolbar from './toolbar';
@@ -34,21 +33,60 @@ function ApprovalDetail(): JSX.Element {
   const [search] = useURLSearch();
   const [formValues, setFormValues] = useState<Record<string, any>>({});
   const [status, setStatus] = useState<FormBuilder.Option[]>([{ label: '', value: '' }]);
+  const [currentTaskId, setCurrentTaskId] = useState<string>('');
   const [showSwitch, setShowSwitch] = useState<boolean>(false);
   const listType = search.get('list') || 'todo';
   const { processInstanceID, type } = useParams<{
     processInstanceID: string;
     type: string
   }>();
-  const [currentTaskId, setCurrentTaskId] = useState<string>('');
   const history = useHistory();
 
   const {
     isLoading, data, isError, error,
   } = useQuery<any, Error>(
-    [processInstanceID, currentTaskId, type],
-    () => apis.getTaskFormById(processInstanceID, { taskId: currentTaskId, type }),
+    [processInstanceID, type],
+    () => apis.getTaskFormById(processInstanceID, { type }).then((res) => {
+      if (!currentTaskId) {
+        setCurrentTaskId(get(res, 'taskDetailModels[0].taskId', ''));
+      }
+
+      if (type === 'HANDLED_PAGE') {
+        const taskDetailModels = get(res, 'taskDetailModels', []);
+        if (taskDetailModels.length > 1) {
+          setShowSwitch(true);
+          const status = taskDetailModels.map(({ taskName, taskId }: Record<string, string>) => {
+            return {
+              label: taskName,
+              value: taskId,
+            };
+          });
+          setStatus(status);
+        }
+      }
+
+      return res;
+    }),
   );
+
+  const {
+    data: formData,
+  } = useQuery<any, Error>(
+    [processInstanceID, currentTaskId],
+    () => {
+      if (!currentTaskId) {
+        return Promise.resolve({});
+      }
+
+      return apis.getFlowFormData(processInstanceID, currentTaskId).catch((err) => {
+        toast.error(err);
+      });
+    },
+  );
+
+  useEffect(() => {
+    setFormValues(formData);
+  }, [formData]);
 
   const getTask = (): Record<string, any> => {
     const taskDetailData = get(data, 'taskDetailModels', []).find(
@@ -61,35 +99,12 @@ function ApprovalDetail(): JSX.Element {
     document.title = '流程详情';
   }, []);
 
-  useEffect(() => {
-    setFormValues(getTask()?.formData || {});
-  }, [data]);
-
-  useEffect(() => {
-    if (type === 'HANDLED_PAGE') {
-      apis.getTaskFormById(processInstanceID, { type }).then((data) => {
-        const taskDetailModels = get(data, 'taskDetailModels', []);
-        if (taskDetailModels.length > 1) {
-          setShowSwitch(true);
-          const status = taskDetailModels.map(({ taskName, taskId }: Record<string, string>) => {
-            return {
-              label: taskName,
-              value: taskId,
-            };
-          });
-          setStatus(status);
-          setCurrentTaskId(taskDetailModels[0]?.taskId);
-        }
-      });
-    }
-  }, []);
-
   const renderSchemaForm = (task: any): JSX.Element | null => {
     return (
       <div className='task-form'>
         <FormRenderer
-          defaultValue={task.formData}
-          schema={task.formSchema.table}
+          defaultValue={formData}
+          schema={task.formSchema}
           onFormValueChange={setFormValues}
           usePermission
         />
@@ -175,10 +190,10 @@ function ApprovalDetail(): JSX.Element {
         <ActionModals
           flowName={data?.flowName}
           formData={formValues}
-          defaultValue={task.formData}
+          defaultValue={formData}
           appID={appID}
           tableID={tableID}
-          schemaMap={schemaToMap(task?.formSchema?.table)}
+          schema={task?.formSchema}
         />
       )}
     </div>

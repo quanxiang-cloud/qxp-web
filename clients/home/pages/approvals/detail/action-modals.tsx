@@ -5,7 +5,7 @@ import { useHistory, useParams } from 'react-router-dom';
 import { TextArea, Form } from '@QCFE/lego-ui';
 import { Radio } from 'antd';
 import { toJS } from 'mobx';
-import { isString } from 'lodash';
+import { isEmpty } from 'lodash';
 
 import toast from '@lib/toast';
 import Modal from '@c/modal';
@@ -13,7 +13,7 @@ import Button from '@c/button';
 import Icon from '@c/icon';
 import ReceiverPicker from '@c/employee-or-department-picker';
 import ReceiverList from '@c/employee-receiver-list';
-import { getRequestDiffFormData } from '@home/pages/app-details/utils';
+import { buildFormDataReqParams, formDataDiff } from '@home/utils';
 
 import SelectStepBackNode from './select-step-back-node';
 import store from './store';
@@ -23,7 +23,7 @@ import actionMap from './action-map';
 
 interface Props {
   flowName?: string;
-  schemaMap: Record<string, SchemaFieldItem>;
+  schema: ISchema;
   formData: Record<string, unknown>;
   defaultValue: Record<string, unknown>;
   appID: string;
@@ -31,7 +31,7 @@ interface Props {
 }
 
 function ActionModals({
-  flowName, formData, defaultValue, appID, tableID, schemaMap,
+  flowName, formData, defaultValue, schema,
 }: Props): JSX.Element | null {
   const { processInstanceID, taskID } = useParams<{ processInstanceID: string; taskID: string; }>();
   const history = useHistory();
@@ -58,16 +58,18 @@ function ActionModals({
       TaskHandleType.refuse,
       TaskHandleType.fill_in,
     ].includes(action as TaskHandleType)) {
-      const _formData = getRequestDiffFormData({
-        defaultValue, currentValue: formData, appID, pageID: tableID, schemaMap,
-      });
-      if (!_formData) {
-        return Promise.resolve();
+      let _formData = {};
+      if (isEmpty(defaultValue)) {
+        _formData = buildFormDataReqParams(schema, 'create', formData);
+      } else {
+        const newValue = formDataDiff(formData, defaultValue, schema);
+        _formData = buildFormDataReqParams(schema, 'updated', newValue);
       }
+
       return apis.reviewTask(processInstanceID, taskID, {
         handleType: action,
         remark: modalInfo.payload.remark || '',
-        formData: isString(_formData) ? {} : _formData,
+        formData: _formData,
       });
     }
 

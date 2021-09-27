@@ -83,9 +83,9 @@ export type SubTableUpdateData = {
 }
 
 export type FormDataRequestUpdateParamsRef = Record<string, SubTableUpdateData & {
-  appID: string;
-  type: 'sub_table' | 'foreign_table';
-  tableID: string;
+  type: 'sub_table' | 'foreign_table' | 'serial';
+  appID?: string;
+  tableID?: string;
 }>;
 
 export type FormDataResponse = { entity: Record<string, any>[]; errorCount: number; total: number };

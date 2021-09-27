@@ -146,6 +146,7 @@ export function buildFormDataReqParams(
   if (subTableFields.length) {
     subTableFields.forEach((field) => {
       const { subordination, appID, tableID } = field?.['x-component-props'] || {};
+
       ref[field.id] = {
         type: subordination || 'sub_table',
         appID,
@@ -155,7 +156,11 @@ export function buildFormDataReqParams(
     });
   }
 
-  const formDataResBody: FormDataBody = { ref };
+  const formDataResBody: FormDataBody = { };
+
+  if (!isEmpty(ref)) {
+    formDataResBody.ref = ref;
+  }
 
   if (values) {
     formDataResBody.entity = omit(values, subTableFields.map(({ id }) => id));

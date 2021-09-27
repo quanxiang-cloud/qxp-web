@@ -109,6 +109,10 @@ export const getTaskFormById = async (processInstanceID: string,
   return await httpClient(`/api/v1/flow/instance/getFlowInstanceForm/${processInstanceID}`, params);
 };
 
+export const getFlowFormData = async (processInstanceID: string, taskID:string): Promise<TaskForm> => {
+  return await httpClient(`/api/v1/flow/instance/getFormData/${processInstanceID}/${taskID}`);
+};
+
 // 流程任务审核
 export const reviewFlowTask = async (params: Record<string, any>) => {
   return await httpClient('/api/v1/flow/instance/reviewFlowTask/{processInstanceId}/{taskId}', params);
@@ -122,11 +126,6 @@ export const entrustTask = async (params: Record<string, any>) => {
 // 领取任务
 export const claimTask = async (params: Record<string, any>) => {
   return await httpClient('/api/v1/flow/instance/claimTask/{processInstanceId}/{taskId}', params);
-};
-
-// 流程处理记录
-export const getProcessHistory = async (params: Record<string, any>) => {
-  return await httpClient('/api/v1/flow/instance/processHistories/{processInstanceId}', params);
 };
 
 // 打回重填
