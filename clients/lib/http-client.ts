@@ -107,7 +107,7 @@ export function fetchFormDataList(
   pageID: string,
   data: FormDataListRequestParams,
 ): Promise<FormDataListResponse> {
-  return httpClient(`/api/v1/form1/${appID}/home/form/${pageID}/search`, {
+  return httpClient(`/api/v1/form/${appID}/home/form/${pageID}/search`, {
     method: 'find',
     page: 1,
     size: 10,
@@ -121,7 +121,7 @@ export function createFormDataRequest(
   params: FormDataBody,
 ): Promise<FormDataResponse> {
   return httpClient<FormDataResponse>(
-    `/api/v1/form1/${appID}/home/form/${tableID}/create`,
+    `/api/v1/form/${appID}/home/form/${tableID}/create`,
     params,
   );
 }
@@ -133,7 +133,7 @@ export function editFormDataRequest(
   params: FormDataBody,
 ): Promise<FormDataResponse> {
   return httpClient<FormDataResponse>(
-    `/api/v1/form1/${appID}/home/form/${tableID}/update`,
+    `/api/v1/form/${appID}/home/form/${tableID}/update`,
     {
       ...params,
       query: {
@@ -176,7 +176,7 @@ export function findOneFormDataRequest(
   }
 
   return httpClient<FormDataResponse>(
-    `/api/v1/form1/${appID}/home/form/${tableID}/get`,
+    `/api/v1/form/${appID}/home/form/${tableID}/get`,
     {
       ref,
       query: {
@@ -205,7 +205,7 @@ export function delFormDataRequest(
   rowIDs: string[],
 ): Promise<Record<string, any>> {
   return httpClient<FormDataResponse>(
-    `/api/v1/form1/${appID}/home/form/${tableID}/delete`,
+    `/api/v1/form/${appID}/home/form/${tableID}/delete`,
     {
       query: {
         bool: {
