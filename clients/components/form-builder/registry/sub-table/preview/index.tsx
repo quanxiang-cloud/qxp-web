@@ -27,6 +27,7 @@ import CheckBoxGroup from '@c/form-builder/registry/checkbox-group/checkboxGroup
 import DatePicker from '@c/form-builder/registry/date-picker/date-picker';
 import Select from '@c/form-builder/registry/select/custom-select';
 import MultipleSelect from '@c/form-builder/registry/multiple-select/multiple-select';
+import Serial from '@c/form-builder/registry/serial-number/serial';
 
 import { getDefaultValue, schemaRulesTransform } from './utils';
 import SubTableRow from './row';
@@ -63,6 +64,7 @@ const components = {
   imageupload: ImageUpload,
   cascadeselector: CascadeSelector,
   associateddata: AssociatedData,
+  serial: Serial,
 };
 
 interface SubTableState {
