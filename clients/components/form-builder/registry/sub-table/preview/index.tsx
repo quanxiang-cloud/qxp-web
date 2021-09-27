@@ -86,9 +86,11 @@ function SubTable({
   const { isInCanvas } = useContext(CanvasContext);
   const isPortal = window.SIDE === 'portal';
   const portalReadOnlyClassName = cs({ 'pointer-events-none': isPortal && isInCanvas });
-  const { data } = useQuery('GET_SUB_TABLE_CONFIG_SCHEMA', () => getTableSchema(appID, tableID), {
-    enabled: !!(isFromForeign && tableID && appID),
-  });
+  const { data } = useQuery(
+    ['GET_SUB_TABLE_CONFIG_SCHEMA', appID, tableID],
+    () => getTableSchema(appID, tableID),
+    { enabled: !!(isFromForeign && tableID && appID) },
+  );
   const isInitialValueEmpty = value?.every((v: Record<string, unknown>) => isEmpty(v));
   schema = isFromForeign ? data?.schema : schema;
 

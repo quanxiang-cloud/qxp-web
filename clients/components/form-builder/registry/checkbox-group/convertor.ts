@@ -1,4 +1,6 @@
-import { convertEnumsToLabels, getSchemaPermissionFromSchemaConfig } from '@c/form-builder/utils';
+import {
+  convertEnumsToLabels, getSchemaPermissionFromSchemaConfig, getDisplayModifierFromSchema,
+} from '@c/form-builder/utils';
 
 export interface CheckboxGroupConfig {
   title: string;
@@ -49,17 +51,10 @@ export function toSchema(value: CheckboxGroupConfig): ISchema {
 }
 
 export function toConfig(schema: ISchema): CheckboxGroupConfig {
-  let displayModifier: FormBuilder.DisplayModifier = 'normal';
-  if (schema.readOnly) {
-    displayModifier = 'readonly';
-  } else if (!schema.display) {
-    displayModifier = 'hidden';
-  }
-
   return {
     title: schema.title as string,
     description: schema.description as string,
-    displayModifier: displayModifier,
+    displayModifier: getDisplayModifierFromSchema(schema),
     optionsLayout: schema['x-component-props']?.layout as any,
     sortable: !!schema['x-internal']?.sortable,
     required: !!schema.required,

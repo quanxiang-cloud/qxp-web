@@ -1,4 +1,4 @@
-import { getSchemaPermissionFromSchemaConfig } from '@c/form-builder/utils';
+import { getDisplayModifierFromSchema, getSchemaPermissionFromSchemaConfig } from '@c/form-builder/utils';
 
 export interface AssociatedRecordsConfig {
   title: string;
@@ -68,17 +68,10 @@ export function toSchema(value: AssociatedRecordsConfig): ISchema {
 }
 
 export function toConfig(schema: ISchema): AssociatedRecordsConfig {
-  let displayModifier: FormBuilder.DisplayModifier = 'normal';
-  if (schema.readOnly) {
-    displayModifier = 'readonly';
-  } else if (!schema.display) {
-    displayModifier = 'hidden';
-  }
-
   return {
     title: schema.title as string,
     description: schema.description as string,
-    displayModifier: displayModifier,
+    displayModifier: getDisplayModifierFromSchema(schema),
     linkedTable: {
       appID: schema['x-component-props']?.appID,
       tableID: schema['x-component-props']?.tableID,
