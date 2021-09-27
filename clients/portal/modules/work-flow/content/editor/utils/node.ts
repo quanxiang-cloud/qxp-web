@@ -88,21 +88,30 @@ export function getNodeInitialData(type: NodeType): BusinessData {
     },
     processBranchTarget: {},
     autocc: {
-      type: 'person',
-      recivers: [],
+      approvePersons: {
+        type: 'person',
+        users: [],
+        departments: [],
+      },
     },
     email: {
-      type: 'person',
+      approvePersons: {
+        type: 'person',
+        users: [],
+        departments: [],
+      },
       content: undefined,
       mes_attachment: undefined,
-      recivers: [],
       templateId: 'quanliang',
       title: '',
     },
     letter: {
-      type: 'person',
+      approvePersons: {
+        type: 'person',
+        users: [],
+        departments: [],
+      },
       content: undefined,
-      recivers: [],
       sort: undefined,
       title: '',
     },
