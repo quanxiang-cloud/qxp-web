@@ -36,18 +36,21 @@ class AppModelStore {
   @observable searchModelFieldInput = '';
 
   @computed get fields(): ModelField[] {
+    let fieldList = [];
     if (this.curDataModel?.source === 1) {
-      return schemaToFields(toJS(this.dataModelSchema.schema)) as ModelField[];
+      fieldList = schemaToFields(toJS(this.dataModelSchema.schema)) as ModelField[];
+    } else {
+      fieldList = Object.entries(this.dataModelSchema.schema.properties || {}).map(([key, fieldSchema]) => {
+        return {
+          id: key,
+          ...fieldSchema,
+        };
+      }).sort((a, b) => {
+        return (b['x-index'] || 0) - (a['x-index'] || 0);
+      });
     }
 
-    return Object.entries(this.dataModelSchema.schema.properties || {}).map(([key, fieldSchema]) => {
-      return {
-        id: key,
-        ...fieldSchema,
-      };
-    }).sort((a, b) => {
-      return (b['x-index'] || 0) - (a['x-index'] || 0);
-    }).filter(({ id, title }) => {
+    return fieldList.filter(({ id, title }) => {
       if (!this.searchModelFieldInput) {
         return true;
       }
