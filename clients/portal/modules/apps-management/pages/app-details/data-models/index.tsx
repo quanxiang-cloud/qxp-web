@@ -13,7 +13,11 @@ import './index.scss';
 
 function DataModels(): JSX.Element {
   const { appID } = useParams<AppParams>();
-  const { saveDataModel, editModalType, setEditModalType } = store;
+  const { saveDataModel, editModalType, setEditModalType, fetchDataModels } = store;
+
+  useEffect(() => {
+    fetchDataModels();
+  }, []);
 
   useEffect(() => {
     store.appID = appID;
