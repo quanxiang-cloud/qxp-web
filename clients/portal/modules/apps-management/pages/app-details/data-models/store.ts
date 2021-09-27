@@ -22,7 +22,7 @@ class AppModelStore {
   @observable dataModels: DataModel[] = [];
   @observable curModelTableID = '';
   @observable curDataModel: DataModel | null = null;
-  @observable dataModelsLoading = true;
+  @observable dataModelsLoading = false;
   @observable modelDetailsLoading = false;
   @observable dataModelTotal = 0;
   @observable dataModelSchema: DataModelSchema = INIT_MODEL_SCHEMA;
