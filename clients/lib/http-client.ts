@@ -137,13 +137,7 @@ export function editFormDataRequest(
     {
       ...params,
       query: {
-        bool: {
-          must: [
-            {
-              term: { _id: dataID },
-            },
-          ],
-        },
+        term: { _id: dataID },
       },
     },
   );
@@ -208,13 +202,7 @@ export function delFormDataRequest(
     `/api/v1/form/${appID}/home/form/${tableID}/delete`,
     {
       query: {
-        bool: {
-          must: [
-            {
-              terms: { _id: rowIDs },
-            },
-          ],
-        },
+        terms: { _id: rowIDs },
       },
     },
   );
