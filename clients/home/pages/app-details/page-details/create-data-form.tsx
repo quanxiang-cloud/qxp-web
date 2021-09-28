@@ -70,7 +70,7 @@ function CreateDataForm({ appID, pageID, rowID, onCancel, title }: Props): JSX.E
           buildFormDataReqParams(schema, 'create', currentValue),
         );
       }
-      toast.success('修改成功');
+      toast.success('保存成功');
       onCancel();
       setLoading(false);
     } catch (err) {
