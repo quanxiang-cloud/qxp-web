@@ -4,8 +4,6 @@
   box-sizing: border-box;
   width: 100%;
   background-color: white;
-
-  // create a new stacking context for preventing z-index out bound of sticky element
   opacity: 0.999;
 
   .adjust-handle {
@@ -51,7 +49,6 @@
     table {
       width: 100%;
       table-layout: fixed;
-      min-width: max-content;
       border-collapse: separate;
       text-align: left;
       color: var(--gray-900);

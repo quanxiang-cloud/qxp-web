@@ -47,7 +47,6 @@ export default function Table<T extends Record<string, any>>({
   style,
 }: Props<T>): JSX.Element {
   const _columns = useExtendColumns(columns, showCheckbox);
-  const tableRef = useRef<HTMLTableElement>(null);
   const widthMapRef = useRef<WidthMap>({});
   const [widthMap, setWidthMap] = useState<WidthMap>({});
   widthMapRef.current = widthMap;
@@ -116,7 +115,7 @@ export default function Table<T extends Record<string, any>>({
   return (
     <div className="qxp-table-wrapper">
       <div className={cs('qxp-table', className, `qxp-table-${size}`)} style={style}>
-        <table ref={tableRef} {...getTableProps()}>
+        <table {...getTableProps()}>
           <colgroup id="colgroup">
             {headerGroups[0].headers.map((header) => {
               return (
