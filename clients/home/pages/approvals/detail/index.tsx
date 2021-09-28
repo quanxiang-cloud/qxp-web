@@ -48,7 +48,7 @@ function ApprovalDetail(): JSX.Element {
     [processInstanceID, type],
     () => apis.getTaskFormById(processInstanceID, { type }).then((res) => {
       if (!currentTaskId) {
-        setCurrentTaskId(get(res, 'taskDetailModels[0].taskId', ''));
+        setCurrentTaskId(get(res, 'taskDetailModels[0].taskId', '').toString());
       }
 
       if (type === 'HANDLED_PAGE') {
