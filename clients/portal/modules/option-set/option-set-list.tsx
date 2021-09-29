@@ -124,7 +124,7 @@ function OptionSetList({ className }: Props): JSX.Element {
             );
           })}
           {!filteredList?.length && (
-            <div className="flex justify-center">暂无数据</div>
+            <div className="flex ml-24 mt-16 text-blueGray-400">暂无数据</div>
           )}
         </div>
       )}
