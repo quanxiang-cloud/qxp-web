@@ -35,7 +35,6 @@ function SourceElement(props: Props): JSX.Element {
   // quick insert field
   const quickInsert = (curFieldName: string): void => {
     const dropField = store.flattenFieldsMap[store.activeFieldId];
-    console.log('dropField', dropField);
     const index = (dropField?.['x-index'] || 0) + 1;
     const { parentFieldId, tabIndex } = dropField?.['x-internal'] || {};
 

@@ -7,6 +7,7 @@ import { get } from 'lodash';
 import { registry } from '@c/form-builder';
 import CanvasContext from '@c/form-builder/canvas-context';
 import DeleteButton from '@c/form-builder/delete-button';
+import MoveButton from '@c/form-builder/move-button';
 import CloneButton from '@c/form-builder/clone-button';
 
 import { StoreContext } from '../../context';
@@ -85,7 +86,7 @@ function FieldItem(field: ISchema): JSX.Element {
           />)}
 
         <DeleteButton filedId={fieldId} />
-        {/* <MoveButton /> */}
+        <MoveButton fieldId={fieldId} />
         {!get(field, 'x-internal.isLayoutComponent') &&
           <CloneButton fieldId={fieldId} />}
       </div>

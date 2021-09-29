@@ -18,11 +18,11 @@ export function draggingStyle({
     switch (position) {
       case 'up': hoverStyle = { boxShadow: '0 -3px 0 var(--blue-600)' };
         break;
-      case 'down': hoverStyle = { boxShadow: '0 3px 0 var(--red-600)' };
+      case 'down': hoverStyle = { boxShadow: '0 3px 0 var(--blue-600)' };
         break;
       case 'left': hoverStyle = { boxShadow: '-3px 0 0 var(--blue-600)' };
         break;
-      case 'right': hoverStyle = { boxShadow: '3px 0 0 var(--red-600)' };
+      case 'right': hoverStyle = { boxShadow: '3px 0 0 var(--blue-600)' };
         break;
     }
   }

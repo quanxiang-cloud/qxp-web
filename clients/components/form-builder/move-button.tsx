@@ -1,23 +1,27 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { observer } from 'mobx-react';
 
-import Icon from '@c/icon';
 import { StoreContext } from '@c/form-builder/context';
+import Icon from '@c/icon';
 
 import './index.scss';
+type ReactMouseEvent = React.MouseEvent<HTMLDivElement, MouseEvent>;
 
-type Props = {
-  fieldId: string;
-}
+function MoveButton({ fieldId }: { fieldId: string }): JSX.Element {
+  const store = useContext(StoreContext);
 
-function MoveButton({ fieldId }: Props): JSX.Element {
-  const store = React.useContext(StoreContext);
+  const setActive = (e: ReactMouseEvent, fieldId: string): void => {
+    e.stopPropagation();
+    e.preventDefault();
+    store.setActiveFieldKey(fieldId);
+  };
 
   return (
     <div
       className='field-icon move-field-icon'
-      onClick={() => store.clone(fieldId)}>
-      <Icon type="light" name="move" size={16} />
+      onMouseEnter={(e) => setActive(e, fieldId)}
+    >
+      <Icon name="drag" size={16} />
     </div >
   );
 }
