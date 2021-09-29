@@ -30,18 +30,11 @@ function OptionSetContent({ className }: Props): JSX.Element {
           />
         </span>
         <div className='datasetHeader-right flex-col'>
-          {store.activeOptionSet && (
-            <>
-              <div className='pt-5 ml-10 text-white font-semibold'>
-                {store.activeOptionSet?.name}
-              </div><div className='ml-10 text-white text-12 truncate'>
-                {store.activeOptionSet?.tag || (store.activeOptionSet && '-')}
-              </div>
-            </>
-          )}
-          {!store.activeOptionSet && !store.loadingOptionSet && !!store.search && (
-            <div className='flex items-center text-white text-null justify-center'>无数据</div>
-          )}
+          <div className='pt-5 ml-10 text-white font-semibold'>
+            {store.activeOptionSet?.name || '-'}
+          </div><div className='ml-10 text-white text-12 truncate'>
+            {store.activeOptionSet?.tag || (store.activeOptionSet && '-')}
+          </div>
         </div>
       </div>
       {store.loadingOptionSet && <Loading />}
