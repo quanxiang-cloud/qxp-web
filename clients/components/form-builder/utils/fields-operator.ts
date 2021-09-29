@@ -93,12 +93,12 @@ export function dynamicRecombinationSchema(
     )];
 
     for (let i = 0; i < _flattedSchemas.length; i += 1) {
-      const pId = _flattedSchemas[i]['x-internal']?.parentFieldId;
+      const pid = _flattedSchemas[i]['x-internal']?.parentFieldId;
 
       const currentField = _flattedSchemas[i];
 
-      if (pId && !allPids.includes(currentField?.['x-internal']?.fieldId)) {
-        const pField = _flattedSchemas.find((v: ISchema) => v?.['x-internal']?.fieldId === pId);
+      if (pid && !allPids.includes(currentField?.['x-internal']?.fieldId)) {
+        const pField = _flattedSchemas.find((v: ISchema) => v?.['x-internal']?.fieldId === pid);
 
         if (pField) {
           set(pField, `properties.${currentField?.['x-internal']?.fieldId}`, currentField);

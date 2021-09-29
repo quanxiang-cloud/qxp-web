@@ -31,15 +31,15 @@ function FieldRender({ schema }: Props): JSX.Element {
   // Render subtable & associatedrecords with entire row
   const handleEntireRowStyle = (field: ISchema): GridStyle => {
     let style = {};
-    const pId = get(field, 'x-internal.parentFieldId');
+    const pid = get(field, 'x-internal.parentFieldId');
     const fieldCompName = get(field, 'x-component') || '';
-    const copName = get(store.flattenFieldsMap[pId], 'componentName') || '';
+    const copName = get(store.flattenFieldsMap[pid], 'componentName') || '';
 
     const shouldFullRow = copName?.toLowerCase() === 'layoutgrid' &&
       FULL_ROW.includes(fieldCompName?.toLocaleLowerCase());
 
     if (shouldFullRow) {
-      const col = get(store.flattenFieldsMap[pId], 'configValue.columns');
+      const col = get(store.flattenFieldsMap[pid], 'configValue.columns');
       style = {
         gridColumnStart: 1,
         gridColumnEnd: col + 1,

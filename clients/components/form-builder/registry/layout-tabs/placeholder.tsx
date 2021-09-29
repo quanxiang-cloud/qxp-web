@@ -25,17 +25,17 @@ function Placeholder(props: ISchema): JSX.Element | null {
   const { properties } = props;
   const xComponentProps = props['x-component-props'] || {};
 
-  const pId = getFieldId(props);
+  const pid = getFieldId(props);
 
   const { tabs } = xComponentProps;
 
   useEffect(() => {
-    const curAct = store.tabsActiveList?.[pId] || tabs[0];
+    const curAct = store.tabsActiveList?.[pid] || tabs[0];
     setActiveKey(curAct);
   }, [store.schema, store.flattenFields, store.tabsActiveList]);
 
   useEffect(() => {
-    store.setTabsActiveList(pId, tabs[0]);
+    store.setTabsActiveList(pid, tabs[0]);
   }, []);
 
   React.useEffect(() => {
@@ -58,7 +58,7 @@ function Placeholder(props: ISchema): JSX.Element | null {
 
   const handleActiveKey = (activeKey: string): void => {
     setActiveKey(activeKey);
-    store.setTabsActiveList(pId, activeKey);
+    store.setTabsActiveList(pid, activeKey);
   };
 
   return (
@@ -67,7 +67,7 @@ function Placeholder(props: ISchema): JSX.Element | null {
         <TabPane tab={label} key={label}>
           <div className='min-h-32 border-b6 layout-grid'>
             {!innerFields.length ?
-              <EmptyLayout pId={pId} tabIndex={activeKey} /> :
+              <EmptyLayout pid={pid} tabIndex={activeKey} /> :
               <FieldRender schema={filterCurrentTabPropertyies(innerFields) as ISchema} />}
           </div>
         </TabPane>

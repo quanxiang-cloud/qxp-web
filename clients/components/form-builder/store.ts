@@ -19,6 +19,7 @@ import {
   filterLinkageTargetKeys,
   filterLinkagesOnDeleteField,
   generateRandomFormFieldID,
+  updateFieldIndex,
 } from './utils';
 
 type Props = {
@@ -164,12 +165,15 @@ export default class FormBuilderStore {
   }
 
   @action clone(fieldId: string): void {
-    const cloneField = cloneDeep(this.flattenFieldsMap[fieldId]);
-    const xIndex = cloneField?.['x-index'] || 0;
+    const cloneField = cloneDeep(this.flattenFields.find((v) => getFieldId(v) === fieldId));
 
-    set(cloneField, 'x-internal.fieldId', generateRandomFormFieldID());
-    set(cloneField, 'x-index', xIndex + 1);
-    this.flattenFields.splice(xIndex, 0, cloneField);
+    if (cloneField) {
+      const xIndex = cloneField?.['x-index'] || 0;
+      set(cloneField, 'x-internal.fieldId', generateRandomFormFieldID());
+      set(cloneField, 'x-index', xIndex + 1);
+      this.flattenFields.splice(xIndex, 0, cloneField);
+      this.flattenFields = updateFieldIndex(this.flattenFields);
+    }
   }
 
   @action insert({
@@ -181,8 +185,8 @@ export default class FormBuilderStore {
     const newField = getNewField({ fieldId, tabIndex, parentFieldId, appID: this.appID });
     set(newField, 'x-index', index);
     this.flattenFields.splice(index, 0, newField as any);
-
-    this.setActiveFieldKey(getFieldId(newField as any));
+    this.flattenFields = updateFieldIndex(this.flattenFields);
+    this.setActiveFieldKey(getFieldId(newField as ISchema));
   }
 
   @action update({
@@ -192,17 +196,24 @@ export default class FormBuilderStore {
     index,
   }: AddOrUpdateField): void {
     const delimiterIndex = index;
-    const currentField = this.flattenFields.find((v: any) => getFieldId(v) === fieldId);
-    const currentIndex = this.flattenFields.findIndex((v: any) => getFieldId(v) === fieldId);
+
+    const currentField = this.flattenFields.find((v: FormItem) => getFieldId(v) === fieldId);
+    const currentIndex = this.flattenFields.findIndex((v: FormItem) => getFieldId(v) === fieldId);
 
     if (currentField) {
       set(currentField, 'x-internal.parentFieldId', parentFieldId);
       set(currentField, 'x-internal.tabIndex', tabIndex);
+      set(currentField, 'x-index', index);
       this.flattenFields.splice(delimiterIndex, 0, currentField);
     }
 
-    if (delimiterIndex < currentIndex) this.flattenFields.splice(currentIndex + 1, 1);
-    if (delimiterIndex >= currentIndex) this.flattenFields.splice(currentIndex, 1);
+    if (delimiterIndex < currentIndex) {
+      this.flattenFields.splice(currentIndex + 1, 1);
+    }
+    if (delimiterIndex >= currentIndex) {
+      this.flattenFields.splice(currentIndex, 1);
+    }
+    this.flattenFields = updateFieldIndex(this.flattenFields);
   }
 
   @action validate(fields: FormItem[] = this.flattenFields): boolean {
@@ -281,7 +292,7 @@ export default class FormBuilderStore {
   @action
   deleteField(fieldId: string): void {
     this.hasEdit = true;
-    const pId = this.flattenFieldsMap[fieldId]?.['x-internal']?.parentFieldId;
+    const pid = this.flattenFieldsMap[fieldId]?.['x-internal']?.parentFieldId;
 
     if (shouldFilterLinkages(fieldId, this.visibleHiddenLinkages)) {
       const deleteConfirmModal = Modal.open({
@@ -297,7 +308,7 @@ export default class FormBuilderStore {
 
           this.flattenFields = this.flattenFields.filter((field) => getFieldId(field) !== fieldId);
 
-          if (pId) this.removeEmptyLayout(pId);
+          if (pid) this.removeEmptyLayout(pid);
           deleteConfirmModal.close();
         },
       });
@@ -307,7 +318,7 @@ export default class FormBuilderStore {
 
     this.flattenFields = this.flattenFields.filter((field) => getFieldId(field) !== fieldId);
 
-    if (pId) this.removeEmptyLayout(pId);
+    if (pid) this.removeEmptyLayout(pid);
   }
 
   // set field config by right panel

@@ -352,3 +352,11 @@ export function sortProperties(properties: ISchema[] = []): Record<string, ISche
     return acc;
   }, {} as Record<string, ISchema>);
 }
+
+export function updateFieldIndex(fields: FormItem[]): FormItem[] {
+  return [...fields].map((item, index) => {
+    item['x-index'] = index;
+
+    return item;
+  });
+}

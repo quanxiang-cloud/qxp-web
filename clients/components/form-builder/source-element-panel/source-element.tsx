@@ -6,6 +6,7 @@ import cs from 'classnames';
 
 import Icon from '@c/icon';
 import { StoreContext } from '@c/form-builder/context';
+import { getFieldId } from '../utils/fields-operator';
 
 export type DragEle = { dataId: string; index: number };
 
@@ -34,7 +35,9 @@ function SourceElement(props: Props): JSX.Element {
 
   // quick insert field
   const quickInsert = (curFieldName: string): void => {
-    const dropField = store.flattenFieldsMap[store.activeFieldId];
+    const dropField = [...store.flattenFields].find(
+      (v) => getFieldId(v) === store.activeFieldId);
+
     const index = (dropField?.['x-index'] || 0) + 1;
     const { parentFieldId, tabIndex } = dropField?.['x-internal'] || {};
 
@@ -55,7 +58,7 @@ function SourceElement(props: Props): JSX.Element {
       className={
         cs('source-element-section--element',
           useCss({
-            cursor: 'pointer',
+            cursor: 'move',
             '&:hover': {
               boxShadow: '0 0 10px var(--gray-200)',
             },

@@ -17,7 +17,7 @@ function Placeholder(props: ISchema): JSX.Element {
   const store = useContext(StoreContext);
 
   const { title = '', properties } = props;
-  const pId = getFieldId(props);
+  const pid = getFieldId(props);
 
   React.useEffect(() => {
     setInnerFields(values(properties));
@@ -27,10 +27,10 @@ function Placeholder(props: ISchema): JSX.Element {
     <Card title={(
       <div>{title}</div>
     )}>
-      <DragDrop id={pId} pId={pId} key={pId}>
+      <DragDrop id={pid} pid={pid} key={pid}>
         <>
           {!innerFields.length ?
-            <EmptyLayout pId={pId} /> :
+            <EmptyLayout pid={pid} /> :
             <FieldRender schema={{ properties }} />
           }
         </>

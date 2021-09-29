@@ -7,10 +7,10 @@ import DragDrop from '@c/form-builder/components/drag-drop';
 import './index.scss';
 
 export function EmptyLayout({
-  pId,
+  pid,
   ...rest
 }: {
-  pId: string;
+  pid: string;
   cols?: number;
 } | Record<string, any>): JSX.Element {
   const { cols = 1 } = rest;
@@ -23,8 +23,8 @@ export function EmptyLayout({
 
   return (
     <DragDrop
-      id={pId}
-      pId={pId}
+      id={pid}
+      pid={pid}
       {...rest}
     >
       <div className={cls} />

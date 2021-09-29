@@ -11,26 +11,24 @@ import { draggingStyle } from './utils';
 
 type Props = {
   id: string;
-  schema?: ISchema & { id: string };
-  children?: React.ReactElement;
-  pId?: string;
+  schema?: SchemaWithId;
+  children?: React.ReactNode;
+  pid?: string;
   tabIndex?: string;
   [key: string]: any;
 }
-
-type Position = 'up' | 'down' | 'left' | 'right';
 
 function DragDrop(props: Props): JSX.Element {
   const {
     id: dropId = 'root',
     children = null,
-    pId,
+    pid,
     tabIndex,
   } = props;
 
   const store = useContext(StoreContext);
   const boxRef = useRef<HTMLDivElement>(null);
-  const [position, setPosition] = useState<Position>('up');
+  const [position, setPosition] = useState<DragPosition>('up');
 
   const [{ isDragging }, drag, dragPreview] = useDrag(() => ({
     type: 'CanvasDragEle',
@@ -54,16 +52,20 @@ function DragDrop(props: Props): JSX.Element {
       const { sourceId, dragId, from } = item;
       if (dragId === dropId) return;
 
-      const draggingId = sourceId ? sourceId : dragId;
+      const draggingId = sourceId || dragId;
       let index = store.flattenFields.findIndex((v) => getFieldId(v) === dropId);
 
-      if (['down', 'right'].includes(position)) index = index + 1;
-      if (dropId === 'root') index = store.flattenFields.length || 0;
+      if (['down', 'right'].includes(position)) {
+        index = index + 1;
+      }
+      if (dropId === 'root') {
+        index = store.flattenFields.length || 0;
+      }
 
       const changedField: AddOrUpdateField = {
         fieldId: draggingId,
         index: Math.max(0, index),
-        parentFieldId: pId,
+        parentFieldId: pid,
         tabIndex,
       };
 
@@ -83,7 +85,8 @@ function DragDrop(props: Props): JSX.Element {
 
       if (didHover) {
         // Get the center height of the drop object
-        const { top: hoverDOMTop,
+        const {
+          top: hoverDOMTop,
           bottom: hoverDOMBottom,
           left: hoverDOMLeft,
           right: hoverDOMRight,
@@ -97,9 +100,9 @@ function DragDrop(props: Props): JSX.Element {
         const hoverClientY = dragOffsetY - hoverDOMTop;
         const hoverClientX = dragOffsetX - hoverDOMLeft;
 
-        let pos: Position = hoverClientY <= hoverMiddleY ? 'up' : 'down';
-        if (pId) {
-          const parentComp = store.flattenFieldsMap[pId];
+        let pos: DragPosition = hoverClientY <= hoverMiddleY ? 'up' : 'down';
+        if (pid) {
+          const parentComp = store.flattenFieldsMap[pid];
           const parentCompName = parentComp?.componentName?.toLocaleLowerCase();
           if (parentCompName === 'layoutgrid') {
             pos = hoverClientX <= hoverMiddleX ? 'left' : 'right';
@@ -126,7 +129,6 @@ function DragDrop(props: Props): JSX.Element {
   return (
     <div
       key={dropId}
-      data-id={dropId}
       ref={boxRef}
       className={isDragging ? hiddenChildrenDOM : ''}
       style={draggingStyle(hoverInducement)}

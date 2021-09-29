@@ -265,6 +265,9 @@
 .move-field-icon {
   left: 0;
   top: 0;
+  &:hover {
+    cursor: move;
+  }
 }
 
 .field-item:hover {

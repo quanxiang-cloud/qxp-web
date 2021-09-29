@@ -29,6 +29,10 @@ type ISchema = import('@formily/react-schema-renderer').ISchema & {
   };
 };
 
+type SchemaWithId = ISchema & { id: string }
+
+type DragPosition = 'up' | 'down' | 'left' | 'right';
+
 type FilterConfig = {
   condition: Condition[];
   tag: 'or' | 'and';

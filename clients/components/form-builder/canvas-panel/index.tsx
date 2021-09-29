@@ -8,13 +8,13 @@ import FieldRender from '../components/field-render';
 import { StoreContext } from '../context';
 import CanvasContext from '../canvas-context';
 
-import useFields from './use-fields';
+import useHasFields from './use-fields';
 
 setValidationLanguage('zh');
 
 function Canvas(): JSX.Element {
   const store = useContext(StoreContext);
-  const hasFields = useFields(store?.schema);
+  const hasFields = useHasFields(store?.schema);
 
   if (hasFields) {
     return (

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { observer } from 'mobx-react';
 
 import Icon from '@c/icon';
@@ -11,7 +11,7 @@ type Props = {
 }
 
 function CloneButton({ fieldId }: Props): JSX.Element {
-  const store = React.useContext(StoreContext);
+  const store = useContext(StoreContext);
 
   return (
     <div

@@ -20,7 +20,7 @@ type ReactMouseEvent = React.MouseEvent<HTMLDivElement, MouseEvent>;
 
 type DragDropProps = {
   id: string;
-  pId?: string;
+  pid?: string;
   tabIndex?: string;
 }
 
@@ -33,7 +33,7 @@ function FieldItem(field: ISchema): JSX.Element {
     tabIndex,
     isLayoutComponent = false,
     fieldId = '',
-    parentFieldId: pId,
+    parentFieldId: pid,
   } = field['x-internal'] || {};
   const comp_name = field?.['x-component'] || 'input';
   const Comp = registry[componentMode][comp_name.toLocaleLowerCase()];
@@ -56,12 +56,13 @@ function FieldItem(field: ISchema): JSX.Element {
   const setActiveFieldId = (e: ReactMouseEvent, fieldId: string): void => {
     e.stopPropagation();
     e.preventDefault();
+
     store.setActiveFieldKey(fieldId);
   };
 
   const dragDropProps: DragDropProps = {
     id: fieldId,
-    pId,
+    pid,
     tabIndex,
   };
 
@@ -76,7 +77,7 @@ function FieldItem(field: ISchema): JSX.Element {
         )}
         onClick={(e) => setActiveFieldId(e, fieldId)}
       >
-        {/* <span style={{ color: 'red' }}>{fieldId}</span> */}
+        {/* <span style={{ color: 'red' }}>{fieldId}+{field['x-index']}</span> */}
         {isLayoutComponent
           ? React.createElement(Comp, { ...field })
           : (<FieldFragment

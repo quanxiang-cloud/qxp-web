@@ -1,10 +1,7 @@
 import { useMemo } from 'react';
-import { values } from 'lodash';
 
-export default function useFields(schema: ISchema): boolean {
+export default function useHasFields(schema: ISchema): boolean {
   return useMemo(() => {
-    const schemaProperties = values(schema?.properties);
-
-    return schemaProperties?.length > 0;
+    return Object.keys(schema?.properties || {}).length > 0;
   }, [schema]);
 }
