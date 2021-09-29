@@ -13,7 +13,11 @@ function ModelDescHeader(): JSX.Element {
       <Icon name="base" type="light" size={33} />
       <div className="flex-1 desc">
         <span className="font-semibold">{curDataModel?.title}</span>
-        <span className="truncate">{curDataModel?.description || '-' }</span>
+        <span className="truncate">
+          {curDataModel?.description || (
+            curDataModel?.source === 1 ? `此数据模型根据表单 ${curDataModel.title} 自动生成` : '-'
+          )}
+        </span>
       </div>
     </div>
   );

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Select } from 'antd';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 
-import { getDatasetNames } from '@portal/modules/system-mgmt/dataset/api';
+import { getOptionSetNames } from '@portal/modules/option-set/api';
 
 const { Option } = Select;
 
@@ -10,7 +10,7 @@ function DatasetConfig(fieldProps: ISchemaFieldComponentProps): JSX.Element {
   const [selectOptions, setSelectOptions] = useState<LabelValue[]>([]);
 
   useEffect(() => {
-    getDatasetNames({ type: 1 }).then(({ list = [] }) => {
+    getOptionSetNames({ type: 1 }).then(({ list = [] }) => {
       const newOptions = list.map(({ id, name }) => ({
         label: name,
         value: id,
