@@ -6,20 +6,23 @@ import ItemWithTitleDesc from '@c/item-with-title-desc';
 import AppIcon from '@c/app-icon';
 
 import AppList from './pages/entry/app-list';
+import OptionSet from '../option-set';
 
 const MENU = [
   {
-    id: 'AppList',
+    id: 'my-apps',
     icon: 'dashboard_customize',
     name: '我的应用',
-    url: '/apps',
+    url: '/apps/my-apps',
     authority: 'application/read',
   },
-  // {
-  //   id: 'PlatformSetting',
-  //   icon: 'theme',
-  //   name: '平台设置',
-  // },
+  {
+    id: 'option-set',
+    icon: 'dataset',
+    name: '选项集',
+    url: '/apps/option-set',
+    authority: 'dataset/read',
+  },
 ];
 
 function AppManagerEntry(): JSX.Element {
@@ -41,10 +44,13 @@ function AppManagerEntry(): JSX.Element {
           </div>
         )}
         menuData={MENU}
+        defaultActiveLink={{ basePath: '/apps', menuId: 'my-apps' }}
       />
       <div className="app-right-box bg-opacity-50 bg-white">
         <Switch>
-          <Route path="/apps" component={AppList} />
+          <Route exact path="/apps" component={AppList} />
+          <Route path="/apps/my-apps" component={AppList} />
+          <Route path="/apps/option-set" component={OptionSet} />
         </Switch>
       </div>
     </div>

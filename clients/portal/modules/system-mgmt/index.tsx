@@ -6,7 +6,6 @@ import ErrorTips from '@c/error-tips';
 const Message = lazy(() => import('./message'));
 const SendMessage = lazy(() => import('./send-message'));
 const MessageDetails = lazy(() => import('./message-details'));
-const Dataset = lazy(() => import('./dataset'));
 const Log = lazy(() => import('./audit-log'));
 const UnusualTask = lazy(() => import('./unusual-task'));
 const UnusualTaskDetail = lazy(() => import('./unusual-task/detail'));
@@ -30,7 +29,6 @@ export default function Index(): JSX.Element {
       <Route exact path={`${path}/log`} component={Log} />
       <Route path={`${path}/message/send`} component={SendMessage} />
       <Route path={`${path}/message/details/:id`} component={MessageDetails} />
-      <Route path={`${path}/dataset/:dataId?`} component={Dataset} />
       <Route
         path={`${path}/unusual/detail/:id/:status/:processInstanceId/:taskId/:flowInstanceId`}
         component={UnusualTaskDetail} />
