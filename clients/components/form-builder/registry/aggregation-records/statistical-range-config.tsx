@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState, useMemo } from 'react';
 
-import FilterConfig from '@c/form-builder/form-settings-panel/form-field-config/filter-config';
+import FilterConfig from '@c/form-builder/registry/associated-data/filter-config';
 import schemaToFields, { schemaToMap } from '@lib/schema-convert';
 import logger from '@lib/logger';
 import { toEs, toFilterConfig, ESParameter } from '@c/data-filter/utils';

@@ -124,15 +124,18 @@ declare global {
   type Rights = {
     id: string;
     types?: number;
+    appID?: string;
     add?: boolean;
     formID?: string;
     sequence?: number;
+    createdBy?: string;
     scopes?: DeptAndUser[];
   } & RightsCreate
 
   type RightsCreate = {
     name?: string;
     description?: string;
+    types?: number;
   }
 
   type DeptAndUser = {
@@ -140,5 +143,4 @@ declare global {
     id: string;
     name: string;
   }
-
 }
