@@ -4,7 +4,7 @@ import { Cascader, CascaderProps } from 'antd';
 import { CascaderOptionType, CascaderValueType } from 'antd/lib/cascader';
 import { omit, last } from 'lodash';
 
-import { getDatasetById } from '@portal/modules/system-mgmt/dataset/api';
+import { getOptionSetById } from '@portal/modules/option-set/api';
 
 export type DefaultValueFrom = 'customized' | 'predefined-dataset';
 
@@ -35,7 +35,7 @@ function useFetchOptions({
       return options;
     }
 
-    return getDatasetById(predefinedDataset).then(({ content }: Dataset) => {
+    return getOptionSetById(predefinedDataset).then(({ content }: OptionSet) => {
       let parsedCont;
       try {
         parsedCont = JSON.parse(content || '[]');
