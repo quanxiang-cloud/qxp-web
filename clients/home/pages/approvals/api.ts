@@ -1,5 +1,5 @@
 // flow instance apis
-import httpClient from '@lib/http-client';
+import httpClient, { FormDataRequestUpdateParamsRef } from '@lib/http-client';
 
 // 分页查询我的待处理任务
 export const getWaitReviewList = async (params: Record<string, any>)
@@ -105,12 +105,12 @@ export const signTask = async (processInstanceId: string, taskID: string, params
 
 // 获取任务的表单
 export const getTaskFormById = async (processInstanceID: string,
-  params: {type: string, taskId?: string}): Promise<TaskForm> => {
+  params: { type: string, taskId?: string }): Promise<TaskForm> => {
   return await httpClient(`/api/v1/flow/instance/getFlowInstanceForm/${processInstanceID}`, params);
 };
 
-export const getFlowFormData = async (processInstanceID: string, taskID:string): Promise<TaskForm> => {
-  return await httpClient(`/api/v1/flow/instance/getFormData/${processInstanceID}/${taskID}`);
+export const getFlowFormData = async (processInstanceID: string, taskID: string, ref?: FormDataRequestUpdateParamsRef): Promise<TaskForm> => {
+  return await httpClient(`/api/v1/flow/instance/getFormData/${processInstanceID}/${taskID}`, { ref });
 };
 
 // 流程任务审核
@@ -155,7 +155,7 @@ export const getStepbackActivityList = async (processInstanceId: string): Promis
 };
 
 // 处理阅示
-export const handleReadTask = async (processInstanceId: string, taskId: string, remark?: string)=> {
+export const handleReadTask = async (processInstanceId: string, taskId: string, remark?: string) => {
   return await httpClient(`/api/v1/flow/instance/handleRead/${processInstanceId}/${taskId}`, remark);
 };
 
@@ -165,7 +165,7 @@ export const getProcessHistories = async (processInstanceID: string): Promise<an
 };
 
 // 获取评论列表
-export const getComments = async (processInstanceId: string, taskId: string): Promise<any>=> {
+export const getComments = async (processInstanceId: string, taskId: string): Promise<any> => {
   return await httpClient(`/api/v1/flow/comment/getComments/${processInstanceId}/${taskId}`);
 };
 

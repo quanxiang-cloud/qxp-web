@@ -143,16 +143,7 @@ export function editFormDataRequest(
   );
 }
 
-export function findOneFormDataRequest(
-  appID: string,
-  tableID: string,
-  rowID: string,
-  schema: ISchema,
-): Promise<Record<string, any>> {
-  if (!rowID) {
-    return Promise.resolve({});
-  }
-
+export function buildQueryRef(schema: ISchema) :FormDataRequestUpdateParamsRef {
   const subTableFields = schemaToFields(schema, (schemaField) => {
     return schemaField['x-component'] === 'SubTable';
   });
@@ -169,10 +160,23 @@ export function findOneFormDataRequest(
     });
   }
 
+  return ref;
+}
+
+export function findOneFormDataRequest(
+  appID: string,
+  tableID: string,
+  rowID: string,
+  schema: ISchema,
+): Promise<Record<string, any>> {
+  if (!rowID) {
+    return Promise.resolve({});
+  }
+
   return httpClient<FormDataResponse>(
     `/api/v1/form/${appID}/home/form/${tableID}/get`,
     {
-      ref,
+      ref: buildQueryRef(schema),
       query: {
         bool: {
           must: [

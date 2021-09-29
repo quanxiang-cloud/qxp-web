@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useParams, useHistory } from 'react-router';
 import { useQuery } from 'react-query';
 import { observer } from 'mobx-react';
@@ -13,13 +13,14 @@ import Loading from '@c/loading';
 import ErrorTips from '@c/error-tips';
 import toast from '@lib/toast';
 import { FormRenderer } from '@c/form-builder';
+import { buildQueryRef } from '@lib/http-client';
 
 import Panel from './panel';
 import Toolbar from './toolbar';
 import Dynamic from './dynamic';
 import Discuss from './discuss';
 import ActionModals from './action-modals';
-import * as apis from '../api';
+import { getFlowFormData, getTaskFormById } from '../api';
 import store from './store';
 
 import './index.scss';
@@ -46,7 +47,7 @@ function ApprovalDetail(): JSX.Element {
     isLoading, data, isError, error,
   } = useQuery<any, Error>(
     [processInstanceID, type],
-    () => apis.getTaskFormById(processInstanceID, { type }).then((res) => {
+    () => getTaskFormById(processInstanceID, { type }).then((res) => {
       if (!currentTaskId) {
         setCurrentTaskId(get(res, 'taskDetailModels[0].taskId', '').toString());
       }
@@ -69,16 +70,27 @@ function ApprovalDetail(): JSX.Element {
     }),
   );
 
+  const task = useMemo(() => {
+    const taskDetailData = get(data, 'taskDetailModels', []).find(
+      (taskItem: Record<string, any>) => taskItem?.formData !== null,
+    );
+    return taskDetailData ? taskDetailData : get(data, 'taskDetailModels[0]', {});
+  }, [data]);
+
   const {
     data: formData,
   } = useQuery<any, Error>(
-    [processInstanceID, currentTaskId],
+    [processInstanceID, currentTaskId, task?.formSchema],
     () => {
-      if (!currentTaskId) {
+      if (!currentTaskId || !task?.formSchema) {
         return Promise.resolve({});
       }
 
-      return apis.getFlowFormData(processInstanceID, currentTaskId).catch((err) => {
+      return getFlowFormData(
+        processInstanceID,
+        currentTaskId,
+        buildQueryRef(task.formSchema),
+      ).catch((err) => {
         toast.error(err);
       });
     },
@@ -87,13 +99,6 @@ function ApprovalDetail(): JSX.Element {
   useEffect(() => {
     setFormValues(formData);
   }, [formData]);
-
-  const getTask = (): Record<string, any> => {
-    const taskDetailData = get(data, 'taskDetailModels', []).find(
-      (taskItem: Record<string, any>) => taskItem?.formData !== null,
-    );
-    return taskDetailData ? taskDetailData : get(data, 'taskDetailModels[0]', {});
-  };
 
   useEffect(() => {
     document.title = '流程详情';
@@ -120,8 +125,6 @@ function ApprovalDetail(): JSX.Element {
     toast.error(error?.message);
     return <ErrorTips />;
   }
-
-  const task = getTask();
   const appID = get(data, 'appId');
   const tableID = get(data, 'tableId');
 
