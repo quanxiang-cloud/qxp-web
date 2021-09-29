@@ -1,4 +1,4 @@
-import { omit, isEmpty, isEqual } from 'lodash';
+import { omit, isEmpty } from 'lodash';
 
 import schemaToFields, { schemaToMap } from '@lib/schema-convert';
 import {
@@ -13,7 +13,7 @@ type Values = Record<string, any>;
 function parseDeleted(
   oldValue: Values[], newValue: Values[],
 ): string[] {
-  return oldValue.reduce<string[]>((acc, value) => {
+  return (oldValue || []).reduce<string[]>((acc, value) => {
     if (value?._id && !newValue.find(({ _id: id }) => id === value._id)) {
       return [...acc, value._id];
     }
@@ -35,15 +35,7 @@ export function formDataDiff(
     }
 
     const oldValue = defaultValues[fieldKey];
-    if (!schemaMap[fieldKey]) {
-      if (!isEqual(oldValue, cValue)) {
-        resultValue[fieldKey] = cValue;
-      }
-
-      return;
-    }
-
-    switch (schemaMap[fieldKey]['x-component']) {
+    switch (schemaMap[fieldKey]?.['x-component']) {
     case 'OrganizationPicker':
     case 'UserPicker':
     case 'ImageUpload':
@@ -67,7 +59,7 @@ export function formDataDiff(
           const _newValue = formDataDiff(
             _value,
             _oldValue,
-              schemaMap[fieldKey].items as ISchema,
+            (schemaMap[fieldKey].items || window[`schema-${fieldKey}`]) as ISchema,
           );
           return isEmpty(_newValue) ? acc : [...acc, { ..._newValue, _id: _value._id }];
         }
@@ -107,13 +99,18 @@ export function formDataDiff(
   return resultValue;
 }
 
-function buildSubTableParams(type: string, valueList = []): SubTableUpdateData {
+function buildSubTableParams(
+  type: string,
+  valueList = [],
+  ref?: FormDataRequestUpdateParamsRef,
+): SubTableUpdateData {
   switch (type) {
   case 'create':
     return {
       new: valueList.map((value: Record<string, any>) => {
         return {
           entity: value,
+          ref,
         };
       }),
     };
@@ -141,37 +138,62 @@ function buildSubTableParams(type: string, valueList = []): SubTableUpdateData {
   }
 }
 
+function buildRef(
+  schema: ISchema,
+  type: string,
+  values?: Record<string, any>,
+): [FormDataRequestUpdateParamsRef, string[]] {
+  const ref: FormDataRequestUpdateParamsRef = {};
+  const refFields = schemaToFields(schema, (schemaField) => {
+    return ['SubTable', 'Serial'].includes(schemaField['x-component'] || '');
+  });
+
+  if (refFields.length) {
+    refFields.forEach(async (field) => {
+      switch (field['x-component']) {
+      case 'SubTable': {
+        const { subordination, appID, tableID } = field?.['x-component-props'] || {};
+        let _ref = {};
+        if (subordination === 'foreign_table') {
+          const [subRef] = buildRef(window[`schema-${field.id}`] as ISchema, type);
+          _ref = subRef;
+        }
+
+        ref[field.id] = {
+          type: subordination || 'sub_table',
+          appID,
+          tableID,
+          ...buildSubTableParams(type, values?.[field.id], _ref),
+        };
+      }
+        break;
+      case 'Serial':
+        ref[field.id] = {
+          type: 'serial',
+        };
+        break;
+      }
+    });
+  }
+
+  return [ref, refFields.map(({ id }) => id)];
+}
+
 export function buildFormDataReqParams(
   schema: ISchema,
   type: string,
   values?: Record<string, any>,
 ): FormDataBody {
-  const subTableFields = schemaToFields(schema, (schemaField) => {
-    return schemaField['x-component'] === 'SubTable';
-  });
+  const [ref, omitFields] = buildRef(schema, type, values);
 
-  const ref: FormDataRequestUpdateParamsRef = {};
-  if (subTableFields.length) {
-    subTableFields.forEach((field) => {
-      const { subordination, appID, tableID } = field?.['x-component-props'] || {};
-
-      ref[field.id] = {
-        type: subordination || 'sub_table',
-        appID,
-        tableID,
-        ...buildSubTableParams(type, values?.[field.id]),
-      };
-    });
-  }
-
-  const formDataResBody: FormDataBody = { };
+  const formDataResBody: FormDataBody = {};
 
   if (!isEmpty(ref)) {
     formDataResBody.ref = ref;
   }
 
   if (values) {
-    formDataResBody.entity = omit(values, subTableFields.map(({ id }) => id));
+    formDataResBody.entity = omit(values, omitFields);
   }
 
   return formDataResBody;
