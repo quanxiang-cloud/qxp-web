@@ -3,13 +3,13 @@ import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 
 import Select, { SelectOption } from '@c/select';
 
-import { getDatasetNames } from '@portal/modules/system-mgmt/dataset/api';
+import { getOptionSetNames } from '@portal/modules/option-set/api';
 
 function DatasetSelector({ mutators, value }: ISchemaFieldComponentProps): JSX.Element {
   const [options, setOptions] = React.useState<SelectOption<any>[]>([]);
 
   useEffect(() => {
-    getDatasetNames({ type: 2 }).then(({ list }) => {
+    getOptionSetNames({ type: 2 }).then(({ list }) => {
       setOptions(list.map(({ id, name }) => ({
         label: name,
         value: id,

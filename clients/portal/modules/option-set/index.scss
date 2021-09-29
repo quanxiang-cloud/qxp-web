@@ -1,0 +1,150 @@
+.-ml-184 {
+  margin-left: -184px;
+}
+
+.h-37 {
+  height: 37px;
+}
+
+.h-38 {
+  height: 38px;
+}
+
+.text-null {
+  font-size: 30px;
+}
+
+.form-add-dataset {
+  > .field .label {
+    width: 25% !important;
+  }
+}
+
+.dataset {
+  background-color: #FFFFFF;
+
+  button.btn--add {
+    height: 28px;
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  &-names {
+    border-right: 1px solid var(--gray-200);
+
+    &--toolbar {
+      position: static;
+    }
+
+    .name-item {
+      &.active {
+        background-color: var(--gray-100);
+      }
+
+      &:hover {
+        .action-more {
+          visibility: visible;
+        }
+      }
+      .action-more {
+        visibility: hidden;
+      }
+    }
+  }
+
+  &-content {
+    &--title {
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    &--datas {
+      .data-tree-items {
+        .tree-row-item {
+          input {
+            min-width: 80px;
+          }
+        }
+      }
+
+    }
+  }
+}
+
+.action-shows {
+  .action-show {
+    visibility: hidden;
+  }
+}
+
+.action-shows:hover {
+  .action-show {
+    visibility: visible;
+  }
+}
+
+.action-to-shows {
+  .action-to-show {
+    visibility: visible;
+  }
+}
+
+.action-to-shows:hover {
+  .action-to-show {
+    visibility: hidden;
+  }
+}
+
+.datasetHeader {
+  position: relative;
+  background: #F59E0B;
+  background-position: top right;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-image: url(/dist/images/datasetHeaderBg.png);
+  box-shadow: 0px 8px 24px 8px rgba(245, 158, 11, 0.15);
+
+  &-right {
+    width: calc(100% - 49px);
+  }
+}
+
+.text-blueGray-400 {
+  color: #475569;
+}
+
+.dataset-alert {
+  border-radius: 4px 12px 12px 12px;
+}
+
+.tree-content {
+  border-radius: 8px 8px 0 0;
+  border-style: solid;
+  box-sizing: border-box;
+  border-color: var(--gray-200);
+  border-width: 1px 1px 0 1px;
+}
+
+.help {
+  margin-left: 25% !important;
+}
+
+input[name='search'] {
+  width: 80px !important;
+}
+
+#option_set_name, #option_set_tag, .input-default, .textarea-default {
+  caret-color: var(--blue-600);
+}
+
+#option_set_name:focus, #option_set_tag:focus {
+  border-color: var(--blue-600);
+}
+
+.is-danger {
+  border-color: #ca2621 !important;
+}
+
+.input-default:focus, .textarea-default:focus {
+  border-color: var(--blue-600) !important;
+}

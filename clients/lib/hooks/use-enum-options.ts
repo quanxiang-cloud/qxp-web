@@ -3,7 +3,7 @@ import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 import { uniq } from 'lodash';
 
 import { parseJSON } from '@lib/utils';
-import { getDatasetById } from '@portal/modules/system-mgmt/dataset/api';
+import { getOptionSetById } from '@portal/modules/option-set/api';
 import { convertEnumsToLabels } from '@c/form-builder/utils';
 
 export default function useEnumOptions(fieldProps: ISchemaFieldComponentProps): string[] {
@@ -20,7 +20,7 @@ export default function useEnumOptions(fieldProps: ISchemaFieldComponentProps): 
     }
 
     if (datasetId && defaultValueFrom === 'dataset') {
-      getDatasetById(datasetId).then(({ content = '' }) => {
+      getOptionSetById(datasetId).then(({ content = '' }) => {
         const labels = parseJSON<LabelValue[]>(content, []).map(({ label }) => label);
         setOptions(uniq(labels));
       });
