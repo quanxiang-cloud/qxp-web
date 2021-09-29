@@ -153,7 +153,7 @@ export const last = <T>(arg: T[]): T => {
 
 export function isPassword(pwd: string): boolean {
   // eslint-disable-next-line
-  return /^(?=.*\d)(?=.*[a-zA-Z])(?=.*[~!@#$%^&*.\(\)\-\+\[\]\|\"\'\_])[\da-zA-Z~!@#$%^&*.\(\)\-\+\[\]\|\"\'\_]{8,}$/.test(pwd);
+  return /^(?=.*\d)(?=.*[a-zA-Z])(?=.*[~!@#$%^&?*.`\(\)\-\+\[\]\|\"\'\_\,\、])[\da-zA-Z~!@#$%^&?*.`\(\)\-\+\[\]\|\"\'\_\,\、]{8,}$/.test(pwd);
 }
 
 export function copyToClipboard(str: string, msg: string): void {
