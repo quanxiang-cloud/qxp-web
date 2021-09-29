@@ -1,4 +1,4 @@
-import { getSchemaPermissionFromSchemaConfig } from '@c/form-builder/utils';
+import { getDisplayModifierFromSchema, getSchemaPermissionFromSchemaConfig } from '@c/form-builder/utils';
 
 export interface DefaultConfig {
   title: string;
@@ -55,18 +55,11 @@ export const toSchema = (config: DefaultConfig): ISchema => {
 };
 
 export const toConfig = (schema: ISchema): DefaultConfig => {
-  let displayModifier: FormBuilder.DisplayModifier = 'normal';
-  if (schema.readOnly) {
-    displayModifier = 'readonly';
-  } else if (!schema.display) {
-    displayModifier = 'hidden';
-  }
-
   return {
     type: 'array',
     title: schema.title as string,
     description: schema.description as string,
-    displayModifier: displayModifier,
+    displayModifier: getDisplayModifierFromSchema(schema),
     placeholder: schema['x-component-props']?.placeholder || '',
     required: !!schema.required,
     defaultValues: schema['x-internal']?.defaultValues || [],

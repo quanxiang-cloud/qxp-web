@@ -1,15 +1,21 @@
 package handlers
 
 import (
+	"fmt"
 	"net/http"
 	"net/url"
 	"qxp-web/server/pkg/contexts"
 )
 
 func getTargetURL(r *http.Request) string {
+	var endpoint = contexts.Config.APIEndpoint;
+	var host = endpoint.Hostname
+	if endpoint.Port != 0 {
+		host = fmt.Sprintf("%s:%d", host, endpoint.Port)
+	}
 	targetURL := url.URL{
 		Scheme:   contexts.Config.APIEndpoint.Protocol,
-		Host:     contexts.Config.APIEndpoint.Hostname,
+		Host:     host,
 		Path:     r.URL.Path,
 		RawQuery: r.URL.RawQuery,
 	}
@@ -38,8 +44,8 @@ func ProxyAPIHandler(w http.ResponseWriter, r *http.Request) {
 		"proxy api request, method: %s, url: %s, header: %s request_id: %s", method, targetURL, req.Header, contexts.GetRequestID(r))
 
 	resp, body, errMsg := contexts.RetrieveResponse(req)
-	if errMsg != "" {
-		contexts.Logger.Errorf("do request proxy error: %s, request_id: %s", err.Error(), contexts.GetRequestID(r))
+	if len(errMsg) != 0 {
+		contexts.Logger.Errorf("do request proxy error: %s, request_id: %s", errMsg, contexts.GetRequestID(r))
 		w.WriteHeader(500)
 		w.Write([]byte("internal error"))
 		return

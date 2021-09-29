@@ -1,4 +1,4 @@
-import { getSchemaPermissionFromSchemaConfig } from '@c/form-builder/utils';
+import { getDisplayModifierFromSchema, getSchemaPermissionFromSchemaConfig } from '@c/form-builder/utils';
 
 export interface TextareaConfig {
   title: string;
@@ -48,17 +48,10 @@ export function toSchema(value: TextareaConfig): ISchema {
 }
 
 export function toConfig(schema: ISchema): TextareaConfig {
-  let displayModifier: FormBuilder.DisplayModifier = 'normal';
-  if (schema.readOnly) {
-    displayModifier = 'readonly';
-  } else if (!schema.display) {
-    displayModifier = 'hidden';
-  }
-
   return {
     title: schema.title as string,
     description: schema.description as string,
-    displayModifier: displayModifier,
+    displayModifier: getDisplayModifierFromSchema(schema),
     placeholder: schema['x-component-props']?.placeholder || '',
     defaultValue: schema['x-component-props']?.defaultValue || '',
     sortable: !!schema['x-internal']?.sortable,

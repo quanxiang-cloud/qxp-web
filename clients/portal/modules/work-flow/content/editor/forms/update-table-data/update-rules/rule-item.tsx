@@ -127,7 +127,10 @@ function RuleItem(props: Props): JSX.Element {
     <div className="flex items-center mb-10">
       <span className="text-caption">目标表:</span>
       <Select
-        options={getSchemaFields(Object.values(targetSchemaMap), { noSystem: true })}
+        options={getSchemaFields(Object.values(targetSchemaMap), {
+          noSystem: true,
+          excludeComps: ['associatedrecords'],
+        })}
         value={item.fieldName}
         onChange={(fieldName: string) => onChange({ fieldName } as Rule)}
       />

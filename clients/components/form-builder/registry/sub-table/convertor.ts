@@ -1,4 +1,4 @@
-import { getSchemaPermissionFromSchemaConfig } from '@c/form-builder/utils';
+import { getDisplayModifierFromSchema, getSchemaPermissionFromSchemaConfig } from '@c/form-builder/utils';
 
 export type SubTableConfig = {
   title: string;
@@ -64,18 +64,11 @@ export function toSchema(value: SubTableConfig): ISchema {
 export function toConfig(schema: ISchema): SubTableConfig {
   const isFromLinkedTable = schema?.['x-component-props']?.subordination === 'foreign_table';
   const tableID = schema['x-component-props']?.tableID;
-  let displayModifier: FormBuilder.DisplayModifier = 'normal';
-  if (schema.readOnly) {
-    displayModifier = 'readonly';
-  } else if (!schema.display) {
-    displayModifier = 'hidden';
-  }
-
   return {
     title: schema.title as string,
     description: schema.description as string,
     subordination: schema['x-component-props']?.subordination,
-    displayModifier,
+    displayModifier: getDisplayModifierFromSchema(schema),
     subTableSchema: schema.items as ISchema,
     required: !!schema.required,
     linkedTable: {
