@@ -14,13 +14,14 @@ import ErrorTips from '@c/error-tips';
 import toast from '@lib/toast';
 import { FormRenderer } from '@c/form-builder';
 import { buildQueryRef } from '@lib/http-client';
+import { getFlowFormData } from '@lib/api/flow';
 
 import Panel from './panel';
 import Toolbar from './toolbar';
 import Dynamic from './dynamic';
 import Discuss from './discuss';
 import ActionModals from './action-modals';
-import { getFlowFormData, getTaskFormById } from '../api';
+import { getTaskFormById } from '../api';
 import store from './store';
 
 import './index.scss';

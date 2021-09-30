@@ -1,5 +1,5 @@
 // flow instance apis
-import httpClient, { FormDataRequestUpdateParamsRef } from '@lib/http-client';
+import httpClient from '@lib/http-client';
 
 // 分页查询我的待处理任务
 export const getWaitReviewList = async (params: Record<string, any>)
@@ -107,10 +107,6 @@ export const signTask = async (processInstanceId: string, taskID: string, params
 export const getTaskFormById = async (processInstanceID: string,
   params: { type: string, taskId?: string }): Promise<TaskForm> => {
   return await httpClient(`/api/v1/flow/instance/getFlowInstanceForm/${processInstanceID}`, params);
-};
-
-export const getFlowFormData = async (processInstanceID: string, taskID: string, ref?: FormDataRequestUpdateParamsRef): Promise<TaskForm> => {
-  return await httpClient(`/api/v1/flow/instance/getFormData/${processInstanceID}/${taskID}`, { ref });
 };
 
 // 流程任务审核
