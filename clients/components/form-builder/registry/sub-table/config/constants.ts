@@ -10,7 +10,7 @@ import {
   Radio,
 } from '@formily/antd-components';
 
-import InputForLabels from '@c/form-builder/form-settings-panel/form-field-config/input-for-labels';
+import EditLabels from '@c/form-builder/form-settings-panel/form-field-config/edit-labels';
 import DatasetConfig from '@c/form-builder/form-settings-panel/form-field-config/dataset-config';
 import input from '@c/form-builder/registry/input';
 import textarea from '@c/form-builder/registry/textarea';
@@ -67,7 +67,7 @@ export const COMPONENTS: Record<string, JSXElementConstructor<ISchemaFieldCompon
   switch: Switch,
   // todo delete this
   arraytable: ArrayTable,
-  inputforlabels: InputForLabels,
+  editlabels: EditLabels,
   addoperate: AddOperate,
   numberpicker: NumberPicker,
   datepicker: DatePicker,
