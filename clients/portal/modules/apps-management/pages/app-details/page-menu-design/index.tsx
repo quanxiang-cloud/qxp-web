@@ -138,7 +138,7 @@ function PageList(): JSX.Element {
           onSubmit={handleEditGroup}
         />
       )}
-      {['editPage', 'createPage', 'copyPage'].includes(modalType) && (
+      {['editPage', 'createPage'].includes(modalType) && (
         <EditPageModal
           appID={appID}
           pageInfo={modalType === 'createPage' ? undefined : curPage}

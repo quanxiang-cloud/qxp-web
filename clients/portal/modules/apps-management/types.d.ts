@@ -79,9 +79,8 @@ type PageInfo = {
   name?: string;
   icon?: string;
   describe?: string;
-  bindingState?: number;
   groupID?: string;
-  child?: PageInfo[] | null;
+  child?: PageInfo[];
   childCount?: number;
   menuType?: number;
   sort?: number;

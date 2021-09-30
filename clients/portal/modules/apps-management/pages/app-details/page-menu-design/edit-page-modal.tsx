@@ -29,9 +29,8 @@ type Option = {
 
 const IconSelectField = Form.getFormField(AppIconSelect);
 
-function EditPageModal({ pageInfo, onCancel, onSubmit, appID }: Props): JSX.Element {
+function EditPageModal({ pageInfo, onCancel, onSubmit, appID }: Props) {
   const [groupList, setGroupList] = useState<Option[]>([]);
-  const { modalType } = store;
   const ref: any = useRef();
 
   useEffect(() => {
@@ -73,7 +72,7 @@ function EditPageModal({ pageInfo, onCancel, onSubmit, appID }: Props): JSX.Elem
     return noRepeated;
   };
 
-  const handleSubmit = (): void => {
+  const handleSubmit = () => {
     const formRef = ref.current;
     if (formRef.validateFields()) {
       onSubmit({ ...(pageInfo || {}), ...formRef.getFieldsValue() });
@@ -102,7 +101,7 @@ function EditPageModal({ pageInfo, onCancel, onSubmit, appID }: Props): JSX.Elem
       <Form className="p-20" layout='vertical' ref={ref}>
         <Form.TextField
           name='name'
-          defaultValue={store.modalType === 'copyPage' ? `${name}-副本` : name}
+          defaultValue={name}
           label='页面名称'
           placeholder='请输入页面名称'
           help='不超过 30 个字符，页面名称不可重复。'
@@ -144,7 +143,7 @@ function EditPageModal({ pageInfo, onCancel, onSubmit, appID }: Props): JSX.Elem
             },
           ]}
         />
-        {(!curAppID || modalType === 'copyPage') && groupList.length > 0 && (
+        {!curAppID && groupList.length > 0 && (
           <SelectField
             name='groupID'
             defaultValue={groupID}

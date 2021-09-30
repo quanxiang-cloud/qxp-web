@@ -91,11 +91,6 @@ export enum MenuType {
   customPage = 2,
 }
 
-export enum BindState {
-  isBind = 20,
-  noBind = 10,
-}
-
 export enum Status {
   inuse = 1,
   unused = 0,

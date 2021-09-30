@@ -74,7 +74,7 @@ function getNextItem(
   return nextRootItem;
 }
 
-const getIcon = (item: TreeItem): JSX.Element => {
+const getIcon = (item: TreeItem) => {
   if (item.data.menuType !== MenuType.group) {
     // todo should has an default icon name
     return (<Icon className='mr-8 text-current flex-shrink-0' name={item.data.icon} size={24} />);
@@ -98,32 +98,9 @@ function NodeRender(
 ): JSX.Element {
   const isPage = item.data.menuType !== MenuType.group;
   const isHide = item.data.isHide;
-  const isCustomPage = item.data.menuType === MenuType.customPage;
 
-  const MENUS = [{
-    key: isPage ? 'delPage' : 'delGroup',
-    label: (
-      <div className="flex items-center">
-        <Icon name="restore_from_trash" size={16} className="mr-8" />
-        <span className="font-normal">删除</span>
-      </div>
-    ),
-    disabled: !isPage && item.children.length > 0,
-  },
-  {
-    key: 'hide',
-    label: (
-      <div className="flex items-center">
-        <Icon name="visibility" size={16} className="mr-8" />
-        <span className="font-normal">{isHide ? '显示' : '隐藏'}</span>
-      </div>
-    ),
-    disabled: !isPage,
-  },
-  ];
-
-  if (isPage) {
-    MENUS.unshift(...[
+  const MENUS = [
+    isPage ?
       {
         key: 'editPage',
         label: (
@@ -132,22 +109,7 @@ function NodeRender(
             <span className="font-normal">编辑名称与图标</span>
           </div>
         ),
-        disabled: false,
-      },
-      {
-        key: 'copyPage',
-        label: (
-          <div className="flex items-center">
-            <Icon name="content_copy" size={16} className="mr-8" />
-            <span className="font-normal">复制</span>
-          </div>
-        ),
-        disabled: isCustomPage,
-      },
-    ]);
-  } else {
-    MENUS.unshift(
-      {
+      } : {
         key: 'editGroup',
         label: (
           <div className="flex items-center">
@@ -155,9 +117,28 @@ function NodeRender(
             <span className="font-normal">修改分组名称</span>
           </div>
         ),
-        disabled: false,
-      });
-  }
+      },
+    {
+      key: isPage ? 'delPage' : 'delGroup',
+      label: (
+        <div className="flex items-center">
+          <Icon name="restore_from_trash" size={16} className="mr-8" />
+          <span className="font-normal">删除</span>
+        </div>
+      ),
+      disabled: !isPage && item.children.length > 0,
+    },
+    {
+      key: 'hide',
+      label: (
+        <div className="flex items-center">
+          <Icon name="visibility" size={16} className="mr-8" />
+          <span className="font-normal">{isHide ? '显示' : '隐藏'}</span>
+        </div>
+      ),
+      disabled: !isPage && item.children.length > 0,
+    },
+  ];
 
   function handleClick(): void {
     if (isPage) {
@@ -300,7 +281,7 @@ export default class PureTree extends Component<Props> {
     });
   };
 
-  render(): JSX.Element {
+  render() {
     const { tree, selectedPage } = this.props;
 
     return (

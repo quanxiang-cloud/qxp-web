@@ -55,14 +55,6 @@ type DataModelListRes = {
   total: number;
 }
 
-type FormDuplicateParameter = {
-  name: string,
-  icon: string,
-  describe: string,
-  groupID: string,
-  duplicateTableID: string,
-}
-
 declare enum EditorModelFieldStep {
   basic, // 基础信息
   fieldDesign, // 字段设计
