@@ -1,3 +1,5 @@
+import { FormEffectHooks, createFormActions } from '@formily/react';
+
 import { validateDatasetElement } from '@c/form-builder/utils';
 
 import CheckboxGroup from './checkboxGroup';
@@ -18,6 +20,17 @@ const CheckboxGroupField: Omit<FormBuilder.SourceElement<typeof defaultConfig>, 
   compareOperators: ['⊇', '⊋'],
   configDependencies: { DatasetConfig },
   validate: validateDatasetElement,
+  effects: () => {
+    const { setFieldValue, getFieldValue } = createFormActions();
+    const { onFieldValueChange$ } = FormEffectHooks;
+
+    onFieldValueChange$('edit').subscribe(({ value }) => {
+      const availableOptions = getFieldValue('availableOptions');
+      setFieldValue('availableOptions', availableOptions.map((op: any, index: number) => {
+        return { label: value[index], isDefault: op.isDefault };
+      }));
+    });
+  },
 };
 
 export default CheckboxGroupField;

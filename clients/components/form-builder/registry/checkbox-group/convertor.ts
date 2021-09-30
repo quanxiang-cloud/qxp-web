@@ -1,5 +1,7 @@
 import {
-  convertEnumsToLabels, getSchemaPermissionFromSchemaConfig, getDisplayModifierFromSchema,
+  getDisplayModifierFromSchema,
+  convertMultipleSelectDefaults,
+  getSchemaPermissionFromSchemaConfig,
 } from '@c/form-builder/utils';
 
 export interface CheckboxGroupConfig {
@@ -11,7 +13,7 @@ export interface CheckboxGroupConfig {
   required: boolean;
   defaultValueFrom: FormBuilder.DefaultValueFrom;
   datasetId: string;
-  availableOptions: string[],
+  availableOptions: Array<Record<string, string | boolean>>,
 }
 
 export const defaultConfig: CheckboxGroupConfig = {
@@ -23,7 +25,11 @@ export const defaultConfig: CheckboxGroupConfig = {
   required: false,
   defaultValueFrom: 'customized',
   datasetId: '',
-  availableOptions: ['选项一', '选项二', '选项三'],
+  availableOptions: [
+    { label: '选项一', isDefault: false },
+    { label: '选项二', isDefault: false },
+    { label: '选项三', isDefault: false },
+  ],
 };
 
 export function toSchema(value: CheckboxGroupConfig): ISchema {
@@ -34,7 +40,10 @@ export function toSchema(value: CheckboxGroupConfig): ISchema {
     required: value.required,
     readOnly: value.displayModifier === 'readonly',
     display: value.displayModifier !== 'hidden',
-    enum: value.availableOptions || [],
+    default: convertMultipleSelectDefaults(value.availableOptions),
+    enum: value.availableOptions.map((op) => {
+      return op.label as string;
+    }) || [],
     'x-component': 'CheckboxGroup',
     // todo support optionsLayout
     ['x-component-props']: {
@@ -60,6 +69,11 @@ export function toConfig(schema: ISchema): CheckboxGroupConfig {
     required: !!schema.required,
     defaultValueFrom: schema['x-internal']?.defaultValueFrom || 'customized',
     datasetId: schema['x-component-props']?.datasetId,
-    availableOptions: convertEnumsToLabels(schema.enum as Array<string | LabelValue>),
+    availableOptions: schema.enum?.map((label) => {
+      return {
+        label: label,
+        isDefault: (!schema.default || !schema.default.length) ? false : schema.default.includes(label),
+      };
+    }) as any,
   };
 }
