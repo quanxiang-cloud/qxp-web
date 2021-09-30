@@ -1,7 +1,7 @@
 import React from 'react';
 import { useMutation } from 'react-query';
 
-import { createFormActions, IFieldState, SchemaForm, FormEffectHooks } from '@formily/antd';
+import { createFormActions, IFieldState, SchemaForm, FormEffectHooks, useForm } from '@formily/antd';
 import { Select, Input, NumberPicker, DatePicker, Radio } from '@formily/antd-components';
 import Modal from '@c/modal';
 import toast from '@lib/toast';
@@ -73,7 +73,6 @@ const { onFieldValueChange$ } = FormEffectHooks;
 
 export default function EditVariableModal({ variable, closeModal, onAdded }: Props): JSX.Element {
   const titleText = `${variable.id ? '修改' : '添加'}`;
-  const { setFieldState } = actions;
   const staffMutation = useMutation(
     (values: Omit<ProcessVariable, 'desc' | 'code'>) => saveFlowVariable(values),
     {
@@ -86,48 +85,47 @@ export default function EditVariableModal({ variable, closeModal, onAdded }: Pro
       },
     });
 
-  function handleSubmit(): void {
-    actions.getFormState((state) => {
-      const params: Omit<ProcessVariable, 'desc' | 'code'> = {
-        flowId: variable.flowId,
-        id: variable.id,
-        name: state.values.name,
-        fieldType: state.values.fieldType,
-        defaultValue: state.values.defaultValue,
-        type: 'CUSTOM',
-      };
-      staffMutation.mutate(params);
-    });
-  }
+  const form = useForm({
+    actions,
+    initialValues: variable,
+    onSubmit: (formData) => {
+      staffMutation.mutate({ flowId: variable.flowId, id: variable?.id || '', type: 'CUSTOM', ...formData });
+    },
+    effects: ($) => {
+      const { setFieldState } = actions;
 
-  function effects(): void {
-    onFieldValueChange$('fieldType').subscribe((fieldTypeState: IFieldState) => {
-      const type = fieldTypeState.value;
-      if (!type) {
-        return;
-      }
-      const componentMap: Record<string, string> = {
-        datetime: 'DatePicker',
-        boolean: 'RadioGroup',
-        number: 'NumberPicker',
-        string: 'Input',
-      };
-      setFieldState('defaultValue', (state) => {
-        state.props['x-component'] = componentMap[type];
-        state.props.enum = undefined;
-        if ( type === 'boolean') {
-          state.props.enum = [
-            { value: 'False', label: 'false' },
-            { value: 'True', label: 'true' },
-          ];
-        }
-        if (type === variable.fieldType) {
-          state.value = variable.defaultValue;
-          return;
-        }
-        state.value = '';
+      onFieldValueChange$('fieldType').subscribe((fieldTypeState: IFieldState) => {
+        const type = fieldTypeState.value;
+        if (!type) return;
+        const componentMap: Record<string, string> = {
+          datetime: 'DatePicker',
+          boolean: 'RadioGroup',
+          number: 'NumberPicker',
+          string: 'Input',
+        };
+        setFieldState('defaultValue', (state) => {
+          state.props['x-component'] = componentMap[type];
+          state.props.enum = undefined;
+          if ( type === 'boolean') {
+            state.props.enum = [
+              { value: 'False', label: 'false' },
+              { value: 'True', label: 'true' },
+            ];
+          }
+          if (type === variable.fieldType) {
+            state.value = variable.defaultValue;
+            return;
+          }
+          state.value = '';
+        });
       });
-    });
+    },
+  });
+
+  function handleSubmit(): void {
+    form.submit().then(() => {
+      closeModal();
+    }).catch(() => null);
   }
 
   return (
@@ -152,15 +150,12 @@ export default function EditVariableModal({ variable, closeModal, onAdded }: Pro
       ]}
     >
       <SchemaForm
-        labelCol={{ span: 4 }}
-        wrapperCol={{ span: 20 }}
         className="p-20"
         components={{ Input, Select, DatePicker, RadioGroup: Radio.Group, NumberPicker }}
         actions={actions}
-        initialValues={variable}
         onSubmit={handleSubmit}
         schema={FIELD_FORM_SCHEMA}
-        effects={effects}
+        form={form as any}
       />
     </Modal>
   );
