@@ -27,6 +27,7 @@ import {
   createGroup,
   deleteGroup,
   deletePage,
+  isHiddenMenu,
 } from './api';
 
 type DeletePageOrGroupParams = {
@@ -364,6 +365,21 @@ class AppDetailsStore {
     getPageCardList(this.appID, this.pageID, this.curPageCardList, curPageInfo.menuType).then((res) => {
       this.curPageCardList = res;
     });
+  }
+
+  @action
+  updatePageHideStatus = (appID: string, pageInfo: PageInfo) => {
+    return isHiddenMenu(appID, { id: pageInfo.id, hide: pageInfo.isHide ? false : true }).then(() => {
+      this.pagesTreeData = mutateTree(toJS(this.pagesTreeData), pageInfo.id, {
+        id: pageInfo.id,
+        data: { ...pageInfo, isHide: !pageInfo.isHide },
+      });
+
+      if (pageInfo.id === this.curPage.id) {
+        this.curPage = { ...pageInfo, isHide: !pageInfo.isHide };
+      }
+      toast.success(`${pageInfo.name}页面${!pageInfo.isHide ? '隐藏' : '显示' }成功`);
+    }).catch(() => toast.error('页面设置显示或者隐藏失败'));
   }
 
   @action

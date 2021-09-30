@@ -84,6 +84,7 @@ type PageInfo = {
   childCount?: number;
   menuType?: number;
   sort?: number;
+  isHide?: boolean;
 }
 
 type fetchPageListRes = {
