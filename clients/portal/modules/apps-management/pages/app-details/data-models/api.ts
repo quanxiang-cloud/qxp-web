@@ -16,15 +16,6 @@ export function saveTableSchema(
   );
 }
 
-export function modelDuplicate(
-  appID: string, duplicateTableID: string, newTableID: string, name: string, describe: string,
-): Promise<{ tableID: string; }> {
-  return httpClient(
-    `/api/v1/form/${appID}/m/table/customDuplicate`,
-    { duplicateTableID, newTableID, name, describe },
-  );
-}
-
 type CheckRepeatRes = {
   tableID?: string;
   title: string;
