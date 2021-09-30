@@ -55,7 +55,11 @@ export function isAdvancedField(type: string, xCompName?: string): boolean {
   return !primitiveTypes.includes(type);
 }
 
-export function isFieldTypeMatch(srcFieldType: string, srcFieldCompName: string, targetFieldSchema: ISchema): boolean {
+export function isFieldTypeMatch(
+  srcFieldType: string,
+  srcFieldCompName: string,
+  targetFieldSchema: ISchema,
+): boolean {
   if (isAdvancedField(srcFieldType, srcFieldCompName)) {
     // advanced field should be the same component type
     return targetFieldSchema['x-component']?.toLowerCase() === srcFieldCompName.toLowerCase();
