@@ -93,15 +93,15 @@ export default function FieldPermission({ value, onChange: _onChange }: Props): 
     customData?.forEach((field) => {
       const oldCustomField = custom.find(({ id }) => id === field.value);
       const newCustomField = {
-        id: field.value,
-        fieldName: field.label,
-        read: field.isLayout ? true : field.read,
-        write: field.write,
-        hidden: field.isLayout,
-        invisible: field.invisible,
-        editable: field.editable,
-        path: field.path,
         ...INITIAL_VALUE,
+        id: field.value,
+        hidden: field.isLayout,
+        fieldName: field.label,
+        read: field.isLayout ? true : false,
+        write: false,
+        invisible: false,
+        editable: false,
+        path: field.path,
       };
       !oldCustomField && custom.push(newCustomField);
       oldCustomField && merge(oldCustomField, {
