@@ -110,7 +110,7 @@ function ApprovalDetail(): JSX.Element {
       <div className='task-form'>
         <FormRenderer
           value={formData}
-          schema={task.formSchema}
+          schema={task.formSchema || {}}
           onFormValueChange={setFormValues}
           usePermission
         />
