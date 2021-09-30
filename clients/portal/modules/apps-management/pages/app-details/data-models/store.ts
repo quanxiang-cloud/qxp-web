@@ -5,7 +5,7 @@ import toast from '@lib/toast';
 import { getTableSchema } from '@lib/http-client';
 import schemaToFields from '@lib/schema-convert';
 
-import { deleteSchema, saveTableSchema } from './api';
+import { deleteSchema, modelDuplicate, saveTableSchema } from './api';
 import { fetchDataModels } from '../api';
 import { INIT_MODEL_SCHEMA } from '../utils';
 
@@ -132,9 +132,25 @@ class AppModelStore {
   }
 
   @action
-  saveDataModel = (basicInfo: DataModelBasicInfo, modalType: string): Promise<boolean> => {
+  saveDataModel = (basicInfo: DataModelBasicInfo, modalType: string): Promise<boolean | void> => {
     if (!this.dataModelSchema) {
       return Promise.resolve(false);
+    }
+
+    if (modalType === 'copy') {
+      return modelDuplicate(
+        this.appID,
+        this.curDataModel?.tableID || '',
+        `${this.appID}_${basicInfo.tableID}`,
+        basicInfo.title,
+        basicInfo.description || '',
+      ).then(() =>{
+        toast.success('复制成功');
+        this.setParams({});
+        this.curModelTableID = `${this.appID}_${basicInfo.tableID}`;
+      }).catch((err) => {
+        toast.error(err);
+      });
     }
 
     return saveTableSchema(

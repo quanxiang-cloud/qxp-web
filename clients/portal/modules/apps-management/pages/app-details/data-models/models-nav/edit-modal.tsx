@@ -14,7 +14,7 @@ type Props = {
 }
 
 function EditModal({ modalType, onClose, handleEditModel }: Props): JSX.Element {
-  const modelInfo = modalType === 'edit' ? toJS(store.curDataModel) : null;
+  const modelInfo = modalType === 'create' ? null : toJS(store.curDataModel);
   const SCHEMA: ISchema = {
     type: 'object',
     properties: {
@@ -51,7 +51,7 @@ function EditModal({ modalType, onClose, handleEditModel }: Props): JSX.Element 
           tableID: {
             type: 'string',
             title: '标识',
-            editable: !modelInfo,
+            editable: !modelInfo || modalType === 'copy',
             'x-component': 'Input',
             'x-component-props': {
               placeholder: '请输入数据模型标识',
@@ -97,8 +97,8 @@ function EditModal({ modalType, onClose, handleEditModel }: Props): JSX.Element 
   };
   const form = useForm({
     initialValues: {
-      title: modelInfo?.title,
-      tableID: modelInfo?.tableID.split('_').pop(),
+      title: modalType === 'copy' ? `${modelInfo?.title}-副本` : modelInfo?.title,
+      tableID: modalType === 'copy' ? '' : modelInfo?.tableID.split('_').pop(),
       description: modelInfo?.description,
     },
     onSubmit: (formData) => {
