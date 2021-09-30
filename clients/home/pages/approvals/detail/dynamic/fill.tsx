@@ -52,10 +52,9 @@ export default function Fill({ workData, clickHandle }: Props): JSX.Element {
     return detailInfo;
   }
 
-  const username = operationRecords?.length ? operationRecords[0].creatorName : '';
+  const username = operationRecords.length ? operationRecords[0].creatorName : '';
   const isHandle = ['REVIEW', 'IN_REVIEW'].includes(status);
-  const isSingle = operationRecords?.length === 1;
-  const isCancel = status === 'CANCEL';
+  const isSingle = operationRecords.length === 1;
   const confirmBack = ['REFUSE', 'SEND_BACK', 'READ', 'DELIVER', 'STEP_BACK'].includes(status);
   return (
     <div className="flex w-full">
@@ -68,7 +67,7 @@ export default function Fill({ workData, clickHandle }: Props): JSX.Element {
             <div className="h-24 flex items-center justify-between">
               {isHandle &&
               (<div className="text-12 text-gray-600">
-                {taskName}（{operationRecords?.length}人处理中 · {NoOperationValue[taskType]}）
+                {taskName}（{operationRecords.length}人处理中 · {NoOperationValue[taskType]}）
               </div>)
               }
             </div>
@@ -83,7 +82,7 @@ export default function Fill({ workData, clickHandle }: Props): JSX.Element {
           )
         }
         {
-          (!isSingle || isHandle) && !isCancel && (
+          (!isSingle || (isSingle && isHandle)) && (
             <UserList userList={operationRecords} clickHandle={goLeaderHandle} />
           )
         }
