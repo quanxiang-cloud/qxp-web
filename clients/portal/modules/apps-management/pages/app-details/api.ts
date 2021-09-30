@@ -38,7 +38,7 @@ export const isHiddenMenu = async (appID: string, params?: {id: string, hide: bo
   return await httpClient(`/api/v1/structor/${appID}/m/menu/hidden`, params);
 };
 
-export const createPage = async (data: PageInfo)=> {
+export const createPage = async (data: Partial<PageInfo>): Promise<{id: string}>=> {
   return await httpClient(`/api/v1/structor/${data.appID}/m/menu/create`, data);
 };
 
@@ -122,4 +122,11 @@ export const fetchDataModels = (
   data: DataModelsParameter,
 ): Promise<DataModelListRes | null> => {
   return httpClient(`/api/v1/structor/${appID}/m/table/search`, data);
+};
+
+export const formDuplicate = (
+  appID: string,
+  data: FormDuplicateParameter,
+): Promise<{id: string}> => {
+  return httpClient(`/api/v1/form/${appID}/m/table/formDuplicate`, data);
 };
