@@ -20,13 +20,6 @@ const InfoCard = () => {
       authority: 'audit/read',
     },
     {
-      id: 'dataset',
-      icon: 'article',
-      name: '数据集',
-      url: '/system/dataset',
-      authority: 'dataset/read',
-    },
-    {
       id: 'unusual',
       icon: 'article',
       name: '异常任务',

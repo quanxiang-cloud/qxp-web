@@ -65,7 +65,18 @@ function Dashboard() {
             itemTitleClassName="text-h6"
             content={(<>
               {store.TODO_LIST.map(({ value, name, key, color }) => (
-                <div className={`backlog ${color}`} key={key} onClick={() => history.push('/approvals')}>
+                <div
+                  className={`backlog ${color}`}
+                  key={key}
+                  onClick={() => {
+                    history.push('/approvals');
+                    if (name === '已超时') {
+                      history.push('/approvals?tagType=OVERTIME');
+                    } else if (name === '催办') {
+                      history.push('/approvals?tagType=URGE');
+                    }
+                  }}
+                >
                   {value}
                   <p>{name}</p>
                 </div>

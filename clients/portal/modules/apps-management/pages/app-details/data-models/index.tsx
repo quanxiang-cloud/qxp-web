@@ -1,51 +1,53 @@
 import React, { useEffect } from 'react';
-import { useParams } from 'react-router-dom';
 import { observer } from 'mobx-react';
-import { Input, FormMegaLayout, FormSlot } from '@formily/antd-components';
-import { SchemaForm, SchemaMarkupField as Field, FormButtonGroup } from '@formily/antd';
+import { useParams } from 'react-router-dom';
 
-import Button from '@c/button';
 import TextHeader from '@c/text-header';
 
-import DataModelsTable from './data-models-table';
 import store from './store';
+import EditModal from './models-nav/edit-modal';
+import ModelsNav from './models-nav';
+import ModelFieldDetails from './model-field-details.tsx';
 
 import './index.scss';
 
-const CONTAINER_CLASS = 'p-20 bg-white rounded-12';
-
 function DataModels(): JSX.Element {
   const { appID } = useParams<AppParams>();
+  const { saveDataModel, editModalType, setEditModalType, fetchDataModels } = store;
+
+  useEffect(() => {
+    fetchDataModels();
+  }, []);
 
   useEffect(() => {
     store.appID = appID;
   }, [appID]);
 
+  function handleEditModal(modalInfo: DataModelBasicInfo): void {
+    saveDataModel(modalInfo, editModalType);
+  }
+
   return (
-    <div className='flex-1 overflow-hidden'>
+    <div className="flex-1 bg-white rounded-t-12 h-full">
       <TextHeader
-        title='数据模型管理'
-        desc=''
-        className="app-list-header header-background-image"
-        itemClassName='items-center'
+        title="数据模型"
+        itemTitleClassName="text-h5"
+        desc="支持可视化的构建数据模型，包括数据模型字段以及模型之间外键关联。"
+        action={<a className="ease-linear text-underline">📌  数据模型可以用来做什么？</a>}
+        className="bg-gray-1000 p-16 header-background-image h-56 shadow-header rounded-t-12"
+        descClassName="text-caption"
       />
-      <div style={{ height: 'calc(100vh - 126px)' }} className='p-20 flex flex-col'>
-        <div className={`${CONTAINER_CLASS} mb-16 data-models-filter`}>
-          <SchemaForm onSubmit={(params) => store.setParams(params)} components={{ Input }}>
-            <FormMegaLayout grid full autoRow>
-              <Field x-component='Input' type="string" title="模型名称" name="title" />
-              <FormSlot>
-                <FormButtonGroup align="right">
-                  <Button type='submit'>查询</Button>
-                </FormButtonGroup>
-              </FormSlot>
-            </FormMegaLayout>
-          </SchemaForm>
-        </div>
-        <div style={{ height: 'calc(100% - 92px)' }} className={`${CONTAINER_CLASS}`}>
-          <DataModelsTable />
-        </div>
+      <div className={'flex text-gray-600'} style={{ height: 'calc(100% - 56px)' }}>
+        <ModelsNav />
+        <ModelFieldDetails />
       </div>
+      {!!editModalType && (
+        <EditModal
+          modalType={editModalType}
+          handleEditModel={handleEditModal}
+          onClose={() => setEditModalType('')}
+        />
+      )}
     </div>
   );
 }

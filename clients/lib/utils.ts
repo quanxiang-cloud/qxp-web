@@ -323,13 +323,13 @@ export function isEmptyArray(value: unknown): boolean {
   return _.isArray(value) && _.isEmpty(value);
 }
 
-export async function copyContent(content: string): Promise<void> {
+export async function copyContent(content: string, successMes?: string, errorMes?: string): Promise<void> {
   if (navigator.clipboard) {
     try {
       await navigator.clipboard.writeText(content);
-      toast.success('复制成功！');
+      toast.success(successMes || '复制成功！');
     } catch (err) {
-      toast.error('复制失败，请手动复制！');
+      toast.error(errorMes || '复制失败，请手动复制！');
     }
     return;
   }
@@ -344,9 +344,9 @@ export async function copyContent(content: string): Promise<void> {
   document.execCommand('copy');
   const successful = document.execCommand('copy');
   if (successful) {
-    toast.success('复制成功！');
+    toast.success(successMes || '复制成功！');
   } else {
-    toast.error('复制失败，请手动复制！');
+    toast.error(errorMes || '复制失败，请手动复制！');
   }
   document.body.removeChild(el);
 }

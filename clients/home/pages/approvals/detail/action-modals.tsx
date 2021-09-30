@@ -173,10 +173,10 @@ function ActionModals({
       return apis.cancelTask(processInstanceID);
     }
 
-    // // 催办
-    // if (action === TaskHandleType.hasUrgeBtn) {
-
-    // }
+    // 催办
+    if (action === TaskHandleType.hasUrgeBtn) {
+      return apis.taskUrge(processInstanceID);
+    }
 
     return Promise.reject(new Error(`未知操作: ${action}`));
   }, {
@@ -410,10 +410,12 @@ function ActionModals({
 
     // }
 
-    // // 催办
-    // if (action === TaskHandleType.hasUrgeBtn) {
-
-    // }
+    // 催办
+    if (action === TaskHandleType.hasUrgeBtn) {
+      return (
+        <div>是否对流程进行催办？</div>
+      );
+    }
   };
 
   if (!store.modalOpen) {

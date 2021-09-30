@@ -1,7 +1,7 @@
 import React, { useContext, useRef } from 'react';
 
 import Modal from '@c/modal';
-import { getSchemaFields } from '@flow/content/editor/forms/utils';
+import { getSchemaFields, isAdvancedField } from '@flow/content/editor/forms/utils';
 import { COLLECTION_OPERATORS } from '@c/formula-editor/constants';
 import FormulaEditor, { CustomRule, RefProps } from '@c/formula-editor';
 import FlowTableContext from '@flow/content/editor/forms/flow-source-table';
@@ -18,8 +18,12 @@ function FormulaModal(props: Props): JSX.Element | null {
   const formulaRef = useRef<RefProps>();
   const { tableSchema: sourceSchema } = useContext(FlowTableContext);
 
-  const targetFields = getSchemaFields(schemaToFields(props.targetSchema));
-  const sourceFields = getSchemaFields(sourceSchema);
+  const targetFields = getSchemaFields(schemaToFields(props.targetSchema), { matchTypeFn: (schema: ISchema)=> {
+    return !isAdvancedField(schema.type || 'string', schema['x-component']?.toLowerCase());
+  } });
+  const sourceFields = getSchemaFields(sourceSchema, { matchTypeFn: (schema: ISchema)=> {
+    return !isAdvancedField(schema.type || 'string', schema['x-component']?.toLowerCase());
+  } });
   const formulaCustomRules: CustomRule[] = targetFields.concat(sourceFields).map(({ label, value }) => ({
     key: value,
     name: label,

@@ -94,6 +94,7 @@ export const COMPONENT_OPERATORS_MAP = {
   multipleselect: ['any', 'all', 'null', 'not-null'],
   datepicker: ['eq', 'neq', 'gt', 'lt', 'gte', 'lte', 'range'],
   numberpicker: ['eq', 'neq', 'gt', 'lt', 'gte', 'lte'],
+  serial: ['null', 'not-null'],
   default: [
     'eq', 'neq', 'gt', 'gte', 'lt', 'lte', 'null', 'not-null', 'any', 'all', 'include', 'not-include',
   ],

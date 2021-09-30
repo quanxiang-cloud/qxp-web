@@ -36,9 +36,10 @@ const tags = [
 function FilterRules({ appId, tableId, defaultValue }: Props, ref: React.Ref<RefType>) {
   const [tag, setTag] = useState<Tag>(defaultValue?.tag || 'and');
   const [conditions, setConditions] = useState<Array<Condition>>(defaultValue?.conditions || []);
-  const { data: targetSchema, isLoading, isError } = useQuery(['GET_TARGET_TABLE_SCHEMA', tableId, appId], getFormFieldSchema, {
-    enabled: !!appId && !!tableId,
-  });
+  const { data: targetSchema, isLoading, isError } = useQuery(['GET_TARGET_TABLE_SCHEMA', tableId, appId],
+    getFormFieldSchema, {
+      enabled: !!appId && !!tableId,
+    });
 
   useImperativeHandle(ref, () => {
     return {

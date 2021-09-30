@@ -14,14 +14,17 @@ type Props = {
   onChange: (tab: string) => void;
   className?: string;
   size?: 'small' | 'normal' | 'big';
+  labelClassName?: string;
 }
 
-function Tab({ activeTab, onChange, tabs, size = 'big', className = '' }: Props) {
+function Tab({
+  activeTab, onChange, tabs, labelClassName, size = 'big', className = '',
+}: Props): JSX.Element {
   return (
     <div className={`qxp-tab-container qxp-tab-size-${size} ${className}`}>
       {tabs.map(({ label, key }) => (
         <div
-          className={cs('qxp-tab-item', { 'qxp-tab-active': activeTab === key })}
+          className={cs('qxp-tab-item', { 'qxp-tab-active': activeTab === key }, labelClassName)}
           onClick={() => onChange(key)}
           key={key}
         >

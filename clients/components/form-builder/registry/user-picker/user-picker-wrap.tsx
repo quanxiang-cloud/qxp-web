@@ -1,16 +1,10 @@
 import React from 'react';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 
-import FormDataValueRenderer from '@c/form-data-value-renderer';
-
 import UserPicker from './user-picker';
 
 const UserPickerWrap = (formField: ISchemaFieldComponentProps): JSX.Element => {
   const { optionalRange, defaultValues, defaultRange } = formField.props;
-
-  if (formField.props.readOnly) {
-    return <FormDataValueRenderer schema={formField.schema} value={formField.value} />;
-  }
 
   return (
     <UserPicker

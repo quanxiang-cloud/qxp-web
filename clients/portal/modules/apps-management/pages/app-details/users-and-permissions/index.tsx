@@ -227,7 +227,7 @@ function UsersAndPermissions(): JSX.Element {
           ]}
         >
           <div className='px-20 py-32'>
-            删除该权限组吼，在平台内无法恢复权限组
+            删除该权限组后，在平台内无法恢复权限组
             <span className='text-16 text-gray-900 mx-6'>{store.currentRights.name}</span>
             数据，确定删除该权限组吗？
           </div>

@@ -35,9 +35,9 @@ export default function ApproveForm({
   }
 
   function onSave(): void {
-    const { timeRule } = value.basicConfig;
+    const { timeRule, approvePersons } = value.basicConfig;
     const someValueIsInvalid = pipe(
-      map(({ path, validator }) => ({ value: get(path, timeRule), validator })),
+      map(({ path, target, validator }) => ({ value: get(path, target), validator })),
       some(({ value, validator }) => validator ? validator(value) : !value),
     );
     const someKeyIsInvalid = pipe(
@@ -45,11 +45,22 @@ export default function ApproveForm({
       values,
       every((v) => +v <= 0),
     );
-    if (timeRule.enabled && someValueIsInvalid([
-      { path: 'deadLine.breakPoint' },
-      { path: 'deadLine', validator: (val: DeadLine) => someKeyIsInvalid(val) },
-      { path: 'whenTimeout', validator: (val: WhenTimeout) => val.type === 'autoDealWith' && !val.value },
-    ])) {
+    const deadLineValidate = someValueIsInvalid([
+      { path: 'deadLine.breakPoint', target: timeRule },
+      { path: 'deadLine', target: timeRule, validator: (val: DeadLine) => someKeyIsInvalid(val) },
+      { path: 'whenTimeout', target: timeRule, validator: (val: WhenTimeout) => {
+        return val.type === 'autoDealWith' && !val.value;
+      } },
+    ]);
+    const userPickValidate = someValueIsInvalid([
+      { path: 'users', target: approvePersons, validator: (val: Array<string>) => {
+        return approvePersons.type === 'person' && !val?.length;
+      } },
+      { path: 'fields', target: approvePersons, validator: (val: Array<string>) => {
+        return approvePersons.type === 'field' && !val?.length;
+      } },
+    ]);
+    if ((timeRule.enabled && deadLineValidate) || userPickValidate) {
       return updateStore((s) => ({ ...s, validating: true }));
     }
     onSubmit(value);

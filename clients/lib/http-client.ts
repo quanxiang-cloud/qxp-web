@@ -101,8 +101,8 @@ export function getTableSchema(appID: string, tableID: string): Promise<GetTable
   return httpClient<GetTableSchemaResponse>(path, { tableID });
 }
 
-export function getCustomPageInfo(appID: string, menuId: string): Promise<CustomPageInfo> {
-  return httpClient(`/api/v1/structor/${appID}/m/page/getByMenu`, { menuId });
+export function getCustomPageInfo(appID: string, menuID: string): Promise<CustomPageInfo> {
+  return httpClient(`/api/v1/structor/${appID}/m/page/getByMenu`, { menuID });
 }
 
 export function getSchemaPageInfo(appID: string, menuId: string): Promise<SchemaPageInfo> {
