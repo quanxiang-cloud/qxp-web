@@ -81,7 +81,7 @@ function SubTable({
     componentColumns: [], rowPlaceHolder: {},
   });
   let schema = definedSchema?.items as ISchema | undefined;
-  const { subordination, columns, appID, tableID } = definedSchema?.['x-component-props'] || {};
+  const { subordination, columns, appID, tableID, rowLimit } = definedSchema?.['x-component-props'] || {};
   const isFromForeign = subordination === 'foreign_table';
   const { isInCanvas } = useContext(CanvasContext);
   const isPortal = window.SIDE === 'portal';
@@ -198,14 +198,16 @@ function SubTable({
               })}
             </div>
             <div className="border-t-1 border-gray-300 flex items-center">
-              <Icon
-                name="add"
-                size={24}
-                className={
-                  cs('m-5 font-bold cursor-pointer', portalReadOnlyClassName)
-                }
-                onClick={() => onAddRow(mutators)}
-              />
+              {rowLimit === 'multiple' && (
+                <Icon
+                  name="add"
+                  size={24}
+                  className={
+                    cs('m-5 font-bold cursor-pointer', portalReadOnlyClassName)
+                  }
+                  onClick={() => onAddRow(mutators)}
+                />
+              )}
             </div>
           </div>
         );

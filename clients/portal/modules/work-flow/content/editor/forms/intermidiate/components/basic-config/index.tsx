@@ -102,18 +102,22 @@ export default function BasicConfig({ type, value, onChange: _onChange }: Props)
   return (
     <div>
       <PersonPicker
-        typeText={typeText}
+        typeText={`${typeText}人`}
         value={value.approvePersons}
         onChange={(value) => onUpdate('approvePersons', value)}
       />
-      <div className="text-body2-no-color text-gray-600 mb-8">多人{typeText}时</div>
+      <div className="text-body2-no-color text-gray-600 mb-8">
+        <span className="text-red-600">*</span>多人{typeText}时
+      </div>
       <div className={cs('flex items-center mb-24')}>
         <RadioGroup onChange={(v) => onUpdate('multiplePersonWay', v)}>
           {multiplePersonBuilder(type === 'approve' ? '或签' : '任填', 'or')}
           {multiplePersonBuilder(type === 'approve' ? '会签' : '全填', 'and')}
         </RadioGroup>
       </div>
-      <div className="text-body2-no-color text-gray-600 mb-8">无{typeText}人时</div>
+      <div className="text-body2-no-color text-gray-600 mb-8">
+        <span className="text-red-600">*</span>无{typeText}人时
+      </div>
       <div className="flex items-center mb-24">
         <RadioGroup onChange={(v) => onUpdate('whenNoPerson', v)}>
           {noPersonBuilder('自动跳过该节点', 'skip')}

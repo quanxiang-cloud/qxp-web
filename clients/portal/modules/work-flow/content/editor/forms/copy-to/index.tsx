@@ -2,14 +2,11 @@ import React, { useEffect } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { useUpdateEffect, usePrevious } from 'react-use';
 import { isEqual } from 'lodash';
-import { Radio } from 'antd';
 
-import formFieldWrap from '@c/form-field-wrap';
 import SaveButtonGroup from '@flow/content/editor/components/_common/action-save-button-group';
 
-import UserSelect from '../../components/add-approval-user';
 import { CCData } from '../../type';
-const FieldUserSelect = formFieldWrap({ FieldFC: UserSelect });
+import PersonPicker from '../../components/_common/person-picker';
 
 type Props = {
   onSubmit: (v: CCData) => void;
@@ -19,14 +16,12 @@ type Props = {
 }
 
 function CopyTo({ defaultValue, onSubmit, onCancel, onChange }: Props): JSX.Element {
-  const { handleSubmit, control, reset, formState: { errors }, watch, unregister } = useForm();
+  const { handleSubmit, control, reset, watch } = useForm();
 
-  const FieldRadio = formFieldWrap({ FieldFC: Radio.Group });
-
-  const allFields = watch(['recivers', 'type']);
+  const allFields = watch(['approvePersons']);
   const previousFields = usePrevious(allFields);
   useUpdateEffect(() => {
-    const value = { recivers: allFields[0], type: allFields[1] };
+    const value = { approvePersons: allFields[0] };
     if (!isEqual(allFields, previousFields)) {
       onChange(value);
     }
@@ -43,45 +38,20 @@ function CopyTo({ defaultValue, onSubmit, onCancel, onChange }: Props): JSX.Elem
   return (
     <div className="flex flex-col overflow-auto flex-1 py-24">
       <Controller
-        name='type'
+        name='approvePersons'
         control={control}
         rules={{ required: '请选择接收对象' }}
+        defaultValue={defaultValue.approvePersons}
         render={({ field }) => {
           return (
-            <FieldRadio
-              label={<><span className='text-red-600'>*</span>接收对象</>}
-              className='block'
-              error={errors.sort}
-              register={field}
-              value={field.value ? field.value : ''}
-              options={[
-                { label: '指定人员', value: 'person' },
-                { label: '流程发起人', value: 'processInitiator' },
-              ]}
-              onChange={(e) => {
-                if (e.target.value === 'processInitiator')unregister('recivers');
-                field.onChange(e.target.value);
-              }}
+            <PersonPicker
+              typeText='接收对象'
+              value={field.value}
+              onChange={field.onChange}
             />
           );
         }}
       />
-      { allFields[1] === 'person' && (
-        <Controller
-          name='recivers'
-          control={control}
-          rules={{ required: '请选择接收对象' }}
-          render={({ field }) => {
-            return (
-              <FieldUserSelect
-                error={errors.recivers}
-                register={field}
-                value={field.value || []}
-              />
-            );
-          }}
-        />
-      )}
       <SaveButtonGroup onCancel={onCancel} onSave={handleSubmit(handleSave)} />
     </div>
   );

@@ -1,5 +1,7 @@
 import {
-  convertEnumsToLabels, getSchemaPermissionFromSchemaConfig, getDisplayModifierFromSchema,
+  convertSingleSelectDefault,
+  getDisplayModifierFromSchema,
+  getSchemaPermissionFromSchemaConfig,
 } from '@c/form-builder/utils';
 
 export interface RadioGroupConfig {
@@ -12,7 +14,7 @@ export interface RadioGroupConfig {
   allowCustom: boolean;
   defaultValueFrom: FormBuilder.DefaultValueFrom;
   datasetId: string;
-  availableOptions: string[],
+  availableOptions: Array<Record<string, string | boolean>>,
 }
 
 export const defaultConfig: RadioGroupConfig = {
@@ -25,7 +27,11 @@ export const defaultConfig: RadioGroupConfig = {
   allowCustom: false,
   defaultValueFrom: 'customized',
   datasetId: '',
-  availableOptions: ['选项一', '选项二', '选项三'],
+  availableOptions: [
+    { label: '选项一', isDefault: false },
+    { label: '选项二', isDefault: false },
+    { label: '选项三', isDefault: false },
+  ],
 };
 
 export function toSchema(value: typeof defaultConfig): ISchema {
@@ -36,7 +42,10 @@ export function toSchema(value: typeof defaultConfig): ISchema {
     required: value.required,
     readOnly: value.displayModifier === 'readonly',
     display: value.displayModifier !== 'hidden',
-    enum: value.availableOptions || [],
+    default: convertSingleSelectDefault(value.availableOptions.find(({ isDefault }) => isDefault) || {}),
+    enum: value.availableOptions.map((op) => {
+      return op.label as string;
+    }) || [],
     'x-component': 'RadioGroup',
     // todo support optionsLayout
     ['x-component-props']: {
@@ -64,6 +73,11 @@ export function toConfig(schema: ISchema): RadioGroupConfig {
     allowCustom: schema['x-component-props']?.allowCustom,
     defaultValueFrom: schema['x-internal']?.defaultValueFrom || 'customized',
     datasetId: schema['x-component-props']?.datasetId,
-    availableOptions: convertEnumsToLabels(schema.enum as Array<string | LabelValue>),
+    availableOptions: schema.enum?.map((label) => {
+      return {
+        label: label,
+        isDefault: label === schema.default,
+      };
+    }) as any,
   };
 }

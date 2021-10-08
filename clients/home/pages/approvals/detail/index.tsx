@@ -89,7 +89,7 @@ function ApprovalDetail(): JSX.Element {
       <div className='task-form'>
         <FormRenderer
           defaultValue={task.formData}
-          schema={task.formSchema.table}
+          schema={task.formSchema || {}}
           onFormValueChange={setFormValues}
           usePermission
         />

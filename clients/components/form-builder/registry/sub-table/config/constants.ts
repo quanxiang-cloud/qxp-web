@@ -10,12 +10,12 @@ import {
   Radio,
 } from '@formily/antd-components';
 
+import EditLabels from '@c/form-builder/form-settings-panel/form-field-config/edit-labels';
 import DefaultValueLinkageConfigBtn from
   '@c/form-builder/form-settings-panel/form-field-config/default-value-linkage-config-btn';
-import InputForLabels from '@c/form-builder/form-settings-panel/form-field-config/input-for-labels';
+// import InputForLabels from '@c/form-builder/form-settings-panel/form-field-config/input-for-labels';
 import DatasetConfig from '@c/form-builder/form-settings-panel/form-field-config/dataset-config';
 import CalculationFormulaBtn from '@c/form-builder/form-settings-panel/form-field-config/calculation-formula-btn';
-
 import input from '../../../registry/input';
 import textarea from '../../../registry/textarea';
 import radiogroup from '../../../registry/radio-group';
@@ -30,6 +30,7 @@ import fileupload from '../../../registry/file-upload';
 import imageupload from '../../../registry/image-upload';
 import cascadeselector from '../../../registry/cascade-selector';
 import associateddata from '../../../registry/associated-data';
+
 import SubTableSchema from './fields/sub-table-schema';
 import SubTableColumns from './fields/sub-table-columns';
 import Subordination from './fields/subordination';
@@ -66,7 +67,7 @@ export const COMPONENTS: Record<string, JSXElementConstructor<ISchemaFieldCompon
   switch: Switch,
   // todo delete this
   arraytable: ArrayTable,
-  inputforlabels: InputForLabels,
+  editlabels: EditLabels,
   addoperate: AddOperate,
   numberpicker: NumberPicker,
   datepicker: DatePicker,
