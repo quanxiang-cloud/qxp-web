@@ -106,6 +106,7 @@ declare global {
     childCount?: number;
     menuType?: number;
     sort?: number;
+    isHide?: boolean;
   }
 
   type PerPageInfo = PageInfo & { authority: number };
