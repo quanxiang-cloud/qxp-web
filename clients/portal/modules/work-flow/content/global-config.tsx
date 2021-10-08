@@ -60,9 +60,14 @@ export default function GlobalConfig(): JSX.Element | null {
   const formulaEditorRef = useRef<RefProps>();
   const { appID, flowID } = useContext(FlowContext);
   const formDataElement = getFormDataElement();
+  const hasAssociativeTable = !!(formDataElement.data.businessData.form.value && appID);
   const { data: fieldList, isLoading } = useQuery(
     ['GET_FIELD_LIST', formDataElement.data.businessData.form.value, appID],
     async ({ queryKey }) => {
+      if (!hasAssociativeTable) {
+        return [];
+      }
+
       const schema = await getFormFieldSchema({ queryKey });
       const schemaFields = schemaToFields(schema);
       return schemaFields.filter((fieldSchema) => {
@@ -308,7 +313,7 @@ export default function GlobalConfig(): JSX.Element | null {
                   defaultValue={keyFields ? keyFields.split(',') : []}
                   onChange={(fields) => {
                     const newFields = fieldList?.map(
-                      (listItem)=> fields.find((item)=> item === listItem.value),
+                      (listItem) => fields.find((item) => item === listItem.value),
                     ).filter(Boolean) || [];
                     field.onChange(newFields.length ? newFields.join(',') : '');
                   }}
@@ -319,7 +324,7 @@ export default function GlobalConfig(): JSX.Element | null {
             />
           </div>
           <div>
-            <Button modifier='primary' type='submit'>保存</Button>
+            <Button forbidden={!hasAssociativeTable} modifier='primary' type='submit'>保存</Button>
           </div>
         </form>
       </div>
