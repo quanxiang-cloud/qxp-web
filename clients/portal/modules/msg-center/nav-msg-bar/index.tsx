@@ -17,10 +17,11 @@ import { getQuery } from '@portal/utils';
 import styles from './index.module.scss';
 
 type Props = {
+  type?: string
   className?: string;
 }
 
-const NavMsgBar = ({ className }: Props): JSX.Element => {
+const NavMsgBar = ({ type, className }: Props): JSX.Element => {
   const toggleRef = useRef(null);
   const msgBoxRef = useRef(null);
   const queryClient = useQueryClient();
@@ -82,18 +83,19 @@ const NavMsgBar = ({ className }: Props): JSX.Element => {
       <div className={cs(className, styles.wrap, 'group')}>
         <div
           className={cs(
-            'relative flex justify-center items-center cursor-pointer text-blue-100',
-            'group-hover:bg-blue-500',
-            'group-hover:text-gray-50',
+            'relative cursor-pointer text-blue-100',
             styles.navItem,
+            { 'text-gray-50 group-hover:bg-blue-500': type !== 'portal',
+              'text-gray-400 group-hover:bg-gray-100 hover:text-gray-600': type === 'portal',
+            },
           )}
           onClick={() => openUnreadMsgBox(true)}
           ref={toggleRef}
         >
           <Icon
-            name="home_bell"
-            className="text-current"
-            size={20}
+            name={type === 'portal' ? 'portal_bell' : 'home_bell'}
+            className='text-current m-6'
+            size={21}
           />
           {countUnread > 0 && <BtnBadge className={styles.count_btn} count={countUnread}/>}
         </div>
