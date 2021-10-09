@@ -4,10 +4,8 @@ import { observer } from 'mobx-react';
 
 import DragDrop from '../components/drag-drop';
 import FieldRender from '../components/field-render';
-
 import { StoreContext } from '../context';
 import CanvasContext from '../canvas-context';
-
 import useHasFields from './use-fields';
 
 setValidationLanguage('zh');

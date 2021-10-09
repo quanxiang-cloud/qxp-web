@@ -2,13 +2,13 @@
 type DraggingStyleParam = {
   isActive: boolean;
   isDragging: boolean;
-  position: string;
+  position: DragPosition;
   dropId: string;
 }
 
 export function draggingStyle({
   isActive = false,
-  position = '',
+  position = 'up',
   dropId = '',
 }: DraggingStyleParam): typeof overwriteStyle {
   const overwriteStyle = {

@@ -27,8 +27,16 @@ function Placeholder({ props }: Props): JSX.Element {
     });
   });
 
+  if (cols.length <= 0) {
+    return <>暂无数据</>;
+  }
+
   return (
-    <Table columns={cols.concat(DEFAULT_COL)} data={[{ id: 'data' }]} rowKey='id' />
+    <Table
+      columns={cols.concat(DEFAULT_COL)}
+      data={[{ id: 'data' }]}
+      rowKey='id'
+    />
   );
 }
 

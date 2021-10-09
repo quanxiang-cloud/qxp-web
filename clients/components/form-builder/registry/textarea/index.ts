@@ -2,6 +2,7 @@ import { Input } from '@formily/antd-components';
 
 import { validateRegistryElement } from '@c/form-builder/utils';
 
+import Placeholder from './placeholder';
 import configSchema from './config-schema';
 import { defaultConfig, TextareaConfig, toConfig, toSchema } from './convertor';
 
@@ -13,6 +14,7 @@ const TextArea: Omit<FormBuilder.SourceElement<TextareaConfig>, 'displayOrder'> 
   icon: 'notes',
   defaultConfig: defaultConfig,
   component: Input.TextArea,
+  placeholderComponent: Placeholder,
   category: 'basic',
   componentName: 'textarea',
   compareOperators: ['~'],

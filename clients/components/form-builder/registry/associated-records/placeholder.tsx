@@ -14,7 +14,7 @@ const DEFAULT_COL = [{
 }];
 
 function Placeholder({ props }: any): JSX.Element {
-  const [cols, setCols] = useState(DEFAULT_COL);
+  const [cols, setCols] = useState([]);
   const { columns, appID, tableID } = props?.['x-component-props'] || {};
 
   const getTableData = useCallback(
@@ -51,6 +51,10 @@ function Placeholder({ props }: any): JSX.Element {
   useEffect(() => {
     getTableData(columns, appID, tableID);
   }, [appID, tableID, columns]);
+
+  if (cols.length <= 0) {
+    return <>无关联记录</>;
+  }
 
   return (
     <Table

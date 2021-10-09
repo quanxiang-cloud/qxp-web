@@ -55,7 +55,6 @@ function FieldRender({ schema }: Props): JSX.Element {
           return (
             <div
               key={get(field, 'x-internal.fieldId')}
-              data-ix='ii'
               style={handleEntireRowStyle(field)}
             >
               <FieldItem {...field} />
