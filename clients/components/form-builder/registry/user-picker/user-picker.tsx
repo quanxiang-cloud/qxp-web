@@ -49,8 +49,8 @@ const UserPicker = ({
 
     if (optionalRange === 'currentUser' || defaultRange === 'currentUser') {
       onChange?.(currentUser);
-    } else {
-      onChange?.(defaultValues || []);
+    } else if (defaultValues) {
+      onChange?.(defaultValues);
     }
   }, [optionalRange, componentsProps.mode, defaultRange]);
 
@@ -97,7 +97,7 @@ const UserPicker = ({
   );
 };
 
-const AllUserPicker = ({ appID, ...otherProps }: AllUserPickerProps): JSX.Element | null => {
+const AllUserPicker = ({ appID, value, ...otherProps }: AllUserPickerProps): JSX.Element | null => {
   const [options, setOptions] = useState<Option[]>([]);
   const [loading, setLoading] = useState(false);
   const [hasNext, setHasNext] = useState<boolean>(false);
@@ -139,6 +139,7 @@ const AllUserPicker = ({ appID, ...otherProps }: AllUserPickerProps): JSX.Elemen
 
   const componentsProps = {
     ...otherProps,
+    value: value || undefined,
     loading,
     onSearch: debounce(_setKeyword, 500),
     showSearch: true,

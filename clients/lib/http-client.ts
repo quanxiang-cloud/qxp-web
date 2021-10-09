@@ -1,6 +1,6 @@
 import qs from 'qs';
 import { CustomPageInfo, SchemaPageInfo } from '@portal/modules/apps-management/pages/app-details/type';
-import type { ESParameter } from '@c/data-filter/utils';
+import { ESParameter, toEs } from '@c/data-filter/utils';
 import schemaToFields from '@lib/schema-convert';
 
 let alreadyAlertUnauthorizedError = false;
@@ -83,9 +83,12 @@ export type SubTableUpdateData = {
 }
 
 export type FormDataRequestUpdateParamsRef = Record<string, SubTableUpdateData & {
-  type: 'sub_table' | 'foreign_table' | 'serial';
+  type: 'sub_table' | 'foreign_table' | 'serial' | 'aggregation';
   appID?: string;
   tableID?: string;
+  sourceFieldId?: string;
+  aggs?: Record<string, any>;
+  query?: ESParameter;
 }>;
 
 export type FormDataResponse = { entity: Record<string, any>[]; errorCount: number; total: number };
@@ -143,20 +146,50 @@ export function editFormDataRequest(
   );
 }
 
-export function buildQueryRef(schema: ISchema) :FormDataRequestUpdateParamsRef {
-  const subTableFields = schemaToFields(schema, (schemaField) => {
-    return schemaField['x-component'] === 'SubTable';
+export function buildQueryRef(schema: ISchema): FormDataRequestUpdateParamsRef {
+  const refFields = schemaToFields(schema, (schemaField) => {
+    return ['SubTable', 'AggregationRecords'].includes(schemaField['x-component'] || '');
   });
 
   const ref: FormDataRequestUpdateParamsRef = {};
-  if (subTableFields.length) {
-    subTableFields.forEach((field) => {
-      const { subordination, appID, tableID } = field?.['x-component-props'] || {};
-      ref[field.id] = {
-        type: subordination || 'sub_table',
-        appID,
-        tableID,
-      };
+  if (refFields.length) {
+    refFields.forEach((field) => {
+      switch (field.componentName) {
+      case 'subtable': {
+        const { subordination, appID, tableID } = field?.['x-component-props'] || {};
+        ref[field.id] = {
+          type: subordination || 'sub_table',
+          appID,
+          tableID,
+        };
+        break;
+      }
+      case 'aggregationrecords': {
+        const {
+          sourceFieldId,
+          appID,
+          tableID,
+          aggType,
+          fieldName,
+          condition,
+        } = field?.['x-component-props'] || {};
+        ref[field.id] = {
+          type: 'aggregation',
+          query: toEs(condition),
+          tableID,
+          appID,
+          sourceFieldId,
+          aggs: {
+            [fieldName]: {
+              [aggType]: {
+                field: sourceFieldId,
+              },
+            },
+          },
+        };
+        break;
+      }
+      }
     });
   }
 
