@@ -89,7 +89,7 @@ export type FormDataRequestUpdateParamsRef = Record<string, SubTableUpdateData &
   sourceFieldId?: string;
   aggType?: string;
   fieldName?: string;
-  query?: ESParameter;
+  query?: ESParameter | null;
 }>;
 
 export type FormDataResponse = { entity: Record<string, any>[]; errorCount: number; total: number };
@@ -174,9 +174,10 @@ export function buildQueryRef(schema: ISchema): FormDataRequestUpdateParamsRef {
           fieldName,
           condition,
         } = field?.['x-component-props'] || {};
+
         ref[field.id] = {
           type: 'aggregation',
-          query: toEs(condition),
+          query: condition ? toEs(condition) : null,
           tableID,
           appID,
           sourceFieldId,
