@@ -1,5 +1,4 @@
 import React, { JSXElementConstructor } from 'react';
-
 import { Row, Col } from 'antd';
 
 import { LAYOUT_COL_SPAN } from './constant';
@@ -28,7 +27,6 @@ function FieldContent({
           <Row><Comp props={{ ...field }} /></Row>
           {description && <Row><span className='description'>{description}</span></Row>}
         </Col>)}
-
     </>
   );
 }
