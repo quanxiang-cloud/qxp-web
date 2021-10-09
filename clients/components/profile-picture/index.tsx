@@ -16,7 +16,7 @@ export default function ProfilePicture({ className }: Props): JSX.Element {
   const [openResetPasswordModal, setOpenResetPasswordModal] = useState<boolean>(false);
   const [side, setSide] = useState('');
   const reference = useRef<HTMLDivElement>(null);
-  const popperRef = React.useRef<Popper>(null);
+  const popperRef = useRef<Popper>(null);
 
   useEffect(() => {
     setSide(window.SIDE);
@@ -43,7 +43,7 @@ export default function ProfilePicture({ className }: Props): JSX.Element {
         ref={reference}
       >
         <Avatar
-          username={window.USER.userName}
+          username={window.USER?.userName || ''}
         />
         <Icon name="arrow_drop_down" size={20} />
       </div>
@@ -55,7 +55,7 @@ export default function ProfilePicture({ className }: Props): JSX.Element {
           <div className='avatar-bg flex py-20'>
             <div className='pl-20'>
               <Avatar
-                username={window.USER.userName}
+                username={window.USER?.userName || ''}
                 size={48}
               />
             </div>

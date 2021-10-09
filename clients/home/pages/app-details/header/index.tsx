@@ -1,20 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { observer } from 'mobx-react';
 import { useHistory, useParams } from 'react-router-dom';
-import cs from 'classnames';
 
 import HeaderNav from '@c/header-nav';
 import toast from '@lib/toast';
 import Select from '@c/select';
 import AppsSwitcher from '@c/apps-switcher';
-import Avatar from '@c/avatar';
-import Icon from '@c/icon';
-import MoreMenu from '@c/more-menu';
+import ProfilePicture from '@c/profile-picture';
 
 import { fetchUserList, getPerOption, roleChange } from '../../../lib/api';
 import store from '../store';
 import './index.scss';
-import ResetPasswordModal from '../../../components/global-header/reset-password-modal';
 
 type PerItem = {
   id: string;
@@ -32,7 +28,6 @@ function DetailsHeader(): JSX.Element {
   const [options, setOptions] = useState<{ value: string, label: string }[]>([]);
   const [curRole, setCurRole] = useState<string>();
   const { appID } = useParams<{ appID: string }>();
-  const [openResetPasswordModal, setOpenResetPasswordModal] = useState<boolean>(false);
 
   useEffect(() => {
     getPerOption<PerRes>(appID).then((res) => {
@@ -65,10 +60,6 @@ function DetailsHeader(): JSX.Element {
 
   return (
     <div className="app-global-header app-details-header">
-      <ResetPasswordModal
-        visible={openResetPasswordModal}
-        onCancel={() => setOpenResetPasswordModal(false)}
-      />
       <div className='flex items-center'>
         <HeaderNav {...{ name: '工作台', icon: 'home_add_task', inside: true, url: '/' }} />
         <span className='mr-16 ml-8'>/</span>
@@ -86,34 +77,7 @@ function DetailsHeader(): JSX.Element {
             <Select value={curRole} onChange={handleRoleChange} className='w-144' options={options} />
           </div>
         )}
-        <MoreMenu
-          menus={[
-            { key: 'resetPassword', label: '重置密码' },
-            { key: 'logout', label: '登出' },
-          ]}
-          onMenuClick={(menuKey) => {
-            if (menuKey === 'logout') {
-              window.location.href = '/logout';
-              return;
-            }
-
-            setOpenResetPasswordModal(true);
-          }}
-        >
-          <div
-            className={
-              cs(
-                'cursor-pointer flex items-center h-36 hover:blue-100',
-                'transition group-hover:text-blue-600 ml-20',
-              )
-            }
-          >
-            <Avatar
-              username={window.USER.userName}
-            />
-            <Icon name="arrow_drop_down" size={20} />
-          </div>
-        </MoreMenu>
+        <ProfilePicture />
       </div>
     </div>
   );
