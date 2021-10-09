@@ -95,7 +95,7 @@ export type Operator = 'eq' | 'neq' | 'gt' | 'gte' | 'lt' | 'lte' | 'null' | 'no
 export type TriggerConditionValue = {
   key: string;
   op: Operator;
-  value: string | string[];
+  value: any;
 }
 export type TriggerConditionExpressionItem = TriggerCondition | TriggerConditionValue;
 export type TriggerConditionExpression = TriggerConditionExpressionItem[]

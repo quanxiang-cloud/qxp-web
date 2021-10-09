@@ -15,6 +15,7 @@ import type {
 } from '@flow/content/editor/type';
 import FormRender from '@c/form-builder/form-renderer';
 import { COMPONENT_OPERATORS_MAP, OPERATOR_OPTIONS } from '@flow/content/editor/utils/constants';
+import { getFieldValuePath } from '@flow/content/editor/forms/utils';
 
 const { RangePicker } = DatePicker;
 
@@ -28,7 +29,7 @@ interface Props {
 export type ConditionItemOptions = FormFieldOption[];
 
 export default function ConditionItem({ condition, options, onChange, schemaMap }: Props): JSX.Element {
-  const value = condition.key;
+  const value = condition.key.split('.')[0]; // key maybe like: `field_x.value`
   const currentOption = options.find((option) => option.value === value);
 
   const currentSchema: SchemaFieldItem | Record<string, any> = schemaMap?.[value || ''] || {};
@@ -47,7 +48,8 @@ export default function ConditionItem({ condition, options, onChange, schemaMap 
   };
 
   function onFieldChange(value: string): void {
-    onChange({ key: value });
+    const valuePath = getFieldValuePath(schemaMap?.[value]);
+    onChange({ key: valuePath ? [value, valuePath].join('.') : value });
   }
 
   function fieldOperatorOptionsFilter(
