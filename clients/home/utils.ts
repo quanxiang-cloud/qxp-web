@@ -54,17 +54,17 @@ export function formDataDiff(
       const deleted = parseDeleted(oldValue, cValue);
       const newValues: Values[] = [];
       const updatedValues = (cValue as Record<string, any>[]).reduce<Record<string, any>[]>((acc, _value) => {
-        const _oldValue = (oldValue as Record<string, any>[]).find(({ _id }) => _id === _value._id);
+        const _oldValue = ((oldValue || []) as Record<string, any>[]).find(({ _id }) => _id === _value._id);
         if (_oldValue) {
           const _newValue = formDataDiff(
             _value,
             _oldValue,
-            (schemaMap[fieldKey].items || window[`schema-${fieldKey}`]) as ISchema,
+              (schemaMap[fieldKey].items || window[`schema-${fieldKey}`]) as ISchema,
           );
           return isEmpty(_newValue) ? acc : [...acc, { ..._newValue, _id: _value._id }];
         }
 
-        newValues.push(_value);
+        !isEmpty(_value) && newValues.push(_value);
         return acc;
       }, []);
 
@@ -76,7 +76,7 @@ export function formDataDiff(
     case 'CheckboxGroup':
     case 'MultipleSelect':
     case 'AssociatedRecords': {
-      if (oldValue.sort().toString() !== cValue.sort().toString()) {
+      if (oldValue?.sort().toString() !== cValue.sort().toString()) {
         resultValue[fieldKey] = cValue;
       }
       break;
@@ -159,12 +159,18 @@ function buildRef(
           _ref = subRef;
         }
 
-        ref[field.id] = {
-          type: subordination || 'sub_table',
-          appID,
-          tableID,
-          ...buildSubTableParams(type, values?.[field.id], _ref),
-        };
+        const _values = values?.[field.id].filter((_value: any) => {
+          return !isEmpty(_value);
+        });
+
+        if (_values.length) {
+          ref[field.id] = {
+            type: subordination || 'sub_table',
+            appID,
+            tableID,
+            ...buildSubTableParams(type, _values, _ref),
+          };
+        }
       }
         break;
       case 'Serial':
