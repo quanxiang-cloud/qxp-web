@@ -61,6 +61,7 @@ export function formDataDiff(
             _oldValue,
               (schemaMap[fieldKey].items || window[`schema-${fieldKey}`]) as ISchema,
           );
+
           return isEmpty(_newValue) ? acc : [...acc, { ..._newValue, _id: _value._id }];
         }
 
@@ -160,7 +161,7 @@ function buildRef(
         }
 
         const _values = values?.[field.id].filter((_value: any) => {
-          return !isEmpty(_value);
+          return !isEmpty(_value) || Array.isArray(_value);
         });
 
         if (_values.length) {
