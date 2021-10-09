@@ -35,7 +35,7 @@ export default function SideNavCard({
   return (
     <div className={`bg-white rounded-12 ${className}`}>
       {cardTitle ? cardTitle : null}
-      <div className="p-20">
+      <div className="px-20 py-16">
         <ul className="w-auto">
           {menuData.map(({ id, icon, name, url, authority }) => {
             return (

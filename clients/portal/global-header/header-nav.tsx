@@ -7,7 +7,7 @@ export default function HeaderLeft(): JSX.Element {
   const location = useLocation();
 
   return (
-    <div className="flex items-center flex-2">
+    <div className="flex items-center flex-2 my-10">
       {/* <NavLink
         to="/"
         activeClassName="global-header-nav--active"

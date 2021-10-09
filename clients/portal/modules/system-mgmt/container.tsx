@@ -45,7 +45,7 @@ const Container = ({
 
   return (
     <div
-      className={cs('py-20 px-58 flex justify-center items-start flex-grow overflow-hidden', className)}
+      className={cs('app-entry-container', className)}
       style={style}
     >
       {!hideInfoCard && <InfoCard/>}
@@ -56,7 +56,7 @@ const Container = ({
             {children}
           </>
         ) : (
-          <div className="h-full flex-grow bg-white rounded-12 overflow-hidden">
+          <div className="app-right-box">
             {children}
           </div>
         )
