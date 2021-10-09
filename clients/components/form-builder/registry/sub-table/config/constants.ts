@@ -10,42 +10,26 @@ import {
   Radio,
 } from '@formily/antd-components';
 
-import InputForLabels from '@c/form-builder/form-settings-panel/form-field-config/input-for-labels';
-import DatasetConfig from '@c/form-builder/form-settings-panel/form-field-config/dataset-config';
-import input from '@c/form-builder/registry/input';
-import textarea from '@c/form-builder/registry/textarea';
-import radiogroup from '@c/form-builder/registry/radio-group';
-import checkboxgroup from '@c/form-builder/registry/checkbox-group';
-import numberpicker from '@c/form-builder/registry/number-picker';
-import datepicker from '@c/form-builder/registry/date-picker';
-import select from '@c/form-builder/registry/select';
-import multipleselect from '@c/form-builder/registry/multiple-select';
-import userpicker from '@c/form-builder/registry/user-picker';
-import organizationpicker from '@c/form-builder/registry/organization-select';
-import fileupload from '@c/form-builder/registry/file-upload';
-import imageupload from '@c/form-builder/registry/image-upload';
-import cascadeselector from '@c/form-builder/registry/cascade-selector';
-import associateddata from '@c/form-builder/registry/associated-data';
+import EditLabels from '@c/form-builder/form-settings-panel/form-field-config/edit-labels';
 import DefaultValueLinkageConfigBtn from
   '@c/form-builder/form-settings-panel/form-field-config/default-value-linkage-config-btn';
-import CalculationFormulaBtn
-  from '@c/form-builder/form-settings-panel/form-field-config/calculation-formula-btn';
-
-import * as inputConvertor from '@c/form-builder/registry/input/convertor';
-import * as textareaConvertor from '@c/form-builder/registry/textarea/convertor';
-import * as numberConvertor from '@c/form-builder/registry/number-picker/convertor';
-import * as datetimeConvertor from '@c/form-builder/registry/date-picker/convertor';
-import * as selectorConvertor from '@c/form-builder/registry/select/convertor';
-import * as radioConvertor from '@c/form-builder/registry/radio-group/convertor';
-import * as checkboxConvertor from '@c/form-builder/registry/checkbox-group/convertor';
-import * as userPickerConvertor from '@c/form-builder/registry/user-picker/convertor';
-import * as organizationPickerConvertor from '@c/form-builder/registry/organization-select/convertor';
-import * as fileUploadConvertor from '@c/form-builder/registry/file-upload/convertor';
-import * as imageUploadConvertor from '@c/form-builder/registry/image-upload/convertor';
-import * as cascadeSelectorConvertor from '@c/form-builder/registry/cascade-selector/convertor';
-import * as associatedDataConvertor from '@c/form-builder/registry/associated-data/convertor';
-import * as multipleSelectorConvertor
-  from '@c/form-builder/registry/multiple-select/convertor';
+// import InputForLabels from '@c/form-builder/form-settings-panel/form-field-config/input-for-labels';
+import DatasetConfig from '@c/form-builder/form-settings-panel/form-field-config/dataset-config';
+import CalculationFormulaBtn from '@c/form-builder/form-settings-panel/form-field-config/calculation-formula-btn';
+import input from '../../../registry/input';
+import textarea from '../../../registry/textarea';
+import radiogroup from '../../../registry/radio-group';
+import checkboxgroup from '../../../registry/checkbox-group';
+import numberpicker from '../../../registry/number-picker';
+import datepicker from '../../../registry/date-picker';
+import select from '../../../registry/select';
+import multipleselect from '../../../registry/multiple-select';
+import userpicker from '../../../registry/user-picker';
+import organizationpicker from '../../../registry/organization-select';
+import fileupload from '../../../registry/file-upload';
+import imageupload from '../../../registry/image-upload';
+import cascadeselector from '../../../registry/cascade-selector';
+import associateddata from '../../../registry/associated-data';
 
 import SubTableSchema from './fields/sub-table-schema';
 import SubTableColumns from './fields/sub-table-columns';
@@ -55,6 +39,22 @@ import { AddOperate } from './fields/operates';
 import CustomizedDatasetBtn from '../../cascade-selector/customized-dataset-btn';
 import DataSetSelector from '../../cascade-selector/dataset-selector';
 import CheckboxGroup from '../../checkbox-group/checkboxGroup';
+
+import * as inputConverter from '../../../registry/input/convertor';
+import * as textareaConverter from '../../../registry/textarea/convertor';
+import * as numberConverter from '../../../registry/number-picker/convertor';
+import * as datetimeConverter from '../../../registry/date-picker/convertor';
+import * as selectorConvertor from '../../../registry/select/convertor';
+import * as radioConvertor from '../../../registry/radio-group/convertor';
+import * as checkboxConvertor from '../../../registry/checkbox-group/convertor';
+import * as userPickerConverter from '../../../registry/user-picker/convertor';
+import * as organizationPickerConverter from '../../../registry/organization-select/convertor';
+import * as fileUploadConverter from '../../../registry/file-upload/convertor';
+import * as imageUploadConverter from '../../../registry/image-upload/convertor';
+import * as cascadeSelectorConverter from '../../../registry/cascade-selector/convertor';
+import * as associatedDataConverter from '../../../registry/associated-data/convertor';
+import * as multipleSelectorConvertor
+  from '../../../registry/multiple-select/convertor';
 
 export const COMPONENTS: Record<string, JSXElementConstructor<ISchemaFieldComponentProps>> = {
   textarea: Input.TextArea,
@@ -67,7 +67,7 @@ export const COMPONENTS: Record<string, JSXElementConstructor<ISchemaFieldCompon
   switch: Switch,
   // todo delete this
   arraytable: ArrayTable,
-  inputforlabels: InputForLabels,
+  editlabels: EditLabels,
   addoperate: AddOperate,
   numberpicker: NumberPicker,
   datepicker: DatePicker,
@@ -83,6 +83,7 @@ export const COMPONENTS: Record<string, JSXElementConstructor<ISchemaFieldCompon
 export type KeyOfConfigComponent = keyof typeof CONFIG_COMPONENTS;
 
 export const CONFIG_COMPONENTS = {
+  ...COMPONENTS,
   input,
   textarea,
   radiogroup,
@@ -106,7 +107,7 @@ export const SUPPORTED_COMPONENTS_NAMES = [
   'select', 'multipleselect',
   'userpicker', 'organizationpicker',
   'fileupload', 'imageupload',
-  'cascadeselector', 'associateddata', 'serial',
+  'cascadeselector', 'associateddata',
 ];
 
 export const LINKED_TABLE = { appID: '', tableID: '', tableName: '' };
@@ -123,20 +124,20 @@ export const SUB_TABLE_TYPES_SCHEMA_MAP: Record<string, ISchema> = {
     'x-internal': { isSystem: true, permission: 3 },
     'x-mega-props': { labelCol: 4 },
   },
-  input: inputConvertor.toSchema(inputConvertor.defaultConfig),
-  textarea: textareaConvertor.toSchema(textareaConvertor.defaultConfig),
+  input: inputConverter.toSchema(inputConverter.defaultConfig),
+  textarea: textareaConverter.toSchema(textareaConverter.defaultConfig),
   radiogroup: radioConvertor.toSchema(radioConvertor.defaultConfig),
   checkboxgroup: checkboxConvertor.toSchema(checkboxConvertor.defaultConfig),
-  numberpicker: numberConvertor.toSchema(numberConvertor.defaultConfig),
-  datepicker: datetimeConvertor.toSchema(datetimeConvertor.defaultConfig),
+  numberpicker: numberConverter.toSchema(numberConverter.defaultConfig),
+  datepicker: datetimeConverter.toSchema(datetimeConverter.defaultConfig),
   select: selectorConvertor.toSchema(selectorConvertor.defaultConfig),
   multipleselect: multipleSelectorConvertor.toSchema(multipleSelectorConvertor.defaultConfig),
-  userpicker: userPickerConvertor.toSchema(userPickerConvertor.defaultConfig),
-  organizationpicker: organizationPickerConvertor.toSchema(organizationPickerConvertor.defaultConfig),
-  fileupload: fileUploadConvertor.toSchema(fileUploadConvertor.defaultConfig),
-  imageupload: imageUploadConvertor.toSchema(imageUploadConvertor.defaultConfig),
-  cascadeselector: cascadeSelectorConvertor.toSchema(cascadeSelectorConvertor.defaultConfig),
-  associateddata: associatedDataConvertor.toSchema(associatedDataConvertor.defaultConfig),
+  userpicker: userPickerConverter.toSchema(userPickerConverter.defaultConfig),
+  organizationpicker: organizationPickerConverter.toSchema(organizationPickerConverter.defaultConfig),
+  fileupload: fileUploadConverter.toSchema(fileUploadConverter.defaultConfig),
+  imageupload: imageUploadConverter.toSchema(imageUploadConverter.defaultConfig),
+  cascadeselector: cascadeSelectorConverter.toSchema(cascadeSelectorConverter.defaultConfig),
+  associateddata: associatedDataConverter.toSchema(associatedDataConverter.defaultConfig),
 };
 
 export const SUB_TABLE_TYPES = [

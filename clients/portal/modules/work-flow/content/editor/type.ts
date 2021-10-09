@@ -155,7 +155,14 @@ export type TimeRule = {
   deadLine: DeadLine;
   whenTimeout: WhenTimeout;
 }
-export type ApprovePersonType = 'person' | 'field' | 'position' | 'superior' | 'leadOfDepartment' | 'processInitiator';
+export type ApprovePersonType =
+|'person'
+| 'field'
+| 'position'
+| 'superior'
+| 'leadOfDepartment'
+| 'processInitiator';
+
 export type ApprovePerson = {
   type: ApprovePersonType;
   users: EmployeeOrDepartmentOfRole[];
@@ -257,23 +264,20 @@ export type Receiver = {
   account: string,
 }
 export interface SendEmailData {
-  type: ApprovePersonType;
-  recivers: Receiver[];
+  approvePersons: ApprovePerson;
   content: string;
   templateId: string;
   title: string;
   mes_attachment: Attachment[];
 }
 export interface WebMessageData {
-  type: ApprovePersonType;
-  recivers: Receiver[];
+  approvePersons: ApprovePerson;
   sort: 1 | 2;
   content: string;
   title: string;
 }
 export interface CCData {
-  type: ApprovePersonType;
-  recivers: Receiver[];
+  approvePersons: ApprovePerson;
 }
 export interface FieldValue {
   variable: string;

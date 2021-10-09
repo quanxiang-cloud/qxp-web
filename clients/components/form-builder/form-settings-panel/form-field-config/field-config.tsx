@@ -7,8 +7,9 @@ import { observer } from 'mobx-react';
 import { toJS } from 'mobx';
 
 import { FieldConfigContext } from './context';
-import { addOperate } from '../../registry/operates';
+import { AddOperate } from '../../registry/operates';
 import DefaultValueLinkageConfigBtn from './default-value-linkage-config-btn';
+import EditLabels from './edit-labels';
 import CalculationFormulaBtn from './calculation-formula-btn';
 import InputForLabels from './input-for-labels';
 
@@ -22,7 +23,8 @@ const COMMON_CONFIG_COMPONENTS = {
   CheckboxGroup: Checkbox.Group,
   Select,
   Switch,
-  addOperate,
+  AddOperate,
+  EditLabels,
   DefaultValueLinkageConfigBtn,
   CalculationFormulaBtn,
   InputForLabels,

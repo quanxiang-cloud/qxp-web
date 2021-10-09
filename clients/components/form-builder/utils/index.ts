@@ -334,6 +334,18 @@ export function convertEnumsToLabels(labelValues: Array<string | LabelValue>): s
       return option;
     }
 
-    return option.label;
+    return option?.label;
   });
+}
+
+export function convertMultipleSelectDefaults(Enum: Array<Record<string, string | boolean>>): string[] {
+  return Enum.filter(({ isDefault }) => isDefault).map(({ label }) => label as string);
+}
+
+export function convertSingleSelectDefault(defaultOption: Record<string, string | boolean>): string {
+  if (defaultOption) {
+    return defaultOption.label as string;
+  }
+
+  return '';
 }

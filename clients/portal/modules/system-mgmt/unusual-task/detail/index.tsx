@@ -27,8 +27,13 @@ function UnusualTaskDetail(): JSX.Element {
   const [currAction, setCurrAction] = useState<Actions | ''>('');
   const [modalType, setModalType] = useState('');
   const history = useHistory();
-  const urlParams = useParams<{ flowInstanceId: string, processInstanceId: string, taskId: string, status: string }>();
-  const { processInstanceId, taskId, status, flowInstanceId } = urlParams;
+  const urlParams = useParams<{
+    flowInstanceId: string,
+    processInstanceId: string,
+    taskId: string,
+    status: string
+  }>();
+  const { processInstanceId, taskId, status } = urlParams;
 
   const { data: formDataItem } = useQuery('GET_ABNORMAL_TASK_FORM', () => getAbnormalTaskForm({
     processInstanceId,
@@ -113,9 +118,9 @@ function UnusualTaskDetail(): JSX.Element {
           closeModal={() => setCurrAction('')}
         />
       )}
-      {
-        modalType === 'flow_modal' && <FlowModal flowInstanceId={flowInstanceId} closeModal={() => setModalType('')} />
-      }
+      {modalType === 'flow_modal' && (
+        <FlowModal processInstanceId={processInstanceId} closeModal={() => setModalType('')} />
+      )}
       <div className='flex items-center'>
         <Icon name='reply' size={20} onClick={goBack} />
         <NavLink to='/system'>系统管理</NavLink>
