@@ -52,8 +52,6 @@ const schema: ISchema = {
           'x-mega-props': {
             labelAlign: 'top',
           },
-          maximum: 4,
-          minimum: 0,
           'x-index': 4,
         },
         displayModifier: {

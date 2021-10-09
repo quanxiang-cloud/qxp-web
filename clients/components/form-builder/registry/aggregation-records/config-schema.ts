@@ -126,8 +126,6 @@ const schema: ISchema = {
           default: 2,
           required: true,
           readOnly: false,
-          maximum: 8,
-          minimum: 0,
           'x-rules': {
             required: true,
             message: '请输入保留的小数点位数',
