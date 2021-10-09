@@ -87,7 +87,8 @@ export type FormDataRequestUpdateParamsRef = Record<string, SubTableUpdateData &
   appID?: string;
   tableID?: string;
   sourceFieldId?: string;
-  aggs?: Record<string, any>;
+  aggType?: string;
+  fieldName?: string;
   query?: ESParameter;
 }>;
 
@@ -179,13 +180,8 @@ export function buildQueryRef(schema: ISchema): FormDataRequestUpdateParamsRef {
           tableID,
           appID,
           sourceFieldId,
-          aggs: {
-            [fieldName]: {
-              [aggType]: {
-                field: sourceFieldId,
-              },
-            },
-          },
+          aggType,
+          fieldName,
         };
         break;
       }
