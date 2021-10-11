@@ -116,7 +116,7 @@ function NodeRender(
       disabled: !isPage,
       label: (
         <div className="flex items-center">
-          <Icon name="visibility" size={16} className="mr-8" />
+          <Icon name={isHide ? 'visibility' : 'visibility_off'} size={16} className="mr-8" />
           <span className="font-normal">{isHide ? '显示' : '隐藏'}</span>
         </div>
       ),
@@ -184,6 +184,7 @@ function NodeRender(
       >
         {getIcon(item)}
         <span className="truncate">{item.data ? item.data.name : ''}</span>
+        {isHide && <Icon name="visibility_off" className="mx-8 flex-shrink-0" size={20} />}
         <div
           className={cs('ml-auto opacity-0 group-hover:opacity-100 flex-shrink-0', {
             'opacity-100': isActive,
