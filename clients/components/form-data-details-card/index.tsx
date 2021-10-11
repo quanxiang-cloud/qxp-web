@@ -4,7 +4,7 @@ import cs from 'classnames';
 import Tab from '@c/tab';
 import FormDataValueRenderer from '@c/form-data-value-renderer';
 import Loading from '@c/page-loading';
-import { findOneRecord, getTableSchema } from '@lib/http-client';
+import { fetchOneFormDataWithSchema } from '@lib/http-client';
 import { isEmpty } from '@lib/utils';
 import schemaToFields from '@lib/schema-convert';
 
@@ -49,16 +49,13 @@ function FormDataDetailsCard({ appID, tableID, rowID, className = '' }: Props): 
 
   useEffect(() => {
     setLoading(false);
-    Promise.all([
-      getTableSchema(appID, tableID),
-      findOneRecord(appID, tableID, rowID),
-    ]).then(([pageSchema, record]) => {
+    fetchOneFormDataWithSchema(appID, tableID, rowID).then(({ schemaRes, record = {} }) => {
       setLoading(false);
-      if (!pageSchema) {
+      if (!schemaRes) {
         return Promise.reject(new Error('没有找到表单 schema，请联系管理员。'));
       }
 
-      setFormData({ schema: pageSchema.schema, record });
+      setFormData({ schema: schemaRes.schema, record });
     });
   }, [appID, tableID]);
 

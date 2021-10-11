@@ -18,18 +18,18 @@ const addZeroFromValue = (position: number, value: number): string => {
 
 const getMoment = (value: Format | ''): string => {
   switch (value) {
-    case '':
-      return '';
-    case 'yyyy':
-      return moment().format('YYYY');
-    case 'yyyyMM':
-      return moment().format('YYYYMM');
-    case 'yyyyMMdd':
-      return moment().format('YYYYMMDD');
-    case 'yyyyMMddHHmm':
-      return moment().format('YYYYMMDDhhmm');
-    case 'yyyyMMddHHmmss':
-      return moment().format('YYYYMMDDhhmmss');
+  case '':
+    return '';
+  case 'yyyy':
+    return moment().format('YYYY');
+  case 'yyyyMM':
+    return moment().format('YYYYMM');
+  case 'yyyyMMdd':
+    return moment().format('YYYYMMDD');
+  case 'yyyyMMddHHmm':
+    return moment().format('YYYYMMDDhhmm');
+  case 'yyyyMMddHHmmss':
+    return moment().format('YYYYMMDDhhmmss');
   }
 };
 

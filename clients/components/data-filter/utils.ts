@@ -1,4 +1,5 @@
 import moment, { unitOfTime, Moment } from 'moment';
+import { get } from 'lodash';
 
 export const OPERATORS_STRING = [
   {
@@ -32,12 +33,16 @@ export const OPERATORS_NUMBER = [
     label: '小于等于',
     value: 'lte',
   },
+  {
+    label: '不等于',
+    value: 'ne',
+  },
 ];
 
 export const OPERATORS_DATE = [
   {
     label: '范围',
-    value: 'between',
+    value: 'range',
   },
 ];
 
@@ -77,11 +82,11 @@ export const OPERATORS_LABEL_VALUE = [
 export const CONDITION = [
   {
     label: '所有',
-    value: 'and',
+    value: 'must',
   },
   {
     label: '任一',
-    value: 'or',
+    value: 'should',
   },
 ];
 
@@ -149,18 +154,9 @@ function getDateType(format: string): unitOfTime.StartOf {
   }
 }
 
-type Value = string
-  | string[]
-  | Record<string, unknown>
-  | Record<string, unknown>[]
-  | number
-  | number[]
-  | LabelValue[]
-  | Moment[];
-
 type ComponentValue = number | string | Moment | LabelValue | Date;
 
-export function getCondition(schema: ISchema, value: Value, key: string, op?: string): Condition {
+export function getCondition(schema: ISchema, value: FormValue, key: string, op?: string): Condition {
   const _condition: Condition = { key };
   switch (schema['x-component']) {
   case 'DatePicker': {
@@ -170,31 +166,32 @@ export function getCondition(schema: ISchema, value: Value, key: string, op?: st
       start.startOf(getDateType(format)).toISOString(),
       end.endOf(getDateType(format)).toISOString(),
     ];
-    _condition.op = op || 'between';
+    _condition.op = op || 'range';
     break;
   }
   case 'NumberPicker':
-    _condition.value = [Number(value)];
+    _condition.value = Number(value);
     _condition.op = op || 'eq';
     break;
   case 'MultipleSelect':
   case 'RadioGroup':
   case 'CheckboxGroup':
   case 'UserPicker':
+  case 'OrganizationPicker':
   case 'Select':
-    _condition.value = value as any[];
+    _condition.value = value;
     _condition.op = op || 'intersection';
     break;
   case 'CascadeSelector':
-    _condition.value = [value as LabelValue];
+    _condition.value = value;
     _condition.op = op || 'eq';
     break;
   default:
     if (Array.isArray(value)) {
-      _condition.value = value as any[];
+      _condition.value = value;
       _condition.op = op || 'intersection';
     } else {
-      _condition.value = [value as string | number];
+      _condition.value = value;
       _condition.op = op || 'like';
     }
     break;
@@ -208,7 +205,7 @@ type ValueFromProps = {
   key: string;
   valueFrom: ValueFrom;
   op: string;
-  value: Value
+  value: FormValue
 }
 
 export function setValueFormCondition({ valueFrom, key, op, value, schema }: ValueFromProps): Condition {
@@ -234,10 +231,10 @@ export function setValueFormCondition({ valueFrom, key, op, value, schema }: Val
 
 export function getValue(
   field: SchemaFieldItem,
-  initValue: Array<string | number | Date | LabelValue> | undefined,
+  initValue: FormValue | undefined,
   valueFrom: ValueFrom | undefined,
-): ComponentValue | ComponentValue[] {
-  if (!initValue || initValue.length === 0) {
+): FormValue {
+  if (!initValue || (Array.isArray(initValue) && initValue.length === 0)) {
     return '';
   }
 
@@ -255,6 +252,228 @@ export function getValue(
   case 'Select':
     return initValue;
   default:
-    return initValue[0];
+    return initValue;
   }
+}
+
+export type ESParameter = {
+  bool: {
+    [key in FilterTag]?: Rule[]
+  }
+}
+
+export type Rule = {
+  [key: string]: any;
+}
+
+const OP_ES_LIST = [
+  {
+    op: 'eq',
+    esExpression: '^{"term":{"([_a-zA-Z0-9.]+)":(.*?)}}$',
+    valuePath: 'term&${key}',
+  },
+  {
+    op: 'range',
+    esExpression: '{"range":{"([_a-zA-Z0-9.]+)":{"(gt|lt|gte|lte)":(.*?),"(gt|lt|gte|lte)":(.*?)}}}',
+    valuePath: 'range&${key}',
+  },
+  {
+    op: 'gt|lt|gte|lte',
+    esExpression: '{"range":{"([_a-zA-Z0-9.]+)":{"(gt|lt|gte|lte)":([".-a-zA-Z0-9]+)}}}',
+    opIndex: 2,
+    valuePath: 'range&${key}&${op}',
+  },
+  {
+    op: 'intersection',
+    esExpression: '{"terms":{"([_a-zA-Z0-9.]+)":(.*?)}}',
+    valuePath: 'terms&${key}',
+  },
+  {
+    op: 'ne',
+    esExpression: '{"bool":{"must_not":\\[{"term":{"([_a-zA-Z0-9.]+)":(.*?)}}\\]}}',
+    valuePath: 'bool&must_not[0]&term&${key}',
+  },
+  {
+    op: 'exclude',
+    esExpression: '{"bool":{"must_not":\\[{"terms":{"([_a-zA-Z0-9.]+)":(.*?)}}\\]}}',
+    valuePath: 'bool&must_not[0]&terms&${key}',
+  },
+  {
+    op: 'like',
+    esExpression: '{"match":{"([_a-zA-Z0-9.]+)":(.*?)}}',
+    valuePath: 'match&${key}',
+  },
+  {
+    op: 'fullSubset',
+    esExpression: '^{"bool":{"must":(\\[{"term":{"[_a-zA-Z0-9.]+":.*?}}\\])+}}$',
+    valuePath: 'bool&must',
+  },
+];
+
+export function operatorESParameter(key: string, op: string, value: FormValue): any {
+  let _value = value;
+  let _key = key;
+  if (typeof value === 'object' && op !== 'range') {
+    if (Array.isArray(_value) && typeof _value[0] === 'object') {
+      _value = _value.map((_value) => (_value as LabelValue).value);
+      _key = `${key}.value`;
+    } else if (!Array.isArray(_value)) {
+      _value = (_value as LabelValue).value;
+      _key = `${key}.value`;
+    }
+  }
+
+  switch (op) {
+  case 'range': {
+    const [start, end] = _value as ComponentValue[];
+    return {
+      range: {
+        [_key]: {
+          gte: start,
+          lt: end,
+        },
+      },
+    };
+  }
+  case 'eq':
+    return {
+      term: {
+        [_key]: _value,
+      },
+    };
+  case 'gt':
+  case 'lt':
+  case 'gte':
+  case 'lte':
+    return {
+      range: {
+        [_key]: { [op]: _value },
+      },
+    };
+  case 'fullSubset':
+    return {
+      bool: {
+        must: (_value as any[]).map((valueItem) => {
+          return {
+            term: {
+              [_key]: valueItem,
+            },
+          };
+        }),
+      },
+    };
+  case 'intersection':
+    return {
+      terms: {
+        [_key]: _value,
+      },
+    };
+  case 'ne':
+    return {
+      bool: {
+        must_not: [
+          {
+            term: {
+              [_key]: _value,
+            },
+          },
+        ],
+      },
+    };
+  case 'exclude':
+    return {
+      bool: {
+        must_not: [
+          {
+            terms: {
+              [_key]: _value,
+            },
+          },
+        ],
+      },
+    };
+  case 'like':
+    return {
+      match: {
+        [_key]: _value,
+      },
+    };
+  default:
+    return {
+      match: {
+        [_key]: _value,
+      },
+    };
+  }
+}
+
+// TODO 暂时兼容方法
+export function toEs(filterConfig: FilterConfig): ESParameter {
+  const rule: Rule[] = [];
+  filterConfig.condition.forEach(({ key = '', value, op = '' }) => {
+    if (!value) {
+      return;
+    }
+
+    rule.push(operatorESParameter(key, op, value));
+  });
+
+  return {
+    bool: {
+      [filterConfig.tag]: rule,
+    },
+  };
+}
+
+export function toFilterConfig(esObj: ESParameter): FilterConfig {
+  let tag: FilterTag = 'must';
+  const condition: Condition[] = [];
+  const tags = Object.keys(esObj.bool) as FilterTag[];
+  if (tags.length) {
+    tag = tags[0];
+    esObj.bool[tag]?.map((rule: Rule) => {
+      OP_ES_LIST.forEach(({ esExpression, op, opIndex, valuePath }) => {
+        const match = JSON.stringify(rule).match(new RegExp(esExpression));
+        if (match) {
+          let key = '';
+          const operator = opIndex && match[opIndex] ? match[opIndex] : op;
+          let value;
+          if (op === 'fullSubset') {
+            const esValues: Rule[] = get(rule, valuePath.split('&'));
+            value = esValues.map(({ term }) => {
+              key = Object.keys(term).shift() || '';
+              return term[key];
+            });
+          } else {
+            key = match[1];
+            value = get(rule, valuePath.replace('${key}', key).replace('${op}', operator).split('&'));
+          }
+
+          if (key.includes('.value')) {
+            key = key.split('.value').shift() || '';
+            value = Array.isArray(value) ? value.map((_value) => ({
+              value: _value,
+              label: '',
+            })) : {
+              label: '',
+              value,
+            };
+          }
+
+          condition.push(
+            {
+              key,
+              value: operator === 'range' ? [value.gte, value.lt] : value,
+              op: operator,
+            },
+          );
+        }
+      });
+    }) || [];
+  }
+
+  return {
+    tag,
+    condition,
+  };
 }

@@ -2,16 +2,17 @@ import React from 'react';
 import { UnionColumns } from 'react-table';
 import { action, observable, reaction, IReactionDisposer } from 'mobx';
 
-import httpClient from '@lib/http-client';
+import { fetchFormDataList } from '@lib/http-client';
 import schemaToFields, { schemaToMap } from '@lib/schema-convert';
 import { SYSTEM_FIELDS } from '@c/form-builder/constants';
+import { toEs } from '@c/data-filter/utils';
 
 import { TableHeaderBtn, TableConfig } from './type';
 import { Config, getPageDataSchema } from './utils';
 
 type Params = {
   condition?: Condition[] | [],
-  tag?: 'or' | 'and',
+  tag?: FilterTag,
   sort?: string[] | [],
   page?: number,
   size?: number,
@@ -59,7 +60,7 @@ class AppPageDataStore {
     sort: [],
     page: 1,
     size: 10,
-    tag: 'and',
+    tag: 'must',
   };
 
   constructor({
@@ -140,15 +141,13 @@ class AppPageDataStore {
     }
 
     this.listLoading = true;
-    const { condition = [], tag, ...other } = params;
+    const { condition = [], tag = 'must', ...other } = params;
     const { condition: frontCondition = [], tag: frontTag } = this.filterConfig || {};
-    httpClient(`/api/v1/form/${this.appID}/home/form/${this.pageID}`, {
-      method: 'find',
-      page: 1,
-      conditions: { tag: frontTag || tag, condition: [...condition, ...frontCondition] },
+    fetchFormDataList(this.appID, this.pageID, {
+      query: toEs({ tag: frontTag || tag, condition: [...condition, ...frontCondition] }),
       sort: [],
       ...other,
-    }).then((res: any) => {
+    }).then((res) => {
       this.formDataList = res.entities;
       this.total = res.total || 0;
       this.listLoading = false;

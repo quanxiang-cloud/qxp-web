@@ -35,8 +35,10 @@ type DragPosition = 'up' | 'down' | 'left' | 'right';
 
 type FilterConfig = {
   condition: Condition[];
-  tag: 'or' | 'and';
+  tag: FilterTag;
 }
+
+type FilterTag = 'should' | 'must';
 
 type IteratISchema = ISchema & { id: string; componentName?: string; }
 

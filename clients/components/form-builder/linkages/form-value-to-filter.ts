@@ -2,12 +2,12 @@ import {
   FormEffectHooks,
   ISchemaFormActions,
 } from '@formily/antd';
-import { debounceTime } from 'rxjs/operators';
 import { get, set } from 'lodash';
+import { debounceTime } from 'rxjs/operators';
 
 const SUPPORT_FILTER_COMP = ['AssociatedData', 'AssociatedRecords'];
 
-const { onFieldValueChange$ } = FormEffectHooks;
+const { onFieldValueChange$, onFieldMount$ } = FormEffectHooks;
 
 type LinkedFilterConfig = {
   field: string;
@@ -74,22 +74,30 @@ export default function formValueToFilter(
   formActions: ISchemaFormActions,
 ): void {
   const { setFieldState, getFieldValue } = formActions;
+
+  function setFilterConfig(name: string, field: string): void {
+    const xComp = getXComp(field, schema);
+    if (xComp) {
+      const [match] = /(?<=\.).*?(?=\.)/.exec(name) || [];
+      setFieldState(field.replace('*', match), (state) => {
+        set(state, 'props.x-component-props', {
+          ...xComp,
+          filterConfig: {
+            ...xComp.filterConfig,
+            condition: getNewCondition(xComp.filterConfig.condition, getFieldValue, Number(match)),
+          },
+        });
+      });
+    }
+  }
+
   findLinkagesFilterComp(schema).forEach(({ field, targetFields }) => {
     onFieldValueChange$(`*(${targetFields.join(',')})`).pipe(
       debounceTime(200),
-    ).subscribe(({ name }) => {
-      const xComp = getXComp(field, schema);
-      if (xComp) {
-        const [match] = /(?<=\.).*?(?=\.)/.exec(name) || [];
-        setFieldState(field.replace('*', match), (state) => {
-          set(state, 'props.x-component-props', {
-            ...xComp,
-            filterConfig: {
-              ...xComp.filterConfig,
-              condition: getNewCondition(xComp.filterConfig.condition, getFieldValue, Number(match)),
-            },
-          });
-        });
+    ).subscribe(({ name }) => setFilterConfig(name, field));
+    onFieldMount$(`*(${targetFields.join(',')})`).subscribe(({ name }) =>{
+      if (name) {
+        setFilterConfig(name, field);
       }
     });
   });
