@@ -206,10 +206,10 @@ Then key should be changed to `field_abc.value_prop`
  */
 const valuePathMap = {
   // AssociatedRecords: '', // string[]
-  UserPicker: 'value',
-  OrganizationPicker: 'value',
-  FileUpload: 'value',
-  ImageUpload: 'value',
+  UserPicker: '[].value', // {label, value}[]
+  OrganizationPicker: '[].value',
+  FileUpload: '[].value',
+  ImageUpload: '[].value',
   CascadeSelector: 'value',
   AssociatedData: 'value',
 };

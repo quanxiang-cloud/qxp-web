@@ -29,7 +29,7 @@ interface Props {
 export type ConditionItemOptions = FormFieldOption[];
 
 export default function ConditionItem({ condition, options, onChange, schemaMap }: Props): JSX.Element {
-  const value = condition.key.split('.')[0]; // key maybe like: `field_x.value`
+  const value = condition.key.split('.')[0]; // key maybe like: `field_x.value`, or `field_x.[].value`
   const currentOption = options.find((option) => option.value === value);
 
   const currentSchema: SchemaFieldItem | Record<string, any> = schemaMap?.[value || ''] || {};
