@@ -101,8 +101,9 @@ declare global {
     name?: string;
     icon?: string;
     describe?: string;
+    bindingState?: number;
     groupID?: string;
-    child?: PageInfo[];
+    child?: PageInfo[] | null;
     childCount?: number;
     menuType?: number;
     sort?: number;
