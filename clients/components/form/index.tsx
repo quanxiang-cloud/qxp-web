@@ -23,10 +23,10 @@ export type Props = PropsWithChildren<DetailedHTMLProps<
 export type Value = string | number | readonly string[] | undefined;
 
 type Field = DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement> &
- DetailedHTMLProps<TextareaHTMLAttributes<HTMLTextAreaElement>, HTMLTextAreaElement> & {
-  validateMessage?: string;
-  rules?: (string | ((value: Value) => string))[];
-};
+  DetailedHTMLProps<TextareaHTMLAttributes<HTMLTextAreaElement>, HTMLTextAreaElement> & {
+    validateMessage?: string;
+    rules?: (string | ((value: Value) => string))[];
+  };
 type Fields = Record<string, Field>;
 type Errors = Record<string, string>;
 

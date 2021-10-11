@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 import { Card } from 'antd';
 
@@ -12,6 +12,12 @@ function LayoutCard(p: ISchemaFieldComponentProps): JSX.Element {
   const handleClick = (): void => {
     if (collapsible) setClosed(!closed);
   };
+
+  const closedStyle = useMemo(() => ({
+    height: closed ? '0px' : 'auto',
+    overflow: closed ? 'hidden' : 'auto',
+    padding: closed ? '0px' : '24px',
+  }), [closed]);
 
   return (
     <div className="layout-card">
@@ -33,7 +39,7 @@ function LayoutCard(p: ISchemaFieldComponentProps): JSX.Element {
         </div>
       )}>
         <div
-          style={{ height: closed ? '0px' : 'auto' }}
+          style={closedStyle}
           className='layout-card-content'
         >
           {p.children}

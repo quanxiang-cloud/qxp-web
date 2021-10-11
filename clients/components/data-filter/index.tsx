@@ -131,6 +131,7 @@ function DataFilter({
       }
 
       if (condition.filter?.['x-component'] === 'DatePicker') {
+        setValue('operators-' + rowID, '');
         condition.filter = {
           ...condition.filter,
           type: valueFrom === 'form' ? 'number' : 'datetime',

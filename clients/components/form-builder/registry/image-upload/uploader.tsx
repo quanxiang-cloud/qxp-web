@@ -61,7 +61,7 @@ function Uploader(props: Props & ISchemaFieldComponentProps): JSX.Element {
       return [...currentFiles];
     });
   };
-  const deleteFile = (currentFile: FileListItemInfo): void=> {
+  const deleteFile = (currentFile: FileListItemInfo): void => {
     uploaderRef?.current?.abort(currentFile.file_uid);
     setFiles((prevFiles) => {
       if (currentFile.file_uid) {
@@ -146,7 +146,7 @@ function Uploader(props: Props & ISchemaFieldComponentProps): JSX.Element {
       </Upload>
       <div className="uploaded-files">
         <FileList
-          files={files.map((itm) => ({
+          files={(files || []).map((itm) => ({
             file_uid: itm.uid,
             file_url: itm.url,
             file_name: itm.filename,

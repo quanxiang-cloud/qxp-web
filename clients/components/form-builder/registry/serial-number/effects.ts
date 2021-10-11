@@ -12,7 +12,7 @@ type PreviewProps = {
 
 const { onFieldValueChange$ } = FormEffectHooks;
 
-const addZeroFromValue = (position: number, value:number): string => {
+const addZeroFromValue = (position: number, value: number): string => {
   return (Array(position).join('0') + value?.toString()).slice(-position);
 };
 

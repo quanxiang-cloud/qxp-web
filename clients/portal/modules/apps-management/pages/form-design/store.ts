@@ -74,21 +74,29 @@ class FormDesignStore {
   }
 
   @computed get internalFields(): Record<string, ISchema> {
+    let innerFieldIndex: number = this.formStore?.flattenFields.length || 0;
+
     const _internalFields = this.formStore?.internalFields.reduce<Record<string, ISchema>>((acc, field) => {
-      const { fieldName, componentName, configValue } = field;
-      acc[fieldName] = {
-        display: false,
-        readOnly: false,
-        title: configValue.title,
-        type: configValue.type,
-        'x-index': 0,
-        'x-component': componentName,
-        'x-component-props': configValue['x-component-props'],
-        'x-internal': {
-          permission: configValue.displayModifier === 'hidden' ? INVISIBLE_NO_WRITE : READONLY_NO_WRITE,
-          isSystem: configValue.isSystem,
-        },
-      };
+      const { componentName, configValue } = field;
+
+      const xInternal = field?.['x-internal'] || {};
+      const { fieldId } = xInternal;
+
+      if (fieldId) {
+        acc[fieldId] = {
+          display: false,
+          readOnly: false,
+          title: configValue.title,
+          type: configValue.type,
+          'x-index': innerFieldIndex += 1,
+          'x-component': componentName,
+          'x-component-props': configValue['x-component-props'],
+          'x-internal': {
+            permission: configValue.displayModifier === 'hidden' ? INVISIBLE_NO_WRITE : READONLY_NO_WRITE,
+            isSystem: configValue.isSystem,
+          },
+        };
+      }
       return acc;
     }, {});
     return _internalFields || {};
@@ -233,7 +241,7 @@ class FormDesignStore {
       return Promise.resolve(false);
     }
 
-    if (this.formStore?.fields.length && this.pageTableColumns && this.pageTableColumns.length === 0) {
+    if (this.formStore?.flattenFields.length && this.pageTableColumns && this.pageTableColumns.length === 0) {
       toast.error('请在页面配置-字段显示和排序至少选择一个字段显示');
       return Promise.resolve(false);
     }

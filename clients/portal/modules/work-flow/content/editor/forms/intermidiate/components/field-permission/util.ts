@@ -52,7 +52,7 @@ export function fieldPermissionEncoder(value: FieldPermission): NewFieldPermissi
 function getSchemaIDToSchemaMap(schema: ISchema): Record<string, ISchema> {
   return schemaToArray(schema, { parseSubTable: true, keepLayout: true })
     .map((schema) => ({
-      [schema['x-internal']?._key || '']: schema,
+      [schema['x-internal']?.fieldId || '']: schema,
     })).reduce((acc, cur) => ({ ...acc, ...cur }), {});
 }
 
@@ -126,7 +126,7 @@ export function getInitFieldPermissionFromSchema(schema: ISchema): NewFieldPermi
   const fields = schemaToArray(schema, { parseSubTable: true, keepLayout: true })
     .map((schema): FieldPermissionMergeType => {
       const permission = schema['x-internal']?.permission || 0;
-      const fieldId = schema['x-internal']?._key;
+      const fieldId = schema['x-internal']?.fieldId;
       return {
         ...getPermission(permission),
         isSystem: INTERNAL_FIELD_NAMES.includes(fieldId || ''),

@@ -191,6 +191,7 @@ export const READONLY_NO_WRITE = 1;
 export const READONLY_WITH_WRITE = 3;
 export const NORMAL = 11;
 
+/** form-builder internal fields map */
 export const INTERNAL_FIELDS: Array<FormItem> = [
   {
     fieldName: '_id',

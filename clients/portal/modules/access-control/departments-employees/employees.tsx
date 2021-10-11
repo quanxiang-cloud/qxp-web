@@ -226,7 +226,7 @@ export default function Employees({
         />)
       }
 
-      <div className="h-full flex flex-col flex-1 overflow-auto">
+      <div className="h-full flex flex-col flex-1 overflow-hidden">
         <div className="flex items-center ml-20 mb-20">
           <div className="text-h6">{department.departmentName}</div>
           <div className="text-12 text-gray-400">（{employeesList?.total || 0}人）</div>
