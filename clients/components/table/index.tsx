@@ -30,6 +30,7 @@ interface Props<T extends Record<string, any>> {
   rowKey: string;
   showCheckbox?: boolean;
   style?: React.CSSProperties;
+  canSetColumnWidth?: boolean;
 }
 
 export default function Table<T extends Record<string, any>>({
@@ -45,6 +46,7 @@ export default function Table<T extends Record<string, any>>({
   rowKey,
   showCheckbox,
   style,
+  canSetColumnWidth,
 }: Props<T>): JSX.Element {
   const _columns = useExtendColumns(columns, showCheckbox);
   const widthMapRef = useRef<WidthMap>({});
@@ -137,7 +139,7 @@ export default function Table<T extends Record<string, any>>({
                     key={header.id}
                   >
                     {header.render('Header')}
-                    {header.id !== '_selector' && index !== _columns.length - 1 && (
+                    {canSetColumnWidth && header.id !== '_selector' && index !== _columns.length - 1 && (
                       <AdjustHandle
                         thID={`th-${header.id}`}
                         onChange={(x) => handleWidthChange(x, header.id)}
