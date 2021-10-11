@@ -6,7 +6,7 @@ import HeaderNav from '@c/header-nav';
 import toast from '@lib/toast';
 import Select from '@c/select';
 import AppsSwitcher from '@c/apps-switcher';
-import UserProfile from '@c/user-picture';
+import UserProfile from '@c/user-profile';
 
 import { fetchUserList, getPerOption, roleChange } from '../../../lib/api';
 import store from '../store';

@@ -50,6 +50,7 @@ export default function UserProfile({ className }: Props): JSX.Element {
       <Popper
         reference={reference}
         ref={popperRef}
+        className='avatar-popper'
       >
         <div className={cs('avatar', className)}>
           <div className='avatar-bg flex py-20'>

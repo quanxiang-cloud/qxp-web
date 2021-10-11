@@ -1,7 +1,7 @@
 import React from 'react';
 
 import NavMsgBar from '@portal/modules/msg-center/nav-msg-bar';
-import UserProfile from '@c/user-picture';
+import UserProfile from '@c/user-profile';
 
 export default function HeaderMenu(): JSX.Element {
   return (
