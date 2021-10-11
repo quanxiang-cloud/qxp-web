@@ -1,6 +1,8 @@
 import React from 'react';
 import { UnionColumns } from 'react-table';
-import { action, observable, reaction, IReactionDisposer } from 'mobx';
+import { action, observable, reaction, computed, IReactionDisposer } from 'mobx';
+import { toPairs, fromPairs, set } from 'lodash';
+import { pipe, map } from 'lodash/fp';
 
 import { fetchFormDataList } from '@lib/http-client';
 import schemaToFields, { schemaToMap } from '@lib/schema-convert';
@@ -17,6 +19,13 @@ type Params = {
   page?: number,
   size?: number,
 }
+
+type FormTableConfig = {
+  hidden: boolean;
+  fixed?: boolean
+}
+
+type ColumnConfig = Record<string, FormTableConfig>
 
 export type FormAppDataTableStoreSchema = Omit<ISchema, 'properties'> & {
   properties?: Record<string, SchemaFieldItem>
@@ -55,6 +64,7 @@ class AppPageDataStore {
   @observable filterData: FormData = {};
   @observable tableColumns: UnionColumns<FormData>[] = [];
   @observable tableHeaderBtnList: TableHeaderBtn[] = [];
+  @observable columnConfig: ColumnConfig = {};
   @observable params: Params = {
     condition: [],
     sort: [],
@@ -97,6 +107,21 @@ class AppPageDataStore {
     }
   }
 
+  @computed get tableShowColumns(): UnionColumns<FormData>[] {
+    return this.tableColumns.reduce<UnionColumns<FormData>[]>((acc, col) => {
+      const curConfig = this.columnConfig[col.id || ''] || {};
+      if (col.id === 'action') {
+        return [...acc, col];
+      }
+
+      if (!curConfig.hidden) {
+        return [...acc, { ...col, fixed: 'fixed' in curConfig ? curConfig.fixed : col.fixed }];
+      }
+
+      return acc;
+    }, []);
+  }
+
   @action
   setSelected = (selected: string[]): void => {
     this.selected = selected;
@@ -130,7 +155,39 @@ class AppPageDataStore {
   }
 
   @action
+  resetColumnConfig = (): void => {
+    this.columnConfig = {};
+  }
+
+  @action
+  selectAllColumn = (type: boolean): void => {
+    if (type) {
+      const process = pipe(
+        toPairs,
+        map(([key, config]) => {
+          return [key, { ...config, hidden: false }];
+        }),
+        fromPairs,
+      );
+      this.columnConfig = process(this.columnConfig);
+    } else {
+      const newColumnConfig: ColumnConfig = {};
+      this.tableColumns.forEach(({ id = '' }) => {
+        set(newColumnConfig, `${id}.hidden`, true);
+      });
+
+      this.columnConfig = newColumnConfig;
+    }
+  }
+
+  @action
+  setColumnConfig = (newConfig: Partial<FormTableConfig>, id: string): void => {
+    this.columnConfig = { ...set(this.columnConfig, id, { ...this.columnConfig[id], ...newConfig }) };
+  }
+
+  @action
   setTableColumns = (tableColumns: UnionColumns<any>[]): void => {
+    this.columnConfig = {};
     this.tableColumns = tableColumns;
   }
 

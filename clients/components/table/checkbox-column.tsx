@@ -6,9 +6,7 @@ export default {
   id: '_selector',
   disableResizing: true,
   disableGroupBy: true,
-  minWidth: 40,
-  width: 40,
-  maxWidth: 40,
+  width: 48,
   // The header can use the table's getToggleAllRowsSelectedProps method
   // to render a checkbox
   Header: ({ getToggleAllRowsSelectedProps }: HeaderProps<any>) => (

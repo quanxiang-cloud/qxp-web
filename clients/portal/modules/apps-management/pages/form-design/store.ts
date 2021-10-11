@@ -7,10 +7,15 @@ import { getTableSchema, saveTableSchema } from '@lib/http-client';
 import { schemaToMap } from '@lib/schema-convert';
 import FormStore from '@c/form-builder/store';
 import AppPageDataStore from '@c/form-app-data-table/store';
-import { TableConfig } from '@c/form-app-data-table/type';
-import { setFixedParameters, SHOW_FIELD } from '@c/form-app-data-table/utils';
 import { INVISIBLE_NO_WRITE, READONLY_NO_WRITE, SYSTEM_FIELDS } from '@c/form-builder/constants';
 import { numberTransform } from '@c/form-builder/utils';
+import { TableConfig, TableColumnConfig } from '@c/form-app-data-table/type';
+import {
+  setFixedParameters,
+  columnStringToObject,
+  DEFAULT_COLUMN_WIDTH,
+  SHOW_FIELD,
+} from '@c/form-app-data-table/utils';
 
 import { createPageScheme } from './api';
 
@@ -29,7 +34,8 @@ class FormDesignStore {
   @observable pageLoading = true;
   @observable formStore: FormStore | null = null;
   @observable hasSchema = false;
-  @observable pageTableColumns: string[] = [];
+  @observable initScheme: ISchema = {};
+  @observable pageTableColumns: TableColumnConfig[] = [];
   @observable pageTableShowRule: TableConfig = { order: '-created_at', pageSize: 10 };
   @observable filters: Filters = [];
   @observable filterModalVisible = false;
@@ -128,7 +134,7 @@ class FormDesignStore {
         return;
       }
 
-      this.pageTableColumns = this.pageTableColumns.filter((id) => {
+      this.pageTableColumns = this.pageTableColumns.filter(({ id }) => {
         return this.judgeInSchema(id);
       });
 
@@ -144,17 +150,19 @@ class FormDesignStore {
       if (!this.pageTableColumns) {
         return [];
       }
-      const column: UnionColumns<any>[] = this.pageTableColumns.map((key) => {
+
+      const column: UnionColumns<any>[] = this.pageTableColumns.map(({ id, width }) => {
         return {
-          id: key,
-          Header: { ...this.fieldsMap, ...this.internalFields }[key]?.title || '',
-          accessor: key,
+          id,
+          Header: { ...this.fieldsMap, ...this.internalFields }[id]?.title || '',
+          accessor: id,
+          width: width || DEFAULT_COLUMN_WIDTH,
         };
       });
 
       return setFixedParameters(
         this.pageTableShowRule.fixedRule,
-        [...column, { id: 'action', Header: '操作', accessor: 'action' }],
+        [...column, { id: 'action', Header: '操作', accessor: 'action', fixed: true, width: 100 }],
       );
     }, this.appPageStore.setTableColumns);
 
@@ -168,22 +176,42 @@ class FormDesignStore {
     return SYSTEM_FIELDS.includes(key) || key in this.fieldsMap;
   }
 
+  @action
   toggleShowAllFields(isShowAll: boolean): void {
     if (isShowAll) {
-      this.setPageTableColumns(this.fieldList.map(({ id }) => id));
+      this.pageTableColumns = this.fieldList.reduce((acc, col) => {
+        if (this.pageTableColumns.findIndex(({ id }) => id === col.id) === -1) {
+          return [...acc, { id: col.id }];
+        }
+
+        return acc;
+      }, this.pageTableColumns);
       return;
     }
 
-    this.setPageTableColumns([]);
+    this.pageTableColumns = [];
   }
 
-  toggleTableColumn(fieldKey: string, isShow: boolean): void {
-    if (isShow) {
-      this.setPageTableColumns([...this.pageTableColumns, fieldKey]);
-      return;
-    }
+  @action
+  tableColumnController = (column: TableColumnConfig, type: TableColumnAction): void => {
+    switch (type) {
+    case 'edit': {
+      this.pageTableColumns = this.pageTableColumns.map((_column) => {
+        if (column.id === _column.id) {
+          return column;
+        }
 
-    this.setPageTableColumns(this.pageTableColumns.filter((id) => id !== fieldKey));
+        return _column;
+      });
+    }
+      break;
+    case 'del':
+      this.pageTableColumns = this.pageTableColumns.filter(({ id }) => id !== column.id);
+      break;
+    case 'add':
+      this.pageTableColumns = [...this.pageTableColumns, column];
+      break;
+    }
   }
 
   @action
@@ -202,8 +230,10 @@ class FormDesignStore {
   }
 
   @action
-  setPageTableColumns = (values: string[]): void => {
-    this.pageTableColumns = values;
+  pageTableColumnsSort = (values: string[]): void => {
+    this.pageTableColumns = values.map((id) => {
+      return this.pageTableColumns.find((column) => id === column.id) as TableColumnConfig;
+    });
   }
 
   @action
@@ -222,7 +252,9 @@ class FormDesignStore {
       const { schema = {}, config = {} } = res || {};
       this.hasSchema = !!res;
       this.formStore = new FormStore({ schema, appID, pageID });
-      this.pageTableColumns = config.pageTableColumns || SYSTEM_FIELDS.filter((key) => key !== '_id');
+      this.pageTableColumns = columnStringToObject(config.pageTableColumns || SYSTEM_FIELDS.filter((key) => {
+        return key !== '_id';
+      }));
       this.filters = config.filters || [];
       if (config.pageTableShowRule) {
         this.pageTableShowRule = config.pageTableShowRule;
@@ -262,7 +294,7 @@ class FormDesignStore {
       this.saveSchemeLoading = false;
       return true;
     } catch (error) {
-      toast.error(error.message);
+      toast.error(error);
       this.saveSchemeLoading = false;
     }
   }
