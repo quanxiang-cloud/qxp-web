@@ -12,7 +12,7 @@ interface Props {
   className?: string;
 }
 
-export default function ProfilePicture({ className }: Props): JSX.Element {
+export default function UserProfile({ className }: Props): JSX.Element {
   const [openResetPasswordModal, setOpenResetPasswordModal] = useState<boolean>(false);
   const [side, setSide] = useState('');
   const reference = useRef<HTMLDivElement>(null);

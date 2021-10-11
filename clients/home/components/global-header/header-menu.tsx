@@ -1,7 +1,7 @@
 import React from 'react';
 
 import NavMsgBar from '@portal/modules/msg-center/nav-msg-bar';
-import ProfilePicture from '@c/profile-picture';
+import UserProfile from '@c/user-picture';
 
 export default function HeaderMenu(): JSX.Element {
   return (
@@ -32,7 +32,7 @@ export default function HeaderMenu(): JSX.Element {
         />
       </div> */}
       <div className="header-nav-btn group">
-        <ProfilePicture />
+        <UserProfile />
       </div>
     </div>
   );
