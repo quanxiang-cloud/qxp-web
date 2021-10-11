@@ -73,7 +73,7 @@ function PageDataTable(): JSX.Element {
             <Icon clickable changeable size={25} name='expand' />
           </MoreMenu>
           <AdvancedQuery
-            tag={store.params.tag as FilterTag}
+            tag={store.params.tag}
             fields={store.fields}
             search={store.setParams}
           />
