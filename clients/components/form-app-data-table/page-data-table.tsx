@@ -15,7 +15,7 @@ import { StoreContext } from './context';
 
 const TABLE_SIZE_MENUS: (LabelValue & { key: SizeType })[] = [
   { label: '正常', value: 'middle', key: 'middle' },
-  { label: '紧密', value: 'small', key: 'small' },
+  { label: '紧凑', value: 'small', key: 'small' },
 ];
 
 function PageDataTable(): JSX.Element {
