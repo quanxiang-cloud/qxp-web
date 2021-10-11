@@ -56,6 +56,16 @@ const NumberPickerField: Omit<FormBuilder.SourceElement<NumberPickerConfig>, 'di
         state.visible = value.length === 0 ? false : true;
       });
     });
+
+    onFieldInputChange$('precision').subscribe(({ value }) => {
+      setFieldState('precision', (state) => {
+        if (value < 0) {
+          state.value = 0;
+        } else if (value > 4) {
+          state.value = 4;
+        }
+      });
+    });
   },
 };
 

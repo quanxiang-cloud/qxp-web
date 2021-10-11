@@ -97,6 +97,7 @@ function NodeRender(
   { item, provided, onCollapse, onExpand, onMenuClick, isActive, onSelectPage }: NodeRenderProps,
 ): JSX.Element {
   const isPage = item.data.menuType !== MenuType.group;
+  const isHide = item.data.isHide;
 
   const MENUS = [
     isPage ?
@@ -126,6 +127,16 @@ function NodeRender(
         </div>
       ),
       disabled: !isPage && item.children.length > 0,
+    },
+    {
+      key: 'hide',
+      label: (
+        <div className="flex items-center">
+          <Icon name="visibility" size={16} className="mr-8" />
+          <span className="font-normal">{isHide ? '显示' : '隐藏'}</span>
+        </div>
+      ),
+      disabled: !isPage,
     },
   ];
 
@@ -186,7 +197,7 @@ type Props = {
 }
 
 export default class PureTree extends Component<Props> {
-  componentDidMount() {
+  componentDidMount(): void {
     const { tree } = this.props;
     if (!this.props.selectedPage?.id) {
       const firstPageItem = getFirstPageItem(tree.items.ROOT.children, tree.items);
@@ -220,12 +231,12 @@ export default class PureTree extends Component<Props> {
     }
   }
 
-  onExpand = (itemId: ItemId) => {
+  onExpand = (itemId: ItemId): void => {
     const { tree } = this.props;
     this.props.onChange(mutateTree(tree, itemId, { isExpanded: true }));
   };
 
-  onCollapse = (itemId: ItemId) => {
+  onCollapse = (itemId: ItemId): void => {
     const { tree } = this.props;
     this.props.onChange(mutateTree(tree, itemId, { isExpanded: false }));
   };
@@ -233,7 +244,7 @@ export default class PureTree extends Component<Props> {
   onDragEnd = (
     source: TreeSourcePosition,
     destination?: TreeDestinationPosition,
-  ) => {
+  ): void => {
     const { tree } = this.props;
     if (!destination || (destination.index === source.index && destination.parentId === source.parentId)) {
       return;

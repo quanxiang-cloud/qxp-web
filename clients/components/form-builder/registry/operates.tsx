@@ -1,9 +1,13 @@
 import React, { useContext } from 'react';
+import { Input } from 'antd';
 import classnames from 'classnames';
 
-import { FieldConfigContext } from '../form-settings-panel/form-field-config/context';
 import Icon from '@c/icon';
 import Button from '@c/button';
+
+import { FieldConfigContext } from '../form-settings-panel/form-field-config/context';
+
+const TextArea = Input.TextArea;
 
 export function deleteOperate(idx: number) {
   const { actions } = useContext(FieldConfigContext);
@@ -47,25 +51,31 @@ export function extraOperations(idx: number) {
   );
 }
 
-export function addOperate() {
+export function AddOperate() {
   const { actions } = useContext(FieldConfigContext);
-
   const mutator = actions.createMutators('availableOptions');
-
   const options = actions.getFieldValue('availableOptions');
-  return (
-    <Button onClick={() => {
-      let hasNullOption = false;
-      options.forEach((element: any) => {
-        if (element.label === '' || element.label === undefined) {
-          hasNullOption = true;
-          return;
-        }
-      });
 
-      if (hasNullOption === false) {
-        mutator.push({ label: '', value: '', title: '' });
-      }
-    }}>添加选项</Button>
+  return (
+    <>
+      <Button
+        className="mr-8"
+        onClick={() => {
+          let hasNullOption = false;
+          options.forEach((element: any) => {
+            if (element.label === '' || element.label === undefined) {
+              hasNullOption = true;
+              return;
+            }
+          });
+
+          if (hasNullOption === false) {
+            mutator.push({ label: '', value: '' });
+          }
+        }}
+      >
+        添加选项
+      </Button>
+    </>
   );
 }

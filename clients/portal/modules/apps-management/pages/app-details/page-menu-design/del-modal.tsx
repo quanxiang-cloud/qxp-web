@@ -6,7 +6,6 @@ import '../index.scss';
 
 type Props = {
   type: 'page' | 'group';
-  visible: boolean;
   onCancel: () => void;
   onOk: () => void;
 }
@@ -26,41 +25,38 @@ const TEXT = {
   },
 };
 
-function DelModal({ onCancel, visible, type = 'page', onOk }: Props) {
+function DelModal({ onCancel, type = 'page', onOk }: Props): JSX.Element {
   return (
-    <>
-      {visible && (
-        <Modal
-          title={TEXT[type].modalTitle}
-          onClose={onCancel}
-          className="static-modal"
-          footerBtns={[
-            {
-              text: '取消',
-              key: 'cancel',
-              iconName: 'close',
-              onClick: onCancel,
-            },
-            {
-              text: TEXT[type].sureText,
-              key: 'confirm',
-              iconName: 'check',
-              modifier: 'primary',
-              onClick: onOk,
-            },
-          ]}
-        >
-          <div className='flex-1 p-20'>
-            <p className='app-status-modal-title text-yellow-600'>
-              <Icon size={20} className='mr-8 app-icon-color-inherit' name='error_outline' />
-              {TEXT[type].title}
-            </p>
-            <p className='pl-28'>
-              {TEXT[type].content}
-            </p>
-          </div>
-        </Modal>)}
-    </>
+    <Modal
+      title={TEXT[type].modalTitle}
+      onClose={onCancel}
+      className="static-modal"
+      footerBtns={[
+        {
+          text: '取消',
+          key: 'cancel',
+          iconName: 'close',
+          onClick: onCancel,
+        },
+        {
+          text: TEXT[type].sureText,
+          key: 'confirm',
+          iconName: 'check',
+          modifier: 'primary',
+          onClick: onOk,
+        },
+      ]}
+    >
+      <div className='flex-1 p-20'>
+        <p className='app-status-modal-title text-yellow-600 mb-16'>
+          <Icon size={20} className='mr-8 app-icon-color-inherit' name='error_outline' />
+          {TEXT[type].title}
+        </p>
+        <p className='pl-28'>
+          {TEXT[type].content}
+        </p>
+      </div>
+    </Modal>
   );
 }
 

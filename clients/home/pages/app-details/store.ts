@@ -38,18 +38,21 @@ class UserAppDetailsStore {
     this.appID = appID;
     this.pageListLoading = true;
     fetchPageList(appID).then((res: any) => {
-      this.pagesTreeData = buildAppPagesTreeData(res.menu);
+      const treeMenu = res.menu.filter(({ isHide }: PageInfo) => {
+        return !isHide;
+      });
+      this.pagesTreeData = buildAppPagesTreeData(treeMenu);
       this.pageListLoading = false;
     });
   }
 
   @action
-  setPageID = (pageID: string) => {
+  setPageID = (pageID: string): void => {
     this.pageID = pageID;
   }
 
   @action
-  setCurPage = (pageInfo: PageInfo) => {
+  setCurPage = (pageInfo: PageInfo): void => {
     if (!pageInfo) {
       return;
     }
