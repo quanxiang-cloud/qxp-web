@@ -19,8 +19,8 @@ export type SubTableConfig = {
 
 export const defaultConfig: SubTableConfig = {
   title: '子表单',
-  description: '子表单的描述内容',
   rowLimit: 'multiple',
+  description: '',
   subordination: 'sub_table',
   displayModifier: 'normal',
   subTableSchema: {
