@@ -1,10 +1,12 @@
 import { NumberPicker } from '@formily/antd-components';
+
 import { FormEffectHooks, createFormActions } from '@formily/react';
 
 import { validateRegistryElement } from '@c/form-builder/utils';
 
 import configSchema from './config-schema';
 import { defaultConfig, toSchema, toConfig, NumberPickerConfig } from './convertor';
+import Placeholder from './placeholder';
 
 const NumberPickerField: Omit<FormBuilder.SourceElement<NumberPickerConfig>, 'displayOrder'> = {
   configSchema,
@@ -14,6 +16,7 @@ const NumberPickerField: Omit<FormBuilder.SourceElement<NumberPickerConfig>, 'di
   defaultConfig: defaultConfig,
   toSchema,
   component: NumberPicker,
+  placeholderComponent: Placeholder,
   category: 'basic',
   componentName: 'NumberPicker',
   compareOperators: ['==', '!=', '>', '>=', '<=', '<'],

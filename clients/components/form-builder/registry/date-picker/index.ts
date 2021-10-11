@@ -3,6 +3,7 @@ import { validateRegistryElement } from '@c/form-builder/utils';
 import DatePicker from './date-picker';
 import configSchema from './config-schema';
 import { defaultConfig, toSchema, toConfig, DatePickerConfig } from './convertor';
+import Placeholder from './placeholder';
 
 const DatePickerField: Omit<FormBuilder.SourceElement<DatePickerConfig>, 'displayOrder'> = {
   configSchema,
@@ -12,6 +13,7 @@ const DatePickerField: Omit<FormBuilder.SourceElement<DatePickerConfig>, 'displa
   icon: 'date_range',
   defaultConfig: defaultConfig,
   component: DatePicker,
+  placeholderComponent: Placeholder,
   category: 'basic',
   componentName: 'DatePicker',
   compareOperators: ['==', '!=', '>', '>=', '<=', '<'],

@@ -6,6 +6,7 @@ import Select from './multiple-select';
 import DatasetConfig from '../../form-settings-panel/form-field-config/dataset-config';
 import configSchema from './config-schema';
 import { defaultConfig, toSchema, toConfig, MultipleSelectConfig } from './convertor';
+import Placeholder from './placeholder';
 
 const MultipleSelectField: Omit<FormBuilder.SourceElement<MultipleSelectConfig>, 'displayOrder'> = {
   configSchema,
@@ -15,6 +16,7 @@ const MultipleSelectField: Omit<FormBuilder.SourceElement<MultipleSelectConfig>,
   defaultConfig: defaultConfig,
   toSchema,
   component: Select,
+  placeholderComponent: Placeholder,
   category: 'basic',
   componentName: 'MultipleSelect',
   compareOperators: ['⊇', '⊋'],
