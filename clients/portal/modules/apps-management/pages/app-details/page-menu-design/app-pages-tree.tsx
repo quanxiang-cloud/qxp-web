@@ -136,7 +136,7 @@ function NodeRender(
           <span className="font-normal">{isHide ? '显示' : '隐藏'}</span>
         </div>
       ),
-      disabled: !isPage && item.children.length > 0,
+      disabled: !isPage,
     },
   ];
 
