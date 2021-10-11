@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useParams, useHistory } from 'react-router';
 import { useQuery } from 'react-query';
 import { observer } from 'mobx-react';
@@ -13,14 +13,15 @@ import Loading from '@c/loading';
 import ErrorTips from '@c/error-tips';
 import toast from '@lib/toast';
 import { FormRenderer } from '@c/form-builder';
-import { schemaToMap } from '@lib/schema-convert';
+import { buildQueryRef } from '@lib/http-client';
+import { getFlowFormData } from '@lib/api/flow';
 
 import Panel from './panel';
 import Toolbar from './toolbar';
 import Dynamic from './dynamic';
 import Discuss from './discuss';
 import ActionModals from './action-modals';
-import * as apis from '../api';
+import { getTaskFormById } from '../api';
 import store from './store';
 
 import './index.scss';
@@ -34,41 +35,26 @@ function ApprovalDetail(): JSX.Element {
   const [search] = useURLSearch();
   const [formValues, setFormValues] = useState<Record<string, any>>({});
   const [status, setStatus] = useState<FormBuilder.Option[]>([{ label: '', value: '' }]);
+  const [currentTaskId, setCurrentTaskId] = useState<string>('');
   const [showSwitch, setShowSwitch] = useState<boolean>(false);
   const listType = search.get('list') || 'todo';
   const { processInstanceID, type } = useParams<{
     processInstanceID: string;
     type: string
   }>();
-  const [currentTaskId, setCurrentTaskId] = useState<string>('');
   const history = useHistory();
 
   const {
     isLoading, data, isError, error,
   } = useQuery<any, Error>(
-    [processInstanceID, currentTaskId, type],
-    () => apis.getTaskFormById(processInstanceID, { taskId: currentTaskId, type }),
-  );
+    [processInstanceID, type],
+    () => getTaskFormById(processInstanceID, { type }).then((res) => {
+      if (!currentTaskId) {
+        setCurrentTaskId(get(res, 'taskDetailModels[0].taskId', '').toString());
+      }
 
-  const getTask = (): Record<string, any> => {
-    const taskDetailData = get(data, 'taskDetailModels', []).find(
-      (taskItem: Record<string, any>) => taskItem?.formData !== null,
-    );
-    return taskDetailData ? taskDetailData : get(data, 'taskDetailModels[0]', {});
-  };
-
-  useEffect(() => {
-    document.title = '流程详情';
-  }, []);
-
-  useEffect(() => {
-    setFormValues(getTask()?.formData || {});
-  }, [data]);
-
-  useEffect(() => {
-    if (type === 'HANDLED_PAGE') {
-      apis.getTaskFormById(processInstanceID, { type }).then((data) => {
-        const taskDetailModels = get(data, 'taskDetailModels', []);
+      if (type === 'HANDLED_PAGE') {
+        const taskDetailModels = get(res, 'taskDetailModels', []);
         if (taskDetailModels.length > 1) {
           setShowSwitch(true);
           const status = taskDetailModels.map(({ taskName, taskId }: Record<string, string>) => {
@@ -78,18 +64,53 @@ function ApprovalDetail(): JSX.Element {
             };
           });
           setStatus(status);
-          setCurrentTaskId(taskDetailModels[0]?.taskId);
         }
+      }
+
+      return res;
+    }),
+  );
+
+  const task = useMemo(() => {
+    const taskDetailData = get(data, 'taskDetailModels', []).find(
+      (taskItem: Record<string, any>) => taskItem?.formData !== null,
+    );
+    return taskDetailData ? taskDetailData : get(data, 'taskDetailModels[0]', {});
+  }, [data]);
+
+  const {
+    data: formData,
+  } = useQuery<any, Error>(
+    [processInstanceID, currentTaskId, task?.formSchema],
+    () => {
+      if (!currentTaskId || !task?.formSchema) {
+        return Promise.resolve({});
+      }
+
+      return getFlowFormData(
+        processInstanceID,
+        currentTaskId,
+        buildQueryRef(task.formSchema),
+      ).catch((err) => {
+        toast.error(err);
       });
-    }
+    },
+  );
+
+  useEffect(() => {
+    setFormValues(formData);
+  }, [formData]);
+
+  useEffect(() => {
+    document.title = '流程详情';
   }, []);
 
   const renderSchemaForm = (task: any): JSX.Element | null => {
     return (
       <div className='task-form'>
         <FormRenderer
-          defaultValue={task.formData}
-          schema={(task.formSchema.table || task.formSchema) || {}}
+          value={formData}
+          schema={task.formSchema || {}}
           onFormValueChange={setFormValues}
           usePermission
         />
@@ -105,8 +126,6 @@ function ApprovalDetail(): JSX.Element {
     toast.error(error?.message);
     return <ErrorTips />;
   }
-
-  const task = getTask();
   const appID = get(data, 'appId');
   const tableID = get(data, 'tableId');
 
@@ -175,10 +194,10 @@ function ApprovalDetail(): JSX.Element {
         <ActionModals
           flowName={data?.flowName}
           formData={formValues}
-          defaultValue={task.formData}
+          defaultValue={formData}
           appID={appID}
           tableID={tableID}
-          schemaMap={schemaToMap(task?.formSchema?.table)}
+          schema={task?.formSchema}
         />
       )}
     </div>

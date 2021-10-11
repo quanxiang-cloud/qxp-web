@@ -53,7 +53,7 @@ export const compareOperatorMap: Record<FormBuilder.CompareOperator, OperatorCon
   },
   '!=': {
     title: '不等于',
-    op: 'not eq',
+    op: 'ne',
     comparator: (leftValue: string | number, rightValue: string | number): boolean => {
       return leftValue !== rightValue;
     },
@@ -88,14 +88,14 @@ export const compareOperatorMap: Record<FormBuilder.CompareOperator, OperatorCon
   },
   '∈': {
     title: '属于',
-    op: 'in',
+    op: 'intersection',
     comparator: (leftValue: string | number, rightValue: Array<string | number>): boolean => {
       return rightValue.includes(leftValue);
     },
   },
   '∉': {
     title: '不属于',
-    op: 'not in',
+    op: 'exclude',
     comparator: (leftValue: string | number, rightValue: Array<string | number>): boolean => {
       return !rightValue.includes(leftValue);
     },
@@ -136,7 +136,7 @@ export const compareOperatorMap: Record<FormBuilder.CompareOperator, OperatorCon
   },
   '()': {
     title: '在范围内',
-    op: 'between',
+    op: 'range',
     comparator: (leftValue: number, rightValue: [number, number]): boolean => {
       return leftValue > rightValue[0] && leftValue < rightValue[1];
     },

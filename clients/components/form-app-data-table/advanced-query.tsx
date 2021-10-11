@@ -7,8 +7,8 @@ import ControlPopper from '@c/control-popper';
 
 type Props = {
   fields: SchemaFieldItem[];
-  search: (params: { tag: 'or' | 'and', condition: Condition[] }) => void;
-  tag?: 'or' | 'and';
+  search: (params: { tag: FilterTag, condition: Condition[] }) => void;
+  tag?: FilterTag;
 }
 
 const modifiers = [
@@ -29,7 +29,7 @@ function AdvancedQuery({ fields, search, tag }: Props): JSX.Element {
 
   const handleEmpty = () => {
     dataFilterRef.current?.empty();
-    search({ tag: 'and', condition: [] });
+    search({ tag: 'must', condition: [] });
     setConditionCount(0);
     setVisible(false);
   };

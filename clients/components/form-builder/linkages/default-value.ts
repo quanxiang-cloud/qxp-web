@@ -1,20 +1,14 @@
-import { ajax } from 'rxjs/ajax';
 import { Observable, of, combineLatest } from 'rxjs';
 import { switchMap, debounceTime, filter, map, catchError } from 'rxjs/operators';
+import { fromPromise } from 'rxjs/observable/fromPromise';
 import { FormEffectHooks, ISchemaFormActions } from '@formily/antd';
 
 import logger from '@lib/logger';
+import { fetchFormDataList, FormDataListResponse } from '@lib/http-client';
+import { operatorESParameter, Rule } from '@c/data-filter/utils';
 import { compareOperatorMap } from '@c/form-builder/constants';
 
 const { onFieldValueChange$ } = FormEffectHooks;
-
-type FetchLinkedTableDataParams = {
-  conditions: {
-    condition: Array<{ key: string; op: string; value: Array<any>; }>;
-    tag: 'and' | 'or';
-  };
-  sort: string[];
-}
 
 function getFieldPath(linkageRulePath: string, fieldRealPath: string): string {
   const [match] = /\.\d+\./.exec(fieldRealPath) || [];
@@ -25,43 +19,28 @@ function fetchLinkedTableData$(
   getFieldValue: (path: string) => any,
   linkage: FormBuilder.DefaultValueLinkage,
 ): Observable<Record<string, any>> {
-  const conditions = linkage.rules.map((rule) => {
-    if (rule.compareTo === 'fixedValue') {
-      return {
-        key: rule.fieldName,
-        op: compareOperatorMap[rule.compareOperator].op,
-        value: Array.isArray(rule.compareValue) ? rule.compareValue : [rule.compareValue],
-      };
-    }
-    const currentValue = getFieldValue(rule.compareValue);
-    return {
-      key: rule.fieldName,
-      op: compareOperatorMap[rule.compareOperator].op,
-      value: Array.isArray(currentValue) ? currentValue : [currentValue],
-    };
+  const rules: Rule[] = linkage.rules.map((rule) => {
+    return operatorESParameter(
+      rule.fieldName,
+      compareOperatorMap[rule.compareOperator].op,
+      rule.compareTo === 'fixedValue' ? rule.compareValue as FormValue : getFieldValue(rule.compareValue),
+    );
   });
 
-  const params: FetchLinkedTableDataParams = {
-    sort: (linkage.linkedTableSortRules || []).filter(Boolean),
-    conditions: {
-      tag: linkage.ruleJoinOperator === 'every' ? 'and' : 'or',
-      condition: conditions,
+  const query = {
+    bool: {
+      [linkage.ruleJoinOperator === 'every' ? 'must' : 'should']: rules,
     },
   };
 
-  return ajax({
-    url: `/api/v1/form/${linkage.linkedAppID}/home/form/${linkage.linkedTable.id}`,
-    method: 'POST',
-    headers: { 'X-Proxy': 'API', 'Content-Type': 'application/json' },
-    body: {
-      ...params,
-      method: 'find',
-      page: 1,
-      size: 1,
-    },
-  }).pipe(
-    catchError(() => of({ response: undefined })),
-    map(({ response }) => response?.data?.entities?.[0]),
+  return fromPromise(
+    fetchFormDataList(linkage.linkedAppID, linkage.linkedTable.id, {
+      sort: (linkage.linkedTableSortRules || []).filter(Boolean),
+      query,
+    }),
+  ).pipe(
+    catchError(() => of({ entities: [], total: 0 })),
+    map((res: FormDataListResponse) => res?.entities?.[0]),
     filter((record) => !!record),
   );
 }

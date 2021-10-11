@@ -51,7 +51,7 @@ export const saveFieldFilter = (appID: string, data: any) => {
 // 0.4
 
 export const fetchPerGroupForm = (appID: string, perGroupID: string): Promise<fetchPerGroupFormRes> => {
-  return httpClient(`/api/v1/structor/${appID}/m/permission/perGroup/getForm`, { perGroupID });
+  return httpClient(`/api/v1/structor1/${appID}/m/permission/perGroup/getForm`, { perGroupID });
 };
 
 export const fetchPerCustom = (appID: string, groupId: string): Promise<{pages: string[]}> => {
@@ -74,7 +74,7 @@ type PerDataReq = {
 }
 
 export const fetchPerData = (appID: string, data: PerDataReq) => {
-  return httpClient(`/api/v1/structor/${appID}/m/permission/perGroup/getPerData`, data);
+  return httpClient(`/api/v1/structor1/${appID}/m/permission/perGroup/getPerData`, data);
 };
 
 export type PerData = {
@@ -86,7 +86,7 @@ export type PerData = {
 }
 
 export const savePer = (appID: string, data: PerData) => {
-  return httpClient(`/api/v1/structor/${appID}/m/permission/perGroup/saveForm`, data);
+  return httpClient(`/api/v1/structor1/${appID}/m/permission/perGroup/saveForm`, data);
 };
 
 export const deleteFormPer = (appID: string, data: PerDataReq) => {
