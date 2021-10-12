@@ -8,6 +8,7 @@ import {
   NumberPicker,
   DatePicker,
   Radio,
+  Checkbox,
 } from '@formily/antd-components';
 
 import EditLabels from '@c/form-builder/form-settings-panel/form-field-config/edit-labels';
@@ -65,6 +66,7 @@ export const COMPONENTS: Record<string, JSXElementConstructor<ISchemaFieldCompon
   subtablecolumns: SubTableColumns,
   linkedtable: LinkedTable,
   switch: Switch,
+  checkbox: Checkbox,
   // todo delete this
   arraytable: ArrayTable,
   editlabels: EditLabels,
