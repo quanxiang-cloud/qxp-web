@@ -17,6 +17,7 @@ export default function UserProfile({ className }: Props): JSX.Element {
   const [side, setSide] = useState('');
   const reference = useRef<HTMLDivElement>(null);
   const popperRef = useRef<Popper>(null);
+  const [show, setShow] = useState(popperRef.current?.state.popVisible);
 
   useEffect(() => {
     setSide(window.SIDE);
@@ -38,21 +39,21 @@ export default function UserProfile({ className }: Props): JSX.Element {
         onCancel={() => setOpenResetPasswordModal(false)}
       />
       <div
-        className="cursor-pointer flex items-center h-36
-            hover:blue-100 transition group-hover:text-blue-600"
+        className={cs('cursor-pointer flex items-center h-36 transition', className)}
         ref={reference}
       >
         <Avatar
           username={window.USER?.userName || ''}
         />
-        <Icon name="arrow_drop_down" size={20} />
+        <Icon name={show ? 'arrow_drop_up' : 'arrow_drop_down'} className='text-current' size={20} />
       </div>
       <Popper
         reference={reference}
         ref={popperRef}
         className='avatar-popper'
+        onVisibilityChange={(visible)=> setShow(visible)}
       >
-        <div className={cs('avatar', className)}>
+        <div className='avatar'>
           <div className='avatar-bg flex py-20'>
             <div className='pl-20'>
               <Avatar

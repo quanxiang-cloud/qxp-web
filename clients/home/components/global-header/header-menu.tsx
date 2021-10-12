@@ -32,7 +32,7 @@ export default function HeaderMenu(): JSX.Element {
         />
       </div> */}
       <div className="header-nav-btn group">
-        <UserProfile />
+        <UserProfile className='hover:text-blue-300' />
       </div>
     </div>
   );
