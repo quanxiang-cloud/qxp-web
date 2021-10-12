@@ -3,7 +3,7 @@ import { useUpdateEffect } from 'react-use';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 
 import Icon from '@c/icon';
-import FormDataValueRenderer from '@c/form-data-value-renderer';
+import FormDataValueRenderer, { getBasicValue } from '@c/form-data-value-renderer';
 
 import SelectAssociationModal from './select-association-modal';
 
@@ -86,7 +86,7 @@ export default function AssociatedDataWrap(p: ISchemaFieldComponentProps): JSX.E
   function executeAssignMent(dataRow: Record<string, any>): void {
     const { setFieldState } = p?.form;
     const associativeConfig = p['x-component-props']?.associativeConfig ||
-      p.props['x-component-props'].associativeConfig;
+    p.props['x-component-props'].associativeConfig;
 
     associativeConfig && associativeConfig.rules.forEach((
       { dataSource, dataTarget }: FormBuilder.DataAssignment,
@@ -104,7 +104,19 @@ export default function AssociatedDataWrap(p: ISchemaFieldComponentProps): JSX.E
     <AssociatedData
       {...p.props['x-component-props']}
       value={p.value}
-      onChange={p?.mutators?.change}
+      readOnly={!!p.props.readOnly}
+      onChange={(dataRow, schema) => {
+        if (!dataRow) {
+          p.mutators.change(undefined);
+          return;
+        }
+
+        const value = dataRow[p.props['x-component-props'].fieldName];
+        const label = value ? getBasicValue(schema as ISchema, value) : '--';
+        executeAssignMent(dataRow);
+        p.mutators.change({ label, value: dataRow._id });
+      }}
+      filterConfig={p['x-component-props']?.filterConfig || p.props['x-component-props'].filterConfig}
     />
   );
 }
