@@ -64,10 +64,11 @@ class FormDesignStore {
 
   @computed get allSchema(): ISchema {
     const indexes = values(this.formStore?.schema?.properties || {}).map(numberTransform);
-    let maxIndex = Math.max(...indexes) + 1;
+    let maxIndex = Math.max(...indexes);
+    maxIndex = Number.isFinite(maxIndex) ? maxIndex : 0;
     const internalFieldMapper = (field: ISchema): ISchema => {
       maxIndex += 1;
-      return { ...field, 'x-index': maxIndex - 1 };
+      return { ...field, 'x-index': maxIndex };
     };
     return {
       ...this.formStore?.schema,
@@ -83,11 +84,8 @@ class FormDesignStore {
     let innerFieldIndex: number = this.formStore?.flattenFields.length || 0;
 
     const _internalFields = this.formStore?.internalFields.reduce<Record<string, ISchema>>((acc, field) => {
-      const { componentName, configValue } = field;
-
-      const xInternal = field?.['x-internal'] || {};
-      const { fieldId } = xInternal;
-
+      const { componentName, configValue, fieldName } = field;
+      const fieldId = fieldName;
       if (fieldId) {
         acc[fieldId] = {
           display: false,
