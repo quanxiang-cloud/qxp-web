@@ -380,3 +380,14 @@ export function convertSingleSelectDefault(defaultOption: Record<string, string 
 
   return '';
 }
+
+export function getNoLabelValues(value: LabelValue[]): string[] {
+  return ((value || []) as LabelValue[]).reduce<string[]>((acc, val) => {
+    // Es object conversion label is missing
+    if (val.value && !val.label) {
+      return [...acc, val.value];
+    }
+
+    return acc;
+  }, []);
+}
