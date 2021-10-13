@@ -25,7 +25,7 @@ type FieldPermissionMergeType = CustomFieldPermission & SystemFieldPermission & 
 export function fieldPermissionEncoder(value: FieldPermission): NewFieldPermission {
   const { custom, system } = value;
   const customEncoded = custom.reduce((acc, cur) => {
-    const permission = calculateFieldPermission(cur.editable, cur.invisible, cur.write, cur.read);
+    const permission = calculateFieldPermission(cur.editable, cur.invisible, cur.write, cur.read, true);
     Object.assign(acc, {
       [cur.id]: {
         fieldName: cur.fieldName,
@@ -37,7 +37,7 @@ export function fieldPermissionEncoder(value: FieldPermission): NewFieldPermissi
     return acc;
   }, {});
   const systemEncoded = system.reduce((acc, cur) => {
-    const permission = calculateFieldPermission(false, cur.invisible, false, cur.read);
+    const permission = calculateFieldPermission(false, cur.invisible, false, cur.read, true);
     Object.assign(acc, {
       [cur.id]: {
         fieldName: cur.fieldName,

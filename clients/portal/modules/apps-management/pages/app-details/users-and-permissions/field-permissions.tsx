@@ -46,6 +46,10 @@ function FieldPermissions({
   useEffect(() => {
     const config: Config = {};
     const permission = fields.reduce((permissionAcc: ISchema, fieldSchema: SchemaFieldItem) => {
+      const isSystemField = fieldSchema?.['x-internal']?.isSystem;
+      if (isSystemField) {
+        return permissionAcc;
+      }
       const defaultPermission = fieldSchema?.['x-internal']?.permission as PERMISSION | undefined;
       const permission: PERMISSION | undefined = get(
         fieldPer, `properties.${fieldSchema.id}.x-internal.permission`,
@@ -61,8 +65,8 @@ function FieldPermissions({
       const readable = isPermissionReadable(targetPermission);
       Object.assign(config, {
         [fieldSchema.id]: {
-          editable: readable ? isPermissionEditable(targetPermission) : false,
-          invisible: readable ? isPermissionInvisible(targetPermission) : false,
+          editable: isPermissionEditable(defaultPermission),
+          invisible: isPermissionInvisible(defaultPermission),
           writeable: readable ? isPermissionWriteable(targetPermission) : false,
           readable,
           fieldTitle: fieldSchema.title,
@@ -130,11 +134,7 @@ function FieldPermissions({
         return;
       }
       const partialPermission = getPartialPermission(type, checked, previousConfig);
-      Object.assign(previousConfig, {
-        ...partialPermission,
-        editable: partialPermission.writeable ? !!previousConfig?.editable : false,
-        invisible: partialPermission.readable ? !!previousConfig?.invisible : false,
-      });
+      Object.assign(previousConfig, partialPermission);
       setConfig((config) => ({ ...config, [value]: previousConfig }));
     };
   }
@@ -143,12 +143,7 @@ function FieldPermissions({
     return (e: React.ChangeEvent<HTMLInputElement>) => {
       setConfig((config) => transform(config || {}, (accConfig: Config, configValue, fieldId) => {
         const partialPermission = getPartialPermission(type, e.target.checked, configValue);
-        accConfig[fieldId] = {
-          ...configValue,
-          ...partialPermission,
-          editable: partialPermission.writeable ? configValue.editable : false,
-          invisible: partialPermission.readable ? configValue.invisible : false,
-        };
+        accConfig[fieldId] = { ...configValue, ...partialPermission };
         return accConfig;
       }, {}));
     };

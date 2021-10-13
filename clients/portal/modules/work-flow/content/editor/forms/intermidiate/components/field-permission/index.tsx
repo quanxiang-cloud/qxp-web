@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useQuery } from 'react-query';
-import { groupBy, merge, first, isEqual } from 'lodash';
-import { useUpdateEffect } from 'react-use';
+import { groupBy, merge, first } from 'lodash';
 import fp from 'lodash/fp';
 
 import Toggle from '@c/toggle';
@@ -66,13 +65,6 @@ export default function FieldPermission({ value, onChange: _onChange }: Props): 
       setEditable(true);
     }
   }, [mergedFieldPermissions.custom]);
-
-  useUpdateEffect(() => {
-    const defaultPermissionChanged = !isEqual(fieldPermissionDecoder(value, schema), mergedFieldPermissions);
-    const isPermissionOldFormat = value.custom || value.system;
-    const shouldSetLatestPermission = defaultPermissionChanged || isPermissionOldFormat;
-    shouldSetLatestPermission && onChange(mergedFieldPermissions);
-  }, [mergedFieldPermissions]);
 
   function onChange(fieldPermission: FieldPermissionType): void {
     _onChange({ fieldPermission: fieldPermissionEncoder(fieldPermission) });

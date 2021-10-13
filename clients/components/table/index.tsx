@@ -82,7 +82,7 @@ export default function Table<T extends Record<string, any>>({
   useEffect(() => {
     const _widthMap: WidthMap = {};
     _columns.forEach((col) => {
-      _widthMap[col.id] = col.width || DEFAULT_WIDTH;
+      _widthMap[`${col.id || col.accessor}`] = col.width || DEFAULT_WIDTH;
     });
 
     setWidthMap(_widthMap);
