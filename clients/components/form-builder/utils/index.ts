@@ -10,6 +10,7 @@ import {
   INVALID_INVISIBLE,
   INVALID_NORMAL,
   INVALID_READONLY,
+  INVALID_READONLY_LEGACY,
   INVISIBLE_NO_READ,
   INVISIBLE_NO_WRITE,
   INVISIBLE_WITH_WRITE,
@@ -288,7 +289,7 @@ export function isPermissionInvisible(permission?: PERMISSION): boolean {
 }
 
 export function isPermissionReadOnly(permission: PERMISSION): boolean {
-  return [READONLY_NO_WRITE, READONLY_WITH_WRITE].includes(permission);
+  return [READONLY_NO_WRITE, READONLY_WITH_WRITE, INVALID_READONLY_LEGACY].includes(permission);
 }
 
 export function isPermissionNormal(permission: PERMISSION): boolean {
@@ -298,6 +299,7 @@ export function isPermissionNormal(permission: PERMISSION): boolean {
 export function isPermissionReadable(permission: PERMISSION): boolean {
   return [
     READONLY_NO_WRITE, READONLY_WITH_WRITE, INVISIBLE_NO_WRITE, INVISIBLE_WITH_WRITE, NORMAL,
+    INVALID_READONLY_LEGACY,
   ].includes(permission);
 }
 

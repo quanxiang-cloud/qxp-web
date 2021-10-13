@@ -15,7 +15,7 @@ import defaultValueLinkageEffect from './linkages/default-value';
 import formValueToFilter from './linkages/form-value-to-filter';
 import calculationFormulaEffect from './linkages/calculation-formula';
 import { wrapSchemaByMegaLayout, schemaPermissionTransformer } from './utils';
-import { INVISIBLE_NO_WRITE, PERMISSION, READONLY_NO_WRITE } from './constants';
+import { INVALID_READONLY_LEGACY, INVISIBLE_NO_WRITE, PERMISSION, READONLY_NO_WRITE } from './constants';
 
 setValidationLanguage('zh');
 
@@ -48,7 +48,9 @@ function FormRenderer({
   const actions = createFormActions();
   const schema = usePermission ? schemaPermissionTransformer(inputSchema, readOnly) : inputSchema;
   const fieldsToOmit = treeUtil.reduce((fields: string[], schema: ISchema, fieldId?: string | number) => {
-    if ([INVISIBLE_NO_WRITE, READONLY_NO_WRITE].includes(schema?.['x-internal']?.permission as PERMISSION)) {
+    if ([INVISIBLE_NO_WRITE, READONLY_NO_WRITE, INVALID_READONLY_LEGACY].includes(
+        schema?.['x-internal']?.permission as PERMISSION,
+    )) {
       fields.push(`${fieldId}`);
     }
     return fields;

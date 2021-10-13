@@ -181,7 +181,7 @@ export const SYSTEM_FIELDS = [
 // 0        1      1     1    invisible = true(7, 不过滤)
 // 1        1      1     1    x
 // 1001 9 -> 1
-export type INVALID_PERMISSION = 4 | 8;
+export type INVALID_PERMISSION = 4 | 8 | 9;
 export type PERMISSION = 0 | 1 | 3 | 5 | 7 | 11 | INVALID_PERMISSION;
 export type PERMISSION_KEY = keyof PERMISSION_TYPE;
 export type PERMISSION_TYPE = { read: boolean; write: boolean; invisible: boolean; editable: boolean; }
@@ -195,6 +195,7 @@ export const NORMAL = 11;
 export const INVALID_READONLY = 0;
 export const INVALID_INVISIBLE = 4;
 export const INVALID_NORMAL = 8;
+export const INVALID_READONLY_LEGACY = 9;
 
 /** form-builder internal fields map */
 export const INTERNAL_FIELDS: Array<FormItem> = [
