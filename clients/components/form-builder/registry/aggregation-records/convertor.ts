@@ -3,6 +3,7 @@ import { get, has } from 'lodash';
 import toast from '@lib/toast';
 import { ESParameter } from '@c/data-filter/utils';
 import { getSchemaPermissionFromSchemaConfig, getDisplayModifierFromSchema } from '@c/form-builder/utils';
+import { ESParameter } from '@c/data-filter/utils';
 
 export type AggType = 'count' | 'sum' | 'max' | 'min' | 'avg';
 export type RoundMethod = 'round' | 'round-up' | 'round-down';
