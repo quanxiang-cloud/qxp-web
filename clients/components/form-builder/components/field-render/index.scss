@@ -1,0 +1,43 @@
+.field-render {
+  .field-label {
+    position: relative;
+    color: #000000d9;
+    font-size: 14px;
+    word-wrap: break-word; 
+    word-break: break-all;
+    font-weight: normal;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    max-width: 100%;
+    
+    &::after {
+      content: ":";
+      position: relative;
+      top: -.5px;
+      margin: 0 8px 0 2px;
+    }
+  }
+
+  .field-require {
+    &::before{
+      display: inline-block;
+      margin-right: 4px;
+      color: #ff4d4f;
+      font-size: 14px;
+      font-family: 'SimSun;sans-serif';
+      line-height: 1;
+      content: '*';
+    }
+  }
+  
+  .description {
+    color: rgba(0, 0, 0, 0.45);
+    font-size: 14px;
+    line-height: 1.5715;
+  }
+}
+
+.field-hidden {
+  opacity: 0.3;
+}

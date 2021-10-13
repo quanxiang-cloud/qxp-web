@@ -4,6 +4,7 @@ export interface LayoutTabsConfig {
   position: 'top' | 'left';
   currentEdit: string;
   tabs: string[];
+  displayModifier: FormBuilder.DisplayModifier;
 }
 
 export const defaultConfig: LayoutTabsConfig = {
@@ -11,12 +12,13 @@ export const defaultConfig: LayoutTabsConfig = {
   position: 'top',
   tabs: ['选项卡1'],
   currentEdit: '选项卡1',
+  displayModifier: 'normal',
 };
 
 export function toSchema(value: LayoutTabsConfig): ISchema {
   return {
     type: 'object',
-    display: true,
+    display: value.displayModifier !== 'hidden',
     'x-component': 'LayoutTabs',
     'x-component-props': {
       tabs: value.tabs,
@@ -30,7 +32,13 @@ export function toSchema(value: LayoutTabsConfig): ISchema {
 }
 
 export function toConfig(schema: ISchema): LayoutTabsConfig {
+  let displayModifier: FormBuilder.DisplayModifier = 'normal';
+  if (!schema.display) {
+    displayModifier = 'hidden';
+  }
+
   return {
+    displayModifier,
     isLayoutComponent: true,
     position: schema['x-component-props']?.position,
     tabs: schema['x-component-props']?.tabs,

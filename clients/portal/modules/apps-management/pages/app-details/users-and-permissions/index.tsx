@@ -90,7 +90,7 @@ function UsersAndPermissions(): JSX.Element {
   ];
 
   const handleDleteSubmit = (): void => {
-    if (store.currentRights.scopes) {
+    if (store.currentRights.scopes?.length) {
       toast.error(`${store.currentRights.name}  权限组已存在员工数据，请先移除该权限组下的所有员工数据。`);
       setShowDeleteRightModal(false);
       return;

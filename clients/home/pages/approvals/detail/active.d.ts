@@ -1,6 +1,6 @@
 type StatusValues = 'FILL_IN' | 'AGREE' | 'REFUSE' | 'SEND_BACK' | 'READ' |
-   'DELIVER' | 'STEP_BACK' | 'UNTREATED' | 'IN_REVIEW' | 'AUTO_REVIEW' | 'AUTO_SKIP'
-   | 'CANCEL' | 'RE_SUBMIT' | 'CC';
+  'DELIVER' | 'STEP_BACK' | 'UNTREATED' | 'IN_REVIEW' | 'AUTO_REVIEW' | 'AUTO_SKIP'
+  | 'CANCEL' | 'RE_SUBMIT' | 'CC';
 type NoOperationStatus = 'CC' | 'REVIEW';
 type Colors = 'text-blue-600' | 'text-green-600' | 'text-red-600' | 'text-yellow-600';
 type BgColors = 'bg-blue-100' | 'bg-green-100' | 'bg-red-100' | 'bg-yellow-100';
@@ -15,7 +15,7 @@ interface OperationRecord {
   createTime?: string;
   handleDesc?: string;
   modifyTime?: string;
-  status?: 0 | 1;
+  status?: 'COMPLETED' | 'ACTIVE';
 }
 
 interface FlowItem {

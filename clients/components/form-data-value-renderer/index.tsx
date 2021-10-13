@@ -89,7 +89,9 @@ export default function FormDataValueRenderer({ value, schema, className }: Prop
     return <AssociatedDataValueRender schema={schema} value={value as LabelValue} />;
   }
 
-  return <span className={className}>{getBasicValue(schema, value)}</span>;
+  const content = getBasicValue(schema, value);
+
+  return <span title={content} className={className}>{content}</span>;
 }
 
 export function getBasicValue(schema: ISchema, value: FormDataValue): string {

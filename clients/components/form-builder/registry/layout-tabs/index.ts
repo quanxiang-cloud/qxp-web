@@ -1,5 +1,5 @@
 import LayoutTabs from './layout-tabs';
-import LayoutTabsCanvas from './layout-tabs-canvas';
+import Placeholder from './placeholder';
 
 import configForm from './config-form';
 import { defaultConfig, toSchema, toConfig, LayoutTabsConfig } from './convertor';
@@ -12,7 +12,7 @@ const LayoutTabsField: Omit<FormBuilder.SourceElement<LayoutTabsConfig>, 'displa
   toSchema,
   toConfig,
   component: LayoutTabs,
-  editComponent: LayoutTabsCanvas,
+  placeholderComponent: Placeholder,
   category: 'layout',
   componentName: 'LayoutTabs',
   isLayoutComponent: true,

@@ -23,6 +23,10 @@ function formatOverTime(dueDate?: string): string {
     return '';
   }
 
+  if (dayjs().isBefore(dueDate)) {
+    return '';
+  }
+
   const duration = dayjs.duration(dayjs().diff(dayjs(dueDate)));
   return [
     [duration.years(), '年'],

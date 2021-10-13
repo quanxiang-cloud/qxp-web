@@ -1,16 +1,25 @@
-import React, { useEffect, useContext } from 'react';
+import React, { useEffect, useContext, useState } from 'react';
 import { toJS } from 'mobx';
 import { observer } from 'mobx-react';
 
 import Button from '@c/button';
-import Table from '@c/table';
+import Table, { SizeType } from '@c/table';
+import Icon from '@c/icon';
 import Pagination from '@c/pagination';
 import PopConfirm from '@c/pop-confirm';
+import MoreMenu from '@c/more-menu';
 
+import TableConfig from './table-config';
 import AdvancedQuery from './advanced-query';
 import { StoreContext } from './context';
 
+const TABLE_SIZE_MENUS: (LabelValue & { key: SizeType })[] = [
+  { label: '正常', value: 'middle', key: 'middle' },
+  { label: '紧凑', value: 'small', key: 'small' },
+];
+
 function PageDataTable(): JSX.Element {
+  const [tableSize, setTableSize] = useState<SizeType>('middle');
   const store = useContext(StoreContext);
   const { selected, setSelected } = store;
 
@@ -58,21 +67,29 @@ function PageDataTable(): JSX.Element {
           })}
 
         </div>
-        <AdvancedQuery
-          tag={store.params.tag as FilterTag}
-          fields={store.fields}
-          search={store.setParams}
-        />
+        <div className='flex gap-x-5 items-center'>
+          <TableConfig />
+          <MoreMenu onMenuClick={setTableSize} menus={TABLE_SIZE_MENUS} activeMenu={tableSize}>
+            <Icon clickable changeable size={25} name='expand' />
+          </MoreMenu>
+          <AdvancedQuery
+            tag={store.params.tag}
+            fields={store.fields}
+            search={store.setParams}
+          />
+        </div>
       </div>
       <div className='flex flex-1 overflow-hidden'>
         <Table
+          canSetColumnWidth
           showCheckbox={store.showCheckbox}
           emptyTips='暂无数据'
+          size={tableSize}
           rowKey="_id"
           loading={store.listLoading}
           initialSelectedRowKeys={selected || []}
           onSelectChange={handleSelectChange}
-          columns={store.tableColumns}
+          columns={store.tableShowColumns}
           data={toJS(store.formDataList)}
         />
       </div>

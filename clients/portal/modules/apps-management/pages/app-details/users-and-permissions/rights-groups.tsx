@@ -70,12 +70,6 @@ function RightsGroups(): JSX.Element {
     }
     dataPerRef.current?.getDataValues().then((conditions) => {
       if (conditions) {
-        if (
-          JSON.stringify(conditions) !== '{}' && !conditions.delete?.arr.length &&
-          !conditions.find?.arr.length && !conditions.update?.arr.length) {
-          toast.error(`${store.currentRights.name}自定义数据权限需要至少填写 1 条有效数据。!`);
-          return;
-        }
         savePer(store.appID, {
           formID: store.currentPage.id,
           perGroupID: store.rightsGroupID,

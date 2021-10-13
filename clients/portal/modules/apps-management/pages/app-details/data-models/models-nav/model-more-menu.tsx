@@ -27,6 +27,9 @@ function ModelMoreMenu({ model }: Props): JSX.Element {
     if (key === 'edit') {
       setEditModalType(key);
     }
+    if (key === 'copy') {
+      setEditModalType(key);
+    }
   }
 
   return (
@@ -46,6 +49,16 @@ function ModelMoreMenu({ model }: Props): JSX.Element {
               </div>
             ),
             disabled: model.source !== 2,
+          },
+          {
+            key: 'copy',
+            label: (
+              <div className="flex items-center">
+                <Icon name="restore_from_trash" size={16} className="mr-8" />
+                <span className="font-normal">复制</span>
+              </div>
+            ),
+            disabled: false,
           },
           {
             key: 'delete',

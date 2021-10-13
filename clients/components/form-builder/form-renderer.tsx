@@ -21,6 +21,7 @@ setValidationLanguage('zh');
 
 type Props = {
   schema: ISchema;
+  value?: any;
   defaultValue?: any;
   className?: string;
   onSubmit?: (value: any) => void;
@@ -36,6 +37,7 @@ function FormRenderer({
   className,
   onSubmit,
   onFormValueChange,
+  value,
   children,
   additionalComponents = {},
   usePermission,
@@ -99,6 +101,7 @@ function FormRenderer({
           <p className="text-red-600">{errorMessage}</p>
         )}
         <SchemaForm
+          value={value}
           previewPlaceholder='-'
           actions={actions}
           onSubmit={handleSubmit}

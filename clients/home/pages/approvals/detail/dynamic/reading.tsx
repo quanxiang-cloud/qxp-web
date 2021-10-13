@@ -19,7 +19,7 @@ export default function Reading({ workData, clickHandle }: Props): JSX.Element {
   }
 
   function filterRead(data: OperationRecord[]): number {
-    const readData = data.filter((operation) => operation.status === 1);
+    const readData = data.filter((operation) => operation.status === 'COMPLETED');
     return readData.length;
   }
 

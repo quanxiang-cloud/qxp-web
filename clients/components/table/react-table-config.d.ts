@@ -118,7 +118,7 @@ declare module 'react-table' {
       UseRowSelectRowProps<D> {}
 
   export type FixedColumn<T extends {}> = Column<T> & { fixed: boolean; width: number };
-  export type UnionColumns<T extends {}> = FixedColumn<T> | Column<T>;
+  export type UnionColumns<T extends {}> = FixedColumn<T> | Column<T> & { fixed?: boolean };
 }
 
 export type TableMouseEventHandler = (instance: TableInstance<T>) => MouseEventHandler
