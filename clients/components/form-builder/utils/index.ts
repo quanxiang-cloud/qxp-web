@@ -7,6 +7,9 @@ import fp, {
 import toast from '@lib/toast';
 
 import {
+  INVALID_INVISIBLE,
+  INVALID_NORMAL,
+  INVALID_READONLY,
   INVISIBLE_NO_READ,
   INVISIBLE_NO_WRITE,
   INVISIBLE_WITH_WRITE,
@@ -250,12 +253,12 @@ export function getSchemaPermissionFromSchemaConfig(
   const isReadonly = value.displayModifier === 'readonly';
   const isHidden = value.displayModifier === 'hidden';
   if (isReadonly) {
-    return READONLY_WITH_WRITE;
+    return INVALID_READONLY;
   }
   if (isHidden) {
-    return INVISIBLE_NO_WRITE;
+    return INVALID_INVISIBLE;
   }
-  return NORMAL;
+  return INVALID_NORMAL;
 }
 
 export function getDisplayModifierFromSchema(schema: ISchema): FormBuilder.DisplayModifier {
@@ -278,8 +281,10 @@ export function getDisplayModifierFromSchema(schema: ISchema): FormBuilder.Displ
   return 'normal';
 }
 
-export function isPermissionInvisible(permission: PERMISSION): boolean {
-  return [INVISIBLE_NO_READ, INVISIBLE_NO_WRITE, INVISIBLE_WITH_WRITE].includes(permission);
+export function isPermissionInvisible(permission?: PERMISSION): boolean {
+  return [INVISIBLE_NO_READ, INVISIBLE_NO_WRITE, INVISIBLE_WITH_WRITE, INVALID_INVISIBLE].some(
+    (per) => per === permission,
+  );
 }
 
 export function isPermissionReadOnly(permission: PERMISSION): boolean {
@@ -305,7 +310,7 @@ export function isPermissionHiddenAble(permission: PERMISSION): boolean {
 }
 
 export function isPermissionEditable(permission?: PERMISSION): boolean {
-  return NORMAL === permission;
+  return NORMAL === permission || permission === INVALID_NORMAL;
 }
 
 export function calculateFieldPermission(
@@ -313,13 +318,16 @@ export function calculateFieldPermission(
   invisible: boolean,
   writeable: boolean,
   readable: boolean,
+  isFromWorkFlow?: boolean,
 ): PERMISSION {
   const permissions = [0b1000, 0b0100, 0b0010, 0b0001];
   const options = [editable, invisible, writeable, readable];
   const permission = permissions.reduce((acc, permission, index) => {
     return acc + (options[index] ? permission : 0b0000);
   }, 0b0000) as PERMISSION;
-  if (![0, 1, 3, 5, 7, 11].includes(permission)) {
+  const availablePermisssions = [0, 1, 3, 5, 7, 11];
+  !isFromWorkFlow && availablePermisssions.push(...[4, 8, 9]);
+  if (!availablePermisssions.includes(permission)) {
     toast.error(`权限配置错误 ${permission}`);
     throw new Error(`${permission}`);
   }
