@@ -2,7 +2,6 @@ import React, { useState, useEffect, useImperativeHandle, forwardRef, useRef } f
 import { get, transform } from 'lodash';
 
 import Checkbox from '@c/checkbox';
-import Icon from '@c/icon';
 import { NORMAL, PERMISSION } from '@c/form-builder/constants';
 import {
   calculateFieldPermission,
@@ -41,15 +40,12 @@ function FieldPermissions({
 
   const [config, setConfig] = useState<Config>();
   const fieldNameRefs = useRef(new Map<string, boolean>());
-  const isPermissionDisabled = store.currentRights.types === 1 || !abled;
+  const isInitialPermissionGroup = store.currentRights.types === 1;
+  const isPermissionDisabled = isInitialPermissionGroup || !abled;
 
   useEffect(() => {
     const config: Config = {};
     const permission = fields.reduce((permissionAcc: ISchema, fieldSchema: SchemaFieldItem) => {
-      const isSystemField = fieldSchema?.['x-internal']?.isSystem;
-      if (isSystemField) {
-        return permissionAcc;
-      }
       const defaultPermission = fieldSchema?.['x-internal']?.permission as PERMISSION | undefined;
       const permission: PERMISSION | undefined = get(
         fieldPer, `properties.${fieldSchema.id}.x-internal.permission`,
@@ -63,12 +59,13 @@ function FieldPermissions({
         },
       });
       const readable = isPermissionReadable(targetPermission);
+      const writeable = readable ? isPermissionWriteable(targetPermission) : false;
       Object.assign(config, {
         [fieldSchema.id]: {
           editable: isPermissionEditable(defaultPermission),
           invisible: isPermissionInvisible(defaultPermission),
-          writeable: readable ? isPermissionWriteable(targetPermission) : false,
-          readable,
+          writeable: isInitialPermissionGroup ? true : writeable,
+          readable: isInitialPermissionGroup ? true : readable,
           fieldTitle: fieldSchema.title,
           fieldComponentName: fieldSchema?.['x-component'],
           isSystem: fieldSchema?.['x-internal']?.isSystem,
@@ -119,9 +116,13 @@ function FieldPermissions({
   function getPartialPermission(
     type: 'read' | 'write', checked: boolean, configPermission: ConfigValue,
   ): Partial<ConfigValue> {
+    const isWriteReadable = checked ? true : configPermission.readable;
     const valueMapper = {
       read: { readable: checked, writeable: !checked ? false : configPermission.writeable },
-      write: { writeable: checked, readable: checked ? true : configPermission.readable },
+      write: {
+        writeable: configPermission.isSystem ? configPermission.writeable : checked,
+        readable: configPermission.isSystem ? configPermission.readable : isWriteReadable,
+      },
     };
     return valueMapper[type];
   }
@@ -159,14 +160,6 @@ function FieldPermissions({
 
   return (
     <div className={className}>
-      <div className='fields-tip text-14'>
-        <Icon
-          name='info'
-          className='text-inherit mx-18'
-          size={20}
-        />
-        系统字段不可修改。例如：创建时间、修改时间
-      </div>
       <div className='pb-field-box'>
         <div className='pb-field-item-title'>
           <span>字段</span>
