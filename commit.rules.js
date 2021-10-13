@@ -14,9 +14,9 @@
  ```
  */
 
-const SUBJECT_MAX_LEN = 50;
-const BODY_MAX_LEN = 72;
-const FOOTER_MAX_LEN = 72;
+const SUBJECT_MAX_LEN = 80;
+const BODY_MAX_LEN = 1000;
+const FOOTER_MAX_LEN = 1000;
 
 // todo: missing rules like: `body-leading-case`, `footer-leading-case`
 
