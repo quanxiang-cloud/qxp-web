@@ -30,8 +30,8 @@ export default function CustomFieldTable({
   const layoutFields = schemaToArray(schema, { parseSubTable: true, keepLayout: true })
     .reduce((layoutFields: string[], schema) => {
       const internal = schema['x-internal'];
-      if (internal?.isLayoutComponent && internal._key) {
-        layoutFields.push(internal._key);
+      if (internal?.isLayoutComponent && internal.fieldId) {
+        layoutFields.push(internal.fieldId);
       }
       return layoutFields;
     }, []);
@@ -224,7 +224,7 @@ export default function CustomFieldTable({
         Header: () => getValueHeader('提交值', '该节点提交工作表后对应字段呈现提交值'),
         accessor: 'submitValue',
         Cell: (model: any) => !model.cell.row.original.write &&
-              getValueCell(model, 'submitValue', editable),
+          getValueCell(model, 'submitValue', editable),
       }]}
       data={fields.filter((field) => !field.hidden)}
     />

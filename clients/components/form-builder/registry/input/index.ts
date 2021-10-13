@@ -4,6 +4,7 @@ import { validateRegistryElement } from '@c/form-builder/utils';
 
 import configSchema from './config-schema';
 import { defaultConfig, toSchema, toConfig, InputConfig } from './convertor';
+import Placeholder from './placeholder';
 
 const InputField: Omit<FormBuilder.SourceElement<InputConfig>, 'displayOrder'> = {
   configSchema,
@@ -13,6 +14,7 @@ const InputField: Omit<FormBuilder.SourceElement<InputConfig>, 'displayOrder'> =
   toSchema,
   toConfig,
   component: Input,
+  placeholderComponent: Placeholder,
   category: 'basic',
   componentName: 'Input',
   compareOperators: ['==', '!='],

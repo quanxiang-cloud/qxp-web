@@ -28,6 +28,9 @@ const schema: ISchema = {
           title: '描述内容',
           maxLength: 50,
           'x-component': 'Input',
+          'x-component-props': {
+            placeholder: '请输入',
+          },
           'x-mega-props': {
             labelAlign: 'top',
           },
@@ -126,8 +129,6 @@ const schema: ISchema = {
           default: 2,
           required: true,
           readOnly: false,
-          maximum: 8,
-          minimum: 0,
           'x-rules': {
             required: true,
             message: '请输入保留的小数点位数',

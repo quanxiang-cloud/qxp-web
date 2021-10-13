@@ -1,4 +1,5 @@
 import React from 'react';
+import { noop } from 'lodash';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 
 import UserPicker from './user-picker';
@@ -9,7 +10,7 @@ const UserPickerWrap = (formField: ISchemaFieldComponentProps): JSX.Element => {
   return (
     <UserPicker
       {...formField.props['x-component-props']}
-      onChange={formField.mutators.change}
+      onChange={formField?.mutators?.change ? formField?.mutators?.change : noop}
       options={formField.props.enum}
       value={formField.value}
       editable={formField.editable ?? !formField.readOnly}

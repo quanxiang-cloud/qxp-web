@@ -1,5 +1,6 @@
 import React from 'react';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
+import { noop } from 'lodash';
 
 import { labelValueRenderer } from '@c/form-data-value-renderer';
 
@@ -21,7 +22,7 @@ const OrganizationPickerWrap = (formField: ISchemaFieldComponentProps): JSX.Elem
       defaultValues={defaultValues}
       defaultRange={defaultRange}
       value={formField.value}
-      onChange={formField.mutators.change}
+      onChange={formField?.mutators?.change ? formField?.mutators?.change : noop}
     />
   );
 };

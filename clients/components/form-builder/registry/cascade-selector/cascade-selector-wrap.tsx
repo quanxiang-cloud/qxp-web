@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { noop } from 'lodash';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
 
 import FormDataValueRenderer from '@c/form-data-value-renderer';
@@ -12,7 +13,7 @@ function CascadeSelectorWarp(props: ISchemaFieldComponentProps): JSX.Element {
     // clear cascade when change value source
     // when initialValue not undefined, is edit mode
     if (!props.initialValue) {
-      props.mutators.change({ label: '', value: '' });
+      if (props?.mutators?.change) props.mutators.change({ label: '', value: '' });
     }
   }, [defaultValueFrom]);
 
@@ -26,7 +27,7 @@ function CascadeSelectorWarp(props: ISchemaFieldComponentProps): JSX.Element {
       predefinedDataset={predefinedDataset}
       defaultValueFrom={defaultValueFrom}
       showFullPath={showFullPath}
-      onChange={props.mutators.change}
+      onChange={props?.mutators?.change ? props?.mutators?.change : noop}
       value={props.value}
     />
   );

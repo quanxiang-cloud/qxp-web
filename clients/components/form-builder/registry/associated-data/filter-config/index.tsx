@@ -70,7 +70,9 @@ function FilterConfig({
 
   useEffect(() => {
     if (currentFormSchema) {
-      setCurrentFields(getFields({ schema: currentFormSchema, excludedSystemField: true }));
+      setCurrentFields(
+        getFields({ schema: currentFormSchema, excludedSystemField: true }),
+      );
     }
   }, [currentFormSchema]);
 

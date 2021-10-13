@@ -5,16 +5,16 @@ import Icon from '@c/icon';
 import { StoreContext } from '@c/form-builder/context';
 
 type Props = {
-  filedName: string;
+  filedId: string;
 }
 
-function DeleteButton({ filedName }: Props): JSX.Element {
+function DeleteButton({ filedId }: Props): JSX.Element {
   const store = React.useContext(StoreContext);
 
   return (
     <div
-      onClick={() => store.deleteField(filedName)}
-      className="delete-field-icon"
+      onClick={() => store.deleteField(filedId)}
+      className="field-icon delete-field-icon"
     >
       <Icon type="light" name="delete_outline" size={16} />
     </div>

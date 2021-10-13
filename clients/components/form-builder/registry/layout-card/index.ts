@@ -1,5 +1,5 @@
 import LayoutCard from './layout-card';
-import LayoutCardCanvas from './layout-card-canvas';
+import Placeholder from './placeholder';
 
 import configSchema from './config-schema';
 import { defaultConfig, toSchema, toConfig, LayoutCardConfig } from './convertor';
@@ -12,7 +12,7 @@ const LayoutCardField: Omit<FormBuilder.SourceElement<LayoutCardConfig>, 'displa
   toSchema,
   toConfig,
   component: LayoutCard,
-  editComponent: LayoutCardCanvas,
+  placeholderComponent: Placeholder,
   category: 'layout',
   componentName: 'LayoutCard',
   isLayoutComponent: true,

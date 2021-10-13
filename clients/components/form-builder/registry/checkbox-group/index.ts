@@ -6,6 +6,7 @@ import CheckboxGroup from './checkboxGroup';
 import DatasetConfig from '../../form-settings-panel/form-field-config/dataset-config';
 import configSchema from './config-schema';
 import { defaultConfig, toSchema, toConfig } from './convertor';
+import Placeholder from './placeholder';
 
 const CheckboxGroupField: Omit<FormBuilder.SourceElement<typeof defaultConfig>, 'displayOrder'> = {
   configSchema,
@@ -15,6 +16,7 @@ const CheckboxGroupField: Omit<FormBuilder.SourceElement<typeof defaultConfig>, 
   defaultConfig,
   toSchema,
   component: CheckboxGroup,
+  placeholderComponent: Placeholder,
   category: 'basic',
   componentName: 'CheckboxGroup',
   compareOperators: ['⊇', '⊋'],

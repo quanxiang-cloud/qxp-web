@@ -1,18 +1,20 @@
-import React, { useContext } from 'react';
-import { Input } from 'antd';
+import React, { useState } from 'react';
 import classnames from 'classnames';
+import { useFormEffects, IMutators, IFormActions } from '@formily/antd';
 
 import Icon from '@c/icon';
 import Button from '@c/button';
 
-import { FieldConfigContext } from '../form-settings-panel/form-field-config/context';
+export function deleteOperate(idx: number): JSX.Element {
+  const [mutators, setMutators] = useState<IMutators>();
 
-const TextArea = Input.TextArea;
-
-export function deleteOperate(idx: number) {
-  const { actions } = useContext(FieldConfigContext);
-
-  const mutator = actions.createMutators('availableOptions');
+  useFormEffects((selector) => {
+    if (mutators) {
+      return;
+    }
+    const mutator = selector.createMutators('availableOptions');
+    setMutators(mutator);
+  });
 
   return (
     <>
@@ -21,17 +23,23 @@ export function deleteOperate(idx: number) {
           className={classnames('operate-icon', 'delete-icon')}
           name="delete"
           size={24}
-          onClick={() => mutator.remove(idx)}
+          onClick={() => mutators?.remove(idx)}
         />
       </div>
     </>
   );
 }
 
-export function extraOperations(idx: number) {
-  const { actions } = useContext(FieldConfigContext);
+export function extraOperations(idx: number): JSX.Element {
+  const [mutators, setMutators] = useState<IMutators>();
 
-  const mutator = actions.createMutators('availableOptions');
+  useFormEffects((selector) => {
+    if (mutators) {
+      return;
+    }
+    const mutator = selector.createMutators('availableOptions');
+    setMutators(mutator);
+  });
 
   return (
     <>
@@ -39,22 +47,30 @@ export function extraOperations(idx: number) {
         <Icon
           className="operate-icon"
           name="keyboard_arrow_up"
-          onClick={() => mutator.moveUp(idx)}
+          onClick={() => mutators?.moveUp(idx)}
         />
         <Icon
           className="operate-icon"
           name="keyboard_arrow_down"
-          onClick={() => mutator.moveDown(idx)}
+          onClick={() => mutators?.moveDown(idx)}
         />
       </div>
     </>
   );
 }
 
-export function AddOperate() {
-  const { actions } = useContext(FieldConfigContext);
-  const mutator = actions.createMutators('availableOptions');
-  const options = actions.getFieldValue('availableOptions');
+export function AddOperate(): JSX.Element {
+  const [actions, setActions] = useState<IFormActions>();
+
+  useFormEffects((_, _actions) => {
+    if (actions) {
+      return;
+    }
+    setActions(_actions);
+  });
+
+  const mutator = actions?.createMutators('availableOptions');
+  const options = actions?.getFieldValue('availableOptions');
 
   return (
     <>
@@ -70,7 +86,7 @@ export function AddOperate() {
           });
 
           if (hasNullOption === false) {
-            mutator.push({ label: '', value: '' });
+            mutator?.push({ label: '', value: '' });
           }
         }}
       >
