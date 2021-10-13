@@ -25,7 +25,7 @@ export default function HeaderMenu(): JSX.Element {
       >
         <Icon name="help_doc" size={21} className='app-icon-color-inherit m-6'/>
       </a>
-      <div className="header-nav-btn group">
+      <div className="header-nav-btn group ml-16">
         <UserAvatarMenu />
       </div>
     </div>

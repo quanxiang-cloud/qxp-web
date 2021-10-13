@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { observer } from 'mobx-react';
 
-import Header from './header';
 import PageNav from './page-nav';
 import PageDetails from './page-details';
 import store from './store';
@@ -32,10 +31,7 @@ function AppDetails(): JSX.Element {
   return (
     <div className='h-screen flex' onMouseMove={handleShowPageNav}>
       <PageNav />
-      <div className='w-full overflow-auto'>
-        <Header />
-        <PageDetails />
-      </div>
+      <PageDetails />
     </div>
   );
 }

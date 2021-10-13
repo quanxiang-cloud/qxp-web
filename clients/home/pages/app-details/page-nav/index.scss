@@ -61,3 +61,11 @@
     background-color: var(--blue-600);
   }
 }
+
+.app-header-icon {
+  @apply cursor-pointer;
+  &:hover {
+    color: var(--gray-600);
+    background-color: var(--gray-100);
+  }
+}

@@ -17,6 +17,7 @@ class UserAppDetailsStore {
   @observable pageName = '';
   @observable authority = 0;
   @observable showPageNav = true;
+  @observable operationType = '';
   @observable isMouseControl = false;
   @observable pageList: NodeItem<PageInfo>[] = [];
   @observable customPageInfo: CustomPageInfo | null = null;

@@ -2,7 +2,6 @@ import React, { useState, useRef, useEffect } from 'react';
 import cs from 'classnames';
 import { observer } from 'mobx-react';
 
-import TextHeader from '@c/text-header';
 import FormAppDataTable from '@c/form-app-data-table';
 import { Ref, TableHeaderBtn } from '@c/form-app-data-table/type';
 import PopConfirm from '@c/pop-confirm';
@@ -13,6 +12,7 @@ import { getOperateButtonPer } from '../utils';
 import CreateDataForm from './create-data-form';
 import DetailsDrawer from './details-drawer';
 import store from '../store';
+import Header from '../header';
 import './index.scss';
 
 function PageDetails(): JSX.Element | null {
@@ -43,7 +43,15 @@ function PageDetails(): JSX.Element | null {
   const tableHeaderBtnList: TableHeaderBtn[] = [];
 
   if (getOperateButtonPer(2, store.authority)) {
-    tableHeaderBtnList.push({ key: 'add', action: () => goEdit(''), text: '新建', iconName: 'add' });
+    tableHeaderBtnList.push({
+      key: 'add',
+      action: () => {
+        store.operationType = '新建';
+        goEdit('');
+      },
+      text: '新建',
+      iconName: 'add',
+    });
   }
 
   if (getOperateButtonPer(4, store.authority)) {
@@ -66,7 +74,10 @@ function PageDetails(): JSX.Element | null {
         <div>
           {getOperateButtonPer(1, store.authority) && (
             <span
-              onClick={() => goView(rowData._id)}
+              onClick={() => {
+                store.operationType = '查看';
+                goView(rowData._id);
+              }}
               className='mr-16 text-blue-600 cursor-pointer'
             >
               查看
@@ -74,7 +85,10 @@ function PageDetails(): JSX.Element | null {
           )}
           {getOperateButtonPer(3, store.authority) && (
             <span
-              onClick={() => goEdit(rowData._id)}
+              onClick={() => {
+                store.operationType = '修改';
+                goEdit(rowData._id);
+              }}
               className='mr-16 text-blue-600 cursor-pointer'
             >
               修改
@@ -94,12 +108,13 @@ function PageDetails(): JSX.Element | null {
   const handleCancel = (isRefresh?: boolean): void => {
     setModalType('');
     setCurRowID('');
+    store.operationType = '';
     if (isRefresh) {
       formTableRef.current?.refresh();
     }
   };
 
-  const renderPageBody = () => {
+  const renderPageBody = (): JSX.Element => {
     const { menuType } = curPage;
     if (menuType === MenuType.customPage) {
       return (
@@ -123,8 +138,7 @@ function PageDetails(): JSX.Element | null {
           appID={store.appID}
           pageID={store.pageID}
           allowRequestData={true}
-          style={{ height: 'calc(100% - 62px)' }}
-          className={cs('p-20', { 'form-table-hidden': modalType === 'dataForm' })}
+          className={cs('p-20 h-full', { 'form-table-hidden': modalType === 'dataForm' })}
         />
       );
     }
@@ -135,30 +149,28 @@ function PageDetails(): JSX.Element | null {
   }
 
   return (
-    <div className='relative h-full flex-1 overflow-hidden'>
-      <TextHeader
-        title={curPage.name || ''}
-        desc={curPage.describe || ''}
-        className="bg-white px-20 py-18 header-background-image"
-        itemTitleClassName="text-h5" />
-      {renderPageBody()}
-      {modalType === 'dataForm' && (
-        <CreateDataForm
-          appID={store.appID}
-          pageID={store.pageID}
-          title={store.pageName}
-          rowID={curRowID}
-          onCancel={() => handleCancel(true)}
-        />
-      )}
-      {modalType === 'details' && (
-        <DetailsDrawer
-          delData={delFormData}
-          goEdit={goEdit}
-          rowID={curRowID}
-          onCancel={handleCancel}
-        />
-      )}
+    <div className='flex-1 overflow-auto'>
+      <Header onCancel={() => handleCancel(true)}/>
+      <div style={{ height: 'calc(100vh - 52px)' }} className='relative h-full flex-1 overflow-hidden'>
+        {renderPageBody()}
+        {modalType === 'dataForm' && (
+          <CreateDataForm
+            appID={store.appID}
+            pageID={store.pageID}
+            title={store.pageName}
+            rowID={curRowID}
+            onCancel={() => handleCancel(true)}
+          />
+        )}
+        {modalType === 'details' && (
+          <DetailsDrawer
+            delData={delFormData}
+            goEdit={goEdit}
+            rowID={curRowID}
+            onCancel={handleCancel}
+          />
+        )}
+      </div>
     </div>
   );
 }
