@@ -52,6 +52,7 @@ export default function UserProfile({ className }: Props): JSX.Element {
         ref={popperRef}
         className='avatar-popper'
         onVisibilityChange={(visible)=> setShow(visible)}
+        trigger='hover'
       >
         <div className='avatar'>
           <div className='avatar-bg flex py-20'>
