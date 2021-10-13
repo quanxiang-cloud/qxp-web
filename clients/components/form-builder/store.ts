@@ -56,13 +56,12 @@ export default class FormBuilderStore {
 
   constructor({ schema, appID, pageID }: Props) {
     this.flattenFields = flattenSchemaToFields(schema);
-
     this.internalFields = INTERNAL_FIELDS;
     this.appID = appID;
     this.pageID = pageID;
     this.visibleHiddenLinkages = schema['x-internal']?.visibleHiddenLinkages || [];
     this.columnsCount = schema['x-internal']?.columns || 1;
-    this.labelAlign = schema?.['x-internal']?.labelAlign;
+    this.labelAlign = schema?.['x-internal']?.labelAlign || 'right';
     this.validations = schema['x-internal']?.validations || [];
   }
 
