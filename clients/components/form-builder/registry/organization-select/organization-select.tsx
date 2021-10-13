@@ -4,19 +4,21 @@ import { TreeSelect } from 'antd';
 import { TreeSelectProps } from 'antd/lib/tree-select';
 import { DataNode } from 'rc-tree-select/lib/interface';
 
+import { labelValueRenderer } from '@c/form-data-value-renderer';
 import { getUserDepartment } from '@lib/utils';
-
-import { searchOrganization, Organization } from './messy/api';
+import { getNoLabelValues } from '@c/form-builder/utils';
+import { searchOrganization, Organization, getOrganizationDetail } from './messy/api';
 import './index.scss';
 
 type Props = TreeSelectProps<any> & {
   appID: string;
   onChange: (value: LabelValue[]) => void;
-  optionalRange: 'all' | 'customize' |'currentUserDep';
+  optionalRange: 'all' | 'customize' | 'currentUserDep';
   defaultRange: 'customize' | 'currentUserDep',
   defaultValues?: LabelValue[];
   rangeList?: LabelValue[];
   value?: LabelValue[];
+  editable?: boolean;
 }
 
 type ParseTreeProps = {
@@ -58,6 +60,7 @@ const OrganizationPicker = ({
   optionalRange,
   defaultRange,
   defaultValues,
+  editable = true,
   value = [],
   ...otherProps
 }: Props): JSX.Element => {
@@ -73,6 +76,26 @@ const OrganizationPicker = ({
       onChange?.(defaultValues || []);
     }
   }, []);
+
+  useEffect(() => {
+    const noLabelValues = getNoLabelValues(value);
+
+    if (noLabelValues.length) {
+      getOrganizationDetail<{ department: { id: string, departmentName: string }[] }>({
+        query: `{department(ids:${JSON.stringify(noLabelValues)}) {id, departmentName }}`,
+      }).then((res) => {
+        const newValue = (value as LabelValue[]).map(({ label, value }) => {
+          if (value && !label) {
+            const curUser = res.department.find(({ id }) => id === value);
+            return { label: curUser?.departmentName || '', value };
+          }
+
+          return { label, value };
+        });
+        onChange?.(newValue);
+      });
+    }
+  }, [value]);
 
   const { data } = useQuery(['query_user_picker', appID], () => searchOrganization(appID));
   const treeData = React.useMemo(() => {
@@ -122,6 +145,17 @@ const OrganizationPicker = ({
   const handleChange = (selected: LabelValue | LabelValue[]): void => {
     onChange(([] as LabelValue[]).concat(selected));
   };
+
+  if (!editable) {
+    return (
+      <span>
+        {
+          value && value.length ?
+            labelValueRenderer(value) : '—'
+        }
+      </span>
+    );
+  }
 
   const selected = otherProps.multiple ? value : [...value].shift();
 
