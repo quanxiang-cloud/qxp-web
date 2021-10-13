@@ -8,7 +8,6 @@ import { fetchFormDataList } from '@lib/http-client';
 import schemaToFields, { schemaToMap } from '@lib/schema-convert';
 import { toEs } from '@c/data-filter/utils';
 import { SYSTEM_FIELDS } from '@c/form-builder/constants';
-import { toEs } from '@c/data-filter/utils';
 
 import { TableHeaderBtn, TableConfig } from './type';
 import { Config, getPageDataSchema } from './utils';
