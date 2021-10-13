@@ -29,6 +29,7 @@ type Props = {
   children?: React.ReactElement | ((form: IForm) => React.ReactElement);
   additionalComponents?: Record<string, React.JSXElementConstructor<any>>;
   usePermission?: boolean;
+  readOnly?: boolean;
 }
 
 function FormRenderer({
@@ -41,10 +42,11 @@ function FormRenderer({
   children,
   additionalComponents = {},
   usePermission,
+  readOnly,
 }: Props): JSX.Element {
   const [errorMessage, setErrorMessage] = useState('');
   const actions = createFormActions();
-  const schema = usePermission ? schemaPermissionTransformer(inputSchema) : inputSchema;
+  const schema = usePermission ? schemaPermissionTransformer(inputSchema, readOnly) : inputSchema;
   const fieldsToOmit = treeUtil.reduce((fields: string[], schema: ISchema, fieldId?: string | number) => {
     if ([INVISIBLE_NO_WRITE, READONLY_NO_WRITE].includes(schema?.['x-internal']?.permission as PERMISSION)) {
       fields.push(`${fieldId}`);

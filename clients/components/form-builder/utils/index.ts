@@ -155,7 +155,7 @@ export const validateRegistryElement: Curried<ValidateRegistryElement<unknown>> 
 );
 
 type PermissionToOverwrite = { display?: boolean; readOnly?: boolean };
-export function schemaPermissionTransformer<T extends ISchema>(schema: T): T {
+export function schemaPermissionTransformer<T extends ISchema>(schema: T, readOnly?: boolean): T {
   function isLayoutSchema(field: ISchema): boolean {
     return !!get(field, 'x-internal.isLayoutComponent');
   }
@@ -175,7 +175,7 @@ export function schemaPermissionTransformer<T extends ISchema>(schema: T): T {
 
   const fieldTransform = pipe(
     (field: ISchema) => [fp.get('x-internal.permission', field), field],
-    ([permission, field]: [PERMISSION, ISchema]) => permissionToSchemaProperties(field, permission),
+    ([permission, field]: [PERMISSION, ISchema]) => permissionToSchemaProperties(field, readOnly ? READONLY_NO_WRITE : permission),
   );
 
   const schemaPermissionTransform = pipe(
@@ -183,7 +183,7 @@ export function schemaPermissionTransformer<T extends ISchema>(schema: T): T {
     entries,
     map(([_, inputField]: [string, ISchema]) => {
       const field: ISchema = inputField.properties || inputField.items ?
-        schemaPermissionTransformer(inputField) :
+        schemaPermissionTransformer(inputField, readOnly) :
         inputField;
       !isLayoutSchema(field) && field?.['x-component'] && fieldTransform(field);
       return [_, field];
