@@ -37,6 +37,7 @@ function ApprovalDetail(): JSX.Element {
   const [status, setStatus] = useState<FormBuilder.Option[]>([{ label: '', value: '' }]);
   const [currentTaskId, setCurrentTaskId] = useState<string>('');
   const [showSwitch, setShowSwitch] = useState<boolean>(false);
+  const [taskEnd, setTaskEnd] = useState<boolean>(false);
   const listType = search.get('list') || 'todo';
   const { processInstanceID, type } = useParams<{
     processInstanceID: string;
@@ -112,6 +113,7 @@ function ApprovalDetail(): JSX.Element {
           value={formData}
           schema={task.formSchema || {}}
           onFormValueChange={setFormValues}
+          readOnly={taskEnd}
           usePermission
         />
       </div>
@@ -179,7 +181,7 @@ function ApprovalDetail(): JSX.Element {
               {
                 id: 'history',
                 name: '动态',
-                content: (<Dynamic />),
+                content: (<Dynamic onTaskEnd={setTaskEnd}/>),
               },
               {
                 id: 'discuss',
