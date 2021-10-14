@@ -95,7 +95,7 @@ const OrganizationPicker = ({
         onChange?.(newValue);
       });
     }
-  }, [value]);
+  }, []);
 
   const { data } = useQuery(['query_user_picker', appID], () => searchOrganization(appID));
   const treeData = React.useMemo(() => {
