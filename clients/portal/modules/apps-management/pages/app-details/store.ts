@@ -319,10 +319,12 @@ class AppDetailsStore {
     if (pageInfo.menuType === MenuType.schemaForm) {
       getTableSchema(this.appID, pageInfo.id).then((pageSchema) => {
         this.hasSchema = !!pageSchema;
+        if (!this.appID) return;
         if (this.hasSchema) {
           return getSchemaPageInfo(this.appID, pageID);
         }
       }).then((res) => {
+        if (!this.pageID) return;
         if (res) {
           const descriptions = this.pageDescriptions.map((description) => {
             return mapToSchemaPageDescription(description, res);
