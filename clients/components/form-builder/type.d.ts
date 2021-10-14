@@ -88,7 +88,9 @@ declare namespace FormBuilder {
     placeholderComponent?: React.JSXElementConstructor<any>;
     isLayoutComponent?: boolean;
     editComponent?: React.JSXElementConstructor<any>;
-    effects?: () => void;
+    effects?: import('@formily/antd').IFormEffect<
+      any, import('@formily/antd').ISchemaFormActions | import('@formily/antd').ISchemaFormAsyncActions
+    >;
     validate?: (value: T, tableSchema?: ISchema) => boolean;
   };
 
