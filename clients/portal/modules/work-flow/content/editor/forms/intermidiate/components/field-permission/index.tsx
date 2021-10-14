@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useQuery } from 'react-query';
-import { groupBy, merge, first } from 'lodash';
+import { groupBy, merge, first, isEqual } from 'lodash';
+import { useUpdateEffect } from 'react-use';
 import fp from 'lodash/fp';
 
 import Toggle from '@c/toggle';
@@ -93,7 +94,7 @@ export default function FieldPermission({ value, onChange: _onChange }: Props): 
         id: field.value,
         hidden: field.isLayout,
         fieldName: field.label,
-        read: field.isLayout ? true : false,
+        read: !!field.isLayout,
         write: false,
         invisible: false,
         editable: false,
