@@ -32,8 +32,9 @@ export default function Fill({ workData, clickHandle }: Props): JSX.Element {
     username: string, detail: string, backOffInfo: string, sendBack: string
   } {
     const detailInfo = { username: '', detail: '', backOffInfo: '', sendBack: '' };
-    const refuseData = workData.operationRecords.filter(
+    const _refuseData = workData.operationRecords.filter(
       (operation: OperationRecord) => operation.handleType === status);
+    const refuseData = _refuseData.length === 0 ? [{} as OperationRecord] : _refuseData;
     detailInfo.detail = refuseData[0].remark || '';
     switch (status) {
     case 'REFUSE':

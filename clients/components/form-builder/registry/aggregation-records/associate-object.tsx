@@ -5,6 +5,7 @@ import { get } from 'lodash';
 import Select from '@c/select';
 import { StoreContext } from '@c/form-builder/context';
 import schemaToFields, { schemaToMap } from '@lib/schema-convert';
+import { getTableSchema } from '@lib/http-client';
 
 const acceptFieldTypes = [
   'SubTable',
@@ -25,6 +26,56 @@ const getNumericFields = (properties: Record<string, ISchema>): LabelValue[] => 
   }).filter(Boolean) as LabelValue[];
 };
 
+const getTargetTableOptions = (fieldName: string, schema: ISchema): Promise<AssociateTableOptions | null> => {
+  const fieldSchema = get(schemaToMap(schema), fieldName, {});
+  const compName = get(fieldSchema, 'x-component');
+  const compProps = get(fieldSchema, 'x-component-props');
+  const targetTableId = get(compProps, 'tableID', '');
+
+  if (!targetTableId) {
+    return Promise.resolve(null);
+  }
+
+  if (compName === 'SubTable') {
+    const subordination = get(compProps, 'subordination', '');
+
+    if (subordination === 'sub_table') {
+      const subTableSchema = get(fieldSchema, 'items.properties', {});
+      return Promise.resolve({
+        tableID: targetTableId,
+        fields: getNumericFields(subTableSchema),
+      });
+    }
+
+    if (subordination === 'foreign_table') {
+      const appId = get(compProps, 'appID', '');
+      const targetTableFields = get(compProps, 'columns', []);
+      return getTableSchema(appId, targetTableId).then((res) => {
+        const targetTableSchema = res?.schema.properties || {};
+        const filterTargetTableFields = Object.entries(targetTableSchema).map(([key, fieldSchema]) => {
+          if (targetTableFields.includes(key) && fieldSchema.type === 'number') {
+            return { label: fieldSchema.title, value: key };
+          }
+        }).filter(Boolean) as LabelValue[];
+        return Promise.resolve({
+          tableID: targetTableId,
+          fields: filterTargetTableFields,
+        });
+      });
+    }
+  }
+
+  if (compName === 'AssociatedRecords') {
+    const associateTableSchema = get(compProps, 'associatedTable.properties', {});
+    return Promise.resolve({
+      tableID: targetTableId,
+      fields: getNumericFields(associateTableSchema),
+    });
+  }
+
+  return Promise.resolve(null);
+};
+
 function AssociateObject(props: ISchemaFieldComponentProps): JSX.Element {
   const { schema, appID } = useContext(StoreContext);
   const selectTables = schemaToFields(schema).reduce((acc: LabelValue[], field) => {
@@ -39,37 +90,8 @@ function AssociateObject(props: ISchemaFieldComponentProps): JSX.Element {
     handleChange(props.value?.sourceFieldId, { initial: true });
   }, [appID]);
 
-  const getTargetTableOptions = (fieldName: string): Promise<AssociateTableOptions | null> => {
-    const fieldSchema = get(schemaToMap(schema), fieldName, {});
-    const compName = get(fieldSchema, 'x-component');
-    const compProps = get(fieldSchema, 'x-component-props');
-
-    if (compName === 'SubTable') {
-      const targetTableId = get(compProps, 'tableID', '');
-      const subTableSchema = get(fieldSchema, 'items.properties', {});
-      if (targetTableId) {
-        return Promise.resolve({
-          tableID: targetTableId,
-          fields: getNumericFields(subTableSchema),
-        });
-      }
-    }
-
-    if (compName === 'AssociatedRecords') {
-      const targetTableId = get(compProps, 'tableID', '');
-      const associateTableSchema = get(compProps, 'associatedTable.properties', {});
-      if (targetTableId) {
-        return Promise.resolve({
-          tableID: targetTableId,
-          fields: getNumericFields(associateTableSchema),
-        });
-      }
-    }
-    return Promise.resolve(null);
-  };
-
   const handleChange = (fieldName: string, extra?: Record<string, any>): void => {
-    getTargetTableOptions(fieldName).then((options) => {
+    getTargetTableOptions(fieldName, schema).then((options) => {
       props.mutators.change({
         appID,
         tableID: options?.tableID || '',

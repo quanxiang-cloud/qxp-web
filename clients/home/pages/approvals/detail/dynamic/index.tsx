@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useParams } from 'react-router';
 import { useQuery } from 'react-query';
 
@@ -15,7 +15,11 @@ import Reading from './reading';
 import CarbonCopy from './carbon-copy';
 import * as apis from '../../api';
 
-export default function index() {
+interface Props {
+  onTaskEnd: (end: boolean)=> void;
+}
+
+export default function ProcessHistory(props: Props) {
   const { processInstanceID } = useParams<{ processInstanceID: string}>();
   const [showType, setShowType] = React.useState<'list' | 'detail'>('list');
   const [currWork, setCurrWork] = React.useState<any>({});
@@ -26,6 +30,13 @@ export default function index() {
     [processInstanceID, 'GET_PROCESS_HISTORIES'],
     () => apis.getProcessHistories(processInstanceID),
   );
+
+  useEffect(()=> {
+    if (Array.isArray(data) &&
+      data.some((v: {taskType: string, status: string})=> v.taskType === 'END' && v.status === 'END')) {
+      props.onTaskEnd(true);
+    }
+  }, [data]);
 
   function changeType(type: 'list' | 'detail'): void {
     setShowType(type);

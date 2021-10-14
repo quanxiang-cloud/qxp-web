@@ -7,7 +7,7 @@ import { getTableSchema, saveTableSchema } from '@lib/http-client';
 import { schemaToMap } from '@lib/schema-convert';
 import FormStore from '@c/form-builder/store';
 import AppPageDataStore from '@c/form-app-data-table/store';
-import { INVISIBLE_NO_WRITE, READONLY_NO_WRITE, SYSTEM_FIELDS } from '@c/form-builder/constants';
+import { SYSTEM_FIELDS, INVALID_INVISIBLE } from '@c/form-builder/constants';
 import { numberTransform } from '@c/form-builder/utils';
 import { TableConfig, TableColumnConfig } from '@c/form-app-data-table/type';
 import {
@@ -96,7 +96,7 @@ class FormDesignStore {
           'x-component': componentName,
           'x-component-props': configValue['x-component-props'],
           'x-internal': {
-            permission: configValue.displayModifier === 'hidden' ? INVISIBLE_NO_WRITE : READONLY_NO_WRITE,
+            permission: INVALID_INVISIBLE,
             isSystem: configValue.isSystem,
           },
         };
