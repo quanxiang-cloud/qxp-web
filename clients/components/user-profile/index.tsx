@@ -21,7 +21,7 @@ export default function UserProfile({ className }: Props): JSX.Element {
 
   useEffect(() => {
     setSide(window.SIDE);
-  }, []);
+  }, [window.SIDE]);
 
   const handleEditPasswordClick = (): void => {
     setOpenResetPasswordModal(true);
@@ -66,9 +66,9 @@ export default function UserProfile({ className }: Props): JSX.Element {
               <span className='text-20 font-medium text-gray-900'>
                 {window.USER.userName}
               </span>
-              <span className='text-12 text-gray-600'>
+              <span className='pr-20 text-12 text-gray-600'>
                 {side === 'portal' ?
-                  `角色: ${window.USER_ADMIN_ROLES[0].name}` : (window.USER.email || window.USER.phone)}
+                  `角色: ${window.USER_ADMIN_ROLES[0]?.name || '-'}` : (window.USER.email || window.USER.phone)}
               </span>
             </div>
           </div>

@@ -1,11 +1,14 @@
 .avatar {
-  width: 216px;
+  min-width: 216px;
+  max-width: 284px;
   box-shadow: 0px 8px 24px 4px rgba(148, 163, 184, 0.25);
   border-radius: 12px 2px 12px 12px;
+  border: 1px solid #E2E8F0;
 }
 
 .avatar-popper {
   margin-left: -20px !important;
+  border-radius: 12px 2px 12px 12px !important;
 }
 
 .avatar-bg {
