@@ -81,7 +81,7 @@ function Toolbar({ currTask, permission, onClickAction, globalActions }: Props):
   return (
     <div className="approval-detail-toolbar flex justify-between items-center px-10 pb-20 mb-24">
       <div className="left-btns task-custom-actions flex flex-1 flex-wrap">
-        {custom.map(({ name, value, enabled, defaultText, text }: PermissionItem, idx) => {
+        {custom?.map(({ name, value, enabled, defaultText, text }: PermissionItem, idx) => {
           if (!enabled) {
             return null;
           }
@@ -116,7 +116,7 @@ function Toolbar({ currTask, permission, onClickAction, globalActions }: Props):
 
       <div className="right-btns task-default-actions">
         {
-          system.map(({ name, value, enabled, defaultText, text, reasonRequired }: PermissionItem, idx) => {
+          system?.map(({ name, value, enabled, defaultText, text, reasonRequired }: PermissionItem, idx) => {
             if (!enabled) {
               return null;
             }
