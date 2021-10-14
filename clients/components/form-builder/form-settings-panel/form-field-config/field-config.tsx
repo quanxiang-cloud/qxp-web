@@ -1,6 +1,8 @@
 import React, { useContext, useEffect, useRef } from 'react';
 import { Radio, Input, Select, Switch, NumberPicker, ArrayTable, Checkbox } from '@formily/antd-components';
-import { SchemaForm, ISchema } from '@formily/antd';
+import {
+  SchemaForm, ISchema, IFormEffect, ISchemaFormActions, ISchemaFormAsyncActions,
+} from '@formily/antd';
 
 import { StoreContext } from '../../context';
 import { observer } from 'mobx-react';
@@ -35,7 +37,7 @@ type Props = {
   initialValue: any;
   schema: ISchema;
   components: Record<string, React.JSXElementConstructor<any>>;
-  effects?: () => void
+  effects?: IFormEffect<any, ISchemaFormActions | ISchemaFormAsyncActions>;
 }
 
 function SchemaFieldConfig({ onChange, initialValue, schema, components, effects }: Props): JSX.Element {
@@ -74,9 +76,9 @@ function FormFieldConfig(): JSX.Element {
       <div ref={formFieldConfigWrap}>
         <SchemaFieldConfig
           // assign key to FormFieldConfigTrue to force re-render when activeFieldId changed
-          effects={() => {
+          effects={(selector, action) => {
             if (typeof store.activeFieldSourceElement?.effects === 'function') {
-              store.activeFieldSourceElement.effects();
+              store.activeFieldSourceElement.effects(selector, action);
             }
           }}
           key={toJS(store.activeFieldId)}
