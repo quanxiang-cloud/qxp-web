@@ -202,6 +202,7 @@ export interface FillInData {
 export interface ProcessBranchData {
   ignore: boolean;
   rule: string;
+  formulaFields: Record<string, string>;
 }
 export interface ProcessBranchTargetData {
   processBranchEndStrategy: 'any' | 'all';
