@@ -47,7 +47,7 @@ function ConditionItem(props: Props): JSX.Element {
 
   return (
     <div className="flex items-center mb-10">
-      <span className="text-caption">目标表:</span>
+      <span className="text-caption">目标字段:</span>
       <Select
         options={getSchemaFields(Object.values(props.targetSchema))}
         value={normalizeFieldName}

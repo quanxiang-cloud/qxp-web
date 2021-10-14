@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useMemo } from 'react';
 import { useQuery } from 'react-query';
 import { get } from 'lodash';
 
@@ -7,7 +7,7 @@ import Select, { SelectOption } from '@c/select';
 import IconBtn from '@c/icon-btn';
 import Button from '@c/button';
 import { getSchemaFields, getValidProcessVariables, isFieldTypeMatch } from '../../utils';
-import { Rule } from './index';
+import { Rule, FormulaFields } from './index';
 import FlowSourceTableContext from '@flow/content/editor/forms/flow-source-table';
 import FlowContext from '@flow/flow-context';
 import { getFlowVariables } from '@flow/content/editor/forms/api';
@@ -38,7 +38,7 @@ function RuleItem(props: Props): JSX.Element {
   const { data: variables, isLoading: loadingVariables } = useQuery(['FETCH_PROCESS_VARIABLES'], () => {
     return getFlowVariables(flowID);
   });
-  const targetSchemaMap = schemaToMap(props.targetSchema);
+  const targetSchemaMap = useMemo(() => schemaToMap(props.targetSchema), [props.targetSchema]);
 
   const onChange = (val: Partial<Rule> = {}): void => {
     setItem((v) => ({ ...v, ...val }));
@@ -48,9 +48,9 @@ function RuleItem(props: Props): JSX.Element {
     onChange({ valueOf: values[item.fieldName] });
   };
 
-  const saveFormula = (rule: string): void => {
+  const saveFormula = (rule: string, formulaFields: FormulaFields = {}): void => {
     setFormulaModalOpen(false);
-    onChange({ valueOf: rule });
+    onChange({ valueOf: rule, formulaFields });
   };
 
   const renderValueBox = (): JSX.Element | null | undefined => {
@@ -58,7 +58,7 @@ function RuleItem(props: Props): JSX.Element {
     if (rule === 'currentFormValue') {
       return (
         <>
-          <span className="text-caption ml-5">当前表:</span>
+          <span className="text-caption ml-5">当前字段:</span>
           <Select
             options={getSchemaFields(curTableSchema, { noSystem: true, matchTypeFn: (schema: ISchema)=> {
               const field = targetSchemaMap[item.fieldName];
@@ -125,7 +125,7 @@ function RuleItem(props: Props): JSX.Element {
 
   return (
     <div className="flex items-center mb-10">
-      <span className="text-caption">目标表:</span>
+      <span className="text-caption">目标字段:</span>
       <Select
         options={getSchemaFields(Object.values(targetSchemaMap), {
           noSystem: true,
