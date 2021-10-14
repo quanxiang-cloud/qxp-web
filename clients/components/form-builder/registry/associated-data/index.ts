@@ -4,6 +4,7 @@ import config from './config';
 import AssociatedData from './associated-data';
 import { defaultConfig, toSchema, toConfig, AssociatedDataConfig } from './convertor';
 import configSchema from './config-schema';
+import Placeholder from './placeholder';
 
 const AssociatedRecordsField: Omit<FormBuilder.SourceElement<AssociatedDataConfig>, 'displayOrder'> = {
   configForm: config,
@@ -16,6 +17,7 @@ const AssociatedRecordsField: Omit<FormBuilder.SourceElement<AssociatedDataConfi
   category: 'advance',
   componentName: 'AssociatedData',
   validate: validateRegistryElement(configSchema),
+  placeholderComponent: Placeholder,
 };
 
 export default AssociatedRecordsField;
