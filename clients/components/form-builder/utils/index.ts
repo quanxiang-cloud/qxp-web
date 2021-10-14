@@ -176,7 +176,9 @@ export function schemaPermissionTransformer<T extends ISchema>(schema: T, readOn
 
   const fieldTransform = pipe(
     (field: ISchema) => [fp.get('x-internal.permission', field), field],
-    ([permission, field]: [PERMISSION, ISchema]) => permissionToSchemaProperties(field, readOnly ? READONLY_NO_WRITE : permission),
+    ([permission, field]: [PERMISSION, ISchema]) => {
+      return permissionToSchemaProperties(field, readOnly ? READONLY_NO_WRITE : permission);
+    },
   );
 
   const schemaPermissionTransform = pipe(
@@ -289,11 +291,13 @@ export function isPermissionInvisible(permission?: PERMISSION): boolean {
 }
 
 export function isPermissionReadOnly(permission: PERMISSION): boolean {
-  return [READONLY_NO_WRITE, READONLY_WITH_WRITE, INVALID_READONLY_LEGACY].includes(permission);
+  return [
+    READONLY_NO_WRITE, READONLY_WITH_WRITE, INVALID_READONLY_LEGACY, INVALID_READONLY,
+  ].includes(permission);
 }
 
 export function isPermissionNormal(permission: PERMISSION): boolean {
-  return permission === NORMAL;
+  return [NORMAL, INVALID_NORMAL].includes(permission);
 }
 
 export function isPermissionReadable(permission: PERMISSION): boolean {
