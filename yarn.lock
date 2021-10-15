@@ -8803,6 +8803,11 @@ ts-toolbelt@^6.15.1:
   resolved "http://r.npm.internal.yunify.com/ts-toolbelt/download/ts-toolbelt-6.15.5.tgz#cb3b43ed725cb63644782c64fbcad7d8f28c0a83"
   integrity sha1-yztD7XJctjZEeCxk+8rX2PKMCoM=
 
+ts-toolbelt@^9.6.0:
+  version "9.6.0"
+  resolved "http://r.npm.internal.yunify.com/ts-toolbelt/download/ts-toolbelt-9.6.0.tgz#50a25426cfed500d4a09bd1b3afb6f28879edfd5"
+  integrity sha1-UKJUJs/tUA1KCb0bOvtvKIee39U=
+
 tsconfig-paths-webpack-plugin@^3.5.1:
   version "3.5.1"
   resolved "http://r.npm.internal.yunify.com/tsconfig-paths-webpack-plugin/download/tsconfig-paths-webpack-plugin-3.5.1.tgz#e4dbf492a20dca9caab60086ddacb703afc2b726"

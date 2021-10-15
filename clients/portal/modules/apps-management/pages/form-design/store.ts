@@ -291,8 +291,8 @@ class FormDesignStore {
       (this.formStore as FormStore).hasEdit = false;
       this.saveSchemeLoading = false;
       return true;
-    } catch (error) {
-      toast.error(error);
+    } catch (error: any) {
+      toast.error(error.message);
       this.saveSchemeLoading = false;
     }
   }

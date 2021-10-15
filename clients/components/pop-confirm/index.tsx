@@ -32,16 +32,16 @@ function PopConfirm({
   onOk,
   cancelText = '取消',
   okText = '确定',
-}: Props) {
+}: Props ): JSX.Element {
   const popperRef = useRef<Popper>(null);
   const reference = useRef<any>(null);
 
-  const handleCancel = () => {
+  const handleCancel = (): void => {
     onCancel && onCancel();
     popperRef.current?.close();
   };
 
-  const handleOk = () => {
+  const handleOk = (): void => {
     if (onOk instanceof Promise) {
       (onOk() as Promise<any>).then(() => {
         popperRef.current?.close();
@@ -58,7 +58,7 @@ function PopConfirm({
   return (
     <>
       {isElement ?
-        cloneElement(children, { ref: reference }) :
+        cloneElement(children as React.ReactElement, { ref: reference }) :
         <span ref={reference}>{children}</span>
       }
       <Popper
