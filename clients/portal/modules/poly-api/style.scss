@@ -1,0 +1,78 @@
+.react-flow__edge-path {
+  stroke: #CBD5E1 !important;
+}
+
+.react-flow__handle {
+  opacity: 0 !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+.react-flow__handle-bottom {
+  bottom: 0 !important;
+}
+
+.react-flow__handle-left {
+  left: 0 !important;
+}
+
+.react-flow__handle-top {
+  top: 0 !important;
+}
+
+.react-flow__handle-right {
+  right: 0 !important;
+}
+
+$nodeTypes: input, request, if, end, default, output;
+@each $var in $nodeTypes {
+  .react-flow__node-#{$var} {
+    footer {
+      transition: box-shadow .2s linear;
+    }
+    padding: 0 !important;
+    border: transparent !important;
+    border-radius: 8px !important;
+    width: auto !important;
+    &:hover, &.selected {
+      footer {
+        box-shadow: 0px 4px 24px rgba(148, 163, 184, 0.25) !important;
+      }
+      box-shadow: none !important;
+    }
+  }
+}
+
+@mixin actionTriggerPlus {
+  content: '';
+  position: absolute;
+  background-color: var(--blue-600);
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.node-action-trigger {
+  position: relative;
+  &::before {
+    @include actionTriggerPlus;
+    width: 4px;
+    height: 1px;
+    opacity: 0;
+  }
+  &::after {
+    @include actionTriggerPlus;
+    width: 1px;
+    height: 4px;
+    opacity: 0;
+  }
+  &.active {
+    transform: scale(2);
+    &::before {
+      opacity: 1;
+    }
+    &::after {
+      opacity: 1;
+    }
+  }
+}

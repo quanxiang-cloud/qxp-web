@@ -82,17 +82,14 @@
   color: var(--gray-600);
 }
 
-.text-caption {
+.text-caption,
+.text-caption-no-weight {
   font-size: 12px;
   line-height: 20px;
   color: var(--gray-600);
 }
 
-.text-caption-no-color {
-  font-size: 12px;
-  line-height: 20px;
-}
-
+.text-caption-no-color,
 .text-caption-no-color-weight {
   font-size: 12px;
   line-height: 20px;
@@ -114,7 +111,7 @@
 .text-h5-blod {
   font-size: 16px;
   line-height: 24px;
-  font-weight: 600
+  font-weight: 600;
 }
 
 .text-toolbar {

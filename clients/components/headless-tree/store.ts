@@ -306,23 +306,20 @@ export default class TreeStore<T> {
   }
 
   @action
-  loadChildren(node: TreeNode<T>, isOverwrite = false): void {
+  async loadChildren(node: TreeNode<T>, isOverwrite = false): Promise<void> {
     this.updateNode({
       ...node,
       childrenStatus: 'loading',
     });
 
-    this.onGetChildren(node).then((subNodes: TreeNode<T>[]) => {
-      const _node = this.getNode(node.id);
-
-      if (!_node) {
-        return;
-      }
-
-      this.updateNode({
-        ...addChildren(_node, subNodes, isOverwrite),
-        childrenStatus: 'resolved',
-      });
+    const _node = this.getNode(node.id);
+    if (!_node) {
+      return;
+    }
+    const subNodes = await this.onGetChildren(node);
+    this.updateNode({
+      ...addChildren(_node, subNodes, isOverwrite),
+      childrenStatus: 'resolved',
     });
   }
 }
