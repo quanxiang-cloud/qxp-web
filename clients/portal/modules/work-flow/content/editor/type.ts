@@ -297,8 +297,15 @@ export interface CustomFieldPermission {
   hidden: boolean;
 }
 
+export interface SystemFieldPermission {
+  fieldName: string;
+  read: boolean;
+  id: string;
+}
+
 export interface FieldPermission {
   custom: CustomFieldPermission[];
+  system: SystemFieldPermission[];
 }
 export interface NewFieldPermissionValue {
   fieldName: string;

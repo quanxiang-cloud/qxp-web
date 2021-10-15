@@ -11,19 +11,19 @@ import {
   isPermissionEditable,
 } from '@c/form-builder/utils';
 import {
-  FieldPermission, NewFieldPermission, CustomFieldPermission, NewFieldPermissionValue,
+  FieldPermission, NewFieldPermission, CustomFieldPermission, SystemFieldPermission, NewFieldPermissionValue,
 } from '@flow/content/editor/type';
 
 import { EDIT_VALUE } from './constants';
 
-type FieldPermissionMergeType = CustomFieldPermission & {
+type FieldPermissionMergeType = CustomFieldPermission & SystemFieldPermission & {
   isSystem: boolean;
   path: string;
   hidden: boolean;
 };
 
 export function fieldPermissionEncoder(value: FieldPermission): NewFieldPermission {
-  const { custom } = value;
+  const { custom, system } = value;
   const customEncoded = custom.reduce((acc, cur) => {
     const permission = calculateFieldPermission(cur.editable, cur.invisible, cur.write, cur.read, true);
     Object.assign(acc, {
@@ -36,7 +36,17 @@ export function fieldPermissionEncoder(value: FieldPermission): NewFieldPermissi
     });
     return acc;
   }, {});
-  return { ...customEncoded };
+  const systemEncoded = system.reduce((acc, cur) => {
+    const permission = calculateFieldPermission(false, true, false, cur.read);
+    Object.assign(acc, {
+      [cur.id]: {
+        fieldName: cur.fieldName,
+        'x-internal': { permission },
+      },
+    });
+    return acc;
+  }, {});
+  return { ...customEncoded, ...systemEncoded };
 }
 
 function getSchemaIDToSchemaMap(schema: ISchema): Record<string, ISchema> {
@@ -47,6 +57,11 @@ function getSchemaIDToSchemaMap(schema: ISchema): Record<string, ISchema> {
 }
 
 function fieldPermissionReducer(acc: FieldPermission, cur: FieldPermissionMergeType): FieldPermission {
+  cur.isSystem && acc.system.push({
+    fieldName: cur.fieldName,
+    read: cur.read,
+    id: cur.id,
+  });
   !cur.isSystem && acc.custom.push({
     fieldName: cur.fieldName,
     read: cur.read,
@@ -75,7 +90,7 @@ function getPermission(permission: PERMISSION): PERMISSION_TYPE {
 export function fieldPermissionDecoder(
   value: FieldPermission | NewFieldPermission, schema: ISchema,
 ): FieldPermission | void {
-  if (value.custom) {
+  if (value.custom || value.system) {
     return value as FieldPermission;
   }
   const schemaIDToSchemaMap = getSchemaIDToSchemaMap(schema);
@@ -103,7 +118,7 @@ export function fieldPermissionDecoder(
   );
   const fields = convertor(value as NewFieldPermission) || [];
 
-  return fields.reduce(fieldPermissionReducer, { custom: [] });
+  return fields.reduce(fieldPermissionReducer, { custom: [], system: [] });
 }
 
 export function getInitFieldPermissionFromSchema(schema: ISchema): NewFieldPermission {
@@ -123,5 +138,5 @@ export function getInitFieldPermissionFromSchema(schema: ISchema): NewFieldPermi
       };
     });
 
-  return fieldPermissionEncoder(fields.reduce(fieldPermissionReducer, { custom: [] }));
+  return fieldPermissionEncoder(fields.reduce(fieldPermissionReducer, { system: [], custom: [] }));
 }
