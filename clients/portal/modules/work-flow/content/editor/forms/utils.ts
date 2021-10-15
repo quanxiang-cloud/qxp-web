@@ -1,7 +1,7 @@
 import { get, flatten, cloneDeep } from 'lodash';
 
-const primitiveTypes = ['string', 'number', 'boolean', 'datetime'];
-const advancedCompTypes = [
+export const primitiveTypes = ['string', 'number', 'boolean', 'datetime'];
+export const advancedCompTypes = [
   'SubTable',
   'AssociatedRecords',
   'UserPicker',
@@ -11,6 +11,7 @@ const advancedCompTypes = [
   'CascadeSelector',
   'AssociatedData',
 ];
+export const excludeComps = ['subtable'];
 
 type TableListItem = {
   label: string;
@@ -36,7 +37,7 @@ export const getSchemaFields = (
     if (options.noSystem && isSystem) {
       return false;
     }
-    if ((options.excludeComps || ['subtable']).includes(compName)) {
+    if ((options.excludeComps || excludeComps).includes(compName)) {
       return false;
     }
     if (options.matchTypeFn) {
@@ -186,3 +187,36 @@ export const getValidProcessVariables = (
     }
   }).filter((v): v is LabelValue => !!v) || [];
 };
+
+/*
+when compare field value in condition, value path should given
+example:
+```
+{
+  key: 'field_abc',
+  value: [
+    {
+      value_prop: 'foo',
+      label: 'bar'
+    }
+  ]
+}
+```
+Then key should be changed to `field_abc.value_prop`
+ */
+const valuePathMap = {
+  // AssociatedRecords: '', // string[]
+  UserPicker: '[].value', // {label, value}[]
+  OrganizationPicker: '[].value',
+  FileUpload: '[].value',
+  ImageUpload: '[].value',
+  CascadeSelector: 'value',
+  AssociatedData: 'value',
+};
+
+export function getFieldValuePath(fieldSchema?: ISchema): string {
+  if (!fieldSchema) {
+    return '';
+  }
+  return get(valuePathMap, fieldSchema['x-component'] || '', '');
+}
