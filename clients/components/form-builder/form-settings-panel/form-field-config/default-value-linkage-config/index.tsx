@@ -97,7 +97,7 @@ function LinkageConfig({
     }
     // todo match type
     return ['string', 'number', 'datetime'].includes(field.type || '');
-  }).map((field) => ({ label: field.title as string, value: field.id }));
+  });
 
   function resetFormDefaultValueOnLinkTableChanged(fields: LinkedTableFieldOptions[]): void {
     setFieldValue('sortBy', fields[0]?.value);
@@ -204,7 +204,8 @@ function LinkageConfig({
       )?.fieldEnum.map(({ label, value })=> ({ label, value }));
     }
     if (currentCompareToValue === 'currentFormValue') {
-      compareValueOptions = currentFormFields;
+      compareValueOptions = currentFormFields
+        .map((field) => ({ label: field.title as string, value: field.id }));
     }
 
     updateCompareValueFieldMode(name, isMultiple, compareValueOptions);
@@ -252,10 +253,17 @@ function LinkageConfig({
         return;
       }
 
+      const compareFields = currentFormFields
+        .filter(({ componentName }) => {
+          return componentName === linkTableField?.componentName;
+        })
+        .map((field) => ({ label: field.title as string, value: field.id }));
+
       state.props['x-component'] = 'AntdSelect';
-      state.props.enum = currentFormFields;
-      if (currentFormFields && !!currentFormFields.length) {
-        const optionValues = currentFormFields.map(({ value }) => value);
+      state.props.enum = compareFields;
+      if (compareFields.length) {
+        const optionValues = compareFields
+          .map(({ value }) => value);
         if (Array.isArray(currentCompareValue)) {
           state.value = currentCompareValue.filter((value: any) => optionValues.includes(value));
           return;
