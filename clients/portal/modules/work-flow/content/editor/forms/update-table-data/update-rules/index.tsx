@@ -14,10 +14,12 @@ interface Props {
   defaultValue: Rule[];
 }
 
+export type FormulaFields=Record<string, string>; // field id => value path
 export type Rule = {
   fieldName: string;
   valueFrom: 'fixedValue' | 'currentFormValue' | 'processVariable' | 'formula';
   valueOf: ValueRuleVal;
+  formulaFields?: FormulaFields;
 }
 export type RefType = { getValues: () => any }
 

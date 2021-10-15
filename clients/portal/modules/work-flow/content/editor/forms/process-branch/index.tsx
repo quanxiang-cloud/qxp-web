@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext, useMemo } from 'react';
 import {
   createFormActions,
   SchemaForm, ISchema,
@@ -8,8 +8,11 @@ import { Select, Input } from '@formily/antd-components';
 import type { ProcessBranchData, NodeType } from '@flow/content/editor/type';
 import Tab from '@c/tab';
 import SaveButtonGroup from '@flow/content/editor/components/_common/action-save-button-group';
+import { SYSTEM_FIELDS } from '@c/form-builder/constants';
+import { getFieldValuePath } from '@flow/content/editor/forms/utils';
 
 import FilterRule from './filter-rule';
+import FlowTableContext from '../flow-source-table';
 
 export interface Props {
   nodeType: NodeType;
@@ -62,9 +65,21 @@ const components = {
 };
 
 export default function ProcessBranch({ defaultValue, onSubmit, onCancel, onChange }: Props): JSX.Element {
+  const { tableSchema } = useContext(FlowTableContext);
+  const formulaFields = useMemo(()=> tableSchema.filter((schema) => {
+    return !SYSTEM_FIELDS.includes(schema.fieldName);
+  }).reduce((acc: Record<string, string>, field) => {
+    const valuePath = getFieldValuePath(field);
+    if (valuePath) {
+      const { fieldName } = field;
+      acc[fieldName] = [fieldName, valuePath].join('.');
+    }
+    return acc;
+  }, {}), [tableSchema]);
+
   function onSave(): void {
     actions.getFormState((formState) => {
-      onSubmit(formState.values);
+      onSubmit({ ...formState.values, formulaFields });
     });
   }
 
