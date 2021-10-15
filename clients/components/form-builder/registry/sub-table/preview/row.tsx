@@ -92,12 +92,12 @@ export default function SubTableRow({
                   }, 'flex items-center justify-center', formItemClassName, portalReadOnlyClassName,
                 )}
               >
-                {!readOnly && component && (
+                {component && (
                   <FormItem
                     {...props}
                     className="mx-8 my-8 w-full"
                     name={path}
-                    component={component}
+                    component={readOnly ? ({ value }) => render?.(value) || null : component}
                     form={form}
                     props={{ ...props, props }}
                     mutators={{ change: onChange(path, form) }}
@@ -108,7 +108,6 @@ export default function SubTableRow({
                     path={path}
                   />
                 )}
-                {readOnly && render?.(value)}
               </div>
             );
           })}
