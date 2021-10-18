@@ -17,6 +17,7 @@ import {
   getUserDetail,
   fetchPerGroupForm,
   fetchPerCustom,
+  copyPerGroup,
 } from './api';
 import { fetchPageList } from '../api';
 import { INIT_CURRENT_RIGHTS } from './constants';
@@ -51,16 +52,6 @@ class UserAndPerStore {
 
   @observable currentPage: PerPageInfo = { id: '', authority: 0 }
   @observable currentPageGroup: PageInfo | undefined = undefined
-
-  @action
-  addRightsGroup = (rights: RightsCreate): Promise<void> => {
-    return createPerGroup(this.appID, rights).then((res: any) => {
-      this.rightsList = [...this.rightsList, { ...rights, ...res }];
-      this.currentRights = { ...rights, ...res };
-      this.rightsGroupID = this.currentRights.id;
-      this.tempRightList = [...this.rightsList];
-    });
-  }
 
   @action
   setRightsGroupID = (groupID: string): void => {
@@ -133,6 +124,16 @@ class UserAndPerStore {
   }
 
   @action
+  addRightsGroup = (rights: RightsCreate): Promise<void> => {
+    return createPerGroup(this.appID, rights).then((res: any) => {
+      this.rightsList = [...this.rightsList, { ...rights, ...res }];
+      this.currentRights = { ...rights, ...res };
+      this.rightsGroupID = this.currentRights.id;
+      this.tempRightList = [...this.rightsList];
+    });
+  }
+
+  @action
   updatePerGroup = (rights: Rights): Promise<void | boolean> => {
     return updatePerGroup(this.appID, rights).then(() => {
       this.rightsList = this.rightsList.map((_rights) => {
@@ -146,6 +147,21 @@ class UserAndPerStore {
       this.tempRightList = deepClone(this.rightsList);
       toast.success('修改成功！');
       return true;
+    });
+  }
+
+  @action
+  copyRightsGroup = (rights: Rights): Promise<void> => {
+    return copyPerGroup(this.appID, {
+      groupID: rights.id,
+      name: rights.name,
+      description: rights.description,
+    }).then((res: {id: string}) => {
+      this.rightsList = [...this.rightsList, { ...rights, ...res }];
+      this.currentRights = { ...rights, ...res };
+      this.rightsGroupID = this.currentRights.id;
+      this.tempRightList = [...this.rightsList];
+      toast.success('修改成功！');
     });
   }
 

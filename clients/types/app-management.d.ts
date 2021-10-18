@@ -140,6 +140,12 @@ declare global {
     types?: number;
   }
 
+  type RightsCopy = {
+    groupID?: string;
+    name?: string;
+    description?: string;
+  }
+
   type DeptAndUser = {
     type: number;
     id: string;

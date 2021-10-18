@@ -4,6 +4,10 @@ export const createPerGroup = (appID: string, data: RightsCreate) => {
   return httpClient(`/api/v1/structor/${appID}/m/permission/perGroup/create`, data);
 };
 
+export const copyPerGroup = (appID: string, data: RightsCopy): Promise<{id: string}> => {
+  return httpClient(`/api/v1/form/${appID}/m/permission/duplicatePer`, data);
+};
+
 export const fetchRights = (appID: string) => {
   return httpClient(`/api/v1/structor/${appID}/m/permission/perGroup/getList`, {});
 };
