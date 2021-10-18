@@ -77,7 +77,13 @@ function fieldPermissionReducer(acc: FieldPermission, cur: FieldPermissionMergeT
   return acc;
 }
 
-function getPermission(permission: PERMISSION): PERMISSION_TYPE {
+function getPermission(permission?: PERMISSION): PERMISSION_TYPE {
+  if (!permission) {
+    return {
+      read: false, write: false, invisible: false, editable: false,
+    };
+  }
+
   const readable = isPermissionReadable(permission);
   return {
     read: readable,
@@ -124,10 +130,9 @@ export function fieldPermissionDecoder(
 export function getInitFieldPermissionFromSchema(schema: ISchema): NewFieldPermission {
   const fields = schemaToArray(schema, { parseSubTable: true, keepLayout: true })
     .map((schema): FieldPermissionMergeType => {
-      const permission = schema['x-internal']?.permission || 0;
       const fieldId = schema['x-internal']?.fieldId;
       return {
-        ...getPermission(permission),
+        ...getPermission(),
         isSystem: INTERNAL_FIELD_NAMES.includes(fieldId || ''),
         fieldName: schema.title as string,
         id: fieldId || '',
