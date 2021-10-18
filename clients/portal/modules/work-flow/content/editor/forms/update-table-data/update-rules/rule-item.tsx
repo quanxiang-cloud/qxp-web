@@ -129,7 +129,7 @@ function RuleItem(props: Props): JSX.Element {
       <Select
         options={getSchemaFields(Object.values(targetSchemaMap), {
           noSystem: true,
-          excludeComps: ['associatedrecords'],
+          excludeComps: ['associatedrecords', 'serial', 'aggregationrecords'],
         })}
         value={item.fieldName}
         onChange={(fieldName: string) => onChange({ fieldName } as Rule)}
