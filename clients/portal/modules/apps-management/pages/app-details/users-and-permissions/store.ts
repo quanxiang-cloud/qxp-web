@@ -334,7 +334,7 @@ class UserAndPerStore {
   deleteFormPer = (formID: string, perGroupID: string): Promise<void> => {
     return deleteFormPer(this.appID, { formID, perGroupID }).then(() => {
       this.updatePerFormList({ id: formID, authority: 0 }, perGroupID);
-      toast.success('清除成功');
+      toast.success('清除权限成功');
     });
   }
 

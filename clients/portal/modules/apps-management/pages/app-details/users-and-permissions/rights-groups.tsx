@@ -63,12 +63,22 @@ function RightsGroups(): JSX.Element {
 
   const handleSave = (): void=> {
     const authority = authorizedRef.current?.getAuthorizedPer() || 0;
+
     if (store.currentPage.menuType === 2) {
       store.updatePerCustom(authority);
       setOpenSet(false);
       return;
     }
+
     dataPerRef.current?.getDataValues().then((conditions) => {
+      if (authority === 0) {
+        store.deleteFormPer(store.currentPage.id, store.rightsGroupID).then(() => {
+          store.getPageSchema();
+        });
+        setOpenSet(false);
+        return;
+      }
+
       if (conditions) {
         savePer(store.appID, {
           formID: store.currentPage.id,
@@ -191,7 +201,7 @@ function RightsGroups(): JSX.Element {
               {store.noSchema && (
                 <div className='h-56 p-20'>
                   <AbsoluteCentered>
-                未配置页面，请点击
+                    未配置页面，请点击
                     <span
                       className='text-btn'
                       onClick={() =>
