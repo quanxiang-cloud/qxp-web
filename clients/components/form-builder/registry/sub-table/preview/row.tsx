@@ -82,6 +82,7 @@ export default function SubTableRow({
             if (schema.type === 'array') {
               value = isArray(value) ? value : [value].filter(Boolean) as FormDataValue;
             }
+
             return (
               <div
                 key={dataIndex}
@@ -95,6 +96,7 @@ export default function SubTableRow({
                 {component && (
                   <FormItem
                     {...props}
+                    initialValue={schema.default}
                     className="mx-8 my-8 w-full"
                     name={path}
                     component={readOnly ? ({ value }) => render?.(value) || null : component}

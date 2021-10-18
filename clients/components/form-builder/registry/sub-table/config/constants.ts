@@ -29,6 +29,8 @@ import cascadeselector from '@c/form-builder/registry/cascade-selector';
 import associateddata from '@c/form-builder/registry/associated-data';
 import DefaultValueLinkageConfigBtn from
   '@c/form-builder/form-settings-panel/form-field-config/default-value-linkage-config-btn';
+import OptionsConfig from
+  '@c/form-builder/form-settings-panel/form-field-config/options_config';
 import CalculationFormulaBtn
   from '@c/form-builder/form-settings-panel/form-field-config/calculation-formula-btn';
 
@@ -52,7 +54,6 @@ import SubTableSchema from './fields/sub-table-schema';
 import SubTableColumns from './fields/sub-table-columns';
 import Subordination from './fields/subordination';
 import LinkedTable from './fields/linked-table';
-import { AddOperate } from './fields/operates';
 import CustomizedDatasetBtn from '../../cascade-selector/customized-dataset-btn';
 import DataSetSelector from '../../cascade-selector/dataset-selector';
 import CheckboxGroup from '../../checkbox-group/checkboxGroup';
@@ -70,10 +71,10 @@ export const COMPONENTS: Record<string, JSXElementConstructor<ISchemaFieldCompon
   // todo delete this
   arraytable: ArrayTable,
   editlabels: EditLabels,
-  addoperate: AddOperate,
   numberpicker: NumberPicker,
   datepicker: DatePicker,
   defaultvaluelinkageconfigbtn: DefaultValueLinkageConfigBtn,
+  optionsconfig: OptionsConfig,
   radiogroup: Radio.Group,
   customizeddatasetbtn: CustomizedDatasetBtn,
   datasetselector: DataSetSelector,
