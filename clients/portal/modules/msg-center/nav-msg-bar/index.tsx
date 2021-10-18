@@ -79,17 +79,20 @@ const NavMsgBar = ({ className }: Props): JSX.Element => {
 
   return (
     <>
-      <div className={cs(className, styles.wrap)}>
+      <div className={cs(className, styles.wrap, 'group')}>
         <div
-          className={
-            cs('relative flex justify-center items-center cursor-pointer group', styles.navItem)
-          }
+          className={cs(
+            'relative flex justify-center items-center cursor-pointer text-blue-100',
+            'group-hover:bg-blue-500',
+            'group-hover:text-gray-50',
+            styles.navItem,
+          )}
           onClick={() => openUnreadMsgBox(true)}
           ref={toggleRef}
         >
           <Icon
-            name="notifications_active"
-            className='group-hover:text-blue-600'
+            name="home_bell"
+            className="text-current"
             size={20}
           />
           {countUnread > 0 && <BtnBadge className={styles.count_btn} count={countUnread}/>}
