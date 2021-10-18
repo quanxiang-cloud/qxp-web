@@ -10,6 +10,7 @@ import { toJS } from 'mobx';
 
 import { FieldConfigContext } from './context';
 import { AddOperate } from '../../registry/operates';
+import OptionsConfig from './options_config';
 import DefaultValueLinkageConfigBtn from './default-value-linkage-config-btn';
 import EditLabels from './edit-labels';
 import CalculationFormulaBtn from './calculation-formula-btn';
@@ -27,6 +28,7 @@ const COMMON_CONFIG_COMPONENTS = {
   Switch,
   AddOperate,
   EditLabels,
+  OptionsConfig,
   DefaultValueLinkageConfigBtn,
   CalculationFormulaBtn,
   InputForLabels,
