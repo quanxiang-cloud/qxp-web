@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react';
 import draftToHtml from 'draftjs-to-html';
 import htmlToDraft from 'html-to-draftjs';
-import { useUpdateEffect, usePrevious } from 'react-use';
+import { usePrevious, useUpdateEffect } from 'react-use';
 import { useQuery } from 'react-query';
 import { isEqual } from 'lodash';
 import { Upload } from 'antd';
@@ -13,6 +13,7 @@ import {
   Modifier,
   SelectionState,
 } from 'draft-js';
+import { Editor } from 'react-draft-wysiwyg';
 
 import MoreMenu from '@c/more-menu';
 import { getFormFieldSchema } from '@flow/content/editor/forms/api';
@@ -21,12 +22,18 @@ import formFieldWrap from '@c/form-field-wrap';
 import useObservable from '@lib/hooks/use-observable';
 import store from '@flow/content/editor/store';
 import Button from '@c/button';
-import { Editor } from 'react-draft-wysiwyg';
 import SaveButtonGroup from '@flow/content/editor/components/_common/action-save-button-group';
-import type { StoreValue, CurrentElement, FormDataData, SendEmailData, Attachment } from '@flow/content/editor/type';
+import type {
+  StoreValue,
+  CurrentElement,
+  FormDataData,
+  SendEmailData,
+  Attachment,
+} from '@flow/content/editor/type';
 import schemaToFields from '@lib/schema-convert';
 
-import UserSelect from '../../components/add-approval-user';
+import PersonPicker from '../../components/_common/person-picker';
+
 import './index.scss';
 
 type Props = {
@@ -52,8 +59,6 @@ const props = {
 
 const Input = formFieldWrap({ field: <input className='input' /> });
 const FieldEditor = formFieldWrap({ FieldFC: Editor });
-
-const FieldUserSelect = formFieldWrap({ FieldFC: UserSelect });
 
 function FieldOption({ onChange, editorState, options }: FieldOPType): JSX.Element {
   const insertText = (text: string, hasSpacing = true): void => {
@@ -103,8 +108,7 @@ function SendEmailConfig({ defaultValue, onSubmit, onCancel, onChange }: Props):
   const { elements = [] } = useObservable<StoreValue>(store);
   const formDataElement = elements?.find(({ type }) => type === 'formData') as CurrentElement;
   const workFormValue = (formDataElement?.data?.businessData as FormDataData)?.form?.value;
-
-  const allFields = watch(['content', 'recivers', 'title', 'mes_attachment']);
+  const allFields = watch(['content', 'recivers', 'title', 'mes_attachment', 'type', 'approvePersons']);
   const previousFields = usePrevious(allFields);
   useUpdateEffect(() => {
     const value = {
@@ -112,7 +116,9 @@ function SendEmailConfig({ defaultValue, onSubmit, onCancel, onChange }: Props):
       recivers: allFields[1],
       title: allFields[2],
       mes_attachment: allFields[3],
+      type: allFields[4],
       templateId: 'quanliang',
+      approvePersons: allFields[5],
     } as SendEmailData;
     if (!isEqual(allFields, previousFields)) {
       onChange(value);
@@ -154,38 +160,20 @@ function SendEmailConfig({ defaultValue, onSubmit, onCancel, onChange }: Props):
 
   return (
     <div className="flex flex-col overflow-auto flex-1 py-24">
-      {/* <Controller
-        name='qd'
-        control={control}
-        defaultValue='issuing'
-        rules={{ required: '请选择发送渠道' }}
-        render={({ field }) => {
-          return (
-            <FieldSelect
-              disabled
-              label={<><span className='text-red-600'>*</span>发送渠道</>}
-              register={field}
-              options={[{ label: '由青云代发', value: 'issuing' }]}
-            />
-          );
-        }
-        }
-      /> */}
       <Controller
-        name='recivers'
+        name='approvePersons'
         control={control}
         rules={{ required: '请选择接收对象' }}
+        defaultValue={defaultValue.approvePersons}
         render={({ field }) => {
           return (
-            <FieldUserSelect
-              label={<><span className='text-red-600'>*</span>接收对象</>}
-              error={errors.recivers}
-              register={field}
-              value={field.value ? field.value : []}
+            <PersonPicker
+              typeText='接收对象'
+              value={field.value}
+              onChange={field.onChange}
             />
           );
-        }
-        }
+        }}
       />
       <Input
         label={<><span className='text-red-600'>*</span>主题</>}

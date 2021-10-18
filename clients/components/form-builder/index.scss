@@ -143,6 +143,7 @@
     label{
       height: auto!important;
       text-align: left;
+      line-height: 32px;
     }
   }
 }
@@ -151,6 +152,7 @@
   padding: 12px;
   border-radius: 12px;
   background-color: white;
+  position: relative;
   min-height: calc(100vh - 224px);
 }
 
@@ -238,20 +240,39 @@
   }
 }
 
-.delete-field-icon {
+.field-icon {
   position: absolute;
   z-index: 11;
-  right: 0;
-  top: 0;
   background-color: var(--blue-500);
   padding: 1px;
   cursor: pointer;
   display: none;
+  svg {
+    color: #fff;
+  }
+}
+
+.delete-field-icon {
+  right: 0;
+  top: 0;
+}
+
+.copy-field-icon {
+  top: 0;
+  right: 20px;
+}
+
+.move-field-icon {
+  left: 0;
+  top: 0;
+  &:hover {
+    cursor: move;
+  }
 }
 
 .field-item:hover {
   border: 1px dashed var(--blue-600);
-  & > .delete-field-icon {
+  & > .field-icon {
     display: block;
   }
 }

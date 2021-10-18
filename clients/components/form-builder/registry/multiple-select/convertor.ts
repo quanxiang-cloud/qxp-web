@@ -1,6 +1,8 @@
-import { getSchemaPermissionFromSchemaConfig } from '@c/form-builder/utils';
-
-import { generateRandomFormFieldID } from '../../utils';
+import {
+  getDisplayModifierFromSchema,
+  convertMultipleSelectDefaults,
+  getSchemaPermissionFromSchemaConfig,
+} from '@c/form-builder/utils';
 
 export interface MultipleSelectConfig {
   title: string;
@@ -10,7 +12,7 @@ export interface MultipleSelectConfig {
   required: boolean;
   defaultValueFrom: FormBuilder.DefaultValueFrom;
   datasetId: string;
-  availableOptions: Array<{ label: string; value: any; title: string }>,
+  availableOptions: Array<Record<string, string | boolean>>,
 }
 export const defaultConfig: MultipleSelectConfig = {
   title: '下拉复选框',
@@ -21,9 +23,9 @@ export const defaultConfig: MultipleSelectConfig = {
   defaultValueFrom: 'customized',
   datasetId: '',
   availableOptions: [
-    { label: '选项一', value: 'option_1', title: '选项一' },
-    { label: '选项二', value: 'option_2', title: '选项二' },
-    { label: '选项三', value: 'option_3', title: '选项三' },
+    { label: '选项一', isDefault: false },
+    { label: '选项二', isDefault: false },
+    { label: '选项三', isDefault: false },
   ],
 };
 
@@ -35,14 +37,10 @@ export function toSchema(value: MultipleSelectConfig): ISchema {
     required: value.required,
     readOnly: value.displayModifier === 'readonly',
     display: value.displayModifier !== 'hidden',
-    enum: (value.availableOptions || []).map((option) => {
-      return {
-        ...option,
-        value: option.value || generateRandomFormFieldID(),
-        title: option.label,
-        name: option.label,
-      };
-    }),
+    default: convertMultipleSelectDefaults(value.availableOptions),
+    enum: value.availableOptions.map((op) => {
+      return op.label as string;
+    }) || [],
     'x-component': 'MultipleSelect',
     // todo support optionsLayout
     ['x-component-props']: {
@@ -57,23 +55,19 @@ export function toSchema(value: MultipleSelectConfig): ISchema {
 }
 
 export function toConfig(schema: ISchema): MultipleSelectConfig {
-  let displayModifier: FormBuilder.DisplayModifier = 'normal';
-  if (schema.readOnly) {
-    displayModifier = 'readonly';
-  } else if (!schema.display) {
-    displayModifier = 'hidden';
-  }
-
   return {
     title: schema.title as string,
     description: schema.description as string,
-    displayModifier: displayModifier,
+    displayModifier: getDisplayModifierFromSchema(schema),
     sortable: !!schema['x-internal']?.sortable,
     required: !!schema.required,
-    // todo implement this
     defaultValueFrom: schema['x-internal']?.defaultValueFrom || 'customized',
     datasetId: schema['x-component-props']?.datasetId,
-    // todo refactor this
-    availableOptions: schema.enum as Array<{ label: string; value: any; title: string }> || [],
+    availableOptions: schema.enum?.map((label) => {
+      return {
+        label: label,
+        isDefault: (!schema.default || !schema.default.length) ? false : schema.default.includes(label),
+      };
+    }) as any,
   };
 }

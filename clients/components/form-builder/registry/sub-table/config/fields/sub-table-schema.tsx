@@ -11,8 +11,8 @@ import {
 import Icon from '@c/icon';
 import { INTERNAL_FIELD_NAMES } from '@c/form-builder/store';
 import { numberTransform } from '@c/form-builder/utils';
+import { FieldConfigContext } from '@c/form-builder/form-settings-panel/form-field-config/context';
 
-import { ActionsContext } from '../context';
 import { SUB_TABLE_TYPES_SCHEMA_MAP, SUB_TABLE_TYPES } from '../constants';
 
 interface Option {
@@ -34,7 +34,7 @@ function getItemStyle(draggableStyle?: DraggingStyle | NotDraggingStyle): CSSPro
 }
 
 function SubTableSchema(props: ISchemaFieldComponentProps): JSX.Element {
-  const { actions } = useContext(ActionsContext);
+  const { actions } = useContext(FieldConfigContext);
   const [currentFieldLabel, setCurrentFieldLabel] = useState('添加');
   const [referenceElRef, setReferenceElRef] = useState<HTMLDivElement>();
   const [popperElRef, setPopperElRef] = useState(null);

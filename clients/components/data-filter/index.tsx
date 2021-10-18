@@ -131,6 +131,7 @@ function DataFilter({
       }
 
       if (condition.filter?.['x-component'] === 'DatePicker') {
+        setValue('operators-' + rowID, '');
         condition.filter = {
           ...condition.filter,
           type: valueFrom === 'form' ? 'number' : 'datetime',
@@ -199,18 +200,25 @@ function DataFilter({
   return (
     <div className={className}>
       <div className='flex items-center'>
-        满足以下
+        筛选出符合以下
         <Select
           className='mx-4'
+          style = {{
+            width: '134px',
+            borderRadius: '2px 8px 8px 8px',
+          }}
           value={tag}
           onChange={(tag) => setTag(tag)}
           options={CONDITION}
         />
         条件的数据
       </div>
-      <div className='qxp-data-filter-box beauty-scroll'>
+      <div className='qxp-data-filter-box overflow-hidden'>
         {conditions.map((condition) => (
-          <div key={condition.id} className='flex gap-x-8 mt-24 items-center'>
+          <div
+            key={condition.id}
+            className='flex gap-x-8 mt-8 items-center px-8 h-64 w-full rounded-8 bg-gray-100 overflow-auto'
+          >
             <div>
               <Controller
                 name={'field-' + condition.id}
@@ -220,7 +228,7 @@ function DataFilter({
                 render={({ field }) => {
                   return (
                     <FormFieldSelect
-                      style={{ width: '250px' }}
+                      style={{ width: '170px' }}
                       error={errors['field-' + condition.id]}
                       register={{ name: field.name, value: field.value }}
                       options={fieldOption}
@@ -230,8 +238,7 @@ function DataFilter({
                       }}
                     />
                   );
-                }
-                }
+                }}
               />
             </div>
             {condition.filter ? (
@@ -244,7 +251,7 @@ function DataFilter({
                     rules={{ required: true }}
                     render={({ field }) => (
                       <FormFieldSelect
-                        style={{ width: '100px' }}
+                        style={{ width: '95px' }}
                         error={errors['operators-' + condition.id]}
                         register={field}
                         options={getOperators(condition.filter?.type || '', condition.filter?.enum)}
@@ -262,7 +269,7 @@ function DataFilter({
                       rules={{ required: true }}
                       render={({ field }) => (
                         <FormFieldSelect
-                          style={{ width: '100px' }}
+                          style={{ width: '95px' }}
                           error={errors['valueFrom-' + condition.id]}
                           register={field}
                           options={VALUE_FROM}
@@ -285,7 +292,7 @@ function DataFilter({
                     render={({ field }) => (
                       condition.valueFrom === 'form' ? (
                         <FormFieldSelect
-                          style={{ width: '300px' }}
+                          style={{ width: '280px' }}
                           error={errors['condition-' + condition.id]}
                           register={field}
                           options={condition.associationFieldsOptions || []}
@@ -295,7 +302,7 @@ function DataFilter({
                           error={errors['condition-' + condition.id]}
                           register={{ ...field, value: field.value ? field.value : '' }}
                           field={condition.filter}
-                          style={{ width: '300px' }}
+                          style={{ width: '280px' }}
                         />
                       )
                     )
@@ -305,6 +312,7 @@ function DataFilter({
               </>
             ) : null}
             <Icon
+              style={{ minWidth: '19px' }}
               clickable
               changeable
               onClick={() => handleRemove(condition.id)}
@@ -315,7 +323,9 @@ function DataFilter({
         ))}
       </div>
       <div className='mt-24'>
-        <span onClick={addCondition} className='text-icon-btn'><Icon name='add' /> 添加筛选条件</span>
+        <span onClick={addCondition} className='text-btn'><Icon name='add' className='text-btn'/>
+          添加筛选条件
+        </span>
       </div>
     </div>
   );

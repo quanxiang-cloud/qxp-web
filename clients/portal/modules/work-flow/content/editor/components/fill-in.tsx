@@ -7,8 +7,9 @@ import type { Data, FillInData, StoreValue } from '@flow/content/editor/type';
 import store from '../store';
 import NodeHeader from './_common/node-header';
 import NodeRemover from './_common/node-remover';
-import usePositionChange from './hooks/use-node-position-change';
 import useNodeSwitch from './hooks/use-node-switch';
+import { getPerson, getRule } from './_common/utils';
+import usePositionChange from './hooks/use-node-position-change';
 
 interface Props {
   data: Data;
@@ -36,27 +37,6 @@ export default function FillInNodeComponent({ data, id, xPos, yPos, isDragging }
     if (+new Date - lastTime.current < 200) {
       switcher(id);
     }
-  }
-
-  function getRule(): string {
-    return `常规填写; ${basicConfig.multiplePersonWay === 'or' ? '任填' : '全填'}`;
-  }
-
-  function getPerson(): string {
-    const typePersonMap = {
-      field: '表单字段',
-      position: '部门负责人',
-      superior: '上级领导',
-      leadOfDepartment: '部门负责人',
-    };
-    const personTitle = typePersonMap[basicConfig.approvePersons.type as keyof typeof typePersonMap];
-    if (personTitle) {
-      return personTitle;
-    }
-    return [
-      ...basicConfig.approvePersons.users,
-      ...basicConfig.approvePersons.departments,
-    ].map((v) => v.ownerName || v.departmentName).join('; ');
   }
 
   function onMouseEnter(): void {
@@ -119,12 +99,12 @@ export default function FillInNodeComponent({ data, id, xPos, yPos, isDragging }
           >
             {hasFillInRule && (
               <div className="text-caption-no-color text-gray-400">
-                规则: <span className="text-gray-600">{getRule()}</span>
+                规则: <span className="text-gray-600">{getRule(basicConfig)}</span>
               </div>
             )}
             {hasFillInPerson && (
               <div className="text-caption-no-color text-gray-400">
-                填写人: <span className="text-gray-600">{getPerson()}</span>
+                填写人: <span className="text-gray-600">{getPerson(basicConfig.approvePersons)}</span>
               </div>
             )}
           </div>

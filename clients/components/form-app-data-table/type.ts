@@ -20,3 +20,8 @@ export type TableConfig = {
   order?: string;
   pageSize?: number;
 };
+
+export type TableColumnConfig = {
+  id: string;
+  width?: number;
+}

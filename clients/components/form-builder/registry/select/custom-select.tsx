@@ -2,15 +2,11 @@ import React, { useState, ChangeEvent, useMemo, useRef } from 'react';
 import { Select, Input, Divider } from 'antd';
 import { RefSelectProps } from 'antd/lib/select';
 import { ISchemaFieldComponentProps } from '@formily/react-schema-renderer';
+import { uniq } from 'lodash';
 
 import toast from '@lib/toast';
 import useEnumOptions from '@lib/hooks/use-enum-options';
 import FormDataValueRenderer from '@c/form-data-value-renderer';
-import {
-  CUSTOM_OTHER_VALUE,
-  usePairValue,
-  useCustomOtherValue,
-} from '@c/form-builder/utils/label-value-pairs';
 
 interface DropdownRenderProps {
   menu: React.ReactElement;
@@ -31,7 +27,7 @@ function DropdownRender({ menu, isAllowCustom, onOtherCustomValueChange }: Dropd
       return;
     }
 
-    onOtherCustomValueChange(inputValue);
+    onOtherCustomValueChange(inputValue.slice(0, 15));
     setInputValue('');
   }
 
@@ -71,8 +67,7 @@ function DropdownRender({ menu, isAllowCustom, onOtherCustomValueChange }: Dropd
 
 function CustomSelect(fieldProps: ISchemaFieldComponentProps): JSX.Element {
   const options = useEnumOptions(fieldProps);
-  const [otherCustomValue, setOtherCustomValue] = useCustomOtherValue(fieldProps.value);
-  const realValue = usePairValue(fieldProps.value);
+  const [otherCustomValue, setOtherCustomValue] = useState('');
   const selectRef = useRef<RefSelectProps>(null);
 
   const isAllowCustom = !!fieldProps.props['x-component-props']?.allowCustom;
@@ -81,7 +76,7 @@ function CustomSelect(fieldProps: ISchemaFieldComponentProps): JSX.Element {
       return options;
     }
 
-    return options.concat({ label: otherCustomValue, value: CUSTOM_OTHER_VALUE });
+    return uniq([...options, otherCustomValue]);
   }, [isAllowCustom, options, otherCustomValue]);
 
   if (fieldProps.props.readOnly) {
@@ -92,16 +87,16 @@ function CustomSelect(fieldProps: ISchemaFieldComponentProps): JSX.Element {
     <div className="flex flex-col w-full">
       <Select
         ref={selectRef}
-        options={allOptions}
+        options={allOptions.map((option) => ({ label: option, value: option }))}
         placeholder="请选择选项"
-        value={realValue}
+        value={fieldProps.value}
         onSelect={(v, option) => {
           // This shouldn't happen
           if (Array.isArray(option)) {
             return;
           }
 
-          fieldProps.mutators.change(`${option.label}:${option.value}`);
+          fieldProps.mutators.change(option.value);
         }}
         dropdownRender={(menu) => (
           <DropdownRender
@@ -110,7 +105,7 @@ function CustomSelect(fieldProps: ISchemaFieldComponentProps): JSX.Element {
             onOtherCustomValueChange={(customValue) => {
               // todo close options after customValue changed
               setOtherCustomValue(customValue);
-              fieldProps.mutators.change(`${customValue}:${CUSTOM_OTHER_VALUE}`);
+              fieldProps.mutators.change(customValue);
             }}
           />
         )}

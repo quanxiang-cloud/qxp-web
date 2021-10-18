@@ -1,0 +1,22 @@
+.header-text {
+  line-height: 22px;
+}
+
+.go-back {
+  cursor: pointer;
+  &:hover {
+    color: var(--blue-600);
+
+    svg {
+      @apply text-current;
+    }
+  }
+}
+
+.preview-header {
+  position: fixed;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}

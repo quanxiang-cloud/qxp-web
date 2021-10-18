@@ -6,7 +6,7 @@ import { DatePicker } from 'antd';
 import moment, { Moment } from 'moment';
 
 import Select from '@c/select';
-import { Option } from '@flow/content/editor/forms/api';
+import { FormFieldOption } from '@flow/content/editor/forms/api';
 import type {
   Operator,
   TriggerConditionExpressionItem,
@@ -20,12 +20,12 @@ const { RangePicker } = DatePicker;
 
 interface Props {
   condition: TriggerConditionValue;
-  options: Option[];
+  options: FormFieldOption[];
   schemaMap?: Record<string, SchemaFieldItem>;
   onChange: (value: Partial<TriggerConditionExpressionItem>) => void;
 }
 
-export type ConditionItemOptions = Option[];
+export type ConditionItemOptions = FormFieldOption[];
 
 export default function ConditionItem({ condition, options, onChange, schemaMap }: Props): JSX.Element {
   const value = condition.key;
@@ -50,7 +50,9 @@ export default function ConditionItem({ condition, options, onChange, schemaMap 
     onChange({ key: value });
   }
 
-  function fieldOperatorOptionsFilter(operatorOptions: FieldOperatorOptions, currentOption?: Option): {
+  function fieldOperatorOptionsFilter(
+    operatorOptions: FieldOperatorOptions, currentOption?: FormFieldOption,
+  ): {
     label: string; value: Operator; exclude?: string[] | undefined;
   }[] {
     const operators = COMPONENT_OPERATORS_MAP[
@@ -80,6 +82,13 @@ export default function ConditionItem({ condition, options, onChange, schemaMap 
     rangePickerDefaultValue = condition.value?.map?.((v) => {
       return moment(v);
     }) as unknown as typeof rangePickerDefaultValue;
+  }
+  // always render radio group as select
+  if (currentSchema.componentName === 'radiogroup') {
+    Object.assign(schema.properties?.[value], {
+      componentName: 'select',
+      'x-component': 'Select',
+    });
   }
 
   return (
@@ -126,6 +135,7 @@ export default function ConditionItem({ condition, options, onChange, schemaMap 
                 defaultValue={{ [value]: condition.value }}
                 onFormValueChange={handleChange}
                 schema={schema}
+                className='min-w-120'
               />
             )}
           </>

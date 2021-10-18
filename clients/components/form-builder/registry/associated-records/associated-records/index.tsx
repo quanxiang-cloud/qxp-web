@@ -79,7 +79,7 @@ function AssociatedRecords({
     );
   }
 
-  tableColumns.push({
+  !readOnly && tableColumns.push({
     id: 'remove',
     Header: '操作',
     accessor: (row) => {

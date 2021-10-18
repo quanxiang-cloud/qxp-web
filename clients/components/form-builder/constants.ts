@@ -53,7 +53,7 @@ export const compareOperatorMap: Record<FormBuilder.CompareOperator, OperatorCon
   },
   '!=': {
     title: '不等于',
-    op: 'not eq',
+    op: 'ne',
     comparator: (leftValue: string | number, rightValue: string | number): boolean => {
       return leftValue !== rightValue;
     },
@@ -88,21 +88,21 @@ export const compareOperatorMap: Record<FormBuilder.CompareOperator, OperatorCon
   },
   '∈': {
     title: '属于',
-    op: 'in',
+    op: 'intersection',
     comparator: (leftValue: string | number, rightValue: Array<string | number>): boolean => {
       return rightValue.includes(leftValue);
     },
   },
   '∉': {
     title: '不属于',
-    op: 'not in',
+    op: 'exclude',
     comparator: (leftValue: string | number, rightValue: Array<string | number>): boolean => {
       return !rightValue.includes(leftValue);
     },
   },
   '⊇': {
     title: '全部包含',
-    op: 'include',
+    op: 'fullSubset',
     comparator: (leftValue: Array<string | number>, rightValue: Array<string | number>): boolean => {
       return rightValue.every((value) => {
         return leftValue.includes(value);
@@ -136,7 +136,7 @@ export const compareOperatorMap: Record<FormBuilder.CompareOperator, OperatorCon
   },
   '()': {
     title: '在范围内',
-    op: 'between',
+    op: 'range',
     comparator: (leftValue: number, rightValue: [number, number]): boolean => {
       return leftValue > rightValue[0] && leftValue < rightValue[1];
     },
@@ -153,9 +153,127 @@ export const SYSTEM_FIELDS = [
   'creator_id',
 ];
 
-export enum PERMISSION {
-  INVISIBLE = 0,
-  READONLY = 1,
-  EDITABLE = 2,
-  NORMAL = 3,
-}
+//  hidden write read
+//  0      0     0     0    invisible = true
+//  0      1     0     2  x invisible = true
+//  1      0     0     4  x invisible = true
+//  1      1     0     6  x invisible = true
+//  1      0     1     5    invisible = true
+//  1      1     1     7  x invisible = true
+//  0      0     1     1    readOnly = true
+//  0      1     1     3    normal = true
+
+// editable hidden write read
+// 0        0      0     0    invisible = true(0, 后端过滤)
+// 1        0      0     0    x
+// 0        1      0     0    x
+// 0        0      1     0    x
+// 0        0      0     1    readOnly = true(1, 提交时过滤)
+// 1        1      0     0    x
+// 1        0      1     0    x
+// 1        0      0     1    x
+// 0        1      1     0    x
+// 0        1      0     1    invisible = true(5, 提交时过滤)
+// 0        0      1     1    readOnly = true(3, 不过滤)
+// 1        1      1     0    x
+// 1        1      0     1    x
+// 1        0      1     1    normal = true(11, 不过滤)
+// 0        1      1     1    invisible = true(7, 不过滤)
+// 1        1      1     1    x
+// 1001 9 -> 1
+export type INVALID_PERMISSION = 4 | 8 | 9;
+export type PERMISSION = 0 | 1 | 3 | 5 | 7 | 11 | INVALID_PERMISSION;
+export type PERMISSION_KEY = keyof PERMISSION_TYPE;
+export type PERMISSION_TYPE = { read: boolean; write: boolean; invisible: boolean; editable: boolean; }
+export const INVISIBLE_NO_READ = 0;
+export const INVISIBLE_NO_WRITE = 5;
+export const INVISIBLE_WITH_WRITE = 7;
+export const READONLY_NO_WRITE = 1;
+export const READONLY_WITH_WRITE = 3;
+export const NORMAL = 11;
+
+export const INVALID_READONLY = 0;
+export const INVALID_INVISIBLE = 4;
+export const INVALID_NORMAL = 8;
+export const INVALID_READONLY_LEGACY = 9;
+
+/** form-builder internal fields map */
+export const INTERNAL_FIELDS: Array<FormItem> = [
+  {
+    fieldName: '_id',
+    componentName: 'Input',
+    configValue: {
+      displayModifier: 'hidden',
+      title: 'id',
+      isSystem: true,
+      type: 'string',
+      'x-component-props': {},
+    },
+  },
+  {
+    fieldName: 'created_at',
+    componentName: 'DatePicker',
+    configValue: {
+      displayModifier: 'hidden',
+      title: '创建时间',
+      isSystem: true,
+      type: 'datetime',
+      'x-component-props': { isNow: false, showTime: false, style: { width: '100%' } },
+    },
+  },
+  {
+    fieldName: 'updated_at',
+    componentName: 'DatePicker',
+    configValue: {
+      displayModifier: 'hidden',
+      title: '修改时间',
+      isSystem: true,
+      type: 'datetime',
+      'x-component-props': { isNow: false, showTime: false, style: { width: '100%' } },
+    },
+  },
+  {
+    fieldName: 'creator_name',
+    componentName: 'Input',
+    configValue: {
+      displayModifier: 'hidden',
+      title: '创建者',
+      isSystem: true,
+      type: 'string',
+      'x-component-props': {},
+    },
+  },
+  {
+    fieldName: 'creator_id',
+    componentName: 'Input',
+    configValue: {
+      displayModifier: 'hidden',
+      title: '创建者 ID',
+      isSystem: true,
+      type: 'string',
+      'x-component-props': {},
+    },
+  },
+  {
+    fieldName: 'modifier_name',
+    componentName: 'Input',
+    configValue: {
+      displayModifier: 'hidden',
+      title: '修改者',
+      isSystem: true,
+      type: 'string',
+      'x-component-props': {},
+    },
+  },
+  {
+    fieldName: 'modifier_id',
+    componentName: 'Input',
+    configValue: {
+      displayModifier: 'hidden',
+      title: '修改者 ID',
+      isSystem: true,
+      type: 'string',
+      'x-component-props': {},
+    },
+  },
+];

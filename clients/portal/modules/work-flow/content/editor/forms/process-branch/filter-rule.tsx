@@ -9,6 +9,7 @@ import FormulaEditor, { CustomRule, RefProps } from '@c/formula-editor';
 import { getFlowVariables } from '../api';
 import FlowTableContext from '../flow-source-table';
 import RuleItem from './rule-item';
+import { isAdvancedField } from '../utils';
 
 const COLLECTION_OPERATORS = [
   {
@@ -16,7 +17,7 @@ const COLLECTION_OPERATORS = [
     key: '==',
   },
   {
-    name: '!==',
+    name: '!=',
     key: '!=',
   },
   {
@@ -78,21 +79,20 @@ function FilterRule({ mutators, value }: ISchemaFieldComponentProps): JSX.Elemen
   });
 
   function onRuleInsert(rule: CustomRule): void {
-    formulaRef.current?.insertText(rule.name);
+    formulaRef.current?.insertEntity(rule);
   }
 
-  const variablesRules = variables?.map?.((item) => {
+  const variablesRules = (variables?.map?.((item) => {
     return {
       name: item.name,
       key: item.code,
       type: item.fieldType?.toLowerCase(),
     };
-  }) || [];
+  }) || []).filter(({ type })=> !isAdvancedField(type));
 
   const tableSchemaRules = tableSchema.filter((schema) => {
     return !SYSTEM_FIELDS.includes(schema.fieldName) &&
-      schema.componentName !== 'subtable' &&
-      schema.componentName !== 'associatedrecords';
+      !isAdvancedField(schema.type || '', schema.componentName);
   }).map((schema) => ({
     name: schema.title as string, key: schema.id, type: schema.type || '',
   }));

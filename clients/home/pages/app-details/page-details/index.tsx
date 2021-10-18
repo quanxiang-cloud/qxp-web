@@ -16,7 +16,7 @@ import store from '../store';
 import './index.scss';
 
 function PageDetails(): JSX.Element | null {
-  const { curPage, fetchSchemeLoading, formScheme } = store;
+  const { curPage, fetchSchemeLoading } = store;
   const [modalType, setModalType] = useState('');
   const [curRowID, setCurRowID] = useState('');
   const formTableRef = useRef<Ref>(null);
@@ -40,9 +40,14 @@ function PageDetails(): JSX.Element | null {
     formTableRef.current?.refresh();
   };
 
-  const tableHeaderBtnList: TableHeaderBtn[] = [
-    { key: 'add', action: () => goEdit(''), text: '新建', iconName: 'add' },
-    {
+  const tableHeaderBtnList: TableHeaderBtn[] = [];
+
+  if (getOperateButtonPer(2, store.authority)) {
+    tableHeaderBtnList.push({ key: 'add', action: () => goEdit(''), text: '新建', iconName: 'add' });
+  }
+
+  if (getOperateButtonPer(4, store.authority)) {
+    tableHeaderBtnList.push({
       key: 'batchRemove',
       action: delFormData,
       text: '批量删除',
@@ -50,8 +55,8 @@ function PageDetails(): JSX.Element | null {
       type: 'popConfirm',
       isBatch: true,
       popText: '确认删除选择数据？',
-    },
-  ];
+    });
+  }
 
   const customColumns = [{
     id: 'action',
@@ -108,20 +113,20 @@ function PageDetails(): JSX.Element | null {
       if (fetchSchemeLoading) {
         return <PageLoading />;
       }
-      if (formScheme) {
-        return (
-          <FormAppDataTable
-            ref={formTableRef}
-            tableHeaderBtnList={tableHeaderBtnList}
-            customColumns={customColumns}
-            appID={store.appID}
-            pageID={store.pageID}
-            allowRequestData={true}
-            style={{ height: 'calc(100% - 62px)' }}
-            className={cs('p-20', { 'form-table-hidden': modalType === 'dataForm' })}
-          />
-        );
-      }
+
+      return (
+        <FormAppDataTable
+          showCheckbox={getOperateButtonPer(4, store.authority)}
+          ref={formTableRef}
+          tableHeaderBtnList={tableHeaderBtnList}
+          customColumns={customColumns}
+          appID={store.appID}
+          pageID={store.pageID}
+          allowRequestData={true}
+          style={{ height: 'calc(100% - 62px)' }}
+          className={cs('p-20', { 'form-table-hidden': modalType === 'dataForm' })}
+        />
+      );
     }
   };
 

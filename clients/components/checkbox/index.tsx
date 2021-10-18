@@ -20,10 +20,13 @@ function Checkbox(
     resolvedRef.current.indeterminate = indeterminate;
   }, [resolvedRef, indeterminate]);
 
+  const { style = {}, disabled } = inputProps;
+
   return (
     <label className={cs('checkbox flex items-center', className)}>
       <input
         {...inputProps}
+        style={{ ...style, cursor: disabled ? 'not-allowed' : 'pointer' }}
         ref={resolvedRef}
         type="checkbox"
         className={cs('checkbox__input', {

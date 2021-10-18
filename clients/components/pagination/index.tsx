@@ -285,8 +285,8 @@ function Pagination({
 
   return (
     <div className="w-full px-20 flex items-center justify-between">
-      <div>
-        {totalText}
+      <div className="text-12 leading-28">
+        {totalText || `共 ${total} 条数据`}
       </div>
       <ul className={cs('pagination-comp', className)}>
         {prevIcon}

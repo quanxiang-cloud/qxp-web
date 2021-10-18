@@ -1,4 +1,4 @@
-import httpClient from '@lib/http-client';
+import httpClient, { httpClientGraphQL } from '@lib/http-client';
 
 export const createPerGroup = (appID: string, data: RightsCreate) => {
   return httpClient(`/api/v1/structor/${appID}/m/permission/perGroup/create`, data);
@@ -58,15 +58,14 @@ export const fetchPerCustom = (appID: string, groupId: string): Promise<{pages: 
   return httpClient(`/api/v1/structor/${appID}/m/permission/perGroup/pageList`, { groupId });
 };
 
-type CheckboxValueType = string | number;
-
 type UpdatePerCustomParam = {
-  pageIds:CheckboxValueType[];
-  groupId: string
+  pageId: string;
+  groupId: string;
+  status: number;
 }
 
 export const updatePerCustom = <T>(appID: string, data: UpdatePerCustomParam): Promise<T> => {
-  return httpClient<T>(`/api/v1/structor/${appID}/m/permission/perGroup/updatePage`, data);
+  return httpClient<T>(`/api/v1/structor/${appID}/m/permission/perGroup/updatePagePer`, data);
 };
 
 type PerDataReq = {
@@ -94,3 +93,6 @@ export const deleteFormPer = (appID: string, data: PerDataReq) => {
   return httpClient(`/api/v1/structor/${appID}/m/permission/perGroup/deleteForm`, data);
 };
 
+export const getUserDetail = <T>(params: {query: string}) => {
+  return httpClientGraphQL<T>('/api/v1/nurturing/getUserByIDs', params);
+};

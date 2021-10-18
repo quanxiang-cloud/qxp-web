@@ -26,10 +26,30 @@ const schema: ISchema = {
           title: '描述内容',
           maxLength: 50,
           'x-component': 'Textarea',
+          'x-component-props': {
+            placeholder: '请输入',
+          },
           'x-mega-props': {
             labelAlign: 'top',
           },
           'x-index': 1,
+        },
+        rowLimit: {
+          type: 'string',
+          title: '子表数量',
+          default: 'multiple',
+          'x-component': 'RadioGroup',
+          'x-mega-props': {
+            labelAlign: 'top',
+          },
+          enum: [{
+            label: '单条',
+            value: 'single',
+          }, {
+            label: '多条',
+            value: 'multiple',
+          }],
+          'x-index': 2,
         },
         displayModifier: {
           type: 'string',
@@ -41,6 +61,10 @@ const schema: ISchema = {
               value: 'normal',
             },
             {
+              label: '只读',
+              value: 'readonly',
+            },
+            {
               label: '隐藏',
               value: 'hidden',
             },
@@ -49,7 +73,7 @@ const schema: ISchema = {
           'x-mega-props': {
             labelAlign: 'top',
           },
-          'x-index': 2,
+          'x-index': 3,
         },
         subordination: {
           title: '子表来源',
@@ -69,7 +93,7 @@ const schema: ISchema = {
           'x-mega-props': {
             labelAlign: 'top',
           },
-          'x-index': 3,
+          'x-index': 4,
           'x-linkages': [
             {
               type: 'value:visible',
@@ -99,7 +123,7 @@ const schema: ISchema = {
           'x-mega-props': {
             labelAlign: 'top',
           },
-          'x-index': 4,
+          'x-index': 5,
         },
         subTableSchema: {
           type: 'object',
@@ -107,7 +131,7 @@ const schema: ISchema = {
           'x-mega-props': {
             labelAlign: 'top',
           },
-          'x-index': 5,
+          'x-index': 6,
         },
         subTableColumns: {
           type: 'array',
@@ -116,7 +140,7 @@ const schema: ISchema = {
           'x-mega-props': {
             labelAlign: 'top',
           },
-          'x-index': 6,
+          'x-index': 7,
         },
         curConfigSubTableKey: {
           type: 'string',
@@ -125,14 +149,14 @@ const schema: ISchema = {
           'x-mega-props': {
             labelAlign: 'top',
           },
-          'x-index': 7,
+          'x-index': 8,
           visible: false,
         },
         required: {
           title: '是否必填',
           default: false,
           'x-component': 'Switch',
-          'x-index': 8,
+          'x-index': 9,
         },
         tableID: {
           type: 'string',
@@ -141,7 +165,7 @@ const schema: ISchema = {
             className: 'hidden',
           },
           default: '',
-          'x-index': 9,
+          'x-index': 10,
         },
       },
     },

@@ -7,13 +7,14 @@ import draftToHtml from 'draftjs-to-html';
 import htmlToDraft from 'html-to-draftjs';
 import { isEqual } from 'lodash';
 import { usePrevious, useUpdateEffect } from 'react-use';
+import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 
 import formFieldWrap from '@c/form-field-wrap';
 import SaveButtonGroup from '@flow/content/editor/components/_common/action-save-button-group';
 
-import UserSelect from '../../components/add-approval-user';
 import { WebMessageData } from '../../type';
-import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
+import PersonPicker from '../../components/_common/person-picker';
+
 import './index.css';
 
 type Props = {
@@ -24,7 +25,6 @@ type Props = {
 }
 
 const Input = formFieldWrap({ field: <input className='input' /> });
-const FieldUserSelect = formFieldWrap({ FieldFC: UserSelect });
 const FieldRadio = formFieldWrap({ FieldFC: Radio.Group });
 
 function WebMessage({ defaultValue, onSubmit, onCancel, onChange }: Props): JSX.Element {
@@ -35,14 +35,14 @@ function WebMessage({ defaultValue, onSubmit, onCancel, onChange }: Props): JSX.
         htmlToDraft(defaultValue.content).contentBlocks),
     ) : EditorState.createEmpty());
 
-  const allFields = watch(['content', 'recivers', 'sort', 'title']);
+  const allFields = watch(['content', 'sort', 'title', 'approvePersons']);
   const previousFields = usePrevious(allFields);
   useUpdateEffect(() => {
     const value = {
       content: allFields[0],
-      recivers: allFields[1],
-      sort: allFields[2],
-      title: allFields[3],
+      sort: allFields[1],
+      title: allFields[2],
+      approvePersons: allFields[3],
     };
     if (!isEqual(allFields, previousFields)) {
       onChange(value);
@@ -73,20 +73,19 @@ function WebMessage({ defaultValue, onSubmit, onCancel, onChange }: Props): JSX.
   return (
     <div className="flex flex-col overflow-auto flex-1 py-24">
       <Controller
-        name='recivers'
+        name='approvePersons'
         control={control}
         rules={{ required: '请选择接收对象' }}
+        defaultValue={defaultValue.approvePersons}
         render={({ field }) => {
           return (
-            <FieldUserSelect
-              label={<><span className='text-red-600'>*</span>接收对象</>}
-              register={field}
-              error={errors.recivers}
-              value={field.value ? field.value : []}
+            <PersonPicker
+              typeText='接收对象'
+              value={field.value}
+              onChange={field.onChange}
             />
           );
-        }
-        }
+        }}
       />
       <Controller
         name='sort'

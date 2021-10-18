@@ -1,104 +1,127 @@
-import { pipe, entries, map, reduce, cond } from 'lodash/fp';
+import { pipe, entries, map, filter } from 'lodash/fp';
 
 import { INTERNAL_FIELD_NAMES } from '@home/pages/app-details/constants';
-import schemaToFields from '@lib/schema-convert';
-import { PERMISSION } from '@c/form-builder/constants';
+import { schemaToArray } from '@lib/schema-convert';
+import { PERMISSION, PERMISSION_TYPE } from '@c/form-builder/constants';
 import {
-  FieldPermission, NewFieldPermission, CustomFieldPermission, SystemFieldPermission, NewFieldPermissionValue,
+  isPermissionReadable,
+  isPermissionWriteable,
+  isPermissionHiddenAble,
+  calculateFieldPermission,
+  isPermissionEditable,
+} from '@c/form-builder/utils';
+import {
+  FieldPermission, NewFieldPermission, CustomFieldPermission, NewFieldPermissionValue,
 } from '@flow/content/editor/type';
 
 import { EDIT_VALUE } from './constants';
 
-type FieldPermissionMergeType = CustomFieldPermission & SystemFieldPermission & {
+type FieldPermissionMergeType = CustomFieldPermission & {
   isSystem: boolean;
   path: string;
   hidden: boolean;
 };
 
 export function fieldPermissionEncoder(value: FieldPermission): NewFieldPermission {
-  const { custom, system } = value;
+  const { custom } = value;
   const customEncoded = custom.reduce((acc, cur) => {
-    const leftValue = cur.read ? 0b01 : 0b00;
-    const rightValue = cur.write ? 0b10 : 0b00;
-    return {
-      ...acc,
+    const permission = calculateFieldPermission(cur.editable, cur.invisible, cur.write, cur.read, true);
+    Object.assign(acc, {
       [cur.id]: {
         fieldName: cur.fieldName,
-        'x-internal': {
-          permission: leftValue + rightValue,
-        },
+        'x-internal': { permission },
         initialValue: cur.initialValue,
         submitValue: cur.submitValue,
       },
-    };
+    });
+    return acc;
   }, {});
-  const systemEncoded = system.reduce((acc, cur) => {
-    return {
-      ...acc,
-      [cur.id]: {
-        fieldName: cur.fieldName,
-        'x-internal': {
-          permission: cur.read ? PERMISSION.READONLY : PERMISSION.INVISIBLE,
-        },
-      },
-    };
-  }, {});
-  return { ...customEncoded, ...systemEncoded };
+  return { ...customEncoded };
+}
+
+function getSchemaIDToSchemaMap(schema: ISchema): Record<string, ISchema> {
+  return schemaToArray(schema, { parseSubTable: true, keepLayout: true })
+    .map((schema) => ({
+      [schema['x-internal']?.fieldId || '']: schema,
+    })).reduce((acc, cur) => ({ ...acc, ...cur }), {});
+}
+
+function fieldPermissionReducer(acc: FieldPermission, cur: FieldPermissionMergeType): FieldPermission {
+  !cur.isSystem && acc.custom.push({
+    fieldName: cur.fieldName,
+    read: cur.read,
+    write: cur.write,
+    invisible: cur.invisible,
+    editable: cur.editable,
+    initialValue: cur.initialValue,
+    submitValue: cur.submitValue,
+    id: cur.id,
+    path: cur.path,
+    hidden: cur.hidden,
+  });
+  return acc;
+}
+
+function getPermission(permission: PERMISSION): PERMISSION_TYPE {
+  const readable = isPermissionReadable(permission);
+  return {
+    read: readable,
+    write: readable ? isPermissionWriteable(permission) : false,
+    invisible: readable ? isPermissionHiddenAble(permission) : false,
+    editable: readable ? isPermissionEditable(permission) : false,
+  };
 }
 
 export function fieldPermissionDecoder(
   value: FieldPermission | NewFieldPermission, schema: ISchema,
 ): FieldPermission | void {
-  if (value.custom || value.system) {
+  if (value.custom) {
     return value as FieldPermission;
   }
-  const schemaIDToSchemaMap = schemaToFields(
-    schema, undefined, { parseSubTable: true, keepLayout: true },
-  ).map((schema) => ({ [schema.id]: schema })).reduce((acc, cur) => ({ ...acc, ...cur }), {});
+  const schemaIDToSchemaMap = getSchemaIDToSchemaMap(schema);
 
-  const convertor: (value: NewFieldPermission) => FieldPermission | void = pipe(
+  const convertor: (value: NewFieldPermission) => FieldPermissionMergeType[] | void = pipe(
     entries,
-    map(([fieldID, fieldValue]: [string, NewFieldPermissionValue]): FieldPermissionMergeType => {
+    map(([fieldID, fieldValue]: [string, NewFieldPermissionValue]): FieldPermissionMergeType | null => {
       const permission = fieldValue?.['x-internal'].permission;
+      const targetSchema = schemaIDToSchemaMap[fieldID];
+      if (!targetSchema) {
+        return null;
+      }
       return {
+        ...getPermission(permission as PERMISSION),
         isSystem: INTERNAL_FIELD_NAMES.includes(fieldID),
         fieldName: fieldValue.fieldName,
         id: fieldID,
-        read: permission === PERMISSION.READONLY || permission === PERMISSION.NORMAL,
-        write: permission === PERMISSION.EDITABLE || permission === PERMISSION.NORMAL,
         initialValue: fieldValue.initialValue || EDIT_VALUE,
         submitValue: fieldValue.submitValue || EDIT_VALUE,
-        path: schemaIDToSchemaMap[fieldID].originPathInSchema,
-        hidden: !!schemaIDToSchemaMap[fieldID]['x-internal']?.isLayoutComponent,
+        path: targetSchema?.['x-internal']?.fieldPath || '',
+        hidden: !!targetSchema?.['x-internal']?.isLayoutComponent,
       };
     }),
-    reduce((acc: FieldPermission, cur: FieldPermissionMergeType): FieldPermission => {
-      const condition = cond<FieldPermissionMergeType, FieldPermission>([
-        [({ isSystem }) => isSystem, () => {
-          acc.system.push({
-            fieldName: cur.fieldName,
-            read: cur.read,
-            id: cur.id,
-          });
-          return acc;
-        }],
-        [({ isSystem }) => !isSystem, () => {
-          acc.custom.push({
-            fieldName: cur.fieldName,
-            read: cur.read,
-            write: cur.write,
-            initialValue: cur.initialValue,
-            submitValue: cur.submitValue,
-            id: cur.id,
-            path: cur.path,
-            hidden: cur.hidden,
-          });
-          return acc;
-        }],
-      ]);
-      return condition(cur);
-    }, { system: [], custom: [] }),
+    filter(Boolean),
   );
+  const fields = convertor(value as NewFieldPermission) || [];
 
-  return convertor(value as NewFieldPermission);
+  return fields.reduce(fieldPermissionReducer, { custom: [] });
+}
+
+export function getInitFieldPermissionFromSchema(schema: ISchema): NewFieldPermission {
+  const fields = schemaToArray(schema, { parseSubTable: true, keepLayout: true })
+    .map((schema): FieldPermissionMergeType => {
+      const permission = schema['x-internal']?.permission || 0;
+      const fieldId = schema['x-internal']?.fieldId;
+      return {
+        ...getPermission(permission),
+        isSystem: INTERNAL_FIELD_NAMES.includes(fieldId || ''),
+        fieldName: schema.title as string,
+        id: fieldId || '',
+        initialValue: EDIT_VALUE,
+        submitValue: EDIT_VALUE,
+        path: schema['x-internal']?.fieldPath || '',
+        hidden: !!schema['x-internal']?.isLayoutComponent,
+      };
+    });
+
+  return fieldPermissionEncoder(fields.reduce(fieldPermissionReducer, { custom: [] }));
 }

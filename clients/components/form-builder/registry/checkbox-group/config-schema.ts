@@ -31,6 +31,9 @@ const schema: ISchema = {
           title: '描述内容',
           maxLength: 50,
           'x-component': 'Input',
+          'x-component-props': {
+            placeholder: '请输入',
+          },
           'x-mega-props': {
             labelAlign: 'top',
           },
@@ -80,12 +83,12 @@ const schema: ISchema = {
           },
           'x-index': 4,
         },
-        sortable: {
-          title: '列表排序',
-          default: false,
-          'x-component': 'Switch',
-          'x-index': 5,
-        },
+        // sortable: {
+        //   title: '列表排序',
+        //   default: false,
+        //   'x-component': 'Switch',
+        //   'x-index': 5,
+        // },
         required: {
           title: '是否必填',
           default: false,
@@ -132,6 +135,18 @@ const schema: ISchema = {
             },
             {
               type: 'value:visible',
+              target: 'edit',
+              condition: '{{ $value === "customized" }}',
+            },
+            {
+              type: 'value:state',
+              target: 'add',
+              state: {
+                display: '{{ $value === "customized" }}',
+              },
+            },
+            {
+              type: 'value:visible',
               target: 'linkageConfig',
               condition: '{{ $value === "linkage" }}',
             },
@@ -167,11 +182,35 @@ const schema: ISchema = {
               label: {
                 title: '选项',
                 type: 'string',
+                required: true,
                 'x-component': 'Input',
                 'x-component-props': {
                   maxLength: 50,
                 },
               },
+              isDefault: {
+                type: 'string',
+                'x-component': 'CheckBox',
+              },
+            },
+          },
+        },
+        operates: {
+          type: 'object',
+          'x-component': 'mega-layout',
+          'x-index': 11,
+          'x-component-props': {
+            grid: true,
+            columns: 2,
+          },
+          properties: {
+            add: {
+              type: 'string',
+              'x-component': 'AddOperate',
+            },
+            edit: {
+              type: 'string',
+              'x-component': 'EditLabels',
             },
           },
         },
@@ -187,11 +226,7 @@ const schema: ISchema = {
           'x-mega-props': {
             labelAlign: 'top',
           },
-          'x-index': 11,
-        },
-        add: {
-          type: 'string',
-          'x-component': 'addOperate',
+          'x-index': 12,
         },
       },
     },

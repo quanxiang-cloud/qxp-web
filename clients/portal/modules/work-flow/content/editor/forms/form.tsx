@@ -91,6 +91,29 @@ export default function Form({
     return (<div>loading...</div>);
   }
 
+  // this a patch.
+  // When creating work flow, selecting working-table should be the first step, nothing else.
+  // All nodes in flow requires working-table, except the start node.
+  if (defaultValue.type === 'formData') {
+    return (
+      <FlowTableContext.Provider
+        value={{
+          tableID: workForm?.value || '',
+          tableName: workForm?.name || '',
+          tableSchema: sourceTableSchema,
+        }}
+      >
+        <div className="flex-1 flex flex-col" style={{ height: 'calc(100% - 56px)' }}>
+          {getConfigForm()}
+        </div>
+      </FlowTableContext.Provider>
+    );
+  }
+
+  if (!sourceTableSchema.length) {
+    return (<div>loading...</div>);
+  }
+
   return (
     <FlowTableContext.Provider
       value={{

@@ -6,16 +6,17 @@ import { FormRenderer } from '@c/form-builder';
 import Select, { SelectOption } from '@c/select';
 import IconBtn from '@c/icon-btn';
 import Button from '@c/button';
-import { getSchemaFields, getValidProcessVariables } from '../../utils';
+import { getSchemaFields, getValidProcessVariables, isFieldTypeMatch } from '../../utils';
 import { Rule } from './index';
 import FlowSourceTableContext from '@flow/content/editor/forms/flow-source-table';
 import FlowContext from '@flow/flow-context';
 import { getFlowVariables } from '@flow/content/editor/forms/api';
 import Context from '../context';
 import FormulaModal from '../formula-modal';
+import { schemaToMap } from '@lib/schema-convert';
 
 interface Props {
-  targetSchema: Record<string, SchemaFieldItem>;
+  targetSchema?: ISchema;
   rule: Rule;
   onRemove: () => void;
   onChange: (data: Partial<Rule>) => void;
@@ -37,6 +38,7 @@ function RuleItem(props: Props): JSX.Element {
   const { data: variables, isLoading: loadingVariables } = useQuery(['FETCH_PROCESS_VARIABLES'], () => {
     return getFlowVariables(flowID);
   });
+  const targetSchemaMap = schemaToMap(props.targetSchema);
 
   const onChange = (val: Partial<Rule> = {}): void => {
     setItem((v) => ({ ...v, ...val }));
@@ -58,7 +60,13 @@ function RuleItem(props: Props): JSX.Element {
         <>
           <span className="text-caption ml-5">当前表:</span>
           <Select
-            options={getSchemaFields(curTableSchema, { noSystem: true })}
+            options={getSchemaFields(curTableSchema, { noSystem: true, matchTypeFn: (schema: ISchema)=> {
+              const field = targetSchemaMap[item.fieldName];
+              if (!field) {
+                return false;
+              }
+              return isFieldTypeMatch(field.type || 'string', field.componentName, schema);
+            } })}
             value={item.valueOf as string}
             onChange={(val) => onChange({ valueOf: val })}
           />
@@ -68,7 +76,7 @@ function RuleItem(props: Props): JSX.Element {
 
     if (rule === 'fixedValue') {
       const { fieldName } = item;
-      const fieldProps = get(props.targetSchema, fieldName) || {};
+      const fieldProps = get(targetSchemaMap, fieldName) || {};
       const defaultVal = (data.updateRule || []).find(
         ({ fieldName }) => fieldName === item.fieldName,
       )?.valueOf;
@@ -92,7 +100,6 @@ function RuleItem(props: Props): JSX.Element {
     if (rule === 'formula') {
       return (
         <div className="inline-flex flex-col items-center">
-          <span className="mr-5">{item.valueOf as string}</span>
           <Button onClick={() => setFormulaModalOpen(true)}>编辑公式</Button>
         </div>
       );
@@ -105,12 +112,10 @@ function RuleItem(props: Props): JSX.Element {
         );
       }
 
-      const fieldCompName = (get(props.targetSchema, `${item.fieldName}.x-component`) as string)
-        .toLowerCase();
-
       return (
         <Select
-          options={getValidProcessVariables(variables || [], fieldCompName) as SelectOption<string>[]}
+          options={getValidProcessVariables(variables || [],
+            targetSchemaMap[item.fieldName]?.type || 'string') as SelectOption<string>[]}
           value={item.valueOf as string}
           onChange={(val) => onChange({ valueOf: val })}
         />
@@ -122,25 +127,33 @@ function RuleItem(props: Props): JSX.Element {
     <div className="flex items-center mb-10">
       <span className="text-caption">目标表:</span>
       <Select
-        options={getSchemaFields(Object.values(props.targetSchema), { noSystem: true })}
+        options={getSchemaFields(Object.values(targetSchemaMap), {
+          noSystem: true,
+          excludeComps: ['associatedrecords'],
+        })}
         value={item.fieldName}
         onChange={(fieldName: string) => onChange({ fieldName } as Rule)}
       />
-      <div className="mx-5">=</div>
-      <Select
-        options={valueFromOptions}
-        value={item.valueFrom}
-        onChange={(valueFrom) => onChange({ valueFrom } as Rule)}
-      />
-      <div className="inline-flex items-center custom-field__value ml-8">
-        {renderValueBox()}
-      </div>
+      {item.fieldName && (
+        <>
+          <div className="mx-5">=</div>
+          <Select
+            options={valueFromOptions}
+            value={item.valueFrom}
+            onChange={(valueFrom) => onChange({ valueFrom } as Rule)}
+          />
+          <div className="inline-flex items-center custom-field__value ml-8">
+            {renderValueBox()}
+          </div>
+        </>
+      )}
       <IconBtn iconName="delete" className="ml-8" onClick={props.onRemove} />
       {formulaModalOpen && (
         <FormulaModal
           onClose={() => setFormulaModalOpen(false)}
           onSave={saveFormula}
           defaultValue={item.valueOf as string}
+          targetSchema={props.targetSchema}
         />
       )}
     </div>

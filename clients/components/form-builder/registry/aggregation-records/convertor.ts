@@ -2,7 +2,7 @@ import { get, has } from 'lodash';
 
 import toast from '@lib/toast';
 import { ESParameter } from '@c/data-filter/utils';
-import { getSchemaPermissionFromSchemaConfig } from '@c/form-builder/utils';
+import { getSchemaPermissionFromSchemaConfig, getDisplayModifierFromSchema } from '@c/form-builder/utils';
 
 export type AggType = 'count' | 'sum' | 'max' | 'min' | 'avg';
 export type RoundMethod = 'round' | 'round-up' | 'round-down';
@@ -74,17 +74,10 @@ export function toSchema(value: AggregationRecordsConfig): ISchema {
 }
 
 export function toConfig(schema: ISchema): AggregationRecordsConfig {
-  let displayModifier: FormBuilder.DisplayModifier = 'normal';
-  if (schema.readOnly) {
-    displayModifier = 'readonly';
-  } else if (!schema.display) {
-    displayModifier = 'hidden';
-  }
-
   return {
     title: schema.title as string,
     description: schema.description as string,
-    displayModifier: displayModifier,
+    displayModifier: getDisplayModifierFromSchema(schema),
     associateObject: {
       appID: schema['x-component-props']?.appID,
       tableID: schema['x-component-props']?.tableID,

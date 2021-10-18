@@ -11,26 +11,31 @@ import './index.scss';
 
 interface Props {
   className?: string;
-  initialValue?: DatasetTreeItem[];
-  onSave: (dataset: DatasetTreeItem[]) => void;
+  initialValue?: OptionSetTreeItem[];
+  onSave: (dataset: OptionSetTreeItem[]) => void;
   hideSaveBtn?: boolean;
 }
 
-export type RefType = {getValues: ()=> (DatasetTreeItem[] | false)};
+export type RefType = { getValues: ()=> (OptionSetTreeItem[] | undefined) };
 
-function TreeContent({ initialValue = [], onSave, hideSaveBtn, className }: Props, ref: React.Ref<RefType>) {
-  const [tree, setTree] = useState<DatasetTreeItem[]>(initialValue);
+function TreeContent({
+  initialValue = [],
+  onSave,
+  hideSaveBtn,
+  className,
+}: Props, ref: React.Ref<RefType>): JSX.Element {
+  const [tree, setTree] = useState<OptionSetTreeItem[]>(initialValue);
   const treeRef: React.MutableRefObject<any> = useRef<HTMLDivElement>(null);
 
   useImperativeHandle(ref, () => {
     return {
       getValues: () => {
-        return validate() ? tree : false;
+        return validate() ? tree : undefined;
       },
     };
   });
 
-  const addSubNode = (nodePath: string) => {
+  function handleAddSubNode(nodePath: string): void {
     const bakTree = cloneDeep(toJS(tree));
     const path = `${nodePath}.children`;
     let cur = get(bakTree, path);
@@ -41,9 +46,9 @@ function TreeContent({ initialValue = [], onSave, hideSaveBtn, className }: Prop
     cur.push({ label: '', value: genId() });
 
     setTree(bakTree);
-  };
+  }
 
-  const removeItem = (path: string) => {
+  function handleRemoveItem(path: string): void {
     const bakTree = cloneDeep(tree);
     const bracketIdx = path.lastIndexOf('[');
     const lastIdx = parseInt(path.slice(bracketIdx + 1));
@@ -52,19 +57,19 @@ function TreeContent({ initialValue = [], onSave, hideSaveBtn, className }: Prop
     // remove chosen item
     parent.splice(lastIdx, 1);
     setTree(bakTree);
-  };
+  }
 
-  const handleChangeField = (path: string, fieldKey: 'label' | 'value', val: string) => {
+  function handleChangeField(path: string, fieldKey: 'label' | 'value', val: string): void {
     const bakTree = cloneDeep(tree);
     set(bakTree, path ? [path, fieldKey].join('.') : fieldKey, val);
     setTree(bakTree);
-  };
+  }
 
-  const validate = (): boolean => {
+  function validate(): boolean {
     // validate
     // 1.label must filled
     let valid = true;
-    const checkItem = ({ label, value, children }: DatasetTreeItem) => {
+    const checkItem = ({ label, value, children }: OptionSetTreeItem): void => {
       if (!label || !value) {
         valid = false;
         return;
@@ -80,15 +85,15 @@ function TreeContent({ initialValue = [], onSave, hideSaveBtn, className }: Prop
       return false;
     }
     return true;
-  };
+  }
 
-  const handleSave = () => {
+  const handleSave = (): void => {
     if (validate()) {
       onSave(tree);
     }
   };
 
-  const getNodePath = (prefix: string, idx: number) => {
+  function getNodePath(prefix: string, idx: number): string {
     /*
       level-0: path=[1]
       level-1: path=[0].children[1]
@@ -98,16 +103,18 @@ function TreeContent({ initialValue = [], onSave, hideSaveBtn, className }: Prop
       return `[${idx}]`;
     }
     return `${prefix}.children[${idx}]`;
-  };
+  }
 
-  const getLevelFromPrefix = (prefix: string) => {
+  function getLevelFromPrefix(prefix: string): number {
     if (prefix === '') {
       return 0;
     }
     return prefix.split('.').length;
-  };
+  }
 
-  const renderTree = ({ label, value, children = [] }: DatasetTreeItem, prefix = '', idx: number) => {
+  function renderTree({
+    label, value, children = [],
+  }: OptionSetTreeItem, prefix = '', idx: number): JSX.Element {
     const level = getLevelFromPrefix(prefix);
     const nodePath = getNodePath(prefix, idx);
 
@@ -133,14 +140,14 @@ function TreeContent({ initialValue = [], onSave, hideSaveBtn, className }: Prop
           <span className="data-tree-items--item-actions flex">
             <span
               className="cursor-pointer flex items-center mr-10 hover:bg-gray-100"
-              onClick={() => addSubNode(nodePath)}
+              onClick={() => handleAddSubNode(nodePath)}
               title="子节点"
             >
               <Icon name="add" />
             </span>
             <span
               className="cursor-pointer flex items-center hover:bg-gray-100"
-              onClick={() => removeItem(nodePath)}
+              onClick={() => handleRemoveItem(nodePath)}
               title="删除"
             >
               <Icon name="delete" />
@@ -166,24 +173,24 @@ function TreeContent({ initialValue = [], onSave, hideSaveBtn, className }: Prop
         {renderItems(children, nodePath)}
       </div>
     );
-  };
+  }
 
-  const renderItems = (items: DatasetTreeItem[], prefix = '') => {
+  function renderItems(items: OptionSetTreeItem[], prefix = ''): JSX.Element | null {
     if (!items || !items.length) {
       return null;
     }
     return (
       <div className="data-tree-items--items mt-10">
-        {items.map((item: DatasetTreeItem, idx) => renderTree(item, prefix, idx))}
+        {items.map((item: OptionSetTreeItem, idx) => renderTree(item, prefix, idx))}
       </div>
     );
-  };
+  }
 
   return (
     <div className={className} ref={treeRef}>
       <div className="data-tree-items">
         {tree.length ?
-          tree.map((item: DatasetTreeItem, idx) => renderTree(item, '', idx)) :
+          tree.map((item: OptionSetTreeItem, idx) => renderTree(item, '', idx)) :
           <div>暂无数据项，请添加</div>
         }
       </div>

@@ -34,7 +34,7 @@ export default function Card({
   descClassName,
   titleClassName,
   itemTitleClassName,
-}: Props) {
+}: Props): JSX.Element {
   const classNames = useCss({
     'border-radius': '12px',
   });

@@ -1,15 +1,14 @@
-import React, { useContext, useEffect, useState, useMemo } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 
-import FilterConfig from '@c/form-builder/form-settings-panel/form-field-config/filter-config';
+import FilterConfig from '@c/form-builder/registry/associated-data/filter-config';
 import schemaToFields, { schemaToMap } from '@lib/schema-convert';
 import logger from '@lib/logger';
-import { toEs, toFilterConfig, ESParameter } from '@c/data-filter/utils';
 import { StoreContext } from '@c/form-builder/context';
 
 type Props = {
   associateObject?: { appID: string, tableID: string, sourceFieldId: string };
   onChange: (v: any) => void;
-  value: ESParameter;
+  value: FilterConfig;
 }
 
 function StatisticalRangeConfig(props: Props): JSX.Element {
@@ -17,8 +16,6 @@ function StatisticalRangeConfig(props: Props): JSX.Element {
   const [formInfo, setFormInfo] = useState({ appID: '', tableID: '' });
   const { appID, tableID, sourceFieldId } = props.associateObject || {};
   const { schema } = useContext(StoreContext);
-
-  const value = useMemo(() => props.value && toFilterConfig(props.value), [props.value]);
 
   useEffect(() => {
     if (!sourceFieldId) {
@@ -50,8 +47,8 @@ function StatisticalRangeConfig(props: Props): JSX.Element {
     <FilterConfig
       tableID={formInfo.tableID}
       appID={formInfo.appID}
-      onChange={(value) => props.onChange(toEs(value))}
-      value={value}
+      onChange={props.onChange}
+      value={props.value}
       customSchemaFields={customSchemaFields}
     />
   );

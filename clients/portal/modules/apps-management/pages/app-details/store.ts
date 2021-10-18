@@ -1,17 +1,22 @@
-import { omit } from 'lodash';
+import { omit, pick } from 'lodash';
 import { History } from 'history';
-import { observable, action, toJS, reaction, IReactionDisposer } from 'mobx';
 import { mutateTree, TreeData, TreeItem } from '@atlaskit/tree';
+import { observable, action, toJS, reaction, IReactionDisposer } from 'mobx';
 
 import toast from '@lib/toast';
 import { buildAppPagesTreeData } from '@lib/utils';
-import { getTableInfo, getTableSchema } from '@lib/http-client';
+import { getCustomPageInfo, getSchemaPageInfo, getTableSchema } from '@lib/http-client';
 
-import { CustomPageInfo } from './type';
+import { BindState, CardList, CustomPageInfo, MenuType } from './type';
 import { fetchAppList } from '../entry/app-list/api';
 import { DefaultPageDescriptions } from './constants';
-import { filterDeletedPage, getValueOfPageDescription } from './utils';
 import { getNextTreeItem } from './page-menu-design/app-pages-tree';
+import {
+  getPageCardList,
+  filterDeletedPage,
+  mapToSchemaPageDescription,
+  mapToCustomPageDescription,
+} from './utils';
 import {
   fetchAppDetails,
   updateAppStatus,
@@ -22,6 +27,8 @@ import {
   createGroup,
   deleteGroup,
   deletePage,
+  isHiddenMenu,
+  formDuplicate,
 } from './api';
 
 type DeletePageOrGroupParams = {
@@ -30,6 +37,19 @@ type DeletePageOrGroupParams = {
   history?: History;
   pathname: string
 }
+
+const DEFAULT_CARD_LIST = [
+  {
+    id: 'linkedFlows',
+    title: '关联工作流',
+    list: [],
+  },
+  {
+    id: 'AuthorizedRoles',
+    title: '已授权角色',
+    list: [],
+  },
+];
 
 class AppDetailsStore {
   destroySetCurPage: IReactionDisposer;
@@ -54,7 +74,9 @@ class AppDetailsStore {
     items: {},
   };
   @observable modalType = '';
-  @observable pageDescription = DefaultPageDescriptions;
+  @observable curPreviewUrl = '';
+  @observable curPageCardList: CardList[] = DEFAULT_CARD_LIST;
+  @observable pageDescriptions = DefaultPageDescriptions;
 
   constructor() {
     this.destroySetCurPage = reaction(() => {
@@ -67,7 +89,7 @@ class AppDetailsStore {
   }
 
   @action
-  setPageID = (pageID: string) => {
+  setPageID = (pageID: string): void => {
     this.pageID = pageID;
   }
 
@@ -77,14 +99,14 @@ class AppDetailsStore {
   }
 
   @action
-  fetchAppList = () => {
+  fetchAppList = (): void => {
     fetchAppList({}).then((res: any) => {
       this.apps = res.data;
     });
   }
 
   @action
-  updateAppStatus = () => {
+  updateAppStatus = (): Promise<void> => {
     const { id, useStatus } = this.appDetails;
     return updateAppStatus({ id, useStatus: -1 * useStatus }).then(() => {
       this.appDetails.useStatus = -1 * useStatus;
@@ -100,7 +122,7 @@ class AppDetailsStore {
   }
 
   @action
-  fetchAppDetails = (appID: string) => {
+  fetchAppDetails = (appID: string): Promise<void> => {
     this.loading = true;
     this.appID = appID;
     return fetchAppDetails(appID).then((res: any) => {
@@ -113,7 +135,7 @@ class AppDetailsStore {
   }
 
   @action
-  updateApp = (appInfo: Pick<AppInfo, 'appName' | 'appIcon' | 'useStatus'>) => {
+  updateApp = (appInfo: Pick<AppInfo, 'appName' | 'appIcon' | 'useStatus'>): Promise<void> => {
     return updateApp({ id: this.appDetails.id, ...appInfo }).then(() => {
       this.appDetails = { ...this.appDetails, ...appInfo };
       this.apps = this.apps.map((_appInfo) => {
@@ -131,7 +153,7 @@ class AppDetailsStore {
   }
 
   @action
-  updatePagesTree = (treeData: TreeData) => {
+  updatePagesTree = (treeData: TreeData): void => {
     this.pagesTreeData = treeData;
   }
 
@@ -180,7 +202,7 @@ class AppDetailsStore {
   }
 
   @action
-  editGroup = (groupInfo: PageInfo) => {
+  editGroup = (groupInfo: PageInfo): Promise<void> => {
     if (groupInfo.id) {
       return updatePageOrGroup({ appID: this.appID, ...groupInfo }).then(() => {
         this.pagesTreeData = mutateTree(toJS(this.pagesTreeData), groupInfo.id as string, {
@@ -215,8 +237,8 @@ class AppDetailsStore {
   }
 
   @action
-  editPage = (pageInfo: PageInfo) => {
-    if (pageInfo.id) {
+  editPage = (pageInfo: PageInfo): Promise<void> => {
+    if (this.modalType === 'editPage') {
       return updatePageOrGroup(pageInfo).then(() => {
         toast.success('修改成功');
         this.pagesTreeData = mutateTree(toJS(this.pagesTreeData), pageInfo.id, {
@@ -229,73 +251,112 @@ class AppDetailsStore {
         }
       });
     }
-
-    return createPage({ appID: this.appID, ...pageInfo }).then((res: any) => {
-      const newPage: PageInfo = {
-        ...res, ...pageInfo, menuType: 0, appID: this.appID, child: null, childCount: 0, sort: 0,
-      };
-      const items = toJS(this.pagesTreeData.items);
-      items[newPage.groupID || 'ROOT'].children.push(newPage.id);
-      items[newPage.id] = {
-        id: newPage.id,
-        data: newPage,
-        children: [],
-        hasChildren: false,
-      };
-
-      this.pagesTreeData = { items, rootId: 'ROOT' };
-
-      if (!newPage.groupID) {
-        this.pageInitList.push(newPage);
-        this.curPage = newPage;
-        toast.success('创建成功');
-        return res.id;
-      }
-
-      this.pageInitList = this.pageInitList.map((page) => {
-        if (page.id === newPage.groupID) {
-          const lastChildPage = page.child?.slice(-1) || [];
-          const sort = lastChildPage[0]?.sort || 0;
-          newPage.sort = sort + 1;
-
-          page.childCount = page.child?.push(newPage);
-          this.curPage = newPage;
-        }
-        return page;
+    const PageInfoPick = pick(pageInfo, 'name', 'icon', 'describe', 'groupID');
+    if (pageInfo.bindingState === BindState.isBind && pageInfo.menuType === MenuType.schemaForm) {
+      return formDuplicate( this.appID, {
+        name: pageInfo.name || '',
+        icon: pageInfo.icon || '',
+        describe: pageInfo.describe || '',
+        groupID: pageInfo.groupID || '',
+        duplicateTableID: pageInfo.id,
+      } ).then((res: {id: string}) => {
+        this.addNewPageToList(PageInfoPick, res.id);
       });
-      toast.success('创建成功');
-      return res.id;
+    }
+    return createPage({ appID: this.appID, ...PageInfoPick } ).then((res: {id: string}) => {
+      this.addNewPageToList(PageInfoPick, res.id);
     });
   }
 
   @action
-  setCurPage = (pageID: string) => {
+  addNewPageToList = (PageInfoPick: Partial<PageInfo>, id:string): string => {
+    const newPage: PageInfo = {
+      id, ...PageInfoPick, menuType: 0, appID: this.appID, child: null, childCount: 0, sort: 0,
+    };
+    const items = toJS(this.pagesTreeData.items);
+    items[newPage.groupID || 'ROOT'].children.push(newPage.id);
+    items[newPage.id] = {
+      id: newPage.id,
+      data: newPage,
+      children: [],
+      hasChildren: false,
+    };
+
+    this.pagesTreeData = { items, rootId: 'ROOT' };
+
+    if (!newPage.groupID) {
+      this.pageInitList.push(newPage);
+      this.curPage = newPage;
+      toast.success('创建成功');
+      return id;
+    }
+
+    this.pageInitList = this.pageInitList.map((page) => {
+      if (page.id === newPage.groupID) {
+        const lastChildPage = page.child?.slice(-1) || [];
+        const sort = lastChildPage[0]?.sort || 0;
+        newPage.sort = sort + 1;
+
+        page.childCount = page.child?.push(newPage);
+        this.curPage = newPage;
+      }
+      return page;
+    });
+    toast.success('创建成功');
+    return id;
+  }
+
+  @action
+  setCurPage = (pageID: string): void => {
     if (!pageID) {
       return;
     }
 
     const pageInfo = this.pagesTreeData.items[pageID].data;
     this.fetchSchemeLoading = true;
-    if (pageInfo.menuType === 0) {
+    this.curPageCardList = DEFAULT_CARD_LIST;
+
+    if (pageInfo.menuType === MenuType.schemaForm) {
       getTableSchema(this.appID, pageInfo.id).then((pageSchema) => {
         this.hasSchema = !!pageSchema;
-        this.pageDescription = DefaultPageDescriptions;
+        if (this.hasSchema) {
+          return getSchemaPageInfo(this.appID, pageID);
+        }
+      }).then((res) => {
+        if (res) {
+          const descriptions = this.pageDescriptions.map((description) => {
+            return mapToSchemaPageDescription(description, res);
+          });
+          this.pageDescriptions = [...descriptions];
+          this.curPreviewUrl = '';
+          return getPageCardList(this.appID, this.pageID, this.curPageCardList, pageInfo.menuType);
+        }
+        this.pageDescriptions = DefaultPageDescriptions;
+      }).then((res) => {
+        if (res) {
+          this.curPageCardList = res;
+          return;
+        }
+        this.curPageCardList = DEFAULT_CARD_LIST;
       }).catch(() => {
-        toast.error('获取页面schema失败');
+        toast.error('获取表单信息失败');
       }).finally(() => {
         this.fetchSchemeLoading = false;
       });
     }
 
-    if (pageInfo.menuType === 2) {
-      getTableInfo(this.appID, pageInfo.id).then((res) => {
-        const descriptions = this.pageDescription.map(({ id, title, value }) => {
-          const test = getValueOfPageDescription(id, res);
-          return { id, title, value: test ? test : value };
+    if (pageInfo.menuType === MenuType.customPage) {
+      getCustomPageInfo(this.appID, pageInfo.id).then((res) => {
+        const descriptions = this.pageDescriptions.map((description) => {
+          return mapToCustomPageDescription(description, res);
         });
-        this.pageDescription = descriptions;
+        this.pageDescriptions = [...descriptions];
+        this.curPreviewUrl = res.fileUrl || '';
+        return getPageCardList(this.appID, this.pageID, this.curPageCardList, pageInfo.menuType);
+      }).then((res) => {
+        this.curPageCardList = res;
       }).catch(() => {
-        toast.error('获取关联自定义页面失败');
+        toast.error('获取自定义页面信息失败');
       }).finally(() => {
         this.fetchSchemeLoading = false;
       });
@@ -306,10 +367,9 @@ class AppDetailsStore {
 
   @action
   setCurPageMenuType = (menuType: number, data: CustomPageInfo): void => {
-    const curPageInfo = { ...this.curPage, menuType: menuType };
-    const descriptions = this.pageDescription.map(({ id, title, value }) => {
-      const test = getValueOfPageDescription(id, data);
-      return { id, title, value: test ? test : value };
+    const curPageInfo = { ...this.curPage, menuType: menuType, fileUrl: data.fileUrl };
+    const descriptions = this.pageDescriptions.map((description) => {
+      return mapToCustomPageDescription(description, data);
     });
 
     this.pagesTreeData = mutateTree(toJS(this.pagesTreeData), curPageInfo.id, {
@@ -317,11 +377,30 @@ class AppDetailsStore {
       data: curPageInfo,
     });
     this.curPage = curPageInfo;
-    this.pageDescription = descriptions;
+    this.pageDescriptions = descriptions;
+    this.curPreviewUrl = data.fileUrl || '';
+    getPageCardList(this.appID, this.pageID, this.curPageCardList, curPageInfo.menuType).then((res) => {
+      this.curPageCardList = res;
+    });
   }
 
   @action
-  fetchPageList = (appID: string) => {
+  updatePageHideStatus = (appID: string, pageInfo: PageInfo) => {
+    return isHiddenMenu(appID, { id: pageInfo.id, hide: pageInfo.isHide ? false : true }).then(() => {
+      this.pagesTreeData = mutateTree(toJS(this.pagesTreeData), pageInfo.id, {
+        id: pageInfo.id,
+        data: { ...pageInfo, isHide: !pageInfo.isHide },
+      });
+
+      if (pageInfo.id === this.curPage.id) {
+        this.curPage = { ...pageInfo, isHide: !pageInfo.isHide };
+      }
+      toast.success(`${pageInfo.name}页面${!pageInfo.isHide ? '隐藏' : '显示' }成功`);
+    }).catch(() => toast.error('页面设置显示或者隐藏失败'));
+  }
+
+  @action
+  fetchPageList = (appID: string): void => {
     this.appID = appID;
     this.pageListLoading = true;
     fetchPageList(appID).then((res: any) => {
@@ -332,7 +411,7 @@ class AppDetailsStore {
   }
 
   @action
-  clear = () => {
+  clear = (): void => {
     this.curPage = { id: '' };
     this.pageListLoading = true;
     this.appID = '';

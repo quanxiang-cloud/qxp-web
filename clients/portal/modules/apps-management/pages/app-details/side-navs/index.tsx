@@ -14,8 +14,12 @@ const SIDE_NAVS = [
     nav_items: [
       {
         id: 'page_setting',
-        name: '页面及菜单设计',
+        name: '页面与菜单管理',
       },
+      // {
+      //   id: 'custom_page',
+      //   name: '自定义页面',
+      // },
     ],
   },
   {
@@ -56,15 +60,15 @@ const SIDE_NAVS = [
     nav_items: [
       {
         id: 'base_info',
-        name: '应用基本信息',
+        name: '基本信息',
       },
       {
         id: 'app_permission',
-        name: '应用授权',
+        name: '业务功能授权',
       },
       {
         id: 'app_manager',
-        name: '应用管理员',
+        name: '管理功能授权',
       },
     ],
   },
@@ -86,10 +90,6 @@ function SideNavs(): JSX.Element {
             <Icon name={icon} className="mr-4 text-current flex-shrink-0" size={21} />
             {title}
           </div>
-          <Icon
-            name='expand_more'
-            className="mr-4 text-current flex-shrink-0" size={21}
-          />
         </div>
         <div>
           {nav_items.map(({ id: subMenuId, name }) => {

@@ -62,7 +62,7 @@ export default function AssociateDepartmentEmployee({ roleID, isSuper }: Props):
         delete: deletes?.map(({ id }: { id: string }) => id),
       });
       return true;
-    } catch (e) {
+    } catch (e: any) {
       toast.error(e.message);
     }
   }

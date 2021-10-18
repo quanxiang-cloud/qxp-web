@@ -33,8 +33,9 @@ export default function Approval({ workData, clickHandle }: Props): JSX.Element 
     username: string, detail: string, backOffInfo: string, sendBack: string
   } {
     const detailInfo = { username: '', detail: '', backOffInfo: '', sendBack: '' };
-    const refuseData = workData.operationRecords.filter(
+    const _refuseData = workData.operationRecords.filter(
       (operation: OperationRecord) => operation.handleType === status);
+    const refuseData = _refuseData.length === 0 ? [{} as OperationRecord] : _refuseData;
     detailInfo.detail = refuseData[0].remark || '';
     switch (status) {
     case 'REFUSE':
@@ -55,7 +56,7 @@ export default function Approval({ workData, clickHandle }: Props): JSX.Element 
 
   const username = operationRecords ? get(operationRecords, '[0].creatorName', '') : '';
   const isHandle = ['REVIEW', 'IN_REVIEW'].includes(status);
-  const isSingle = operationRecords.length === 1;
+  const isSingle = operationRecords?.length === 1;
   const confirmBack = ['REFUSE', 'SEND_BACK', 'READ', 'DELIVER', 'STEP_BACK'].includes(status);
 
   return (
@@ -84,7 +85,7 @@ export default function Approval({ workData, clickHandle }: Props): JSX.Element 
           )
         }
         {
-          (!isSingle || (isSingle && isHandle) || (status === 'AUTO_REVIEW')) && (
+          (!isSingle || (isSingle && isHandle) || (status === 'AUTO_REVIEW')) && operationRecords && (
             <UserList userList={operationRecords} clickHandle={goLeaderHandle} />
           )
         }

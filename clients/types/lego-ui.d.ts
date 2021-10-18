@@ -232,15 +232,16 @@ declare module '@QCFE/lego-ui' {
 
   class SelectField extends React.Component<SelectFieldProps, {}> { }
 
-  interface TextFieldProps extends CommonFormFieldProps {
-    iconLeft?: string;
-    iconRight?: string;
-    placeholder?: string;
-    validateOnChange?: boolean;
-    validateOnBlur?: boolean;
-    maxLength?: number;
+  export namespace Form {
+    interface TextFieldProps extends CommonFormFieldProps {
+      iconLeft?: string;
+      iconRight?: string;
+      placeholder?: string;
+      validateOnChange?: boolean;
+      validateOnBlur?: boolean;
+      maxLength?: number;
+    }
   }
-
   export interface BadgeProps {
     count?: number;
     children?: React.ReactNode;

@@ -2,6 +2,7 @@ import React from 'react';
 import { useHistory } from 'react-router-dom';
 import dayjs from 'dayjs';
 import { map, get } from 'lodash';
+import duration from 'dayjs/plugin/duration';
 
 import Status from '@c/process-node-status';
 import Icon from '@c/icon';
@@ -13,6 +14,27 @@ import './index.scss';
 interface Props {
   task: ApprovalTask;
   type: 'APPLY_PAGE' | 'WAIT_HANDLE_PAGE' | 'HANDLED_PAGE' | 'CC_PAGE' | 'ALL_PAGE';
+}
+
+dayjs.extend(duration);
+
+function formatOverTime(dueDate?: string): string {
+  if (!dueDate) {
+    return '';
+  }
+
+  if (dayjs().isBefore(dueDate)) {
+    return '';
+  }
+
+  const duration = dayjs.duration(dayjs().diff(dayjs(dueDate)));
+  return [
+    [duration.years(), '年'],
+    [duration.months(), '月'],
+    [duration.days(), '天'],
+    [duration.hours(), '小时'],
+    [duration.minutes(), '分钟'],
+  ].filter(([length]) => !!length).map(([length, unit]) => `${length}${unit}`).join('');
 }
 
 export default function TaskCard({ task, type }: Props): JSX.Element {
@@ -36,7 +58,7 @@ export default function TaskCard({ task, type }: Props): JSX.Element {
 
   const {
     name, flowInstanceEntity, startTime, createTime, creatorName, creatorAvatar, appName, formData,
-    formSchema, status, keyFields,
+    formSchema, status, keyFields, dueDate, urgeNum,
   } = task;
   const taskCardData = (multiTask ? formData : flowInstanceEntity?.formData) || {};
   const properties = multiTask ? formSchema?.properties : flowInstanceEntity?.formSchema?.properties;
@@ -74,6 +96,19 @@ export default function TaskCard({ task, type }: Props): JSX.Element {
                 <span className="info-label"><Icon name="layers" className="mr-6" />应用: </span>
                 <div>{multiTask ? appName : flowInstanceEntity?.appName}</div>
               </div>
+            </div>
+
+            <div className='flex mt-8'>
+              {!!formatOverTime(dueDate) && (
+                <div className='urge-card text-red-600 bg-red-50'>
+                  超时：{formatOverTime(dueDate)}
+                </div>
+              )}
+              {!!urgeNum && (
+                <div className='urge-card text-yellow-600 bg-yellow-50'>
+                  被催办+{urgeNum}
+                </div>
+              )}
             </div>
           </div>
         </div>

@@ -1,15 +1,6 @@
-import httpClient from '@lib/http-client';
+import { fetchFormDataList, FormDataListResponse } from '@lib/http-client';
+import { operatorESParameter } from '@c/data-filter/utils';
 import logger from '@lib/logger';
-
-type FormDataRequestQueryParams = {
-  method: 'find';
-  conditions: {
-    condition: Array<{ key: string; op: string; value: Array<string | number>; }>;
-    tag: 'and',
-  }
-}
-
-type FormDataResponse = { entities: Array<Record<string, any>>; total: number; };
 
 export function findTableRecords(
   appID: string,
@@ -20,18 +11,11 @@ export function findTableRecords(
     return Promise.resolve([]);
   }
 
-  const params: FormDataRequestQueryParams = {
-    method: 'find',
-    conditions: {
-      condition: [{ key: '_id', op: 'in', value: ids }],
-      tag: 'and',
-    },
-  };
-
-  return httpClient<FormDataResponse>(
-    `/api/v1/form/${appID}/home/form/${tableID}`,
-    params,
-  ).then(({ entities }) => entities).catch((err) => {
+  return fetchFormDataList(appID, tableID, {
+    query: { bool: { must: [operatorESParameter('_id', 'intersection', ids)] } },
+  }).then((res) => {
+    return res.entities || [];
+  }).catch((err) => {
     logger.error(err);
     return [];
   });
@@ -40,16 +24,8 @@ export function findTableRecords(
 export async function fetchTableData(
   appID: string,
   tableID: string,
-  pageNumber: number,
-  pageSize: number,
-): Promise<FormDataResponse | null> {
-  try {
-    return httpClient<FormDataResponse>(
-      `/api/v1/form/${appID}/home/form/${tableID}`,
-      { method: 'find', page: pageNumber, size: pageSize },
-    );
-  } catch (err) {
-    logger.error(err);
-    return null;
-  }
+  page: number,
+  size: number,
+): Promise<FormDataListResponse | null> {
+  return fetchFormDataList(appID, tableID, { page, size });
 }

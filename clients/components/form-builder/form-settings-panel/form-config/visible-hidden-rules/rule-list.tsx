@@ -28,7 +28,7 @@ const RuleList = ({ onEdit }: VisibleHiddenLinkagesProps): JSX.Element => {
 
   if (!store.visibleHiddenLinkages.length) {
     return (
-      <div className="text-caption">没有设置联动规则</div>
+      <div className="text-caption">没有设置显隐规则</div>
     );
   }
 

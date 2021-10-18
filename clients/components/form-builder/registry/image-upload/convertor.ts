@@ -1,4 +1,4 @@
-import { getSchemaPermissionFromSchemaConfig } from '@c/form-builder/utils';
+import { getSchemaPermissionFromSchemaConfig, getDisplayModifierFromSchema } from '@c/form-builder/utils';
 
 export interface ImageUploadConfig {
   title: string;
@@ -40,18 +40,11 @@ export function toSchema(value: ImageUploadConfig): ISchema {
 }
 
 export function toConfig(schema: ISchema): ImageUploadConfig {
-  let displayModifier: FormBuilder.DisplayModifier = 'normal';
-  if (schema.readOnly) {
-    displayModifier = 'readonly';
-  } else if (!schema.display) {
-    displayModifier = 'hidden';
-  }
-
   return {
     title: schema.title as string,
     type: 'array',
     description: schema.description as string,
-    displayModifier: displayModifier,
+    displayModifier: getDisplayModifierFromSchema(schema),
     required: !!schema.required,
     multiple: schema['x-component-props']?.multiple,
     autoCompress: schema['x-component-props']?.autoCompress,

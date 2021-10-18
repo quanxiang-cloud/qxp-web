@@ -12,13 +12,11 @@ type TaskDetailItem = {
     [key: string]: string;
   };
   formSchema: {
-    table: {
-      properties: {
-        [key: string]: ISchema;
-      },
-      title: string,
-      type: string
-    }
+    properties: {
+      [key: string]: ISchema;
+    },
+    title: string,
+    type: string
   }
 }
 

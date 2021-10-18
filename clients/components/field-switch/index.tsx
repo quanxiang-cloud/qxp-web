@@ -4,11 +4,12 @@ import { DatePicker, Select, Input, InputNumber } from 'antd';
 
 import { getPicker } from '@c/form-builder/registry/date-picker/date-picker';
 import { omit } from 'lodash';
+import OrganizationPicker from '@c/form-builder/registry/organization-select/organization-select';
+import UserPicker from '@c/form-builder/registry/user-picker/user-picker';
 import CascadeSelector, {
   DefaultValueFrom, CascadeSelectorProps,
 } from '@c/form-builder/registry/cascade-selector/cascade-selector';
-import OrganizationPicker from '@c/form-builder/registry/organization-select/organization-select';
-import UserPicker from '@c/form-builder/registry/user-picker/user-picker';
+import { Option } from 'antd/lib/mentions';
 
 type Props<T> = {
   field: ISchema;
@@ -24,6 +25,19 @@ type Option = {
   value: string;
 }
 
+function toOptions(initOptions: string[] | LabelValue[]): LabelValue[] {
+  return initOptions.map((option) => {
+    if (typeof option === 'object') {
+      return option;
+    }
+
+    return {
+      label: option,
+      value: option,
+    };
+  });
+}
+
 function FieldSwitch({ field, className, ...otherProps }: Props<any>, ref: React.Ref<any>): JSX.Element {
   switch (field['x-component']) {
   case 'CheckboxGroup':
@@ -37,7 +51,7 @@ function FieldSwitch({ field, className, ...otherProps }: Props<any>, ref: React
         mode='multiple'
         className={`'w-full ${className}`}
         ref={ref}
-        options={field?.enum as unknown as Option[] || []}
+        options={toOptions(field?.enum as unknown as string[] || [])}
       />
     );
   case 'NumberPicker':
@@ -53,14 +67,12 @@ function FieldSwitch({ field, className, ...otherProps }: Props<any>, ref: React
   case 'DatePicker':
     return (
       <DatePicker.RangePicker
-        {...field['x-component-props']}
+        {...omit(field['x-component-props'], ['placeholder'])}
         {...otherProps}
         locale={zhCN}
         picker={getPicker(field['x-component-props']?.format)}
         ref={ref}
         className={`'w-full input ${className}`}
-        {...omit(field['x-component-props'], ['placeholder'])}
-        {...otherProps}
       />
     );
   case 'CascadeSelector':
@@ -79,7 +91,7 @@ function FieldSwitch({ field, className, ...otherProps }: Props<any>, ref: React
       <OrganizationPicker
         {...field['x-component-props'] as { appID: string, placeholder?: string }}
         {...otherProps}
-        multiple={field['x-internal']?.multiple}
+        multiple
         optionalRange={field['x-internal']?.optionalRange}
         defaultRange={field['x-internal']?.defaultRange}
         rangeList={field['x-internal']?.rangeList}

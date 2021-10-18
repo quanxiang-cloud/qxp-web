@@ -1,4 +1,7 @@
-import { PERMISSION } from '@c/form-builder/constants';
+import {
+  getSchemaPermissionFromSchemaConfig,
+  getDisplayModifierFromSchema,
+} from '@c/form-builder/utils';
 
 import { Format } from './prefix';
 
@@ -10,7 +13,7 @@ export type PrefixType = {
 export interface SerialConfig {
   title: string;
   description?: string;
-  displayModifier?: FormBuilder.DisplayModifier;
+  displayModifier: FormBuilder.DisplayModifier;
   numberPreview?: string;
   prefix?: PrefixType;
   initialPosition: number;
@@ -40,8 +43,8 @@ export function toSchema(value: SerialConfig): ISchema {
     title: value.title,
     description: value.description,
     required: false,
-    readOnly: true,
-    display: true,
+    readOnly: value.displayModifier === 'readonly',
+    display: value.displayModifier !== 'hidden',
     'x-component': 'Serial',
     default: '',
     ['x-component-props']: {
@@ -57,7 +60,7 @@ export function toSchema(value: SerialConfig): ISchema {
       numberPreview: value.numberPreview,
     },
     ['x-internal']: {
-      permission: PERMISSION.READONLY,
+      permission: getSchemaPermissionFromSchemaConfig(value),
     },
   };
 }
@@ -66,7 +69,7 @@ export function toConfig(schema: ISchema): SerialConfig {
   return {
     title: schema.title as string,
     description: schema.description as string,
-    displayModifier: 'readonly',
+    displayModifier: getDisplayModifierFromSchema(schema),
     numberPreview: schema['x-component-props']?.numberPreview as string,
     prefix: schema['x-component-props']?.prefix,
     suffix: schema['x-component-props']?.suffix,

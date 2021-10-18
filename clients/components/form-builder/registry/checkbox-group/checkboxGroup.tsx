@@ -5,19 +5,13 @@ import { CheckboxValueType } from 'antd/lib/checkbox/Group';
 
 import useEnumOptions from '@lib/hooks/use-enum-options';
 import FormDataValueRenderer from '@c/form-data-value-renderer';
-import {
-  usePairListValue,
-  toLabelValuePairList,
-} from '@c/form-builder/utils/label-value-pairs';
 
 function CheckBoxGroup(fieldProps: ISchemaFieldComponentProps): JSX.Element {
   const options = useEnumOptions(fieldProps);
-  const checkboxValue = usePairListValue(fieldProps.value);
   const { optionsLayout } = fieldProps.props['x-component-props'];
 
   function handleCheckBoxChange(value: Array<CheckboxValueType>): void {
-    const values = toLabelValuePairList(value as string[], options);
-    fieldProps.mutators.change(values);
+    fieldProps.mutators.change(value as string[]);
   }
 
   if (!options.length) {
@@ -30,14 +24,11 @@ function CheckBoxGroup(fieldProps: ISchemaFieldComponentProps): JSX.Element {
 
   return (
     <div className="flex items-center">
-      <Checkbox.Group onChange={handleCheckBoxChange} value={checkboxValue}>
+      <Checkbox.Group onChange={handleCheckBoxChange} value={fieldProps.value}>
         <Space direction={optionsLayout}>
-          {
-            options.map((option): JSX.Element => {
-              return (
-                <Checkbox key={option.value} value={option.value}>{option.label}</Checkbox>);
-            })
-          }
+          {options.map((option): JSX.Element => (
+            <Checkbox key={option} value={option}>{option}</Checkbox>
+          ))}
         </Space>
       </Checkbox.Group>
     </div>

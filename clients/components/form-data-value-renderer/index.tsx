@@ -1,13 +1,12 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import moment from 'moment';
 
 const SubTable = React.lazy(() => import('@c/form-builder/registry/sub-table/preview'));
 const AssociatedRecords = React.lazy(
   () => import('@c/form-builder/registry/associated-records/associated-records'),
 );
-const AssociatedDataValueRender = React.lazy(
-  () => import('@c/form-builder/registry/associated-data/associated-data-view'),
-);
+
+import AssociatedDataValueRender from '@c/form-builder/registry/associated-data/associated-data-view';
 import { RoundMethod } from '@c/form-builder/registry/aggregation-records/convertor';
 import logger from '@lib/logger';
 
@@ -26,24 +25,28 @@ function datetimeValueRenderer({ value, schema }: ValueRendererProps): string {
 
 function SubTableValueRenderer({ value, schema, className }: ValueRendererProps): JSX.Element {
   return (
-    <SubTable
-      props={{ readOnly: true, className }}
-      value={value as Record<string, unknown>[]}
-      schema={schema as any}
-    />
+    <Suspense fallback={<div>loading...</div>} >
+      <SubTable
+        props={{ readOnly: true, className }}
+        value={value as Record<string, unknown>[]}
+        schema={schema as any}
+      />
+    </Suspense>
   );
 }
 
 function AssociatedRecordsValueRender({ value, schema, className }: ValueRendererProps): JSX.Element {
   return (
-    <AssociatedRecords
-      props={{ readOnly: true, ['x-component-props']: schema?.['x-component-props'], className }}
-      value={value}
-    />
+    <Suspense fallback={<div>loading...</div>} >
+      <AssociatedRecords
+        props={{ readOnly: true, ['x-component-props']: schema?.['x-component-props'], className }}
+        value={value}
+      />
+    </Suspense>
   );
 }
 
-function labelValueRenderer(value: FormDataValue): string {
+export function labelValueRenderer(value: FormDataValue): string {
   if (Array.isArray(value)) {
     const labels = (value as FormBuilder.Option[]).map(({ label }) => label).join(', ');
     return labels;
@@ -65,38 +68,12 @@ function statisticValueRender({ schema, value }: ValueRendererProps): string {
   return method(parseFloat(value as string)).toFixed(decimalPlaces) + '' || displayFieldNull;
 }
 
-function readableLabelValuePair({ value, schema }: ValueRendererProps): string {
-  if (!value || typeof value !== 'string') {
-    return '';
-  }
-
-  const labelValuePair: string[] = value.split(':');
-
-  // compatible with old version component
-  if (labelValuePair.length === 1) {
-    const enums = (schema.enum || []) as LabelValue[];
-    return enums.find(({ value }: LabelValue) => {
-      return value === labelValuePair[0];
-    })?.label || '';
-  }
-
-  return labelValuePair.slice(0, -1).join('');
-}
-
-function readableLabelValuePairList({ value, schema }: ValueRendererProps): string {
+function stringListValue({ value }: ValueRendererProps): string {
   if (!Array.isArray(value)) {
     return '';
   }
 
-  const enums = (schema.enum || []) as LabelValue[];
-  return (value as string[]).map((pair) => pair.split(':')).map((pair) => {
-    // compatible with old version radio component
-    if (pair.length < 2) {
-      return enums.find(({ value }) => value === pair[0])?.label || pair[0];
-    }
-
-    return pair.slice(0, -1).join('');
-  }).join(', ');
+  return value.join(', ');
 }
 
 export default function FormDataValueRenderer({ value, schema, className }: Props): JSX.Element {
@@ -112,7 +89,9 @@ export default function FormDataValueRenderer({ value, schema, className }: Prop
     return <AssociatedDataValueRender schema={schema} value={value as LabelValue} />;
   }
 
-  return <span className={className}>{getBasicValue(schema, value)}</span>;
+  const content = getBasicValue(schema, value);
+
+  return <span title={content} className={className}>{content}</span>;
 }
 
 export function getBasicValue(schema: ISchema, value: FormDataValue): string {
@@ -120,13 +99,13 @@ export function getBasicValue(schema: ISchema, value: FormDataValue): string {
   case 'input':
   case 'numberpicker':
   case 'textarea':
-    return value as string;
   case 'radiogroup':
   case 'select':
-    return readableLabelValuePair({ schema, value });
+  case 'serial':
+    return value as string;
   case 'checkboxgroup':
   case 'multipleselect':
-    return readableLabelValuePairList({ schema, value });
+    return stringListValue({ schema, value });
   case 'datepicker':
     return datetimeValueRenderer({ schema, value });
   case 'associateddata':
@@ -138,8 +117,6 @@ export function getBasicValue(schema: ISchema, value: FormDataValue): string {
     return labelValueRenderer(value);
   case 'aggregationrecords':
     return statisticValueRender({ schema, value });
-  case 'serial':
-    return value as string;
   default:
     logger.warn('encounter unsupported formDataValue:', value, 'schema:', schema);
     return value?.toString();

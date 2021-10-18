@@ -1,5 +1,9 @@
 import qs from 'qs';
-import { CustomPageInfo } from '@portal/modules/apps-management/pages/app-details/type';
+import { CustomPageInfo, SchemaPageInfo } from '@portal/modules/apps-management/pages/app-details/type';
+import { ESParameter, toEs } from '@c/data-filter/utils';
+import schemaToFields from '@lib/schema-convert';
+
+let alreadyAlertUnauthorizedError = false;
 
 function httpClient<TData>(path: string, body?: unknown, additionalHeaders?: HeadersInit): Promise<TData> {
   const headers = {
@@ -14,11 +18,15 @@ function httpClient<TData>(path: string, body?: unknown, additionalHeaders?: Hea
     headers: headers,
   }).then((response) => {
     if (response.status === 401) {
-      alert('当前会话已失效，请重新登录!');
+      if (!alreadyAlertUnauthorizedError) {
+        alreadyAlertUnauthorizedError = true;
+        alert('当前会话已失效，请重新登录!');
+      }
+
       window.location.reload();
       return Promise.reject(new Error('当前会话已失效，请重新登录!'));
     }
-    if (response.status === 500) {
+    if ([404, 500].includes(response.status)) {
       return Promise.reject(new Error('请求失败!'));
     }
     return response.json();
@@ -49,14 +57,6 @@ export type FormDataRequestCreateParams = {
   entity: any;
 }
 
-export type FormDataRequestUpdateParamsRef = Record<string, {
-  appID: string;
-  tableID: string;
-  updated: Record<string, any>[];
-  new: Record<string, any>[];
-  deleted: string[];
-}>;
-
 export type FormDataRequestUpdateParams = {
   method: 'update';
   conditions?: {
@@ -72,18 +72,191 @@ export type FormDataRequestParams =
   FormDataRequestCreateParams |
   FormDataRequestUpdateParams;
 
-export type FormDataResponse = { entity: any; errorCount: number; };
+export type FormDataListResponse = { entities: Record<string, any>[]; total: number };
 
-export function formDataRequest(
+// new
+
+export type SubTableUpdateData = {
+  updated?: Record<string, any>[];
+  new?: Record<string, any>[];
+  deleted?: string[];
+}
+
+export type FormDataRequestUpdateParamsRef = Record<string, SubTableUpdateData & {
+  type: 'sub_table' | 'foreign_table' | 'serial' | 'aggregation';
+  appID?: string;
+  tableID?: string;
+  sourceFieldId?: string;
+  aggType?: string;
+  fieldName?: string;
+  query?: ESParameter | null;
+}>;
+
+export type FormDataResponse = { entity: Record<string, any>[]; errorCount: number; total: number };
+
+export type FormDataBody = {
+  entity?: Record<string, any>;
+  ref?: FormDataRequestUpdateParamsRef;
+}
+
+export type FormDataListRequestParams = {
+  query?: ESParameter;
+  page?: number;
+  size?: number;
+  sort?: string[];
+}
+
+export function fetchFormDataList(
+  appID: string,
+  pageID: string,
+  data: FormDataListRequestParams,
+): Promise<FormDataListResponse> {
+  return httpClient(`/api/v1/form/${appID}/home/form/${pageID}/search`, {
+    method: 'find',
+    page: 1,
+    size: 10,
+    ...data,
+  });
+}
+
+export function createFormDataRequest(
   appID: string,
   tableID: string,
-  params: FormDataRequestParams,
+  params: FormDataBody,
 ): Promise<FormDataResponse> {
   return httpClient<FormDataResponse>(
-    `/api/v1/form/${appID}/home/form/${tableID}`,
+    `/api/v1/form/${appID}/home/form/${tableID}/create`,
     params,
   );
 }
+
+export function editFormDataRequest(
+  appID: string,
+  tableID: string,
+  dataID: string,
+  params: FormDataBody,
+): Promise<FormDataResponse> {
+  return httpClient<FormDataResponse>(
+    `/api/v1/form/${appID}/home/form/${tableID}/update`,
+    {
+      ...params,
+      query: {
+        terms: { _id: [dataID] },
+      },
+    },
+  );
+}
+
+export function buildQueryRef(schema: ISchema): FormDataRequestUpdateParamsRef {
+  const refFields = schemaToFields(schema, (schemaField) => {
+    return ['SubTable', 'AggregationRecords'].includes(schemaField['x-component'] || '');
+  });
+
+  const ref: FormDataRequestUpdateParamsRef = {};
+  if (refFields.length) {
+    refFields.forEach((field) => {
+      switch (field.componentName) {
+      case 'subtable': {
+        const { subordination, appID, tableID } = field?.['x-component-props'] || {};
+        ref[field.id] = {
+          type: subordination || 'sub_table',
+          appID,
+          tableID,
+        };
+        break;
+      }
+      case 'aggregationrecords': {
+        const {
+          sourceFieldId,
+          appID,
+          tableID,
+          aggType,
+          fieldName,
+          condition,
+        } = field?.['x-component-props'] || {};
+
+        ref[field.id] = {
+          type: 'aggregation',
+          query: condition ? toEs(condition) : null,
+          tableID,
+          appID,
+          sourceFieldId,
+          aggType,
+          fieldName,
+        };
+        break;
+      }
+      }
+    });
+  }
+
+  return ref;
+}
+
+export function findOneFormDataRequest(
+  appID: string,
+  tableID: string,
+  rowID: string,
+  schema: ISchema,
+): Promise<Record<string, any>> {
+  if (!rowID) {
+    return Promise.resolve({});
+  }
+
+  return httpClient<FormDataResponse>(
+    `/api/v1/form/${appID}/home/form/${tableID}/get`,
+    {
+      ref: buildQueryRef(schema),
+      query: {
+        bool: {
+          must: [
+            {
+              term: { _id: rowID },
+            },
+          ],
+        },
+      },
+    },
+  ).then(({ entity }) => {
+    if (!entity) {
+      // 只查 schema 的时候不要 reject
+      return {};
+    }
+
+    return entity;
+  });
+}
+
+export function delFormDataRequest(
+  appID: string,
+  tableID: string,
+  rowIDs: string[],
+): Promise<Record<string, any>> {
+  return httpClient<FormDataResponse>(
+    `/api/v1/form/${appID}/home/form/${tableID}/delete`,
+    {
+      query: {
+        terms: { _id: rowIDs },
+      },
+    },
+  );
+}
+
+export async function fetchOneFormDataWithSchema(
+  appID: string,
+  tableID: string,
+  rowID: string,
+): Promise<{ schemaRes?: GetTableSchemaResponse, record?: Record<string, any> }> {
+  const schemaRes = await getTableSchema(appID, tableID);
+  if (!schemaRes?.schema) {
+    return {};
+  }
+
+  const record = await findOneFormDataRequest(appID, tableID, rowID, schemaRes.schema);
+  return { schemaRes, record };
+}
+
+// new end
 
 type GetTableSchemaResponse = null | { config: any; schema: ISchema; };
 
@@ -95,32 +268,12 @@ export function getTableSchema(appID: string, tableID: string): Promise<GetTable
   return httpClient<GetTableSchemaResponse>(path, { tableID });
 }
 
-export function getTableInfo(appID: string, menuId: string): Promise<CustomPageInfo> {
+export function getCustomPageInfo(appID: string, menuId: string): Promise<CustomPageInfo> {
   return httpClient(`/api/v1/structor/${appID}/m/page/getByMenu`, { menuId });
 }
 
-export function findOneRecord(appID: string, tableID: string, id: string): Promise<Record<string, any>> {
-  if (!id) {
-    return Promise.resolve({});
-  }
-
-  return formDataRequest(
-    appID,
-    tableID,
-    {
-      method: 'findOne',
-      conditions: {
-        condition: [{ key: '_id', op: 'eq', value: [id] }],
-      },
-    },
-  ).then(({ entity }) => {
-    if (!entity) {
-      // 只查 schema 的时候不要 reject
-      return {};
-    }
-
-    return entity;
-  });
+export function getSchemaPageInfo(appID: string, menuId: string): Promise<SchemaPageInfo> {
+  return httpClient(`/api/v1/structor/${appID}/m/table/getInfo`, { menuId });
 }
 
 export function saveTableSchema(
@@ -142,6 +295,7 @@ export function httpClientGraphQL<TData>(
     'Content-Type': 'application/json',
     ...additionalHeaders,
   };
+
   const _path = params ? `${path}?${qs.stringify(params)}` : path;
 
   return fetch(_path, {

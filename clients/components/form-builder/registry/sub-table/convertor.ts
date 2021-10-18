@@ -1,8 +1,9 @@
-import { getSchemaPermissionFromSchemaConfig } from '@c/form-builder/utils';
+import { getDisplayModifierFromSchema, getSchemaPermissionFromSchemaConfig } from '@c/form-builder/utils';
 
 export type SubTableConfig = {
   title: string;
   description: string;
+  rowLimit: string;
   subordination: string;
   subTableSchema: ISchema;
   displayModifier: FormBuilder.DisplayModifier;
@@ -18,7 +19,8 @@ export type SubTableConfig = {
 
 export const defaultConfig: SubTableConfig = {
   title: '子表单',
-  description: '子表单的描述内容',
+  rowLimit: 'multiple',
+  description: '',
   subordination: 'sub_table',
   displayModifier: 'normal',
   subTableSchema: {
@@ -43,6 +45,7 @@ export function toSchema(value: SubTableConfig): ISchema {
     title: value.title,
     description: value.description,
     required: value.required,
+    readOnly: value.displayModifier === 'readonly',
     display: value.displayModifier !== 'hidden',
     items: isFromLinkedTable ? undefined : value.subTableSchema,
     'x-component': 'SubTable',
@@ -52,6 +55,7 @@ export function toSchema(value: SubTableConfig): ISchema {
       appID: value.linkedTable?.appID,
       tableID: isFromLinkedTable ? value.linkedTable?.tableID : value.tableID,
       tableName: value.linkedTable?.tableName,
+      rowLimit: value.rowLimit,
     },
     ['x-internal']: {
       permission: getSchemaPermissionFromSchemaConfig(value),
@@ -63,12 +67,12 @@ export function toSchema(value: SubTableConfig): ISchema {
 export function toConfig(schema: ISchema): SubTableConfig {
   const isFromLinkedTable = schema?.['x-component-props']?.subordination === 'foreign_table';
   const tableID = schema['x-component-props']?.tableID;
-
   return {
     title: schema.title as string,
     description: schema.description as string,
+    rowLimit: schema['x-component-props']?.rowLimit,
     subordination: schema['x-component-props']?.subordination,
-    displayModifier: schema.display ? 'normal' : 'hidden',
+    displayModifier: getDisplayModifierFromSchema(schema),
     subTableSchema: schema.items as ISchema,
     required: !!schema.required,
     linkedTable: {

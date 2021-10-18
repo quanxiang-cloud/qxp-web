@@ -3,22 +3,25 @@ import { SchemaForm, setValidationLanguage, IForm, createFormActions } from '@fo
 import { ConfigProvider } from 'antd';
 import zhCN from 'antd/lib/locale/zh_CN';
 import { parse, resolve, findVariables } from 'qxp-formula';
+import { omit } from 'ramda';
 
 import logger from '@lib/logger';
 import { schemaToMap } from '@lib/schema-convert';
-import { schemaPermissionTransformer } from './utils';
+import treeUtil from '@lib/tree';
 
 import registry from './registry';
 import visibleHiddenLinkageEffect from './linkages/visible-hidden';
 import defaultValueLinkageEffect from './linkages/default-value';
 import formValueToFilter from './linkages/form-value-to-filter';
 import calculationFormulaEffect from './linkages/calculation-formula';
-import { wrapSchemaByMegaLayout } from './utils';
+import { wrapSchemaByMegaLayout, schemaPermissionTransformer } from './utils';
+import { INVALID_READONLY_LEGACY, INVISIBLE_NO_WRITE, PERMISSION, READONLY_NO_WRITE } from './constants';
 
 setValidationLanguage('zh');
 
 type Props = {
   schema: ISchema;
+  value?: any;
   defaultValue?: any;
   className?: string;
   onSubmit?: (value: any) => void;
@@ -26,7 +29,7 @@ type Props = {
   children?: React.ReactElement | ((form: IForm) => React.ReactElement);
   additionalComponents?: Record<string, React.JSXElementConstructor<any>>;
   usePermission?: boolean;
-  hiddenInReadOnly?: boolean;
+  readOnly?: boolean;
 }
 
 function FormRenderer({
@@ -35,14 +38,23 @@ function FormRenderer({
   className,
   onSubmit,
   onFormValueChange,
+  value,
   children,
   additionalComponents = {},
   usePermission,
-  hiddenInReadOnly,
+  readOnly,
 }: Props): JSX.Element {
   const [errorMessage, setErrorMessage] = useState('');
   const actions = createFormActions();
-  const schema = usePermission ? schemaPermissionTransformer(inputSchema, hiddenInReadOnly) : inputSchema;
+  const schema = usePermission ? schemaPermissionTransformer(inputSchema, readOnly) : inputSchema;
+  const fieldsToOmit = treeUtil.reduce((fields: string[], schema: ISchema, fieldId?: string | number) => {
+    if ([INVISIBLE_NO_WRITE, READONLY_NO_WRITE, INVALID_READONLY_LEGACY].includes(
+        schema?.['x-internal']?.permission as PERMISSION,
+    )) {
+      fields.push(`${fieldId}`);
+    }
+    return fields;
+  }, 'properties', [], schema);
 
   function handleSubmit(values: any): void {
     const validations = schema['x-internal']?.validations || [];
@@ -77,12 +89,12 @@ function FormRenderer({
     });
 
     if (valid) {
-      onSubmit?.(values);
+      onSubmit?.(omit(fieldsToOmit, values));
     }
   }
 
   function handleOnChange(values: any): void {
-    onFormValueChange?.(values);
+    onFormValueChange?.(omit(fieldsToOmit, values));
     setErrorMessage('');
   }
 
@@ -93,6 +105,7 @@ function FormRenderer({
           <p className="text-red-600">{errorMessage}</p>
         )}
         <SchemaForm
+          value={value}
           previewPlaceholder='-'
           actions={actions}
           onSubmit={handleSubmit}

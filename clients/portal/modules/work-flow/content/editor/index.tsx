@@ -1,18 +1,19 @@
-import React, { useState, DragEvent } from 'react';
+import React, { useState, DragEvent, useContext } from 'react';
 import cs from 'classnames';
 import { Elements, XYPosition, Node } from 'react-flow-renderer';
 
 import useObservable from '@lib/hooks/use-observable';
 import { uuid } from '@lib/utils';
 import FlowRender from '@c/flow-render';
+import FlowContext from '@flow/flow-context';
 
 import Components from './components';
-import store, { getNodeElementById, updateStore } from './store';
+import store, { getNodeElementById, updateStore, getFormDataElement } from './store';
 import type { StoreValue, NodeType, Data } from './type';
 import DrawerForm from './forms';
 import {
   nodeBuilder, buildBranchNodes, edgeBuilder, getCenterPosition, removeEdge,
-  getBranchTargetElementID, getBranchID,
+  getBranchTargetElementID, getBranchID, prepareNodeData,
 } from './utils';
 
 import 'react-flow-renderer/dist/style.css';
@@ -29,6 +30,7 @@ interface NodeInfo {
 }
 
 export default function Editor(): JSX.Element {
+  const { appID } = useContext(FlowContext);
   const { currentConnection, elements, nodeIdForDrawerForm } = useObservable<StoreValue>(store);
   const [fitViewFinished, setFitViewFinished] = useState(false);
 
@@ -36,7 +38,9 @@ export default function Editor(): JSX.Element {
     updateStore((s) => ({ ...s, elements: eles }));
   }
 
-  function addNewNode({ nodeType, source, target, position, width, height, nodeName }: NodeInfo): void {
+  async function addNewNode({
+    nodeType, source, target, position, width, height, nodeName,
+  }: NodeInfo): Promise<void> {
     const id = nodeType + uuid();
     const newElements: Elements = [...elements];
     const sourceElement = newElements.find(({ id }) => id === source) as Node<Data>;
@@ -54,7 +58,7 @@ export default function Editor(): JSX.Element {
       const sourceElement = getNodeElementById(source);
       const targetElement = getNodeElementById(target);
       const branchTargetElementID = getBranchTargetElementID(sourceElement, targetElement);
-      newElements.push(nodeBuilder(id, nodeType, nodeName, {
+      const newNode = nodeBuilder(id, nodeType, nodeName, {
         width,
         height,
         parentID: [source],
@@ -62,7 +66,12 @@ export default function Editor(): JSX.Element {
         branchID: getBranchID(sourceElement, targetElement),
         position: getCenterPosition(position, width, height),
         branchTargetElementID,
-      }));
+      });
+      await prepareNodeData(newNode, {
+        tableID: getFormDataElement()?.data?.businessData?.form?.value,
+        appID,
+      });
+      newElements.push(newNode);
       newElements.push(...edgeBuilder(source, id));
       newElements.push(...edgeBuilder(id, target));
     }
@@ -81,7 +90,7 @@ export default function Editor(): JSX.Element {
     setElements(removeEdge(newElements, source, target));
   }
 
-  function onDrop(e: DragEvent): void {
+  async function onDrop(e: DragEvent): Promise<void> {
     e.preventDefault();
     if (!e?.dataTransfer) {
       return;
@@ -93,7 +102,7 @@ export default function Editor(): JSX.Element {
     if (!source || !target || !position) {
       return;
     }
-    addNewNode({ nodeType, width, height, nodeName, source, target, position });
+    await addNewNode({ nodeType, width, height, nodeName, source, target, position });
     updateStore((s) => ({ ...s, currentConnection: {} }));
   }
 

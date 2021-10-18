@@ -1,6 +1,8 @@
 import { QueryFunctionContext } from 'react-query';
+
 import httpClient from '@lib/http-client';
-import { schemaToOptions, SchemaConvertOptions } from '@lib/schema-convert';
+import { schemaToOptions, SchemaToOptionsOptions } from '@lib/schema-convert';
+import logger from '@lib/logger';
 
 import { Operation } from '../type';
 import { SYSTEM_OPERATOR_PERMISSION, CUSTOM_OPERATOR_PERMISSION } from '../utils/constants';
@@ -13,12 +15,16 @@ interface SchemaResponse {
   }
 }
 
-export type Option = {
+export type FormFieldOption = {
   label: string;
   value: string;
   isSystem: boolean;
   isLayout: boolean;
   path: string;
+  read: boolean;
+  write: boolean;
+  invisible: boolean;
+  editable: boolean;
 };
 
 export async function getFormFieldSchema({ queryKey }: QueryFunctionContext): Promise<{
@@ -30,12 +36,12 @@ export async function getFormFieldSchema({ queryKey }: QueryFunctionContext): Pr
 }
 
 export async function getFormFieldOptions({ queryKey }: QueryFunctionContext): Promise<{
-  options: Option[],
+  options: FormFieldOption[],
   schema: ISchema,
 }> {
   const schema = await getFormFieldSchema({ queryKey });
   return {
-    options: schemaToOptions(schema, undefined, queryKey[3] as SchemaConvertOptions),
+    options: schemaToOptions(schema, queryKey[3] as SchemaToOptionsOptions),
     schema,
   };
 }
@@ -55,5 +61,8 @@ export function getOperationList({ queryKey }: QueryFunctionContext): Promise<{
 }
 
 export function getFlowVariables(flowID: string): Promise<Array<ProcessVariable>> {
-  return httpClient(`/api/v1/flow/getVariableList?id=${flowID}`);
+  return httpClient<Array<ProcessVariable>>(`/api/v1/flow/getVariableList?id=${flowID}`).catch((e) => {
+    logger.error(e);
+    return [];
+  });
 }

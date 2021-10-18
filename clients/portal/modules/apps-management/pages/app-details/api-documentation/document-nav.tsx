@@ -1,43 +1,67 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { observer } from 'mobx-react';
+import { Collapse } from 'antd';
 import cs from 'classnames';
 
-import Icon from '@c/icon';
+import Search from '@c/search';
 
 import store from './store';
 
 function DocumentNav(): JSX.Element {
-  const [openApi, setOpenApi] = useState(true);
+  const { Panel } = Collapse;
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    setLoading(false);
+    setTimeout(() => {
+      setLoading(true);
+    }, 100);
+  }, [store.defaultActiveKey]);
 
   return (
-    <div className='api-doc-details-nav pt-20'>
-      <div
-        className='h-40 flex items-center px-18 hover:bg-gray-100'
-        onClick={() => setOpenApi(!openApi)}
-      >
-        <Icon
-          className='mr-8 text-current flex-shrink-0'
-          name={openApi ? 'arrow_drop_up' : 'arrow_drop_down' }
-          size={24}
-        />
-        数据模型API
-      </div>
-      <ul className={openApi ? 'show' : 'hidden'}>
-        {(store.dataModels).map((item: DataModel) => (
-          <li
-            key={item.id}
-            className={cs('nav-item', {
-              'bg-gray-100 text-blue-600': item.tableID === store.tableID,
-            })}
-            onClick={() => {
-              store.currentDataModel = item;
-              store.tableID = item.tableID;
-            }}
-          >
-            {item.title}
-          </li>
-        ))}
-      </ul>
+    <div className='api-doc-details-nav rounded-tl-12 flex flex-col'>
+      <div className='h-62 text-gray-400 text-14 font-semibold py-20 pl-16'>文档目录</div>
+      <Search
+        className="mx-8"
+        placeholder="输入目录名称..."
+        onChange={store.changeKeyword}
+      />
+      {loading && (
+        <Collapse defaultActiveKey={store.defaultActiveKey} ghost className='model-menu flex-1'>
+          <Panel header="页面表单API" key="pageForm">
+            {(store.dataModels).filter((dataModel) => dataModel.source === 1).map((item: DataModel) => (
+              <div
+                key={item.id}
+                className={cs('nav-item pl-50', {
+                  'bg-gray-100 text-blue-600': item.tableID === store.tableID,
+                })}
+                onClick={() => {
+                  store.currentDataModel = item;
+                  store.tableID = item.tableID;
+                }}
+              >
+                {item.title}
+              </div>
+            ))}
+          </Panel>
+          <Panel header="数据模型API" key="dataModel">
+            {(store.dataModels).filter((dataModel) => dataModel.source === 2).map((item: DataModel) => (
+              <li
+                key={item.id}
+                className={cs('nav-item pl-50', {
+                  'bg-gray-100 text-blue-600': item.tableID === store.tableID,
+                })}
+                onClick={() => {
+                  store.currentDataModel = item;
+                  store.tableID = item.tableID;
+                }}
+              >
+                {item.title}
+              </li>
+            ))}
+          </Panel>
+        </Collapse>
+      )}
     </div>
   );
 }

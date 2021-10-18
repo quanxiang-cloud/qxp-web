@@ -3,10 +3,10 @@ import { TreeData } from '@atlaskit/tree';
 
 import toast from '@lib/toast';
 import { buildAppPagesTreeData } from '@lib/utils';
-import { getTableInfo } from '@lib/http-client';
+import { getCustomPageInfo, delFormDataRequest } from '@lib/http-client';
 import { CustomPageInfo, MenuType } from '@portal/modules/apps-management/pages/app-details/type';
 
-import { fetchPageList, fetchFormScheme, formDataCurd, getOperate } from './api';
+import { fetchPageList, getOperate } from './api';
 
 class UserAppDetailsStore {
   destroySetCurPage: IReactionDisposer;
@@ -16,7 +16,6 @@ class UserAppDetailsStore {
   @observable curPage: PageInfo = { id: '' };
   @observable fetchSchemeLoading = true;
   @observable pageName = '';
-  @observable formScheme: ISchema | null = null;
   @observable authority = 0;
   @observable pagesTreeData: TreeData = {
     rootId: 'ROOT',
@@ -39,18 +38,21 @@ class UserAppDetailsStore {
     this.appID = appID;
     this.pageListLoading = true;
     fetchPageList(appID).then((res: any) => {
-      this.pagesTreeData = buildAppPagesTreeData(res.menu);
+      const treeMenu = res.menu.filter(({ isHide }: PageInfo) => {
+        return !isHide;
+      });
+      this.pagesTreeData = buildAppPagesTreeData(treeMenu);
       this.pageListLoading = false;
     });
   }
 
   @action
-  setPageID = (pageID: string) => {
+  setPageID = (pageID: string): void => {
     this.pageID = pageID;
   }
 
   @action
-  setCurPage = (pageInfo: PageInfo) => {
+  setCurPage = (pageInfo: PageInfo): void => {
     if (!pageInfo) {
       return;
     }
@@ -58,19 +60,14 @@ class UserAppDetailsStore {
     this.curPage = pageInfo;
 
     if (pageInfo.menuType === MenuType.customPage) {
-      getTableInfo(pageInfo.appID as string, pageInfo.id).then((pageRes: CustomPageInfo) => {
+      getCustomPageInfo(pageInfo.appID as string, pageInfo.id).then((pageRes: CustomPageInfo) => {
         this.customPageInfo = pageRes;
       });
     } else {
-      this.formScheme = null;
       this.fetchSchemeLoading = true;
-      Promise.all([
-        getOperate<{ authority: number | null }>(this.appID, this.pageID),
-        fetchFormScheme(this.appID, pageInfo.id),
-      ]).then(([authorityRef, schemeRef]) => {
+      getOperate<{ authority: number | null }>(this.appID, this.pageID).then((authorityRef) => {
         this.authority = authorityRef?.authority || 0;
         this.pageName = pageInfo.name || '';
-        this.formScheme = schemeRef.schema || null;
         this.fetchSchemeLoading = false;
       }).catch(() => {
         this.fetchSchemeLoading = false;
@@ -80,10 +77,7 @@ class UserAppDetailsStore {
 
   @action
   delFormData = (ids: string[]): Promise<void> => {
-    return formDataCurd(this.appID, this.pageID, {
-      method: 'delete',
-      conditions: { condition: [{ key: '_id', op: ids.length > 1 ? 'in' : 'eq', value: ids }] },
-    }).then((data: any) => {
+    return delFormDataRequest(this.appID, this.pageID, ids).then((data: any) => {
       if (data.errorCount && data.errorCount === ids.length) {
         toast.error('删除失败！没有权限');
         return;
@@ -100,7 +94,6 @@ class UserAppDetailsStore {
 
   @action
   clear = (): void => {
-    this.formScheme = null;
     this.pageListLoading = true;
     this.pagesTreeData = {
       rootId: 'ROOT',

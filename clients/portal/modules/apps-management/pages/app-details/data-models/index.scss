@@ -9,3 +9,57 @@
     vertical-align: 0.125em !important;
   }
 }
+
+.add-data-model {
+  display: flex;
+  align-items: center;
+  padding: 16px;
+  cursor: pointer;
+
+  &:hover {
+    color: var(--blue-600);
+
+    svg {
+      @apply text-current;
+    }
+  }
+}
+
+.data-model-list {
+  max-width: 220px;
+  min-width: 220px;
+}
+
+.model-info-header {
+  max-height: 52px;
+  min-height: 52px;
+  color:#FFFFFF;
+  border-radius: 8px;
+  justify-content: center;
+  background: url(/dist/images/authority-bg.svg);
+  background-size: cover;
+  box-shadow: 0px 8px 24px 8px rgb(99 102 241 / 25%);
+
+  .desc {
+    @apply flex flex-col ml-4 truncate;
+  }
+}
+
+.model-field-search {
+  width: 253px;
+}
+
+.foreign-key-col {
+  @apply w-32 h-24 bg-gray-100 rounded-tl-4 rounded-br-4 px-8 py-4;
+}
+
+.data-model-count {
+  max-height: 44px;
+  min-height: 44px;
+  
+  @apply px-16 py-12 border-t-1 text-12;
+}
+
+.model-field-table .qxp-table-wrapper {
+  @apply h-full;
+}

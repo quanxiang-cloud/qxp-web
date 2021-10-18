@@ -27,6 +27,7 @@ import CheckBoxGroup from '@c/form-builder/registry/checkbox-group/checkboxGroup
 import DatePicker from '@c/form-builder/registry/date-picker/date-picker';
 import Select from '@c/form-builder/registry/select/custom-select';
 import MultipleSelect from '@c/form-builder/registry/multiple-select/multiple-select';
+import Serial from '@c/form-builder/registry/serial-number/serial';
 
 import { getDefaultValue, schemaRulesTransform } from './utils';
 import SubTableRow from './row';
@@ -63,6 +64,7 @@ const components = {
   imageupload: ImageUpload,
   cascadeselector: CascadeSelector,
   associateddata: AssociatedData,
+  serial: Serial,
 };
 
 interface SubTableState {
@@ -80,15 +82,18 @@ function SubTable({
   const [{ componentColumns, rowPlaceHolder }, setSubTableState] = useState<SubTableState>({
     componentColumns: [], rowPlaceHolder: {},
   });
+
   let schema = definedSchema?.items as ISchema | undefined;
-  const { subordination, columns, appID, tableID } = definedSchema?.['x-component-props'] || {};
+  const { subordination, columns, appID, tableID, rowLimit } = definedSchema?.['x-component-props'] || {};
   const isFromForeign = subordination === 'foreign_table';
   const { isInCanvas } = useContext(CanvasContext);
   const isPortal = window.SIDE === 'portal';
   const portalReadOnlyClassName = cs({ 'pointer-events-none': isPortal && isInCanvas });
-  const { data } = useQuery('GET_SUB_TABLE_CONFIG_SCHEMA', () => getTableSchema(appID, tableID), {
-    enabled: !!(isFromForeign && tableID && appID),
-  });
+  const { data } = useQuery(
+    ['GET_SUB_TABLE_CONFIG_SCHEMA', appID, tableID],
+    () => getTableSchema(appID, tableID),
+    { enabled: !!(isFromForeign && tableID && appID) },
+  );
   const isInitialValueEmpty = value?.every((v: Record<string, unknown>) => isEmpty(v));
   schema = isFromForeign ? data?.schema : schema;
 
@@ -96,7 +101,8 @@ function SubTable({
     if (!schema) {
       return;
     }
-    const rowPlaceHolder = {};
+    window[`schema-${definedSchema?.key}`] = schema;
+    const rowPlaceHolder = { };
     const componentColumns: Column[] = schemaToFields(schema).reduce((acc: Column[], field) => {
       const isHidden = !field.display;
       if ((isFromForeign && !columns?.includes(field.id)) || field.id === '_id' || isHidden) {
@@ -110,6 +116,9 @@ function SubTable({
       return acc;
     }, []);
     setSubTableState({ componentColumns, rowPlaceHolder });
+    return () => {
+      delete window[`schema-${definedSchema?.key}`];
+    };
   }, [schema, columns]);
 
   useEffect(() => {
@@ -196,14 +205,16 @@ function SubTable({
               })}
             </div>
             <div className="border-t-1 border-gray-300 flex items-center">
-              <Icon
-                name="add"
-                size={24}
-                className={
-                  cs('m-5 font-bold cursor-pointer', portalReadOnlyClassName)
-                }
-                onClick={() => onAddRow(mutators)}
-              />
+              {rowLimit === 'multiple' && (
+                <Icon
+                  name="add"
+                  size={24}
+                  className={
+                    cs('m-5 font-bold cursor-pointer', portalReadOnlyClassName)
+                  }
+                  onClick={() => onAddRow(mutators)}
+                />
+              )}
             </div>
           </div>
         );

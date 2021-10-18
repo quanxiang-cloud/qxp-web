@@ -1,4 +1,4 @@
-import { getSchemaPermissionFromSchemaConfig } from '@c/form-builder/utils';
+import { getDisplayModifierFromSchema, getSchemaPermissionFromSchemaConfig } from '@c/form-builder/utils';
 
 export interface AssociatedDataConfig {
   title: string;
@@ -10,6 +10,7 @@ export interface AssociatedDataConfig {
   required: boolean;
   placeholder: string;
   filterConfig?: FilterConfig;
+  associativeConfig?: Record<string, Array<FormBuilder.DataAssignment>>;
 }
 
 export const defaultConfig: AssociatedDataConfig = {
@@ -21,6 +22,7 @@ export const defaultConfig: AssociatedDataConfig = {
   appID: '',
   fieldName: '',
   required: false,
+  associativeConfig: undefined,
 };
 
 export function toSchema(config: AssociatedDataConfig): ISchema {
@@ -38,6 +40,7 @@ export function toSchema(config: AssociatedDataConfig): ISchema {
       associationTableID: config?.associationTableID,
       placeholder: config.placeholder,
       filterConfig: config.filterConfig || null,
+      associativeConfig: config.associativeConfig,
     },
     ['x-internal']: {
       permission: getSchemaPermissionFromSchemaConfig(config),
@@ -46,22 +49,16 @@ export function toSchema(config: AssociatedDataConfig): ISchema {
 }
 
 export function toConfig(schema: ISchema): AssociatedDataConfig {
-  let displayModifier: FormBuilder.DisplayModifier = 'normal';
-  if (schema.readOnly) {
-    displayModifier = 'readonly';
-  } else if (!schema.display) {
-    displayModifier = 'hidden';
-  }
-
   return {
     title: schema.title as string,
     description: schema.description as string,
-    displayModifier: displayModifier,
+    displayModifier: getDisplayModifierFromSchema(schema),
     associationTableID: schema['x-component-props']?.associationTableID,
     fieldName: schema['x-component-props']?.fieldName,
     appID: schema['x-component-props']?.appID,
     placeholder: schema['x-component-props']?.placeholder || '选择关联数据',
     required: !!schema.required,
     filterConfig: schema['x-component-props']?.filterConfig || null,
+    associativeConfig: schema['x-component-props']?.associativeConfig,
   };
 }

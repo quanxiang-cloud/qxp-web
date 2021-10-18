@@ -1,17 +1,66 @@
-import React, { JSXElementConstructor, useState } from 'react';
+import React from 'react';
 import { useMutation } from 'react-query';
-import {
-  Form, FormItem, createFormActions, LifeCycleTypes, IFieldState,
-  IFormEffectSelector, IFormActions,
-} from '@formily/antd';
-import { skip } from 'rxjs/operators';
-import { Select, Radio, Input, DatePicker } from '@formily/antd-components';
 
+import { createFormActions, IFieldState, SchemaForm, FormEffectHooks, useForm } from '@formily/antd';
+import { Select, Input, NumberPicker, DatePicker, Radio } from '@formily/antd-components';
 import Modal from '@c/modal';
 import toast from '@lib/toast';
 import { saveFlowVariable } from '@flow/api';
 
 import { FLOW_VARIABLE_FIELD_TYPES } from '../editor/utils/constants';
+
+const FIELD_FORM_SCHEMA = {
+  type: 'object',
+  properties: {
+    Fields: {
+      type: 'object',
+      'x-component': 'mega-layout',
+      properties: {
+        name: {
+          type: 'string',
+          title: '变量名称',
+          required: true,
+          maxLength: 20,
+          'x-rules': [
+            {
+              required: true,
+              message: '请输入名称',
+            },
+            {
+              message: '不能以空白字符开头',
+              pattern: /^\S/,
+            },
+          ],
+          'x-component': 'Input',
+          'x-index': 0,
+          'x-mega-props': {
+            labelAlign: 'top',
+          },
+        },
+        fieldType: {
+          type: 'string',
+          title: '变量类型',
+          required: true,
+          enum: FLOW_VARIABLE_FIELD_TYPES,
+          'x-component': 'Select',
+          'x-index': 1,
+          'x-mega-props': {
+            labelAlign: 'top',
+          },
+        },
+        defaultValue: {
+          type: 'string',
+          title: '默认值',
+          'x-component': 'Input',
+          'x-index': 2,
+          'x-mega-props': {
+            labelAlign: 'top',
+          },
+        },
+      },
+    },
+  },
+};
 
 interface Props {
   variable: ProcessVariable;
@@ -20,13 +69,10 @@ interface Props {
 }
 
 const actions = createFormActions();
+const { onFieldValueChange$ } = FormEffectHooks;
 
 export default function EditVariableModal({ variable, closeModal, onAdded }: Props): JSX.Element {
-  const [renderComponent, setRenderComponent] = useState<JSXElementConstructor<any>>(() => Input);
-  const [defaultDataSource, setDefaultDataSource] = useState<any>();
-
   const titleText = `${variable.id ? '修改' : '添加'}`;
-
   const staffMutation = useMutation(
     (values: Omit<ProcessVariable, 'desc' | 'code'>) => saveFlowVariable(values),
     {
@@ -39,49 +85,47 @@ export default function EditVariableModal({ variable, closeModal, onAdded }: Pro
       },
     });
 
-  function handleSubmit(): void {
-    actions.getFormState((state) => {
-      const params: Omit<ProcessVariable, 'desc' | 'code'> = {
-        flowId: variable.flowId,
-        id: variable.id,
-        name: state.values.name,
-        fieldType: state.values.fieldType,
-        defaultValue: state.values.defaultValue,
-        type: 'CUSTOM',
-      };
-      staffMutation.mutate(params);
-    });
-  }
+  const form = useForm({
+    actions,
+    initialValues: variable,
+    onSubmit: (formData) => {
+      staffMutation.mutate({ flowId: variable.flowId, id: variable?.id || '', type: 'CUSTOM', ...formData });
+    },
+    effects: ($) => {
+      const { setFieldState } = actions;
 
-  function effects($: IFormEffectSelector, { setFieldState }: IFormActions): void {
-    $(LifeCycleTypes.ON_FIELD_VALUE_CHANGE, 'fieldType').pipe(skip(1))
-      .subscribe((fieldTypeState: IFieldState) => {
-        setFieldState('defaultValue', (defaultValueState: IFieldState) => {
-          const type = fieldTypeState?.value?.toLowerCase();
-          if (!type) {
-            return;
-          }
-          const componentMap: Record<string, JSXElementConstructor<any>> = {
-            date: DatePicker,
-            boolean: Radio.Group,
-          };
-          if (componentMap[type]) {
-            setRenderComponent(() => componentMap[type]);
-            setDefaultDataSource([
+      onFieldValueChange$('fieldType').subscribe((fieldTypeState: IFieldState) => {
+        const type = fieldTypeState.value;
+        if (!type) return;
+        const componentMap: Record<string, string> = {
+          datetime: 'DatePicker',
+          boolean: 'RadioGroup',
+          number: 'NumberPicker',
+          string: 'Input',
+        };
+        setFieldState('defaultValue', (state) => {
+          state.props['x-component'] = componentMap[type];
+          state.props.enum = undefined;
+          if ( type === 'boolean') {
+            state.props.enum = [
               { value: 'False', label: 'false' },
-              { value: 'True', label: 'true' }]);
-          } else {
-            setRenderComponent(() =>Input);
-            setDefaultDataSource(null);
-            defaultValueState.props.type = type;
+              { value: 'True', label: 'true' },
+            ];
           }
-          if (type === variable.fieldType.toLowerCase()) {
-            defaultValueState.value = variable.defaultValue;
+          if (type === variable.fieldType) {
+            state.value = variable.defaultValue;
             return;
           }
-          defaultValueState.value = '';
+          state.value = '';
         });
       });
+    },
+  });
+
+  function handleSubmit(): void {
+    form.submit().then(() => {
+      closeModal();
+    }).catch(() => null);
   }
 
   return (
@@ -105,30 +149,14 @@ export default function EditVariableModal({ variable, closeModal, onAdded }: Pro
         },
       ]}
     >
-      <Form
-        labelCol={{ span: 4 }}
-        wrapperCol={{ span: 20 }}
+      <SchemaForm
         className="p-20"
+        components={{ Input, Select, DatePicker, RadioGroup: Radio.Group, NumberPicker }}
         actions={actions}
-        initialValues={variable}
         onSubmit={handleSubmit}
-        effects={effects}
-      >
-        <FormItem label="变量名称" name="name" component={Input} rules={[{ required: true, message: '请输入流程变量名称!' }]}/>
-        <FormItem
-          name="fieldType"
-          title="变量类型"
-          component={Select}
-          rules={[{ required: true, message: '请输入流程变量名称!' }]}
-          dataSource={FLOW_VARIABLE_FIELD_TYPES}
-        />
-        <FormItem
-          label="默认值"
-          name="defaultValue"
-          component={renderComponent}
-          dataSource={defaultDataSource}
-        />
-      </Form>
+        schema={FIELD_FORM_SCHEMA}
+        form={form as any}
+      />
     </Modal>
   );
 }

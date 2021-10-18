@@ -3,6 +3,7 @@ import { FormButtonGroup, setValidationLanguage } from '@formily/antd';
 import { toJS } from 'mobx';
 import { useQuery } from 'react-query';
 import { observer } from 'mobx-react';
+import { isEmpty } from 'lodash';
 
 import Breadcrumb from '@c/breadcrumb';
 import Icon from '@c/icon';
@@ -10,11 +11,10 @@ import Button from '@c/button';
 import Loading from '@c/loading';
 import toast from '@lib/toast';
 import { FormRenderer } from '@c/form-builder';
-import { schemaToMap } from '@lib/schema-convert';
-import { formDataRequest } from '@lib/http-client';
+import { createFormDataRequest, editFormDataRequest } from '@lib/http-client';
 
-import { getRequestDiffFormData } from '../utils';
 import { getSchemaAndRecord } from '../api';
+import { formDataDiff, buildFormDataReqParams } from '@home/utils';
 
 setValidationLanguage('zh');
 
@@ -48,26 +48,35 @@ function CreateDataForm({ appID, pageID, rowID, onCancel, title }: Props): JSX.E
     return <div>some error</div>;
   }
 
-  const handleSubmit = (currentValue: Record<string, unknown>): void => {
-    const schemaMap = schemaToMap(schema);
-    const defaultValue = defaultValues ? toJS(defaultValues) : undefined;
-    const reqData = getRequestDiffFormData({ currentValue, schemaMap, defaultValue, appID, pageID });
-    if (!reqData) {
-      return;
-    }
-    if (typeof reqData === 'string') {
-      return toast.error(reqData);
-    }
-    setLoading(true);
-    formDataRequest(appID, pageID, reqData).then((data) => {
-      if (data?.errorCount) {
-        return toast.error(`提交成功, 失败记录数: ${data?.errorCount}`);
+  const handleSubmit = async (currentValue: Record<string, unknown>): Promise<void> => {
+    try {
+      if (rowID && defaultValues) {
+        const newValue = formDataDiff(currentValue, defaultValues, schema);
+        if (isEmpty(newValue)) {
+          toast.error('内容未更改');
+          return;
+        }
+
+        await editFormDataRequest(
+          appID,
+          pageID,
+          rowID,
+          buildFormDataReqParams(schema, 'updated', newValue),
+        );
+      } else {
+        await createFormDataRequest(
+          appID,
+          pageID,
+          buildFormDataReqParams(schema, 'create', currentValue),
+        );
       }
-      toast.success('提交成功');
-    }).finally(() => {
-      setLoading(false);
+      toast.success('保存成功');
       onCancel();
-    });
+      setLoading(false);
+    } catch (err) {
+      toast.error(err);
+      setLoading(false);
+    }
   };
 
   return (
@@ -92,7 +101,6 @@ function CreateDataForm({ appID, pageID, rowID, onCancel, title }: Props): JSX.E
           defaultValue={toJS(defaultValues)}
           schema={schema as ISchema}
           usePermission
-          hiddenInReadOnly
         >
           <FormButtonGroup className='pl-96'>
             <Button

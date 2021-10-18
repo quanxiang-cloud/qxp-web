@@ -101,11 +101,13 @@ declare global {
     name?: string;
     icon?: string;
     describe?: string;
+    bindingState?: number;
     groupID?: string;
-    child?: PageInfo[];
+    child?: PageInfo[] | null;
     childCount?: number;
     menuType?: number;
     sort?: number;
+    isHide?: boolean;
   }
 
   type PerPageInfo = PageInfo & { authority: number };
@@ -124,15 +126,18 @@ declare global {
   type Rights = {
     id: string;
     types?: number;
+    appID?: string;
     add?: boolean;
     formID?: string;
     sequence?: number;
+    createdBy?: string;
     scopes?: DeptAndUser[];
   } & RightsCreate
 
   type RightsCreate = {
     name?: string;
     description?: string;
+    types?: number;
   }
 
   type DeptAndUser = {
@@ -140,5 +145,4 @@ declare global {
     id: string;
     name: string;
   }
-
 }

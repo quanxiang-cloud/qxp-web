@@ -2,7 +2,7 @@ import React from 'react';
 import cs from 'classnames';
 
 export interface Props {
-  text: string;
+  text: React.ReactNode;
   className?: string;
 }
 

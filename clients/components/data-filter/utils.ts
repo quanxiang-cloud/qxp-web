@@ -1,8 +1,6 @@
 import moment, { unitOfTime, Moment } from 'moment';
 import { get } from 'lodash';
 
-import logger from '@lib/logger';
-
 export const OPERATORS_STRING = [
   {
     label: '等于',
@@ -136,6 +134,7 @@ export const FILTER_FIELD = [
   'UserPicker',
   'CascadeSelector',
   'OrganizationPicker',
+  'Serial',
 ];
 
 function getDateType(format: string): unitOfTime.StartOf {
@@ -263,7 +262,7 @@ export type ESParameter = {
   }
 }
 
-type Rule = {
+export type Rule = {
   [key: string]: any;
 }
 
@@ -295,6 +294,11 @@ const OP_ES_LIST = [
     valuePath: 'bool&must_not[0]&term&${key}',
   },
   {
+    op: 'exclude',
+    esExpression: '{"bool":{"must_not":\\[{"terms":{"([_a-zA-Z0-9.]+)":(.*?)}}\\]}}',
+    valuePath: 'bool&must_not[0]&terms&${key}',
+  },
+  {
     op: 'like',
     esExpression: '{"match":{"([_a-zA-Z0-9.]+)":(.*?)}}',
     valuePath: 'match&${key}',
@@ -306,103 +310,112 @@ const OP_ES_LIST = [
   },
 ];
 
+export function operatorESParameter(key: string, op: string, value: FormValue): any {
+  let _value = value;
+  let _key = key;
+  if (typeof value === 'object' && op !== 'range') {
+    if (Array.isArray(_value) && typeof _value[0] === 'object') {
+      _value = _value.map((_value) => (_value as LabelValue).value);
+      _key = `${key}.value`;
+    } else if (!Array.isArray(_value)) {
+      _value = (_value as LabelValue).value;
+      _key = `${key}.value`;
+    }
+  }
+
+  switch (op) {
+  case 'range': {
+    const [start, end] = _value as ComponentValue[];
+    return {
+      range: {
+        [_key]: {
+          gte: start,
+          lt: end,
+        },
+      },
+    };
+  }
+  case 'eq':
+    return {
+      term: {
+        [_key]: _value,
+      },
+    };
+  case 'gt':
+  case 'lt':
+  case 'gte':
+  case 'lte':
+    return {
+      range: {
+        [_key]: { [op]: _value },
+      },
+    };
+  case 'fullSubset':
+    return {
+      bool: {
+        must: (_value as any[]).map((valueItem) => {
+          return {
+            term: {
+              [_key]: valueItem,
+            },
+          };
+        }),
+      },
+    };
+  case 'intersection':
+    return {
+      terms: {
+        [_key]: _value,
+      },
+    };
+  case 'ne':
+    return {
+      bool: {
+        must_not: [
+          {
+            term: {
+              [_key]: _value,
+            },
+          },
+        ],
+      },
+    };
+  case 'exclude':
+    return {
+      bool: {
+        must_not: [
+          {
+            terms: {
+              [_key]: _value,
+            },
+          },
+        ],
+      },
+    };
+  case 'like':
+    return {
+      match: {
+        [_key]: _value,
+      },
+    };
+  default:
+    return {
+      match: {
+        [_key]: _value,
+      },
+    };
+  }
+}
+
 // TODO 暂时兼容方法
 export function toEs(filterConfig: FilterConfig): ESParameter {
   const rule: Rule[] = [];
-  filterConfig.condition.forEach(({ key = '', value, op }) => {
-    let _value = value;
-    let _key = key;
-    if (typeof value === 'object' && op !== 'range') {
-      if (Array.isArray(_value) && typeof _value[0] === 'object') {
-        _value = _value.map((_value) => (_value as LabelValue).value);
-        _key = `${key}.value`;
-      } else if (!Array.isArray(_value)) {
-        _value = (_value as LabelValue).value;
-        _key = `${key}.value`;
-      }
+  filterConfig.condition.forEach(({ key = '', value, op = '' }) => {
+    if (!value) {
+      return;
     }
 
-    switch (op) {
-    case 'range': {
-      const [start, end] = _value as ComponentValue[];
-      rule.push({
-        range: {
-          [_key]: {
-            gte: start,
-            lt: end,
-          },
-        },
-      });
-      break;
-    }
-    case 'eq':
-      rule.push({
-        term: {
-          [_key]: _value,
-        },
-      });
-      break;
-    case 'gt':
-    case 'lt':
-    case 'gte':
-    case 'lte':
-      if (typeof _value !== 'number' && typeof _value !== 'string') {
-        logger.error('Data type error');
-        return;
-      }
-      rule.push({
-        range: {
-          [_key]: { [op]: _value },
-        },
-      });
-      break;
-    case 'fullSubset':
-      rule.push({
-        bool: {
-          must: (_value as any[]).map((valueItem) => {
-            return {
-              term: {
-                [_key]: valueItem,
-              },
-            };
-          }),
-        },
-      });
-      break;
-    case 'intersection':
-      rule.push({
-        terms: {
-          [_key]: _value,
-        },
-      });
-      break;
-    case 'ne':
-      rule.push({
-        bool: {
-          must_not: [
-            {
-              term: {
-                [_key]: _value,
-              },
-            },
-          ],
-        },
-      });
-      break;
-    case 'like':
-      rule.push({
-        match: {
-          [_key]: _value,
-        },
-      });
-      break;
-    default:
-      return {
-        match: {
-          [_key]: _value,
-        },
-      };
-    }
+    rule.push(operatorESParameter(key, op, value));
   });
 
   return {

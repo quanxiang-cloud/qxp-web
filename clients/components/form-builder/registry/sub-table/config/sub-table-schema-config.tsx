@@ -2,7 +2,8 @@ import React, { useContext, useMemo } from 'react';
 import { Button } from 'antd';
 import { createFormActions, SchemaForm } from '@formily/antd';
 
-import { ItemActionsContext, ActionsContext } from './context';
+import { FieldConfigContext } from '@c/form-builder/form-settings-panel/form-field-config/context';
+import { ItemActionsContext } from './context';
 import { CONFIG_COMPONENTS, COMPONENTS, KeyOfConfigComponent } from './constants';
 
 interface Props {
@@ -16,15 +17,16 @@ export default function SubTableSchemaConfig({
   currentSubSchema, onChange, currentSchemaType, subTableSchema,
 }: Props): JSX.Element | null {
   const itemActions = useMemo(() => createFormActions(), []);
-  const { actions } = useContext(ActionsContext);
+  const { actions } = useContext(FieldConfigContext);
 
   if (!currentSubSchema || !currentSchemaType) {
     return null;
   }
 
-  const currentSubSchemaDefault = CONFIG_COMPONENTS[currentSchemaType]?.configSchema;
-  const CurrentSubSchemaForm = CONFIG_COMPONENTS[currentSchemaType]?.configForm;
-  const currentSubSchemaConfig = CONFIG_COMPONENTS[currentSchemaType]?.toConfig(currentSubSchema);
+  const currentConfigComponent = CONFIG_COMPONENTS[currentSchemaType];
+  const currentSubSchemaDefault = currentConfigComponent?.configSchema;
+  const CurrentSubSchemaForm = currentConfigComponent?.configForm;
+  const currentSubSchemaConfig = currentConfigComponent?.toConfig(currentSubSchema);
 
   function onGoBack(): void {
     actions.setFieldState('Fields.curConfigSubTableKey', (state) => {
@@ -51,6 +53,9 @@ export default function SubTableSchemaConfig({
           onChange={onChange}
           schema={currentSubSchemaDefault}
           actions={itemActions}
+          effects={() => {
+            currentConfigComponent?.effects?.();
+          }}
         />
       )}
     </ItemActionsContext.Provider>

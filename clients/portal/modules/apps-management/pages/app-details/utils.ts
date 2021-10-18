@@ -1,7 +1,10 @@
 import moment from 'moment';
 import { UnionColumns } from 'react-table';
 
-import { CustomPageInfo } from './type';
+import toast from '@lib/toast';
+
+import { fetchCorrelationFlows, fetchCorrelationRoles } from './api';
+import { CardListInfo, CardList, CustomPageInfo, Description, SchemaPageInfo, MenuType } from './type';
 
 export const SYSTEM_FIELDS: Record<string, ModelFieldSchema> = {
   _id: {
@@ -97,7 +100,7 @@ export const FIELD_COLUMNS: UnionColumns<ModelField>[] = [
   {
     Header: '是否允许为空',
     id: 'not_null',
-    accessor: (rowData) => rowData.not_null ? '允许' : '不允许',
+    accessor: (rowData) => rowData.not_null ? '不允许' : '允许',
   },
 ];
 
@@ -129,15 +132,109 @@ export function filterDeletedPage(
   });
 }
 
-export function getValueOfPageDescription(key: string, data: CustomPageInfo): string | undefined {
+export function getValueOfPageDescription(key: string, data: CustomPageInfo & SchemaPageInfo): string | undefined {
   switch (key) {
   case 'createdBy':
     return data.createdBy;
+  case 'updatedBy':
+    return data.updatedBy;
   case 'updatedAt':
-    return moment(data.updatedAt, 'X').format('YYYY-MM-DD HH:mm:ss');
-  case 'type':
-    return data.type === 1 ? 'HTML自定义页面' : '基于空白创建';
+    return !data.updatedAt ? '-' : moment(data.updatedAt, 'X').format('YYYY-MM-DD');
+  case 'createdAt':
+    return !data.createdAt ? '-' : moment(data.createdAt, 'X').format('YYYY-MM-DD');
+  case 'fileSize':
+    return data.fileSize;
+  case 'fieldLen':
+    return data.fieldLen;
   default:
     return undefined;
   }
+}
+
+export function mapToSchemaPageDescription(
+  { id, title, value }: Description, data: SchemaPageInfo,
+): Description {
+  const test = getValueOfPageDescription(id, { ...data, id: data.tableID || '' });
+
+  if (id === 'type') {
+    return { id, title, value: '表单' };
+  }
+
+  if (id === 'fileSize') {
+    return { id: 'fieldLen', title: '已配置字段总数', value: data.fieldLen || '' };
+  }
+
+  return { id, title, value: test ? test : value };
+}
+
+export function mapToCustomPageDescription(
+  { id, title, value }: Description, data: CustomPageInfo,
+): Description {
+  const test = getValueOfPageDescription(id, data);
+
+  if (id === 'type') {
+    return { id, title, value: '自定义页面' };
+  }
+
+  if (id === 'fieldLen') {
+    return { id: 'fileSize', title: '文件大小', value: data.fileSize || '' };
+  }
+
+  return { id, title, value: test ? test : value };
+}
+
+export async function getPageCardList(
+  appID: string,
+  pageID: string,
+  cardList: CardList[],
+  menuType: number | undefined,
+): Promise<CardList[]> {
+  let flowList: CardListInfo[] = [];
+  let roleList: CardListInfo[] = [];
+  await fetchCorrelationRoles(appID, pageID).then((res) => {
+    roleList = res.perGroups;
+  }).catch((err) => {
+    toast.error(err.message);
+  });
+
+  if (menuType === MenuType.schemaForm) {
+    await fetchCorrelationFlows({ appID, formID: pageID }).then((res: CardListInfo[]) => {
+      flowList = res;
+    }).catch((err) => {
+      toast.error(err.message);
+    });
+  }
+
+  return cardList.map(({ id, title }) => {
+    if (id === 'linkedFlows') {
+      return {
+        id,
+        title,
+        list: flowList.map(({ name, id, status }) => {
+          return { name, id, status };
+        }),
+      };
+    }
+
+    if (id === 'AuthorizedRoles') {
+      return {
+        id,
+        title,
+        list: roleList.map(({ name, id, status }) => {
+          return { name, id, status };
+        }),
+      };
+    }
+
+    return { id, title, list: [] };
+  });
+}
+
+export function formatFileSize(fileSize: number): string {
+  if (fileSize === 0) return '0 Bytes';
+
+  const units = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+  const i = Math.floor(Math.log(fileSize) / Math.log(1024));
+
+  return parseFloat((fileSize / Math.pow(1024, i)).toFixed(2)) + ' ' + units[i];
 }

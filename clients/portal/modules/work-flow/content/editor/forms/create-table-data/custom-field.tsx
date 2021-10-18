@@ -1,13 +1,14 @@
 import React, { useContext } from 'react';
 import { useQuery } from 'react-query';
 import { get, set } from 'lodash';
+import cs from 'classnames';
 
 import Select, { SelectOption } from '@c/select';
 import FlowSourceTableContext from '../flow-source-table';
 import FlowContext from '../../../../flow-context';
 import Context from './context';
 import { getFlowVariables } from '../api';
-import { getSchemaFields, getValidProcessVariables } from '../utils';
+import { getSchemaFields, getValidProcessVariables, isFieldTypeMatch } from '../utils';
 
 import './styles.scss';
 
@@ -36,7 +37,12 @@ export default function CustomField(props: Props): JSX.Element {
   });
   const fieldName = props.name;
   const isSubTableKey = fieldName.indexOf('@') > 0;
-  const innerFieldType = (get(props, 'props.x-component-props.x-component') as string).toLowerCase();
+  const compType = (get(props, 'props.x-component-props.x-component', '') as string).toLowerCase();
+  /*
+    field data type: string, number, datetime, array, object, label-value, ..
+    when assign with target field, inner field type should match
+   */
+  const fieldDataType = get(props, 'props.x-component-props.type', 'string');
 
   const getVal = (prop?: string) => {
     if (!isSubTableKey) {
@@ -79,7 +85,9 @@ export default function CustomField(props: Props): JSX.Element {
     if (rule === 'currentFormValue') {
       return (
         <Select
-          options={getSchemaFields(tableSchema)}
+          options={getSchemaFields(tableSchema, {
+            matchTypeFn: (schema: ISchema)=> isFieldTypeMatch(fieldDataType, compType, schema),
+          })}
           value={getVal() as string}
           onChange={onChangeFieldValue}
         />
@@ -99,7 +107,7 @@ export default function CustomField(props: Props): JSX.Element {
 
       return (
         <Select
-          options={getValidProcessVariables(variables || [], innerFieldType) as SelectOption<string>[]}
+          options={getValidProcessVariables(variables || [], fieldDataType) as SelectOption<string>[]}
           value={getVal() as string}
           onChange={onChangeFieldValue}
         />
@@ -112,7 +120,10 @@ export default function CustomField(props: Props): JSX.Element {
       <span className="w-64">{props.props['x-component-props'].title}</span>
       <span className="mx-10">=</span>
       <Select options={ruleOptions} value={getVal('valueFrom')} onChange={onChangeRule} />
-      <div className="inline-flex items-center ml-10 custom-field__value">
+      <div className={cs('inline-flex items-center ml-10 custom-field__value', {
+        'xl-width': getVal('valueFrom') === 'fixedValue' &&
+          ['associatedrecords', 'associateddata'].includes(compType),
+      })}>
         {renderValueBox()}
       </div>
     </div>

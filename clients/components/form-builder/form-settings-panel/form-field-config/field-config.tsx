@@ -1,15 +1,17 @@
 import React, { useContext, useEffect, useRef } from 'react';
 import { Radio, Input, Select, Switch, NumberPicker, ArrayTable, Checkbox } from '@formily/antd-components';
-import { SchemaForm, ISchema, FormEffectHooks, createFormActions } from '@formily/antd';
+import { SchemaForm, ISchema } from '@formily/antd';
 
 import { StoreContext } from '../../context';
 import { observer } from 'mobx-react';
 import { toJS } from 'mobx';
 
 import { FieldConfigContext } from './context';
-import { addOperate } from '../../registry/operates';
+import { AddOperate } from '../../registry/operates';
 import DefaultValueLinkageConfigBtn from './default-value-linkage-config-btn';
+import EditLabels from './edit-labels';
 import CalculationFormulaBtn from './calculation-formula-btn';
+import InputForLabels from './input-for-labels';
 
 const COMMON_CONFIG_COMPONENTS = {
   ArrayTable,
@@ -21,9 +23,11 @@ const COMMON_CONFIG_COMPONENTS = {
   CheckboxGroup: Checkbox.Group,
   Select,
   Switch,
-  addOperate,
+  AddOperate,
+  EditLabels,
   DefaultValueLinkageConfigBtn,
   CalculationFormulaBtn,
+  InputForLabels,
 };
 
 type Props = {
@@ -57,44 +61,7 @@ function FormFieldConfig(): JSX.Element {
     if (formFieldConfigWrap.current) {
       (formFieldConfigWrap.current.parentNode as HTMLDivElement).scrollTop = 0;
     }
-  }, [store.activeFieldName]);
-
-  const schemaFieldConfigEffects = () => {
-    const { onFieldInputChange$, onFieldInit$ } = FormEffectHooks;
-    const { setFieldState } = createFormActions();
-
-    onFieldInit$('minSet').subscribe((field) => {
-      let visible = false;
-      if (field.value !== undefined) {
-        visible = field.value.length === 0 ? false : true;
-      }
-      setFieldState('minimum', (state) => {
-        state.visible = visible;
-      });
-    });
-
-    onFieldInit$('maxSet').subscribe((field) => {
-      let visible = false;
-      if (field.value !== undefined) {
-        visible = field.value.length === 0 ? false : true;
-      }
-      setFieldState('maximum', (state) => {
-        state.visible = visible;
-      });
-    });
-
-    onFieldInputChange$('minSet').subscribe(({ value }) => {
-      setFieldState('minimum', (state) => {
-        state.visible = value.length === 0 ? false : true;
-      });
-    });
-
-    onFieldInputChange$('maxSet').subscribe(({ value }) => {
-      setFieldState('maximum', (state) => {
-        state.visible = value.length === 0 ? false : true;
-      });
-    });
-  };
+  }, [store.activeFieldId]);
 
   if (!store.activeField) {
     return (
@@ -106,14 +73,13 @@ function FormFieldConfig(): JSX.Element {
     return (
       <div ref={formFieldConfigWrap}>
         <SchemaFieldConfig
-          // assign key to FormFieldConfigTrue to force re-render when activeFieldName changed
+          // assign key to FormFieldConfigTrue to force re-render when activeFieldId changed
           effects={() => {
-            schemaFieldConfigEffects();
             if (typeof store.activeFieldSourceElement?.effects === 'function') {
               store.activeFieldSourceElement.effects();
             }
           }}
-          key={toJS(store.activeFieldName)}
+          key={toJS(store.activeFieldId)}
           onChange={(value) => store.updateFieldConfig(value)}
           initialValue={toJS(store.activeField.configValue)}
           schema={store.activeFieldSourceElement?.configSchema}
@@ -128,7 +94,7 @@ function FormFieldConfig(): JSX.Element {
 
   if (store.activeFieldSourceElement?.configForm) {
     return React.createElement(store.activeFieldSourceElement.configForm, {
-      key: toJS(store.activeFieldName),
+      key: toJS(store.activeFieldId),
       onChange: (value: any) => store.updateFieldConfig(value),
       initialValue: toJS(store.activeField.configValue),
     });

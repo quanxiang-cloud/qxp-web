@@ -153,7 +153,7 @@ export const last = <T>(arg: T[]): T => {
 
 export function isPassword(pwd: string): boolean {
   // eslint-disable-next-line
-  return /^(?=.*\d)(?=.*[a-zA-Z])(?=.*[~!@#$%^&*.\(\)\-\+\[\]\|\"\'\_])[\da-zA-Z~!@#$%^&*.\(\)\-\+\[\]\|\"\'\_]{8,}$/.test(pwd);
+  return /^(?=.*\d)(?=.*[a-zA-Z])(?=.*[~!@#$%^&?*.`\(\)\-\+\[\]\|\"\'\_\,\、])[\da-zA-Z~!@#$%^&?*.`\(\)\-\+\[\]\|\"\'\_\,\、]{8,}$/.test(pwd);
 }
 
 export function copyToClipboard(str: string, msg: string): void {
@@ -310,8 +310,8 @@ export function not<A extends any[]>(fn: (...args: [...A]) => boolean) {
 export function quickSortObjectArray<T extends Record<string, T[keyof T]>>(key: string, arr: T[]): T[] {
   if (!arr?.length || !key) return [];
   const [head, ...tail] = arr;
-  const left = tail.filter((e) => e[key] < head[key]);
-  const right = tail.filter((e) => e[key] >= head[key]);
+  const left = tail.filter((e) => (e[key] ?? 0) < (head[key] ?? 0));
+  const right = tail.filter((e) => (e[key] ?? 0) >= (head[key] ?? 0));
   return quickSortObjectArray<T>(key, left).concat(head, quickSortObjectArray(key, right));
 }
 
@@ -323,13 +323,13 @@ export function isEmptyArray(value: unknown): boolean {
   return _.isArray(value) && _.isEmpty(value);
 }
 
-export async function copyContent(content: string): Promise<void> {
+export async function copyContent(content: string, successMes?: string, errorMes?: string): Promise<void> {
   if (navigator.clipboard) {
     try {
       await navigator.clipboard.writeText(content);
-      toast.success('复制成功！');
+      toast.success(successMes || '复制成功！');
     } catch (err) {
-      toast.error('复制失败，请手动复制！');
+      toast.error(errorMes || '复制失败，请手动复制！');
     }
     return;
   }
@@ -344,9 +344,9 @@ export async function copyContent(content: string): Promise<void> {
   document.execCommand('copy');
   const successful = document.execCommand('copy');
   if (successful) {
-    toast.success('复制成功！');
+    toast.success(successMes || '复制成功！');
   } else {
-    toast.error('复制失败，请手动复制！');
+    toast.error(errorMes || '复制失败，请手动复制！');
   }
   document.body.removeChild(el);
 }

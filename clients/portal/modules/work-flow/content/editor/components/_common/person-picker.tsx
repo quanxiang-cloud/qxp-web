@@ -8,32 +8,13 @@ import RadioGroup from '@c/radio/group';
 import Radio from '@c/radio';
 import Select from '@c/select';
 import FlowTableContext from '@flow/content/editor/forms/flow-source-table';
+import useObservable from '@lib/hooks/use-observable';
+import store from '@flow/content/editor/store';
+import type { StoreValue } from '@flow/content/editor/type';
 
 import { ApprovePersonType, ApprovePerson } from '@flow/content/editor/type';
-
-interface Option {
-  label: string;
-  value: string;
-}
-
-const typeOptions: Option[] = [
-  {
-    label: '指定人员',
-    value: 'person',
-  },
-  {
-    label: '表单字段',
-    value: 'field',
-  },
-  {
-    label: '上级领导',
-    value: 'superior',
-  },
-  {
-    label: '部门负责人',
-    value: 'leadOfDepartment',
-  },
-];
+import ValidatingTips from './validating-tips';
+import { personTypeOptions } from '../../forms/constants';
 
 const positionOptions = [
   {
@@ -53,6 +34,7 @@ interface Props {
 }
 
 export default function PersonPicker({ value, typeText, onChange } : Props): JSX.Element {
+  const { validating } = useObservable<StoreValue>(store);
   const [showAddPersonModal, setShowAddPersonModal] = useState(false);
   const { tableSchema } = useContext(FlowTableContext);
 
@@ -110,7 +92,7 @@ export default function PersonPicker({ value, typeText, onChange } : Props): JSX
     <div className="mb-24">
       {showAddPersonModal && (
         <EmployeeOrDepartmentPicker
-          title={`选择${typeText}人`}
+          title={typeText || ''}
           submitText="确认添加"
           onSubmit={onSetPersons}
           onCancel={() => setShowAddPersonModal(false)}
@@ -119,12 +101,11 @@ export default function PersonPicker({ value, typeText, onChange } : Props): JSX
         />
       )}
       <div className="text-body2-no-color text-gray-600 mb-10">
-        {typeText}
-        人
+        <span className="text-red-600">*</span>{typeText}
       </div>
       <div className="grid grid-rows-2 grid-cols-2 mb-10">
         <RadioGroup onChange={handleTypeChange}>
-          {typeOptions.map(({ label, value: val }) => (
+          {personTypeOptions.map(({ label, value: val }) => (
             <Radio
               key={val}
               className="mr-16"
@@ -183,8 +164,11 @@ export default function PersonPicker({ value, typeText, onChange } : Props): JSX
           )}
           <div
             className={cs(
-              'flex items-center border border-dashed border-gray-300 corner-8-2-8-8',
-              'py-5 text-button mt-8 justify-center cursor-pointer h-32',
+              'flex items-center border border-dashed corner-8-2-8-8',
+              'py-5 text-button mt-8 justify-center cursor-pointer h-32', {
+                'border-gray-300': !validating || value.users?.length,
+                'border-red-300': validating && !value.users?.length,
+              },
             )}
             role="button"
             tabIndex={0}
@@ -192,20 +176,34 @@ export default function PersonPicker({ value, typeText, onChange } : Props): JSX
           >
             <Icon name="add" className="mr-8" size={20} />
             <span>
-              添加
-              {typeText}
-              人
+              添加{typeText}
             </span>
           </div>
+          <ValidatingTips
+            validating={validating && !value.users?.length}
+            tips={`请添加${typeText}人`}
+          />
         </>
       )}
       {type === 'field' && (
-        <Select<string>
-          multiple
-          options={fieldOptions}
-          value={fields}
-          onChange={handleFieldChange}
-        />
+        <>
+          <Select<string>
+            multiple
+            options={fieldOptions}
+            value={fields}
+            onChange={handleFieldChange}
+            className={cs(
+              {
+                'border-gray-300': !validating || value.fields?.length,
+                'border-red-300': validating && !value.fields?.length,
+              },
+            )}
+          />
+          <ValidatingTips
+            validating={validating && !value.fields?.length}
+            tips={`请选择${typeText}人`}
+          />
+        </>
       )}
       {type === 'position' && (
         <Select<string>
