@@ -8,7 +8,7 @@ import Icon from '@c/icon';
 import ResetPasswordModal from './reset-password-modal';
 import Avatar from '@c/avatar';
 
-export default function HeaderMenu() {
+export default function HeaderMenu(): JSX.Element {
   const [openResetPasswordModal, setOpenResetPasswordModal] = useState<boolean>(false);
 
   return (
@@ -17,7 +17,7 @@ export default function HeaderMenu() {
         visible={openResetPasswordModal}
         onCancel={() => setOpenResetPasswordModal(false)}
       />
-      <NavMsgBar className="mr-8" />
+      <NavMsgBar className="mr-16" />
       {/* <Button className="mr-32">
           进入应用管理
       </Button>
@@ -42,32 +42,28 @@ export default function HeaderMenu() {
           size={20}
         />
       </div> */}
-      <div className="header-nav-btn group">
-        <MoreMenu
-          menus={[
-            { key: 'resetPassword', label: '重置密码' },
-            { key: 'logout', label: '登出' },
-          ]}
-          onMenuClick={(menuKey) => {
-            if (menuKey === 'logout') {
-              window.location.href = '/logout';
-              return;
-            }
+      <MoreMenu
+        menus={[
+          { key: 'resetPassword', label: '重置密码' },
+          { key: 'logout', label: '登出' },
+        ]}
+        onMenuClick={(menuKey) => {
+          if (menuKey === 'logout') {
+            window.location.href = '/logout';
+            return;
+          }
 
-            setOpenResetPasswordModal(true);
-          }}
+          setOpenResetPasswordModal(true);
+        }}
+      >
+        <div
+          className="cursor-pointer flex items-center h-36 text-gray-50
+            transition hover:text-blue-300"
         >
-          <div
-            className="cursor-pointer flex items-center h-36
-            hover:blue-100 transition group-hover:text-blue-600"
-          >
-            <Avatar
-              username={window.USER.userName}
-            />
-            <Icon name="arrow_drop_down" size={20} />
-          </div>
-        </MoreMenu>
-      </div>
+          <Avatar username={window.USER.userName} />
+          <Icon name="arrow_drop_down" className="text-current" size={20} />
+        </div>
+      </MoreMenu>
     </div>
   );
 }
