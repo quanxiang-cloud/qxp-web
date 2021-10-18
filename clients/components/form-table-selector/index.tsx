@@ -4,18 +4,15 @@ import { useParams } from 'react-router-dom';
 import { useQuery } from 'react-query';
 import { Cascader } from 'antd';
 import { CascaderOptionType } from 'antd/lib/cascader';
-import { merge, noop, last } from 'lodash';
-import { pipe, split, reduce, map } from 'ramda';
+import { noop, last } from 'lodash';
 
 import Icon from '@c/icon';
 import ToolTip from '@c/tooltip';
 import toast from '@lib/toast';
-import treeUtil from '@lib/tree';
 
-import { getFormDataOptions, Options, Option } from './api';
+import { getLinkageTables } from '../form-builder/utils/api';
 
 export type Value = { name?: string; value: string }
-type SelectorOption = Option & { fieldPath: string; };
 
 interface Props {
   value: Value;
@@ -26,25 +23,6 @@ interface Props {
   exclude?: string[];
 }
 
-function buildOptions(optionsData: Options, exclude: string[]): Options {
-  if (!exclude?.length) {
-    return optionsData;
-  }
-  const options = [];
-  for (let index = 0; index < optionsData.length; index += 1) {
-    const op = optionsData[index];
-    if (!exclude.includes(op.value)) {
-      if (op.children?.length) {
-        options.push(...buildOptions(op.children, exclude));
-      } else {
-        options.push(op);
-      }
-    }
-  }
-
-  return options;
-}
-
 function FormTableSelector(
   { value, changeable = true, onChange = noop, validating, errorMessage, exclude }: Props,
   ref?: Ref<Cascader>,
@@ -52,14 +30,12 @@ function FormTableSelector(
   const { appID } = useParams<{appID: string}>();
 
   const {
-    data: optionsData = [],
+    data: pages = [],
     isError,
     error = '获取工作表失败',
-  } = useQuery(['GET_WORK_FORM_LIST', appID], getFormDataOptions, {
-    enabled: !!appID,
-  });
+  } = useQuery(['GET_WORK_FORM_LIST', appID], () => getLinkageTables(appID));
 
-  const options = buildOptions(optionsData, exclude || []);
+  const options = [...pages];
 
   useEffect(() => {
     isError && toast.error(error as string);
@@ -73,28 +49,7 @@ function FormTableSelector(
     });
   }
 
-  const pathToOptionMap: Record<string, SelectorOption> = {};
-  const valueToOptionMap = treeUtil.reduce<Record<string, SelectorOption>, Options | Option>(
-    (acc, _form) => {
-      const form = _form as SelectorOption;
-      form.value && merge(acc, { [form.value]: form });
-      merge(pathToOptionMap, { [form.fieldPath]: form });
-      return acc;
-    }, 'children', {}, options,
-  );
-
-  const getCurrentValuePath = pipe<string, string[], string[], string[]>(
-    () => valueToOptionMap[value.value]?.fieldPath || '',
-    split('.'),
-    reduce((pathArr: string[], pathSegment: string) => {
-      const lastSegment = last(pathArr);
-      pathArr.push(lastSegment ? `${lastSegment}.${pathSegment}` : pathSegment);
-      return pathArr;
-    }, []),
-    map((path) => pathToOptionMap[path]?.value || ''),
-  );
-
-  const currentValuePath = getCurrentValuePath();
+  const currentValue = value.value ? [value.value] : [];
 
   const extra = {};
   if (ref) {
@@ -120,7 +75,7 @@ function FormTableSelector(
             expandTrigger={'hover'}
             onChange={onWorkFormChange}
             placeholder="请选择"
-            value={currentValuePath}
+            value={currentValue}
             popupClassName="ml-12"
             className={cs(
               'h-28 border-none px-12 text-12 flex items-center',
@@ -147,7 +102,7 @@ function FormTableSelector(
               expandTrigger={'hover'}
               onChange={onWorkFormChange}
               placeholder="请选择"
-              value={currentValuePath}
+              value={currentValue}
               popupClassName="ml-12"
               className={cs(
                 'h-28 border-none px-12 text-12 flex items-center',
