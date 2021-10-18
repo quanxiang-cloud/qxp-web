@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { forwardRef, Ref } from 'react';
 import cs from 'classnames';
 import { Placement } from '@popperjs/core';
+import { useClickAway } from 'react-use';
 
 import Icon from '@c/icon';
 import Popper from '@c/popper';
@@ -26,31 +27,33 @@ type MenusProps<T extends React.Key> = {
   activeMenu?: T;
 }
 
-function Menus<T extends React.Key>({ items, onClick, activeMenu }: MenusProps<T>): JSX.Element {
-  return (
-    <div className="dropdown-options">
-      {
-        items.map(({ key, label, disabled }) => {
-          return (
-            <div
-              key={key}
-              className={cs('dropdown-options__option', {
-                'select-option--disabled': disabled,
-                'text-blue-600 bg-blue-50': activeMenu === key,
-              })}
-              onClick={(e): void => {
-                e.stopPropagation();
-                !disabled && onClick(key);
-              }}
-            >
-              <div className="select-option__content py-6">{label}</div>
-            </div>
-          );
-        })
-      }
-    </div>
-  );
-}
+const Menus = forwardRef<HTMLDivElement, MenusProps<any>>(
+  <T extends React.Key>({ items, onClick, activeMenu }: MenusProps<T>, ref: Ref<HTMLDivElement>,
+  ): JSX.Element => {
+    return (
+      <div className="dropdown-options" ref={ref}>
+        {
+          items.map(({ key, label, disabled }) => {
+            return (
+              <div
+                key={key}
+                className={cs('dropdown-options__option', {
+                  'select-option--disabled': disabled,
+                  'text-blue-600 bg-blue-50': activeMenu === key,
+                })}
+                onClick={(e): void => {
+                  e.stopPropagation();
+                  !disabled && onClick(key);
+                }}
+              >
+                <div className="select-option__content py-6">{label}</div>
+              </div>
+            );
+          })
+        }
+      </div>
+    );
+  });
 
 type Props<T extends React.Key> = {
   iconName?: string;
@@ -68,6 +71,8 @@ export default function MoreMenu<T extends React.Key>({
 }: Props<T>): JSX.Element {
   const reference = React.useRef<Element>(null);
   const popperRef = React.useRef<Popper>(null);
+  const menuRef = React.useRef<HTMLDivElement>(null);
+  useClickAway(menuRef, () => popperRef.current?.close());
 
   function handleMenuClick(key: T): void {
     popperRef.current?.close();
@@ -95,7 +100,7 @@ export default function MoreMenu<T extends React.Key>({
         placement={placement || 'bottom-start'}
         modifiers={modifiers}
       >
-        <Menus activeMenu={activeMenu} items={menus} onClick={handleMenuClick} />
+        <Menus ref={menuRef} activeMenu={activeMenu} items={menus} onClick={handleMenuClick} />
       </Popper>
     </>
   );
