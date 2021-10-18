@@ -13,6 +13,7 @@ export interface MultipleSelectConfig {
   defaultValueFrom: FormBuilder.DefaultValueFrom;
   datasetId: string;
   availableOptions: Array<Record<string, string | boolean>>,
+  defaultValue: undefined | string,
 }
 
 export const defaultConfig: MultipleSelectConfig = {
@@ -28,6 +29,7 @@ export const defaultConfig: MultipleSelectConfig = {
     { label: '选项二', isDefault: false },
     { label: '选项三', isDefault: false },
   ],
+  defaultValue: undefined,
 };
 
 export function toSchema(value: MultipleSelectConfig): ISchema {
@@ -38,7 +40,8 @@ export function toSchema(value: MultipleSelectConfig): ISchema {
     required: value.required,
     readOnly: value.displayModifier === 'readonly',
     display: value.displayModifier !== 'hidden',
-    default: convertMultipleSelectDefaults(value.availableOptions),
+    default: value.defaultValueFrom === 'dataset' ? value.defaultValue :
+      convertMultipleSelectDefaults(value.availableOptions),
     enum: value.availableOptions.map((op) => {
       return op.label as string;
     }) || [],
@@ -70,5 +73,6 @@ export function toConfig(schema: ISchema): MultipleSelectConfig {
         isDefault: (!schema.default || !schema.default.length) ? false : schema.default.includes(label),
       };
     }) as any,
+    defaultValue: schema.default,
   };
 }

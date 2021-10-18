@@ -10,7 +10,9 @@ function Placeholder(fieldProps: ISchemaFieldComponentProps): JSX.Element {
   const labels = useEnumOptions(fieldProps);
 
   return (
-    <CheckboxGroup options={labels} />
+    <>
+      {!labels.length ? <span>暂无可选项</span> : <CheckboxGroup options={labels} />}
+    </>
   );
 }
 

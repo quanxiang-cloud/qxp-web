@@ -100,13 +100,6 @@ const schema: ISchema = {
               },
             },
             {
-              type: 'value:state',
-              target: 'add',
-              state: {
-                display: '{{ $value === "customized" }}',
-              },
-            },
-            {
               type: 'value:visible',
               target: 'edit',
               condition: '{{ $value === "customized" }}',
@@ -114,6 +107,11 @@ const schema: ISchema = {
             {
               type: 'value:visible',
               target: 'datasetId',
+              condition: '{{ $value === "dataset" }}',
+            },
+            {
+              type: 'value:visible',
+              target: 'defaultValue',
               condition: '{{ $value === "dataset" }}',
             },
           ],
@@ -145,6 +143,18 @@ const schema: ISchema = {
             labelAlign: 'top',
           },
           'x-index': 9,
+        },
+        defaultValue: {
+          type: 'string',
+          title: '默认值',
+          'x-component': 'Select',
+          'x-component-props': {
+            mode: 'multiple',
+          },
+          'x-mega-props': {
+            labelAlign: 'top',
+          },
+          'x-index': 13,
         },
       },
     },

@@ -1,5 +1,4 @@
-import { filter } from 'rxjs/operators';
-import { FormEffectHooks, createFormActions } from '@formily/react';
+import { createFormActions } from '@formily/antd';
 
 import { validateDatasetElement } from '@c/form-builder/utils';
 import DatasetConfig from '@c/form-builder/form-settings-panel/form-field-config/dataset-config';
@@ -8,6 +7,11 @@ import Placeholder from './placeholder';
 import RadioGroup from './radioGroup';
 import configSchema from './config-schema';
 import { defaultConfig, toSchema, toConfig, RadioGroupConfig } from './convertor';
+import {
+  updateLabelsOnSimpleEdit,
+  initDefaultValueOnOptionsFromDataset,
+  updateDefaultValueOnDatasetIdChanged,
+} from '../options-effects';
 
 const RadioField: Omit<FormBuilder.SourceElement<RadioGroupConfig>, 'displayOrder'> = {
   displayName: '单选框',
@@ -24,21 +28,11 @@ const RadioField: Omit<FormBuilder.SourceElement<RadioGroupConfig>, 'displayOrde
   configDependencies: { DatasetConfig },
   validate: validateDatasetElement,
   effects: () => {
-    const { setFieldValue, getFieldValue } = createFormActions();
-    const { onFieldValueChange$ } = FormEffectHooks;
+    const actions = createFormActions();
 
-    onFieldValueChange$('edit').pipe(
-      filter(({ value }) => !!value),
-    ).subscribe(({ value }) => {
-      const availableOptions = getFieldValue('availableOptions');
-      setFieldValue('availableOptions', value.map((op: any, index: number) => {
-        if (index >= availableOptions.length) {
-          return { label: op, isDefault: false };
-        }
-
-        return { label: op, isDefault: availableOptions[index].isDefault };
-      }));
-    });
+    updateLabelsOnSimpleEdit(actions);
+    initDefaultValueOnOptionsFromDataset(actions);
+    updateDefaultValueOnDatasetIdChanged(actions);
   },
 };
 

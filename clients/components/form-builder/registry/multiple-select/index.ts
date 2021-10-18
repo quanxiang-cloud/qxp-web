@@ -1,13 +1,17 @@
-import { filter } from 'rxjs/operators';
-import { FormEffectHooks, createFormActions } from '@formily/react';
+import { createFormActions } from '@formily/antd';
 
 import { validateDatasetElement } from '@c/form-builder/utils';
 
 import Select from './multiple-select';
-import DatasetConfig from '../../form-settings-panel/form-field-config/dataset-config';
-import configSchema from './config-schema';
-import { defaultConfig, toSchema, toConfig, MultipleSelectConfig } from './convertor';
 import Placeholder from './placeholder';
+import configSchema from './config-schema';
+import DatasetConfig from '../../form-settings-panel/form-field-config/dataset-config';
+import { defaultConfig, toSchema, toConfig, MultipleSelectConfig } from './convertor';
+import {
+  updateLabelsOnMultipleEdit,
+  initDefaultValueOnOptionsFromDataset,
+  updateDefaultValueOnDatasetIdChanged,
+} from '../options-effects';
 
 const MultipleSelectField: Omit<FormBuilder.SourceElement<MultipleSelectConfig>, 'displayOrder'> = {
   configSchema,
@@ -24,21 +28,11 @@ const MultipleSelectField: Omit<FormBuilder.SourceElement<MultipleSelectConfig>,
   configDependencies: { DatasetConfig },
   validate: validateDatasetElement,
   effects: () => {
-    const { setFieldValue, getFieldValue } = createFormActions();
-    const { onFieldValueChange$ } = FormEffectHooks;
+    const actions = createFormActions();
 
-    onFieldValueChange$('edit').pipe(
-      filter(({ value }) => !!value),
-    ).subscribe(({ value }) => {
-      const availableOptions = getFieldValue('availableOptions');
-      setFieldValue('availableOptions', value?.map((op: string, index: number) => {
-        if (index >= availableOptions.length) {
-          return { label: op, isDefault: false };
-        }
-
-        return { label: op, isDefault: availableOptions[index].isDefault };
-      }));
-    });
+    updateLabelsOnMultipleEdit(actions);
+    initDefaultValueOnOptionsFromDataset(actions);
+    updateDefaultValueOnDatasetIdChanged(actions);
   },
 };
 
