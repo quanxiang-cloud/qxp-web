@@ -12,6 +12,7 @@ type Props<T extends React.Key> = {
   strechNavs?: boolean;
   separator?: boolean;
   navTitleClassName?: string;
+  navsStyles?: React.CSSProperties;
   navsClassName?: string;
   onClick?: (id: T) => void;
 }
@@ -21,14 +22,16 @@ function TabNavs<T extends React.Key>({
   strechNavs,
   separator,
   navTitleClassName,
+  navsStyles,
   navsClassName,
   onClick,
 }: Props<T>,
-ref?: React.Ref<HTMLDivElement>) {
+ref?: React.Ref<HTMLDivElement>): JSX.Element {
   return (
     <div className='z-10'> {/* This layer of div is used to solve the overflow-x auto */}
       <div
         ref={ref}
+        style={navsStyles}
         className={cs('tab-navs', navsClassName)}>
         {
           navs.map((item) => {

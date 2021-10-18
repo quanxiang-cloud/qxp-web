@@ -18,6 +18,7 @@ export type Props<T extends React.Key> = {
   separator?: boolean;
   className?: string;
   navsClassName?: string;
+  navsStyles?: React.CSSProperties;
   navTitleClassName?: string;
   contentClassName?: string;
   style?: Record<string, unknown>;
@@ -30,13 +31,14 @@ export default function Tab<T extends React.Key>({
   style,
   className,
   navsClassName,
+  navsStyles,
   navTitleClassName,
   contentClassName,
   strechNavs,
   separator,
   currentKey,
   onChange,
-}: Props<T>) {
+}: Props<T>): JSX.Element {
   const navsRef = useRef(null);
   const [key, setKey] = useState<string | number>(currentKey || items[0].id);
 
@@ -65,6 +67,7 @@ export default function Tab<T extends React.Key>({
         strechNavs={strechNavs}
         separator={separator}
         navsClassName={navsClassName}
+        navsStyles={navsStyles}
         navTitleClassName={navTitleClassName}
         onClick={handleNavItemClick}
       />

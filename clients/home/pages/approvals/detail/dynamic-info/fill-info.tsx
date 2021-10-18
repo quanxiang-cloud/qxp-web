@@ -6,7 +6,7 @@ import NoHandle from './common/no-handle';
 import Handled from './common/handled';
 import HandleInfo from './common/handle-info';
 
-type StatusDescribe = Record<string, {text: string, describe: string}>;
+type StatusDescribe = Record<string, { text: string, describe: string }>;
 type DataClassify = Record<'handledData' | 'noHandleData', OperationRecord[]>;
 
 const statusDescribe: StatusDescribe = {
@@ -53,7 +53,9 @@ export default function FillInfo({ workData, returnFlowPage }: Props): JSX.Eleme
         {
           isNoFinish && (
             <div className="mb-16 text-yellow-600 text-12 flex">
-              <div className="h-20 flex justify-center items-center"><Icon name="info" /></div>
+              <div className="h-20 flex justify-center items-center">
+                <Icon name="info" className="text-current" />
+              </div>
               <div className="ml-4">{statusDescribe[taskType].text}：{statusDescribe[taskType].describe}</div>
             </div>
           )
@@ -81,7 +83,7 @@ export default function FillInfo({ workData, returnFlowPage }: Props): JSX.Eleme
             </>
           )
         }
-        { (!isNoFinish && noHandleData.length > 0) && (
+        {(!isNoFinish && noHandleData.length > 0) && (
           <>
             <div className="mb-16 text-12 text-gray-600">工作流任务已结束，以下负责人未处理</div>
             {

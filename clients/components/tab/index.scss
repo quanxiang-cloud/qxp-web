@@ -3,7 +3,7 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  background: #fff;
+  background-color: #fff;
   overflow: hidden;
   position: relative;
 
@@ -12,7 +12,7 @@
     display: flex;
     overflow-x: auto;
     flex-direction: row;
-    background: #fff;
+    background-color: #fff;
     margin-bottom: 1px;
     border-bottom: 1px solid var(--gray-200);
 
@@ -24,7 +24,7 @@
       padding: 12px;
       cursor: pointer;
       position: relative;
-      
+
       &:hover {
         color: var(--blue-600);
       }
@@ -55,6 +55,7 @@
         opacity: 1;
       }
     }
+
     .strech-navs {
       flex-grow: 1;
     }
