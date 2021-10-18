@@ -158,6 +158,7 @@ export const transformSchema = (
       });
     } else if (compName) {
       const defaultVal = getCompDefaultValFromData(compName, mergeData, key);
+      if (compName === 'serial' || compName === 'aggregationrecords') return;
       Object.assign(acc, {
         [key]: {
           type: 'object',
