@@ -30,8 +30,8 @@ export default function CustomFieldTable({
   const layoutFields = schemaToArray(schema, { parseSubTable: true, keepLayout: true })
     .reduce((layoutFields: string[], schema) => {
       const internal = schema['x-internal'];
-      if (internal?.isLayoutComponent && internal._key) {
-        layoutFields.push(internal._key);
+      if (internal?.isLayoutComponent && internal.fieldId) {
+        layoutFields.push(internal.fieldId);
       }
       return layoutFields;
     }, []);
@@ -63,7 +63,7 @@ export default function CustomFieldTable({
     const indeterminate = checkedNumber < model.data.length && checkedNumber > 0;
     const isChecked = checkedNumber === model.data.length;
     return (
-      <div className="flex items-center">
+      <div className="flex items-center flex-nowrap">
         <Checkbox
           indeterminate={indeterminate}
           checked={isChecked}
@@ -92,15 +92,15 @@ export default function CustomFieldTable({
             }
           }}
         />
-        <span className="ml-8">{label}</span>
+        <span className="ml-8 whitespace-nowrap">{label}</span>
       </div>
     );
   }
 
   function getValueHeader(label: string, tip: string): JSX.Element {
     return (
-      <div className="flex items-center">
-        <span className="mr-4">{label}</span>
+      <div className="flex items-center flex-nowrap">
+        <span className="mr-4 whitespace-nowrap">{label}</span>
         <ToolTip
           inline
           labelClassName="whitespace-nowrap text-12 py-8 px-16"
@@ -118,7 +118,14 @@ export default function CustomFieldTable({
     if (!key) {
       const path = without(layoutFields, model.cell.row.original.path?.split('.') || []);
       const level = path.length - 1 > 0 ? path.length - 1 : 0;
-      return <div style={{ marginLeft: isNaN(level) ? 0 : level * 20 }}> {model.cell.value} </div>;
+      return (
+        <div
+          style={{ marginLeft: isNaN(level) ? 0 : level * 20 }}
+          className="whitespace-nowrap"
+        >
+          {model.cell.value}
+        </div>
+      );
     }
 
     return (
@@ -195,37 +202,45 @@ export default function CustomFieldTable({
   return (
     <Table
       rowKey="id"
-      columns={[{
-        Header: '字段',
-        accessor: 'fieldName',
-        Cell: (model: any) => getCell(model),
-        fixed: true,
-      }, {
-        Header: (model: any) => getHeader(model, 'read', '查看'),
-        accessor: 'read',
-        Cell: (model: any) => getCell(model, 'read'),
-      }, {
-        Header: (model: any) => getHeader(model, 'write', '写入'),
-        accessor: 'write',
-        Cell: (model: any) => getCell(model, 'write'),
-      }, {
-        Header: (model: any) => getHeader(model, 'editable', '编辑'),
-        accessor: 'editable',
-        Cell: (model: any) => getCell(model, 'editable'),
-      }, {
-        Header: (model: any) => getHeader(model, 'invisible', '隐藏'),
-        accessor: 'invisible',
-        Cell: (model: any) => getCell(model, 'invisible'),
-      }, {
-        Header: () => getValueHeader('初始值', '该节点初次打开工作表时对应字段呈现初始值'),
-        accessor: 'initialValue',
-        Cell: (model: any) => getValueCell(model, 'initialValue', editable),
-      }, {
-        Header: () => getValueHeader('提交值', '该节点提交工作表后对应字段呈现提交值'),
-        accessor: 'submitValue',
-        Cell: (model: any) => !model.cell.row.original.write &&
+      columns={[
+        {
+          Header: <span className="whitespace-nowrap">字段</span>,
+          accessor: 'fieldName',
+          Cell: (model: any) => getCell(model),
+          fixed: true,
+        },
+        {
+          Header: (model: any) => getHeader(model, 'editable', '编辑'),
+          accessor: 'editable',
+          Cell: (model: any) => getCell(model, 'editable'),
+        },
+        {
+          Header: (model: any) => getHeader(model, 'invisible', '隐藏'),
+          accessor: 'invisible',
+          Cell: (model: any) => getCell(model, 'invisible'),
+        },
+        {
+          Header: (model: any) => getHeader(model, 'write', '写入'),
+          accessor: 'write',
+          Cell: (model: any) => getCell(model, 'write'),
+        },
+        {
+          Header: (model: any) => getHeader(model, 'read', '查看'),
+          accessor: 'read',
+          Cell: (model: any) => getCell(model, 'read'),
+        },
+        {
+          Header: () => getValueHeader('初始值', '该节点初次打开工作表时对应字段呈现初始值'),
+          accessor: 'initialValue',
+          Cell: (model: any) => getValueCell(model, 'initialValue', editable),
+        },
+        {
+          Header: () => getValueHeader('提交值', '该节点提交工作表后对应字段呈现提交值'),
+          accessor: 'submitValue',
+          Cell: (model: any) => !model.cell.row.original.write &&
               getValueCell(model, 'submitValue', editable),
-      }]}
+        }]
+      }
       data={fields.filter((field) => !field.hidden)}
     />
   );

@@ -25,7 +25,7 @@ function CalculationFormulaBtn(props: ISchemaFieldComponentProps): JSX.Element {
   const store = useContext(StoreContext);
   const [showModal, setShowModal] = useState(false);
   const variables = getVariables(store.schema).filter(({ fieldName }) => {
-    return fieldName !== store.activeFieldName;
+    return fieldName !== store.activeFieldId;
   });
 
   return (

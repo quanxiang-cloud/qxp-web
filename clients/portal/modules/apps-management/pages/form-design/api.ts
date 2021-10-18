@@ -1,10 +1,10 @@
-import { TableConfig } from '@c/form-app-data-table/type';
+import { TableConfig, TableColumnConfig } from '@c/form-app-data-table/type';
 import httpClient from '@lib/http-client';
 
 type createPageSchemeParam = {
   tableID: string;
   config: {
-    pageTableColumns: string[];
+    pageTableColumns: TableColumnConfig[];
     filters: Filters;
     pageTableShowRule: TableConfig;
   },

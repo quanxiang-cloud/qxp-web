@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { Input, Field, Label, Control, Icon } from '@QCFE/lego-ui';
-import useDebounce from 'react-use/lib/useDebounce';
+import { useDebounce } from 'react-use';
 import cs from 'classnames';
+
+import usePrevious from '@lib/hooks/use-previous';
 
 export interface ISearchInput {
   name: string;
@@ -23,14 +25,13 @@ export default function SearchInput({
   appendix,
   name,
   className,
-}: ISearchInput) {
+}: ISearchInput): JSX.Element {
   const [val, setVal] = useState<string>('');
   const [isVisible, setIsVisible] = useState<boolean>(!!visible);
+  const previousVal = usePrevious(val);
   useDebounce(
-    () => {
-      onChange(val);
-    },
-    500,
+    () => val !== previousVal && previousVal !== undefined && onChange(val),
+    300,
     [val],
   );
 

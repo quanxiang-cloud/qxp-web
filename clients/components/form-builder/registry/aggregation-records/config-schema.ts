@@ -28,6 +28,9 @@ const schema: ISchema = {
           title: '描述内容',
           maxLength: 50,
           'x-component': 'Input',
+          'x-component-props': {
+            placeholder: '请输入',
+          },
           'x-mega-props': {
             labelAlign: 'top',
           },
@@ -126,8 +129,6 @@ const schema: ISchema = {
           default: 2,
           required: true,
           readOnly: false,
-          maximum: 8,
-          minimum: 0,
           'x-rules': {
             required: true,
             message: '请输入保留的小数点位数',
@@ -213,6 +214,18 @@ const schema: ISchema = {
             labelAlign: 'top',
           },
           'x-index': 9,
+          'x-linkages': [{
+            type: 'value:visible',
+            target: 'condition',
+            condition: '{{ $value === "part" }}',
+          }],
+        },
+        condition: {
+          title: '',
+          'x-component': 'StatisticalRangeConfig',
+          'x-mega-props': {
+            labelAlign: 'top',
+          },
         },
       },
     },

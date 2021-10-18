@@ -6,7 +6,7 @@ import UserProfile from '@c/user-profile';
 export default function HeaderMenu(): JSX.Element {
   return (
     <div className="flex-2 flex justify-end items-center">
-      <NavMsgBar className="mr-8" />
+      <NavMsgBar className="mr-16" />
       {/* <Button className="mr-32">
           进入应用管理
       </Button>
@@ -31,9 +31,7 @@ export default function HeaderMenu(): JSX.Element {
           size={20}
         />
       </div> */}
-      <div className="header-nav-btn group">
-        <UserProfile className='hover:text-blue-300' />
-      </div>
+      <UserProfile className='text-white hover:text-blue-300' />
     </div>
   );
 }

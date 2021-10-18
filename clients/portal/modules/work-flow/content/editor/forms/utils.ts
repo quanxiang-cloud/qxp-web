@@ -1,6 +1,5 @@
 import { get, flatten, cloneDeep } from 'lodash';
 
-const excludeComps = ['subtable', 'associatedrecords'];
 const primitiveTypes = ['string', 'number', 'boolean', 'datetime'];
 const advancedCompTypes = [
   'SubTable',
@@ -23,27 +22,31 @@ type TableListItem = {
 type Options = {
   noSystem?: boolean;
   matchTypeFn?: (...args: any[])=> boolean;
+  excludeComps?: string[],
+  [key: string]: any,
 }
 
-export const getSchemaFields =
-  (schemaFields: SchemaFieldItem[] = [], options: Options = {}): LabelValue[] => {
-    return schemaFields.filter((schema) => {
-      const compName = schema.componentName;
-      const isSystem = !!get(schema, 'x-internal.isSystem');
-      if (options.noSystem && isSystem) {
-        return false;
-      }
-      if (excludeComps.includes(compName)) {
-        return false;
-      }
-      if (options.matchTypeFn) {
-        return options.matchTypeFn.call(null, schema);
-      }
-      return !!compName;
-    }).map((schema) => {
-      return { label: schema.title as string, value: schema.id };
-    });
-  };
+export const getSchemaFields = (
+  schemaFields: SchemaFieldItem[] = [],
+  options: Options = {},
+): LabelValue[] => {
+  return schemaFields.filter((schema) => {
+    const compName = schema.componentName;
+    const isSystem = !!get(schema, 'x-internal.isSystem');
+    if (options.noSystem && isSystem) {
+      return false;
+    }
+    if ((options.excludeComps || ['subtable']).includes(compName)) {
+      return false;
+    }
+    if (options.matchTypeFn) {
+      return options.matchTypeFn.call(null, schema);
+    }
+    return !!compName;
+  }).map((schema) => {
+    return { label: schema.title as string, value: schema.id };
+  });
+};
 
 export function isAdvancedField(type: string, xCompName?: string): boolean {
   if (xCompName && advancedCompTypes.map((t)=> t.toLowerCase()).includes(xCompName.toLowerCase())) {
@@ -52,7 +55,11 @@ export function isAdvancedField(type: string, xCompName?: string): boolean {
   return !primitiveTypes.includes(type);
 }
 
-export function isFieldTypeMatch(srcFieldType: string, srcFieldCompName: string, targetFieldSchema: ISchema): boolean {
+export function isFieldTypeMatch(
+  srcFieldType: string,
+  srcFieldCompName: string,
+  targetFieldSchema: ISchema,
+): boolean {
   if (isAdvancedField(srcFieldType, srcFieldCompName)) {
     // advanced field should be the same component type
     return targetFieldSchema['x-component']?.toLowerCase() === srcFieldCompName.toLowerCase();

@@ -1,4 +1,4 @@
-import { getSchemaPermissionFromSchemaConfig } from '@c/form-builder/utils';
+import { getSchemaPermissionFromSchemaConfig, getDisplayModifierFromSchema } from '@c/form-builder/utils';
 
 type ValueFormat =
   'YYYY' |
@@ -61,17 +61,10 @@ export function toSchema(value: typeof defaultConfig): ISchema {
 }
 
 export function toConfig(schema: ISchema): DatePickerConfig {
-  let displayModifier: FormBuilder.DisplayModifier = 'normal';
-  if (schema.readOnly) {
-    displayModifier = 'readonly';
-  } else if (!schema.display) {
-    displayModifier = 'hidden';
-  }
-
   return {
     title: schema.title as string,
     description: schema.description as string,
-    displayModifier: displayModifier,
+    displayModifier: getDisplayModifierFromSchema(schema),
     placeholder: schema['x-component-props']?.placeholder || '',
     sortable: !!schema['x-internal']?.sortable,
     valueFormat: schema['x-component-props']?.format,

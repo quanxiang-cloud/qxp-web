@@ -39,14 +39,14 @@
   }
 
   // schema form
-  .task-form {
-    form {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      grid-row-gap: 24px;
-      grid-column-gap: 20px;
-    }
-  }
+  // .task-form {
+  //   form {
+  //     display: grid;
+  //     grid-template-columns: repeat(2, 1fr);
+  //     grid-row-gap: 24px;
+  //     grid-column-gap: 20px;
+  //   }
+  // }
 
   &-tab {
     width: 400px;

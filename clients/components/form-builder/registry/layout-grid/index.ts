@@ -1,5 +1,5 @@
 import LayoutGrid from './layout-grid';
-import LayoutGridCanvas from './layout-grid-canvas';
+import Placeholder from './placeholder';
 
 import configSchema from './config-schema';
 import { defaultConfig, toSchema, toConfig, LayoutGridConfig } from './convertor';
@@ -12,7 +12,7 @@ const LayoutGridField: Omit<FormBuilder.SourceElement<LayoutGridConfig>, 'displa
   toSchema,
   toConfig,
   component: LayoutGrid,
-  editComponent: LayoutGridCanvas,
+  placeholderComponent: Placeholder,
   category: 'layout',
   componentName: 'LayoutGrid',
   isLayoutComponent: true,

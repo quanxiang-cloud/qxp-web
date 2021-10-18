@@ -91,7 +91,7 @@ function FieldSwitch({ field, className, ...otherProps }: Props<any>, ref: React
       <OrganizationPicker
         {...field['x-component-props'] as { appID: string, placeholder?: string }}
         {...otherProps}
-        multiple={field['x-internal']?.multiple}
+        multiple
         optionalRange={field['x-internal']?.optionalRange}
         defaultRange={field['x-internal']?.defaultRange}
         rangeList={field['x-internal']?.rangeList}

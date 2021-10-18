@@ -14,6 +14,7 @@ export function handleFieldHighlight(
 ): void {
   const text = contentBlock.getText();
   let matchArr; let start;
+  nameStr.sort((a, b) => b.length - a.length);
   const regex = new RegExp(nameStr.filter((name) => !!name).map((name) => escapeRegExp(name)).join('|'), 'g');
   while ((matchArr = regex.exec(text)) !== null) {
     start = matchArr.index;

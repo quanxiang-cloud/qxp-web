@@ -21,7 +21,7 @@ export default function Index({ workData, returnFlowPage }: Props): JSX.Element 
       noHandleData: [],
     };
     data.map((operation: OperationRecord) => {
-      if (operation.status === 0) {
+      if (operation.status === 'ACTIVE') {
         newData.noHandleData.push(operation);
       } else {
         newData.handledData.push(operation);

@@ -39,6 +39,9 @@ const schema: ISchema = {
           title: '描述内容',
           maxLength: 50,
           'x-component': 'Input',
+          'x-component-props': {
+            placeholder: '请输入',
+          },
           'x-mega-props': {
             labelAlign: 'top',
           },
@@ -76,7 +79,7 @@ const schema: ISchema = {
               value: 'customized',
             },
             {
-              label: '数据集',
+              label: '选项集',
               value: 'predefined-dataset',
             },
           ],

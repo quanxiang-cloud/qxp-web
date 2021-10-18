@@ -5,8 +5,10 @@ import { useQuery } from 'react-query';
 import Button from '@c/button';
 import Icon from '@c/icon';
 import FormDataValueRenderer from '@c/form-data-value-renderer';
-import { Schema } from '@formily/react-schema-renderer';
 import { isEmpty } from '@lib/utils';
+import { buildQueryRef } from '@lib/http-client';
+import { getFlowFormData } from '@lib/api/flow';
+import { schemaToFields } from '@lib/schema-convert';
 
 import { getAbnormalTaskForm } from '../api';
 import ActionModal from './action-modal';
@@ -25,13 +27,27 @@ function UnusualTaskDetail(): JSX.Element {
   const [currAction, setCurrAction] = useState<Actions | ''>('');
   const [modalType, setModalType] = useState('');
   const history = useHistory();
-  const urlParams = useParams<{ flowInstanceId: string, processInstanceId: string, taskId: string, status: string }>();
-  const { processInstanceId, taskId, status, flowInstanceId } = urlParams;
+  const urlParams = useParams<{
+    flowInstanceId: string,
+    processInstanceId: string,
+    taskId: string,
+    status: string
+  }>();
+  const { processInstanceId, taskId, status } = urlParams;
 
   const { data: formDataItem } = useQuery('GET_ABNORMAL_TASK_FORM', () => getAbnormalTaskForm({
     processInstanceId,
     taskId,
   }));
+
+  const { formSchema } = formDataItem?.taskDetailModels[0] || {};
+
+  const { data: formData } = useQuery(['GET_FLOW_FORM_DATA', formSchema], () => {
+    if (!formSchema) {
+      return Promise.resolve({} as Record<string, any>);
+    }
+    return getFlowFormData(processInstanceId, taskId, buildQueryRef(formSchema));
+  });
 
   const [details] = useMemo(() => {
     if (!formDataItem) {
@@ -40,38 +56,36 @@ function UnusualTaskDetail(): JSX.Element {
 
     const _details: FormDataProp[] = [];
     const _systems: FormDataProp[] = [];
-    const { formSchema, formData } = formDataItem.taskDetailModels[0];
 
-    Object.entries(formSchema.table.properties || {}).forEach(([fieldKey, fieldSchema]) => {
-      const hasValue = formData && !isEmpty(formData[fieldKey]);
-      if ((fieldSchema as any)['x-internal']?.isSystem) {
+    schemaToFields(formSchema).forEach((field) => {
+      const hasValue = formData && !isEmpty(formData[field.id]);
+      if (field['x-internal']?.isSystem) {
         _systems.push({
-          label: fieldSchema.title as string,
-          key: fieldKey,
+          label: field.title as string,
+          key: field.id,
           value: hasValue ? (
-            <FormDataValueRenderer schema={fieldSchema as Schema} value={formData?.[fieldKey]} />
+            <FormDataValueRenderer schema={field} value={formData?.[field.id]} />
           ) : '无数据',
-          fieldSchema,
+          fieldSchema: field,
         });
         return;
       }
 
       _details.push({
-        label: fieldSchema.title as string,
-        key: fieldKey,
+        label: field.title as string,
+        key: field.id,
         value: hasValue ? (
-          <FormDataValueRenderer schema={fieldSchema as Schema} value={formData?.[fieldKey]} />
+          <FormDataValueRenderer schema={field} value={formData?.[field.id]} />
         ) : '无数据',
-        fieldSchema,
+        fieldSchema: field,
       });
     });
-
     return [_details, _systems];
   }, [formDataItem]);
 
   const cardRender = (list: FormDataProp[]): JSX.Element => {
     return (
-      <div className='grid gap-20 grid-cols-2'>
+      <div style={{ maxHeight: 'calc(100% - 139px)' }} className='grid gap-20 grid-cols-2 p-20 overflow-auto'>
         {list.map(({ label, value, key }) => (
           <div className='page-data-info-view' key={key}>
             <div className='text-body2-no-color text-gray-600'>{label}</div>
@@ -104,9 +118,9 @@ function UnusualTaskDetail(): JSX.Element {
           closeModal={() => setCurrAction('')}
         />
       )}
-      {
-        modalType === 'flow_modal' && <FlowModal flowInstanceId={flowInstanceId} closeModal={() => setModalType('')} />
-      }
+      {modalType === 'flow_modal' && (
+        <FlowModal processInstanceId={processInstanceId} closeModal={() => setModalType('')} />
+      )}
       <div className='flex items-center'>
         <Icon name='reply' size={20} onClick={goBack} />
         <NavLink to='/system'>系统管理</NavLink>
@@ -138,7 +152,7 @@ function UnusualTaskDetail(): JSX.Element {
               {/* <Icon name='reply' size={20} onClick={goBack} /> */}
             </div>
           </div>
-          <div className="h-1 border-b-2 border-gray-100">
+          <div className="border-t-2 border-gray-100">
             {cardRender(details)}
           </div>
         </div>

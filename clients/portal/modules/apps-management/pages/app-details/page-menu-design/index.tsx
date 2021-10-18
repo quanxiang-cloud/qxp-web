@@ -9,13 +9,15 @@ import PageLoading from '@c/page-loading';
 import Icon from '@c/icon';
 import { getQuery } from '@lib/utils';
 
-import PageDetails from './page-details';
-import AppPagesTree from './app-pages-tree';
-import EditGroupModal from './edit-group-modal';
-import AddGroupPoper from './add-group-poper';
-import EditPageModal from './edit-page-modal';
 import DelModal from './del-modal';
 import appPagesStore from '../store';
+import PageDetails from './page-details';
+import AppPagesTree from './app-pages-tree';
+import AddGroupPoper from './add-group-poper';
+import EditPageModal from './edit-page-modal';
+import EditGroupModal from './edit-group-modal';
+import HidePageConfirmModal from './hide-modal';
+
 import './index.scss';
 
 function PageList(): JSX.Element {
@@ -25,11 +27,22 @@ function PageList(): JSX.Element {
   const { appID } = useParams<{ appID: string }>();
   const { pageID } = getQuery<{ pageID: string }>();
   const {
-    modalType, editGroup, deletePageOrGroup, setPageID, setModalType,
+    curPage,
+    editPage,
+    setPageID,
+    modalType,
+    editGroup,
+    setModalType,
+    pagesTreeData,
+    fetchPageList,
+    deletePageOrGroup,
+    updatePageHideStatus,
+    pageListLoading,
+    updatePagesTree,
   } = appPagesStore;
 
   useEffect(() => {
-    appPagesStore.fetchPageList(appID);
+    fetchPageList(appID);
   }, [appID]);
 
   useEffect(() => {
@@ -53,7 +66,13 @@ function PageList(): JSX.Element {
   }
 
   function handleEditPage(pageInfo: PageInfo): void {
-    appPagesStore.editPage(pageInfo).then(() => {
+    editPage(pageInfo).then(() => {
+      closeModal();
+    });
+  }
+
+  function handleVisibleHiddenPage(pageInfo: PageInfo): void {
+    updatePageHideStatus(appID, pageInfo).then(() => {
       closeModal();
     });
   }
@@ -72,7 +91,7 @@ function PageList(): JSX.Element {
     setModalType(key);
   };
 
-  if (appPagesStore.pageListLoading) {
+  if (pageListLoading) {
     return <div className='app-details-nav'><PageLoading /></div>;
   }
 
@@ -96,21 +115,22 @@ function PageList(): JSX.Element {
             新建菜单
           </div>
           <AppPagesTree
-            tree={toJS(appPagesStore.pagesTreeData)}
+            tree={toJS(pagesTreeData)}
             onMenuClick={handleMenuClick}
-            selectedPage={appPagesStore.curPage}
+            selectedPage={curPage}
             onSelectPage={handleSelectPage}
-            onChange={appPagesStore.updatePagesTree}
+            onChange={updatePagesTree}
           />
         </div>
       </div>
       <PageDetails pageID={pageID} />
-      <DelModal
-        type={modalType === 'delGroup' ? 'group' : 'page'}
-        visible={modalType === 'delPage' || modalType === 'delGroup'}
-        onOk={delPageOrGroup}
-        onCancel={closeModal}
-      />
+      {['delPage', 'delGroup'].includes(modalType) && (
+        <DelModal
+          type={modalType === 'delGroup' ? 'group' : 'page'}
+          onOk={delPageOrGroup}
+          onCancel={closeModal}
+        />
+      )}
       {modalType === 'editGroup' && (
         <EditGroupModal
           groupInfo={curEditNode?.data as PageInfo}
@@ -118,12 +138,19 @@ function PageList(): JSX.Element {
           onSubmit={handleEditGroup}
         />
       )}
-      {['editPage', 'createPage'].includes(modalType) && (
+      {['editPage', 'createPage', 'copyPage'].includes(modalType) && (
         <EditPageModal
           appID={appID}
-          pageInfo={modalType === 'createPage' ? undefined : appPagesStore.curPage}
+          pageInfo={modalType === 'createPage' ? undefined : curPage}
           onCancel={closeModal}
           onSubmit={handleEditPage}
+        />
+      )}
+      {modalType === 'hide' && (
+        <HidePageConfirmModal
+          pageInfo={curPage}
+          onCancel={closeModal}
+          onOk={() => handleVisibleHiddenPage(curPage)}
         />
       )}
     </div>

@@ -1,7 +1,8 @@
 import { get, has } from 'lodash';
 
 import toast from '@lib/toast';
-import { getSchemaPermissionFromSchemaConfig } from '@c/form-builder/utils';
+import { ESParameter } from '@c/data-filter/utils';
+import { getSchemaPermissionFromSchemaConfig, getDisplayModifierFromSchema } from '@c/form-builder/utils';
 
 export type AggType = 'count' | 'sum' | 'max' | 'min' | 'avg';
 export type RoundMethod = 'round' | 'round-up' | 'round-down';
@@ -21,6 +22,7 @@ export interface AggregationRecordsConfig {
   roundDecimal: RoundMethod;
   displayFieldNull: '0' | '-';
   dataRange: 'all' | 'part';
+  condition: ESParameter,
 }
 
 export const defaultConfig: AggregationRecordsConfig = {
@@ -38,6 +40,11 @@ export const defaultConfig: AggregationRecordsConfig = {
   roundDecimal: 'round',
   displayFieldNull: '0',
   dataRange: 'all',
+  condition: {
+    bool: {
+      must: [],
+    },
+  },
 };
 
 export function toSchema(value: AggregationRecordsConfig): ISchema {
@@ -58,6 +65,7 @@ export function toSchema(value: AggregationRecordsConfig): ISchema {
       roundDecimal: value.roundDecimal,
       displayFieldNull: value.displayFieldNull,
       dataRange: value.dataRange,
+      condition: value.condition,
     },
     ['x-internal']: {
       permission: getSchemaPermissionFromSchemaConfig(value),
@@ -66,17 +74,10 @@ export function toSchema(value: AggregationRecordsConfig): ISchema {
 }
 
 export function toConfig(schema: ISchema): AggregationRecordsConfig {
-  let displayModifier: FormBuilder.DisplayModifier = 'normal';
-  if (schema.readOnly) {
-    displayModifier = 'readonly';
-  } else if (!schema.display) {
-    displayModifier = 'hidden';
-  }
-
   return {
     title: schema.title as string,
     description: schema.description as string,
-    displayModifier: displayModifier,
+    displayModifier: getDisplayModifierFromSchema(schema),
     associateObject: {
       appID: schema['x-component-props']?.appID,
       tableID: schema['x-component-props']?.tableID,
@@ -88,6 +89,7 @@ export function toConfig(schema: ISchema): AggregationRecordsConfig {
     roundDecimal: schema['x-component-props']?.roundDecimal,
     displayFieldNull: schema['x-component-props']?.displayFieldNull,
     dataRange: schema['x-component-props']?.dataRange,
+    condition: schema['x-component-props']?.condition,
   };
 }
 

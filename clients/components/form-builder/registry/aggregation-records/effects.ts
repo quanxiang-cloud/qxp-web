@@ -11,6 +11,12 @@ export default function effects() {
       }
       state.props.enum = value?.fields || [];
     });
+
+    setFieldState('condition', (state)=> {
+      state.props['x-component-props'] = {
+        associateObject: value,
+      };
+    });
   });
 
   onFieldValueChange$('aggType').subscribe(({ value }) => {
@@ -19,8 +25,17 @@ export default function effects() {
         state.value = 0;
         state.props.readOnly = true;
       } else {
-        state.value = 2;
         state.props.readOnly = false;
+      }
+    });
+  });
+
+  onFieldValueChange$('decimalPlaces').subscribe(({ value }) => {
+    setFieldState('decimalPlaces', (state) => {
+      if (value < 0) {
+        state.value = 0;
+      } else if (value > 8) {
+        state.value = 8;
       }
     });
   });

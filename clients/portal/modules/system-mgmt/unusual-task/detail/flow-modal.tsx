@@ -20,15 +20,15 @@ import { getFlowInfo } from '../api';
 import '@flow/style.scss';
 
 interface Props {
-  flowInstanceId: string;
+  processInstanceId: string;
   closeModal(): void;
 }
 
-function FlowModal({ flowInstanceId, closeModal }: Props): JSX.Element | null {
+function FlowModal({ processInstanceId, closeModal }: Props): JSX.Element | null {
   const [flowParentElement, setFlowParentElement] = useState<HTMLDivElement | null>(null);
   const { elements } = useObservable<StoreValue>(store);
-  const { data, isLoading, isError } = useQuery(['GET_WORK_FLOW_INFO', flowInstanceId], getFlowInfo, {
-    enabled: !!flowInstanceId,
+  const { data, isLoading, isError } = useQuery(['GET_WORK_FLOW_INFO', processInstanceId], getFlowInfo, {
+    enabled: !!processInstanceId,
   });
 
   useEffect(() => {

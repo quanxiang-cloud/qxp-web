@@ -1,6 +1,7 @@
 import React, { useRef, useContext, useState } from 'react';
 import { useQuery } from 'react-query';
 import { useForm, Controller } from 'react-hook-form';
+import { Radio, RadioChangeEvent } from 'antd';
 
 import Toggle from '@c/toggle';
 import Icon from '@c/icon';
@@ -10,9 +11,7 @@ import Select from '@c/select';
 import useObservable from '@lib/hooks/use-observable';
 import toast from '@lib/toast';
 import CheckBoxGroup from '@c/checkbox/checkbox-group';
-import RadioGroup from '@c/radio/group';
 import Button from '@c/button';
-import Radio from '@c/radio';
 import FormulaEditor, { RefProps } from '@c/formula-editor';
 import { getFormFieldSchema } from '@flow/content/editor/forms/api';
 import schemaToFields from '@lib/schema-convert';
@@ -27,21 +26,6 @@ import { getFlowVariables } from './editor/forms/api';
 import type { StoreValue } from './editor/type';
 import FlowContext from '../flow-context';
 
-const WITHDRAW_OPTIONS = [
-  {
-    label: '仅在下一节点未处理时可撤回',
-    value: 1,
-  },
-  {
-    label: '任意节点都可以撤回',
-    value: 2,
-  },
-  {
-    label: '指定节点下可撤回',
-    value: 3,
-  },
-];
-
 export default function GlobalConfig(): JSX.Element | null {
   const {
     cancelable,
@@ -55,6 +39,7 @@ export default function GlobalConfig(): JSX.Element | null {
     canCancelType,
     canCancelNodes,
   } = useObservable<StoreValue>(store);
+
   const [instanceNameTmp, setInstanceName] = useState(instanceName || '');
   const { control, handleSubmit, unregister, formState: { errors } } = useForm();
   const formulaEditorRef = useRef<RefProps>();
@@ -94,8 +79,8 @@ export default function GlobalConfig(): JSX.Element | null {
     formulaEditorRef.current?.insertEntity(variable);
   };
 
-  const handleCancelTypeChange = (canCancelType: any): void => {
-    const updateData: { canCancelType: number, canCancelNodes?: string } = { canCancelType };
+  const handleCancelTypeChange = (e: RadioChangeEvent): void => {
+    const updateData: { canCancelType: number, canCancelNodes?: string } = { canCancelType: e.target.value };
     if (canCancelType !== 3) {
       updateData.canCancelNodes = '';
       unregister('canCancelNodes');
@@ -126,6 +111,22 @@ export default function GlobalConfig(): JSX.Element | null {
     };
   });
 
+  const WITHDRAW_OPTIONS = [
+    {
+      label: '仅在下一节点未处理时可撤回',
+      value: 1,
+    },
+    {
+      label: '任意节点都可以撤回',
+      value: 2,
+    },
+    {
+      label: '指定节点下可撤回',
+      value: 3,
+      disabled: approveNodes.length === 0,
+    },
+  ];
+
   const options = [{
     field: 'cancelable',
     title: '流程发起后允许撤回',
@@ -133,18 +134,7 @@ export default function GlobalConfig(): JSX.Element | null {
     subTitle: cancelable && (
       <div className='mt-16'>
         <div className='flex gap-x-16'>
-          <RadioGroup onChange={handleCancelTypeChange}>
-            {WITHDRAW_OPTIONS.map(({ label, value: val }) => (
-              <Radio
-                className='text-gray-600'
-                disabled={!approveNodes.length && val === 3}
-                key={val}
-                label={label}
-                value={val}
-                defaultChecked={canCancelType === val}
-              />
-            ))}
-          </RadioGroup>
+          <Radio.Group options={WITHDRAW_OPTIONS} onChange={handleCancelTypeChange} value={canCancelType} />
         </div>
         {canCancelType === 3 && (
           <div className='mt-10 text-body2-no-color text-gray-600 flex items-center'>
@@ -308,7 +298,7 @@ export default function GlobalConfig(): JSX.Element | null {
                   defaultValue={keyFields ? keyFields.split(',') : []}
                   onChange={(fields) => {
                     const newFields = fieldList?.map(
-                      (listItem)=> fields.find((item)=> item === listItem.value),
+                      (listItem) => fields.find((item) => item === listItem.value),
                     ).filter(Boolean) || [];
                     field.onChange(newFields.length ? newFields.join(',') : '');
                   }}

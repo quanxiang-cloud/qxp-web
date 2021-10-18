@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { observer } from 'mobx-react';
 import { useQuery } from 'react-query';
+import { useHistory, useLocation } from 'react-router-dom';
 
 import Switch from '@c/switch';
 import Select from '@c/select';
@@ -32,12 +33,16 @@ const sortOptions = [
 ];
 
 function TodoApprovals(): JSX.Element {
+  const { search, pathname } = useLocation();
+  const searchParams = new URLSearchParams(search);
+  const history = useHistory();
   const { data: flowInstCount } = useQuery(['flow-instance-count'], async () => {
     return await getFlowInstanceCount({});
   });
 
   useEffect(() => {
     document.title = '我的流程 - 待处理列表'; // todo
+    store.tagType = searchParams.get('tagType') || '';
     store.fetchAll();
 
     return () => {
@@ -51,8 +56,11 @@ function TodoApprovals(): JSX.Element {
         <div className="flex flex-1">
           <Switch
             className="mr-16"
-            onChange={store.changeTagType}
-            defaultValue={store.tagType}
+            onChange={(value) => {
+              history.push(`${pathname}${value ? '?tagType=' : ''}${value}`);
+              store.changeTagType(value);
+            }}
+            value={store.tagType}
             options={status}
             optionRenderer={({ value, label }) => {
               let count = 0;

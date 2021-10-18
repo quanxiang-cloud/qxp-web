@@ -55,3 +55,19 @@
   }
   
 }
+
+.form-table-column-config {
+  width: 180px;
+  max-height: 300px;
+  overflow: auto;
+  background-color: #fff;
+  background-clip: padding-box;
+  border-radius: 2px;
+  box-shadow: 0 3px 6px -4px rgb(0 0 0 / 12%), 0 6px 16px 0 rgb(0 0 0 / 8%), 0 9px 28px 8px rgb(0 0 0 / 5%);
+}
+
+.form-table-fixed-active {
+  transition: transform .3s;
+  color: var(--blue-600);
+  transform: rotate(45deg);
+}

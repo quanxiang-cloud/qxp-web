@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { observer } from 'mobx-react';
+import { useTitle } from 'react-use';
 
 import TextHeader from '@c/text-header';
 
@@ -12,6 +13,8 @@ import './index.scss';
 function MyApp(): JSX.Element {
   const [modalType, setModalType] = useState('');
   const { isListLoading, changeParams, params, appList, countMaps } = store;
+
+  useTitle('应用管理 - 我的应用');
 
   useEffect(() => {
     store.changeParams({});

@@ -87,12 +87,17 @@ function FormDesignHeader(): JSX.Element {
       <div className='form-design-tool'>
         <Button
           iconName='preview'
-          forbidden={!(store.formStore && store.formStore.fields.length !== 0)}
+          forbidden={store?.formStore?.flattenFields?.length === 0}
           onClick={() => setPreviewModalVisible(true)}
         >
           预览表单
         </Button>
-        <Button onClick={store.saveFormSchema} iconName='save' modifier="primary">
+        <Button
+          onClick={store.saveFormSchema}
+          iconName='save'
+          modifier='primary'
+          forbidden={store?.formStore?.flattenFields?.length === 0}
+        >
           保存
         </Button>
         {/* <span className='text-underline-no-color cursor-pointer'>

@@ -3,6 +3,10 @@ import { FixedColumn, IdType, UnionColumns } from 'react-table';
 
 import checkboxColumn from './checkbox-column';
 
+export const DEFAULT_WIDTH = 150;
+
+export const MINIMUM_WIDTH = 50;
+
 export const getDefaultSelectMap = (keys: string[] | undefined): Record<IdType<any>, boolean> => {
   if (!keys) {
     return {};
@@ -20,14 +24,22 @@ export function useExtendColumns<T = any>(
   showCheckbox?: boolean,
 ): UnionColumns<T>[] {
   return useMemo(() => {
+    const _originalColumns = originalColumns.map((col) => {
+      if (col.width) {
+        return col;
+      }
+
+      return { ...col, width: DEFAULT_WIDTH };
+    });
+
     if (!showCheckbox) {
-      return originalColumns;
+      return _originalColumns;
     }
 
-    const firstColumnFixed = originalColumns.length > 0 && (originalColumns[0] as FixedColumn<any>).fixed;
+    const firstColumnFixed = _originalColumns.length > 0 && (_originalColumns[0] as FixedColumn<any>).fixed;
     return [
       { ...checkboxColumn, fixed: firstColumnFixed },
-      ...originalColumns,
+      ..._originalColumns,
     ];
   }, [showCheckbox, originalColumns]);
 }

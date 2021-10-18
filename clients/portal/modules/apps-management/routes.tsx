@@ -26,7 +26,6 @@ export default function Routes(): JSX.Element {
 
   return (
     <Switch>
-      <Route exact path="/apps" component={AppsIndex} />
       <Route path="/apps/details/:appID" component={AppDetails} />
       <Route exact path="/apps/preview/customPage/:appID/:pageID" component={PreviewCustomPage} />
       <Route
@@ -36,6 +35,7 @@ export default function Routes(): JSX.Element {
       />
       <Route path="/apps/flow/new/:type/:appID" component={FlowDetail} />
       <Route path="/apps/flow/:appID/:flowID" component={FlowDetail} />
+      <Route path="/apps" component={AppsIndex} />
     </Switch>
   );
 }
