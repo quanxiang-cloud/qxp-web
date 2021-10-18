@@ -66,5 +66,5 @@ const generateSprite = async function () {
 
 module.exports = {
   getSprite,
-  buildIcons: generateSprite,
+  generateSprite,
 };
