@@ -102,22 +102,22 @@ function NodeRender(
 
   const MENUS = [
     {
-      key: isPage ? 'delPage' : 'delGroup',
-      disabled: !isPage && item.children.length > 0,
-      label: (
-        <div className="flex items-center">
-          <Icon name="restore_from_trash" size={16} className="mr-8" />
-          <span className="font-normal">删除</span>
-        </div>
-      ),
-    },
-    {
       key: 'hide',
       disabled: !isPage,
       label: (
         <div className="flex items-center">
           <Icon name={isHide ? 'visibility' : 'visibility_off'} size={16} className="mr-8" />
           <span className="font-normal">{isHide ? '显示' : '隐藏'}</span>
+        </div>
+      ),
+    },
+    {
+      key: isPage ? 'delPage' : 'delGroup',
+      disabled: !isPage && item.children.length > 0,
+      label: (
+        <div className="flex items-center">
+          <Icon name="restore_from_trash" size={16} className="mr-8" />
+          <span className="font-normal">删除</span>
         </div>
       ),
     },
