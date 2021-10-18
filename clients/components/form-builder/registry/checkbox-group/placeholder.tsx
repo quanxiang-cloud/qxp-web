@@ -1,12 +1,16 @@
 import React from 'react';
 import { Checkbox } from 'antd';
-import { ISchemaFieldContextProps } from '@formily/antd';
+import { ISchemaFieldComponentProps } from '@formily/antd';
+
+import useEnumOptions from '@lib/hooks/use-enum-options';
 
 const CheckboxGroup = Checkbox.Group;
 
-function Placeholder({ props }: ISchemaFieldContextProps): JSX.Element {
+function Placeholder(fieldProps: ISchemaFieldComponentProps): JSX.Element {
+  const labels = useEnumOptions(fieldProps);
+
   return (
-    <CheckboxGroup options={props.enum} />
+    <CheckboxGroup options={labels} />
   );
 }
 

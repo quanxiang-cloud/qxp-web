@@ -1,11 +1,15 @@
 import React from 'react';
 import { Radio } from 'antd';
-import { ISchemaFieldContextProps } from '@formily/antd';
+import { ISchemaFieldComponentProps } from '@formily/antd';
 
-function Placeholder({ props }: ISchemaFieldContextProps): JSX.Element {
+import useEnumOptions from '@lib/hooks/use-enum-options';
+
+function Placeholder(fieldProps: ISchemaFieldComponentProps): JSX.Element {
+  const labels = useEnumOptions(fieldProps);
+
   return (
     <Radio.Group>
-      {props.enum?.map((label: string, index: number) => {
+      {labels?.map((label: string, index: number) => {
         return <Radio key={index} value={index}>{label}</Radio>;
       })}
     </Radio.Group>
