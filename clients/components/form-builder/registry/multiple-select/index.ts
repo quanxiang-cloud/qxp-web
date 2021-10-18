@@ -1,3 +1,4 @@
+import { filter } from 'rxjs/operators';
 import { FormEffectHooks, createFormActions } from '@formily/react';
 
 import { validateDatasetElement } from '@c/form-builder/utils';
@@ -26,10 +27,16 @@ const MultipleSelectField: Omit<FormBuilder.SourceElement<MultipleSelectConfig>,
     const { setFieldValue, getFieldValue } = createFormActions();
     const { onFieldValueChange$ } = FormEffectHooks;
 
-    onFieldValueChange$('edit').subscribe(({ value }) => {
+    onFieldValueChange$('edit').pipe(
+      filter(({ value }) => !!value),
+    ).subscribe(({ value }) => {
       const availableOptions = getFieldValue('availableOptions');
-      setFieldValue('availableOptions', availableOptions.map((op: any, index: number) => {
-        return { label: value[index], isDefault: op.isDefault };
+      setFieldValue('availableOptions', value?.map((op: string, index: number) => {
+        if (index >= availableOptions.length) {
+          return { label: op, isDefault: false };
+        }
+
+        return { label: op, isDefault: availableOptions[index].isDefault };
       }));
     });
   },

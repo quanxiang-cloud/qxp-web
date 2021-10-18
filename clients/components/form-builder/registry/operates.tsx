@@ -77,17 +77,7 @@ export function AddOperate(): JSX.Element {
       <Button
         className="mr-8"
         onClick={() => {
-          let hasNullOption = false;
-          options.forEach((element: any) => {
-            if (element.label === '' || element.label === undefined) {
-              hasNullOption = true;
-              return;
-            }
-          });
-
-          if (hasNullOption === false) {
-            mutator?.push({ label: '', value: '' });
-          }
+          mutator?.change(options.concat([{ label: `选项${options.length + 1}`, isDefault: false }]));
         }}
       >
         添加选项

@@ -14,6 +14,7 @@ export interface MultipleSelectConfig {
   datasetId: string;
   availableOptions: Array<Record<string, string | boolean>>,
 }
+
 export const defaultConfig: MultipleSelectConfig = {
   title: '下拉复选框',
   description: '',
