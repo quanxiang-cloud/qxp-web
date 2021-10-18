@@ -14,6 +14,7 @@ export interface SelectConfig {
   defaultValueFrom: FormBuilder.DefaultValueFrom;
   datasetId: string;
   availableOptions: Array<Record<string, string | boolean>>,
+  defaultValue: undefined | string,
 }
 
 export const defaultConfig: SelectConfig = {
@@ -30,6 +31,7 @@ export const defaultConfig: SelectConfig = {
     { label: '选项二', isDefault: false },
     { label: '选项三', isDefault: false },
   ],
+  defaultValue: undefined,
 };
 
 export function toSchema(value: SelectConfig): ISchema {
@@ -40,7 +42,8 @@ export function toSchema(value: SelectConfig): ISchema {
     required: value.required,
     readOnly: value.displayModifier === 'readonly',
     display: value.displayModifier !== 'hidden',
-    default: convertSingleSelectDefault(value.availableOptions.find(({ isDefault }) => isDefault) || {}),
+    default: value.defaultValueFrom === 'dataset' ? value.defaultValue :
+      convertSingleSelectDefault(value.availableOptions.find(({ isDefault }) => isDefault) || {}),
     enum: value.availableOptions.map((op) => {
       return op.label as string;
     }) || [],
@@ -74,5 +77,6 @@ export function toConfig(schema: ISchema): SelectConfig {
         isDefault: label === schema.default,
       };
     }) as any,
+    defaultValue: schema.default,
   };
 }

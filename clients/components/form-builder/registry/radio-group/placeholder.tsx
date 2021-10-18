@@ -8,11 +8,17 @@ function Placeholder(fieldProps: ISchemaFieldComponentProps): JSX.Element {
   const labels = useEnumOptions(fieldProps);
 
   return (
-    <Radio.Group>
-      {labels?.map((label: string, index: number) => {
-        return <Radio key={index} value={index}>{label}</Radio>;
-      })}
-    </Radio.Group>
+    <>
+      {!labels.length ? (
+        <span>暂无可选项</span>
+      ) : (
+        <Radio.Group>
+          {labels?.map((label: string, index: number) => {
+            return <Radio key={index} value={index}>{label}</Radio>;
+          })}
+        </Radio.Group>
+      )}
+    </>
   );
 }
 

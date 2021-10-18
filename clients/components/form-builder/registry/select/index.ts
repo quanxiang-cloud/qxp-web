@@ -1,13 +1,17 @@
-import { filter } from 'rxjs/operators';
-import { FormEffectHooks, createFormActions } from '@formily/react';
+import { createFormActions } from '@formily/antd';
 
 import { validateDatasetElement } from '@c/form-builder/utils';
 
+import Placeholder from './placeholder';
+import configSchema from './config-schema';
 import CustomSelect from './custom-select';
 import DatasetConfig from '../../form-settings-panel/form-field-config/dataset-config';
-import configSchema from './config-schema';
 import { defaultConfig, toSchema, toConfig, SelectConfig } from './convertor';
-import Placeholder from './placeholder';
+import {
+  updateLabelsOnSimpleEdit,
+  initDefaultValueOnOptionsFromDataset,
+  updateDefaultValueOnDatasetIdChanged,
+} from '../options-effects';
 
 const SelectField: Omit<FormBuilder.SourceElement<SelectConfig>, 'displayOrder'> = {
   configSchema,
@@ -24,21 +28,11 @@ const SelectField: Omit<FormBuilder.SourceElement<SelectConfig>, 'displayOrder'>
   configDependencies: { DatasetConfig },
   validate: validateDatasetElement,
   effects: () => {
-    const { setFieldValue, getFieldValue } = createFormActions();
-    const { onFieldValueChange$ } = FormEffectHooks;
+    const actions = createFormActions();
 
-    onFieldValueChange$('edit').pipe(
-      filter(({ value }) => !!value),
-    ).subscribe(({ value }) => {
-      const availableOptions = getFieldValue('availableOptions');
-      setFieldValue('availableOptions', value.map((op: any, index: number) => {
-        if (index >= availableOptions.length) {
-          return { label: op, isDefault: false };
-        }
-
-        return { label: op, isDefault: availableOptions[index].isDefault };
-      }));
-    });
+    updateLabelsOnSimpleEdit(actions);
+    initDefaultValueOnOptionsFromDataset(actions);
+    updateDefaultValueOnDatasetIdChanged(actions);
   },
 };
 
