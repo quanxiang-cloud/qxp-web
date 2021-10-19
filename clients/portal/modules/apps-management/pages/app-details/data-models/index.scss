@@ -31,18 +31,19 @@
 }
 
 .model-info-header {
-  max-height: 52px;
-  min-height: 52px;
+  width: auto;
+  height: 52px;
   color:#FFFFFF;
   border-radius: 8px;
   justify-content: center;
-  background: url(/dist/images/authority-bg.svg);
-  background-size: cover;
-  box-shadow: 0px 8px 24px 8px rgb(99 102 241 / 25%);
+  background: url(/dist/images/authority-line.png) top right no-repeat,linear-gradient(90deg, #638AFF 0%, #375FF3 100%);
+  background-size: contain;
+  box-shadow: 0px 8px 24px 8px rgba(55, 95, 243, 0.15);
 
   .desc {
     @apply flex flex-col ml-4 truncate;
   }
+  
 }
 
 .model-field-search {

@@ -23,7 +23,8 @@ function ModelNavList(): JSX.Element {
           <Icon
             size={20}
             className='text-current flex-shrink-0 mr-4'
-            name={model.id === curDataModel?.id ? 'database_active' : 'database_unactive'}
+            name="model_test"
+            // name={model.id === curDataModel?.id ? 'database_active' : 'database_unactive'}
           />
           <span className="truncate">{model.title}</span>
           {model.id === curDataModel?.id && <ModelMoreMenu model={model} />}
