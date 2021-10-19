@@ -30,10 +30,6 @@ export type FormFieldOption = {
 export async function getFormFieldSchema({ queryKey }: QueryFunctionContext): Promise<{
   properties?: { [key: string]: ISchema; } | undefined;
 }> {
-  if (!queryKey[1] || !queryKey[0]) {
-    return {};
-  }
-
   const data = await httpClient<SchemaResponse | null>(
     `/api/v1/form/${queryKey[2]}/m/table/getByID`, { tableID: queryKey[1] });
   return data?.schema ?? {};
