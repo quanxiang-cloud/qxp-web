@@ -24,9 +24,7 @@ function SubTableColumns({ value, mutators }: ISchemaFieldComponentProps): JSX.E
   const subRef = useRef<any>();
 
   useEffect(() => {
-    if (!currentSchema && value?.length) {
-      actions.getFieldState('Fields.linkedTable', handleLinkedTableChange);
-    }
+    !currentSchema && actions.getFieldState('Fields.linkedTable', handleLinkedTableChange);
     return () => subRef.current?.unsubscribe();
   }, []);
 
