@@ -231,7 +231,7 @@ function LinkageConfig({
         state.props['x-component'] = 'AntdSelect';
         state.props.enum = linkTableField?.fieldEnum;
         if (linkTableField?.fieldEnum && !!linkTableField?.fieldEnum?.length) {
-          const optionValues = linkTableField?.fieldEnum.map(({ value }) => value);
+          const optionValues = linkTableField?.fieldEnum;
           if (Array.isArray(currentCompareValue)) {
             state.value = currentCompareValue.filter((value: any) => optionValues.includes(value));
             return;
