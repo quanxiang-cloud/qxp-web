@@ -1,6 +1,6 @@
 import httpClient, { httpClientGraphQL } from '@lib/http-client';
 
-export const createPerGroup = (appID: string, data: RightsCreate) => {
+export const createPerGroup = (appID: string, data: RightsCreate): Promise<{id: string}> => {
   return httpClient(`/api/v1/structor/${appID}/m/permission/perGroup/create`, data);
 };
 

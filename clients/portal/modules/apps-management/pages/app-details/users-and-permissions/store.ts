@@ -124,12 +124,29 @@ class UserAndPerStore {
   }
 
   @action
+  updateUserAndPerStore = (rights: RightsCreate, id: {id: string}): void => {
+    this.rightsList = [...this.rightsList, { ...rights, ...id }];
+    this.currentRights = { ...rights, ...id };
+    this.rightsGroupID = this.currentRights.id;
+    this.tempRightList = [...this.rightsList];
+  }
+
+  @action
   addRightsGroup = (rights: RightsCreate): Promise<void> => {
-    return createPerGroup(this.appID, rights).then((res: any) => {
-      this.rightsList = [...this.rightsList, { ...rights, ...res }];
-      this.currentRights = { ...rights, ...res };
-      this.rightsGroupID = this.currentRights.id;
-      this.tempRightList = [...this.rightsList];
+    return createPerGroup(this.appID, rights).then((res: {id: string}) => {
+      this.updateUserAndPerStore(rights, res);
+    });
+  }
+
+  @action
+  copyRightsGroup = (rights: Rights): Promise<void> => {
+    return copyPerGroup(this.appID, {
+      groupID: rights.id,
+      name: rights.name,
+      description: rights.description,
+    }).then((res: {id: string}) => {
+      this.updateUserAndPerStore(rights, res);
+      toast.success('修改成功！');
     });
   }
 
@@ -147,21 +164,6 @@ class UserAndPerStore {
       this.tempRightList = deepClone(this.rightsList);
       toast.success('修改成功！');
       return true;
-    });
-  }
-
-  @action
-  copyRightsGroup = (rights: Rights): Promise<void> => {
-    return copyPerGroup(this.appID, {
-      groupID: rights.id,
-      name: rights.name,
-      description: rights.description,
-    }).then((res: {id: string}) => {
-      this.rightsList = [...this.rightsList, { ...rights, ...res }];
-      this.currentRights = { ...rights, ...res };
-      this.rightsGroupID = this.currentRights.id;
-      this.tempRightList = [...this.rightsList];
-      toast.success('修改成功！');
     });
   }
 
