@@ -96,7 +96,7 @@ function LinkageConfig({
       return false;
     }
     // todo match type
-    return ['string', 'number', 'datetime'].includes(field.type || '');
+    return true;
   });
 
   function resetFormDefaultValueOnLinkTableChanged(fields: LinkedTableFieldOptions[]): void {
@@ -192,7 +192,7 @@ function LinkageConfig({
   }
 
   function updateCompareValueFieldOnCompareOperatorChanged({ name, value }: IFieldState): void {
-    const isMultiple = ['⊇', '∩', '∈', '∉'].includes(value);
+    const isMultiple = ['∩', '∈', '∉'].includes(value);
     const fieldNamePath = FormPath.transform(name, /\d/, ($1) => `rules.${$1}.fieldName`);
     const compareToPath = FormPath.transform(name, /\d/, ($1) => `rules.${$1}.compareTo`);
     const currentFieldNameValue = getFieldValue(fieldNamePath);
@@ -213,6 +213,7 @@ function LinkageConfig({
 
   function updateCompareValueFieldEnumAndComponent({ name }: IFieldState): void {
     const fieldNamePath = FormPath.transform(name, /\d/, ($1) => `rules.${$1}.fieldName`);
+    const operatePath = FormPath.transform(name, /\d/, ($1) => `rules.${$1}.compareOperator`);
     const compareToPath = FormPath.transform(name, /\d/, ($1) => `rules.${$1}.compareTo`);
     const compareValuePath = FormPath.transform(name, /\d/, ($1) => `rules.${$1}.compareValue`);
     const currentFieldNameValue = getFieldValue(fieldNamePath);
@@ -228,8 +229,12 @@ function LinkageConfig({
     }
 
     setFieldState(compareValuePath, (state) => {
+      const compareOperator = getFieldValue(operatePath);
+
       if (currentCompareToValue === 'fixedValue' && enumerable) {
         state.props['x-component'] = 'AntdSelect';
+        state.props['x-component-props'] = ['⊇', '⊋', '∩', '∈', '∉']
+          .includes(compareOperator) ? { mode: 'multiple' } : {};
         state.props.enum = linkTableField?.fieldEnum;
         if (linkTableField?.fieldEnum && !!linkTableField?.fieldEnum?.length) {
           const optionValues = linkTableField?.fieldEnum;
@@ -244,6 +249,7 @@ function LinkageConfig({
       }
 
       if (currentCompareToValue === 'fixedValue') {
+        console.log(222);
         state.props['x-component'] = linkTableField?.componentName || 'input';
         state.props.enum = undefined;
 
@@ -258,9 +264,10 @@ function LinkageConfig({
           return componentName === linkTableField?.componentName;
         })
         .map((field) => ({ label: field.title as string, value: field.id }));
-
       state.props['x-component'] = 'AntdSelect';
       state.props.enum = compareFields;
+      state.props['x-component-props'] = ['∩', '∈', '∉']
+        .includes(compareOperator) ? { mode: 'multiple' } : {};
       if (compareFields.length) {
         const optionValues = compareFields
           .map(({ value }) => value);
