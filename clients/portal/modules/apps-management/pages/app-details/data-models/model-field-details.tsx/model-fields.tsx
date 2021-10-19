@@ -65,24 +65,24 @@ function ModelFields(): JSX.Element {
 
   return (
     <>
-      <div className="py-16 flex items-center">
-        <Search
-          className="model-field-search mr-16"
-          placeholder="搜索字段名称/标识..."
-          onChange={handleSearchNameChange}
-        />
+      <div className="pt-16 pb-8 flex items-center justify-between">
         <Button
           modifier="primary"
-          className="flex items-center"
+          className="flex items-center w-100"
           forbidden={curDataModel?.source === 1}
           onClick={() => {
             setCurModelField(undefined);
             setFieldModalType('create');
           }}
         >
-          <Icon type="light" name="link" size={21} />
-          <span className="ml-4">添加字段</span>
+          <Icon type="light" name="add" className="flex-shrink-0" size={16} />
+          <span className="ml-4 text-12">添加字段</span>
         </Button>
+        <Search
+          className="model-field-search"
+          placeholder="搜索字段名称/标识..."
+          onChange={handleSearchNameChange}
+        />
       </div>
       <div className="flex-1 text-14 flex flex-col overflow-auto">
         <div className="flex-1 overflow-auto model-field-table">
